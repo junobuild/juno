@@ -53,7 +53,7 @@
 	<LaunchpadLink
 		size="small"
 		href="/analytics"
-		ariaLabel={`${$i18n.satellites.open}: ${$i18n.analytics.title}`}
+		ariaLabel={`${$i18n.core.open}: ${$i18n.analytics.title}`}
 		highlight={isNullish($orbiterStore)}
 	>
 		<p>
@@ -76,7 +76,7 @@
 	<LaunchpadLink
 		size="small"
 		href="/monitoring"
-		ariaLabel={`${$i18n.satellites.open}: ${$i18n.monitoring.title}`}
+		ariaLabel={`${$i18n.core.open}: ${$i18n.monitoring.title}`}
 		highlight={$missionControlSettingsLoaded && $missionControlNotMonitored}
 	>
 		<p>
@@ -90,7 +90,7 @@
 	<LaunchpadLink
 		size="small"
 		href="/mission-control"
-		ariaLabel={`${$i18n.satellites.open}: ${$i18n.mission_control.title}`}
+		ariaLabel={`${$i18n.core.open}: ${$i18n.mission_control.title}`}
 	>
 		<p>
 			<IconMissionControl />
@@ -103,7 +103,7 @@
 	<LaunchpadLink
 		size="small"
 		href="/mission-control"
-		ariaLabel={`${$i18n.satellites.open}: ${$i18n.mission_control.title}`}
+		ariaLabel={`${$i18n.core.open}: ${$i18n.mission_control.title}`}
 	>
 		<p>
 			<IconWallet />

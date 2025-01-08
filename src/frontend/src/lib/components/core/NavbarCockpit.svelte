@@ -41,7 +41,7 @@
 	<div in:slide={{ axis: 'x' }} class="container">
 		<NavbarLink
 			href="/mission-control"
-			ariaLabel={`${$i18n.satellites.open}: ${$i18n.mission_control.title}`}
+			ariaLabel={`${$i18n.core.open}: ${$i18n.mission_control.title}`}
 		>
 			<IconMissionControl />
 			<CanisterIndicator data={missionControlData} />
@@ -61,7 +61,7 @@
 
 {#if nonNullish($orbiterStore) && nonNullish(orbiterData)}
 	<div in:slide={{ axis: 'x' }} class="container">
-		<NavbarLink href="/analytics" ariaLabel={`${$i18n.satellites.open}: ${$i18n.analytics.title}`}>
+		<NavbarLink href="/analytics" ariaLabel={`${$i18n.core.open}: ${$i18n.analytics.title}`}>
 			<IconAnalytics />
 			<CanisterIndicator data={orbiterData} />
 			<div class="cycles"><CanisterTCycles data={orbiterData} /></div>
@@ -73,7 +73,7 @@
 	<WalletLoader missionControlId={$missionControlIdDerived} bind:balance>
 		{#if nonNullish(balance)}
 			<div in:slide={{ axis: 'x' }} class="container wallet">
-				<NavbarLink href="/wallet" ariaLabel={`${$i18n.satellites.open}: ${$i18n.wallet.title}`}>
+				<NavbarLink href="/wallet" ariaLabel={`${$i18n.core.open}: ${$i18n.wallet.title}`}>
 					<IconWallet />
 					<span in:fade>{formatE8sICP(balance)} <small>ICP</small></span>
 				</NavbarLink>

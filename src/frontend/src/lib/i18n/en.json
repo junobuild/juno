@@ -70,7 +70,8 @@
 		"none": "None",
 		"enabled": "Enabled",
 		"disabled": "Disabled",
-		"email_address": "Email address"
+		"email_address": "Email address",
+		"open": "Open"
 	},
 	"canisters": {
 		"top_up": "Top-up",
@@ -216,7 +217,6 @@
 		"title": "Satellites",
 		"launch": "Launch a new satellite",
 		"loading_launchpad": "Loading your launchpad...",
-		"open": "Open satellite",
 		"create": "Create satellite",
 		"search": "Search",
 		"satellite": "Satellite",

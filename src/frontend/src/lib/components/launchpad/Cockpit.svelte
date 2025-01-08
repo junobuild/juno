@@ -136,8 +136,8 @@
 <div class="wallet">
 	<LaunchpadLink
 		size="small"
-		href="/mission-control"
-		ariaLabel={`${$i18n.core.open}: ${$i18n.mission_control.title}`}
+		href="/wallet"
+		ariaLabel={`${$i18n.core.open}: ${$i18n.wallet.title}`}
 	>
 		<p>
 			<IconWallet />

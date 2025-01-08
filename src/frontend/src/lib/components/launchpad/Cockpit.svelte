@@ -157,6 +157,7 @@
 	@use '../../../lib/styles/mixins/grid';
 	@use '../../../lib/styles/mixins/media';
 	@use '../../../lib/styles/mixins/fonts';
+	@use '../../../lib/styles/mixins/text';
 
 	p {
 		@include fonts.bold(true);
@@ -176,6 +177,8 @@
 
 	.link {
 		display: none;
+
+		@include text.truncate;
 
 		@include media.min-width(large) {
 			display: flex;

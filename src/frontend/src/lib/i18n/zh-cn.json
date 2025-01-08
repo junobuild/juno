@@ -70,7 +70,8 @@
 		"none": "None",
 		"enabled": "已启用",
 		"disabled": "已禁用",
-		"email_address": "Email address"
+		"email_address": "Email address",
+		"open": "打开"
 	},
 	"canisters": {
 		"top_up": "充值",
@@ -216,7 +217,6 @@
 		"title": "Satellites",
 		"launch": "启动一个新的satellite",
 		"loading_launchpad": "启动发射台...",
-		"open": "打开satellite",
 		"create": "创建 satellite",
 		"search": "查询",
 		"satellite": "Satellite",

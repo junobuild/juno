@@ -74,6 +74,7 @@ interface I18nCore {
 	enabled: string;
 	disabled: string;
 	email_address: string;
+	open: string;
 }
 
 interface I18nCanisters {
@@ -222,7 +223,6 @@ interface I18nSatellites {
 	title: string;
 	launch: string;
 	loading_launchpad: string;
-	open: string;
 	create: string;
 	search: string;
 	satellite: string;

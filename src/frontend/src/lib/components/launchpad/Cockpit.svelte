@@ -36,7 +36,7 @@
 	<LaunchpadLink
 		size="small"
 		href="/mission-control"
-		ariaLabel={`${$i18n.satellites.open}: ${$i18n.mission_control.title}`}
+		ariaLabel={`${$i18n.core.open}: ${$i18n.mission_control.title}`}
 	>
 		<p>
 			<IconMissionControl />
@@ -57,7 +57,7 @@
 		<LaunchpadLink
 			size="small"
 			href="/analytics"
-			ariaLabel={`${$i18n.satellites.open}: ${$i18n.analytics.title}`}
+			ariaLabel={`${$i18n.core.open}: ${$i18n.analytics.title}`}
 		>
 			<p>
 				<IconAnalytics size="24px" />

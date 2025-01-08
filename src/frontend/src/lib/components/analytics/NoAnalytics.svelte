@@ -3,7 +3,7 @@
 </script>
 
 <div class="card-container with-title">
-	<span class="title">{$i18n.analytics.start}</span>
+	<span class="title">{$i18n.core.getting_started}</span>
 
 	<div class="content">
 		<p>{$i18n.analytics.empty}</p>

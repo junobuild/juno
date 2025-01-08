@@ -69,13 +69,15 @@
 					>{$i18n.analytics.title}
 					{#if nonNullish($orbiterStore)}<CanisterIndicator data={orbiterData} />{/if}</span
 				>
-				<span class="link-details">
-					{#if isNullish(orbiterData)}
-						<SkeletonText />
-					{:else}
-						<span in:fade><CanisterTCycles data={orbiterData} /></span>
-					{/if}
-				</span>
+				{#if nonNullish($orbiterStore)}
+					<span class="link-details">
+						{#if isNullish(orbiterData)}
+							<SkeletonText />
+						{:else}
+							<span in:fade><CanisterTCycles data={orbiterData} /></span>
+						{/if}
+					</span>
+				{/if}
 			</span>
 		</p>
 	</LaunchpadLink>

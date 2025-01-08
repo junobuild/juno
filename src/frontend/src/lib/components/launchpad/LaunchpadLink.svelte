@@ -9,12 +9,28 @@
 		ariaLabel: string;
 		size?: 'small' | 'default';
 		row?: boolean;
+		highlight?: boolean;
 	}
 
-	let { children, summary, href, ariaLabel, size = 'default', row = false }: Props = $props();
+	let {
+		children,
+		summary,
+		href,
+		ariaLabel,
+		size = 'default',
+		row = false,
+		highlight = false
+	}: Props = $props();
 </script>
 
-<a class="article" {href} aria-label={ariaLabel} class:small={size === 'small'} class:row>
+<a
+	class="article"
+	{href}
+	aria-label={ariaLabel}
+	class:small={size === 'small'}
+	class:row
+	class:highlight
+>
 	{#if nonNullish(summary)}
 		<div class="summary">
 			{@render summary()}
@@ -84,6 +100,23 @@
 			padding: var(--padding-2x) var(--padding-4x);
 			min-height: auto;
 			height: 100%;
+		}
+	}
+
+	a.article {
+		height: 100%;
+		justify-content: center;
+	}
+
+	a.highlight {
+		color: var(--color-primary);
+
+		border: 2px solid var(--color-primary);
+		box-shadow: 1px 1px var(--color-primary);
+
+		&:hover:not(:disabled),
+		&:focus:not(:disabled) {
+			color: var(--color-primary);
 		}
 	}
 </style>

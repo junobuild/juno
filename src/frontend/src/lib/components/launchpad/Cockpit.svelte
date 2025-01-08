@@ -1,17 +1,30 @@
 <script lang="ts">
-	import { nonNullish } from '@dfinity/utils';
+	import { isNullish, nonNullish } from '@dfinity/utils';
 	import { run } from 'svelte/legacy';
 	import { fade } from 'svelte/transition';
 	import Canister from '$lib/components/canister/Canister.svelte';
 	import CanisterIndicator from '$lib/components/canister/CanisterIndicator.svelte';
+	import CanisterTCycles from '$lib/components/canister/CanisterTCycles.svelte';
 	import IconAnalytics from '$lib/components/icons/IconAnalytics.svelte';
 	import IconMissionControl from '$lib/components/icons/IconMissionControl.svelte';
+	import IconTelescope from '$lib/components/icons/IconTelescope.svelte';
+	import IconWallet from '$lib/components/icons/IconWallet.svelte';
 	import LaunchpadLink from '$lib/components/launchpad/LaunchpadLink.svelte';
-	import { missionControlIdDerived } from '$lib/derived/mission-control.derived';
+	import MissionControlDataLoader from '$lib/components/mission-control/MissionControlDataLoader.svelte';
+	import MissionControlVersion from '$lib/components/mission-control/MissionControlVersion.svelte';
+	import SkeletonText from '$lib/components/ui/SkeletonText.svelte';
+	import WalletLoader from '$lib/components/wallet/WalletLoader.svelte';
+	import {
+		missionControlIdDerived,
+		missionControlNotMonitored,
+		missionControlSettingsLoaded
+	} from '$lib/derived/mission-control.derived';
 	import { orbiterStore } from '$lib/derived/orbiter.derived';
+	import { missionControlVersion } from '$lib/derived/version.derived';
 	import { loadOrbiters } from '$lib/services/orbiters.services';
 	import { i18n } from '$lib/stores/i18n.store';
 	import type { CanisterData } from '$lib/types/canister';
+	import { formatE8sICP } from '$lib/utils/icp.utils';
 
 	run(() => {
 		// @ts-expect-error TODO: to be migrated to Svelte v5
@@ -20,6 +33,7 @@
 	});
 
 	let missionControlData: CanisterData | undefined = $state(undefined);
+	let walletBalance: bigint | undefined = $state(undefined);
 	let orbiterData: CanisterData | undefined = $state(undefined);
 </script>
 
@@ -32,6 +46,63 @@
 	/>
 {/if}
 
+{#if nonNullish($orbiterStore)}
+	<Canister
+		canisterId={$orbiterStore.orbiter_id}
+		segment="orbiter"
+		display={false}
+		bind:data={orbiterData}
+	/>
+{/if}
+
+<div class="analytics">
+	<LaunchpadLink
+		size="small"
+		href="/analytics"
+		ariaLabel={`${$i18n.core.open}: ${$i18n.analytics.title}`}
+		highlight={isNullish($orbiterStore)}
+	>
+		<p>
+			<IconAnalytics size="24px" />
+			<span class="link">
+				<span class="link-title"
+					>{$i18n.analytics.title}
+					{#if nonNullish($orbiterStore)}<CanisterIndicator data={orbiterData} />{/if}</span
+				>
+				<span class="link-details">
+					{#if isNullish(orbiterData)}
+						<SkeletonText />
+					{:else}
+						<span in:fade><CanisterTCycles data={orbiterData} /></span>
+					{/if}
+				</span>
+			</span>
+		</p>
+	</LaunchpadLink>
+</div>
+
+<MissionControlVersion />
+
+{#if nonNullish($missionControlIdDerived) && nonNullish($missionControlVersion)}
+	<MissionControlDataLoader missionControlId={$missionControlIdDerived} />
+{/if}
+
+<div class="monitoring">
+	<LaunchpadLink
+		size="small"
+		href="/monitoring"
+		ariaLabel={`${$i18n.core.open}: ${$i18n.monitoring.title}`}
+		highlight={$missionControlSettingsLoaded && $missionControlNotMonitored}
+	>
+		<p>
+			<IconTelescope />
+			<span class="link">
+				<span class="link-title">{$i18n.monitoring.title}</span>
+			</span>
+		</p>
+	</LaunchpadLink>
+</div>
+
 <div class="mission-control">
 	<LaunchpadLink
 		size="small"
@@ -40,32 +111,47 @@
 	>
 		<p>
 			<IconMissionControl />
-			<span>{$i18n.mission_control.title} <CanisterIndicator data={missionControlData} /></span>
+			<span class="link">
+				<span class="link-title"
+					>{$i18n.mission_control.title} <CanisterIndicator data={missionControlData} /></span
+				>
+				<span class="link-details">
+					{#if isNullish(missionControlData)}
+						<SkeletonText />
+					{:else}
+						<span in:fade><CanisterTCycles data={missionControlData} /></span>
+					{/if}
+				</span>
+			</span>
 		</p>
 	</LaunchpadLink>
 </div>
 
-{#if nonNullish($orbiterStore)}
-	<Canister
-		canisterId={$orbiterStore.orbiter_id}
-		segment="orbiter"
-		display={false}
-		bind:data={orbiterData}
-	/>
-
-	<div in:fade class="analytics">
-		<LaunchpadLink
-			size="small"
-			href="/analytics"
-			ariaLabel={`${$i18n.core.open}: ${$i18n.analytics.title}`}
-		>
-			<p>
-				<IconAnalytics size="24px" />
-				<span>{$i18n.analytics.title} <CanisterIndicator data={orbiterData} /></span>
-			</p>
-		</LaunchpadLink>
-	</div>
+{#if nonNullish($missionControlIdDerived)}
+	<WalletLoader missionControlId={$missionControlIdDerived} bind:balance={walletBalance} />
 {/if}
+
+<div class="wallet">
+	<LaunchpadLink
+		size="small"
+		href="/mission-control"
+		ariaLabel={`${$i18n.core.open}: ${$i18n.mission_control.title}`}
+	>
+		<p>
+			<IconWallet />
+			<span class="link">
+				<span class="link-title">{$i18n.wallet.title}</span>
+				<span class="link-details">
+					{#if isNullish(walletBalance)}
+						<SkeletonText />
+					{:else}
+						<span in:fade>{formatE8sICP(walletBalance)} <small>ICP</small></span>
+					{/if}
+				</span>
+			</span>
+		</p>
+	</LaunchpadLink>
+</div>
 
 <style lang="scss">
 	@use '../../../lib/styles/mixins/grid';
@@ -82,25 +168,49 @@
 		margin: 0 0 var(--padding);
 	}
 
-	span {
+	.link-title {
 		display: inline-flex;
 		align-items: center;
 		gap: var(--padding);
 	}
 
-	.mission-control {
-		grid-column: 1 / 13;
+	.link {
+		display: none;
 
-		@include media.min-width(medium) {
-			grid-column: 1 / 7;
+		@include media.min-width(large) {
+			display: flex;
+			flex-direction: column;
+		}
+	}
+
+	.link-details {
+		font-size: var(--font-size-small);
+		font-weight: normal;
+
+		--skeleton-text-padding: 0 0 var(--padding);
+	}
+
+	.mission-control {
+		@include media.min-width(large) {
+			grid-column: 7 / 10;
 		}
 	}
 
 	.analytics {
-		grid-column: 1 / 13;
+		@include media.min-width(large) {
+			grid-column: 1 / 4;
+		}
+	}
 
-		@include media.min-width(medium) {
-			grid-column: 7 / 13;
+	.monitoring {
+		@include media.min-width(large) {
+			grid-column: 4 / 7;
+		}
+	}
+
+	.wallet {
+		@include media.min-width(large) {
+			grid-column: 10 / 13;
 		}
 	}
 </style>

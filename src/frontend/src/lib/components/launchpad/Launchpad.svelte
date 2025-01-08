@@ -38,7 +38,7 @@
 	{/if}
 {:else if ($satellitesStore?.length ?? 0) >= 1}
 	<div in:fade use:onIntersection onjunoIntersecting={onLayoutTitleIntersection}>
-		<section>
+		<section class="cockpit">
 			<Cockpit />
 		</section>
 
@@ -54,6 +54,7 @@
 
 <style lang="scss">
 	@use '../../../lib/styles/mixins/grid';
+	@use '../../../lib/styles/mixins/media';
 
 	section {
 		@include grid.twelve-columns;
@@ -62,6 +63,15 @@
 
 		&:first-of-type {
 			margin-top: var(--padding-4x);
+		}
+
+		&.cockpit {
+			display: flex;
+			justify-content: center;
+
+			@include media.min-width(large) {
+				@include grid.twelve-columns;
+			}
 		}
 	}
 

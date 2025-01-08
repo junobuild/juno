@@ -39,6 +39,6 @@
 
 	path,
 	circle {
-		fill: var(--color-background-contrast);
+		fill: currentColor;
 	}
 </style>

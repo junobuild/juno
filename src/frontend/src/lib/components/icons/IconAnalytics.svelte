@@ -64,6 +64,6 @@
 	}
 
 	.uuid-6ee6014c-dbb3-4770-b018-42da8f70ae29 {
-		fill: var(--color-background-contrast);
+		fill: currentColor;
 	}
 </style>

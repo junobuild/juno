@@ -30,3 +30,9 @@
 <button onclick={openModal}>
 	{$i18n.core.get_started}
 </button>
+
+<style lang="scss">
+	.card-container {
+		margin: 0 0 var(--padding-2x);
+	}
+</style>

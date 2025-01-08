@@ -30,3 +30,13 @@
 <button onclick={openModal}>
 	{$i18n.monitoring.start_monitoring}
 </button>
+
+<style lang="scss">
+	.card-container {
+		margin: 0 0 var(--padding-2x);
+	}
+
+	button {
+		margin: 0;
+	}
+</style>

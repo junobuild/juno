@@ -5,21 +5,21 @@
 	import CanisterIndicator from '$lib/components/canister/CanisterIndicator.svelte';
 	import IconAnalytics from '$lib/components/icons/IconAnalytics.svelte';
 	import IconMissionControl from '$lib/components/icons/IconMissionControl.svelte';
+	import IconTelescope from '$lib/components/icons/IconTelescope.svelte';
+	import IconWallet from '$lib/components/icons/IconWallet.svelte';
 	import LaunchpadLink from '$lib/components/launchpad/LaunchpadLink.svelte';
+	import MissionControlDataLoader from '$lib/components/mission-control/MissionControlDataLoader.svelte';
+	import MissionControlVersion from '$lib/components/mission-control/MissionControlVersion.svelte';
 	import {
 		missionControlIdDerived,
 		missionControlNotMonitored,
 		missionControlSettingsLoaded
 	} from '$lib/derived/mission-control.derived';
 	import { orbiterStore } from '$lib/derived/orbiter.derived';
+	import { missionControlVersion } from '$lib/derived/version.derived';
 	import { loadOrbiters } from '$lib/services/orbiters.services';
 	import { i18n } from '$lib/stores/i18n.store';
 	import type { CanisterData } from '$lib/types/canister';
-	import IconTelescope from '$lib/components/icons/IconTelescope.svelte';
-	import IconWallet from '$lib/components/icons/IconWallet.svelte';
-	import MissionControlDataLoader from '$lib/components/mission-control/MissionControlDataLoader.svelte';
-	import { missionControlVersion } from '$lib/derived/version.derived';
-	import MissionControlVersion from '$lib/components/mission-control/MissionControlVersion.svelte';
 
 	run(() => {
 		// @ts-expect-error TODO: to be migrated to Svelte v5

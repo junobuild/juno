@@ -1,7 +1,7 @@
 <script lang="ts">
-	import { loadVersion } from '$lib/services/console.services';
-	import { missionControlIdDerived } from '$lib/derived/mission-control.derived';
 	import { type Snippet, untrack } from 'svelte';
+	import { missionControlIdDerived } from '$lib/derived/mission-control.derived';
+	import { loadVersion } from '$lib/services/console.services';
 
 	interface Props {
 		children?: Snippet;

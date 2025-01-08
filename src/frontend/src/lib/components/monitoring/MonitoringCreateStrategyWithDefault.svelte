@@ -6,7 +6,7 @@
 	interface Props {
 		minCycles: bigint | undefined;
 		fundCycles: bigint | undefined;
-		useAsDefaultStrategy: boolean;
+		saveAsDefaultStrategy: boolean;
 		strategy: 'modules' | 'mission-control';
 		onback: () => void;
 		oncontinue: () => void;
@@ -15,7 +15,7 @@
 	let {
 		minCycles = $bindable(undefined),
 		fundCycles = $bindable(undefined),
-		useAsDefaultStrategy = $bindable(true),
+		saveAsDefaultStrategy = $bindable(true),
 		strategy,
 		oncontinue,
 		onback
@@ -27,8 +27,8 @@
 		<label class="default-strategy">
 			<input
 				type="checkbox"
-				checked={useAsDefaultStrategy}
-				onchange={() => (useAsDefaultStrategy = !useAsDefaultStrategy)}
+				checked={saveAsDefaultStrategy}
+				onchange={() => (saveAsDefaultStrategy = !saveAsDefaultStrategy)}
 			/>
 			<span>{$i18n.monitoring.set_as_default_strategy}</span>
 		</label>

@@ -721,7 +721,15 @@
 		"email_notifications": "Email Notifications",
 		"receive_email": "Do you want to receive email notifications when a module is refilled? Enter your email below to enable notifications or leave it blank if you prefer no notifications.",
 		"notifications": "Notifications",
-		"edit_email": "Edit the email address"
+		"edit_email": "Edit the email address",
+		"select_auto_refill_strategy": "Select Auto-Refill Strategy",
+		"choose_method": "Choose how you'd like to configure auto-refill:",
+		"basic": "Basic",
+		"basic_description": "Predefined values to quickly set up auto-refill.",
+		"custom": "Custom",
+		"custom_description": "Define your own thresholds and top-up amounts.",
+		"default": "Your strategy",
+		"default_description": "Use your previously saved default strategy."
 	},
 	"preferences": {
 		"title": "Preferences",

@@ -1,4 +1,7 @@
 <script lang="ts">
+	import { isNullish } from '@dfinity/utils';
+	import { onMount } from 'svelte';
+	import type { CyclesMonitoringStrategy } from '$declarations/mission_control/mission_control.did';
 	import MonitoringCreateStrategy from '$lib/components/monitoring/MonitoringCreateStrategy.svelte';
 	import Checkbox from '$lib/components/ui/Checkbox.svelte';
 	import { i18n } from '$lib/stores/i18n.store';
@@ -7,6 +10,7 @@
 		minCycles: bigint | undefined;
 		fundCycles: bigint | undefined;
 		saveAsDefaultStrategy: boolean;
+		defaultStrategy: CyclesMonitoringStrategy | undefined;
 		strategy: 'modules' | 'mission-control';
 		onback: () => void;
 		oncontinue: () => void;
@@ -15,11 +19,16 @@
 	let {
 		minCycles = $bindable(undefined),
 		fundCycles = $bindable(undefined),
-		saveAsDefaultStrategy = $bindable(true),
+		saveAsDefaultStrategy = $bindable(false),
+		defaultStrategy,
 		strategy,
 		oncontinue,
 		onback
 	}: Props = $props();
+
+	onMount(() => {
+		saveAsDefaultStrategy = isNullish(defaultStrategy);
+	});
 </script>
 
 <MonitoringCreateStrategy bind:minCycles bind:fundCycles {strategy} {oncontinue} {onback}>

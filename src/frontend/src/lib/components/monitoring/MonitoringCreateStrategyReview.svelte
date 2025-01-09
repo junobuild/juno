@@ -23,6 +23,7 @@
 		missionControlFundCycles: bigint | undefined;
 		missionControl: { monitored: boolean; strategy: CyclesMonitoringStrategy | undefined };
 		userEmail: Option<string>;
+		reuseStrategy: CyclesMonitoringStrategy | undefined;
 		onback: () => void;
 		onsubmit: ($event: MouseEvent | TouchEvent) => Promise<void>;
 	}
@@ -37,6 +38,7 @@
 		missionControlFundCycles,
 		missionControl,
 		userEmail,
+		reuseStrategy,
 		onback,
 		onsubmit
 	}: Props = $props();
@@ -61,7 +63,7 @@
 						{$i18n.monitoring.remaining_threshold}
 					{/snippet}
 
-					<p>{formatTCycles(minCycles ?? 0n)}</p>
+					<p>{formatTCycles(reuseStrategy?.BelowThreshold.min_cycles ?? minCycles ?? 0n)}</p>
 				</Value>
 
 				<Value>
@@ -69,7 +71,7 @@
 						{$i18n.monitoring.top_up_amount}
 					{/snippet}
 
-					<p>{formatTCycles(fundCycles ?? 0n)}</p>
+					<p>{formatTCycles(reuseStrategy?.BelowThreshold.fund_cycles ?? fundCycles ?? 0n)}</p>
 				</Value>
 
 				{#if saveAsDefaultStrategy}
@@ -95,7 +97,14 @@
 								{$i18n.monitoring.remaining_threshold}
 							{/snippet}
 
-							<p>{formatTCycles(missionControlMinCycles ?? minCycles ?? 0n)}</p>
+							<p>
+								{formatTCycles(
+									reuseStrategy?.BelowThreshold.min_cycles ??
+										missionControlMinCycles ??
+										minCycles ??
+										0n
+								)}
+							</p>
 						</Value>
 
 						<Value>
@@ -103,7 +112,14 @@
 								{$i18n.monitoring.top_up_amount}
 							{/snippet}
 
-							<p class="no-margin">{formatTCycles(missionControlFundCycles ?? fundCycles ?? 0n)}</p>
+							<p class="no-margin">
+								{formatTCycles(
+									reuseStrategy?.BelowThreshold.fund_cycles ??
+										missionControlFundCycles ??
+										fundCycles ??
+										0n
+								)}
+							</p>
 						</Value>
 					</div>
 				</div>

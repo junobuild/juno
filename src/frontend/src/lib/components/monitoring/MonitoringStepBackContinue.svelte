@@ -9,15 +9,16 @@
 		onback: () => void;
 		oncontinue: () => void;
 		disabled?: boolean;
+		grid?: boolean;
 	}
 
-	let { children, header, onback, oncontinue, disabled = false }: Props = $props();
+	let { children, header, onback, oncontinue, disabled = false, grid = true }: Props = $props();
 </script>
 
 <form onsubmit={oncontinue}>
 	{@render header()}
 
-	<div class="container">
+	<div class:grid>
 		{@render children()}
 	</div>
 
@@ -36,7 +37,7 @@
 	@use '../../styles/mixins/media';
 	@use '../../styles/mixins/grid';
 
-	.container {
+	.grid {
 		@include media.min-width(large) {
 			@include grid.two-columns;
 		}

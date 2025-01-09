@@ -1,12 +1,12 @@
 <script lang="ts">
 	import type { Principal } from '@dfinity/principal';
-	import { fromNullable, isNullish, nonNullish, notEmptyString } from '@dfinity/utils';
-	import { onMount } from 'svelte';
+	import { fromNullable, nonNullish, notEmptyString } from '@dfinity/utils';
 	import type {
 		CyclesMonitoringStrategy,
 		Orbiter,
 		Satellite
 	} from '$declarations/mission_control/mission_control.did';
+	import MonitoringCreateSelectStrategy from '$lib/components/monitoring/MonitoringCreateSelectStrategy.svelte';
 	import MonitoringCreateStrategy from '$lib/components/monitoring/MonitoringCreateStrategy.svelte';
 	import MonitoringCreateStrategyMissionControl from '$lib/components/monitoring/MonitoringCreateStrategyMissionControl.svelte';
 	import MonitoringCreateStrategyNotifications from '$lib/components/monitoring/MonitoringCreateStrategyNotifications.svelte';
@@ -42,6 +42,7 @@
 
 	type Steps =
 		| 'init'
+		| 'select_strategy'
 		| 'strategy'
 		| 'mission_control'
 		| 'mission_control_strategy'
@@ -98,6 +99,21 @@
 	let hasMissionControlEmail = $derived(nonNullish(missionControlEmail));
 	let userEmail: Option<string> = $state(undefined);
 
+	// Strategy choice
+
+	let reuseStrategy: CyclesMonitoringStrategy | undefined = $state(undefined);
+
+	const onSelectStrategy = (strategy?: CyclesMonitoringStrategy) => {
+		reuseStrategy = strategy;
+
+		if (nonNullish(strategy)) {
+			nextReviewOrNotifications();
+			return;
+		}
+
+		next('strategy');
+	};
+
 	// Monitoring config
 
 	let monitoringConfig = $derived(fromNullable(fromNullable(user?.config ?? [])?.monitoring ?? []));
@@ -106,11 +122,7 @@
 		fromNullable(fromNullable(monitoringConfig?.cycles ?? [])?.default_strategy ?? [])
 	);
 
-	let saveAsDefaultStrategy = $state(true);
-
-	onMount(() => {
-		saveAsDefaultStrategy = isNullish(defaultStrategy);
-	});
+	let saveAsDefaultStrategy = $state(false);
 
 	let withOptions: ApplyMonitoringCyclesStrategyOptions | undefined = $derived(
 		saveAsDefaultStrategy || (nonNullish(userEmail) && notEmptyString(userEmail))
@@ -144,6 +156,7 @@
 			orbiters: selectedOrbiters.map(([id, _]) => id),
 			fundCycles,
 			minCycles,
+			reuseStrategy,
 			missionControlMonitored: missionControl.monitored,
 			missionControlMinCycles,
 			missionControlFundCycles,
@@ -191,6 +204,7 @@
 			{missionControlFundCycles}
 			{missionControl}
 			{userEmail}
+			{reuseStrategy}
 			onback={back}
 			{onsubmit}
 		/>
@@ -213,16 +227,19 @@
 			bind:minCycles
 			bind:fundCycles
 			bind:saveAsDefaultStrategy
+			{defaultStrategy}
 			strategy="modules"
 			onback={back}
 			oncontinue={() => next('mission_control')}
 		/>
+	{:else if step === 'select_strategy'}
+		<MonitoringCreateSelectStrategy {defaultStrategy} onback={back} oncontinue={onSelectStrategy} />
 	{:else}
 		<MonitoringSelectSegments
 			{missionControlId}
 			bind:selectedSatellites
 			bind:selectedOrbiters
-			oncontinue={() => next('strategy')}
+			oncontinue={() => next('select_strategy')}
 		>
 			<h2>{$i18n.core.getting_started}</h2>
 

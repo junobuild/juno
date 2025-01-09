@@ -4,6 +4,7 @@ import { createAuthClient } from '$lib/utils/auth.utils';
 import { IdbStorage, KEY_STORAGE_DELEGATION, type AuthClient } from '@dfinity/auth-client';
 import { DelegationChain, isDelegationValid } from '@dfinity/identity';
 
+// eslint-disable-next-line require-await
 export const onAuthMessage = async ({
 	data
 }: MessageEvent<PostMessage<PostMessageDataRequest>>) => {

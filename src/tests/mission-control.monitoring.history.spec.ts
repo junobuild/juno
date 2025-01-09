@@ -30,6 +30,8 @@ describe('Mission Control - History', () => {
 
 	const controller = Ed25519KeyIdentity.generate();
 
+	const MONITORING_INTERVAL_IN_MILLISECONDS = 60 * 60 * 1000;
+
 	beforeAll(async () => {
 		pic = await PocketIc.create(inject('PIC_URL'));
 
@@ -193,7 +195,7 @@ describe('Mission Control - History', () => {
 		describe('collect entries over time', () => {
 			describe('first round', () => {
 				beforeAll(async () => {
-					await pic.advanceTime(30000);
+					await pic.advanceTime(MONITORING_INTERVAL_IN_MILLISECONDS);
 
 					await tick(pic);
 				});
@@ -215,7 +217,7 @@ describe('Mission Control - History', () => {
 				beforeAll(async () => {
 					await tick(pic);
 
-					await pic.advanceTime(30000);
+					await pic.advanceTime(MONITORING_INTERVAL_IN_MILLISECONDS);
 
 					await tick(pic);
 				});
@@ -274,7 +276,7 @@ describe('Mission Control - History', () => {
 				const thirtyDays = 1000 * 60 * 60 * 24 * 30;
 
 				// We want to keep the history for the first round and second round but, clean up the start
-				await pic.advanceTime(thirtyDays - 2 * 30000);
+				await pic.advanceTime(thirtyDays - 2 * MONITORING_INTERVAL_IN_MILLISECONDS);
 
 				await tick(pic);
 			});

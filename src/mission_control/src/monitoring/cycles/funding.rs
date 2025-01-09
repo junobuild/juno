@@ -1,3 +1,4 @@
+use crate::constants::MONITORING_INTERVAL_SECONDS;
 use crate::monitoring::cycles::history::save_monitoring_history;
 use crate::monitoring::cycles::notification::defer_notify;
 use crate::types::state::CyclesMonitoringStrategy;
@@ -33,8 +34,7 @@ pub fn init_register_options(
 
 fn init_funding_config() -> FundManagerOptions {
     FundManagerOptions::new()
-        // TODO: Integrate in mission control config
-        .with_interval_secs(30)
+        .with_interval_secs(MONITORING_INTERVAL_SECONDS)
         .with_obtain_cycles_options(Some(obtain_cycles_options()))
         .with_funding_callback(funding_callback())
 }

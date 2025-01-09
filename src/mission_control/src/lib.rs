@@ -37,7 +37,10 @@ use crate::types::interface::{
     CreateCanisterConfig, GetMonitoringHistory, MonitoringStartConfig, MonitoringStatus,
     MonitoringStopConfig,
 };
-use crate::types::state::{Config, HeapState, MissionControlSettings, MonitoringHistory, MonitoringHistoryKey, Orbiter, Orbiters, Satellite, Satellites, State, User};
+use crate::types::state::{
+    Config, HeapState, MissionControlSettings, MonitoringHistory, MonitoringHistoryKey, Orbiter,
+    Orbiters, Satellite, Satellites, State, User,
+};
 use candid::Principal;
 use ciborium::into_writer;
 use ic_cdk::api::call::{arg_data, ArgDecoderConfig};
@@ -70,8 +73,9 @@ use segments::store::{
 use std::collections::HashMap;
 use user::store::{
     get_config as get_config_store, get_metadata as get_metadata_store,
-    get_settings as get_settings_store, get_user as get_user_store, set_config as set_config_store,
-    set_metadata as set_metadata_store, get_user_data as get_user_data_store,
+    get_settings as get_settings_store, get_user as get_user_store,
+    get_user_data as get_user_data_store, set_config as set_config_store,
+    set_metadata as set_metadata_store,
 };
 
 #[init]

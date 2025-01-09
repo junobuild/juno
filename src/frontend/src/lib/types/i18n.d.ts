@@ -712,8 +712,8 @@ interface I18nMonitoring {
 	stop_auto_refill: string;
 	auto_refill_activated: string;
 	monitoring_stopped: string;
-	starting_monitoring: string;
-	stopping_monitoring: string;
+	starting_auto_refill: string;
+	stopping_auto_refill: string;
 	remaining_threshold: string;
 	top_up_amount: string;
 	set_as_default_strategy: string;

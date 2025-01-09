@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 if [ -z "$1" ]; then
-  read -r -p "Enter the Mission Control ID: " PRINCIPAL
+  read -r -p "Enter the Wallet ID: " PRINCIPAL
 else
   PRINCIPAL=$1
 fi

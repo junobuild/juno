@@ -126,8 +126,7 @@
 	let saveAsDefaultStrategy = $state(false);
 
 	let withOptions: ApplyMonitoringCyclesStrategyOptions | undefined = $derived(
-		saveAsDefaultStrategy ||
-			(nonNullish(userEmail) && notEmptyString(userEmail))
+		saveAsDefaultStrategy || (nonNullish(userEmail) && notEmptyString(userEmail))
 			? {
 					monitoringConfig,
 					saveAsDefaultStrategy,

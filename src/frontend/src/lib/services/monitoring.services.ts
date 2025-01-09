@@ -431,9 +431,7 @@ const buildMissionControlStrategy = ({
 	fundCycles
 }: Pick<
 	ApplyMonitoringCyclesStrategyParams,
-	| 'missionControlMonitored'
-	| 'missionControlMinCycles'
-	| 'missionControlFundCycles'
+	'missionControlMonitored' | 'missionControlMinCycles' | 'missionControlFundCycles'
 > &
 	Required<
 		Pick<ApplyMonitoringCyclesStrategyParams, 'minCycles' | 'fundCycles'>

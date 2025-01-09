@@ -2,9 +2,9 @@
 	import MonitoringCreateStrategy from '$lib/components/monitoring/MonitoringCreateStrategy.svelte';
 	import Checkbox from '$lib/components/ui/Checkbox.svelte';
 	import { i18n } from '$lib/stores/i18n.store';
-	import {onMount} from "svelte";
-	import {isNullish} from "@dfinity/utils";
-	import type {CyclesMonitoringStrategy} from "$declarations/mission_control/mission_control.did";
+	import { onMount } from 'svelte';
+	import { isNullish } from '@dfinity/utils';
+	import type { CyclesMonitoringStrategy } from '$declarations/mission_control/mission_control.did';
 
 	interface Props {
 		minCycles: bigint | undefined;

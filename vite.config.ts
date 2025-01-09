@@ -32,7 +32,7 @@ const config: UserConfig = {
 					const folder = dirname(id);
 
 					if (
-						['@sveltejs', 'svelte', 'layercake'].find((lib) => folder.includes(lib)) ===
+						['@sveltejs', 'svelte', 'layercake', 'd3-'].find((lib) => folder.includes(lib)) ===
 							undefined &&
 						folder.includes('node_modules')
 					) {

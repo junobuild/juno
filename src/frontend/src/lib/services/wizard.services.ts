@@ -5,10 +5,11 @@ import type {
 } from '$declarations/mission_control/mission_control.did';
 import { getOrbiterFee, getSatelliteFee } from '$lib/api/console.api';
 import { updateAndStartMonitoring } from '$lib/api/mission-control.api';
+import { missionControlMonitored } from '$lib/derived/mission-control-settings.derived';
 import { missionControlConfigMonitoring } from '$lib/derived/mission-control-user.derived';
 import { getMissionControlBalance } from '$lib/services/balance.services';
 import { loadVersion } from '$lib/services/console.services';
-import { loadUserData } from '$lib/services/mission-control.services';
+import { loadSettings, loadUserData } from '$lib/services/mission-control.services';
 import {
 	createOrbiter,
 	createOrbiterWithConfig,
@@ -34,7 +35,7 @@ import { assertNonNullish, isNullish, nonNullish, toNullable } from '@dfinity/ut
 import { get } from 'svelte/store';
 
 interface GetFeeBalance {
-	result?: Omit<JunoModalCreateSegmentDetail, 'monitoringConfig'>;
+	result?: Omit<JunoModalCreateSegmentDetail, 'monitoringConfig' | 'monitoringEnabled'>;
 	error?: unknown;
 }
 
@@ -105,17 +106,23 @@ const initCreateWizard = async ({
 		skipReload: true
 	});
 
-	const { success } = await loadUserData({
+	const params = {
 		identity,
 		missionControlId
-	});
+	};
+
+	const [{ success: settingsSuccess }, { success: userSuccess }] = await Promise.all([
+		loadSettings(params),
+		loadUserData(params)
+	]);
 
 	busy.stop();
 
-	if (!success) {
+	if (!settingsSuccess || !userSuccess) {
 		return;
 	}
 
+	const monitoringEnabled = get(missionControlMonitored);
 	const monitoringConfig = get(missionControlConfigMonitoring);
 
 	emit<JunoModal<JunoModalCreateSegmentDetail>>({
@@ -124,6 +131,7 @@ const initCreateWizard = async ({
 			type: modalType,
 			detail: {
 				...feeBalance,
+				monitoringEnabled,
 				monitoringConfig
 			}
 		}

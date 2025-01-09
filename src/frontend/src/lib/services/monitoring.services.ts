@@ -55,7 +55,6 @@ interface MonitoringCyclesStrategyParams {
 
 export interface ApplyMonitoringCyclesStrategyOptions {
 	monitoringConfig: MonitoringConfig | undefined;
-	reuseStrategy: CyclesMonitoringStrategy | undefined;
 	saveAsDefaultStrategy: boolean;
 	metadata: Metadata;
 	userEmail: Option<string>;
@@ -67,6 +66,7 @@ interface ApplyMonitoringCyclesStrategyParams extends MonitoringCyclesStrategyPa
 	missionControlMonitored: boolean;
 	missionControlMinCycles: bigint | undefined;
 	missionControlFundCycles: bigint | undefined;
+	reuseStrategy: CyclesMonitoringStrategy | undefined;
 	options: ApplyMonitoringCyclesStrategyOptions | undefined;
 }
 
@@ -230,27 +230,31 @@ const setMonitoringCyclesStrategy = async ({
 	orbiters,
 	minCycles,
 	fundCycles,
+	reuseStrategy,
 	...missionControlRest
 }: Omit<ApplyMonitoringCyclesStrategyParams, 'identity' | 'onProgress' | 'options'> &
 	Required<Pick<ApplyMonitoringCyclesStrategyParams, 'identity'>>) => {
-	if (isNullish(minCycles)) {
+	const moduleMinCycles = reuseStrategy?.BelowThreshold.min_cycles ?? minCycles;
+	const moduleFundCycles = reuseStrategy?.BelowThreshold.fund_cycles ?? fundCycles;
+
+	if (isNullish(moduleMinCycles)) {
 		throw new Error(get(i18n).monitoring.min_cycles_not_defined);
 	}
 
-	if (isNullish(fundCycles)) {
+	if (isNullish(moduleFundCycles)) {
 		throw new Error(get(i18n).monitoring.fund_cycles_not_defined);
 	}
 
 	const missionControlStrategy = buildMissionControlStrategy({
 		...missionControlRest,
-		minCycles,
-		fundCycles
+		minCycles: moduleMinCycles,
+		fundCycles: moduleFundCycles
 	});
 
 	const moduleStrategy: CyclesMonitoringStrategy = {
 		BelowThreshold: {
-			min_cycles: minCycles,
-			fund_cycles: fundCycles
+			min_cycles: moduleMinCycles,
+			fund_cycles: moduleFundCycles
 		}
 	};
 
@@ -427,7 +431,9 @@ const buildMissionControlStrategy = ({
 	fundCycles
 }: Pick<
 	ApplyMonitoringCyclesStrategyParams,
-	'missionControlMonitored' | 'missionControlMinCycles' | 'missionControlFundCycles'
+	| 'missionControlMonitored'
+	| 'missionControlMinCycles'
+	| 'missionControlFundCycles'
 > &
 	Required<
 		Pick<ApplyMonitoringCyclesStrategyParams, 'minCycles' | 'fundCycles'>

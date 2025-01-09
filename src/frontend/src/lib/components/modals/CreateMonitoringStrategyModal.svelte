@@ -127,11 +127,9 @@
 
 	let withOptions: ApplyMonitoringCyclesStrategyOptions | undefined = $derived(
 		saveAsDefaultStrategy ||
-			(nonNullish(userEmail) && notEmptyString(userEmail)) ||
-			nonNullish(reuseStrategy)
+			(nonNullish(userEmail) && notEmptyString(userEmail))
 			? {
 					monitoringConfig,
-					reuseStrategy,
 					saveAsDefaultStrategy,
 					userEmail,
 					metadata
@@ -160,6 +158,7 @@
 			orbiters: selectedOrbiters.map(([id, _]) => id),
 			fundCycles,
 			minCycles,
+			reuseStrategy,
 			missionControlMonitored: missionControl.monitored,
 			missionControlMinCycles,
 			missionControlFundCycles,

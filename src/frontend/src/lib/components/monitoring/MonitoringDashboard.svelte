@@ -10,9 +10,9 @@
 	import SpinnerParagraph from '$lib/components/ui/SpinnerParagraph.svelte';
 	import {
 		hasMissionControlSettings,
+		missionControlMonitoring,
 		missionControlSettingsNotLoaded
 	} from '$lib/derived/mission-control-settings.derived';
-	import { missionControlMonitoring } from '$lib/derived/mission-control.derived';
 	import { orbitersStore } from '$lib/derived/orbiter.derived';
 	import { satellitesStore } from '$lib/derived/satellite.derived';
 	import { i18n } from '$lib/stores/i18n.store';

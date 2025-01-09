@@ -1,15 +1,10 @@
 import { missionControlSettingsDataStore } from '$lib/stores/mission-control.store';
-import { nonNullish } from '@dfinity/utils';
+import { fromNullable, nonNullish } from '@dfinity/utils';
 import { derived } from 'svelte/store';
 
 export const missionControlSettings = derived(
 	[missionControlSettingsDataStore],
 	([$missionControlSettingsDataStore]) => $missionControlSettingsDataStore?.data
-);
-
-export const hasMissionControlSettings = derived(
-	[missionControlSettings],
-	([$missionControlSettings]) => nonNullish($missionControlSettings)
 );
 
 export const missionControlSettingsLoaded = derived(
@@ -20,4 +15,14 @@ export const missionControlSettingsLoaded = derived(
 export const missionControlSettingsNotLoaded = derived(
 	[missionControlSettingsLoaded],
 	([$missionControlSettingsLoaded]) => !$missionControlSettingsLoaded
+);
+
+export const missionControlMonitoring = derived(
+	[missionControlSettings],
+	([$missionControlSettings]) => fromNullable($missionControlSettings?.monitoring ?? [])
+);
+
+export const hasMissionControlSettings = derived(
+	[missionControlSettings],
+	([$missionControlSettings]) => nonNullish($missionControlSettings)
 );

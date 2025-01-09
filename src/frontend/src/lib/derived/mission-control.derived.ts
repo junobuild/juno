@@ -1,4 +1,4 @@
-import { missionControlSettings } from '$lib/derived/mission-control-settings.derived';
+import { missionControlMonitoring } from '$lib/derived/mission-control-settings.derived';
 import {
 	missionControlIdDataStore,
 	missionControlUserDataStore
@@ -11,11 +11,6 @@ import { derived } from 'svelte/store';
 export const missionControlIdDerived = derived(
 	[missionControlIdDataStore],
 	([$missionControlDataStore]) => $missionControlDataStore?.data
-);
-
-export const missionControlMonitoring = derived(
-	[missionControlSettings],
-	([$missionControlSettings]) => fromNullable($missionControlSettings?.monitoring ?? [])
 );
 
 export const missionControlUserData = derived(

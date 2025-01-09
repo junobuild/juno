@@ -5,7 +5,7 @@
 	import Popover from '$lib/components/ui/Popover.svelte';
 	import SkeletonText from '$lib/components/ui/SkeletonText.svelte';
 	import Value from '$lib/components/ui/Value.svelte';
-	import { EMAIL_PLACEHOLDER } from '$lib/constants/constants';
+	import { EMAIL_PLACEHOLDER } from '$lib/constants/monitoring.constants';
 	import {
 		missionControlEmail,
 		missionControlIdDerived,

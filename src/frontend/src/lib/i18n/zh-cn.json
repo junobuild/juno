@@ -714,7 +714,7 @@
 		"usage": "Usage",
 		"weekly_cycles_deposit": "Weekly cycles deposit",
 		"default_strategy": "Default Strategy",
-		"strategy_for_modules": "This auto-refill strategy will be used as the default for monitoring newly created modules.",
+		"strategy_for_modules": "This auto-refill strategy will be suggested as the default for monitoring newly created modules.",
 		"auto_refill": "Auto-refill",
 		"auto_refill_disabled": "Auto-refill disabled",
 		"auto_refill_strategy": "Top-up {0} T Cycles if the remaining threshold falls below {1}",

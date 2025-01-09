@@ -10,7 +10,7 @@ export interface CyclesWorker {
 }
 
 export const initCyclesWorker = async (): Promise<CyclesWorker> => {
-	const CyclesWorker = await import('$lib/workers/cycles.worker?worker');
+	const CyclesWorker = await import('$lib/workers/workers?worker');
 	const cyclesWorker: Worker = new CyclesWorker.default();
 
 	let cyclesCallback: CyclesCallback | undefined;

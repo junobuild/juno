@@ -11,7 +11,9 @@ import type {
 import { Principal } from '@dfinity/principal';
 import { isNullish, jsonReplacer } from '@dfinity/utils';
 
-onmessage = async ({ data: dataMsg }: MessageEvent<PostMessage<PostMessageDataRequest>>) => {
+export const onWalletMessage = async ({
+	data: dataMsg
+}: MessageEvent<PostMessage<PostMessageDataRequest>>) => {
 	const { msg, data } = dataMsg;
 
 	switch (msg) {

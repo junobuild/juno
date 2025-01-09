@@ -1,7 +1,6 @@
 <script lang="ts">
 	import type { Principal } from '@dfinity/principal';
-	import { fromNullable, isNullish, nonNullish, notEmptyString } from '@dfinity/utils';
-	import { onMount } from 'svelte';
+	import { fromNullable, nonNullish, notEmptyString } from '@dfinity/utils';
 	import type {
 		CyclesMonitoringStrategy,
 		Orbiter,

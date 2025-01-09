@@ -1,9 +1,9 @@
 <script lang="ts">
-	import MonitoringStepBackContinue from '$lib/components/monitoring/MonitoringStepBackContinue.svelte';
-	import { i18n } from '$lib/stores/i18n.store';
-	import type { CyclesMonitoringStrategy } from '$declarations/mission_control/mission_control.did';
 	import { nonNullish } from '@dfinity/utils';
+	import type { CyclesMonitoringStrategy } from '$declarations/mission_control/mission_control.did';
+	import MonitoringStepBackContinue from '$lib/components/monitoring/MonitoringStepBackContinue.svelte';
 	import { BASIC_STRATEGY } from '$lib/constants/monitoring.constants';
+	import { i18n } from '$lib/stores/i18n.store';
 
 	interface Props {
 		defaultStrategy: CyclesMonitoringStrategy | undefined;

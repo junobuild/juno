@@ -81,15 +81,17 @@
 
 	.in_progress {
 		.state {
-			color: var(--color-secondary);
-			background: rgba(var(--color-secondary-rgb), 0.3);
+			color: var(--color-secondary-contrast);
+			background: rgba(var(--color-secondary-rgb), 0.6);
+			border: 1px solid var(--color-secondary);
 		}
 	}
 
 	.error {
 		.state {
 			color: var(--color-error-contrast);
-			background: var(--color-error);
+			background: rgba(var(--color-error-rgb), 0.6);
+			border: 1px solid var(--color-error);
 		}
 
 		.checkmark {
@@ -111,8 +113,9 @@
 
 		font-size: var(--font-size-very-small);
 
-		color: var(--color-primary);
-		background: rgba(var(--color-primary-rgb), 0.3);
+		color: var(--color-primary-contrast);
+		background: rgba(var(--color-primary-rgb), 0.6);
+		border: 1px solid var(--color-primary);
 
 		width: fit-content;
 

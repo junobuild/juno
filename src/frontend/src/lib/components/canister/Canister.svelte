@@ -157,6 +157,9 @@
 
 			font-size: var(--font-size-small);
 
+			min-width: var(--padding-8x);
+			--skeleton-text-padding: 0;
+
 			&:not(:last-of-type):after {
 				content: '';
 				border-right: 1px solid currentColor;

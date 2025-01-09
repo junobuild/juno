@@ -12,10 +12,8 @@
 	import Tabs from '$lib/components/ui/Tabs.svelte';
 	import Warnings from '$lib/components/warning/Warnings.svelte';
 	import { authSignedIn } from '$lib/derived/auth.derived';
-	import {
-		missionControlIdDerived,
-		hasMissionControlSettings
-	} from '$lib/derived/mission-control.derived';
+	import { hasMissionControlSettings } from '$lib/derived/mission-control-settings.derived';
+	import { missionControlIdDerived } from '$lib/derived/mission-control.derived';
 	import {
 		type Tab,
 		TABS_CONTEXT_KEY,

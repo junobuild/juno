@@ -4,10 +4,10 @@
 	import { fade } from 'svelte/transition';
 	import Toggle from '$lib/components/ui/Toggle.svelte';
 	import Value from '$lib/components/ui/Value.svelte';
+	import { missionControlSettingsLoaded } from '$lib/derived/mission-control-settings.derived';
 	import {
 		missionControlIdDerived,
-		missionControlConfigMonitoring,
-		missionControlSettingsLoaded
+		missionControlConfigMonitoring
 	} from '$lib/derived/mission-control.derived';
 	import { setMonitoringNotification } from '$lib/services/monitoring.services';
 	import { authStore } from '$lib/stores/auth.store';

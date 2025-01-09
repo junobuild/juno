@@ -10,10 +10,8 @@
 	import Identifier from '$lib/components/ui/Identifier.svelte';
 	import Value from '$lib/components/ui/Value.svelte';
 	import { authSignedIn } from '$lib/derived/auth.derived';
-	import {
-		missionControlMonitoring,
-		missionControlSettingsNotLoaded
-	} from '$lib/derived/mission-control.derived';
+	import { missionControlSettingsNotLoaded } from '$lib/derived/mission-control-settings.derived';
+	import { missionControlMonitoring } from '$lib/derived/mission-control.derived';
 	import { missionControlVersion } from '$lib/derived/version.derived';
 	import { i18n } from '$lib/stores/i18n.store';
 

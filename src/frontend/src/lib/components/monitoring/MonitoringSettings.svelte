@@ -6,10 +6,8 @@
 	import MonitoringDefaultStrategy from '$lib/components/monitoring/MonitoringDefaultStrategy.svelte';
 	import MonitoringNotifications from '$lib/components/monitoring/MonitoringNotifications.svelte';
 	import MonitoringStatus from '$lib/components/monitoring/MonitoringStatus.svelte';
-	import {
-		missionControlMonitored,
-		missionControlSettingsLoaded
-	} from '$lib/derived/mission-control.derived';
+	import { missionControlSettingsLoaded } from '$lib/derived/mission-control-settings.derived';
+	import { missionControlMonitored } from '$lib/derived/mission-control.derived';
 	import { orbiterLoaded } from '$lib/derived/orbiter.derived';
 	import { satellitesLoaded } from '$lib/derived/satellite.derived';
 	import { openMonitoringModal } from '$lib/services/monitoring.services';

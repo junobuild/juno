@@ -1,36 +1,16 @@
+import { missionControlSettings } from '$lib/derived/mission-control-settings.derived';
 import {
 	missionControlIdDataStore,
-	missionControlSettingsDataStore,
 	missionControlUserDataStore
 } from '$lib/stores/mission-control.store';
 import { metadataEmail } from '$lib/utils/metadata.utils';
-import { fromNullable, nonNullish } from '@dfinity/utils';
+import { fromNullable } from '@dfinity/utils';
 import { derived } from 'svelte/store';
 
 // TODO: find a better name but, I don't want to use missionControlId because it would clashes with the properties called missionControlId
 export const missionControlIdDerived = derived(
 	[missionControlIdDataStore],
 	([$missionControlDataStore]) => $missionControlDataStore?.data
-);
-
-export const missionControlSettings = derived(
-	[missionControlSettingsDataStore],
-	([$missionControlSettingsDataStore]) => $missionControlSettingsDataStore?.data
-);
-
-export const hasMissionControlSettings = derived(
-	[missionControlSettings],
-	([$missionControlSettings]) => nonNullish($missionControlSettings)
-);
-
-export const missionControlSettingsLoaded = derived(
-	[missionControlSettingsDataStore],
-	([$missionControlSettingsDataStore]) => $missionControlSettingsDataStore !== undefined
-);
-
-export const missionControlSettingsNotLoaded = derived(
-	[missionControlSettingsLoaded],
-	([$missionControlSettingsLoaded]) => !$missionControlSettingsLoaded
 );
 
 export const missionControlMonitoring = derived(

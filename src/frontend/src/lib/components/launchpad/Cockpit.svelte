@@ -14,11 +14,11 @@
 	import MissionControlVersion from '$lib/components/mission-control/MissionControlVersion.svelte';
 	import SkeletonText from '$lib/components/ui/SkeletonText.svelte';
 	import WalletLoader from '$lib/components/wallet/WalletLoader.svelte';
-	import { missionControlSettingsLoaded } from '$lib/derived/mission-control-settings.derived';
 	import {
-		missionControlIdDerived,
-		missionControlNotMonitored
-	} from '$lib/derived/mission-control.derived';
+		missionControlNotMonitored,
+		missionControlSettingsLoaded
+	} from '$lib/derived/mission-control-settings.derived';
+	import { missionControlIdDerived } from '$lib/derived/mission-control.derived';
 	import { orbiterStore } from '$lib/derived/orbiter.derived';
 	import { missionControlVersion } from '$lib/derived/version.derived';
 	import { loadOrbiters } from '$lib/services/orbiters.services';

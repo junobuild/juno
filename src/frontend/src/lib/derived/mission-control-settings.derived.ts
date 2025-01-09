@@ -17,12 +17,23 @@ export const missionControlSettingsNotLoaded = derived(
 	([$missionControlSettingsLoaded]) => !$missionControlSettingsLoaded
 );
 
+export const hasMissionControlSettings = derived(
+	[missionControlSettings],
+	([$missionControlSettings]) => nonNullish($missionControlSettings)
+);
+
 export const missionControlMonitoring = derived(
 	[missionControlSettings],
 	([$missionControlSettings]) => fromNullable($missionControlSettings?.monitoring ?? [])
 );
 
-export const hasMissionControlSettings = derived(
-	[missionControlSettings],
-	([$missionControlSettings]) => nonNullish($missionControlSettings)
+export const missionControlMonitored = derived(
+	[missionControlMonitoring],
+	([$missionControlMonitoring]) =>
+		fromNullable($missionControlMonitoring?.cycles ?? [])?.enabled === true
+);
+
+export const missionControlNotMonitored = derived(
+	[missionControlMonitored],
+	([$missionControlMonitored]) => !$missionControlMonitored
 );

@@ -1,4 +1,3 @@
-import { missionControlMonitoring } from '$lib/derived/mission-control-settings.derived';
 import {
 	missionControlIdDataStore,
 	missionControlUserDataStore
@@ -25,17 +24,6 @@ export const missionControlConfig = derived([missionControlUserData], ([$mission
 export const missionControlConfigMonitoring = derived(
 	[missionControlConfig],
 	([$missionControlConfig]) => fromNullable($missionControlConfig?.monitoring ?? [])
-);
-
-export const missionControlMonitored = derived(
-	[missionControlMonitoring],
-	([$missionControlMonitoring]) =>
-		fromNullable($missionControlMonitoring?.cycles ?? [])?.enabled === true
-);
-
-export const missionControlNotMonitored = derived(
-	[missionControlMonitored],
-	([$missionControlMonitored]) => !$missionControlMonitored
 );
 
 export const missionControlUserDataLoaded = derived(

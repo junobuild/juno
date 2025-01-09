@@ -55,6 +55,7 @@ interface MonitoringCyclesStrategyParams {
 
 export interface ApplyMonitoringCyclesStrategyOptions {
 	monitoringConfig: MonitoringConfig | undefined;
+	reuseStrategy: CyclesMonitoringStrategy | undefined;
 	saveAsDefaultStrategy: boolean;
 	metadata: Metadata;
 	userEmail: Option<string>;

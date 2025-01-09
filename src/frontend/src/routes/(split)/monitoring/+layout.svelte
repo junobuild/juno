@@ -13,7 +13,7 @@
 	let { children }: Props = $props();
 
 	onMount(() => {
-		applyColor(Color.FOLLY);
+		applyColor(Color.HOT_PINK);
 
 		layoutNavigation.set({
 			title: $i18n.monitoring.title,

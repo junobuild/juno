@@ -5,7 +5,7 @@ export enum Color {
 	PINK_LACE = 'pink-lace',
 	BABY_PINK = 'baby-pink',
 	SHANDY = 'shandy',
-	FOLLY = 'folly',
+	HOT_PINK = 'hot-pink',
 	ROSE = 'rose',
 	KEPPEL = 'keppel',
 	TIFFANY_BLUE = 'tiffany-blue'

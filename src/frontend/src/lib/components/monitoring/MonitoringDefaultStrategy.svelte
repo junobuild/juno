@@ -4,17 +4,19 @@
 	import MonitoringSentence from '$lib/components/modals/MonitoringSentence.svelte';
 	import Value from '$lib/components/ui/Value.svelte';
 	import {
-		missionControlMonitoring,
-		missionControlSettingsLoaded
+		missionControlConfigMonitoring,
+		missionControlUserDataLoaded
 	} from '$lib/derived/mission-control.derived';
 	import { i18n } from '$lib/stores/i18n.store';
 
 	let monitoringStrategy = $derived(
-		fromNullable(fromNullable($missionControlMonitoring?.cycles ?? [])?.strategy ?? [])
+		fromNullable(
+			fromNullable($missionControlConfigMonitoring?.cycles ?? [])?.default_strategy ?? []
+		)
 	);
 </script>
 
-{#if $missionControlSettingsLoaded}
+{#if $missionControlUserDataLoaded}
 	<div in:fade>
 		<Value>
 			{#snippet label()}
@@ -25,7 +27,7 @@
 				{#if nonNullish(monitoringStrategy)}
 					<MonitoringSentence {monitoringStrategy} />
 				{:else}
-					&ZeroWidthSpace;
+					{$i18n.core.none}
 				{/if}
 			</p>
 		</Value>

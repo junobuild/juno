@@ -1,7 +1,7 @@
 <script lang="ts">
 	import type { Principal } from '@dfinity/principal';
 	import { fromNullable, isNullish, nonNullish } from '@dfinity/utils';
-	import { uploadFile } from '@junobuild/core-peer';
+	import { uploadFile } from '@junobuild/core';
 	import { createEventDispatcher, getContext, type Snippet } from 'svelte';
 	import type { AssetNoContent } from '$declarations/satellite/satellite.did';
 	import DataUpload from '$lib/components/data/DataUpload.svelte';

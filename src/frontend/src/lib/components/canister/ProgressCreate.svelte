@@ -37,7 +37,7 @@
 			monitoring: {
 				state: 'next',
 				step: 'monitoring',
-				text: $i18n.monitoring.starting_monitoring
+				text: $i18n.monitoring.starting_auto_refill
 			}
 		}),
 		reload: {

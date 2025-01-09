@@ -43,8 +43,8 @@
 			step: 'create_and_start',
 			text:
 				action === 'stop'
-					? $i18n.monitoring.stopping_monitoring
-					: $i18n.monitoring.starting_monitoring
+					? $i18n.monitoring.stopping_auto_refill
+					: $i18n.monitoring.starting_auto_refill
 		},
 		reload: {
 			state: 'next',

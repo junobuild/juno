@@ -52,19 +52,19 @@
 	--color-primary-opaque-shade: #b1b6e0;
 	--color-primary-opaque-tint: #ced4ff;
 
-	--color-secondary: #ffc759;
-	--color-secondary-rgb: 255, 199, 89;
-	--color-secondary-contrast: var(--text-color);
-	--color-secondary-contrast-rgb: var(--text-color-rgb);
-	--color-secondary-shade: #e0af4e;
-	--color-secondary-tint: #ffcd6a;
+	--color-secondary: #ff7888;
+	--color-secondary-rgb: 255, 120, 136;
+	--color-secondary-contrast: #000000;
+	--color-secondary-contrast-rgb: 0, 0, 0;
+	--color-secondary-shade: #e06a78;
+	--color-secondary-tint: #ff8694;
 
-	--color-tertiary: #c4cdff;
-	--color-tertiary-rgb: 196, 205, 255;
-	--color-tertiary-contrast: var(--text-color);
-	--color-tertiary-contrast-rgb: var(--text-color-rgb);
-	--color-tertiary-shade: #acb4e0;
-	--color-tertiary-tint: #cad2ff;
+	--color-tertiary: #88ff78;
+	--color-tertiary-rgb: 136, 255, 120;
+	--color-tertiary-contrast: #000000;
+	--color-tertiary-contrast-rgb: 0, 0, 0;
+	--color-tertiary-shade: #78e06a;
+	--color-tertiary-tint: #94ff86;
 
 	&[color='papaya-whip'] {
 		--color-primary: #ffcf98;
@@ -81,19 +81,19 @@
 		--color-primary-opaque-shade: #e0d0bc;
 		--color-primary-opaque-tint: #ffeeda;
 
-		--color-secondary: #ce7da5;
-		--color-secondary-rgb: 206, 125, 165;
+		--color-secondary: #98ffcf;
+		--color-secondary-rgb: 152, 255, 207;
 		--color-secondary-contrast: #000000;
 		--color-secondary-contrast-rgb: 0, 0, 0;
-		--color-secondary-shade: #b56e91;
-		--color-secondary-tint: #d38aae;
+		--color-secondary-shade: #86e0b6;
+		--color-secondary-tint: #a2ffd4;
 
-		--color-tertiary: #ffeed6;
-		--color-tertiary-rgb: 255, 238, 214;
+		--color-tertiary: #cf98ff;
+		--color-tertiary-rgb: 207, 152, 255;
 		--color-tertiary-contrast: #000000;
 		--color-tertiary-contrast-rgb: 0, 0, 0;
-		--color-tertiary-shade: #e0d1bc;
-		--color-tertiary-tint: #fff0da;
+		--color-tertiary-shade: #b686e0;
+		--color-tertiary-tint: #d4a2ff;
 	}
 
 	&[color='aero-blue'] {
@@ -111,19 +111,19 @@
 		--color-primary-opaque-shade: #bbe0d1;
 		--color-primary-opaque-tint: #d9ffef;
 
-		--color-secondary: #fbcaef;
-		--color-secondary-rgb: 251, 202, 239;
+		--color-secondary: #d297ff;
+		--color-secondary-rgb: 210, 151, 255;
 		--color-secondary-contrast: #000000;
 		--color-secondary-contrast-rgb: 0, 0, 0;
-		--color-secondary-shade: #ddb2d2;
-		--color-secondary-tint: #fbcff1;
+		--color-secondary-shade: #b985e0;
+		--color-secondary-tint: #d7a1ff;
 
-		--color-tertiary: #d5ffef;
-		--color-tertiary-rgb: 213, 255, 239;
+		--color-tertiary: #ffd297;
+		--color-tertiary-rgb: 255, 210, 151;
 		--color-tertiary-contrast: #000000;
 		--color-tertiary-contrast-rgb: 0, 0, 0;
-		--color-tertiary-shade: #bbe0d2;
-		--color-tertiary-tint: #d9fff1;
+		--color-tertiary-shade: #e0b985;
+		--color-tertiary-tint: #ffd7a1;
 	}
 
 	&[color='pink-lace'] {
@@ -141,19 +141,19 @@
 		--color-primary-opaque-shade: #e0bbd8;
 		--color-primary-opaque-tint: #ffd9f6;
 
-		--color-secondary: #6d98ba;
-		--color-secondary-rgb: 109, 152, 186;
+		--color-secondary: #e7ff97;
+		--color-secondary-rgb: 231, 255, 151;
 		--color-secondary-contrast: #000000;
 		--color-secondary-contrast-rgb: 0, 0, 0;
-		--color-secondary-shade: #6086a4;
-		--color-secondary-tint: #7ca2c1;
+		--color-secondary-shade: #cbe085;
+		--color-secondary-tint: #e9ffa1;
 
-		--color-tertiary: #ffd5f7;
-		--color-tertiary-rgb: 255, 213, 247;
+		--color-tertiary: #97e7ff;
+		--color-tertiary-rgb: 151, 231, 255;
 		--color-tertiary-contrast: #000000;
 		--color-tertiary-contrast-rgb: 0, 0, 0;
-		--color-tertiary-shade: #e0bbd9;
-		--color-tertiary-tint: #ffd9f8;
+		--color-tertiary-shade: #85cbe0;
+		--color-tertiary-tint: #a1e9ff;
 	}
 
 	&[color='baby-pink'] {
@@ -171,19 +171,19 @@
 		--color-primary-opaque-shade: #e0b7b7;
 		--color-primary-opaque-tint: #ffd5d5;
 
-		--color-secondary: #80ced7;
-		--color-secondary-rgb: 128, 206, 215;
+		--color-secondary: #89ff89;
+		--color-secondary-rgb: 137, 255, 137;
 		--color-secondary-contrast: #000000;
 		--color-secondary-contrast-rgb: 0, 0, 0;
-		--color-secondary-shade: #71b5bd;
-		--color-secondary-tint: #8dd3db;
+		--color-secondary-shade: #79e079;
+		--color-secondary-tint: #95ff95;
 
-		--color-tertiary: #ffcece;
-		--color-tertiary-rgb: 255, 206, 206;
+		--color-tertiary: #8989ff;
+		--color-tertiary-rgb: 137, 137, 255;
 		--color-tertiary-contrast: #000000;
 		--color-tertiary-contrast-rgb: 0, 0, 0;
-		--color-tertiary-shade: #e0b5b5;
-		--color-tertiary-tint: #ffd3d3;
+		--color-tertiary-shade: #7979e0;
+		--color-tertiary-tint: #9595ff;
 	}
 
 	&[color='shandy'] {
@@ -201,19 +201,19 @@
 		--color-primary-opaque-shade: #ddcd88;
 		--color-primary-opaque-tint: #fbeba4;
 
-		--color-secondary: #af9ab2;
-		--color-secondary-rgb: 175, 154, 178;
+		--color-secondary: #6fffe3;
+		--color-secondary-rgb: 111, 255, 227;
 		--color-secondary-contrast: #000000;
 		--color-secondary-contrast-rgb: 0, 0, 0;
-		--color-secondary-shade: #9a889d;
-		--color-secondary-tint: #b7a4ba;
+		--color-secondary-shade: #62e0c8;
+		--color-secondary-tint: #7dffe6;
 
-		--color-tertiary: #820b8a;
-		--color-tertiary-rgb: 130, 11, 138;
-		--color-tertiary-contrast: #ffffff;
-		--color-tertiary-contrast-rgb: 255, 255, 255;
-		--color-tertiary-shade: #720a79;
-		--color-tertiary-tint: #8f2396;
+		--color-tertiary: #e36fff;
+		--color-tertiary-rgb: 227, 111, 255;
+		--color-tertiary-contrast: #000000;
+		--color-tertiary-contrast-rgb: 0, 0, 0;
+		--color-tertiary-shade: #c862e0;
+		--color-tertiary-tint: #e67dff;
 	}
 
 	&[color='hot-pink'] {

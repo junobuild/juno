@@ -1,7 +1,7 @@
 <script lang="ts">
 	import type { Principal } from '@dfinity/principal';
 	import { fromNullable, isNullish, nonNullish, notEmptyString } from '@dfinity/utils';
-	import { setDoc } from '@junobuild/core-peer';
+	import { setDoc } from '@junobuild/core';
 	import { nanoid } from 'nanoid';
 	import { createEventDispatcher, getContext, type Snippet } from 'svelte';
 	import { run } from 'svelte/legacy';

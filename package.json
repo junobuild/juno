@@ -94,7 +94,7 @@
 		"@dfinity/principal": "^2.1.3",
 		"@dfinity/utils": "^2.8.0",
 		"@junobuild/admin": "^0.0.61",
-		"@junobuild/core-peer": "^0.0.29",
+		"@junobuild/core": "^0.1.0",
 		"@junobuild/utils": "^0.0.27",
 		"buffer": "^6.0.3",
 		"date-fns": "^4.1.0",

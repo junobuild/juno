@@ -5,7 +5,7 @@ import type {
 } from '$declarations/mission_control/mission_control.did';
 import { getOrbiterFee, getSatelliteFee } from '$lib/api/console.api';
 import { updateAndStartMonitoring } from '$lib/api/mission-control.api';
-import { missionControlConfigMonitoring } from '$lib/derived/mission-control.derived';
+import { missionControlConfigMonitoring } from '$lib/derived/mission-control-user.derived';
 import { getMissionControlBalance } from '$lib/services/balance.services';
 import { loadVersion } from '$lib/services/console.services';
 import { loadUserData } from '$lib/services/mission-control.services';

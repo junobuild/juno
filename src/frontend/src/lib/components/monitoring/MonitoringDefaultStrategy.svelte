@@ -6,7 +6,7 @@
 	import {
 		missionControlConfigMonitoring,
 		missionControlUserDataLoaded
-	} from '$lib/derived/mission-control.derived';
+	} from '$lib/derived/mission-control-user.derived';
 	import { i18n } from '$lib/stores/i18n.store';
 
 	let monitoringStrategy = $derived(

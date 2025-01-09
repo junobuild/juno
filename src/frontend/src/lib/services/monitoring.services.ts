@@ -12,7 +12,7 @@ import {
 	updateAndStopMonitoring
 } from '$lib/api/mission-control.api';
 import { METADATA_KEY_EMAIL } from '$lib/constants/metadata.constants';
-import { missionControlUserData } from '$lib/derived/mission-control.derived';
+import { missionControlUserData } from '$lib/derived/mission-control-user.derived';
 import { orbiterNotLoaded, orbiterStore } from '$lib/derived/orbiter.derived';
 import { satellitesNotLoaded, satellitesStore } from '$lib/derived/satellite.derived';
 import { loadSettings, loadUserData } from '$lib/services/mission-control.services';

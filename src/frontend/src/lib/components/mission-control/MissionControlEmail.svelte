@@ -8,10 +8,10 @@
 	import { EMAIL_PLACEHOLDER } from '$lib/constants/monitoring.constants';
 	import {
 		missionControlEmail,
-		missionControlIdDerived,
 		missionControlMetadata,
 		missionControlUserDataLoaded
-	} from '$lib/derived/mission-control.derived';
+	} from '$lib/derived/mission-control-user.derived';
+	import { missionControlIdDerived } from '$lib/derived/mission-control.derived';
 	import { setMetadataEmail } from '$lib/services/mission-control.services';
 	import { authStore } from '$lib/stores/auth.store';
 	import { busy, isBusy } from '$lib/stores/busy.store';

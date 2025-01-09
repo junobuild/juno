@@ -2,7 +2,7 @@
 	import { notEmptyString } from '@dfinity/utils';
 	import MonitoringStepBackContinue from '$lib/components/monitoring/MonitoringStepBackContinue.svelte';
 	import Value from '$lib/components/ui/Value.svelte';
-	import { EMAIL_PLACEHOLDER } from '$lib/constants/constants';
+	import { EMAIL_PLACEHOLDER } from '$lib/constants/monitoring.constants';
 	import { isBusy } from '$lib/stores/busy.store';
 	import { i18n } from '$lib/stores/i18n.store';
 	import { toasts } from '$lib/stores/toasts.store';

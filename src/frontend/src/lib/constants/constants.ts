@@ -47,5 +47,3 @@ export const REVOKED_CONTROLLERS: string[] = [
 ];
 
 export const JUNO_SUBNET_ID = '6pbhf-qzpdk-kuqbr-pklfa-5ehhf-jfjps-zsj6q-57nrl-kzhpd-mu7hc-vae';
-
-export const EMAIL_PLACEHOLDER = 'name@example.com';

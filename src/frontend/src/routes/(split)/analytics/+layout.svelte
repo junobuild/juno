@@ -13,7 +13,7 @@
 	let { children }: Props = $props();
 
 	onMount(() => {
-		applyColor(Color.ROSE);
+		applyColor(Color.FOLLY_LIGHTER);
 
 		layoutNavigation.set({
 			title: $i18n.analytics.title,

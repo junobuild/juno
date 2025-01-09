@@ -7,6 +7,7 @@
 		Orbiter,
 		Satellite
 	} from '$declarations/mission_control/mission_control.did';
+	import MonitoringCreateSelectStrategy from '$lib/components/monitoring/MonitoringCreateSelectStrategy.svelte';
 	import MonitoringCreateStrategy from '$lib/components/monitoring/MonitoringCreateStrategy.svelte';
 	import MonitoringCreateStrategyMissionControl from '$lib/components/monitoring/MonitoringCreateStrategyMissionControl.svelte';
 	import MonitoringCreateStrategyNotifications from '$lib/components/monitoring/MonitoringCreateStrategyNotifications.svelte';
@@ -26,7 +27,6 @@
 	import type { MonitoringStrategyProgress } from '$lib/types/strategy';
 	import type { Option } from '$lib/types/utils';
 	import { metadataEmail } from '$lib/utils/metadata.utils';
-	import MonitoringCreateSelectStrategy from '$lib/components/monitoring/MonitoringCreateSelectStrategy.svelte';
 
 	interface Props {
 		detail: JunoModalDetail;

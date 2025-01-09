@@ -44,6 +44,7 @@ export type JunoModalUpgradeSatelliteDetail = JunoModalUpgradeDetail &
 
 export interface JunoModalCreateSegmentDetail extends JunoModalBalance {
 	fee: bigint;
+	monitoringEnabled: boolean;
 	monitoringConfig: Option<MonitoringConfig>;
 }
 

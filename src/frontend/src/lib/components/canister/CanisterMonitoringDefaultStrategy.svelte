@@ -5,6 +5,7 @@
 	import MonitoringSentence from '$lib/components/modals/MonitoringSentence.svelte';
 	import Checkbox from '$lib/components/ui/Checkbox.svelte';
 	import Value from '$lib/components/ui/Value.svelte';
+	import { BASIC_STRATEGY } from '$lib/constants/monitoring.constants';
 	import { i18n } from '$lib/stores/i18n.store';
 	import type { JunoModalCreateSegmentDetail, JunoModalDetail } from '$lib/types/modal';
 
@@ -15,15 +16,17 @@
 
 	let { monitoringStrategy = $bindable(), detail }: Props = $props();
 
-	let { monitoringConfig } = detail as JunoModalCreateSegmentDetail;
+	let { monitoringConfig, monitoringEnabled } = detail as JunoModalCreateSegmentDetail;
 
 	let useDefaultStrategy = $state(false);
 	let useMonitoringStrategy: CyclesMonitoringStrategy | undefined = $state(undefined);
 
 	onMount(() => {
-		useMonitoringStrategy = fromNullable(
-			fromNullable(monitoringConfig?.cycles ?? [])?.default_strategy ?? []
-		);
+		// If user as a default strategy, we use this strategy else, if monitored is already enabled, we use the basic suggested strategy
+		useMonitoringStrategy =
+			fromNullable(fromNullable(monitoringConfig?.cycles ?? [])?.default_strategy ?? []) ??
+			(monitoringEnabled ? BASIC_STRATEGY : undefined);
+
 		monitoringStrategy = useMonitoringStrategy;
 		useDefaultStrategy = nonNullish(monitoringStrategy);
 	});

@@ -10,7 +10,9 @@
 	import { i18n } from '$lib/stores/i18n.store';
 
 	let monitoringStrategy = $derived(
-		fromNullable(fromNullable($missionControlConfigMonitoring?.cycles ?? [])?.default_strategy ?? [])
+		fromNullable(
+			fromNullable($missionControlConfigMonitoring?.cycles ?? [])?.default_strategy ?? []
+		)
 	);
 </script>
 

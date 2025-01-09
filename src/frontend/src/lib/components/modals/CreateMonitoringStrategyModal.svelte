@@ -125,6 +125,10 @@
 			: undefined
 	);
 
+	// Strategy choice
+
+	let useStrategy: CyclesMonitoringStrategy | undefined = $state(undefined);
+
 	// Submit
 
 	let progress: MonitoringStrategyProgress | undefined = $state(undefined);
@@ -220,7 +224,7 @@
 			oncontinue={() => next('mission_control')}
 		/>
 	{:else if step === 'select_strategy'}
-		<MonitoringCreateSelectStrategy onback={back} oncontinue={() => next('strategy')} />
+		<MonitoringCreateSelectStrategy {defaultStrategy} onback={back} oncontinue={() => next('strategy')} />
 	{:else}
 		<MonitoringSelectSegments
 			{missionControlId}

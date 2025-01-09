@@ -1,18 +1,35 @@
 <script lang="ts">
-	import { i18n } from '$lib/stores/i18n.store';
 	import MonitoringStepBackContinue from '$lib/components/monitoring/MonitoringStepBackContinue.svelte';
+	import { i18n } from '$lib/stores/i18n.store';
+	import type { CyclesMonitoringStrategy } from '$declarations/mission_control/mission_control.did';
+	import { nonNullish } from '@dfinity/utils';
+	import { BASIC_STRATEGY } from '$lib/constants/monitoring.constants';
 
 	interface Props {
+		defaultStrategy: CyclesMonitoringStrategy | undefined;
 		onback: () => void;
-		oncontinue: () => void;
+		oncontinue: (strategy?: CyclesMonitoringStrategy) => void;
 	}
 
-	let { oncontinue, onback }: Props = $props();
+	let { defaultStrategy, oncontinue, onback }: Props = $props();
 
-	let action = $state('generate');
+	let strategy: 'basic' | 'default' | 'custom' = $state('basic');
+
+	const onSelect = () => {
+		switch (strategy) {
+			case 'default':
+				oncontinue(defaultStrategy);
+				break;
+			case 'basic':
+				oncontinue(BASIC_STRATEGY);
+				break;
+			default:
+				oncontinue();
+		}
+	};
 </script>
 
-<MonitoringStepBackContinue {onback} {oncontinue} grid={false}>
+<MonitoringStepBackContinue {onback} oncontinue={onSelect} grid={false}>
 	{#snippet header()}
 		<h2>{$i18n.monitoring.select_auto_refill_strategy}</h2>
 
@@ -23,23 +40,25 @@
 
 	<div class="options">
 		<label class="radio-group">
-			<input type="radio" bind:group={action} name="action" value="generate" />
+			<input type="radio" bind:group={strategy} name="strategy" value="basic" />
 			<span class="text">
-				<span>{$i18n.monitoring.suggested}</span>
-				<span class="description">{$i18n.monitoring.suggested_description}</span>
+				<span>{$i18n.monitoring.basic}</span>
+				<span class="description">{$i18n.monitoring.basic_description}</span>
 			</span>
 		</label>
 
-		<label class="radio-group">
-			<input type="radio" bind:group={action} name="action" value="add" />
-			<span class="text">
-				<span>{$i18n.monitoring.default}</span>
-				<span class="description">{$i18n.monitoring.default_description}</span>
-			</span>
-		</label>
+		{#if nonNullish(defaultStrategy)}
+			<label class="radio-group">
+				<input type="radio" bind:group={strategy} name="strategy" value="default" />
+				<span class="text">
+					<span>{$i18n.monitoring.default}</span>
+					<span class="description">{$i18n.monitoring.default_description}</span>
+				</span>
+			</label>
+		{/if}
 
 		<label class="radio-group">
-			<input type="radio" bind:group={action} name="action" value="add" />
+			<input type="radio" bind:group={strategy} name="strategy" value="custom" />
 			<span class="text">
 				<span>{$i18n.monitoring.custom}</span>
 				<span class="description">{$i18n.monitoring.custom_description}</span>

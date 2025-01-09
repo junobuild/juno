@@ -749,8 +749,8 @@ interface I18nMonitoring {
 	edit_email: string;
 	select_auto_refill_strategy: string;
 	choose_method: string;
-	suggested: string;
-	suggested_description: string;
+	basic: string;
+	basic_description: string;
 	custom: string;
 	custom_description: string;
 	default: string;

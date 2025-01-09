@@ -17,7 +17,9 @@ import type { Identity } from '@dfinity/agent';
 import { isNullish, nonNullish } from '@dfinity/utils';
 import { set } from 'idb-keyval';
 
-onmessage = async ({ data: dataMsg }: MessageEvent<PostMessage<PostMessageDataRequest>>) => {
+export const onCyclesMessage = async ({
+	data: dataMsg
+}: MessageEvent<PostMessage<PostMessageDataRequest>>) => {
 	const { msg, data } = dataMsg;
 
 	switch (msg) {

@@ -9,7 +9,7 @@ export interface WalletWorker {
 }
 
 export const initWalletWorker = async (): Promise<WalletWorker> => {
-	const WalletWorker = await import('$lib/workers/wallet.worker?worker');
+	const WalletWorker = await import('$lib/workers/workers?worker');
 	const worker: Worker = new WalletWorker.default();
 
 	let walletCallback: WalletCallback | undefined;

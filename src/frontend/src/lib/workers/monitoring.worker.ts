@@ -23,7 +23,9 @@ import { fromNullable, isNullish, nonNullish } from '@dfinity/utils';
 import { addDays, endOfDay, format, startOfDay } from 'date-fns';
 import { get, set } from 'idb-keyval';
 
-onmessage = async ({ data: dataMsg }: MessageEvent<PostMessage<PostMessageDataRequest>>) => {
+export const onMonitoringMessage = async ({
+	data: dataMsg
+}: MessageEvent<PostMessage<PostMessageDataRequest>>) => {
 	const { msg, data } = dataMsg;
 
 	switch (msg) {

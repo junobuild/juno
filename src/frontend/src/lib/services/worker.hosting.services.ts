@@ -4,7 +4,7 @@ import type { PostMessage, PostMessageDataResponse } from '$lib/types/post-messa
 export type HostingCallback = (data: PostMessageDataResponse) => void;
 
 export const initHostingWorker = async () => {
-	const HostingWorker = await import('$lib/workers/hosting.worker?worker');
+	const HostingWorker = await import('$lib/workers/workers?worker');
 	const hostingWorker: Worker = new HostingWorker.default();
 
 	let hostingCallback: HostingCallback | undefined;

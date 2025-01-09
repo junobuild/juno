@@ -5,7 +5,9 @@ import type { CustomDomainRegistrationState } from '$lib/types/custom-domain';
 import type { PostMessage, PostMessageDataRequest } from '$lib/types/post-message';
 import { fromNullable, nonNullish } from '@dfinity/utils';
 
-onmessage = async ({ data: dataMsg }: MessageEvent<PostMessage<PostMessageDataRequest>>) => {
+export const onHostingMessage = async ({
+	data: dataMsg
+}: MessageEvent<PostMessage<PostMessageDataRequest>>) => {
 	const { msg, data } = dataMsg;
 
 	switch (msg) {

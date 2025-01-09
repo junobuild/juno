@@ -19,7 +19,7 @@ export interface MonitoringWorker {
 }
 
 export const initStatusesWorker = async (): Promise<MonitoringWorker> => {
-	const MonitoringWorker = await import('$lib/workers/monitoring.worker?worker');
+	const MonitoringWorker = await import('$lib/workers/workers?worker');
 	const monitoringWorker: Worker = new MonitoringWorker.default();
 
 	let monitoringCallback: MonitoringCallback | undefined;

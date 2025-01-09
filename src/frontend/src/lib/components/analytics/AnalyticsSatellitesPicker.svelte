@@ -15,8 +15,6 @@
 
 	let satelliteIdText: SatelliteIdText | undefined = $state();
 
-	onMount(() => (satelliteIdText = $satelliteIdStore));
-
 	let satellites: { satelliteId: string; satName: string }[] = $derived(
 		Object.entries($orbiterSatellitesConfig).reduce(
 			(acc, [satelliteId, { name: satName, enabled }]) => [
@@ -34,6 +32,14 @@
 			[] as { satelliteId: string; satName: string }[]
 		)
 	);
+
+	onMount(() => {
+		satelliteIdText =
+			nonNullish($satelliteIdStore) &&
+			satellites.find(({ satelliteId }) => satelliteId === $satelliteIdStore)
+				? $satelliteIdStore
+				: undefined;
+	});
 </script>
 
 <select

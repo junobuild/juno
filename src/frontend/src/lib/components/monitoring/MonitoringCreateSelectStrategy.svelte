@@ -21,34 +21,42 @@
 		</p>
 	{/snippet}
 
-    <div class="options">
-        <label class="radio-group">
-            <input type="radio" bind:group={action} name="action" value="generate" />
-            <span class="text">
+	<div class="options">
+		<label class="radio-group">
+			<input type="radio" bind:group={action} name="action" value="generate" />
+			<span class="text">
 				<span>{$i18n.monitoring.suggested}</span>
 				<span class="description">{$i18n.monitoring.suggested_description}</span>
 			</span>
-        </label>
+		</label>
 
-        <label class="radio-group">
-            <input type="radio" bind:group={action} name="action" value="add" />
-            <span class="text">
+		<label class="radio-group">
+			<input type="radio" bind:group={action} name="action" value="add" />
+			<span class="text">
+				<span>{$i18n.monitoring.default}</span>
+				<span class="description">{$i18n.monitoring.default_description}</span>
+			</span>
+		</label>
+
+		<label class="radio-group">
+			<input type="radio" bind:group={action} name="action" value="add" />
+			<span class="text">
 				<span>{$i18n.monitoring.custom}</span>
 				<span class="description">{$i18n.monitoring.custom_description}</span>
 			</span>
-        </label>
-    </div>
+		</label>
+	</div>
 </MonitoringStepBackContinue>
 
 <style lang="scss">
-    .options {
-      margin: 0 0 var(--padding-2x);
-    }
+	.options {
+		margin: 0 0 var(--padding-2x);
+	}
 
 	.radio-group {
 		display: grid;
 		grid-template-columns: auto 1fr;
-        align-items: flex-start;
+		align-items: flex-start;
 
 		gap: var(--padding-2x);
 	}

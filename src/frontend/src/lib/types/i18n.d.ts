@@ -753,6 +753,8 @@ interface I18nMonitoring {
 	suggested_description: string;
 	custom: string;
 	custom_description: string;
+	default: string;
+	default_description: string;
 }
 
 interface I18nPreferences {

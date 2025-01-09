@@ -724,10 +724,12 @@
 		"edit_email": "Edit the email address",
 		"select_auto_refill_strategy": "Select Auto-Refill Strategy",
 		"choose_method": "Choose how you'd like to configure auto-refill:",
-		"suggested": "Suggested by Juno",
-		"suggested_description": "Predefined values to quickly set up auto-refill. Skip directly to the last step.",
-		"custom": "Custom configuration",
-		"custom_description": "Define your own thresholds and top-up amounts."
+		"suggested": "Basic",
+		"suggested_description": "Predefined values to quickly set up auto-refill.",
+		"custom": "Custom",
+		"custom_description": "Define your own thresholds and top-up amounts.",
+		"default": "Your strategy",
+		"default_description": "Use your previously saved default strategy."
 	},
 	"preferences": {
 		"title": "Preferences",

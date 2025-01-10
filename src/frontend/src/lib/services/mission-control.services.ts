@@ -22,7 +22,7 @@ import { setMissionControlController004 } from '$lib/api/mission-control.depreca
 import { satelliteVersion } from '$lib/api/satellites.api';
 import { METADATA_KEY_EMAIL, METADATA_KEY_NAME } from '$lib/constants/metadata.constants';
 import {
-	MISSION_CONTROL_v0_0_13,
+	MISSION_CONTROL_v0_0_14,
 	MISSION_CONTROL_v0_0_3,
 	MISSION_CONTROL_v0_0_5,
 	MISSION_CONTROL_v0_0_7
@@ -255,7 +255,7 @@ export const loadSettings = async ({
 }): Promise<{ success: boolean }> => {
 	const versionStore = get(missionControlVersionStore);
 
-	if (compare(versionStore?.current ?? '0.0.0', MISSION_CONTROL_v0_0_13) < 0) {
+	if (compare(versionStore?.current ?? '0.0.0', MISSION_CONTROL_v0_0_14) < 0) {
 		missionControlSettingsDataStore.reset();
 		return { success: true };
 	}
@@ -291,7 +291,7 @@ export const loadUserData = async ({
 }): Promise<{ success: boolean }> => {
 	const versionStore = get(missionControlVersionStore);
 
-	if (compare(versionStore?.current ?? '0.0.0', MISSION_CONTROL_v0_0_13) < 0) {
+	if (compare(versionStore?.current ?? '0.0.0', MISSION_CONTROL_v0_0_14) < 0) {
 		missionControlUserDataStore.reset();
 		return { success: true };
 	}

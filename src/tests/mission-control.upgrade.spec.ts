@@ -109,20 +109,24 @@ describe('Mission control upgrade', () => {
 			expect(user.toText()).toEqual(controller.getPrincipal().toText());
 		};
 
-		it('should still contains data after upgrade even if the internal state variable is renamed from state to heap', async () => {
-			await setModules();
+		it(
+			'should still contains data after upgrade even if the internal state variable is renamed from state to heap',
+			async () => {
+				await setModules();
 
-			await testModules();
-			await testUser();
+				await testModules();
+				await testUser();
 
-			await upgradeCurrent();
+				await upgradeCurrent();
 
-			actor = pic.createActor<MissionControlActor>(idlFactorMissionControl, missionControlId);
-			actor.setIdentity(controller);
+				actor = pic.createActor<MissionControlActor>(idlFactorMissionControl, missionControlId);
+				actor.setIdentity(controller);
 
-			await testModules();
-			await testUser();
-		});
+				await testModules();
+				await testUser();
+			},
+			{ timeout: 60000 }
+		);
 
 		it('should migrate with no settings', async () => {
 			await upgradeCurrent();

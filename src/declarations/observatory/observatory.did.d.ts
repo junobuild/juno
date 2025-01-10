@@ -29,15 +29,6 @@ export interface GetNotifications {
 	from: [] | [bigint];
 	segment_id: [] | [Principal];
 }
-export interface HttpHeader {
-	value: string;
-	name: string;
-}
-export interface HttpResponse {
-	status: bigint;
-	body: Uint8Array | number[];
-	headers: Array<HttpHeader>;
-}
 export type NotificationKind = {
 	DepositedCyclesEmail: DepositedCyclesEmailNotification;
 };
@@ -66,10 +57,6 @@ export interface SetControllersArgs {
 	controller: SetController;
 	controllers: Array<Principal>;
 }
-export interface TransformArgs {
-	context: Uint8Array | number[];
-	response: HttpResponse;
-}
 export interface _SERVICE {
 	del_controllers: ActorMethod<[DeleteControllersArgs], undefined>;
 	get_notify_status: ActorMethod<[GetNotifications], NotifyStatus>;
@@ -78,7 +65,6 @@ export interface _SERVICE {
 	ping: ActorMethod<[NotifyArgs], undefined>;
 	set_controllers: ActorMethod<[SetControllersArgs], undefined>;
 	set_env: ActorMethod<[Env], undefined>;
-	transform: ActorMethod<[TransformArgs], HttpResponse>;
 	version: ActorMethod<[], string>;
 }
 export declare const idlFactory: IDL.InterfaceFactory;

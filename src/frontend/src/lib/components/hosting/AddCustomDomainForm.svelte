@@ -52,6 +52,7 @@
 		name="domain_name"
 		placeholder={$i18n.hosting.domain_name}
 		autocomplete="off"
+		data-1p-ignore
 	/>
 
 	<button type="submit">{$i18n.core.continue}</button>

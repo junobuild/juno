@@ -42,7 +42,13 @@
 				{$i18n.core.email_address}
 			{/snippet}
 
-			<input type="email" bind:value={email} placeholder={EMAIL_PLACEHOLDER} disabled={$isBusy} />
+			<input
+				type="email"
+				bind:value={email}
+				placeholder={EMAIL_PLACEHOLDER}
+				disabled={$isBusy}
+				data-1p-ignore
+			/>
 		</Value>
 	</div>
 </MonitoringStepBackContinue>

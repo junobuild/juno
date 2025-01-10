@@ -176,6 +176,7 @@
 					name="profile"
 					bind:value={profile}
 					autocomplete="off"
+					data-1p-ignore
 				/>
 			</div>
 		</Collapsible>

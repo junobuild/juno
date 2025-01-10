@@ -86,6 +86,7 @@
 			placeholder={EMAIL_PLACEHOLDER}
 			disabled={$isBusy}
 			autocomplete="off"
+			data-1p-ignore
 		/>
 
 		<button type="submit" class="submit" disabled={$isBusy || !validConfirm}>

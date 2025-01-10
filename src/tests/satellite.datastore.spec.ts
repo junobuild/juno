@@ -789,14 +789,14 @@ describe.each([{ memory: { Heap: null } }, { memory: { Stable: null } }])(
 					});
 				});
 
-				it('should not allow to set a document', () => {
-					expect(createDoc()).rejects.toThrow(errorMsg);
+				it('should not allow to set a document', async () => {
+					await expect(createDoc()).rejects.toThrow(errorMsg);
 				});
 
-				it('should not allow to set many documents', () => {
+				it('should not allow to set many documents', async () => {
 					const { set_many_docs } = actor;
 
-					expect(
+					await expect(
 						set_many_docs(
 							Array.from({ length: 4 }).map((_, i) => [
 								collection,

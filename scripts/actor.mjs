@@ -1,8 +1,6 @@
 import pkgAgent, { AnonymousIdentity } from '@dfinity/agent';
-import pkgPrincipal from '@dfinity/principal';
 /* eslint-disable */
 import { idlFactory } from '../src/declarations/console/console.factory.did.mjs';
-import { idlFactory as icIdlFactory } from '../src/declarations/ic/ic.factory.did.mjs';
 import { idlFactory as observatoryIdlFactory } from '../src/declarations/observatory/observatory.factory.did.mjs';
 import { idlFactory as orbiterIdlFactory } from '../src/declarations/orbiter/orbiter.factory.did.mjs';
 /* eslint-enable */
@@ -11,7 +9,6 @@ import { CONSOLE_ID, OBSERVATORY_ID } from './constants.mjs';
 import { targetMainnet } from './utils.mjs';
 
 const { HttpAgent, Actor } = pkgAgent;
-const { Principal } = pkgPrincipal;
 
 export const icAgent = async () => {
 	const identity = await getIdentity(true);
@@ -103,32 +100,5 @@ export const orbiterActorLocal = async (canisterId) => {
 	return Actor.createActor(orbiterIdlFactory, {
 		agent,
 		canisterId
-	});
-};
-
-const MANAGEMENT_CANISTER_ID = Principal.fromText('aaaaa-aa');
-
-// Source nns-dapp - dart -> JS bridge
-// eslint-disable-next-line local-rules/prefer-object-params
-const transform = (_methodName, args, _callConfig) => {
-	const first = args[0];
-	let effectiveCanisterId = MANAGEMENT_CANISTER_ID;
-	if (first && typeof first === 'object' && first.canister_id) {
-		effectiveCanisterId = Principal.from(first.canister_id);
-	}
-
-	return { effectiveCanisterId };
-};
-
-export const icActorIC = async () => {
-	const agent = await icAgent();
-
-	return Actor.createActor(icIdlFactory, {
-		agent,
-		canisterId: MANAGEMENT_CANISTER_ID,
-		config: {
-			callTransform: transform,
-			queryTransform: transform
-		}
 	});
 };

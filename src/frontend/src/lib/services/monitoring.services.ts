@@ -335,11 +335,11 @@ const setMonitoringCyclesConfig = async ({
 			'monitoringConfig' | 'userEmail' | 'saveAsDefaultStrategy'
 		>
 	>) => {
-	if (isNullish(minCycles)) {
+	if (saveAsDefaultStrategy && isNullish(minCycles)) {
 		throw new Error(get(i18n).monitoring.min_cycles_not_defined);
 	}
 
-	if (isNullish(fundCycles)) {
+	if (saveAsDefaultStrategy && isNullish(fundCycles)) {
 		throw new Error(get(i18n).monitoring.fund_cycles_not_defined);
 	}
 
@@ -354,14 +354,15 @@ const setMonitoringCyclesConfig = async ({
 		: (currentCyclesConfig?.notification ?? []);
 
 	// If the strategy should be use as default, we update or insert the default strategy else we keep the current configuration regardless if set or not
-	const default_strategy: [] | [CyclesMonitoringStrategy] = saveAsDefaultStrategy
-		? toNullable({
-				BelowThreshold: {
-					min_cycles: minCycles,
-					fund_cycles: fundCycles
-				}
-			})
-		: (currentCyclesConfig?.default_strategy ?? []);
+	const default_strategy: [] | [CyclesMonitoringStrategy] =
+		saveAsDefaultStrategy && nonNullish(minCycles) && nonNullish(fundCycles)
+			? toNullable({
+					BelowThreshold: {
+						min_cycles: minCycles,
+						fund_cycles: fundCycles
+					}
+				})
+			: (currentCyclesConfig?.default_strategy ?? []);
 
 	const updateMonitoringConfig: MonitoringConfig = {
 		cycles: toNullable({

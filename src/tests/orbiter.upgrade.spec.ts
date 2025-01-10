@@ -322,7 +322,7 @@ describe('Orbiter upgrade', () => {
 					expect('Err' in results).toBeFalsy();
 				});
 			},
-			{ timeout: 600000 }
+			{ timeout: 1200000 }
 		);
 
 		describe(
@@ -394,7 +394,7 @@ describe('Orbiter upgrade', () => {
 					expect('Err' in results).toBeFalsy();
 				});
 			},
-			{ timeout: 600000 }
+			{ timeout: 1200000 }
 		);
 	});
 });

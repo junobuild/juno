@@ -98,6 +98,7 @@
 			maxlength={64}
 			disabled={$isBusy}
 			autocomplete="off"
+			data-1p-ignore
 		/>
 
 		<button type="submit" class="submit" disabled={$isBusy || !validConfirm}>

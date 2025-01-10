@@ -255,22 +255,18 @@ describe('Orbiter upgrade', () => {
 		describe(
 			'Page views',
 			() => {
-				it(
-					'should still list all entries after upgrade',
-					async () => {
-						const originalKeys = await setPageViews0_0_6();
+				it('should still list all entries after upgrade', async () => {
+					const originalKeys = await setPageViews0_0_6();
 
-						await testPageViews({ keys: originalKeys });
+					await testPageViews({ keys: originalKeys });
 
-						await upgrade();
+					await upgrade();
 
-						const newActor = pic.createActor<OrbiterActor>(idlFactorOrbiter, canisterId);
-						newActor.setIdentity(controller);
+					const newActor = pic.createActor<OrbiterActor>(idlFactorOrbiter, canisterId);
+					newActor.setIdentity(controller);
 
-						await testPageViews({ keys: originalKeys, useActor: newActor });
-					},
-					{ timeout: 60000 }
-				);
+					await testPageViews({ keys: originalKeys, useActor: newActor });
+				});
 
 				it('should be able to collect new entry and list both bounded and unbounded serialized data', async () => {
 					const keysBeforeUpgrade = await setPageViews0_0_6();

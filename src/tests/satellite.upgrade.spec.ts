@@ -430,33 +430,26 @@ describe('Satellite upgrade', () => {
 			let newActor: Actor<SatelliteActor_0_0_17>;
 
 			describe('Custom domain', () => {
-				it(
-					'should add version set to none to custom domain',
-					async () => {
-						const { set_custom_domain } = actor;
+				it('should add version set to none to custom domain', async () => {
+					const { set_custom_domain } = actor;
 
-						await set_custom_domain('hello.com', ['123456']);
-						await set_custom_domain('test2.com', []);
+					await set_custom_domain('hello.com', ['123456']);
+					await set_custom_domain('test2.com', []);
 
-						await upgradeVersion('0.0.17');
+					await upgradeVersion('0.0.17');
 
-						newActor = pic.createActor<SatelliteActor_0_0_17>(
-							idlFactorSatellite_0_0_17,
-							canisterId
-						);
-						newActor.setIdentity(controller);
+					newActor = pic.createActor<SatelliteActor_0_0_17>(idlFactorSatellite_0_0_17, canisterId);
+					newActor.setIdentity(controller);
 
-						const { list_custom_domains } = newActor;
+					const { list_custom_domains } = newActor;
 
-						const results = await list_custom_domains();
+					const results = await list_custom_domains();
 
-						expect(results).toHaveLength(2);
+					expect(results).toHaveLength(2);
 
-						expect(fromNullable(results[0][1].version)).toBeUndefined();
-						expect(fromNullable(results[1][1].version)).toBeUndefined();
-					},
-					{ timeout: 60000 }
-				);
+					expect(fromNullable(results[0][1].version)).toBeUndefined();
+					expect(fromNullable(results[1][1].version)).toBeUndefined();
+				});
 
 				it('should be able to update after upgrade and has version set', async () => {
 					const { set_custom_domain: set_custom_domain_deprecated } = actor;
@@ -518,36 +511,29 @@ describe('Satellite upgrade', () => {
 					});
 				};
 
-				it(
-					'should add version set to none to custom domain',
-					async () => {
-						await upload({ actor, full_path: `/${collection}/ugprade.html` });
-						await upload({ actor, full_path: `/${collection}/ugprade2.html` });
-						await upload({ actor, full_path: `/${collection}/ugprade3.html` });
+				it('should add version set to none to custom domain', async () => {
+					await upload({ actor, full_path: `/${collection}/ugprade.html` });
+					await upload({ actor, full_path: `/${collection}/ugprade2.html` });
+					await upload({ actor, full_path: `/${collection}/ugprade3.html` });
 
-						await upgradeVersion('0.0.17');
+					await upgradeVersion('0.0.17');
 
-						newActor = pic.createActor<SatelliteActor_0_0_17>(
-							idlFactorSatellite_0_0_17,
-							canisterId
-						);
-						newActor.setIdentity(controller);
+					newActor = pic.createActor<SatelliteActor_0_0_17>(idlFactorSatellite_0_0_17, canisterId);
+					newActor.setIdentity(controller);
 
-						const { list_assets } = newActor;
+					const { list_assets } = newActor;
 
-						const assets = await list_assets(collection, {
-							matcher: [],
-							order: [],
-							owner: [],
-							paginate: []
-						});
+					const assets = await list_assets(collection, {
+						matcher: [],
+						order: [],
+						owner: [],
+						paginate: []
+					});
 
-						for (const [_, { version }] of assets.items) {
-							expect(fromNullable(version)).toBeUndefined();
-						}
-					},
-					{ timeout: 60000 }
-				);
+					for (const [_, { version }] of assets.items) {
+						expect(fromNullable(version)).toBeUndefined();
+					}
+				});
 
 				it('should be able to update after upgrade and has version set', async () => {
 					const full_path = `/${collection}/ugprade.html`;

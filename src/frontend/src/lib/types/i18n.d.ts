@@ -553,6 +553,7 @@ interface I18nErrors {
 	monitoring_email_missing: string;
 	monitoring_email_update: string;
 	monitoring_notifications_update: string;
+	monitoring_upgrade: string;
 }
 
 interface I18nDocument {

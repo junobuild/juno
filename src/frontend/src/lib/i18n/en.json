@@ -536,7 +536,8 @@
 		"monitoring_no_modules": "Monitoring requires at least one satellite or orbiter to be set up. Add a module to get started.",
 		"monitoring_email_missing": "An email address must be provided.",
 		"monitoring_email_update": "Unexpected error(s) while trying to update your email address.",
-		"monitoring_notifications_update": "Unexpected error(s) while trying to update the notifications."
+		"monitoring_notifications_update": "Unexpected error(s) while trying to update the notifications.",
+		"monitoring_upgrade": "Please upgrade your Mission Control to enable the monitoring feature."
 	},
 	"document": {
 		"owner": "Owner",

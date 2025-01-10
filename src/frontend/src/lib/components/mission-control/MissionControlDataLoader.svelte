@@ -8,10 +8,11 @@
 
 	interface Props {
 		missionControlId: Principal;
+		reload?: boolean;
 		children?: Snippet;
 	}
 
-	let { missionControlId, children }: Props = $props();
+	let { missionControlId, children, reload = false }: Props = $props();
 
 	const load = async () => {
 		if (isNullish($missionControlVersion?.current)) {
@@ -21,11 +22,13 @@
 		await Promise.all([
 			loadSettings({
 				missionControlId,
-				identity: $authStore.identity
+				identity: $authStore.identity,
+				reload
 			}),
 			loadUserData({
 				missionControlId,
-				identity: $authStore.identity
+				identity: $authStore.identity,
+				reload
 			})
 		]);
 	};

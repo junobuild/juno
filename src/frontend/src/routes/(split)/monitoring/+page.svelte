@@ -68,7 +68,7 @@
 			<OrbitersLoader>
 				<MissionControlGuard>
 					{#if nonNullish($missionControlIdDerived)}
-						<MissionControlDataLoader missionControlId={$missionControlIdDerived}>
+						<MissionControlDataLoader missionControlId={$missionControlIdDerived} reload>
 							{#if $store.tabId === $store.tabs[0].id}
 								<MonitoringDashboard missionControlId={$missionControlIdDerived} />
 							{:else if $store.tabId === $store.tabs[1].id && $hasMissionControlSettings}

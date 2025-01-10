@@ -24,7 +24,7 @@
 
 	const tabDashboard = {
 		id: Symbol('1'),
-		labelKey: 'analytics.dashboard'
+		labelKey: 'core.dashboard'
 	};
 
 	let tabs: Tab[] = $derived([

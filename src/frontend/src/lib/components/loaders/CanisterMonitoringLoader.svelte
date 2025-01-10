@@ -4,7 +4,7 @@
 	import { compare } from 'semver';
 	import { onDestroy, onMount, type Snippet } from 'svelte';
 	import { run } from 'svelte/legacy';
-	import { MISSION_CONTROL_v0_0_13 } from '$lib/constants/version.constants';
+	import { MISSION_CONTROL_v0_0_14 } from '$lib/constants/version.constants';
 	import { missionControlIdDerived } from '$lib/derived/mission-control.derived';
 	import { missionControlVersion } from '$lib/derived/version.derived';
 	import {
@@ -68,7 +68,7 @@
 					],
 					missionControlId: $missionControlIdDerived,
 					withMonitoringHistory:
-						compare($missionControlVersion.current ?? '0.0.0', MISSION_CONTROL_v0_0_13) >= 0,
+						compare($missionControlVersion.current ?? '0.0.0', MISSION_CONTROL_v0_0_14) >= 0,
 					callback: syncCanister
 				});
 			})();

@@ -4,8 +4,7 @@ const VERSIONS = {
 		v0_0_5: '0.0.5',
 		v0_0_7: '0.0.7',
 		v0_0_12: '0.0.12',
-		// TODO: review for release of monitoring
-		v0_0_13: '0.0.13'
+		v0_0_14: '0.0.14'
 	},
 	SATELLITE: {
 		v0_0_7: '0.0.7',
@@ -29,7 +28,7 @@ export const {
 		v0_0_5: MISSION_CONTROL_v0_0_5,
 		v0_0_7: MISSION_CONTROL_v0_0_7,
 		v0_0_12: MISSION_CONTROL_v0_0_12,
-		v0_0_13: MISSION_CONTROL_v0_0_13
+		v0_0_14: MISSION_CONTROL_v0_0_14
 	},
 	SATELLITE: {
 		v0_0_7: SATELLITE_v0_0_7,

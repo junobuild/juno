@@ -24,7 +24,7 @@ use crate::types::interface::{GetNotifications, NotifyStatus};
 use crate::types::state::{Env, HeapState, State};
 use ciborium::{from_reader, into_writer};
 use ic_cdk::api::management_canister::http_request::{HttpResponse, TransformArgs};
-use ic_cdk::{caller, storage, trap};
+use ic_cdk::{caller, trap};
 use ic_cdk_macros::{export_candid, init, post_upgrade, pre_upgrade, query, update};
 use junobuild_shared::controllers::init_controllers;
 use junobuild_shared::types::interface::{DeleteControllersArgs, NotifyArgs, SetControllersArgs};

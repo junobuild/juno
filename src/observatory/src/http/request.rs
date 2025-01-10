@@ -1,9 +1,13 @@
+use crate::http::constants::SEND_EMAIL_CYCLES;
 use crate::http::types::EmailRequestBody;
 use crate::types::state::ApiKey;
-use ic_cdk::api::management_canister::http_request::http_request as http_request_outcall;
+use ic_cdk::api::management_canister::http_request::{
+    http_request as http_request_outcall, TransformContext, TransformFunc,
+};
 use ic_cdk::api::management_canister::http_request::{
     CanisterHttpRequestArgument, HttpHeader, HttpMethod,
 };
+use ic_cdk::id;
 use serde_json::json;
 
 pub async fn post_email(
@@ -13,7 +17,7 @@ pub async fn post_email(
 ) -> Result<(), String> {
     let request = get_email_request(idempotency_key, api_key, email)?;
 
-    match http_request_outcall(request, 5_000_000_000).await {
+    match http_request_outcall(request, SEND_EMAIL_CYCLES).await {
         Ok((_response,)) => Ok(()),
         Err((r, m)) => {
             let message = format!("HTTP request error. RejectionCode: {:?}, Error: {}", r, m);
@@ -54,7 +58,17 @@ fn get_email_request(
         method: HttpMethod::POST,
         body: Some(body_json.as_bytes().to_vec()),
         max_response_bytes: None,
-        transform: None,
+        transform: param_transform(),
         headers: request_headers,
+    })
+}
+
+fn param_transform() -> Option<TransformContext> {
+    Some(TransformContext {
+        function: TransformFunc(candid::Func {
+            principal: id(),
+            method: "transform".to_string(),
+        }),
+        context: vec![],
     })
 }

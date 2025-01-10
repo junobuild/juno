@@ -458,24 +458,31 @@ describe('Satellite upgrade', () => {
 					{ timeout: 60000 }
 				);
 
-				it('should be able to update after upgrade and has version set', async () => {
-					const { set_custom_domain: set_custom_domain_deprecated } = actor;
+				it(
+					'should be able to update after upgrade and has version set',
+					async () => {
+						const { set_custom_domain: set_custom_domain_deprecated } = actor;
 
-					await set_custom_domain_deprecated('hello.com', ['123456']);
+						await set_custom_domain_deprecated('hello.com', ['123456']);
 
-					await upgradeVersion('0.0.17');
+						await upgradeVersion('0.0.17');
 
-					newActor = pic.createActor<SatelliteActor_0_0_17>(idlFactorSatellite_0_0_17, canisterId);
-					newActor.setIdentity(controller);
+						newActor = pic.createActor<SatelliteActor_0_0_17>(
+							idlFactorSatellite_0_0_17,
+							canisterId
+						);
+						newActor.setIdentity(controller);
 
-					const { list_custom_domains, set_custom_domain } = newActor;
+						const { list_custom_domains, set_custom_domain } = newActor;
 
-					await set_custom_domain('hello.com', ['123456']);
+						await set_custom_domain('hello.com', ['123456']);
 
-					const [[_, { version }]] = await list_custom_domains();
+						const [[_, { version }]] = await list_custom_domains();
 
-					expect(fromNullable(version)).toEqual(1n);
-				});
+						expect(fromNullable(version)).toEqual(1n);
+					},
+					{ timeout: 60000 }
+				);
 			});
 
 			describe('Asset', () => {
@@ -549,25 +556,32 @@ describe('Satellite upgrade', () => {
 					{ timeout: 60000 }
 				);
 
-				it('should be able to update after upgrade and has version set', async () => {
-					const full_path = `/${collection}/ugprade.html`;
+				it(
+					'should be able to update after upgrade and has version set',
+					async () => {
+						const full_path = `/${collection}/ugprade.html`;
 
-					await upload({ actor, full_path });
+						await upload({ actor, full_path });
 
-					await upgradeVersion('0.0.17');
+						await upgradeVersion('0.0.17');
 
-					newActor = pic.createActor<SatelliteActor_0_0_17>(idlFactorSatellite_0_0_17, canisterId);
-					newActor.setIdentity(controller);
+						newActor = pic.createActor<SatelliteActor_0_0_17>(
+							idlFactorSatellite_0_0_17,
+							canisterId
+						);
+						newActor.setIdentity(controller);
 
-					await upload({ actor: newActor, full_path });
+						await upload({ actor: newActor, full_path });
 
-					const { get_asset } = newActor;
+						const { get_asset } = newActor;
 
-					const asset = fromNullable(await get_asset(collection, full_path));
+						const asset = fromNullable(await get_asset(collection, full_path));
 
-					expect(asset).not.toBeUndefined();
-					expect(fromNullable(asset!.version)).toEqual(1n);
-				});
+						expect(asset).not.toBeUndefined();
+						expect(fromNullable(asset!.version)).toEqual(1n);
+					},
+					{ timeout: 60000 }
+				);
 			});
 		});
 	});

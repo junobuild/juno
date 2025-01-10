@@ -57,7 +57,7 @@
 </script>
 
 <IdentityGuard>
-	<Tabs help="https://juno.build/docs/miscellaneous/monitoring">
+	<Tabs help="https://juno.build/docs/management/monitoring">
 		{#snippet info()}
 			{#if $authSignedIn}
 				<Warnings />

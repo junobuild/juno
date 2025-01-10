@@ -42,7 +42,7 @@ const injectScriptLoader = (indexHtml) =>
  * Instead, we transform these in dynamic scripts and add the sha256 value of the script to the script-src policy of the CSP.
  */
 const injectLinkPreloader = (indexHtml) => {
-	const preload = /<link rel="preload"[\s\S]*?href="([\s\S]*?)">/gm;
+	const preload = /<link rel="preload"[\s\S]*?href="([\s\S]*?)">/gim;
 
 	const links = [];
 

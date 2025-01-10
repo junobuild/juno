@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 
 import { IDL } from '@dfinity/candid';
-import { ICManagementCanister, InstallMode } from '@dfinity/ic-management';
+import { ICManagementCanister } from '@dfinity/ic-management';
 import { fromNullable, uint8ArrayToHexString } from '@dfinity/utils';
 import { fileExists } from '@junobuild/cli-tools';
 import { createHash } from 'crypto';
@@ -9,6 +9,10 @@ import { readFile } from 'fs/promises';
 import { join } from 'node:path';
 import { icAgent, localAgent } from './actor.mjs';
 import { targetMainnet } from './utils.mjs';
+
+const INSTALL_MODE_UPGRADE = {
+	upgrade: [{ skip_pre_upgrade: [false], wasm_memory_persistence: [{ replace: null }] }]
+};
 
 const target = join(process.cwd(), 'target', 'deploy');
 
@@ -51,7 +55,7 @@ export const upgrade = async ({ sourceFilename, canisterId }) => {
 	}
 
 	await installCode({
-		mode: InstallMode.Upgrade,
+		mode: INSTALL_MODE_UPGRADE,
 		canisterId,
 		wasmModule: wasm,
 		arg: new Uint8Array(EMPTY_ARG)

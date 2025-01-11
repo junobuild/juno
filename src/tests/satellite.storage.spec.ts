@@ -1,4 +1,5 @@
 import type {
+	HttpRequest,
 	ListParams,
 	_SERVICE as SatelliteActor,
 	SetRule,
@@ -18,6 +19,7 @@ import {
 	CONTROLLER_ERROR_MSG,
 	SATELLITE_ADMIN_ERROR_MSG
 } from './constants/satellite-tests.constants';
+import { assertCertification } from './utils/certification-test.utils';
 import { deleteDefaultIndexHTML } from './utils/satellite-tests.utils';
 import { SATELLITE_WASM_PATH, controllersInitArgs } from './utils/setup-tests.utils';
 
@@ -28,8 +30,12 @@ describe('Satellite storage', () => {
 
 	const controller = Ed25519KeyIdentity.generate();
 
+	const currentDate = new Date(2021, 6, 10, 0, 0, 0, 0);
+
 	beforeAll(async () => {
 		pic = await PocketIc.create(inject('PIC_URL'));
+
+		await pic.setTime(currentDate.getTime());
 
 		const { actor: a, canisterId: c } = await pic.setupCanister<SatelliteActor>({
 			idlFactory: idlFactorSatellite,
@@ -354,13 +360,17 @@ describe('Satellite storage', () => {
 
 					await upload({ full_path, name, collection });
 
-					const { headers, body } = await http_request({
+					const request: HttpRequest = {
 						body: [],
-						certificate_version: toNullable(),
+						certificate_version: toNullable(2),
 						headers: [],
 						method: 'GET',
 						url: `/${collection}/hello.html`
-					});
+					};
+
+					const response = await http_request(request);
+
+					const { headers, body } = response;
 
 					const rest = headers.filter(([header, _]) => header !== 'IC-Certificate');
 
@@ -371,19 +381,20 @@ describe('Satellite storage', () => {
 						['Strict-Transport-Security', 'max-age=31536000 ; includeSubDomains'],
 						['Referrer-Policy', 'same-origin'],
 						['X-Frame-Options', 'DENY'],
-						['Cache-Control', 'no-cache']
+						['Cache-Control', 'no-cache'],
+						[
+							'IC-CertificateExpression',
+							'default_certification(ValidationArgs{certification:Certification{no_request_certification:Empty{},response_certification:ResponseCertification{certified_response_headers:ResponseHeaderList{headers:[\"accept-ranges\",\"etag\",\"X-Content-Type-Options\",\"Strict-Transport-Security\",\"Referrer-Policy\",\"X-Frame-Options\",\"Cache-Control\"]}}}})'
+						]
 					]);
 
-					const certificate = headers.find(([header, _]) => header === 'IC-Certificate');
-
-					expect(certificate).not.toBeUndefined();
-
-					const [_, value] = certificate as [string, string];
-					expect(value.substring(value.indexOf('tree=:'))).toEqual(
-						'Heap' in memory
-							? 'tree=:2dn3gwGDAktodHRwX2Fzc2V0c4MBggRYIDmN5doHXoiKCtNGBOZIdmQ+WGqYjcmdRB1MPuJBK2oXgwGCBFggt7tI5llYugLZXRndu2mmTmaNLbDM2eqISxM1gx67GwmDAYIEWCDEVEc4ahc6i6xmd9dtC3pC/IyxtWlOSwhqEXoadQkFaYMCVS90ZXN0X2hlYXAvaGVsbG8uaHRtbIIDWCAD7mbxRSkWtPkaUEwem6v6IBttZMJqgrLPA8PtSdkVhYIEWCDFugcAM49e3AzOhjYl0yM44iKyWE3AhTjwyDEvXJIBSg==:'
-							: 'tree=:2dn3gwGDAktodHRwX2Fzc2V0c4MBggRYIMRURzhqFzqLrGZ3120LekL8jLG1aU5LCGoRehp1CQVpgwGCBFggyTghlH7DR1YspmeTEIgVRAhMyez5Qc69yCfwJwbRv2ODAYIEWCCwXgjjstWy8ZsWgsocF8UA1sXH9TrGaPSZSS7eP0T9sYMCVy90ZXN0X3N0YWJsZS9oZWxsby5odG1sggNYIAPuZvFFKRa0+RpQTB6bq/ogG21kwmqCss8Dw+1J2RWFggRYIG0xIVQMYLbFiFp7+GtLirVS/jAQ4pfd52Uc+oSPPc2b:'
-					);
+					await assertCertification({
+						canisterId,
+						pic,
+						request,
+						response,
+						currentDate
+					});
 
 					const decoder = new TextDecoder();
 					expect(decoder.decode(body as Uint8Array<ArrayBufferLike>)).toEqual(HTML);

@@ -244,13 +244,17 @@ describe('Satellite storage', () => {
 				headers: []
 			});
 
-			const { headers, body } = await http_request({
+			const request: HttpRequest = {
 				body: [],
-				certificate_version: toNullable(),
+				certificate_version: toNullable(2),
 				headers: [],
 				method: 'GET',
 				url: '/hello.html'
-			});
+			};
+
+			const response = await http_request(request);
+
+			const { headers, body } = response;
 
 			const rest = headers.filter(([header, _]) => header !== 'IC-Certificate');
 
@@ -261,17 +265,21 @@ describe('Satellite storage', () => {
 				['Strict-Transport-Security', 'max-age=31536000 ; includeSubDomains'],
 				['Referrer-Policy', 'same-origin'],
 				['X-Frame-Options', 'DENY'],
-				['Cache-Control', 'no-cache']
+				['Cache-Control', 'no-cache'],
+				// eslint-disable-next-line no-useless-escape
+				[
+					'IC-CertificateExpression',
+					'default_certification(ValidationArgs{certification:Certification{no_request_certification:Empty{},response_certification:ResponseCertification{certified_response_headers:ResponseHeaderList{headers:[\"accept-ranges\",\"etag\",\"X-Content-Type-Options\",\"Strict-Transport-Security\",\"Referrer-Policy\",\"X-Frame-Options\",\"Cache-Control\"]}}}})'
+				]
 			]);
 
-			const certificate = headers.find(([header, _]) => header === 'IC-Certificate');
-
-			expect(certificate).not.toBeUndefined();
-
-			const [_, value] = certificate as [string, string];
-			expect(value.substring(value.indexOf('tree=:'))).toEqual(
-				'tree=:2dn3gwGDAktodHRwX2Fzc2V0c4MBggRYIDmN5doHXoiKCtNGBOZIdmQ+WGqYjcmdRB1MPuJBK2oXgwJLL2hlbGxvLmh0bWyCA1ggA+5m8UUpFrT5GlBMHpur+iAbbWTCaoKyzwPD7UnZFYWCBFggqaxo4lOdUyS+X9luPEzOoyC9c2+ICLLJ6ogdBRYOj+8=:'
-			);
+			await assertCertification({
+				canisterId,
+				pic,
+				request,
+				response,
+				currentDate
+			});
 
 			const decoder = new TextDecoder();
 			expect(decoder.decode(body as Uint8Array<ArrayBufferLike>)).toEqual(HTML);
@@ -382,6 +390,7 @@ describe('Satellite storage', () => {
 						['Referrer-Policy', 'same-origin'],
 						['X-Frame-Options', 'DENY'],
 						['Cache-Control', 'no-cache'],
+						// eslint-disable-next-line no-useless-escape
 						[
 							'IC-CertificateExpression',
 							'default_certification(ValidationArgs{certification:Certification{no_request_certification:Empty{},response_certification:ResponseCertification{certified_response_headers:ResponseHeaderList{headers:[\"accept-ranges\",\"etag\",\"X-Content-Type-Options\",\"Strict-Transport-Security\",\"Referrer-Policy\",\"X-Frame-Options\",\"Cache-Control\"]}}}})'

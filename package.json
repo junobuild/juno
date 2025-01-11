@@ -45,6 +45,7 @@
 		"build:satellite": "scripts/cargo.sh satellite",
 		"build:mission-control": "scripts/cargo.sh mission_control",
 		"build:orbiter": "scripts/cargo.sh orbiter",
+		"build:modules": "npm run build:console && npm run build:observatory && npm run build:satellite && npm run build:mission-control && npm run build:orbiter",
 		"emulator": "docker compose up"
 	},
 	"devDependencies": {

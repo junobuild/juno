@@ -1,5 +1,5 @@
 <!-- source: Font Awesome v5.15.4 - David Pro License -->
-<!-- tweaked for plan background -->
+<!-- tweaked for plain background -->
 <script lang="ts">
 	interface Props {
 		size?: string;

@@ -1,7 +1,6 @@
 <script lang="ts">
 	import { onMount, type Snippet } from 'svelte';
 	import Navbar from '$lib/components/core/Navbar.svelte';
-	import IconRaygun from '$lib/components/icons/IconRaygun.svelte';
 	import IconUser from '$lib/components/icons/IconUser.svelte';
 	import Footer from '$lib/components/ui/Footer.svelte';
 	import Layout from '$lib/components/ui/Layout.svelte';

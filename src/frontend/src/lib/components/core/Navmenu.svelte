@@ -10,6 +10,7 @@
 	import IconFunctions from '$lib/components/icons/IconFunctions.svelte';
 	import IconHosting from '$lib/components/icons/IconHosting.svelte';
 	import IconMissionControl from '$lib/components/icons/IconMissionControl.svelte';
+	import IconRocket from '$lib/components/icons/IconRocket.svelte';
 	import IconSatellite from '$lib/components/icons/IconSatellite.svelte';
 	import IconStorage from '$lib/components/icons/IconStorage.svelte';
 	import IconTelescope from '$lib/components/icons/IconTelescope.svelte';
@@ -17,7 +18,6 @@
 	import Menu from '$lib/components/ui/Menu.svelte';
 	import { satelliteIdStore } from '$lib/derived/satellite.derived';
 	import { i18n } from '$lib/stores/i18n.store';
-	import IconRocket from '$lib/components/icons/IconRocket.svelte';
 
 	let routeId: string | null = $derived($page.route.id);
 

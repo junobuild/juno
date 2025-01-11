@@ -258,6 +258,7 @@ describe('Satellite storage', () => {
 
 			const rest = headers.filter(([header, _]) => header !== 'IC-Certificate');
 
+			/* eslint-disable no-useless-escape */
 			expect(rest).toEqual([
 				['accept-ranges', 'bytes'],
 				['etag', '"03ee66f1452916b4f91a504c1e9babfa201b6d64c26a82b2cf03c3ed49d91585"'],
@@ -266,12 +267,12 @@ describe('Satellite storage', () => {
 				['Referrer-Policy', 'same-origin'],
 				['X-Frame-Options', 'DENY'],
 				['Cache-Control', 'no-cache'],
-				// eslint-disable-next-line no-useless-escape
 				[
 					'IC-CertificateExpression',
 					'default_certification(ValidationArgs{certification:Certification{no_request_certification:Empty{},response_certification:ResponseCertification{certified_response_headers:ResponseHeaderList{headers:[\"accept-ranges\",\"etag\",\"X-Content-Type-Options\",\"Strict-Transport-Security\",\"Referrer-Policy\",\"X-Frame-Options\",\"Cache-Control\"]}}}})'
 				]
 			]);
+			/* eslint-enable no-useless-escape */
 
 			await assertCertification({
 				canisterId,
@@ -382,6 +383,7 @@ describe('Satellite storage', () => {
 
 					const rest = headers.filter(([header, _]) => header !== 'IC-Certificate');
 
+					/* eslint-disable no-useless-escape */
 					expect(rest).toEqual([
 						['accept-ranges', 'bytes'],
 						['etag', '"03ee66f1452916b4f91a504c1e9babfa201b6d64c26a82b2cf03c3ed49d91585"'],
@@ -390,12 +392,12 @@ describe('Satellite storage', () => {
 						['Referrer-Policy', 'same-origin'],
 						['X-Frame-Options', 'DENY'],
 						['Cache-Control', 'no-cache'],
-						// eslint-disable-next-line no-useless-escape
 						[
 							'IC-CertificateExpression',
 							'default_certification(ValidationArgs{certification:Certification{no_request_certification:Empty{},response_certification:ResponseCertification{certified_response_headers:ResponseHeaderList{headers:[\"accept-ranges\",\"etag\",\"X-Content-Type-Options\",\"Strict-Transport-Security\",\"Referrer-Policy\",\"X-Frame-Options\",\"Cache-Control\"]}}}})'
 						]
 					]);
+					/* eslint-enable no-useless-escape */
 
 					await assertCertification({
 						canisterId,

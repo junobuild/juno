@@ -17,6 +17,7 @@
 	import Menu from '$lib/components/ui/Menu.svelte';
 	import { satelliteIdStore } from '$lib/derived/satellite.derived';
 	import { i18n } from '$lib/stores/i18n.store';
+	import IconRocket from '$lib/components/icons/IconRocket.svelte';
 
 	let routeId: string | null = $derived($page.route.id);
 
@@ -43,7 +44,7 @@
 	<nav>
 		{#if !notEmptyString(satelliteId)}
 			<a class="link" href="/">
-				<IconSatellite size="24px" />
+				<IconRocket size="24px" />
 				<span>{$i18n.satellites.launchpad}</span>
 			</a>
 		{:else}

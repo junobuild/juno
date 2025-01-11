@@ -504,9 +504,9 @@ dependencies = [
 
 [[package]]
 name = "ic-certification"
-version = "2.4.0"
+version = "2.6.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "480b6a64a6602ed8c4eac150ef72f2206dc2910069d0cf524b5c6f90d8bc03fc"
+checksum = "e64ee3d8b6e81b51f245716d3e0badb63c283c00f3c9fb5d5219afc30b5bf821"
 dependencies = [
  "hex",
  "serde",
@@ -531,9 +531,9 @@ dependencies = [
 
 [[package]]
 name = "ic-representation-independent-hash"
-version = "2.4.0"
+version = "2.6.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "257c90372cfbf5bf5b7f473d034dac2fb344665015c582592b8b45d90b181c88"
+checksum = "08ae59483e377cd9aad94ec339ed1d2583b0d5929cab989328dac2d853b2f570"
 dependencies = [
  "leb128",
  "sha2",

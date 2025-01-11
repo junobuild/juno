@@ -1,7 +1,6 @@
 <script lang="ts">
 	import type { Principal } from '@dfinity/principal';
 	import { compare } from 'semver';
-	import { get } from 'svelte/store';
 	import { MISSION_CONTROL_v0_0_14 } from '$lib/constants/version.constants';
 	import { missionControlVersion } from '$lib/derived/version.derived';
 	import { loadVersion } from '$lib/services/console.services';

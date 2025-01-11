@@ -8,7 +8,6 @@ mod random;
 mod store;
 mod templates;
 mod types;
-mod upgrade;
 
 use crate::console::assert_mission_control_center;
 use crate::guards::{caller_is_admin_controller, caller_is_not_anonymous};
@@ -23,15 +22,14 @@ use crate::store::heap::{
 use crate::store::stable::get_notifications;
 use crate::types::interface::{GetNotifications, NotifyStatus};
 use crate::types::state::{Env, HeapState, State};
-use crate::upgrade::types::upgrade::UpgradeStableState;
-use ciborium::into_writer;
+use ciborium::{from_reader, into_writer};
 use ic_cdk::api::management_canister::http_request::{HttpResponse, TransformArgs};
-use ic_cdk::{caller, storage, trap};
+use ic_cdk::{caller, trap};
 use ic_cdk_macros::{export_candid, init, post_upgrade, pre_upgrade, query, update};
 use junobuild_shared::controllers::init_controllers;
 use junobuild_shared::types::interface::{DeleteControllersArgs, NotifyArgs, SetControllersArgs};
 use junobuild_shared::types::state::Controllers;
-use junobuild_shared::upgrade::write_pre_upgrade;
+use junobuild_shared::upgrade::{read_post_upgrade, write_pre_upgrade};
 
 #[init]
 fn init() {
@@ -64,26 +62,13 @@ fn pre_upgrade() {
 
 #[post_upgrade]
 fn post_upgrade() {
-    // TODO: remove once stable memory introduced on mainnet
-    let (upgrade_stable,): (UpgradeStableState,) = storage::stable_restore().unwrap();
+    let memory = get_memory_upgrades();
+    let state_bytes = read_post_upgrade(&memory);
 
-    let heap = HeapState::from(&upgrade_stable);
+    let state: State = from_reader(&*state_bytes)
+        .expect("Failed to decode the state of the observatory in post_upgrade hook.");
 
-    STATE.with(|state| {
-        *state.borrow_mut() = State {
-            heap,
-            stable: init_stable_state(),
-        }
-    });
-
-    // TODO: uncomment once stable memory introduced on mainnet
-    // let memory = get_memory_upgrades();
-    // let state_bytes = read_post_upgrade(&memory);
-
-    // let state: State = from_reader(&*state_bytes)
-    //     .expect("Failed to decode the state of the observatory in post_upgrade hook.");
-
-    // STATE.with(|s| *s.borrow_mut() = state);
+    STATE.with(|s| *s.borrow_mut() = state);
 
     init_runtime_state();
 
@@ -145,7 +130,7 @@ fn ping(notify_args: NotifyArgs) {
 // HTTP Outcalls
 // ---------------------------------------------------------
 
-#[query]
+#[query(hidden = true)]
 fn transform(raw: TransformArgs) -> HttpResponse {
     transform_response(raw)
 }

@@ -196,6 +196,7 @@
 					bind:value={collection}
 					disabled={mode === 'edit'}
 					autocomplete="off"
+					data-1p-ignore
 				/>
 			</Value>
 		</div>

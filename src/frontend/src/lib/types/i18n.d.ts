@@ -77,6 +77,7 @@ interface I18nCore {
 	open: string;
 	get_started: string;
 	getting_started: string;
+	dashboard: string;
 }
 
 interface I18nCanisters {
@@ -327,7 +328,6 @@ interface I18nStorage {
 
 interface I18nAnalytics {
 	title: string;
-	dashboard: string;
 	loading: string;
 	empty: string;
 	error_msg: string;
@@ -694,7 +694,6 @@ interface I18nUsers {
 
 interface I18nMonitoring {
 	title: string;
-	dashboard: string;
 	loading: string;
 	introduction: string;
 	create_info: string;

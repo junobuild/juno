@@ -12,6 +12,10 @@ import {
 	updateAndStopMonitoring
 } from '$lib/api/mission-control.api';
 import { METADATA_KEY_EMAIL } from '$lib/constants/metadata.constants';
+import {
+	missionControlSettings,
+	missionControlSettingsNotLoaded
+} from '$lib/derived/mission-control-settings.derived';
 import { missionControlUserData } from '$lib/derived/mission-control-user.derived';
 import { orbiterNotLoaded, orbiterStore } from '$lib/derived/orbiter.derived';
 import { satellitesNotLoaded, satellitesStore } from '$lib/derived/satellite.derived';
@@ -20,7 +24,6 @@ import { loadOrbiters } from '$lib/services/orbiters.services';
 import { execute } from '$lib/services/progress.services';
 import { loadSatellites } from '$lib/services/satellites.services';
 import { i18n } from '$lib/stores/i18n.store';
-import { missionControlSettingsDataStore } from '$lib/stores/mission-control.store';
 import { toasts } from '$lib/stores/toasts.store';
 import type { OptionIdentity } from '$lib/types/itentity';
 import type { Metadata } from '$lib/types/metadata';
@@ -332,11 +335,11 @@ const setMonitoringCyclesConfig = async ({
 			'monitoringConfig' | 'userEmail' | 'saveAsDefaultStrategy'
 		>
 	>) => {
-	if (isNullish(minCycles)) {
+	if (saveAsDefaultStrategy && isNullish(minCycles)) {
 		throw new Error(get(i18n).monitoring.min_cycles_not_defined);
 	}
 
-	if (isNullish(fundCycles)) {
+	if (saveAsDefaultStrategy && isNullish(fundCycles)) {
 		throw new Error(get(i18n).monitoring.fund_cycles_not_defined);
 	}
 
@@ -351,14 +354,15 @@ const setMonitoringCyclesConfig = async ({
 		: (currentCyclesConfig?.notification ?? []);
 
 	// If the strategy should be use as default, we update or insert the default strategy else we keep the current configuration regardless if set or not
-	const default_strategy: [] | [CyclesMonitoringStrategy] = saveAsDefaultStrategy
-		? toNullable({
-				BelowThreshold: {
-					min_cycles: minCycles,
-					fund_cycles: fundCycles
-				}
-			})
-		: (currentCyclesConfig?.default_strategy ?? []);
+	const default_strategy: [] | [CyclesMonitoringStrategy] =
+		saveAsDefaultStrategy && nonNullish(minCycles) && nonNullish(fundCycles)
+			? toNullable({
+					BelowThreshold: {
+						min_cycles: minCycles,
+						fund_cycles: fundCycles
+					}
+				})
+			: (currentCyclesConfig?.default_strategy ?? []);
 
 	const updateMonitoringConfig: MonitoringConfig = {
 		cycles: toNullable({
@@ -462,8 +466,9 @@ export const openMonitoringModal = ({
 	type: 'create_monitoring_strategy' | 'stop_monitoring_strategy';
 	missionControlId: Principal;
 }) => {
-	const $missionControlSettingsDataStore = get(missionControlSettingsDataStore);
-	if (isNullish($missionControlSettingsDataStore)) {
+	const $missionControlSettingsNotLoaded = get(missionControlSettingsNotLoaded);
+
+	if ($missionControlSettingsNotLoaded) {
 		toasts.warn(get(i18n).errors.mission_control_settings_not_loaded);
 		return;
 	}
@@ -493,12 +498,14 @@ export const openMonitoringModal = ({
 		return;
 	}
 
+	const $missionControlSettings = get(missionControlSettings);
+
 	emit<JunoModal<JunoModalCreateMonitoringStrategyDetail>>({
 		message: 'junoModal',
 		detail: {
 			type,
 			detail: {
-				settings: $missionControlSettingsDataStore.data,
+				settings: $missionControlSettings,
 				user: $missionControlUserData,
 				missionControlId
 			}

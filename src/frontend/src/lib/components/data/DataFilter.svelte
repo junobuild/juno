@@ -46,6 +46,7 @@
 		type="text"
 		placeholder={$i18n.filter.placeholder_keys}
 		autocomplete="off"
+		data-1p-ignore
 	/>
 
 	<label for="filter-owner" class="owner">{$i18n.filter.filter_owner}</label>
@@ -57,6 +58,7 @@
 		type="text"
 		placeholder={$i18n.filter.placeholder_owners}
 		autocomplete="off"
+		data-1p-ignore
 	/>
 </PopoverApply>
 

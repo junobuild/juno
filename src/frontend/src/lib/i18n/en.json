@@ -73,7 +73,8 @@
 		"email_address": "Email address",
 		"open": "Open",
 		"get_started": "Get started",
-		"getting_started": "Getting started"
+		"getting_started": "Getting started",
+		"dashboard": "Dashboard"
 	},
 	"canisters": {
 		"top_up": "Top-up",
@@ -315,7 +316,6 @@
 	},
 	"analytics": {
 		"title": "Analytics",
-		"dashboard": "Dashboard",
 		"loading": "Loading data...",
 		"empty": "Juno provides simple, performant, and open-source web analytics that do not use cookies. It aggregates anonymous data within smart contracts and respects the privacy of your dapps and website visitors.",
 		"error_msg": "An error occurred while processing the analytics for the selected filters. Please refine to try again.",
@@ -669,7 +669,6 @@
 	},
 	"monitoring": {
 		"title": "Monitoring",
-		"dashboard": "Dashboard",
 		"loading": "Loading monitoring data...",
 		"introduction": "Ensure your modules always have enough cycles to operate by automatically tracking their levels and topping them up when needed. Enable auto-refill to avoid downtime and keep your projects running smoothly.",
 		"create_info": "Select the modules for which auto-refill will periodically ensure sufficient cycles.",

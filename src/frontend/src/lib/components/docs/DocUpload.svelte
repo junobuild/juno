@@ -143,6 +143,7 @@
 						placeholder={$i18n.document.key_placeholder}
 						bind:value={key}
 						autocomplete="off"
+						data-1p-ignore
 					/>
 					<button
 						class="text"
@@ -167,6 +168,7 @@
 					placeholder={$i18n.document.description_placeholder}
 					bind:value={description}
 					autocomplete="off"
+					data-1p-ignore
 				/>
 			</Value>
 		</div>

@@ -60,16 +60,6 @@ export const idlFactory = ({ IDL }) => {
 		controllers: IDL.Vec(IDL.Principal)
 	});
 	const Env = IDL.Record({ email_api_key: IDL.Opt(IDL.Text) });
-	const HttpHeader = IDL.Record({ value: IDL.Text, name: IDL.Text });
-	const HttpResponse = IDL.Record({
-		status: IDL.Nat,
-		body: IDL.Vec(IDL.Nat8),
-		headers: IDL.Vec(HttpHeader)
-	});
-	const TransformArgs = IDL.Record({
-		context: IDL.Vec(IDL.Nat8),
-		response: HttpResponse
-	});
 	return IDL.Service({
 		del_controllers: IDL.Func([DeleteControllersArgs], [], []),
 		get_notify_status: IDL.Func([GetNotifications], [NotifyStatus], ['query']),
@@ -78,7 +68,6 @@ export const idlFactory = ({ IDL }) => {
 		ping: IDL.Func([NotifyArgs], [], []),
 		set_controllers: IDL.Func([SetControllersArgs], [], []),
 		set_env: IDL.Func([Env], [], []),
-		transform: IDL.Func([TransformArgs], [HttpResponse], ['query']),
 		version: IDL.Func([], [IDL.Text], ['query'])
 	});
 };

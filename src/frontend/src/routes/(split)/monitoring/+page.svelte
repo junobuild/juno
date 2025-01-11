@@ -24,7 +24,7 @@
 
 	const tabDashboard = {
 		id: Symbol('1'),
-		labelKey: 'analytics.dashboard'
+		labelKey: 'core.dashboard'
 	};
 
 	let tabs: Tab[] = $derived([
@@ -57,7 +57,7 @@
 </script>
 
 <IdentityGuard>
-	<Tabs help="https://juno.build/docs/miscellaneous/monitoring">
+	<Tabs help="https://juno.build/docs/management/monitoring">
 		{#snippet info()}
 			{#if $authSignedIn}
 				<Warnings />
@@ -68,7 +68,7 @@
 			<OrbitersLoader>
 				<MissionControlGuard>
 					{#if nonNullish($missionControlIdDerived)}
-						<MissionControlDataLoader missionControlId={$missionControlIdDerived}>
+						<MissionControlDataLoader missionControlId={$missionControlIdDerived} reload>
 							{#if $store.tabId === $store.tabs[0].id}
 								<MonitoringDashboard missionControlId={$missionControlIdDerived} />
 							{:else if $store.tabId === $store.tabs[1].id && $hasMissionControlSettings}

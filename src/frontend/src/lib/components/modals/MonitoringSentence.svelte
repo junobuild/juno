@@ -14,10 +14,10 @@
 {i18nFormat($i18n.monitoring.auto_refill_strategy, [
 	{
 		placeholder: '{0}',
-		value: formatTCycles(monitoringStrategy.BelowThreshold.min_cycles)
+		value: formatTCycles(monitoringStrategy.BelowThreshold.fund_cycles)
 	},
 	{
 		placeholder: '{1}',
-		value: formatTCycles(monitoringStrategy.BelowThreshold.fund_cycles)
+		value: formatTCycles(monitoringStrategy.BelowThreshold.min_cycles)
 	}
 ])}

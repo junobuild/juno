@@ -187,6 +187,7 @@
 				required={action === 'add'}
 				disabled={action === 'generate'}
 				autocomplete="off"
+				data-1p-ignore
 			/>
 
 			<div class="scope">

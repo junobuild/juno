@@ -7,6 +7,8 @@
 	import { authSignedIn } from '$lib/derived/auth.derived';
 	import { i18n } from '$lib/stores/i18n.store';
 	import { layoutNavigation } from '$lib/stores/layout-navigation.store';
+	import { Color } from '$lib/types/theme';
+	import { applyColor } from '$lib/utils/theme.utils';
 
 	interface Props {
 		children: Snippet;
@@ -14,12 +16,14 @@
 
 	let { children }: Props = $props();
 
-	onMount(() =>
+	onMount(() => {
+		applyColor(Color.LAVENDER_BLUE);
+
 		layoutNavigation.set({
 			title: $i18n.cli.title,
 			icon: IconUser
-		})
-	);
+		});
+	});
 </script>
 
 <Layout centered={true}>

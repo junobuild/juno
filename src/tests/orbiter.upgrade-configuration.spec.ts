@@ -104,84 +104,76 @@ describe('Orbiter upgrade- Configuration', () => {
 			expect(fromNullable(configs[0][1].features)).toBeUndefined();
 		});
 
-		it(
-			'should migrate configuration enabled to the new features',
-			async () => {
-				const { set_satellite_configs } = actor;
+		it('should migrate configuration enabled to the new features', async () => {
+			const { set_satellite_configs } = actor;
 
-				await expect(
-					set_satellite_configs([
-						[
-							satelliteIdMock,
-							{
-								version: [],
-								enabled: true
-							}
-						]
-					])
-				).resolves.not.toThrowError();
+			await expect(
+				set_satellite_configs([
+					[
+						satelliteIdMock,
+						{
+							version: [],
+							enabled: true
+						}
+					]
+				])
+			).resolves.not.toThrowError();
 
-				await upgradeVersion();
+			await upgradeVersion();
 
-				const newActor = pic.createActor<OrbiterActor>(idlFactorOrbiter, canisterId);
-				newActor.setIdentity(controller);
+			const newActor = pic.createActor<OrbiterActor>(idlFactorOrbiter, canisterId);
+			newActor.setIdentity(controller);
 
-				const { list_satellite_configs } = newActor;
+			const { list_satellite_configs } = newActor;
 
-				const configs = await list_satellite_configs();
-				expect(configs.length).toBe(1);
+			const configs = await list_satellite_configs();
+			expect(configs.length).toBe(1);
 
-				expect(configs[0][0].toText()).toEqual(satelliteIdMock.toText());
-				expect(fromNullable(configs[0][1].version)).toBe(1n);
-				expect(fromNullable(configs[0][1].features)).toEqual({
-					page_views: true,
-					performance_metrics: true,
-					track_events: true
-				});
-			},
-			{ timeout: 60000 }
-		);
+			expect(configs[0][0].toText()).toEqual(satelliteIdMock.toText());
+			expect(fromNullable(configs[0][1].version)).toBe(1n);
+			expect(fromNullable(configs[0][1].features)).toEqual({
+				page_views: true,
+				performance_metrics: true,
+				track_events: true
+			});
+		});
 	});
 
 	describe('v0.0.7 -> v0.0.8 -> current', () => {
-		it(
-			'should migrate configuration enabled to the new features',
-			async () => {
-				const { set_satellite_configs } = actor;
+		it('should migrate configuration enabled to the new features', async () => {
+			const { set_satellite_configs } = actor;
 
-				await expect(
-					set_satellite_configs([
-						[
-							satelliteIdMock,
-							{
-								version: [],
-								enabled: true
-							}
-						]
-					])
-				).resolves.not.toThrowError();
+			await expect(
+				set_satellite_configs([
+					[
+						satelliteIdMock,
+						{
+							version: [],
+							enabled: true
+						}
+					]
+				])
+			).resolves.not.toThrowError();
 
-				await upgradeVersion();
+			await upgradeVersion();
 
-				await upgradeCurrent();
+			await upgradeCurrent();
 
-				const newActor = pic.createActor<OrbiterActor>(idlFactorOrbiter, canisterId);
-				newActor.setIdentity(controller);
+			const newActor = pic.createActor<OrbiterActor>(idlFactorOrbiter, canisterId);
+			newActor.setIdentity(controller);
 
-				const { list_satellite_configs } = newActor;
+			const { list_satellite_configs } = newActor;
 
-				const configs = await list_satellite_configs();
-				expect(configs.length).toBe(1);
+			const configs = await list_satellite_configs();
+			expect(configs.length).toBe(1);
 
-				expect(configs[0][0].toText()).toEqual(satelliteIdMock.toText());
-				expect(fromNullable(configs[0][1].version)).toBe(1n);
-				expect(fromNullable(configs[0][1].features)).toEqual({
-					page_views: true,
-					performance_metrics: true,
-					track_events: true
-				});
-			},
-			{ timeout: 60000 }
-		);
+			expect(configs[0][0].toText()).toEqual(satelliteIdMock.toText());
+			expect(fromNullable(configs[0][1].version)).toBe(1n);
+			expect(fromNullable(configs[0][1].features)).toEqual({
+				page_views: true,
+				performance_metrics: true,
+				track_events: true
+			});
+		});
 	});
 });

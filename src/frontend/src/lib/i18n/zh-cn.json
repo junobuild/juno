@@ -73,7 +73,8 @@
 		"email_address": "Email address",
 		"open": "打开",
 		"get_started": "这里开始",
-		"getting_started": "从这开始"
+		"getting_started": "从这开始",
+		"dashboard": "仪表盘"
 	},
 	"canisters": {
 		"top_up": "充值",
@@ -315,7 +316,6 @@
 	},
 	"analytics": {
 		"title": "统计",
-		"dashboard": "仪表盘",
 		"loading": "加载数据...",
 		"empty": "Juno 提供简单，轻便，开源的网络统计功能，不需要使用 cookies. 它会通过智能合约统计匿名数据并尊重您的网站用户隐私.",
 		"error_msg": "处理分析选定的过滤器出错.请重新再试.",
@@ -669,7 +669,6 @@
 	},
 	"monitoring": {
 		"title": "Monitoring",
-		"dashboard": "仪表盘",
 		"loading": "Loading monitoring data...",
 		"introduction": "Ensure your modules always have enough cycles to operate by automatically tracking their levels and topping them up when needed. Enable auto-refill to avoid downtime and keep your projects running smoothly.",
 		"create_info": "Select the modules for which auto-refill will periodically ensure sufficient cycles.",

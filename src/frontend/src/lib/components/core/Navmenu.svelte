@@ -10,6 +10,7 @@
 	import IconFunctions from '$lib/components/icons/IconFunctions.svelte';
 	import IconHosting from '$lib/components/icons/IconHosting.svelte';
 	import IconMissionControl from '$lib/components/icons/IconMissionControl.svelte';
+	import IconRocket from '$lib/components/icons/IconRocket.svelte';
 	import IconSatellite from '$lib/components/icons/IconSatellite.svelte';
 	import IconStorage from '$lib/components/icons/IconStorage.svelte';
 	import IconTelescope from '$lib/components/icons/IconTelescope.svelte';
@@ -43,7 +44,7 @@
 	<nav>
 		{#if !notEmptyString(satelliteId)}
 			<a class="link" href="/">
-				<IconSatellite size="24px" />
+				<IconRocket size="24px" />
 				<span>{$i18n.satellites.launchpad}</span>
 			</a>
 		{:else}

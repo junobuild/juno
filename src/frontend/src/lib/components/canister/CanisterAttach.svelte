@@ -90,6 +90,7 @@
 			maxlength={64}
 			disabled={saving}
 			autocomplete="off"
+			data-1p-ignore
 		/>
 
 		<button type="submit" class="submit" disabled={saving || !validConfirm}>

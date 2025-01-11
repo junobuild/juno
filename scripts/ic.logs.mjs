@@ -1,8 +1,13 @@
-import { Principal } from '@dfinity/principal';
-import { icActorIC } from './actor.mjs';
+#!/usr/bin/env node
 
-const { fetch_canister_logs } = await icActorIC();
-const logs = await fetch_canister_logs({
-	canister_id: Principal.fromText('nbyi7-6aaaa-aaaal-acjtq-cai')
+import { ICManagementCanister } from '@dfinity/ic-management';
+import { icAgent } from './actor.mjs';
+import { OBSERVATORY_ID } from './constants.mjs';
+
+const { fetchCanisterLogs } = ICManagementCanister.create({
+	agent: await icAgent()
 });
-console.log(logs);
+
+const { canister_log_records } = await fetchCanisterLogs(OBSERVATORY_ID);
+
+console.log(canister_log_records);

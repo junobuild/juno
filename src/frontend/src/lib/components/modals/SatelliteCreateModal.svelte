@@ -117,6 +117,7 @@
 						placeholder={$i18n.satellites.enter_name}
 						required
 						autocomplete="off"
+						data-1p-ignore
 					/>
 				</Value>
 

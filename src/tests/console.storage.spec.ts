@@ -1,6 +1,7 @@
 import type {
 	CommitProposal,
 	_SERVICE as ConsoleActor,
+	HttpRequest,
 	InitAssetKey,
 	ProposalType,
 	UploadChunk
@@ -9,6 +10,7 @@ import { idlFactory as idlFactorConsole } from '$declarations/console/console.fa
 import type { StorageConfig } from '$declarations/satellite/satellite.did';
 import { AnonymousIdentity } from '@dfinity/agent';
 import { Ed25519KeyIdentity } from '@dfinity/identity';
+import type { Principal } from '@dfinity/principal';
 import {
 	arrayBufferToUint8Array,
 	fromNullable,
@@ -19,20 +21,28 @@ import { PocketIc, type Actor } from '@hadronous/pic';
 import { assertNonNullish } from '@junobuild/utils';
 import { beforeAll, describe, expect, inject } from 'vitest';
 import { CONTROLLER_ERROR_MSG } from './constants/console-tests.constants';
+import { assertCertification } from './utils/certification-test.utils';
 import { uploadFile } from './utils/console-tests.utils';
 import { sha256ToBase64String } from './utils/crypto-tests.utils';
+import { tick } from './utils/pic-tests.utils';
 import { CONSOLE_WASM_PATH } from './utils/setup-tests.utils';
 
 describe('Console / Storage', () => {
 	let pic: PocketIc;
 	let actor: Actor<ConsoleActor>;
 
+	let canisterId: Principal;
+
 	const controller = Ed25519KeyIdentity.generate();
+
+	const currentDate = new Date(2021, 6, 10, 0, 0, 0, 0);
 
 	beforeAll(async () => {
 		pic = await PocketIc.create(inject('PIC_URL'));
 
-		const { actor: c } = await pic.setupCanister<ConsoleActor>({
+		await pic.setTime(currentDate.getTime());
+
+		const { actor: c, canisterId: cId } = await pic.setupCanister<ConsoleActor>({
 			idlFactory: idlFactorConsole,
 			wasm: CONSOLE_WASM_PATH,
 			sender: controller.getPrincipal()
@@ -40,6 +50,8 @@ describe('Console / Storage', () => {
 
 		actor = c;
 		actor.setIdentity(controller);
+
+		canisterId = cId;
 	});
 
 	afterAll(async () => {
@@ -182,9 +194,7 @@ describe('Console / Storage', () => {
 				} as ProposalType,
 				collection: '#dapp',
 				full_path: '/hello.html',
-				expected_proposal_id: 1n,
-				expected_asset_tree:
-					'2dn3gwGDAktodHRwX2Fzc2V0c4EAggRYIEKdEzNVVN//oyhbMyr+jpaHvXLSS++G0FDxoOHNPxMy'
+				expected_proposal_id: 1n
 			},
 			{
 				proposal_type: {
@@ -196,13 +206,11 @@ describe('Console / Storage', () => {
 				} as ProposalType,
 				collection: '#releases',
 				full_path: '/releases/satellite-v0.0.18.wasm.gz',
-				expected_proposal_id: 2n,
-				expected_asset_tree:
-					'2dn3gwGDAktodHRwX2Fzc2V0c4MBggRYIDmN5doHXoiKCtNGBOZIdmQ+WGqYjcmdRB1MPuJBK2oXgwJLL2hlbGxvLmh0bWyCBFggHw1FFuN/7ZgqBSfwV2enJYVUtL9EM+nvOePuHXQ1yCaCBFggqaxo4lOdUyS+X9luPEzOoyC9c2+ICLLJ6ogdBRYOj+8='
+				expected_proposal_id: 2n
 			}
 		])(
 			'Proposal, upload and serve',
-			({ proposal_type, collection, full_path, expected_proposal_id, expected_asset_tree }) => {
+			({ proposal_type, collection, full_path, expected_proposal_id }) => {
 				let sha256: [] | [Uint8Array | number[]];
 				let proposalId: bigint;
 
@@ -407,18 +415,25 @@ describe('Console / Storage', () => {
 				it('should serve asset', async () => {
 					const { http_request } = actor;
 
-					const { status_code, headers, body } = await http_request({
+					await tick(pic);
+
+					const request: HttpRequest = {
 						body: [],
-						certificate_version: toNullable(),
+						certificate_version: toNullable(2),
 						headers: [],
 						method: 'GET',
 						url: full_path
-					});
+					};
+
+					const response = await http_request(request);
+
+					const { status_code, headers, body } = response;
 
 					expect(status_code).toBe(200);
 
 					const rest = headers.filter(([header, _]) => header !== 'IC-Certificate');
 
+					/* eslint-disable no-useless-escape */
 					expect(rest).toEqual([
 						['accept-ranges', 'bytes'],
 						['etag', '"03ee66f1452916b4f91a504c1e9babfa201b6d64c26a82b2cf03c3ed49d91585"'],
@@ -426,15 +441,21 @@ describe('Console / Storage', () => {
 						['Strict-Transport-Security', 'max-age=31536000 ; includeSubDomains'],
 						['Referrer-Policy', 'same-origin'],
 						['X-Frame-Options', 'DENY'],
-						['Cache-Control', 'no-cache']
+						['Cache-Control', 'no-cache'],
+						[
+							'IC-CertificateExpression',
+							'default_certification(ValidationArgs{certification:Certification{no_request_certification:Empty{},response_certification:ResponseCertification{certified_response_headers:ResponseHeaderList{headers:[\"accept-ranges\",\"etag\",\"X-Content-Type-Options\",\"Strict-Transport-Security\",\"Referrer-Policy\",\"X-Frame-Options\",\"Cache-Control\"]}}}})'
+						]
 					]);
+					/* eslint-enable no-useless-escape */
 
-					const certificate = headers.find(([header, _]) => header === 'IC-Certificate');
-
-					expect(certificate).not.toBeUndefined();
-
-					const [_, value] = certificate as [string, string];
-					expect(value.substring(value.indexOf('tree=:'))).toEqual(`tree=:${expected_asset_tree}:`);
+					await assertCertification({
+						canisterId,
+						pic,
+						request,
+						response,
+						currentDate
+					});
 
 					const decoder = new TextDecoder();
 					expect(decoder.decode(body as Uint8Array<ArrayBufferLike>)).toEqual(HTML);

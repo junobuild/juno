@@ -5,8 +5,8 @@
 	import Layout from '$lib/components/ui/Layout.svelte';
 	import { authSignedIn, authSignedOut } from '$lib/derived/auth.derived';
 	import { layoutNavigation } from '$lib/stores/layout-navigation.store';
-	import { applyColor } from '$lib/utils/theme.utils';
 	import { Color } from '$lib/types/theme';
+	import { applyColor } from '$lib/utils/theme.utils';
 
 	interface Props {
 		children: Snippet;

@@ -45,10 +45,12 @@
 		"build:satellite": "scripts/cargo.sh satellite",
 		"build:mission-control": "scripts/cargo.sh mission_control",
 		"build:orbiter": "scripts/cargo.sh orbiter",
+		"build:modules": "npm run build:console && npm run build:observatory && npm run build:satellite && npm run build:mission-control && npm run build:orbiter",
 		"emulator": "docker compose up"
 	},
 	"devDependencies": {
 		"@dfinity/eslint-config-oisy-wallet": "^0.0.6",
+		"@dfinity/response-verification": "^3.0.2",
 		"@esbuild-plugins/node-modules-polyfill": "^0.2.2",
 		"@hadronous/pic": "^0.10.0",
 		"@junobuild/cli-tools": "^0.0.16",

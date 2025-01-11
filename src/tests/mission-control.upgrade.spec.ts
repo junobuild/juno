@@ -10,7 +10,7 @@ import {
 	setupMissionControlModules
 } from './utils/mission-control-tests.utils';
 import { tick } from './utils/pic-tests.utils';
-import { downloadMissionControl, MISSION_CONTROL_WASM_PATH } from './utils/setup-tests.utils';
+import { downloadMissionControl } from './utils/setup-tests.utils';
 
 describe('Mission control upgrade', () => {
 	let pic: PocketIc;
@@ -54,12 +54,14 @@ describe('Mission control upgrade', () => {
 			satelliteId = sId;
 		});
 
-		const upgradeCurrent = async () => {
+		const upgrade0_0_14 = async () => {
 			await tick(pic);
+
+			const destination = await downloadMissionControl('0.0.14');
 
 			await pic.upgradeCanister({
 				canisterId: missionControlId,
-				wasm: MISSION_CONTROL_WASM_PATH,
+				wasm: destination,
 				sender: controller.getPrincipal()
 			});
 		};
@@ -117,7 +119,7 @@ describe('Mission control upgrade', () => {
 				await testModules();
 				await testUser();
 
-				await upgradeCurrent();
+				await upgrade0_0_14();
 
 				actor = pic.createActor<MissionControlActor>(idlFactorMissionControl, missionControlId);
 				actor.setIdentity(controller);
@@ -129,7 +131,7 @@ describe('Mission control upgrade', () => {
 		);
 
 		it('should migrate with no settings', async () => {
-			await upgradeCurrent();
+			await upgrade0_0_14();
 
 			actor = pic.createActor<MissionControlActor>(idlFactorMissionControl, missionControlId);
 			actor.setIdentity(controller);

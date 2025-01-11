@@ -42,9 +42,9 @@ use crate::types::state::{
     Orbiters, Satellite, Satellites, State, User,
 };
 use candid::Principal;
-use ciborium::into_writer;
+use ciborium::{from_reader, into_writer};
 use ic_cdk::api::call::{arg_data, ArgDecoderConfig};
-use ic_cdk::{storage, trap};
+use ic_cdk::trap;
 use ic_cdk_macros::{export_candid, init, post_upgrade, pre_upgrade, query, update};
 use ic_ledger_types::{Tokens, TransferArgs, TransferResult};
 use icrc_ledger_types::icrc1::transfer::TransferArg;
@@ -58,7 +58,7 @@ use junobuild_shared::types::state::{
     ControllerId, ControllerScope, Controllers, OrbiterId, SatelliteId,
 };
 use junobuild_shared::types::state::{Metadata, UserId};
-use junobuild_shared::upgrade::write_pre_upgrade;
+use junobuild_shared::upgrade::{read_post_upgrade, write_pre_upgrade};
 use monitoring::monitor::{
     defer_restart_monitoring, get_monitoring_history as get_any_monitoring_history,
     get_monitoring_status as get_any_monitoring_status,
@@ -107,24 +107,13 @@ fn pre_upgrade() {
 
 #[post_upgrade]
 fn post_upgrade() {
-    // TODO: remove once stable memory introduced on mainnet
-    let (heap,): (HeapState,) = storage::stable_restore().unwrap();
+    let memory = get_memory_upgrades();
+    let state_bytes = read_post_upgrade(&memory);
 
-    STATE.with(|state| {
-        *state.borrow_mut() = State {
-            heap,
-            stable: init_stable_state(),
-        }
-    });
+    let state: State = from_reader(&*state_bytes)
+        .expect("Failed to decode the state of the mission control in post_upgrade hook.");
 
-    // TODO: uncomment once stable memory introduced on mainnet
-    // let memory: Memory = get_memory_upgrades();
-    // let state_bytes = read_post_upgrade(&memory);
-
-    // let state: State = from_reader(&*state_bytes)
-    //     .expect("Failed to decode the state of the mission control in post_upgrade hook.");
-
-    // STATE.with(|s| *s.borrow_mut() = state);
+    STATE.with(|s| *s.borrow_mut() = state);
 
     init_runtime_state();
 

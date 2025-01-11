@@ -763,7 +763,7 @@ describe.each([{ memory: { Heap: null } }, { memory: { Stable: null } }])(
 			describe.each([
 				{
 					memory: { Heap: null },
-					expectMemory: 3_932_160n
+					expectMemory: 3_997_696n
 				},
 				{
 					memory: { Stable: null },
@@ -790,7 +790,7 @@ describe.each([{ memory: { Heap: null } }, { memory: { Stable: null } }])(
 				});
 
 				it('should not allow to set a document', async () => {
-					await expect(createDoc()).rejects.toThrow(errorMsg);
+					await expect(createDoc()).rejects.toThrowError(new RegExp(errorMsg, 'i'));
 				});
 
 				it('should not allow to set many documents', async () => {

@@ -28,10 +28,7 @@ export type PostMessageRequest =
 	| 'startWalletTimer'
 	| 'startMonitoringTimer'
 	| 'stopMonitoringTimer'
-	| 'restartMonitoringTimer'
-	| 'startTokensTimer'
-	| 'stopTokensTimer'
-	| 'restartTokensTimer';
+	| 'restartMonitoringTimer';
 
 export type PostMessageResponse =
 	| 'syncCanister'

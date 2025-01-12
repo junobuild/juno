@@ -1,59 +1,75 @@
-import type {PostMessage, PostMessageDataRequest} from "$lib/types/post-message";
-import {SYNC_MONITORING_TIMER_INTERVAL, SYNC_TOKENS_TIMER_INTERVAL} from "$lib/constants/constants";
-import type {Identity} from "@dfinity/agent";
+import { SYNC_TOKENS_TIMER_INTERVAL } from '$lib/constants/constants';
+import type { PostMessage, PostMessageDataRequest } from '$lib/types/post-message';
+import {fetchKongSwapTokens} from "$lib/rest/kongswap.rest";
 
 export const onTokensMessage = async ({
-                                              data: dataMsg
-                                          }: MessageEvent<PostMessage<PostMessageDataRequest>>) => {
-    const {msg, data} = dataMsg;
+	data: dataMsg
+}: MessageEvent<PostMessage<PostMessageDataRequest>>) => {
+	const { msg } = dataMsg;
 
-    switch (msg) {
-        case 'stopTokensTimer':
-            stopTokensTimer();
-            return;
-        case 'startTokensTimer':
-            await startTokensTimer();
-            return;
-        case 'restartTokensTimer':
-            stopTokensTimer();
-            await startTokensTimer();
-            return;
-    }
+	switch (msg) {
+		case 'stopWalletTimer':
+			stopTokensTimer();
+			return;
+		case 'startWalletTimer':
+			await startTokensTimer();
+			return;
+	}
 };
 
 let timer: NodeJS.Timeout | undefined = undefined;
 
 const startTokensTimer = async () => {
-    const sync = async () =>
-        await syncTokens({
-            identity,
-            segments: segments ?? [],
-            missionControlId,
-            withTokensHistory: withTokensHistory ?? false
-        });
+	const sync = async () => await syncTokens();
 
-    // We sync the cycles now but also schedule the update afterwards
-    await sync();
+	// We sync the cycles now but also schedule the update afterwards
+	await sync();
 
-    timer = setInterval(sync, SYNC_TOKENS_TIMER_INTERVAL);
-}
+	timer = setInterval(sync, SYNC_TOKENS_TIMER_INTERVAL);
+};
 
 const stopTokensTimer = () => {
-    if (!timer) {
-        return;
-    }
+	if (!timer) {
+		return;
+	}
 
-    clearInterval(timer);
-    timer = undefined;
+	clearInterval(timer);
+	timer = undefined;
 };
 
 let syncing = false;
 
-const syncMonitoring = async () => {
-    // We avoid to relaunch a sync while previous sync is not finished
-    if (syncing) {
-        return;
-    }
+let retry = 0;
 
-    syncing = true;
-}
+const syncTokens = async () => {
+	// We avoid to relaunch a sync while previous sync is not finished
+	if (syncing) {
+		return;
+	}
+
+	syncing = true;
+
+    try {
+		const data = await fetchKongSwapTokens();
+
+		console.log("TOKENS:", data);
+
+		// TODO: emit
+
+		retry = 0;
+	} catch (err: unknown) {
+		console.error(err);
+
+		// TODO: emit
+
+		// We try few times but after a while we stop trying.
+		if (retry >= 5) {
+			stopTokensTimer();
+			return;
+		}
+
+		retry++;
+	} finally {
+		syncing = false;
+	}
+};

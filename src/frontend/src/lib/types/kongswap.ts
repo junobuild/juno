@@ -1,11 +1,9 @@
+import { PrincipalTextSchema } from '$lib/types/principal';
 import { z } from 'zod';
-import {PrincipalTextSchema} from "$lib/types/principal";
 
-const NumberAsStringSchema = z
-	.string()
-	.refine((val) => !isNaN(Number(val)), {
-		message: "Invalid number string",
-	});
+const NumberAsStringSchema = z.string().refine((val) => !isNaN(Number(val)), {
+	message: 'Invalid number string'
+});
 
 const KongSwapTokenMetricsSchema = z.object({
 	market_cap: NumberAsStringSchema,
@@ -35,7 +33,9 @@ const KongSwapTokenSchema = z.object({
 	token_type: z.string()
 });
 
-const KongSwapTokensSchema = z.object({
+export const KongSwapTokensSchema = z.object({
 	tokens: z.array(KongSwapTokenSchema),
-    total_count: z.number()
+	total_count: z.number()
 });
+
+export type KongSwapTokens = z.infer<typeof KongSwapTokensSchema>;

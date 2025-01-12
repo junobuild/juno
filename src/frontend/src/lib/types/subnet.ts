@@ -1,4 +1,4 @@
-import type { PrincipalText } from '$lib/types/itentity';
+import type { PrincipalText } from '$lib/types/principal';
 
 export interface SubnetMetadata {
 	type: 'application' | string;

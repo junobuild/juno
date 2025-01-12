@@ -24,8 +24,9 @@ import {
 import { busy } from '$lib/stores/busy.store';
 import { i18n } from '$lib/stores/i18n.store';
 import { toasts } from '$lib/stores/toasts.store';
-import type { OptionIdentity, PrincipalText } from '$lib/types/itentity';
+import type { OptionIdentity } from '$lib/types/itentity';
 import type { JunoModal, JunoModalCreateSegmentDetail } from '$lib/types/modal';
+import type { PrincipalText } from '$lib/types/principal';
 import type { Option } from '$lib/types/utils';
 import { type WizardCreateProgress, WizardCreateProgressStep } from '$lib/types/wizard';
 import { emit } from '$lib/utils/events.utils';

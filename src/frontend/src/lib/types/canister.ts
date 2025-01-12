@@ -1,7 +1,7 @@
 import type { MemorySize } from '$declarations/satellite/satellite.did';
 import type { ChartsData, TimeOfDayChartData } from '$lib/types/chart';
-import type { PrincipalText } from '$lib/types/itentity';
 import type { MonitoringHistory, MonitoringMetadata } from '$lib/types/monitoring';
+import type { PrincipalText } from '$lib/types/principal';
 import type { Principal } from '@dfinity/principal';
 
 export type CanisterStatus = 'stopped' | 'stopping' | 'running';

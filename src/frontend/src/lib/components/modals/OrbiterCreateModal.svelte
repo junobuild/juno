@@ -12,9 +12,9 @@
 	import { authStore } from '$lib/stores/auth.store';
 	import { wizardBusy } from '$lib/stores/busy.store';
 	import { i18n } from '$lib/stores/i18n.store';
-	import type { PrincipalText } from '$lib/types/itentity';
 	import type { JunoModalDetail } from '$lib/types/modal';
 	import type { WizardCreateProgress } from '$lib/types/wizard';
+	import type { PrincipalText } from '$lib/types/principal';
 
 	interface Props {
 		detail: JunoModalDetail;

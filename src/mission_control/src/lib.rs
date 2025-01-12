@@ -14,10 +14,7 @@ use crate::controllers::mission_control::{
     set_mission_control_controllers as set_controllers_to_mission_control,
 };
 use crate::controllers::orbiter::{delete_orbiter_controllers, set_orbiter_controllers};
-use crate::controllers::satellite::{
-    add_satellite_controllers as add_satellite_controllers_impl, delete_satellite_controllers,
-    remove_satellite_controllers as remove_satellite_controllers_impl, set_satellite_controllers,
-};
+use crate::controllers::satellite::{delete_satellite_controllers, set_satellite_controllers};
 use crate::controllers::store::get_controllers;
 use crate::guards::caller_is_user_or_admin_controller;
 use crate::memory::{get_memory_upgrades, init_runtime_state, init_stable_state, STATE};
@@ -150,38 +147,6 @@ fn set_satellite_metadata(satellite_id: SatelliteId, metadata: Metadata) -> Sate
     set_satellite_metadata_store(&satellite_id, &metadata).unwrap_or_else(|e| trap(&e))
 }
 
-#[deprecated(
-    since = "0.0.3",
-    note = "please use `set_satellites_controllers` instead"
-)]
-#[update(guard = "caller_is_user_or_admin_controller")]
-async fn add_satellites_controllers(
-    satellite_ids: Vec<SatelliteId>,
-    controllers: Vec<ControllerId>,
-) {
-    for satellite_id in satellite_ids {
-        add_satellite_controllers_impl(&satellite_id, &controllers)
-            .await
-            .unwrap_or_else(|e| trap(&e));
-    }
-}
-
-#[deprecated(
-    since = "0.0.3",
-    note = "please use `del_satellites_controllers` instead"
-)]
-#[update(guard = "caller_is_user_or_admin_controller")]
-async fn remove_satellites_controllers(
-    satellite_ids: Vec<SatelliteId>,
-    controllers: Vec<ControllerId>,
-) {
-    for satellite_id in satellite_ids {
-        remove_satellite_controllers_impl(&satellite_id, &controllers)
-            .await
-            .unwrap_or_else(|e| trap(&e));
-    }
-}
-
 #[update(guard = "caller_is_user_or_admin_controller")]
 async fn set_satellites_controllers(
     satellite_ids: Vec<SatelliteId>,
@@ -299,34 +264,6 @@ async fn del_orbiter(orbiter_id: OrbiterId, cycles_to_deposit: u128) {
 // ---------------------------------------------------------
 // Controllers
 // ---------------------------------------------------------
-
-#[deprecated(
-    since = "0.0.3",
-    note = "please use `set_mission_control_controllers` instead"
-)]
-#[update(guard = "caller_is_user_or_admin_controller")]
-async fn add_mission_control_controllers(controllers: Vec<UserId>) {
-    let controller: SetController = SetController {
-        metadata: HashMap::new(),
-        expires_at: None,
-        scope: ControllerScope::Admin,
-    };
-
-    set_controllers_to_mission_control(&controllers, &controller)
-        .await
-        .unwrap_or_else(|e| trap(&e));
-}
-
-#[deprecated(
-    since = "0.0.3",
-    note = "please use `del_mission_control_controllers` instead"
-)]
-#[update(guard = "caller_is_user_or_admin_controller")]
-async fn remove_mission_control_controllers(controllers: Vec<ControllerId>) {
-    delete_controllers_to_mission_control(&controllers)
-        .await
-        .unwrap_or_else(|e| trap(&e));
-}
 
 #[update(guard = "caller_is_user_or_admin_controller")]
 async fn set_mission_control_controllers(

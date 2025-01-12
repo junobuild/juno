@@ -4,6 +4,7 @@ import type { ExchangePrice } from '$lib/types/exchange';
 import type { KongSwapToken } from '$lib/types/kongswap';
 import type { PostMessage, PostMessageDataRequest } from '$lib/types/post-message';
 import { isNullish, nonNullish } from '@dfinity/utils';
+import type {Canister} from "$lib/types/canister";
 
 export const onExchangeMessage = async ({
 	data: dataMsg
@@ -113,3 +114,11 @@ const findICPToken = async (page = 1): Promise<KongSwapToken | undefined> => {
 
 	return undefined;
 };
+
+export const emitCanister = <T>(canister: Canister<T>) =>
+	postMessage({
+		msg: 'syncCanister',
+		data: {
+			canister
+		}
+	});

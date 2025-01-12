@@ -43,6 +43,8 @@ const KongSwapTokenSchema = z.object({
 	token_type: z.string()
 });
 
+export type KongSwapToken = z.infer<typeof KongSwapTokenSchema>;
+
 export const KongSwapTokensSchema = z.object({
 	tokens: z.array(KongSwapTokenSchema),
 	total_count: z.number()

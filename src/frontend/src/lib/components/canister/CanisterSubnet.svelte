@@ -9,9 +9,9 @@
 	import { loadSubnetId } from '$lib/services/subnets.services';
 	import { i18n } from '$lib/stores/i18n.store';
 	import { subnetStore } from '$lib/stores/subnet.store';
+	import type { PrincipalText } from '$lib/types/principal';
 	import type { Subnet } from '$lib/types/subnet';
 	import type { Option } from '$lib/types/utils';
-	import type { PrincipalText } from '$lib/types/principal';
 
 	interface Props {
 		canisterId: Principal;

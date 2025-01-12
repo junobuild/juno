@@ -6,9 +6,9 @@
 	import { DEV, JUNO_SUBNET_ID } from '$lib/constants/constants';
 	import subnets from '$lib/env/subnets.json';
 	import { i18n } from '$lib/stores/i18n.store';
+	import type { PrincipalText } from '$lib/types/principal';
 	import type { Subnet } from '$lib/types/subnet';
 	import { shortenWithMiddleEllipsis } from '$lib/utils/format.utils';
-	import type { PrincipalText } from '$lib/types/principal';
 
 	interface Props {
 		subnetId: PrincipalText | undefined;

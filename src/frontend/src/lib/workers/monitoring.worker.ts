@@ -106,6 +106,8 @@ const syncMonitoring = async ({
 		return;
 	}
 
+	syncing = true;
+
 	await emitSavedCanisters({
 		canisterIds: segments.map(({ canisterId }) => canisterId),
 		customStore: monitoringIdbStore

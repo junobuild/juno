@@ -55,5 +55,5 @@ const syncMonitoring = async () => {
         return;
     }
 
-
+    syncing = true;
 }

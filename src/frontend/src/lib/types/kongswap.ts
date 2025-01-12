@@ -5,13 +5,15 @@ const NumberAsStringSchema = z.string().refine((val) => !isNaN(Number(val)), {
 	message: 'Invalid number string'
 });
 
-const DateTimeSchema = z.string().refine((val) => {
-	const parsed = new Date(val);
-	return !isNaN(parsed.getTime());
-}, {
-	message: "Invalid ISO 8601 datetime string",
-});
-
+const DateTimeSchema = z.string().refine(
+	(val) => {
+		const parsed = new Date(val);
+		return !isNaN(parsed.getTime());
+	},
+	{
+		message: 'Invalid ISO 8601 datetime string'
+	}
+);
 
 const KongSwapTokenMetricsSchema = z.object({
 	market_cap: NumberAsStringSchema.nullable(),

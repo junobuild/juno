@@ -1,6 +1,6 @@
 import { SYNC_TOKENS_TIMER_INTERVAL } from '$lib/constants/constants';
+import { fetchKongSwapTokens } from '$lib/rest/kongswap.rest';
 import type { PostMessage, PostMessageDataRequest } from '$lib/types/post-message';
-import {fetchKongSwapTokens} from "$lib/rest/kongswap.rest";
 
 export const onTokensMessage = async ({
 	data: dataMsg
@@ -49,10 +49,10 @@ const syncTokens = async () => {
 
 	syncing = true;
 
-    try {
+	try {
 		const data = await fetchKongSwapTokens();
 
-		console.log("TOKENS:", data);
+		console.log('TOKENS:', data);
 
 		// TODO: emit
 

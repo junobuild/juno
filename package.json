@@ -105,7 +105,8 @@
 		"layercake": "^8.4.2",
 		"nanoid": "^5.0.9",
 		"semver": "^7.6.3",
-		"svelte-confetti": "^2.2.0"
+		"svelte-confetti": "^2.2.0",
+		"zod": "^3.24.1"
 	},
 	"engines": {
 		"node": "^22"

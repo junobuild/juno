@@ -188,9 +188,17 @@ const buildCycles = (history: MonitoringHistory): ChartsData[] =>
 				};
 			}
 
+			const {
+				cycles: { amount },
+				deposited_cycles
+			} = cycles;
+
+			// The cycles amount is collected before the round of monitoring. By adding the potential deposited cycles, we got the resulting value.
+			const cyclesAmount = amount + (fromNullable(deposited_cycles)?.amount ?? 0n);
+
 			return {
 				x: `${fromBigIntNanoSeconds(created_at).getTime()}`,
-				y: parseFloat(formatTCycles(cycles.cycles.amount))
+				y: parseFloat(formatTCycles(cyclesAmount))
 			};
 		})
 		.sort(sortChartsData);

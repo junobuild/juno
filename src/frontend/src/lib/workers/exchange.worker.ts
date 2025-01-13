@@ -65,7 +65,7 @@ const syncExchange = async () => {
 		// TODO: emit
 
 		// We try few times but after a while we stop trying.
-		if (retry >= 5) {
+		if (retry >= 3) {
 			stopTimer();
 			return;
 		}

@@ -1,3 +1,4 @@
+import { onSyncExchange } from '$lib/services/wallet.loader.services';
 import type { PostMessageDataResponse, PostMessageResponse } from '$lib/types/post-message';
 import type { Principal } from '@dfinity/principal';
 
@@ -20,6 +21,9 @@ export const initWalletWorker = async (): Promise<WalletWorker> => {
 		switch (msg) {
 			case 'syncWallet':
 				walletCallback?.(data.data);
+				return;
+			case 'syncExchange':
+				onSyncExchange(data.data);
 				return;
 		}
 	};

@@ -11,8 +11,6 @@ export const onSyncExchange = (data: PostMessageDataResponse) => {
 
 	const entries = Object.entries(exchange);
 
-    console.log(entries)
-
 	for (const [canisterId, data] of entries) {
 		if (isNullish(data)) {
 			exchangePricesStore.reset(canisterId);

@@ -130,26 +130,26 @@ const syncExchangePrice = async (exchangePrice: ExchangePrice) => {
 	// Save information in indexed-db as well to load previous values on navigation and refresh
 	await set(ICP_LEDGER_CANISTER_ID, exchangePrice, exchangeIdbStore);
 
-	const data: PostMessageDataResponseExchangeData = {
+	const exchange: PostMessageDataResponseExchangeData = {
 		[ICP_LEDGER_CANISTER_ID]: exchangePrice
 	};
 
 	postMessage({
 		msg: 'syncExchange',
-		data
+		data: { exchange }
 	});
 };
 
 const cleanExchangePrice = async () => {
 	await del(ICP_LEDGER_CANISTER_ID, exchangeIdbStore);
 
-	const data: PostMessageDataResponseExchangeData = {
+	const exchange: PostMessageDataResponseExchangeData = {
 		[ICP_LEDGER_CANISTER_ID]: null
 	};
 
 	postMessage({
 		msg: 'syncExchange',
-		data
+		data: { exchange }
 	});
 };
 
@@ -160,7 +160,7 @@ const emitSavedExchanges = async () => {
 		return;
 	}
 
-	const data: PostMessageDataResponseExchangeData = exchanges.reduce(
+	const exchange: PostMessageDataResponseExchangeData = exchanges.reduce(
 		(acc, [canisterId, value]) => ({
 			...acc,
 			[canisterId]: value
@@ -170,6 +170,8 @@ const emitSavedExchanges = async () => {
 
 	postMessage({
 		msg: 'syncExchange',
-		data
+		data: {
+			exchange
+		}
 	});
 };

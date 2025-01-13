@@ -1,6 +1,6 @@
 import { getTransactions } from '$lib/api/icp-index.api';
 import { PAGINATION, SYNC_WALLET_TIMER_INTERVAL } from '$lib/constants/constants';
-import type { PostMessage, PostMessageDataRequest } from '$lib/types/post-message';
+import type { PostMessageDataRequest, PostMessageRequest } from '$lib/types/post-message';
 import { loadIdentity } from '$lib/utils/worker.utils';
 import type { Identity } from '@dfinity/agent';
 import type {
@@ -11,9 +11,7 @@ import type {
 import { Principal } from '@dfinity/principal';
 import { isNullish, jsonReplacer } from '@dfinity/utils';
 
-export const onWalletMessage = async ({
-	data: dataMsg
-}: MessageEvent<PostMessage<PostMessageDataRequest>>) => {
+export const onWalletMessage = async ({ data: dataMsg }: MessageEvent<PostMessageRequest>) => {
 	const { msg, data } = dataMsg;
 
 	switch (msg) {

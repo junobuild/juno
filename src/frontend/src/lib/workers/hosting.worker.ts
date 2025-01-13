@@ -2,12 +2,10 @@ import type { CustomDomain } from '$declarations/satellite/satellite.did';
 import { SYNC_CUSTOM_DOMAIN_TIMER_INTERVAL } from '$lib/constants/constants';
 import { getCustomDomainRegistration } from '$lib/rest/bn.rest';
 import type { CustomDomainRegistrationState } from '$lib/types/custom-domain';
-import type { PostMessage, PostMessageDataRequest } from '$lib/types/post-message';
+import type { PostMessageDataRequest, PostMessageRequest } from '$lib/types/post-message';
 import { fromNullable, nonNullish } from '@dfinity/utils';
 
-export const onHostingMessage = async ({
-	data: dataMsg
-}: MessageEvent<PostMessage<PostMessageDataRequest>>) => {
+export const onHostingMessage = async ({ data: dataMsg }: MessageEvent<PostMessageRequest>) => {
 	const { msg, data } = dataMsg;
 
 	switch (msg) {

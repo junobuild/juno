@@ -1,47 +1,18 @@
-import type { CustomDomain } from '$declarations/satellite/satellite.did';
-import type { CustomDomainRegistrationState } from '$lib/types/custom-domain';
-import type { Wallet } from '$lib/types/transaction';
-import type { CanisterSegment, CanisterSyncData, CanisterSyncMonitoring } from './canister';
+import {
+	type PostMessageDataRequestDataSchema,
+	PostMessageDataResponseDataAuthSchema,
+	PostMessageDataResponseDataSchema,
+	PostMessageRequestSchema,
+	PostMessageResponseSchema
+} from '$lib/schema/post-message.schema';
+import * as z from 'zod';
 
-export interface PostMessageDataRequest {
-	segments?: CanisterSegment[];
-	customDomain?: CustomDomain;
-	missionControlId?: string;
-	withMonitoringHistory?: boolean;
-}
+export type PostMessageDataRequest = z.infer<typeof PostMessageDataRequestDataSchema>;
 
-export interface PostMessageDataResponse {
-	canister?: CanisterSyncData | CanisterSyncMonitoring;
-	registrationState?: CustomDomainRegistrationState | null;
-	wallet?: Wallet;
-}
+export type PostMessageDataResponse = z.infer<typeof PostMessageDataResponseDataSchema>;
 
-export type PostMessageRequest =
-	| 'startCyclesTimer'
-	| 'stopCyclesTimer'
-	| 'restartCyclesTimer'
-	| 'startIdleTimer'
-	| 'stopIdleTimer'
-	| 'startCustomDomainRegistrationTimer'
-	| 'stopCustomDomainRegistrationTimer'
-	| 'stopWalletTimer'
-	| 'startWalletTimer'
-	| 'startMonitoringTimer'
-	| 'stopMonitoringTimer'
-	| 'restartMonitoringTimer';
+export type PostMessageDataResponseAuth = z.infer<typeof PostMessageDataResponseDataAuthSchema>;
 
-export type PostMessageResponse =
-	| 'syncCanister'
-	| 'signOutIdleTimer'
-	| 'delegationRemainingTime'
-	| 'customDomainRegistrationState'
-	| 'syncWallet';
+export type PostMessageRequest = z.infer<typeof PostMessageRequestSchema>;
 
-export interface PostMessageDataResponseAuth extends PostMessageDataResponse {
-	authRemainingTime: number;
-}
-
-export interface PostMessage<T extends PostMessageDataRequest | PostMessageDataResponse> {
-	msg: PostMessageRequest | PostMessageResponse;
-	data: T;
-}
+export type PostMessageResponse = z.infer<typeof PostMessageResponseSchema>;

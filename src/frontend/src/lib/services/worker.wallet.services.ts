@@ -1,4 +1,4 @@
-import type { PostMessage, PostMessageDataResponse } from '$lib/types/post-message';
+import type { PostMessageDataResponse, PostMessageResponse } from '$lib/types/post-message';
 import type { Principal } from '@dfinity/principal';
 
 export type WalletCallback = (data: PostMessageDataResponse) => void;
@@ -14,7 +14,7 @@ export const initWalletWorker = async (): Promise<WalletWorker> => {
 
 	let walletCallback: WalletCallback | undefined;
 
-	worker.onmessage = ({ data }: MessageEvent<PostMessage<PostMessageDataResponse>>) => {
+	worker.onmessage = ({ data }: MessageEvent<PostMessageResponse>) => {
 		const { msg } = data;
 
 		switch (msg) {

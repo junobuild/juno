@@ -10,16 +10,14 @@ import {
 } from '$lib/constants/constants';
 import { cyclesIdbStore } from '$lib/stores/idb.store';
 import type { CanisterInfo, CanisterSegment, CanisterSyncData } from '$lib/types/canister';
-import type { PostMessage, PostMessageDataRequest } from '$lib/types/post-message';
+import type { PostMessageDataRequest, PostMessageRequest } from '$lib/types/post-message';
 import { cyclesToICP } from '$lib/utils/cycles.utils';
 import { emitCanister, emitSavedCanisters, loadIdentity } from '$lib/utils/worker.utils';
 import type { Identity } from '@dfinity/agent';
 import { isNullish, nonNullish } from '@dfinity/utils';
 import { set } from 'idb-keyval';
 
-export const onCyclesMessage = async ({
-	data: dataMsg
-}: MessageEvent<PostMessage<PostMessageDataRequest>>) => {
+export const onCyclesMessage = async ({ data: dataMsg }: MessageEvent<PostMessageRequest>) => {
 	const { msg, data } = dataMsg;
 
 	switch (msg) {

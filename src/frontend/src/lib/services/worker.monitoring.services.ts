@@ -1,5 +1,5 @@
 import type { CanisterSegment } from '$lib/types/canister';
-import type { PostMessage, PostMessageDataResponse } from '$lib/types/post-message';
+import type { PostMessageDataResponse, PostMessageResponse } from '$lib/types/post-message';
 import type { Principal } from '@dfinity/principal';
 
 export type MonitoringCallback = (data: PostMessageDataResponse) => void;
@@ -24,7 +24,7 @@ export const initStatusesWorker = async (): Promise<MonitoringWorker> => {
 
 	let monitoringCallback: MonitoringCallback | undefined;
 
-	monitoringWorker.onmessage = ({ data }: MessageEvent<PostMessage<PostMessageDataResponse>>) => {
+	monitoringWorker.onmessage = ({ data }: MessageEvent<PostMessageResponse>) => {
 		const { msg } = data;
 
 		switch (msg) {

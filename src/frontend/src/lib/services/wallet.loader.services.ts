@@ -1,4 +1,4 @@
-import { exchangePricesStore } from '$lib/stores/exchange.store';
+import { exchangePricesCanisterDataStore } from '$lib/stores/exchange.store';
 import type { PostMessageDataResponse } from '$lib/types/post-message';
 import { isNullish } from '@dfinity/utils';
 
@@ -13,9 +13,9 @@ export const onSyncExchange = (data: PostMessageDataResponse) => {
 
 	for (const [canisterId, data] of entries) {
 		if (isNullish(data)) {
-			exchangePricesStore.reset(canisterId);
+			exchangePricesCanisterDataStore.reset(canisterId);
 		} else {
-			exchangePricesStore.set({ canisterId, data });
+			exchangePricesCanisterDataStore.set({ canisterId, data });
 		}
 	}
 };

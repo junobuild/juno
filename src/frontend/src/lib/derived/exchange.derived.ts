@@ -12,7 +12,12 @@ export const exchangePricesLoaded = derived(
 	([$exchangePricesCanisterDataStore]) => $exchangePricesCanisterDataStore !== undefined
 );
 
-export const icpExchangePrice = derived(
+export const exchangePricesNotLoaded = derived(
+	[exchangePricesLoaded],
+	([$exchangePricesLoaded]) => !$exchangePricesLoaded
+);
+
+export const icpToUsd = derived(
 	[exchangePrices],
-	([$exchangePrices]) => $exchangePrices?.[ICP_LEDGER_CANISTER_ID]?.data
+	([$exchangePrices]) => $exchangePrices?.[ICP_LEDGER_CANISTER_ID]?.data?.usd
 );

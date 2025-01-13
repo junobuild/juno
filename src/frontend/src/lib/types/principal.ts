@@ -1,5 +1,5 @@
 import { Principal } from '@dfinity/principal';
-import { z } from 'zod';
+import * as z from 'zod';
 
 export const PrincipalTextSchema = z.string().refine(
 	(principal) => {

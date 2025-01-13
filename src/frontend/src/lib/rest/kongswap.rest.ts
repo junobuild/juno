@@ -1,4 +1,5 @@
-import { type KongSwapTokens, KongSwapTokensSchema } from '$lib/types/kongswap';
+import { KongSwapTokensSchema } from '$lib/schema/kongswap.schema';
+import { type KongSwapTokens } from '$lib/types/kongswap';
 
 export const fetchKongSwapTokens = async ({
 	page,

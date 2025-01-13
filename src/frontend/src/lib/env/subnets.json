@@ -3,8 +3,8 @@
 		"subnetId": "4ecnw-byqwz-dtgss-ua2mh-pfvs7-c3lct-gtf4e-hnu75-j7eek-iifqm-sqe",
 		"type": "application",
 		"canisters": {
-			"stopped": 115,
-			"running": 6969
+			"stopped": 113,
+			"running": 7247
 		},
 		"nodes": {
 			"up": 12,
@@ -16,7 +16,19 @@
 		"type": "application",
 		"canisters": {
 			"stopped": 1,
-			"running": 7945
+			"running": 12585
+		},
+		"nodes": {
+			"up": 13,
+			"total": 13
+		}
+	},
+	{
+		"subnetId": "6pbhf-qzpdk-kuqbr-pklfa-5ehhf-jfjps-zsj6q-57nrl-kzhpd-mu7hc-vae",
+		"type": "application",
+		"canisters": {
+			"stopped": 71,
+			"running": 35055
 		},
 		"nodes": {
 			"up": 13,
@@ -27,8 +39,8 @@
 		"subnetId": "brlsh-zidhj-3yy3e-6vqbz-7xnih-xeq2l-as5oc-g32c4-i5pdn-2wwof-oae",
 		"type": "application",
 		"canisters": {
-			"stopped": 28,
-			"running": 37480
+			"stopped": 646,
+			"running": 34429
 		},
 		"nodes": {
 			"up": 13,
@@ -40,7 +52,7 @@
 		"type": "application",
 		"canisters": {
 			"stopped": 179,
-			"running": 50907
+			"running": 51135
 		},
 		"nodes": {
 			"up": 13,
@@ -51,8 +63,20 @@
 		"subnetId": "e66qm-3cydn-nkf4i-ml4rb-4ro6o-srm5s-x5hwq-hnprz-3meqp-s7vks-5qe",
 		"type": "application",
 		"canisters": {
-			"stopped": 99,
-			"running": 35430
+			"stopped": 101,
+			"running": 35659
+		},
+		"nodes": {
+			"up": 13,
+			"total": 13
+		}
+	},
+	{
+		"subnetId": "ejbmu-grnam-gk6ol-6irwa-htwoj-7ihfl-goimw-hlnvh-abms4-47v2e-zqe",
+		"type": "application",
+		"canisters": {
+			"stopped": 2,
+			"running": 468
 		},
 		"nodes": {
 			"up": 13,
@@ -64,7 +88,7 @@
 		"type": "application",
 		"canisters": {
 			"stopped": 1,
-			"running": 19898
+			"running": 20125
 		},
 		"nodes": {
 			"up": 13,
@@ -76,7 +100,7 @@
 		"type": "application",
 		"canisters": {
 			"stopped": 52,
-			"running": 33629
+			"running": 33638
 		},
 		"nodes": {
 			"up": 13,
@@ -88,7 +112,7 @@
 		"type": "application",
 		"canisters": {
 			"stopped": 2,
-			"running": 182
+			"running": 401
 		},
 		"nodes": {
 			"up": 13,
@@ -100,7 +124,7 @@
 		"type": "application",
 		"canisters": {
 			"stopped": 3,
-			"running": 26863
+			"running": 27083
 		},
 		"nodes": {
 			"up": 13,
@@ -112,7 +136,55 @@
 		"type": "application",
 		"canisters": {
 			"stopped": 94,
-			"running": 39437
+			"running": 39665
+		},
+		"nodes": {
+			"up": 13,
+			"total": 13
+		}
+	},
+	{
+		"subnetId": "mpubz-g52jc-grhjo-5oze5-qcj74-sex34-omprz-ivnsm-qvvhr-rfzpv-vae",
+		"type": "application",
+		"canisters": {
+			"stopped": 89,
+			"running": 55125
+		},
+		"nodes": {
+			"up": 13,
+			"total": 13
+		}
+	},
+	{
+		"subnetId": "nl6hn-ja4yw-wvmpy-3z2jx-ymc34-pisx3-3cp5z-3oj4a-qzzny-jbsv3-4qe",
+		"type": "application",
+		"canisters": {
+			"stopped": 38,
+			"running": 31473
+		},
+		"nodes": {
+			"up": 13,
+			"total": 13
+		}
+	},
+	{
+		"subnetId": "o3ow2-2ipam-6fcjo-3j5vt-fzbge-2g7my-5fz2m-p4o2t-dwlc4-gt2q7-5ae",
+		"type": "application",
+		"canisters": {
+			"stopped": 55,
+			"running": 56451
+		},
+		"nodes": {
+			"up": 13,
+			"total": 13
+		}
+	},
+	{
+		"subnetId": "opn46-zyspe-hhmyp-4zu6u-7sbrh-dok77-m7dch-im62f-vyimr-a3n2c-4ae",
+		"type": "application",
+		"canisters": {
+			"stopped": 46,
+			"running": 39741
 		},
 		"nodes": {
 			"up": 13,
@@ -123,8 +195,8 @@
 		"subnetId": "pjljw-kztyl-46ud4-ofrj6-nzkhm-3n4nt-wi3jt-ypmav-ijqkt-gjf66-uae",
 		"type": "application",
 		"canisters": {
-			"stopped": 62,
-			"running": 31737
+			"stopped": 59,
+			"running": 31969
 		},
 		"nodes": {
 			"up": 13,
@@ -136,7 +208,19 @@
 		"type": "application",
 		"canisters": {
 			"stopped": 16,
-			"running": 52493
+			"running": 52500
+		},
+		"nodes": {
+			"up": 13,
+			"total": 13
+		}
+	},
+	{
+		"subnetId": "yinp6-35cfo-wgcd2-oc4ty-2kqpf-t4dul-rfk33-fsq3r-mfmua-m2ngh-jqe",
+		"type": "application",
+		"canisters": {
+			"stopped": 17,
+			"running": 5756
 		},
 		"nodes": {
 			"up": 13,
@@ -148,8 +232,8 @@
 		"specialization": "european",
 		"type": "application",
 		"canisters": {
-			"stopped": 368,
-			"running": 23878
+			"stopped": 440,
+			"running": 24152
 		},
 		"nodes": {
 			"up": 13,
@@ -162,10 +246,10 @@
 		"type": "application",
 		"canisters": {
 			"stopped": 7,
-			"running": 732
+			"running": 745
 		},
 		"nodes": {
-			"up": 34,
+			"up": 33,
 			"total": 34
 		}
 	}

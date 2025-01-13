@@ -92,7 +92,7 @@
 		"@dfinity/identity": "^2.1.3",
 		"@dfinity/ledger-icp": "^2.6.5",
 		"@dfinity/ledger-icrc": "^2.7.0",
-		"@dfinity/oisy-wallet-signer": "^0.1.1",
+		"@dfinity/oisy-wallet-signer": "^0.1.2",
 		"@dfinity/principal": "^2.1.3",
 		"@dfinity/utils": "^2.8.0",
 		"@junobuild/admin": "^0.1.1",

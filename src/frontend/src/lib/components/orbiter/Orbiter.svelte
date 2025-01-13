@@ -1,5 +1,4 @@
 <script lang="ts">
-	import { fromNullable } from '@dfinity/utils';
 	import type { Orbiter } from '$declarations/mission_control/mission_control.did';
 	import CanisterMonitoring from '$lib/components/canister/CanisterMonitoring.svelte';
 	import CanisterOverview from '$lib/components/canister/CanisterOverview.svelte';
@@ -11,6 +10,7 @@
 	import { orbiterNotLoaded } from '$lib/derived/orbiter.derived';
 	import { i18n } from '$lib/stores/i18n.store';
 	import { versionStore } from '$lib/stores/version.store';
+	import { fromNullishNullable } from '$lib/utils/did.utils';
 
 	interface Props {
 		orbiter: Orbiter;
@@ -18,7 +18,7 @@
 
 	let { orbiter }: Props = $props();
 
-	let monitoring = $derived(fromNullable(fromNullable(orbiter.settings ?? [])?.monitoring ?? []));
+	let monitoring = $derived(fromNullishNullable(fromNullishNullable(orbiter.settings)?.monitoring));
 </script>
 
 <div class="card-container with-title">

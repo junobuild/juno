@@ -33,12 +33,12 @@ import {
 	MonitoringStrategyProgressStep
 } from '$lib/types/strategy';
 import type { Option } from '$lib/types/utils';
+import { fromNullishNullable } from '$lib/utils/did.utils';
 import { isNotValidEmail } from '$lib/utils/email.utils';
 import { emit } from '$lib/utils/events.utils';
 import type { Principal } from '@dfinity/principal';
 import {
 	assertNonNullish,
-	fromNullable,
 	isNullish,
 	nonNullish,
 	notEmptyString,
@@ -343,7 +343,7 @@ const setMonitoringCyclesConfig = async ({
 		throw new Error(get(i18n).monitoring.fund_cycles_not_defined);
 	}
 
-	const currentCyclesConfig = fromNullable(monitoringConfig?.cycles ?? []);
+	const currentCyclesConfig = fromNullishNullable(monitoringConfig?.cycles);
 
 	// If a new email is provided, we activate the notification else we keep the current config
 	const notification: [] | [DepositedCyclesEmailNotification] = nonNullish(userEmail)
@@ -529,8 +529,8 @@ export const setMonitoringNotification = async ({
 
 		assertNonNullish(missionControlId, get(i18n).errors.no_mission_control);
 
-		const cycles = fromNullable(monitoringConfig?.cycles ?? []);
-		const notification = fromNullable(cycles?.notification ?? []);
+		const cycles = fromNullishNullable(monitoringConfig?.cycles);
+		const notification = fromNullishNullable(cycles?.notification);
 
 		const updateMonitoringConfig: MonitoringConfig = {
 			...(nonNullish(monitoringConfig) && monitoringConfig),

@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { fromNullable, isNullish, nonNullish } from '@dfinity/utils';
+	import { isNullish, nonNullish } from '@dfinity/utils';
 	import { createEventDispatcher, onDestroy, onMount } from 'svelte';
 	import { run } from 'svelte/legacy';
 	import type { Satellite } from '$declarations/mission_control/mission_control.did';
@@ -17,6 +17,7 @@
 	import type { CustomDomainRegistrationState } from '$lib/types/custom-domain';
 	import type { PostMessageDataResponse } from '$lib/types/post-message';
 	import type { Option } from '$lib/types/utils';
+	import { fromNullishNullable } from '$lib/utils/did.utils';
 	import { emit } from '$lib/utils/events.utils';
 	import { keyOf } from '$lib/utils/utils';
 
@@ -44,7 +45,7 @@
 	});
 
 	let authDomain: string | undefined = $derived(
-		fromNullable(fromNullable(config?.internet_identity ?? [])?.derivation_origin ?? [])
+		fromNullishNullable(fromNullishNullable(config?.internet_identity)?.derivation_origin)
 	);
 
 	let mainDomain: boolean = $derived(host === authDomain && nonNullish(authDomain));

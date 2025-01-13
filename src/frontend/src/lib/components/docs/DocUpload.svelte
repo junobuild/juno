@@ -1,6 +1,6 @@
 <script lang="ts">
 	import type { Principal } from '@dfinity/principal';
-	import { fromNullable, isNullish, nonNullish, notEmptyString } from '@dfinity/utils';
+	import { isNullish, nonNullish, notEmptyString } from '@dfinity/utils';
 	import { setDoc } from '@junobuild/core';
 	import { nanoid } from 'nanoid';
 	import { createEventDispatcher, getContext, type Snippet } from 'svelte';
@@ -14,6 +14,7 @@
 	import { i18n } from '$lib/stores/i18n.store';
 	import { toasts } from '$lib/stores/toasts.store';
 	import { RULES_CONTEXT_KEY, type RulesContext } from '$lib/types/rules.context';
+	import { fromNullishNullable } from '$lib/utils/did.utils';
 	import { fileToDocData } from '$lib/utils/doc.utils';
 	import { container } from '$lib/utils/juno.utils';
 
@@ -48,7 +49,7 @@
 	let description: string | undefined = $state();
 	const initDescription = (d: string | undefined) => (description = d);
 	run(() => {
-		initDescription(fromNullable(doc?.description ?? []));
+		initDescription(fromNullishNullable(doc?.description));
 	});
 
 	const generateKey = () => (key = nanoid());
@@ -95,7 +96,7 @@
 					key,
 					...(notEmptyString(description) && { description }),
 					data: await fileToDocData(file),
-					...(nonNullish(doc) && { version: fromNullable(doc?.version ?? []) })
+					...(nonNullish(doc) && { version: fromNullishNullable(doc?.version) })
 				},
 				satellite: {
 					satelliteId: satelliteId.toText(),

@@ -21,6 +21,7 @@
 	import { i18n } from '$lib/stores/i18n.store';
 	import { toasts } from '$lib/stores/toasts.store';
 	import { RULES_CONTEXT_KEY, type RulesContext } from '$lib/types/rules.context';
+	import { fromNullishNullable } from '$lib/utils/did.utils';
 	import { i18nFormat } from '$lib/utils/i18n.utils';
 	import { memoryToText, permissionToText } from '$lib/utils/rules.utils';
 
@@ -60,7 +61,9 @@
 
 	// Before the introduction of the stable memory, the memory used was "Heap". That's why we fallback for display purpose on Stable only if new to support old satellites
 	const initMemory = (rule: Rule | undefined): MemoryText =>
-		memoryToText(fromNullable(rule?.memory ?? []) ?? (isNullish(rule) ? MemoryStable : MemoryHeap));
+		memoryToText(
+			fromNullishNullable(rule?.memory) ?? (isNullish(rule) ? MemoryStable : MemoryHeap)
+		);
 	let memory: MemoryText = $state(memoryToText(MemoryStable));
 	$effect(() => {
 		memory = initMemory(rule);
@@ -69,7 +72,7 @@
 	let currentImmutable: boolean | undefined = $state();
 	let immutable: boolean | undefined = $state();
 	const initMutable = (initialRule: Rule | undefined) => {
-		currentImmutable = !(fromNullable(initialRule?.mutable_permissions ?? []) ?? true);
+		currentImmutable = !(fromNullishNullable(initialRule?.mutable_permissions) ?? true);
 		immutable = currentImmutable;
 	};
 	$effect(() => initMutable($store.rule?.[1] ?? undefined));
@@ -90,7 +93,7 @@
 
 	let maxCapacity: number | undefined = $state(undefined);
 	$effect(() => {
-		maxCapacity = fromNullable(rule?.max_capacity ?? []);
+		maxCapacity = fromNullishNullable(rule?.max_capacity);
 	});
 
 	const dispatch = createEventDispatcher();
@@ -172,10 +175,10 @@
 		toggleCollection = $store.rule?.[0];
 
 		const toggleOptions =
-			nonNullish(fromNullable(r?.max_capacity ?? [])) ||
-			nonNullish(fromNullable(r?.max_size ?? [])) ||
-			nonNullish(fromNullable(r?.rate_config ?? [])) ||
-			fromNullable(r?.mutable_permissions ?? []) === false;
+			nonNullish(fromNullishNullable(r?.max_capacity)) ||
+			nonNullish(fromNullishNullable(r?.max_size)) ||
+			nonNullish(fromNullishNullable(r?.rate_config)) ||
+			fromNullishNullable(r?.mutable_permissions) === false;
 
 		toggle(toggleOptions);
 	});

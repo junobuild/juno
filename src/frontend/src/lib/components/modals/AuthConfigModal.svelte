@@ -14,6 +14,7 @@
 	import { isBusy, wizardBusy } from '$lib/stores/busy.store';
 	import { i18n } from '$lib/stores/i18n.store';
 	import type { JunoModalDetail, JunoModalEditAuthConfigDetail } from '$lib/types/modal';
+	import { fromNullishNullable } from '$lib/utils/did.utils';
 	import { emit } from '$lib/utils/events.utils';
 	import { satelliteUrl as satelliteUrlUtils } from '$lib/utils/satellite.utils';
 
@@ -44,14 +45,14 @@
 
 	let currentDerivationOrigin: string | undefined = $state(
 		fromNullable(
-			fromNullable((detail as JunoModalEditAuthConfigDetail).config?.internet_identity ?? [])
+			fromNullishNullable((detail as JunoModalEditAuthConfigDetail).config?.internet_identity)
 				?.derivation_origin ?? []
 		)
 	);
 
 	let derivationOrigin: string | undefined = $state(
 		fromNullable(
-			fromNullable((detail as JunoModalEditAuthConfigDetail).config?.internet_identity ?? [])
+			fromNullishNullable((detail as JunoModalEditAuthConfigDetail).config?.internet_identity)
 				?.derivation_origin ?? []
 		)
 	);
@@ -63,10 +64,10 @@
 
 	let maxTokens: number | undefined = $state(
 		nonNullish(
-			fromNullable((detail as JunoModalEditAuthConfigDetail).rule?.rate_config ?? [])?.max_tokens
+			fromNullishNullable((detail as JunoModalEditAuthConfigDetail).rule?.rate_config)?.max_tokens
 		)
 			? Number(
-					fromNullable((detail as JunoModalEditAuthConfigDetail).rule?.rate_config ?? [])
+					fromNullishNullable((detail as JunoModalEditAuthConfigDetail).rule?.rate_config)
 						?.max_tokens ?? 0
 				)
 			: undefined

@@ -1,14 +1,12 @@
 import { idleSignOut } from '$lib/services/auth.services';
 import { authRemainingTimeStore, type AuthStoreData } from '$lib/stores/auth.store';
-import type { PostMessage, PostMessageDataResponseAuth } from '$lib/types/post-message';
+import type { PostMessageResponse } from '$lib/types/post-message';
 
 export const initAuthWorker = async () => {
 	const AuthWorker = await import('$lib/workers/workers?worker');
 	const authWorker: Worker = new AuthWorker.default();
 
-	authWorker.onmessage = async ({
-		data
-	}: MessageEvent<PostMessage<PostMessageDataResponseAuth>>) => {
+	authWorker.onmessage = async ({ data }: MessageEvent<PostMessageResponse>) => {
 		const { msg, data: value } = data;
 
 		switch (msg) {

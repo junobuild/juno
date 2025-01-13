@@ -1,6 +1,7 @@
 import { ICP_LEDGER_CANISTER_ID, SYNC_TOKENS_TIMER_INTERVAL } from '$lib/constants/constants';
 import { fetchKongSwapTokens } from '$lib/rest/kongswap.rest';
 import { exchangeIdbStore } from '$lib/stores/idb.store';
+import type { CanisterIdText } from '$lib/types/canister';
 import type { ExchangePrice } from '$lib/types/exchange';
 import type { KongSwapToken } from '$lib/types/kongswap';
 import type {
@@ -8,7 +9,7 @@ import type {
 	PostMessageRequest
 } from '$lib/types/post-message';
 import { isNullish, nonNullish } from '@dfinity/utils';
-import { del, set } from 'idb-keyval';
+import { del, entries, set } from 'idb-keyval';
 
 export const onExchangeMessage = async ({ data: dataMsg }: MessageEvent<PostMessageRequest>) => {
 	const { msg } = dataMsg;
@@ -27,6 +28,9 @@ let timer: NodeJS.Timeout | undefined = undefined;
 
 const startTimer = async () => {
 	const sync = async () => await syncExchange();
+
+	// First we emit the value we already have in IDB
+	await emitSavedExchanges();
 
 	// We sync the cycles now but also schedule the update afterwards
 	await sync();
@@ -142,6 +146,27 @@ const cleanExchangePrice = async () => {
 	const data: PostMessageDataResponseExchangeData = {
 		[ICP_LEDGER_CANISTER_ID]: null
 	};
+
+	postMessage({
+		msg: 'syncExchange',
+		data
+	});
+};
+
+const emitSavedExchanges = async () => {
+	const exchanges = await entries<CanisterIdText, ExchangePrice>(exchangeIdbStore);
+
+	if (exchanges.length === 0) {
+		return;
+	}
+
+	const data: PostMessageDataResponseExchangeData = exchanges.reduce(
+		(acc, [canisterId, value]) => ({
+			...acc,
+			[canisterId]: value
+		}),
+		{}
+	);
 
 	postMessage({
 		msg: 'syncExchange',

@@ -16,6 +16,7 @@
 	import { orbitersStore } from '$lib/derived/orbiter.derived';
 	import { satellitesStore } from '$lib/derived/satellite.derived';
 	import { i18n } from '$lib/stores/i18n.store';
+	import { fromNullishNullable } from '$lib/utils/did.utils';
 	import { satelliteName } from '$lib/utils/satellite.utils';
 
 	interface Props {
@@ -45,7 +46,7 @@
 
 		{#each $satellitesStore ?? [] as satellite}
 			<MonitoringArticle
-				monitoring={fromNullable(fromNullable(satellite.settings)?.monitoring ?? [])}
+				monitoring={fromNullishNullable(fromNullable(satellite.settings)?.monitoring)}
 				canisterId={satellite.satellite_id}
 				segment="satellite"
 				segmentLabel={$i18n.satellites.satellite}
@@ -57,7 +58,7 @@
 
 		{#each $orbitersStore ?? [] as orbiter}
 			<MonitoringArticle
-				monitoring={fromNullable(fromNullable(orbiter.settings)?.monitoring ?? [])}
+				monitoring={fromNullishNullable(fromNullable(orbiter.settings)?.monitoring)}
 				canisterId={orbiter.orbiter_id}
 				segment="orbiter"
 				segmentLabel={$i18n.analytics.orbiter}

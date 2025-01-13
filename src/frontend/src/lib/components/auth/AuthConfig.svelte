@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { fromNullable, isNullish, nonNullish } from '@dfinity/utils';
+	import { isNullish, nonNullish } from '@dfinity/utils';
 	import { fade } from 'svelte/transition';
 	import type { Satellite } from '$declarations/mission_control/mission_control.did';
 	import type { AuthenticationConfig, Rule } from '$declarations/satellite/satellite.did';
@@ -10,6 +10,7 @@
 	import { authStore } from '$lib/stores/auth.store';
 	import { busy } from '$lib/stores/busy.store';
 	import { i18n } from '$lib/stores/i18n.store';
+	import { fromNullishNullable } from '$lib/utils/did.utils';
 	import { emit } from '$lib/utils/events.utils';
 
 	interface Props {
@@ -34,7 +35,7 @@
 	let supportConfig = $state(false);
 	let config: AuthenticationConfig | undefined = $state();
 	let derivationOrigin = $derived(
-		fromNullable(fromNullable(config?.internet_identity ?? [])?.derivation_origin ?? [])
+		fromNullishNullable(fromNullishNullable(config?.internet_identity)?.derivation_origin)
 	);
 
 	const loadConfig = async () => {
@@ -56,7 +57,7 @@
 	});
 
 	$effect(() => {
-		const rateConfig = fromNullable(rule?.rate_config ?? []);
+		const rateConfig = fromNullishNullable(rule?.rate_config);
 		maxTokens = nonNullish(rateConfig?.max_tokens) ? Number(rateConfig.max_tokens) : undefined;
 	});
 

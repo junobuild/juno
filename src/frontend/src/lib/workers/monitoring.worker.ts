@@ -16,6 +16,7 @@ import type {
 import type { PostMessage, PostMessageDataRequest } from '$lib/types/post-message';
 import { formatTCycles } from '$lib/utils/cycles.utils';
 import { fromBigIntNanoSeconds, toBigIntNanoSeconds } from '$lib/utils/date.utils';
+import { fromNullishNullable } from '$lib/utils/did.utils';
 import { emitCanister, emitSavedCanisters, loadIdentity } from '$lib/utils/worker.utils';
 import type { Identity } from '@dfinity/agent';
 import { Principal } from '@dfinity/principal';
@@ -188,9 +189,17 @@ const buildCycles = (history: MonitoringHistory): ChartsData[] =>
 				};
 			}
 
+			const {
+				cycles: { amount },
+				deposited_cycles
+			} = cycles;
+
+			// The cycles amount is collected before the round of monitoring. By adding the potential deposited cycles, we got the resulting value.
+			const cyclesAmount = amount + (fromNullable(deposited_cycles)?.amount ?? 0n);
+
 			return {
 				x: `${fromBigIntNanoSeconds(created_at).getTime()}`,
-				y: parseFloat(formatTCycles(cycles.cycles.amount))
+				y: parseFloat(formatTCycles(cyclesAmount))
 			};
 		})
 		.sort(sortChartsData);
@@ -201,7 +210,7 @@ const buildWeekDepositedCycles = (history: MonitoringHistory): TimeOfDayChartDat
 
 	return history
 		.filter(([_, result]) => {
-			const depositedCycles = fromNullable(fromNullable(result.cycles)?.deposited_cycles ?? []);
+			const depositedCycles = fromNullishNullable(fromNullable(result.cycles)?.deposited_cycles);
 
 			return (
 				nonNullish(depositedCycles) &&
@@ -291,7 +300,7 @@ const buildChartTotalPerDay = ({
 };
 
 const buildMonitoringMetadata = (history: MonitoringHistory): MonitoringMetadata | undefined => {
-	const cycles = fromNullable(history[0]?.[1].cycles ?? []);
+	const cycles = fromNullishNullable(history[0]?.[1].cycles);
 
 	const latestCycles = cycles?.cycles;
 
@@ -300,11 +309,11 @@ const buildMonitoringMetadata = (history: MonitoringHistory): MonitoringMetadata
 	}
 
 	const latestDepositedCyclesEntry = history.find(([_, entry]) =>
-		nonNullish(fromNullable(fromNullable(entry.cycles ?? [])?.deposited_cycles ?? []))
+		nonNullish(fromNullishNullable(fromNullishNullable(entry.cycles)?.deposited_cycles))
 	);
 
-	const latestDepositedCycles = fromNullable(
-		fromNullable(latestDepositedCyclesEntry?.[1].cycles ?? [])?.deposited_cycles ?? []
+	const latestDepositedCycles = fromNullishNullable(
+		fromNullishNullable(latestDepositedCyclesEntry?.[1].cycles)?.deposited_cycles
 	);
 
 	return {

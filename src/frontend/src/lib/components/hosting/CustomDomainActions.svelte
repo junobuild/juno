@@ -1,7 +1,6 @@
 <script lang="ts">
-	import { fromNullable, isNullish, nonNullish } from '@dfinity/utils';
+	import { isNullish, nonNullish } from '@dfinity/utils';
 	import { run, stopPropagation } from 'svelte/legacy';
-
 	import type { Satellite } from '$declarations/mission_control/mission_control.did';
 	import type {
 		AuthenticationConfig,
@@ -21,6 +20,7 @@
 	import type { JunoModalCustomDomainDetail } from '$lib/types/modal';
 	import type { Option } from '$lib/types/utils';
 	import { buildDeleteAuthenticationConfig } from '$lib/utils/auth.config.utils';
+	import { fromNullishNullable } from '$lib/utils/did.utils';
 	import { emit } from '$lib/utils/events.utils';
 	import { i18nFormat } from '$lib/utils/i18n.utils';
 
@@ -51,7 +51,7 @@
 		deleteMainDomain =
 			nonNullish(customDomain?.[0]) &&
 			customDomain?.[0] ===
-				fromNullable(fromNullable(config?.internet_identity ?? [])?.derivation_origin ?? []);
+				fromNullishNullable(fromNullishNullable(config?.internet_identity)?.derivation_origin);
 	});
 
 	let advancedOptions = $state(false);

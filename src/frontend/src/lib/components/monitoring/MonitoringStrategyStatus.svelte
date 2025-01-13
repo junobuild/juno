@@ -1,10 +1,11 @@
 <script lang="ts">
-	import { fromNullable, nonNullish } from '@dfinity/utils';
+	import { nonNullish } from '@dfinity/utils';
 	import type { Monitoring } from '$declarations/mission_control/mission_control.did';
 	import MonitoringSentence from '$lib/components/modals/MonitoringSentence.svelte';
 	import MonitoringDisabled from '$lib/components/monitoring/MonitoringDisabled.svelte';
 	import Value from '$lib/components/ui/Value.svelte';
 	import { i18n } from '$lib/stores/i18n.store';
+	import { fromNullishNullable } from '$lib/utils/did.utils';
 
 	interface Props {
 		monitoring: Monitoring | undefined;
@@ -13,7 +14,7 @@
 	let { monitoring }: Props = $props();
 
 	let monitoringStrategy = $derived(
-		fromNullable(fromNullable(monitoring?.cycles ?? [])?.strategy ?? [])
+		fromNullishNullable(fromNullishNullable(monitoring?.cycles)?.strategy)
 	);
 </script>
 

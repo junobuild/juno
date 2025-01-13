@@ -6,6 +6,7 @@ import { orbiterConfigs } from '$lib/derived/orbiter.derived';
 import { satellitesStore } from '$lib/derived/satellite.derived';
 import type { OrbiterSatelliteConfigEntry } from '$lib/types/ortbiter';
 import type { SatelliteIdText } from '$lib/types/satellite';
+import { fromNullishNullable } from '$lib/utils/did.utils';
 import { satelliteName } from '$lib/utils/satellite.utils';
 import { first } from '$lib/utils/utils';
 import type { Principal } from '@dfinity/principal';
@@ -21,7 +22,7 @@ export const orbiterSatellitesConfig: Readable<
 		).find(([satelliteId, _]) => satelliteId.toText() === satellite.satellite_id.toText());
 
 		const entry = config?.[1];
-		const enabled = nonNullish(fromNullable(entry?.features ?? []));
+		const enabled = nonNullish(fromNullishNullable(entry?.features));
 
 		return {
 			...acc,

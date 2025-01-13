@@ -1,4 +1,4 @@
-import type { DataStore } from '$lib/stores/data.store';
+import type { DataStore } from '$lib/stores/_data.store';
 import { i18n } from '$lib/stores/i18n.store';
 import { toasts } from '$lib/stores/toasts.store';
 import type { OptionIdentity } from '$lib/types/itentity';

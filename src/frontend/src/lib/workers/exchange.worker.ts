@@ -1,14 +1,16 @@
 import { ICP_LEDGER_CANISTER_ID, SYNC_TOKENS_TIMER_INTERVAL } from '$lib/constants/constants';
 import { fetchKongSwapTokens } from '$lib/rest/kongswap.rest';
+import { exchangeIdbStore } from '$lib/stores/idb.store';
 import type { ExchangePrice } from '$lib/types/exchange';
 import type { KongSwapToken } from '$lib/types/kongswap';
-import type { PostMessage, PostMessageDataRequest } from '$lib/types/post-message';
+import type {
+	PostMessageDataResponseExchangeData,
+	PostMessageRequest
+} from '$lib/types/post-message';
 import { isNullish, nonNullish } from '@dfinity/utils';
-import type {Canister} from "$lib/types/canister";
+import { del, set } from 'idb-keyval';
 
-export const onExchangeMessage = async ({
-	data: dataMsg
-}: MessageEvent<PostMessage<PostMessageDataRequest>>) => {
+export const onExchangeMessage = async ({ data: dataMsg }: MessageEvent<PostMessageRequest>) => {
 	const { msg } = dataMsg;
 
 	switch (msg) {
@@ -54,15 +56,20 @@ const syncExchange = async () => {
 	syncing = true;
 
 	try {
-		const currentICPPrice = await exchangeRateICPToUsd();
+		const icpExchange = await exchangeRateICPToUsd();
 
-		// TODO: emit
+		if (isNullish(icpExchange)) {
+			await cleanExchangePrice();
+			return;
+		}
+
+		await syncExchangePrice(icpExchange);
 
 		retry = 0;
 	} catch (err: unknown) {
 		console.error(err);
 
-		// TODO: emit
+		await cleanExchangePrice();
 
 		// We try few times but after a while we stop trying.
 		if (retry >= 3) {
@@ -115,10 +122,29 @@ const findICPToken = async (page = 1): Promise<KongSwapToken | undefined> => {
 	return undefined;
 };
 
-export const emitCanister = <T>(canister: Canister<T>) =>
+const syncExchangePrice = async (exchangePrice: ExchangePrice) => {
+	// Save information in indexed-db as well to load previous values on navigation and refresh
+	await set(ICP_LEDGER_CANISTER_ID, exchangePrice, exchangeIdbStore);
+
+	const data: PostMessageDataResponseExchangeData = {
+		[ICP_LEDGER_CANISTER_ID]: exchangePrice
+	};
+
 	postMessage({
-		msg: 'syncCanister',
-		data: {
-			canister
-		}
+		msg: 'syncExchange',
+		data
 	});
+};
+
+const cleanExchangePrice = async () => {
+	await del(ICP_LEDGER_CANISTER_ID, exchangeIdbStore);
+
+	const data: PostMessageDataResponseExchangeData = {
+		[ICP_LEDGER_CANISTER_ID]: null
+	};
+
+	postMessage({
+		msg: 'syncExchange',
+		data
+	});
+};

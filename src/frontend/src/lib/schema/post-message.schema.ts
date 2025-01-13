@@ -1,4 +1,6 @@
 import type { CustomDomain } from '$declarations/satellite/satellite.did';
+import { CanisterIdTextSchema } from '$lib/schema/canister.schema';
+import { ExchangePriceSchema } from '$lib/schema/exchange.schema';
 import type {
 	CanisterSegment,
 	CanisterSyncData,
@@ -15,11 +17,17 @@ export const PostMessageDataRequestDataSchema = z.object({
 	withMonitoringHistory: z.boolean().optional()
 });
 
+export const PostMessageDataResponseExchangeDataSchema = z.record(
+	CanisterIdTextSchema,
+	ExchangePriceSchema.nullable()
+);
+
 export const PostMessageDataResponseDataSchema = z.object({
 	canister: z.union([z.custom<CanisterSyncData>(), z.custom<CanisterSyncMonitoring>()]).optional(),
 	registrationState: z.custom<CustomDomainRegistrationState>().nullable().optional(),
 	wallet: z.custom<Wallet>().optional(),
-	authRemainingTime: z.number().optional()
+	authRemainingTime: z.number().optional(),
+	exchange: PostMessageDataResponseExchangeDataSchema.optional()
 });
 
 export const PostMessageRequestMsgSchema = z.enum([

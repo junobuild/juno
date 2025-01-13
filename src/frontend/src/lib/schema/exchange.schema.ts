@@ -7,4 +7,3 @@ export const ExchangePriceSchema = z.object({
 	usdChange24h: z.number().optional(),
 	updatedAt: z.number() // Represents Date.getTime()
 });
-

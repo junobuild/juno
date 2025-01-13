@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { fromNullable, isNullish, nonNullish, notEmptyString } from '@dfinity/utils';
+	import { isNullish, nonNullish, notEmptyString } from '@dfinity/utils';
 	import { createEventDispatcher, onMount } from 'svelte';
 	import type { AuthenticationConfig } from '$declarations/satellite/satellite.did';
 	import { setAuthConfig } from '$lib/api/satellites.api';
@@ -17,6 +17,7 @@
 	import type { CustomDomainDns } from '$lib/types/custom-domain';
 	import type { JunoModalCustomDomainDetail, JunoModalDetail } from '$lib/types/modal';
 	import { toCustomDomainDns } from '$lib/utils/custom-domain.utils';
+	import { fromNullishNullable } from '$lib/utils/did.utils';
 	import { emit } from '$lib/utils/events.utils';
 
 	interface Props {
@@ -97,8 +98,8 @@
 	};
 
 	const onFormNext = () => {
-		let authDomain: string | undefined = fromNullable(
-			fromNullable(config?.internet_identity ?? [])?.derivation_origin ?? []
+		let authDomain: string | undefined = fromNullishNullable(
+			fromNullishNullable(config?.internet_identity)?.derivation_origin
 		);
 
 		let existingDerivationOrigin = nonNullish(authDomain);

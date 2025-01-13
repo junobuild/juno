@@ -10,7 +10,8 @@ import {
 	buildDeleteAuthenticationConfig,
 	buildSetAuthenticationConfig
 } from '$lib/utils/auth.config.utils';
-import { fromNullable, isNullish, nonNullish, toNullable } from '@dfinity/utils';
+import { fromNullishNullable } from '$lib/utils/did.utils';
+import { isNullish, nonNullish, toNullable } from '@dfinity/utils';
 import { get } from 'svelte/store';
 
 interface UpdateAuthConfigParams {
@@ -78,7 +79,7 @@ const updateConfig = async ({
 	if (
 		isNullish(derivationOrigin?.host) &&
 		derivationOrigin?.host ===
-			fromNullable(fromNullable(config?.internet_identity ?? [])?.derivation_origin ?? [])
+			fromNullishNullable(fromNullishNullable(config?.internet_identity)?.derivation_origin)
 	) {
 		return { result: 'skip' };
 	}

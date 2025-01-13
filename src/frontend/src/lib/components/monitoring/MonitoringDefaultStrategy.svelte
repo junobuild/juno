@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { fromNullable, nonNullish } from '@dfinity/utils';
+	import { nonNullish } from '@dfinity/utils';
 	import { fade } from 'svelte/transition';
 	import MonitoringSentence from '$lib/components/modals/MonitoringSentence.svelte';
 	import Value from '$lib/components/ui/Value.svelte';
@@ -8,10 +8,11 @@
 		missionControlUserDataLoaded
 	} from '$lib/derived/mission-control-user.derived';
 	import { i18n } from '$lib/stores/i18n.store';
+	import { fromNullishNullable } from '$lib/utils/did.utils';
 
 	let monitoringStrategy = $derived(
-		fromNullable(
-			fromNullable($missionControlConfigMonitoring?.cycles ?? [])?.default_strategy ?? []
+		fromNullishNullable(
+			fromNullishNullable($missionControlConfigMonitoring?.cycles)?.default_strategy
 		)
 	);
 </script>

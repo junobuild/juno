@@ -1,6 +1,6 @@
 <script lang="ts">
 	import type { Principal } from '@dfinity/principal';
-	import { fromNullable, nonNullish } from '@dfinity/utils';
+	import { nonNullish } from '@dfinity/utils';
 	import type { Snippet } from 'svelte';
 	import { fade } from 'svelte/transition';
 	import type { Monitoring } from '$declarations/mission_control/mission_control.did';
@@ -13,6 +13,7 @@
 	import type { CanisterData, CanisterMonitoringData, Segment } from '$lib/types/canister';
 	import { formatTCycles } from '$lib/utils/cycles.utils';
 	import { formatToRelativeTime } from '$lib/utils/date.utils';
+	import { fromNullishNullable } from '$lib/utils/did.utils';
 	import { emit } from '$lib/utils/events.utils';
 
 	interface Props {
@@ -25,7 +26,7 @@
 
 	let { children, monitoring, segment, canisterId, segmentLabel }: Props = $props();
 
-	let enabled = $derived(fromNullable(monitoring?.cycles ?? [])?.enabled === true);
+	let enabled = $derived(fromNullishNullable(monitoring?.cycles)?.enabled === true);
 
 	let monitoringData = $state<CanisterMonitoringData | undefined>(undefined);
 	let canisterData = $state<CanisterData | undefined>(undefined);

@@ -17,6 +17,7 @@
 	import { PAGINATION_CONTEXT_KEY, type PaginationContext } from '$lib/types/pagination.context';
 	import { RULES_CONTEXT_KEY, type RulesContext } from '$lib/types/rules.context';
 	import { formatToDate } from '$lib/utils/date.utils';
+	import { fromNullishNullable } from '$lib/utils/did.utils';
 	import { satelliteUrl } from '$lib/utils/satellite.utils';
 
 	const { store, resetData }: DataContext<AssetNoContent> =
@@ -53,7 +54,7 @@
 		nonNullish(asset) ? fromNullable(asset.key.description) : undefined
 	);
 
-	let version: bigint | undefined = $derived(fromNullable(asset?.version ?? []));
+	let version: bigint | undefined = $derived(fromNullishNullable(asset?.version));
 
 	let deleteData: (params: { collection: string; satelliteId: Principal }) => Promise<void> =
 		$derived(async (params: { collection: string; satelliteId: Principal }) => {

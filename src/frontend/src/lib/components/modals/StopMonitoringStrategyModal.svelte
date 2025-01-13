@@ -1,6 +1,5 @@
 <script lang="ts">
 	import type { Principal } from '@dfinity/principal';
-	import { fromNullable } from '@dfinity/utils';
 	import type {
 		CyclesMonitoringStrategy,
 		Orbiter,
@@ -17,6 +16,7 @@
 	import { i18n } from '$lib/stores/i18n.store';
 	import type { JunoModalDetail, JunoModalCreateMonitoringStrategyDetail } from '$lib/types/modal';
 	import type { MonitoringStrategyProgress } from '$lib/types/strategy';
+	import { fromNullishNullable } from '$lib/utils/did.utils';
 
 	interface Props {
 		detail: JunoModalDetail;
@@ -31,13 +31,13 @@
 	let selectedOrbiters: [Principal, Orbiter][] = $state([]);
 
 	let missionControlCycles = $derived(
-		fromNullable(fromNullable(settings?.monitoring ?? [])?.cycles ?? [])
+		fromNullishNullable(fromNullishNullable(settings?.monitoring)?.cycles)
 	);
 
 	let missionControl: { monitored: boolean; strategy: CyclesMonitoringStrategy | undefined } =
 		$derived({
 			monitored: missionControlCycles?.enabled === true,
-			strategy: fromNullable(missionControlCycles?.strategy ?? [])
+			strategy: fromNullishNullable(missionControlCycles?.strategy)
 		});
 
 	let stopMissionControl: boolean | undefined = $state(undefined);

@@ -11,6 +11,7 @@
 	import { i18n } from '$lib/stores/i18n.store';
 	import { DATA_CONTEXT_KEY, type DataContext } from '$lib/types/data.context';
 	import { formatToDate } from '$lib/utils/date.utils';
+	import { fromNullishNullable } from '$lib/utils/did.utils';
 
 	const { store }: DataContext<Doc> = getContext<DataContext<Doc>>(DATA_CONTEXT_KEY);
 
@@ -27,7 +28,7 @@
 		nonNullish(doc) ? fromNullable(doc.description) : undefined
 	);
 
-	let version: bigint | undefined = $derived(fromNullable(doc?.version ?? []));
+	let version: bigint | undefined = $derived(fromNullishNullable(doc?.version));
 
 	let obj: unknown | undefined = $state(undefined);
 	run(() => {

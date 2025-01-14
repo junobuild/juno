@@ -119,11 +119,25 @@
 {/if}
 
 <style lang="scss">
+	@use '../../styles/mixins/media';
+	@use '../../styles/mixins/grid';
+
+	form {
+		@include media.min-width(large) {
+			@include grid.two-columns;
+		}
+	}
+
 	p {
 		min-height: 24px;
 	}
 
-	.cycles {
-		padding: var(--padding) 0 0;
+	.cycles,
+	button {
+		grid-column-start: 1;
+	}
+
+	button {
+		margin: var(--padding-2x) 0 0;
 	}
 </style>

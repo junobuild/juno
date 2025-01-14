@@ -23,7 +23,7 @@
 		accountIdentifier: AccountIdentifier | undefined;
 		icp: string | undefined;
 		cycles: number | undefined;
-		onreview: () => void;
+		onreview: ($event: SubmitEvent) => void;
 		onclose: () => void;
 	}
 

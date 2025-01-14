@@ -89,6 +89,11 @@
 
 		wizardBusy.stop();
 	};
+
+	const onreview = ($event: SubmitEvent) => {
+		$event.preventDefault();
+		step = 'review';
+	};
 </script>
 
 <Modal on:junoClose={onclose}>
@@ -119,7 +124,7 @@
 			{balance}
 			{accountIdentifier}
 			{onclose}
-			onreview={() => (step = 'review')}
+			{onreview}
 			bind:icp
 			bind:cycles
 		/>

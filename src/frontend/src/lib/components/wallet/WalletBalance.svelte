@@ -26,6 +26,7 @@
 	<p>
 		{#if isNullish(balance) || $exchangePricesNotLoaded}
 			<span class="skeleton main"><SkeletonText /></span>
+			<span class="skeleton"><SkeletonText /></span>
 		{:else}
 			<span in:fade class="main">
 				{#if nonNullish($icpToUsd)}
@@ -35,9 +36,11 @@
 				{/if}
 			</span>
 
-			{#if nonNullish($icpToUsd)}
-				<span in:fade>{@render icpBalance()}</span>
-			{/if}
+			<span in:fade>
+				{#if nonNullish($icpToUsd)}
+					{@render icpBalance()}
+				{/if}</span
+			>
 		{/if}
 	</p>
 </Value>
@@ -56,6 +59,7 @@
 	.skeleton {
 		display: block;
 		padding: var(--padding-0_5x) 0 0;
-		max-width: 250px;
+		max-width: 350px;
+		min-width: 150px;
 	}
 </style>

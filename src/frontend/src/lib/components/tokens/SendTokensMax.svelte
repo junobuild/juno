@@ -3,7 +3,7 @@
 	import { fade } from 'svelte/transition';
 	import { IC_TRANSACTION_FEE_ICP } from '$lib/constants/constants';
 	import { i18n } from '$lib/stores/i18n.store';
-	import { formatE8sICP } from '$lib/utils/icp.utils';
+	import { formatICP } from '$lib/utils/icp.utils';
 
 	interface Props {
 		balance: bigint | undefined;
@@ -22,7 +22,7 @@
 
 		const amount = balance - IC_TRANSACTION_FEE_ICP;
 
-		onmax(formatE8sICP(amount));
+		onmax(formatICP(amount));
 	};
 </script>
 

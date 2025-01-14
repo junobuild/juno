@@ -7,7 +7,7 @@
 	import { toasts } from '$lib/stores/toasts.store';
 	import { i18nFormat } from '$lib/utils/i18n.utils';
 	import { invalidIcpAddress } from '$lib/utils/icp-account.utils';
-	import { formatE8sICP } from '$lib/utils/icp.utils';
+	import { formatICP } from '$lib/utils/icp.utils';
 	import { invalidIcrcAddress } from '$lib/utils/icrc-account.utils';
 	import { assertAndConvertAmountToICPToken } from '$lib/utils/token.utils';
 
@@ -50,7 +50,7 @@
 		text={i18nFormat($i18n.wallet.send_information, [
 			{
 				placeholder: '{0}',
-				value: formatE8sICP(balance ?? 0n)
+				value: formatICP(balance ?? 0n)
 			}
 		])}
 	/>

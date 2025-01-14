@@ -10,7 +10,7 @@
 	import { authStore } from '$lib/stores/auth.store';
 	import { i18n } from '$lib/stores/i18n.store';
 	import { toasts } from '$lib/stores/toasts.store';
-	import { formatE8sICP } from '$lib/utils/icp.utils';
+	import { formatICP } from '$lib/utils/icp.utils';
 
 	interface Props {
 		account: IcrcAccount;
@@ -65,7 +65,7 @@
 				{$i18n.wallet.balance}
 			{/snippet}
 			{#if nonNullish(balance)}
-				{formatE8sICP(balance)} <small>ICP</small>
+				{formatICP(balance)} <small>ICP</small>
 			{:else}
 				<SkeletonText />
 			{/if}

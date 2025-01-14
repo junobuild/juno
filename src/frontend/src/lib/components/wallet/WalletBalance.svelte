@@ -5,7 +5,7 @@
 	import Value from '$lib/components/ui/Value.svelte';
 	import { exchangePricesNotLoaded, icpToUsd } from '$lib/derived/exchange.derived';
 	import { i18n } from '$lib/stores/i18n.store';
-	import { formatE8sICP, formatE8sICPToUsd } from '$lib/utils/icp.utils';
+	import { formatICP, formatICPToUsd } from '$lib/utils/icp.utils';
 
 	interface Props {
 		balance: bigint | undefined;
@@ -15,7 +15,7 @@
 </script>
 
 {#snippet icpBalance()}
-	{formatE8sICP(balance ?? 0n)} <small>ICP</small>
+	{formatICP(balance ?? 0n)} <small>ICP</small>
 {/snippet}
 
 <Value>
@@ -30,7 +30,7 @@
 		{:else}
 			<span in:fade class="main">
 				{#if nonNullish($icpToUsd)}
-					{formatE8sICPToUsd({ icp: balance, icpToUsd: $icpToUsd })}
+					{formatICPToUsd({ icp: balance, icpToUsd: $icpToUsd })}
 				{:else}
 					{@render icpBalance()}
 				{/if}

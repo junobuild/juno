@@ -6,7 +6,7 @@
 	import { E8S_PER_ICP } from '$lib/constants/constants';
 	import type { JunoModalCreateSegmentDetail, JunoModalDetail } from '$lib/types/modal';
 	import { i18nFormat } from '$lib/utils/i18n.utils';
-	import { formatE8sICP } from '$lib/utils/icp.utils';
+	import { formatICP } from '$lib/utils/icp.utils';
 
 	interface Props {
 		detail: JunoModalDetail;
@@ -49,11 +49,11 @@
 			text={i18nFormat(priceLabel, [
 				{
 					placeholder: '{0}',
-					value: formatE8sICP(fee)
+					value: formatICP(fee)
 				},
 				{
 					placeholder: '{1}',
-					value: formatE8sICP(balance)
+					value: formatICP(balance)
 				}
 			])}
 		/>

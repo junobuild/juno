@@ -13,7 +13,7 @@
 	import { toasts } from '$lib/stores/toasts.store';
 	import type { Languages } from '$lib/types/languages';
 	import { secondsToDuration } from '$lib/utils/date.utils';
-	import { formatE8sCredits } from '$lib/utils/icp.utils';
+	import { formatCredits } from '$lib/utils/icp.utils';
 
 	let lang: Languages = $state('en');
 
@@ -55,7 +55,7 @@
 						{$i18n.wallet.credits}
 					{/snippet}
 					<p>
-						{#if nonNullish(credits)}<span in:fade>{formatE8sCredits(credits)}</span>{/if}
+						{#if nonNullish(credits)}<span in:fade>{formatCredits(credits)}</span>{/if}
 					</p>
 				</Value>
 

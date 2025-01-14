@@ -22,7 +22,7 @@
 	import { formatTCycles, icpToCycles } from '$lib/utils/cycles.utils';
 	import { emit } from '$lib/utils/events.utils';
 	import { i18nFormat } from '$lib/utils/i18n.utils';
-	import { formatE8sICP } from '$lib/utils/icp.utils';
+	import { formatICP } from '$lib/utils/icp.utils';
 
 	interface Props {
 		canisterId: Principal;
@@ -133,11 +133,11 @@
 				text={i18nFormat($i18n.canisters.top_up_info, [
 					{
 						placeholder: '{0}',
-						value: formatE8sICP(balance)
+						value: formatICP(balance)
 					},
 					{
 						placeholder: '{1}',
-						value: formatE8sICP(networkFees)
+						value: formatICP(networkFees)
 					}
 				])}
 			/>

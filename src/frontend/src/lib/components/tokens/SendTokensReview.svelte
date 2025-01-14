@@ -11,7 +11,7 @@
 	import { authStore } from '$lib/stores/auth.store';
 	import { wizardBusy } from '$lib/stores/busy.store';
 	import { i18n } from '$lib/stores/i18n.store';
-	import { formatE8sICP } from '$lib/utils/icp.utils';
+	import { formatICP } from '$lib/utils/icp.utils';
 	import { amountToICPToken } from '$lib/utils/token.utils';
 
 	interface Props {
@@ -93,7 +93,7 @@
 						{$i18n.wallet.balance}
 					{/snippet}
 					<p>
-						{#if nonNullish(balance)}<span>{formatE8sICP(balance)} <small>ICP</small></span>{/if}
+						{#if nonNullish(balance)}<span>{formatICP(balance)} <small>ICP</small></span>{/if}
 					</p>
 				</Value>
 			</div>
@@ -129,7 +129,7 @@
 						{$i18n.wallet.tx_amount}
 					{/snippet}
 					<p>
-						{#if nonNullish(token)}<span>{formatE8sICP(token.toE8s())} <small>ICP</small></span
+						{#if nonNullish(token)}<span>{formatICP(token.toE8s())} <small>ICP</small></span
 							>{/if}
 					</p>
 				</Value>
@@ -139,7 +139,7 @@
 						{$i18n.wallet.fee}
 					{/snippet}
 					<p>
-						<span>{formatE8sICP(IC_TRANSACTION_FEE_ICP)} <small>ICP</small></span>
+						<span>{formatICP(IC_TRANSACTION_FEE_ICP)} <small>ICP</small></span>
 					</p>
 				</Value>
 			</div>

@@ -6,7 +6,7 @@ import {
 	MEMO_SATELLITE_CREATE_REFUND
 } from '$lib/constants/wallet.constants';
 import { i18n } from '$lib/stores/i18n.store';
-import { formatE8sICP } from '$lib/utils/icp.utils';
+import { formatICP } from '$lib/utils/icp.utils';
 import type { Transaction } from '@dfinity/ledger-icp';
 import type { Principal } from '@dfinity/principal';
 import { fromNullable } from '@dfinity/utils';
@@ -56,5 +56,5 @@ export const transactionMemo = ({
 
 export const transactionAmount = (transaction: Transaction): string | undefined =>
 	'Transfer' in transaction.operation
-		? formatE8sICP(transaction.operation.Transfer.amount.e8s)
+		? formatICP(transaction.operation.Transfer.amount.e8s)
 		: undefined;

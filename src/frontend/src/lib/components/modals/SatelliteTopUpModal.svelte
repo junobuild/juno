@@ -25,8 +25,11 @@
 </script>
 
 <CanisterTopUpModal
-	segment="satellite"
-	canisterId={satellite.satellite_id}
+	segment={{
+		segment: 'satellite',
+		canisterId: satellite.satellite_id.toText(),
+		label: satelliteName(satellite)
+	}}
 	{balance}
 	{accountIdentifier}
 	{onclose}

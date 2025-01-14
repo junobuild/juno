@@ -79,10 +79,13 @@ interface I18nCore {
 	getting_started: string;
 	dashboard: string;
 	icp_amount: string;
+	amount: string;
+	fee: string;
 }
 
 interface I18nCanisters {
 	top_up: string;
+	topping_up: string;
 	cycles_description: string;
 	top_up_in_progress: string;
 	delete_in_progress: string;
@@ -291,7 +294,6 @@ interface I18nWallet {
 	wallet_id: string;
 	sending: string;
 	sending_in_progress: string;
-	fee: string;
 	review_and_confirm: string;
 	icp_on_its_way: string;
 	or_connect_wallet: string;

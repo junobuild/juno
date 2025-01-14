@@ -75,10 +75,13 @@
 		"get_started": "这里开始",
 		"getting_started": "从这开始",
 		"dashboard": "仪表盘",
-		"icp_amount": "数量 (ICP)"
+		"icp_amount": "数量 (ICP)",
+		"amount": "金额",
+		"fee": "费用"
 	},
 	"canisters": {
 		"top_up": "充值",
+		"topping_up": "Topping-up",
 		"cycles_description": "Cycles 用于支付只能合约运行消耗. 你可以通过将ICP 转换为cycles为你的 {0} 充值.",
 		"top_up_in_progress": "充值中...",
 		"delete_in_progress": "正在删除...",
@@ -99,7 +102,7 @@
 		"upgrade_note": "一共有 {0} 升级包为你的 {1}.升级应该按顺序执行, 从小版本开始依次向上升级. 这个过程会引导你升级到适配的版本. 重复这个流程直到你的 {2} 为最新版本.",
 		"upgrade_confirm": "你的 {0} 是<strong>扩展</strong>版本，升级为<strong>默认</strong>版本会丢失所有定制开发的功能，你确定要继续吗？",
 		"converted_cycles": "Converted Cycles",
-		"top_up_info": "你当前的 wallet 余额是 {0},以及用于充值网络费用是 {1}.",
+		"top_up_info": "你当前的 wallet 余额是 {0}.",
 		"top_up_mission_control_done": "充值你的 mission control center 完成.",
 		"top_up_satellite_done": "充值你的 satellite 完成.",
 		"top_up_orbiter_done": "您的 orbiter 充值成功.",
@@ -283,7 +286,6 @@
 		"wallet_id": "钱包 ID",
 		"sending": "发送..",
 		"sending_in_progress": "正在发送...",
-		"fee": "费用",
 		"review_and_confirm": "仔细检查下面的详细信息并确认处理你的交易.",
 		"icp_on_its_way": "你的 ICP 正在路上!",
 		"or_connect_wallet": "或者链接钱包",

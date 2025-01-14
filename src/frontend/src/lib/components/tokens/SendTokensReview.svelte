@@ -1,11 +1,10 @@
 <script lang="ts">
-	import { AccountIdentifier } from '@dfinity/ledger-icp';
 	import type { Principal } from '@dfinity/principal';
 	import { nonNullish, type TokenAmountV2 } from '@dfinity/utils';
-	import { getAccountIdentifier } from '$lib/api/icp-index.api';
 	import GridArrow from '$lib/components/ui/GridArrow.svelte';
 	import Identifier from '$lib/components/ui/Identifier.svelte';
 	import Value from '$lib/components/ui/Value.svelte';
+	import WalletSendFrom from '$lib/components/wallet/WalletSendFrom.svelte';
 	import { IC_TRANSACTION_FEE_ICP } from '$lib/constants/constants';
 	import { sendTokens } from '$lib/services/tokens.services';
 	import { authStore } from '$lib/stores/auth.store';
@@ -13,6 +12,7 @@
 	import { i18n } from '$lib/stores/i18n.store';
 	import { formatICP } from '$lib/utils/icp.utils';
 	import { amountToICPToken } from '$lib/utils/token.utils';
+	import SendTokensAmount from '$lib/components/tokens/SendTokensAmount.svelte';
 
 	interface Props {
 		missionControlId: Principal;
@@ -29,10 +29,6 @@
 		amount = $bindable(),
 		onnext
 	}: Props = $props();
-
-	let accountIdentifier: AccountIdentifier | undefined = $derived(
-		getAccountIdentifier(missionControlId)
-	);
 
 	let token: TokenAmountV2 | undefined = $derived(amountToICPToken(amount));
 
@@ -66,38 +62,7 @@
 
 <form onsubmit={onSubmit}>
 	<div class="columns">
-		<div class="card-container with-title from">
-			<span class="title">{$i18n.wallet.tx_from}</span>
-
-			<div class="content">
-				<Value>
-					{#snippet label()}
-						{$i18n.wallet.wallet_id}
-					{/snippet}
-					<p class="identifier">
-						<Identifier shorten={false} identifier={missionControlId.toText()} />
-					</p>
-				</Value>
-
-				<Value>
-					{#snippet label()}
-						{$i18n.wallet.account_identifier}
-					{/snippet}
-					<p class="identifier">
-						<Identifier identifier={accountIdentifier?.toHex() ?? ''} />
-					</p>
-				</Value>
-
-				<Value>
-					{#snippet label()}
-						{$i18n.wallet.balance}
-					{/snippet}
-					<p>
-						{#if nonNullish(balance)}<span>{formatICP(balance)} <small>ICP</small></span>{/if}
-					</p>
-				</Value>
-			</div>
-		</div>
+		<WalletSendFrom {missionControlId} {balance} />
 
 		<GridArrow />
 
@@ -120,18 +85,11 @@
 			<span class="title">{$i18n.wallet.sending}</span>
 
 			<div class="content">
-				<Value>
-					{#snippet label()}
-						{$i18n.wallet.tx_amount}
-					{/snippet}
-					<p>
-						{#if nonNullish(token)}<span>{formatICP(token.toE8s())} <small>ICP</small></span>{/if}
-					</p>
-				</Value>
+				<SendTokensAmount {token} />
 
 				<Value>
 					{#snippet label()}
-						{$i18n.wallet.fee}
+						{$i18n.core.fee}
 					{/snippet}
 					<p>
 						<span>{formatICP(IC_TRANSACTION_FEE_ICP)} <small>ICP</small></span>
@@ -152,11 +110,6 @@
 
 	.columns {
 		@include grid.two-columns-with-arrow;
-	}
-
-	.from {
-		grid-row-start: 1;
-		grid-row-end: 3;
 	}
 
 	.sending {

@@ -6,49 +6,47 @@
 	import InputIcp from '$lib/components/core/InputIcp.svelte';
 	import MissionControlICPInfo from '$lib/components/mission-control/MissionControlICPInfo.svelte';
 	import Html from '$lib/components/ui/Html.svelte';
-	import Value from '$lib/components/ui/Value.svelte';
 	import { TOP_UP_NETWORK_FEES } from '$lib/constants/constants';
 	import { icpToUsd } from '$lib/derived/exchange.derived';
 	import { missionControlIdDerived } from '$lib/derived/mission-control.derived';
 	import { i18n } from '$lib/stores/i18n.store';
-	import type { Segment } from '$lib/types/canister';
-	import { formatTCycles, icpToCycles } from '$lib/utils/cycles.utils';
+	import type { CanisterSegmentWithLabel } from '$lib/types/canister';
+	import { icpToCycles } from '$lib/utils/cycles.utils';
 	import { i18nFormat } from '$lib/utils/i18n.utils';
 	import { formatICPToHTML } from '$lib/utils/icp.utils';
+	import CanisterTopUpCycles from '$lib/components/canister/CanisterTopUpCycles.svelte';
 
 	interface Props {
 		intro?: Snippet;
-		segment: Segment;
+		segment: CanisterSegmentWithLabel;
 		balance: bigint;
 		accountIdentifier: AccountIdentifier | undefined;
 		icp: string | undefined;
-		invalidCycles: boolean;
-		onsubmit: ($event: SubmitEvent) => Promise<void>;
+		cycles: number | undefined;
+		onreview: () => void;
 	}
 
 	let {
 		accountIdentifier,
-		onsubmit,
+		onreview,
 		intro,
 		segment,
 		balance,
-		icp = $bindable(),
-		invalidCycles = $bindable(false)
+		icp = $bindable(undefined),
+		cycles = $bindable(undefined)
 	}: Props = $props();
 
 	let trillionRatio: bigint | undefined = $state();
 	onMount(async () => (trillionRatio = await icpXdrConversionRate()));
 
-	let cycles: number | undefined = $derived(
+	let convertedCycles: number | undefined = $derived(
 		nonNullish(trillionRatio) && !isNaN(Number(icp)) && nonNullish(icp)
 			? icpToCycles({ icp: Number(icp), trillionRatio })
 			: undefined
 	);
 
-	let validCycles = $derived(nonNullish(cycles));
-
 	$effect(() => {
-		invalidCycles = !validCycles;
+		cycles = convertedCycles;
 	});
 </script>
 
@@ -58,7 +56,7 @@
 	{i18nFormat($i18n.canisters.cycles_description, [
 		{
 			placeholder: '{0}',
-			value: segment
+			value: segment.segment.replace('_', ' ')
 		}
 	])}
 	<Html
@@ -66,10 +64,6 @@
 			{
 				placeholder: '{0}',
 				value: formatICPToHTML({ e8s: balance, bold: false, icpToUsd: $icpToUsd })
-			},
-			{
-				placeholder: '{1}',
-				value: formatICPToHTML({ e8s: TOP_UP_NETWORK_FEES, bold: false, icpToUsd: $icpToUsd })
 			}
 		])}
 	/>
@@ -78,20 +72,15 @@
 {#if balance <= TOP_UP_NETWORK_FEES}
 	<MissionControlICPInfo {accountIdentifier} onclose={close} />
 {:else}
-	<form {onsubmit}>
+	<form onsubmit={onreview}>
 		<InputIcp bind:amount={icp} {balance} />
 
 		<div class="cycles">
-			<Value>
-				{#snippet label()}
-					{$i18n.canisters.converted_cycles}
-				{/snippet}
-				{nonNullish(cycles) ? `${formatTCycles(BigInt(cycles ?? 0))}` : '0'} TCycles
-			</Value>
+			<CanisterTopUpCycles {cycles} />
 		</div>
 
-		<button type="submit" disabled={isNullish($missionControlIdDerived) || invalidCycles}
-			>{$i18n.canisters.top_up}</button
+		<button type="submit" disabled={isNullish($missionControlIdDerived) || isNullish(cycles)}
+			>{$i18n.core.review}</button
 		>
 	</form>
 {/if}
@@ -113,9 +102,5 @@
 	.cycles,
 	button {
 		grid-column-start: 1;
-	}
-
-	button {
-		margin: var(--padding-2x) 0 0;
 	}
 </style>

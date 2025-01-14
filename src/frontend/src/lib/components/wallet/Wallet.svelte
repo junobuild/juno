@@ -22,6 +22,7 @@
 	import { emit } from '$lib/utils/events.utils';
 	import { formatE8sICP } from '$lib/utils/icp.utils';
 	import { last } from '$lib/utils/utils';
+	import WalletBalance from "$lib/components/wallet/WalletBalance.svelte";
 
 	interface Props {
 		missionControlId: Principal;
@@ -141,16 +142,7 @@
 				</div>
 
 				<div>
-					<Value>
-						{#snippet label()}
-							{$i18n.wallet.balance}
-						{/snippet}
-						<p>
-							{#if nonNullish(balance)}<span in:fade
-									>{formatE8sICP(balance)} <small>ICP</small></span
-								>{:else}<span class="skeleton"><SkeletonText /></span>{/if}
-						</p>
-					</Value>
+					<WalletBalance {balance} />
 				</div>
 			</div>
 		</div>
@@ -173,15 +165,3 @@
 {/if}
 
 <ReceiveTokens bind:visible={receiveVisible} {missionControlId} />
-
-<style lang="scss">
-	p {
-		min-height: 24px;
-	}
-
-	.skeleton {
-		display: block;
-		padding: var(--padding-0_5x) 0 0;
-		max-width: 150px;
-	}
-</style>

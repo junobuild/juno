@@ -17,6 +17,7 @@
 		duration={5000}
 		amount={200}
 		fallDistance="300px"
+		colorArray={['var(--color-primary)', 'var(--color-secondary)', 'var(--color-tertiary)']}
 	/>
 </div>
 

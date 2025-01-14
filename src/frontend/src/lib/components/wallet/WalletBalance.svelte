@@ -3,7 +3,11 @@
 	import { fade } from 'svelte/transition';
 	import SkeletonText from '$lib/components/ui/SkeletonText.svelte';
 	import Value from '$lib/components/ui/Value.svelte';
-	import { exchangePricesNotLoaded, icpToUsd } from '$lib/derived/exchange.derived';
+	import {
+		exchangePricesNotLoaded,
+		icpToUsd,
+		icpToUsdDefined
+	} from '$lib/derived/exchange.derived';
 	import { i18n } from '$lib/stores/i18n.store';
 	import { formatICP, formatICPToUsd } from '$lib/utils/icp.utils';
 
@@ -29,7 +33,7 @@
 			<span class="skeleton"><SkeletonText /></span>
 		{:else}
 			<span in:fade class="main">
-				{#if nonNullish($icpToUsd)}
+				{#if nonNullish($icpToUsd) && $icpToUsdDefined}
 					{formatICPToUsd({ icp: balance, icpToUsd: $icpToUsd })}
 				{:else}
 					{@render icpBalance()}
@@ -37,7 +41,7 @@
 			</span>
 
 			<span in:fade>
-				{#if nonNullish($icpToUsd)}
+				{#if nonNullish($icpToUsd) && $icpToUsdDefined}
 					{@render icpBalance()}
 				{/if}</span
 			>

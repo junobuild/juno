@@ -1,4 +1,5 @@
 import { E8S_PER_ICP } from '$lib/constants/constants';
+import { nonNullish } from '@dfinity/utils';
 import { formatNumber, formatUsd } from './number.utils';
 
 /**
@@ -35,3 +36,37 @@ export const formatCredits = (credits: bigint): string =>
 		minFraction: 2,
 		maxFraction: 2
 	});
+
+/**
+ * Generates an HTML string representation of an ICP value, optionally including its USD equivalent.
+ *
+ * @param {Object} params - The parameters for formatting the HTML.
+ * @param {bigint} params.e8s - The value of ICP in e8s (1 ICP = 10^8 e8s).
+ * @param {boolean} params.bold - Whether the ICP value should be displayed in bold.
+ * @param {number | undefined} params.icpToUsd - The exchange rate of 1 ICP to USD (optional).
+ * @returns {string} - An HTML string representing the ICP value, optionally with its USD equivalent.
+ */
+export const formatICPToHTML = ({
+	e8s,
+	bold,
+	icpToUsd
+}: {
+	e8s: bigint;
+	bold: boolean;
+	icpToUsd: number | undefined;
+}): string => {
+	const tag = bold ? 'strong' : 'span';
+
+	const icpValue = (): string => `<${tag}>${formatICP(e8s)} <small>ICP</small></${tag}>`;
+
+	if (nonNullish(icpToUsd) && icpToUsd > 0) {
+		const value = formatICPToUsd({ icp: e8s, icpToUsd: icpToUsd });
+
+		// Hardcoded $0.00. We can convert to number but, ultimately it's the same result, we do not want to display $0.00.
+		if (value !== '$0.00') {
+			return `${icpValue()} <small>(${formatICPToUsd({ icp: e8s, icpToUsd: icpToUsd })})</small>`;
+		}
+	}
+
+	return icpValue();
+};

@@ -98,7 +98,7 @@
 		"upgrade_note": "There is a total of {0} upgrades available for your {1}. Upgrades should be executed one after the other, starting with the lower version number and moving upward. This process will guide you by upgrading to the next compatible version. Repeat the process until your {2} is up-to-date.",
 		"upgrade_confirm": "Your {0} appears to be an <strong>extended</strong> build. Upgrading to the <strong>stock</strong> version will remove any custom features you have developed. Are you sure you want to continue?",
 		"additional_cycles": "Additional Cycles",
-		"top_up_info": "Your current wallet balance is {0} ICP, and network fees for topping up are {1} ICP.",
+		"top_up_info": "Your current wallet balance is {0}, and network fees for topping up are {1}.",
 		"top_up_mission_control_done": "Your mission control center has been topped-up.",
 		"top_up_satellite_done": "Your satellite has been topped-up.",
 		"top_up_orbiter_done": "Your orbiter has been topped-up.",

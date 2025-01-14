@@ -37,6 +37,33 @@
 		padding: 0;
 		display: block;
 
+		&.primary {
+			--card-border-color: var(--color-primary);
+
+			.title {
+				background: var(--color-primary);
+				color: var(--color-primary-contrast);
+			}
+		}
+
+		&.secondary {
+			--card-border-color: var(--color-secondary);
+
+			.title {
+				background: var(--color-secondary);
+				color: var(--color-secondary-contrast);
+			}
+		}
+
+		&.tertiary {
+			--card-border-color: var(--color-tertiary);
+
+			.title {
+				background: var(--color-tertiary);
+				color: var(--color-tertiary-contrast);
+			}
+		}
+
 		.title {
 			padding: var(--padding-0_5x) var(--padding-2x);
 

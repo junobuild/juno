@@ -13,6 +13,7 @@
 	import SpinnerModal from '$lib/components/ui/SpinnerModal.svelte';
 	import Value from '$lib/components/ui/Value.svelte';
 	import { E8S_PER_ICP, IC_TRANSACTION_FEE_ICP } from '$lib/constants/constants';
+	import { icpToUsd } from '$lib/derived/exchange.derived';
 	import { missionControlIdDerived } from '$lib/derived/mission-control.derived';
 	import { authStore } from '$lib/stores/auth.store';
 	import { wizardBusy } from '$lib/stores/busy.store';
@@ -22,7 +23,7 @@
 	import { formatTCycles, icpToCycles } from '$lib/utils/cycles.utils';
 	import { emit } from '$lib/utils/events.utils';
 	import { i18nFormat } from '$lib/utils/i18n.utils';
-	import { formatICP } from '$lib/utils/icp.utils';
+	import { formatICPToHTML } from '$lib/utils/icp.utils';
 
 	interface Props {
 		canisterId: Principal;
@@ -133,11 +134,11 @@
 				text={i18nFormat($i18n.canisters.top_up_info, [
 					{
 						placeholder: '{0}',
-						value: formatICP(balance)
+						value: formatICPToHTML({ e8s: balance, bold: false, icpToUsd: $icpToUsd })
 					},
 					{
 						placeholder: '{1}',
-						value: formatICP(networkFees)
+						value: formatICPToHTML({ e8s: networkFees, bold: false, icpToUsd: $icpToUsd })
 					}
 				])}
 			/>

@@ -74,7 +74,8 @@
 		"open": "打开",
 		"get_started": "这里开始",
 		"getting_started": "从这开始",
-		"dashboard": "仪表盘"
+		"dashboard": "仪表盘",
+		"icp_amount": "数量 (ICP)"
 	},
 	"canisters": {
 		"top_up": "充值",
@@ -278,7 +279,6 @@
 		"send_information": "安全地发送代币到任何地址. 你的钱包还有 <strong>{0}</strong> ICP.",
 		"destination": "目的地",
 		"destination_placeholder": "输入目的地地址",
-		"icp_amount": "数量 (ICP)",
 		"amount_placeholder": "输入数量",
 		"wallet_id": "钱包 ID",
 		"sending": "发送..",

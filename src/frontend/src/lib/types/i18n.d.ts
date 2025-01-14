@@ -78,6 +78,7 @@ interface I18nCore {
 	get_started: string;
 	getting_started: string;
 	dashboard: string;
+	icp_amount: string;
 }
 
 interface I18nCanisters {
@@ -286,7 +287,6 @@ interface I18nWallet {
 	send_information: string;
 	destination: string;
 	destination_placeholder: string;
-	icp_amount: string;
 	amount_placeholder: string;
 	wallet_id: string;
 	sending: string;

@@ -21,10 +21,12 @@ export const amountToICPToken = (amount: string | undefined): TokenAmountV2 | un
 
 export const assertAndConvertAmountToICPToken = ({
 	amount,
-	balance
+	balance,
+	fee = IC_TRANSACTION_FEE_ICP
 }: {
 	amount: string | undefined;
 	balance: bigint | undefined;
+	fee?: bigint;
 }): { valid: boolean; tokenAmount?: TokenAmountV2 } => {
 	const labels = get(i18n);
 
@@ -51,7 +53,7 @@ export const assertAndConvertAmountToICPToken = ({
 		return { valid: false };
 	}
 
-	if (balance + IC_TRANSACTION_FEE_ICP < tokenAmount.toE8s()) {
+	if (balance + fee < tokenAmount.toE8s()) {
 		toasts.error({
 			text: labels.errors.invalid_amount
 		});

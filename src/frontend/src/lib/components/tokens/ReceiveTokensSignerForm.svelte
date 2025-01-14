@@ -75,7 +75,7 @@
 	<div>
 		<Value>
 			{#snippet label()}
-				{$i18n.wallet.icp_amount}
+				{$i18n.core.icp_amount}
 			{/snippet}
 			<Input
 				name="amount"

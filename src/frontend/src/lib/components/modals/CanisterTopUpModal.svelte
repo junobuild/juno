@@ -7,7 +7,7 @@
 	import CanisterTopUpForm from '$lib/components/canister/CanisterTopUpForm.svelte';
 	import Modal from '$lib/components/ui/Modal.svelte';
 	import SpinnerModal from '$lib/components/ui/SpinnerModal.svelte';
-	import { E8S_PER_ICP } from '$lib/constants/constants';
+	import { TOP_UP_NETWORK_FEES } from '$lib/constants/constants';
 	import { missionControlIdDerived } from '$lib/derived/mission-control.derived';
 	import { authStore } from '$lib/stores/auth.store';
 	import { wizardBusy } from '$lib/stores/busy.store';
@@ -15,6 +15,7 @@
 	import { toasts } from '$lib/stores/toasts.store';
 	import type { Segment } from '$lib/types/canister';
 	import { emit } from '$lib/utils/events.utils';
+	import { assertAndConvertAmountToICPToken } from '$lib/utils/token.utils';
 
 	interface Props {
 		canisterId: Principal;
@@ -30,8 +31,8 @@
 
 	let step: 'init' | 'in_progress' | 'ready' | 'error' = $state('init');
 
-	let icp: number | undefined = $state(undefined);
-	let invalidIcpCycles = $state(false);
+	let icp: string | undefined = $state(undefined);
+	let invalidCycles = $state(false);
 
 	const onsubmit = async ($event: SubmitEvent) => {
 		$event.preventDefault();
@@ -43,10 +44,20 @@
 			return;
 		}
 
-		if (isNullish(icp) || invalidIcpCycles) {
+		if (invalidCycles) {
 			toasts.error({
 				text: $i18n.errors.invalid_amount_to_top_up
 			});
+			return;
+		}
+
+		const { valid, tokenAmount } = assertAndConvertAmountToICPToken({
+			balance,
+			amount: icp,
+			fee: TOP_UP_NETWORK_FEES
+		});
+
+		if (!valid || isNullish(tokenAmount)) {
 			return;
 		}
 
@@ -57,7 +68,7 @@
 			await topUp({
 				canisterId,
 				missionControlId: $missionControlIdDerived,
-				e8s: BigInt(icp * Number(E8S_PER_ICP)),
+				e8s: tokenAmount.toE8s(),
 				identity: $authStore.identity
 			});
 
@@ -95,7 +106,7 @@
 			{accountIdentifier}
 			{onsubmit}
 			bind:icp
-			bind:invalidIcpCycles
+			bind:invalidCycles
 		/>
 	{/if}
 </Modal>

@@ -101,7 +101,7 @@ interface I18nCanisters {
 	more_upgrade: string;
 	upgrade_note: string;
 	upgrade_confirm: string;
-	additional_cycles: string;
+	converted_cycles: string;
 	top_up_info: string;
 	top_up_mission_control_done: string;
 	top_up_satellite_done: string;
@@ -514,6 +514,7 @@ interface I18nErrors {
 	orbiter_unexpected_error: string;
 	transactions_next: string;
 	transactions_export: string;
+	invalid_amount_to_top_up: string;
 	invalid_cycles_to_transfer: string;
 	invalid_cycles_destination: string;
 	transfer_cycles: string;

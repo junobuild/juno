@@ -11,9 +11,10 @@
 
 	interface Props {
 		detail: JunoModalDetail;
+		onclose: () => void;
 	}
 
-	let { detail }: Props = $props();
+	let { detail, onclose }: Props = $props();
 
 	let balance = $state(0n);
 	let accountIdentifier: AccountIdentifier | undefined = $derived(
@@ -31,7 +32,7 @@
 		canisterId={$missionControlIdDerived}
 		{balance}
 		{accountIdentifier}
-		on:junoClose
+		{onclose}
 	>
 		{#snippet intro()}
 			<h2>

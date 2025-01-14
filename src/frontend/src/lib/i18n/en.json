@@ -82,6 +82,7 @@
 	"canisters": {
 		"top_up": "Top-up",
 		"topping_up": "Topping-up",
+		"review_and_confirm_top_up": "Review the details below and confirm to proceed with your top-up.",
 		"cycles_description": "Cycles are the unit of payment for operating your smart contracts. You can top-up (recharge) your {0} by converting ICP to cycles.",
 		"top_up_in_progress": "Top-up in progress...",
 		"delete_in_progress": "Deletion in progress...",

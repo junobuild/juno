@@ -28,9 +28,9 @@
 	let token: TokenAmountV2 | undefined = $derived(amountToICPToken(icp));
 </script>
 
-<h2>{$i18n.wallet.send}</h2>
+<h2>{$i18n.canisters.top_up}</h2>
 
-<p>{$i18n.wallet.review_and_confirm}</p>
+<p>{$i18n.canisters.review_and_confirm_top_up}</p>
 
 <form {onsubmit}>
 	<div class="columns">

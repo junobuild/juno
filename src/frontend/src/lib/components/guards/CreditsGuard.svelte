@@ -1,12 +1,14 @@
 <script lang="ts">
 	import type { AccountIdentifier } from '@dfinity/ledger-icp';
+	import { nonNullish } from '@dfinity/utils';
 	import type { Snippet } from 'svelte';
 	import MissionControlICPInfo from '$lib/components/mission-control/MissionControlICPInfo.svelte';
 	import Html from '$lib/components/ui/Html.svelte';
 	import { E8S_PER_ICP } from '$lib/constants/constants';
+	import { icpToUsd } from '$lib/derived/exchange.derived';
 	import type { JunoModalCreateSegmentDetail, JunoModalDetail } from '$lib/types/modal';
 	import { i18nFormat } from '$lib/utils/i18n.utils';
-	import { formatICP } from '$lib/utils/icp.utils';
+	import { formatICP, formatICPToUsd } from '$lib/utils/icp.utils';
 
 	interface Props {
 		detail: JunoModalDetail;
@@ -41,6 +43,18 @@
 	$effect(() => {
 		insufficientFunds = balance < fee && notEnoughCredits;
 	});
+
+	const priceValue = ({ e8s, bold }: { e8s: bigint; bold: boolean }): string => {
+		const tag = bold ? 'strong' : 'span';
+
+		const icpValue = (): string => `<${tag}>${formatICP(e8s)} <small>ICP</small></${tag}>`;
+
+		if (nonNullish($icpToUsd)) {
+			return `${icpValue()} <small>(${formatICPToUsd({ icp: e8s, icpToUsd: $icpToUsd })})</small>`;
+		}
+
+		return icpValue();
+	};
 </script>
 
 {#if notEnoughCredits}
@@ -49,11 +63,11 @@
 			text={i18nFormat(priceLabel, [
 				{
 					placeholder: '{0}',
-					value: formatICP(fee)
+					value: priceValue({ e8s: fee, bold: true })
 				},
 				{
 					placeholder: '{1}',
-					value: formatICP(balance)
+					value: priceValue({ e8s: balance, bold: false })
 				}
 			])}
 		/>

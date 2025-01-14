@@ -5,8 +5,9 @@
 	import { getAccountIdentifier } from '$lib/api/icp-index.api';
 	import Identifier from '$lib/components/ui/Identifier.svelte';
 	import Value from '$lib/components/ui/Value.svelte';
+	import { icpToUsd } from '$lib/derived/exchange.derived';
 	import { i18n } from '$lib/stores/i18n.store';
-	import { formatICP } from '$lib/utils/icp.utils';
+	import { formatICP, formatICPToUsd } from '$lib/utils/icp.utils';
 
 	interface Props {
 		missionControlId: Principal;
@@ -47,7 +48,13 @@
 				{$i18n.wallet.balance}
 			{/snippet}
 			<p>
-				{#if nonNullish(balance)}<span>{formatICP(balance)} <small>ICP</small></span>{/if}
+				{#if nonNullish(balance)}
+					<span>{formatICP(balance)} <small>ICP</small></span>
+
+					{#if nonNullish($icpToUsd)}
+						<span class="usd">{formatICPToUsd({ icp: balance, icpToUsd: $icpToUsd })}</span>
+					{/if}
+				{/if}
 			</p>
 		</Value>
 	</div>
@@ -57,5 +64,10 @@
 	.from {
 		grid-row-start: 1;
 		grid-row-end: 3;
+	}
+
+	.usd {
+		display: block;
+		font-size: var(--font-size-small);
 	}
 </style>

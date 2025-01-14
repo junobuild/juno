@@ -12,9 +12,9 @@
 	import { missionControlIdDerived } from '$lib/derived/mission-control.derived';
 	import { i18n } from '$lib/stores/i18n.store';
 	import type { Segment } from '$lib/types/canister';
-	import { formatTCycles, icpToCycles } from '$lib/utils/cycles.utils.js';
-	import { i18nFormat } from '$lib/utils/i18n.utils.js';
-	import { formatICPToHTML } from '$lib/utils/icp.utils.js';
+	import { formatTCycles, icpToCycles } from '$lib/utils/cycles.utils';
+	import { i18nFormat } from '$lib/utils/i18n.utils';
+	import { formatICPToHTML } from '$lib/utils/icp.utils';
 
 	interface Props {
 		intro?: Snippet;

@@ -4,7 +4,7 @@
 	import { isNullish } from '@dfinity/utils';
 	import type { Snippet } from 'svelte';
 	import { topUp } from '$lib/api/mission-control.api';
-	import CanisterTopUpFrom from '$lib/components/canister/CanisterTopUpFrom.svelte';
+	import CanisterTopUpForm from '$lib/components/canister/CanisterTopUpForm.svelte';
 	import Modal from '$lib/components/ui/Modal.svelte';
 	import SpinnerModal from '$lib/components/ui/SpinnerModal.svelte';
 	import { E8S_PER_ICP } from '$lib/constants/constants';
@@ -88,7 +88,7 @@
 			<p>{$i18n.canisters.top_up_in_progress}</p>
 		</SpinnerModal>
 	{:else}
-		<CanisterTopUpFrom
+		<CanisterTopUpForm
 			{intro}
 			{segment}
 			{balance}

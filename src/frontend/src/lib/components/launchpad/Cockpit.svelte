@@ -24,7 +24,7 @@
 	import { loadOrbiters } from '$lib/services/orbiters.services';
 	import { i18n } from '$lib/stores/i18n.store';
 	import type { CanisterData } from '$lib/types/canister';
-	import WalletBalance from "$lib/components/wallet/WalletBalance.svelte";
+	import WalletInlineBalance from "$lib/components/wallet/WalletInlineBalance.svelte";
 
 	run(() => {
 		// @ts-expect-error TODO: to be migrated to Svelte v5
@@ -144,7 +144,7 @@
 			<span class="link">
 				<span class="link-title">{$i18n.wallet.title}</span>
 				<span class="link-details">
-					<WalletBalance balance={walletBalance} />
+					<WalletInlineBalance balance={walletBalance} />
 				</span>
 			</span>
 		</p>

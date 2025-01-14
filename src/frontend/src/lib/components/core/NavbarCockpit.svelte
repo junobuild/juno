@@ -15,7 +15,7 @@
 	import { loadOrbiters } from '$lib/services/orbiters.services';
 	import { i18n } from '$lib/stores/i18n.store';
 	import type { CanisterData } from '$lib/types/canister';
-	import WalletBalance from "$lib/components/wallet/WalletBalance.svelte";
+	import WalletInlineBalance from "$lib/components/wallet/WalletInlineBalance.svelte";
 
 	let missionControlData: CanisterData | undefined = $state(undefined);
 	let orbiterData: CanisterData | undefined = $state(undefined);
@@ -75,7 +75,7 @@
 			<div in:slide={{ axis: 'x' }} class="container wallet">
 				<NavbarLink href="/wallet" ariaLabel={`${$i18n.core.open}: ${$i18n.wallet.title}`}>
 					<IconWallet />
-					<WalletBalance {balance} />
+					<WalletInlineBalance {balance} />
 				</NavbarLink>
 			</div>
 		{/if}

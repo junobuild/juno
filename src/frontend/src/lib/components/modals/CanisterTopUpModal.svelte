@@ -118,6 +118,7 @@
 			{segment}
 			{balance}
 			{accountIdentifier}
+			{onclose}
 			onreview={() => (step = 'review')}
 			bind:icp
 			bind:cycles

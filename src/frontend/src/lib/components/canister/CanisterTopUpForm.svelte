@@ -24,6 +24,7 @@
 		icp: string | undefined;
 		cycles: number | undefined;
 		onreview: () => void;
+		onclose: () => void;
 	}
 
 	let {
@@ -32,6 +33,7 @@
 		intro,
 		segment,
 		balance,
+		onclose,
 		icp = $bindable(undefined),
 		cycles = $bindable(undefined)
 	}: Props = $props();
@@ -70,7 +72,7 @@
 </p>
 
 {#if balance <= TOP_UP_NETWORK_FEES}
-	<MissionControlICPInfo {accountIdentifier} onclose={close} />
+	<MissionControlICPInfo {accountIdentifier} {onclose} />
 {:else}
 	<form onsubmit={onreview}>
 		<InputIcp bind:amount={icp} {balance} />

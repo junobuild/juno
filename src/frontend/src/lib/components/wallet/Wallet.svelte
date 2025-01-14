@@ -3,9 +3,7 @@
 	import type { Principal } from '@dfinity/principal';
 	import { isNullish, nonNullish } from '@dfinity/utils';
 	import { compare } from 'semver';
-	import { onMount } from 'svelte';
 	import { fade } from 'svelte/transition';
-	import { getCredits } from '$lib/api/console.api';
 	import { getAccountIdentifier, getTransactions } from '$lib/api/icp-index.api';
 	import ReceiveTokens from '$lib/components/tokens/ReceiveTokens.svelte';
 	import Transactions from '$lib/components/transactions/Transactions.svelte';
@@ -22,7 +20,7 @@
 	import { i18n } from '$lib/stores/i18n.store';
 	import { toasts } from '$lib/stores/toasts.store';
 	import { emit } from '$lib/utils/events.utils';
-	import { formatE8sCredits, formatE8sICP } from '$lib/utils/icp.utils';
+	import { formatE8sICP } from '$lib/utils/icp.utils';
 	import { last } from '$lib/utils/utils';
 
 	interface Props {
@@ -32,22 +30,6 @@
 	let { missionControlId }: Props = $props();
 
 	const accountIdentifier = getAccountIdentifier(missionControlId);
-	let credits: bigint | undefined = $state();
-
-	/**
-	 * Credits
-	 */
-
-	const loadCredits = async () => {
-		try {
-			credits = await getCredits($authStore.identity);
-		} catch (err: unknown) {
-			toasts.error({
-				text: $i18n.errors.load_credits,
-				detail: err
-			});
-		}
-	};
 
 	/**
 	 * Wallet
@@ -99,12 +81,6 @@
 			disableInfiniteScroll = true;
 		}
 	};
-
-	/**
-	 * Lifecycle
-	 */
-
-	onMount(async () => await loadCredits());
 
 	/**
 	 * Actions
@@ -175,17 +151,6 @@
 								>{:else}<span class="skeleton"><SkeletonText /></span>{/if}
 						</p>
 					</Value>
-
-					<div class="credits">
-						<Value>
-							{#snippet label()}
-								{$i18n.wallet.credits}
-							{/snippet}
-							<p>
-								{#if nonNullish(credits)}<span in:fade>{formatE8sCredits(credits)}</span>{/if}
-							</p>
-						</Value>
-					</div>
 				</div>
 			</div>
 		</div>
@@ -218,9 +183,5 @@
 		display: block;
 		padding: var(--padding-0_5x) 0 0;
 		max-width: 150px;
-	}
-
-	.credits {
-		padding: var(--padding) 0 0;
 	}
 </style>

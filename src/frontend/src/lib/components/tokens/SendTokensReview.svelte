@@ -129,8 +129,7 @@
 						{$i18n.wallet.tx_amount}
 					{/snippet}
 					<p>
-						{#if nonNullish(token)}<span>{formatICP(token.toE8s())} <small>ICP</small></span
-							>{/if}
+						{#if nonNullish(token)}<span>{formatICP(token.toE8s())} <small>ICP</small></span>{/if}
 					</p>
 				</Value>
 

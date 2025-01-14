@@ -1,18 +1,18 @@
 <script lang="ts">
+	import { Principal } from '@dfinity/principal';
 	import { nonNullish, type TokenAmountV2 } from '@dfinity/utils';
+	import CanisterTopUpCycles from '$lib/components/canister/CanisterTopUpCycles.svelte';
+	import Segment from '$lib/components/segments/Segment.svelte';
+	import SendTokensAmount from '$lib/components/tokens/SendTokensAmount.svelte';
 	import GridArrow from '$lib/components/ui/GridArrow.svelte';
+	import Value from '$lib/components/ui/Value.svelte';
 	import WalletSendFrom from '$lib/components/wallet/WalletSendFrom.svelte';
+	import { TOP_UP_NETWORK_FEES } from '$lib/constants/constants';
 	import { missionControlIdDerived } from '$lib/derived/mission-control.derived';
 	import { i18n } from '$lib/stores/i18n.store';
-	import Value from '$lib/components/ui/Value.svelte';
 	import type { CanisterSegmentWithLabel } from '$lib/types/canister';
-	import Segment from '$lib/components/segments/Segment.svelte';
-	import { Principal } from '@dfinity/principal';
-	import { amountToICPToken } from '$lib/utils/token.utils';
-	import SendTokensAmount from '$lib/components/tokens/SendTokensAmount.svelte';
 	import { formatICP } from '$lib/utils/icp.utils';
-	import { TOP_UP_NETWORK_FEES } from '$lib/constants/constants';
-	import CanisterTopUpCycles from '$lib/components/canister/CanisterTopUpCycles.svelte';
+	import { amountToICPToken } from '$lib/utils/token.utils';
 
 	interface Props {
 		balance: bigint;

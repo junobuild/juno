@@ -1,8 +1,8 @@
 <script lang="ts">
 	import { nonNullish, type TokenAmountV2 } from '@dfinity/utils';
-	import { formatICP } from '$lib/utils/icp.utils';
 	import Value from '$lib/components/ui/Value.svelte';
 	import { i18n } from '$lib/stores/i18n.store';
+	import { formatICP } from '$lib/utils/icp.utils';
 
 	interface Props {
 		token: TokenAmountV2 | undefined;

@@ -1,6 +1,7 @@
 <script lang="ts">
 	import type { Principal } from '@dfinity/principal';
 	import { nonNullish, type TokenAmountV2 } from '@dfinity/utils';
+	import SendTokensAmount from '$lib/components/tokens/SendTokensAmount.svelte';
 	import GridArrow from '$lib/components/ui/GridArrow.svelte';
 	import Identifier from '$lib/components/ui/Identifier.svelte';
 	import Value from '$lib/components/ui/Value.svelte';
@@ -12,7 +13,6 @@
 	import { i18n } from '$lib/stores/i18n.store';
 	import { formatICP } from '$lib/utils/icp.utils';
 	import { amountToICPToken } from '$lib/utils/token.utils';
-	import SendTokensAmount from '$lib/components/tokens/SendTokensAmount.svelte';
 
 	interface Props {
 		missionControlId: Principal;

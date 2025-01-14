@@ -3,6 +3,7 @@
 	import { isNullish, nonNullish } from '@dfinity/utils';
 	import { onMount, type Snippet } from 'svelte';
 	import { icpXdrConversionRate } from '$lib/api/cmc.api';
+	import CanisterTopUpCycles from '$lib/components/canister/CanisterTopUpCycles.svelte';
 	import InputIcp from '$lib/components/core/InputIcp.svelte';
 	import MissionControlICPInfo from '$lib/components/mission-control/MissionControlICPInfo.svelte';
 	import Html from '$lib/components/ui/Html.svelte';
@@ -14,7 +15,6 @@
 	import { icpToCycles } from '$lib/utils/cycles.utils';
 	import { i18nFormat } from '$lib/utils/i18n.utils';
 	import { formatICPToHTML } from '$lib/utils/icp.utils';
-	import CanisterTopUpCycles from '$lib/components/canister/CanisterTopUpCycles.svelte';
 
 	interface Props {
 		intro?: Snippet;

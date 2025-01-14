@@ -14,7 +14,6 @@
 	import MissionControlVersion from '$lib/components/mission-control/MissionControlVersion.svelte';
 	import SkeletonText from '$lib/components/ui/SkeletonText.svelte';
 	import WalletLoader from '$lib/components/wallet/WalletLoader.svelte';
-	import { exchangePricesNotLoaded, icpToUsd } from '$lib/derived/exchange.derived';
 	import {
 		missionControlNotMonitored,
 		missionControlSettingsLoaded
@@ -25,7 +24,7 @@
 	import { loadOrbiters } from '$lib/services/orbiters.services';
 	import { i18n } from '$lib/stores/i18n.store';
 	import type { CanisterData } from '$lib/types/canister';
-	import { formatE8sICP, formatE8sICPToUsd } from '$lib/utils/icp.utils';
+	import WalletBalance from "$lib/components/wallet/WalletBalance.svelte";
 
 	run(() => {
 		// @ts-expect-error TODO: to be migrated to Svelte v5
@@ -145,13 +144,7 @@
 			<span class="link">
 				<span class="link-title">{$i18n.wallet.title}</span>
 				<span class="link-details">
-					{#if isNullish(walletBalance) || $exchangePricesNotLoaded}
-						<SkeletonText />
-					{:else if nonNullish($icpToUsd)}
-						<span in:fade>{formatE8sICPToUsd({ icp: walletBalance, icpToUsd: $icpToUsd })}</span>
-					{:else}
-						<span in:fade>{formatE8sICP(walletBalance)} <small>ICP</small></span>
-					{/if}
+					<WalletBalance balance={walletBalance} />
 				</span>
 			</span>
 		</p>

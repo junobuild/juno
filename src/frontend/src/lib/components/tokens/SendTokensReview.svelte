@@ -3,7 +3,7 @@
 	import type { Principal } from '@dfinity/principal';
 	import { nonNullish, type TokenAmountV2 } from '@dfinity/utils';
 	import { getAccountIdentifier } from '$lib/api/icp-index.api';
-	import IconArrowCircleDown from '$lib/components/icons/IconArrowCircleDown.svelte';
+	import GridArrow from '$lib/components/ui/GridArrow.svelte';
 	import Identifier from '$lib/components/ui/Identifier.svelte';
 	import Value from '$lib/components/ui/Value.svelte';
 	import { IC_TRANSACTION_FEE_ICP } from '$lib/constants/constants';
@@ -13,7 +13,6 @@
 	import { i18n } from '$lib/stores/i18n.store';
 	import { formatICP } from '$lib/utils/icp.utils';
 	import { amountToICPToken } from '$lib/utils/token.utils';
-	import GridArrow from "$lib/components/ui/GridArrow.svelte";
 
 	interface Props {
 		missionControlId: Principal;

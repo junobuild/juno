@@ -10,9 +10,10 @@
 
 	interface Props {
 		detail: JunoModalDetail;
+		onclose: () => void;
 	}
 
-	let { detail }: Props = $props();
+	let { detail, onclose }: Props = $props();
 
 	let { satellite } = $derived(detail as JunoModalTopUpSatelliteDetail);
 	let balance = $derived(
@@ -28,7 +29,7 @@
 	canisterId={satellite.satellite_id}
 	{balance}
 	{accountIdentifier}
-	on:junoClose
+	{onclose}
 >
 	{#snippet intro()}
 		<h2>

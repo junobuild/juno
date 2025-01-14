@@ -42,15 +42,15 @@
 {/if}
 
 {#if modal?.type === 'topup_satellite' && nonNullish(modal.detail)}
-	<SatelliteTopUpModal on:junoClose={close} detail={modal.detail} />
+	<SatelliteTopUpModal onclose={close} detail={modal.detail} />
 {/if}
 
 {#if modal?.type === 'topup_mission_control' && nonNullish(modal.detail)}
-	<MissionControlTopUpModal on:junoClose={close} detail={modal.detail} />
+	<MissionControlTopUpModal onclose={close} detail={modal.detail} />
 {/if}
 
 {#if modal?.type === 'topup_orbiter' && nonNullish(modal.detail)}
-	<OrbiterTopUpModal on:junoClose={close} detail={modal.detail} />
+	<OrbiterTopUpModal onclose={close} detail={modal.detail} />
 {/if}
 
 {#if modal?.type === 'add_custom_domain' && nonNullish(modal.detail)}

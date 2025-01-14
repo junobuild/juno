@@ -1,16 +1,15 @@
 <script lang="ts">
 	import type { TransactionWithId } from '@dfinity/ledger-icp';
 	import type { Principal } from '@dfinity/principal';
-	import { isNullish, nonNullish } from '@dfinity/utils';
+	import { isNullish } from '@dfinity/utils';
 	import { compare } from 'semver';
-	import { fade } from 'svelte/transition';
 	import { getAccountIdentifier, getTransactions } from '$lib/api/icp-index.api';
 	import ReceiveTokens from '$lib/components/tokens/ReceiveTokens.svelte';
 	import Transactions from '$lib/components/transactions/Transactions.svelte';
 	import TransactionsExport from '$lib/components/transactions/TransactionsExport.svelte';
 	import Identifier from '$lib/components/ui/Identifier.svelte';
-	import SkeletonText from '$lib/components/ui/SkeletonText.svelte';
 	import Value from '$lib/components/ui/Value.svelte';
+	import WalletBalance from '$lib/components/wallet/WalletBalance.svelte';
 	import WalletLoader from '$lib/components/wallet/WalletLoader.svelte';
 	import { PAGINATION } from '$lib/constants/constants';
 	import { MISSION_CONTROL_v0_0_12 } from '$lib/constants/version.constants';
@@ -20,7 +19,6 @@
 	import { i18n } from '$lib/stores/i18n.store';
 	import { toasts } from '$lib/stores/toasts.store';
 	import { emit } from '$lib/utils/events.utils';
-	import { formatE8sICP } from '$lib/utils/icp.utils';
 	import { last } from '$lib/utils/utils';
 
 	interface Props {
@@ -141,16 +139,7 @@
 				</div>
 
 				<div>
-					<Value>
-						{#snippet label()}
-							{$i18n.wallet.balance}
-						{/snippet}
-						<p>
-							{#if nonNullish(balance)}<span in:fade
-									>{formatE8sICP(balance)} <small>ICP</small></span
-								>{:else}<span class="skeleton"><SkeletonText /></span>{/if}
-						</p>
-					</Value>
+					<WalletBalance {balance} />
 				</div>
 			</div>
 		</div>
@@ -173,15 +162,3 @@
 {/if}
 
 <ReceiveTokens bind:visible={receiveVisible} {missionControlId} />
-
-<style lang="scss">
-	p {
-		min-height: 24px;
-	}
-
-	.skeleton {
-		display: block;
-		padding: var(--padding-0_5x) 0 0;
-		max-width: 150px;
-	}
-</style>

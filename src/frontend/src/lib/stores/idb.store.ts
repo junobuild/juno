@@ -7,6 +7,7 @@ export const monitoringIdbStore = createStore('juno-monitoring', 'juno-monitorin
  * @deprecated use monitoringHistoryIdbStore instead
  */
 export const statusesIdbStore = createStore('juno-statuses', 'juno-statuses-store');
+export const exchangeIdbStore = createStore('juno-exchange', 'juno-exchange-store');
 
 // Loaded and set on the UI side
 export const snapshotsIdbStore = createStore('juno-snapshot', 'juno-snapshot-store');

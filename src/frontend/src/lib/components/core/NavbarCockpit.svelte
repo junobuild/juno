@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { nonNullish } from '@dfinity/utils';
 	import { run } from 'svelte/legacy';
-	import { slide, fade } from 'svelte/transition';
+	import { slide } from 'svelte/transition';
 	import Canister from '$lib/components/canister/Canister.svelte';
 	import CanisterIndicator from '$lib/components/canister/CanisterIndicator.svelte';
 	import CanisterTCycles from '$lib/components/canister/CanisterTCycles.svelte';
@@ -9,13 +9,13 @@
 	import IconAnalytics from '$lib/components/icons/IconAnalytics.svelte';
 	import IconMissionControl from '$lib/components/icons/IconMissionControl.svelte';
 	import IconWallet from '$lib/components/icons/IconWallet.svelte';
+	import WalletInlineBalance from '$lib/components/wallet/WalletInlineBalance.svelte';
 	import WalletLoader from '$lib/components/wallet/WalletLoader.svelte';
 	import { missionControlIdDerived } from '$lib/derived/mission-control.derived';
 	import { orbiterStore } from '$lib/derived/orbiter.derived';
 	import { loadOrbiters } from '$lib/services/orbiters.services';
 	import { i18n } from '$lib/stores/i18n.store';
 	import type { CanisterData } from '$lib/types/canister';
-	import { formatE8sICP } from '$lib/utils/icp.utils';
 
 	let missionControlData: CanisterData | undefined = $state(undefined);
 	let orbiterData: CanisterData | undefined = $state(undefined);
@@ -75,7 +75,7 @@
 			<div in:slide={{ axis: 'x' }} class="container wallet">
 				<NavbarLink href="/wallet" ariaLabel={`${$i18n.core.open}: ${$i18n.wallet.title}`}>
 					<IconWallet />
-					<span in:fade>{formatE8sICP(balance)} <small>ICP</small></span>
+					<WalletInlineBalance {balance} />
 				</NavbarLink>
 			</div>
 		{/if}

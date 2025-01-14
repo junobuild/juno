@@ -1,7 +1,7 @@
 import {
 	type PostMessageDataRequestDataSchema,
-	PostMessageDataResponseDataAuthSchema,
 	PostMessageDataResponseDataSchema,
+	PostMessageDataResponseExchangeDataSchema,
 	PostMessageRequestSchema,
 	PostMessageResponseSchema
 } from '$lib/schema/post-message.schema';
@@ -11,7 +11,9 @@ export type PostMessageDataRequest = z.infer<typeof PostMessageDataRequestDataSc
 
 export type PostMessageDataResponse = z.infer<typeof PostMessageDataResponseDataSchema>;
 
-export type PostMessageDataResponseAuth = z.infer<typeof PostMessageDataResponseDataAuthSchema>;
+export type PostMessageDataResponseExchangeData = z.infer<
+	typeof PostMessageDataResponseExchangeDataSchema
+>;
 
 export type PostMessageRequest = z.infer<typeof PostMessageRequestSchema>;
 

@@ -13,6 +13,7 @@
 	import MissionControlDataLoader from '$lib/components/mission-control/MissionControlDataLoader.svelte';
 	import MissionControlVersion from '$lib/components/mission-control/MissionControlVersion.svelte';
 	import SkeletonText from '$lib/components/ui/SkeletonText.svelte';
+	import WalletInlineBalance from '$lib/components/wallet/WalletInlineBalance.svelte';
 	import WalletLoader from '$lib/components/wallet/WalletLoader.svelte';
 	import {
 		missionControlNotMonitored,
@@ -24,7 +25,6 @@
 	import { loadOrbiters } from '$lib/services/orbiters.services';
 	import { i18n } from '$lib/stores/i18n.store';
 	import type { CanisterData } from '$lib/types/canister';
-	import { formatE8sICP } from '$lib/utils/icp.utils';
 
 	run(() => {
 		// @ts-expect-error TODO: to be migrated to Svelte v5
@@ -144,11 +144,7 @@
 			<span class="link">
 				<span class="link-title">{$i18n.wallet.title}</span>
 				<span class="link-details">
-					{#if isNullish(walletBalance)}
-						<SkeletonText />
-					{:else}
-						<span in:fade>{formatE8sICP(walletBalance)} <small>ICP</small></span>
-					{/if}
+					<WalletInlineBalance balance={walletBalance} />
 				</span>
 			</span>
 		</p>

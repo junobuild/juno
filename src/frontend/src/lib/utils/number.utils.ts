@@ -15,6 +15,13 @@ export const formatNumber = (
 	}).format(value);
 };
 
+export const formatUsd = (value: number): string =>
+	new Intl.NumberFormat('en-US', {
+		style: 'currency',
+		currency: 'USD',
+		currencyDisplay: 'narrowSymbol'
+	}).format(value);
+
 export const formatBytes = (value: number): string =>
 	formatNumber(value, {
 		notation: 'compact',

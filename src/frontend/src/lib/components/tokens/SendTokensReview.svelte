@@ -66,7 +66,7 @@
 
 		<GridArrow />
 
-		<div class="card-container with-title">
+		<div class="card-container with-title primary">
 			<span class="title">{$i18n.wallet.tx_to}</span>
 
 			<div class="content">
@@ -81,7 +81,7 @@
 			</div>
 		</div>
 
-		<div class="card-container with-title sending">
+		<div class="card-container with-title sending tertiary">
 			<span class="title">{$i18n.wallet.sending}</span>
 
 			<div class="content">

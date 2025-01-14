@@ -40,7 +40,7 @@
 
 		<GridArrow />
 
-		<div class="card-container with-title">
+		<div class="card-container with-title primary">
 			<span class="title">{$i18n.core.to}</span>
 
 			<div class="content">
@@ -58,7 +58,7 @@
 			</div>
 		</div>
 
-		<div class="card-container with-title sending">
+		<div class="card-container with-title tertiary">
 			<span class="title">{$i18n.canisters.topping_up}</span>
 
 			<div class="content">

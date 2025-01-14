@@ -111,7 +111,13 @@ const exchangeRateICPToUsd = async (): Promise<ExchangePrice | undefined> => {
 };
 
 const findICPToken = async (page = 1): Promise<KongSwapToken | undefined> => {
-	const { tokens, total_count } = await fetchKongSwapTokens({ page, limit });
+	const kongTokens = await fetchKongSwapTokens({ page, limit });
+
+	if (isNullish(kongTokens)) {
+		return undefined;
+	}
+
+	const { tokens, total_count } = kongTokens;
 
 	const icp = tokens.find(({ canister_id }) => canister_id === ICP_LEDGER_CANISTER_ID);
 

@@ -13,6 +13,7 @@
 	import { i18n } from '$lib/stores/i18n.store';
 	import { formatICP } from '$lib/utils/icp.utils';
 	import { amountToICPToken } from '$lib/utils/token.utils';
+	import GridArrow from "$lib/components/ui/GridArrow.svelte";
 
 	interface Props {
 		missionControlId: Principal;
@@ -99,11 +100,7 @@
 			</div>
 		</div>
 
-		<div class="arrow">
-			<div class="arrow-icon">
-				<IconArrowCircleDown />
-			</div>
-		</div>
+		<GridArrow />
 
 		<div class="card-container with-title">
 			<span class="title">{$i18n.wallet.tx_to}</span>
@@ -152,18 +149,10 @@
 </form>
 
 <style lang="scss">
-	@use '../../styles/mixins/media';
+	@use '../../styles/mixins/grid';
 
 	.columns {
-		@include media.min-width(large) {
-			display: grid;
-			--column-size: calc(
-				(100% - var(--padding-2x) - var(--padding-2x) - var(--column-arrow-size)) / 2
-			);
-			--column-arrow-size: var(--padding-8x);
-			grid-template-columns: var(--column-size) var(--column-arrow-size) var(--column-size);
-			grid-column-gap: var(--padding-2x);
-		}
+		@include grid.two-columns-with-arrow;
 	}
 
 	.from {
@@ -178,21 +167,5 @@
 
 	.identifier {
 		margin: 0 0 var(--padding);
-	}
-
-	.arrow {
-		display: flex;
-		justify-content: center;
-		align-items: center;
-		padding: 0 0 var(--padding-3x);
-
-		@include media.min-width(large) {
-			grid-row: 1/3;
-			grid-column: 2/3;
-
-			.arrow-icon {
-				transform: rotate(-90deg);
-			}
-		}
 	}
 </style>

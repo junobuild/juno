@@ -1,3 +1,5 @@
+@use './media';
+
 @mixin twelve-columns {
 	display: grid;
 	grid-template-columns: repeat(12, 1fr);
@@ -14,4 +16,16 @@
 	grid-template-columns: repeat(2, 1fr);
 	column-gap: var(--padding-4x);
 	row-gap: var(--padding);
+}
+
+@mixin two-columns-with-arrow {
+	@include media.min-width(large) {
+		display: grid;
+		--column-size: calc(
+			(100% - var(--padding-2x) - var(--padding-2x) - var(--column-arrow-size)) / 2
+		);
+		--column-arrow-size: var(--padding-8x);
+		grid-template-columns: var(--column-size) var(--column-arrow-size) var(--column-size);
+		grid-column-gap: var(--padding-2x);
+	}
 }

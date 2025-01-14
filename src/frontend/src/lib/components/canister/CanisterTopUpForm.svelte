@@ -3,11 +3,11 @@
 	import { isNullish, nonNullish } from '@dfinity/utils';
 	import { onMount, type Snippet } from 'svelte';
 	import { icpXdrConversionRate } from '$lib/api/cmc.api';
+	import InputIcp from '$lib/components/core/InputIcp.svelte';
 	import MissionControlICPInfo from '$lib/components/mission-control/MissionControlICPInfo.svelte';
 	import Html from '$lib/components/ui/Html.svelte';
-	import Input from '$lib/components/ui/Input.svelte';
 	import Value from '$lib/components/ui/Value.svelte';
-	import { E8S_PER_ICP, TOP_UP_NETWORK_FEES } from '$lib/constants/constants';
+	import { TOP_UP_NETWORK_FEES } from '$lib/constants/constants';
 	import { icpToUsd } from '$lib/derived/exchange.derived';
 	import { missionControlIdDerived } from '$lib/derived/mission-control.derived';
 	import { i18n } from '$lib/stores/i18n.store';
@@ -21,8 +21,8 @@
 		segment: Segment;
 		balance: bigint;
 		accountIdentifier: AccountIdentifier | undefined;
-		icp: number | undefined;
-		invalidIcpCycles: boolean;
+		icp: string | undefined;
+		invalidCycles: boolean;
 		onsubmit: ($event: SubmitEvent) => Promise<void>;
 	}
 
@@ -32,30 +32,23 @@
 		intro,
 		segment,
 		balance,
-		icp = $bindable(undefined),
-		invalidIcpCycles = $bindable(false)
+		icp = $bindable(),
+		invalidCycles = $bindable(false)
 	}: Props = $props();
 
 	let trillionRatio: bigint | undefined = $state();
 	onMount(async () => (trillionRatio = await icpXdrConversionRate()));
 
-	let validIcp = $derived(
-		nonNullish(icp) &&
-			icp > 0 &&
-			icp < Number(balance) / Number(E8S_PER_ICP) &&
-			icp > Number(TOP_UP_NETWORK_FEES) / Number(E8S_PER_ICP)
-	);
-
 	let cycles: number | undefined = $derived(
-		nonNullish(trillionRatio) && validIcp && nonNullish(icp)
-			? icpToCycles({ icp, trillionRatio })
+		nonNullish(trillionRatio) && !isNaN(Number(icp)) && nonNullish(icp)
+			? icpToCycles({ icp: Number(icp), trillionRatio })
 			: undefined
 	);
 
 	let validCycles = $derived(nonNullish(cycles));
 
 	$effect(() => {
-		invalidIcpCycles = !validIcp || !validCycles;
+		invalidCycles = !validCycles;
 	});
 </script>
 
@@ -86,20 +79,7 @@
 	<MissionControlICPInfo {accountIdentifier} onclose={close} />
 {:else}
 	<form {onsubmit}>
-		<div>
-			<Value>
-				{#snippet label()}
-					ICP
-				{/snippet}
-				<Input
-					name="icp"
-					inputType="icp"
-					required
-					bind:value={icp}
-					placeholder={$i18n.canisters.amount}
-				/>
-			</Value>
-		</div>
+		<InputIcp bind:amount={icp} {balance} />
 
 		<div class="cycles">
 			<Value>
@@ -110,9 +90,7 @@
 			</Value>
 		</div>
 
-		<button
-			type="submit"
-			disabled={isNullish($missionControlIdDerived) || !validIcp || !validCycles}
+		<button type="submit" disabled={isNullish($missionControlIdDerived) || invalidCycles}
 			>{$i18n.canisters.top_up}</button
 		>
 	</form>

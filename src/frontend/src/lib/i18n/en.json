@@ -74,7 +74,8 @@
 		"open": "Open",
 		"get_started": "Get started",
 		"getting_started": "Getting started",
-		"dashboard": "Dashboard"
+		"dashboard": "Dashboard",
+		"icp_amount": "Amount (ICP)"
 	},
 	"canisters": {
 		"top_up": "Top-up",
@@ -278,7 +279,6 @@
 		"send_information": "Send tokens securely to any address. Your wallet currently holds <strong>{0}</strong> ICP.",
 		"destination": "Destination",
 		"destination_placeholder": "Enter destination address",
-		"icp_amount": "Amount (ICP)",
 		"amount_placeholder": "Enter an amount",
 		"wallet_id": "Wallet ID",
 		"sending": "Sending",

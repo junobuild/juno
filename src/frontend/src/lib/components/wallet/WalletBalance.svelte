@@ -52,12 +52,12 @@
 <style lang="scss">
 	span {
 		display: block;
-		color: var(--text-color);
 	}
 
 	.main {
 		font-size: var(--font-size-h2);
 		font-weight: var(--font-weight-bold);
+		color: var(--color-secondary);
 	}
 
 	.skeleton {

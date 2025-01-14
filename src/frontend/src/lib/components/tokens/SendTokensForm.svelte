@@ -107,6 +107,7 @@
 			@include grid.two-columns;
 		}
 	}
+
 	div {
 		margin-bottom: var(--padding);
 	}

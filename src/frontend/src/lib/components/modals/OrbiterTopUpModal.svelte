@@ -28,8 +28,11 @@
 
 {#if nonNullish($orbiterStore)}
 	<CanisterTopUpModal
-		segment="orbiter"
-		canisterId={$orbiterStore.orbiter_id}
+		segment={{
+			segment: 'orbiter',
+			canisterId: $orbiterStore.orbiter_id.toText(),
+			label: $i18n.analytics.orbiter
+		}}
 		{balance}
 		{accountIdentifier}
 		{onclose}

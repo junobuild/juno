@@ -28,8 +28,11 @@
 
 {#if nonNullish($missionControlIdDerived)}
 	<CanisterTopUpModal
-		segment="mission_control"
-		canisterId={$missionControlIdDerived}
+		segment={{
+			segment: 'mission_control',
+			canisterId: $missionControlIdDerived.toText(),
+			label: $i18n.mission_control.title
+		}}
 		{balance}
 		{accountIdentifier}
 		{onclose}

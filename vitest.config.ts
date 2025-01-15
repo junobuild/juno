@@ -22,6 +22,10 @@ export default defineConfig({
 			{
 				find: '$declarations',
 				replacement: resolve(__dirname, 'src/declarations')
+			},
+			{
+				find: '$lib',
+				replacement: resolve(__dirname, 'src/frontend/src/lib')
 			}
 		]
 	}

@@ -157,6 +157,7 @@ interface I18nCanisters {
 	delete_success: string;
 	cycles: string;
 	transfer_cycles: string;
+	review_and_confirm_transfer_cycles: string;
 	transfer_cycles_action: string;
 	buy_cycles: string;
 	transfer_cycles_description: string;

@@ -54,9 +54,3 @@
 		<option value={satellite.satellite_id.toText()}>{satName}</option>
 	{/each}
 </select>
-
-<style lang="scss">
-	select {
-		margin: 0 0 var(--padding-4x);
-	}
-</style>

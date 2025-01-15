@@ -153,6 +153,7 @@
 		"delete_success": "{0} 已删除.",
 		"cycles": "Cycles",
 		"transfer_cycles": "转移 Cycles",
+		"review_and_confirm_transfer_cycles": "Review the details below and confirm to proceed with your transfer.",
 		"transfer_cycles_action": "转移",
 		"buy_cycles": "Buy",
 		"transfer_cycles_description": "你可以通过在 satellite, mission control, 和 analytics 之间转移 Cycles 来管理他们的使用分配.",

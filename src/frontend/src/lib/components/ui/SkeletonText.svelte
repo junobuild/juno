@@ -12,6 +12,8 @@
 </div>
 
 <style lang="scss">
+	@use '../../styles/mixins/media';
+
 	.skeleton-text {
 		display: block;
 
@@ -20,8 +22,8 @@
 
 		margin: var(--skeleton-text-padding, 0 0 var(--padding-1_5x));
 
-		--skeleton-text-background: rgba(var(--color-background-contrast-rgb), 0.065);
-		--skeleton-text-background-animated: rgba(var(--color-background-contrast-rgb), 0.135);
+		--skeleton-text-background: rgba(var(--color-secondary-rgb), 0.25);
+		--skeleton-text-background-animated: rgba(var(--color-secondary-rgb), 0.135);
 		background: var(--skeleton-text-background);
 
 		line-height: 1.05;
@@ -29,8 +31,17 @@
 		user-select: none;
 		pointer-events: none;
 
+		border-radius: 2px;
+
 		* {
 			display: inline-block;
+		}
+	}
+
+	@include media.dark-theme {
+		.skeleton-text {
+			--skeleton-text-background: rgba(var(--color-background-contrast-rgb), 0.065);
+			--skeleton-text-background-animated: rgba(var(--color-background-contrast-rgb), 0.135);
 		}
 	}
 

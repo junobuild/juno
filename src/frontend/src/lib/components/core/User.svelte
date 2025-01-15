@@ -18,6 +18,7 @@
 	import { signIn as doSignIn, signOut } from '$lib/services/auth.services';
 	import { i18n } from '$lib/stores/i18n.store';
 	import { analyticsLink } from '$lib/utils/nav.utils';
+	import { page } from '$app/state';
 
 	interface Props {
 		signIn?: boolean;
@@ -44,8 +45,10 @@
 		visible = true;
 	};
 
-	// If there is no satellites, we consider the user has a new developer and want to show all links in the user popover that way the user can navigate anyway.
+	// If there is no satellites, we consider the user has a new developer and want to show all links in the user popover that way the user can navigate anyway on the home screen.
 	let newDeveloper = $derived($satellitesNotLoaded || ($satellitesStore?.length ?? 0) === 0);
+	let routeId: string | null = $derived(page.route.id);
+	let showNavigation = $derived(newDeveloper && routeId === '/(home)');
 </script>
 
 {#if $authSignedIn}
@@ -66,7 +69,7 @@
 
 <Popover bind:visible anchor={button} direction="rtl">
 	<div class="container">
-		{#if newDeveloper}
+		{#if showNavigation}
 			<a href="/mission-control" class="menu" role="menuitem" aria-haspopup="menu" onclick={close}>
 				<IconMissionControl />
 				<span>{$i18n.mission_control.title}</span>

@@ -1,0 +1,25 @@
+name: Frontend Tests
+
+on:
+  pull_request:
+    paths:
+      - 'src/frontend/**'
+
+jobs:
+  tests:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Prepare
+        uses: ./.github/actions/prepare
+      - name: Frontend tests
+        run: npm run test:frontend
+
+  may-merge:
+    needs: ['tests']
+    runs-on: ubuntu-latest
+    steps:
+      - name: Cleared for merging
+        run: echo OK

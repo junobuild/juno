@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { page } from '$app/state';
 	import IconAnalytics from '$lib/components/icons/IconAnalytics.svelte';
 	import IconMissionControl from '$lib/components/icons/IconMissionControl.svelte';
 	import IconRaygun from '$lib/components/icons/IconRaygun.svelte';
@@ -18,7 +19,6 @@
 	import { signIn as doSignIn, signOut } from '$lib/services/auth.services';
 	import { i18n } from '$lib/stores/i18n.store';
 	import { analyticsLink } from '$lib/utils/nav.utils';
-	import { page } from '$app/state';
 
 	interface Props {
 		signIn?: boolean;

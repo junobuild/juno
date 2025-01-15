@@ -167,11 +167,11 @@ const emitSavedExchanges = async () => {
 		([_, { updatedAt }]) => updatedAt > new Date().getTime() - PRICE_VALIDITY_TIMEFRAME
 	);
 
-	if (exchanges.length === 0) {
+	if (activeExchanges.length === 0) {
 		return;
 	}
 
-	const exchange: PostMessageDataResponseExchangeData = exchanges.reduce(
+	const exchange: PostMessageDataResponseExchangeData = activeExchanges.reduce(
 		(acc, [canisterId, value]) => ({
 			...acc,
 			[canisterId]: value

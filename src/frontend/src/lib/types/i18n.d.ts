@@ -447,6 +447,7 @@ interface I18nCli {
 	profile_info: string;
 	segments: string;
 	profile_placeholder: string;
+	confirm: string;
 	authorize: string;
 }
 

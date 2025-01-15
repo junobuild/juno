@@ -432,6 +432,7 @@
 		"profile_info": "如果需要，提供一个简介名字有助于在未来更容易识别.",
 		"segments": "模块:",
 		"profile_placeholder": "可选的简介名字",
+		"confirm": "Authorizing will grant control to the specified modules.<br />Proceed only if you are certain that this request originates from your terminal and is legitimate.",
 		"authorize": "授权"
 	},
 	"errors": {

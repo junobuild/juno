@@ -5,6 +5,8 @@
 	import { setOrbitersController } from '$lib/api/mission-control.api';
 	import SegmentsTable from '$lib/components/segments/SegmentsTable.svelte';
 	import Collapsible from '$lib/components/ui/Collapsible.svelte';
+	import Html from '$lib/components/ui/Html.svelte';
+	import Warning from '$lib/components/ui/Warning.svelte';
 	import { REVOKED_CONTROLLERS } from '$lib/constants/constants';
 	import { missionControlIdDerived } from '$lib/derived/mission-control.derived';
 	import {
@@ -181,6 +183,10 @@
 			</div>
 		</Collapsible>
 	</div>
+
+	<Warning>
+		<Html text={$i18n.cli.confirm} />
+	</Warning>
 
 	<button {disabled}>{$i18n.cli.authorize}</button>
 </form>

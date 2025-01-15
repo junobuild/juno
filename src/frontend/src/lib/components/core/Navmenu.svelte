@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { isEmptyString } from '@dfinity/utils';
+	import { notEmptyString } from '@dfinity/utils';
 	import { circOut, quintOut } from 'svelte/easing';
 	import { slide } from 'svelte/transition';
 	import { page } from '$app/state';
@@ -10,7 +10,6 @@
 	import IconFunctions from '$lib/components/icons/IconFunctions.svelte';
 	import IconHosting from '$lib/components/icons/IconHosting.svelte';
 	import IconMissionControl from '$lib/components/icons/IconMissionControl.svelte';
-	import IconRocket from '$lib/components/icons/IconRocket.svelte';
 	import IconSatellite from '$lib/components/icons/IconSatellite.svelte';
 	import IconStorage from '$lib/components/icons/IconStorage.svelte';
 	import IconTelescope from '$lib/components/icons/IconTelescope.svelte';
@@ -42,12 +41,7 @@
 
 <Menu>
 	<nav>
-		{#if isEmptyString(satelliteId)}
-			<a class="link" href="/">
-				<IconRocket size="24px" />
-				<span>{$i18n.satellites.launchpad}</span>
-			</a>
-		{:else}
+		{#if notEmptyString(satelliteId)}
 			<a
 				class="link"
 				href={`/satellite/?s=${satelliteId}`}

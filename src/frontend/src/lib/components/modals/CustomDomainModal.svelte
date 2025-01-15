@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { isNullish, nonNullish, notEmptyString } from '@dfinity/utils';
+	import { isEmptyString, isNullish, nonNullish } from '@dfinity/utils';
 	import { createEventDispatcher, onMount } from 'svelte';
 	import type { AuthenticationConfig } from '$declarations/satellite/satellite.did';
 	import { setAuthConfig } from '$lib/api/satellites.api';
@@ -37,7 +37,7 @@
 	onMount(() => {
 		domainNameInput = (detail as JunoModalCustomDomainDetail).editDomainName ?? '';
 
-		if (!notEmptyString(domainNameInput)) {
+		if (isEmptyString(domainNameInput)) {
 			return;
 		}
 

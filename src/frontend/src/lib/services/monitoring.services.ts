@@ -39,6 +39,7 @@ import { emit } from '$lib/utils/events.utils';
 import type { Principal } from '@dfinity/principal';
 import {
 	assertNonNullish,
+	isEmptyString,
 	isNullish,
 	nonNullish,
 	notEmptyString,
@@ -301,7 +302,7 @@ const setEmail = async ({
 		Omit<ApplyMonitoringCyclesStrategyOptions, 'saveAsDefaultStrategy' | 'monitoringConfig'>
 	>) => {
 	// Do nothing if no email is provided
-	if (isNullish(userEmail) || !notEmptyString(userEmail)) {
+	if (isNullish(userEmail) || isEmptyString(userEmail)) {
 		return;
 	}
 

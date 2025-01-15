@@ -1,15 +1,12 @@
 <script lang="ts">
 	import type { AccountIdentifier } from '@dfinity/ledger-icp';
 	import { isNullish, nonNullish, notEmptyString } from '@dfinity/utils';
-	import { onMount, type Snippet, untrack } from 'svelte';
+	import { onMount, type Snippet } from 'svelte';
 	import { icpXdrConversionRate } from '$lib/api/cmc.api';
-	import CanisterTopUpCycles from '$lib/components/canister/CanisterTopUpCycles.svelte';
 	import InputIcp from '$lib/components/core/InputIcp.svelte';
 	import MissionControlICPInfo from '$lib/components/mission-control/MissionControlICPInfo.svelte';
-	import SendTokensMax from '$lib/components/tokens/SendTokensMax.svelte';
 	import GridArrow from '$lib/components/ui/GridArrow.svelte';
 	import Html from '$lib/components/ui/Html.svelte';
-	import Input from '$lib/components/ui/Input.svelte';
 	import Value from '$lib/components/ui/Value.svelte';
 	import { TOP_UP_NETWORK_FEES } from '$lib/constants/constants';
 	import { icpToUsd } from '$lib/derived/exchange.derived';

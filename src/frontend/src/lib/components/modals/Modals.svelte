@@ -86,15 +86,15 @@
 {/if}
 
 {#if modal?.type === 'transfer_cycles_satellite' && nonNullish(modal.detail)}
-	<SatelliteTransferCyclesModal on:junoClose={close} detail={modal.detail} />
+	<SatelliteTransferCyclesModal onclose={close} detail={modal.detail} />
 {/if}
 
 {#if modal?.type === 'transfer_cycles_orbiter' && nonNullish(modal.detail)}
-	<OrbiterTransferCyclesModal on:junoClose={close} detail={modal.detail} />
+	<OrbiterTransferCyclesModal onclose={close} detail={modal.detail} />
 {/if}
 
 {#if modal?.type === 'transfer_cycles_mission_control' && nonNullish(modal.detail)}
-	<MissionControlTransferCyclesModal on:junoClose={close} detail={modal.detail} />
+	<MissionControlTransferCyclesModal onclose={close} detail={modal.detail} />
 {/if}
 
 {#if modal?.type === 'send_tokens' && nonNullish(modal.detail)}

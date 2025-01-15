@@ -54,4 +54,3 @@
 		<option value={satellite.satellite_id.toText()}>{satName}</option>
 	{/each}
 </select>
-

@@ -1,7 +1,10 @@
 import {
 	type PostMessageDataRequestDataSchema,
 	PostMessageDataResponseDataSchema,
+	PostMessageDataResponseErrorDataSchema,
 	PostMessageDataResponseExchangeDataSchema,
+	PostMessageDataResponseWalletCleanUpDataSchema,
+	PostMessageDataResponseWalletDataSchema,
 	PostMessageRequestSchema,
 	PostMessageResponseSchema
 } from '$lib/schema/post-message.schema';
@@ -13,6 +16,18 @@ export type PostMessageDataResponse = z.infer<typeof PostMessageDataResponseData
 
 export type PostMessageDataResponseExchangeData = z.infer<
 	typeof PostMessageDataResponseExchangeDataSchema
+>;
+
+export type PostMessageDataResponseWalletData = z.infer<
+	typeof PostMessageDataResponseWalletDataSchema
+>;
+
+export type PostMessageDataResponseWalletCleanUpData = z.infer<
+	typeof PostMessageDataResponseWalletCleanUpDataSchema
+>;
+
+export type PostMessageDataResponseErrorData = z.infer<
+	typeof PostMessageDataResponseErrorDataSchema
 >;
 
 export type PostMessageRequest = z.infer<typeof PostMessageRequestSchema>;

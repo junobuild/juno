@@ -7,7 +7,7 @@ import type {
 	CanisterSyncMonitoring
 } from '$lib/types/canister';
 import type { CustomDomainRegistrationState } from '$lib/types/custom-domain';
-import type { Wallet } from '$lib/types/transaction';
+import type { CertifiedData } from '$lib/types/store';
 import * as z from 'zod';
 
 export const PostMessageDataRequestDataSchema = z.object({
@@ -22,13 +22,38 @@ export const PostMessageDataResponseExchangeDataSchema = z.record(
 	ExchangePriceSchema.nullable()
 );
 
-export const PostMessageDataResponseDataSchema = z.object({
+const JsonTransactionsTextSchema = z.string();
+
+const PostMessageWalletDataSchema = z.object({
+	balance: z.custom<CertifiedData<bigint>>(),
+	newTransactions: JsonTransactionsTextSchema.optional()
+});
+
+export const PostMessageDataResponseWalletDataSchema = z.object({
+	wallet: PostMessageWalletDataSchema.optional()
+});
+
+export const PostMessageDataResponseWalletCleanUpDataSchema = z.object({
+	transactionIds: z.array(z.string()).optional()
+});
+
+export const PostMessageDataResponseErrorDataSchema = z.object({
+	error: z.unknown().optional()
+});
+
+export const PostMessageDataResponseDataOthersSchema = z.object({
 	canister: z.union([z.custom<CanisterSyncData>(), z.custom<CanisterSyncMonitoring>()]).optional(),
 	registrationState: z.custom<CustomDomainRegistrationState>().nullable().optional(),
-	wallet: z.custom<Wallet>().optional(),
 	authRemainingTime: z.number().optional(),
 	exchange: PostMessageDataResponseExchangeDataSchema.optional()
 });
+
+export const PostMessageDataResponseDataSchema = z.union([
+	PostMessageDataResponseWalletDataSchema,
+	PostMessageDataResponseWalletCleanUpDataSchema,
+	PostMessageDataResponseDataOthersSchema,
+	PostMessageDataResponseErrorDataSchema
+]);
 
 export const PostMessageRequestMsgSchema = z.enum([
 	'startCyclesTimer',
@@ -51,6 +76,8 @@ export const PostMessageResponseMsgSchema = z.enum([
 	'delegationRemainingTime',
 	'customDomainRegistrationState',
 	'syncWallet',
+	'syncWalletCleanUp',
+	'syncWalletError',
 	'syncExchange'
 ]);
 

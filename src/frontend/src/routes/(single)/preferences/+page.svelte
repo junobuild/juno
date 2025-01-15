@@ -8,6 +8,7 @@
 	import Identifier from '$lib/components/ui/Identifier.svelte';
 	import Theme from '$lib/components/ui/Theme.svelte';
 	import Value from '$lib/components/ui/Value.svelte';
+	import { authSignedOut } from '$lib/derived/auth.derived';
 	import { authRemainingTimeStore, authStore } from '$lib/stores/auth.store';
 	import { i18n } from '$lib/stores/i18n.store';
 	import { toasts } from '$lib/stores/toasts.store';
@@ -22,6 +23,10 @@
 	let credits: bigint | undefined = $state(undefined);
 
 	const loadCredits = async () => {
+		if ($authSignedOut) {
+			return;
+		}
+
 		try {
 			credits = await getCredits($authStore.identity);
 		} catch (err: unknown) {

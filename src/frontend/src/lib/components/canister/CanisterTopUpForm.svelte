@@ -1,18 +1,22 @@
 <script lang="ts">
 	import type { AccountIdentifier } from '@dfinity/ledger-icp';
-	import { isNullish, nonNullish } from '@dfinity/utils';
-	import { onMount, type Snippet } from 'svelte';
+	import { isNullish, nonNullish, notEmptyString } from '@dfinity/utils';
+	import { onMount, type Snippet, untrack } from 'svelte';
 	import { icpXdrConversionRate } from '$lib/api/cmc.api';
 	import CanisterTopUpCycles from '$lib/components/canister/CanisterTopUpCycles.svelte';
 	import InputIcp from '$lib/components/core/InputIcp.svelte';
 	import MissionControlICPInfo from '$lib/components/mission-control/MissionControlICPInfo.svelte';
+	import SendTokensMax from '$lib/components/tokens/SendTokensMax.svelte';
+	import GridArrow from '$lib/components/ui/GridArrow.svelte';
 	import Html from '$lib/components/ui/Html.svelte';
+	import Input from '$lib/components/ui/Input.svelte';
+	import Value from '$lib/components/ui/Value.svelte';
 	import { TOP_UP_NETWORK_FEES } from '$lib/constants/constants';
 	import { icpToUsd } from '$lib/derived/exchange.derived';
 	import { missionControlIdDerived } from '$lib/derived/mission-control.derived';
 	import { i18n } from '$lib/stores/i18n.store';
 	import type { CanisterSegmentWithLabel } from '$lib/types/canister';
-	import { icpToCycles } from '$lib/utils/cycles.utils';
+	import { formatTCycles, icpToCycles } from '$lib/utils/cycles.utils';
 	import { i18nFormat } from '$lib/utils/i18n.utils';
 	import { formatICPToHTML } from '$lib/utils/icp.utils';
 
@@ -50,6 +54,12 @@
 	$effect(() => {
 		cycles = convertedCycles;
 	});
+
+	let displayTCycles: string | undefined = $state(undefined);
+
+	$effect(() => {
+		displayTCycles = nonNullish(cycles) ? `${formatTCycles(BigInt(cycles ?? 0))}` : '';
+	});
 </script>
 
 {@render intro?.()}
@@ -75,10 +85,22 @@
 	<MissionControlICPInfo {accountIdentifier} {onclose} />
 {:else}
 	<form onsubmit={onreview}>
-		<InputIcp bind:amount={icp} {balance} />
+		<div class="columns">
+			<InputIcp bind:amount={icp} {balance} />
 
-		<div class="cycles">
-			<CanisterTopUpCycles {cycles} />
+			<GridArrow small />
+
+			<div>
+				<Value>
+					{#snippet label()}
+						{$i18n.canisters.converted_cycles}
+					{/snippet}
+
+					<span class="cycles" class:fill={notEmptyString(displayTCycles)}
+						>{displayTCycles}&ZeroWidthSpace;</span
+					>
+				</Value>
+			</div>
 		</div>
 
 		<button type="submit" disabled={isNullish($missionControlIdDerived) || isNullish(cycles)}
@@ -91,9 +113,9 @@
 	@use '../../styles/mixins/media';
 	@use '../../styles/mixins/grid';
 
-	form {
+	.columns {
 		@include media.min-width(large) {
-			@include grid.two-columns;
+			@include grid.two-columns-with-arrow;
 		}
 	}
 
@@ -101,8 +123,21 @@
 		min-height: 24px;
 	}
 
-	.cycles,
-	button {
-		grid-column-start: 1;
+	.cycles {
+		display: inline-block;
+		padding: var(--padding) var(--padding-2x);
+		margin: var(--padding) 0 var(--padding-2x);
+		width: 100%;
+		max-width: 100%;
+		border: 1px solid rgb(var(--color-card-contrast-rgb), 0.1);
+		border-radius: var(--border-radius);
+		background: var(--color-card);
+		color: var(--color-card-contrast);
+		transition: all var(--animation-time) ease-out;
+
+		&.fill {
+			background: rgba(var(--color-tertiary-rgb), 0.1);
+			border: 1px solid var(--color-tertiary);
+		}
 	}
 </style>

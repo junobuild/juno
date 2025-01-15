@@ -1,10 +1,16 @@
 <script lang="ts">
 	import IconArrowCircleDown from '$lib/components/icons/IconArrowCircleDown.svelte';
+
+	interface Props {
+		small?: boolean;
+	}
+
+	let { small }: Props = $props();
 </script>
 
-<div class="arrow">
+<div class="arrow" class:small>
 	<div class="arrow-icon">
-		<IconArrowCircleDown />
+		<IconArrowCircleDown size={small ? '32px' : '48px'} />
 	</div>
 </div>
 
@@ -22,8 +28,19 @@
 			grid-column: 2/3;
 
 			.arrow-icon {
+				display: flex;
+				justify-content: center;
+
 				transform: rotate(-90deg);
 			}
+		}
+	}
+
+	.small {
+		padding: 0;
+
+		@include media.min-width(large) {
+			padding: 0 0 var(--padding);
 		}
 	}
 </style>

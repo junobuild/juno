@@ -1,8 +1,15 @@
 <script lang="ts">
-	import { i18n } from '$lib/stores/i18n.store';
 	import GridArrow from '$lib/components/ui/GridArrow.svelte';
 	import Value from '$lib/components/ui/Value.svelte';
+	import { i18n } from '$lib/stores/i18n.store';
 	import { formatTCycles } from '$lib/utils/cycles.utils';
+	import { nonNullish } from '@dfinity/utils';
+	import { missionControlIdDerived } from '$lib/derived/mission-control.derived';
+	import { orbiterStore } from '$lib/derived/orbiter.derived';
+	import { Principal } from '@dfinity/principal';
+	import Segment from '$lib/components/segments/Segment.svelte';
+	import { satellitesStore } from '$lib/derived/satellite.derived';
+	import { satelliteName } from '$lib/utils/satellite.utils';
 
 	interface Props {
 		cycles: bigint;
@@ -12,6 +19,10 @@
 	}
 
 	let { onsubmit, onback, cycles, destinationId }: Props = $props();
+
+	let satellite = $derived(
+		($satellitesStore ?? []).find(({ satellite_id }) => satellite_id.toText() === destinationId)
+	);
 </script>
 
 <h2>{$i18n.canisters.transfer_cycles}</h2>
@@ -48,7 +59,21 @@
 					{/snippet}
 
 					<p>
-						{destinationId ?? ''}
+						{#if nonNullish($missionControlIdDerived) && $missionControlIdDerived.toText() === destinationId}
+							<Segment id={Principal.fromText(destinationId)}>
+								{$i18n.mission_control.title}
+							</Segment>
+						{:else if nonNullish($orbiterStore) && $orbiterStore.orbiter_id.toText() === destinationId}
+							<Segment id={Principal.fromText(destinationId)}>
+								{$i18n.analytics.title}
+							</Segment>
+						{:else if nonNullish(satellite)}
+							<Segment id={satellite.satellite_id}>
+								{satelliteName(satellite)}
+							</Segment>
+						{:else}
+							{destinationId ?? ''}
+						{/if}
 					</p>
 				</Value>
 			</div>

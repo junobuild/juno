@@ -2,6 +2,7 @@
 	import { Principal } from '@dfinity/principal';
 	import { isNullish } from '@dfinity/utils';
 	import CanisterTransferCyclesForm from '$lib/components/canister/CanisterTransferCyclesForm.svelte';
+	import CanisterTransferCyclesReview from '$lib/components/canister/CanisterTransferCyclesReview.svelte';
 	import Modal from '$lib/components/ui/Modal.svelte';
 	import SpinnerModal from '$lib/components/ui/SpinnerModal.svelte';
 	import { authSignedOut } from '$lib/derived/auth.derived';
@@ -10,7 +11,6 @@
 	import { toasts } from '$lib/stores/toasts.store';
 	import type { CanisterSegmentWithLabel } from '$lib/types/canister';
 	import { emit } from '$lib/utils/events.utils';
-	import CanisterTransferCyclesReview from '$lib/components/canister/CanisterTransferCyclesReview.svelte';
 
 	interface Props {
 		segment: CanisterSegmentWithLabel;

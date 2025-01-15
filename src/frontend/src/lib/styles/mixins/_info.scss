@@ -1,6 +1,10 @@
 @use './shadow';
 
 @mixin warning {
+	display: flex;
+	align-items: center;
+	gap: var(--padding-2x);
+
 	background: var(--color-warning);
 	color: var(--color-warning-contrast);
 	padding: var(--padding-2x);

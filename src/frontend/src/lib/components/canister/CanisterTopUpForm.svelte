@@ -19,6 +19,7 @@
 	import { formatTCycles, icpToCycles } from '$lib/utils/cycles.utils';
 	import { i18nFormat } from '$lib/utils/i18n.utils';
 	import { formatICPToHTML } from '$lib/utils/icp.utils';
+	import { assertAndConvertAmountToICPToken } from '$lib/utils/token.utils';
 
 	interface Props {
 		intro?: Snippet;
@@ -27,7 +28,7 @@
 		accountIdentifier: AccountIdentifier | undefined;
 		icp: string | undefined;
 		cycles: number | undefined;
-		onreview: ($event: SubmitEvent) => void;
+		onreview: () => void;
 		onclose: () => void;
 	}
 
@@ -60,6 +61,22 @@
 	$effect(() => {
 		displayTCycles = nonNullish(cycles) ? `${formatTCycles(BigInt(cycles ?? 0))}` : '';
 	});
+
+	const onSubmit = ($event: SubmitEvent) => {
+		$event.preventDefault();
+
+		const { valid } = assertAndConvertAmountToICPToken({
+			balance,
+			amount: icp,
+			fee: TOP_UP_NETWORK_FEES
+		});
+
+		if (!valid) {
+			return;
+		}
+
+		onreview();
+	};
 </script>
 
 {@render intro?.()}
@@ -84,7 +101,7 @@
 {#if balance <= TOP_UP_NETWORK_FEES}
 	<MissionControlICPInfo {accountIdentifier} {onclose} />
 {:else}
-	<form onsubmit={onreview}>
+	<form onsubmit={onSubmit}>
 		<div class="columns">
 			<InputIcp bind:amount={icp} {balance} />
 

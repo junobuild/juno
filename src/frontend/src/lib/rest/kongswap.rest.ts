@@ -1,6 +1,6 @@
 import { KongSwapTokensSchema } from '$lib/schema/kongswap.schema';
-import { type KongSwapTokens } from '$lib/types/kongswap';
-import { isNullish } from '@dfinity/utils';
+import type { KongSwapTokens } from '$lib/types/kongswap';
+import { isEmptyString } from '@dfinity/utils';
 
 export const fetchKongSwapTokens = async ({
 	page,
@@ -11,7 +11,7 @@ export const fetchKongSwapTokens = async ({
 }): Promise<KongSwapTokens | undefined> => {
 	const KONGSWAP_API_URL = import.meta.env.VITE_KONGSWAP_API_URL;
 
-	if (isNullish(KONGSWAP_API_URL)) {
+	if (isEmptyString(KONGSWAP_API_URL)) {
 		return undefined;
 	}
 

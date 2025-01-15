@@ -8,7 +8,7 @@
 	import Value from '$lib/components/ui/Value.svelte';
 	import { isBusy } from '$lib/stores/busy.store';
 	import { i18n } from '$lib/stores/i18n.store';
-	import type { CanisterSegmentWithLabel, Segment } from '$lib/types/canister';
+	import type { CanisterSegmentWithLabel } from '$lib/types/canister';
 	import { formatTCycles, tCyclesToCycles } from '$lib/utils/cycles.utils';
 	import { i18nFormat } from '$lib/utils/i18n.utils';
 

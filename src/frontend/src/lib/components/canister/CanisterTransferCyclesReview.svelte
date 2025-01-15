@@ -1,14 +1,14 @@
 <script lang="ts">
+	import { Principal } from '@dfinity/principal';
+	import { nonNullish } from '@dfinity/utils';
+	import Segment from '$lib/components/segments/Segment.svelte';
 	import GridArrow from '$lib/components/ui/GridArrow.svelte';
 	import Value from '$lib/components/ui/Value.svelte';
-	import { i18n } from '$lib/stores/i18n.store';
-	import { formatTCycles } from '$lib/utils/cycles.utils';
-	import { nonNullish } from '@dfinity/utils';
 	import { missionControlIdDerived } from '$lib/derived/mission-control.derived';
 	import { orbiterStore } from '$lib/derived/orbiter.derived';
-	import { Principal } from '@dfinity/principal';
-	import Segment from '$lib/components/segments/Segment.svelte';
 	import { satellitesStore } from '$lib/derived/satellite.derived';
+	import { i18n } from '$lib/stores/i18n.store';
+	import { formatTCycles } from '$lib/utils/cycles.utils';
 	import { satelliteName } from '$lib/utils/satellite.utils';
 
 	interface Props {

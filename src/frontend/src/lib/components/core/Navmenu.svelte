@@ -2,7 +2,7 @@
 	import { notEmptyString } from '@dfinity/utils';
 	import { circOut, quintOut } from 'svelte/easing';
 	import { slide } from 'svelte/transition';
-	import { page } from '$app/stores';
+	import { page } from '$app/state';
 	import NavmenuFooter from '$lib/components/core/NavmenuFooter.svelte';
 	import IconAnalytics from '$lib/components/icons/IconAnalytics.svelte';
 	import IconAuthentication from '$lib/components/icons/IconAuthentication.svelte';
@@ -19,7 +19,7 @@
 	import { satelliteIdStore } from '$lib/derived/satellite.derived';
 	import { i18n } from '$lib/stores/i18n.store';
 
-	let routeId: string | null = $derived($page.route.id);
+	let routeId: string | null = $derived(page.route.id);
 
 	let satelliteId: string = $derived($satelliteIdStore ?? '');
 

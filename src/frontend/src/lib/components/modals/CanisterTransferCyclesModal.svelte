@@ -16,6 +16,7 @@
 	import { formatTCycles, tCyclesToCycles } from '$lib/utils/cycles.utils';
 	import { emit } from '$lib/utils/events.utils';
 	import { i18nFormat } from '$lib/utils/i18n.utils';
+	import GridArrow from "$lib/components/ui/GridArrow.svelte";
 
 	interface Props {
 		canisterId: Principal;
@@ -125,44 +126,54 @@
 				/>
 			</p>
 
-			<Value>
-				{#snippet label()}
-					{$i18n.canisters.destination}
-				{/snippet}
+			<div class="columns">
+				<div>
+					<Value ref="cycles">
+						{#snippet label()}
+							T Cycles
+						{/snippet}
 
-				<CanistersPicker excludeSegmentId={canisterId} bind:segmentIdText={destinationId} />
-			</Value>
+						<Input
+							name="cycles"
+							inputType="icp"
+							required
+							bind:value={tCycles}
+							placeholder={$i18n.canisters.amount_cycles}
+						>
+							{#snippet footer()}
+								<span class="remaining-cycles">
+									<small
+										><Html
+											text={i18nFormat($i18n.canisters.cycles_will_remain, [
+												{
+													placeholder: '{0}',
+													value: formatTCycles(remainingCycles)
+												},
+												{
+													placeholder: '{1}',
+													value: segment.replace('_', ' ')
+												}
+											])}
+										/></small
+									>
+								</span>
+							{/snippet}
+						</Input>
+					</Value>
+				</div>
 
-			<Value ref="cycles">
-				{#snippet label()}
-					T Cycles
-				{/snippet}
+				<GridArrow small />
 
-				<Input
-					name="cycles"
-					inputType="icp"
-					required
-					bind:value={tCycles}
-					placeholder={$i18n.canisters.amount_cycles}
-				/>
-			</Value>
+				<div>
+					<Value>
+						{#snippet label()}
+							{$i18n.canisters.destination}
+						{/snippet}
 
-			<p>
-				<small
-					><Html
-						text={i18nFormat($i18n.canisters.cycles_will_remain, [
-							{
-								placeholder: '{0}',
-								value: formatTCycles(remainingCycles)
-							},
-							{
-								placeholder: '{1}',
-								value: segment.replace('_', ' ')
-							}
-						])}
-					/></small
-				>
-			</p>
+						<CanistersPicker excludeSegmentId={canisterId} bind:segmentIdText={destinationId} />
+					</Value>
+				</div>
+			</div>
 
 			<button type="submit" class="submit" disabled={$isBusy || !validConfirm}>
 				{$i18n.core.submit}
@@ -173,6 +184,14 @@
 
 <style lang="scss">
 	@use '../../styles/mixins/overlay';
+	@use '../../styles/mixins/media';
+	@use '../../styles/mixins/grid';
+
+	.columns {
+		@include media.min-width(large) {
+			@include grid.two-columns-with-arrow;
+		}
+	}
 
 	button {
 		margin: var(--padding-2x) 0 0;
@@ -184,5 +203,10 @@
 		p {
 			margin: 0;
 		}
+	}
+
+	.remaining-cycles {
+		display: block;
+		padding: var(--padding-0_5x) 0 0;
 	}
 </style>

@@ -6,7 +6,11 @@
 	import CanisterTopUpCycles from '$lib/components/canister/CanisterTopUpCycles.svelte';
 	import InputIcp from '$lib/components/core/InputIcp.svelte';
 	import MissionControlICPInfo from '$lib/components/mission-control/MissionControlICPInfo.svelte';
+	import SendTokensMax from '$lib/components/tokens/SendTokensMax.svelte';
+	import GridArrow from '$lib/components/ui/GridArrow.svelte';
 	import Html from '$lib/components/ui/Html.svelte';
+	import Input from '$lib/components/ui/Input.svelte';
+	import Value from '$lib/components/ui/Value.svelte';
 	import { TOP_UP_NETWORK_FEES } from '$lib/constants/constants';
 	import { icpToUsd } from '$lib/derived/exchange.derived';
 	import { missionControlIdDerived } from '$lib/derived/mission-control.derived';
@@ -15,10 +19,6 @@
 	import { formatTCycles, icpToCycles } from '$lib/utils/cycles.utils';
 	import { i18nFormat } from '$lib/utils/i18n.utils';
 	import { formatICPToHTML } from '$lib/utils/icp.utils';
-	import Input from '$lib/components/ui/Input.svelte';
-	import SendTokensMax from '$lib/components/tokens/SendTokensMax.svelte';
-	import Value from '$lib/components/ui/Value.svelte';
-	import GridArrow from '$lib/components/ui/GridArrow.svelte';
 
 	interface Props {
 		intro?: Snippet;

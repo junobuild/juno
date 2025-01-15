@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { notEmptyString } from '@dfinity/utils';
+	import { isEmptyString } from '@dfinity/utils';
 	import { circOut, quintOut } from 'svelte/easing';
 	import { slide } from 'svelte/transition';
 	import { page } from '$app/state';
@@ -42,7 +42,7 @@
 
 <Menu>
 	<nav>
-		{#if !notEmptyString(satelliteId)}
+		{#if isEmptyString(satelliteId)}
 			<a class="link" href="/">
 				<IconRocket size="24px" />
 				<span>{$i18n.satellites.launchpad}</span>

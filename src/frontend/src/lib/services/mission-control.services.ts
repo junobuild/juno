@@ -47,7 +47,7 @@ import type { Option } from '$lib/types/utils';
 import { isNotValidEmail } from '$lib/utils/email.utils';
 import type { Identity } from '@dfinity/agent';
 import type { Principal } from '@dfinity/principal';
-import { fromNullable, isNullish, notEmptyString } from '@dfinity/utils';
+import { fromNullable, isEmptyString, isNullish } from '@dfinity/utils';
 import { compare } from 'semver';
 import { get } from 'svelte/store';
 
@@ -324,7 +324,7 @@ export const setMetadataEmail = async ({
 	email: string;
 	metadata: Metadata;
 }): Promise<{ success: boolean }> => {
-	if (!notEmptyString(email) || isNotValidEmail(email)) {
+	if (isEmptyString(email) || isNotValidEmail(email)) {
 		toasts.error({
 			text: get(i18n).errors.invalid_email
 		});

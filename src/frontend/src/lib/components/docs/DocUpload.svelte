@@ -1,6 +1,6 @@
 <script lang="ts">
 	import type { Principal } from '@dfinity/principal';
-	import { isNullish, nonNullish, notEmptyString } from '@dfinity/utils';
+	import { isEmptyString, isNullish, nonNullish, notEmptyString } from '@dfinity/utils';
 	import { setDoc } from '@junobuild/core';
 	import { nanoid } from 'nanoid';
 	import { createEventDispatcher, getContext, type Snippet } from 'svelte';
@@ -65,7 +65,7 @@
 			return;
 		}
 
-		if (isNullish(key) || !notEmptyString(key)) {
+		if (isNullish(key) || isEmptyString(key)) {
 			// Upload is disabled if not valid
 			toasts.error({
 				text: $i18n.errors.key_invalid
@@ -126,7 +126,7 @@
 
 <DataUpload
 	on:junoUpload={upload}
-	disabled={!notEmptyString(key)}
+	disabled={isEmptyString(key)}
 	{action}
 	{title}
 	description={descriptionSnippet}

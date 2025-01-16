@@ -9,13 +9,19 @@
 		missionControlId: Principal;
 		transactions: IcTransactionUi[];
 		disableInfiniteScroll?: boolean;
+		onintersect: () => void;
 	}
 
-	let { missionControlId, transactions, disableInfiniteScroll = false }: Props = $props();
+	let {
+		missionControlId,
+		transactions,
+		onintersect,
+		disableInfiniteScroll = false
+	}: Props = $props();
 </script>
 
 {#if transactions.length > 0}
-	<InfiniteScroll on:junoIntersect disabled={disableInfiniteScroll}>
+	<InfiniteScroll {onintersect} disabled={disableInfiniteScroll}>
 		<div class="table-container">
 			<table>
 				<thead>

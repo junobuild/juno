@@ -52,7 +52,7 @@
 
 	let disableInfiniteScroll = $state(false);
 
-	const onIntersect = async () => {
+	const onintersect = async () => {
 		if ($authSignedOut) {
 			toasts.error({
 				text: $i18n.errors.no_identity
@@ -147,12 +147,7 @@
 			<button onclick={openSend}>{$i18n.wallet.send}</button>
 		</div>
 
-		<Transactions
-			{transactions}
-			{disableInfiniteScroll}
-			{missionControlId}
-			on:junoIntersect={onIntersect}
-		/>
+		<Transactions {transactions} {disableInfiniteScroll} {missionControlId} {onintersect} />
 
 		<TransactionsExport {transactions} {missionControlId} />
 	</WalletLoader>

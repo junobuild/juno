@@ -1,12 +1,12 @@
 <script lang="ts">
-	import type { Principal } from '@dfinity/principal';
 	import Transaction from '$lib/components/transactions/Transaction.svelte';
 	import InfiniteScroll from '$lib/components/ui/InfiniteScroll.svelte';
 	import { i18n } from '$lib/stores/i18n.store';
 	import type { IcTransactionUi } from '$lib/types/ic-transaction';
+	import type { MissionControlId } from '$lib/types/mission-control';
 
 	interface Props {
-		missionControlId: Principal;
+		missionControlId: MissionControlId;
 		transactions: IcTransactionUi[];
 		disableInfiniteScroll?: boolean;
 		onintersect: () => void;

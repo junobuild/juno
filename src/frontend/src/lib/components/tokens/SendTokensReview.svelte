@@ -1,5 +1,4 @@
 <script lang="ts">
-	import type { Principal } from '@dfinity/principal';
 	import type { TokenAmountV2 } from '@dfinity/utils';
 	import SendTokensAmount from '$lib/components/tokens/SendTokensAmount.svelte';
 	import GridArrow from '$lib/components/ui/GridArrow.svelte';
@@ -11,11 +10,12 @@
 	import { authStore } from '$lib/stores/auth.store';
 	import { wizardBusy } from '$lib/stores/busy.store';
 	import { i18n } from '$lib/stores/i18n.store';
+	import type { MissionControlId } from '$lib/types/mission-control';
 	import { formatICP } from '$lib/utils/icp.utils';
 	import { amountToICPToken } from '$lib/utils/token.utils';
 
 	interface Props {
-		missionControlId: Principal;
+		missionControlId: MissionControlId;
 		balance: bigint | undefined;
 		destination?: string;
 		amount: string | undefined;

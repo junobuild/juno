@@ -5,9 +5,10 @@
 	import SegmentsTable from '$lib/components/segments/SegmentsTable.svelte';
 	import { isBusy } from '$lib/stores/busy.store';
 	import { i18n } from '$lib/stores/i18n.store';
+	import type { MissionControlId } from '$lib/types/mission-control';
 
 	interface Props {
-		missionControlId: Principal;
+		missionControlId: MissionControlId;
 		selectedSatellites: [Principal, Satellite][];
 		selectedOrbiters: [Principal, Orbiter][];
 		oncontinue: () => void;

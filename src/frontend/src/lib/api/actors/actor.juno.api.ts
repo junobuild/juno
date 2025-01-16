@@ -11,6 +11,7 @@ import { idlFactory as idlFactorSatellite } from '$declarations/satellite/satell
 import { ActorApi } from '$lib/api/actors/actor.api';
 import { CONSOLE_CANISTER_ID, OBSERVATORY_CANISTER_ID } from '$lib/constants/constants';
 import type { OptionIdentity } from '$lib/types/itentity';
+import type { MissionControlId } from '$lib/types/mission-control';
 import type { Principal } from '@dfinity/principal';
 
 const consoleActor = new ActorApi<ConsoleActor>();
@@ -63,7 +64,7 @@ export const getMissionControlActor = async ({
 	identity,
 	missionControlId
 }: {
-	missionControlId: Principal;
+	missionControlId: MissionControlId;
 	identity: OptionIdentity;
 }): Promise<MissionControlActor> =>
 	await missionControlActor.getActor({

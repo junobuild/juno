@@ -1,14 +1,14 @@
 <script lang="ts">
-	import type { Principal } from '@dfinity/principal';
 	import Confirmation from '$lib/components/core/Confirmation.svelte';
 	import { exportTransactions as exportTransactionsServices } from '$lib/services/wallet.services';
 	import { busy } from '$lib/stores/busy.store';
 	import { i18n } from '$lib/stores/i18n.store';
 	import { toasts } from '$lib/stores/toasts.store';
 	import type { IcTransactionUi } from '$lib/types/ic-transaction';
+	import type { MissionControlId } from '$lib/types/mission-control';
 
 	interface Props {
-		missionControlId: Principal;
+		missionControlId: MissionControlId;
 		transactions: IcTransactionUi[];
 	}
 

@@ -27,6 +27,7 @@ import { i18n } from '$lib/stores/i18n.store';
 import { toasts } from '$lib/stores/toasts.store';
 import type { OptionIdentity } from '$lib/types/itentity';
 import type { Metadata } from '$lib/types/metadata';
+import type { MissionControlId } from '$lib/types/mission-control';
 import type { JunoModal, JunoModalCreateMonitoringStrategyDetail } from '$lib/types/modal';
 import {
 	type MonitoringStrategyProgress,
@@ -51,7 +52,7 @@ type MonitoringStrategyOnProgress = (progress: MonitoringStrategyProgress | unde
 
 interface MonitoringCyclesStrategyParams {
 	identity: OptionIdentity;
-	missionControlId: Principal;
+	missionControlId: MissionControlId;
 	satellites: Principal[];
 	orbiters: Principal[];
 	onProgress: MonitoringStrategyOnProgress;
@@ -465,7 +466,7 @@ export const openMonitoringModal = ({
 	missionControlId
 }: {
 	type: 'create_monitoring_strategy' | 'stop_monitoring_strategy';
-	missionControlId: Principal;
+	missionControlId: MissionControlId;
 }) => {
 	const $missionControlSettingsNotLoaded = get(missionControlSettingsNotLoaded);
 

@@ -1,4 +1,5 @@
 import { onSyncExchange } from '$lib/services/wallet.loader.services';
+import type { MissionControlId } from '$lib/types/mission-control';
 import type {
 	PostMessage,
 	PostMessageDataResponseError,
@@ -6,12 +7,11 @@ import type {
 	PostMessageDataResponseWallet,
 	PostMessageDataResponseWalletCleanUp
 } from '$lib/types/post-message';
-import type { Principal } from '@dfinity/principal';
 
 export type WalletCallback = (data: PostMessageDataResponseWallet) => void;
 
 export interface WalletWorker {
-	start: (params: { missionControlId: Principal; callback: WalletCallback }) => void;
+	start: (params: { missionControlId: MissionControlId; callback: WalletCallback }) => void;
 	stop: () => void;
 }
 
@@ -48,7 +48,7 @@ export const initWalletWorker = async (): Promise<WalletWorker> => {
 			callback,
 			missionControlId
 		}: {
-			missionControlId: Principal;
+			missionControlId: MissionControlId;
 			callback: WalletCallback;
 		}) => {
 			walletCallback = callback;

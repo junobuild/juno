@@ -10,6 +10,7 @@
 	import { authStore } from '$lib/stores/auth.store';
 	import { i18n } from '$lib/stores/i18n.store';
 	import type { SetControllerParams } from '$lib/types/controllers';
+	import type { MissionControlId } from '$lib/types/mission-control';
 
 	interface Props {
 		satellite: Satellite;
@@ -20,7 +21,10 @@
 	const list = (): Promise<[Principal, Controller][]> =>
 		listControllers({ satelliteId: satellite.satellite_id, identity: $authStore.identity });
 
-	const remove = (params: { missionControlId: Principal; controller: Principal }): Promise<void> =>
+	const remove = (params: {
+		missionControlId: MissionControlId;
+		controller: Principal;
+	}): Promise<void> =>
 		deleteSatellitesController({
 			...params,
 			satelliteIds: [satellite.satellite_id],
@@ -29,7 +33,7 @@
 
 	const add = (
 		params: {
-			missionControlId: Principal;
+			missionControlId: MissionControlId;
 		} & SetControllerParams
 	): Promise<void> =>
 		setSatellitesController({

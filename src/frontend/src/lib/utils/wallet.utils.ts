@@ -7,8 +7,8 @@ import {
 } from '$lib/constants/wallet.constants';
 import { i18n } from '$lib/stores/i18n.store';
 import type { IcTransactionUi } from '$lib/types/ic-transaction';
+import type { MissionControlId } from '$lib/types/mission-control';
 import { formatICP } from '$lib/utils/icp.utils';
-import type { Principal } from '@dfinity/principal';
 import { nonNullish } from '@dfinity/utils';
 import { get } from 'svelte/store';
 
@@ -17,7 +17,7 @@ export const transactionMemo = ({
 	missionControlId
 }: {
 	transaction: IcTransactionUi;
-	missionControlId: Principal;
+	missionControlId: MissionControlId;
 }): string => {
 	const labels = get(i18n);
 

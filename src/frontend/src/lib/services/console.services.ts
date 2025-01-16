@@ -7,6 +7,7 @@ import { getNewestReleasesMetadata } from '$lib/rest/cdn.rest';
 import { authStore } from '$lib/stores/auth.store';
 import { toasts } from '$lib/stores/toasts.store';
 import { versionStore, type ReleaseVersionSatellite } from '$lib/stores/version.store';
+import type { MissionControlId } from '$lib/types/mission-control';
 import type { Option } from '$lib/types/utils';
 import { container } from '$lib/utils/juno.utils';
 import type { Identity } from '@dfinity/agent';
@@ -20,7 +21,7 @@ export const initMissionControl = async ({
 	onInitMissionControlSuccess
 }: {
 	identity: Identity;
-	onInitMissionControlSuccess: (missionControlId: Principal) => void;
+	onInitMissionControlSuccess: (missionControlId: MissionControlId) => void;
 	// eslint-disable-next-line no-async-promise-executor, require-await
 }) =>
 	// eslint-disable-next-line no-async-promise-executor, require-await
@@ -55,7 +56,7 @@ const getMissionControl = async ({
 }: {
 	identity: Identity | undefined;
 }): Promise<{
-	missionControlId: Principal | undefined;
+	missionControlId: MissionControlId | undefined;
 }> => {
 	if (isNullish(identity)) {
 		throw new Error('Invalid identity.');
@@ -63,7 +64,7 @@ const getMissionControl = async ({
 
 	const mission_control = await initMissionControlApi(identity);
 
-	const missionControlId: Principal | undefined = fromNullable<Principal>(
+	const missionControlId: MissionControlId | undefined = fromNullable<Principal>(
 		mission_control.mission_control_id
 	);
 

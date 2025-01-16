@@ -6,6 +6,7 @@ import {
 } from '$lib/api/actors/actor.deprecated.api';
 import type { SetControllerParams } from '$lib/types/controllers';
 import type { OptionIdentity } from '$lib/types/itentity';
+import type { MissionControlId } from '$lib/types/mission-control';
 import { Principal } from '@dfinity/principal';
 import { nonNullish, toNullable } from '@dfinity/utils';
 
@@ -25,7 +26,7 @@ export const setMissionControlController004 = async ({
 	identity,
 	...rest
 }: {
-	missionControlId: Principal;
+	missionControlId: MissionControlId;
 	identity: OptionIdentity;
 } & SetControllerParams) => {
 	try {
@@ -48,7 +49,7 @@ export const listSatelliteStatuses = async ({
 	identity,
 	satelliteId
 }: {
-	missionControlId: Principal;
+	missionControlId: MissionControlId;
 	identity: OptionIdentity;
 	satelliteId: Principal;
 }): Promise<[] | [[bigint, Result_2][]]> => {
@@ -67,7 +68,7 @@ export const listOrbiterStatuses = async ({
 	identity,
 	orbiterId
 }: {
-	missionControlId: Principal;
+	missionControlId: MissionControlId;
 	identity: OptionIdentity;
 	orbiterId: Principal;
 }): Promise<[] | [[bigint, Result_2][]]> => {
@@ -85,7 +86,7 @@ export const listMissionControlStatuses = async ({
 	missionControlId,
 	identity
 }: {
-	missionControlId: Principal;
+	missionControlId: MissionControlId;
 	identity: OptionIdentity;
 }): Promise<[] | [[bigint, Result_2][]]> => {
 	const { list_mission_control_statuses } = await getMissionControlActor0013({

@@ -1,14 +1,14 @@
 <script lang="ts">
-	import type { Principal } from '@dfinity/principal';
 	import { nonNullish } from '@dfinity/utils';
 	import { fade } from 'svelte/transition';
 	import Identifier from '$lib/components/ui/Identifier.svelte';
 	import type { IcTransactionUi } from '$lib/types/ic-transaction';
+	import type { MissionControlId } from '$lib/types/mission-control';
 	import { formatToDate } from '$lib/utils/date.utils';
 	import { transactionAmount, transactionMemo } from '$lib/utils/wallet.utils';
 
 	interface Props {
-		missionControlId: Principal;
+		missionControlId: MissionControlId;
 		transaction: IcTransactionUi;
 	}
 

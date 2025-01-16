@@ -41,7 +41,9 @@
 
 	$effect(() => {
 		transactions = [
-			...transactionsLoaded.filter(({ id }) => !transactionsNext.some(({ id: txId }) => txId === id)),
+			...transactionsLoaded.filter(
+				({ id }) => !transactionsNext.some(({ id: txId }) => txId === id)
+			),
 			...transactionsNext
 		];
 	});

@@ -4,10 +4,7 @@
 	import { fade } from 'svelte/transition';
 	import Identifier from '$lib/components/ui/Identifier.svelte';
 	import { formatToDate } from '$lib/utils/date.utils';
-	import {
-		transactionAmount,
-		transactionMemo,
-	} from '$lib/utils/wallet.utils';
+	import { transactionAmount, transactionMemo } from '$lib/utils/wallet.utils';
 	import type { IcTransactionUi } from '$lib/types/ic-transaction';
 
 	interface Props {

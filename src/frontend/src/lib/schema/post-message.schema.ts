@@ -30,15 +30,15 @@ const PostMessageWalletDataSchema = z.object({
 });
 
 export const PostMessageDataResponseWalletDataSchema = z.object({
-	wallet: PostMessageWalletDataSchema.optional()
+	wallet: PostMessageWalletDataSchema
 });
 
 export const PostMessageDataResponseWalletCleanUpDataSchema = z.object({
-	transactionIds: z.array(z.string()).optional()
+	transactionIds: z.array(z.string())
 });
 
 export const PostMessageDataResponseErrorDataSchema = z.object({
-	error: z.unknown().optional()
+	error: z.unknown()
 });
 
 export const PostMessageDataResponseDataOthersSchema = z.object({
@@ -49,10 +49,10 @@ export const PostMessageDataResponseDataOthersSchema = z.object({
 });
 
 export const PostMessageDataResponseDataSchema = z.union([
-	PostMessageDataResponseWalletDataSchema,
-	PostMessageDataResponseWalletCleanUpDataSchema,
+	PostMessageDataResponseWalletDataSchema.optional(),
+	PostMessageDataResponseWalletCleanUpDataSchema.optional(),
 	PostMessageDataResponseDataOthersSchema,
-	PostMessageDataResponseErrorDataSchema
+	PostMessageDataResponseErrorDataSchema.optional()
 ]);
 
 export const PostMessageRequestMsgSchema = z.enum([

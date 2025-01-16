@@ -1,4 +1,9 @@
-import { queryAndUpdate } from '$lib/api/call/query.api';
+import {
+	queryAndUpdate,
+	type QueryAndUpdateOnCertifiedError,
+	type QueryAndUpdateOnResponse,
+	type QueryAndUpdateRequestParams
+} from '$lib/api/call/query.api';
 import { getTransactions } from '$lib/api/icp-index.api';
 import { PAGINATION, SYNC_WALLET_TIMER_INTERVAL } from '$lib/constants/constants';
 import type { IcTransactionAddOnsInfo } from '$lib/types/ic-transaction';
@@ -95,26 +100,38 @@ const syncWallet = async ({
 
 	syncing = true;
 
-	await queryAndUpdate<GetAccountIdentifierTransactionsResponse>({
-		request: ({ identity: _, certified }) =>
-			getTransactions({
-				identity,
-				owner: Principal.fromText(missionControlId),
-				// We query tip to discover the new transactions
-				start: undefined,
-				maxResults: PAGINATION,
-				certified
-			}),
-		onLoad: ({ certified, ...rest }) => {
-			syncTransactions({ certified, ...rest });
-			cleanTransactions({ certified });
-		},
-		onCertifiedError: ({ error }) => {
-			postMessageWalletError(error);
+	const request = ({
+		identity: _,
+		certified
+	}: QueryAndUpdateRequestParams): Promise<GetAccountIdentifierTransactionsResponse> =>
+		getTransactions({
+			identity,
+			owner: Principal.fromText(missionControlId),
+			// We query tip to discover the new transactions
+			start: undefined,
+			maxResults: PAGINATION,
+			certified
+		});
 
-			console.error(error);
-			stopTimer();
-		},
+	const onLoad: QueryAndUpdateOnResponse<GetAccountIdentifierTransactionsResponse> = ({
+		certified,
+		...rest
+	}) => {
+		syncTransactions({ certified, ...rest });
+		cleanTransactions({ certified });
+	};
+
+	const onCertifiedError: QueryAndUpdateOnCertifiedError = ({ error }) => {
+		postMessageWalletError(error);
+
+		console.error(error);
+		stopTimer();
+	};
+
+	await queryAndUpdate<GetAccountIdentifierTransactionsResponse>({
+		request,
+		onLoad,
+		onCertifiedError,
 		identity,
 		resolution: 'all_settled'
 	});

@@ -15,7 +15,7 @@
 		CanisterSyncStatus,
 		Segment
 	} from '$lib/types/canister';
-	import type { PostMessageDataResponse } from '$lib/types/post-message';
+	import type { PostMessageDataResponseCanister } from '$lib/types/post-message';
 	import { emit } from '$lib/utils/events.utils';
 	import { formatBytes } from '$lib/utils/number.utils';
 
@@ -39,7 +39,7 @@
 
 	let canister: CanisterSyncData | undefined = $state(undefined);
 
-	const syncCanister = ({ canister: c }: PostMessageDataResponse) => {
+	const syncCanister = ({ canister: c }: PostMessageDataResponseCanister) => {
 		canister = c as CanisterSyncData;
 		emit({ message: 'junoSyncCanister', detail: { canister } });
 	};

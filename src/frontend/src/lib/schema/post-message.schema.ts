@@ -17,43 +17,45 @@ export const PostMessageDataRequestDataSchema = z.object({
 	withMonitoringHistory: z.boolean().optional()
 });
 
-export const PostMessageDataResponseExchangeDataSchema = z.record(
-	CanisterIdTextSchema,
-	ExchangePriceSchema.nullable()
-);
-
 const JsonCertifiedIcTransactionUiTextSchema = z.string();
 
 const PostMessageWalletDataSchema = z.object({
 	balance: z.custom<CertifiedData<bigint>>(),
-	newTransactions: JsonCertifiedIcTransactionUiTextSchema.optional()
+	newTransactions: JsonCertifiedIcTransactionUiTextSchema
 });
 
-export const PostMessageDataResponseWalletDataSchema = z.object({
+export const PostMessageDataResponseWalletSchema = z.object({
 	wallet: PostMessageWalletDataSchema
 });
 
-export const PostMessageDataResponseWalletCleanUpDataSchema = z.object({
+export const PostMessageDataResponseWalletCleanUpSchema = z.object({
 	transactionIds: z.array(z.string())
 });
 
-export const PostMessageDataResponseErrorDataSchema = z.object({
+export const PostMessageDataResponseErrorSchema = z.object({
 	error: z.unknown()
 });
 
-export const PostMessageDataResponseDataOthersSchema = z.object({
-	canister: z.union([z.custom<CanisterSyncData>(), z.custom<CanisterSyncMonitoring>()]).optional(),
-	registrationState: z.custom<CustomDomainRegistrationState>().nullable().optional(),
-	authRemainingTime: z.number().optional(),
-	exchange: PostMessageDataResponseExchangeDataSchema.optional()
+export const PostMessageDataResponseAuthSchema = z.object({
+	authRemainingTime: z.number()
 });
 
-export const PostMessageDataResponseDataSchema = z.union([
-	PostMessageDataResponseWalletDataSchema.optional(),
-	PostMessageDataResponseWalletCleanUpDataSchema.optional(),
-	PostMessageDataResponseDataOthersSchema,
-	PostMessageDataResponseErrorDataSchema.optional()
-]);
+export const PostMessageDataResponseCanisterSchema = z.object({
+	canister: z.union([z.custom<CanisterSyncData>(), z.custom<CanisterSyncMonitoring>()]).optional()
+});
+
+export const PostMessageDataResponseHostingSchema = z.object({
+	registrationState: z.custom<CustomDomainRegistrationState>().nullable().optional()
+});
+
+const PostMessageDataResponseExchangeDataSchema = z.record(
+	CanisterIdTextSchema,
+	ExchangePriceSchema.nullable()
+);
+
+export const PostMessageDataResponseExchangeSchema = z.object({
+	exchange: PostMessageDataResponseExchangeDataSchema.optional()
+});
 
 export const PostMessageRequestMsgSchema = z.enum([
 	'startCyclesTimer',
@@ -86,7 +88,10 @@ export const PostMessageRequestSchema = z.object({
 	data: PostMessageDataRequestDataSchema
 });
 
-export const PostMessageResponseSchema = z.object({
-	msg: PostMessageResponseMsgSchema,
-	data: PostMessageDataResponseDataSchema
-});
+export const PostMessageDataResponseSchema = z.object({}).strict();
+
+export const inferPostMessageSchema = <T extends z.ZodTypeAny>(dataSchema: T) =>
+	z.object({
+		msg: z.union([PostMessageRequestMsgSchema, PostMessageResponseMsgSchema]),
+		data: dataSchema.optional()
+	});

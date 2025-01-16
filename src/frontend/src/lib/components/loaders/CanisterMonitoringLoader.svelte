@@ -18,7 +18,7 @@
 		CanisterSyncMonitoring,
 		Segment
 	} from '$lib/types/canister';
-	import type { PostMessageDataResponse } from '$lib/types/post-message';
+	import type { PostMessageDataResponseCanister } from '$lib/types/post-message';
 
 	interface Props {
 		canisterId: Principal;
@@ -29,7 +29,7 @@
 
 	let { canisterId, segment, data = $bindable(undefined), children }: Props = $props();
 
-	const syncCanister = ({ canister }: PostMessageDataResponse) => {
+	const syncCanister = ({ canister }: PostMessageDataResponseCanister) => {
 		const { data: d } = canister as CanisterSyncMonitoring;
 
 		if (isNullish(d)) {

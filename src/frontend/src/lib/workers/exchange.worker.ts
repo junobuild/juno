@@ -6,7 +6,7 @@ import type { CanisterIdText } from '$lib/types/canister';
 import type { ExchangePrice } from '$lib/types/exchange';
 import type { KongSwapToken } from '$lib/types/kongswap';
 import type {
-	PostMessageDataResponseExchangeData,
+	PostMessageDataResponseExchange,
 	PostMessageRequest
 } from '$lib/types/post-message';
 import { isNullish, nonNullish } from '@dfinity/utils';
@@ -137,7 +137,7 @@ const syncExchangePrice = async (exchangePrice: ExchangePrice) => {
 	// Save information in indexed-db as well to load previous values on navigation and refresh
 	await set(ICP_LEDGER_CANISTER_ID, exchangePrice, exchangeIdbStore);
 
-	const exchange: PostMessageDataResponseExchangeData = {
+	const exchange: PostMessageDataResponseExchange = {
 		[ICP_LEDGER_CANISTER_ID]: exchangePrice
 	};
 
@@ -150,7 +150,7 @@ const syncExchangePrice = async (exchangePrice: ExchangePrice) => {
 const cleanExchangePrice = async () => {
 	await del(ICP_LEDGER_CANISTER_ID, exchangeIdbStore);
 
-	const exchange: PostMessageDataResponseExchangeData = {
+	const exchange: PostMessageDataResponseExchange = {
 		[ICP_LEDGER_CANISTER_ID]: null
 	};
 
@@ -171,7 +171,7 @@ const emitSavedExchanges = async () => {
 		return;
 	}
 
-	const exchange: PostMessageDataResponseExchangeData = activeExchanges.reduce(
+	const exchange: PostMessageDataResponseExchange = activeExchanges.reduce(
 		(acc, [canisterId, value]) => ({
 			...acc,
 			[canisterId]: value

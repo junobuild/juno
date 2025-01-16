@@ -5,7 +5,7 @@
 	import { onDestroy, onMount, type Snippet } from 'svelte';
 	import { run } from 'svelte/legacy';
 	import { type WalletWorker, initWalletWorker } from '$lib/services/worker.wallet.services';
-	import type { PostMessageDataResponse } from '$lib/types/post-message';
+	import type { PostMessageDataResponseWallet } from '$lib/types/post-message';
 	import { emit } from '$lib/utils/events.utils';
 
 	interface Props {
@@ -24,12 +24,12 @@
 
 	let worker: WalletWorker | undefined = $state();
 
-	const syncState = (data: PostMessageDataResponse) => {
+	const syncState = (data: PostMessageDataResponseWallet) => {
 		if (isNullish(data.wallet)) {
 			return;
 		}
 
-		balance = data.wallet.balance;
+		balance = data.wallet.balance.data;
 		transactions = [...JSON.parse(data.wallet.newTransactions, jsonReviver), ...transactions];
 
 		emit({

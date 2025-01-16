@@ -9,9 +9,9 @@ import { PAGINATION, SYNC_WALLET_TIMER_INTERVAL } from '$lib/constants/constants
 import type { IcTransactionAddOnsInfo, IcTransactionUi } from '$lib/types/ic-transaction';
 import type {
 	PostMessageDataRequest,
-	PostMessageDataResponseErrorData,
-	PostMessageDataResponseWalletCleanUpData,
-	PostMessageDataResponseWalletData,
+	PostMessageDataResponseError,
+	PostMessageDataResponseWalletCleanUp,
+	PostMessageDataResponseWallet,
 	PostMessageRequest
 } from '$lib/types/post-message';
 import type { CertifiedData } from '$lib/types/store';
@@ -151,7 +151,7 @@ const postMessageWallet = ({
 }) => {
 	const certifiedTransactions = newTransactions.map((data) => ({ data, certified }));
 
-	const data: PostMessageDataResponseWalletData = {
+	const data: PostMessageDataResponseWallet = {
 		wallet: {
 			balance: {
 				data: balance,
@@ -282,7 +282,7 @@ const cleanTransactions = ({ certified }: { certified: boolean }) => {
 };
 
 const postMessageWalletCleanUp = (transactions: IndexedTransactions) => {
-	const data: PostMessageDataResponseWalletCleanUpData = {
+	const data: PostMessageDataResponseWalletCleanUp = {
 		transactionIds: Object.keys(transactions)
 	};
 
@@ -293,7 +293,7 @@ const postMessageWalletCleanUp = (transactions: IndexedTransactions) => {
 };
 
 const postMessageWalletError = (error: unknown) => {
-	const data: PostMessageDataResponseErrorData = {
+	const data: PostMessageDataResponseError = {
 		error
 	};
 

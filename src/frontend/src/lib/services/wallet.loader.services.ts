@@ -1,8 +1,8 @@
 import { exchangePricesCanisterDataStore } from '$lib/stores/exchange.store';
-import type { PostMessageDataResponse } from '$lib/types/post-message';
+import type { PostMessageDataResponseExchange } from '$lib/types/post-message';
 import { isNullish } from '@dfinity/utils';
 
-export const onSyncExchange = (data: PostMessageDataResponse) => {
+export const onSyncExchange = (data: PostMessageDataResponseExchange) => {
 	if (isNullish(data.exchange)) {
 		return;
 	}

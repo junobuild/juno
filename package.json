@@ -27,7 +27,7 @@
 		"format-imports": "eslint --fix --rule 'import/no-duplicates: [error, { prefer-inline: true }]' ./src/frontend/src/**/*.svelte",
 		"format": "prettier --write './**/*.{ts,js,mjs,json,scss,css,svelte,html,md}' && npm run format-imports",
 		"prebuild": "npm run generate",
-		"generate": "scripts/did.sh && scripts/did.idl.sh && node scripts/did.update.types.mjs && npm run copy:mjs && npm run format",
+		"generate": "scripts/did.sh && scripts/did.idl.sh && node scripts/did.update.types.mjs && scripts/did.idl.certified.sh && npm run copy:mjs && npm run format",
 		"copy:mjs": "cp src/declarations/console/console.factory.did.js src/declarations/console/console.factory.did.mjs && cp src/declarations/satellite/satellite.factory.did.js src/declarations/satellite/satellite.factory.did.mjs && cp src/declarations/observatory/observatory.factory.did.js src/declarations/observatory/observatory.factory.did.mjs && cp src/declarations/satellite/satellite.factory.did.js src/declarations/satellite/satellite.factory.did.mjs && cp src/declarations/orbiter/orbiter.factory.did.js src/declarations/orbiter/orbiter.factory.did.mjs && cp src/declarations/ic/ic.factory.did.js src/declarations/ic/ic.factory.did.mjs",
 		"console:invitation": "node scripts/console.invitation.mjs",
 		"console:credits": "node scripts/console.credits.mjs",

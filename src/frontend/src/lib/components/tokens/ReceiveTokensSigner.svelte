@@ -2,7 +2,6 @@
 	import type { Icrc1TransferRequest } from '@dfinity/ledger-icp';
 	import type { IcrcAccount } from '@dfinity/oisy-wallet-signer';
 	import { IcpWallet } from '@dfinity/oisy-wallet-signer/icp-wallet';
-	import { Principal } from '@dfinity/principal';
 	import { isNullish, nonNullish, toNullable } from '@dfinity/utils';
 	import ReceiveTokensSignerForm from '$lib/components/tokens/ReceiveTokensSignerForm.svelte';
 	import Confetti from '$lib/components/ui/Confetti.svelte';

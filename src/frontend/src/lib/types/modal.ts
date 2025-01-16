@@ -8,31 +8,31 @@ import type {
 } from '$declarations/mission_control/mission_control.did';
 import type { OrbiterSatelliteFeatures } from '$declarations/orbiter/orbiter.did';
 import type { AuthenticationConfig, Rule } from '$declarations/satellite/satellite.did';
-import type { MissionControlBalance } from '$lib/types/balance';
 import type { CanisterSegmentWithLabel, CanisterSettings } from '$lib/types/canister';
 import type { SetControllerParams } from '$lib/types/controllers';
 import type { CustomDomains } from '$lib/types/custom-domain';
 import type { OrbiterSatelliteConfigEntry } from '$lib/types/ortbiter';
 import type { SatelliteIdText } from '$lib/types/satellite';
 import type { Option } from '$lib/types/utils';
+import type { AccountIdentifier } from '@dfinity/ledger-icp';
 import type { Principal } from '@dfinity/principal';
 import type { BuildType } from '@junobuild/admin';
 
-export interface JunoModalBalance {
-	missionControlBalance?: MissionControlBalance;
+export interface JunoModalWithAccountIdentifier {
+	accountIdentifier: AccountIdentifier;
 }
 
-export interface JunoModalSatelliteDetail {
+export interface JunoModalWithSatellite {
 	satellite: Satellite;
 }
 
-export type JunoModalTopUpSatelliteDetail = JunoModalBalance & JunoModalSatelliteDetail;
+export type JunoModalTopUpSatelliteDetail = JunoModalWithAccountIdentifier & JunoModalWithSatellite;
 
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
-export interface JunoModalTopUpMissionControlDetail extends JunoModalBalance {}
+export interface JunoModalTopUpMissionControlDetail extends JunoModalWithAccountIdentifier {}
 
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
-export interface JunoModalTopUpOrbiterDetail extends JunoModalBalance {}
+export interface JunoModalTopUpOrbiterDetail extends JunoModalWithAccountIdentifier {}
 
 export interface JunoModalUpgradeDetail {
 	currentVersion: string;
@@ -40,9 +40,9 @@ export interface JunoModalUpgradeDetail {
 }
 
 export type JunoModalUpgradeSatelliteDetail = JunoModalUpgradeDetail &
-	JunoModalSatelliteDetail & { build?: BuildType };
+	JunoModalWithSatellite & { build?: BuildType };
 
-export interface JunoModalCreateSegmentDetail extends JunoModalBalance {
+export interface JunoModalCreateSegmentDetail extends JunoModalWithAccountIdentifier {
 	fee: bigint;
 	monitoringEnabled: boolean;
 	monitoringConfig: Option<MonitoringConfig>;
@@ -62,11 +62,11 @@ export interface JunoModalCustomDomainsDetail {
 	customDomains: CustomDomains;
 }
 
-export type JunoModalCyclesSatelliteDetail = JunoModalCycles & JunoModalSatelliteDetail;
+export type JunoModalCyclesSatelliteDetail = JunoModalCycles & JunoModalWithSatellite;
 
 export type JunoModalDeleteSatelliteDetail = JunoModalCycles &
 	JunoModalCustomDomainsDetail &
-	JunoModalSatelliteDetail;
+	JunoModalWithSatellite;
 
 export interface JunoModalSegmentDetail {
 	segment: CanisterSegmentWithLabel;
@@ -95,7 +95,7 @@ export interface JunoModalEditOrbiterConfigDetail {
 	config: Record<SatelliteIdText, OrbiterSatelliteConfigEntry>;
 }
 
-export interface JunoModalEditAuthConfigDetail extends JunoModalSatelliteDetail {
+export interface JunoModalEditAuthConfigDetail extends JunoModalWithSatellite {
 	rule: Rule | undefined;
 	config: AuthenticationConfig | undefined;
 }
@@ -111,6 +111,9 @@ export interface JunoModalShowMonitoringDetail extends JunoModalSegmentDetail {
 }
 
 export type JunoModalDetail =
+	| JunoModalUpgradeSatelliteDetail
+	| JunoModalUpgradeDetail
+	| JunoModalShowMonitoringDetail
 	| JunoModalTopUpSatelliteDetail
 	| JunoModalTopUpMissionControlDetail
 	| JunoModalCreateSegmentDetail

@@ -3,6 +3,7 @@
 	import IconSatellite from '$lib/components/icons/IconSatellite.svelte';
 	import CanisterTopUpModal from '$lib/components/modals/CanisterTopUpModal.svelte';
 	import Html from '$lib/components/ui/Html.svelte';
+	import { balanceOrZero } from '$lib/derived/balance.derived';
 	import { i18n } from '$lib/stores/i18n.store';
 	import type { JunoModalTopUpSatelliteDetail, JunoModalDetail } from '$lib/types/modal';
 	import { i18nFormat } from '$lib/utils/i18n.utils';
@@ -16,11 +17,9 @@
 	let { detail, onclose }: Props = $props();
 
 	let { satellite } = $derived(detail as JunoModalTopUpSatelliteDetail);
-	let balance = $derived(
-		(detail as JunoModalTopUpSatelliteDetail).missionControlBalance?.balance ?? 0n
-	);
+
 	let accountIdentifier: AccountIdentifier | undefined = $derived(
-		(detail as JunoModalTopUpSatelliteDetail).missionControlBalance?.accountIdentifier
+		(detail as JunoModalTopUpSatelliteDetail).accountIdentifier
 	);
 </script>
 
@@ -30,7 +29,7 @@
 		canisterId: satellite.satellite_id.toText(),
 		label: satelliteName(satellite)
 	}}
-	{balance}
+	balance={$balanceOrZero}
 	{accountIdentifier}
 	{onclose}
 >

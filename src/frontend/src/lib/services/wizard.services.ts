@@ -4,11 +4,12 @@ import type {
 	Satellite
 } from '$declarations/mission_control/mission_control.did';
 import { getOrbiterFee, getSatelliteFee } from '$lib/api/console.api';
+import { getAccountIdentifier } from '$lib/api/icp-index.api';
 import { updateAndStartMonitoring } from '$lib/api/mission-control.api';
 import { missionControlMonitored } from '$lib/derived/mission-control-settings.derived';
 import { missionControlConfigMonitoring } from '$lib/derived/mission-control-user.derived';
-import { loadCredits } from '$lib/services/credits.services';
 import { loadVersion } from '$lib/services/console.services';
+import { loadCredits } from '$lib/services/credits.services';
 import { loadSettings, loadUserData } from '$lib/services/mission-control.services';
 import {
 	createOrbiter,
@@ -35,10 +36,12 @@ import { Principal } from '@dfinity/principal';
 import { assertNonNullish, isNullish, nonNullish, toNullable } from '@dfinity/utils';
 import { get } from 'svelte/store';
 
-interface GetFeeBalance {
-	result?: Omit<JunoModalCreateSegmentDetail, 'monitoringConfig' | 'monitoringEnabled'>;
-	error?: unknown;
-}
+type GetFeeBalance =
+	| Omit<
+			JunoModalCreateSegmentDetail,
+			'monitoringConfig' | 'monitoringEnabled' | 'accountIdentifier'
+	  >
+	| { error: null | string };
 
 type GetFeeBalanceFn = (params: {
 	missionControlId: Principal;
@@ -91,15 +94,17 @@ const initCreateWizard = async ({
 
 	busy.start();
 
-	const { result: feeBalance, error } = await feeFn({
+	const resultFee = await feeFn({
 		identity,
 		missionControlId
 	});
 
-	if (nonNullish(error) || isNullish(feeBalance)) {
+	if ('error' in resultFee) {
 		busy.stop();
 		return;
 	}
+
+	const { fee } = resultFee;
 
 	await loadVersion({
 		satelliteId: undefined,
@@ -126,12 +131,15 @@ const initCreateWizard = async ({
 	const monitoringEnabled = get(missionControlMonitored);
 	const monitoringConfig = get(missionControlConfigMonitoring);
 
+	const accountIdentifier = getAccountIdentifier(missionControlId);
+
 	emit<JunoModal<JunoModalCreateSegmentDetail>>({
 		message: 'junoModal',
 		detail: {
 			type: modalType,
 			detail: {
-				...feeBalance,
+				accountIdentifier,
+				fee,
 				monitoringEnabled,
 				monitoringConfig
 			}
@@ -165,30 +173,22 @@ const getCreateFeeBalance = async ({
 
 	if (fee === 0n) {
 		return {
-			result: {
-				fee
-			}
+			fee
 		};
 	}
 
-	const { result, error } = await loadCredits(missionControlId);
+	const { result } = await loadCredits({
+		missionControlId,
+		identity,
+		reload: true
+	});
 
-	if (nonNullish(error)) {
-		return { error };
-	}
-
-	if (isNullish(result)) {
-		toasts.error({ text: labels.errors.no_mission_control });
-		return { error: labels.errors.no_mission_control };
+	if (result === 'error') {
+		return { error: null };
 	}
 
 	return {
-		result: {
-			fee,
-			missionControlBalance: {
-				...result
-			}
-		}
+		fee
 	};
 };
 

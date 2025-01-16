@@ -10,7 +10,6 @@
 	import { balance } from '$lib/derived/balance.derived';
 	import { missionControlIdDerived } from '$lib/derived/mission-control.derived';
 	import { i18n } from '$lib/stores/i18n.store';
-	import type { JunoModalDetail } from '$lib/types/modal';
 
 	let destination = $state('');
 

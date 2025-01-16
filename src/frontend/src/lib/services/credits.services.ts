@@ -1,46 +1,32 @@
 import { getCredits as getCreditsApi } from '$lib/api/console.api';
-import { getAccountIdentifier, getBalance } from '$lib/api/icp-index.api';
-import { authStore } from '$lib/stores/auth.store';
-import { i18n } from '$lib/stores/i18n.store';
-import { toasts } from '$lib/stores/toasts.store';
-import type { MissionControlBalance } from '$lib/types/balance';
+import { loadDataStore } from '$lib/services/loader.services';
+import { creditsDataStore } from '$lib/stores/credits.store';
+import type { OptionIdentity } from '$lib/types/itentity';
 import type { Option } from '$lib/types/utils';
+import type { Identity } from '@dfinity/agent';
 import type { Principal } from '@dfinity/principal';
 import { isNullish } from '@dfinity/utils';
-import { get } from 'svelte/store';
 
-export const loadCredits = async (
-	missionControlId: Option<Principal>
-): Promise<{ result: MissionControlBalance | undefined; error?: unknown }> => {
+export const loadCredits = async ({
+	missionControlId,
+	identity,
+	reload = false
+}: {
+	missionControlId: Option<Principal>;
+	identity: OptionIdentity;
+	reload?: boolean;
+}): Promise<{ result: 'skip' | 'success' | 'error' }> => {
 	if (isNullish(missionControlId)) {
-		return { result: undefined };
+		return { result: 'skip' };
 	}
 
-	try {
-		const accountIdentifier = getAccountIdentifier(missionControlId);
+	const load = (identity: Identity): Promise<bigint> => getCreditsApi(identity);
 
-		const identity = get(authStore).identity;
-
-		const queryBalance = async (): Promise<bigint> =>
-			await getBalance({ owner: missionControlId, identity });
-
-		const [balance, credits] = await Promise.all([queryBalance(), getCreditsApi(identity)]);
-
-		return {
-			result: {
-				accountIdentifier,
-				balance,
-				credits
-			}
-		};
-	} catch (error: unknown) {
-		const labels = get(i18n);
-
-		toasts.error({
-			text: labels.errors.ledger_balance_credits,
-			detail: error
-		});
-
-		return { result: undefined, error };
-	}
+	return await loadDataStore<bigint>({
+		identity,
+		store: creditsDataStore,
+		errorLabel: 'load_credits',
+		load,
+		reload
+	});
 };

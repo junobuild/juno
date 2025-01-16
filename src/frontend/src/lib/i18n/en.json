@@ -454,7 +454,6 @@
 		"canister_settings_not_loaded": "The settings of the smart contract are not yet loaded.",
 		"canister_update_error": "Unexpected error(s) while updating the settings.",
 		"segment_detach": "Unexpected error(s) while trying to detach the module.",
-		"ledger_balance_credits": "Unexpected error(s) while getting your mission control balance and credits.",
 		"load_credits": "Cannot load your current credits status.",
 		"load_documents": "Unexpected error(s) while loading the documents.",
 		"load_users": "Unexpected error(s) while loading the users.",

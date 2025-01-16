@@ -51,7 +51,7 @@
 
 <SegmentActions bind:visible segment="mission_control">
 	{#snippet cycleActions()}
-		<TopUp type="topup_mission_control" on:junoTopUp={close} />
+		<TopUp type="topup_mission_control" onclose={close} />
 
 		<CanisterTransferCycles {canister} onclick={onTransferCycles} />
 

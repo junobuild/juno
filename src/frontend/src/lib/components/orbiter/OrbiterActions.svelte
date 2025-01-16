@@ -52,7 +52,7 @@
 
 <SegmentActions bind:visible segment="orbiter">
 	{#snippet cycleActions()}
-		<TopUp type="topup_orbiter" on:junoTopUp={close} />
+		<TopUp type="topup_orbiter" onclose={close} />
 
 		<CanisterTransferCycles
 			{canister}

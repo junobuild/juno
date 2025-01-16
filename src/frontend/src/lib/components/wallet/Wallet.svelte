@@ -36,6 +36,16 @@
 	let balance: bigint | undefined = $state(undefined);
 	let transactions: IcTransactionUi[] = $state([]);
 
+	let transactionsLoaded: IcTransactionUi[] = $state([]);
+	let transactionsNext: IcTransactionUi[] = $state([]);
+
+	$effect(() => {
+		transactions = [
+			...transactionsLoaded.filter(({ id }) => !transactionsNext.some(({ id: txId }) => txId === id)),
+			...transactionsNext
+		];
+	});
+
 	/**
 	 * Scroll
 	 */
@@ -63,11 +73,7 @@
 			maxResults: PAGINATION,
 			start: lastId,
 			signalEnd: () => (disableInfiniteScroll = true),
-			loadTransactions: (nextTransactions) =>
-				(transactions = [
-					...transactions.filter(({ id }) => !nextTransactions.some(({ id: txId }) => txId === id)),
-					...nextTransactions
-				])
+			loadTransactions: (txs) => (transactionsNext = txs)
 		});
 	};
 
@@ -108,7 +114,7 @@
 </script>
 
 {#if $authSignedIn}
-	<WalletLoader {missionControlId} bind:balance bind:transactions>
+	<WalletLoader {missionControlId} bind:balance bind:transactions={transactionsLoaded}>
 		<div class="card-container with-title">
 			<span class="title">{$i18n.wallet.overview}</span>
 

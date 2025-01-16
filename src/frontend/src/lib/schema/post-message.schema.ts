@@ -22,11 +22,11 @@ export const PostMessageDataResponseExchangeDataSchema = z.record(
 	ExchangePriceSchema.nullable()
 );
 
-const JsonTransactionsTextSchema = z.string();
+const JsonCertifiedIcTransactionUiTextSchema = z.string();
 
 const PostMessageWalletDataSchema = z.object({
 	balance: z.custom<CertifiedData<bigint>>(),
-	newTransactions: JsonTransactionsTextSchema.optional()
+	newTransactions: JsonCertifiedIcTransactionUiTextSchema.optional()
 });
 
 export const PostMessageDataResponseWalletDataSchema = z.object({

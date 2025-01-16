@@ -6,7 +6,7 @@ import {
 } from '$lib/api/call/query.api';
 import { getTransactions } from '$lib/api/icp-index.api';
 import { PAGINATION, SYNC_WALLET_TIMER_INTERVAL } from '$lib/constants/constants';
-import type { IcTransactionAddOnsInfo } from '$lib/types/ic-transaction';
+import type { IcTransactionAddOnsInfo, IcTransactionUi } from '$lib/types/ic-transaction';
 import type {
 	PostMessageDataRequest,
 	PostMessageDataResponseErrorData,
@@ -15,7 +15,7 @@ import type {
 	PostMessageRequest
 } from '$lib/types/post-message';
 import type { CertifiedData } from '$lib/types/store';
-import { mapTransactionIcpToSelf } from '$lib/utils/icp-transactions.utils';
+import { mapIcpTransaction, mapTransactionIcpToSelf } from '$lib/utils/icp-transactions.utils';
 import { loadIdentity } from '$lib/utils/worker.utils';
 import type { Identity } from '@dfinity/agent';
 import type { GetAccountIdentifierTransactionsResponse, Transaction } from '@dfinity/ledger-icp';
@@ -117,7 +117,7 @@ const syncWallet = async ({
 		certified,
 		...rest
 	}) => {
-		syncTransactions({ certified, ...rest });
+		syncTransactions({ certified, identity, ...rest });
 		cleanTransactions({ certified });
 	};
 
@@ -144,7 +144,9 @@ const postMessageWallet = ({
 	balance,
 	transactions: newTransactions,
 	...rest
-}: GetAccountIdentifierTransactionsResponse & {
+}: Omit<GetAccountIdentifierTransactionsResponse, 'transactions'> & {
+	transactions: IcTransactionUi[];
+} & {
 	certified: boolean;
 }) => {
 	const certifiedTransactions = newTransactions.map((data) => ({ data, certified }));
@@ -171,10 +173,12 @@ const postMessageWallet = ({
 
 const syncTransactions = ({
 	response: { transactions: fetchedTransactions, balance, ...rest },
-	certified
+	certified,
+	identity
 }: {
 	response: GetAccountIdentifierTransactionsResponse;
 	certified: boolean;
+	identity: Identity;
 }) => {
 	// Is there any new transactions unknown so far or which has become certified
 	const newTransactions = fetchedTransactions.filter(
@@ -222,8 +226,12 @@ const syncTransactions = ({
 		}
 	};
 
+	const newUiTransactions = newExtendedTransactions.map((transaction) =>
+		mapIcpTransaction({ transaction, identity })
+	);
+
 	postMessageWallet({
-		transactions: newExtendedTransactions,
+		transactions: newUiTransactions,
 		balance,
 		certified,
 		...rest

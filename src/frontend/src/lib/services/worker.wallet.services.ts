@@ -3,8 +3,8 @@ import type {
 	PostMessage,
 	PostMessageDataResponseError,
 	PostMessageDataResponseExchange,
-	PostMessageDataResponseWalletCleanUp,
-	PostMessageDataResponseWallet
+	PostMessageDataResponseWallet,
+	PostMessageDataResponseWalletCleanUp
 } from '$lib/types/post-message';
 import type { Principal } from '@dfinity/principal';
 

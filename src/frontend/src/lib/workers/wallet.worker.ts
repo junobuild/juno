@@ -10,8 +10,8 @@ import type { IcTransactionAddOnsInfo, IcTransactionUi } from '$lib/types/ic-tra
 import type {
 	PostMessageDataRequest,
 	PostMessageDataResponseError,
-	PostMessageDataResponseWalletCleanUp,
 	PostMessageDataResponseWallet,
+	PostMessageDataResponseWalletCleanUp,
 	PostMessageRequest
 } from '$lib/types/post-message';
 import type { CertifiedData } from '$lib/types/store';

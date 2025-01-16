@@ -3,7 +3,7 @@
 	import type { Principal } from '@dfinity/principal';
 	import { isNullish } from '@dfinity/utils';
 	import { compare } from 'semver';
-	import { getAccountIdentifier, getTransactions } from '$lib/api/icp-index.api';
+	import { getAccountIdentifier } from '$lib/api/icp-index.api';
 	import ReceiveTokens from '$lib/components/tokens/ReceiveTokens.svelte';
 	import Transactions from '$lib/components/transactions/Transactions.svelte';
 	import TransactionsExport from '$lib/components/transactions/TransactionsExport.svelte';
@@ -15,6 +15,7 @@
 	import { MISSION_CONTROL_v0_0_12 } from '$lib/constants/version.constants';
 	import { authSignedIn, authSignedOut } from '$lib/derived/auth.derived';
 	import { missionControlVersion } from '$lib/derived/version.derived';
+	import { loadNextTransactions } from '$lib/services/wallet.services';
 	import { authStore } from '$lib/stores/auth.store';
 	import { i18n } from '$lib/stores/i18n.store';
 	import { toasts } from '$lib/stores/toasts.store';
@@ -56,28 +57,15 @@
 			return;
 		}
 
-		try {
-			const { transactions: nextTransactions } = await getTransactions({
-				owner: missionControlId,
-				identity: $authStore.identity,
-				maxResults: PAGINATION,
-				start: lastId
-			});
-
-			if (nextTransactions.length === 0) {
-				disableInfiniteScroll = true;
-				return;
-			}
-
-			transactions = [...transactions, ...nextTransactions];
-		} catch (err: unknown) {
-			toasts.error({
-				text: $i18n.errors.transactions_next,
-				detail: err
-			});
-
-			disableInfiniteScroll = true;
-		}
+		await loadNextTransactions({
+			owner: missionControlId,
+			identity: $authStore.identity,
+			maxResults: PAGINATION,
+			start: lastId,
+			signalEnd: () => (disableInfiniteScroll = true),
+			loadTransactions: (nextTransactions) =>
+				(transactions = [...transactions, ...nextTransactions])
+		});
 	};
 
 	/**

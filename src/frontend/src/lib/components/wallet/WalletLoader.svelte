@@ -4,11 +4,11 @@
 	import { onDestroy, onMount, type Snippet } from 'svelte';
 	import { run } from 'svelte/legacy';
 	import { type WalletWorker, initWalletWorker } from '$lib/services/worker.wallet.services';
+	import { balanceStore } from '$lib/stores/balance.store';
 	import type { IcTransactionUi } from '$lib/types/ic-transaction';
 	import type { PostMessageDataResponseWallet } from '$lib/types/post-message';
 	import type { CertifiedData } from '$lib/types/store';
 	import { emit } from '$lib/utils/events.utils';
-	import { balanceStore } from '$lib/stores/balance.store';
 
 	interface Props {
 		missionControlId: Principal;

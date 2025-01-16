@@ -13,6 +13,7 @@
 	import { PAGINATION } from '$lib/constants/constants';
 	import { MISSION_CONTROL_v0_0_12 } from '$lib/constants/version.constants';
 	import { authSignedIn, authSignedOut } from '$lib/derived/auth.derived';
+	import { balance, balanceNotLoaded } from '$lib/derived/balance.derived';
 	import { missionControlVersion } from '$lib/derived/version.derived';
 	import { loadNextTransactions } from '$lib/services/wallet.services';
 	import { authStore } from '$lib/stores/auth.store';
@@ -21,7 +22,6 @@
 	import type { IcTransactionUi } from '$lib/types/ic-transaction';
 	import { emit } from '$lib/utils/events.utils';
 	import { last } from '$lib/utils/utils';
-	import { balance, balanceNotLoaded } from '$lib/derived/balance.derived';
 
 	interface Props {
 		missionControlId: Principal;

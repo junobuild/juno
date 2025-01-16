@@ -11,12 +11,12 @@
 	import IconWallet from '$lib/components/icons/IconWallet.svelte';
 	import WalletInlineBalance from '$lib/components/wallet/WalletInlineBalance.svelte';
 	import WalletLoader from '$lib/components/wallet/WalletLoader.svelte';
+	import { balance, balanceLoaded } from '$lib/derived/balance.derived';
 	import { missionControlIdDerived } from '$lib/derived/mission-control.derived';
 	import { orbiterStore } from '$lib/derived/orbiter.derived';
 	import { loadOrbiters } from '$lib/services/orbiters.services';
 	import { i18n } from '$lib/stores/i18n.store';
 	import type { CanisterData } from '$lib/types/canister';
-	import { balance, balanceLoaded } from '$lib/derived/balance.derived';
 
 	let missionControlData: CanisterData | undefined = $state(undefined);
 	let orbiterData: CanisterData | undefined = $state(undefined);

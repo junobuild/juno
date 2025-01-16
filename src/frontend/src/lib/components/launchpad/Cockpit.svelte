@@ -15,6 +15,7 @@
 	import SkeletonText from '$lib/components/ui/SkeletonText.svelte';
 	import WalletInlineBalance from '$lib/components/wallet/WalletInlineBalance.svelte';
 	import WalletLoader from '$lib/components/wallet/WalletLoader.svelte';
+	import { balance } from '$lib/derived/balance.derived';
 	import {
 		missionControlNotMonitored,
 		missionControlSettingsLoaded
@@ -25,7 +26,6 @@
 	import { loadOrbiters } from '$lib/services/orbiters.services';
 	import { i18n } from '$lib/stores/i18n.store';
 	import type { CanisterData } from '$lib/types/canister';
-	import { balance } from '$lib/derived/balance.derived';
 
 	run(() => {
 		// @ts-expect-error TODO: to be migrated to Svelte v5

@@ -7,10 +7,10 @@
 	import Confetti from '$lib/components/ui/Confetti.svelte';
 	import Modal from '$lib/components/ui/Modal.svelte';
 	import SpinnerModal from '$lib/components/ui/SpinnerModal.svelte';
+	import { balance } from '$lib/derived/balance.derived';
 	import { missionControlIdDerived } from '$lib/derived/mission-control.derived';
 	import { i18n } from '$lib/stores/i18n.store';
 	import type { JunoModalDetail } from '$lib/types/modal';
-	import { balance } from '$lib/derived/balance.derived';
 
 	let destination = $state('');
 

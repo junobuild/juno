@@ -1,14 +1,3 @@
-import type { Transaction, TransactionWithId } from '@dfinity/ledger-icp';
-
-export interface IcTransactionAddOnsInfo {
-	transferToSelf?: 'send' | 'receive';
-}
-
-export type IcpTransaction = { transaction: Transaction & IcTransactionAddOnsInfo } & Pick<
-	TransactionWithId,
-	'id'
->;
-
 export type IcTransactionType = 'send' | 'receive' | 'approve' | 'burn' | 'mint';
 
 export type IcTransactionStatus = 'executed' | 'pending' | 'reimbursed' | 'failed';

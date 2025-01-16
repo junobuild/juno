@@ -40,10 +40,7 @@
 	let transactionsNext: IcTransactionUi[] = $state([]);
 
 	$effect(() => {
-		transactions = [
-			...transactionsLoaded,
-			...transactionsNext
-		];
+		transactions = [...transactionsLoaded, ...transactionsNext];
 	});
 
 	/**

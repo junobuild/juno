@@ -6,7 +6,7 @@ import {
 } from '$lib/api/call/query.api';
 import { getTransactions } from '$lib/api/icp-index.api';
 import { PAGINATION, SYNC_WALLET_TIMER_INTERVAL } from '$lib/constants/constants';
-import type { IcTransactionAddOnsInfo, IcTransactionUi } from '$lib/types/ic-transaction';
+import type { IcTransactionUi } from '$lib/types/ic-transaction';
 import type {
 	PostMessageDataRequest,
 	PostMessageDataResponseError,
@@ -15,10 +15,13 @@ import type {
 	PostMessageRequest
 } from '$lib/types/post-message';
 import type { CertifiedData } from '$lib/types/store';
-import { mapIcpTransaction, mapTransactionIcpToSelf } from '$lib/utils/icp-transactions.utils';
+import { mapIcpTransaction } from '$lib/utils/icp-transactions.utils';
 import { loadIdentity } from '$lib/utils/worker.utils';
 import type { Identity } from '@dfinity/agent';
-import type { GetAccountIdentifierTransactionsResponse, Transaction } from '@dfinity/ledger-icp';
+import type {
+	GetAccountIdentifierTransactionsResponse,
+	TransactionWithId
+} from '@dfinity/ledger-icp';
 import { Principal } from '@dfinity/principal';
 import { isNullish, jsonReplacer } from '@dfinity/utils';
 
@@ -77,9 +80,7 @@ interface IcWalletStore {
 	transactions: IndexedTransactions;
 }
 
-type IndexedTransaction = Transaction & IcTransactionAddOnsInfo;
-
-type IndexedTransactions = Record<string, CertifiedData<IndexedTransaction>>;
+type IndexedTransactions = Record<string, CertifiedData<TransactionWithId>>;
 
 let store: IcWalletStore = {
 	balance: undefined,
@@ -185,15 +186,13 @@ const syncTransactions = ({
 		({ id }) => isNullish(store.transactions[`${id}`]) || !store.transactions[`${id}`].certified
 	);
 
-	const newExtendedTransactions = newTransactions.flatMap(mapTransactionIcpToSelf);
-
 	// Is the balance different from last value or has it become certified
 	const newBalance =
 		isNullish(store.balance) ||
 		store.balance.data !== balance ||
 		(!store.balance.certified && certified);
 
-	if (newExtendedTransactions.length === 0 && !newBalance) {
+	if (newTransactions.length === 0 && !newBalance) {
 		// We execute postMessage at least once because developer may have no transaction at all so, we want to display the balance zero
 		if (!initialized) {
 			postMessageWallet({
@@ -213,11 +212,14 @@ const syncTransactions = ({
 		balance: { data: balance, certified },
 		transactions: {
 			...store.transactions,
-			...newExtendedTransactions.reduce(
-				(acc: Record<string, CertifiedData<IndexedTransaction>>, { id, transaction }) => ({
+			...newTransactions.reduce(
+				(acc: Record<string, CertifiedData<TransactionWithId>>, { id, transaction }) => ({
 					...acc,
 					[`${id}`]: {
-						data: transaction,
+						data: {
+							id,
+							transaction
+						},
 						certified
 					}
 				}),
@@ -226,7 +228,7 @@ const syncTransactions = ({
 		}
 	};
 
-	const newUiTransactions = newExtendedTransactions.map((transaction) =>
+	const newUiTransactions = newTransactions.map((transaction) =>
 		mapIcpTransaction({ transaction, identity })
 	);
 

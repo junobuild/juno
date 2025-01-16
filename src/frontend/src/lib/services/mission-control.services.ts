@@ -35,7 +35,7 @@ import { authStore } from '$lib/stores/auth.store';
 import { i18n } from '$lib/stores/i18n.store';
 import {
 	missionControlSettingsUncertifiedStore,
-	missionControlUncertifiedStore
+	missionControlUserUncertifiedStore
 } from '$lib/stores/mission-control.store';
 import { orbitersUncertifiedStore } from '$lib/stores/orbiter.store';
 import { satellitesUncertifiedStore } from '$lib/stores/satellite.store';
@@ -293,7 +293,7 @@ export const loadUserData = async ({
 	const versionStore = get(missionControlVersionStore);
 
 	if (compare(versionStore?.current ?? '0.0.0', MISSION_CONTROL_v0_0_14) < 0) {
-		missionControlUncertifiedStore.reset();
+		missionControlUserUncertifiedStore.reset();
 		return { success: true };
 	}
 
@@ -308,7 +308,7 @@ export const loadUserData = async ({
 		reload,
 		load,
 		errorLabel: 'load_user_data',
-		store: missionControlUncertifiedStore
+		store: missionControlUserUncertifiedStore
 	});
 
 	return { success: result !== 'error' };

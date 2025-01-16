@@ -8,7 +8,7 @@ import type { MissionControlId } from '$lib/types/mission-control';
 
 export const missionControlIdCertifiedStore = initCertifiedStore<MissionControlId>();
 
-export const missionControlUncertifiedStore = initUncertifiedStore<User>();
+export const missionControlUserUncertifiedStore = initUncertifiedStore<User>();
 
 export const missionControlSettingsUncertifiedStore = initUncertifiedStore<
 	MissionControlSettings | undefined

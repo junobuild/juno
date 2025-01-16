@@ -6,11 +6,13 @@ import type { IDL } from '@dfinity/candid';
 import { Principal } from '@dfinity/principal';
 import { assertNonNullish, isNullish } from '@dfinity/utils';
 
-type GetActorParams = {
+type CreateActorParams = {
 	canisterId: string | Principal;
 	idlFactory: IDL.InterfaceFactory;
 	config?: Pick<ActorConfig, 'callTransform' | 'queryTransform'>;
 } & GetAgentParams;
+
+export type GetActorParams = { certified?: boolean; identity: OptionIdentity };
 
 export class ActorApi<T = Record<string, ActorMethod>> {
 	#actors: Option<Record<string, ActorSubclass<T>>> = undefined;
@@ -18,14 +20,15 @@ export class ActorApi<T = Record<string, ActorMethod>> {
 	async getActor({
 		identity,
 		canisterId,
+		certified = false,
 		...rest
-	}: Omit<GetActorParams, 'identity'> & { identity: OptionIdentity }): Promise<ActorSubclass<T>> {
+	}: Omit<CreateActorParams, 'identity'> & GetActorParams): Promise<ActorSubclass<T>> {
 		assertNonNullish(identity, 'No internet identity to initialize the actor.');
 
 		const identityText = identity.getPrincipal().toText();
 		const canisterIdText = canisterId instanceof Principal ? canisterId.toText() : canisterId;
 
-		const key = `${canisterIdText}#${identityText}`;
+		const key = `${canisterIdText}${certified ? '+' : '#'}${identityText}`;
 
 		if (isNullish(this.#actors) || isNullish(this.#actors[key])) {
 			const actor = await this.createActor({ identity, canisterId, ...rest });
@@ -46,7 +49,7 @@ export class ActorApi<T = Record<string, ActorMethod>> {
 		idlFactory,
 		config = {},
 		...rest
-	}: GetActorParams): Promise<ActorSubclass<T>> {
+	}: CreateActorParams): Promise<ActorSubclass<T>> {
 		const agent = await getAgent(rest);
 
 		// Creates an actor with using the candid interface and the HttpAgent

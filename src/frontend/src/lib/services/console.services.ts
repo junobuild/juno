@@ -24,11 +24,11 @@ import { assertNonNullish, fromNullable, isNullish, nonNullish } from '@dfinity/
 import { satelliteBuildType } from '@junobuild/admin';
 import { get } from 'svelte/store';
 
-interface LoadingStrategy { loading: 'update' | 'query' }
+type Certified = { certified: boolean };
 
 type PollAndInitResult = {
 	missionControlId: MissionControlId;
-} & LoadingStrategy;
+} & Certified;
 
 export const initMissionControl = async ({
 	identity
@@ -42,20 +42,21 @@ export const initMissionControl = async ({
 
 	try {
 		// Poll to init mission control center
-		const { missionControlId, loading } = await pollAndInitMissionControl({
+		const { missionControlId, certified } = await pollAndInitMissionControl({
 			identity
 		});
 
 		missionControlIdCertifiedStore.set({
 			data: missionControlId,
-			certified: loading === 'update'
+			certified
 		});
 
-		if (loading === 'update') {
+		if (certified) {
 			return { result: 'success' };
 		}
 
-		// TODO: certify
+		// We deliberately do not await the promise to avoid blocking the main UX. However, if necessary, we take the required measures if Mission Control cannot be certified.
+		assertMissionControl({ identity });
 
 		return { result: 'success' };
 	} catch (err: unknown) {
@@ -79,7 +80,7 @@ const pollAndInitMissionControl = async ({
 	// eslint-disable-next-line no-async-promise-executor, require-await
 	new Promise<PollAndInitResult>(async (resolve, reject) => {
 		try {
-			const { missionControlId, loading } = await getOrInitMissionControlId({
+			const { missionControlId, certified } = await getOrInitMissionControlId({
 				identity
 			});
 
@@ -96,7 +97,7 @@ const pollAndInitMissionControl = async ({
 				return;
 			}
 
-			resolve({ missionControlId, loading });
+			resolve({ missionControlId, certified });
 		} catch (err: unknown) {
 			reject(err);
 		}
@@ -107,15 +108,15 @@ const getOrInitMissionControlId = async (params: {
 }): Promise<
 	{
 		missionControlId: MissionControlId | undefined;
-	} & LoadingStrategy
+	} & Certified
 > => {
-	const { missionControl, loading } = await getOrInitMissionControl(params);
+	const { missionControl, certified } = await getOrInitMissionControl(params);
 
 	const missionControlId = fromNullable(missionControl.mission_control_id);
 
 	return {
 		missionControlId,
-		loading
+		certified
 	};
 };
 
@@ -123,21 +124,29 @@ export const getOrInitMissionControl = async ({
 	identity
 }: {
 	identity: Identity;
-}): Promise<{ missionControl: MissionControl } & LoadingStrategy> => {
-	const existingMissionControl = await getMissionControlApi(identity);
+}): Promise<{ missionControl: MissionControl } & Certified> => {
+	const existingMissionControl = await getMissionControlApi({ identity, certified: false });
 
 	if (isNullish(existingMissionControl)) {
 		const newMissionControl = await initMissionControlApi(identity);
 		return {
 			missionControl: newMissionControl,
-			loading: 'update'
+			certified: true
 		};
 	}
 
 	return {
 		missionControl: existingMissionControl,
-		loading: 'query'
+		certified: false
 	};
+};
+
+const assertMissionControl = async ({ identity }: { identity: Identity }) => {
+	try {
+		await getMissionControlApi({ identity, certified: true });
+	} catch (error: unknown) {
+		await signOut();
+	}
 };
 
 export const loadVersion = async ({

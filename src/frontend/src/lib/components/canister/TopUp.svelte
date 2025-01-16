@@ -3,7 +3,7 @@
 	import { createEventDispatcher } from 'svelte';
 	import IconPublish from '$lib/components/icons/IconPublish.svelte';
 	import { missionControlIdDerived } from '$lib/derived/mission-control.derived';
-	import { getMissionControlBalance } from '$lib/services/balance.services';
+	import { loadCredits } from '$lib/services/credits.services';
 	import { busy } from '$lib/stores/busy.store';
 	import { i18n } from '$lib/stores/i18n.store';
 	import type { JunoModalDetail } from '$lib/types/modal';
@@ -23,7 +23,7 @@
 
 		busy.start();
 
-		const { result, error } = await getMissionControlBalance($missionControlIdDerived);
+		const { result, error } = await loadCredits($missionControlIdDerived);
 
 		busy.stop();
 

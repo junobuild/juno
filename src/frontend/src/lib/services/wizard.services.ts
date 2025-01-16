@@ -7,7 +7,7 @@ import { getOrbiterFee, getSatelliteFee } from '$lib/api/console.api';
 import { updateAndStartMonitoring } from '$lib/api/mission-control.api';
 import { missionControlMonitored } from '$lib/derived/mission-control-settings.derived';
 import { missionControlConfigMonitoring } from '$lib/derived/mission-control-user.derived';
-import { getMissionControlBalance } from '$lib/services/balance.services';
+import { loadCredits } from '$lib/services/credits.services';
 import { loadVersion } from '$lib/services/console.services';
 import { loadSettings, loadUserData } from '$lib/services/mission-control.services';
 import {
@@ -171,7 +171,7 @@ const getCreateFeeBalance = async ({
 		};
 	}
 
-	const { result, error } = await getMissionControlBalance(missionControlId);
+	const { result, error } = await loadCredits(missionControlId);
 
 	if (nonNullish(error)) {
 		return { error };

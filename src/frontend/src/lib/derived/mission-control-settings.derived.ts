@@ -1,15 +1,15 @@
-import { missionControlSettingsDataStore } from '$lib/stores/mission-control.store';
+import { missionControlSettingsUncertifiedStore } from '$lib/stores/mission-control.store';
 import { fromNullishNullable } from '$lib/utils/did.utils';
 import { nonNullish } from '@dfinity/utils';
 import { derived } from 'svelte/store';
 
 export const missionControlSettings = derived(
-	[missionControlSettingsDataStore],
+	[missionControlSettingsUncertifiedStore],
 	([$missionControlSettingsDataStore]) => $missionControlSettingsDataStore?.data
 );
 
 export const missionControlSettingsLoaded = derived(
-	[missionControlSettingsDataStore],
+	[missionControlSettingsUncertifiedStore],
 	([$missionControlSettingsDataStore]) => $missionControlSettingsDataStore !== undefined
 );
 

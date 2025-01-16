@@ -34,11 +34,11 @@ import { loadSatellites } from '$lib/services/satellites.services';
 import { authStore } from '$lib/stores/auth.store';
 import { i18n } from '$lib/stores/i18n.store';
 import {
-	missionControlSettingsDataStore,
-	missionControlUserDataStore
+	missionControlSettingsUncertifiedStore,
+	missionControlUncertifiedStore
 } from '$lib/stores/mission-control.store';
-import { orbitersDataStore } from '$lib/stores/orbiter.store';
-import { satellitesDataStore } from '$lib/stores/satellite.store';
+import { orbitersUncertifiedStore } from '$lib/stores/orbiter.store';
+import { satellitesUncertifiedStore } from '$lib/stores/satellite.store';
 import { toasts } from '$lib/stores/toasts.store';
 import type { SetControllerParams } from '$lib/types/controllers';
 import type { OptionIdentity } from '$lib/types/itentity';
@@ -176,7 +176,7 @@ export const setSatelliteName = async ({
 	});
 
 	const satellites = get(satellitesStore);
-	satellitesDataStore.set([
+	satellitesUncertifiedStore.set([
 		...(satellites ?? []).filter(
 			({ satellite_id }) => updatedSatellite.satellite_id.toText() !== satellite_id.toText()
 		),
@@ -227,7 +227,7 @@ export const attachOrbiter = async (params: {
 
 	const orbiter = await setOrbiter({ ...params, identity });
 
-	orbitersDataStore.set([orbiter]);
+	orbitersUncertifiedStore.set([orbiter]);
 };
 
 export const detachOrbiter = async ({
@@ -241,7 +241,7 @@ export const detachOrbiter = async ({
 
 	await unsetOrbiter({ ...rest, orbiterId: canisterId, identity });
 
-	orbitersDataStore.reset();
+	orbitersUncertifiedStore.reset();
 };
 
 export const loadSettings = async ({
@@ -256,7 +256,7 @@ export const loadSettings = async ({
 	const versionStore = get(missionControlVersionStore);
 
 	if (compare(versionStore?.current ?? '0.0.0', MISSION_CONTROL_v0_0_14) < 0) {
-		missionControlSettingsDataStore.reset();
+		missionControlSettingsUncertifiedStore.reset();
 		return { success: true };
 	}
 
@@ -274,7 +274,7 @@ export const loadSettings = async ({
 		reload,
 		load,
 		errorLabel: 'load_settings',
-		store: missionControlSettingsDataStore
+		store: missionControlSettingsUncertifiedStore
 	});
 
 	return { success: result !== 'error' };
@@ -292,7 +292,7 @@ export const loadUserData = async ({
 	const versionStore = get(missionControlVersionStore);
 
 	if (compare(versionStore?.current ?? '0.0.0', MISSION_CONTROL_v0_0_14) < 0) {
-		missionControlUserDataStore.reset();
+		missionControlUncertifiedStore.reset();
 		return { success: true };
 	}
 
@@ -307,7 +307,7 @@ export const loadUserData = async ({
 		reload,
 		load,
 		errorLabel: 'load_user_data',
-		store: missionControlUserDataStore
+		store: missionControlUncertifiedStore
 	});
 
 	return { success: result !== 'error' };

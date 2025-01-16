@@ -1,15 +1,15 @@
-import { missionControlUserDataStore } from '$lib/stores/mission-control.store';
+import { missionControlUncertifiedStore } from '$lib/stores/mission-control.store';
 import { fromNullishNullable } from '$lib/utils/did.utils';
 import { metadataEmail } from '$lib/utils/metadata.utils';
 import { derived } from 'svelte/store';
 
 export const missionControlUserData = derived(
-	[missionControlUserDataStore],
+	[missionControlUncertifiedStore],
 	([$missionControlUserDataStore]) => $missionControlUserDataStore?.data
 );
 
 export const missionControlUserDataLoaded = derived(
-	[missionControlUserDataStore],
+	[missionControlUncertifiedStore],
 	([$missionControlUserDataStore]) => $missionControlUserDataStore !== undefined
 );
 

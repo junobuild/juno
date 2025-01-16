@@ -4,7 +4,7 @@
 	import { onDestroy, onMount, type Snippet } from 'svelte';
 	import { run } from 'svelte/legacy';
 	import { type WalletWorker, initWalletWorker } from '$lib/services/worker.wallet.services';
-	import { balanceStore } from '$lib/stores/balance.store';
+	import { balanceCertifiedStore } from '$lib/stores/balance.store';
 	import type { IcTransactionUi } from '$lib/types/ic-transaction';
 	import type { PostMessageDataResponseWallet } from '$lib/types/post-message';
 	import type { CertifiedData } from '$lib/types/store';
@@ -24,7 +24,7 @@
 			return;
 		}
 
-		balanceStore.set(data.wallet.balance);
+		balanceCertifiedStore.set(data.wallet.balance);
 
 		const newTransactions = JSON.parse(data.wallet.newTransactions, jsonReviver).map(
 			({ data }: CertifiedData<IcTransactionUi>) => data

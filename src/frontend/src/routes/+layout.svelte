@@ -13,7 +13,7 @@
 	import { initAuthWorker } from '$lib/services/worker.auth.services';
 	import { type AuthStoreData, authStore } from '$lib/stores/auth.store';
 	import { i18n } from '$lib/stores/i18n.store';
-	import { missionControlIdDataStore } from '$lib/stores/mission-control.store';
+	import { missionControlIdUncertifiedStore } from '$lib/stores/mission-control.store';
 	import { toasts } from '$lib/stores/toasts.store';
 	import '$lib/styles/global.scss';
 
@@ -50,7 +50,7 @@
 			await initMissionControl({
 				identity,
 				onInitMissionControlSuccess: (missionControlId) =>
-					missionControlIdDataStore.set(missionControlId)
+					missionControlIdUncertifiedStore.set(missionControlId)
 			});
 		} catch (err: unknown) {
 			toasts.error({

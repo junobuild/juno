@@ -5,10 +5,10 @@ import type {
 import { initUncertifiedStore } from '$lib/stores/_uncertified.store';
 import type { Principal } from '@dfinity/principal';
 
-export const missionControlIdDataStore = initUncertifiedStore<Principal>();
+export const missionControlIdUncertifiedStore = initUncertifiedStore<Principal>();
 
-export const missionControlUserDataStore = initUncertifiedStore<User>();
+export const missionControlUncertifiedStore = initUncertifiedStore<User>();
 
-export const missionControlSettingsDataStore = initUncertifiedStore<
+export const missionControlSettingsUncertifiedStore = initUncertifiedStore<
 	MissionControlSettings | undefined
 >();

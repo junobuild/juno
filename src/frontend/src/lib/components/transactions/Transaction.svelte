@@ -3,9 +3,9 @@
 	import { nonNullish } from '@dfinity/utils';
 	import { fade } from 'svelte/transition';
 	import Identifier from '$lib/components/ui/Identifier.svelte';
+	import type { IcTransactionUi } from '$lib/types/ic-transaction';
 	import { formatToDate } from '$lib/utils/date.utils';
 	import { transactionAmount, transactionMemo } from '$lib/utils/wallet.utils';
-	import type { IcTransactionUi } from '$lib/types/ic-transaction';
 
 	interface Props {
 		missionControlId: Principal;

@@ -18,9 +18,9 @@
 	import { authStore } from '$lib/stores/auth.store';
 	import { i18n } from '$lib/stores/i18n.store';
 	import { toasts } from '$lib/stores/toasts.store';
+	import type { IcTransactionUi } from '$lib/types/ic-transaction';
 	import { emit } from '$lib/utils/events.utils';
 	import { last } from '$lib/utils/utils';
-	import type { IcTransactionUi } from '$lib/types/ic-transaction';
 
 	interface Props {
 		missionControlId: Principal;
@@ -41,9 +41,7 @@
 
 	$effect(() => {
 		transactions = [
-			...transactionsLoaded.filter(
-				({ id }) => !transactionsNext.some(({ id: txId }) => txId === id)
-			),
+			...transactionsLoaded,
 			...transactionsNext
 		];
 	});
@@ -75,7 +73,11 @@
 			maxResults: PAGINATION,
 			start: lastId,
 			signalEnd: () => (disableInfiniteScroll = true),
-			loadTransactions: (txs) => (transactionsNext = txs)
+			loadTransactions: (txs) =>
+				(transactionsNext = [
+					...transactionsNext.filter(({ id }) => !txs.some(({ id: txId }) => txId === id)),
+					...txs
+				])
 		});
 	};
 

@@ -24,7 +24,9 @@ import { assertNonNullish, fromNullable, isNullish, nonNullish } from '@dfinity/
 import { satelliteBuildType } from '@junobuild/admin';
 import { get } from 'svelte/store';
 
-type Certified = { certified: boolean };
+interface Certified {
+	certified: boolean;
+}
 
 type PollAndInitResult = {
 	missionControlId: MissionControlId;
@@ -76,6 +78,7 @@ const pollAndInitMissionControl = async ({
 	identity
 }: {
 	identity: Identity;
+	// eslint-disable-next-line no-async-promise-executor, require-await
 }): Promise<PollAndInitResult> =>
 	// eslint-disable-next-line no-async-promise-executor, require-await
 	new Promise<PollAndInitResult>(async (resolve, reject) => {

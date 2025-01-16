@@ -1,5 +1,4 @@
 <script lang="ts">
-	import type { TransactionWithId } from '@dfinity/ledger-icp';
 	import type { Principal } from '@dfinity/principal';
 	import { isNullish } from '@dfinity/utils';
 	import { compare } from 'semver';
@@ -21,7 +20,7 @@
 	import { toasts } from '$lib/stores/toasts.store';
 	import { emit } from '$lib/utils/events.utils';
 	import { last } from '$lib/utils/utils';
-	import type {IcTransactionUi} from "$lib/types/ic-transaction";
+	import type { IcTransactionUi } from '$lib/types/ic-transaction';
 
 	interface Props {
 		missionControlId: Principal;
@@ -65,7 +64,10 @@
 			start: lastId,
 			signalEnd: () => (disableInfiniteScroll = true),
 			loadTransactions: (nextTransactions) =>
-				(transactions = [...transactions, ...nextTransactions])
+				(transactions = [
+					...transactions.filter(({ id }) => !nextTransactions.some(({ id: txId }) => txId === id)),
+					...nextTransactions
+				])
 		});
 	};
 

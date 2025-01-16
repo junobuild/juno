@@ -1,5 +1,5 @@
 <script lang="ts">
-    import type {IcTransactionUi} from "$lib/types/ic-transaction";
+	import type { IcTransactionUi } from '$lib/types/ic-transaction';
 	import type { Principal } from '@dfinity/principal';
 	import { isNullish, jsonReviver } from '@dfinity/utils';
 	import { onDestroy, onMount, type Snippet } from 'svelte';
@@ -7,6 +7,7 @@
 	import { type WalletWorker, initWalletWorker } from '$lib/services/worker.wallet.services';
 	import type { PostMessageDataResponseWallet } from '$lib/types/post-message';
 	import { emit } from '$lib/utils/events.utils';
+	import type { CertifiedData } from '$lib/types/store';
 
 	interface Props {
 		missionControlId: Principal;
@@ -30,7 +31,15 @@
 		}
 
 		balance = data.wallet.balance.data;
-		transactions = [...JSON.parse(data.wallet.newTransactions, jsonReviver), ...transactions];
+
+		const newTransactions = JSON.parse(data.wallet.newTransactions, jsonReviver).map(
+			({ data }: CertifiedData<IcTransactionUi>) => data
+		);
+
+		transactions = [
+			...newTransactions,
+			...transactions.filter(({ id }) => !transactions.some(({ id: txId }) => txId === id))
+		];
 
 		emit({
 			message: 'junoSyncBalance',

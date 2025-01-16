@@ -30,7 +30,7 @@
 				</thead>
 
 				<tbody>
-					{#each transactions as transaction (transaction.id)}
+					{#each transactions as transaction, index (`${transaction.id}-${index}`)}
 						<Transaction {transaction} {missionControlId} />
 					{/each}
 				</tbody>

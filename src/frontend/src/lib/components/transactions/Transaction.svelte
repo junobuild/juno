@@ -9,7 +9,6 @@
 		transactionMemo,
 	} from '$lib/utils/wallet.utils';
 	import type { IcTransactionUi } from '$lib/types/ic-transaction';
-	import { formatICP } from '$lib/utils/icp.utils';
 
 	interface Props {
 		missionControlId: Principal;

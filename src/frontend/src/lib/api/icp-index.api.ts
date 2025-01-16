@@ -6,7 +6,7 @@ import {
 	type GetAccountIdentifierTransactionsResponse
 } from '@dfinity/ledger-icp';
 import type { Principal } from '@dfinity/principal';
-import { isNullish } from '@dfinity/utils';
+import { assertNonNullish } from '@dfinity/utils';
 
 export const getAccountIdentifier = (principal: Principal): AccountIdentifier =>
 	AccountIdentifier.fromPrincipal({ principal, subAccount: undefined });
@@ -18,9 +18,7 @@ export const getBalance = async ({
 	owner: Principal;
 	identity: OptionIdentity;
 }): Promise<bigint> => {
-	if (isNullish(identity)) {
-		throw new Error('No internet identity.');
-	}
+	assertNonNullish(identity, 'No internet identity to initialize the Index actor.');
 
 	const agent = await getAgent({ identity });
 
@@ -38,16 +36,16 @@ export const getTransactions = async ({
 	owner,
 	identity,
 	start,
-	maxResults = 100n
+	maxResults = 100n,
+	certified
 }: {
 	owner: Principal;
 	identity: OptionIdentity;
 	start?: bigint;
 	maxResults?: bigint;
+	certified: boolean;
 }): Promise<GetAccountIdentifierTransactionsResponse> => {
-	if (isNullish(identity)) {
-		throw new Error('No internet identity.');
-	}
+	assertNonNullish(identity, 'No internet identity to initialize the Index actor.');
 
 	const agent = await getAgent({ identity });
 
@@ -59,6 +57,6 @@ export const getTransactions = async ({
 		start,
 		maxResults,
 		accountIdentifier: getAccountIdentifier(owner).toHex(),
-		certified: false
+		certified
 	});
 };

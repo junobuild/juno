@@ -1,15 +1,15 @@
 <script lang="ts">
-	import type { TransactionWithId } from '@dfinity/ledger-icp';
 	import type { Principal } from '@dfinity/principal';
 	import Confirmation from '$lib/components/core/Confirmation.svelte';
 	import { exportTransactions as exportTransactionsServices } from '$lib/services/wallet.services';
 	import { busy } from '$lib/stores/busy.store';
 	import { i18n } from '$lib/stores/i18n.store';
 	import { toasts } from '$lib/stores/toasts.store';
+	import type { IcTransactionUi } from '$lib/types/ic-transaction';
 
 	interface Props {
 		missionControlId: Principal;
-		transactions: TransactionWithId[];
+		transactions: IcTransactionUi[];
 	}
 
 	let { missionControlId, transactions }: Props = $props();

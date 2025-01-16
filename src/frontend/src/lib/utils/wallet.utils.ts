@@ -6,32 +6,22 @@ import {
 	MEMO_SATELLITE_CREATE_REFUND
 } from '$lib/constants/wallet.constants';
 import { i18n } from '$lib/stores/i18n.store';
+import type { IcTransactionUi } from '$lib/types/ic-transaction';
 import { formatICP } from '$lib/utils/icp.utils';
-import type { Transaction } from '@dfinity/ledger-icp';
 import type { Principal } from '@dfinity/principal';
-import { fromNullable } from '@dfinity/utils';
+import { nonNullish } from '@dfinity/utils';
 import { get } from 'svelte/store';
-
-export const transactionTimestamp = (transaction: Transaction): bigint | undefined =>
-	fromNullable(transaction.timestamp)?.timestamp_nanos;
-
-export const transactionFrom = (transaction: Transaction): string =>
-	'Transfer' in transaction.operation ? transaction.operation.Transfer.from : '';
-
-export const transactionTo = (transaction: Transaction): string =>
-	'Transfer' in transaction.operation ? transaction.operation.Transfer.to : '';
 
 export const transactionMemo = ({
 	transaction,
 	missionControlId
 }: {
-	transaction: Transaction;
+	transaction: IcTransactionUi;
 	missionControlId: Principal;
 }): string => {
 	const labels = get(i18n);
 
-	const from = transactionFrom(transaction);
-	const { memo } = transaction;
+	const { memo, from } = transaction;
 
 	switch (memo) {
 		case MEMO_CANISTER_CREATE:
@@ -54,7 +44,5 @@ export const transactionMemo = ({
 	}
 };
 
-export const transactionAmount = (transaction: Transaction): string | undefined =>
-	'Transfer' in transaction.operation
-		? formatICP(transaction.operation.Transfer.amount.e8s)
-		: undefined;
+export const transactionAmount = (transaction: IcTransactionUi): string | undefined =>
+	nonNullish(transaction.value) ? formatICP(transaction.value) : undefined;

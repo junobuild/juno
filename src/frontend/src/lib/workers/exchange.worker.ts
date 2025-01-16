@@ -5,10 +5,7 @@ import { exchangeIdbStore } from '$lib/stores/idb.store';
 import type { CanisterIdText } from '$lib/types/canister';
 import type { ExchangePrice } from '$lib/types/exchange';
 import type { KongSwapToken } from '$lib/types/kongswap';
-import type {
-	PostMessageDataResponseExchangeData,
-	PostMessageRequest
-} from '$lib/types/post-message';
+import type { PostMessageDataResponseExchange, PostMessageRequest } from '$lib/types/post-message';
 import { isNullish, nonNullish } from '@dfinity/utils';
 import { del, entries, set } from 'idb-keyval';
 
@@ -137,26 +134,30 @@ const syncExchangePrice = async (exchangePrice: ExchangePrice) => {
 	// Save information in indexed-db as well to load previous values on navigation and refresh
 	await set(ICP_LEDGER_CANISTER_ID, exchangePrice, exchangeIdbStore);
 
-	const exchange: PostMessageDataResponseExchangeData = {
-		[ICP_LEDGER_CANISTER_ID]: exchangePrice
+	const data: PostMessageDataResponseExchange = {
+		exchange: {
+			[ICP_LEDGER_CANISTER_ID]: exchangePrice
+		}
 	};
 
 	postMessage({
 		msg: 'syncExchange',
-		data: { exchange }
+		data
 	});
 };
 
 const cleanExchangePrice = async () => {
 	await del(ICP_LEDGER_CANISTER_ID, exchangeIdbStore);
 
-	const exchange: PostMessageDataResponseExchangeData = {
-		[ICP_LEDGER_CANISTER_ID]: null
+	const data: PostMessageDataResponseExchange = {
+		exchange: {
+			[ICP_LEDGER_CANISTER_ID]: null
+		}
 	};
 
 	postMessage({
 		msg: 'syncExchange',
-		data: { exchange }
+		data
 	});
 };
 
@@ -171,7 +172,7 @@ const emitSavedExchanges = async () => {
 		return;
 	}
 
-	const exchange: PostMessageDataResponseExchangeData = activeExchanges.reduce(
+	const exchange: PostMessageDataResponseExchange = activeExchanges.reduce(
 		(acc, [canisterId, value]) => ({
 			...acc,
 			[canisterId]: value

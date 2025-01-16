@@ -1,9 +1,8 @@
 <script lang="ts">
-	import type { TransactionWithId } from '@dfinity/ledger-icp';
 	import type { Principal } from '@dfinity/principal';
 	import { isNullish } from '@dfinity/utils';
 	import { compare } from 'semver';
-	import { getAccountIdentifier, getTransactions } from '$lib/api/icp-index.api';
+	import { getAccountIdentifier } from '$lib/api/icp-index.api';
 	import ReceiveTokens from '$lib/components/tokens/ReceiveTokens.svelte';
 	import Transactions from '$lib/components/transactions/Transactions.svelte';
 	import TransactionsExport from '$lib/components/transactions/TransactionsExport.svelte';
@@ -15,9 +14,11 @@
 	import { MISSION_CONTROL_v0_0_12 } from '$lib/constants/version.constants';
 	import { authSignedIn, authSignedOut } from '$lib/derived/auth.derived';
 	import { missionControlVersion } from '$lib/derived/version.derived';
+	import { loadNextTransactions } from '$lib/services/wallet.services';
 	import { authStore } from '$lib/stores/auth.store';
 	import { i18n } from '$lib/stores/i18n.store';
 	import { toasts } from '$lib/stores/toasts.store';
+	import type { IcTransactionUi } from '$lib/types/ic-transaction';
 	import { emit } from '$lib/utils/events.utils';
 	import { last } from '$lib/utils/utils';
 
@@ -33,7 +34,14 @@
 	 * Wallet
 	 */
 	let balance: bigint | undefined = $state(undefined);
-	let transactions: TransactionWithId[] = $state([]);
+	let transactions: IcTransactionUi[] = $state([]);
+
+	let transactionsLoaded: IcTransactionUi[] = $state([]);
+	let transactionsNext: IcTransactionUi[] = $state([]);
+
+	$effect(() => {
+		transactions = [...transactionsLoaded, ...transactionsNext];
+	});
 
 	/**
 	 * Scroll
@@ -56,28 +64,18 @@
 			return;
 		}
 
-		try {
-			const { transactions: nextTransactions } = await getTransactions({
-				owner: missionControlId,
-				identity: $authStore.identity,
-				maxResults: PAGINATION,
-				start: lastId
-			});
-
-			if (nextTransactions.length === 0) {
-				disableInfiniteScroll = true;
-				return;
-			}
-
-			transactions = [...transactions, ...nextTransactions];
-		} catch (err: unknown) {
-			toasts.error({
-				text: $i18n.errors.transactions_next,
-				detail: err
-			});
-
-			disableInfiniteScroll = true;
-		}
+		await loadNextTransactions({
+			owner: missionControlId,
+			identity: $authStore.identity,
+			maxResults: PAGINATION,
+			start: lastId,
+			signalEnd: () => (disableInfiniteScroll = true),
+			loadTransactions: (txs) =>
+				(transactionsNext = [
+					...transactionsNext.filter(({ id }) => !txs.some(({ id: txId }) => txId === id)),
+					...txs
+				])
+		});
 	};
 
 	/**
@@ -117,7 +115,7 @@
 </script>
 
 {#if $authSignedIn}
-	<WalletLoader {missionControlId} bind:balance bind:transactions>
+	<WalletLoader {missionControlId} bind:balance bind:transactions={transactionsLoaded}>
 		<div class="card-container with-title">
 			<span class="title">{$i18n.wallet.overview}</span>
 

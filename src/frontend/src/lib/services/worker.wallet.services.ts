@@ -1,8 +1,14 @@
 import { onSyncExchange } from '$lib/services/wallet.loader.services';
-import type { PostMessageDataResponse, PostMessageResponse } from '$lib/types/post-message';
+import type {
+	PostMessage,
+	PostMessageDataResponseError,
+	PostMessageDataResponseExchange,
+	PostMessageDataResponseWallet,
+	PostMessageDataResponseWalletCleanUp
+} from '$lib/types/post-message';
 import type { Principal } from '@dfinity/principal';
 
-export type WalletCallback = (data: PostMessageDataResponse) => void;
+export type WalletCallback = (data: PostMessageDataResponseWallet) => void;
 
 export interface WalletWorker {
 	start: (params: { missionControlId: Principal; callback: WalletCallback }) => void;
@@ -15,15 +21,24 @@ export const initWalletWorker = async (): Promise<WalletWorker> => {
 
 	let walletCallback: WalletCallback | undefined;
 
-	worker.onmessage = ({ data }: MessageEvent<PostMessageResponse>) => {
+	worker.onmessage = ({
+		data
+	}: MessageEvent<
+		PostMessage<
+			| PostMessageDataResponseWallet
+			| PostMessageDataResponseWalletCleanUp
+			| PostMessageDataResponseError
+			| PostMessageDataResponseExchange
+		>
+	>) => {
 		const { msg } = data;
 
 		switch (msg) {
 			case 'syncWallet':
-				walletCallback?.(data.data);
+				walletCallback?.(data.data as PostMessageDataResponseWallet);
 				return;
 			case 'syncExchange':
-				onSyncExchange(data.data);
+				onSyncExchange(data.data as PostMessageDataResponseExchange);
 				return;
 		}
 	};

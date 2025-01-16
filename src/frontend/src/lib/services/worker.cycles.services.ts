@@ -1,7 +1,7 @@
 import type { CanisterSegment } from '$lib/types/canister';
-import type { PostMessageDataResponse, PostMessageResponse } from '$lib/types/post-message';
+import type { PostMessage, PostMessageDataResponseCanister } from '$lib/types/post-message';
 
-export type CyclesCallback = (data: PostMessageDataResponse) => void;
+export type CyclesCallback = (data: PostMessageDataResponseCanister) => void;
 
 export interface CyclesWorker {
 	startCyclesTimer: (params: { segments: CanisterSegment[]; callback: CyclesCallback }) => void;
@@ -15,12 +15,14 @@ export const initCyclesWorker = async (): Promise<CyclesWorker> => {
 
 	let cyclesCallback: CyclesCallback | undefined;
 
-	cyclesWorker.onmessage = ({ data }: MessageEvent<PostMessageResponse>) => {
+	cyclesWorker.onmessage = ({
+		data
+	}: MessageEvent<PostMessage<PostMessageDataResponseCanister>>) => {
 		const { msg } = data;
 
 		switch (msg) {
 			case 'syncCanister':
-				cyclesCallback?.(data.data);
+				cyclesCallback?.(data.data as PostMessageDataResponseCanister);
 				return;
 		}
 	};

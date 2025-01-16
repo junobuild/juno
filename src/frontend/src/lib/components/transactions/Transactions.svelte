@@ -1,13 +1,13 @@
 <script lang="ts">
-	import type { TransactionWithId } from '@dfinity/ledger-icp';
 	import type { Principal } from '@dfinity/principal';
 	import Transaction from '$lib/components/transactions/Transaction.svelte';
 	import InfiniteScroll from '$lib/components/ui/InfiniteScroll.svelte';
 	import { i18n } from '$lib/stores/i18n.store';
+	import type { IcTransactionUi } from '$lib/types/ic-transaction';
 
 	interface Props {
 		missionControlId: Principal;
-		transactions: TransactionWithId[];
+		transactions: IcTransactionUi[];
 		disableInfiniteScroll?: boolean;
 		onintersect: () => void;
 	}
@@ -36,8 +36,8 @@
 				</thead>
 
 				<tbody>
-					{#each transactions as transactionWithId (transactionWithId.id)}
-						<Transaction {transactionWithId} {missionControlId} />
+					{#each transactions as transaction, index (`${transaction.id}-${index}`)}
+						<Transaction {transaction} {missionControlId} />
 					{/each}
 				</tbody>
 			</table>

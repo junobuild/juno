@@ -1,17 +1,18 @@
 <script lang="ts">
-	import type { TransactionWithId } from '@dfinity/ledger-icp';
 	import type { Principal } from '@dfinity/principal';
 	import { isNullish, jsonReviver } from '@dfinity/utils';
 	import { onDestroy, onMount, type Snippet } from 'svelte';
 	import { run } from 'svelte/legacy';
 	import { type WalletWorker, initWalletWorker } from '$lib/services/worker.wallet.services';
-	import type { PostMessageDataResponse } from '$lib/types/post-message';
+	import type { IcTransactionUi } from '$lib/types/ic-transaction';
+	import type { PostMessageDataResponseWallet } from '$lib/types/post-message';
+	import type { CertifiedData } from '$lib/types/store';
 	import { emit } from '$lib/utils/events.utils';
 
 	interface Props {
 		missionControlId: Principal;
 		balance?: bigint | undefined;
-		transactions?: TransactionWithId[];
+		transactions?: IcTransactionUi[];
 		children?: Snippet;
 	}
 
@@ -24,13 +25,21 @@
 
 	let worker: WalletWorker | undefined = $state();
 
-	const syncState = (data: PostMessageDataResponse) => {
+	const syncState = (data: PostMessageDataResponseWallet) => {
 		if (isNullish(data.wallet)) {
 			return;
 		}
 
-		balance = data.wallet.balance;
-		transactions = [...JSON.parse(data.wallet.newTransactions, jsonReviver), ...transactions];
+		balance = data.wallet.balance.data;
+
+		const newTransactions = JSON.parse(data.wallet.newTransactions, jsonReviver).map(
+			({ data }: CertifiedData<IcTransactionUi>) => data
+		) as IcTransactionUi[];
+
+		transactions = [
+			...newTransactions,
+			...transactions.filter(({ id }) => !newTransactions.some(({ id: txId }) => txId === id))
+		];
 
 		emit({
 			message: 'junoSyncBalance',

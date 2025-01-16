@@ -15,7 +15,7 @@
 	import { type HostingCallback, initHostingWorker } from '$lib/services/worker.hosting.services';
 	import { i18n } from '$lib/stores/i18n.store';
 	import type { CustomDomainRegistrationState } from '$lib/types/custom-domain';
-	import type { PostMessageDataResponse } from '$lib/types/post-message';
+	import type { PostMessageDataResponseHosting } from '$lib/types/post-message';
 	import type { Option } from '$lib/types/utils';
 	import { fromNullishNullable } from '$lib/utils/did.utils';
 	import { emit } from '$lib/utils/events.utils';
@@ -62,7 +62,7 @@
 		  }
 		| undefined = $state();
 
-	const syncState = ({ registrationState: state }: PostMessageDataResponse) => {
+	const syncState = ({ registrationState: state }: PostMessageDataResponseHosting) => {
 		registrationState = state;
 
 		// If the state is available we can optimistically stop polling

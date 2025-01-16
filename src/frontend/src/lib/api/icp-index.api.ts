@@ -1,4 +1,4 @@
-import { getAgent } from '$lib/api/_agent/agent.api';
+import { getAgent } from '$lib/api/_agent/_agent.api';
 import type { OptionIdentity } from '$lib/types/itentity';
 import {
 	AccountIdentifier,

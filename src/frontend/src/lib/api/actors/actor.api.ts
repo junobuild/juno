@@ -1,4 +1,4 @@
-import { getAgent, type GetAgentParams } from '$lib/api/_agent/agent.api';
+import { getAgent, type GetAgentParams } from '$lib/api/_agent/_agent.api';
 import type { OptionIdentity } from '$lib/types/itentity';
 import type { Option } from '$lib/types/utils';
 import { Actor, type ActorConfig, type ActorMethod, type ActorSubclass } from '@dfinity/agent';

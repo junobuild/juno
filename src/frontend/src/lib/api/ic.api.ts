@@ -6,8 +6,8 @@ import type {
 	snapshot,
 	snapshot_id
 } from '$declarations/ic/ic.did';
+import { getAgent } from '$lib/api/_agent/agent.api';
 import { getICActor } from '$lib/api/actors/actor.ic.api';
-import { getAgent } from '$lib/api/agent/agent.api';
 import type { CanisterInfo, CanisterLogVisibility, CanisterStatus } from '$lib/types/canister';
 import type { Snapshots } from '$lib/types/snapshot';
 import {

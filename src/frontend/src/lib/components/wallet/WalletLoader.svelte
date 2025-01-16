@@ -34,11 +34,11 @@
 
 		const newTransactions = JSON.parse(data.wallet.newTransactions, jsonReviver).map(
 			({ data }: CertifiedData<IcTransactionUi>) => data
-		);
+		) as IcTransactionUi[];
 
 		transactions = [
 			...newTransactions,
-			...transactions.filter(({ id }) => !transactions.some(({ id: txId }) => txId === id))
+			...transactions.filter(({ id }) => !newTransactions.some(({ id: txId }) => txId === id))
 		];
 
 		emit({

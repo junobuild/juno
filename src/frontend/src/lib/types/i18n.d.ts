@@ -470,7 +470,6 @@ interface I18nErrors {
 	canister_settings_not_loaded: string;
 	canister_update_error: string;
 	segment_detach: string;
-	ledger_balance_credits: string;
 	load_credits: string;
 	load_documents: string;
 	load_users: string;

@@ -8,7 +8,6 @@
 	import type { IcTransactionUi } from '$lib/types/ic-transaction';
 	import type { PostMessageDataResponseWallet } from '$lib/types/post-message';
 	import type { CertifiedData } from '$lib/types/store';
-	import { emit } from '$lib/utils/events.utils';
 
 	interface Props {
 		missionControlId: Principal;

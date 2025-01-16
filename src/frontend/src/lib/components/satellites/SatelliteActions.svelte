@@ -85,7 +85,7 @@
 
 <SegmentActions bind:visible segment="satellite">
 	{#snippet cycleActions()}
-		<TopUp type="topup_satellite" {detail} on:junoTopUp={close} />
+		<TopUp type="topup_satellite" {detail} onclose={close} />
 
 		<CanisterTransferCycles {canister} onclick={onTransferCycles} />
 

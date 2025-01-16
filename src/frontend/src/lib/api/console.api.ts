@@ -19,9 +19,9 @@ export const initMissionControl = async (identity: OptionIdentity): Promise<Miss
 };
 
 export const getCredits = async (identity: OptionIdentity): Promise<bigint> => {
-	const actor = await getConsoleActor(identity);
-	const credits = await actor.get_credits();
-	return credits.e8s;
+	const { get_credits } = await getConsoleActor(identity);
+	const { e8s } = await get_credits();
+	return e8s;
 };
 
 export const getSatelliteFee = async ({

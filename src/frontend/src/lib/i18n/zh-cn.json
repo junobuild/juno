@@ -454,7 +454,6 @@
 		"canister_settings_not_loaded": "智能合约设置没有加载.",
 		"canister_update_error": "更新设置出现异常错误.",
 		"segment_detach": "解绑module时出现异常错误.",
-		"ledger_balance_credits": "获取你的 mission control 余额和积分时出现未知错误.",
 		"load_credits": "无法加载你当前credit状态.",
 		"load_documents": "Unexpected error(s) while loading the documents.",
 		"load_users": "Unexpected error(s) while loading the users.",

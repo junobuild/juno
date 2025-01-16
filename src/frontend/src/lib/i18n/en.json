@@ -438,6 +438,7 @@
 	"errors": {
 		"no_identity": "Unexpected error. No identity provided.",
 		"initializing_mission_control": "Mission control center cannot be initialized.",
+		"mission_control_sign_out": "You have been signed out because your Mission Control could not be certified.",
 		"no_mission_control": "Mission control center is not initialized.",
 		"cli_missing_params": "Missing URL parameters. Either the redirection URL or principal is not provided.",
 		"cli_missing_selection": "No mission control or satellite(s) selected.",

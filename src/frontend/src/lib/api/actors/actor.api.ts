@@ -12,7 +12,10 @@ type CreateActorParams = {
 	config?: Pick<ActorConfig, 'callTransform' | 'queryTransform'>;
 } & GetAgentParams;
 
-export type GetActorParams = { certified?: boolean; identity: OptionIdentity };
+export interface GetActorParams {
+	certified?: boolean;
+	identity: OptionIdentity;
+}
 
 export class ActorApi<T = Record<string, ActorMethod>> {
 	#actors: Option<Record<string, ActorSubclass<T>>> = undefined;

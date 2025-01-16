@@ -8,7 +8,7 @@ import { missionControlVersion } from '$lib/api/mission-control.api';
 import { orbiterVersion } from '$lib/api/orbiter.api';
 import { satelliteBuildVersion, satelliteVersion } from '$lib/api/satellites.api';
 import { getNewestReleasesMetadata } from '$lib/rest/cdn.rest';
-import { signOut } from '$lib/services/auth.services';
+import { missionControlErrorSignOut } from '$lib/services/auth.services';
 import { authStore } from '$lib/stores/auth.store';
 import { i18n } from '$lib/stores/i18n.store';
 import { missionControlIdCertifiedStore } from '$lib/stores/mission-control.store';
@@ -66,7 +66,7 @@ export const initMissionControl = async ({
 		});
 
 		// There was an error so, we sign the user out otherwise skeleton and other spinners will be displayed forever
-		await signOut();
+		await missionControlErrorSignOut();
 
 		return { result: 'error' };
 	}
@@ -129,6 +129,7 @@ export const getOrInitMissionControl = async ({
 
 	if (isNullish(existingMissionControl)) {
 		const newMissionControl = await initMissionControlApi(identity);
+
 		return {
 			missionControl: newMissionControl,
 			certified: true
@@ -145,7 +146,7 @@ const assertMissionControl = async ({ identity }: { identity: Identity }) => {
 	try {
 		await getMissionControlApi({ identity, certified: true });
 	} catch (error: unknown) {
-		await signOut();
+		await missionControlErrorSignOut();
 	}
 };
 

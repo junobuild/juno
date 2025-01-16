@@ -44,6 +44,14 @@ export const signIn = async (
 
 export const signOut = (): Promise<void> => logout({});
 
+export const missionControlErrorSignOut = async () =>
+	await logout({
+		msg: {
+			text: get(i18n).errors.mission_control_sign_out,
+			level: 'error'
+		}
+	});
+
 export const idleSignOut = async () =>
 	await logout({
 		msg: {

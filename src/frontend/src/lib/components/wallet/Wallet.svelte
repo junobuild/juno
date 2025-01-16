@@ -150,12 +150,7 @@
 			<button onclick={openSend}>{$i18n.wallet.send}</button>
 		</div>
 
-		<Transactions
-			{transactions}
-			{disableInfiniteScroll}
-			{missionControlId}
-			{onintersect}
-		/>
+		<Transactions {transactions} {disableInfiniteScroll} {missionControlId} {onintersect} />
 
 		<TransactionsExport {transactions} {missionControlId} />
 	</WalletLoader>

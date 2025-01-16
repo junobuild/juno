@@ -11,6 +11,7 @@ import type { AuthenticationConfig, Rule } from '$declarations/satellite/satelli
 import type { CanisterSegmentWithLabel, CanisterSettings } from '$lib/types/canister';
 import type { SetControllerParams } from '$lib/types/controllers';
 import type { CustomDomains } from '$lib/types/custom-domain';
+import type { MissionControlId } from '$lib/types/mission-control';
 import type { OrbiterSatelliteConfigEntry } from '$lib/types/ortbiter';
 import type { SatelliteIdText } from '$lib/types/satellite';
 import type { Option } from '$lib/types/utils';
@@ -75,7 +76,7 @@ export interface JunoModalSegmentDetail {
 export interface JunoModalCreateControllerDetail extends JunoModalSegmentDetail {
 	add: (
 		params: {
-			missionControlId: Principal;
+			missionControlId: MissionControlId;
 		} & SetControllerParams
 	) => Promise<void>;
 	load: () => Promise<void>;
@@ -101,7 +102,7 @@ export interface JunoModalEditAuthConfigDetail extends JunoModalWithSatellite {
 }
 
 export interface JunoModalCreateMonitoringStrategyDetail {
-	missionControlId: Principal;
+	missionControlId: MissionControlId;
 	settings: MissionControlSettings | undefined;
 	user: User;
 }

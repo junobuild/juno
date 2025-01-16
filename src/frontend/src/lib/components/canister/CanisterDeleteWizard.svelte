@@ -1,5 +1,4 @@
 <script lang="ts">
-	import type { Principal } from '@dfinity/principal';
 	import { isNullish, nonNullish } from '@dfinity/utils';
 	import { createEventDispatcher } from 'svelte';
 	import { run, preventDefault } from 'svelte/legacy';
@@ -16,6 +15,7 @@
 	import { isBusy, wizardBusy } from '$lib/stores/busy.store';
 	import { i18n } from '$lib/stores/i18n.store';
 	import { toasts } from '$lib/stores/toasts.store';
+	import type { MissionControlId } from '$lib/types/mission-control';
 	import { formatTCycles } from '$lib/utils/cycles.utils';
 	import { i18nCapitalize, i18nFormat } from '$lib/utils/i18n.utils';
 
@@ -23,7 +23,10 @@
 		segmentName?: string;
 		segment: 'satellite' | 'analytics';
 		currentCycles: bigint;
-		deleteFn: (params: { missionControlId: Principal; cyclesToDeposit: bigint }) => Promise<void>;
+		deleteFn: (params: {
+			missionControlId: MissionControlId;
+			cyclesToDeposit: bigint;
+		}) => Promise<void>;
 	}
 
 	let { segment, segmentName, currentCycles, deleteFn }: Props = $props();

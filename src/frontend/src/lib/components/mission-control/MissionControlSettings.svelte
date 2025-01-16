@@ -1,12 +1,12 @@
 <script lang="ts">
-	import type { Principal } from '@dfinity/principal';
 	import CanisterSettings from '$lib/components/canister/CanisterSettings.svelte';
 	import MissionControlControllers from '$lib/components/mission-control/MissionControlControllers.svelte';
 	import Snapshots from '$lib/components/snapshot/Snapshots.svelte';
 	import { i18n } from '$lib/stores/i18n.store';
+	import type { MissionControlId } from '$lib/types/mission-control';
 
 	interface Props {
-		missionControlId: Principal;
+		missionControlId: MissionControlId;
 	}
 
 	let { missionControlId }: Props = $props();

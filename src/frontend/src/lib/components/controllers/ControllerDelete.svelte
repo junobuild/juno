@@ -8,11 +8,15 @@
 	import { busy } from '$lib/stores/busy.store';
 	import { i18n } from '$lib/stores/i18n.store';
 	import { toasts } from '$lib/stores/toasts.store';
+	import type { MissionControlId } from '$lib/types/mission-control';
 
 	interface Props {
 		visible?: boolean;
 		selectedController: [Principal, Controller | undefined] | undefined;
-		remove: (params: { missionControlId: Principal; controller: Principal }) => Promise<void>;
+		remove: (params: {
+			missionControlId: MissionControlId;
+			controller: Principal;
+		}) => Promise<void>;
 		load: () => Promise<void>;
 	}
 

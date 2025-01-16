@@ -43,6 +43,7 @@ import { toasts } from '$lib/stores/toasts.store';
 import type { SetControllerParams } from '$lib/types/controllers';
 import type { OptionIdentity } from '$lib/types/itentity';
 import type { Metadata } from '$lib/types/metadata';
+import type { MissionControlId } from '$lib/types/mission-control';
 import type { Option } from '$lib/types/utils';
 import { isNotValidEmail } from '$lib/utils/email.utils';
 import type { Identity } from '@dfinity/agent';
@@ -57,7 +58,7 @@ export const setMissionControlControllerForVersion = async ({
 	controllerId,
 	profile
 }: {
-	missionControlId: Principal;
+	missionControlId: MissionControlId;
 } & SetControllerParams) => {
 	const identity = get(authStore).identity;
 
@@ -86,7 +87,7 @@ export const setSatellitesForVersion = async ({
 	controllerId,
 	profile
 }: {
-	missionControlId: Principal;
+	missionControlId: MissionControlId;
 	satelliteIds: Principal[];
 } & SetControllerParams) => {
 	const identity = get(authStore).identity;
@@ -159,7 +160,7 @@ export const setSatelliteName = async ({
 	satellite: { satellite_id: satelliteId, metadata },
 	satelliteName
 }: {
-	missionControlId: Principal;
+	missionControlId: MissionControlId;
 	satellite: Satellite;
 	satelliteName: string;
 }) => {
@@ -188,7 +189,7 @@ export const attachSatellite = async ({
 	missionControlId,
 	satelliteId
 }: {
-	missionControlId: Principal;
+	missionControlId: MissionControlId;
 	satelliteId: Principal;
 }) => {
 	const identity = get(authStore).identity;
@@ -206,7 +207,7 @@ export const detachSatellite = async ({
 	canisterId,
 	missionControlId
 }: {
-	missionControlId: Principal;
+	missionControlId: MissionControlId;
 	canisterId: Principal;
 }) => {
 	const identity = get(authStore).identity;
@@ -220,7 +221,7 @@ export const detachSatellite = async ({
 };
 
 export const attachOrbiter = async (params: {
-	missionControlId: Principal;
+	missionControlId: MissionControlId;
 	orbiterId: Principal;
 }) => {
 	const identity = get(authStore).identity;
@@ -234,7 +235,7 @@ export const detachOrbiter = async ({
 	canisterId,
 	...rest
 }: {
-	missionControlId: Principal;
+	missionControlId: MissionControlId;
 	canisterId: Principal;
 }) => {
 	const identity = get(authStore).identity;
@@ -249,7 +250,7 @@ export const loadSettings = async ({
 	identity,
 	reload = false
 }: {
-	missionControlId: Principal;
+	missionControlId: MissionControlId;
 	identity: OptionIdentity;
 	reload?: boolean;
 }): Promise<{ success: boolean }> => {
@@ -285,7 +286,7 @@ export const loadUserData = async ({
 	identity,
 	reload = false
 }: {
-	missionControlId: Principal;
+	missionControlId: MissionControlId;
 	identity: OptionIdentity;
 	reload?: boolean;
 }): Promise<{ success: boolean }> => {

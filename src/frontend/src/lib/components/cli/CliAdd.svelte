@@ -17,6 +17,7 @@
 	import { busy } from '$lib/stores/busy.store';
 	import { i18n } from '$lib/stores/i18n.store';
 	import { toasts } from '$lib/stores/toasts.store';
+	import type { MissionControlId } from '$lib/types/mission-control';
 	import { bigintStringify } from '$lib/utils/number.utils';
 	import { orbiterName } from '$lib/utils/orbiter.utils';
 	import { satelliteName } from '$lib/utils/satellite.utils';
@@ -24,7 +25,7 @@
 	interface Props {
 		principal: string;
 		redirect_uri: string;
-		missionControlId: Principal;
+		missionControlId: MissionControlId;
 	}
 
 	let { principal, redirect_uri, missionControlId }: Props = $props();

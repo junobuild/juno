@@ -10,6 +10,7 @@ import type { _SERVICE as SatelliteActor009 } from '$declarations/deprecated/sat
 import { idlFactory as idlFactorSatellite009 } from '$declarations/deprecated/satellite-0-0-9.factory.did';
 import { ActorApi } from '$lib/api/actors/actor.api';
 import type { OptionIdentity } from '$lib/types/itentity';
+import type { MissionControlId } from '$lib/types/mission-control';
 import type { Principal } from '@dfinity/principal';
 
 const missionControl004Actor = new ActorApi<MissionControlActor004>();
@@ -25,7 +26,7 @@ export const getMissionControlActor004 = ({
 	identity,
 	missionControlId
 }: {
-	missionControlId: Principal;
+	missionControlId: MissionControlId;
 	identity: OptionIdentity;
 }): Promise<MissionControlActor004> =>
 	missionControl004Actor.getActor({
@@ -41,7 +42,7 @@ export const getMissionControlActor0013 = ({
 	identity,
 	missionControlId
 }: {
-	missionControlId: Principal;
+	missionControlId: MissionControlId;
 	identity: OptionIdentity;
 }): Promise<MissionControlActor0013> =>
 	missionControl0013Actor.getActor({

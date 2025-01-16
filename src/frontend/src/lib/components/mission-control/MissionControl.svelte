@@ -1,5 +1,4 @@
 <script lang="ts">
-	import type { Principal } from '@dfinity/principal';
 	import { fade } from 'svelte/transition';
 	import CanisterMonitoring from '$lib/components/canister/CanisterMonitoring.svelte';
 	import CanisterOverview from '$lib/components/canister/CanisterOverview.svelte';
@@ -16,9 +15,10 @@
 	} from '$lib/derived/mission-control-settings.derived';
 	import { missionControlVersion } from '$lib/derived/version.derived';
 	import { i18n } from '$lib/stores/i18n.store';
+	import type { MissionControlId } from '$lib/types/mission-control';
 
 	interface Props {
-		missionControlId: Principal;
+		missionControlId: MissionControlId;
 	}
 
 	let { missionControlId }: Props = $props();

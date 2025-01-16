@@ -1,16 +1,16 @@
 <script lang="ts">
-	import type { Principal } from '@dfinity/principal';
 	import { isNullish, jsonReviver } from '@dfinity/utils';
 	import { onDestroy, onMount, type Snippet } from 'svelte';
 	import { run } from 'svelte/legacy';
 	import { type WalletWorker, initWalletWorker } from '$lib/services/worker.wallet.services';
 	import { balanceCertifiedStore } from '$lib/stores/balance.store';
 	import type { IcTransactionUi } from '$lib/types/ic-transaction';
+	import type { MissionControlId } from '$lib/types/mission-control';
 	import type { PostMessageDataResponseWallet } from '$lib/types/post-message';
 	import type { CertifiedData } from '$lib/types/store';
 
 	interface Props {
-		missionControlId: Principal;
+		missionControlId: MissionControlId;
 		transactions?: IcTransactionUi[];
 		children?: Snippet;
 	}

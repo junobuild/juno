@@ -10,11 +10,12 @@
 	import { loadOrbiters } from '$lib/services/orbiters.services';
 	import { loadSatellites } from '$lib/services/satellites.services';
 	import { i18n } from '$lib/stores/i18n.store';
+	import type { MissionControlId } from '$lib/types/mission-control';
 	import { orbiterName } from '$lib/utils/orbiter.utils';
 	import { satelliteName } from '$lib/utils/satellite.utils';
 
 	interface Props {
-		missionControlId: Principal;
+		missionControlId: MissionControlId;
 		children?: Snippet;
 		selectedMissionControl?: boolean;
 		selectedSatellites: [Principal, Satellite][];

@@ -4,6 +4,7 @@ import { i18n } from '$lib/stores/i18n.store';
 import { toasts } from '$lib/stores/toasts.store';
 import type { IcTransactionUi } from '$lib/types/ic-transaction';
 import type { OptionIdentity } from '$lib/types/itentity';
+import type { MissionControlId } from '$lib/types/mission-control';
 import { formatToDateNumeric } from '$lib/utils/date.utils';
 import { mapIcpTransaction } from '$lib/utils/icp-transactions.utils';
 import { CSV_PICKER_OPTIONS, filenameTimestamp, saveToFileSystem } from '$lib/utils/save.utils';
@@ -33,7 +34,7 @@ export const exportTransactions = async ({
 	missionControlId,
 	transactions
 }: {
-	missionControlId: Principal;
+	missionControlId: MissionControlId;
 	transactions: IcTransactionUi[];
 }) => {
 	const transactionsCsv: TransactionCsv[] = transactions.map((transaction) => {

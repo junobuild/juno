@@ -1,16 +1,16 @@
 <script lang="ts">
 	import { AccountIdentifier } from '@dfinity/ledger-icp';
-	import type { Principal } from '@dfinity/principal';
 	import { nonNullish } from '@dfinity/utils';
 	import { getAccountIdentifier } from '$lib/api/icp-index.api';
 	import Identifier from '$lib/components/ui/Identifier.svelte';
 	import Value from '$lib/components/ui/Value.svelte';
 	import { icpToUsd } from '$lib/derived/exchange.derived';
 	import { i18n } from '$lib/stores/i18n.store';
+	import type { MissionControlId } from '$lib/types/mission-control';
 	import { formatICP, formatICPToUsd } from '$lib/utils/icp.utils';
 
 	interface Props {
-		missionControlId: Principal;
+		missionControlId: MissionControlId;
 		balance: bigint | undefined;
 	}
 

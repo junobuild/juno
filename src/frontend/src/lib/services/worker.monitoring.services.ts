@@ -1,20 +1,20 @@
 import type { CanisterSegment } from '$lib/types/canister';
+import type { MissionControlId } from '$lib/types/mission-control';
 import type { PostMessage, PostMessageDataResponseCanister } from '$lib/types/post-message';
-import type { Principal } from '@dfinity/principal';
 
 export type MonitoringCallback = (data: PostMessageDataResponseCanister) => void;
 
 export interface MonitoringWorker {
 	startMonitoringTimer: (params: {
 		segments: CanisterSegment[];
-		missionControlId: Principal;
+		missionControlId: MissionControlId;
 		withMonitoringHistory: boolean;
 		callback: MonitoringCallback;
 	}) => void;
 	stopMonitoringTimer: () => void;
 	restartMonitoringTimer: (params: {
 		segments: CanisterSegment[];
-		missionControlId: Principal;
+		missionControlId: MissionControlId;
 	}) => void;
 }
 

@@ -9,19 +9,8 @@
 	import SpinnerModal from '$lib/components/ui/SpinnerModal.svelte';
 	import { missionControlIdDerived } from '$lib/derived/mission-control.derived';
 	import { i18n } from '$lib/stores/i18n.store';
-	import type { JunoModalDetail, JunoModalSendTokensDetail } from '$lib/types/modal';
-
-	interface Props {
-		detail: JunoModalDetail;
-	}
-
-	let { detail }: Props = $props();
-
-	let balance: bigint | undefined = $state();
-
-	$effect(() => {
-		balance = (detail as JunoModalSendTokensDetail).balance;
-	});
+	import type { JunoModalDetail } from '$lib/types/modal';
+	import { balance } from '$lib/derived/balance.derived';
 
 	let destination = $state('');
 
@@ -32,8 +21,6 @@
 	const dispatch = createEventDispatcher();
 	const close = () => dispatch('junoClose');
 </script>
-
-<svelte:window onjunoSyncBalance={({ detail: syncBalance }) => (balance = syncBalance)} />
 
 {#if nonNullish($missionControlIdDerived)}
 	<Modal on:junoClose>
@@ -52,14 +39,19 @@
 			<div in:fade>
 				<SendTokensReview
 					missionControlId={$missionControlIdDerived}
-					{balance}
+					balance={$balance}
 					bind:amount
 					bind:destination
 					onnext={(nextSteps) => (step = nextSteps)}
 				/>
 			</div>
 		{:else}
-			<SendTokensForm {balance} bind:amount bind:destination onreview={() => (step = 'review')} />
+			<SendTokensForm
+				balance={$balance}
+				bind:amount
+				bind:destination
+				onreview={() => (step = 'review')}
+			/>
 		{/if}
 	</Modal>
 {/if}

@@ -21,6 +21,7 @@
 	import type { IcTransactionUi } from '$lib/types/ic-transaction';
 	import { emit } from '$lib/utils/events.utils';
 	import { last } from '$lib/utils/utils';
+	import { balance, balanceNotLoaded } from '$lib/derived/balance.derived';
 
 	interface Props {
 		missionControlId: Principal;
@@ -33,7 +34,6 @@
 	/**
 	 * Wallet
 	 */
-	let balance: bigint | undefined = $state(undefined);
 	let transactions: IcTransactionUi[] = $state([]);
 
 	let transactionsLoaded: IcTransactionUi[] = $state([]);
@@ -87,12 +87,12 @@
 	const openReceive = () => (receiveVisible = true);
 
 	const openSend = () => {
-		if (isNullish(balance)) {
+		if ($balanceNotLoaded) {
 			toasts.show({ text: $i18n.wallet.balance_not_loaded, level: 'info' });
 			return;
 		}
 
-		if (balance <= 0n) {
+		if (isNullish($balance) || $balance <= 0n) {
 			toasts.show({ text: $i18n.wallet.balance_zero, level: 'info' });
 			return;
 		}
@@ -105,17 +105,14 @@
 		emit({
 			message: 'junoModal',
 			detail: {
-				type: 'send_tokens',
-				detail: {
-					balance
-				}
+				type: 'send_tokens'
 			}
 		});
 	};
 </script>
 
 {#if $authSignedIn}
-	<WalletLoader {missionControlId} bind:balance bind:transactions={transactionsLoaded}>
+	<WalletLoader {missionControlId} bind:transactions={transactionsLoaded}>
 		<div class="card-container with-title">
 			<span class="title">{$i18n.wallet.overview}</span>
 
@@ -137,7 +134,7 @@
 				</div>
 
 				<div>
-					<WalletBalance {balance} />
+					<WalletBalance balance={$balance} />
 				</div>
 			</div>
 		</div>

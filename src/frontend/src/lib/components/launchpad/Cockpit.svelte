@@ -25,6 +25,7 @@
 	import { loadOrbiters } from '$lib/services/orbiters.services';
 	import { i18n } from '$lib/stores/i18n.store';
 	import type { CanisterData } from '$lib/types/canister';
+	import { balance } from '$lib/derived/balance.derived';
 
 	run(() => {
 		// @ts-expect-error TODO: to be migrated to Svelte v5
@@ -33,7 +34,6 @@
 	});
 
 	let missionControlData: CanisterData | undefined = $state(undefined);
-	let walletBalance: bigint | undefined = $state(undefined);
 	let orbiterData: CanisterData | undefined = $state(undefined);
 </script>
 
@@ -130,7 +130,7 @@
 </div>
 
 {#if nonNullish($missionControlIdDerived)}
-	<WalletLoader missionControlId={$missionControlIdDerived} bind:balance={walletBalance} />
+	<WalletLoader missionControlId={$missionControlIdDerived} />
 {/if}
 
 <div class="wallet">
@@ -144,7 +144,7 @@
 			<span class="link">
 				<span class="link-title">{$i18n.wallet.title}</span>
 				<span class="link-details">
-					<WalletInlineBalance balance={walletBalance} />
+					<WalletInlineBalance balance={$balance} />
 				</span>
 			</span>
 		</p>

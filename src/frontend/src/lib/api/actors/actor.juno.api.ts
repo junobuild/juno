@@ -1,5 +1,6 @@
 import type { _SERVICE as ConsoleActor } from '$declarations/console/console.did';
 import { idlFactory as idlFactorConsole } from '$declarations/console/console.factory.did';
+import { idlFactory as idlFactoryCertifiedConsole } from '$declarations/console/console.factory.certified.did';
 import type { _SERVICE as MissionControlActor } from '$declarations/mission_control/mission_control.did';
 import { idlFactory as idlFactorMissionControl } from '$declarations/mission_control/mission_control.factory.did';
 import type { _SERVICE as ObservatoryActor } from '$declarations/observatory/observatory.did';

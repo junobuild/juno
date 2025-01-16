@@ -41,7 +41,7 @@
 
 	let disableInfiniteScroll = $state(false);
 
-	const onIntersect = async () => {
+	const onintersect = async () => {
 		if ($authSignedOut) {
 			toasts.error({
 				text: $i18n.errors.no_identity
@@ -154,7 +154,7 @@
 			{transactions}
 			{disableInfiniteScroll}
 			{missionControlId}
-			on:junoIntersect={onIntersect}
+			{onintersect}
 		/>
 
 		<TransactionsExport {transactions} {missionControlId} />

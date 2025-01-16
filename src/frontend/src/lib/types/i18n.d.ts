@@ -454,6 +454,7 @@ interface I18nCli {
 interface I18nErrors {
 	no_identity: string;
 	initializing_mission_control: string;
+	mission_control_sign_out: string;
 	no_mission_control: string;
 	cli_missing_params: string;
 	cli_missing_selection: string;

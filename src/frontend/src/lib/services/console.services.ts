@@ -1,12 +1,20 @@
+import type { MissionControl } from '$declarations/console/console.did';
 import type { Orbiter } from '$declarations/mission_control/mission_control.did';
-import { initMissionControl as initMissionControlApi } from '$lib/api/console.api';
+import {
+	getMissionControl as getMissionControlApi,
+	initMissionControl as initMissionControlApi
+} from '$lib/api/console.api';
 import { missionControlVersion } from '$lib/api/mission-control.api';
 import { orbiterVersion } from '$lib/api/orbiter.api';
 import { satelliteBuildVersion, satelliteVersion } from '$lib/api/satellites.api';
 import { getNewestReleasesMetadata } from '$lib/rest/cdn.rest';
+import { signOut } from '$lib/services/auth.services';
 import { authStore } from '$lib/stores/auth.store';
+import { i18n } from '$lib/stores/i18n.store';
+import { missionControlIdCertifiedStore } from '$lib/stores/mission-control.store';
 import { toasts } from '$lib/stores/toasts.store';
 import { versionStore, type ReleaseVersionSatellite } from '$lib/stores/version.store';
+import type { OptionIdentity } from '$lib/types/itentity';
 import type { MissionControlId } from '$lib/types/mission-control';
 import type { Option } from '$lib/types/utils';
 import { container } from '$lib/utils/juno.utils';
@@ -16,26 +24,71 @@ import { assertNonNullish, fromNullable, isNullish, nonNullish } from '@dfinity/
 import { satelliteBuildType } from '@junobuild/admin';
 import { get } from 'svelte/store';
 
+interface LoadingStrategy { loading: 'update' | 'query' }
+
+type PollAndInitResult = {
+	missionControlId: MissionControlId;
+} & LoadingStrategy;
+
 export const initMissionControl = async ({
-	identity,
-	onInitMissionControlSuccess
+	identity
+}: {
+	identity: OptionIdentity;
+}): Promise<{ result: 'skip' | 'success' | 'error' }> => {
+	// If not signed in, we are not going to init and load a mission control.
+	if (isNullish(identity)) {
+		return { result: 'skip' };
+	}
+
+	try {
+		// Poll to init mission control center
+		const { missionControlId, loading } = await pollAndInitMissionControl({
+			identity
+		});
+
+		missionControlIdCertifiedStore.set({
+			data: missionControlId,
+			certified: loading === 'update'
+		});
+
+		if (loading === 'update') {
+			return { result: 'success' };
+		}
+
+		// TODO: certify
+
+		return { result: 'success' };
+	} catch (err: unknown) {
+		toasts.error({
+			text: get(i18n).errors.initializing_mission_control,
+			detail: err
+		});
+
+		// There was an error so, we sign the user out otherwise skeleton and other spinners will be displayed forever
+		await signOut();
+
+		return { result: 'error' };
+	}
+};
+
+const pollAndInitMissionControl = async ({
+	identity
 }: {
 	identity: Identity;
-	onInitMissionControlSuccess: (missionControlId: MissionControlId) => void;
+}): Promise<PollAndInitResult> =>
 	// eslint-disable-next-line no-async-promise-executor, require-await
-}) =>
-	// eslint-disable-next-line no-async-promise-executor, require-await
-	new Promise<void>(async (resolve, reject) => {
+	new Promise<PollAndInitResult>(async (resolve, reject) => {
 		try {
-			const { missionControlId } = await getMissionControl({
+			const { missionControlId, loading } = await getOrInitMissionControlId({
 				identity
 			});
 
+			// TODO: we can/should probably add a max time to not retry forever even though the user will probably close their browsers.
 			if (isNullish(missionControlId)) {
 				setTimeout(async () => {
 					try {
-						await initMissionControl({ identity, onInitMissionControlSuccess });
-						resolve();
+						const result = await pollAndInitMissionControl({ identity });
+						resolve(result);
 					} catch (err: unknown) {
 						reject(err);
 					}
@@ -43,33 +96,47 @@ export const initMissionControl = async ({
 				return;
 			}
 
-			onInitMissionControlSuccess(missionControlId);
-
-			resolve();
+			resolve({ missionControlId, loading });
 		} catch (err: unknown) {
 			reject(err);
 		}
 	});
 
-const getMissionControl = async ({
-	identity
-}: {
-	identity: Identity | undefined;
-}): Promise<{
-	missionControlId: MissionControlId | undefined;
-}> => {
-	if (isNullish(identity)) {
-		throw new Error('Invalid identity.');
-	}
+const getOrInitMissionControlId = async (params: {
+	identity: Identity;
+}): Promise<
+	{
+		missionControlId: MissionControlId | undefined;
+	} & LoadingStrategy
+> => {
+	const { missionControl, loading } = await getOrInitMissionControl(params);
 
-	const mission_control = await initMissionControlApi(identity);
-
-	const missionControlId: MissionControlId | undefined = fromNullable<Principal>(
-		mission_control.mission_control_id
-	);
+	const missionControlId = fromNullable(missionControl.mission_control_id);
 
 	return {
-		missionControlId
+		missionControlId,
+		loading
+	};
+};
+
+export const getOrInitMissionControl = async ({
+	identity
+}: {
+	identity: Identity;
+}): Promise<{ missionControl: MissionControl } & LoadingStrategy> => {
+	const existingMissionControl = await getMissionControlApi(identity);
+
+	if (isNullish(existingMissionControl)) {
+		const newMissionControl = await initMissionControlApi(identity);
+		return {
+			missionControl: newMissionControl,
+			loading: 'update'
+		};
+	}
+
+	return {
+		missionControl: existingMissionControl,
+		loading: 'query'
 	};
 };
 

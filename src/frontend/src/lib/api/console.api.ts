@@ -5,17 +5,17 @@ import type { Principal } from '@dfinity/principal';
 import { fromNullable, isNullish } from '@dfinity/utils';
 
 export const initMissionControl = async (identity: OptionIdentity): Promise<MissionControl> => {
-	const actor = await getConsoleActor(identity);
+	const { init_user_mission_control_center } = await getConsoleActor(identity);
 
-	const existingMissionControl: MissionControl | undefined = fromNullable<MissionControl>(
-		await actor.get_user_mission_control_center()
-	);
+	return await init_user_mission_control_center();
+};
 
-	if (!existingMissionControl) {
-		return await actor.init_user_mission_control_center();
-	}
+export const getMissionControl = async (
+	identity: OptionIdentity
+): Promise<MissionControl | undefined> => {
+	const { get_user_mission_control_center } = await getConsoleActor(identity);
 
-	return existingMissionControl;
+	return fromNullable(await get_user_mission_control_center());
 };
 
 export const getCredits = async (identity: OptionIdentity): Promise<bigint> => {

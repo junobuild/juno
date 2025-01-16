@@ -21,6 +21,7 @@
 	import { toasts } from '$lib/stores/toasts.store';
 	import { emit } from '$lib/utils/events.utils';
 	import { last } from '$lib/utils/utils';
+	import type {IcTransactionUi} from "$lib/types/ic-transaction";
 
 	interface Props {
 		missionControlId: Principal;
@@ -34,7 +35,7 @@
 	 * Wallet
 	 */
 	let balance: bigint | undefined = $state(undefined);
-	let transactions: TransactionWithId[] = $state([]);
+	let transactions: IcTransactionUi[] = $state([]);
 
 	/**
 	 * Scroll

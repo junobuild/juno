@@ -1,5 +1,4 @@
 <script lang="ts">
-	import type { TransactionWithId } from '@dfinity/ledger-icp';
 	import type { Principal } from '@dfinity/principal';
 	import { nonNullish } from '@dfinity/utils';
 	import { fade } from 'svelte/transition';
@@ -7,30 +6,29 @@
 	import { formatToDate } from '$lib/utils/date.utils';
 	import {
 		transactionAmount,
-		transactionFrom,
 		transactionMemo,
-		transactionTimestamp,
-		transactionTo
 	} from '$lib/utils/wallet.utils';
+	import type { IcTransactionUi } from '$lib/types/ic-transaction';
+	import { formatICP } from '$lib/utils/icp.utils';
 
 	interface Props {
 		missionControlId: Principal;
-		transactionWithId: TransactionWithId;
+		transaction: IcTransactionUi;
 	}
 
-	let { missionControlId, transactionWithId }: Props = $props();
+	let { missionControlId, transaction }: Props = $props();
 
-	let { id, transaction } = $derived(transactionWithId);
+	let id = $derived(transaction.id);
 
-	let from: string = $derived(transactionFrom(transaction));
+	let from = $derived(transaction.from);
 
-	let to: string = $derived(transactionTo(transaction));
+	let to = $derived(transaction.to);
 
-	let timestamp: bigint | undefined = $derived(transactionTimestamp(transaction));
+	let timestamp = $derived(transaction.timestamp);
 
-	let memo: string = $derived(transactionMemo({ transaction, missionControlId }));
+	let memo = $derived(transactionMemo({ transaction, missionControlId }));
 
-	let amount: string | undefined = $derived(transactionAmount(transaction));
+	let amount = $derived(transactionAmount(transaction));
 </script>
 
 <tr in:fade>
@@ -41,10 +39,14 @@
 		{/if}
 	</td>
 	<td class="from">
-		<Identifier small={false} identifier={from} />
+		{#if nonNullish(from)}
+			<Identifier small={false} identifier={from} />
+		{/if}
 	</td>
 	<td class="to">
-		<Identifier small={false} identifier={to} />
+		{#if nonNullish(to)}
+			<Identifier small={false} identifier={to} />
+		{/if}
 	</td>
 	<td class="memo">{memo}</td>
 	<td class="amount">

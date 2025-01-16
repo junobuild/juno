@@ -1,5 +1,5 @@
 <script lang="ts">
-	import type { TransactionWithId } from '@dfinity/ledger-icp';
+	import type {IcTransactionUi} from "$lib/types/ic-transaction";
 	import type { Principal } from '@dfinity/principal';
 	import Transaction from '$lib/components/transactions/Transaction.svelte';
 	import InfiniteScroll from '$lib/components/ui/InfiniteScroll.svelte';
@@ -7,7 +7,7 @@
 
 	interface Props {
 		missionControlId: Principal;
-		transactions: TransactionWithId[];
+		transactions: IcTransactionUi[];
 		disableInfiniteScroll?: boolean;
 	}
 
@@ -30,8 +30,8 @@
 				</thead>
 
 				<tbody>
-					{#each transactions as transactionWithId (transactionWithId.id)}
-						<Transaction {transactionWithId} {missionControlId} />
+					{#each transactions as transaction (transaction.id)}
+						<Transaction {transaction} {missionControlId} />
 					{/each}
 				</tbody>
 			</table>

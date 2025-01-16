@@ -11,12 +11,10 @@ export type IcpTransaction = { transaction: Transaction & IcTransactionAddOnsInf
 
 export type IcTransactionType = 'send' | 'receive' | 'approve' | 'burn' | 'mint';
 
-export type IcTransactionIdText = string;
-
 export type IcTransactionStatus = 'executed' | 'pending' | 'reimbursed' | 'failed';
 
 export interface IcTransactionUi {
-	id: bigint | string;
+	id: bigint;
 	type: IcTransactionType;
 	// e.g. BTC Received
 	typeLabel?: string;
@@ -33,4 +31,5 @@ export interface IcTransactionUi {
 	timestamp?: bigint;
 	status: IcTransactionStatus;
 	txExplorerUrl?: string;
+	memo: bigint;
 }

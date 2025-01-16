@@ -56,15 +56,16 @@ export const mapIcpTransaction = ({
 	transaction: IcpTransaction;
 	identity: OptionIdentity;
 }): IcTransactionUi => {
-	const { operation, timestamp, transferToSelf } = transaction;
+	const { operation, timestamp, memo, transferToSelf } = transaction;
 
 	const ICP_EXPLORER_URL = import.meta.env.VITE_ICP_EXPLORER_URL;
 
-	const tx: Pick<IcTransactionUi, 'timestamp' | 'id' | 'status' | 'txExplorerUrl'> = {
+	const tx: Pick<IcTransactionUi, 'timestamp' | 'id' | 'status' | 'txExplorerUrl' | 'memo'> = {
 		id,
 		timestamp: fromNullable(timestamp)?.timestamp_nanos,
 		status: 'executed',
-		txExplorerUrl: `${ICP_EXPLORER_URL}/transaction/${id}`
+		txExplorerUrl: `${ICP_EXPLORER_URL}/transaction/${id}`,
+		memo
 	};
 
 	const accountIdentifier = nonNullish(identity)

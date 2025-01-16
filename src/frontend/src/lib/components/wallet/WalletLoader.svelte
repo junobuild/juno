@@ -1,5 +1,5 @@
 <script lang="ts">
-	import type { TransactionWithId } from '@dfinity/ledger-icp';
+    import type {IcTransactionUi} from "$lib/types/ic-transaction";
 	import type { Principal } from '@dfinity/principal';
 	import { isNullish, jsonReviver } from '@dfinity/utils';
 	import { onDestroy, onMount, type Snippet } from 'svelte';
@@ -11,7 +11,7 @@
 	interface Props {
 		missionControlId: Principal;
 		balance?: bigint | undefined;
-		transactions?: TransactionWithId[];
+		transactions?: IcTransactionUi[];
 		children?: Snippet;
 	}
 

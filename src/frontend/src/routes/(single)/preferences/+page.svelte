@@ -2,16 +2,16 @@
 	import { nonNullish } from '@dfinity/utils';
 	import { onMount } from 'svelte';
 	import { fade } from 'svelte/transition';
-	import { getCredits } from '$lib/api/console.api';
 	import AppLangSelect from '$lib/components/core/AppLangSelect.svelte';
 	import IdentityGuard from '$lib/components/guards/IdentityGuard.svelte';
 	import Identifier from '$lib/components/ui/Identifier.svelte';
 	import Theme from '$lib/components/ui/Theme.svelte';
 	import Value from '$lib/components/ui/Value.svelte';
 	import { authSignedOut } from '$lib/derived/auth.derived';
+	import { credits } from '$lib/derived/credits.derived';
+	import { loadCredits as loadCreditsServices } from '$lib/services/credits.services';
 	import { authRemainingTimeStore, authStore } from '$lib/stores/auth.store';
 	import { i18n } from '$lib/stores/i18n.store';
-	import { toasts } from '$lib/stores/toasts.store';
 	import type { Languages } from '$lib/types/languages';
 	import { secondsToDuration } from '$lib/utils/date.utils';
 	import { formatCredits } from '$lib/utils/icp.utils';
@@ -20,21 +20,14 @@
 
 	let remainingTimeMilliseconds: number | undefined = $derived($authRemainingTimeStore);
 
-	let credits: bigint | undefined = $state(undefined);
-
 	const loadCredits = async () => {
 		if ($authSignedOut) {
 			return;
 		}
 
-		try {
-			credits = await getCredits($authStore.identity);
-		} catch (err: unknown) {
-			toasts.error({
-				text: $i18n.errors.load_credits,
-				detail: err
-			});
-		}
+		await loadCreditsServices({
+			identity: $authStore.identity
+		});
 	};
 
 	onMount(loadCredits);
@@ -60,7 +53,7 @@
 						{$i18n.wallet.credits}
 					{/snippet}
 					<p>
-						{#if nonNullish(credits)}<span in:fade>{formatCredits(credits)}</span>{/if}
+						{#if nonNullish($credits)}<span in:fade>{formatCredits($credits)}</span>{/if}
 					</p>
 				</Value>
 

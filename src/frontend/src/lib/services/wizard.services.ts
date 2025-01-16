@@ -43,10 +43,7 @@ type GetFeeBalance =
 	  >
 	| { error: null | string };
 
-type GetFeeBalanceFn = (params: {
-	missionControlId: Principal;
-	identity: Option<Identity>;
-}) => Promise<GetFeeBalance>;
+type GetFeeBalanceFn = (params: { identity: Option<Identity> }) => Promise<GetFeeBalance>;
 
 export const initSatelliteWizard = ({
 	missionControlId,
@@ -95,8 +92,7 @@ const initCreateWizard = async ({
 	busy.start();
 
 	const resultFee = await feeFn({
-		identity,
-		missionControlId
+		identity
 	});
 
 	if ('error' in resultFee) {
@@ -155,11 +151,9 @@ const getCreateOrbiterFeeBalance: GetFeeBalanceFn = async (params): Promise<GetF
 
 const getCreateFeeBalance = async ({
 	identity,
-	missionControlId,
 	getFee
 }: {
 	identity: OptionIdentity;
-	missionControlId: Option<Principal>;
 	getFee: (params: { user: Principal; identity: OptionIdentity }) => Promise<bigint>;
 }): Promise<GetFeeBalance> => {
 	const labels = get(i18n);
@@ -178,7 +172,6 @@ const getCreateFeeBalance = async ({
 	}
 
 	const { result } = await loadCredits({
-		missionControlId,
 		identity,
 		reload: true
 	});

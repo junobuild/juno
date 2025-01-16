@@ -97,8 +97,8 @@
 	<MissionControlTransferCyclesModal onclose={close} detail={modal.detail} />
 {/if}
 
-{#if modal?.type === 'send_tokens' && nonNullish(modal.detail)}
-	<SendTokensModal on:junoClose={close} detail={modal.detail} />
+{#if modal?.type === 'send_tokens'}
+	<SendTokensModal on:junoClose={close} />
 {/if}
 
 {#if modal?.type === 'edit_orbiter_config' && nonNullish(modal.detail)}

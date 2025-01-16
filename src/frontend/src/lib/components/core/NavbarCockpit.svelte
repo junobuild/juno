@@ -11,6 +11,7 @@
 	import IconWallet from '$lib/components/icons/IconWallet.svelte';
 	import WalletInlineBalance from '$lib/components/wallet/WalletInlineBalance.svelte';
 	import WalletLoader from '$lib/components/wallet/WalletLoader.svelte';
+	import { balance, balanceLoaded } from '$lib/derived/balance.derived';
 	import { missionControlIdDerived } from '$lib/derived/mission-control.derived';
 	import { orbiterStore } from '$lib/derived/orbiter.derived';
 	import { loadOrbiters } from '$lib/services/orbiters.services';
@@ -19,7 +20,6 @@
 
 	let missionControlData: CanisterData | undefined = $state(undefined);
 	let orbiterData: CanisterData | undefined = $state(undefined);
-	let balance: bigint | undefined = $state(undefined);
 
 	run(() => {
 		// @ts-expect-error TODO: to be migrated to Svelte v5
@@ -70,12 +70,12 @@
 {/if}
 
 {#if nonNullish($missionControlIdDerived)}
-	<WalletLoader missionControlId={$missionControlIdDerived} bind:balance>
-		{#if nonNullish(balance)}
+	<WalletLoader missionControlId={$missionControlIdDerived}>
+		{#if $balanceLoaded}
 			<div in:slide={{ axis: 'x' }} class="container wallet">
 				<NavbarLink href="/wallet" ariaLabel={`${$i18n.core.open}: ${$i18n.wallet.title}`}>
 					<IconWallet />
-					<WalletInlineBalance {balance} />
+					<WalletInlineBalance balance={$balance} />
 				</NavbarLink>
 			</div>
 		{/if}

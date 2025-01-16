@@ -15,6 +15,7 @@
 	import SkeletonText from '$lib/components/ui/SkeletonText.svelte';
 	import WalletInlineBalance from '$lib/components/wallet/WalletInlineBalance.svelte';
 	import WalletLoader from '$lib/components/wallet/WalletLoader.svelte';
+	import { balance } from '$lib/derived/balance.derived';
 	import {
 		missionControlNotMonitored,
 		missionControlSettingsLoaded
@@ -33,7 +34,6 @@
 	});
 
 	let missionControlData: CanisterData | undefined = $state(undefined);
-	let walletBalance: bigint | undefined = $state(undefined);
 	let orbiterData: CanisterData | undefined = $state(undefined);
 </script>
 
@@ -130,7 +130,7 @@
 </div>
 
 {#if nonNullish($missionControlIdDerived)}
-	<WalletLoader missionControlId={$missionControlIdDerived} bind:balance={walletBalance} />
+	<WalletLoader missionControlId={$missionControlIdDerived} />
 {/if}
 
 <div class="wallet">
@@ -144,7 +144,7 @@
 			<span class="link">
 				<span class="link-title">{$i18n.wallet.title}</span>
 				<span class="link-details">
-					<WalletInlineBalance balance={walletBalance} />
+					<WalletInlineBalance balance={$balance} />
 				</span>
 			</span>
 		</p>

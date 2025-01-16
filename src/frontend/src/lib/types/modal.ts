@@ -89,10 +89,6 @@ export interface JunoModalRestoreSnapshotDetail extends JunoModalSegmentDetail {
 	snapshot: snapshot;
 }
 
-export interface JunoModalSendTokensDetail {
-	balance: bigint | undefined;
-}
-
 export interface JunoModalEditOrbiterConfigDetail {
 	orbiterId: Principal;
 	features: OrbiterSatelliteFeatures | undefined;
@@ -124,7 +120,6 @@ export type JunoModalDetail =
 	| JunoModalRestoreSnapshotDetail
 	| JunoModalCyclesSatelliteDetail
 	| JunoModalDeleteSatelliteDetail
-	| JunoModalSendTokensDetail
 	| JunoModalEditOrbiterConfigDetail
 	| JunoModalCreateMonitoringStrategyDetail;
 

@@ -4,6 +4,7 @@
 	import { onDestroy, onMount, type Snippet } from 'svelte';
 	import { run } from 'svelte/legacy';
 	import { type WalletWorker, initWalletWorker } from '$lib/services/worker.wallet.services';
+	import { balanceStore } from '$lib/stores/balance.store';
 	import type { IcTransactionUi } from '$lib/types/ic-transaction';
 	import type { PostMessageDataResponseWallet } from '$lib/types/post-message';
 	import type { CertifiedData } from '$lib/types/store';
@@ -11,17 +12,11 @@
 
 	interface Props {
 		missionControlId: Principal;
-		balance?: bigint | undefined;
 		transactions?: IcTransactionUi[];
 		children?: Snippet;
 	}
 
-	let {
-		missionControlId,
-		balance = $bindable(undefined),
-		transactions = $bindable([]),
-		children
-	}: Props = $props();
+	let { missionControlId, transactions = $bindable([]), children }: Props = $props();
 
 	let worker: WalletWorker | undefined = $state();
 
@@ -30,7 +25,7 @@
 			return;
 		}
 
-		balance = data.wallet.balance.data;
+		balanceStore.set(data.wallet.balance);
 
 		const newTransactions = JSON.parse(data.wallet.newTransactions, jsonReviver).map(
 			({ data }: CertifiedData<IcTransactionUi>) => data
@@ -40,11 +35,6 @@
 			...newTransactions,
 			...transactions.filter(({ id }) => !newTransactions.some(({ id: txId }) => txId === id))
 		];
-
-		emit({
-			message: 'junoSyncBalance',
-			detail: balance
-		});
 	};
 
 	const initWorker = async () => {

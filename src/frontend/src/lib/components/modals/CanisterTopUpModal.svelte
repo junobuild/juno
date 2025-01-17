@@ -1,24 +1,19 @@
 <script lang="ts">
 	import type { AccountIdentifier } from '@dfinity/ledger-icp';
 	import { Principal } from '@dfinity/principal';
-	import { isNullish } from '@dfinity/utils';
 	import type { Snippet } from 'svelte';
 	import { fade } from 'svelte/transition';
-	import { topUp } from '$lib/api/mission-control.api';
 	import CanisterTopUpForm from '$lib/components/canister/CanisterTopUpForm.svelte';
 	import CanisterTopUpReview from '$lib/components/canister/CanisterTopUpReview.svelte';
+	import ProgressTopUp from '$lib/components/canister/ProgressTopUp.svelte';
 	import Modal from '$lib/components/ui/Modal.svelte';
-	import SpinnerModal from '$lib/components/ui/SpinnerModal.svelte';
-	import { TOP_UP_NETWORK_FEES } from '$lib/constants/constants';
 	import { missionControlIdDerived } from '$lib/derived/mission-control.derived';
+	import { topUp } from '$lib/services/topup.services';
 	import { authStore } from '$lib/stores/auth.store';
 	import { wizardBusy } from '$lib/stores/busy.store';
 	import { i18n } from '$lib/stores/i18n.store';
-	import { toasts } from '$lib/stores/toasts.store';
 	import type { CanisterSegmentWithLabel } from '$lib/types/canister';
-	import { emit } from '$lib/utils/events.utils';
-	import { assertAndConvertAmountToICPToken } from '$lib/utils/token.utils';
-	import { waitAndRestartWallet } from '$lib/utils/wallet.utils';
+	import { type TopUpProgress } from '$lib/types/progress-topup';
 
 	interface Props {
 		balance: bigint;
@@ -36,61 +31,35 @@
 	let icp: string | undefined = $state(undefined);
 	let cycles: number | undefined = $state(undefined);
 
+	let progress: TopUpProgress | undefined = $state(undefined);
+	const onProgress = (topUpProgress: TopUpProgress | undefined) => (progress = topUpProgress);
+
 	const onsubmit = async ($event: SubmitEvent) => {
 		$event.preventDefault();
 
-		if (isNullish($missionControlIdDerived)) {
-			toasts.error({
-				text: $i18n.errors.no_mission_control
-			});
-			return;
-		}
-
-		if (isNullish(cycles)) {
-			toasts.error({
-				text: $i18n.errors.invalid_amount_to_top_up
-			});
-			return;
-		}
-
-		const { valid, tokenAmount } = assertAndConvertAmountToICPToken({
-			balance,
-			amount: icp,
-			fee: TOP_UP_NETWORK_FEES
-		});
-
-		if (!valid || isNullish(tokenAmount)) {
-			return;
-		}
+		onProgress(undefined);
 
 		wizardBusy.start();
 		step = 'in_progress';
 
-		try {
-			const canisterId = Principal.fromText(segment.canisterId);
-
-			await topUp({
-				canisterId,
-				missionControlId: $missionControlIdDerived,
-				e8s: tokenAmount.toE8s(),
-				identity: $authStore.identity
-			});
-
-			emit({ message: 'junoRestartCycles', detail: { canisterId } });
-
-			await waitAndRestartWallet();
-
-			step = 'ready';
-		} catch (err: unknown) {
-			toasts.error({
-				text: $i18n.errors.top_up_error,
-				detail: err
-			});
-
-			step = 'error';
-		}
+		const { success } = await topUp({
+			canisterId: Principal.fromText(segment.canisterId),
+			missionControlId: $missionControlIdDerived,
+			identity: $authStore.identity,
+			cycles,
+			balance,
+			icp,
+			onProgress
+		});
 
 		wizardBusy.stop();
+
+		if (success !== 'ok') {
+			step = 'init';
+			return;
+		}
+
+		step = 'ready';
 	};
 </script>
 
@@ -101,9 +70,7 @@
 			<button onclick={onclose}>{$i18n.core.close}</button>
 		</div>
 	{:else if step === 'in_progress'}
-		<SpinnerModal>
-			<p>{$i18n.canisters.top_up_in_progress}</p>
-		</SpinnerModal>
+		<ProgressTopUp {progress} />
 	{:else if step === 'review'}
 		<div in:fade>
 			<CanisterTopUpReview

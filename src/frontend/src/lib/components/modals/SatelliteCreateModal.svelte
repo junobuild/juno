@@ -28,6 +28,7 @@
 
 	let { detail, onclose }: Props = $props();
 
+	let withCredits = $state(false);
 	let insufficientFunds = $state(true);
 
 	let step: 'init' | 'in_progress' | 'ready' | 'error' = $state('init');
@@ -53,6 +54,7 @@
 			subnetId,
 			monitoringStrategy,
 			satelliteName,
+			withCredits,
 			onProgress
 		});
 
@@ -101,6 +103,7 @@
 
 		<CreditsGuard
 			{onclose}
+			bind:withCredits
 			bind:insufficientFunds
 			{detail}
 			priceLabel={$i18n.satellites.create_satellite_price}

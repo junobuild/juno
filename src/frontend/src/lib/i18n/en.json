@@ -526,6 +526,8 @@
 		"snapshot_restore_error": "Unexpected error(s) while restoring the snapshot.",
 		"snapshot_delete_error": "Unexpected error(s) while deleting the snapshot.",
 		"snapshot_list_error": "Unexpected error(s) while listing the snapshot.",
+		"wallet_error": "Error while loading your wallet.",
+		"wallet_uncertified_transactions_removed": "Several uncertified transactions were identified and subsequently removed from the displayed lists.",
 		"wallet_no_account": "The wallet did not provide any account.",
 		"wallet_load_balance": "The balance of the account cannot be loaded.",
 		"wallet_receive_error": "Unexpected error while receiving tokens.",

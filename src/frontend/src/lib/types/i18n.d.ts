@@ -542,6 +542,8 @@ interface I18nErrors {
 	snapshot_restore_error: string;
 	snapshot_delete_error: string;
 	snapshot_list_error: string;
+	wallet_error: string;
+	wallet_uncertified_transactions_removed: string;
 	wallet_no_account: string;
 	wallet_load_balance: string;
 	wallet_receive_error: string;

@@ -23,6 +23,7 @@
 
 	let { detail, onclose }: Props = $props();
 
+	let withCredits = $state(false);
 	let insufficientFunds = $state(true);
 
 	let step: 'init' | 'in_progress' | 'ready' | 'error' = $state('init');
@@ -46,6 +47,7 @@
 			missionControlId: $missionControlIdDerived,
 			subnetId,
 			monitoringStrategy,
+			withCredits,
 			onProgress
 		});
 
@@ -85,6 +87,7 @@
 		<CreditsGuard
 			{onclose}
 			bind:insufficientFunds
+			bind:withCredits
 			{detail}
 			priceLabel={$i18n.analytics.create_orbiter_price}
 		>

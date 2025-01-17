@@ -14,6 +14,7 @@
 	interface Props {
 		detail: JunoModalDetail;
 		priceLabel: string;
+		withCredits: boolean;
 		insufficientFunds?: boolean;
 		children: Snippet;
 		onclose: () => void;
@@ -23,6 +24,7 @@
 		detail,
 		priceLabel,
 		insufficientFunds = $bindable(true),
+		withCredits = $bindable(false),
 		children,
 		onclose
 	}: Props = $props();
@@ -37,6 +39,10 @@
 
 	$effect(() => {
 		insufficientFunds = $balanceOrZero < fee && notEnoughCredits;
+	});
+
+	$effect(() => {
+		withCredits = !notEnoughCredits;
 	});
 </script>
 

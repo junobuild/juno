@@ -31,6 +31,7 @@ import type { PrincipalText } from '$lib/types/principal';
 import { type WizardCreateProgress, WizardCreateProgressStep } from '$lib/types/progress-wizard';
 import type { Option } from '$lib/types/utils';
 import { emit } from '$lib/utils/events.utils';
+import { waitAndRestartWallet } from '$lib/utils/wallet.utils';
 import type { Identity } from '@dfinity/agent';
 import { Principal } from '@dfinity/principal';
 import { assertNonNullish, isNullish, nonNullish, toNullable } from '@dfinity/utils';
@@ -190,6 +191,7 @@ interface CreateWizardParams {
 	identity: OptionIdentity;
 	subnetId: PrincipalText | undefined;
 	monitoringStrategy: CyclesMonitoringStrategy | undefined;
+	withCredits: boolean;
 	onProgress: (progress: WizardCreateProgress | undefined) => void;
 }
 
@@ -351,7 +353,8 @@ const createWizard = async <T>({
 	createFn,
 	reloadFn,
 	monitoringFn,
-	onProgress
+	onProgress,
+	withCredits
 }: Omit<CreateWizardParams, 'subnetId' | 'monitoringStrategy'> & {
 	errorLabel: keyof I18nErrors;
 	createFn: (params: { identity: Identity }) => Promise<T>;
@@ -382,11 +385,22 @@ const createWizard = async <T>({
 		});
 
 		const reload = async () => {
-			await reloadFn({ missionControlId, reload: true });
+			await Promise.allSettled([
+				...(withCredits
+					? [
+							loadCredits({
+								identity,
+								reload: true
+							})
+						]
+					: [waitAndRestartWallet()]),
+				reloadFn({ missionControlId, reload: true })
+			]);
 		};
 
 		if (nonNullish(monitoringFn)) {
 			const executeMonitoringFn = async () => {
+				await waitAndRestartWallet();
 				await monitoringFn({ identity, segment });
 			};
 
@@ -397,7 +411,7 @@ const createWizard = async <T>({
 			});
 		}
 
-		// Reload list of segments before navigation
+		// Reload list of segments and wallet or credits before navigation
 		await execute({
 			fn: reload,
 			onProgress,

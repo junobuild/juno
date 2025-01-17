@@ -10,7 +10,7 @@
 	import { isBusy, wizardBusy } from '$lib/stores/busy.store';
 	import { i18n } from '$lib/stores/i18n.store';
 	import type { JunoModalDetail, JunoModalRestoreSnapshotDetail } from '$lib/types/modal';
-	import type { SnapshotProgress } from '$lib/types/snapshot';
+	import type { SnapshotProgress } from '$lib/types/progress-snapshot';
 	import { formatToDate } from '$lib/utils/date.utils';
 	import { i18nFormat } from '$lib/utils/i18n.utils';
 

@@ -1,4 +1,4 @@
-import { onSyncExchange } from '$lib/services/wallet.loader.services';
+import { onSyncExchange, onSyncWallet } from '$lib/services/wallet.loader.services';
 import type { MissionControlId } from '$lib/types/mission-control';
 import type {
 	PostMessage,
@@ -8,18 +8,14 @@ import type {
 	PostMessageDataResponseWalletCleanUp
 } from '$lib/types/post-message';
 
-export type WalletCallback = (data: PostMessageDataResponseWallet) => void;
-
 export interface WalletWorker {
-	start: (params: { missionControlId: MissionControlId; callback: WalletCallback }) => void;
+	start: (params: { missionControlId: MissionControlId }) => void;
 	stop: () => void;
 }
 
 export const initWalletWorker = async (): Promise<WalletWorker> => {
 	const WalletWorker = await import('$lib/workers/workers?worker');
 	const worker: Worker = new WalletWorker.default();
-
-	let walletCallback: WalletCallback | undefined;
 
 	worker.onmessage = ({
 		data
@@ -35,7 +31,7 @@ export const initWalletWorker = async (): Promise<WalletWorker> => {
 
 		switch (msg) {
 			case 'syncWallet':
-				walletCallback?.(data.data as PostMessageDataResponseWallet);
+				onSyncWallet(data.data as PostMessageDataResponseWallet);
 				return;
 			case 'syncExchange':
 				onSyncExchange(data.data as PostMessageDataResponseExchange);
@@ -44,15 +40,7 @@ export const initWalletWorker = async (): Promise<WalletWorker> => {
 	};
 
 	return {
-		start: ({
-			callback,
-			missionControlId
-		}: {
-			missionControlId: MissionControlId;
-			callback: WalletCallback;
-		}) => {
-			walletCallback = callback;
-
+		start: ({ missionControlId }: { missionControlId: MissionControlId }) => {
 			worker.postMessage({
 				msg: 'startWalletTimer',
 				data: { missionControlId: missionControlId.toText() }

@@ -1,12 +1,8 @@
 <script lang="ts">
-	import { isNullish, jsonReviver } from '@dfinity/utils';
+	import { isNullish } from '@dfinity/utils';
 	import { onDestroy, onMount, type Snippet } from 'svelte';
-	import { run } from 'svelte/legacy';
 	import { type WalletWorker, initWalletWorker } from '$lib/services/worker.wallet.services';
-	import { balanceCertifiedStore } from '$lib/stores/balance.store';
-	import { transactionsCertifiedStore } from '$lib/stores/transactions.store';
 	import type { MissionControlId } from '$lib/types/mission-control';
-	import type { PostMessageDataResponseWallet } from '$lib/types/post-message';
 
 	interface Props {
 		missionControlId: MissionControlId;
@@ -17,37 +13,19 @@
 
 	let worker: WalletWorker | undefined = $state();
 
-	const syncState = (data: PostMessageDataResponseWallet) => {
-		if (isNullish(data.wallet)) {
-			return;
-		}
-
-		balanceCertifiedStore.set(data.wallet.balance);
-
-		const newTransactions = JSON.parse(data.wallet.newTransactions, jsonReviver);
-
-		transactionsCertifiedStore.prepend(newTransactions);
-	};
-
 	const initWorker = async () => {
 		worker = await initWalletWorker();
 	};
 
-	run(() => {
-		// @ts-expect-error TODO: to be migrated to Svelte v5
-		worker,
-			missionControlId,
-			(() => {
-				if (isNullish(missionControlId)) {
-					worker?.stop();
-					return;
-				}
+	$effect(() => {
+		if (isNullish(missionControlId)) {
+			worker?.stop();
+			return;
+		}
 
-				worker?.start({
-					missionControlId,
-					callback: syncState
-				});
-			})();
+		worker?.start({
+			missionControlId
+		});
 	});
 
 	onMount(async () => await initWorker());

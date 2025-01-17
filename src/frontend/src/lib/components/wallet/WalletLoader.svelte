@@ -4,18 +4,16 @@
 	import { run } from 'svelte/legacy';
 	import { type WalletWorker, initWalletWorker } from '$lib/services/worker.wallet.services';
 	import { balanceCertifiedStore } from '$lib/stores/balance.store';
-	import type { IcTransactionUi } from '$lib/types/ic-transaction';
+	import { transactionsCertifiedStore } from '$lib/stores/transactions.store';
 	import type { MissionControlId } from '$lib/types/mission-control';
 	import type { PostMessageDataResponseWallet } from '$lib/types/post-message';
-	import type { CertifiedData } from '$lib/types/store';
 
 	interface Props {
 		missionControlId: MissionControlId;
-		transactions?: IcTransactionUi[];
 		children?: Snippet;
 	}
 
-	let { missionControlId, transactions = $bindable([]), children }: Props = $props();
+	let { missionControlId, children }: Props = $props();
 
 	let worker: WalletWorker | undefined = $state();
 
@@ -26,14 +24,9 @@
 
 		balanceCertifiedStore.set(data.wallet.balance);
 
-		const newTransactions = JSON.parse(data.wallet.newTransactions, jsonReviver).map(
-			({ data }: CertifiedData<IcTransactionUi>) => data
-		) as IcTransactionUi[];
+		const newTransactions = JSON.parse(data.wallet.newTransactions, jsonReviver);
 
-		transactions = [
-			...newTransactions,
-			...transactions.filter(({ id }) => !newTransactions.some(({ id: txId }) => txId === id))
-		];
+		transactionsCertifiedStore.prepend(newTransactions);
 	};
 
 	const initWorker = async () => {

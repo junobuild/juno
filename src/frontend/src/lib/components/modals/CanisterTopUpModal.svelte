@@ -18,6 +18,7 @@
 	import type { CanisterSegmentWithLabel } from '$lib/types/canister';
 	import { emit } from '$lib/utils/events.utils';
 	import { assertAndConvertAmountToICPToken } from '$lib/utils/token.utils';
+	import {waitAndRestartWallet} from "$lib/utils/wallet.utils";
 
 	interface Props {
 		balance: bigint;
@@ -76,6 +77,8 @@
 			});
 
 			emit({ message: 'junoRestartCycles', detail: { canisterId } });
+
+			await waitAndRestartWallet()
 
 			step = 'ready';
 		} catch (err: unknown) {

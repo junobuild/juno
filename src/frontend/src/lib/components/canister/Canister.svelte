@@ -2,10 +2,8 @@
 	import type { Principal } from '@dfinity/principal';
 	import { onDestroy, onMount } from 'svelte';
 	import { run } from 'svelte/legacy';
-	import { slide } from 'svelte/transition';
 	import CanisterIndicator from '$lib/components/canister/CanisterIndicator.svelte';
 	import CanisterTCycles from '$lib/components/canister/CanisterTCycles.svelte';
-	import IconSync from '$lib/components/icons/IconSync.svelte';
 	import SkeletonText from '$lib/components/ui/SkeletonText.svelte';
 	import { type CyclesWorker, initCyclesWorker } from '$lib/services/worker.cycles.services';
 	import { i18n } from '$lib/stores/i18n.store';
@@ -103,12 +101,9 @@
 {#if display}
 	<div class:row>
 		{#if ['synced', 'syncing'].includes(sync ?? '')}
-			<p class="status"><CanisterIndicator {data} /><span>{status ?? '???'}</span></p>
+			<p class="status"><CanisterIndicator {data} {sync} /><span>{status ?? '???'}</span></p>
 			<p class="cycles">
-				<CanisterTCycles {data} />{#if sync === 'syncing'}<span
-						class="spinner"
-						transition:slide={{ axis: 'x' }}><IconSync size="16px" /></span
-					>{/if}
+				<CanisterTCycles {data} />
 			</p>
 			<p>
 				{formatBytes(Number(memorySize))} <small>{$i18n.canisters.in_total}</small>
@@ -173,9 +168,5 @@
 				transform: translate(var(--padding), 20%) rotate(15deg);
 			}
 		}
-	}
-
-	.spinner {
-		height: 16px;
 	}
 </style>

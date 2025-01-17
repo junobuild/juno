@@ -125,8 +125,6 @@
 
 		color: var(--value-color);
 
-		margin: 0 0 0 -5px;
-
 		> span {
 			display: flex;
 			align-items: flex-start;
@@ -139,14 +137,6 @@
 					text-transform: uppercase;
 				}
 			}
-
-			:global(svg) {
-				min-width: 22px;
-			}
-		}
-
-		@include media.min-width(large) {
-			margin: 0;
 		}
 	}
 

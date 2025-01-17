@@ -289,6 +289,7 @@
 		"wallet_id": "钱包 ID",
 		"sending": "发送..",
 		"sending_in_progress": "正在发送...",
+		"preparing_send": "Preparing send...",
 		"review_and_confirm": "仔细检查下面的详细信息并确认处理你的交易.",
 		"icp_on_its_way": "你的 ICP 正在路上!",
 		"or_connect_wallet": "或者链接钱包",

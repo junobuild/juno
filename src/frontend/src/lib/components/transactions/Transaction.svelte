@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { nonNullish } from '@dfinity/utils';
-	import { fade } from 'svelte/transition';
+	import { blur } from 'svelte/transition';
 	import Identifier from '$lib/components/ui/Identifier.svelte';
 	import type { IcTransactionUi } from '$lib/types/ic-transaction';
 	import type { MissionControlId } from '$lib/types/mission-control';
@@ -27,7 +27,7 @@
 	let amount = $derived(transactionAmount(transaction));
 </script>
 
-<tr in:fade>
+<tr in:blur={{ delay: 0, duration: 125 }}>
 	<td class="id">{`${id}`}</td>
 	<td class="timestamp">
 		{#if nonNullish(timestamp)}

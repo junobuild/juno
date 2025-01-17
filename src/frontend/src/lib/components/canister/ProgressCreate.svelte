@@ -26,7 +26,7 @@
 		preparing: {
 			state: 'in_progress',
 			step: 'preparing',
-			text: $i18n.monitoring.strategy_preparing
+			text: $i18n.core.preparing
 		},
 		create: {
 			state: 'next',
@@ -43,7 +43,7 @@
 		reload: {
 			state: 'next',
 			step: 'reload',
-			text: $i18n.canisters.loading_ui_data
+			text: $i18n.core.refreshing_interface
 		}
 	});
 

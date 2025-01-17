@@ -77,12 +77,14 @@
 		"dashboard": "Dashboard",
 		"icp_amount": "Amount (ICP)",
 		"amount": "Amount",
-		"fee": "Fee"
+		"fee": "Fee",
+		"preparing": "Gearing up...",
+		"refreshing_interface": "Refreshing the interface..."
 	},
 	"canisters": {
 		"top_up": "Top-up",
 		"topping_up": "Topping-up",
-		"top_up_preparing": "Preparing top-up...",
+		"top_up_preparing": "Preparing your boost...",
 		"review_and_confirm_top_up": "Review the details below and confirm to proceed with your top-up.",
 		"cycles_description": "Cycles are the unit of payment for operating your smart contracts. You can top-up (recharge) your {0} by converting ICP to cycles.",
 		"top_up_in_progress": "Top-up in progress...",
@@ -201,13 +203,12 @@
 		"backup_restored": "The backup for your {0} was restored.",
 		"creating_backup": "Creating a backup...",
 		"restoring_backup": "Restoring a backup...",
-		"backup_preparing": "Preparing execution...",
+		"backup_preparing": "Activating backup execution...",
 		"backup_stopping": "Stopping {0}...",
 		"upgrade_snapshot": "Creating a backup...",
 		"edit_snapshot": "Edit backup",
 		"delete_snapshot": "Delete backup",
-		"delete_snapshot_confirm": "Are you sure you want to delete the backup {0} of your {1}?",
-		"loading_ui_data": "Loading data for the display..."
+		"delete_snapshot_confirm": "Are you sure you want to delete the backup {0} of your {1}?"
 	},
 	"sign_in": {
 		"quote_1": "Stars can't shine without darkness.",
@@ -288,8 +289,8 @@
 		"amount_placeholder": "Enter an amount",
 		"wallet_id": "Wallet ID",
 		"sending": "Sending",
-		"sending_in_progress": "Sending...",
-		"preparing_send": "Preparing send...",
+		"sending_in_progress": "Sending now...",
+		"preparing_send": "Gearing up for transfer...",
 		"review_and_confirm": "Review the details below and confirm to proceed with your transaction.",
 		"icp_on_its_way": "Your ICP is on its way!",
 		"or_connect_wallet": "Or connect wallet",
@@ -714,7 +715,7 @@
 		"mission_control_strategy": "Mission Control auto-refill strategy",
 		"review_strategy": "Review auto-refill strategy",
 		"warning_advice": "Go to the Monitoring section to enable it and ensure sufficient cycles for your modules.",
-		"strategy_preparing": "Preparing...",
+		"strategy_preparing": "Getting things ready...",
 		"reload_data": "Reloading data...",
 		"saving_options": "Saving options...",
 		"stop_monitoring_question": "Do you want to stop monitoring your Mission Control as well?",

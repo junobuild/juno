@@ -77,12 +77,14 @@
 		"dashboard": "仪表盘",
 		"icp_amount": "数量 (ICP)",
 		"amount": "金额",
-		"fee": "费用"
+		"fee": "费用",
+		"preparing": "Gearing up...",
+		"refreshing_interface": "Refreshing the interface..."
 	},
 	"canisters": {
 		"top_up": "充值",
 		"topping_up": "Topping-up",
-		"top_up_preparing": "Preparing top-up...",
+		"top_up_preparing": "Preparing your boost...",
 		"review_and_confirm_top_up": "Review the details below and confirm to proceed with your top-up.",
 		"cycles_description": "Cycles 用于支付只能合约运行消耗. 你可以通过将ICP 转换为cycles为你的 {0} 充值.",
 		"top_up_in_progress": "充值中...",
@@ -201,13 +203,12 @@
 		"backup_restored": "你的 {0} 已经从备份恢复.",
 		"creating_backup": "创建备份...",
 		"restoring_backup": "恢复备份...",
-		"backup_preparing": "准备执行...",
+		"backup_preparing": "Activating backup execution...",
 		"backup_stopping": "停止 {0}...",
 		"upgrade_snapshot": "创建备份...",
 		"edit_snapshot": "编辑备份",
 		"delete_snapshot": "删除备份",
-		"delete_snapshot_confirm": "你确定要删除你的 {1} 备份  {0}  ?",
-		"loading_ui_data": "Loading data for the display..."
+		"delete_snapshot_confirm": "你确定要删除你的 {1} 备份  {0}  ?"
 	},
 	"sign_in": {
 		"quote_1": "Stars can't shine without darkness.",
@@ -288,8 +289,8 @@
 		"amount_placeholder": "输入数量",
 		"wallet_id": "钱包 ID",
 		"sending": "发送..",
-		"sending_in_progress": "正在发送...",
-		"preparing_send": "Preparing send...",
+		"sending_in_progress": "Sending now...",
+		"preparing_send": "Gearing up for transfer...",
 		"review_and_confirm": "仔细检查下面的详细信息并确认处理你的交易.",
 		"icp_on_its_way": "你的 ICP 正在路上!",
 		"or_connect_wallet": "或者链接钱包",
@@ -714,7 +715,7 @@
 		"mission_control_strategy": "Mission Control auto-refill strategy",
 		"review_strategy": "Review auto-refill strategy",
 		"warning_advice": "Go to the Monitoring section to enable it and ensure sufficient cycles for your modules.",
-		"strategy_preparing": "Preparing...",
+		"strategy_preparing": "Getting things ready...",
 		"reload_data": "Reloading data...",
 		"saving_options": "Saving options...",
 		"stop_monitoring_question": "Do you want to stop monitoring your Mission Control as well?",

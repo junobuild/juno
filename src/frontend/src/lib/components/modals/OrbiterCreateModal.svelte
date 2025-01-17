@@ -14,7 +14,7 @@
 	import { i18n } from '$lib/stores/i18n.store';
 	import type { JunoModalDetail } from '$lib/types/modal';
 	import type { PrincipalText } from '$lib/types/principal';
-	import type { WizardCreateProgress } from '$lib/types/wizard';
+	import type { WizardCreateProgress } from '$lib/types/progress-wizard';
 
 	interface Props {
 		detail: JunoModalDetail;

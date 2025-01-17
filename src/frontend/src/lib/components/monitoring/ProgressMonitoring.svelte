@@ -7,7 +7,7 @@
 	import {
 		type MonitoringStrategyProgress,
 		MonitoringStrategyProgressStep
-	} from '$lib/types/strategy';
+	} from '$lib/types/progress-strategy';
 	import { mapProgressState } from '$lib/utils/progress.utils';
 
 	interface Props {

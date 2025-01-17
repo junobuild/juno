@@ -14,7 +14,7 @@
 	import { snapshotStore } from '$lib/stores/snapshot.store';
 	import { toasts } from '$lib/stores/toasts.store';
 	import type { CanisterSegmentWithLabel, Segment } from '$lib/types/canister';
-	import type { Snapshots } from '$lib/types/snapshot';
+	import type { Snapshots } from '$lib/types/progress-snapshot';
 	import type { Option } from '$lib/types/utils';
 	import { formatToDate } from '$lib/utils/date.utils';
 	import { emit } from '$lib/utils/events.utils';

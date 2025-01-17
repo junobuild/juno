@@ -4,7 +4,7 @@
 	import WizardProgressSteps from '$lib/components/ui/WizardProgressSteps.svelte';
 	import { i18n } from '$lib/stores/i18n.store';
 	import type { ProgressStep } from '$lib/types/progress-step';
-	import { type WizardCreateProgress, WizardCreateProgressStep } from '$lib/types/wizard';
+	import { type WizardCreateProgress, WizardCreateProgressStep } from '$lib/types/progress-wizard';
 	import { mapProgressState } from '$lib/utils/progress.utils';
 
 	interface Props {

@@ -9,7 +9,7 @@ import type {
 import { getAgent } from '$lib/api/_agent/_agent.api';
 import { getICActor } from '$lib/api/actors/actor.ic.api';
 import type { CanisterInfo, CanisterLogVisibility, CanisterStatus } from '$lib/types/canister';
-import type { Snapshots } from '$lib/types/snapshot';
+import type { Snapshots } from '$lib/types/progress-snapshot';
 import {
 	CanisterStatus as AgentCanisterStatus,
 	AnonymousIdentity,

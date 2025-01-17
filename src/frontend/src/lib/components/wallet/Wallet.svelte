@@ -13,12 +13,12 @@
 	import { MISSION_CONTROL_v0_0_12 } from '$lib/constants/version.constants';
 	import { authSignedIn, authSignedOut } from '$lib/derived/auth.derived';
 	import { balance, balanceNotLoaded } from '$lib/derived/balance.derived';
+	import { transactions } from '$lib/derived/transactions.derived';
 	import { missionControlVersion } from '$lib/derived/version.derived';
 	import { loadNextTransactions } from '$lib/services/wallet.services';
 	import { authStore } from '$lib/stores/auth.store';
 	import { i18n } from '$lib/stores/i18n.store';
 	import { toasts } from '$lib/stores/toasts.store';
-	import type { IcTransactionUi } from '$lib/types/ic-transaction';
 	import type { MissionControlId } from '$lib/types/mission-control';
 	import { emit } from '$lib/utils/events.utils';
 	import { last } from '$lib/utils/utils';
@@ -30,18 +30,6 @@
 	let { missionControlId }: Props = $props();
 
 	const accountIdentifier = getAccountIdentifier(missionControlId);
-
-	/**
-	 * Wallet
-	 */
-	let transactions: IcTransactionUi[] = $state([]);
-
-	let transactionsLoaded: IcTransactionUi[] = $state([]);
-	let transactionsNext: IcTransactionUi[] = $state([]);
-
-	$effect(() => {
-		transactions = [...transactionsLoaded, ...transactionsNext];
-	});
 
 	/**
 	 * Scroll
@@ -57,7 +45,7 @@
 			return;
 		}
 
-		const lastId = last(transactions)?.id;
+		const lastId = last($transactions)?.data.id;
 
 		if (isNullish(lastId)) {
 			// No transactions, we do nothing here and wait for the worker to post the first transactions
@@ -69,12 +57,7 @@
 			identity: $authStore.identity,
 			maxResults: PAGINATION,
 			start: lastId,
-			signalEnd: () => (disableInfiniteScroll = true),
-			loadTransactions: (txs) =>
-				(transactionsNext = [
-					...transactionsNext.filter(({ id }) => !txs.some(({ id: txId }) => txId === id)),
-					...txs
-				])
+			signalEnd: () => (disableInfiniteScroll = true)
 		});
 	};
 
@@ -112,7 +95,7 @@
 </script>
 
 {#if $authSignedIn}
-	<WalletLoader {missionControlId} bind:transactions={transactionsLoaded}>
+	<WalletLoader {missionControlId}>
 		<div class="card-container with-title">
 			<span class="title">{$i18n.wallet.overview}</span>
 
@@ -145,9 +128,14 @@
 			<button onclick={openSend}>{$i18n.wallet.send}</button>
 		</div>
 
-		<Transactions {transactions} {disableInfiniteScroll} {missionControlId} {onintersect} />
+		<Transactions
+			transactions={$transactions}
+			{disableInfiniteScroll}
+			{missionControlId}
+			{onintersect}
+		/>
 
-		<TransactionsExport {transactions} {missionControlId} />
+		<TransactionsExport transactions={$transactions} {missionControlId} />
 	</WalletLoader>
 {/if}
 

@@ -4,12 +4,12 @@
 	import { busy } from '$lib/stores/busy.store';
 	import { i18n } from '$lib/stores/i18n.store';
 	import { toasts } from '$lib/stores/toasts.store';
-	import type { IcTransactionUi } from '$lib/types/ic-transaction';
 	import type { MissionControlId } from '$lib/types/mission-control';
+	import type { CertifiedTransactions } from '$lib/types/transaction';
 
 	interface Props {
 		missionControlId: MissionControlId;
-		transactions: IcTransactionUi[];
+		transactions: CertifiedTransactions;
 	}
 
 	let { missionControlId, transactions }: Props = $props();

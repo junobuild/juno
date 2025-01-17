@@ -2,12 +2,12 @@
 	import Transaction from '$lib/components/transactions/Transaction.svelte';
 	import InfiniteScroll from '$lib/components/ui/InfiniteScroll.svelte';
 	import { i18n } from '$lib/stores/i18n.store';
-	import type { IcTransactionUi } from '$lib/types/ic-transaction';
 	import type { MissionControlId } from '$lib/types/mission-control';
+	import type { CertifiedTransactions } from '$lib/types/transaction';
 
 	interface Props {
 		missionControlId: MissionControlId;
-		transactions: IcTransactionUi[];
+		transactions: CertifiedTransactions;
 		disableInfiniteScroll?: boolean;
 		onintersect: () => void;
 	}
@@ -36,8 +36,8 @@
 				</thead>
 
 				<tbody>
-					{#each transactions as transaction, index (`${transaction.id}-${index}`)}
-						<Transaction {transaction} {missionControlId} />
+					{#each transactions as transaction, index (`${transaction.data.id}-${index}`)}
+						<Transaction transaction={transaction.data} {missionControlId} />
 					{/each}
 				</tbody>
 			</table>

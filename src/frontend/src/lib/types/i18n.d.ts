@@ -81,6 +81,8 @@ interface I18nCore {
 	icp_amount: string;
 	amount: string;
 	fee: string;
+	preparing: string;
+	refreshing_interface: string;
 }
 
 interface I18nCanisters {
@@ -211,7 +213,6 @@ interface I18nCanisters {
 	edit_snapshot: string;
 	delete_snapshot: string;
 	delete_snapshot_confirm: string;
-	loading_ui_data: string;
 }
 
 interface I18nSign_in {

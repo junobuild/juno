@@ -291,8 +291,6 @@ const emitSavedWallet = ({ store, identity }: { store: WalletStore; identity: Id
 		}
 	};
 
-	console.log('init', uiTransactions);
-
 	postMessage({
 		msg: 'syncWallet',
 		data

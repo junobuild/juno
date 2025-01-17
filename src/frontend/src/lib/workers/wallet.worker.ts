@@ -5,7 +5,11 @@ import {
 	type QueryAndUpdateRequestParams
 } from '$lib/api/call/query.api';
 import { getTransactions } from '$lib/api/icp-index.api';
-import { PAGINATION, SYNC_WALLET_TIMER_INTERVAL } from '$lib/constants/constants';
+import {
+	ICP_LEDGER_CANISTER_ID,
+	PAGINATION,
+	SYNC_WALLET_TIMER_INTERVAL
+} from '$lib/constants/constants';
 import type { IcTransactionUi } from '$lib/types/ic-transaction';
 import type {
 	PostMessageDataRequest,
@@ -63,7 +67,10 @@ const startTimer = async ({ data: { missionControlId } }: { data: PostMessageDat
 		return;
 	}
 
-	const store = await WalletStore.init();
+	const store = await WalletStore.init({
+		account: { owner: Principal.fromText(missionControlId) },
+		ledgerId: ICP_LEDGER_CANISTER_ID
+	});
 
 	emitSavedWallet({ store, identity });
 

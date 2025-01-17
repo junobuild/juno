@@ -86,6 +86,7 @@ interface I18nCore {
 interface I18nCanisters {
 	top_up: string;
 	topping_up: string;
+	top_up_preparing: string;
 	review_and_confirm_top_up: string;
 	cycles_description: string;
 	top_up_in_progress: string;

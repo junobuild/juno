@@ -82,6 +82,7 @@
 	"canisters": {
 		"top_up": "充值",
 		"topping_up": "Topping-up",
+		"top_up_preparing": "Preparing top-up...",
 		"review_and_confirm_top_up": "Review the details below and confirm to proceed with your top-up.",
 		"cycles_description": "Cycles 用于支付只能合约运行消耗. 你可以通过将ICP 转换为cycles为你的 {0} 充值.",
 		"top_up_in_progress": "充值中...",

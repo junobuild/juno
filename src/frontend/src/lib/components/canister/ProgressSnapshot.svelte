@@ -3,8 +3,8 @@
 	import { untrack } from 'svelte';
 	import WizardProgressSteps from '$lib/components/ui/WizardProgressSteps.svelte';
 	import { i18n } from '$lib/stores/i18n.store';
-	import type { ProgressStep } from '$lib/types/progress-step';
 	import { type SnapshotProgress, SnapshotProgressStep } from '$lib/types/progress-snapshot';
+	import type { ProgressStep } from '$lib/types/progress-step';
 	import { i18nFormat } from '$lib/utils/i18n.utils';
 	import { mapProgressState } from '$lib/utils/progress.utils';
 

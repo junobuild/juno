@@ -12,6 +12,7 @@
 	import Orbiter from '$lib/components/orbiter/Orbiter.svelte';
 	import OrbiterConfig from '$lib/components/orbiter/OrbiterConfig.svelte';
 	import Tabs from '$lib/components/ui/Tabs.svelte';
+	import WalletLoader from '$lib/components/wallet/WalletLoader.svelte';
 	import Warnings from '$lib/components/warning/Warnings.svelte';
 	import { authSignedIn } from '$lib/derived/auth.derived';
 	import { orbiterStore } from '$lib/derived/orbiter.derived';
@@ -73,20 +74,22 @@
 			{/if}
 		{/snippet}
 
-		<SatellitesLoader>
-			<OrbitersLoader withVersion>
-				<MissionControlGuard>
-					{#if $store.tabId === $store.tabs[0].id}
-						<Analytics />
-					{:else if $store.tabId === $store.tabs[1].id && nonNullish($orbiterStore)}
-						<Orbiter orbiter={$orbiterStore} />
-					{:else if $store.tabId === $store.tabs[2].id && nonNullish($orbiterStore)}
-						<OrbiterConfig orbiterId={$orbiterStore.orbiter_id} />
+		<WalletLoader>
+			<SatellitesLoader>
+				<OrbitersLoader withVersion>
+					<MissionControlGuard>
+						{#if $store.tabId === $store.tabs[0].id}
+							<Analytics />
+						{:else if $store.tabId === $store.tabs[1].id && nonNullish($orbiterStore)}
+							<Orbiter orbiter={$orbiterStore} />
+						{:else if $store.tabId === $store.tabs[2].id && nonNullish($orbiterStore)}
+							<OrbiterConfig orbiterId={$orbiterStore.orbiter_id} />
 
-						<AnalyticsSettings orbiterId={$orbiterStore.orbiter_id} />
-					{/if}
-				</MissionControlGuard>
-			</OrbitersLoader>
-		</SatellitesLoader>
+							<AnalyticsSettings orbiterId={$orbiterStore.orbiter_id} />
+						{/if}
+					</MissionControlGuard>
+				</OrbitersLoader>
+			</SatellitesLoader>
+		</WalletLoader>
 	</Tabs>
 </IdentityGuard>

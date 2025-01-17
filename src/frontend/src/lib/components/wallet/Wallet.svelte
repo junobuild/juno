@@ -8,7 +8,6 @@
 	import Identifier from '$lib/components/ui/Identifier.svelte';
 	import Value from '$lib/components/ui/Value.svelte';
 	import WalletBalance from '$lib/components/wallet/WalletBalance.svelte';
-	import WalletLoader from '$lib/components/wallet/WalletLoader.svelte';
 	import { PAGINATION } from '$lib/constants/constants';
 	import { MISSION_CONTROL_v0_0_12 } from '$lib/constants/version.constants';
 	import { authSignedIn, authSignedOut } from '$lib/derived/auth.derived';
@@ -95,48 +94,46 @@
 </script>
 
 {#if $authSignedIn}
-	<WalletLoader {missionControlId}>
-		<div class="card-container with-title">
-			<span class="title">{$i18n.wallet.overview}</span>
+	<div class="card-container with-title">
+		<span class="title">{$i18n.wallet.overview}</span>
 
-			<div class="columns-3 fit-column-1">
-				<div>
-					<Value>
-						{#snippet label()}
-							{$i18n.wallet.wallet_id}
-						{/snippet}
-						<Identifier shorten={false} small={false} identifier={missionControlId.toText()} />
-					</Value>
+		<div class="columns-3 fit-column-1">
+			<div>
+				<Value>
+					{#snippet label()}
+						{$i18n.wallet.wallet_id}
+					{/snippet}
+					<Identifier shorten={false} small={false} identifier={missionControlId.toText()} />
+				</Value>
 
-					<Value>
-						{#snippet label()}
-							{$i18n.wallet.account_identifier}
-						{/snippet}
-						<Identifier identifier={accountIdentifier?.toHex() ?? ''} small={false} />
-					</Value>
-				</div>
+				<Value>
+					{#snippet label()}
+						{$i18n.wallet.account_identifier}
+					{/snippet}
+					<Identifier identifier={accountIdentifier?.toHex() ?? ''} small={false} />
+				</Value>
+			</div>
 
-				<div>
-					<WalletBalance balance={$balance} />
-				</div>
+			<div>
+				<WalletBalance balance={$balance} />
 			</div>
 		</div>
+	</div>
 
-		<div class="toolbar">
-			<button onclick={openReceive}>{$i18n.wallet.receive}</button>
+	<div class="toolbar">
+		<button onclick={openReceive}>{$i18n.wallet.receive}</button>
 
-			<button onclick={openSend}>{$i18n.wallet.send}</button>
-		</div>
+		<button onclick={openSend}>{$i18n.wallet.send}</button>
+	</div>
 
-		<Transactions
-			transactions={$transactions}
-			{disableInfiniteScroll}
-			{missionControlId}
-			{onintersect}
-		/>
+	<Transactions
+		transactions={$transactions}
+		{disableInfiniteScroll}
+		{missionControlId}
+		{onintersect}
+	/>
 
-		<TransactionsExport transactions={$transactions} {missionControlId} />
-	</WalletLoader>
+	<TransactionsExport transactions={$transactions} {missionControlId} />
 {/if}
 
 <ReceiveTokens bind:visible={receiveVisible} {missionControlId} />

@@ -14,7 +14,6 @@
 	import MissionControlVersion from '$lib/components/mission-control/MissionControlVersion.svelte';
 	import SkeletonText from '$lib/components/ui/SkeletonText.svelte';
 	import WalletInlineBalance from '$lib/components/wallet/WalletInlineBalance.svelte';
-	import WalletLoader from '$lib/components/wallet/WalletLoader.svelte';
 	import { balance } from '$lib/derived/balance.derived';
 	import {
 		missionControlNotMonitored,
@@ -128,10 +127,6 @@
 		</p>
 	</LaunchpadLink>
 </div>
-
-{#if nonNullish($missionControlIdDerived)}
-	<WalletLoader missionControlId={$missionControlIdDerived} />
-{/if}
 
 <div class="wallet">
 	<LaunchpadLink

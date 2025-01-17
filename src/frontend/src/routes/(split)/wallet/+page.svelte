@@ -6,6 +6,7 @@
 	import MissionControlGuard from '$lib/components/guards/MissionControlGuard.svelte';
 	import Tabs from '$lib/components/ui/Tabs.svelte';
 	import Wallet from '$lib/components/wallet/Wallet.svelte';
+	import WalletLoader from '$lib/components/wallet/WalletLoader.svelte';
 	import Warnings from '$lib/components/warning/Warnings.svelte';
 	import { authSignedIn } from '$lib/derived/auth.derived';
 	import { missionControlIdDerived } from '$lib/derived/mission-control.derived';
@@ -42,12 +43,14 @@
 			{/if}
 		{/snippet}
 
-		<MissionControlGuard>
-			{#if nonNullish($missionControlIdDerived)}
-				{#if $store.tabId === $store.tabs[0].id}
-					<Wallet missionControlId={$missionControlIdDerived} />
+		<WalletLoader>
+			<MissionControlGuard>
+				{#if nonNullish($missionControlIdDerived)}
+					{#if $store.tabId === $store.tabs[0].id}
+						<Wallet missionControlId={$missionControlIdDerived} />
+					{/if}
 				{/if}
-			{/if}
-		</MissionControlGuard>
+			</MissionControlGuard>
+		</WalletLoader>
 	</Tabs>
 </IdentityGuard>

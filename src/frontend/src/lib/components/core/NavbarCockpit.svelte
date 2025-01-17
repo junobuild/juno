@@ -10,7 +10,6 @@
 	import IconMissionControl from '$lib/components/icons/IconMissionControl.svelte';
 	import IconWallet from '$lib/components/icons/IconWallet.svelte';
 	import WalletInlineBalance from '$lib/components/wallet/WalletInlineBalance.svelte';
-	import WalletLoader from '$lib/components/wallet/WalletLoader.svelte';
 	import { balance, balanceLoaded } from '$lib/derived/balance.derived';
 	import { missionControlIdDerived } from '$lib/derived/mission-control.derived';
 	import { orbiterStore } from '$lib/derived/orbiter.derived';
@@ -70,16 +69,14 @@
 {/if}
 
 {#if nonNullish($missionControlIdDerived)}
-	<WalletLoader missionControlId={$missionControlIdDerived}>
-		{#if $balanceLoaded}
-			<div in:slide={{ axis: 'x' }} class="container wallet">
-				<NavbarLink href="/wallet" ariaLabel={`${$i18n.core.open}: ${$i18n.wallet.title}`}>
-					<IconWallet />
-					<WalletInlineBalance balance={$balance} />
-				</NavbarLink>
-			</div>
-		{/if}
-	</WalletLoader>
+	{#if $balanceLoaded}
+		<div in:slide={{ axis: 'x' }} class="container wallet">
+			<NavbarLink href="/wallet" ariaLabel={`${$i18n.core.open}: ${$i18n.wallet.title}`}>
+				<IconWallet />
+				<WalletInlineBalance balance={$balance} />
+			</NavbarLink>
+		</div>
+	{/if}
 {/if}
 
 <style lang="scss">

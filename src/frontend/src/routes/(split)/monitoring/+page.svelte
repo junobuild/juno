@@ -10,6 +10,7 @@
 	import MonitoringDashboard from '$lib/components/monitoring/MonitoringDashboard.svelte';
 	import MonitoringSettings from '$lib/components/monitoring/MonitoringSettings.svelte';
 	import Tabs from '$lib/components/ui/Tabs.svelte';
+	import WalletLoader from '$lib/components/wallet/WalletLoader.svelte';
 	import Warnings from '$lib/components/warning/Warnings.svelte';
 	import { authSignedIn } from '$lib/derived/auth.derived';
 	import { hasMissionControlSettings } from '$lib/derived/mission-control-settings.derived';
@@ -64,20 +65,22 @@
 			{/if}
 		{/snippet}
 
-		<SatellitesLoader>
-			<OrbitersLoader>
-				<MissionControlGuard>
-					{#if nonNullish($missionControlIdDerived)}
-						<MissionControlDataLoader missionControlId={$missionControlIdDerived} reload>
-							{#if $store.tabId === $store.tabs[0].id}
-								<MonitoringDashboard missionControlId={$missionControlIdDerived} />
-							{:else if $store.tabId === $store.tabs[1].id && $hasMissionControlSettings}
-								<MonitoringSettings missionControlId={$missionControlIdDerived} />
-							{/if}
-						</MissionControlDataLoader>
-					{/if}
-				</MissionControlGuard>
-			</OrbitersLoader>
-		</SatellitesLoader>
+		<WalletLoader>
+			<SatellitesLoader>
+				<OrbitersLoader>
+					<MissionControlGuard>
+						{#if nonNullish($missionControlIdDerived)}
+							<MissionControlDataLoader missionControlId={$missionControlIdDerived} reload>
+								{#if $store.tabId === $store.tabs[0].id}
+									<MonitoringDashboard missionControlId={$missionControlIdDerived} />
+								{:else if $store.tabId === $store.tabs[1].id && $hasMissionControlSettings}
+									<MonitoringSettings missionControlId={$missionControlIdDerived} />
+								{/if}
+							</MissionControlDataLoader>
+						{/if}
+					</MissionControlGuard>
+				</OrbitersLoader>
+			</SatellitesLoader>
+		</WalletLoader>
 	</Tabs>
 </IdentityGuard>

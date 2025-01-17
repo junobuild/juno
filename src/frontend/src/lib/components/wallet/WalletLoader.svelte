@@ -28,8 +28,18 @@
 		});
 	});
 
+	const onRestartWallet = () => {
+		if (isNullish(missionControlId)) {
+			return;
+		}
+
+		worker?.restart({ missionControlId });
+	};
+
 	onMount(async () => await initWorker());
 	onDestroy(() => worker?.stop());
 </script>
+
+<svelte:window onjunoRestartWallet={onRestartWallet} />
 
 {@render children?.()}

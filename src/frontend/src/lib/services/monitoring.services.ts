@@ -32,7 +32,7 @@ import type { JunoModal, JunoModalCreateMonitoringStrategyDetail } from '$lib/ty
 import {
 	type MonitoringStrategyProgress,
 	MonitoringStrategyProgressStep
-} from '$lib/types/strategy';
+} from '$lib/types/progress-strategy';
 import type { Option } from '$lib/types/utils';
 import { fromNullishNullable } from '$lib/utils/did.utils';
 import { isNotValidEmail } from '$lib/utils/email.utils';

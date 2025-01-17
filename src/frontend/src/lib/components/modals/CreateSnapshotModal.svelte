@@ -14,7 +14,7 @@
 	import { snapshotStore } from '$lib/stores/snapshot.store';
 	import { toasts } from '$lib/stores/toasts.store';
 	import type { JunoModalDetail, JunoModalSegmentDetail } from '$lib/types/modal';
-	import type { SnapshotProgress } from '$lib/types/snapshot';
+	import type { SnapshotProgress } from '$lib/types/progress-snapshot';
 	import { i18nFormat } from '$lib/utils/i18n.utils';
 
 	interface Props {

@@ -1,6 +1,6 @@
+import type { SnapshotProgressState } from '$lib/types/progress-snapshot';
 import type { ProgressStepState } from '$lib/types/progress-step';
-import type { SnapshotProgressState } from '$lib/types/snapshot';
-import type { MonitoringStrategyProgressState } from '$lib/types/strategy';
+import type { MonitoringStrategyProgressState } from '$lib/types/progress-strategy';
 import type { UpgradeCodeProgressState } from '@junobuild/admin';
 
 export const mapProgressState = (

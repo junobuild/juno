@@ -15,7 +15,7 @@
 	import { wizardBusy } from '$lib/stores/busy.store';
 	import { i18n } from '$lib/stores/i18n.store';
 	import type { JunoModalDetail, JunoModalCreateMonitoringStrategyDetail } from '$lib/types/modal';
-	import type { MonitoringStrategyProgress } from '$lib/types/strategy';
+	import type { MonitoringStrategyProgress } from '$lib/types/progress-strategy';
 	import { fromNullishNullable } from '$lib/utils/did.utils';
 
 	interface Props {

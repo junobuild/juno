@@ -11,6 +11,7 @@
 	import SatelliteOverview from '$lib/components/satellites/SatelliteOverview.svelte';
 	import SatelliteSettings from '$lib/components/satellites/SatelliteSettings.svelte';
 	import Tabs from '$lib/components/ui/Tabs.svelte';
+	import WalletLoader from '$lib/components/wallet/WalletLoader.svelte';
 	import Warnings from '$lib/components/warning/Warnings.svelte';
 	import { satelliteStore } from '$lib/derived/satellite.derived';
 	import {
@@ -54,22 +55,24 @@
 			{/if}
 		{/snippet}
 
-		<SatellitesLoader>
-			<OrbitersLoader>
-				<SatelliteGuard>
-					<MissionControlGuard>
-						{#if nonNullish($satelliteStore)}
-							{#if $store.tabId === $store.tabs[0].id}
-								<SatelliteOverview satellite={$satelliteStore} />
+		<WalletLoader>
+			<SatellitesLoader>
+				<OrbitersLoader>
+					<SatelliteGuard>
+						<MissionControlGuard>
+							{#if nonNullish($satelliteStore)}
+								{#if $store.tabId === $store.tabs[0].id}
+									<SatelliteOverview satellite={$satelliteStore} />
 
-								<Guides />
-							{:else if $store.tabId === $store.tabs[1].id}
-								<SatelliteSettings satellite={$satelliteStore} />
+									<Guides />
+								{:else if $store.tabId === $store.tabs[1].id}
+									<SatelliteSettings satellite={$satelliteStore} />
+								{/if}
 							{/if}
-						{/if}
-					</MissionControlGuard>
-				</SatelliteGuard>
-			</OrbitersLoader>
-		</SatellitesLoader>
+						</MissionControlGuard>
+					</SatelliteGuard>
+				</OrbitersLoader>
+			</SatellitesLoader>
+		</WalletLoader>
 	</Tabs>
 </IdentityGuard>

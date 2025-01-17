@@ -8,6 +8,7 @@
 	import SatelliteGuard from '$lib/components/guards/SatelliteGuard.svelte';
 	import SatellitesLoader from '$lib/components/loaders/SatellitesLoader.svelte';
 	import Tabs from '$lib/components/ui/Tabs.svelte';
+	import WalletLoader from '$lib/components/wallet/WalletLoader.svelte';
 	import { satelliteStore } from '$lib/derived/satellite.derived';
 	import {
 		type Tab,
@@ -40,16 +41,18 @@
 
 <IdentityGuard>
 	<Tabs help="https://juno.build/docs/build/authentication">
-		<SatellitesLoader>
-			<SatelliteGuard>
-				{#if nonNullish($satelliteStore)}
-					{#if $store.tabId === $store.tabs[0].id}
-						<Users satelliteId={$satelliteStore.satellite_id} />
-					{:else if $store.tabId === $store.tabs[1].id}
-						<AuthSettings satellite={$satelliteStore} />
+		<WalletLoader>
+			<SatellitesLoader>
+				<SatelliteGuard>
+					{#if nonNullish($satelliteStore)}
+						{#if $store.tabId === $store.tabs[0].id}
+							<Users satelliteId={$satelliteStore.satellite_id} />
+						{:else if $store.tabId === $store.tabs[1].id}
+							<AuthSettings satellite={$satelliteStore} />
+						{/if}
 					{/if}
-				{/if}
-			</SatelliteGuard>
-		</SatellitesLoader>
+				</SatelliteGuard>
+			</SatellitesLoader>
+		</WalletLoader>
 	</Tabs>
 </IdentityGuard>

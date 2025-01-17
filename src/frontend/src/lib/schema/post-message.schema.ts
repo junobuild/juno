@@ -67,6 +67,7 @@ export const PostMessageRequestMsgSchema = z.enum([
 	'stopCustomDomainRegistrationTimer',
 	'stopWalletTimer',
 	'startWalletTimer',
+	'restartWalletTimer',
 	'startMonitoringTimer',
 	'stopMonitoringTimer',
 	'restartMonitoringTimer'

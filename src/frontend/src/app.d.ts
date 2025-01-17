@@ -23,6 +23,7 @@ declare namespace svelteHTML {
 		onjunoCloseActions?: (event: CustomEvent<any>) => void;
 		onjunoRegistrationState?: (event: CustomEvent<any>) => void;
 		onjunoReloadAuthConfig?: (event: CustomEvent<any>) => void;
+		onjunoRestartWallet?: (event: CustomEvent<any>) => void;
 	}
 }
 

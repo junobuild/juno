@@ -8,6 +8,7 @@ import type { MissionControlId } from '$lib/types/mission-control';
 import { nowInBigIntNanoSeconds } from '$lib/utils/date.utils';
 import { invalidIcpAddress } from '$lib/utils/icp-account.utils';
 import { invalidIcrcAddress } from '$lib/utils/icrc-account.utils';
+import { waitAndRestartWallet } from '$lib/utils/wallet.utils';
 import { AccountIdentifier } from '@dfinity/ledger-icp';
 import { decodeIcrcAccount } from '@dfinity/ledger-icrc';
 import { Principal } from '@dfinity/principal';
@@ -55,6 +56,8 @@ export const sendTokens = async ({
 			identity,
 			missionControlId
 		});
+
+		await waitAndRestartWallet();
 
 		return { success: true };
 	} catch (err: unknown) {

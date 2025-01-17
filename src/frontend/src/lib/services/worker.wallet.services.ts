@@ -15,6 +15,7 @@ import type {
 
 export interface WalletWorker {
 	start: (params: { missionControlId: MissionControlId }) => void;
+	restart: (params: { missionControlId: MissionControlId }) => void;
 	stop: () => void;
 }
 
@@ -58,6 +59,12 @@ export const initWalletWorker = async (): Promise<WalletWorker> => {
 		start: ({ missionControlId }: { missionControlId: MissionControlId }) => {
 			worker.postMessage({
 				msg: 'startWalletTimer',
+				data: { missionControlId: missionControlId.toText() }
+			});
+		},
+		restart: ({ missionControlId }: { missionControlId: MissionControlId }) => {
+			worker.postMessage({
+				msg: 'restartWalletTimer',
 				data: { missionControlId: missionControlId.toText() }
 			});
 		},

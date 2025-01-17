@@ -526,6 +526,8 @@
 		"snapshot_restore_error": "恢复快照出现未知错误.",
 		"snapshot_delete_error": "删除快照出现未知错误.",
 		"snapshot_list_error": "列表快照出现未知错误.",
+		"wallet_error": "Error while loading your wallet.",
+		"wallet_uncertified_transactions_removed": "Several uncertified transactions were identified and subsequently removed from the displayed lists.",
 		"wallet_no_account": "签名方未提供账号.",
 		"wallet_load_balance": "账户余额不能被加载.",
 		"wallet_receive_error": "接受代币是出现异常错误.",

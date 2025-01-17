@@ -1,4 +1,9 @@
-import { onSyncExchange, onSyncWallet } from '$lib/services/wallet.loader.services';
+import {
+	onSyncExchange,
+	onSyncWallet,
+	onWalletCleanUp,
+	onWalletError
+} from '$lib/services/wallet.loader.services';
 import type { MissionControlId } from '$lib/types/mission-control';
 import type {
 	PostMessage,
@@ -32,6 +37,16 @@ export const initWalletWorker = async (): Promise<WalletWorker> => {
 		switch (msg) {
 			case 'syncWallet':
 				onSyncWallet(data.data as PostMessageDataResponseWallet);
+				return;
+			case 'syncWalletError':
+				onWalletError({
+					error: (data.data as PostMessageDataResponseError).error
+				});
+				return;
+			case 'syncWalletCleanUp':
+				onWalletCleanUp({
+					transactionIds: (data.data as PostMessageDataResponseWalletCleanUp).transactionIds
+				});
 				return;
 			case 'syncExchange':
 				onSyncExchange(data.data as PostMessageDataResponseExchange);

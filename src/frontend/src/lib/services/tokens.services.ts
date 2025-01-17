@@ -1,10 +1,13 @@
 import type { TransferArg, TransferArgs } from '$declarations/mission_control/mission_control.did';
 import { icpTransfer, icrcTransfer } from '$lib/api/mission-control.api';
 import { ICP_LEDGER_CANISTER_ID, IC_TRANSACTION_FEE_ICP } from '$lib/constants/constants';
+import { execute } from '$lib/services/progress.services';
 import { i18n } from '$lib/stores/i18n.store';
 import { toasts } from '$lib/stores/toasts.store';
 import type { OptionIdentity } from '$lib/types/itentity';
 import type { MissionControlId } from '$lib/types/mission-control';
+import { type SendTokensProgress, SendTokensProgressStep } from '$lib/types/progress-send-tokens';
+import type { Option } from '$lib/types/utils';
 import { nowInBigIntNanoSeconds } from '$lib/utils/date.utils';
 import { invalidIcpAddress } from '$lib/utils/icp-account.utils';
 import { invalidIcrcAddress } from '$lib/utils/icrc-account.utils';
@@ -12,20 +15,22 @@ import { waitAndRestartWallet } from '$lib/utils/wallet.utils';
 import { AccountIdentifier } from '@dfinity/ledger-icp';
 import { decodeIcrcAccount } from '@dfinity/ledger-icrc';
 import { Principal } from '@dfinity/principal';
-import { isNullish, toNullable, type TokenAmountV2 } from '@dfinity/utils';
+import { type TokenAmountV2, assertNonNullish, isNullish, toNullable } from '@dfinity/utils';
 import { get } from 'svelte/store';
 
 export const sendTokens = async ({
 	destination,
 	token,
 	identity,
-	missionControlId
+	missionControlId,
+	onProgress
 }: {
 	destination: string;
 	token: TokenAmountV2 | undefined;
 	identity: OptionIdentity;
-	missionControlId: MissionControlId;
-}): Promise<{ success: boolean }> => {
+	missionControlId: Option<MissionControlId>;
+	onProgress: (progress: SendTokensProgress | undefined) => void;
+}): Promise<{ success: 'ok' | 'error'; err?: unknown }> => {
 	const notIcp = invalidIcpAddress(destination);
 	const notIcrc = invalidIcrcAddress(destination);
 
@@ -35,7 +40,7 @@ export const sendTokens = async ({
 		toasts.error({
 			text: labels.errors.invalid_destination
 		});
-		return { success: false };
+		return { success: 'error' };
 	}
 
 	if (isNullish(token)) {
@@ -44,22 +49,28 @@ export const sendTokens = async ({
 		toasts.error({
 			text: labels.errors.empty_amount
 		});
-		return { success: false };
+		return { success: 'error' };
 	}
 
 	try {
-		const fn = !invalidIcpAddress(destination) ? sendIcp : sendIcrc;
+		assertNonNullish(missionControlId, get(i18n).errors.mission_control_not_loaded);
 
-		await fn({
-			destination,
-			token,
-			identity,
-			missionControlId
-		});
+		const send = async () => {
+			const fn = !invalidIcpAddress(destination) ? sendIcp : sendIcrc;
 
-		await waitAndRestartWallet();
+			await fn({
+				destination,
+				token,
+				identity,
+				missionControlId
+			});
+		};
+		await execute({ fn: send, onProgress, step: SendTokensProgressStep.Send });
 
-		return { success: true };
+		const reload = async () => {
+			await waitAndRestartWallet();
+		};
+		await execute({ fn: reload, onProgress, step: SendTokensProgressStep.Reload });
 	} catch (err: unknown) {
 		const labels = get(i18n);
 
@@ -68,8 +79,10 @@ export const sendTokens = async ({
 			detail: err
 		});
 
-		return { success: false };
+		return { success: 'error', err };
 	}
+
+	return { success: 'ok' };
 };
 
 export const sendIcrc = async ({

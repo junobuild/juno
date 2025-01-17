@@ -98,7 +98,7 @@
 {/if}
 
 {#if modal?.type === 'send_tokens'}
-	<SendTokensModal on:junoClose={close} />
+	<SendTokensModal onclose={close} />
 {/if}
 
 {#if modal?.type === 'edit_orbiter_config' && nonNullish(modal.detail)}

@@ -289,6 +289,7 @@
 		"wallet_id": "Wallet ID",
 		"sending": "Sending",
 		"sending_in_progress": "Sending...",
+		"preparing_send": "Preparing send...",
 		"review_and_confirm": "Review the details below and confirm to proceed with your transaction.",
 		"icp_on_its_way": "Your ICP is on its way!",
 		"or_connect_wallet": "Or connect wallet",

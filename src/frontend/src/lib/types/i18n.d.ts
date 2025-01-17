@@ -297,6 +297,7 @@ interface I18nWallet {
 	wallet_id: string;
 	sending: string;
 	sending_in_progress: string;
+	preparing_send: string;
 	review_and_confirm: string;
 	icp_on_its_way: string;
 	or_connect_wallet: string;

@@ -6,9 +6,6 @@
 	import Value from '$lib/components/ui/Value.svelte';
 	import WalletSendFrom from '$lib/components/wallet/WalletSendFrom.svelte';
 	import { IC_TRANSACTION_FEE_ICP } from '$lib/constants/constants';
-	import { sendTokens } from '$lib/services/tokens.services';
-	import { authStore } from '$lib/stores/auth.store';
-	import { wizardBusy } from '$lib/stores/busy.store';
 	import { i18n } from '$lib/stores/i18n.store';
 	import type { MissionControlId } from '$lib/types/mission-control';
 	import { formatICP } from '$lib/utils/icp.utils';
@@ -19,7 +16,14 @@
 		balance: bigint | undefined;
 		destination?: string;
 		amount: string | undefined;
-		onnext: (steps: 'form' | 'in_progress' | 'ready' | 'error') => void;
+		onback: () => void;
+		onsubmit: ({
+			$event,
+			token
+		}: {
+			$event: SubmitEvent;
+			token: TokenAmountV2 | undefined;
+		}) => Promise<void>;
 	}
 
 	let {
@@ -27,32 +31,14 @@
 		balance,
 		destination = $bindable(''),
 		amount = $bindable(),
-		onnext
+		onback,
+		onsubmit
 	}: Props = $props();
 
 	let token: TokenAmountV2 | undefined = $derived(amountToICPToken(amount));
 
 	const onSubmit = async ($event: SubmitEvent) => {
-		$event.preventDefault();
-
-		wizardBusy.start();
-
-		onnext('in_progress');
-
-		try {
-			await sendTokens({
-				missionControlId,
-				identity: $authStore.identity,
-				destination,
-				token
-			});
-
-			onnext('ready');
-		} catch (err: unknown) {
-			onnext('error');
-		}
-
-		wizardBusy.stop();
+		await onsubmit({ $event, token });
 	};
 </script>
 
@@ -100,7 +86,7 @@
 	</div>
 
 	<div class="toolbar">
-		<button type="button" onclick={() => onnext('form')}>{$i18n.core.back}</button>
+		<button type="button" onclick={onback}>{$i18n.core.back}</button>
 		<button type="submit">{$i18n.core.confirm}</button>
 	</div>
 </form>

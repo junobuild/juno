@@ -14,14 +14,11 @@ import type {
 	PostMessageDataResponseWalletCleanUp,
 	PostMessageRequest
 } from '$lib/types/post-message';
-import type { CertifiedData } from '$lib/types/store';
 import { mapIcpTransaction } from '$lib/utils/icp-transactions.utils';
 import { loadIdentity } from '$lib/utils/worker.utils';
+import { type IndexedTransactions, WalletStore } from '$lib/workers/_stores/wallet-worker.store';
 import type { Identity } from '@dfinity/agent';
-import type {
-	GetAccountIdentifierTransactionsResponse,
-	TransactionWithId
-} from '@dfinity/ledger-icp';
+import type { GetAccountIdentifierTransactionsResponse } from '@dfinity/ledger-icp';
 import { Principal } from '@dfinity/principal';
 import { isNullish, jsonReplacer } from '@dfinity/utils';
 
@@ -62,7 +59,11 @@ const startTimer = async ({ data: { missionControlId } }: { data: PostMessageDat
 		return;
 	}
 
-	const sync = async () => await syncWallet({ missionControlId, identity });
+	const store = await WalletStore.init();
+
+	emitSavedWallet({ store, identity });
+
+	const sync = async () => await syncWallet({ missionControlId, identity, store });
 
 	// We sync the cycles now but also schedule the update afterwards
 	await sync();
@@ -74,25 +75,14 @@ let syncing = false;
 
 let initialized = false;
 
-// Not reactive, only used to hold values imperatively.
-interface IcWalletStore {
-	balance: CertifiedData<bigint> | undefined;
-	transactions: IndexedTransactions;
-}
-
-type IndexedTransactions = Record<string, CertifiedData<TransactionWithId>>;
-
-let store: IcWalletStore = {
-	balance: undefined,
-	transactions: {}
-};
-
 const syncWallet = async ({
 	missionControlId,
-	identity
+	identity,
+	store
 }: {
 	missionControlId: string;
 	identity: Identity;
+	store: WalletStore;
 }) => {
 	// We avoid to relaunch a sync while previous sync is not finished
 	if (syncing) {
@@ -118,14 +108,15 @@ const syncWallet = async ({
 		certified,
 		...rest
 	}) => {
-		syncTransactions({ certified, identity, ...rest });
-		cleanTransactions({ certified });
+		syncTransactions({ certified, identity, store, ...rest });
+		cleanTransactions({ certified, store });
 	};
 
 	const onCertifiedError: QueryAndUpdateOnCertifiedError = ({ error }) => {
+		store.reset();
+
 		postMessageWalletError(error);
 
-		console.error(error);
 		stopTimer();
 	};
 
@@ -137,15 +128,16 @@ const syncWallet = async ({
 		resolution: 'all_settled'
 	});
 
+	await store.save();
+
 	syncing = false;
 };
 
 const postMessageWallet = ({
 	certified,
 	balance,
-	transactions: newTransactions,
-	...rest
-}: Omit<GetAccountIdentifierTransactionsResponse, 'transactions'> & {
+	transactions: newTransactions
+}: Pick<GetAccountIdentifierTransactionsResponse, 'balance'> & {
 	transactions: IcTransactionUi[];
 } & {
 	certified: boolean;
@@ -158,11 +150,7 @@ const postMessageWallet = ({
 				data: balance,
 				certified
 			},
-			...rest,
-			newTransactions: JSON.stringify(
-				Object.entries(certifiedTransactions).map(([_id, transaction]) => transaction),
-				jsonReplacer
-			)
+			newTransactions: JSON.stringify(certifiedTransactions, jsonReplacer)
 		}
 	};
 
@@ -175,11 +163,13 @@ const postMessageWallet = ({
 const syncTransactions = ({
 	response: { transactions: fetchedTransactions, balance, ...rest },
 	certified,
-	identity
+	identity,
+	store
 }: {
 	response: GetAccountIdentifierTransactionsResponse;
 	certified: boolean;
 	identity: Identity;
+	store: WalletStore;
 }) => {
 	// Is there any new transactions unknown so far or which has become certified
 	const newTransactions = fetchedTransactions.filter(
@@ -208,25 +198,7 @@ const syncTransactions = ({
 		return;
 	}
 
-	store = {
-		balance: { data: balance, certified },
-		transactions: {
-			...store.transactions,
-			...newTransactions.reduce(
-				(acc: Record<string, CertifiedData<TransactionWithId>>, { id, transaction }) => ({
-					...acc,
-					[`${id}`]: {
-						data: {
-							id,
-							transaction
-						},
-						certified
-					}
-				}),
-				{}
-			)
-		}
-	};
+	store.update({ balance, newTransactions, certified });
 
 	const newUiTransactions = newTransactions.map((transaction) =>
 		mapIcpTransaction({ transaction, identity })
@@ -247,7 +219,7 @@ const syncTransactions = ({
  * For security reason, everytime we get an update results we check if there are remaining transactions not certified in memory.
  * If we find some, we prune those. Given that we are fetching transactions every X seconds, there should not be any query in memory when update calls have been resolved.
  */
-const cleanTransactions = ({ certified }: { certified: boolean }) => {
+const cleanTransactions = ({ certified, store }: { certified: boolean; store: WalletStore }) => {
 	if (!certified) {
 		return;
 	}
@@ -275,12 +247,7 @@ const cleanTransactions = ({ certified }: { certified: boolean }) => {
 
 	postMessageWalletCleanUp(notCertifiedTransactions);
 
-	store = {
-		...store,
-		transactions: {
-			...certifiedTransactions
-		}
-	};
+	store.clean(certifiedTransactions);
 };
 
 const postMessageWalletCleanUp = (transactions: IndexedTransactions) => {
@@ -301,6 +268,33 @@ const postMessageWalletError = (error: unknown) => {
 
 	postMessage({
 		msg: 'syncWalletError',
+		data
+	});
+};
+
+const emitSavedWallet = ({ store, identity }: { store: WalletStore; identity: Identity }) => {
+	if (isNullish(store.balance)) {
+		return;
+	}
+
+	const uiTransactions = Object.values(store.transactions)
+		.sort(({ data: { id: idA } }, { data: { id: idB } }) => Number(idB) - Number(idA))
+		.map(({ certified, data: transaction }) => ({
+			certified,
+			data: mapIcpTransaction({ transaction, identity })
+		}));
+
+	const data: PostMessageDataResponseWallet = {
+		wallet: {
+			balance: store.balance,
+			newTransactions: JSON.stringify(uiTransactions, jsonReplacer)
+		}
+	};
+
+	console.log('init', uiTransactions);
+
+	postMessage({
+		msg: 'syncWallet',
 		data
 	});
 };

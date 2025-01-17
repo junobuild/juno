@@ -7,7 +7,8 @@ import {
 	cyclesIdbStore,
 	exchangeIdbStore,
 	monitoringIdbStore,
-	statusesIdbStore
+	statusesIdbStore,
+	walletIdbStore
 } from '$lib/stores/idb.store';
 import { toasts } from '$lib/stores/toasts.store';
 import type { ToastLevel, ToastMsg } from '$lib/types/toast';
@@ -77,6 +78,7 @@ const logout = async ({
 			clear(statusesIdbStore),
 			clear(monitoringIdbStore),
 			clear(exchangeIdbStore),
+			clear(walletIdbStore),
 			resetSnapshots(),
 			resetSubnets()
 		]);

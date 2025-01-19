@@ -109,9 +109,9 @@
 				{formatBytes(Number(memorySize))} <small>{$i18n.canisters.in_total}</small>
 			</p>
 		{:else if sync === 'loading'}
-			<p><SkeletonText /></p>
-			<p><SkeletonText /></p>
-			<p><SkeletonText /></p>
+			<p class="skeleton"><SkeletonText /></p>
+			<p class="skeleton"><SkeletonText /></p>
+			<p class="skeleton"><SkeletonText /></p>
 		{/if}
 	</div>
 {/if}
@@ -167,6 +167,16 @@
 				right: 0;
 				transform: translate(var(--padding), 20%) rotate(15deg);
 			}
+		}
+	}
+
+	.skeleton {
+		:global(.skeleton-text) {
+			margin: 0;
+		}
+
+		:global(span) {
+			line-height: var(--line-height-standard);
 		}
 	}
 </style>

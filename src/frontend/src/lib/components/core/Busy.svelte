@@ -56,7 +56,7 @@
 		position: fixed;
 		@include display.inset;
 
-		@include overlay.backdrop(dark);
+		@include overlay.backdrop(dark, $blur: false);
 
 		&.close {
 			@include interaction.tappable;

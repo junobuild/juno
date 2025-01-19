@@ -40,7 +40,7 @@
 {#if visible}
 	<div
 		class="modal"
-		transition:fade
+		out:fade
 		role="dialog"
 		aria-labelledby="modalTitle"
 		aria-describedby="modalContent"

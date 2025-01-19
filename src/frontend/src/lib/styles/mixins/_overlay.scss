@@ -2,11 +2,15 @@
 @use './shadow';
 @use './display';
 
-@mixin backdrop($color) {
+@mixin backdrop($color, $blur: true) {
 	@if $color == 'dark' {
-		background: rgba(0, 0, 0, 0.85);
+		background: rgba(0, 0, 0, 0.75);
 	} @else {
 		background: rgba(0, 0, 0, 0.15);
+	}
+
+	@if $blur {
+		backdrop-filter: blur(3px);
 	}
 }
 

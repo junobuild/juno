@@ -43,7 +43,7 @@
 	</Value>
 </div>
 
-{#if notEmptyString(subnet?.type)}
+{#if notEmptyString(subnet?.specialization)}
 	<div in:fade>
 		<Value>
 			{#snippet label()}

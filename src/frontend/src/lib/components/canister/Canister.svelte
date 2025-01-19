@@ -101,7 +101,7 @@
 {#if display}
 	<div class:row>
 		{#if ['synced', 'syncing'].includes(sync ?? '')}
-			<p class="status"><CanisterIndicator {data} {sync} /><span>{status ?? '???'}</span></p>
+			<p class="status"><CanisterIndicator {data} /><span>{status ?? '???'}</span></p>
 			<p class="cycles">
 				<CanisterTCycles {data} />
 			</p>

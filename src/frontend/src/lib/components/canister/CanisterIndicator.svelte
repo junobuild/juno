@@ -1,16 +1,14 @@
 <script lang="ts">
 	import { isNullish } from '@dfinity/utils';
-	import { fade, blur } from 'svelte/transition';
-	import IconSync from '$lib/components/icons/IconSync.svelte';
+	import { fade } from 'svelte/transition';
 	import { i18n } from '$lib/stores/i18n.store';
-	import type { CanisterData, CanisterStatus, CanisterSyncStatus } from '$lib/types/canister';
+	import type { CanisterData, CanisterStatus } from '$lib/types/canister';
 
 	interface Props {
 		data?: CanisterData | undefined;
-		sync?: CanisterSyncStatus | undefined;
 	}
 
-	let { data = undefined, sync }: Props = $props();
+	let { data = undefined }: Props = $props();
 
 	let warning: boolean = $derived(data?.warning?.cycles === true);
 

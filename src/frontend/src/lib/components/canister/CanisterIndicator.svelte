@@ -19,8 +19,6 @@
 
 {#if isNullish(status)}
 	<div in:fade></div>
-{:else if sync === 'syncing'}
-	<span class="spinner" in:blur><IconSync size="16px" /> </span>
 {:else if warning || status === 'stopping'}
 	<div class="warning" in:fade aria-label={$i18n.canisters.warning_indicator}></div>
 {:else if status === 'stopped'}
@@ -52,9 +50,5 @@
 
 	.stopped {
 		background: var(--color-error);
-	}
-
-	.spinner {
-		height: 16px;
 	}
 </style>

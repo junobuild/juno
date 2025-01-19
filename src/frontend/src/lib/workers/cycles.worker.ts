@@ -7,7 +7,7 @@ import {
 	CYCLES_WARNING,
 	MEMORY_HEAP_WARNING,
 	SYNC_CYCLES_TIMER_INTERVAL
-} from '$lib/constants/constants';
+} from '$lib/constants/app.constants';
 import { cyclesIdbStore } from '$lib/stores/idb.store';
 import type { CanisterInfo, CanisterSegment, CanisterSyncData } from '$lib/types/canister';
 import type { PostMessageDataRequest, PostMessageRequest } from '$lib/types/post-message';

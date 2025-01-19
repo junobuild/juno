@@ -8,7 +8,7 @@
 	import GridArrow from '$lib/components/ui/GridArrow.svelte';
 	import Html from '$lib/components/ui/Html.svelte';
 	import Value from '$lib/components/ui/Value.svelte';
-	import { TOP_UP_NETWORK_FEES } from '$lib/constants/constants';
+	import { TOP_UP_NETWORK_FEES } from '$lib/constants/app.constants';
 	import { icpToUsd } from '$lib/derived/exchange.derived';
 	import { missionControlIdDerived } from '$lib/derived/mission-control.derived';
 	import { i18n } from '$lib/stores/i18n.store';

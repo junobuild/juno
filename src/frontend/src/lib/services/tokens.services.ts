@@ -1,6 +1,6 @@
 import type { TransferArg, TransferArgs } from '$declarations/mission_control/mission_control.did';
 import { icpTransfer, icrcTransfer } from '$lib/api/mission-control.api';
-import { ICP_LEDGER_CANISTER_ID, IC_TRANSACTION_FEE_ICP } from '$lib/constants/constants';
+import { ICP_LEDGER_CANISTER_ID, IC_TRANSACTION_FEE_ICP } from '$lib/constants/app.constants';
 import { execute } from '$lib/services/progress.services';
 import { i18n } from '$lib/stores/i18n.store';
 import { toasts } from '$lib/stores/toasts.store';

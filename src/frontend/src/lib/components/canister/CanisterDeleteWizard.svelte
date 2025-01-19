@@ -8,7 +8,10 @@
 	import Input from '$lib/components/ui/Input.svelte';
 	import SpinnerModal from '$lib/components/ui/SpinnerModal.svelte';
 	import Value from '$lib/components/ui/Value.svelte';
-	import { ONE_TRILLION, DEFAULT_TCYCLES_TO_RETAIN_ON_DELETION } from '$lib/constants/constants';
+	import {
+		ONE_TRILLION,
+		DEFAULT_TCYCLES_TO_RETAIN_ON_DELETION
+	} from '$lib/constants/app.constants';
 	import { authSignedOut } from '$lib/derived/auth.derived';
 	import { missionControlIdDerived } from '$lib/derived/mission-control.derived';
 	import { loadSatellites } from '$lib/services/satellites.services';

@@ -1,4 +1,4 @@
-import { DEV } from '$lib/constants/constants';
+import { DEV } from '$lib/constants/app.constants';
 import type { RelyingPartyOptions } from '@dfinity/oisy-wallet-signer';
 
 export const MEMO_CANISTER_CREATE = BigInt(0x41455243); // == 'CREA'

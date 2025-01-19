@@ -5,7 +5,7 @@
 	import Identifier from '$lib/components/ui/Identifier.svelte';
 	import Value from '$lib/components/ui/Value.svelte';
 	import WalletSendFrom from '$lib/components/wallet/WalletSendFrom.svelte';
-	import { IC_TRANSACTION_FEE_ICP } from '$lib/constants/constants';
+	import { IC_TRANSACTION_FEE_ICP } from '$lib/constants/app.constants';
 	import { i18n } from '$lib/stores/i18n.store';
 	import type { MissionControlId } from '$lib/types/mission-control';
 	import { formatICP } from '$lib/utils/icp.utils';

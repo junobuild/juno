@@ -3,7 +3,7 @@
 	import type { Snippet } from 'svelte';
 	import MissionControlICPInfo from '$lib/components/mission-control/MissionControlICPInfo.svelte';
 	import Html from '$lib/components/ui/Html.svelte';
-	import { E8S_PER_ICP } from '$lib/constants/constants';
+	import { E8S_PER_ICP } from '$lib/constants/app.constants';
 	import { balanceOrZero } from '$lib/derived/balance.derived';
 	import { creditsOrZero } from '$lib/derived/credits.derived';
 	import { icpToUsd } from '$lib/derived/exchange.derived';

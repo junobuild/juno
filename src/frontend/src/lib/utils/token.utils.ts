@@ -1,4 +1,4 @@
-import { IC_TRANSACTION_FEE_ICP } from '$lib/constants/constants';
+import { IC_TRANSACTION_FEE_ICP } from '$lib/constants/app.constants';
 import { i18n } from '$lib/stores/i18n.store';
 import { toasts } from '$lib/stores/toasts.store';
 import { FromStringToTokenError, ICPToken, isNullish, TokenAmountV2 } from '@dfinity/utils';

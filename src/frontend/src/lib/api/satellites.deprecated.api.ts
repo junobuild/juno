@@ -8,7 +8,7 @@ import type {
 	RulesType
 } from '$declarations/satellite/satellite.did';
 import { getSatelliteActor008, getSatelliteActor009 } from '$lib/api/actors/actor.deprecated.api';
-import { PAGINATION } from '$lib/constants/constants';
+import { PAGINATION } from '$lib/constants/app.constants';
 import type { OptionIdentity } from '$lib/types/itentity';
 import type { ListParams } from '$lib/types/list';
 import { toListParams } from '$lib/utils/satellite.utils';

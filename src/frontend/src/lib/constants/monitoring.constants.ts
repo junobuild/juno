@@ -1,5 +1,5 @@
 import type { CyclesMonitoringStrategy } from '$declarations/mission_control/mission_control.did';
-import { CYCLES_WARNING } from '$lib/constants/constants';
+import { CYCLES_WARNING } from '$lib/constants/app.constants';
 
 export const EMAIL_PLACEHOLDER = 'name@example.com';
 

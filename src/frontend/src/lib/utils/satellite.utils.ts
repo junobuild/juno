@@ -1,6 +1,6 @@
 import type { Satellite } from '$declarations/mission_control/mission_control.did';
 import type { ListParams as ListParamsApi } from '$declarations/satellite/satellite.did';
-import { DEV, PAGINATION } from '$lib/constants/constants';
+import { DEV, PAGINATION } from '$lib/constants/app.constants';
 import type { ListParams } from '$lib/types/list';
 import { metadataName } from '$lib/utils/metadata.utils';
 import { Principal } from '@dfinity/principal';

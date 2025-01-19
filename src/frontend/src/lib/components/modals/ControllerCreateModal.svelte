@@ -8,7 +8,7 @@
 	import Modal from '$lib/components/ui/Modal.svelte';
 	import SpinnerModal from '$lib/components/ui/SpinnerModal.svelte';
 	import Value from '$lib/components/ui/Value.svelte';
-	import { REVOKED_CONTROLLERS } from '$lib/constants/constants';
+	import { REVOKED_CONTROLLERS } from '$lib/constants/app.constants';
 	import { missionControlIdDerived } from '$lib/derived/mission-control.derived';
 	import { wizardBusy } from '$lib/stores/busy.store';
 	import { i18n } from '$lib/stores/i18n.store';

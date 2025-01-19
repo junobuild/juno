@@ -1,4 +1,4 @@
-import { DEV } from '$lib/constants/constants';
+import { DEV } from '$lib/constants/app.constants';
 import type { Option } from '$lib/types/utils';
 import { HttpAgent, type Identity } from '@dfinity/agent';
 import { isNullish } from '@dfinity/utils';

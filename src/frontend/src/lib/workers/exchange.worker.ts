@@ -1,4 +1,4 @@
-import { ICP_LEDGER_CANISTER_ID, SYNC_TOKENS_TIMER_INTERVAL } from '$lib/constants/constants';
+import { ICP_LEDGER_CANISTER_ID, SYNC_TOKENS_TIMER_INTERVAL } from '$lib/constants/app.constants';
 import { PRICE_VALIDITY_TIMEFRAME } from '$lib/constants/exchange.constants';
 import { fetchKongSwapTokens } from '$lib/rest/kongswap.rest';
 import { exchangeIdbStore } from '$lib/stores/idb.store';

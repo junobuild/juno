@@ -1,5 +1,5 @@
 import type { CustomDomain } from '$declarations/satellite/satellite.did';
-import { SYNC_CUSTOM_DOMAIN_TIMER_INTERVAL } from '$lib/constants/constants';
+import { SYNC_CUSTOM_DOMAIN_TIMER_INTERVAL } from '$lib/constants/app.constants';
 import { getCustomDomainRegistration } from '$lib/rest/bn.rest';
 import type { CustomDomainRegistrationState } from '$lib/types/custom-domain';
 import type { PostMessageDataRequest, PostMessageRequest } from '$lib/types/post-message';

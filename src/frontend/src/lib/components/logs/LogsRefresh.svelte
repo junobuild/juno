@@ -6,7 +6,7 @@
 	import IconTimer from '$lib/components/icons/IconTimer.svelte';
 	import IconTimerOff from '$lib/components/icons/IconTimerOff.svelte';
 	import Popover from '$lib/components/ui/Popover.svelte';
-	import { SYNC_LOGS_TIMER_INTERVAL } from '$lib/constants/constants';
+	import { SYNC_LOGS_TIMER_INTERVAL } from '$lib/constants/app.constants';
 	import { i18n } from '$lib/stores/i18n.store';
 	import type { Log as LogType } from '$lib/types/log';
 	import { PAGINATION_CONTEXT_KEY, type PaginationContext } from '$lib/types/pagination.context';

@@ -1,4 +1,4 @@
-import { E8S_PER_ICP } from '$lib/constants/constants';
+import { E8S_PER_ICP } from '$lib/constants/app.constants';
 import { nonNullish } from '@dfinity/utils';
 import { formatNumber, formatUsd } from './number.utils';
 

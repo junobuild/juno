@@ -4,7 +4,7 @@ import {
 	AUTH_POPUP_WIDTH,
 	DEV,
 	INTERNET_IDENTITY_CANISTER_ID
-} from '$lib/constants/constants';
+} from '$lib/constants/app.constants';
 import type { OptionIdentity } from '$lib/types/itentity';
 import type { Option } from '$lib/types/utils';
 import { createAuthClient } from '$lib/utils/auth.utils';

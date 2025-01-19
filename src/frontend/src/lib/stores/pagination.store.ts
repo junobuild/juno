@@ -1,4 +1,4 @@
-import { PAGINATION } from '$lib/constants/constants';
+import { PAGINATION } from '$lib/constants/app.constants';
 import type { PaginationContext, PaginationStore } from '$lib/types/pagination.context';
 import { last } from '$lib/utils/utils';
 import { nonNullish } from '@dfinity/utils';

@@ -7,7 +7,7 @@
 	import Modal from '$lib/components/ui/Modal.svelte';
 	import SpinnerModal from '$lib/components/ui/SpinnerModal.svelte';
 	import Value from '$lib/components/ui/Value.svelte';
-	import { ONE_TRILLION } from '$lib/constants/constants';
+	import { ONE_TRILLION } from '$lib/constants/app.constants';
 	import { updateSettings as updateSettingsServices } from '$lib/services/settings.services';
 	import { authStore } from '$lib/stores/auth.store';
 	import { isBusy, wizardBusy } from '$lib/stores/busy.store';

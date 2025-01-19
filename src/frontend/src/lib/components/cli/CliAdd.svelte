@@ -7,7 +7,7 @@
 	import Collapsible from '$lib/components/ui/Collapsible.svelte';
 	import Html from '$lib/components/ui/Html.svelte';
 	import Warning from '$lib/components/ui/Warning.svelte';
-	import { REVOKED_CONTROLLERS } from '$lib/constants/constants';
+	import { REVOKED_CONTROLLERS } from '$lib/constants/app.constants';
 	import { missionControlIdDerived } from '$lib/derived/mission-control.derived';
 	import {
 		setMissionControlControllerForVersion,

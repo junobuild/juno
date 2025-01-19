@@ -8,7 +8,7 @@
 	import Identifier from '$lib/components/ui/Identifier.svelte';
 	import Value from '$lib/components/ui/Value.svelte';
 	import WalletBalance from '$lib/components/wallet/WalletBalance.svelte';
-	import { PAGINATION } from '$lib/constants/constants';
+	import { PAGINATION } from '$lib/constants/app.constants';
 	import { MISSION_CONTROL_v0_0_12 } from '$lib/constants/version.constants';
 	import { authSignedIn, authSignedOut } from '$lib/derived/auth.derived';
 	import { balance, balanceNotLoaded } from '$lib/derived/balance.derived';

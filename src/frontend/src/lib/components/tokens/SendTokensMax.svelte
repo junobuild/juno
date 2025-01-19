@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { isNullish, nonNullish } from '@dfinity/utils';
 	import { fade } from 'svelte/transition';
-	import { IC_TRANSACTION_FEE_ICP } from '$lib/constants/constants';
+	import { IC_TRANSACTION_FEE_ICP } from '$lib/constants/app.constants';
 	import { i18n } from '$lib/stores/i18n.store';
 	import { formatICP } from '$lib/utils/icp.utils';
 

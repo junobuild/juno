@@ -9,7 +9,7 @@ import {
 	ICP_LEDGER_CANISTER_ID,
 	PAGINATION,
 	SYNC_WALLET_TIMER_INTERVAL
-} from '$lib/constants/constants';
+} from '$lib/constants/app.constants';
 import type { IcTransactionUi } from '$lib/types/ic-transaction';
 import type {
 	PostMessageDataRequest,

@@ -7,7 +7,7 @@
 	import GridArrow from '$lib/components/ui/GridArrow.svelte';
 	import Value from '$lib/components/ui/Value.svelte';
 	import WalletSendFrom from '$lib/components/wallet/WalletSendFrom.svelte';
-	import { TOP_UP_NETWORK_FEES } from '$lib/constants/constants';
+	import { TOP_UP_NETWORK_FEES } from '$lib/constants/app.constants';
 	import { missionControlIdDerived } from '$lib/derived/mission-control.derived';
 	import { i18n } from '$lib/stores/i18n.store';
 	import type { CanisterSegmentWithLabel } from '$lib/types/canister';

@@ -1,4 +1,4 @@
-import { AUTH_TIMER_INTERVAL } from '$lib/constants/constants';
+import { AUTH_TIMER_INTERVAL } from '$lib/constants/app.constants';
 import type { PostMessageRequest } from '$lib/types/post-message';
 import { createAuthClient } from '$lib/utils/auth.utils';
 import { IdbStorage, KEY_STORAGE_DELEGATION, type AuthClient } from '@dfinity/auth-client';

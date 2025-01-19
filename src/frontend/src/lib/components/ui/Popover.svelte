@@ -60,7 +60,7 @@
 	<div
 		role="menu"
 		aria-orientation="vertical"
-		transition:fade
+		out:fade
 		class={`popover ${backdrop}`}
 		class:center
 		tabindex="-1"

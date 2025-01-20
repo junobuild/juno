@@ -58,7 +58,6 @@ const config: UserConfig = {
 			define: {
 				global: 'globalThis'
 			},
-			target: 'es2020',
 			// Enable esbuild polyfill plugins
 			plugins: [
 				NodeModulesPolyfillPlugin(),

@@ -6,8 +6,8 @@ import type {
 	OrbiterSatelliteConfig as SatelliteConfig
 } from '$declarations/orbiter/orbiter.did';
 import type { OptionIdentity } from '$lib/types/itentity';
-import type { PrincipalText } from '$lib/types/principal';
 import { Principal } from '@dfinity/principal';
+import type { PrincipalText } from '@dfinity/zod-schemas';
 
 export interface PageViewsPeriod {
 	from?: Date;

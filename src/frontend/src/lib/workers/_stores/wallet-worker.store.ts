@@ -1,8 +1,8 @@
 import { walletIdbStore } from '$lib/stores/idb.store';
-import type { PrincipalText } from '$lib/types/principal';
 import type { CertifiedData } from '$lib/types/store';
 import type { TransactionWithId } from '@dfinity/ledger-icp';
 import { encodeIcrcAccount, type IcrcAccount } from '@dfinity/ledger-icrc';
+import type { PrincipalText } from '@dfinity/zod-schemas';
 import { get, set } from 'idb-keyval';
 
 export type IndexedTransactions = Record<string, CertifiedData<TransactionWithId>>;

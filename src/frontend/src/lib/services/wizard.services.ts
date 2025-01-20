@@ -27,7 +27,6 @@ import { i18n } from '$lib/stores/i18n.store';
 import { toasts } from '$lib/stores/toasts.store';
 import type { OptionIdentity } from '$lib/types/itentity';
 import type { JunoModal, JunoModalCreateSegmentDetail } from '$lib/types/modal';
-import type { PrincipalText } from '$lib/types/principal';
 import { type WizardCreateProgress, WizardCreateProgressStep } from '$lib/types/progress-wizard';
 import type { Option } from '$lib/types/utils';
 import { emit } from '$lib/utils/events.utils';
@@ -35,6 +34,7 @@ import { waitAndRestartWallet } from '$lib/utils/wallet.utils';
 import type { Identity } from '@dfinity/agent';
 import { Principal } from '@dfinity/principal';
 import { assertNonNullish, isNullish, nonNullish, toNullable } from '@dfinity/utils';
+import type { PrincipalText } from '@dfinity/zod-schemas';
 import { get } from 'svelte/store';
 
 type GetFeeBalance =

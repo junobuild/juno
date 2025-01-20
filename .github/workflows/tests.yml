@@ -90,6 +90,9 @@ jobs:
       - name: Prepare
         uses: ./.github/actions/prepare
 
+      - name: Build to generate .svelte-kit/tsconfig.json
+        uses: npm run build:frontend
+
       - name: Download satellite.wasm.gz
         uses: actions/download-artifact@v4
         with:

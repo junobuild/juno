@@ -7,7 +7,6 @@ export default defineConfig({
 		globals: true,
 		watch: false,
 		silent: false,
-		reporters: ['basic'],
 		environment: 'node',
 		poolOptions: {
 			threads: {

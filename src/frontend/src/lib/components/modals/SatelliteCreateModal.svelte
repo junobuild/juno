@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { isNullish, nonNullish } from '@dfinity/utils';
+	import type { PrincipalText } from '@dfinity/zod-schemas';
 	import type {
 		CyclesMonitoringStrategy,
 		Satellite
@@ -17,7 +18,6 @@
 	import { wizardBusy } from '$lib/stores/busy.store';
 	import { i18n } from '$lib/stores/i18n.store';
 	import type { JunoModalDetail } from '$lib/types/modal';
-	import type { PrincipalText } from '$lib/types/principal';
 	import type { WizardCreateProgress } from '$lib/types/progress-wizard';
 	import { navigateToSatellite } from '$lib/utils/nav.utils';
 

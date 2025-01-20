@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { isEmptyString, isNullish, nonNullish , fromNullishNullable } from '@dfinity/utils';
+	import { isEmptyString, isNullish, nonNullish, fromNullishNullable } from '@dfinity/utils';
 	import { createEventDispatcher, onMount } from 'svelte';
 	import type { AuthenticationConfig } from '$declarations/satellite/satellite.did';
 	import { setAuthConfig } from '$lib/api/satellites.api';
@@ -17,7 +17,7 @@
 	import type { CustomDomainDns } from '$lib/types/custom-domain';
 	import type { JunoModalCustomDomainDetail, JunoModalDetail } from '$lib/types/modal';
 	import { toCustomDomainDns } from '$lib/utils/custom-domain.utils';
-		import { emit } from '$lib/utils/events.utils';
+	import { emit } from '$lib/utils/events.utils';
 
 	interface Props {
 		detail: JunoModalDetail;

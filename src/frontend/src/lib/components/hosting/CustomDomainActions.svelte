@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { isNullish, nonNullish , fromNullishNullable } from '@dfinity/utils';
+	import { isNullish, nonNullish, fromNullishNullable } from '@dfinity/utils';
 	import { run, stopPropagation } from 'svelte/legacy';
 	import type { Satellite } from '$declarations/mission_control/mission_control.did';
 	import type {
@@ -20,7 +20,7 @@
 	import type { JunoModalCustomDomainDetail } from '$lib/types/modal';
 	import type { Option } from '$lib/types/utils';
 	import { buildDeleteAuthenticationConfig } from '$lib/utils/auth.config.utils';
-		import { emit } from '$lib/utils/events.utils';
+	import { emit } from '$lib/utils/events.utils';
 	import { i18nFormat } from '$lib/utils/i18n.utils';
 
 	interface Props {

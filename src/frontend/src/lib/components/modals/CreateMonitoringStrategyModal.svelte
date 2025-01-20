@@ -1,6 +1,6 @@
 <script lang="ts">
 	import type { Principal } from '@dfinity/principal';
-	import { nonNullish, notEmptyString , fromNullishNullable } from '@dfinity/utils';
+	import { nonNullish, notEmptyString, fromNullishNullable } from '@dfinity/utils';
 	import type {
 		CyclesMonitoringStrategy,
 		Orbiter,
@@ -25,7 +25,7 @@
 	import type { JunoModalDetail, JunoModalCreateMonitoringStrategyDetail } from '$lib/types/modal';
 	import type { MonitoringStrategyProgress } from '$lib/types/progress-strategy';
 	import type { Option } from '$lib/types/utils';
-		import { metadataEmail } from '$lib/utils/metadata.utils';
+	import { metadataEmail } from '$lib/utils/metadata.utils';
 
 	interface Props {
 		detail: JunoModalDetail;

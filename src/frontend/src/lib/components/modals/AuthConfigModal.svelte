@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { fromNullable, nonNullish, isNullish } from '@dfinity/utils';
+	import { fromNullable, nonNullish, isNullish , fromNullishNullable } from '@dfinity/utils';
 	import { fade } from 'svelte/transition';
 	import type { Satellite } from '$declarations/mission_control/mission_control.did';
 	import type { AuthenticationConfig, Rule } from '$declarations/satellite/satellite.did';
@@ -14,8 +14,7 @@
 	import { isBusy, wizardBusy } from '$lib/stores/busy.store';
 	import { i18n } from '$lib/stores/i18n.store';
 	import type { JunoModalDetail, JunoModalEditAuthConfigDetail } from '$lib/types/modal';
-	import { fromNullishNullable } from '$lib/utils/did.utils';
-	import { emit } from '$lib/utils/events.utils';
+		import { emit } from '$lib/utils/events.utils';
 	import { satelliteUrl as satelliteUrlUtils } from '$lib/utils/satellite.utils';
 
 	interface Props {

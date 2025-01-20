@@ -1,6 +1,6 @@
 <script lang="ts">
 	import type { Principal } from '@dfinity/principal';
-	import { nonNullish } from '@dfinity/utils';
+	import { nonNullish , fromNullishNullable } from '@dfinity/utils';
 	import type { Snippet } from 'svelte';
 	import { fade } from 'svelte/transition';
 	import type { Monitoring } from '$declarations/mission_control/mission_control.did';
@@ -13,8 +13,7 @@
 	import type { CanisterData, CanisterMonitoringData, Segment } from '$lib/types/canister';
 	import { formatTCycles } from '$lib/utils/cycles.utils';
 	import { formatToRelativeTime } from '$lib/utils/date.utils';
-	import { fromNullishNullable } from '$lib/utils/did.utils';
-	import { emit } from '$lib/utils/events.utils';
+		import { emit } from '$lib/utils/events.utils';
 
 	interface Props {
 		children: Snippet;

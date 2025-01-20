@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { isNullish, nonNullish } from '@dfinity/utils';
+	import { isNullish, nonNullish , fromNullishNullable } from '@dfinity/utils';
 	import { createEventDispatcher, onDestroy, onMount } from 'svelte';
 	import { run } from 'svelte/legacy';
 	import type { Satellite } from '$declarations/mission_control/mission_control.did';
@@ -17,8 +17,7 @@
 	import type { CustomDomainRegistrationState } from '$lib/types/custom-domain';
 	import type { PostMessageDataResponseHosting } from '$lib/types/post-message';
 	import type { Option } from '$lib/types/utils';
-	import { fromNullishNullable } from '$lib/utils/did.utils';
-	import { emit } from '$lib/utils/events.utils';
+		import { emit } from '$lib/utils/events.utils';
 	import { keyOf } from '$lib/utils/utils';
 
 	interface Props {

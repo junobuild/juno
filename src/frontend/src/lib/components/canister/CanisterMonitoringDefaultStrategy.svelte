@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { nonNullish } from '@dfinity/utils';
+	import { nonNullish , fromNullishNullable } from '@dfinity/utils';
 	import { onMount, untrack } from 'svelte';
 	import type { CyclesMonitoringStrategy } from '$declarations/mission_control/mission_control.did';
 	import MonitoringSentence from '$lib/components/modals/MonitoringSentence.svelte';
@@ -8,8 +8,7 @@
 	import { BASIC_STRATEGY } from '$lib/constants/monitoring.constants';
 	import { i18n } from '$lib/stores/i18n.store';
 	import type { JunoModalCreateSegmentDetail, JunoModalDetail } from '$lib/types/modal';
-	import { fromNullishNullable } from '$lib/utils/did.utils';
-
+	
 	interface Props {
 		detail: JunoModalDetail;
 		monitoringStrategy: CyclesMonitoringStrategy | undefined;

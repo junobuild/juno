@@ -1,6 +1,6 @@
 <script lang="ts">
 	import type { Principal } from '@dfinity/principal';
-	import { fromNullable, isNullish, nonNullish } from '@dfinity/utils';
+	import { fromNullable, isNullish, nonNullish , fromNullishNullable } from '@dfinity/utils';
 	import { getContext } from 'svelte';
 	import type { AssetNoContent } from '$declarations/satellite/satellite.did';
 	import { deleteAsset } from '$lib/api/satellites.api';
@@ -17,8 +17,7 @@
 	import { PAGINATION_CONTEXT_KEY, type PaginationContext } from '$lib/types/pagination.context';
 	import { RULES_CONTEXT_KEY, type RulesContext } from '$lib/types/rules.context';
 	import { formatToDate } from '$lib/utils/date.utils';
-	import { fromNullishNullable } from '$lib/utils/did.utils';
-	import { satelliteUrl } from '$lib/utils/satellite.utils';
+		import { satelliteUrl } from '$lib/utils/satellite.utils';
 
 	const { store, resetData }: DataContext<AssetNoContent> =
 		getContext<DataContext<AssetNoContent>>(DATA_CONTEXT_KEY);

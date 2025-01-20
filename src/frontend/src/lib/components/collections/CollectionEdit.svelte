@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { fromNullable, isNullish, nonNullish } from '@dfinity/utils';
+	import { fromNullable, isNullish, nonNullish , fromNullishNullable } from '@dfinity/utils';
 	import { type SvelteComponent, createEventDispatcher, getContext } from 'svelte';
 	import { preventDefault } from 'svelte/legacy';
 	import type { RateConfig, Rule, RulesType } from '$declarations/satellite/satellite.did';
@@ -21,8 +21,7 @@
 	import { i18n } from '$lib/stores/i18n.store';
 	import { toasts } from '$lib/stores/toasts.store';
 	import { RULES_CONTEXT_KEY, type RulesContext } from '$lib/types/rules.context';
-	import { fromNullishNullable } from '$lib/utils/did.utils';
-	import { i18nFormat } from '$lib/utils/i18n.utils';
+		import { i18nFormat } from '$lib/utils/i18n.utils';
 	import { memoryToText, permissionToText } from '$lib/utils/rules.utils';
 
 	const { store, reload }: RulesContext = getContext<RulesContext>(RULES_CONTEXT_KEY);

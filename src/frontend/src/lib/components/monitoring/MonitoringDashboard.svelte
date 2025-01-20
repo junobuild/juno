@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { fromNullable } from '@dfinity/utils';
+	import { fromNullable , fromNullishNullable } from '@dfinity/utils';
 	import { fade } from 'svelte/transition';
 	import IconAnalytics from '$lib/components/icons/IconAnalytics.svelte';
 	import IconMissionControl from '$lib/components/icons/IconMissionControl.svelte';
@@ -16,8 +16,7 @@
 	import { satellitesStore } from '$lib/derived/satellite.derived';
 	import { i18n } from '$lib/stores/i18n.store';
 	import type { MissionControlId } from '$lib/types/mission-control';
-	import { fromNullishNullable } from '$lib/utils/did.utils';
-	import { satelliteName } from '$lib/utils/satellite.utils';
+		import { satelliteName } from '$lib/utils/satellite.utils';
 
 	interface Props {
 		missionControlId: MissionControlId;

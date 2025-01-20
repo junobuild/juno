@@ -7,14 +7,7 @@
 			"$lib": ["./src/frontend/src/lib"],
 			"$lib/*": ["./src/frontend/src/lib/*"]
 		},
-		"types": ["vitest/globals", "@types/wicg-file-system-access"],
-		"verbatimModuleSyntax": true,
-		"isolatedModules": true,
-		"lib": ["esnext", "DOM", "DOM.Iterable"],
-		"moduleResolution": "bundler",
-		"module": "esnext",
-		"noEmit": true,
-		"target": "esnext"
+		"types": ["vitest/globals", "@types/wicg-file-system-access"]
 	},
 	"exclude": [],
 	"include": ["**/*.ts", "../../vitest.setup.ts"]

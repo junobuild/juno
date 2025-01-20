@@ -13,8 +13,13 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+
       - name: Prepare
         uses: ./.github/actions/prepare
+
+      - name: Build to generate .svelte-kit/tsconfig.json
+        uses: npm run build:frontend
+
       - name: Frontend tests
         run: npm run test:frontend
 

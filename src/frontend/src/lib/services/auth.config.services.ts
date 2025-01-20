@@ -10,8 +10,7 @@ import {
 	buildDeleteAuthenticationConfig,
 	buildSetAuthenticationConfig
 } from '$lib/utils/auth.config.utils';
-import { fromNullishNullable } from '$lib/utils/did.utils';
-import { isNullish, nonNullish, toNullable } from '@dfinity/utils';
+import { fromNullishNullable, isNullish, nonNullish, toNullable } from '@dfinity/utils';
 import { get } from 'svelte/store';
 
 interface UpdateAuthConfigParams {

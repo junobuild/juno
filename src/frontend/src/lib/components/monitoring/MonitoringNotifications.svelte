@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { debounce } from '@dfinity/utils';
+	import { debounce, fromNullishNullable } from '@dfinity/utils';
 	import { onMount } from 'svelte';
 	import { fade } from 'svelte/transition';
 	import Toggle from '$lib/components/ui/Toggle.svelte';
@@ -11,7 +11,6 @@
 	import { authStore } from '$lib/stores/auth.store';
 	import { busy } from '$lib/stores/busy.store';
 	import { i18n } from '$lib/stores/i18n.store';
-	import { fromNullishNullable } from '$lib/utils/did.utils';
 
 	let enabled = $state(false);
 

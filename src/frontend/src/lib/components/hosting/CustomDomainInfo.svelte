@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { nonNullish } from '@dfinity/utils';
+	import { nonNullish, fromNullishNullable } from '@dfinity/utils';
 	import { createEventDispatcher } from 'svelte';
 	import { run, stopPropagation } from 'svelte/legacy';
 	import { fade } from 'svelte/transition';
@@ -11,7 +11,6 @@
 	import { i18n } from '$lib/stores/i18n.store';
 	import type { CustomDomainRegistrationState } from '$lib/types/custom-domain';
 	import type { Option } from '$lib/types/utils';
-	import { fromNullishNullable } from '$lib/utils/did.utils';
 	import { keyOf } from '$lib/utils/utils';
 
 	interface Props {

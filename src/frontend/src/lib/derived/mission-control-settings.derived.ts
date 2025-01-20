@@ -1,6 +1,5 @@
 import { missionControlSettingsUncertifiedStore } from '$lib/stores/mission-control.store';
-import { fromNullishNullable } from '$lib/utils/did.utils';
-import { nonNullish } from '@dfinity/utils';
+import { fromNullishNullable, nonNullish } from '@dfinity/utils';
 import { derived } from 'svelte/store';
 
 export const missionControlSettings = derived(

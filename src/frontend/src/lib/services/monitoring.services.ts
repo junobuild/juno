@@ -34,12 +34,12 @@ import {
 	MonitoringStrategyProgressStep
 } from '$lib/types/progress-strategy';
 import type { Option } from '$lib/types/utils';
-import { fromNullishNullable } from '$lib/utils/did.utils';
 import { isNotValidEmail } from '$lib/utils/email.utils';
 import { emit } from '$lib/utils/events.utils';
 import type { Principal } from '@dfinity/principal';
 import {
 	assertNonNullish,
+	fromNullishNullable,
 	isEmptyString,
 	isNullish,
 	nonNullish,

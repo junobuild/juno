@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { isNullish, nonNullish } from '@dfinity/utils';
+	import { isNullish, nonNullish, fromNullishNullable } from '@dfinity/utils';
 	import { fade } from 'svelte/transition';
 	import type { Satellite } from '$declarations/mission_control/mission_control.did';
 	import type { AuthenticationConfig, Rule } from '$declarations/satellite/satellite.did';
@@ -10,7 +10,6 @@
 	import { authStore } from '$lib/stores/auth.store';
 	import { busy } from '$lib/stores/busy.store';
 	import { i18n } from '$lib/stores/i18n.store';
-	import { fromNullishNullable } from '$lib/utils/did.utils';
 	import { emit } from '$lib/utils/events.utils';
 
 	interface Props {

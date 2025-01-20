@@ -1,6 +1,6 @@
 <script lang="ts">
 	import type { Principal } from '@dfinity/principal';
-	import { fromNullable, nonNullish } from '@dfinity/utils';
+	import { fromNullable, nonNullish, fromNullishNullable } from '@dfinity/utils';
 	import { fromArray } from '@junobuild/utils';
 	import { getContext } from 'svelte';
 	import { run } from 'svelte/legacy';
@@ -11,7 +11,6 @@
 	import { i18n } from '$lib/stores/i18n.store';
 	import { DATA_CONTEXT_KEY, type DataContext } from '$lib/types/data.context';
 	import { formatToDate } from '$lib/utils/date.utils';
-	import { fromNullishNullable } from '$lib/utils/did.utils';
 
 	const { store }: DataContext<Doc> = getContext<DataContext<Doc>>(DATA_CONTEXT_KEY);
 

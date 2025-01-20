@@ -16,11 +16,10 @@ import type {
 import type { PostMessageDataRequest, PostMessageRequest } from '$lib/types/post-message';
 import { formatTCycles } from '$lib/utils/cycles.utils';
 import { fromBigIntNanoSeconds, toBigIntNanoSeconds } from '$lib/utils/date.utils';
-import { fromNullishNullable } from '$lib/utils/did.utils';
 import { emitCanister, emitSavedCanisters, loadIdentity } from '$lib/utils/worker.utils';
 import type { Identity } from '@dfinity/agent';
 import { Principal } from '@dfinity/principal';
-import { fromNullable, isNullish, nonNullish } from '@dfinity/utils';
+import { fromNullable, fromNullishNullable, isNullish, nonNullish } from '@dfinity/utils';
 import { addDays, endOfDay, format, startOfDay } from 'date-fns';
 import { get, set } from 'idb-keyval';
 

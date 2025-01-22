@@ -1,8 +1,12 @@
 import type { CanisterSegment } from '$lib/types/canister';
 import type { MissionControlId } from '$lib/types/mission-control';
-import type { PostMessage, PostMessageDataResponseCanister } from '$lib/types/post-message';
+import type {
+	PostMessage,
+	PostMessageDataResponseCanister,
+	PostMessageDataResponseCanisterMonitoring
+} from '$lib/types/post-message';
 
-export type MonitoringCallback = (data: PostMessageDataResponseCanister) => void;
+export type MonitoringCallback = (data: PostMessageDataResponseCanisterMonitoring) => void;
 
 export interface MonitoringWorker {
 	startMonitoringTimer: (params: {
@@ -31,7 +35,7 @@ export const initMonitoringWorker = async (): Promise<MonitoringWorker> => {
 
 		switch (msg) {
 			case 'syncCanister':
-				monitoringCallback?.(data.data as PostMessageDataResponseCanister);
+				monitoringCallback?.(data.data as PostMessageDataResponseCanisterMonitoring);
 				return;
 		}
 	};

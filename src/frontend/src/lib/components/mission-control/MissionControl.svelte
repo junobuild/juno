@@ -63,7 +63,7 @@
 		<div class="columns-3">
 			<CanisterOverview canisterId={missionControlId} segment="mission_control" />
 
-			<CanisterMonitoring canisterId={missionControlId} segment="mission_control">
+			<CanisterMonitoring canisterId={missionControlId}>
 				<MissionControlDataLoader {missionControlId}>
 					<MonitoringDisabled
 						monitoring={$missionControlMonitoring}

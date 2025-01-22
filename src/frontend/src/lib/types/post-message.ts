@@ -2,9 +2,9 @@ import {
 	inferPostMessageSchema,
 	type PostMessageDataRequestDataSchema,
 	PostMessageDataResponseAuthSchema,
+	PostMessageDataResponseCanisterMonitoringSchema,
 	PostMessageDataResponseCanisterSchema,
 	PostMessageDataResponseCanisterSyncDataSchema,
-	PostMessageDataResponseCanisterSyncMonitoringSchema,
 	PostMessageDataResponseErrorSchema,
 	PostMessageDataResponseExchangeSchema,
 	PostMessageDataResponseHostingSchema,
@@ -32,8 +32,8 @@ export type PostMessageDataResponseCanisterSyncData = z.infer<
 	typeof PostMessageDataResponseCanisterSyncDataSchema
 >;
 
-export type PostMessageDataResponseCanisterSyncMonitoring = z.infer<
-	typeof PostMessageDataResponseCanisterSyncMonitoringSchema
+export type PostMessageDataResponseCanisterMonitoring = z.infer<
+	typeof PostMessageDataResponseCanisterMonitoringSchema
 >;
 
 export type PostMessageDataResponseCanister = z.infer<typeof PostMessageDataResponseCanisterSchema>;

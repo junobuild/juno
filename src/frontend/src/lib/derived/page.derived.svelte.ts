@@ -7,16 +7,23 @@ type PageSatelliteIdStoreData = SatelliteIdText | undefined;
 export type PageSatelliteIdStore = Readable<PageSatelliteIdStoreData>;
 
 const initPageSatelliteIdStore = (): PageSatelliteIdStore => {
-	const cleanup = $effect.root(() => {
-		$effect(() => {
-			set(page.data?.satellite);
-		});
-	});
-
-	const { subscribe, set } = writable<PageSatelliteIdStoreData>(undefined, cleanup);
+	const { subscribe, set } = writable<PageSatelliteIdStoreData>(undefined);
 
 	return {
-		subscribe
+		subscribe: (run) => {
+			const cleanup = $effect.root(() => {
+				$effect(() => {
+					set(page.data?.satellite);
+				});
+			});
+
+			const unsubscribe = subscribe(run);
+
+			return () => {
+				cleanup();
+				unsubscribe();
+			};
+		}
 	};
 };
 

@@ -16,6 +16,7 @@
 		TABS_CONTEXT_KEY
 	} from '$lib/types/tabs.context';
 	import { initTabId } from '$lib/utils/tabs.utils';
+	import CanisterCyclesLoader from '$lib/components/loaders/CanisterCyclesLoader.svelte';
 
 	const tabs: Tab[] = [
 		{
@@ -43,9 +44,11 @@
 		<WalletLoader>
 			<SatellitesLoader>
 				<SatelliteGuard>
-					{#if nonNullish($satelliteStore)}
-						<Db satelliteId={$satelliteStore.satellite_id} />
-					{/if}
+					<CanisterCyclesLoader>
+						{#if nonNullish($satelliteStore)}
+							<Db satelliteId={$satelliteStore.satellite_id} />
+						{/if}
+					</CanisterCyclesLoader>
 				</SatelliteGuard>
 			</SatellitesLoader>
 		</WalletLoader>

@@ -23,6 +23,7 @@
 		TABS_CONTEXT_KEY
 	} from '$lib/types/tabs.context';
 	import { initTabId } from '$lib/utils/tabs.utils';
+	import CanisterCyclesLoader from '$lib/components/loaders/CanisterCyclesLoader.svelte';
 
 	const tabDashboard = {
 		id: Symbol('1'),
@@ -77,17 +78,19 @@
 		<WalletLoader>
 			<SatellitesLoader>
 				<OrbitersLoader withVersion>
-					<MissionControlGuard>
-						{#if $store.tabId === $store.tabs[0].id}
-							<Analytics />
-						{:else if $store.tabId === $store.tabs[1].id && nonNullish($orbiterStore)}
-							<Orbiter orbiter={$orbiterStore} />
-						{:else if $store.tabId === $store.tabs[2].id && nonNullish($orbiterStore)}
-							<OrbiterConfig orbiterId={$orbiterStore.orbiter_id} />
+					<CanisterCyclesLoader>
+						<MissionControlGuard>
+							{#if $store.tabId === $store.tabs[0].id}
+								<Analytics />
+							{:else if $store.tabId === $store.tabs[1].id && nonNullish($orbiterStore)}
+								<Orbiter orbiter={$orbiterStore} />
+							{:else if $store.tabId === $store.tabs[2].id && nonNullish($orbiterStore)}
+								<OrbiterConfig orbiterId={$orbiterStore.orbiter_id} />
 
-							<AnalyticsSettings orbiterId={$orbiterStore.orbiter_id} />
-						{/if}
-					</MissionControlGuard>
+								<AnalyticsSettings orbiterId={$orbiterStore.orbiter_id} />
+							{/if}
+						</MissionControlGuard>
+					</CanisterCyclesLoader>
 				</OrbitersLoader>
 			</SatellitesLoader>
 		</WalletLoader>

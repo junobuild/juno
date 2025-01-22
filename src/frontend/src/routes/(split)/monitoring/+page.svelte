@@ -22,6 +22,8 @@
 		type TabsStore
 	} from '$lib/types/tabs.context';
 	import { initTabId } from '$lib/utils/tabs.utils';
+	import CanisterCyclesLoader from '$lib/components/loaders/CanisterCyclesLoader.svelte';
+	import { sortedSatellites } from '$lib/derived/satellites.derived';
 
 	const tabDashboard = {
 		id: Symbol('1'),
@@ -69,15 +71,17 @@
 			<SatellitesLoader>
 				<OrbitersLoader>
 					<MissionControlGuard>
-						{#if nonNullish($missionControlIdDerived)}
-							<MissionControlDataLoader missionControlId={$missionControlIdDerived} reload>
-								{#if $store.tabId === $store.tabs[0].id}
-									<MonitoringDashboard missionControlId={$missionControlIdDerived} />
-								{:else if $store.tabId === $store.tabs[1].id && $hasMissionControlSettings}
-									<MonitoringSettings missionControlId={$missionControlIdDerived} />
-								{/if}
-							</MissionControlDataLoader>
-						{/if}
+						<CanisterCyclesLoader satellites={$sortedSatellites}>
+							{#if nonNullish($missionControlIdDerived)}
+								<MissionControlDataLoader missionControlId={$missionControlIdDerived} reload>
+									{#if $store.tabId === $store.tabs[0].id}
+										<MonitoringDashboard missionControlId={$missionControlIdDerived} />
+									{:else if $store.tabId === $store.tabs[1].id && $hasMissionControlSettings}
+										<MonitoringSettings missionControlId={$missionControlIdDerived} />
+									{/if}
+								</MissionControlDataLoader>
+							{/if}
+						</CanisterCyclesLoader>
 					</MissionControlGuard>
 				</OrbitersLoader>
 			</SatellitesLoader>

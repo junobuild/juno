@@ -6,13 +6,17 @@
 	import SatellitesLoader from '$lib/components/loaders/SatellitesLoader.svelte';
 	import WalletLoader from '$lib/components/wallet/WalletLoader.svelte';
 	import { authSignedIn } from '$lib/derived/auth.derived';
+	import CanisterCyclesLoader from '$lib/components/loaders/CanisterCyclesLoader.svelte';
+	import { sortedSatellites } from '$lib/derived/satellites.derived';
 </script>
 
 {#if $authSignedIn}
 	<div in:fade>
 		<WalletLoader>
 			<SatellitesLoader>
-				<Launchpad />
+				<CanisterCyclesLoader satellites={$sortedSatellites}>
+					<Launchpad />
+				</CanisterCyclesLoader>
 			</SatellitesLoader>
 		</WalletLoader>
 	</div>

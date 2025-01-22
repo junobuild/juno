@@ -1,12 +1,16 @@
 <script lang="ts">
 	import type { Principal } from '@dfinity/principal';
 	import CanisterIndicator from '$lib/components/canister/CanisterIndicator.svelte';
+	import CanisterSyncData from '$lib/components/canister/CanisterSyncData.svelte';
 	import CanisterTCycles from '$lib/components/canister/CanisterTCycles.svelte';
 	import SkeletonText from '$lib/components/ui/SkeletonText.svelte';
 	import { i18n } from '$lib/stores/i18n.store';
-	import type { CanisterSyncData, CanisterData, CanisterSyncStatus } from '$lib/types/canister';
+	import type {
+		CanisterSyncData as CanisterSyncDataType,
+		CanisterData,
+		CanisterSyncStatus
+	} from '$lib/types/canister';
 	import { formatBytes } from '$lib/utils/number.utils';
-	import { canisterSyncDataUncertifiedStore } from '$lib/stores/canister-sync-data.store';
 
 	interface Props {
 		canisterId: Principal;
@@ -24,9 +28,7 @@
 		sync = $bindable(undefined)
 	}: Props = $props();
 
-	let canister: CanisterSyncData | undefined = $derived(
-		$canisterSyncDataUncertifiedStore?.[canisterId.toText()]?.data
-	);
+	let canister = $state<CanisterSyncDataType | undefined>(undefined);
 
 	$effect(() => {
 		const c = canister ?? { data: undefined, sync: undefined };
@@ -44,6 +46,8 @@
 		}
 	);
 </script>
+
+<CanisterSyncData {canisterId} bind:canister />
 
 {#if display}
 	<div class:row>

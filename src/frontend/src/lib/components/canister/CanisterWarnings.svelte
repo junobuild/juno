@@ -1,8 +1,9 @@
 <script lang="ts">
 	import type { Principal } from '@dfinity/principal';
 	import type { Snippet } from 'svelte';
+	import CanisterSyncData from '$lib/components/canister/CanisterSyncData.svelte';
 	import Warning from '$lib/components/ui/Warning.svelte';
-	import type { CanisterSyncData } from '$lib/types/canister';
+	import type { CanisterSyncData as CanisterSyncDataType } from '$lib/types/canister';
 
 	interface Props {
 		canisterId: Principal;
@@ -12,22 +13,16 @@
 
 	let { canisterId, cycles, heap }: Props = $props();
 
-	let cyclesWarning = $state(false);
+	let canister = $state<CanisterSyncDataType | undefined>(undefined);
+
+	let cyclesWarning = $derived(canister?.data?.warning?.cycles === true);
+
+	// Disabled for now, a bit too much in your face given that wasm memory cannot be shrink. We can always activate this warning if necessary, therefore I don't remove the code.
+	// heapWarning = data?.warning?.heap === true ?? false;
 	let heapWarning = false;
-
-	const syncCanister = ({ id, data }: CanisterSyncData) => {
-		if (id !== canisterId.toText()) {
-			return;
-		}
-
-		cyclesWarning = data?.warning?.cycles === true;
-
-		// Disabled for now, a bit too much in your face given that wasm memory cannot be shrink. We can always activate this warning if necessary, therefore I don't remove the code.
-		// heapWarning = data?.warning?.heap === true ?? false;
-	};
 </script>
 
-<svelte:window onjunoSyncCanister={({ detail: { canister } }) => syncCanister(canister)} />
+<CanisterSyncData {canisterId} bind:canister />
 
 {#if cyclesWarning}
 	<Warning>

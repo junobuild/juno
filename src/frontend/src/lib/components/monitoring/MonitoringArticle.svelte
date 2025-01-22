@@ -8,12 +8,16 @@
 	import Chart from '$lib/components/charts/Chart.svelte';
 	import IconClockUpdate from '$lib/components/icons/IconClockUpdate.svelte';
 	import IconRefresh from '$lib/components/icons/IconRefresh.svelte';
-	import CanisterMonitoringLoader from '$lib/components/loaders/CanisterMonitoringLoader.svelte';
 	import { i18n } from '$lib/stores/i18n.store';
-	import type { CanisterData, CanisterMonitoringData, Segment } from '$lib/types/canister';
+	import type {
+		CanisterData,
+		CanisterMonitoringData as CanisterMonitoringDataType,
+		Segment
+	} from '$lib/types/canister';
 	import { formatTCycles } from '$lib/utils/cycles.utils';
 	import { formatToRelativeTime } from '$lib/utils/date.utils';
 	import { emit } from '$lib/utils/events.utils';
+	import CanisterMonitoringData from '$lib/components/canister/CanisterMonitoringData.svelte';
 
 	interface Props {
 		children: Snippet;
@@ -27,7 +31,7 @@
 
 	let enabled = $derived(fromNullishNullable(monitoring?.cycles)?.enabled === true);
 
-	let monitoringData = $state<CanisterMonitoringData | undefined>(undefined);
+	let monitoringData = $state<CanisterMonitoringDataType | undefined>(undefined);
 	let canisterData = $state<CanisterData | undefined>(undefined);
 
 	let chartsData = $derived(monitoringData?.chartsData ?? []);
@@ -56,7 +60,7 @@
 
 <Canister {canisterId} display={false} bind:data={canisterData} />
 
-<CanisterMonitoringLoader {segment} {canisterId} bind:data={monitoringData}>
+<CanisterMonitoringData {canisterId} bind:monitoringData>
 	<button onclick={openModal} class="article monitoring">
 		<span class="segment">
 			{@render children()}
@@ -94,7 +98,7 @@
 			<span class="info">{$i18n.monitoring.auto_refill_disabled}</span>
 		{/if}
 	</button>
-</CanisterMonitoringLoader>
+</CanisterMonitoringData>
 
 <style lang="scss">
 	@use '../../styles/mixins/media';

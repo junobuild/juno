@@ -65,7 +65,7 @@
 			heapWarningLabel={$i18n.canisters.warning_satellite_heap_memory}
 		/>
 
-		<CanisterMonitoring segment="satellite" canisterId={satellite.satellite_id}>
+		<CanisterMonitoring canisterId={satellite.satellite_id}>
 			<MonitoringDisabled {monitoring} loading={$satellitesNotLoaded} />
 		</CanisterMonitoring>
 	</div>

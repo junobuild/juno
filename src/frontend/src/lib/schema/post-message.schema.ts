@@ -44,13 +44,13 @@ export const PostMessageDataResponseCanisterSyncDataSchema = z.object({
 	canister: z.custom<CanisterSyncData>().optional()
 });
 
-export const PostMessageDataResponseCanisterSyncMonitoringSchema = z.object({
+export const PostMessageDataResponseCanisterMonitoringSchema = z.object({
 	canister: z.custom<CanisterSyncMonitoring>().optional()
 });
 
 export const PostMessageDataResponseCanisterSchema = z.union([
 	PostMessageDataResponseCanisterSyncDataSchema,
-	PostMessageDataResponseCanisterSyncMonitoringSchema
+	PostMessageDataResponseCanisterMonitoringSchema
 ]);
 
 export const PostMessageDataResponseHostingSchema = z.object({

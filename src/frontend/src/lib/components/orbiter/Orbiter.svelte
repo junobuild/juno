@@ -63,7 +63,7 @@
 			heapWarningLabel={$i18n.canisters.warning_orbiter_heap_memory}
 		/>
 
-		<CanisterMonitoring segment="orbiter" canisterId={orbiter.orbiter_id}>
+		<CanisterMonitoring canisterId={orbiter.orbiter_id}>
 			<MonitoringDisabled {monitoring} loading={$orbiterNotLoaded} />
 		</CanisterMonitoring>
 	</div>

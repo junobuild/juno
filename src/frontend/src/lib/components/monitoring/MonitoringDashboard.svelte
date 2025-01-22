@@ -13,7 +13,7 @@
 		missionControlSettingsNotLoaded
 	} from '$lib/derived/mission-control-settings.derived';
 	import { orbitersStore } from '$lib/derived/orbiter.derived';
-	import { satellitesStore } from '$lib/derived/satellites.derived';
+	import { sortedSatellites } from '$lib/derived/satellites.derived';
 	import { i18n } from '$lib/stores/i18n.store';
 	import type { MissionControlId } from '$lib/types/mission-control';
 	import { satelliteName } from '$lib/utils/satellite.utils';
@@ -43,7 +43,7 @@
 			<span>{$i18n.mission_control.title}</span>
 		</MonitoringArticle>
 
-		{#each $satellitesStore ?? [] as satellite}
+		{#each $sortedSatellites ?? [] as satellite}
 			<MonitoringArticle
 				monitoring={fromNullishNullable(fromNullable(satellite.settings)?.monitoring)}
 				canisterId={satellite.satellite_id}

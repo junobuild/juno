@@ -18,7 +18,6 @@
 	import SpinnerParagraph from '$lib/components/ui/SpinnerParagraph.svelte';
 	import { orbiterFeatures } from '$lib/derived/orbiter-satellites.derived';
 	import { orbiterStore } from '$lib/derived/orbiter.derived';
-	import { satelliteStore } from '$lib/derived/satellites.derived';
 	import {
 		getAnalyticsPageViews,
 		getAnalyticsPerformanceMetrics,
@@ -34,6 +33,7 @@
 		PageViewsParams,
 		PageViewsPeriod
 	} from '$lib/types/ortbiter';
+	import { satelliteStore } from '$lib/derived/satellite.derived';
 
 	let loading: 'in_progress' | 'success' | 'error' = $state('in_progress');
 

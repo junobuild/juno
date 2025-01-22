@@ -15,7 +15,7 @@
 	import IconTelescope from '$lib/components/icons/IconTelescope.svelte';
 	import IconWallet from '$lib/components/icons/IconWallet.svelte';
 	import Menu from '$lib/components/ui/Menu.svelte';
-	import { pageSatelliteId } from '$lib/derived/satellite.derived.svelte.js';
+	import { pageSatelliteId } from '$lib/derived/page.derived.svelte.js';
 	import { i18n } from '$lib/stores/i18n.store';
 
 	let routeId: string | null = $derived(page.route.id);

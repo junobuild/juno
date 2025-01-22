@@ -15,11 +15,12 @@
 
 	interface Props {
 		canister: CanisterSyncData;
+		monitoringEnabled: boolean;
 		segment: 'satellite' | 'orbiter';
 		onstop: () => void;
 	}
 
-	let { canister, segment, onstop }: Props = $props();
+	let { canister, monitoringEnabled, segment, onstop }: Props = $props();
 
 	let visible = $state(false);
 
@@ -30,6 +31,11 @@
 			toasts.error({
 				text: $i18n.errors.no_identity
 			});
+			return;
+		}
+
+		if (monitoringEnabled) {
+			toasts.warn($i18n.monitoring.warn_monitoring_enabled);
 			return;
 		}
 

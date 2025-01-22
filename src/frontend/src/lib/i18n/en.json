@@ -740,7 +740,8 @@
 		"custom": "Custom",
 		"custom_description": "Define your own thresholds and top-up amounts.",
 		"default": "Your strategy",
-		"default_description": "Use your previously saved default strategy."
+		"default_description": "Use your previously saved default strategy.",
+		"warn_monitoring_enabled": "Please disable monitoring before proceeding."
 	},
 	"preferences": {
 		"title": "Preferences",

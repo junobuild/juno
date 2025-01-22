@@ -766,6 +766,7 @@ interface I18nMonitoring {
 	custom_description: string;
 	default: string;
 	default_description: string;
+	warn_monitoring_enabled: string;
 }
 
 interface I18nPreferences {

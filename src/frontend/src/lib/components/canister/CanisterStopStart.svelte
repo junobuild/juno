@@ -7,12 +7,13 @@
 
 	interface Props {
 		canister?: CanisterSyncData | undefined;
+		monitoringEnabled: boolean;
 		segment: 'satellite' | 'orbiter';
 		onstart: () => void;
 		onstop: () => void;
 	}
 
-	let { canister = undefined, segment, onstart, onstop }: Props = $props();
+	let { canister = undefined, monitoringEnabled, segment, onstart, onstop }: Props = $props();
 
 	let status = $derived<CanisterStatus | undefined>(canister?.data?.canister.status);
 	let sync = $derived<CanisterSyncStatus | undefined>(canister?.sync);
@@ -21,7 +22,7 @@
 {#if nonNullish(canister) && status === 'stopped' && sync === 'synced'}
 	<div in:fade><CanisterStart {canister} {segment} {onstart} /></div>
 {:else if nonNullish(canister) && status === 'running' && sync === 'synced'}
-	<div in:fade><CanisterStop {canister} {segment} {onstop} /></div>
+	<div in:fade><CanisterStop {canister} {monitoringEnabled} {segment} {onstop} /></div>
 {/if}
 
 <style lang="scss">

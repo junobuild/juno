@@ -1,14 +1,14 @@
 <script lang="ts">
 	import type { Principal } from '@dfinity/principal';
-	import type { CanisterSegment } from '$lib/types/canister';
-	import { onDestroy, onMount, type Snippet } from 'svelte';
-	import { type CyclesWorker, initCyclesWorker } from '$lib/services/worker.cycles.services';
-	import type { PostMessageDataResponseCanister } from '$lib/types/post-message';
 	import { debounce, isNullish, nonNullish } from '@dfinity/utils';
+	import { onDestroy, onMount, type Snippet } from 'svelte';
+	import type { Satellite } from '$declarations/mission_control/mission_control.did';
 	import { missionControlIdDerived } from '$lib/derived/mission-control.derived';
 	import { orbiterNotLoaded, orbiterStore } from '$lib/derived/orbiter.derived';
 	import { satellitesNotLoaded } from '$lib/derived/satellites.derived';
-	import type { Satellite } from '$declarations/mission_control/mission_control.did';
+	import { type CyclesWorker, initCyclesWorker } from '$lib/services/worker.cycles.services';
+	import type { CanisterSegment } from '$lib/types/canister';
+	import type { PostMessageDataResponseCanister } from '$lib/types/post-message';
 
 	interface Props {
 		children: Snippet;

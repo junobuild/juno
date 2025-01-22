@@ -4,6 +4,7 @@
 	import { writable } from 'svelte/store';
 	import IdentityGuard from '$lib/components/guards/IdentityGuard.svelte';
 	import MissionControlGuard from '$lib/components/guards/MissionControlGuard.svelte';
+	import CanisterCyclesLoader from '$lib/components/loaders/CanisterCyclesLoader.svelte';
 	import OrbitersLoader from '$lib/components/loaders/OrbitersLoader.svelte';
 	import SatellitesLoader from '$lib/components/loaders/SatellitesLoader.svelte';
 	import MissionControlDataLoader from '$lib/components/mission-control/MissionControlDataLoader.svelte';
@@ -15,6 +16,7 @@
 	import { authSignedIn } from '$lib/derived/auth.derived';
 	import { hasMissionControlSettings } from '$lib/derived/mission-control-settings.derived';
 	import { missionControlIdDerived } from '$lib/derived/mission-control.derived';
+	import { sortedSatellites } from '$lib/derived/satellites.derived';
 	import {
 		type Tab,
 		TABS_CONTEXT_KEY,
@@ -22,8 +24,6 @@
 		type TabsStore
 	} from '$lib/types/tabs.context';
 	import { initTabId } from '$lib/utils/tabs.utils';
-	import CanisterCyclesLoader from '$lib/components/loaders/CanisterCyclesLoader.svelte';
-	import { sortedSatellites } from '$lib/derived/satellites.derived';
 
 	const tabDashboard = {
 		id: Symbol('1'),

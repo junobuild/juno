@@ -2,7 +2,7 @@
 	import { nonNullish } from '@dfinity/utils';
 	import type { Snippet } from 'svelte';
 	import type { Satellite } from '$declarations/mission_control/mission_control.did';
-	import CanistersCyclesLoader from '$lib/components/loaders/CanistersCyclesLoader.svelte';
+	import CanistersSyncDataLoader from '$lib/components/loaders/CanistersSyncDataLoader.svelte';
 	import CanistersMonitoringLoader from '$lib/components/loaders/CanistersMonitoringLoader.svelte';
 	import CanistersNoMonitoringLoader from '$lib/components/loaders/CanistersNoMonitoringLoader.svelte';
 	import { missionControlIdDerived } from '$lib/derived/mission-control.derived';
@@ -45,8 +45,8 @@
 	);
 </script>
 
-<CanistersCyclesLoader {segments}>
+<CanistersSyncDataLoader {segments}>
 	<CanistersMonitoringLoaderComponent {segments}>
 		{@render children()}
 	</CanistersMonitoringLoaderComponent>
-</CanistersCyclesLoader>
+</CanistersSyncDataLoader>

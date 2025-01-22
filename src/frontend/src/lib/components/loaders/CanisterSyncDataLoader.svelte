@@ -7,13 +7,9 @@
 	import { orbiterNotLoaded, orbiterStore } from '$lib/derived/orbiter.derived';
 	import { satellitesNotLoaded } from '$lib/derived/satellites.derived';
 	import { type CyclesWorker, initCyclesWorker } from '$lib/services/worker.cycles.services';
-	import type { CanisterSegment } from '$lib/types/canister';
-	import type {
-		PostMessageDataResponseCanister,
-		PostMessageDataResponseCanisterSyncData
-	} from '$lib/types/post-message';
 	import { canisterSyncDataUncertifiedStore } from '$lib/stores/canister-sync-data.store';
-	import { emit } from '$lib/utils/events.utils';
+	import type { CanisterSegment } from '$lib/types/canister';
+	import type { PostMessageDataResponseCanisterSyncData } from '$lib/types/post-message';
 
 	interface Props {
 		children: Snippet;
@@ -61,9 +57,6 @@
 				certified: false
 			}
 		});
-
-		// TODO: use store
-		emit({ message: 'junoSyncCanister', detail: { canister } });
 	};
 
 	const debounceStart = debounce(() =>

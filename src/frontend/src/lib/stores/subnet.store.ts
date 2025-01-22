@@ -1,4 +1,4 @@
-import { initCanisterStore } from '$lib/stores/canister.store';
+import { initCanisterStore } from '$lib/stores/_canister.store';
 import type { Subnet } from '$lib/types/subnet';
 import type { Option } from '$lib/types/utils';
 

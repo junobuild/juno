@@ -1,6 +1,5 @@
 <script lang="ts">
 	import { nonNullish } from '@dfinity/utils';
-	import { run } from 'svelte/legacy';
 	import { fade } from 'svelte/transition';
 	import CanisterStart from '$lib/components/canister/CanisterStart.svelte';
 	import CanisterStop from '$lib/components/canister/CanisterStop.svelte';
@@ -15,15 +14,8 @@
 
 	let { canister = undefined, segment, onstart, onstop }: Props = $props();
 
-	let status: CanisterStatus | undefined = $state(undefined);
-	let sync: CanisterSyncStatus | undefined = $state(undefined);
-
-	run(() => {
-		status = canister?.data?.canister.status;
-	});
-	run(() => {
-		sync = canister?.sync;
-	});
+	let status = $derived<CanisterStatus | undefined>(canister?.data?.canister.status);
+	let sync = $derived<CanisterSyncStatus | undefined>(canister?.sync);
 </script>
 
 {#if nonNullish(canister) && status === 'stopped' && sync === 'synced'}

@@ -8,7 +8,7 @@
 	import { missionControlIdDerived } from '$lib/derived/mission-control.derived';
 	import { missionControlVersion } from '$lib/derived/version.derived';
 	import {
-		initStatusesWorker,
+		initMonitoringWorker,
 		type MonitoringWorker
 	} from '$lib/services/worker.monitoring.services';
 	import { i18n } from '$lib/stores/i18n.store';
@@ -41,7 +41,7 @@
 
 	let worker: MonitoringWorker | undefined = $state();
 
-	onMount(async () => (worker = await initStatusesWorker()));
+	onMount(async () => (worker = await initMonitoringWorker()));
 	run(() => {
 		// @ts-expect-error TODO: to be migrated to Svelte v5
 		worker,

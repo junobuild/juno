@@ -18,7 +18,7 @@ export interface MonitoringWorker {
 	}) => void;
 }
 
-export const initStatusesWorker = async (): Promise<MonitoringWorker> => {
+export const initMonitoringWorker = async (): Promise<MonitoringWorker> => {
 	const MonitoringWorker = await import('$lib/workers/workers?worker');
 	const monitoringWorker: Worker = new MonitoringWorker.default();
 

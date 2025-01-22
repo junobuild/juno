@@ -15,12 +15,12 @@
 	import IconTelescope from '$lib/components/icons/IconTelescope.svelte';
 	import IconWallet from '$lib/components/icons/IconWallet.svelte';
 	import Menu from '$lib/components/ui/Menu.svelte';
-	import { satelliteIdStore } from '$lib/derived/satellite.derived';
+	import { pageSatelliteId } from '$lib/derived/satellite.derived';
 	import { i18n } from '$lib/stores/i18n.store';
 
 	let routeId: string | null = $derived(page.route.id);
 
-	let satelliteId: string = $derived($satelliteIdStore ?? '');
+	let satelliteId: string = $derived($pageSatelliteId ?? '');
 
 	const isSelected = ({ routeId, path }: { routeId: string | null; path: string }): boolean =>
 		routeId?.includes(path) ?? false;

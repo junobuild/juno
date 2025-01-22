@@ -3,6 +3,8 @@ import {
 	type PostMessageDataRequestDataSchema,
 	PostMessageDataResponseAuthSchema,
 	PostMessageDataResponseCanisterSchema,
+	PostMessageDataResponseCanisterSyncDataSchema,
+	PostMessageDataResponseCanisterSyncMonitoringSchema,
 	PostMessageDataResponseErrorSchema,
 	PostMessageDataResponseExchangeSchema,
 	PostMessageDataResponseHostingSchema,
@@ -25,6 +27,14 @@ export type PostMessageRequest = z.infer<typeof PostMessageRequestSchema>;
 export type PostMessageDataResponse = z.infer<typeof PostMessageDataResponseSchema>;
 
 export type PostMessageDataResponseAuth = z.infer<typeof PostMessageDataResponseAuthSchema>;
+
+export type PostMessageDataResponseCanisterSyncData = z.infer<
+	typeof PostMessageDataResponseCanisterSyncDataSchema
+>;
+
+export type PostMessageDataResponseCanisterSyncMonitoring = z.infer<
+	typeof PostMessageDataResponseCanisterSyncMonitoringSchema
+>;
 
 export type PostMessageDataResponseCanister = z.infer<typeof PostMessageDataResponseCanisterSchema>;
 

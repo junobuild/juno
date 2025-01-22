@@ -40,9 +40,18 @@ export const PostMessageDataResponseAuthSchema = z.object({
 	authRemainingTime: z.number()
 });
 
-export const PostMessageDataResponseCanisterSchema = z.object({
-	canister: z.union([z.custom<CanisterSyncData>(), z.custom<CanisterSyncMonitoring>()]).optional()
+export const PostMessageDataResponseCanisterSyncDataSchema = z.object({
+	canister: z.custom<CanisterSyncData>().optional()
 });
+
+export const PostMessageDataResponseCanisterSyncMonitoringSchema = z.object({
+	canister: z.custom<CanisterSyncMonitoring>().optional()
+});
+
+export const PostMessageDataResponseCanisterSchema = z.union([
+	PostMessageDataResponseCanisterSyncDataSchema,
+	PostMessageDataResponseCanisterSyncMonitoringSchema
+]);
 
 export const PostMessageDataResponseHostingSchema = z.object({
 	registrationState: z.custom<CustomDomainRegistrationState>().nullable().optional()

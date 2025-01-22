@@ -129,7 +129,7 @@
 	</div>
 </div>
 
-<Canister {canisterId} {segment} bind:data bind:sync display={false} />
+<Canister {canisterId} bind:data bind:sync display={false} />
 
 <button onclick={openModal}>{$i18n.canisters.edit_settings}</button>
 

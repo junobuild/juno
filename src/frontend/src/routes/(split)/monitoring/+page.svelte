@@ -4,6 +4,7 @@
 	import { writable } from 'svelte/store';
 	import IdentityGuard from '$lib/components/guards/IdentityGuard.svelte';
 	import MissionControlGuard from '$lib/components/guards/MissionControlGuard.svelte';
+	import CanisterSyncDataLoader from '$lib/components/loaders/CanisterSyncDataLoader.svelte';
 	import OrbitersLoader from '$lib/components/loaders/OrbitersLoader.svelte';
 	import SatellitesLoader from '$lib/components/loaders/SatellitesLoader.svelte';
 	import MissionControlDataLoader from '$lib/components/mission-control/MissionControlDataLoader.svelte';
@@ -15,6 +16,7 @@
 	import { authSignedIn } from '$lib/derived/auth.derived';
 	import { hasMissionControlSettings } from '$lib/derived/mission-control-settings.derived';
 	import { missionControlIdDerived } from '$lib/derived/mission-control.derived';
+	import { sortedSatellites } from '$lib/derived/satellites.derived';
 	import {
 		type Tab,
 		TABS_CONTEXT_KEY,
@@ -69,15 +71,17 @@
 			<SatellitesLoader>
 				<OrbitersLoader>
 					<MissionControlGuard>
-						{#if nonNullish($missionControlIdDerived)}
-							<MissionControlDataLoader missionControlId={$missionControlIdDerived} reload>
-								{#if $store.tabId === $store.tabs[0].id}
-									<MonitoringDashboard missionControlId={$missionControlIdDerived} />
-								{:else if $store.tabId === $store.tabs[1].id && $hasMissionControlSettings}
-									<MonitoringSettings missionControlId={$missionControlIdDerived} />
-								{/if}
-							</MissionControlDataLoader>
-						{/if}
+						<CanisterSyncDataLoader satellites={$sortedSatellites}>
+							{#if nonNullish($missionControlIdDerived)}
+								<MissionControlDataLoader missionControlId={$missionControlIdDerived} reload>
+									{#if $store.tabId === $store.tabs[0].id}
+										<MonitoringDashboard missionControlId={$missionControlIdDerived} />
+									{:else if $store.tabId === $store.tabs[1].id && $hasMissionControlSettings}
+										<MonitoringSettings missionControlId={$missionControlIdDerived} />
+									{/if}
+								</MissionControlDataLoader>
+							{/if}
+						</CanisterSyncDataLoader>
 					</MissionControlGuard>
 				</OrbitersLoader>
 			</SatellitesLoader>

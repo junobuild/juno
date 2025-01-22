@@ -4,6 +4,7 @@
 	import { writable } from 'svelte/store';
 	import IdentityGuard from '$lib/components/guards/IdentityGuard.svelte';
 	import MissionControlGuard from '$lib/components/guards/MissionControlGuard.svelte';
+	import CanisterSyncDataLoader from '$lib/components/loaders/CanisterSyncDataLoader.svelte';
 	import Tabs from '$lib/components/ui/Tabs.svelte';
 	import Wallet from '$lib/components/wallet/Wallet.svelte';
 	import WalletLoader from '$lib/components/wallet/WalletLoader.svelte';
@@ -45,11 +46,13 @@
 
 		<WalletLoader>
 			<MissionControlGuard>
-				{#if nonNullish($missionControlIdDerived)}
-					{#if $store.tabId === $store.tabs[0].id}
-						<Wallet missionControlId={$missionControlIdDerived} />
+				<CanisterSyncDataLoader>
+					{#if nonNullish($missionControlIdDerived)}
+						{#if $store.tabId === $store.tabs[0].id}
+							<Wallet missionControlId={$missionControlIdDerived} />
+						{/if}
 					{/if}
-				{/if}
+				</CanisterSyncDataLoader>
 			</MissionControlGuard>
 		</WalletLoader>
 	</Tabs>

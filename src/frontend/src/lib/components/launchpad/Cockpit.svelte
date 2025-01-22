@@ -37,21 +37,11 @@
 </script>
 
 {#if nonNullish($missionControlIdDerived)}
-	<Canister
-		canisterId={$missionControlIdDerived}
-		segment="mission_control"
-		display={false}
-		bind:data={missionControlData}
-	/>
+	<Canister canisterId={$missionControlIdDerived} display={false} bind:data={missionControlData} />
 {/if}
 
 {#if nonNullish($orbiterStore)}
-	<Canister
-		canisterId={$orbiterStore.orbiter_id}
-		segment="orbiter"
-		display={false}
-		bind:data={orbiterData}
-	/>
+	<Canister canisterId={$orbiterStore.orbiter_id} display={false} bind:data={orbiterData} />
 {/if}
 
 <div class="analytics">

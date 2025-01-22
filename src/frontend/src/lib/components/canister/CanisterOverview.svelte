@@ -50,7 +50,7 @@
 			{#snippet label()}
 				{$i18n.core.status}
 			{/snippet}
-			<Canister {canisterId} {segment} bind:data bind:sync />
+			<Canister {canisterId} bind:data bind:sync />
 		</Value>
 	</div>
 

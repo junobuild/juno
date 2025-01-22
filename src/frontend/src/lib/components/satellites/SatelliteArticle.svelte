@@ -30,7 +30,7 @@
 		<IconSatellite size={row ? '28px' : '48px'} />
 	{/snippet}
 
-	<Canister canisterId={satellite_id} segment="satellite" {row} />
+	<Canister canisterId={satellite_id} {row} />
 </LaunchpadLink>
 
 <style lang="scss">

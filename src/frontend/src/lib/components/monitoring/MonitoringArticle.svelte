@@ -54,7 +54,7 @@
 	};
 </script>
 
-<Canister {canisterId} {segment} display={false} bind:data={canisterData} />
+<Canister {canisterId} display={false} bind:data={canisterData} />
 
 <CanisterMonitoringLoader {segment} {canisterId} bind:data={monitoringData}>
 	<button onclick={openModal} class="article monitoring">
@@ -62,7 +62,7 @@
 			{@render children()}
 		</span>
 
-		<span class="canister"><Canister {segment} {canisterId} row={true} /></span>
+		<span class="canister"><Canister {canisterId} row={true} /></span>
 
 		{#if enabled}
 			<span class="chart-container" in:fade>

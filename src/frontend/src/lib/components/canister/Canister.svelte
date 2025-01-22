@@ -3,10 +3,10 @@
 	import CanisterIndicator from '$lib/components/canister/CanisterIndicator.svelte';
 	import CanisterTCycles from '$lib/components/canister/CanisterTCycles.svelte';
 	import SkeletonText from '$lib/components/ui/SkeletonText.svelte';
-	import { canisterSyncDataStore } from '$lib/derived/canister-sync-data.derived';
 	import { i18n } from '$lib/stores/i18n.store';
 	import type { CanisterSyncData, CanisterData, CanisterSyncStatus } from '$lib/types/canister';
 	import { formatBytes } from '$lib/utils/number.utils';
+	import { canisterSyncDataUncertifiedStore } from '$lib/stores/canister-sync-data.store';
 
 	interface Props {
 		canisterId: Principal;
@@ -25,7 +25,7 @@
 	}: Props = $props();
 
 	let canister: CanisterSyncData | undefined = $derived(
-		$canisterSyncDataStore?.[canisterId.toText()]?.data
+		$canisterSyncDataUncertifiedStore?.[canisterId.toText()]?.data
 	);
 
 	$effect(() => {

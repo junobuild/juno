@@ -90,19 +90,13 @@
 
 	onDestroy(() => worker?.stopCyclesTimer());
 
-	const restartCycles = ({ detail: { canisterId } }: CustomEvent<{ canisterId: Principal }>) => {
-		const segment = segments.find(({ canisterId: cId }) => cId === canisterId.toText());
-
-		if (isNullish(segment)) {
+	const restartCycles = ({ detail: { canisterId: _ } }: CustomEvent<{ canisterId: Principal }>) => {
+		if (segments.length === 0) {
 			return;
 		}
 
-		worker?.restartCyclesTimer([
-			{
-				canisterId: canisterId.toText(),
-				segment: segment.segment
-			}
-		]);
+		// TODO: we can potentially restart only the specified canister but, for now and simplicity reason, the worker just restart fully that's why we are passing all the segments.
+		worker?.restartCyclesTimer(segments);
 	};
 </script>
 

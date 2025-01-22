@@ -1,4 +1,4 @@
-import { initCanisterStore } from '$lib/stores/canister.store';
+import { initCanisterStore } from '$lib/stores/_canister.store';
 import type { Snapshots } from '$lib/types/progress-snapshot';
 
 export type SnapshotData = Snapshots;

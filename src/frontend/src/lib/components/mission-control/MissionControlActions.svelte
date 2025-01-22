@@ -1,11 +1,12 @@
 <script lang="ts">
 	import CanisterBuyCycleExpress from '$lib/components/canister/CanisterBuyCycleExpress.svelte';
+	import CanisterSyncData from '$lib/components/canister/CanisterSyncData.svelte';
 	import CanisterTransferCycles from '$lib/components/canister/CanisterTransferCycles.svelte';
 	import TopUp from '$lib/components/canister/TopUp.svelte';
 	import MissionControlAttachOrbiter from '$lib/components/mission-control/MissionControlAttachOrbiter.svelte';
 	import MissionControlAttachSatellite from '$lib/components/mission-control/MissionControlAttachSatellite.svelte';
 	import SegmentActions from '$lib/components/segments/SegmentActions.svelte';
-	import type { CanisterSyncData } from '$lib/types/canister';
+	import type { CanisterSyncData as CanisterSyncDataType } from '$lib/types/canister';
 	import type { MissionControlId } from '$lib/types/mission-control';
 	import { emit } from '$lib/utils/events.utils';
 
@@ -15,18 +16,10 @@
 
 	let { missionControlId }: Props = $props();
 
-	let canister: CanisterSyncData | undefined = $state(undefined);
+	let canister = $state<CanisterSyncDataType | undefined>(undefined);
 
 	let visible: boolean = $state(false);
 	const close = () => (visible = false);
-
-	const onSyncCanister = (syncCanister: CanisterSyncData) => {
-		if (syncCanister.id !== missionControlId.toText()) {
-			return;
-		}
-
-		canister = syncCanister;
-	};
 
 	// eslint-disable-next-line require-await
 	const onTransferCycles = async () => {
@@ -44,10 +37,7 @@
 	};
 </script>
 
-<svelte:window
-	onjunoSyncCanister={({ detail: { canister } }: CustomEvent<{ canister: CanisterSyncData }>) =>
-		onSyncCanister(canister)}
-/>
+<CanisterSyncData canisterId={missionControlId} bind:canister />
 
 <SegmentActions bind:visible segment="mission_control">
 	{#snippet cycleActions()}

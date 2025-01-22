@@ -13,6 +13,7 @@
 		PostMessageDataResponseCanisterSyncData
 	} from '$lib/types/post-message';
 	import { canisterSyncDataUncertifiedStore } from '$lib/stores/canister-sync-data.store';
+	import { emit } from '$lib/utils/events.utils';
 
 	interface Props {
 		children: Snippet;
@@ -60,6 +61,9 @@
 				certified: false
 			}
 		});
+
+		// TODO: use store
+		emit({ message: 'junoSyncCanister', detail: { canister } });
 	};
 
 	const debounceStart = debounce(() =>

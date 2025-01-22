@@ -8,7 +8,7 @@
 		orbiterFeatures,
 		orbiterSatellitesConfig
 	} from '$lib/derived/orbiter-satellites.derived';
-	import { satellitesStore } from '$lib/derived/satellite.derived';
+	import { satellitesStore } from '$lib/derived/satellites.derived';
 	import { loadOrbiterConfigs } from '$lib/services/orbiters.services';
 	import { i18n } from '$lib/stores/i18n.store';
 	import { versionStore } from '$lib/stores/version.store';

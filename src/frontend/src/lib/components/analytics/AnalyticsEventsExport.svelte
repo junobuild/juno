@@ -2,7 +2,7 @@
 	import { jsonReplacer } from '@dfinity/utils';
 	import type { Orbiter } from '$declarations/mission_control/mission_control.did';
 	import { getTrackEvents } from '$lib/api/orbiter.api';
-	import { satelliteStore } from '$lib/derived/satellite.derived';
+	import { satelliteStore } from '$lib/derived/satellites.derived';
 	import { authStore } from '$lib/stores/auth.store';
 	import { busy } from '$lib/stores/busy.store';
 	import { i18n } from '$lib/stores/i18n.store';

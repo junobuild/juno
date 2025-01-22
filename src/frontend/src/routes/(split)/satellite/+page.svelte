@@ -13,7 +13,7 @@
 	import Tabs from '$lib/components/ui/Tabs.svelte';
 	import WalletLoader from '$lib/components/wallet/WalletLoader.svelte';
 	import Warnings from '$lib/components/warning/Warnings.svelte';
-	import { satelliteStore } from '$lib/derived/satellite.derived';
+	import { satelliteStore } from '$lib/derived/satellites.derived';
 	import {
 		type Tab,
 		TABS_CONTEXT_KEY,

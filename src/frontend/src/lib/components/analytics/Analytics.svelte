@@ -18,7 +18,7 @@
 	import SpinnerParagraph from '$lib/components/ui/SpinnerParagraph.svelte';
 	import { orbiterFeatures } from '$lib/derived/orbiter-satellites.derived';
 	import { orbiterStore } from '$lib/derived/orbiter.derived';
-	import { satelliteStore } from '$lib/derived/satellite.derived';
+	import { satelliteStore } from '$lib/derived/satellites.derived';
 	import {
 		getAnalyticsPageViews,
 		getAnalyticsPerformanceMetrics,

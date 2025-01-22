@@ -5,7 +5,7 @@
 	import type { Satellite } from '$declarations/mission_control/mission_control.did';
 	import { missionControlIdDerived } from '$lib/derived/mission-control.derived';
 	import { orbiterStore } from '$lib/derived/orbiter.derived';
-	import { satellitesStore } from '$lib/derived/satellite.derived';
+	import { satellitesStore } from '$lib/derived/satellites.derived';
 	import { loadOrbiters } from '$lib/services/orbiters.services';
 	import { loadSatellites } from '$lib/services/satellites.services';
 	import { i18n } from '$lib/stores/i18n.store';

@@ -27,7 +27,7 @@ import {
 	MISSION_CONTROL_v0_0_5,
 	MISSION_CONTROL_v0_0_7
 } from '$lib/constants/version.constants';
-import { satellitesStore } from '$lib/derived/satellite.derived';
+import { satellitesStore } from '$lib/derived/satellites.derived';
 import { missionControlVersion as missionControlVersionStore } from '$lib/derived/version.derived';
 import { loadDataStore } from '$lib/services/loader.services';
 import { loadSatellites } from '$lib/services/satellites.services';

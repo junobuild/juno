@@ -1,4 +1,4 @@
-import { satelliteStore } from '$lib/derived/satellite.derived';
+import { satelliteStore } from '$lib/derived/satellites.derived';
 import { customDomainsStore } from '$lib/stores/custom-domains.store';
 import type { CustomDomainName, CustomDomains } from '$lib/types/custom-domain';
 import { isNullish, nonNullish } from '@dfinity/utils';

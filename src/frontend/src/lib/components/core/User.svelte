@@ -16,7 +16,7 @@
 		satellitesNotLoaded,
 		satellitesStore,
 		satelliteStore
-	} from '$lib/derived/satellite.derived';
+	} from '$lib/derived/satellites.derived';
 	import { signIn as doSignIn, signOut } from '$lib/services/auth.services';
 	import { i18n } from '$lib/stores/i18n.store';
 	import { analyticsLink } from '$lib/utils/nav.utils';

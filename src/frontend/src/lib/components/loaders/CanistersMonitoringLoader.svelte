@@ -3,12 +3,10 @@
 	import { debounce, isNullish } from '@dfinity/utils';
 	import { compare } from 'semver';
 	import { onDestroy, onMount, type Snippet } from 'svelte';
-	import type { Satellite } from '$declarations/mission_control/mission_control.did';
 	import { MISSION_CONTROL_v0_0_14 } from '$lib/constants/version.constants';
 	import { missionControlIdDerived } from '$lib/derived/mission-control.derived';
 	import { orbiterNotLoaded } from '$lib/derived/orbiter.derived';
 	import { satellitesNotLoaded } from '$lib/derived/satellites.derived';
-	import { allSegments } from '$lib/derived/segments.derived';
 	import { missionControlVersion } from '$lib/derived/version.derived';
 	import {
 		initMonitoringWorker,
@@ -22,18 +20,10 @@
 
 	interface Props {
 		children: Snippet;
-		satellites?: Satellite[];
+		segments: CanisterSegment[];
 	}
 
-	let { children, satellites = [] }: Props = $props();
-
-	let segments: CanisterSegment[] = $derived([
-		...$allSegments.filter(
-			({ segment, canisterId }) =>
-				segment !== 'satellite' ||
-				satellites.find(({ satellite_id }) => satellite_id.toText() === canisterId) !== undefined
-		)
-	]);
+	let { children, segments }: Props = $props();
 
 	let worker: MonitoringWorker | undefined = $state();
 

@@ -6,8 +6,7 @@
 	import IdentityGuard from '$lib/components/guards/IdentityGuard.svelte';
 	import MissionControlGuard from '$lib/components/guards/MissionControlGuard.svelte';
 	import SatelliteGuard from '$lib/components/guards/SatelliteGuard.svelte';
-	import CanisterMonitoringLoader from '$lib/components/loaders/CanisterMonitoringLoader.svelte';
-	import CanisterSyncDataLoader from '$lib/components/loaders/CanisterSyncDataLoader.svelte';
+	import CanistersLoader from '$lib/components/loaders/CanistersLoader.svelte';
 	import OrbitersLoader from '$lib/components/loaders/OrbitersLoader.svelte';
 	import SatellitesLoader from '$lib/components/loaders/SatellitesLoader.svelte';
 	import SatelliteOverview from '$lib/components/satellites/SatelliteOverview.svelte';
@@ -63,17 +62,15 @@
 					<SatelliteGuard>
 						<MissionControlGuard>
 							{#if nonNullish($satelliteStore)}
-								<CanisterSyncDataLoader satellites={[$satelliteStore]}>
-									<CanisterMonitoringLoader satellites={[$satelliteStore]}>
-										{#if $store.tabId === $store.tabs[0].id}
-											<SatelliteOverview satellite={$satelliteStore} />
+								<CanistersLoader monitoring satellites={[$satelliteStore]}>
+									{#if $store.tabId === $store.tabs[0].id}
+										<SatelliteOverview satellite={$satelliteStore} />
 
-											<Guides />
-										{:else if $store.tabId === $store.tabs[1].id}
-											<SatelliteSettings satellite={$satelliteStore} />
-										{/if}
-									</CanisterMonitoringLoader>
-								</CanisterSyncDataLoader>
+										<Guides />
+									{:else if $store.tabId === $store.tabs[1].id}
+										<SatelliteSettings satellite={$satelliteStore} />
+									{/if}
+								</CanistersLoader>
 							{/if}
 						</MissionControlGuard>
 					</SatelliteGuard>

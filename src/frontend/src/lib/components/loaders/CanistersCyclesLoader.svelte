@@ -5,7 +5,6 @@
 	import type { Satellite } from '$declarations/mission_control/mission_control.did';
 	import { orbiterNotLoaded } from '$lib/derived/orbiter.derived';
 	import { satellitesNotLoaded } from '$lib/derived/satellites.derived';
-	import { allSegments } from '$lib/derived/segments.derived';
 	import { type CyclesWorker, initCyclesWorker } from '$lib/services/worker.cycles.services';
 	import { canisterSyncDataUncertifiedStore } from '$lib/stores/canister-sync-data.store';
 	import type { CanisterSegment } from '$lib/types/canister';
@@ -15,17 +14,10 @@
 	interface Props {
 		children: Snippet;
 		satellites?: Satellite[];
+		segments: CanisterSegment[];
 	}
 
-	let { children, satellites = [] }: Props = $props();
-
-	let segments: CanisterSegment[] = $derived([
-		...$allSegments.filter(
-			({ segment, canisterId }) =>
-				segment !== 'satellite' ||
-				satellites.find(({ satellite_id }) => satellite_id.toText() === canisterId) !== undefined
-		)
-	]);
+	let { children, segments }: Props = $props();
 
 	let worker: CyclesWorker | undefined = $state(undefined);
 

@@ -9,21 +9,14 @@ export type PageSatelliteIdStore = Readable<PageSatelliteIdStoreData>;
 const initPageSatelliteIdStore = (): PageSatelliteIdStore => {
 	const { subscribe, set } = writable<PageSatelliteIdStoreData>(undefined);
 
+	$effect.root(() => {
+		$effect(() => {
+			set(page.data?.satellite);
+		});
+	});
+
 	return {
-		subscribe: (run) => {
-			const cleanup = $effect.root(() => {
-				$effect(() => {
-					set(page.data?.satellite);
-				});
-			});
-
-			const unsubscribe = subscribe(run);
-
-			return () => {
-				cleanup();
-				unsubscribe();
-			};
-		}
+		subscribe
 	};
 };
 

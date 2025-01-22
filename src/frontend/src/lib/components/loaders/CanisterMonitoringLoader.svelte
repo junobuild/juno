@@ -3,22 +3,22 @@
 	import { debounce, isNullish } from '@dfinity/utils';
 	import { compare } from 'semver';
 	import { onDestroy, onMount, type Snippet } from 'svelte';
+	import type { Satellite } from '$declarations/mission_control/mission_control.did';
 	import { MISSION_CONTROL_v0_0_14 } from '$lib/constants/version.constants';
 	import { missionControlIdDerived } from '$lib/derived/mission-control.derived';
+	import { orbiterNotLoaded } from '$lib/derived/orbiter.derived';
+	import { satellitesNotLoaded } from '$lib/derived/satellites.derived';
+	import { allSegments } from '$lib/derived/segments.derived';
 	import { missionControlVersion } from '$lib/derived/version.derived';
 	import {
 		initMonitoringWorker,
 		type MonitoringWorker
 	} from '$lib/services/worker.monitoring.services';
+	import { canisterMonitoringUncertifiedStore } from '$lib/stores/canister-monitoring.store';
 	import { i18n } from '$lib/stores/i18n.store';
 	import { toasts } from '$lib/stores/toasts.store';
-	import type { PostMessageDataResponseCanisterMonitoring } from '$lib/types/post-message';
-	import { satellitesNotLoaded } from '$lib/derived/satellites.derived';
-	import { orbiterNotLoaded } from '$lib/derived/orbiter.derived';
-	import { allSegments } from '$lib/derived/segments.derived';
-	import { canisterMonitoringUncertifiedStore } from '$lib/stores/canister-monitoring.store';
 	import type { CanisterSegment } from '$lib/types/canister';
-	import type { Satellite } from '$declarations/mission_control/mission_control.did';
+	import type { PostMessageDataResponseCanisterMonitoring } from '$lib/types/post-message';
 
 	interface Props {
 		children: Snippet;

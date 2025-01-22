@@ -5,6 +5,7 @@
 	import { fade } from 'svelte/transition';
 	import type { Monitoring } from '$declarations/mission_control/mission_control.did';
 	import Canister from '$lib/components/canister/Canister.svelte';
+	import CanisterMonitoringData from '$lib/components/canister/CanisterMonitoringData.svelte';
 	import Chart from '$lib/components/charts/Chart.svelte';
 	import IconClockUpdate from '$lib/components/icons/IconClockUpdate.svelte';
 	import IconRefresh from '$lib/components/icons/IconRefresh.svelte';
@@ -17,7 +18,6 @@
 	import { formatTCycles } from '$lib/utils/cycles.utils';
 	import { formatToRelativeTime } from '$lib/utils/date.utils';
 	import { emit } from '$lib/utils/events.utils';
-	import CanisterMonitoringData from '$lib/components/canister/CanisterMonitoringData.svelte';
 
 	interface Props {
 		children: Snippet;

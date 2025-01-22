@@ -3,6 +3,7 @@
 	import { nonNullish } from '@dfinity/utils';
 	import { fade } from 'svelte/transition';
 	import CanisterMonitoringChart from '$lib/components/canister/CanisterMonitoringChart.svelte';
+	import CanisterMonitoringData from '$lib/components/canister/CanisterMonitoringData.svelte';
 	import CanisterOverview from '$lib/components/canister/CanisterOverview.svelte';
 	import MonitoringDepositCyclesChart from '$lib/components/monitoring/MonitoringDepositCyclesChart.svelte';
 	import MonitoringStrategyStatus from '$lib/components/monitoring/MonitoringStrategyStatus.svelte';
@@ -13,7 +14,6 @@
 	import type { JunoModalDetail, JunoModalShowMonitoringDetail } from '$lib/types/modal';
 	import { formatTCycles } from '$lib/utils/cycles.utils';
 	import { formatToRelativeTime } from '$lib/utils/date.utils';
-	import CanisterMonitoringData from '$lib/components/canister/CanisterMonitoringData.svelte';
 
 	interface Props {
 		detail: JunoModalDetail;

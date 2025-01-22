@@ -5,12 +5,12 @@
 	import type { Satellite } from '$declarations/mission_control/mission_control.did';
 	import { orbiterNotLoaded } from '$lib/derived/orbiter.derived';
 	import { satellitesNotLoaded } from '$lib/derived/satellites.derived';
+	import { allSegments } from '$lib/derived/segments.derived';
 	import { type CyclesWorker, initCyclesWorker } from '$lib/services/worker.cycles.services';
 	import { canisterSyncDataUncertifiedStore } from '$lib/stores/canister-sync-data.store';
 	import type { CanisterSegment } from '$lib/types/canister';
 	import type { PostMessageDataResponseCanisterSyncData } from '$lib/types/post-message';
 	import { emit } from '$lib/utils/events.utils';
-	import { allSegments } from '$lib/derived/segments.derived';
 
 	interface Props {
 		children: Snippet;

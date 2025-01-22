@@ -1,8 +1,8 @@
 <script lang="ts">
 	import type { Principal } from '@dfinity/principal';
 	import type { Snippet } from 'svelte';
-	import type { CanisterMonitoringData } from '$lib/types/canister';
 	import { canisterMonitoringUncertifiedStore } from '$lib/stores/canister-monitoring.store';
+	import type { CanisterMonitoringData } from '$lib/types/canister';
 
 	interface Props {
 		canisterId: Principal;

@@ -4,7 +4,7 @@
 	import { writable } from 'svelte/store';
 	import IdentityGuard from '$lib/components/guards/IdentityGuard.svelte';
 	import MissionControlGuard from '$lib/components/guards/MissionControlGuard.svelte';
-	import CanistersLoader from '$lib/components/loaders/CanistersLoader.svelte';
+	import CanisterSyncDataLoader from '$lib/components/loaders/CanisterSyncDataLoader.svelte';
 	import SatellitesLoader from '$lib/components/loaders/SatellitesLoader.svelte';
 	import MissionControl from '$lib/components/mission-control/MissionControl.svelte';
 	import MissionControlSettings from '$lib/components/mission-control/MissionControlSettings.svelte';
@@ -57,7 +57,7 @@
 		<WalletLoader>
 			<SatellitesLoader>
 				<MissionControlGuard>
-					<CanistersLoader>
+					<CanisterSyncDataLoader>
 						{#if nonNullish($missionControlIdDerived)}
 							{#if $store.tabId === $store.tabs[0].id}
 								<MissionControl missionControlId={$missionControlIdDerived} />
@@ -65,7 +65,7 @@
 								<MissionControlSettings missionControlId={$missionControlIdDerived} />
 							{/if}
 						{/if}
-					</CanistersLoader>
+					</CanisterSyncDataLoader>
 				</MissionControlGuard>
 			</SatellitesLoader>
 		</WalletLoader>

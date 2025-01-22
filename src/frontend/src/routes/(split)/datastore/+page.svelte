@@ -5,7 +5,7 @@
 	import Db from '$lib/components/db/Db.svelte';
 	import IdentityGuard from '$lib/components/guards/IdentityGuard.svelte';
 	import SatelliteGuard from '$lib/components/guards/SatelliteGuard.svelte';
-	import CanistersLoader from '$lib/components/loaders/CanistersLoader.svelte';
+	import CanisterSyncDataLoader from '$lib/components/loaders/CanisterSyncDataLoader.svelte';
 	import SatellitesLoader from '$lib/components/loaders/SatellitesLoader.svelte';
 	import Tabs from '$lib/components/ui/Tabs.svelte';
 	import WalletLoader from '$lib/components/wallet/WalletLoader.svelte';
@@ -44,11 +44,11 @@
 		<WalletLoader>
 			<SatellitesLoader>
 				<SatelliteGuard>
-					<CanistersLoader>
+					<CanisterSyncDataLoader>
 						{#if nonNullish($satelliteStore)}
 							<Db satelliteId={$satelliteStore.satellite_id} />
 						{/if}
-					</CanistersLoader>
+					</CanisterSyncDataLoader>
 				</SatelliteGuard>
 			</SatellitesLoader>
 		</WalletLoader>

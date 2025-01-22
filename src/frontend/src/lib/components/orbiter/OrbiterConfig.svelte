@@ -8,7 +8,7 @@
 		orbiterFeatures,
 		orbiterSatellitesConfig
 	} from '$lib/derived/orbiter-satellites.derived';
-	import { satellitesStore } from '$lib/derived/satellites.derived';
+	import { sortedSatellites } from '$lib/derived/satellites.derived';
 	import { loadOrbiterConfigs } from '$lib/services/orbiters.services';
 	import { i18n } from '$lib/stores/i18n.store';
 	import { versionStore } from '$lib/stores/version.store';
@@ -117,7 +117,7 @@
 	</div>
 </div>
 
-{#if ($satellitesStore ?? []).length > 0}
+{#if $sortedSatellites.length > 0}
 	<button onclick={openModal} in:fade>
 		{$i18n.core.edit_config}
 	</button>

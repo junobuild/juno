@@ -6,7 +6,7 @@
 	import MissionControlGuard from '$lib/components/guards/MissionControlGuard.svelte';
 	import SatelliteGuard from '$lib/components/guards/SatelliteGuard.svelte';
 	import Hosting from '$lib/components/hosting/Hosting.svelte';
-	import CanisterCyclesLoader from '$lib/components/loaders/CanisterCyclesLoader.svelte';
+	import CanisterSyncDataLoader from '$lib/components/loaders/CanisterSyncDataLoader.svelte';
 	import SatellitesLoader from '$lib/components/loaders/SatellitesLoader.svelte';
 	import Tabs from '$lib/components/ui/Tabs.svelte';
 	import WalletLoader from '$lib/components/wallet/WalletLoader.svelte';
@@ -42,13 +42,13 @@
 			<SatellitesLoader>
 				<SatelliteGuard>
 					<MissionControlGuard>
-						<CanisterCyclesLoader>
+						<CanisterSyncDataLoader>
 							{#if nonNullish($satelliteStore)}
 								{#if $store.tabId === $store.tabs[0].id}
 									<Hosting satellite={$satelliteStore} />
 								{/if}
 							{/if}
-						</CanisterCyclesLoader>
+						</CanisterSyncDataLoader>
 					</MissionControlGuard>
 				</SatelliteGuard>
 			</SatellitesLoader>

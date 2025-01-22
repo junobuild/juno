@@ -7,7 +7,7 @@
 	import AnalyticsSettings from '$lib/components/analytics/AnalyticsSettings.svelte';
 	import IdentityGuard from '$lib/components/guards/IdentityGuard.svelte';
 	import MissionControlGuard from '$lib/components/guards/MissionControlGuard.svelte';
-	import CanisterCyclesLoader from '$lib/components/loaders/CanisterCyclesLoader.svelte';
+	import CanisterSyncDataLoader from '$lib/components/loaders/CanisterSyncDataLoader.svelte';
 	import OrbitersLoader from '$lib/components/loaders/OrbitersLoader.svelte';
 	import SatellitesLoader from '$lib/components/loaders/SatellitesLoader.svelte';
 	import Orbiter from '$lib/components/orbiter/Orbiter.svelte';
@@ -78,7 +78,7 @@
 		<WalletLoader>
 			<SatellitesLoader>
 				<OrbitersLoader withVersion>
-					<CanisterCyclesLoader>
+					<CanisterSyncDataLoader>
 						<MissionControlGuard>
 							{#if $store.tabId === $store.tabs[0].id}
 								<Analytics />
@@ -90,7 +90,7 @@
 								<AnalyticsSettings orbiterId={$orbiterStore.orbiter_id} />
 							{/if}
 						</MissionControlGuard>
-					</CanisterCyclesLoader>
+					</CanisterSyncDataLoader>
 				</OrbitersLoader>
 			</SatellitesLoader>
 		</WalletLoader>

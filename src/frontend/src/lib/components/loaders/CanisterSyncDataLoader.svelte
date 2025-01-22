@@ -8,7 +8,11 @@
 	import { satellitesNotLoaded } from '$lib/derived/satellites.derived';
 	import { type CyclesWorker, initCyclesWorker } from '$lib/services/worker.cycles.services';
 	import type { CanisterSegment } from '$lib/types/canister';
-	import type { PostMessageDataResponseCanister } from '$lib/types/post-message';
+	import type {
+		PostMessageDataResponseCanister,
+		PostMessageDataResponseCanisterSyncData
+	} from '$lib/types/post-message';
+	import { canisterSyncDataUncertifiedStore } from '$lib/stores/canister-sync-data.store';
 
 	interface Props {
 		children: Snippet;
@@ -44,8 +48,18 @@
 
 	onMount(async () => (worker = await initCyclesWorker()));
 
-	const syncCanister = ({ canister: c }: PostMessageDataResponseCanister) => {
-		console.log('syncCanister', c);
+	const syncCanister = ({ canister }: PostMessageDataResponseCanisterSyncData) => {
+		if (isNullish(canister)) {
+			return;
+		}
+
+		canisterSyncDataUncertifiedStore.set({
+			canisterId: canister.id,
+			data: {
+				data: canister,
+				certified: false
+			}
+		});
 	};
 
 	const debounceStart = debounce(() =>

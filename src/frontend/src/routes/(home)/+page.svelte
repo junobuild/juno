@@ -3,7 +3,7 @@
 	import SignIn from '$lib/components/core/SignIn.svelte';
 	import Launchpad from '$lib/components/launchpad/Launchpad.svelte';
 
-	import CanisterCyclesLoader from '$lib/components/loaders/CanisterCyclesLoader.svelte';
+	import CanisterSyncDataLoader from '$lib/components/loaders/CanisterSyncDataLoader.svelte';
 	import SatellitesLoader from '$lib/components/loaders/SatellitesLoader.svelte';
 	import WalletLoader from '$lib/components/wallet/WalletLoader.svelte';
 	import { authSignedIn } from '$lib/derived/auth.derived';
@@ -14,9 +14,9 @@
 	<div in:fade>
 		<WalletLoader>
 			<SatellitesLoader>
-				<CanisterCyclesLoader satellites={$sortedSatellites}>
+				<CanisterSyncDataLoader satellites={$sortedSatellites}>
 					<Launchpad />
-				</CanisterCyclesLoader>
+				</CanisterSyncDataLoader>
 			</SatellitesLoader>
 		</WalletLoader>
 	</div>

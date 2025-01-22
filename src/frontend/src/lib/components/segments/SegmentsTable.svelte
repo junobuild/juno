@@ -6,7 +6,7 @@
 	import Segment from '$lib/components/segments/Segment.svelte';
 	import Checkbox from '$lib/components/ui/Checkbox.svelte';
 	import { orbiterStore } from '$lib/derived/orbiter.derived';
-	import { satellitesStore } from '$lib/derived/satellite.derived';
+	import { sortedSatellites } from '$lib/derived/satellites.derived';
 	import { loadOrbiters } from '$lib/services/orbiters.services';
 	import { loadSatellites } from '$lib/services/satellites.services';
 	import { i18n } from '$lib/stores/i18n.store';
@@ -54,7 +54,7 @@
 			return;
 		}
 
-		satellites = ($satellitesStore ?? []).map(({ satellite_id, ...rest }) => [
+		satellites = $sortedSatellites.map(({ satellite_id, ...rest }) => [
 			satellite_id,
 			{ satellite_id, ...rest }
 		]);

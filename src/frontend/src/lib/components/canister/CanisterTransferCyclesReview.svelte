@@ -6,7 +6,7 @@
 	import Value from '$lib/components/ui/Value.svelte';
 	import { missionControlIdDerived } from '$lib/derived/mission-control.derived';
 	import { orbiterStore } from '$lib/derived/orbiter.derived';
-	import { satellitesStore } from '$lib/derived/satellite.derived';
+	import { sortedSatellites } from '$lib/derived/satellites.derived';
 	import { i18n } from '$lib/stores/i18n.store';
 	import { formatTCycles } from '$lib/utils/cycles.utils';
 	import { satelliteName } from '$lib/utils/satellite.utils';
@@ -21,7 +21,7 @@
 	let { onsubmit, onback, cycles, destinationId }: Props = $props();
 
 	let satellite = $derived(
-		($satellitesStore ?? []).find(({ satellite_id }) => satellite_id.toText() === destinationId)
+		$sortedSatellites.find(({ satellite_id }) => satellite_id.toText() === destinationId)
 	);
 </script>
 

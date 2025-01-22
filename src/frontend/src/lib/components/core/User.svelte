@@ -12,11 +12,8 @@
 	import ButtonIcon from '$lib/components/ui/ButtonIcon.svelte';
 	import Popover from '$lib/components/ui/Popover.svelte';
 	import { authSignedIn } from '$lib/derived/auth.derived';
-	import {
-		satellitesNotLoaded,
-		satellitesStore,
-		satelliteStore
-	} from '$lib/derived/satellite.derived';
+	import { satelliteStore } from '$lib/derived/satellite.derived';
+	import { satellitesNotLoaded, satellitesStore } from '$lib/derived/satellites.derived';
 	import { signIn as doSignIn, signOut } from '$lib/services/auth.services';
 	import { i18n } from '$lib/stores/i18n.store';
 	import { analyticsLink } from '$lib/utils/nav.utils';

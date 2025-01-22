@@ -8,6 +8,7 @@
 	import Logs from '$lib/components/logs/Logs.svelte';
 	import Tabs from '$lib/components/ui/Tabs.svelte';
 	import WalletLoader from '$lib/components/wallet/WalletLoader.svelte';
+	import { satelliteStore } from '$lib/derived/satellite.derived';
 	import {
 		type Tab,
 		type TabsContext,
@@ -15,7 +16,6 @@
 		TABS_CONTEXT_KEY
 	} from '$lib/types/tabs.context';
 	import { initTabId } from '$lib/utils/tabs.utils';
-	import { satelliteStore } from '$lib/derived/satellite.derived';
 
 	const tabs: Tab[] = [
 		{

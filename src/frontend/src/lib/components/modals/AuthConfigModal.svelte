@@ -8,7 +8,7 @@
 	import SpinnerModal from '$lib/components/ui/SpinnerModal.svelte';
 	import Value from '$lib/components/ui/Value.svelte';
 	import Warning from '$lib/components/ui/Warning.svelte';
-	import { satelliteCustomDomains } from '$lib/derived/custom-domains.derived';
+	import { satelliteCustomDomains } from '$lib/derived/satellite-custom-domains.derived';
 	import { updateAuthConfig } from '$lib/services/auth.config.services';
 	import { authStore } from '$lib/stores/auth.store';
 	import { isBusy, wizardBusy } from '$lib/stores/busy.store';

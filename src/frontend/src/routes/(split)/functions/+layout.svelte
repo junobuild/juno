@@ -2,11 +2,11 @@
 	import { nonNullish } from '@dfinity/utils';
 	import { onMount, type Snippet } from 'svelte';
 	import IconFunctions from '$lib/components/icons/IconFunctions.svelte';
+	import { satelliteStore } from '$lib/derived/satellite.derived';
 	import { i18n } from '$lib/stores/i18n.store';
 	import { layoutNavigation } from '$lib/stores/layout-navigation.store';
 	import { Color } from '$lib/types/theme';
 	import { applyColor } from '$lib/utils/theme.utils';
-	import { satelliteStore } from '$lib/derived/satellite.derived';
 
 	interface Props {
 		children: Snippet;

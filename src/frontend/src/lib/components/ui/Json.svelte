@@ -205,7 +205,7 @@
 			left: 0;
 			top: 0;
 			// Move left to compensate for the padding of the ul
-			// Move down to componsate for the gap between li
+			// Move down to compensate for the gap between li
 			transform: translate(calc(-1 * var(--padding-1_5x)), calc(0.8 * var(--padding)));
 			font-size: var(--padding);
 		}

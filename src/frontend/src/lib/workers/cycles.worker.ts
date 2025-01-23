@@ -12,7 +12,12 @@ import { cyclesIdbStore } from '$lib/stores/idb.store';
 import type { CanisterInfo, CanisterSegment, CanisterSyncData } from '$lib/types/canister';
 import type { PostMessageDataRequest, PostMessageRequest } from '$lib/types/post-message';
 import { cyclesToICP } from '$lib/utils/cycles.utils';
-import { emitCanister, emitSavedCanisters, loadIdentity } from '$lib/utils/worker.utils';
+import {
+	emitCanister,
+	emitCanisters,
+	emitSavedCanisters,
+	loadIdentity
+} from '$lib/utils/worker.utils';
 import type { Identity } from '@dfinity/agent';
 import { isNullish, nonNullish } from '@dfinity/utils';
 import { set } from 'idb-keyval';
@@ -105,51 +110,65 @@ const syncIcStatusCanisters = async ({
 	segments: CanisterSegment[];
 	trillionRatio: bigint;
 }) => {
-	await Promise.allSettled(
-		segments.map(async ({ canisterId, segment }) => {
-			try {
-				const [canisterResult, memorySizeResult] = await Promise.allSettled([
-					canisterStatus({ canisterId, identity }),
-					...(segment === 'satellite'
-						? [memorySizeSatellite({ satelliteId: canisterId, identity })]
-						: segment === 'orbiter'
-							? [memorySizeOrbiter({ orbiterId: canisterId, identity })]
-							: [])
-				]);
+	const syncStatusAndMemoryPerCanister = async ({
+		canisterId,
+		segment
+	}: CanisterSegment): Promise<CanisterSyncData> => {
+		try {
+			const [canisterResult, memorySizeResult] = await Promise.allSettled([
+				canisterStatus({ canisterId, identity }),
+				...(segment === 'satellite'
+					? [memorySizeSatellite({ satelliteId: canisterId, identity })]
+					: segment === 'orbiter'
+						? [memorySizeOrbiter({ orbiterId: canisterId, identity })]
+						: [])
+			]);
 
-				if (canisterResult.status === 'rejected') {
-					throw canisterResult.reason;
-				}
-
-				const { value: canisterInfo } = canisterResult;
-
-				// We silence those error because we managed the canister status.
-				// Satellites and orbiters which were not migrated for example will throw an error because the end point won't be exposed.
-				if (memorySizeResult?.status === 'rejected') {
-					console.error(`Error fetching memory size information: `, memorySizeResult.reason);
-				}
-
-				await syncCanister({
-					canisterInfo,
-					trillionRatio,
-					canisterId: canisterInfo.canisterId,
-					memory: memorySizeResult?.status === 'fulfilled' ? memorySizeResult.value : undefined
-				});
-			} catch (err: unknown) {
-				console.error(err);
-
-				emitCanister({
-					id: canisterId,
-					sync: 'error'
-				});
-
-				throw err;
+			if (canisterResult.status === 'rejected') {
+				throw canisterResult.reason;
 			}
-		})
-	);
+
+			const { value: canisterInfo } = canisterResult;
+
+			// We silence those error because we managed the canister status.
+			// Satellites and orbiters which were not migrated for example will throw an error because the end point won't be exposed.
+			if (memorySizeResult?.status === 'rejected') {
+				console.error(`Error fetching memory size information: `, memorySizeResult.reason);
+			}
+
+			const canister = mapCanisterSyncData({
+				canisterInfo,
+				trillionRatio,
+				canisterId: canisterInfo.canisterId,
+				memory: memorySizeResult?.status === 'fulfilled' ? memorySizeResult.value : undefined
+			});
+
+			// We emit the canister data this way the UI can render asynchronously render the information without waiting for all canisters status to be fetched.
+			emitCanister(canister);
+
+			return canister;
+		} catch (err: unknown) {
+			console.error(err);
+
+			return {
+				id: canisterId,
+				sync: 'error'
+			};
+		}
+	};
+
+	const canisters = await Promise.all(segments.map(syncStatusAndMemoryPerCanister));
+
+	// Save information in indexed-db as well to load previous values on navigation and refresh
+	for (const { id, ...rest } of canisters.filter(({ sync }) => sync !== 'error')) {
+		await set(id, { id, ...rest }, cyclesIdbStore);
+	}
+
+	// We also emits all canisters status for syncing the potential errors but also to hold the value in the UI in a stores that gets updated in bulk and lead to less re-render
+	emitCanisters(canisters);
 };
 
-const syncCanister = async ({
+const mapCanisterSyncData = ({
 	canisterId,
 	trillionRatio,
 	canisterInfo: { canisterId: _, cycles, ...rest },
@@ -159,26 +178,19 @@ const syncCanister = async ({
 	trillionRatio: bigint;
 	canisterInfo: CanisterInfo;
 	memory: MemorySize | undefined;
-}) => {
-	const canister: CanisterSyncData = {
-		id: canisterId,
-		sync: 'synced',
-		data: {
-			icp: cyclesToICP({ cycles, trillionRatio }),
-			warning: {
-				cycles: cycles < CYCLES_WARNING,
-				heap: (memory?.heap ?? 0n) >= MEMORY_HEAP_WARNING
-			},
-			canister: {
-				cycles,
-				...rest
-			},
-			...(nonNullish(memory) && { memory })
-		}
-	};
-
-	// Save information in indexed-db as well to load previous values on navigation and refresh
-	await set(canisterId, canister, cyclesIdbStore);
-
-	emitCanister(canister);
-};
+}): CanisterSyncData => ({
+	id: canisterId,
+	sync: 'synced',
+	data: {
+		icp: cyclesToICP({ cycles, trillionRatio }),
+		warning: {
+			cycles: cycles < CYCLES_WARNING,
+			heap: (memory?.heap ?? 0n) >= MEMORY_HEAP_WARNING
+		},
+		canister: {
+			cycles,
+			...rest
+		},
+		...(nonNullish(memory) && { memory })
+	}
+});

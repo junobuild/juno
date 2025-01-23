@@ -5,17 +5,17 @@
 	import type { Orbiter, Satellite } from '$declarations/mission_control/mission_control.did';
 	import Segment from '$lib/components/segments/Segment.svelte';
 	import Checkbox from '$lib/components/ui/Checkbox.svelte';
+	import { canisterSyncDataUncertifiedLoaded } from '$lib/derived/canisters.derived';
+	import { orbiterWithSyncData } from '$lib/derived/orbiter-merged.derived';
+	import { orbiterLoaded } from '$lib/derived/orbiter.derived';
+	import { satellitesWithSyncData } from '$lib/derived/satellites-merged.derived';
+	import { satellitesLoaded } from '$lib/derived/satellites.derived';
 	import { loadOrbiters } from '$lib/services/orbiters.services';
 	import { loadSatellites } from '$lib/services/satellites.services';
 	import { i18n } from '$lib/stores/i18n.store';
 	import type { MissionControlId } from '$lib/types/mission-control';
 	import { orbiterName } from '$lib/utils/orbiter.utils';
 	import { satelliteName } from '$lib/utils/satellite.utils';
-	import { satellitesWithSyncData } from '$lib/derived/satellites-merged.derived';
-	import { orbiterWithSyncData } from '$lib/derived/orbiter-merged.derived';
-	import { canisterSyncDataUncertifiedLoaded } from '$lib/derived/canisters.derived';
-	import { satellitesLoaded } from '$lib/derived/satellites.derived';
-	import { orbiterLoaded } from '$lib/derived/orbiter.derived';
 
 	interface Props {
 		missionControlId: MissionControlId;

@@ -53,7 +53,7 @@ export const assertAndConvertAmountToICPToken = ({
 		return { valid: false };
 	}
 
-	if (balance + fee < tokenAmount.toE8s()) {
+	if (balance - fee < tokenAmount.toE8s()) {
 		toasts.error({
 			text: labels.errors.invalid_amount
 		});

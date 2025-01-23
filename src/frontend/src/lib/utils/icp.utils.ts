@@ -11,7 +11,7 @@ import { formatNumber, formatUsd } from './number.utils';
 export const formatICP = (icp: bigint): string =>
 	formatNumber(Number(icp) / Number(E8S_PER_ICP), {
 		minFraction: 4,
-		maxFraction: 4
+		maxFraction: 8
 	});
 
 /**

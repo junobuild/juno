@@ -1,18 +1,21 @@
 <script lang="ts">
 	import type { Principal } from '@dfinity/principal';
-	import { isEmptyString, nonNullish } from '@dfinity/utils';
+	import { debounce, isEmptyString, isNullish, nonNullish } from '@dfinity/utils';
 	import { onMount, type Snippet, untrack } from 'svelte';
 	import type { Orbiter, Satellite } from '$declarations/mission_control/mission_control.did';
 	import Segment from '$lib/components/segments/Segment.svelte';
 	import Checkbox from '$lib/components/ui/Checkbox.svelte';
-	import { orbiterStore } from '$lib/derived/orbiter.derived';
-	import { sortedSatellites } from '$lib/derived/satellites.derived';
 	import { loadOrbiters } from '$lib/services/orbiters.services';
 	import { loadSatellites } from '$lib/services/satellites.services';
 	import { i18n } from '$lib/stores/i18n.store';
 	import type { MissionControlId } from '$lib/types/mission-control';
 	import { orbiterName } from '$lib/utils/orbiter.utils';
 	import { satelliteName } from '$lib/utils/satellite.utils';
+	import { satellitesWithSyncData } from '$lib/derived/satellites-merged.derived';
+	import { orbiterWithSyncData } from '$lib/derived/orbiter-merged.derived';
+	import { canisterSyncDataUncertifiedLoaded } from '$lib/derived/canisters.derived';
+	import { satellitesLoaded } from '$lib/derived/satellites.derived';
+	import { orbiterLoaded } from '$lib/derived/orbiter.derived';
 
 	interface Props {
 		missionControlId: MissionControlId;
@@ -36,8 +39,35 @@
 		reloadSegments = true
 	}: Props = $props();
 
-	let satellites: [Principal, Satellite][] = $state([]);
-	let orbiters: [Principal, Orbiter][] = $state([]);
+	let satellites: [Principal, Satellite][] | undefined = $derived(
+		$canisterSyncDataUncertifiedLoaded && $satellitesLoaded
+			? $satellitesWithSyncData.map(({ segment: { satellite_id, ...rest } }) => [
+					satellite_id,
+					{ satellite_id, ...rest }
+				])
+			: undefined
+	);
+	let orbiters: [Principal, Orbiter][] | undefined = $derived(
+		$canisterSyncDataUncertifiedLoaded && $orbiterLoaded
+			? (nonNullish($orbiterWithSyncData) ? [$orbiterWithSyncData] : []).map(
+					({ segment: { orbiter_id, ...rest } }) => [orbiter_id, { orbiter_id, ...rest }]
+				)
+			: undefined
+	);
+
+	$effect(() => {
+		console.log(satellites, orbiters);
+
+		if (isNullish(satellites)) {
+			return;
+		}
+
+		if (isNullish(orbiters)) {
+			return;
+		}
+
+		debounceToggleAll();
+	});
 
 	const loadSegments = async () => {
 		const [{ result: resultSatellites }, { result: resultOrbiters }] = await Promise.all([
@@ -49,18 +79,8 @@
 			!['success', 'skip'].includes(resultSatellites) ||
 			!['success', 'skip'].includes(resultOrbiters)
 		) {
-			satellites = [];
-			orbiters = [];
 			return;
 		}
-
-		satellites = $sortedSatellites.map(({ satellite_id, ...rest }) => [
-			satellite_id,
-			{ satellite_id, ...rest }
-		]);
-		orbiters = nonNullish($orbiterStore) ? [[$orbiterStore.orbiter_id, $orbiterStore]] : [];
-
-		toggleAll();
 	};
 
 	onMount(() => {
@@ -72,10 +92,14 @@
 	const toggleAll = () => {
 		allSelected = !allSelected;
 
+		console.log('yo', satellites, orbiters);
+
 		selectedMissionControl = allSelected;
-		selectedSatellites = allSelected ? [...satellites] : [];
-		selectedOrbiters = allSelected ? [...orbiters] : [];
+		selectedSatellites = allSelected ? [...(satellites ?? [])] : [];
+		selectedOrbiters = allSelected ? [...(orbiters ?? [])] : [];
 	};
+
+	const debounceToggleAll = debounce(toggleAll);
 
 	$effect(() => {
 		const disabled =
@@ -114,7 +138,7 @@
 				</tr>
 			{/if}
 
-			{#each satellites as satellite}
+			{#each satellites ?? [] as satellite}
 				<tr>
 					<td class="actions"
 						><Checkbox
@@ -129,7 +153,7 @@
 				</tr>
 			{/each}
 
-			{#each orbiters as orbiter}
+			{#each orbiters ?? [] as orbiter}
 				{@const orbName = orbiterName(orbiter[1])}
 
 				<tr>

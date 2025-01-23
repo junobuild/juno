@@ -48,9 +48,17 @@ export const PostMessageDataResponseCanisterMonitoringSchema = z.object({
 	canister: z.custom<CanisterSyncMonitoring>().optional()
 });
 
+export const PostMessageDataResponseCanistersSyncDataSchema = z.object({
+	canisters: z.array(z.custom<CanisterSyncData>()).optional()
+});
+
+export const PostMessageDataResponseCanistersMonitoringSchema = z.object({
+	canisters: z.array(z.custom<CanisterSyncMonitoring>()).optional()
+});
+
 export const PostMessageDataResponseCanisterSchema = z.union([
-	PostMessageDataResponseCanisterSyncDataSchema,
-	PostMessageDataResponseCanisterMonitoringSchema
+	PostMessageDataResponseCanistersSyncDataSchema,
+	PostMessageDataResponseCanistersMonitoringSchema
 ]);
 
 export const PostMessageDataResponseHostingSchema = z.object({
@@ -84,6 +92,7 @@ export const PostMessageRequestMsgSchema = z.enum([
 
 export const PostMessageResponseMsgSchema = z.enum([
 	'syncCanister',
+	'syncCanisters',
 	'signOutIdleTimer',
 	'delegationRemainingTime',
 	'customDomainRegistrationState',

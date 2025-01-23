@@ -16,7 +16,12 @@ import type {
 import type { PostMessageDataRequest, PostMessageRequest } from '$lib/types/post-message';
 import { formatTCycles } from '$lib/utils/cycles.utils';
 import { fromBigIntNanoSeconds, toBigIntNanoSeconds } from '$lib/utils/date.utils';
-import { emitCanister, emitSavedCanisters, loadIdentity } from '$lib/utils/worker.utils';
+import {
+	emitCanister,
+	emitCanisters,
+	emitSavedCanisters,
+	loadIdentity
+} from '$lib/utils/worker.utils';
 import type { Identity } from '@dfinity/agent';
 import { Principal } from '@dfinity/principal';
 import { fromNullable, fromNullishNullable, isNullish, nonNullish } from '@dfinity/utils';
@@ -331,62 +336,72 @@ const syncMonitoringForSegments = async ({
 } & Required<
 	Pick<PostMessageDataRequest, 'missionControlId' | 'segments' | 'withMonitoringHistory'>
 >) => {
-	await Promise.allSettled(
-		segments.map(async ({ canisterId, ...rest }) => {
-			try {
-				const loadParams = {
-					identity,
-					missionControlId,
-					segment: { canisterId, ...rest }
-				};
+	const syncMonitoringPerCanister = async ({
+		canisterId,
+		...rest
+	}: CanisterSegment): Promise<CanisterSyncMonitoring> => {
+		try {
+			const loadParams = {
+				identity,
+				missionControlId,
+				segment: { canisterId, ...rest }
+			};
 
-				const [resultStatuses, resultHistory] = await Promise.allSettled([
-					loadDeprecatedStatuses(loadParams),
-					withMonitoringHistory
-						? loadMonitoringHistory(loadParams)
-						: Promise.resolve({ history: [], chartsData: [], depositedCyclesChartData: [] })
-				]);
+			const [resultStatuses, resultHistory] = await Promise.allSettled([
+				loadDeprecatedStatuses(loadParams),
+				withMonitoringHistory
+					? loadMonitoringHistory(loadParams)
+					: Promise.resolve({ history: [], chartsData: [], depositedCyclesChartData: [] })
+			]);
 
-				if (resultHistory.status === 'rejected') {
-					throw new Error(resultHistory.reason);
-				}
-
-				const {
-					history,
-					chartsData: chartsHistory,
-					depositedCyclesChartData
-				} = resultHistory.value;
-				const chartsStatuses = resultStatuses.status === 'fulfilled' ? resultStatuses.value : [];
-
-				const chartsData = buildChartTotalPerDay({
-					chartsStatuses,
-					chartsHistory
-				});
-
-				const metadata = buildMonitoringMetadata(history);
-
-				await syncMonitoringHistory({
-					canisterId,
-					history,
-					chartsData,
-					depositedCyclesChartData,
-					metadata
-				});
-			} catch (err: unknown) {
-				console.error(err);
-
-				emitCanister({
-					id: canisterId,
-					sync: 'error'
-				});
-
-				throw err;
+			if (resultHistory.status === 'rejected') {
+				throw new Error(resultHistory.reason);
 			}
-		})
-	);
+
+			const { history, chartsData: chartsHistory, depositedCyclesChartData } = resultHistory.value;
+			const chartsStatuses = resultStatuses.status === 'fulfilled' ? resultStatuses.value : [];
+
+			const chartsData = buildChartTotalPerDay({
+				chartsStatuses,
+				chartsHistory
+			});
+
+			const metadata = buildMonitoringMetadata(history);
+
+			const canister = mapMonitoringHistory({
+				canisterId,
+				history,
+				chartsData,
+				depositedCyclesChartData,
+				metadata
+			});
+
+			// We emit the canister data this way the UI can render asynchronously render the information without waiting for all canisters status to be fetched.
+			emitCanister(canister);
+
+			return canister;
+		} catch (err: unknown) {
+			console.error(err);
+
+			return {
+				id: canisterId,
+				sync: 'error'
+			};
+		}
+	};
+
+	const canisters = await Promise.all(segments.map(syncMonitoringPerCanister));
+
+	// Save information in indexed-db as well to load previous values on navigation and refresh
+	for (const { id, ...rest } of canisters.filter(({ sync }) => sync !== 'error')) {
+		await set(id, { id, ...rest }, monitoringIdbStore);
+	}
+
+	// We also emits all canisters status for syncing the potential errors but also to hold the value in the UI in a stores that gets updated in bulk and lead to less re-render
+	emitCanisters(canisters);
 };
 
-const syncMonitoringHistory = async ({
+const mapMonitoringHistory = ({
 	canisterId,
 	history,
 	chartsData,
@@ -398,22 +413,15 @@ const syncMonitoringHistory = async ({
 	chartsData: ChartsData[];
 	depositedCyclesChartData: TimeOfDayChartData[];
 	metadata: MonitoringMetadata | undefined;
-}) => {
-	const canister: CanisterSyncMonitoring = {
-		id: canisterId,
-		sync: 'synced',
-		data: {
-			history,
-			chartsData,
-			charts: {
-				depositedCycles: depositedCyclesChartData
-			},
-			...(nonNullish(metadata) && { metadata })
-		}
-	};
-
-	// Save information in indexed-db as well to load previous values on navigation and refresh
-	await set(canisterId, canister, monitoringIdbStore);
-
-	emitCanister(canister);
-};
+}): CanisterSyncMonitoring => ({
+	id: canisterId,
+	sync: 'synced',
+	data: {
+		history,
+		chartsData,
+		charts: {
+			depositedCycles: depositedCyclesChartData
+		},
+		...(nonNullish(metadata) && { metadata })
+	}
+});

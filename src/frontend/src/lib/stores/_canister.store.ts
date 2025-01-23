@@ -34,3 +34,13 @@ export const initCanisterStore = <T>(): CanisterStore<T> => {
 		resetAll: () => set(null)
 	};
 };
+
+// Each canister is set independently. This way the subscriber is triggered each time a canister changes.
+// Useful to update the UI without waiting all canisters data to be loaded.
+export const initPerCanisterStore = <T>(): Omit<CanisterStore<T>, 'setAll' | 'resetAll'> =>
+	initCanisterStore();
+
+// Only bulk independently. This way the subscribers is triggered only when all canisters are loaded.
+// Useful to reduce the amount of repaint.
+export const initBulkCanistersStore = <T>(): Omit<CanisterStore<T>, 'set' | 'reset'> =>
+	initCanisterStore();

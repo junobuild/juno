@@ -1,14 +1,12 @@
 <script lang="ts">
 	import type { Principal } from '@dfinity/principal';
-	import { debounce, isNullish } from '@dfinity/utils';
+	import { debounce } from '@dfinity/utils';
 	import { onDestroy, onMount, type Snippet } from 'svelte';
 	import type { Satellite } from '$declarations/mission_control/mission_control.did';
 	import { orbiterNotLoaded } from '$lib/derived/orbiter.derived';
 	import { satellitesNotLoaded } from '$lib/derived/satellites.derived';
 	import { type CyclesWorker, initCyclesWorker } from '$lib/services/worker.cycles.services';
-	import { canisterSyncDataUncertifiedStore } from '$lib/stores/canister-sync-data.store';
 	import type { CanisterSegment } from '$lib/types/canister';
-	import type { PostMessageDataResponseCanisterSyncData } from '$lib/types/post-message';
 
 	interface Props {
 		children: Snippet;
@@ -22,24 +20,9 @@
 
 	onMount(async () => (worker = await initCyclesWorker()));
 
-	const syncCanister = ({ canister }: PostMessageDataResponseCanisterSyncData) => {
-		if (isNullish(canister)) {
-			return;
-		}
-
-		canisterSyncDataUncertifiedStore.set({
-			canisterId: canister.id,
-			data: {
-				data: canister,
-				certified: false
-			}
-		});
-	};
-
 	const debounceStart = debounce(() =>
 		worker?.startCyclesTimer({
-			segments,
-			callback: syncCanister
+			segments
 		})
 	);
 

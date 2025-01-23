@@ -12,11 +12,9 @@
 		initMonitoringWorker,
 		type MonitoringWorker
 	} from '$lib/services/worker.monitoring.services';
-	import { canisterMonitoringUncertifiedStore } from '$lib/stores/canister-monitoring.store';
 	import { i18n } from '$lib/stores/i18n.store';
 	import { toasts } from '$lib/stores/toasts.store';
 	import type { CanisterSegment } from '$lib/types/canister';
-	import type { PostMessageDataResponseCanisterMonitoring } from '$lib/types/post-message';
 
 	interface Props {
 		children: Snippet;
@@ -28,20 +26,6 @@
 	let worker: MonitoringWorker | undefined = $state();
 
 	onMount(async () => (worker = await initMonitoringWorker()));
-
-	const syncCanister = ({ canister }: PostMessageDataResponseCanisterMonitoring) => {
-		if (isNullish(canister)) {
-			return;
-		}
-
-		canisterMonitoringUncertifiedStore.set({
-			canisterId: canister.id,
-			data: {
-				data: canister,
-				certified: false
-			}
-		});
-	};
 
 	const debounceStart = debounce(() => {
 		if (isNullish($missionControlIdDerived)) {
@@ -56,8 +40,7 @@
 			segments,
 			missionControlId: $missionControlIdDerived,
 			withMonitoringHistory:
-				compare($missionControlVersion.current ?? '0.0.0', MISSION_CONTROL_v0_0_14) >= 0,
-			callback: syncCanister
+				compare($missionControlVersion.current ?? '0.0.0', MISSION_CONTROL_v0_0_14) >= 0
 		});
 	});
 

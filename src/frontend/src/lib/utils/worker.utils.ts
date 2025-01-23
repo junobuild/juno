@@ -47,16 +47,29 @@ export const emitSavedCanisters = async <T extends Canister<T>>({
 				}) as Canister<T>
 		);
 
-	await Promise.all(canistersNeverSynced.map(emitCanister));
+	const syncedCanisters = [...canistersNeverSynced, ...canisters];
 
-	await Promise.all(canisters.map(emitCanister));
+	for (const canister of syncedCanisters) {
+		emitCanister(canister);
+	}
+
+	emitCanisters(syncedCanisters);
 };
 
-// Update ui with one canister information
+// Update ui with one canister information at a time
 export const emitCanister = <T>(canister: Canister<T>) =>
 	postMessage({
 		msg: 'syncCanister',
 		data: {
 			canister
+		}
+	});
+
+// Update ui with multiple canisters information
+export const emitCanisters = <T>(canisters: Canister<T>[]) =>
+	postMessage({
+		msg: 'syncCanisters',
+		data: {
+			canisters
 		}
 	});

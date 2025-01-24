@@ -119,6 +119,7 @@
 			{missionControlId}
 			bind:selectedSatellites
 			bind:selectedOrbiters
+			onlySyncedSegments={false}
 			oncontinue={onContinueSegments}
 		>
 			<h2>{$i18n.monitoring.stop_auto_refill}</h2>

@@ -12,6 +12,7 @@
 		missionControlId: MissionControlId;
 		selectedSatellites: [Principal, Satellite][];
 		selectedOrbiters: [Principal, Orbiter][];
+		onlySyncedSegments?: boolean;
 		oncontinue: () => void;
 		children: Snippet;
 	}
@@ -20,6 +21,7 @@
 		missionControlId,
 		selectedSatellites = $bindable([]),
 		selectedOrbiters = $bindable([]),
+		onlySyncedSegments,
 		oncontinue,
 		children
 	}: Props = $props();
@@ -39,6 +41,7 @@
 	withMissionControl={false}
 	reloadSegments={false}
 	bind:loadingSegments
+	{onlySyncedSegments}
 ></SegmentsTable>
 
 {#if loadingSegments === 'ready'}

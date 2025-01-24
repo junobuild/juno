@@ -34,6 +34,7 @@
 		withMissionControl?: boolean;
 		reloadSegments?: boolean;
 		loadingSegments?: 'loading' | 'ready' | 'error';
+		onlySyncedSegments?: boolean;
 	}
 
 	let {
@@ -45,7 +46,8 @@
 		selectedDisabled = $bindable(false),
 		withMissionControl = $bindable(true),
 		reloadSegments = true,
-		loadingSegments = $bindable('loading')
+		loadingSegments = $bindable('loading'),
+		onlySyncedSegments = true
 	}: Props = $props();
 
 	let loadingState = $state<'loading' | 'ready' | 'error'>('loading');
@@ -105,14 +107,17 @@
 
 		loadingState = 'ready';
 
-		satellites = $satellitesWithSyncData.map(({ segment: { satellite_id, ...rest } }) => [
-			satellite_id,
-			{ satellite_id, ...rest }
-		]);
+		satellites = $satellitesWithSyncData
+			.filter(
+				({ canister: { data } }) => data?.canister?.status === 'running' || !onlySyncedSegments
+			)
+			.map(({ segment: { satellite_id, ...rest } }) => [satellite_id, { satellite_id, ...rest }]);
 
-		orbiters = (nonNullish($orbiterWithSyncData) ? [$orbiterWithSyncData] : []).map(
-			({ segment: { orbiter_id, ...rest } }) => [orbiter_id, { orbiter_id, ...rest }]
-		);
+		orbiters = (nonNullish($orbiterWithSyncData) ? [$orbiterWithSyncData] : [])
+			.filter(
+				({ canister: { data } }) => data?.canister?.status === 'running' || !onlySyncedSegments
+			)
+			.map(({ segment: { orbiter_id, ...rest } }) => [orbiter_id, { orbiter_id, ...rest }]);
 
 		toggleAll();
 	};

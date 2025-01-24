@@ -104,7 +104,8 @@
 			<IconMissionControl />
 			<span class="link">
 				<span class="link-title"
-					>{$i18n.mission_control.title} <CanisterIndicator data={missionControlData} /></span
+					><span class="link-title-text">{$i18n.mission_control.title}</span>
+					<CanisterIndicator data={missionControlData} /></span
 				>
 				<span class="link-details">
 					{#if isNullish(missionControlData)}
@@ -156,6 +157,10 @@
 		display: inline-flex;
 		align-items: center;
 		gap: var(--padding);
+	}
+
+	.link-title-text {
+		@include text.truncate;
 	}
 
 	.link {

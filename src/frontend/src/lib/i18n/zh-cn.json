@@ -208,7 +208,8 @@
 		"upgrade_snapshot": "创建备份...",
 		"edit_snapshot": "编辑备份",
 		"delete_snapshot": "删除备份",
-		"delete_snapshot_confirm": "你确定要删除你的 {1} 备份  {0}  ?"
+		"delete_snapshot_confirm": "你确定要删除你的 {1} 备份  {0}  ?",
+		"loading_segments": "Loading your modules"
 	},
 	"sign_in": {
 		"quote_1": "Stars can't shine without darkness.",

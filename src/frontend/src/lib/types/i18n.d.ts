@@ -213,6 +213,7 @@ interface I18nCanisters {
 	edit_snapshot: string;
 	delete_snapshot: string;
 	delete_snapshot_confirm: string;
+	loading_segments: string;
 }
 
 interface I18nSign_in {

@@ -208,7 +208,8 @@
 		"upgrade_snapshot": "Creating a backup...",
 		"edit_snapshot": "Edit backup",
 		"delete_snapshot": "Delete backup",
-		"delete_snapshot_confirm": "Are you sure you want to delete the backup {0} of your {1}?"
+		"delete_snapshot_confirm": "Are you sure you want to delete the backup {0} of your {1}?",
+		"loading_segments": "Loading your modules"
 	},
 	"sign_in": {
 		"quote_1": "Stars can't shine without darkness.",

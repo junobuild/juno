@@ -6,7 +6,7 @@
 	import type { Orbiter, Satellite } from '$declarations/mission_control/mission_control.did';
 	import Segment from '$lib/components/segments/Segment.svelte';
 	import Checkbox from '$lib/components/ui/Checkbox.svelte';
-	import SkeletonTableRow from '$lib/components/ui/SkeletonTableRow.svelte';
+	import SpinnerParagraph from '$lib/components/ui/SpinnerParagraph.svelte';
 	import {
 		canistersSyncDataUncertifiedCount,
 		canistersSyncDataUncertifiedNotSynced
@@ -205,7 +205,11 @@
 					</tr>
 				{/each}
 			{:else}
-				<SkeletonTableRow colspan={2} />
+				<tr
+					><td colspan="2" class="loading"
+						><SpinnerParagraph>{$i18n.canisters.loading_segments}</SpinnerParagraph></td
+					>
+				</tr>
 			{/if}
 		</tbody>
 	</table>
@@ -254,5 +258,9 @@
 	.actions {
 		display: flex;
 		padding: var(--padding-1_5x) var(--padding-2x);
+	}
+
+	.loading {
+		--spinner-paragraph-margin: 0;
 	}
 </style>

@@ -9,6 +9,11 @@ export interface GetAgentParams {
 
 let agents: Option<Record<string, HttpAgent>> = undefined;
 
+// Attempt to prevent the random IC issue triggered by agent-js at the end of the Satellite creation process in the UI.
+// Note: The process of creation works as expected; the module is successfully created. It's really the calls from the UI that fails randomly, "fortunately".
+// Server returned an error: Code: 400 () Body: Invalid signature: Invalid basic signature: EcdsaP256 signature could not be verified: public key 042..., signature f1a..., error: verification failed
+const DEFAULT_RETRY_TIMES = 10;
+
 export const getAgent = async ({ identity }: GetAgentParams): Promise<HttpAgent> => {
 	const key = identity.getPrincipal().toText();
 
@@ -34,20 +39,19 @@ const createAgent = async (params: GetAgentParams): Promise<HttpAgent> => {
 	return await getMainnetAgent(params);
 };
 
-const getMainnetAgent = async (params: GetAgentParams) => {
+const getMainnetAgent = async (params: GetAgentParams): Promise<HttpAgent> => {
 	const host = 'https://icp-api.io';
-	return await HttpAgent.create({ ...params, host });
+	return await HttpAgent.create({ ...params, host, retryTimes: DEFAULT_RETRY_TIMES });
 };
 
-const getLocalAgent = async (params: GetAgentParams) => {
+const getLocalAgent = async (params: GetAgentParams): Promise<HttpAgent> => {
 	const host = 'http://localhost:5987/';
-
-	const agent: HttpAgent = await HttpAgent.create({ ...params, host });
-
-	// Fetch root key for certificate validation during development
-	await agent.fetchRootKey();
-
-	return agent;
+	return await HttpAgent.create({
+		...params,
+		host,
+		shouldFetchRootKey: true,
+		retryTimes: DEFAULT_RETRY_TIMES
+	});
 };
 
 // Unused because currently we do a window.location.reload after logout

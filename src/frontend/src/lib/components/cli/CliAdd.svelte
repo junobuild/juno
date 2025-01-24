@@ -1,6 +1,7 @@
 <script lang="ts">
 	import type { Principal } from '@dfinity/principal';
 	import { isNullish, nonNullish } from '@dfinity/utils';
+	import { fade } from 'svelte/transition';
 	import type { Satellite, Orbiter } from '$declarations/mission_control/mission_control.did';
 	import { setOrbitersController } from '$lib/api/mission-control.api';
 	import SegmentsTable from '$lib/components/segments/SegmentsTable.svelte';
@@ -148,6 +149,8 @@
 	};
 
 	let disabled = $state(true);
+
+	let loadingSegments = $state<'loading' | 'ready' | 'error'>('loading');
 </script>
 
 <form onsubmit={onSubmit}>
@@ -161,35 +164,40 @@
 		bind:selectedSatellites
 		bind:selectedOrbiters
 		bind:selectedDisabled={disabled}
+		bind:loadingSegments
 	>
 		<div class="terminal">{$i18n.cli.terminal}:&nbsp;{principal}</div>
 	</SegmentsTable>
 
-	<div class="options">
-		<Collapsible>
-			<svelte:fragment slot="header">{$i18n.core.advanced_options}</svelte:fragment>
+	{#if loadingSegments === 'ready'}
+		<div class="options">
+			<Collapsible>
+				<svelte:fragment slot="header">{$i18n.core.advanced_options}</svelte:fragment>
 
-			<div>
-				<p class="profile-info">{$i18n.cli.profile_info}</p>
+				<div>
+					<p class="profile-info">{$i18n.cli.profile_info}</p>
 
-				<input
-					id="profile"
-					type="text"
-					placeholder={$i18n.cli.profile_placeholder}
-					name="profile"
-					bind:value={profile}
-					autocomplete="off"
-					data-1p-ignore
-				/>
-			</div>
-		</Collapsible>
-	</div>
+					<input
+						id="profile"
+						type="text"
+						placeholder={$i18n.cli.profile_placeholder}
+						name="profile"
+						bind:value={profile}
+						autocomplete="off"
+						data-1p-ignore
+					/>
+				</div>
+			</Collapsible>
+		</div>
 
-	<Warning>
-		<Html text={$i18n.cli.confirm} />
-	</Warning>
+		<div in:fade>
+			<Warning>
+				<Html text={$i18n.cli.confirm} />
+			</Warning>
 
-	<button {disabled}>{$i18n.cli.authorize}</button>
+			<button {disabled}>{$i18n.cli.authorize}</button>
+		</div>
+	{/if}
 </form>
 
 <style lang="scss">

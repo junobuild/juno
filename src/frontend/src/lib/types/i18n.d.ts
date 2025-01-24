@@ -213,6 +213,7 @@ interface I18nCanisters {
 	edit_snapshot: string;
 	delete_snapshot: string;
 	delete_snapshot_confirm: string;
+	loading_segments: string;
 }
 
 interface I18nSign_in {
@@ -473,6 +474,7 @@ interface I18nErrors {
 	canister_delete: string;
 	canister_settings_not_loaded: string;
 	canister_update_error: string;
+	canister_status: string;
 	segment_detach: string;
 	load_credits: string;
 	load_documents: string;

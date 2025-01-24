@@ -1,6 +1,7 @@
 <script lang="ts">
 	import type { Principal } from '@dfinity/principal';
 	import type { Snippet } from 'svelte';
+	import { fade } from 'svelte/transition';
 	import type { Orbiter, Satellite } from '$declarations/mission_control/mission_control.did';
 	import SegmentsTable from '$lib/components/segments/SegmentsTable.svelte';
 	import { isBusy } from '$lib/stores/busy.store';
@@ -24,6 +25,8 @@
 	}: Props = $props();
 
 	let selectedDisabled = $state(true);
+
+	let loadingSegments = $state<'loading' | 'ready' | 'error'>('loading');
 </script>
 
 {@render children()}
@@ -35,8 +38,11 @@
 	bind:selectedDisabled
 	withMissionControl={false}
 	reloadSegments={false}
+	bind:loadingSegments
 ></SegmentsTable>
 
-<button disabled={$isBusy || selectedDisabled} onclick={oncontinue}>
-	{$i18n.core.continue}
-</button>
+{#if loadingSegments === 'ready'}
+	<button disabled={$isBusy || selectedDisabled} onclick={oncontinue} in:fade>
+		{$i18n.core.continue}
+	</button>
+{/if}

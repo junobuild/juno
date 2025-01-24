@@ -9,7 +9,7 @@
 	import SnapshotsLoader from '$lib/components/snapshot/SnapshotsLoader.svelte';
 	import SnapshotsRefresh from '$lib/components/snapshot/SnapshotsRefresh.svelte';
 	import Identifier from '$lib/components/ui/Identifier.svelte';
-	import SkeletonText from '$lib/components/ui/SkeletonText.svelte';
+	import SkeletonTableRow from '$lib/components/ui/SkeletonTableRow.svelte';
 	import { i18n } from '$lib/stores/i18n.store';
 	import { snapshotStore } from '$lib/stores/snapshot.store';
 	import { toasts } from '$lib/stores/toasts.store';
@@ -130,13 +130,7 @@
 						>
 					{/if}
 				{:else}
-					<tr
-						><td colspan="4">
-							<div class="skeleton">
-								&ZeroWidthSpace;<SkeletonText />
-							</div>
-						</td></tr
-					>
+					<SkeletonTableRow colspan={4} />
 				{/if}
 			</tbody>
 		</table>
@@ -175,12 +169,6 @@
 
 	.table-container {
 		margin: var(--padding-8x) 0 var(--padding-2x);
-	}
-
-	.skeleton {
-		display: flex;
-		max-width: 200px;
-		--skeleton-text-padding: var(--padding-0_25x) 0;
 	}
 
 	.actions {

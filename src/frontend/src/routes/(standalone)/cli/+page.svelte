@@ -3,8 +3,10 @@
 	import { fade } from 'svelte/transition';
 	import CliAdd from '$lib/components/cli/CliAdd.svelte';
 	import MissionControlGuard from '$lib/components/guards/MissionControlGuard.svelte';
+	import CanistersLoader from '$lib/components/loaders/CanistersLoader.svelte';
 	import { authSignedIn } from '$lib/derived/auth.derived';
 	import { missionControlIdDerived } from '$lib/derived/mission-control.derived';
+	import { sortedSatellites } from '$lib/derived/satellites.derived';
 	import { signIn } from '$lib/services/auth.services';
 	import { i18n } from '$lib/stores/i18n.store';
 	import type { Option } from '$lib/types/utils';
@@ -25,11 +27,13 @@
 {#if nonNullish(redirect_uri) && nonNullish(principal) && notEmptyString(redirect_uri) && notEmptyString(principal)}
 	{#if $authSignedIn}
 		<MissionControlGuard>
-			{#if nonNullish($missionControlIdDerived)}
-				<div in:fade>
-					<CliAdd {principal} {redirect_uri} missionControlId={$missionControlIdDerived} />
-				</div>
-			{/if}
+			<CanistersLoader satellites={$sortedSatellites}>
+				{#if nonNullish($missionControlIdDerived)}
+					<div in:fade>
+						<CliAdd {principal} {redirect_uri} missionControlId={$missionControlIdDerived} />
+					</div>
+				{/if}
+			</CanistersLoader>
 		</MissionControlGuard>
 	{:else}
 		<p>

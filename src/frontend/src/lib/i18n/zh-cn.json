@@ -457,6 +457,7 @@
 		"canister_delete": "删除智能合约时出现异常错误.",
 		"canister_settings_not_loaded": "智能合约设置没有加载.",
 		"canister_update_error": "更新设置出现异常错误.",
+		"canister_status": "Unexpected error(s) while loading the status of your modules.",
 		"segment_detach": "解绑module时出现异常错误.",
 		"load_credits": "无法加载你当前credit状态.",
 		"load_documents": "Unexpected error(s) while loading the documents.",

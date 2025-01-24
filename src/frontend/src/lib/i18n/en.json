@@ -457,6 +457,7 @@
 		"canister_delete": "Unexpected error(s) while trying to delete the smart contract.",
 		"canister_settings_not_loaded": "The settings of the smart contract are not yet loaded.",
 		"canister_update_error": "Unexpected error(s) while updating the settings.",
+		"canister_status": "Unexpected error(s) while loading the status of your modules.",
 		"segment_detach": "Unexpected error(s) while trying to detach the module.",
 		"load_credits": "Cannot load your current credits status.",
 		"load_documents": "Unexpected error(s) while loading the documents.",

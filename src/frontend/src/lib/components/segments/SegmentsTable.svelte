@@ -1,21 +1,28 @@
 <script lang="ts">
 	import type { Principal } from '@dfinity/principal';
-	import { debounce, isEmptyString, isNullish, nonNullish } from '@dfinity/utils';
+	import { isEmptyString, isNullish, nonNullish } from '@dfinity/utils';
 	import { onMount, type Snippet, untrack } from 'svelte';
+	import { fade } from 'svelte/transition';
 	import type { Orbiter, Satellite } from '$declarations/mission_control/mission_control.did';
 	import Segment from '$lib/components/segments/Segment.svelte';
 	import Checkbox from '$lib/components/ui/Checkbox.svelte';
-	import { canisterSyncDataUncertifiedLoaded } from '$lib/derived/canisters.derived';
+	import SkeletonTableRow from '$lib/components/ui/SkeletonTableRow.svelte';
+	import {
+		canistersSyncDataUncertifiedCount,
+		canistersSyncDataUncertifiedNotSynced
+	} from '$lib/derived/canisters.derived';
 	import { orbiterWithSyncData } from '$lib/derived/orbiter-merged.derived';
-	import { orbiterLoaded } from '$lib/derived/orbiter.derived';
+	import { orbiterStore } from '$lib/derived/orbiter.derived';
 	import { satellitesWithSyncData } from '$lib/derived/satellites-merged.derived';
-	import { satellitesLoaded } from '$lib/derived/satellites.derived';
+	import { sortedSatellites } from '$lib/derived/satellites.derived';
 	import { loadOrbiters } from '$lib/services/orbiters.services';
 	import { loadSatellites } from '$lib/services/satellites.services';
 	import { i18n } from '$lib/stores/i18n.store';
+	import { toasts } from '$lib/stores/toasts.store';
 	import type { MissionControlId } from '$lib/types/mission-control';
 	import { orbiterName } from '$lib/utils/orbiter.utils';
 	import { satelliteName } from '$lib/utils/satellite.utils';
+	import { waitReady } from '$lib/utils/timeout.utils';
 
 	interface Props {
 		missionControlId: MissionControlId;
@@ -26,6 +33,7 @@
 		selectedDisabled: boolean;
 		withMissionControl?: boolean;
 		reloadSegments?: boolean;
+		loadingSegments?: 'loading' | 'ready' | 'error';
 	}
 
 	let {
@@ -36,38 +44,18 @@
 		selectedOrbiters = $bindable([]),
 		selectedDisabled = $bindable(false),
 		withMissionControl = $bindable(true),
-		reloadSegments = true
+		reloadSegments = true,
+		loadingSegments = $bindable('loading')
 	}: Props = $props();
 
-	let satellites: [Principal, Satellite][] | undefined = $derived(
-		$canisterSyncDataUncertifiedLoaded && $satellitesLoaded
-			? $satellitesWithSyncData.map(({ segment: { satellite_id, ...rest } }) => [
-					satellite_id,
-					{ satellite_id, ...rest }
-				])
-			: undefined
-	);
-	let orbiters: [Principal, Orbiter][] | undefined = $derived(
-		$canisterSyncDataUncertifiedLoaded && $orbiterLoaded
-			? (nonNullish($orbiterWithSyncData) ? [$orbiterWithSyncData] : []).map(
-					({ segment: { orbiter_id, ...rest } }) => [orbiter_id, { orbiter_id, ...rest }]
-				)
-			: undefined
-	);
+	let loadingState = $state<'loading' | 'ready' | 'error'>('loading');
 
 	$effect(() => {
-		console.log(satellites, orbiters);
-
-		if (isNullish(satellites)) {
-			return;
-		}
-
-		if (isNullish(orbiters)) {
-			return;
-		}
-
-		debounceToggleAll();
+		loadingSegments = loadingState;
 	});
+
+	let satellites: [Principal, Satellite][] = $state([]);
+	let orbiters: [Principal, Orbiter][] = $state([]);
 
 	const loadSegments = async () => {
 		const [{ result: resultSatellites }, { result: resultOrbiters }] = await Promise.all([
@@ -79,8 +67,54 @@
 			!['success', 'skip'].includes(resultSatellites) ||
 			!['success', 'skip'].includes(resultOrbiters)
 		) {
+			satellites = [];
+			orbiters = [];
+
+			loadingState = 'error';
 			return;
 		}
+
+		let countModules = $sortedSatellites.length + (isNullish($orbiterStore) ? 0 : 1);
+
+		if (countModules === 0) {
+			satellites = [];
+			orbiters = [];
+
+			loadingState = 'ready';
+			return;
+		}
+
+		const result = await waitReady({
+			isDisabled: () =>
+				$canistersSyncDataUncertifiedNotSynced ||
+				$canistersSyncDataUncertifiedCount < countModules + 1
+		});
+
+		if (result === 'timeout') {
+			satellites = [];
+			orbiters = [];
+
+			loadingState = 'error';
+
+			toasts.error({
+				text: $i18n.errors.canister_status
+			});
+
+			return;
+		}
+
+		loadingState = 'ready';
+
+		satellites = $satellitesWithSyncData.map(({ segment: { satellite_id, ...rest } }) => [
+			satellite_id,
+			{ satellite_id, ...rest }
+		]);
+
+		orbiters = (nonNullish($orbiterWithSyncData) ? [$orbiterWithSyncData] : []).map(
+			({ segment: { orbiter_id, ...rest } }) => [orbiter_id, { orbiter_id, ...rest }]
+		);
+
+		toggleAll();
 	};
 
 	onMount(() => {
@@ -92,14 +126,10 @@
 	const toggleAll = () => {
 		allSelected = !allSelected;
 
-		console.log('yo', satellites, orbiters);
-
 		selectedMissionControl = allSelected;
-		selectedSatellites = allSelected ? [...(satellites ?? [])] : [];
-		selectedOrbiters = allSelected ? [...(orbiters ?? [])] : [];
+		selectedSatellites = allSelected ? [...satellites] : [];
+		selectedOrbiters = allSelected ? [...orbiters] : [];
 	};
-
-	const debounceToggleAll = debounce(toggleAll);
 
 	$effect(() => {
 		const disabled =
@@ -122,65 +152,75 @@
 			</tr>
 		</thead>
 		<tbody>
-			{#if withMissionControl}
-				<tr>
-					<td class="actions">
-						<Checkbox>
-							<input type="checkbox" bind:checked={selectedMissionControl} />
-						</Checkbox>
-					</td>
+			{#if loadingState !== 'loading'}
+				{#if withMissionControl}
+					<tr>
+						<td class="actions">
+							<Checkbox>
+								<input type="checkbox" bind:checked={selectedMissionControl} />
+							</Checkbox>
+						</td>
 
-					<td>
-						<Segment id={missionControlId}>
-							{$i18n.mission_control.title}
-						</Segment>
-					</td>
-				</tr>
+						<td>
+							<Segment id={missionControlId}>
+								{$i18n.mission_control.title}
+							</Segment>
+						</td>
+					</tr>
+				{/if}
+
+				{#each satellites as satellite}
+					<tr>
+						<td class="actions"
+							><Checkbox
+								><input
+									type="checkbox"
+									bind:group={selectedSatellites}
+									value={satellite}
+								/></Checkbox
+							></td
+						>
+						<td>
+							<Segment id={satellite[0]}>
+								{satelliteName(satellite[1])}
+							</Segment></td
+						>
+					</tr>
+				{/each}
+
+				{#each orbiters as orbiter}
+					{@const orbName = orbiterName(orbiter[1])}
+
+					<tr>
+						<td class="actions"
+							><Checkbox
+								><input type="checkbox" bind:group={selectedOrbiters} value={orbiter} /></Checkbox
+							></td
+						>
+						<td>
+							<Segment id={orbiter[0]}>
+								{isEmptyString(orbName) ? $i18n.analytics.title : orbName}
+							</Segment>
+						</td>
+					</tr>
+				{/each}
+			{:else}
+				<SkeletonTableRow colspan={2} />
 			{/if}
-
-			{#each satellites ?? [] as satellite}
-				<tr>
-					<td class="actions"
-						><Checkbox
-							><input type="checkbox" bind:group={selectedSatellites} value={satellite} /></Checkbox
-						></td
-					>
-					<td>
-						<Segment id={satellite[0]}>
-							{satelliteName(satellite[1])}
-						</Segment></td
-					>
-				</tr>
-			{/each}
-
-			{#each orbiters ?? [] as orbiter}
-				{@const orbName = orbiterName(orbiter[1])}
-
-				<tr>
-					<td class="actions"
-						><Checkbox
-							><input type="checkbox" bind:group={selectedOrbiters} value={orbiter} /></Checkbox
-						></td
-					>
-					<td>
-						<Segment id={orbiter[0]}>
-							{isEmptyString(orbName) ? $i18n.analytics.title : orbName}
-						</Segment>
-					</td>
-				</tr>
-			{/each}
 		</tbody>
 	</table>
 </div>
 
-<div class="objects">
-	<div class="all">
-		<Checkbox>
-			<input type="checkbox" onchange={toggleAll} checked={allSelected} />
-			<span>{allSelected ? $i18n.core.unselect_all : $i18n.core.select_all}</span>
-		</Checkbox>
+{#if loadingState === 'ready'}
+	<div class="objects" in:fade>
+		<div class="all">
+			<Checkbox>
+				<input type="checkbox" onchange={toggleAll} checked={allSelected} />
+				<span>{allSelected ? $i18n.core.unselect_all : $i18n.core.select_all}</span>
+			</Checkbox>
+		</div>
 	</div>
-</div>
+{/if}
 
 <style lang="scss">
 	@use '../../styles/mixins/text';

@@ -473,6 +473,7 @@ interface I18nErrors {
 	canister_delete: string;
 	canister_settings_not_loaded: string;
 	canister_update_error: string;
+	canister_status: string;
 	segment_detach: string;
 	load_credits: string;
 	load_documents: string;

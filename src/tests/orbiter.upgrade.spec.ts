@@ -252,145 +252,137 @@ describe('Orbiter upgrade', () => {
 			).resolves.not.toThrowError();
 		});
 
-		describe(
-			'Page views',
-			() => {
-				it('should still list all entries after upgrade', async () => {
-					const originalKeys = await setPageViews0_0_6();
+		describe('Page views', { timeout: 1200000 }, () => {
+			it('should still list all entries after upgrade', async () => {
+				const originalKeys = await setPageViews0_0_6();
 
-					await testPageViews({ keys: originalKeys });
+				await testPageViews({ keys: originalKeys });
 
-					await upgrade();
+				await upgrade();
 
-					const newActor = pic.createActor<OrbiterActor>(idlFactorOrbiter, canisterId);
-					newActor.setIdentity(controller);
+				const newActor = pic.createActor<OrbiterActor>(idlFactorOrbiter, canisterId);
+				newActor.setIdentity(controller);
 
-					await testPageViews({ keys: originalKeys, useActor: newActor });
+				await testPageViews({ keys: originalKeys, useActor: newActor });
+			});
+
+			it('should be able to collect new entry and list both bounded and unbounded serialized data', async () => {
+				const keysBeforeUpgrade = await setPageViews0_0_6();
+
+				await testPageViews({ keys: keysBeforeUpgrade });
+
+				await upgrade();
+
+				const newActor = pic.createActor<OrbiterActor>(idlFactorOrbiter, canisterId);
+				newActor.setIdentity(controller);
+
+				const keysAfterUpgrade = await setPageViews(newActor);
+
+				await testPageViews({
+					keys: [...keysBeforeUpgrade, ...keysAfterUpgrade],
+					useActor: newActor
+				});
+			});
+
+			it('should be able to update existing entry after upgrade and remain bounded', async () => {
+				const keysBeforeUpgrade = await setPageViews0_0_6();
+
+				await upgrade();
+
+				const newActor = pic.createActor<OrbiterActor>(idlFactorOrbiter, canisterId);
+				newActor.setIdentity(controller);
+
+				const { set_page_views, get_page_views } = newActor;
+
+				const [[__, { updated_at }]] = await get_page_views({
+					to: toNullable(),
+					from: toNullable(),
+					satellite_id: toNullable()
 				});
 
-				it('should be able to collect new entry and list both bounded and unbounded serialized data', async () => {
-					const keysBeforeUpgrade = await setPageViews0_0_6();
+				const [key, _] = keysBeforeUpgrade;
 
-					await testPageViews({ keys: keysBeforeUpgrade });
+				const results = await set_page_views([
+					[
+						key,
+						{
+							...pageViewMock,
+							updated_at: toNullable(updated_at),
+							version: []
+						}
+					]
+				]);
 
-					await upgrade();
+				expect('Err' in results).toBeFalsy();
+			});
+		});
 
-					const newActor = pic.createActor<OrbiterActor>(idlFactorOrbiter, canisterId);
-					newActor.setIdentity(controller);
+		describe('Track events', { timeout: 1200000 }, () => {
+			it('should still list all entries after upgrade', async () => {
+				const keys = await setTrackEvents0_0_6();
 
-					const keysAfterUpgrade = await setPageViews(newActor);
+				await testTrackEvents({ keys });
 
-					await testPageViews({
-						keys: [...keysBeforeUpgrade, ...keysAfterUpgrade],
-						useActor: newActor
-					});
+				await upgrade();
+
+				const newActor = pic.createActor<OrbiterActor>(idlFactorOrbiter, canisterId);
+				newActor.setIdentity(controller);
+
+				await testTrackEvents({
+					keys: keys,
+					useActor: newActor
+				});
+			});
+
+			it('should be able to collect new entry and list both bounded and unbounded serialized data', async () => {
+				const keysBeforeUpgrade = await setTrackEvents0_0_6();
+
+				await testTrackEvents({ keys: keysBeforeUpgrade });
+
+				await upgrade();
+
+				const newActor = pic.createActor<OrbiterActor>(idlFactorOrbiter, canisterId);
+				newActor.setIdentity(controller);
+
+				const keysAfterUpgrade = await setTrackEvents(newActor);
+
+				await testTrackEvents({
+					keys: [...keysBeforeUpgrade, ...keysAfterUpgrade],
+					useActor: newActor
+				});
+			});
+
+			it('should be able to update existing entry after upgrade and remain bounded', async () => {
+				const keysBeforeUpgrade = await setTrackEvents0_0_6();
+
+				await upgrade();
+
+				const newActor = pic.createActor<OrbiterActor>(idlFactorOrbiter, canisterId);
+				newActor.setIdentity(controller);
+
+				const { set_track_events, get_track_events } = newActor;
+
+				const [[__, { updated_at }]] = await get_track_events({
+					to: toNullable(),
+					from: toNullable(),
+					satellite_id: toNullable()
 				});
 
-				it('should be able to update existing entry after upgrade and remain bounded', async () => {
-					const keysBeforeUpgrade = await setPageViews0_0_6();
+				const [key, _] = keysBeforeUpgrade;
 
-					await upgrade();
+				const results = await set_track_events([
+					[
+						key,
+						{
+							...trackEventMock,
+							updated_at: toNullable(updated_at),
+							version: toNullable()
+						}
+					]
+				]);
 
-					const newActor = pic.createActor<OrbiterActor>(idlFactorOrbiter, canisterId);
-					newActor.setIdentity(controller);
-
-					const { set_page_views, get_page_views } = newActor;
-
-					const [[__, { updated_at }]] = await get_page_views({
-						to: toNullable(),
-						from: toNullable(),
-						satellite_id: toNullable()
-					});
-
-					const [key, _] = keysBeforeUpgrade;
-
-					const results = await set_page_views([
-						[
-							key,
-							{
-								...pageViewMock,
-								updated_at: toNullable(updated_at),
-								version: []
-							}
-						]
-					]);
-
-					expect('Err' in results).toBeFalsy();
-				});
-			},
-			{ timeout: 1200000 }
-		);
-
-		describe(
-			'Track events',
-			() => {
-				it('should still list all entries after upgrade', async () => {
-					const keys = await setTrackEvents0_0_6();
-
-					await testTrackEvents({ keys });
-
-					await upgrade();
-
-					const newActor = pic.createActor<OrbiterActor>(idlFactorOrbiter, canisterId);
-					newActor.setIdentity(controller);
-
-					await testTrackEvents({
-						keys: keys,
-						useActor: newActor
-					});
-				});
-
-				it('should be able to collect new entry and list both bounded and unbounded serialized data', async () => {
-					const keysBeforeUpgrade = await setTrackEvents0_0_6();
-
-					await testTrackEvents({ keys: keysBeforeUpgrade });
-
-					await upgrade();
-
-					const newActor = pic.createActor<OrbiterActor>(idlFactorOrbiter, canisterId);
-					newActor.setIdentity(controller);
-
-					const keysAfterUpgrade = await setTrackEvents(newActor);
-
-					await testTrackEvents({
-						keys: [...keysBeforeUpgrade, ...keysAfterUpgrade],
-						useActor: newActor
-					});
-				});
-
-				it('should be able to update existing entry after upgrade and remain bounded', async () => {
-					const keysBeforeUpgrade = await setTrackEvents0_0_6();
-
-					await upgrade();
-
-					const newActor = pic.createActor<OrbiterActor>(idlFactorOrbiter, canisterId);
-					newActor.setIdentity(controller);
-
-					const { set_track_events, get_track_events } = newActor;
-
-					const [[__, { updated_at }]] = await get_track_events({
-						to: toNullable(),
-						from: toNullable(),
-						satellite_id: toNullable()
-					});
-
-					const [key, _] = keysBeforeUpgrade;
-
-					const results = await set_track_events([
-						[
-							key,
-							{
-								...trackEventMock,
-								updated_at: toNullable(updated_at),
-								version: toNullable()
-							}
-						]
-					]);
-
-					expect('Err' in results).toBeFalsy();
-				});
-			},
-			{ timeout: 1200000 }
-		);
+				expect('Err' in results).toBeFalsy();
+			});
+		});
 	});
 });

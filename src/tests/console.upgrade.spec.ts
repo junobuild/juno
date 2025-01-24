@@ -87,6 +87,9 @@ describe('Console upgrade', () => {
 		describe('Heap state', () => {
 			it(
 				'should still list mission controls',
+				{
+					timeout: 120000
+				},
 				async () => {
 					// We need to advance time for the rate limiter
 					await pic.advanceTime(1000);
@@ -115,9 +118,6 @@ describe('Console upgrade', () => {
 						actor,
 						pic
 					});
-				},
-				{
-					timeout: 120000
 				}
 			);
 		});

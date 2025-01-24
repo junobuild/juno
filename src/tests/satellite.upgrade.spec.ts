@@ -122,6 +122,9 @@ describe('Satellite upgrade', () => {
 
 		it(
 			'should add users after upgrade and still list all users from heap',
+			{
+				timeout: 120000
+			},
 			async () => {
 				await initUsers();
 
@@ -134,9 +137,6 @@ describe('Satellite upgrade', () => {
 				const moreUsers = await initUsers();
 
 				await testUsers([...users, ...moreUsers]);
-			},
-			{
-				timeout: 120000
 			}
 		);
 
@@ -188,45 +188,41 @@ describe('Satellite upgrade', () => {
 			actor.setIdentity(controller);
 		});
 
-		it(
-			'should still list users from heap',
-			async () => {
-				await initUsers();
+		it('should still list users from heap', { timeout: 600000 }, async () => {
+			await initUsers();
 
-				const users = await initUsers();
+			const users = await initUsers();
 
-				await testUsers(users);
+			await testUsers(users);
 
-				await upgradeVersion('0.0.12');
+			await upgradeVersion('0.0.12');
 
-				await testUsers(users);
+			await testUsers(users);
 
-				await upgradeVersion('0.0.13');
+			await upgradeVersion('0.0.13');
 
-				await testUsers(users);
+			await testUsers(users);
 
-				await upgradeVersion('0.0.14');
+			await upgradeVersion('0.0.14');
 
-				await testUsers(users);
+			await testUsers(users);
 
-				await upgradeVersion('0.0.15');
+			await upgradeVersion('0.0.15');
 
-				await testUsers(users);
+			await testUsers(users);
 
-				await upgradeVersion('0.0.16');
+			await upgradeVersion('0.0.16');
 
-				await testUsers(users);
+			await testUsers(users);
 
-				await upgradeVersion('0.0.17');
+			await upgradeVersion('0.0.17');
 
-				await testUsers(users);
+			await testUsers(users);
 
-				await upgrade();
+			await upgrade();
 
-				await testUsers(users);
-			},
-			{ timeout: 600000 }
-		);
+			await testUsers(users);
+		});
 	});
 
 	describe('v0.0.16 -> v0.0.16', () => {
@@ -453,6 +449,7 @@ describe('Satellite upgrade', () => {
 
 				it(
 					'should be able to update after upgrade and has version set',
+					{ timeout: 60000 },
 					async () => {
 						const { set_custom_domain: set_custom_domain_deprecated } = actor;
 
@@ -473,8 +470,7 @@ describe('Satellite upgrade', () => {
 						const [[_, { version }]] = await list_custom_domains();
 
 						expect(fromNullable(version)).toEqual(1n);
-					},
-					{ timeout: 60000 }
+					}
 				);
 			});
 
@@ -544,6 +540,7 @@ describe('Satellite upgrade', () => {
 
 				it(
 					'should be able to update after upgrade and has version set',
+					{ timeout: 60000 },
 					async () => {
 						const full_path = `/${collection}/ugprade.html`;
 
@@ -565,8 +562,7 @@ describe('Satellite upgrade', () => {
 
 						expect(asset).not.toBeUndefined();
 						expect(fromNullable(asset!.version)).toEqual(1n);
-					},
-					{ timeout: 60000 }
+					}
 				);
 			});
 		});

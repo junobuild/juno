@@ -52,10 +52,10 @@
 		highlight={isNullish($orbiterStore)}
 	>
 		<p>
-			<IconAnalytics size="24px" />
+			<span class="link-icon"><IconAnalytics size="24px" /></span>
 			<span class="link">
 				<span class="link-title"
-					>{$i18n.analytics.title}
+					><span class="link-title-text">{$i18n.analytics.title}</span>
 					{#if nonNullish($orbiterStore)}<CanisterIndicator data={orbiterData} />{/if}</span
 				>
 				{#if nonNullish($orbiterStore)}
@@ -86,9 +86,10 @@
 		highlight={$missionControlSettingsLoaded && $missionControlNotMonitored}
 	>
 		<p>
-			<IconTelescope />
-			<span class="link">
-				<span class="link-title">{$i18n.monitoring.title}</span>
+			<span class="link-icon"><IconTelescope /></span>
+			<span class="link link-without-indicator">
+				<span class="link-title"><span class="link-title-text">{$i18n.monitoring.title}</span></span
+				>
 			</span>
 		</p>
 	</LaunchpadLink>
@@ -101,7 +102,7 @@
 		ariaLabel={`${$i18n.core.open}: ${$i18n.mission_control.title}`}
 	>
 		<p>
-			<IconMissionControl />
+			<span class="link-icon"><IconMissionControl /></span>
 			<span class="link">
 				<span class="link-title"
 					><span class="link-title-text">{$i18n.mission_control.title}</span>
@@ -126,9 +127,9 @@
 		ariaLabel={`${$i18n.core.open}: ${$i18n.wallet.title}`}
 	>
 		<p>
-			<IconWallet />
-			<span class="link">
-				<span class="link-title">{$i18n.wallet.title}</span>
+			<span class="link-icon"><IconWallet /></span>
+			<span class="link link-without-indicator">
+				<span class="link-title"><span class="link-title-text">{$i18n.wallet.title}</span></span>
 				<span class="link-details">
 					<WalletInlineBalance balance={$balance} />
 				</span>
@@ -160,13 +161,22 @@
 	}
 
 	.link-title-text {
+		max-width: calc(100% - var(--padding-4x));
 		@include text.truncate;
 	}
 
-	.link {
+	.link-title-text,
+	.link-without-indicator,
+	.link-details {
 		display: none;
 
-		@include text.truncate;
+		@include media.min-width(large) {
+			display: block;
+		}
+	}
+
+	.link {
+		width: 100%;
 
 		@include media.min-width(large) {
 			display: flex;
@@ -179,6 +189,11 @@
 		font-weight: normal;
 
 		--skeleton-text-padding: 0 0 var(--padding);
+	}
+
+	.link-icon {
+		display: inline-flex;
+		min-width: 24px;
 	}
 
 	.mission-control {

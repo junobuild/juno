@@ -149,6 +149,8 @@
 
 		display: flex;
 		align-items: center;
+		justify-content: center;
+
 		gap: var(--padding-3x);
 
 		margin: 0 0 var(--padding);

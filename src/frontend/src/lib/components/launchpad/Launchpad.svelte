@@ -66,8 +66,16 @@
 		}
 
 		&.cockpit {
-			display: flex;
-			justify-content: center;
+			padding: 0 var(--padding-12x);
+
+			@include grid.two-columns;
+
+			@include media.min-width(small) {
+				display: flex;
+				justify-content: center;
+
+				padding: 0;
+			}
 
 			@include media.min-width(large) {
 				@include grid.twelve-columns;

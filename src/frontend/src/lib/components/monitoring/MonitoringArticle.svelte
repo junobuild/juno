@@ -180,7 +180,7 @@
 	}
 
 	.canister {
-		margin: var(--padding-4x) 0 0;
+		margin: var(--padding-2x) 0 0;
 
 		@include media.min-width(large) {
 			margin: 0;

@@ -68,6 +68,8 @@
 {/if}
 
 <style lang="scss">
+	@use '../../styles/mixins/media';
+
 	p {
 		max-width: 300px;
 		color: var(--value-color);
@@ -94,29 +96,31 @@
 	}
 
 	.row {
-		display: flex;
-		gap: var(--padding-2x);
+		font-size: var(--font-size-small);
 
-		p {
-			margin: 0;
-			position: relative;
+		@include media.min-width(large) {
+			display: flex;
+			gap: var(--padding-2x);
 
-			font-size: var(--font-size-small);
+			p {
+				margin: 0;
+				position: relative;
 
-			min-width: var(--padding-8x);
-			--skeleton-text-padding: 0;
+				min-width: var(--padding-8x);
+				--skeleton-text-padding: 0;
 
-			&:not(:last-of-type):after {
-				content: '';
-				border-right: 1px solid currentColor;
+				&:not(:last-of-type):after {
+					content: '';
+					border-right: 1px solid currentColor;
 
-				display: block;
-				height: 75%;
+					display: block;
+					height: 75%;
 
-				position: absolute;
-				top: 0;
-				right: 0;
-				transform: translate(var(--padding), 20%) rotate(15deg);
+					position: absolute;
+					top: 0;
+					right: 0;
+					transform: translate(var(--padding), 20%) rotate(15deg);
+				}
 			}
 		}
 	}

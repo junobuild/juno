@@ -10,7 +10,7 @@
 	import CustomDomain from '$lib/components/hosting/CustomDomain.svelte';
 	import CustomDomainInfo from '$lib/components/hosting/CustomDomainInfo.svelte';
 	import HostingCount from '$lib/components/hosting/HostingCount.svelte';
-	import { satelliteCustomDomains } from '$lib/derived/satellite-custom-domains.derived';
+	import { sortedSatelliteCustomDomains } from '$lib/derived/satellite-custom-domains.derived';
 	import { listCustomDomains, getAuthConfig } from '$lib/services/hosting.services';
 	import { authStore } from '$lib/stores/auth.store';
 	import { i18n } from '$lib/stores/i18n.store';
@@ -74,7 +74,7 @@
 				<CustomDomain url={satelliteUrl(satelliteId)} ariaLabel={$i18n.hosting.default_domain} />
 			</tr>
 
-			{#each $satelliteCustomDomains as [customDomainUrl, customDomain]}
+			{#each $sortedSatelliteCustomDomains as [customDomainUrl, customDomain]}
 				<tr>
 					<CustomDomain
 						type="custom"

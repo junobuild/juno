@@ -19,8 +19,16 @@ export const satelliteCustomDomainsLoaded: Readable<boolean> = derived(
 		nonNullish($customDomainsStore[$satelliteStore.satellite_id.toText()])
 );
 
+export const sortedSatelliteCustomDomains: Readable<CustomDomains> = derived(
+	[satelliteCustomDomains],
+	([$satelliteCustomDomains]) =>
+		$satelliteCustomDomains.sort(
+			([_, { created_at: atA }], [__, { created_at: atB }]) => Number(atA) - Number(atB)
+		)
+);
+
 // For simplicity reason we just return the first
 export const satelliteCustomDomain: Readable<CustomDomainName | undefined> = derived(
-	[satelliteCustomDomains],
-	([$satelliteCustomDomains]) => $satelliteCustomDomains?.[0]?.[0]
+	[sortedSatelliteCustomDomains],
+	([$sortedSatelliteCustomDomains]) => $sortedSatelliteCustomDomains?.[0]?.[0]
 );

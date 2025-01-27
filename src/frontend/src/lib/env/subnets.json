@@ -3,8 +3,8 @@
 		"subnetId": "4ecnw-byqwz-dtgss-ua2mh-pfvs7-c3lct-gtf4e-hnu75-j7eek-iifqm-sqe",
 		"type": "application",
 		"canisters": {
-			"stopped": 113,
-			"running": 7413
+			"stopped": 114,
+			"running": 7415
 		},
 		"nodes": {
 			"up": 13,
@@ -15,8 +15,8 @@
 		"subnetId": "4zbus-z2bmt-ilreg-xakz4-6tyre-hsqj4-slb4g-zjwqo-snjcc-iqphi-3qe",
 		"type": "application",
 		"canisters": {
-			"stopped": 1,
-			"running": 15825
+			"stopped": 2,
+			"running": 16327
 		},
 		"nodes": {
 			"up": 13,
@@ -28,7 +28,7 @@
 		"type": "application",
 		"canisters": {
 			"stopped": 50,
-			"running": 10287
+			"running": 10288
 		},
 		"nodes": {
 			"up": 13,
@@ -40,7 +40,7 @@
 		"type": "application",
 		"canisters": {
 			"stopped": 70,
-			"running": 35195
+			"running": 35201
 		},
 		"nodes": {
 			"up": 13,
@@ -51,8 +51,8 @@
 		"subnetId": "brlsh-zidhj-3yy3e-6vqbz-7xnih-xeq2l-as5oc-g32c4-i5pdn-2wwof-oae",
 		"type": "application",
 		"canisters": {
-			"stopped": 647,
-			"running": 34599
+			"stopped": 648,
+			"running": 34631
 		},
 		"nodes": {
 			"up": 13,
@@ -64,7 +64,7 @@
 		"type": "application",
 		"canisters": {
 			"stopped": 180,
-			"running": 51201
+			"running": 51202
 		},
 		"nodes": {
 			"up": 13,
@@ -76,7 +76,7 @@
 		"type": "application",
 		"canisters": {
 			"stopped": 101,
-			"running": 35740
+			"running": 35744
 		},
 		"nodes": {
 			"up": 13,
@@ -87,8 +87,8 @@
 		"subnetId": "ejbmu-grnam-gk6ol-6irwa-htwoj-7ihfl-goimw-hlnvh-abms4-47v2e-zqe",
 		"type": "application",
 		"canisters": {
-			"stopped": 2,
-			"running": 542
+			"stopped": 5,
+			"running": 583
 		},
 		"nodes": {
 			"up": 13,
@@ -100,7 +100,7 @@
 		"type": "application",
 		"canisters": {
 			"stopped": 2,
-			"running": 20199
+			"running": 20206
 		},
 		"nodes": {
 			"up": 13,
@@ -112,7 +112,7 @@
 		"type": "application",
 		"canisters": {
 			"stopped": 52,
-			"running": 33694
+			"running": 33696
 		},
 		"nodes": {
 			"up": 13,
@@ -124,7 +124,7 @@
 		"type": "application",
 		"canisters": {
 			"stopped": 2,
-			"running": 465
+			"running": 470
 		},
 		"nodes": {
 			"up": 13,
@@ -136,7 +136,7 @@
 		"type": "application",
 		"canisters": {
 			"stopped": 3,
-			"running": 27153
+			"running": 27156
 		},
 		"nodes": {
 			"up": 13,
@@ -148,7 +148,7 @@
 		"type": "application",
 		"canisters": {
 			"stopped": 96,
-			"running": 39758
+			"running": 39772
 		},
 		"nodes": {
 			"up": 13,
@@ -160,7 +160,7 @@
 		"type": "application",
 		"canisters": {
 			"stopped": 91,
-			"running": 55203
+			"running": 55205
 		},
 		"nodes": {
 			"up": 13,
@@ -172,7 +172,7 @@
 		"type": "application",
 		"canisters": {
 			"stopped": 39,
-			"running": 31697
+			"running": 31704
 		},
 		"nodes": {
 			"up": 13,
@@ -184,7 +184,7 @@
 		"type": "application",
 		"canisters": {
 			"stopped": 55,
-			"running": 56527
+			"running": 56529
 		},
 		"nodes": {
 			"up": 13,
@@ -196,7 +196,7 @@
 		"type": "application",
 		"canisters": {
 			"stopped": 46,
-			"running": 39832
+			"running": 39835
 		},
 		"nodes": {
 			"up": 13,
@@ -208,7 +208,7 @@
 		"type": "application",
 		"canisters": {
 			"stopped": 59,
-			"running": 32032
+			"running": 32037
 		},
 		"nodes": {
 			"up": 13,
@@ -220,7 +220,7 @@
 		"type": "application",
 		"canisters": {
 			"stopped": 16,
-			"running": 52578
+			"running": 52591
 		},
 		"nodes": {
 			"up": 13,
@@ -232,7 +232,7 @@
 		"type": "application",
 		"canisters": {
 			"stopped": 16,
-			"running": 5983
+			"running": 6043
 		},
 		"nodes": {
 			"up": 13,
@@ -244,8 +244,8 @@
 		"specialization": "european",
 		"type": "application",
 		"canisters": {
-			"stopped": 480,
-			"running": 24313
+			"stopped": 496,
+			"running": 24318
 		},
 		"nodes": {
 			"up": 13,
@@ -258,7 +258,7 @@
 		"type": "application",
 		"canisters": {
 			"stopped": 7,
-			"running": 764
+			"running": 773
 		},
 		"nodes": {
 			"up": 33,

@@ -36,6 +36,8 @@
 
 	.container {
 		padding: var(--padding-1_5x) var(--padding-2x) 0;
+
+		font-size: var(--font-size-small);
 	}
 
 	.ids {

@@ -64,6 +64,8 @@
 		overflow-y: auto;
 		width: 100%;
 		padding: var(--padding-1_5x);
+
+		font-size: var(--font-size-small);
 	}
 
 	button.text {

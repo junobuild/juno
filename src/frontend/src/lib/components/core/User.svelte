@@ -122,4 +122,8 @@
 	@use '../../styles/mixins/overlay';
 
 	@include overlay.popover-container;
+
+	.container {
+		font-size: var(--font-size-small);
+	}
 </style>

@@ -23,9 +23,10 @@
 
 	onMount(() => {
 		// If user as a default strategy, we use this strategy else, if monitored is already enabled, we use the basic suggested strategy
-		useMonitoringStrategy =
-			fromNullishNullable(fromNullishNullable(monitoringConfig?.cycles)?.default_strategy) ??
-			(monitoringEnabled ? BASIC_STRATEGY : undefined);
+		useMonitoringStrategy = monitoringEnabled
+			? (fromNullishNullable(fromNullishNullable(monitoringConfig?.cycles)?.default_strategy) ??
+				BASIC_STRATEGY)
+			: undefined;
 
 		monitoringStrategy = useMonitoringStrategy;
 		useDefaultStrategy = nonNullish(monitoringStrategy);

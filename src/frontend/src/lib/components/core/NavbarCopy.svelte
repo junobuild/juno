@@ -4,9 +4,7 @@
 	import Popover from '$lib/components/ui/Popover.svelte';
 	import WalletIds from '$lib/components/wallet/WalletIds.svelte';
 	import { i18n } from '$lib/stores/i18n.store';
-	import { toasts } from '$lib/stores/toasts.store';
 	import type { MissionControlId } from '$lib/types/mission-control';
-	import { satelliteName } from '$lib/utils/satellite.utils';
 
 	interface Props {
 		missionControlId: MissionControlId;

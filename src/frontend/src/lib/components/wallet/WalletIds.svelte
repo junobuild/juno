@@ -18,12 +18,21 @@
 	{#snippet label()}
 		{$i18n.wallet.wallet_id}
 	{/snippet}
-	<Identifier shorten={false} small={false} identifier={missionControlId.toText()} />
+	<Identifier
+		shorten={false}
+		small={false}
+		identifier={missionControlId.toText()}
+		what={$i18n.wallet.wallet_id}
+	/>
 </Value>
 
 <Value>
 	{#snippet label()}
 		{$i18n.wallet.account_identifier}
 	{/snippet}
-	<Identifier identifier={accountIdentifier?.toHex() ?? ''} small={false} />
+	<Identifier
+		identifier={accountIdentifier?.toHex() ?? ''}
+		small={false}
+		what={$i18n.wallet.account_identifier}
+	/>
 </Value>

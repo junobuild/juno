@@ -3,6 +3,7 @@
 	import Copy from '$lib/components/ui/Copy.svelte';
 	import Popover from '$lib/components/ui/Popover.svelte';
 	import WalletIds from '$lib/components/wallet/WalletIds.svelte';
+	import { i18n } from '$lib/stores/i18n.store';
 	import type { MissionControlId } from '$lib/types/mission-control';
 
 	interface Props {
@@ -16,7 +17,7 @@
 </script>
 
 <div class="ids">
-	<Copy value={missionControlId.toText()} variant="text" />
+	<Copy value={missionControlId.toText()} variant="text" what={$i18n.wallet.wallet_id} />
 
 	<button class="text more" onclick={() => (visible = true)} bind:this={button}
 		><IconArrowDropDown size="16px" /></button

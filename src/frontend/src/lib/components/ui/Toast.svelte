@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { isNullish } from '@dfinity/utils';
-	import { onDestroy, onMount, untrack } from 'svelte';
+	import { onDestroy, untrack } from 'svelte';
 	import { fade, fly } from 'svelte/transition';
 	import IconClose from '$lib/components/icons/IconClose.svelte';
 	import { i18n } from '$lib/stores/i18n.store';
@@ -13,10 +13,7 @@
 
 	let { msg }: Props = $props();
 
-	const close = () => {
-		console.log('close');
-		toasts.hide();
-	};
+	const close = () => toasts.hide();
 
 	let text: string = $derived(msg.text);
 	let level: ToastLevel = $derived(msg.level);

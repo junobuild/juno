@@ -7,6 +7,7 @@ interface I18nCore {
 	back: string;
 	menu: string;
 	copy: string;
+	copied: string;
 	toggle: string;
 	loading: string;
 	status: string;
@@ -309,8 +310,6 @@ interface I18nWallet {
 	balance_not_loaded: string;
 	balance_zero: string;
 	wallet_upgrade: string;
-	wallet_id_copied_clipboard: string;
-	account_identifier_copied_clipboard: string;
 }
 
 interface I18nAuthentication {

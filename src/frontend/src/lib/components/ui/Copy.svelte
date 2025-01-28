@@ -7,25 +7,16 @@
 	interface Props {
 		value: string;
 		variant?: 'square' | 'text';
-		confirmText?: string;
 	}
 
-	let { value, variant = 'square', confirmText }: Props = $props();
+	let { value, variant = 'square' }: Props = $props();
 
 	const copyToClipboard = async ($event: UIEvent) => {
 		$event.stopPropagation();
 
 		await navigator.clipboard.writeText(value);
 
-		showConfirmation();
-	};
-
-	const showConfirmation = () => {
-		if (isNullish(confirmText)) {
-			return;
-		}
-
-		toasts.show({ text: confirmText, level: 'info', duration: 2000 });
+		toasts.show({ text: `${value} ${$i18n.core.copied}`, level: 'info', duration: 2000 });
 	};
 </script>
 

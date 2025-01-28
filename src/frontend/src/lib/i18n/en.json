@@ -4,6 +4,7 @@
 		"back": "Back",
 		"menu": "Open menu to access navigation options",
 		"copy": "Copy to clipboard",
+		"copied": "copied to clipboard",
 		"toggle": "Toggle",
 		"loading": "Loading...",
 		"status": "Status",
@@ -300,9 +301,7 @@
 		"wallet_missing_account": "No account available to request the transaction. Have you connected your wallet?",
 		"balance_not_loaded": "Please wait, your balance is not yet loaded.",
 		"balance_zero": "Your balance is zero. Get some tokens to start sending.",
-		"wallet_upgrade": "Please upgrade your wallet to enable the sending feature.",
-		"wallet_id_copied_clipboard": "Wallet ID copied to your clipboard.",
-		"account_identifier_copied_clipboard": "Account identifier copied to your clipboard."
+		"wallet_upgrade": "Please upgrade your wallet to enable the sending feature."
 	},
 	"authentication": {
 		"title": "Authentication",

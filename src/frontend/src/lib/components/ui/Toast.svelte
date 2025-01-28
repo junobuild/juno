@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { isNullish } from '@dfinity/utils';
-	import { onDestroy, onMount } from 'svelte';
+	import { onDestroy, onMount, untrack } from 'svelte';
 	import { fade, fly } from 'svelte/transition';
 	import IconClose from '$lib/components/icons/IconClose.svelte';
 	import { i18n } from '$lib/stores/i18n.store';
@@ -13,24 +13,29 @@
 
 	let { msg }: Props = $props();
 
-	const close = () => toasts.hide();
+	const close = () => {
+		console.log('close');
+		toasts.hide();
+	};
 
 	let text: string = $derived(msg.text);
 	let level: ToastLevel = $derived(msg.level);
 	let detail: string | undefined = $derived(msg.detail);
 
-	let timer: number | undefined;
+	let timer = $state<number | undefined>(undefined);
 
-	onMount(() => {
+	$effect(() => {
 		const { duration } = msg;
 
-		if (!duration || duration <= 0) {
-			return;
-		}
+		untrack(() => {
+			if (isNullish(duration) || duration <= 0) {
+				return;
+			}
 
-		// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-		// @ts-ignore NodeJS.timeout vs number
-		timer = setTimeout(close, duration);
+			// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+			// @ts-ignore NodeJS.timeout vs number
+			timer = setTimeout(close, duration);
+		});
 	});
 
 	onDestroy(() => clearTimeout(timer));

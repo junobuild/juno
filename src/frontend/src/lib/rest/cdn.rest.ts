@@ -1,6 +1,6 @@
 import { last } from '$lib/utils/utils';
-import type { ReleaseMetadata, ReleasesMetadata } from '@junobuild/admin';
 import { assertNonNullish } from '@dfinity/utils';
+import type { ReleaseMetadata, ReleasesMetadata } from '@junobuild/admin';
 import { compare } from 'semver';
 
 export const getReleasesMetadata = async (): Promise<ReleasesMetadata> => {

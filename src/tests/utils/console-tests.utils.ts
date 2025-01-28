@@ -6,7 +6,7 @@ import type { Identity } from '@dfinity/agent';
 import { Ed25519KeyIdentity } from '@dfinity/identity';
 import { arrayBufferToUint8Array, fromNullable, toNullable } from '@dfinity/utils';
 import { PocketIc, type Actor } from '@hadronous/pic';
-import { assertNonNullish } from '@junobuild/utils';
+import { assertNonNullish } from '@dfinity/utils';
 import { readFile } from 'node:fs/promises';
 import { expect } from 'vitest';
 import { tick } from './pic-tests.utils';

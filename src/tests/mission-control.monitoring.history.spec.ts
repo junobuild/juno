@@ -9,9 +9,8 @@ import type {
 import { idlFactory as idlFactorMissionControl } from '$declarations/mission_control/mission_control.factory.did';
 import { Ed25519KeyIdentity } from '@dfinity/identity';
 import type { Principal } from '@dfinity/principal';
-import { fromNullable, toNullable } from '@dfinity/utils';
+import { assertNonNullish, fromNullable, toNullable } from '@dfinity/utils';
 import { type Actor, PocketIc } from '@hadronous/pic';
-import { assertNonNullish } from '@junobuild/utils';
 import { afterAll, beforeAll, describe, inject } from 'vitest';
 import {
 	missionControlUserInitArgs,

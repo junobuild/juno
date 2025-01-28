@@ -13,12 +13,12 @@ import { Ed25519KeyIdentity } from '@dfinity/identity';
 import type { Principal } from '@dfinity/principal';
 import {
 	arrayBufferToUint8Array,
+	assertNonNullish,
 	fromNullable,
 	toNullable,
 	uint8ArrayToHexString
 } from '@dfinity/utils';
 import { PocketIc, type Actor } from '@hadronous/pic';
-import { assertNonNullish } from '@junobuild/utils';
 import { beforeAll, describe, expect, inject } from 'vitest';
 import { CONTROLLER_ERROR_MSG } from './constants/console-tests.constants';
 import { assertCertification } from './utils/certification-test.utils';

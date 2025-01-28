@@ -1,8 +1,7 @@
 import type { Identity } from '@dfinity/agent';
 import { IDL } from '@dfinity/candid';
 import type { Principal } from '@dfinity/principal';
-import { nonNullish } from '@dfinity/utils';
-import { assertNonNullish } from '@junobuild/utils';
+import { assertNonNullish, nonNullish } from '@dfinity/utils';
 import { parse } from '@ltd/j-toml';
 import { existsSync, readFileSync, writeFileSync } from 'node:fs';
 import { get, type RequestOptions } from 'node:https';

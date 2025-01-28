@@ -1,9 +1,8 @@
 import type { _SERVICE as SatelliteActor, SetRule } from '$declarations/satellite/satellite.did';
 import { idlFactory as idlFactorSatellite } from '$declarations/satellite/satellite.factory.did';
 import { Ed25519KeyIdentity } from '@dfinity/identity';
-import { fromNullable, toNullable } from '@dfinity/utils';
+import { assertNonNullish, fromNullable, toNullable } from '@dfinity/utils';
 import { PocketIc, type Actor } from '@hadronous/pic';
-import { assertNonNullish } from '@junobuild/utils';
 import { parse } from '@ltd/j-toml';
 import { readFileSync } from 'node:fs';
 import { join } from 'node:path';

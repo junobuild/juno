@@ -1,7 +1,6 @@
 import type { _SERVICE as ConsoleActor } from '$declarations/console/console.did';
 import type { _SERVICE as SatelliteActor } from '$declarations/satellite/satellite.did';
-import { fromNullable, toNullable } from '@dfinity/utils';
-import { assertNonNullish } from '@dfinity/utils';
+import { assertNonNullish, fromNullable, toNullable } from '@dfinity/utils';
 import { expect } from 'vitest';
 
 export const anonymousCustomDomainsTests = <T extends SatelliteActor | ConsoleActor>({

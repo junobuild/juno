@@ -1,8 +1,8 @@
 import type { HttpResponse } from '$declarations/satellite/satellite.did';
 import type { Principal } from '@dfinity/principal';
 import { verifyRequestResponsePair, type Request } from '@dfinity/response-verification';
-import type { PocketIc } from '@hadronous/pic';
 import { assertNonNullish } from '@dfinity/utils';
+import type { PocketIc } from '@hadronous/pic';
 
 const CERTIFICATE_VERSION = 2;
 

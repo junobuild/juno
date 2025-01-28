@@ -5,8 +5,8 @@ import { AccountIdentifier } from '@dfinity/ledger-icp';
 import type { _SERVICE as LedgerActor } from '@dfinity/ledger-icp/dist/candid/ledger';
 // @ts-expect-error init is not packaged / exposed
 import { idlFactory, init } from '@dfinity/ledger-icp/dist/candid/ledger.idl.js';
-import type { CanisterFixture, PocketIc } from '@hadronous/pic';
 import { assertNonNullish } from '@dfinity/utils';
+import type { CanisterFixture, PocketIc } from '@hadronous/pic';
 import { LEDGER_ID } from '../constants/ledger-tests.contants';
 import { download } from './setup-tests.utils';
 

@@ -5,6 +5,7 @@
 	import Canister from '$lib/components/canister/Canister.svelte';
 	import CanisterIndicator from '$lib/components/canister/CanisterIndicator.svelte';
 	import CanisterTCycles from '$lib/components/canister/CanisterTCycles.svelte';
+	import NavbarCopy from '$lib/components/core/NavbarCopy.svelte';
 	import NavbarLink from '$lib/components/core/NavbarLink.svelte';
 	import IconAnalytics from '$lib/components/icons/IconAnalytics.svelte';
 	import IconMissionControl from '$lib/components/icons/IconMissionControl.svelte';
@@ -67,6 +68,10 @@
 			</NavbarLink>
 		</div>
 	{/if}
+
+	<div in:slide={{ axis: 'x' }} class="container wallet">
+		<NavbarCopy missionControlId={$missionControlIdDerived} />
+	</div>
 {/if}
 
 <style lang="scss">

@@ -1,13 +1,11 @@
 <script lang="ts">
 	import { isNullish } from '@dfinity/utils';
 	import { compare } from 'semver';
-	import { getAccountIdentifier } from '$lib/api/icp-index.api';
 	import ReceiveTokens from '$lib/components/tokens/ReceiveTokens.svelte';
 	import Transactions from '$lib/components/transactions/Transactions.svelte';
 	import TransactionsExport from '$lib/components/transactions/TransactionsExport.svelte';
-	import Identifier from '$lib/components/ui/Identifier.svelte';
-	import Value from '$lib/components/ui/Value.svelte';
 	import WalletBalance from '$lib/components/wallet/WalletBalance.svelte';
+	import WalletIds from '$lib/components/wallet/WalletIds.svelte';
 	import { PAGINATION } from '$lib/constants/app.constants';
 	import { MISSION_CONTROL_v0_0_12 } from '$lib/constants/version.constants';
 	import { authSignedIn, authSignedOut } from '$lib/derived/auth.derived';
@@ -27,8 +25,6 @@
 	}
 
 	let { missionControlId }: Props = $props();
-
-	const accountIdentifier = getAccountIdentifier(missionControlId);
 
 	/**
 	 * Scroll
@@ -99,19 +95,7 @@
 
 		<div class="columns-3 fit-column-1">
 			<div>
-				<Value>
-					{#snippet label()}
-						{$i18n.wallet.wallet_id}
-					{/snippet}
-					<Identifier shorten={false} small={false} identifier={missionControlId.toText()} />
-				</Value>
-
-				<Value>
-					{#snippet label()}
-						{$i18n.wallet.account_identifier}
-					{/snippet}
-					<Identifier identifier={accountIdentifier?.toHex() ?? ''} small={false} />
-				</Value>
+				<WalletIds {missionControlId} />
 			</div>
 
 			<div>

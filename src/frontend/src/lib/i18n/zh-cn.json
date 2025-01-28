@@ -300,7 +300,9 @@
 		"wallet_missing_account": "没有有效的账户来处理交易，你确定链接你的钱包了吗?",
 		"balance_not_loaded": "Please wait, your balance is not yet loaded.",
 		"balance_zero": "Your balance is zero. Get some tokens to start sending.",
-		"wallet_upgrade": "Please upgrade your wallet to enable the sending feature."
+		"wallet_upgrade": "Please upgrade your wallet to enable the sending feature.",
+		"wallet_id_copied_clipboard": "Wallet ID copied to your clipboard.",
+		"account_identifier_copied_clipboard": "Account identifier copied to your clipboard."
 	},
 	"authentication": {
 		"title": "认证",

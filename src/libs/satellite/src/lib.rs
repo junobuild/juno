@@ -13,6 +13,7 @@ mod rules;
 mod satellite;
 mod storage;
 mod types;
+mod usage;
 mod version;
 
 use crate::auth::types::config::AuthenticationConfig;

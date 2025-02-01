@@ -38,6 +38,7 @@ use crate::storage::store::{
 use crate::storage::strategy_impls::StorageState;
 use crate::types::interface::{Config, RulesType};
 use crate::types::state::{HeapState, RuntimeState, State};
+use crate::usage::store::{decrease_user_usage, decrease_user_usage_by, increase_user_usage};
 use ciborium::{from_reader, into_writer};
 use ic_cdk::api::call::{arg_data, ArgDecoderConfig};
 use ic_cdk::api::{caller, trap};
@@ -120,10 +121,12 @@ pub fn post_upgrade() {
 pub fn set_doc(collection: CollectionKey, key: Key, doc: SetDoc) -> Doc {
     let caller = caller();
 
-    let result = set_doc_store(caller, collection, key, doc);
+    let result = set_doc_store(caller, collection.clone(), key, doc);
 
     match result {
         Ok(doc) => {
+            increase_user_usage(&caller, &collection);
+
             invoke_on_set_doc(&caller, &doc);
 
             doc.data.after
@@ -146,7 +149,10 @@ pub fn get_doc(collection: CollectionKey, key: Key) -> Option<Doc> {
 pub fn del_doc(collection: CollectionKey, key: Key, doc: DelDoc) {
     let caller = caller();
 
-    let deleted_doc = delete_doc_store(caller, collection, key, doc).unwrap_or_else(|e| trap(&e));
+    let deleted_doc =
+        delete_doc_store(caller, collection.clone(), key, doc).unwrap_or_else(|e| trap(&e));
+
+    decrease_user_usage(&caller, &collection);
 
     invoke_on_delete_doc(&caller, &deleted_doc);
 }
@@ -189,8 +195,10 @@ pub fn set_many_docs(docs: Vec<(CollectionKey, Key, SetDoc)>) -> Vec<(Key, Doc)>
     let mut results: Vec<(Key, Doc)> = Vec::new();
 
     for (collection, key, doc) in docs {
-        let result =
-            set_doc_store(caller, collection, key.clone(), doc).unwrap_or_else(|e| trap(&e));
+        let result = set_doc_store(caller, collection.clone(), key.clone(), doc)
+            .unwrap_or_else(|e| trap(&e));
+
+        increase_user_usage(&caller, &collection);
 
         results.push((result.key.clone(), result.data.after.clone()));
 
@@ -208,8 +216,11 @@ pub fn del_many_docs(docs: Vec<(CollectionKey, Key, DelDoc)>) {
     let mut results: Vec<DocContext<Option<Doc>>> = Vec::new();
 
     for (collection, key, doc) in docs {
-        let deleted_doc =
-            delete_doc_store(caller, collection, key.clone(), doc).unwrap_or_else(|e| trap(&e));
+        let deleted_doc = delete_doc_store(caller, collection.clone(), key.clone(), doc)
+            .unwrap_or_else(|e| trap(&e));
+
+        decrease_user_usage(&caller, &collection);
+
         results.push(deleted_doc);
     }
 
@@ -219,8 +230,10 @@ pub fn del_many_docs(docs: Vec<(CollectionKey, Key, DelDoc)>) {
 pub fn del_filtered_docs(collection: CollectionKey, filter: ListParams) {
     let caller = caller();
 
-    let results =
-        delete_filtered_docs_store(caller, collection, &filter).unwrap_or_else(|e| trap(&e));
+    let results = delete_filtered_docs_store(caller, collection.clone(), &filter)
+        .unwrap_or_else(|e| trap(&e));
+
+    decrease_user_usage_by(&caller, &collection, results.len() as u32);
 
     invoke_on_delete_filtered_docs(&caller, &results);
 }

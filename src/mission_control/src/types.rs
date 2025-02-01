@@ -207,7 +207,7 @@ pub mod interface {
     use crate::types::state::CyclesMonitoringStrategy;
     use candid::CandidType;
     use junobuild_shared::mgmt::types::cmc::SubnetId;
-    use junobuild_shared::types::state::{Metadata, OrbiterId, SatelliteId, SegmentId, Timestamp};
+    use junobuild_shared::types::state::{OrbiterId, SatelliteId, SegmentId, Timestamp};
     use serde::{Deserialize, Serialize};
 
     #[derive(CandidType, Serialize, Deserialize, Clone)]

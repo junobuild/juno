@@ -2,7 +2,7 @@ use crate::types::rules::Permission;
 use candid::Principal;
 use junobuild_shared::controllers::is_controller;
 use junobuild_shared::types::state::Controllers;
-use junobuild_shared::utils::{principal_equal, principal_not_anonymous};
+use junobuild_shared::utils::{principal_not_anonymous, principal_not_anonymous_and_equal};
 
 pub fn assert_permission(
     permission: &Permission,
@@ -34,7 +34,7 @@ pub fn assert_create_permission(
 }
 
 fn assert_caller(caller: Principal, owner: Principal) -> bool {
-    assert_not_anonymous(caller) && principal_equal(owner, caller)
+    principal_not_anonymous_and_equal(caller, owner)
 }
 
 fn assert_not_anonymous(caller: Principal) -> bool {

@@ -22,7 +22,6 @@ use crate::guards::{caller_is_admin_controller, caller_is_controller};
 use crate::types::interface::{Config, RulesType};
 use crate::version::SATELLITE_VERSION;
 use ic_cdk::api::trap;
-use ic_cdk::caller;
 use ic_cdk_macros::{init, post_upgrade, pre_upgrade, query, update};
 use junobuild_collections::types::core::CollectionKey;
 use junobuild_collections::types::interface::{DelRule, SetRule};

@@ -5,6 +5,7 @@ use candid::Principal;
 use junobuild_collections::types::core::CollectionKey;
 use junobuild_shared::controllers::is_controller;
 use junobuild_shared::types::state::{Controllers, UserId};
+use junobuild_shared::utils::principal_not_anonymous_and_equal;
 
 pub fn get_user_usage_by_id(
     collection: &CollectionKey,
@@ -13,7 +14,9 @@ pub fn get_user_usage_by_id(
 ) -> Option<UserUsage> {
     let controllers: Controllers = get_controllers();
 
-    if assert_caller(caller, user_id) || is_controller(caller, &controllers) {
+    if principal_not_anonymous_and_equal(user_id.clone(), caller)
+        || is_controller(caller, &controllers)
+    {
         return get_user_usage_store(user_id, collection);
     }
 

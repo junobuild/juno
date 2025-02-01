@@ -16,6 +16,10 @@ pub fn decrease_user_usage_by(user_id: &UserId, collection: &CollectionKey, coun
     update_user_usage(user_id, collection, &ModificationType::Delete, Some(count));
 }
 
+pub fn get_user_usage(user_id: &UserId, collection: &CollectionKey) -> Option<UserUsage> {
+    STATE.with(|state| get_user_usage_impl(user_id, collection, &state.borrow().stable.user_usage))
+}
+
 fn update_user_usage(
     user_id: &UserId,
     collection: &CollectionKey,
@@ -31,6 +35,16 @@ fn update_user_usage(
             &mut state.borrow_mut().stable.user_usage,
         )
     })
+}
+
+fn get_user_usage_impl(
+    user_id: &UserId,
+    collection: &CollectionKey,
+    state: &UserUsageStable,
+) -> Option<UserUsage> {
+    let key = stable_user_usage_key(user_id, collection);
+
+    state.get(&key)
 }
 
 fn update_user_usage_impl(

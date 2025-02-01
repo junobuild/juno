@@ -22,6 +22,7 @@ use crate::guards::{caller_is_admin_controller, caller_is_controller};
 use crate::types::interface::{Config, RulesType};
 use crate::version::SATELLITE_VERSION;
 use ic_cdk::api::trap;
+use ic_cdk::caller;
 use ic_cdk_macros::{init, post_upgrade, pre_upgrade, query, update};
 use junobuild_collections::types::core::CollectionKey;
 use junobuild_collections::types::interface::{DelRule, SetRule};
@@ -34,7 +35,7 @@ use junobuild_shared::types::interface::{
 };
 use junobuild_shared::types::list::ListParams;
 use junobuild_shared::types::list::ListResults;
-use junobuild_shared::types::state::Controllers;
+use junobuild_shared::types::state::{Controllers, UserId};
 use junobuild_storage::http::types::{
     HttpRequest, HttpResponse, StreamingCallbackHttpResponse, StreamingCallbackToken,
 };
@@ -72,6 +73,7 @@ pub use crate::types::hooks::{
     OnDeleteFilteredAssetsContext, OnDeleteFilteredDocsContext, OnDeleteManyAssetsContext,
     OnDeleteManyDocsContext, OnSetDocContext, OnSetManyDocsContext, OnUploadAssetContext,
 };
+use crate::usage::types::state::UserUsage;
 // ============================================================================================
 // END: Re-exported Types
 // ============================================================================================
@@ -392,6 +394,16 @@ pub fn get_many_assets(
     assets: Vec<(CollectionKey, FullPath)>,
 ) -> Vec<(FullPath, Option<AssetNoContent>)> {
     satellite::get_many_assets(assets)
+}
+
+// ---------------------------------------------------------
+// User usage
+// ---------------------------------------------------------
+
+#[doc(hidden)]
+#[query]
+pub fn get_user_usage(collection: CollectionKey, user_id: Option<UserId>) -> Option<UserUsage> {
+    satellite::get_user_usage(&collection, &user_id)
 }
 
 // ---------------------------------------------------------

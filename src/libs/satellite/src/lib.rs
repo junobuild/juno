@@ -452,12 +452,12 @@ macro_rules! include_satellite {
             count_docs, del_asset, del_assets, del_controllers, del_custom_domain, del_doc,
             del_docs, del_filtered_assets, del_filtered_docs, del_many_assets, del_many_docs,
             del_rule, deposit_cycles, get_asset, get_auth_config, get_config, get_db_config,
-            get_doc, get_many_assets, get_many_docs, get_storage_config, http_request,
-            http_request_streaming_callback, init, init_asset_upload, list_assets,
+            get_doc, get_many_assets, get_many_docs, get_storage_config, get_user_usage,
+            http_request, http_request_streaming_callback, init, init_asset_upload, list_assets,
             list_controllers, list_custom_domains, list_docs, list_rules, memory_size,
             post_upgrade, pre_upgrade, set_auth_config, set_controllers, set_custom_domain,
             set_db_config, set_doc, set_many_docs, set_rule, set_storage_config,
-            upload_asset_chunk, get_user_usage, version,
+            upload_asset_chunk, version,
         };
 
         #[ic_cdk::query]

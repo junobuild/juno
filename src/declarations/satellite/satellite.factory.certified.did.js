@@ -145,6 +145,12 @@ export const idlFactory = ({ IDL }) => {
 		rate_config: IDL.Opt(RateConfig),
 		write: Permission
 	});
+	const UserUsage = IDL.Record({
+		updated_at: IDL.Nat64,
+		created_at: IDL.Nat64,
+		version: IDL.Opt(IDL.Nat64),
+		items_count: IDL.Nat32
+	});
 	const HttpRequest = IDL.Record({
 		url: IDL.Text,
 		method: IDL.Text,
@@ -277,6 +283,7 @@ export const idlFactory = ({ IDL }) => {
 		),
 		get_rule: IDL.Func([RulesType, IDL.Text], [IDL.Opt(Rule)], []),
 		get_storage_config: IDL.Func([], [StorageConfig], []),
+		get_user_usage: IDL.Func([IDL.Text, IDL.Opt(IDL.Principal)], [IDL.Opt(UserUsage)], []),
 		http_request: IDL.Func([HttpRequest], [HttpResponse], []),
 		http_request_streaming_callback: IDL.Func(
 			[StreamingCallbackToken],

@@ -237,6 +237,12 @@ export interface UploadChunk {
 export interface UploadChunkResult {
 	chunk_id: bigint;
 }
+export interface UserUsage {
+	updated_at: bigint;
+	created_at: bigint;
+	version: [] | [bigint];
+	items_count: number;
+}
 export interface _SERVICE {
 	build_version: ActorMethod<[], string>;
 	commit_asset_upload: ActorMethod<[CommitBatch], undefined>;
@@ -265,6 +271,7 @@ export interface _SERVICE {
 	get_many_docs: ActorMethod<[Array<[string, string]>], Array<[string, [] | [Doc]]>>;
 	get_rule: ActorMethod<[RulesType, string], [] | [Rule]>;
 	get_storage_config: ActorMethod<[], StorageConfig>;
+	get_user_usage: ActorMethod<[string, [] | [Principal]], [] | [UserUsage]>;
 	http_request: ActorMethod<[HttpRequest], HttpResponse>;
 	http_request_streaming_callback: ActorMethod<
 		[StreamingCallbackToken],

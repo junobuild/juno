@@ -1,6 +1,6 @@
 use crate::memory::STATE;
 use crate::types::state::{
-    CyclesMonitoringStrategy, HeapState, MissionControlSettings, MonitoringConfig, Orbiters,
+    CyclesMonitoringStrategy, HeapState, MissionControlSettings, Orbiters,
     Satellites, Settings,
 };
 use junobuild_shared::types::state::{OrbiterId, SatelliteId};

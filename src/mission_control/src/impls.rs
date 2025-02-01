@@ -3,8 +3,8 @@ use crate::types::core::{Segment, SettingsMonitoring};
 use crate::types::state::CyclesMonitoringStrategy::BelowThreshold;
 use crate::types::state::{
     Archive, ArchiveStatuses, Config, CyclesMonitoring, CyclesMonitoringStrategy, HeapState,
-    MissionControlSettings, Monitoring, MonitoringHistory, MonitoringHistoryKey,
-    Orbiter, Orbiters, Satellite, Settings, State, User,
+    MissionControlSettings, Monitoring, MonitoringHistory, MonitoringHistoryKey, Orbiter, Orbiters,
+    Satellite, Settings, State, User,
 };
 use canfund::manager::options::{CyclesThreshold, FundStrategy};
 use ic_cdk::api::time;

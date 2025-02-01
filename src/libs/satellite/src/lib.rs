@@ -316,9 +316,9 @@ pub fn http_request_streaming_callback(
     satellite::http_request_streaming_callback(callback)
 }
 
-//
+// ---------------------------------------------------------
 // Storage
-//
+// ---------------------------------------------------------
 
 #[doc(hidden)]
 #[update]

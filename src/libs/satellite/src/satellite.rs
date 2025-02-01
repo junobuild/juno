@@ -412,9 +412,9 @@ pub fn http_request_streaming_callback(
     http_request_streaming_callback_storage(streaming_callback_token, &StorageState)
 }
 
-//
+// ---------------------------------------------------------
 // Storage
-//
+// ---------------------------------------------------------
 
 pub fn init_asset_upload(init: InitAssetKey) -> InitUploadResult {
     let caller = caller();

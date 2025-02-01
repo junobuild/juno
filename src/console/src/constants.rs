@@ -24,6 +24,7 @@ pub const DEFAULT_RELEASES_COLLECTIONS: [(&str, SetRule); 1] = [(
         mutable_permissions: Some(false),
         max_size: None,
         max_capacity: None,
+        max_items_per_user: None,
         version: None,
         rate_config: None,
     },

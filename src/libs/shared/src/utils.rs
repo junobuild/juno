@@ -45,3 +45,15 @@ pub fn principal_not_anonymous(p: Principal) -> bool {
 pub fn principal_anonymous(p: Principal) -> bool {
     principal_equal(p, Principal::anonymous())
 }
+
+/// Checks if two principals are equal and neither is anonymous.
+///
+/// # Arguments
+/// * `x` - The first principal to compare.
+/// * `y` - The second principal to compare.
+///
+/// # Returns
+/// True if the principals are equal and neither is anonymous; false otherwise.
+pub fn principal_not_anonymous_and_equal(x: Principal, y: Principal) -> bool {
+    principal_not_anonymous(x) && principal_equal(x, y)
+}

@@ -4,23 +4,11 @@ use crate::usage::types::state::{UserUsage, UserUsageKey, UserUsageStable};
 use junobuild_collections::types::core::CollectionKey;
 use junobuild_shared::types::state::UserId;
 
-pub fn increase_user_usage(user_id: &UserId, collection: &CollectionKey) {
-    update_user_usage(user_id, collection, &ModificationType::Set, None);
-}
-
-pub fn decrease_user_usage(user_id: &UserId, collection: &CollectionKey) {
-    update_user_usage(user_id, collection, &ModificationType::Delete, None);
-}
-
-pub fn decrease_user_usage_by(user_id: &UserId, collection: &CollectionKey, count: u32) {
-    update_user_usage(user_id, collection, &ModificationType::Delete, Some(count));
-}
-
 pub fn get_user_usage(user_id: &UserId, collection: &CollectionKey) -> Option<UserUsage> {
     STATE.with(|state| get_user_usage_impl(user_id, collection, &state.borrow().stable.user_usage))
 }
 
-fn update_user_usage(
+pub fn update_user_usage(
     user_id: &UserId,
     collection: &CollectionKey,
     modification: &ModificationType,

@@ -14,6 +14,7 @@ pub const DEFAULT_DB_LOG_RULE: SetRule = SetRule {
     mutable_permissions: Some(false),
     max_size: None,
     max_capacity: Some(100),
+    max_items_per_user: None,
     version: None,
     rate_config: None,
 };
@@ -28,6 +29,7 @@ pub const DEFAULT_DB_COLLECTIONS: [(&str, SetRule); 2] = [
             mutable_permissions: Some(false),
             max_size: None,
             max_capacity: None,
+            max_items_per_user: None,
             version: None,
             rate_config: Some(DEFAULT_RATE_CONFIG),
         },
@@ -46,6 +48,7 @@ pub const DEFAULT_ASSETS_COLLECTIONS: [(&str, SetRule); 1] = [(
         mutable_permissions: Some(false),
         max_size: None,
         max_capacity: None,
+        max_items_per_user: None,
         version: None,
         rate_config: None,
     },

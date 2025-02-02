@@ -37,7 +37,7 @@ fn get_user_usage_by_id(
     let controllers: Controllers = get_controllers();
 
     if principal_not_anonymous_and_equal(*user_id, caller) || is_controller(caller, &controllers) {
-        return get_user_usage_store(user_id, collection_key, collection_type);
+        return get_user_usage_store(collection_key, collection_type, user_id);
     }
 
     None

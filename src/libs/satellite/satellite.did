@@ -236,7 +236,9 @@ service : () -> {
     ) query;
   get_rule : (CollectionType, text) -> (opt Rule) query;
   get_storage_config : () -> (StorageConfig) query;
-  get_user_usage : (text, opt principal) -> (opt UserUsage) query;
+  get_user_usage : (text, CollectionType, opt principal) -> (
+      opt UserUsage,
+    ) query;
   http_request : (HttpRequest) -> (HttpResponse) query;
   http_request_streaming_callback : (StreamingCallbackToken) -> (
       StreamingCallbackHttpResponse,

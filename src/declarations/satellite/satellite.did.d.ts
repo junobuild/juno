@@ -271,7 +271,7 @@ export interface _SERVICE {
 	get_many_docs: ActorMethod<[Array<[string, string]>], Array<[string, [] | [Doc]]>>;
 	get_rule: ActorMethod<[CollectionType, string], [] | [Rule]>;
 	get_storage_config: ActorMethod<[], StorageConfig>;
-	get_user_usage: ActorMethod<[string, [] | [Principal]], [] | [UserUsage]>;
+	get_user_usage: ActorMethod<[string, CollectionType, [] | [Principal]], [] | [UserUsage]>;
 	http_request: ActorMethod<[HttpRequest], HttpResponse>;
 	http_request_streaming_callback: ActorMethod<
 		[StreamingCallbackToken],

@@ -283,7 +283,11 @@ export const idlFactory = ({ IDL }) => {
 		),
 		get_rule: IDL.Func([CollectionType, IDL.Text], [IDL.Opt(Rule)], ['query']),
 		get_storage_config: IDL.Func([], [StorageConfig], ['query']),
-		get_user_usage: IDL.Func([IDL.Text, IDL.Opt(IDL.Principal)], [IDL.Opt(UserUsage)], ['query']),
+		get_user_usage: IDL.Func(
+			[IDL.Text, CollectionType, IDL.Opt(IDL.Principal)],
+			[IDL.Opt(UserUsage)],
+			['query']
+		),
 		http_request: IDL.Func([HttpRequest], [HttpResponse], ['query']),
 		http_request_streaming_callback: IDL.Func(
 			[StreamingCallbackToken],

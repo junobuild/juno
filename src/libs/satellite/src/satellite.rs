@@ -264,29 +264,29 @@ pub fn count_collection_docs(collection: CollectionKey) -> usize {
 // Rules
 // ---------------------------------------------------------
 
-pub fn get_rule(rules_type: &CollectionType, collection: &CollectionKey) -> Option<Rule> {
-    match rules_type {
+pub fn get_rule(collection_type: &CollectionType, collection: &CollectionKey) -> Option<Rule> {
+    match collection_type {
         CollectionType::Db => get_rule_db(collection),
         CollectionType::Storage => get_rule_storage(collection),
     }
 }
 
-pub fn list_rules(rules_type: CollectionType) -> Vec<(CollectionKey, Rule)> {
-    match rules_type {
+pub fn list_rules(collection_type: CollectionType) -> Vec<(CollectionKey, Rule)> {
+    match collection_type {
         CollectionType::Db => get_rules_db(),
         CollectionType::Storage => get_rules_storage(),
     }
 }
 
-pub fn set_rule(rules_type: CollectionType, collection: CollectionKey, rule: SetRule) -> Rule {
-    match rules_type {
+pub fn set_rule(collection_type: CollectionType, collection: CollectionKey, rule: SetRule) -> Rule {
+    match collection_type {
         CollectionType::Db => set_rule_db(collection, rule).unwrap_or_else(|e| trap(&e)),
         CollectionType::Storage => set_rule_storage(collection, rule).unwrap_or_else(|e| trap(&e)),
     }
 }
 
-pub fn del_rule(rules_type: CollectionType, collection: CollectionKey, rule: DelRule) {
-    match rules_type {
+pub fn del_rule(collection_type: CollectionType, collection: CollectionKey, rule: DelRule) {
+    match collection_type {
         CollectionType::Db => del_rule_db(collection, rule).unwrap_or_else(|e| trap(&e)),
         CollectionType::Storage => del_rule_storage(collection, rule).unwrap_or_else(|e| trap(&e)),
     }

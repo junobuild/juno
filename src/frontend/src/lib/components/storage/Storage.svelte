@@ -5,7 +5,7 @@
 	import { writable } from 'svelte/store';
 	import StorageData from '$lib/components/storage/StorageData.svelte';
 	import StorageRules from '$lib/components/storage/StorageRules.svelte';
-	import { StorageRulesType } from '$lib/constants/rules.constants';
+	import { StorageCollectionType } from '$lib/constants/rules.constants';
 	import { authStore } from '$lib/stores/auth.store';
 	import { RULES_CONTEXT_KEY, type RulesContext, type RulesStore } from '$lib/types/rules.context';
 	import { TABS_CONTEXT_KEY, type TabsContext } from '$lib/types/tabs.context';
@@ -26,7 +26,7 @@
 	const reloadRules = async () =>
 		await reloadContextRules({
 			satelliteId,
-			type: StorageRulesType,
+			type: StorageCollectionType,
 			store,
 			identity: $authStore.identity
 		});

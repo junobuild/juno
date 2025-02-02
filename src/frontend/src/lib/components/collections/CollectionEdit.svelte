@@ -2,7 +2,7 @@
 	import { fromNullable, isNullish, nonNullish, fromNullishNullable } from '@dfinity/utils';
 	import { type SvelteComponent, createEventDispatcher, getContext } from 'svelte';
 	import { preventDefault } from 'svelte/legacy';
-	import type { RateConfig, Rule, RulesType } from '$declarations/satellite/satellite.did';
+	import type { RateConfig, Rule, CollectionType } from '$declarations/satellite/satellite.did';
 	import CollectionDelete from '$lib/components/collections/CollectionDelete.svelte';
 	import Checkbox from '$lib/components/ui/Checkbox.svelte';
 	import Collapsible from '$lib/components/ui/Collapsible.svelte';
@@ -27,7 +27,7 @@
 	const { store, reload }: RulesContext = getContext<RulesContext>(RULES_CONTEXT_KEY);
 
 	interface Props {
-		type: RulesType;
+		type: CollectionType;
 	}
 
 	let { type }: Props = $props();

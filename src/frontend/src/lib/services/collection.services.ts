@@ -1,4 +1,4 @@
-import type { Rule, RulesType, SetRule } from '$declarations/satellite/satellite.did';
+import type { CollectionType, Rule, SetRule } from '$declarations/satellite/satellite.did';
 import { getRule, satelliteVersion, setRule as setRuleApi } from '$lib/api/satellites.api';
 import { DEFAULT_RATE_CONFIG_TIME_PER_TOKEN_NS } from '$lib/constants/data.constants';
 import { MemoryStable, type MemoryText, type PermissionText } from '$lib/constants/rules.constants';
@@ -25,7 +25,7 @@ export const setRule = async ({
 }: {
 	satelliteId: Principal;
 	collection: string;
-	type: RulesType;
+	type: CollectionType;
 	identity: OptionIdentity;
 	read: PermissionText;
 	write: PermissionText;

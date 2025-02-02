@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { getContext } from 'svelte';
-	import type { Rule, RulesType } from '$declarations/satellite/satellite.did';
+	import type { Rule, CollectionType } from '$declarations/satellite/satellite.did';
 	import CollectionEdit from '$lib/components/collections/CollectionEdit.svelte';
 	import Collections from '$lib/components/collections/Collections.svelte';
 	import CollectionsNav from '$lib/components/collections/CollectionsNav.svelte';
@@ -9,7 +9,7 @@
 	import { RULES_CONTEXT_KEY, type RulesContext } from '$lib/types/rules.context';
 
 	interface Props {
-		type: RulesType;
+		type: CollectionType;
 	}
 
 	let { type }: Props = $props();

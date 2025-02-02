@@ -43,6 +43,7 @@ use junobuild_storage::types::interface::{
     AssetNoContent, CommitBatch, InitAssetKey, InitUploadResult, UploadChunk, UploadChunkResult,
 };
 use junobuild_storage::types::state::FullPath;
+use crate::usage::types::state::UserUsage;
 
 // ============================================================================================
 // START: Re-exported Types
@@ -72,7 +73,6 @@ pub use crate::types::hooks::{
     OnDeleteFilteredAssetsContext, OnDeleteFilteredDocsContext, OnDeleteManyAssetsContext,
     OnDeleteManyDocsContext, OnSetDocContext, OnSetManyDocsContext, OnUploadAssetContext,
 };
-use crate::usage::types::state::UserUsage;
 // ============================================================================================
 // END: Re-exported Types
 // ============================================================================================
@@ -175,26 +175,26 @@ pub fn count_collection_docs(collection: CollectionKey) -> usize {
 
 #[doc(hidden)]
 #[query(guard = "caller_is_admin_controller")]
-pub fn get_rule(rules_type: CollectionType, collection: CollectionKey) -> Option<Rule> {
-    satellite::get_rule(&rules_type, &collection)
+pub fn get_rule(collection_type: CollectionType, collection: CollectionKey) -> Option<Rule> {
+    satellite::get_rule(&collection_type, &collection)
 }
 
 #[doc(hidden)]
 #[query(guard = "caller_is_admin_controller")]
-pub fn list_rules(rules_type: CollectionType) -> Vec<(CollectionKey, Rule)> {
-    satellite::list_rules(rules_type)
+pub fn list_rules(collection_type: CollectionType) -> Vec<(CollectionKey, Rule)> {
+    satellite::list_rules(collection_type)
 }
 
 #[doc(hidden)]
 #[update(guard = "caller_is_admin_controller")]
-pub fn set_rule(rules_type: CollectionType, collection: CollectionKey, rule: SetRule) -> Rule {
-    satellite::set_rule(rules_type, collection, rule)
+pub fn set_rule(collection_type: CollectionType, collection: CollectionKey, rule: SetRule) -> Rule {
+    satellite::set_rule(collection_type, collection, rule)
 }
 
 #[doc(hidden)]
 #[update(guard = "caller_is_admin_controller")]
-pub fn del_rule(rules_type: CollectionType, collection: CollectionKey, rule: DelRule) {
-    satellite::del_rule(rules_type, collection, rule)
+pub fn del_rule(collection_type: CollectionType, collection: CollectionKey, rule: DelRule) {
+    satellite::del_rule(collection_type, collection, rule)
 }
 
 // ---------------------------------------------------------

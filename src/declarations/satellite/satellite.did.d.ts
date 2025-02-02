@@ -29,6 +29,7 @@ export interface AuthenticationConfig {
 export interface AuthenticationConfigInternetIdentity {
 	derivation_origin: [] | [string];
 }
+export type CollectionType = { Db: null } | { Storage: null };
 export interface CommitBatch {
 	batch_id: bigint;
 	headers: Array<[string, string]>;
@@ -166,7 +167,6 @@ export interface Rule {
 	rate_config: [] | [RateConfig];
 	write: Permission;
 }
-export type RulesType = { Db: null } | { Storage: null };
 export interface SetController {
 	metadata: Array<[string, string]>;
 	scope: ControllerScope;
@@ -260,7 +260,7 @@ export interface _SERVICE {
 	del_filtered_docs: ActorMethod<[string, ListParams], undefined>;
 	del_many_assets: ActorMethod<[Array<[string, string]>], undefined>;
 	del_many_docs: ActorMethod<[Array<[string, string, DelDoc]>], undefined>;
-	del_rule: ActorMethod<[RulesType, string, DelRule], undefined>;
+	del_rule: ActorMethod<[CollectionType, string, DelRule], undefined>;
 	deposit_cycles: ActorMethod<[DepositCyclesArgs], undefined>;
 	get_asset: ActorMethod<[string, string], [] | [AssetNoContent]>;
 	get_auth_config: ActorMethod<[], [] | [AuthenticationConfig]>;
@@ -269,7 +269,7 @@ export interface _SERVICE {
 	get_doc: ActorMethod<[string, string], [] | [Doc]>;
 	get_many_assets: ActorMethod<[Array<[string, string]>], Array<[string, [] | [AssetNoContent]]>>;
 	get_many_docs: ActorMethod<[Array<[string, string]>], Array<[string, [] | [Doc]]>>;
-	get_rule: ActorMethod<[RulesType, string], [] | [Rule]>;
+	get_rule: ActorMethod<[CollectionType, string], [] | [Rule]>;
 	get_storage_config: ActorMethod<[], StorageConfig>;
 	get_user_usage: ActorMethod<[string, [] | [Principal]], [] | [UserUsage]>;
 	http_request: ActorMethod<[HttpRequest], HttpResponse>;
@@ -282,7 +282,7 @@ export interface _SERVICE {
 	list_controllers: ActorMethod<[], Array<[Principal, Controller]>>;
 	list_custom_domains: ActorMethod<[], Array<[string, CustomDomain]>>;
 	list_docs: ActorMethod<[string, ListParams], ListResults_1>;
-	list_rules: ActorMethod<[RulesType], Array<[string, Rule]>>;
+	list_rules: ActorMethod<[CollectionType], Array<[string, Rule]>>;
 	memory_size: ActorMethod<[], MemorySize>;
 	set_auth_config: ActorMethod<[AuthenticationConfig], undefined>;
 	set_controllers: ActorMethod<[SetControllersArgs], Array<[Principal, Controller]>>;
@@ -290,7 +290,7 @@ export interface _SERVICE {
 	set_db_config: ActorMethod<[DbConfig], undefined>;
 	set_doc: ActorMethod<[string, string, SetDoc], Doc>;
 	set_many_docs: ActorMethod<[Array<[string, string, SetDoc]>], Array<[string, Doc]>>;
-	set_rule: ActorMethod<[RulesType, string, SetRule], Rule>;
+	set_rule: ActorMethod<[CollectionType, string, SetRule], Rule>;
 	set_storage_config: ActorMethod<[StorageConfig], undefined>;
 	upload_asset_chunk: ActorMethod<[UploadChunk], UploadChunkResult>;
 	version: ActorMethod<[], string>;

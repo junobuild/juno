@@ -191,6 +191,9 @@ export interface SetRule {
 	rate_config: [] | [RateConfig];
 	write: Permission;
 }
+export interface SetUserUsage {
+	items_count: number;
+}
 export interface StorageConfig {
 	iframe: [] | [StorageConfigIFrame];
 	rewrites: Array<[string, string]>;
@@ -237,6 +240,12 @@ export interface UploadChunk {
 export interface UploadChunkResult {
 	chunk_id: bigint;
 }
+export interface UserUsage {
+	updated_at: bigint;
+	created_at: bigint;
+	version: [] | [bigint];
+	items_count: number;
+}
 export interface _SERVICE {
 	build_version: ActorMethod<[], string>;
 	commit_asset_upload: ActorMethod<[CommitBatch], undefined>;
@@ -265,6 +274,7 @@ export interface _SERVICE {
 	get_many_docs: ActorMethod<[Array<[string, string]>], Array<[string, [] | [Doc]]>>;
 	get_rule: ActorMethod<[CollectionType, string], [] | [Rule]>;
 	get_storage_config: ActorMethod<[], StorageConfig>;
+	get_user_usage: ActorMethod<[string, CollectionType, [] | [Principal]], [] | [UserUsage]>;
 	http_request: ActorMethod<[HttpRequest], HttpResponse>;
 	http_request_streaming_callback: ActorMethod<
 		[StreamingCallbackToken],
@@ -285,6 +295,7 @@ export interface _SERVICE {
 	set_many_docs: ActorMethod<[Array<[string, string, SetDoc]>], Array<[string, Doc]>>;
 	set_rule: ActorMethod<[CollectionType, string, SetRule], Rule>;
 	set_storage_config: ActorMethod<[StorageConfig], undefined>;
+	set_user_usage: ActorMethod<[string, CollectionType, Principal, SetUserUsage], UserUsage>;
 	upload_asset_chunk: ActorMethod<[UploadChunk], UploadChunkResult>;
 	version: ActorMethod<[], string>;
 }

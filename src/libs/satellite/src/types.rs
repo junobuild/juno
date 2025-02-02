@@ -3,6 +3,7 @@ pub mod state {
     use crate::db::types::state::{DbHeapState, DbRuntimeState, DbStable};
     use crate::memory::init_stable_state;
     use crate::storage::types::state::{AssetsStable, ContentChunksStable};
+    use crate::usage::types::state::UserUsageStable;
     use candid::CandidType;
     use junobuild_shared::types::state::Controllers;
     use junobuild_storage::types::state::StorageHeapState;
@@ -27,6 +28,7 @@ pub mod state {
         pub db: DbStable,
         pub assets: AssetsStable,
         pub content_chunks: ContentChunksStable,
+        pub user_usage: UserUsageStable,
     }
 
     #[derive(Default, CandidType, Serialize, Deserialize, Clone)]
@@ -42,6 +44,12 @@ pub mod state {
         pub rng: Option<StdRng>, // rng = Random Number Generator
         pub db: DbRuntimeState,
     }
+
+    #[derive(CandidType, Deserialize, Serialize, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
+    pub enum CollectionType {
+        Db,
+        Storage,
+    }
 }
 
 pub mod interface {
@@ -50,12 +58,6 @@ pub mod interface {
     use candid::CandidType;
     use junobuild_storage::types::config::StorageConfig;
     use serde::Deserialize;
-
-    #[derive(CandidType, Deserialize)]
-    pub enum CollectionType {
-        Db,
-        Storage,
-    }
 
     #[derive(CandidType, Deserialize)]
     pub struct Config {

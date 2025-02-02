@@ -13,12 +13,16 @@ mod rules;
 mod satellite;
 mod storage;
 mod types;
+mod usage;
 mod version;
 
 use crate::auth::types::config::AuthenticationConfig;
 use crate::db::types::config::DbConfig;
 use crate::guards::{caller_is_admin_controller, caller_is_controller};
-use crate::types::interface::{Config, CollectionType};
+use crate::types::interface::Config;
+use crate::types::state::CollectionType;
+use crate::usage::types::interface::SetUserUsage;
+use crate::usage::types::state::UserUsage;
 use crate::version::SATELLITE_VERSION;
 use ic_cdk::api::trap;
 use ic_cdk_macros::{init, post_upgrade, pre_upgrade, query, update};
@@ -33,7 +37,7 @@ use junobuild_shared::types::interface::{
 };
 use junobuild_shared::types::list::ListParams;
 use junobuild_shared::types::list::ListResults;
-use junobuild_shared::types::state::Controllers;
+use junobuild_shared::types::state::{Controllers, UserId};
 use junobuild_storage::http::types::{
     HttpRequest, HttpResponse, StreamingCallbackHttpResponse, StreamingCallbackToken,
 };
@@ -394,6 +398,31 @@ pub fn get_many_assets(
 }
 
 // ---------------------------------------------------------
+// User usage
+// ---------------------------------------------------------
+
+#[doc(hidden)]
+#[query]
+pub fn get_user_usage(
+    collection_key: CollectionKey,
+    collection_type: CollectionType,
+    user_id: Option<UserId>,
+) -> Option<UserUsage> {
+    satellite::get_user_usage(&collection_key, &collection_type, &user_id)
+}
+
+#[doc(hidden)]
+#[update(guard = "caller_is_admin_controller")]
+pub fn set_user_usage(
+    collection_key: CollectionKey,
+    collection_type: CollectionType,
+    user_id: UserId,
+    usage: SetUserUsage,
+) -> UserUsage {
+    satellite::set_user_usage(&collection_key, &collection_type, &user_id, &usage)
+}
+
+// ---------------------------------------------------------
 // Mgmt
 // ---------------------------------------------------------
 
@@ -440,11 +469,11 @@ macro_rules! include_satellite {
             count_docs, del_asset, del_assets, del_controllers, del_custom_domain, del_doc,
             del_docs, del_filtered_assets, del_filtered_docs, del_many_assets, del_many_docs,
             del_rule, deposit_cycles, get_asset, get_auth_config, get_config, get_db_config,
-            get_doc, get_many_assets, get_many_docs, get_storage_config, http_request,
-            http_request_streaming_callback, init, init_asset_upload, list_assets,
+            get_doc, get_many_assets, get_many_docs, get_storage_config, get_user_usage,
+            http_request, http_request_streaming_callback, init, init_asset_upload, list_assets,
             list_controllers, list_custom_domains, list_docs, list_rules, memory_size,
             post_upgrade, pre_upgrade, set_auth_config, set_controllers, set_custom_domain,
-            set_db_config, set_doc, set_many_docs, set_rule, set_storage_config,
+            set_db_config, set_doc, set_many_docs, set_rule, set_storage_config, set_user_usage,
             upload_asset_chunk, version,
         };
 

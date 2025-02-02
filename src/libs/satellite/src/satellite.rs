@@ -36,8 +36,15 @@ use crate::storage::store::{
     set_domain_store,
 };
 use crate::storage::strategy_impls::StorageState;
-use crate::types::interface::{Config, CollectionType};
-use crate::types::state::{HeapState, RuntimeState, State};
+use crate::types::interface::Config;
+use crate::types::state::{CollectionType, HeapState, RuntimeState, State};
+use crate::usage::types::interface::SetUserUsage;
+use crate::usage::types::state::UserUsage;
+use crate::usage::user_usage::{
+    decrease_db_usage, decrease_db_usage_by, decrease_storage_usage, decrease_storage_usage_by,
+    get_db_usage_by_id, get_storage_usage_by_id, increase_db_usage, increase_storage_usage,
+    set_db_usage, set_storage_usage,
+};
 use ciborium::{from_reader, into_writer};
 use ic_cdk::api::call::{arg_data, ArgDecoderConfig};
 use ic_cdk::api::{caller, trap};
@@ -54,7 +61,7 @@ use junobuild_shared::types::interface::{DeleteControllersArgs, SegmentArgs, Set
 use junobuild_shared::types::list::ListParams;
 use junobuild_shared::types::list::ListResults;
 use junobuild_shared::types::memory::Memory;
-use junobuild_shared::types::state::{ControllerScope, Controllers};
+use junobuild_shared::types::state::{ControllerScope, Controllers, UserId};
 use junobuild_shared::upgrade::{read_post_upgrade, write_pre_upgrade};
 use junobuild_storage::http::types::{
     HttpRequest, HttpResponse, StreamingCallbackHttpResponse, StreamingCallbackToken,
@@ -120,10 +127,12 @@ pub fn post_upgrade() {
 pub fn set_doc(collection: CollectionKey, key: Key, doc: SetDoc) -> Doc {
     let caller = caller();
 
-    let result = set_doc_store(caller, collection, key, doc);
+    let result = set_doc_store(caller, collection.clone(), key, doc);
 
     match result {
         Ok(doc) => {
+            increase_db_usage(&collection, &caller);
+
             invoke_on_set_doc(&caller, &doc);
 
             doc.data.after
@@ -146,7 +155,10 @@ pub fn get_doc(collection: CollectionKey, key: Key) -> Option<Doc> {
 pub fn del_doc(collection: CollectionKey, key: Key, doc: DelDoc) {
     let caller = caller();
 
-    let deleted_doc = delete_doc_store(caller, collection, key, doc).unwrap_or_else(|e| trap(&e));
+    let deleted_doc =
+        delete_doc_store(caller, collection.clone(), key, doc).unwrap_or_else(|e| trap(&e));
+
+    decrease_db_usage(&collection, &caller);
 
     invoke_on_delete_doc(&caller, &deleted_doc);
 }
@@ -189,8 +201,10 @@ pub fn set_many_docs(docs: Vec<(CollectionKey, Key, SetDoc)>) -> Vec<(Key, Doc)>
     let mut results: Vec<(Key, Doc)> = Vec::new();
 
     for (collection, key, doc) in docs {
-        let result =
-            set_doc_store(caller, collection, key.clone(), doc).unwrap_or_else(|e| trap(&e));
+        let result = set_doc_store(caller, collection.clone(), key.clone(), doc)
+            .unwrap_or_else(|e| trap(&e));
+
+        increase_db_usage(&collection, &caller);
 
         results.push((result.key.clone(), result.data.after.clone()));
 
@@ -208,8 +222,11 @@ pub fn del_many_docs(docs: Vec<(CollectionKey, Key, DelDoc)>) {
     let mut results: Vec<DocContext<Option<Doc>>> = Vec::new();
 
     for (collection, key, doc) in docs {
-        let deleted_doc =
-            delete_doc_store(caller, collection, key.clone(), doc).unwrap_or_else(|e| trap(&e));
+        let deleted_doc = delete_doc_store(caller, collection.clone(), key.clone(), doc)
+            .unwrap_or_else(|e| trap(&e));
+
+        decrease_db_usage(&collection, &caller);
+
         results.push(deleted_doc);
     }
 
@@ -219,8 +236,10 @@ pub fn del_many_docs(docs: Vec<(CollectionKey, Key, DelDoc)>) {
 pub fn del_filtered_docs(collection: CollectionKey, filter: ListParams) {
     let caller = caller();
 
-    let results =
-        delete_filtered_docs_store(caller, collection, &filter).unwrap_or_else(|e| trap(&e));
+    let results = delete_filtered_docs_store(caller, collection.clone(), &filter)
+        .unwrap_or_else(|e| trap(&e));
+
+    decrease_db_usage_by(&collection, &caller, results.len() as u32);
 
     invoke_on_delete_filtered_docs(&caller, &results);
 }
@@ -429,6 +448,8 @@ pub fn commit_asset_upload(commit: CommitBatch) {
 
     let asset = commit_batch_store(caller, commit).unwrap_or_else(|e| trap(&e));
 
+    increase_storage_usage(&asset.key.collection, &caller);
+
     invoke_upload_asset(&caller, &asset);
 }
 
@@ -460,7 +481,11 @@ pub fn del_asset(collection: CollectionKey, full_path: FullPath) {
     let result = delete_asset_store(caller, &collection, full_path);
 
     match result {
-        Ok(asset) => invoke_on_delete_asset(&caller, &asset),
+        Ok(asset) => {
+            decrease_storage_usage(&collection, &caller);
+
+            invoke_on_delete_asset(&caller, &asset)
+        }
         Err(error) => trap(&["Asset cannot be deleted: ", &error].join("")),
     }
 }
@@ -473,6 +498,9 @@ pub fn del_many_assets(assets: Vec<(CollectionKey, String)>) {
     for (collection, full_path) in assets {
         let deleted_asset =
             delete_asset_store(caller, &collection, full_path).unwrap_or_else(|e| trap(&e));
+
+        decrease_storage_usage(&collection, &caller);
+
         results.push(deleted_asset);
     }
 
@@ -482,8 +510,10 @@ pub fn del_many_assets(assets: Vec<(CollectionKey, String)>) {
 pub fn del_filtered_assets(collection: CollectionKey, filter: ListParams) {
     let caller = caller();
 
-    let results =
-        delete_filtered_assets_store(caller, collection, &filter).unwrap_or_else(|e| trap(&e));
+    let results = delete_filtered_assets_store(caller, collection.clone(), &filter)
+        .unwrap_or_else(|e| trap(&e));
+
+    decrease_storage_usage_by(&collection, &caller, results.len() as u32);
 
     invoke_on_delete_filtered_assets(&caller, &results);
 }
@@ -527,4 +557,38 @@ pub fn get_many_assets(
             (full_path.clone(), asset.clone())
         })
         .collect()
+}
+
+// ---------------------------------------------------------
+// User usage
+// ---------------------------------------------------------
+
+pub fn get_user_usage(
+    collection: &CollectionKey,
+    collection_type: &CollectionType,
+    user_id: &Option<UserId>,
+) -> Option<UserUsage> {
+    let caller = caller();
+    let user_id_or_caller = user_id.unwrap_or(caller);
+
+    match collection_type {
+        CollectionType::Db => get_db_usage_by_id(caller, collection, &user_id_or_caller),
+        CollectionType::Storage => get_storage_usage_by_id(caller, collection, &user_id_or_caller),
+    }
+}
+
+pub fn set_user_usage(
+    collection: &CollectionKey,
+    collection_type: &CollectionType,
+    user_id: &UserId,
+    usage: &SetUserUsage,
+) -> UserUsage {
+    match collection_type {
+        CollectionType::Db => {
+            set_db_usage(collection, user_id, usage.items_count).unwrap_or_else(|e| trap(&e))
+        }
+        CollectionType::Storage => {
+            set_storage_usage(collection, user_id, usage.items_count).unwrap_or_else(|e| trap(&e))
+        }
+    }
 }

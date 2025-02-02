@@ -145,6 +145,12 @@ export const idlFactory = ({ IDL }) => {
 		rate_config: IDL.Opt(RateConfig),
 		write: Permission
 	});
+	const UserUsage = IDL.Record({
+		updated_at: IDL.Nat64,
+		created_at: IDL.Nat64,
+		version: IDL.Opt(IDL.Nat64),
+		items_count: IDL.Nat32
+	});
 	const HttpRequest = IDL.Record({
 		url: IDL.Text,
 		method: IDL.Text,
@@ -231,6 +237,7 @@ export const idlFactory = ({ IDL }) => {
 		rate_config: IDL.Opt(RateConfig),
 		write: Permission
 	});
+	const SetUserUsage = IDL.Record({ items_count: IDL.Nat32 });
 	const UploadChunk = IDL.Record({
 		content: IDL.Vec(IDL.Nat8),
 		batch_id: IDL.Nat,
@@ -277,6 +284,11 @@ export const idlFactory = ({ IDL }) => {
 		),
 		get_rule: IDL.Func([CollectionType, IDL.Text], [IDL.Opt(Rule)], ['query']),
 		get_storage_config: IDL.Func([], [StorageConfig], ['query']),
+		get_user_usage: IDL.Func(
+			[IDL.Text, CollectionType, IDL.Opt(IDL.Principal)],
+			[IDL.Opt(UserUsage)],
+			['query']
+		),
 		http_request: IDL.Func([HttpRequest], [HttpResponse], ['query']),
 		http_request_streaming_callback: IDL.Func(
 			[StreamingCallbackToken],
@@ -306,6 +318,11 @@ export const idlFactory = ({ IDL }) => {
 		),
 		set_rule: IDL.Func([CollectionType, IDL.Text, SetRule], [Rule], []),
 		set_storage_config: IDL.Func([StorageConfig], [], []),
+		set_user_usage: IDL.Func(
+			[IDL.Text, CollectionType, IDL.Principal, SetUserUsage],
+			[UserUsage],
+			[]
+		),
 		upload_asset_chunk: IDL.Func([UploadChunk], [UploadChunkResult], []),
 		version: IDL.Func([], [IDL.Text], ['query'])
 	});

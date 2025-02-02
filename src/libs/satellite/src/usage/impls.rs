@@ -86,7 +86,7 @@ impl UserUsage {
 }
 
 impl UserUsageKey {
-    pub fn new(
+    pub fn create(
         user_id: &UserId,
         collection_key: &CollectionKey,
         collection_type: &CollectionType,

@@ -274,4 +274,54 @@ describe('Satellite User Usage', () => {
 			});
 		});
 	});
+
+	describe('Storage', async () => {
+
+		const COLLECTION_TYPE = {Storage: null};
+
+		describe('User', () => {
+			const user = Ed25519KeyIdentity.generate();
+
+			beforeAll(() => {
+				actor.setIdentity(user);
+			});
+
+			const uploadAsset = async () => {
+				const { init_asset_upload, upload_asset_chunk } = actor;
+
+				const batch = await init_asset_upload({
+					collection: '#dapp',
+					description: toNullable(),
+					encoding_type: [],
+					full_path: '/hello.html',
+					name: 'hello.html',
+					token: toNullable()
+				});
+			}
+
+			const countSetAssets = 10;
+
+			it('should get a usage count after update asset', async () => {
+				await Promise.all(Array.from({length: countSetDocs}).map(createDoc));
+
+				const {get_user_usage} = actor;
+
+				const usageResponse = await get_user_usage(TEST_COLLECTION, COLLECTION_TYPE, toNullable());
+
+				const usage = fromNullable(usageResponse);
+
+				assertNonNullish(usage);
+
+				expect(usage.items_count).toEqual(countSetDocs);
+
+				expect(usage.updated_at).not.toBeUndefined();
+				expect(usage.updated_at).toBeGreaterThan(0n);
+				expect(usage.created_at).not.toBeUndefined();
+				expect(usage.created_at).toBeGreaterThan(0n);
+				expect(usage.updated_at).toBeGreaterThan(usage.created_at);
+
+				expect(usage.version).toEqual(toNullable(BigInt(countSetDocs)));
+			});
+		});
+	});
 });

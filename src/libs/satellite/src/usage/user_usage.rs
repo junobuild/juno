@@ -1,10 +1,12 @@
 use crate::get_controllers;
 use crate::types::state::CollectionType;
-use crate::usage::store;
-use crate::usage::store::get_user_usage as get_user_usage_store;
+use crate::usage::store::{get_user_usage as get_user_usage_store, update_user_usage};
 use crate::usage::types::interface::ModificationType;
 use crate::usage::types::state::UserUsage;
 use candid::Principal;
+use junobuild_collections::constants::{
+    ASSETS_COLLECTIONS_NO_USER_USAGE, DB_COLLECTIONS_NO_USER_USAGE,
+};
 use junobuild_collections::types::core::CollectionKey;
 use junobuild_shared::controllers::is_controller;
 use junobuild_shared::types::state::{Controllers, UserId};
@@ -42,7 +44,11 @@ fn get_user_usage_by_id(
 }
 
 pub fn increase_db_usage(collection: &CollectionKey, user_id: &UserId) {
-    store::update_user_usage(
+    if is_db_collection_no_usage(collection) {
+        return;
+    }
+
+    update_user_usage(
         user_id,
         collection,
         &CollectionType::Db,
@@ -52,7 +58,11 @@ pub fn increase_db_usage(collection: &CollectionKey, user_id: &UserId) {
 }
 
 pub fn decrease_db_usage(collection: &CollectionKey, user_id: &UserId) {
-    store::update_user_usage(
+    if is_db_collection_no_usage(collection) {
+        return;
+    }
+
+    update_user_usage(
         user_id,
         collection,
         &CollectionType::Db,
@@ -62,7 +72,11 @@ pub fn decrease_db_usage(collection: &CollectionKey, user_id: &UserId) {
 }
 
 pub fn decrease_db_usage_by(collection: &CollectionKey, user_id: &UserId, count: u32) {
-    store::update_user_usage(
+    if is_db_collection_no_usage(collection) {
+        return;
+    }
+
+    update_user_usage(
         user_id,
         collection,
         &CollectionType::Db,
@@ -72,7 +86,11 @@ pub fn decrease_db_usage_by(collection: &CollectionKey, user_id: &UserId, count:
 }
 
 pub fn increase_storage_usage(collection: &CollectionKey, user_id: &UserId) {
-    store::update_user_usage(
+    if is_storage_collection_no_usage(collection) {
+        return;
+    }
+
+    update_user_usage(
         user_id,
         collection,
         &CollectionType::Storage,
@@ -82,7 +100,11 @@ pub fn increase_storage_usage(collection: &CollectionKey, user_id: &UserId) {
 }
 
 pub fn decrease_storage_usage(collection: &CollectionKey, user_id: &UserId) {
-    store::update_user_usage(
+    if is_storage_collection_no_usage(collection) {
+        return;
+    }
+
+    update_user_usage(
         user_id,
         collection,
         &CollectionType::Storage,
@@ -92,11 +114,23 @@ pub fn decrease_storage_usage(collection: &CollectionKey, user_id: &UserId) {
 }
 
 pub fn decrease_storage_usage_by(collection: &CollectionKey, user_id: &UserId, count: u32) {
-    store::update_user_usage(
+    if is_storage_collection_no_usage(collection) {
+        return;
+    }
+
+    update_user_usage(
         user_id,
         collection,
         &CollectionType::Storage,
         &ModificationType::Delete,
         Some(count),
     );
+}
+
+fn is_db_collection_no_usage(collection: &CollectionKey) -> bool {
+    DB_COLLECTIONS_NO_USER_USAGE.contains(&collection.as_str())
+}
+
+fn is_storage_collection_no_usage(collection: &CollectionKey) -> bool {
+    ASSETS_COLLECTIONS_NO_USER_USAGE.contains(&collection.as_str())
 }

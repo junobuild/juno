@@ -35,6 +35,8 @@ pub const DEFAULT_DB_COLLECTIONS: [(&str, SetRule); 2] = [
     (LOG_COLLECTION_KEY, DEFAULT_DB_LOG_RULE),
 ];
 
+pub const DB_COLLECTIONS_NO_USER_USAGE: [&str; 1] = [LOG_COLLECTION_KEY];
+
 pub const ASSET_COLLECTION_KEY: &str = "#dapp";
 
 pub const DEFAULT_ASSETS_COLLECTIONS: [(&str, SetRule); 1] = [(
@@ -50,3 +52,5 @@ pub const DEFAULT_ASSETS_COLLECTIONS: [(&str, SetRule); 1] = [(
         rate_config: None,
     },
 )];
+
+pub const ASSETS_COLLECTIONS_NO_USER_USAGE: [&str; 1] = [ASSET_COLLECTION_KEY];

@@ -241,6 +241,7 @@ describe('Satellite User Usage', () => {
 					COLLECTION_TYPE,
 					toNullable(userId)
 				);
+
 				return fromNullable(usageResponse);
 			};
 
@@ -272,6 +273,30 @@ describe('Satellite User Usage', () => {
 				assertNonNullish(usage);
 
 				expect(usage.items_count).toEqual(1);
+			});
+		});
+
+		describe('No user usage', () => {
+			beforeAll(() => {
+				actor.setIdentity(controller);
+			});
+
+			it('should get no usage of collection is log', async () => {
+				const { set_doc, get_doc, get_user_usage } = actor;
+
+				const key = nanoid();
+
+				await set_doc('#log', key, {
+					data,
+					description: toNullable(),
+					version: toNullable()
+				});
+
+				const doc = await get_doc('#log', key);
+				expect(fromNullable(doc)).not.toBeUndefined();
+
+				const usageResponse = await get_user_usage('#log', COLLECTION_TYPE, toNullable());
+				expect(fromNullable(usageResponse)).toBeUndefined();
 			});
 		});
 	});
@@ -463,6 +488,32 @@ describe('Satellite User Usage', () => {
 				assertNonNullish(usage);
 
 				expect(usage.items_count).toEqual(1);
+			});
+		});
+
+		describe('No user usage', () => {
+			beforeAll(() => {
+				actor.setIdentity(controller);
+			});
+
+			it('should get no usage of collection is dapp', async () => {
+				const { get_asset, get_user_usage } = actor;
+
+				const name = `index.html`;
+				const full_path = `/${name}`;
+
+				await uploadAsset({
+					full_path,
+					name,
+					collection: '#dapp',
+					actor
+				});
+
+				const asset = await get_asset('#dapp', full_path);
+				expect(fromNullable(asset)).not.toBeUndefined();
+
+				const usageResponse = await get_user_usage('#dapp', COLLECTION_TYPE, toNullable());
+				expect(fromNullable(usageResponse)).toBeUndefined();
 			});
 		});
 	});

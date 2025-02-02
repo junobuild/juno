@@ -13,7 +13,8 @@ import { assertNonNullish, fromNullable, toNullable } from '@dfinity/utils';
 import { type Actor, PocketIc } from '@hadronous/pic';
 import { toArray } from '@junobuild/utils';
 import { nanoid } from 'nanoid';
-import { afterAll, beforeAll, expect, inject } from 'vitest';
+import {afterAll, beforeAll, describe, expect, inject} from 'vitest';
+import { uploadAsset } from './utils/satellite-storage-tests.utils';
 import { controllersInitArgs, SATELLITE_WASM_PATH } from './utils/setup-tests.utils';
 
 describe('Satellite User Usage', () => {
@@ -61,6 +62,22 @@ describe('Satellite User Usage', () => {
 		await pic?.tearDown();
 	});
 
+	describe.each([
+		{ title: "Datastore", features: [] },
+		{
+			title: "Storage",
+			features: [
+				{
+					page_views: false,
+					performance_metrics: false,
+					track_events: false
+				}
+			]
+		}
+	])('%s', ({ title }) => {
+
+	});
+
 	describe('Datastore', async () => {
 		const data = await toArray({
 			hello: 'World'
@@ -70,7 +87,7 @@ describe('Satellite User Usage', () => {
 
 		beforeAll(async () => {
 			const { set_rule } = actor;
-			await set_rule({ Db: null }, TEST_COLLECTION, setRule);
+			await set_rule(COLLECTION_TYPE, TEST_COLLECTION, setRule);
 		});
 
 		const createDoc = async (): Promise<string> => {
@@ -276,35 +293,53 @@ describe('Satellite User Usage', () => {
 	});
 
 	describe('Storage', async () => {
+		const COLLECTION_TYPE = { Storage: null };
 
-		const COLLECTION_TYPE = {Storage: null};
+		beforeAll(async () => {
+			actor.setIdentity(controller);
+
+			const { set_rule } = actor;
+			await set_rule(COLLECTION_TYPE, TEST_COLLECTION, setRule);
+		});
 
 		describe('User', () => {
 			const user = Ed25519KeyIdentity.generate();
 
-			beforeAll(() => {
+			beforeAll(async () => {
 				actor.setIdentity(user);
+
+				// We need a user entry to upload to the storage, there is a guard
+				const { set_doc } = actor;
+
+				await set_doc('#user', user.getPrincipal().toText(), {
+					data: await toArray({
+						provider: 'internet_identity'
+					}),
+					description: toNullable(),
+					version: toNullable()
+				});
 			});
 
-			const uploadAsset = async () => {
-				const { init_asset_upload, upload_asset_chunk } = actor;
+			const upload = async (index: number) => {
+				const name = `hello-${index}.html`;
+				const full_path = `/${TEST_COLLECTION}/${name}`;
 
-				const batch = await init_asset_upload({
-					collection: '#dapp',
-					description: toNullable(),
-					encoding_type: [],
-					full_path: '/hello.html',
-					name: 'hello.html',
-					token: toNullable()
+				await uploadAsset({
+					full_path,
+					name,
+					collection: TEST_COLLECTION,
+					actor
 				});
-			}
+			};
 
 			const countSetAssets = 10;
 
 			it('should get a usage count after update asset', async () => {
-				await Promise.all(Array.from({length: countSetDocs}).map(createDoc));
+				await Promise.all(
+					Array.from({ length: countSetAssets }).map(async (_, i) => await upload(i))
+				);
 
-				const {get_user_usage} = actor;
+				const { get_user_usage } = actor;
 
 				const usageResponse = await get_user_usage(TEST_COLLECTION, COLLECTION_TYPE, toNullable());
 
@@ -312,7 +347,7 @@ describe('Satellite User Usage', () => {
 
 				assertNonNullish(usage);
 
-				expect(usage.items_count).toEqual(countSetDocs);
+				expect(usage.items_count).toEqual(countSetAssets);
 
 				expect(usage.updated_at).not.toBeUndefined();
 				expect(usage.updated_at).toBeGreaterThan(0n);
@@ -320,7 +355,7 @@ describe('Satellite User Usage', () => {
 				expect(usage.created_at).toBeGreaterThan(0n);
 				expect(usage.updated_at).toBeGreaterThan(usage.created_at);
 
-				expect(usage.version).toEqual(toNullable(BigInt(countSetDocs)));
+				expect(usage.version).toEqual(toNullable(BigInt(countSetAssets)));
 			});
 		});
 	});

@@ -13,7 +13,7 @@ import { assertNonNullish, fromNullable, toNullable } from '@dfinity/utils';
 import { type Actor, PocketIc } from '@hadronous/pic';
 import { toArray } from '@junobuild/utils';
 import { nanoid } from 'nanoid';
-import {inject} from 'vitest';
+import { inject } from 'vitest';
 import { uploadAsset } from './utils/satellite-storage-tests.utils';
 import { controllersInitArgs, SATELLITE_WASM_PATH } from './utils/setup-tests.utils';
 
@@ -309,7 +309,7 @@ describe('Satellite User Usage', () => {
 				description: toNullable(),
 				version: toNullable()
 			});
-		}
+		};
 
 		describe('User', () => {
 			const user = Ed25519KeyIdentity.generate();
@@ -366,9 +366,7 @@ describe('Satellite User Usage', () => {
 				assertNonNullish(usage);
 
 				expect(usage.items_count).toEqual(countUploadAssets - countDelAsset);
-				expect(usage.version).toEqual(
-					toNullable(BigInt(countUploadAssets + countDelAsset))
-				);
+				expect(usage.version).toEqual(toNullable(BigInt(countUploadAssets + countDelAsset)));
 			});
 
 			const countDelManyAssets = 2;
@@ -393,9 +391,7 @@ describe('Satellite User Usage', () => {
 
 				assertNonNullish(usage);
 
-				expect(usage.items_count).toEqual(
-					countUploadAssets - countDelAsset - countDelManyAssets
-				);
+				expect(usage.items_count).toEqual(countUploadAssets - countDelAsset - countDelManyAssets);
 				expect(usage.version).toEqual(
 					toNullable(BigInt(countUploadAssets + countDelAsset + countDelManyAssets))
 				);
@@ -427,7 +423,7 @@ describe('Satellite User Usage', () => {
 			beforeAll(async () => {
 				actor.setIdentity(user1);
 				await createUser(user1.getPrincipal());
-			})
+			});
 
 			const fetchUsage = async (userId?: Principal): Promise<UserUsage | undefined> => {
 				const { get_user_usage } = actor;

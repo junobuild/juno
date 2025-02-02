@@ -129,7 +129,7 @@ pub fn set_doc(collection: CollectionKey, key: Key, doc: SetDoc) -> Doc {
 
     match result {
         Ok(doc) => {
-            increase_db_usage(&caller, &collection);
+            increase_db_usage(&collection, &caller);
 
             invoke_on_set_doc(&caller, &doc);
 
@@ -156,7 +156,7 @@ pub fn del_doc(collection: CollectionKey, key: Key, doc: DelDoc) {
     let deleted_doc =
         delete_doc_store(caller, collection.clone(), key, doc).unwrap_or_else(|e| trap(&e));
 
-    decrease_db_usage(&caller, &collection);
+    decrease_db_usage(&collection, &caller);
 
     invoke_on_delete_doc(&caller, &deleted_doc);
 }
@@ -202,7 +202,7 @@ pub fn set_many_docs(docs: Vec<(CollectionKey, Key, SetDoc)>) -> Vec<(Key, Doc)>
         let result = set_doc_store(caller, collection.clone(), key.clone(), doc)
             .unwrap_or_else(|e| trap(&e));
 
-        increase_db_usage(&caller, &collection);
+        increase_db_usage(&collection, &caller);
 
         results.push((result.key.clone(), result.data.after.clone()));
 
@@ -223,7 +223,7 @@ pub fn del_many_docs(docs: Vec<(CollectionKey, Key, DelDoc)>) {
         let deleted_doc = delete_doc_store(caller, collection.clone(), key.clone(), doc)
             .unwrap_or_else(|e| trap(&e));
 
-        decrease_db_usage(&caller, &collection);
+        decrease_db_usage(&collection, &caller);
 
         results.push(deleted_doc);
     }
@@ -237,7 +237,7 @@ pub fn del_filtered_docs(collection: CollectionKey, filter: ListParams) {
     let results = delete_filtered_docs_store(caller, collection.clone(), &filter)
         .unwrap_or_else(|e| trap(&e));
 
-    decrease_db_usage_by(&caller, &collection, results.len() as u32);
+    decrease_db_usage_by(&collection, &caller, results.len() as u32);
 
     invoke_on_delete_filtered_docs(&caller, &results);
 }
@@ -446,7 +446,7 @@ pub fn commit_asset_upload(commit: CommitBatch) {
 
     let asset = commit_batch_store(caller, commit).unwrap_or_else(|e| trap(&e));
 
-    increase_storage_usage(&caller, &asset.key.collection);
+    increase_storage_usage(&asset.key.collection, &caller);
 
     invoke_upload_asset(&caller, &asset);
 }
@@ -480,7 +480,7 @@ pub fn del_asset(collection: CollectionKey, full_path: FullPath) {
 
     match result {
         Ok(asset) => {
-            decrease_storage_usage(&caller, &collection);
+            decrease_storage_usage(&collection, &caller);
 
             invoke_on_delete_asset(&caller, &asset)
         }
@@ -497,7 +497,7 @@ pub fn del_many_assets(assets: Vec<(CollectionKey, String)>) {
         let deleted_asset =
             delete_asset_store(caller, &collection, full_path).unwrap_or_else(|e| trap(&e));
 
-        decrease_storage_usage(&caller, &collection);
+        decrease_storage_usage(&collection, &caller);
 
         results.push(deleted_asset);
     }
@@ -511,7 +511,7 @@ pub fn del_filtered_assets(collection: CollectionKey, filter: ListParams) {
     let results = delete_filtered_assets_store(caller, collection.clone(), &filter)
         .unwrap_or_else(|e| trap(&e));
 
-    decrease_storage_usage_by(&caller, &collection, results.len() as u32);
+    decrease_storage_usage_by(&collection, &caller, results.len() as u32);
 
     invoke_on_delete_filtered_assets(&caller, &results);
 }
@@ -570,7 +570,7 @@ pub fn get_user_usage(
     let user_id_or_caller = user_id.unwrap_or(caller);
 
     match collection_type {
-        CollectionType::Db => get_db_usage_by_id(collection, &user_id_or_caller, caller),
-        CollectionType::Storage => get_storage_usage_by_id(collection, &user_id_or_caller, caller),
+        CollectionType::Db => get_db_usage_by_id(caller, collection, &user_id_or_caller),
+        CollectionType::Storage => get_storage_usage_by_id(caller, collection, &user_id_or_caller),
     }
 }

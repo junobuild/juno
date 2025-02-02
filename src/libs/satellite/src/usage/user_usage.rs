@@ -11,26 +11,26 @@ use junobuild_shared::types::state::{Controllers, UserId};
 use junobuild_shared::utils::principal_not_anonymous_and_equal;
 
 pub fn get_db_usage_by_id(
+    caller: Principal,
     collection: &CollectionKey,
     user_id: &UserId,
-    caller: Principal,
 ) -> Option<UserUsage> {
-    get_user_usage_by_id(collection, &CollectionType::Db, user_id, caller)
+    get_user_usage_by_id(caller, collection, &CollectionType::Db, user_id)
 }
 
 pub fn get_storage_usage_by_id(
+    caller: Principal,
     collection: &CollectionKey,
     user_id: &UserId,
-    caller: Principal,
 ) -> Option<UserUsage> {
-    get_user_usage_by_id(collection, &CollectionType::Storage, user_id, caller)
+    get_user_usage_by_id(caller, collection, &CollectionType::Storage, user_id)
 }
 
 fn get_user_usage_by_id(
+    caller: Principal,
     collection_key: &CollectionKey,
     collection_type: &CollectionType,
     user_id: &UserId,
-    caller: Principal,
 ) -> Option<UserUsage> {
     let controllers: Controllers = get_controllers();
 
@@ -41,7 +41,7 @@ fn get_user_usage_by_id(
     None
 }
 
-pub fn increase_db_usage(user_id: &UserId, collection: &CollectionKey) {
+pub fn increase_db_usage(collection: &CollectionKey, user_id: &UserId) {
     store::update_user_usage(
         user_id,
         collection,
@@ -51,7 +51,7 @@ pub fn increase_db_usage(user_id: &UserId, collection: &CollectionKey) {
     );
 }
 
-pub fn decrease_db_usage(user_id: &UserId, collection: &CollectionKey) {
+pub fn decrease_db_usage(collection: &CollectionKey, user_id: &UserId) {
     store::update_user_usage(
         user_id,
         collection,
@@ -61,7 +61,7 @@ pub fn decrease_db_usage(user_id: &UserId, collection: &CollectionKey) {
     );
 }
 
-pub fn decrease_db_usage_by(user_id: &UserId, collection: &CollectionKey, count: u32) {
+pub fn decrease_db_usage_by(collection: &CollectionKey, user_id: &UserId, count: u32) {
     store::update_user_usage(
         user_id,
         collection,
@@ -71,7 +71,7 @@ pub fn decrease_db_usage_by(user_id: &UserId, collection: &CollectionKey, count:
     );
 }
 
-pub fn increase_storage_usage(user_id: &UserId, collection: &CollectionKey) {
+pub fn increase_storage_usage(collection: &CollectionKey, user_id: &UserId) {
     store::update_user_usage(
         user_id,
         collection,
@@ -81,7 +81,7 @@ pub fn increase_storage_usage(user_id: &UserId, collection: &CollectionKey) {
     );
 }
 
-pub fn decrease_storage_usage(user_id: &UserId, collection: &CollectionKey) {
+pub fn decrease_storage_usage(collection: &CollectionKey, user_id: &UserId) {
     store::update_user_usage(
         user_id,
         collection,
@@ -91,7 +91,7 @@ pub fn decrease_storage_usage(user_id: &UserId, collection: &CollectionKey) {
     );
 }
 
-pub fn decrease_storage_usage_by(user_id: &UserId, collection: &CollectionKey, count: u32) {
+pub fn decrease_storage_usage_by(collection: &CollectionKey, user_id: &UserId, count: u32) {
     store::update_user_usage(
         user_id,
         collection,

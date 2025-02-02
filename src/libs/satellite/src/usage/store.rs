@@ -1,5 +1,5 @@
 use crate::memory::STATE;
-use crate::types::interface::CollectionType;
+use crate::types::state::CollectionType;
 use crate::usage::types::interface::ModificationType;
 use crate::usage::types::state::{UserUsage, UserUsageKey, UserUsageStable};
 use junobuild_collections::types::core::CollectionKey;

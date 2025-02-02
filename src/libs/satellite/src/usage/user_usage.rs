@@ -1,5 +1,5 @@
 use crate::get_controllers;
-use crate::types::interface::CollectionType;
+use crate::types::state::CollectionType;
 use crate::usage::store;
 use crate::usage::store::get_user_usage as get_user_usage_store;
 use crate::usage::types::interface::ModificationType;

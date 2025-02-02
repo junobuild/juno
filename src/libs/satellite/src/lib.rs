@@ -19,7 +19,9 @@ mod version;
 use crate::auth::types::config::AuthenticationConfig;
 use crate::db::types::config::DbConfig;
 use crate::guards::{caller_is_admin_controller, caller_is_controller};
-use crate::types::interface::{CollectionType, Config};
+use crate::types::interface::Config;
+use crate::types::state::CollectionType;
+use crate::usage::types::state::UserUsage;
 use crate::version::SATELLITE_VERSION;
 use ic_cdk::api::trap;
 use ic_cdk_macros::{init, post_upgrade, pre_upgrade, query, update};
@@ -43,7 +45,6 @@ use junobuild_storage::types::interface::{
     AssetNoContent, CommitBatch, InitAssetKey, InitUploadResult, UploadChunk, UploadChunkResult,
 };
 use junobuild_storage::types::state::FullPath;
-use crate::usage::types::state::UserUsage;
 
 // ============================================================================================
 // START: Re-exported Types

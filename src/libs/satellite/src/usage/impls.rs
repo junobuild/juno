@@ -1,4 +1,4 @@
-use crate::types::interface::CollectionType;
+use crate::types::state::CollectionType;
 use crate::usage::types::interface::ModificationType;
 use crate::usage::types::state::{UserUsage, UserUsageKey};
 use ic_cdk::api::time;

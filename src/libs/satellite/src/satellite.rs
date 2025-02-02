@@ -36,8 +36,8 @@ use crate::storage::store::{
     set_domain_store,
 };
 use crate::storage::strategy_impls::StorageState;
-use crate::types::interface::{CollectionType, Config};
-use crate::types::state::{HeapState, RuntimeState, State};
+use crate::types::interface::Config;
+use crate::types::state::{CollectionType, HeapState, RuntimeState, State};
 use crate::usage::types::state::UserUsage;
 use crate::usage::user_usage::{
     decrease_db_usage, decrease_db_usage_by, get_db_usage_by_id, get_storage_usage_by_id,

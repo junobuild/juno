@@ -1,5 +1,5 @@
 pub mod state {
-    use crate::types::interface::CollectionType;
+    use crate::types::state::CollectionType;
     use candid::{CandidType, Deserialize};
     use ic_stable_structures::StableBTreeMap;
     use junobuild_collections::types::core::CollectionKey;

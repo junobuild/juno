@@ -19,6 +19,7 @@ import { toArray } from '@junobuild/utils';
 import { nanoid } from 'nanoid';
 import { afterEach, beforeEach, describe, expect, inject } from 'vitest';
 import { NO_VERSION_ERROR_MSG } from './constants/satellite-tests.constants';
+import { mockBlob } from './mocks/storage.mocks';
 import { tick } from './utils/pic-tests.utils';
 import {
 	SATELLITE_WASM_PATH,
@@ -475,12 +476,6 @@ describe('Satellite upgrade', () => {
 			});
 
 			describe('Asset', () => {
-				const HTML = '<html><body>Hello</body></html>';
-
-				const blob = new Blob([HTML], {
-					type: 'text/plain; charset=utf-8'
-				});
-
 				const collection = '#dapp';
 
 				const upload = async ({
@@ -503,7 +498,7 @@ describe('Satellite upgrade', () => {
 
 					const chunk = await upload_asset_chunk({
 						batch_id: file.batch_id,
-						content: arrayBufferToUint8Array(await blob.arrayBuffer()),
+						content: arrayBufferToUint8Array(await mockBlob.arrayBuffer()),
 						order_id: [0n]
 					});
 

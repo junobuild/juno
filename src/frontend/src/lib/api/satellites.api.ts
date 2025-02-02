@@ -1,12 +1,12 @@
 import type { Controller } from '$declarations/mission_control/mission_control.did';
 import type {
 	AuthenticationConfig,
+	CollectionType,
 	DelDoc as DelRule,
 	Doc,
 	ListResults as ListAssets,
 	ListResults_1 as ListDocs,
 	Rule,
-	RulesType,
 	SetRule
 } from '$declarations/satellite/satellite.did';
 import { getSatelliteActor } from '$lib/api/actors/actor.juno.api';
@@ -53,7 +53,7 @@ export const listRules = async ({
 	identity
 }: {
 	satelliteId: Principal;
-	type: RulesType;
+	type: CollectionType;
 	identity: OptionIdentity;
 }): Promise<[string, Rule][]> => {
 	const actor = await getSatelliteActor({ satelliteId, identity });
@@ -67,7 +67,7 @@ export const getRule = async ({
 	collection
 }: {
 	satelliteId: Principal;
-	type: RulesType;
+	type: CollectionType;
 	identity: OptionIdentity;
 	collection: string;
 }): Promise<[] | [Rule]> => {
@@ -84,7 +84,7 @@ export const setRule = async ({
 }: {
 	satelliteId: Principal;
 	collection: string;
-	type: RulesType;
+	type: CollectionType;
 	identity: OptionIdentity;
 	rule: SetRule;
 }): Promise<Rule> => {
@@ -101,7 +101,7 @@ export const deleteRule = async ({
 }: {
 	satelliteId: Principal;
 	collection: string;
-	type: RulesType;
+	type: CollectionType;
 	rule: Rule;
 	identity: OptionIdentity;
 }) => {

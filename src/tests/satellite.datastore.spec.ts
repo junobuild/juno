@@ -767,7 +767,7 @@ describe.each([{ memory: { Heap: null } }, { memory: { Stable: null } }])(
 				},
 				{
 					memory: { Stable: null },
-					expectMemory: 25_231_360n
+					expectMemory: 33_619_968n
 				}
 			])('With collection', ({ memory, expectMemory }) => {
 				const errorMsg = `${'Heap' in memory ? 'Heap' : 'Stable'} memory usage exceeded: ${expectMemory} bytes used, 20000 bytes allowed.`;

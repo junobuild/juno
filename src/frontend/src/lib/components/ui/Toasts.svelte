@@ -1,8 +1,6 @@
 <script lang="ts">
 	import Toast from './Toast.svelte';
 	import { toasts } from '$lib/stores/toasts.store';
-
-	$inspect($toasts);
 </script>
 
 {#if $toasts.length > 0}

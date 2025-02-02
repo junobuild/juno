@@ -1,11 +1,13 @@
+use crate::types::state::CollectionType;
 use crate::usage::types::interface::ModificationType;
 use crate::usage::types::state::{UserUsage, UserUsageKey};
 use ic_cdk::api::time;
 use ic_stable_structures::storable::Bound;
 use ic_stable_structures::Storable;
+use junobuild_collections::types::core::CollectionKey;
 use junobuild_shared::constants::INITIAL_VERSION;
 use junobuild_shared::serializers::{deserialize_from_bytes, serialize_to_bytes};
-use junobuild_shared::types::state::{Timestamp, Version};
+use junobuild_shared::types::state::{Timestamp, UserId, Version};
 use std::borrow::Cow;
 
 impl Storable for UserUsage {
@@ -33,12 +35,15 @@ impl Storable for UserUsageKey {
 }
 
 impl UserUsage {
-    pub fn update(
+    pub fn set(current_user_usage: &Option<UserUsage>, count: u32) -> Self {
+        UserUsage::apply_update(current_user_usage, count)
+    }
+
+    pub fn increase_or_decrease(
         current_user_usage: &Option<UserUsage>,
         modification: &ModificationType,
         count: Option<u32>,
     ) -> Self {
-        let now = time();
         let count = count.unwrap_or(1);
 
         // User usage for the collection
@@ -50,6 +55,12 @@ impl UserUsage {
                 ModificationType::Delete => current_user_usage.items_count.saturating_sub(count),
             },
         };
+
+        UserUsage::apply_update(current_user_usage, items_count)
+    }
+
+    fn apply_update(current_user_usage: &Option<UserUsage>, items_count: u32) -> Self {
+        let now = time();
 
         // Metadata for the UserUsage entity entry
 
@@ -70,6 +81,20 @@ impl UserUsage {
             created_at,
             updated_at,
             version: Some(version),
+        }
+    }
+}
+
+impl UserUsageKey {
+    pub fn create(
+        user_id: &UserId,
+        collection_key: &CollectionKey,
+        collection_type: &CollectionType,
+    ) -> Self {
+        Self {
+            user_id: *user_id,
+            collection_key: collection_key.clone(),
+            collection_type: collection_type.clone(),
         }
     }
 }

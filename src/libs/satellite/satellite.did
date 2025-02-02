@@ -25,6 +25,7 @@ type AuthenticationConfig = record {
 type AuthenticationConfigInternetIdentity = record {
   derivation_origin : opt text;
 };
+type CollectionType = variant { Db; Storage };
 type CommitBatch = record {
   batch_id : nat;
   headers : vec record { text; text };
@@ -130,7 +131,6 @@ type Rule = record {
   rate_config : opt RateConfig;
   write : Permission;
 };
-type RulesType = variant { Db; Storage };
 type SetController = record {
   metadata : vec record { text; text };
   scope : ControllerScope;
@@ -155,6 +155,7 @@ type SetRule = record {
   rate_config : opt RateConfig;
   write : Permission;
 };
+type SetUserUsage = record { items_count : nat32 };
 type StorageConfig = record {
   iframe : opt StorageConfigIFrame;
   rewrites : vec record { text; text };
@@ -197,6 +198,12 @@ type UploadChunk = record {
   order_id : opt nat;
 };
 type UploadChunkResult = record { chunk_id : nat };
+type UserUsage = record {
+  updated_at : nat64;
+  created_at : nat64;
+  version : opt nat64;
+  items_count : nat32;
+};
 service : () -> {
   commit_asset_upload : (CommitBatch) -> ();
   count_assets : (text, ListParams) -> (nat64) query;
@@ -215,7 +222,7 @@ service : () -> {
   del_filtered_docs : (text, ListParams) -> ();
   del_many_assets : (vec record { text; text }) -> ();
   del_many_docs : (vec record { text; text; DelDoc }) -> ();
-  del_rule : (RulesType, text, DelRule) -> ();
+  del_rule : (CollectionType, text, DelRule) -> ();
   deposit_cycles : (DepositCyclesArgs) -> ();
   get_asset : (text, text) -> (opt AssetNoContent) query;
   get_auth_config : () -> (opt AuthenticationConfig) query;
@@ -228,8 +235,11 @@ service : () -> {
   get_many_docs : (vec record { text; text }) -> (
       vec record { text; opt Doc },
     ) query;
-  get_rule : (RulesType, text) -> (opt Rule) query;
+  get_rule : (CollectionType, text) -> (opt Rule) query;
   get_storage_config : () -> (StorageConfig) query;
+  get_user_usage : (text, CollectionType, opt principal) -> (
+      opt UserUsage,
+    ) query;
   http_request : (HttpRequest) -> (HttpResponse) query;
   http_request_streaming_callback : (StreamingCallbackToken) -> (
       StreamingCallbackHttpResponse,
@@ -239,7 +249,7 @@ service : () -> {
   list_controllers : () -> (vec record { principal; Controller }) query;
   list_custom_domains : () -> (vec record { text; CustomDomain }) query;
   list_docs : (text, ListParams) -> (ListResults_1) query;
-  list_rules : (RulesType) -> (vec record { text; Rule }) query;
+  list_rules : (CollectionType) -> (vec record { text; Rule }) query;
   memory_size : () -> (MemorySize) query;
   set_auth_config : (AuthenticationConfig) -> ();
   set_controllers : (SetControllersArgs) -> (
@@ -251,8 +261,11 @@ service : () -> {
   set_many_docs : (vec record { text; text; SetDoc }) -> (
       vec record { text; Doc },
     );
-  set_rule : (RulesType, text, SetRule) -> (Rule);
+  set_rule : (CollectionType, text, SetRule) -> (Rule);
   set_storage_config : (StorageConfig) -> ();
+  set_user_usage : (text, CollectionType, principal, SetUserUsage) -> (
+      UserUsage,
+    );
   upload_asset_chunk : (UploadChunk) -> (UploadChunkResult);
   version : () -> (text) query;
 }

@@ -44,6 +44,12 @@ pub mod state {
         pub rng: Option<StdRng>, // rng = Random Number Generator
         pub db: DbRuntimeState,
     }
+
+    #[derive(CandidType, Deserialize, Serialize, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
+    pub enum CollectionType {
+        Db,
+        Storage,
+    }
 }
 
 pub mod interface {
@@ -52,12 +58,6 @@ pub mod interface {
     use candid::CandidType;
     use junobuild_storage::types::config::StorageConfig;
     use serde::Deserialize;
-
-    #[derive(CandidType, Deserialize)]
-    pub enum RulesType {
-        Db,
-        Storage,
-    }
 
     #[derive(CandidType, Deserialize)]
     pub struct Config {

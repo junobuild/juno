@@ -1,4 +1,4 @@
-import type { Memory, Permission, RulesType } from '$declarations/satellite/satellite.did';
+import type { CollectionType, Memory, Permission } from '$declarations/satellite/satellite.did';
 import { listRules } from '$lib/api/satellites.api';
 import { listRulesDeprecated } from '$lib/api/satellites.deprecated.api';
 import {
@@ -71,7 +71,7 @@ export const reloadContextRules = async ({
 }: {
 	satelliteId: Principal;
 	store: Writable<RulesStore>;
-	type: RulesType;
+	type: CollectionType;
 	identity: OptionIdentity;
 }) => {
 	try {

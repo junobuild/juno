@@ -66,6 +66,8 @@ describe('Satellite User Usage', () => {
 			hello: 'World'
 		});
 
+		const COLLECTION_TYPE = { Db: null };
+
 		beforeAll(async () => {
 			const { set_rule } = actor;
 			await set_rule({ Db: null }, TEST_COLLECTION, setRule);
@@ -99,7 +101,7 @@ describe('Satellite User Usage', () => {
 
 				const { get_user_usage } = actor;
 
-				const usageResponse = await get_user_usage(TEST_COLLECTION, toNullable());
+				const usageResponse = await get_user_usage(TEST_COLLECTION, COLLECTION_TYPE, toNullable());
 
 				const usage = fromNullable(usageResponse);
 
@@ -137,7 +139,7 @@ describe('Satellite User Usage', () => {
 
 				const { get_user_usage } = actor;
 
-				const usageResponse = await get_user_usage(TEST_COLLECTION, toNullable());
+				const usageResponse = await get_user_usage(TEST_COLLECTION, COLLECTION_TYPE, toNullable());
 
 				const usage = fromNullable(usageResponse);
 
@@ -162,7 +164,7 @@ describe('Satellite User Usage', () => {
 
 				const { get_user_usage } = actor;
 
-				const usageResponse = await get_user_usage(TEST_COLLECTION, toNullable());
+				const usageResponse = await get_user_usage(TEST_COLLECTION, COLLECTION_TYPE, toNullable());
 
 				const usage = fromNullable(usageResponse);
 
@@ -193,7 +195,7 @@ describe('Satellite User Usage', () => {
 
 				const { get_user_usage } = actor;
 
-				const usageResponse = await get_user_usage(TEST_COLLECTION, toNullable());
+				const usageResponse = await get_user_usage(TEST_COLLECTION, COLLECTION_TYPE, toNullable());
 
 				const usage = fromNullable(usageResponse);
 
@@ -214,7 +216,7 @@ describe('Satellite User Usage', () => {
 
 				const { get_user_usage } = actor;
 
-				const usageResponse = await get_user_usage(TEST_COLLECTION, toNullable());
+				const usageResponse = await get_user_usage(TEST_COLLECTION, COLLECTION_TYPE, toNullable());
 
 				const usage = fromNullable(usageResponse);
 
@@ -233,7 +235,11 @@ describe('Satellite User Usage', () => {
 			const fetchUsage = async (userId?: Principal): Promise<UserUsage | undefined> => {
 				const { get_user_usage } = actor;
 
-				const usageResponse = await get_user_usage(TEST_COLLECTION, toNullable(userId));
+				const usageResponse = await get_user_usage(
+					TEST_COLLECTION,
+					COLLECTION_TYPE,
+					toNullable(userId)
+				);
 				return fromNullable(usageResponse);
 			};
 

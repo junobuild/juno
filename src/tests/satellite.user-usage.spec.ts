@@ -276,7 +276,7 @@ describe('Satellite User Usage', () => {
 		});
 	});
 
-	describe('Storage', async () => {
+	describe('Storage', () => {
 		const COLLECTION_TYPE = { Storage: null };
 
 		beforeAll(async () => {

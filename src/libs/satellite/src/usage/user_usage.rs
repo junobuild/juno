@@ -49,9 +49,9 @@ pub fn increase_db_usage(collection: &CollectionKey, user_id: &UserId) {
     }
 
     update_user_usage(
-        user_id,
         collection,
         &CollectionType::Db,
+        user_id,
         &ModificationType::Set,
         None,
     );
@@ -63,9 +63,9 @@ pub fn decrease_db_usage(collection: &CollectionKey, user_id: &UserId) {
     }
 
     update_user_usage(
-        user_id,
         collection,
         &CollectionType::Db,
+        user_id,
         &ModificationType::Delete,
         None,
     );
@@ -77,9 +77,9 @@ pub fn decrease_db_usage_by(collection: &CollectionKey, user_id: &UserId, count:
     }
 
     update_user_usage(
-        user_id,
         collection,
         &CollectionType::Db,
+        user_id,
         &ModificationType::Delete,
         Some(count),
     );
@@ -91,9 +91,9 @@ pub fn increase_storage_usage(collection: &CollectionKey, user_id: &UserId) {
     }
 
     update_user_usage(
-        user_id,
         collection,
         &CollectionType::Storage,
+        user_id,
         &ModificationType::Set,
         None,
     );
@@ -105,9 +105,9 @@ pub fn decrease_storage_usage(collection: &CollectionKey, user_id: &UserId) {
     }
 
     update_user_usage(
-        user_id,
         collection,
         &CollectionType::Storage,
+        user_id,
         &ModificationType::Delete,
         None,
     );
@@ -119,9 +119,9 @@ pub fn decrease_storage_usage_by(collection: &CollectionKey, user_id: &UserId, c
     }
 
     update_user_usage(
-        user_id,
         collection,
         &CollectionType::Storage,
+        user_id,
         &ModificationType::Delete,
         Some(count),
     );

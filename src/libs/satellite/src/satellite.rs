@@ -40,8 +40,8 @@ use crate::types::interface::Config;
 use crate::types::state::{CollectionType, HeapState, RuntimeState, State};
 use crate::usage::types::state::UserUsage;
 use crate::usage::user_usage::{
-    decrease_db_usage, decrease_db_usage_by, get_db_usage_by_id, get_storage_usage_by_id,
-    increase_db_usage,
+    decrease_db_usage, decrease_db_usage_by, decrease_storage_usage, decrease_storage_usage_by,
+    get_db_usage_by_id, get_storage_usage_by_id, increase_db_usage, increase_storage_usage,
 };
 use ciborium::{from_reader, into_writer};
 use ic_cdk::api::call::{arg_data, ArgDecoderConfig};
@@ -446,6 +446,8 @@ pub fn commit_asset_upload(commit: CommitBatch) {
 
     let asset = commit_batch_store(caller, commit).unwrap_or_else(|e| trap(&e));
 
+    increase_storage_usage(&caller, &asset.key.collection);
+
     invoke_upload_asset(&caller, &asset);
 }
 
@@ -477,7 +479,11 @@ pub fn del_asset(collection: CollectionKey, full_path: FullPath) {
     let result = delete_asset_store(caller, &collection, full_path);
 
     match result {
-        Ok(asset) => invoke_on_delete_asset(&caller, &asset),
+        Ok(asset) => {
+            decrease_storage_usage(&caller, &collection);
+
+            invoke_on_delete_asset(&caller, &asset)
+        }
         Err(error) => trap(&["Asset cannot be deleted: ", &error].join("")),
     }
 }
@@ -490,6 +496,9 @@ pub fn del_many_assets(assets: Vec<(CollectionKey, String)>) {
     for (collection, full_path) in assets {
         let deleted_asset =
             delete_asset_store(caller, &collection, full_path).unwrap_or_else(|e| trap(&e));
+
+        decrease_storage_usage(&caller, &collection);
+
         results.push(deleted_asset);
     }
 
@@ -499,8 +508,10 @@ pub fn del_many_assets(assets: Vec<(CollectionKey, String)>) {
 pub fn del_filtered_assets(collection: CollectionKey, filter: ListParams) {
     let caller = caller();
 
-    let results =
-        delete_filtered_assets_store(caller, collection, &filter).unwrap_or_else(|e| trap(&e));
+    let results = delete_filtered_assets_store(caller, collection.clone(), &filter)
+        .unwrap_or_else(|e| trap(&e));
+
+    decrease_storage_usage_by(&caller, &collection, results.len() as u32);
 
     invoke_on_delete_filtered_assets(&caller, &results);
 }

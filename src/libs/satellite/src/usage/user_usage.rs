@@ -70,3 +70,33 @@ pub fn decrease_db_usage_by(user_id: &UserId, collection: &CollectionKey, count:
         Some(count),
     );
 }
+
+pub fn increase_storage_usage(user_id: &UserId, collection: &CollectionKey) {
+    store::update_user_usage(
+        user_id,
+        collection,
+        &CollectionType::Storage,
+        &ModificationType::Set,
+        None,
+    );
+}
+
+pub fn decrease_storage_usage(user_id: &UserId, collection: &CollectionKey) {
+    store::update_user_usage(
+        user_id,
+        collection,
+        &CollectionType::Storage,
+        &ModificationType::Delete,
+        None,
+    );
+}
+
+pub fn decrease_storage_usage_by(user_id: &UserId, collection: &CollectionKey, count: u32) {
+    store::update_user_usage(
+        user_id,
+        collection,
+        &CollectionType::Storage,
+        &ModificationType::Delete,
+        Some(count),
+    );
+}

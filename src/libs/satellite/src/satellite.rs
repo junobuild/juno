@@ -36,11 +36,12 @@ use crate::storage::store::{
     set_domain_store,
 };
 use crate::storage::strategy_impls::StorageState;
-use crate::types::interface::{Config, RulesType};
+use crate::types::interface::{CollectionType, Config};
 use crate::types::state::{HeapState, RuntimeState, State};
 use crate::usage::types::state::UserUsage;
 use crate::usage::user_usage::{
-    decrease_user_usage, decrease_user_usage_by, get_user_usage_by_id, increase_user_usage,
+    decrease_db_usage, decrease_db_usage_by, get_db_usage_by_id, get_storage_usage_by_id,
+    increase_db_usage,
 };
 use ciborium::{from_reader, into_writer};
 use ic_cdk::api::call::{arg_data, ArgDecoderConfig};
@@ -128,7 +129,7 @@ pub fn set_doc(collection: CollectionKey, key: Key, doc: SetDoc) -> Doc {
 
     match result {
         Ok(doc) => {
-            increase_user_usage(&caller, &collection);
+            increase_db_usage(&caller, &collection);
 
             invoke_on_set_doc(&caller, &doc);
 
@@ -155,7 +156,7 @@ pub fn del_doc(collection: CollectionKey, key: Key, doc: DelDoc) {
     let deleted_doc =
         delete_doc_store(caller, collection.clone(), key, doc).unwrap_or_else(|e| trap(&e));
 
-    decrease_user_usage(&caller, &collection);
+    decrease_db_usage(&caller, &collection);
 
     invoke_on_delete_doc(&caller, &deleted_doc);
 }
@@ -201,7 +202,7 @@ pub fn set_many_docs(docs: Vec<(CollectionKey, Key, SetDoc)>) -> Vec<(Key, Doc)>
         let result = set_doc_store(caller, collection.clone(), key.clone(), doc)
             .unwrap_or_else(|e| trap(&e));
 
-        increase_user_usage(&caller, &collection);
+        increase_db_usage(&caller, &collection);
 
         results.push((result.key.clone(), result.data.after.clone()));
 
@@ -222,7 +223,7 @@ pub fn del_many_docs(docs: Vec<(CollectionKey, Key, DelDoc)>) {
         let deleted_doc = delete_doc_store(caller, collection.clone(), key.clone(), doc)
             .unwrap_or_else(|e| trap(&e));
 
-        decrease_user_usage(&caller, &collection);
+        decrease_db_usage(&caller, &collection);
 
         results.push(deleted_doc);
     }
@@ -236,7 +237,7 @@ pub fn del_filtered_docs(collection: CollectionKey, filter: ListParams) {
     let results = delete_filtered_docs_store(caller, collection.clone(), &filter)
         .unwrap_or_else(|e| trap(&e));
 
-    decrease_user_usage_by(&caller, &collection, results.len() as u32);
+    decrease_db_usage_by(&caller, &collection, results.len() as u32);
 
     invoke_on_delete_filtered_docs(&caller, &results);
 }
@@ -263,31 +264,31 @@ pub fn count_collection_docs(collection: CollectionKey) -> usize {
 // Rules
 // ---------------------------------------------------------
 
-pub fn get_rule(rules_type: &RulesType, collection: &CollectionKey) -> Option<Rule> {
+pub fn get_rule(rules_type: &CollectionType, collection: &CollectionKey) -> Option<Rule> {
     match rules_type {
-        RulesType::Db => get_rule_db(collection),
-        RulesType::Storage => get_rule_storage(collection),
+        CollectionType::Db => get_rule_db(collection),
+        CollectionType::Storage => get_rule_storage(collection),
     }
 }
 
-pub fn list_rules(rules_type: RulesType) -> Vec<(CollectionKey, Rule)> {
+pub fn list_rules(rules_type: CollectionType) -> Vec<(CollectionKey, Rule)> {
     match rules_type {
-        RulesType::Db => get_rules_db(),
-        RulesType::Storage => get_rules_storage(),
+        CollectionType::Db => get_rules_db(),
+        CollectionType::Storage => get_rules_storage(),
     }
 }
 
-pub fn set_rule(rules_type: RulesType, collection: CollectionKey, rule: SetRule) -> Rule {
+pub fn set_rule(rules_type: CollectionType, collection: CollectionKey, rule: SetRule) -> Rule {
     match rules_type {
-        RulesType::Db => set_rule_db(collection, rule).unwrap_or_else(|e| trap(&e)),
-        RulesType::Storage => set_rule_storage(collection, rule).unwrap_or_else(|e| trap(&e)),
+        CollectionType::Db => set_rule_db(collection, rule).unwrap_or_else(|e| trap(&e)),
+        CollectionType::Storage => set_rule_storage(collection, rule).unwrap_or_else(|e| trap(&e)),
     }
 }
 
-pub fn del_rule(rules_type: RulesType, collection: CollectionKey, rule: DelRule) {
+pub fn del_rule(rules_type: CollectionType, collection: CollectionKey, rule: DelRule) {
     match rules_type {
-        RulesType::Db => del_rule_db(collection, rule).unwrap_or_else(|e| trap(&e)),
-        RulesType::Storage => del_rule_storage(collection, rule).unwrap_or_else(|e| trap(&e)),
+        CollectionType::Db => del_rule_db(collection, rule).unwrap_or_else(|e| trap(&e)),
+        CollectionType::Storage => del_rule_storage(collection, rule).unwrap_or_else(|e| trap(&e)),
     }
 }
 
@@ -549,7 +550,16 @@ pub fn get_many_assets(
 // User usage
 // ---------------------------------------------------------
 
-pub fn get_user_usage(collection: &CollectionKey, user_id: &Option<UserId>) -> Option<UserUsage> {
+pub fn get_user_usage(
+    collection: &CollectionKey,
+    collection_type: &CollectionType,
+    user_id: &Option<UserId>,
+) -> Option<UserUsage> {
     let caller = caller();
-    get_user_usage_by_id(collection, &user_id.unwrap_or(caller), caller)
+    let user_id_or_caller = user_id.unwrap_or(caller);
+
+    match collection_type {
+        CollectionType::Db => get_db_usage_by_id(collection, &user_id_or_caller, caller),
+        CollectionType::Storage => get_storage_usage_by_id(collection, &user_id_or_caller, caller),
+    }
 }

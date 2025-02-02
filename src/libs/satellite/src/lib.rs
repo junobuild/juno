@@ -19,7 +19,7 @@ mod version;
 use crate::auth::types::config::AuthenticationConfig;
 use crate::db::types::config::DbConfig;
 use crate::guards::{caller_is_admin_controller, caller_is_controller};
-use crate::types::interface::{Config, RulesType};
+use crate::types::interface::{CollectionType, Config};
 use crate::version::SATELLITE_VERSION;
 use ic_cdk::api::trap;
 use ic_cdk_macros::{init, post_upgrade, pre_upgrade, query, update};
@@ -175,25 +175,25 @@ pub fn count_collection_docs(collection: CollectionKey) -> usize {
 
 #[doc(hidden)]
 #[query(guard = "caller_is_admin_controller")]
-pub fn get_rule(rules_type: RulesType, collection: CollectionKey) -> Option<Rule> {
+pub fn get_rule(rules_type: CollectionType, collection: CollectionKey) -> Option<Rule> {
     satellite::get_rule(&rules_type, &collection)
 }
 
 #[doc(hidden)]
 #[query(guard = "caller_is_admin_controller")]
-pub fn list_rules(rules_type: RulesType) -> Vec<(CollectionKey, Rule)> {
+pub fn list_rules(rules_type: CollectionType) -> Vec<(CollectionKey, Rule)> {
     satellite::list_rules(rules_type)
 }
 
 #[doc(hidden)]
 #[update(guard = "caller_is_admin_controller")]
-pub fn set_rule(rules_type: RulesType, collection: CollectionKey, rule: SetRule) -> Rule {
+pub fn set_rule(rules_type: CollectionType, collection: CollectionKey, rule: SetRule) -> Rule {
     satellite::set_rule(rules_type, collection, rule)
 }
 
 #[doc(hidden)]
 #[update(guard = "caller_is_admin_controller")]
-pub fn del_rule(rules_type: RulesType, collection: CollectionKey, rule: DelRule) {
+pub fn del_rule(rules_type: CollectionType, collection: CollectionKey, rule: DelRule) {
     satellite::del_rule(rules_type, collection, rule)
 }
 
@@ -401,8 +401,12 @@ pub fn get_many_assets(
 
 #[doc(hidden)]
 #[query]
-pub fn get_user_usage(collection: CollectionKey, user_id: Option<UserId>) -> Option<UserUsage> {
-    satellite::get_user_usage(&collection, &user_id)
+pub fn get_user_usage(
+    collection_key: CollectionKey,
+    collection_type: CollectionType,
+    user_id: Option<UserId>,
+) -> Option<UserUsage> {
+    satellite::get_user_usage(&collection_key, &collection_type, &user_id)
 }
 
 // ---------------------------------------------------------

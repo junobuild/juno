@@ -1,13 +1,14 @@
+use crate::types::interface::CollectionType;
 use crate::usage::types::interface::ModificationType;
 use crate::usage::types::state::{UserUsage, UserUsageKey};
 use ic_cdk::api::time;
 use ic_stable_structures::storable::Bound;
 use ic_stable_structures::Storable;
+use junobuild_collections::types::core::CollectionKey;
 use junobuild_shared::constants::INITIAL_VERSION;
 use junobuild_shared::serializers::{deserialize_from_bytes, serialize_to_bytes};
 use junobuild_shared::types::state::{Timestamp, UserId, Version};
 use std::borrow::Cow;
-use junobuild_collections::types::core::CollectionKey;
 
 impl Storable for UserUsage {
     fn to_bytes(&self) -> Cow<[u8]> {
@@ -76,10 +77,15 @@ impl UserUsage {
 }
 
 impl UserUsageKey {
-    pub fn new(user_id: &UserId, collection: &CollectionKey) -> Self {
+    pub fn new(
+        user_id: &UserId,
+        collection_key: &CollectionKey,
+        collection_type: &CollectionType,
+    ) -> Self {
         Self {
             user_id: *user_id,
-            collection: collection.clone(),
+            collection_key: collection_key.clone(),
+            collection_type: collection_type.clone(),
         }
     }
 }

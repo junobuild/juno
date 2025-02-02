@@ -1,4 +1,5 @@
 pub mod state {
+    use crate::types::interface::CollectionType;
     use candid::{CandidType, Deserialize};
     use ic_stable_structures::StableBTreeMap;
     use junobuild_collections::types::core::CollectionKey;
@@ -11,7 +12,8 @@ pub mod state {
     #[derive(CandidType, Serialize, Deserialize, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
     pub struct UserUsageKey {
         pub user_id: UserId,
-        pub collection: CollectionKey,
+        pub collection_key: CollectionKey,
+        pub collection_type: CollectionType,
     }
 
     #[derive(CandidType, Serialize, Deserialize, Clone)]

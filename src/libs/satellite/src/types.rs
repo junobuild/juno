@@ -53,8 +53,8 @@ pub mod interface {
     use junobuild_storage::types::config::StorageConfig;
     use serde::Deserialize;
 
-    #[derive(CandidType, Deserialize)]
-    pub enum RulesType {
+    #[derive(CandidType, Deserialize, Serialize, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
+    pub enum CollectionType {
         Db,
         Storage,
     }

@@ -191,6 +191,9 @@ export interface SetRule {
 	rate_config: [] | [RateConfig];
 	write: Permission;
 }
+export interface SetUserUsage {
+	items_count: number;
+}
 export interface StorageConfig {
 	iframe: [] | [StorageConfigIFrame];
 	rewrites: Array<[string, string]>;
@@ -292,6 +295,7 @@ export interface _SERVICE {
 	set_many_docs: ActorMethod<[Array<[string, string, SetDoc]>], Array<[string, Doc]>>;
 	set_rule: ActorMethod<[CollectionType, string, SetRule], Rule>;
 	set_storage_config: ActorMethod<[StorageConfig], undefined>;
+	set_user_usage: ActorMethod<[string, CollectionType, Principal, SetUserUsage], UserUsage>;
 	upload_asset_chunk: ActorMethod<[UploadChunk], UploadChunkResult>;
 	version: ActorMethod<[], string>;
 }

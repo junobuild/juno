@@ -155,6 +155,7 @@ type SetRule = record {
   rate_config : opt RateConfig;
   write : Permission;
 };
+type SetUserUsage = record { items_count : nat32 };
 type StorageConfig = record {
   iframe : opt StorageConfigIFrame;
   rewrites : vec record { text; text };
@@ -262,6 +263,9 @@ service : () -> {
     );
   set_rule : (CollectionType, text, SetRule) -> (Rule);
   set_storage_config : (StorageConfig) -> ();
+  set_user_usage : (text, CollectionType, principal, SetUserUsage) -> (
+      UserUsage,
+    );
   upload_asset_chunk : (UploadChunk) -> (UploadChunkResult);
   version : () -> (text) query;
 }

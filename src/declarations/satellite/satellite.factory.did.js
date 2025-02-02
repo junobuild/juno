@@ -237,6 +237,7 @@ export const idlFactory = ({ IDL }) => {
 		rate_config: IDL.Opt(RateConfig),
 		write: Permission
 	});
+	const SetUserUsage = IDL.Record({ items_count: IDL.Nat32 });
 	const UploadChunk = IDL.Record({
 		content: IDL.Vec(IDL.Nat8),
 		batch_id: IDL.Nat,
@@ -317,6 +318,11 @@ export const idlFactory = ({ IDL }) => {
 		),
 		set_rule: IDL.Func([CollectionType, IDL.Text, SetRule], [Rule], []),
 		set_storage_config: IDL.Func([StorageConfig], [], []),
+		set_user_usage: IDL.Func(
+			[IDL.Text, CollectionType, IDL.Principal, SetUserUsage],
+			[UserUsage],
+			[]
+		),
 		upload_asset_chunk: IDL.Func([UploadChunk], [UploadChunkResult], []),
 		version: IDL.Func([], [IDL.Text], ['query'])
 	});

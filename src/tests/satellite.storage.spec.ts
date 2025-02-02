@@ -19,7 +19,9 @@ import {
 	CONTROLLER_ERROR_MSG,
 	SATELLITE_ADMIN_ERROR_MSG
 } from './constants/satellite-tests.constants';
+import { mockBlob, mockHtml } from './mocks/storage.mocks';
 import { assertCertification } from './utils/certification-test.utils';
+import { uploadAsset } from './utils/satellite-storage-tests.utils';
 import { deleteDefaultIndexHTML } from './utils/satellite-tests.utils';
 import { SATELLITE_WASM_PATH, controllersInitArgs } from './utils/setup-tests.utils';
 
@@ -147,42 +149,10 @@ describe('Satellite storage', () => {
 		});
 	});
 
-	const HTML = '<html><body>Hello</body></html>';
-
-	const blob = new Blob([HTML], {
-		type: 'text/plain; charset=utf-8'
-	});
-
-	const upload = async ({
-		full_path,
-		name,
-		collection
-	}: {
-		full_path: string;
-		name: string;
-		collection: string;
-	}) => {
-		const { commit_asset_upload, upload_asset_chunk, init_asset_upload } = actor;
-
-		const file = await init_asset_upload({
-			collection,
-			description: toNullable(),
-			encoding_type: [],
-			full_path,
-			name,
-			token: toNullable()
-		});
-
-		const chunk = await upload_asset_chunk({
-			batch_id: file.batch_id,
-			content: arrayBufferToUint8Array(await blob.arrayBuffer()),
-			order_id: [0n]
-		});
-
-		await commit_asset_upload({
-			batch_id: file.batch_id,
-			chunk_ids: [chunk.chunk_id],
-			headers: []
+	const upload = async (params: { full_path: string; name: string; collection: string }) => {
+		await uploadAsset({
+			...params,
+			actor
 		});
 	};
 
@@ -226,15 +196,9 @@ describe('Satellite storage', () => {
 				token: toNullable()
 			});
 
-			const HTML = '<html><body>Hello</body></html>';
-
-			const blob = new Blob([HTML], {
-				type: 'text/plain; charset=utf-8'
-			});
-
 			const chunk = await upload_asset_chunk({
 				batch_id: file.batch_id,
-				content: arrayBufferToUint8Array(await blob.arrayBuffer()),
+				content: arrayBufferToUint8Array(await mockBlob.arrayBuffer()),
 				order_id: [0n]
 			});
 
@@ -283,7 +247,7 @@ describe('Satellite storage', () => {
 			});
 
 			const decoder = new TextDecoder();
-			expect(decoder.decode(body as Uint8Array<ArrayBufferLike>)).toEqual(HTML);
+			expect(decoder.decode(body as Uint8Array<ArrayBufferLike>)).toEqual(mockHtml);
 		});
 
 		describe.each(['/.well-known/ic-domains', '/.well-known/ii-alternative-origins'])(
@@ -408,7 +372,7 @@ describe('Satellite storage', () => {
 					});
 
 					const decoder = new TextDecoder();
-					expect(decoder.decode(body as Uint8Array<ArrayBufferLike>)).toEqual(HTML);
+					expect(decoder.decode(body as Uint8Array<ArrayBufferLike>)).toEqual(mockHtml);
 				});
 
 				it('should not delete other collection assets', async () => {
@@ -537,11 +501,6 @@ describe('Satellite storage', () => {
 
 	describe('routing', () => {
 		const collection = '#dapp';
-		const HTML = '<html><body>Hello</body></html>';
-
-		const blob = new Blob([HTML], {
-			type: 'text/plain; charset=utf-8'
-		});
 
 		const full_path = '/index.html';
 
@@ -561,7 +520,7 @@ describe('Satellite storage', () => {
 
 			const chunk = await upload_asset_chunk({
 				batch_id: file.batch_id,
-				content: arrayBufferToUint8Array(await blob.arrayBuffer()),
+				content: arrayBufferToUint8Array(await mockBlob.arrayBuffer()),
 				order_id: [0n]
 			});
 
@@ -617,7 +576,7 @@ describe('Satellite storage', () => {
 				expect(status_code).toEqual(200);
 
 				const decoder = new TextDecoder();
-				expect(decoder.decode(body as Uint8Array<ArrayBufferLike>)).toEqual(HTML);
+				expect(decoder.decode(body as Uint8Array<ArrayBufferLike>)).toEqual(mockHtml);
 			});
 
 			it('should not be able to access on raw if explicitly disabled', async () => {
@@ -670,7 +629,7 @@ describe('Satellite storage', () => {
 				expect(status_code).toEqual(200);
 
 				const decoder = new TextDecoder();
-				expect(decoder.decode(body as Uint8Array<ArrayBufferLike>)).toEqual(HTML);
+				expect(decoder.decode(body as Uint8Array<ArrayBufferLike>)).toEqual(mockHtml);
 			});
 		});
 	});

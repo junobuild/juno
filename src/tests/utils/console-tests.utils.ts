@@ -13,6 +13,7 @@ import {
 import { PocketIc, type Actor } from '@hadronous/pic';
 import { readFile } from 'node:fs/promises';
 import { expect } from 'vitest';
+import { mockBlob } from '../mocks/storage.mocks';
 import { tick } from './pic-tests.utils';
 import {
 	MISSION_CONTROL_WASM_PATH,
@@ -325,15 +326,9 @@ export const uploadFile = async ({
 		proposalId
 	);
 
-	const HTML = '<html><body>Hello</body></html>';
-
-	const blob = new Blob([HTML], {
-		type: 'text/plain; charset=utf-8'
-	});
-
 	const chunk = await upload_asset_chunk({
 		batch_id: file.batch_id,
-		content: arrayBufferToUint8Array(await blob.arrayBuffer()),
+		content: arrayBufferToUint8Array(await mockBlob.arrayBuffer()),
 		order_id: [0n]
 	});
 

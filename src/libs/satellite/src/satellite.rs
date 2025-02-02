@@ -38,10 +38,12 @@ use crate::storage::store::{
 use crate::storage::strategy_impls::StorageState;
 use crate::types::interface::Config;
 use crate::types::state::{CollectionType, HeapState, RuntimeState, State};
+use crate::usage::types::interface::SetUserUsage;
 use crate::usage::types::state::UserUsage;
 use crate::usage::user_usage::{
     decrease_db_usage, decrease_db_usage_by, decrease_storage_usage, decrease_storage_usage_by,
     get_db_usage_by_id, get_storage_usage_by_id, increase_db_usage, increase_storage_usage,
+    set_db_usage, set_storage_usage,
 };
 use ciborium::{from_reader, into_writer};
 use ic_cdk::api::call::{arg_data, ArgDecoderConfig};
@@ -572,5 +574,21 @@ pub fn get_user_usage(
     match collection_type {
         CollectionType::Db => get_db_usage_by_id(caller, collection, &user_id_or_caller),
         CollectionType::Storage => get_storage_usage_by_id(caller, collection, &user_id_or_caller),
+    }
+}
+
+pub fn set_user_usage(
+    collection: &CollectionKey,
+    collection_type: &CollectionType,
+    user_id: &UserId,
+    usage: &SetUserUsage,
+) -> UserUsage {
+    match collection_type {
+        CollectionType::Db => {
+            set_db_usage(collection, user_id, usage.items_count).unwrap_or_else(|e| trap(&e))
+        }
+        CollectionType::Storage => {
+            set_storage_usage(collection, user_id, usage.items_count).unwrap_or_else(|e| trap(&e))
+        }
     }
 }

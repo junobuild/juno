@@ -45,6 +45,7 @@ use junobuild_storage::types::interface::{
     AssetNoContent, CommitBatch, InitAssetKey, InitUploadResult, UploadChunk, UploadChunkResult,
 };
 use junobuild_storage::types::state::FullPath;
+use crate::usage::types::interface::SetUserUsage;
 
 // ============================================================================================
 // START: Re-exported Types
@@ -408,6 +409,17 @@ pub fn get_user_usage(
     user_id: Option<UserId>,
 ) -> Option<UserUsage> {
     satellite::get_user_usage(&collection_key, &collection_type, &user_id)
+}
+
+#[doc(hidden)]
+#[update(guard = "caller_is_controller")]
+pub fn set_user_usage(
+    collection_key: CollectionKey,
+    collection_type: CollectionType,
+    user_id: UserId,
+    usage: SetUserUsage,
+) -> UserUsage {
+    satellite::set_user_usage(&collection_key, &collection_type, &user_id, &usage)
 }
 
 // ---------------------------------------------------------

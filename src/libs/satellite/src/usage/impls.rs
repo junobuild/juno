@@ -35,12 +35,15 @@ impl Storable for UserUsageKey {
 }
 
 impl UserUsage {
-    pub fn update(
+    pub fn set(current_user_usage: &Option<UserUsage>, count: u32) -> Self {
+        UserUsage::apply_update(current_user_usage, count)
+    }
+
+    pub fn increase_or_decrease(
         current_user_usage: &Option<UserUsage>,
         modification: &ModificationType,
         count: Option<u32>,
     ) -> Self {
-        let now = time();
         let count = count.unwrap_or(1);
 
         // User usage for the collection
@@ -52,6 +55,12 @@ impl UserUsage {
                 ModificationType::Delete => current_user_usage.items_count.saturating_sub(count),
             },
         };
+
+        UserUsage::apply_update(current_user_usage, items_count)
+    }
+
+    fn apply_update(current_user_usage: &Option<UserUsage>, items_count: u32) -> Self {
+        let now = time();
 
         // Metadata for the UserUsage entity entry
 

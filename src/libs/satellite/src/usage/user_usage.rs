@@ -1,6 +1,8 @@
 use crate::get_controllers;
 use crate::types::state::CollectionType;
-use crate::usage::store::{get_user_usage as get_user_usage_store, update_user_usage};
+use crate::usage::store::{
+    get_user_usage as get_user_usage_store, set_user_usage, update_user_usage,
+};
 use crate::usage::types::interface::ModificationType;
 use crate::usage::types::state::UserUsage;
 use candid::Principal;
@@ -57,6 +59,23 @@ pub fn increase_db_usage(collection: &CollectionKey, user_id: &UserId) {
     );
 }
 
+pub fn set_db_usage(
+    collection: &CollectionKey,
+    user_id: &UserId,
+    count: u32,
+) -> Result<UserUsage, String> {
+    if is_db_collection_no_usage(collection) {
+        return Err(format!(
+            "Datastore usage is not recorded for collection {}.",
+            collection
+        ));
+    }
+
+    let usage = set_user_usage(collection, &CollectionType::Db, user_id, count);
+
+    Ok(usage)
+}
+
 pub fn decrease_db_usage(collection: &CollectionKey, user_id: &UserId) {
     if is_db_collection_no_usage(collection) {
         return;
@@ -97,6 +116,23 @@ pub fn increase_storage_usage(collection: &CollectionKey, user_id: &UserId) {
         &ModificationType::Set,
         None,
     );
+}
+
+pub fn set_storage_usage(
+    collection: &CollectionKey,
+    user_id: &UserId,
+    count: u32,
+) -> Result<UserUsage, String> {
+    if is_storage_collection_no_usage(collection) {
+        return Err(format!(
+            "Storage usage is not recorded for collection {}.",
+            collection
+        ));
+    }
+
+    let usage = set_user_usage(collection, &CollectionType::Storage, user_id, count);
+
+    Ok(usage)
 }
 
 pub fn decrease_storage_usage(collection: &CollectionKey, user_id: &UserId) {

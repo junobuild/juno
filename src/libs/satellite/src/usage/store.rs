@@ -39,6 +39,23 @@ pub fn update_user_usage(
     })
 }
 
+pub fn set_user_usage(
+    collection_key: &CollectionKey,
+    collection_type: &CollectionType,
+    user_id: &UserId,
+    count: u32,
+) -> UserUsage {
+    STATE.with(|state| {
+        set_user_usage_impl(
+            collection_key,
+            collection_type,
+            user_id,
+            count,
+            &mut state.borrow_mut().stable.user_usage,
+        )
+    })
+}
+
 fn get_user_usage_impl(
     collection_key: &CollectionKey,
     collection_type: &CollectionType,
@@ -62,7 +79,25 @@ fn update_user_usage_impl(
 
     let current_usage = state.get(&key);
 
-    let update_usage = UserUsage::update(&current_usage, modification, count);
+    let update_usage = UserUsage::increase_or_decrease(&current_usage, modification, count);
 
     state.insert(key, update_usage);
+}
+
+fn set_user_usage_impl(
+    collection_key: &CollectionKey,
+    collection_type: &CollectionType,
+    user_id: &UserId,
+    count: u32,
+    state: &mut UserUsageStable,
+) -> UserUsage {
+    let key = UserUsageKey::new(user_id, collection_key, collection_type);
+
+    let current_usage = state.get(&key);
+
+    let update_usage = UserUsage::set(&current_usage, count);
+
+    state.insert(key, update_usage.clone());
+
+    update_usage
 }

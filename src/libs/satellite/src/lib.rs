@@ -412,7 +412,7 @@ pub fn get_user_usage(
 }
 
 #[doc(hidden)]
-#[update(guard = "caller_is_controller")]
+#[update(guard = "caller_is_admin_controller")]
 pub fn set_user_usage(
     collection_key: CollectionKey,
     collection_type: CollectionType,

@@ -30,7 +30,7 @@ fn get_user_usage_impl(
     collection: &CollectionKey,
     state: &UserUsageStable,
 ) -> Option<UserUsage> {
-    let key = stable_user_usage_key(user_id, collection);
+    let key = UserUsageKey::new(user_id, collection);
 
     state.get(&key)
 }
@@ -42,18 +42,11 @@ fn update_user_usage_impl(
     count: Option<u32>,
     state: &mut UserUsageStable,
 ) {
-    let key = stable_user_usage_key(user_id, collection);
+    let key = UserUsageKey::new(user_id, collection);
 
     let current_usage = state.get(&key);
 
     let update_usage = UserUsage::update(&current_usage, modification, count);
 
     state.insert(key, update_usage);
-}
-
-fn stable_user_usage_key(user_id: &UserId, collection: &CollectionKey) -> UserUsageKey {
-    UserUsageKey {
-        user_id: *user_id,
-        collection: collection.clone(),
-    }
 }

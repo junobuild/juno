@@ -52,7 +52,7 @@ pub mod interface {
     use serde::Deserialize;
 
     #[derive(CandidType, Deserialize)]
-    pub enum RulesType {
+    pub enum CollectionType {
         Db,
         Storage,
     }

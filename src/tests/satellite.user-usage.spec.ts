@@ -13,7 +13,7 @@ import { assertNonNullish, fromNullable, toNullable } from '@dfinity/utils';
 import { type Actor, PocketIc } from '@hadronous/pic';
 import { toArray } from '@junobuild/utils';
 import { nanoid } from 'nanoid';
-import {afterAll, beforeAll, describe, expect, inject} from 'vitest';
+import {inject} from 'vitest';
 import { uploadAsset } from './utils/satellite-storage-tests.utils';
 import { controllersInitArgs, SATELLITE_WASM_PATH } from './utils/setup-tests.utils';
 
@@ -60,22 +60,6 @@ describe('Satellite User Usage', () => {
 
 	afterAll(async () => {
 		await pic?.tearDown();
-	});
-
-	describe.each([
-		{ title: "Datastore", features: [] },
-		{
-			title: "Storage",
-			features: [
-				{
-					page_views: false,
-					performance_metrics: false,
-					track_events: false
-				}
-			]
-		}
-	])('%s', ({ title }) => {
-
 	});
 
 	describe('Datastore', async () => {
@@ -302,41 +286,45 @@ describe('Satellite User Usage', () => {
 			await set_rule(COLLECTION_TYPE, TEST_COLLECTION, setRule);
 		});
 
+		const upload = async (index: number) => {
+			const name = `hello-${index}.html`;
+			const full_path = `/${TEST_COLLECTION}/${name}`;
+
+			await uploadAsset({
+				full_path,
+				name,
+				collection: TEST_COLLECTION,
+				actor
+			});
+		};
+
+		const createUser = async (user: Principal) => {
+			// We need a user entry to upload to the storage, there is a guard
+			const { set_doc } = actor;
+
+			await set_doc('#user', user.toText(), {
+				data: await toArray({
+					provider: 'internet_identity'
+				}),
+				description: toNullable(),
+				version: toNullable()
+			});
+		}
+
 		describe('User', () => {
 			const user = Ed25519KeyIdentity.generate();
 
 			beforeAll(async () => {
 				actor.setIdentity(user);
 
-				// We need a user entry to upload to the storage, there is a guard
-				const { set_doc } = actor;
-
-				await set_doc('#user', user.getPrincipal().toText(), {
-					data: await toArray({
-						provider: 'internet_identity'
-					}),
-					description: toNullable(),
-					version: toNullable()
-				});
+				await createUser(user.getPrincipal());
 			});
 
-			const upload = async (index: number) => {
-				const name = `hello-${index}.html`;
-				const full_path = `/${TEST_COLLECTION}/${name}`;
-
-				await uploadAsset({
-					full_path,
-					name,
-					collection: TEST_COLLECTION,
-					actor
-				});
-			};
-
-			const countSetAssets = 10;
+			const countUploadAssets = 10;
 
 			it('should get a usage count after update asset', async () => {
 				await Promise.all(
-					Array.from({ length: countSetAssets }).map(async (_, i) => await upload(i))
+					Array.from({ length: countUploadAssets }).map(async (_, i) => await upload(i))
 				);
 
 				const { get_user_usage } = actor;
@@ -347,7 +335,7 @@ describe('Satellite User Usage', () => {
 
 				assertNonNullish(usage);
 
-				expect(usage.items_count).toEqual(countSetAssets);
+				expect(usage.items_count).toEqual(countUploadAssets);
 
 				expect(usage.updated_at).not.toBeUndefined();
 				expect(usage.updated_at).toBeGreaterThan(0n);
@@ -355,7 +343,130 @@ describe('Satellite User Usage', () => {
 				expect(usage.created_at).toBeGreaterThan(0n);
 				expect(usage.updated_at).toBeGreaterThan(usage.created_at);
 
-				expect(usage.version).toEqual(toNullable(BigInt(countSetAssets)));
+				expect(usage.version).toEqual(toNullable(BigInt(countUploadAssets)));
+			});
+
+			const countDelAsset = 1;
+
+			it('should get a usage count after delete one asset', async () => {
+				const { del_asset, list_assets } = actor;
+
+				const { items } = await list_assets(TEST_COLLECTION, NO_FILTER_PARAMS);
+
+				const asset = items[0][1];
+
+				await del_asset(TEST_COLLECTION, asset.key.full_path);
+
+				const { get_user_usage } = actor;
+
+				const usageResponse = await get_user_usage(TEST_COLLECTION, COLLECTION_TYPE, toNullable());
+
+				const usage = fromNullable(usageResponse);
+
+				assertNonNullish(usage);
+
+				expect(usage.items_count).toEqual(countUploadAssets - countDelAsset);
+				expect(usage.version).toEqual(
+					toNullable(BigInt(countUploadAssets + countDelAsset))
+				);
+			});
+
+			const countDelManyAssets = 2;
+
+			it('should get a usage count after delete many assets', async () => {
+				const { del_many_assets, list_assets } = actor;
+
+				const { items } = await list_assets(TEST_COLLECTION, NO_FILTER_PARAMS);
+
+				const assets: [string, string][] = [items[0], items[1]].map(([_, asset]) => [
+					TEST_COLLECTION,
+					asset.key.full_path
+				]);
+
+				await del_many_assets(assets);
+
+				const { get_user_usage } = actor;
+
+				const usageResponse = await get_user_usage(TEST_COLLECTION, COLLECTION_TYPE, toNullable());
+
+				const usage = fromNullable(usageResponse);
+
+				assertNonNullish(usage);
+
+				expect(usage.items_count).toEqual(
+					countUploadAssets - countDelAsset - countDelManyAssets
+				);
+				expect(usage.version).toEqual(
+					toNullable(BigInt(countUploadAssets + countDelAsset + countDelManyAssets))
+				);
+			});
+
+			it('should get a usage count after delete filtered assets', async () => {
+				const { del_filtered_assets } = actor;
+
+				await del_filtered_assets(TEST_COLLECTION, NO_FILTER_PARAMS);
+
+				const { get_user_usage } = actor;
+
+				const usageResponse = await get_user_usage(TEST_COLLECTION, COLLECTION_TYPE, toNullable());
+
+				const usage = fromNullable(usageResponse);
+
+				assertNonNullish(usage);
+
+				expect(usage.items_count).toEqual(0);
+				expect(usage.version).toEqual(
+					toNullable(BigInt(countUploadAssets + countDelAsset + countDelManyAssets + 1))
+				);
+			});
+		});
+
+		describe('Guards', () => {
+			const user1 = Ed25519KeyIdentity.generate();
+
+			beforeAll(async () => {
+				actor.setIdentity(user1);
+				await createUser(user1.getPrincipal());
+			})
+
+			const fetchUsage = async (userId?: Principal): Promise<UserUsage | undefined> => {
+				const { get_user_usage } = actor;
+
+				const usageResponse = await get_user_usage(
+					TEST_COLLECTION,
+					COLLECTION_TYPE,
+					toNullable(userId)
+				);
+				return fromNullable(usageResponse);
+			};
+
+			it('should not get usage of another user', async () => {
+				await upload(100);
+
+				const usage = await fetchUsage();
+
+				assertNonNullish(usage);
+
+				expect(usage.items_count).toEqual(1);
+
+				const user2 = Ed25519KeyIdentity.generate();
+
+				actor.setIdentity(user2);
+				await createUser(user2.getPrincipal());
+
+				const usage2 = await fetchUsage(user1.getPrincipal());
+
+				expect(usage2).toBeUndefined();
+			});
+
+			it('should get usage of user if controller', async () => {
+				actor.setIdentity(controller);
+
+				const usage = await fetchUsage(user1.getPrincipal());
+
+				assertNonNullish(usage);
+
+				expect(usage.items_count).toEqual(1);
 			});
 		});
 	});

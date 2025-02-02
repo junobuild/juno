@@ -21,6 +21,7 @@ use crate::db::types::config::DbConfig;
 use crate::guards::{caller_is_admin_controller, caller_is_controller};
 use crate::types::interface::Config;
 use crate::types::state::CollectionType;
+use crate::usage::types::interface::SetUserUsage;
 use crate::usage::types::state::UserUsage;
 use crate::version::SATELLITE_VERSION;
 use ic_cdk::api::trap;
@@ -45,7 +46,6 @@ use junobuild_storage::types::interface::{
     AssetNoContent, CommitBatch, InitAssetKey, InitUploadResult, UploadChunk, UploadChunkResult,
 };
 use junobuild_storage::types::state::FullPath;
-use crate::usage::types::interface::SetUserUsage;
 
 // ============================================================================================
 // START: Re-exported Types
@@ -473,7 +473,7 @@ macro_rules! include_satellite {
             http_request, http_request_streaming_callback, init, init_asset_upload, list_assets,
             list_controllers, list_custom_domains, list_docs, list_rules, memory_size,
             post_upgrade, pre_upgrade, set_auth_config, set_controllers, set_custom_domain,
-            set_db_config, set_doc, set_many_docs, set_rule, set_storage_config,
+            set_db_config, set_doc, set_many_docs, set_rule, set_storage_config, set_user_usage,
             upload_asset_chunk, version,
         };
 

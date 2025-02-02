@@ -21,6 +21,7 @@ import {
 import { PocketIc, type Actor } from '@hadronous/pic';
 import { beforeAll, describe, expect, inject } from 'vitest';
 import { CONTROLLER_ERROR_MSG } from './constants/console-tests.constants';
+import { mockBlob, mockHtml } from './mocks/storage.mocks';
 import { assertCertification } from './utils/certification-test.utils';
 import { uploadFile } from './utils/console-tests.utils';
 import { sha256ToBase64String } from './utils/crypto-tests.utils';
@@ -164,8 +165,6 @@ describe('Console / Storage', () => {
 			actor.setIdentity(controller);
 		});
 
-		const HTML = '<html><body>Hello</body></html>';
-
 		it('should set and get config', async () => {
 			const { set_storage_config, get_storage_config } = actor;
 
@@ -271,13 +270,9 @@ describe('Console / Storage', () => {
 						proposalId
 					);
 
-					const blob = new Blob([HTML], {
-						type: 'text/plain; charset=utf-8'
-					});
-
 					const chunk = await upload_asset_chunk({
 						batch_id: file.batch_id,
-						content: arrayBufferToUint8Array(await blob.arrayBuffer()),
+						content: arrayBufferToUint8Array(await mockBlob.arrayBuffer()),
 						order_id: [0n]
 					});
 
@@ -458,7 +453,7 @@ describe('Console / Storage', () => {
 					});
 
 					const decoder = new TextDecoder();
-					expect(decoder.decode(body as Uint8Array<ArrayBufferLike>)).toEqual(HTML);
+					expect(decoder.decode(body as Uint8Array<ArrayBufferLike>)).toEqual(mockHtml);
 				});
 
 				it('should list assets', async () => {

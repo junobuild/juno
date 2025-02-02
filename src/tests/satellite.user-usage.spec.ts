@@ -13,7 +13,8 @@ import { assertNonNullish, fromNullable, toNullable } from '@dfinity/utils';
 import { type Actor, PocketIc } from '@hadronous/pic';
 import { toArray } from '@junobuild/utils';
 import { nanoid } from 'nanoid';
-import { inject } from 'vitest';
+import { beforeAll, describe, expect, inject } from 'vitest';
+import { SATELLITE_ADMIN_ERROR_MSG } from './constants/satellite-tests.constants';
 import { uploadAsset } from './utils/satellite-storage-tests.utils';
 import { controllersInitArgs, SATELLITE_WASM_PATH } from './utils/setup-tests.utils';
 
@@ -88,9 +89,10 @@ describe('Satellite User Usage', () => {
 			return key;
 		};
 
-		describe('User', () => {
-			const user = Ed25519KeyIdentity.generate();
+		const user = Ed25519KeyIdentity.generate();
+		let countTotalTestVersion: number;
 
+		describe('User', () => {
 			beforeAll(() => {
 				actor.setIdentity(user);
 			});
@@ -223,10 +225,11 @@ describe('Satellite User Usage', () => {
 
 				assertNonNullish(usage);
 
+				countTotalTestVersion =
+					countSetManyDocs + countSetDocs + countDelDoc + countDelManyDocs + 1;
+
 				expect(usage.items_count).toEqual(0);
-				expect(usage.version).toEqual(
-					toNullable(BigInt(countSetManyDocs + countSetDocs + countDelDoc + countDelManyDocs + 1))
-				);
+				expect(usage.version).toEqual(toNullable(BigInt(countTotalTestVersion)));
 			});
 		});
 
@@ -274,6 +277,18 @@ describe('Satellite User Usage', () => {
 
 				expect(usage.items_count).toEqual(1);
 			});
+
+			it('should throw errors on set usage', async () => {
+				actor.setIdentity(user1);
+
+				const { set_user_usage } = actor;
+
+				await expect(
+					set_user_usage(TEST_COLLECTION, COLLECTION_TYPE, user1.getPrincipal(), {
+						items_count: 345
+					})
+				).rejects.toThrow(SATELLITE_ADMIN_ERROR_MSG);
+			});
 		});
 
 		describe('No user usage', () => {
@@ -297,6 +312,30 @@ describe('Satellite User Usage', () => {
 
 				const usageResponse = await get_user_usage('#log', COLLECTION_TYPE, toNullable());
 				expect(fromNullable(usageResponse)).toBeUndefined();
+			});
+		});
+
+		describe('Admin', () => {
+			beforeAll(() => {
+				actor.setIdentity(controller);
+			});
+
+			it('should set usage for user', async () => {
+				const { set_user_usage } = actor;
+
+				const usage = await set_user_usage(TEST_COLLECTION, COLLECTION_TYPE, user.getPrincipal(), {
+					items_count: 345
+				});
+
+				expect(usage.items_count).toEqual(345);
+
+				expect(usage.updated_at).not.toBeUndefined();
+				expect(usage.updated_at).toBeGreaterThan(0n);
+				expect(usage.created_at).not.toBeUndefined();
+				expect(usage.created_at).toBeGreaterThan(0n);
+				expect(usage.updated_at).toBeGreaterThan(usage.created_at);
+
+				expect(usage.version).toEqual(toNullable(BigInt(countTotalTestVersion + 1)));
 			});
 		});
 	});
@@ -336,9 +375,10 @@ describe('Satellite User Usage', () => {
 			});
 		};
 
-		describe('User', () => {
-			const user = Ed25519KeyIdentity.generate();
+		const user = Ed25519KeyIdentity.generate();
+		let countTotalTestVersion: number;
 
+		describe('User', () => {
 			beforeAll(async () => {
 				actor.setIdentity(user);
 
@@ -435,10 +475,10 @@ describe('Satellite User Usage', () => {
 
 				assertNonNullish(usage);
 
+				countTotalTestVersion = countUploadAssets + countDelAsset + countDelManyAssets + 1;
+
 				expect(usage.items_count).toEqual(0);
-				expect(usage.version).toEqual(
-					toNullable(BigInt(countUploadAssets + countDelAsset + countDelManyAssets + 1))
-				);
+				expect(usage.version).toEqual(toNullable(BigInt(countTotalTestVersion)));
 			});
 		});
 
@@ -489,6 +529,18 @@ describe('Satellite User Usage', () => {
 
 				expect(usage.items_count).toEqual(1);
 			});
+
+			it('should throw errors on set usage', async () => {
+				actor.setIdentity(user1);
+
+				const { set_user_usage } = actor;
+
+				await expect(
+					set_user_usage(TEST_COLLECTION, COLLECTION_TYPE, user1.getPrincipal(), {
+						items_count: 345
+					})
+				).rejects.toThrow(SATELLITE_ADMIN_ERROR_MSG);
+			});
 		});
 
 		describe('No user usage', () => {
@@ -514,6 +566,30 @@ describe('Satellite User Usage', () => {
 
 				const usageResponse = await get_user_usage('#dapp', COLLECTION_TYPE, toNullable());
 				expect(fromNullable(usageResponse)).toBeUndefined();
+			});
+		});
+
+		describe('Admin', () => {
+			beforeAll(() => {
+				actor.setIdentity(controller);
+			});
+
+			it('should set usage for user', async () => {
+				const { set_user_usage } = actor;
+
+				const usage = await set_user_usage(TEST_COLLECTION, COLLECTION_TYPE, user.getPrincipal(), {
+					items_count: 456
+				});
+
+				expect(usage.items_count).toEqual(456);
+
+				expect(usage.updated_at).not.toBeUndefined();
+				expect(usage.updated_at).toBeGreaterThan(0n);
+				expect(usage.created_at).not.toBeUndefined();
+				expect(usage.created_at).toBeGreaterThan(0n);
+				expect(usage.updated_at).toBeGreaterThan(usage.created_at);
+
+				expect(usage.version).toEqual(toNullable(BigInt(countTotalTestVersion + 1)));
 			});
 		});
 	});

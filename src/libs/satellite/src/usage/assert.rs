@@ -21,7 +21,7 @@ pub fn increment_and_assert_db_usage(
     let user_usage = increase_db_usage(collection, &caller);
 
     if let Some(max_items_per_user) = max_items_per_user {
-        if user_usage.items_count > max_items_per_user {
+        if user_usage.changes_count > max_items_per_user {
             return Err("Documents limit reached.".to_string());
         }
     }

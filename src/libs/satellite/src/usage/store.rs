@@ -2,7 +2,7 @@ use crate::get_controllers;
 use crate::types::state::CollectionType;
 use crate::usage::state::{get_user_usage, set_user_usage};
 use crate::usage::types::state::UserUsage;
-use crate::usage::utils::is_db_collection_no_usage;
+use crate::usage::utils::{is_db_collection_no_usage, is_storage_collection_no_usage};
 use candid::Principal;
 use junobuild_collections::types::core::CollectionKey;
 use junobuild_shared::controllers::is_controller;
@@ -53,6 +53,23 @@ pub fn set_db_usage(
     }
 
     let usage = set_user_usage(collection, &CollectionType::Db, user_id, count);
+
+    Ok(usage)
+}
+
+pub fn set_storage_usage(
+    collection: &CollectionKey,
+    user_id: &UserId,
+    count: u32,
+) -> Result<UserUsage, String> {
+    if is_storage_collection_no_usage(collection) {
+        return Err(format!(
+            "Storage usage is not recorded for collection {}.",
+            collection
+        ));
+    }
+
+    let usage = set_user_usage(collection, &CollectionType::Storage, user_id, count);
 
     Ok(usage)
 }

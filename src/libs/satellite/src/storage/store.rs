@@ -1,16 +1,6 @@
 use crate::controllers::store::get_controllers;
-use crate::hooks::invoke_assert_delete_asset;
 use crate::memory::STATE;
-use candid::Principal;
-use junobuild_collections::assert_stores::{assert_permission, public_permission};
-use junobuild_collections::msg::msg_storage_collection_not_empty;
-use junobuild_collections::types::core::CollectionKey;
-use junobuild_collections::types::rules::{Memory, Rule};
-use junobuild_shared::controllers::is_controller;
-use junobuild_shared::list::list_values;
-use junobuild_shared::types::state::Controllers;
-
-use crate::rules::assert_stores::is_known_user;
+use crate::storage::assert::{assert_create_batch, assert_delete_asset};
 use crate::storage::certified_assets::runtime::init_certified_assets as init_runtime_certified_assets;
 use crate::storage::state::{
     count_assets_stable, delete_asset as delete_state_asset, delete_domain as delete_state_domain,
@@ -22,17 +12,23 @@ use crate::storage::state::{
 };
 use crate::storage::strategy_impls::{StorageAssertions, StorageState, StorageUpload};
 use crate::types::store::StoreContext;
+use candid::Principal;
+use junobuild_collections::assert_stores::{assert_permission};
+use junobuild_collections::msg::msg_storage_collection_not_empty;
+use junobuild_collections::types::core::CollectionKey;
+use junobuild_collections::types::rules::{Memory, Rule};
+use junobuild_shared::list::list_values;
 use junobuild_shared::types::core::{Blob, DomainName};
 use junobuild_shared::types::domain::CustomDomains;
 use junobuild_shared::types::list::{ListParams, ListResults};
+use junobuild_shared::types::state::Controllers;
 use junobuild_storage::constants::{ROOT_404_HTML, ROOT_INDEX_HTML};
 use junobuild_storage::heap_utils::{
     collect_assets_heap, collect_delete_assets_heap, count_assets_heap,
 };
-use junobuild_storage::msg::{ERROR_ASSET_NOT_FOUND, UPLOAD_NOT_ALLOWED};
+use junobuild_storage::msg::{ERROR_ASSET_NOT_FOUND};
 use junobuild_storage::runtime::{
     delete_certified_asset as delete_runtime_certified_asset,
-    increment_and_assert_rate as increment_and_assert_rate_runtime,
     update_certified_asset as update_runtime_certified_asset,
 };
 use junobuild_storage::store::{commit_batch as commit_batch_storage, create_batch, create_chunk};
@@ -391,18 +387,7 @@ fn delete_asset_impl(
     match asset {
         None => Err(ERROR_ASSET_NOT_FOUND.to_string()),
         Some(asset) => {
-            if !assert_permission(
-                &rule.write,
-                asset.key.owner,
-                context.caller,
-                context.controllers,
-            ) {
-                return Err(ERROR_ASSET_NOT_FOUND.to_string());
-            }
-
-            increment_and_assert_rate_runtime(context.collection, &rule.rate_config)?;
-
-            invoke_assert_delete_asset(&context.caller, &asset)?;
+            assert_delete_asset(context, rule, &asset)?;
 
             let deleted = delete_state_asset(context.collection, &full_path, rule);
             delete_runtime_certified_asset(&asset);
@@ -574,12 +559,7 @@ fn secure_create_batch_impl(
 ) -> Result<BatchId, String> {
     let rule = get_state_rule(&init.collection)?;
 
-    if !(public_permission(&rule.write)
-        || is_known_user(caller)
-        || is_controller(caller, controllers))
-    {
-        return Err(UPLOAD_NOT_ALLOWED.to_string());
-    }
+    assert_create_batch(caller, controllers, &rule)?;
 
     create_batch(caller, controllers, config, init, None, &StorageState)
 }

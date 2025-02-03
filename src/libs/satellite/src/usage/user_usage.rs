@@ -3,7 +3,6 @@ use crate::types::state::CollectionType;
 use crate::usage::store::{
     get_user_usage as get_user_usage_store, set_user_usage, update_user_usage,
 };
-use crate::usage::types::interface::ModificationType;
 use crate::usage::types::state::UserUsage;
 use candid::Principal;
 use junobuild_collections::constants::{
@@ -54,7 +53,6 @@ pub fn increase_db_usage(collection: &CollectionKey, user_id: &UserId) {
         collection,
         &CollectionType::Db,
         user_id,
-        &ModificationType::Set,
         None,
     );
 }
@@ -76,7 +74,7 @@ pub fn set_db_usage(
     Ok(usage)
 }
 
-pub fn decrease_db_usage(collection: &CollectionKey, user_id: &UserId) {
+pub fn increase_db_usage_by(collection: &CollectionKey, user_id: &UserId, count: u32) {
     if is_db_collection_no_usage(collection) {
         return;
     }
@@ -85,21 +83,6 @@ pub fn decrease_db_usage(collection: &CollectionKey, user_id: &UserId) {
         collection,
         &CollectionType::Db,
         user_id,
-        &ModificationType::Delete,
-        None,
-    );
-}
-
-pub fn decrease_db_usage_by(collection: &CollectionKey, user_id: &UserId, count: u32) {
-    if is_db_collection_no_usage(collection) {
-        return;
-    }
-
-    update_user_usage(
-        collection,
-        &CollectionType::Db,
-        user_id,
-        &ModificationType::Delete,
         Some(count),
     );
 }
@@ -113,7 +96,6 @@ pub fn increase_storage_usage(collection: &CollectionKey, user_id: &UserId) {
         collection,
         &CollectionType::Storage,
         user_id,
-        &ModificationType::Set,
         None,
     );
 }
@@ -135,7 +117,7 @@ pub fn set_storage_usage(
     Ok(usage)
 }
 
-pub fn decrease_storage_usage(collection: &CollectionKey, user_id: &UserId) {
+pub fn increase_storage_usage_by(collection: &CollectionKey, user_id: &UserId, count: u32) {
     if is_storage_collection_no_usage(collection) {
         return;
     }
@@ -144,21 +126,6 @@ pub fn decrease_storage_usage(collection: &CollectionKey, user_id: &UserId) {
         collection,
         &CollectionType::Storage,
         user_id,
-        &ModificationType::Delete,
-        None,
-    );
-}
-
-pub fn decrease_storage_usage_by(collection: &CollectionKey, user_id: &UserId, count: u32) {
-    if is_storage_collection_no_usage(collection) {
-        return;
-    }
-
-    update_user_usage(
-        collection,
-        &CollectionType::Storage,
-        user_id,
-        &ModificationType::Delete,
         Some(count),
     );
 }

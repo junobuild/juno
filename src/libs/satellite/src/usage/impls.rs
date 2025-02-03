@@ -1,5 +1,4 @@
 use crate::types::state::CollectionType;
-use crate::usage::types::interface::ModificationType;
 use crate::usage::types::state::{UserUsage, UserUsageKey};
 use ic_cdk::api::time;
 use ic_stable_structures::storable::Bound;
@@ -39,9 +38,8 @@ impl UserUsage {
         UserUsage::apply_update(current_user_usage, count)
     }
 
-    pub fn increase_or_decrease(
+    pub fn increment(
         current_user_usage: &Option<UserUsage>,
-        modification: &ModificationType,
         count: Option<u32>,
     ) -> Self {
         let count = count.unwrap_or(1);
@@ -49,11 +47,8 @@ impl UserUsage {
         // User usage for the collection
 
         let items_count: u32 = match current_user_usage {
-            None => 1,
-            Some(current_user_usage) => match modification {
-                ModificationType::Set => current_user_usage.items_count.saturating_add(count),
-                ModificationType::Delete => current_user_usage.items_count.saturating_sub(count),
-            },
+            None => count,
+            Some(current_user_usage) => current_user_usage.changes_count.saturating_add(count),
         };
 
         UserUsage::apply_update(current_user_usage, items_count)
@@ -77,7 +72,7 @@ impl UserUsage {
         let updated_at: Timestamp = now;
 
         UserUsage {
-            items_count,
+            changes_count: items_count,
             created_at,
             updated_at,
             version: Some(version),

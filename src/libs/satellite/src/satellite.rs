@@ -41,9 +41,8 @@ use crate::types::state::{CollectionType, HeapState, RuntimeState, State};
 use crate::usage::types::interface::SetUserUsage;
 use crate::usage::types::state::UserUsage;
 use crate::usage::user_usage::{
-    increase_db_usage_by, increase_storage_usage_by,
-    get_db_usage_by_id, get_storage_usage_by_id, increase_db_usage, increase_storage_usage,
-    set_db_usage, set_storage_usage,
+    get_db_usage_by_id, get_storage_usage_by_id, increase_db_usage, increase_db_usage_by,
+    increase_storage_usage, increase_storage_usage_by, set_db_usage, set_storage_usage,
 };
 use ciborium::{from_reader, into_writer};
 use ic_cdk::api::call::{arg_data, ArgDecoderConfig};

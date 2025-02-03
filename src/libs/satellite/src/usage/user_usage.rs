@@ -49,12 +49,7 @@ pub fn increase_db_usage(collection: &CollectionKey, user_id: &UserId) {
         return;
     }
 
-    update_user_usage(
-        collection,
-        &CollectionType::Db,
-        user_id,
-        None,
-    );
+    update_user_usage(collection, &CollectionType::Db, user_id, None);
 }
 
 pub fn set_db_usage(
@@ -79,12 +74,7 @@ pub fn increase_db_usage_by(collection: &CollectionKey, user_id: &UserId, count:
         return;
     }
 
-    update_user_usage(
-        collection,
-        &CollectionType::Db,
-        user_id,
-        Some(count),
-    );
+    update_user_usage(collection, &CollectionType::Db, user_id, Some(count));
 }
 
 pub fn increase_storage_usage(collection: &CollectionKey, user_id: &UserId) {
@@ -92,12 +82,7 @@ pub fn increase_storage_usage(collection: &CollectionKey, user_id: &UserId) {
         return;
     }
 
-    update_user_usage(
-        collection,
-        &CollectionType::Storage,
-        user_id,
-        None,
-    );
+    update_user_usage(collection, &CollectionType::Storage, user_id, None);
 }
 
 pub fn set_storage_usage(
@@ -122,12 +107,7 @@ pub fn increase_storage_usage_by(collection: &CollectionKey, user_id: &UserId, c
         return;
     }
 
-    update_user_usage(
-        collection,
-        &CollectionType::Storage,
-        user_id,
-        Some(count),
-    );
+    update_user_usage(collection, &CollectionType::Storage, user_id, Some(count));
 }
 
 fn is_db_collection_no_usage(collection: &CollectionKey) -> bool {

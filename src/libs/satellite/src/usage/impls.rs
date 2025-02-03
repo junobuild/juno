@@ -38,10 +38,7 @@ impl UserUsage {
         UserUsage::apply_update(current_user_usage, count)
     }
 
-    pub fn increment(
-        current_user_usage: &Option<UserUsage>,
-        count: Option<u32>,
-    ) -> Self {
+    pub fn increment(current_user_usage: &Option<UserUsage>, count: Option<u32>) -> Self {
         let count = count.unwrap_or(1);
 
         // User usage for the collection

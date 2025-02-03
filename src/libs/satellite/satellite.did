@@ -122,6 +122,7 @@ type RateConfig = record { max_tokens : nat64; time_per_token_ns : nat64 };
 type Rule = record {
   max_capacity : opt nat32;
   memory : opt Memory;
+  max_items_per_user : opt nat32;
   updated_at : nat64;
   max_size : opt nat;
   read : Permission;
@@ -148,6 +149,7 @@ type SetDoc = record {
 type SetRule = record {
   max_capacity : opt nat32;
   memory : opt Memory;
+  max_items_per_user : opt nat32;
   max_size : opt nat;
   read : Permission;
   version : opt nat64;

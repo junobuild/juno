@@ -158,6 +158,7 @@ export interface RateConfig {
 export interface Rule {
 	max_capacity: [] | [number];
 	memory: [] | [Memory];
+	max_items_per_user: [] | [number];
 	updated_at: bigint;
 	max_size: [] | [bigint];
 	read: Permission;
@@ -184,6 +185,7 @@ export interface SetDoc {
 export interface SetRule {
 	max_capacity: [] | [number];
 	memory: [] | [Memory];
+	max_items_per_user: [] | [number];
 	max_size: [] | [bigint];
 	read: Permission;
 	version: [] | [bigint];

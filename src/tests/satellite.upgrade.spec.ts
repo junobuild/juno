@@ -660,6 +660,7 @@ describe('Satellite upgrade', () => {
 			await upgrade();
 
 			const newActor = pic.createActor<SatelliteActor>(idlFactorSatellite, canisterId);
+			newActor.setIdentity(controller);
 
 			const { get_rule } = newActor;
 

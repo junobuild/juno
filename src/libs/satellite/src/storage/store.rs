@@ -13,7 +13,7 @@ use crate::storage::state::{
 use crate::storage::strategy_impls::{StorageAssertions, StorageState, StorageUpload};
 use crate::types::store::StoreContext;
 use candid::Principal;
-use junobuild_collections::assert_stores::{assert_permission};
+use junobuild_collections::assert_stores::assert_permission;
 use junobuild_collections::msg::msg_storage_collection_not_empty;
 use junobuild_collections::types::core::CollectionKey;
 use junobuild_collections::types::rules::{Memory, Rule};
@@ -26,7 +26,7 @@ use junobuild_storage::constants::{ROOT_404_HTML, ROOT_INDEX_HTML};
 use junobuild_storage::heap_utils::{
     collect_assets_heap, collect_delete_assets_heap, count_assets_heap,
 };
-use junobuild_storage::msg::{ERROR_ASSET_NOT_FOUND};
+use junobuild_storage::msg::ERROR_ASSET_NOT_FOUND;
 use junobuild_storage::runtime::{
     delete_certified_asset as delete_runtime_certified_asset,
     update_certified_asset as update_runtime_certified_asset,

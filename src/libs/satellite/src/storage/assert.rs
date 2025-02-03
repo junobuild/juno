@@ -1,17 +1,15 @@
 use crate::hooks::invoke_assert_delete_asset;
 use crate::rules::assert_stores::is_known_user;
 use crate::types::store::StoreContext;
+use crate::usage::assert::increment_and_assert_storage_usage;
 use candid::Principal;
 use junobuild_collections::assert_stores::{assert_permission, public_permission};
 use junobuild_collections::types::rules::Rule;
 use junobuild_shared::controllers::is_controller;
 use junobuild_shared::types::state::Controllers;
 use junobuild_storage::msg::{ERROR_ASSET_NOT_FOUND, UPLOAD_NOT_ALLOWED};
-use junobuild_storage::runtime::{
-    increment_and_assert_rate as increment_and_assert_rate_runtime,
-};
+use junobuild_storage::runtime::increment_and_assert_rate as increment_and_assert_rate_runtime;
 use junobuild_storage::types::store::Asset;
-use crate::usage::assert::{increment_and_assert_db_usage, increment_and_assert_storage_usage};
 
 pub fn assert_create_batch(
     caller: Principal,
@@ -42,7 +40,12 @@ pub fn assert_delete_asset(
         return Err(ERROR_ASSET_NOT_FOUND.to_string());
     }
 
-    increment_and_assert_storage_usage(context.caller, context.controllers, context.collection, rule.max_changes_per_user)?;
+    increment_and_assert_storage_usage(
+        context.caller,
+        context.controllers,
+        context.collection,
+        rule.max_changes_per_user,
+    )?;
 
     increment_and_assert_rate_runtime(context.collection, &rule.rate_config)?;
 

@@ -1,9 +1,9 @@
 use crate::types::state::CollectionType;
 use crate::usage::state::{set_user_usage, update_user_usage};
 use crate::usage::types::state::UserUsage;
+use crate::usage::utils::is_storage_collection_no_usage;
 use junobuild_collections::types::core::CollectionKey;
 use junobuild_shared::types::state::UserId;
-use crate::usage::utils::is_storage_collection_no_usage;
 
 pub fn increase_storage_usage(collection: &CollectionKey, user_id: &UserId) {
     if is_storage_collection_no_usage(collection) {

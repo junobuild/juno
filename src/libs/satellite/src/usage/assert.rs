@@ -15,7 +15,13 @@ pub fn increment_and_assert_db_usage(
         return Ok(());
     }
 
-    increment_and_assert_usage(caller, controllers, collection, &CollectionType::Db, max_changes_per_user)
+    increment_and_assert_usage(
+        caller,
+        controllers,
+        collection,
+        &CollectionType::Db,
+        max_changes_per_user,
+    )
 }
 
 pub fn increment_and_assert_storage_usage(
@@ -28,7 +34,13 @@ pub fn increment_and_assert_storage_usage(
         return Ok(());
     }
 
-    increment_and_assert_usage(caller, controllers, collection, &CollectionType::Storage, max_changes_per_user)
+    increment_and_assert_usage(
+        caller,
+        controllers,
+        collection,
+        &CollectionType::Storage,
+        max_changes_per_user,
+    )
 }
 
 fn increment_and_assert_usage(

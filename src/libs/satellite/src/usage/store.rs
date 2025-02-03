@@ -2,12 +2,12 @@ use crate::get_controllers;
 use crate::types::state::CollectionType;
 use crate::usage::state::{get_user_usage, set_user_usage};
 use crate::usage::types::state::UserUsage;
+use crate::usage::utils::is_db_collection_no_usage;
 use candid::Principal;
 use junobuild_collections::types::core::CollectionKey;
 use junobuild_shared::controllers::is_controller;
 use junobuild_shared::types::state::{Controllers, UserId};
 use junobuild_shared::utils::principal_not_anonymous_and_equal;
-use crate::usage::utils::is_db_collection_no_usage;
 
 pub fn get_db_usage_by_id(
     caller: Principal,

@@ -42,7 +42,7 @@ use crate::usage::types::interface::SetUserUsage;
 use crate::usage::types::state::UserUsage;
 use crate::usage::user_usage::{
     decrease_db_usage, decrease_db_usage_by, decrease_storage_usage, decrease_storage_usage_by,
-    get_db_usage_by_id, get_storage_usage_by_id, increase_db_usage, increase_storage_usage,
+    get_db_usage_by_id, get_storage_usage_by_id, increase_storage_usage,
     set_db_usage, set_storage_usage,
 };
 use ciborium::{from_reader, into_writer};
@@ -131,8 +131,6 @@ pub fn set_doc(collection: CollectionKey, key: Key, doc: SetDoc) -> Doc {
 
     match result {
         Ok(doc) => {
-            increase_db_usage(&collection, &caller);
-
             invoke_on_set_doc(&caller, &doc);
 
             doc.data.after
@@ -203,8 +201,6 @@ pub fn set_many_docs(docs: Vec<(CollectionKey, Key, SetDoc)>) -> Vec<(Key, Doc)>
     for (collection, key, doc) in docs {
         let result = set_doc_store(caller, collection.clone(), key.clone(), doc)
             .unwrap_or_else(|e| trap(&e));
-
-        increase_db_usage(&collection, &caller);
 
         results.push((result.key.clone(), result.data.after.clone()));
 

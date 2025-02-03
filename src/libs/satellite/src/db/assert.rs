@@ -5,6 +5,7 @@ use crate::db::types::state::{DocAssertDelete, DocAssertSet, DocContext};
 use crate::hooks::{invoke_assert_delete_doc, invoke_assert_set_doc};
 use crate::rules::assert_stores::assert_user_collection_caller_key;
 use crate::types::store::StoreContext;
+use crate::usage::user_usage::increment_and_assert_db_usage;
 use crate::{DelDoc, Doc, SetDoc};
 use candid::Principal;
 use junobuild_collections::assert_stores::{
@@ -48,6 +49,8 @@ pub fn assert_set_doc(
             },
         },
     )?;
+
+    increment_and_assert_db_usage(caller, controllers, collection, rule.max_items_per_user)?;
 
     increment_and_assert_rate(collection, &rule.rate_config)?;
 

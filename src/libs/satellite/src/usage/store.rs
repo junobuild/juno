@@ -26,7 +26,7 @@ pub fn update_user_usage(
     user_id: &UserId,
     modification: &ModificationType,
     count: Option<u32>,
-) {
+) -> UserUsage {
     STATE.with(|state| {
         update_user_usage_impl(
             collection_key,
@@ -74,14 +74,16 @@ fn update_user_usage_impl(
     modification: &ModificationType,
     count: Option<u32>,
     state: &mut UserUsageStable,
-) {
+) -> UserUsage {
     let key = UserUsageKey::create(user_id, collection_key, collection_type);
 
     let current_usage = state.get(&key);
 
     let update_usage = UserUsage::increase_or_decrease(&current_usage, modification, count);
 
-    state.insert(key, update_usage);
+    state.insert(key, update_usage.clone());
+
+    update_usage
 }
 
 fn set_user_usage_impl(

@@ -7,9 +7,7 @@ use junobuild_collections::types::rules::Rule;
 use junobuild_shared::controllers::is_controller;
 use junobuild_shared::types::state::Controllers;
 use junobuild_storage::msg::{ERROR_ASSET_NOT_FOUND, UPLOAD_NOT_ALLOWED};
-use junobuild_storage::runtime::{
-    increment_and_assert_rate as increment_and_assert_rate_runtime,
-};
+use junobuild_storage::runtime::increment_and_assert_rate as increment_and_assert_rate_runtime;
 use junobuild_storage::types::store::Asset;
 use crate::usage::assert::{increment_and_assert_db_usage, increment_and_assert_storage_usage};
 
@@ -46,7 +44,7 @@ pub fn assert_delete_asset(
 
     increment_and_assert_rate_runtime(context.collection, &rule.rate_config)?;
 
-    invoke_assert_delete_asset(&context.caller, &asset)?;
+    invoke_assert_delete_asset(&context.caller, asset)?;
 
     Ok(())
 }

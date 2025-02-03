@@ -7,7 +7,7 @@ pub fn increment_and_assert_db_usage(
     caller: UserId,
     controllers: &Controllers,
     collection: &CollectionKey,
-    max_items_per_user: Option<u32>,
+    max_changes_per_user: Option<u32>,
 ) -> Result<(), String> {
     if is_db_collection_no_usage(collection) {
         return Ok(());
@@ -20,8 +20,8 @@ pub fn increment_and_assert_db_usage(
 
     let user_usage = increase_db_usage(collection, &caller);
 
-    if let Some(max_items_per_user) = max_items_per_user {
-        if user_usage.changes_count > max_items_per_user {
+    if let Some(max_changes_per_user) = max_changes_per_user {
+        if user_usage.changes_count > max_changes_per_user {
             return Err("Documents limit reached.".to_string());
         }
     }

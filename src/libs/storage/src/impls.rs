@@ -45,7 +45,7 @@ impl StorageHeapState {
                             mutable_permissions: Some(rule.mutable_permissions.unwrap_or(false)),
                             max_size: rule.max_size,
                             max_capacity: rule.max_capacity,
-                            max_items_per_user: rule.max_items_per_user,
+                            max_changes_per_user: rule.max_changes_per_user,
                             created_at: now,
                             updated_at: now,
                             version: rule.version,

@@ -29,7 +29,7 @@ pub mod rules {
         pub memory: Option<Memory>,
         pub max_size: Option<u128>,
         pub max_capacity: Option<u32>,
-        pub max_items_per_user: Option<u32>,
+        pub max_changes_per_user: Option<u32>,
         pub created_at: Timestamp,
         pub updated_at: Timestamp,
         pub version: Option<Version>,
@@ -74,7 +74,7 @@ pub mod interface {
         pub memory: Option<Memory>,
         pub max_size: Option<u128>,
         pub max_capacity: Option<u32>,
-        pub max_items_per_user: Option<u32>,
+        pub max_changes_per_user: Option<u32>,
         pub version: Option<Version>,
         pub rate_config: Option<RateConfig>,
     }

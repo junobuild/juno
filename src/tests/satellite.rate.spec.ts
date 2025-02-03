@@ -170,7 +170,7 @@ describe('Satellite rate', () => {
 			memory: nonNullish(rule) ? rule.memory : toNullable(),
 			max_size: toNullable(),
 			max_capacity: toNullable(),
-			max_items_per_user: toNullable(),
+			max_changes_per_user: toNullable(),
 			read: { Public: null },
 			mutable_permissions: toNullable(true),
 			write: { Public: null },

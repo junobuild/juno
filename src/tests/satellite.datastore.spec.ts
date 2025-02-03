@@ -50,7 +50,7 @@ describe.each([{ memory: { Heap: null } }, { memory: { Stable: null } }])(
 				write: { Managed: null },
 				version: toNullable(),
 				rate_config: toNullable(),
-				max_items_per_user: toNullable()
+				max_changes_per_user: toNullable()
 			};
 
 			const { set_rule } = actor;
@@ -593,7 +593,7 @@ describe.each([{ memory: { Heap: null } }, { memory: { Stable: null } }])(
 				write: { Managed: null },
 				version: toNullable(),
 				rate_config: toNullable(),
-				max_items_per_user: toNullable()
+				max_changes_per_user: toNullable()
 			};
 
 			beforeAll(() => {
@@ -756,7 +756,7 @@ describe.each([{ memory: { Heap: null } }, { memory: { Stable: null } }])(
 				version: toNullable(),
 				max_capacity: toNullable(),
 				rate_config: toNullable(),
-				max_items_per_user: toNullable()
+				max_changes_per_user: toNullable()
 			};
 
 			beforeAll(() => {

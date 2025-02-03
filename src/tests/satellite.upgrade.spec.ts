@@ -641,7 +641,7 @@ describe('Satellite upgrade', () => {
 			actor.setIdentity(controller);
 		});
 
-		it('should still migrate rules with none max_items_per_users', async () => {
+		it('should still migrate rules with none max_changes_per_users', async () => {
 			const { set_rule } = actor;
 
 			const collection = 'test_migration';
@@ -678,7 +678,7 @@ describe('Satellite upgrade', () => {
 				read,
 				write,
 				version,
-				max_items_per_user
+				max_changes_per_user
 			} = rule;
 
 			expect(memory).toEqual(toNullable({ Heap: null }));
@@ -689,7 +689,7 @@ describe('Satellite upgrade', () => {
 			expect(updated_at).toBeGreaterThan(0n);
 			expect(fromNullable(version)).toEqual(1n);
 
-			expect(fromNullable(max_items_per_user)).toBeUndefined();
+			expect(fromNullable(max_changes_per_user)).toBeUndefined();
 		});
 	});
 });

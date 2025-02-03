@@ -42,6 +42,7 @@ describe('Satellite', () => {
 		memory: toNullable(),
 		max_size: toNullable(),
 		max_capacity: toNullable(),
+		max_items_per_user: toNullable(),
 		read: { Managed: null },
 		mutable_permissions: toNullable(),
 		write: { Managed: null },
@@ -53,6 +54,7 @@ describe('Satellite', () => {
 		memory: toNullable(),
 		max_size: toNullable(123n),
 		max_capacity: toNullable(456),
+		max_items_per_user: toNullable(999),
 		read: { Private: null },
 		mutable_permissions: toNullable(false),
 		write: { Private: null },
@@ -219,6 +221,7 @@ describe('Satellite', () => {
 				const {
 					max_capacity,
 					max_size,
+					max_items_per_user,
 					mutable_permissions,
 					rate_config,
 					version,
@@ -237,6 +240,7 @@ describe('Satellite', () => {
 				expect(max_size).toEqual(setRuleWithValues.max_size);
 				expect(mutable_permissions).toEqual(setRuleWithValues.mutable_permissions);
 				expect(rate_config).toEqual(setRuleWithValues.rate_config);
+				expect(max_items_per_user).toEqual(setRuleWithValues.max_items_per_user);
 			});
 
 			it('should create and update a collection', async () => {

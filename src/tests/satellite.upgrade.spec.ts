@@ -9,11 +9,19 @@ import type {
 	SetRule as SetRule0_0_17
 } from '$declarations/deprecated/satellite-0-0-17.did';
 import { idlFactory as idlFactorSatellite_0_0_17 } from '$declarations/deprecated/satellite-0-0-17.factory.did';
-import type { SetDoc } from '$declarations/satellite/satellite.did';
+import type { _SERVICE as SatelliteActor_0_0_21 } from '$declarations/deprecated/satellite-0-0-21.did';
+import { idlFactory as idlFactorSatellite_0_0_21 } from '$declarations/deprecated/satellite-0-0-21.factory.did';
+import type { _SERVICE as SatelliteActor, SetDoc } from '$declarations/satellite/satellite.did';
+import { idlFactory as idlFactorSatellite } from '$declarations/satellite/satellite.factory.did';
 import type { Identity } from '@dfinity/agent';
 import { Ed25519KeyIdentity } from '@dfinity/identity';
 import type { Principal } from '@dfinity/principal';
-import { arrayBufferToUint8Array, fromNullable, toNullable } from '@dfinity/utils';
+import {
+	arrayBufferToUint8Array,
+	assertNonNullish,
+	fromNullable,
+	toNullable
+} from '@dfinity/utils';
 import { PocketIc, type Actor } from '@hadronous/pic';
 import { toArray } from '@junobuild/utils';
 import { nanoid } from 'nanoid';
@@ -29,7 +37,6 @@ import {
 
 describe('Satellite upgrade', () => {
 	let pic: PocketIc;
-	let actor: Actor<SatelliteActor_0_0_16>;
 	let canisterId: Principal;
 
 	const controller = Ed25519KeyIdentity.generate();
@@ -60,7 +67,7 @@ describe('Satellite upgrade', () => {
 		});
 	};
 
-	const initUsers = async (): Promise<Identity[]> => {
+	const initUsers = async (actor: Actor<SatelliteActor_0_0_16>): Promise<Identity[]> => {
 		const { set_doc } = actor;
 
 		const user1 = Ed25519KeyIdentity.generate();
@@ -86,7 +93,13 @@ describe('Satellite upgrade', () => {
 		return [user1, user2];
 	};
 
-	const testUsers = async (users: Identity[]) => {
+	const testUsers = async ({
+		users,
+		actor
+	}: {
+		users: Identity[];
+		actor: Actor<SatelliteActor_0_0_16 | SatelliteActor_0_0_17 | SatelliteActor_0_0_21>;
+	}) => {
 		const { list_docs } = actor;
 
 		const { items } = await list_docs('#user', {
@@ -104,6 +117,8 @@ describe('Satellite upgrade', () => {
 	};
 
 	describe('v0.0.15 -> v0.0.16', () => {
+		let actor: Actor<SatelliteActor_0_0_16>;
+
 		beforeEach(async () => {
 			pic = await PocketIc.create(inject('PIC_URL'));
 
@@ -127,17 +142,17 @@ describe('Satellite upgrade', () => {
 				timeout: 120000
 			},
 			async () => {
-				await initUsers();
+				await initUsers(actor);
 
-				const users = await initUsers();
+				const users = await initUsers(actor);
 
-				await testUsers(users);
+				await testUsers({ users, actor });
 
 				await upgradeVersion('0.0.16');
 
-				const moreUsers = await initUsers();
+				const moreUsers = await initUsers(actor);
 
-				await testUsers([...users, ...moreUsers]);
+				await testUsers({ users: [...users, ...moreUsers], actor });
 			}
 		);
 
@@ -172,6 +187,8 @@ describe('Satellite upgrade', () => {
 	});
 
 	describe('v0.0.11 -> v0.0.17', () => {
+		let actor: Actor<SatelliteActor_0_0_16>;
+
 		beforeEach(async () => {
 			pic = await PocketIc.create(inject('PIC_URL'));
 
@@ -190,43 +207,45 @@ describe('Satellite upgrade', () => {
 		});
 
 		it('should still list users from heap', { timeout: 600000 }, async () => {
-			await initUsers();
+			await initUsers(actor);
 
-			const users = await initUsers();
+			const users = await initUsers(actor);
 
-			await testUsers(users);
+			await testUsers({ users, actor });
 
 			await upgradeVersion('0.0.12');
 
-			await testUsers(users);
+			await testUsers({ users, actor });
 
 			await upgradeVersion('0.0.13');
 
-			await testUsers(users);
+			await testUsers({ users, actor });
 
 			await upgradeVersion('0.0.14');
 
-			await testUsers(users);
+			await testUsers({ users, actor });
 
 			await upgradeVersion('0.0.15');
 
-			await testUsers(users);
+			await testUsers({ users, actor });
 
 			await upgradeVersion('0.0.16');
 
-			await testUsers(users);
+			await testUsers({ users, actor });
 
 			await upgradeVersion('0.0.17');
 
-			await testUsers(users);
+			await testUsers({ users, actor });
 
 			await upgrade();
 
-			await testUsers(users);
+			await testUsers({ users, actor });
 		});
 	});
 
 	describe('v0.0.16 -> v0.0.16', () => {
+		let actor: Actor<SatelliteActor_0_0_16>;
+
 		beforeEach(async () => {
 			pic = await PocketIc.create(inject('PIC_URL'));
 
@@ -245,19 +264,21 @@ describe('Satellite upgrade', () => {
 		});
 
 		it('should keep users', async () => {
-			await initUsers();
+			await initUsers(actor);
 
-			const users = await initUsers();
+			const users = await initUsers(actor);
 
-			await testUsers(users);
+			await testUsers({ users, actor });
 
 			await upgradeVersion('0.0.16');
 
-			await testUsers(users);
+			await testUsers({ users, actor });
 		});
 	});
 
 	describe('v0.0.16 -> v0.0.17', () => {
+		let actor: Actor<SatelliteActor_0_0_16>;
+
 		beforeEach(async () => {
 			pic = await PocketIc.create(inject('PIC_URL'));
 
@@ -564,6 +585,8 @@ describe('Satellite upgrade', () => {
 	});
 
 	describe('v0.0.20 -> v0.0.21', () => {
+		let actor: Actor<SatelliteActor_0_0_16>;
+
 		beforeEach(async () => {
 			pic = await PocketIc.create(inject('PIC_URL'));
 
@@ -582,7 +605,7 @@ describe('Satellite upgrade', () => {
 		});
 
 		it('should not populate an index HTML file', async () => {
-			await upgrade();
+			await upgradeVersion('0.0.21');
 
 			const { http_request } = actor;
 
@@ -595,6 +618,77 @@ describe('Satellite upgrade', () => {
 			});
 
 			expect(status_code).toBe(404);
+		});
+	});
+
+	describe('v0.0.21 -> v0.0.22', () => {
+		let actor: Actor<SatelliteActor_0_0_21>;
+
+		beforeEach(async () => {
+			pic = await PocketIc.create(inject('PIC_URL'));
+
+			const destination = await downloadSatellite('0.0.21');
+
+			const { actor: c, canisterId: cId } = await pic.setupCanister<SatelliteActor_0_0_21>({
+				idlFactory: idlFactorSatellite_0_0_21,
+				wasm: destination,
+				arg: controllersInitArgs(controller),
+				sender: controller.getPrincipal()
+			});
+
+			actor = c;
+			canisterId = cId;
+			actor.setIdentity(controller);
+		});
+
+		it('should still migrate rules with none max_items_per_users', async () => {
+			const { set_rule } = actor;
+
+			const collection = 'test_migration';
+
+			await set_rule({ Db: null }, collection, {
+				memory: toNullable({ Heap: null }),
+				version: toNullable(),
+				max_size: toNullable(),
+				read: { Managed: null },
+				mutable_permissions: toNullable(),
+				write: { Public: null },
+				max_capacity: toNullable(),
+				rate_config: toNullable()
+			});
+
+			await upgrade();
+
+			const newActor = pic.createActor<SatelliteActor>(idlFactorSatellite, canisterId);
+
+			const { get_rule } = newActor;
+
+			const result = await get_rule({ Db: null }, collection);
+
+			const rule = fromNullable(result);
+
+			assertNonNullish(rule);
+
+			const {
+				updated_at,
+				created_at,
+				memory,
+				mutable_permissions,
+				read,
+				write,
+				version,
+				max_items_per_user
+			} = rule;
+
+			expect(memory).toEqual(toNullable({ Heap: null }));
+			expect(read).toEqual({ Managed: null });
+			expect(write).toEqual({ Public: null });
+			expect(mutable_permissions).toEqual([true]);
+			expect(created_at).toBeGreaterThan(0n);
+			expect(updated_at).toBeGreaterThan(0n);
+			expect(fromNullable(version)).toEqual(1n);
+
+			expect(fromNullable(max_items_per_user)).toBeUndefined();
 		});
 	});
 });

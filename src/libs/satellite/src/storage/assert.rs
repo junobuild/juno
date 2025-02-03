@@ -11,6 +11,7 @@ use junobuild_storage::runtime::{
     increment_and_assert_rate as increment_and_assert_rate_runtime,
 };
 use junobuild_storage::types::store::Asset;
+use crate::usage::assert::{increment_and_assert_db_usage, increment_and_assert_storage_usage};
 
 pub fn assert_create_batch(
     caller: Principal,
@@ -40,6 +41,8 @@ pub fn assert_delete_asset(
     ) {
         return Err(ERROR_ASSET_NOT_FOUND.to_string());
     }
+
+    increment_and_assert_storage_usage(context.caller, context.controllers, context.collection, rule.max_changes_per_user)?;
 
     increment_and_assert_rate_runtime(context.collection, &rule.rate_config)?;
 

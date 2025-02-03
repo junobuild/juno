@@ -42,6 +42,7 @@ export const setRule = async ({
 		version: isNullish(rule) ? [] : rule.version,
 		max_size: toNullable(nonNullish(maxSize) && maxSize > 0 ? BigInt(maxSize) : undefined),
 		max_capacity: toNullable(nonNullish(maxCapacity) && maxCapacity > 0 ? maxCapacity : undefined),
+		max_items_per_user: toNullable(),
 		memory: isNullish(rule)
 			? [memoryFromText(memory)]
 			: [fromNullable(rule.memory) ?? MemoryStable],

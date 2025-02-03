@@ -111,7 +111,7 @@ describe('Satellite User Usage', () => {
 
 				assertNonNullish(usage);
 
-				expect(usage.items_count).toEqual(countSetDocs);
+				expect(usage.changes_count).toEqual(countSetDocs);
 
 				expect(usage.updated_at).not.toBeUndefined();
 				expect(usage.updated_at).toBeGreaterThan(0n);
@@ -149,7 +149,7 @@ describe('Satellite User Usage', () => {
 
 				assertNonNullish(usage);
 
-				expect(usage.items_count).toEqual(countSetManyDocs + countSetDocs);
+				expect(usage.changes_count).toEqual(countSetManyDocs + countSetDocs);
 				expect(usage.version).toEqual(toNullable(BigInt(countSetManyDocs + countSetDocs)));
 			});
 
@@ -174,7 +174,7 @@ describe('Satellite User Usage', () => {
 
 				assertNonNullish(usage);
 
-				expect(usage.items_count).toEqual(countSetManyDocs + countSetDocs - countDelDoc);
+				expect(usage.changes_count).toEqual(countSetManyDocs + countSetDocs + countDelDoc);
 				expect(usage.version).toEqual(
 					toNullable(BigInt(countSetManyDocs + countSetDocs + countDelDoc))
 				);
@@ -205,8 +205,8 @@ describe('Satellite User Usage', () => {
 
 				assertNonNullish(usage);
 
-				expect(usage.items_count).toEqual(
-					countSetManyDocs + countSetDocs - countDelDoc - countDelManyDocs
+				expect(usage.changes_count).toEqual(
+					countSetManyDocs + countSetDocs + countDelDoc + countDelManyDocs
 				);
 				expect(usage.version).toEqual(
 					toNullable(BigInt(countSetManyDocs + countSetDocs + countDelDoc + countDelManyDocs))
@@ -227,9 +227,13 @@ describe('Satellite User Usage', () => {
 				assertNonNullish(usage);
 
 				countTotalTestVersion =
-					countSetManyDocs + countSetDocs + countDelDoc + countDelManyDocs + 1;
+					countSetManyDocs + countSetDocs + countDelDoc + countDelManyDocs + 1; // + 1 for del_filtered_docs
 
-				expect(usage.items_count).toEqual(0);
+				const countRemainingDocs = countSetManyDocs + countSetDocs - countDelDoc - countDelManyDocs;
+
+				expect(usage.changes_count).toEqual(
+					countSetManyDocs + countSetDocs + countDelDoc + countDelManyDocs + countRemainingDocs
+				);
 				expect(usage.version).toEqual(toNullable(BigInt(countTotalTestVersion)));
 			});
 		});
@@ -258,7 +262,7 @@ describe('Satellite User Usage', () => {
 
 				assertNonNullish(usage);
 
-				expect(usage.items_count).toEqual(1);
+				expect(usage.changes_count).toEqual(1);
 
 				const user2 = Ed25519KeyIdentity.generate();
 
@@ -276,7 +280,7 @@ describe('Satellite User Usage', () => {
 
 				assertNonNullish(usage);
 
-				expect(usage.items_count).toEqual(1);
+				expect(usage.changes_count).toEqual(1);
 			});
 
 			it('should throw errors on set usage', async () => {
@@ -286,7 +290,7 @@ describe('Satellite User Usage', () => {
 
 				await expect(
 					set_user_usage(TEST_COLLECTION, COLLECTION_TYPE, user1.getPrincipal(), {
-						items_count: 345
+						changes_count: 345
 					})
 				).rejects.toThrow(SATELLITE_ADMIN_ERROR_MSG);
 			});
@@ -325,10 +329,10 @@ describe('Satellite User Usage', () => {
 				const { set_user_usage } = actor;
 
 				const usage = await set_user_usage(TEST_COLLECTION, COLLECTION_TYPE, user.getPrincipal(), {
-					items_count: 345
+					changes_count: 345
 				});
 
-				expect(usage.items_count).toEqual(345);
+				expect(usage.changes_count).toEqual(345);
 
 				expect(usage.updated_at).not.toBeUndefined();
 				expect(usage.updated_at).toBeGreaterThan(0n);
@@ -401,7 +405,7 @@ describe('Satellite User Usage', () => {
 
 				assertNonNullish(usage);
 
-				expect(usage.items_count).toEqual(countUploadAssets);
+				expect(usage.changes_count).toEqual(countUploadAssets);
 
 				expect(usage.updated_at).not.toBeUndefined();
 				expect(usage.updated_at).toBeGreaterThan(0n);
@@ -431,7 +435,7 @@ describe('Satellite User Usage', () => {
 
 				assertNonNullish(usage);
 
-				expect(usage.items_count).toEqual(countUploadAssets - countDelAsset);
+				expect(usage.changes_count).toEqual(countUploadAssets + countDelAsset);
 				expect(usage.version).toEqual(toNullable(BigInt(countUploadAssets + countDelAsset)));
 			});
 
@@ -457,7 +461,7 @@ describe('Satellite User Usage', () => {
 
 				assertNonNullish(usage);
 
-				expect(usage.items_count).toEqual(countUploadAssets - countDelAsset - countDelManyAssets);
+				expect(usage.changes_count).toEqual(countUploadAssets + countDelAsset + countDelManyAssets);
 				expect(usage.version).toEqual(
 					toNullable(BigInt(countUploadAssets + countDelAsset + countDelManyAssets))
 				);
@@ -476,9 +480,13 @@ describe('Satellite User Usage', () => {
 
 				assertNonNullish(usage);
 
-				countTotalTestVersion = countUploadAssets + countDelAsset + countDelManyAssets + 1;
+				countTotalTestVersion = countUploadAssets + countDelAsset + countDelManyAssets + 1; // + 1 for del_filtered_assets
 
-				expect(usage.items_count).toEqual(0);
+				const countRemainingAssets = countUploadAssets - countDelAsset - countDelManyAssets;
+
+				expect(usage.changes_count).toEqual(
+					countUploadAssets + countDelAsset + countDelManyAssets + countRemainingAssets
+				);
 				expect(usage.version).toEqual(toNullable(BigInt(countTotalTestVersion)));
 			});
 		});
@@ -509,7 +517,7 @@ describe('Satellite User Usage', () => {
 
 				assertNonNullish(usage);
 
-				expect(usage.items_count).toEqual(1);
+				expect(usage.changes_count).toEqual(1);
 
 				const user2 = Ed25519KeyIdentity.generate();
 
@@ -528,7 +536,7 @@ describe('Satellite User Usage', () => {
 
 				assertNonNullish(usage);
 
-				expect(usage.items_count).toEqual(1);
+				expect(usage.changes_count).toEqual(1);
 			});
 
 			it('should throw errors on set usage', async () => {
@@ -538,7 +546,7 @@ describe('Satellite User Usage', () => {
 
 				await expect(
 					set_user_usage(TEST_COLLECTION, COLLECTION_TYPE, user1.getPrincipal(), {
-						items_count: 345
+						changes_count: 345
 					})
 				).rejects.toThrow(SATELLITE_ADMIN_ERROR_MSG);
 			});
@@ -579,10 +587,10 @@ describe('Satellite User Usage', () => {
 				const { set_user_usage } = actor;
 
 				const usage = await set_user_usage(TEST_COLLECTION, COLLECTION_TYPE, user.getPrincipal(), {
-					items_count: 456
+					changes_count: 456
 				});
 
-				expect(usage.items_count).toEqual(456);
+				expect(usage.changes_count).toEqual(456);
 
 				expect(usage.updated_at).not.toBeUndefined();
 				expect(usage.updated_at).toBeGreaterThan(0n);

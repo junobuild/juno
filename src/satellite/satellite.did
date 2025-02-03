@@ -159,7 +159,7 @@ type SetRule = record {
   rate_config : opt RateConfig;
   write : Permission;
 };
-type SetUserUsage = record { items_count : nat32 };
+type SetUserUsage = record { changes_count : nat32 };
 type StorageConfig = record {
   iframe : opt StorageConfigIFrame;
   rewrites : vec record { text; text };
@@ -206,7 +206,7 @@ type UserUsage = record {
   updated_at : nat64;
   created_at : nat64;
   version : opt nat64;
-  items_count : nat32;
+  changes_count : nat32;
 };
 service : () -> {
   commit_asset_upload : (CommitBatch) -> ();

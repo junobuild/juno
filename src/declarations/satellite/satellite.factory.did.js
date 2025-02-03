@@ -150,7 +150,7 @@ export const idlFactory = ({ IDL }) => {
 		updated_at: IDL.Nat64,
 		created_at: IDL.Nat64,
 		version: IDL.Opt(IDL.Nat64),
-		items_count: IDL.Nat32
+		changes_count: IDL.Nat32
 	});
 	const HttpRequest = IDL.Record({
 		url: IDL.Text,
@@ -239,7 +239,7 @@ export const idlFactory = ({ IDL }) => {
 		rate_config: IDL.Opt(RateConfig),
 		write: Permission
 	});
-	const SetUserUsage = IDL.Record({ items_count: IDL.Nat32 });
+	const SetUserUsage = IDL.Record({ changes_count: IDL.Nat32 });
 	const UploadChunk = IDL.Record({
 		content: IDL.Vec(IDL.Nat8),
 		batch_id: IDL.Nat,

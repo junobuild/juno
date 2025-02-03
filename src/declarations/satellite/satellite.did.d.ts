@@ -194,7 +194,7 @@ export interface SetRule {
 	write: Permission;
 }
 export interface SetUserUsage {
-	items_count: number;
+	changes_count: number;
 }
 export interface StorageConfig {
 	iframe: [] | [StorageConfigIFrame];
@@ -246,7 +246,7 @@ export interface UserUsage {
 	updated_at: bigint;
 	created_at: bigint;
 	version: [] | [bigint];
-	items_count: number;
+	changes_count: number;
 }
 export interface _SERVICE {
 	build_version: ActorMethod<[], string>;

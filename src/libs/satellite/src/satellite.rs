@@ -41,9 +41,8 @@ use crate::types::state::{CollectionType, HeapState, RuntimeState, State};
 use crate::usage::types::interface::SetUserUsage;
 use crate::usage::types::state::UserUsage;
 use crate::usage::user_usage::{
-    decrease_db_usage, decrease_db_usage_by, decrease_storage_usage, decrease_storage_usage_by,
-    get_db_usage_by_id, get_storage_usage_by_id, increase_db_usage, increase_storage_usage,
-    set_db_usage, set_storage_usage,
+    get_db_usage_by_id, get_storage_usage_by_id, increase_db_usage, increase_db_usage_by,
+    increase_storage_usage, increase_storage_usage_by, set_db_usage, set_storage_usage,
 };
 use ciborium::{from_reader, into_writer};
 use ic_cdk::api::call::{arg_data, ArgDecoderConfig};
@@ -158,7 +157,7 @@ pub fn del_doc(collection: CollectionKey, key: Key, doc: DelDoc) {
     let deleted_doc =
         delete_doc_store(caller, collection.clone(), key, doc).unwrap_or_else(|e| trap(&e));
 
-    decrease_db_usage(&collection, &caller);
+    increase_db_usage(&collection, &caller);
 
     invoke_on_delete_doc(&caller, &deleted_doc);
 }
@@ -225,7 +224,7 @@ pub fn del_many_docs(docs: Vec<(CollectionKey, Key, DelDoc)>) {
         let deleted_doc = delete_doc_store(caller, collection.clone(), key.clone(), doc)
             .unwrap_or_else(|e| trap(&e));
 
-        decrease_db_usage(&collection, &caller);
+        increase_db_usage(&collection, &caller);
 
         results.push(deleted_doc);
     }
@@ -239,7 +238,7 @@ pub fn del_filtered_docs(collection: CollectionKey, filter: ListParams) {
     let results = delete_filtered_docs_store(caller, collection.clone(), &filter)
         .unwrap_or_else(|e| trap(&e));
 
-    decrease_db_usage_by(&collection, &caller, results.len() as u32);
+    increase_db_usage_by(&collection, &caller, results.len() as u32);
 
     invoke_on_delete_filtered_docs(&caller, &results);
 }
@@ -482,7 +481,7 @@ pub fn del_asset(collection: CollectionKey, full_path: FullPath) {
 
     match result {
         Ok(asset) => {
-            decrease_storage_usage(&collection, &caller);
+            increase_storage_usage(&collection, &caller);
 
             invoke_on_delete_asset(&caller, &asset)
         }
@@ -499,7 +498,7 @@ pub fn del_many_assets(assets: Vec<(CollectionKey, String)>) {
         let deleted_asset =
             delete_asset_store(caller, &collection, full_path).unwrap_or_else(|e| trap(&e));
 
-        decrease_storage_usage(&collection, &caller);
+        increase_storage_usage(&collection, &caller);
 
         results.push(deleted_asset);
     }
@@ -513,7 +512,7 @@ pub fn del_filtered_assets(collection: CollectionKey, filter: ListParams) {
     let results = delete_filtered_assets_store(caller, collection.clone(), &filter)
         .unwrap_or_else(|e| trap(&e));
 
-    decrease_storage_usage_by(&collection, &caller, results.len() as u32);
+    increase_storage_usage_by(&collection, &caller, results.len() as u32);
 
     invoke_on_delete_filtered_assets(&caller, &results);
 }
@@ -585,10 +584,10 @@ pub fn set_user_usage(
 ) -> UserUsage {
     match collection_type {
         CollectionType::Db => {
-            set_db_usage(collection, user_id, usage.items_count).unwrap_or_else(|e| trap(&e))
+            set_db_usage(collection, user_id, usage.changes_count).unwrap_or_else(|e| trap(&e))
         }
         CollectionType::Storage => {
-            set_storage_usage(collection, user_id, usage.items_count).unwrap_or_else(|e| trap(&e))
+            set_storage_usage(collection, user_id, usage.changes_count).unwrap_or_else(|e| trap(&e))
         }
     }
 }

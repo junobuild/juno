@@ -1,7 +1,7 @@
+use crate::usage::user_usage::{increase_db_usage, is_db_collection_no_usage};
 use junobuild_collections::types::core::CollectionKey;
 use junobuild_shared::controllers::is_controller;
 use junobuild_shared::types::state::{Controllers, UserId};
-use crate::usage::user_usage::{increase_db_usage, is_db_collection_no_usage};
 
 pub fn increment_and_assert_db_usage(
     caller: UserId,
@@ -22,7 +22,7 @@ pub fn increment_and_assert_db_usage(
 
     if let Some(max_changes_per_user) = max_changes_per_user {
         if user_usage.changes_count > max_changes_per_user {
-            return Err("Documents limit reached.".to_string());
+            return Err("Document changes limit reached.".to_string());
         }
     }
 

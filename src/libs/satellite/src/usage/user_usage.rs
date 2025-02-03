@@ -45,12 +45,7 @@ fn get_user_usage_by_id(
 }
 
 pub fn increase_db_usage(collection: &CollectionKey, user_id: &UserId) -> UserUsage {
-    update_user_usage(
-        collection,
-        &CollectionType::Db,
-        user_id,
-        None,
-    )
+    update_user_usage(collection, &CollectionType::Db, user_id, None)
 }
 
 pub fn set_db_usage(
@@ -70,43 +65,12 @@ pub fn set_db_usage(
     Ok(usage)
 }
 
-pub fn decrease_db_usage(collection: &CollectionKey, user_id: &UserId) {
-    if is_db_collection_no_usage(collection) {
-        return;
-    }
-
-    update_user_usage(
-        collection,
-        &CollectionType::Db,
-        user_id,
-        None,
-    );
-}
-
-pub fn decrease_db_usage_by(collection: &CollectionKey, user_id: &UserId, count: u32) {
-    if is_db_collection_no_usage(collection) {
-        return;
-    }
-
-    update_user_usage(
-        collection,
-        &CollectionType::Db,
-        user_id,
-        Some(count),
-    );
-}
-
 pub fn increase_storage_usage(collection: &CollectionKey, user_id: &UserId) {
     if is_storage_collection_no_usage(collection) {
         return;
     }
 
-    update_user_usage(
-        collection,
-        &CollectionType::Storage,
-        user_id,
-        None,
-    );
+    update_user_usage(collection, &CollectionType::Storage, user_id, None);
 }
 
 pub fn set_storage_usage(
@@ -131,12 +95,7 @@ pub fn decrease_storage_usage(collection: &CollectionKey, user_id: &UserId) {
         return;
     }
 
-    update_user_usage(
-        collection,
-        &CollectionType::Storage,
-        user_id,
-        None,
-    );
+    update_user_usage(collection, &CollectionType::Storage, user_id, None);
 }
 
 pub fn decrease_storage_usage_by(collection: &CollectionKey, user_id: &UserId, count: u32) {
@@ -144,12 +103,7 @@ pub fn decrease_storage_usage_by(collection: &CollectionKey, user_id: &UserId, c
         return;
     }
 
-    update_user_usage(
-        collection,
-        &CollectionType::Storage,
-        user_id,
-        Some(count),
-    );
+    update_user_usage(collection, &CollectionType::Storage, user_id, Some(count));
 }
 
 pub fn is_db_collection_no_usage(collection: &CollectionKey) -> bool {

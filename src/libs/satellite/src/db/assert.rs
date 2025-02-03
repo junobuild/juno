@@ -84,6 +84,8 @@ pub fn assert_delete_doc(
         },
     )?;
 
+    increment_and_assert_db_usage(caller, controllers, collection, rule.max_changes_per_user)?;
+
     increment_and_assert_rate(collection, &rule.rate_config)?;
 
     Ok(())

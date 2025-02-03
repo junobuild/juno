@@ -1,6 +1,6 @@
 use crate::get_controllers;
 use crate::types::state::CollectionType;
-use crate::usage::store::{
+use crate::usage::state::{
     get_user_usage as get_user_usage_store, set_user_usage, update_user_usage,
 };
 use crate::usage::types::state::UserUsage;

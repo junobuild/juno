@@ -1,5 +1,5 @@
 pub mod assert;
 mod impls;
-mod store;
+mod state;
 pub mod types;
 pub mod user_usage;

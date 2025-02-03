@@ -38,11 +38,10 @@ use crate::storage::store::{
 use crate::storage::strategy_impls::StorageState;
 use crate::types::interface::Config;
 use crate::types::state::{CollectionType, HeapState, RuntimeState, State};
+use crate::usage::store::{get_db_usage_by_id, get_storage_usage_by_id, set_db_usage};
 use crate::usage::types::interface::SetUserUsage;
 use crate::usage::types::state::UserUsage;
-use crate::usage::user_usage::{
-    get_db_usage_by_id, get_storage_usage_by_id, set_db_usage, set_storage_usage,
-};
+use crate::usage::user_usage::set_storage_usage;
 use ciborium::{from_reader, into_writer};
 use ic_cdk::api::call::{arg_data, ArgDecoderConfig};
 use ic_cdk::api::{caller, trap};

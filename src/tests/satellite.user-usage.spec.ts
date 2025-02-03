@@ -34,7 +34,8 @@ describe('Satellite User Usage', () => {
 		mutable_permissions: toNullable(),
 		write: { Managed: null },
 		version: toNullable(),
-		rate_config: toNullable()
+		rate_config: toNullable(),
+		max_items_per_user: toNullable()
 	};
 
 	const NO_FILTER_PARAMS: ListParams = {

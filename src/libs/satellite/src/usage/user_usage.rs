@@ -45,32 +45,7 @@ fn get_user_usage_by_id(
     None
 }
 
-pub fn increment_and_assert_db_usage(
-    caller: UserId,
-    controllers: &Controllers,
-    collection: &CollectionKey,
-    max_items_per_user: Option<u32>,
-) -> Result<(), String> {
-    if is_db_collection_no_usage(collection) {
-        return Ok(());
-    }
-
-    let user_usage = increase_db_usage(collection, &caller);
-
-    if is_controller(caller, controllers) {
-        return Ok(());
-    }
-
-    if let Some(max_items_per_user) = max_items_per_user {
-        if user_usage.items_count > max_items_per_user {
-            return Err("Documents limit reached.".to_string());
-        }
-    }
-
-    Ok(())
-}
-
-fn increase_db_usage(collection: &CollectionKey, user_id: &UserId) -> UserUsage {
+pub fn increase_db_usage(collection: &CollectionKey, user_id: &UserId) -> UserUsage {
     update_user_usage(
         collection,
         &CollectionType::Db,
@@ -184,7 +159,7 @@ pub fn decrease_storage_usage_by(collection: &CollectionKey, user_id: &UserId, c
     );
 }
 
-fn is_db_collection_no_usage(collection: &CollectionKey) -> bool {
+pub fn is_db_collection_no_usage(collection: &CollectionKey) -> bool {
     DB_COLLECTIONS_NO_USER_USAGE.contains(&collection.as_str())
 }
 

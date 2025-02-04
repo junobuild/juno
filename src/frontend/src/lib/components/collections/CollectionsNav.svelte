@@ -1,7 +1,6 @@
 <script lang="ts">
 	import { isNullish, nonNullish } from '@dfinity/utils';
-	import { createEventDispatcher, getContext, type Snippet } from 'svelte';
-	import { run } from 'svelte/legacy';
+	import { getContext, type Snippet } from 'svelte';
 	import type { Rule } from '$declarations/satellite/satellite.did';
 	import IconHome from '$lib/components/icons/IconHome.svelte';
 	import NavSeparator from '$lib/components/ui/NavSeparator.svelte';
@@ -9,27 +8,24 @@
 
 	interface Props {
 		children?: Snippet;
+		onclose: () => void;
+		onedit: (rule: [string, Rule] | undefined) => void;
 	}
 
-	let { children }: Props = $props();
+	let { children, onclose, onedit }: Props = $props();
 
 	const { store }: RulesContext = getContext<RulesContext>(RULES_CONTEXT_KEY);
 
-	let collectionSelected = $state(false);
-	run(() => {
-		collectionSelected = nonNullish($store.rule);
-	});
+	let collectionSelected = $derived(nonNullish($store.rule));
 
 	let selected: [string, Rule] | undefined = $state(undefined);
 	const initSelected = (rule: [string, Rule] | undefined) => (selected = rule);
-	run(() => {
+	$effect(() => {
 		initSelected($store.rule);
 	});
 
-	const dispatch = createEventDispatcher();
-
-	const close = () => dispatch('junoCollectionClose');
-	const edit = (rule: [string, Rule] | undefined) => dispatch('junoCollectionEdit', rule);
+	const close = () => onclose();
+	const edit = (rule: [string, Rule] | undefined) => onedit(rule);
 </script>
 
 <nav class="th">

@@ -1,7 +1,6 @@
 <script lang="ts">
 	import { fromNullable, isNullish, nonNullish, fromNullishNullable } from '@dfinity/utils';
-	import { type SvelteComponent, createEventDispatcher, getContext } from 'svelte';
-	import { preventDefault } from 'svelte/legacy';
+	import { type SvelteComponent, getContext } from 'svelte';
 	import type { RateConfig, Rule, CollectionType } from '$declarations/satellite/satellite.did';
 	import CollectionDelete from '$lib/components/collections/CollectionDelete.svelte';
 	import Checkbox from '$lib/components/ui/Checkbox.svelte';
@@ -28,9 +27,11 @@
 
 	interface Props {
 		type: CollectionType;
+		oncancel: () => void;
+		onsuccess: () => void;
 	}
 
-	let { type }: Props = $props();
+	let { type, oncancel, onsuccess }: Props = $props();
 
 	let typeStorage = $derived('Storage' in type);
 
@@ -95,9 +96,9 @@
 		maxCapacity = fromNullishNullable(rule?.max_capacity);
 	});
 
-	const dispatch = createEventDispatcher();
+	const onSubmit = async ($event: SubmitEvent) => {
+		$event.preventDefault();
 
-	const onSubmit = async () => {
 		busy.start();
 
 		try {
@@ -127,7 +128,7 @@
 
 			await reload();
 
-			dispatch('junoCollectionSuccess');
+			onsuccess();
 		} catch (err: unknown) {
 			toasts.error({
 				text: i18nFormat(
@@ -184,7 +185,7 @@
 </script>
 
 <article>
-	<form onsubmit={preventDefault(onSubmit)}>
+	<form onsubmit={onSubmit}>
 		<div>
 			<Value ref="collection">
 				{#snippet label()}
@@ -315,9 +316,7 @@
 		</Collapsible>
 
 		<div class="toolbar">
-			<button type="button" onclick={() => dispatch('junoCollectionCancel')}
-				>{$i18n.core.cancel}</button
-			>
+			<button type="button" onclick={oncancel}>{$i18n.core.cancel}</button>
 
 			{#if mode === 'edit'}
 				<CollectionDelete {collection} {rule} {type} on:junoCollectionSuccess />

@@ -628,6 +628,7 @@
 	"collections": {
 		"title": "文档集",
 		"details": "详细",
+		"start_collection": "Start collection",
 		"key": "关键字",
 		"key_placeholder": "文档集关键字",
 		"read_permission": "只读权限",

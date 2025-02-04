@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { createEventDispatcher, getContext, onMount, type Snippet } from 'svelte';
+	import { getContext, onMount, type Snippet } from 'svelte';
 	import type { Rule } from '$declarations/satellite/satellite.did';
 	import Collections from '$lib/components/collections/Collections.svelte';
 	import CollectionsEmpty from '$lib/components/collections/CollectionsEmpty.svelte';
@@ -10,23 +10,23 @@
 	interface Props {
 		children: Snippet;
 		count?: Snippet;
+		onclose: () => void;
 	}
 
-	let { children, count }: Props = $props();
+	let { children, count, onclose }: Props = $props();
 
 	// Rules
 	const { store }: RulesContext = getContext<RulesContext>(RULES_CONTEXT_KEY);
 
 	onMount(() => store.update((data) => ({ ...data, rule: undefined })));
 
-	const selectionCollection = (rule: [string, Rule]) => {
+	const selectionCollection = (rule: [string, Rule] | undefined) => {
 		closeData();
 		store.update((data) => ({ ...data, rule }));
 	};
 
 	// Data
-	const dispatch = createEventDispatcher();
-	const closeData = () => dispatch('junoCloseData');
+	const closeData = () => onclose();
 
 	// Tabs
 	const { store: tabsStore }: TabsContext = getContext<TabsContext>(TABS_CONTEXT_KEY);
@@ -40,16 +40,13 @@
 </script>
 
 <section>
-	<DataNav
-		on:junoCollectionEdit={({ detail }) => selectionCollection(detail)}
-		on:junoCollectionClose={close}
-	/>
+	<DataNav onedit={selectionCollection} onclose={close} />
 
-	<Collections on:junoCollectionEdit={({ detail }) => selectionCollection(detail)} />
+	<Collections onedit={selectionCollection} />
 
 	{@render children()}
 
-	<CollectionsEmpty on:click={() => selectTab()} />
+	<CollectionsEmpty onclick={selectTab} />
 </section>
 
 <div class="count">

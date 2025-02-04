@@ -18,7 +18,7 @@
 
 	let editCollection = $state(false);
 
-	const editCollectionRule = (rule: [string, Rule]) => {
+	const editCollectionRule = (rule: [string, Rule] | undefined) => {
 		store.update((data) => ({ ...data, rule }));
 		editCollection = true;
 	};
@@ -35,29 +35,18 @@
 </script>
 
 <section>
-	<CollectionsNav
-		on:junoCollectionClose={closeEdit}
-		on:junoCollectionEdit={({ detail }) => editCollectionRule(detail)}
-	/>
+	<CollectionsNav onclose={closeEdit} onedit={editCollectionRule} />
 
-	<Collections
-		start
-		on:junoCollectionEdit={({ detail }) => editCollectionRule(detail)}
-		on:junoCollectionStart={startCollectionRule}
-	/>
+	<Collections start onedit={editCollectionRule} onstart={startCollectionRule} />
 
 	<p class="title rules-title">{$i18n.collections.details}</p>
 
 	<div class="rules">
 		{#if editCollection}
-			<CollectionEdit
-				{type}
-				on:junoCollectionCancel={closeEdit}
-				on:junoCollectionSuccess={closeEdit}
-			/>
+			<CollectionEdit {type} oncancel={closeEdit} onsuccess={closeEdit} />
 		{:else}
 			<button class="text action start" onclick={startCollectionRule}
-				><IconNew size="16px" /> <span>Start collection</span></button
+				><IconNew size="16px" /> <span>{$i18n.collections.start_collection}</span></button
 			>
 		{/if}
 	</div>

@@ -20,7 +20,7 @@ import { SATELLITE_WASM_PATH, controllersInitArgs } from './utils/setup-tests.ut
 
 describe.each([{ memory: { Heap: null } }, { memory: { Stable: null } }])(
 	'Satellite datastore',
-	 ({ memory }) => {
+	({ memory }) => {
 		let pic: PocketIc;
 		let actor: Actor<SatelliteActor>;
 

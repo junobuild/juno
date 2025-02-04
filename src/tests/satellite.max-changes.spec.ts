@@ -73,11 +73,14 @@ describe('Satellite max changes', () => {
 
 		const user = Ed25519KeyIdentity.generate();
 
-		const createDoc = (collection: string): Promise<string> =>
-			createDocUtils({
+		const createDoc = async (collection: string): Promise<string> => {
+			const result = await createDocUtils({
 				actor,
 				collection
 			});
+
+			return result;
+		};
 
 		const testShouldSucceed = async ({
 			collection,
@@ -134,18 +137,18 @@ describe('Satellite max changes', () => {
 		it('should limit changes for user', async () => {
 			const collection = 'test_db_max_changes';
 
+			const countMaxChanges = 5;
+
 			await config({
 				collection,
 				collectionType,
-				maxChanges: 5
+				maxChanges: countMaxChanges
 			});
 
 			actor.setIdentity(user);
 
-			const countSetDocs = 10n;
-
 			const promises = Promise.all(
-				Array.from({ length: Number(countSetDocs) }).map((_) => createDoc(collection))
+				Array.from({ length: countMaxChanges + 1 }).map((_) => createDoc(collection))
 			);
 
 			await expect(promises).rejects.toThrow('Change limit reached.');
@@ -226,20 +229,18 @@ describe('Satellite max changes', () => {
 		it('should limit changes for user', async () => {
 			const collection = 'test_db_max_changes';
 
+			const countMaxChanges = 5;
+
 			await config({
 				collection,
 				collectionType,
-				maxChanges: 5
+				maxChanges: countMaxChanges
 			});
 
 			actor.setIdentity(user);
 
-			const countSetDocs = 10n;
-
 			const promises = Promise.all(
-				Array.from({ length: Number(countSetDocs) }).map((_, index) =>
-					upload({ index, collection })
-				)
+				Array.from({ length: countMaxChanges + 1 }).map((_, index) => upload({ index, collection }))
 			);
 
 			await expect(promises).rejects.toThrow('Change limit reached.');

@@ -628,6 +628,7 @@
 	"collections": {
 		"title": "Collections",
 		"details": "Details",
+		"start_collection": "Start collection",
 		"key": "Key",
 		"key_placeholder": "A collection key",
 		"read_permission": "Read permission",

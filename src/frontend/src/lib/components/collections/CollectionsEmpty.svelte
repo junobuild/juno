@@ -1,18 +1,20 @@
 <script lang="ts">
 	import { getContext } from 'svelte';
-	import { createBubbler } from 'svelte/legacy';
 	import { i18n } from '$lib/stores/i18n.store';
 	import { RULES_CONTEXT_KEY, type RulesContext } from '$lib/types/rules.context';
 
-	const { store }: RulesContext = getContext<RulesContext>(RULES_CONTEXT_KEY);
+	interface Props {
+		onclick: () => void;
+	}
 
-	const bubble = createBubbler();
+	let { onclick }: Props = $props();
+
+	const { store }: RulesContext = getContext<RulesContext>(RULES_CONTEXT_KEY);
 </script>
 
 {#if $store.rules?.length === 0}
 	<p>
-		{$i18n.collections.none}
-		<button class="text" onclick={bubble('click')}>{$i18n.collections.title}</button>.
+		{$i18n.collections.none} <button class="text" {onclick}>{$i18n.collections.title}</button>.
 	</p>
 {/if}
 
@@ -25,8 +27,8 @@
 		padding: calc(var(--padding) / 3) var(--padding);
 	}
 
-	button {
+	button.text {
 		display: inline-block;
-		margin: 0;
+		margin: var(--padding) 0;
 	}
 </style>

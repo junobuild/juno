@@ -649,6 +649,7 @@ interface I18nControllers {
 interface I18nCollections {
 	title: string;
 	details: string;
+	start_collection: string;
 	key: string;
 	key_placeholder: string;
 	read_permission: string;

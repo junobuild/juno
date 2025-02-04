@@ -1,27 +1,25 @@
 <script lang="ts">
 	import { nonNullish } from '@dfinity/utils';
-	import { createEventDispatcher, getContext } from 'svelte';
-	import { run } from 'svelte/legacy';
+	import { getContext } from 'svelte';
 	import type { Rule } from '$declarations/satellite/satellite.did';
 	import IconNew from '$lib/components/icons/IconNew.svelte';
 	import { RULES_CONTEXT_KEY, type RulesContext } from '$lib/types/rules.context';
 
 	interface Props {
 		start?: boolean;
+		onstart?: () => void;
+		onedit: (rule: [string, Rule]) => void;
 	}
 
-	let { start = false }: Props = $props();
+	let { start = false, onedit, onstart }: Props = $props();
 
 	const { store }: RulesContext = getContext<RulesContext>(RULES_CONTEXT_KEY);
 
-	const dispatch = createEventDispatcher();
+	const edit = (rule: [string, Rule]) => onedit(rule);
 
-	const edit = (rule: [string, Rule]) => dispatch('junoCollectionEdit', rule);
+	let empty = $derived($store.rules?.length === 0);
 
-	let empty = $state(false);
-	run(() => {
-		empty = $store.rules?.length === 0;
-	});
+	const startCollection = () => onstart?.();
 </script>
 
 <p class="title collections">Collections</p>
@@ -29,7 +27,7 @@
 {#if start || !empty}
 	<div class="collections">
 		{#if start}
-			<button class="text action start" onclick={() => dispatch('junoCollectionStart')}
+			<button class="text action start" onclick={startCollection}
 				><IconNew size="16px" /> <span>Start collection</span></button
 			>
 		{/if}

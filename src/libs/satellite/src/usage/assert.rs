@@ -1,6 +1,6 @@
 use crate::types::state::CollectionType;
 use crate::usage::state::update_user_usage;
-use crate::usage::utils::is_db_collection_no_usage;
+use crate::usage::utils::{is_db_collection_no_usage, is_storage_collection_no_usage};
 use junobuild_collections::types::core::CollectionKey;
 use junobuild_shared::controllers::is_controller;
 use junobuild_shared::types::state::{Controllers, UserId};
@@ -30,7 +30,7 @@ pub fn increment_and_assert_storage_usage(
     collection: &CollectionKey,
     max_changes_per_user: Option<u32>,
 ) -> Result<(), String> {
-    if is_db_collection_no_usage(collection) {
+    if is_storage_collection_no_usage(collection) {
         return Ok(());
     }
 

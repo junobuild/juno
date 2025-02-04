@@ -1,5 +1,6 @@
 import type { ListParams, _SERVICE as SatelliteActor } from '$declarations/satellite/satellite.did';
 import { idlFactory as idlFactorSatellite } from '$declarations/satellite/satellite.factory.did';
+import type { Identity } from '@dfinity/agent';
 import { Ed25519KeyIdentity } from '@dfinity/identity';
 import { fromNullable, nonNullish, toNullable } from '@dfinity/utils';
 import { type Actor, PocketIc } from '@hadronous/pic';
@@ -68,37 +69,70 @@ describe('Satellite max changes', () => {
 
 	describe('datastore', () => {
 		const collectionType = { Db: null };
-		const collection = 'test_db_changes';
 
 		const user = Ed25519KeyIdentity.generate();
 
-		const createDoc = (): Promise<string> =>
+		const createDoc = (collection: string): Promise<string> =>
 			createDocUtils({
 				actor,
 				collection
 			});
 
-		it('should not limit changes for user', async () => {
+		const testShouldSucceed = async ({
+			collection,
+			docUser,
+			maxChanges
+		}: {
+			collection: string;
+			docUser: Identity;
+			maxChanges: number | undefined;
+		}) => {
 			await config({
 				collection,
 				collectionType,
-				maxChanges: undefined
+				maxChanges
 			});
 
-			actor.setIdentity(user);
+			actor.setIdentity(docUser);
 
 			const countSetDocs = 10n;
 
-			await Promise.all(Array.from({ length: Number(countSetDocs) }).map(createDoc));
+			await Promise.all(
+				Array.from({ length: Number(countSetDocs) }).map((_) => createDoc(collection))
+			);
 
 			const { count_docs } = actor;
 
 			const count = await count_docs(collection, NO_FILTER_PARAMS);
 
 			expect(count).toEqual(countSetDocs);
+		};
+
+		it('should not limit changes for user if no configuration is set', async () => {
+			await testShouldSucceed({
+				collection: 'test_user_changes',
+				docUser: user,
+				maxChanges: undefined
+			});
+		});
+
+		it('should not limit changes for controllers', async () => {
+			await testShouldSucceed({
+				collection: 'test_controller_no_changes',
+				docUser: controller,
+				maxChanges: undefined
+			});
+
+			await testShouldSucceed({
+				collection: 'test_controller_no_changes_even_if_configured',
+				docUser: controller,
+				maxChanges: 5
+			});
 		});
 
 		it('should limit changes for user', async () => {
+			const collection = 'test_db_max_changes';
+
 			await config({
 				collection,
 				collectionType,
@@ -109,7 +143,9 @@ describe('Satellite max changes', () => {
 
 			const countSetDocs = 10n;
 
-			const promises = Promise.all(Array.from({ length: Number(countSetDocs) }).map(createDoc));
+			const promises = Promise.all(
+				Array.from({ length: Number(countSetDocs) }).map((_) => createDoc(collection))
+			);
 
 			await expect(promises).rejects.toThrow('Change limit reached.');
 		});

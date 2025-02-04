@@ -91,7 +91,7 @@ describe('Satellite User Usage', () => {
 		};
 
 		const user = Ed25519KeyIdentity.generate();
-		let countTotalTestVersion: number;
+		let countTotalChanges: number;
 
 		describe('User', () => {
 			beforeAll(() => {
@@ -226,15 +226,13 @@ describe('Satellite User Usage', () => {
 
 				assertNonNullish(usage);
 
-				countTotalTestVersion =
-					countSetManyDocs + countSetDocs + countDelDoc + countDelManyDocs + 1; // + 1 for del_filtered_docs
-
 				const countRemainingDocs = countSetManyDocs + countSetDocs - countDelDoc - countDelManyDocs;
 
-				expect(usage.changes_count).toEqual(
-					countSetManyDocs + countSetDocs + countDelDoc + countDelManyDocs + countRemainingDocs
-				);
-				expect(usage.version).toEqual(toNullable(BigInt(countTotalTestVersion)));
+				countTotalChanges =
+					countSetManyDocs + countSetDocs + countDelDoc + countDelManyDocs + countRemainingDocs;
+
+				expect(usage.changes_count).toEqual(countTotalChanges);
+				expect(usage.version).toEqual(toNullable(BigInt(countTotalChanges)));
 			});
 		});
 
@@ -340,7 +338,7 @@ describe('Satellite User Usage', () => {
 				expect(usage.created_at).toBeGreaterThan(0n);
 				expect(usage.updated_at).toBeGreaterThan(usage.created_at);
 
-				expect(usage.version).toEqual(toNullable(BigInt(countTotalTestVersion + 1)));
+				expect(usage.version).toEqual(toNullable(BigInt(countTotalChanges + 1)));
 			});
 		});
 	});
@@ -381,7 +379,7 @@ describe('Satellite User Usage', () => {
 		};
 
 		const user = Ed25519KeyIdentity.generate();
-		let countTotalTestVersion: number;
+		let countTotalChanges: number;
 
 		describe('User', () => {
 			beforeAll(async () => {
@@ -480,14 +478,13 @@ describe('Satellite User Usage', () => {
 
 				assertNonNullish(usage);
 
-				countTotalTestVersion = countUploadAssets + countDelAsset + countDelManyAssets + 1; // + 1 for del_filtered_assets
-
 				const countRemainingAssets = countUploadAssets - countDelAsset - countDelManyAssets;
 
-				expect(usage.changes_count).toEqual(
-					countUploadAssets + countDelAsset + countDelManyAssets + countRemainingAssets
-				);
-				expect(usage.version).toEqual(toNullable(BigInt(countTotalTestVersion)));
+				countTotalChanges =
+					countUploadAssets + countDelAsset + countDelManyAssets + countRemainingAssets;
+
+				expect(usage.changes_count).toEqual(countTotalChanges);
+				expect(usage.version).toEqual(toNullable(BigInt(countTotalChanges)));
 			});
 		});
 
@@ -598,7 +595,7 @@ describe('Satellite User Usage', () => {
 				expect(usage.created_at).toBeGreaterThan(0n);
 				expect(usage.updated_at).toBeGreaterThan(usage.created_at);
 
-				expect(usage.version).toEqual(toNullable(BigInt(countTotalTestVersion + 1)));
+				expect(usage.version).toEqual(toNullable(BigInt(countTotalChanges + 1)));
 			});
 		});
 	});

@@ -15,6 +15,8 @@ import { toArray } from '@junobuild/utils';
 import { nanoid } from 'nanoid';
 import { beforeAll, describe, expect, inject } from 'vitest';
 import { SATELLITE_ADMIN_ERROR_MSG } from './constants/satellite-tests.constants';
+import { mockData } from './mocks/doc.mocks';
+import { createDoc as createDocUtils } from './utils/satellite-doc-tests.utils';
 import { uploadAsset } from './utils/satellite-storage-tests.utils';
 import { controllersInitArgs, SATELLITE_WASM_PATH } from './utils/setup-tests.utils';
 
@@ -64,11 +66,7 @@ describe('Satellite User Usage', () => {
 		await pic?.tearDown();
 	});
 
-	describe('Datastore', async () => {
-		const data = await toArray({
-			hello: 'World'
-		});
-
+	describe('Datastore', () => {
 		const COLLECTION_TYPE = { Db: null };
 
 		beforeAll(async () => {
@@ -76,19 +74,11 @@ describe('Satellite User Usage', () => {
 			await set_rule(COLLECTION_TYPE, TEST_COLLECTION, setRule);
 		});
 
-		const createDoc = async (): Promise<string> => {
-			const key = nanoid();
-
-			const { set_doc } = actor;
-
-			await set_doc(TEST_COLLECTION, key, {
-				data,
-				description: toNullable(),
-				version: toNullable()
+		const createDoc = (): Promise<string> =>
+			createDocUtils({
+				actor,
+				collection: TEST_COLLECTION
 			});
-
-			return key;
-		};
 
 		const user = Ed25519KeyIdentity.generate();
 		let countTotalChanges: number;
@@ -132,7 +122,7 @@ describe('Satellite User Usage', () => {
 						TEST_COLLECTION,
 						nanoid(),
 						{
-							data,
+							data: mockData,
 							description: toNullable(),
 							version: toNullable()
 						}
@@ -305,7 +295,7 @@ describe('Satellite User Usage', () => {
 				const key = nanoid();
 
 				await set_doc('#log', key, {
-					data,
+					data: mockData,
 					description: toNullable(),
 					version: toNullable()
 				});

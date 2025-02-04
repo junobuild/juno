@@ -27,6 +27,7 @@ import { toArray } from '@junobuild/utils';
 import { nanoid } from 'nanoid';
 import { afterEach, beforeEach, describe, expect, inject } from 'vitest';
 import { NO_VERSION_ERROR_MSG } from './constants/satellite-tests.constants';
+import { mockData } from './mocks/doc.mocks';
 import { mockBlob } from './mocks/storage.mocks';
 import { tick } from './utils/pic-tests.utils';
 import {
@@ -367,12 +368,10 @@ describe('Satellite upgrade', () => {
 			});
 		});
 
-		describe('Documents', async () => {
+		describe('Documents', () => {
 			const setDoc: SetDoc0_0_16 = {
 				description: toNullable(),
-				data: await toArray({
-					hello: 'World'
-				}),
+				data: mockData,
 				updated_at: toNullable()
 			};
 

@@ -23,14 +23,12 @@ pub fn update_user_usage(
     collection_key: &CollectionKey,
     collection_type: &CollectionType,
     user_id: &UserId,
-    count: Option<u32>,
 ) -> UserUsage {
     STATE.with(|state| {
         update_user_usage_impl(
             collection_key,
             collection_type,
             user_id,
-            count,
             &mut state.borrow_mut().stable.user_usage,
         )
     })
@@ -68,14 +66,13 @@ fn update_user_usage_impl(
     collection_key: &CollectionKey,
     collection_type: &CollectionType,
     user_id: &UserId,
-    count: Option<u32>,
     state: &mut UserUsageStable,
 ) -> UserUsage {
     let key = UserUsageKey::create(user_id, collection_key, collection_type);
 
     let current_usage = state.get(&key);
 
-    let update_usage = UserUsage::increment(&current_usage, count);
+    let update_usage = UserUsage::increment(&current_usage);
 
     state.insert(key, update_usage.clone());
 

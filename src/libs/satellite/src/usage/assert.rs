@@ -55,7 +55,7 @@ fn increment_and_assert_usage(
         return Ok(());
     }
 
-    let user_usage = update_user_usage(collection, collection_type, &caller, None);
+    let user_usage = update_user_usage(collection, collection_type, &caller);
 
     if let Some(max_changes_per_user) = max_changes_per_user {
         if user_usage.changes_count > max_changes_per_user {

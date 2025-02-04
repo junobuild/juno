@@ -158,7 +158,6 @@ export interface RateConfig {
 export interface Rule {
 	max_capacity: [] | [number];
 	memory: [] | [Memory];
-	max_changes_per_user: [] | [number];
 	updated_at: bigint;
 	max_size: [] | [bigint];
 	read: Permission;
@@ -185,7 +184,6 @@ export interface SetDoc {
 export interface SetRule {
 	max_capacity: [] | [number];
 	memory: [] | [Memory];
-	max_changes_per_user: [] | [number];
 	max_size: [] | [bigint];
 	read: Permission;
 	version: [] | [bigint];
@@ -194,7 +192,7 @@ export interface SetRule {
 	write: Permission;
 }
 export interface SetUserUsage {
-	changes_count: number;
+	items_count: number;
 }
 export interface StorageConfig {
 	iframe: [] | [StorageConfigIFrame];
@@ -246,7 +244,7 @@ export interface UserUsage {
 	updated_at: bigint;
 	created_at: bigint;
 	version: [] | [bigint];
-	changes_count: number;
+	items_count: number;
 }
 export interface _SERVICE {
 	build_version: ActorMethod<[], string>;

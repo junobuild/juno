@@ -117,9 +117,11 @@ pub fn assert_commit_chunks_update(
 
 pub fn assert_commit_chunks(
     caller: Principal,
+    controllers: &Controllers,
     commit_batch: &CommitBatch,
     batch: &Batch,
     current: &Option<Asset>,
+    rule: &Rule,
     assertions: &impl StorageAssertionsStrategy,
 ) -> Result<(), String> {
     assertions.invoke_assert_upload_asset(
@@ -129,6 +131,13 @@ pub fn assert_commit_chunks(
             batch: batch.clone(),
             commit_batch: commit_batch.clone(),
         },
+    )?;
+
+    assertions.increment_and_assert_storage_usage(
+        &caller,
+        controllers,
+        &batch.key.collection,
+        rule.max_changes_per_user,
     )?;
 
     Ok(())

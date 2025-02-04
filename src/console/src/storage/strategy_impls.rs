@@ -11,6 +11,7 @@ use junobuild_collections::types::core::CollectionKey;
 use junobuild_collections::types::rules::{Memory, Rule};
 use junobuild_shared::types::core::Blob;
 use junobuild_shared::types::domain::CustomDomains;
+use junobuild_shared::types::state::Controllers;
 use junobuild_storage::strategies::{
     StorageAssertionsStrategy, StorageStateStrategy, StorageUploadStrategy,
 };
@@ -27,6 +28,17 @@ impl StorageAssertionsStrategy for StorageAssertions {
         &self,
         _caller: &Principal,
         _asset: &AssetAssertUpload,
+    ) -> Result<(), String> {
+        // No pre-assertions on the console
+        Ok(())
+    }
+
+    fn increment_and_assert_storage_usage(
+        &self,
+        _caller: &Principal,
+        _controllers: &Controllers,
+        _collection: &CollectionKey,
+        _max_changes_per_user: Option<u32>,
     ) -> Result<(), String> {
         // No pre-assertions on the console
         Ok(())

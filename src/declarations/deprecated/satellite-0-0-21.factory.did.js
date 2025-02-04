@@ -136,7 +136,6 @@ export const idlFactory = ({ IDL }) => {
 	const Rule = IDL.Record({
 		max_capacity: IDL.Opt(IDL.Nat32),
 		memory: IDL.Opt(Memory),
-		max_changes_per_user: IDL.Opt(IDL.Nat32),
 		updated_at: IDL.Nat64,
 		max_size: IDL.Opt(IDL.Nat),
 		read: Permission,
@@ -150,7 +149,7 @@ export const idlFactory = ({ IDL }) => {
 		updated_at: IDL.Nat64,
 		created_at: IDL.Nat64,
 		version: IDL.Opt(IDL.Nat64),
-		changes_count: IDL.Nat32
+		items_count: IDL.Nat32
 	});
 	const HttpRequest = IDL.Record({
 		url: IDL.Text,
@@ -231,7 +230,6 @@ export const idlFactory = ({ IDL }) => {
 	const SetRule = IDL.Record({
 		max_capacity: IDL.Opt(IDL.Nat32),
 		memory: IDL.Opt(Memory),
-		max_changes_per_user: IDL.Opt(IDL.Nat32),
 		max_size: IDL.Opt(IDL.Nat),
 		read: Permission,
 		version: IDL.Opt(IDL.Nat64),
@@ -239,7 +237,7 @@ export const idlFactory = ({ IDL }) => {
 		rate_config: IDL.Opt(RateConfig),
 		write: Permission
 	});
-	const SetUserUsage = IDL.Record({ changes_count: IDL.Nat32 });
+	const SetUserUsage = IDL.Record({ items_count: IDL.Nat32 });
 	const UploadChunk = IDL.Record({
 		content: IDL.Vec(IDL.Nat8),
 		batch_id: IDL.Nat,

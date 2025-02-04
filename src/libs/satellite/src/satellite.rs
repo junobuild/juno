@@ -38,12 +38,10 @@ use crate::storage::store::{
 use crate::storage::strategy_impls::StorageState;
 use crate::types::interface::Config;
 use crate::types::state::{CollectionType, HeapState, RuntimeState, State};
+use crate::usage::store::set_storage_usage;
+use crate::usage::store::{get_db_usage_by_id, get_storage_usage_by_id, set_db_usage};
 use crate::usage::types::interface::SetUserUsage;
 use crate::usage::types::state::UserUsage;
-use crate::usage::user_usage::{
-    get_db_usage_by_id, get_storage_usage_by_id, increase_db_usage, increase_db_usage_by,
-    increase_storage_usage, increase_storage_usage_by, set_db_usage, set_storage_usage,
-};
 use ciborium::{from_reader, into_writer};
 use ic_cdk::api::call::{arg_data, ArgDecoderConfig};
 use ic_cdk::api::{caller, trap};
@@ -126,12 +124,10 @@ pub fn post_upgrade() {
 pub fn set_doc(collection: CollectionKey, key: Key, doc: SetDoc) -> Doc {
     let caller = caller();
 
-    let result = set_doc_store(caller, collection.clone(), key, doc);
+    let result = set_doc_store(caller, collection, key, doc);
 
     match result {
         Ok(doc) => {
-            increase_db_usage(&collection, &caller);
-
             invoke_on_set_doc(&caller, &doc);
 
             doc.data.after
@@ -154,10 +150,7 @@ pub fn get_doc(collection: CollectionKey, key: Key) -> Option<Doc> {
 pub fn del_doc(collection: CollectionKey, key: Key, doc: DelDoc) {
     let caller = caller();
 
-    let deleted_doc =
-        delete_doc_store(caller, collection.clone(), key, doc).unwrap_or_else(|e| trap(&e));
-
-    increase_db_usage(&collection, &caller);
+    let deleted_doc = delete_doc_store(caller, collection, key, doc).unwrap_or_else(|e| trap(&e));
 
     invoke_on_delete_doc(&caller, &deleted_doc);
 }
@@ -200,10 +193,8 @@ pub fn set_many_docs(docs: Vec<(CollectionKey, Key, SetDoc)>) -> Vec<(Key, Doc)>
     let mut results: Vec<(Key, Doc)> = Vec::new();
 
     for (collection, key, doc) in docs {
-        let result = set_doc_store(caller, collection.clone(), key.clone(), doc)
-            .unwrap_or_else(|e| trap(&e));
-
-        increase_db_usage(&collection, &caller);
+        let result =
+            set_doc_store(caller, collection, key.clone(), doc).unwrap_or_else(|e| trap(&e));
 
         results.push((result.key.clone(), result.data.after.clone()));
 
@@ -221,11 +212,8 @@ pub fn del_many_docs(docs: Vec<(CollectionKey, Key, DelDoc)>) {
     let mut results: Vec<DocContext<Option<Doc>>> = Vec::new();
 
     for (collection, key, doc) in docs {
-        let deleted_doc = delete_doc_store(caller, collection.clone(), key.clone(), doc)
-            .unwrap_or_else(|e| trap(&e));
-
-        increase_db_usage(&collection, &caller);
-
+        let deleted_doc =
+            delete_doc_store(caller, collection, key.clone(), doc).unwrap_or_else(|e| trap(&e));
         results.push(deleted_doc);
     }
 
@@ -235,10 +223,8 @@ pub fn del_many_docs(docs: Vec<(CollectionKey, Key, DelDoc)>) {
 pub fn del_filtered_docs(collection: CollectionKey, filter: ListParams) {
     let caller = caller();
 
-    let results = delete_filtered_docs_store(caller, collection.clone(), &filter)
-        .unwrap_or_else(|e| trap(&e));
-
-    increase_db_usage_by(&collection, &caller, results.len() as u32);
+    let results =
+        delete_filtered_docs_store(caller, collection, &filter).unwrap_or_else(|e| trap(&e));
 
     invoke_on_delete_filtered_docs(&caller, &results);
 }
@@ -447,8 +433,6 @@ pub fn commit_asset_upload(commit: CommitBatch) {
 
     let asset = commit_batch_store(caller, commit).unwrap_or_else(|e| trap(&e));
 
-    increase_storage_usage(&asset.key.collection, &caller);
-
     invoke_upload_asset(&caller, &asset);
 }
 
@@ -480,11 +464,7 @@ pub fn del_asset(collection: CollectionKey, full_path: FullPath) {
     let result = delete_asset_store(caller, &collection, full_path);
 
     match result {
-        Ok(asset) => {
-            increase_storage_usage(&collection, &caller);
-
-            invoke_on_delete_asset(&caller, &asset)
-        }
+        Ok(asset) => invoke_on_delete_asset(&caller, &asset),
         Err(error) => trap(&["Asset cannot be deleted: ", &error].join("")),
     }
 }
@@ -497,9 +477,6 @@ pub fn del_many_assets(assets: Vec<(CollectionKey, String)>) {
     for (collection, full_path) in assets {
         let deleted_asset =
             delete_asset_store(caller, &collection, full_path).unwrap_or_else(|e| trap(&e));
-
-        increase_storage_usage(&collection, &caller);
-
         results.push(deleted_asset);
     }
 
@@ -509,10 +486,8 @@ pub fn del_many_assets(assets: Vec<(CollectionKey, String)>) {
 pub fn del_filtered_assets(collection: CollectionKey, filter: ListParams) {
     let caller = caller();
 
-    let results = delete_filtered_assets_store(caller, collection.clone(), &filter)
-        .unwrap_or_else(|e| trap(&e));
-
-    increase_storage_usage_by(&collection, &caller, results.len() as u32);
+    let results =
+        delete_filtered_assets_store(caller, collection, &filter).unwrap_or_else(|e| trap(&e));
 
     invoke_on_delete_filtered_assets(&caller, &results);
 }

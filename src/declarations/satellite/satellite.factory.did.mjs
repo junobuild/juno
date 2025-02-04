@@ -136,6 +136,7 @@ export const idlFactory = ({ IDL }) => {
 	const Rule = IDL.Record({
 		max_capacity: IDL.Opt(IDL.Nat32),
 		memory: IDL.Opt(Memory),
+		max_changes_per_user: IDL.Opt(IDL.Nat32),
 		updated_at: IDL.Nat64,
 		max_size: IDL.Opt(IDL.Nat),
 		read: Permission,
@@ -230,6 +231,7 @@ export const idlFactory = ({ IDL }) => {
 	const SetRule = IDL.Record({
 		max_capacity: IDL.Opt(IDL.Nat32),
 		memory: IDL.Opt(Memory),
+		max_changes_per_user: IDL.Opt(IDL.Nat32),
 		max_size: IDL.Opt(IDL.Nat),
 		read: Permission,
 		version: IDL.Opt(IDL.Nat64),

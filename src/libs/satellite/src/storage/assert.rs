@@ -1,6 +1,7 @@
 use crate::hooks::invoke_assert_delete_asset;
 use crate::rules::assert_stores::is_known_user;
 use crate::types::store::StoreContext;
+use crate::usage::assert::increment_and_assert_storage_usage;
 use candid::Principal;
 use junobuild_collections::assert_stores::{assert_permission, public_permission};
 use junobuild_collections::types::rules::Rule;
@@ -38,6 +39,13 @@ pub fn assert_delete_asset(
     ) {
         return Err(ERROR_ASSET_NOT_FOUND.to_string());
     }
+
+    increment_and_assert_storage_usage(
+        context.caller,
+        context.controllers,
+        context.collection,
+        rule.max_changes_per_user,
+    )?;
 
     increment_and_assert_rate_runtime(context.collection, &rule.rate_config)?;
 

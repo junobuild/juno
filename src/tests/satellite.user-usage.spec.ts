@@ -15,6 +15,8 @@ import { toArray } from '@junobuild/utils';
 import { nanoid } from 'nanoid';
 import { beforeAll, describe, expect, inject } from 'vitest';
 import { SATELLITE_ADMIN_ERROR_MSG } from './constants/satellite-tests.constants';
+import { mockData } from './mocks/doc.mocks';
+import { createDoc as createDocUtils } from './utils/satellite-doc-tests.utils';
 import { uploadAsset } from './utils/satellite-storage-tests.utils';
 import { controllersInitArgs, SATELLITE_WASM_PATH } from './utils/setup-tests.utils';
 
@@ -34,7 +36,8 @@ describe('Satellite User Usage', () => {
 		mutable_permissions: toNullable(),
 		write: { Managed: null },
 		version: toNullable(),
-		rate_config: toNullable()
+		rate_config: toNullable(),
+		max_changes_per_user: toNullable()
 	};
 
 	const NO_FILTER_PARAMS: ListParams = {
@@ -63,11 +66,7 @@ describe('Satellite User Usage', () => {
 		await pic?.tearDown();
 	});
 
-	describe('Datastore', async () => {
-		const data = await toArray({
-			hello: 'World'
-		});
-
+	describe('Datastore', () => {
 		const COLLECTION_TYPE = { Db: null };
 
 		beforeAll(async () => {
@@ -75,22 +74,14 @@ describe('Satellite User Usage', () => {
 			await set_rule(COLLECTION_TYPE, TEST_COLLECTION, setRule);
 		});
 
-		const createDoc = async (): Promise<string> => {
-			const key = nanoid();
-
-			const { set_doc } = actor;
-
-			await set_doc(TEST_COLLECTION, key, {
-				data,
-				description: toNullable(),
-				version: toNullable()
+		const createDoc = (): Promise<string> =>
+			createDocUtils({
+				actor,
+				collection: TEST_COLLECTION
 			});
 
-			return key;
-		};
-
 		const user = Ed25519KeyIdentity.generate();
-		let countTotalTestVersion: number;
+		let countTotalChanges: number;
 
 		describe('User', () => {
 			beforeAll(() => {
@@ -131,7 +122,7 @@ describe('Satellite User Usage', () => {
 						TEST_COLLECTION,
 						nanoid(),
 						{
-							data,
+							data: mockData,
 							description: toNullable(),
 							version: toNullable()
 						}
@@ -225,15 +216,13 @@ describe('Satellite User Usage', () => {
 
 				assertNonNullish(usage);
 
-				countTotalTestVersion =
-					countSetManyDocs + countSetDocs + countDelDoc + countDelManyDocs + 1; // + 1 for del_filtered_docs
-
 				const countRemainingDocs = countSetManyDocs + countSetDocs - countDelDoc - countDelManyDocs;
 
-				expect(usage.changes_count).toEqual(
-					countSetManyDocs + countSetDocs + countDelDoc + countDelManyDocs + countRemainingDocs
-				);
-				expect(usage.version).toEqual(toNullable(BigInt(countTotalTestVersion)));
+				countTotalChanges =
+					countSetManyDocs + countSetDocs + countDelDoc + countDelManyDocs + countRemainingDocs;
+
+				expect(usage.changes_count).toEqual(countTotalChanges);
+				expect(usage.version).toEqual(toNullable(BigInt(countTotalChanges)));
 			});
 		});
 
@@ -306,7 +295,7 @@ describe('Satellite User Usage', () => {
 				const key = nanoid();
 
 				await set_doc('#log', key, {
-					data,
+					data: mockData,
 					description: toNullable(),
 					version: toNullable()
 				});
@@ -339,7 +328,7 @@ describe('Satellite User Usage', () => {
 				expect(usage.created_at).toBeGreaterThan(0n);
 				expect(usage.updated_at).toBeGreaterThan(usage.created_at);
 
-				expect(usage.version).toEqual(toNullable(BigInt(countTotalTestVersion + 1)));
+				expect(usage.version).toEqual(toNullable(BigInt(countTotalChanges + 1)));
 			});
 		});
 	});
@@ -380,7 +369,7 @@ describe('Satellite User Usage', () => {
 		};
 
 		const user = Ed25519KeyIdentity.generate();
-		let countTotalTestVersion: number;
+		let countTotalChanges: number;
 
 		describe('User', () => {
 			beforeAll(async () => {
@@ -479,14 +468,13 @@ describe('Satellite User Usage', () => {
 
 				assertNonNullish(usage);
 
-				countTotalTestVersion = countUploadAssets + countDelAsset + countDelManyAssets + 1; // + 1 for del_filtered_assets
-
 				const countRemainingAssets = countUploadAssets - countDelAsset - countDelManyAssets;
 
-				expect(usage.changes_count).toEqual(
-					countUploadAssets + countDelAsset + countDelManyAssets + countRemainingAssets
-				);
-				expect(usage.version).toEqual(toNullable(BigInt(countTotalTestVersion)));
+				countTotalChanges =
+					countUploadAssets + countDelAsset + countDelManyAssets + countRemainingAssets;
+
+				expect(usage.changes_count).toEqual(countTotalChanges);
+				expect(usage.version).toEqual(toNullable(BigInt(countTotalChanges)));
 			});
 		});
 
@@ -597,7 +585,7 @@ describe('Satellite User Usage', () => {
 				expect(usage.created_at).toBeGreaterThan(0n);
 				expect(usage.updated_at).toBeGreaterThan(usage.created_at);
 
-				expect(usage.version).toEqual(toNullable(BigInt(countTotalTestVersion + 1)));
+				expect(usage.version).toEqual(toNullable(BigInt(countTotalChanges + 1)));
 			});
 		});
 	});

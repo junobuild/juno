@@ -193,6 +193,7 @@ fn secure_commit_chunks(
 
             commit_chunks(
                 caller,
+                controllers,
                 commit_batch,
                 batch,
                 &rule,
@@ -231,6 +232,7 @@ fn secure_commit_chunks_update(
 
     commit_chunks(
         caller,
+        controllers,
         commit_batch,
         batch,
         &rule,
@@ -240,8 +242,10 @@ fn secure_commit_chunks_update(
     )
 }
 
+#[allow(clippy::too_many_arguments)]
 fn commit_chunks(
     caller: Principal,
+    controllers: &Controllers,
     commit_batch: CommitBatch,
     batch: &Batch,
     rule: &Rule,
@@ -256,7 +260,15 @@ fn commit_chunks(
         return Err("Batch did not complete in time. Chunks cannot be committed.".to_string());
     }
 
-    assert_commit_chunks(caller, &commit_batch, batch, current, assertions)?;
+    assert_commit_chunks(
+        caller,
+        controllers,
+        &commit_batch,
+        batch,
+        current,
+        rule,
+        assertions,
+    )?;
 
     let CommitBatch {
         chunk_ids,

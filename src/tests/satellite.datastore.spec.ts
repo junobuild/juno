@@ -8,18 +8,19 @@ import { idlFactory as idlFactorSatellite } from '$declarations/satellite/satell
 import { Ed25519KeyIdentity } from '@dfinity/identity';
 import { fromNullable, toNullable } from '@dfinity/utils';
 import { PocketIc, type Actor } from '@hadronous/pic';
-import { toArray } from '@junobuild/utils';
 import { nanoid } from 'nanoid';
 import { afterAll, beforeAll, describe, expect, inject } from 'vitest';
 import {
 	INVALID_VERSION_ERROR_MSG,
 	NO_VERSION_ERROR_MSG
 } from './constants/satellite-tests.constants';
+import { mockData } from './mocks/doc.mocks';
+import { createDoc as createDocUtils } from './utils/satellite-doc-tests.utils';
 import { SATELLITE_WASM_PATH, controllersInitArgs } from './utils/setup-tests.utils';
 
 describe.each([{ memory: { Heap: null } }, { memory: { Stable: null } }])(
 	'Satellite datastore',
-	async ({ memory }) => {
+	({ memory }) => {
 		let pic: PocketIc;
 		let actor: Actor<SatelliteActor>;
 
@@ -49,7 +50,8 @@ describe.each([{ memory: { Heap: null } }, { memory: { Stable: null } }])(
 				mutable_permissions: toNullable(),
 				write: { Managed: null },
 				version: toNullable(),
-				rate_config: toNullable()
+				rate_config: toNullable(),
+				max_changes_per_user: toNullable()
 			};
 
 			const { set_rule } = actor;
@@ -60,23 +62,11 @@ describe.each([{ memory: { Heap: null } }, { memory: { Stable: null } }])(
 			await pic?.tearDown();
 		});
 
-		const data = await toArray({
-			hello: 'World'
-		});
-
-		const createDoc = async (): Promise<string> => {
-			const key = nanoid();
-
-			const { set_doc } = actor;
-
-			await set_doc(TEST_COLLECTION, key, {
-				data,
-				description: toNullable(),
-				version: toNullable()
+		const createDoc = (): Promise<string> =>
+			createDocUtils({
+				actor,
+				collection: TEST_COLLECTION
 			});
-
-			return key;
-		};
 
 		describe('user (part 1)', () => {
 			const user = Ed25519KeyIdentity.generate();
@@ -109,7 +99,7 @@ describe.each([{ memory: { Heap: null } }, { memory: { Stable: null } }])(
 					expect(doc?.created_at).toBeGreaterThan(0n);
 
 					expect(doc?.owner.toText()).toEqual(user.getPrincipal().toText());
-					expect(doc?.data).toEqual(data);
+					expect(doc?.data).toEqual(mockData);
 				}
 			});
 
@@ -467,7 +457,7 @@ describe.each([{ memory: { Heap: null } }, { memory: { Stable: null } }])(
 				for (let i = 0; i < 5; i++) {
 					const key = nanoid();
 					await set_doc(TEST_COLLECTION, key, {
-						data,
+						data: mockData,
 						description: toNullable(),
 						version: toNullable()
 					});
@@ -591,7 +581,8 @@ describe.each([{ memory: { Heap: null } }, { memory: { Stable: null } }])(
 				mutable_permissions: toNullable(),
 				write: { Managed: null },
 				version: toNullable(),
-				rate_config: toNullable()
+				rate_config: toNullable(),
+				max_changes_per_user: toNullable()
 			};
 
 			beforeAll(() => {
@@ -614,7 +605,7 @@ describe.each([{ memory: { Heap: null } }, { memory: { Stable: null } }])(
 						collection,
 						nanoid(),
 						{
-							data,
+							data: mockData,
 							description: toNullable(),
 							version: toNullable()
 						}
@@ -683,7 +674,7 @@ describe.each([{ memory: { Heap: null } }, { memory: { Stable: null } }])(
 						COLLECTION,
 						`${i}`,
 						{
-							data,
+							data: mockData,
 							description: toNullable(),
 							version: toNullable()
 						}
@@ -730,7 +721,7 @@ describe.each([{ memory: { Heap: null } }, { memory: { Stable: null } }])(
 
 				try {
 					await set_doc(collectionUnknown, nanoid(), {
-						data,
+						data: mockData,
 						description: toNullable(),
 						version: toNullable()
 					});
@@ -753,7 +744,8 @@ describe.each([{ memory: { Heap: null } }, { memory: { Stable: null } }])(
 				write: { Managed: null },
 				version: toNullable(),
 				max_capacity: toNullable(),
-				rate_config: toNullable()
+				rate_config: toNullable(),
+				max_changes_per_user: toNullable()
 			};
 
 			beforeAll(() => {
@@ -802,7 +794,7 @@ describe.each([{ memory: { Heap: null } }, { memory: { Stable: null } }])(
 								collection,
 								`${i}`,
 								{
-									data,
+									data: mockData,
 									description: toNullable(),
 									version: toNullable()
 								}

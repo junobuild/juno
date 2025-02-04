@@ -6,6 +6,7 @@ import { fromNullable, nonNullish, toNullable } from '@dfinity/utils';
 import { type Actor, PocketIc } from '@hadronous/pic';
 import { afterAll, beforeAll, describe, expect, inject } from 'vitest';
 import { createDoc as createDocUtils } from './utils/satellite-doc-tests.utils';
+import { uploadAsset } from './utils/satellite-storage-tests.utils';
 import { controllersInitArgs, SATELLITE_WASM_PATH } from './utils/setup-tests.utils';
 
 describe('Satellite max changes', () => {
@@ -67,7 +68,7 @@ describe('Satellite max changes', () => {
 		paginate: toNullable()
 	};
 
-	describe('datastore', () => {
+	describe('Datastore', () => {
 		const collectionType = { Db: null };
 
 		const user = Ed25519KeyIdentity.generate();
@@ -145,6 +146,100 @@ describe('Satellite max changes', () => {
 
 			const promises = Promise.all(
 				Array.from({ length: Number(countSetDocs) }).map((_) => createDoc(collection))
+			);
+
+			await expect(promises).rejects.toThrow('Change limit reached.');
+		});
+	});
+
+	describe('Storage', () => {
+		const collectionType = { Storage: null };
+
+		const user = Ed25519KeyIdentity.generate();
+
+		const upload = async ({ collection, index }: { collection: string; index: number }) => {
+			const name = `hello-${index}.html`;
+			const full_path = `/${collection}/${name}`;
+
+			await uploadAsset({
+				full_path,
+				name,
+				collection: collection,
+				actor
+			});
+		};
+
+		const testShouldSucceed = async ({
+			collection,
+			assetUser,
+			maxChanges
+		}: {
+			collection: string;
+			assetUser: Identity;
+			maxChanges: number | undefined;
+		}) => {
+			await config({
+				collection,
+				collectionType,
+				maxChanges
+			});
+
+			actor.setIdentity(assetUser);
+
+			const countUploadAssets = 10n;
+
+			await Promise.all(
+				Array.from({ length: Number(countUploadAssets) }).map((_, index) =>
+					upload({ index, collection })
+				)
+			);
+
+			const { count_assets } = actor;
+
+			const count = await count_assets(collection, NO_FILTER_PARAMS);
+
+			expect(count).toEqual(countUploadAssets);
+		};
+
+		it('should not limit changes for user if no configuration is set', async () => {
+			await testShouldSucceed({
+				collection: 'test_user_changes',
+				assetUser: user,
+				maxChanges: undefined
+			});
+		});
+
+		it('should not limit changes for controllers', async () => {
+			await testShouldSucceed({
+				collection: 'test_controller_no_changes',
+				assetUser: controller,
+				maxChanges: undefined
+			});
+
+			await testShouldSucceed({
+				collection: 'test_controller_no_changes_even_if_configured',
+				assetUser: controller,
+				maxChanges: 5
+			});
+		});
+
+		it('should limit changes for user', async () => {
+			const collection = 'test_db_max_changes';
+
+			await config({
+				collection,
+				collectionType,
+				maxChanges: 5
+			});
+
+			actor.setIdentity(user);
+
+			const countSetDocs = 10n;
+
+			const promises = Promise.all(
+				Array.from({ length: Number(countSetDocs) }).map((_, index) =>
+					upload({ index, collection })
+				)
 			);
 
 			await expect(promises).rejects.toThrow('Change limit reached.');

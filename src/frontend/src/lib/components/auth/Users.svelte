@@ -62,10 +62,10 @@
 	<table>
 		<thead>
 			<tr>
+				<th class="tools"></th>
 				<th class="identifier"> {$i18n.users.identifier} </th>
 				<th class="providers"> {$i18n.users.provider} </th>
 				<th class="created"> {$i18n.users.created} </th>
-				<th class="updated"> {$i18n.users.updated} </th>
 			</tr>
 		</thead>
 
@@ -92,32 +92,29 @@
 <style lang="scss">
 	@use '../../styles/mixins/media';
 
-	.providers,
-	.created,
-	.updated {
+	.tools {
+		width: 48px;
+	}
+
+	.providers {
+		display: none;
+
+		@include media.min-width(small) {
+			display: table-cell;
+		}
+	}
+
+	.created {
 		display: none;
 
 		@include media.min-width(medium) {
-			display: table-header-group;
-		}
-	}
-
-	.identifier {
-		width: 100%;
-	}
-
-	@include media.min-width(medium) {
-		.identifier {
-			width: 260px;
-		}
-
-		.providers {
-			width: 120px;
-		}
-
-		.providers,
-		.created {
 			display: table-cell;
+		}
+	}
+
+	@include media.min-width(small) {
+		.providers {
+			width: 220px;
 		}
 	}
 
@@ -128,10 +125,6 @@
 
 		.providers {
 			width: inherit;
-		}
-
-		.updated {
-			display: table-cell;
 		}
 	}
 </style>

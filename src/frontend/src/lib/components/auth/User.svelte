@@ -11,12 +11,13 @@
 
 	let { user }: Props = $props();
 
-	let { owner, created_at, updated_at, data } = $derived(user);
+	let { owner, created_at, data } = $derived(user);
 
 	let { provider } = $derived(data);
 </script>
 
 <tr>
+	<td></td>
 	<td><Identifier small={false} identifier={owner.toText()} /></td>
 	<td class="providers">
 		{#if provider === 'internet_identity'}
@@ -25,12 +26,29 @@
 			<IconNFID />
 		{/if}
 	</td>
-	<td>{formatToDate(created_at)}</td>
-	<td>{formatToDate(updated_at)}</td>
+	<td class="created">{formatToDate(created_at)}</td>
 </tr>
 
 <style lang="scss">
+	@use '../../styles/mixins/media';
+
 	.providers {
 		vertical-align: middle;
+	}
+
+	.providers {
+		display: none;
+
+		@include media.min-width(small) {
+			display: table-cell;
+		}
+	}
+
+	.created {
+		display: none;
+
+		@include media.min-width(medium) {
+			display: table-cell;
+		}
 	}
 </style>

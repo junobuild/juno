@@ -3,6 +3,7 @@
 	import { getContext } from 'svelte';
 	import type { Rule } from '$declarations/satellite/satellite.did';
 	import IconNew from '$lib/components/icons/IconNew.svelte';
+	import { i18n } from '$lib/stores/i18n.store';
 	import { RULES_CONTEXT_KEY, type RulesContext } from '$lib/types/rules.context';
 
 	interface Props {
@@ -28,7 +29,7 @@
 	<div class="collections">
 		{#if start}
 			<button class="text action start" onclick={startCollection}
-				><IconNew size="16px" /> <span>Start collection</span></button
+				><IconNew size="12px" /> <span>{$i18n.collections.start_collection}</span></button
 			>
 		{/if}
 

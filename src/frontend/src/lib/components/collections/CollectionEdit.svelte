@@ -232,87 +232,89 @@
 			</Value>
 		</div>
 
-		<div>
-			<Value ref="memory">
-				{#snippet label()}
-					{$i18n.collections.memory}
-				{/snippet}
-				<select id="memory" name="write" bind:value={memory} disabled={mode === 'edit'}>
-					<option value="Stable">{$i18n.collections.stable}</option>
-					<option value="Heap">{$i18n.collections.heap}</option>
-				</select>
-			</Value>
-		</div>
-
 		<Collapsible bind:this={collapsibleRef}>
 			<svelte:fragment slot="header">{$i18n.collections.options}</svelte:fragment>
 
-			{#if typeDatastore}
+			<div class="options">
+				<div>
+					<Value ref="memory">
+						{#snippet label()}
+							{$i18n.collections.memory}
+						{/snippet}
+						<select id="memory" name="write" bind:value={memory} disabled={mode === 'edit'}>
+							<option value="Stable">{$i18n.collections.stable}</option>
+							<option value="Heap">{$i18n.collections.heap}</option>
+						</select>
+					</Value>
+				</div>
+
+				{#if typeDatastore}
+					<div>
+						<Value>
+							{#snippet label()}
+								{$i18n.collections.max_capacity}
+							{/snippet}
+							<Input
+								inputType="number"
+								placeholder={$i18n.collections.max_capacity_placeholder}
+								name="maxLength"
+								required={false}
+								bind:value={maxCapacity}
+								onblur={() =>
+									(maxCapacity = nonNullish(maxCapacity) ? Math.trunc(maxCapacity) : undefined)}
+							/>
+						</Value>
+					</div>
+				{/if}
+
+				{#if typeStorage}
+					<div>
+						<Value>
+							{#snippet label()}
+								{$i18n.collections.max_size}
+							{/snippet}
+							<Input
+								inputType="number"
+								placeholder={$i18n.collections.max_size_placeholder}
+								name="maxSize"
+								required={false}
+								bind:value={maxSize}
+								onblur={() => (maxSize = nonNullish(maxSize) ? Math.trunc(maxSize) : undefined)}
+							/>
+						</Value>
+					</div>
+				{/if}
+
 				<div>
 					<Value>
 						{#snippet label()}
-							{$i18n.collections.max_capacity}
+							{$i18n.collections.rate_limit}
 						{/snippet}
 						<Input
 							inputType="number"
-							placeholder={$i18n.collections.max_capacity_placeholder}
-							name="maxLength"
+							placeholder={$i18n.collections.rate_limit_placeholder}
+							name="maxTokens"
 							required={false}
-							bind:value={maxCapacity}
-							onblur={() =>
-								(maxCapacity = nonNullish(maxCapacity) ? Math.trunc(maxCapacity) : undefined)}
+							bind:value={maxTokens}
+							onblur={() => (maxTokens = nonNullish(maxTokens) ? Math.trunc(maxTokens) : undefined)}
 						/>
 					</Value>
 				</div>
-			{/if}
 
-			{#if typeStorage}
-				<div>
-					<Value>
-						{#snippet label()}
-							{$i18n.collections.max_size}
-						{/snippet}
-						<Input
-							inputType="number"
-							placeholder={$i18n.collections.max_size_placeholder}
-							name="maxSize"
-							required={false}
-							bind:value={maxSize}
-							onblur={() => (maxSize = nonNullish(maxSize) ? Math.trunc(maxSize) : undefined)}
-						/>
-					</Value>
-				</div>
-			{/if}
-
-			<div>
-				<Value>
-					{#snippet label()}
-						{$i18n.collections.rate_limit}
-					{/snippet}
-					<Input
-						inputType="number"
-						placeholder={$i18n.collections.rate_limit_placeholder}
-						name="maxTokens"
-						required={false}
-						bind:value={maxTokens}
-						onblur={() => (maxTokens = nonNullish(maxTokens) ? Math.trunc(maxTokens) : undefined)}
-					/>
-				</Value>
+				{#if !currentImmutable}
+					<Checkbox>
+						<label class="immutable">
+							<input
+								type="checkbox"
+								checked={immutable}
+								disabled={currentImmutable}
+								onchange={() => (immutable = !immutable)}
+							/>
+							<span>{$i18n.collections.immutable}</span>
+						</label>
+					</Checkbox>
+				{/if}
 			</div>
-
-			{#if !currentImmutable}
-				<Checkbox>
-					<label class="immutable">
-						<input
-							type="checkbox"
-							checked={immutable}
-							disabled={currentImmutable}
-							onchange={() => (immutable = !immutable)}
-						/>
-						<span>{$i18n.collections.immutable}</span>
-					</label>
-				</Checkbox>
-			{/if}
 		</Collapsible>
 
 		<div class="toolbar">
@@ -333,11 +335,15 @@
 		height: 100%;
 	}
 
-	form {
+	form,
+	.options {
 		display: flex;
 		flex-direction: column;
-		padding: var(--padding-2x) var(--padding);
 		gap: var(--padding);
+	}
+
+	form {
+		padding: var(--padding-2x) var(--padding);
 	}
 
 	.toolbar {

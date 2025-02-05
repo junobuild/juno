@@ -4,7 +4,7 @@
 	import { run } from 'svelte/legacy';
 	import { writable } from 'svelte/store';
 	import DbData from '$lib/components/db/DbData.svelte';
-	import DbRules from '$lib/components/db/DbRules.svelte';
+	import DbCollections from '$lib/components/db/DbCollections.svelte';
 	import { DbCollectionType } from '$lib/constants/rules.constants';
 	import { authStore } from '$lib/stores/auth.store';
 	import { RULES_CONTEXT_KEY, type RulesContext, type RulesStore } from '$lib/types/rules.context';
@@ -47,5 +47,5 @@
 {#if $tabsStore.tabId === $tabsStore.tabs[0].id}
 	<DbData />
 {:else if $tabsStore.tabId === $tabsStore.tabs[1].id}
-	<DbRules />
+	<DbCollections />
 {/if}

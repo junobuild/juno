@@ -4,7 +4,7 @@
 	import { run } from 'svelte/legacy';
 	import { writable } from 'svelte/store';
 	import StorageData from '$lib/components/storage/StorageData.svelte';
-	import StorageRules from '$lib/components/storage/StorageRules.svelte';
+	import StorageCollections from '$lib/components/storage/StorageCollections.svelte';
 	import { StorageCollectionType } from '$lib/constants/rules.constants';
 	import { authStore } from '$lib/stores/auth.store';
 	import { RULES_CONTEXT_KEY, type RulesContext, type RulesStore } from '$lib/types/rules.context';
@@ -47,5 +47,5 @@
 {#if $tabsStore.tabId === $tabsStore.tabs[0].id}
 	<StorageData />
 {:else if $tabsStore.tabId === $tabsStore.tabs[1].id}
-	<StorageRules />
+	<StorageCollections />
 {/if}

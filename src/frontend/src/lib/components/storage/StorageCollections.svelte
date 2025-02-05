@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { getContext, onMount } from 'svelte';
-	import Rules from '$lib/components/rules/Rules.svelte';
+	import Collections from '$lib/components/collections/Collections.svelte';
 	import { StorageCollectionType } from '$lib/constants/rules.constants';
 	import { RULES_CONTEXT_KEY, type RulesContext } from '$lib/types/rules.context';
 
@@ -9,4 +9,4 @@
 	onMount(() => store.update((data) => ({ ...data, rule: undefined })));
 </script>
 
-<Rules type={StorageCollectionType} />
+<Collections type={StorageCollectionType} />

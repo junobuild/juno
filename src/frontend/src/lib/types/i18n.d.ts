@@ -660,6 +660,8 @@ interface I18nCollections {
 	max_capacity_placeholder: string;
 	rate_limit: string;
 	rate_limit_placeholder: string;
+	max_changes: string;
+	max_changes_placeholder: string;
 	no_rate_limit: string;
 	public: string;
 	private: string;

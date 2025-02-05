@@ -2,7 +2,7 @@
 	import { getContext } from 'svelte';
 	import type { Rule, CollectionType } from '$declarations/satellite/satellite.did';
 	import CollectionEdit from '$lib/components/collections/CollectionEdit.svelte';
-	import Collections from '$lib/components/collections/Collections.svelte';
+	import CollectionSelection from '$lib/components/collections/CollectionSelection.svelte';
 	import CollectionsNav from '$lib/components/collections/CollectionsNav.svelte';
 	import IconNew from '$lib/components/icons/IconNew.svelte';
 	import { i18n } from '$lib/stores/i18n.store';
@@ -37,7 +37,7 @@
 <section>
 	<CollectionsNav onclose={closeEdit} onedit={editCollectionRule} />
 
-	<Collections start onedit={editCollectionRule} onstart={startCollectionRule} />
+	<CollectionSelection start onedit={editCollectionRule} onstart={startCollectionRule} />
 
 	<p class="title rules-title">{$i18n.collections.details}</p>
 

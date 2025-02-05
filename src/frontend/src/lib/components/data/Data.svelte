@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { getContext, onMount, type Snippet } from 'svelte';
 	import type { Rule } from '$declarations/satellite/satellite.did';
-	import Collections from '$lib/components/collections/Collections.svelte';
+	import CollectionSelection from '$lib/components/collections/CollectionSelection.svelte';
 	import CollectionsEmpty from '$lib/components/collections/CollectionsEmpty.svelte';
 	import DataNav from '$lib/components/data/DataNav.svelte';
 	import { RULES_CONTEXT_KEY, type RulesContext } from '$lib/types/rules.context';
@@ -42,7 +42,7 @@
 <section>
 	<DataNav onedit={selectionCollection} onclose={close} />
 
-	<Collections onedit={selectionCollection} />
+	<CollectionSelection onedit={selectionCollection} />
 
 	{@render children()}
 

@@ -25,6 +25,7 @@
 	import SendTokensModal from '$lib/components/modals/SendTokensModal.svelte';
 	import StopMonitoringStrategyModal from '$lib/components/modals/StopMonitoringStrategyModal.svelte';
 	import type { JunoModal, JunoModalDetail } from '$lib/types/modal';
+	import UserDetailsModal from '$lib/components/modals/UserDetailsModal.svelte';
 
 	let modal: JunoModal<JunoModalDetail> | undefined = $state(undefined);
 
@@ -127,4 +128,8 @@
 
 {#if modal?.type === 'show_monitoring_details' && nonNullish(modal.detail)}
 	<MonitoringDetailsModal onclose={close} detail={modal.detail} />
+{/if}
+
+{#if modal?.type === 'show_user_details' && nonNullish(modal.detail)}
+	<UserDetailsModal onclose={close} detail={modal.detail} />
 {/if}

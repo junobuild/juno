@@ -80,7 +80,8 @@
 		"amount": "Amount",
 		"fee": "Fee",
 		"preparing": "Gearing up...",
-		"refreshing_interface": "Refreshing the interface..."
+		"refreshing_interface": "Refreshing the interface...",
+		"usage": "Usage"
 	},
 	"canisters": {
 		"top_up": "Top-up",
@@ -551,7 +552,8 @@
 		"monitoring_email_missing": "An email address must be provided.",
 		"monitoring_email_update": "Unexpected error(s) while trying to update your email address.",
 		"monitoring_notifications_update": "Unexpected error(s) while trying to update the notifications.",
-		"monitoring_upgrade": "Please upgrade your Mission Control to enable the monitoring feature."
+		"monitoring_upgrade": "Please upgrade your Mission Control to enable the monitoring feature.",
+		"user_usage_not_loaded": "Unexpected error(s) while loading the user's usage."
 	},
 	"document": {
 		"owner": "Owner",
@@ -678,11 +680,15 @@
 		"placeholder_owners": "Owner ID"
 	},
 	"users": {
+		"user_details": "User's details",
 		"identifier": "Identifier",
 		"provider": "Provider",
 		"created": "Created",
 		"updated": "Updated",
-		"empty": "No registered users at the moment."
+		"empty": "No registered users at the moment.",
+		"view_details": "View user details",
+		"persistence": "Persistence",
+		"changes": "Changes"
 	},
 	"monitoring": {
 		"title": "Monitoring",
@@ -728,7 +734,6 @@
 		"stop_monitoring_note": "<strong>Important Note</strong>: it can only be stopped if all your modules are about to stop being monitored or if none are still monitored.",
 		"last_status_check": "Last status check",
 		"last_top_up": "Last top-up",
-		"usage": "Usage",
 		"weekly_cycles_deposit": "Weekly cycles deposit",
 		"default_strategy": "Default Strategy",
 		"strategy_for_modules": "This auto-refill strategy will be suggested as the default for monitoring newly created modules.",

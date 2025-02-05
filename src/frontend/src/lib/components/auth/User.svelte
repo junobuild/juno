@@ -1,13 +1,13 @@
 <script lang="ts">
+	import type { Principal } from '@dfinity/principal';
+	import UserProvider from '$lib/components/auth/UserProvider.svelte';
+	import ButtonTableAction from '$lib/components/ui/ButtonTableAction.svelte';
 	import Identifier from '$lib/components/ui/Identifier.svelte';
+	import { openUserDetail } from '$lib/services/user.services';
+	import { authStore } from '$lib/stores/auth.store';
+	import { i18n } from '$lib/stores/i18n.store';
 	import type { User } from '$lib/types/user';
 	import { formatToDate } from '$lib/utils/date.utils';
-	import ButtonTableAction from '$lib/components/ui/ButtonTableAction.svelte';
-	import { i18n } from '$lib/stores/i18n.store';
-	import { openUserDetail } from '$lib/services/user.services';
-	import type { Principal } from '@dfinity/principal';
-	import { authStore } from '$lib/stores/auth.store';
-	import UserProvider from '$lib/components/auth/UserProvider.svelte';
 
 	interface Props {
 		user: User;

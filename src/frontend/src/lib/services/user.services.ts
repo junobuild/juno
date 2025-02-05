@@ -27,6 +27,7 @@ export const openUserDetail = async ({ user, satelliteId, identity }: OpenUserDe
 
 	try {
 		const waitLoadUserUsages = (): Promise<UserUsageCollection[]> =>
+			// eslint-disable-next-line no-async-promise-executor, require-await
 			new Promise<UserUsageCollection[]>(async (resolve, reject) => {
 				let usages: UserUsageCollection[] | undefined = undefined;
 

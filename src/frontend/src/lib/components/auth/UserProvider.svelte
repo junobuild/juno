@@ -1,7 +1,7 @@
 <script lang="ts">
-	import type { User } from '$lib/types/user';
 	import IconIC from '$lib/components/icons/IconIC.svelte';
 	import IconNFID from '$lib/components/icons/IconNFID.svelte';
+	import type { User } from '$lib/types/user';
 
 	interface Props {
 		user: User;

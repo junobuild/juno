@@ -24,8 +24,8 @@
 	import SatelliteUpgradeModal from '$lib/components/modals/SatelliteUpgradeModal.svelte';
 	import SendTokensModal from '$lib/components/modals/SendTokensModal.svelte';
 	import StopMonitoringStrategyModal from '$lib/components/modals/StopMonitoringStrategyModal.svelte';
-	import type { JunoModal, JunoModalDetail } from '$lib/types/modal';
 	import UserDetailsModal from '$lib/components/modals/UserDetailsModal.svelte';
+	import type { JunoModal, JunoModalDetail } from '$lib/types/modal';
 
 	let modal: JunoModal<JunoModalDetail> | undefined = $state(undefined);
 

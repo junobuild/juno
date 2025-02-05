@@ -1,11 +1,10 @@
 <script lang="ts">
-	import type { JunoModalDetail, JunoModalShowUserDetail } from '$lib/types/modal';
-	import Modal from '$lib/components/ui/Modal.svelte';
-	import { i18n } from '$lib/stores/i18n.store';
-	import Canister from '$lib/components/canister/Canister.svelte';
-	import Value from '$lib/components/ui/Value.svelte';
-	import Identifier from '$lib/components/ui/Identifier.svelte';
 	import UserProvider from '$lib/components/auth/UserProvider.svelte';
+	import Identifier from '$lib/components/ui/Identifier.svelte';
+	import Modal from '$lib/components/ui/Modal.svelte';
+	import Value from '$lib/components/ui/Value.svelte';
+	import { i18n } from '$lib/stores/i18n.store';
+	import type { JunoModalDetail, JunoModalShowUserDetail } from '$lib/types/modal';
 	import { formatToDate } from '$lib/utils/date.utils';
 
 	interface Props {

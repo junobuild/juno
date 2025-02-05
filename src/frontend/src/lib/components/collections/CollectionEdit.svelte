@@ -96,6 +96,11 @@
 		maxCapacity = fromNullishNullable(rule?.max_capacity);
 	});
 
+	let maxChanges: number | undefined = $state(undefined);
+	$effect(() => {
+		maxChanges = fromNullishNullable(rule?.max_changes_per_user);
+	});
+
 	const onSubmit = async ($event: SubmitEvent) => {
 		$event.preventDefault();
 
@@ -113,6 +118,7 @@
 				maxSize,
 				maxCapacity,
 				maxTokens,
+				maxChanges,
 				mutablePermissions: !immutable,
 				identity: $authStore.identity
 			});
@@ -176,6 +182,7 @@
 
 		const toggleOptions =
 			nonNullish(fromNullishNullable(r?.max_capacity)) ||
+			nonNullish(fromNullishNullable(r?.max_changes_per_user)) ||
 			nonNullish(fromNullishNullable(r?.max_size)) ||
 			nonNullish(fromNullishNullable(r?.rate_config)) ||
 			fromNullishNullable(r?.mutable_permissions) === false;
@@ -248,6 +255,23 @@
 					</Value>
 				</div>
 
+				<div>
+					<Value>
+						{#snippet label()}
+							{$i18n.collections.max_changes}
+						{/snippet}
+						<Input
+							inputType="number"
+							placeholder={$i18n.collections.max_changes_placeholder}
+							name="maxChanges"
+							required={false}
+							bind:value={maxChanges}
+							onblur={() =>
+								(maxChanges = nonNullish(maxChanges) ? Math.trunc(maxChanges) : undefined)}
+						/>
+					</Value>
+				</div>
+
 				{#if typeDatastore}
 					<div>
 						<Value>
@@ -257,7 +281,7 @@
 							<Input
 								inputType="number"
 								placeholder={$i18n.collections.max_capacity_placeholder}
-								name="maxLength"
+								name="maxCapacity"
 								required={false}
 								bind:value={maxCapacity}
 								onblur={() =>

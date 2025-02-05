@@ -322,9 +322,7 @@
 				<CollectionDelete {collection} {rule} {type} on:junoCollectionSuccess />
 			{/if}
 
-			{#if !currentImmutable}
-				<button type="submit" class="primary" {disabled}>{$i18n.core.submit}</button>
-			{/if}
+			<button type="submit" class="primary" {disabled}>{$i18n.core.submit}</button>
 		</div>
 	</form>
 </article>

@@ -3,8 +3,8 @@
 	import { getContext, setContext } from 'svelte';
 	import { run } from 'svelte/legacy';
 	import { writable } from 'svelte/store';
-	import StorageData from '$lib/components/storage/StorageData.svelte';
 	import StorageCollections from '$lib/components/storage/StorageCollections.svelte';
+	import StorageData from '$lib/components/storage/StorageData.svelte';
 	import { StorageCollectionType } from '$lib/constants/rules.constants';
 	import { authStore } from '$lib/stores/auth.store';
 	import { RULES_CONTEXT_KEY, type RulesContext, type RulesStore } from '$lib/types/rules.context';

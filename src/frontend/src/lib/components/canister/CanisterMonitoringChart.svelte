@@ -16,7 +16,7 @@
 	<div in:fade>
 		<Value>
 			{#snippet label()}
-				{$i18n.monitoring.usage} <small>(T Cycles)</small>
+				{$i18n.core.usage} <small>(T Cycles)</small>
 			{/snippet}
 
 			<div class="chart-container">

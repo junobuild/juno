@@ -14,6 +14,8 @@ import type { CustomDomains } from '$lib/types/custom-domain';
 import type { MissionControlId } from '$lib/types/mission-control';
 import type { OrbiterSatelliteConfigEntry } from '$lib/types/ortbiter';
 import type { SatelliteIdText } from '$lib/types/satellite';
+import type { User as UserListed } from '$lib/types/user';
+import type { UserUsageCollection } from '$lib/types/user-usage';
 import type { Option } from '$lib/types/utils';
 import type { AccountIdentifier } from '@dfinity/ledger-icp';
 import type { Principal } from '@dfinity/principal';
@@ -111,6 +113,11 @@ export interface JunoModalShowMonitoringDetail extends JunoModalSegmentDetail {
 	monitoring: Monitoring | undefined;
 }
 
+export interface JunoModalShowUserDetail {
+	user: UserListed;
+	usages: UserUsageCollection[];
+}
+
 export type JunoModalDetail =
 	| JunoModalUpgradeSatelliteDetail
 	| JunoModalUpgradeDetail
@@ -125,7 +132,8 @@ export type JunoModalDetail =
 	| JunoModalCyclesSatelliteDetail
 	| JunoModalDeleteSatelliteDetail
 	| JunoModalEditOrbiterConfigDetail
-	| JunoModalCreateMonitoringStrategyDetail;
+	| JunoModalCreateMonitoringStrategyDetail
+	| JunoModalShowUserDetail;
 
 export interface JunoModal<T extends JunoModalDetail> {
 	type:
@@ -152,6 +160,7 @@ export interface JunoModal<T extends JunoModalDetail> {
 		| 'send_tokens'
 		| 'create_monitoring_strategy'
 		| 'stop_monitoring_strategy'
-		| 'show_monitoring_details';
+		| 'show_monitoring_details'
+		| 'show_user_details';
 	detail?: T;
 }

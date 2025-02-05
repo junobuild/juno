@@ -7,7 +7,8 @@ import type {
 	ListResults as ListAssets,
 	ListResults_1 as ListDocs,
 	Rule,
-	SetRule
+	SetRule,
+	UserUsage
 } from '$declarations/satellite/satellite.did';
 import { getSatelliteActor } from '$lib/api/actors/actor.juno.api';
 import type { CustomDomains } from '$lib/types/custom-domain';
@@ -289,4 +290,21 @@ export const countCollectionAssets = async ({
 }): Promise<bigint> => {
 	const { count_collection_assets } = await getSatelliteActor({ satelliteId, identity });
 	return count_collection_assets(collection);
+};
+
+export const getUsageUsage = async ({
+	satelliteId,
+	collection,
+	collectionType,
+	userId,
+	identity
+}: {
+	satelliteId: Principal;
+	collection: string;
+	collectionType: CollectionType;
+	userId: Principal;
+	identity: OptionIdentity;
+}): Promise<[] | [UserUsage]> => {
+	const { get_user_usage } = await getSatelliteActor({ satelliteId, identity });
+	return get_user_usage(collection, collectionType, toNullable(userId));
 };

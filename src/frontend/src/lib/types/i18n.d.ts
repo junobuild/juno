@@ -84,6 +84,7 @@ interface I18nCore {
 	fee: string;
 	preparing: string;
 	refreshing_interface: string;
+	usage: string;
 }
 
 interface I18nCanisters {
@@ -568,6 +569,7 @@ interface I18nErrors {
 	monitoring_email_update: string;
 	monitoring_notifications_update: string;
 	monitoring_upgrade: string;
+	user_usage_not_loaded: string;
 }
 
 interface I18nDocument {
@@ -702,11 +704,15 @@ interface I18nFilter {
 }
 
 interface I18nUsers {
+	user_details: string;
 	identifier: string;
 	provider: string;
 	created: string;
 	updated: string;
 	empty: string;
+	view_details: string;
+	persistence: string;
+	changes: string;
 }
 
 interface I18nMonitoring {
@@ -753,7 +759,6 @@ interface I18nMonitoring {
 	stop_monitoring_note: string;
 	last_status_check: string;
 	last_top_up: string;
-	usage: string;
 	weekly_cycles_deposit: string;
 	default_strategy: string;
 	strategy_for_modules: string;

@@ -713,6 +713,8 @@ interface I18nUsers {
 	view_details: string;
 	persistence: string;
 	changes: string;
+	changes_unlimited: string;
+	max_changes_reached: string;
 }
 
 interface I18nMonitoring {

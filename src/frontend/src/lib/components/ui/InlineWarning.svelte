@@ -3,12 +3,13 @@
 
 	interface Props {
 		title: string | undefined;
+		iconSize?: string;
 	}
 
-	let { title }: Props = $props();
+	let { title, iconSize = '24px' }: Props = $props();
 </script>
 
-<span class="warning" {title}><IconWarning /></span>
+<span class="warning" {title}><IconWarning size={iconSize} /></span>
 
 <style lang="scss">
 	.warning {

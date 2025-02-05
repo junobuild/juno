@@ -81,10 +81,12 @@ const loadUserUsages = async ({
 
 	const loadUsage = async ({
 		collection,
-		collectionType
+		collectionType,
+		maxChangesPerUser
 	}: {
 		collection: string;
 		collectionType: CollectionType;
+		maxChangesPerUser: number | undefined;
 	}): Promise<UserUsageCollection> => {
 		const usage = await getUsageUsage({
 			satelliteId,
@@ -97,16 +99,25 @@ const loadUserUsages = async ({
 		return {
 			collection,
 			collectionType,
+			maxChangesPerUser,
 			usage: fromNullable(usage)
 		};
 	};
 
 	const promises = [
-		...dbRules.map(([collection, _]) =>
-			loadUsage({ collection, collectionType: DbCollectionType })
+		...dbRules.map(([collection, { max_changes_per_user }]) =>
+			loadUsage({
+				collection,
+				collectionType: DbCollectionType,
+				maxChangesPerUser: fromNullable(max_changes_per_user)
+			})
 		),
-		...storageRules.map(([collection, _]) =>
-			loadUsage({ collection, collectionType: StorageCollectionType })
+		...storageRules.map(([collection, { max_changes_per_user }]) =>
+			loadUsage({
+				collection,
+				collectionType: StorageCollectionType,
+				maxChangesPerUser: fromNullable(max_changes_per_user)
+			})
 		)
 	];
 

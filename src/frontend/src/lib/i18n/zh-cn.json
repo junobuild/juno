@@ -688,7 +688,9 @@
 		"empty": "目前还有注册的用户.",
 		"view_details": "View user details",
 		"persistence": "Persistence",
-		"changes": "Changes"
+		"changes": "Changes",
+		"changes_unlimited": "Unlimited",
+		"max_changes_reached": "Max changes per user reached"
 	},
 	"monitoring": {
 		"title": "Monitoring",

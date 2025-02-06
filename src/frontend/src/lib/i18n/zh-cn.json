@@ -444,6 +444,7 @@
 	"errors": {
 		"no_identity": "异常错误，没有提供 identity ",
 		"initializing_mission_control": "Mission control center cannot be initialized.",
+		"sign_in": "An error occurred during sign-in. Please check the error details and try again.",
 		"mission_control_sign_out": "You have been signed out because your Mission Control could not be certified.",
 		"no_mission_control": "Mission 控制中心没有初始化.",
 		"cli_missing_params": "URL参数缺失，重定向URL或者 principal没有提供.",

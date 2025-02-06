@@ -4,7 +4,6 @@ use ic_cdk::api::time;
 use ic_stable_structures::storable::Bound;
 use ic_stable_structures::Storable;
 use junobuild_collections::types::core::CollectionKey;
-use junobuild_shared::constants::INITIAL_VERSION;
 use junobuild_shared::serializers::{deserialize_from_bytes, serialize_to_bytes};
 use junobuild_shared::types::state::{Timestamp, UserId, Version, Versioned};
 use std::borrow::Cow;

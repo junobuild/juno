@@ -10,7 +10,6 @@ use candid::Principal;
 use ic_cdk::api::time;
 use ic_stable_structures::storable::Bound;
 use ic_stable_structures::Storable;
-use junobuild_shared::constants::INITIAL_VERSION;
 use junobuild_shared::rate::constants::DEFAULT_RATE_CONFIG;
 use junobuild_shared::rate::types::RateTokens;
 use junobuild_shared::serializers::{deserialize_from_bytes, serialize_to_bytes};

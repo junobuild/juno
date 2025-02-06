@@ -6,7 +6,6 @@ use ic_stable_structures::storable::Bound;
 use ic_stable_structures::Storable;
 use junobuild_collections::constants::DEFAULT_DB_COLLECTIONS;
 use junobuild_collections::types::rules::{Memory, Rule};
-use junobuild_shared::constants::INITIAL_VERSION;
 use junobuild_shared::serializers::{deserialize_from_bytes, serialize_to_bytes};
 use junobuild_shared::types::state::{Timestamped, Versioned};
 use junobuild_shared::types::state::{Timestamp, UserId, Version};

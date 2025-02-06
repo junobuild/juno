@@ -3,7 +3,6 @@ use crate::types::core::CollectionKey;
 use crate::types::interface::SetRule;
 use crate::types::rules::{Memory, Rule};
 use ic_cdk::api::time;
-use junobuild_shared::constants::INITIAL_VERSION;
 use junobuild_shared::types::state::{Timestamp, Version, Versioned};
 use junobuild_shared::version::next_version;
 

@@ -32,6 +32,10 @@ pub mod state {
         fn cmp_created_at(&self, other: &Self) -> Ordering;
     }
 
+    pub trait Versioned {
+        fn version(&self) -> Option<Version>;
+    }
+
     #[derive(CandidType, Serialize, Deserialize, Clone)]
     pub struct Controller {
         pub metadata: Metadata,

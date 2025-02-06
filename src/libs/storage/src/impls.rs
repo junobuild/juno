@@ -14,8 +14,8 @@ use junobuild_collections::types::interface::SetRule;
 use junobuild_collections::types::rules::{Memory, Rule, Rules};
 use junobuild_shared::serializers::{deserialize_from_bytes, serialize_to_bytes};
 use junobuild_shared::types::core::{Blob, Hash, Hashable};
-use junobuild_shared::types::state::Timestamp;
 use junobuild_shared::types::state::Timestamped;
+use junobuild_shared::types::state::{Timestamp, Version, Versioned};
 use sha2::{Digest, Sha256};
 use std::borrow::Cow;
 use std::cmp::Ordering;
@@ -178,6 +178,18 @@ impl Timestamped for Asset {
 
     fn cmp_created_at(&self, other: &Self) -> Ordering {
         self.created_at.cmp(&other.created_at)
+    }
+}
+
+impl Versioned for Asset {
+    fn version(&self) -> Option<Version> {
+        self.version
+    }
+}
+
+impl Versioned for &Asset {
+    fn version(&self) -> Option<Version> {
+        self.version
     }
 }
 

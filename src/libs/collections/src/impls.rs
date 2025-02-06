@@ -3,8 +3,8 @@ use crate::types::core::CollectionKey;
 use crate::types::interface::SetRule;
 use crate::types::rules::{Memory, Rule};
 use ic_cdk::api::time;
-use junobuild_shared::constants::INITIAL_VERSION;
-use junobuild_shared::types::state::{Timestamp, Version};
+use junobuild_shared::types::state::{Timestamp, Version, Versioned};
+use junobuild_shared::version::next_version;
 
 impl Rule {
     pub fn mem(&self) -> Memory {
@@ -31,10 +31,7 @@ impl Rule {
             Some(current_rule) => current_rule.created_at,
         };
 
-        let version: Version = match current_rule {
-            None => INITIAL_VERSION,
-            Some(current_rule) => current_rule.version.unwrap_or_default() + 1,
-        };
+        let version = next_version(current_rule);
 
         let updated_at: Timestamp = now;
 
@@ -87,5 +84,11 @@ impl Rule {
                 Ok(rule)
             }
         }
+    }
+}
+
+impl Versioned for &Rule {
+    fn version(&self) -> Option<Version> {
+        self.version
     }
 }

@@ -10,12 +10,12 @@ use candid::Principal;
 use ic_cdk::api::time;
 use ic_stable_structures::storable::Bound;
 use ic_stable_structures::Storable;
-use junobuild_shared::constants::INITIAL_VERSION;
 use junobuild_shared::rate::constants::DEFAULT_RATE_CONFIG;
 use junobuild_shared::rate::types::RateTokens;
 use junobuild_shared::serializers::{deserialize_from_bytes, serialize_to_bytes};
 use junobuild_shared::types::core::Hash;
-use junobuild_shared::types::state::Version;
+use junobuild_shared::types::state::{Version, Versioned};
+use junobuild_shared::version::next_version;
 use std::borrow::Cow;
 use std::fmt;
 
@@ -121,10 +121,7 @@ impl Storable for Proposal {
 
 impl Proposal {
     fn get_next_version(current_proposal: &Option<Proposal>) -> Version {
-        match current_proposal {
-            None => INITIAL_VERSION,
-            Some(current_proposal) => current_proposal.version.unwrap_or_default() + 1,
-        }
+        next_version(current_proposal)
     }
 
     pub fn init(caller: Principal, proposal_type: &ProposalType) -> Self {
@@ -196,6 +193,12 @@ impl Proposal {
             version: Some(version),
             ..current_proposal.clone()
         }
+    }
+}
+
+impl Versioned for Proposal {
+    fn version(&self) -> Option<Version> {
+        self.version
     }
 }
 

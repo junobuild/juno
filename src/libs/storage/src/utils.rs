@@ -10,11 +10,11 @@ use ic_cdk::api::time;
 use junobuild_collections::assert_stores::assert_permission;
 use junobuild_collections::types::core::CollectionKey;
 use junobuild_collections::types::rules::Permission;
-use junobuild_shared::constants::INITIAL_VERSION;
 use junobuild_shared::list::{filter_timestamps, matcher_regex};
 use junobuild_shared::types::core::Blob;
 use junobuild_shared::types::list::ListParams;
-use junobuild_shared::types::state::{Controllers, Timestamp, UserId, Version};
+use junobuild_shared::types::state::{Controllers, Timestamp, UserId};
+use junobuild_shared::version::next_version;
 use regex::Regex;
 use std::collections::HashMap;
 
@@ -171,10 +171,7 @@ pub fn create_empty_asset(
         Some(existing_asset) => existing_asset.created_at,
     };
 
-    let version: Version = match existing_asset {
-        None => INITIAL_VERSION,
-        Some(existing_asset) => existing_asset.version.unwrap_or_default() + 1,
-    };
+    let version = next_version(&existing_asset);
 
     Asset {
         key,

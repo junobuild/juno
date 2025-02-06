@@ -15,7 +15,7 @@ use ciborium::from_reader;
 use ic_stable_structures::storable::Bound;
 use ic_stable_structures::Storable;
 use junobuild_shared::serializers::{deserialize_from_bytes, serialize_to_bytes};
-use junobuild_shared::types::state::{Controllers, SatelliteId};
+use junobuild_shared::types::state::{Controllers, SatelliteId, Version, Versioned};
 use std::borrow::Cow;
 
 impl Default for State {
@@ -54,8 +54,20 @@ impl StoredPageView {
         }
     }
 
+    pub fn inner(&self) -> &PageView {
+        match self {
+            StoredPageView::Unbounded(page_view) | StoredPageView::Bounded(page_view) => page_view,
+        }
+    }
+
     pub fn is_bounded(&self) -> bool {
         matches!(self, StoredPageView::Bounded(_))
+    }
+}
+
+impl Versioned for StoredPageView {
+    fn version(&self) -> Option<Version> {
+        self.inner().version
     }
 }
 
@@ -85,8 +97,22 @@ impl StoredTrackEvent {
         }
     }
 
+    pub fn inner(&self) -> &TrackEvent {
+        match self {
+            StoredTrackEvent::Unbounded(track_event) | StoredTrackEvent::Bounded(track_event) => {
+                track_event
+            }
+        }
+    }
+
     pub fn is_bounded(&self) -> bool {
         matches!(self, StoredTrackEvent::Bounded(_))
+    }
+}
+
+impl Versioned for StoredTrackEvent {
+    fn version(&self) -> Option<Version> {
+        self.inner().version
     }
 }
 
@@ -100,6 +126,12 @@ impl Storable for PerformanceMetric {
     }
 
     const BOUND: Bound = Bound::Unbounded;
+}
+
+impl Versioned for PerformanceMetric {
+    fn version(&self) -> Option<Version> {
+        self.version
+    }
 }
 
 impl Storable for AnalyticKey {

@@ -20,7 +20,6 @@ use sha2::{Digest, Sha256};
 use std::borrow::Cow;
 use std::cmp::Ordering;
 use std::collections::HashMap;
-use junobuild_shared::types::domain::CustomDomain;
 
 impl Default for StorageHeapState {
     fn default() -> Self {

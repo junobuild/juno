@@ -145,7 +145,7 @@ pub fn create_asset_with_content(
     existing_asset: Option<Asset>,
     key: AssetKey,
 ) -> Asset {
-    let mut asset: Asset = Asset::new(headers, existing_asset, key);
+    let mut asset: Asset = Asset::prepare(key, headers.to_vec(), &existing_asset);
 
     let encoding = map_content_encoding(&content.as_bytes().to_vec());
 

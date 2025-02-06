@@ -12,7 +12,6 @@ use ic_stable_structures::Storable;
 use junobuild_collections::constants::DEFAULT_ASSETS_COLLECTIONS;
 use junobuild_collections::types::interface::SetRule;
 use junobuild_collections::types::rules::{Memory, Rule, Rules};
-use junobuild_shared::constants::INITIAL_VERSION;
 use junobuild_shared::serializers::{deserialize_from_bytes, serialize_to_bytes};
 use junobuild_shared::types::core::{Blob, Hash, Hashable};
 use junobuild_shared::types::state::Timestamped;
@@ -184,48 +183,35 @@ impl Timestamped for Asset {
 }
 
 impl Asset {
-
-    // TODO: new and prepare can be merged
-
-    pub fn new(headers: &[HeaderField], existing_asset: Option<Asset>, key: AssetKey) -> Self {
+    pub fn prepare(
+        key: AssetKey,
+        headers: Vec<HeaderField>,
+        existing_asset: &Option<Asset>,
+    ) -> Self {
         let now = time();
 
-        let created_at: Timestamp = match existing_asset.clone() {
+        let created_at: Timestamp = match existing_asset {
             None => now,
-            Some(existing_asset) => existing_asset.created_at,
+            Some(current_doc) => current_doc.created_at,
         };
 
-        let version = next_version(&existing_asset);
+        let version = next_version(existing_asset);
+
+        let encodings = match existing_asset {
+            None => HashMap::new(),
+            Some(existing_asset) => existing_asset.encodings.clone(),
+        };
+
+        let updated_at: Timestamp = now;
 
         Asset {
             key,
-            headers: headers.to_owned(),
-            encodings: HashMap::new(),
+            headers,
+            encodings,
             created_at,
-            updated_at: now,
+            updated_at,
             version: Some(version),
         }
-    }
-
-    pub fn prepare(key: AssetKey, headers: Vec<HeaderField>, current: &Option<Asset>) -> Self {
-        let now = time();
-
-        let mut asset: Asset = Asset {
-            key,
-            headers,
-            encodings: HashMap::new(),
-            created_at: now,
-            updated_at: now,
-            version: Some(INITIAL_VERSION),
-        };
-
-        if let Some(existing_asset) = current {
-            asset.encodings = existing_asset.encodings.clone();
-            asset.created_at = existing_asset.created_at;
-            asset.version = Some(next_version(&Some(existing_asset)));
-        }
-
-        asset
     }
 }
 

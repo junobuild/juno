@@ -115,9 +115,9 @@ const findICPToken = async (page = 1): Promise<KongSwapToken | undefined> => {
 		return undefined;
 	}
 
-	const { tokens, total_count } = kongTokens;
+	const { items, total_count } = kongTokens;
 
-	const icp = tokens.find(({ canister_id }) => canister_id === ICP_LEDGER_CANISTER_ID);
+	const icp = items.find(({ canister_id }) => canister_id === ICP_LEDGER_CANISTER_ID);
 
 	if (nonNullish(icp)) {
 		return icp;

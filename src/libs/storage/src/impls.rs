@@ -12,10 +12,12 @@ use ic_stable_structures::Storable;
 use junobuild_collections::constants::DEFAULT_ASSETS_COLLECTIONS;
 use junobuild_collections::types::interface::SetRule;
 use junobuild_collections::types::rules::{Memory, Rule, Rules};
+use junobuild_shared::constants::INITIAL_VERSION;
 use junobuild_shared::serializers::{deserialize_from_bytes, serialize_to_bytes};
 use junobuild_shared::types::core::{Blob, Hash, Hashable};
 use junobuild_shared::types::state::Timestamped;
 use junobuild_shared::types::state::{Timestamp, Version, Versioned};
+use junobuild_shared::version::next_version;
 use sha2::{Digest, Sha256};
 use std::borrow::Cow;
 use std::cmp::Ordering;
@@ -178,6 +180,52 @@ impl Timestamped for Asset {
 
     fn cmp_created_at(&self, other: &Self) -> Ordering {
         self.created_at.cmp(&other.created_at)
+    }
+}
+
+impl Asset {
+
+    // TODO: new and prepare can be merged
+
+    pub fn new(headers: &[HeaderField], existing_asset: Option<Asset>, key: AssetKey) -> Self {
+        let now = time();
+
+        let created_at: Timestamp = match existing_asset.clone() {
+            None => now,
+            Some(existing_asset) => existing_asset.created_at,
+        };
+
+        let version = next_version(&existing_asset);
+
+        Asset {
+            key,
+            headers: headers.to_owned(),
+            encodings: HashMap::new(),
+            created_at,
+            updated_at: now,
+            version: Some(version),
+        }
+    }
+
+    pub fn prepare(key: AssetKey, headers: Vec<HeaderField>, current: &Option<Asset>) -> Self {
+        let now = time();
+
+        let mut asset: Asset = Asset {
+            key,
+            headers,
+            encodings: HashMap::new(),
+            created_at: now,
+            updated_at: now,
+            version: Some(INITIAL_VERSION),
+        };
+
+        if let Some(existing_asset) = current {
+            asset.encodings = existing_asset.encodings.clone();
+            asset.created_at = existing_asset.created_at;
+            asset.version = Some(next_version(&Some(existing_asset)));
+        }
+
+        asset
     }
 }
 

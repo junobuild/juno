@@ -48,7 +48,7 @@ impl Storable for StoredPageView {
 }
 
 impl StoredPageView {
-    pub fn inner(self) -> PageView {
+    pub fn into_inner(self) -> PageView {
         match self {
             StoredPageView::Unbounded(page_view) | StoredPageView::Bounded(page_view) => page_view,
         }
@@ -83,7 +83,7 @@ impl Storable for StoredTrackEvent {
 }
 
 impl StoredTrackEvent {
-    pub fn inner(self) -> TrackEvent {
+    pub fn into_inner(self) -> TrackEvent {
         match self {
             StoredTrackEvent::Unbounded(track_event) | StoredTrackEvent::Bounded(track_event) => {
                 track_event

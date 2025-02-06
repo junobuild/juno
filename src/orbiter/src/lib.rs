@@ -48,7 +48,7 @@ use ic_cdk::api::call::{arg_data, ArgDecoderConfig};
 use ic_cdk::trap;
 use ic_cdk_macros::{export_candid, init, post_upgrade, pre_upgrade, query, update};
 use junobuild_shared::canister::memory_size as canister_memory_size;
-use junobuild_shared::constants::MAX_NUMBER_OF_SATELLITE_CONTROLLERS;
+use junobuild_shared::constants_shared::MAX_NUMBER_OF_SATELLITE_CONTROLLERS;
 use junobuild_shared::controllers::{
     assert_controllers, assert_max_number_of_controllers, init_controllers,
 };

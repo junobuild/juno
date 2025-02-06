@@ -4,7 +4,7 @@ use candid::Principal;
 use ic_cdk::api::call::CallResult;
 use ic_cdk::{call, id};
 use ic_ledger_types::{BlockIndex, Tokens};
-use junobuild_shared::constants::{IC_TRANSACTION_FEE_ICP, MEMO_CANISTER_CREATE};
+use junobuild_shared::constants_shared::{IC_TRANSACTION_FEE_ICP, MEMO_CANISTER_CREATE};
 use junobuild_shared::env::CONSOLE;
 use junobuild_shared::ledger::icp::{transfer_payment, SUB_ACCOUNT};
 use junobuild_shared::mgmt::ic::{delete_segment, stop_segment};

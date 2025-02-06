@@ -23,3 +23,5 @@ pub mod types;
 #[doc(hidden)]
 pub mod upgrade;
 pub mod utils;
+#[doc(hidden)]
+pub mod version;

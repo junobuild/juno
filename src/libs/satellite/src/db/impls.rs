@@ -8,11 +8,12 @@ use junobuild_collections::constants::DEFAULT_DB_COLLECTIONS;
 use junobuild_collections::types::rules::{Memory, Rule};
 use junobuild_shared::constants::INITIAL_VERSION;
 use junobuild_shared::serializers::{deserialize_from_bytes, serialize_to_bytes};
-use junobuild_shared::types::state::Timestamped;
+use junobuild_shared::types::state::{Timestamped, Versioned};
 use junobuild_shared::types::state::{Timestamp, UserId, Version};
 use std::borrow::Cow;
 use std::cmp::Ordering;
 use std::collections::{BTreeMap, HashMap};
+use junobuild_shared::version::next_version;
 
 impl Default for DbHeapState {
     fn default() -> Self {
@@ -97,10 +98,7 @@ impl Doc {
             Some(current_doc) => current_doc.created_at,
         };
 
-        let version: Version = match current_doc {
-            None => INITIAL_VERSION,
-            Some(current_doc) => current_doc.version.unwrap_or_default() + 1,
-        };
+        let version = next_version(current_doc);
 
         let owner: UserId = match current_doc {
             None => caller,
@@ -119,3 +117,10 @@ impl Doc {
         }
     }
 }
+
+impl Versioned for Doc {
+    fn version(&self) -> Option<Version> {
+        self.version
+    }
+}
+

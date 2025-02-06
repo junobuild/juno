@@ -14,6 +14,7 @@ use ic_cdk::api::time;
 use junobuild_shared::assert::{assert_timestamp, assert_version};
 use junobuild_shared::constants::INITIAL_VERSION;
 use junobuild_shared::types::state::{SatelliteId, Timestamp, Version};
+use junobuild_shared::version::next_version;
 
 pub fn insert_page_view(key: AnalyticKey, page_view: SetPageView) -> Result<PageView, String> {
     STATE.with(|state| insert_page_view_impl(key, page_view, &mut state.borrow_mut().stable))
@@ -78,10 +79,7 @@ fn insert_page_view_impl(
         Some(current_page_view) => current_page_view.inner().created_at,
     };
 
-    let version: Version = match current_page_view.clone() {
-        None => INITIAL_VERSION,
-        Some(current_page_view) => current_page_view.inner().version.unwrap_or_default() + 1,
-    };
+    let version = next_version(&current_page_view);
 
     let session_id: String = match current_page_view.clone() {
         None => page_view.session_id.clone(),
@@ -189,10 +187,7 @@ fn insert_track_event_impl(
         Some(current_track_event) => current_track_event.inner().created_at,
     };
 
-    let version: Version = match current_track_event.clone() {
-        None => INITIAL_VERSION,
-        Some(current_track_event) => current_track_event.inner().version.unwrap_or_default() + 1,
-    };
+    let version = next_version(&current_track_event);
 
     let session_id: String = match current_track_event.clone() {
         None => track_event.session_id.clone(),

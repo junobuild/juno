@@ -15,7 +15,7 @@ use ciborium::from_reader;
 use ic_stable_structures::storable::Bound;
 use ic_stable_structures::Storable;
 use junobuild_shared::serializers::{deserialize_from_bytes, serialize_to_bytes};
-use junobuild_shared::types::state::{Controllers, SatelliteId};
+use junobuild_shared::types::state::{Controllers, SatelliteId, Version, Versioned};
 use std::borrow::Cow;
 
 impl Default for State {
@@ -59,6 +59,12 @@ impl StoredPageView {
     }
 }
 
+impl Versioned for StoredPageView {
+    fn version(self) -> Option<Version> {
+        self.inner().version
+    }
+}
+
 impl Storable for StoredTrackEvent {
     fn to_bytes(&self) -> Cow<[u8]> {
         match self {
@@ -87,6 +93,12 @@ impl StoredTrackEvent {
 
     pub fn is_bounded(&self) -> bool {
         matches!(self, StoredTrackEvent::Bounded(_))
+    }
+}
+
+impl Versioned for StoredTrackEvent {
+    fn version(&self) -> Option<Version> {
+        self.inner().version
     }
 }
 

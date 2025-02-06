@@ -17,6 +17,7 @@ use junobuild_shared::types::list::ListParams;
 use junobuild_shared::types::state::{Controllers, Timestamp, UserId, Version};
 use regex::Regex;
 use std::collections::HashMap;
+use junobuild_shared::version::next_version;
 
 pub fn map_asset_no_content(asset: &Asset) -> (FullPath, AssetNoContent) {
     (asset.key.full_path.clone(), AssetNoContent::from(asset))
@@ -171,10 +172,7 @@ pub fn create_empty_asset(
         Some(existing_asset) => existing_asset.created_at,
     };
 
-    let version: Version = match existing_asset {
-        None => INITIAL_VERSION,
-        Some(existing_asset) => existing_asset.version.unwrap_or_default() + 1,
-    };
+    let version = next_version(&existing_asset);
 
     Asset {
         key,

@@ -6,8 +6,9 @@ use ic_stable_structures::Storable;
 use junobuild_collections::types::core::CollectionKey;
 use junobuild_shared::constants::INITIAL_VERSION;
 use junobuild_shared::serializers::{deserialize_from_bytes, serialize_to_bytes};
-use junobuild_shared::types::state::{Timestamp, UserId, Version};
+use junobuild_shared::types::state::{Timestamp, UserId, Version, Versioned};
 use std::borrow::Cow;
+use junobuild_shared::version::next_version;
 
 impl Storable for UserUsage {
     fn to_bytes(&self) -> Cow<[u8]> {
@@ -61,10 +62,7 @@ impl UserUsage {
             Some(current_user_usage) => current_user_usage.created_at,
         };
 
-        let version: Version = match current_user_usage {
-            None => INITIAL_VERSION,
-            Some(current_user_usage) => current_user_usage.version.unwrap_or_default() + 1,
-        };
+        let version = next_version(current_user_usage);
 
         let updated_at: Timestamp = now;
 
@@ -74,6 +72,12 @@ impl UserUsage {
             updated_at,
             version: Some(version),
         }
+    }
+}
+
+impl Versioned for UserUsage {
+    fn version(&self) -> Option<Version> {
+        self.version
     }
 }
 

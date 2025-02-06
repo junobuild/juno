@@ -15,9 +15,10 @@ use junobuild_shared::rate::constants::DEFAULT_RATE_CONFIG;
 use junobuild_shared::rate::types::RateTokens;
 use junobuild_shared::serializers::{deserialize_from_bytes, serialize_to_bytes};
 use junobuild_shared::types::core::Hash;
-use junobuild_shared::types::state::Version;
+use junobuild_shared::types::state::{Version, Versioned};
 use std::borrow::Cow;
 use std::fmt;
+use junobuild_shared::version::next_version;
 
 impl Default for State {
     fn default() -> Self {
@@ -121,10 +122,7 @@ impl Storable for Proposal {
 
 impl Proposal {
     fn get_next_version(current_proposal: &Option<Proposal>) -> Version {
-        match current_proposal {
-            None => INITIAL_VERSION,
-            Some(current_proposal) => current_proposal.version.unwrap_or_default() + 1,
-        }
+        next_version(current_proposal)
     }
 
     pub fn init(caller: Principal, proposal_type: &ProposalType) -> Self {
@@ -196,6 +194,12 @@ impl Proposal {
             version: Some(version),
             ..current_proposal.clone()
         }
+    }
+}
+
+impl Versioned for Proposal {
+    fn version(&self) -> Option<Version> {
+        self.version
     }
 }
 

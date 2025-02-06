@@ -128,6 +128,12 @@ impl Storable for PerformanceMetric {
     const BOUND: Bound = Bound::Unbounded;
 }
 
+impl Versioned for PerformanceMetric {
+    fn version(&self) -> Option<Version> {
+        self.version
+    }
+}
+
 impl Storable for AnalyticKey {
     fn to_bytes(&self) -> Cow<[u8]> {
         serialize_bounded_analytic_key(self)

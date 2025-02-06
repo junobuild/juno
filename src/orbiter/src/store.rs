@@ -12,8 +12,7 @@ use crate::types::state::{
 };
 use ic_cdk::api::time;
 use junobuild_shared::assert::{assert_timestamp, assert_version};
-use junobuild_shared::constants::INITIAL_VERSION;
-use junobuild_shared::types::state::{SatelliteId, Timestamp, Version};
+use junobuild_shared::types::state::{SatelliteId, Timestamp};
 use junobuild_shared::version::next_version;
 
 pub fn insert_page_view(key: AnalyticKey, page_view: SetPageView) -> Result<PageView, String> {
@@ -294,12 +293,7 @@ fn insert_performance_metric_impl(
         Some(current_performance_metric) => current_performance_metric.created_at,
     };
 
-    let version: Version = match &current_performance_metric {
-        None => INITIAL_VERSION,
-        Some(current_performance_metric) => {
-            current_performance_metric.version.unwrap_or_default() + 1
-        }
-    };
+    let version = next_version(&current_performance_metric);
 
     let session_id: String = match &current_performance_metric {
         None => performance_metric.session_id.clone(),

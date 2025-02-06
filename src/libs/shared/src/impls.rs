@@ -1,4 +1,4 @@
-use crate::types::state::{SegmentKind, Version, Versioned};
+use crate::types::state::{OrbiterSatelliteConfig, SegmentKind, Version, Versioned};
 use crate::types::utils::CalendarDate;
 use std::fmt::{Display, Formatter, Result};
 use time::Month;
@@ -25,6 +25,12 @@ impl Display for SegmentKind {
 }
 
 impl Versioned for CustomDomain {
+    fn version(&self) -> Option<Version> {
+        self.version
+    }
+}
+
+impl Versioned for &OrbiterSatelliteConfig {
     fn version(&self) -> Option<Version> {
         self.version
     }

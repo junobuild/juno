@@ -20,11 +20,8 @@ use crate::types::store::{
 use candid::Principal;
 use ic_cdk::api::time;
 use junobuild_collections::types::rules::Rule;
-use junobuild_shared::constants::INITIAL_VERSION;
 use junobuild_shared::types::core::Blob;
 use junobuild_shared::types::state::Controllers;
-use junobuild_shared::version::next_version;
-use std::collections::HashMap;
 use std::ptr::addr_of;
 
 // ---------------------------------------------------------
@@ -320,22 +317,7 @@ fn commit_chunks(
         ..batch.clone().key
     };
 
-    let now = time();
-
-    let mut asset: Asset = Asset {
-        key,
-        headers,
-        encodings: HashMap::new(),
-        created_at: now,
-        updated_at: now,
-        version: Some(INITIAL_VERSION),
-    };
-
-    if let Some(existing_asset) = current {
-        asset.encodings = existing_asset.encodings.clone();
-        asset.created_at = existing_asset.created_at;
-        asset.version = Some(next_version(&Some(existing_asset)));
-    }
+    let mut asset: Asset = Asset::prepare(key, headers, current);
 
     let encoding_type = get_encoding_type(&batch.encoding_type)?;
 

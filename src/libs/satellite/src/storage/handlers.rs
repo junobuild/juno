@@ -10,7 +10,7 @@ use junobuild_storage::http::types::HeaderField;
 use junobuild_storage::msg::SET_NOT_ALLOWED;
 use junobuild_storage::runtime::update_certified_asset as update_runtime_certified_asset;
 use junobuild_storage::types::store::{Asset, AssetKey};
-use junobuild_storage::utils::{create_empty_asset, map_content_encoding};
+use junobuild_storage::utils::{map_content_encoding};
 
 /// Handles the setting of an asset within the store. This function performs
 /// various checks and operations to ensure the asset can be set and updated
@@ -66,7 +66,7 @@ fn set_asset_handler_impl(
     headers: &[HeaderField],
     rule: &Rule,
 ) -> Result<(), String> {
-    let mut asset = create_empty_asset(headers, existing_asset.clone(), key.clone());
+    let mut asset = Asset::new(headers, existing_asset.clone(), key.clone());
 
     let encoding = map_content_encoding(content);
 

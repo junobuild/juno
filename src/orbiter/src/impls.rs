@@ -54,13 +54,19 @@ impl StoredPageView {
         }
     }
 
+    pub fn inner(&self) -> &PageView {
+        match self {
+            StoredPageView::Unbounded(page_view) | StoredPageView::Bounded(page_view) => page_view,
+        }
+    }
+
     pub fn is_bounded(&self) -> bool {
         matches!(self, StoredPageView::Bounded(_))
     }
 }
 
 impl Versioned for StoredPageView {
-    fn version(self) -> Option<Version> {
+    fn version(&self) -> Option<Version> {
         self.inner().version
     }
 }
@@ -84,6 +90,14 @@ impl Storable for StoredTrackEvent {
 
 impl StoredTrackEvent {
     pub fn into_inner(self) -> TrackEvent {
+        match self {
+            StoredTrackEvent::Unbounded(track_event) | StoredTrackEvent::Bounded(track_event) => {
+                track_event
+            }
+        }
+    }
+
+    pub fn inner(&self) -> &TrackEvent {
         match self {
             StoredTrackEvent::Unbounded(track_event) | StoredTrackEvent::Bounded(track_event) => {
                 track_event

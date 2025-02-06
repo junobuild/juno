@@ -17,8 +17,10 @@ const DateTimeSchema = z.string().refine(
 
 const KongSwapTokenMetricsSchema = z.object({
 	market_cap: NumberAsStringSchema.nullable(),
+	previous_price: NumberAsStringSchema.nullable(),
 	price: NumberAsStringSchema,
 	price_change_24h: NumberAsStringSchema,
+	token_id: z.number(),
 	total_supply: NumberAsStringSchema.nullable(),
 	tvl: NumberAsStringSchema,
 	updated_at: DateTimeSchema,
@@ -31,6 +33,7 @@ export const KongSwapTokenSchema = z.object({
 	decimals: z.number(),
 	fee: z.number(),
 	fee_fixed: z.string().nullable(),
+	has_custom_logo: z.boolean(),
 	icrc1: z.boolean(),
 	icrc2: z.boolean(),
 	icrc3: z.boolean(),
@@ -44,6 +47,9 @@ export const KongSwapTokenSchema = z.object({
 });
 
 export const KongSwapTokensSchema = z.object({
-	tokens: z.array(KongSwapTokenSchema),
-	total_count: z.number()
+	items: z.array(KongSwapTokenSchema),
+	total_pages: z.number(),
+	total_count: z.number(),
+	page: z.number(),
+	limit: z.number()
 });

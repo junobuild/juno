@@ -23,6 +23,7 @@ use junobuild_collections::types::rules::Rule;
 use junobuild_shared::constants::INITIAL_VERSION;
 use junobuild_shared::types::core::Blob;
 use junobuild_shared::types::state::Controllers;
+use junobuild_shared::version::next_version;
 use std::collections::HashMap;
 use std::ptr::addr_of;
 
@@ -333,7 +334,7 @@ fn commit_chunks(
     if let Some(existing_asset) = current {
         asset.encodings = existing_asset.encodings.clone();
         asset.created_at = existing_asset.created_at;
-        asset.version = Some(existing_asset.version.unwrap_or_default() + 1);
+        asset.version = Some(next_version(&Some(existing_asset)));
     }
 
     let encoding_type = get_encoding_type(&batch.encoding_type)?;

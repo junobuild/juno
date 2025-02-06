@@ -187,6 +187,12 @@ impl Versioned for Asset {
     }
 }
 
+impl Versioned for &Asset {
+    fn version(&self) -> Option<Version> {
+        self.version
+    }
+}
+
 impl BatchExpiry for Batch {
     fn expires_at(&self) -> Timestamp {
         self.expires_at

@@ -35,7 +35,10 @@ fn insert_page_view_impl(
         None => (),
         Some(current_page_view) => {
             if current_page_view.is_bounded() {
-                match assert_timestamp(page_view.updated_at, current_page_view.into_inner().updated_at) {
+                match assert_timestamp(
+                    page_view.updated_at,
+                    current_page_view.into_inner().updated_at,
+                ) {
                     Ok(_) => (),
                     Err(e) => {
                         return Err(e);
@@ -56,7 +59,10 @@ fn insert_page_view_impl(
     match current_page_view.clone() {
         None => (),
         Some(current_page_view) => {
-            assert_session_id(&page_view.session_id, &current_page_view.into_inner().session_id)?;
+            assert_session_id(
+                &page_view.session_id,
+                &current_page_view.into_inner().session_id,
+            )?;
         }
     }
 
@@ -150,7 +156,10 @@ fn insert_track_event_impl(
                     }
                 }
             } else {
-                match assert_version(track_event.version, current_track_event.into_inner().version) {
+                match assert_version(
+                    track_event.version,
+                    current_track_event.into_inner().version,
+                ) {
                     Ok(_) => (),
                     Err(e) => {
                         return Err(e);
@@ -191,7 +200,9 @@ fn insert_track_event_impl(
 
     let version: Version = match current_track_event.clone() {
         None => INITIAL_VERSION,
-        Some(current_track_event) => current_track_event.into_inner().version.unwrap_or_default() + 1,
+        Some(current_track_event) => {
+            current_track_event.into_inner().version.unwrap_or_default() + 1
+        }
     };
 
     let session_id: String = match current_track_event.clone() {

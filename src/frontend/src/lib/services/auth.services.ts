@@ -11,6 +11,7 @@ import {
 	walletIdbStore
 } from '$lib/stores/idb.store';
 import { toasts } from '$lib/stores/toasts.store';
+import { SignInUserInterruptError } from '$lib/types/errors';
 import type { ToastLevel, ToastMsg } from '$lib/types/toast';
 import { replaceHistory } from '$lib/utils/route.utils';
 import { isNullish } from '@dfinity/utils';
@@ -27,13 +28,13 @@ export const signIn = async (
 
 		return { success: 'ok' };
 	} catch (err: unknown) {
-		if (err === 'UserInterrupt') {
+		if (err instanceof SignInUserInterruptError) {
 			// We do not display an error if user explicitly cancelled the process of sign-in
 			return { success: 'cancelled' };
 		}
 
 		toasts.error({
-			text: `Something went wrong while sign-in.`,
+			text: get(i18n).errors.sign_in,
 			detail: err
 		});
 

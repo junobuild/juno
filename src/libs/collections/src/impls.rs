@@ -87,7 +87,7 @@ impl Rule {
     }
 }
 
-impl Versioned for Rule {
+impl Versioned for &Rule {
     fn version(&self) -> Option<Version> {
         self.version
     }

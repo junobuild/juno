@@ -14,9 +14,9 @@ use junobuild_shared::list::{filter_timestamps, matcher_regex};
 use junobuild_shared::types::core::Blob;
 use junobuild_shared::types::list::ListParams;
 use junobuild_shared::types::state::{Controllers, Timestamp, UserId};
+use junobuild_shared::version::next_version;
 use regex::Regex;
 use std::collections::HashMap;
-use junobuild_shared::version::next_version;
 
 pub fn map_asset_no_content(asset: &Asset) -> (FullPath, AssetNoContent) {
     (asset.key.full_path.clone(), AssetNoContent::from(asset))

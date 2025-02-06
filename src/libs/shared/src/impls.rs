@@ -1,8 +1,8 @@
+use crate::types::domain::CustomDomain;
 use crate::types::state::{OrbiterSatelliteConfig, SegmentKind, Version, Versioned};
 use crate::types::utils::CalendarDate;
 use std::fmt::{Display, Formatter, Result};
 use time::Month;
-use crate::types::domain::CustomDomain;
 
 impl From<&(i32, Month, u8)> for CalendarDate {
     fn from((year, month, day): &(i32, Month, u8)) -> Self {

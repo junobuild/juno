@@ -6,8 +6,8 @@ use ic_stable_structures::Storable;
 use junobuild_collections::types::core::CollectionKey;
 use junobuild_shared::serializers::{deserialize_from_bytes, serialize_to_bytes};
 use junobuild_shared::types::state::{Timestamp, UserId, Version, Versioned};
-use std::borrow::Cow;
 use junobuild_shared::version::next_version;
+use std::borrow::Cow;
 
 impl Storable for UserUsage {
     fn to_bytes(&self) -> Cow<[u8]> {

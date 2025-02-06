@@ -15,9 +15,9 @@ use junobuild_shared::rate::types::RateTokens;
 use junobuild_shared::serializers::{deserialize_from_bytes, serialize_to_bytes};
 use junobuild_shared::types::core::Hash;
 use junobuild_shared::types::state::{Version, Versioned};
+use junobuild_shared::version::next_version;
 use std::borrow::Cow;
 use std::fmt;
-use junobuild_shared::version::next_version;
 
 impl Default for State {
     fn default() -> Self {

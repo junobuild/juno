@@ -1,4 +1,5 @@
-use crate::constants::{CREATE_CANISTER_CYCLES, WASM_MEMORY_LIMIT};
+use crate::constants_internal::WASM_MEMORY_LIMIT;
+use crate::constants_shared::CREATE_CANISTER_CYCLES;
 use candid::{Nat, Principal};
 use ic_cdk::api::management_canister::main::CanisterSettings;
 

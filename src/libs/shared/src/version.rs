@@ -1,4 +1,4 @@
-use crate::constants::INITIAL_VERSION;
+use crate::constants_internal::INITIAL_VERSION;
 use crate::types::state::{Version, Versioned};
 
 pub fn next_version<T>(current: &Option<T>) -> Version

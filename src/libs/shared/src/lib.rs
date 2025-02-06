@@ -2,8 +2,9 @@
 
 pub mod assert;
 pub mod canister;
+mod constants_internal;
 #[doc(hidden)]
-pub mod constants;
+pub mod constants_shared;
 pub mod controllers;
 pub mod day;
 #[doc(hidden)]

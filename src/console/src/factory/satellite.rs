@@ -3,7 +3,7 @@ use crate::factory::canister::create_canister;
 use crate::store::heap::{get_satellite_fee, increment_satellites_rate};
 use crate::wasm::satellite_wasm_arg;
 use candid::Principal;
-use junobuild_shared::constants::CREATE_SATELLITE_CYCLES;
+use junobuild_shared::constants_shared::CREATE_SATELLITE_CYCLES;
 use junobuild_shared::mgmt::cmc::cmc_create_canister_install_code;
 use junobuild_shared::mgmt::ic::create_canister_install_code;
 use junobuild_shared::mgmt::types::cmc::SubnetId;

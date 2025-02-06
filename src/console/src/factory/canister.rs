@@ -6,7 +6,7 @@ use crate::store::stable::{
 use crate::types::ledger::Payment;
 use candid::Principal;
 use ic_ledger_types::{BlockIndex, Tokens};
-use junobuild_shared::constants::{IC_TRANSACTION_FEE_ICP, MEMO_SATELLITE_CREATE_REFUND};
+use junobuild_shared::constants_shared::{IC_TRANSACTION_FEE_ICP, MEMO_SATELLITE_CREATE_REFUND};
 use junobuild_shared::ledger::icp::{
     find_payment, principal_to_account_identifier, transfer_payment, SUB_ACCOUNT,
 };

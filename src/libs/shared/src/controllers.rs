@@ -1,4 +1,4 @@
-use crate::constants::REVOKED_CONTROLLERS;
+use crate::constants_internal::REVOKED_CONTROLLERS;
 use crate::env::{CONSOLE, OBSERVATORY};
 use crate::types::interface::SetController;
 use crate::types::state::{Controller, ControllerId, ControllerScope, Controllers, UserId};

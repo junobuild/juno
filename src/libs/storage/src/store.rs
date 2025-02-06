@@ -331,6 +331,7 @@ fn commit_chunks(
         version: Some(INITIAL_VERSION),
     };
 
+
     if let Some(existing_asset) = current {
         asset.encodings = existing_asset.encodings.clone();
         asset.created_at = existing_asset.created_at;

@@ -75,7 +75,7 @@ RUN mkdir -p src/console/src \
     && touch src/libs/collections/src/lib.rs \
     && mkdir -p src/libs/storage/src \
     && touch src/libs/storage/src/lib.rs \
-    && ./docker/build --only-dependencies \
+    && ./docker/build-deps \
     && rm -rf src
 
 FROM deps as build_mission_control

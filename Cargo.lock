@@ -1390,7 +1390,6 @@ dependencies = [
  "ic-cdk",
  "junobuild-macros",
  "junobuild-satellite",
- "junobuild-storage",
 ]
 
 [[package]]

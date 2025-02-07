@@ -11,5 +11,4 @@ crate-type = ["cdylib"]
 candid.workspace = true
 ic-cdk.workspace = true
 junobuild-satellite = { path = "../../../libs/satellite", default-features = false, features = ["on_set_doc"] }
-junobuild-storage = { path = "../../../libs/storage" }
 junobuild-macros = { path = "../../../libs/macros" }

@@ -140,7 +140,9 @@ FROM deps as build_test_satellite
 
 COPY . .
 
-RUN touch src/**/lib.rs
+RUN touch src/*/src/lib.rs
+RUN touch src/libs/*/src/lib.rs
+RUN touch src/tests/fixtures/*/src/lib.rs
 
 RUN ./docker/build --test_satellite
 RUN sha256sum /test_satellite.wasm.gz

@@ -18,7 +18,7 @@ function usage() {
     cat << EOF
 
 Usage:
-  $0 [--only-dependencies] [--mission_control] [--satellite] [--console] [--observatory] [--orbiter]
+  $0 [--only-dependencies] [--mission_control] [--satellite] [--console] [--observatory] [--orbiter] [--test_satellite]
 
 Options:
   --only-dependencies          only build rust dependencies (no js build, no wasm optimization)
@@ -27,6 +27,7 @@ Options:
   --console                    build the console canister
   --observatory                build the observatory canister
   --orbiter                    build the orbiter canister
+  --test_satellite             build the satellite canister used for testing purposes
 EOF
 }
 

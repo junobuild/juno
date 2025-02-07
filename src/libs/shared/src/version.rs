@@ -19,6 +19,6 @@ where
             } else {
                 version + 1
             }
-        },
+        }
     }
 }

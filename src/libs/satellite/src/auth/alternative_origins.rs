@@ -17,17 +17,22 @@ struct AlternativeOrigins {
 }
 
 pub fn update_alternative_origins(config: &AuthenticationConfig) -> Result<(), String> {
-    config
-        .internet_identity
-        .as_ref()
-        .and_then(|config| config.derivation_origin.as_ref())
-        .map_or_else(
-            || delete_alternative_origins_asset(&StorageState),
-            set_alternative_origins,
-        )
+    if let Some(internet_identity) = &config.internet_identity {
+        if let Some(derivation_origin) = &internet_identity.derivation_origin {
+            return set_alternative_origins(
+                derivation_origin,
+                &internet_identity.external_alternative_origins,
+            );
+        }
+    }
+
+    delete_alternative_origins_asset(&StorageState)
 }
 
-fn set_alternative_origins(derivation_origin: &DomainName) -> Result<(), String> {
+fn set_alternative_origins(
+    derivation_origin: &DomainName,
+    external_alternative_origins: &Option<Vec<DomainName>>,
+) -> Result<(), String> {
     let mut custom_domains: Vec<DomainName> = get_custom_domains_store()
         .keys()
         .filter(|domain| *domain != derivation_origin)
@@ -39,6 +44,21 @@ fn set_alternative_origins(derivation_origin: &DomainName) -> Result<(), String>
     if canister_url != *derivation_origin {
         custom_domains.push(canister_url);
     }
+
+    let external_domains: Vec<DomainName> =
+        external_alternative_origins
+            .as_ref()
+            .map_or_else(Vec::new, |alternative_origins| {
+                alternative_origins
+                    .iter()
+                    .filter(|domain| {
+                        *domain != derivation_origin && !custom_domains.contains(domain)
+                    })
+                    .cloned()
+                    .collect()
+            });
+
+    custom_domains.extend(external_domains);
 
     if custom_domains.is_empty() {
         return delete_alternative_origins_asset(&StorageState);

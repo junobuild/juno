@@ -76,7 +76,8 @@ export const idlFactory = ({ IDL }) => {
 		version: IDL.Opt(IDL.Nat64)
 	});
 	const AuthenticationConfigInternetIdentity = IDL.Record({
-		derivation_origin: IDL.Opt(IDL.Text)
+		derivation_origin: IDL.Opt(IDL.Text),
+		external_alternative_origins: IDL.Opt(IDL.Vec(IDL.Text))
 	});
 	const AuthenticationConfig = IDL.Record({
 		internet_identity: IDL.Opt(AuthenticationConfigInternetIdentity)
@@ -136,7 +137,6 @@ export const idlFactory = ({ IDL }) => {
 	const Rule = IDL.Record({
 		max_capacity: IDL.Opt(IDL.Nat32),
 		memory: IDL.Opt(Memory),
-		max_changes_per_user: IDL.Opt(IDL.Nat32),
 		updated_at: IDL.Nat64,
 		max_size: IDL.Opt(IDL.Nat),
 		read: Permission,
@@ -144,7 +144,8 @@ export const idlFactory = ({ IDL }) => {
 		version: IDL.Opt(IDL.Nat64),
 		mutable_permissions: IDL.Opt(IDL.Bool),
 		rate_config: IDL.Opt(RateConfig),
-		write: Permission
+		write: Permission,
+		max_changes_per_user: IDL.Opt(IDL.Nat32)
 	});
 	const UserUsage = IDL.Record({
 		updated_at: IDL.Nat64,
@@ -231,13 +232,13 @@ export const idlFactory = ({ IDL }) => {
 	const SetRule = IDL.Record({
 		max_capacity: IDL.Opt(IDL.Nat32),
 		memory: IDL.Opt(Memory),
-		max_changes_per_user: IDL.Opt(IDL.Nat32),
 		max_size: IDL.Opt(IDL.Nat),
 		read: Permission,
 		version: IDL.Opt(IDL.Nat64),
 		mutable_permissions: IDL.Opt(IDL.Bool),
 		rate_config: IDL.Opt(RateConfig),
-		write: Permission
+		write: Permission,
+		max_changes_per_user: IDL.Opt(IDL.Nat32)
 	});
 	const SetUserUsage = IDL.Record({ changes_count: IDL.Nat32 });
 	const UploadChunk = IDL.Record({

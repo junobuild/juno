@@ -61,7 +61,8 @@ describe('Satellite authentication', () => {
 			const config: AuthenticationConfig = {
 				internet_identity: [
 					{
-						derivation_origin: ['domain.com']
+						derivation_origin: ['domain.com'],
+						external_alternative_origins: toNullable()
 					}
 				]
 			};
@@ -89,13 +90,59 @@ describe('Satellite authentication', () => {
 			expect(JSON.parse(responseBody).alternativeOrigins).toEqual([canisterIdUrl]);
 		});
 
+		const externalAlternativeOrigins = ['other.com', 'another.com'];
+		const externalAlternativeOriginsUrls = externalAlternativeOrigins.map(
+			(url) => `https://${url}`
+		);
+
+		it('should set external alternative origins', async () => {
+			const { set_auth_config, get_auth_config } = actor;
+
+			const config: AuthenticationConfig = {
+				internet_identity: [
+					{
+						derivation_origin: ['domain.com'],
+						external_alternative_origins: [externalAlternativeOrigins]
+					}
+				]
+			};
+
+			await set_auth_config(config);
+
+			const result = await get_auth_config();
+			expect(result).toEqual([config]);
+		});
+
+		it('should expose /.well-known/ii-alternative-origins with external origins', async () => {
+			const { http_request } = actor;
+
+			const { body } = await http_request({
+				body: [],
+				certificate_version: toNullable(),
+				headers: [],
+				method: 'GET',
+				url: '/.well-known/ii-alternative-origins'
+			});
+
+			const decoder = new TextDecoder();
+			const responseBody = decoder.decode(body as Uint8Array<ArrayBufferLike>);
+			expect(responseBody).toEqual(
+				JSON.stringify({ alternativeOrigins: [canisterIdUrl, ...externalAlternativeOriginsUrls] })
+			);
+			expect(JSON.parse(responseBody).alternativeOrigins).toEqual([
+				canisterIdUrl,
+				...externalAlternativeOriginsUrls
+			]);
+		});
+
 		it('should set config auth domain to none', async () => {
 			const { set_auth_config, get_auth_config } = actor;
 
 			const config: AuthenticationConfig = {
 				internet_identity: [
 					{
-						derivation_origin: []
+						derivation_origin: [],
+						external_alternative_origins: toNullable()
 					}
 				]
 			};
@@ -150,102 +197,249 @@ describe('Satellite authentication', () => {
 		const urls = ['test.com', 'test2.com'];
 		const httpsUrls = urls.map((url) => `https://${url}`);
 
-		it('should expose canister id and filtered custom domains as alternative origin', async () => {
-			const { set_auth_config, http_request, set_custom_domain } = actor;
+		describe('With custom domains', () => {
+			it('should expose canister id and filtered custom domains as alternative origin', async () => {
+				const { set_auth_config, http_request, set_custom_domain } = actor;
 
-			await set_custom_domain(urls[0], []);
-			await set_custom_domain(urls[1], []);
+				await set_custom_domain(urls[0], []);
+				await set_custom_domain(urls[1], []);
 
-			const config: AuthenticationConfig = {
-				internet_identity: [
-					{
-						derivation_origin: ['domain.com']
-					}
-				]
-			};
+				const config: AuthenticationConfig = {
+					internet_identity: [
+						{
+							derivation_origin: ['domain.com'],
+							external_alternative_origins: toNullable()
+						}
+					]
+				};
 
-			await set_auth_config(config);
+				await set_auth_config(config);
 
-			const { body } = await http_request({
-				body: [],
-				certificate_version: toNullable(),
-				headers: [],
-				method: 'GET',
-				url: '/.well-known/ii-alternative-origins'
+				const { body } = await http_request({
+					body: [],
+					certificate_version: toNullable(),
+					headers: [],
+					method: 'GET',
+					url: '/.well-known/ii-alternative-origins'
+				});
+
+				const decoder = new TextDecoder();
+				const responseBody = decoder.decode(body as Uint8Array<ArrayBufferLike>);
+
+				const responseObj = JSON.parse(responseBody);
+
+				expect({
+					...responseObj,
+					alternativeOrigins: responseObj.alternativeOrigins.sort()
+				}).toStrictEqual({
+					alternativeOrigins: [...httpsUrls, canisterIdUrl].sort()
+				});
 			});
 
-			const decoder = new TextDecoder();
-			const responseBody = decoder.decode(body as Uint8Array<ArrayBufferLike>);
+			it('should not expose canister id if canister id is the derivation origin', async () => {
+				const { set_auth_config, http_request } = actor;
 
-			const responseObj = JSON.parse(responseBody);
+				const config: AuthenticationConfig = {
+					internet_identity: [
+						{
+							derivation_origin: [`${canisterId.toText()}.icp0.io`],
+							external_alternative_origins: toNullable()
+						}
+					]
+				};
 
-			expect({
-				...responseObj,
-				alternativeOrigins: responseObj.alternativeOrigins.sort()
-			}).toStrictEqual({
-				alternativeOrigins: [...httpsUrls, canisterIdUrl].sort()
+				await set_auth_config(config);
+
+				const { body } = await http_request({
+					body: [],
+					certificate_version: toNullable(),
+					headers: [],
+					method: 'GET',
+					url: '/.well-known/ii-alternative-origins'
+				});
+
+				const decoder = new TextDecoder();
+				const responseBody = decoder.decode(body as Uint8Array<ArrayBufferLike>);
+
+				const responseObj = JSON.parse(responseBody);
+
+				expect({
+					...responseObj,
+					alternativeOrigins: responseObj.alternativeOrigins.sort()
+				}).toStrictEqual({
+					alternativeOrigins: [...httpsUrls].sort()
+				});
+			});
+
+			it('should not expose alternative origins if derivation is the canister ID and no custom domains', async () => {
+				const { del_custom_domain, set_auth_config, http_request } = actor;
+
+				await del_custom_domain(urls[0]);
+				await del_custom_domain(urls[1]);
+
+				const config: AuthenticationConfig = {
+					internet_identity: [
+						{
+							derivation_origin: [`${canisterId.toText()}.icp0.io`],
+							external_alternative_origins: toNullable()
+						}
+					]
+				};
+
+				await set_auth_config(config);
+
+				const { status_code } = await http_request({
+					body: [],
+					certificate_version: toNullable(),
+					headers: [],
+					method: 'GET',
+					url: '/.well-known/ii-alternative-origins'
+				});
+
+				expect(status_code).toBe(404);
 			});
 		});
 
-		it('should not expose canister id if canister id is the derivation origin', async () => {
-			const { set_auth_config, http_request } = actor;
+		describe('With custom domains and external alternative origins', () => {
+			it('should expose canister id, filtered custom domains and external as alternative origin', async () => {
+				const { set_auth_config, http_request, set_custom_domain } = actor;
 
-			const config: AuthenticationConfig = {
-				internet_identity: [
-					{
-						derivation_origin: [`${canisterId.toText()}.icp0.io`]
-					}
-				]
-			};
+				await set_custom_domain(urls[0], []);
+				await set_custom_domain(urls[1], []);
 
-			await set_auth_config(config);
+				const config: AuthenticationConfig = {
+					internet_identity: [
+						{
+							derivation_origin: ['domain.com'],
+							external_alternative_origins: [externalAlternativeOrigins]
+						}
+					]
+				};
 
-			const { body } = await http_request({
-				body: [],
-				certificate_version: toNullable(),
-				headers: [],
-				method: 'GET',
-				url: '/.well-known/ii-alternative-origins'
+				await set_auth_config(config);
+
+				const { body } = await http_request({
+					body: [],
+					certificate_version: toNullable(),
+					headers: [],
+					method: 'GET',
+					url: '/.well-known/ii-alternative-origins'
+				});
+
+				const decoder = new TextDecoder();
+				const responseBody = decoder.decode(body as Uint8Array<ArrayBufferLike>);
+
+				const responseObj = JSON.parse(responseBody);
+
+				expect({
+					...responseObj,
+					alternativeOrigins: responseObj.alternativeOrigins.sort()
+				}).toStrictEqual({
+					alternativeOrigins: [
+						...httpsUrls,
+						...externalAlternativeOriginsUrls,
+						canisterIdUrl
+					].sort()
+				});
 			});
 
-			const decoder = new TextDecoder();
-			const responseBody = decoder.decode(body as Uint8Array<ArrayBufferLike>);
+			it('should filter external equals custom domains', async () => {
+				const { set_auth_config, http_request } = actor;
 
-			const responseObj = JSON.parse(responseBody);
+				const config: AuthenticationConfig = {
+					internet_identity: [
+						{
+							derivation_origin: [`${canisterId.toText()}.icp0.io`],
+							external_alternative_origins: [[urls[0], externalAlternativeOrigins[0]]]
+						}
+					]
+				};
 
-			expect({
-				...responseObj,
-				alternativeOrigins: responseObj.alternativeOrigins.sort()
-			}).toStrictEqual({
-				alternativeOrigins: [...httpsUrls].sort()
-			});
-		});
+				await set_auth_config(config);
 
-		it('should not expose alternative origins if derivation is the canister ID and no custom domains', async () => {
-			const { del_custom_domain, set_auth_config, http_request } = actor;
+				const { body } = await http_request({
+					body: [],
+					certificate_version: toNullable(),
+					headers: [],
+					method: 'GET',
+					url: '/.well-known/ii-alternative-origins'
+				});
 
-			await del_custom_domain(urls[0]);
-			await del_custom_domain(urls[1]);
+				const decoder = new TextDecoder();
+				const responseBody = decoder.decode(body as Uint8Array<ArrayBufferLike>);
 
-			const config: AuthenticationConfig = {
-				internet_identity: [
-					{
-						derivation_origin: [`${canisterId.toText()}.icp0.io`]
-					}
-				]
-			};
+				const responseObj = JSON.parse(responseBody);
 
-			await set_auth_config(config);
-
-			const { status_code } = await http_request({
-				body: [],
-				certificate_version: toNullable(),
-				headers: [],
-				method: 'GET',
-				url: '/.well-known/ii-alternative-origins'
+				expect({
+					...responseObj,
+					alternativeOrigins: responseObj.alternativeOrigins.sort()
+				}).toStrictEqual({
+					alternativeOrigins: [...httpsUrls, externalAlternativeOriginsUrls[0]].sort()
+				});
 			});
 
-			expect(status_code).toBe(404);
+			it('should not expose canister id if canister id is the derivation origin', async () => {
+				const { set_auth_config, http_request } = actor;
+
+				const config: AuthenticationConfig = {
+					internet_identity: [
+						{
+							derivation_origin: [`${canisterId.toText()}.icp0.io`],
+							external_alternative_origins: [externalAlternativeOrigins]
+						}
+					]
+				};
+
+				await set_auth_config(config);
+
+				const { body } = await http_request({
+					body: [],
+					certificate_version: toNullable(),
+					headers: [],
+					method: 'GET',
+					url: '/.well-known/ii-alternative-origins'
+				});
+
+				const decoder = new TextDecoder();
+				const responseBody = decoder.decode(body as Uint8Array<ArrayBufferLike>);
+
+				const responseObj = JSON.parse(responseBody);
+
+				expect({
+					...responseObj,
+					alternativeOrigins: responseObj.alternativeOrigins.sort()
+				}).toStrictEqual({
+					alternativeOrigins: [...httpsUrls, ...externalAlternativeOriginsUrls].sort()
+				});
+			});
+
+			it('should not expose alternative origins if derivation is the canister ID and no custom domains and not external', async () => {
+				const { del_custom_domain, set_auth_config, http_request } = actor;
+
+				await del_custom_domain(urls[0]);
+				await del_custom_domain(urls[1]);
+
+				const config: AuthenticationConfig = {
+					internet_identity: [
+						{
+							derivation_origin: [`${canisterId.toText()}.icp0.io`],
+							external_alternative_origins: toNullable()
+						}
+					]
+				};
+
+				await set_auth_config(config);
+
+				const { status_code } = await http_request({
+					body: [],
+					certificate_version: toNullable(),
+					headers: [],
+					method: 'GET',
+					url: '/.well-known/ii-alternative-origins'
+				});
+
+				expect(status_code).toBe(404);
+			});
 		});
 	});
 
@@ -327,7 +521,9 @@ describe('Satellite authentication', () => {
 
 			await expect(
 				set_auth_config({
-					internet_identity: [{ derivation_origin: ['demo.com'] }]
+					internet_identity: [
+						{ derivation_origin: ['demo.com'], external_alternative_origins: toNullable() }
+					]
 				})
 			).rejects.toThrow(SATELLITE_ADMIN_ERROR_MSG);
 		});

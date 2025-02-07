@@ -24,6 +24,7 @@ type AuthenticationConfig = record {
 };
 type AuthenticationConfigInternetIdentity = record {
   derivation_origin : opt text;
+  external_alternative_origins : opt vec text;
 };
 type CollectionType = variant { Db; Storage };
 type CommitBatch = record {
@@ -122,7 +123,6 @@ type RateConfig = record { max_tokens : nat64; time_per_token_ns : nat64 };
 type Rule = record {
   max_capacity : opt nat32;
   memory : opt Memory;
-  max_changes_per_user : opt nat32;
   updated_at : nat64;
   max_size : opt nat;
   read : Permission;
@@ -131,6 +131,7 @@ type Rule = record {
   mutable_permissions : opt bool;
   rate_config : opt RateConfig;
   write : Permission;
+  max_changes_per_user : opt nat32;
 };
 type SetController = record {
   metadata : vec record { text; text };
@@ -149,13 +150,13 @@ type SetDoc = record {
 type SetRule = record {
   max_capacity : opt nat32;
   memory : opt Memory;
-  max_changes_per_user : opt nat32;
   max_size : opt nat;
   read : Permission;
   version : opt nat64;
   mutable_permissions : opt bool;
   rate_config : opt RateConfig;
   write : Permission;
+  max_changes_per_user : opt nat32;
 };
 type SetUserUsage = record { changes_count : nat32 };
 type StorageConfig = record {

@@ -18,6 +18,10 @@
 	import type { JunoModalCustomDomainDetail, JunoModalDetail } from '$lib/types/modal';
 	import { toCustomDomainDns } from '$lib/utils/custom-domain.utils';
 	import { emit } from '$lib/utils/events.utils';
+	import type { TopUpProgress } from '$lib/types/progress-topup';
+	import type { HostingProgress } from '$lib/types/progress-hosting';
+	import ProgressMonitoring from '$lib/components/monitoring/ProgressMonitoring.svelte';
+	import ProgressHosting from '$lib/components/canister/ProgressHosting.svelte';
 
 	interface Props {
 		detail: JunoModalDetail;
@@ -51,6 +55,10 @@
 
 		step = 'dns';
 	};
+
+	let progress: HostingProgress | undefined = $state(undefined);
+	const onProgress = (hostingProgress: HostingProgress | undefined) =>
+		(progress = hostingProgress);
 
 	const setupCustomDomain = async () => {
 		if (isNullish(dns)) {
@@ -124,9 +132,7 @@
 			on:junoClose
 		/>
 	{:else if step === 'in_progress'}
-		<SpinnerModal>
-			<p>{$i18n.hosting.config_in_progress}</p>
-		</SpinnerModal>
+		<ProgressHosting {progress} withConfig={nonNullish(editConfig)} />
 	{:else if step === 'auth'}
 		<AddCustomDomainAuth {domainNameInput} {config} next={onAuth} />
 	{:else}

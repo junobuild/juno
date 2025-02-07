@@ -402,7 +402,8 @@ interface I18nHosting {
 	type: string;
 	host: string;
 	value: string;
-	config_in_progress: string;
+	config_custom_domain_in_progress: string;
+	config_auth_config_in_progress: string;
 	add_custom_domain: string;
 	description: string;
 	custom_domain: string;

@@ -1,7 +1,9 @@
 #!/usr/bin/env bash
 
+USAGE="Usage: $0 <module_name> [--with-certification] [--build-type=stock|extended]"
+
 if [ -z "$1" ]; then
-  echo "Usage: $0 <module_name> [with_certification] [--build-type=stock|extended]"
+  echo "$USAGE"
   exit 1
 fi
 
@@ -26,7 +28,7 @@ while [[ $# -gt 0 ]]; do
       ;;
     *)
       echo "ERROR: unknown argument $1"
-      echo "Usage: $0 <module_name> [--with-certification] [--build-type=stock|extended]"
+      echo "$USAGE"
       exit 1
       ;;
   esac

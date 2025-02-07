@@ -28,6 +28,7 @@ export interface AuthenticationConfig {
 }
 export interface AuthenticationConfigInternetIdentity {
 	derivation_origin: [] | [string];
+	external_alternative_origins: [] | [Array<string>];
 }
 export type CollectionType = { Db: null } | { Storage: null };
 export interface CommitBatch {
@@ -158,7 +159,6 @@ export interface RateConfig {
 export interface Rule {
 	max_capacity: [] | [number];
 	memory: [] | [Memory];
-	max_changes_per_user: [] | [number];
 	updated_at: bigint;
 	max_size: [] | [bigint];
 	read: Permission;
@@ -167,6 +167,7 @@ export interface Rule {
 	mutable_permissions: [] | [boolean];
 	rate_config: [] | [RateConfig];
 	write: Permission;
+	max_changes_per_user: [] | [number];
 }
 export interface SetController {
 	metadata: Array<[string, string]>;
@@ -185,13 +186,13 @@ export interface SetDoc {
 export interface SetRule {
 	max_capacity: [] | [number];
 	memory: [] | [Memory];
-	max_changes_per_user: [] | [number];
 	max_size: [] | [bigint];
 	read: Permission;
 	version: [] | [bigint];
 	mutable_permissions: [] | [boolean];
 	rate_config: [] | [RateConfig];
 	write: Permission;
+	max_changes_per_user: [] | [number];
 }
 export interface SetUserUsage {
 	changes_count: number;

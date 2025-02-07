@@ -4,5 +4,5 @@ CANISTERS=console,observatory,mission_control,orbiter,satellite
 
 for canister in $(echo $CANISTERS | sed "s/,/ /g")
 do
-    ./docker/build "$canister" --only-dependencies
+    ./docker/build "--$canister" --only-dependencies
 done

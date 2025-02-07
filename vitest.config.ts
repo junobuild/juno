@@ -27,6 +27,10 @@ export default defineConfig({
 	resolve: {
 		alias: [
 			{
+				find: '$test-declarations',
+				replacement: resolve(__dirname, 'src/tests/declarations')
+			},
+			{
 				find: '$declarations',
 				replacement: resolve(__dirname, 'src/declarations')
 			},

@@ -39,6 +39,12 @@ export const OBSERVATORY_WASM_PATH = existsSync(OBSERVATORY_WASM_PATH_CI)
 	? OBSERVATORY_WASM_PATH_CI
 	: OBSERVATORY_WASM_PATH_LOCAL;
 
+const TEST_SATELLITE_WASM_PATH_LOCAL = join(WASM_PATH_LOCAL, 'test_satellite.wasm.gz');
+const TEST_SATELLITE_WASM_PATH_CI = join(process.cwd(), 'test_satellite.wasm.gz');
+export const TEST_SATELLITE_WASM_PATH = existsSync(SATELLITE_WASM_PATH_CI)
+	? TEST_SATELLITE_WASM_PATH_CI
+	: TEST_SATELLITE_WASM_PATH_LOCAL;
+
 export const controllersInitArgs = (controllers: Identity | Principal[]): ArrayBuffer =>
 	IDL.encode(
 		[

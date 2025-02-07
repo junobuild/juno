@@ -84,7 +84,6 @@ COPY . .
 
 RUN touch src/*/src/lib.rs
 RUN touch src/libs/*/src/lib.rs
-RUN touch src/tests/fixtures/*/src/lib.rs
 
 RUN ./docker/build
 RUN sha256sum /mission_control.wasm.gz
@@ -95,7 +94,6 @@ COPY . .
 
 RUN touch src/*/src/lib.rs
 RUN touch src/libs/*/src/lib.rs
-RUN touch src/tests/fixtures/*/src/lib.rs
 
 RUN ./docker/build --satellite
 RUN sha256sum /satellite.wasm.gz
@@ -106,7 +104,6 @@ COPY . .
 
 RUN touch src/*/src/lib.rs
 RUN touch src/libs/*/src/lib.rs
-RUN touch src/tests/fixtures/*/src/lib.rs
 
 RUN ./docker/build --console
 RUN sha256sum /console.wasm.gz
@@ -117,7 +114,6 @@ COPY . .
 
 RUN touch src/*/src/lib.rs
 RUN touch src/libs/*/src/lib.rs
-RUN touch src/tests/fixtures/*/src/lib.rs
 
 RUN ./docker/build --observatory
 RUN sha256sum /observatory.wasm.gz
@@ -128,7 +124,6 @@ COPY . .
 
 RUN touch src/*/src/lib.rs
 RUN touch src/libs/*/src/lib.rs
-RUN touch src/tests/fixtures/*/src/lib.rs
 
 RUN ./docker/build --orbiter
 RUN sha256sum /orbiter.wasm.gz

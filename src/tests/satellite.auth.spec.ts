@@ -55,6 +55,42 @@ describe('Satellite authentication', () => {
 			expect(config).toEqual([]);
 		});
 
+		const invalidDomain = 'domain%20.com';
+
+		it('should throw if derivation origin is malformed', async () => {
+			const { set_auth_config } = actor;
+
+			const config: AuthenticationConfig = {
+				internet_identity: [
+					{
+						derivation_origin: [invalidDomain],
+						external_alternative_origins: toNullable()
+					}
+				]
+			};
+
+			await expect(set_auth_config(config)).rejects.toThrow(
+				`error_invalid_origin (${invalidDomain})`
+			);
+		});
+
+		it('should throw if external alternative origin is malformed', async () => {
+			const { set_auth_config } = actor;
+
+			const config: AuthenticationConfig = {
+				internet_identity: [
+					{
+						derivation_origin: toNullable(),
+						external_alternative_origins: [[invalidDomain]]
+					}
+				]
+			};
+
+			await expect(set_auth_config(config)).rejects.toThrow(
+				`error_invalid_origin (${invalidDomain})`
+			);
+		});
+
 		it('should set config auth domain', async () => {
 			const { set_auth_config, get_auth_config } = actor;
 

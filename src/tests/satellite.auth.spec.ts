@@ -61,7 +61,8 @@ describe('Satellite authentication', () => {
 			const config: AuthenticationConfig = {
 				internet_identity: [
 					{
-						derivation_origin: ['domain.com']
+						derivation_origin: ['domain.com'],
+						external_alternative_origins: toNullable()
 					}
 				]
 			};
@@ -95,7 +96,8 @@ describe('Satellite authentication', () => {
 			const config: AuthenticationConfig = {
 				internet_identity: [
 					{
-						derivation_origin: []
+						derivation_origin: [],
+						external_alternative_origins: toNullable()
 					}
 				]
 			};
@@ -159,7 +161,8 @@ describe('Satellite authentication', () => {
 			const config: AuthenticationConfig = {
 				internet_identity: [
 					{
-						derivation_origin: ['domain.com']
+						derivation_origin: ['domain.com'],
+						external_alternative_origins: toNullable()
 					}
 				]
 			};
@@ -193,7 +196,8 @@ describe('Satellite authentication', () => {
 			const config: AuthenticationConfig = {
 				internet_identity: [
 					{
-						derivation_origin: [`${canisterId.toText()}.icp0.io`]
+						derivation_origin: [`${canisterId.toText()}.icp0.io`],
+						external_alternative_origins: toNullable()
 					}
 				]
 			};
@@ -230,7 +234,8 @@ describe('Satellite authentication', () => {
 			const config: AuthenticationConfig = {
 				internet_identity: [
 					{
-						derivation_origin: [`${canisterId.toText()}.icp0.io`]
+						derivation_origin: [`${canisterId.toText()}.icp0.io`],
+						external_alternative_origins: toNullable()
 					}
 				]
 			};
@@ -327,7 +332,9 @@ describe('Satellite authentication', () => {
 
 			await expect(
 				set_auth_config({
-					internet_identity: [{ derivation_origin: ['demo.com'] }]
+					internet_identity: [
+						{ derivation_origin: ['demo.com'], external_alternative_origins: toNullable() }
+					]
 				})
 			).rejects.toThrow(SATELLITE_ADMIN_ERROR_MSG);
 		});

@@ -1,5 +1,5 @@
 import type { AuthenticationConfig } from '$declarations/satellite/satellite.did';
-import { fromNullable, isNullish, nonNullish } from '@dfinity/utils';
+import { fromNullable, isNullish, nonNullish, toNullable } from '@dfinity/utils';
 
 export const buildSetAuthenticationConfig = ({
 	config,
@@ -12,7 +12,8 @@ export const buildSetAuthenticationConfig = ({
 		? {
 				internet_identity: [
 					{
-						derivation_origin: [domainName]
+						derivation_origin: [domainName],
+						external_alternative_origins: toNullable()
 					}
 				]
 			}
@@ -22,7 +23,8 @@ export const buildSetAuthenticationConfig = ({
 					internet_identity: [
 						{
 							...fromNullable(config.internet_identity),
-							derivation_origin: [domainName]
+							derivation_origin: [domainName],
+							external_alternative_origins: toNullable()
 						}
 					]
 				})
@@ -36,7 +38,8 @@ export const buildDeleteAuthenticationConfig = (
 		internet_identity: [
 			{
 				...fromNullable(config.internet_identity),
-				derivation_origin: []
+				derivation_origin: [],
+				external_alternative_origins: []
 			}
 		]
 	})

@@ -18,7 +18,7 @@
 	import type { SatelliteIdText } from '$lib/types/satellite';
 	import type { Option } from '$lib/types/utils';
 	import { satelliteUrl } from '$lib/utils/satellite.utils';
-    import {getAuthConfig} from "$lib/services/auth.config.services";
+	import { getAuthConfig } from '$lib/services/auth.config.services';
 
 	interface Props {
 		satellite: Satellite;

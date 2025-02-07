@@ -11,7 +11,7 @@
 	import { busy } from '$lib/stores/busy.store';
 	import { i18n } from '$lib/stores/i18n.store';
 	import { emit } from '$lib/utils/events.utils';
-	import {getAuthConfig} from "$lib/services/auth.config.services";
+	import { getAuthConfig } from '$lib/services/auth.config.services';
 
 	interface Props {
 		satellite: Satellite;

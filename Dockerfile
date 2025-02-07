@@ -82,18 +82,7 @@ FROM deps as build_mission_control
 
 COPY . .
 
-RUN touch src/console/src/lib.rs
-RUN touch src/observatory/src/lib.rs
-RUN touch src/orbiter/src/lib.rs
-RUN touch src/mission_control/src/lib.rs
-RUN touch src/satellite/src/lib.rs
-RUN touch src/libs/macros/src/lib.rs
-RUN touch src/libs/satellite/src/lib.rs
-RUN touch src/libs/shared/src/lib.rs
-RUN touch src/libs/utils/src/lib.rs
-RUN touch src/libs/collections/src/lib.rs
-RUN touch src/libs/storage/src/lib.rs
-RUN npm ci
+RUN touch src/**/lib.rs
 
 RUN ./docker/build
 RUN sha256sum /mission_control.wasm.gz
@@ -102,17 +91,7 @@ FROM deps as build_satellite
 
 COPY . .
 
-RUN touch src/console/src/lib.rs
-RUN touch src/observatory/src/lib.rs
-RUN touch src/orbiter/src/lib.rs
-RUN touch src/mission_control/src/lib.rs
-RUN touch src/satellite/src/lib.rs
-RUN touch src/libs/macros/src/lib.rs
-RUN touch src/libs/satellite/src/lib.rs
-RUN touch src/libs/shared/src/lib.rs
-RUN touch src/libs/utils/src/lib.rs
-RUN touch src/libs/collections/src/lib.rs
-RUN touch src/libs/storage/src/lib.rs
+RUN touch src/**/lib.rs
 
 RUN ./docker/build --satellite
 RUN sha256sum /satellite.wasm.gz
@@ -121,17 +100,7 @@ FROM deps as build_console
 
 COPY . .
 
-RUN touch src/console/src/lib.rs
-RUN touch src/observatory/src/lib.rs
-RUN touch src/orbiter/src/lib.rs
-RUN touch src/mission_control/src/lib.rs
-RUN touch src/satellite/src/lib.rs
-RUN touch src/libs/macros/src/lib.rs
-RUN touch src/libs/satellite/src/lib.rs
-RUN touch src/libs/shared/src/lib.rs
-RUN touch src/libs/utils/src/lib.rs
-RUN touch src/libs/collections/src/lib.rs
-RUN touch src/libs/storage/src/lib.rs
+RUN touch src/**/lib.rs
 
 RUN ./docker/build --console
 RUN sha256sum /console.wasm.gz
@@ -140,17 +109,7 @@ FROM deps as build_observatory
 
 COPY . .
 
-RUN touch src/console/src/lib.rs
-RUN touch src/observatory/src/lib.rs
-RUN touch src/orbiter/src/lib.rs
-RUN touch src/mission_control/src/lib.rs
-RUN touch src/satellite/src/lib.rs
-RUN touch src/libs/macros/src/lib.rs
-RUN touch src/libs/satellite/src/lib.rs
-RUN touch src/libs/shared/src/lib.rs
-RUN touch src/libs/utils/src/lib.rs
-RUN touch src/libs/collections/src/lib.rs
-RUN touch src/libs/storage/src/lib.rs
+RUN touch src/**/lib.rs
 
 RUN ./docker/build --observatory
 RUN sha256sum /observatory.wasm.gz
@@ -159,17 +118,7 @@ FROM deps as build_orbiter
 
 COPY . .
 
-RUN touch src/console/src/lib.rs
-RUN touch src/observatory/src/lib.rs
-RUN touch src/orbiter/src/lib.rs
-RUN touch src/mission_control/src/lib.rs
-RUN touch src/satellite/src/lib.rs
-RUN touch src/libs/macros/src/lib.rs
-RUN touch src/libs/satellite/src/lib.rs
-RUN touch src/libs/shared/src/lib.rs
-RUN touch src/libs/utils/src/lib.rs
-RUN touch src/libs/collections/src/lib.rs
-RUN touch src/libs/storage/src/lib.rs
+RUN touch src/**/lib.rs
 
 RUN ./docker/build --orbiter
 RUN sha256sum /orbiter.wasm.gz

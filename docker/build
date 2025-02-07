@@ -47,6 +47,8 @@ CANISTER=
 WITH_CERTIFICATION=0
 # Candid metadata juno:build
 BUILD_TYPE=
+# Source directory where to find $CANISTER/Cargo.toml
+SRC_ROOT_DIR="$PWD/src"
 
 while [[ $# -gt 0  ]]
 do
@@ -88,6 +90,7 @@ do
             CANISTER="test_satellite"
             WITH_CERTIFICATION=1
             BUILD_TYPE="extended"
+            SRC_ROOT_DIR="$PWD/src/tests/fixtures"
             break
             ;;
         *)
@@ -123,7 +126,7 @@ function build_canister() {
     echo "Building $canister"
     echo
 
-    SRC_DIR="$PWD/src/$canister"
+    SRC_DIR="$SRC_ROOT_DIR/$canister"
     TARGET="wasm32-unknown-unknown"
     # standardize source references
     CARGO_HOME="${CARGO_HOME:-"$HOME/.cargo"}"

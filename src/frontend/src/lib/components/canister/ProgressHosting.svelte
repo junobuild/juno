@@ -61,7 +61,7 @@
 							: customDomain.state
 				},
 				...(nonNullish(authConfig) && {
-					monitoring: {
+					authConfig: {
 						...authConfig,
 						state:
 							progress?.step === HostingProgressStep.AuthConfig

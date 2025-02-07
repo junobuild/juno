@@ -31,8 +31,6 @@ export const topUp = async ({
 	canisterId: Principal;
 	onProgress: (progress: TopUpProgress | undefined) => void;
 }): Promise<{ success: 'ok' | 'error'; err?: unknown }> => {
-	assertNonNullish(identity, get(i18n).core.not_logged_in);
-
 	if (isNullish(missionControlId)) {
 		toasts.error({
 			text: get(i18n).errors.no_mission_control
@@ -58,6 +56,8 @@ export const topUp = async ({
 	}
 
 	try {
+		assertNonNullish(identity, get(i18n).core.not_logged_in);
+
 		const topUp = async () =>
 			await topUpApi({
 				canisterId,

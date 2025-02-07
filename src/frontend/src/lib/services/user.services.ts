@@ -21,11 +21,11 @@ interface OpenUserDetailParams {
 }
 
 export const openUserDetail = async ({ user, satelliteId, identity }: OpenUserDetailParams) => {
-	assertNonNullish(identity, get(i18n).core.not_logged_in);
-
-	busy.start();
-
 	try {
+		assertNonNullish(identity, get(i18n).core.not_logged_in);
+
+		busy.start();
+
 		const waitLoadUserUsages = (): Promise<UserUsageCollection[]> =>
 			// eslint-disable-next-line no-async-promise-executor, require-await
 			new Promise<UserUsageCollection[]>(async (resolve, reject) => {

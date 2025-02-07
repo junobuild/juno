@@ -7,6 +7,18 @@ where
 {
     match current {
         None => INITIAL_VERSION,
-        Some(current) => current.version().unwrap_or_default() + 1,
+        Some(current) => {
+            let version = current.version().unwrap_or_default();
+
+            // We reset to zero if the maximum version (u64::MAX) is reached.
+            // This is really an edge case—it would take an extremely high number of updates
+            // (and therefore a significant amount of cycles) to reach this point.
+            // But you never know.
+            if version == u64::MAX {
+                0
+            } else {
+                version + 1
+            }
+        },
     }
 }

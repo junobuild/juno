@@ -6,11 +6,12 @@
 	import SkeletonText from '$lib/components/ui/SkeletonText.svelte';
 	import Value from '$lib/components/ui/Value.svelte';
 	import { getRuleUser } from '$lib/services/collection.services';
-	import { getAuthConfig, listCustomDomains } from '$lib/services/hosting.services';
+	import { listCustomDomains } from '$lib/services/hosting.services';
 	import { authStore } from '$lib/stores/auth.store';
 	import { busy } from '$lib/stores/busy.store';
 	import { i18n } from '$lib/stores/i18n.store';
 	import { emit } from '$lib/utils/events.utils';
+	import {getAuthConfig} from "$lib/services/auth.config.services";
 
 	interface Props {
 		satellite: Satellite;

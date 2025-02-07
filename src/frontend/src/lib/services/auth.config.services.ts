@@ -1,7 +1,13 @@
 import type { Satellite } from '$declarations/mission_control/mission_control.did';
 import type { AuthenticationConfig, Rule } from '$declarations/satellite/satellite.did';
-import { setAuthConfig, setRule } from '$lib/api/satellites.api';
+import {
+	getAuthConfig as getAuthConfigApi,
+	satelliteVersion,
+	setAuthConfig,
+	setRule
+} from '$lib/api/satellites.api';
 import { DEFAULT_RATE_CONFIG_TIME_PER_TOKEN_NS } from '$lib/constants/data.constants';
+import { SATELLITE_v0_0_17 } from '$lib/constants/version.constants';
 import { i18n } from '$lib/stores/i18n.store';
 import { toasts } from '$lib/stores/toasts.store';
 import type { OptionIdentity } from '$lib/types/itentity';
@@ -10,7 +16,15 @@ import {
 	buildDeleteAuthenticationConfig,
 	buildSetAuthenticationConfig
 } from '$lib/utils/auth.config.utils';
-import { fromNullishNullable, isNullish, nonNullish, toNullable } from '@dfinity/utils';
+import type { Principal } from '@dfinity/principal';
+import {
+	fromNullable,
+	fromNullishNullable,
+	isNullish,
+	nonNullish,
+	toNullable
+} from '@dfinity/utils';
+import { compare } from 'semver';
 import { get } from 'svelte/store';
 
 interface UpdateAuthConfigParams {
@@ -160,4 +174,44 @@ const updateRule = async ({
 	}
 
 	return { result: 'success' };
+};
+
+export const getAuthConfig = async ({
+	satelliteId,
+	identity
+}: {
+	satelliteId: Principal;
+	identity: OptionIdentity;
+}): Promise<{
+	result: 'success' | 'error' | 'skip';
+	config?: AuthenticationConfig | undefined;
+}> => {
+	try {
+		// TODO: load versions globally and use store value instead of fetching version again
+		const version = await satelliteVersion({ satelliteId, identity });
+
+		// TODO: keep a list of those version checks and remove them incrementally
+		// Also would be cleaner than to have 0.0.17 hardcoded there and there...
+		const authConfigSupported = compare(version, SATELLITE_v0_0_17) >= 0;
+
+		if (!authConfigSupported) {
+			return { result: 'skip' };
+		}
+
+		const config = await getAuthConfigApi({
+			satelliteId,
+			identity
+		});
+
+		return { result: 'success', config: fromNullable(config) };
+	} catch (err: unknown) {
+		const labels = get(i18n);
+
+		toasts.error({
+			text: labels.errors.authentication_config_loading,
+			detail: err
+		});
+
+		return { result: 'error' };
+	}
 };

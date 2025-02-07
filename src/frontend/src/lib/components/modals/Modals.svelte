@@ -55,7 +55,7 @@
 {/if}
 
 {#if modal?.type === 'add_custom_domain' && nonNullish(modal.detail)}
-	<CustomDomainModal on:junoClose={close} detail={modal.detail} />
+	<CustomDomainModal onclose={close} detail={modal.detail} />
 {/if}
 
 {#if modal?.type === 'create_controller' && nonNullish(modal.detail)}

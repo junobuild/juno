@@ -1,0 +1,276 @@
+import service "test_satellite_extension.did";
+
+type AssetEncodingNoContent = record {
+  modified : nat64;
+  sha256 : blob;
+  total_length : nat;
+};
+type AssetKey = record {
+  token : opt text;
+  collection : text;
+  owner : principal;
+  name : text;
+  description : opt text;
+  full_path : text;
+};
+type AssetNoContent = record {
+  key : AssetKey;
+  updated_at : nat64;
+  encodings : vec record { text; AssetEncodingNoContent };
+  headers : vec record { text; text };
+  created_at : nat64;
+  version : opt nat64;
+};
+type AuthenticationConfig = record {
+  internet_identity : opt AuthenticationConfigInternetIdentity;
+};
+type AuthenticationConfigInternetIdentity = record {
+  derivation_origin : opt text;
+  external_alternative_origins : opt vec text;
+};
+type CollectionType = variant { Db; Storage };
+type CommitBatch = record {
+  batch_id : nat;
+  headers : vec record { text; text };
+  chunk_ids : vec nat;
+};
+type Config = record {
+  db : opt DbConfig;
+  authentication : opt AuthenticationConfig;
+  storage : StorageConfig;
+};
+type ConfigMaxMemorySize = record { stable : opt nat64; heap : opt nat64 };
+type Controller = record {
+  updated_at : nat64;
+  metadata : vec record { text; text };
+  created_at : nat64;
+  scope : ControllerScope;
+  expires_at : opt nat64;
+};
+type ControllerScope = variant { Write; Admin };
+type CustomDomain = record {
+  updated_at : nat64;
+  created_at : nat64;
+  version : opt nat64;
+  bn_id : opt text;
+};
+type DbConfig = record { max_memory_size : opt ConfigMaxMemorySize };
+type DelDoc = record { version : opt nat64 };
+type DelRule = record { version : opt nat64 };
+type DeleteControllersArgs = record { controllers : vec principal };
+type DepositCyclesArgs = record { cycles : nat; destination_id : principal };
+type Doc = record {
+  updated_at : nat64;
+  owner : principal;
+  data : blob;
+  description : opt text;
+  created_at : nat64;
+  version : opt nat64;
+};
+type HttpRequest = record {
+  url : text;
+  method : text;
+  body : blob;
+  headers : vec record { text; text };
+  certificate_version : opt nat16;
+};
+type HttpResponse = record {
+  body : blob;
+  headers : vec record { text; text };
+  streaming_strategy : opt StreamingStrategy;
+  status_code : nat16;
+};
+type InitAssetKey = record {
+  token : opt text;
+  collection : text;
+  name : text;
+  description : opt text;
+  encoding_type : opt text;
+  full_path : text;
+};
+type InitUploadResult = record { batch_id : nat };
+type ListMatcher = record {
+  key : opt text;
+  updated_at : opt TimestampMatcher;
+  description : opt text;
+  created_at : opt TimestampMatcher;
+};
+type ListOrder = record { field : ListOrderField; desc : bool };
+type ListOrderField = variant { UpdatedAt; Keys; CreatedAt };
+type ListPaginate = record { start_after : opt text; limit : opt nat64 };
+type ListParams = record {
+  order : opt ListOrder;
+  owner : opt principal;
+  matcher : opt ListMatcher;
+  paginate : opt ListPaginate;
+};
+type ListResults = record {
+  matches_pages : opt nat64;
+  matches_length : nat64;
+  items_page : opt nat64;
+  items : vec record { text; AssetNoContent };
+  items_length : nat64;
+};
+type ListResults_1 = record {
+  matches_pages : opt nat64;
+  matches_length : nat64;
+  items_page : opt nat64;
+  items : vec record { text; Doc };
+  items_length : nat64;
+};
+type Memory = variant { Heap; Stable };
+type MemorySize = record { stable : nat64; heap : nat64 };
+type Permission = variant { Controllers; Private; Public; Managed };
+type RateConfig = record { max_tokens : nat64; time_per_token_ns : nat64 };
+type Rule = record {
+  max_capacity : opt nat32;
+  memory : opt Memory;
+  updated_at : nat64;
+  max_size : opt nat;
+  read : Permission;
+  created_at : nat64;
+  version : opt nat64;
+  mutable_permissions : opt bool;
+  rate_config : opt RateConfig;
+  write : Permission;
+  max_changes_per_user : opt nat32;
+};
+type SetController = record {
+  metadata : vec record { text; text };
+  scope : ControllerScope;
+  expires_at : opt nat64;
+};
+type SetControllersArgs = record {
+  controller : SetController;
+  controllers : vec principal;
+};
+type SetDoc = record {
+  data : blob;
+  description : opt text;
+  version : opt nat64;
+};
+type SetRule = record {
+  max_capacity : opt nat32;
+  memory : opt Memory;
+  max_size : opt nat;
+  read : Permission;
+  version : opt nat64;
+  mutable_permissions : opt bool;
+  rate_config : opt RateConfig;
+  write : Permission;
+  max_changes_per_user : opt nat32;
+};
+type SetUserUsage = record { changes_count : nat32 };
+type StorageConfig = record {
+  iframe : opt StorageConfigIFrame;
+  rewrites : vec record { text; text };
+  headers : vec record { text; vec record { text; text } };
+  max_memory_size : opt ConfigMaxMemorySize;
+  raw_access : opt StorageConfigRawAccess;
+  redirects : opt vec record { text; StorageConfigRedirect };
+};
+type StorageConfigIFrame = variant { Deny; AllowAny; SameOrigin };
+type StorageConfigRawAccess = variant { Deny; Allow };
+type StorageConfigRedirect = record { status_code : nat16; location : text };
+type StreamingCallbackHttpResponse = record {
+  token : opt StreamingCallbackToken;
+  body : blob;
+};
+type StreamingCallbackToken = record {
+  memory : Memory;
+  token : opt text;
+  sha256 : opt blob;
+  headers : vec record { text; text };
+  index : nat64;
+  encoding_type : text;
+  full_path : text;
+};
+type StreamingStrategy = variant {
+  Callback : record {
+    token : StreamingCallbackToken;
+    callback : func () -> () query;
+  };
+};
+type TimestampMatcher = variant {
+  Equal : nat64;
+  Between : record { nat64; nat64 };
+  GreaterThan : nat64;
+  LessThan : nat64;
+};
+type UploadChunk = record {
+  content : blob;
+  batch_id : nat;
+  order_id : opt nat;
+};
+type UploadChunkResult = record { chunk_id : nat };
+type UserUsage = record {
+  updated_at : nat64;
+  created_at : nat64;
+  version : opt nat64;
+  changes_count : nat32;
+};
+service : () -> {
+  commit_asset_upload : (CommitBatch) -> ();
+  count_assets : (text, ListParams) -> (nat64) query;
+  count_collection_assets : (text) -> (nat64) query;
+  count_collection_docs : (text) -> (nat64) query;
+  count_docs : (text, ListParams) -> (nat64) query;
+  del_asset : (text, text) -> ();
+  del_assets : (text) -> ();
+  del_controllers : (DeleteControllersArgs) -> (
+      vec record { principal; Controller },
+    );
+  del_custom_domain : (text) -> ();
+  del_doc : (text, text, DelDoc) -> ();
+  del_docs : (text) -> ();
+  del_filtered_assets : (text, ListParams) -> ();
+  del_filtered_docs : (text, ListParams) -> ();
+  del_many_assets : (vec record { text; text }) -> ();
+  del_many_docs : (vec record { text; text; DelDoc }) -> ();
+  del_rule : (CollectionType, text, DelRule) -> ();
+  deposit_cycles : (DepositCyclesArgs) -> ();
+  get_asset : (text, text) -> (opt AssetNoContent) query;
+  get_auth_config : () -> (opt AuthenticationConfig) query;
+  get_config : () -> (Config);
+  get_db_config : () -> (opt DbConfig) query;
+  get_doc : (text, text) -> (opt Doc) query;
+  get_many_assets : (vec record { text; text }) -> (
+      vec record { text; opt AssetNoContent },
+    ) query;
+  get_many_docs : (vec record { text; text }) -> (
+      vec record { text; opt Doc },
+    ) query;
+  get_rule : (CollectionType, text) -> (opt Rule) query;
+  get_storage_config : () -> (StorageConfig) query;
+  get_user_usage : (text, CollectionType, opt principal) -> (
+      opt UserUsage,
+    ) query;
+  http_request : (HttpRequest) -> (HttpResponse) query;
+  http_request_streaming_callback : (StreamingCallbackToken) -> (
+      StreamingCallbackHttpResponse,
+    ) query;
+  init_asset_upload : (InitAssetKey) -> (InitUploadResult);
+  list_assets : (text, ListParams) -> (ListResults) query;
+  list_controllers : () -> (vec record { principal; Controller }) query;
+  list_custom_domains : () -> (vec record { text; CustomDomain }) query;
+  list_docs : (text, ListParams) -> (ListResults_1) query;
+  list_rules : (CollectionType) -> (vec record { text; Rule }) query;
+  memory_size : () -> (MemorySize) query;
+  set_auth_config : (AuthenticationConfig) -> ();
+  set_controllers : (SetControllersArgs) -> (
+      vec record { principal; Controller },
+    );
+  set_custom_domain : (text, opt text) -> ();
+  set_db_config : (DbConfig) -> ();
+  set_doc : (text, text, SetDoc) -> (Doc);
+  set_many_docs : (vec record { text; text; SetDoc }) -> (
+      vec record { text; Doc },
+    );
+  set_rule : (CollectionType, text, SetRule) -> (Rule);
+  set_storage_config : (StorageConfig) -> ();
+  set_user_usage : (text, CollectionType, principal, SetUserUsage) -> (
+      UserUsage,
+    );
+  upload_asset_chunk : (UploadChunk) -> (UploadChunkResult);
+  version : () -> (text) query;
+}

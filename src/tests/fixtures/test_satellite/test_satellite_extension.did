@@ -1,0 +1,1 @@
+service : { build_version : () -> (text) query }

@@ -1,0 +1,9 @@
+#!/usr/bin/env bash
+
+CANISTERS=console,observatory,mission_control,orbiter,satellite
+
+for canister in $(echo $CANISTERS | sed "s/,/ /g")
+do
+    # Order of options matters, currently --only-dependencies should be first
+    ./docker/build --only-dependencies "--$canister"
+done

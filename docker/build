@@ -18,7 +18,7 @@ function usage() {
     cat << EOF
 
 Usage:
-  $0 [--only-dependencies] [--mission_control] [--satellite] [--console] [--observatory] [--orbiter]
+  $0 [--only-dependencies] [--mission_control] [--satellite] [--console] [--observatory] [--orbiter] [--test_satellite]
 
 Options:
   --only-dependencies          only build rust dependencies (no js build, no wasm optimization)
@@ -27,6 +27,7 @@ Options:
   --console                    build the console canister
   --observatory                build the observatory canister
   --orbiter                    build the orbiter canister
+  --test_satellite             build the satellite canister used for testing purposes
 EOF
 }
 
@@ -46,6 +47,8 @@ CANISTER=
 WITH_CERTIFICATION=0
 # Candid metadata juno:build
 BUILD_TYPE=
+# Source directory where to find $CANISTER/Cargo.toml
+SRC_ROOT_DIR="$PWD/src"
 
 while [[ $# -gt 0  ]]
 do
@@ -83,6 +86,13 @@ do
             CANISTER="orbiter"
             break
             ;;
+        --test_satellite)
+            CANISTER="test_satellite"
+            WITH_CERTIFICATION=1
+            BUILD_TYPE="extended"
+            SRC_ROOT_DIR="$PWD/src/tests/fixtures"
+            break
+            ;;
         *)
             echo "ERROR: unknown argument $1"
             usage
@@ -116,7 +126,7 @@ function build_canister() {
     echo "Building $canister"
     echo
 
-    SRC_DIR="$PWD/src/$canister"
+    SRC_DIR="$SRC_ROOT_DIR/$canister"
     TARGET="wasm32-unknown-unknown"
     # standardize source references
     CARGO_HOME="${CARGO_HOME:-"$HOME/.cargo"}"

@@ -10,7 +10,8 @@ members = [
     "src/libs/macros",
     "src/libs/utils",
     "src/libs/collections",
-    "src/libs/storage"]
+    "src/libs/storage",
+    "src/tests/fixtures/test_satellite"]
 resolver = "2"
 
 [workspace.package]

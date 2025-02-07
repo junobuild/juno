@@ -13,3 +13,9 @@ do
     generate_certified_did_idl "$canister"
 done
 
+FIXTURES=test_satellite
+
+for fixture in $(echo $FIXTURES | sed "s/,/ /g")
+do
+    generate_certified_did_idl "$fixture"
+done

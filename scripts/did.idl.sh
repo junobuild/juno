@@ -20,4 +20,11 @@ do
     generate_did_idl "$canister" "src/$canister"
 done
 
+FIXTURES=test_satellite
+
+for fixture in $(echo $FIXTURES | sed "s/,/ /g")
+do
+    generate_did_idl "$fixture" "src/tests/fixtures/$fixture"
+done
+
 generate_did_idl "ic" "candid"

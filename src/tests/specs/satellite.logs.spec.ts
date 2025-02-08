@@ -57,7 +57,7 @@ describe('Satellite Logging', () => {
 		await tick(pic);
 	};
 
-	const createDoc = async (): Promise<string> => createDocUtils({
+	const createDoc = (): Promise<string> => createDocUtils({
 			actor,
 			collection: TEST_COLLECTION
 		});

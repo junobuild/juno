@@ -37,6 +37,11 @@
 	let derivationOrigin = $derived(
 		fromNullishNullable(fromNullishNullable(config?.internet_identity)?.derivation_origin)
 	);
+	let externalAlternativeOrigins = $derived(
+		fromNullishNullable(
+			fromNullishNullable(config?.internet_identity)?.external_alternative_origins
+		)
+	);
 
 	const loadConfig = async () => {
 		const result = await getAuthConfig({
@@ -91,7 +96,7 @@
 <div class="card-container with-title">
 	<span class="title">{$i18n.core.config}</span>
 
-	<div class="columns-3 fit-column-1">
+	<div class="content">
 		<div>
 			{#if supportConfig}
 				<div in:fade>
@@ -107,6 +112,18 @@
 						{/if}
 					</Value>
 				</div>
+
+				{#if nonNullish(externalAlternativeOrigins)}
+					<div in:fade>
+						<Value>
+							{#snippet label()}
+								{$i18n.authentication.external_alternative_origins}
+							{/snippet}
+
+							<p>{externalAlternativeOrigins.join(',')}</p>
+						</Value>
+					</div>
+				{/if}
 			{/if}
 
 			{#if supportSettings}
@@ -135,7 +152,13 @@
 {/if}
 
 <style lang="scss">
+	@use '../../styles/mixins/text';
+
 	.card-container {
 		min-height: 166px;
+	}
+
+	p {
+		@include text.truncate;
 	}
 </style>

@@ -3,17 +3,24 @@ import { fromNullable, isNullish, nonNullish, toNullable } from '@dfinity/utils'
 
 export const buildSetAuthenticationConfig = ({
 	config,
-	domainName
+	domainName,
+	externalOrigins
 }: {
 	config: AuthenticationConfig | undefined;
 	domainName: string;
-}): AuthenticationConfig =>
-	isNullish(config)
+	externalOrigins?: string[];
+}): AuthenticationConfig => {
+	const external_alternative_origins: [] | [string[]] =
+		isNullish(externalOrigins) || externalOrigins.length === 0
+			? toNullable()
+			: toNullable(externalOrigins);
+
+	return isNullish(config)
 		? {
 				internet_identity: [
 					{
 						derivation_origin: [domainName],
-						external_alternative_origins: toNullable()
+						external_alternative_origins
 					}
 				]
 			}
@@ -24,11 +31,12 @@ export const buildSetAuthenticationConfig = ({
 						{
 							...fromNullable(config.internet_identity),
 							derivation_origin: [domainName],
-							external_alternative_origins: toNullable()
+							external_alternative_origins
 						}
 					]
 				})
 			};
+};
 
 export const buildDeleteAuthenticationConfig = (
 	config: AuthenticationConfig
@@ -44,3 +52,14 @@ export const buildDeleteAuthenticationConfig = (
 		]
 	})
 });
+
+export const assertExternalAlternativeOrigins = (externalOrigins: string[]): { valid: boolean } => {
+	const invalidUrl = externalOrigins.find((origin) => URL.parse(`https://${origin}`) === null);
+
+	const containsProtocol = (origin: string): boolean => /^[a-zA-Z]+:\/\//.test(origin);
+	const invalidProtocol = externalOrigins.find(containsProtocol);
+
+	return {
+		valid: externalOrigins.length === 0 || (isNullish(invalidUrl) && isNullish(invalidProtocol))
+	};
+};

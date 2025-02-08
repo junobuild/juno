@@ -13,6 +13,7 @@ import { toasts } from '$lib/stores/toasts.store';
 import type { OptionIdentity } from '$lib/types/itentity';
 import type { Option } from '$lib/types/utils';
 import {
+	assertExternalAlternativeOrigins,
 	buildDeleteAuthenticationConfig,
 	buildSetAuthenticationConfig
 } from '$lib/utils/auth.config.utils';
@@ -22,6 +23,7 @@ import {
 	fromNullishNullable,
 	isNullish,
 	nonNullish,
+	notEmptyString,
 	toNullable
 } from '@dfinity/utils';
 import { compare } from 'semver';
@@ -32,6 +34,7 @@ interface UpdateAuthConfigParams {
 	rule: Rule | undefined;
 	config: AuthenticationConfig | undefined;
 	maxTokens: number | undefined;
+	externalAlternativeOrigins: string;
 	derivationOrigin: Option<URL>;
 	identity: OptionIdentity;
 }
@@ -42,12 +45,23 @@ export const updateAuthConfig = async ({
 	config,
 	maxTokens,
 	derivationOrigin,
+	externalAlternativeOrigins,
 	identity
 }: UpdateAuthConfigParams): Promise<{ success: 'ok' | 'cancelled' | 'error'; err?: unknown }> => {
 	const labels = get(i18n);
 
 	if (isNullish(identity) || isNullish(identity?.getPrincipal())) {
 		toasts.error({ text: labels.core.not_logged_in });
+		return { success: 'error' };
+	}
+
+	const externalOrigins = notEmptyString(externalAlternativeOrigins)
+		? externalAlternativeOrigins.split(',').map((origin) => origin.trim())
+		: [];
+	const { valid } = assertExternalAlternativeOrigins(externalOrigins);
+
+	if (!valid) {
+		toasts.error({ text: labels.errors.auth_external_alternative_origins });
 		return { success: 'error' };
 	}
 
@@ -65,6 +79,7 @@ export const updateAuthConfig = async ({
 	const { result: resultConfig } = await updateConfig({
 		satellite,
 		derivationOrigin,
+		externalOrigins,
 		config,
 		identity
 	});
@@ -80,9 +95,10 @@ const updateConfig = async ({
 	satellite: { satellite_id: satelliteId },
 	config,
 	derivationOrigin,
+	externalOrigins,
 	identity
 }: Pick<UpdateAuthConfigParams, 'config' | 'derivationOrigin' | 'satellite'> &
-	Required<Pick<UpdateAuthConfigParams, 'identity'>>): Promise<{
+	Required<Pick<UpdateAuthConfigParams, 'identity'>> & { externalOrigins: string[] }): Promise<{
 	result: 'skip' | 'success' | 'error';
 	err?: unknown;
 }> => {
@@ -99,7 +115,7 @@ const updateConfig = async ({
 
 	const editConfig = nonNullish(derivationOrigin)
 		? // We use the host in the backend satellite which parse the url with https to generate the /.well-known/ii-alternative-origins
-			buildSetAuthenticationConfig({ config, domainName: derivationOrigin.host })
+			buildSetAuthenticationConfig({ config, domainName: derivationOrigin.host, externalOrigins })
 		: nonNullish(config)
 			? buildDeleteAuthenticationConfig(config)
 			: undefined;

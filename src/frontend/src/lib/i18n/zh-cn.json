@@ -313,7 +313,9 @@
 		"main_domain": "主域名(\"derivation origin\")",
 		"not_configured": "未配置",
 		"edit_configuration": "用如下表格更新你的认证配置.",
-		"main_domain_warn": "你将要修改主域名. 请再次确认, 现有所有用户将无法识别由于修改."
+		"main_domain_warn": "你将要修改主域名. 请再次确认, 现有所有用户将无法识别由于修改.",
+		"external_alternative_origins": "External alternative origins",
+		"external_alternative_origins_placeholder": "A comma-separated list of external domains to allow for derivation"
 	},
 	"datastore": {
 		"title": "数据池",
@@ -544,7 +546,8 @@
 		"auth_settings_not_loaded": "认证设置未被加载.",
 		"auth_rate_config_max_tokens": "每分钟最多更新操作数量是必须的.",
 		"auth_rate_config_update": "更改认证配置出现异常错误.",
-		"auth_domain_config": "更新认证配置是出现异常错误",
+		"auth_domain_config": "更新认证配置是出现异常错误.",
+		"auth_external_alternative_origins": "External alternative origins are malformed. Please provide a valid domain without a protocol.",
 		"mission_control_not_loaded": "Your mission control is not yet loaded.",
 		"mission_control_settings_not_loaded": "The settings for the mission control are not yet loaded.",
 		"mission_control_user_data_not_loaded": "Your data (metadata, config, etc) for the mission control are not yet loaded.",

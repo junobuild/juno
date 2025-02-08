@@ -323,6 +323,8 @@ interface I18nAuthentication {
 	not_configured: string;
 	edit_configuration: string;
 	main_domain_warn: string;
+	external_alternative_origins: string;
+	external_alternative_origins_placeholder: string;
 }
 
 interface I18nDatastore {
@@ -561,6 +563,7 @@ interface I18nErrors {
 	auth_rate_config_max_tokens: string;
 	auth_rate_config_update: string;
 	auth_domain_config: string;
+	auth_external_alternative_origins: string;
 	mission_control_not_loaded: string;
 	mission_control_settings_not_loaded: string;
 	mission_control_user_data_not_loaded: string;

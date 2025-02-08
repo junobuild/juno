@@ -30,6 +30,8 @@
 
 	let selectedDerivationOrigin = $state<URL | undefined>(undefined);
 
+	let externalAlternativeOrigins = $state('');
+
 	let step: 'init' | 'in_progress' | 'ready' | 'error' = $state('init');
 
 	const handleSubmit = async ($event: SubmitEvent) => {
@@ -44,6 +46,7 @@
 			maxTokens,
 			rule,
 			derivationOrigin: selectedDerivationOrigin,
+			externalAlternativeOrigins,
 			config
 		});
 
@@ -78,6 +81,7 @@
 			onsubmit={handleSubmit}
 			bind:maxTokens
 			bind:selectedDerivationOrigin
+			bind:externalAlternativeOrigins
 		/>
 	{/if}
 </Modal>

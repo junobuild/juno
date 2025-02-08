@@ -2,11 +2,11 @@ use crate::certification::constants::{IC_CERTIFICATE_EXPRESSION_HEADER, IC_CERTI
 use crate::certification::tree_utils::response_headers_expression;
 use crate::certification::types::certified::CertifiedAssetHashes;
 use crate::http::types::HeaderField;
+use base64::{engine::general_purpose::STANDARD as BASE64, Engine};
 use ic_cdk::api::{data_certificate, set_certified_data};
 use junobuild_shared::types::core::Blob;
 use serde::Serialize;
 use serde_cbor::ser::Serializer;
-use base64::{engine::general_purpose::STANDARD as BASE64, Engine};
 
 pub fn update_certified_data(asset_hashes: &CertifiedAssetHashes) {
     let prefixed_root_hash = &asset_hashes.root_hash();

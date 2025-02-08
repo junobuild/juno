@@ -20,7 +20,7 @@ async fn set_random_seed() {
 
 /// Source: https://github.com/rust-random/getrandom?tab=readme-ov-file#custom-backend
 #[no_mangle]
-unsafe extern "Rust" fn __getrandom_v03_custom(dest: *mut u8, len: usize,) -> Result<(), Error> {
+unsafe extern "Rust" fn __getrandom_v03_custom(dest: *mut u8, len: usize) -> Result<(), Error> {
     RUNTIME_STATE.with(|state| {
         let rng = &mut state.borrow_mut().rng;
 

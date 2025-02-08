@@ -57,12 +57,10 @@ describe('Satellite Logging', () => {
 		await tick(pic);
 	};
 
-	const createDoc = async (): Promise<string> => {
-		return createDocUtils({
+	const createDoc = async (): Promise<string> => createDocUtils({
 			actor,
 			collection: TEST_COLLECTION
 		});
-	};
 
 	it('should log an info when on_set_doc hook is fired', async () => {
 		await createDoc();

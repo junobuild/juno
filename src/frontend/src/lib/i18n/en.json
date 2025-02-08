@@ -313,7 +313,9 @@
 		"main_domain": "Main domain (\"derivation origin\")",
 		"not_configured": "Not configured",
 		"edit_configuration": "Update the configuration of your authentication using the form below.",
-		"main_domain_warn": "You are about to change your main domain. Please ensure this is the desired action, as all existing users will no longer be recognized by your app."
+		"main_domain_warn": "You are about to change your main domain. Please ensure this is the desired action, as all existing users will no longer be recognized by your app.",
+		"external_alternative_origins": "External alternative origins",
+		"external_alternative_origins_placeholder": "A comma-separated list of external domains to allow for derivation"
 	},
 	"datastore": {
 		"title": "Datastore",
@@ -544,7 +546,8 @@
 		"auth_settings_not_loaded": "The authentication's settings are not yet loaded.",
 		"auth_rate_config_max_tokens": "A maximal number of updates per minute is required.",
 		"auth_rate_config_update": "Unexpected error(s) while trying to update your authentication settings.",
-		"auth_domain_config": "Unexpected error(s) while trying to update your authentication configuration",
+		"auth_domain_config": "Unexpected error(s) while trying to update your authentication configuration.",
+		"auth_external_alternative_origins": "External alternative origins are malformed. Please provide a valid domain without a protocol.",
 		"mission_control_not_loaded": "Your mission control is not yet loaded.",
 		"mission_control_settings_not_loaded": "The settings for the mission control are not yet loaded.",
 		"mission_control_user_data_not_loaded": "Your data (metadata, config, etc) for the mission control are not yet loaded.",

@@ -10,6 +10,7 @@
 	import { isBusy } from '$lib/stores/busy.store';
 	import { i18n } from '$lib/stores/i18n.store';
 	import { satelliteUrl as satelliteUrlUtils } from '$lib/utils/satellite.utils';
+	import AuthConfigAdvancedOptions from "$lib/components/auth/AuthConfigAdvancedOptions.svelte";
 
 	interface Props {
 		config: AuthenticationConfig | undefined;
@@ -17,6 +18,7 @@
 		satellite: Satellite;
 		rule: Rule | undefined;
 		maxTokens: number | undefined;
+		externalAlternativeOrigins: string;
 		onsubmit: ($event: SubmitEvent) => Promise<void>;
 	}
 
@@ -26,7 +28,8 @@
 		config,
 		satellite,
 		rule,
-		maxTokens = $bindable(undefined)
+		maxTokens = $bindable(undefined),
+		externalAlternativeOrigins = $bindable("")
 	}: Props = $props();
 
 	let satelliteUrl: URL | null = $derived(
@@ -120,6 +123,8 @@
 				</Value>
 			</div>
 		{/if}
+
+		<AuthConfigAdvancedOptions bind:externalAlternativeOrigins />
 
 		{#if warnDerivationOrigin}
 			<div class="warn" in:fade>

@@ -1,6 +1,4 @@
 <script lang="ts">
-	import { fromNullable, nonNullish, isNullish, fromNullishNullable } from '@dfinity/utils';
-	import { fade } from 'svelte/transition';
 	import type { Satellite } from '$declarations/mission_control/mission_control.did';
 	import type { AuthenticationConfig, Rule } from '$declarations/satellite/satellite.did';
 	import AuthConfigForm from '$lib/components/auth/AuthConfigForm.svelte';
@@ -8,7 +6,7 @@
 	import SpinnerModal from '$lib/components/ui/SpinnerModal.svelte';
 	import { updateAuthConfig } from '$lib/services/auth.config.services';
 	import { authStore } from '$lib/stores/auth.store';
-	import { isBusy, wizardBusy } from '$lib/stores/busy.store';
+	import { wizardBusy } from '$lib/stores/busy.store';
 	import { i18n } from '$lib/stores/i18n.store';
 	import type { JunoModalDetail, JunoModalEditAuthConfigDetail } from '$lib/types/modal';
 	import { emit } from '$lib/utils/events.utils';

@@ -1,11 +1,11 @@
 pub mod state {
     use crate::types::state::CollectionType;
-    use candid::{CandidType, Deserialize};
+    use candid::CandidType;
     use ic_stable_structures::StableBTreeMap;
     use junobuild_collections::types::core::CollectionKey;
     use junobuild_shared::types::memory::Memory;
     use junobuild_shared::types::state::{Timestamp, UserId, Version};
-    use serde::Serialize;
+    use serde::{Deserialize, Serialize};
 
     pub type UserUsageStable = StableBTreeMap<UserUsageKey, UserUsage, Memory>;
 
@@ -40,8 +40,8 @@ pub mod state {
 }
 
 pub mod interface {
-    use candid::{CandidType, Deserialize};
-    use serde::Serialize;
+    use candid::CandidType;
+    use serde::{Deserialize, Serialize};
 
     /// Represents the parameters for setting or updating a user's usage entry for a controller.
     ///

@@ -2,11 +2,11 @@ use crate::certification::constants::{IC_CERTIFICATE_EXPRESSION_HEADER, IC_CERTI
 use crate::certification::tree_utils::response_headers_expression;
 use crate::certification::types::certified::CertifiedAssetHashes;
 use crate::http::types::HeaderField;
-use base64::encode;
 use ic_cdk::api::{data_certificate, set_certified_data};
 use junobuild_shared::types::core::Blob;
 use serde::Serialize;
 use serde_cbor::ser::Serializer;
+use base64::{engine::general_purpose::STANDARD as BASE64, Engine};
 
 pub fn update_certified_data(asset_hashes: &CertifiedAssetHashes) {
     let prefixed_root_hash = &asset_hashes.root_hash();
@@ -69,8 +69,8 @@ fn build_asset_certificate_header_v1_impl(
             IC_CERTIFICATE_HEADER.to_string(),
             format!(
                 "certificate=:{}:, tree=:{}:",
-                encode(certificate),
-                encode(serializer.into_inner())
+                BASE64.encode(certificate),
+                BASE64.encode(serializer.into_inner())
             ),
         )),
     }
@@ -108,9 +108,9 @@ fn build_asset_certificate_header_v2_impl(
                     IC_CERTIFICATE_HEADER.to_string(),
                     format!(
                         "certificate=:{}:, tree=:{}:, expr_path=:{}:, version=2",
-                        encode(certificate),
-                        encode(serializer.into_inner()),
-                        encode(expr_path_serializer.into_inner())
+                        BASE64.encode(certificate),
+                        BASE64.encode(serializer.into_inner()),
+                        BASE64.encode(expr_path_serializer.into_inner())
                     ),
                 )),
             }

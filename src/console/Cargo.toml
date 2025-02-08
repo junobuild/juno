@@ -21,7 +21,7 @@ ciborium.workspace = true
 sha2.workspace = true
 hex.workspace = true
 regex.workspace = true
-semver = "1.0"
+semver = "1.0.25"
 junobuild-shared = { path = "../libs/shared" }
 junobuild-storage = { path = "../libs/storage" }
 junobuild-collections = { path = "../libs/collections" }

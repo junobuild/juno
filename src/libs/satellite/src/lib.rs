@@ -15,6 +15,7 @@ mod storage;
 mod types;
 mod usage;
 mod version;
+mod admin;
 
 use crate::auth::types::config::AuthenticationConfig;
 use crate::db::types::config::DbConfig;
@@ -46,7 +47,8 @@ use junobuild_storage::types::interface::{
     AssetNoContent, CommitBatch, InitAssetKey, InitUploadResult, UploadChunk, UploadChunkResult,
 };
 use junobuild_storage::types::state::FullPath;
-
+use crate::admin::types::interface::SetUserAdmin;
+use crate::admin::types::state::UserAdmin;
 // ============================================================================================
 // START: Re-exported Types
 //
@@ -420,6 +422,27 @@ pub fn set_user_usage(
     usage: SetUserUsage,
 ) -> UserUsage {
     satellite::set_user_usage(&collection_key, &collection_type, &user_id, &usage)
+}
+
+// ---------------------------------------------------------
+// User admin
+// ---------------------------------------------------------
+
+#[doc(hidden)]
+#[query(guard = "caller_is_admin_controller")]
+fn get_user_admins(
+    user_ids: &Vec<UserId>,
+) -> Vec<(UserId, Option<UserAdmin>)> {
+    satellite::get_user_admins(&user_ids)
+}
+
+#[doc(hidden)]
+#[update(guard = "caller_is_admin_controller")]
+pub fn set_user_admin(
+    user_id: UserId,
+    user_admin: SetUserAdmin,
+) -> UserAdmin {
+    satellite::set_user_admin(&user_id, &user_admin)
 }
 
 // ---------------------------------------------------------

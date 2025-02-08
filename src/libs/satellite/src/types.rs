@@ -9,6 +9,7 @@ pub mod state {
     use junobuild_storage::types::state::StorageHeapState;
     use rand::rngs::StdRng;
     use serde::{Deserialize, Serialize};
+    use crate::admin::types::state::UserAdminStable;
 
     #[derive(Serialize, Deserialize)]
     pub struct State {
@@ -29,6 +30,7 @@ pub mod state {
         pub assets: AssetsStable,
         pub content_chunks: ContentChunksStable,
         pub user_usage: UserUsageStable,
+        pub user_admin: UserAdminStable,
     }
 
     #[derive(Default, CandidType, Serialize, Deserialize, Clone)]

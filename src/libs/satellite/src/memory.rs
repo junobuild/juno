@@ -10,6 +10,7 @@ const DB: MemoryId = MemoryId::new(1);
 const ASSETS: MemoryId = MemoryId::new(2);
 const CONTENT_CHUNKS: MemoryId = MemoryId::new(3);
 const USER_USAGE: MemoryId = MemoryId::new(4);
+const USER_ADMIN: MemoryId = MemoryId::new(5);
 
 thread_local! {
     pub static STATE: RefCell<State> = RefCell::default();
@@ -38,11 +39,16 @@ fn get_memory_user_usage() -> Memory {
     MEMORY_MANAGER.with(|m| m.borrow().get(USER_USAGE))
 }
 
+fn get_memory_user_admin() -> Memory {
+    MEMORY_MANAGER.with(|m| m.borrow().get(USER_ADMIN))
+}
+
 pub fn init_stable_state() -> StableState {
     StableState {
         db: StableBTreeMap::init(get_memory_db()),
         assets: StableBTreeMap::init(get_memory_assets()),
         content_chunks: StableBTreeMap::init(get_memory_content_chunks()),
         user_usage: StableBTreeMap::init(get_memory_user_usage()),
+        user_admin: StableBTreeMap::init(get_memory_user_admin()),
     }
 }

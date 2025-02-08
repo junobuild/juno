@@ -10,5 +10,5 @@ crate-type = ["cdylib"]
 [dependencies]
 candid.workspace = true
 ic-cdk.workspace = true
-junobuild-satellite = { path = "../../../libs/satellite", default-features = false, features = ["on_set_doc"] }
+junobuild-satellite = { path = "../../../libs/satellite", default-features = false, features = ["on_set_doc", "on_delete_doc"] }
 junobuild-macros = { path = "../../../libs/macros" }

@@ -3,19 +3,15 @@
 	import { fade } from 'svelte/transition';
 	import type { Satellite } from '$declarations/mission_control/mission_control.did';
 	import type { AuthenticationConfig, Rule } from '$declarations/satellite/satellite.did';
-	import Input from '$lib/components/ui/Input.svelte';
+	import AuthConfigForm from '$lib/components/auth/AuthConfigForm.svelte';
 	import Modal from '$lib/components/ui/Modal.svelte';
 	import SpinnerModal from '$lib/components/ui/SpinnerModal.svelte';
-	import Value from '$lib/components/ui/Value.svelte';
-	import Warning from '$lib/components/ui/Warning.svelte';
-	import { sortedSatelliteCustomDomains } from '$lib/derived/satellite-custom-domains.derived';
 	import { updateAuthConfig } from '$lib/services/auth.config.services';
 	import { authStore } from '$lib/stores/auth.store';
 	import { isBusy, wizardBusy } from '$lib/stores/busy.store';
 	import { i18n } from '$lib/stores/i18n.store';
 	import type { JunoModalDetail, JunoModalEditAuthConfigDetail } from '$lib/types/modal';
 	import { emit } from '$lib/utils/events.utils';
-	import { satelliteUrl as satelliteUrlUtils } from '$lib/utils/satellite.utils';
 
 	interface Props {
 		detail: JunoModalDetail;
@@ -26,51 +22,15 @@
 
 	let satellite: Satellite = $state((detail as JunoModalEditAuthConfigDetail).satellite);
 
-	let satelliteUrl: URL | null = $derived(
-		URL.parse(satelliteUrlUtils(satellite.satellite_id.toText()))
-	);
-
-	let customDomains: URL[] = $derived(
-		$sortedSatelliteCustomDomains
-			.map(([customDomain, _]) => URL.parse(`https://${customDomain}`))
-			.filter(nonNullish)
-	);
-
 	let rule: Rule | undefined = $state((detail as JunoModalEditAuthConfigDetail).rule);
 
 	let config: AuthenticationConfig | undefined = $state(
 		(detail as JunoModalEditAuthConfigDetail).config
 	);
 
-	let currentDerivationOrigin: string | undefined = $state(
-		fromNullable(
-			fromNullishNullable((detail as JunoModalEditAuthConfigDetail).config?.internet_identity)
-				?.derivation_origin ?? []
-		)
-	);
+	let maxTokens = $state<number | undefined>(undefined);
 
-	let derivationOrigin: string | undefined = $state(
-		fromNullable(
-			fromNullishNullable((detail as JunoModalEditAuthConfigDetail).config?.internet_identity)
-				?.derivation_origin ?? []
-		)
-	);
-
-	let warnDerivationOrigin = $derived(
-		(nonNullish(currentDerivationOrigin) && derivationOrigin !== currentDerivationOrigin) ||
-			(isNullish(currentDerivationOrigin) && nonNullish(derivationOrigin) && nonNullish(config))
-	);
-
-	let maxTokens: number | undefined = $state(
-		nonNullish(
-			fromNullishNullable((detail as JunoModalEditAuthConfigDetail).rule?.rate_config)?.max_tokens
-		)
-			? Number(
-					fromNullishNullable((detail as JunoModalEditAuthConfigDetail).rule?.rate_config)
-						?.max_tokens ?? 0
-				)
-			: undefined
-	);
+	let selectedDerivationOrigin = $state<URL | undefined>(undefined);
 
 	let step: 'init' | 'in_progress' | 'ready' | 'error' = $state('init');
 
@@ -79,12 +39,6 @@
 
 		wizardBusy.start();
 		step = 'in_progress';
-
-		const selectedDerivationOrigin = nonNullish(derivationOrigin)
-			? [...(nonNullish(satelliteUrl) ? [satelliteUrl] : []), ...customDomains].find(
-					({ host }) => host === derivationOrigin
-				)
-			: undefined;
 
 		const { success } = await updateAuthConfig({
 			satellite,
@@ -119,65 +73,14 @@
 			<p>{$i18n.core.updating_configuration}</p>
 		</SpinnerModal>
 	{:else}
-		<h2>{$i18n.core.config}</h2>
-
-		<p>{$i18n.authentication.edit_configuration}</p>
-
-		<form class="content" onsubmit={handleSubmit}>
-			<div class="container">
-				<div>
-					<div>
-						<Value>
-							{#snippet label()}
-								{$i18n.authentication.main_domain}
-							{/snippet}
-
-							<select id="logVisibility" name="logVisibility" bind:value={derivationOrigin}>
-								<option value={undefined}>{$i18n.authentication.not_configured}</option>
-
-								{#if nonNullish(satelliteUrl)}
-									<option value={satelliteUrl.host}>{satelliteUrl.host}</option>
-								{/if}
-
-								{#each customDomains as customDomain}
-									<option value={customDomain.host}>{customDomain.host}</option>
-								{/each}
-							</select>
-						</Value>
-					</div>
-				</div>
-
-				{#if nonNullish(rule)}
-					<div>
-						<Value>
-							{#snippet label()}
-								{$i18n.collections.rate_limit}
-							{/snippet}
-
-							<Input
-								inputType="number"
-								placeholder={$i18n.collections.rate_limit_placeholder}
-								name="maxTokens"
-								required={false}
-								bind:value={maxTokens}
-								onblur={() =>
-									(maxTokens = nonNullish(maxTokens) ? Math.trunc(maxTokens) : undefined)}
-							/>
-						</Value>
-					</div>
-				{/if}
-
-				{#if warnDerivationOrigin}
-					<div class="warn" in:fade>
-						<Warning>{$i18n.authentication.main_domain_warn}</Warning>
-					</div>
-				{/if}
-			</div>
-
-			<button type="submit" disabled={$isBusy}>
-				{$i18n.core.submit}
-			</button>
-		</form>
+		<AuthConfigForm
+			{satellite}
+			{config}
+			{rule}
+			onsubmit={handleSubmit}
+			bind:maxTokens
+			bind:selectedDerivationOrigin
+		/>
 	{/if}
 </Modal>
 

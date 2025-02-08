@@ -124,7 +124,7 @@
 			</div>
 		{/if}
 
-		<AuthConfigAdvancedOptions bind:externalAlternativeOrigins />
+		<AuthConfigAdvancedOptions {config} bind:externalAlternativeOrigins />
 
 		{#if warnDerivationOrigin}
 			<div class="warn" in:fade>

@@ -35,7 +35,11 @@ while [[ $# -gt 0 ]]; do
 done
 
 TARGET="wasm32-unknown-unknown"
-RUSTFLAGS="--remap-path-prefix $CARGO_HOME=/cargo -C link-args=-zstack-size=3000000"
+
+# Flags required by third party dependencies such as getrandom
+FEATURES="--cfg getrandom_backend=\"custom\""
+
+RUSTFLAGS="--remap-path-prefix $CARGO_HOME=/cargo -C link-args=-zstack-size=3000000 $FEATURES"
 
 # Build module WASM
 RUSTFLAGS="$RUSTFLAGS" cargo build --target "$TARGET" -p "$MODULE" --release --locked

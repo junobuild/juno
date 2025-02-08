@@ -43,6 +43,7 @@ EOF
 
 ONLY_DEPS=
 CANISTER=
+
 # Candid metadata supported_certificate_versions 1 and 2
 WITH_CERTIFICATION=0
 # Candid metadata juno:build
@@ -128,9 +129,14 @@ function build_canister() {
 
     SRC_DIR="$SRC_ROOT_DIR/$canister"
     TARGET="wasm32-unknown-unknown"
-    # standardize source references
+
+    # Standardize source references
     CARGO_HOME="${CARGO_HOME:-"$HOME/.cargo"}"
-    RUSTFLAGS="--remap-path-prefix $CARGO_HOME=/cargo -C link-args=-zstack-size=3000000"
+
+    # Flags required by third party dependencies such as getrandom
+    FEATURES="--cfg getrandom_backend=\"custom\""
+
+    RUSTFLAGS="--remap-path-prefix $CARGO_HOME=/cargo -C link-args=-zstack-size=3000000 $FEATURES"
 
     cargo_build_args=(
         --manifest-path "$SRC_DIR/Cargo.toml"

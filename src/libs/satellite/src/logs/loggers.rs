@@ -107,7 +107,7 @@ fn random() -> Result<i32, String> {
 
         match rng {
             None => Err("The random number generator has not been initialized.".to_string()),
-            Some(rng) => Ok(rng.gen()),
+            Some(rng) => Ok(rng.random()),
         }
     })
 }

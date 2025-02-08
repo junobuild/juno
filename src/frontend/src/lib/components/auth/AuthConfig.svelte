@@ -120,7 +120,7 @@
 								{$i18n.authentication.external_alternative_origins}
 							{/snippet}
 
-							<p>{externalAlternativeOrigins.join(",")}</p>
+							<p>{externalAlternativeOrigins.join(',')}</p>
 						</Value>
 					</div>
 				{/if}

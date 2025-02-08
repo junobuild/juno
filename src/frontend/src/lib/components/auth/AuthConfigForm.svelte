@@ -3,6 +3,7 @@
 	import { fade } from 'svelte/transition';
 	import type { Satellite } from '$declarations/mission_control/mission_control.did';
 	import type { AuthenticationConfig, Rule } from '$declarations/satellite/satellite.did';
+	import AuthConfigAdvancedOptions from '$lib/components/auth/AuthConfigAdvancedOptions.svelte';
 	import Input from '$lib/components/ui/Input.svelte';
 	import Value from '$lib/components/ui/Value.svelte';
 	import Warning from '$lib/components/ui/Warning.svelte';
@@ -10,7 +11,6 @@
 	import { isBusy } from '$lib/stores/busy.store';
 	import { i18n } from '$lib/stores/i18n.store';
 	import { satelliteUrl as satelliteUrlUtils } from '$lib/utils/satellite.utils';
-	import AuthConfigAdvancedOptions from "$lib/components/auth/AuthConfigAdvancedOptions.svelte";
 
 	interface Props {
 		config: AuthenticationConfig | undefined;
@@ -29,7 +29,7 @@
 		satellite,
 		rule,
 		maxTokens = $bindable(undefined),
-		externalAlternativeOrigins = $bindable("")
+		externalAlternativeOrigins = $bindable('')
 	}: Props = $props();
 
 	let satelliteUrl: URL | null = $derived(

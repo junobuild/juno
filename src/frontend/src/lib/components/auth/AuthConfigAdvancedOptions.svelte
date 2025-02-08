@@ -1,11 +1,11 @@
 <script lang="ts">
-	import Collapsible from '$lib/components/ui/Collapsible.svelte';
-	import { i18n } from '$lib/stores/i18n.store';
-	import Input from '$lib/components/ui/Input.svelte';
-	import Value from '$lib/components/ui/Value.svelte';
-	import type { AuthenticationConfig } from '$declarations/satellite/satellite.did';
 	import { fromNullable, fromNullishNullable, isEmptyString } from '@dfinity/utils';
 	import { onMount, type SvelteComponent } from 'svelte';
+	import type { AuthenticationConfig } from '$declarations/satellite/satellite.did';
+	import Collapsible from '$lib/components/ui/Collapsible.svelte';
+	import Input from '$lib/components/ui/Input.svelte';
+	import Value from '$lib/components/ui/Value.svelte';
+	import { i18n } from '$lib/stores/i18n.store';
 
 	interface Props {
 		config: AuthenticationConfig | undefined;

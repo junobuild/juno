@@ -143,9 +143,9 @@ dependencies = [
 
 [[package]]
 name = "canfund"
-version = "0.6.0"
+version = "0.7.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "1c9d4c6a3cb71dbdd4776aea82ee2536ab095fe970f6b76cd4650062e33b8bae"
+checksum = "b23c9f11d24d5a101a0ed297ace8b76261737ba9654f3ddfeb35a3d73c33d230"
 dependencies = [
  "async-trait",
  "candid",
@@ -153,6 +153,7 @@ dependencies = [
  "ic-cdk",
  "ic-cdk-timers",
  "ic-ledger-types",
+ "icrc-ledger-types",
  "num-bigint",
  "serde",
  "serde_bytes",

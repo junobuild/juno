@@ -23,6 +23,7 @@ import {
 	fromNullishNullable,
 	isNullish,
 	nonNullish,
+	notEmptyString,
 	toNullable
 } from '@dfinity/utils';
 import { compare } from 'semver';
@@ -54,7 +55,9 @@ export const updateAuthConfig = async ({
 		return { success: 'error' };
 	}
 
-	const externalOrigins = externalAlternativeOrigins.split(',').map((origin) => origin.trim());
+	const externalOrigins = notEmptyString(externalAlternativeOrigins)
+		? externalAlternativeOrigins.split(',').map((origin) => origin.trim())
+		: [];
 	const { valid } = assertExternalAlternativeOrigins(externalOrigins);
 
 	if (!valid) {

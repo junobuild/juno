@@ -59,5 +59,7 @@ export const assertExternalAlternativeOrigins = (externalOrigins: string[]): { v
 	const containsProtocol = (origin: string): boolean => /^[a-zA-Z]+:\/\//.test(origin);
 	const invalidProtocol = externalOrigins.find(containsProtocol);
 
-	return { valid: isNullish(invalidUrl) && isNullish(invalidProtocol) };
+	return {
+		valid: externalOrigins.length === 0 || (isNullish(invalidUrl) && isNullish(invalidProtocol))
+	};
 };

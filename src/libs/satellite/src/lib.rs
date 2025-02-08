@@ -1,5 +1,6 @@
 #![doc = include_str!("../README.md")]
 
+mod admin;
 mod auth;
 mod controllers;
 mod db;
@@ -15,8 +16,9 @@ mod storage;
 mod types;
 mod usage;
 mod version;
-mod admin;
 
+use crate::admin::types::interface::SetUserAdmin;
+use crate::admin::types::state::UserAdmin;
 use crate::auth::types::config::AuthenticationConfig;
 use crate::db::types::config::DbConfig;
 use crate::guards::{caller_is_admin_controller, caller_is_controller};
@@ -47,8 +49,6 @@ use junobuild_storage::types::interface::{
     AssetNoContent, CommitBatch, InitAssetKey, InitUploadResult, UploadChunk, UploadChunkResult,
 };
 use junobuild_storage::types::state::FullPath;
-use crate::admin::types::interface::SetUserAdmin;
-use crate::admin::types::state::UserAdmin;
 // ============================================================================================
 // START: Re-exported Types
 //
@@ -430,18 +430,13 @@ pub fn set_user_usage(
 
 #[doc(hidden)]
 #[query(guard = "caller_is_admin_controller")]
-fn get_user_admins(
-    user_ids: &Vec<UserId>,
-) -> Vec<(UserId, Option<UserAdmin>)> {
+fn get_user_admins(user_ids: &Vec<UserId>) -> Vec<(UserId, Option<UserAdmin>)> {
     satellite::get_user_admins(&user_ids)
 }
 
 #[doc(hidden)]
 #[update(guard = "caller_is_admin_controller")]
-pub fn set_user_admin(
-    user_id: UserId,
-    user_admin: SetUserAdmin,
-) -> UserAdmin {
+pub fn set_user_admin(user_id: UserId, user_admin: SetUserAdmin) -> UserAdmin {
     satellite::set_user_admin(&user_id, &user_admin)
 }
 

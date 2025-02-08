@@ -1,3 +1,6 @@
+use crate::admin::store::{get_user_admin, set_user_banned};
+use crate::admin::types::interface::SetUserAdmin;
+use crate::admin::types::state::UserAdmin;
 use crate::auth::store::{
     get_config as get_authentication_config, set_config as set_authentication_config,
 };
@@ -73,9 +76,6 @@ use junobuild_storage::types::interface::{
 };
 use junobuild_storage::types::state::FullPath;
 use junobuild_storage::types::store::Asset;
-use crate::admin::store::{get_user_admin, set_user_banned};
-use crate::admin::types::interface::SetUserAdmin;
-use crate::admin::types::state::UserAdmin;
 
 pub fn init() {
     let call_arg = arg_data::<(Option<SegmentArgs>,)>(ArgDecoderConfig::default()).0;
@@ -574,15 +574,13 @@ pub fn set_user_usage(
 // User usage
 // ---------------------------------------------------------
 
-pub fn get_user_admins(
-    user_ids: &Vec<UserId>,
-) -> Vec<(UserId, Option<UserAdmin>)> {
-    user_ids.iter().map(|user_id|(user_id.clone(), get_user_admin(&user_id))).collect()
+pub fn get_user_admins(user_ids: &Vec<UserId>) -> Vec<(UserId, Option<UserAdmin>)> {
+    user_ids
+        .iter()
+        .map(|user_id| (user_id.clone(), get_user_admin(&user_id)))
+        .collect()
 }
 
-pub fn set_user_admin(
-    user_id: &UserId,
-    user_admin: &SetUserAdmin,
-) -> UserAdmin {
+pub fn set_user_admin(user_id: &UserId, user_admin: &SetUserAdmin) -> UserAdmin {
     set_user_banned(user_id, &user_admin.banned)
 }

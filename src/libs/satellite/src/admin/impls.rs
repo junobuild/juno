@@ -1,11 +1,11 @@
-use std::borrow::Cow;
+use crate::admin::types::state::{BannedReason, UserAdmin, UserAdminKey};
 use ic_cdk::api::time;
-use ic_stable_structures::Storable;
 use ic_stable_structures::storable::Bound;
+use ic_stable_structures::Storable;
 use junobuild_shared::serializers::{deserialize_from_bytes, serialize_to_bytes};
 use junobuild_shared::types::state::{Timestamp, UserId, Version, Versioned};
 use junobuild_shared::version::next_version;
-use crate::admin::types::state::{BannedReason, UserAdmin, UserAdminKey};
+use std::borrow::Cow;
 
 impl Storable for UserAdmin {
     fn to_bytes(&self) -> Cow<[u8]> {
@@ -32,17 +32,16 @@ impl Storable for UserAdminKey {
 }
 
 impl UserAdminKey {
-    pub fn create(
-        user_id: &UserId,
-    ) -> Self {
-        Self {
-            user_id: *user_id,
-        }
+    pub fn create(user_id: &UserId) -> Self {
+        Self { user_id: *user_id }
     }
 }
 
 impl UserAdmin {
-    pub fn set_banned(current_user_admin: &Option<UserAdmin>, banned: &Option<BannedReason>) -> Self {
+    pub fn set_banned(
+        current_user_admin: &Option<UserAdmin>,
+        banned: &Option<BannedReason>,
+    ) -> Self {
         let now = time();
 
         let created_at: Timestamp = match current_user_admin {

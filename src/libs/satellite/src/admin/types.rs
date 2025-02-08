@@ -1,9 +1,9 @@
 pub mod state {
     use candid::CandidType;
     use ic_stable_structures::StableBTreeMap;
-    use serde::{Deserialize, Serialize};
     use junobuild_shared::types::memory::Memory;
     use junobuild_shared::types::state::{Timestamp, UserId, Version};
+    use serde::{Deserialize, Serialize};
 
     pub type UserAdminStable = StableBTreeMap<UserAdminKey, UserAdmin, Memory>;
 
@@ -39,9 +39,9 @@ pub mod state {
 }
 
 pub mod interface {
+    use crate::admin::types::state::BannedReason;
     use candid::{CandidType, Deserialize};
     use serde::Serialize;
-    use crate::admin::types::state::BannedReason;
 
     /// Represents the parameters for setting or updating a user's admin entry for a controller.
     ///

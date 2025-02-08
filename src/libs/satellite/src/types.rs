@@ -1,4 +1,5 @@
 pub mod state {
+    use crate::admin::types::state::UserAdminStable;
     use crate::auth::types::state::AuthenticationHeapState;
     use crate::db::types::state::{DbHeapState, DbRuntimeState, DbStable};
     use crate::memory::init_stable_state;
@@ -9,7 +10,6 @@ pub mod state {
     use junobuild_storage::types::state::StorageHeapState;
     use rand::rngs::StdRng;
     use serde::{Deserialize, Serialize};
-    use crate::admin::types::state::UserAdminStable;
 
     #[derive(Serialize, Deserialize)]
     pub struct State {

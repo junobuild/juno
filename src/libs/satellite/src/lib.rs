@@ -430,7 +430,7 @@ pub fn set_user_usage(
 
 #[doc(hidden)]
 #[query(guard = "caller_is_admin_controller")]
-fn get_user_admins(user_ids: &Vec<UserId>) -> Vec<(UserId, Option<UserAdmin>)> {
+fn get_user_admins(user_ids: Vec<UserId>) -> Vec<(UserId, Option<UserAdmin>)> {
     satellite::get_user_admins(&user_ids)
 }
 

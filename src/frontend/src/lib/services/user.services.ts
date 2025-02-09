@@ -1,17 +1,18 @@
 import type { CollectionType } from '$declarations/satellite/satellite.did';
-import { getUsageUsage, listRules } from '$lib/api/satellites.api';
+import { getDoc, listRules } from '$lib/api/satellites.api';
 import { DbCollectionType, StorageCollectionType } from '$lib/constants/rules.constants';
 import { busy } from '$lib/stores/busy.store';
 import { i18n } from '$lib/stores/i18n.store';
 import { toasts } from '$lib/stores/toasts.store';
 import type { OptionIdentity } from '$lib/types/itentity';
 import type { User } from '$lib/types/user';
-import type { UserUsageCollection } from '$lib/types/user-usage';
+import type { UserUsage, UserUsageCollection } from '$lib/types/user-usage';
 import { emit } from '$lib/utils/events.utils';
 import { waitReady } from '$lib/utils/timeout.utils';
 import type { Identity } from '@dfinity/agent';
 import type { Principal } from '@dfinity/principal';
 import { assertNonNullish, fromNullable, isNullish } from '@dfinity/utils';
+import { fromArray } from '@junobuild/utils';
 import { get } from 'svelte/store';
 
 interface OpenUserDetailParams {
@@ -88,19 +89,27 @@ const loadUserUsages = async ({
 		collectionType: CollectionType;
 		maxChangesPerUser: number | undefined;
 	}): Promise<UserUsageCollection> => {
-		const usage = await getUsageUsage({
+		let key = `${user.owner.toText()}#${collection}`;
+
+		let userUsageCollection =
+			'Storage' in collectionType ? '#user_usage_storage' : '#user_usage_db';
+
+		const result = await getDoc({
 			satelliteId,
-			collection,
-			collectionType,
-			identity,
-			userId: user.owner
+			collection: userUsageCollection,
+			key,
+			identity
 		});
+
+		const doc = fromNullable(result);
+
+		const usage = isNullish(doc) ? undefined : await fromArray<UserUsage>(doc.data);
 
 		return {
 			collection,
 			collectionType,
 			maxChangesPerUser,
-			usage: fromNullable(usage)
+			usage
 		};
 	};
 

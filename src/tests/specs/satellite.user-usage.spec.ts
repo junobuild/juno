@@ -1,17 +1,18 @@
 import type {
+	CollectionType,
 	DelDoc,
+	Doc,
 	ListParams,
 	_SERVICE as SatelliteActor,
 	SetDoc,
-	SetRule,
-	UserUsage
+	SetRule
 } from '$declarations/satellite/satellite.did';
 import { idlFactory as idlFactorSatellite } from '$declarations/satellite/satellite.factory.did';
 import { Ed25519KeyIdentity } from '@dfinity/identity';
 import type { Principal } from '@dfinity/principal';
-import { assertNonNullish, fromNullable, toNullable } from '@dfinity/utils';
+import { assertNonNullish, fromNullable, isNullish, toNullable } from '@dfinity/utils';
 import { type Actor, PocketIc } from '@hadronous/pic';
-import { toArray } from '@junobuild/utils';
+import { fromArray, toArray } from '@junobuild/utils';
 import { nanoid } from 'nanoid';
 import { beforeAll, describe, expect, inject } from 'vitest';
 import { SATELLITE_ADMIN_ERROR_MSG } from './constants/satellite-tests.constants';
@@ -45,6 +46,34 @@ describe('Satellite User Usage', () => {
 		order: toNullable(),
 		owner: toNullable(),
 		paginate: toNullable()
+	};
+
+	interface UserUsage {
+		changes_count: number;
+	}
+
+	const get_user_usage = async (
+		collection: string,
+		collectionType: CollectionType,
+		userId: Principal
+	): Promise<{ doc: Doc | undefined; usage: UserUsage | undefined }> => {
+		const { get_doc } = actor;
+
+		const key = `${userId.toText()}#${collection}`;
+
+		const userUsageCollection =
+			'Storage' in collectionType ? '#user_usage_storage' : '#user_usage_db';
+
+		const result = await get_doc(userUsageCollection, key);
+
+		const doc = fromNullable(result);
+
+		const usage = isNullish(doc) ? undefined : await fromArray<UserUsage>(doc.data);
+
+		return {
+			doc,
+			usage
+		};
 	};
 
 	beforeAll(async () => {
@@ -93,23 +122,24 @@ describe('Satellite User Usage', () => {
 			it('should get a usage count after set documents', async () => {
 				await Promise.all(Array.from({ length: countSetDocs }).map(createDoc));
 
-				const { get_user_usage } = actor;
+				const { doc, usage } = await get_user_usage(
+					TEST_COLLECTION,
+					COLLECTION_TYPE,
+					user.getPrincipal()
+				);
 
-				const usageResponse = await get_user_usage(TEST_COLLECTION, COLLECTION_TYPE, toNullable());
-
-				const usage = fromNullable(usageResponse);
-
+				assertNonNullish(doc);
 				assertNonNullish(usage);
 
 				expect(usage.changes_count).toEqual(countSetDocs);
 
-				expect(usage.updated_at).not.toBeUndefined();
-				expect(usage.updated_at).toBeGreaterThan(0n);
-				expect(usage.created_at).not.toBeUndefined();
-				expect(usage.created_at).toBeGreaterThan(0n);
-				expect(usage.updated_at).toBeGreaterThan(usage.created_at);
+				expect(doc.updated_at).not.toBeUndefined();
+				expect(doc.updated_at).toBeGreaterThan(0n);
+				expect(doc.created_at).not.toBeUndefined();
+				expect(doc.created_at).toBeGreaterThan(0n);
+				expect(doc.updated_at).toBeGreaterThan(doc.created_at);
 
-				expect(usage.version).toEqual(toNullable(BigInt(countSetDocs)));
+				expect(doc.version).toEqual(toNullable(BigInt(countSetDocs)));
 			});
 
 			const countSetManyDocs = 5;
@@ -131,16 +161,17 @@ describe('Satellite User Usage', () => {
 
 				await set_many_docs(docs);
 
-				const { get_user_usage } = actor;
+				const { doc, usage } = await get_user_usage(
+					TEST_COLLECTION,
+					COLLECTION_TYPE,
+					user.getPrincipal()
+				);
 
-				const usageResponse = await get_user_usage(TEST_COLLECTION, COLLECTION_TYPE, toNullable());
-
-				const usage = fromNullable(usageResponse);
-
+				assertNonNullish(doc);
 				assertNonNullish(usage);
 
 				expect(usage.changes_count).toEqual(countSetManyDocs + countSetDocs);
-				expect(usage.version).toEqual(toNullable(BigInt(countSetManyDocs + countSetDocs)));
+				expect(doc.version).toEqual(toNullable(BigInt(countSetManyDocs + countSetDocs)));
 			});
 
 			const countDelDoc = 1;
@@ -156,16 +187,17 @@ describe('Satellite User Usage', () => {
 					version: doc.version ?? []
 				});
 
-				const { get_user_usage } = actor;
+				const { doc: docRead, usage } = await get_user_usage(
+					TEST_COLLECTION,
+					COLLECTION_TYPE,
+					user.getPrincipal()
+				);
 
-				const usageResponse = await get_user_usage(TEST_COLLECTION, COLLECTION_TYPE, toNullable());
-
-				const usage = fromNullable(usageResponse);
-
+				assertNonNullish(docRead);
 				assertNonNullish(usage);
 
 				expect(usage.changes_count).toEqual(countSetManyDocs + countSetDocs + countDelDoc);
-				expect(usage.version).toEqual(
+				expect(docRead.version).toEqual(
 					toNullable(BigInt(countSetManyDocs + countSetDocs + countDelDoc))
 				);
 			});
@@ -187,18 +219,19 @@ describe('Satellite User Usage', () => {
 
 				await del_many_docs(docs);
 
-				const { get_user_usage } = actor;
+				const { doc, usage } = await get_user_usage(
+					TEST_COLLECTION,
+					COLLECTION_TYPE,
+					user.getPrincipal()
+				);
 
-				const usageResponse = await get_user_usage(TEST_COLLECTION, COLLECTION_TYPE, toNullable());
-
-				const usage = fromNullable(usageResponse);
-
+				assertNonNullish(doc);
 				assertNonNullish(usage);
 
 				expect(usage.changes_count).toEqual(
 					countSetManyDocs + countSetDocs + countDelDoc + countDelManyDocs
 				);
-				expect(usage.version).toEqual(
+				expect(doc.version).toEqual(
 					toNullable(BigInt(countSetManyDocs + countSetDocs + countDelDoc + countDelManyDocs))
 				);
 			});
@@ -208,12 +241,13 @@ describe('Satellite User Usage', () => {
 
 				await del_filtered_docs(TEST_COLLECTION, NO_FILTER_PARAMS);
 
-				const { get_user_usage } = actor;
+				const { doc, usage } = await get_user_usage(
+					TEST_COLLECTION,
+					COLLECTION_TYPE,
+					user.getPrincipal()
+				);
 
-				const usageResponse = await get_user_usage(TEST_COLLECTION, COLLECTION_TYPE, toNullable());
-
-				const usage = fromNullable(usageResponse);
-
+				assertNonNullish(doc);
 				assertNonNullish(usage);
 
 				const countRemainingDocs = countSetManyDocs + countSetDocs - countDelDoc - countDelManyDocs;
@@ -222,23 +256,21 @@ describe('Satellite User Usage', () => {
 					countSetManyDocs + countSetDocs + countDelDoc + countDelManyDocs + countRemainingDocs;
 
 				expect(usage.changes_count).toEqual(countTotalChanges);
-				expect(usage.version).toEqual(toNullable(BigInt(countTotalChanges)));
+				expect(doc.version).toEqual(toNullable(BigInt(countTotalChanges)));
 			});
 		});
 
 		describe('Guards', () => {
 			const user1 = Ed25519KeyIdentity.generate();
 
-			const fetchUsage = async (userId?: Principal): Promise<UserUsage | undefined> => {
-				const { get_user_usage } = actor;
-
-				const usageResponse = await get_user_usage(
+			const fetchUsage = async (
+				userId?: Principal
+			): Promise<{ doc: Doc | undefined; usage: UserUsage | undefined }> => {
+				return await get_user_usage(
 					TEST_COLLECTION,
 					COLLECTION_TYPE,
-					toNullable(userId)
+					userId ?? user.getPrincipal()
 				);
-
-				return fromNullable(usageResponse);
 			};
 
 			it('should not get usage of another user', async () => {
@@ -246,7 +278,7 @@ describe('Satellite User Usage', () => {
 
 				await createDoc();
 
-				const usage = await fetchUsage();
+				const { usage } = await fetchUsage();
 
 				assertNonNullish(usage);
 
@@ -264,7 +296,7 @@ describe('Satellite User Usage', () => {
 			it('should get usage of user if controller', async () => {
 				actor.setIdentity(controller);
 
-				const usage = await fetchUsage(user1.getPrincipal());
+				const { usage } = await fetchUsage(user1.getPrincipal());
 
 				assertNonNullish(usage);
 
@@ -274,10 +306,15 @@ describe('Satellite User Usage', () => {
 			it('should throw errors on set usage', async () => {
 				actor.setIdentity(user1);
 
-				const { set_user_usage } = actor;
+				const { set_doc } = actor;
+
+				const key = `${user1.getPrincipal().toText()}#${TEST_COLLECTION}`;
+
+				const userUsageCollection =
+					'Storage' in collectionType ? '#user_usage_storage' : '#user_usage_db';
 
 				await expect(
-					set_user_usage(TEST_COLLECTION, COLLECTION_TYPE, user1.getPrincipal(), {
+					set_doc(userUsageCollection, key, {
 						changes_count: 345
 					})
 				).rejects.toThrow(SATELLITE_ADMIN_ERROR_MSG);
@@ -385,8 +422,6 @@ describe('Satellite User Usage', () => {
 					Array.from({ length: countUploadAssets }).map(async (_, i) => await upload(i))
 				);
 
-				const { get_user_usage } = actor;
-
 				const usageResponse = await get_user_usage(TEST_COLLECTION, COLLECTION_TYPE, toNullable());
 
 				const usage = fromNullable(usageResponse);
@@ -415,8 +450,6 @@ describe('Satellite User Usage', () => {
 
 				await del_asset(TEST_COLLECTION, asset.key.full_path);
 
-				const { get_user_usage } = actor;
-
 				const usageResponse = await get_user_usage(TEST_COLLECTION, COLLECTION_TYPE, toNullable());
 
 				const usage = fromNullable(usageResponse);
@@ -441,8 +474,6 @@ describe('Satellite User Usage', () => {
 
 				await del_many_assets(assets);
 
-				const { get_user_usage } = actor;
-
 				const usageResponse = await get_user_usage(TEST_COLLECTION, COLLECTION_TYPE, toNullable());
 
 				const usage = fromNullable(usageResponse);
@@ -459,8 +490,6 @@ describe('Satellite User Usage', () => {
 				const { del_filtered_assets } = actor;
 
 				await del_filtered_assets(TEST_COLLECTION, NO_FILTER_PARAMS);
-
-				const { get_user_usage } = actor;
 
 				const usageResponse = await get_user_usage(TEST_COLLECTION, COLLECTION_TYPE, toNullable());
 
@@ -487,8 +516,6 @@ describe('Satellite User Usage', () => {
 			});
 
 			const fetchUsage = async (userId?: Principal): Promise<UserUsage | undefined> => {
-				const { get_user_usage } = actor;
-
 				const usageResponse = await get_user_usage(
 					TEST_COLLECTION,
 					COLLECTION_TYPE,

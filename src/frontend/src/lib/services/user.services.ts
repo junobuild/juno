@@ -89,9 +89,9 @@ const loadUserUsages = async ({
 		collectionType: CollectionType;
 		maxChangesPerUser: number | undefined;
 	}): Promise<UserUsageCollection> => {
-		let key = `${user.owner.toText()}#${collection}`;
+		const key = `${user.owner.toText()}#${collection}`;
 
-		let userUsageCollection =
+		const userUsageCollection =
 			'Storage' in collectionType ? '#user_usage_storage' : '#user_usage_db';
 
 		const result = await getDoc({

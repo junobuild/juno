@@ -1,6 +1,6 @@
 pub mod state {
     use candid::CandidType;
-    use junobuild_shared::types::state::{Timestamp, UserId, Version};
+    use junobuild_shared::types::state::{UserId};
     use serde::{Deserialize, Serialize};
     use junobuild_collections::types::core::CollectionKey;
     use crate::types::state::CollectionType;
@@ -29,9 +29,6 @@ pub mod state {
     #[derive(CandidType, Serialize, Deserialize, Clone)]
     pub struct UserUsage {
         pub changes_count: u32,
-        pub created_at: Timestamp,
-        pub updated_at: Timestamp,
-        pub version: Option<Version>,
     }
 }
 

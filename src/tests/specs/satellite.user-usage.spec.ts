@@ -59,12 +59,9 @@ describe('Satellite User Usage', () => {
 	): Promise<{ doc: Doc | undefined; usage: UserUsage | undefined }> => {
 		const { get_doc } = actor;
 
-		const key = `${userId.toText()}#${collection}`;
+		const key = `${userId.toText()}#${'Storage' in collectionType ? 'storage' : 'db'}#${collection}`;
 
-		const userUsageCollection =
-			'Storage' in collectionType ? '#user_usage_storage' : '#user_usage_db';
-
-		const result = await get_doc(userUsageCollection, key);
+		const result = await get_doc('#user-usage', key);
 
 		const doc = fromNullable(result);
 
@@ -308,16 +305,17 @@ describe('Satellite User Usage', () => {
 
 				const { set_doc } = actor;
 
-				const key = `${user1.getPrincipal().toText()}#${TEST_COLLECTION}`;
+				const key = `${user1.getPrincipal().toText()}#db#${TEST_COLLECTION}`;
 
-				const userUsageCollection =
-					'Storage' in collectionType ? '#user_usage_storage' : '#user_usage_db';
-
-				await expect(
-					set_doc(userUsageCollection, key, {
+				const doc: SetDoc = {
+					data: await toArray({
 						changes_count: 345
-					})
-				).rejects.toThrow(SATELLITE_ADMIN_ERROR_MSG);
+					}),
+					description: toNullable(),
+					version: toNullable()
+				};
+
+				await expect(set_doc(key, key, doc)).rejects.toThrow(SATELLITE_ADMIN_ERROR_MSG);
 			});
 		});
 
@@ -327,7 +325,7 @@ describe('Satellite User Usage', () => {
 			});
 
 			it('should get no usage of collection is log', async () => {
-				const { set_doc, get_doc, get_user_usage } = actor;
+				const { set_doc, get_doc } = actor;
 
 				const key = nanoid();
 
@@ -340,8 +338,12 @@ describe('Satellite User Usage', () => {
 				const doc = await get_doc('#log', key);
 				expect(fromNullable(doc)).not.toBeUndefined();
 
-				const usageResponse = await get_user_usage('#log', COLLECTION_TYPE, toNullable());
-				expect(fromNullable(usageResponse)).toBeUndefined();
+				const { doc: usageDoc } = await get_user_usage(
+					'#log',
+					COLLECTION_TYPE,
+					controller.getPrincipal()
+				);
+				expect(usageDoc).toBeUndefined();
 			});
 		});
 
@@ -351,13 +353,23 @@ describe('Satellite User Usage', () => {
 			});
 
 			it('should set usage for user', async () => {
-				const { set_user_usage } = actor;
+				const { set_doc } = actor;
 
-				const usage = await set_user_usage(TEST_COLLECTION, COLLECTION_TYPE, user.getPrincipal(), {
-					changes_count: 345
-				});
+				const key = `${user.getPrincipal().toText()}#db#${TEST_COLLECTION}`;
 
-				expect(usage.changes_count).toEqual(345);
+				const doc: SetDoc = {
+					data: await toArray({
+						changes_count: 345
+					}),
+					description: toNullable(),
+					version: toNullable()
+				};
+
+				const usage = await set_doc(TEST_COLLECTION, key, doc);
+
+				const usageData = await fromArray<UserUsage>(usage.data);
+
+				expect(usageData.changes_count).toEqual(345);
 
 				expect(usage.updated_at).not.toBeUndefined();
 				expect(usage.updated_at).toBeGreaterThan(0n);
@@ -422,21 +434,24 @@ describe('Satellite User Usage', () => {
 					Array.from({ length: countUploadAssets }).map(async (_, i) => await upload(i))
 				);
 
-				const usageResponse = await get_user_usage(TEST_COLLECTION, COLLECTION_TYPE, toNullable());
+				const { doc, usage } = await get_user_usage(
+					TEST_COLLECTION,
+					COLLECTION_TYPE,
+					user.getPrincipal()
+				);
 
-				const usage = fromNullable(usageResponse);
-
+				assertNonNullish(doc);
 				assertNonNullish(usage);
 
 				expect(usage.changes_count).toEqual(countUploadAssets);
 
-				expect(usage.updated_at).not.toBeUndefined();
-				expect(usage.updated_at).toBeGreaterThan(0n);
-				expect(usage.created_at).not.toBeUndefined();
-				expect(usage.created_at).toBeGreaterThan(0n);
-				expect(usage.updated_at).toBeGreaterThan(usage.created_at);
+				expect(doc.updated_at).not.toBeUndefined();
+				expect(doc.updated_at).toBeGreaterThan(0n);
+				expect(doc.created_at).not.toBeUndefined();
+				expect(doc.created_at).toBeGreaterThan(0n);
+				expect(doc.updated_at).toBeGreaterThan(doc.created_at);
 
-				expect(usage.version).toEqual(toNullable(BigInt(countUploadAssets)));
+				expect(doc.version).toEqual(toNullable(BigInt(countUploadAssets)));
 			});
 
 			const countDelAsset = 1;
@@ -450,14 +465,17 @@ describe('Satellite User Usage', () => {
 
 				await del_asset(TEST_COLLECTION, asset.key.full_path);
 
-				const usageResponse = await get_user_usage(TEST_COLLECTION, COLLECTION_TYPE, toNullable());
+				const { doc, usage } = await get_user_usage(
+					TEST_COLLECTION,
+					COLLECTION_TYPE,
+					user.getPrincipal()
+				);
 
-				const usage = fromNullable(usageResponse);
-
+				assertNonNullish(doc);
 				assertNonNullish(usage);
 
 				expect(usage.changes_count).toEqual(countUploadAssets + countDelAsset);
-				expect(usage.version).toEqual(toNullable(BigInt(countUploadAssets + countDelAsset)));
+				expect(doc.version).toEqual(toNullable(BigInt(countUploadAssets + countDelAsset)));
 			});
 
 			const countDelManyAssets = 2;
@@ -474,14 +492,17 @@ describe('Satellite User Usage', () => {
 
 				await del_many_assets(assets);
 
-				const usageResponse = await get_user_usage(TEST_COLLECTION, COLLECTION_TYPE, toNullable());
+				const { doc, usage } = await get_user_usage(
+					TEST_COLLECTION,
+					COLLECTION_TYPE,
+					user.getPrincipal()
+				);
 
-				const usage = fromNullable(usageResponse);
-
+				assertNonNullish(doc);
 				assertNonNullish(usage);
 
 				expect(usage.changes_count).toEqual(countUploadAssets + countDelAsset + countDelManyAssets);
-				expect(usage.version).toEqual(
+				expect(doc.version).toEqual(
 					toNullable(BigInt(countUploadAssets + countDelAsset + countDelManyAssets))
 				);
 			});
@@ -491,10 +512,13 @@ describe('Satellite User Usage', () => {
 
 				await del_filtered_assets(TEST_COLLECTION, NO_FILTER_PARAMS);
 
-				const usageResponse = await get_user_usage(TEST_COLLECTION, COLLECTION_TYPE, toNullable());
+				const { doc, usage } = await get_user_usage(
+					TEST_COLLECTION,
+					COLLECTION_TYPE,
+					user.getPrincipal()
+				);
 
-				const usage = fromNullable(usageResponse);
-
+				assertNonNullish(doc);
 				assertNonNullish(usage);
 
 				const countRemainingAssets = countUploadAssets - countDelAsset - countDelManyAssets;
@@ -503,7 +527,7 @@ describe('Satellite User Usage', () => {
 					countUploadAssets + countDelAsset + countDelManyAssets + countRemainingAssets;
 
 				expect(usage.changes_count).toEqual(countTotalChanges);
-				expect(usage.version).toEqual(toNullable(BigInt(countTotalChanges)));
+				expect(doc.version).toEqual(toNullable(BigInt(countTotalChanges)));
 			});
 		});
 
@@ -515,19 +539,20 @@ describe('Satellite User Usage', () => {
 				await createUser(user1.getPrincipal());
 			});
 
-			const fetchUsage = async (userId?: Principal): Promise<UserUsage | undefined> => {
-				const usageResponse = await get_user_usage(
+			const fetchUsage = async (
+				userId?: Principal
+			): Promise<{ doc: Doc | undefined; usage: UserUsage | undefined }> => {
+				return await get_user_usage(
 					TEST_COLLECTION,
 					COLLECTION_TYPE,
-					toNullable(userId)
+					userId ?? user.getPrincipal()
 				);
-				return fromNullable(usageResponse);
 			};
 
 			it('should not get usage of another user', async () => {
 				await upload(100);
 
-				const usage = await fetchUsage();
+				const { usage } = await fetchUsage();
 
 				assertNonNullish(usage);
 
@@ -546,7 +571,7 @@ describe('Satellite User Usage', () => {
 			it('should get usage of user if controller', async () => {
 				actor.setIdentity(controller);
 
-				const usage = await fetchUsage(user1.getPrincipal());
+				const { usage } = await fetchUsage(user1.getPrincipal());
 
 				assertNonNullish(usage);
 
@@ -556,13 +581,19 @@ describe('Satellite User Usage', () => {
 			it('should throw errors on set usage', async () => {
 				actor.setIdentity(user1);
 
-				const { set_user_usage } = actor;
+				const { set_doc } = actor;
 
-				await expect(
-					set_user_usage(TEST_COLLECTION, COLLECTION_TYPE, user1.getPrincipal(), {
+				const key = `${user1.getPrincipal().toText()}#storage#${TEST_COLLECTION}`;
+
+				const doc: SetDoc = {
+					data: await toArray({
 						changes_count: 345
-					})
-				).rejects.toThrow(SATELLITE_ADMIN_ERROR_MSG);
+					}),
+					description: toNullable(),
+					version: toNullable()
+				};
+
+				await expect(set_doc(key, key, doc)).rejects.toThrow(SATELLITE_ADMIN_ERROR_MSG);
 			});
 		});
 
@@ -572,7 +603,7 @@ describe('Satellite User Usage', () => {
 			});
 
 			it('should get no usage of collection is dapp', async () => {
-				const { get_asset, get_user_usage } = actor;
+				const { get_asset } = actor;
 
 				const name = `index.html`;
 				const full_path = `/${name}`;
@@ -587,8 +618,12 @@ describe('Satellite User Usage', () => {
 				const asset = await get_asset('#dapp', full_path);
 				expect(fromNullable(asset)).not.toBeUndefined();
 
-				const usageResponse = await get_user_usage('#dapp', COLLECTION_TYPE, toNullable());
-				expect(fromNullable(usageResponse)).toBeUndefined();
+				const { doc: usageDoc } = await get_user_usage(
+					'#dapp',
+					COLLECTION_TYPE,
+					controller.getPrincipal()
+				);
+				expect(usageDoc).toBeUndefined();
 			});
 		});
 
@@ -598,13 +633,23 @@ describe('Satellite User Usage', () => {
 			});
 
 			it('should set usage for user', async () => {
-				const { set_user_usage } = actor;
+				const { set_doc } = actor;
 
-				const usage = await set_user_usage(TEST_COLLECTION, COLLECTION_TYPE, user.getPrincipal(), {
-					changes_count: 456
-				});
+				const key = `${user.getPrincipal().toText()}#db#${TEST_COLLECTION}`;
 
-				expect(usage.changes_count).toEqual(456);
+				const doc: SetDoc = {
+					data: await toArray({
+						changes_count: 456
+					}),
+					description: toNullable(),
+					version: toNullable()
+				};
+
+				const usage = await set_doc(TEST_COLLECTION, key, doc);
+
+				const usageData = await fromArray<UserUsage>(usage.data);
+
+				expect(usageData.changes_count).toEqual(345);
 
 				expect(usage.updated_at).not.toBeUndefined();
 				expect(usage.updated_at).toBeGreaterThan(0n);

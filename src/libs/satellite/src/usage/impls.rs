@@ -1,7 +1,9 @@
-use crate::usage::types::state::UserUsage;
+use crate::usage::types::state::{UserUsage, UserUsageKey};
 use ic_cdk::api::time;
-use junobuild_shared::types::state::{Timestamp, Version, Versioned};
+use junobuild_collections::types::core::CollectionKey;
+use junobuild_shared::types::state::{Timestamp, UserId, Version, Versioned};
 use junobuild_shared::version::next_version;
+use crate::types::state::CollectionType;
 
 impl UserUsage {
     pub fn increment(current_user_usage: &Option<UserUsage>) -> Self {
@@ -43,5 +45,25 @@ impl UserUsage {
 impl Versioned for UserUsage {
     fn version(&self) -> Option<Version> {
         self.version
+    }
+}
+
+impl UserUsageKey {
+    pub fn create(
+        user_id: &UserId,
+        collection_key: &CollectionKey,
+        collection_type: &CollectionType,
+    ) -> Self {
+        Self {
+            user_id: *user_id,
+            collection_key: collection_key.clone(),
+            collection_type: collection_type.clone(),
+        }
+    }
+
+    pub fn to_key(
+        &self
+    ) -> String {
+        format!("{}#{}#{}", self.user_id.to_text(), self.collection_type, self.collection_key)
     }
 }

@@ -19,8 +19,7 @@ pub const DEFAULT_DB_LOG_RULE: SetRule = SetRule {
     rate_config: None,
 };
 
-pub const USER_USAGE_DB_COLLECTION_KEY: &str = "#user_usage_db";
-pub const USER_USAGE_STORAGE_COLLECTION_KEY: &str = "#user_usage_storage";
+pub const USER_USAGE_COLLECTION_KEY: &str = "#user-usage";
 
 pub const DEFAULT_USER_USAGE_RULE: SetRule = SetRule {
     read: Managed,
@@ -34,7 +33,7 @@ pub const DEFAULT_USER_USAGE_RULE: SetRule = SetRule {
     rate_config: None,
 };
 
-pub const DEFAULT_DB_COLLECTIONS: [(&str, SetRule); 4] = [
+pub const DEFAULT_DB_COLLECTIONS: [(&str, SetRule); 3] = [
     (
         "#user",
         SetRule {
@@ -50,8 +49,7 @@ pub const DEFAULT_DB_COLLECTIONS: [(&str, SetRule); 4] = [
         },
     ),
     (LOG_COLLECTION_KEY, DEFAULT_DB_LOG_RULE),
-    (USER_USAGE_DB_COLLECTION_KEY, DEFAULT_USER_USAGE_RULE),
-    (USER_USAGE_STORAGE_COLLECTION_KEY, DEFAULT_USER_USAGE_RULE),
+    (USER_USAGE_COLLECTION_KEY, DEFAULT_USER_USAGE_RULE),
 ];
 
 pub const DB_COLLECTIONS_NO_USER_USAGE: [&str; 1] = [LOG_COLLECTION_KEY];

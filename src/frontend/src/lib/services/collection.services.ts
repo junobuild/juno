@@ -1,7 +1,12 @@
 import type { CollectionType, Rule, SetRule } from '$declarations/satellite/satellite.did';
 import { getRule, satelliteVersion, setRule as setRuleApi } from '$lib/api/satellites.api';
 import { DEFAULT_RATE_CONFIG_TIME_PER_TOKEN_NS } from '$lib/constants/data.constants';
-import { MemoryStable, type MemoryText, type PermissionText } from '$lib/constants/rules.constants';
+import {
+	DbCollectionType,
+	MemoryStable,
+	type MemoryText,
+	type PermissionText
+} from '$lib/constants/rules.constants';
 import { SATELLITE_v0_0_21 } from '$lib/constants/version.constants';
 import { i18n } from '$lib/stores/i18n.store';
 import { toasts } from '$lib/stores/toasts.store';
@@ -90,7 +95,7 @@ export const getRuleUser = async ({
 			satelliteId,
 			collection: '#user',
 			identity,
-			type: { Db: null }
+			type: DbCollectionType
 		});
 
 		return { result: 'success', rule: fromNullable(result) };

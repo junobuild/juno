@@ -7,6 +7,7 @@ import {
 	setRule
 } from '$lib/api/satellites.api';
 import { DEFAULT_RATE_CONFIG_TIME_PER_TOKEN_NS } from '$lib/constants/data.constants';
+import { DbCollectionType } from '$lib/constants/rules.constants';
 import { SATELLITE_v0_0_17 } from '$lib/constants/version.constants';
 import { i18n } from '$lib/stores/i18n.store';
 import { toasts } from '$lib/stores/toasts.store';
@@ -173,7 +174,7 @@ const updateRule = async ({
 						: undefined
 				)
 			},
-			type: { Db: null },
+			type: DbCollectionType,
 			identity,
 			collection: '#user',
 			satelliteId

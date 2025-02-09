@@ -19,7 +19,22 @@ pub const DEFAULT_DB_LOG_RULE: SetRule = SetRule {
     rate_config: None,
 };
 
-pub const DEFAULT_DB_COLLECTIONS: [(&str, SetRule); 2] = [
+pub const USER_USAGE_DB_COLLECTION_KEY: &str = "#user_usage_db";
+pub const USER_USAGE_STORAGE_COLLECTION_KEY: &str = "#user_usage_storage";
+
+pub const DEFAULT_USER_USAGE_RULE: SetRule = SetRule {
+    read: Managed,
+    write: Controllers,
+    memory: Some(Memory::Stable),
+    mutable_permissions: Some(false),
+    max_size: None,
+    max_capacity: None,
+    max_changes_per_user: None,
+    version: None,
+    rate_config: None,
+};
+
+pub const DEFAULT_DB_COLLECTIONS: [(&str, SetRule); 4] = [
     (
         "#user",
         SetRule {
@@ -35,6 +50,8 @@ pub const DEFAULT_DB_COLLECTIONS: [(&str, SetRule); 2] = [
         },
     ),
     (LOG_COLLECTION_KEY, DEFAULT_DB_LOG_RULE),
+    (USER_USAGE_DB_COLLECTION_KEY, DEFAULT_USER_USAGE_RULE),
+    (USER_USAGE_STORAGE_COLLECTION_KEY, DEFAULT_USER_USAGE_RULE),
 ];
 
 pub const DB_COLLECTIONS_NO_USER_USAGE: [&str; 1] = [LOG_COLLECTION_KEY];

@@ -1,26 +1,10 @@
 pub mod state {
-    use crate::types::state::CollectionType;
     use candid::CandidType;
-    use ic_stable_structures::StableBTreeMap;
-    use junobuild_collections::types::core::CollectionKey;
-    use junobuild_shared::types::memory::Memory;
-    use junobuild_shared::types::state::{Timestamp, UserId, Version};
+    use junobuild_shared::types::core::Key;
+    use junobuild_shared::types::state::{Timestamp, Version};
     use serde::{Deserialize, Serialize};
 
-    pub type UserUsageStable = StableBTreeMap<UserUsageKey, UserUsage, Memory>;
-
-    /// A unique key for identifying user usage within a collection.
-    ///
-    /// It consists of:
-    /// - `user_id`: The unique identifier for the user which is matched to the caller.
-    /// - `collection_key`: The collection where usage is tracked.
-    /// - `collection_type`: The type of collection (`Db` for datastore, `Storage` for assets).
-    #[derive(CandidType, Serialize, Deserialize, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
-    pub struct UserUsageKey {
-        pub user_id: UserId,
-        pub collection_key: CollectionKey,
-        pub collection_type: CollectionType,
-    }
+    pub type UserUsageKey = Key;
 
     /// Tracks the usage (create, set and delete) of a user in a collection.
     ///

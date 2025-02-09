@@ -21,8 +21,6 @@ use crate::db::types::config::DbConfig;
 use crate::guards::{caller_is_admin_controller, caller_is_controller};
 use crate::types::interface::Config;
 use crate::types::state::CollectionType;
-use crate::usage::types::interface::SetUserUsage;
-use crate::usage::types::state::UserUsage;
 use crate::version::SATELLITE_VERSION;
 use ic_cdk::api::trap;
 use ic_cdk_macros::{init, post_upgrade, pre_upgrade, query, update};
@@ -407,19 +405,8 @@ pub fn get_user_usage(
     collection_key: CollectionKey,
     collection_type: CollectionType,
     user_id: Option<UserId>,
-) -> Option<UserUsage> {
+) -> Option<Doc> {
     satellite::get_user_usage(&collection_key, &collection_type, &user_id)
-}
-
-#[doc(hidden)]
-#[update(guard = "caller_is_admin_controller")]
-pub fn set_user_usage(
-    collection_key: CollectionKey,
-    collection_type: CollectionType,
-    user_id: UserId,
-    usage: SetUserUsage,
-) -> UserUsage {
-    satellite::set_user_usage(&collection_key, &collection_type, &user_id, &usage)
 }
 
 // ---------------------------------------------------------
@@ -473,7 +460,7 @@ macro_rules! include_satellite {
             http_request, http_request_streaming_callback, init, init_asset_upload, list_assets,
             list_controllers, list_custom_domains, list_docs, list_rules, memory_size,
             post_upgrade, pre_upgrade, set_auth_config, set_controllers, set_custom_domain,
-            set_db_config, set_doc, set_many_docs, set_rule, set_storage_config, set_user_usage,
+            set_db_config, set_doc, set_many_docs, set_rule, set_storage_config,
             upload_asset_chunk, version,
         };
 

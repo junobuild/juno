@@ -3,7 +3,6 @@ pub mod state {
     use crate::db::types::state::{DbHeapState, DbRuntimeState, DbStable};
     use crate::memory::init_stable_state;
     use crate::storage::types::state::{AssetsStable, ContentChunksStable};
-    use crate::usage::types::state::UserUsageStable;
     use candid::CandidType;
     use junobuild_shared::types::state::Controllers;
     use junobuild_storage::types::state::StorageHeapState;
@@ -28,7 +27,6 @@ pub mod state {
         pub db: DbStable,
         pub assets: AssetsStable,
         pub content_chunks: ContentChunksStable,
-        pub user_usage: UserUsageStable,
     }
 
     #[derive(Default, CandidType, Serialize, Deserialize, Clone)]

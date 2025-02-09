@@ -22,7 +22,7 @@ pub const DEFAULT_DB_LOG_RULE: SetRule = SetRule {
 pub const USER_USAGE_COLLECTION_KEY: &str = "#user-usage";
 
 pub const DEFAULT_USER_USAGE_RULE: SetRule = SetRule {
-    read: Managed,
+    read: Controllers,
     write: Controllers,
     memory: Some(Memory::Stable),
     mutable_permissions: Some(false),

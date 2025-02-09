@@ -6,7 +6,7 @@ use junobuild_collections::constants::{DEFAULT_USER_USAGE_RULE, USER_USAGE_COLLE
 // One time upgrade
 // ---------------------------------------------------------
 
-pub fn init_user_usage_collections() {
+pub fn init_user_usage_collection() {
     let col = STATE.with(|state| {
         let rules = &state.borrow_mut().heap.db.rules;
         rules.get(USER_USAGE_COLLECTION_KEY).cloned()

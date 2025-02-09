@@ -8,6 +8,7 @@ import type {
 	SetRule
 } from '$declarations/satellite/satellite.did';
 import { idlFactory as idlFactorSatellite } from '$declarations/satellite/satellite.factory.did';
+import type { Identity } from '@dfinity/agent';
 import { Ed25519KeyIdentity } from '@dfinity/identity';
 import type { Principal } from '@dfinity/principal';
 import { assertNonNullish, fromNullable, isNullish, toNullable } from '@dfinity/utils';
@@ -15,7 +16,7 @@ import { type Actor, PocketIc } from '@hadronous/pic';
 import { fromArray, toArray } from '@junobuild/utils';
 import { nanoid } from 'nanoid';
 import { beforeAll, describe, expect, inject } from 'vitest';
-import { SATELLITE_ADMIN_ERROR_MSG } from './constants/satellite-tests.constants';
+import { USER_CANNOT_WRITE } from './constants/satellite-tests.constants';
 import { mockData } from './mocks/doc.mocks';
 import { createDoc as createDocUtils } from './utils/satellite-doc-tests.utils';
 import { uploadAsset } from './utils/satellite-storage-tests.utils';
@@ -55,8 +56,11 @@ describe('Satellite User Usage', () => {
 	const get_user_usage = async (
 		collection: string,
 		collectionType: CollectionType,
-		userId: Principal
+		userId: Principal,
+		actorIdentity?: Identity
 	): Promise<{ doc: Doc | undefined; usage: UserUsage | undefined }> => {
+		actor.setIdentity(actorIdentity ?? controller);
+
 		const { get_doc } = actor;
 
 		const key = `${userId.toText()}#${'Storage' in collectionType ? 'storage' : 'db'}#${collection}`;
@@ -109,8 +113,8 @@ describe('Satellite User Usage', () => {
 		const user = Ed25519KeyIdentity.generate();
 		let countTotalChanges: number;
 
-		describe('User', () => {
-			beforeAll(() => {
+		describe('User interactions', () => {
+			beforeEach(() => {
 				actor.setIdentity(user);
 			});
 
@@ -258,42 +262,33 @@ describe('Satellite User Usage', () => {
 		});
 
 		describe('Guards', () => {
-			const user1 = Ed25519KeyIdentity.generate();
+			const user = Ed25519KeyIdentity.generate();
 
 			const fetchUsage = async (
-				userId?: Principal
+				actorIdentity?: Identity
 			): Promise<{ doc: Doc | undefined; usage: UserUsage | undefined }> => {
 				return await get_user_usage(
 					TEST_COLLECTION,
 					COLLECTION_TYPE,
-					userId ?? user.getPrincipal()
+					user.getPrincipal(),
+					actorIdentity
 				);
 			};
 
-			it('should not get usage of another user', async () => {
-				actor.setIdentity(user1);
+			it('should not get usage ', async () => {
+				actor.setIdentity(user);
 
 				await createDoc();
 
-				const { usage } = await fetchUsage();
+				const { usage } = await fetchUsage(user);
 
-				assertNonNullish(usage);
-
-				expect(usage.changes_count).toEqual(1);
-
-				const user2 = Ed25519KeyIdentity.generate();
-
-				actor.setIdentity(user2);
-
-				const usage2 = await fetchUsage(user1.getPrincipal());
-
-				expect(usage2).toBeUndefined();
+				expect(usage).toBeUndefined();
 			});
 
 			it('should get usage of user if controller', async () => {
 				actor.setIdentity(controller);
 
-				const { usage } = await fetchUsage(user1.getPrincipal());
+				const { usage } = await fetchUsage();
 
 				assertNonNullish(usage);
 
@@ -301,11 +296,11 @@ describe('Satellite User Usage', () => {
 			});
 
 			it('should throw errors on set usage', async () => {
-				actor.setIdentity(user1);
+				actor.setIdentity(user);
 
 				const { set_doc } = actor;
 
-				const key = `${user1.getPrincipal().toText()}#db#${TEST_COLLECTION}`;
+				const key = `${user.getPrincipal().toText()}#db#${TEST_COLLECTION}`;
 
 				const doc: SetDoc = {
 					data: await toArray({
@@ -315,7 +310,7 @@ describe('Satellite User Usage', () => {
 					version: toNullable()
 				};
 
-				await expect(set_doc(key, key, doc)).rejects.toThrow(SATELLITE_ADMIN_ERROR_MSG);
+				await expect(set_doc('#user-usage', key, doc)).rejects.toThrow(USER_CANNOT_WRITE);
 			});
 		});
 
@@ -353,19 +348,21 @@ describe('Satellite User Usage', () => {
 			});
 
 			it('should set usage for user', async () => {
-				const { set_doc } = actor;
+				const { set_doc, get_doc } = actor;
 
 				const key = `${user.getPrincipal().toText()}#db#${TEST_COLLECTION}`;
+
+				const currentDoc = await get_doc('#user-usage', key);
 
 				const doc: SetDoc = {
 					data: await toArray({
 						changes_count: 345
 					}),
 					description: toNullable(),
-					version: toNullable()
+					version: fromNullable(currentDoc)?.version ?? []
 				};
 
-				const usage = await set_doc(TEST_COLLECTION, key, doc);
+				const usage = await set_doc('#user-usage', key, doc);
 
 				const usageData = await fromArray<UserUsage>(usage.data);
 
@@ -420,11 +417,15 @@ describe('Satellite User Usage', () => {
 		const user = Ed25519KeyIdentity.generate();
 		let countTotalChanges: number;
 
-		describe('User', () => {
+		describe('User interactions', () => {
 			beforeAll(async () => {
 				actor.setIdentity(user);
 
 				await createUser(user.getPrincipal());
+			});
+
+			beforeEach(() => {
+				actor.setIdentity(user);
 			});
 
 			const countUploadAssets = 10;
@@ -532,46 +533,38 @@ describe('Satellite User Usage', () => {
 		});
 
 		describe('Guards', () => {
-			const user1 = Ed25519KeyIdentity.generate();
+			const user = Ed25519KeyIdentity.generate();
 
 			beforeAll(async () => {
-				actor.setIdentity(user1);
-				await createUser(user1.getPrincipal());
+				actor.setIdentity(user);
+				await createUser(user.getPrincipal());
 			});
 
 			const fetchUsage = async (
-				userId?: Principal
+				actorIdentity?: Identity
 			): Promise<{ doc: Doc | undefined; usage: UserUsage | undefined }> => {
 				return await get_user_usage(
 					TEST_COLLECTION,
 					COLLECTION_TYPE,
-					userId ?? user.getPrincipal()
+					user.getPrincipal(),
+					actorIdentity
 				);
 			};
 
-			it('should not get usage of another user', async () => {
+			it('should not get usage ', async () => {
+				actor.setIdentity(user);
+
 				await upload(100);
 
-				const { usage } = await fetchUsage();
+				const { usage } = await fetchUsage(user);
 
-				assertNonNullish(usage);
-
-				expect(usage.changes_count).toEqual(1);
-
-				const user2 = Ed25519KeyIdentity.generate();
-
-				actor.setIdentity(user2);
-				await createUser(user2.getPrincipal());
-
-				const usage2 = await fetchUsage(user1.getPrincipal());
-
-				expect(usage2).toBeUndefined();
+				expect(usage).toBeUndefined();
 			});
 
 			it('should get usage of user if controller', async () => {
 				actor.setIdentity(controller);
 
-				const { usage } = await fetchUsage(user1.getPrincipal());
+				const { usage } = await fetchUsage();
 
 				assertNonNullish(usage);
 
@@ -579,11 +572,11 @@ describe('Satellite User Usage', () => {
 			});
 
 			it('should throw errors on set usage', async () => {
-				actor.setIdentity(user1);
+				actor.setIdentity(user);
 
 				const { set_doc } = actor;
 
-				const key = `${user1.getPrincipal().toText()}#storage#${TEST_COLLECTION}`;
+				const key = `${user.getPrincipal().toText()}#storage#${TEST_COLLECTION}`;
 
 				const doc: SetDoc = {
 					data: await toArray({
@@ -593,7 +586,7 @@ describe('Satellite User Usage', () => {
 					version: toNullable()
 				};
 
-				await expect(set_doc(key, key, doc)).rejects.toThrow(SATELLITE_ADMIN_ERROR_MSG);
+				await expect(set_doc('#user-usage', key, doc)).rejects.toThrow(USER_CANNOT_WRITE);
 			});
 		});
 
@@ -633,23 +626,25 @@ describe('Satellite User Usage', () => {
 			});
 
 			it('should set usage for user', async () => {
-				const { set_doc } = actor;
+				const { set_doc, get_doc } = actor;
 
-				const key = `${user.getPrincipal().toText()}#db#${TEST_COLLECTION}`;
+				const key = `${user.getPrincipal().toText()}#storage#${TEST_COLLECTION}`;
+
+				const currentDoc = await get_doc('#user-usage', key);
 
 				const doc: SetDoc = {
 					data: await toArray({
 						changes_count: 456
 					}),
 					description: toNullable(),
-					version: toNullable()
+					version: fromNullable(currentDoc)?.version ?? []
 				};
 
-				const usage = await set_doc(TEST_COLLECTION, key, doc);
+				const usage = await set_doc('#user-usage', key, doc);
 
 				const usageData = await fromArray<UserUsage>(usage.data);
 
-				expect(usageData.changes_count).toEqual(345);
+				expect(usageData.changes_count).toEqual(456);
 
 				expect(usage.updated_at).not.toBeUndefined();
 				expect(usage.updated_at).toBeGreaterThan(0n);

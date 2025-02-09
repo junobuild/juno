@@ -53,12 +53,17 @@ describe('Satellite User Usage', () => {
 		changes_count: number;
 	}
 
-	const get_user_usage = async (
-		collection: string,
-		collectionType: CollectionType,
-		userId: Principal,
-		actorIdentity?: Identity
-	): Promise<{ doc: Doc | undefined; usage: UserUsage | undefined }> => {
+	const get_user_usage = async ({
+		collection,
+		collectionType,
+		userId,
+		actorIdentity
+	}: {
+		collection: string;
+		collectionType: CollectionType;
+		userId: Principal;
+		actorIdentity?: Identity;
+	}): Promise<{ doc: Doc | undefined; usage: UserUsage | undefined }> => {
 		actor.setIdentity(actorIdentity ?? controller);
 
 		const { get_doc } = actor;
@@ -123,11 +128,11 @@ describe('Satellite User Usage', () => {
 			it('should get a usage count after set documents', async () => {
 				await Promise.all(Array.from({ length: countSetDocs }).map(createDoc));
 
-				const { doc, usage } = await get_user_usage(
-					TEST_COLLECTION,
-					COLLECTION_TYPE,
-					user.getPrincipal()
-				);
+				const { doc, usage } = await get_user_usage({
+					collection: TEST_COLLECTION,
+					collectionType: COLLECTION_TYPE,
+					userId: user.getPrincipal()
+				});
 
 				assertNonNullish(doc);
 				assertNonNullish(usage);
@@ -162,11 +167,11 @@ describe('Satellite User Usage', () => {
 
 				await set_many_docs(docs);
 
-				const { doc, usage } = await get_user_usage(
-					TEST_COLLECTION,
-					COLLECTION_TYPE,
-					user.getPrincipal()
-				);
+				const { doc, usage } = await get_user_usage({
+					collection: TEST_COLLECTION,
+					collectionType: COLLECTION_TYPE,
+					userId: user.getPrincipal()
+				});
 
 				assertNonNullish(doc);
 				assertNonNullish(usage);
@@ -188,11 +193,11 @@ describe('Satellite User Usage', () => {
 					version: doc.version ?? []
 				});
 
-				const { doc: docRead, usage } = await get_user_usage(
-					TEST_COLLECTION,
-					COLLECTION_TYPE,
-					user.getPrincipal()
-				);
+				const { doc: docRead, usage } = await get_user_usage({
+					collection: TEST_COLLECTION,
+					collectionType: COLLECTION_TYPE,
+					userId: user.getPrincipal()
+				});
 
 				assertNonNullish(docRead);
 				assertNonNullish(usage);
@@ -220,11 +225,11 @@ describe('Satellite User Usage', () => {
 
 				await del_many_docs(docs);
 
-				const { doc, usage } = await get_user_usage(
-					TEST_COLLECTION,
-					COLLECTION_TYPE,
-					user.getPrincipal()
-				);
+				const { doc, usage } = await get_user_usage({
+					collection: TEST_COLLECTION,
+					collectionType: COLLECTION_TYPE,
+					userId: user.getPrincipal()
+				});
 
 				assertNonNullish(doc);
 				assertNonNullish(usage);
@@ -242,11 +247,11 @@ describe('Satellite User Usage', () => {
 
 				await del_filtered_docs(TEST_COLLECTION, NO_FILTER_PARAMS);
 
-				const { doc, usage } = await get_user_usage(
-					TEST_COLLECTION,
-					COLLECTION_TYPE,
-					user.getPrincipal()
-				);
+				const { doc, usage } = await get_user_usage({
+					collection: TEST_COLLECTION,
+					collectionType: COLLECTION_TYPE,
+					userId: user.getPrincipal()
+				});
 
 				assertNonNullish(doc);
 				assertNonNullish(usage);
@@ -266,12 +271,13 @@ describe('Satellite User Usage', () => {
 
 			const fetchUsage = async (
 				actorIdentity?: Identity
-			): Promise<{ doc: Doc | undefined; usage: UserUsage | undefined }> => await get_user_usage(
-					TEST_COLLECTION,
-					COLLECTION_TYPE,
-					user.getPrincipal(),
+			): Promise<{ doc: Doc | undefined; usage: UserUsage | undefined }> =>
+				await get_user_usage({
+					collection: TEST_COLLECTION,
+					collectionType: COLLECTION_TYPE,
+					userId: user.getPrincipal(),
 					actorIdentity
-				);
+				});
 
 			it('should not get usage ', async () => {
 				actor.setIdentity(user);
@@ -331,11 +337,11 @@ describe('Satellite User Usage', () => {
 				const doc = await get_doc('#log', key);
 				expect(fromNullable(doc)).not.toBeUndefined();
 
-				const { doc: usageDoc } = await get_user_usage(
-					'#log',
-					COLLECTION_TYPE,
-					controller.getPrincipal()
-				);
+				const { doc: usageDoc } = await get_user_usage({
+					collection: '#log',
+					collectionType: COLLECTION_TYPE,
+					userId: controller.getPrincipal()
+				});
 				expect(usageDoc).toBeUndefined();
 			});
 		});
@@ -433,11 +439,11 @@ describe('Satellite User Usage', () => {
 					Array.from({ length: countUploadAssets }).map(async (_, i) => await upload(i))
 				);
 
-				const { doc, usage } = await get_user_usage(
-					TEST_COLLECTION,
-					COLLECTION_TYPE,
-					user.getPrincipal()
-				);
+				const { doc, usage } = await get_user_usage({
+					collection: TEST_COLLECTION,
+					collectionType: COLLECTION_TYPE,
+					userId: user.getPrincipal()
+				});
 
 				assertNonNullish(doc);
 				assertNonNullish(usage);
@@ -464,11 +470,11 @@ describe('Satellite User Usage', () => {
 
 				await del_asset(TEST_COLLECTION, asset.key.full_path);
 
-				const { doc, usage } = await get_user_usage(
-					TEST_COLLECTION,
-					COLLECTION_TYPE,
-					user.getPrincipal()
-				);
+				const { doc, usage } = await get_user_usage({
+					collection: TEST_COLLECTION,
+					collectionType: COLLECTION_TYPE,
+					userId: user.getPrincipal()
+				});
 
 				assertNonNullish(doc);
 				assertNonNullish(usage);
@@ -491,11 +497,11 @@ describe('Satellite User Usage', () => {
 
 				await del_many_assets(assets);
 
-				const { doc, usage } = await get_user_usage(
-					TEST_COLLECTION,
-					COLLECTION_TYPE,
-					user.getPrincipal()
-				);
+				const { doc, usage } = await get_user_usage({
+					collection: TEST_COLLECTION,
+					collectionType: COLLECTION_TYPE,
+					userId: user.getPrincipal()
+				});
 
 				assertNonNullish(doc);
 				assertNonNullish(usage);
@@ -511,11 +517,11 @@ describe('Satellite User Usage', () => {
 
 				await del_filtered_assets(TEST_COLLECTION, NO_FILTER_PARAMS);
 
-				const { doc, usage } = await get_user_usage(
-					TEST_COLLECTION,
-					COLLECTION_TYPE,
-					user.getPrincipal()
-				);
+				const { doc, usage } = await get_user_usage({
+					collection: TEST_COLLECTION,
+					collectionType: COLLECTION_TYPE,
+					userId: user.getPrincipal()
+				});
 
 				assertNonNullish(doc);
 				assertNonNullish(usage);
@@ -540,12 +546,13 @@ describe('Satellite User Usage', () => {
 
 			const fetchUsage = async (
 				actorIdentity?: Identity
-			): Promise<{ doc: Doc | undefined; usage: UserUsage | undefined }> => await get_user_usage(
-					TEST_COLLECTION,
-					COLLECTION_TYPE,
-					user.getPrincipal(),
+			): Promise<{ doc: Doc | undefined; usage: UserUsage | undefined }> =>
+				await get_user_usage({
+					collection: TEST_COLLECTION,
+					collectionType: COLLECTION_TYPE,
+					userId: user.getPrincipal(),
 					actorIdentity
-				);
+				});
 
 			it('should not get usage ', async () => {
 				actor.setIdentity(user);
@@ -607,11 +614,11 @@ describe('Satellite User Usage', () => {
 				const asset = await get_asset('#dapp', full_path);
 				expect(fromNullable(asset)).not.toBeUndefined();
 
-				const { doc: usageDoc } = await get_user_usage(
-					'#dapp',
-					COLLECTION_TYPE,
-					controller.getPrincipal()
-				);
+				const { doc: usageDoc } = await get_user_usage({
+					collection: '#dapp',
+					collectionType: COLLECTION_TYPE,
+					userId: controller.getPrincipal()
+				});
 				expect(usageDoc).toBeUndefined();
 			});
 		});

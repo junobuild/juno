@@ -39,7 +39,6 @@ use crate::storage::store::{
 use crate::storage::strategy_impls::StorageState;
 use crate::types::interface::Config;
 use crate::types::state::{CollectionType, HeapState, RuntimeState, State};
-use crate::usage::store::{get_db_usage_by_id, get_storage_usage_by_id};
 use ciborium::{from_reader, into_writer};
 use ic_cdk::api::call::{arg_data, ArgDecoderConfig};
 use ic_cdk::api::{caller, trap};
@@ -56,7 +55,7 @@ use junobuild_shared::types::interface::{DeleteControllersArgs, SegmentArgs, Set
 use junobuild_shared::types::list::ListParams;
 use junobuild_shared::types::list::ListResults;
 use junobuild_shared::types::memory::Memory;
-use junobuild_shared::types::state::{ControllerScope, Controllers, UserId};
+use junobuild_shared::types::state::{ControllerScope, Controllers};
 use junobuild_shared::upgrade::{read_post_upgrade, write_pre_upgrade};
 use junobuild_storage::http::types::{
     HttpRequest, HttpResponse, StreamingCallbackHttpResponse, StreamingCallbackToken,
@@ -532,25 +531,4 @@ pub fn get_many_assets(
             (full_path.clone(), asset.clone())
         })
         .collect()
-}
-
-// ---------------------------------------------------------
-// User usage
-// ---------------------------------------------------------
-
-pub fn get_user_usage(
-    collection: &CollectionKey,
-    collection_type: &CollectionType,
-    user_id: &Option<UserId>,
-) -> Option<Doc> {
-    let caller = caller();
-    let user_id_or_caller = user_id.unwrap_or(caller);
-
-    match collection_type {
-        CollectionType::Db => {
-            get_db_usage_by_id(caller, collection, &user_id_or_caller).unwrap_or_else(|e| trap(&e))
-        }
-        CollectionType::Storage => get_storage_usage_by_id(caller, collection, &user_id_or_caller)
-            .unwrap_or_else(|e| trap(&e)),
-    }
 }

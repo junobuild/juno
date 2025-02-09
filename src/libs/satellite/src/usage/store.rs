@@ -1,34 +1,10 @@
 use crate::usage::types::state::UserUsage;
 use crate::usage::utils::build_user_usage_key;
-use crate::{get_doc_store, set_doc_store, Doc, SetDoc};
-use candid::Principal;
+use crate::{get_doc_store, set_doc_store, SetDoc};
 use ic_cdk::id;
-use junobuild_collections::constants::{
-    USER_USAGE_DB_COLLECTION_KEY, USER_USAGE_STORAGE_COLLECTION_KEY,
-};
 use junobuild_collections::types::core::CollectionKey;
 use junobuild_shared::types::state::UserId;
 use junobuild_utils::{decode_doc_data, encode_doc_data};
-
-pub fn get_db_usage_by_id(
-    caller: Principal,
-    collection: &CollectionKey,
-    user_id: &UserId,
-) -> Result<Option<Doc>, String> {
-    let key = build_user_usage_key(user_id, collection);
-
-    get_doc_store(caller, USER_USAGE_DB_COLLECTION_KEY.to_string(), key)
-}
-
-pub fn get_storage_usage_by_id(
-    caller: Principal,
-    collection: &CollectionKey,
-    user_id: &UserId,
-) -> Result<Option<Doc>, String> {
-    let key = build_user_usage_key(user_id, collection);
-
-    get_doc_store(caller, USER_USAGE_STORAGE_COLLECTION_KEY.to_string(), key)
-}
 
 pub fn increment_usage(
     user_usage_collection: &CollectionKey,

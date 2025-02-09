@@ -1,6 +1,7 @@
 use crate::memory::STATE;
-use crate::rules::store::set_rule_db;
+use ic_cdk::api::time;
 use junobuild_collections::constants::{DEFAULT_USER_USAGE_RULE, USER_USAGE_COLLECTION_KEY};
+use junobuild_collections::types::rules::{Rule};
 
 // ---------------------------------------------------------
 // One time upgrade
@@ -13,10 +14,26 @@ pub fn init_user_usage_collection() {
     });
 
     if col.is_none() {
-        // We are ignoring potential issues because we are processing during an upgrade.
-        let _ = set_rule_db(
-            USER_USAGE_COLLECTION_KEY.to_string(),
-            DEFAULT_USER_USAGE_RULE,
-        );
+        STATE.with(|state| {
+            let rules = &mut state.borrow_mut().heap.db.rules;
+
+            let now = time();
+
+            let rule = Rule {
+                read: DEFAULT_USER_USAGE_RULE.read,
+                write: DEFAULT_USER_USAGE_RULE.write,
+                memory: DEFAULT_USER_USAGE_RULE.memory,
+                mutable_permissions: DEFAULT_USER_USAGE_RULE.mutable_permissions,
+                max_size: DEFAULT_USER_USAGE_RULE.max_size,
+                max_capacity: DEFAULT_USER_USAGE_RULE.max_capacity,
+                max_changes_per_user: DEFAULT_USER_USAGE_RULE.max_changes_per_user,
+                created_at: now,
+                updated_at: now,
+                version: DEFAULT_USER_USAGE_RULE.version,
+                rate_config: DEFAULT_USER_USAGE_RULE.rate_config,
+            };
+
+            rules.insert(USER_USAGE_COLLECTION_KEY.to_string(), rule.clone());
+        });
     }
 }

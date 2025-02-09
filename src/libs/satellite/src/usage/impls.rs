@@ -1,7 +1,7 @@
+use crate::types::state::CollectionType;
 use crate::usage::types::state::{UserUsage, UserUsageKey};
 use junobuild_collections::types::core::CollectionKey;
-use junobuild_shared::types::state::{UserId};
-use crate::types::state::CollectionType;
+use junobuild_shared::types::state::UserId;
 
 impl UserUsage {
     pub fn increment(current_user_usage: &Option<UserUsage>) -> Self {
@@ -31,9 +31,12 @@ impl UserUsageKey {
         }
     }
 
-    pub fn to_key(
-        &self
-    ) -> String {
-        format!("{}#{}#{}", self.user_id.to_text(), self.collection_type, self.collection_key)
+    pub fn to_key(&self) -> String {
+        format!(
+            "{}#{}#{}",
+            self.user_id.to_text(),
+            self.collection_type,
+            self.collection_key
+        )
     }
 }

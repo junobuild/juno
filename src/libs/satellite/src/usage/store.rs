@@ -1,11 +1,11 @@
+use crate::types::state::CollectionType;
 use crate::usage::types::state::{UserUsage, UserUsageKey};
 use crate::{get_doc_store, set_doc_store, SetDoc};
 use ic_cdk::id;
+use junobuild_collections::constants::USER_USAGE_COLLECTION_KEY;
 use junobuild_collections::types::core::CollectionKey;
 use junobuild_shared::types::state::UserId;
 use junobuild_utils::{decode_doc_data, encode_doc_data};
-use junobuild_collections::constants::USER_USAGE_COLLECTION_KEY;
-use crate::types::state::CollectionType;
 
 pub fn increment_usage(
     collection_key: &CollectionKey,
@@ -17,14 +17,17 @@ pub fn increment_usage(
 
     let doc = get_doc_store(id(), USER_USAGE_COLLECTION_KEY.to_string(), key.clone())?;
 
-    let current_usage = doc.as_ref().map(|doc| decode_doc_data(&doc.data)).transpose()?;
+    let current_usage = doc
+        .as_ref()
+        .map(|doc| decode_doc_data(&doc.data))
+        .transpose()?;
 
     let update_usage = UserUsage::increment(&current_usage);
 
     let update_doc = SetDoc {
         data: encode_doc_data(&update_usage)?,
         description: doc.as_ref().and_then(|d| d.description.clone()),
-        version: doc.as_ref().and_then(|d| d.version.clone()),
+        version: doc.as_ref().and_then(|d| d.version),
     };
 
     set_doc_store(id(), USER_USAGE_COLLECTION_KEY.to_string(), key, update_doc)?;

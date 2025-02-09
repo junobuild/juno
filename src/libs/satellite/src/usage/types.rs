@@ -1,9 +1,9 @@
 pub mod state {
-    use candid::CandidType;
-    use junobuild_shared::types::state::{UserId};
-    use serde::{Deserialize, Serialize};
-    use junobuild_collections::types::core::CollectionKey;
     use crate::types::state::CollectionType;
+    use candid::CandidType;
+    use junobuild_collections::types::core::CollectionKey;
+    use junobuild_shared::types::state::UserId;
+    use serde::{Deserialize, Serialize};
 
     /// A unique key for identifying user usage within a collection.
     ///

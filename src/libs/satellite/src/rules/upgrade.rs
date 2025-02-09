@@ -1,10 +1,10 @@
 use crate::memory::STATE;
 use crate::rules::store::set_rule_db;
-use junobuild_collections::constants::{
-    DEFAULT_USER_USAGE_RULE, USER_USAGE_COLLECTION_KEY,
-};
+use junobuild_collections::constants::{DEFAULT_USER_USAGE_RULE, USER_USAGE_COLLECTION_KEY};
 
-/// One time upgrade
+// ---------------------------------------------------------
+// One time upgrade
+// ---------------------------------------------------------
 
 pub fn init_user_usage_collections() {
     let col = STATE.with(|state| {

@@ -35,7 +35,7 @@ use junobuild_shared::types::interface::{
 };
 use junobuild_shared::types::list::ListParams;
 use junobuild_shared::types::list::ListResults;
-use junobuild_shared::types::state::{Controllers};
+use junobuild_shared::types::state::Controllers;
 use junobuild_storage::http::types::{
     HttpRequest, HttpResponse, StreamingCallbackHttpResponse, StreamingCallbackToken,
 };

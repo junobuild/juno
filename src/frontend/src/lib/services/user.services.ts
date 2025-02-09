@@ -89,7 +89,7 @@ const loadUserUsages = async ({
 		collectionType: CollectionType;
 		maxChangesPerUser: number | undefined;
 	}): Promise<UserUsageCollection> => {
-		const key = `${user.owner.toText()}#${collection}`;
+		const key = `${user.owner.toText()}#${}#${collection}`;
 
 		const userUsageCollection =
 			'Storage' in collectionType ? '#user_usage_storage' : '#user_usage_db';

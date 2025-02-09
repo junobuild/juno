@@ -39,7 +39,7 @@
 		"ledger:transfer": "scripts/ledger.transfer.sh",
 		"i18n": "node scripts/i18n.mjs && prettier --write ./src/frontend/src/lib/types/i18n.d.ts",
 		"observatory:statuses": "node scripts/observatory.statuses.mjs",
-		"clippy": "cargo clippy --target=wasm32-unknown-unknown -- -A deprecated",
+		"clippy": "RUSTFLAGS='--cfg getrandom_backend=\"custom\"' cargo clippy --target=wasm32-unknown-unknown -- -A deprecated",
 		"test": "tsc --project tsconfig.spec.json --noEmit && vitest",
 		"test:frontend": "tsc --project tsconfig.spec.json --noEmit && vitest --dir src/frontend",
 		"build:console": "scripts/cargo.sh console --with-certification",

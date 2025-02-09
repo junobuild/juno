@@ -266,14 +266,12 @@ describe('Satellite User Usage', () => {
 
 			const fetchUsage = async (
 				actorIdentity?: Identity
-			): Promise<{ doc: Doc | undefined; usage: UserUsage | undefined }> => {
-				return await get_user_usage(
+			): Promise<{ doc: Doc | undefined; usage: UserUsage | undefined }> => await get_user_usage(
 					TEST_COLLECTION,
 					COLLECTION_TYPE,
 					user.getPrincipal(),
 					actorIdentity
 				);
-			};
 
 			it('should not get usage ', async () => {
 				actor.setIdentity(user);
@@ -542,14 +540,12 @@ describe('Satellite User Usage', () => {
 
 			const fetchUsage = async (
 				actorIdentity?: Identity
-			): Promise<{ doc: Doc | undefined; usage: UserUsage | undefined }> => {
-				return await get_user_usage(
+			): Promise<{ doc: Doc | undefined; usage: UserUsage | undefined }> => await get_user_usage(
 					TEST_COLLECTION,
 					COLLECTION_TYPE,
 					user.getPrincipal(),
 					actorIdentity
 				);
-			};
 
 			it('should not get usage ', async () => {
 				actor.setIdentity(user);

@@ -3,9 +3,9 @@ use crate::db::runtime::increment_and_assert_rate;
 use crate::db::types::config::DbConfig;
 use crate::db::types::state::{DocAssertDelete, DocAssertSet, DocContext};
 use crate::hooks::{invoke_assert_delete_doc, invoke_assert_set_doc};
-use crate::rules::assert_stores::{assert_user_collection_caller_key, assert_user_collection_data};
 use crate::types::store::StoreContext;
 use crate::usage::assert::increment_and_assert_db_usage;
+use crate::user::assert::{assert_user_collection_caller_key, assert_user_collection_data};
 use crate::{DelDoc, Doc, SetDoc};
 use candid::Principal;
 use junobuild_collections::assert_stores::{

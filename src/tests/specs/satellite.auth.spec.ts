@@ -510,20 +510,6 @@ describe('Satellite authentication', () => {
 				expect(users.find(([key]) => key === user.getPrincipal().toText())).not.toBeUndefined();
 			});
 
-			it('should create a user within unknown provider because this is just a visual information', async () => {
-				const { set_doc } = actor;
-
-				const doc = await set_doc('#user', user.getPrincipal().toText(), {
-					data: await toArray({
-						provider: 'something'
-					}),
-					description: toNullable(),
-					version: toNullable()
-				});
-
-				expect(doc).not.toBeUndefined();
-			});
-
 			it('should create a user without provider because this is optional', async () => {
 				const { set_doc } = actor;
 
@@ -583,7 +569,25 @@ describe('Satellite authentication', () => {
 					actor.setIdentity(user);
 				});
 
-				it('should not create a user with invalid data fields', async () => {
+				it('should not create a user with an unknown provider', async () => {
+					const { set_doc } = actor;
+
+					const data = await toArray({
+						provider: 'unknown'
+					});
+
+					await expect(
+						set_doc('#user', user.getPrincipal().toText(), {
+							data,
+							description: toNullable(),
+							version: toNullable()
+						})
+					).rejects.toThrow(
+						'Invalid user data: unknown variant `unknown`, expected `internet_identity` or `nfid` at line 1 column 21.'
+					);
+				});
+
+				it('should not create a user with invalid additional data fields', async () => {
 					const { set_doc } = actor;
 
 					const data = await toArray({

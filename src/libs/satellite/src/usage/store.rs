@@ -2,7 +2,7 @@ use crate::types::state::CollectionType;
 use crate::usage::types::state::{UserUsage, UserUsageKey};
 use crate::{get_doc_store, set_doc_store, SetDoc};
 use ic_cdk::id;
-use junobuild_collections::constants::USER_USAGE_COLLECTION_KEY;
+use junobuild_collections::constants::db::USER_USAGE_COLLECTION_KEY;
 use junobuild_collections::types::core::CollectionKey;
 use junobuild_shared::types::state::UserId;
 use junobuild_utils::{decode_doc_data, encode_doc_data};

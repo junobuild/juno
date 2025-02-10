@@ -2,7 +2,7 @@ use crate::user::types::state::UserData;
 use crate::{get_doc_store, SetDoc};
 use candid::Principal;
 use ic_cdk::id;
-use junobuild_collections::constants::COLLECTION_USER_KEY;
+use junobuild_collections::constants::db::COLLECTION_USER_KEY;
 use junobuild_collections::types::core::CollectionKey;
 use junobuild_shared::types::core::Key;
 use junobuild_shared::utils::principal_not_equal;

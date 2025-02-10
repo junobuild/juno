@@ -3,7 +3,7 @@ use crate::assert_rules::{
     assert_system_collection_delete_permission, assert_system_collection_set_permission,
     assert_write_version,
 };
-use crate::constants::SYS_COLLECTION_PREFIX;
+use crate::constants::core::SYS_COLLECTION_PREFIX;
 use crate::types::core::CollectionKey;
 use crate::types::interface::{DelRule, SetRule};
 use crate::types::rules::{Rule, Rules};

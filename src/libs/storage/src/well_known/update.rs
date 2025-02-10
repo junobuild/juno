@@ -5,7 +5,7 @@ use crate::runtime::{
 use crate::strategies::StorageStateStrategy;
 use crate::types::store::Asset;
 use crate::well_known::utils::{map_alternative_origins_asset, map_custom_domains_asset};
-use junobuild_collections::constants::DEFAULT_ASSETS_COLLECTIONS;
+use junobuild_collections::constants::assets::DEFAULT_ASSETS_COLLECTIONS;
 use junobuild_shared::types::core::DomainName;
 
 pub fn update_alternative_origins_asset(

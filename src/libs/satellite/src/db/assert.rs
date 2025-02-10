@@ -8,7 +8,7 @@ use crate::usage::assert::increment_and_assert_db_usage;
 use crate::user::assert::{assert_user_collection_caller_key, assert_user_collection_data};
 use crate::{DelDoc, Doc, SetDoc};
 use candid::Principal;
-use junobuild_collections::assert_stores::{
+use junobuild_collections::assert::stores::{
     assert_create_permission, assert_permission, public_permission,
 };
 use junobuild_collections::types::rules::{Permission, Rule};

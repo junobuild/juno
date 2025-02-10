@@ -10,7 +10,8 @@ use crate::types::hooks::{
 use crate::HookContext;
 #[allow(unused)]
 use ic_cdk_timers::set_timer;
-use junobuild_collections::constants::{COLLECTION_ASSET_KEY, COLLECTION_LOG_KEY};
+use junobuild_collections::constants_assets::COLLECTION_ASSET_KEY;
+use junobuild_collections::constants_db::COLLECTION_LOG_KEY;
 use junobuild_collections::types::core::CollectionKey;
 use junobuild_shared::types::state::UserId;
 use junobuild_storage::types::store::{Asset, AssetAssertUpload};

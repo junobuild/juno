@@ -1,6 +1,5 @@
-use junobuild_collections::constants::{
-    ASSETS_COLLECTIONS_WITHOUT_USER_USAGE, DB_COLLECTIONS_WITHOUT_USER_USAGE,
-};
+use junobuild_collections::constants_assets::ASSETS_COLLECTIONS_WITHOUT_USER_USAGE;
+use junobuild_collections::constants_db::DB_COLLECTIONS_WITHOUT_USER_USAGE;
 use junobuild_collections::types::core::CollectionKey;
 
 pub fn is_db_collection_no_usage(collection: &CollectionKey) -> bool {

@@ -1,10 +1,10 @@
 use crate::types::state::CollectionType;
-use crate::usage::types::state::{UserUsage, UserUsageKey};
+use crate::usage::types::state::{UserUsageData, UserUsageKey};
 use junobuild_collections::types::core::CollectionKey;
 use junobuild_shared::types::state::UserId;
 
-impl UserUsage {
-    pub fn increment(current_user_usage: &Option<UserUsage>) -> Self {
+impl UserUsageData {
+    pub fn increment(current_user_usage: &Option<UserUsageData>) -> Self {
         let count = 1;
 
         let items_count: u32 = match current_user_usage {
@@ -12,7 +12,7 @@ impl UserUsage {
             Some(current_user_usage) => current_user_usage.changes_count.saturating_add(count),
         };
 
-        UserUsage {
+        UserUsageData {
             changes_count: items_count,
         }
     }

@@ -5,7 +5,20 @@ use junobuild_shared::rate::constants::DEFAULT_RATE_CONFIG;
 
 pub const SYS_COLLECTION_PREFIX: char = '#';
 
+pub const COLLECTION_USER_KEY: &str = "#user";
 pub const COLLECTION_LOG_KEY: &str = "#log";
+
+const COLLECTION_USER_DEFAULT_RULE: SetRule = SetRule {
+    read: Managed,
+    write: Managed,
+    memory: Some(Memory::Stable),
+    mutable_permissions: Some(false),
+    max_size: None,
+    max_capacity: None,
+    max_changes_per_user: None,
+    version: None,
+    rate_config: Some(DEFAULT_RATE_CONFIG),
+};
 
 pub const COLLECTION_LOG_DEFAULT_RULE: SetRule = SetRule {
     read: Controllers,
@@ -20,20 +33,7 @@ pub const COLLECTION_LOG_DEFAULT_RULE: SetRule = SetRule {
 };
 
 pub const DEFAULT_DB_COLLECTIONS: [(&str, SetRule); 2] = [
-    (
-        "#user",
-        SetRule {
-            read: Managed,
-            write: Managed,
-            memory: Some(Memory::Stable),
-            mutable_permissions: Some(false),
-            max_size: None,
-            max_capacity: None,
-            max_changes_per_user: None,
-            version: None,
-            rate_config: Some(DEFAULT_RATE_CONFIG),
-        },
-    ),
+    (COLLECTION_USER_KEY, COLLECTION_USER_DEFAULT_RULE),
     (COLLECTION_LOG_KEY, COLLECTION_LOG_DEFAULT_RULE),
 ];
 

@@ -4,7 +4,7 @@
 		"type": "application",
 		"canisters": {
 			"stopped": 114,
-			"running": 7464
+			"running": 7505
 		},
 		"nodes": {
 			"up": 13,
@@ -16,7 +16,7 @@
 		"type": "application",
 		"canisters": {
 			"stopped": 1,
-			"running": 18933
+			"running": 20419
 		},
 		"nodes": {
 			"up": 13,
@@ -28,7 +28,7 @@
 		"type": "application",
 		"canisters": {
 			"stopped": 50,
-			"running": 10313
+			"running": 10344
 		},
 		"nodes": {
 			"up": 13,
@@ -40,7 +40,7 @@
 		"type": "application",
 		"canisters": {
 			"stopped": 648,
-			"running": 34677
+			"running": 34752
 		},
 		"nodes": {
 			"up": 13,
@@ -51,8 +51,8 @@
 		"subnetId": "ejbmu-grnam-gk6ol-6irwa-htwoj-7ihfl-goimw-hlnvh-abms4-47v2e-zqe",
 		"type": "application",
 		"canisters": {
-			"stopped": 2,
-			"running": 609
+			"stopped": 4,
+			"running": 4642
 		},
 		"nodes": {
 			"up": 13,
@@ -64,7 +64,7 @@
 		"type": "application",
 		"canisters": {
 			"stopped": 2,
-			"running": 20235
+			"running": 20260
 		},
 		"nodes": {
 			"up": 13,
@@ -76,7 +76,7 @@
 		"type": "application",
 		"canisters": {
 			"stopped": 2,
-			"running": 486
+			"running": 498
 		},
 		"nodes": {
 			"up": 13,
@@ -88,7 +88,7 @@
 		"type": "application",
 		"canisters": {
 			"stopped": 117,
-			"running": 39782
+			"running": 39806
 		},
 		"nodes": {
 			"up": 13,
@@ -100,7 +100,7 @@
 		"type": "application",
 		"canisters": {
 			"stopped": 61,
-			"running": 32056
+			"running": 32063
 		},
 		"nodes": {
 			"up": 13,
@@ -111,8 +111,8 @@
 		"subnetId": "qdvhd-os4o2-zzrdw-xrcv4-gljou-eztdp-bj326-e6jgr-tkhuc-ql6v2-yqe",
 		"type": "application",
 		"canisters": {
-			"stopped": 18,
-			"running": 52733
+			"stopped": 17,
+			"running": 52758
 		},
 		"nodes": {
 			"up": 13,
@@ -124,7 +124,7 @@
 		"type": "application",
 		"canisters": {
 			"stopped": 4,
-			"running": 170
+			"running": 183
 		},
 		"nodes": {
 			"up": 13,
@@ -136,7 +136,7 @@
 		"type": "application",
 		"canisters": {
 			"stopped": 17,
-			"running": 6108
+			"running": 6170
 		},
 		"nodes": {
 			"up": 13,
@@ -148,8 +148,8 @@
 		"specialization": "european",
 		"type": "application",
 		"canisters": {
-			"stopped": 518,
-			"running": 24393
+			"stopped": 471,
+			"running": 24500
 		},
 		"nodes": {
 			"up": 13,
@@ -161,8 +161,8 @@
 		"specialization": "fiduciary",
 		"type": "application",
 		"canisters": {
-			"stopped": 7,
-			"running": 795
+			"stopped": 8,
+			"running": 834
 		},
 		"nodes": {
 			"up": 34,

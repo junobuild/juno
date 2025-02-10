@@ -14,6 +14,7 @@ mod satellite;
 mod storage;
 mod types;
 mod usage;
+mod user;
 mod version;
 
 use crate::auth::types::config::AuthenticationConfig;

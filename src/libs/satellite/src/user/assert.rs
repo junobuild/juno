@@ -1,4 +1,4 @@
-use crate::rules::types::state::UserData;
+use crate::user::types::state::UserData;
 use crate::{get_doc_store, SetDoc};
 use candid::Principal;
 use ic_cdk::id;

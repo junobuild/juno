@@ -3,6 +3,7 @@ use crate::storage::state::{
     delete_asset, get_asset, get_config, get_domains, get_rule, insert_asset, insert_asset_encoding,
 };
 use crate::storage::store::{get_content_chunks_store, get_public_asset_store};
+use crate::types::store::StoreContext;
 use crate::usage::assert::increment_and_assert_storage_usage;
 use candid::Principal;
 use junobuild_collections::types::core::CollectionKey;
@@ -37,7 +38,13 @@ impl StorageAssertionsStrategy for StorageAssertions {
         collection: &CollectionKey,
         max_changes_per_user: Option<u32>,
     ) -> Result<(), String> {
-        increment_and_assert_storage_usage(*caller, controllers, collection, max_changes_per_user)
+        let context = StoreContext {
+            caller: caller.clone(),
+            controllers: &controllers,
+            collection,
+        };
+
+        increment_and_assert_storage_usage(&context, max_changes_per_user)
     }
 }
 

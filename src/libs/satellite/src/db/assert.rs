@@ -51,24 +51,35 @@ pub fn assert_set_doc(
         },
     )?;
 
-    increment_and_assert_db_usage(caller, controllers, collection, rule.max_changes_per_user)?;
+    Ok(())
+}
 
-    increment_and_assert_rate(collection, &rule.rate_config)?;
+pub fn assert_and_increment_set_doc(
+    context: &StoreContext,
+    config: &Option<DbConfig>,
+    rule: &Rule,
+) -> Result<(), String> {
+    increment_and_assert_db_usage(context, config, rule.max_changes_per_user)?;
+
+    increment_and_assert_rate(context.collection, &rule.rate_config)?;
 
     Ok(())
 }
 
 pub fn assert_delete_doc(
-    &StoreContext {
-        caller,
-        controllers,
-        collection,
-    }: &StoreContext,
+    context: &StoreContext,
+    config: &Option<DbConfig>,
     key: &Key,
     value: &DelDoc,
     rule: &Rule,
     current_doc: &Option<Doc>,
 ) -> Result<(), String> {
+    let &StoreContext {
+        caller,
+        controllers,
+        collection,
+    } = context;
+
     assert_write_permission(caller, controllers, current_doc, &rule.write)?;
 
     assert_write_version(current_doc, value.version)?;
@@ -85,7 +96,7 @@ pub fn assert_delete_doc(
         },
     )?;
 
-    increment_and_assert_db_usage(caller, controllers, collection, rule.max_changes_per_user)?;
+    increment_and_assert_db_usage(&context, config, rule.max_changes_per_user)?;
 
     increment_and_assert_rate(collection, &rule.rate_config)?;
 

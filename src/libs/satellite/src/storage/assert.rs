@@ -40,12 +40,7 @@ pub fn assert_delete_asset(
         return Err(ERROR_ASSET_NOT_FOUND.to_string());
     }
 
-    increment_and_assert_storage_usage(
-        context.caller,
-        context.controllers,
-        context.collection,
-        rule.max_changes_per_user,
-    )?;
+    increment_and_assert_storage_usage(context, rule.max_changes_per_user)?;
 
     increment_and_assert_rate_runtime(context.collection, &rule.rate_config)?;
 

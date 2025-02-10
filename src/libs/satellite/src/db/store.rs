@@ -1,5 +1,5 @@
 use crate::controllers::store::get_controllers;
-use crate::db::assert::{assert_delete_doc, assert_set_doc};
+use crate::db::assert::{assert_and_increment_set_doc, assert_delete_doc, assert_set_doc};
 use crate::db::state::{
     count_docs_heap, count_docs_stable, delete_collection as delete_state_collection,
     delete_doc as delete_state_doc, get_config, get_doc as get_state_doc, get_docs_heap,
@@ -179,6 +179,7 @@ fn set_doc_impl(
     let current_doc = get_state_doc(context.collection, &key, rule)?;
 
     assert_set_doc(context, config, &key, &value, rule, &current_doc)?;
+    assert_and_increment_set_doc(context, config, rule)?;
 
     let doc: Doc = Doc::prepare(context.caller, &current_doc, value);
 
@@ -316,6 +317,7 @@ pub fn delete_doc_store(
     value: DelDoc,
 ) -> Result<DocContext<Option<Doc>>, String> {
     let controllers: Controllers = get_controllers();
+    let config = get_config();
 
     let context = StoreContext {
         caller,
@@ -323,7 +325,7 @@ pub fn delete_doc_store(
         collection: &collection,
     };
 
-    let doc = secure_delete_doc(&context, key.clone(), value)?;
+    let doc = secure_delete_doc(&context, &config, key.clone(), value)?;
 
     Ok(DocContext {
         key,
@@ -334,22 +336,24 @@ pub fn delete_doc_store(
 
 fn secure_delete_doc(
     context: &StoreContext,
+    config: &Option<DbConfig>,
     key: Key,
     value: DelDoc,
 ) -> Result<Option<Doc>, String> {
     let rule = get_state_rule(context.collection)?;
-    delete_doc_impl(context, key, value, &rule)
+    delete_doc_impl(context, config, key, value, &rule)
 }
 
 fn delete_doc_impl(
     context: &StoreContext,
+    config: &Option<DbConfig>,
     key: Key,
     value: DelDoc,
     rule: &Rule,
 ) -> Result<Option<Doc>, String> {
     let current_doc = get_state_doc(context.collection, &key, rule)?;
 
-    assert_delete_doc(context, &key, &value, rule, &current_doc)?;
+    assert_delete_doc(context, config, &key, &value, rule, &current_doc)?;
 
     delete_state_doc(context.collection, &key, rule)
 }
@@ -454,6 +458,7 @@ pub fn delete_filtered_docs_store(
     filter: &ListParams,
 ) -> Result<Vec<DocContext<Option<Doc>>>, String> {
     let controllers: Controllers = get_controllers();
+    let config = get_config();
 
     let docs = secure_get_docs(caller, &controllers, collection.clone(), filter)?;
 
@@ -463,11 +468,12 @@ pub fn delete_filtered_docs_store(
         collection: &collection,
     };
 
-    delete_filtered_docs_store_impl(&context, &docs)
+    delete_filtered_docs_store_impl(&context, &config, &docs)
 }
 
 fn delete_filtered_docs_store_impl(
     context: &StoreContext,
+    config: &Option<DbConfig>,
     docs: &ListResults<Doc>,
 ) -> Result<Vec<DocContext<Option<Doc>>>, String> {
     let rule = get_state_rule(context.collection)?;
@@ -479,7 +485,7 @@ fn delete_filtered_docs_store_impl(
             version: doc.version,
         };
 
-        let deleted_doc = delete_doc_impl(context, key.clone(), value, &rule)?;
+        let deleted_doc = delete_doc_impl(context, config, key.clone(), value, &rule)?;
 
         let doc_context = DocContext {
             key: key.clone(),

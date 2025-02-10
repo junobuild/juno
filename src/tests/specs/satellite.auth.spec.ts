@@ -10,7 +10,10 @@ import { toNullable } from '@dfinity/utils';
 import { PocketIc, type Actor } from '@hadronous/pic';
 import { toArray } from '@junobuild/utils';
 import { afterAll, beforeAll, describe, expect, inject } from 'vitest';
-import { SATELLITE_ADMIN_ERROR_MSG } from './constants/satellite-tests.constants';
+import {
+	SATELLITE_ADMIN_ERROR_MSG,
+	USER_CANNOT_WRITE
+} from './constants/satellite-tests.constants';
 import { deleteDefaultIndexHTML } from './utils/satellite-tests.utils';
 import { SATELLITE_WASM_PATH, controllersInitArgs } from './utils/setup-tests.utils';
 
@@ -645,7 +648,7 @@ describe('Satellite authentication', () => {
 					description: toNullable(),
 					version: toNullable()
 				})
-			).rejects.toThrow('Cannot write.');
+			).rejects.toThrow(USER_CANNOT_WRITE);
 		});
 	});
 });

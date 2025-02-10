@@ -1,75 +1,36 @@
-use crate::get_controllers;
 use crate::types::state::CollectionType;
-use crate::usage::state::{get_user_usage, set_user_usage};
-use crate::usage::types::state::UserUsage;
-use crate::usage::utils::{is_db_collection_no_usage, is_storage_collection_no_usage};
-use candid::Principal;
+use crate::usage::types::state::{UserUsage, UserUsageKey};
+use crate::{get_doc_store, set_doc_store, SetDoc};
+use ic_cdk::id;
+use junobuild_collections::constants::USER_USAGE_COLLECTION_KEY;
 use junobuild_collections::types::core::CollectionKey;
-use junobuild_shared::controllers::is_controller;
-use junobuild_shared::types::state::{Controllers, UserId};
-use junobuild_shared::utils::principal_not_anonymous_and_equal;
+use junobuild_shared::types::state::UserId;
+use junobuild_utils::{decode_doc_data, encode_doc_data};
 
-pub fn get_db_usage_by_id(
-    caller: Principal,
-    collection: &CollectionKey,
-    user_id: &UserId,
-) -> Option<UserUsage> {
-    get_user_usage_by_id(caller, collection, &CollectionType::Db, user_id)
-}
-
-pub fn get_storage_usage_by_id(
-    caller: Principal,
-    collection: &CollectionKey,
-    user_id: &UserId,
-) -> Option<UserUsage> {
-    get_user_usage_by_id(caller, collection, &CollectionType::Storage, user_id)
-}
-
-fn get_user_usage_by_id(
-    caller: Principal,
+pub fn increment_usage(
     collection_key: &CollectionKey,
     collection_type: &CollectionType,
     user_id: &UserId,
-) -> Option<UserUsage> {
-    let controllers: Controllers = get_controllers();
-
-    if principal_not_anonymous_and_equal(*user_id, caller) || is_controller(caller, &controllers) {
-        return get_user_usage(collection_key, collection_type, user_id);
-    }
-
-    None
-}
-
-pub fn set_db_usage(
-    collection: &CollectionKey,
-    user_id: &UserId,
-    count: u32,
 ) -> Result<UserUsage, String> {
-    if is_db_collection_no_usage(collection) {
-        return Err(format!(
-            "Datastore usage is not recorded for collection {}.",
-            collection
-        ));
-    }
+    let user_usage_key = UserUsageKey::create(user_id, collection_key, collection_type);
+    let key = user_usage_key.to_key();
 
-    let usage = set_user_usage(collection, &CollectionType::Db, user_id, count);
+    let doc = get_doc_store(id(), USER_USAGE_COLLECTION_KEY.to_string(), key.clone())?;
 
-    Ok(usage)
-}
+    let current_usage = doc
+        .as_ref()
+        .map(|doc| decode_doc_data(&doc.data))
+        .transpose()?;
 
-pub fn set_storage_usage(
-    collection: &CollectionKey,
-    user_id: &UserId,
-    count: u32,
-) -> Result<UserUsage, String> {
-    if is_storage_collection_no_usage(collection) {
-        return Err(format!(
-            "Storage usage is not recorded for collection {}.",
-            collection
-        ));
-    }
+    let update_usage = UserUsage::increment(&current_usage);
 
-    let usage = set_user_usage(collection, &CollectionType::Storage, user_id, count);
+    let update_doc = SetDoc {
+        data: encode_doc_data(&update_usage)?,
+        description: doc.as_ref().and_then(|d| d.description.clone()),
+        version: doc.as_ref().and_then(|d| d.version),
+    };
 
-    Ok(usage)
+    set_doc_store(id(), USER_USAGE_COLLECTION_KEY.to_string(), key, update_doc)?;
+
+    Ok(update_usage)
 }

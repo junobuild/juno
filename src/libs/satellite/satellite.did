@@ -158,7 +158,6 @@ type SetRule = record {
   write : Permission;
   max_changes_per_user : opt nat32;
 };
-type SetUserUsage = record { changes_count : nat32 };
 type StorageConfig = record {
   iframe : opt StorageConfigIFrame;
   rewrites : vec record { text; text };
@@ -201,12 +200,6 @@ type UploadChunk = record {
   order_id : opt nat;
 };
 type UploadChunkResult = record { chunk_id : nat };
-type UserUsage = record {
-  updated_at : nat64;
-  created_at : nat64;
-  version : opt nat64;
-  changes_count : nat32;
-};
 service : () -> {
   commit_asset_upload : (CommitBatch) -> ();
   count_assets : (text, ListParams) -> (nat64) query;
@@ -240,9 +233,6 @@ service : () -> {
     ) query;
   get_rule : (CollectionType, text) -> (opt Rule) query;
   get_storage_config : () -> (StorageConfig) query;
-  get_user_usage : (text, CollectionType, opt principal) -> (
-      opt UserUsage,
-    ) query;
   http_request : (HttpRequest) -> (HttpResponse) query;
   http_request_streaming_callback : (StreamingCallbackToken) -> (
       StreamingCallbackHttpResponse,
@@ -266,9 +256,6 @@ service : () -> {
     );
   set_rule : (CollectionType, text, SetRule) -> (Rule);
   set_storage_config : (StorageConfig) -> ();
-  set_user_usage : (text, CollectionType, principal, SetUserUsage) -> (
-      UserUsage,
-    );
   upload_asset_chunk : (UploadChunk) -> (UploadChunkResult);
   version : () -> (text) query;
 }

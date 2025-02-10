@@ -1,13 +1,9 @@
 pub mod state {
     use crate::types::state::CollectionType;
     use candid::CandidType;
-    use ic_stable_structures::StableBTreeMap;
     use junobuild_collections::types::core::CollectionKey;
-    use junobuild_shared::types::memory::Memory;
-    use junobuild_shared::types::state::{Timestamp, UserId, Version};
+    use junobuild_shared::types::state::UserId;
     use serde::{Deserialize, Serialize};
-
-    pub type UserUsageStable = StableBTreeMap<UserUsageKey, UserUsage, Memory>;
 
     /// A unique key for identifying user usage within a collection.
     ///
@@ -33,9 +29,6 @@ pub mod state {
     #[derive(CandidType, Serialize, Deserialize, Clone)]
     pub struct UserUsage {
         pub changes_count: u32,
-        pub created_at: Timestamp,
-        pub updated_at: Timestamp,
-        pub version: Option<Version>,
     }
 }
 

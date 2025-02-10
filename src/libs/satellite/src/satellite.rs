@@ -27,6 +27,7 @@ use crate::rules::store::{
     del_rule_db, del_rule_storage, get_rule_db, get_rule_storage, get_rules_db, get_rules_storage,
     set_rule_db, set_rule_storage,
 };
+use crate::rules::upgrade::init_user_usage_collection;
 use crate::storage::certified_assets::upgrade::defer_init_certified_assets;
 use crate::storage::store::{
     commit_batch_store, count_assets_store, count_collection_assets_store, create_batch_store,
@@ -38,10 +39,6 @@ use crate::storage::store::{
 use crate::storage::strategy_impls::StorageState;
 use crate::types::interface::Config;
 use crate::types::state::{CollectionType, HeapState, RuntimeState, State};
-use crate::usage::store::set_storage_usage;
-use crate::usage::store::{get_db_usage_by_id, get_storage_usage_by_id, set_db_usage};
-use crate::usage::types::interface::SetUserUsage;
-use crate::usage::types::state::UserUsage;
 use ciborium::{from_reader, into_writer};
 use ic_cdk::api::call::{arg_data, ArgDecoderConfig};
 use ic_cdk::api::{caller, trap};
@@ -58,7 +55,7 @@ use junobuild_shared::types::interface::{DeleteControllersArgs, SegmentArgs, Set
 use junobuild_shared::types::list::ListParams;
 use junobuild_shared::types::list::ListResults;
 use junobuild_shared::types::memory::Memory;
-use junobuild_shared::types::state::{ControllerScope, Controllers, UserId};
+use junobuild_shared::types::state::{ControllerScope, Controllers};
 use junobuild_shared::upgrade::{read_post_upgrade, write_pre_upgrade};
 use junobuild_storage::http::types::{
     HttpRequest, HttpResponse, StreamingCallbackHttpResponse, StreamingCallbackToken,
@@ -115,6 +112,9 @@ pub fn post_upgrade() {
     defer_init_random_seed();
 
     invoke_on_post_upgrade();
+
+    // TODO: to be removed - one time upgrade!
+    init_user_usage_collection();
 }
 
 // ---------------------------------------------------------
@@ -531,38 +531,4 @@ pub fn get_many_assets(
             (full_path.clone(), asset.clone())
         })
         .collect()
-}
-
-// ---------------------------------------------------------
-// User usage
-// ---------------------------------------------------------
-
-pub fn get_user_usage(
-    collection: &CollectionKey,
-    collection_type: &CollectionType,
-    user_id: &Option<UserId>,
-) -> Option<UserUsage> {
-    let caller = caller();
-    let user_id_or_caller = user_id.unwrap_or(caller);
-
-    match collection_type {
-        CollectionType::Db => get_db_usage_by_id(caller, collection, &user_id_or_caller),
-        CollectionType::Storage => get_storage_usage_by_id(caller, collection, &user_id_or_caller),
-    }
-}
-
-pub fn set_user_usage(
-    collection: &CollectionKey,
-    collection_type: &CollectionType,
-    user_id: &UserId,
-    usage: &SetUserUsage,
-) -> UserUsage {
-    match collection_type {
-        CollectionType::Db => {
-            set_db_usage(collection, user_id, usage.changes_count).unwrap_or_else(|e| trap(&e))
-        }
-        CollectionType::Storage => {
-            set_storage_usage(collection, user_id, usage.changes_count).unwrap_or_else(|e| trap(&e))
-        }
-    }
 }

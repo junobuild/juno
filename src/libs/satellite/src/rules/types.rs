@@ -4,8 +4,13 @@ pub mod state {
     #[derive(Serialize, Deserialize)]
     #[serde(deny_unknown_fields)]
     pub struct UserData {
-        // We use a string instead of a strict typed enum because this value was originally introduced
-        // and has been used exclusively as presentation information.
-        pub provider: Option<String>,
+        pub provider: Option<AuthProvider>,
+    }
+
+    #[derive(Serialize, Deserialize)]
+    #[serde(rename_all = "snake_case")]
+    pub enum AuthProvider {
+        InternetIdentity,
+        Nfid,
     }
 }

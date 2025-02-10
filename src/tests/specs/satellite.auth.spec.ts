@@ -3,7 +3,7 @@ import type {
 	_SERVICE as SatelliteActor
 } from '$declarations/satellite/satellite.did';
 import { idlFactory as idlFactorSatellite } from '$declarations/satellite/satellite.factory.did';
-import { AnonymousIdentity } from '@dfinity/agent';
+import { AnonymousIdentity, type Identity } from '@dfinity/agent';
 import { Ed25519KeyIdentity } from '@dfinity/identity';
 import type { Principal } from '@dfinity/principal';
 import { toNullable } from '@dfinity/utils';
@@ -484,9 +484,10 @@ describe('Satellite authentication', () => {
 
 	describe('user', () => {
 		describe('success', () => {
-			const user = Ed25519KeyIdentity.generate();
+			let user: Identity;
 
-			beforeAll(() => {
+			beforeEach(() => {
+				user = Ed25519KeyIdentity.generate();
 				actor.setIdentity(user);
 			});
 
@@ -511,41 +512,98 @@ describe('Satellite authentication', () => {
 				expect(users).toHaveLength(1);
 				expect(users.find(([key]) => key === user.getPrincipal().toText())).not.toBeUndefined();
 			});
+
+			it('should create a user within unknown provider because this is just a visual information', async () => {
+				const { set_doc } = actor;
+
+				const doc = await set_doc('#user', user.getPrincipal().toText(), {
+					data: await toArray({
+						provider: 'something'
+					}),
+					description: toNullable(),
+					version: toNullable()
+				});
+
+				expect(doc).not.toBeUndefined();
+			});
+
+			it('should create a user without provider because this is optional', async () => {
+				const { set_doc } = actor;
+
+				const doc = await set_doc('#user', user.getPrincipal().toText(), {
+					data: await toArray({
+						provider: undefined
+					}),
+					description: toNullable(),
+					version: toNullable()
+				});
+
+				expect(doc).not.toBeUndefined();
+			});
 		});
 
 		describe('error', () => {
-			const user = Ed25519KeyIdentity.generate();
+			describe('key', () => {
+				const user = Ed25519KeyIdentity.generate();
 
-			beforeAll(() => {
-				actor.setIdentity(controller);
+				beforeAll(() => {
+					actor.setIdentity(controller);
+				});
+
+				it('should not create a user if caller is not the user', async () => {
+					const { set_doc } = actor;
+
+					await expect(
+						set_doc('#user', user.getPrincipal().toText(), {
+							data: await toArray({
+								provider: 'internet_identity'
+							}),
+							description: toNullable(),
+							version: toNullable()
+						})
+					).rejects.toThrow('Caller and key must match to create a user.');
+				});
+
+				it('should not create a user if key is not a principal', async () => {
+					const { set_doc } = actor;
+
+					await expect(
+						set_doc('#user', 'test', {
+							data: await toArray({
+								provider: 'internet_identity'
+							}),
+							description: toNullable(),
+							version: toNullable()
+						})
+					).rejects.toThrow('User key must be a textual representation of a principal.');
+				});
 			});
 
-			it('should not create a user if caller is not the user', async () => {
-				const { set_doc } = actor;
+			describe('data', () => {
+				const user = Ed25519KeyIdentity.generate();
 
-				await expect(
-					set_doc('#user', user.getPrincipal().toText(), {
-						data: await toArray({
-							provider: 'internet_identity'
-						}),
-						description: toNullable(),
-						version: toNullable()
-					})
-				).rejects.toThrow('Caller and key must match to create a user.');
-			});
+				beforeAll(() => {
+					actor.setIdentity(user);
+				});
 
-			it('should not create a user if key is not a principal', async () => {
-				const { set_doc } = actor;
+				it('should not create a user with invalid data fields', async () => {
+					const { set_doc } = actor;
 
-				await expect(
-					set_doc('#user', 'test', {
-						data: await toArray({
-							provider: 'internet_identity'
-						}),
-						description: toNullable(),
-						version: toNullable()
-					})
-				).rejects.toThrow('User key must be a textual representation of a principal.');
+					const data = await toArray({
+						provider: 'internet_identity',
+						unknown: 'field'
+					});
+
+					await expect(
+						set_doc('#user', user.getPrincipal().toText(), {
+							data,
+							description: toNullable(),
+							version: toNullable()
+						})
+					).rejects.toThrow(
+						'Invalid user data: unknown field `unknown`, expected `provider` at line 1 column 41.'
+					);
+				});
 			});
 		});
 	});

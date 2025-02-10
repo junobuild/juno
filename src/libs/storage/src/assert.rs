@@ -7,7 +7,7 @@ use crate::types::interface::{CommitBatch, InitAssetKey};
 use crate::types::state::FullPath;
 use crate::types::store::{Asset, AssetAssertUpload, Batch};
 use candid::Principal;
-use junobuild_collections::assert_stores::{assert_create_permission, assert_permission};
+use junobuild_collections::assert::stores::{assert_create_permission, assert_permission};
 use junobuild_collections::constants::assets::DEFAULT_ASSETS_COLLECTIONS;
 use junobuild_collections::constants::core::SYS_COLLECTION_PREFIX;
 use junobuild_collections::types::core::CollectionKey;

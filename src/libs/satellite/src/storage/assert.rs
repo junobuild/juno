@@ -3,7 +3,7 @@ use crate::types::store::StoreContext;
 use crate::usage::assert::increment_and_assert_storage_usage;
 use crate::user::assert::is_known_user;
 use candid::Principal;
-use junobuild_collections::assert_stores::{assert_permission, public_permission};
+use junobuild_collections::assert::stores::{assert_permission, public_permission};
 use junobuild_collections::types::rules::Rule;
 use junobuild_shared::controllers::is_controller;
 use junobuild_shared::types::state::Controllers;

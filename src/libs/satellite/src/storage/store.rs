@@ -13,7 +13,7 @@ use crate::storage::state::{
 use crate::storage::strategy_impls::{StorageAssertions, StorageState, StorageUpload};
 use crate::types::store::StoreContext;
 use candid::Principal;
-use junobuild_collections::assert_stores::assert_permission;
+use junobuild_collections::assert::stores::assert_permission;
 use junobuild_collections::msg::msg_storage_collection_not_empty;
 use junobuild_collections::types::core::CollectionKey;
 use junobuild_collections::types::rules::{Memory, Rule};

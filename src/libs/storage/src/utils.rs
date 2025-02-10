@@ -6,7 +6,7 @@ use crate::types::interface::AssetNoContent;
 use crate::types::state::FullPath;
 use crate::types::store::{Asset, AssetEncoding, AssetKey};
 use candid::Principal;
-use junobuild_collections::assert_stores::assert_permission;
+use junobuild_collections::assert::stores::assert_permission;
 use junobuild_collections::types::core::CollectionKey;
 use junobuild_collections::types::rules::Permission;
 use junobuild_shared::list::{filter_timestamps, matcher_regex};

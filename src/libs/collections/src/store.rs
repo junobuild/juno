@@ -1,4 +1,4 @@
-use crate::assert_rules::{
+use crate::assert::rules::{
     assert_memory, assert_mutable_permissions, assert_storage_reserved_collection,
     assert_system_collection_delete_permission, assert_system_collection_set_permission,
     assert_write_version,

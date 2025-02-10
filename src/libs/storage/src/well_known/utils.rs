@@ -3,7 +3,7 @@ use crate::types::store::{Asset, AssetKey};
 use crate::utils::{create_asset_with_content, map_content_type_headers};
 use ic_cdk::api::time;
 use ic_cdk::id;
-use junobuild_collections::constants_assets::COLLECTION_ASSET_KEY;
+use junobuild_collections::constants::assets::COLLECTION_ASSET_KEY;
 use junobuild_shared::types::domain::CustomDomain;
 use junobuild_shared::types::state::Timestamp;
 use junobuild_shared::version::next_version;

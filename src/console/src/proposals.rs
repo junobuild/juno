@@ -14,7 +14,7 @@ use crate::types::interface::CommitProposal;
 use crate::types::state::{Proposal, ProposalId, ProposalStatus, ProposalType};
 use candid::Principal;
 use hex::encode;
-use junobuild_collections::constants_assets::COLLECTION_ASSET_KEY;
+use junobuild_collections::constants::assets::COLLECTION_ASSET_KEY;
 use junobuild_shared::types::core::{Hash, Hashable};
 use junobuild_shared::utils::principal_not_equal;
 use junobuild_storage::types::store::AssetEncoding;

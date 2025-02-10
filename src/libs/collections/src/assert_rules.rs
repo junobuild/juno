@@ -1,4 +1,4 @@
-use crate::constants::SYS_COLLECTION_PREFIX;
+use crate::constants::core::SYS_COLLECTION_PREFIX;
 use crate::types::core::CollectionKey;
 use crate::types::interface::SetRule;
 use crate::types::rules::{Memory, Rule, Rules};

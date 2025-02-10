@@ -9,7 +9,7 @@ use crate::types::store::{Asset, AssetEncoding, AssetKey, Batch, BatchExpiry};
 use ic_cdk::api::time;
 use ic_stable_structures::storable::Bound;
 use ic_stable_structures::Storable;
-use junobuild_collections::constants_assets::DEFAULT_ASSETS_COLLECTIONS;
+use junobuild_collections::constants::assets::DEFAULT_ASSETS_COLLECTIONS;
 use junobuild_collections::types::interface::SetRule;
 use junobuild_collections::types::rules::{Memory, Rule, Rules};
 use junobuild_shared::serializers::{deserialize_from_bytes, serialize_to_bytes};

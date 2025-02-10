@@ -1,6 +1,6 @@
 use crate::memory::STATE;
 use ic_cdk::api::time;
-use junobuild_collections::constants_db::{DEFAULT_USER_USAGE_RULE, USER_USAGE_COLLECTION_KEY};
+use junobuild_collections::constants::db::{DEFAULT_USER_USAGE_RULE, USER_USAGE_COLLECTION_KEY};
 use junobuild_collections::types::rules::Rule;
 
 // ---------------------------------------------------------

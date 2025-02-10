@@ -1,8 +1,6 @@
 mod assert_rules;
 pub mod assert_stores;
 pub mod constants;
-pub mod constants_assets;
-pub mod constants_db;
 mod impls;
 pub mod msg;
 pub mod store;

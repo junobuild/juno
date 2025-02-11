@@ -1,15 +1,15 @@
-import type { _SERVICE as SatelliteActor, SetDoc } from '$declarations/satellite/satellite.did';
+import type { Doc, _SERVICE as SatelliteActor } from '$declarations/satellite/satellite.did';
 import { idlFactory as idlFactorSatellite } from '$declarations/satellite/satellite.factory.did';
-import { AnonymousIdentity, type Identity } from '@dfinity/agent';
+import { type Identity } from '@dfinity/agent';
 import { Ed25519KeyIdentity } from '@dfinity/identity';
 import { fromNullable, toNullable } from '@dfinity/utils';
 import { type Actor, PocketIc } from '@hadronous/pic';
 import { toArray } from '@junobuild/utils';
 import { nanoid } from 'nanoid';
 import { beforeAll, describe, expect, inject } from 'vitest';
-import { USER_CANNOT_WRITE } from './constants/satellite-tests.constants';
 import { mockSetRule } from './mocks/collection.mocks';
 import { controllersInitArgs, SATELLITE_WASM_PATH } from './utils/setup-tests.utils';
+import {USER_NOT_ALLOWED} from "./constants/satellite-tests.constants";
 
 describe('Satellite User Usage', () => {
 	let pic: PocketIc;
@@ -50,7 +50,7 @@ describe('Satellite User Usage', () => {
 
 				const data = await toArray({
 					provider: 'internet_identity',
-					banned: "yolo"
+					banned: 'yolo'
 				});
 
 				await expect(
@@ -92,7 +92,7 @@ describe('Satellite User Usage', () => {
 			});
 		};
 
-		const banUser = async ({user, version}: {user: Identity, version: [] | [bigint]}) => {
+		const banUser = async ({ user, version }: { user: Identity; version: [] | [bigint] }) => {
 			actor.setIdentity(controller);
 
 			const { set_doc } = actor;
@@ -107,7 +107,7 @@ describe('Satellite User Usage', () => {
 			});
 		};
 
-		const unbanUser = async ({user, version}: {user: Identity, version: [] | [bigint]}) => {
+		const unbanUser = async ({ user, version }: { user: Identity; version: [] | [bigint] }) => {
 			actor.setIdentity(controller);
 
 			const { set_doc } = actor;
@@ -142,10 +142,10 @@ describe('Satellite User Usage', () => {
 					description: toNullable(),
 					version: toNullable()
 				});
-			})
+			});
 
 			it('should not get document if banned', async () => {
-				await banUser({user, version: [1n]});
+				await banUser({ user, version: [1n] });
 
 				actor.setIdentity(user);
 				const { get_doc } = actor;
@@ -157,8 +157,8 @@ describe('Satellite User Usage', () => {
 			});
 
 			it('should get document if unbanned', async () => {
-				await banUser({user, version: [1n]});
-				await unbanUser({user, version: [2n]});
+				await banUser({ user, version: [1n] });
+				await unbanUser({ user, version: [2n] });
 
 				actor.setIdentity(user);
 				const { get_doc } = actor;
@@ -167,6 +167,88 @@ describe('Satellite User Usage', () => {
 				const doc = fromNullable(result);
 
 				expect(doc).not.toBeUndefined();
+			});
+		});
+
+		describe('set document', () => {
+			let user: Identity;
+
+			const createDoc = async (): Promise<Doc> => {
+				actor.setIdentity(user);
+
+				const { set_doc } = actor;
+
+				return await set_doc(collection, nanoid(), {
+					data: await toArray({
+						hello: 'world'
+					}),
+					description: toNullable(),
+					version: toNullable()
+				});
+			};
+
+			beforeEach(async () => {
+				user = Ed25519KeyIdentity.generate();
+
+				await createUser(user);
+			});
+
+			it('should not set document if banned', async () => {
+				const doc = await createDoc();
+
+				expect(doc).not.toBeUndefined();
+
+				await banUser({ user, version: [1n] });
+
+				await expect(createDoc()).rejects.toThrow(USER_NOT_ALLOWED);
+			});
+
+			it('should set document if unbanned', async () => {
+				await createDoc();
+
+				await banUser({ user, version: [1n] });
+				await unbanUser({ user, version: [2n] });
+
+				const doc = await createDoc();
+
+				expect(doc).not.toBeUndefined();
+			});
+		});
+
+		describe('delete a document', () => {
+			let user: Identity;
+
+			const deleteDoc = async (): Promise<void> => {
+				actor.setIdentity(user);
+
+				const { del_doc } = actor;
+
+				await del_doc(collection, nanoid(), {
+					version: toNullable()
+				});
+			};
+
+			beforeEach(async () => {
+				user = Ed25519KeyIdentity.generate();
+
+				await createUser(user);
+			});
+
+			it('should not delete document if banned', async () => {
+				await deleteDoc();
+
+				await banUser({ user, version: [1n] });
+
+				await expect(deleteDoc()).rejects.toThrow(USER_NOT_ALLOWED);
+			});
+
+			it('should get document if unbanned', async () => {
+				await deleteDoc();
+
+				await banUser({ user, version: [1n] });
+				await unbanUser({ user, version: [2n] });
+
+				await expect(deleteDoc()).resolves.not.toThrowError();
 			});
 		});
 	});

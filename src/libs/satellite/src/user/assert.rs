@@ -93,7 +93,7 @@ pub fn assert_user_is_not_banned(
         let user_data = decode_doc_data::<UserData>(&user.data)?;
 
         if let Some(BannedReason::Indefinite) = user_data.banned {
-            return Err(format!("User {} is not allowed.", caller));
+            return Err("Not allowed.".to_string());
         }
     }
 

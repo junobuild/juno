@@ -6,3 +6,4 @@ export const NO_VERSION_ERROR_MSG = 'error_no_version_provided';
 export const INVALID_VERSION_ERROR_MSG = 'error_version_outdated_or_future';
 export const USER_CANNOT_WRITE = 'Cannot write.';
 export const CANNOT_UPDATE_USER = 'Cannot update user.';
+export const USER_NOT_ALLOWED = "Not allowed."

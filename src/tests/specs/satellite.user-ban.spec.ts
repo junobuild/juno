@@ -66,13 +66,13 @@ describe('Satellite User Usage', () => {
 						version: toNullable()
 					})
 				).rejects.toThrow(
-					'Invalid user data: unknown field `unknown`, expected `provider` or `banned` at line 1 column 41.'
+					'Invalid user data: unknown variant `yolo`, expected `indefinite` at line 1 column 47.'
 				);
 			});
 		});
 	});
 
-	describe.only('Ban', () => {
+	describe('Ban', () => {
 		const collection = 'test_banned';
 
 		beforeAll(async () => {

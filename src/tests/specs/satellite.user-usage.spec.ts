@@ -351,34 +351,79 @@ describe('Satellite User Usage', () => {
 				actor.setIdentity(controller);
 			});
 
-			it('should set usage for user', async () => {
-				const { set_doc, get_doc } = actor;
+			describe('success', () => {
+				it('should set usage for user', async () => {
+					const { set_doc, get_doc } = actor;
 
-				const key = `${user.getPrincipal().toText()}#db#${TEST_COLLECTION}`;
+					const key = `${user.getPrincipal().toText()}#db#${TEST_COLLECTION}`;
 
-				const currentDoc = await get_doc('#user-usage', key);
+					const currentDoc = await get_doc('#user-usage', key);
 
-				const doc: SetDoc = {
-					data: await toArray({
-						changes_count: 345
-					}),
-					description: toNullable(),
-					version: fromNullable(currentDoc)?.version ?? []
-				};
+					const doc: SetDoc = {
+						data: await toArray({
+							changes_count: 345
+						}),
+						description: toNullable(),
+						version: fromNullable(currentDoc)?.version ?? []
+					};
 
-				const usage = await set_doc('#user-usage', key, doc);
+					const usage = await set_doc('#user-usage', key, doc);
 
-				const usageData = await fromArray<UserUsage>(usage.data);
+					const usageData = await fromArray<UserUsage>(usage.data);
 
-				expect(usageData.changes_count).toEqual(345);
+					expect(usageData.changes_count).toEqual(345);
 
-				expect(usage.updated_at).not.toBeUndefined();
-				expect(usage.updated_at).toBeGreaterThan(0n);
-				expect(usage.created_at).not.toBeUndefined();
-				expect(usage.created_at).toBeGreaterThan(0n);
-				expect(usage.updated_at).toBeGreaterThan(usage.created_at);
+					expect(usage.updated_at).not.toBeUndefined();
+					expect(usage.updated_at).toBeGreaterThan(0n);
+					expect(usage.created_at).not.toBeUndefined();
+					expect(usage.created_at).toBeGreaterThan(0n);
+					expect(usage.updated_at).toBeGreaterThan(usage.created_at);
 
-				expect(usage.version).toEqual(toNullable(BigInt(countTotalChanges + 1)));
+					expect(usage.version).toEqual(toNullable(BigInt(countTotalChanges + 1)));
+				});
+			});
+
+			describe('error', () => {
+				it('should not set usage with invalid type', async () => {
+					const { set_doc, get_doc } = actor;
+
+					const key = `${user.getPrincipal().toText()}#db#${TEST_COLLECTION}`;
+
+					const currentDoc = await get_doc('#user-usage', key);
+
+					const doc: SetDoc = {
+						data: await toArray({
+							changes_count: 'invalid'
+						}),
+						description: toNullable(),
+						version: fromNullable(currentDoc)?.version ?? []
+					};
+
+					await expect(set_doc('#user-usage', key, doc)).rejects.toThrow(
+						'Invalid user usage data: invalid type: string "invalid", expected u32 at line 1 column 26.'
+					);
+				});
+
+				it('should not set usage with invalid additional data fields', async () => {
+					const { set_doc, get_doc } = actor;
+
+					const key = `${user.getPrincipal().toText()}#db#${TEST_COLLECTION}`;
+
+					const currentDoc = await get_doc('#user-usage', key);
+
+					const doc: SetDoc = {
+						data: await toArray({
+							changes_count: 432,
+							unknown: 'field'
+						}),
+						description: toNullable(),
+						version: fromNullable(currentDoc)?.version ?? []
+					};
+
+					await expect(set_doc('#user-usage', key, doc)).rejects.toThrow(
+						'Invalid user usage data: unknown field `unknown`, expected `changes_count` at line 1 column 30.'
+					);
+				});
 			});
 		});
 	});
@@ -628,34 +673,79 @@ describe('Satellite User Usage', () => {
 				actor.setIdentity(controller);
 			});
 
-			it('should set usage for user', async () => {
-				const { set_doc, get_doc } = actor;
+			describe('success', () => {
+				it('should set usage for user', async () => {
+					const { set_doc, get_doc } = actor;
 
-				const key = `${user.getPrincipal().toText()}#storage#${TEST_COLLECTION}`;
+					const key = `${user.getPrincipal().toText()}#storage#${TEST_COLLECTION}`;
 
-				const currentDoc = await get_doc('#user-usage', key);
+					const currentDoc = await get_doc('#user-usage', key);
 
-				const doc: SetDoc = {
-					data: await toArray({
-						changes_count: 456
-					}),
-					description: toNullable(),
-					version: fromNullable(currentDoc)?.version ?? []
-				};
+					const doc: SetDoc = {
+						data: await toArray({
+							changes_count: 456
+						}),
+						description: toNullable(),
+						version: fromNullable(currentDoc)?.version ?? []
+					};
 
-				const usage = await set_doc('#user-usage', key, doc);
+					const usage = await set_doc('#user-usage', key, doc);
 
-				const usageData = await fromArray<UserUsage>(usage.data);
+					const usageData = await fromArray<UserUsage>(usage.data);
 
-				expect(usageData.changes_count).toEqual(456);
+					expect(usageData.changes_count).toEqual(456);
 
-				expect(usage.updated_at).not.toBeUndefined();
-				expect(usage.updated_at).toBeGreaterThan(0n);
-				expect(usage.created_at).not.toBeUndefined();
-				expect(usage.created_at).toBeGreaterThan(0n);
-				expect(usage.updated_at).toBeGreaterThan(usage.created_at);
+					expect(usage.updated_at).not.toBeUndefined();
+					expect(usage.updated_at).toBeGreaterThan(0n);
+					expect(usage.created_at).not.toBeUndefined();
+					expect(usage.created_at).toBeGreaterThan(0n);
+					expect(usage.updated_at).toBeGreaterThan(usage.created_at);
 
-				expect(usage.version).toEqual(toNullable(BigInt(countTotalChanges + 1)));
+					expect(usage.version).toEqual(toNullable(BigInt(countTotalChanges + 1)));
+				});
+			});
+
+			describe('error', () => {
+				it('should not set usage with invalid type', async () => {
+					const { set_doc, get_doc } = actor;
+
+					const key = `${user.getPrincipal().toText()}#storage#${TEST_COLLECTION}`;
+
+					const currentDoc = await get_doc('#user-usage', key);
+
+					const doc: SetDoc = {
+						data: await toArray({
+							changes_count: 'invalid'
+						}),
+						description: toNullable(),
+						version: fromNullable(currentDoc)?.version ?? []
+					};
+
+					await expect(set_doc('#user-usage', key, doc)).rejects.toThrow(
+						'Invalid user usage data: invalid type: string "invalid", expected u32 at line 1 column 26.'
+					);
+				});
+
+				it('should not set usage with invalid additional data fields', async () => {
+					const { set_doc, get_doc } = actor;
+
+					const key = `${user.getPrincipal().toText()}#storage#${TEST_COLLECTION}`;
+
+					const currentDoc = await get_doc('#user-usage', key);
+
+					const doc: SetDoc = {
+						data: await toArray({
+							changes_count: 432,
+							unknown: 'field'
+						}),
+						description: toNullable(),
+						version: fromNullable(currentDoc)?.version ?? []
+					};
+
+					await expect(set_doc('#user-usage', key, doc)).rejects.toThrow(
+						'Invalid user usage data: unknown field `unknown`, expected `changes_count` at line 1 column 30.'
+					);
+				});
 			});
 		});
 	});

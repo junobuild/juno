@@ -2,7 +2,7 @@ use crate::db::internal::{unsafe_get_doc, unsafe_set_doc};
 use crate::rules::store::get_rule_db;
 use crate::types::state::CollectionType;
 use crate::usage::types::state::{UserUsage, UserUsageKey};
-use crate::{get_doc_store, set_doc_store, SetDoc};
+use crate::{SetDoc};
 use ic_cdk::id;
 use junobuild_collections::constants::db::COLLECTION_USER_USAGE_KEY;
 use junobuild_collections::msg::msg_db_collection_not_found;

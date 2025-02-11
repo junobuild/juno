@@ -1,7 +1,7 @@
 use crate::db::internal::{unsafe_get_doc, unsafe_set_doc};
 use crate::rules::store::get_rule_db;
 use crate::types::state::CollectionType;
-use crate::usage::types::state::{UserUsage, UserUsageKey};
+use crate::usage::types::state::{UserUsageData, UserUsageKey};
 use crate::SetDoc;
 use ic_cdk::id;
 use junobuild_collections::constants::db::COLLECTION_USER_USAGE_KEY;
@@ -14,7 +14,7 @@ pub fn increment_usage(
     collection_key: &CollectionKey,
     collection_type: &CollectionType,
     user_id: &UserId,
-) -> Result<UserUsage, String> {
+) -> Result<UserUsageData, String> {
     let user_usage_key = UserUsageKey::create(user_id, collection_key, collection_type).to_key();
 
     let user_usage_collection = COLLECTION_USER_USAGE_KEY.to_string();
@@ -29,7 +29,7 @@ pub fn increment_usage(
         .map(|doc| decode_doc_data(&doc.data))
         .transpose()?;
 
-    let update_usage = UserUsage::increment(&current_usage);
+    let update_usage = UserUsageData::increment(&current_usage);
 
     let update_doc = SetDoc {
         data: encode_doc_data(&update_usage)?,

@@ -31,19 +31,3 @@ pub mod state {
         pub changes_count: u32,
     }
 }
-
-pub mod interface {
-    use candid::CandidType;
-    use serde::{Deserialize, Serialize};
-
-    /// Represents the parameters for setting or updating a user's usage entry for a controller.
-    ///
-    /// This is useful if one want to set a value after the upgrade, given the lack of migration, or if a controller ever wants to reset the value to allow a user who would hit the limit to continue submitted changes.
-    ///
-    /// It includes:
-    /// - `changes_count`: The total number of changes the user has in a specific collection.
-    #[derive(Default, CandidType, Serialize, Deserialize, Clone)]
-    pub struct SetUserUsage {
-        pub changes_count: u32,
-    }
-}

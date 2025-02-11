@@ -10,6 +10,7 @@ pub const COLLECTION_USER_ADMIN_KEY: &str = "#user-admin";
 
 const COLLECTION_USER_DEFAULT_RULE: SetRule = SetRule {
     read: Managed,
+    // ❗Managed, BUT an assertion prevents the user from updating the entry.
     write: Managed,
     memory: Some(Memory::Stable),
     mutable_permissions: Some(false),

@@ -6,7 +6,7 @@ import { fromNullable, toNullable } from '@dfinity/utils';
 import { PocketIc, type Actor } from '@hadronous/pic';
 import { toArray } from '@junobuild/utils';
 import { afterAll, beforeAll, describe, expect, inject } from 'vitest';
-import { USER_CANNOT_WRITE } from './constants/satellite-tests.constants';
+import { CANNOT_UPDATE_USER, USER_CANNOT_WRITE } from './constants/satellite-tests.constants';
 import { SATELLITE_WASM_PATH, controllersInitArgs } from './utils/setup-tests.utils';
 
 describe('Satellite > User', () => {
@@ -76,8 +76,17 @@ describe('Satellite > User', () => {
 
 				expect(doc).not.toBeUndefined();
 			});
+		});
 
-			it('should update a user', async () => {
+		describe('error', () => {
+			let user: Identity;
+
+			beforeEach(() => {
+				user = Ed25519KeyIdentity.generate();
+				actor.setIdentity(user);
+			});
+
+			it('should not update a user because only controller can update', async () => {
 				const { set_doc, get_doc } = actor;
 
 				await set_doc('#user', user.getPrincipal().toText(), {
@@ -90,7 +99,118 @@ describe('Satellite > User', () => {
 
 				const before = await get_doc('#user', user.getPrincipal().toText());
 
+				await expect(
+					set_doc('#user', user.getPrincipal().toText(), {
+						data: await toArray({
+							provider: 'nfid'
+						}),
+						description: toNullable(),
+						version: fromNullable(before)?.version ?? []
+					})
+				).rejects.toThrow(CANNOT_UPDATE_USER);
+			});
+		});
+	});
+
+	describe('anonymous', () => {
+		beforeAll(() => {
+			actor.setIdentity(new AnonymousIdentity());
+		});
+
+		it('should not create a user', async () => {
+			const { set_doc } = actor;
+
+			const user = Ed25519KeyIdentity.generate();
+
+			await expect(
+				set_doc('#user', user.getPrincipal().toText(), {
+					data: await toArray({
+						provider: 'internet_identity'
+					}),
+					description: toNullable(),
+					version: toNullable()
+				})
+			).rejects.toThrow(USER_CANNOT_WRITE);
+		});
+	});
+
+	describe('Controller Read+Write', () => {
+		const controllerReadWrite = Ed25519KeyIdentity.generate();
+
+		beforeAll(async () => {
+			actor.setIdentity(controller);
+
+			const { set_controllers } = actor;
+
+			await set_controllers({
+				controller: {
+					scope: { Write: null },
+					metadata: [],
+					expires_at: []
+				},
+				controllers: [controllerReadWrite.getPrincipal()]
+			});
+		});
+
+		describe('error', () => {
+			it('should not update a user', async () => {
+				const user = Ed25519KeyIdentity.generate();
+
+				actor.setIdentity(user);
+
+				const { set_doc, get_doc } = actor;
+
 				await set_doc('#user', user.getPrincipal().toText(), {
+					data: await toArray({
+						provider: 'internet_identity'
+					}),
+					description: toNullable(),
+					version: toNullable()
+				});
+
+				const before = await get_doc('#user', user.getPrincipal().toText());
+
+				actor.setIdentity(controllerReadWrite);
+
+				const { set_doc: set_doc_after } = actor;
+
+				await expect(
+					set_doc_after('#user', user.getPrincipal().toText(), {
+						data: await toArray({
+							provider: 'nfid'
+						}),
+						description: toNullable(),
+						version: fromNullable(before)?.version ?? []
+					})
+				).rejects.toThrow(CANNOT_UPDATE_USER);
+			});
+		});
+	});
+
+	describe('Admin', () => {
+		describe('success', () => {
+			it('should update a user', async () => {
+				const user = Ed25519KeyIdentity.generate();
+
+				actor.setIdentity(user);
+
+				const { set_doc, get_doc } = actor;
+
+				await set_doc('#user', user.getPrincipal().toText(), {
+					data: await toArray({
+						provider: 'internet_identity'
+					}),
+					description: toNullable(),
+					version: toNullable()
+				});
+
+				const before = await get_doc('#user', user.getPrincipal().toText());
+
+				actor.setIdentity(controller);
+
+				const { set_doc: set_doc_after, get_doc: get_doc_after } = actor;
+
+				await set_doc_after('#user', user.getPrincipal().toText(), {
 					data: await toArray({
 						provider: 'nfid'
 					}),
@@ -98,7 +218,7 @@ describe('Satellite > User', () => {
 					version: fromNullable(before)?.version ?? []
 				});
 
-				const after = await get_doc('#user', user.getPrincipal().toText());
+				const after = await get_doc_after('#user', user.getPrincipal().toText());
 
 				const doc = fromNullable(after);
 
@@ -108,12 +228,12 @@ describe('Satellite > User', () => {
 		});
 
 		describe('error', () => {
+			beforeAll(() => {
+				actor.setIdentity(controller);
+			});
+
 			describe('key', () => {
 				const user = Ed25519KeyIdentity.generate();
-
-				beforeAll(() => {
-					actor.setIdentity(controller);
-				});
 
 				it('should not create a user if caller is not the user', async () => {
 					const { set_doc } = actor;
@@ -143,73 +263,51 @@ describe('Satellite > User', () => {
 					).rejects.toThrow('User key must be a textual representation of a principal.');
 				});
 			});
-
-			describe('data', () => {
-				const user = Ed25519KeyIdentity.generate();
-
-				beforeAll(() => {
-					actor.setIdentity(user);
-				});
-
-				it('should not create a user with an unknown provider', async () => {
-					const { set_doc } = actor;
-
-					const data = await toArray({
-						provider: 'unknown'
-					});
-
-					await expect(
-						set_doc('#user', user.getPrincipal().toText(), {
-							data,
-							description: toNullable(),
-							version: toNullable()
-						})
-					).rejects.toThrow(
-						'Invalid user data: unknown variant `unknown`, expected `internet_identity` or `nfid` at line 1 column 21.'
-					);
-				});
-
-				it('should not create a user with invalid additional data fields', async () => {
-					const { set_doc } = actor;
-
-					const data = await toArray({
-						provider: 'internet_identity',
-						unknown: 'field'
-					});
-
-					await expect(
-						set_doc('#user', user.getPrincipal().toText(), {
-							data,
-							description: toNullable(),
-							version: toNullable()
-						})
-					).rejects.toThrow(
-						'Invalid user data: unknown field `unknown`, expected `provider` at line 1 column 41.'
-					);
-				});
-			});
 		});
 	});
 
-	describe('anonymous', () => {
+	describe('Data', () => {
+		const user = Ed25519KeyIdentity.generate();
+
 		beforeAll(() => {
-			actor.setIdentity(new AnonymousIdentity());
+			actor.setIdentity(user);
 		});
 
-		it('should not create a user', async () => {
+		it('should not create a user with an unknown provider', async () => {
 			const { set_doc } = actor;
 
-			const user = Ed25519KeyIdentity.generate();
+			const data = await toArray({
+				provider: 'unknown'
+			});
 
 			await expect(
 				set_doc('#user', user.getPrincipal().toText(), {
-					data: await toArray({
-						provider: 'internet_identity'
-					}),
+					data,
 					description: toNullable(),
 					version: toNullable()
 				})
-			).rejects.toThrow(USER_CANNOT_WRITE);
+			).rejects.toThrow(
+				'Invalid user data: unknown variant `unknown`, expected `internet_identity` or `nfid` at line 1 column 21.'
+			);
+		});
+
+		it('should not create a user with invalid additional data fields', async () => {
+			const { set_doc } = actor;
+
+			const data = await toArray({
+				provider: 'internet_identity',
+				unknown: 'field'
+			});
+
+			await expect(
+				set_doc('#user', user.getPrincipal().toText(), {
+					data,
+					description: toNullable(),
+					version: toNullable()
+				})
+			).rejects.toThrow(
+				'Invalid user data: unknown field `unknown`, expected `provider` at line 1 column 41.'
+			);
 		});
 	});
 });

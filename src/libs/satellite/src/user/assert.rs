@@ -1,14 +1,14 @@
-use crate::user::types::state::UserData;
+use crate::user::types::state::{BannedReason, UserData};
 use crate::{get_doc_store, Doc, SetDoc};
 use candid::Principal;
-use ic_cdk::id;
+use ic_cdk::{id};
 use junobuild_collections::constants::db::COLLECTION_USER_KEY;
 use junobuild_collections::types::core::CollectionKey;
+use junobuild_shared::controllers::{is_admin_controller, is_controller};
 use junobuild_shared::types::core::Key;
+use junobuild_shared::types::state::Controllers;
 use junobuild_shared::utils::principal_not_equal;
 use junobuild_utils::decode_doc_data;
-use junobuild_shared::controllers::{is_admin_controller};
-use junobuild_shared::types::state::Controllers;
 
 pub fn is_known_user(caller: Principal) -> bool {
     let user_key = caller.to_text();
@@ -51,7 +51,12 @@ pub fn assert_user_collection_data(collection: &CollectionKey, doc: &SetDoc) -> 
     Ok(())
 }
 
-pub fn assert_user_write_permission(caller: Principal, controllers: &Controllers, collection: &CollectionKey, current_doc: &Option<Doc>,) -> Result<(), String> {
+pub fn assert_user_write_permission(
+    caller: Principal,
+    controllers: &Controllers,
+    collection: &CollectionKey,
+    current_doc: &Option<Doc>,
+) -> Result<(), String> {
     let user_collection = COLLECTION_USER_KEY;
 
     if collection != user_collection {
@@ -69,4 +74,28 @@ pub fn assert_user_write_permission(caller: Principal, controllers: &Controllers
 
     // The user already exist but the caller is not a controller
     Err("Cannot update user.".to_string())
+}
+
+pub fn assert_user_is_not_banned(
+    caller: Principal,
+    controllers: &Controllers,
+) -> Result<(), String> {
+    // This way we spare loading the user for controllers calls.
+    if is_controller(caller, controllers) {
+        return Ok(());
+    }
+
+    let user_key = caller.to_text();
+
+    let user = get_doc_store(id(), COLLECTION_USER_KEY.to_string(), user_key)?;
+
+    if let Some(user) = user {
+        let user_data = decode_doc_data::<UserData>(&user.data)?;
+
+        if let Some(BannedReason::Indefinite) = user_data.banned {
+            return Err(format!("User {} is not allowed.", caller));
+        }
+    }
+
+    Ok(())
 }

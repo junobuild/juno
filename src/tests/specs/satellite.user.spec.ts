@@ -76,6 +76,18 @@ describe('Satellite > User', () => {
 
 				expect(doc).not.toBeUndefined();
 			});
+
+			it('should create a user without data because those is optional', async () => {
+				const { set_doc } = actor;
+
+				const doc = await set_doc('#user', user.getPrincipal().toText(), {
+					data: await toArray({}),
+					description: toNullable(),
+					version: toNullable()
+				});
+
+				expect(doc).not.toBeUndefined();
+			});
 		});
 
 		describe('error', () => {
@@ -306,7 +318,7 @@ describe('Satellite > User', () => {
 					version: toNullable()
 				})
 			).rejects.toThrow(
-				'Invalid user data: unknown field `unknown`, expected `provider` at line 1 column 41.'
+				'Invalid user data: unknown field `unknown`, expected `provider` or `banned` at line 1 column 41.'
 			);
 		});
 	});

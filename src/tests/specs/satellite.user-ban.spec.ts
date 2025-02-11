@@ -332,7 +332,7 @@ describe('Satellite User Usage', () => {
 					await expect(deleteDoc()).rejects.toThrow(USER_NOT_ALLOWED);
 				});
 
-				it('should get document if unbanned', async () => {
+				it('should delete document if unbanned', async () => {
 					await expect(deleteDoc()).resolves.not.toThrowError();
 
 					await banUser({ user, version: [1n] });
@@ -370,7 +370,7 @@ describe('Satellite User Usage', () => {
 					await expect(deleteDocs()).rejects.toThrow(USER_NOT_ALLOWED);
 				});
 
-				it('should get documents if unbanned', async () => {
+				it('should delete documents if unbanned', async () => {
 					await expect(deleteDocs()).resolves.not.toThrowError();
 
 					await banUser({ user, version: [1n] });
@@ -477,7 +477,7 @@ describe('Satellite User Usage', () => {
 		describe('Storage', () => {
 			let user: Identity;
 			let fullPath: string;
-			let filename = 'hello.html';
+			const filename = 'hello.html';
 
 			beforeAll(async () => {
 				actor.setIdentity(controller);
@@ -531,8 +531,6 @@ describe('Satellite User Usage', () => {
 			});
 
 			describe('get asset', () => {
-				let docKey: string;
-
 				beforeEach(async () => {
 					await createUser(user);
 
@@ -660,6 +658,114 @@ describe('Satellite User Usage', () => {
 					await unbanUser({ user, version: [2n] });
 
 					await expect(countAssets()).resolves.not.toThrowError();
+				});
+			});
+
+			describe('get many assets', () => {
+				beforeEach(async () => {
+					await createUser(user);
+
+					await uploadAsset({
+						full_path: fullPath,
+						name: filename,
+						collection: collection,
+						actor
+					});
+				});
+
+				it('should not get assets if banned', async () => {
+					await banUser({ user, version: [1n] });
+
+					actor.setIdentity(user);
+					const { get_many_assets } = actor;
+
+					const result = await get_many_assets([[collection, fullPath]]);
+
+					const asset = fromNullable(result[0][1]);
+
+					expect(asset).toBeUndefined();
+				});
+
+				it('should get assets if unbanned', async () => {
+					await banUser({ user, version: [1n] });
+					await unbanUser({ user, version: [2n] });
+
+					actor.setIdentity(user);
+					const { get_many_assets } = actor;
+
+					const result = await get_many_assets([[collection, fullPath]]);
+
+					const doc = fromNullable(result[0][1]);
+
+					expect(doc).not.toBeUndefined();
+				});
+			});
+
+			describe('delete an asset', () => {
+				const deleteAsset = async (): Promise<void> => {
+					actor.setIdentity(user);
+
+					const { del_asset } = actor;
+
+					await del_asset(collection, fullPath);
+				};
+
+				beforeEach(async () => {
+					await createUser(user);
+
+					await uploadAsset({
+						full_path: fullPath,
+						name: filename,
+						collection: collection,
+						actor
+					});
+				});
+
+				it('should not delete an asset if banned', async () => {
+					await banUser({ user, version: [1n] });
+
+					await expect(deleteAsset()).rejects.toThrow(USER_NOT_ALLOWED);
+				});
+
+				it('should delete asset if unbanned', async () => {
+					await banUser({ user, version: [1n] });
+					await unbanUser({ user, version: [2n] });
+
+					await expect(deleteAsset()).resolves.not.toThrowError();
+				});
+			});
+
+			describe('delete many assets', () => {
+				const deleteAssets = async (): Promise<void> => {
+					actor.setIdentity(user);
+
+					const { del_many_assets } = actor;
+
+					await del_many_assets([[collection, fullPath]]);
+				};
+
+				beforeEach(async () => {
+					await createUser(user);
+
+					await uploadAsset({
+						full_path: fullPath,
+						name: filename,
+						collection: collection,
+						actor
+					});
+				});
+
+				it('should not delete assets if banned', async () => {
+					await banUser({ user, version: [1n] });
+
+					await expect(deleteAssets()).rejects.toThrow(USER_NOT_ALLOWED);
+				});
+
+				it('should delete assets if unbanned', async () => {
+					await banUser({ user, version: [1n] });
+					await unbanUser({ user, version: [2n] });
+
+					await expect(deleteAssets()).resolves.not.toThrowError();
 				});
 			});
 		});

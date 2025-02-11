@@ -14,6 +14,7 @@ import { nanoid } from 'nanoid';
 import { beforeAll, describe, expect, inject } from 'vitest';
 import { USER_NOT_ALLOWED } from './constants/satellite-tests.constants';
 import { mockSetRule } from './mocks/collection.mocks';
+import { mockListParams } from './mocks/list.mocks';
 import { controllersInitArgs, SATELLITE_WASM_PATH } from './utils/setup-tests.utils';
 
 describe('Satellite User Usage', () => {
@@ -392,6 +393,41 @@ describe('Satellite User Usage', () => {
 				await unbanUser({ user, version: [2n] });
 
 				await expect(deleteDocs()).resolves.not.toThrowError();
+			});
+		});
+
+		describe('delete filtered documents', () => {
+			let user: Identity;
+
+			const deleteFilteredDocs = async (): Promise<void> => {
+				actor.setIdentity(user);
+
+				const { del_filtered_docs } = actor;
+
+				await del_filtered_docs(collection, mockListParams);
+			};
+
+			beforeEach(async () => {
+				user = Ed25519KeyIdentity.generate();
+
+				await createUser(user);
+			});
+
+			it('should not delete documents if banned', async () => {
+				await expect(deleteFilteredDocs()).resolves.not.toThrowError();
+
+				await banUser({ user, version: [1n] });
+
+				await expect(deleteFilteredDocs()).rejects.toThrow(USER_NOT_ALLOWED);
+			});
+
+			it('should get documents if unbanned', async () => {
+				await expect(deleteFilteredDocs()).resolves.not.toThrowError();
+
+				await banUser({ user, version: [1n] });
+				await unbanUser({ user, version: [2n] });
+
+				await expect(deleteFilteredDocs()).resolves.not.toThrowError();
 			});
 		});
 	});

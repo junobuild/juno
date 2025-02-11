@@ -9,7 +9,7 @@ import { type Identity } from '@dfinity/agent';
 import { Ed25519KeyIdentity } from '@dfinity/identity';
 import { fromNullable, toNullable } from '@dfinity/utils';
 import { type Actor, PocketIc } from '@hadronous/pic';
-import { toArray } from '@junobuild/utils';
+import { fromArray, toArray } from '@junobuild/utils';
 import { nanoid } from 'nanoid';
 import { beforeAll, describe, expect, inject } from 'vitest';
 import { USER_NOT_ALLOWED } from './constants/satellite-tests.constants';
@@ -143,9 +143,20 @@ describe('Satellite User Usage', () => {
 
 			expect(items_length).toEqual(3n);
 
-			expect(items.find(([key, _]) => key === user1.getPrincipal().toText())).not.toBeUndefined();
-			expect(items.find(([key, _]) => key === user2.getPrincipal().toText())).not.toBeUndefined();
-			expect(items.find(([key, _]) => key === user3.getPrincipal().toText())).not.toBeUndefined();
+			const item1 = items.find(([key, _]) => key === user1.getPrincipal().toText());
+			const item2 = items.find(([key, _]) => key === user2.getPrincipal().toText());
+			const item3 = items.find(([key, _]) => key === user3.getPrincipal().toText());
+
+			expect(item1).not.toBeUndefined();
+			expect(item2).not.toBeUndefined();
+			expect(item3).not.toBeUndefined();
+
+			expect(await fromArray(item1?.[1].data ?? [])).toEqual({
+				provider: 'internet_identity',
+				banned: 'indefinite'
+			});
+			expect(await fromArray(item2?.[1].data ?? [])).toEqual({ provider: 'internet_identity' });
+			expect(await fromArray(item3?.[1].data ?? [])).toEqual({ provider: 'internet_identity' });
 		});
 	});
 

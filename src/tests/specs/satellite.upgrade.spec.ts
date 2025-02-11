@@ -691,7 +691,7 @@ describe('Satellite upgrade', () => {
 			expect(fromNullable(max_changes_per_user)).toBeUndefined();
 		});
 
-		describe.each([{ collection: '#user-usage' }, { collection: '#user-admin' }])(
+		it.each([{ collection: '#user-usage' }, { collection: '#user-admin' }])(
 			'%s',
 			async ({ collection }) => {
 				const { get_rule: getRuleBefore } = actor;

@@ -1,3 +1,4 @@
+use crate::assert::collection::{is_not_system_collection, is_system_collection};
 use crate::constants::core::SYS_COLLECTION_PREFIX;
 use crate::types::core::CollectionKey;
 use crate::types::interface::SetRule;
@@ -95,7 +96,7 @@ pub fn assert_system_collection_set_permission(
     user_rule: &SetRule,
 ) -> Result<(), String> {
     // Allow non-system collections to proceed without restrictions
-    if !collection.starts_with(SYS_COLLECTION_PREFIX) {
+    if is_not_system_collection(collection) {
         return Ok(());
     }
 
@@ -130,7 +131,7 @@ pub fn assert_system_collection_set_permission(
 pub fn assert_system_collection_delete_permission(
     collection: &CollectionKey,
 ) -> Result<(), String> {
-    if collection.starts_with(SYS_COLLECTION_PREFIX) {
+    if is_system_collection(collection) {
         return Err(format!(
             "Collection starting with {} cannot be deleted",
             SYS_COLLECTION_PREFIX
@@ -148,7 +149,7 @@ pub fn assert_storage_reserved_collection(
     rules: &Rules,
 ) -> Result<(), String> {
     // We do not have to check system collection.
-    if collection.starts_with(SYS_COLLECTION_PREFIX) {
+    if is_system_collection(collection) {
         return Ok(());
     }
 

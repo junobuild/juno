@@ -31,6 +31,7 @@ pub fn assert_user_collection_caller_key(
     let owner = Principal::from_text(key.trim())
         .map_err(|_| "User key must be a textual representation of a principal.".to_string())?;
 
+    // Once set the owner cannot be modified and another assertion prevent user update unless the caller is an admin controller
     if current_doc.is_none() && principal_not_equal(owner, caller) {
         return Err("Caller and key must match to create a user.".to_string());
     }

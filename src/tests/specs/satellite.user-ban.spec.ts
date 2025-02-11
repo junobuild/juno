@@ -24,6 +24,50 @@ describe('Satellite User Usage', () => {
 
 	const controller = Ed25519KeyIdentity.generate();
 
+	const createUser = async (user: Identity) => {
+		actor.setIdentity(user);
+
+		const { set_doc } = actor;
+
+		return await set_doc('#user', user.getPrincipal().toText(), {
+			data: await toArray({
+				provider: 'internet_identity'
+			}),
+			description: toNullable(),
+			version: toNullable()
+		});
+	};
+
+	const banUser = async ({ user, version }: { user: Identity; version: [] | [bigint] }) => {
+		actor.setIdentity(controller);
+
+		const { set_doc } = actor;
+
+		await set_doc('#user', user.getPrincipal().toText(), {
+			data: await toArray({
+				provider: 'internet_identity',
+				banned: 'indefinite'
+			}),
+			description: toNullable(),
+			version: version
+		});
+	};
+
+	const unbanUser = async ({ user, version }: { user: Identity; version: [] | [bigint] }) => {
+		actor.setIdentity(controller);
+
+		const { set_doc } = actor;
+
+		await set_doc('#user', user.getPrincipal().toText(), {
+			data: await toArray({
+				provider: 'internet_identity',
+				banned: undefined
+			}),
+			description: toNullable(),
+			version: version
+		});
+	};
+
 	beforeAll(async () => {
 		pic = await PocketIc.create(inject('PIC_URL'));
 
@@ -43,7 +87,7 @@ describe('Satellite User Usage', () => {
 		await pic?.tearDown();
 	});
 
-	describe('user', () => {
+	describe('User', () => {
 		describe('error', () => {
 			let user: Identity;
 
@@ -73,51 +117,40 @@ describe('Satellite User Usage', () => {
 		});
 	});
 
+	describe('Admin', () => {
+		beforeAll(() => {
+			actor.setIdentity(controller);
+		});
+
+		it('should list users including never banned, banned and unbanned', async () => {
+			const user1 = Ed25519KeyIdentity.generate();
+			await createUser(user1);
+
+			const user2 = Ed25519KeyIdentity.generate();
+			await createUser(user2);
+
+			const user3 = Ed25519KeyIdentity.generate();
+			await createUser(user3);
+
+			await banUser({ user: user1, version: [1n] });
+
+			await banUser({ user: user2, version: [1n] });
+			await unbanUser({ user: user2, version: [2n] });
+
+			const { list_docs } = actor;
+
+			const { items, items_length } = await list_docs('#user', mockListParams);
+
+			expect(items_length).toEqual(3n);
+
+			expect(items.find(([key, _]) => key === user1.getPrincipal().toText())).not.toBeUndefined();
+			expect(items.find(([key, _]) => key === user2.getPrincipal().toText())).not.toBeUndefined();
+			expect(items.find(([key, _]) => key === user3.getPrincipal().toText())).not.toBeUndefined();
+		});
+	});
+
 	describe('Ban', () => {
 		const collection = 'test_banned';
-
-		const createUser = async (user: Identity) => {
-			actor.setIdentity(user);
-
-			const { set_doc } = actor;
-
-			return await set_doc('#user', user.getPrincipal().toText(), {
-				data: await toArray({
-					provider: 'internet_identity'
-				}),
-				description: toNullable(),
-				version: toNullable()
-			});
-		};
-		const banUser = async ({ user, version }: { user: Identity; version: [] | [bigint] }) => {
-			actor.setIdentity(controller);
-
-			const { set_doc } = actor;
-
-			await set_doc('#user', user.getPrincipal().toText(), {
-				data: await toArray({
-					provider: 'internet_identity',
-					banned: 'indefinite'
-				}),
-				description: toNullable(),
-				version: version
-			});
-		};
-
-		const unbanUser = async ({ user, version }: { user: Identity; version: [] | [bigint] }) => {
-			actor.setIdentity(controller);
-
-			const { set_doc } = actor;
-
-			await set_doc('#user', user.getPrincipal().toText(), {
-				data: await toArray({
-					provider: 'internet_identity',
-					banned: undefined
-				}),
-				description: toNullable(),
-				version: version
-			});
-		};
 
 		describe('Datastore', () => {
 			let user: Identity;

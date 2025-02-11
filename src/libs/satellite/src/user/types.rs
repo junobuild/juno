@@ -18,13 +18,15 @@ pub mod state {
     ///
     /// It consists of:
     /// - `banned`: The reason why the user is banned, if applicable. If None, user is not banned.
-    #[derive(CandidType, Serialize, Deserialize, Clone)]
-    pub struct UserAdmin {
+    #[derive(Serialize, Deserialize)]
+    #[serde(deny_unknown_fields)]
+    pub struct UserAdminData {
         pub banned: Option<BannedReason>,
     }
 
     /// The reason why a user is banned.
-    #[derive(CandidType, Serialize, Deserialize, Clone)]
+    #[derive(Serialize, Deserialize)]
+    #[serde(rename_all = "snake_case")]
     pub enum BannedReason {
         Indefinite,
     }

@@ -15,6 +15,7 @@ import { beforeAll, describe, expect, inject } from 'vitest';
 import { USER_NOT_ALLOWED } from './constants/satellite-tests.constants';
 import { mockSetRule } from './mocks/collection.mocks';
 import { mockListParams } from './mocks/list.mocks';
+import { uploadAsset } from './utils/satellite-storage-tests.utils';
 import { controllersInitArgs, SATELLITE_WASM_PATH } from './utils/setup-tests.utils';
 
 describe('Satellite User Usage', () => {
@@ -119,6 +120,8 @@ describe('Satellite User Usage', () => {
 		};
 
 		describe('Datastore', () => {
+			let user: Identity;
+
 			beforeAll(async () => {
 				actor.setIdentity(controller);
 
@@ -127,13 +130,14 @@ describe('Satellite User Usage', () => {
 				await set_rule({ Db: null }, collection, mockSetRule);
 			});
 
+			beforeEach(() => {
+				user = Ed25519KeyIdentity.generate();
+			});
+
 			describe('get document', () => {
-				let user: Identity;
 				let docKey: string;
 
 				beforeEach(async () => {
-					user = Ed25519KeyIdentity.generate();
-
 					await createUser(user);
 
 					const { set_doc } = actor;
@@ -176,12 +180,9 @@ describe('Satellite User Usage', () => {
 			});
 
 			describe('get many documents', () => {
-				let user: Identity;
 				let docKey: string;
 
 				beforeEach(async () => {
-					user = Ed25519KeyIdentity.generate();
-
 					await createUser(user);
 
 					const { set_doc } = actor;
@@ -226,8 +227,6 @@ describe('Satellite User Usage', () => {
 			});
 
 			describe('set document', () => {
-				let user: Identity;
-
 				const createDoc = async (): Promise<Doc> => {
 					actor.setIdentity(user);
 
@@ -243,8 +242,6 @@ describe('Satellite User Usage', () => {
 				};
 
 				beforeEach(async () => {
-					user = Ed25519KeyIdentity.generate();
-
 					await createUser(user);
 				});
 
@@ -271,8 +268,6 @@ describe('Satellite User Usage', () => {
 			});
 
 			describe('set many documents', () => {
-				let user: Identity;
-
 				const createDocs = async (): Promise<void> => {
 					actor.setIdentity(user);
 
@@ -293,8 +288,6 @@ describe('Satellite User Usage', () => {
 				};
 
 				beforeEach(async () => {
-					user = Ed25519KeyIdentity.generate();
-
 					await createUser(user);
 				});
 
@@ -317,8 +310,6 @@ describe('Satellite User Usage', () => {
 			});
 
 			describe('delete a document', () => {
-				let user: Identity;
-
 				const deleteDoc = async (): Promise<void> => {
 					actor.setIdentity(user);
 
@@ -330,8 +321,6 @@ describe('Satellite User Usage', () => {
 				};
 
 				beforeEach(async () => {
-					user = Ed25519KeyIdentity.generate();
-
 					await createUser(user);
 				});
 
@@ -354,8 +343,6 @@ describe('Satellite User Usage', () => {
 			});
 
 			describe('delete many documents', () => {
-				let user: Identity;
-
 				const deleteDocs = async (): Promise<void> => {
 					actor.setIdentity(user);
 
@@ -372,8 +359,6 @@ describe('Satellite User Usage', () => {
 				};
 
 				beforeEach(async () => {
-					user = Ed25519KeyIdentity.generate();
-
 					await createUser(user);
 				});
 
@@ -396,8 +381,6 @@ describe('Satellite User Usage', () => {
 			});
 
 			describe('delete filtered documents', () => {
-				let user: Identity;
-
 				const deleteFilteredDocs = async (): Promise<void> => {
 					actor.setIdentity(user);
 
@@ -407,8 +390,6 @@ describe('Satellite User Usage', () => {
 				};
 
 				beforeEach(async () => {
-					user = Ed25519KeyIdentity.generate();
-
 					await createUser(user);
 				});
 
@@ -431,8 +412,6 @@ describe('Satellite User Usage', () => {
 			});
 
 			describe('list documents', () => {
-				let user: Identity;
-
 				const listDocs = async (): Promise<void> => {
 					actor.setIdentity(user);
 
@@ -442,8 +421,6 @@ describe('Satellite User Usage', () => {
 				};
 
 				beforeEach(async () => {
-					user = Ed25519KeyIdentity.generate();
-
 					await createUser(user);
 				});
 
@@ -466,8 +443,6 @@ describe('Satellite User Usage', () => {
 			});
 
 			describe('count documents', () => {
-				let user: Identity;
-
 				const countDocs = async (): Promise<void> => {
 					actor.setIdentity(user);
 
@@ -477,8 +452,6 @@ describe('Satellite User Usage', () => {
 				};
 
 				beforeEach(async () => {
-					user = Ed25519KeyIdentity.generate();
-
 					await createUser(user);
 				});
 
@@ -502,6 +475,10 @@ describe('Satellite User Usage', () => {
 		});
 
 		describe('Storage', () => {
+			let user: Identity;
+			let fullPath: string;
+			let filename = 'hello.html';
+
 			beforeAll(async () => {
 				actor.setIdentity(controller);
 
@@ -510,9 +487,12 @@ describe('Satellite User Usage', () => {
 				await set_rule({ Storage: null }, collection, mockSetRule);
 			});
 
-			describe('init asset upload', () => {
-				let user: Identity;
+			beforeEach(() => {
+				user = Ed25519KeyIdentity.generate();
+				fullPath = `/${collection}/${user.getPrincipal().toText()}/hello.html`;
+			});
 
+			describe('init asset upload', () => {
 				const initAsset = async (): Promise<void> => {
 					actor.setIdentity(user);
 
@@ -522,15 +502,13 @@ describe('Satellite User Usage', () => {
 						collection,
 						description: toNullable(),
 						encoding_type: [],
-						full_path: `/${collection}/${user.getPrincipal().toText()}/hello.html`,
-						name: `hello.html`,
+						full_path: fullPath,
+						name: filename,
 						token: toNullable()
 					});
 				};
 
 				beforeEach(async () => {
-					user = Ed25519KeyIdentity.generate();
-
 					await createUser(user);
 				});
 
@@ -549,6 +527,46 @@ describe('Satellite User Usage', () => {
 					await unbanUser({ user, version: [2n] });
 
 					await expect(initAsset()).resolves.not.toThrowError();
+				});
+			});
+
+			describe('get asset', () => {
+				let docKey: string;
+
+				beforeEach(async () => {
+					await createUser(user);
+
+					await uploadAsset({
+						full_path: fullPath,
+						name: filename,
+						collection: collection,
+						actor
+					});
+				});
+
+				it('should not get asset if banned', async () => {
+					await banUser({ user, version: [1n] });
+
+					actor.setIdentity(user);
+					const { get_asset } = actor;
+
+					const result = await get_asset(collection, fullPath);
+					const asset = fromNullable(result);
+
+					expect(asset).toBeUndefined();
+				});
+
+				it('should get asset if unbanned', async () => {
+					await banUser({ user, version: [1n] });
+					await unbanUser({ user, version: [2n] });
+
+					actor.setIdentity(user);
+					const { get_asset } = actor;
+
+					const result = await get_asset(collection, fullPath);
+					const doc = fromNullable(result);
+
+					expect(doc).not.toBeUndefined();
 				});
 			});
 		});

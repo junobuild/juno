@@ -75,14 +75,48 @@ describe('Satellite User Usage', () => {
 	describe('Ban', () => {
 		const collection = 'test_banned';
 
-		beforeAll(async () => {
+		const createUser = async (user: Identity) => {
+			actor.setIdentity(user);
+
+			const { set_doc } = actor;
+
+			return await set_doc('#user', user.getPrincipal().toText(), {
+				data: await toArray({
+					provider: 'internet_identity'
+				}),
+				description: toNullable(),
+				version: toNullable()
+			});
+		};
+		const banUser = async ({ user, version }: { user: Identity; version: [] | [bigint] }) => {
 			actor.setIdentity(controller);
 
-			const { set_rule } = actor;
+			const { set_doc } = actor;
 
-			await set_rule({ Db: null }, collection, mockSetRule);
-			await set_rule({ Storage: null }, collection, mockSetRule);
-		});
+			await set_doc('#user', user.getPrincipal().toText(), {
+				data: await toArray({
+					provider: 'internet_identity',
+					banned: 'indefinite'
+				}),
+				description: toNullable(),
+				version: version
+			});
+		};
+
+		const unbanUser = async ({ user, version }: { user: Identity; version: [] | [bigint] }) => {
+			actor.setIdentity(controller);
+
+			const { set_doc } = actor;
+
+			await set_doc('#user', user.getPrincipal().toText(), {
+				data: await toArray({
+					provider: 'internet_identity',
+					banned: undefined
+				}),
+				description: toNullable(),
+				version: version
+			});
+		};
 
 		describe('Datastore', () => {
 			beforeAll(async () => {
@@ -92,50 +126,6 @@ describe('Satellite User Usage', () => {
 
 				await set_rule({ Db: null }, collection, mockSetRule);
 			});
-
-			const createUser = async (user: Identity) => {
-				actor.setIdentity(user);
-
-				const { set_doc } = actor;
-
-				return await set_doc('#user', user.getPrincipal().toText(), {
-					data: await toArray({
-						provider: 'internet_identity'
-					}),
-					description: toNullable(),
-					version: toNullable()
-				});
-			};
-
-			const banUser = async ({ user, version }: { user: Identity; version: [] | [bigint] }) => {
-				actor.setIdentity(controller);
-
-				const { set_doc } = actor;
-
-				await set_doc('#user', user.getPrincipal().toText(), {
-					data: await toArray({
-						provider: 'internet_identity',
-						banned: 'indefinite'
-					}),
-					description: toNullable(),
-					version: version
-				});
-			};
-
-			const unbanUser = async ({ user, version }: { user: Identity; version: [] | [bigint] }) => {
-				actor.setIdentity(controller);
-
-				const { set_doc } = actor;
-
-				await set_doc('#user', user.getPrincipal().toText(), {
-					data: await toArray({
-						provider: 'internet_identity',
-						banned: undefined
-					}),
-					description: toNullable(),
-					version: version
-				});
-			};
 
 			describe('get document', () => {
 				let user: Identity;
@@ -507,6 +497,58 @@ describe('Satellite User Usage', () => {
 					await unbanUser({ user, version: [2n] });
 
 					await expect(countDocs()).resolves.not.toThrowError();
+				});
+			});
+		});
+
+		describe('Storage', () => {
+			beforeAll(async () => {
+				actor.setIdentity(controller);
+
+				const { set_rule } = actor;
+
+				await set_rule({ Storage: null }, collection, mockSetRule);
+			});
+
+			describe('init asset upload', () => {
+				let user: Identity;
+
+				const initAsset = async (): Promise<void> => {
+					actor.setIdentity(user);
+
+					const { init_asset_upload } = actor;
+
+					await init_asset_upload({
+						collection,
+						description: toNullable(),
+						encoding_type: [],
+						full_path: `/${collection}/${user.getPrincipal().toText()}/hello.html`,
+						name: `hello.html`,
+						token: toNullable()
+					});
+				};
+
+				beforeEach(async () => {
+					user = Ed25519KeyIdentity.generate();
+
+					await createUser(user);
+				});
+
+				it('should not init asset upload if banned', async () => {
+					await expect(initAsset()).resolves.not.toThrowError();
+
+					await banUser({ user, version: [1n] });
+
+					await expect(initAsset()).rejects.toThrow(USER_NOT_ALLOWED);
+				});
+
+				it('should init asset upload if unbanned', async () => {
+					await expect(initAsset()).resolves.not.toThrowError();
+
+					await banUser({ user, version: [1n] });
+					await unbanUser({ user, version: [2n] });
+
+					await expect(initAsset()).resolves.not.toThrowError();
 				});
 			});
 		});

@@ -64,3 +64,13 @@ pub fn assert_user_is_not_banned(caller: Principal, rule: &Rule) -> Result<(), S
 
     Ok(())
 }
+
+pub fn assert_user_admin_collection_data(collection: &CollectionKey, doc: &SetDoc) -> Result<(), String> {
+    if collection != COLLECTION_USER_ADMIN_KEY {
+        return Ok(());
+    }
+
+    decode_doc_data::<UserAdminData>(&doc.data).map_err(|err| format!("Invalid user admin data: {}", err))?;
+
+    Ok(())
+}

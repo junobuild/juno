@@ -35,6 +35,18 @@ pub fn assert_get_doc(
     Ok(())
 }
 
+pub fn assert_get_docs(
+    &StoreContext {
+        caller,
+        controllers,
+        collection: _,
+    }: &StoreContext,
+) -> Result<(), String> {
+    assert_user_is_not_banned(caller, controllers)?;
+
+    Ok(())
+}
+
 pub fn assert_set_doc(
     &StoreContext {
         caller,

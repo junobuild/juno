@@ -15,7 +15,7 @@ where
             // (and therefore a significant amount of cycles) to reach this point.
             // But you never know.
             if version == u64::MAX {
-                0
+                INITIAL_VERSION
             } else {
                 version + 1
             }

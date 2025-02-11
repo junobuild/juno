@@ -1,6 +1,8 @@
 use crate::controllers::store::get_controllers;
 use crate::memory::STATE;
-use crate::storage::assert::{assert_create_batch, assert_delete_asset};
+use crate::storage::assert::{
+    assert_create_batch, assert_delete_asset, assert_get_asset, assert_list_assets,
+};
 use crate::storage::certified_assets::runtime::init_certified_assets as init_runtime_certified_assets;
 use crate::storage::state::{
     count_assets_stable, delete_asset as delete_state_asset, delete_domain as delete_state_domain,
@@ -13,7 +15,6 @@ use crate::storage::state::{
 use crate::storage::strategy_impls::{StorageAssertions, StorageState, StorageUpload};
 use crate::types::store::StoreContext;
 use candid::Principal;
-use junobuild_collections::assert::stores::assert_permission;
 use junobuild_collections::msg::msg_storage_collection_not_empty;
 use junobuild_collections::types::core::CollectionKey;
 use junobuild_collections::types::rules::{Memory, Rule};
@@ -244,12 +245,7 @@ fn get_asset_impl(
     match asset {
         None => Ok(None),
         Some(asset) => {
-            if !assert_permission(
-                &rule.read,
-                asset.key.owner,
-                context.caller,
-                context.controllers,
-            ) {
+            if let Err(_) = assert_get_asset(context, rule, &asset) {
                 return Ok(None);
             }
 
@@ -313,6 +309,8 @@ fn secure_list_assets_impl(
     context: &StoreContext,
     filters: &ListParams,
 ) -> Result<ListResults<AssetNoContent>, String> {
+    assert_list_assets(context)?;
+
     let rule = get_state_rule(context.collection)?;
 
     match rule.mem() {

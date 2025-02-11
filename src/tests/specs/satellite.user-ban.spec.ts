@@ -430,5 +430,75 @@ describe('Satellite User Usage', () => {
 				await expect(deleteFilteredDocs()).resolves.not.toThrowError();
 			});
 		});
+
+		describe('list documents', () => {
+			let user: Identity;
+
+			const listDocs = async (): Promise<void> => {
+				actor.setIdentity(user);
+
+				const { list_docs } = actor;
+
+				await list_docs(collection, mockListParams);
+			};
+
+			beforeEach(async () => {
+				user = Ed25519KeyIdentity.generate();
+
+				await createUser(user);
+			});
+
+			it('should not list documents if banned', async () => {
+				await expect(listDocs()).resolves.not.toThrowError();
+
+				await banUser({ user, version: [1n] });
+
+				await expect(listDocs()).rejects.toThrow(USER_NOT_ALLOWED);
+			});
+
+			it('should list documents if unbanned', async () => {
+				await expect(listDocs()).resolves.not.toThrowError();
+
+				await banUser({ user, version: [1n] });
+				await unbanUser({ user, version: [2n] });
+
+				await expect(listDocs()).resolves.not.toThrowError();
+			});
+		});
+
+		describe('count documents', () => {
+			let user: Identity;
+
+			const countDocs = async (): Promise<void> => {
+				actor.setIdentity(user);
+
+				const { count_docs } = actor;
+
+				await count_docs(collection, mockListParams);
+			};
+
+			beforeEach(async () => {
+				user = Ed25519KeyIdentity.generate();
+
+				await createUser(user);
+			});
+
+			it('should not count documents if banned', async () => {
+				await expect(countDocs()).resolves.not.toThrowError();
+
+				await banUser({ user, version: [1n] });
+
+				await expect(countDocs()).rejects.toThrow(USER_NOT_ALLOWED);
+			});
+
+			it('should count documents if unbanned', async () => {
+				await expect(countDocs()).resolves.not.toThrowError();
+
+				await banUser({ user, version: [1n] });
+				await unbanUser({ user, version: [2n] });
+
+				await expect(countDocs()).resolves.not.toThrowError();
+			});
+		});
 	});
 });

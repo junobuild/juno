@@ -5,7 +5,7 @@ use crate::db::types::state::{DocAssertDelete, DocAssertSet, DocContext};
 use crate::hooks::{invoke_assert_delete_doc, invoke_assert_set_doc};
 use crate::types::store::StoreContext;
 use crate::usage::assert::{assert_user_usage_collection_data, increment_and_assert_db_usage};
-use crate::user::assert::{assert_user_collection_caller_key, assert_user_collection_data};
+use crate::user::assert::{assert_user_collection_caller_key, assert_user_collection_data, assert_user_write_permission};
 use crate::{DelDoc, Doc, SetDoc};
 use candid::Principal;
 use junobuild_collections::assert::stores::{
@@ -50,8 +50,9 @@ pub fn assert_set_doc(
 
     assert_description_length(&value.description)?;
 
-    assert_user_collection_caller_key(caller, collection, key)?;
+    assert_user_collection_caller_key(caller, collection, key, &current_doc)?;
     assert_user_collection_data(collection, value)?;
+    assert_user_write_permission(caller, controllers, collection, &current_doc)?;
 
     assert_user_usage_collection_data(collection, value)?;
 

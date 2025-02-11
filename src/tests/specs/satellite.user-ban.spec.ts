@@ -569,6 +569,99 @@ describe('Satellite User Usage', () => {
 					expect(doc).not.toBeUndefined();
 				});
 			});
+
+			describe('delete filtered assets', () => {
+				const deleteFilteredAssets = async (): Promise<void> => {
+					actor.setIdentity(user);
+
+					const { del_filtered_assets } = actor;
+
+					await del_filtered_assets(collection, mockListParams);
+				};
+
+				beforeEach(async () => {
+					await createUser(user);
+				});
+
+				it('should not delete assets if banned', async () => {
+					await expect(deleteFilteredAssets()).resolves.not.toThrowError();
+
+					await banUser({ user, version: [1n] });
+
+					await expect(deleteFilteredAssets()).rejects.toThrow(USER_NOT_ALLOWED);
+				});
+
+				it('should get assets if unbanned', async () => {
+					await expect(deleteFilteredAssets()).resolves.not.toThrowError();
+
+					await banUser({ user, version: [1n] });
+					await unbanUser({ user, version: [2n] });
+
+					await expect(deleteFilteredAssets()).resolves.not.toThrowError();
+				});
+			});
+
+			describe('list assets', () => {
+				const listAssets = async (): Promise<void> => {
+					actor.setIdentity(user);
+
+					const { list_assets } = actor;
+
+					await list_assets(collection, mockListParams);
+				};
+
+				beforeEach(async () => {
+					await createUser(user);
+				});
+
+				it('should not list assets if banned', async () => {
+					await expect(listAssets()).resolves.not.toThrowError();
+
+					await banUser({ user, version: [1n] });
+
+					await expect(listAssets()).rejects.toThrow(USER_NOT_ALLOWED);
+				});
+
+				it('should list assets if unbanned', async () => {
+					await expect(listAssets()).resolves.not.toThrowError();
+
+					await banUser({ user, version: [1n] });
+					await unbanUser({ user, version: [2n] });
+
+					await expect(listAssets()).resolves.not.toThrowError();
+				});
+			});
+
+			describe('count assets', () => {
+				const countAssets = async (): Promise<void> => {
+					actor.setIdentity(user);
+
+					const { count_assets } = actor;
+
+					await count_assets(collection, mockListParams);
+				};
+
+				beforeEach(async () => {
+					await createUser(user);
+				});
+
+				it('should not count assets if banned', async () => {
+					await expect(countAssets()).resolves.not.toThrowError();
+
+					await banUser({ user, version: [1n] });
+
+					await expect(countAssets()).rejects.toThrow(USER_NOT_ALLOWED);
+				});
+
+				it('should count assets if unbanned', async () => {
+					await expect(countAssets()).resolves.not.toThrowError();
+
+					await banUser({ user, version: [1n] });
+					await unbanUser({ user, version: [2n] });
+
+					await expect(countAssets()).resolves.not.toThrowError();
+				});
+			});
 		});
 	});
 });

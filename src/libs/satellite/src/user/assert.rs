@@ -1,17 +1,18 @@
+use crate::db::internal::unsafe_get_doc;
 use crate::user::types::state::UserData;
-use crate::{get_doc_store, SetDoc};
+use crate::SetDoc;
 use candid::Principal;
-use ic_cdk::id;
 use junobuild_collections::constants::db::COLLECTION_USER_KEY;
 use junobuild_collections::types::core::CollectionKey;
+use junobuild_collections::types::rules::Rule;
 use junobuild_shared::types::core::Key;
 use junobuild_shared::utils::principal_not_equal;
 use junobuild_utils::decode_doc_data;
 
-pub fn is_known_user(caller: Principal) -> bool {
+pub fn is_known_user(caller: Principal, rule: &Rule) -> bool {
     let user_key = caller.to_text();
 
-    let user = get_doc_store(id(), COLLECTION_USER_KEY.to_string(), user_key).unwrap_or(None);
+    let user = unsafe_get_doc(&COLLECTION_USER_KEY.to_string(), &user_key, rule).unwrap_or(None);
 
     user.is_some()
 }

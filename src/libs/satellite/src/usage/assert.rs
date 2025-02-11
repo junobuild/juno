@@ -3,7 +3,7 @@ use crate::usage::store::increment_usage;
 use crate::usage::types::state::UserUsageData;
 use crate::usage::utils::{is_db_collection_no_usage, is_storage_collection_no_usage};
 use crate::SetDoc;
-use junobuild_collections::constants::db::{COLLECTION_USER_USAGE_KEY};
+use junobuild_collections::constants::db::COLLECTION_USER_USAGE_KEY;
 use junobuild_collections::types::core::CollectionKey;
 use junobuild_shared::controllers::is_controller;
 use junobuild_shared::types::state::{Controllers, UserId};

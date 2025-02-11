@@ -17,7 +17,7 @@ pub fn assert_create_batch(
     rule: &Rule,
 ) -> Result<(), String> {
     if !(public_permission(&rule.write)
-        || is_known_user(caller)
+        || is_known_user(caller, rule)
         || is_controller(caller, controllers))
     {
         return Err(UPLOAD_NOT_ALLOWED.to_string());

@@ -84,420 +84,430 @@ describe('Satellite User Usage', () => {
 			await set_rule({ Storage: null }, collection, mockSetRule);
 		});
 
-		const createUser = async (user: Identity) => {
-			actor.setIdentity(user);
+		describe('Datastore', () => {
+			beforeAll(async () => {
+				actor.setIdentity(controller);
 
-			const { set_doc } = actor;
+				const { set_rule } = actor;
 
-			return await set_doc('#user', user.getPrincipal().toText(), {
-				data: await toArray({
-					provider: 'internet_identity'
-				}),
-				description: toNullable(),
-				version: toNullable()
-			});
-		};
-
-		const banUser = async ({ user, version }: { user: Identity; version: [] | [bigint] }) => {
-			actor.setIdentity(controller);
-
-			const { set_doc } = actor;
-
-			await set_doc('#user', user.getPrincipal().toText(), {
-				data: await toArray({
-					provider: 'internet_identity',
-					banned: 'indefinite'
-				}),
-				description: toNullable(),
-				version: version
-			});
-		};
-
-		const unbanUser = async ({ user, version }: { user: Identity; version: [] | [bigint] }) => {
-			actor.setIdentity(controller);
-
-			const { set_doc } = actor;
-
-			await set_doc('#user', user.getPrincipal().toText(), {
-				data: await toArray({
-					provider: 'internet_identity',
-					banned: undefined
-				}),
-				description: toNullable(),
-				version: version
-			});
-		};
-
-		describe('get document', () => {
-			let user: Identity;
-			let docKey: string;
-
-			beforeEach(async () => {
-				user = Ed25519KeyIdentity.generate();
-
-				await createUser(user);
-
-				const { set_doc } = actor;
-
-				docKey = nanoid();
-
-				await set_doc(collection, docKey, {
-					data: await toArray({
-						hello: 'world'
-					}),
-					description: toNullable(),
-					version: toNullable()
-				});
+				await set_rule({ Db: null }, collection, mockSetRule);
 			});
 
-			it('should not get document if banned', async () => {
-				await banUser({ user, version: [1n] });
-
-				actor.setIdentity(user);
-				const { get_doc } = actor;
-
-				const result = await get_doc(collection, docKey);
-				const doc = fromNullable(result);
-
-				expect(doc).toBeUndefined();
-			});
-
-			it('should get document if unbanned', async () => {
-				await banUser({ user, version: [1n] });
-				await unbanUser({ user, version: [2n] });
-
-				actor.setIdentity(user);
-				const { get_doc } = actor;
-
-				const result = await get_doc(collection, docKey);
-				const doc = fromNullable(result);
-
-				expect(doc).not.toBeUndefined();
-			});
-		});
-
-		describe('get many documents', () => {
-			let user: Identity;
-			let docKey: string;
-
-			beforeEach(async () => {
-				user = Ed25519KeyIdentity.generate();
-
-				await createUser(user);
-
-				const { set_doc } = actor;
-
-				docKey = nanoid();
-
-				await set_doc(collection, docKey, {
-					data: await toArray({
-						hello: 'world'
-					}),
-					description: toNullable(),
-					version: toNullable()
-				});
-			});
-
-			it('should not get documents if banned', async () => {
-				await banUser({ user, version: [1n] });
-
-				actor.setIdentity(user);
-				const { get_many_docs } = actor;
-
-				const result = await get_many_docs([[collection, docKey]]);
-
-				const doc = fromNullable(result[0][1]);
-
-				expect(doc).toBeUndefined();
-			});
-
-			it('should get documents if unbanned', async () => {
-				await banUser({ user, version: [1n] });
-				await unbanUser({ user, version: [2n] });
-
-				actor.setIdentity(user);
-				const { get_many_docs } = actor;
-
-				const result = await get_many_docs([[collection, docKey]]);
-
-				const doc = fromNullable(result[0][1]);
-
-				expect(doc).not.toBeUndefined();
-			});
-		});
-
-		describe('set document', () => {
-			let user: Identity;
-
-			const createDoc = async (): Promise<Doc> => {
+			const createUser = async (user: Identity) => {
 				actor.setIdentity(user);
 
 				const { set_doc } = actor;
 
-				return await set_doc(collection, nanoid(), {
+				return await set_doc('#user', user.getPrincipal().toText(), {
 					data: await toArray({
-						hello: 'world'
+						provider: 'internet_identity'
 					}),
 					description: toNullable(),
 					version: toNullable()
 				});
 			};
 
-			beforeEach(async () => {
-				user = Ed25519KeyIdentity.generate();
+			const banUser = async ({ user, version }: { user: Identity; version: [] | [bigint] }) => {
+				actor.setIdentity(controller);
 
-				await createUser(user);
-			});
+				const { set_doc } = actor;
 
-			it('should not set document if banned', async () => {
-				const doc = await createDoc();
-
-				expect(doc).not.toBeUndefined();
-
-				await banUser({ user, version: [1n] });
-
-				await expect(createDoc()).rejects.toThrow(USER_NOT_ALLOWED);
-			});
-
-			it('should set document if unbanned', async () => {
-				await createDoc();
-
-				await banUser({ user, version: [1n] });
-				await unbanUser({ user, version: [2n] });
-
-				const doc = await createDoc();
-
-				expect(doc).not.toBeUndefined();
-			});
-		});
-
-		describe('set many documents', () => {
-			let user: Identity;
-
-			const createDocs = async (): Promise<void> => {
-				actor.setIdentity(user);
-
-				const { set_many_docs } = actor;
-
-				const data: SetDoc = {
+				await set_doc('#user', user.getPrincipal().toText(), {
 					data: await toArray({
-						hello: 'world'
+						provider: 'internet_identity',
+						banned: 'indefinite'
 					}),
 					description: toNullable(),
-					version: toNullable()
+					version: version
+				});
+			};
+
+			const unbanUser = async ({ user, version }: { user: Identity; version: [] | [bigint] }) => {
+				actor.setIdentity(controller);
+
+				const { set_doc } = actor;
+
+				await set_doc('#user', user.getPrincipal().toText(), {
+					data: await toArray({
+						provider: 'internet_identity',
+						banned: undefined
+					}),
+					description: toNullable(),
+					version: version
+				});
+			};
+
+			describe('get document', () => {
+				let user: Identity;
+				let docKey: string;
+
+				beforeEach(async () => {
+					user = Ed25519KeyIdentity.generate();
+
+					await createUser(user);
+
+					const { set_doc } = actor;
+
+					docKey = nanoid();
+
+					await set_doc(collection, docKey, {
+						data: await toArray({
+							hello: 'world'
+						}),
+						description: toNullable(),
+						version: toNullable()
+					});
+				});
+
+				it('should not get document if banned', async () => {
+					await banUser({ user, version: [1n] });
+
+					actor.setIdentity(user);
+					const { get_doc } = actor;
+
+					const result = await get_doc(collection, docKey);
+					const doc = fromNullable(result);
+
+					expect(doc).toBeUndefined();
+				});
+
+				it('should get document if unbanned', async () => {
+					await banUser({ user, version: [1n] });
+					await unbanUser({ user, version: [2n] });
+
+					actor.setIdentity(user);
+					const { get_doc } = actor;
+
+					const result = await get_doc(collection, docKey);
+					const doc = fromNullable(result);
+
+					expect(doc).not.toBeUndefined();
+				});
+			});
+
+			describe('get many documents', () => {
+				let user: Identity;
+				let docKey: string;
+
+				beforeEach(async () => {
+					user = Ed25519KeyIdentity.generate();
+
+					await createUser(user);
+
+					const { set_doc } = actor;
+
+					docKey = nanoid();
+
+					await set_doc(collection, docKey, {
+						data: await toArray({
+							hello: 'world'
+						}),
+						description: toNullable(),
+						version: toNullable()
+					});
+				});
+
+				it('should not get documents if banned', async () => {
+					await banUser({ user, version: [1n] });
+
+					actor.setIdentity(user);
+					const { get_many_docs } = actor;
+
+					const result = await get_many_docs([[collection, docKey]]);
+
+					const doc = fromNullable(result[0][1]);
+
+					expect(doc).toBeUndefined();
+				});
+
+				it('should get documents if unbanned', async () => {
+					await banUser({ user, version: [1n] });
+					await unbanUser({ user, version: [2n] });
+
+					actor.setIdentity(user);
+					const { get_many_docs } = actor;
+
+					const result = await get_many_docs([[collection, docKey]]);
+
+					const doc = fromNullable(result[0][1]);
+
+					expect(doc).not.toBeUndefined();
+				});
+			});
+
+			describe('set document', () => {
+				let user: Identity;
+
+				const createDoc = async (): Promise<Doc> => {
+					actor.setIdentity(user);
+
+					const { set_doc } = actor;
+
+					return await set_doc(collection, nanoid(), {
+						data: await toArray({
+							hello: 'world'
+						}),
+						description: toNullable(),
+						version: toNullable()
+					});
 				};
 
-				await set_many_docs([
-					[collection, nanoid(), data],
-					[collection, nanoid(), data]
-				]);
-			};
+				beforeEach(async () => {
+					user = Ed25519KeyIdentity.generate();
 
-			beforeEach(async () => {
-				user = Ed25519KeyIdentity.generate();
-
-				await createUser(user);
-			});
-
-			it('should not set documents if banned', async () => {
-				await expect(createDocs()).resolves.not.toThrowError();
-
-				await banUser({ user, version: [1n] });
-
-				await expect(createDocs()).rejects.toThrow(USER_NOT_ALLOWED);
-			});
-
-			it('should set documents if unbanned', async () => {
-				await expect(createDocs()).resolves.not.toThrowError();
-
-				await banUser({ user, version: [1n] });
-				await unbanUser({ user, version: [2n] });
-
-				await expect(createDocs()).resolves.not.toThrowError();
-			});
-		});
-
-		describe('delete a document', () => {
-			let user: Identity;
-
-			const deleteDoc = async (): Promise<void> => {
-				actor.setIdentity(user);
-
-				const { del_doc } = actor;
-
-				await del_doc(collection, nanoid(), {
-					version: toNullable()
+					await createUser(user);
 				});
-			};
 
-			beforeEach(async () => {
-				user = Ed25519KeyIdentity.generate();
+				it('should not set document if banned', async () => {
+					const doc = await createDoc();
 
-				await createUser(user);
+					expect(doc).not.toBeUndefined();
+
+					await banUser({ user, version: [1n] });
+
+					await expect(createDoc()).rejects.toThrow(USER_NOT_ALLOWED);
+				});
+
+				it('should set document if unbanned', async () => {
+					await createDoc();
+
+					await banUser({ user, version: [1n] });
+					await unbanUser({ user, version: [2n] });
+
+					const doc = await createDoc();
+
+					expect(doc).not.toBeUndefined();
+				});
 			});
 
-			it('should not delete document if banned', async () => {
-				await expect(deleteDoc()).resolves.not.toThrowError();
+			describe('set many documents', () => {
+				let user: Identity;
 
-				await banUser({ user, version: [1n] });
+				const createDocs = async (): Promise<void> => {
+					actor.setIdentity(user);
 
-				await expect(deleteDoc()).rejects.toThrow(USER_NOT_ALLOWED);
-			});
+					const { set_many_docs } = actor;
 
-			it('should get document if unbanned', async () => {
-				await expect(deleteDoc()).resolves.not.toThrowError();
+					const data: SetDoc = {
+						data: await toArray({
+							hello: 'world'
+						}),
+						description: toNullable(),
+						version: toNullable()
+					};
 
-				await banUser({ user, version: [1n] });
-				await unbanUser({ user, version: [2n] });
-
-				await expect(deleteDoc()).resolves.not.toThrowError();
-			});
-		});
-
-		describe('delete many documents', () => {
-			let user: Identity;
-
-			const deleteDocs = async (): Promise<void> => {
-				actor.setIdentity(user);
-
-				const { del_many_docs } = actor;
-
-				const data: DelDoc = {
-					version: toNullable()
+					await set_many_docs([
+						[collection, nanoid(), data],
+						[collection, nanoid(), data]
+					]);
 				};
 
-				await del_many_docs([
-					[collection, nanoid(), data],
-					[collection, nanoid(), data]
-				]);
-			};
+				beforeEach(async () => {
+					user = Ed25519KeyIdentity.generate();
 
-			beforeEach(async () => {
-				user = Ed25519KeyIdentity.generate();
+					await createUser(user);
+				});
 
-				await createUser(user);
+				it('should not set documents if banned', async () => {
+					await expect(createDocs()).resolves.not.toThrowError();
+
+					await banUser({ user, version: [1n] });
+
+					await expect(createDocs()).rejects.toThrow(USER_NOT_ALLOWED);
+				});
+
+				it('should set documents if unbanned', async () => {
+					await expect(createDocs()).resolves.not.toThrowError();
+
+					await banUser({ user, version: [1n] });
+					await unbanUser({ user, version: [2n] });
+
+					await expect(createDocs()).resolves.not.toThrowError();
+				});
 			});
 
-			it('should not delete documents if banned', async () => {
-				await expect(deleteDocs()).resolves.not.toThrowError();
+			describe('delete a document', () => {
+				let user: Identity;
 
-				await banUser({ user, version: [1n] });
+				const deleteDoc = async (): Promise<void> => {
+					actor.setIdentity(user);
 
-				await expect(deleteDocs()).rejects.toThrow(USER_NOT_ALLOWED);
+					const { del_doc } = actor;
+
+					await del_doc(collection, nanoid(), {
+						version: toNullable()
+					});
+				};
+
+				beforeEach(async () => {
+					user = Ed25519KeyIdentity.generate();
+
+					await createUser(user);
+				});
+
+				it('should not delete document if banned', async () => {
+					await expect(deleteDoc()).resolves.not.toThrowError();
+
+					await banUser({ user, version: [1n] });
+
+					await expect(deleteDoc()).rejects.toThrow(USER_NOT_ALLOWED);
+				});
+
+				it('should get document if unbanned', async () => {
+					await expect(deleteDoc()).resolves.not.toThrowError();
+
+					await banUser({ user, version: [1n] });
+					await unbanUser({ user, version: [2n] });
+
+					await expect(deleteDoc()).resolves.not.toThrowError();
+				});
 			});
 
-			it('should get documents if unbanned', async () => {
-				await expect(deleteDocs()).resolves.not.toThrowError();
+			describe('delete many documents', () => {
+				let user: Identity;
 
-				await banUser({ user, version: [1n] });
-				await unbanUser({ user, version: [2n] });
+				const deleteDocs = async (): Promise<void> => {
+					actor.setIdentity(user);
 
-				await expect(deleteDocs()).resolves.not.toThrowError();
-			});
-		});
+					const { del_many_docs } = actor;
 
-		describe('delete filtered documents', () => {
-			let user: Identity;
+					const data: DelDoc = {
+						version: toNullable()
+					};
 
-			const deleteFilteredDocs = async (): Promise<void> => {
-				actor.setIdentity(user);
+					await del_many_docs([
+						[collection, nanoid(), data],
+						[collection, nanoid(), data]
+					]);
+				};
 
-				const { del_filtered_docs } = actor;
+				beforeEach(async () => {
+					user = Ed25519KeyIdentity.generate();
 
-				await del_filtered_docs(collection, mockListParams);
-			};
+					await createUser(user);
+				});
 
-			beforeEach(async () => {
-				user = Ed25519KeyIdentity.generate();
+				it('should not delete documents if banned', async () => {
+					await expect(deleteDocs()).resolves.not.toThrowError();
 
-				await createUser(user);
-			});
+					await banUser({ user, version: [1n] });
 
-			it('should not delete documents if banned', async () => {
-				await expect(deleteFilteredDocs()).resolves.not.toThrowError();
+					await expect(deleteDocs()).rejects.toThrow(USER_NOT_ALLOWED);
+				});
 
-				await banUser({ user, version: [1n] });
+				it('should get documents if unbanned', async () => {
+					await expect(deleteDocs()).resolves.not.toThrowError();
 
-				await expect(deleteFilteredDocs()).rejects.toThrow(USER_NOT_ALLOWED);
-			});
+					await banUser({ user, version: [1n] });
+					await unbanUser({ user, version: [2n] });
 
-			it('should get documents if unbanned', async () => {
-				await expect(deleteFilteredDocs()).resolves.not.toThrowError();
-
-				await banUser({ user, version: [1n] });
-				await unbanUser({ user, version: [2n] });
-
-				await expect(deleteFilteredDocs()).resolves.not.toThrowError();
-			});
-		});
-
-		describe('list documents', () => {
-			let user: Identity;
-
-			const listDocs = async (): Promise<void> => {
-				actor.setIdentity(user);
-
-				const { list_docs } = actor;
-
-				await list_docs(collection, mockListParams);
-			};
-
-			beforeEach(async () => {
-				user = Ed25519KeyIdentity.generate();
-
-				await createUser(user);
+					await expect(deleteDocs()).resolves.not.toThrowError();
+				});
 			});
 
-			it('should not list documents if banned', async () => {
-				await expect(listDocs()).resolves.not.toThrowError();
+			describe('delete filtered documents', () => {
+				let user: Identity;
 
-				await banUser({ user, version: [1n] });
+				const deleteFilteredDocs = async (): Promise<void> => {
+					actor.setIdentity(user);
 
-				await expect(listDocs()).rejects.toThrow(USER_NOT_ALLOWED);
+					const { del_filtered_docs } = actor;
+
+					await del_filtered_docs(collection, mockListParams);
+				};
+
+				beforeEach(async () => {
+					user = Ed25519KeyIdentity.generate();
+
+					await createUser(user);
+				});
+
+				it('should not delete documents if banned', async () => {
+					await expect(deleteFilteredDocs()).resolves.not.toThrowError();
+
+					await banUser({ user, version: [1n] });
+
+					await expect(deleteFilteredDocs()).rejects.toThrow(USER_NOT_ALLOWED);
+				});
+
+				it('should get documents if unbanned', async () => {
+					await expect(deleteFilteredDocs()).resolves.not.toThrowError();
+
+					await banUser({ user, version: [1n] });
+					await unbanUser({ user, version: [2n] });
+
+					await expect(deleteFilteredDocs()).resolves.not.toThrowError();
+				});
 			});
 
-			it('should list documents if unbanned', async () => {
-				await expect(listDocs()).resolves.not.toThrowError();
+			describe('list documents', () => {
+				let user: Identity;
 
-				await banUser({ user, version: [1n] });
-				await unbanUser({ user, version: [2n] });
+				const listDocs = async (): Promise<void> => {
+					actor.setIdentity(user);
 
-				await expect(listDocs()).resolves.not.toThrowError();
+					const { list_docs } = actor;
+
+					await list_docs(collection, mockListParams);
+				};
+
+				beforeEach(async () => {
+					user = Ed25519KeyIdentity.generate();
+
+					await createUser(user);
+				});
+
+				it('should not list documents if banned', async () => {
+					await expect(listDocs()).resolves.not.toThrowError();
+
+					await banUser({ user, version: [1n] });
+
+					await expect(listDocs()).rejects.toThrow(USER_NOT_ALLOWED);
+				});
+
+				it('should list documents if unbanned', async () => {
+					await expect(listDocs()).resolves.not.toThrowError();
+
+					await banUser({ user, version: [1n] });
+					await unbanUser({ user, version: [2n] });
+
+					await expect(listDocs()).resolves.not.toThrowError();
+				});
 			});
-		});
 
-		describe('count documents', () => {
-			let user: Identity;
+			describe('count documents', () => {
+				let user: Identity;
 
-			const countDocs = async (): Promise<void> => {
-				actor.setIdentity(user);
+				const countDocs = async (): Promise<void> => {
+					actor.setIdentity(user);
 
-				const { count_docs } = actor;
+					const { count_docs } = actor;
 
-				await count_docs(collection, mockListParams);
-			};
+					await count_docs(collection, mockListParams);
+				};
 
-			beforeEach(async () => {
-				user = Ed25519KeyIdentity.generate();
+				beforeEach(async () => {
+					user = Ed25519KeyIdentity.generate();
 
-				await createUser(user);
-			});
+					await createUser(user);
+				});
 
-			it('should not count documents if banned', async () => {
-				await expect(countDocs()).resolves.not.toThrowError();
+				it('should not count documents if banned', async () => {
+					await expect(countDocs()).resolves.not.toThrowError();
 
-				await banUser({ user, version: [1n] });
+					await banUser({ user, version: [1n] });
 
-				await expect(countDocs()).rejects.toThrow(USER_NOT_ALLOWED);
-			});
+					await expect(countDocs()).rejects.toThrow(USER_NOT_ALLOWED);
+				});
 
-			it('should count documents if unbanned', async () => {
-				await expect(countDocs()).resolves.not.toThrowError();
+				it('should count documents if unbanned', async () => {
+					await expect(countDocs()).resolves.not.toThrowError();
 
-				await banUser({ user, version: [1n] });
-				await unbanUser({ user, version: [2n] });
+					await banUser({ user, version: [1n] });
+					await unbanUser({ user, version: [2n] });
 
-				await expect(countDocs()).resolves.not.toThrowError();
+					await expect(countDocs()).resolves.not.toThrowError();
+				});
 			});
 		});
 	});

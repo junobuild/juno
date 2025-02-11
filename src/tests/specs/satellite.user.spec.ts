@@ -2,7 +2,7 @@ import type { _SERVICE as SatelliteActor } from '$declarations/satellite/satelli
 import { idlFactory as idlFactorSatellite } from '$declarations/satellite/satellite.factory.did';
 import { AnonymousIdentity, type Identity } from '@dfinity/agent';
 import { Ed25519KeyIdentity } from '@dfinity/identity';
-import { toNullable } from '@dfinity/utils';
+import { fromNullable, toNullable } from '@dfinity/utils';
 import { PocketIc, type Actor } from '@hadronous/pic';
 import { toArray } from '@junobuild/utils';
 import { afterAll, beforeAll, describe, expect, inject } from 'vitest';
@@ -75,6 +75,35 @@ describe('Satellite > User', () => {
 				});
 
 				expect(doc).not.toBeUndefined();
+			});
+
+			it('should update a user', async () => {
+				const { set_doc, get_doc } = actor;
+
+				await set_doc('#user', user.getPrincipal().toText(), {
+					data: await toArray({
+						provider: 'internet_identity'
+					}),
+					description: toNullable(),
+					version: toNullable()
+				});
+
+				const before = await get_doc('#user', user.getPrincipal().toText());
+
+				await set_doc('#user', user.getPrincipal().toText(), {
+					data: await toArray({
+						provider: 'nfid'
+					}),
+					description: toNullable(),
+					version: fromNullable(before)?.version ?? []
+				});
+
+				const after = await get_doc('#user', user.getPrincipal().toText());
+
+				const doc = fromNullable(after);
+
+				expect(doc).not.toBeUndefined();
+				expect(doc?.updated_at ?? 0n).toBeGreaterThan(doc?.created_at ?? 0n);
 			});
 		});
 

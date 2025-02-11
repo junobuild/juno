@@ -1,14 +1,14 @@
+use crate::db::internal::unsafe_get_doc;
 use crate::user::types::state::{BannedReason, UserAdminData, UserData};
 use crate::{get_doc_store, SetDoc};
 use candid::Principal;
 use ic_cdk::id;
 use junobuild_collections::constants::db::{COLLECTION_USER_ADMIN_KEY, COLLECTION_USER_KEY};
 use junobuild_collections::types::core::CollectionKey;
+use junobuild_collections::types::rules::Rule;
 use junobuild_shared::types::core::Key;
 use junobuild_shared::utils::principal_not_equal;
 use junobuild_utils::decode_doc_data;
-use junobuild_collections::types::rules::Rule;
-use crate::db::internal::unsafe_get_doc;
 
 pub fn is_known_user(caller: Principal) -> bool {
     let user_key = caller.to_text();
@@ -58,19 +58,23 @@ pub fn assert_user_is_not_banned(caller: Principal, rule: &Rule) -> Result<(), S
         let current_admin = decode_doc_data::<UserAdminData>(&doc.data)?;
 
         if let Some(BannedReason::Indefinite) = current_admin.banned {
-            return Err(format!("User {} is banned.", caller));
+            return Err(format!("User {} is not allowed.", caller));
         }
     }
 
     Ok(())
 }
 
-pub fn assert_user_admin_collection_data(collection: &CollectionKey, doc: &SetDoc) -> Result<(), String> {
+pub fn assert_user_admin_collection_data(
+    collection: &CollectionKey,
+    doc: &SetDoc,
+) -> Result<(), String> {
     if collection != COLLECTION_USER_ADMIN_KEY {
         return Ok(());
     }
 
-    decode_doc_data::<UserAdminData>(&doc.data).map_err(|err| format!("Invalid user admin data: {}", err))?;
+    decode_doc_data::<UserAdminData>(&doc.data)
+        .map_err(|err| format!("Invalid user admin data: {}", err))?;
 
     Ok(())
 }

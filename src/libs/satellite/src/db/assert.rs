@@ -1,4 +1,4 @@
-use crate::db::msg::ERROR_CANNOT_WRITE;
+use crate::db::msg::{ERROR_CANNOT_READ, ERROR_CANNOT_WRITE};
 use crate::db::runtime::increment_and_assert_rate;
 use crate::db::types::config::DbConfig;
 use crate::db::types::state::{DocAssertDelete, DocAssertSet, DocContext};
@@ -15,6 +15,20 @@ use junobuild_collections::types::rules::{Permission, Rule};
 use junobuild_shared::assert::{assert_description_length, assert_max_memory_size, assert_version};
 use junobuild_shared::types::core::Key;
 use junobuild_shared::types::state::{Controllers, Version};
+
+pub fn assert_get_doc(
+    &StoreContext {
+        caller,
+        controllers,
+        collection: _,
+    }: &StoreContext,
+    rule: &Rule,
+    current_doc: &Doc,
+) -> Result<(), String> {
+    assert_read_permission(caller, controllers, current_doc, &rule.read)?;
+
+    Ok(())
+}
 
 pub fn assert_set_doc(
     &StoreContext {
@@ -101,6 +115,19 @@ fn assert_memory_size(config: &Option<DbConfig>) -> Result<(), String> {
         None => Ok(()),
         Some(config) => assert_max_memory_size(&config.max_memory_size),
     }
+}
+
+fn assert_read_permission(
+    caller: Principal,
+    controllers: &Controllers,
+    current_doc: &Doc,
+    rule: &Permission,
+) -> Result<(), String> {
+    if !assert_permission(rule, current_doc.owner, caller, controllers) {
+        return Err(ERROR_CANNOT_READ.to_string());
+    }
+
+    Ok(())
 }
 
 fn assert_write_permission(

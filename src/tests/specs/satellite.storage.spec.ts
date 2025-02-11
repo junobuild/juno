@@ -1167,7 +1167,7 @@ describe('Satellite storage', () => {
 			},
 			{
 				memory: { Stable: null },
-				expectMemory: 33_619_968n,
+				expectMemory: 25_231_360n,
 				allowedMemory: maxStableMemorySize,
 				preUploadCount: 0
 			}

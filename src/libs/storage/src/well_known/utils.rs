@@ -3,7 +3,7 @@ use crate::types::store::{Asset, AssetKey};
 use crate::utils::{create_asset_with_content, map_content_type_headers};
 use ic_cdk::api::time;
 use ic_cdk::id;
-use junobuild_collections::constants::ASSET_COLLECTION_KEY;
+use junobuild_collections::constants::assets::COLLECTION_ASSET_KEY;
 use junobuild_shared::types::domain::CustomDomain;
 use junobuild_shared::types::state::Timestamp;
 use junobuild_shared::version::next_version;
@@ -13,7 +13,7 @@ pub fn map_custom_domains_asset(custom_domains: &str, existing_asset: Option<Ass
         name: "custom-domains".to_string(),
         full_path: WELL_KNOWN_CUSTOM_DOMAINS.to_string(),
         token: None,
-        collection: ASSET_COLLECTION_KEY.to_string(),
+        collection: COLLECTION_ASSET_KEY.to_string(),
         owner: id(),
         description: None,
     };
@@ -31,7 +31,7 @@ pub fn map_alternative_origins_asset(
         name: "ii-alternative-origins".to_string(),
         full_path: WELL_KNOWN_II_ALTERNATIVE_ORIGINS.to_string(),
         token: None,
-        collection: ASSET_COLLECTION_KEY.to_string(),
+        collection: COLLECTION_ASSET_KEY.to_string(),
         owner: id(),
         description: None,
     };

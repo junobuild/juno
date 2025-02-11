@@ -14,7 +14,7 @@ use crate::types::interface::CommitProposal;
 use crate::types::state::{Proposal, ProposalId, ProposalStatus, ProposalType};
 use candid::Principal;
 use hex::encode;
-use junobuild_collections::constants::ASSET_COLLECTION_KEY;
+use junobuild_collections::constants::assets::COLLECTION_ASSET_KEY;
 use junobuild_shared::types::core::{Hash, Hashable};
 use junobuild_shared::utils::principal_not_equal;
 use junobuild_storage::types::store::AssetEncoding;
@@ -168,7 +168,7 @@ fn pre_commit_assets(proposal: &Proposal) {
         ProposalType::AssetsUpgrade(ref options) => {
             // Clear existing assets if required.
             if let Some(true) = options.clear_existing_assets {
-                delete_assets(&ASSET_COLLECTION_KEY.to_string());
+                delete_assets(&COLLECTION_ASSET_KEY.to_string());
             }
         }
         ProposalType::SegmentsDeployment(_) => (),

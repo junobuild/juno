@@ -1,4 +1,8 @@
-import type { CollectionType, UserUsage } from '$declarations/satellite/satellite.did';
+import type { CollectionType } from '$declarations/satellite/satellite.did';
+
+export interface UserUsage {
+	changes_count: number;
+}
 
 export interface UserUsageCollection {
 	collection: string;

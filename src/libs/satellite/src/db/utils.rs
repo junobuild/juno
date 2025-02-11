@@ -1,6 +1,6 @@
 use crate::db::types::state::Doc;
 use candid::Principal;
-use junobuild_collections::assert_stores::assert_permission;
+use junobuild_collections::assert::stores::assert_permission;
 use junobuild_collections::types::rules::Permission;
 use junobuild_shared::list::{filter_timestamps, matcher_regex};
 use junobuild_shared::types::core::Key;

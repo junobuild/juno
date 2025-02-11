@@ -7,8 +7,7 @@ import type {
 	ListResults as ListAssets,
 	ListResults_1 as ListDocs,
 	Rule,
-	SetRule,
-	UserUsage
+	SetRule
 } from '$declarations/satellite/satellite.did';
 import { getSatelliteActor } from '$lib/api/actors/actor.juno.api';
 import type { CustomDomains } from '$lib/types/custom-domain';
@@ -31,6 +30,21 @@ export const listDocs = async ({
 }): Promise<ListDocs> => {
 	const { list_docs } = await getSatelliteActor({ satelliteId, identity });
 	return list_docs(collection, toListParams(params));
+};
+
+export const getDoc = async ({
+	satelliteId,
+	collection,
+	key,
+	identity
+}: {
+	satelliteId: Principal;
+	collection: string;
+	key: string;
+	identity: OptionIdentity;
+}): Promise<[] | [Doc]> => {
+	const { get_doc } = await getSatelliteActor({ satelliteId, identity });
+	return get_doc(collection, key);
 };
 
 export const listAssets = async ({
@@ -290,21 +304,4 @@ export const countCollectionAssets = async ({
 }): Promise<bigint> => {
 	const { count_collection_assets } = await getSatelliteActor({ satelliteId, identity });
 	return count_collection_assets(collection);
-};
-
-export const getUsageUsage = async ({
-	satelliteId,
-	collection,
-	collectionType,
-	userId,
-	identity
-}: {
-	satelliteId: Principal;
-	collection: string;
-	collectionType: CollectionType;
-	userId: Principal;
-	identity: OptionIdentity;
-}): Promise<[] | [UserUsage]> => {
-	const { get_user_usage } = await getSatelliteActor({ satelliteId, identity });
-	return get_user_usage(collection, collectionType, toNullable(userId));
 };

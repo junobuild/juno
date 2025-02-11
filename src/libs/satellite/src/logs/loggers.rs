@@ -3,7 +3,7 @@ use crate::memory::STATE;
 use crate::{set_doc_store, Key, SetDoc};
 use ic_cdk::api::time;
 use ic_cdk::id;
-use junobuild_collections::constants::LOG_COLLECTION_KEY;
+use junobuild_collections::constants::db::COLLECTION_LOG_KEY;
 use junobuild_utils::encode_doc_data;
 use rand::Rng;
 use serde::Serialize;
@@ -96,7 +96,7 @@ fn set_log<T: Serialize>(level: LogLevel, message: String, data: Option<&T>) -> 
         version: None,
     };
 
-    set_doc_store(id(), LOG_COLLECTION_KEY.to_string(), key, doc)?;
+    set_doc_store(id(), COLLECTION_LOG_KEY.to_string(), key, doc)?;
 
     Ok(())
 }

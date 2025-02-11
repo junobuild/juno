@@ -1,5 +1,4 @@
-mod assert_rules;
-pub mod assert_stores;
+pub mod assert;
 pub mod constants;
 mod impls;
 pub mod msg;

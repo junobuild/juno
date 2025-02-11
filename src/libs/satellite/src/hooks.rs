@@ -10,7 +10,8 @@ use crate::types::hooks::{
 use crate::HookContext;
 #[allow(unused)]
 use ic_cdk_timers::set_timer;
-use junobuild_collections::constants::{ASSET_COLLECTION_KEY, LOG_COLLECTION_KEY};
+use junobuild_collections::constants::assets::COLLECTION_ASSET_KEY;
+use junobuild_collections::constants::db::COLLECTION_LOG_KEY;
 use junobuild_collections::types::core::CollectionKey;
 use junobuild_shared::types::state::UserId;
 use junobuild_storage::types::store::{Asset, AssetAssertUpload};
@@ -421,7 +422,7 @@ fn filter_docs<T: Clone>(
 
 // Logs are set internally without calling hooks anyway, so this use case cannot happen at the time I wrote these lines, but I added those to prevent any unwanted issues in the future.
 fn is_log_collection(collection: &CollectionKey) -> bool {
-    collection == LOG_COLLECTION_KEY
+    collection == COLLECTION_LOG_KEY
 }
 
 fn is_not_log_collection(collection: &CollectionKey) -> bool {
@@ -452,7 +453,7 @@ fn filter_assets(
 }
 
 fn is_asset_collection(collection: &CollectionKey) -> bool {
-    collection == ASSET_COLLECTION_KEY
+    collection == COLLECTION_ASSET_KEY
 }
 
 fn is_not_asset_collection(collection: &CollectionKey) -> bool {

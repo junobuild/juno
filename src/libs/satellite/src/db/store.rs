@@ -14,7 +14,7 @@ use crate::db::utils::filter_values;
 use crate::memory::STATE;
 use crate::types::store::StoreContext;
 use candid::Principal;
-use junobuild_collections::assert_stores::assert_permission;
+use junobuild_collections::assert::stores::assert_permission;
 use junobuild_collections::msg::msg_db_collection_not_empty;
 use junobuild_collections::types::core::CollectionKey;
 use junobuild_collections::types::rules::{Memory, Rule};

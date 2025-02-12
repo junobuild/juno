@@ -7,6 +7,7 @@ use crate::types::interface::{CommitBatch, InitAssetKey};
 use crate::types::state::FullPath;
 use crate::types::store::{Asset, AssetAssertUpload, Batch};
 use candid::Principal;
+use junobuild_collections::assert::collection::is_system_collection;
 use junobuild_collections::assert::stores::{assert_create_permission, assert_permission};
 use junobuild_collections::constants::assets::DEFAULT_ASSETS_COLLECTIONS;
 use junobuild_collections::constants::core::SYS_COLLECTION_PREFIX;
@@ -168,7 +169,7 @@ fn assert_key(
     }
 
     // Only controllers can write in reserved collections starting with #
-    if collection.starts_with(SYS_COLLECTION_PREFIX) && !is_controller(caller, controllers) {
+    if is_system_collection(collection) && !is_controller(caller, controllers) {
         return Err(UPLOAD_NOT_ALLOWED);
     }
 

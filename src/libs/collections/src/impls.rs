@@ -1,4 +1,4 @@
-use crate::constants::core::SYS_COLLECTION_PREFIX;
+use crate::assert::collection::is_system_collection;
 use crate::types::core::CollectionKey;
 use crate::types::interface::SetRule;
 use crate::types::rules::{Memory, Rule};
@@ -16,7 +16,7 @@ impl Rule {
         current_rule: &Option<&Rule>,
         user_rule: &SetRule,
     ) -> Result<Self, String> {
-        if collection.starts_with(SYS_COLLECTION_PREFIX) {
+        if is_system_collection(collection) {
             return Self::prepare_sys_rule(collection, current_rule, user_rule);
         }
 

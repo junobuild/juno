@@ -13,8 +13,8 @@ import { fromArray, toArray } from '@junobuild/utils';
 import { nanoid } from 'nanoid';
 import { beforeAll, describe, expect, inject } from 'vitest';
 import {
-	ERROR_USER_INVALID_DATA,
-	ERROR_USER_NOT_ALLOWED
+	JUNO_SATELLITE_ERROR_USER_INVALID_DATA,
+	JUNO_SATELLITE_ERROR_USER_NOT_ALLOWED
 } from './constants/satellite-tests.constants';
 import { mockSetRule } from './mocks/collection.mocks';
 import { mockListParams } from './mocks/list.mocks';
@@ -114,7 +114,7 @@ describe('Satellite User Usage', () => {
 						version: toNullable()
 					})
 				).rejects.toThrow(
-					`${ERROR_USER_INVALID_DATA}: unknown variant \`yolo\`, expected \`indefinite\` at line 1 column 47.`
+					`${JUNO_SATELLITE_ERROR_USER_INVALID_DATA}: unknown variant \`yolo\`, expected \`indefinite\` at line 1 column 47.`
 				);
 			});
 		});
@@ -299,7 +299,7 @@ describe('Satellite User Usage', () => {
 
 					await banUser({ user, version: [1n] });
 
-					await expect(createDoc()).rejects.toThrow(ERROR_USER_NOT_ALLOWED);
+					await expect(createDoc()).rejects.toThrow(JUNO_SATELLITE_ERROR_USER_NOT_ALLOWED);
 				});
 
 				it('should set document if unbanned', async () => {
@@ -343,7 +343,7 @@ describe('Satellite User Usage', () => {
 
 					await banUser({ user, version: [1n] });
 
-					await expect(createDocs()).rejects.toThrow(ERROR_USER_NOT_ALLOWED);
+					await expect(createDocs()).rejects.toThrow(JUNO_SATELLITE_ERROR_USER_NOT_ALLOWED);
 				});
 
 				it('should set documents if unbanned', async () => {
@@ -376,7 +376,7 @@ describe('Satellite User Usage', () => {
 
 					await banUser({ user, version: [1n] });
 
-					await expect(deleteDoc()).rejects.toThrow(ERROR_USER_NOT_ALLOWED);
+					await expect(deleteDoc()).rejects.toThrow(JUNO_SATELLITE_ERROR_USER_NOT_ALLOWED);
 				});
 
 				it('should delete document if unbanned', async () => {
@@ -414,7 +414,7 @@ describe('Satellite User Usage', () => {
 
 					await banUser({ user, version: [1n] });
 
-					await expect(deleteDocs()).rejects.toThrow(ERROR_USER_NOT_ALLOWED);
+					await expect(deleteDocs()).rejects.toThrow(JUNO_SATELLITE_ERROR_USER_NOT_ALLOWED);
 				});
 
 				it('should delete documents if unbanned', async () => {
@@ -445,7 +445,7 @@ describe('Satellite User Usage', () => {
 
 					await banUser({ user, version: [1n] });
 
-					await expect(deleteFilteredDocs()).rejects.toThrow(ERROR_USER_NOT_ALLOWED);
+					await expect(deleteFilteredDocs()).rejects.toThrow(JUNO_SATELLITE_ERROR_USER_NOT_ALLOWED);
 				});
 
 				it('should get documents if unbanned', async () => {
@@ -476,7 +476,7 @@ describe('Satellite User Usage', () => {
 
 					await banUser({ user, version: [1n] });
 
-					await expect(listDocs()).rejects.toThrow(ERROR_USER_NOT_ALLOWED);
+					await expect(listDocs()).rejects.toThrow(JUNO_SATELLITE_ERROR_USER_NOT_ALLOWED);
 				});
 
 				it('should list documents if unbanned', async () => {
@@ -507,7 +507,7 @@ describe('Satellite User Usage', () => {
 
 					await banUser({ user, version: [1n] });
 
-					await expect(countDocs()).rejects.toThrow(ERROR_USER_NOT_ALLOWED);
+					await expect(countDocs()).rejects.toThrow(JUNO_SATELLITE_ERROR_USER_NOT_ALLOWED);
 				});
 
 				it('should count documents if unbanned', async () => {
@@ -564,7 +564,7 @@ describe('Satellite User Usage', () => {
 
 					await banUser({ user, version: [1n] });
 
-					await expect(initAsset()).rejects.toThrow(ERROR_USER_NOT_ALLOWED);
+					await expect(initAsset()).rejects.toThrow(JUNO_SATELLITE_ERROR_USER_NOT_ALLOWED);
 				});
 
 				it('should init asset upload if unbanned', async () => {
@@ -633,7 +633,9 @@ describe('Satellite User Usage', () => {
 
 					await banUser({ user, version: [1n] });
 
-					await expect(deleteFilteredAssets()).rejects.toThrow(ERROR_USER_NOT_ALLOWED);
+					await expect(deleteFilteredAssets()).rejects.toThrow(
+						JUNO_SATELLITE_ERROR_USER_NOT_ALLOWED
+					);
 				});
 
 				it('should get assets if unbanned', async () => {
@@ -664,7 +666,7 @@ describe('Satellite User Usage', () => {
 
 					await banUser({ user, version: [1n] });
 
-					await expect(listAssets()).rejects.toThrow(ERROR_USER_NOT_ALLOWED);
+					await expect(listAssets()).rejects.toThrow(JUNO_SATELLITE_ERROR_USER_NOT_ALLOWED);
 				});
 
 				it('should list assets if unbanned', async () => {
@@ -695,7 +697,7 @@ describe('Satellite User Usage', () => {
 
 					await banUser({ user, version: [1n] });
 
-					await expect(countAssets()).rejects.toThrow(ERROR_USER_NOT_ALLOWED);
+					await expect(countAssets()).rejects.toThrow(JUNO_SATELLITE_ERROR_USER_NOT_ALLOWED);
 				});
 
 				it('should count assets if unbanned', async () => {
@@ -771,7 +773,7 @@ describe('Satellite User Usage', () => {
 				it('should not delete an asset if banned', async () => {
 					await banUser({ user, version: [1n] });
 
-					await expect(deleteAsset()).rejects.toThrow(ERROR_USER_NOT_ALLOWED);
+					await expect(deleteAsset()).rejects.toThrow(JUNO_SATELLITE_ERROR_USER_NOT_ALLOWED);
 				});
 
 				it('should delete asset if unbanned', async () => {
@@ -805,7 +807,7 @@ describe('Satellite User Usage', () => {
 				it('should not delete assets if banned', async () => {
 					await banUser({ user, version: [1n] });
 
-					await expect(deleteAssets()).rejects.toThrow(ERROR_USER_NOT_ALLOWED);
+					await expect(deleteAssets()).rejects.toThrow(JUNO_SATELLITE_ERROR_USER_NOT_ALLOWED);
 				});
 
 				it('should delete assets if unbanned', async () => {

@@ -230,12 +230,7 @@ pub fn del_filtered_docs(collection: CollectionKey, filter: ListParams) {
 }
 
 pub fn del_docs(collection: CollectionKey) {
-    let result = delete_docs_store(&collection);
-
-    match result {
-        Ok(_) => (),
-        Err(error) => trap(&["Documents cannot be deleted: ", &error].join("")),
-    }
+    let _ = delete_docs_store(&collection).unwrap_or_else(|e| trap(&e));
 }
 
 pub fn count_collection_docs(collection: CollectionKey) -> usize {
@@ -443,7 +438,7 @@ pub fn list_assets(collection: CollectionKey, filter: ListParams) -> ListResults
 
     match result {
         Ok(result) => result,
-        Err(error) => trap(&["Assets cannot be listed: ".to_string(), error].join("")),
+        Err(error) => trap(&error),
     }
 }
 
@@ -454,7 +449,7 @@ pub fn count_assets(collection: CollectionKey, filter: ListParams) -> usize {
 
     match result {
         Ok(result) => result,
-        Err(error) => trap(&["Assets cannot be counted: ".to_string(), error].join("")),
+        Err(error) => trap(&error),
     }
 }
 
@@ -465,7 +460,7 @@ pub fn del_asset(collection: CollectionKey, full_path: FullPath) {
 
     match result {
         Ok(asset) => invoke_on_delete_asset(&caller, &asset),
-        Err(error) => trap(&["Asset cannot be deleted: ", &error].join("")),
+        Err(error) => trap(&error),
     }
 }
 
@@ -497,7 +492,7 @@ pub fn del_assets(collection: CollectionKey) {
 
     match result {
         Ok(_) => (),
-        Err(error) => trap(&["Assets cannot be deleted: ", &error].join("")),
+        Err(error) => trap(&error),
     }
 }
 

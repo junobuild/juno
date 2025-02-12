@@ -13,8 +13,8 @@ import { PocketIc, type Actor } from '@hadronous/pic';
 import { nanoid } from 'nanoid';
 import { afterAll, beforeAll, describe, expect, inject } from 'vitest';
 import {
-	INVALID_VERSION_ERROR_MSG,
-	NO_VERSION_ERROR_MSG
+	JUNO_ERROR_NO_VERSION_PROVIDED,
+	JUNO_ERROR_VERSION_OUTDATED_OR_FUTURE
 } from './constants/satellite-tests.constants';
 import {
 	pageViewMock,
@@ -88,7 +88,7 @@ describe('Orbiter', () => {
 							}
 						]
 					])
-				).rejects.toThrow(NO_VERSION_ERROR_MSG);
+				).rejects.toThrow(JUNO_ERROR_NO_VERSION_PROVIDED);
 			});
 
 			it('should not configure satellite if invalid version', async () => {
@@ -104,7 +104,7 @@ describe('Orbiter', () => {
 							}
 						]
 					])
-				).rejects.toThrowError(new RegExp(INVALID_VERSION_ERROR_MSG, 'i'));
+				).rejects.toThrowError(new RegExp(JUNO_ERROR_VERSION_OUTDATED_OR_FUTURE, 'i'));
 			});
 		});
 
@@ -140,7 +140,7 @@ describe('Orbiter', () => {
 				expect('Err' in results).toBeTruthy();
 
 				(results as { Err: Array<[AnalyticKey, string]> }).Err.forEach(([_, msg]) =>
-					expect(msg).toEqual(NO_VERSION_ERROR_MSG)
+					expect(msg).toEqual(JUNO_ERROR_NO_VERSION_PROVIDED)
 				);
 			});
 
@@ -162,7 +162,7 @@ describe('Orbiter', () => {
 				expect('Err' in results).toBeTruthy();
 
 				(results as { Err: Array<[AnalyticKey, string]> }).Err.forEach(([_, msg]) =>
-					expect(msg).toContain(INVALID_VERSION_ERROR_MSG)
+					expect(msg).toContain(JUNO_ERROR_VERSION_OUTDATED_OR_FUTURE)
 				);
 			});
 
@@ -189,7 +189,7 @@ describe('Orbiter', () => {
 				expect('Err' in results).toBeTruthy();
 
 				(results as { Err: Array<[AnalyticKey, string]> }).Err.forEach(([_, msg]) =>
-					expect(msg).toEqual(NO_VERSION_ERROR_MSG)
+					expect(msg).toEqual(JUNO_ERROR_NO_VERSION_PROVIDED)
 				);
 			});
 
@@ -211,7 +211,7 @@ describe('Orbiter', () => {
 				expect('Err' in results).toBeTruthy();
 
 				(results as { Err: Array<[AnalyticKey, string]> }).Err.forEach(([_, msg]) =>
-					expect(msg).toContain(INVALID_VERSION_ERROR_MSG)
+					expect(msg).toContain(JUNO_ERROR_VERSION_OUTDATED_OR_FUTURE)
 				);
 			});
 
@@ -238,7 +238,7 @@ describe('Orbiter', () => {
 				expect('Err' in results).toBeTruthy();
 
 				(results as { Err: Array<[AnalyticKey, string]> }).Err.forEach(([_, msg]) =>
-					expect(msg).toEqual(NO_VERSION_ERROR_MSG)
+					expect(msg).toEqual(JUNO_ERROR_NO_VERSION_PROVIDED)
 				);
 			});
 
@@ -260,7 +260,7 @@ describe('Orbiter', () => {
 				expect('Err' in results).toBeTruthy();
 
 				(results as { Err: Array<[AnalyticKey, string]> }).Err.forEach(([_, msg]) =>
-					expect(msg).toContain(INVALID_VERSION_ERROR_MSG)
+					expect(msg).toContain(JUNO_ERROR_VERSION_OUTDATED_OR_FUTURE)
 				);
 			});
 

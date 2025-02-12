@@ -24,10 +24,10 @@ use junobuild_shared::types::domain::CustomDomains;
 use junobuild_shared::types::list::{ListParams, ListResults};
 use junobuild_shared::types::state::Controllers;
 use junobuild_storage::constants::{ROOT_404_HTML, ROOT_INDEX_HTML};
+use junobuild_storage::errors::JUNO_STORAGE_ERROR_ASSET_NOT_FOUND;
 use junobuild_storage::heap_utils::{
     collect_assets_heap, collect_delete_assets_heap, count_assets_heap,
 };
-use junobuild_storage::msg::ERROR_ASSET_NOT_FOUND;
 use junobuild_storage::runtime::{
     delete_certified_asset as delete_runtime_certified_asset,
     update_certified_asset as update_runtime_certified_asset,
@@ -383,7 +383,7 @@ fn delete_asset_impl(
     let asset = get_state_asset(context.collection, &full_path, rule);
 
     match asset {
-        None => Err(ERROR_ASSET_NOT_FOUND.to_string()),
+        None => Err(JUNO_STORAGE_ERROR_ASSET_NOT_FOUND.to_string()),
         Some(asset) => {
             assert_delete_asset(context, rule, &asset)?;
 

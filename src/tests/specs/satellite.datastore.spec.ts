@@ -11,8 +11,8 @@ import { PocketIc, type Actor } from '@hadronous/pic';
 import { nanoid } from 'nanoid';
 import { afterAll, beforeAll, describe, expect, inject } from 'vitest';
 import {
-	INVALID_VERSION_ERROR_MSG,
-	NO_VERSION_ERROR_MSG
+	JUNO_ERROR_NO_VERSION_PROVIDED,
+	JUNO_ERROR_VERSION_OUTDATED_OR_FUTURE
 } from './constants/satellite-tests.constants';
 import { mockData } from './mocks/doc.mocks';
 import { createDoc as createDocUtils } from './utils/satellite-doc-tests.utils';
@@ -150,7 +150,7 @@ describe.each([{ memory: { Heap: null } }, { memory: { Stable: null } }])(
 						...doc!,
 						version: []
 					})
-				).rejects.toThrow(NO_VERSION_ERROR_MSG);
+				).rejects.toThrow(JUNO_ERROR_NO_VERSION_PROVIDED);
 			});
 
 			it('should not update a document if invalid version', async () => {
@@ -167,7 +167,7 @@ describe.each([{ memory: { Heap: null } }, { memory: { Stable: null } }])(
 						...doc!,
 						version: [123n]
 					})
-				).rejects.toThrowError(new RegExp(INVALID_VERSION_ERROR_MSG, 'i'));
+				).rejects.toThrowError(new RegExp(JUNO_ERROR_VERSION_OUTDATED_OR_FUTURE, 'i'));
 			});
 		});
 

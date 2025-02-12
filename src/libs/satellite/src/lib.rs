@@ -3,6 +3,7 @@
 mod auth;
 mod controllers;
 mod db;
+mod errors;
 mod guards;
 mod hooks;
 mod impls;

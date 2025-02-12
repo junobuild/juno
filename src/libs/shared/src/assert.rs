@@ -1,7 +1,7 @@
 use crate::canister::memory_size;
 use crate::msg::{
-    ERROR_NO_TIMESTAMP, ERROR_NO_VERSION, ERROR_TIMESTAMP_OUTDATED_OR_FUTURE,
-    ERROR_VERSION_OUTDATED_OR_FUTURE,
+    JUNO_ERROR_NO_TIMESTAMP, JUNO_ERROR_NO_VERSION, JUNO_ERROR_TIMESTAMP_OUTDATED_OR_FUTURE,
+    JUNO_ERROR_VERSION_OUTDATED_OR_FUTURE,
 };
 use crate::types::config::ConfigMaxMemorySize;
 use crate::types::interface::MemorySize;
@@ -48,13 +48,13 @@ use crate::types::state::Version;
 pub fn assert_timestamp(user_timestamp: Option<u64>, current_timestamp: u64) -> Result<(), String> {
     match user_timestamp {
         None => {
-            return Err(ERROR_NO_TIMESTAMP.to_string());
+            return Err(JUNO_ERROR_NO_TIMESTAMP.to_string());
         }
         Some(user_timestamp) => {
             if current_timestamp != user_timestamp {
                 return Err(format!(
                     "{} ({} - {})",
-                    ERROR_TIMESTAMP_OUTDATED_OR_FUTURE, current_timestamp, user_timestamp
+                    JUNO_ERROR_TIMESTAMP_OUTDATED_OR_FUTURE, current_timestamp, user_timestamp
                 ));
             }
         }
@@ -106,13 +106,13 @@ pub fn assert_version(
         None => (),
         Some(current_version) => match user_version {
             None => {
-                return Err(ERROR_NO_VERSION.to_string());
+                return Err(JUNO_ERROR_NO_VERSION.to_string());
             }
             Some(user_version) => {
                 if current_version != user_version {
                     return Err(format!(
                         "{} ({} - {})",
-                        ERROR_VERSION_OUTDATED_OR_FUTURE, current_version, user_version
+                        JUNO_ERROR_VERSION_OUTDATED_OR_FUTURE, current_version, user_version
                     ));
                 }
             }

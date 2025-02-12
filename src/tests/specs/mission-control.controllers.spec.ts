@@ -9,7 +9,7 @@ import type { Principal } from '@dfinity/principal';
 import { PocketIc, type Actor } from '@hadronous/pic';
 import { afterAll, beforeAll, describe, expect, inject } from 'vitest';
 import { ORBITER_CONTROLLER_ERR_MSG } from './constants/orbiter-tests.constants';
-import { SATELLITE_ADMIN_ERROR_MSG } from './constants/satellite-tests.constants';
+import { JUNO_AUTH_ERROR_NOT_ADMIN_CONTROLLER } from './constants/satellite-tests.constants';
 import { missionControlUserInitArgs } from './utils/mission-control-tests.utils';
 import {
 	MISSION_CONTROL_WASM_PATH,
@@ -80,7 +80,7 @@ describe('Mission Control - Controllers', () => {
 		const { set_satellite } = actor;
 
 		await expect(set_satellite(satelliteId, ['Hello'])).rejects.toThrowError(
-			new RegExp(SATELLITE_ADMIN_ERROR_MSG)
+			new RegExp(JUNO_AUTH_ERROR_NOT_ADMIN_CONTROLLER)
 		);
 	});
 });

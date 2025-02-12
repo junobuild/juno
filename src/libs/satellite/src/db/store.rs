@@ -1,5 +1,5 @@
 use crate::controllers::store::get_controllers;
-use crate::db::assert::{assert_delete_doc, assert_get_doc, assert_set_doc};
+use crate::db::assert::{assert_delete_doc, assert_get_doc, assert_get_docs, assert_set_doc};
 use crate::db::state::{
     count_docs_heap, count_docs_stable, delete_collection as delete_state_collection,
     delete_doc as delete_state_doc, get_config, get_doc as get_state_doc, get_docs_heap,
@@ -253,6 +253,14 @@ fn secure_get_docs(
     collection: CollectionKey,
     filter: &ListParams,
 ) -> Result<ListResults<Doc>, String> {
+    let context: StoreContext = StoreContext {
+        caller,
+        collection: &collection,
+        controllers,
+    };
+
+    assert_get_docs(&context)?;
+
     let rule = get_state_rule(&collection)?;
 
     match rule.mem() {

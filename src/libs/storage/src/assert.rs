@@ -1,5 +1,5 @@
 use crate::constants::{WELL_KNOWN_CUSTOM_DOMAINS, WELL_KNOWN_II_ALTERNATIVE_ORIGINS};
-use crate::msg::{ERROR_CANNOT_COMMIT_BATCH, UPLOAD_NOT_ALLOWED};
+use crate::errors::{ERROR_CANNOT_COMMIT_BATCH, JUNO_STORAGE_ERROR_UPLOAD_NOT_ALLOWED};
 use crate::runtime::increment_and_assert_rate;
 use crate::strategies::{StorageAssertionsStrategy, StorageStateStrategy};
 use crate::types::config::StorageConfig;
@@ -165,12 +165,12 @@ fn assert_key(
 
     // Only controllers can write in collection #dapp
     if collection.clone() == *dapp_collection && !is_controller(caller, controllers) {
-        return Err(UPLOAD_NOT_ALLOWED);
+        return Err(JUNO_STORAGE_ERROR_UPLOAD_NOT_ALLOWED);
     }
 
     // Only controllers can write in reserved collections starting with #
     if is_system_collection(collection) && !is_controller(caller, controllers) {
-        return Err(UPLOAD_NOT_ALLOWED);
+        return Err(JUNO_STORAGE_ERROR_UPLOAD_NOT_ALLOWED);
     }
 
     // Asset uploaded by users should be prefixed with the collection. That way developers can organize assets to particular folders.

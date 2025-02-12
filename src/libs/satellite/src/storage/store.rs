@@ -27,7 +27,7 @@ use junobuild_storage::constants::{ROOT_404_HTML, ROOT_INDEX_HTML};
 use junobuild_storage::heap_utils::{
     collect_assets_heap, collect_delete_assets_heap, count_assets_heap,
 };
-use junobuild_storage::msg::ERROR_ASSET_NOT_FOUND;
+use junobuild_storage::errors::ERROR_ASSET_NOT_FOUND;
 use junobuild_storage::runtime::{
     delete_certified_asset as delete_runtime_certified_asset,
     update_certified_asset as update_runtime_certified_asset,

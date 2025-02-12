@@ -3,7 +3,7 @@ use crate::assert::{
     assert_commit_chunks_update, assert_create_batch, assert_create_chunk,
 };
 use crate::constants::{ASSET_ENCODING_NO_COMPRESSION, ENCODING_CERTIFICATION_ORDER};
-use crate::msg::ERROR_CANNOT_COMMIT_BATCH;
+use crate::errors::ERROR_CANNOT_COMMIT_BATCH;
 use crate::runtime::{
     clear_batch as clear_runtime_batch, clear_expired_batches as clear_expired_runtime_batches,
     clear_expired_chunks as clear_expired_runtime_chunks, get_batch as get_runtime_batch,

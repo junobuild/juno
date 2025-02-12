@@ -9,7 +9,7 @@ import { join } from 'node:path';
 import { afterAll, beforeAll, describe, expect, inject } from 'vitest';
 import {
 	CONTROLLER_ERROR_MSG,
-	INVALID_VERSION_ERROR_MSG,
+	INVALID_VERSION_ERROR_MSG, JUNO_STORAGE_ERROR_UPLOAD_NOT_ALLOWED,
 	NO_VERSION_ERROR_MSG,
 	SATELLITE_ADMIN_ERROR_MSG
 } from './constants/satellite-tests.constants';
@@ -727,7 +727,7 @@ describe('Satellite', () => {
 					name: 'hello.html',
 					token: toNullable()
 				})
-			).rejects.toThrow('Caller not allowed to upload data.');
+			).rejects.toThrow(JUNO_STORAGE_ERROR_UPLOAD_NOT_ALLOWED);
 		});
 	});
 

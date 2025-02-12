@@ -9,7 +9,10 @@ import type { Principal } from '@dfinity/principal';
 import { toNullable } from '@dfinity/utils';
 import { PocketIc, type Actor } from '@hadronous/pic';
 import { afterAll, beforeAll, describe, expect, inject } from 'vitest';
-import { SATELLITE_ADMIN_ERROR_MSG } from './constants/satellite-tests.constants';
+import {
+	JUNO_ERROR_AUTH_INVALID_ORIGIN,
+	SATELLITE_ADMIN_ERROR_MSG
+} from './constants/satellite-tests.constants';
 import { deleteDefaultIndexHTML } from './utils/satellite-tests.utils';
 import { SATELLITE_WASM_PATH, controllersInitArgs } from './utils/setup-tests.utils';
 
@@ -69,7 +72,7 @@ describe('Satellite > Authentication', () => {
 			};
 
 			await expect(set_auth_config(config)).rejects.toThrow(
-				`error_invalid_origin (${invalidDomain})`
+				`${JUNO_ERROR_AUTH_INVALID_ORIGIN} (${invalidDomain})`
 			);
 		});
 
@@ -86,7 +89,7 @@ describe('Satellite > Authentication', () => {
 			};
 
 			await expect(set_auth_config(config)).rejects.toThrow(
-				`error_invalid_origin (${invalidDomain})`
+				`${JUNO_ERROR_AUTH_INVALID_ORIGIN} (${invalidDomain})`
 			);
 		});
 

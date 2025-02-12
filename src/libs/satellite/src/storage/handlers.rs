@@ -7,7 +7,7 @@ use junobuild_shared::types::core::Blob;
 use junobuild_shared::types::state::Controllers;
 use junobuild_storage::constants::ASSET_ENCODING_NO_COMPRESSION;
 use junobuild_storage::http::types::HeaderField;
-use junobuild_storage::msg::SET_NOT_ALLOWED;
+use junobuild_storage::errors::SET_NOT_ALLOWED;
 use junobuild_storage::runtime::update_certified_asset as update_runtime_certified_asset;
 use junobuild_storage::types::store::{Asset, AssetKey};
 use junobuild_storage::utils::map_content_encoding;

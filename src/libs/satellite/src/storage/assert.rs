@@ -7,7 +7,7 @@ use junobuild_collections::assert::stores::{assert_permission, public_permission
 use junobuild_collections::types::rules::{Permission, Rule};
 use junobuild_shared::controllers::is_controller;
 use junobuild_shared::types::state::Controllers;
-use junobuild_storage::msg::{ERROR_ASSET_NOT_FOUND, ERROR_CANNOT_READ_ASSET, UPLOAD_NOT_ALLOWED};
+use junobuild_storage::errors::{ERROR_ASSET_NOT_FOUND, ERROR_CANNOT_READ_ASSET, JUNO_STORAGE_ERROR_UPLOAD_NOT_ALLOWED};
 use junobuild_storage::runtime::increment_and_assert_rate as increment_and_assert_rate_runtime;
 use junobuild_storage::types::store::Asset;
 
@@ -50,7 +50,7 @@ pub fn assert_create_batch(
         || is_known_user(caller)
         || is_controller(caller, controllers))
     {
-        return Err(UPLOAD_NOT_ALLOWED.to_string());
+        return Err(JUNO_STORAGE_ERROR_UPLOAD_NOT_ALLOWED.to_string());
     }
 
     Ok(())

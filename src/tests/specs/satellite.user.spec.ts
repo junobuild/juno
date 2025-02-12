@@ -7,11 +7,11 @@ import { PocketIc, type Actor } from '@hadronous/pic';
 import { toArray } from '@junobuild/utils';
 import { afterAll, beforeAll, describe, expect, inject } from 'vitest';
 import {
-	JUNO_SATELLITE_ERROR_USER_CALLER_KEY,
-	JUNO_SATELLITE_ERROR_USER_CANNOT_UPDATE,
-	JUNO_SATELLITE_ERROR_USER_INVALID_DATA,
-	JUNO_SATELLITE_ERROR_USER_KEY_NO_PRINCIPAL,
-	USER_CANNOT_WRITE
+	JUNO_DATASTORE_ERROR_USER_CALLER_KEY,
+	JUNO_DATASTORE_ERROR_USER_CANNOT_UPDATE,
+	JUNO_DATASTORE_ERROR_USER_INVALID_DATA,
+	JUNO_DATASTORE_ERROR_USER_KEY_NO_PRINCIPAL,
+	JUNO_DATASTORE_ERROR_CANNOT_WRITE
 } from './constants/satellite-tests.constants';
 import { SATELLITE_WASM_PATH, controllersInitArgs } from './utils/setup-tests.utils';
 
@@ -125,7 +125,7 @@ describe('Satellite > User', () => {
 						description: toNullable(),
 						version: fromNullable(before)?.version ?? []
 					})
-				).rejects.toThrow(JUNO_SATELLITE_ERROR_USER_CANNOT_UPDATE);
+				).rejects.toThrow(JUNO_DATASTORE_ERROR_USER_CANNOT_UPDATE);
 			});
 		});
 	});
@@ -148,7 +148,7 @@ describe('Satellite > User', () => {
 					description: toNullable(),
 					version: toNullable()
 				})
-			).rejects.toThrow(USER_CANNOT_WRITE);
+			).rejects.toThrow(JUNO_DATASTORE_ERROR_CANNOT_WRITE);
 		});
 	});
 
@@ -200,7 +200,7 @@ describe('Satellite > User', () => {
 						description: toNullable(),
 						version: fromNullable(before)?.version ?? []
 					})
-				).rejects.toThrow(JUNO_SATELLITE_ERROR_USER_CANNOT_UPDATE);
+				).rejects.toThrow(JUNO_DATASTORE_ERROR_USER_CANNOT_UPDATE);
 			});
 		});
 	});
@@ -264,7 +264,7 @@ describe('Satellite > User', () => {
 							description: toNullable(),
 							version: toNullable()
 						})
-					).rejects.toThrow(JUNO_SATELLITE_ERROR_USER_CALLER_KEY);
+					).rejects.toThrow(JUNO_DATASTORE_ERROR_USER_CALLER_KEY);
 				});
 
 				it('should not create a user if key is not a principal', async () => {
@@ -278,7 +278,7 @@ describe('Satellite > User', () => {
 							description: toNullable(),
 							version: toNullable()
 						})
-					).rejects.toThrow(JUNO_SATELLITE_ERROR_USER_KEY_NO_PRINCIPAL);
+					).rejects.toThrow(JUNO_DATASTORE_ERROR_USER_KEY_NO_PRINCIPAL);
 				});
 			});
 		});
@@ -305,7 +305,7 @@ describe('Satellite > User', () => {
 					version: toNullable()
 				})
 			).rejects.toThrow(
-				`${JUNO_SATELLITE_ERROR_USER_INVALID_DATA}: unknown variant \`unknown\`, expected \`internet_identity\` or \`nfid\` at line 1 column 21.`
+				`${JUNO_DATASTORE_ERROR_USER_INVALID_DATA}: unknown variant \`unknown\`, expected \`internet_identity\` or \`nfid\` at line 1 column 21.`
 			);
 		});
 
@@ -324,7 +324,7 @@ describe('Satellite > User', () => {
 					version: toNullable()
 				})
 			).rejects.toThrow(
-				`${JUNO_SATELLITE_ERROR_USER_INVALID_DATA}: unknown field \`unknown\`, expected \`provider\` or \`banned\` at line 1 column 41.`
+				`${JUNO_DATASTORE_ERROR_USER_INVALID_DATA}: unknown field \`unknown\`, expected \`provider\` or \`banned\` at line 1 column 41.`
 			);
 		});
 	});

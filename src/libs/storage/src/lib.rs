@@ -7,7 +7,7 @@ pub mod http;
 pub mod http_request;
 pub mod impls;
 mod memory;
-pub mod msg;
+pub mod errors;
 pub mod rewrites;
 pub mod routing;
 pub mod runtime;

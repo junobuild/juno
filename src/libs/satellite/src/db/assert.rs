@@ -1,4 +1,4 @@
-use crate::db::msg::{ERROR_CANNOT_READ, ERROR_CANNOT_WRITE};
+use crate::errors::db::{JUNO_DATASTORE_ERROR_CANNOT_READ, JUNO_DATASTORE_ERROR_CANNOT_WRITE};
 use crate::db::runtime::increment_and_assert_rate;
 use crate::db::types::config::DbConfig;
 use crate::db::types::state::{DocAssertDelete, DocAssertSet, DocContext};
@@ -144,7 +144,7 @@ fn assert_read_permission(
     rule: &Permission,
 ) -> Result<(), String> {
     if !assert_permission(rule, current_doc.owner, caller, controllers) {
-        return Err(ERROR_CANNOT_READ.to_string());
+        return Err(JUNO_DATASTORE_ERROR_CANNOT_READ.to_string());
     }
 
     Ok(())
@@ -161,12 +161,12 @@ fn assert_write_permission(
         match current_doc {
             None => {
                 if !assert_create_permission(rule, caller, controllers) {
-                    return Err(ERROR_CANNOT_WRITE.to_string());
+                    return Err(JUNO_DATASTORE_ERROR_CANNOT_WRITE.to_string());
                 }
             }
             Some(current_doc) => {
                 if !assert_permission(rule, current_doc.owner, caller, controllers) {
-                    return Err(ERROR_CANNOT_WRITE.to_string());
+                    return Err(JUNO_DATASTORE_ERROR_CANNOT_WRITE.to_string());
                 }
             }
         }

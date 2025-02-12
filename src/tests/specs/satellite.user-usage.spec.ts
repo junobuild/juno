@@ -16,7 +16,7 @@ import { type Actor, PocketIc } from '@hadronous/pic';
 import { fromArray, toArray } from '@junobuild/utils';
 import { nanoid } from 'nanoid';
 import { beforeAll, describe, expect, inject } from 'vitest';
-import { USER_CANNOT_WRITE } from './constants/satellite-tests.constants';
+import { JUNO_DATASTORE_ERROR_CANNOT_WRITE } from './constants/satellite-tests.constants';
 import { mockData } from './mocks/doc.mocks';
 import { createDoc as createDocUtils } from './utils/satellite-doc-tests.utils';
 import { uploadAsset } from './utils/satellite-storage-tests.utils';
@@ -314,7 +314,7 @@ describe('Satellite User Usage', () => {
 					version: toNullable()
 				};
 
-				await expect(set_doc('#user-usage', key, doc)).rejects.toThrow(USER_CANNOT_WRITE);
+				await expect(set_doc('#user-usage', key, doc)).rejects.toThrow(JUNO_DATASTORE_ERROR_CANNOT_WRITE);
 			});
 		});
 
@@ -683,7 +683,7 @@ describe('Satellite User Usage', () => {
 					version: toNullable()
 				};
 
-				await expect(set_doc('#user-usage', key, doc)).rejects.toThrow(USER_CANNOT_WRITE);
+				await expect(set_doc('#user-usage', key, doc)).rejects.toThrow(JUNO_DATASTORE_ERROR_CANNOT_WRITE);
 			});
 		});
 

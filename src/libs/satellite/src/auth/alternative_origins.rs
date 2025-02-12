@@ -1,4 +1,4 @@
-use crate::auth::msg::ERROR_INVALID_ORIGIN;
+use crate::errors::auth::JUNO_ERROR_AUTH_INVALID_ORIGIN;
 use crate::auth::types::config::AuthenticationConfig;
 use crate::storage::store::get_custom_domains_store;
 use crate::storage::strategy_impls::StorageState;
@@ -76,7 +76,7 @@ fn set_alternative_origins_with_custom_domains(
         let parsed_url = Url::parse(&format!("https://{}", domain));
 
         match parsed_url {
-            Err(_) => Err(format!("{} ({})", ERROR_INVALID_ORIGIN, domain)),
+            Err(_) => Err(format!("{} ({})", JUNO_ERROR_AUTH_INVALID_ORIGIN, domain)),
             Ok(url) => {
                 let mut url_str = url.to_string();
 

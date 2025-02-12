@@ -10,8 +10,8 @@ import { toNullable } from '@dfinity/utils';
 import { PocketIc, type Actor } from '@hadronous/pic';
 import { afterAll, beforeAll, describe, expect, inject } from 'vitest';
 import {
-	JUNO_ERROR_AUTH_INVALID_ORIGIN,
-	JUNO_ERROR_AUTH_NOT_ADMIN_CONTROLLER
+	JUNO_AUTH_ERROR_INVALID_ORIGIN,
+	JUNO_AUTH_ERROR_NOT_ADMIN_CONTROLLER
 } from './constants/satellite-tests.constants';
 import { deleteDefaultIndexHTML } from './utils/satellite-tests.utils';
 import { SATELLITE_WASM_PATH, controllersInitArgs } from './utils/setup-tests.utils';
@@ -72,7 +72,7 @@ describe('Satellite > Authentication', () => {
 			};
 
 			await expect(set_auth_config(config)).rejects.toThrow(
-				`${JUNO_ERROR_AUTH_INVALID_ORIGIN} (${invalidDomain})`
+				`${JUNO_AUTH_ERROR_INVALID_ORIGIN} (${invalidDomain})`
 			);
 		});
 
@@ -89,7 +89,7 @@ describe('Satellite > Authentication', () => {
 			};
 
 			await expect(set_auth_config(config)).rejects.toThrow(
-				`${JUNO_ERROR_AUTH_INVALID_ORIGIN} (${invalidDomain})`
+				`${JUNO_AUTH_ERROR_INVALID_ORIGIN} (${invalidDomain})`
 			);
 		});
 
@@ -495,13 +495,13 @@ describe('Satellite > Authentication', () => {
 						{ derivation_origin: ['demo.com'], external_alternative_origins: toNullable() }
 					]
 				})
-			).rejects.toThrow(JUNO_ERROR_AUTH_NOT_ADMIN_CONTROLLER);
+			).rejects.toThrow(JUNO_AUTH_ERROR_NOT_ADMIN_CONTROLLER);
 		});
 
 		it('should throw errors on getting config', async () => {
 			const { get_auth_config } = actor;
 
-			await expect(get_auth_config()).rejects.toThrow(JUNO_ERROR_AUTH_NOT_ADMIN_CONTROLLER);
+			await expect(get_auth_config()).rejects.toThrow(JUNO_AUTH_ERROR_NOT_ADMIN_CONTROLLER);
 		});
 	});
 });

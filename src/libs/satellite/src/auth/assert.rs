@@ -1,5 +1,5 @@
 use crate::auth::types::config::AuthenticationConfig;
-use crate::errors::auth::JUNO_ERROR_AUTH_INVALID_ORIGIN;
+use crate::errors::auth::JUNO_AUTH_ERROR_INVALID_ORIGIN;
 use junobuild_shared::types::core::DomainName;
 use url::Url;
 
@@ -24,7 +24,7 @@ fn assert_url(domain: &DomainName) -> Result<(), String> {
     let parsed_url = Url::parse(&format!("https://{}", domain));
 
     match parsed_url {
-        Err(_) => Err(format!("{} ({})", JUNO_ERROR_AUTH_INVALID_ORIGIN, domain)),
+        Err(_) => Err(format!("{} ({})", JUNO_AUTH_ERROR_INVALID_ORIGIN, domain)),
         Ok(_url) => Ok(()),
     }
 }

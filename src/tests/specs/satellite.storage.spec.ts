@@ -16,8 +16,8 @@ import { readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { afterAll, beforeAll, beforeEach, describe, expect, inject } from 'vitest';
 import {
-	JUNO_ERROR_AUTH_NOT_ADMIN_CONTROLLER,
-	JUNO_ERROR_AUTH_NOT_CONTROLLER,
+	JUNO_AUTH_ERROR_NOT_ADMIN_CONTROLLER,
+	JUNO_AUTH_ERROR_NOT_CONTROLLER,
 	JUNO_STORAGE_ERROR_CANNOT_COMMIT_BATCH
 } from './constants/satellite-tests.constants';
 import { mockBlob, mockHtml } from './mocks/storage.mocks';
@@ -65,7 +65,7 @@ describe('Satellite storage', () => {
 		it('should throw errors on delete all assets', async () => {
 			const { del_assets } = actor;
 
-			await expect(del_assets('#dapp')).rejects.toThrow(JUNO_ERROR_AUTH_NOT_CONTROLLER);
+			await expect(del_assets('#dapp')).rejects.toThrow(JUNO_AUTH_ERROR_NOT_CONTROLLER);
 		});
 
 		it('should throw errors on setting config', async () => {
@@ -80,13 +80,13 @@ describe('Satellite storage', () => {
 					raw_access: toNullable(),
 					max_memory_size: toNullable()
 				})
-			).rejects.toThrow(JUNO_ERROR_AUTH_NOT_ADMIN_CONTROLLER);
+			).rejects.toThrow(JUNO_AUTH_ERROR_NOT_ADMIN_CONTROLLER);
 		});
 
 		it('should throw errors on getting config', async () => {
 			const { get_config } = actor;
 
-			await expect(get_config()).rejects.toThrow(JUNO_ERROR_AUTH_NOT_ADMIN_CONTROLLER);
+			await expect(get_config()).rejects.toThrow(JUNO_AUTH_ERROR_NOT_ADMIN_CONTROLLER);
 		});
 	});
 

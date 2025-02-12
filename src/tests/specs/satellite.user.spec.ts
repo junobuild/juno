@@ -7,11 +7,11 @@ import { PocketIc, type Actor } from '@hadronous/pic';
 import { toArray } from '@junobuild/utils';
 import { afterAll, beforeAll, describe, expect, inject } from 'vitest';
 import {
+	JUNO_DATASTORE_ERROR_CANNOT_WRITE,
 	JUNO_DATASTORE_ERROR_USER_CALLER_KEY,
 	JUNO_DATASTORE_ERROR_USER_CANNOT_UPDATE,
 	JUNO_DATASTORE_ERROR_USER_INVALID_DATA,
-	JUNO_DATASTORE_ERROR_USER_KEY_NO_PRINCIPAL,
-	JUNO_DATASTORE_ERROR_CANNOT_WRITE
+	JUNO_DATASTORE_ERROR_USER_KEY_NO_PRINCIPAL
 } from './constants/satellite-tests.constants';
 import { SATELLITE_WASM_PATH, controllersInitArgs } from './utils/setup-tests.utils';
 

@@ -12,9 +12,9 @@ export const JUNO_STORAGE_ERROR_CANNOT_COMMIT_BATCH = 'juno.storage.error.cannot
 export const JUNO_STORAGE_ERROR_ASSET_NOT_FOUND = 'juno.storage.error.asset_not_found';
 export const JUNO_STORAGE_ERROR_CANNOT_READ_ASSET = 'juno.storage.error.cannot_read_asset';
 
-export const JUNO_ERROR_AUTH_NOT_ADMIN_CONTROLLER = 'juno.error.auth.not_admin_controller';
-export const JUNO_ERROR_AUTH_INVALID_ORIGIN = 'juno.error.auth.invalid_origin';
-export const JUNO_ERROR_AUTH_NOT_CONTROLLER = 'juno.error.auth.not_controller';
+export const JUNO_AUTH_ERROR_NOT_ADMIN_CONTROLLER = 'juno.auth.error.not_admin_controller';
+export const JUNO_AUTH_ERROR_INVALID_ORIGIN = 'juno.auth.error.invalid_origin';
+export const JUNO_AUTH_ERROR_NOT_CONTROLLER = 'juno.auth.error.not_controller';
 
 export const JUNO_DATASTORE_ERROR_USER_CANNOT_UPDATE = 'juno.datastore.error.user.cannot_update';
 export const JUNO_DATASTORE_ERROR_USER_INVALID_DATA = 'juno.datastore.error.user.invalid_data';

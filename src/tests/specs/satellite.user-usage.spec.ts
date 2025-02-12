@@ -314,7 +314,9 @@ describe('Satellite User Usage', () => {
 					version: toNullable()
 				};
 
-				await expect(set_doc('#user-usage', key, doc)).rejects.toThrow(JUNO_DATASTORE_ERROR_CANNOT_WRITE);
+				await expect(set_doc('#user-usage', key, doc)).rejects.toThrow(
+					JUNO_DATASTORE_ERROR_CANNOT_WRITE
+				);
 			});
 		});
 
@@ -683,7 +685,9 @@ describe('Satellite User Usage', () => {
 					version: toNullable()
 				};
 
-				await expect(set_doc('#user-usage', key, doc)).rejects.toThrow(JUNO_DATASTORE_ERROR_CANNOT_WRITE);
+				await expect(set_doc('#user-usage', key, doc)).rejects.toThrow(
+					JUNO_DATASTORE_ERROR_CANNOT_WRITE
+				);
 			});
 		});
 

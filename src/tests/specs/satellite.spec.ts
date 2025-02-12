@@ -8,8 +8,8 @@ import { readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { afterAll, beforeAll, describe, expect, inject } from 'vitest';
 import {
-	JUNO_ERROR_AUTH_NOT_ADMIN_CONTROLLER,
-	JUNO_ERROR_AUTH_NOT_CONTROLLER,
+	JUNO_AUTH_ERROR_NOT_ADMIN_CONTROLLER,
+	JUNO_AUTH_ERROR_NOT_CONTROLLER,
 	JUNO_ERROR_NO_VERSION_PROVIDED,
 	JUNO_ERROR_VERSION_OUTDATED_OR_FUTURE,
 	JUNO_STORAGE_ERROR_UPLOAD_NOT_ALLOWED
@@ -618,21 +618,21 @@ describe('Satellite', () => {
 			const { set_rule } = actor;
 
 			await expect(set_rule({ Db: null }, 'user-test', setRule)).rejects.toThrow(
-				JUNO_ERROR_AUTH_NOT_ADMIN_CONTROLLER
+				JUNO_AUTH_ERROR_NOT_ADMIN_CONTROLLER
 			);
 		});
 
 		it('should throw errors on list collections', async () => {
 			const { list_rules } = actor;
 
-			await expect(list_rules({ Db: null })).rejects.toThrow(JUNO_ERROR_AUTH_NOT_ADMIN_CONTROLLER);
+			await expect(list_rules({ Db: null })).rejects.toThrow(JUNO_AUTH_ERROR_NOT_ADMIN_CONTROLLER);
 		});
 
 		it('should throw errors on getting a collection', async () => {
 			const { get_rule } = actor;
 
 			await expect(get_rule({ Db: null }, 'test')).rejects.toThrow(
-				JUNO_ERROR_AUTH_NOT_ADMIN_CONTROLLER
+				JUNO_AUTH_ERROR_NOT_ADMIN_CONTROLLER
 			);
 		});
 
@@ -640,7 +640,7 @@ describe('Satellite', () => {
 			const { del_rule } = actor;
 
 			await expect(del_rule({ Db: null }, 'test', { version: testRuleVersion })).rejects.toThrow(
-				JUNO_ERROR_AUTH_NOT_ADMIN_CONTROLLER
+				JUNO_AUTH_ERROR_NOT_ADMIN_CONTROLLER
 			);
 		});
 
@@ -658,13 +658,13 @@ describe('Satellite', () => {
 						scope: { Admin: null }
 					}
 				})
-			).rejects.toThrow(JUNO_ERROR_AUTH_NOT_ADMIN_CONTROLLER);
+			).rejects.toThrow(JUNO_AUTH_ERROR_NOT_ADMIN_CONTROLLER);
 		});
 
 		it('should throw errors on list controllers', async () => {
 			const { list_controllers } = actor;
 
-			await expect(list_controllers()).rejects.toThrow(JUNO_ERROR_AUTH_NOT_ADMIN_CONTROLLER);
+			await expect(list_controllers()).rejects.toThrow(JUNO_AUTH_ERROR_NOT_ADMIN_CONTROLLER);
 		});
 
 		it('should throw errors on deleting controller', async () => {
@@ -674,31 +674,31 @@ describe('Satellite', () => {
 				del_controllers({
 					controllers: [controller.getPrincipal()]
 				})
-			).rejects.toThrow(JUNO_ERROR_AUTH_NOT_ADMIN_CONTROLLER);
+			).rejects.toThrow(JUNO_AUTH_ERROR_NOT_ADMIN_CONTROLLER);
 		});
 
 		it('should throw errors on deleting docs', async () => {
 			const { del_docs } = actor;
 
-			await expect(del_docs('test')).rejects.toThrow(JUNO_ERROR_AUTH_NOT_CONTROLLER);
+			await expect(del_docs('test')).rejects.toThrow(JUNO_AUTH_ERROR_NOT_CONTROLLER);
 		});
 
 		it('should throw errors on counting docs', async () => {
 			const { count_collection_docs } = actor;
 
-			await expect(count_collection_docs('test')).rejects.toThrow(JUNO_ERROR_AUTH_NOT_CONTROLLER);
+			await expect(count_collection_docs('test')).rejects.toThrow(JUNO_AUTH_ERROR_NOT_CONTROLLER);
 		});
 
 		it('should throw errors on deleting assets', async () => {
 			const { del_assets } = actor;
 
-			await expect(del_assets('test')).rejects.toThrow(JUNO_ERROR_AUTH_NOT_CONTROLLER);
+			await expect(del_assets('test')).rejects.toThrow(JUNO_AUTH_ERROR_NOT_CONTROLLER);
 		});
 
 		it('should throw errors on counting assets', async () => {
 			const { count_collection_assets } = actor;
 
-			await expect(count_collection_assets('test')).rejects.toThrow(JUNO_ERROR_AUTH_NOT_CONTROLLER);
+			await expect(count_collection_assets('test')).rejects.toThrow(JUNO_AUTH_ERROR_NOT_CONTROLLER);
 		});
 
 		it('should throw errors on deposit cycles', async () => {
@@ -709,13 +709,13 @@ describe('Satellite', () => {
 					cycles: 123n,
 					destination_id: user.getPrincipal()
 				})
-			).rejects.toThrow(JUNO_ERROR_AUTH_NOT_ADMIN_CONTROLLER);
+			).rejects.toThrow(JUNO_AUTH_ERROR_NOT_ADMIN_CONTROLLER);
 		});
 
 		it('should throw errors on getting memory size', async () => {
 			const { memory_size } = actor;
 
-			await expect(memory_size()).rejects.toThrow(JUNO_ERROR_AUTH_NOT_CONTROLLER);
+			await expect(memory_size()).rejects.toThrow(JUNO_AUTH_ERROR_NOT_CONTROLLER);
 		});
 
 		it('should throw errors on trying to deploy dapp', async () => {

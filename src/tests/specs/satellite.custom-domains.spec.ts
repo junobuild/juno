@@ -5,7 +5,7 @@ import { Ed25519KeyIdentity } from '@dfinity/identity';
 import { toNullable } from '@dfinity/utils';
 import { PocketIc, type Actor } from '@hadronous/pic';
 import { afterAll, beforeAll, describe, expect, inject } from 'vitest';
-import { JUNO_ERROR_AUTH_NOT_ADMIN_CONTROLLER } from './constants/satellite-tests.constants';
+import { JUNO_AUTH_ERROR_NOT_ADMIN_CONTROLLER } from './constants/satellite-tests.constants';
 import {
 	adminCustomDomainsTests,
 	anonymousCustomDomainsTests
@@ -42,7 +42,7 @@ describe('Satellite custom domains', () => {
 
 		anonymousCustomDomainsTests({
 			actor: () => actor,
-			errorMsg: JUNO_ERROR_AUTH_NOT_ADMIN_CONTROLLER
+			errorMsg: JUNO_AUTH_ERROR_NOT_ADMIN_CONTROLLER
 		});
 	});
 

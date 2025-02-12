@@ -695,7 +695,8 @@
 		"persistence": "Persistence",
 		"changes": "Changes",
 		"changes_unlimited": "Unlimited",
-		"max_changes_reached": "Max changes per user reached"
+		"max_changes_reached": "Max changes per user reached",
+		"banned": "Banned"
 	},
 	"monitoring": {
 		"title": "Monitoring",

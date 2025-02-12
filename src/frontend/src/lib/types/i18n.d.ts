@@ -720,6 +720,7 @@ interface I18nUsers {
 	changes: string;
 	changes_unlimited: string;
 	max_changes_reached: string;
+	banned: string;
 }
 
 interface I18nMonitoring {

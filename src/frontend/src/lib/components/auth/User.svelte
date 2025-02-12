@@ -8,6 +8,7 @@
 	import { i18n } from '$lib/stores/i18n.store';
 	import type { User } from '$lib/types/user';
 	import { formatToDate } from '$lib/utils/date.utils';
+	import UserBanned from '$lib/components/auth/UserBanned.svelte';
 
 	interface Props {
 		user: User;
@@ -29,21 +30,33 @@
 
 <tr>
 	<td class="actions">
-		<ButtonTableAction
-			icon="visibility"
-			ariaLabel={$i18n.users.view_details}
-			onaction={openModal}
-		/>
+		<div class="actions-tools">
+			<ButtonTableAction
+				icon="visibility"
+				ariaLabel={$i18n.users.view_details}
+				onaction={openModal}
+			/>
+
+			<ButtonTableAction icon="edit" ariaLabel={$i18n.users.view_details} onaction={openModal} />
+		</div>
 	</td>
 	<td><Identifier small={false} identifier={owner.toText()} /></td>
 	<td class="providers">
 		<UserProvider {user} />
 	</td>
 	<td class="created">{formatToDate(created_at)}</td>
+	<td class="banned">
+		<UserBanned {user} />
+	</td>
 </tr>
 
 <style lang="scss">
 	@use '../../styles/mixins/media';
+
+	.actions-tools {
+		display: flex;
+		gap: var(--padding);
+	}
 
 	.providers {
 		vertical-align: middle;
@@ -61,6 +74,14 @@
 		display: none;
 
 		@include media.min-width(medium) {
+			display: table-cell;
+		}
+	}
+
+	.banned {
+		display: none;
+
+		@include media.min-width(small) {
 			display: table-cell;
 		}
 	}

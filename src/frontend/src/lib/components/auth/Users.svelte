@@ -66,6 +66,7 @@
 				<th class="identifier"> {$i18n.users.identifier} </th>
 				<th class="providers"> {$i18n.users.provider} </th>
 				<th class="created"> {$i18n.users.created} </th>
+				<th class="banned"> {$i18n.users.banned} </th>
 			</tr>
 		</thead>
 
@@ -76,11 +77,11 @@
 				{/each}
 
 				{#if !empty && ($paginationStore.pages ?? 0) > 1}
-					<tr><td colspan="4"><DataPaginator /></td></tr>
+					<tr><td colspan="5"><DataPaginator /></td></tr>
 				{/if}
 
 				{#if empty}
-					<tr><td colspan="4">{$i18n.users.empty}</td></tr>
+					<tr><td colspan="5">{$i18n.users.empty}</td></tr>
 				{/if}
 			{/if}
 		</tbody>
@@ -93,7 +94,7 @@
 	@use '../../styles/mixins/media';
 
 	.tools {
-		width: 48px;
+		width: 60px;
 	}
 
 	.providers {
@@ -109,6 +110,15 @@
 
 		@include media.min-width(medium) {
 			display: table-cell;
+		}
+	}
+
+	.banned {
+		display: none;
+
+		@include media.min-width(small) {
+			display: table-cell;
+			width: 100px;
 		}
 	}
 

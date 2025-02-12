@@ -30,8 +30,6 @@
 
 		const fn = isBanned ? unbanUser : banUser;
 
-		console.log(isBanned, user);
-
 		const { success } = await fn({
 			identity: $authStore.identity,
 			satelliteId,

@@ -323,7 +323,56 @@ describe('Satellite User Usage', () => {
 				actor.setIdentity(controller);
 			});
 
-			it('should get no usage of collection is log', async () => {
+			it('should not track usage for collection #log', async () => {
+				const { set_doc, get_doc } = actor;
+
+				const key = nanoid();
+
+				await set_doc('#log', key, {
+					data: mockData,
+					description: toNullable(),
+					version: toNullable()
+				});
+
+				const doc = await get_doc('#log', key);
+				expect(fromNullable(doc)).not.toBeUndefined();
+
+				const { doc: usageDoc } = await get_user_usage({
+					collection: '#log',
+					collectionType: COLLECTION_TYPE,
+					userId: controller.getPrincipal()
+				});
+				expect(usageDoc).toBeUndefined();
+			});
+
+			it('should not track usage for collection #user-usage', async () => {
+				const user = Ed25519KeyIdentity.generate();
+				actor.setIdentity(user);
+
+				const { set_doc, get_doc } = actor;
+
+				const key = user.getPrincipal().toText();
+
+				const data = await toArray({});
+
+				await set_doc('#user', key, {
+					data: data,
+					description: toNullable(),
+					version: toNullable()
+				});
+
+				const doc = await get_doc('#user', key);
+				expect(fromNullable(doc)).not.toBeUndefined();
+
+				const { doc: usageDoc } = await get_user_usage({
+					collection: '#user',
+					collectionType: COLLECTION_TYPE,
+					userId: controller.getPrincipal()
+				});
+				expect(usageDoc).toBeUndefined();
+			});
+
+			it('should not track usage for collection #user', async () => {
 				const { set_doc, get_doc } = actor;
 
 				const key = nanoid();

@@ -1,14 +1,13 @@
 use crate::types::state::CollectionType;
 use crate::usage::store::increment_usage;
 use crate::usage::types::state::UserUsageData;
-use crate::usage::utils::{is_db_collection_no_usage, is_storage_collection_no_usage};
 use crate::SetDoc;
+use junobuild_collections::assert::collection::is_system_collection;
 use junobuild_collections::constants::db::COLLECTION_USER_USAGE_KEY;
 use junobuild_collections::types::core::CollectionKey;
 use junobuild_shared::controllers::is_controller;
 use junobuild_shared::types::state::{Controllers, UserId};
 use junobuild_utils::decode_doc_data;
-
 // ---------------------------------------------------------
 // Increment user usage - i.e. when a user edit, create or delete
 // ---------------------------------------------------------
@@ -19,10 +18,6 @@ pub fn increment_and_assert_db_usage(
     collection: &CollectionKey,
     max_changes_per_user: Option<u32>,
 ) -> Result<(), String> {
-    if is_db_collection_no_usage(collection) {
-        return Ok(());
-    }
-
     increment_and_assert_usage(
         caller,
         controllers,
@@ -38,10 +33,6 @@ pub fn increment_and_assert_storage_usage(
     collection: &CollectionKey,
     max_changes_per_user: Option<u32>,
 ) -> Result<(), String> {
-    if is_storage_collection_no_usage(collection) {
-        return Ok(());
-    }
-
     increment_and_assert_usage(
         caller,
         controllers,
@@ -58,6 +49,11 @@ fn increment_and_assert_usage(
     collection_type: &CollectionType,
     max_changes_per_user: Option<u32>,
 ) -> Result<(), String> {
+    // We do not collect usage on system collection. This is useful for performance reason (collection #dapp) or because others are solely editable by controllers.
+    if is_system_collection(collection) {
+        return Ok(());
+    }
+
     // We only collect usage for users
     if is_controller(caller, controllers) {
         return Ok(());

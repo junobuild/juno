@@ -558,7 +558,9 @@
 		"monitoring_email_update": "Unexpected error(s) while trying to update your email address.",
 		"monitoring_notifications_update": "Unexpected error(s) while trying to update the notifications.",
 		"monitoring_upgrade": "Please upgrade your Mission Control to enable the monitoring feature.",
-		"user_usage_not_loaded": "Unexpected error(s) while loading the user's usage."
+		"user_usage_not_loaded": "Unexpected error(s) while loading the user's usage.",
+		"user_ban": "Unexpected error(s) while trying to ban the user.",
+		"user_unban": "Unexpected error(s) while trying to unban the user."
 	},
 	"document": {
 		"owner": "Owner",
@@ -696,7 +698,13 @@
 		"changes": "Changes",
 		"changes_unlimited": "Unlimited",
 		"max_changes_reached": "Max changes per user reached",
-		"banned": "Banned"
+		"banned": "Banned",
+		"ban_user": "Ban user",
+		"unban_user": "Unban user",
+		"are_you_sure_ban": "Are you sure you want to ban this user?",
+		"are_you_sure_unban": "Are you sure you want to unban this user?",
+		"ban_explanation": "Banning a user will prevent them from accessing, updating, creating, or deleting any data in the Datastore or Storage. This action can be reverted later by unbanning the user.",
+		"unban_explanation": "Unbanning will restore their access to get, update, create, or delete data in the Datastore or Storage."
 	},
 	"monitoring": {
 		"title": "Monitoring",

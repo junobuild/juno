@@ -14,6 +14,6 @@
 	let { banned } = $derived(data);
 </script>
 
-{#if banned === 'indefinitely'}
+{#if banned === 'indefinite'}
 	<span transition:fade><IconBlock size="20px" /></span>
 {/if}

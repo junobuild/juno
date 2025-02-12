@@ -1,5 +1,5 @@
 import type { CollectionType } from '$declarations/satellite/satellite.did';
-import { getDoc, listRules } from '$lib/api/satellites.api';
+import { getDoc, listRules, setDoc } from '$lib/api/satellites.api';
 import { DbCollectionType, StorageCollectionType } from '$lib/constants/rules.constants';
 import { busy } from '$lib/stores/busy.store';
 import { i18n } from '$lib/stores/i18n.store';
@@ -12,7 +12,7 @@ import { waitReady } from '$lib/utils/timeout.utils';
 import type { Identity } from '@dfinity/agent';
 import type { Principal } from '@dfinity/principal';
 import { assertNonNullish, fromNullable, isNullish } from '@dfinity/utils';
-import { fromArray } from '@junobuild/utils';
+import { fromArray, toArray } from '@junobuild/utils';
 import { get } from 'svelte/store';
 
 interface OpenUserDetailParams {
@@ -128,4 +128,66 @@ const loadUserUsages = async ({
 	];
 
 	return await Promise.all(promises);
+};
+
+export interface BanUser {
+	user: User;
+	identity: OptionIdentity;
+	satelliteId: Principal;
+}
+
+export const banUser = async (params: BanUser): Promise<{ success: boolean }> =>
+	updateUser({
+		...params,
+		action: 'ban'
+	});
+
+export const unbanUser = async (params: BanUser): Promise<{ success: boolean }> =>
+	updateUser({
+		...params,
+		action: 'unban'
+	});
+
+const updateUser = async ({
+	action,
+	identity,
+	user,
+	satelliteId
+}: BanUser & { action: 'ban' | 'unban' }): Promise<{ success: boolean }> => {
+	busy.start();
+
+	try {
+		assertNonNullish(identity, get(i18n).core.not_logged_in);
+
+		const { data: currentData, ...rest } = user;
+
+		const data = await toArray({
+			...currentData,
+			banned: action === 'ban' ? 'indefinite' : undefined
+		});
+
+		await setDoc({
+			identity,
+			satelliteId,
+			collection: '#user',
+			key: user.owner.toText(),
+			doc: {
+				...rest,
+				data
+			}
+		});
+
+		return { success: true };
+	} catch (err: unknown) {
+		const labels = get(i18n);
+
+		toasts.error({
+			text: action === 'ban' ? labels.errors.user_ban : labels.errors.user_unban,
+			detail: err
+		});
+
+		return { success: false };
+	} finally {
+		busy.stop();
+	}
 };

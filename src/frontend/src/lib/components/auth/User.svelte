@@ -8,7 +8,8 @@
 	import { i18n } from '$lib/stores/i18n.store';
 	import type { User } from '$lib/types/user';
 	import { formatToDate } from '$lib/utils/date.utils';
-	import UserBanned from '$lib/components/auth/UserBanned.svelte';
+	import UserBannedStatus from '$lib/components/auth/UserBannedStatus.svelte';
+	import UserBan from '$lib/components/auth/UserBan.svelte';
 
 	interface Props {
 		user: User;
@@ -37,7 +38,7 @@
 				onaction={openModal}
 			/>
 
-			<ButtonTableAction icon="edit" ariaLabel={$i18n.users.view_details} onaction={openModal} />
+			<UserBan {user} {satelliteId} />
 		</div>
 	</td>
 	<td><Identifier small={false} identifier={owner.toText()} /></td>
@@ -46,7 +47,7 @@
 	</td>
 	<td class="created">{formatToDate(created_at)}</td>
 	<td class="banned">
-		<UserBanned {user} />
+		<UserBannedStatus {user} />
 	</td>
 </tr>
 

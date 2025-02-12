@@ -7,6 +7,7 @@ import type {
 	ListResults as ListAssets,
 	ListResults_1 as ListDocs,
 	Rule,
+	SetDoc,
 	SetRule
 } from '$declarations/satellite/satellite.did';
 import { getSatelliteActor } from '$lib/api/actors/actor.juno.api';
@@ -45,6 +46,23 @@ export const getDoc = async ({
 }): Promise<[] | [Doc]> => {
 	const { get_doc } = await getSatelliteActor({ satelliteId, identity });
 	return get_doc(collection, key);
+};
+
+export const setDoc = async ({
+	satelliteId,
+	collection,
+	key,
+	doc,
+	identity
+}: {
+	satelliteId: Principal;
+	collection: string;
+	key: string;
+	doc: SetDoc;
+	identity: OptionIdentity;
+}): Promise<Doc> => {
+	const { set_doc } = await getSatelliteActor({ satelliteId, identity });
+	return set_doc(collection, key, doc);
 };
 
 export const listAssets = async ({

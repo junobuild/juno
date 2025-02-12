@@ -131,11 +131,27 @@ describe('Satellite > User', () => {
 	});
 
 	describe('anonymous', () => {
+		const anonymous = new AnonymousIdentity();
+
 		beforeAll(() => {
-			actor.setIdentity(new AnonymousIdentity());
+			actor.setIdentity(anonymous);
 		});
 
-		it('should not create a user', async () => {
+		it('should not create an anonymous user', async () => {
+			const { set_doc } = actor;
+
+			await expect(
+				set_doc('#user', anonymous.getPrincipal().toText(), {
+					data: await toArray({
+						provider: 'internet_identity'
+					}),
+					description: toNullable(),
+					version: toNullable()
+				})
+			).rejects.toThrow(JUNO_DATASTORE_ERROR_CANNOT_WRITE);
+		});
+
+		it('should not create another user', async () => {
 			const { set_doc } = actor;
 
 			const user = Ed25519KeyIdentity.generate();
@@ -148,7 +164,7 @@ describe('Satellite > User', () => {
 					description: toNullable(),
 					version: toNullable()
 				})
-			).rejects.toThrow(JUNO_DATASTORE_ERROR_CANNOT_WRITE);
+			).rejects.toThrow(JUNO_DATASTORE_ERROR_USER_CALLER_KEY);
 		});
 	});
 

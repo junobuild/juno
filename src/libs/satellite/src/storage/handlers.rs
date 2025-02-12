@@ -6,8 +6,8 @@ use junobuild_collections::types::rules::Rule;
 use junobuild_shared::types::core::Blob;
 use junobuild_shared::types::state::Controllers;
 use junobuild_storage::constants::ASSET_ENCODING_NO_COMPRESSION;
+use junobuild_storage::errors::JUNO_STORAGE_ERROR_SET_NOT_ALLOWED;
 use junobuild_storage::http::types::HeaderField;
-use junobuild_storage::msg::SET_NOT_ALLOWED;
 use junobuild_storage::runtime::update_certified_asset as update_runtime_certified_asset;
 use junobuild_storage::types::store::{Asset, AssetKey};
 use junobuild_storage::utils::map_content_encoding;
@@ -52,7 +52,7 @@ pub fn set_asset_handler(
         let caller = id();
 
         if !assert_permission(&rule.write, existing_asset.key.owner, caller, &controllers) {
-            return Err(SET_NOT_ALLOWED.to_string());
+            return Err(JUNO_STORAGE_ERROR_SET_NOT_ALLOWED.to_string());
         }
     }
 

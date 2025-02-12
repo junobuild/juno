@@ -52,5 +52,3 @@ pub const DEFAULT_DB_COLLECTIONS: [(&str, SetRule); 3] = [
         COLLECTION_USER_USAGE_DEFAULT_RULE,
     ),
 ];
-
-pub const DB_COLLECTIONS_WITHOUT_USER_USAGE: [&str; 1] = [COLLECTION_LOG_KEY];

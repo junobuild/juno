@@ -6,7 +6,13 @@ import { fromNullable, toNullable } from '@dfinity/utils';
 import { PocketIc, type Actor } from '@hadronous/pic';
 import { toArray } from '@junobuild/utils';
 import { afterAll, beforeAll, describe, expect, inject } from 'vitest';
-import { CANNOT_UPDATE_USER, USER_CANNOT_WRITE } from './constants/satellite-tests.constants';
+import {
+	JUNO_SATELLITE_ERROR_USER_CALLER_KEY,
+	JUNO_SATELLITE_ERROR_USER_CANNOT_UPDATE,
+	JUNO_SATELLITE_ERROR_USER_INVALID_DATA,
+	JUNO_SATELLITE_ERROR_USER_KEY_NO_PRINCIPAL,
+	USER_CANNOT_WRITE
+} from './constants/satellite-tests.constants';
 import { SATELLITE_WASM_PATH, controllersInitArgs } from './utils/setup-tests.utils';
 
 describe('Satellite > User', () => {
@@ -119,7 +125,7 @@ describe('Satellite > User', () => {
 						description: toNullable(),
 						version: fromNullable(before)?.version ?? []
 					})
-				).rejects.toThrow(CANNOT_UPDATE_USER);
+				).rejects.toThrow(JUNO_SATELLITE_ERROR_USER_CANNOT_UPDATE);
 			});
 		});
 	});
@@ -194,7 +200,7 @@ describe('Satellite > User', () => {
 						description: toNullable(),
 						version: fromNullable(before)?.version ?? []
 					})
-				).rejects.toThrow(CANNOT_UPDATE_USER);
+				).rejects.toThrow(JUNO_SATELLITE_ERROR_USER_CANNOT_UPDATE);
 			});
 		});
 	});
@@ -258,7 +264,7 @@ describe('Satellite > User', () => {
 							description: toNullable(),
 							version: toNullable()
 						})
-					).rejects.toThrow('Caller and key must match to create a user.');
+					).rejects.toThrow(JUNO_SATELLITE_ERROR_USER_CALLER_KEY);
 				});
 
 				it('should not create a user if key is not a principal', async () => {
@@ -272,7 +278,7 @@ describe('Satellite > User', () => {
 							description: toNullable(),
 							version: toNullable()
 						})
-					).rejects.toThrow('User key must be a textual representation of a principal.');
+					).rejects.toThrow(JUNO_SATELLITE_ERROR_USER_KEY_NO_PRINCIPAL);
 				});
 			});
 		});
@@ -299,7 +305,7 @@ describe('Satellite > User', () => {
 					version: toNullable()
 				})
 			).rejects.toThrow(
-				'Invalid user data: unknown variant `unknown`, expected `internet_identity` or `nfid` at line 1 column 21.'
+				`${JUNO_SATELLITE_ERROR_USER_INVALID_DATA}: unknown variant \`unknown\`, expected \`internet_identity\` or \`nfid\` at line 1 column 21.`
 			);
 		});
 
@@ -318,7 +324,7 @@ describe('Satellite > User', () => {
 					version: toNullable()
 				})
 			).rejects.toThrow(
-				'Invalid user data: unknown field `unknown`, expected `provider` or `banned` at line 1 column 41.'
+				`${JUNO_SATELLITE_ERROR_USER_INVALID_DATA}: unknown field \`unknown\`, expected \`provider\` or \`banned\` at line 1 column 41.`
 			);
 		});
 	});

@@ -1,3 +1,8 @@
+use crate::errors::user::{
+    JUNO_SATELLITE_ERROR_USER_CALLER_KEY, JUNO_SATELLITE_ERROR_USER_CANNOT_UPDATE,
+    JUNO_SATELLITE_ERROR_USER_INVALID_DATA, JUNO_SATELLITE_ERROR_USER_KEY_NO_PRINCIPAL,
+    JUNO_SATELLITE_ERROR_USER_NOT_ALLOWED,
+};
 use crate::user::types::state::{BannedReason, UserData};
 use crate::{get_doc_store, Doc, SetDoc};
 use candid::Principal;
@@ -29,11 +34,11 @@ pub fn assert_user_collection_caller_key(
     }
 
     let owner = Principal::from_text(key.trim())
-        .map_err(|_| "User key must be a textual representation of a principal.".to_string())?;
+        .map_err(|_| JUNO_SATELLITE_ERROR_USER_KEY_NO_PRINCIPAL.to_string())?;
 
     // Once set the owner cannot be modified and another assertion prevent user update unless the caller is an admin controller
     if current_doc.is_none() && principal_not_equal(owner, caller) {
-        return Err("Caller and key must match to create a user.".to_string());
+        return Err(JUNO_SATELLITE_ERROR_USER_CALLER_KEY.to_string());
     }
 
     Ok(())
@@ -46,7 +51,8 @@ pub fn assert_user_collection_data(collection: &CollectionKey, doc: &SetDoc) -> 
         return Ok(());
     }
 
-    decode_doc_data::<UserData>(&doc.data).map_err(|err| format!("Invalid user data: {}", err))?;
+    decode_doc_data::<UserData>(&doc.data)
+        .map_err(|err| format!("{}: {}", JUNO_SATELLITE_ERROR_USER_INVALID_DATA, err))?;
 
     Ok(())
 }
@@ -73,7 +79,7 @@ pub fn assert_user_write_permission(
     }
 
     // The user already exist but the caller is not a controller
-    Err("Cannot update user.".to_string())
+    Err(JUNO_SATELLITE_ERROR_USER_CANNOT_UPDATE.to_string())
 }
 
 pub fn assert_user_is_not_banned(
@@ -93,7 +99,7 @@ pub fn assert_user_is_not_banned(
         let user_data = decode_doc_data::<UserData>(&user.data)?;
 
         if let Some(BannedReason::Indefinite) = user_data.banned {
-            return Err("Not allowed.".to_string());
+            return Err(JUNO_SATELLITE_ERROR_USER_NOT_ALLOWED.to_string());
         }
     }
 

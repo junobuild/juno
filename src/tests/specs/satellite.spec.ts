@@ -8,10 +8,11 @@ import { readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { afterAll, beforeAll, describe, expect, inject } from 'vitest';
 import {
-	CONTROLLER_ERROR_MSG,
-	INVALID_VERSION_ERROR_MSG, JUNO_STORAGE_ERROR_UPLOAD_NOT_ALLOWED,
-	NO_VERSION_ERROR_MSG,
-	SATELLITE_ADMIN_ERROR_MSG
+	JUNO_ERROR_AUTH_NOT_ADMIN_CONTROLLER,
+	JUNO_ERROR_AUTH_NOT_CONTROLLER,
+	JUNO_ERROR_NO_VERSION_PROVIDED,
+	JUNO_ERROR_VERSION_OUTDATED_OR_FUTURE,
+	JUNO_STORAGE_ERROR_UPLOAD_NOT_ALLOWED
 } from './constants/satellite-tests.constants';
 import { SATELLITE_WASM_PATH, controllersInitArgs } from './utils/setup-tests.utils';
 
@@ -264,7 +265,7 @@ describe('Satellite', () => {
 
 				await expect(
 					set_rule(collectionType, `${collection}_update_throw`, setRule)
-				).rejects.toThrow(NO_VERSION_ERROR_MSG);
+				).rejects.toThrow(JUNO_ERROR_NO_VERSION_PROVIDED);
 			});
 		});
 
@@ -581,7 +582,7 @@ describe('Satellite', () => {
 				await pic.advanceTime(100);
 
 				await expect(set_rule({ Db: null }, 'test3', setRule)).rejects.toThrow(
-					NO_VERSION_ERROR_MSG
+					JUNO_ERROR_NO_VERSION_PROVIDED
 				);
 			});
 
@@ -600,7 +601,7 @@ describe('Satellite', () => {
 
 					expect(true).toBe(false);
 				} catch (error: unknown) {
-					expect((error as Error).message).toContain(INVALID_VERSION_ERROR_MSG);
+					expect((error as Error).message).toContain(JUNO_ERROR_VERSION_OUTDATED_OR_FUTURE);
 				}
 			});
 		});
@@ -617,27 +618,29 @@ describe('Satellite', () => {
 			const { set_rule } = actor;
 
 			await expect(set_rule({ Db: null }, 'user-test', setRule)).rejects.toThrow(
-				SATELLITE_ADMIN_ERROR_MSG
+				JUNO_ERROR_AUTH_NOT_ADMIN_CONTROLLER
 			);
 		});
 
 		it('should throw errors on list collections', async () => {
 			const { list_rules } = actor;
 
-			await expect(list_rules({ Db: null })).rejects.toThrow(SATELLITE_ADMIN_ERROR_MSG);
+			await expect(list_rules({ Db: null })).rejects.toThrow(JUNO_ERROR_AUTH_NOT_ADMIN_CONTROLLER);
 		});
 
 		it('should throw errors on getting a collection', async () => {
 			const { get_rule } = actor;
 
-			await expect(get_rule({ Db: null }, 'test')).rejects.toThrow(SATELLITE_ADMIN_ERROR_MSG);
+			await expect(get_rule({ Db: null }, 'test')).rejects.toThrow(
+				JUNO_ERROR_AUTH_NOT_ADMIN_CONTROLLER
+			);
 		});
 
 		it('should throw errors on deleting collections', async () => {
 			const { del_rule } = actor;
 
 			await expect(del_rule({ Db: null }, 'test', { version: testRuleVersion })).rejects.toThrow(
-				SATELLITE_ADMIN_ERROR_MSG
+				JUNO_ERROR_AUTH_NOT_ADMIN_CONTROLLER
 			);
 		});
 
@@ -655,13 +658,13 @@ describe('Satellite', () => {
 						scope: { Admin: null }
 					}
 				})
-			).rejects.toThrow(SATELLITE_ADMIN_ERROR_MSG);
+			).rejects.toThrow(JUNO_ERROR_AUTH_NOT_ADMIN_CONTROLLER);
 		});
 
 		it('should throw errors on list controllers', async () => {
 			const { list_controllers } = actor;
 
-			await expect(list_controllers()).rejects.toThrow(SATELLITE_ADMIN_ERROR_MSG);
+			await expect(list_controllers()).rejects.toThrow(JUNO_ERROR_AUTH_NOT_ADMIN_CONTROLLER);
 		});
 
 		it('should throw errors on deleting controller', async () => {
@@ -671,31 +674,31 @@ describe('Satellite', () => {
 				del_controllers({
 					controllers: [controller.getPrincipal()]
 				})
-			).rejects.toThrow(SATELLITE_ADMIN_ERROR_MSG);
+			).rejects.toThrow(JUNO_ERROR_AUTH_NOT_ADMIN_CONTROLLER);
 		});
 
 		it('should throw errors on deleting docs', async () => {
 			const { del_docs } = actor;
 
-			await expect(del_docs('test')).rejects.toThrow(CONTROLLER_ERROR_MSG);
+			await expect(del_docs('test')).rejects.toThrow(JUNO_ERROR_AUTH_NOT_CONTROLLER);
 		});
 
 		it('should throw errors on counting docs', async () => {
 			const { count_collection_docs } = actor;
 
-			await expect(count_collection_docs('test')).rejects.toThrow(CONTROLLER_ERROR_MSG);
+			await expect(count_collection_docs('test')).rejects.toThrow(JUNO_ERROR_AUTH_NOT_CONTROLLER);
 		});
 
 		it('should throw errors on deleting assets', async () => {
 			const { del_assets } = actor;
 
-			await expect(del_assets('test')).rejects.toThrow(CONTROLLER_ERROR_MSG);
+			await expect(del_assets('test')).rejects.toThrow(JUNO_ERROR_AUTH_NOT_CONTROLLER);
 		});
 
 		it('should throw errors on counting assets', async () => {
 			const { count_collection_assets } = actor;
 
-			await expect(count_collection_assets('test')).rejects.toThrow(CONTROLLER_ERROR_MSG);
+			await expect(count_collection_assets('test')).rejects.toThrow(JUNO_ERROR_AUTH_NOT_CONTROLLER);
 		});
 
 		it('should throw errors on deposit cycles', async () => {
@@ -706,13 +709,13 @@ describe('Satellite', () => {
 					cycles: 123n,
 					destination_id: user.getPrincipal()
 				})
-			).rejects.toThrow(SATELLITE_ADMIN_ERROR_MSG);
+			).rejects.toThrow(JUNO_ERROR_AUTH_NOT_ADMIN_CONTROLLER);
 		});
 
 		it('should throw errors on getting memory size', async () => {
 			const { memory_size } = actor;
 
-			await expect(memory_size()).rejects.toThrow(CONTROLLER_ERROR_MSG);
+			await expect(memory_size()).rejects.toThrow(JUNO_ERROR_AUTH_NOT_CONTROLLER);
 		});
 
 		it('should throw errors on trying to deploy dapp', async () => {

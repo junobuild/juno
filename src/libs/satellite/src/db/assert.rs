@@ -1,7 +1,7 @@
-use crate::errors::db::{JUNO_DATASTORE_ERROR_CANNOT_READ, JUNO_DATASTORE_ERROR_CANNOT_WRITE};
 use crate::db::runtime::increment_and_assert_rate;
 use crate::db::types::config::DbConfig;
 use crate::db::types::state::{DocAssertDelete, DocAssertSet, DocContext};
+use crate::errors::db::{JUNO_DATASTORE_ERROR_CANNOT_READ, JUNO_DATASTORE_ERROR_CANNOT_WRITE};
 use crate::hooks::{invoke_assert_delete_doc, invoke_assert_set_doc};
 use crate::types::store::StoreContext;
 use crate::usage::assert::{assert_user_usage_collection_data, increment_and_assert_db_usage};

@@ -1,5 +1,7 @@
 use crate::constants::{WELL_KNOWN_CUSTOM_DOMAINS, WELL_KNOWN_II_ALTERNATIVE_ORIGINS};
-use crate::errors::{ERROR_CANNOT_COMMIT_BATCH, JUNO_STORAGE_ERROR_UPLOAD_NOT_ALLOWED};
+use crate::errors::{
+    JUNO_STORAGE_ERROR_CANNOT_COMMIT_BATCH, JUNO_STORAGE_ERROR_UPLOAD_NOT_ALLOWED,
+};
 use crate::runtime::increment_and_assert_rate;
 use crate::strategies::{StorageAssertionsStrategy, StorageStateStrategy};
 use crate::types::config::StorageConfig;
@@ -60,7 +62,7 @@ pub fn assert_commit_batch(
 ) -> Result<Rule, String> {
     // The one that started the batch should be the one that commits it
     if principal_not_equal(caller, batch.key.owner) {
-        return Err(ERROR_CANNOT_COMMIT_BATCH.to_string());
+        return Err(JUNO_STORAGE_ERROR_CANNOT_COMMIT_BATCH.to_string());
     }
 
     assert_key(
@@ -87,7 +89,7 @@ pub fn assert_commit_chunks_new_asset(
     rule: &Rule,
 ) -> Result<(), String> {
     if !assert_create_permission(&rule.write, caller, controllers) {
-        return Err(ERROR_CANNOT_COMMIT_BATCH.to_string());
+        return Err(JUNO_STORAGE_ERROR_CANNOT_COMMIT_BATCH.to_string());
     }
 
     assert_memory_size(config)?;
@@ -109,7 +111,7 @@ pub fn assert_commit_chunks_update(
     }
 
     if !assert_permission(&rule.write, current.key.owner, caller, controllers) {
-        return Err(ERROR_CANNOT_COMMIT_BATCH.to_string());
+        return Err(JUNO_STORAGE_ERROR_CANNOT_COMMIT_BATCH.to_string());
     }
 
     assert_memory_size(config)?;

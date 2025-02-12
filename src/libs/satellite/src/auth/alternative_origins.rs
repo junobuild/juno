@@ -1,5 +1,5 @@
-use crate::errors::auth::JUNO_ERROR_AUTH_INVALID_ORIGIN;
 use crate::auth::types::config::AuthenticationConfig;
+use crate::errors::auth::JUNO_ERROR_AUTH_INVALID_ORIGIN;
 use crate::storage::store::get_custom_domains_store;
 use crate::storage::strategy_impls::StorageState;
 use ic_cdk::id;

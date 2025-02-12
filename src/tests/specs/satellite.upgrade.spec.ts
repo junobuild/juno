@@ -26,7 +26,7 @@ import { PocketIc, type Actor } from '@hadronous/pic';
 import { toArray } from '@junobuild/utils';
 import { nanoid } from 'nanoid';
 import { afterEach, beforeEach, describe, expect, inject } from 'vitest';
-import { NO_VERSION_ERROR_MSG } from './constants/satellite-tests.constants';
+import { JUNO_ERROR_NO_VERSION_PROVIDED } from './constants/satellite-tests.constants';
 import { mockData } from './mocks/doc.mocks';
 import { mockBlob } from './mocks/storage.mocks';
 import { tick } from './utils/pic-tests.utils';
@@ -349,7 +349,7 @@ describe('Satellite upgrade', () => {
 
 				// We do not provide the version again so it should failed
 				await expect(set_rule_deprecated({ Db: null }, 'test', setRule)).rejects.toThrow(
-					NO_VERSION_ERROR_MSG
+					JUNO_ERROR_NO_VERSION_PROVIDED
 				);
 
 				const { list_rules, set_rule } = newActor;
@@ -423,7 +423,7 @@ describe('Satellite upgrade', () => {
 
 				// We do not provide the version again so it should failed
 				await expect(set_doc_deprecated(collection, key, setDoc)).rejects.toThrow(
-					NO_VERSION_ERROR_MSG
+					JUNO_ERROR_NO_VERSION_PROVIDED
 				);
 
 				const { get_doc, set_doc } = newActor;

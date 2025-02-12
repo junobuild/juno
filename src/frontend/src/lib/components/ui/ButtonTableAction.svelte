@@ -1,10 +1,10 @@
 <script lang="ts">
+	import IconBlock from '$lib/components/icons/IconBlock.svelte';
+	import IconCheckCircle from '$lib/components/icons/IconCheckCircle.svelte';
 	import IconDelete from '$lib/components/icons/IconDelete.svelte';
 	import IconEdit from '$lib/components/icons/IconEdit.svelte';
 	import IconInfo from '$lib/components/icons/IconInfo.svelte';
 	import IconVisibility from '$lib/components/icons/IconVisibility.svelte';
-	import IconBlock from '$lib/components/icons/IconBlock.svelte';
-	import IconCheckCircle from '$lib/components/icons/IconCheckCircle.svelte';
 
 	interface Props {
 		ariaLabel: string;

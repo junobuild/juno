@@ -1,11 +1,11 @@
 <script lang="ts">
-	import Popover from '$lib/components/ui/Popover.svelte';
+	import type { Principal } from '@dfinity/principal';
 	import ButtonTableAction from '$lib/components/ui/ButtonTableAction.svelte';
-	import type { User } from '$lib/types/user';
-	import { i18n } from '$lib/stores/i18n.store';
+	import Popover from '$lib/components/ui/Popover.svelte';
 	import { banUser, unbanUser } from '$lib/services/user.services';
 	import { authStore } from '$lib/stores/auth.store';
-	import type { Principal } from '@dfinity/principal';
+	import { i18n } from '$lib/stores/i18n.store';
+	import type { User } from '$lib/types/user';
 
 	interface Props {
 		user: User;

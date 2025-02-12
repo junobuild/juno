@@ -1,5 +1,7 @@
 <script lang="ts">
 	import type { Principal } from '@dfinity/principal';
+	import UserBan from '$lib/components/auth/UserBan.svelte';
+	import UserBannedStatus from '$lib/components/auth/UserBannedStatus.svelte';
 	import UserProvider from '$lib/components/auth/UserProvider.svelte';
 	import ButtonTableAction from '$lib/components/ui/ButtonTableAction.svelte';
 	import Identifier from '$lib/components/ui/Identifier.svelte';
@@ -8,8 +10,6 @@
 	import { i18n } from '$lib/stores/i18n.store';
 	import type { User } from '$lib/types/user';
 	import { formatToDate } from '$lib/utils/date.utils';
-	import UserBannedStatus from '$lib/components/auth/UserBannedStatus.svelte';
-	import UserBan from '$lib/components/auth/UserBan.svelte';
 
 	interface Props {
 		user: User;

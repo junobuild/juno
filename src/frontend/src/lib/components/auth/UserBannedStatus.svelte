@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { fade } from 'svelte/transition';
-	import type { User } from '$lib/types/user';
 	import IconBlock from '$lib/components/icons/IconBlock.svelte';
+	import type { User } from '$lib/types/user';
 
 	interface Props {
 		user: User;

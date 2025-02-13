@@ -5,13 +5,13 @@ export interface Tab {
 	labelKey: string;
 }
 
-export interface TabsStore {
+export interface TabsData {
 	tabId: symbol;
 	tabs: Tab[];
 }
 
 export interface TabsContext {
-	store: Writable<TabsStore>;
+	store: Writable<TabsData>;
 }
 
 export const TABS_CONTEXT_KEY = Symbol('tabs');

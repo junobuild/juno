@@ -20,7 +20,7 @@
 	import {
 		type Tab,
 		type TabsContext,
-		type TabsStore,
+		type TabsData,
 		TABS_CONTEXT_KEY
 	} from '$lib/types/tabs.context';
 	import { initTabId } from '$lib/utils/tabs.utils';
@@ -46,7 +46,7 @@
 			: [])
 	]);
 
-	const store = writable<TabsStore>({
+	const store = writable<TabsData>({
 		tabId: untrack(() => initTabId(tabs)),
 		tabs: untrack(() => tabs)
 	});

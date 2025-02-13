@@ -7,7 +7,7 @@
 	import DbData from '$lib/components/db/DbData.svelte';
 	import { DbCollectionType } from '$lib/constants/rules.constants';
 	import { authStore } from '$lib/stores/auth.store';
-	import { RULES_CONTEXT_KEY, type RulesContext, type RulesStore } from '$lib/types/rules.context';
+	import { RULES_CONTEXT_KEY, type RulesContext, type RulesData } from '$lib/types/rules.context';
 	import { TABS_CONTEXT_KEY, type TabsContext } from '$lib/types/tabs.context';
 	import { reloadContextRules } from '$lib/utils/rules.utils';
 
@@ -17,7 +17,7 @@
 
 	let { satelliteId }: Props = $props();
 
-	const store = writable<RulesStore>({
+	const store = writable<RulesData>({
 		satelliteId,
 		rules: undefined,
 		rule: undefined

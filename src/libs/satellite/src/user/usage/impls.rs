@@ -1,5 +1,5 @@
 use crate::types::state::CollectionType;
-use crate::usage::types::state::{UserUsageData, UserUsageKey};
+use crate::user::usage::types::state::{UserUsageData, UserUsageKey};
 use junobuild_collections::types::core::CollectionKey;
 use junobuild_shared::types::state::UserId;
 

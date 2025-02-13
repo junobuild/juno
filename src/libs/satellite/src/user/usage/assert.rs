@@ -1,6 +1,6 @@
 use crate::types::state::CollectionType;
-use crate::usage::store::increment_usage;
-use crate::usage::types::state::UserUsageData;
+use crate::user::usage::store::increment_usage;
+use crate::user::usage::types::state::UserUsageData;
 use crate::SetDoc;
 use junobuild_collections::assert::collection::is_system_collection;
 use junobuild_collections::constants::db::COLLECTION_USER_USAGE_KEY;

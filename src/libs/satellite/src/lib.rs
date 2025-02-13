@@ -14,7 +14,6 @@ mod rules;
 mod satellite;
 mod storage;
 mod types;
-mod usage;
 mod user;
 mod version;
 

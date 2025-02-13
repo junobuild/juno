@@ -3,7 +3,7 @@ use crate::errors::user::{
     JUNO_DATASTORE_ERROR_USER_INVALID_DATA, JUNO_DATASTORE_ERROR_USER_KEY_NO_PRINCIPAL,
     JUNO_DATASTORE_ERROR_USER_NOT_ALLOWED,
 };
-use crate::user::types::state::{BannedReason, UserData};
+use crate::user::core::types::state::{BannedReason, UserData};
 use crate::{get_doc_store, Doc, SetDoc};
 use candid::Principal;
 use ic_cdk::id;

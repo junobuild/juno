@@ -3,16 +3,25 @@ use ic_cdk::api::time;
 use junobuild_collections::constants::db::{
     COLLECTION_USER_USAGE_DEFAULT_RULE, COLLECTION_USER_USAGE_KEY,
 };
+use junobuild_collections::types::core::CollectionKey;
+use junobuild_collections::types::interface::SetRule;
 use junobuild_collections::types::rules::Rule;
 
 // ---------------------------------------------------------
 // One time upgrade
 // ---------------------------------------------------------
 
-pub fn init_user_usage_collection() {
+pub fn init_new_user_collections() {
+    init_collection(
+        &COLLECTION_USER_USAGE_KEY.to_string(),
+        COLLECTION_USER_USAGE_DEFAULT_RULE,
+    );
+}
+
+fn init_collection(collection: &CollectionKey, default_rule: SetRule) {
     let col = STATE.with(|state| {
         let rules = &state.borrow_mut().heap.db.rules;
-        rules.get(COLLECTION_USER_USAGE_KEY).cloned()
+        rules.get(collection).cloned()
     });
 
     if col.is_none() {
@@ -22,20 +31,20 @@ pub fn init_user_usage_collection() {
             let now = time();
 
             let rule = Rule {
-                read: COLLECTION_USER_USAGE_DEFAULT_RULE.read,
-                write: COLLECTION_USER_USAGE_DEFAULT_RULE.write,
-                memory: COLLECTION_USER_USAGE_DEFAULT_RULE.memory,
-                mutable_permissions: COLLECTION_USER_USAGE_DEFAULT_RULE.mutable_permissions,
-                max_size: COLLECTION_USER_USAGE_DEFAULT_RULE.max_size,
-                max_capacity: COLLECTION_USER_USAGE_DEFAULT_RULE.max_capacity,
-                max_changes_per_user: COLLECTION_USER_USAGE_DEFAULT_RULE.max_changes_per_user,
+                read: default_rule.read,
+                write: default_rule.write,
+                memory: default_rule.memory,
+                mutable_permissions: default_rule.mutable_permissions,
+                max_size: default_rule.max_size,
+                max_capacity: default_rule.max_capacity,
+                max_changes_per_user: default_rule.max_changes_per_user,
                 created_at: now,
                 updated_at: now,
-                version: COLLECTION_USER_USAGE_DEFAULT_RULE.version,
-                rate_config: COLLECTION_USER_USAGE_DEFAULT_RULE.rate_config,
+                version: default_rule.version,
+                rate_config: default_rule.rate_config,
             };
 
-            rules.insert(COLLECTION_USER_USAGE_KEY.to_string(), rule.clone());
+            rules.insert(collection.to_string(), rule.clone());
         });
     }
 }

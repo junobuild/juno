@@ -533,6 +533,45 @@ describe('Satellite', () => {
 				expect(updated_at).toBeGreaterThan(0n);
 			});
 
+			it('should get #user-admin system collection', async () => {
+				const { get_rule } = actor;
+
+				const result = await get_rule({ Db: null }, '#user-admin');
+
+				const rule = fromNullable(result);
+
+				assertNonNullish(rule);
+
+				const { updated_at, created_at, memory, mutable_permissions, read, write, max_capacity } = rule;
+
+				expect(memory).toEqual(toNullable({ Stable: null }));
+				expect(read).toEqual({ Controllers: null });
+				expect(write).toEqual({ Controllers: null });
+				expect(mutable_permissions).toEqual([false]);
+				expect(max_capacity).toEqual([100]);
+				expect(created_at).toBeGreaterThan(0n);
+				expect(updated_at).toBeGreaterThan(0n);
+			});
+
+			it('should get #user-usage system collection', async () => {
+				const { get_rule } = actor;
+
+				const result = await get_rule({ Db: null }, '#user-usage');
+
+				const rule = fromNullable(result);
+
+				assertNonNullish(rule);
+
+				const { updated_at, created_at, memory, mutable_permissions, read, write } = rule;
+
+				expect(memory).toEqual(toNullable({ Stable: null }));
+				expect(read).toEqual({ Controllers: null });
+				expect(write).toEqual({ Controllers: null });
+				expect(mutable_permissions).toEqual([false]);
+				expect(created_at).toBeGreaterThan(0n);
+				expect(updated_at).toBeGreaterThan(0n);
+			});
+
 			describe('errors', () => {
 				it('should throw errors on creating reserved collection', async () => {
 					const { set_rule } = actor;

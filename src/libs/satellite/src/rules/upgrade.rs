@@ -1,8 +1,5 @@
 use crate::memory::STATE;
 use ic_cdk::api::time;
-use junobuild_collections::constants::db::{
-    COLLECTION_USER_USAGE_DEFAULT_RULE, COLLECTION_USER_USAGE_KEY,
-};
 use junobuild_collections::types::core::CollectionKey;
 use junobuild_collections::types::interface::SetRule;
 use junobuild_collections::types::rules::Rule;
@@ -10,13 +7,6 @@ use junobuild_collections::types::rules::Rule;
 // ---------------------------------------------------------
 // One time upgrade
 // ---------------------------------------------------------
-
-pub fn init_new_user_collections() {
-    init_collection(
-        &COLLECTION_USER_USAGE_KEY.to_string(),
-        COLLECTION_USER_USAGE_DEFAULT_RULE,
-    );
-}
 
 fn init_collection(collection: &CollectionKey, default_rule: SetRule) {
     let col = STATE.with(|state| {

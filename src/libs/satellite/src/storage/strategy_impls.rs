@@ -3,7 +3,7 @@ use crate::storage::state::{
     delete_asset, get_asset, get_config, get_domains, get_rule, insert_asset, insert_asset_encoding,
 };
 use crate::storage::store::{get_content_chunks_store, get_public_asset_store};
-use crate::usage::assert::increment_and_assert_storage_usage;
+use crate::user::usage::assert::increment_and_assert_storage_usage;
 use candid::Principal;
 use junobuild_collections::types::core::CollectionKey;
 use junobuild_collections::types::rules::{Memory, Rule};

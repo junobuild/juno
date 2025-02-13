@@ -6,6 +6,8 @@
 	import { authStore } from '$lib/stores/auth.store';
 	import { i18n } from '$lib/stores/i18n.store';
 	import type { User } from '$lib/types/user';
+	import { getContext } from 'svelte';
+	import { PAGINATION_CONTEXT_KEY, type PaginationContext } from '$lib/types/pagination.context';
 
 	interface Props {
 		user: User;
@@ -25,6 +27,8 @@
 	const open = () => (visible = true);
 	const close = () => (visible = false);
 
+	const { setItem } = getContext<PaginationContext<User>>(PAGINATION_CONTEXT_KEY);
+
 	const handleSubmit = async ($event: SubmitEvent) => {
 		$event.preventDefault();
 
@@ -33,7 +37,8 @@
 		const { success } = await fn({
 			identity: $authStore.identity,
 			satelliteId,
-			user
+			user,
+			setItem
 		});
 
 		if (!success) {
@@ -41,8 +46,6 @@
 		}
 
 		visible = false;
-
-		// TODO: update list
 	};
 </script>
 

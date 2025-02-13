@@ -8,6 +8,7 @@ import type { Principal } from '@dfinity/principal';
 import { fromArray } from '@junobuild/utils';
 import { compare } from 'semver';
 import { get } from 'svelte/store';
+import {toKeyUser} from "$lib/utils/user.utils";
 
 export const listUsers = async ({
 	startAfter,
@@ -38,16 +39,9 @@ export const listUsers = async ({
 
 	const users: [string, User][] = [];
 
-	for (const [key, item] of items) {
-		const { data: dataArray, ...rest } = item;
-
-		users.push([
-			key,
-			{
-				data: await fromArray(dataArray),
-				...rest
-			}
-		]);
+	for (const item of items) {
+		const user = await toKeyUser(item);
+		users.push(user);
 	}
 
 	return {

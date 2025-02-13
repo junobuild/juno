@@ -61,6 +61,19 @@ export const initPaginationContext = <T>(): Omit<PaginationContext<T>, 'list'> =
 				itemsLength: nonNullish(items_length) ? Number(items_length) : undefined,
 				matchesLength: nonNullish(matches_length) ? Number(matches_length) : undefined
 			}));
+		},
+
+		setItem: ([key, data]: [string, T]) => {
+			store.update(({ items, ...rest }) => ({
+				...rest,
+				items: items?.reduce<[string, T][]>(
+					(acc, [currentKey, currentData]) => [
+						...acc,
+						currentKey === key ? [key, data] : [currentKey, currentData]
+					],
+					[]
+				)
+			}));
 		}
 	};
 };

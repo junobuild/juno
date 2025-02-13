@@ -19,6 +19,7 @@ export interface PaginationContext<T> {
 		matches_length: bigint | undefined;
 		items_length: bigint | undefined;
 	}) => void;
+	setItem: (item: [string, T]) => void;
 	list: () => Promise<void>;
 	startAfter: Readable<string | undefined>;
 }

@@ -17,7 +17,7 @@
 
 	let { user, satelliteId }: Props = $props();
 
-	let { owner, created_at } = $derived(user);
+	let { owner, created_at, updated_at } = $derived(user);
 
 	const openModal = async () => {
 		await openUserDetail({
@@ -41,6 +41,7 @@
 		<UserProvider {user} />
 	</td>
 	<td class="created">{formatToDate(created_at)}</td>
+	<td class="updated">{formatToDate(updated_at)}</td>
 </tr>
 
 <style lang="scss">
@@ -67,6 +68,14 @@
 		display: none;
 
 		@include media.min-width(medium) {
+			display: table-cell;
+		}
+	}
+
+	.updated {
+		display: none;
+
+		@include media.min-width(large) {
 			display: table-cell;
 		}
 	}

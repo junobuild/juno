@@ -63,6 +63,7 @@
 				<th class="identifier"> {$i18n.users.identifier} </th>
 				<th class="providers"> {$i18n.users.provider} </th>
 				<th class="created"> {$i18n.users.created} </th>
+				<th class="updated"> {$i18n.users.updated} </th>
 			</tr>
 		</thead>
 
@@ -73,11 +74,11 @@
 				{/each}
 
 				{#if !empty && ($paginationStore.pages ?? 0) > 1}
-					<tr><td colspan="4"><DataPaginator /></td></tr>
+					<tr><td colspan="5"><DataPaginator /></td></tr>
 				{/if}
 
 				{#if empty}
-					<tr><td colspan="4">{$i18n.users.empty}</td></tr>
+					<tr><td colspan="5">{$i18n.users.empty}</td></tr>
 				{/if}
 			{/if}
 		</tbody>
@@ -105,6 +106,14 @@
 		display: none;
 
 		@include media.min-width(medium) {
+			display: table-cell;
+		}
+	}
+
+	.updated {
+		display: none;
+
+		@include media.min-width(large) {
 			display: table-cell;
 		}
 	}

@@ -53,6 +53,7 @@
 
 <ButtonTableAction
 	icon={isBanned ? 'block' : 'check'}
+	errorStyle={isBanned}
 	ariaLabel={isBanned ? $i18n.users.unban_user : $i18n.users.ban_user}
 	onaction={open}
 />

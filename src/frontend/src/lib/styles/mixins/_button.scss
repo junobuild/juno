@@ -50,6 +50,16 @@
 		background: var(--color-primary-opaque);
 		color: var(--color-primary-opaque-contrast);
 	}
+
+	&.error {
+		background: var(--color-error);
+		color: var(--color-error-contrast);
+
+		&:hover:not(:disabled),
+		&:focus:not(:disabled) {
+			background: var(--color-error-shade);
+		}
+	}
 }
 
 @mixin menu {

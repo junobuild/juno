@@ -8,10 +8,11 @@
 	interface Props {
 		ariaLabel: string;
 		icon: 'delete' | 'edit' | 'info' | 'block' | 'check';
+		errorStyle?: boolean;
 		onaction: (() => void) | (() => Promise<void>);
 	}
 
-	let { ariaLabel, icon, onaction }: Props = $props();
+	let { ariaLabel, icon, onaction, errorStyle }: Props = $props();
 
 	const onclick = ($event: MouseEvent | TouchEvent) => {
 		$event.stopPropagation();
@@ -20,7 +21,7 @@
 	};
 </script>
 
-<button class="square" aria-label={ariaLabel} type="button" {onclick}
+<button class="square" class:error={errorStyle} aria-label={ariaLabel} type="button" {onclick}
 	>{#if icon === 'delete'}
 		<IconDelete size="20px" />
 	{:else if icon === 'info'}

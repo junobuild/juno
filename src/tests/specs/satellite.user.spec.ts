@@ -11,7 +11,8 @@ import {
 	JUNO_DATASTORE_ERROR_USER_CALLER_KEY,
 	JUNO_DATASTORE_ERROR_USER_CANNOT_UPDATE,
 	JUNO_DATASTORE_ERROR_USER_INVALID_DATA,
-	JUNO_DATASTORE_ERROR_USER_KEY_NO_PRINCIPAL
+	JUNO_DATASTORE_ERROR_USER_KEY_NO_PRINCIPAL,
+	JUNO_DATASTORE_ERROR_USER_NOT_ALLOWED
 } from './constants/satellite-tests.constants';
 import { SATELLITE_WASM_PATH, controllersInitArgs } from './utils/setup-tests.utils';
 
@@ -94,6 +95,30 @@ describe('Satellite > User', () => {
 
 				expect(doc).not.toBeUndefined();
 			});
+
+			it('should delete a user', async () => {
+				actor.setIdentity(user);
+
+				const { set_doc, get_doc } = actor;
+
+				await set_doc('#user', user.getPrincipal().toText(), {
+					data: await toArray({
+						provider: 'internet_identity'
+					}),
+					description: toNullable(),
+					version: toNullable()
+				});
+
+				const before = await get_doc('#user', user.getPrincipal().toText());
+
+				const { del_doc } = actor;
+
+				await expect(
+					del_doc('#user', user.getPrincipal().toText(), {
+						version: fromNullable(before)?.version ?? []
+					})
+				).resolves.not.toThrowError();
+			});
 		});
 
 		describe('error', () => {
@@ -128,28 +153,38 @@ describe('Satellite > User', () => {
 				).rejects.toThrow(JUNO_DATASTORE_ERROR_USER_CANNOT_UPDATE);
 			});
 
-			it('should not delete a user', async () => {
-				actor.setIdentity(user);
-
+			it('should not delete a user if banned', async () => {
 				const { set_doc, get_doc } = actor;
 
-				await set_doc('#user', user.getPrincipal().toText(), {
-					data: await toArray({
-						provider: 'internet_identity'
-					}),
+				const before = await set_doc('#user', user.getPrincipal().toText(), {
+					data: await toArray({}),
 					description: toNullable(),
 					version: toNullable()
 				});
 
-				const before = await get_doc('#user', user.getPrincipal().toText());
+				actor.setIdentity(controller);
 
-				const { del_doc } = actor;
+				const { set_doc: setDocBan } = actor;
+
+				const bannedUser = await setDocBan('#user', user.getPrincipal().toText(), {
+					data: await toArray({
+						banned: 'indefinite'
+					}),
+					description: toNullable(),
+					version: before.version
+				});
+
+				actor.setIdentity(user);
 
 				await expect(
-					del_doc('#user', user.getPrincipal().toText(), {
-						version: fromNullable(before)?.version ?? []
+					set_doc('#user', user.getPrincipal().toText(), {
+						data: await toArray({
+							provider: 'nfid'
+						}),
+						description: toNullable(),
+						version: bannedUser.version ?? []
 					})
-				).rejects.toThrow(JUNO_DATASTORE_ERROR_USER_CANNOT_UPDATE);
+				).rejects.toThrow(JUNO_DATASTORE_ERROR_USER_NOT_ALLOWED);
 			});
 		});
 	});
@@ -216,7 +251,7 @@ describe('Satellite > User', () => {
 				del_doc('#user', user.getPrincipal().toText(), {
 					version: fromNullable(before)?.version ?? []
 				})
-			).rejects.toThrow(JUNO_DATASTORE_ERROR_USER_CANNOT_UPDATE);
+			).rejects.toThrow(JUNO_DATASTORE_ERROR_CANNOT_WRITE);
 		});
 	});
 
@@ -296,7 +331,7 @@ describe('Satellite > User', () => {
 					del_doc('#user', user.getPrincipal().toText(), {
 						version: fromNullable(before)?.version ?? []
 					})
-				).rejects.toThrow(JUNO_DATASTORE_ERROR_USER_CANNOT_UPDATE);
+				).resolves.not.toThrowError();
 			});
 		});
 	});

@@ -60,6 +60,7 @@
 		"@junobuild/config": "^0.1.0",
 		"@junobuild/config-loader": "^0.1.0",
 		"@junobuild/console": "^0.1.3",
+		"@junobuild/errors": "^0.0.3",
 		"@junobuild/storage": "^0.1.3",
 		"@ltd/j-toml": "^1.38.0",
 		"@rollup/plugin-inject": "^5.0.5",

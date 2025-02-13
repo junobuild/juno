@@ -1,7 +1,8 @@
 use crate::hooks::invoke_assert_delete_asset;
 use crate::types::store::StoreContext;
 use crate::usage::assert::increment_and_assert_storage_usage;
-use crate::user::assert::{assert_user_is_not_banned, is_known_user};
+use crate::user::admin::assert::assert_user_is_not_banned;
+use crate::user::assert::is_known_user;
 use candid::Principal;
 use junobuild_collections::assert::stores::{assert_permission, public_permission};
 use junobuild_collections::types::rules::{Permission, Rule};

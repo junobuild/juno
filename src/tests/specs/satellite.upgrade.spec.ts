@@ -690,53 +690,54 @@ describe('Satellite upgrade', () => {
 			expect(fromNullable(max_changes_per_user)).toBeUndefined();
 		});
 
-		it('should create a rule for collection #user-usage', async () => {
-			const collection = '#user-usage';
+		it.each([{ collection: '#user-usage' }, { collection: '#user-admin' }])(
+			'%s',
+			async ({ collection }) => {
+				const { get_rule: getRuleBefore } = actor;
 
-			const { get_rule: getRuleBefore } = actor;
+				const beforeUpgrade = await getRuleBefore({ Db: null }, collection);
 
-			const beforeUpgrade = await getRuleBefore({ Db: null }, collection);
+				expect(fromNullable(beforeUpgrade)).toBeUndefined();
 
-			expect(fromNullable(beforeUpgrade)).toBeUndefined();
+				await upgrade();
 
-			await upgrade();
+				const newActor = pic.createActor<SatelliteActor>(idlFactorSatellite, canisterId);
+				newActor.setIdentity(controller);
 
-			const newActor = pic.createActor<SatelliteActor>(idlFactorSatellite, canisterId);
-			newActor.setIdentity(controller);
+				const { get_rule: getRuleAfter } = newActor;
 
-			const { get_rule: getRuleAfter } = newActor;
+				const afterUpgrade = await getRuleAfter({ Db: null }, collection);
 
-			const afterUpgrade = await getRuleAfter({ Db: null }, collection);
+				const rule = fromNullable(afterUpgrade);
 
-			const rule = fromNullable(afterUpgrade);
+				assertNonNullish(rule);
 
-			assertNonNullish(rule);
+				const {
+					updated_at,
+					created_at,
+					memory,
+					mutable_permissions,
+					read,
+					write,
+					version,
+					max_changes_per_user,
+					max_capacity,
+					max_size,
+					rate_config
+				} = rule;
 
-			const {
-				updated_at,
-				created_at,
-				memory,
-				mutable_permissions,
-				read,
-				write,
-				version,
-				max_changes_per_user,
-				max_capacity,
-				max_size,
-				rate_config
-			} = rule;
-
-			expect(memory).toEqual(toNullable({ Stable: null }));
-			expect(read).toEqual({ Controllers: null });
-			expect(write).toEqual({ Controllers: null });
-			expect(mutable_permissions).toEqual([false]);
-			expect(created_at).toBeGreaterThan(0n);
-			expect(updated_at).toBeGreaterThan(0n);
-			expect(fromNullable(version)).toBeUndefined();
-			expect(fromNullable(max_changes_per_user)).toBeUndefined();
-			expect(fromNullable(max_capacity)).toBeUndefined();
-			expect(fromNullable(max_size)).toBeUndefined();
-			expect(fromNullable(rate_config)).toBeUndefined();
-		});
+				expect(memory).toEqual(toNullable({ Stable: null }));
+				expect(read).toEqual({ Controllers: null });
+				expect(write).toEqual({ Controllers: null });
+				expect(mutable_permissions).toEqual([false]);
+				expect(created_at).toBeGreaterThan(0n);
+				expect(updated_at).toBeGreaterThan(0n);
+				expect(fromNullable(version)).toBeUndefined();
+				expect(fromNullable(max_changes_per_user)).toBeUndefined();
+				expect(fromNullable(max_capacity)).toBeUndefined();
+				expect(fromNullable(max_size)).toBeUndefined();
+				expect(fromNullable(rate_config)).toBeUndefined();
+			}
+		);
 	});
 });

@@ -5,7 +5,6 @@ pub mod state {
     #[serde(deny_unknown_fields)]
     pub struct UserData {
         pub provider: Option<AuthProvider>,
-        pub banned: Option<BannedReason>,
     }
 
     #[derive(Serialize, Deserialize)]
@@ -13,11 +12,5 @@ pub mod state {
     pub enum AuthProvider {
         InternetIdentity,
         Nfid,
-    }
-
-    #[derive(Serialize, Deserialize)]
-    #[serde(rename_all = "snake_case")]
-    pub enum BannedReason {
-        Indefinite,
     }
 }

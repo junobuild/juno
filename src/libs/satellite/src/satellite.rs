@@ -27,7 +27,6 @@ use crate::rules::store::{
     del_rule_db, del_rule_storage, get_rule_db, get_rule_storage, get_rules_db, get_rules_storage,
     set_rule_db, set_rule_storage,
 };
-use crate::rules::upgrade::init_user_usage_collection;
 use crate::storage::certified_assets::upgrade::defer_init_certified_assets;
 use crate::storage::store::{
     commit_batch_store, count_assets_store, count_collection_assets_store, create_batch_store,
@@ -70,6 +69,7 @@ use junobuild_storage::types::interface::{
 };
 use junobuild_storage::types::state::FullPath;
 use junobuild_storage::types::store::Asset;
+use crate::rules::upgrade::init_new_user_collections;
 
 pub fn init() {
     let call_arg = arg_data::<(Option<SegmentArgs>,)>(ArgDecoderConfig::default()).0;
@@ -114,7 +114,7 @@ pub fn post_upgrade() {
     invoke_on_post_upgrade();
 
     // TODO: to be removed - one time upgrade!
-    init_user_usage_collection();
+    init_new_user_collections();
 }
 
 // ---------------------------------------------------------

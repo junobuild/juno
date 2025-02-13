@@ -9,7 +9,7 @@
 	import { getContext } from 'svelte';
 	import { PAGINATION_CONTEXT_KEY, type PaginationContext } from '$lib/types/pagination.context';
 	import { i18nFormat } from '$lib/utils/i18n.utils';
-	import {shortenWithMiddleEllipsis} from "$lib/utils/format.utils";
+	import { shortenWithMiddleEllipsis } from '$lib/utils/format.utils';
 
 	interface Props {
 		user: User;

@@ -8,5 +8,7 @@ pub const JUNO_DATASTORE_ERROR_USER_KEY_NO_PRINCIPAL: &str =
 // Banned
 pub const JUNO_DATASTORE_ERROR_USER_NOT_ALLOWED: &str = "juno.datastore.error.user.not_allowed";
 // Change limit reached.
-pub const JUNO_DATASTORE_ERROR_USER_USAGE_CHANGE_LIMIT_REACHED: &str = "juno.datastore.error.user.usage.change_limit_reached";
-pub const JUNO_DATASTORE_ERROR_USER_USAGE_INVALID_DATA: &str = "juno.datastore.error.user.usage.invalid_data";
+pub const JUNO_DATASTORE_ERROR_USER_USAGE_CHANGE_LIMIT_REACHED: &str =
+    "juno.datastore.error.user.usage.change_limit_reached";
+pub const JUNO_DATASTORE_ERROR_USER_USAGE_INVALID_DATA: &str =
+    "juno.datastore.error.user.usage.invalid_data";

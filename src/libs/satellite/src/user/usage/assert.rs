@@ -1,3 +1,7 @@
+use crate::errors::user::{
+    JUNO_DATASTORE_ERROR_USER_USAGE_CHANGE_LIMIT_REACHED,
+    JUNO_DATASTORE_ERROR_USER_USAGE_INVALID_DATA,
+};
 use crate::types::state::CollectionType;
 use crate::user::usage::store::increment_usage;
 use crate::user::usage::types::state::UserUsageData;
@@ -8,7 +12,6 @@ use junobuild_collections::types::core::CollectionKey;
 use junobuild_shared::controllers::is_controller;
 use junobuild_shared::types::state::{Controllers, UserId};
 use junobuild_utils::decode_doc_data;
-use crate::errors::user::{JUNO_DATASTORE_ERROR_USER_USAGE_CHANGE_LIMIT_REACHED, JUNO_DATASTORE_ERROR_USER_USAGE_INVALID_DATA};
 // ---------------------------------------------------------
 // Increment user usage - i.e. when a user edit, create or delete
 // ---------------------------------------------------------

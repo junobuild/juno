@@ -29,11 +29,11 @@ pub fn unsafe_set_doc(
     value: SetDoc,
     rule: &Rule,
 ) -> Result<DocUpsert, String> {
-    let current_doc = get_state_doc(collection, &key, rule)?;
+    let current_doc = get_state_doc(collection, key, rule)?;
 
     let doc: Doc = Doc::prepare(caller, &current_doc, value);
 
-    let (_evicted_doc, after) = insert_state_doc(collection, &key, &doc, rule)?;
+    let (_evicted_doc, after) = insert_state_doc(collection, key, &doc, rule)?;
 
     Ok(DocUpsert {
         before: current_doc,

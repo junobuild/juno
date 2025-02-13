@@ -245,7 +245,7 @@ fn get_asset_impl(
     match asset {
         None => Ok(None),
         Some(asset) => {
-            if let Err(_) = assert_get_asset(context, rule, &asset) {
+            if assert_get_asset(context, rule, &asset).is_err() {
                 return Ok(None);
             }
 

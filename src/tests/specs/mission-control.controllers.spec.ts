@@ -6,16 +6,16 @@ import type { _SERVICE as SatelliteActor } from '$declarations/satellite/satelli
 import { idlFactory as idlFactorSatellite } from '$declarations/satellite/satellite.factory.did';
 import { Ed25519KeyIdentity } from '@dfinity/identity';
 import type { Principal } from '@dfinity/principal';
-import { PocketIc, type Actor } from '@hadronous/pic';
+import { type Actor, PocketIc } from '@hadronous/pic';
+import { JUNO_AUTH_ERROR_NOT_ADMIN_CONTROLLER } from '@junobuild/errors';
 import { afterAll, beforeAll, describe, expect, inject } from 'vitest';
 import { ORBITER_CONTROLLER_ERR_MSG } from './constants/orbiter-tests.constants';
-import { JUNO_AUTH_ERROR_NOT_ADMIN_CONTROLLER } from './constants/satellite-tests.constants';
 import { missionControlUserInitArgs } from './utils/mission-control-tests.utils';
 import {
+	controllersInitArgs,
 	MISSION_CONTROL_WASM_PATH,
 	ORBITER_WASM_PATH,
-	SATELLITE_WASM_PATH,
-	controllersInitArgs
+	SATELLITE_WASM_PATH
 } from './utils/setup-tests.utils';
 
 describe('Mission Control - Controllers', () => {

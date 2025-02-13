@@ -3,9 +3,7 @@ import { idlFactory as idlFactorSatellite } from '$declarations/satellite/satell
 import { AnonymousIdentity, type Identity } from '@dfinity/agent';
 import { Ed25519KeyIdentity } from '@dfinity/identity';
 import { fromNullable, toNullable } from '@dfinity/utils';
-import { PocketIc, type Actor } from '@hadronous/pic';
-import { toArray } from '@junobuild/utils';
-import { afterAll, beforeAll, describe, expect, inject } from 'vitest';
+import { type Actor, PocketIc } from '@hadronous/pic';
 import {
 	JUNO_DATASTORE_ERROR_CANNOT_WRITE,
 	JUNO_DATASTORE_ERROR_USER_CALLER_KEY,
@@ -13,8 +11,10 @@ import {
 	JUNO_DATASTORE_ERROR_USER_INVALID_DATA,
 	JUNO_DATASTORE_ERROR_USER_KEY_NO_PRINCIPAL,
 	JUNO_DATASTORE_ERROR_USER_NOT_ALLOWED
-} from './constants/satellite-tests.constants';
-import { SATELLITE_WASM_PATH, controllersInitArgs } from './utils/setup-tests.utils';
+} from '@junobuild/errors';
+import { toArray } from '@junobuild/utils';
+import { afterAll, beforeAll, describe, expect, inject } from 'vitest';
+import { controllersInitArgs, SATELLITE_WASM_PATH } from './utils/setup-tests.utils';
 
 describe('Satellite > User', () => {
 	let pic: PocketIc;

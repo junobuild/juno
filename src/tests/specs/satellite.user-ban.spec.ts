@@ -9,13 +9,13 @@ import { type Identity } from '@dfinity/agent';
 import { Ed25519KeyIdentity } from '@dfinity/identity';
 import { fromNullable, toNullable } from '@dfinity/utils';
 import { type Actor, PocketIc } from '@hadronous/pic';
-import { fromArray, toArray } from '@junobuild/utils';
-import { nanoid } from 'nanoid';
-import { beforeAll, describe, expect, inject } from 'vitest';
 import {
 	JUNO_DATASTORE_ERROR_USER_INVALID_DATA,
 	JUNO_DATASTORE_ERROR_USER_NOT_ALLOWED
-} from './constants/satellite-tests.constants';
+} from '@junobuild/errors';
+import { fromArray, toArray } from '@junobuild/utils';
+import { nanoid } from 'nanoid';
+import { beforeAll, describe, expect, inject } from 'vitest';
 import { mockSetRule } from './mocks/collection.mocks';
 import { mockListParams } from './mocks/list.mocks';
 import { uploadAsset } from './utils/satellite-storage-tests.utils';

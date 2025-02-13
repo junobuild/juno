@@ -10,21 +10,21 @@ import { AnonymousIdentity } from '@dfinity/agent';
 import { Ed25519KeyIdentity } from '@dfinity/identity';
 import type { Principal } from '@dfinity/principal';
 import { arrayBufferToUint8Array, fromNullable, toNullable } from '@dfinity/utils';
-import { PocketIc, type Actor } from '@hadronous/pic';
-import { toArray } from '@junobuild/utils';
-import { readFileSync } from 'node:fs';
-import { join } from 'node:path';
-import { afterAll, beforeAll, beforeEach, describe, expect, inject } from 'vitest';
+import { type Actor, PocketIc } from '@hadronous/pic';
 import {
 	JUNO_AUTH_ERROR_NOT_ADMIN_CONTROLLER,
 	JUNO_AUTH_ERROR_NOT_CONTROLLER,
 	JUNO_STORAGE_ERROR_CANNOT_COMMIT_BATCH
-} from './constants/satellite-tests.constants';
+} from '@junobuild/errors';
+import { toArray } from '@junobuild/utils';
+import { readFileSync } from 'node:fs';
+import { join } from 'node:path';
+import { afterAll, beforeAll, beforeEach, describe, expect, inject } from 'vitest';
 import { mockBlob, mockHtml } from './mocks/storage.mocks';
 import { assertCertification } from './utils/certification-test.utils';
 import { uploadAsset } from './utils/satellite-storage-tests.utils';
 import { deleteDefaultIndexHTML } from './utils/satellite-tests.utils';
-import { SATELLITE_WASM_PATH, controllersInitArgs } from './utils/setup-tests.utils';
+import { controllersInitArgs, SATELLITE_WASM_PATH } from './utils/setup-tests.utils';
 
 describe('Satellite storage', () => {
 	let pic: PocketIc;

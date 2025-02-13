@@ -7,16 +7,16 @@ import type {
 import { idlFactory as idlFactorSatellite } from '$declarations/satellite/satellite.factory.did';
 import { Ed25519KeyIdentity } from '@dfinity/identity';
 import { fromNullable, toNullable } from '@dfinity/utils';
-import { PocketIc, type Actor } from '@hadronous/pic';
-import { nanoid } from 'nanoid';
-import { afterAll, beforeAll, describe, expect, inject } from 'vitest';
+import { type Actor, PocketIc } from '@hadronous/pic';
 import {
 	JUNO_ERROR_NO_VERSION_PROVIDED,
 	JUNO_ERROR_VERSION_OUTDATED_OR_FUTURE
-} from './constants/satellite-tests.constants';
+} from '@junobuild/errors';
+import { nanoid } from 'nanoid';
+import { afterAll, beforeAll, describe, expect, inject } from 'vitest';
 import { mockData } from './mocks/doc.mocks';
 import { createDoc as createDocUtils } from './utils/satellite-doc-tests.utils';
-import { SATELLITE_WASM_PATH, controllersInitArgs } from './utils/setup-tests.utils';
+import { controllersInitArgs, SATELLITE_WASM_PATH } from './utils/setup-tests.utils';
 
 describe.each([{ memory: { Heap: null } }, { memory: { Stable: null } }])(
 	'Satellite datastore',

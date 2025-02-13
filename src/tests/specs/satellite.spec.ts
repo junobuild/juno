@@ -2,19 +2,19 @@ import type { _SERVICE as SatelliteActor, SetRule } from '$declarations/satellit
 import { idlFactory as idlFactorSatellite } from '$declarations/satellite/satellite.factory.did';
 import { Ed25519KeyIdentity } from '@dfinity/identity';
 import { assertNonNullish, fromNullable, toNullable } from '@dfinity/utils';
-import { PocketIc, type Actor } from '@hadronous/pic';
-import { parse } from '@ltd/j-toml';
-import { readFileSync } from 'node:fs';
-import { join } from 'node:path';
-import { afterAll, beforeAll, describe, expect, inject } from 'vitest';
+import { type Actor, PocketIc } from '@hadronous/pic';
 import {
 	JUNO_AUTH_ERROR_NOT_ADMIN_CONTROLLER,
 	JUNO_AUTH_ERROR_NOT_CONTROLLER,
 	JUNO_ERROR_NO_VERSION_PROVIDED,
 	JUNO_ERROR_VERSION_OUTDATED_OR_FUTURE,
 	JUNO_STORAGE_ERROR_UPLOAD_NOT_ALLOWED
-} from './constants/satellite-tests.constants';
-import { SATELLITE_WASM_PATH, controllersInitArgs } from './utils/setup-tests.utils';
+} from '@junobuild/errors';
+import { parse } from '@ltd/j-toml';
+import { readFileSync } from 'node:fs';
+import { join } from 'node:path';
+import { afterAll, beforeAll, describe, expect, inject } from 'vitest';
+import { controllersInitArgs, SATELLITE_WASM_PATH } from './utils/setup-tests.utils';
 
 describe('Satellite', () => {
 	let pic: PocketIc;

@@ -9,20 +9,20 @@ import type {
 import { idlFactory as idlFactorOrbiter } from '$declarations/orbiter/orbiter.factory.did';
 import { Ed25519KeyIdentity } from '@dfinity/identity';
 import { fromNullable } from '@dfinity/utils';
-import { PocketIc, type Actor } from '@hadronous/pic';
-import { nanoid } from 'nanoid';
-import { afterAll, beforeAll, describe, expect, inject } from 'vitest';
+import { type Actor, PocketIc } from '@hadronous/pic';
 import {
 	JUNO_ERROR_NO_VERSION_PROVIDED,
 	JUNO_ERROR_VERSION_OUTDATED_OR_FUTURE
-} from './constants/satellite-tests.constants';
+} from '@junobuild/errors';
+import { nanoid } from 'nanoid';
+import { afterAll, beforeAll, describe, expect, inject } from 'vitest';
 import {
 	pageViewMock,
 	performanceMetricMock,
 	satelliteIdMock,
 	trackEventMock
 } from './mocks/orbiter.mocks';
-import { ORBITER_WASM_PATH, controllersInitArgs } from './utils/setup-tests.utils';
+import { controllersInitArgs, ORBITER_WASM_PATH } from './utils/setup-tests.utils';
 
 describe('Orbiter', () => {
 	let pic: PocketIc;

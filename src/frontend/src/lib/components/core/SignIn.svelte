@@ -1,6 +1,6 @@
 <script lang="ts">
 	import DeprecatedSignIn from '$lib/components/core/DeprecatedSignIn.svelte';
-	import IconICMonochrome from '$lib/components/icons/IconICMonochrome.svelte';
+	import IconIc from '$lib/components/icons/IconIC.svelte';
 	import { signIn } from '$lib/services/auth.services';
 	import { isBusy } from '$lib/stores/busy.store';
 	import { i18n } from '$lib/stores/i18n.store';
@@ -30,7 +30,7 @@
 
 	<div class="sign-in">
 		<button onclick={async () => await signIn({})} disabled={$isBusy}
-			><IconICMonochrome size="20px" />
+			><IconIc size="20px" />
 			<span>{$i18n.sign_in.internet_identity}</span></button
 		>
 

@@ -44,6 +44,7 @@
 		...initPaginationContext(),
 		list
 	});
+
 	const {
 		store: paginationStore,
 		setItems,
@@ -52,10 +53,7 @@
 
 	onMount(async () => await list());
 
-	let empty = $state(false);
-	run(() => {
-		empty = $paginationStore.items?.length === 0;
-	});
+	let empty = $derived($paginationStore.items?.length === 0);
 </script>
 
 <div class="table-container">

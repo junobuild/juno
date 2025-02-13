@@ -1,7 +1,6 @@
 <script lang="ts">
 	import type { Principal } from '@dfinity/principal';
 	import UserBan from '$lib/components/auth/UserBan.svelte';
-	import UserBannedStatus from '$lib/components/auth/UserBannedStatus.svelte';
 	import UserProvider from '$lib/components/auth/UserProvider.svelte';
 	import ButtonTableAction from '$lib/components/ui/ButtonTableAction.svelte';
 	import Identifier from '$lib/components/ui/Identifier.svelte';

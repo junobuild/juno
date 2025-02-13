@@ -1,7 +1,6 @@
 <script lang="ts">
-	import { fade } from 'svelte/transition';
-	import IconBlock from '$lib/components/icons/IconBlock.svelte';
 	import type { User } from '$lib/types/user';
+	import { i18n } from '$lib/stores/i18n.store';
 
 	interface Props {
 		user: User;
@@ -14,6 +13,4 @@
 	let { banned } = $derived(data);
 </script>
 
-{#if banned === 'indefinite'}
-	<span transition:fade><IconBlock size="20px" /></span>
-{/if}
+{banned === 'indefinite' ? $i18n.users.banned : $i18n.users.active}

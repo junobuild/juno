@@ -699,6 +699,8 @@
 		"changes_unlimited": "Unlimited",
 		"max_changes_reached": "Max changes per user reached",
 		"banned": "Banned",
+		"active": "Active",
+		"status": "Status",
 		"ban_user": "Ban user",
 		"unban_user": "Unban user",
 		"user_active": "The user {0} is active.",

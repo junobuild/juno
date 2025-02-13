@@ -723,6 +723,8 @@ interface I18nUsers {
 	changes_unlimited: string;
 	max_changes_reached: string;
 	banned: string;
+	active: string;
+	status: string;
 	ban_user: string;
 	unban_user: string;
 	user_active: string;

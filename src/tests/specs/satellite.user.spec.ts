@@ -273,7 +273,7 @@ describe('Satellite > User', () => {
 			});
 		});
 
-		describe('error', () => {
+		describe("success", () => {
 			it('should not update a user', async () => {
 				const user = Ed25519KeyIdentity.generate();
 
@@ -303,9 +303,11 @@ describe('Satellite > User', () => {
 						description: toNullable(),
 						version: fromNullable(before)?.version ?? []
 					})
-				).rejects.toThrow(JUNO_DATASTORE_ERROR_USER_CANNOT_UPDATE);
+				).resolves.not.toThrowError();
 			});
+		})
 
+		describe('error', () => {
 			it('should not delete a user', async () => {
 				const user = Ed25519KeyIdentity.generate();
 

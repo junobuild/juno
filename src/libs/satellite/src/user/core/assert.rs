@@ -69,7 +69,7 @@ pub fn assert_user_write_permission(
         return Ok(());
     }
 
-    if is_admin_controller(caller, controllers) {
+    if is_controller(caller, controllers) {
         return Ok(());
     }
 

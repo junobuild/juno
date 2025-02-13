@@ -70,6 +70,7 @@ use junobuild_storage::types::interface::{
 };
 use junobuild_storage::types::state::FullPath;
 use junobuild_storage::types::store::Asset;
+use crate::user::internal_hooks::{invoke_on_delete_many_users, invoke_on_delete_user};
 
 pub fn init() {
     let call_arg = arg_data::<(Option<SegmentArgs>,)>(ArgDecoderConfig::default()).0;
@@ -153,6 +154,7 @@ pub fn del_doc(collection: CollectionKey, key: Key, doc: DelDoc) {
     let deleted_doc = delete_doc_store(caller, collection, key, doc).unwrap_or_else(|e| trap(&e));
 
     invoke_on_delete_doc(&caller, &deleted_doc);
+    invoke_on_delete_user(&deleted_doc);
 }
 
 pub fn list_docs(collection: CollectionKey, filter: ListParams) -> ListResults<Doc> {
@@ -218,6 +220,7 @@ pub fn del_many_docs(docs: Vec<(CollectionKey, Key, DelDoc)>) {
     }
 
     invoke_on_delete_many_docs(&caller, &results);
+    invoke_on_delete_many_users(&results);
 }
 
 pub fn del_filtered_docs(collection: CollectionKey, filter: ListParams) {

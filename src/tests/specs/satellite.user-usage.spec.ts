@@ -21,6 +21,7 @@ import {
 	JUNO_DATASTORE_ERROR_USER_USAGE_INVALID_DATA
 } from './constants/satellite-tests.constants';
 import { mockData } from './mocks/doc.mocks';
+import { tick } from './utils/pic-tests.utils';
 import { createDoc as createDocUtils } from './utils/satellite-doc-tests.utils';
 import { uploadAsset } from './utils/satellite-storage-tests.utils';
 import { controllersInitArgs, SATELLITE_WASM_PATH } from './utils/setup-tests.utils';
@@ -83,6 +84,31 @@ describe('Satellite User Usage', () => {
 			doc,
 			usage
 		};
+	};
+
+	const createUser = async (user: Principal) => {
+		// We need a user entry to upload to the storage, there is a guard
+		const { set_doc } = actor;
+
+		await set_doc('#user', user.toText(), {
+			data: await toArray({
+				provider: 'internet_identity'
+			}),
+			description: toNullable(),
+			version: toNullable()
+		});
+	};
+
+	const upload = async ({ index, collection }: { index: number; collection?: string }) => {
+		const name = `hello-${index}.html`;
+		const full_path = `/${collection ?? TEST_COLLECTION}/${name}`;
+
+		await uploadAsset({
+			full_path,
+			name,
+			collection: collection ?? TEST_COLLECTION,
+			actor
+		});
 	};
 
 	beforeAll(async () => {
@@ -492,31 +518,6 @@ describe('Satellite User Usage', () => {
 			await set_rule(COLLECTION_TYPE, TEST_COLLECTION, setRule);
 		});
 
-		const upload = async (index: number) => {
-			const name = `hello-${index}.html`;
-			const full_path = `/${TEST_COLLECTION}/${name}`;
-
-			await uploadAsset({
-				full_path,
-				name,
-				collection: TEST_COLLECTION,
-				actor
-			});
-		};
-
-		const createUser = async (user: Principal) => {
-			// We need a user entry to upload to the storage, there is a guard
-			const { set_doc } = actor;
-
-			await set_doc('#user', user.toText(), {
-				data: await toArray({
-					provider: 'internet_identity'
-				}),
-				description: toNullable(),
-				version: toNullable()
-			});
-		};
-
 		const user = Ed25519KeyIdentity.generate();
 		let countTotalChanges: number;
 
@@ -535,7 +536,7 @@ describe('Satellite User Usage', () => {
 
 			it('should get a usage count after update asset', async () => {
 				await Promise.all(
-					Array.from({ length: countUploadAssets }).map(async (_, i) => await upload(i))
+					Array.from({ length: countUploadAssets }).map(async (_, index) => await upload({ index }))
 				);
 
 				const { doc, usage } = await get_user_usage({
@@ -656,7 +657,7 @@ describe('Satellite User Usage', () => {
 			it('should not get usage ', async () => {
 				actor.setIdentity(user);
 
-				await upload(100);
+				await upload({ index: 100 });
 
 				const { usage } = await fetchUsage(user);
 
@@ -803,6 +804,156 @@ describe('Satellite User Usage', () => {
 					);
 				});
 			});
+		});
+	});
+
+	describe('Clean-up', () => {
+		let user: Identity;
+
+		beforeEach(async () => {
+			user = Ed25519KeyIdentity.generate();
+
+			actor.setIdentity(user);
+
+			await createUser(user.getPrincipal());
+		});
+
+		const createCollections = async (collection: string) => {
+			actor.setIdentity(controller);
+
+			const { set_rule } = actor;
+			await set_rule({ Db: null }, collection, setRule);
+			await set_rule({ Storage: null }, collection, setRule);
+		};
+
+		const createDoc = (collection: string): Promise<string> =>
+			createDocUtils({
+				actor,
+				collection
+			});
+
+		const createUsage = async (collection: string) => {
+			const countSetDocs = 10;
+
+			actor.setIdentity(user);
+
+			await Promise.all(
+				Array.from({ length: countSetDocs }).map(async () => await createDoc(collection))
+			);
+
+			const { doc: docDocs, usage: usageDocs } = await get_user_usage({
+				collection,
+				collectionType: { Db: null },
+				userId: user.getPrincipal()
+			});
+
+			assertNonNullish(docDocs);
+			assertNonNullish(usageDocs);
+
+			expect(usageDocs.changes_count).toEqual(countSetDocs);
+
+			const countUploadAssets = 5;
+
+			actor.setIdentity(user);
+
+			await Promise.all(
+				Array.from({ length: countUploadAssets }).map(
+					async (_, index) => await upload({ index, collection })
+				)
+			);
+
+			const { doc: docAssets, usage: usageAssets } = await get_user_usage({
+				collection,
+				collectionType: { Storage: null },
+				userId: user.getPrincipal()
+			});
+
+			assertNonNullish(docAssets);
+			assertNonNullish(usageAssets);
+
+			expect(usageAssets.changes_count).toEqual(countUploadAssets);
+		};
+
+		it('should delete user-usage on delete user', async () => {
+			const collection = 'clean-up-doc';
+
+			await createCollections(collection);
+
+			await createUsage(collection);
+
+			actor.setIdentity(user);
+
+			const { del_doc } = actor;
+
+			await del_doc('#user', user.getPrincipal().toText(), {
+				version: [1n]
+			});
+
+			await tick(pic);
+
+			actor.setIdentity(controller);
+
+			const { doc: docDocs, usage: usageDocs } = await get_user_usage({
+				collection,
+				collectionType: { Db: null },
+				userId: user.getPrincipal()
+			});
+
+			expect(docDocs).toBeUndefined();
+			expect(usageDocs).toBeUndefined();
+
+			const { doc: docAssets, usage: usageAssets } = await get_user_usage({
+				collection,
+				collectionType: { Storage: null },
+				userId: user.getPrincipal()
+			});
+
+			expect(docAssets).toBeUndefined();
+			expect(usageAssets).toBeUndefined();
+		});
+
+		it('should delete user-usage on delete many users', async () => {
+			const collection = 'clean-up-many-docs';
+
+			await createCollections(collection);
+
+			await createUsage(collection);
+
+			actor.setIdentity(user);
+
+			const { del_many_docs } = actor;
+
+			await del_many_docs([
+				[
+					'#user',
+					user.getPrincipal().toText(),
+					{
+						version: [1n]
+					}
+				]
+			]);
+
+			await tick(pic);
+
+			actor.setIdentity(controller);
+
+			const { doc: docDocs, usage: usageDocs } = await get_user_usage({
+				collection,
+				collectionType: { Db: null },
+				userId: user.getPrincipal()
+			});
+
+			expect(docDocs).toBeUndefined();
+			expect(usageDocs).toBeUndefined();
+
+			const { doc: docAssets, usage: usageAssets } = await get_user_usage({
+				collection,
+				collectionType: { Storage: null },
+				userId: user.getPrincipal()
+			});
+
+			expect(docAssets).toBeUndefined();
+			expect(usageAssets).toBeUndefined();
 		});
 	});
 });

@@ -138,12 +138,14 @@ export type BanUser = {
 	satelliteId: Principal;
 } & Pick<PaginationContext<User>, 'setItem'>;
 
-export const banUser = async (params: BanUser): Promise<{ success: boolean }> => await updateUser({
+export const banUser = async (params: BanUser): Promise<{ success: boolean }> =>
+	await updateUser({
 		...params,
 		action: 'ban'
 	});
 
-export const unbanUser = async (params: BanUser): Promise<{ success: boolean }> => await updateUser({
+export const unbanUser = async (params: BanUser): Promise<{ success: boolean }> =>
+	await updateUser({
 		...params,
 		action: 'unban'
 	});

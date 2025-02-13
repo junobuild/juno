@@ -1,5 +1,6 @@
 <script lang="ts">
 	import type { Principal } from '@dfinity/principal';
+	import UserBan from '$lib/components/auth/UserBan.svelte';
 	import UserProvider from '$lib/components/auth/UserProvider.svelte';
 	import ButtonTableAction from '$lib/components/ui/ButtonTableAction.svelte';
 	import Identifier from '$lib/components/ui/Identifier.svelte';
@@ -29,11 +30,15 @@
 
 <tr>
 	<td class="actions">
-		<ButtonTableAction
-			icon="visibility"
-			ariaLabel={$i18n.users.view_details}
-			onaction={openModal}
-		/>
+		<div class="actions-tools">
+			<ButtonTableAction
+				icon="visibility"
+				ariaLabel={$i18n.users.view_details}
+				onaction={openModal}
+			/>
+
+			<UserBan {user} {satelliteId} />
+		</div>
 	</td>
 	<td><Identifier small={false} identifier={owner.toText()} /></td>
 	<td class="providers">
@@ -44,6 +49,11 @@
 
 <style lang="scss">
 	@use '../../styles/mixins/media';
+
+	.actions-tools {
+		display: flex;
+		gap: var(--padding);
+	}
 
 	.providers {
 		vertical-align: middle;

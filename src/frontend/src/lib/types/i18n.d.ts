@@ -575,6 +575,8 @@ interface I18nErrors {
 	monitoring_notifications_update: string;
 	monitoring_upgrade: string;
 	user_usage_not_loaded: string;
+	user_ban: string;
+	user_unban: string;
 }
 
 interface I18nDocument {
@@ -720,6 +722,17 @@ interface I18nUsers {
 	changes: string;
 	changes_unlimited: string;
 	max_changes_reached: string;
+	banned: string;
+	active: string;
+	status: string;
+	ban_user: string;
+	unban_user: string;
+	user_active: string;
+	user_banned: string;
+	are_you_sure_ban: string;
+	are_you_sure_unban: string;
+	ban_explanation: string;
+	unban_explanation: string;
 }
 
 interface I18nMonitoring {

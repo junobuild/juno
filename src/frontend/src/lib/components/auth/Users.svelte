@@ -2,7 +2,6 @@
 	import type { Principal } from '@dfinity/principal';
 	import { isNullish, nonNullish } from '@dfinity/utils';
 	import { getContext, onMount, setContext } from 'svelte';
-	import { run } from 'svelte/legacy';
 	import User from '$lib/components/auth/User.svelte';
 	import DataCount from '$lib/components/data/DataCount.svelte';
 	import DataPaginator from '$lib/components/data/DataPaginator.svelte';
@@ -44,6 +43,7 @@
 		...initPaginationContext(),
 		list
 	});
+
 	const {
 		store: paginationStore,
 		setItems,
@@ -52,10 +52,7 @@
 
 	onMount(async () => await list());
 
-	let empty = $state(false);
-	run(() => {
-		empty = $paginationStore.items?.length === 0;
-	});
+	let empty = $derived($paginationStore.items?.length === 0);
 </script>
 
 <div class="table-container">
@@ -76,11 +73,11 @@
 				{/each}
 
 				{#if !empty && ($paginationStore.pages ?? 0) > 1}
-					<tr><td colspan="4"><DataPaginator /></td></tr>
+					<tr><td colspan="5"><DataPaginator /></td></tr>
 				{/if}
 
 				{#if empty}
-					<tr><td colspan="4">{$i18n.users.empty}</td></tr>
+					<tr><td colspan="5">{$i18n.users.empty}</td></tr>
 				{/if}
 			{/if}
 		</tbody>
@@ -93,7 +90,7 @@
 	@use '../../styles/mixins/media';
 
 	.tools {
-		width: 48px;
+		width: 60px;
 	}
 
 	.providers {

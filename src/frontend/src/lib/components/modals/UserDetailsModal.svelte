@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { nonNullish } from '@dfinity/utils';
 	import UserProvider from '$lib/components/auth/UserProvider.svelte';
+	import UserStatus from '$lib/components/auth/UserStatus.svelte';
 	import Identifier from '$lib/components/ui/Identifier.svelte';
 	import InlineWarning from '$lib/components/ui/InlineWarning.svelte';
 	import Modal from '$lib/components/ui/Modal.svelte';
@@ -32,29 +33,42 @@
 				{/snippet}
 				<Identifier small={false} identifier={owner.toText()} />
 			</Value>
-
-			<Value>
-				{#snippet label()}
-					{$i18n.users.provider}
-				{/snippet}
-				<p class="provider"><UserProvider {user} withText /></p>
-			</Value>
 		</div>
 
-		<div class="timestamps">
-			<Value>
-				{#snippet label()}
-					{$i18n.users.created}
-				{/snippet}
-				<p>{formatToDate(created_at)}</p>
-			</Value>
+		<div class="details">
+			<div class="sub-details">
+				<div>
+					<Value>
+						{#snippet label()}
+							{$i18n.users.provider}
+						{/snippet}
+						<p class="provider"><UserProvider {user} withText /></p>
+					</Value>
 
-			<Value>
-				{#snippet label()}
-					{$i18n.users.updated}
-				{/snippet}
-				<p>{formatToDate(updated_at)}</p>
-			</Value>
+					<Value>
+						{#snippet label()}
+							{$i18n.users.status}
+						{/snippet}
+						<p><UserStatus {user} /></p>
+					</Value>
+				</div>
+
+				<div>
+					<Value>
+						{#snippet label()}
+							{$i18n.users.created}
+						{/snippet}
+						<p>{formatToDate(created_at)}</p>
+					</Value>
+
+					<Value>
+						{#snippet label()}
+							{$i18n.users.updated}
+						{/snippet}
+						<p>{formatToDate(updated_at)}</p>
+					</Value>
+				</div>
+			</div>
 		</div>
 
 		{#if usages.length > 0}
@@ -122,8 +136,15 @@
 		gap: var(--padding);
 	}
 
-	.timestamps {
+	.details {
 		grid-column: 2 / 4;
+	}
+
+	.sub-details {
+		@include media.min-width(medium) {
+			display: flex;
+			gap: var(--padding-12x);
+		}
 	}
 
 	.chart {

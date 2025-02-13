@@ -95,7 +95,7 @@ fn assert_read_permission(
     current_asset: &Asset,
     rule: &Permission,
 ) -> Result<(), String> {
-    if !assert_permission(&rule, current_asset.key.owner, caller, controllers) {
+    if !assert_permission(rule, current_asset.key.owner, caller, controllers) {
         return Err(JUNO_STORAGE_ERROR_CANNOT_READ_ASSET.to_string());
     }
 

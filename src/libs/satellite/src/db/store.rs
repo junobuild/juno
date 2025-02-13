@@ -103,7 +103,7 @@ fn get_doc_impl(context: &StoreContext, key: Key, rule: &Rule) -> Result<Option<
     match value {
         None => Ok(None),
         Some(value) => {
-            if let Err(_) = assert_get_doc(context, rule, &value) {
+            if assert_get_doc(context, rule, &value).is_err() {
                 return Ok(None);
             }
 

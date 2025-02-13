@@ -233,7 +233,7 @@ pub fn del_filtered_docs(collection: CollectionKey, filter: ListParams) {
 }
 
 pub fn del_docs(collection: CollectionKey) {
-    let _ = delete_docs_store(&collection).unwrap_or_else(|e| trap(&e));
+    delete_docs_store(&collection).unwrap_or_else(|e| trap(&e));
 }
 
 pub fn count_collection_docs(collection: CollectionKey) -> usize {

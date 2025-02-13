@@ -13,13 +13,13 @@ import { Ed25519KeyIdentity } from '@dfinity/identity';
 import type { Principal } from '@dfinity/principal';
 import { assertNonNullish, fromNullable, isNullish, toNullable } from '@dfinity/utils';
 import { type Actor, PocketIc } from '@hadronous/pic';
-import { fromArray, toArray } from '@junobuild/utils';
-import { nanoid } from 'nanoid';
-import { beforeAll, describe, expect, inject } from 'vitest';
 import {
 	JUNO_DATASTORE_ERROR_CANNOT_WRITE,
 	JUNO_DATASTORE_ERROR_USER_USAGE_INVALID_DATA
-} from './constants/satellite-tests.constants';
+} from '@junobuild/errors';
+import { fromArray, toArray } from '@junobuild/utils';
+import { nanoid } from 'nanoid';
+import { beforeAll, describe, expect, inject } from 'vitest';
 import { mockData } from './mocks/doc.mocks';
 import { tick } from './utils/pic-tests.utils';
 import { createDoc as createDocUtils } from './utils/satellite-doc-tests.utils';

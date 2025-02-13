@@ -3,14 +3,14 @@ import { idlFactory as idlFactorSatellite } from '$declarations/satellite/satell
 import { AnonymousIdentity } from '@dfinity/agent';
 import { Ed25519KeyIdentity } from '@dfinity/identity';
 import { toNullable } from '@dfinity/utils';
-import { PocketIc, type Actor } from '@hadronous/pic';
+import { type Actor, PocketIc } from '@hadronous/pic';
+import { JUNO_AUTH_ERROR_NOT_ADMIN_CONTROLLER } from '@junobuild/errors';
 import { afterAll, beforeAll, describe, expect, inject } from 'vitest';
-import { JUNO_AUTH_ERROR_NOT_ADMIN_CONTROLLER } from './constants/satellite-tests.constants';
 import {
 	adminCustomDomainsTests,
 	anonymousCustomDomainsTests
 } from './utils/custom-domains-tests.utils';
-import { SATELLITE_WASM_PATH, controllersInitArgs } from './utils/setup-tests.utils';
+import { controllersInitArgs, SATELLITE_WASM_PATH } from './utils/setup-tests.utils';
 
 describe('Satellite custom domains', () => {
 	let pic: PocketIc;

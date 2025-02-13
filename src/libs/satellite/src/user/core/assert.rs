@@ -82,31 +82,6 @@ pub fn assert_user_write_permission(
     Err(JUNO_DATASTORE_ERROR_USER_CANNOT_UPDATE.to_string())
 }
 
-pub fn assert_user_delete_permission(
-    caller: Principal,
-    controllers: &Controllers,
-    collection: &CollectionKey,
-    current_doc: &Option<Doc>,
-) -> Result<(), String> {
-    let user_collection = COLLECTION_USER_KEY;
-
-    if collection != user_collection {
-        return Ok(());
-    }
-
-    if is_admin_controller(caller, controllers) {
-        return Ok(());
-    }
-
-    // It's a new document
-    if current_doc.is_none() {
-        return Ok(());
-    }
-
-    // The user already exist but the caller is not a controller
-    Err(JUNO_DATASTORE_ERROR_USER_CANNOT_UPDATE.to_string())
-}
-
 pub fn assert_user_is_not_banned(
     caller: Principal,
     controllers: &Controllers,

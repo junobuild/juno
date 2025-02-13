@@ -18,6 +18,8 @@ export const JUNO_AUTH_ERROR_NOT_CONTROLLER = 'juno.auth.error.not_controller';
 
 export const JUNO_DATASTORE_ERROR_USER_CANNOT_UPDATE = 'juno.datastore.error.user.cannot_update';
 export const JUNO_DATASTORE_ERROR_USER_INVALID_DATA = 'juno.datastore.error.user.invalid_data';
+export const JUNO_DATASTORE_ERROR_USER_ADMIN_INVALID_DATA =
+	'juno.datastore.error.user.admin.invalid_data';
 export const JUNO_DATASTORE_ERROR_USER_CALLER_KEY = 'juno.datastore.error.user.caller_key';
 export const JUNO_DATASTORE_ERROR_USER_KEY_NO_PRINCIPAL =
 	'juno.datastore.error.user.key_no_principal';

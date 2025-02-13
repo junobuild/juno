@@ -13,7 +13,7 @@ import { fromArray, toArray } from '@junobuild/utils';
 import { nanoid } from 'nanoid';
 import { beforeAll, describe, expect, inject } from 'vitest';
 import {
-	JUNO_DATASTORE_ERROR_USER_INVALID_DATA,
+	JUNO_DATASTORE_ERROR_USER_ADMIN_INVALID_DATA,
 	JUNO_DATASTORE_ERROR_USER_NOT_ALLOWED
 } from './constants/satellite-tests.constants';
 import { mockSetRule } from './mocks/collection.mocks';
@@ -46,9 +46,8 @@ describe('Satellite User Usage', () => {
 
 		const { set_doc } = actor;
 
-		await set_doc('#user', user.getPrincipal().toText(), {
+		await set_doc('#user-admin', user.getPrincipal().toText(), {
 			data: await toArray({
-				provider: 'internet_identity',
 				banned: 'indefinite'
 			}),
 			description: toNullable(),
@@ -61,9 +60,8 @@ describe('Satellite User Usage', () => {
 
 		const { set_doc } = actor;
 
-		await set_doc('#user', user.getPrincipal().toText(), {
+		await set_doc('#user-admin', user.getPrincipal().toText(), {
 			data: await toArray({
-				provider: 'internet_identity',
 				banned: undefined
 			}),
 			description: toNullable(),
@@ -99,22 +97,21 @@ describe('Satellite User Usage', () => {
 				actor.setIdentity(user);
 			});
 
-			it('should not create a user with invalid banned data field', async () => {
+			it('should not create a user admin with invalid banned data field', async () => {
 				const { set_doc } = actor;
 
 				const data = await toArray({
-					provider: 'internet_identity',
 					banned: 'yolo'
 				});
 
 				await expect(
-					set_doc('#user', user.getPrincipal().toText(), {
+					set_doc('#user-admin', user.getPrincipal().toText(), {
 						data,
 						description: toNullable(),
 						version: toNullable()
 					})
 				).rejects.toThrow(
-					`${JUNO_DATASTORE_ERROR_USER_INVALID_DATA}: unknown variant \`yolo\`, expected \`indefinite\` at line 1 column 47.`
+					`${JUNO_DATASTORE_ERROR_USER_ADMIN_INVALID_DATA}: unknown variant \`yolo\`, expected \`indefinite\` at line 1 column 16.`
 				);
 			});
 		});
@@ -135,10 +132,10 @@ describe('Satellite User Usage', () => {
 			const user3 = Ed25519KeyIdentity.generate();
 			await createUser(user3);
 
-			await banUser({ user: user1, version: [1n] });
+			await banUser({ user: user1, version: [] });
 
-			await banUser({ user: user2, version: [1n] });
-			await unbanUser({ user: user2, version: [2n] });
+			await banUser({ user: user2, version: [] });
+			await unbanUser({ user: user2, version: [1n] });
 
 			const { list_docs } = actor;
 
@@ -154,12 +151,27 @@ describe('Satellite User Usage', () => {
 			expect(item2).not.toBeUndefined();
 			expect(item3).not.toBeUndefined();
 
-			expect(await fromArray(item1?.[1].data ?? [])).toEqual({
-				provider: 'internet_identity',
-				banned: 'indefinite'
-			});
+			expect(await fromArray(item1?.[1].data ?? [])).toEqual({ provider: 'internet_identity' });
 			expect(await fromArray(item2?.[1].data ?? [])).toEqual({ provider: 'internet_identity' });
 			expect(await fromArray(item3?.[1].data ?? [])).toEqual({ provider: 'internet_identity' });
+
+			const { items: itemsAdmin, items_length: itemsAdminLength } = await list_docs(
+				'#user-admin',
+				mockListParams
+			);
+
+			expect(itemsAdminLength).toEqual(2n);
+
+			const itemsAdmin1 = itemsAdmin.find(([key, _]) => key === user1.getPrincipal().toText());
+			const itemsAdmin2 = itemsAdmin.find(([key, _]) => key === user2.getPrincipal().toText());
+			const itemsAdmin3 = itemsAdmin.find(([key, _]) => key === user3.getPrincipal().toText());
+
+			expect(itemsAdmin1).not.toBeUndefined();
+			expect(itemsAdmin2).not.toBeUndefined();
+			expect(itemsAdmin3).toBeUndefined();
+
+			expect(await fromArray(itemsAdmin1?.[1].data ?? [])).toEqual({ banned: 'indefinite' });
+			expect(await fromArray(itemsAdmin2?.[1].data ?? [])).toEqual({});
 		});
 	});
 
@@ -201,7 +213,7 @@ describe('Satellite User Usage', () => {
 				});
 
 				it('should not get document if banned', async () => {
-					await banUser({ user, version: [1n] });
+					await banUser({ user, version: [] });
 
 					actor.setIdentity(user);
 					const { get_doc } = actor;
@@ -213,8 +225,8 @@ describe('Satellite User Usage', () => {
 				});
 
 				it('should get document if unbanned', async () => {
-					await banUser({ user, version: [1n] });
-					await unbanUser({ user, version: [2n] });
+					await banUser({ user, version: [] });
+					await unbanUser({ user, version: [1n] });
 
 					actor.setIdentity(user);
 					const { get_doc } = actor;
@@ -246,7 +258,7 @@ describe('Satellite User Usage', () => {
 				});
 
 				it('should not get documents if banned', async () => {
-					await banUser({ user, version: [1n] });
+					await banUser({ user, version: [] });
 
 					actor.setIdentity(user);
 					const { get_many_docs } = actor;
@@ -259,8 +271,8 @@ describe('Satellite User Usage', () => {
 				});
 
 				it('should get documents if unbanned', async () => {
-					await banUser({ user, version: [1n] });
-					await unbanUser({ user, version: [2n] });
+					await banUser({ user, version: [] });
+					await unbanUser({ user, version: [1n] });
 
 					actor.setIdentity(user);
 					const { get_many_docs } = actor;
@@ -297,7 +309,7 @@ describe('Satellite User Usage', () => {
 
 					expect(doc).not.toBeUndefined();
 
-					await banUser({ user, version: [1n] });
+					await banUser({ user, version: [] });
 
 					await expect(createDoc()).rejects.toThrow(JUNO_DATASTORE_ERROR_USER_NOT_ALLOWED);
 				});
@@ -305,8 +317,8 @@ describe('Satellite User Usage', () => {
 				it('should set document if unbanned', async () => {
 					await createDoc();
 
-					await banUser({ user, version: [1n] });
-					await unbanUser({ user, version: [2n] });
+					await banUser({ user, version: [] });
+					await unbanUser({ user, version: [1n] });
 
 					const doc = await createDoc();
 
@@ -341,7 +353,7 @@ describe('Satellite User Usage', () => {
 				it('should not set documents if banned', async () => {
 					await expect(createDocs()).resolves.not.toThrowError();
 
-					await banUser({ user, version: [1n] });
+					await banUser({ user, version: [] });
 
 					await expect(createDocs()).rejects.toThrow(JUNO_DATASTORE_ERROR_USER_NOT_ALLOWED);
 				});
@@ -349,8 +361,8 @@ describe('Satellite User Usage', () => {
 				it('should set documents if unbanned', async () => {
 					await expect(createDocs()).resolves.not.toThrowError();
 
-					await banUser({ user, version: [1n] });
-					await unbanUser({ user, version: [2n] });
+					await banUser({ user, version: [] });
+					await unbanUser({ user, version: [1n] });
 
 					await expect(createDocs()).resolves.not.toThrowError();
 				});
@@ -374,7 +386,7 @@ describe('Satellite User Usage', () => {
 				it('should not delete document if banned', async () => {
 					await expect(deleteDoc()).resolves.not.toThrowError();
 
-					await banUser({ user, version: [1n] });
+					await banUser({ user, version: [] });
 
 					await expect(deleteDoc()).rejects.toThrow(JUNO_DATASTORE_ERROR_USER_NOT_ALLOWED);
 				});
@@ -382,8 +394,8 @@ describe('Satellite User Usage', () => {
 				it('should delete document if unbanned', async () => {
 					await expect(deleteDoc()).resolves.not.toThrowError();
 
-					await banUser({ user, version: [1n] });
-					await unbanUser({ user, version: [2n] });
+					await banUser({ user, version: [] });
+					await unbanUser({ user, version: [1n] });
 
 					await expect(deleteDoc()).resolves.not.toThrowError();
 				});
@@ -412,7 +424,7 @@ describe('Satellite User Usage', () => {
 				it('should not delete documents if banned', async () => {
 					await expect(deleteDocs()).resolves.not.toThrowError();
 
-					await banUser({ user, version: [1n] });
+					await banUser({ user, version: [] });
 
 					await expect(deleteDocs()).rejects.toThrow(JUNO_DATASTORE_ERROR_USER_NOT_ALLOWED);
 				});
@@ -420,8 +432,8 @@ describe('Satellite User Usage', () => {
 				it('should delete documents if unbanned', async () => {
 					await expect(deleteDocs()).resolves.not.toThrowError();
 
-					await banUser({ user, version: [1n] });
-					await unbanUser({ user, version: [2n] });
+					await banUser({ user, version: [] });
+					await unbanUser({ user, version: [1n] });
 
 					await expect(deleteDocs()).resolves.not.toThrowError();
 				});
@@ -443,7 +455,7 @@ describe('Satellite User Usage', () => {
 				it('should not delete documents if banned', async () => {
 					await expect(deleteFilteredDocs()).resolves.not.toThrowError();
 
-					await banUser({ user, version: [1n] });
+					await banUser({ user, version: [] });
 
 					await expect(deleteFilteredDocs()).rejects.toThrow(JUNO_DATASTORE_ERROR_USER_NOT_ALLOWED);
 				});
@@ -451,8 +463,8 @@ describe('Satellite User Usage', () => {
 				it('should get documents if unbanned', async () => {
 					await expect(deleteFilteredDocs()).resolves.not.toThrowError();
 
-					await banUser({ user, version: [1n] });
-					await unbanUser({ user, version: [2n] });
+					await banUser({ user, version: [] });
+					await unbanUser({ user, version: [1n] });
 
 					await expect(deleteFilteredDocs()).resolves.not.toThrowError();
 				});
@@ -474,7 +486,7 @@ describe('Satellite User Usage', () => {
 				it('should not list documents if banned', async () => {
 					await expect(listDocs()).resolves.not.toThrowError();
 
-					await banUser({ user, version: [1n] });
+					await banUser({ user, version: [] });
 
 					await expect(listDocs()).rejects.toThrow(JUNO_DATASTORE_ERROR_USER_NOT_ALLOWED);
 				});
@@ -482,8 +494,8 @@ describe('Satellite User Usage', () => {
 				it('should list documents if unbanned', async () => {
 					await expect(listDocs()).resolves.not.toThrowError();
 
-					await banUser({ user, version: [1n] });
-					await unbanUser({ user, version: [2n] });
+					await banUser({ user, version: [] });
+					await unbanUser({ user, version: [1n] });
 
 					await expect(listDocs()).resolves.not.toThrowError();
 				});
@@ -505,7 +517,7 @@ describe('Satellite User Usage', () => {
 				it('should not count documents if banned', async () => {
 					await expect(countDocs()).resolves.not.toThrowError();
 
-					await banUser({ user, version: [1n] });
+					await banUser({ user, version: [] });
 
 					await expect(countDocs()).rejects.toThrow(JUNO_DATASTORE_ERROR_USER_NOT_ALLOWED);
 				});
@@ -513,8 +525,8 @@ describe('Satellite User Usage', () => {
 				it('should count documents if unbanned', async () => {
 					await expect(countDocs()).resolves.not.toThrowError();
 
-					await banUser({ user, version: [1n] });
-					await unbanUser({ user, version: [2n] });
+					await banUser({ user, version: [] });
+					await unbanUser({ user, version: [1n] });
 
 					await expect(countDocs()).resolves.not.toThrowError();
 				});
@@ -562,7 +574,7 @@ describe('Satellite User Usage', () => {
 				it('should not init asset upload if banned', async () => {
 					await expect(initAsset()).resolves.not.toThrowError();
 
-					await banUser({ user, version: [1n] });
+					await banUser({ user, version: [] });
 
 					await expect(initAsset()).rejects.toThrow(JUNO_DATASTORE_ERROR_USER_NOT_ALLOWED);
 				});
@@ -570,8 +582,8 @@ describe('Satellite User Usage', () => {
 				it('should init asset upload if unbanned', async () => {
 					await expect(initAsset()).resolves.not.toThrowError();
 
-					await banUser({ user, version: [1n] });
-					await unbanUser({ user, version: [2n] });
+					await banUser({ user, version: [] });
+					await unbanUser({ user, version: [1n] });
 
 					await expect(initAsset()).resolves.not.toThrowError();
 				});
@@ -590,7 +602,7 @@ describe('Satellite User Usage', () => {
 				});
 
 				it('should not get asset if banned', async () => {
-					await banUser({ user, version: [1n] });
+					await banUser({ user, version: [] });
 
 					actor.setIdentity(user);
 					const { get_asset } = actor;
@@ -602,8 +614,8 @@ describe('Satellite User Usage', () => {
 				});
 
 				it('should get asset if unbanned', async () => {
-					await banUser({ user, version: [1n] });
-					await unbanUser({ user, version: [2n] });
+					await banUser({ user, version: [] });
+					await unbanUser({ user, version: [1n] });
 
 					actor.setIdentity(user);
 					const { get_asset } = actor;
@@ -631,7 +643,7 @@ describe('Satellite User Usage', () => {
 				it('should not delete assets if banned', async () => {
 					await expect(deleteFilteredAssets()).resolves.not.toThrowError();
 
-					await banUser({ user, version: [1n] });
+					await banUser({ user, version: [] });
 
 					await expect(deleteFilteredAssets()).rejects.toThrow(
 						JUNO_DATASTORE_ERROR_USER_NOT_ALLOWED
@@ -641,8 +653,8 @@ describe('Satellite User Usage', () => {
 				it('should get assets if unbanned', async () => {
 					await expect(deleteFilteredAssets()).resolves.not.toThrowError();
 
-					await banUser({ user, version: [1n] });
-					await unbanUser({ user, version: [2n] });
+					await banUser({ user, version: [] });
+					await unbanUser({ user, version: [1n] });
 
 					await expect(deleteFilteredAssets()).resolves.not.toThrowError();
 				});
@@ -664,7 +676,7 @@ describe('Satellite User Usage', () => {
 				it('should not list assets if banned', async () => {
 					await expect(listAssets()).resolves.not.toThrowError();
 
-					await banUser({ user, version: [1n] });
+					await banUser({ user, version: [] });
 
 					await expect(listAssets()).rejects.toThrow(JUNO_DATASTORE_ERROR_USER_NOT_ALLOWED);
 				});
@@ -672,8 +684,8 @@ describe('Satellite User Usage', () => {
 				it('should list assets if unbanned', async () => {
 					await expect(listAssets()).resolves.not.toThrowError();
 
-					await banUser({ user, version: [1n] });
-					await unbanUser({ user, version: [2n] });
+					await banUser({ user, version: [] });
+					await unbanUser({ user, version: [1n] });
 
 					await expect(listAssets()).resolves.not.toThrowError();
 				});
@@ -695,7 +707,7 @@ describe('Satellite User Usage', () => {
 				it('should not count assets if banned', async () => {
 					await expect(countAssets()).resolves.not.toThrowError();
 
-					await banUser({ user, version: [1n] });
+					await banUser({ user, version: [] });
 
 					await expect(countAssets()).rejects.toThrow(JUNO_DATASTORE_ERROR_USER_NOT_ALLOWED);
 				});
@@ -703,8 +715,8 @@ describe('Satellite User Usage', () => {
 				it('should count assets if unbanned', async () => {
 					await expect(countAssets()).resolves.not.toThrowError();
 
-					await banUser({ user, version: [1n] });
-					await unbanUser({ user, version: [2n] });
+					await banUser({ user, version: [] });
+					await unbanUser({ user, version: [1n] });
 
 					await expect(countAssets()).resolves.not.toThrowError();
 				});
@@ -723,7 +735,7 @@ describe('Satellite User Usage', () => {
 				});
 
 				it('should not get assets if banned', async () => {
-					await banUser({ user, version: [1n] });
+					await banUser({ user, version: [] });
 
 					actor.setIdentity(user);
 					const { get_many_assets } = actor;
@@ -736,8 +748,8 @@ describe('Satellite User Usage', () => {
 				});
 
 				it('should get assets if unbanned', async () => {
-					await banUser({ user, version: [1n] });
-					await unbanUser({ user, version: [2n] });
+					await banUser({ user, version: [] });
+					await unbanUser({ user, version: [1n] });
 
 					actor.setIdentity(user);
 					const { get_many_assets } = actor;
@@ -771,14 +783,14 @@ describe('Satellite User Usage', () => {
 				});
 
 				it('should not delete an asset if banned', async () => {
-					await banUser({ user, version: [1n] });
+					await banUser({ user, version: [] });
 
 					await expect(deleteAsset()).rejects.toThrow(JUNO_DATASTORE_ERROR_USER_NOT_ALLOWED);
 				});
 
 				it('should delete asset if unbanned', async () => {
-					await banUser({ user, version: [1n] });
-					await unbanUser({ user, version: [2n] });
+					await banUser({ user, version: [] });
+					await unbanUser({ user, version: [1n] });
 
 					await expect(deleteAsset()).resolves.not.toThrowError();
 				});
@@ -805,14 +817,14 @@ describe('Satellite User Usage', () => {
 				});
 
 				it('should not delete assets if banned', async () => {
-					await banUser({ user, version: [1n] });
+					await banUser({ user, version: [] });
 
 					await expect(deleteAssets()).rejects.toThrow(JUNO_DATASTORE_ERROR_USER_NOT_ALLOWED);
 				});
 
 				it('should delete assets if unbanned', async () => {
-					await banUser({ user, version: [1n] });
-					await unbanUser({ user, version: [2n] });
+					await banUser({ user, version: [] });
+					await unbanUser({ user, version: [1n] });
 
 					await expect(deleteAssets()).resolves.not.toThrowError();
 				});

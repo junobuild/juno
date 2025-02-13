@@ -5,7 +5,7 @@ use crate::errors::db::{JUNO_DATASTORE_ERROR_CANNOT_READ, JUNO_DATASTORE_ERROR_C
 use crate::hooks::{invoke_assert_delete_doc, invoke_assert_set_doc};
 use crate::types::store::StoreContext;
 use crate::usage::assert::{assert_user_usage_collection_data, increment_and_assert_db_usage};
-use crate::user::admin::assert::assert_user_is_not_banned;
+use crate::user::admin::assert::{assert_user_admin_collection_data, assert_user_is_not_banned};
 use crate::user::assert::{
     assert_user_collection_caller_key, assert_user_collection_data, assert_user_write_permission,
 };
@@ -63,6 +63,8 @@ pub fn assert_set_doc(
 
     assert_user_collection_caller_key(caller, collection, key, &current_doc)?;
     assert_user_collection_data(collection, value)?;
+
+    assert_user_admin_collection_data(collection, value)?;
 
     assert_user_write_permission(caller, controllers, collection, &current_doc)?;
     assert_write_permission(caller, controllers, current_doc, &rule.write)?;

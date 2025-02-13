@@ -374,6 +374,67 @@ describe('Satellite > User', () => {
 				expect(doc).not.toBeUndefined();
 				expect(doc?.updated_at ?? 0n).toBeGreaterThan(doc?.created_at ?? 0n);
 			});
+
+			it('should delete a user', async () => {
+				const user = Ed25519KeyIdentity.generate();
+
+				actor.setIdentity(user);
+
+				const { set_doc } = actor;
+
+				const before = await set_doc('#user', user.getPrincipal().toText(), {
+					data: await toArray({
+						provider: 'internet_identity'
+					}),
+					description: toNullable(),
+					version: toNullable()
+				});
+
+				actor.setIdentity(controller);
+
+				const { del_doc } = actor;
+
+				await expect(
+					del_doc('#user', user.getPrincipal().toText(), {
+						version: before.version
+					})
+				).resolves.not.toThrowError();
+			});
+
+			it('should delete a banned user', async () => {
+				const user = Ed25519KeyIdentity.generate();
+
+				actor.setIdentity(user);
+
+				const { set_doc } = actor;
+
+				const before = await set_doc('#user', user.getPrincipal().toText(), {
+					data: await toArray({
+						provider: 'internet_identity'
+					}),
+					description: toNullable(),
+					version: toNullable()
+				});
+
+				actor.setIdentity(controller);
+
+				const { del_doc, set_doc: set_doc_after } = actor;
+
+				const afterBan = await set_doc_after('#user', user.getPrincipal().toText(), {
+					data: await toArray({
+						provider: 'internet_identity',
+						banned: 'indefinite'
+					}),
+					description: toNullable(),
+					version: before.version
+				});
+
+				await expect(
+					del_doc('#user', user.getPrincipal().toText(), {
+						version: afterBan.version
+					})
+				).resolves.not.toThrowError();
+			});
 		});
 
 		describe('error', () => {

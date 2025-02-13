@@ -273,7 +273,7 @@ describe('Satellite > User', () => {
 			});
 		});
 
-		describe("success", () => {
+		describe('success', () => {
 			it('should not update a user', async () => {
 				const user = Ed25519KeyIdentity.generate();
 
@@ -305,7 +305,7 @@ describe('Satellite > User', () => {
 					})
 				).resolves.not.toThrowError();
 			});
-		})
+		});
 
 		describe('error', () => {
 			it('should not delete a user', async () => {

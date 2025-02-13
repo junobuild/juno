@@ -8,6 +8,7 @@ use junobuild_collections::types::core::CollectionKey;
 use junobuild_shared::controllers::is_controller;
 use junobuild_shared::types::state::{Controllers, UserId};
 use junobuild_utils::decode_doc_data;
+use crate::errors::user::{JUNO_DATASTORE_ERROR_USER_USAGE_CHANGE_LIMIT_REACHED, JUNO_DATASTORE_ERROR_USER_USAGE_INVALID_DATA};
 // ---------------------------------------------------------
 // Increment user usage - i.e. when a user edit, create or delete
 // ---------------------------------------------------------
@@ -63,7 +64,7 @@ fn increment_and_assert_usage(
 
     if let Some(max_changes_per_user) = max_changes_per_user {
         if user_usage.changes_count > max_changes_per_user {
-            return Err("Change limit reached.".to_string());
+            return Err(JUNO_DATASTORE_ERROR_USER_USAGE_CHANGE_LIMIT_REACHED.to_string());
         }
     }
 
@@ -85,7 +86,7 @@ pub fn assert_user_usage_collection_data(
     }
 
     decode_doc_data::<UserUsageData>(&doc.data)
-        .map_err(|err| format!("Invalid user usage data: {}", err))?;
+        .map_err(|err| format!("{}: {}", JUNO_DATASTORE_ERROR_USER_USAGE_INVALID_DATA, err))?;
 
     Ok(())
 }

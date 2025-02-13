@@ -19,7 +19,7 @@
 		type Tab,
 		TABS_CONTEXT_KEY,
 		type TabsContext,
-		type TabsStore
+		type TabsData
 	} from '$lib/types/tabs.context';
 	import { initTabId } from '$lib/utils/tabs.utils';
 
@@ -34,7 +34,7 @@
 		}
 	];
 
-	const store = writable<TabsStore>({
+	const store = writable<TabsData>({
 		tabId: initTabId(tabs),
 		tabs
 	});

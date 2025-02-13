@@ -2,14 +2,14 @@ import type { Rule } from '$declarations/satellite/satellite.did';
 import type { Principal } from '@dfinity/principal';
 import type { Writable } from 'svelte/store';
 
-export interface RulesStore {
+export interface RulesData {
 	satelliteId: Principal;
 	rules: [string, Rule][] | undefined;
 	rule: [string, Rule] | undefined;
 }
 
 export interface RulesContext {
-	store: Writable<RulesStore>;
+	store: Writable<RulesData>;
 	reload: () => Promise<void>;
 }
 

@@ -13,7 +13,7 @@ import {
 } from '$lib/constants/rules.constants';
 import { toasts } from '$lib/stores/toasts.store';
 import type { OptionIdentity } from '$lib/types/itentity';
-import type { RulesStore } from '$lib/types/rules.context';
+import type { RulesData } from '$lib/types/rules.context';
 import type { Principal } from '@dfinity/principal';
 import type { Writable } from 'svelte/store';
 
@@ -70,7 +70,7 @@ export const reloadContextRules = async ({
 	identity
 }: {
 	satelliteId: Principal;
-	store: Writable<RulesStore>;
+	store: Writable<RulesData>;
 	type: CollectionType;
 	identity: OptionIdentity;
 }) => {

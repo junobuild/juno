@@ -1,0 +1,23 @@
+declare module '@junobuild/errors' {
+    export const ERROR_NO_TIMESTAMP: string;
+    export const ERROR_TIMESTAMP_OUTDATED_OR_FUTURE: string;
+    export const ERROR_NO_VERSION: string;
+    export const ERROR_VERSION_OUTDATED_OR_FUTURE: string;
+    export const DATASTORE_ERROR_CANNOT_WRITE: string;
+    export const DATASTORE_ERROR_CANNOT_READ: string;
+    export const STORAGE_ERROR_UPLOAD_NOT_ALLOWED: string;
+    export const STORAGE_ERROR_SET_NOT_ALLOWED: string;
+    export const STORAGE_ERROR_CANNOT_COMMIT_BATCH: string;
+    export const STORAGE_ERROR_ASSET_NOT_FOUND: string;
+    export const STORAGE_ERROR_CANNOT_READ_ASSET: string;
+    export const AUTH_ERROR_NOT_ADMIN_CONTROLLER: string;
+    export const AUTH_ERROR_INVALID_ORIGIN: string;
+    export const AUTH_ERROR_NOT_CONTROLLER: string;
+    export const DATASTORE_ERROR_USER_CANNOT_UPDATE: string;
+    export const DATASTORE_ERROR_USER_INVALID_DATA: string;
+    export const DATASTORE_ERROR_USER_CALLER_KEY: string;
+    export const DATASTORE_ERROR_USER_KEY_NO_PRINCIPAL: string;
+    export const DATASTORE_ERROR_USER_NOT_ALLOWED: string;
+    export const DATASTORE_ERROR_USER_USAGE_CHANGE_LIMIT_REACHED: string;
+    export const DATASTORE_ERROR_USER_USAGE_INVALID_DATA: string;
+} 

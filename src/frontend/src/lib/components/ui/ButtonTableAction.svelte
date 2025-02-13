@@ -4,11 +4,10 @@
 	import IconDelete from '$lib/components/icons/IconDelete.svelte';
 	import IconEdit from '$lib/components/icons/IconEdit.svelte';
 	import IconInfo from '$lib/components/icons/IconInfo.svelte';
-	import IconVisibility from '$lib/components/icons/IconVisibility.svelte';
 
 	interface Props {
 		ariaLabel: string;
-		icon: 'delete' | 'edit' | 'info' | 'visibility' | 'block' | 'check';
+		icon: 'delete' | 'edit' | 'info' | 'block' | 'check';
 		onaction: (() => void) | (() => Promise<void>);
 	}
 
@@ -26,8 +25,6 @@
 		<IconDelete size="20px" />
 	{:else if icon === 'info'}
 		<IconInfo size="20px" />
-	{:else if icon === 'visibility'}
-		<IconVisibility size="20px" />
 	{:else if icon === 'block'}
 		<IconBlock size="20px" />
 	{:else if icon === 'check'}

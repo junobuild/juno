@@ -31,11 +31,7 @@
 <tr>
 	<td class="actions">
 		<div class="actions-tools">
-			<ButtonTableAction
-				icon="visibility"
-				ariaLabel={$i18n.users.view_details}
-				onaction={openModal}
-			/>
+			<ButtonTableAction icon="info" ariaLabel={$i18n.users.view_details} onaction={openModal} />
 
 			<UserBan {user} {satelliteId} />
 		</div>

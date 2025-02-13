@@ -73,11 +73,11 @@
 				{/each}
 
 				{#if !empty && ($paginationStore.pages ?? 0) > 1}
-					<tr><td colspan="5"><DataPaginator /></td></tr>
+					<tr><td colspan="4"><DataPaginator /></td></tr>
 				{/if}
 
 				{#if empty}
-					<tr><td colspan="5">{$i18n.users.empty}</td></tr>
+					<tr><td colspan="4">{$i18n.users.empty}</td></tr>
 				{/if}
 			{/if}
 		</tbody>

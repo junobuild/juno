@@ -127,6 +127,30 @@ describe('Satellite > User', () => {
 					})
 				).rejects.toThrow(JUNO_DATASTORE_ERROR_USER_CANNOT_UPDATE);
 			});
+
+			it('should not delete a user', async () => {
+				actor.setIdentity(user);
+
+				const { set_doc, get_doc } = actor;
+
+				await set_doc('#user', user.getPrincipal().toText(), {
+					data: await toArray({
+						provider: 'internet_identity'
+					}),
+					description: toNullable(),
+					version: toNullable()
+				});
+
+				const before = await get_doc('#user', user.getPrincipal().toText());
+
+				const { del_doc } = actor;
+
+				await expect(
+					del_doc('#user', user.getPrincipal().toText(), {
+						version: fromNullable(before)?.version ?? []
+					})
+				).rejects.toThrow(JUNO_DATASTORE_ERROR_USER_CANNOT_UPDATE);
+			});
 		});
 	});
 
@@ -165,6 +189,34 @@ describe('Satellite > User', () => {
 					version: toNullable()
 				})
 			).rejects.toThrow(JUNO_DATASTORE_ERROR_USER_CALLER_KEY);
+		});
+
+		it('should not delete a user', async () => {
+			const user = Ed25519KeyIdentity.generate();
+
+			actor.setIdentity(user);
+
+			const { set_doc, get_doc } = actor;
+
+			await set_doc('#user', user.getPrincipal().toText(), {
+				data: await toArray({
+					provider: 'internet_identity'
+				}),
+				description: toNullable(),
+				version: toNullable()
+			});
+
+			const before = await get_doc('#user', user.getPrincipal().toText());
+
+			actor.setIdentity(anonymous);
+
+			const { del_doc } = actor;
+
+			await expect(
+				del_doc('#user', user.getPrincipal().toText(), {
+					version: fromNullable(before)?.version ?? []
+				})
+			).rejects.toThrow(JUNO_DATASTORE_ERROR_USER_CANNOT_UPDATE);
 		});
 	});
 
@@ -214,6 +266,34 @@ describe('Satellite > User', () => {
 							provider: 'nfid'
 						}),
 						description: toNullable(),
+						version: fromNullable(before)?.version ?? []
+					})
+				).rejects.toThrow(JUNO_DATASTORE_ERROR_USER_CANNOT_UPDATE);
+			});
+
+			it('should not delete a user', async () => {
+				const user = Ed25519KeyIdentity.generate();
+
+				actor.setIdentity(user);
+
+				const { set_doc, get_doc } = actor;
+
+				await set_doc('#user', user.getPrincipal().toText(), {
+					data: await toArray({
+						provider: 'internet_identity'
+					}),
+					description: toNullable(),
+					version: toNullable()
+				});
+
+				const before = await get_doc('#user', user.getPrincipal().toText());
+
+				actor.setIdentity(controllerReadWrite);
+
+				const { del_doc } = actor;
+
+				await expect(
+					del_doc('#user', user.getPrincipal().toText(), {
 						version: fromNullable(before)?.version ?? []
 					})
 				).rejects.toThrow(JUNO_DATASTORE_ERROR_USER_CANNOT_UPDATE);

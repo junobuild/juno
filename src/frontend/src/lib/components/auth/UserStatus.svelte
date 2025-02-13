@@ -1,6 +1,6 @@
 <script lang="ts">
-	import type { User } from '$lib/types/user';
 	import { i18n } from '$lib/stores/i18n.store';
+	import type { User } from '$lib/types/user';
 
 	interface Props {
 		user: User;

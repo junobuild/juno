@@ -1,15 +1,15 @@
 <script lang="ts">
 	import type { Principal } from '@dfinity/principal';
+	import { getContext } from 'svelte';
 	import ButtonTableAction from '$lib/components/ui/ButtonTableAction.svelte';
 	import Popover from '$lib/components/ui/Popover.svelte';
 	import { banUser, unbanUser } from '$lib/services/user.services';
 	import { authStore } from '$lib/stores/auth.store';
 	import { i18n } from '$lib/stores/i18n.store';
-	import type { User } from '$lib/types/user';
-	import { getContext } from 'svelte';
 	import { PAGINATION_CONTEXT_KEY, type PaginationContext } from '$lib/types/pagination.context';
-	import { i18nFormat } from '$lib/utils/i18n.utils';
+	import type { User } from '$lib/types/user';
 	import { shortenWithMiddleEllipsis } from '$lib/utils/format.utils';
+	import { i18nFormat } from '$lib/utils/i18n.utils';
 
 	interface Props {
 		user: User;

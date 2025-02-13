@@ -10,12 +10,12 @@ import type { User } from '$lib/types/user';
 import type { UserUsage, UserUsageCollection } from '$lib/types/user-usage';
 import { emit } from '$lib/utils/events.utils';
 import { waitReady } from '$lib/utils/timeout.utils';
+import { toKeyUser } from '$lib/utils/user.utils';
 import type { Identity } from '@dfinity/agent';
 import type { Principal } from '@dfinity/principal';
 import { assertNonNullish, fromNullable, isNullish } from '@dfinity/utils';
 import { fromArray, toArray } from '@junobuild/utils';
 import { get } from 'svelte/store';
-import {toKeyUser} from "$lib/utils/user.utils";
 
 interface OpenUserDetailParams {
 	user: User;

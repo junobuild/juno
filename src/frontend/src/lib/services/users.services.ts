@@ -4,11 +4,10 @@ import { SATELLITE_v0_0_9 } from '$lib/constants/version.constants';
 import { authStore } from '$lib/stores/auth.store';
 import type { ListParams } from '$lib/types/list';
 import type { User } from '$lib/types/user';
+import { toKeyUser } from '$lib/utils/user.utils';
 import type { Principal } from '@dfinity/principal';
-import { fromArray } from '@junobuild/utils';
 import { compare } from 'semver';
 import { get } from 'svelte/store';
-import {toKeyUser} from "$lib/utils/user.utils";
 
 export const listUsers = async ({
 	startAfter,

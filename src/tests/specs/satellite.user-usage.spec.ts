@@ -16,7 +16,10 @@ import { type Actor, PocketIc } from '@hadronous/pic';
 import { fromArray, toArray } from '@junobuild/utils';
 import { nanoid } from 'nanoid';
 import { beforeAll, describe, expect, inject } from 'vitest';
-import { JUNO_DATASTORE_ERROR_CANNOT_WRITE } from './constants/satellite-tests.constants';
+import {
+	JUNO_DATASTORE_ERROR_CANNOT_WRITE,
+	JUNO_DATASTORE_ERROR_USER_USAGE_INVALID_DATA
+} from './constants/satellite-tests.constants';
 import { mockData } from './mocks/doc.mocks';
 import { createDoc as createDocUtils } from './utils/satellite-doc-tests.utils';
 import { uploadAsset } from './utils/satellite-storage-tests.utils';
@@ -451,7 +454,7 @@ describe('Satellite User Usage', () => {
 					};
 
 					await expect(set_doc('#user-usage', key, doc)).rejects.toThrow(
-						'Invalid user usage data: invalid type: string "invalid", expected u32 at line 1 column 26.'
+						`${JUNO_DATASTORE_ERROR_USER_USAGE_INVALID_DATA}: string "invalid", expected u32 at line 1 column 26.`
 					);
 				});
 
@@ -472,7 +475,7 @@ describe('Satellite User Usage', () => {
 					};
 
 					await expect(set_doc('#user-usage', key, doc)).rejects.toThrow(
-						'Invalid user usage data: unknown field `unknown`, expected `changes_count` at line 1 column 30.'
+						`${JUNO_DATASTORE_ERROR_USER_USAGE_INVALID_DATA}: unknown field \`unknown\`, expected \`changes_count\` at line 1 column 30.`
 					);
 				});
 			});
@@ -775,7 +778,7 @@ describe('Satellite User Usage', () => {
 					};
 
 					await expect(set_doc('#user-usage', key, doc)).rejects.toThrow(
-						'Invalid user usage data: invalid type: string "invalid", expected u32 at line 1 column 26.'
+						`${JUNO_DATASTORE_ERROR_USER_USAGE_INVALID_DATA}: invalid type: string "invalid", expected u32 at line 1 column 26.`
 					);
 				});
 
@@ -796,7 +799,7 @@ describe('Satellite User Usage', () => {
 					};
 
 					await expect(set_doc('#user-usage', key, doc)).rejects.toThrow(
-						'Invalid user usage data: unknown field `unknown`, expected `changes_count` at line 1 column 30.'
+						`${JUNO_DATASTORE_ERROR_USER_USAGE_INVALID_DATA}: unknown field \`unknown\`, expected \`changes_count\` at line 1 column 30.`
 					);
 				});
 			});

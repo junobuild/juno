@@ -5,6 +5,7 @@ import { Ed25519KeyIdentity } from '@dfinity/identity';
 import { fromNullable, nonNullish, toNullable } from '@dfinity/utils';
 import { type Actor, PocketIc } from '@hadronous/pic';
 import { afterAll, beforeAll, describe, expect, inject } from 'vitest';
+import { JUNO_DATASTORE_ERROR_USER_USAGE_CHANGE_LIMIT_REACHED } from './constants/satellite-tests.constants';
 import { createDoc as createDocUtils } from './utils/satellite-doc-tests.utils';
 import { uploadAsset } from './utils/satellite-storage-tests.utils';
 import { controllersInitArgs, SATELLITE_WASM_PATH } from './utils/setup-tests.utils';
@@ -151,7 +152,7 @@ describe('Satellite max changes', () => {
 				Array.from({ length: countMaxChanges + 1 }).map((_) => createDoc(collection))
 			);
 
-			await expect(promises).rejects.toThrow('Change limit reached.');
+			await expect(promises).rejects.toThrow(JUNO_DATASTORE_ERROR_USER_USAGE_CHANGE_LIMIT_REACHED);
 		});
 	});
 
@@ -243,7 +244,7 @@ describe('Satellite max changes', () => {
 				Array.from({ length: countMaxChanges + 1 }).map((_, index) => upload({ index, collection }))
 			);
 
-			await expect(promises).rejects.toThrow('Change limit reached.');
+			await expect(promises).rejects.toThrow(JUNO_DATASTORE_ERROR_USER_USAGE_CHANGE_LIMIT_REACHED);
 		});
 	});
 });

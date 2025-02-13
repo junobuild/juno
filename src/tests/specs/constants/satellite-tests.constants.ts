@@ -22,3 +22,7 @@ export const JUNO_DATASTORE_ERROR_USER_CALLER_KEY = 'juno.datastore.error.user.c
 export const JUNO_DATASTORE_ERROR_USER_KEY_NO_PRINCIPAL =
 	'juno.datastore.error.user.key_no_principal';
 export const JUNO_DATASTORE_ERROR_USER_NOT_ALLOWED = 'juno.datastore.error.user.not_allowed';
+export const JUNO_DATASTORE_ERROR_USER_USAGE_CHANGE_LIMIT_REACHED =
+	'juno.datastore.error.user.usage.change_limit_reached';
+export const JUNO_DATASTORE_ERROR_USER_USAGE_INVALID_DATA =
+	'juno.datastore.error.user.usage.invalid_data';

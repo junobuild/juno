@@ -46,9 +46,6 @@
 		<UserProvider {user} />
 	</td>
 	<td class="created">{formatToDate(created_at)}</td>
-	<td class="banned">
-		<UserBannedStatus {user} />
-	</td>
 </tr>
 
 <style lang="scss">
@@ -75,14 +72,6 @@
 		display: none;
 
 		@include media.min-width(medium) {
-			display: table-cell;
-		}
-	}
-
-	.banned {
-		display: none;
-
-		@include media.min-width(small) {
 			display: table-cell;
 		}
 	}

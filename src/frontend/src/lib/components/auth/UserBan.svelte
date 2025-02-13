@@ -8,6 +8,8 @@
 	import type { User } from '$lib/types/user';
 	import { getContext } from 'svelte';
 	import { PAGINATION_CONTEXT_KEY, type PaginationContext } from '$lib/types/pagination.context';
+	import { i18nFormat } from '$lib/utils/i18n.utils';
+	import {shortenWithMiddleEllipsis} from "$lib/utils/format.utils";
 
 	interface Props {
 		user: User;
@@ -50,16 +52,25 @@
 </script>
 
 <ButtonTableAction
-	icon={isBanned ? 'check' : 'block'}
+	icon={isBanned ? 'block' : 'check'}
 	ariaLabel={isBanned ? $i18n.users.unban_user : $i18n.users.ban_user}
 	onaction={open}
 />
 
 <Popover bind:visible center backdrop="dark">
 	<form class="container" onsubmit={handleSubmit}>
-		<p class="title">{isBanned ? $i18n.users.are_you_sure_unban : $i18n.users.are_you_sure_ban}</p>
+		<p class="title">
+			{i18nFormat(isBanned ? $i18n.users.user_banned : $i18n.users.user_active, [
+				{
+					placeholder: '{0}',
+					value: shortenWithMiddleEllipsis(user.owner.toText())
+				}
+			])}
+		</p>
 
 		<p>{isBanned ? $i18n.users.unban_explanation : $i18n.users.ban_explanation}</p>
+
+		<p>{isBanned ? $i18n.users.are_you_sure_unban : $i18n.users.are_you_sure_ban}</p>
 
 		<div class="toolbar">
 			<button type="button" onclick={close}>{$i18n.core.cancel}</button>

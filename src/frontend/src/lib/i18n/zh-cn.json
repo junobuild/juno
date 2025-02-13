@@ -701,10 +701,12 @@
 		"banned": "Banned",
 		"ban_user": "Ban user",
 		"unban_user": "Unban user",
-		"are_you_sure_ban": "Are you sure you want to ban this user?",
-		"are_you_sure_unban": "Are you sure you want to unban this user?",
-		"ban_explanation": "Banning a user will prevent them from accessing, updating, creating, or deleting any data in the Datastore or Storage. This action can be reverted later by unbanning the user.",
-		"unban_explanation": "Unbanning will restore their access to get, update, create, or delete data in the Datastore or Storage."
+		"user_active": "The user {0} is active.",
+		"user_banned": "The user {0} is banned.",
+		"are_you_sure_ban": "Do you want to ban this user?",
+		"are_you_sure_unban": "Do you want to unban this user?",
+		"ban_explanation": "You can ban this user to prevent them from accessing, updating, creating, or deleting any data in the Datastore or Storage. This action can be reverted later by unbanning the user.",
+		"unban_explanation": "You can unban this user to restore their access to get, update, create, or delete data in the Datastore or Storage."
 	},
 	"monitoring": {
 		"title": "Monitoring",

@@ -725,6 +725,8 @@ interface I18nUsers {
 	banned: string;
 	ban_user: string;
 	unban_user: string;
+	user_active: string;
+	user_banned: string;
 	are_you_sure_ban: string;
 	are_you_sure_unban: string;
 	ban_explanation: string;

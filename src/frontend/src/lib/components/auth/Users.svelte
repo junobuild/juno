@@ -64,7 +64,6 @@
 				<th class="identifier"> {$i18n.users.identifier} </th>
 				<th class="providers"> {$i18n.users.provider} </th>
 				<th class="created"> {$i18n.users.created} </th>
-				<th class="banned"> {$i18n.users.banned} </th>
 			</tr>
 		</thead>
 
@@ -108,15 +107,6 @@
 
 		@include media.min-width(medium) {
 			display: table-cell;
-		}
-	}
-
-	.banned {
-		display: none;
-
-		@include media.min-width(small) {
-			display: table-cell;
-			width: 100px;
 		}
 	}
 

@@ -1,5 +1,5 @@
 <script lang="ts">
-	import IconIC from '$lib/components/icons/IconIC.svelte';
+	import IconIc from '$lib/components/icons/IconIC.svelte';
 	import IconNFID from '$lib/components/icons/IconNFID.svelte';
 	import ExternalLink from '$lib/components/ui/ExternalLink.svelte';
 	import { i18n } from '$lib/stores/i18n.store';
@@ -18,14 +18,18 @@
 			<tr>
 				<td
 					><ExternalLink href="https://internetcomputer.org/internet-identity" arrow={false}
-						><span class="icon"><IconIC /></span> Internet Identity</ExternalLink
+						><span class="icon"><IconIc /></span> Internet Identity</ExternalLink
 					></td
 				>
 				<td class="status">{$i18n.core.enabled}</td>
 			</tr>
 
 			<tr>
-				<td><ExternalLink href="https://nfid.one/" arrow={false}><IconNFID /></ExternalLink></td>
+				<td
+					><ExternalLink href="https://nfid.one/" arrow={false}
+						><span class="icon"><IconNFID /></span> NFID</ExternalLink
+					></td
+				>
 				<td class="status">{$i18n.core.enabled}</td>
 			</tr>
 		</tbody>
@@ -53,7 +57,7 @@
 	}
 
 	.icon {
-		margin: 0 var(--padding-0_5x) 0 0;
+		margin: 0 var(--padding) 0 0;
 	}
 
 	.table-container {

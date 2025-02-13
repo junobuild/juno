@@ -117,6 +117,12 @@
 				max-height: -webkit-fill-available;
 			}
 		}
+
+		@supports (-webkit-touch-callout: none) and (height: 100dvh) {
+			& {
+				height: calc(100dvh - 2.75rem);
+			}
+		}
 	}
 
 	.flex {

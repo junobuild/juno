@@ -48,6 +48,12 @@ checksum = "23ce669cd6c8588f79e15cf450314f9638f967fc5770ff1c7c1deb0925ea7cfa"
 
 [[package]]
 name = "base64"
+version = "0.13.1"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "9e1b586273c5702936fe7b7d6896644d8be71e6314cfe09d3167c95f712589e8"
+
+[[package]]
+name = "base64"
 version = "0.22.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "72b3254f16251a8381aa12e40e3c4d2f0199f8c6508fbecb9d91f575e0fbb8c6"
@@ -216,7 +222,7 @@ dependencies = [
  "ic-stable-structures",
  "junobuild-collections 0.0.11",
  "junobuild-shared 0.0.24",
- "junobuild-storage",
+ "junobuild-storage 0.0.15",
  "regex",
  "semver",
  "serde",
@@ -519,6 +525,18 @@ dependencies = [
 
 [[package]]
 name = "ic-certification"
+version = "2.4.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "480b6a64a6602ed8c4eac150ef72f2206dc2910069d0cf524b5c6f90d8bc03fc"
+dependencies = [
+ "hex",
+ "serde",
+ "serde_bytes",
+ "sha2",
+]
+
+[[package]]
+name = "ic-certification"
 version = "3.0.3"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "ffb40d73f9f8273dc6569a68859003bbd467c9dc6d53c6fd7d174742f857209d"
@@ -541,6 +559,16 @@ dependencies = [
  "ic-cdk",
  "serde",
  "serde_bytes",
+ "sha2",
+]
+
+[[package]]
+name = "ic-representation-independent-hash"
+version = "2.4.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "257c90372cfbf5bf5b7f473d034dac2fb344665015c582592b8b45d90b181c88"
+dependencies = [
+ "leb128",
  "sha2",
 ]
 
@@ -827,7 +855,7 @@ dependencies = [
  "ic-stable-structures",
  "junobuild-collections 0.0.10",
  "junobuild-shared 0.0.23",
- "junobuild-storage",
+ "junobuild-storage 0.0.14",
  "junobuild-utils 0.0.4 (registry+https://github.com/rust-lang/crates.io-index)",
  "rand 0.9.0",
  "regex",
@@ -877,17 +905,42 @@ dependencies = [
 [[package]]
 name = "junobuild-storage"
 version = "0.0.14"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "5cedcd9fac53955490083722011c59445a13d93b17787af704b5c2e9e78e8786"
 dependencies = [
- "base64",
+ "base64 0.13.1",
  "candid",
  "globset",
  "hex",
  "ic-cdk",
- "ic-certification",
- "ic-representation-independent-hash",
+ "ic-certification 2.4.0",
+ "ic-representation-independent-hash 2.4.0",
  "ic-stable-structures",
  "junobuild-collections 0.0.10",
  "junobuild-shared 0.0.23",
+ "regex",
+ "serde",
+ "serde_bytes",
+ "serde_cbor",
+ "sha2",
+ "url",
+ "urlencoding",
+]
+
+[[package]]
+name = "junobuild-storage"
+version = "0.0.15"
+dependencies = [
+ "base64 0.22.1",
+ "candid",
+ "globset",
+ "hex",
+ "ic-cdk",
+ "ic-certification 3.0.3",
+ "ic-representation-independent-hash 3.0.3",
+ "ic-stable-structures",
+ "junobuild-collections 0.0.11",
+ "junobuild-shared 0.0.24",
  "regex",
  "serde",
  "serde_bytes",
@@ -1252,7 +1305,7 @@ dependencies = [
  "ic-cdk",
  "junobuild-macros",
  "junobuild-satellite",
- "junobuild-storage",
+ "junobuild-storage 0.0.15",
 ]
 
 [[package]]

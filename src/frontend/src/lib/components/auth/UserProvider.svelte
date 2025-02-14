@@ -19,6 +19,6 @@
 	<IconIc title="Internet Identity" />{#if withText}
 		Internet Identity{/if}
 {:else if provider === 'nfid'}
-	<IconNFID size="20px" withTitle />{#if withText}
+	<IconNFID withTitle />{#if withText}
 		NFID{/if}
 {/if}

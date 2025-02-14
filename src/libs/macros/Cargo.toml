@@ -1,6 +1,6 @@
 [package]
 name = "junobuild-macros"
-version = "0.0.3"
+version = "0.0.4"
 authors.workspace = true
 edition.workspace = true
 repository.workspace = true

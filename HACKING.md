@@ -8,6 +8,7 @@ This document explains how to run locally [Juno](https://juno.build).
 - [Building the Smart Contracts](#building-the-smart-contracts)
 - [Useful Administration Commands](#useful-administration-commands)
 - [Troubleshooting](#troubleshooting)
+- [Releasing Crates](#releasing-crates)
 
 ## Local Development
 
@@ -89,4 +90,12 @@ chmod 755 ~/.cargo/bin/didc
 
 ```sh
 cargo install candid-extractor
+```
+
+## Releasing Crates
+
+To publish the `junobuild-shared` or crates, use the following command:
+
+```sh
+RUSTFLAGS='--cfg getrandom_backend="custom"' cargo publish --target wasm32-unknown-unknown -p junobuild-shared
 ```

@@ -215,7 +215,7 @@ dependencies = [
  "ic-ledger-types",
  "ic-stable-structures",
  "junobuild-collections",
- "junobuild-shared",
+ "junobuild-shared 0.0.24",
  "junobuild-storage",
  "regex",
  "semver",
@@ -411,13 +411,24 @@ dependencies = [
 
 [[package]]
 name = "getrandom"
+version = "0.2.15"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "c4567c8db10ae91089c99af84c68c38da3ec2f087c3f82960bcdbf3656b6f4d7"
+dependencies = [
+ "cfg-if",
+ "libc",
+ "wasi 0.11.0+wasi-snapshot-preview1",
+]
+
+[[package]]
+name = "getrandom"
 version = "0.3.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "43a49c392881ce6d5c3b8cb70f98717b7c07aabbdff06687b9030dbfbe2725f8"
 dependencies = [
  "cfg-if",
  "libc",
- "wasi",
+ "wasi 0.13.3+wasi-0.2.2",
  "windows-targets",
 ]
 
@@ -776,7 +787,7 @@ version = "0.0.10"
 dependencies = [
  "candid",
  "ic-cdk",
- "junobuild-shared",
+ "junobuild-shared 0.0.23",
  "serde",
 ]
 
@@ -797,16 +808,16 @@ version = "0.0.21-patch.4"
 dependencies = [
  "candid",
  "ciborium",
- "getrandom",
+ "getrandom 0.3.1",
  "ic-cdk",
  "ic-cdk-macros",
  "ic-cdk-timers",
  "ic-stable-structures",
  "junobuild-collections",
- "junobuild-shared",
+ "junobuild-shared 0.0.23",
  "junobuild-storage",
  "junobuild-utils 0.0.4 (registry+https://github.com/rust-lang/crates.io-index)",
- "rand",
+ "rand 0.9.0",
  "regex",
  "serde",
  "serde_json",
@@ -816,16 +827,36 @@ dependencies = [
 [[package]]
 name = "junobuild-shared"
 version = "0.0.23"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "37a9b6f6e699c9182e1c6a46eaabea41146dfef0128d34e7b03d28e8e94aa1c4"
 dependencies = [
  "candid",
  "ciborium",
  "futures",
- "getrandom",
+ "getrandom 0.2.15",
  "ic-cdk",
  "ic-ledger-types",
  "ic-stable-structures",
  "icrc-ledger-types",
- "rand",
+ "rand 0.8.5",
+ "regex",
+ "serde",
+ "time",
+]
+
+[[package]]
+name = "junobuild-shared"
+version = "0.0.24"
+dependencies = [
+ "candid",
+ "ciborium",
+ "futures",
+ "getrandom 0.3.1",
+ "ic-cdk",
+ "ic-ledger-types",
+ "ic-stable-structures",
+ "icrc-ledger-types",
+ "rand 0.9.0",
  "regex",
  "serde",
  "time",
@@ -844,7 +875,7 @@ dependencies = [
  "ic-representation-independent-hash",
  "ic-stable-structures",
  "junobuild-collections",
- "junobuild-shared",
+ "junobuild-shared 0.0.23",
  "regex",
  "serde",
  "serde_bytes",
@@ -943,15 +974,15 @@ dependencies = [
  "candid",
  "canfund",
  "ciborium",
- "getrandom",
+ "getrandom 0.3.1",
  "ic-cdk",
  "ic-cdk-macros",
  "ic-cdk-timers",
  "ic-ledger-types",
  "ic-stable-structures",
  "icrc-ledger-types",
- "junobuild-shared",
- "rand",
+ "junobuild-shared 0.0.24",
+ "rand 0.9.0",
  "serde",
 ]
 
@@ -997,13 +1028,13 @@ version = "0.0.9"
 dependencies = [
  "candid",
  "ciborium",
- "getrandom",
+ "getrandom 0.3.1",
  "ic-cdk",
  "ic-cdk-macros",
  "ic-cdk-timers",
  "ic-stable-structures",
- "junobuild-shared",
- "rand",
+ "junobuild-shared 0.0.24",
+ "rand 0.9.0",
  "serde",
  "serde_json",
  "time",
@@ -1019,7 +1050,7 @@ dependencies = [
  "ic-cdk-macros",
  "ic-stable-structures",
  "isbot",
- "junobuild-shared",
+ "junobuild-shared 0.0.24",
  "regex",
  "serde",
  "url",
@@ -1101,13 +1132,34 @@ dependencies = [
 
 [[package]]
 name = "rand"
+version = "0.8.5"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "34af8d1a0e25924bc5b7c43c079c942339d8f0a8b57c39049bef581b46327404"
+dependencies = [
+ "libc",
+ "rand_chacha 0.3.1",
+ "rand_core 0.6.4",
+]
+
+[[package]]
+name = "rand"
 version = "0.9.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "3779b94aeb87e8bd4e834cee3650289ee9e0d5677f976ecdb6d219e5f4f6cd94"
 dependencies = [
- "rand_chacha",
- "rand_core",
+ "rand_chacha 0.9.0",
+ "rand_core 0.9.0",
  "zerocopy",
+]
+
+[[package]]
+name = "rand_chacha"
+version = "0.3.1"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "e6c10a63a0fa32252be49d21e7709d4d4baf8d231c2dbce1eaa8141b9b127d88"
+dependencies = [
+ "ppv-lite86",
+ "rand_core 0.6.4",
 ]
 
 [[package]]
@@ -1117,7 +1169,16 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "d3022b5f1df60f26e1ffddd6c66e8aa15de382ae63b3a0c1bfc0e4d3e3f325cb"
 dependencies = [
  "ppv-lite86",
- "rand_core",
+ "rand_core 0.9.0",
+]
+
+[[package]]
+name = "rand_core"
+version = "0.6.4"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "ec0be4795e2f6a28069bec0b5ff3e2ac9bafc99e6a9a7dc3547996c5c816922c"
+dependencies = [
+ "getrandom 0.2.15",
 ]
 
 [[package]]
@@ -1126,7 +1187,7 @@ version = "0.9.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "b08f3c9802962f7e1b25113931d94f43ed9725bebc59db9d0c3e9a23b67e15ff"
 dependencies = [
- "getrandom",
+ "getrandom 0.3.1",
  "zerocopy",
 ]
 
@@ -1489,6 +1550,12 @@ name = "version_check"
 version = "0.9.4"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "49874b5167b65d7193b8aba1567f5c7d93d001cafc34600cee003eda787e483f"
+
+[[package]]
+name = "wasi"
+version = "0.11.0+wasi-snapshot-preview1"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "9c8d87e72b64a3b4db28d11ce29237c246188f4f51057d65a7eab63b7987e423"
 
 [[package]]
 name = "wasi"

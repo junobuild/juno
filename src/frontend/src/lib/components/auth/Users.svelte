@@ -53,7 +53,15 @@
 	onMount(async () => await list());
 
 	let empty = $derived($paginationStore.items?.length === 0);
+
+	let innerWidth = $state(0);
+
+	let colspan = $derived(
+		innerWidth >= 1024 ? 5 : innerWidth >= 768 ? 4 : innerWidth >= 576 ? 3 : 2
+	);
 </script>
+
+<svelte:window bind:innerWidth />
 
 <div class="table-container">
 	<table>
@@ -74,11 +82,11 @@
 				{/each}
 
 				{#if !empty && ($paginationStore.pages ?? 0) > 1}
-					<tr><td colspan="5"><DataPaginator /></td></tr>
+					<tr><td {colspan}><DataPaginator /></td></tr>
 				{/if}
 
 				{#if empty}
-					<tr><td colspan="5">{$i18n.users.empty}</td></tr>
+					<tr><td {colspan}>{$i18n.users.empty}</td></tr>
 				{/if}
 			{/if}
 		</tbody>

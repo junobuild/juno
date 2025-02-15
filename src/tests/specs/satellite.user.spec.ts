@@ -154,7 +154,7 @@ describe('Satellite > User', () => {
 			});
 
 			it('should not delete a user if banned', async () => {
-				const { set_doc, get_doc } = actor;
+				const { set_doc } = actor;
 
 				const before = await set_doc('#user', user.getPrincipal().toText(), {
 					data: await toArray({}),

@@ -655,7 +655,7 @@ describe('Satellite upgrade', () => {
 				rate_config: toNullable()
 			});
 
-			await upgrade();
+			await upgradeVersion('0.0.22');
 
 			const newActor = pic.createActor<SatelliteActor>(idlFactorSatellite, canisterId);
 			newActor.setIdentity(controller);
@@ -699,7 +699,7 @@ describe('Satellite upgrade', () => {
 
 			expect(fromNullable(beforeUpgrade)).toBeUndefined();
 
-			await upgrade();
+			await upgradeVersion('0.0.22');
 
 			const newActor = pic.createActor<SatelliteActor>(idlFactorSatellite, canisterId);
 			newActor.setIdentity(controller);

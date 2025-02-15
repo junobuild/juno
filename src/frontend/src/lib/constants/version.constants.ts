@@ -13,8 +13,7 @@ const VERSIONS = {
 		v0_0_16: '0.0.16',
 		v0_0_17: '0.0.17',
 		v0_0_20: '0.0.20',
-		v0_0_21: '0.0.21',
-		v0_0_22: '0.0.22'
+		v0_0_21: '0.0.21'
 	},
 	ORBITER: {
 		v0_0_4: '0.0.4',
@@ -38,8 +37,7 @@ export const {
 		v0_0_16: SATELLITE_v0_0_16,
 		v0_0_17: SATELLITE_v0_0_17,
 		v0_0_20: SATELLITE_v0_0_20,
-		v0_0_21: SATELLITE_v0_0_21,
-		v0_0_22: SATELLITE_v0_0_22
+		v0_0_21: SATELLITE_v0_0_21
 	},
 	ORBITER: { v0_0_4: ORBITER_v0_0_4, v0_0_5: ORBITER_v0_0_5, v0_0_8: ORBITER_v0_0_8 }
 } = VERSIONS;

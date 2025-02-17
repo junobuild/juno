@@ -1,5 +1,5 @@
 <script lang="ts">
-	import DeprecatedSignIn from '$lib/components/core/DeprecatedSignIn.svelte';
+	import SignInTroubleshooting from '$lib/components/core/SignInTroubleshooting.svelte';
 	import IconIc from '$lib/components/icons/IconIC.svelte';
 	import { signIn } from '$lib/services/auth.services';
 	import { isBusy } from '$lib/stores/busy.store';
@@ -24,8 +24,6 @@
 <div class="container">
 	<div class="overview">
 		<h1>{title}</h1>
-
-		<p>{$i18n.sign_in.future}</p>
 	</div>
 
 	<div class="sign-in">
@@ -34,7 +32,7 @@
 			<span>{$i18n.sign_in.internet_identity}</span></button
 		>
 
-		<DeprecatedSignIn />
+		<SignInTroubleshooting />
 	</div>
 </div>
 
@@ -53,8 +51,7 @@
 	}
 
 	h1 {
-		color: var(--color-primary);
-		padding: var(--padding-2x) 0 var(--padding);
+		padding: var(--padding-12x) 0 var(--padding);
 
 		--bigger-title: 1;
 		font-size: calc(var(--font-size-h1) * var(--bigger-title));
@@ -72,6 +69,6 @@
 	}
 
 	button {
-		font-size: var(--font-size-small);
+		padding: var(--padding) var(--padding-2x);
 	}
 </style>

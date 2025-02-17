@@ -1,4 +1,5 @@
 <script lang="ts">
+	import SignInHelp from '$lib/components/core/SignInHelp.svelte';
 	import IconIc from '$lib/components/icons/IconIC.svelte';
 	import { signIn } from '$lib/services/auth.services';
 	import { isBusy } from '$lib/stores/busy.store';
@@ -33,6 +34,10 @@
 	</div>
 </div>
 
+<div class="pre-footer">
+	<SignInHelp />
+</div>
+
 <style lang="scss">
 	@use '../../../lib/styles/mixins/media';
 
@@ -44,7 +49,8 @@
 
 		text-align: center;
 
-		min-height: calc(100vh - var(--header-height) - var(--footer-height) - var(--padding-8x));
+		min-height: calc(100vh - var(--header-height) - var(--padding-8x));
+		padding: 0 0 var(--padding-12x);
 	}
 
 	h1 {
@@ -66,5 +72,10 @@
 
 	button {
 		padding: var(--padding) var(--padding-2x);
+	}
+
+	.pre-footer {
+		display: flex;
+		justify-content: center;
 	}
 </style>

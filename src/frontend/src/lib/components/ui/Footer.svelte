@@ -1,14 +1,13 @@
 <script lang="ts">
 	import AppLang from '$lib/components/core/AppLang.svelte';
-	import SignInTroubleshooting from '$lib/components/core/SignInTroubleshooting.svelte';
 	import Theme from '$lib/components/ui/Theme.svelte';
 
 	interface Props {
 		themeToggle?: boolean;
-		end?: boolean;
+		end?: 'lang' | 'none';
 	}
 
-	let { themeToggle = false, end = false }: Props = $props();
+	let { themeToggle = false, end = 'none' }: Props = $props();
 </script>
 
 <footer>
@@ -17,12 +16,8 @@
 			<Theme />
 		{/if}
 
-		{#if end}
-			<div>
-				<SignInTroubleshooting />
-
-				<AppLang />
-			</div>
+		{#if end === 'lang'}
+			<AppLang />
 		{/if}
 	</div>
 </footer>
@@ -33,8 +28,6 @@
 	footer {
 		display: flex;
 		justify-content: flex-end;
-
-		height: calc(var(--footer-height) - var(--padding-4x));
 
 		padding: var(--padding) var(--padding-2x);
 
@@ -57,11 +50,5 @@
 
 	.social {
 		padding: 0 var(--padding) 0 0;
-	}
-
-	div {
-		display: flex;
-		gap: var(--padding-2_5x);
-		align-items: center;
 	}
 </style>

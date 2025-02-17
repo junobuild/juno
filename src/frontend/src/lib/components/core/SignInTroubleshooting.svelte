@@ -1,9 +1,9 @@
 <script lang="ts">
 	import { createEventDispatcher } from 'svelte';
+	import Popover from '$lib/components/ui/Popover.svelte';
 	import { signIn } from '$lib/services/auth.services';
 	import { isBusy } from '$lib/stores/busy.store';
-	import Popover from "$lib/components/ui/Popover.svelte";
-	import {i18n} from "$lib/stores/i18n.store";
+	import { i18n } from '$lib/stores/i18n.store';
 
 	const dispatch = createEventDispatcher();
 
@@ -15,47 +15,48 @@
 	let visible = $state(false);
 </script>
 
-<p class="help">Need help <button
-		class="text action"
-		onclick={() => visible = true}
-		disabled={$isBusy}>signing in?</button
-></p>
+<p class="help">
+	Need help <button class="text action" onclick={() => (visible = true)} disabled={$isBusy}
+		>signing in?</button
+	>
+</p>
 
 <Popover bind:visible center={true}>
 	<div class="content">
-
-
 		<p class="sign-in-now">
 			Juno defaults to
 			<button
-					class="text action"
-					onclick={async () => await doSignIn('internetcomputer.org')}
-					disabled={$isBusy}>internetcomputer.org</button
+				class="text action"
+				onclick={async () => await doSignIn('internetcomputer.org')}
+				disabled={$isBusy}>internetcomputer.org</button
 			> for authentication.
 		</p>
 
 		<p>
 			Alternatively, you can use the method at
 			<button class="text action" onclick={async () => await doSignIn('ic0.app')} disabled={$isBusy}
-			>ic0.app</button
+				>ic0.app</button
 			>.
 		</p>
 
 		<p>If neither works, reach out on Discord.</p>
 
 		<div class="toolbar">
-			<button type="button" onclick={() => visible = false}>{$i18n.core.close}</button>
+			<button type="button" onclick={() => (visible = false)}>{$i18n.core.close}</button>
 		</div>
 	</div>
 </Popover>
 
 <style lang="scss">
 	.help {
-		margin: calc(var(--padding) * 28) 0 0;
 		font-size: var(--font-size-ultra-small);
 	}
 
 	.action {
+		margin: 0;
+	}
+
+	.help {
 		margin: 0;
 	}
 

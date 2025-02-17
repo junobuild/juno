@@ -29,8 +29,6 @@
 
 		gap: var(--padding);
 
-		min-width: var(--menu-width);
-
 		text-decoration: none;
 
 		margin: 0 0 var(--padding-2_5x);

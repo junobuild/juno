@@ -3,7 +3,7 @@
 	import Navbar from '$lib/components/core/Navbar.svelte';
 	import Footer from '$lib/components/ui/Footer.svelte';
 	import Layout from '$lib/components/ui/Layout.svelte';
-	import { authSignedIn, authSignedOut } from '$lib/derived/auth.derived';
+	import { authNotSignedIn, authSignedOut } from '$lib/derived/auth.derived';
 	import { layoutNavigation } from '$lib/stores/layout-navigation.store';
 	import { Color } from '$lib/types/theme';
 	import { applyColor } from '$lib/utils/theme.utils';
@@ -29,6 +29,6 @@
 	{@render children()}
 
 	{#snippet footer()}
-		<Footer themeToggle={$authSignedOut} end={$authSignedIn ? 'none' : 'lang'} />
+		<Footer themeToggle={$authSignedOut} end={$authNotSignedIn} />
 	{/snippet}
 </Layout>

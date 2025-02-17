@@ -4,7 +4,7 @@
 	import IconUser from '$lib/components/icons/IconUser.svelte';
 	import Footer from '$lib/components/ui/Footer.svelte';
 	import Layout from '$lib/components/ui/Layout.svelte';
-	import { authSignedIn } from '$lib/derived/auth.derived';
+	import { authNotSignedIn } from '$lib/derived/auth.derived';
 	import { i18n } from '$lib/stores/i18n.store';
 	import { layoutNavigation } from '$lib/stores/layout-navigation.store';
 	import { Color } from '$lib/types/theme';
@@ -34,6 +34,6 @@
 	{@render children()}
 
 	{#snippet footer()}
-		<Footer themeToggle end={$authSignedIn ? 'none' : 'lang'} />
+		<Footer themeToggle end={$authNotSignedIn} />
 	{/snippet}
 </Layout>

@@ -1,5 +1,4 @@
 <script lang="ts">
-	import SignInTroubleshooting from '$lib/components/core/SignInTroubleshooting.svelte';
 	import IconIc from '$lib/components/icons/IconIC.svelte';
 	import { signIn } from '$lib/services/auth.services';
 	import { isBusy } from '$lib/stores/busy.store';
@@ -31,8 +30,6 @@
 			><IconIc size="20px" />
 			<span>{$i18n.sign_in.internet_identity}</span></button
 		>
-
-		<SignInTroubleshooting />
 	</div>
 </div>
 
@@ -51,16 +48,15 @@
 	}
 
 	h1 {
-		padding: var(--padding-12x) 0 var(--padding);
+		padding: 0;
 
-		--bigger-title: 1;
+		--bigger-title: 1.2;
 		font-size: calc(var(--font-size-h1) * var(--bigger-title));
 
 		max-width: 420px;
 
 		@include media.min-width(large) {
 			--bigger-title: 1.4;
-			margin-top: var(--padding-8x);
 		}
 	}
 

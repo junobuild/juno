@@ -564,7 +564,8 @@ export const setMonitoringNotification = async ({
 		return { success: true };
 	} catch (err: unknown) {
 		toasts.error({
-			text: get(i18n).errors.monitoring_notifications_update
+			text: get(i18n).errors.monitoring_notifications_update,
+			detail: err
 		});
 		return { success: false };
 	}

@@ -164,7 +164,7 @@ const uploadSegment = async ({
 	await commit_asset_upload({
 		batch_id: batchId,
 		chunk_ids: chunkIds.map(({ chunk_id }) => chunk_id),
-		headers: [...headers, ...(contentType ? contentType : [])]
+		headers: [...headers, ...(contentType ?? [])]
 	});
 };
 

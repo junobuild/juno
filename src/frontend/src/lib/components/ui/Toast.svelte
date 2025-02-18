@@ -45,7 +45,7 @@
 		}
 
 		// Present the message we throw in the backend first
-		const trapKeywords = 'trapped explicitly:' as const;
+		const trapKeywords = 'trapped explicitly:';
 
 		if (!detail.includes(trapKeywords)) {
 			reorgDetail = detail;

@@ -78,9 +78,9 @@ const pollAndInitMissionControl = async ({
 	identity
 }: {
 	identity: Identity;
-	// eslint-disable-next-line no-async-promise-executor, require-await
+	// eslint-disable-next-line require-await
 }): Promise<PollAndInitResult> =>
-	// eslint-disable-next-line no-async-promise-executor, require-await
+	// eslint-disable-next-line no-async-promise-executor
 	new Promise<PollAndInitResult>(async (resolve, reject) => {
 		try {
 			const { missionControlId, certified } = await getOrInitMissionControlId({
@@ -148,7 +148,7 @@ export const getOrInitMissionControl = async ({
 const assertMissionControl = async ({ identity }: { identity: Identity }) => {
 	try {
 		await getMissionControlApi({ identity, certified: true });
-	} catch (error: unknown) {
+	} catch (_err: unknown) {
 		await missionControlErrorSignOut();
 	}
 };

@@ -6,7 +6,7 @@
 		onintersect: () => void;
 		disabled?: boolean;
 		// IntersectionObserverInit is not recognized by the linter
-		// eslint-disable-next-line no-undef
+
 		options?: IntersectionObserverInit;
 		children: Snippet;
 	}
@@ -23,7 +23,6 @@
 
 	let target: HTMLDivElement | undefined;
 
-	// eslint-disable-next-line local-rules/prefer-object-params
 	const onIntersection = (entries: IntersectionObserverEntry[]) => {
 		const intersecting = entries.find(
 			({ isIntersecting }: IntersectionObserverEntry) => isIntersecting

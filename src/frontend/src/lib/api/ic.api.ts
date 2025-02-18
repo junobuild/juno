@@ -225,7 +225,7 @@ export const getSubnetId = async ({
 }): Promise<string | undefined> => {
 	const agent = await getAgent({ identity: new AnonymousIdentity() });
 
-	const path = 'subnet' as const;
+	const path = 'subnet';
 
 	const result = await AgentCanisterStatus.request({
 		canisterId: Principal.from(canisterId),

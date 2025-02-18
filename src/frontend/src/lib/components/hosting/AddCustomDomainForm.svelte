@@ -30,7 +30,8 @@
 			dns = toCustomDomainDns({ domainName: domainNameInput, canisterId: satellite.satellite_id });
 		} catch (err: unknown) {
 			toasts.error({
-				text: $i18n.errors.hosting_invalid_url
+				text: $i18n.errors.hosting_invalid_url,
+				detail: err
 			});
 			return;
 		}

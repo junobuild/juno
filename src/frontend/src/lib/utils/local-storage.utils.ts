@@ -54,7 +54,7 @@ export const getLocalStorageTheme = (): Theme => {
 		const darkMode = window.matchMedia('(prefers-color-scheme: dark)').matches;
 
 		return storageTheme ?? (darkMode ? Theme.DARK : Theme.LIGHT);
-	} catch (err: unknown) {
+	} catch (_err: unknown) {
 		// We ignore the error until we can extra proxy/signin to auth.papy.rs
 		return Theme.LIGHT;
 	}

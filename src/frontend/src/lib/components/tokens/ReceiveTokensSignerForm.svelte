@@ -28,9 +28,10 @@
 	const loadBalance = async (owner: Principal) => {
 		try {
 			balance = await getBalance({ owner, identity: $authStore.identity });
-		} catch (error: unknown) {
+		} catch (err: unknown) {
 			toasts.error({
-				text: $i18n.errors.wallet_load_balance
+				text: $i18n.errors.wallet_load_balance,
+				detail: err
 			});
 
 			back();

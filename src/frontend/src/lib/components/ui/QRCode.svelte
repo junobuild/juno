@@ -16,7 +16,6 @@
 	export let value: string;
 
 	let dark: boolean;
-	// eslint-disable-next-line svelte/valid-compile
 	$: dark = $theme === Theme.DARK;
 
 	// Valid CSS colors

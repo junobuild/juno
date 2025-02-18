@@ -31,10 +31,8 @@ export interface JunoModalWithSatellite {
 
 export type JunoModalTopUpSatelliteDetail = JunoModalWithAccountIdentifier & JunoModalWithSatellite;
 
-// eslint-disable-next-line @typescript-eslint/no-empty-interface
 export interface JunoModalTopUpMissionControlDetail extends JunoModalWithAccountIdentifier {}
 
-// eslint-disable-next-line @typescript-eslint/no-empty-interface
 export interface JunoModalTopUpOrbiterDetail extends JunoModalWithAccountIdentifier {}
 
 export interface JunoModalUpgradeDetail {

@@ -1,17 +1,16 @@
-import { NodeModulesPolyfillPlugin } from '@esbuild-plugins/node-modules-polyfill';
-import inject from '@rollup/plugin-inject';
 import { sveltekit } from '@sveltejs/kit/vite';
 import { readFileSync } from 'fs';
 import { dirname, resolve } from 'path';
 import { fileURLToPath } from 'url';
 import { defineConfig, type UserConfig } from 'vite';
+import { nodePolyfills } from 'vite-plugin-node-polyfills';
 
 const file = fileURLToPath(new URL('package.json', import.meta.url));
 const json = readFileSync(file, 'utf8');
 const { version } = JSON.parse(json);
 
 const config: UserConfig = {
-	plugins: [sveltekit()],
+	plugins: [sveltekit(), nodePolyfills()],
 	resolve: {
 		alias: {
 			$declarations: resolve('./src/declarations')
@@ -41,33 +40,7 @@ const config: UserConfig = {
 
 					return undefined;
 				}
-			},
-			// Polyfill Buffer for production build
-			plugins: [
-				inject({
-					modules: { Buffer: ['buffer', 'Buffer'] }
-				})
-			]
-		}
-	},
-	// Node polyfill agent-js. Thanks solution shared by chovyfu on the Discord channel.
-	// https://stackoverflow.com/questions/71744659/how-do-i-deploy-a-sveltekit-app-to-a-dfinity-container
-	optimizeDeps: {
-		esbuildOptions: {
-			// Node.js global to browser globalThis
-			define: {
-				global: 'globalThis'
-			},
-			// Enable esbuild polyfill plugins
-			plugins: [
-				NodeModulesPolyfillPlugin(),
-				{
-					name: 'fix-node-globals-polyfill',
-					setup(build) {
-						build.onResolve({ filter: /_virtual-process-polyfill_\.js/ }, ({ path }) => ({ path }));
-					}
-				}
-			]
+			}
 		}
 	},
 	worker: {

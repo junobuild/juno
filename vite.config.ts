@@ -9,6 +9,7 @@ const file = fileURLToPath(new URL('package.json', import.meta.url));
 const json = readFileSync(file, 'utf8');
 const { version } = JSON.parse(json);
 
+
 const config: UserConfig = {
 	plugins: [sveltekit(), nodePolyfills()],
 	resolve: {

@@ -82,9 +82,6 @@
 
 		padding: 0 var(--padding-2x) var(--padding-6x);
 
-		position: relative;
-		min-height: calc(100% - var(--footer-height));
-
 		@include media.min-width(xlarge) {
 			padding: 0 var(--padding-10x) var(--padding-6x);
 		}

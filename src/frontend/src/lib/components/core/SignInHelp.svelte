@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { createEventDispatcher } from 'svelte';
+	import ExternalLink from '$lib/components/ui/ExternalLink.svelte';
 	import Popover from '$lib/components/ui/Popover.svelte';
 	import { signIn } from '$lib/services/auth.services';
 	import { isBusy } from '$lib/stores/busy.store';
@@ -39,7 +40,13 @@
 			>.
 		</p>
 
-		<p>If neither works, reach out on Discord.</p>
+		<p>
+			If neither works, reach out on <ExternalLink
+				underline
+				href="https://discord.gg/wHZ57Z2RAG"
+				arrow={false}>Discord</ExternalLink
+			>.
+		</p>
 
 		<div class="toolbar">
 			<button type="button" onclick={() => (visible = false)}>{$i18n.core.close}</button>

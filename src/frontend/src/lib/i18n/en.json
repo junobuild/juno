@@ -224,7 +224,11 @@
 		"quote_8": "Galaxies within grasp forever.",
 		"quote_9": "Navigate stars, chase dreams.",
 		"quote_10": "Universe: endless exploration awaits.",
-		"internet_identity": "Continue with Internet Identity"
+		"internet_identity": "Continue with Internet Identity",
+		"juno_defaults_to": "Juno defaults to",
+		"for_authentication": "for authentication.",
+		"alternatively": "Alternatively, you can use the method at",
+		"if_neither_works": "If neither works, reach out on"
 	},
 	"satellites": {
 		"title": "Satellites",

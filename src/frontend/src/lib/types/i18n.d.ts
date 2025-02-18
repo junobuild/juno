@@ -230,6 +230,10 @@ interface I18nSign_in {
 	quote_9: string;
 	quote_10: string;
 	internet_identity: string;
+	juno_defaults_to: string;
+	for_authentication: string;
+	alternatively: string;
+	if_neither_works: string;
 }
 
 interface I18nSatellites {

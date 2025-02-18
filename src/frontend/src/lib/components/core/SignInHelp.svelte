@@ -25,26 +25,26 @@
 <Popover bind:visible center={true}>
 	<div class="content">
 		<p class="sign-in-now">
-			Juno defaults to
+			{$i18n.sign_in.juno_defaults_to}
 			<button
 				class="text action"
 				onclick={async () => await doSignIn('internetcomputer.org')}
 				disabled={$isBusy}>internetcomputer.org</button
-			> for authentication.
+			>
+			{$i18n.sign_in.for_authentication}
 		</p>
 
 		<p>
-			Alternatively, you can use the method at
+			{$i18n.sign_in.alternatively}
 			<button class="text action" onclick={async () => await doSignIn('ic0.app')} disabled={$isBusy}
 				>ic0.app</button
 			>.
 		</p>
 
 		<p>
-			If neither works, reach out on <ExternalLink
-				underline
-				href="https://discord.gg/wHZ57Z2RAG"
-				arrow={false}>Discord</ExternalLink
+			{$i18n.sign_in.if_neither_works}
+			<ExternalLink underline href="https://discord.gg/wHZ57Z2RAG" arrow={false}
+				>Discord</ExternalLink
 			>.
 		</p>
 

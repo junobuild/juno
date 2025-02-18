@@ -201,6 +201,10 @@
 </form>
 
 <style lang="scss">
+	form {
+		padding: 0 0 var(--padding-8x);
+	}
+
 	button {
 		margin: var(--padding-2_5x) 0 0;
 		display: block;

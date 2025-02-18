@@ -1,24 +1,26 @@
 <script lang="ts">
 	import AppLang from '$lib/components/core/AppLang.svelte';
+	import ExternalLink from '$lib/components/ui/ExternalLink.svelte';
 	import Theme from '$lib/components/ui/Theme.svelte';
-
-	interface Props {
-		themeToggle?: boolean;
-		end?: 'lang' | 'none';
-	}
-
-	let { themeToggle = false, end = 'none' }: Props = $props();
 </script>
 
 <footer>
-	<div class:theme={themeToggle} class="footer">
-		{#if themeToggle}
-			<Theme />
-		{/if}
+	<Theme />
 
-		{#if end === 'lang'}
-			<AppLang />
-		{/if}
+	<div class="end">
+		<div class="links">
+			<ExternalLink href="https://juno.build/docs/intro" arrow={false}>Docs</ExternalLink>
+
+			<ExternalLink href="https://juno.build/docs/category/guides-and-examples" arrow={false}
+				>Guides</ExternalLink
+			>
+
+			<ExternalLink href="https://github.com/junobuild/juno" arrow={false}>GitHub</ExternalLink>
+
+			<ExternalLink href="https://discord.gg/wHZ57Z2RAG" arrow={false}>Discord</ExternalLink>
+		</div>
+
+		<AppLang />
 	</div>
 </footer>
 
@@ -26,29 +28,25 @@
 	@use '../../styles/mixins/media';
 
 	footer {
-		display: flex;
-		justify-content: flex-end;
+		padding: var(--padding-3x) var(--padding-2x) 0;
 
-		padding: var(--padding) var(--padding-2x);
+		border-top: 1px solid var(--text-color);
 
 		@include media.min-width(xlarge) {
-			padding: var(--padding-4x) var(--padding-6x);
+			padding: var(--padding-4x) var(--padding-6x) 0;
 		}
 	}
 
-	.footer {
+	.end {
 		display: flex;
+		justify-content: space-between;
 		align-items: center;
 	}
 
-	.theme {
-		display: flex;
-		justify-content: space-between;
+	.links {
+		gap: var(--padding-2x);
+		padding: var(--padding-2x) 0;
 
-		width: 100%;
-	}
-
-	.social {
-		padding: 0 var(--padding) 0 0;
+		font-size: var(--font-size-very-small);
 	}
 </style>

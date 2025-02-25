@@ -448,7 +448,7 @@ pub fn on_init(attr: TokenStream, item: TokenStream) -> TokenStream {
     hook_macro(Hook::OnInit, attr, item)
 }
 
-/// The `on_post_upgrade_unsafe` function is a procedural macro attribute for hooking into the `OnPostUpgrade` event.
+/// The `on_post_upgrade_sync` function is a procedural macro attribute for hooking into the `OnPostUpgrade` event.
 /// Unlike `on_post_upgrade`, this variant **executes synchronously** and is intended for advanced use cases
 /// where immediate execution is required.
 ///
@@ -465,8 +465,8 @@ pub fn on_init(attr: TokenStream, item: TokenStream) -> TokenStream {
 /// # Example (Restricted Usage)
 ///
 /// ```rust
-/// #[on_post_upgrade_unsafe]
-/// fn on_post_upgrade_critical() {
+/// #[on_post_upgrade_sync]
+/// fn on_post_upgrade_sync() {
 ///     // Perform necessary actions immediately on upgrade
 /// }
 /// ```
@@ -474,11 +474,11 @@ pub fn on_init(attr: TokenStream, item: TokenStream) -> TokenStream {
 /// **Note:** This function is hidden from public documentation to discourage general usage.
 #[doc(hidden)]
 #[proc_macro_attribute]
-pub fn on_post_upgrade_unsafe(attr: TokenStream, item: TokenStream) -> TokenStream {
-    hook_macro(Hook::OnInitUnsafe, attr, item)
+pub fn on_post_upgrade_sync(attr: TokenStream, item: TokenStream) -> TokenStream {
+    hook_macro(Hook::OnPostUpgradeSync, attr, item)
 }
 
-/// The `on_init_unsafe` function is a procedural macro attribute for hooking into the `OnInit` event.
+/// The `on_init_sync` function is a procedural macro attribute for hooking into the `OnInit` event.
 /// It serves the same purpose as `on_init`, but **executes synchronously**, ensuring that initialization
 /// logic is run **immediately** instead of being deferred.
 ///
@@ -493,8 +493,8 @@ pub fn on_post_upgrade_unsafe(attr: TokenStream, item: TokenStream) -> TokenStre
 /// # Example (Restricted Usage)
 ///
 /// ```rust
-/// #[on_init_unsafe]
-/// fn critical_on_init() {
+/// #[on_init_sync]
+/// fn on_init_sync() {
 ///     // This runs synchronously before any async operations are triggered
 /// }
 /// ```
@@ -502,6 +502,6 @@ pub fn on_post_upgrade_unsafe(attr: TokenStream, item: TokenStream) -> TokenStre
 /// **Note:** This function is hidden from public documentation to prevent unintended usage.
 #[doc(hidden)]
 #[proc_macro_attribute]
-pub fn on_init_unsafe(attr: TokenStream, item: TokenStream) -> TokenStream {
-    hook_macro(Hook::OnInitUnsafe, attr, item)
+pub fn on_init_sync(attr: TokenStream, item: TokenStream) -> TokenStream {
+    hook_macro(Hook::OnInitSync, attr, item)
 }

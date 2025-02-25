@@ -25,9 +25,9 @@ pub enum Hook {
     OnDeleteManyAssets,
     OnDeleteFilteredAssets,
     OnInit,
-    OnInitUnsafe,
+    OnInitSync,
     OnPostUpgrade,
-    OnPostUpgradeUnsafe,
+    OnPostUpgradeSync,
     AssertSetDoc,
     AssertDeleteDoc,
     AssertUploadAsset,
@@ -49,8 +49,8 @@ fn map_hook_name(hook: Hook) -> String {
         Hook::OnDeleteFilteredAssets => "juno_on_delete_filtered_assets".to_string(),
         Hook::OnInit => "juno_on_init".to_string(),
         Hook::OnPostUpgrade => "juno_on_post_upgrade".to_string(),
-        Hook::OnInitUnsafe => "juno_on_init_unsafe".to_string(),
-        Hook::OnPostUpgradeUnsafe => "juno_on_post_upgrade_unsafe".to_string(),
+        Hook::OnInitSync => "juno_on_init_sync".to_string(),
+        Hook::OnPostUpgradeSync => "juno_on_post_upgrade_sync".to_string(),
         Hook::AssertSetDoc => "juno_assert_set_doc".to_string(),
         Hook::AssertDeleteDoc => "juno_assert_delete_doc".to_string(),
         Hook::AssertUploadAsset => "juno_assert_upload_asset".to_string(),
@@ -110,7 +110,7 @@ fn parse_hook(hook: &Hook, attr: TokenStream, item: TokenStream) -> Result<Token
     let hook_fn = Ident::new(&map_hook_name(hook.clone()), proc_macro2::Span::call_site());
 
     match hook {
-        Hook::OnPostUpgrade | Hook::OnInit | Hook::OnPostUpgradeUnsafe | Hook::OnInitUnsafe => {
+        Hook::OnPostUpgrade | Hook::OnInit | Hook::OnPostUpgradeSync | Hook::OnInitSync => {
             parse_lifecycle_hook(&ast, signature, &hook_fn)
         }
         _ => parse_doc_hook(&ast, signature, &hook_fn, hook, attr),

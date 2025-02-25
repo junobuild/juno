@@ -1,4 +1,6 @@
-use crate::db::state::{get_doc as get_state_doc, insert_doc as insert_state_doc, delete_doc as delete_state_doc};
+use crate::db::state::{
+    delete_doc as delete_state_doc, get_doc as get_state_doc, insert_doc as insert_state_doc,
+};
 use crate::db::types::state::{Doc, DocUpsert};
 use crate::SetDoc;
 use junobuild_collections::types::core::CollectionKey;

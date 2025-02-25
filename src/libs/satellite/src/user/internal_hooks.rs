@@ -1,7 +1,7 @@
-use junobuild_collections::constants::db::COLLECTION_USER_KEY;
 use crate::db::types::state::DocContext;
-use crate::Doc;
 use crate::user::usage::internal_hooks::invoke_delete_user_usage;
+use crate::Doc;
+use junobuild_collections::constants::db::COLLECTION_USER_KEY;
 
 pub fn invoke_on_delete_user(doc: &DocContext<Option<Doc>>) {
     invoke_deletion(doc);

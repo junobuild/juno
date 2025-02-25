@@ -38,6 +38,7 @@ use crate::storage::store::{
 use crate::storage::strategy_impls::StorageState;
 use crate::types::interface::Config;
 use crate::types::state::{CollectionType, HeapState, RuntimeState, State};
+use crate::user::internal_hooks::{invoke_on_delete_many_users, invoke_on_delete_user};
 use ciborium::{from_reader, into_writer};
 use ic_cdk::api::call::{arg_data, ArgDecoderConfig};
 use ic_cdk::api::{caller, trap};
@@ -69,7 +70,6 @@ use junobuild_storage::types::interface::{
 };
 use junobuild_storage::types::state::FullPath;
 use junobuild_storage::types::store::Asset;
-use crate::user::internal_hooks::{invoke_on_delete_many_users, invoke_on_delete_user};
 
 pub fn init() {
     let call_arg = arg_data::<(Option<SegmentArgs>,)>(ArgDecoderConfig::default()).0;

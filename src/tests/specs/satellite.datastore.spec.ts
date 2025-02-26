@@ -590,10 +590,10 @@ describe.each([{ memory: { Heap: null } }, { memory: { Stable: null } }])(
 			});
 
 			const testItemsLength = async ({
-				setLength,
-				expectedLength,
-				collection
-			}: {
+											   setLength,
+											   expectedLength,
+											   collection
+										   }: {
 				setLength: number;
 				expectedLength: number;
 				collection: string;

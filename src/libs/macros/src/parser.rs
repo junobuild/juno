@@ -28,6 +28,7 @@ pub enum Hook {
     OnInitSync,
     OnPostUpgrade,
     OnPostUpgradeSync,
+    OnInitRandomSeed,
     AssertSetDoc,
     AssertDeleteDoc,
     AssertUploadAsset,
@@ -51,6 +52,7 @@ fn map_hook_name(hook: Hook) -> String {
         Hook::OnPostUpgrade => "juno_on_post_upgrade".to_string(),
         Hook::OnInitSync => "juno_on_init_sync".to_string(),
         Hook::OnPostUpgradeSync => "juno_on_post_upgrade_sync".to_string(),
+        Hook::OnInitRandomSeed => "juno_on_init_random_seed".to_string(),
         Hook::AssertSetDoc => "juno_assert_set_doc".to_string(),
         Hook::AssertDeleteDoc => "juno_assert_delete_doc".to_string(),
         Hook::AssertUploadAsset => "juno_assert_upload_asset".to_string(),
@@ -111,7 +113,7 @@ fn parse_hook(hook: &Hook, attr: TokenStream, item: TokenStream) -> Result<Token
 
     match hook {
         Hook::OnPostUpgrade | Hook::OnInit => parse_lifecycle_hook(&ast, signature, &hook_fn),
-        Hook::OnPostUpgradeSync | Hook::OnInitSync => {
+        Hook::OnPostUpgradeSync | Hook::OnInitSync | Hook::OnInitRandomSeed => {
             parse_lifecycle_sync_hook(&ast, signature, &hook_fn)
         }
         _ => parse_doc_hook(&ast, signature, &hook_fn, hook, attr),

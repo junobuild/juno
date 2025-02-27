@@ -509,3 +509,21 @@ pub fn on_post_upgrade_sync(attr: TokenStream, item: TokenStream) -> TokenStream
 pub fn on_init_sync(attr: TokenStream, item: TokenStream) -> TokenStream {
     hook_macro(Hook::OnInitSync, attr, item)
 }
+
+/// The `on_init_random_seed` function is a procedural macro attribute for hooking into the
+/// `OnInitRandomSeed` event. It allows you to define custom logic to be executed after
+/// the satellite has initialized the random seed.
+///
+/// Example:
+///
+/// ```rust
+/// #[on_init_random_seed]
+/// fn on_init_random_seed() {
+///     // Your post-initialization logic after random seed setup
+/// }
+/// ```
+///
+#[proc_macro_attribute]
+pub fn on_init_random_seed(attr: TokenStream, item: TokenStream) -> TokenStream {
+    hook_macro(Hook::OnInitRandomSeed, attr, item)
+}

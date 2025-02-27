@@ -19,12 +19,12 @@ use crate::hooks::db::{
     invoke_on_delete_doc, invoke_on_delete_filtered_docs, invoke_on_delete_many_docs,
     invoke_on_set_doc, invoke_on_set_many_docs,
 };
+use crate::hooks::lifecycle::{
+    invoke_on_init, invoke_on_init_sync, invoke_on_post_upgrade, invoke_on_post_upgrade_sync,
+};
 use crate::hooks::storage::{
     invoke_on_delete_asset, invoke_on_delete_filtered_assets, invoke_on_delete_many_assets,
     invoke_upload_asset,
-};
-use crate::hooks::lifecycle::{
-    invoke_on_init, invoke_on_init_sync, invoke_on_post_upgrade, invoke_on_post_upgrade_sync,
 };
 use crate::memory::{get_memory_upgrades, init_stable_state, STATE};
 use crate::random::init::defer_init_random_seed;

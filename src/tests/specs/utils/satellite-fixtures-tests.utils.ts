@@ -6,11 +6,13 @@ import { type Actor, PocketIc } from '@hadronous/pic';
 import { inject } from 'vitest';
 import { tick } from './pic-tests.utils';
 import { controllersInitArgs, TEST_SATELLITE_WASM_PATH } from './setup-tests.utils';
+import type {Principal} from "@dfinity/principal";
 
 export const setupTestSatellite = async (): Promise<{
 	pic: PocketIc;
 	actor: Actor<TestSatelliteActor>;
 	controller: Identity;
+	canisterId: Principal;
 }> => {
 	const controller = Ed25519KeyIdentity.generate();
 
@@ -41,6 +43,7 @@ export const setupTestSatellite = async (): Promise<{
 	return {
 		pic,
 		actor,
-		controller
+		controller,
+		canisterId
 	};
 };

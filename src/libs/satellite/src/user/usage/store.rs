@@ -81,7 +81,7 @@ fn delete_user_usage_for_collections(
         let user_usage_key =
             UserUsageKey::create(user_id, &collection_key, collection_type).to_key();
 
-        unsafe_delete_doc(user_usage_collection, &user_usage_key, &user_usage_rule)?;
+        unsafe_delete_doc(user_usage_collection, &user_usage_key, user_usage_rule)?;
     }
 
     Ok(())

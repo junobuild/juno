@@ -27,7 +27,7 @@ use crate::hooks::lifecycle::{
     invoke_on_init, invoke_on_init_sync, invoke_on_post_upgrade, invoke_on_post_upgrade_sync,
 };
 use crate::memory::{get_memory_upgrades, init_stable_state, STATE};
-use crate::random::defer_init_random_seed;
+use crate::random::init::defer_init_random_seed;
 use crate::rules::store::{
     del_rule_db, del_rule_storage, get_rule_db, get_rule_storage, get_rules_db, get_rules_storage,
     set_rule_db, set_rule_storage,

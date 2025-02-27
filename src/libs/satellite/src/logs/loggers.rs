@@ -1,11 +1,10 @@
 use crate::logs::types::logs::{Log, LogLevel};
-use crate::memory::STATE;
+use crate::random::runtime::random;
 use crate::{set_doc_store, Key, SetDoc};
 use ic_cdk::api::time;
 use ic_cdk::id;
 use junobuild_collections::constants::db::COLLECTION_LOG_KEY;
 use junobuild_utils::encode_doc_data;
-use rand::Rng;
 use serde::Serialize;
 
 /// Logs a message at the `Info` level.
@@ -99,15 +98,4 @@ fn set_log<T: Serialize>(level: LogLevel, message: String, data: Option<&T>) -> 
     set_doc_store(id(), COLLECTION_LOG_KEY.to_string(), key, doc)?;
 
     Ok(())
-}
-
-fn random() -> Result<i32, String> {
-    STATE.with(|state| {
-        let rng = &mut state.borrow_mut().runtime.rng;
-
-        match rng {
-            None => Err("The random number generator has not been initialized.".to_string()),
-            Some(rng) => Ok(rng.random()),
-        }
-    })
 }

@@ -74,7 +74,7 @@ pub use crate::types::hooks::{
     OnDeleteFilteredAssetsContext, OnDeleteFilteredDocsContext, OnDeleteManyAssetsContext,
     OnDeleteManyDocsContext, OnSetDocContext, OnSetManyDocsContext, OnUploadAssetContext,
 };
-
+pub use crate::random::runtime::random;
 // ============================================================================================
 // END: Re-exported Types
 // ============================================================================================

@@ -8,7 +8,9 @@ import { inject } from 'vitest';
 import { tick } from './pic-tests.utils';
 import { controllersInitArgs, TEST_SATELLITE_WASM_PATH } from './setup-tests.utils';
 
-export const setupTestSatellite = async (): Promise<{
+export const setupTestSatellite = async (
+	{ withUpgrade }: { withUpgrade: boolean } = { withUpgrade: true }
+): Promise<{
 	pic: PocketIc;
 	actor: Actor<TestSatelliteActor>;
 	controller: Identity;
@@ -30,6 +32,31 @@ export const setupTestSatellite = async (): Promise<{
 
 	await tick(pic);
 
+	if (withUpgrade) {
+		await upgradeTestSatellite({
+			pic,
+			controller,
+			canisterId
+		});
+	}
+
+	return {
+		pic,
+		actor,
+		controller,
+		canisterId
+	};
+};
+
+export const upgradeTestSatellite = async ({
+	pic,
+	canisterId,
+	controller
+}: {
+	pic: PocketIc;
+	controller: Identity;
+	canisterId: Principal;
+}) => {
 	// The random number generator is only initialized on upgrade because dev that do not use serverless functions do not need it
 	await pic.upgradeCanister({
 		canisterId,
@@ -39,11 +66,4 @@ export const setupTestSatellite = async (): Promise<{
 
 	// Wait for post_upgrade to kicks in since we defer instantiation of random
 	await tick(pic);
-
-	return {
-		pic,
-		actor,
-		controller,
-		canisterId
-	};
 };

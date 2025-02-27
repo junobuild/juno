@@ -15,11 +15,16 @@ use crate::db::store::{
 use crate::db::types::config::DbConfig;
 use crate::db::types::interface::{DelDoc, SetDoc};
 use crate::db::types::state::{Doc, DocContext, DocUpsert};
-use crate::hooks::{
-    invoke_on_delete_asset, invoke_on_delete_doc, invoke_on_delete_filtered_assets,
-    invoke_on_delete_filtered_docs, invoke_on_delete_many_assets, invoke_on_delete_many_docs,
+use crate::hooks::db::{
+    invoke_on_delete_doc, invoke_on_delete_filtered_docs, invoke_on_delete_many_docs,
+    invoke_on_set_doc, invoke_on_set_many_docs,
+};
+use crate::hooks::storage::{
+    invoke_on_delete_asset, invoke_on_delete_filtered_assets, invoke_on_delete_many_assets,
+    invoke_upload_asset,
+};
+use crate::hooks::lifecycle::{
     invoke_on_init, invoke_on_init_sync, invoke_on_post_upgrade, invoke_on_post_upgrade_sync,
-    invoke_on_set_doc, invoke_on_set_many_docs, invoke_upload_asset,
 };
 use crate::memory::{get_memory_upgrades, init_stable_state, STATE};
 use crate::random::defer_init_random_seed;

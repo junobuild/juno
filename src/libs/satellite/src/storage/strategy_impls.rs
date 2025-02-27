@@ -1,4 +1,4 @@
-use crate::hooks::invoke_assert_upload_asset;
+use crate::hooks::storage::invoke_assert_upload_asset;
 use crate::storage::state::{
     delete_asset, get_asset, get_config, get_domains, get_rule, insert_asset, insert_asset_encoding,
 };

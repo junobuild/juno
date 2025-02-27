@@ -2,11 +2,11 @@ import type { _SERVICE as TestSatelliteActor } from '$test-declarations/test_sat
 import { idlFactory as idlTestFactorySatellite } from '$test-declarations/test_satellite/test_satellite.factory.did';
 import type { Identity } from '@dfinity/agent';
 import { Ed25519KeyIdentity } from '@dfinity/identity';
+import type { Principal } from '@dfinity/principal';
 import { type Actor, PocketIc } from '@hadronous/pic';
 import { inject } from 'vitest';
 import { tick } from './pic-tests.utils';
 import { controllersInitArgs, TEST_SATELLITE_WASM_PATH } from './setup-tests.utils';
-import type {Principal} from "@dfinity/principal";
 
 export const setupTestSatellite = async (): Promise<{
 	pic: PocketIc;

@@ -1,5 +1,4 @@
 import type { _SERVICE as TestSatelliteActor } from '$test-declarations/test_satellite/test_satellite.did';
-import type { Identity } from '@dfinity/agent';
 import { toNullable } from '@dfinity/utils';
 import { type Actor, PocketIc } from '@hadronous/pic';
 import { fromArray } from '@junobuild/utils';

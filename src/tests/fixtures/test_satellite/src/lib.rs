@@ -1,5 +1,7 @@
-use junobuild_macros::{on_delete_doc, on_set_doc, on_init_sync, on_post_upgrade_sync};
-use junobuild_satellite::{error, include_satellite, info, set_doc_store, OnDeleteDocContext, OnSetDocContext};
+use junobuild_macros::{on_delete_doc, on_init_sync, on_post_upgrade_sync, on_set_doc};
+use junobuild_satellite::{
+    error, include_satellite, info, set_doc_store, OnDeleteDocContext, OnSetDocContext,
+};
 
 #[on_set_doc]
 fn on_set_doc(_context: OnSetDocContext) -> Result<(), String> {

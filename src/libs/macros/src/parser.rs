@@ -110,9 +110,7 @@ fn parse_hook(hook: &Hook, attr: TokenStream, item: TokenStream) -> Result<Token
     let hook_fn = Ident::new(&map_hook_name(hook.clone()), proc_macro2::Span::call_site());
 
     match hook {
-        Hook::OnPostUpgrade | Hook::OnInit => {
-            parse_lifecycle_hook(&ast, signature, &hook_fn)
-        }
+        Hook::OnPostUpgrade | Hook::OnInit => parse_lifecycle_hook(&ast, signature, &hook_fn),
         Hook::OnPostUpgradeSync | Hook::OnInitSync => {
             parse_lifecycle_sync_hook(&ast, signature, &hook_fn)
         }
@@ -292,7 +290,10 @@ fn parse_lifecycle_sync_hook(
     Ok(result.into())
 }
 
-fn parse_lifecycle_hook_sync_body(signature: &Signature, hook_fn: &Ident) -> proc_macro2::TokenStream {
+fn parse_lifecycle_hook_sync_body(
+    signature: &Signature,
+    hook_fn: &Ident,
+) -> proc_macro2::TokenStream {
     let func_name = &signature.ident;
 
     let function_call = quote! { #func_name() };

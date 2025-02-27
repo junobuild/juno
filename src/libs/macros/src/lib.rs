@@ -447,3 +447,65 @@ pub fn on_post_upgrade(attr: TokenStream, item: TokenStream) -> TokenStream {
 pub fn on_init(attr: TokenStream, item: TokenStream) -> TokenStream {
     hook_macro(Hook::OnInit, attr, item)
 }
+
+/// The `on_post_upgrade_sync` function is a procedural macro attribute for hooking into the `OnPostUpgrade` event.
+/// Unlike `on_post_upgrade`, this variant **executes synchronously** and is intended for advanced use cases
+/// where immediate execution is required.
+///
+/// This macro should only be used in scenarios where deferred execution (via async hooks) is **not an option**.
+/// Regular users should use `#[on_post_upgrade]` instead.
+///
+/// # Warning ⚠️
+/// - This function **executes immediately** during a satellite upgrade.
+/// - It **bypasses** the usual async execution model, which may lead to **unexpected behavior** if used improperly.
+/// - Any error in this function will cause the upgrade to fail!!!
+/// - If the upgrade fails, the satellite might become unresponsive and lose its data.
+/// - **Developers should prefer `on_post_upgrade` unless they explicitly need synchronous behavior.**
+///
+/// Furthermore, note that the random number generator or other capabilities might not have been initialized at this point.
+///
+/// # Example (Restricted Usage)
+///
+/// ```rust
+/// #[on_post_upgrade_sync]
+/// fn on_post_upgrade_sync() {
+///     // Perform necessary actions immediately on upgrade
+/// }
+/// ```
+///
+/// **Note:** This function is hidden from public documentation to discourage general usage.
+#[doc(hidden)]
+#[proc_macro_attribute]
+pub fn on_post_upgrade_sync(attr: TokenStream, item: TokenStream) -> TokenStream {
+    hook_macro(Hook::OnPostUpgradeSync, attr, item)
+}
+
+/// The `on_init_sync` function is a procedural macro attribute for hooking into the `OnInit` event.
+/// It serves the same purpose as `on_init`, but **executes synchronously**, ensuring that initialization
+/// logic is run **immediately** instead of being deferred.
+///
+/// This function is intended for **special cases only** where an immediate initialization
+/// step is necessary before any asynchronous tasks are triggered.
+///
+/// # Warning ⚠️
+/// - This function **runs immediately** at initialization time.
+/// - It **bypasses deferred execution**, meaning long-running operations **may slow down startup**.
+/// - Regular users **should use `on_init` instead**, unless there's a strict requirement for synchronous behavior.
+///
+/// Furthermore, note that the random number generator or other capabilities might not have been initialized at this point.
+///
+/// # Example (Restricted Usage)
+///
+/// ```rust
+/// #[on_init_sync]
+/// fn on_init_sync() {
+///     // This runs synchronously before any async operations are triggered
+/// }
+/// ```
+///
+/// **Note:** This function is hidden from public documentation to prevent unintended usage.
+#[doc(hidden)]
+#[proc_macro_attribute]
+pub fn on_init_sync(attr: TokenStream, item: TokenStream) -> TokenStream {
+    hook_macro(Hook::OnInitSync, attr, item)
+}

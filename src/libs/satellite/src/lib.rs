@@ -63,6 +63,7 @@ pub use crate::logs::loggers::{
     warn_with_data,
 };
 pub use crate::logs::types::logs::{Log, LogLevel};
+pub use crate::random::runtime::random;
 pub use crate::storage::handlers::set_asset_handler;
 pub use crate::storage::store::{
     count_assets_store, count_collection_assets_store, delete_asset_store, delete_assets_store,
@@ -74,7 +75,6 @@ pub use crate::types::hooks::{
     OnDeleteFilteredAssetsContext, OnDeleteFilteredDocsContext, OnDeleteManyAssetsContext,
     OnDeleteManyDocsContext, OnSetDocContext, OnSetManyDocsContext, OnUploadAssetContext,
 };
-pub use crate::random::runtime::random;
 // ============================================================================================
 // END: Re-exported Types
 // ============================================================================================

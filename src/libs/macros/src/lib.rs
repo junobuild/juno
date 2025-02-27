@@ -462,6 +462,8 @@ pub fn on_init(attr: TokenStream, item: TokenStream) -> TokenStream {
 /// - If the upgrade fails, the satellite might become unresponsive and lose its data.
 /// - **Developers should prefer `on_post_upgrade` unless they explicitly need synchronous behavior.**
 ///
+/// Furthermore, note that the random number generator or other capabilities might not have been initialized at this point.
+///
 /// # Example (Restricted Usage)
 ///
 /// ```rust
@@ -489,6 +491,8 @@ pub fn on_post_upgrade_sync(attr: TokenStream, item: TokenStream) -> TokenStream
 /// - This function **runs immediately** at initialization time.
 /// - It **bypasses deferred execution**, meaning long-running operations **may slow down startup**.
 /// - Regular users **should use `on_init` instead**, unless there's a strict requirement for synchronous behavior.
+///
+/// Furthermore, note that the random number generator or other capabilities might not have been initialized at this point.
 ///
 /// # Example (Restricted Usage)
 ///

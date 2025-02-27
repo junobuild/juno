@@ -110,8 +110,11 @@ fn parse_hook(hook: &Hook, attr: TokenStream, item: TokenStream) -> Result<Token
     let hook_fn = Ident::new(&map_hook_name(hook.clone()), proc_macro2::Span::call_site());
 
     match hook {
-        Hook::OnPostUpgrade | Hook::OnInit | Hook::OnPostUpgradeSync | Hook::OnInitSync => {
+        Hook::OnPostUpgrade | Hook::OnInit => {
             parse_lifecycle_hook(&ast, signature, &hook_fn)
+        }
+        Hook::OnPostUpgradeSync | Hook::OnInitSync => {
+            parse_lifecycle_sync_hook(&ast, signature, &hook_fn)
         }
         _ => parse_doc_hook(&ast, signature, &hook_fn, hook, attr),
     }
@@ -269,6 +272,35 @@ fn parse_lifecycle_hook_body(signature: &Signature, hook_fn: &Ident) -> proc_mac
         pub extern "Rust" fn #hook_fn() {
             let result = #function_call;
             #hook_return
+        }
+    }
+}
+
+fn parse_lifecycle_sync_hook(
+    ast: &ItemFn,
+    signature: &Signature,
+    hook_fn: &Ident,
+) -> Result<TokenStream, String> {
+    let hook_body = parse_lifecycle_hook_sync_body(signature, hook_fn);
+
+    let result = quote! {
+        #ast
+
+        #hook_body
+    };
+
+    Ok(result.into())
+}
+
+fn parse_lifecycle_hook_sync_body(signature: &Signature, hook_fn: &Ident) -> proc_macro2::TokenStream {
+    let func_name = &signature.ident;
+
+    let function_call = quote! { #func_name() };
+
+    quote! {
+        #[no_mangle]
+        pub extern "Rust" fn #hook_fn() {
+            #function_call;
         }
     }
 }

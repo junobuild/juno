@@ -18,7 +18,7 @@ import {
 	SATELLITE_WASM_PATH
 } from './utils/setup-tests.utils';
 
-describe('Mission Control - Controllers', () => {
+describe('Mission Control > Controllers', () => {
 	let pic: PocketIc;
 	let actor: Actor<MissionControlActor>;
 

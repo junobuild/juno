@@ -19,7 +19,7 @@ import { createDoc as createDocUtils } from './utils/satellite-doc-tests.utils';
 import { controllersInitArgs, SATELLITE_WASM_PATH } from './utils/setup-tests.utils';
 
 describe.each([{ memory: { Heap: null } }, { memory: { Stable: null } }])(
-	'Satellite datastore',
+	'Satellite > Datastore',
 	({ memory }) => {
 		let pic: PocketIc;
 		let actor: Actor<SatelliteActor>;

@@ -10,7 +10,7 @@ import { tick } from './utils/pic-tests.utils';
 import { createDoc as createDocUtils } from './utils/satellite-doc-tests.utils';
 import { setupTestSatellite } from './utils/satellite-fixtures-tests.utils';
 
-describe('Satellite Logging', () => {
+describe('Satellite > Hooks', () => {
 	let pic: PocketIc;
 	let actor: Actor<TestSatelliteActor>;
 	let canisterId: Principal;
@@ -33,17 +33,6 @@ describe('Satellite Logging', () => {
 	afterAll(async () => {
 		await pic?.tearDown();
 	});
-
-	const waitServerlessFunction = async () => {
-		// Wait for the serverless function to being fired
-		await tick(pic);
-	};
-
-	const createDoc = (): Promise<string> =>
-		createDocUtils({
-			actor,
-			collection: TEST_COLLECTION
-		});
 
 	interface Log {
 		message: string;

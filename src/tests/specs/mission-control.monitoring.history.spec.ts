@@ -19,7 +19,7 @@ import {
 import { tick } from './utils/pic-tests.utils';
 import { MISSION_CONTROL_WASM_PATH } from './utils/setup-tests.utils';
 
-describe('Mission Control - History', () => {
+describe('Mission Control > History', () => {
 	let pic: PocketIc;
 	let actor: Actor<MissionControlActor>;
 

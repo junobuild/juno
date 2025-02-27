@@ -21,7 +21,7 @@ import { mockListParams } from './mocks/list.mocks';
 import { uploadAsset } from './utils/satellite-storage-tests.utils';
 import { controllersInitArgs, SATELLITE_WASM_PATH } from './utils/setup-tests.utils';
 
-describe('Satellite User Usage', () => {
+describe('Satellite > User Ban', () => {
 	let pic: PocketIc;
 	let actor: Actor<SatelliteActor>;
 

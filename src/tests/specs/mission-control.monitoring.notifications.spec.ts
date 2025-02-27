@@ -20,7 +20,7 @@ import { setupMissionControlModules } from './utils/mission-control-tests.utils'
 import { tick } from './utils/pic-tests.utils';
 import { CONSOLE_WASM_PATH, OBSERVATORY_WASM_PATH } from './utils/setup-tests.utils';
 
-describe('Mission Control - Notifications', () => {
+describe('Mission Control > Notifications', () => {
 	let pic: PocketIc;
 	let actor: Actor<ConsoleActor>;
 

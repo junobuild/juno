@@ -35,7 +35,7 @@ import {
 	downloadSatellite
 } from './utils/setup-tests.utils';
 
-describe('Satellite upgrade', () => {
+describe('Satellite > Upgrade', () => {
 	let pic: PocketIc;
 	let canisterId: Principal;
 

@@ -8,7 +8,7 @@ import { beforeAll, describe, expect, inject } from 'vitest';
 import { deploySegments, uploadFile } from './utils/console-tests.utils';
 import { CONSOLE_WASM_PATH, WASM_VERSIONS } from './utils/setup-tests.utils';
 
-describe('Console / Metadata', () => {
+describe('Console > Metadata', () => {
 	let pic: PocketIc;
 	let actor: Actor<ConsoleActor>;
 

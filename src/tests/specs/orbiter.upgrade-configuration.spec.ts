@@ -11,7 +11,7 @@ import { satelliteIdMock } from './mocks/orbiter.mocks';
 import { tick } from './utils/pic-tests.utils';
 import { ORBITER_WASM_PATH, controllersInitArgs, downloadOrbiter } from './utils/setup-tests.utils';
 
-describe('Orbiter upgrade- Configuration', () => {
+describe('Orbiter > Upgrade > Configuration', () => {
 	let pic: PocketIc;
 	let actor: Actor<OrbiterActor0_0_7>;
 	let canisterId: Principal;

@@ -21,7 +21,7 @@ import {
 } from './utils/mission-control-tests.utils';
 import { MISSION_CONTROL_WASM_PATH } from './utils/setup-tests.utils';
 
-describe('Mission Control - Monitoring', () => {
+describe('Mission Control > Monitoring', () => {
 	let pic: PocketIc;
 	let actor: Actor<MissionControlActor>;
 

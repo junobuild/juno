@@ -16,7 +16,7 @@ import { afterAll, beforeAll, describe, expect, inject } from 'vitest';
 import { controllersInitArgs, SATELLITE_WASM_PATH } from './utils/setup-tests.utils';
 
 describe.each([{ memory: { Heap: null } }, { memory: { Stable: null } }])(
-	'Satellite datastore / Data',
+	'Satellite > Datastore > Data',
 	({ memory }) => {
 		let pic: PocketIc;
 		let actor: Actor<SatelliteActor>;

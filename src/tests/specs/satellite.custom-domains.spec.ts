@@ -12,7 +12,7 @@ import {
 } from './utils/custom-domains-tests.utils';
 import { controllersInitArgs, SATELLITE_WASM_PATH } from './utils/setup-tests.utils';
 
-describe('Satellite custom domains', () => {
+describe('Satellite > Custom domains', () => {
 	let pic: PocketIc;
 	let actor: Actor<SatelliteActor>;
 

@@ -17,7 +17,7 @@ import { setupLedger } from './utils/ledger-tests.utils';
 import { missionControlUserInitArgs } from './utils/mission-control-tests.utils';
 import { MISSION_CONTROL_WASM_PATH } from './utils/setup-tests.utils';
 
-describe('Mission Control - Wallet', () => {
+describe('Mission Control > Wallet', () => {
 	let pic: PocketIc;
 	let actor: Actor<MissionControlActor>;
 	let missionControlId: Principal;

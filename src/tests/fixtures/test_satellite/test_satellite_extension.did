@@ -1,1 +1,2 @@
-service : { build_version : () -> (text) query }
+type Result = variant { Ok : int32; Err : text };
+service : { build_version : () -> (text) query; get_random : () -> (Result) }

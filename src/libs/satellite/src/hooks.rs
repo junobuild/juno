@@ -420,6 +420,7 @@ pub fn invoke_on_post_upgrade_sync() {
     }
 }
 
+#[allow(clippy::unnecessary_map_or)]
 fn should_invoke_doc_hook<T>(
     collections: Option<Vec<String>>,
     context: &HookContext<DocContext<T>>,
@@ -428,6 +429,7 @@ fn should_invoke_doc_hook<T>(
         && collections.map_or(true, |c| c.contains(&context.data.collection))
 }
 
+#[allow(clippy::unnecessary_map_or)]
 fn filter_docs<T: Clone>(
     collections: &Option<Vec<String>>,
     docs: &[DocContext<T>],
@@ -452,10 +454,12 @@ fn is_not_log_collection(collection: &CollectionKey) -> bool {
     !is_log_collection(collection)
 }
 
+#[allow(clippy::unnecessary_map_or)]
 fn should_invoke_asset_hook(collections: Option<Vec<String>>, collection: &CollectionKey) -> bool {
     is_not_asset_collection(collection) && collections.map_or(true, |c| c.contains(collection))
 }
 
+#[allow(clippy::unnecessary_map_or)]
 fn filter_assets(
     collections: &Option<Vec<String>>,
     assets: &[Option<Asset>],

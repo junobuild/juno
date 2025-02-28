@@ -56,8 +56,8 @@
 
 		<p>
 			{takeSnapshot
-				? $i18n.canisters.confirm_upgrade_with_backup
-				: $i18n.canisters.confirm_upgrade_without_backup}
+				? $i18n.canisters.confirm_upgrade_with_snapshot
+				: $i18n.canisters.confirm_upgrade_without_snapshot}
 		</p>
 
 		<div class="toolbar">

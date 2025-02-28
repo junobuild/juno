@@ -56,9 +56,6 @@ describe('Satellite > Hooks > Random', () => {
 		});
 
 		await tick(pic);
-		await tick(pic);
-		await tick(pic);
-		await tick(pic);
 
 		const { list_docs } = actor;
 

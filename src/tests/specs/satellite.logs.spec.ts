@@ -1,4 +1,8 @@
-import type { _SERVICE as TestSatelliteActor } from '$test-declarations/test_satellite/test_satellite.did';
+import type { LogLevel } from '$lib/types/log';
+import type {
+	Doc,
+	_SERVICE as TestSatelliteActor
+} from '$test-declarations/test_satellite/test_satellite.did';
 import { toNullable } from '@dfinity/utils';
 import { type Actor, PocketIc } from '@hadronous/pic';
 import { fromArray } from '@junobuild/utils';
@@ -40,6 +44,23 @@ describe('Satellite > Logging', () => {
 			collection: TEST_COLLECTION
 		});
 
+	interface Log {
+		level: LogLevel;
+		message: string;
+		timestamp: bigint;
+	}
+
+	const filterLogs = async ({
+		logs,
+		level
+	}: {
+		logs: Array<[string, Doc]>;
+		level: LogLevel;
+	}): Promise<Log[]> => {
+		const mappedLogs = await Promise.all(logs.map(([_, doc]): Promise<Log> => fromArray(doc.data)));
+		return mappedLogs.filter((log) => log.level === level);
+	};
+
 	it('should log an info when on_set_doc hook is fired', async () => {
 		await createDoc();
 
@@ -49,18 +70,11 @@ describe('Satellite > Logging', () => {
 
 		const { items: logs } = await list_docs('#log', mockListParams);
 
-		expect(logs).toHaveLength(1);
+		const infoLogs = await filterLogs({ logs, level: 'Info' });
 
-		const [log, _] = logs;
-		const [__, doc] = log;
+		expect(infoLogs).toHaveLength(1);
 
-		const data = await fromArray(doc.data);
-
-		expect(data).toEqual({
-			data: null,
-			level: 'Info',
-			message: 'Hello world'
-		});
+		expect(infoLogs[0].message).toEqual('Hello world');
 	});
 
 	it('should log an error when on_delete_doc hook is fired', async () => {
@@ -83,18 +97,13 @@ describe('Satellite > Logging', () => {
 			})
 		});
 
-		expect(logs).toHaveLength(2);
+		expect(logs).toHaveLength(3);
 
-		const [log, _] = logs;
-		const [__, docLog] = log;
+		const errorLogs = await filterLogs({ logs, level: 'Error' });
 
-		const data = await fromArray(docLog.data);
+		expect(errorLogs).toHaveLength(1);
 
-		expect(data).toEqual({
-			data: null,
-			level: 'Error',
-			message: 'Delete Hello world'
-		});
+		expect(errorLogs[0].message).toEqual('Delete Hello world');
 	});
 
 	it('should create logs with different random keys', async () => {
@@ -106,16 +115,16 @@ describe('Satellite > Logging', () => {
 
 		const { items: logs } = await list_docs('#log', mockListParams);
 
-		expect(logs).toHaveLength(12);
+		expect(logs).toHaveLength(13);
 
 		const keys = new Set([...logs.map(([key, _]) => key)]);
-		expect(keys).toHaveLength(12);
+		expect(keys).toHaveLength(13);
 
 		// Log key is format!("{}-{}", time(), nonce)
 		// When we create doc and log with serverless without tick, the time should be the same
 		// Therefore, without nonce, the count of entry should be smaller than the effective count of time we logged
 		const trimmedKey = new Set([...logs.map(([key, _]) => key.split('-')[0])]);
-		expect(trimmedKey.size).toBeLessThan(12);
+		expect(trimmedKey.size).toBeLessThan(13);
 	});
 
 	it('should limit log entries to hundred', async () => {

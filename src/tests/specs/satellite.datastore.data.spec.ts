@@ -26,7 +26,7 @@ describe.each([{ memory: { Heap: null } }, { memory: { Stable: null } }])(
 		beforeAll(async () => {
 			pic = await PocketIc.create(inject('PIC_URL'));
 
-			const { actor: c, canisterId: cId } = await pic.setupCanister<SatelliteActor>({
+			const { actor: c } = await pic.setupCanister<SatelliteActor>({
 				idlFactory: idlFactorSatellite,
 				wasm: SATELLITE_WASM_PATH,
 				arg: controllersInitArgs(controller),

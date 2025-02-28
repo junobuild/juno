@@ -6,8 +6,6 @@ import { Principal } from '@dfinity/principal';
 import { type Actor, PocketIc } from '@hadronous/pic';
 import { afterAll, beforeAll, describe } from 'vitest';
 import { mockSetRule } from './mocks/collection.mocks';
-import { tick } from './utils/pic-tests.utils';
-import { createDoc as createDocUtils } from './utils/satellite-doc-tests.utils';
 import { setupTestSatellite } from './utils/satellite-fixtures-tests.utils';
 
 describe('Satellite > Hooks', () => {

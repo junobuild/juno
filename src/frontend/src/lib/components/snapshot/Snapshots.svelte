@@ -87,9 +87,9 @@
 			<thead>
 				<tr>
 					<th class="tools"></th>
-					<th class="backup">
+					<th class="snapshot">
 						<div class="actions">
-							<span>{$i18n.canisters.backup}</span>
+							<span>{$i18n.canisters.snapshot}</span>
 
 							<SnapshotsRefresh {canisterId} />
 						</div>
@@ -120,7 +120,7 @@
 					{#if snapshots === null || snapshots?.length === 0}
 						<tr in:fade
 							><td colspan="4"
-								>{i18nFormat($i18n.canisters.no_backup, [
+								>{i18nFormat($i18n.canisters.no_snapshot, [
 									{
 										placeholder: '{0}',
 										value: segmentLabel
@@ -155,7 +155,7 @@
 		width: 88px;
 	}
 
-	.backup {
+	.snapshot {
 		@include media.min-width(medium) {
 			width: 25%;
 		}

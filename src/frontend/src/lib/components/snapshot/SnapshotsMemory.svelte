@@ -22,7 +22,7 @@
 	{#if nonNullish(memorySize) && memorySize > 0n}
 		<p in:fade>
 			{formatBytes(Number(memorySize))}
-			<small>{$i18n.canisters.on_backup}</small>
+			<small>{$i18n.canisters.on_snapshot}</small>
 		</p>
 	{/if}
 </SnapshotsLoader>

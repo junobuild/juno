@@ -1,7 +1,9 @@
 <script lang="ts">
 	import IconNewReleases from '$lib/components/icons/IconNewReleases.svelte';
 	import Html from '$lib/components/ui/Html.svelte';
+	import { onIntersection } from '$lib/directives/intersection.directives';
 	import { i18n } from '$lib/stores/i18n.store';
+	import { onLayoutTitleIntersection } from '$lib/stores/layout-intersecting.store';
 
 	interface Props {
 		text: string;
@@ -11,7 +13,7 @@
 	let { text, onclick }: Props = $props();
 </script>
 
-<div class="container">
+<div class="container" use:onIntersection onjunoIntersecting={onLayoutTitleIntersection}>
 	<div class="icon"><IconNewReleases /></div>
 
 	<div>

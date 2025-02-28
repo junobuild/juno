@@ -36,12 +36,16 @@
 
 		padding: var(--padding-2x) var(--padding-2x);
 
+		transition: border-bottom-color var(--animation-time);
+		border-bottom: 1px solid transparent;
+
 		@include media.min-width(xlarge) {
 			padding: calc(var(--padding-4x) - 1px) var(--padding-7x) var(--padding-4x);
 		}
 
 		&.opaque {
 			background: var(--color-background);
+			border-bottom: 1px solid var(--color-background-contrast);
 		}
 
 		:global(*) {

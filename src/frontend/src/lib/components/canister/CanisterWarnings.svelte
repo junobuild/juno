@@ -3,6 +3,8 @@
 	import type { Snippet } from 'svelte';
 	import CanisterSyncData from '$lib/components/canister/CanisterSyncData.svelte';
 	import Warning from '$lib/components/ui/Warning.svelte';
+	import { onIntersection } from '$lib/directives/intersection.directives';
+	import { onLayoutTitleIntersection } from '$lib/stores/layout-intersecting.store';
 	import type { CanisterSyncData as CanisterSyncDataType } from '$lib/types/canister';
 
 	interface Props {
@@ -25,13 +27,17 @@
 <CanisterSyncData {canisterId} bind:canister />
 
 {#if cyclesWarning}
-	<Warning>
-		{@render cycles?.()}
-	</Warning>
+	<div use:onIntersection onjunoIntersecting={onLayoutTitleIntersection}>
+		<Warning>
+			{@render cycles?.()}
+		</Warning>
+	</div>
 {/if}
 
 {#if heapWarning}
-	<Warning>
-		{@render heap?.()}
-	</Warning>
+	<div use:onIntersection onjunoIntersecting={onLayoutTitleIntersection}>
+		<Warning>
+			{@render heap?.()}
+		</Warning>
+	</div>
 {/if}

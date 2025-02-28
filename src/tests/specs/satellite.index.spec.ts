@@ -14,7 +14,7 @@ import { assertCertification } from './utils/certification-test.utils';
 import { deleteDefaultIndexHTML } from './utils/satellite-tests.utils';
 import { SATELLITE_WASM_PATH, controllersInitArgs } from './utils/setup-tests.utils';
 
-describe('Satellite Index HTML', () => {
+describe('Satellite > Index HTML', () => {
 	let pic: PocketIc;
 	let canisterId: Principal;
 	let actor: Actor<SatelliteActor>;

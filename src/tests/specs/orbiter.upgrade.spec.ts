@@ -21,7 +21,7 @@ import { pageViewMock, satelliteIdMock, trackEventMock } from './mocks/orbiter.m
 import { tick } from './utils/pic-tests.utils';
 import { ORBITER_WASM_PATH, controllersInitArgs, downloadOrbiter } from './utils/setup-tests.utils';
 
-describe('Orbiter upgrade', () => {
+describe('Orbiter > Upgrade', () => {
 	let pic: PocketIc;
 	let actor: Actor<OrbiterActor0_0_6>;
 	let canisterId: Principal;

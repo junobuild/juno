@@ -171,7 +171,7 @@ export const executeSnapshot = async ({
 	await execute({ fn: stop, onProgress, step: SnapshotProgressStep.StoppingCanister });
 
 	try {
-		// 2. We create or restore the backup
+		// 2. We create or restore the snapshot
 		await execute({ fn: action, onProgress, step: SnapshotProgressStep.CreateOrRestoreSnapshot });
 	} finally {
 		// 3. We restart the canister to finalize the process. No matter what.

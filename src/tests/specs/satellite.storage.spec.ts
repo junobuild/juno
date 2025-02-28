@@ -26,7 +26,7 @@ import { uploadAsset } from './utils/satellite-storage-tests.utils';
 import { deleteDefaultIndexHTML } from './utils/satellite-tests.utils';
 import { controllersInitArgs, SATELLITE_WASM_PATH } from './utils/setup-tests.utils';
 
-describe('Satellite storage', () => {
+describe('Satellite > Storage', () => {
 	let pic: PocketIc;
 	let canisterId: Principal;
 	let actor: Actor<SatelliteActor>;

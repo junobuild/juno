@@ -19,7 +19,7 @@ import {
 } from './mocks/orbiter.mocks';
 import { ORBITER_WASM_PATH, controllersInitArgs } from './utils/setup-tests.utils';
 
-describe('Orbiter - No configuration', () => {
+describe('Orbiter > No configuration', () => {
 	let pic: PocketIc;
 	let actor: Actor<OrbiterActor>;
 

@@ -21,7 +21,7 @@
 - ⚙️ Functions [[Docs](https://juno.build/docs/build/functions)]
 - 📊 Analytics [[Docs](https://juno.build/docs/build/analytics)]
 - 👀 Monitoring [[Docs](https://juno.build/docs/management/monitoring)]
-- 💾 Backups [[Docs](https://juno.build/docs/management/backups)]
+- 💾 Snapshots [[Docs](https://juno.build/docs/management/snapshots)]
 
 <br />
 

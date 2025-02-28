@@ -26,7 +26,7 @@ import { createDoc as createDocUtils } from './utils/satellite-doc-tests.utils';
 import { uploadAsset } from './utils/satellite-storage-tests.utils';
 import { controllersInitArgs, SATELLITE_WASM_PATH } from './utils/setup-tests.utils';
 
-describe('Satellite User Usage', () => {
+describe('Satellite > User Usage', () => {
 	let pic: PocketIc;
 	let actor: Actor<SatelliteActor>;
 

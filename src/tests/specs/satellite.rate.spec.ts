@@ -12,7 +12,7 @@ import { toArray } from '@junobuild/utils';
 import { afterAll, beforeAll, describe, expect, inject } from 'vitest';
 import { SATELLITE_WASM_PATH, controllersInitArgs } from './utils/setup-tests.utils';
 
-describe('Satellite rate', () => {
+describe('Satellite > Rate', () => {
 	let pic: PocketIc;
 	let actor: Actor<SatelliteActor>;
 

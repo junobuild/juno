@@ -13,7 +13,7 @@ import {
 import { tick } from './utils/pic-tests.utils';
 import { downloadConsole } from './utils/setup-tests.utils';
 
-describe('Console upgrade', () => {
+describe('Console > Upgrade', () => {
 	let pic: PocketIc;
 	let actor: Actor<ConsoleActor_0_0_8>;
 	let canisterId: Principal;

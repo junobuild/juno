@@ -17,7 +17,7 @@ import {
 import { tick } from './utils/pic-tests.utils';
 import { MISSION_CONTROL_WASM_PATH } from './utils/setup-tests.utils';
 
-describe.skip('Mission control upgrade - Monitoring', () => {
+describe.skip('Mission control > Upgrade > Monitoring', () => {
 	let pic: PocketIc;
 	let actor: Actor<MissionControlActor>;
 

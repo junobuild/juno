@@ -39,11 +39,6 @@ describe('Satellite > Random', () => {
 		await pic?.tearDown();
 	});
 
-	const waitServerlessFunction = async () => {
-		// Wait for the serverless function to being fired
-		await tick(pic);
-	};
-
 	it('should not be initialized by default', async () => {
 		const { get_random } = actor;
 

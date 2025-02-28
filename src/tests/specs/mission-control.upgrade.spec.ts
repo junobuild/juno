@@ -12,7 +12,7 @@ import {
 import { tick } from './utils/pic-tests.utils';
 import { downloadMissionControl } from './utils/setup-tests.utils';
 
-describe('Mission control upgrade', () => {
+describe('Mission control > Upgrade', () => {
 	let pic: PocketIc;
 	let actor: Actor<MissionControlActor>;
 

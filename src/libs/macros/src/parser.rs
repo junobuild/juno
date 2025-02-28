@@ -112,7 +112,9 @@ fn parse_hook(hook: &Hook, attr: TokenStream, item: TokenStream) -> Result<Token
     let hook_fn = Ident::new(&map_hook_name(hook.clone()), proc_macro2::Span::call_site());
 
     match hook {
-        Hook::OnPostUpgrade | Hook::OnInit | Hook::OnInitRandomSeed => parse_lifecycle_hook(&ast, signature, &hook_fn),
+        Hook::OnPostUpgrade | Hook::OnInit | Hook::OnInitRandomSeed => {
+            parse_lifecycle_hook(&ast, signature, &hook_fn)
+        }
         Hook::OnPostUpgradeSync | Hook::OnInitSync => {
             parse_lifecycle_sync_hook(&ast, signature, &hook_fn)
         }

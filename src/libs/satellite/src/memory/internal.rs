@@ -44,3 +44,4 @@ pub fn register_polyfill_memory(init_fn: InitPolyfillMemoryFn) {
     let memory = get_memory_polyfill();
     init_fn(memory);
 }
+

@@ -1,9 +1,9 @@
-pub mod controllers;
-pub mod db;
-pub mod hooks;
-pub mod logs;
-pub mod random;
-pub mod storage;
+mod controllers;
+mod db;
+mod hooks;
+mod logs;
+mod random;
+mod storage;
 
 pub use controllers::*;
 pub use db::*;

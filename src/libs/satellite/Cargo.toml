@@ -1,6 +1,6 @@
 [package]
 name = "junobuild-satellite"
-version = "0.0.22-patch.3"
+version = "0.0.22-patch.4"
 authors.workspace = true
 edition.workspace = true
 repository.workspace = true

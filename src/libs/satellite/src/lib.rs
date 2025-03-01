@@ -50,8 +50,8 @@ use junobuild_storage::types::state::FullPath;
 // ============================================================================================
 // These types are made available for use in Serverless Functions.
 // ============================================================================================
+pub use sdk::core::*;
 pub use sdk::internal;
-pub use sdk::root::*;
 
 // ---------------------------------------------------------
 // Init and Upgrade

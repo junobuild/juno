@@ -1,3 +1,4 @@
+use crate::hooks::random::invoke_on_init_random_seed;
 use crate::memory::STATE;
 use getrandom::Error;
 use ic_cdk::spawn;
@@ -7,15 +8,17 @@ use rand::RngCore;
 use std::time::Duration;
 
 pub fn defer_init_random_seed() {
-    set_timer(Duration::ZERO, || spawn(set_random_seed()));
+    set_timer(Duration::ZERO, || spawn(init_random_seed()));
 }
 
-async fn set_random_seed() {
+async fn init_random_seed() {
     let seed = get_random_seed().await;
 
     STATE.with(|state| {
         state.borrow_mut().runtime.rng = seed;
     });
+
+    invoke_on_init_random_seed();
 }
 
 /// Source: https://github.com/rust-random/getrandom?tab=readme-ov-file#custom-backend

@@ -1,4 +1,4 @@
-use crate::memory::STATE;
+use crate::memory::internal::STATE;
 use crate::storage::types::state::{
     AssetsStable, ContentChunksStable, StableEncodingChunkKey, StableKey,
 };

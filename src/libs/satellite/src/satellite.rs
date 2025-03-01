@@ -26,7 +26,7 @@ use crate::hooks::storage::{
     invoke_on_delete_asset, invoke_on_delete_filtered_assets, invoke_on_delete_many_assets,
     invoke_upload_asset,
 };
-use crate::memory::{get_memory_upgrades, init_stable_state, STATE};
+use crate::memory::internal::{get_memory_for_upgrade, init_stable_state, STATE};
 use crate::random::init::defer_init_random_seed;
 use crate::rules::store::{
     del_rule_db, del_rule_storage, get_rule_db, get_rule_storage, get_rules_db, get_rules_storage,
@@ -104,11 +104,11 @@ pub fn pre_upgrade() {
         .with(|s| into_writer(&*s.borrow(), &mut state_bytes))
         .expect("Failed to encode the state of the satellite in pre_upgrade hook.");
 
-    write_pre_upgrade(&state_bytes, &mut get_memory_upgrades());
+    write_pre_upgrade(&state_bytes, &mut get_memory_for_upgrade());
 }
 
 pub fn post_upgrade() {
-    let memory: Memory = get_memory_upgrades();
+    let memory: Memory = get_memory_for_upgrade();
     let state_bytes = read_post_upgrade(&memory);
 
     let state = from_reader(&*state_bytes)

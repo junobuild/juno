@@ -11,7 +11,7 @@ use crate::db::types::config::DbConfig;
 use crate::db::types::interface::{DelDoc, SetDoc};
 use crate::db::types::state::{Doc, DocContext, DocUpsert};
 use crate::db::utils::filter_values;
-use crate::memory::STATE;
+use crate::memory::internal::STATE;
 use crate::types::store::StoreContext;
 use candid::Principal;
 use junobuild_collections::msg::msg_db_collection_not_empty;

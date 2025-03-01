@@ -1,4 +1,4 @@
-use crate::memory::init_stable_state;
+use crate::memory::internal::init_stable_state;
 use crate::types::state::{CollectionType, HeapState, RuntimeState, State};
 use std::fmt::{Display, Formatter, Result as FmtResult};
 

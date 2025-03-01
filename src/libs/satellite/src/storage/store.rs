@@ -1,5 +1,5 @@
 use crate::controllers::store::get_controllers;
-use crate::memory::STATE;
+use crate::memory::internal::STATE;
 use crate::storage::assert::{
     assert_create_batch, assert_delete_asset, assert_get_asset, assert_list_assets,
 };

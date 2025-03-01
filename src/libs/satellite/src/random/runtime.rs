@@ -1,4 +1,4 @@
-use crate::memory::STATE;
+use crate::memory::internal::STATE;
 use rand::Rng;
 
 /// Generates a random `i32` number.

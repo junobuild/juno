@@ -1,5 +1,5 @@
 use crate::hooks::random::invoke_on_init_random_seed;
-use crate::memory::STATE;
+use crate::memory::internal::STATE;
 use getrandom::Error;
 use ic_cdk::spawn;
 use ic_cdk_timers::set_timer;

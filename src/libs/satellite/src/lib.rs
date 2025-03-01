@@ -75,6 +75,7 @@ pub use crate::types::hooks::{
     OnDeleteFilteredAssetsContext, OnDeleteFilteredDocsContext, OnDeleteManyAssetsContext,
     OnDeleteManyDocsContext, OnSetDocContext, OnSetManyDocsContext, OnUploadAssetContext,
 };
+pub use memory::internal::register_polyfill_memory;
 // ============================================================================================
 // END: Re-exported Types
 // ============================================================================================

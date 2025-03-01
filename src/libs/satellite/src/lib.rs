@@ -12,6 +12,7 @@ mod memory;
 mod random;
 mod rules;
 mod satellite;
+mod sdk;
 mod storage;
 mod types;
 mod user;
@@ -47,38 +48,9 @@ use junobuild_storage::types::interface::{
 use junobuild_storage::types::state::FullPath;
 
 // ============================================================================================
-// START: Re-exported Types
-//
 // These types are made available for use in Serverless Functions.
 // ============================================================================================
-pub use crate::controllers::store::{get_admin_controllers, get_controllers};
-pub use crate::db::store::{
-    count_collection_docs_store, count_docs_store, delete_doc_store, delete_docs_store,
-    delete_filtered_docs_store, get_doc_store, list_docs_store, set_doc_store,
-};
-pub use crate::db::types::interface::{DelDoc, SetDoc};
-pub use crate::db::types::state::Doc;
-pub use crate::logs::loggers::{
-    debug, debug_with_data, error, error_with_data, info, info_with_data, log, log_with_data, warn,
-    warn_with_data,
-};
-pub use crate::logs::types::logs::{Log, LogLevel};
-pub use crate::memory::internal::register_polyfill_memory;
-pub use crate::random::runtime::random;
-pub use crate::storage::handlers::set_asset_handler;
-pub use crate::storage::store::{
-    count_assets_store, count_collection_assets_store, delete_asset_store, delete_assets_store,
-    delete_filtered_assets_store, get_asset_store, get_content_chunks_store, list_assets_store,
-};
-pub use crate::types::hooks::{
-    AssertDeleteAssetContext, AssertDeleteDocContext, AssertSetDocContext,
-    AssertUploadAssetContext, HookContext, OnDeleteAssetContext, OnDeleteDocContext,
-    OnDeleteFilteredAssetsContext, OnDeleteFilteredDocsContext, OnDeleteManyAssetsContext,
-    OnDeleteManyDocsContext, OnSetDocContext, OnSetManyDocsContext, OnUploadAssetContext,
-};
-// ============================================================================================
-// END: Re-exported Types
-// ============================================================================================
+pub use sdk::*;
 
 // ---------------------------------------------------------
 // Init and Upgrade

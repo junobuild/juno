@@ -7,6 +7,7 @@ const UPGRADES: MemoryId = MemoryId::new(0);
 const DB: MemoryId = MemoryId::new(1);
 const ASSETS: MemoryId = MemoryId::new(2);
 const CONTENT_CHUNKS: MemoryId = MemoryId::new(3);
+const POLYFILL: MemoryId = MemoryId::new(4);
 
 thread_local! {
     static MEMORY_MANAGER: RefCell<MemoryManager<DefaultMemoryImpl>> =
@@ -27,4 +28,8 @@ pub fn get_memory_assets() -> Memory {
 
 pub fn get_memory_content_chunks() -> Memory {
     MEMORY_MANAGER.with(|m| m.borrow().get(CONTENT_CHUNKS))
+}
+
+pub fn get_memory_polyfill() -> Memory {
+    MEMORY_MANAGER.with(|m| m.borrow().get(POLYFILL))
 }

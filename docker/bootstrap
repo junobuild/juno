@@ -28,11 +28,10 @@ echo "using rust targets: $targets"
 run curl --fail https://sh.rustup.rs -sSf | run sh -s -- -y --default-toolchain "none" --no-modify-path
 
 # Install the effective Rust version
-rustup show active-toolchain | grep -q "$rust_version" || run rustup toolchain install "$rust_version"
-
+run rustup toolchain install "$rust_version"
 run rustup default "$rust_version"
 
-echo "Rust installed. Version: $(rustc --version)"
+echo "Rust toolchain version $(rustc --version) installed."
 
 # Install Rust targets
 for target in $targets; do

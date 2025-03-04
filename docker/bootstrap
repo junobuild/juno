@@ -19,7 +19,7 @@ function run() {
 rust_version=$(cat ./rust-toolchain.toml | sed -n 's/^channel[[:space:]]*=[[:space:]]"\(.*\)"/\1/p')
 echo "using rust version '$rust_version'"
 
-# Install rustup without a toolchain to 'none'.
+# Install rustup with a toolchain set to 'none'.
 # Note: rustup does NOT automatically pick up ./rust-toolchain.toml. We will install and set the correct version afterwards.
 run curl --fail https://sh.rustup.rs -sSf | run sh -s -- -y --default-toolchain "none" --no-modify-path
 

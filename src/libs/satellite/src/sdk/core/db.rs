@@ -4,3 +4,7 @@ pub use crate::db::store::{
 };
 pub use crate::db::types::interface::{DelDoc, SetDoc};
 pub use crate::db::types::state::Doc;
+pub use crate::db::types::state::DocAssertDelete;
+pub use crate::db::types::state::DocAssertSet;
+pub use crate::db::types::state::DocContext;
+pub use crate::db::types::state::DocUpsert;

@@ -793,7 +793,7 @@ dependencies = [
 
 [[package]]
 name = "junobuild-satellite"
-version = "0.0.22-patch.4"
+version = "0.0.22-patch.5"
 dependencies = [
  "candid",
  "ciborium",

@@ -28,12 +28,15 @@ echo "using rust targets: $targets"
 run curl --fail https://sh.rustup.rs -sSf | run sh -s -- -y --default-toolchain "none" --no-modify-path
 
 # Install the effective Rust version
-rustup install "$rust_version"
-rustup default "$rust_version"
+rustup show active-toolchain | grep -q "$rust_version" || run rustup toolchain install "$rust_version"
+
+run rustup default "$rust_version"
+
+echo "Rust installed. Version: $(rustc --version)"
 
 # Install Rust targets
 for target in $targets; do
-    rustup target add "$target"
+    run rustup target add "$target"
 done
 
 echo "looking for ic-wasm 0.8.5"

@@ -19,12 +19,22 @@ function run() {
 rust_version=$(cat ./rust-toolchain.toml | sed -n 's/^channel[[:space:]]*=[[:space:]]"\(.*\)"/\1/p')
 echo "using rust version '$rust_version'"
 
+targets=$(sed -n 's/^targets[[:space:]]*=[[:space:]]\[\(.*\)\]/\1/p' ./rust-toolchain.toml | tr -d '[]" ' | tr ',' ' ')
+echo "using rust targets: $targets"
+
 # Install rustup with a toolchain set to 'none'.
 # Note: rustup does NOT automatically pick up ./rust-toolchain.toml. We will install and set the correct version afterwards.
 # https://blog.rust-lang.org/2025/03/02/Rustup-1.28.0.html
 run curl --fail https://sh.rustup.rs -sSf | run sh -s -- -y --default-toolchain "none" --no-modify-path
 
-rustup show active-toolchain || rustup toolchain install
+# Install the effective Rust version
+rustup install "$rust_version"
+rustup default "$rust_version"
+
+# Install Rust targets
+for target in $targets; do
+    rustup target add "$target"
+done
 
 echo "looking for ic-wasm 0.8.5"
 if [[ ! "$(command -v ic-wasm)" || "$(ic-wasm --version)" != "ic-wasm 0.8.5" ]]

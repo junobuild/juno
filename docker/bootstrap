@@ -27,6 +27,8 @@ run curl --fail https://sh.rustup.rs -sSf | run sh -s -- -y --default-toolchain 
 rustup install "$rust_version"
 rustup default "$rust_version"
 
+echo "Rust installed. Version: $(rustc --version)"
+
 echo "looking for ic-wasm 0.8.5"
 if [[ ! "$(command -v ic-wasm)" || "$(ic-wasm --version)" != "ic-wasm 0.8.5" ]]
 then

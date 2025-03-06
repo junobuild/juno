@@ -1,7 +1,7 @@
 import type { CollectionType } from '$declarations/satellite/satellite.did';
+import { reloadContextRules } from '$lib/services/rules.loader.services';
 import type { OptionIdentity } from '$lib/types/itentity';
 import type { RulesContext, RulesData } from '$lib/types/rules.context';
-import { reloadContextRules } from '$lib/utils/rules.utils';
 import type { Principal } from '@dfinity/principal';
 import { get, writable } from 'svelte/store';
 

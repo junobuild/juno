@@ -3,8 +3,8 @@
 	import { getContext } from 'svelte';
 	import IconNew from '$lib/components/icons/IconNew.svelte';
 	import { i18n } from '$lib/stores/i18n.store';
-	import { RULES_CONTEXT_KEY, type RulesContext } from '$lib/types/rules.context';
 	import type { CollectionRule } from '$lib/types/collection';
+	import { RULES_CONTEXT_KEY, type RulesContext } from '$lib/types/rules.context';
 
 	interface Props {
 		start?: boolean;
@@ -14,18 +14,16 @@
 
 	let { start = false, onedit, onstart }: Props = $props();
 
-	const { store }: RulesContext = getContext<RulesContext>(RULES_CONTEXT_KEY);
+	const { store, hasAnyRules }: RulesContext = getContext<RulesContext>(RULES_CONTEXT_KEY);
 
 	const edit = (rule: CollectionRule) => onedit(rule);
-
-	let empty = $derived($store.rules?.length === 0);
 
 	const startCollection = () => onstart?.();
 </script>
 
 <p class="title collections">Collections</p>
 
-{#if start || !empty}
+{#if start || $hasAnyRules}
 	<div class="collections">
 		{#if start}
 			<button class="text action start" onclick={startCollection}

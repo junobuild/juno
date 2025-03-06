@@ -16,6 +16,7 @@ export interface RulesContext {
 	init: (params: { satelliteId: Principal; identity: OptionIdentity }) => Promise<void>;
 
 	hasAnyRules: Readable<boolean>;
+	emptyRules: Readable<boolean>;
 }
 
 export const RULES_CONTEXT_KEY = Symbol('rules');

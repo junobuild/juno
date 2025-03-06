@@ -9,10 +9,10 @@
 
 	let { onclick }: Props = $props();
 
-	const { store }: RulesContext = getContext<RulesContext>(RULES_CONTEXT_KEY);
+	const { emptyRules }: RulesContext = getContext<RulesContext>(RULES_CONTEXT_KEY);
 </script>
 
-{#if $store.rules?.length === 0}
+{#if $emptyRules}
 	<p>
 		{$i18n.collections.none} <button class="text" {onclick}>{$i18n.collections.title}</button>.
 	</p>

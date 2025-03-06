@@ -1,22 +1,22 @@
 <script lang="ts">
 	import { nonNullish } from '@dfinity/utils';
 	import { getContext } from 'svelte';
-	import type { Rule } from '$declarations/satellite/satellite.did';
 	import IconNew from '$lib/components/icons/IconNew.svelte';
 	import { i18n } from '$lib/stores/i18n.store';
 	import { RULES_CONTEXT_KEY, type RulesContext } from '$lib/types/rules.context';
+	import type { CollectionRule } from '$lib/types/collection';
 
 	interface Props {
 		start?: boolean;
 		onstart?: () => void;
-		onedit: (rule: [string, Rule]) => void;
+		onedit: (rule: CollectionRule) => void;
 	}
 
 	let { start = false, onedit, onstart }: Props = $props();
 
 	const { store }: RulesContext = getContext<RulesContext>(RULES_CONTEXT_KEY);
 
-	const edit = (rule: [string, Rule]) => onedit(rule);
+	const edit = (rule: CollectionRule) => onedit(rule);
 
 	let empty = $derived($store.rules?.length === 0);
 

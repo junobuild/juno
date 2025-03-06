@@ -1,15 +1,15 @@
 <script lang="ts">
 	import { isNullish, nonNullish } from '@dfinity/utils';
 	import { getContext, type Snippet } from 'svelte';
-	import type { Rule } from '$declarations/satellite/satellite.did';
 	import IconHome from '$lib/components/icons/IconHome.svelte';
 	import NavSeparator from '$lib/components/ui/NavSeparator.svelte';
 	import { RULES_CONTEXT_KEY, type RulesContext } from '$lib/types/rules.context';
+	import type { CollectionRule } from '$lib/types/collection';
 
 	interface Props {
 		children?: Snippet;
 		onclose: () => void;
-		onedit: (rule: [string, Rule] | undefined) => void;
+		onedit: (rule: CollectionRule | undefined) => void;
 	}
 
 	let { children, onclose, onedit }: Props = $props();
@@ -18,14 +18,14 @@
 
 	let collectionSelected = $derived(nonNullish($store.rule));
 
-	let selected: [string, Rule] | undefined = $state(undefined);
-	const initSelected = (rule: [string, Rule] | undefined) => (selected = rule);
+	let selected: CollectionRule | undefined = $state(undefined);
+	const initSelected = (rule: CollectionRule | undefined) => (selected = rule);
 	$effect(() => {
 		initSelected($store.rule);
 	});
 
 	const close = () => onclose();
-	const edit = (rule: [string, Rule] | undefined) => onedit(rule);
+	const edit = (rule: CollectionRule | undefined) => onedit(rule);
 </script>
 
 <nav class="th">

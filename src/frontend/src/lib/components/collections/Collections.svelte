@@ -1,12 +1,13 @@
 <script lang="ts">
 	import { getContext } from 'svelte';
-	import type { Rule, CollectionType } from '$declarations/satellite/satellite.did';
+	import type { CollectionType } from '$declarations/satellite/satellite.did';
 	import CollectionEdit from '$lib/components/collections/CollectionEdit.svelte';
 	import CollectionSelection from '$lib/components/collections/CollectionSelection.svelte';
 	import CollectionsNav from '$lib/components/collections/CollectionsNav.svelte';
 	import IconNew from '$lib/components/icons/IconNew.svelte';
 	import { i18n } from '$lib/stores/i18n.store';
 	import { RULES_CONTEXT_KEY, type RulesContext } from '$lib/types/rules.context';
+	import type { CollectionRule } from '$lib/types/collection';
 
 	interface Props {
 		type: CollectionType;
@@ -18,7 +19,7 @@
 
 	let editCollection = $state(false);
 
-	const editCollectionRule = (rule: [string, Rule] | undefined) => {
+	const editCollectionRule = (rule: CollectionRule | undefined) => {
 		store.update((data) => ({ ...data, rule }));
 		editCollection = true;
 	};

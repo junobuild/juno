@@ -1,12 +1,12 @@
-import type { Rule } from '$declarations/satellite/satellite.did';
+import type { CollectionRule } from '$lib/types/collection';
 import type { OptionIdentity } from '$lib/types/itentity';
 import type { Principal } from '@dfinity/principal';
 import type { Readable, Writable } from 'svelte/store';
 
 export interface RulesData {
 	satelliteId: Principal;
-	rules: [string, Rule][] | undefined;
-	rule: [string, Rule] | undefined;
+	rules: CollectionRule[] | undefined;
+	rule: CollectionRule | undefined;
 }
 
 export interface RulesContext {

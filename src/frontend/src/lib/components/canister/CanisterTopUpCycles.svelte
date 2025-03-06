@@ -2,7 +2,7 @@
 	import { nonNullish } from '@dfinity/utils';
 	import Value from '$lib/components/ui/Value.svelte';
 	import { i18n } from '$lib/stores/i18n.store';
-	import { formatTCycles } from '$lib/utils/cycles.utils.js';
+	import { formatTCycles } from '$lib/utils/cycles.utils';
 
 	interface Props {
 		cycles: number | undefined;

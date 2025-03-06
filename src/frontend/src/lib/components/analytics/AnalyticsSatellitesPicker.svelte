@@ -3,7 +3,7 @@
 	import { nonNullish } from '@dfinity/utils';
 	import { onMount } from 'svelte';
 	import { orbiterSatellitesConfig } from '$lib/derived/orbiter-satellites.derived';
-	import { pageSatelliteId } from '$lib/derived/page.derived.svelte.js';
+	import { pageSatelliteId } from '$lib/derived/page.derived.svelte';
 	import { i18n } from '$lib/stores/i18n.store';
 	import type { SatelliteIdText } from '$lib/types/satellite';
 	import { navigateToAnalytics } from '$lib/utils/nav.utils';

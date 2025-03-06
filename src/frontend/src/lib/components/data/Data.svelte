@@ -3,9 +3,9 @@
 	import CollectionSelection from '$lib/components/collections/CollectionSelection.svelte';
 	import CollectionsEmpty from '$lib/components/collections/CollectionsEmpty.svelte';
 	import DataNav from '$lib/components/data/DataNav.svelte';
+	import type { CollectionRule } from '$lib/types/collection';
 	import { RULES_CONTEXT_KEY, type RulesContext } from '$lib/types/rules.context';
 	import { type TabsContext, TABS_CONTEXT_KEY } from '$lib/types/tabs.context';
-	import type { CollectionRule } from '$lib/types/collection';
 
 	interface Props {
 		children: Snippet;

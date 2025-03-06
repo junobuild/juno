@@ -3,8 +3,8 @@
 	import { getContext } from 'svelte';
 	import CollectionsNav from '$lib/components/collections/CollectionsNav.svelte';
 	import NavSeparator from '$lib/components/ui/NavSeparator.svelte';
-	import { DATA_CONTEXT_KEY, type DataContext } from '$lib/types/data.context';
 	import type { CollectionRule } from '$lib/types/collection';
+	import { DATA_CONTEXT_KEY, type DataContext } from '$lib/types/data.context';
 
 	interface Props {
 		onclose: () => void;

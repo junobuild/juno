@@ -11,6 +11,7 @@ export interface RulesData {
 export interface RulesContext {
 	store: Writable<RulesData>;
 	reload: () => Promise<void>;
+	init: (satelliteId: Principal) => Promise<void>;
 }
 
 export const RULES_CONTEXT_KEY = Symbol('rules');

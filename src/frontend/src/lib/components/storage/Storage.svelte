@@ -20,9 +20,7 @@
 	});
 
 	$effect(() => {
-		satelliteId;
-
-		context.reload();
+		context.init(satelliteId);
 	});
 
 	setContext<RulesContext>(RULES_CONTEXT_KEY, context);

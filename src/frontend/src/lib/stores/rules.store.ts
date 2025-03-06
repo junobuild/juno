@@ -23,6 +23,7 @@ export const initRulesContext = ({
 			satelliteId,
 			type: DbCollectionType,
 			store,
+			// TODO: pass auth as argument
 			identity: get(authStore).identity
 		});
 

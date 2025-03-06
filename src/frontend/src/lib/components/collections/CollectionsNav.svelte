@@ -3,8 +3,8 @@
 	import { getContext, type Snippet } from 'svelte';
 	import IconHome from '$lib/components/icons/IconHome.svelte';
 	import NavSeparator from '$lib/components/ui/NavSeparator.svelte';
-	import { RULES_CONTEXT_KEY, type RulesContext } from '$lib/types/rules.context';
 	import type { CollectionRule } from '$lib/types/collection';
+	import { RULES_CONTEXT_KEY, type RulesContext } from '$lib/types/rules.context';
 
 	interface Props {
 		children?: Snippet;

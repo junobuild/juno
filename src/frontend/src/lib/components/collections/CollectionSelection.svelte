@@ -14,7 +14,8 @@
 
 	let { start = false, onedit, onstart }: Props = $props();
 
-	const { store, hasAnyRules }: RulesContext = getContext<RulesContext>(RULES_CONTEXT_KEY);
+	const { store, hasAnyRules, sortedRules }: RulesContext =
+		getContext<RulesContext>(RULES_CONTEXT_KEY);
 
 	const edit = (rule: CollectionRule) => onedit(rule);
 
@@ -32,7 +33,7 @@
 		{/if}
 
 		{#if nonNullish($store.rules)}
-			{#each $store.rules as col}
+			{#each $sortedRules as col}
 				<button class="text action" class:offset={start} onclick={() => edit(col)}
 					><span>{col[0]}</span></button
 				>

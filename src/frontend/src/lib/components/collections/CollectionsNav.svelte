@@ -14,7 +14,7 @@
 
 	let { children, onclose, onedit }: Props = $props();
 
-	const { store }: RulesContext = getContext<RulesContext>(RULES_CONTEXT_KEY);
+	const { store, sortedRules }: RulesContext = getContext<RulesContext>(RULES_CONTEXT_KEY);
 
 	let collectionSelected = $derived(nonNullish($store.rule));
 
@@ -50,7 +50,7 @@
 	<select bind:value={selected} onchange={() => (isNullish(selected) ? close() : edit(selected))}>
 		<option value={undefined}>Select a collection</option>
 		{#if nonNullish($store.rules)}
-			{#each $store.rules as rule}
+			{#each $sortedRules as rule}
 				<option value={rule}>{rule[0]}</option>
 			{/each}
 		{/if}

@@ -6,8 +6,8 @@
 	import CollectionsNav from '$lib/components/collections/CollectionsNav.svelte';
 	import IconNew from '$lib/components/icons/IconNew.svelte';
 	import { i18n } from '$lib/stores/i18n.store';
-	import { RULES_CONTEXT_KEY, type RulesContext } from '$lib/types/rules.context';
 	import type { CollectionRule } from '$lib/types/collection';
+	import { RULES_CONTEXT_KEY, type RulesContext } from '$lib/types/rules.context';
 
 	interface Props {
 		type: CollectionType;

@@ -7,7 +7,8 @@ import type { Principal } from '@dfinity/principal';
 import { get, writable } from 'svelte/store';
 
 export const initRulesContext = ({
-	satelliteId
+	satelliteId,
+	type
 }: {
 	satelliteId: Principal;
 	type: CollectionType;
@@ -21,7 +22,7 @@ export const initRulesContext = ({
 	const reloadRules = async () =>
 		await reloadContextRules({
 			satelliteId,
-			type: DbCollectionType,
+			type,
 			store,
 			// TODO: pass auth as argument
 			identity: get(authStore).identity

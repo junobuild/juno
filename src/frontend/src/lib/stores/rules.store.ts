@@ -46,11 +46,18 @@ export const initRulesContext = ({
 
 	const emptyRules = derived(hasAnyRules, (hasAnyRules) => !hasAnyRules);
 
+	const sortedRules = derived(store, ({ rules }) =>
+		(rules ?? []).sort(([collectionA, _], [collectionB, __]) =>
+			collectionA.localeCompare(collectionB)
+		)
+	);
+
 	return {
 		store,
 		reload: reloadRules,
 		init: initRules,
 		hasAnyRules,
-		emptyRules
+		emptyRules,
+		sortedRules
 	};
 };

@@ -44,10 +44,13 @@ export const initRulesContext = ({
 
 	const hasAnyRules = derived(store, ({ rules }) => (rules?.length ?? 0) > 0);
 
+	const emptyRules = derived(hasAnyRules, (hasAnyRules) => !hasAnyRules);
+
 	return {
 		store,
 		reload: reloadRules,
 		init: initRules,
-		hasAnyRules
+		hasAnyRules,
+		emptyRules
 	};
 };

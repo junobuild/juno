@@ -3,7 +3,7 @@ import { reloadContextRules } from '$lib/services/rules.loader.services';
 import type { OptionIdentity } from '$lib/types/itentity';
 import type { RulesContext, RulesData } from '$lib/types/rules.context';
 import type { Principal } from '@dfinity/principal';
-import { get, writable } from 'svelte/store';
+import { derived, get, writable } from 'svelte/store';
 
 export const initRulesContext = ({
 	satelliteId: initialSatelliteId,
@@ -42,9 +42,12 @@ export const initRulesContext = ({
 		await reloadRules({ identity });
 	};
 
+	const hasAnyRules = derived(store, ({ rules }) => (rules?.length ?? 0) > 0);
+
 	return {
 		store,
 		reload: reloadRules,
-		init: initRules
+		init: initRules,
+		hasAnyRules
 	};
 };

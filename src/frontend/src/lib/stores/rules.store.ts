@@ -1,5 +1,5 @@
 import type { CollectionType } from '$declarations/satellite/satellite.did';
-import { authStore } from '$lib/stores/auth.store';
+import type { OptionIdentity } from '$lib/types/itentity';
 import type { RulesContext, RulesData } from '$lib/types/rules.context';
 import { reloadContextRules } from '$lib/utils/rules.utils';
 import type { Principal } from '@dfinity/principal';
@@ -18,23 +18,28 @@ export const initRulesContext = ({
 		rule: undefined
 	});
 
-	const reloadRules = async () =>
+	const reloadRules = async ({ identity }: { identity: OptionIdentity }) =>
 		await reloadContextRules({
 			satelliteId: get(store).satelliteId,
 			type,
 			store,
-			// TODO: pass auth as argument
-			identity: get(authStore).identity
+			identity
 		});
 
-	const initRules = async (satelliteId: Principal) => {
+	const initRules = async ({
+		satelliteId,
+		identity
+	}: {
+		satelliteId: Principal;
+		identity: OptionIdentity;
+	}) => {
 		store.set({
 			satelliteId,
 			rules: undefined,
 			rule: undefined
 		});
 
-		await reloadRules();
+		await reloadRules({ identity });
 	};
 
 	return {

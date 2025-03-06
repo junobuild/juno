@@ -47,7 +47,7 @@
 				identity: $authStore.identity
 			});
 
-			await reload();
+			await reload({ identity: $authStore.identity });
 
 			toasts.success(
 				i18nFormat($i18n.collections.deleted, [

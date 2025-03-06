@@ -4,6 +4,7 @@
 	import DbCollections from '$lib/components/db/DbCollections.svelte';
 	import DbData from '$lib/components/db/DbData.svelte';
 	import { DbCollectionType } from '$lib/constants/rules.constants';
+	import { authStore } from '$lib/stores/auth.store';
 	import { initRulesContext } from '$lib/stores/rules.store';
 	import { RULES_CONTEXT_KEY, type RulesContext } from '$lib/types/rules.context';
 	import { TABS_CONTEXT_KEY, type TabsContext } from '$lib/types/tabs.context';
@@ -20,7 +21,7 @@
 	});
 
 	$effect(() => {
-		context.init(satelliteId);
+		context.init({ satelliteId, identity: $authStore.identity });
 	});
 
 	setContext<RulesContext>(RULES_CONTEXT_KEY, context);

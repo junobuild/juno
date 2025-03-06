@@ -132,7 +132,7 @@
 				])
 			);
 
-			await reload();
+			await reload({ identity: $authStore.identity });
 
 			onsuccess();
 		} catch (err: unknown) {

@@ -119,6 +119,6 @@ then
 fi
 
 # Source the script to effectively build the canister
-source "$SCRIPTS_DIR/docker/build-canister"
+source "$SCRIPTS_DIR/build-canister"
 
 build_canister "$CANISTER" "$SRC_ROOT_DIR" "$ONLY_DEPS" "$WITH_CERTIFICATION" "$BUILD_TYPE"

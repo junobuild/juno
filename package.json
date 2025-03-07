@@ -48,7 +48,8 @@
 		"build:sputnik": "scripts/cargo.sh sputnik --with-certification --build-type=extended",
 		"build:mission-control": "scripts/cargo.sh mission_control",
 		"build:orbiter": "scripts/cargo.sh orbiter",
-		"build:fixtures": "scripts/cargo.sh test_satellite --with-certification --build-type=extended --fixture",
+		"build:fixtures": "npm run build:test-satellite",
+		"build:test-satellite": "scripts/cargo.sh test_satellite --with-certification --build-type=extended --fixture",
 		"build:modules": "npm run build:console && npm run build:observatory && npm run build:satellite && npm run build:mission-control && npm run build:orbiter",
 		"emulator": "docker compose up"
 	},

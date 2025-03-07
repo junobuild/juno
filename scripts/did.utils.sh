@@ -3,7 +3,7 @@ function generate_did() {
   local canister_root=$2
   local did_filename=$3
 
-  ./scripts/cargo.sh "$canister"
+  npm run build:"${canister//_/-}"
 
   if [ -z "$did_filename" ]; then
     candid-extractor "target/wasm/$canister.wasm" > "$canister_root/$canister.did"

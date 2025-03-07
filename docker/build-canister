@@ -89,6 +89,8 @@ function build_canister() {
         ic-wasm "$output_dir/$canister.wasm" -o "$output_dir/$canister.wasm" metadata supported_certificate_versions -d "1,2" -v public --keep-name-section
       fi
 
-      gzip --no-name --force "$output_dir/$canister.wasm"
+      # --no-name to avoid reproducibility issues
+      # --keep-unused in CI Docker build, but useful for local tooling and particularly for the job that generates the DID files
+      gzip --no-name --force --keep "$output_dir/$canister.wasm"
     fi
 }

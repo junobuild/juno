@@ -2,7 +2,7 @@
 
 set -euo pipefail
 
-USAGE="Usage: $0 <module_name> [--with-certification] [--build-type=stock|extended]"
+USAGE="Usage: $0 <module_name> [--with-certification] [--build-type=stock|extended] [--fixture]"
 
 if [ -z "$1" ]; then
   echo "$USAGE"
@@ -16,6 +16,9 @@ WASM_MODULE="${MODULE}.wasm"
 WITH_CERTIFICATION=0
 BUILD_TYPE=
 
+# Source directory where to find $CANISTER/Cargo.toml
+SRC_ROOT_DIR="$PWD/src"
+
 # Parse optional arguments
 shift
 while [[ $# -gt 0 ]]; do
@@ -28,6 +31,10 @@ while [[ $# -gt 0 ]]; do
       BUILD_TYPE="${1#--build-type=}"
       shift
       ;;
+    --fixture)
+      SRC_ROOT_DIR="$PWD/src/tests/fixtures"
+      shift
+      ;;
     *)
       echo "ERROR: unknown argument $1"
       echo "$USAGE"
@@ -35,6 +42,8 @@ while [[ $# -gt 0 ]]; do
       ;;
   esac
 done
+
+echo "---> $SRC_ROOT_DIR $PWD"
 
 ############
 # Metadata #
@@ -50,9 +59,6 @@ node ./scripts/cargo.metadata.mjs "$MODULE" "$VERSION"
 
 # We do not want to build only the dependencies in this script
 ONLY_DEPS=
-
-# Source directory where to find $CANISTER/Cargo.toml
-SRC_ROOT_DIR="$PWD/src"
 
 # Clean and create temporary and output folder
 BUILD_DIR="./target/wasm"

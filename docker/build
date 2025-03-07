@@ -106,7 +106,7 @@ done
 
 # build Mission Control by default
 if [ ${#CANISTER} -eq 0 ]; then
-    CANISTER=("mission_control")
+    CANISTER="mission_control"
 fi
 
 # Checking for dependencies

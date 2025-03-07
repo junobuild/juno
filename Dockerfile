@@ -1,6 +1,6 @@
 # Use this with
 #
-#  docker build -t mission_control .
+#  docker build -t mission_control . --progress=plain --platform=linux/amd64
 #
 # The docker image. To update, run `docker pull ubuntu` locally, and update the
 # sha256:... accordingly.
@@ -46,6 +46,7 @@ COPY src/observatory/Cargo.toml src/observatory/Cargo.toml
 COPY src/orbiter/Cargo.toml src/orbiter/Cargo.toml
 COPY src/mission_control/Cargo.toml src/mission_control/Cargo.toml
 COPY src/satellite/Cargo.toml src/satellite/Cargo.toml
+COPY src/sputnik/Cargo.toml src/sputnik/Cargo.toml
 COPY src/tests/fixtures/test_satellite/Cargo.toml src/tests/fixtures/test_satellite/Cargo.toml
 COPY src/libs/macros/Cargo.toml src/libs/macros/Cargo.toml
 COPY src/libs/satellite/Cargo.toml src/libs/satellite/Cargo.toml
@@ -64,6 +65,8 @@ RUN mkdir -p src/console/src \
     && touch src/mission_control/src/lib.rs \
     && mkdir -p src/satellite/src \
     && touch src/satellite/src/lib.rs \
+    && mkdir -p src/sputnik/src \
+    && touch src/sputnik/src/lib.rs \
     && mkdir -p src/tests/fixtures/test_satellite/src \
     && touch src/tests/fixtures/test_satellite/src/lib.rs \
     && mkdir -p src/libs/macros/src \

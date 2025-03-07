@@ -7,7 +7,7 @@ function generate_certified_did_idl() {
   sed "s/\['query'\]/\[\]/g" "$declaration_path"/"$canister".factory.did.js > "$declaration_path"/"$canister".factory.certified.did.js
 }
 
-CANISTERS=console,observatory,mission_control,orbiter,satellite
+CANISTERS=console,observatory,mission_control,orbiter,satellite,sputnik
 
 for canister in $(echo $CANISTERS | sed "s/,/ /g")
 do

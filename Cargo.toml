@@ -5,6 +5,7 @@ members = [
     "src/satellite",
     "src/observatory",
     "src/orbiter",
+    "src/sputnik",
     "src/libs/shared",
     "src/libs/satellite",
     "src/libs/macros",

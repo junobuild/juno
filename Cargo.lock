@@ -1287,6 +1287,17 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "3c5e1a9a646d36c3599cd173a41282daf47c44583ad367b8e6837255952e5c67"
 
 [[package]]
+name = "sputnik"
+version = "0.0.1"
+dependencies = [
+ "candid",
+ "ic-cdk",
+ "junobuild-macros",
+ "junobuild-satellite",
+ "junobuild-storage",
+]
+
+[[package]]
 name = "stable_deref_trait"
 version = "1.2.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"

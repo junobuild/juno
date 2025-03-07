@@ -14,7 +14,7 @@ function generate_did_idl() {
   didc bind -t js "$canister_root"/"$canister".did > "$declaration_path"/"$canister".did.js
 }
 
-CANISTERS=console,observatory,mission_control,orbiter,satellite
+CANISTERS=console,observatory,mission_control,orbiter,satellite,sputnik
 
 for canister in $(echo $CANISTERS | sed "s/,/ /g")
 do

@@ -1,0 +1,16 @@
+[package]
+name = "sputnik"
+version = "0.0.1"
+edition = "2021"
+publish = false
+
+[lib]
+crate-type = ["cdylib"]
+
+[dependencies]
+candid.workspace = true
+ic-cdk.workspace = true
+junobuild-satellite = { path = "../libs/satellite", default-features = false }
+junobuild-storage = { path = "../libs/storage" }
+junobuild-macros = { path = "../libs/macros" }
+

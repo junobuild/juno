@@ -22,6 +22,7 @@ function prepend_import_did() {
 
 # Satellite specific code due to inheritance of the crate
 generate_did satellite "src/satellite" satellite_extension
+generate_did sputnik "src/sputnik" satellite_extension
 
 function prepend_satellite_import_did() {
   local canister=$1
@@ -34,6 +35,7 @@ function prepend_satellite_import_did() {
 }
 
 prepend_satellite_import_did satellite satellite_extension
+prepend_satellite_import_did sputnik satellite_extension
 
 # Fixtures
 

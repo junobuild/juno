@@ -28,6 +28,14 @@ generate_did satellite "src/satellite" satellite_extension
 prepend_import_did $SATELLITE_CRATE_DID "src/satellite" satellite satellite_extension
 
 #######################################
+# Sputnik (with serverless functions) #
+#######################################
+
+generate_did sputnik "src/sputnik" sputnik_extension
+
+prepend_import_did $SATELLITE_CRATE_DID "src/sputnik" sputnik sputnik_extension
+
+#######################################
 # Fixtures (with serverless functions) #
 #######################################
 

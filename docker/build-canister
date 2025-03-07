@@ -3,13 +3,17 @@
 # Builds a single canister
 function build_canister() {
     local canister=$1
-    shift
+    local src_root_dir=$2
+    local only_deps=$3
+    local with_certification=$4
+    local build_type=$5
+    shift 5
     local extra_build_args=("$@")
 
     echo "Building $canister"
     echo
 
-    SRC_DIR="$SRC_ROOT_DIR/$canister"
+    SRC_DIR="$src_root_dir/$canister"
     TARGET="wasm32-unknown-unknown"
 
     # Standardize source references
@@ -35,7 +39,7 @@ function build_canister() {
 
     RUSTFLAGS="$RUSTFLAGS" cargo build "${cargo_build_args[@]}"
 
-    if [ "$ONLY_DEPS" != "1" ]
+    if [ "$only_deps" != "1" ]
     then
       CARGO_TARGET_DIR="${CARGO_TARGET_DIR:-$SRC_DIR/../../target/}"
 
@@ -52,13 +56,13 @@ function build_canister() {
       # adds the content of $canister.did to the `icp:public candid:service` custom section of the public metadata in the wasm
       ic-wasm "$canister.wasm" -o "$canister.wasm" metadata candid:service -f "$SRC_DIR/$canister.did" -v public --keep-name-section
 
-      if [ -n "$BUILD_TYPE" ]
+      if [ -n "$build_type" ]
       then
         # add the type of build "stock" to the satellite. This way, we can identify whether it's the standard canister ("stock") or a custom build ("extended") of the developer.
-        ic-wasm "$canister.wasm" -o "$canister.wasm" metadata juno:build -d "$BUILD_TYPE" -v public --keep-name-section
+        ic-wasm "$canister.wasm" -o "$canister.wasm" metadata juno:build -d "$build_type" -v public --keep-name-section
       fi
 
-      if [ "$WITH_CERTIFICATION" -eq 1 ]
+      if [ "$with_certification" -eq 1 ]
       then
         # indicate support for certificate version 1 and 2 in the canister metadata
         ic-wasm "$canister.wasm" -o "$canister.wasm" metadata supported_certificate_versions -d "1,2" -v public --keep-name-section

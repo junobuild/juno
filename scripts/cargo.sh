@@ -43,8 +43,6 @@ while [[ $# -gt 0 ]]; do
   esac
 done
 
-echo "---> $SRC_ROOT_DIR $PWD"
-
 ############
 # Metadata #
 ############

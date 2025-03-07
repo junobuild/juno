@@ -4,11 +4,32 @@
 function build_canister() {
     local canister=$1
     local src_root_dir=$2
-    local only_deps=$3
-    local with_certification=$4
-    local build_type=$5
-    shift 5
+    local output_dir=$3
+    local only_deps=$4
+    local with_certification=$5
+    local build_type=$6
+    shift 6
     local extra_build_args=("$@")
+
+    if [ -z "$canister" ]; then
+        echo "ERROR: No canister specified."
+        exit 1
+    fi
+
+    if [ -z "$src_root_dir" ]; then
+        echo "ERROR: No root directory for the source specified."
+        exit 1
+    fi
+
+    if [ -z "$output_dir" ]; then
+        echo "ERROR: No output directory specified."
+        exit 1
+    fi
+
+    if [ ! -d "$output_dir" ]; then
+        echo "ERROR: The output directory '$output_dir' does not exist."
+        exit 1
+    fi
 
     echo "Building $canister"
     echo
@@ -44,30 +65,30 @@ function build_canister() {
       CARGO_TARGET_DIR="${CARGO_TARGET_DIR:-$SRC_DIR/../../target/}"
 
       # Generate did file
-      candid-extractor "$CARGO_TARGET_DIR/$TARGET/release/$canister.wasm" > "./$canister.did"
+      candid-extractor "$CARGO_TARGET_DIR/$TARGET/release/$canister.wasm" > "$output_dir/$canister.did"
 
       # Optimize WASM and set metadata
       ic-wasm \
           "$CARGO_TARGET_DIR/$TARGET/release/$canister.wasm" \
-          -o "./$canister.wasm" \
+          -o "$output_dir/$canister.wasm" \
           shrink \
           --keep-name-section
 
       # adds the content of $canister.did to the `icp:public candid:service` custom section of the public metadata in the wasm
-      ic-wasm "$canister.wasm" -o "$canister.wasm" metadata candid:service -f "$SRC_DIR/$canister.did" -v public --keep-name-section
+      ic-wasm "$output_dir/$canister.wasm" -o "$output_dir/$canister.wasm" metadata candid:service -f "$output_dir/$canister.did" -v public --keep-name-section
 
       if [ -n "$build_type" ]
       then
         # add the type of build "stock" to the satellite. This way, we can identify whether it's the standard canister ("stock") or a custom build ("extended") of the developer.
-        ic-wasm "$canister.wasm" -o "$canister.wasm" metadata juno:build -d "$build_type" -v public --keep-name-section
+        ic-wasm "$output_dir/$canister.wasm" -o "$output_dir/$canister.wasm" metadata juno:build -d "$build_type" -v public --keep-name-section
       fi
 
       if [ "$with_certification" -eq 1 ]
       then
         # indicate support for certificate version 1 and 2 in the canister metadata
-        ic-wasm "$canister.wasm" -o "$canister.wasm" metadata supported_certificate_versions -d "1,2" -v public --keep-name-section
+        ic-wasm "$output_dir/$canister.wasm" -o "$output_dir/$canister.wasm" metadata supported_certificate_versions -d "1,2" -v public --keep-name-section
       fi
 
-      gzip --no-name --force "./$canister.wasm"
+      gzip --no-name --force "$output_dir/$canister.wasm"
     fi
 }

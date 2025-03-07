@@ -62,7 +62,7 @@ function build_canister() {
 
     if [ "$only_deps" != "1" ]
     then
-      CARGO_TARGET_DIR="${CARGO_TARGET_DIR:-$SRC_DIR/../../target/}"
+      CARGO_TARGET_DIR="${CARGO_TARGET_DIR:-$PWD/target}"
 
       # Generate did file
       candid-extractor "$CARGO_TARGET_DIR/$TARGET/release/$canister.wasm" > "$output_dir/$canister.did"

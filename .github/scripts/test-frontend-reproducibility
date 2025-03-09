@@ -16,7 +16,7 @@ for ((n = 0; n < 10; n++)); do
   rm -r node_modules
   npm ci
 
-  npm run build && find build -type f -exec sha256sum {} \; | awk '{print $2 " " $1}' | sort >"$DIR/sha256-batch${n}.txt"
+  npm run build:frontend && find build -type f -exec sha256sum {} \; | awk '{print $2 " " $1}' | sort >"$DIR/sha256-batch${n}.txt"
 
   # Save results for manual comparison
   rm -r "$DIR/build-batch${n}" 2>/dev/null

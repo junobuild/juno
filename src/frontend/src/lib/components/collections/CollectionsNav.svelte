@@ -1,35 +1,31 @@
 <script lang="ts">
 	import { isNullish, nonNullish } from '@dfinity/utils';
-	import { createEventDispatcher, getContext, type Snippet } from 'svelte';
-	import { run } from 'svelte/legacy';
-	import type { Rule } from '$declarations/satellite/satellite.did';
+	import { getContext, type Snippet } from 'svelte';
 	import IconHome from '$lib/components/icons/IconHome.svelte';
 	import NavSeparator from '$lib/components/ui/NavSeparator.svelte';
+	import type { CollectionRule } from '$lib/types/collection';
 	import { RULES_CONTEXT_KEY, type RulesContext } from '$lib/types/rules.context';
 
 	interface Props {
 		children?: Snippet;
+		onclose: () => void;
+		onedit: (rule: CollectionRule | undefined) => void;
 	}
 
-	let { children }: Props = $props();
+	let { children, onclose, onedit }: Props = $props();
 
-	const { store }: RulesContext = getContext<RulesContext>(RULES_CONTEXT_KEY);
+	const { store, sortedRules }: RulesContext = getContext<RulesContext>(RULES_CONTEXT_KEY);
 
-	let collectionSelected = $state(false);
-	run(() => {
-		collectionSelected = nonNullish($store.rule);
-	});
+	let collectionSelected = $derived(nonNullish($store.rule));
 
-	let selected: [string, Rule] | undefined = $state(undefined);
-	const initSelected = (rule: [string, Rule] | undefined) => (selected = rule);
-	run(() => {
+	let selected: CollectionRule | undefined = $state(undefined);
+	const initSelected = (rule: CollectionRule | undefined) => (selected = rule);
+	$effect(() => {
 		initSelected($store.rule);
 	});
 
-	const dispatch = createEventDispatcher();
-
-	const close = () => dispatch('junoCollectionClose');
-	const edit = (rule: [string, Rule] | undefined) => dispatch('junoCollectionEdit', rule);
+	const close = () => onclose();
+	const edit = (rule: CollectionRule | undefined) => onedit(rule);
 </script>
 
 <nav class="th">
@@ -54,7 +50,7 @@
 	<select bind:value={selected} onchange={() => (isNullish(selected) ? close() : edit(selected))}>
 		<option value={undefined}>Select a collection</option>
 		{#if nonNullish($store.rules)}
-			{#each $store.rules as rule}
+			{#each $sortedRules as rule}
 				<option value={rule}>{rule[0]}</option>
 			{/each}
 		{/if}

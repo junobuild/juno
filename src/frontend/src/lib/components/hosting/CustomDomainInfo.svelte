@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { fromNullable, nonNullish } from '@dfinity/utils';
+	import { nonNullish, fromNullishNullable } from '@dfinity/utils';
 	import { createEventDispatcher } from 'svelte';
 	import { run, stopPropagation } from 'svelte/legacy';
 	import { fade } from 'svelte/transition';
@@ -40,7 +40,7 @@
 		dispatch('junoClose');
 	};
 
-	let bnId: string | undefined = $derived(fromNullable(customDomain?.[1].bn_id ?? []));
+	let bnId: string | undefined = $derived(fromNullishNullable(customDomain?.[1].bn_id));
 
 	run(() => {
 		// @ts-expect-error TODO: to be migrated to Svelte v5

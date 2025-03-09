@@ -27,27 +27,28 @@ import {
 	MISSION_CONTROL_v0_0_5,
 	MISSION_CONTROL_v0_0_7
 } from '$lib/constants/version.constants';
-import { satellitesStore } from '$lib/derived/satellite.derived';
+import { satellitesStore } from '$lib/derived/satellites.derived';
 import { missionControlVersion as missionControlVersionStore } from '$lib/derived/version.derived';
 import { loadDataStore } from '$lib/services/loader.services';
 import { loadSatellites } from '$lib/services/satellites.services';
 import { authStore } from '$lib/stores/auth.store';
 import { i18n } from '$lib/stores/i18n.store';
 import {
-	missionControlSettingsDataStore,
-	missionControlUserDataStore
+	missionControlSettingsUncertifiedStore,
+	missionControlUserUncertifiedStore
 } from '$lib/stores/mission-control.store';
-import { orbitersDataStore } from '$lib/stores/orbiter.store';
-import { satellitesDataStore } from '$lib/stores/satellite.store';
+import { orbitersUncertifiedStore } from '$lib/stores/orbiter.store';
+import { satellitesUncertifiedStore } from '$lib/stores/satellite.store';
 import { toasts } from '$lib/stores/toasts.store';
 import type { SetControllerParams } from '$lib/types/controllers';
 import type { OptionIdentity } from '$lib/types/itentity';
 import type { Metadata } from '$lib/types/metadata';
+import type { MissionControlId } from '$lib/types/mission-control';
 import type { Option } from '$lib/types/utils';
 import { isNotValidEmail } from '$lib/utils/email.utils';
 import type { Identity } from '@dfinity/agent';
 import type { Principal } from '@dfinity/principal';
-import { fromNullable, isNullish, notEmptyString } from '@dfinity/utils';
+import { fromNullable, isEmptyString, isNullish } from '@dfinity/utils';
 import { compare } from 'semver';
 import { get } from 'svelte/store';
 
@@ -57,7 +58,7 @@ export const setMissionControlControllerForVersion = async ({
 	controllerId,
 	profile
 }: {
-	missionControlId: Principal;
+	missionControlId: MissionControlId;
 } & SetControllerParams) => {
 	const identity = get(authStore).identity;
 
@@ -86,7 +87,7 @@ export const setSatellitesForVersion = async ({
 	controllerId,
 	profile
 }: {
-	missionControlId: Principal;
+	missionControlId: MissionControlId;
 	satelliteIds: Principal[];
 } & SetControllerParams) => {
 	const identity = get(authStore).identity;
@@ -159,7 +160,7 @@ export const setSatelliteName = async ({
 	satellite: { satellite_id: satelliteId, metadata },
 	satelliteName
 }: {
-	missionControlId: Principal;
+	missionControlId: MissionControlId;
 	satellite: Satellite;
 	satelliteName: string;
 }) => {
@@ -176,7 +177,7 @@ export const setSatelliteName = async ({
 	});
 
 	const satellites = get(satellitesStore);
-	satellitesDataStore.set([
+	satellitesUncertifiedStore.set([
 		...(satellites ?? []).filter(
 			({ satellite_id }) => updatedSatellite.satellite_id.toText() !== satellite_id.toText()
 		),
@@ -188,7 +189,7 @@ export const attachSatellite = async ({
 	missionControlId,
 	satelliteId
 }: {
-	missionControlId: Principal;
+	missionControlId: MissionControlId;
 	satelliteId: Principal;
 }) => {
 	const identity = get(authStore).identity;
@@ -206,7 +207,7 @@ export const detachSatellite = async ({
 	canisterId,
 	missionControlId
 }: {
-	missionControlId: Principal;
+	missionControlId: MissionControlId;
 	canisterId: Principal;
 }) => {
 	const identity = get(authStore).identity;
@@ -220,28 +221,28 @@ export const detachSatellite = async ({
 };
 
 export const attachOrbiter = async (params: {
-	missionControlId: Principal;
+	missionControlId: MissionControlId;
 	orbiterId: Principal;
 }) => {
 	const identity = get(authStore).identity;
 
 	const orbiter = await setOrbiter({ ...params, identity });
 
-	orbitersDataStore.set([orbiter]);
+	orbitersUncertifiedStore.set([orbiter]);
 };
 
 export const detachOrbiter = async ({
 	canisterId,
 	...rest
 }: {
-	missionControlId: Principal;
+	missionControlId: MissionControlId;
 	canisterId: Principal;
 }) => {
 	const identity = get(authStore).identity;
 
 	await unsetOrbiter({ ...rest, orbiterId: canisterId, identity });
 
-	orbitersDataStore.reset();
+	orbitersUncertifiedStore.reset();
 };
 
 export const loadSettings = async ({
@@ -249,14 +250,14 @@ export const loadSettings = async ({
 	identity,
 	reload = false
 }: {
-	missionControlId: Principal;
+	missionControlId: MissionControlId;
 	identity: OptionIdentity;
 	reload?: boolean;
 }): Promise<{ success: boolean }> => {
 	const versionStore = get(missionControlVersionStore);
 
 	if (compare(versionStore?.current ?? '0.0.0', MISSION_CONTROL_v0_0_14) < 0) {
-		missionControlSettingsDataStore.reset();
+		missionControlSettingsUncertifiedStore.reset();
 		return { success: true };
 	}
 
@@ -274,7 +275,7 @@ export const loadSettings = async ({
 		reload,
 		load,
 		errorLabel: 'load_settings',
-		store: missionControlSettingsDataStore
+		store: missionControlSettingsUncertifiedStore
 	});
 
 	return { success: result !== 'error' };
@@ -285,14 +286,14 @@ export const loadUserData = async ({
 	identity,
 	reload = false
 }: {
-	missionControlId: Principal;
+	missionControlId: MissionControlId;
 	identity: OptionIdentity;
 	reload?: boolean;
 }): Promise<{ success: boolean }> => {
 	const versionStore = get(missionControlVersionStore);
 
 	if (compare(versionStore?.current ?? '0.0.0', MISSION_CONTROL_v0_0_14) < 0) {
-		missionControlUserDataStore.reset();
+		missionControlUserUncertifiedStore.reset();
 		return { success: true };
 	}
 
@@ -307,7 +308,7 @@ export const loadUserData = async ({
 		reload,
 		load,
 		errorLabel: 'load_user_data',
-		store: missionControlUserDataStore
+		store: missionControlUserUncertifiedStore
 	});
 
 	return { success: result !== 'error' };
@@ -324,7 +325,7 @@ export const setMetadataEmail = async ({
 	email: string;
 	metadata: Metadata;
 }): Promise<{ success: boolean }> => {
-	if (!notEmptyString(email) || isNotValidEmail(email)) {
+	if (isEmptyString(email) || isNotValidEmail(email)) {
 		toasts.error({
 			text: get(i18n).errors.invalid_email
 		});

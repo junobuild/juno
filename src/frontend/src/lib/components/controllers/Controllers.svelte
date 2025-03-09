@@ -14,14 +14,18 @@
 	import { toasts } from '$lib/stores/toasts.store';
 	import type { CanisterSegmentWithLabel } from '$lib/types/canister';
 	import type { SetControllerParams } from '$lib/types/controllers';
+	import type { MissionControlId } from '$lib/types/mission-control';
 	import { metadataProfile } from '$lib/utils/metadata.utils';
 
 	interface Props {
 		list: () => Promise<[Principal, Controller][]>;
-		remove: (params: { missionControlId: Principal; controller: Principal }) => Promise<void>;
+		remove: (params: {
+			missionControlId: MissionControlId;
+			controller: Principal;
+		}) => Promise<void>;
 		add: (
 			params: {
-				missionControlId: Principal;
+				missionControlId: MissionControlId;
 			} & SetControllerParams
 		) => Promise<void>;
 		segment: CanisterSegmentWithLabel;

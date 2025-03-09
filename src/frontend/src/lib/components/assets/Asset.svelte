@@ -1,6 +1,6 @@
 <script lang="ts">
 	import type { Principal } from '@dfinity/principal';
-	import { fromNullable, isNullish, nonNullish } from '@dfinity/utils';
+	import { fromNullable, isNullish, nonNullish, fromNullishNullable } from '@dfinity/utils';
 	import { getContext } from 'svelte';
 	import type { AssetNoContent } from '$declarations/satellite/satellite.did';
 	import { deleteAsset } from '$lib/api/satellites.api';
@@ -53,7 +53,7 @@
 		nonNullish(asset) ? fromNullable(asset.key.description) : undefined
 	);
 
-	let version: bigint | undefined = $derived(fromNullable(asset?.version ?? []));
+	let version: bigint | undefined = $derived(fromNullishNullable(asset?.version));
 
 	let deleteData: (params: { collection: string; satelliteId: Principal }) => Promise<void> =
 		$derived(async (params: { collection: string; satelliteId: Principal }) => {

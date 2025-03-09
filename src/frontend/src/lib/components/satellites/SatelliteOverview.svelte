@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { fromNullable } from '@dfinity/utils';
+	import { fromNullishNullable } from '@dfinity/utils';
 	import type { Satellite } from '$declarations/mission_control/mission_control.did';
 	import CanisterMonitoring from '$lib/components/canister/CanisterMonitoring.svelte';
 	import CanisterOverview from '$lib/components/canister/CanisterOverview.svelte';
@@ -11,7 +11,7 @@
 	import SatelliteOverviewVersion from '$lib/components/satellites/SatelliteOverviewVersion.svelte';
 	import Identifier from '$lib/components/ui/Identifier.svelte';
 	import Value from '$lib/components/ui/Value.svelte';
-	import { satellitesNotLoaded } from '$lib/derived/satellite.derived';
+	import { satellitesNotLoaded } from '$lib/derived/satellites.derived';
 	import { i18n } from '$lib/stores/i18n.store';
 	import type { SatelliteIdText } from '$lib/types/satellite';
 
@@ -23,7 +23,9 @@
 
 	let satelliteId: SatelliteIdText = $derived(satellite.satellite_id.toText());
 
-	let monitoring = $derived(fromNullable(fromNullable(satellite.settings ?? [])?.monitoring ?? []));
+	let monitoring = $derived(
+		fromNullishNullable(fromNullishNullable(satellite.settings)?.monitoring)
+	);
 </script>
 
 <div class="card-container with-title">
@@ -63,7 +65,7 @@
 			heapWarningLabel={$i18n.canisters.warning_satellite_heap_memory}
 		/>
 
-		<CanisterMonitoring segment="satellite" canisterId={satellite.satellite_id}>
+		<CanisterMonitoring canisterId={satellite.satellite_id}>
 			<MonitoringDisabled {monitoring} loading={$satellitesNotLoaded} />
 		</CanisterMonitoring>
 	</div>

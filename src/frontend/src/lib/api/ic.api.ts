@@ -6,10 +6,10 @@ import type {
 	snapshot,
 	snapshot_id
 } from '$declarations/ic/ic.did';
+import { getAgent } from '$lib/api/_agent/_agent.api';
 import { getICActor } from '$lib/api/actors/actor.ic.api';
-import { getAgent } from '$lib/api/agent/agent.api';
 import type { CanisterInfo, CanisterLogVisibility, CanisterStatus } from '$lib/types/canister';
-import type { Snapshots } from '$lib/types/snapshot';
+import type { Snapshots } from '$lib/types/progress-snapshot';
 import {
 	CanisterStatus as AgentCanisterStatus,
 	AnonymousIdentity,
@@ -225,7 +225,7 @@ export const getSubnetId = async ({
 }): Promise<string | undefined> => {
 	const agent = await getAgent({ identity: new AnonymousIdentity() });
 
-	const path = 'subnet' as const;
+	const path = 'subnet';
 
 	const result = await AgentCanisterStatus.request({
 		canisterId: Principal.from(canisterId),

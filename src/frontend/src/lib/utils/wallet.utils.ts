@@ -1,37 +1,43 @@
 import { getAccountIdentifier } from '$lib/api/icp-index.api';
 import {
+	INDEX_RELOAD_DELAY,
 	MEMO_CANISTER_CREATE,
 	MEMO_CANISTER_TOP_UP,
 	MEMO_ORBITER_CREATE_REFUND,
 	MEMO_SATELLITE_CREATE_REFUND
 } from '$lib/constants/wallet.constants';
 import { i18n } from '$lib/stores/i18n.store';
-import { formatE8sICP } from '$lib/utils/icp.utils';
-import type { Transaction } from '@dfinity/ledger-icp';
-import type { Principal } from '@dfinity/principal';
-import { fromNullable } from '@dfinity/utils';
+import type { IcTransactionUi } from '$lib/types/ic-transaction';
+import type { MissionControlId } from '$lib/types/mission-control';
+import { emit } from '$lib/utils/events.utils';
+import { formatICP } from '$lib/utils/icp.utils';
+import { waitForMilliseconds } from '$lib/utils/timeout.utils';
+import { nonNullish } from '@dfinity/utils';
 import { get } from 'svelte/store';
 
-export const transactionTimestamp = (transaction: Transaction): bigint | undefined =>
-	fromNullable(transaction.timestamp)?.timestamp_nanos;
+/**
+ * Wait few seconds and trigger the wallet to fetch optimistically new transactions twice.
+ */
+export const waitAndRestartWallet = async () => {
+	await waitForMilliseconds(INDEX_RELOAD_DELAY);
 
-export const transactionFrom = (transaction: Transaction): string =>
-	'Transfer' in transaction.operation ? transaction.operation.Transfer.from : '';
+	// Best case scenario, the transaction has already been noticed by the index canister after INDEX_RELOAD_DELAY seconds.
+	emit({ message: 'junoRestartWallet' });
 
-export const transactionTo = (transaction: Transaction): string =>
-	'Transfer' in transaction.operation ? transaction.operation.Transfer.to : '';
+	// In case the best case scenario was not met, we optimistically try to retrieve the transactions on more time given that we generally retrieve transactions every WALLET_TIMER_INTERVAL_MILLIS seconds without blocking the UI.
+	waitForMilliseconds(INDEX_RELOAD_DELAY).then(() => emit({ message: 'junoRestartWallet' }));
+};
 
 export const transactionMemo = ({
 	transaction,
 	missionControlId
 }: {
-	transaction: Transaction;
-	missionControlId: Principal;
+	transaction: IcTransactionUi;
+	missionControlId: MissionControlId;
 }): string => {
 	const labels = get(i18n);
 
-	const from = transactionFrom(transaction);
-	const { memo } = transaction;
+	const { memo, from } = transaction;
 
 	switch (memo) {
 		case MEMO_CANISTER_CREATE:
@@ -54,7 +60,5 @@ export const transactionMemo = ({
 	}
 };
 
-export const transactionAmount = (transaction: Transaction): string | undefined =>
-	'Transfer' in transaction.operation
-		? formatE8sICP(transaction.operation.Transfer.amount.e8s)
-		: undefined;
+export const transactionAmount = (transaction: IcTransactionUi): string | undefined =>
+	nonNullish(transaction.value) ? formatICP(transaction.value) : undefined;

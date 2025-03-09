@@ -40,7 +40,7 @@
 {#if visible}
 	<div
 		class="modal"
-		transition:fade
+		out:fade
 		role="dialog"
 		aria-labelledby="modalTitle"
 		aria-describedby="modalContent"
@@ -115,6 +115,12 @@
 		@supports (-webkit-touch-callout: none) {
 			& {
 				max-height: -webkit-fill-available;
+			}
+		}
+
+		@supports (-webkit-touch-callout: none) and (height: 100dvh) {
+			& {
+				height: calc(100dvh - 2.75rem);
 			}
 		}
 	}

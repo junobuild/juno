@@ -1,12 +1,21 @@
+import type { MissionControl } from '$declarations/console/console.did';
 import type { Orbiter } from '$declarations/mission_control/mission_control.did';
-import { initMissionControl as initMissionControlApi } from '$lib/api/console.api';
+import {
+	getMissionControl as getMissionControlApi,
+	initMissionControl as initMissionControlApi
+} from '$lib/api/console.api';
 import { missionControlVersion } from '$lib/api/mission-control.api';
 import { orbiterVersion } from '$lib/api/orbiter.api';
 import { satelliteBuildVersion, satelliteVersion } from '$lib/api/satellites.api';
 import { getNewestReleasesMetadata } from '$lib/rest/cdn.rest';
+import { missionControlErrorSignOut } from '$lib/services/auth.services';
 import { authStore } from '$lib/stores/auth.store';
+import { i18n } from '$lib/stores/i18n.store';
+import { missionControlIdCertifiedStore } from '$lib/stores/mission-control.store';
 import { toasts } from '$lib/stores/toasts.store';
 import { versionStore, type ReleaseVersionSatellite } from '$lib/stores/version.store';
+import type { OptionIdentity } from '$lib/types/itentity';
+import type { MissionControlId } from '$lib/types/mission-control';
 import type { Option } from '$lib/types/utils';
 import { container } from '$lib/utils/juno.utils';
 import type { Identity } from '@dfinity/agent';
@@ -15,26 +24,75 @@ import { assertNonNullish, fromNullable, isNullish, nonNullish } from '@dfinity/
 import { satelliteBuildType } from '@junobuild/admin';
 import { get } from 'svelte/store';
 
+interface Certified {
+	certified: boolean;
+}
+
+type PollAndInitResult = {
+	missionControlId: MissionControlId;
+} & Certified;
+
 export const initMissionControl = async ({
-	identity,
-	onInitMissionControlSuccess
+	identity
+}: {
+	identity: OptionIdentity;
+}): Promise<{ result: 'skip' | 'success' | 'error' }> => {
+	// If not signed in, we are not going to init and load a mission control.
+	if (isNullish(identity)) {
+		return { result: 'skip' };
+	}
+
+	try {
+		// Poll to init mission control center
+		const { missionControlId, certified } = await pollAndInitMissionControl({
+			identity
+		});
+
+		missionControlIdCertifiedStore.set({
+			data: missionControlId,
+			certified
+		});
+
+		if (certified) {
+			return { result: 'success' };
+		}
+
+		// We deliberately do not await the promise to avoid blocking the main UX. However, if necessary, we take the required measures if Mission Control cannot be certified.
+		assertMissionControl({ identity });
+
+		return { result: 'success' };
+	} catch (err: unknown) {
+		toasts.error({
+			text: get(i18n).errors.initializing_mission_control,
+			detail: err
+		});
+
+		// There was an error so, we sign the user out otherwise skeleton and other spinners will be displayed forever
+		await missionControlErrorSignOut();
+
+		return { result: 'error' };
+	}
+};
+
+const pollAndInitMissionControl = async ({
+	identity
 }: {
 	identity: Identity;
-	onInitMissionControlSuccess: (missionControlId: Principal) => void;
-	// eslint-disable-next-line no-async-promise-executor, require-await
-}) =>
-	// eslint-disable-next-line no-async-promise-executor, require-await
-	new Promise<void>(async (resolve, reject) => {
+	// eslint-disable-next-line require-await
+}): Promise<PollAndInitResult> =>
+	// eslint-disable-next-line no-async-promise-executor
+	new Promise<PollAndInitResult>(async (resolve, reject) => {
 		try {
-			const { missionControlId } = await getMissionControl({
+			const { missionControlId, certified } = await getOrInitMissionControlId({
 				identity
 			});
 
+			// TODO: we can/should probably add a max time to not retry forever even though the user will probably close their browsers.
 			if (isNullish(missionControlId)) {
 				setTimeout(async () => {
 					try {
-						await initMissionControl({ identity, onInitMissionControlSuccess });
-						resolve();
+						const result = await pollAndInitMissionControl({ identity });
+						resolve(result);
 					} catch (err: unknown) {
 						reject(err);
 					}
@@ -42,34 +100,57 @@ export const initMissionControl = async ({
 				return;
 			}
 
-			onInitMissionControlSuccess(missionControlId);
-
-			resolve();
+			resolve({ missionControlId, certified });
 		} catch (err: unknown) {
 			reject(err);
 		}
 	});
 
-const getMissionControl = async ({
-	identity
-}: {
-	identity: Identity | undefined;
-}): Promise<{
-	missionControlId: Principal | undefined;
-}> => {
-	if (isNullish(identity)) {
-		throw new Error('Invalid identity.');
-	}
+const getOrInitMissionControlId = async (params: {
+	identity: Identity;
+}): Promise<
+	{
+		missionControlId: MissionControlId | undefined;
+	} & Certified
+> => {
+	const { missionControl, certified } = await getOrInitMissionControl(params);
 
-	const mission_control = await initMissionControlApi(identity);
-
-	const missionControlId: Principal | undefined = fromNullable<Principal>(
-		mission_control.mission_control_id
-	);
+	const missionControlId = fromNullable(missionControl.mission_control_id);
 
 	return {
-		missionControlId
+		missionControlId,
+		certified
 	};
+};
+
+export const getOrInitMissionControl = async ({
+	identity
+}: {
+	identity: Identity;
+}): Promise<{ missionControl: MissionControl } & Certified> => {
+	const existingMissionControl = await getMissionControlApi({ identity, certified: false });
+
+	if (isNullish(existingMissionControl)) {
+		const newMissionControl = await initMissionControlApi(identity);
+
+		return {
+			missionControl: newMissionControl,
+			certified: true
+		};
+	}
+
+	return {
+		missionControl: existingMissionControl,
+		certified: false
+	};
+};
+
+const assertMissionControl = async ({ identity }: { identity: Identity }) => {
+	try {
+		await getMissionControlApi({ identity, certified: true });
+	} catch (_err: unknown) {
+		await missionControlErrorSignOut();
+	}
 };
 
 export const loadVersion = async ({

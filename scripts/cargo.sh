@@ -1,7 +1,11 @@
 #!/usr/bin/env bash
 
+set -euo pipefail
+
+USAGE="Usage: $0 <module_name> [--with-certification] [--build-type=stock|extended] [--fixture]"
+
 if [ -z "$1" ]; then
-  echo "Usage: $0 <module_name>"
+  echo "$USAGE"
   exit 1
 fi
 
@@ -9,60 +13,68 @@ CARGO_HOME=${CARGO_HOME:-$HOME/.cargo}
 
 MODULE=$1
 WASM_MODULE="${MODULE}.wasm"
+WITH_CERTIFICATION=0
+BUILD_TYPE=
 
-TARGET="wasm32-unknown-unknown"
-RUSTFLAGS="--remap-path-prefix $CARGO_HOME=/cargo -C link-args=-zstack-size=3000000"
+# Source directory where to find $CANISTER/Cargo.toml
+SRC_ROOT_DIR="$PWD/src"
 
-# Build module WASM
-RUSTFLAGS="$RUSTFLAGS" cargo build --target "$TARGET" -p "$MODULE" --release --locked
+# Parse optional arguments
+shift
+while [[ $# -gt 0 ]]; do
+  case "$1" in
+    --with-certification)
+      WITH_CERTIFICATION=1
+      shift
+      ;;
+    --build-type=*)
+      BUILD_TYPE="${1#--build-type=}"
+      shift
+      ;;
+    --fixture)
+      SRC_ROOT_DIR="$PWD/src/tests/fixtures"
+      shift
+      ;;
+    *)
+      echo "ERROR: unknown argument $1"
+      echo "$USAGE"
+      exit 1
+      ;;
+  esac
+done
+
+############
+# Metadata #
+############
 
 # Generate metadata for Docker image
 VERSION=$(cargo metadata --format-version=1 --no-deps | jq -r '.packages[] | select(.name == "'"$MODULE"'") | .version')
 node ./scripts/cargo.metadata.mjs "$MODULE" "$VERSION"
 
-RELEASE_DIR="./target/${TARGET}/release"
+#########
+# Build #
+#########
+
+# We do not want to build only the dependencies in this script
+ONLY_DEPS=
 
 # Clean and create temporary and output folder
-WASM_DIR="./target/wasm"
-DID_DIR="./target/did"
+BUILD_DIR="./target/wasm"
 DEPLOY_DIR="./target/deploy"
 
-rm -rf "${WASM_DIR}"
-mkdir -p "${WASM_DIR}"
-
-rm -rf "${DID_DIR}"
-mkdir -p "${DID_DIR}"
+rm -rf "${BUILD_DIR}"
+mkdir -p "${BUILD_DIR}"
 
 mkdir -p "${DEPLOY_DIR}"
 
-# Generate did
-candid-extractor "${RELEASE_DIR}/${WASM_MODULE}" > "${DID_DIR}/${WASM_MODULE}.did"
+# Source the script to effectively build the canister
+source "$PWD/docker/build-canister"
 
-# Optimize WASM and set metadata
-ic-wasm \
-    "${RELEASE_DIR}/${WASM_MODULE}" \
-    -o "${WASM_DIR}/${WASM_MODULE}" \
-    shrink \
-    --keep-name-section
+# Build the canister
+build_canister "$MODULE" "$SRC_ROOT_DIR" "$BUILD_DIR" "$ONLY_DEPS" "$WITH_CERTIFICATION" "$BUILD_TYPE"
 
-# adds the content of did to the `icp:public candid:service` custom section of the public metadata in the wasm
-ic-wasm "${WASM_DIR}/${WASM_MODULE}" -o "${WASM_DIR}/${WASM_MODULE}" metadata candid:service -f "${DID_DIR}/${WASM_MODULE}.did" -v public --keep-name-section
-
-if [ "${WASM_MODULE}" == "satellite" ]
-then
-  # add the type of build "stock" to the satellite. This way, we can identify whether it's the standard canister ("stock") or a custom build ("extended") of the developer.
-  ic-wasm "${WASM_DIR}/${WASM_MODULE}" -o "${WASM_DIR}/${WASM_MODULE}" metadata juno:build -d "stock" -v public --keep-name-section
-fi
-
-if [ "${MODULE}" == "satellite" ] || [ "${MODULE}" == "console" ];
-then
-  # indicate support for certificate version 1 and 2 in the canister metadata
-  ic-wasm "${WASM_DIR}/${WASM_MODULE}" -o "${WASM_DIR}/${WASM_MODULE}" metadata supported_certificate_versions -d "1,2" -v public --keep-name-section
-fi
-
-gzip -c --no-name --force "${WASM_DIR}/${WASM_MODULE}" > "${DEPLOY_DIR}/${WASM_MODULE}.tmp.gz"
-
-mv "${DEPLOY_DIR}/${WASM_MODULE}.tmp.gz" "${DEPLOY_DIR}/${WASM_MODULE}.gz"
+# Move the result to the deploy directory to upgrade the module in the local replica
+mv "$BUILD_DIR/${WASM_MODULE}.gz" "${DEPLOY_DIR}/${WASM_MODULE}.gz"
 
 echo ""
 echo "👉 ${DEPLOY_DIR}/${WASM_MODULE}.gz"

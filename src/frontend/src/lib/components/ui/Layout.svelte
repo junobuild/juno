@@ -32,7 +32,7 @@
 		{@render navbar?.()}
 
 		<div class="page">
-			<main class:centered>
+			<main class:centered class:with-footer={nonNullish(footer)}>
 				{#if title}
 					{#if nonNullish($layoutNavigation)}
 						{@const SvelteComponent = $layoutNavigation.data.icon}
@@ -80,22 +80,19 @@
 		max-width: calc(media.$breakpoint-extra-large - 100px);
 		overflow-x: hidden;
 
-		padding: 0 var(--padding-2x) var(--padding-4x);
-
-		position: relative;
-		min-height: calc(100% - var(--footer-height));
+		padding: 0 var(--padding-2x) var(--padding-6x);
 
 		@include media.min-width(xlarge) {
-			padding: 0 var(--padding-10x) var(--padding-2x);
+			padding: 0 var(--padding-10x) var(--padding-6x);
 		}
+	}
+
+	.with-footer {
+		min-height: calc(100vh - var(--header-height));
 	}
 
 	.centered {
 		margin: 0 auto;
-
-		@include media.min-width(xlarge) {
-			min-height: calc(100vh - var(--header-height) - calc((var(--padding) * 14) - 3px));
-		}
 	}
 
 	.empty,

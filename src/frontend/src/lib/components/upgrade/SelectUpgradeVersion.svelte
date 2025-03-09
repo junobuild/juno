@@ -124,10 +124,10 @@
 		</p>
 	{/if}
 
-	<p class="warning">
-		<IconWarning />
-		<Html text={$i18n.canisters.upgrade_breaking_change} />
-	</p>
+	<div class="warning">
+		<div class="icon"><IconWarning /></div>
+		<p><Html text={$i18n.canisters.upgrade_breaking_change} /></p>
+	</div>
 
 	<p>
 		<Html
@@ -163,5 +163,13 @@
 		@include info.warning;
 
 		margin: var(--padding-2x) 0;
+
+		p {
+			margin: 0;
+		}
+
+		.icon {
+			min-width: var(--padding-4x);
+		}
 	}
 </style>

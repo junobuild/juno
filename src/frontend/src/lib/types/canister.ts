@@ -1,8 +1,9 @@
 import type { MemorySize } from '$declarations/satellite/satellite.did';
+import type { CanisterIdTextSchema } from '$lib/schema/canister.schema';
 import type { ChartsData, TimeOfDayChartData } from '$lib/types/chart';
 import type { MonitoringHistory, MonitoringMetadata } from '$lib/types/monitoring';
-import type { PrincipalText } from '$lib/types/principal';
 import type { Principal } from '@dfinity/principal';
+import * as z from 'zod';
 
 export type CanisterStatus = 'stopped' | 'stopping' | 'running';
 export type CanisterSyncStatus = 'loading' | 'syncing' | 'synced' | 'error';
@@ -69,7 +70,7 @@ export interface CanisterMonitoringData {
 	charts: CanisterMonitoringCharts;
 }
 
-export type CanisterIdText = PrincipalText;
+export type CanisterIdText = z.infer<typeof CanisterIdTextSchema>;
 
 export interface Canister<T> {
 	id: CanisterIdText;

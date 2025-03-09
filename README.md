@@ -20,6 +20,8 @@
 - 🌐 Hosting [[Docs](https://juno.build/docs/build/hosting)]
 - ⚙️ Functions [[Docs](https://juno.build/docs/build/functions)]
 - 📊 Analytics [[Docs](https://juno.build/docs/build/analytics)]
+- 👀 Monitoring [[Docs](https://juno.build/docs/management/monitoring)]
+- 💾 Snapshots [[Docs](https://juno.build/docs/management/snapshots)]
 
 <br />
 

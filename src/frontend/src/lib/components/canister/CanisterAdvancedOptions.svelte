@@ -1,11 +1,11 @@
 <script lang="ts">
+	import type { PrincipalText } from '@dfinity/zod-schemas';
 	import type { CyclesMonitoringStrategy } from '$declarations/mission_control/mission_control.did';
 	import CanisterMonitoringDefaultStrategy from '$lib/components/canister/CanisterMonitoringDefaultStrategy.svelte';
 	import CanisterSubnets from '$lib/components/canister/CanisterSubnets.svelte';
 	import Collapsible from '$lib/components/ui/Collapsible.svelte';
 	import { i18n } from '$lib/stores/i18n.store';
 	import type { JunoModalDetail } from '$lib/types/modal';
-	import type { PrincipalText } from '$lib/types/principal';
 
 	interface Props {
 		subnetId: PrincipalText | undefined;

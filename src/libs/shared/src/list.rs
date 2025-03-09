@@ -172,7 +172,7 @@ fn paginate_values<T: Clone + Timestamped>(
                 return Vec::new();
             }
 
-            if (start + length) > max - 1 {
+            if start.saturating_add(length) > max - 1 {
                 return matches[start..=(max - 1)]
                     .iter()
                     .map(|(key, value)| ((*key).clone(), (*value).clone()))

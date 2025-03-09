@@ -12,6 +12,8 @@
 <p class="label loading"><Spinner inline /> <span>{@render children()}</span></p>
 
 <style lang="scss">
+	@use '../../styles/mixins/text';
+
 	.loading {
 		display: flex;
 		gap: var(--padding);
@@ -27,6 +29,8 @@
 	span {
 		font-size: var(--font-size-small);
 		animation: pulse 1s linear infinite;
+
+		@include text.truncate;
 	}
 
 	/* -global- */

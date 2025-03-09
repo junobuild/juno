@@ -1,6 +1,12 @@
 <script lang="ts">
 	import type { Principal } from '@dfinity/principal';
-	import { fromNullable, isNullish, nonNullish, notEmptyString } from '@dfinity/utils';
+	import {
+		isEmptyString,
+		isNullish,
+		nonNullish,
+		notEmptyString,
+		fromNullishNullable
+	} from '@dfinity/utils';
 	import { setDoc } from '@junobuild/core';
 	import { nanoid } from 'nanoid';
 	import { createEventDispatcher, getContext, type Snippet } from 'svelte';
@@ -48,7 +54,7 @@
 	let description: string | undefined = $state();
 	const initDescription = (d: string | undefined) => (description = d);
 	run(() => {
-		initDescription(fromNullable(doc?.description ?? []));
+		initDescription(fromNullishNullable(doc?.description));
 	});
 
 	const generateKey = () => (key = nanoid());
@@ -64,7 +70,7 @@
 			return;
 		}
 
-		if (isNullish(key) || !notEmptyString(key)) {
+		if (isNullish(key) || isEmptyString(key)) {
 			// Upload is disabled if not valid
 			toasts.error({
 				text: $i18n.errors.key_invalid
@@ -95,7 +101,7 @@
 					key,
 					...(notEmptyString(description) && { description }),
 					data: await fileToDocData(file),
-					...(nonNullish(doc) && { version: fromNullable(doc?.version ?? []) })
+					...(nonNullish(doc) && { version: fromNullishNullable(doc?.version) })
 				},
 				satellite: {
 					satelliteId: satelliteId.toText(),
@@ -125,7 +131,7 @@
 
 <DataUpload
 	on:junoUpload={upload}
-	disabled={!notEmptyString(key)}
+	disabled={isEmptyString(key)}
 	{action}
 	{title}
 	description={descriptionSnippet}

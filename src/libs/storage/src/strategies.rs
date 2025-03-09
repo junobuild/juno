@@ -8,12 +8,21 @@ use junobuild_collections::types::core::CollectionKey;
 use junobuild_collections::types::rules::{Memory, Rule};
 use junobuild_shared::types::core::Blob;
 use junobuild_shared::types::domain::CustomDomains;
+use junobuild_shared::types::state::Controllers;
 
 pub trait StorageAssertionsStrategy {
     fn invoke_assert_upload_asset(
         &self,
         caller: &Principal,
         asset: &AssetAssertUpload,
+    ) -> Result<(), String>;
+
+    fn increment_and_assert_storage_usage(
+        &self,
+        caller: &Principal,
+        controllers: &Controllers,
+        collection: &CollectionKey,
+        max_changes_per_user: Option<u32>,
     ) -> Result<(), String>;
 }
 

@@ -2,7 +2,9 @@
 <script lang="ts">
 	import { isNullish, nonNullish } from '@dfinity/utils';
 	import { afterUpdate } from 'svelte';
-	import IconChevron from '$lib/components/icons/IconChevron.svelte';
+	import { fade } from 'svelte/transition';
+	import IconUnfoldLess from '$lib/components/icons/IconUnfoldLess.svelte';
+	import IconUnfoldMore from '$lib/components/icons/IconUnfoldMore.svelte';
 	import { i18n } from '$lib/stores/i18n.store';
 	import { handleKeyPress } from '$lib/utils/keyboard.utils';
 
@@ -94,7 +96,11 @@
 			title={expanded ? $i18n.core.collapse : $i18n.core.expand}
 			tabindex="-1"
 		>
-			<IconChevron size="16px" />
+			{#if expanded}
+				<span in:fade class="icon"><IconUnfoldLess size="16px" /></span>
+			{:else}
+				<span in:fade class="icon"><IconUnfoldMore size="16px" /></span>
+			{/if}
 		</button>
 		<slot name="header" />
 	</div>
@@ -128,13 +134,15 @@
 		position: relative;
 
 		display: flex;
-
+		justify-content: center;
+		align-items: center;
+		flex-direction: row-reverse;
 		gap: var(--padding);
 
 		outline: none;
 
 		color: var(--placeholder-color);
-		font-size: var(--font-size-small);
+		font-size: var(--font-size-very-small);
 
 		@include interaction.tappable;
 		user-select: none;
@@ -145,20 +153,8 @@
 	}
 
 	button {
-		transform: rotate(90deg);
-
 		border-color: transparent;
 		background-color: transparent;
-
-		:global(svg) {
-			transition: transform var(--animation-time);
-		}
-
-		&.expanded {
-			:global(svg) {
-				transform: rotate(180deg);
-			}
-		}
 	}
 
 	.wrapper {
@@ -186,5 +182,11 @@
 			// to not stick the content to the bottom
 			padding-bottom: var(--padding);
 		}
+	}
+
+	.icon {
+		display: flex;
+		justify-content: center;
+		align-items: center;
 	}
 </style>

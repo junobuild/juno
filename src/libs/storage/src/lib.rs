@@ -1,12 +1,13 @@
+mod assert;
 pub mod certification;
 pub mod certified_assets;
 pub mod constants;
+pub mod errors;
 pub mod heap_utils;
 pub mod http;
 pub mod http_request;
 pub mod impls;
 mod memory;
-pub mod msg;
 pub mod rewrites;
 pub mod routing;
 pub mod runtime;

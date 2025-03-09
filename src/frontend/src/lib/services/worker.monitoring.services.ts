@@ -1,43 +1,50 @@
+import {
+	syncCanisterMonitoring,
+	syncCanistersMonitoring
+} from '$lib/services/canisters.loader.services';
 import type { CanisterSegment } from '$lib/types/canister';
-import type { PostMessage, PostMessageDataResponse } from '$lib/types/post-message';
-import type { Principal } from '@dfinity/principal';
-
-export type MonitoringCallback = (data: PostMessageDataResponse) => void;
+import type { MissionControlId } from '$lib/types/mission-control';
+import type {
+	PostMessage,
+	PostMessageDataResponseCanister,
+	PostMessageDataResponseCanisterMonitoring,
+	PostMessageDataResponseCanistersMonitoring
+} from '$lib/types/post-message';
 
 export interface MonitoringWorker {
 	startMonitoringTimer: (params: {
 		segments: CanisterSegment[];
-		missionControlId: Principal;
+		missionControlId: MissionControlId;
 		withMonitoringHistory: boolean;
-		callback: MonitoringCallback;
 	}) => void;
 	stopMonitoringTimer: () => void;
 	restartMonitoringTimer: (params: {
 		segments: CanisterSegment[];
-		missionControlId: Principal;
+		missionControlId: MissionControlId;
 	}) => void;
 }
 
-export const initStatusesWorker = async (): Promise<MonitoringWorker> => {
+export const initMonitoringWorker = async (): Promise<MonitoringWorker> => {
 	const MonitoringWorker = await import('$lib/workers/workers?worker');
 	const monitoringWorker: Worker = new MonitoringWorker.default();
 
-	let monitoringCallback: MonitoringCallback | undefined;
-
-	monitoringWorker.onmessage = ({ data }: MessageEvent<PostMessage<PostMessageDataResponse>>) => {
+	monitoringWorker.onmessage = ({
+		data
+	}: MessageEvent<PostMessage<PostMessageDataResponseCanister>>) => {
 		const { msg } = data;
 
 		switch (msg) {
 			case 'syncCanister':
-				monitoringCallback?.(data.data);
+				syncCanisterMonitoring(data.data as PostMessageDataResponseCanisterMonitoring);
+				return;
+			case 'syncCanisters':
+				syncCanistersMonitoring(data.data as PostMessageDataResponseCanistersMonitoring);
 				return;
 		}
 	};
 
 	return {
-		startMonitoringTimer: ({ callback, segments, missionControlId, withMonitoringHistory }) => {
-			monitoringCallback = callback;
-
+		startMonitoringTimer: ({ segments, missionControlId, withMonitoringHistory }) => {
 			monitoringWorker.postMessage({
 				msg: 'startMonitoringTimer',
 				data: { segments, missionControlId: missionControlId.toText(), withMonitoringHistory }

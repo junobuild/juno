@@ -1,25 +1,25 @@
-import { missionControlUserDataStore } from '$lib/stores/mission-control.store';
+import { missionControlUserUncertifiedStore } from '$lib/stores/mission-control.store';
 import { metadataEmail } from '$lib/utils/metadata.utils';
-import { fromNullable } from '@dfinity/utils';
+import { fromNullishNullable } from '@dfinity/utils';
 import { derived } from 'svelte/store';
 
 export const missionControlUserData = derived(
-	[missionControlUserDataStore],
+	[missionControlUserUncertifiedStore],
 	([$missionControlUserDataStore]) => $missionControlUserDataStore?.data
 );
 
 export const missionControlUserDataLoaded = derived(
-	[missionControlUserDataStore],
+	[missionControlUserUncertifiedStore],
 	([$missionControlUserDataStore]) => $missionControlUserDataStore !== undefined
 );
 
 const missionControlConfig = derived([missionControlUserData], ([$missionControlUserData]) =>
-	fromNullable($missionControlUserData?.config ?? [])
+	fromNullishNullable($missionControlUserData?.config)
 );
 
 export const missionControlConfigMonitoring = derived(
 	[missionControlConfig],
-	([$missionControlConfig]) => fromNullable($missionControlConfig?.monitoring ?? [])
+	([$missionControlConfig]) => fromNullishNullable($missionControlConfig?.monitoring)
 );
 
 export const missionControlMetadata = derived(

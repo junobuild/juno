@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { fromNullable } from '@dfinity/utils';
+	import { fromNullishNullable } from '@dfinity/utils';
 	import { fade } from 'svelte/transition';
 	import type { Monitoring } from '$declarations/mission_control/mission_control.did';
 	import Value from '$lib/components/ui/Value.svelte';
@@ -12,7 +12,7 @@
 
 	let { monitoring, loading }: Props = $props();
 
-	let cycles = $derived(fromNullable(monitoring?.cycles ?? []));
+	let cycles = $derived(fromNullishNullable(monitoring?.cycles));
 
 	let enabled = $derived(cycles?.enabled === true);
 </script>

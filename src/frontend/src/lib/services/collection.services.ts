@@ -1,7 +1,12 @@
-import type { Rule, RulesType, SetRule } from '$declarations/satellite/satellite.did';
+import type { CollectionType, Rule, SetRule } from '$declarations/satellite/satellite.did';
 import { getRule, satelliteVersion, setRule as setRuleApi } from '$lib/api/satellites.api';
 import { DEFAULT_RATE_CONFIG_TIME_PER_TOKEN_NS } from '$lib/constants/data.constants';
-import { MemoryStable, type MemoryText, type PermissionText } from '$lib/constants/rules.constants';
+import {
+	DbCollectionType,
+	MemoryStable,
+	type MemoryText,
+	type PermissionText
+} from '$lib/constants/rules.constants';
 import { SATELLITE_v0_0_21 } from '$lib/constants/version.constants';
 import { i18n } from '$lib/stores/i18n.store';
 import { toasts } from '$lib/stores/toasts.store';
@@ -19,13 +24,14 @@ export const setRule = async ({
 	rule,
 	maxSize,
 	maxCapacity,
+	maxChanges,
 	maxTokens,
 	mutablePermissions,
 	...rest
 }: {
 	satelliteId: Principal;
 	collection: string;
-	type: RulesType;
+	type: CollectionType;
 	identity: OptionIdentity;
 	read: PermissionText;
 	write: PermissionText;
@@ -33,6 +39,7 @@ export const setRule = async ({
 	rule: Rule | undefined;
 	maxSize: number | undefined;
 	maxCapacity: number | undefined;
+	maxChanges: number | undefined;
 	maxTokens: number | undefined;
 	mutablePermissions: boolean;
 }) => {
@@ -42,6 +49,9 @@ export const setRule = async ({
 		version: isNullish(rule) ? [] : rule.version,
 		max_size: toNullable(nonNullish(maxSize) && maxSize > 0 ? BigInt(maxSize) : undefined),
 		max_capacity: toNullable(nonNullish(maxCapacity) && maxCapacity > 0 ? maxCapacity : undefined),
+		max_changes_per_user: toNullable(
+			nonNullish(maxChanges) && maxChanges > 0 ? maxChanges : undefined
+		),
 		memory: isNullish(rule)
 			? [memoryFromText(memory)]
 			: [fromNullable(rule.memory) ?? MemoryStable],
@@ -85,7 +95,7 @@ export const getRuleUser = async ({
 			satelliteId,
 			collection: '#user',
 			identity,
-			type: { Db: null }
+			type: DbCollectionType
 		});
 
 		return { result: 'success', rule: fromNullable(result) };

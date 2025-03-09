@@ -15,6 +15,6 @@ serde.workspace = true
 ic-stable-structures.workspace = true
 ciborium.workspace = true
 isbot = "0.1.3"
-url = "2.4.0"
+url.workspace = true
 regex.workspace = true
 junobuild-shared = { path = "../libs/shared" }

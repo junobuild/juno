@@ -22,7 +22,7 @@
 	import { emit } from '$lib/utils/events.utils';
 	import { i18nFormat } from '$lib/utils/i18n.utils';
 
-	const { store }: RulesContext = getContext<RulesContext>(RULES_CONTEXT_KEY);
+	const { store, hasAnyRules }: RulesContext = getContext<RulesContext>(RULES_CONTEXT_KEY);
 
 	let collection: string | undefined = $state();
 	run(() => {
@@ -42,8 +42,6 @@
 
 	const { store: docsStore, resetData }: DataContext<DocType> =
 		getContext<DataContext<DocType>>(DATA_CONTEXT_KEY);
-
-	let emptyCollection = $derived($store.rules?.length === 0);
 
 	const load = async () => {
 		resetPage();
@@ -121,7 +119,7 @@
 	</DataCollectionHeader>
 </div>
 
-{#if !emptyCollection}
+{#if $hasAnyRules}
 	<div
 		class="data"
 		class:data-selected={nonNullish($docsStore?.data)}

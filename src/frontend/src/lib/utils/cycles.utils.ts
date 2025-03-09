@@ -1,4 +1,4 @@
-import { ONE_TRILLION } from '$lib/constants/constants';
+import { ONE_TRILLION } from '$lib/constants/app.constants';
 import { notEmptyString } from '@dfinity/utils';
 import { formatNumber } from './number.utils';
 

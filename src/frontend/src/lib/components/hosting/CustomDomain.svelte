@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { fromNullable, isNullish, nonNullish } from '@dfinity/utils';
+	import { isNullish, nonNullish, fromNullishNullable } from '@dfinity/utils';
 	import { createEventDispatcher, onDestroy, onMount } from 'svelte';
 	import { run } from 'svelte/legacy';
 	import type { Satellite } from '$declarations/mission_control/mission_control.did';
@@ -15,7 +15,7 @@
 	import { type HostingCallback, initHostingWorker } from '$lib/services/worker.hosting.services';
 	import { i18n } from '$lib/stores/i18n.store';
 	import type { CustomDomainRegistrationState } from '$lib/types/custom-domain';
-	import type { PostMessageDataResponse } from '$lib/types/post-message';
+	import type { PostMessageDataResponseHosting } from '$lib/types/post-message';
 	import type { Option } from '$lib/types/utils';
 	import { emit } from '$lib/utils/events.utils';
 	import { keyOf } from '$lib/utils/utils';
@@ -44,7 +44,7 @@
 	});
 
 	let authDomain: string | undefined = $derived(
-		fromNullable(fromNullable(config?.internet_identity ?? [])?.derivation_origin ?? [])
+		fromNullishNullable(fromNullishNullable(config?.internet_identity)?.derivation_origin)
 	);
 
 	let mainDomain: boolean = $derived(host === authDomain && nonNullish(authDomain));
@@ -61,7 +61,7 @@
 		  }
 		| undefined = $state();
 
-	const syncState = ({ registrationState: state }: PostMessageDataResponse) => {
+	const syncState = ({ registrationState: state }: PostMessageDataResponseHosting) => {
 		registrationState = state;
 
 		// If the state is available we can optimistically stop polling

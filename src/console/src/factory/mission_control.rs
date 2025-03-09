@@ -6,7 +6,7 @@ use crate::store::stable::{
 use crate::types::state::MissionControl;
 use crate::wasm::mission_control_wasm_arg;
 use candid::Principal;
-use junobuild_shared::constants::CREATE_MISSION_CONTROL_CYCLES;
+use junobuild_shared::constants_shared::CREATE_MISSION_CONTROL_CYCLES;
 use junobuild_shared::mgmt::ic::create_canister_install_code;
 use junobuild_shared::types::state::UserId;
 

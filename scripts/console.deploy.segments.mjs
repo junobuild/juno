@@ -1,9 +1,8 @@
 #!/usr/bin/env node
 
-import { toNullable } from '@dfinity/utils';
+import { assertNonNullish, toNullable } from '@dfinity/utils';
 import { fileExists } from '@junobuild/cli-tools';
 import { uploadAsset } from '@junobuild/console';
-import { assertNonNullish } from '@junobuild/utils';
 import { parse } from '@ltd/j-toml';
 import { readFileSync } from 'node:fs';
 import { readFile } from 'node:fs/promises';

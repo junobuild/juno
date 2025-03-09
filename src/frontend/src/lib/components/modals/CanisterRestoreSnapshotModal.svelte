@@ -10,7 +10,7 @@
 	import { isBusy, wizardBusy } from '$lib/stores/busy.store';
 	import { i18n } from '$lib/stores/i18n.store';
 	import type { JunoModalDetail, JunoModalRestoreSnapshotDetail } from '$lib/types/modal';
-	import type { SnapshotProgress } from '$lib/types/snapshot';
+	import type { SnapshotProgress } from '$lib/types/progress-snapshot';
 	import { formatToDate } from '$lib/utils/date.utils';
 	import { i18nFormat } from '$lib/utils/i18n.utils';
 
@@ -61,7 +61,7 @@
 		<div class="msg">
 			<p>
 				<Html
-					text={i18nFormat($i18n.canisters.backup_restored, [
+					text={i18nFormat($i18n.canisters.snapshot_restored, [
 						{
 							placeholder: '{0}',
 							value: segment.label
@@ -74,14 +74,14 @@
 	{:else if step === 'in_progress'}
 		<ProgressSnapshot segment={segment.segment} {progress} snapshotAction="restore" />
 	{:else}
-		<h2>{$i18n.canisters.backup}</h2>
+		<h2>{$i18n.canisters.snapshot}</h2>
 
 		<div class="warning">
-			<Warning>{$i18n.canisters.restore_backup_warning}</Warning>
+			<Warning>{$i18n.canisters.restore_snapshot_warning}</Warning>
 		</div>
 
 		<p>
-			{i18nFormat($i18n.canisters.restore_backup_info, [
+			{i18nFormat($i18n.canisters.restore_snapshot_info, [
 				{ placeholder: '{0}', value: segment.label },
 				{ placeholder: '{1}', value: formatToDate(snapshot.taken_at_timestamp) },
 				{ placeholder: '{2}', value: `0x${encodeSnapshotId(snapshot.id)}` }
@@ -90,7 +90,7 @@
 
 		<form class="content" onsubmit={handleSubmit}>
 			<button type="submit" disabled={$isBusy}>
-				{$i18n.canisters.restore_the_backup}
+				{$i18n.canisters.restore_the_snapshot}
 			</button>
 		</form>
 	{/if}

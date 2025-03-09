@@ -1,16 +1,20 @@
 <script lang="ts">
 	import type { Principal } from '@dfinity/principal';
-	import { fromNullable, nonNullish } from '@dfinity/utils';
+	import { nonNullish, fromNullishNullable } from '@dfinity/utils';
 	import type { Snippet } from 'svelte';
 	import { fade } from 'svelte/transition';
 	import type { Monitoring } from '$declarations/mission_control/mission_control.did';
 	import Canister from '$lib/components/canister/Canister.svelte';
+	import CanisterMonitoringData from '$lib/components/canister/CanisterMonitoringData.svelte';
 	import Chart from '$lib/components/charts/Chart.svelte';
 	import IconClockUpdate from '$lib/components/icons/IconClockUpdate.svelte';
 	import IconRefresh from '$lib/components/icons/IconRefresh.svelte';
-	import CanisterMonitoringLoader from '$lib/components/loaders/CanisterMonitoringLoader.svelte';
 	import { i18n } from '$lib/stores/i18n.store';
-	import type { CanisterData, CanisterMonitoringData, Segment } from '$lib/types/canister';
+	import type {
+		CanisterData,
+		CanisterMonitoringData as CanisterMonitoringDataType,
+		Segment
+	} from '$lib/types/canister';
 	import { formatTCycles } from '$lib/utils/cycles.utils';
 	import { formatToRelativeTime } from '$lib/utils/date.utils';
 	import { emit } from '$lib/utils/events.utils';
@@ -25,9 +29,9 @@
 
 	let { children, monitoring, segment, canisterId, segmentLabel }: Props = $props();
 
-	let enabled = $derived(fromNullable(monitoring?.cycles ?? [])?.enabled === true);
+	let enabled = $derived(fromNullishNullable(monitoring?.cycles)?.enabled === true);
 
-	let monitoringData = $state<CanisterMonitoringData | undefined>(undefined);
+	let monitoringData = $state<CanisterMonitoringDataType | undefined>(undefined);
 	let canisterData = $state<CanisterData | undefined>(undefined);
 
 	let chartsData = $derived(monitoringData?.chartsData ?? []);
@@ -54,15 +58,15 @@
 	};
 </script>
 
-<Canister {canisterId} {segment} display={false} bind:data={canisterData} />
+<Canister {canisterId} display={false} bind:data={canisterData} />
 
-<CanisterMonitoringLoader {segment} {canisterId} bind:data={monitoringData}>
+<CanisterMonitoringData {canisterId} bind:monitoringData>
 	<button onclick={openModal} class="article monitoring">
 		<span class="segment">
 			{@render children()}
 		</span>
 
-		<span class="canister"><Canister {segment} {canisterId} row={true} /></span>
+		<span class="canister"><Canister {canisterId} row={true} /></span>
 
 		{#if enabled}
 			<span class="chart-container" in:fade>
@@ -94,7 +98,7 @@
 			<span class="info">{$i18n.monitoring.auto_refill_disabled}</span>
 		{/if}
 	</button>
-</CanisterMonitoringLoader>
+</CanisterMonitoringData>
 
 <style lang="scss">
 	@use '../../styles/mixins/media';
@@ -124,8 +128,6 @@
 
 		color: var(--value-color);
 
-		margin: 0 0 0 -5px;
-
 		> span {
 			display: flex;
 			align-items: flex-start;
@@ -138,14 +140,6 @@
 					text-transform: uppercase;
 				}
 			}
-
-			:global(svg) {
-				min-width: 22px;
-			}
-		}
-
-		@include media.min-width(large) {
-			margin: 0;
 		}
 	}
 
@@ -186,7 +180,7 @@
 	}
 
 	.canister {
-		margin: var(--padding-4x) 0 0;
+		margin: var(--padding-2x) 0 0;
 
 		@include media.min-width(large) {
 			margin: 0;

@@ -1,15 +1,19 @@
 <script lang="ts">
+	import { fromNullishNullable } from '@dfinity/utils';
 	import type { Satellite } from '$declarations/mission_control/mission_control.did';
 	import CanisterBuyCycleExpress from '$lib/components/canister/CanisterBuyCycleExpress.svelte';
 	import CanisterDelete from '$lib/components/canister/CanisterDelete.svelte';
 	import CanisterStopStart from '$lib/components/canister/CanisterStopStart.svelte';
+	import CanisterSyncData from '$lib/components/canister/CanisterSyncData.svelte';
 	import CanisterTransferCycles from '$lib/components/canister/CanisterTransferCycles.svelte';
 	import SegmentDetach from '$lib/components/canister/SegmentDetach.svelte';
 	import TopUp from '$lib/components/canister/TopUp.svelte';
 	import SegmentActions from '$lib/components/segments/SegmentActions.svelte';
-	import { listCustomDomains } from '$lib/services/hosting.services';
+	import { listCustomDomains } from '$lib/services/custom-domain.services';
 	import { busy } from '$lib/stores/busy.store';
-	import type { CanisterSyncData } from '$lib/types/canister';
+	import { i18n } from '$lib/stores/i18n.store';
+	import { toasts } from '$lib/stores/toasts.store';
+	import type { CanisterSyncData as CanisterSyncDataType } from '$lib/types/canister';
 	import { emit } from '$lib/utils/events.utils';
 
 	interface Props {
@@ -18,17 +22,15 @@
 
 	let { satellite }: Props = $props();
 
+	let monitoring = $derived(
+		fromNullishNullable(fromNullishNullable(satellite.settings)?.monitoring)
+	);
+
+	let monitoringEnabled = $derived(fromNullishNullable(monitoring?.cycles)?.enabled === true);
+
 	let detail = { satellite };
 
-	let canister: CanisterSyncData | undefined = $state(undefined);
-
-	const onSyncCanister = (syncCanister: CanisterSyncData) => {
-		if (syncCanister.id !== satellite.satellite_id.toText()) {
-			return;
-		}
-
-		canister = syncCanister;
-	};
+	let canister = $state<CanisterSyncDataType | undefined>(undefined);
 
 	let visible: boolean = $state(false);
 	const close = () => (visible = false);
@@ -51,6 +53,12 @@
 
 	const onDeleteSatellite = async () => {
 		close();
+
+		// TODO: can be removed once the mission control is patched to disable monitoring on delete
+		if (monitoringEnabled) {
+			toasts.warn($i18n.monitoring.warn_monitoring_enabled);
+			return;
+		}
 
 		busy.start();
 
@@ -78,14 +86,11 @@
 	};
 </script>
 
-<svelte:window
-	onjunoSyncCanister={({ detail: { canister } }: CustomEvent<{ canister: CanisterSyncData }>) =>
-		onSyncCanister(canister)}
-/>
+<CanisterSyncData canisterId={satellite.satellite_id} bind:canister />
 
 <SegmentActions bind:visible segment="satellite">
 	{#snippet cycleActions()}
-		<TopUp type="topup_satellite" {detail} on:junoTopUp={close} />
+		<TopUp type="topup_satellite" {detail} onclose={close} />
 
 		<CanisterTransferCycles {canister} onclick={onTransferCycles} />
 
@@ -93,9 +98,20 @@
 	{/snippet}
 
 	{#snippet canisterActions()}
-		<CanisterStopStart {canister} segment="satellite" onstop={close} onstart={close} />
+		<CanisterStopStart
+			{canister}
+			{monitoringEnabled}
+			segment="satellite"
+			onstop={close}
+			onstart={close}
+		/>
 
-		<SegmentDetach segment="satellite" segmentId={satellite.satellite_id} ondetach={close} />
+		<SegmentDetach
+			segment="satellite"
+			segmentId={satellite.satellite_id}
+			{monitoringEnabled}
+			ondetach={close}
+		/>
 
 		<CanisterDelete {canister} onclick={onDeleteSatellite} />
 	{/snippet}

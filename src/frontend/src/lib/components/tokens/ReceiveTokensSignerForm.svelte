@@ -10,7 +10,7 @@
 	import { authStore } from '$lib/stores/auth.store';
 	import { i18n } from '$lib/stores/i18n.store';
 	import { toasts } from '$lib/stores/toasts.store';
-	import { formatE8sICP } from '$lib/utils/icp.utils';
+	import { formatICP } from '$lib/utils/icp.utils';
 
 	interface Props {
 		account: IcrcAccount;
@@ -28,9 +28,10 @@
 	const loadBalance = async (owner: Principal) => {
 		try {
 			balance = await getBalance({ owner, identity: $authStore.identity });
-		} catch (error: unknown) {
+		} catch (err: unknown) {
 			toasts.error({
-				text: $i18n.errors.wallet_load_balance
+				text: $i18n.errors.wallet_load_balance,
+				detail: err
 			});
 
 			back();
@@ -65,7 +66,7 @@
 				{$i18n.wallet.balance}
 			{/snippet}
 			{#if nonNullish(balance)}
-				{formatE8sICP(balance)} <small>ICP</small>
+				{formatICP(balance)} <small>ICP</small>
 			{:else}
 				<SkeletonText />
 			{/if}
@@ -75,7 +76,7 @@
 	<div>
 		<Value>
 			{#snippet label()}
-				{$i18n.wallet.icp_amount}
+				{$i18n.core.icp_amount}
 			{/snippet}
 			<Input
 				name="amount"

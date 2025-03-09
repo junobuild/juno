@@ -1,11 +1,11 @@
-import { PAGINATION } from '$lib/constants/constants';
-import type { PaginationContext, PaginationStore } from '$lib/types/pagination.context';
+import { PAGINATION } from '$lib/constants/app.constants';
+import type { PaginationContext, PaginationData } from '$lib/types/pagination.context';
 import { last } from '$lib/utils/utils';
 import { nonNullish } from '@dfinity/utils';
 import { derived, writable } from 'svelte/store';
 
 export const initPaginationContext = <T>(): Omit<PaginationContext<T>, 'list'> => {
-	const store = writable<PaginationStore<T>>({
+	const store = writable<PaginationData<T>>({
 		selectedPage: 0
 	});
 
@@ -60,6 +60,19 @@ export const initPaginationContext = <T>(): Omit<PaginationContext<T>, 'list'> =
 					: undefined,
 				itemsLength: nonNullish(items_length) ? Number(items_length) : undefined,
 				matchesLength: nonNullish(matches_length) ? Number(matches_length) : undefined
+			}));
+		},
+
+		setItem: ([key, data]: [string, T]) => {
+			store.update(({ items, ...rest }) => ({
+				...rest,
+				items: items?.reduce<[string, T][]>(
+					(acc, [currentKey, currentData]) => [
+						...acc,
+						currentKey === key ? [key, data] : [currentKey, currentData]
+					],
+					[]
+				)
 			}));
 		}
 	};

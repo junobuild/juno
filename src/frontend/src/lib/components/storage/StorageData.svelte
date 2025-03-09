@@ -86,7 +86,7 @@
 	let collection: string | undefined = $derived($store.rule?.[0]);
 </script>
 
-<Data on:junoCloseData={resetData}>
+<Data onclose={resetData}>
 	<Assets />
 
 	<Asset />

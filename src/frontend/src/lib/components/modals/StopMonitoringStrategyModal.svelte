@@ -1,6 +1,6 @@
 <script lang="ts">
 	import type { Principal } from '@dfinity/principal';
-	import { fromNullable } from '@dfinity/utils';
+	import { fromNullishNullable } from '@dfinity/utils';
 	import type {
 		CyclesMonitoringStrategy,
 		Orbiter,
@@ -16,7 +16,7 @@
 	import { wizardBusy } from '$lib/stores/busy.store';
 	import { i18n } from '$lib/stores/i18n.store';
 	import type { JunoModalDetail, JunoModalCreateMonitoringStrategyDetail } from '$lib/types/modal';
-	import type { MonitoringStrategyProgress } from '$lib/types/strategy';
+	import type { MonitoringStrategyProgress } from '$lib/types/progress-strategy';
 
 	interface Props {
 		detail: JunoModalDetail;
@@ -31,13 +31,13 @@
 	let selectedOrbiters: [Principal, Orbiter][] = $state([]);
 
 	let missionControlCycles = $derived(
-		fromNullable(fromNullable(settings?.monitoring ?? [])?.cycles ?? [])
+		fromNullishNullable(fromNullishNullable(settings?.monitoring)?.cycles)
 	);
 
 	let missionControl: { monitored: boolean; strategy: CyclesMonitoringStrategy | undefined } =
 		$derived({
 			monitored: missionControlCycles?.enabled === true,
-			strategy: fromNullable(missionControlCycles?.strategy ?? [])
+			strategy: fromNullishNullable(missionControlCycles?.strategy)
 		});
 
 	let stopMissionControl: boolean | undefined = $state(undefined);
@@ -119,6 +119,7 @@
 			{missionControlId}
 			bind:selectedSatellites
 			bind:selectedOrbiters
+			onlySyncedSegments={false}
 			oncontinue={onContinueSegments}
 		>
 			<h2>{$i18n.monitoring.stop_auto_refill}</h2>

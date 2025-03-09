@@ -1,4 +1,4 @@
-import type { PrincipalText } from '$lib/types/principal';
+import type { PrincipalText } from '@dfinity/zod-schemas';
 
 export interface SubnetMetadata {
 	type: 'application' | string;

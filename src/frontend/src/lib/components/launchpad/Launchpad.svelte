@@ -6,7 +6,7 @@
 	import SatelliteNew from '$lib/components/satellites/SatelliteNew.svelte';
 	import Satellites from '$lib/components/satellites/Satellites.svelte';
 	import Spinner from '$lib/components/ui/Spinner.svelte';
-	import { satellitesStore } from '$lib/derived/satellite.derived';
+	import { satellitesStore } from '$lib/derived/satellites.derived';
 	import { onIntersection } from '$lib/directives/intersection.directives';
 	import { i18n } from '$lib/stores/i18n.store';
 	import { onLayoutTitleIntersection } from '$lib/stores/layout-intersecting.store';
@@ -66,8 +66,16 @@
 		}
 
 		&.cockpit {
-			display: flex;
-			justify-content: center;
+			padding: 0 var(--padding-12x);
+
+			@include grid.two-columns;
+
+			@include media.min-width(small) {
+				display: flex;
+				justify-content: center;
+
+				padding: 0;
+			}
 
 			@include media.min-width(large) {
 				@include grid.twelve-columns;

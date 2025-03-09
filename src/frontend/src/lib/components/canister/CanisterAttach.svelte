@@ -8,9 +8,10 @@
 	import { busy } from '$lib/stores/busy.store';
 	import { i18n } from '$lib/stores/i18n.store';
 	import { toasts } from '$lib/stores/toasts.store';
+	import type { MissionControlId } from '$lib/types/mission-control';
 
 	interface Props {
-		setFn: (params: { missionControlId: Principal; canisterId: Principal }) => Promise<void>;
+		setFn: (params: { missionControlId: MissionControlId; canisterId: Principal }) => Promise<void>;
 		visible: boolean | undefined;
 		title?: Snippet;
 		input?: Snippet;

@@ -1,6 +1,5 @@
 <script lang="ts">
-	import type { Principal } from '@dfinity/principal';
-	import { fromNullable } from '@dfinity/utils';
+	import { fromNullable, fromNullishNullable } from '@dfinity/utils';
 	import { fade } from 'svelte/transition';
 	import IconAnalytics from '$lib/components/icons/IconAnalytics.svelte';
 	import IconMissionControl from '$lib/components/icons/IconMissionControl.svelte';
@@ -14,12 +13,13 @@
 		missionControlSettingsNotLoaded
 	} from '$lib/derived/mission-control-settings.derived';
 	import { orbitersStore } from '$lib/derived/orbiter.derived';
-	import { satellitesStore } from '$lib/derived/satellite.derived';
+	import { sortedSatellites } from '$lib/derived/satellites.derived';
 	import { i18n } from '$lib/stores/i18n.store';
+	import type { MissionControlId } from '$lib/types/mission-control';
 	import { satelliteName } from '$lib/utils/satellite.utils';
 
 	interface Props {
-		missionControlId: Principal;
+		missionControlId: MissionControlId;
 	}
 
 	let { missionControlId }: Props = $props();
@@ -43,9 +43,9 @@
 			<span>{$i18n.mission_control.title}</span>
 		</MonitoringArticle>
 
-		{#each $satellitesStore ?? [] as satellite}
+		{#each $sortedSatellites ?? [] as satellite}
 			<MonitoringArticle
-				monitoring={fromNullable(fromNullable(satellite.settings)?.monitoring ?? [])}
+				monitoring={fromNullishNullable(fromNullable(satellite.settings)?.monitoring)}
 				canisterId={satellite.satellite_id}
 				segment="satellite"
 				segmentLabel={$i18n.satellites.satellite}
@@ -57,7 +57,7 @@
 
 		{#each $orbitersStore ?? [] as orbiter}
 			<MonitoringArticle
-				monitoring={fromNullable(fromNullable(orbiter.settings)?.monitoring ?? [])}
+				monitoring={fromNullishNullable(fromNullable(orbiter.settings)?.monitoring)}
 				canisterId={orbiter.orbiter_id}
 				segment="orbiter"
 				segmentLabel={$i18n.analytics.orbiter}

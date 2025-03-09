@@ -1,6 +1,6 @@
 use crate::auth::types::config::AuthenticationConfig;
 use crate::auth::types::state::AuthenticationHeapState;
-use crate::memory::STATE;
+use crate::memory::internal::STATE;
 
 // ---------------------------------------------------------
 // Config

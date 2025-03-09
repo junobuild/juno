@@ -12,8 +12,8 @@ use crate::types::state::{
 };
 use ic_cdk::api::time;
 use junobuild_shared::assert::{assert_timestamp, assert_version};
-use junobuild_shared::constants::INITIAL_VERSION;
-use junobuild_shared::types::state::{SatelliteId, Timestamp, Version};
+use junobuild_shared::types::state::{SatelliteId, Timestamp};
+use junobuild_shared::version::next_version;
 
 pub fn insert_page_view(key: AnalyticKey, page_view: SetPageView) -> Result<PageView, String> {
     STATE.with(|state| insert_page_view_impl(key, page_view, &mut state.borrow_mut().stable))
@@ -35,14 +35,17 @@ fn insert_page_view_impl(
         None => (),
         Some(current_page_view) => {
             if current_page_view.is_bounded() {
-                match assert_timestamp(page_view.updated_at, current_page_view.inner().updated_at) {
+                match assert_timestamp(
+                    page_view.updated_at,
+                    current_page_view.into_inner().updated_at,
+                ) {
                     Ok(_) => (),
                     Err(e) => {
                         return Err(e);
                     }
                 }
             } else {
-                match assert_version(page_view.version, current_page_view.inner().version) {
+                match assert_version(page_view.version, current_page_view.into_inner().version) {
                     Ok(_) => (),
                     Err(e) => {
                         return Err(e);
@@ -56,7 +59,10 @@ fn insert_page_view_impl(
     match current_page_view.clone() {
         None => (),
         Some(current_page_view) => {
-            assert_session_id(&page_view.session_id, &current_page_view.inner().session_id)?;
+            assert_session_id(
+                &page_view.session_id,
+                &current_page_view.into_inner().session_id,
+            )?;
         }
     }
 
@@ -66,7 +72,7 @@ fn insert_page_view_impl(
         Some(current_page_view) => {
             assert_satellite_id(
                 page_view.satellite_id,
-                current_page_view.inner().satellite_id,
+                current_page_view.into_inner().satellite_id,
             )?;
         }
     }
@@ -75,17 +81,14 @@ fn insert_page_view_impl(
 
     let created_at: Timestamp = match current_page_view.clone() {
         None => now,
-        Some(current_page_view) => current_page_view.inner().created_at,
+        Some(current_page_view) => current_page_view.into_inner().created_at,
     };
 
-    let version: Version = match current_page_view.clone() {
-        None => INITIAL_VERSION,
-        Some(current_page_view) => current_page_view.inner().version.unwrap_or_default() + 1,
-    };
+    let version = next_version(&current_page_view);
 
     let session_id: String = match current_page_view.clone() {
         None => page_view.session_id.clone(),
-        Some(current_page_view) => current_page_view.inner().session_id.clone(),
+        Some(current_page_view) => current_page_view.into_inner().session_id.clone(),
     };
 
     let new_page_view: PageView = PageView {
@@ -142,7 +145,7 @@ fn insert_track_event_impl(
             if current_track_event.is_bounded() {
                 match assert_timestamp(
                     track_event.updated_at,
-                    current_track_event.inner().updated_at,
+                    current_track_event.into_inner().updated_at,
                 ) {
                     Ok(_) => (),
                     Err(e) => {
@@ -150,7 +153,10 @@ fn insert_track_event_impl(
                     }
                 }
             } else {
-                match assert_version(track_event.version, current_track_event.inner().version) {
+                match assert_version(
+                    track_event.version,
+                    current_track_event.into_inner().version,
+                ) {
                     Ok(_) => (),
                     Err(e) => {
                         return Err(e);
@@ -166,7 +172,7 @@ fn insert_track_event_impl(
         Some(current_track_event) => {
             assert_session_id(
                 &track_event.session_id,
-                &current_track_event.inner().session_id,
+                &current_track_event.into_inner().session_id,
             )?;
         }
     }
@@ -177,7 +183,7 @@ fn insert_track_event_impl(
         Some(current_track_event) => {
             assert_satellite_id(
                 track_event.satellite_id,
-                current_track_event.inner().satellite_id,
+                current_track_event.into_inner().satellite_id,
             )?;
         }
     }
@@ -186,17 +192,14 @@ fn insert_track_event_impl(
 
     let created_at: Timestamp = match current_track_event.clone() {
         None => now,
-        Some(current_track_event) => current_track_event.inner().created_at,
+        Some(current_track_event) => current_track_event.into_inner().created_at,
     };
 
-    let version: Version = match current_track_event.clone() {
-        None => INITIAL_VERSION,
-        Some(current_track_event) => current_track_event.inner().version.unwrap_or_default() + 1,
-    };
+    let version = next_version(&current_track_event);
 
     let session_id: String = match current_track_event.clone() {
         None => track_event.session_id.clone(),
-        Some(current_track_event) => current_track_event.inner().session_id.clone(),
+        Some(current_track_event) => current_track_event.into_inner().session_id.clone(),
     };
 
     let new_track_event: TrackEvent = TrackEvent {
@@ -290,12 +293,7 @@ fn insert_performance_metric_impl(
         Some(current_performance_metric) => current_performance_metric.created_at,
     };
 
-    let version: Version = match &current_performance_metric {
-        None => INITIAL_VERSION,
-        Some(current_performance_metric) => {
-            current_performance_metric.version.unwrap_or_default() + 1
-        }
-    };
+    let version = next_version(&current_performance_metric);
 
     let session_id: String = match &current_performance_metric {
         None => performance_metric.session_id.clone(),
@@ -334,7 +332,7 @@ fn get_page_views_impl(filter: &GetAnalytics, state: &StableState) -> Vec<(Analy
         None => state
             .page_views
             .range(filter_analytics(filter))
-            .map(|(key, page_view)| (key, page_view.inner()))
+            .map(|(key, page_view)| (key, page_view.into_inner()))
             .collect(),
         Some(satellite_id) => {
             let satellites_keys: Vec<(AnalyticSatelliteKey, AnalyticKey)> = state
@@ -345,7 +343,7 @@ fn get_page_views_impl(filter: &GetAnalytics, state: &StableState) -> Vec<(Analy
                 .iter()
                 .filter_map(|(_, key)| {
                     let page_view = state.page_views.get(key);
-                    page_view.map(|page_view| (key.clone(), page_view.inner()))
+                    page_view.map(|page_view| (key.clone(), page_view.into_inner()))
                 })
                 .collect()
         }
@@ -364,7 +362,7 @@ fn get_track_events_impl(
         None => state
             .track_events
             .range(filter_analytics(filter))
-            .map(|(key, track_event)| (key.clone(), track_event.inner()))
+            .map(|(key, track_event)| (key.clone(), track_event.into_inner()))
             .collect(),
         Some(satellite_id) => {
             let satellites_keys: Vec<(AnalyticSatelliteKey, AnalyticKey)> = state
@@ -375,7 +373,7 @@ fn get_track_events_impl(
                 .iter()
                 .filter_map(|(_, key)| {
                     let track_event = state.track_events.get(key);
-                    track_event.map(|track_event| (key.clone(), track_event.inner()))
+                    track_event.map(|track_event| (key.clone(), track_event.into_inner()))
                 })
                 .collect()
         }

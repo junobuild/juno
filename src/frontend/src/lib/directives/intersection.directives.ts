@@ -20,8 +20,6 @@ const dispatchIntersecting = ({
 };
 
 export const onIntersection = (element: HTMLElement) => {
-	// IntersectionObserverInit is not recognized by the linter
-	// eslint-disable-next-line no-undef
 	const options: IntersectionObserverInit = {
 		threshold: INTERSECTION_THRESHOLD,
 		rootMargin: INTERSECTION_ROOT_MARGIN

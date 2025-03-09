@@ -2,7 +2,6 @@
 	import type { Principal } from '@dfinity/principal';
 	import { isNullish, nonNullish } from '@dfinity/utils';
 	import { getContext, onMount, setContext } from 'svelte';
-	import { run } from 'svelte/legacy';
 	import User from '$lib/components/auth/User.svelte';
 	import DataCount from '$lib/components/data/DataCount.svelte';
 	import DataPaginator from '$lib/components/data/DataPaginator.svelte';
@@ -44,6 +43,7 @@
 		...initPaginationContext(),
 		list
 	});
+
 	const {
 		store: paginationStore,
 		setItems,
@@ -52,16 +52,22 @@
 
 	onMount(async () => await list());
 
-	let empty = $state(false);
-	run(() => {
-		empty = $paginationStore.items?.length === 0;
-	});
+	let empty = $derived($paginationStore.items?.length === 0);
+
+	let innerWidth = $state(0);
+
+	let colspan = $derived(
+		innerWidth >= 1024 ? 5 : innerWidth >= 768 ? 4 : innerWidth >= 576 ? 3 : 2
+	);
 </script>
+
+<svelte:window bind:innerWidth />
 
 <div class="table-container">
 	<table>
 		<thead>
 			<tr>
+				<th class="tools"></th>
 				<th class="identifier"> {$i18n.users.identifier} </th>
 				<th class="providers"> {$i18n.users.provider} </th>
 				<th class="created"> {$i18n.users.created} </th>
@@ -72,15 +78,15 @@
 		<tbody>
 			{#if nonNullish($paginationStore.items)}
 				{#each $paginationStore.items as [_key, user]}
-					<User {user} />
+					<User {user} {satelliteId} />
 				{/each}
 
 				{#if !empty && ($paginationStore.pages ?? 0) > 1}
-					<tr><td colspan="4"><DataPaginator /></td></tr>
+					<tr><td {colspan}><DataPaginator /></td></tr>
 				{/if}
 
 				{#if empty}
-					<tr><td colspan="4">{$i18n.users.empty}</td></tr>
+					<tr><td {colspan}>{$i18n.users.empty}</td></tr>
 				{/if}
 			{/if}
 		</tbody>
@@ -92,32 +98,37 @@
 <style lang="scss">
 	@use '../../styles/mixins/media';
 
-	.providers,
-	.created,
-	.updated {
+	.tools {
+		width: 60px;
+	}
+
+	.providers {
+		display: none;
+
+		@include media.min-width(small) {
+			display: table-cell;
+		}
+	}
+
+	.created {
 		display: none;
 
 		@include media.min-width(medium) {
-			display: table-header-group;
-		}
-	}
-
-	.identifier {
-		width: 100%;
-	}
-
-	@include media.min-width(medium) {
-		.identifier {
-			width: 260px;
-		}
-
-		.providers {
-			width: 120px;
-		}
-
-		.providers,
-		.created {
 			display: table-cell;
+		}
+	}
+
+	.updated {
+		display: none;
+
+		@include media.min-width(large) {
+			display: table-cell;
+		}
+	}
+
+	@include media.min-width(small) {
+		.providers {
+			width: 220px;
 		}
 	}
 
@@ -128,10 +139,6 @@
 
 		.providers {
 			width: inherit;
-		}
-
-		.updated {
-			display: table-cell;
 		}
 	}
 </style>

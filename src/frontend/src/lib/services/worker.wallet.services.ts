@@ -1,10 +1,21 @@
-import type { PostMessage, PostMessageDataResponse } from '$lib/types/post-message';
-import type { Principal } from '@dfinity/principal';
-
-export type WalletCallback = (data: PostMessageDataResponse) => void;
+import {
+	onSyncExchange,
+	onSyncWallet,
+	onWalletCleanUp,
+	onWalletError
+} from '$lib/services/wallet.loader.services';
+import type { MissionControlId } from '$lib/types/mission-control';
+import type {
+	PostMessage,
+	PostMessageDataResponseError,
+	PostMessageDataResponseExchange,
+	PostMessageDataResponseWallet,
+	PostMessageDataResponseWalletCleanUp
+} from '$lib/types/post-message';
 
 export interface WalletWorker {
-	start: (params: { missionControlId: Principal; callback: WalletCallback }) => void;
+	start: (params: { missionControlId: MissionControlId }) => void;
+	restart: (params: { missionControlId: MissionControlId }) => void;
 	stop: () => void;
 }
 
@@ -12,30 +23,48 @@ export const initWalletWorker = async (): Promise<WalletWorker> => {
 	const WalletWorker = await import('$lib/workers/workers?worker');
 	const worker: Worker = new WalletWorker.default();
 
-	let walletCallback: WalletCallback | undefined;
-
-	worker.onmessage = ({ data }: MessageEvent<PostMessage<PostMessageDataResponse>>) => {
+	worker.onmessage = ({
+		data
+	}: MessageEvent<
+		PostMessage<
+			| PostMessageDataResponseWallet
+			| PostMessageDataResponseWalletCleanUp
+			| PostMessageDataResponseError
+			| PostMessageDataResponseExchange
+		>
+	>) => {
 		const { msg } = data;
 
 		switch (msg) {
 			case 'syncWallet':
-				walletCallback?.(data.data);
+				onSyncWallet(data.data as PostMessageDataResponseWallet);
+				return;
+			case 'syncWalletError':
+				onWalletError({
+					error: (data.data as PostMessageDataResponseError).error
+				});
+				return;
+			case 'syncWalletCleanUp':
+				onWalletCleanUp({
+					transactionIds: (data.data as PostMessageDataResponseWalletCleanUp).transactionIds
+				});
+				return;
+			case 'syncExchange':
+				onSyncExchange(data.data as PostMessageDataResponseExchange);
 				return;
 		}
 	};
 
 	return {
-		start: ({
-			callback,
-			missionControlId
-		}: {
-			missionControlId: Principal;
-			callback: WalletCallback;
-		}) => {
-			walletCallback = callback;
-
+		start: ({ missionControlId }: { missionControlId: MissionControlId }) => {
 			worker.postMessage({
 				msg: 'startWalletTimer',
+				data: { missionControlId: missionControlId.toText() }
+			});
+		},
+		restart: ({ missionControlId }: { missionControlId: MissionControlId }) => {
+			worker.postMessage({
+				msg: 'restartWalletTimer',
 				data: { missionControlId: missionControlId.toText() }
 			});
 		},

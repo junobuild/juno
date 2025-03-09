@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { isNullish, notEmptyString } from '@dfinity/utils';
+	import { isEmptyString, isNullish } from '@dfinity/utils';
 	import { createEventDispatcher } from 'svelte';
 	import { preventDefault } from 'svelte/legacy';
 	import type { Satellite } from '$declarations/mission_control/mission_control.did';
@@ -19,7 +19,7 @@
 	const dispatch = createEventDispatcher();
 
 	const onSubmitDomainName = () => {
-		if (isNullish(domainNameInput) || !notEmptyString(domainNameInput)) {
+		if (isNullish(domainNameInput) || isEmptyString(domainNameInput)) {
 			toasts.error({
 				text: $i18n.errors.hosting_missing_domain_name
 			});
@@ -30,7 +30,8 @@
 			dns = toCustomDomainDns({ domainName: domainNameInput, canisterId: satellite.satellite_id });
 		} catch (err: unknown) {
 			toasts.error({
-				text: $i18n.errors.hosting_invalid_url
+				text: $i18n.errors.hosting_invalid_url,
+				detail: err
 			});
 			return;
 		}

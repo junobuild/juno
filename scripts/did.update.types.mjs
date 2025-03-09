@@ -100,10 +100,12 @@ const renameFactory = async ({ dest = `./src/declarations` }) => {
 (async () => {
 	try {
 		await cleanTypes({});
-
 		await cleanFactory({});
-
 		await renameFactory({});
+
+		await cleanTypes({ dest: './src/tests/declarations' });
+		await cleanFactory({ dest: './src/tests/declarations' });
+		await renameFactory({ dest: './src/tests/declarations' });
 
 		console.log(`Types declarations copied!`);
 	} catch (err) {

@@ -14,7 +14,7 @@
 	import { snapshotStore } from '$lib/stores/snapshot.store';
 	import { toasts } from '$lib/stores/toasts.store';
 	import type { JunoModalDetail, JunoModalSegmentDetail } from '$lib/types/modal';
-	import type { SnapshotProgress } from '$lib/types/snapshot';
+	import type { SnapshotProgress } from '$lib/types/progress-snapshot';
 	import { i18nFormat } from '$lib/utils/i18n.utils';
 
 	interface Props {
@@ -64,7 +64,7 @@
 		step = 'ready';
 	};
 
-	let warnExistingBackup = $derived(($snapshotStore?.[segment.canisterId]?.length ?? 0) > 0);
+	let warnExistingSnapshot = $derived(($snapshotStore?.[segment.canisterId]?.length ?? 0) > 0);
 </script>
 
 <Modal on:junoClose={onclose}>
@@ -74,7 +74,7 @@
 		<div class="msg">
 			<p>
 				<Html
-					text={i18nFormat($i18n.canisters.backup_created, [
+					text={i18nFormat($i18n.canisters.snapshot_created, [
 						{
 							placeholder: '{0}',
 							value: segment.label
@@ -87,23 +87,23 @@
 	{:else if step === 'in_progress'}
 		<ProgressSnapshot segment={segment.segment} {progress} snapshotAction="create" />
 	{:else}
-		<h2>{$i18n.canisters.backup}</h2>
+		<h2>{$i18n.canisters.snapshot}</h2>
 
-		{#if warnExistingBackup}
+		{#if warnExistingSnapshot}
 			<div in:fade class="warning">
-				<Warning>{$i18n.canisters.create_backup_warning}</Warning>
+				<Warning>{$i18n.canisters.create_snapshot_warning}</Warning>
 			</div>
 		{/if}
 
 		<p>
-			{i18nFormat($i18n.canisters.create_backup_info, [
+			{i18nFormat($i18n.canisters.create_snapshot_info, [
 				{ placeholder: '{0}', value: segment.label }
 			])}
 		</p>
 
 		<form class="content" onsubmit={handleSubmit}>
 			<button type="submit" disabled={$isBusy}>
-				{$i18n.canisters.create_a_backup}
+				{$i18n.canisters.create_a_snapshot}
 			</button>
 		</form>
 	{/if}

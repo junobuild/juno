@@ -1,13 +1,13 @@
 <script lang="ts">
-	import type { Principal } from '@dfinity/principal';
 	import { createEventDispatcher } from 'svelte';
 	import { deleteSatellite } from '$lib/api/mission-control.api';
 	import CanisterDeleteWizard from '$lib/components/canister/CanisterDeleteWizard.svelte';
 	import Html from '$lib/components/ui/Html.svelte';
 	import Modal from '$lib/components/ui/Modal.svelte';
-	import { satelliteCustomDomains } from '$lib/derived/custom-domains.derived';
+	import { satelliteCustomDomains } from '$lib/derived/satellite-custom-domains.derived';
 	import { authStore } from '$lib/stores/auth.store';
 	import { i18n } from '$lib/stores/i18n.store';
+	import type { MissionControlId } from '$lib/types/mission-control';
 	import type { JunoModalDeleteSatelliteDetail, JunoModalDetail } from '$lib/types/modal';
 	import { i18nFormat } from '$lib/utils/i18n.utils';
 	import { satelliteName } from '$lib/utils/satellite.utils';
@@ -21,10 +21,10 @@
 	let { satellite, cycles: currentCycles } = $derived(detail as JunoModalDeleteSatelliteDetail);
 
 	let deleteFn: (params: {
-		missionControlId: Principal;
+		missionControlId: MissionControlId;
 		cyclesToDeposit: bigint;
 	}) => Promise<void> = $derived(
-		async (params: { missionControlId: Principal; cyclesToDeposit: bigint }) =>
+		async (params: { missionControlId: MissionControlId; cyclesToDeposit: bigint }) =>
 			await deleteSatellite({
 				...params,
 				satelliteId: satellite.satellite_id,

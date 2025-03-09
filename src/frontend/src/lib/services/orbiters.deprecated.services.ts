@@ -122,7 +122,7 @@ const getDeprecatedAnalyticsTop10PageViews = (
 			try {
 				const url = new URL(ref);
 				host = url.host;
-			} catch (err: unknown) {
+			} catch (_err: unknown) {
 				host = ref;
 			}
 
@@ -137,7 +137,7 @@ const getDeprecatedAnalyticsTop10PageViews = (
 		try {
 			const { pathname } = new URL(href);
 			pages = pathname;
-		} catch (err: unknown) {
+		} catch (_err: unknown) {
 			pages = href;
 		}
 

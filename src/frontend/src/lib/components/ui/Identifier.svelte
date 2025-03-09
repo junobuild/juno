@@ -6,9 +6,10 @@
 		identifier: string;
 		shorten?: boolean;
 		small?: boolean;
+		what?: string;
 	}
 
-	let { identifier, shorten = true, small = true }: Props = $props();
+	let { identifier, shorten = true, small = true, what }: Props = $props();
 
 	let shortIdentifier: string = $derived(
 		shorten ? shortenWithMiddleEllipsis(identifier) : identifier
@@ -17,7 +18,7 @@
 
 <p class:small>
 	<span class:small>{shortIdentifier}</span>
-	<Copy value={identifier} />
+	<Copy value={identifier} {what} />
 </p>
 
 <style lang="scss">

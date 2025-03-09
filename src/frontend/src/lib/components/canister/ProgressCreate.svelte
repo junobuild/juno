@@ -4,7 +4,7 @@
 	import WizardProgressSteps from '$lib/components/ui/WizardProgressSteps.svelte';
 	import { i18n } from '$lib/stores/i18n.store';
 	import type { ProgressStep } from '$lib/types/progress-step';
-	import { type WizardCreateProgress, WizardCreateProgressStep } from '$lib/types/wizard';
+	import { type WizardCreateProgress, WizardCreateProgressStep } from '$lib/types/progress-wizard';
 	import { mapProgressState } from '$lib/utils/progress.utils';
 
 	interface Props {
@@ -26,7 +26,7 @@
 		preparing: {
 			state: 'in_progress',
 			step: 'preparing',
-			text: $i18n.monitoring.strategy_preparing
+			text: $i18n.core.preparing
 		},
 		create: {
 			state: 'next',
@@ -43,7 +43,7 @@
 		reload: {
 			state: 'next',
 			step: 'reload',
-			text: $i18n.canisters.loading_ui_data
+			text: $i18n.core.refreshing_interface
 		}
 	});
 

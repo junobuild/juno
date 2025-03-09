@@ -1,12 +1,12 @@
 <script lang="ts">
 	import { nonNullish } from '@dfinity/utils';
+	import type { PrincipalText } from '@dfinity/zod-schemas';
 	import { run } from 'svelte/legacy';
 	import { getDefaultSubnets } from '$lib/api/cmc.api';
 	import Value from '$lib/components/ui/Value.svelte';
-	import { DEV, JUNO_SUBNET_ID } from '$lib/constants/constants';
+	import { DEV, JUNO_SUBNET_ID } from '$lib/constants/app.constants';
 	import subnets from '$lib/env/subnets.json';
 	import { i18n } from '$lib/stores/i18n.store';
-	import type { PrincipalText } from '$lib/types/principal';
 	import type { Subnet } from '$lib/types/subnet';
 	import { shortenWithMiddleEllipsis } from '$lib/utils/format.utils';
 

@@ -15,14 +15,19 @@ use crate::db::store::{
 use crate::db::types::config::DbConfig;
 use crate::db::types::interface::{DelDoc, SetDoc};
 use crate::db::types::state::{Doc, DocContext, DocUpsert};
-use crate::hooks::{
-    invoke_on_delete_asset, invoke_on_delete_doc, invoke_on_delete_filtered_assets,
-    invoke_on_delete_filtered_docs, invoke_on_delete_many_assets, invoke_on_delete_many_docs,
-    invoke_on_init, invoke_on_post_upgrade, invoke_on_set_doc, invoke_on_set_many_docs,
+use crate::hooks::db::{
+    invoke_on_delete_doc, invoke_on_delete_filtered_docs, invoke_on_delete_many_docs,
+    invoke_on_set_doc, invoke_on_set_many_docs,
+};
+use crate::hooks::lifecycle::{
+    invoke_on_init, invoke_on_init_sync, invoke_on_post_upgrade, invoke_on_post_upgrade_sync,
+};
+use crate::hooks::storage::{
+    invoke_on_delete_asset, invoke_on_delete_filtered_assets, invoke_on_delete_many_assets,
     invoke_upload_asset,
 };
-use crate::memory::{get_memory_upgrades, init_stable_state, STATE};
-use crate::random::defer_init_random_seed;
+use crate::memory::internal::{get_memory_for_upgrade, init_stable_state, STATE};
+use crate::random::init::defer_init_random_seed;
 use crate::rules::store::{
     del_rule_db, del_rule_storage, get_rule_db, get_rule_storage, get_rules_db, get_rules_storage,
     set_rule_db, set_rule_storage,
@@ -36,15 +41,16 @@ use crate::storage::store::{
     set_domain_store,
 };
 use crate::storage::strategy_impls::StorageState;
-use crate::types::interface::{Config, RulesType};
-use crate::types::state::{HeapState, RuntimeState, State};
+use crate::types::interface::Config;
+use crate::types::state::{CollectionType, HeapState, RuntimeState, State};
+use crate::user::internal_hooks::{invoke_on_delete_many_users, invoke_on_delete_user};
 use ciborium::{from_reader, into_writer};
 use ic_cdk::api::call::{arg_data, ArgDecoderConfig};
 use ic_cdk::api::{caller, trap};
 use junobuild_collections::types::core::CollectionKey;
 use junobuild_collections::types::interface::{DelRule, SetRule};
 use junobuild_collections::types::rules::Rule;
-use junobuild_shared::constants::MAX_NUMBER_OF_SATELLITE_CONTROLLERS;
+use junobuild_shared::constants_shared::MAX_NUMBER_OF_SATELLITE_CONTROLLERS;
 use junobuild_shared::controllers::{
     assert_controllers, assert_max_number_of_controllers, init_controllers,
 };
@@ -87,6 +93,8 @@ pub fn init() {
         };
     });
 
+    invoke_on_init_sync();
+
     invoke_on_init();
 }
 
@@ -96,11 +104,11 @@ pub fn pre_upgrade() {
         .with(|s| into_writer(&*s.borrow(), &mut state_bytes))
         .expect("Failed to encode the state of the satellite in pre_upgrade hook.");
 
-    write_pre_upgrade(&state_bytes, &mut get_memory_upgrades());
+    write_pre_upgrade(&state_bytes, &mut get_memory_for_upgrade());
 }
 
 pub fn post_upgrade() {
-    let memory: Memory = get_memory_upgrades();
+    let memory: Memory = get_memory_for_upgrade();
     let state_bytes = read_post_upgrade(&memory);
 
     let state = from_reader(&*state_bytes)
@@ -109,6 +117,8 @@ pub fn post_upgrade() {
 
     defer_init_certified_assets();
     defer_init_random_seed();
+
+    invoke_on_post_upgrade_sync();
 
     invoke_on_post_upgrade();
 }
@@ -149,6 +159,7 @@ pub fn del_doc(collection: CollectionKey, key: Key, doc: DelDoc) {
     let deleted_doc = delete_doc_store(caller, collection, key, doc).unwrap_or_else(|e| trap(&e));
 
     invoke_on_delete_doc(&caller, &deleted_doc);
+    invoke_on_delete_user(&deleted_doc);
 }
 
 pub fn list_docs(collection: CollectionKey, filter: ListParams) -> ListResults<Doc> {
@@ -214,6 +225,7 @@ pub fn del_many_docs(docs: Vec<(CollectionKey, Key, DelDoc)>) {
     }
 
     invoke_on_delete_many_docs(&caller, &results);
+    invoke_on_delete_many_users(&results);
 }
 
 pub fn del_filtered_docs(collection: CollectionKey, filter: ListParams) {
@@ -226,12 +238,7 @@ pub fn del_filtered_docs(collection: CollectionKey, filter: ListParams) {
 }
 
 pub fn del_docs(collection: CollectionKey) {
-    let result = delete_docs_store(&collection);
-
-    match result {
-        Ok(_) => (),
-        Err(error) => trap(&["Documents cannot be deleted: ", &error].join("")),
-    }
+    delete_docs_store(&collection).unwrap_or_else(|e| trap(&e));
 }
 
 pub fn count_collection_docs(collection: CollectionKey) -> usize {
@@ -247,31 +254,31 @@ pub fn count_collection_docs(collection: CollectionKey) -> usize {
 // Rules
 // ---------------------------------------------------------
 
-pub fn get_rule(rules_type: &RulesType, collection: &CollectionKey) -> Option<Rule> {
-    match rules_type {
-        RulesType::Db => get_rule_db(collection),
-        RulesType::Storage => get_rule_storage(collection),
+pub fn get_rule(collection_type: &CollectionType, collection: &CollectionKey) -> Option<Rule> {
+    match collection_type {
+        CollectionType::Db => get_rule_db(collection),
+        CollectionType::Storage => get_rule_storage(collection),
     }
 }
 
-pub fn list_rules(rules_type: RulesType) -> Vec<(CollectionKey, Rule)> {
-    match rules_type {
-        RulesType::Db => get_rules_db(),
-        RulesType::Storage => get_rules_storage(),
+pub fn list_rules(collection_type: CollectionType) -> Vec<(CollectionKey, Rule)> {
+    match collection_type {
+        CollectionType::Db => get_rules_db(),
+        CollectionType::Storage => get_rules_storage(),
     }
 }
 
-pub fn set_rule(rules_type: RulesType, collection: CollectionKey, rule: SetRule) -> Rule {
-    match rules_type {
-        RulesType::Db => set_rule_db(collection, rule).unwrap_or_else(|e| trap(&e)),
-        RulesType::Storage => set_rule_storage(collection, rule).unwrap_or_else(|e| trap(&e)),
+pub fn set_rule(collection_type: CollectionType, collection: CollectionKey, rule: SetRule) -> Rule {
+    match collection_type {
+        CollectionType::Db => set_rule_db(collection, rule).unwrap_or_else(|e| trap(&e)),
+        CollectionType::Storage => set_rule_storage(collection, rule).unwrap_or_else(|e| trap(&e)),
     }
 }
 
-pub fn del_rule(rules_type: RulesType, collection: CollectionKey, rule: DelRule) {
-    match rules_type {
-        RulesType::Db => del_rule_db(collection, rule).unwrap_or_else(|e| trap(&e)),
-        RulesType::Storage => del_rule_storage(collection, rule).unwrap_or_else(|e| trap(&e)),
+pub fn del_rule(collection_type: CollectionType, collection: CollectionKey, rule: DelRule) {
+    match collection_type {
+        CollectionType::Db => del_rule_db(collection, rule).unwrap_or_else(|e| trap(&e)),
+        CollectionType::Storage => del_rule_storage(collection, rule).unwrap_or_else(|e| trap(&e)),
     }
 }
 
@@ -399,9 +406,9 @@ pub fn http_request_streaming_callback(
     http_request_streaming_callback_storage(streaming_callback_token, &StorageState)
 }
 
-//
+// ---------------------------------------------------------
 // Storage
-//
+// ---------------------------------------------------------
 
 pub fn init_asset_upload(init: InitAssetKey) -> InitUploadResult {
     let caller = caller();
@@ -439,7 +446,7 @@ pub fn list_assets(collection: CollectionKey, filter: ListParams) -> ListResults
 
     match result {
         Ok(result) => result,
-        Err(error) => trap(&["Assets cannot be listed: ".to_string(), error].join("")),
+        Err(error) => trap(&error),
     }
 }
 
@@ -450,7 +457,7 @@ pub fn count_assets(collection: CollectionKey, filter: ListParams) -> usize {
 
     match result {
         Ok(result) => result,
-        Err(error) => trap(&["Assets cannot be counted: ".to_string(), error].join("")),
+        Err(error) => trap(&error),
     }
 }
 
@@ -461,7 +468,7 @@ pub fn del_asset(collection: CollectionKey, full_path: FullPath) {
 
     match result {
         Ok(asset) => invoke_on_delete_asset(&caller, &asset),
-        Err(error) => trap(&["Asset cannot be deleted: ", &error].join("")),
+        Err(error) => trap(&error),
     }
 }
 
@@ -493,7 +500,7 @@ pub fn del_assets(collection: CollectionKey) {
 
     match result {
         Ok(_) => (),
-        Err(error) => trap(&["Assets cannot be deleted: ", &error].join("")),
+        Err(error) => trap(&error),
     }
 }
 

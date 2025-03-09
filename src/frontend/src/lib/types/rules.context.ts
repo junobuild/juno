@@ -1,16 +1,23 @@
-import type { Rule } from '$declarations/satellite/satellite.did';
+import type { CollectionRule } from '$lib/types/collection';
+import type { OptionIdentity } from '$lib/types/itentity';
 import type { Principal } from '@dfinity/principal';
-import type { Writable } from 'svelte/store';
+import type { Readable, Writable } from 'svelte/store';
 
-export interface RulesStore {
+export interface RulesData {
 	satelliteId: Principal;
-	rules: [string, Rule][] | undefined;
-	rule: [string, Rule] | undefined;
+	rules: CollectionRule[] | undefined;
+	rule: CollectionRule | undefined;
 }
 
 export interface RulesContext {
-	store: Writable<RulesStore>;
-	reload: () => Promise<void>;
+	store: Writable<RulesData>;
+
+	reload: (params: { identity: OptionIdentity }) => Promise<void>;
+	init: (params: { satelliteId: Principal; identity: OptionIdentity }) => Promise<void>;
+
+	hasAnyRules: Readable<boolean>;
+	emptyRules: Readable<boolean>;
+	sortedRules: Readable<CollectionRule[]>;
 }
 
 export const RULES_CONTEXT_KEY = Symbol('rules');

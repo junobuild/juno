@@ -1,11 +1,11 @@
 import type { Orbiter } from '$declarations/mission_control/mission_control.did';
 import { type OrbiterConfigs, orbitersConfigsStore } from '$lib/stores/orbiter-configs.store';
-import { orbitersDataStore } from '$lib/stores/orbiter.store';
+import { orbitersUncertifiedStore } from '$lib/stores/orbiter.store';
 import { nonNullish } from '@dfinity/utils';
 import { derived, type Readable } from 'svelte/store';
 
 export const orbitersStore = derived(
-	[orbitersDataStore],
+	[orbitersUncertifiedStore],
 	([$orbitersDataStore]) => $orbitersDataStore?.data
 );
 
@@ -15,7 +15,7 @@ export const orbiterStore: Readable<Orbiter | undefined | null> = derived(
 );
 
 export const orbiterLoaded = derived(
-	[orbitersDataStore],
+	[orbitersUncertifiedStore],
 	([$orbitersDataStore]) => $orbitersDataStore !== undefined
 );
 

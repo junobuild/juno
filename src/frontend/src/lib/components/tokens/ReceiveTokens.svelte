@@ -1,5 +1,4 @@
 <script lang="ts">
-	import type { Principal } from '@dfinity/principal';
 	import { fade } from 'svelte/transition';
 	import { getAccountIdentifier } from '$lib/api/icp-index.api';
 	import IconOisy from '$lib/components/icons/IconOisy.svelte';
@@ -8,9 +7,10 @@
 	import ReceiveTokensSigner from '$lib/components/tokens/ReceiveTokensSigner.svelte';
 	import Popover from '$lib/components/ui/Popover.svelte';
 	import { i18n } from '$lib/stores/i18n.store';
+	import type { MissionControlId } from '$lib/types/mission-control';
 
 	interface Props {
-		missionControlId: Principal;
+		missionControlId: MissionControlId;
 		visible?: boolean;
 	}
 

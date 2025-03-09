@@ -7,8 +7,8 @@
 	import {
 		satelliteCustomDomain,
 		satelliteCustomDomainsLoaded
-	} from '$lib/derived/custom-domains.derived';
-	import { listCustomDomains } from '$lib/services/hosting.services';
+	} from '$lib/derived/satellite-custom-domains.derived';
+	import { listCustomDomains } from '$lib/services/custom-domain.services';
 	import { i18n } from '$lib/stores/i18n.store';
 	import { satelliteUrl } from '$lib/utils/satellite.utils';
 

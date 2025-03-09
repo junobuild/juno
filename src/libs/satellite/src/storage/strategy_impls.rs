@@ -1,13 +1,15 @@
-use crate::hooks::invoke_assert_upload_asset;
+use crate::hooks::storage::invoke_assert_upload_asset;
 use crate::storage::state::{
     delete_asset, get_asset, get_config, get_domains, get_rule, insert_asset, insert_asset_encoding,
 };
 use crate::storage::store::{get_content_chunks_store, get_public_asset_store};
+use crate::user::usage::assert::increment_and_assert_storage_usage;
 use candid::Principal;
 use junobuild_collections::types::core::CollectionKey;
 use junobuild_collections::types::rules::{Memory, Rule};
 use junobuild_shared::types::core::Blob;
 use junobuild_shared::types::domain::CustomDomains;
+use junobuild_shared::types::state::Controllers;
 use junobuild_storage::strategies::{
     StorageAssertionsStrategy, StorageStateStrategy, StorageUploadStrategy,
 };
@@ -26,6 +28,16 @@ impl StorageAssertionsStrategy for StorageAssertions {
         asset: &AssetAssertUpload,
     ) -> Result<(), String> {
         invoke_assert_upload_asset(caller, asset)
+    }
+
+    fn increment_and_assert_storage_usage(
+        &self,
+        caller: &Principal,
+        controllers: &Controllers,
+        collection: &CollectionKey,
+        max_changes_per_user: Option<u32>,
+    ) -> Result<(), String> {
+        increment_and_assert_storage_usage(*caller, controllers, collection, max_changes_per_user)
     }
 }
 

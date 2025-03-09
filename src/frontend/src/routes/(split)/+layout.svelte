@@ -2,7 +2,6 @@
 	import type { Snippet } from 'svelte';
 	import Navbar from '$lib/components/core/Navbar.svelte';
 	import Navmenu from '$lib/components/core/Navmenu.svelte';
-	import Footer from '$lib/components/ui/Footer.svelte';
 	import Layout from '$lib/components/ui/Layout.svelte';
 
 	interface Props {
@@ -22,8 +21,4 @@
 	{/snippet}
 
 	{@render children()}
-
-	{#snippet footer()}
-		<Footer />
-	{/snippet}
 </Layout>

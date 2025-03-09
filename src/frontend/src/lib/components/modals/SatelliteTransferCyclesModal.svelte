@@ -4,12 +4,14 @@
 	import CanisterTransferCyclesModal from '$lib/components/modals/CanisterTransferCyclesModal.svelte';
 	import { authStore } from '$lib/stores/auth.store';
 	import type { JunoModalCyclesSatelliteDetail, JunoModalDetail } from '$lib/types/modal';
+	import { satelliteName } from '$lib/utils/satellite.utils';
 
 	interface Props {
 		detail: JunoModalDetail;
+		onclose: () => void;
 	}
 
-	let { detail }: Props = $props();
+	let { detail, onclose }: Props = $props();
 
 	let { satellite, cycles: currentCycles } = $derived(detail as JunoModalCyclesSatelliteDetail);
 
@@ -27,7 +29,10 @@
 <CanisterTransferCyclesModal
 	{transferFn}
 	{currentCycles}
-	canisterId={satellite.satellite_id}
-	on:junoClose
-	segment="satellite"
+	{onclose}
+	segment={{
+		segment: 'satellite',
+		canisterId: satellite.satellite_id.toText(),
+		label: satelliteName(satellite)
+	}}
 />

@@ -23,6 +23,7 @@
 		onblur?: () => void;
 		onfocus?: () => void;
 		end?: Snippet;
+		footer?: Snippet;
 	}
 
 	let {
@@ -44,7 +45,8 @@
 		oninput,
 		onblur,
 		onfocus,
-		end
+		end,
+		footer
 	}: Props = $props();
 
 	let inputElement: HTMLInputElement | undefined = $state();
@@ -179,9 +181,8 @@
 	});
 </script>
 
-<div class="input-field">
+<div class="input-field" class:with-footer={nonNullish(footer)}>
 	<input
-		class:with-end={nonNullish(end)}
 		bind:this={inputElement}
 		data-tid={testId}
 		type={currency ? 'text' : inputType}
@@ -206,6 +207,10 @@
 	{#if nonNullish(end)}
 		<div class="inner-end">{@render end()}</div>
 	{/if}
+
+	{#if nonNullish(footer)}
+		<div class="footer">{@render footer()}</div>
+	{/if}
 </div>
 
 <style lang="scss">
@@ -218,5 +223,21 @@
 		top: 50%;
 		right: 3px;
 		transform: translate(0, calc(-50% - var(--padding-0_5x)));
+	}
+
+	.with-footer {
+		margin: 0 0 var(--padding-2x);
+
+		input {
+			margin: var(--padding) 0 var(--padding-0_25x);
+		}
+
+		.inner-end {
+			transform: translate(0, calc(-50% - var(--padding-1_5x)));
+		}
+	}
+
+	.footer {
+		padding: 0 var(--padding-2x);
 	}
 </style>

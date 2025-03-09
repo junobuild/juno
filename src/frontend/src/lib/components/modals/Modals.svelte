@@ -24,6 +24,7 @@
 	import SatelliteUpgradeModal from '$lib/components/modals/SatelliteUpgradeModal.svelte';
 	import SendTokensModal from '$lib/components/modals/SendTokensModal.svelte';
 	import StopMonitoringStrategyModal from '$lib/components/modals/StopMonitoringStrategyModal.svelte';
+	import UserDetailsModal from '$lib/components/modals/UserDetailsModal.svelte';
 	import type { JunoModal, JunoModalDetail } from '$lib/types/modal';
 
 	let modal: JunoModal<JunoModalDetail> | undefined = $state(undefined);
@@ -42,19 +43,19 @@
 {/if}
 
 {#if modal?.type === 'topup_satellite' && nonNullish(modal.detail)}
-	<SatelliteTopUpModal on:junoClose={close} detail={modal.detail} />
+	<SatelliteTopUpModal onclose={close} detail={modal.detail} />
 {/if}
 
 {#if modal?.type === 'topup_mission_control' && nonNullish(modal.detail)}
-	<MissionControlTopUpModal on:junoClose={close} detail={modal.detail} />
+	<MissionControlTopUpModal onclose={close} detail={modal.detail} />
 {/if}
 
 {#if modal?.type === 'topup_orbiter' && nonNullish(modal.detail)}
-	<OrbiterTopUpModal on:junoClose={close} detail={modal.detail} />
+	<OrbiterTopUpModal onclose={close} detail={modal.detail} />
 {/if}
 
 {#if modal?.type === 'add_custom_domain' && nonNullish(modal.detail)}
-	<CustomDomainModal on:junoClose={close} detail={modal.detail} />
+	<CustomDomainModal onclose={close} detail={modal.detail} />
 {/if}
 
 {#if modal?.type === 'create_controller' && nonNullish(modal.detail)}
@@ -86,19 +87,19 @@
 {/if}
 
 {#if modal?.type === 'transfer_cycles_satellite' && nonNullish(modal.detail)}
-	<SatelliteTransferCyclesModal on:junoClose={close} detail={modal.detail} />
+	<SatelliteTransferCyclesModal onclose={close} detail={modal.detail} />
 {/if}
 
 {#if modal?.type === 'transfer_cycles_orbiter' && nonNullish(modal.detail)}
-	<OrbiterTransferCyclesModal on:junoClose={close} detail={modal.detail} />
+	<OrbiterTransferCyclesModal onclose={close} detail={modal.detail} />
 {/if}
 
 {#if modal?.type === 'transfer_cycles_mission_control' && nonNullish(modal.detail)}
-	<MissionControlTransferCyclesModal on:junoClose={close} detail={modal.detail} />
+	<MissionControlTransferCyclesModal onclose={close} detail={modal.detail} />
 {/if}
 
-{#if modal?.type === 'send_tokens' && nonNullish(modal.detail)}
-	<SendTokensModal on:junoClose={close} detail={modal.detail} />
+{#if modal?.type === 'send_tokens'}
+	<SendTokensModal onclose={close} />
 {/if}
 
 {#if modal?.type === 'edit_orbiter_config' && nonNullish(modal.detail)}
@@ -127,4 +128,8 @@
 
 {#if modal?.type === 'show_monitoring_details' && nonNullish(modal.detail)}
 	<MonitoringDetailsModal onclose={close} detail={modal.detail} />
+{/if}
+
+{#if modal?.type === 'show_user_details' && nonNullish(modal.detail)}
+	<UserDetailsModal onclose={close} detail={modal.detail} />
 {/if}

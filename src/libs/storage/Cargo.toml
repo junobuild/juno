@@ -1,6 +1,6 @@
 [package]
 name = "junobuild-storage"
-version = "0.0.14"
+version = "0.0.15"
 authors.workspace = true
 edition.workspace = true
 repository.workspace = true
@@ -22,12 +22,12 @@ ic-stable-structures.workspace = true
 sha2.workspace = true
 hex.workspace = true
 serde_bytes = "0.11.12"
-ic-certification = "2.6.0"
-ic-representation-independent-hash = "2.6.0"
+ic-certification = "3.0.3"
+ic-representation-independent-hash = "3.0.3"
 regex.workspace = true
-base64 = "0.13.1"
-url = "2.4.0"
+base64 = "0.22.1"
+url.workspace = true
 urlencoding = "2.1.3"
 globset = "0.4.13"
-junobuild-shared = "0.0.23"
-junobuild-collections = "0.0.10"
+junobuild-shared = "0.0.24"
+junobuild-collections = "0.0.11"

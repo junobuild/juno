@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { fromNullable } from '@dfinity/utils';
+	import { fromNullishNullable } from '@dfinity/utils';
 	import type { Orbiter } from '$declarations/mission_control/mission_control.did';
 	import CanisterMonitoring from '$lib/components/canister/CanisterMonitoring.svelte';
 	import CanisterOverview from '$lib/components/canister/CanisterOverview.svelte';
@@ -18,7 +18,7 @@
 
 	let { orbiter }: Props = $props();
 
-	let monitoring = $derived(fromNullable(fromNullable(orbiter.settings ?? [])?.monitoring ?? []));
+	let monitoring = $derived(fromNullishNullable(fromNullishNullable(orbiter.settings)?.monitoring));
 </script>
 
 <div class="card-container with-title">
@@ -63,7 +63,7 @@
 			heapWarningLabel={$i18n.canisters.warning_orbiter_heap_memory}
 		/>
 
-		<CanisterMonitoring segment="orbiter" canisterId={orbiter.orbiter_id}>
+		<CanisterMonitoring canisterId={orbiter.orbiter_id}>
 			<MonitoringDisabled {monitoring} loading={$orbiterNotLoaded} />
 		</CanisterMonitoring>
 	</div>

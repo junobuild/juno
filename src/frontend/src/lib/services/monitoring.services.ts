@@ -18,7 +18,7 @@ import {
 } from '$lib/derived/mission-control-settings.derived';
 import { missionControlUserData } from '$lib/derived/mission-control-user.derived';
 import { orbiterNotLoaded, orbiterStore } from '$lib/derived/orbiter.derived';
-import { satellitesNotLoaded, satellitesStore } from '$lib/derived/satellite.derived';
+import { satellitesNotLoaded, satellitesStore } from '$lib/derived/satellites.derived';
 import { loadSettings, loadUserData } from '$lib/services/mission-control.services';
 import { loadOrbiters } from '$lib/services/orbiters.services';
 import { execute } from '$lib/services/progress.services';
@@ -27,18 +27,20 @@ import { i18n } from '$lib/stores/i18n.store';
 import { toasts } from '$lib/stores/toasts.store';
 import type { OptionIdentity } from '$lib/types/itentity';
 import type { Metadata } from '$lib/types/metadata';
+import type { MissionControlId } from '$lib/types/mission-control';
 import type { JunoModal, JunoModalCreateMonitoringStrategyDetail } from '$lib/types/modal';
 import {
 	type MonitoringStrategyProgress,
 	MonitoringStrategyProgressStep
-} from '$lib/types/strategy';
+} from '$lib/types/progress-strategy';
 import type { Option } from '$lib/types/utils';
 import { isNotValidEmail } from '$lib/utils/email.utils';
 import { emit } from '$lib/utils/events.utils';
 import type { Principal } from '@dfinity/principal';
 import {
 	assertNonNullish,
-	fromNullable,
+	fromNullishNullable,
+	isEmptyString,
 	isNullish,
 	nonNullish,
 	notEmptyString,
@@ -50,7 +52,7 @@ type MonitoringStrategyOnProgress = (progress: MonitoringStrategyProgress | unde
 
 interface MonitoringCyclesStrategyParams {
 	identity: OptionIdentity;
-	missionControlId: Principal;
+	missionControlId: MissionControlId;
 	satellites: Principal[];
 	orbiters: Principal[];
 	onProgress: MonitoringStrategyOnProgress;
@@ -301,7 +303,7 @@ const setEmail = async ({
 		Omit<ApplyMonitoringCyclesStrategyOptions, 'saveAsDefaultStrategy' | 'monitoringConfig'>
 	>) => {
 	// Do nothing if no email is provided
-	if (isNullish(userEmail) || !notEmptyString(userEmail)) {
+	if (isNullish(userEmail) || isEmptyString(userEmail)) {
 		return;
 	}
 
@@ -343,7 +345,7 @@ const setMonitoringCyclesConfig = async ({
 		throw new Error(get(i18n).monitoring.fund_cycles_not_defined);
 	}
 
-	const currentCyclesConfig = fromNullable(monitoringConfig?.cycles ?? []);
+	const currentCyclesConfig = fromNullishNullable(monitoringConfig?.cycles);
 
 	// If a new email is provided, we activate the notification else we keep the current config
 	const notification: [] | [DepositedCyclesEmailNotification] = nonNullish(userEmail)
@@ -464,7 +466,7 @@ export const openMonitoringModal = ({
 	missionControlId
 }: {
 	type: 'create_monitoring_strategy' | 'stop_monitoring_strategy';
-	missionControlId: Principal;
+	missionControlId: MissionControlId;
 }) => {
 	const $missionControlSettingsNotLoaded = get(missionControlSettingsNotLoaded);
 
@@ -529,8 +531,8 @@ export const setMonitoringNotification = async ({
 
 		assertNonNullish(missionControlId, get(i18n).errors.no_mission_control);
 
-		const cycles = fromNullable(monitoringConfig?.cycles ?? []);
-		const notification = fromNullable(cycles?.notification ?? []);
+		const cycles = fromNullishNullable(monitoringConfig?.cycles);
+		const notification = fromNullishNullable(cycles?.notification);
 
 		const updateMonitoringConfig: MonitoringConfig = {
 			...(nonNullish(monitoringConfig) && monitoringConfig),
@@ -562,7 +564,8 @@ export const setMonitoringNotification = async ({
 		return { success: true };
 	} catch (err: unknown) {
 		toasts.error({
-			text: get(i18n).errors.monitoring_notifications_update
+			text: get(i18n).errors.monitoring_notifications_update,
+			detail: err
 		});
 		return { success: false };
 	}

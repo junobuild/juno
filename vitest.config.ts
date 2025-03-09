@@ -7,7 +7,14 @@ export default defineConfig({
 		globals: true,
 		watch: false,
 		silent: false,
-		reporters: ['basic'],
+		reporters: [
+			[
+				'default',
+				{
+					summary: false
+				}
+			]
+		],
 		environment: 'node',
 		poolOptions: {
 			threads: {
@@ -20,8 +27,16 @@ export default defineConfig({
 	resolve: {
 		alias: [
 			{
+				find: '$test-declarations',
+				replacement: resolve(__dirname, 'src/tests/declarations')
+			},
+			{
 				find: '$declarations',
 				replacement: resolve(__dirname, 'src/declarations')
+			},
+			{
+				find: '$lib',
+				replacement: resolve(__dirname, 'src/frontend/src/lib')
 			}
 		]
 	}

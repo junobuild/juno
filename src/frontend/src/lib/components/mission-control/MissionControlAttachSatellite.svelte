@@ -6,6 +6,7 @@
 	import { attachSatellite } from '$lib/services/mission-control.services';
 	import { i18n } from '$lib/stores/i18n.store';
 	import { toasts } from '$lib/stores/toasts.store';
+	import type { MissionControlId } from '$lib/types/mission-control';
 	import { i18nCapitalize, i18nFormat } from '$lib/utils/i18n.utils';
 
 	let visible = $state(false);
@@ -14,7 +15,7 @@
 		missionControlId,
 		canisterId
 	}: {
-		missionControlId: Principal;
+		missionControlId: MissionControlId;
 		canisterId: Principal;
 	}) => {
 		await attachSatellite({

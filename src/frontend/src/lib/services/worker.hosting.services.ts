@@ -1,7 +1,7 @@
 import type { CustomDomain } from '$declarations/satellite/satellite.did';
-import type { PostMessage, PostMessageDataResponse } from '$lib/types/post-message';
+import type { PostMessage, PostMessageDataResponseHosting } from '$lib/types/post-message';
 
-export type HostingCallback = (data: PostMessageDataResponse) => void;
+export type HostingCallback = (data: PostMessageDataResponseHosting) => void;
 
 export const initHostingWorker = async () => {
 	const HostingWorker = await import('$lib/workers/workers?worker');
@@ -9,12 +9,14 @@ export const initHostingWorker = async () => {
 
 	let hostingCallback: HostingCallback | undefined;
 
-	hostingWorker.onmessage = ({ data }: MessageEvent<PostMessage<PostMessageDataResponse>>) => {
+	hostingWorker.onmessage = ({
+		data
+	}: MessageEvent<PostMessage<PostMessageDataResponseHosting>>) => {
 		const { msg } = data;
 
 		switch (msg) {
 			case 'customDomainRegistrationState':
-				hostingCallback?.(data.data);
+				hostingCallback?.(data.data as PostMessageDataResponseHosting);
 				return;
 		}
 	};

@@ -1,1 +1,1 @@
-pub const SATELLITE_VERSION: &str = "0.0.21";
+pub const SATELLITE_VERSION: &str = "0.0.22";

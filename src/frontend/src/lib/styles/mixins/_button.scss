@@ -50,6 +50,16 @@
 		background: var(--color-primary-opaque);
 		color: var(--color-primary-opaque-contrast);
 	}
+
+	&.error {
+		background: var(--color-error);
+		color: var(--color-error-contrast);
+
+		&:hover:not(:disabled),
+		&:focus:not(:disabled) {
+			background: var(--color-error-shade);
+		}
+	}
 }
 
 @mixin menu {
@@ -122,7 +132,7 @@
 	background: transparent;
 
 	text-decoration: underline;
-	text-underline-offset: 0.025rem;
+	text-underline-offset: 0.1rem;
 
 	text-align: inherit;
 

@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { debounce, fromNullable } from '@dfinity/utils';
+	import { debounce, fromNullishNullable } from '@dfinity/utils';
 	import { onMount } from 'svelte';
 	import { fade } from 'svelte/transition';
 	import Toggle from '$lib/components/ui/Toggle.svelte';
@@ -15,7 +15,7 @@
 	let enabled = $state(false);
 
 	let monitoringEnabled = $derived(
-		fromNullable(fromNullable($missionControlConfigMonitoring?.cycles ?? [])?.notification ?? [])
+		fromNullishNullable(fromNullishNullable($missionControlConfigMonitoring?.cycles)?.notification)
 			?.enabled === true
 	);
 

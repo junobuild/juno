@@ -4,11 +4,12 @@ import type {
 	Satellite
 } from '$declarations/mission_control/mission_control.did';
 import { getOrbiterFee, getSatelliteFee } from '$lib/api/console.api';
+import { getAccountIdentifier } from '$lib/api/icp-index.api';
 import { updateAndStartMonitoring } from '$lib/api/mission-control.api';
 import { missionControlMonitored } from '$lib/derived/mission-control-settings.derived';
 import { missionControlConfigMonitoring } from '$lib/derived/mission-control-user.derived';
-import { getMissionControlBalance } from '$lib/services/balance.services';
 import { loadVersion } from '$lib/services/console.services';
+import { loadCredits } from '$lib/services/credits.services';
 import { loadSettings, loadUserData } from '$lib/services/mission-control.services';
 import {
 	createOrbiter,
@@ -26,24 +27,24 @@ import { i18n } from '$lib/stores/i18n.store';
 import { toasts } from '$lib/stores/toasts.store';
 import type { OptionIdentity } from '$lib/types/itentity';
 import type { JunoModal, JunoModalCreateSegmentDetail } from '$lib/types/modal';
-import type { PrincipalText } from '$lib/types/principal';
+import { type WizardCreateProgress, WizardCreateProgressStep } from '$lib/types/progress-wizard';
 import type { Option } from '$lib/types/utils';
-import { type WizardCreateProgress, WizardCreateProgressStep } from '$lib/types/wizard';
 import { emit } from '$lib/utils/events.utils';
+import { waitAndRestartWallet } from '$lib/utils/wallet.utils';
 import type { Identity } from '@dfinity/agent';
 import { Principal } from '@dfinity/principal';
 import { assertNonNullish, isNullish, nonNullish, toNullable } from '@dfinity/utils';
+import type { PrincipalText } from '@dfinity/zod-schemas';
 import { get } from 'svelte/store';
 
-interface GetFeeBalance {
-	result?: Omit<JunoModalCreateSegmentDetail, 'monitoringConfig' | 'monitoringEnabled'>;
-	error?: unknown;
-}
+type GetFeeBalance =
+	| Omit<
+			JunoModalCreateSegmentDetail,
+			'monitoringConfig' | 'monitoringEnabled' | 'accountIdentifier'
+	  >
+	| { error: null | string };
 
-type GetFeeBalanceFn = (params: {
-	missionControlId: Principal;
-	identity: Option<Identity>;
-}) => Promise<GetFeeBalance>;
+type GetFeeBalanceFn = (params: { identity: Option<Identity> }) => Promise<GetFeeBalance>;
 
 export const initSatelliteWizard = ({
 	missionControlId,
@@ -91,15 +92,16 @@ const initCreateWizard = async ({
 
 	busy.start();
 
-	const { result: feeBalance, error } = await feeFn({
-		identity,
-		missionControlId
+	const resultFee = await feeFn({
+		identity
 	});
 
-	if (nonNullish(error) || isNullish(feeBalance)) {
+	if ('error' in resultFee) {
 		busy.stop();
 		return;
 	}
+
+	const { fee } = resultFee;
 
 	await loadVersion({
 		satelliteId: undefined,
@@ -126,12 +128,15 @@ const initCreateWizard = async ({
 	const monitoringEnabled = get(missionControlMonitored);
 	const monitoringConfig = get(missionControlConfigMonitoring);
 
+	const accountIdentifier = getAccountIdentifier(missionControlId);
+
 	emit<JunoModal<JunoModalCreateSegmentDetail>>({
 		message: 'junoModal',
 		detail: {
 			type: modalType,
 			detail: {
-				...feeBalance,
+				accountIdentifier,
+				fee,
 				monitoringEnabled,
 				monitoringConfig
 			}
@@ -147,11 +152,9 @@ const getCreateOrbiterFeeBalance: GetFeeBalanceFn = async (params): Promise<GetF
 
 const getCreateFeeBalance = async ({
 	identity,
-	missionControlId,
 	getFee
 }: {
 	identity: OptionIdentity;
-	missionControlId: Option<Principal>;
 	getFee: (params: { user: Principal; identity: OptionIdentity }) => Promise<bigint>;
 }): Promise<GetFeeBalance> => {
 	const labels = get(i18n);
@@ -165,30 +168,21 @@ const getCreateFeeBalance = async ({
 
 	if (fee === 0n) {
 		return {
-			result: {
-				fee
-			}
+			fee
 		};
 	}
 
-	const { result, error } = await getMissionControlBalance(missionControlId);
+	const { result } = await loadCredits({
+		identity,
+		reload: true
+	});
 
-	if (nonNullish(error)) {
-		return { error };
-	}
-
-	if (isNullish(result)) {
-		toasts.error({ text: labels.errors.no_mission_control });
-		return { error: labels.errors.no_mission_control };
+	if (result === 'error') {
+		return { error: null };
 	}
 
 	return {
-		result: {
-			fee,
-			missionControlBalance: {
-				...result
-			}
-		}
+		fee
 	};
 };
 
@@ -197,6 +191,7 @@ interface CreateWizardParams {
 	identity: OptionIdentity;
 	subnetId: PrincipalText | undefined;
 	monitoringStrategy: CyclesMonitoringStrategy | undefined;
+	withCredits: boolean;
 	onProgress: (progress: WizardCreateProgress | undefined) => void;
 }
 
@@ -358,7 +353,8 @@ const createWizard = async <T>({
 	createFn,
 	reloadFn,
 	monitoringFn,
-	onProgress
+	onProgress,
+	withCredits
 }: Omit<CreateWizardParams, 'subnetId' | 'monitoringStrategy'> & {
 	errorLabel: keyof I18nErrors;
 	createFn: (params: { identity: Identity }) => Promise<T>;
@@ -389,11 +385,22 @@ const createWizard = async <T>({
 		});
 
 		const reload = async () => {
-			await reloadFn({ missionControlId, reload: true });
+			await Promise.allSettled([
+				...(withCredits
+					? [
+							loadCredits({
+								identity,
+								reload: true
+							})
+						]
+					: [waitAndRestartWallet()]),
+				reloadFn({ missionControlId, reload: true })
+			]);
 		};
 
 		if (nonNullish(monitoringFn)) {
 			const executeMonitoringFn = async () => {
+				await waitAndRestartWallet();
 				await monitoringFn({ identity, segment });
 			};
 
@@ -404,7 +411,7 @@ const createWizard = async <T>({
 			});
 		}
 
-		// Reload list of segments before navigation
+		// Reload list of segments and wallet or credits before navigation
 		await execute({
 			fn: reload,
 			onProgress,

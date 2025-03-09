@@ -19,7 +19,10 @@
 		"./e2e/**/*.js",
 		"./e2e/**/*.ts",
 		"./scripts/*.mjs",
-		"./scripts/*.ts"
+		"./scripts/*.ts",
+		"./juno.config.mjs",
+		"./eslint.config.mjs",
+		"./eslint-local-rules.cjs"
 	],
 	"exclude": [
 		"./node_modules/**",

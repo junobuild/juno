@@ -6,17 +6,14 @@ use crate::types::interface::AssetNoContent;
 use crate::types::state::FullPath;
 use crate::types::store::{Asset, AssetEncoding, AssetKey};
 use candid::Principal;
-use ic_cdk::api::time;
-use junobuild_collections::assert_stores::assert_permission;
+use junobuild_collections::assert::stores::assert_permission;
 use junobuild_collections::types::core::CollectionKey;
 use junobuild_collections::types::rules::Permission;
-use junobuild_shared::constants::INITIAL_VERSION;
 use junobuild_shared::list::{filter_timestamps, matcher_regex};
 use junobuild_shared::types::core::Blob;
 use junobuild_shared::types::list::ListParams;
-use junobuild_shared::types::state::{Controllers, Timestamp, UserId, Version};
+use junobuild_shared::types::state::{Controllers, UserId};
 use regex::Regex;
-use std::collections::HashMap;
 
 pub fn map_asset_no_content(asset: &Asset) -> (FullPath, AssetNoContent) {
     (asset.key.full_path.clone(), AssetNoContent::from(asset))
@@ -148,7 +145,7 @@ pub fn create_asset_with_content(
     existing_asset: Option<Asset>,
     key: AssetKey,
 ) -> Asset {
-    let mut asset: Asset = create_empty_asset(headers, existing_asset, key);
+    let mut asset: Asset = Asset::prepare(key, headers.to_vec(), &existing_asset);
 
     let encoding = map_content_encoding(&content.as_bytes().to_vec());
 
@@ -157,31 +154,4 @@ pub fn create_asset_with_content(
         .insert(ASSET_ENCODING_NO_COMPRESSION.to_string(), encoding);
 
     asset
-}
-
-pub fn create_empty_asset(
-    headers: &[HeaderField],
-    existing_asset: Option<Asset>,
-    key: AssetKey,
-) -> Asset {
-    let now = time();
-
-    let created_at: Timestamp = match existing_asset.clone() {
-        None => now,
-        Some(existing_asset) => existing_asset.created_at,
-    };
-
-    let version: Version = match existing_asset {
-        None => INITIAL_VERSION,
-        Some(existing_asset) => existing_asset.version.unwrap_or_default() + 1,
-    };
-
-    Asset {
-        key,
-        headers: headers.to_owned(),
-        encodings: HashMap::new(),
-        created_at,
-        updated_at: now,
-        version: Some(version),
-    }
 }

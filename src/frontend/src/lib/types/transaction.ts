@@ -1,7 +1,6 @@
-import type { GetAccountIdentifierTransactionsResponse } from '@dfinity/ledger-icp';
+import type { IcTransactionUi } from '$lib/types/ic-transaction';
+import type { CertifiedData } from '$lib/types/store';
 
-export type JsonTransactionsText = string;
+export type CertifiedTransaction = CertifiedData<IcTransactionUi>;
 
-export type Wallet = Omit<GetAccountIdentifierTransactionsResponse, 'transactions'> & {
-	newTransactions: JsonTransactionsText;
-};
+export type CertifiedTransactions = CertifiedTransaction[];

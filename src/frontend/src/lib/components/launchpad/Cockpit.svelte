@@ -13,7 +13,8 @@
 	import MissionControlDataLoader from '$lib/components/mission-control/MissionControlDataLoader.svelte';
 	import MissionControlVersion from '$lib/components/mission-control/MissionControlVersion.svelte';
 	import SkeletonText from '$lib/components/ui/SkeletonText.svelte';
-	import WalletLoader from '$lib/components/wallet/WalletLoader.svelte';
+	import WalletInlineBalance from '$lib/components/wallet/WalletInlineBalance.svelte';
+	import { balance } from '$lib/derived/balance.derived';
 	import {
 		missionControlNotMonitored,
 		missionControlSettingsLoaded
@@ -24,7 +25,6 @@
 	import { loadOrbiters } from '$lib/services/orbiters.services';
 	import { i18n } from '$lib/stores/i18n.store';
 	import type { CanisterData } from '$lib/types/canister';
-	import { formatE8sICP } from '$lib/utils/icp.utils';
 
 	run(() => {
 		// @ts-expect-error TODO: to be migrated to Svelte v5
@@ -33,26 +33,15 @@
 	});
 
 	let missionControlData: CanisterData | undefined = $state(undefined);
-	let walletBalance: bigint | undefined = $state(undefined);
 	let orbiterData: CanisterData | undefined = $state(undefined);
 </script>
 
 {#if nonNullish($missionControlIdDerived)}
-	<Canister
-		canisterId={$missionControlIdDerived}
-		segment="mission_control"
-		display={false}
-		bind:data={missionControlData}
-	/>
+	<Canister canisterId={$missionControlIdDerived} display={false} bind:data={missionControlData} />
 {/if}
 
 {#if nonNullish($orbiterStore)}
-	<Canister
-		canisterId={$orbiterStore.orbiter_id}
-		segment="orbiter"
-		display={false}
-		bind:data={orbiterData}
-	/>
+	<Canister canisterId={$orbiterStore.orbiter_id} display={false} bind:data={orbiterData} />
 {/if}
 
 <div class="analytics">
@@ -63,10 +52,10 @@
 		highlight={isNullish($orbiterStore)}
 	>
 		<p>
-			<IconAnalytics size="24px" />
+			<span class="link-icon"><IconAnalytics size="24px" /></span>
 			<span class="link">
 				<span class="link-title"
-					>{$i18n.analytics.title}
+					><span class="link-title-text">{$i18n.analytics.title}</span>
 					{#if nonNullish($orbiterStore)}<CanisterIndicator data={orbiterData} />{/if}</span
 				>
 				{#if nonNullish($orbiterStore)}
@@ -97,9 +86,10 @@
 		highlight={$missionControlSettingsLoaded && $missionControlNotMonitored}
 	>
 		<p>
-			<IconTelescope />
-			<span class="link">
-				<span class="link-title">{$i18n.monitoring.title}</span>
+			<span class="link-icon"><IconTelescope /></span>
+			<span class="link link-without-indicator">
+				<span class="link-title"><span class="link-title-text">{$i18n.monitoring.title}</span></span
+				>
 			</span>
 		</p>
 	</LaunchpadLink>
@@ -112,10 +102,11 @@
 		ariaLabel={`${$i18n.core.open}: ${$i18n.mission_control.title}`}
 	>
 		<p>
-			<IconMissionControl />
+			<span class="link-icon"><IconMissionControl /></span>
 			<span class="link">
 				<span class="link-title"
-					>{$i18n.mission_control.title} <CanisterIndicator data={missionControlData} /></span
+					><span class="link-title-text">{$i18n.mission_control.title}</span>
+					<CanisterIndicator data={missionControlData} /></span
 				>
 				<span class="link-details">
 					{#if isNullish(missionControlData)}
@@ -129,10 +120,6 @@
 	</LaunchpadLink>
 </div>
 
-{#if nonNullish($missionControlIdDerived)}
-	<WalletLoader missionControlId={$missionControlIdDerived} bind:balance={walletBalance} />
-{/if}
-
 <div class="wallet">
 	<LaunchpadLink
 		size="small"
@@ -140,15 +127,11 @@
 		ariaLabel={`${$i18n.core.open}: ${$i18n.wallet.title}`}
 	>
 		<p>
-			<IconWallet />
-			<span class="link">
-				<span class="link-title">{$i18n.wallet.title}</span>
+			<span class="link-icon"><IconWallet /></span>
+			<span class="link link-without-indicator">
+				<span class="link-title"><span class="link-title-text">{$i18n.wallet.title}</span></span>
 				<span class="link-details">
-					{#if isNullish(walletBalance)}
-						<SkeletonText />
-					{:else}
-						<span in:fade>{formatE8sICP(walletBalance)} <small>ICP</small></span>
-					{/if}
+					<WalletInlineBalance balance={$balance} />
 				</span>
 			</span>
 		</p>
@@ -166,6 +149,8 @@
 
 		display: flex;
 		align-items: center;
+		justify-content: center;
+
 		gap: var(--padding-3x);
 
 		margin: 0 0 var(--padding);
@@ -177,10 +162,23 @@
 		gap: var(--padding);
 	}
 
-	.link {
+	.link-title-text {
+		max-width: calc(100% - var(--padding-4x));
+		@include text.truncate;
+	}
+
+	.link-title-text,
+	.link-without-indicator,
+	.link-details {
 		display: none;
 
-		@include text.truncate;
+		@include media.min-width(large) {
+			display: block;
+		}
+	}
+
+	.link {
+		width: 100%;
 
 		@include media.min-width(large) {
 			display: flex;
@@ -193,6 +191,11 @@
 		font-weight: normal;
 
 		--skeleton-text-padding: 0 0 var(--padding);
+	}
+
+	.link-icon {
+		display: inline-flex;
+		min-width: 24px;
 	}
 
 	.mission-control {

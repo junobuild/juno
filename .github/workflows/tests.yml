@@ -1,6 +1,7 @@
 name: Tests
 
 on:
+  workflow_dispatch:
   pull_request:
     paths:
       - 'src/satellite/**'
@@ -13,6 +14,8 @@ on:
       - 'rust-toolchain.toml'
       - 'Cargo.toml'
       - 'docker/**'
+      - 'Dockerfile'
+      - 'package-lock.json'
 
 jobs:
   docker-build-base:
@@ -50,6 +53,10 @@ jobs:
           - name: mission_control
             wasm: mission_control.wasm.gz
             target: scratch_mission_control
+
+          - name: test_satellite
+            wasm: test_satellite.wasm.gz
+            target: scratch_test_satellite
 
     steps:
       - name: Checkout
@@ -117,6 +124,12 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           name: mission_control.wasm.gz
+          path: .
+
+      - name: Download test_satellite.wasm.gz
+        uses: actions/download-artifact@v4
+        with:
+          name: test_satellite.wasm.gz
           path: .
 
       - name: Tests

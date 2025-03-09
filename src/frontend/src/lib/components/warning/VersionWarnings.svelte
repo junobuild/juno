@@ -4,8 +4,7 @@
 	import { compare } from 'semver';
 	import { run } from 'svelte/legacy';
 	import type { Satellite } from '$declarations/mission_control/mission_control.did';
-	import IconNewReleases from '$lib/components/icons/IconNewReleases.svelte';
-	import Html from '$lib/components/ui/Html.svelte';
+	import VersionWarning from '$lib/components/warning/VersionWarning.svelte';
 	import { missionControlIdDerived } from '$lib/derived/mission-control.derived';
 	import { missionControlVersion } from '$lib/derived/version.derived';
 	import { loadVersion } from '$lib/services/console.services';
@@ -155,53 +154,13 @@
 <svelte:window onjunoReloadVersions={async () => await load(false)} />
 
 {#if ctrlReady && ctrlWarning}
-	<div>
-		<p>
-			<IconNewReleases />
-			<Html text={$i18n.admin.mission_control_new_version} />
-		</p>
-
-		<button class="primary" onclick={upgradeMissionControl}>{$i18n.canisters.upgrade}</button>
-	</div>
+	<VersionWarning text={$i18n.admin.mission_control_new_version} onclick={upgradeMissionControl} />
 {/if}
 
 {#if orbReady && orbWarning}
-	<div>
-		<p>
-			<IconNewReleases />
-			<Html text={$i18n.admin.orbiter_new_version} />
-		</p>
-
-		<button class="primary" onclick={upgradeOrbiter}>{$i18n.canisters.upgrade}</button>
-	</div>
+	<VersionWarning text={$i18n.admin.orbiter_new_version} onclick={upgradeOrbiter} />
 {/if}
 
 {#if satReady && satWarning}
-	<div>
-		<p>
-			<IconNewReleases />
-			<Html text={$i18n.admin.satellite_new_version} />
-		</p>
-		<button class="primary" onclick={upgradeSatellite}>{$i18n.canisters.upgrade}</button>
-	</div>
+	<VersionWarning text={$i18n.admin.satellite_new_version} onclick={upgradeSatellite} />
 {/if}
-
-<style lang="scss">
-	@use '../../styles/mixins/info';
-
-	div {
-		@include info.warning;
-
-		button {
-			@include info.warning-button;
-		}
-	}
-
-	p {
-		margin: 0 0 var(--padding);
-	}
-
-	button {
-		margin: var(--padding-1_5x) 0 var(--padding-0_5x);
-	}
-</style>

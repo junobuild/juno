@@ -1,6 +1,14 @@
 {
 	"extends": "./tsconfig.json",
 	"compilerOptions": {
+		"paths": {
+			"$test-declarations": ["./src/tests/declarations"],
+			"$test-declarations/*": ["./src/tests/declarations/*"],
+			"$declarations": ["./src/declarations"],
+			"$declarations/*": ["./src/declarations/*"],
+			"$lib": ["./src/frontend/src/lib"],
+			"$lib/*": ["./src/frontend/src/lib/*"]
+		},
 		"types": ["vitest/globals", "@types/wicg-file-system-access"]
 	},
 	"exclude": [],

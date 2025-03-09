@@ -3,8 +3,8 @@ use crate::types::interface::{DelSatelliteConfig, SetSatelliteConfig};
 use crate::types::state::{SatelliteConfig, SatelliteConfigs};
 use ic_cdk::api::time;
 use junobuild_shared::assert::assert_version;
-use junobuild_shared::constants::INITIAL_VERSION;
-use junobuild_shared::types::state::{SatelliteId, Timestamp, Version};
+use junobuild_shared::types::state::{SatelliteId, Timestamp};
+use junobuild_shared::version::next_version;
 
 pub fn set_satellite_config(
     satellite_id: &SatelliteId,
@@ -53,10 +53,7 @@ fn set_satellite_config_impl(
         Some(current_config) => current_config.created_at,
     };
 
-    let version: Version = match current_config {
-        None => INITIAL_VERSION,
-        Some(current_config) => current_config.version.unwrap_or_default() + 1,
-    };
+    let version = next_version(&current_config);
 
     let updated_at: u64 = now;
 

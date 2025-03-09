@@ -30,7 +30,7 @@ import {
 import { authStore } from '$lib/stores/auth.store';
 import { i18n } from '$lib/stores/i18n.store';
 import { orbitersConfigsStore } from '$lib/stores/orbiter-configs.store';
-import { orbitersDataStore } from '$lib/stores/orbiter.store';
+import { orbitersUncertifiedStore } from '$lib/stores/orbiter.store';
 import { toasts } from '$lib/stores/toasts.store';
 import type { OptionIdentity } from '$lib/types/itentity';
 import type {
@@ -118,7 +118,7 @@ export const loadOrbiters = async ({
 
 	return await loadDataStore<Orbiter[]>({
 		identity,
-		store: orbitersDataStore,
+		store: orbitersUncertifiedStore,
 		errorLabel: 'orbiters_loading',
 		load,
 		reload

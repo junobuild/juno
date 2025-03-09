@@ -1,14 +1,14 @@
 import type { ListParams as ListParamsApi } from '$declarations/deprecated/satellite-0-0-8.did';
 import type {
 	AssetNoContent,
+	CollectionType,
 	Doc,
 	ListResults as ListAssets,
 	ListResults_1 as ListDocs,
-	Rule,
-	RulesType
+	Rule
 } from '$declarations/satellite/satellite.did';
 import { getSatelliteActor008, getSatelliteActor009 } from '$lib/api/actors/actor.deprecated.api';
-import { PAGINATION } from '$lib/constants/constants';
+import { PAGINATION } from '$lib/constants/app.constants';
 import type { OptionIdentity } from '$lib/types/itentity';
 import type { ListParams } from '$lib/types/list';
 import { toListParams } from '$lib/utils/satellite.utils';
@@ -130,7 +130,7 @@ export const listRulesDeprecated = async ({
 	identity
 }: {
 	satelliteId: Principal;
-	type: RulesType;
+	type: CollectionType;
 	identity: OptionIdentity;
 }): Promise<[string, Rule][]> => {
 	const actor = await getSatelliteActor008({ satelliteId, identity });

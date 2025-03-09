@@ -1,5 +1,5 @@
 use crate::controllers::store::get_controllers;
-use crate::db::assert::{assert_delete_doc, assert_set_doc};
+use crate::db::assert::{assert_delete_doc, assert_get_doc, assert_get_docs, assert_set_doc};
 use crate::db::state::{
     count_docs_heap, count_docs_stable, delete_collection as delete_state_collection,
     delete_doc as delete_state_doc, get_config, get_doc as get_state_doc, get_docs_heap,
@@ -11,10 +11,9 @@ use crate::db::types::config::DbConfig;
 use crate::db::types::interface::{DelDoc, SetDoc};
 use crate::db::types::state::{Doc, DocContext, DocUpsert};
 use crate::db::utils::filter_values;
-use crate::memory::STATE;
+use crate::memory::internal::STATE;
 use crate::types::store::StoreContext;
 use candid::Principal;
-use junobuild_collections::assert_stores::assert_permission;
 use junobuild_collections::msg::msg_db_collection_not_empty;
 use junobuild_collections::types::core::CollectionKey;
 use junobuild_collections::types::rules::{Memory, Rule};
@@ -104,7 +103,7 @@ fn get_doc_impl(context: &StoreContext, key: Key, rule: &Rule) -> Result<Option<
     match value {
         None => Ok(None),
         Some(value) => {
-            if !assert_permission(&rule.read, value.owner, context.caller, context.controllers) {
+            if assert_get_doc(context, rule, &value).is_err() {
                 return Ok(None);
             }
 
@@ -254,6 +253,14 @@ fn secure_get_docs(
     collection: CollectionKey,
     filter: &ListParams,
 ) -> Result<ListResults<Doc>, String> {
+    let context: StoreContext = StoreContext {
+        caller,
+        collection: &collection,
+        controllers,
+    };
+
+    assert_get_docs(&context)?;
+
     let rule = get_state_rule(&collection)?;
 
     match rule.mem() {

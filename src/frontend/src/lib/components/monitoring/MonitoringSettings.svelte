@@ -1,5 +1,4 @@
 <script lang="ts">
-	import type { Principal } from '@dfinity/principal';
 	import { onMount } from 'svelte';
 	import { fade } from 'svelte/transition';
 	import MissionControlEmail from '$lib/components/mission-control/MissionControlEmail.svelte';
@@ -11,13 +10,14 @@
 		missionControlSettingsLoaded
 	} from '$lib/derived/mission-control-settings.derived';
 	import { orbiterLoaded } from '$lib/derived/orbiter.derived';
-	import { satellitesLoaded } from '$lib/derived/satellite.derived';
+	import { satellitesLoaded } from '$lib/derived/satellites.derived';
 	import { openMonitoringModal } from '$lib/services/monitoring.services';
 	import { loadOrbiters } from '$lib/services/orbiters.services';
 	import { i18n } from '$lib/stores/i18n.store';
+	import type { MissionControlId } from '$lib/types/mission-control';
 
 	interface Props {
-		missionControlId: Principal;
+		missionControlId: MissionControlId;
 	}
 
 	let { missionControlId }: Props = $props();

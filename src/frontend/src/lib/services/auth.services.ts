@@ -3,8 +3,15 @@ import { resetSubnets } from '$lib/services/subnets.services';
 import { authStore, type AuthSignInParams } from '$lib/stores/auth.store';
 import { busy } from '$lib/stores/busy.store';
 import { i18n } from '$lib/stores/i18n.store';
-import { cyclesIdbStore, monitoringIdbStore, statusesIdbStore } from '$lib/stores/idb.store';
+import {
+	cyclesIdbStore,
+	exchangeIdbStore,
+	monitoringIdbStore,
+	statusesIdbStore,
+	walletIdbStore
+} from '$lib/stores/idb.store';
 import { toasts } from '$lib/stores/toasts.store';
+import { SignInUserInterruptError } from '$lib/types/errors';
 import type { ToastLevel, ToastMsg } from '$lib/types/toast';
 import { replaceHistory } from '$lib/utils/route.utils';
 import { isNullish } from '@dfinity/utils';
@@ -21,13 +28,13 @@ export const signIn = async (
 
 		return { success: 'ok' };
 	} catch (err: unknown) {
-		if (err === 'UserInterrupt') {
+		if (err instanceof SignInUserInterruptError) {
 			// We do not display an error if user explicitly cancelled the process of sign-in
 			return { success: 'cancelled' };
 		}
 
 		toasts.error({
-			text: `Something went wrong while sign-in.`,
+			text: get(i18n).errors.sign_in,
 			detail: err
 		});
 
@@ -38,6 +45,14 @@ export const signIn = async (
 };
 
 export const signOut = (): Promise<void> => logout({});
+
+export const missionControlErrorSignOut = async () =>
+	await logout({
+		msg: {
+			text: get(i18n).errors.mission_control_sign_out,
+			level: 'error'
+		}
+	});
 
 export const idleSignOut = async () =>
 	await logout({
@@ -63,6 +78,8 @@ const logout = async ({
 			clear(cyclesIdbStore),
 			clear(statusesIdbStore),
 			clear(monitoringIdbStore),
+			clear(exchangeIdbStore),
+			clear(walletIdbStore),
 			resetSnapshots(),
 			resetSubnets()
 		]);

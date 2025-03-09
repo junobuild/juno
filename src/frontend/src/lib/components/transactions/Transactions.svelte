@@ -1,21 +1,27 @@
 <script lang="ts">
-	import type { TransactionWithId } from '@dfinity/ledger-icp';
-	import type { Principal } from '@dfinity/principal';
 	import Transaction from '$lib/components/transactions/Transaction.svelte';
 	import InfiniteScroll from '$lib/components/ui/InfiniteScroll.svelte';
 	import { i18n } from '$lib/stores/i18n.store';
+	import type { MissionControlId } from '$lib/types/mission-control';
+	import type { CertifiedTransactions } from '$lib/types/transaction';
 
 	interface Props {
-		missionControlId: Principal;
-		transactions: TransactionWithId[];
+		missionControlId: MissionControlId;
+		transactions: CertifiedTransactions;
 		disableInfiniteScroll?: boolean;
+		onintersect: () => void;
 	}
 
-	let { missionControlId, transactions, disableInfiniteScroll = false }: Props = $props();
+	let {
+		missionControlId,
+		transactions,
+		onintersect,
+		disableInfiniteScroll = false
+	}: Props = $props();
 </script>
 
 {#if transactions.length > 0}
-	<InfiniteScroll on:junoIntersect disabled={disableInfiniteScroll}>
+	<InfiniteScroll {onintersect} disabled={disableInfiniteScroll}>
 		<div class="table-container">
 			<table>
 				<thead>
@@ -30,8 +36,8 @@
 				</thead>
 
 				<tbody>
-					{#each transactions as transactionWithId (transactionWithId.id)}
-						<Transaction {transactionWithId} {missionControlId} />
+					{#each transactions as transaction, index (`${transaction.data.id}-${index}`)}
+						<Transaction transaction={transaction.data} {missionControlId} />
 					{/each}
 				</tbody>
 			</table>

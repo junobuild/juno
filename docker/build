@@ -18,7 +18,7 @@ function usage() {
     cat << EOF
 
 Usage:
-  $0 [--only-dependencies] [--mission_control] [--satellite] [--console] [--observatory] [--orbiter]
+  $0 [--only-dependencies] [--mission_control] [--satellite] [--console] [--observatory] [--orbiter] [--test_satellite]
 
 Options:
   --only-dependencies          only build rust dependencies (no js build, no wasm optimization)
@@ -27,6 +27,7 @@ Options:
   --console                    build the console canister
   --observatory                build the observatory canister
   --orbiter                    build the orbiter canister
+  --test_satellite             build the satellite canister used for testing purposes
 EOF
 }
 
@@ -42,6 +43,13 @@ EOF
 
 ONLY_DEPS=
 CANISTER=
+
+# Candid metadata supported_certificate_versions 1 and 2
+WITH_CERTIFICATION=0
+# Candid metadata juno:build
+BUILD_TYPE=
+# Source directory where to find $CANISTER/Cargo.toml
+SRC_ROOT_DIR="$PWD/src"
 
 while [[ $# -gt 0  ]]
 do
@@ -62,10 +70,13 @@ do
             ;;
         --satellite)
             CANISTER="satellite"
+            WITH_CERTIFICATION=1
+            BUILD_TYPE="stock"
             break
             ;;
         --console)
             CANISTER="console"
+            WITH_CERTIFICATION=1
             break
             ;;
         --observatory)
@@ -74,6 +85,13 @@ do
             ;;
         --orbiter)
             CANISTER="orbiter"
+            break
+            ;;
+        --test_satellite)
+            CANISTER="test_satellite"
+            WITH_CERTIFICATION=1
+            BUILD_TYPE="extended"
+            SRC_ROOT_DIR="$PWD/src/tests/fixtures"
             break
             ;;
         *)
@@ -88,7 +106,7 @@ done
 
 # build Mission Control by default
 if [ ${#CANISTER} -eq 0 ]; then
-    CANISTER=("mission_control")
+    CANISTER="mission_control"
 fi
 
 # Checking for dependencies
@@ -100,67 +118,7 @@ then
     exit 1
 fi
 
-# Builds a single canister
-function build_canister() {
-    local canister=$1
-    shift
-    local extra_build_args=("$@")
+# Source the script to effectively build the canister
+source "$SCRIPTS_DIR/build-canister"
 
-    echo "Building $canister"
-    echo
-
-    SRC_DIR="$PWD/src/$canister"
-    TARGET="wasm32-unknown-unknown"
-    # standardize source references
-    CARGO_HOME="${CARGO_HOME:-"$HOME/.cargo"}"
-    RUSTFLAGS="--remap-path-prefix $CARGO_HOME=/cargo -C link-args=-zstack-size=3000000"
-
-    cargo_build_args=(
-        --manifest-path "$SRC_DIR/Cargo.toml"
-        --target "$TARGET"
-        --release
-        --locked
-        -j1
-        )
-    # XXX: for bash > 4.4, empty arrays are considered unset, so do some substitution
-    cargo_build_args+=(${extra_build_args[@]+"${extra_build_args[@]}"})
-
-    echo Running cargo build "${cargo_build_args[@]}"
-    echo RUSTFLAGS: "$RUSTFLAGS"
-
-    RUSTFLAGS="$RUSTFLAGS" cargo build "${cargo_build_args[@]}"
-
-    if [ "$ONLY_DEPS" != "1" ]
-    then
-      CARGO_TARGET_DIR="${CARGO_TARGET_DIR:-$SRC_DIR/../../target/}"
-
-      # Generate did file
-      candid-extractor "$CARGO_TARGET_DIR/$TARGET/release/$canister.wasm" > "./$canister.did"
-
-      # Optimize WASM and set metadata
-      ic-wasm \
-          "$CARGO_TARGET_DIR/$TARGET/release/$canister.wasm" \
-          -o "./$canister.wasm" \
-          shrink \
-          --keep-name-section
-
-      # adds the content of $canister.did to the `icp:public candid:service` custom section of the public metadata in the wasm
-      ic-wasm "$canister.wasm" -o "$canister.wasm" metadata candid:service -f "$SRC_DIR/$canister.did" -v public --keep-name-section
-
-      if [ "$canister" == "satellite" ]
-      then
-        # add the type of build "stock" to the satellite. This way, we can identify whether it's the standard canister ("stock") or a custom build ("extended") of the developer.
-        ic-wasm "$canister.wasm" -o "$canister.wasm" metadata juno:build -d "stock" -v public --keep-name-section
-      fi
-
-      if [ "$canister" == "satellite" ] || [ "$canister" == "console" ];
-      then
-        # indicate support for certificate version 1 and 2 in the canister metadata
-        ic-wasm "$canister.wasm" -o "$canister.wasm" metadata supported_certificate_versions -d "1,2" -v public --keep-name-section
-      fi
-
-      gzip --no-name --force "./$canister.wasm"
-    fi
-}
-
-build_canister "$CANISTER"
+build_canister "$CANISTER" "$SRC_ROOT_DIR" "." "$ONLY_DEPS" "$WITH_CERTIFICATION" "$BUILD_TYPE"

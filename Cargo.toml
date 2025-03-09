@@ -5,12 +5,14 @@ members = [
     "src/satellite",
     "src/observatory",
     "src/orbiter",
+    "src/sputnik",
     "src/libs/shared",
     "src/libs/satellite",
     "src/libs/macros",
     "src/libs/utils",
     "src/libs/collections",
-    "src/libs/storage"]
+    "src/libs/storage",
+    "src/tests/fixtures/test_satellite"]
 resolver = "2"
 
 [workspace.package]
@@ -20,22 +22,23 @@ repository = "https://github.com/junobuild/juno"
 homepage = "https://juno.build"
 
 [workspace.dependencies]
-candid = "0.10.2"
-ic-cdk = "0.17.0"
-ic-cdk-macros = "0.17.0"
+candid = "0.10.13"
+ic-cdk = "0.17.1"
+ic-cdk-macros = "0.17.1"
 ic-ledger-types = "0.14.0"
-icrc-ledger-types = "0.1.6"
+icrc-ledger-types = "0.1.8"
 ic-cdk-timers = "0.11.0"
 ic-stable-structures = "0.6.7"
-serde = "1.0.190"
+serde = "1.0.217"
 serde_cbor = "0.11.2"
-serde_json = "1.0.111"
-ciborium = "0.2.1"
-sha2 = "0.10.7"
+serde_json = "1.0.138"
+ciborium = "0.2.2"
+sha2 = "0.10.8"
 hex = "0.4.3"
-regex = "1.9.3"
-getrandom = { version = "0.2", features = ["custom"] }
-rand = { version = "0.8.5", features = ["getrandom"]}
+url = "2.5.4"
+regex = "1.11.1"
+getrandom = "0.3.1"
+rand = { version = "0.9.0", features = ["os_rng"]}
 
 [patch.crates-io]
 junobuild-shared = { path = "./src/libs/shared" }

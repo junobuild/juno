@@ -3,6 +3,7 @@
 mod auth;
 mod controllers;
 mod db;
+mod errors;
 mod guards;
 mod hooks;
 mod impls;
@@ -11,14 +12,17 @@ mod memory;
 mod random;
 mod rules;
 mod satellite;
+mod sdk;
 mod storage;
 mod types;
+mod user;
 mod version;
 
 use crate::auth::types::config::AuthenticationConfig;
 use crate::db::types::config::DbConfig;
 use crate::guards::{caller_is_admin_controller, caller_is_controller};
-use crate::types::interface::{Config, RulesType};
+use crate::types::interface::Config;
+use crate::types::state::CollectionType;
 use crate::version::SATELLITE_VERSION;
 use ic_cdk::api::trap;
 use ic_cdk_macros::{init, post_upgrade, pre_upgrade, query, update};
@@ -44,36 +48,10 @@ use junobuild_storage::types::interface::{
 use junobuild_storage::types::state::FullPath;
 
 // ============================================================================================
-// START: Re-exported Types
-//
 // These types are made available for use in Serverless Functions.
 // ============================================================================================
-pub use crate::controllers::store::{get_admin_controllers, get_controllers};
-pub use crate::db::store::{
-    count_collection_docs_store, count_docs_store, delete_doc_store, delete_docs_store,
-    delete_filtered_docs_store, get_doc_store, list_docs_store, set_doc_store,
-};
-pub use crate::db::types::interface::{DelDoc, SetDoc};
-pub use crate::db::types::state::Doc;
-pub use crate::logs::loggers::{
-    debug, debug_with_data, error, error_with_data, info, info_with_data, log, log_with_data, warn,
-    warn_with_data,
-};
-pub use crate::logs::types::logs::{Log, LogLevel};
-pub use crate::storage::handlers::set_asset_handler;
-pub use crate::storage::store::{
-    count_assets_store, count_collection_assets_store, delete_asset_store, delete_assets_store,
-    delete_filtered_assets_store, get_asset_store, get_content_chunks_store, list_assets_store,
-};
-pub use crate::types::hooks::{
-    AssertDeleteAssetContext, AssertDeleteDocContext, AssertSetDocContext,
-    AssertUploadAssetContext, HookContext, OnDeleteAssetContext, OnDeleteDocContext,
-    OnDeleteFilteredAssetsContext, OnDeleteFilteredDocsContext, OnDeleteManyAssetsContext,
-    OnDeleteManyDocsContext, OnSetDocContext, OnSetManyDocsContext, OnUploadAssetContext,
-};
-// ============================================================================================
-// END: Re-exported Types
-// ============================================================================================
+pub use sdk::core::*;
+pub use sdk::internal;
 
 // ---------------------------------------------------------
 // Init and Upgrade
@@ -173,26 +151,26 @@ pub fn count_collection_docs(collection: CollectionKey) -> usize {
 
 #[doc(hidden)]
 #[query(guard = "caller_is_admin_controller")]
-pub fn get_rule(rules_type: RulesType, collection: CollectionKey) -> Option<Rule> {
-    satellite::get_rule(&rules_type, &collection)
+pub fn get_rule(collection_type: CollectionType, collection: CollectionKey) -> Option<Rule> {
+    satellite::get_rule(&collection_type, &collection)
 }
 
 #[doc(hidden)]
 #[query(guard = "caller_is_admin_controller")]
-pub fn list_rules(rules_type: RulesType) -> Vec<(CollectionKey, Rule)> {
-    satellite::list_rules(rules_type)
+pub fn list_rules(collection_type: CollectionType) -> Vec<(CollectionKey, Rule)> {
+    satellite::list_rules(collection_type)
 }
 
 #[doc(hidden)]
 #[update(guard = "caller_is_admin_controller")]
-pub fn set_rule(rules_type: RulesType, collection: CollectionKey, rule: SetRule) -> Rule {
-    satellite::set_rule(rules_type, collection, rule)
+pub fn set_rule(collection_type: CollectionType, collection: CollectionKey, rule: SetRule) -> Rule {
+    satellite::set_rule(collection_type, collection, rule)
 }
 
 #[doc(hidden)]
 #[update(guard = "caller_is_admin_controller")]
-pub fn del_rule(rules_type: RulesType, collection: CollectionKey, rule: DelRule) {
-    satellite::del_rule(rules_type, collection, rule)
+pub fn del_rule(collection_type: CollectionType, collection: CollectionKey, rule: DelRule) {
+    satellite::del_rule(collection_type, collection, rule)
 }
 
 // ---------------------------------------------------------
@@ -315,9 +293,9 @@ pub fn http_request_streaming_callback(
     satellite::http_request_streaming_callback(callback)
 }
 
-//
+// ---------------------------------------------------------
 // Storage
-//
+// ---------------------------------------------------------
 
 #[doc(hidden)]
 #[update]

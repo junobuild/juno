@@ -2,7 +2,6 @@
 	import type { Icrc1TransferRequest } from '@dfinity/ledger-icp';
 	import type { IcrcAccount } from '@dfinity/oisy-wallet-signer';
 	import { IcpWallet } from '@dfinity/oisy-wallet-signer/icp-wallet';
-	import { Principal } from '@dfinity/principal';
 	import { isNullish, nonNullish, toNullable } from '@dfinity/utils';
 	import ReceiveTokensSignerForm from '$lib/components/tokens/ReceiveTokensSignerForm.svelte';
 	import Confetti from '$lib/components/ui/Confetti.svelte';
@@ -11,10 +10,11 @@
 	import { wizardBusy } from '$lib/stores/busy.store';
 	import { i18n } from '$lib/stores/i18n.store';
 	import { toasts } from '$lib/stores/toasts.store';
+	import type { MissionControlId } from '$lib/types/mission-control';
 	import { assertAndConvertAmountToICPToken } from '$lib/utils/token.utils';
 
 	interface Props {
-		missionControlId: Principal;
+		missionControlId: MissionControlId;
 		back: () => void;
 		visible?: boolean;
 	}

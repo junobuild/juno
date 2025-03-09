@@ -48,6 +48,9 @@ fi
 echo "installing candid-extractor"
 cargo install candid-extractor --locked
 
+echo "installing wasi2ic"
+cargo install wasi2ic --locked
+
 # make sure the packages are actually installed (rustup waits for the first invoke to lazyload)
 cargo --version
 cargo clippy --version

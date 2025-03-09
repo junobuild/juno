@@ -10,6 +10,6 @@ This document covers administrative tasks related to managing and maintaining Ju
 
 To publish the `junobuild-shared` crate, use the following command:
 
-```sh
+```bash
 RUSTFLAGS='--cfg getrandom_backend="custom"' cargo publish --target wasm32-unknown-unknown -p junobuild-shared
 ```

@@ -89,6 +89,14 @@ chmod 755 ~/.cargo/bin/didc
 cargo install candid-extractor
 ```
 
+### wasi2ic
+
+`wasi2ic` is required to convert the Wasm of the Sputnik crate for compatibility with the Internet Computer. This is necessary because this module must be built with the `wasm32-wasip1` target.
+
+```bash
+cargo install wasi2ic
+```
+
 ## Useful Administration Commands
 
 Here are a few commands that can be useful when developing and contributing to Juno:

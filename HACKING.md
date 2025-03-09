@@ -75,7 +75,7 @@ The following additional tools are required when building the modules:
 
 For example, to install `didc` on macOS:
 
-```sh
+```bash
 release=$(curl --silent "https://api.github.com/repos/dfinity/candid/releases/latest" | grep -e '"tag_name"' | cut -c 16-25)
 curl -fsSL https://github.com/dfinity/candid/releases/download/$release/didc-macos > ~/.cargo/bin/didc
 chmod 755 ~/.cargo/bin/didc
@@ -85,7 +85,7 @@ chmod 755 ~/.cargo/bin/didc
 
 `candid-extractor` is needed to extract Candid interfaces. Install it with:
 
-```sh
+```bash
 cargo install candid-extractor
 ```
 

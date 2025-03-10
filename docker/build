@@ -50,6 +50,8 @@ WITH_CERTIFICATION=0
 BUILD_TYPE=
 # Source directory where to find $CANISTER/Cargo.toml
 SRC_ROOT_DIR="$PWD/src"
+# Default target is wasm32-unknown-unknown
+TARGET=wasm32-unknown-unknown
 
 while [[ $# -gt 0  ]]
 do
@@ -121,4 +123,4 @@ fi
 # Source the script to effectively build the canister
 source "$SCRIPTS_DIR/build-canister"
 
-build_canister "$CANISTER" "$SRC_ROOT_DIR" "." "$ONLY_DEPS" "$WITH_CERTIFICATION" "$BUILD_TYPE"
+build_canister "$CANISTER" "$SRC_ROOT_DIR" "." "$ONLY_DEPS" "$WITH_CERTIFICATION" "$BUILD_TYPE" "$TARGET"

@@ -2,7 +2,7 @@
 
 set -euo pipefail
 
-USAGE="Usage: $0 <module_name> [--with-certification] [--build-type=stock|extended] [--fixture]"
+USAGE="Usage: $0 <module_name> [--with-certification] [--build-type=stock|extended] [--fixture] [--target=wasm32-unknown-unknown|wasm32-wasip1]"
 
 if [ -z "$1" ]; then
   echo "$USAGE"
@@ -19,6 +19,9 @@ BUILD_TYPE=
 # Source directory where to find $CANISTER/Cargo.toml
 SRC_ROOT_DIR="$PWD/src"
 
+# Default target is wasm32-unknown-unknown
+TARGET=wasm32-unknown-unknown
+
 # Parse optional arguments
 shift
 while [[ $# -gt 0 ]]; do
@@ -33,6 +36,15 @@ while [[ $# -gt 0 ]]; do
       ;;
     --fixture)
       SRC_ROOT_DIR="$PWD/src/tests/fixtures"
+      shift
+      ;;
+    --target=*)
+      TARGET="${1#--target=}"
+      if [[ "$TARGET" != "wasm32-unknown-unknown" && "$TARGET" != "wasm32-wasip1" ]]; then
+        echo "ERROR: Invalid target specified. Use 'wasm32-unknown-unknown' (default) or 'wasm32-wasip1'."
+        echo "$USAGE"
+        exit 1
+      fi
       shift
       ;;
     *)
@@ -71,7 +83,7 @@ mkdir -p "${DEPLOY_DIR}"
 source "$PWD/docker/build-canister"
 
 # Build the canister
-build_canister "$MODULE" "$SRC_ROOT_DIR" "$BUILD_DIR" "$ONLY_DEPS" "$WITH_CERTIFICATION" "$BUILD_TYPE"
+build_canister "$MODULE" "$SRC_ROOT_DIR" "$BUILD_DIR" "$ONLY_DEPS" "$WITH_CERTIFICATION" "$BUILD_TYPE" "$TARGET"
 
 # Move the result to the deploy directory to upgrade the module in the local replica
 mv "$BUILD_DIR/${WASM_MODULE}.gz" "${DEPLOY_DIR}/${WASM_MODULE}.gz"

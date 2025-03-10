@@ -8,7 +8,8 @@ function build_canister() {
     local only_deps=$4
     local with_certification=$5
     local build_type=$6
-    shift 6
+    local target=$7
+    shift 7
     local extra_build_args=("$@")
 
     if [ -z "$canister" ]; then
@@ -31,11 +32,26 @@ function build_canister() {
         exit 1
     fi
 
+    TARGET="wasm32-unknown-unknown"
+
+    case "$target" in
+        wasm32-wasip1)
+            TARGET="wasm32-wasip1"
+            USE_WASI=1
+            ;;
+        wasm32-unknown-unknown | "")
+            USE_WASI=0
+            ;;
+        *)
+            echo "ERROR: Invalid target specified. Use 'wasm32' (default) or 'wasi'."
+            exit 1
+            ;;
+    esac
+
     echo "Building $canister"
     echo
 
     SRC_DIR="$src_root_dir/$canister"
-    TARGET="wasm32-unknown-unknown"
 
     # Standardize source references
     CARGO_HOME="${CARGO_HOME:-"$HOME/.cargo"}"
@@ -63,6 +79,12 @@ function build_canister() {
     if [ "$only_deps" != "1" ]
     then
       CARGO_TARGET_DIR="${CARGO_TARGET_DIR:-$PWD/target}"
+
+      if [ "$USE_WASI" -eq 1 ]; then
+          echo
+          echo "Converting WASI to IC..."
+          wasi2ic "$CARGO_TARGET_DIR/$TARGET/release/$canister.wasm" "$CARGO_TARGET_DIR/$TARGET/release/$canister.wasm" --quiet
+      fi
 
       # Optimize WASM and set metadata
       ic-wasm \

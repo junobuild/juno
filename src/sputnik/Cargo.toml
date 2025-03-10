@@ -10,7 +10,8 @@ crate-type = ["cdylib"]
 [dependencies]
 candid.workspace = true
 ic-cdk.workspace = true
-junobuild-satellite = { path = "../libs/satellite", default-features = false }
+junobuild-satellite = { path = "../libs/satellite", default-features = false, features = ["on_init_sync", "on_post_upgrade_sync", "on_init_random_seed"] }
 junobuild-storage = { path = "../libs/storage" }
 junobuild-macros = { path = "../libs/macros" }
+ic-wasi-polyfill = "0.7.0"
 

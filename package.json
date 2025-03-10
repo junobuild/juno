@@ -45,7 +45,7 @@
 		"build:console": "scripts/cargo.sh console --with-certification",
 		"build:observatory": "scripts/cargo.sh observatory",
 		"build:satellite": "scripts/cargo.sh satellite --with-certification --build-type=stock",
-		"build:sputnik": "scripts/cargo.sh sputnik --with-certification --build-type=extended",
+		"build:sputnik": "scripts/cargo.sh sputnik --with-certification --build-type=extended --target=wasm32-wasip1",
 		"build:mission-control": "scripts/cargo.sh mission_control",
 		"build:orbiter": "scripts/cargo.sh orbiter",
 		"build:fixtures": "npm run build:test-satellite",

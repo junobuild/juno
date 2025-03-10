@@ -4,7 +4,7 @@
 #
 # The docker image. To update, run `docker pull ubuntu` locally, and update the
 # sha256:... accordingly.
-FROM --platform=linux/amd64 ubuntu@sha256:bbf3d1baa208b7649d1d0264ef7d522e1dc0deeeaaf6085bf8e4618867f03494 as deps
+FROM --platform=linux/amd64 ubuntu@sha256:bbf3d1baa208b7649d1d0264ef7d522e1dc0deeeaaf6085bf8e4618867f03494 AS deps
 
 ENV TZ=UTC
 
@@ -84,7 +84,7 @@ RUN mkdir -p src/console/src \
     && ./docker/build-deps \
     && rm -rf src
 
-FROM deps as build_mission_control
+FROM deps AS build_mission_control
 
 COPY . .
 
@@ -95,7 +95,7 @@ RUN touch src/tests/fixtures/*/src/lib.rs
 RUN ./docker/build
 RUN sha256sum /mission_control.wasm.gz
 
-FROM deps as build_satellite
+FROM deps AS build_satellite
 
 COPY . .
 
@@ -106,7 +106,7 @@ RUN touch src/tests/fixtures/*/src/lib.rs
 RUN ./docker/build --satellite
 RUN sha256sum /satellite.wasm.gz
 
-FROM deps as build_console
+FROM deps AS build_console
 
 COPY . .
 
@@ -117,7 +117,7 @@ RUN touch src/tests/fixtures/*/src/lib.rs
 RUN ./docker/build --console
 RUN sha256sum /console.wasm.gz
 
-FROM deps as build_observatory
+FROM deps AS build_observatory
 
 COPY . .
 
@@ -128,7 +128,7 @@ RUN touch src/tests/fixtures/*/src/lib.rs
 RUN ./docker/build --observatory
 RUN sha256sum /observatory.wasm.gz
 
-FROM deps as build_orbiter
+FROM deps AS build_orbiter
 
 COPY . .
 
@@ -139,7 +139,7 @@ RUN touch src/tests/fixtures/*/src/lib.rs
 RUN ./docker/build --orbiter
 RUN sha256sum /orbiter.wasm.gz
 
-FROM deps as build_test_satellite
+FROM deps AS build_test_satellite
 
 COPY . .
 
@@ -152,24 +152,18 @@ RUN sha256sum /test_satellite.wasm.gz
 
 FROM scratch AS scratch_mission_control
 COPY --from=build_mission_control /mission_control.wasm.gz /
-COPY --from=build_mission_control /mission_control.did /
 
 FROM scratch AS scratch_satellite
 COPY --from=build_satellite /satellite.wasm.gz /
-COPY --from=build_satellite /satellite.did /
 
 FROM scratch AS scratch_console
 COPY --from=build_console /console.wasm.gz /
-COPY --from=build_console /console.did /
 
 FROM scratch AS scratch_observatory
 COPY --from=build_observatory /observatory.wasm.gz /
-COPY --from=build_observatory /observatory.did /
 
 FROM scratch AS scratch_orbiter
 COPY --from=build_orbiter /orbiter.wasm.gz /
-COPY --from=build_orbiter /orbiter.did /
 
 FROM scratch AS scratch_test_satellite
 COPY --from=build_test_satellite /test_satellite.wasm.gz /
-COPY --from=build_test_satellite /test_satellite.did /

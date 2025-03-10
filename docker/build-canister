@@ -64,9 +64,6 @@ function build_canister() {
     then
       CARGO_TARGET_DIR="${CARGO_TARGET_DIR:-$PWD/target}"
 
-      # Generate did file
-      candid-extractor "$CARGO_TARGET_DIR/$TARGET/release/$canister.wasm" > "$output_dir/$canister.did"
-
       # Optimize WASM and set metadata
       ic-wasm \
           "$CARGO_TARGET_DIR/$TARGET/release/$canister.wasm" \
@@ -75,7 +72,7 @@ function build_canister() {
           --keep-name-section
 
       # adds the content of $canister.did to the `icp:public candid:service` custom section of the public metadata in the wasm
-      ic-wasm "$output_dir/$canister.wasm" -o "$output_dir/$canister.wasm" metadata candid:service -f "$output_dir/$canister.did" -v public --keep-name-section
+      ic-wasm "$output_dir/$canister.wasm" -o "$output_dir/$canister.wasm" metadata candid:service -f "$SRC_DIR/$canister.did" -v public --keep-name-section
 
       if [ -n "$build_type" ]
       then

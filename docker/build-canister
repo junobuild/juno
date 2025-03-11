@@ -78,6 +78,7 @@ function build_canister() {
 
     echo Running cargo build "${cargo_build_args[@]}"
     echo RUSTFLAGS: "$RUSTFLAGS"
+    echo
 
     RUSTFLAGS="$RUSTFLAGS" cargo build "${cargo_build_args[@]}"
 

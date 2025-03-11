@@ -4,9 +4,10 @@ import type { _SERVICE as TestSatelliteActor } from '$test-declarations/test_sat
 import type { Identity } from '@dfinity/agent';
 import { Principal } from '@dfinity/principal';
 import { type Actor, PocketIc } from '@hadronous/pic';
-import { afterAll, beforeAll, describe } from 'vitest';
+import { afterAll, beforeAll, describe, expect } from 'vitest';
 import { mockSetRule } from '../../../mocks/collection.mocks';
 import { setupTestSatellite } from '../../../utils/satellite-fixtures-tests.utils';
+import { crateVersion } from '../../../utils/version-test.utils';
 
 describe('Satellite > Hooks', () => {
 	let pic: PocketIc;
@@ -74,11 +75,27 @@ describe('Satellite > Hooks', () => {
 		expect(log).not.toBeUndefined();
 	};
 
-	it('should call on init sync', async () => {
-		await assertLog('On init sync was executed');
+	describe('controller', () => {
+		it('should call on init sync', async () => {
+			await assertLog('On init sync was executed');
+		});
+
+		it('should call on post_upgrade sync', async () => {
+			await assertLog('On post upgrade sync was executed');
+		});
 	});
 
-	it('should call on post_upgrade sync', async () => {
-		await assertLog('On post upgrade sync was executed');
+	describe('public', () => {
+		it('should expose build version', async () => {
+			const hooksVersion = crateVersion('tests/fixtures/test_satellite');
+
+			expect(await actor.build_version()).toEqual(hooksVersion);
+		});
+
+		it('should expose satellite version', async () => {
+			const satelliteVersion = crateVersion('satellite');
+
+			expect(await actor.version()).toEqual(satelliteVersion);
+		});
 	});
 });

@@ -10,11 +10,9 @@ import {
 	JUNO_ERROR_VERSION_OUTDATED_OR_FUTURE,
 	JUNO_STORAGE_ERROR_UPLOAD_NOT_ALLOWED
 } from '@junobuild/errors';
-import { parse } from '@ltd/j-toml';
-import { readFileSync } from 'node:fs';
-import { join } from 'node:path';
 import { afterAll, beforeAll, describe, expect, inject } from 'vitest';
 import { controllersInitArgs, SATELLITE_WASM_PATH } from '../../../utils/setup-tests.utils';
+import { crateVersion } from '../../../utils/version-test.utils';
 
 describe('Satellite', () => {
 	let pic: PocketIc;
@@ -736,15 +734,9 @@ describe('Satellite', () => {
 
 	describe('public', () => {
 		it('should expose version of the consumer', async () => {
-			const tomlFile = readFileSync(join(process.cwd(), 'src', 'satellite', 'Cargo.toml'));
+			const satelliteVersion = crateVersion('satellite');
 
-			type Toml = { package: { version: string } } | undefined;
-
-			const result: Toml = parse(tomlFile.toString()) as unknown as Toml;
-
-			expect(result?.package?.version).not.toBeNull();
-
-			expect(await actor.version()).toEqual(result?.package?.version);
+			expect(await actor.build_version()).toEqual(satelliteVersion);
 		});
 	});
 });

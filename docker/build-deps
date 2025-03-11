@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-CANISTERS=console,observatory,mission_control,orbiter,satellite
+CANISTERS=console,observatory,mission_control,orbiter,satellite,test_satellite,sputnik
 
 for canister in $(echo $CANISTERS | sed "s/,/ /g")
 do

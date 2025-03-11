@@ -1,3 +1,5 @@
+#![allow(clippy::needless_lifetimes)]
+
 mod errors;
 mod js;
 mod wasi_polyfill;

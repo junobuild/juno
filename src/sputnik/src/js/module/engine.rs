@@ -18,7 +18,7 @@ pub async fn evaluate_async_module<'js>(
     promises
         .into_future::<()>()
         .await
-        .catch(&ctx)
+        .catch(ctx)
         .map_err(|e| format!("{} ({})", JUNO_SPUTNIK_ERROR_MODULE_EXECUTE_PROMISES, e))
 }
 
@@ -27,7 +27,7 @@ pub fn evaluate_module<'js>(ctx: &Ctx<'js>, name: &str, source: &str) -> Result<
         Module::evaluate(ctx.clone(), name, source).and_then(|module| module.finish::<()>());
 
     result
-        .catch(&ctx)
+        .catch(ctx)
         .map_err(|e| format!("{} ({})", JUNO_SPUTNIK_ERROR_MODULE_EXECUTE, e))
 }
 

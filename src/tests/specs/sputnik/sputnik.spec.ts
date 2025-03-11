@@ -29,13 +29,6 @@ describe('Sputnik', () => {
 		await pic?.tearDown();
 	});
 
-	it('should install sputnik with build version', async () => {
-		const { build_version } = actor;
-		const liveVersion = await build_version();
-
-		expect(liveVersion).toEqual('v0.0.1');
-	});
-
 	describe('public', () => {
 		it('should expose build version', async () => {
 			const sputnikVersion = crateVersion('sputnik');

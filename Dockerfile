@@ -1,6 +1,6 @@
 # Use this with
 #
-#  docker build -t mission_control . --progress=plain --platform=linux/amd64
+#  docker build -t scratch_mission_control . --progress=plain --platform=linux/amd64
 #
 # The docker image. To update, run `docker pull ubuntu` locally, and update the
 # sha256:... accordingly.

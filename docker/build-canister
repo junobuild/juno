@@ -48,6 +48,11 @@ function build_canister() {
             ;;
     esac
 
+    # Checking for installed additional tools
+    if [ "$only_deps" != "1" ]; then
+      check_tools "$TARGET"
+    fi
+
     echo "Building $canister"
     echo
 
@@ -112,4 +117,25 @@ function build_canister() {
       # --keep-unused in CI Docker build, but useful for local tooling and particularly for the job that generates the DID files
       gzip --no-name --force --keep "$output_dir/$canister.wasm"
     fi
+}
+
+function check_tools() {
+  local target=$1
+
+  if [[ ! "$(command -v ic-wasm)" || "$(ic-wasm --version)" != "ic-wasm 0.8.5" ]]
+  then
+      echo "could not find ic-wasm 0.8.5"
+      echo "ic-wasm version 0.8.5 is needed, please run the following command:"
+      echo "  cargo install ic-wasm --version 0.8.5"
+      exit 1
+  fi
+
+  if [ "$target" = "wasm32-wasip1" ]; then
+      if [[ ! "$(command -v wasi2ic)" || "$(wasi2ic --version)" != "wasi2ic 0.2.14" ]]; then
+          echo "could not find wasi2ic 0.2.14"
+          echo "wasi2ic version 0.2.14 is needed, please run the following command:"
+          echo "  cargo install wasi2ic --version 0.2.14"
+          exit 1
+      fi
+  fi
 }

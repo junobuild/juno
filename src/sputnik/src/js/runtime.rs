@@ -5,6 +5,7 @@ use crate::errors::js::{
 };
 use crate::js::types::RunAsyncJsFn;
 use rquickjs::{async_with, AsyncContext, AsyncRuntime, Context, Ctx, Runtime};
+use crate::js::dev::script::declare_dev_script;
 
 pub async fn execute_async_js<T>(f: T) -> Result<(), String>
 where
@@ -20,8 +21,7 @@ where
         // TODO: init APIs
         // init_apis(&ctx).map_err(|e| format!("APIs initialization failed: {}", e))?;
 
-        // TODO: declare user script
-        // declare_user_script(&ctx)?;
+        declare_dev_script(&ctx)?;
 
         f.run(&ctx).await.map_err(|e| format!("{} ({})", JUNO_SPUTNIK_ERROR_RUNTIME_ASYNC_EXECUTE, e))?;
 
@@ -47,8 +47,7 @@ where
         // TODO: init APIs
         // init_apis(&ctx).map_err(|e| format!("APIs initialization failed: {}", e))?;
 
-        // TODO: declare user script
-        // declare_user_script(&ctx)?;
+        declare_dev_script(&ctx)?;
 
         f(&ctx)
     })

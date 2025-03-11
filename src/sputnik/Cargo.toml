@@ -15,7 +15,7 @@ junobuild-satellite = { path = "../libs/satellite", default-features = false, fe
 	"on_post_upgrade_sync",
 	"on_init_random_seed"
 ] }
-junobuild-storage = { path = "../libs/storage" }
+junobuild-collections = { path = "../libs/collections" }
 junobuild-macros = { path = "../libs/macros" }
 ic-wasi-polyfill = "0.7.0"
 rquickjs = { version = "0.9.0", features = ["macro", "futures"] }

@@ -1520,9 +1520,9 @@ dependencies = [
  "candid",
  "ic-cdk",
  "ic-wasi-polyfill",
+ "junobuild-collections",
  "junobuild-macros",
  "junobuild-satellite",
- "junobuild-storage",
  "rquickjs",
 ]
 

@@ -9,6 +9,7 @@ on:
       - 'src/console/**'
       - 'src/observatory/**'
       - 'src/mission_control/**'
+      - 'src/sputnik/**'
       - 'src/libs/**'
       - 'src/tests/**'
       - 'rust-toolchain.toml'
@@ -53,6 +54,10 @@ jobs:
           - name: mission_control
             wasm: mission_control.wasm.gz
             target: scratch_mission_control
+
+          - name: sputnik
+            wasm: sputnik.wasm.gz
+            target: scratch_sputnik
 
           - name: test_satellite
             wasm: test_satellite.wasm.gz
@@ -106,6 +111,12 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           name: orbiter.wasm.gz
+          path: .
+
+      - name: Download sputnik.wasm.gz
+        uses: actions/download-artifact@v4
+        with:
+          name: sputnik.wasm.gz
           path: .
 
       - name: Download console.wasm.gz

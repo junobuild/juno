@@ -1,3 +1,7 @@
+#![allow(clippy::needless_lifetimes)]
+
+mod errors;
+mod js;
 mod wasi_polyfill;
 
 use crate::wasi_polyfill::{init_wasi, update_wasi_seed};

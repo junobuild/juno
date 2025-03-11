@@ -18,7 +18,7 @@ function usage() {
     cat << EOF
 
 Usage:
-  $0 [--only-dependencies] [--mission_control] [--satellite] [--console] [--observatory] [--orbiter] [--test_satellite]
+  $0 [--only-dependencies] [--mission_control] [--satellite] [--console] [--observatory] [--orbiter] [--sputnik] [--test_satellite]
 
 Options:
   --only-dependencies          only build rust dependencies (no js build, no wasm optimization)
@@ -27,6 +27,7 @@ Options:
   --console                    build the console canister
   --observatory                build the observatory canister
   --orbiter                    build the orbiter canister
+  --sputnik                    build the sputnik canister
   --test_satellite             build the satellite canister used for testing purposes
 EOF
 }
@@ -89,6 +90,13 @@ do
             CANISTER="orbiter"
             break
             ;;
+        --sputnik)
+            CANISTER="sputnik"
+            WITH_CERTIFICATION=1
+            BUILD_TYPE="extended"
+            TARGET="wasm32-wasip1"
+            break
+            ;;
         --test_satellite)
             CANISTER="test_satellite"
             WITH_CERTIFICATION=1
@@ -109,15 +117,6 @@ done
 # build Mission Control by default
 if [ ${#CANISTER} -eq 0 ]; then
     CANISTER="mission_control"
-fi
-
-# Checking for dependencies
-if [[ ! "$(command -v ic-wasm)" || "$(ic-wasm --version)" != "ic-wasm 0.8.5" ]]
-then
-    echo "could not find ic-wasm 0.8.5"
-    echo "ic-wasm version 0.8.5 is needed, please run the following command:"
-    echo "  cargo install ic-wasm --version 0.8.5"
-    exit 1
 fi
 
 # Source the script to effectively build the canister

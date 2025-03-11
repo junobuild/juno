@@ -1,6 +1,6 @@
 # Use this with
 #
-#  docker build -t mission_control . --progress=plain --platform=linux/amd64
+#  docker build -t scratch_mission_control . --progress=plain --platform=linux/amd64
 #
 # The docker image. To update, run `docker pull ubuntu` locally, and update the
 # sha256:... accordingly.
@@ -139,6 +139,17 @@ RUN touch src/tests/fixtures/*/src/lib.rs
 RUN ./docker/build --orbiter
 RUN sha256sum /orbiter.wasm.gz
 
+FROM deps AS build_sputnik
+
+COPY . .
+
+RUN touch src/*/src/lib.rs
+RUN touch src/libs/*/src/lib.rs
+RUN touch src/tests/fixtures/*/src/lib.rs
+
+RUN ./docker/build --sputnik
+RUN sha256sum /sputnik.wasm.gz
+
 FROM deps AS build_test_satellite
 
 COPY . .
@@ -164,6 +175,9 @@ COPY --from=build_observatory /observatory.wasm.gz /
 
 FROM scratch AS scratch_orbiter
 COPY --from=build_orbiter /orbiter.wasm.gz /
+
+FROM scratch AS scratch_sputnik
+COPY --from=build_sputnik /sputnik.wasm.gz /
 
 FROM scratch AS scratch_test_satellite
 COPY --from=build_test_satellite /test_satellite.wasm.gz /

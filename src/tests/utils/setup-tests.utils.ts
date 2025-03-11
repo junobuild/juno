@@ -45,6 +45,12 @@ export const TEST_SATELLITE_WASM_PATH = existsSync(SATELLITE_WASM_PATH_CI)
 	? TEST_SATELLITE_WASM_PATH_CI
 	: TEST_SATELLITE_WASM_PATH_LOCAL;
 
+const SPUTNIK_WASM_PATH_LOCAL = join(WASM_PATH_LOCAL, 'sputnik.wasm.gz');
+const SPUTNIK_WASM_PATH_CI = join(process.cwd(), 'sputnik.wasm.gz');
+export const SPUTNIK_WASM_PATH = existsSync(SPUTNIK_WASM_PATH_CI)
+	? SPUTNIK_WASM_PATH_CI
+	: SPUTNIK_WASM_PATH_LOCAL;
+
 export const controllersInitArgs = (controllers: Identity | Principal[]): ArrayBuffer =>
 	IDL.encode(
 		[

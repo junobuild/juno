@@ -79,6 +79,9 @@ mkdir -p "${BUILD_DIR}"
 
 mkdir -p "${DEPLOY_DIR}"
 
+# Ensure we rebuild the canister. This is useful locally for rebuilding canisters that have no code changes but have resource changes.
+touch "$SRC_ROOT_DIR"/"$MODULE"/src/lib.rs
+
 # Source the script to effectively build the canister
 source "$PWD/docker/build-canister"
 

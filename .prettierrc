@@ -4,5 +4,8 @@
 	"trailingComma": "none",
 	"printWidth": 100,
 	"plugins": ["prettier-plugin-svelte", "prettier-plugin-organize-imports", "prettier-plugin-toml"],
-	"overrides": [{ "files": "*.svelte", "options": { "parser": "svelte" } }]
+	"overrides": [
+		{ "files": "*.svelte", "options": { "parser": "svelte" } },
+		{ "files": "*.toml", "options": { "printWidth": 120 } }
+	]
 }

@@ -69,16 +69,12 @@ npm run build:orbiter
 
 The following additional tools are required when building the modules:
 
-### didc
+### junobuild-didc
 
-`didc` is required to work with Candid files. You can download it from the [Candid releases](https://github.com/dfinity/candid/releases) page.
-
-For example, to install `didc` on macOS:
+`didc` is required to generate [Candid](https://github.com/dfinity/candid) files.
 
 ```bash
-release=$(curl --silent "https://api.github.com/repos/dfinity/candid/releases/latest" | grep -e '"tag_name"' | cut -c 16-25)
-curl -fsSL https://github.com/dfinity/candid/releases/download/$release/didc-macos > ~/.cargo/bin/didc
-chmod 755 ~/.cargo/bin/didc
+cargo install junobuild-didc
 ```
 
 ### candid-extractor

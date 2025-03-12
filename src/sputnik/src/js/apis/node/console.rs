@@ -37,7 +37,7 @@ globalThis.console = {
 }
 
 #[rquickjs::function]
-async fn console_log<'js>(_ctx: Ctx<'js>, msg: String<'js>) -> JsResult<()> {
+fn console_log<'js>(_ctx: Ctx<'js>, msg: String<'js>) -> JsResult<()> {
     print(format!("{}", &msg.to_string()?));
 
     Ok(())

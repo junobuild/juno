@@ -11,7 +11,8 @@ import { mockSetRule } from '../../../mocks/collection.mocks';
 import { mockListParams } from '../../../mocks/list.mocks';
 import { tick } from '../../../utils/pic-tests.utils';
 import { createDoc as createDocUtils } from '../../../utils/satellite-doc-tests.utils';
-import { setupTestSatellite } from '../../../utils/satellite-fixtures-tests.utils';
+import { setupTestSatellite } from '../../../utils/fixtures-tests.utils';
+import {waitServerlessFunction} from "../../../utils/satellite-extended-tests.utils";
 
 describe('Satellite > Logging', () => {
 	let pic: PocketIc;
@@ -32,11 +33,6 @@ describe('Satellite > Logging', () => {
 	afterAll(async () => {
 		await pic?.tearDown();
 	});
-
-	const waitServerlessFunction = async () => {
-		// Wait for the serverless function to being fired
-		await tick(pic);
-	};
 
 	const createDoc = (): Promise<string> =>
 		createDocUtils({
@@ -64,7 +60,7 @@ describe('Satellite > Logging', () => {
 	it('should log an info when on_set_doc hook is fired', async () => {
 		await createDoc();
 
-		await waitServerlessFunction();
+		await waitServerlessFunction(pic);
 
 		const { list_docs } = actor;
 
@@ -87,7 +83,7 @@ describe('Satellite > Logging', () => {
 
 		await del_doc(TEST_COLLECTION, key, doc);
 
-		await waitServerlessFunction();
+		await waitServerlessFunction(pic);
 
 		const { items: logs } = await list_docs('#log', {
 			...mockListParams,
@@ -109,7 +105,7 @@ describe('Satellite > Logging', () => {
 	it('should create logs with different random keys', async () => {
 		await Promise.all(Array.from({ length: 10 }).map(createDoc));
 
-		await waitServerlessFunction();
+		await waitServerlessFunction(pic);
 
 		const { list_docs } = actor;
 
@@ -130,7 +126,7 @@ describe('Satellite > Logging', () => {
 	it('should limit log entries to hundred', async () => {
 		await Promise.all(Array.from({ length: 101 }).map(createDoc));
 
-		await waitServerlessFunction();
+		await waitServerlessFunction(pic);
 
 		const { list_docs } = actor;
 

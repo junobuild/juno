@@ -11,7 +11,7 @@ import { tick } from '../../../utils/pic-tests.utils';
 import {
 	setupTestSatellite,
 	upgradeTestSatellite
-} from '../../../utils/satellite-fixtures-tests.utils';
+} from '../../../utils/fixtures-tests.utils';
 
 describe('Satellite > Random', () => {
 	let pic: PocketIc;

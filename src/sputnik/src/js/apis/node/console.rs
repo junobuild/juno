@@ -14,16 +14,20 @@ const __juno_console_map_args = (v) => v.map(arg => typeof arg === 'object' ? JS
 
 globalThis.console = {
   info(...v) {
-    globalThis.__juno_console_log(__juno_console_map_args);
+    const msg = __juno_console_map_args(v);
+    globalThis.__juno_console_log(msg);
   },
   log(...v) {
-    globalThis.__juno_console_log(__juno_console_map_args);
+    const msg = __juno_console_map_args(v);
+    globalThis.__juno_console_log(msg);
   },
   warn(...v) {
-    globalThis.__juno_console_log(__juno_console_map_args);
+    const msg = __juno_console_map_args(v);
+    globalThis.__juno_console_log(msg);
   },
   error(...v) {
-    globalThis.__juno_console_log(__juno_console_map_args);
+    const msg = __juno_console_map_args(v);
+    globalThis.__juno_console_log(msg);
   }
 }
 "#,

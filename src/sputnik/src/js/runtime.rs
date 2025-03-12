@@ -3,9 +3,9 @@ use crate::errors::js::{
     JUNO_SPUTNIK_ERROR_RUNTIME_ASYNC_RUNTIME, JUNO_SPUTNIK_ERROR_RUNTIME_SYNC_CONTEXT,
     JUNO_SPUTNIK_ERROR_RUNTIME_SYNC_RUNTIME,
 };
+use crate::js::dev::script::declare_dev_script;
 use crate::js::types::RunAsyncJsFn;
 use rquickjs::{async_with, AsyncContext, AsyncRuntime, Context, Ctx, Runtime};
-use crate::js::dev::script::declare_dev_script;
 
 pub async fn execute_async_js<T>(f: T) -> Result<(), String>
 where

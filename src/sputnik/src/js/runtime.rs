@@ -21,7 +21,7 @@ where
         // TODO: init APIs
         // init_apis(&ctx).map_err(|e| format!("APIs initialization failed: {}", e))?;
 
-        declare_dev_script(&ctx)?;
+        declare_dev_script(&ctx).map_err(|e| e.to_string())?;
 
         f.run(&ctx).await.map_err(|e| format!("{} ({})", JUNO_SPUTNIK_ERROR_RUNTIME_ASYNC_EXECUTE, e))?;
 
@@ -47,7 +47,7 @@ where
         // TODO: init APIs
         // init_apis(&ctx).map_err(|e| format!("APIs initialization failed: {}", e))?;
 
-        declare_dev_script(&ctx)?;
+        declare_dev_script(&ctx).map_err(|e| e.to_string())?;
 
         f(&ctx)
     })

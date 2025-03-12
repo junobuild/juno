@@ -45,6 +45,7 @@ EOF
 
 ONLY_DEPS=
 CANISTER=
+OUTPUT=
 
 # Candid metadata supported_certificate_versions 1 and 2
 WITH_CERTIFICATION=0
@@ -91,7 +92,15 @@ do
             CANISTER="orbiter"
             break
             ;;
-        --sputnik|--test_sputnik)
+        --test_sputnik)
+            CANISTER="sputnik"
+            OUTPUT="test_sputnik"
+            WITH_CERTIFICATION=1
+            BUILD_TYPE="extended"
+            TARGET="wasm32-wasip1"
+            break
+            ;;
+        --sputnik)
             CANISTER="sputnik"
             WITH_CERTIFICATION=1
             BUILD_TYPE="extended"
@@ -129,3 +138,8 @@ build_set_env "$@"
 source "$SCRIPTS_DIR/build-canister"
 
 build_canister "$CANISTER" "$SRC_ROOT_DIR" "." "$ONLY_DEPS" "$WITH_CERTIFICATION" "$BUILD_TYPE" "$TARGET"
+
+# We rename the output if set and different from the canister name. Useful for test_sputnik which is the same canister built with different resources.
+if [ -n "$OUTPUT" ] && [ "$OUTPUT" != "$CANISTER" ]; then
+  mv "./$CANISTER.wasm.gz" "./$OUTPUT.wasm.gz"
+fi

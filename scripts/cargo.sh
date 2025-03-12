@@ -12,6 +12,7 @@ fi
 CARGO_HOME=${CARGO_HOME:-$HOME/.cargo}
 
 CANISTER=
+OUTPUT=
 WITH_CERTIFICATION=0
 BUILD_TYPE=
 
@@ -47,7 +48,15 @@ while [[ $# -gt 0 ]]; do
       CANISTER="orbiter"
       break
       ;;
-    --sputnik|--test_sputnik)
+    --test_sputnik)
+      CANISTER="sputnik"
+      OUTPUT="test_sputnik"
+      WITH_CERTIFICATION=1
+      BUILD_TYPE="extended"
+      TARGET="wasm32-wasip1"
+      break
+      ;;
+    --sputnik)
       CANISTER="sputnik"
       WITH_CERTIFICATION=1
       BUILD_TYPE="extended"
@@ -70,6 +79,7 @@ while [[ $# -gt 0 ]]; do
 done
 
 WASM_CANISTER="${CANISTER}.wasm"
+OUTPUT_CANISTER="${OUTPUT:-$CANISTER}.wasm"
 
 ############
 # Metadata #
@@ -111,8 +121,8 @@ source "$PWD/docker/build-canister"
 build_canister "$CANISTER" "$SRC_ROOT_DIR" "$BUILD_DIR" "$ONLY_DEPS" "$WITH_CERTIFICATION" "$BUILD_TYPE" "$TARGET"
 
 # Move the result to the deploy directory to upgrade the canister in the local replica
-mv "$BUILD_DIR/${WASM_CANISTER}.gz" "${DEPLOY_DIR}/${WASM_CANISTER}.gz"
+mv "$BUILD_DIR/${WASM_CANISTER}.gz" "${DEPLOY_DIR}/${OUTPUT_CANISTER}.gz"
 
 echo ""
-echo "👉 ${DEPLOY_DIR}/${WASM_CANISTER}.gz"
+echo "👉 ${DEPLOY_DIR}/${OUTPUT_CANISTER}.gz"
 echo ""

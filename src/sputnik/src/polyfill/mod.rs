@@ -1,1 +1,2 @@
-pub mod wasi;
+mod lifecycle;
+mod wasi;

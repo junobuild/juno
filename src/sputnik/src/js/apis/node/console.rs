@@ -10,20 +10,20 @@ pub fn init_console_log(ctx: &Ctx) -> Result<(), JsError> {
 
     let result = ctx.eval::<(), _>(
         r#"
-const __juno_console_map = (v) => v.map(arg => typeof arg === 'object' ? JSON.stringify(arg) : arg).join(" ");
+const __juno_console_map_args = (v) => v.map(arg => typeof arg === 'object' ? JSON.stringify(arg) : arg).join(" ");
 
 globalThis.console = {
   info(...v) {
-    globalThis.__juno_console_log(__juno_console_map(v));
-  }
+    globalThis.__juno_console_log(__juno_console_map_args);
+  },
   log(...v) {
-    globalThis.__juno_console_log(__juno_console_map(v));
-  }
+    globalThis.__juno_console_log(__juno_console_map_args);
+  },
   warn(...v) {
-    globalThis.__juno_console_log(__juno_console_map(v));
-  }
+    globalThis.__juno_console_log(__juno_console_map_args);
+  },
   error(...v) {
-    globalThis.__juno_console_log(__juno_console_map(v));
+    globalThis.__juno_console_log(__juno_console_map_args);
   }
 }
 "#,

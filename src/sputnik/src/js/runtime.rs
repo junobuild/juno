@@ -1,8 +1,9 @@
 use crate::errors::js::{
-    JUNO_SPUTNIK_ERROR_RUNTIME_ASYNC_CONTEXT, JUNO_SPUTNIK_ERROR_RUNTIME_ASYNC_EXECUTE,
-    JUNO_SPUTNIK_ERROR_RUNTIME_ASYNC_RUNTIME, JUNO_SPUTNIK_ERROR_RUNTIME_SYNC_CONTEXT,
-    JUNO_SPUTNIK_ERROR_RUNTIME_SYNC_RUNTIME,
+    JUNO_SPUTNIK_ERROR_RUNTIME_API_INIT, JUNO_SPUTNIK_ERROR_RUNTIME_ASYNC_CONTEXT,
+    JUNO_SPUTNIK_ERROR_RUNTIME_ASYNC_EXECUTE, JUNO_SPUTNIK_ERROR_RUNTIME_ASYNC_RUNTIME,
+    JUNO_SPUTNIK_ERROR_RUNTIME_SYNC_CONTEXT, JUNO_SPUTNIK_ERROR_RUNTIME_SYNC_RUNTIME,
 };
+use crate::js::apis::init_apis;
 use crate::js::dev::script::declare_dev_script;
 use crate::js::types::RunAsyncJsFn;
 use rquickjs::{async_with, AsyncContext, AsyncRuntime, Context, Ctx, Runtime};
@@ -18,8 +19,7 @@ where
         .map_err(|e| format!("{} ({})", JUNO_SPUTNIK_ERROR_RUNTIME_ASYNC_CONTEXT, e))?;
 
     async_with!(ctx => |ctx|{
-        // TODO: init APIs
-        // init_apis(&ctx).map_err(|e| format!("APIs initialization failed: {}", e))?;
+        init_apis(&ctx).map_err(|e| format!("{} ({})", JUNO_SPUTNIK_ERROR_RUNTIME_API_INIT, e))?;
 
         declare_dev_script(&ctx).map_err(|e| e.to_string())?;
 
@@ -44,8 +44,7 @@ where
         .map_err(|e| format!("{} ({})", JUNO_SPUTNIK_ERROR_RUNTIME_SYNC_CONTEXT, e))?;
 
     ctx.with(|ctx| -> Result<(), String> {
-        // TODO: init APIs
-        // init_apis(&ctx).map_err(|e| format!("APIs initialization failed: {}", e))?;
+        init_apis(&ctx).map_err(|e| format!("{} ({})", JUNO_SPUTNIK_ERROR_RUNTIME_API_INIT, e))?;
 
         declare_dev_script(&ctx).map_err(|e| e.to_string())?;
 

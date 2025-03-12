@@ -21,3 +21,5 @@ pub const JUNO_SPUTNIK_ERROR_RUNTIME_ASYNC_EXECUTE: &str =
 pub const JUNO_SPUTNIK_ERROR_RUNTIME_SYNC_RUNTIME: &str = "juno.sputnik.error.runtime.sync_runtime";
 // Failed to create synchronous JavaScript execution context.
 pub const JUNO_SPUTNIK_ERROR_RUNTIME_SYNC_CONTEXT: &str = "juno.sputnik.error.runtime.sync_context";
+// APIs initialization failed.
+pub const JUNO_SPUTNIK_ERROR_RUNTIME_API_INIT: &str = "juno.sputnik.error.runtime.api_init";

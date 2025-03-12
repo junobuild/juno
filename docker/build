@@ -18,7 +18,7 @@ function usage() {
     cat << EOF
 
 Usage:
-  $0 [--only-dependencies] [--mission_control] [--satellite] [--console] [--observatory] [--orbiter] [--sputnik] [--test_satellite]
+  $0 [--only-dependencies] [--mission_control] [--satellite] [--console] [--observatory] [--orbiter] [--sputnik] [--test_satellite] [--test_sputnik]
 
 Options:
   --only-dependencies          only build rust dependencies (no js build, no wasm optimization)
@@ -29,6 +29,7 @@ Options:
   --orbiter                    build the orbiter canister
   --sputnik                    build the sputnik canister
   --test_satellite             build the satellite canister used for testing purposes
+  --test_sputnik               build the sputnik canister for testing purposes
 EOF
 }
 
@@ -90,7 +91,7 @@ do
             CANISTER="orbiter"
             break
             ;;
-        --sputnik)
+        --sputnik|--test_sputnik)
             CANISTER="sputnik"
             WITH_CERTIFICATION=1
             BUILD_TYPE="extended"
@@ -118,6 +119,11 @@ done
 if [ ${#CANISTER} -eq 0 ]; then
     CANISTER="mission_control"
 fi
+
+# Source the script to set environment variables before building the canister
+source "$SCRIPTS_DIR/build-set-env"
+
+build_set_env "$@"
 
 # Source the script to effectively build the canister
 source "$SCRIPTS_DIR/build-canister"

@@ -63,6 +63,10 @@ jobs:
             wasm: test_satellite.wasm.gz
             target: scratch_test_satellite
 
+          - name: test_sputnik
+            wasm: test_sputnik.wasm.gz
+            target: scratch_test_sputnik
+
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -141,6 +145,12 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           name: test_satellite.wasm.gz
+          path: .
+
+      - name: Download test_sputnik.wasm.gz
+        uses: actions/download-artifact@v4
+        with:
+          name: test_sputnik.wasm.gz
           path: .
 
       - name: Tests

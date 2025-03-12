@@ -2,7 +2,7 @@
 
 set -euo pipefail
 
-USAGE="Usage: $0 <module_name> [--with-certification] [--build-type=stock|extended] [--fixture] [--target=wasm32-unknown-unknown|wasm32-wasip1]"
+USAGE="Usage: $0 <canister_name>"
 
 if [ -z "$1" ]; then
   echo "$USAGE"
@@ -11,8 +11,8 @@ fi
 
 CARGO_HOME=${CARGO_HOME:-$HOME/.cargo}
 
-MODULE=$1
-WASM_MODULE="${MODULE}.wasm"
+CANISTER=
+OUTPUT=
 WITH_CERTIFICATION=0
 BUILD_TYPE=
 
@@ -23,29 +23,52 @@ SRC_ROOT_DIR="$PWD/src"
 TARGET=wasm32-unknown-unknown
 
 # Parse optional arguments
-shift
 while [[ $# -gt 0 ]]; do
   case "$1" in
-    --with-certification)
+    --mission_control)
+      CANISTER="mission_control"
+      break
+      ;;
+    --satellite)
       WITH_CERTIFICATION=1
-      shift
+      CANISTER=satellite
+      BUILD_TYPE="stock"
+      break
       ;;
-    --build-type=*)
-      BUILD_TYPE="${1#--build-type=}"
-      shift
+    --console)
+      CANISTER="console"
+      WITH_CERTIFICATION=1
+      break
       ;;
-    --fixture)
+    --observatory)
+      CANISTER="observatory"
+      break
+      ;;
+    --orbiter)
+      CANISTER="orbiter"
+      break
+      ;;
+    --test_sputnik)
+      CANISTER="sputnik"
+      OUTPUT="test_sputnik"
+      WITH_CERTIFICATION=1
+      BUILD_TYPE="extended"
+      TARGET="wasm32-wasip1"
+      break
+      ;;
+    --sputnik)
+      CANISTER="sputnik"
+      WITH_CERTIFICATION=1
+      BUILD_TYPE="extended"
+      TARGET="wasm32-wasip1"
+      break
+      ;;
+    --test_satellite)
+      CANISTER="test_satellite"
+      WITH_CERTIFICATION=1
+      BUILD_TYPE="extended"
       SRC_ROOT_DIR="$PWD/src/tests/fixtures"
-      shift
-      ;;
-    --target=*)
-      TARGET="${1#--target=}"
-      if [[ "$TARGET" != "wasm32-unknown-unknown" && "$TARGET" != "wasm32-wasip1" ]]; then
-        echo "ERROR: Invalid target specified. Use 'wasm32-unknown-unknown' (default) or 'wasm32-wasip1'."
-        echo "$USAGE"
-        exit 1
-      fi
-      shift
+      break
       ;;
     *)
       echo "ERROR: unknown argument $1"
@@ -55,13 +78,16 @@ while [[ $# -gt 0 ]]; do
   esac
 done
 
+WASM_CANISTER="${CANISTER}.wasm"
+OUTPUT_CANISTER="${OUTPUT:-$CANISTER}.wasm"
+
 ############
 # Metadata #
 ############
 
 # Generate metadata for Docker image
-VERSION=$(cargo metadata --format-version=1 --no-deps | jq -r '.packages[] | select(.name == "'"$MODULE"'") | .version')
-node ./scripts/cargo.metadata.mjs "$MODULE" "$VERSION"
+VERSION=$(cargo metadata --format-version=1 --no-deps | jq -r '.packages[] | select(.name == "'"$CANISTER"'") | .version')
+node ./scripts/cargo.metadata.mjs "$CANISTER" "$VERSION"
 
 #########
 # Build #
@@ -80,17 +106,23 @@ mkdir -p "${BUILD_DIR}"
 mkdir -p "${DEPLOY_DIR}"
 
 # Ensure we rebuild the canister. This is useful locally for rebuilding canisters that have no code changes but have resource changes.
-touch "$SRC_ROOT_DIR"/"$MODULE"/src/lib.rs
+touch "$SRC_ROOT_DIR"/"$CANISTER"/src/lib.rs
+
+# Source the script to set environment variables before building the canister
+source "$PWD/docker/build-set-env"
+
+# Define environment variables
+build_set_env "$@"
 
 # Source the script to effectively build the canister
 source "$PWD/docker/build-canister"
 
 # Build the canister
-build_canister "$MODULE" "$SRC_ROOT_DIR" "$BUILD_DIR" "$ONLY_DEPS" "$WITH_CERTIFICATION" "$BUILD_TYPE" "$TARGET"
+build_canister "$CANISTER" "$SRC_ROOT_DIR" "$BUILD_DIR" "$ONLY_DEPS" "$WITH_CERTIFICATION" "$BUILD_TYPE" "$TARGET"
 
-# Move the result to the deploy directory to upgrade the module in the local replica
-mv "$BUILD_DIR/${WASM_MODULE}.gz" "${DEPLOY_DIR}/${WASM_MODULE}.gz"
+# Move the result to the deploy directory to upgrade the canister in the local replica
+mv "$BUILD_DIR/${WASM_CANISTER}.gz" "${DEPLOY_DIR}/${OUTPUT_CANISTER}.gz"
 
 echo ""
-echo "👉 ${DEPLOY_DIR}/${WASM_MODULE}.gz"
+echo "👉 ${DEPLOY_DIR}/${OUTPUT_CANISTER}.gz"
 echo ""

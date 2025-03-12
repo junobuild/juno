@@ -1,0 +1,23 @@
+#!/usr/bin/env bash
+
+set -euo pipefail
+
+function build_set_env() {
+    if [[ $# -eq 0 ]]; then
+        echo "WARNING: No arguments provided. Skipping environment variable setup."
+        return 0
+    fi
+
+    while [[ $# -gt 0 ]]
+    do
+        case "$1" in
+            --test_sputnik)
+                export DEV_SCRIPT_PATH="$PWD/src/tests/fixtures/test_sputnik/resources/index.mjs"
+                echo "DEV_SCRIPT_PATH set for test_sputnik to $DEV_SCRIPT_PATH"
+                echo
+                ;;
+        esac
+        shift
+    done
+}
+

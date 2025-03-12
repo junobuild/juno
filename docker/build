@@ -18,7 +18,7 @@ function usage() {
     cat << EOF
 
 Usage:
-  $0 [--only-dependencies] [--mission_control] [--satellite] [--console] [--observatory] [--orbiter] [--sputnik] [--test_satellite]
+  $0 [--only-dependencies] [--mission_control] [--satellite] [--console] [--observatory] [--orbiter] [--sputnik] [--test_satellite] [--test_sputnik]
 
 Options:
   --only-dependencies          only build rust dependencies (no js build, no wasm optimization)
@@ -29,6 +29,7 @@ Options:
   --orbiter                    build the orbiter canister
   --sputnik                    build the sputnik canister
   --test_satellite             build the satellite canister used for testing purposes
+  --test_sputnik               build the sputnik canister for testing purposes
 EOF
 }
 
@@ -44,6 +45,7 @@ EOF
 
 ONLY_DEPS=
 CANISTER=
+OUTPUT=
 
 # Candid metadata supported_certificate_versions 1 and 2
 WITH_CERTIFICATION=0
@@ -90,6 +92,14 @@ do
             CANISTER="orbiter"
             break
             ;;
+        --test_sputnik)
+            CANISTER="sputnik"
+            OUTPUT="test_sputnik"
+            WITH_CERTIFICATION=1
+            BUILD_TYPE="extended"
+            TARGET="wasm32-wasip1"
+            break
+            ;;
         --sputnik)
             CANISTER="sputnik"
             WITH_CERTIFICATION=1
@@ -119,7 +129,17 @@ if [ ${#CANISTER} -eq 0 ]; then
     CANISTER="mission_control"
 fi
 
+# Source the script to set environment variables before building the canister
+source "$SCRIPTS_DIR/build-set-env"
+
+build_set_env "$@"
+
 # Source the script to effectively build the canister
 source "$SCRIPTS_DIR/build-canister"
 
 build_canister "$CANISTER" "$SRC_ROOT_DIR" "." "$ONLY_DEPS" "$WITH_CERTIFICATION" "$BUILD_TYPE" "$TARGET"
+
+# We rename the output if set and different from the canister name. Useful for test_sputnik which is the same canister built with different resources.
+if [ -n "$OUTPUT" ] && [ "$OUTPUT" != "$CANISTER" ]; then
+  mv "./$CANISTER.wasm.gz" "./$OUTPUT.wasm.gz"
+fi

@@ -23,7 +23,8 @@ export default [
 			'src/tests/declarations/**/*',
 			'target/**/*',
 			'tmp/**/*',
-			'src/sputnik/resources/index.mjs'
+			'src/sputnik/resources/index.mjs',
+			'src/tests/fixtures/test_sputnik/resources/index.mjs'
 		]
 	}
 ];

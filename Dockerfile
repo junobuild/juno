@@ -161,6 +161,17 @@ RUN touch src/tests/fixtures/*/src/lib.rs
 RUN ./docker/build --test_satellite
 RUN sha256sum /test_satellite.wasm.gz
 
+FROM deps AS build_test_sputnik
+
+COPY . .
+
+RUN touch src/*/src/lib.rs
+RUN touch src/libs/*/src/lib.rs
+RUN touch src/tests/fixtures/*/src/lib.rs
+
+RUN ./docker/build --test_sputnik
+RUN sha256sum /test_sputnik.wasm.gz
+
 FROM scratch AS scratch_mission_control
 COPY --from=build_mission_control /mission_control.wasm.gz /
 
@@ -181,3 +192,6 @@ COPY --from=build_sputnik /sputnik.wasm.gz /
 
 FROM scratch AS scratch_test_satellite
 COPY --from=build_test_satellite /test_satellite.wasm.gz /
+
+FROM scratch AS scratch_test_sputnik
+COPY --from=build_test_sputnik /test_sputnik.wasm.gz /

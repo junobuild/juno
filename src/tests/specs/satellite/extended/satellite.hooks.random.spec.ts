@@ -8,11 +8,8 @@ import { fromArray } from '@junobuild/utils';
 import { afterAll, beforeAll, describe, expect } from 'vitest';
 import { mockSetRule } from '../../../mocks/collection.mocks';
 import { mockListParams } from '../../../mocks/list.mocks';
+import { setupTestSatellite, upgradeTestSatellite } from '../../../utils/fixtures-tests.utils';
 import { tick } from '../../../utils/pic-tests.utils';
-import {
-	setupTestSatellite,
-	upgradeTestSatellite
-} from '../../../utils/fixtures-tests.utils';
 
 describe('Satellite > Hooks > Random', () => {
 	let pic: PocketIc;

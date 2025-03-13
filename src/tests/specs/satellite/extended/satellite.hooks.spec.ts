@@ -4,8 +4,8 @@ import { Principal } from '@dfinity/principal';
 import { type Actor, PocketIc } from '@hadronous/pic';
 import { afterAll, beforeAll, describe, expect } from 'vitest';
 import { mockSetRule } from '../../../mocks/collection.mocks';
-import { fetchLogs } from '../../../utils/mgmt-test.utils';
 import { setupTestSatellite } from '../../../utils/fixtures-tests.utils';
+import { fetchLogs } from '../../../utils/mgmt-test.utils';
 import { crateVersion } from '../../../utils/version-test.utils';
 
 describe('Satellite > Hooks', () => {

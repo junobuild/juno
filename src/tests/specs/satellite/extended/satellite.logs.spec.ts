@@ -9,10 +9,9 @@ import { fromArray } from '@junobuild/utils';
 import { afterAll, beforeAll, describe, expect } from 'vitest';
 import { mockSetRule } from '../../../mocks/collection.mocks';
 import { mockListParams } from '../../../mocks/list.mocks';
-import { tick } from '../../../utils/pic-tests.utils';
-import { createDoc as createDocUtils } from '../../../utils/satellite-doc-tests.utils';
 import { setupTestSatellite } from '../../../utils/fixtures-tests.utils';
-import {waitServerlessFunction} from "../../../utils/satellite-extended-tests.utils";
+import { createDoc as createDocUtils } from '../../../utils/satellite-doc-tests.utils';
+import { waitServerlessFunction } from '../../../utils/satellite-extended-tests.utils';
 
 describe('Satellite > Logging', () => {
 	let pic: PocketIc;

@@ -7,11 +7,8 @@ import { Principal } from '@dfinity/principal';
 import { type Actor, PocketIc } from '@hadronous/pic';
 import { afterAll, beforeAll, describe } from 'vitest';
 import { mockSetRule } from '../../../mocks/collection.mocks';
+import { setupTestSatellite, upgradeTestSatellite } from '../../../utils/fixtures-tests.utils';
 import { tick } from '../../../utils/pic-tests.utils';
-import {
-	setupTestSatellite,
-	upgradeTestSatellite
-} from '../../../utils/fixtures-tests.utils';
 
 describe('Satellite > Random', () => {
 	let pic: PocketIc;

@@ -24,23 +24,19 @@ export interface SetupFixtureCanister<T extends ActorInterface<T>> {
 
 export const setupTestSatellite = async (
 	{ withUpgrade }: { withUpgrade: boolean } = { withUpgrade: true }
-): Promise<SetupFixtureCanister<TestSatelliteActor>> => {
-	return await setupFixtureCanister({
+): Promise<SetupFixtureCanister<TestSatelliteActor>> => await setupFixtureCanister({
 		withUpgrade,
 		idlFactory: idlTestFactorySatellite,
 		wasm: TEST_SATELLITE_WASM_PATH
 	});
-};
 
 export const setupTestSputnik = async (
 	{ withUpgrade }: { withUpgrade: boolean } = { withUpgrade: true }
-): Promise<SetupFixtureCanister<SputnikActor>> => {
-	return await setupFixtureCanister({
+): Promise<SetupFixtureCanister<SputnikActor>> => await setupFixtureCanister({
 		withUpgrade,
 		idlFactory: idlFactorySputnik,
 		wasm: TEST_SPUTNIK_WASM_PATH
 	});
-};
 
 const setupFixtureCanister = async <T extends ActorInterface<T>>({
 	withUpgrade,

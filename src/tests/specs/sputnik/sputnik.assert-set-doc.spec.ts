@@ -37,18 +37,18 @@ describe('Sputnik > assert_set_doc', () => {
 		await pic?.tearDown();
 	});
 
-	it('should not assert document', async () => {
+	const setDocAndAssertLogsLength = async ({
+		collection,
+		length
+	}: {
+		collection: string;
+		length: number;
+	}) => {
 		const key = await createDocUtils({
 			actor,
-			collection: TEST_ASSERTED_COLLECTION
+			collection
 		});
 
-		await waitServerlessFunction(pic);
-		await waitServerlessFunction(pic);
-		await waitServerlessFunction(pic);
-		await waitServerlessFunction(pic);
-		await waitServerlessFunction(pic);
-		await waitServerlessFunction(pic);
 		await waitServerlessFunction(pic);
 
 		const logs = await fetchLogs({
@@ -57,6 +57,22 @@ describe('Sputnik > assert_set_doc', () => {
 			pic
 		});
 
-		console.log(logs);
+		const logsWithKey = logs.filter(([_, { message }]) => message.includes(key));
+
+		expect(logsWithKey.length).toEqual(length);
+	};
+
+	it('should not assert document', async () => {
+		await setDocAndAssertLogsLength({
+			collection: TEST_NOT_ASSERTED_COLLECTION,
+			length: 0
+		});
+	});
+
+	it('should assert document', async () => {
+		await setDocAndAssertLogsLength({
+			collection: TEST_ASSERTED_COLLECTION,
+			length: 1
+		});
 	});
 });

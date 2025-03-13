@@ -21,7 +21,7 @@ where
     async_with!(ctx => |ctx|{
         init_apis(&ctx).map_err(|e| format!("{} ({})", JUNO_SPUTNIK_ERROR_RUNTIME_API_INIT, e))?;
 
-        declare_dev_script(&ctx)?;
+        declare_dev_script(&ctx).map_err(|e| e.to_string())?;
 
         f.run(&ctx).await.map_err(|e| format!("{} ({})", JUNO_SPUTNIK_ERROR_RUNTIME_ASYNC_EXECUTE, e))?;
 
@@ -46,7 +46,8 @@ where
     ctx.with(|ctx| -> Result<(), String> {
         init_apis(&ctx).map_err(|e| format!("{} ({})", JUNO_SPUTNIK_ERROR_RUNTIME_API_INIT, e))?;
 
-        declare_dev_script(&ctx)?;
+        // TODO: find a way to bubble the content of the error
+        declare_dev_script(&ctx).map_err(|e| e.to_string())?;
 
         f(&ctx)
     })

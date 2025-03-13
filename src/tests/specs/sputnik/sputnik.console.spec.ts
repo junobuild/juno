@@ -13,8 +13,7 @@ describe('Sputnik > assert_set_doc', () => {
 	let canisterId: Principal;
 	let controller: Identity;
 
-	const TEST_ASSERTED_COLLECTION = 'demo';
-	const TEST_NOT_ASSERTED_COLLECTION = 'test';
+	const TEST_ASSERTED_COLLECTION = 'console';
 
 	beforeAll(async () => {
 		pic = await PocketIc.create(inject('PIC_URL'));
@@ -28,19 +27,18 @@ describe('Sputnik > assert_set_doc', () => {
 
 		const { set_rule } = actor;
 		await set_rule({ Db: null }, TEST_ASSERTED_COLLECTION, mockSetRule);
-		await set_rule({ Db: null }, TEST_NOT_ASSERTED_COLLECTION, mockSetRule);
 	});
 
 	afterAll(async () => {
 		await pic?.tearDown();
 	});
 
-	const setDocAndAssertLogsLength = async ({
+	const setDocAndAssertMsg = async ({
 		collection,
-		length
+		identifier
 	}: {
 		collection: string;
-		length: number;
+		identifier: string;
 	}) => {
 		const { docKey, logs } = await setDocAndFetchLogs({
 			collection,
@@ -50,22 +48,36 @@ describe('Sputnik > assert_set_doc', () => {
 			pic
 		});
 
-		const logsWithKey = logs.filter(([_, { message }]) => message.includes(docKey));
+		const log = logs.find(([_, { message }]) => message.includes(`${identifier}: ${docKey}`));
 
-		expect(logsWithKey.length).toEqual(length);
+		expect(log).not.toBeUndefined();
 	};
 
-	it('should not assert document for unobserved collection', async () => {
-		await setDocAndAssertLogsLength({
-			collection: TEST_NOT_ASSERTED_COLLECTION,
-			length: 0
+	it('should forward console.log to ic_cdk::print', async () => {
+		await setDocAndAssertMsg({
+			collection: TEST_ASSERTED_COLLECTION,
+			identifier: 'Log'
 		});
 	});
 
-	it('should assert document for observed collection', async () => {
-		await setDocAndAssertLogsLength({
+	it('should forward console.info to ic_cdk::print', async () => {
+		await setDocAndAssertMsg({
 			collection: TEST_ASSERTED_COLLECTION,
-			length: 1
+			identifier: 'Info'
+		});
+	});
+
+	it('should forward console.warn to ic_cdk::print', async () => {
+		await setDocAndAssertMsg({
+			collection: TEST_ASSERTED_COLLECTION,
+			identifier: 'Warn'
+		});
+	});
+
+	it('should forward console.error to ic_cdk::print', async () => {
+		await setDocAndAssertMsg({
+			collection: TEST_ASSERTED_COLLECTION,
+			identifier: 'Error'
 		});
 	});
 });

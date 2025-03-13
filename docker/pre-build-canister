@@ -29,35 +29,10 @@ function export_test_sputnik_fixtures() {
 
 # TODO: to be replace with a CLI command
 function build_test_sputnik_fixtures() {
-  DIST="$PWD/target/fixtures"
-  ENTRY="${PWD%/}/src/tests/fixtures/test_sputnik/resources/index.ts"
-  OUTFILE="$DIST/index.mjs"
-
-  if [ -d "$DIST" ]; then
-    rm -rf "$DIST"
-  fi
-
-  mkdir -p "$DIST"
-
   if [ ! -d "$PWD/node_modules" ]; then
     npm ci
     npm run prepare
   fi
 
-  npx esbuild "$ENTRY" \
-    --outfile="$OUTFILE" \
-    --bundle \
-    --minify \
-    --tree-shaking=true \
-    --format=esm \
-    --platform=browser \
-    --define:self=globalThis \
-    --supported:top-level-await=false \
-    --supported:inline-script=false \
-    --supported:dynamic-import=false \
-    --tsconfig=tsconfig.sputnik.json
-
-  echo
-  echo "[test_sputnik] $DIST/index.mjs generated"
-  echo
+  npm run build:test:fixtures
 }

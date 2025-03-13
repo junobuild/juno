@@ -129,10 +129,10 @@ if [ ${#CANISTER} -eq 0 ]; then
     CANISTER="mission_control"
 fi
 
-# Source the script to set environment variables before building the canister
-source "$SCRIPTS_DIR/build-set-env"
+# Source the script to perform tasks before building the canister
+source "$SCRIPTS_DIR/pre-build-canister"
 
-build_set_env "$@"
+pre_build_canister "$@"
 
 # Source the script to effectively build the canister
 source "$SCRIPTS_DIR/build-canister"

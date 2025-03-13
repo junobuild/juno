@@ -108,11 +108,11 @@ mkdir -p "${DEPLOY_DIR}"
 # Ensure we rebuild the canister. This is useful locally for rebuilding canisters that have no code changes but have resource changes.
 touch "$SRC_ROOT_DIR"/"$CANISTER"/src/lib.rs
 
-# Source the script to set environment variables before building the canister
-source "$PWD/docker/build-set-env"
+# Source the script to perform tasks before building the canister
+source "$PWD/docker/pre-build-canister"
 
-# Define environment variables
-build_set_env "$@"
+# Run pre-build steps
+pre_build_canister "$@"
 
 # Source the script to effectively build the canister
 source "$PWD/docker/build-canister"

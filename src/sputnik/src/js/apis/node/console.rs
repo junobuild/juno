@@ -1,5 +1,4 @@
-use ic_cdk::print;
-use rquickjs::{Ctx, Error as JsError, Result as JsResult, String};
+use rquickjs::{Ctx, Error as JsError};
 
 pub fn init_console_log(ctx: &Ctx) -> Result<(), JsError> {
     // TODO: use jsonReplace

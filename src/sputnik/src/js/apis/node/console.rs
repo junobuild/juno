@@ -1,40 +1,31 @@
-use ic_cdk::print;
-use rquickjs::{Ctx, Error as JsError, Result as JsResult, String};
+use rquickjs::{Ctx, Error as JsError};
 
 pub fn init_console_log(ctx: &Ctx) -> Result<(), JsError> {
-    let global = ctx.globals();
-
-    global.set("__juno_console_log", js_console_log)?;
-
     // TODO: use jsonReplace
 
     let result = ctx.eval::<(), _>(
         r#"
-const __juno_console_map = (v) => v.map(arg => typeof arg === 'object' ? JSON.stringify(arg) : arg).join(" ");
+const __juno_console_log = (v) => {
+    const msg = v.map(arg => typeof arg === 'object' ? JSON.stringify(arg) : arg).join(" ");
+    globalThis.__ic_cdk_print(msg);
+}
 
 globalThis.console = {
   info(...v) {
-    globalThis.__juno_console_log(__juno_console_map(v));
-  }
+    __juno_console_log(v);
+  },
   log(...v) {
-    globalThis.__juno_console_log(__juno_console_map(v));
-  }
+    __juno_console_log(v);
+  },
   warn(...v) {
-    globalThis.__juno_console_log(__juno_console_map(v));
-  }
+    __juno_console_log(v);
+  },
   error(...v) {
-    globalThis.__juno_console_log(__juno_console_map(v));
+    __juno_console_log(v);
   }
 }
 "#,
     );
 
     result
-}
-
-#[rquickjs::function]
-async fn console_log<'js>(_ctx: Ctx<'js>, msg: String<'js>) -> JsResult<()> {
-    print(format!("{}", &msg.to_string()?));
-
-    Ok(())
 }

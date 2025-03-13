@@ -48,7 +48,8 @@ function build_test_sputnik_fixtures() {
     --define:self=globalThis \
     --supported:top-level-await=false \
     --supported:inline-script=false \
-    --supported:dynamic-import=false
+    --supported:dynamic-import=false \
+    --tsconfig=tsconfig.sputnik.json
 
   echo
   echo "[test_sputnik] $DIST/index.mjs generated"

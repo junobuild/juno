@@ -32,7 +32,7 @@ const downloadTextEncodingPolyfills = async () => {
 		};
 	};
 
-	return Promise.all(resources.map(download));
+	return await Promise.all(resources.map(download));
 };
 
 const saveJS = async ({ dest, content }) => {

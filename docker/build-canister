@@ -84,7 +84,7 @@ function build_canister() {
 
     if [ "$only_deps" != "1" ]
     then
-      CARGO_TARGET_DIR="${CARGO_TARGET_DIR:-$(pwd)/target}"
+      CARGO_TARGET_DIR="${CARGO_TARGET_DIR:-$PWD/target}"
 
       if [ "$USE_WASI" -eq 1 ]; then
           echo

@@ -52,7 +52,7 @@ WITH_CERTIFICATION=0
 # Candid metadata juno:build
 BUILD_TYPE=
 # Source directory where to find $CANISTER/Cargo.toml
-SRC_ROOT_DIR="$(pwd)/src"
+SRC_ROOT_DIR="$PWD/src"
 # Default target is wasm32-unknown-unknown
 TARGET=wasm32-unknown-unknown
 
@@ -111,7 +111,7 @@ do
             CANISTER="test_satellite"
             WITH_CERTIFICATION=1
             BUILD_TYPE="extended"
-            SRC_ROOT_DIR="$(pwd)/src/tests/fixtures"
+            SRC_ROOT_DIR="$PWD/src/tests/fixtures"
             break
             ;;
         *)

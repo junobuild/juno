@@ -21,15 +21,15 @@ function pre_build_canister() {
 }
 
 function export_test_sputnik_fixtures() {
-  export DEV_SCRIPT_PATH="$(pwd)/target/fixtures/index.mjs"
+  export DEV_SCRIPT_PATH="$PWD/target/fixtures/index.mjs"
 
   echo "[test_sputnik] DEV_SCRIPT_PATH set to $DEV_SCRIPT_PATH"
   echo
 }
 
 function build_test_sputnik_fixtures() {
-  DIST="$(pwd)/target/fixtures"
-  ENTRY="$(pwd)/src/tests/fixtures/test_sputnik/resources/index.ts"
+  DIST="$PWD/target/fixtures"
+  ENTRY="$PWD/src/tests/fixtures/test_sputnik/resources/index.ts"
   OUTFILE="$DIST/index.mjs"
 
   if [ -d "$DIST" ]; then

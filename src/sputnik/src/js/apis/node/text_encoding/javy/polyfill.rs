@@ -9,7 +9,7 @@ use rquickjs::{
 };
 
 /// Register `TextDecoder` and `TextEncoder` classes.
-pub(crate) fn register(this: &Ctx<'_>) -> Result<()> {
+pub(crate) fn register(this: Ctx<'_>) -> Result<()> {
     let globals = this.globals();
     globals.set(
         "__javy_decodeUtf8BufferToString",

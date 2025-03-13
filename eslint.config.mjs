@@ -28,8 +28,7 @@ export default [
 	{
 		ignores: [
 			'src/sputnik/resources/index.mjs',
-			'src/tests/fixtures/test_sputnik/resources/index.mjs',
-			'src/js/apis/node/text_encoding/text-encoding.js'
+			'src/sputnik/src/js/apis/node/text_encoding/javy/text-encoding.js'
 		]
 	}
 ];

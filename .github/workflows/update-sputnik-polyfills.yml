@@ -1,0 +1,35 @@
+name: Update Sputnik Polyfills
+
+on:
+  schedule:
+    - cron: '30 3 * * MON'
+  workflow_dispatch:
+
+jobs:
+  update-sputnik-polyfills:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Prepare
+        uses: ./.github/actions/prepare
+      - name: Update
+        run: npm run build:sputnik:polyfills
+      - name: Format
+        run: npm run format
+
+      - name: Check for Changes
+        run: |
+          if ! git diff --quiet; then
+            echo "CHANGES_DETECTED=true" >> $GITHUB_ENV
+          fi
+
+      # This action creates a PR only if there are changes.
+      - name: Create Pull Request
+        if: env.CHANGES_DETECTED == 'true'
+        uses: ./.github/actions/create-pr
+        with:
+          branch: bot-sputnik-polyfills-update
+          title: 'feat(sputnik): Polyfills updated'
+          body: |
+            Modifications have been made to the polyfills of Sputnik.

@@ -8,7 +8,7 @@ if (existsSync(dist)) {
 	rmSync(dist, { recursive: true, force: true });
 }
 
-mkdirSync(distr, { recursive: true });
+mkdirSync(dist, { recursive: true });
 
 const outfile = join(dist, 'index.mjs');
 

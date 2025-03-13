@@ -29,7 +29,7 @@ function export_test_sputnik_fixtures() {
 
 function build_test_sputnik_fixtures() {
   DIST="$PWD/target/fixtures"
-  ENTRY="$PWD/src/tests/fixtures/test_sputnik/resources/index.ts"
+  ENTRY="${PWD%/}/src/tests/fixtures/test_sputnik/resources/index.ts"
   OUTFILE="$DIST/index.mjs"
 
   if [ -d "$DIST" ]; then

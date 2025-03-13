@@ -27,6 +27,7 @@ function export_test_sputnik_fixtures() {
   echo
 }
 
+# TODO: to be replace with a CLI command
 function build_test_sputnik_fixtures() {
   DIST="$PWD/target/fixtures"
   ENTRY="${PWD%/}/src/tests/fixtures/test_sputnik/resources/index.ts"
@@ -37,6 +38,11 @@ function build_test_sputnik_fixtures() {
   fi
 
   mkdir -p "$DIST"
+
+  if [ ! -d "$PWD/node_modules" ]; then
+    npm ci
+    npm run prepare
+  fi
 
   npx esbuild "$ENTRY" \
     --outfile="$OUTFILE" \

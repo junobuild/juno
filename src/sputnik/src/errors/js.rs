@@ -23,3 +23,6 @@ pub const JUNO_SPUTNIK_ERROR_RUNTIME_SYNC_RUNTIME: &str = "juno.sputnik.error.ru
 pub const JUNO_SPUTNIK_ERROR_RUNTIME_SYNC_CONTEXT: &str = "juno.sputnik.error.runtime.sync_context";
 // APIs initialization failed.
 pub const JUNO_SPUTNIK_ERROR_RUNTIME_API_INIT: &str = "juno.sputnik.error.runtime.api_init";
+
+// TextEncoding polyfill init error.
+pub const JUNO_SPUTNIK_ERROR_JS_API_TEXT_ENCODING: &str = "juno.sputnik.error.js.api.text_encoding";

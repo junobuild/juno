@@ -1517,6 +1517,7 @@ checksum = "3c5e1a9a646d36c3599cd173a41282daf47c44583ad367b8e6837255952e5c67"
 name = "sputnik"
 version = "0.0.1"
 dependencies = [
+ "anyhow",
  "candid",
  "ic-cdk",
  "ic-wasi-polyfill",

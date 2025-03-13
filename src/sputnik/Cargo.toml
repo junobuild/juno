@@ -22,3 +22,4 @@ junobuild-shared = { path = "../libs/shared" }
 junobuild-macros = { path = "../libs/macros" }
 ic-wasi-polyfill = "0.7.0"
 rquickjs = { version = "0.9.0", features = ["macro", "futures"] }
+anyhow = "1.0.79"

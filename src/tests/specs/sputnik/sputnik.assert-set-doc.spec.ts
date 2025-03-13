@@ -62,14 +62,14 @@ describe('Sputnik > assert_set_doc', () => {
 		expect(logsWithKey.length).toEqual(length);
 	};
 
-	it('should not assert document', async () => {
+	it('should not assert document for unobserved collection', async () => {
 		await setDocAndAssertLogsLength({
 			collection: TEST_NOT_ASSERTED_COLLECTION,
 			length: 0
 		});
 	});
 
-	it('should assert document', async () => {
+	it('should assert document for observed collection', async () => {
 		await setDocAndAssertLogsLength({
 			collection: TEST_ASSERTED_COLLECTION,
 			length: 1

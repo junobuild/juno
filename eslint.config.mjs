@@ -22,9 +22,10 @@ export default [
 			'src/declarations/**/*',
 			'src/tests/declarations/**/*',
 			'target/**/*',
-			'tmp/**/*',
-			'src/sputnik/resources/index.mjs',
-			'src/tests/fixtures/test_sputnik/resources/index.mjs'
+			'tmp/**/*'
 		]
+	},
+	{
+		ignores: ['src/sputnik/resources/index.mjs', 'src/js/apis/node/text_encoding/text-encoding.js']
 	}
 ];

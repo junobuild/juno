@@ -34,5 +34,5 @@ function build_test_sputnik_fixtures() {
     npm run prepare
   fi
 
-  npm run build:test:fixtures
+  npm run build:sputnik:fixtures
 }

@@ -1,11 +1,11 @@
-use crate::js::runtime::{execute_async_js};
+use crate::hooks::js::runtime::on_set_doc::OnSetDoc;
+use crate::hooks::js::runtime::types::OnJsHook;
+use crate::js::runtime::execute_async_js;
+use crate::js::types::RunAsyncJsFn;
+use crate::state::store::get_on_set_docs_collections;
 use ic_cdk::{spawn, trap};
 use junobuild_satellite::OnSetDocContext;
 use rquickjs::{Ctx, Error as JsError};
-use crate::hooks::js::runtime::on_set_doc::OnSetDoc;
-use crate::hooks::js::runtime::types::OnJsHook;
-use crate::js::types::RunAsyncJsFn;
-use crate::state::store::get_on_set_docs_collections;
 
 #[no_mangle]
 pub extern "Rust" fn juno_on_set_doc(context: OnSetDocContext) {

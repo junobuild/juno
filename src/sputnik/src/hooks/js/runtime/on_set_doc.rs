@@ -1,9 +1,9 @@
-use crate::hooks::js::types::hooks::{JsHookContext};
-use crate::js::module::engine::{evaluate_async_module};
-use junobuild_satellite::{OnSetDocContext};
-use rquickjs::{Ctx, IntoJs, Error as JsError};
 use crate::hooks::js::runtime::types::{JsHook, OnJsHook};
+use crate::hooks::js::types::hooks::JsHookContext;
 use crate::js::constants::{DEV_MODULE_NAME, HOOKS_MODULE_NAME};
+use crate::js::module::engine::evaluate_async_module;
+use junobuild_satellite::OnSetDocContext;
+use rquickjs::{Ctx, Error as JsError, IntoJs};
 
 pub struct OnSetDoc;
 
@@ -21,7 +21,6 @@ impl JsHook for OnSetDoc {
         )
     }
 }
-
 
 impl OnJsHook<OnSetDocContext> for OnSetDoc {
     async fn execute<'js>(&self, ctx: &Ctx<'js>, context: OnSetDocContext) -> Result<(), JsError> {

@@ -14,7 +14,6 @@ impl JsHook for OnSetDoc {
 
             if (typeof onSetDoc !== 'undefined') {{
                 const config = typeof onSetDoc === 'function' ? onSetDoc({{}}) : onSetDoc;
-
                 __juno_satellite_on_set_doc_loader(config.collections);
             }}
             "#,
@@ -36,8 +35,7 @@ impl OnJsHook<OnSetDocContext> for OnSetDoc {
 
             if (typeof onSetDoc !== 'undefined') {{
                 const config = typeof onSetDoc === 'function' ? onSetDoc({{}}) : onSetDoc;
-
-                await config.onSetDoc(jsContext);
+                await config.run(jsContext);
             }}
             "#,
             DEV_MODULE_NAME

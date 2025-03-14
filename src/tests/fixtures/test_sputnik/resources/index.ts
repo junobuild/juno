@@ -9,6 +9,7 @@ const onAssertSetDocConsole = (context: AssertSetDocContext) => {
 	console.warn('Warn:', context.data.key);
 	console.error('Error:', context.data.key);
 
+	// eslint-disable-next-line no-console
 	console.log('Log and serialize:', mockObj);
 };
 

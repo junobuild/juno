@@ -31,8 +31,6 @@ impl RunAsyncJsFn for AsyncJsFnContext {
     }
 }
 
-// TODO: return None to not trigger hook
-
 #[no_mangle]
 pub extern "Rust" fn juno_on_set_doc_collections() -> Option<Vec<String>> {
     let collections = get_on_set_docs_collections();

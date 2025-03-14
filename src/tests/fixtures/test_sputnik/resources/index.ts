@@ -1,14 +1,19 @@
 import { type AssertSetDocContext, decodeDocData, defineAssert } from '@junobuild/functions';
 
 const onAssertSetDocConsole = (context: AssertSetDocContext) => {
+	// eslint-disable-next-line no-console
 	console.log('Log:', context.data.key);
+	// eslint-disable-next-line no-console
 	console.info('Info:', context.data.key);
+	 
 	console.warn('Warn:', context.data.key);
+	 
 	console.error('Error:', context.data.key);
 };
 
 const onAssertSetDocDemo = (context: AssertSetDocContext) => {
 	decodeDocData;
+	// eslint-disable-next-line no-console
 	console.log('Asserting data for', context.data.key);
 };
 

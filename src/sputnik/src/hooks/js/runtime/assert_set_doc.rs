@@ -16,11 +16,7 @@ impl JsHook for AssertSetDoc {
             if (typeof assertSetDoc !== 'undefined') {{
                 const config = typeof assertSetDoc === 'function' ? assertSetDoc({{}}) : assertSetDoc;
 
-                console.log('assertSetDoc', config, typeof assertSetDoc === 'function');
-
-                __juno_assert_set_doc_loader(config.collections);
-            }} else {{
-                console.log("assertSetDoc is not defined");
+                __juno_satellite_assert_set_doc_loader(config.collections);
             }}
             "#,
             DEV_MODULE_NAME
@@ -42,8 +38,6 @@ impl AssertJsHook<AssertSetDocContext> for AssertSetDoc {
                 const config = typeof assertSetDoc === 'function' ? assertSetDoc({{}}) : assertSetDoc;
 
                 config.assertSetDoc(jsContext);
-            }} else {{
-                console.log("assertSetDoc is not defined");
             }}
             "#,
             DEV_MODULE_NAME

@@ -4,7 +4,7 @@ use rquickjs::{Ctx, Error as JsError, Result as JsResult};
 pub fn init_assert_set_doc_loader(ctx: &Ctx) -> Result<(), JsError> {
     let global = ctx.globals();
 
-    global.set("__juno_assert_set_doc_loader", js_assert_set_doc_loader)?;
+    global.set("__juno_satellite_assert_set_doc_loader", js_assert_set_doc_loader)?;
 
     Ok(())
 }

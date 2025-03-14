@@ -5,9 +5,7 @@ const onAssertSetDocConsole = (context: AssertSetDocContext) => {
 	console.log('Log:', context.data.key);
 	// eslint-disable-next-line no-console
 	console.info('Info:', context.data.key);
-	 
 	console.warn('Warn:', context.data.key);
-	 
 	console.error('Error:', context.data.key);
 };
 

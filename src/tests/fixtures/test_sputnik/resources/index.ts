@@ -4,7 +4,8 @@ import {
 	decodeDocData,
 	defineAssert,
 	defineHook,
-	type OnSetDoc
+	type OnSetDoc,
+	type OnSetDocContext
 } from '@junobuild/functions';
 import { mockObj } from '../../../mocks/sputnik.mocks';
 
@@ -40,9 +41,17 @@ export const assertSetDoc = defineAssert<AssertSetDoc>({
 	}
 });
 
+const onSetDocDemo = async (context: OnSetDocContext) => {
+	console.log('onSetDoc:', context.data.key);
+};
+
 export const onSetDoc = defineHook<OnSetDoc>({
-	collections: ['demo', 'console'],
+	collections: ['demo-onsetdoc'],
 	run: async (context) => {
-		console.log('onSetDoc', context.data.key);
+		switch (context.data.collection) {
+			case 'demo-onsetdoc':
+				await onSetDocDemo(context);
+				break;
+		}
 	}
 });

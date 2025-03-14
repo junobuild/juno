@@ -34,3 +34,27 @@ export const setDocAndFetchLogs = async ({
 		logs
 	};
 };
+
+export const setDocAndAssertLogsLength = async ({
+	collection,
+	length,
+	actor,
+	pic,
+	canisterId,
+	controller
+}: {
+	collection: string;
+	length: number;
+} & SetupFixtureCanister<SputnikActor>) => {
+	const { docKey, logs } = await setDocAndFetchLogs({
+		collection,
+		actor,
+		controller,
+		canisterId,
+		pic
+	});
+
+	const logsWithKey = logs.filter(([_, { message }]) => message.includes(docKey));
+
+	expect(logsWithKey.length).toEqual(length);
+};

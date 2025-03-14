@@ -7,13 +7,13 @@ import { mockSetRule } from '../../mocks/collection.mocks';
 import { setupTestSputnik } from '../../utils/fixtures-tests.utils';
 import { setDocAndAssertLogsLength } from '../../utils/sputnik-tests.utils';
 
-describe('Sputnik > assert_set_doc', () => {
+describe('Sputnik > on_set_doc', () => {
 	let pic: PocketIc;
 	let actor: Actor<SputnikActor>;
 	let canisterId: Principal;
 	let controller: Identity;
 
-	const TEST_ASSERTED_COLLECTION = 'demo';
+	const TEST_ASSERTED_COLLECTION = 'demo-onsetdoc';
 	const TEST_NOT_ASSERTED_COLLECTION = 'test';
 
 	beforeAll(async () => {
@@ -46,14 +46,14 @@ describe('Sputnik > assert_set_doc', () => {
 		});
 	};
 
-	it('should not assert document for unobserved collection', async () => {
+	it('should not call hook for unobserved collection', async () => {
 		await setAndAssert({
 			collection: TEST_NOT_ASSERTED_COLLECTION,
 			length: 0
 		});
 	});
 
-	it('should assert document for observed collection', async () => {
+	it('should call hook for observed collection', async () => {
 		await setAndAssert({
 			collection: TEST_ASSERTED_COLLECTION,
 			length: 1

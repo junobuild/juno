@@ -45,10 +45,12 @@ pub fn declare_module<'js>(
     name: &str,
     source: &str,
 ) -> Result<Module<'js>, JsError> {
-    Module::declare(ctx.clone(), name, source).map_err(|e| {
-        Exception::throw_message(
-            ctx,
-            &format!("{} ({})", JUNO_SPUTNIK_ERROR_MODULE_DECLARE, e),
-        )
-    })
+    Module::declare(ctx.clone(), name, source)
+        .catch(ctx)
+        .map_err(|e| {
+            Exception::throw_message(
+                ctx,
+                &format!("{} ({})", JUNO_SPUTNIK_ERROR_MODULE_DECLARE, e),
+            )
+        })
 }

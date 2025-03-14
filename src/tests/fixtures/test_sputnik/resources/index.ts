@@ -1,4 +1,5 @@
 import { type AssertSetDocContext, decodeDocData, defineAssert } from '@junobuild/functions';
+import { mockObj } from '../../../mocks/sputnik.mocks';
 
 const onAssertSetDocConsole = (context: AssertSetDocContext) => {
 	// eslint-disable-next-line no-console
@@ -7,6 +8,9 @@ const onAssertSetDocConsole = (context: AssertSetDocContext) => {
 	console.info('Info:', context.data.key);
 	console.warn('Warn:', context.data.key);
 	console.error('Error:', context.data.key);
+
+	// eslint-disable-next-line no-console
+	console.log('Log and serialize:', mockObj);
 };
 
 const onAssertSetDocDemo = (context: AssertSetDocContext) => {

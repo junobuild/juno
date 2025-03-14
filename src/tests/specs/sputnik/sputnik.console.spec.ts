@@ -1,9 +1,11 @@
 import type { _SERVICE as SputnikActor } from '$declarations/sputnik/sputnik.did';
 import type { Identity } from '@dfinity/agent';
 import type { Principal } from '@dfinity/principal';
+import { jsonReplacer } from '@dfinity/utils';
 import { type Actor, PocketIc } from '@hadronous/pic';
 import { afterAll, beforeAll, describe, inject } from 'vitest';
 import { mockSetRule } from '../../mocks/collection.mocks';
+import { mockObj } from '../../mocks/sputnik.mocks';
 import { setupTestSputnik } from '../../utils/fixtures-tests.utils';
 import { setDocAndFetchLogs } from '../../utils/sputnik-tests.utils';
 
@@ -79,5 +81,21 @@ describe('Sputnik > assert_set_doc', () => {
 			collection: TEST_ASSERTED_COLLECTION,
 			identifier: 'Error'
 		});
+	});
+
+	it('should serialize types no supported natively by JSON.stringify', async () => {
+		const { logs } = await setDocAndFetchLogs({
+			collection: TEST_ASSERTED_COLLECTION,
+			actor,
+			controller,
+			canisterId,
+			pic
+		});
+
+		const obj = JSON.stringify(mockObj, jsonReplacer);
+
+		const log = logs.find(([_, { message }]) => message.includes(`Log and serialize: ${obj}`));
+
+		expect(log).not.toBeUndefined();
 	});
 });

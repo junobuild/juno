@@ -5,23 +5,23 @@ pub fn init_console_log(ctx: &Ctx) -> Result<(), JsError> {
 
     let result = ctx.eval::<(), _>(
         r#"
-const __juno_console_log = (v) => {
+const __juno_satellite_console_log = (v) => {
     const msg = v.map(arg => typeof arg === 'object' ? JSON.stringify(arg) : arg).join(" ");
     globalThis.__ic_cdk_print(msg);
 }
 
 globalThis.console = {
   info(...v) {
-    __juno_console_log(v);
+    __juno_satellite_console_log(v);
   },
   log(...v) {
-    __juno_console_log(v);
+    __juno_satellite_console_log(v);
   },
   warn(...v) {
-    __juno_console_log(v);
+    __juno_satellite_console_log(v);
   },
   error(...v) {
-    __juno_console_log(v);
+    __juno_satellite_console_log(v);
   }
 }
 "#,

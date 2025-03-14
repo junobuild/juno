@@ -13,9 +13,12 @@ ic-cdk.workspace = true
 junobuild-satellite = { path = "../libs/satellite", default-features = false, features = [
 	"on_init_sync",
 	"on_post_upgrade_sync",
-	"on_init_random_seed"
+	"on_post_upgrade",
+	"on_init_random_seed",
+	"assert_set_doc"
 ] }
 junobuild-collections = { path = "../libs/collections" }
+junobuild-shared = { path = "../libs/shared" }
 junobuild-macros = { path = "../libs/macros" }
 ic-wasi-polyfill = "0.7.0"
 rquickjs = { version = "0.9.0", features = ["macro", "futures"] }

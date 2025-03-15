@@ -1,12 +1,12 @@
 import {
 	type AssertSetDoc,
 	type AssertSetDocContext,
-	decodeDocData,
 	defineAssert,
 	defineHook,
 	type OnSetDoc,
 	type OnSetDocContext
 } from '@junobuild/functions';
+import { decodeDocData } from '@junobuild/functions/sdk';
 import { mockObj } from '../../../mocks/sputnik.mocks';
 
 const onAssertSetDocConsole = (context: AssertSetDocContext) => {

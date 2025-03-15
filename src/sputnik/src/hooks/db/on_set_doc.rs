@@ -1,5 +1,6 @@
 use crate::hooks::js::runtime::on_set_doc::OnSetDoc;
 use crate::hooks::js::runtime::types::OnJsHook;
+use crate::hooks::js::sdk::init_sdk;
 use crate::js::runtime::execute_async_js;
 use crate::js::types::RunAsyncJsFn;
 use crate::state::store::get_on_set_docs_collections;
@@ -24,8 +25,7 @@ pub struct AsyncJsFnContext {
 
 impl RunAsyncJsFn for AsyncJsFnContext {
     async fn run<'js>(&self, ctx: &Ctx<'js>) -> Result<(), JsError> {
-        // TODO
-        // init_sdk(ctx)?;
+        init_sdk(ctx)?;
 
         OnSetDoc.execute(ctx, self.context.clone()).await
     }

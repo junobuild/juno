@@ -1,13 +1,16 @@
+import { Principal } from '@dfinity/principal';
 import {
 	type AssertSetDoc,
 	type AssertSetDocContext,
 	decodeDocData,
 	defineAssert,
 	defineHook,
+	encodeDocData,
 	type OnSetDoc,
-	type OnSetDocContext
+	type OnSetDocContext,
+	setDocStore
 } from '@junobuild/functions';
-import { mockObj } from '../../../mocks/sputnik.mocks';
+import { mockSputnikObj, type SputnikMock } from '../../../mocks/sputnik.mocks';
 
 const onAssertSetDocConsole = (context: AssertSetDocContext) => {
 	// eslint-disable-next-line no-console
@@ -18,7 +21,7 @@ const onAssertSetDocConsole = (context: AssertSetDocContext) => {
 	console.error('Error:', context.data.key);
 
 	// eslint-disable-next-line no-console
-	console.log('Log and serialize:', mockObj);
+	console.log('Log and serialize:', mockSputnikObj);
 };
 
 const onAssertSetDocDemo = (context: AssertSetDocContext) => {
@@ -41,16 +44,41 @@ export const assertSetDoc = defineAssert<AssertSetDoc>({
 	}
 });
 
+// TODO: test assertion reject with Zod
+
 const onSetDocDemo = async (context: OnSetDocContext) => {
 	console.log('onSetDoc:', context.data.key);
 };
 
+const onSetDocUpdate = async (context: OnSetDocContext) => {
+	const sourceData = decodeDocData<SputnikMock>(context.data.data.after.data);
+
+	const updateData = {
+		...sourceData,
+		value: `${sourceData.value} (updated)`
+	};
+
+	const encodedData = encodeDocData(updateData);
+
+	setDocStore({
+		caller: Principal.anonymous().toUint8Array(),
+		collection: context.data.collection,
+		doc: {
+			key: context.data.key,
+			data: encodedData
+		}
+	});
+};
+
 export const onSetDoc = defineHook<OnSetDoc>({
-	collections: ['demo-onsetdoc'],
+	collections: ['demo-onsetdoc', 'update'],
 	run: async (context) => {
 		switch (context.data.collection) {
 			case 'demo-onsetdoc':
 				await onSetDocDemo(context);
+				break;
+			case 'update':
+				await onSetDocUpdate(context);
 				break;
 		}
 	}

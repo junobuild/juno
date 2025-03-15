@@ -5,7 +5,7 @@ import { jsonReplacer } from '@dfinity/utils';
 import { type Actor, PocketIc } from '@hadronous/pic';
 import { afterAll, beforeAll, describe, inject } from 'vitest';
 import { mockSetRule } from '../../mocks/collection.mocks';
-import { mockObj } from '../../mocks/sputnik.mocks';
+import { mockSputnikObj } from '../../mocks/sputnik.mocks';
 import { setupTestSputnik } from '../../utils/fixtures-tests.utils';
 import { setDocAndFetchLogs } from '../../utils/sputnik-tests.utils';
 
@@ -92,7 +92,7 @@ describe('Sputnik > assert_set_doc', () => {
 			pic
 		});
 
-		const obj = JSON.stringify(mockObj, jsonReplacer);
+		const obj = JSON.stringify(mockSputnikObj, jsonReplacer);
 
 		const log = logs.find(([_, { message }]) => message.includes(`Log and serialize: ${obj}`));
 

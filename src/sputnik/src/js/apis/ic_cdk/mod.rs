@@ -1,4 +1,6 @@
+mod impls;
 mod print;
+pub mod types;
 
 use crate::js::apis::ic_cdk::print::init_ic_cdk_print;
 use rquickjs::{Ctx, Error as JsError};

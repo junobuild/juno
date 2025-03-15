@@ -1,8 +1,8 @@
 use crate::hooks::js::types::hooks::{
-    JsDoc, JsDocAssertSet, JsDocContext, JsDocUpsert, JsHookContext, JsRawData, JsRawPrincipal,
+    JsDoc, JsDocAssertSet, JsDocContext, JsDocUpsert, JsHookContext, JsRawData,
 };
 use crate::hooks::js::types::interface::JsSetDoc;
-use candid::Principal;
+use crate::js::types::candid::JsRawPrincipal;
 use junobuild_satellite::{Doc, DocAssertSet, DocContext, DocUpsert, HookContext, SetDoc};
 use rquickjs::{
     BigInt, Ctx, Error as JsError, FromJs, IntoJs, Object, Result as JsResult, TypedArray, Value,
@@ -186,33 +186,6 @@ impl<'js> JsSetDoc<'js> {
             description: self.description.clone(),
             version: self.version,
         })
-    }
-}
-
-impl<'js> IntoJs<'js> for JsRawPrincipal<'js> {
-    fn into_js(self, ctx: &Ctx<'js>) -> JsResult<Value<'js>> {
-        self.0.into_js(ctx)
-    }
-}
-
-impl<'js> FromJs<'js> for JsRawPrincipal<'js> {
-    fn from_js(_ctx: &Ctx<'js>, value: Value<'js>) -> JsResult<Self> {
-        let array: TypedArray<'js, u8> = TypedArray::from_value(value)?;
-        Ok(JsRawPrincipal(array))
-    }
-}
-
-impl<'js> JsRawPrincipal<'js> {
-    pub fn from_bytes(ctx: &Ctx<'js>, bytes: &[u8]) -> JsResult<Self> {
-        let typed_array = TypedArray::new(ctx.clone(), bytes)?;
-        Ok(JsRawPrincipal(typed_array))
-    }
-
-    pub fn to_principal(&self) -> JsResult<Principal> {
-        self.0
-            .as_bytes()
-            .map(Principal::from_slice)
-            .ok_or_else(|| JsError::new_from_js("JsRawPrincipal", "Principal"))
     }
 }
 

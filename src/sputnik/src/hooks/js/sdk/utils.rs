@@ -4,8 +4,8 @@ use rquickjs::{Ctx, Error as JsError, Result as JsResult};
 pub fn init_utils_sdk(ctx: &Ctx) -> Result<(), JsError> {
     let global = ctx.globals();
 
-    global.set("__juno_satellite_raw_data_to_text", js_raw_data_to_text)?;
-    global.set("__juno_satellite_raw_data_from_text", js_raw_data_from_text)?;
+    global.set("__juno_satellite_datastore_raw_data_to_text", js_raw_data_to_text)?;
+    global.set("__juno_satellite_datastore_raw_data_from_text", js_raw_data_from_text)?;
 
     Ok(())
 }

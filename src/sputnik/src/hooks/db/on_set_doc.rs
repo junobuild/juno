@@ -1,7 +1,6 @@
 use crate::hooks::js::runtime::on_set_doc::OnSetDoc;
 use crate::hooks::js::runtime::types::OnJsHook;
-use crate::js::runtime::execute_async_js;
-use crate::js::types::RunAsyncJsFn;
+use crate::js::runtime::{execute_async_js, RunAsyncJsFn};
 use crate::state::store::get_on_set_docs_collections;
 use ic_cdk::{spawn, trap};
 use junobuild_satellite::OnSetDocContext;

@@ -10,8 +10,8 @@ import {
 	type RunFunction
 } from '@junobuild/functions';
 import { id } from '@junobuild/functions/ic-cdk';
-import { decodeDocData } from '@junobuild/functions/sdk';
-import { mockObj } from '../../../mocks/sputnik.mocks';
+import { decodeDocData, encodeDocData, setDocStore } from '@junobuild/functions/sdk';
+import { mockSputnikObj, type SputnikMock } from '../../../mocks/sputnik.mocks';
 
 const onAssertSetDocConsole = (context: AssertSetDocContext) => {
 	// eslint-disable-next-line no-console
@@ -22,7 +22,7 @@ const onAssertSetDocConsole = (context: AssertSetDocContext) => {
 	console.error('Error:', context.data.key);
 
 	// eslint-disable-next-line no-console
-	console.log('Log and serialize:', mockObj);
+	console.log('Log and serialize:', mockSputnikObj);
 };
 
 const onAssertSetDocDemo = (context: AssertSetDocContext) => {
@@ -61,12 +61,36 @@ const onSetIcCdkId = async (_context: OnSetDocContext) => {
 	console.log('Satellite ID is anonymous:', id().isAnonymous());
 };
 
+const onSetDocUpdate = async (context: OnSetDocContext) => {
+	const sourceData = decodeDocData<SputnikMock>(context.data.data.after.data);
+
+	const updateData = {
+		...sourceData,
+		value: `${sourceData.value} (updated)`
+	};
+
+	const encodedData = encodeDocData(updateData);
+
+	setDocStore({
+		// TODO: can we get a better stacktrace if owner is allowed?
+		// TODO: a test for this too?
+		caller: id(),
+		collection: context.data.collection,
+		doc: {
+			key: context.data.key,
+			version: context.data.data.after.version,
+			data: encodedData
+		}
+	});
+};
+
 export const onSetDoc = defineHook<OnSetDoc>({
-	collections: ['demo-onsetdoc', 'demo-ic-cdk-id'],
+	collections: ['demo-onsetdoc', 'demo-ic-cdk-id', 'demo-update'],
 	run: async (context) => {
 		const fn: Record<Collection, RunFunction<OnSetDocContext>> = {
 			'demo-onsetdoc': onSetDocDemo,
-			'demo-ic-cdk-id': onSetIcCdkId
+			'demo-ic-cdk-id': onSetIcCdkId,
+			'demo-update': onSetDocUpdate
 		};
 
 		await fn[context.data.collection]?.(context);

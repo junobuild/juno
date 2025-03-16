@@ -1,3 +1,5 @@
+/* eslint-disable require-await, no-console */
+
 import { Principal } from '@dfinity/principal';
 import {
 	type AssertSetDoc,
@@ -14,22 +16,19 @@ import { decodeDocData, encodeDocData, setDocStore } from '@junobuild/functions/
 import { mockSputnikObj, type SputnikMock } from '../../../mocks/sputnik.mocks';
 
 const onAssertSetDocConsole = (context: AssertSetDocContext) => {
-	// eslint-disable-next-line no-console
 	console.log('Log:', context.data.key);
-	// eslint-disable-next-line no-console
 	console.info('Info:', context.data.key);
 	console.warn('Warn:', context.data.key);
 	console.error('Error:', context.data.key);
 
-	// eslint-disable-next-line no-console
 	console.log('Log and serialize:', mockSputnikObj);
 };
 
 const onAssertSetDocDemo = (context: AssertSetDocContext) => {
-	decodeDocData;
-	// eslint-disable-next-line no-console
 	console.log('Asserting data for', context.data.key);
 };
+
+// TODO: test an assertion using zod
 
 export const assertSetDoc = defineAssert<AssertSetDoc>({
 	collections: ['demo', 'console'],
@@ -45,19 +44,15 @@ export const assertSetDoc = defineAssert<AssertSetDoc>({
 	}
 });
 
-// eslint-disable-next-line require-await
 const onSetDocDemo = async (context: OnSetDocContext) => {
-	// eslint-disable-next-line no-console
 	console.log('onSetDoc:', context.data.key);
 };
 
-// eslint-disable-next-line require-await
 const onSetIcCdkId = async (_context: OnSetDocContext) => {
-	// eslint-disable-next-line no-console
 	console.log('Satellite ID:', id().toText());
-	// eslint-disable-next-line no-console
+
 	console.log('Satellite ID is principal:', id() instanceof Principal);
-	// eslint-disable-next-line no-console
+
 	console.log('Satellite ID is anonymous:', id().isAnonymous());
 };
 
@@ -84,6 +79,8 @@ const onSetDocUpdate = async (context: OnSetDocContext) => {
 	});
 };
 
+// TODO: add test for text-encoding
+
 export const onSetDoc = defineHook<OnSetDoc>({
 	collections: ['demo-onsetdoc', 'demo-ic-cdk-id', 'demo-update'],
 	run: async (context) => {
@@ -96,3 +93,5 @@ export const onSetDoc = defineHook<OnSetDoc>({
 		await fn[context.data.collection]?.(context);
 	}
 });
+
+/* eslint-enable */

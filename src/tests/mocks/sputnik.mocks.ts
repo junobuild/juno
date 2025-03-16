@@ -2,7 +2,7 @@ import { Principal } from '@dfinity/principal';
 import { isNullish } from '@dfinity/utils';
 import { z } from 'zod';
 
-const SputnikMockSchema = z.object({
+export const SputnikMockSchema = z.object({
 	id: z.bigint(),
 	owner: z.custom((value: unknown) => {
 		if (isNullish(value)) {

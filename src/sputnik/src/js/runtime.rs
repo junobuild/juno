@@ -5,7 +5,9 @@ use crate::errors::js::{
 };
 use crate::js::apis::init_apis;
 use crate::js::dev::script::declare_dev_script;
-use rquickjs::{async_with, AsyncContext, AsyncRuntime, Context, Ctx, Error as JsError, Runtime};
+use rquickjs::{
+    async_with, AsyncContext, AsyncRuntime, CatchResultExt, Context, Ctx, Error as JsError, Runtime,
+};
 
 pub trait RunAsyncJsFn {
     async fn run<'js>(&self, ctx: &Ctx<'js>) -> Result<(), JsError>;
@@ -26,7 +28,7 @@ where
 
         declare_dev_script(&ctx).map_err(|e| e.to_string())?;
 
-        f.run(&ctx).await.map_err(|e| format!("{} ({})", JUNO_SPUTNIK_ERROR_RUNTIME_ASYNC_EXECUTE, e))?;
+        f.run(&ctx).await.catch(&ctx).map_err(|e| format!("{} ({})", JUNO_SPUTNIK_ERROR_RUNTIME_ASYNC_EXECUTE, e))?;
 
         Ok::<(), String>(())
     })

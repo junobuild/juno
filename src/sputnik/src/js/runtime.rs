@@ -1,7 +1,7 @@
 use crate::errors::js::{
     JUNO_SPUTNIK_ERROR_RUNTIME_API_INIT, JUNO_SPUTNIK_ERROR_RUNTIME_ASYNC_CONTEXT,
-    JUNO_SPUTNIK_ERROR_RUNTIME_ASYNC_EXECUTE, JUNO_SPUTNIK_ERROR_RUNTIME_ASYNC_RUNTIME,
-    JUNO_SPUTNIK_ERROR_RUNTIME_SYNC_CONTEXT, JUNO_SPUTNIK_ERROR_RUNTIME_SYNC_RUNTIME,
+    JUNO_SPUTNIK_ERROR_RUNTIME_ASYNC_RUNTIME, JUNO_SPUTNIK_ERROR_RUNTIME_SYNC_CONTEXT,
+    JUNO_SPUTNIK_ERROR_RUNTIME_SYNC_RUNTIME,
 };
 use crate::js::apis::init_apis;
 use crate::js::dev::script::declare_dev_script;
@@ -28,7 +28,7 @@ where
 
         declare_dev_script(&ctx).map_err(|e| e.to_string())?;
 
-        f.run(&ctx).await.catch(&ctx).map_err(|e| format!("{} ({})", JUNO_SPUTNIK_ERROR_RUNTIME_ASYNC_EXECUTE, e))?;
+        f.run(&ctx).await.catch(&ctx).map_err(|e| e.to_string())?;
 
         Ok::<(), String>(())
     })

@@ -5,8 +5,8 @@ pub const JUNO_SPUTNIK_ERROR_MODULE_EVALUATE: &str = "juno.sputnik.error.module.
 // Execute synchronous JS error.
 pub const JUNO_SPUTNIK_ERROR_MODULE_EXECUTE: &str = "juno.sputnik.error.module.execute";
 // Execute asynchronous JS promises future error.
-pub const JUNO_SPUTNIK_ERROR_MODULE_EXECUTE_PROMISES: &str =
-    "juno.sputnik.error.module.execute_promises";
+pub const JUNO_SPUTNIK_ERROR_MODULE_EXECUTE_ASYNC_PROMISE: &str =
+    "juno.sputnik.error.module.execute_async_promise";
 
 // Failed to create JavaScript async runtime.
 pub const JUNO_SPUTNIK_ERROR_RUNTIME_ASYNC_RUNTIME: &str =
@@ -14,9 +14,6 @@ pub const JUNO_SPUTNIK_ERROR_RUNTIME_ASYNC_RUNTIME: &str =
 // Failed to create asynchronous JavaScript execution context.
 pub const JUNO_SPUTNIK_ERROR_RUNTIME_ASYNC_CONTEXT: &str =
     "juno.sputnik.error.runtime.async_context";
-// JavaScript async execution failed.
-pub const JUNO_SPUTNIK_ERROR_RUNTIME_ASYNC_EXECUTE: &str =
-    "juno.sputnik.error.runtime.async_execute";
 // Failed to create JavaScript sync runtime.
 pub const JUNO_SPUTNIK_ERROR_RUNTIME_SYNC_RUNTIME: &str = "juno.sputnik.error.runtime.sync_runtime";
 // Failed to create synchronous JavaScript execution context.

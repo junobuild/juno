@@ -19,9 +19,8 @@ fn set_doc_store<'js>(
     key: JsKey,
     value: JsSetDoc<'js>,
 ) -> JsResult<()> {
-    set_doc_store_sdk(caller.to_principal()?, collection, key, value.to_doc()?).map_err(|e| {
-        Exception::throw_message(&ctx, &format!("Error setting the doc in store: {:?}", e))
-    })?;
+    set_doc_store_sdk(caller.to_principal()?, collection, key, value.to_doc()?)
+        .map_err(|e| Exception::throw_message(&ctx, &e))?;
 
     Ok(())
 }

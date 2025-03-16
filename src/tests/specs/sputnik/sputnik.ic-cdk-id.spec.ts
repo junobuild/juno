@@ -52,7 +52,7 @@ describe('Sputnik > ic-cdk > id', () => {
 	});
 
 	it('should get ID as Principal', async () => {
-		await assertId(`Satellite is principal: true`);
+		await assertId(`Satellite ID is principal: true`);
 	});
 
 	it('should not get ID as anonymous', async () => {

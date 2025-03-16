@@ -72,11 +72,11 @@ const onSetDocUpdate = async (context: OnSetDocContext) => {
 	const encodedData = encodeDocData(updateData);
 
 	setDocStore({
-		caller: Principal.anonymous().toUint8Array(),
+		caller: id(),
 		collection: context.data.collection,
 		doc: {
-			...context.data.data.after,
 			key: context.data.key,
+			version: context.data.data.after.version,
 			data: encodedData
 		}
 	});

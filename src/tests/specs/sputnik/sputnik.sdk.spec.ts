@@ -60,7 +60,7 @@ describe('Sputnik > ic-cdk > id', () => {
 			const data: SputnikMock = await fromArray(doc.data);
 
 			expect(data.value).toEqual(`${mockSputnikObj.value} (updated)`);
-			expect(doc.version).toEqual(2n);
+			expect(fromNullable(doc.version)).toEqual(2n);
 		});
 	});
 });

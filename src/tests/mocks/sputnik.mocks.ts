@@ -1,6 +1,6 @@
 import { Principal } from '@dfinity/principal';
-import { z } from "zod";
-import {isNullish} from "@dfinity/utils";
+import { isNullish } from '@dfinity/utils';
+import { z } from 'zod';
 
 const SputnikMockSchema = z.object({
 	id: z.bigint(),
@@ -9,7 +9,7 @@ const SputnikMockSchema = z.object({
 			return false;
 		}
 
-		return value instanceof Principal
+		return value instanceof Principal;
 	}),
 	array: z.custom<Uint8Array>((val) => val instanceof Uint8Array),
 	value: z.string()

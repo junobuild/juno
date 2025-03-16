@@ -75,6 +75,7 @@ const onSetDocUpdate = async (context: OnSetDocContext) => {
 		caller: Principal.anonymous().toUint8Array(),
 		collection: context.data.collection,
 		doc: {
+			...context.data.data.after,
 			key: context.data.key,
 			data: encodedData
 		}

@@ -1,5 +1,6 @@
 pub mod hooks {
     use crate::hooks::js::types::interface::JsSetDoc;
+    use crate::js::types::candid::JsRawPrincipal;
     use junobuild_collections::types::core::CollectionKey;
     use junobuild_shared::types::core::Key;
     use junobuild_shared::types::state::{Timestamp, Version};
@@ -9,9 +10,6 @@ pub mod hooks {
     pub type JsKey = Key;
     pub type JsTimestamp = Timestamp;
     pub type JsVersion = Version;
-
-    #[derive(Clone)]
-    pub struct JsRawPrincipal<'js>(pub TypedArray<'js, u8>);
 
     #[derive(Clone)]
     pub struct JsRawData<'js>(pub TypedArray<'js, u8>);

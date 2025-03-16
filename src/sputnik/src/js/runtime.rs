@@ -5,8 +5,11 @@ use crate::errors::js::{
 };
 use crate::js::apis::init_apis;
 use crate::js::dev::script::declare_dev_script;
-use crate::js::types::RunAsyncJsFn;
-use rquickjs::{async_with, AsyncContext, AsyncRuntime, Context, Ctx, Runtime};
+use rquickjs::{async_with, AsyncContext, AsyncRuntime, Context, Ctx, Error as JsError, Runtime};
+
+pub trait RunAsyncJsFn {
+    async fn run<'js>(&self, ctx: &Ctx<'js>) -> Result<(), JsError>;
+}
 
 pub async fn execute_async_js<T>(f: T) -> Result<(), String>
 where

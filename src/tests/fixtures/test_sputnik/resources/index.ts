@@ -2,14 +2,15 @@ import { Principal } from '@dfinity/principal';
 import {
 	type AssertSetDoc,
 	type AssertSetDocContext,
-	decodeDocData,
+	type Collection,
 	defineAssert,
 	defineHook,
-	encodeDocData,
 	type OnSetDoc,
 	type OnSetDocContext,
-	setDocStore
+	type RunFunction
 } from '@junobuild/functions';
+import { id } from '@junobuild/functions/ic-cdk';
+import { decodeDocData, encodeDocData, setDocStore } from '@junobuild/functions/sdk';
 import { mockSputnikObj, type SputnikMock } from '../../../mocks/sputnik.mocks';
 
 const onAssertSetDocConsole = (context: AssertSetDocContext) => {
@@ -44,10 +45,20 @@ export const assertSetDoc = defineAssert<AssertSetDoc>({
 	}
 });
 
-// TODO: test assertion reject with Zod
-
+// eslint-disable-next-line require-await
 const onSetDocDemo = async (context: OnSetDocContext) => {
+	// eslint-disable-next-line no-console
 	console.log('onSetDoc:', context.data.key);
+};
+
+// eslint-disable-next-line require-await
+const onSetIcCdkId = async (_context: OnSetDocContext) => {
+	// eslint-disable-next-line no-console
+	console.log('Satellite ID:', id().toText());
+	// eslint-disable-next-line no-console
+	console.log('Satellite ID is principal:', id() instanceof Principal);
+	// eslint-disable-next-line no-console
+	console.log('Satellite ID is anonymous:', id().isAnonymous());
 };
 
 const onSetDocUpdate = async (context: OnSetDocContext) => {
@@ -71,15 +82,14 @@ const onSetDocUpdate = async (context: OnSetDocContext) => {
 };
 
 export const onSetDoc = defineHook<OnSetDoc>({
-	collections: ['demo-onsetdoc', 'update'],
+	collections: ['demo-onsetdoc', 'demo-ic-cdk-id', 'demo-update'],
 	run: async (context) => {
-		switch (context.data.collection) {
-			case 'demo-onsetdoc':
-				await onSetDocDemo(context);
-				break;
-			case 'update':
-				await onSetDocUpdate(context);
-				break;
-		}
+		const fn: Record<Collection, RunFunction<OnSetDocContext>> = {
+			'demo-onsetdoc': onSetDocDemo,
+			'demo-ic-cdk-id': onSetIcCdkId,
+			'demo-update': onSetDocUpdate
+		};
+
+		await fn[context.data.collection]?.(context);
 	}
 });

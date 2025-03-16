@@ -45,13 +45,19 @@ export const assertSetDoc = defineAssert<AssertSetDoc>({
 	}
 });
 
+// eslint-disable-next-line require-await
 const onSetDocDemo = async (context: OnSetDocContext) => {
+	// eslint-disable-next-line no-console
 	console.log('onSetDoc:', context.data.key);
 };
 
+// eslint-disable-next-line require-await
 const onSetIcCdkId = async (_context: OnSetDocContext) => {
+	// eslint-disable-next-line no-console
 	console.log('Satellite ID:', id().toText());
+	// eslint-disable-next-line no-console
 	console.log('Satellite ID is principal:', id() instanceof Principal);
+	// eslint-disable-next-line no-console
 	console.log('Satellite ID is anonymous:', id().isAnonymous());
 };
 

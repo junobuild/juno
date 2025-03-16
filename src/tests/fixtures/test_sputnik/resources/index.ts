@@ -67,7 +67,6 @@ const onSetDocUpdate = async (context: OnSetDocContext) => {
 	const encodedData = encodeDocData(updateData);
 
 	setDocStore({
-		// TODO: can we get a better stacktrace if owner is allowed?
 		// TODO: a test for this too?
 		caller: id(),
 		collection: context.data.collection,

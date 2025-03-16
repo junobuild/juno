@@ -52,7 +52,7 @@ const onSetDocDemo = async (context: OnSetDocContext) => {
 const onSetIcCdkId = async (_context: OnSetDocContext) => {
 	console.log('Satellite ID:', id().toText());
 	console.log('Satellite ID is principal:', id() instanceof Principal);
-	console.log('Satellite ID is not anonymous:', id().isAnonymous());
+	console.log('Satellite ID is anonymous:', id().isAnonymous());
 };
 
 export const onSetDoc = defineHook<OnSetDoc>({

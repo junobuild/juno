@@ -56,6 +56,6 @@ describe('Sputnik > ic-cdk > id', () => {
 	});
 
 	it('should not get ID as anonymous', async () => {
-		await assertId(`Satellite ID is not anonymous: true`);
+		await assertId(`Satellite ID is anonymous: false`);
 	});
 });

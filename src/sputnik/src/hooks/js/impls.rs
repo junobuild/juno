@@ -4,9 +4,7 @@ use crate::hooks::js::types::hooks::{
 use crate::hooks::js::types::interface::JsSetDoc;
 use crate::js::types::candid::JsRawPrincipal;
 use junobuild_satellite::{Doc, DocAssertSet, DocContext, DocUpsert, HookContext, SetDoc};
-use rquickjs::{
-    BigInt, Ctx, Error as JsError, FromJs, IntoJs, Object, Result as JsResult, TypedArray, Value,
-};
+use rquickjs::{BigInt, Ctx, Error as JsError, FromJs, IntoJs, Object, Result as JsResult, Value};
 
 type OnSetDocContext = HookContext<DocContext<DocUpsert>>;
 type AssertSetDocContext = HookContext<DocContext<DocAssertSet>>;
@@ -189,25 +187,7 @@ impl<'js> JsSetDoc<'js> {
     }
 }
 
-impl<'js> IntoJs<'js> for JsRawData<'js> {
-    fn into_js(self, ctx: &Ctx<'js>) -> JsResult<Value<'js>> {
-        self.0.into_js(ctx)
-    }
-}
-
-impl<'js> FromJs<'js> for JsRawData<'js> {
-    fn from_js(_ctx: &Ctx<'js>, value: Value<'js>) -> JsResult<Self> {
-        let array: TypedArray<'js, u8> = TypedArray::from_value(value)?;
-        Ok(JsRawData(array))
-    }
-}
-
 impl<'js> JsRawData<'js> {
-    pub fn from_bytes(ctx: &Ctx<'js>, bytes: &[u8]) -> JsResult<Self> {
-        let typed_array = TypedArray::new(ctx.clone(), bytes)?;
-        Ok(JsRawData(typed_array))
-    }
-
     pub fn from_text(ctx: &Ctx<'js>, text: &str) -> JsResult<Self> {
         Self::from_bytes(ctx, text.as_bytes())
     }

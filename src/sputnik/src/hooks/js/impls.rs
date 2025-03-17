@@ -67,7 +67,7 @@ fn convert_doc<'js>(ctx: &Ctx<'js>, doc: Doc) -> Result<JsDoc<'js>, JsError> {
         description: doc.description,
         created_at: doc.created_at,
         updated_at: doc.updated_at,
-        version: doc.version.map(Into::into),
+        version: doc.version,
     })
 }
 
@@ -75,7 +75,7 @@ fn convert_set_doc<'js>(ctx: &Ctx<'js>, doc: SetDoc) -> Result<JsSetDoc<'js>, Js
     Ok(JsSetDoc {
         data: JsRawData::from_bytes(ctx, &doc.data)?,
         description: doc.description,
-        version: doc.version.map(Into::into),
+        version: doc.version,
     })
 }
 
@@ -224,7 +224,7 @@ impl<'js> JsRawData<'js> {
             .0
             .as_bytes()
             .ok_or_else(|| JsError::new_from_js("JsRawData", "String"))?;
-        Ok(String::from_utf8_lossy(&bytes).to_string())
+        Ok(String::from_utf8_lossy(bytes).to_string())
     }
 }
 

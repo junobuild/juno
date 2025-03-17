@@ -10,7 +10,7 @@ pub fn execute_on_post_upgrade<'js>(ctx: &Ctx<'js>) -> Result<(), JsError> {
 }
 
 fn evaluate_loaders<'js>(ctx: &Ctx<'js>) -> Result<(), JsError> {
-    let loaders = vec![AssertSetDoc.get_loader_code(), OnSetDoc.get_loader_code()];
+    let loaders = [AssertSetDoc.get_loader_code(), OnSetDoc.get_loader_code()];
 
     let loaders_code = loaders.join("\n");
 

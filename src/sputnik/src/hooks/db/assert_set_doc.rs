@@ -13,7 +13,7 @@ pub extern "Rust" fn juno_assert_set_doc(context: AssertSetDocContext) -> Result
 
         AssertSetDoc
             .execute(ctx, context.clone())
-            .catch(&ctx)
+            .catch(ctx)
             .map_err(|e| e.to_string())?;
 
         Ok(())

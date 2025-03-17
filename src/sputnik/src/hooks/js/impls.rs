@@ -215,15 +215,15 @@ impl<'js> JsRawData<'js> {
     pub fn to_vec(&self) -> JsResult<Vec<u8>> {
         self.0
             .as_bytes()
-            .map(|bytes| bytes.to_vec()) // Convert &[u8] to Vec<u8>
-            .ok_or_else(|| JsError::new_from_js("JsRawPrincipal", "Principal"))
+            .map(|bytes| bytes.to_vec())
+            .ok_or_else(|| JsError::new_from_js("JsRawData", "Vec<u8>"))
     }
 
     pub fn to_text(&self) -> JsResult<String> {
         let bytes = self
             .0
             .as_bytes()
-            .ok_or_else(|| JsError::new_from_js("JsRawPrincipal", "Text"))?;
+            .ok_or_else(|| JsError::new_from_js("JsRawData", "String"))?;
         Ok(String::from_utf8_lossy(&bytes).to_string())
     }
 }

@@ -32,7 +32,7 @@ async fn ic_cdk_call_raw<'js>(
         Err(err) => Err(throw_js_exception(
             &ctx,
             JUNO_SPUTNIK_ERROR_IC_CDK_CALL_RAW,
-            &format!("{}: {}", err.0 as i32, &err.1),
+            format!("{}: {}", err.0 as i32, &err.1),
         )),
         Ok(bytes) => {
             let ok = TypedArray::<u8>::new(ctx.clone(), bytes)?;

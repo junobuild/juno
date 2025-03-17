@@ -10,7 +10,7 @@ pub fn init_ic_cdk_print(ctx: &Ctx) -> Result<(), JsError> {
 
 #[rquickjs::function]
 fn ic_cdk_print<'js>(_ctx: Ctx<'js>, msg: String<'js>) -> JsResult<()> {
-    print(format!("{}", &msg.to_string()?));
+    print(&msg.to_string()?);
 
     Ok(())
 }

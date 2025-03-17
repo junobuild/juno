@@ -8,7 +8,7 @@ fn on_post_upgrade() -> Result<(), String> {
     execute_sync_js(|ctx| {
         init_loaders(ctx).map_err(|e| e.to_string())?;
 
-        execute_on_post_upgrade(&ctx).map_err(|e| e.to_string())?;
+        execute_on_post_upgrade(ctx).map_err(|e| e.to_string())?;
 
         Ok(())
     })

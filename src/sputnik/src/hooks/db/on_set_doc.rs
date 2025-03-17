@@ -13,7 +13,7 @@ pub extern "Rust" fn juno_on_set_doc(context: OnSetDocContext) {
         let execute_context = AsyncJsFnContext { context };
 
         if let Err(e) = execute_async_js(execute_context).await {
-            trap(&format!("{}", e));
+            trap(&e.to_string());
         }
     });
 }

@@ -15,7 +15,7 @@ describe('Sputnik > assert_set_doc', () => {
 	let canisterId: Principal;
 	let controller: Identity;
 
-	const TEST_ASSERTED_COLLECTION = 'console';
+	const TEST_ASSERTED_COLLECTION = 'test-console';
 
 	beforeAll(async () => {
 		pic = await PocketIc.create(inject('PIC_URL'));

@@ -14,7 +14,7 @@ describe('Sputnik > ic-cdk > call', () => {
 	let pic: PocketIc;
 	let actor: Actor<SputnikActor>;
 
-	const TEST_COLLECTION = 'demo-ic-cdk-call';
+	const TEST_COLLECTION = 'test-ic-cdk-call';
 	const MOCK_COLLECTION = 'demo';
 
 	beforeAll(async () => {

@@ -13,7 +13,7 @@ describe('Sputnik > on_set_doc', () => {
 	let canisterId: Principal;
 	let controller: Identity;
 
-	const TEST_ASSERTED_COLLECTION = 'demo-onsetdoc';
+	const TEST_ASSERTED_COLLECTION = 'test-onsetdoc';
 	const TEST_NOT_ASSERTED_COLLECTION = 'test';
 
 	beforeAll(async () => {

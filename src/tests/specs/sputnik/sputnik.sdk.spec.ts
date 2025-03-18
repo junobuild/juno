@@ -13,7 +13,7 @@ describe('Sputnik > ic-cdk > id', () => {
 	let pic: PocketIc;
 	let actor: Actor<SputnikActor>;
 
-	const TEST_COLLECTION = 'demo-update';
+	const TEST_COLLECTION = 'test-update';
 
 	beforeAll(async () => {
 		pic = await PocketIc.create(inject('PIC_URL'));

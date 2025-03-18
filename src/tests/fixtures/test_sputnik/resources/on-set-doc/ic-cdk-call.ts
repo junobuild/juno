@@ -127,6 +127,6 @@ const callStringNoArgs = async ({ caller, data: { collection, key, data } }: OnS
 	});
 };
 
-export const onTestIcCdkCall = async (context: OnSetDocContext) => {
+export const testIcCdkCall = async (context: OnSetDocContext) => {
 	await Promise.all([callRecord(context), callBigInt(context), callStringNoArgs(context)]);
 };

@@ -2,7 +2,7 @@ import type { OnSetDocContext } from '@junobuild/functions';
 import { decodeDocData, encodeDocData, setDocStore } from '@junobuild/functions/sdk';
 import type { SputnikTestTextEncodingData } from '../../../mocks/sputnik.mocks';
 
-export const onTestTextEncoding = async ({
+export const onTestTextEncoding = ({
 	caller,
 	data: { collection, key, data }
 }: OnSetDocContext) => {

@@ -18,7 +18,7 @@ describe('Sputnik > ic-cdk > id', () => {
 	beforeAll(async () => {
 		pic = await PocketIc.create(inject('PIC_URL'));
 
-		const { pic: p, actor: a, canisterId: cId, controller: c } = await setupTestSputnik();
+		const { pic: p, actor: a } = await setupTestSputnik();
 
 		pic = p;
 		actor = a;

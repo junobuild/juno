@@ -1,7 +1,5 @@
 import type { Doc } from '$declarations/satellite/satellite.did';
 import type { _SERVICE as SputnikActor } from '$declarations/sputnik/sputnik.did';
-import type { Identity } from '@dfinity/agent';
-import type { Principal } from '@dfinity/principal';
 import { assertNonNullish, fromNullable, toNullable } from '@dfinity/utils';
 import { type Actor, PocketIc } from '@hadronous/pic';
 import { fromArray, toArray } from '@junobuild/utils';
@@ -15,8 +13,6 @@ import { waitServerlessFunction } from '../../utils/satellite-extended-tests.uti
 describe('Sputnik > ic-cdk > call', () => {
 	let pic: PocketIc;
 	let actor: Actor<SputnikActor>;
-	let canisterId: Principal;
-	let controller: Identity;
 
 	const TEST_COLLECTION = 'demo-ic-cdk-call';
 	const MOCK_COLLECTION = 'demo';
@@ -24,12 +20,10 @@ describe('Sputnik > ic-cdk > call', () => {
 	beforeAll(async () => {
 		pic = await PocketIc.create(inject('PIC_URL'));
 
-		const { pic: p, actor: a, canisterId: cId, controller: c } = await setupTestSputnik();
+		const { pic: p, actor: a } = await setupTestSputnik();
 
 		pic = p;
 		actor = a;
-		canisterId = cId;
-		controller = c;
 
 		const { set_rule } = actor;
 		await set_rule({ Db: null }, TEST_COLLECTION, mockSetRule);

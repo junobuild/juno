@@ -36,3 +36,4 @@ impl<'js> JsRawPrincipal<'js> {
             .map_err(|_| JsError::new_from_js("JsRawPrincipal", "Principal"))
     }
 }
+

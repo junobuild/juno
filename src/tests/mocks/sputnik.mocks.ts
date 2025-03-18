@@ -1,5 +1,5 @@
 import { Principal } from '@dfinity/principal';
-import {fromNullable, isNullish} from '@dfinity/utils';
+import { isNullish } from '@dfinity/utils';
 import { z } from 'zod';
 
 export const SputnikMockSchema = z.object({
@@ -25,7 +25,7 @@ export const mockSputnikObj: SputnikMock = {
 };
 
 export interface SputnikTestListDocs {
-	items_length: bigint,
-	items_page: bigint | undefined,
-	matches_length: bigint
+	items_length: bigint;
+	items_page: bigint | undefined;
+	matches_length: bigint;
 }

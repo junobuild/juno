@@ -1,16 +1,15 @@
 import type { _SERVICE as SputnikActor } from '$declarations/sputnik/sputnik.did';
 import type { Identity } from '@dfinity/agent';
 import type { Principal } from '@dfinity/principal';
+import { assertNonNullish, fromNullable, toNullable } from '@dfinity/utils';
 import { type Actor, PocketIc } from '@hadronous/pic';
+import { fromArray, toArray } from '@junobuild/utils';
+import { nanoid } from 'nanoid';
 import { afterAll, beforeAll, describe, inject } from 'vitest';
 import { mockSetRule } from '../../mocks/collection.mocks';
+import { mockSputnikObj, type SputnikTestListDocs } from '../../mocks/sputnik.mocks';
 import { setupTestSputnik } from '../../utils/fixtures-tests.utils';
-import { setDocAndFetchLogs } from '../../utils/sputnik-tests.utils';
-import {nanoid} from "nanoid";
-import {fromArray, toArray} from "@junobuild/utils";
-import {mockSputnikObj, type SputnikMock, type SputnikTestListDocs} from "../../mocks/sputnik.mocks";
-import {assertNonNullish, fromNullable, toNullable} from "@dfinity/utils";
-import {waitServerlessFunction} from "../../utils/satellite-extended-tests.utils";
+import { waitServerlessFunction } from '../../utils/satellite-extended-tests.utils';
 
 describe('Sputnik > ic-cdk > call', () => {
 	let pic: PocketIc;
@@ -19,7 +18,7 @@ describe('Sputnik > ic-cdk > call', () => {
 	let controller: Identity;
 
 	const TEST_COLLECTION = 'demo-ic-cdk-call';
-	const MOCK_COLLECTION = "demo";
+	const MOCK_COLLECTION = 'demo';
 
 	beforeAll(async () => {
 		pic = await PocketIc.create(inject('PIC_URL'));
@@ -56,9 +55,9 @@ describe('Sputnik > ic-cdk > call', () => {
 			description: toNullable(),
 			version: toNullable()
 		});
-	}
+	};
 
-	it("should make a call to list documents", async () => {
+	it('should make a call to list documents', async () => {
 		const { set_doc, get_doc } = actor;
 
 		const key = nanoid();
@@ -82,5 +81,5 @@ describe('Sputnik > ic-cdk > call', () => {
 		expect(data.items_length).toEqual(2n);
 		expect(data.matches_length).toEqual(2n);
 		expect(data.items_page).toEqual(0n);
-	})
+	});
 });

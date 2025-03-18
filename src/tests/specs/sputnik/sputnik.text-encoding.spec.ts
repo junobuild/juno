@@ -10,7 +10,6 @@ import { mockSetRule } from '../../mocks/collection.mocks';
 import { type SputnikTestTextEncodingData } from '../../mocks/sputnik.mocks';
 import { setupTestSputnik } from '../../utils/fixtures-tests.utils';
 import { waitServerlessFunction } from '../../utils/satellite-extended-tests.utils';
-import { setDocAndAssertLogsLength } from '../../utils/sputnik-tests.utils';
 
 describe('Sputnik > text-encoding', () => {
 	let pic: PocketIc;
@@ -37,17 +36,6 @@ describe('Sputnik > text-encoding', () => {
 	afterAll(async () => {
 		await pic?.tearDown();
 	});
-
-	const setAndAssert = async ({ collection, length }: { collection: string; length: number }) => {
-		await setDocAndAssertLogsLength({
-			collection,
-			length,
-			actor,
-			controller,
-			canisterId,
-			pic
-		});
-	};
 
 	it('should encode and decode using text encoding polyfill', async () => {
 		const { set_doc, get_doc } = actor;

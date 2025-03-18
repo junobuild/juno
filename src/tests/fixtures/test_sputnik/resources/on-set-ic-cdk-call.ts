@@ -75,7 +75,7 @@ export const onSetIcCdkCall = async ({
 			[IDL.Text, 'demo'],
 			[ListParams, params]
 		],
-		results: [ListResults_1_Type]
+		result: ListResults_1_Type
 	});
 
 	setDocStore({

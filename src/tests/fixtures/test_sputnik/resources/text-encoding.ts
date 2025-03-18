@@ -2,7 +2,9 @@ import type { OnSetDocContext } from '@junobuild/functions';
 import { decodeDocData, encodeDocData, setDocStore } from '@junobuild/functions/sdk';
 import type { SputnikTestTextEncodingData } from '../../../mocks/sputnik.mocks';
 
-export const onTestTextEncoding = ({
+// TODO: why not both
+// eslint-disable-next-line require-await
+export const onTestTextEncoding = async ({
 	caller,
 	data: { collection, key, data }
 }: OnSetDocContext) => {

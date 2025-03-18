@@ -1,3 +1,4 @@
+import type { Doc } from '$declarations/satellite/satellite.did';
 import type { _SERVICE as SputnikActor } from '$declarations/sputnik/sputnik.did';
 import type { Identity } from '@dfinity/agent';
 import type { Principal } from '@dfinity/principal';
@@ -57,7 +58,7 @@ describe('Sputnik > ic-cdk > call', () => {
 		});
 	};
 
-	it('should make a call to list documents', async () => {
+	const setAndGetDoc = async (keySuffix?: string): Promise<Doc> => {
 		const { set_doc, get_doc } = actor;
 
 		const key = nanoid();
@@ -70,16 +71,38 @@ describe('Sputnik > ic-cdk > call', () => {
 
 		await waitServerlessFunction(pic);
 
-		const result = await get_doc(TEST_COLLECTION, key);
+		const result = await get_doc(TEST_COLLECTION, `${key}${keySuffix ?? ''}`);
 
 		const doc = fromNullable(result);
 
 		assertNonNullish(doc);
+
+		return doc;
+	};
+
+	it('should call with args object and get and object', async () => {
+		const doc = await setAndGetDoc();
 
 		const data: SputnikTestListDocs = await fromArray(doc.data);
 
 		expect(data.items_length).toEqual(2n);
 		expect(data.matches_length).toEqual(2n);
 		expect(data.items_page).toEqual(0n);
+	});
+
+	it('should call and get a bigint as result', async () => {
+		const doc = await setAndGetDoc('_count_docs');
+
+		const data: bigint = await fromArray(doc.data);
+
+		expect(data).toEqual(2n);
+	});
+
+	it('should call without args and get a string as result', async () => {
+		const doc = await setAndGetDoc('_version');
+
+		const version: unknown = await fromArray(doc.data);
+
+		expect(typeof version === 'string').toBeTruthy();
 	});
 });

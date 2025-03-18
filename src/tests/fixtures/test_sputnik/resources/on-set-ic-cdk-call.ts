@@ -64,10 +64,7 @@ const params = {
 	]
 };
 
-export const onSetIcCdkCall = async ({
-	caller,
-	data: { collection, key, data }
-}: OnSetDocContext) => {
+const callRecord = async ({ caller, data: { collection, key, data } }: OnSetDocContext) => {
 	const result = await call<ListResults_1>({
 		canisterId: id(),
 		method: 'list_docs',
@@ -91,4 +88,45 @@ export const onSetIcCdkCall = async ({
 			})
 		}
 	});
+};
+
+const callBigInt = async ({ caller, data: { collection, key, data } }: OnSetDocContext) => {
+	const count = await call<bigint>({
+		canisterId: id(),
+		method: 'count_collection_docs',
+		args: [[IDL.Text, 'demo']],
+		result: IDL.Nat64
+	});
+
+	setDocStore({
+		caller,
+		collection,
+		doc: {
+			key: `${key}_count_docs`,
+			version: data.after.version,
+			data: encodeDocData(count)
+		}
+	});
+};
+
+const callStringNoArgs = async ({ caller, data: { collection, key, data } }: OnSetDocContext) => {
+	const version = await call<bigint>({
+		canisterId: id(),
+		method: 'version',
+		result: IDL.Text
+	});
+
+	setDocStore({
+		caller,
+		collection,
+		doc: {
+			key: `${key}_version`,
+			version: data.after.version,
+			data: encodeDocData(version)
+		}
+	});
+};
+
+export const onSetIcCdkCall = async (context: OnSetDocContext) => {
+	await Promise.all([callRecord(context), callBigInt(context), callStringNoArgs(context)]);
 };

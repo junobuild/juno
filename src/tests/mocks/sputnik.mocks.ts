@@ -29,3 +29,25 @@ export interface SputnikTestListDocs {
 	items_page: bigint | undefined;
 	matches_length: bigint;
 }
+
+export interface SputnikTestTextEncodingData {
+	input: {
+		decode: {
+			value: Uint8Array;
+		};
+		encode: {
+			value: string;
+		};
+	};
+	output?: {
+		decoded: {
+			value: string;
+			labelNotSupported: boolean;
+			inputIsNotArrayBuffer: boolean;
+		};
+		encoded: {
+			value: Uint8Array;
+			encodeIntoNotSupported: boolean;
+		};
+	};
+}

@@ -23,3 +23,6 @@ pub const JUNO_SPUTNIK_ERROR_RUNTIME_API_INIT: &str = "juno.sputnik.error.runtim
 
 // TextEncoding polyfill init error.
 pub const JUNO_SPUTNIK_ERROR_JS_API_TEXT_ENCODING: &str = "juno.sputnik.error.js.api.text_encoding";
+
+// The canister call failed.
+pub const JUNO_SPUTNIK_ERROR_IC_CDK_CALL_RAW: &str = "juno.sputnik.error.ic_cdk.call_raw";

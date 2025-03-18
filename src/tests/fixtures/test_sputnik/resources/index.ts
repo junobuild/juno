@@ -14,6 +14,7 @@ import {
 import { id } from '@junobuild/functions/ic-cdk';
 import { decodeDocData, encodeDocData, setDocStore } from '@junobuild/functions/sdk';
 import { mockSputnikObj, type SputnikMock } from '../../../mocks/sputnik.mocks';
+import { onSetIcCdkCall } from './on-set-ic-cdk-call';
 
 const onAssertSetDocConsole = (context: AssertSetDocContext) => {
 	console.log('Log:', context.data.key);
@@ -81,12 +82,13 @@ const onSetDocUpdate = async (context: OnSetDocContext) => {
 // TODO: add test for text-encoding
 
 export const onSetDoc = defineHook<OnSetDoc>({
-	collections: ['demo-onsetdoc', 'demo-ic-cdk-id', 'demo-update'],
+	collections: ['demo-onsetdoc', 'demo-ic-cdk-id', 'demo-ic-cdk-call', 'demo-update'],
 	run: async (context) => {
 		const fn: Record<Collection, RunFunction<OnSetDocContext>> = {
 			'demo-onsetdoc': onSetDocDemo,
 			'demo-ic-cdk-id': onSetIcCdkId,
-			'demo-update': onSetDocUpdate
+			'demo-update': onSetDocUpdate,
+			'demo-ic-cdk-call': onSetIcCdkCall
 		};
 
 		await fn[context.data.collection]?.(context);

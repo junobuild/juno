@@ -23,3 +23,9 @@ export const mockSputnikObj: SputnikMock = {
 	array: Uint8Array.from([1, 2, 3]),
 	value: 'hello'
 };
+
+export interface SputnikTestListDocs {
+	items_length: bigint;
+	items_page: bigint | undefined;
+	matches_length: bigint;
+}

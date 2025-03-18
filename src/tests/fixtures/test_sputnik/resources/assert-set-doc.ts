@@ -19,13 +19,13 @@ const onAssertSetDocDemo = (context: AssertSetDocContext) => {
 // TODO: test an assertion using zod
 
 export const assertSetDoc = defineAssert<AssertSetDoc>({
-	collections: ['demo', 'console'],
+	collections: ['test-assert', 'test-console'],
 	assert: (context) => {
 		switch (context.data.collection) {
-			case 'demo':
+			case 'test-assert':
 				onAssertSetDocDemo(context);
 				break;
-			case 'console':
+			case 'test-console':
 				onAssertSetDocConsole(context);
 				break;
 		}

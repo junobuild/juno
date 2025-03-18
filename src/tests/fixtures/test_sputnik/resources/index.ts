@@ -1,2 +1,2 @@
-import './assert-set-doc';
-import './on-set-doc';
+export * from './assert-set-doc';
+export { onSetDoc } from './on-set-doc';

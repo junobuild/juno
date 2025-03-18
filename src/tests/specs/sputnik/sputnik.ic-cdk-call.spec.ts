@@ -7,8 +7,8 @@ import { mockSetRule } from '../../mocks/collection.mocks';
 import { setupTestSputnik } from '../../utils/fixtures-tests.utils';
 import { setDocAndFetchLogs } from '../../utils/sputnik-tests.utils';
 import {nanoid} from "nanoid";
-import {toArray} from "@junobuild/utils";
-import {mockSputnikObj} from "../../mocks/sputnik.mocks";
+import {fromArray, toArray} from "@junobuild/utils";
+import {mockSputnikObj, type SputnikMock, type SputnikTestListDocs} from "../../mocks/sputnik.mocks";
 import {assertNonNullish, fromNullable, toNullable} from "@dfinity/utils";
 import {waitServerlessFunction} from "../../utils/satellite-extended-tests.utils";
 
@@ -76,5 +76,11 @@ describe('Sputnik > ic-cdk > call', () => {
 		const doc = fromNullable(result);
 
 		assertNonNullish(doc);
+
+		const data: SputnikTestListDocs = await fromArray(doc.data);
+
+		expect(data.items_length).toEqual(2n);
+		expect(data.matches_length).toEqual(2n);
+		expect(data.items_page).toEqual(0n);
 	})
 });

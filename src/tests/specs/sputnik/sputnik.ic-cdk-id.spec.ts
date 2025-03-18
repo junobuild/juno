@@ -13,7 +13,7 @@ describe('Sputnik > ic-cdk > id', () => {
 	let canisterId: Principal;
 	let controller: Identity;
 
-	const TEST_COLLECTION = 'demo-ic-cdk-id';
+	const TEST_COLLECTION = 'test-ic-cdk-id';
 
 	beforeAll(async () => {
 		pic = await PocketIc.create(inject('PIC_URL'));

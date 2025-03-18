@@ -13,7 +13,7 @@ import {
 import { id } from '@junobuild/functions/ic-cdk';
 import { decodeDocData, encodeDocData, setDocStore } from '@junobuild/functions/sdk';
 import { mockSputnikObj, type SputnikMock } from '../../../mocks/sputnik.mocks';
-import { onSetIcCdkCall } from './on-set-ic-cdk-call';
+import { onTestIcCdkCall } from './on-set-ic-cdk-call';
 import { onTestTextEncoding } from './text-encoding';
 
 const onAssertSetDocConsole = (context: AssertSetDocContext) => {
@@ -45,11 +45,11 @@ export const assertSetDoc = defineAssert<AssertSetDoc>({
 	}
 });
 
-const onSetDocDemo = async (context: OnSetDocContext) => {
+const onTestSetDoc = async (context: OnSetDocContext) => {
 	console.log('onSetDoc:', context.data.key);
 };
 
-const onSetIcCdkId = async (_context: OnSetDocContext) => {
+const onTestIcCdkId = async (_context: OnSetDocContext) => {
 	console.log('Satellite ID:', id().toText());
 
 	console.log('Satellite ID is principal:', id() instanceof Principal);
@@ -57,7 +57,7 @@ const onSetIcCdkId = async (_context: OnSetDocContext) => {
 	console.log('Satellite ID is anonymous:', id().isAnonymous());
 };
 
-const onSetDocUpdate = async (context: OnSetDocContext) => {
+const onTestDocUpdate = async (context: OnSetDocContext) => {
 	const sourceData = decodeDocData<SputnikMock>(context.data.data.after.data);
 
 	const updateData = {
@@ -79,13 +79,11 @@ const onSetDocUpdate = async (context: OnSetDocContext) => {
 	});
 };
 
-// TODO: add test for text-encoding
-
 const collections = [
-	'demo-onsetdoc',
-	'demo-ic-cdk-id',
-	'demo-ic-cdk-call',
-	'demo-update',
+	'test-onsetdoc',
+	'test-ic-cdk-id',
+	'test-ic-cdk-call',
+	'test-update',
 	'test-textencoding'
 ] as const;
 
@@ -95,10 +93,10 @@ export const onSetDoc = defineHook<OnSetDoc>({
 	collections,
 	run: async (context) => {
 		const fn: Record<OnSetDocCollection, RunFunction<OnSetDocContext>> = {
-			'demo-onsetdoc': onSetDocDemo,
-			'demo-ic-cdk-id': onSetIcCdkId,
-			'demo-update': onSetDocUpdate,
-			'demo-ic-cdk-call': onSetIcCdkCall,
+			'test-onsetdoc': onTestSetDoc,
+			'test-ic-cdk-id': onTestIcCdkId,
+			'test-update': onTestDocUpdate,
+			'test-ic-cdk-call': onTestIcCdkCall,
 			'test-textencoding': onTestTextEncoding
 		};
 

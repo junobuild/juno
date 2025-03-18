@@ -14,7 +14,7 @@ import {
 import { id } from '@junobuild/functions/ic-cdk';
 import { decodeDocData, encodeDocData, setDocStore } from '@junobuild/functions/sdk';
 import { mockSputnikObj, type SputnikMock } from '../../../mocks/sputnik.mocks';
-import {onSetIcCdkCall} from "./on-set-ic-cdk-call";
+import { onSetIcCdkCall } from './on-set-ic-cdk-call';
 
 const onAssertSetDocConsole = (context: AssertSetDocContext) => {
 	console.log('Log:', context.data.key);

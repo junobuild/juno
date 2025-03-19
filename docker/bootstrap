@@ -1,5 +1,6 @@
 #!/usr/bin/env bash
-# install build dependencies (rustup + ic-wasm)
+
+# install build dependencies (rustup, ic-wasm and wasi2ic)
 
 set -euo pipefail
 
@@ -44,9 +45,6 @@ then
     echo "installing ic-wasm 0.8.5"
     run cargo install ic-wasm --version 0.8.5 --locked
 fi
-
-echo "installing candid-extractor"
-cargo install candid-extractor --locked
 
 echo "installing wasi2ic"
 cargo install wasi2ic --locked

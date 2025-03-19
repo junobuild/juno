@@ -1,7 +1,8 @@
 /* eslint-disable no-console */
 
 import { type AssertSetDoc, type AssertSetDocContext, defineAssert } from '@junobuild/functions';
-import { mockSputnikObj } from '../../../mocks/sputnik.mocks';
+import { decodeDocData } from '@junobuild/functions/sdk';
+import { mockSputnikObj, type SputnikMock, SputnikMockSchema } from '../../../mocks/sputnik.mocks';
 
 const onAssertSetDocConsole = (context: AssertSetDocContext) => {
 	console.log('Log:', context.data.key);
@@ -16,10 +17,21 @@ const onAssertSetDocDemo = (context: AssertSetDocContext) => {
 	console.log('Asserting data for', context.data.key);
 };
 
+const onAssertZod = ({
+	data: {
+		data: {
+			proposed: { data }
+		}
+	}
+}: AssertSetDocContext) => {
+	const proposedData = decodeDocData<SputnikMock>(data);
+	console.log('Asserting with Zod:', SputnikMockSchema.safeParse(proposedData).success);
+};
+
 // TODO: test an assertion using zod
 
 export const assertSetDoc = defineAssert<AssertSetDoc>({
-	collections: ['test-assert', 'test-console'],
+	collections: ['test-assert', 'test-console', 'test-zod'],
 	assert: (context) => {
 		switch (context.data.collection) {
 			case 'test-assert':
@@ -27,6 +39,9 @@ export const assertSetDoc = defineAssert<AssertSetDoc>({
 				break;
 			case 'test-console':
 				onAssertSetDocConsole(context);
+				break;
+			case 'test-zod':
+				onAssertZod(context);
 				break;
 		}
 	}

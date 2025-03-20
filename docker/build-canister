@@ -64,7 +64,7 @@ function build_canister() {
     # Flags required by third party dependencies such as getrandom
     FEATURES="--cfg getrandom_backend=\"custom\""
 
-    RUSTFLAGS="--remap-path-prefix $CARGO_HOME=/cargo -C link-args=-zstack-size=3000000 $FEATURES"
+    RUSTFLAGS="-A deprecated --remap-path-prefix $CARGO_HOME=/cargo -C link-args=-zstack-size=3000000 $FEATURES"
 
     cargo_build_args=(
         --manifest-path "$SRC_DIR/Cargo.toml"

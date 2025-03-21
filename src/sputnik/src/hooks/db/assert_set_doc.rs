@@ -24,6 +24,5 @@ pub extern "Rust" fn juno_assert_set_doc(context: AssertSetDocContext) -> Result
 #[no_mangle]
 pub extern "Rust" fn juno_assert_set_doc_collections() -> Option<Vec<String>> {
     let collections = get_assert_set_docs_collections();
-
     Some(collections)
 }

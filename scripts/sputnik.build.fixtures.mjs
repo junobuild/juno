@@ -1,4 +1,4 @@
-import esbuild from 'esbuild';
+import { buildEsm } from '@junobuild/cli-tools';
 import { existsSync, mkdirSync, rmSync } from 'node:fs';
 import { join } from 'node:path';
 
@@ -10,27 +10,9 @@ if (existsSync(dist)) {
 
 mkdirSync(dist, { recursive: true });
 
+const infile = join(process.cwd(), 'src/tests/fixtures/test_sputnik/resources/index.ts');
 const outfile = join(dist, 'index.mjs');
 
-// TODO: disallow execution at the root
-// TODO: use CLI to build
-await esbuild.build({
-	entryPoints: [join(process.cwd(), 'src/tests/fixtures/test_sputnik/resources/index.ts')],
-	outfile,
-	bundle: true,
-	minify: true,
-	treeShaking: true,
-	format: 'esm',
-	platform: 'browser',
-	write: true,
-	supported: {
-		'top-level-await': false,
-		'inline-script': false,
-		'dynamic-import': false
-	},
-	define: {
-		self: 'globalThis'
-	}
-});
+await buildEsm({ infile, outfile });
 
 console.log(`[test_sputnik] ${outfile} generated`);

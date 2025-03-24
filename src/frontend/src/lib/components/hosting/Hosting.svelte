@@ -75,7 +75,7 @@
 				<CustomDomain url={satelliteUrl(satelliteId)} ariaLabel={$i18n.hosting.default_domain} />
 			</tr>
 
-			{#each $sortedSatelliteCustomDomains as [customDomainUrl, customDomain]}
+			{#each $sortedSatelliteCustomDomains as [customDomainUrl, customDomain] (customDomainUrl)}
 				<tr>
 					<CustomDomain
 						type="custom"

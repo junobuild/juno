@@ -46,7 +46,7 @@
 		<option value={$orbiterStore.orbiter_id.toText()}>{$i18n.analytics.title}</option>
 	{/if}
 
-	{#each satellites as satellite}
+	{#each satellites as satellite (satellite.satellite_id.toText())}
 		{@const satName = satelliteName(satellite)}
 
 		<option value={satellite.satellite_id.toText()}>{satName}</option>

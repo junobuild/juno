@@ -23,6 +23,6 @@
 
 <SatelliteNew row={$layoutSatellites === SatellitesLayout.LIST} />
 
-{#each satellites as satellite}
+{#each satellites as satellite (satellite.satellite_id.toText())}
 	<SatelliteArticle {satellite} />
 {/each}

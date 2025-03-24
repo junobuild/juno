@@ -33,7 +33,7 @@
 		{/if}
 
 		{#if nonNullish($store.rules)}
-			{#each $sortedRules as col}
+			{#each $sortedRules as col (col[0])}
 				<button class="text action" class:offset={start} onclick={() => edit(col)}
 					><span>{col[0]}</span></button
 				>

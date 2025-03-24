@@ -27,7 +27,7 @@
 			<select id="page" name="page" bind:value={page}>
 				<option value={undefined}>{$i18n.analytics.overall}</option>
 
-				{#each pages as pageMetric}
+				{#each pages as pageMetric (pageMetric[0])}
 					<option value={pageMetric[1]}>{pageMetric[0]}</option>
 				{/each}
 			</select>

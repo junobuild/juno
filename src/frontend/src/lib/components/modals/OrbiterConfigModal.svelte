@@ -175,7 +175,7 @@
 						</tr>
 					</thead>
 					<tbody>
-						{#each Object.entries(config) as conf}
+						{#each Object.entries(config) as conf (conf[0])}
 							{@const satelliteId = conf[0]}
 							{@const entry = conf[1]}
 

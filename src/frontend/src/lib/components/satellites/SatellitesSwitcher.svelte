@@ -34,7 +34,7 @@
 		<hr />
 
 		<div class="satellites">
-			{#each $sortedSatellites as satellite}
+			{#each $sortedSatellites as satellite (satellite.satellite_id.toText())}
 				{@const satName = satelliteName(satellite)}
 
 				<a

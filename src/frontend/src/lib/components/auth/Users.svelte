@@ -77,7 +77,7 @@
 
 		<tbody>
 			{#if nonNullish($paginationStore.items)}
-				{#each $paginationStore.items as [_key, user]}
+				{#each $paginationStore.items as [key, user] (key)}
 					<User {user} {satelliteId} />
 				{/each}
 

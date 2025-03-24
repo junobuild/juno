@@ -100,7 +100,7 @@
 					></tr
 				>
 			{:else}
-				{#each $store.items as [_, log]}
+				{#each $store.items as [key, log] (key)}
 					<Log {log} />
 				{/each}
 			{/if}

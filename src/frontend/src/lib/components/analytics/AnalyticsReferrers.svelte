@@ -22,7 +22,7 @@
 			</thead>
 
 			<tbody>
-				{#each top10.referrers as [referrer, count]}
+				{#each top10.referrers as [referrer, count] (referrer)}
 					<tr>
 						<td>{referrer}</td>
 						<td>{count}</td>

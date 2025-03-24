@@ -51,7 +51,7 @@
 >
 	<option value={undefined}>{$i18n.analytics.all_satellites}</option>
 
-	{#each satellites as { satelliteId, satName }}
+	{#each satellites as { satelliteId, satName } (satName)}
 		<option value={satelliteId}>{satName}</option>
 	{/each}
 </select>

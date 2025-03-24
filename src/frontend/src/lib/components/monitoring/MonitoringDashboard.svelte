@@ -43,7 +43,7 @@
 			<span>{$i18n.mission_control.title}</span>
 		</MonitoringArticle>
 
-		{#each $sortedSatellites ?? [] as satellite}
+		{#each $sortedSatellites ?? [] as satellite (satellite.satellite_id.toText())}
 			<MonitoringArticle
 				monitoring={fromNullishNullable(fromNullable(satellite.settings)?.monitoring)}
 				canisterId={satellite.satellite_id}
@@ -55,7 +55,7 @@
 			</MonitoringArticle>
 		{/each}
 
-		{#each $orbitersStore ?? [] as orbiter}
+		{#each $orbitersStore ?? [] as orbiter (orbiter.orbiter_id.toText())}
 			<MonitoringArticle
 				monitoring={fromNullishNullable(fromNullable(orbiter.settings)?.monitoring)}
 				canisterId={orbiter.orbiter_id}

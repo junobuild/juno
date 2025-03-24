@@ -174,7 +174,7 @@
 					</tr>
 				{/if}
 
-				{#each satellites as satellite}
+				{#each satellites as satellite (satellite[0].toText())}
 					<tr>
 						<td class="actions"
 							><Checkbox
@@ -193,7 +193,7 @@
 					</tr>
 				{/each}
 
-				{#each orbiters as orbiter}
+				{#each orbiters as orbiter (orbiter[0].toText())}
 					{@const orbName = orbiterName(orbiter[1])}
 
 					<tr>

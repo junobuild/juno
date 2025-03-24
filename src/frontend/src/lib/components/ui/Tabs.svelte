@@ -23,7 +23,7 @@
 {@render info?.()}
 
 <div class="tabs" use:onIntersection onjunoIntersecting={onLayoutTitleIntersection}>
-	{#each $store.tabs as { labelKey, id }}
+	{#each $store.tabs as { labelKey, id } (id)}
 		{@const [group, key] = labelKey.split('.')}
 		{@const obj = keyOf({ obj: $i18n, key: group })}
 		{@const text = keyOf({ obj, key })}

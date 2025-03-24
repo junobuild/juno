@@ -130,7 +130,7 @@
 		{#if nonNullish($paginationStore.items)}
 			<div in:fade>
 				{#if $paginationStore.items.length > 0}
-					{#each $paginationStore.items as item}
+					{#each $paginationStore.items as item (item[0])}
 						{@const asset = item[1]}
 						{@const key = asset.key.full_path}
 

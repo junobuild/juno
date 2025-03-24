@@ -20,7 +20,7 @@
 	{#if ['synced', 'syncing'].includes(sync ?? '')}
 		{@render children()}
 	{:else if sync === 'loading'}
-		{#each paragraphs as _}
+		{#each paragraphs as paragraph (paragraph)}
 			<p><SkeletonText /></p>
 		{/each}
 	{:else}

@@ -90,7 +90,7 @@
 							</thead>
 
 							<tbody>
-								{#each usages as usage}
+								{#each usages as usage (usage.collection)}
 									{@const warning =
 										nonNullish(usage.maxChangesPerUser) &&
 										(usage.usage?.changes_count ?? 0) >= (usage.maxChangesPerUser ?? 0)}

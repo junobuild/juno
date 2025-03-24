@@ -12,7 +12,6 @@
 
 	let { children, actions }: Props = $props();
 
-	// eslint-disable-next-line no-undef
 	const { store }: DataContext<T> = getContext<DataContext<T>>(DATA_CONTEXT_KEY);
 </script>
 

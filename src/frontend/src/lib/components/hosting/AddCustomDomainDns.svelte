@@ -36,7 +36,7 @@
 	<p class="title">{$i18n.hosting.host}</p>
 	<p class="title value">{$i18n.hosting.value}</p>
 
-	{#each dns?.entries ?? [] as { type, host, value }}
+	{#each dns?.entries ?? [] as { type, host, value } (value)}
 		<p class="td">{type}</p>
 		<p class="td">
 			{#if nonNullish(host)}

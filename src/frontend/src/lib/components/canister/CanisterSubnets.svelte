@@ -58,7 +58,7 @@
 		<select name="subnet" bind:value={subnetId}>
 			<option value={undefined}>{$i18n.canisters.default_subnet}</option>
 
-			{#each sortedSubnets as { subnetId, specialization }}
+			{#each sortedSubnets as { subnetId, specialization } (subnetId)}
 				<option value={subnetId}
 					>{shortenWithMiddleEllipsis(subnetId)}{nonNullish(specialization)
 						? ` (${specialization})`

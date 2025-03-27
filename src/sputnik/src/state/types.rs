@@ -13,7 +13,7 @@ pub mod state {
 
     #[derive(Default, Clone)]
     pub struct Hooks {
-        pub on_set_docs_collections: Vec<CollectionKey>,
-        pub assert_set_docs_collections: Vec<CollectionKey>,
+        pub on_set_doc_collections: Vec<CollectionKey>,
+        pub assert_set_doc_collections: Vec<CollectionKey>,
     }
 }

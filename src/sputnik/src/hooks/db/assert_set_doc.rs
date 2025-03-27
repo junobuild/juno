@@ -2,7 +2,7 @@ use crate::hooks::js::runtime::assert_set_doc::AssertSetDoc;
 use crate::hooks::js::runtime::types::AssertJsHook;
 use crate::hooks::js::sdk::init_sdk;
 use crate::js::runtime::execute_sync_js;
-use crate::state::store::get_assert_set_docs_collections;
+use crate::state::store::get_assert_set_doc_collections;
 use junobuild_satellite::AssertSetDocContext;
 use rquickjs::CatchResultExt;
 
@@ -23,6 +23,6 @@ pub extern "Rust" fn juno_assert_set_doc(context: AssertSetDocContext) -> Result
 
 #[no_mangle]
 pub extern "Rust" fn juno_assert_set_doc_collections() -> Option<Vec<String>> {
-    let collections = get_assert_set_docs_collections();
+    let collections = get_assert_set_doc_collections();
     Some(collections)
 }

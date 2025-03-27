@@ -110,6 +110,10 @@ const callBigInt = async ({ caller, data: { collection, key, data } }: OnSetDocC
 };
 
 const callStringNoArgs = async ({ caller, data: { collection, key, data } }: OnSetDocContext) => {
+
+
+
+
 	const version = await call<bigint>({
 		canisterId: id(),
 		method: 'version',

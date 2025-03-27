@@ -1,5 +1,5 @@
 pub mod hooks {
-    use crate::hooks::js::types::interface::JsSetDoc;
+    use crate::hooks::js::types::interface::{JsDelDoc, JsSetDoc};
     use crate::js::types::candid::{JsRawPrincipal, JsUint8Array};
     use junobuild_collections::types::core::CollectionKey;
     use junobuild_shared::types::core::Key;
@@ -40,6 +40,12 @@ pub mod hooks {
     }
 
     #[derive(Clone)]
+    pub struct JsDocAssertDelete<'js> {
+        pub current: Option<JsDoc<'js>>,
+        pub proposed: JsDelDoc,
+    }
+
+    #[derive(Clone)]
     pub struct JsDoc<'js> {
         pub owner: JsUserId<'js>,
         pub data: JsRawData<'js>,
@@ -52,11 +58,17 @@ pub mod hooks {
 
 pub mod interface {
     use crate::hooks::js::types::hooks::{JsRawData, JsVersion};
+    use junobuild_shared::types::state::Version;
 
     #[derive(Clone)]
     pub struct JsSetDoc<'js> {
         pub data: JsRawData<'js>,
         pub description: Option<String>,
         pub version: Option<JsVersion>,
+    }
+
+    #[derive(Clone)]
+    pub struct JsDelDoc {
+        pub version: Option<Version>,
     }
 }

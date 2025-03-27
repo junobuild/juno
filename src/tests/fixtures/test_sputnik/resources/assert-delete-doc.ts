@@ -8,12 +8,10 @@ import { decodeDocData } from '@junobuild/functions/sdk';
 import type { SputnikValueMock } from '../../../mocks/sputnik.mocks';
 
 const onAssertDeleteDocDemo = (context: AssertDeleteDocContext) => {
-	if (isNullish(context.data.data.proposed)) {
+	if (isNullish(context.data.data.current)) {
 		console.log('Document does not exist');
 		return;
 	}
-
-	assertNonNullish(context.data.data.current?.data);
 
 	const { value } = decodeDocData<SputnikValueMock>(context.data.data.current.data);
 

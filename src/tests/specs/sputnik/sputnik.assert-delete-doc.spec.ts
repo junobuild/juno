@@ -53,20 +53,20 @@ describe('Sputnik > assert_delete_doc', () => {
 		});
 	};
 
-	it('should use assertDeleteDoc', async () => {
-		const logs = await deleteAndFetchLogs(TEST_ASSERTED_COLLECTION);
-
-		const log = logs.find(([_, { message }]) => message === 'assertDeleteDoc called');
-
-		expect(log).not.toBeUndefined();
-	});
-
 	it('should not use assertDeleteDoc', async () => {
 		const logs = await deleteAndFetchLogs(TEST_NOT_ASSERTED_COLLECTION);
 
 		const log = logs.find(([_, { message }]) => message === 'assertDeleteDoc called');
 
 		expect(log).toBeUndefined();
+	});
+
+	it('should use assertDeleteDoc', async () => {
+		const logs = await deleteAndFetchLogs(TEST_ASSERTED_COLLECTION);
+
+		const log = logs.find(([_, { message }]) => message === 'assertDeleteDoc called');
+
+		expect(log).not.toBeUndefined();
 	});
 
 	it('should assert on document not exists', async () => {
@@ -76,4 +76,5 @@ describe('Sputnik > assert_delete_doc', () => {
 
 		expect(log).not.toBeUndefined();
 	});
+
 });

@@ -1,11 +1,13 @@
 import type { _SERVICE as SputnikActor } from '$declarations/sputnik/sputnik.did';
 import type { Identity } from '@dfinity/agent';
 import type { Principal } from '@dfinity/principal';
-import { toNullable } from '@dfinity/utils';
+import { fromNullable, toNullable } from '@dfinity/utils';
 import { type Actor, PocketIc } from '@hadronous/pic';
+import { toArray } from '@junobuild/utils';
 import { nanoid } from 'nanoid';
 import { afterAll, beforeAll, describe, expect, inject } from 'vitest';
 import { mockSetRule } from '../../mocks/collection.mocks';
+import type { SputnikValueMock } from '../../mocks/sputnik.mocks';
 import { setupTestSputnik } from '../../utils/fixtures-tests.utils';
 import { fetchLogs, type IcMgmtLog } from '../../utils/mgmt-test.utils';
 
@@ -77,4 +79,60 @@ describe('Sputnik > assert_delete_doc', () => {
 		expect(log).not.toBeUndefined();
 	});
 
+	it('should assert document can be deleted', async () => {
+		const data = await toArray<SputnikValueMock>({
+			value: 'ok'
+		});
+
+		const { set_doc, get_doc, del_doc } = actor;
+
+		const key = nanoid();
+
+		await set_doc(TEST_ASSERTED_COLLECTION, key, {
+			data,
+			description: toNullable(),
+			version: toNullable()
+		});
+
+		const doc = fromNullable(await get_doc(TEST_ASSERTED_COLLECTION, key));
+
+		expect(doc).not.toBeUndefined();
+
+		await expect(
+			del_doc(TEST_ASSERTED_COLLECTION, key, {
+				version: doc?.version ?? []
+			})
+		).resolves.not.toThrowError();
+
+		const afterDoc = fromNullable(await get_doc(TEST_ASSERTED_COLLECTION, key));
+
+		expect(afterDoc).toBeUndefined();
+	});
+
+	it('should prevent document to be deleted', async () => {
+		// The fixture disallow editing doc if it contains a value equals to "test"
+		const data = await toArray<SputnikValueMock>({
+			value: 'test'
+		});
+
+		const { set_doc, get_doc, del_doc } = actor;
+
+		const key = nanoid();
+
+		await set_doc(TEST_ASSERTED_COLLECTION, key, {
+			data,
+			description: toNullable(),
+			version: toNullable()
+		});
+
+		const doc = fromNullable(await get_doc(TEST_ASSERTED_COLLECTION, key));
+
+		expect(doc).not.toBeUndefined();
+
+		await expect(
+			del_doc(TEST_ASSERTED_COLLECTION, key, {
+				version: doc?.version ?? []
+			})
+		).rejects.toThrowError(new RegExp('test keyword not allowed', 'i'));
+	});
 });

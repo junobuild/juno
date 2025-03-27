@@ -1,4 +1,4 @@
-import { assertNonNullish, isNullish } from '@dfinity/utils';
+import { isNullish } from '@dfinity/utils';
 import {
 	type AssertDeleteDoc,
 	type AssertDeleteDocContext,
@@ -16,7 +16,7 @@ const onAssertDeleteDocDemo = (context: AssertDeleteDocContext) => {
 	const { value } = decodeDocData<SputnikValueMock>(context.data.data.current.data);
 
 	if (value === 'test') {
-		throw new Error();
+		throw new Error('test keyword not allowed');
 	}
 };
 

@@ -3,7 +3,7 @@ import type { DocContext, DocUpsert, RawUserId } from '@junobuild/functions';
 import { call, id } from '@junobuild/functions/ic-cdk';
 import { encodeDocData, setDocStore } from '@junobuild/functions/sdk';
 
-export const fetchVersionAndSetDoc = async ({
+export const callAndSaveVersion = async ({
 	caller,
 	doc: { collection, key, data }
 }: {
@@ -19,8 +19,8 @@ export const fetchVersionAndSetDoc = async ({
 	setDocStore({
 		caller,
 		collection,
+		key: `${key}_version`,
 		doc: {
-			key: `${key}_version`,
 			version: data.after.version,
 			data: encodeDocData(version)
 		}

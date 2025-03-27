@@ -2,6 +2,9 @@ use crate::hooks::js::types::hooks::{
     JsDoc, JsDocAssertDelete, JsDocAssertSet, JsDocContext, JsDocUpsert, JsHookContext, JsRawData,
 };
 use crate::hooks::js::types::interface::{JsDelDoc, JsSetDoc};
+use crate::hooks::js::utils::{
+    from_optional_bigint_js, into_optional_bigint_js, into_optional_jsdoc_js,
+};
 use crate::js::types::candid::JsRawPrincipal;
 use junobuild_satellite::{
     AssertDeleteDocContext, DelDoc, Doc, DocAssertSet, DocContext, DocUpsert, HookContext, SetDoc,
@@ -121,11 +124,7 @@ impl<'js> IntoJs<'js> for JsDoc<'js> {
         obj.set("created_at", JsBigInt(self.created_at).into_js(ctx)?)?;
         obj.set("updated_at", JsBigInt(self.updated_at).into_js(ctx)?)?;
 
-        if let Some(version) = self.version {
-            obj.set("version", JsBigInt(version).into_js(ctx)?)?;
-        } else {
-            obj.set("version", Value::new_undefined(ctx.clone()))?;
-        }
+        obj.set("version", into_optional_bigint_js(ctx, self.version)?)?;
 
         Ok(obj.into_value())
     }
@@ -137,11 +136,7 @@ impl<'js> IntoJs<'js> for JsSetDoc<'js> {
         obj.set("data", self.data)?;
         obj.set("description", self.description)?;
 
-        if let Some(version) = self.version {
-            obj.set("version", JsBigInt(version).into_js(ctx)?)?;
-        } else {
-            obj.set("version", Value::new_undefined(ctx.clone()))?;
-        }
+        obj.set("version", into_optional_bigint_js(ctx, self.version)?)?;
 
         Ok(obj.into_value())
     }
@@ -151,13 +146,7 @@ impl<'js> IntoJs<'js> for JsDelDoc {
     fn into_js(self, ctx: &Ctx<'js>) -> JsResult<Value<'js>> {
         let obj = Object::new(ctx.clone())?;
 
-        // TODO: refactor duplicated code?
-
-        if let Some(version) = self.version {
-            obj.set("version", JsBigInt(version).into_js(ctx)?)?;
-        } else {
-            obj.set("version", Value::new_undefined(ctx.clone()))?;
-        }
+        obj.set("version", into_optional_bigint_js(ctx, self.version)?)?;
 
         Ok(obj.into_value())
     }
@@ -182,13 +171,9 @@ impl<'js> IntoJs<'js> for JsDocAssertSet<'js> {
     fn into_js(self, ctx: &Ctx<'js>) -> JsResult<Value<'js>> {
         let obj = Object::new(ctx.clone())?;
 
-        if let Some(current) = self.current {
-            obj.set("current", current.into_js(ctx)?)?;
-        } else {
-            obj.set("current", Value::new_undefined(ctx.clone()))?;
-        }
-
+        obj.set("current", into_optional_jsdoc_js(ctx, self.current)?)?;
         obj.set("proposed", self.proposed.into_js(ctx)?)?;
+
         Ok(obj.into_value())
     }
 }
@@ -197,15 +182,9 @@ impl<'js> IntoJs<'js> for JsDocAssertDelete<'js> {
     fn into_js(self, ctx: &Ctx<'js>) -> JsResult<Value<'js>> {
         let obj = Object::new(ctx.clone())?;
 
-        // TODO: refactor duplicated code?
-
-        if let Some(current) = self.current {
-            obj.set("current", current.into_js(ctx)?)?;
-        } else {
-            obj.set("current", Value::new_undefined(ctx.clone()))?;
-        }
-
+        obj.set("current", into_optional_jsdoc_js(ctx, self.current)?)?;
         obj.set("proposed", self.proposed.into_js(ctx)?)?;
+
         Ok(obj.into_value())
     }
 }
@@ -291,18 +270,8 @@ impl<'js> FromJs<'js> for JsSetDoc<'js> {
 
         let description: Option<String> = obj.get("description")?;
 
-        let version: Option<u64> = match obj.get::<_, Option<BigInt>>("version")? {
-            Some(bigint) => {
-                let value = bigint.to_i64()?;
-
-                if value >= 0 {
-                    Ok(Some(value as u64))
-                } else {
-                    Err(JsError::new_from_js("BigInt", "u64"))
-                }
-            }
-            None => Ok(None),
-        }?;
+        let version: Option<u64> =
+            from_optional_bigint_js(obj.get::<_, Option<BigInt>>("version")?)?;
 
         Ok(JsSetDoc {
             data,
@@ -316,20 +285,8 @@ impl<'js> FromJs<'js> for JsDelDoc {
     fn from_js(_ctx: &Ctx<'js>, value: Value<'js>) -> JsResult<Self> {
         let obj = Object::from_value(value)?;
 
-        // TODO: refactor duplicated code?
-
-        let version: Option<u64> = match obj.get::<_, Option<BigInt>>("version")? {
-            Some(bigint) => {
-                let value = bigint.to_i64()?;
-
-                if value >= 0 {
-                    Ok(Some(value as u64))
-                } else {
-                    Err(JsError::new_from_js("BigInt", "u64"))
-                }
-            }
-            None => Ok(None),
-        }?;
+        let version: Option<u64> =
+            from_optional_bigint_js(obj.get::<_, Option<BigInt>>("version")?)?;
 
         Ok(JsDelDoc { version })
     }

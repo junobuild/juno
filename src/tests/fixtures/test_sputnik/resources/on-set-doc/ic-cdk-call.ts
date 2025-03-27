@@ -78,8 +78,8 @@ const callRecord = async ({ caller, data: { collection, key, data } }: OnSetDocC
 	setDocStore({
 		caller,
 		collection,
+		key,
 		doc: {
-			key,
 			version: data.after.version,
 			data: encodeDocData({
 				items_length: result.items_length,
@@ -101,8 +101,8 @@ const callBigInt = async ({ caller, data: { collection, key, data } }: OnSetDocC
 	setDocStore({
 		caller,
 		collection,
+		key: `${key}_count_docs`,
 		doc: {
-			key: `${key}_count_docs`,
 			version: data.after.version,
 			data: encodeDocData(count)
 		}
@@ -119,8 +119,8 @@ const callStringNoArgs = async ({ caller, data: { collection, key, data } }: OnS
 	setDocStore({
 		caller,
 		collection,
+		key: `${key}_version`,
 		doc: {
-			key: `${key}_version`,
 			version: data.after.version,
 			data: encodeDocData(version)
 		}

@@ -1,46 +1,20 @@
+use crate::hooks::js::runtime::assert_utils::{execute_assertion, make_loader_code};
 use crate::hooks::js::runtime::types::{AssertJsHook, JsHook};
 use crate::hooks::js::types::hooks::JsHookContext;
-use crate::js::constants::{DEV_MODULE_NAME, HOOKS_MODULE_NAME};
-use crate::js::module::engine::evaluate_module;
 use junobuild_satellite::AssertSetDocContext;
-use rquickjs::IntoJs;
 use rquickjs::{Ctx, Error as JsError};
 
 pub struct AssertSetDoc;
 
 impl JsHook for AssertSetDoc {
     fn get_loader_code(&self) -> String {
-        format!(
-            r#"const {{ assertSetDoc }} = await import("{}");
-
-            if (typeof assertSetDoc !== 'undefined') {{
-                const config = typeof assertSetDoc === 'function' ? assertSetDoc({{}}) : assertSetDoc;
-                __juno_satellite_assert_set_doc_loader(config.collections);
-            }}
-            "#,
-            DEV_MODULE_NAME
-        )
+        make_loader_code("assertSetDoc", "__juno_satellite_assert_set_doc_loader")
     }
 }
 
 impl AssertJsHook<AssertSetDocContext> for AssertSetDoc {
     fn execute<'js>(&self, ctx: &Ctx<'js>, context: AssertSetDocContext) -> Result<(), JsError> {
         let js_context = JsHookContext::from_assert_set_doc(context, ctx)?;
-        let js_obj = js_context.into_js(ctx)?;
-
-        ctx.globals().set("jsContext", js_obj)?;
-
-        let code = format!(
-            r#"const {{ assertSetDoc }} = await import("{}");
-
-            if (typeof assertSetDoc !== 'undefined') {{
-                const config = typeof assertSetDoc === 'function' ? assertSetDoc({{}}) : assertSetDoc;
-                config.assert(jsContext);
-            }}
-            "#,
-            DEV_MODULE_NAME
-        );
-
-        evaluate_module(ctx, HOOKS_MODULE_NAME, &code)
+        execute_assertion(ctx, js_context, "assertSetDoc")
     }
 }

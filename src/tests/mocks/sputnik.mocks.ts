@@ -2,6 +2,14 @@ import { Principal } from '@dfinity/principal';
 import { isNullish } from '@dfinity/utils';
 import { z } from 'zod';
 
+export const SputnikValueMockSchema = z
+	.object({
+		value: z.string()
+	})
+	.strict();
+
+export type SputnikValueMock = z.infer<typeof SputnikValueMockSchema>;
+
 export const SputnikMockSchema = z
 	.object({
 		id: z.bigint(),

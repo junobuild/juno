@@ -2,7 +2,9 @@ use crate::hooks::js::types::hooks::{
     JsDoc, JsDocAssertDelete, JsDocAssertSet, JsDocContext, JsDocUpsert, JsHookContext, JsRawData,
 };
 use crate::hooks::js::types::interface::{JsDelDoc, JsSetDoc};
-use crate::hooks::js::utils::{from_optional_bigint_js, into_optional_bigint_js};
+use crate::hooks::js::utils::{
+    from_optional_bigint_js, into_optional_bigint_js, into_optional_jsdoc_js,
+};
 use crate::js::types::candid::JsRawPrincipal;
 use junobuild_satellite::{
     AssertDeleteDocContext, DelDoc, Doc, DocAssertSet, DocContext, DocUpsert, HookContext, SetDoc,
@@ -169,13 +171,9 @@ impl<'js> IntoJs<'js> for JsDocAssertSet<'js> {
     fn into_js(self, ctx: &Ctx<'js>) -> JsResult<Value<'js>> {
         let obj = Object::new(ctx.clone())?;
 
-        if let Some(current) = self.current {
-            obj.set("current", current.into_js(ctx)?)?;
-        } else {
-            obj.set("current", Value::new_undefined(ctx.clone()))?;
-        }
-
+        obj.set("current", into_optional_jsdoc_js(ctx, self.current)?)?;
         obj.set("proposed", self.proposed.into_js(ctx)?)?;
+
         Ok(obj.into_value())
     }
 }
@@ -184,15 +182,9 @@ impl<'js> IntoJs<'js> for JsDocAssertDelete<'js> {
     fn into_js(self, ctx: &Ctx<'js>) -> JsResult<Value<'js>> {
         let obj = Object::new(ctx.clone())?;
 
-        // TODO: refactor duplicated code?
-
-        if let Some(current) = self.current {
-            obj.set("current", current.into_js(ctx)?)?;
-        } else {
-            obj.set("current", Value::new_undefined(ctx.clone()))?;
-        }
-
+        obj.set("current", into_optional_jsdoc_js(ctx, self.current)?)?;
         obj.set("proposed", self.proposed.into_js(ctx)?)?;
+
         Ok(obj.into_value())
     }
 }

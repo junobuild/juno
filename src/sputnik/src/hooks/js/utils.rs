@@ -1,4 +1,5 @@
 use crate::hooks::js::impls::JsBigInt;
+use crate::hooks::js::types::hooks::JsDoc;
 use rquickjs::{BigInt, Ctx, Error as JsError, IntoJs, Result as JsResult, Value};
 
 pub fn into_optional_bigint_js<'js>(ctx: &Ctx<'js>, value: Option<u64>) -> JsResult<Value<'js>> {
@@ -9,7 +10,7 @@ pub fn into_optional_bigint_js<'js>(ctx: &Ctx<'js>, value: Option<u64>) -> JsRes
     }
 }
 
-pub fn from_optional_bigint_js<'js>(value: Option<BigInt>) -> JsResult<Option<u64>> {
+pub fn from_optional_bigint_js(value: Option<BigInt>) -> JsResult<Option<u64>> {
     match value {
         Some(bigint) => {
             let value = bigint.to_i64()?;
@@ -24,5 +25,15 @@ pub fn from_optional_bigint_js<'js>(value: Option<BigInt>) -> JsResult<Option<u6
             }
         }
         None => Ok(None),
+    }
+}
+
+pub fn into_optional_jsdoc_js<'js>(
+    ctx: &Ctx<'js>,
+    value: Option<JsDoc<'js>>,
+) -> JsResult<Value<'js>> {
+    match value {
+        Some(value) => value.into_js(ctx),
+        None => Ok(Value::new_undefined(ctx.clone())),
     }
 }

@@ -1,9 +1,11 @@
 use crate::hooks::js::types::hooks::{
-    JsDoc, JsDocAssertSet, JsDocContext, JsDocUpsert, JsHookContext, JsRawData,
+    JsDoc, JsDocAssertDelete, JsDocAssertSet, JsDocContext, JsDocUpsert, JsHookContext, JsRawData,
 };
-use crate::hooks::js::types::interface::JsSetDoc;
+use crate::hooks::js::types::interface::{JsDelDoc, JsSetDoc};
 use crate::js::types::candid::JsRawPrincipal;
-use junobuild_satellite::{Doc, DocAssertSet, DocContext, DocUpsert, HookContext, SetDoc};
+use junobuild_satellite::{
+    AssertDeleteDocContext, DelDoc, Doc, DocAssertSet, DocContext, DocUpsert, HookContext, SetDoc,
+};
 use rquickjs::{BigInt, Ctx, Error as JsError, FromJs, IntoJs, Object, Result as JsResult, Value};
 
 type OnSetDocContext = HookContext<DocContext<DocUpsert>>;
@@ -58,6 +60,32 @@ impl<'js> JsHookContext<'js, JsDocContext<JsDocAssertSet<'js>>> {
     }
 }
 
+impl<'js> JsHookContext<'js, JsDocContext<JsDocAssertDelete<'js>>> {
+    pub fn from_assert_delete_doc(
+        original: AssertDeleteDocContext,
+        ctx: &Ctx<'js>,
+    ) -> Result<Self, JsError> {
+        let js_context = JsHookContext {
+            caller: JsRawPrincipal::from_bytes(ctx, original.caller.as_slice())?,
+            data: JsDocContext {
+                key: original.data.key,
+                collection: original.data.collection,
+                data: JsDocAssertDelete {
+                    current: original
+                        .data
+                        .data
+                        .current
+                        .map(|doc| convert_doc(ctx, doc))
+                        .transpose()?,
+                    proposed: convert_del_doc(ctx, original.data.data.proposed)?,
+                },
+            },
+        };
+
+        Ok(js_context)
+    }
+}
+
 fn convert_doc<'js>(ctx: &Ctx<'js>, doc: Doc) -> Result<JsDoc<'js>, JsError> {
     Ok(JsDoc {
         owner: JsRawPrincipal::from_bytes(ctx, doc.owner.as_slice())?,
@@ -73,6 +101,12 @@ fn convert_set_doc<'js>(ctx: &Ctx<'js>, doc: SetDoc) -> Result<JsSetDoc<'js>, Js
     Ok(JsSetDoc {
         data: JsRawData::from_bytes(ctx, &doc.data)?,
         description: doc.description,
+        version: doc.version,
+    })
+}
+
+fn convert_del_doc<'js>(_ctx: &Ctx<'js>, doc: DelDoc) -> Result<JsDelDoc, JsError> {
+    Ok(JsDelDoc {
         version: doc.version,
     })
 }
@@ -113,6 +147,22 @@ impl<'js> IntoJs<'js> for JsSetDoc<'js> {
     }
 }
 
+impl<'js> IntoJs<'js> for JsDelDoc {
+    fn into_js(self, ctx: &Ctx<'js>) -> JsResult<Value<'js>> {
+        let obj = Object::new(ctx.clone())?;
+
+        // TODO: refactor duplicated code?
+
+        if let Some(version) = self.version {
+            obj.set("version", JsBigInt(version).into_js(ctx)?)?;
+        } else {
+            obj.set("version", Value::new_undefined(ctx.clone()))?;
+        }
+
+        Ok(obj.into_value())
+    }
+}
+
 impl<'js> IntoJs<'js> for JsDocUpsert<'js> {
     fn into_js(self, ctx: &Ctx<'js>) -> JsResult<Value<'js>> {
         let obj = Object::new(ctx.clone())?;
@@ -131,6 +181,23 @@ impl<'js> IntoJs<'js> for JsDocUpsert<'js> {
 impl<'js> IntoJs<'js> for JsDocAssertSet<'js> {
     fn into_js(self, ctx: &Ctx<'js>) -> JsResult<Value<'js>> {
         let obj = Object::new(ctx.clone())?;
+
+        if let Some(current) = self.current {
+            obj.set("current", current.into_js(ctx)?)?;
+        } else {
+            obj.set("current", Value::new_undefined(ctx.clone()))?;
+        }
+
+        obj.set("proposed", self.proposed.into_js(ctx)?)?;
+        Ok(obj.into_value())
+    }
+}
+
+impl<'js> IntoJs<'js> for JsDocAssertDelete<'js> {
+    fn into_js(self, ctx: &Ctx<'js>) -> JsResult<Value<'js>> {
+        let obj = Object::new(ctx.clone())?;
+
+        // TODO: refactor duplicated code?
 
         if let Some(current) = self.current {
             obj.set("current", current.into_js(ctx)?)?;
@@ -187,6 +254,14 @@ impl<'js> JsSetDoc<'js> {
     }
 }
 
+impl JsDelDoc {
+    pub fn to_doc(&self) -> JsResult<DelDoc> {
+        Ok(DelDoc {
+            version: self.version,
+        })
+    }
+}
+
 impl<'js> JsRawData<'js> {
     pub fn from_text(ctx: &Ctx<'js>, text: &str) -> JsResult<Self> {
         Self::from_bytes(ctx, text.as_bytes())
@@ -234,5 +309,28 @@ impl<'js> FromJs<'js> for JsSetDoc<'js> {
             description,
             version,
         })
+    }
+}
+
+impl<'js> FromJs<'js> for JsDelDoc {
+    fn from_js(_ctx: &Ctx<'js>, value: Value<'js>) -> JsResult<Self> {
+        let obj = Object::from_value(value)?;
+
+        // TODO: refactor duplicated code?
+
+        let version: Option<u64> = match obj.get::<_, Option<BigInt>>("version")? {
+            Some(bigint) => {
+                let value = bigint.to_i64()?;
+
+                if value >= 0 {
+                    Ok(Some(value as u64))
+                } else {
+                    Err(JsError::new_from_js("BigInt", "u64"))
+                }
+            }
+            None => Ok(None),
+        }?;
+
+        Ok(JsDelDoc { version })
     }
 }

@@ -15,5 +15,6 @@ pub mod state {
     pub struct Hooks {
         pub on_set_doc_collections: Vec<CollectionKey>,
         pub assert_set_doc_collections: Vec<CollectionKey>,
+        pub assert_delete_doc_collections: Vec<CollectionKey>,
     }
 }

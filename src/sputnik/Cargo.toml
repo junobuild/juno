@@ -16,6 +16,7 @@ junobuild-satellite = { path = "../libs/satellite", default-features = false, fe
 	"on_post_upgrade",
 	"on_init_random_seed",
 	"assert_set_doc",
+	"assert_delete_doc",
 	"on_set_doc"
 ] }
 junobuild-collections = { path = "../libs/collections" }

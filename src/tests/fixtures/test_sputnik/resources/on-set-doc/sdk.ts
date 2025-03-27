@@ -18,8 +18,8 @@ export const testDocUpdate = async (context: OnSetDocContext) => {
 		// TODO: a test for this too?
 		caller: id(),
 		collection: context.data.collection,
+		key: context.data.key,
 		doc: {
-			key: context.data.key,
 			version: context.data.data.after.version,
 			data: encodedData
 		}

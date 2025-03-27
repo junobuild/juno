@@ -7,6 +7,8 @@ import {
 import { decodeDocData } from '@junobuild/functions/sdk';
 import type { SputnikValueMock } from '../../../mocks/sputnik.mocks';
 
+/* eslint-disable no-console */
+
 const onAssertDeleteDocDemo = (context: AssertDeleteDocContext) => {
 	if (isNullish(context.data.data.current)) {
 		console.log('Document does not exist');
@@ -19,6 +21,8 @@ const onAssertDeleteDocDemo = (context: AssertDeleteDocContext) => {
 		throw new Error('test keyword not allowed');
 	}
 };
+
+/* eslint-enable */
 
 export const assertDeleteDoc = defineAssert<AssertDeleteDoc>({
 	collections: ['test-delete-assert'],

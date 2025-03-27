@@ -1,18 +1,23 @@
+import { assertNonNullish } from '@dfinity/utils';
 import { defineHook, type OnSetManyDocs } from '@junobuild/functions';
+import { callAndSaveVersion } from './services/set-doc.services';
 
 /* eslint-disable no-console */
 
 export const onSetManyDocs = defineHook<OnSetManyDocs>({
-    collections: ['test-onsetmanydocs'],
-    run: async (context) => {
-        console.log('onSetManyDocs called');
+	collections: ['test-onsetmanydocs'],
+	run: async ({ caller, data }) => {
+		console.log('onSetManyDocs called');
 
-        switch (context.data) {
-            case 'test-delete-assert':
-                onAssertDeleteDocDemo(context);
-                break;
-        }
-    }
+		const [doc] = data;
+
+		assertNonNullish(doc);
+
+		await callAndSaveVersion({
+			caller,
+			doc
+		});
+	}
 });
 
 /* eslint-enable */

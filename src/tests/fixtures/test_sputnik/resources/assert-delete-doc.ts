@@ -22,8 +22,6 @@ const onAssertDeleteDocDemo = (context: AssertDeleteDocContext) => {
 	}
 };
 
-/* eslint-enable */
-
 export const assertDeleteDoc = defineAssert<AssertDeleteDoc>({
 	collections: ['test-delete-assert'],
 	assert: (context) => {
@@ -36,3 +34,5 @@ export const assertDeleteDoc = defineAssert<AssertDeleteDoc>({
 		}
 	}
 });
+
+/* eslint-enable */

@@ -110,10 +110,11 @@ const callBigInt = async ({ caller, data: { collection, key, data } }: OnSetDocC
 	});
 };
 
-const callStringNoArgs = async ({ caller, data: doc }: OnSetDocContext) => {
+const callStringNoArgs = async ({ caller, data: { collection, key } }: OnSetDocContext) => {
 	await callAndSaveVersion({
 		caller,
-		doc
+		collection,
+		key
 	});
 };
 

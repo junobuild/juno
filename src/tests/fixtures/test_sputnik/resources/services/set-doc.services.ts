@@ -1,14 +1,16 @@
 import { IDL } from '@dfinity/candid';
-import type { DocContext, DocUpsert, RawUserId } from '@junobuild/functions';
+import type { Collection, Key, RawUserId } from '@junobuild/functions';
 import { call, id } from '@junobuild/functions/ic-cdk';
 import { encodeDocData, setDocStore } from '@junobuild/functions/sdk';
 
 export const callAndSaveVersion = async ({
 	caller,
-	doc: { collection, key, data }
+	collection,
+	key
 }: {
 	caller: RawUserId;
-	doc: DocContext<DocUpsert>;
+	collection: Collection;
+	key: Key;
 }) => {
 	const version = await call<bigint>({
 		canisterId: id(),
@@ -21,7 +23,6 @@ export const callAndSaveVersion = async ({
 		collection,
 		key: `${key}_version`,
 		doc: {
-			version: data.after.version,
 			data: encodeDocData(version)
 		}
 	});

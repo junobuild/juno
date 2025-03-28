@@ -56,9 +56,61 @@ pub mod hooks {
     }
 }
 
+pub mod storage {
+    use crate::hooks::js::types::hooks::{JsTimestamp, JsUserId, JsVersion};
+    use crate::js::types::candid::JsUint8Array;
+
+    pub type JsHeaderField<'js> = (String, String);
+
+    pub type JsBlob<'js> = JsUint8Array<'js>;
+
+    pub type JsBlobOrKey<'js> = JsBlob<'js>;
+
+    pub type JsHash<'js> = JsUint8Array<'js>;
+
+    #[derive(Clone)]
+    pub struct JsAssetEncoding<'js> {
+        pub modified: JsTimestamp,
+        pub content_chunks: Vec<JsBlobOrKey<'js>>,
+        pub total_length: u128,
+        pub sha256: JsHash<'js>,
+    }
+
+    #[derive(Clone)]
+    pub struct JsAssetKey<'js> {
+        pub name: String,
+        pub full_path: String,
+        pub token: Option<String>,
+        pub collection: String,
+        pub owner: JsUserId<'js>,
+        pub description: Option<String>,
+    }
+
+    #[derive(Clone)]
+    pub struct JsAsset<'js> {
+        pub key: JsAssetKey<'js>,
+        pub headers: Vec<JsHeaderField<'js>>,
+        pub encodings: Vec<(String, JsAssetEncoding<'js>)>,
+        pub created_at: JsTimestamp,
+        pub updated_at: JsTimestamp,
+        pub version: Option<JsVersion>,
+    }
+
+    pub type JsReferenceId = u128;
+
+    #[derive(Clone)]
+    pub struct JsBatch<'js> {
+        pub key: JsAssetKey<'js>,
+        pub reference_id: Option<JsReferenceId>,
+        pub expires_at: JsTimestamp,
+        pub encoding_type: Option<String>,
+    }
+}
+
 pub mod interface {
     use crate::hooks::js::types::hooks::{JsRawData, JsVersion};
     use junobuild_shared::types::state::Version;
+    use crate::hooks::js::types::storage::JsHeaderField;
 
     #[derive(Clone)]
     pub struct JsSetDoc<'js> {
@@ -70,5 +122,15 @@ pub mod interface {
     #[derive(Clone)]
     pub struct JsDelDoc {
         pub version: Option<Version>,
+    }
+
+    pub type JsBatchId = u128;
+    pub type JsChunkId = u128;
+
+    #[derive(Clone)]
+    pub struct JsCommitBatch<'js> {
+        pub batch_id: JsBatchId,
+        pub headers: Vec<JsHeaderField<'js>>,
+        pub chunk_ids: Vec<JsChunkId>,
     }
 }

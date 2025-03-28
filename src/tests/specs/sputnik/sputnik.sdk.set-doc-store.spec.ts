@@ -9,7 +9,7 @@ import { mockSputnikObj, type SputnikMock } from '../../mocks/sputnik.mocks';
 import { setupTestSputnik } from '../../utils/fixtures-tests.utils';
 import { waitServerlessFunction } from '../../utils/satellite-extended-tests.utils';
 
-describe('Sputnik > ic-cdk > id', () => {
+describe('Sputnik > sdk > setDocStore', () => {
 	let pic: PocketIc;
 	let actor: Actor<SputnikActor>;
 
@@ -31,30 +31,28 @@ describe('Sputnik > ic-cdk > id', () => {
 		await pic?.tearDown();
 	});
 
-	describe('setDocStore', () => {
-		it('should update document', async () => {
-			const { set_doc, get_doc } = actor;
+	it('should update document', async () => {
+		const { set_doc, get_doc } = actor;
 
-			const key = nanoid();
+		const key = nanoid();
 
-			await set_doc(TEST_COLLECTION, key, {
-				data: await toArray(mockSputnikObj),
-				description: toNullable(),
-				version: toNullable()
-			});
-
-			await waitServerlessFunction(pic);
-
-			const result = await get_doc(TEST_COLLECTION, key);
-
-			const doc = fromNullable(result);
-
-			assertNonNullish(doc);
-
-			const data: SputnikMock = await fromArray(doc.data);
-
-			expect(data.value).toEqual(`${mockSputnikObj.value} (updated)`);
-			expect(fromNullable(doc.version)).toEqual(2n);
+		await set_doc(TEST_COLLECTION, key, {
+			data: await toArray(mockSputnikObj),
+			description: toNullable(),
+			version: toNullable()
 		});
+
+		await waitServerlessFunction(pic);
+
+		const result = await get_doc(TEST_COLLECTION, key);
+
+		const doc = fromNullable(result);
+
+		assertNonNullish(doc);
+
+		const data: SputnikMock = await fromArray(doc.data);
+
+		expect(data.value).toEqual(`${mockSputnikObj.value} (updated)`);
+		expect(fromNullable(doc.version)).toEqual(2n);
 	});
 });

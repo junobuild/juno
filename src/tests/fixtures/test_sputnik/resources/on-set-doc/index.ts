@@ -6,7 +6,7 @@ import {
 } from '@junobuild/functions';
 import { testIcCdkCall } from './ic-cdk-call';
 import { testIcCdkId } from './ic-cdk-id';
-import { testDocUpdate } from './sdk';
+import { testSdkDeleteDocStore, testSdkSetDocStore } from './sdk';
 import { testTextEncoding } from './text-encoding';
 
 /* eslint-disable require-await, no-console */
@@ -22,7 +22,8 @@ const collections = [
 	'test-ic-cdk-id',
 	'test-ic-cdk-call',
 	'test-update',
-	'test-textencoding'
+	'test-textencoding',
+	'test-deletedoc'
 ] as const;
 
 type OnSetDocCollection = (typeof collections)[number];
@@ -33,9 +34,10 @@ export const onSetDoc = defineHook<OnSetDoc>({
 		const fn: Record<OnSetDocCollection, RunFunction<OnSetDocContext>> = {
 			'test-onsetdoc': testSetDoc,
 			'test-ic-cdk-id': testIcCdkId,
-			'test-update': testDocUpdate,
+			'test-update': testSdkSetDocStore,
 			'test-ic-cdk-call': testIcCdkCall,
-			'test-textencoding': testTextEncoding
+			'test-textencoding': testTextEncoding,
+			'test-deletedoc': testSdkDeleteDocStore
 		};
 
 		await fn[context.data.collection as OnSetDocCollection]?.(context);

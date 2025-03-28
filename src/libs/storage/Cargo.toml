@@ -1,6 +1,6 @@
 [package]
 name = "junobuild-storage"
-version = "0.0.16"
+version = "0.0.17"
 authors.workspace = true
 edition.workspace = true
 repository.workspace = true
@@ -31,5 +31,5 @@ base64 = "0.22.1"
 url.workspace = true
 urlencoding = "2.1.3"
 globset = "0.4.13"
-junobuild-shared = "0.0.25"
-junobuild-collections = "0.0.12"
+junobuild-shared = "0.0.26"
+junobuild-collections = "0.0.13"

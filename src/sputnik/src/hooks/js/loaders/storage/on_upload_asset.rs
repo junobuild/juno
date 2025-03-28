@@ -4,7 +4,10 @@ use rquickjs::{Ctx, Error as JsError, Result as JsResult};
 pub fn init_on_upload_asset_loader(ctx: &Ctx) -> Result<(), JsError> {
     let global = ctx.globals();
 
-    global.set("__juno_satellite_on_upload_asset_loader", js_on_upload_asset_loader)?;
+    global.set(
+        "__juno_satellite_on_upload_asset_loader",
+        js_on_upload_asset_loader,
+    )?;
 
     Ok(())
 }

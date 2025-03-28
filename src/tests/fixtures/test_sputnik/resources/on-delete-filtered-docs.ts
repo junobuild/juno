@@ -1,15 +1,15 @@
 import { assertNonNullish } from '@dfinity/utils';
-import { defineHook, type OnDeleteDoc } from '@junobuild/functions';
+import { defineHook, type OnDeleteFilteredDocs } from '@junobuild/functions';
 import { callAndSaveVersion } from './services/set-doc.services';
 
 /* eslint-disable no-console */
 
-export const onDeleteDoc = defineHook<OnDeleteDoc>({
-	collections: ['test-ondeletedoc'],
+export const onDeleteFilteredDocs = defineHook<OnDeleteFilteredDocs>({
+	collections: ['test-ondeletefiltereddocs'],
 	run: async ({ caller, data }) => {
-		console.log('onDeleteDoc called');
+		console.log('onDeleteFilteredDocs called');
 
-		const doc = data;
+		const [doc] = data;
 
 		assertNonNullish(doc);
 

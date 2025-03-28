@@ -7,12 +7,10 @@ use crate::hooks::js::utils::{
 };
 use crate::js::types::candid::JsRawPrincipal;
 use junobuild_satellite::{
-    AssertDeleteDocContext, DelDoc, Doc, DocAssertSet, DocContext, DocUpsert, HookContext, SetDoc,
+    AssertDeleteDocContext, AssertSetDocContext, DelDoc, Doc, OnSetDocContext,
+    OnSetManyDocsContext, SetDoc,
 };
 use rquickjs::{BigInt, Ctx, Error as JsError, FromJs, IntoJs, Object, Result as JsResult, Value};
-
-type OnSetDocContext = HookContext<DocContext<DocUpsert>>;
-type AssertSetDocContext = HookContext<DocContext<DocAssertSet>>;
 
 impl<'js> JsHookContext<'js, JsDocContext<JsDocUpsert<'js>>> {
     pub fn from_on_set_doc(original: OnSetDocContext, ctx: &Ctx<'js>) -> Result<Self, JsError> {
@@ -34,6 +32,37 @@ impl<'js> JsHookContext<'js, JsDocContext<JsDocUpsert<'js>>> {
         };
 
         Ok(js_context)
+    }
+}
+
+impl<'js> JsHookContext<'js, Vec<JsDocContext<JsDocUpsert<'js>>>> {
+    pub fn from_on_set_many_docs(
+        original: OnSetManyDocsContext,
+        ctx: &Ctx<'js>,
+    ) -> Result<Self, JsError> {
+        let data: Vec<JsDocContext<JsDocUpsert<'js>>> = original
+            .data
+            .into_iter()
+            .map(|doc_ctx| {
+                Ok(JsDocContext {
+                    key: doc_ctx.key,
+                    collection: doc_ctx.collection,
+                    data: JsDocUpsert {
+                        before: doc_ctx
+                            .data
+                            .before
+                            .map(|doc| convert_doc(ctx, doc))
+                            .transpose()?,
+                        after: convert_doc(ctx, doc_ctx.data.after)?,
+                    },
+                })
+            })
+            .collect::<Result<Vec<JsDocContext<JsDocUpsert<'js>>>, JsError>>()?;
+
+        Ok(JsHookContext {
+            caller: JsRawPrincipal::from_bytes(ctx, original.caller.as_slice())?,
+            data,
+        })
     }
 }
 

@@ -19,7 +19,15 @@ pub mod state {
         pub on_delete_many_docs_collections: Vec<CollectionKey>,
         pub on_delete_filtered_docs_collections: Vec<CollectionKey>,
 
+        pub on_upload_asset_collections: Vec<CollectionKey>,
+        pub on_delete_asset_collections: Vec<CollectionKey>,
+        pub on_delete_many_assets_collections: Vec<CollectionKey>,
+        pub on_delete_filtered_assets_collections: Vec<CollectionKey>,
+
         pub assert_set_doc_collections: Vec<CollectionKey>,
         pub assert_delete_doc_collections: Vec<CollectionKey>,
+
+        pub assert_upload_asset_collections: Vec<CollectionKey>,
+        pub assert_delete_asset_collections: Vec<CollectionKey>,
     }
 }

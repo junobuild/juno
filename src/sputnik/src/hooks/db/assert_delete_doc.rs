@@ -1,4 +1,4 @@
-use crate::hooks::js::runtime::assert_delete_doc::AssertDeleteDoc;
+use crate::hooks::js::runtime::db::assert_delete_doc::AssertDeleteDoc;
 use crate::hooks::js::runtime::types::AssertJsHook;
 use crate::hooks::js::sdk::init_sdk;
 use crate::js::runtime::execute_sync_js;

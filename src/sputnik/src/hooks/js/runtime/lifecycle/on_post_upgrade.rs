@@ -1,10 +1,10 @@
-use crate::hooks::js::runtime::assert_delete_doc::AssertDeleteDoc;
-use crate::hooks::js::runtime::assert_set_doc::AssertSetDoc;
-use crate::hooks::js::runtime::on_delete_doc::OnDeleteDoc;
-use crate::hooks::js::runtime::on_delete_filtered_docs::OnDeleteFilteredDocs;
-use crate::hooks::js::runtime::on_delete_many_docs::OnDeleteManyDocs;
-use crate::hooks::js::runtime::on_set_doc::OnSetDoc;
-use crate::hooks::js::runtime::on_set_many_docs::OnSetManyDocs;
+use crate::hooks::js::runtime::db::assert_delete_doc::AssertDeleteDoc;
+use crate::hooks::js::runtime::db::assert_set_doc::AssertSetDoc;
+use crate::hooks::js::runtime::db::on_delete_doc::OnDeleteDoc;
+use crate::hooks::js::runtime::db::on_delete_filtered_docs::OnDeleteFilteredDocs;
+use crate::hooks::js::runtime::db::on_delete_many_docs::OnDeleteManyDocs;
+use crate::hooks::js::runtime::db::on_set_doc::OnSetDoc;
+use crate::hooks::js::runtime::db::on_set_many_docs::OnSetManyDocs;
 use crate::hooks::js::runtime::types::JsHook;
 use crate::js::constants::HOOKS_MODULE_NAME;
 use crate::js::module::engine::evaluate_module;

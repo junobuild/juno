@@ -1,4 +1,4 @@
-use crate::hooks::js::runtime::on_delete_doc::OnDeleteDoc;
+use crate::hooks::js::runtime::db::on_delete_doc::OnDeleteDoc;
 use crate::hooks::js::runtime::types::OnJsHook;
 use crate::hooks::js::sdk::init_sdk;
 use crate::js::runtime::{execute_async_js, RunAsyncJsFn};

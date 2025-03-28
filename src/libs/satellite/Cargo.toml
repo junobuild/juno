@@ -12,6 +12,7 @@ license-file = "LICENSE.md"
 
 [package.metadata.docs.rs]
 targets = ["wasm32-unknown-unknown"]
+rustc-args = ['--cfg', "getrandom_backend=\"custom\""]
 rustdoc-args = ['--cfg', "getrandom_backend=\"custom\""]
 
 [features]

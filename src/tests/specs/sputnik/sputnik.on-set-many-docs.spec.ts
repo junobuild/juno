@@ -111,6 +111,6 @@ describe('Sputnik > on_set_many_docs', () => {
 		const version: unknown = await fromArray(doc.data);
 
 		expect(typeof version === 'string').toBeTruthy();
-		expect(valid(version as string)).not.toBeNull()
+		expect(valid(version as string)).not.toBeNull();
 	});
 });

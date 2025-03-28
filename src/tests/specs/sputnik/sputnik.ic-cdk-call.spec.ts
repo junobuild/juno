@@ -99,6 +99,6 @@ describe('Sputnik > ic-cdk > call', () => {
 		const version: unknown = await fromArray(doc.data);
 
 		expect(typeof version === 'string').toBeTruthy();
-		expect(valid(version as string)).not.toBeNull()
+		expect(valid(version as string)).not.toBeNull();
 	});
 });

@@ -31,10 +31,10 @@ export const testSdkSetDocStore = async (context: OnSetDocContext) => {
 	});
 };
 
-// eslint-disable-next-line require-await
 export const testSdkDeleteDocStore = async ({
 	caller,
 	data: { collection, key, data }
+	// eslint-disable-next-line require-await
 }: OnSetDocContext) => {
 	deleteDocStore({
 		caller,

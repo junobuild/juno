@@ -5,3 +5,4 @@ pub mod on_set_doc;
 pub mod on_set_many_docs;
 mod runner;
 pub mod types;
+pub mod runner;

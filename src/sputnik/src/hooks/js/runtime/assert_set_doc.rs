@@ -1,4 +1,4 @@
-use crate::hooks::js::runtime::assert_utils::{execute_assertion, make_loader_code};
+use crate::hooks::js::runtime::runner::assert::{execute_assertion, make_loader_code};
 use crate::hooks::js::runtime::types::{AssertJsHook, JsHook};
 use crate::hooks::js::types::hooks::JsHookContext;
 use junobuild_satellite::AssertSetDocContext;

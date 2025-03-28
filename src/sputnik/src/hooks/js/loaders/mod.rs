@@ -1,4 +1,5 @@
 mod db;
+mod storage;
 
 use db::assert_delete_doc::init_assert_delete_doc_loader;
 use db::assert_set_doc::init_assert_set_doc_loader;

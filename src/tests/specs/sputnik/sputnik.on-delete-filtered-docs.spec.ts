@@ -53,7 +53,17 @@ describe('Sputnik > on_delete_filtered_docs', () => {
 			version: toNullable()
 		});
 
-		await del_filtered_docs(collection, mockListParams);
+		await del_filtered_docs(collection, {
+			...mockListParams,
+			matcher: [
+				{
+					key: [key],
+					description: [],
+					created_at: [],
+					updated_at: []
+				}
+			]
+		});
 
 		return { key };
 	};

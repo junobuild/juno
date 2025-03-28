@@ -7,10 +7,13 @@ use crate::hooks::js::utils::{
 };
 use crate::js::types::candid::JsRawPrincipal;
 use junobuild_satellite::{
-    AssertDeleteDocContext, AssertSetDocContext, DelDoc, Doc, OnSetDocContext,
-    OnSetManyDocsContext, SetDoc,
+    AssertDeleteDocContext, AssertSetDocContext, DelDoc, Doc, OnDeleteDocContext,
+    OnDeleteFilteredDocsContext, OnDeleteManyDocsContext, OnSetDocContext, OnSetManyDocsContext,
+    SetDoc,
 };
 use rquickjs::{BigInt, Ctx, Error as JsError, FromJs, IntoJs, Object, Result as JsResult, Value};
+
+// TODO: refactor caller, it's always the same conversion
 
 impl<'js> JsHookContext<'js, JsDocContext<JsDocUpsert<'js>>> {
     pub fn from_on_set_doc(original: OnSetDocContext, ctx: &Ctx<'js>) -> Result<Self, JsError> {
@@ -63,6 +66,59 @@ impl<'js> JsHookContext<'js, Vec<JsDocContext<JsDocUpsert<'js>>>> {
             caller: JsRawPrincipal::from_bytes(ctx, original.caller.as_slice())?,
             data,
         })
+    }
+}
+
+impl<'js> JsHookContext<'js, JsDocContext<Option<JsDoc<'js>>>> {
+    pub fn from_on_delete_doc(
+        original: OnDeleteDocContext,
+        ctx: &Ctx<'js>,
+    ) -> Result<Self, JsError> {
+        let js_context = JsHookContext {
+            caller: JsRawPrincipal::from_bytes(ctx, original.caller.as_slice())?,
+            data: JsDocContext {
+                key: original.data.key,
+                collection: original.data.collection,
+                data: original
+                    .data
+                    .data
+                    .map(|doc| convert_doc(ctx, doc))
+                    .transpose()?,
+            },
+        };
+
+        Ok(js_context)
+    }
+}
+
+impl<'js> JsHookContext<'js, Vec<JsDocContext<Option<JsDoc<'js>>>>> {
+    pub fn from_on_delete_many_docs(
+        original: OnDeleteManyDocsContext,
+        ctx: &Ctx<'js>,
+    ) -> Result<Self, JsError> {
+        let data: Vec<JsDocContext<Option<JsDoc<'js>>>> = original
+            .data
+            .into_iter()
+            .map(|doc_ctx| {
+                Ok(JsDocContext {
+                    key: doc_ctx.key,
+                    collection: doc_ctx.collection,
+                    data: doc_ctx.data.map(|doc| convert_doc(ctx, doc)).transpose()?,
+                })
+            })
+            .collect::<Result<Vec<JsDocContext<Option<JsDoc<'js>>>>, JsError>>()?;
+
+        Ok(JsHookContext {
+            caller: JsRawPrincipal::from_bytes(ctx, original.caller.as_slice())?,
+            data,
+        })
+    }
+
+    pub fn from_on_delete_filtered_docs(
+        original: OnDeleteFilteredDocsContext,
+        ctx: &Ctx<'js>,
+    ) -> Result<Self, JsError> {
+        Self::from_on_delete_many_docs(original, ctx)
     }
 }
 

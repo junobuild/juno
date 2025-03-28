@@ -4,7 +4,8 @@ import { assertNonNullish, fromNullable, toNullable } from '@dfinity/utils';
 import { type Actor, PocketIc } from '@hadronous/pic';
 import { fromArray, toArray } from '@junobuild/utils';
 import { nanoid } from 'nanoid';
-import { afterAll, beforeAll, describe, inject } from 'vitest';
+import { valid } from 'semver';
+import { afterAll, beforeAll, describe, expect, inject } from 'vitest';
 import { mockSetRule } from '../../mocks/collection.mocks';
 import { mockSputnikObj, type SputnikTestListDocs } from '../../mocks/sputnik.mocks';
 import { setupTestSputnik } from '../../utils/fixtures-tests.utils';
@@ -98,5 +99,6 @@ describe('Sputnik > ic-cdk > call', () => {
 		const version: unknown = await fromArray(doc.data);
 
 		expect(typeof version === 'string').toBeTruthy();
+		expect(valid(version as string)).not.toBeNull()
 	});
 });

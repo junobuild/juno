@@ -13,12 +13,10 @@ use junobuild_satellite::{
 };
 use rquickjs::{BigInt, Ctx, Error as JsError, FromJs, IntoJs, Object, Result as JsResult, Value};
 
-// TODO: refactor caller, it's always the same conversion
-
 impl<'js> JsHookContext<'js, JsDocContext<JsDocUpsert<'js>>> {
     pub fn from_on_set_doc(original: OnSetDocContext, ctx: &Ctx<'js>) -> Result<Self, JsError> {
         let js_context = JsHookContext {
-            caller: JsRawPrincipal::from_bytes(ctx, original.caller.as_slice())?,
+            caller: JsRawPrincipal::from_principal(ctx, &original.caller)?,
             data: JsDocContext {
                 key: original.data.key,
                 collection: original.data.collection,
@@ -63,7 +61,7 @@ impl<'js> JsHookContext<'js, Vec<JsDocContext<JsDocUpsert<'js>>>> {
             .collect::<Result<Vec<JsDocContext<JsDocUpsert<'js>>>, JsError>>()?;
 
         Ok(JsHookContext {
-            caller: JsRawPrincipal::from_bytes(ctx, original.caller.as_slice())?,
+            caller: JsRawPrincipal::from_principal(ctx, &original.caller)?,
             data,
         })
     }
@@ -75,7 +73,7 @@ impl<'js> JsHookContext<'js, JsDocContext<Option<JsDoc<'js>>>> {
         ctx: &Ctx<'js>,
     ) -> Result<Self, JsError> {
         let js_context = JsHookContext {
-            caller: JsRawPrincipal::from_bytes(ctx, original.caller.as_slice())?,
+            caller: JsRawPrincipal::from_principal(ctx, &original.caller)?,
             data: JsDocContext {
                 key: original.data.key,
                 collection: original.data.collection,
@@ -109,7 +107,7 @@ impl<'js> JsHookContext<'js, Vec<JsDocContext<Option<JsDoc<'js>>>>> {
             .collect::<Result<Vec<JsDocContext<Option<JsDoc<'js>>>>, JsError>>()?;
 
         Ok(JsHookContext {
-            caller: JsRawPrincipal::from_bytes(ctx, original.caller.as_slice())?,
+            caller: JsRawPrincipal::from_principal(ctx, &original.caller)?,
             data,
         })
     }
@@ -128,7 +126,7 @@ impl<'js> JsHookContext<'js, JsDocContext<JsDocAssertSet<'js>>> {
         ctx: &Ctx<'js>,
     ) -> Result<Self, JsError> {
         let js_context = JsHookContext {
-            caller: JsRawPrincipal::from_bytes(ctx, original.caller.as_slice())?,
+            caller: JsRawPrincipal::from_principal(ctx, &original.caller)?,
             data: JsDocContext {
                 key: original.data.key,
                 collection: original.data.collection,
@@ -154,7 +152,7 @@ impl<'js> JsHookContext<'js, JsDocContext<JsDocAssertDelete<'js>>> {
         ctx: &Ctx<'js>,
     ) -> Result<Self, JsError> {
         let js_context = JsHookContext {
-            caller: JsRawPrincipal::from_bytes(ctx, original.caller.as_slice())?,
+            caller: JsRawPrincipal::from_principal(ctx, &original.caller)?,
             data: JsDocContext {
                 key: original.data.key,
                 collection: original.data.collection,
@@ -176,7 +174,7 @@ impl<'js> JsHookContext<'js, JsDocContext<JsDocAssertDelete<'js>>> {
 
 fn convert_doc<'js>(ctx: &Ctx<'js>, doc: Doc) -> Result<JsDoc<'js>, JsError> {
     Ok(JsDoc {
-        owner: JsRawPrincipal::from_bytes(ctx, doc.owner.as_slice())?,
+        owner: JsRawPrincipal::from_principal(ctx, &doc.owner)?,
         data: JsRawData::from_bytes(ctx, &doc.data)?,
         description: doc.description,
         created_at: doc.created_at,

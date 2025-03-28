@@ -235,7 +235,7 @@ dependencies = [
  "ic-ledger-types",
  "ic-stable-structures",
  "junobuild-collections",
- "junobuild-shared",
+ "junobuild-shared 0.0.25",
  "junobuild-storage",
  "regex",
  "semver",
@@ -905,7 +905,7 @@ version = "0.0.11"
 dependencies = [
  "candid",
  "ic-cdk",
- "junobuild-shared",
+ "junobuild-shared 0.0.24",
  "serde",
 ]
 
@@ -932,7 +932,7 @@ dependencies = [
  "ic-cdk-timers",
  "ic-stable-structures",
  "junobuild-collections",
- "junobuild-shared",
+ "junobuild-shared 0.0.24",
  "junobuild-storage",
  "junobuild-utils 0.0.4 (registry+https://github.com/rust-lang/crates.io-index)",
  "rand 0.9.0",
@@ -945,6 +945,26 @@ dependencies = [
 [[package]]
 name = "junobuild-shared"
 version = "0.0.24"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "a6aff97ae8730c50b37dcb9e55ab9e6451becc8bef724178dfde5091044ce51e"
+dependencies = [
+ "candid",
+ "ciborium",
+ "futures",
+ "getrandom 0.3.1",
+ "ic-cdk",
+ "ic-ledger-types",
+ "ic-stable-structures",
+ "icrc-ledger-types",
+ "rand 0.9.0",
+ "regex",
+ "serde",
+ "time",
+]
+
+[[package]]
+name = "junobuild-shared"
+version = "0.0.25"
 dependencies = [
  "candid",
  "ciborium",
@@ -973,7 +993,7 @@ dependencies = [
  "ic-representation-independent-hash",
  "ic-stable-structures",
  "junobuild-collections",
- "junobuild-shared",
+ "junobuild-shared 0.0.24",
  "regex",
  "serde",
  "serde_bytes",
@@ -1079,7 +1099,7 @@ dependencies = [
  "ic-ledger-types",
  "ic-stable-structures",
  "icrc-ledger-types",
- "junobuild-shared",
+ "junobuild-shared 0.0.25",
  "rand 0.9.0",
  "serde",
 ]
@@ -1131,7 +1151,7 @@ dependencies = [
  "ic-cdk-macros",
  "ic-cdk-timers",
  "ic-stable-structures",
- "junobuild-shared",
+ "junobuild-shared 0.0.25",
  "rand 0.9.0",
  "serde",
  "serde_json",
@@ -1148,7 +1168,7 @@ dependencies = [
  "ic-cdk-macros",
  "ic-stable-structures",
  "isbot",
- "junobuild-shared",
+ "junobuild-shared 0.0.25",
  "regex",
  "serde",
  "url",
@@ -1524,7 +1544,7 @@ dependencies = [
  "junobuild-collections",
  "junobuild-macros",
  "junobuild-satellite",
- "junobuild-shared",
+ "junobuild-shared 0.0.25",
  "rquickjs",
 ]
 

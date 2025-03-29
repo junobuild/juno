@@ -1525,6 +1525,7 @@ dependencies = [
  "junobuild-macros",
  "junobuild-satellite",
  "junobuild-shared",
+ "junobuild-storage",
  "rquickjs",
 ]
 

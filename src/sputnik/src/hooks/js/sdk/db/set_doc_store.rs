@@ -1,5 +1,6 @@
-use crate::hooks::js::types::hooks::{JsCollectionKey, JsKey, JsUserId};
+use crate::hooks::js::types::hooks::JsKey;
 use crate::hooks::js::types::interface::JsSetDoc;
+use crate::hooks::js::types::shared::{JsCollectionKey, JsUserId};
 use junobuild_satellite::set_doc_store as set_doc_store_sdk;
 use rquickjs::{Ctx, Error as JsError, Exception, Result as JsResult};
 

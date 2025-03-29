@@ -73,8 +73,6 @@ pub mod storage {
     use crate::hooks::js::types::shared::{JsTimestamp, JsUserId, JsVersion};
     use crate::js::types::candid::JsUint8Array;
 
-    pub type JsHeaderField<'js> = (String, String);
-
     pub type JsBlob<'js> = JsUint8Array<'js>;
 
     pub type JsBlobOrKey<'js> = JsBlob<'js>;
@@ -82,12 +80,18 @@ pub mod storage {
     pub type JsHash<'js> = JsUint8Array<'js>;
 
     #[derive(Clone)]
+    pub struct JsHeaderField(pub String, pub String);
+
+    #[derive(Clone)]
     pub struct JsAssetEncoding<'js> {
         pub modified: JsTimestamp,
         pub content_chunks: Vec<JsBlobOrKey<'js>>,
-        pub total_length: u128,
+        pub total_length: String,
         pub sha256: JsHash<'js>,
     }
+
+    #[derive(Clone)]
+    pub struct JsAssetEncodings<'js>(pub String, pub JsAssetEncoding<'js>);
 
     #[derive(Clone)]
     pub struct JsAssetKey<'js> {
@@ -102,8 +106,8 @@ pub mod storage {
     #[derive(Clone)]
     pub struct JsAsset<'js> {
         pub key: JsAssetKey<'js>,
-        pub headers: Vec<JsHeaderField<'js>>,
-        pub encodings: Vec<(String, JsAssetEncoding<'js>)>,
+        pub headers: Vec<JsHeaderField>,
+        pub encodings: Vec<JsAssetEncodings<'js>>,
         pub created_at: JsTimestamp,
         pub updated_at: JsTimestamp,
         pub version: Option<JsVersion>,
@@ -123,8 +127,8 @@ pub mod storage {
 pub mod interface {
     use crate::hooks::js::types::hooks::JsRawData;
     use crate::hooks::js::types::shared::JsVersion;
-    use junobuild_shared::types::state::Version;
     use crate::hooks::js::types::storage::JsHeaderField;
+    use junobuild_shared::types::state::Version;
 
     #[derive(Clone)]
     pub struct JsSetDoc<'js> {
@@ -142,9 +146,9 @@ pub mod interface {
     pub type JsChunkId = u128;
 
     #[derive(Clone)]
-    pub struct JsCommitBatch<'js> {
+    pub struct JsCommitBatch {
         pub batch_id: JsBatchId,
-        pub headers: Vec<JsHeaderField<'js>>,
+        pub headers: Vec<JsHeaderField>,
         pub chunk_ids: Vec<JsChunkId>,
     }
 }

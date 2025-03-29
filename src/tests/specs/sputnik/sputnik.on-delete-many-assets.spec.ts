@@ -9,13 +9,13 @@ import { fetchLogs, type IcMgmtLog } from '../../utils/mgmt-test.utils';
 import { waitServerlessFunction } from '../../utils/satellite-extended-tests.utils';
 import { uploadAsset } from '../../utils/satellite-storage-tests.utils';
 
-describe('Sputnik > on_delete_asset', () => {
+describe('Sputnik > on_delete_many_assets', () => {
 	let pic: PocketIc;
 	let actor: Actor<SputnikActor>;
 	let canisterId: Principal;
 	let controller: Identity;
 
-	const TEST_ASSERTED_COLLECTION = 'test-on-delete-asset';
+	const TEST_ASSERTED_COLLECTION = 'test-on-delete-many-assets';
 	const TEST_NOT_ASSERTED_COLLECTION = 'test';
 
 	beforeAll(async () => {
@@ -57,7 +57,7 @@ describe('Sputnik > on_delete_asset', () => {
 	const uploadAndFetchLogs = async ({
 		collection,
 		name,
-		full_path,
+		full_path
 	}: {
 		name: string;
 		full_path: string;
@@ -65,9 +65,9 @@ describe('Sputnik > on_delete_asset', () => {
 	}): Promise<[string, IcMgmtLog][]> => {
 		await upload({ collection, name, full_path });
 
-		const { del_asset } = actor;
+		const { del_many_assets } = actor;
 
-		await del_asset(collection, full_path);
+		await del_many_assets([[collection, full_path]]);
 
 		await waitServerlessFunction(pic);
 
@@ -78,7 +78,7 @@ describe('Sputnik > on_delete_asset', () => {
 		});
 	};
 
-	const MSG = 'onDeleteAsset called';
+	const MSG = 'onDeleteManyAssets called';
 	const TRAP_MSG = 'test-async-and-trap';
 
 	it(`should not use ${MSG}`, async () => {

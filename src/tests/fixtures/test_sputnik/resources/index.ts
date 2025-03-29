@@ -5,6 +5,7 @@ export * from './assert-upload-asset';
 export * from './on-delete-asset';
 export * from './on-delete-doc';
 export * from './on-delete-filtered-docs';
+export * from './on-delete-many-assets';
 export * from './on-delete-many-docs';
 export { onSetDoc } from './on-set-doc';
 export * from './on-set-many-docs';

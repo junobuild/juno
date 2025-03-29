@@ -172,6 +172,7 @@ impl<'js> JsHookContext<'js, JsDocContext<JsDocAssertDelete<'js>>> {
         Ok(js_context)
     }
 }
+
 impl<'js> IntoJs<'js> for JsDocUpsert<'js> {
     fn into_js(self, ctx: &Ctx<'js>) -> JsResult<Value<'js>> {
         let obj = Object::new(ctx.clone())?;

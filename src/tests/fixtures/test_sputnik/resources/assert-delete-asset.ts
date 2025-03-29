@@ -1,5 +1,8 @@
-import type { AssertDeleteAsset, AssertDeleteAssetContext } from '@junobuild/functions';
-import { defineAssert } from '@junobuild/functions';
+import {
+	type AssertDeleteAsset,
+	type AssertDeleteAssetContext,
+	defineAssert
+} from '@junobuild/functions';
 
 /* eslint-disable no-console */
 

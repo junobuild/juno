@@ -1,5 +1,8 @@
-import type { AssertUploadAsset, AssertUploadAssetContext } from '@junobuild/functions';
-import { defineAssert } from '@junobuild/functions';
+import {
+	type AssertUploadAsset,
+	type AssertUploadAssetContext,
+	defineAssert
+} from '@junobuild/functions';
 
 /* eslint-disable no-console */
 

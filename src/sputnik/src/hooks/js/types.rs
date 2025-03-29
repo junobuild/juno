@@ -13,8 +13,9 @@ pub mod shared {
 
 pub mod hooks {
     use crate::hooks::js::types::db::JsDoc;
-    use crate::hooks::js::types::interface::{JsDelDoc, JsSetDoc};
+    use crate::hooks::js::types::interface::{JsCommitBatch, JsDelDoc, JsSetDoc};
     use crate::hooks::js::types::shared::{JsCollectionKey, JsUserId};
+    use crate::hooks::js::types::storage::{JsAsset, JsBatch};
     use crate::js::types::candid::JsUint8Array;
     use junobuild_shared::types::core::Key;
 
@@ -51,6 +52,13 @@ pub mod hooks {
     pub struct JsDocAssertDelete<'js> {
         pub current: Option<JsDoc<'js>>,
         pub proposed: JsDelDoc,
+    }
+
+    #[derive(Clone)]
+    pub struct JsAssetAssertUpload<'js> {
+        pub current: Option<JsAsset<'js>>,
+        pub batch: JsBatch<'js>,
+        pub commit_batch: JsCommitBatch,
     }
 }
 
@@ -113,7 +121,7 @@ pub mod storage {
         pub version: Option<JsVersion>,
     }
 
-    pub type JsReferenceId = u128;
+    pub type JsReferenceId = String;
 
     #[derive(Clone)]
     pub struct JsBatch<'js> {
@@ -142,8 +150,8 @@ pub mod interface {
         pub version: Option<Version>,
     }
 
-    pub type JsBatchId = u128;
-    pub type JsChunkId = u128;
+    pub type JsBatchId = String;
+    pub type JsChunkId = String;
 
     #[derive(Clone)]
     pub struct JsCommitBatch {

@@ -25,9 +25,9 @@ impl<'js> JsHookContext<'js, JsDocContext<JsDocUpsert<'js>>> {
                         .data
                         .data
                         .before
-                        .map(|doc| convert_doc(ctx, doc))
+                        .map(|doc| JsDoc::from_doc(ctx, doc))
                         .transpose()?,
-                    after: convert_doc(ctx, original.data.data.after)?,
+                    after: JsDoc::from_doc(ctx, original.data.data.after)?,
                 },
             },
         };
@@ -52,9 +52,9 @@ impl<'js> JsHookContext<'js, Vec<JsDocContext<JsDocUpsert<'js>>>> {
                         before: doc_ctx
                             .data
                             .before
-                            .map(|doc| convert_doc(ctx, doc))
+                            .map(|doc| JsDoc::from_doc(ctx, doc))
                             .transpose()?,
-                        after: convert_doc(ctx, doc_ctx.data.after)?,
+                        after: JsDoc::from_doc(ctx, doc_ctx.data.after)?,
                     },
                 })
             })
@@ -80,7 +80,7 @@ impl<'js> JsHookContext<'js, JsDocContext<Option<JsDoc<'js>>>> {
                 data: original
                     .data
                     .data
-                    .map(|doc| convert_doc(ctx, doc))
+                    .map(|doc| JsDoc::from_doc(ctx, doc))
                     .transpose()?,
             },
         };
@@ -101,7 +101,10 @@ impl<'js> JsHookContext<'js, Vec<JsDocContext<Option<JsDoc<'js>>>>> {
                 Ok(JsDocContext {
                     key: doc_ctx.key,
                     collection: doc_ctx.collection,
-                    data: doc_ctx.data.map(|doc| convert_doc(ctx, doc)).transpose()?,
+                    data: doc_ctx
+                        .data
+                        .map(|doc| JsDoc::from_doc(ctx, doc))
+                        .transpose()?,
                 })
             })
             .collect::<Result<Vec<JsDocContext<Option<JsDoc<'js>>>>, JsError>>()?;
@@ -135,9 +138,9 @@ impl<'js> JsHookContext<'js, JsDocContext<JsDocAssertSet<'js>>> {
                         .data
                         .data
                         .current
-                        .map(|doc| convert_doc(ctx, doc))
+                        .map(|doc| JsDoc::from_doc(ctx, doc))
                         .transpose()?,
-                    proposed: convert_set_doc(ctx, original.data.data.proposed)?,
+                    proposed: JsSetDoc::from_set_doc(ctx, original.data.data.proposed)?,
                 },
             },
         };
@@ -161,9 +164,9 @@ impl<'js> JsHookContext<'js, JsDocContext<JsDocAssertDelete<'js>>> {
                         .data
                         .data
                         .current
-                        .map(|doc| convert_doc(ctx, doc))
+                        .map(|doc| JsDoc::from_doc(ctx, doc))
                         .transpose()?,
-                    proposed: convert_del_doc(ctx, original.data.data.proposed)?,
+                    proposed: JsDelDoc::from_del_doc(original.data.data.proposed),
                 },
             },
         };
@@ -172,29 +175,35 @@ impl<'js> JsHookContext<'js, JsDocContext<JsDocAssertDelete<'js>>> {
     }
 }
 
-fn convert_doc<'js>(ctx: &Ctx<'js>, doc: Doc) -> Result<JsDoc<'js>, JsError> {
-    Ok(JsDoc {
-        owner: JsRawPrincipal::from_principal(ctx, &doc.owner)?,
-        data: JsRawData::from_bytes(ctx, &doc.data)?,
-        description: doc.description,
-        created_at: doc.created_at,
-        updated_at: doc.updated_at,
-        version: doc.version,
-    })
+impl<'js> JsDoc<'js> {
+    pub fn from_doc(ctx: &Ctx<'js>, doc: Doc) -> JsResult<Self> {
+        Ok(Self {
+            owner: JsRawPrincipal::from_principal(ctx, &doc.owner)?,
+            data: JsRawData::from_bytes(ctx, &doc.data)?,
+            description: doc.description,
+            created_at: doc.created_at,
+            updated_at: doc.updated_at,
+            version: doc.version,
+        })
+    }
 }
 
-fn convert_set_doc<'js>(ctx: &Ctx<'js>, doc: SetDoc) -> Result<JsSetDoc<'js>, JsError> {
-    Ok(JsSetDoc {
-        data: JsRawData::from_bytes(ctx, &doc.data)?,
-        description: doc.description,
-        version: doc.version,
-    })
+impl<'js> JsSetDoc<'js> {
+    pub fn from_set_doc(ctx: &Ctx<'js>, doc: SetDoc) -> JsResult<Self> {
+        Ok(Self {
+            data: JsRawData::from_bytes(ctx, &doc.data)?,
+            description: doc.description,
+            version: doc.version,
+        })
+    }
 }
 
-fn convert_del_doc<'js>(_ctx: &Ctx<'js>, doc: DelDoc) -> Result<JsDelDoc, JsError> {
-    Ok(JsDelDoc {
-        version: doc.version,
-    })
+impl JsDelDoc {
+    pub fn from_del_doc(doc: DelDoc) -> Self {
+        Self {
+            version: doc.version,
+        }
+    }
 }
 
 impl<'js> IntoJs<'js> for JsDoc<'js> {

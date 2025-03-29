@@ -10,6 +10,7 @@ export const onUploadAsset = defineHook<OnUploadAsset>({
 		const asset = data;
 
 		if (asset.key.name === 'test.html') {
+			// eslint-disable-next-line require-await
 			const thr = async () => {
 				throw new Error('test-async-and-trap');
 			};

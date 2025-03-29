@@ -47,7 +47,11 @@ then
 fi
 
 echo "installing wasi2ic"
-cargo install wasi2ic --locked
+if [[ ! "$(command -v wasi2ic)" || "$(wasi2ic --version)" != "wasi2ic 0.2.14" ]]
+then
+    echo "installing ic-wasm 0.2.14"
+    run cargo install wasi2ic --version 0.2.14 --locked
+fi
 
 # make sure the packages are actually installed (rustup waits for the first invoke to lazyload)
 cargo --version

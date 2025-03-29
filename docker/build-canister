@@ -132,10 +132,10 @@ function check_tools() {
   fi
 
   if [ "$target" = "wasm32-wasip1" ]; then
-      if [[ ! "$(command -v wasi2ic)" || "$(wasi2ic --version)" != "wasi2ic 0.2.14" ]]; then
-          echo "could not find wasi2ic 0.2.14"
-          echo "wasi2ic version 0.2.14 is needed, please run the following command:"
-          echo "  cargo install wasi2ic --version 0.2.14"
+      if [[ ! "$(command -v wasi2ic)" || "$(wasi2ic --version)" != "wasi2ic 0.2.15" ]]; then
+          echo "could not find wasi2ic 0.2.15"
+          echo "wasi2ic version 0.2.15 is needed, please run the following command:"
+          echo "  cargo install wasi2ic --version 0.2.15"
           exit 1
       fi
   fi

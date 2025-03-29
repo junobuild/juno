@@ -1,7 +1,6 @@
 use crate::hooks::js::impls::shared::JsBigInt;
 use crate::hooks::js::impls::utils::into_optional_bigint_js;
 use crate::hooks::js::types::interface::JsCommitBatch;
-use crate::hooks::js::types::shared::JsUserId;
 use crate::hooks::js::types::storage::{
     JsAsset, JsAssetEncoding, JsAssetEncodings, JsAssetKey, JsBatch, JsBlobOrKey, JsHash,
     JsHeaderField,
@@ -10,7 +9,7 @@ use crate::js::types::candid::JsRawPrincipal;
 use junobuild_storage::http::types::HeaderField;
 use junobuild_storage::types::interface::CommitBatch;
 use junobuild_storage::types::store::{Asset, AssetEncoding, AssetKey, Batch};
-use rquickjs::{Array, Ctx, Error as JsError, FromJs, IntoJs, Object, Result as JsResult, Value};
+use rquickjs::{Array, Ctx, Error as JsError, IntoJs, Object, Result as JsResult, Value};
 
 impl<'js> JsAssetKey<'js> {
     pub fn from_asset_key(ctx: &Ctx<'js>, key: AssetKey) -> JsResult<JsAssetKey<'js>> {

@@ -1,7 +1,7 @@
 use crate::hooks::js::runtime::runner::{execute_assertion, make_loader_code};
 use crate::hooks::js::runtime::types::{AssertJsHook, JsHook};
 use crate::hooks::js::types::hooks::JsHookContext;
-use junobuild_satellite::{AssertDeleteAssetContext, AssertDeleteDocContext};
+use junobuild_satellite::{AssertDeleteAssetContext};
 use rquickjs::{Ctx, Error as JsError};
 
 const ASSERT_FUNCTION: &str = "assertDeleteAsset";

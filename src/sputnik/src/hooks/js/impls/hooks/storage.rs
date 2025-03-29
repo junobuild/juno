@@ -5,7 +5,7 @@ use crate::hooks::js::types::storage::{JsAsset, JsBatch};
 use crate::js::types::candid::JsRawPrincipal;
 use junobuild_satellite::{
     AssertDeleteAssetContext, AssertUploadAssetContext, OnDeleteAssetContext,
-    OnDeleteFilteredAssetsContext, OnDeleteFilteredDocsContext, OnDeleteManyAssetsContext,
+    OnDeleteFilteredAssetsContext, OnDeleteManyAssetsContext,
     OnUploadAssetContext,
 };
 use rquickjs::{Ctx, Error as JsError, IntoJs, Object, Result as JsResult, Value};

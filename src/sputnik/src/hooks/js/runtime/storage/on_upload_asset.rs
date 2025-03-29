@@ -1,7 +1,7 @@
 use crate::hooks::js::runtime::runner::{execute_hook, make_loader_code};
 use crate::hooks::js::runtime::types::{JsHook, OnJsHook};
 use crate::hooks::js::types::hooks::JsHookContext;
-use junobuild_satellite::{OnSetDocContext, OnUploadAssetContext};
+use junobuild_satellite::{OnUploadAssetContext};
 use rquickjs::{Ctx, Error as JsError};
 
 const ON_FUNCTION: &str = "onUploadAsset";

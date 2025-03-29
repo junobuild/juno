@@ -4,18 +4,19 @@ import type { Principal } from '@dfinity/principal';
 import { type Actor, PocketIc } from '@hadronous/pic';
 import { afterAll, beforeAll, describe, expect, inject } from 'vitest';
 import { mockSetRule } from '../../mocks/collection.mocks';
+import { mockListParams } from '../../mocks/list.mocks';
 import { setupTestSputnik } from '../../utils/fixtures-tests.utils';
 import { fetchLogs, type IcMgmtLog } from '../../utils/mgmt-test.utils';
 import { waitServerlessFunction } from '../../utils/satellite-extended-tests.utils';
 import { uploadAsset } from '../../utils/satellite-storage-tests.utils';
 
-describe('Sputnik > on_delete_asset', () => {
+describe('Sputnik > on_delete_filtered_assets', () => {
 	let pic: PocketIc;
 	let actor: Actor<SputnikActor>;
 	let canisterId: Principal;
 	let controller: Identity;
 
-	const TEST_ASSERTED_COLLECTION = 'test-on-delete-asset';
+	const TEST_ASSERTED_COLLECTION = 'test-on-delete-filtered-assets';
 	const TEST_NOT_ASSERTED_COLLECTION = 'test';
 
 	beforeAll(async () => {
@@ -65,9 +66,19 @@ describe('Sputnik > on_delete_asset', () => {
 	}): Promise<[string, IcMgmtLog][]> => {
 		await upload({ collection, name, full_path });
 
-		const { del_asset } = actor;
+		const { del_filtered_assets } = actor;
 
-		await del_asset(collection, full_path);
+		await del_filtered_assets(collection, {
+			...mockListParams,
+			matcher: [
+				{
+					key: [full_path],
+					description: [],
+					created_at: [],
+					updated_at: []
+				}
+			]
+		});
 
 		await waitServerlessFunction(pic);
 
@@ -78,7 +89,7 @@ describe('Sputnik > on_delete_asset', () => {
 		});
 	};
 
-	const MSG = 'onDeleteAsset called';
+	const MSG = 'onDeleteFilteredAssets called';
 	const TRAP_MSG = 'test-async-and-trap';
 
 	it(`should not use ${MSG}`, async () => {

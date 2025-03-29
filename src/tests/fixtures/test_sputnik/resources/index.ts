@@ -1,3 +1,4 @@
+export * from './assert-delete-asset';
 export * from './assert-delete-doc';
 export * from './assert-set-doc';
 export * from './on-delete-doc';

@@ -1,5 +1,6 @@
-use crate::hooks::js::types::hooks::{JsCollectionKey, JsKey, JsUserId};
+use crate::hooks::js::types::hooks::JsKey;
 use crate::hooks::js::types::interface::JsDelDoc;
+use crate::hooks::js::types::shared::{JsCollectionKey, JsUserId};
 use junobuild_satellite::delete_doc_store as delete_doc_store_sdk;
 use rquickjs::{Ctx, Error as JsError, Exception, Result as JsResult};
 

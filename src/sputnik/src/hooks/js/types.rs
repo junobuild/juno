@@ -70,7 +70,7 @@ pub mod db {
 }
 
 pub mod storage {
-    use crate::hooks::js::types::hooks::{JsTimestamp, JsUserId, JsVersion};
+    use crate::hooks::js::types::shared::{JsTimestamp, JsUserId, JsVersion};
     use crate::js::types::candid::JsUint8Array;
 
     pub type JsHeaderField<'js> = (String, String);

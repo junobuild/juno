@@ -12,7 +12,7 @@ use junobuild_satellite::{
 use rquickjs::{Ctx, Error as JsError, IntoJs, Object, Result as JsResult, Value};
 
 impl<'js> JsHookContext<'js, JsDocContext<JsDocUpsert<'js>>> {
-    pub fn from_on_set_doc(original: OnSetDocContext, ctx: &Ctx<'js>) -> Result<Self, JsError> {
+    pub fn from_on_set_doc(ctx: &Ctx<'js>, original: OnSetDocContext) -> Result<Self, JsError> {
         let js_context = JsHookContext {
             caller: JsRawPrincipal::from_principal(ctx, &original.caller)?,
             data: JsDocContext {
@@ -36,8 +36,8 @@ impl<'js> JsHookContext<'js, JsDocContext<JsDocUpsert<'js>>> {
 
 impl<'js> JsHookContext<'js, Vec<JsDocContext<JsDocUpsert<'js>>>> {
     pub fn from_on_set_many_docs(
-        original: OnSetManyDocsContext,
         ctx: &Ctx<'js>,
+        original: OnSetManyDocsContext,
     ) -> Result<Self, JsError> {
         let data: Vec<JsDocContext<JsDocUpsert<'js>>> = original
             .data
@@ -67,8 +67,8 @@ impl<'js> JsHookContext<'js, Vec<JsDocContext<JsDocUpsert<'js>>>> {
 
 impl<'js> JsHookContext<'js, JsDocContext<Option<JsDoc<'js>>>> {
     pub fn from_on_delete_doc(
-        original: OnDeleteDocContext,
         ctx: &Ctx<'js>,
+        original: OnDeleteDocContext,
     ) -> Result<Self, JsError> {
         let js_context = JsHookContext {
             caller: JsRawPrincipal::from_principal(ctx, &original.caller)?,
@@ -89,8 +89,8 @@ impl<'js> JsHookContext<'js, JsDocContext<Option<JsDoc<'js>>>> {
 
 impl<'js> JsHookContext<'js, Vec<JsDocContext<Option<JsDoc<'js>>>>> {
     pub fn from_on_delete_many_docs(
-        original: OnDeleteManyDocsContext,
         ctx: &Ctx<'js>,
+        original: OnDeleteManyDocsContext,
     ) -> Result<Self, JsError> {
         let data: Vec<JsDocContext<Option<JsDoc<'js>>>> = original
             .data
@@ -114,17 +114,17 @@ impl<'js> JsHookContext<'js, Vec<JsDocContext<Option<JsDoc<'js>>>>> {
     }
 
     pub fn from_on_delete_filtered_docs(
-        original: OnDeleteFilteredDocsContext,
         ctx: &Ctx<'js>,
+        original: OnDeleteFilteredDocsContext,
     ) -> Result<Self, JsError> {
-        Self::from_on_delete_many_docs(original, ctx)
+        Self::from_on_delete_many_docs(ctx, original)
     }
 }
 
 impl<'js> JsHookContext<'js, JsDocContext<JsDocAssertSet<'js>>> {
     pub fn from_assert_set_doc(
-        original: AssertSetDocContext,
         ctx: &Ctx<'js>,
+        original: AssertSetDocContext,
     ) -> Result<Self, JsError> {
         let js_context = JsHookContext {
             caller: JsRawPrincipal::from_principal(ctx, &original.caller)?,
@@ -149,8 +149,8 @@ impl<'js> JsHookContext<'js, JsDocContext<JsDocAssertSet<'js>>> {
 
 impl<'js> JsHookContext<'js, JsDocContext<JsDocAssertDelete<'js>>> {
     pub fn from_assert_delete_doc(
-        original: AssertDeleteDocContext,
         ctx: &Ctx<'js>,
+        original: AssertDeleteDocContext,
     ) -> Result<Self, JsError> {
         let js_context = JsHookContext {
             caller: JsRawPrincipal::from_principal(ctx, &original.caller)?,

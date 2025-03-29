@@ -20,7 +20,7 @@ impl OnJsHook<OnDeleteAssetContext> for OnDeleteAsset {
         ctx: &Ctx<'js>,
         context: OnDeleteAssetContext,
     ) -> Result<(), JsError> {
-        let js_context = JsHookContext::from_on_delete_asset(context, ctx)?;
+        let js_context = JsHookContext::from_on_delete_asset(ctx, context)?;
         execute_hook(ctx, js_context, ON_FUNCTION).await
     }
 }

@@ -1,7 +1,7 @@
 use crate::hooks::js::runtime::runner::{execute_hook, make_loader_code};
 use crate::hooks::js::runtime::types::{JsHook, OnJsHook};
 use crate::hooks::js::types::hooks::JsHookContext;
-use junobuild_satellite::{OnUploadAssetContext};
+use junobuild_satellite::OnUploadAssetContext;
 use rquickjs::{Ctx, Error as JsError};
 
 const ON_FUNCTION: &str = "onUploadAsset";
@@ -20,7 +20,7 @@ impl OnJsHook<OnUploadAssetContext> for OnUploadAsset {
         ctx: &Ctx<'js>,
         context: OnUploadAssetContext,
     ) -> Result<(), JsError> {
-        let js_context = JsHookContext::from_on_upload_asset(context, ctx)?;
+        let js_context = JsHookContext::from_on_upload_asset(ctx, context)?;
         execute_hook(ctx, js_context, ON_FUNCTION).await
     }
 }

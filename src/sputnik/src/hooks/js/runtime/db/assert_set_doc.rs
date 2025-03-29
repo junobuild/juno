@@ -16,7 +16,7 @@ impl JsHook for AssertSetDoc {
 
 impl AssertJsHook<AssertSetDocContext> for AssertSetDoc {
     fn execute<'js>(&self, ctx: &Ctx<'js>, context: AssertSetDocContext) -> Result<(), JsError> {
-        let js_context = JsHookContext::from_assert_set_doc(context, ctx)?;
+        let js_context = JsHookContext::from_assert_set_doc(ctx, context)?;
         execute_assertion(ctx, js_context, ASSERT_FUNCTION)
     }
 }

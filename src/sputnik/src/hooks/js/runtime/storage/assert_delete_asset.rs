@@ -1,7 +1,7 @@
 use crate::hooks::js::runtime::runner::{execute_assertion, make_loader_code};
 use crate::hooks::js::runtime::types::{AssertJsHook, JsHook};
 use crate::hooks::js::types::hooks::JsHookContext;
-use junobuild_satellite::{AssertDeleteAssetContext};
+use junobuild_satellite::AssertDeleteAssetContext;
 use rquickjs::{Ctx, Error as JsError};
 
 const ASSERT_FUNCTION: &str = "assertDeleteAsset";
@@ -23,7 +23,7 @@ impl AssertJsHook<AssertDeleteAssetContext> for AssertDeleteAsset {
         ctx: &Ctx<'js>,
         context: AssertDeleteAssetContext,
     ) -> Result<(), JsError> {
-        let js_context = JsHookContext::from_assert_delete_asset(context, ctx)?;
+        let js_context = JsHookContext::from_assert_delete_asset(ctx, context)?;
         execute_assertion(ctx, js_context, ASSERT_FUNCTION)
     }
 }

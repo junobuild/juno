@@ -16,7 +16,7 @@ impl JsHook for OnSetDoc {
 
 impl OnJsHook<OnSetDocContext> for OnSetDoc {
     async fn execute<'js>(&self, ctx: &Ctx<'js>, context: OnSetDocContext) -> Result<(), JsError> {
-        let js_context = JsHookContext::from_on_set_doc(context, ctx)?;
+        let js_context = JsHookContext::from_on_set_doc(ctx, context)?;
         execute_hook(ctx, js_context, ON_FUNCTION).await
     }
 }

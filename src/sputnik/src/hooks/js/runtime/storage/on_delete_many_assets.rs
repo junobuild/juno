@@ -1,7 +1,7 @@
 use crate::hooks::js::runtime::runner::{execute_hook, make_loader_code};
 use crate::hooks::js::runtime::types::{JsHook, OnJsHook};
 use crate::hooks::js::types::hooks::JsHookContext;
-use junobuild_satellite::{OnDeleteManyAssetsContext};
+use junobuild_satellite::OnDeleteManyAssetsContext;
 use rquickjs::{Ctx, Error as JsError};
 
 const ON_FUNCTION: &str = "onDeleteManyAssets";
@@ -20,7 +20,7 @@ impl OnJsHook<OnDeleteManyAssetsContext> for OnDeleteManyAssets {
         ctx: &Ctx<'js>,
         context: OnDeleteManyAssetsContext,
     ) -> Result<(), JsError> {
-        let js_context = JsHookContext::from_on_delete_many_assets(context, ctx)?;
+        let js_context = JsHookContext::from_on_delete_many_assets(ctx, context)?;
         execute_hook(ctx, js_context, ON_FUNCTION).await
     }
 }

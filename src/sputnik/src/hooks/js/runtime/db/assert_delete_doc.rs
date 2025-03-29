@@ -16,7 +16,7 @@ impl JsHook for AssertDeleteDoc {
 
 impl AssertJsHook<AssertDeleteDocContext> for AssertDeleteDoc {
     fn execute<'js>(&self, ctx: &Ctx<'js>, context: AssertDeleteDocContext) -> Result<(), JsError> {
-        let js_context = JsHookContext::from_assert_delete_doc(context, ctx)?;
+        let js_context = JsHookContext::from_assert_delete_doc(ctx, context)?;
         execute_assertion(ctx, js_context, ASSERT_FUNCTION)
     }
 }

@@ -23,7 +23,7 @@ impl OnJsHook<OnDeleteFilteredAssetsContext> for OnDeleteFilteredAssets {
         ctx: &Ctx<'js>,
         context: OnDeleteFilteredAssetsContext,
     ) -> Result<(), JsError> {
-        let js_context = JsHookContext::from_on_delete_filtered_assets(context, ctx)?;
+        let js_context = JsHookContext::from_on_delete_filtered_assets(ctx, context)?;
         execute_hook(ctx, js_context, ON_FUNCTION).await
     }
 }

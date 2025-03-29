@@ -20,7 +20,7 @@ impl OnJsHook<OnSetManyDocsContext> for OnSetManyDocs {
         ctx: &Ctx<'js>,
         context: OnSetManyDocsContext,
     ) -> Result<(), JsError> {
-        let js_context = JsHookContext::from_on_set_many_docs(context, ctx)?;
+        let js_context = JsHookContext::from_on_set_many_docs(ctx, context)?;
         execute_hook(ctx, js_context, ON_FUNCTION).await
     }
 }

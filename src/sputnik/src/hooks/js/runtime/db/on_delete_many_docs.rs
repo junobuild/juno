@@ -20,7 +20,7 @@ impl OnJsHook<OnDeleteManyDocsContext> for OnDeleteManyDocs {
         ctx: &Ctx<'js>,
         context: OnDeleteManyDocsContext,
     ) -> Result<(), JsError> {
-        let js_context = JsHookContext::from_on_delete_many_docs(context, ctx)?;
+        let js_context = JsHookContext::from_on_delete_many_docs(ctx, context)?;
         execute_hook(ctx, js_context, ON_FUNCTION).await
     }
 }

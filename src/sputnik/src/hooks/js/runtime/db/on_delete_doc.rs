@@ -20,7 +20,7 @@ impl OnJsHook<OnDeleteDocContext> for OnDeleteDoc {
         ctx: &Ctx<'js>,
         context: OnDeleteDocContext,
     ) -> Result<(), JsError> {
-        let js_context = JsHookContext::from_on_delete_doc(context, ctx)?;
+        let js_context = JsHookContext::from_on_delete_doc(ctx, context)?;
         execute_hook(ctx, js_context, ON_FUNCTION).await
     }
 }

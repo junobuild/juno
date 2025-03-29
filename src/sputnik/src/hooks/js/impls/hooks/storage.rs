@@ -5,17 +5,14 @@ use crate::hooks::js::types::storage::{JsAsset, JsBatch};
 use crate::js::types::candid::JsRawPrincipal;
 use junobuild_satellite::{
     AssertDeleteAssetContext, AssertUploadAssetContext, OnDeleteAssetContext,
-    OnDeleteFilteredAssetsContext, OnDeleteManyAssetsContext,
-    OnUploadAssetContext,
+    OnDeleteFilteredAssetsContext, OnDeleteManyAssetsContext, OnUploadAssetContext,
 };
 use rquickjs::{Ctx, Error as JsError, IntoJs, Object, Result as JsResult, Value};
 
-// TODO: invert ctx param first
-
 impl<'js> JsHookContext<'js, JsAsset<'js>> {
     pub fn from_on_upload_asset(
-        original: OnUploadAssetContext,
         ctx: &Ctx<'js>,
+        original: OnUploadAssetContext,
     ) -> Result<Self, JsError> {
         Ok(JsHookContext {
             caller: JsRawPrincipal::from_principal(ctx, &original.caller)?,
@@ -24,17 +21,17 @@ impl<'js> JsHookContext<'js, JsAsset<'js>> {
     }
 
     pub fn from_assert_delete_asset(
-        original: AssertDeleteAssetContext,
         ctx: &Ctx<'js>,
+        original: AssertDeleteAssetContext,
     ) -> Result<Self, JsError> {
-        Self::from_on_upload_asset(original, ctx)
+        Self::from_on_upload_asset(ctx, original)
     }
 }
 
 impl<'js> JsHookContext<'js, Option<JsAsset<'js>>> {
     pub fn from_on_delete_asset(
-        original: OnDeleteAssetContext,
         ctx: &Ctx<'js>,
+        original: OnDeleteAssetContext,
     ) -> Result<Self, JsError> {
         let data = original
             .data
@@ -50,8 +47,8 @@ impl<'js> JsHookContext<'js, Option<JsAsset<'js>>> {
 
 impl<'js> JsHookContext<'js, Vec<Option<JsAsset<'js>>>> {
     pub fn from_on_delete_many_assets(
-        original: OnDeleteManyAssetsContext,
         ctx: &Ctx<'js>,
+        original: OnDeleteManyAssetsContext,
     ) -> Result<Self, JsError> {
         let data: Vec<Option<JsAsset<'js>>> = original
             .data
@@ -66,17 +63,17 @@ impl<'js> JsHookContext<'js, Vec<Option<JsAsset<'js>>>> {
     }
 
     pub fn from_on_delete_filtered_assets(
-        original: OnDeleteFilteredAssetsContext,
         ctx: &Ctx<'js>,
+        original: OnDeleteFilteredAssetsContext,
     ) -> Result<Self, JsError> {
-        Self::from_on_delete_many_assets(original, ctx)
+        Self::from_on_delete_many_assets(ctx, original)
     }
 }
 
 impl<'js> JsHookContext<'js, JsAssetAssertUpload<'js>> {
     pub fn from_assert_upload_asset(
-        original: AssertUploadAssetContext,
         ctx: &Ctx<'js>,
+        original: AssertUploadAssetContext,
     ) -> Result<Self, JsError> {
         let data = JsAssetAssertUpload {
             current: original

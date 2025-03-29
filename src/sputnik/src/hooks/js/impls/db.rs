@@ -38,44 +38,6 @@ impl JsDelDoc {
     }
 }
 
-impl<'js> IntoJs<'js> for JsDoc<'js> {
-    fn into_js(self, ctx: &Ctx<'js>) -> JsResult<Value<'js>> {
-        let obj = Object::new(ctx.clone())?;
-        obj.set("owner", self.owner)?;
-        obj.set("data", self.data)?;
-        obj.set("description", self.description)?;
-
-        obj.set("created_at", JsBigInt(self.created_at).into_js(ctx)?)?;
-        obj.set("updated_at", JsBigInt(self.updated_at).into_js(ctx)?)?;
-
-        obj.set("version", into_optional_bigint_js(ctx, self.version)?)?;
-
-        Ok(obj.into_value())
-    }
-}
-
-impl<'js> IntoJs<'js> for JsSetDoc<'js> {
-    fn into_js(self, ctx: &Ctx<'js>) -> JsResult<Value<'js>> {
-        let obj = Object::new(ctx.clone())?;
-        obj.set("data", self.data)?;
-        obj.set("description", self.description)?;
-
-        obj.set("version", into_optional_bigint_js(ctx, self.version)?)?;
-
-        Ok(obj.into_value())
-    }
-}
-
-impl<'js> IntoJs<'js> for JsDelDoc {
-    fn into_js(self, ctx: &Ctx<'js>) -> JsResult<Value<'js>> {
-        let obj = Object::new(ctx.clone())?;
-
-        obj.set("version", into_optional_bigint_js(ctx, self.version)?)?;
-
-        Ok(obj.into_value())
-    }
-}
-
 impl<'js> JsSetDoc<'js> {
     pub fn to_doc(&self) -> JsResult<SetDoc> {
         Ok(SetDoc {
@@ -114,6 +76,52 @@ impl<'js> JsRawData<'js> {
         Ok(String::from_utf8_lossy(bytes).to_string())
     }
 }
+
+// ---------------------------------------------------------
+// IntoJs
+// ---------------------------------------------------------
+
+impl<'js> IntoJs<'js> for JsDoc<'js> {
+    fn into_js(self, ctx: &Ctx<'js>) -> JsResult<Value<'js>> {
+        let obj = Object::new(ctx.clone())?;
+        obj.set("owner", self.owner)?;
+        obj.set("data", self.data)?;
+        obj.set("description", self.description)?;
+
+        obj.set("created_at", JsBigInt(self.created_at).into_js(ctx)?)?;
+        obj.set("updated_at", JsBigInt(self.updated_at).into_js(ctx)?)?;
+
+        obj.set("version", into_optional_bigint_js(ctx, self.version)?)?;
+
+        Ok(obj.into_value())
+    }
+}
+
+impl<'js> IntoJs<'js> for JsSetDoc<'js> {
+    fn into_js(self, ctx: &Ctx<'js>) -> JsResult<Value<'js>> {
+        let obj = Object::new(ctx.clone())?;
+        obj.set("data", self.data)?;
+        obj.set("description", self.description)?;
+
+        obj.set("version", into_optional_bigint_js(ctx, self.version)?)?;
+
+        Ok(obj.into_value())
+    }
+}
+
+impl<'js> IntoJs<'js> for JsDelDoc {
+    fn into_js(self, ctx: &Ctx<'js>) -> JsResult<Value<'js>> {
+        let obj = Object::new(ctx.clone())?;
+
+        obj.set("version", into_optional_bigint_js(ctx, self.version)?)?;
+
+        Ok(obj.into_value())
+    }
+}
+
+// ---------------------------------------------------------
+// FromJs
+// ---------------------------------------------------------
 
 impl<'js> FromJs<'js> for JsSetDoc<'js> {
     fn from_js(_ctx: &Ctx<'js>, value: Value<'js>) -> JsResult<Self> {

@@ -13,8 +13,9 @@ pub mod shared {
 
 pub mod hooks {
     use crate::hooks::js::types::db::JsDoc;
-    use crate::hooks::js::types::interface::{JsDelDoc, JsSetDoc};
+    use crate::hooks::js::types::interface::{JsCommitBatch, JsDelDoc, JsSetDoc};
     use crate::hooks::js::types::shared::{JsCollectionKey, JsUserId};
+    use crate::hooks::js::types::storage::{JsAsset, JsBatch};
     use crate::js::types::candid::JsUint8Array;
     use junobuild_shared::types::core::Key;
 
@@ -52,6 +53,13 @@ pub mod hooks {
         pub current: Option<JsDoc<'js>>,
         pub proposed: JsDelDoc,
     }
+
+    #[derive(Clone)]
+    pub struct JsAssetAssertUpload<'js> {
+        pub current: Option<JsAsset<'js>>,
+        pub batch: JsBatch<'js>,
+        pub commit_batch: JsCommitBatch,
+    }
 }
 
 pub mod db {
@@ -69,9 +77,65 @@ pub mod db {
     }
 }
 
+pub mod storage {
+    use crate::hooks::js::types::shared::{JsTimestamp, JsUserId, JsVersion};
+    use crate::js::types::candid::JsUint8Array;
+
+    pub type JsBlob<'js> = JsUint8Array<'js>;
+
+    pub type JsBlobOrKey<'js> = JsBlob<'js>;
+
+    pub type JsHash<'js> = JsUint8Array<'js>;
+
+    #[derive(Clone)]
+    pub struct JsHeaderField(pub String, pub String);
+
+    #[derive(Clone)]
+    pub struct JsAssetEncoding<'js> {
+        pub modified: JsTimestamp,
+        pub content_chunks: Vec<JsBlobOrKey<'js>>,
+        pub total_length: String,
+        pub sha256: JsHash<'js>,
+    }
+
+    #[derive(Clone)]
+    pub struct JsAssetEncodings<'js>(pub String, pub JsAssetEncoding<'js>);
+
+    #[derive(Clone)]
+    pub struct JsAssetKey<'js> {
+        pub name: String,
+        pub full_path: String,
+        pub token: Option<String>,
+        pub collection: String,
+        pub owner: JsUserId<'js>,
+        pub description: Option<String>,
+    }
+
+    #[derive(Clone)]
+    pub struct JsAsset<'js> {
+        pub key: JsAssetKey<'js>,
+        pub headers: Vec<JsHeaderField>,
+        pub encodings: Vec<JsAssetEncodings<'js>>,
+        pub created_at: JsTimestamp,
+        pub updated_at: JsTimestamp,
+        pub version: Option<JsVersion>,
+    }
+
+    pub type JsReferenceId = String;
+
+    #[derive(Clone)]
+    pub struct JsBatch<'js> {
+        pub key: JsAssetKey<'js>,
+        pub reference_id: Option<JsReferenceId>,
+        pub expires_at: JsTimestamp,
+        pub encoding_type: Option<String>,
+    }
+}
+
 pub mod interface {
     use crate::hooks::js::types::hooks::JsRawData;
     use crate::hooks::js::types::shared::JsVersion;
+    use crate::hooks::js::types::storage::JsHeaderField;
     use junobuild_shared::types::state::Version;
 
     #[derive(Clone)]
@@ -84,5 +148,15 @@ pub mod interface {
     #[derive(Clone)]
     pub struct JsDelDoc {
         pub version: Option<Version>,
+    }
+
+    pub type JsBatchId = String;
+    pub type JsChunkId = String;
+
+    #[derive(Clone)]
+    pub struct JsCommitBatch {
+        pub batch_id: JsBatchId,
+        pub headers: Vec<JsHeaderField>,
+        pub chunk_ids: Vec<JsChunkId>,
     }
 }

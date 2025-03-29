@@ -1,18 +1,26 @@
-pub mod hooks {
-    use crate::hooks::js::types::interface::{JsDelDoc, JsSetDoc};
-    use crate::js::types::candid::{JsRawPrincipal, JsUint8Array};
+pub mod shared {
+    use crate::js::types::candid::JsRawPrincipal;
     use junobuild_collections::types::core::CollectionKey;
-    use junobuild_shared::types::core::Key;
     use junobuild_shared::types::state::{Timestamp, Version};
 
     pub type JsCollectionKey = CollectionKey;
-    pub type JsKey = Key;
+
     pub type JsTimestamp = Timestamp;
     pub type JsVersion = Version;
 
-    pub type JsRawData<'js> = JsUint8Array<'js>;
-
     pub type JsUserId<'js> = JsRawPrincipal<'js>;
+}
+
+pub mod hooks {
+    use crate::hooks::js::types::db::JsDoc;
+    use crate::hooks::js::types::interface::{JsDelDoc, JsSetDoc};
+    use crate::hooks::js::types::shared::{JsCollectionKey, JsUserId};
+    use crate::js::types::candid::JsUint8Array;
+    use junobuild_shared::types::core::Key;
+
+    pub type JsKey = Key;
+
+    pub type JsRawData<'js> = JsUint8Array<'js>;
 
     #[derive(Clone)]
     pub struct JsHookContext<'js, T> {
@@ -44,6 +52,11 @@ pub mod hooks {
         pub current: Option<JsDoc<'js>>,
         pub proposed: JsDelDoc,
     }
+}
+
+pub mod db {
+    use crate::hooks::js::types::hooks::JsRawData;
+    use crate::hooks::js::types::shared::{JsTimestamp, JsUserId, JsVersion};
 
     #[derive(Clone)]
     pub struct JsDoc<'js> {
@@ -57,7 +70,8 @@ pub mod hooks {
 }
 
 pub mod interface {
-    use crate::hooks::js::types::hooks::{JsRawData, JsVersion};
+    use crate::hooks::js::types::hooks::JsRawData;
+    use crate::hooks::js::types::shared::JsVersion;
     use junobuild_shared::types::state::Version;
 
     #[derive(Clone)]

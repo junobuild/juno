@@ -6,7 +6,11 @@
 	import Signer from '$lib/components/signer/Signer.svelte';
 	import { nonNullish } from '@dfinity/utils';
 	import { missionControlIdDerived } from '$lib/derived/mission-control.derived';
+	import { onIntersection } from '$lib/directives/intersection.directives';
+	import {onLayoutTitleIntersection} from "$lib/stores/layout-intersecting.store";
 </script>
+
+<span use:onIntersection onjunoIntersecting={onLayoutTitleIntersection}></span>
 
 {#if $authSignedIn}
 	<MissionControlGuard>

@@ -10,6 +10,8 @@
 	import { signIn } from '$lib/services/auth.services';
 	import { i18n } from '$lib/stores/i18n.store';
 	import type { Option } from '$lib/types/utils';
+	import { onIntersection } from '$lib/directives/intersection.directives';
+	import {onLayoutTitleIntersection} from "$lib/stores/layout-intersecting.store";
 
 	interface Props {
 		data: {
@@ -23,6 +25,8 @@
 	let redirect_uri: Option<string> = $derived(data?.redirect_uri);
 	let principal: Option<string> = $derived(data?.principal);
 </script>
+
+<span use:onIntersection onjunoIntersecting={onLayoutTitleIntersection}></span>
 
 {#if nonNullish(redirect_uri) && nonNullish(principal) && notEmptyString(redirect_uri) && notEmptyString(principal)}
 	{#if $authSignedIn}

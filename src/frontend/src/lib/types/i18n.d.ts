@@ -827,6 +827,14 @@ interface I18nResources {
 interface I18nSigner {
 	title: string;
 	access_your_wallet: string;
+	permissions_no_confirm_callback: string;
+	permissions_icrc27_accounts: string;
+	permissions_icrc49_call_canister: string;
+	permissions_requested_permissions: string;
+	permissions_your_wallet_address: string;
+	origin_request_from: string;
+	origin_invalid_origin: string;
+	origin_link_to_dapp: string;
 }
 
 interface I18n {

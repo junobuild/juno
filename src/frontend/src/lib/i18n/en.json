@@ -797,6 +797,14 @@
 	},
 	"signer": {
 		"title": "Juno Wallet",
-		"access_your_wallet": "Access your wallet to securely connect a dApp and start using your assets."
+		"access_your_wallet": "Access your wallet to securely connect a dApp and start using your assets.",
+		"permissions_no_confirm_callback": "No callback to confirm the permissions, which is unexpected. Close the wallet and try again.",
+		"permissions_icrc27_accounts": "View your Juno address",
+		"permissions_icrc49_call_canister": "Request approval for transactions",
+		"permissions_requested_permissions": "Requested permissions",
+		"permissions_your_wallet_address": "Your wallet address",
+		"origin_request_from": "Request from:",
+		"origin_invalid_origin": "Invalid origin️!!",
+		"origin_link_to_dapp": "Link to the dApp requesting permissions"
 	}
 }

@@ -4,10 +4,36 @@
 	import { i18n } from '$lib/stores/i18n.store';
 	import MissionControlGuard from '$lib/components/guards/MissionControlGuard.svelte';
 	import Signer from '$lib/components/signer/Signer.svelte';
-	import { nonNullish } from '@dfinity/utils';
+	import { isNullish, nonNullish } from '@dfinity/utils';
 	import { missionControlIdDerived } from '$lib/derived/mission-control.derived';
 	import { onIntersection } from '$lib/directives/intersection.directives';
 	import { onLayoutTitleIntersection } from '$lib/stores/layout-intersecting.store';
+	import { initSignerContext, SIGNER_CONTEXT_KEY } from '$lib/stores/signer.store';
+	import { onDestroy, setContext } from 'svelte';
+	import { authStore } from '$lib/stores/auth.store';
+	import type { OptionIdentity } from '$lib/types/itentity';
+
+	const { idle, reset, ...context } = initSignerContext();
+	setContext(SIGNER_CONTEXT_KEY, {
+		...context,
+		idle,
+		reset
+	});
+
+	const init = (owner: OptionIdentity) => {
+		if (isNullish(owner)) {
+			reset();
+			return;
+		}
+
+		context.init({ owner });
+	};
+
+	onDestroy(reset);
+
+	$effect(() => {
+		init($authStore.identity);
+	});
 </script>
 
 <div class="section" use:onIntersection onjunoIntersecting={onLayoutTitleIntersection}>

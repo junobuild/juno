@@ -1,53 +1,38 @@
 <script lang="ts">
-	import { Signer } from '@dfinity/oisy-wallet-signer/signer';
-    import {type AccountsApproval, type AccountsPromptPayload, ICRC27_ACCOUNTS} from "@dfinity/oisy-wallet-signer";
-    import {isNullish, nonNullish} from "@dfinity/utils";
-    import { fade } from 'svelte/transition';
-    import type {MissionControlId} from "$lib/types/mission-control";
+	import { isNullish } from '@dfinity/utils';
+	import type { MissionControlId } from '$lib/types/mission-control';
+	import { getContext, type Snippet } from 'svelte';
+	import { SIGNER_CONTEXT_KEY, type SignerContext } from '$lib/stores/signer.store';
 
 	interface Props {
-		signer: Signer | undefined;
-        missionControlId: MissionControlId;
+		missionControlId: MissionControlId;
+		children: Snippet;
 	}
 
-	let { signer, missionControlId }: Props = $props();
+	let { missionControlId, children }: Props = $props();
 
-    let approve = $state<AccountsApproval | undefined | null>(undefined);
+	const {
+		accountsPrompt: { payload, reset: resetPrompt }
+	} = getContext<SignerContext>(SIGNER_CONTEXT_KEY);
 
-    const resetPrompt = () => {
-        approve = null;
-    };
+	const onAccountsPrompt = async () => {
+		if (isNullish($payload)) {
+			// Payload has been reset. Nothing to do.
+			return;
+		}
 
-    $effect(() => {
-        if (isNullish(signer)) {
-            resetPrompt();
-            return;
-        }
+		const { approve } = $payload;
 
-        signer.register({
-            method: ICRC27_ACCOUNTS,
-            prompt: ({ approve: approveAccounts }: AccountsPromptPayload) => {
-                approve = approveAccounts;
-            }
-        });
-    });
+		approve([{ owner: missionControlId.toText() }]);
 
-    $effect(() => {
-        if (isNullish(approve)) {
-            return;
-        }
+		resetPrompt();
+	};
 
-        approve([
-            {
-                owner: missionControlId.toText()
-            }
-        ]);
+	$effect(() => {
+		$payload;
 
-        // Just to animate the UI. Strictly related to this demo.
-        setTimeout(() => resetPrompt(), 1000);
-    });
+		onAccountsPrompt();
+	});
 </script>
 
-{#if nonNullish(approve)}
-    <p transition:fade>Notifying account...</p>
-{/if}
+{@render children()}

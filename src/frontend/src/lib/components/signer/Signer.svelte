@@ -1,42 +1,29 @@
 <script lang="ts">
-	import {Signer} from "@dfinity/oisy-wallet-signer/signer";
-    import {authNotSignedIn} from "$lib/derived/auth.derived";
-    import {isNullish} from "@dfinity/utils";
-    import { authStore } from '$lib/stores/auth.store';
-    import SignerPermissions from "$lib/components/signer/SignerPermissions.svelte";
-    import SignerAccounts from "$lib/components/signer/SignerAccounts.svelte";
-    import type {MissionControlId} from "$lib/types/mission-control";
+	import SignerPermissions from '$lib/components/signer/SignerPermissions.svelte';
+	import type { MissionControlId } from '$lib/types/mission-control';
+	import SignerAccounts from '$lib/components/signer/SignerAccounts.svelte';
+	import { getContext } from 'svelte';
+	import { SIGNER_CONTEXT_KEY, type SignerContext } from '$lib/stores/signer.store';
+	import { fade, type FadeParams } from 'svelte/transition';
 
-    interface Props {
-        missionControlId: MissionControlId;
-    }
+	interface Props {
+		missionControlId: MissionControlId;
+	}
 
-    let { missionControlId }: Props = $props();
+	let { missionControlId }: Props = $props();
 
-    let signer = $state<Signer | undefined>(undefined);
+	const { idle } = getContext<SignerContext>(SIGNER_CONTEXT_KEY);
 
-    $effect(() => {
-        if ($authNotSignedIn) {
-            signer?.disconnect();
-            return;
-        }
-
-        if (isNullish($authStore.identity)) {
-            signer?.disconnect();
-            return;
-        }
-
-        signer = Signer.init({
-            owner: $authStore.identity,
-            host: 'http://localhost:5987'
-        });
-
-        return () => {
-            signer?.disconnect();
-        };
-    });
+	// We use specific fade parameters for the idle state due to the asynchronous communication between the relying party and the wallet.
+	// Because the idle state might be displayed when a client starts communication with the wallet, we add a small delay to prevent a minor glitch where the idle animation is briefly shown before the actual action is rendered.
+	// Technically, from a specification standpoint, we don't have a way to fully prevent this.
+	const fadeParams: FadeParams = { delay: 150, duration: 250 };
 </script>
 
-<SignerPermissions {signer} />
-
-<SignerAccounts {signer} {missionControlId} />
+<SignerAccounts {missionControlId}>
+	{#if $idle}
+		<div in:fade={fadeParams}>TODO</div>
+	{:else}
+		<SignerPermissions {missionControlId} />
+	{/if}
+</SignerAccounts>

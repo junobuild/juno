@@ -825,6 +825,7 @@ interface I18nResources {
 }
 
 interface I18nSigner {
+	title: string;
 	access_your_wallet: string;
 }
 

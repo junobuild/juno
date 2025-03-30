@@ -17,10 +17,10 @@
 	let { children }: Props = $props();
 
 	onMount(() => {
-		applyColor(Color.LAVENDER_BLUE);
+		applyColor(Color.TIFFANY_BLUE);
 
 		layoutNavigation.set({
-			title: "Juno Wallet",
+			title: $i18n.signer.title,
 			icon: IconWallet
 		});
 	});
@@ -28,7 +28,7 @@
 
 <Layout centered={true}>
 	{#snippet navbar()}
-		<Navbar start="logo" />
+		<Navbar start="logo" signIn={false} />
 	{/snippet}
 
 	{@render children()}

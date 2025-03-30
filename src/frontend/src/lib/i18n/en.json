@@ -796,6 +796,7 @@
 		"changelog_description": "See the last updates and improvements."
 	},
 	"signer": {
+		"title": "Juno Wallet",
 		"access_your_wallet": "Access your wallet to securely connect a dApp and start using your assets."
 	}
 }

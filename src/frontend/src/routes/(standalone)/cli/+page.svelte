@@ -11,7 +11,7 @@
 	import { i18n } from '$lib/stores/i18n.store';
 	import type { Option } from '$lib/types/utils';
 	import { onIntersection } from '$lib/directives/intersection.directives';
-	import {onLayoutTitleIntersection} from "$lib/stores/layout-intersecting.store";
+	import { onLayoutTitleIntersection } from '$lib/stores/layout-intersecting.store';
 
 	interface Props {
 		data: {
@@ -26,26 +26,32 @@
 	let principal: Option<string> = $derived(data?.principal);
 </script>
 
-<span use:onIntersection onjunoIntersecting={onLayoutTitleIntersection}></span>
+<div use:onIntersection onjunoIntersecting={onLayoutTitleIntersection}>
+	{#if nonNullish(redirect_uri) && nonNullish(principal) && notEmptyString(redirect_uri) && notEmptyString(principal)}
+		{#if $authSignedIn}
+			<MissionControlGuard>
+				<CanistersLoader satellites={$sortedSatellites}>
+					{#if nonNullish($missionControlIdDerived)}
+						<div in:fade>
+							<CliAdd {principal} {redirect_uri} missionControlId={$missionControlIdDerived} />
+						</div>
+					{/if}
+				</CanistersLoader>
+			</MissionControlGuard>
+		{:else}
+			<p>
+				{$i18n.cli.sign_in}
+			</p>
 
-{#if nonNullish(redirect_uri) && nonNullish(principal) && notEmptyString(redirect_uri) && notEmptyString(principal)}
-	{#if $authSignedIn}
-		<MissionControlGuard>
-			<CanistersLoader satellites={$sortedSatellites}>
-				{#if nonNullish($missionControlIdDerived)}
-					<div in:fade>
-						<CliAdd {principal} {redirect_uri} missionControlId={$missionControlIdDerived} />
-					</div>
-				{/if}
-			</CanistersLoader>
-		</MissionControlGuard>
+			<button onclick={async () => await signIn({})}>{$i18n.core.sign_in}</button>
+		{/if}
 	{:else}
-		<p>
-			{$i18n.cli.sign_in}
-		</p>
-
-		<button onclick={async () => await signIn({})}>{$i18n.core.sign_in}</button>
+		<p>{$i18n.errors.cli_missing_params}</p>
 	{/if}
-{:else}
-	<p>{$i18n.errors.cli_missing_params}</p>
-{/if}
+</div>
+
+<style lang="scss">
+	.section {
+		--spinner-paragraph-margin: 0;
+	}
+</style>

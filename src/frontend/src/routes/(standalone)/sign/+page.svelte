@@ -7,19 +7,25 @@
 	import { nonNullish } from '@dfinity/utils';
 	import { missionControlIdDerived } from '$lib/derived/mission-control.derived';
 	import { onIntersection } from '$lib/directives/intersection.directives';
-	import {onLayoutTitleIntersection} from "$lib/stores/layout-intersecting.store";
+	import { onLayoutTitleIntersection } from '$lib/stores/layout-intersecting.store';
 </script>
 
-<span use:onIntersection onjunoIntersecting={onLayoutTitleIntersection}></span>
+<div class="section" use:onIntersection onjunoIntersecting={onLayoutTitleIntersection}>
+	{#if $authSignedIn}
+		<MissionControlGuard>
+			{#if nonNullish($missionControlIdDerived)}
+				<Signer missionControlId={$missionControlIdDerived} />
+			{/if}
+		</MissionControlGuard>
+	{:else}
+		<p>{$i18n.signer.access_your_wallet}</p>
 
-{#if $authSignedIn}
-	<MissionControlGuard>
-		{#if nonNullish($missionControlIdDerived)}
-			<Signer missionControlId={$missionControlIdDerived} />
-		{/if}
-	</MissionControlGuard>
-{:else}
-	<p>{$i18n.signer.access_your_wallet}</p>
+		<button onclick={async () => await signIn({})}>{$i18n.core.sign_in}</button>
+	{/if}
+</div>
 
-	<button onclick={async () => await signIn({})}>{$i18n.core.sign_in}</button>
-{/if}
+<style lang="scss">
+	.section {
+		--spinner-paragraph-margin: 0;
+	}
+</style>

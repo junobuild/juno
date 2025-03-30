@@ -805,6 +805,7 @@
 		"permissions_your_wallet_address": "Your wallet address",
 		"origin_request_from": "Request from:",
 		"origin_invalid_origin": "Invalid origin️!!",
-		"origin_link_to_dapp": "Link to the dApp requesting permissions"
+		"origin_link_to_dapp": "Link to the dApp requesting permissions",
+		"idle_waiting": "Waiting for the dApp interaction..."
 	}
 }

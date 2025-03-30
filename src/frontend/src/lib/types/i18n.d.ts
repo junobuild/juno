@@ -835,6 +835,7 @@ interface I18nSigner {
 	origin_request_from: string;
 	origin_invalid_origin: string;
 	origin_link_to_dapp: string;
+	idle_waiting: string;
 }
 
 interface I18n {

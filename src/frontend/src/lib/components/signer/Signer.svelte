@@ -5,6 +5,7 @@
 	import SignerPermissions from '$lib/components/signer/SignerPermissions.svelte';
 	import { SIGNER_CONTEXT_KEY, type SignerContext } from '$lib/stores/signer.store';
 	import type { MissionControlId } from '$lib/types/mission-control';
+	import SignerIdle from '$lib/components/signer/SignerIdle.svelte';
 
 	interface Props {
 		missionControlId: MissionControlId;
@@ -22,7 +23,9 @@
 
 <SignerAccounts {missionControlId}>
 	{#if $idle}
-		<div in:fade={fadeParams}>TODO</div>
+		<div in:fade={fadeParams}>
+			<SignerIdle />
+		</div>
 	{:else}
 		<SignerPermissions {missionControlId} />
 	{/if}

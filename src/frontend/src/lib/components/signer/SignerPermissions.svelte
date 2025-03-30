@@ -3,7 +3,7 @@
 	import {
 		ICRC25_PERMISSION_GRANTED,
 		ICRC27_ACCOUNTS,
-		type IcrcScopedMethod,
+		type IcrcScopedMethod
 	} from '@dfinity/oisy-wallet-signer';
 	import { fade } from 'svelte/transition';
 	import { toasts } from '$lib/stores/toasts.store';

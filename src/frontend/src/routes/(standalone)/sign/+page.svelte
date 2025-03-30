@@ -5,7 +5,7 @@
 	import MissionControlGuard from '$lib/components/guards/MissionControlGuard.svelte';
 	import Signer from '$lib/components/signer/Signer.svelte';
 	import { nonNullish } from '@dfinity/utils';
-    import { missionControlIdDerived } from '$lib/derived/mission-control.derived';
+	import { missionControlIdDerived } from '$lib/derived/mission-control.derived';
 </script>
 
 {#if $authSignedIn}
@@ -15,7 +15,7 @@
 		{/if}
 	</MissionControlGuard>
 {:else}
-	<p>Access your Juno Wallet.</p>
+	<p>{$i18n.signer.access_your_wallet}</p>
 
 	<button onclick={async () => await signIn({})}>{$i18n.core.sign_in}</button>
 {/if}

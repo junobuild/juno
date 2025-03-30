@@ -824,6 +824,10 @@ interface I18nResources {
 	changelog_description: string;
 }
 
+interface I18nSigner {
+	access_your_wallet: string;
+}
+
 interface I18n {
 	lang: Languages;
 	core: I18nCore;
@@ -852,4 +856,5 @@ interface I18n {
 	preferences: I18nPreferences;
 	examples: I18nExamples;
 	resources: I18nResources;
+	signer: I18nSigner;
 }

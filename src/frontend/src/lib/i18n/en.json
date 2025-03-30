@@ -794,5 +794,8 @@
 		"resources_description": "View a collection of sample code, applications, and microservices build with Juno",
 		"changelog": "Releases",
 		"changelog_description": "See the last updates and improvements."
+	},
+	"signer": {
+		"access_your_wallet": "Access your wallet to securely connect a dApp and start using your assets."
 	}
 }

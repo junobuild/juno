@@ -1,4 +1,4 @@
-import { DEV, LOCAL_REPLICA_URL } from '$lib/constants/app.constants';
+import { DEV, LOCAL_REPLICA_HOST } from '$lib/constants/app.constants';
 import type { Option } from '$lib/types/utils';
 import type { Identity } from '@dfinity/agent';
 import {
@@ -156,7 +156,7 @@ export const initSignerContext = (): SignerContext => {
 	const init = ({ owner }: { owner: Identity }) => {
 		signer = Signer.init({
 			owner,
-			...(DEV && { host: LOCAL_REPLICA_URL })
+			...(DEV && { host: LOCAL_REPLICA_HOST })
 		});
 
 		signer.register({

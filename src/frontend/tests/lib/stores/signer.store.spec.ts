@@ -1,4 +1,4 @@
-import { LOCAL_REPLICA_URL } from '$lib/constants/app.constants';
+import { LOCAL_REPLICA_HOST } from '$lib/constants/app.constants';
 import { initSignerContext } from '$lib/stores/signer.store';
 import { Ed25519KeyIdentity } from '@dfinity/identity';
 import { Signer } from '@dfinity/oisy-wallet-signer/signer';
@@ -16,7 +16,7 @@ describe('SignerContext', () => {
 
 		expect(spy).toHaveBeenCalledWith({
 			owner: identity,
-			host: LOCAL_REPLICA_URL
+			host: LOCAL_REPLICA_HOST
 		});
 	});
 

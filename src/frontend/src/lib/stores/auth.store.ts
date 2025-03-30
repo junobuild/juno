@@ -4,7 +4,7 @@ import {
 	AUTH_POPUP_WIDTH,
 	DEV,
 	INTERNET_IDENTITY_CANISTER_ID,
-	LOCAL_REPLICA_URL
+	LOCAL_REPLICA_HOST
 } from '$lib/constants/app.constants';
 import { SignInError, SignInInitError, SignInUserInterruptError } from '$lib/types/errors';
 import type { OptionIdentity } from '$lib/types/itentity';
@@ -58,8 +58,8 @@ const initAuthStore = (): AuthStore => {
 
 				const identityProvider = DEV
 					? /apple/i.test(navigator?.vendor)
-						? `${LOCAL_REPLICA_URL}?canisterId=${INTERNET_IDENTITY_CANISTER_ID}`
-						: `http://${INTERNET_IDENTITY_CANISTER_ID}.${new URL(LOCAL_REPLICA_URL).host}`
+						? `${LOCAL_REPLICA_HOST}?canisterId=${INTERNET_IDENTITY_CANISTER_ID}`
+						: `http://${INTERNET_IDENTITY_CANISTER_ID}.${new URL(LOCAL_REPLICA_HOST).host}`
 					: `https://identity.${domain ?? 'internetcomputer.org'}`;
 
 				await authClient?.login({

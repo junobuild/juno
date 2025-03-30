@@ -7,7 +7,7 @@
 		segments: CanisterSegment[];
 	}
 
-	let { children }: Props = $props();
+	let { children, segments: _ }: Props = $props();
 </script>
 
 {@render children()}

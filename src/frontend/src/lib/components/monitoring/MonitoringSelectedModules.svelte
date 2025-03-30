@@ -22,7 +22,7 @@
 	{/snippet}
 
 	<ul>
-		{#each selectedSatellites as [satelliteId, satellite]}
+		{#each selectedSatellites as [satelliteId, satellite] (satelliteId.toText())}
 			<li>
 				<Segment id={satelliteId}>
 					{satelliteName(satellite)}
@@ -30,7 +30,7 @@
 			</li>
 		{/each}
 
-		{#each selectedOrbiters as [orbiterId, orbiter]}
+		{#each selectedOrbiters as [orbiterId, orbiter] (orbiterId.toText())}
 			{@const orbName = orbiterName(orbiter)}
 
 			<li>

@@ -64,8 +64,8 @@ export const testTextEncoding = async ({
 	setDocStore({
 		caller,
 		collection,
+		key,
 		doc: {
-			key,
 			version: data.after.version,
 			data: updatedData
 		}

@@ -1,5 +1,5 @@
 use crate::hooks::js::loaders::init_loaders;
-use crate::hooks::js::runtime::on_post_upgrade::execute_on_post_upgrade;
+use crate::hooks::js::runtime::lifecycle::on_post_upgrade::execute_on_post_upgrade;
 use crate::js::runtime::execute_sync_js;
 use junobuild_macros::on_post_upgrade;
 

@@ -14,7 +14,7 @@
 		segments: CanisterSegment[];
 	}
 
-	let { children, segments }: Props = $props();
+	let { children, segments, satellites: _ }: Props = $props();
 
 	let worker: CyclesWorker | undefined = $state(undefined);
 

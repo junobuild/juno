@@ -35,4 +35,8 @@ impl<'js> JsRawPrincipal<'js> {
             .map(Principal::from_slice)
             .map_err(|_| JsError::new_from_js("JsRawPrincipal", "Principal"))
     }
+
+    pub fn from_principal(ctx: &Ctx<'js>, principal: &Principal) -> JsResult<Self> {
+        JsRawPrincipal::from_bytes(ctx, principal.as_slice())
+    }
 }

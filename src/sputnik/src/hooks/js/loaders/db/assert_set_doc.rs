@@ -1,4 +1,4 @@
-use crate::state::store::set_assert_set_docs_collections;
+use crate::state::store::set_assert_set_doc_collections;
 use rquickjs::{Ctx, Error as JsError, Result as JsResult};
 
 pub fn init_assert_set_doc_loader(ctx: &Ctx) -> Result<(), JsError> {
@@ -14,7 +14,7 @@ pub fn init_assert_set_doc_loader(ctx: &Ctx) -> Result<(), JsError> {
 
 #[rquickjs::function]
 fn assert_set_doc_loader<'js>(_ctx: Ctx<'js>, collections: Vec<String>) -> JsResult<()> {
-    set_assert_set_docs_collections(&collections);
+    set_assert_set_doc_collections(&collections);
 
     Ok(())
 }

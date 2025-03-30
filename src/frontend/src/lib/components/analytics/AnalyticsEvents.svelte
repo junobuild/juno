@@ -28,7 +28,7 @@
 		</thead>
 
 		<tbody>
-			{#each total as [name, count]}
+			{#each total as [name, count] (name)}
 				<tr>
 					<td>{name}</td>
 					<td>{count}</td>

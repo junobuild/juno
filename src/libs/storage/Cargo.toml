@@ -1,6 +1,6 @@
 [package]
 name = "junobuild-storage"
-version = "0.0.15"
+version = "0.0.17"
 authors.workspace = true
 edition.workspace = true
 repository.workspace = true
@@ -12,6 +12,8 @@ license-file = "LICENSE.md"
 
 [package.metadata.docs.rs]
 targets = ["wasm32-unknown-unknown"]
+rustc-args = ['--cfg', "getrandom_backend=\"custom\""]
+rustdoc-args = ['--cfg', "getrandom_backend=\"custom\""]
 
 [dependencies]
 candid.workspace = true
@@ -29,5 +31,5 @@ base64 = "0.22.1"
 url.workspace = true
 urlencoding = "2.1.3"
 globset = "0.4.13"
-junobuild-shared = "0.0.24"
-junobuild-collections = "0.0.11"
+junobuild-shared = "0.0.26"
+junobuild-collections = "0.0.13"

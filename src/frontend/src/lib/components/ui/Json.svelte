@@ -122,7 +122,7 @@
 		>
 		<!-- children -->
 		<ul>
-			{#each children as [key, value]}
+			{#each children as [key, value], index (index)}
 				<li>
 					<Json json={value} _key={key} {defaultExpandedLevel} _level={_level + 1} />
 				</li>

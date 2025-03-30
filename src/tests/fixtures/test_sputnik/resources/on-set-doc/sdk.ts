@@ -1,10 +1,15 @@
 import type { OnSetDocContext } from '@junobuild/functions';
 import { id } from '@junobuild/functions/ic-cdk';
-import { decodeDocData, encodeDocData, setDocStore } from '@junobuild/functions/sdk';
+import {
+	decodeDocData,
+	deleteDocStore,
+	encodeDocData,
+	setDocStore
+} from '@junobuild/functions/sdk';
 import type { SputnikMock } from '../../../../mocks/sputnik.mocks';
 
 // eslint-disable-next-line require-await
-export const testDocUpdate = async (context: OnSetDocContext) => {
+export const testSdkSetDocStore = async (context: OnSetDocContext) => {
 	const sourceData = decodeDocData<SputnikMock>(context.data.data.after.data);
 
 	const updateData = {
@@ -18,10 +23,25 @@ export const testDocUpdate = async (context: OnSetDocContext) => {
 		// TODO: a test for this too?
 		caller: id(),
 		collection: context.data.collection,
+		key: context.data.key,
 		doc: {
-			key: context.data.key,
 			version: context.data.data.after.version,
 			data: encodedData
+		}
+	});
+};
+
+export const testSdkDeleteDocStore = async ({
+	caller,
+	data: { collection, key, data }
+	// eslint-disable-next-line require-await
+}: OnSetDocContext) => {
+	deleteDocStore({
+		caller,
+		collection,
+		key,
+		doc: {
+			version: data.after.version
 		}
 	});
 };

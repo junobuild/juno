@@ -34,8 +34,8 @@
 
 <LayerCake
 	padding={padding ?? { top: 32, right: 0, bottom: 32, left: 0 }}
-	x={'x'}
-	y={'y'}
+	x="x"
+	y="y"
 	yNice={4}
 	yDomain={[0, null]}
 	data={chartsData}

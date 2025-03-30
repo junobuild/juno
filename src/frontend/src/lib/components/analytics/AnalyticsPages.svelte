@@ -22,7 +22,7 @@
 			</thead>
 
 			<tbody>
-				{#each top10.pages as [pages, count]}
+				{#each top10.pages as [pages, count], index (index)}
 					<tr>
 						<td>{pages}</td>
 						<td>{count}</td>

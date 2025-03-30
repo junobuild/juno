@@ -101,7 +101,7 @@
 
 			<tbody>
 				{#if snapshots !== undefined}
-					{#each snapshots ?? [] as snapshot}
+					{#each snapshots ?? [] as snapshot, index (index)}
 						<tr>
 							<td
 								><SnapshotActions

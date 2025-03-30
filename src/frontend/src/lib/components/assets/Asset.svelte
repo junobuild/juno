@@ -153,7 +153,7 @@
 					{$i18n.asset.headers}
 				{/snippet}
 				<div class="headers">
-					{#each headers as header}
+					{#each headers as header, index (index)}
 						<span>{header[0]}: {header[1]}</span>
 					{/each}
 				</div>

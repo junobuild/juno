@@ -136,7 +136,7 @@
 				{/if}
 
 				{#if $paginationStore.items.length > 0}
-					{#each $paginationStore.items as [key, doc]}
+					{#each $paginationStore.items as [key, doc] (key)}
 						<button class="text action" onclick={() => docsStore.set({ key, data: doc })}
 							><span>{key}</span></button
 						>

@@ -24,6 +24,7 @@
 </script>
 
 <g class="scatter-group">
+	<!-- eslint-disable-next-line svelte/require-each-key -->
 	{#each $data as d}
 		<circle
 			cx={$xGet(d) + ($xScale.bandwidth ? $xScale.bandwidth() / 2 : 0)}

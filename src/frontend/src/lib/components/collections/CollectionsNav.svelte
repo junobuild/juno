@@ -50,7 +50,7 @@
 	<select bind:value={selected} onchange={() => (isNullish(selected) ? close() : edit(selected))}>
 		<option value={undefined}>Select a collection</option>
 		{#if nonNullish($store.rules)}
-			{#each $sortedRules as rule}
+			{#each $sortedRules as rule (rule[0])}
 				<option value={rule}>{rule[0]}</option>
 			{/each}
 		{/if}

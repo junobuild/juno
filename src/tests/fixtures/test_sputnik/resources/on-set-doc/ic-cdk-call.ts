@@ -4,6 +4,7 @@ import { fromNullable } from '@dfinity/utils';
 import type { OnSetDocContext } from '@junobuild/functions';
 import { call, id } from '@junobuild/functions/ic-cdk';
 import { encodeDocData, setDocStore } from '@junobuild/functions/sdk';
+import { callAndSaveVersion } from '../services/set-doc.services';
 
 // Calling a function with records.
 const ListOrderField = IDL.Variant({
@@ -78,8 +79,8 @@ const callRecord = async ({ caller, data: { collection, key, data } }: OnSetDocC
 	setDocStore({
 		caller,
 		collection,
+		key,
 		doc: {
-			key,
 			version: data.after.version,
 			data: encodeDocData({
 				items_length: result.items_length,
@@ -101,29 +102,19 @@ const callBigInt = async ({ caller, data: { collection, key, data } }: OnSetDocC
 	setDocStore({
 		caller,
 		collection,
+		key: `${key}_count_docs`,
 		doc: {
-			key: `${key}_count_docs`,
 			version: data.after.version,
 			data: encodeDocData(count)
 		}
 	});
 };
 
-const callStringNoArgs = async ({ caller, data: { collection, key, data } }: OnSetDocContext) => {
-	const version = await call<bigint>({
-		canisterId: id(),
-		method: 'version',
-		result: IDL.Text
-	});
-
-	setDocStore({
+const callStringNoArgs = async ({ caller, data: { collection, key } }: OnSetDocContext) => {
+	await callAndSaveVersion({
 		caller,
 		collection,
-		doc: {
-			key: `${key}_version`,
-			version: data.after.version,
-			data: encodeDocData(version)
-		}
+		key
 	});
 };
 

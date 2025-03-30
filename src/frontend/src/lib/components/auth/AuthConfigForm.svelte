@@ -94,7 +94,7 @@
 							<option value={satelliteUrl.host}>{satelliteUrl.host}</option>
 						{/if}
 
-						{#each customDomains as customDomain}
+						{#each customDomains as customDomain (customDomain.host)}
 							<option value={customDomain.host}>{customDomain.host}</option>
 						{/each}
 					</select>

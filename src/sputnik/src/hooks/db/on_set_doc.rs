@@ -1,8 +1,8 @@
-use crate::hooks::js::runtime::on_set_doc::OnSetDoc;
+use crate::hooks::js::runtime::db::on_set_doc::OnSetDoc;
 use crate::hooks::js::runtime::types::OnJsHook;
 use crate::hooks::js::sdk::init_sdk;
 use crate::js::runtime::{execute_async_js, RunAsyncJsFn};
-use crate::state::store::get_on_set_docs_collections;
+use crate::state::store::get_on_set_doc_collections;
 use ic_cdk::{spawn, trap};
 use junobuild_satellite::OnSetDocContext;
 use rquickjs::{Ctx, Error as JsError};
@@ -32,6 +32,6 @@ impl RunAsyncJsFn for AsyncJsFnContext {
 
 #[no_mangle]
 pub extern "Rust" fn juno_on_set_doc_collections() -> Option<Vec<String>> {
-    let collections = get_on_set_docs_collections();
+    let collections = get_on_set_doc_collections();
     Some(collections)
 }

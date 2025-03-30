@@ -57,7 +57,7 @@
 		"emulator": "docker compose up"
 	},
 	"devDependencies": {
-		"@dfinity/eslint-config-oisy-wallet": "^0.1.1",
+		"@dfinity/eslint-config-oisy-wallet": "^0.1.2",
 		"@dfinity/response-verification": "^3.0.3",
 		"@hadronous/pic": "^0.11.0",
 		"@junobuild/cli-tools": "^0.1.6",
@@ -65,7 +65,7 @@
 		"@junobuild/config-loader": "^0.2.0",
 		"@junobuild/console": "^0.1.5",
 		"@junobuild/errors": "^0.0.5",
-		"@junobuild/functions": "^0.0.10",
+		"@junobuild/functions": "^0.0.13",
 		"@junobuild/storage": "^0.1.5",
 		"@ltd/j-toml": "^1.38.0",
 		"@sveltejs/adapter-static": "^3.0.8",

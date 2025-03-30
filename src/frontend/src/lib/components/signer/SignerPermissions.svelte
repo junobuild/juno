@@ -1,15 +1,12 @@
 <script lang="ts">
-	import {
-		ICRC25_PERMISSION_GRANTED,
-		ICRC27_ACCOUNTS,
-		type IcrcScopedMethod
-	} from '@dfinity/oisy-wallet-signer';
+	import { ICRC25_PERMISSION_GRANTED, type IcrcScopedMethod } from '@dfinity/oisy-wallet-signer';
 	import { isNullish, nonNullish } from '@dfinity/utils';
 	import { type Component, getContext } from 'svelte';
 	import { fade } from 'svelte/transition';
 	import IconShield from '$lib/components/icons/IconShield.svelte';
 	import IconWallet from '$lib/components/icons/IconWallet.svelte';
 	import SignerOrigin from '$lib/components/signer/SignerOrigin.svelte';
+	import Html from '$lib/components/ui/Html.svelte';
 	import { i18n } from '$lib/stores/i18n.store';
 	import { SIGNER_CONTEXT_KEY, type SignerContext } from '$lib/stores/signer.store';
 	import { toasts } from '$lib/stores/toasts.store';
@@ -68,17 +65,13 @@
 	let listItems: Record<IcrcScopedMethod, { icon: Component; label: string }> = $derived({
 		icrc27_accounts: {
 			icon: IconWallet,
-			label: $i18n.signer.permissions_icrc27_accounts
+			label: `${$i18n.signer.permissions_icrc27_accounts} <strong>${shortenWithMiddleEllipsis(missionControlId.toText())}</strong>`
 		},
 		icrc49_call_canister: {
 			icon: IconShield,
 			label: $i18n.signer.permissions_icrc49_call_canister
 		}
 	});
-
-	let requestAccountsPermissions = $derived(
-		nonNullish(scopes.find(({ scope: { method } }) => method === ICRC27_ACCOUNTS))
-	);
 </script>
 
 {#if nonNullish($payload)}
@@ -94,21 +87,11 @@
 
 					<li>
 						<Icon size="24" />
-						{label}
+						<Html text={label} />
 					</li>
 				{/each}
 			</ul>
 		</div>
-
-		{#if requestAccountsPermissions}
-			<p>
-				<label for="ic-wallet-address">{$i18n.signer.permissions_your_wallet_address}:</label>
-
-				<output id="ic-wallet-address"
-					>{shortenWithMiddleEllipsis(missionControlId.toText())}</output
-				>
-			</p>
-		{/if}
 
 		<div class="toolbar">
 			<button type="button" onclick={onReject}>Reject</button>

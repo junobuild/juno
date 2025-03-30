@@ -13,7 +13,7 @@
 
 	let origin = $derived(payload?.origin);
 
-	const mapHost = (origin: Origin | undefined): string | undefined | null => {
+	const mapHost = (origin: Origin | undefined): Option<string> => {
 		if (isNullish(origin)) {
 			return undefined;
 		}

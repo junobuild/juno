@@ -1,8 +1,8 @@
 <script lang="ts">
 	import { isNullish } from '@dfinity/utils';
-	import type { MissionControlId } from '$lib/types/mission-control';
 	import { getContext, type Snippet } from 'svelte';
 	import { SIGNER_CONTEXT_KEY, type SignerContext } from '$lib/stores/signer.store';
+	import type { MissionControlId } from '$lib/types/mission-control';
 
 	interface Props {
 		missionControlId: MissionControlId;
@@ -15,7 +15,7 @@
 		accountsPrompt: { payload, reset: resetPrompt }
 	} = getContext<SignerContext>(SIGNER_CONTEXT_KEY);
 
-	const onAccountsPrompt = async () => {
+	const onAccountsPrompt = () => {
 		if (isNullish($payload)) {
 			// Payload has been reset. Nothing to do.
 			return;

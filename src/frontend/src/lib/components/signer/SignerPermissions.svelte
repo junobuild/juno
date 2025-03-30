@@ -1,20 +1,20 @@
 <script lang="ts">
-	import { isNullish, nonNullish } from '@dfinity/utils';
 	import {
 		ICRC25_PERMISSION_GRANTED,
 		ICRC27_ACCOUNTS,
 		type IcrcScopedMethod
 	} from '@dfinity/oisy-wallet-signer';
-	import { fade } from 'svelte/transition';
-	import { toasts } from '$lib/stores/toasts.store';
+	import { isNullish, nonNullish } from '@dfinity/utils';
 	import { type Component, getContext } from 'svelte';
-	import { SIGNER_CONTEXT_KEY, type SignerContext } from '$lib/stores/signer.store';
-	import { i18n } from '$lib/stores/i18n.store';
-	import IconWallet from '$lib/components/icons/IconWallet.svelte';
+	import { fade } from 'svelte/transition';
 	import IconShield from '$lib/components/icons/IconShield.svelte';
+	import IconWallet from '$lib/components/icons/IconWallet.svelte';
 	import SignerOrigin from '$lib/components/signer/SignerOrigin.svelte';
-	import { shortenWithMiddleEllipsis } from '$lib/utils/format.utils';
+	import { i18n } from '$lib/stores/i18n.store';
+	import { SIGNER_CONTEXT_KEY, type SignerContext } from '$lib/stores/signer.store';
+	import { toasts } from '$lib/stores/toasts.store';
 	import type { MissionControlId } from '$lib/types/mission-control';
+	import { shortenWithMiddleEllipsis } from '$lib/utils/format.utils';
 
 	interface Props {
 		missionControlId: MissionControlId;

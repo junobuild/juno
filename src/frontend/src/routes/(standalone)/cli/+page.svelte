@@ -7,11 +7,11 @@
 	import { authSignedIn } from '$lib/derived/auth.derived';
 	import { missionControlIdDerived } from '$lib/derived/mission-control.derived';
 	import { sortedSatellites } from '$lib/derived/satellites.derived';
+	import { onIntersection } from '$lib/directives/intersection.directives';
 	import { signIn } from '$lib/services/auth.services';
 	import { i18n } from '$lib/stores/i18n.store';
-	import type { Option } from '$lib/types/utils';
-	import { onIntersection } from '$lib/directives/intersection.directives';
 	import { onLayoutTitleIntersection } from '$lib/stores/layout-intersecting.store';
+	import type { Option } from '$lib/types/utils';
 
 	interface Props {
 		data: {

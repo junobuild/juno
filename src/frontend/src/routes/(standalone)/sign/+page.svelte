@@ -1,16 +1,16 @@
 <script lang="ts">
-	import { authSignedIn } from '$lib/derived/auth.derived';
-	import { signIn } from '$lib/services/auth.services';
-	import { i18n } from '$lib/stores/i18n.store';
+	import { isNullish, nonNullish } from '@dfinity/utils';
+	import { onDestroy, setContext } from 'svelte';
 	import MissionControlGuard from '$lib/components/guards/MissionControlGuard.svelte';
 	import Signer from '$lib/components/signer/Signer.svelte';
-	import { isNullish, nonNullish } from '@dfinity/utils';
+	import { authSignedIn } from '$lib/derived/auth.derived';
 	import { missionControlIdDerived } from '$lib/derived/mission-control.derived';
 	import { onIntersection } from '$lib/directives/intersection.directives';
+	import { signIn } from '$lib/services/auth.services';
+	import { authStore } from '$lib/stores/auth.store';
+	import { i18n } from '$lib/stores/i18n.store';
 	import { onLayoutTitleIntersection } from '$lib/stores/layout-intersecting.store';
 	import { initSignerContext, SIGNER_CONTEXT_KEY } from '$lib/stores/signer.store';
-	import { onDestroy, setContext } from 'svelte';
-	import { authStore } from '$lib/stores/auth.store';
 	import type { OptionIdentity } from '$lib/types/itentity';
 
 	const { idle, reset, ...context } = initSignerContext();

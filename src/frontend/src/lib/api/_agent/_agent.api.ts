@@ -1,4 +1,4 @@
-import {DEV, LOCAL_REPLICA_URL} from '$lib/constants/app.constants';
+import {DEV, LOCAL_REPLICA_HOST} from '$lib/constants/app.constants';
 import type { Option } from '$lib/types/utils';
 import { HttpAgent, type Identity } from '@dfinity/agent';
 import { isNullish } from '@dfinity/utils';
@@ -47,7 +47,7 @@ const getMainnetAgent = async (params: GetAgentParams): Promise<HttpAgent> => {
 const getLocalAgent = async (params: GetAgentParams): Promise<HttpAgent> => {
 	return await HttpAgent.create({
 		...params,
-		host: LOCAL_REPLICA_URL,
+		host: LOCAL_REPLICA_HOST,
 		shouldFetchRootKey: true,
 		retryTimes: DEFAULT_RETRY_TIMES
 	});

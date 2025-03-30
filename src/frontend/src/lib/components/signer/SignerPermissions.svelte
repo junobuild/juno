@@ -86,7 +86,7 @@
 		<SignerOrigin payload={$payload} />
 
 		<div class="warning">
-			<p>{$i18n.signer.permissions_requested_permissions}</p>
+			<p class="request">{$i18n.signer.permissions_requested_permissions}</p>
 
 			<ul>
 				{#each scopes as { scope: { method } } (method)}
@@ -122,5 +122,26 @@
 
 	.warning {
 		@include info.warning;
+
+		flex-direction: column;
+		align-items: flex-start;
+		gap: 0;
+	}
+
+	.request {
+		font-weight: var(--font-weight-bold);
+	}
+
+	ul {
+		margin: 0;
+		padding: 0;
+		list-style: none;
+	}
+
+	li {
+		display: flex;
+		align-items: center;
+		gap: var(--padding);
+		margin: 0 0 var(--padding-2x);
 	}
 </style>

@@ -1,5 +1,5 @@
-import { DEV } from '$lib/constants/app.constants';
+import { DEV, LOCAL_REPLICA_URL } from '$lib/constants/app.constants';
 import type { ActorParameters } from '@junobuild/admin';
 
 export const container = (): Partial<Pick<ActorParameters, 'container'>> =>
-	DEV ? { container: 'http://localhost:5987' } : {};
+	DEV ? { container: LOCAL_REPLICA_URL } : {};

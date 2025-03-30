@@ -2,6 +2,8 @@ export const APP_VERSION = VITE_APP_VERSION;
 
 export const DEV = import.meta.env.DEV;
 
+export const LOCAL_REPLICA_URL = 'http://localhost:5987';
+
 // Workers
 export const AUTH_TIMER_INTERVAL = 1000;
 export const SYNC_CYCLES_TIMER_INTERVAL = 60000;

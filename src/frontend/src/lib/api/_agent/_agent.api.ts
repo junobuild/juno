@@ -1,4 +1,4 @@
-import {DEV, LOCAL_REPLICA_HOST} from '$lib/constants/app.constants';
+import { DEV, LOCAL_REPLICA_HOST } from '$lib/constants/app.constants';
 import type { Option } from '$lib/types/utils';
 import { HttpAgent, type Identity } from '@dfinity/agent';
 import { isNullish } from '@dfinity/utils';
@@ -44,14 +44,13 @@ const getMainnetAgent = async (params: GetAgentParams): Promise<HttpAgent> => {
 	return await HttpAgent.create({ ...params, host, retryTimes: DEFAULT_RETRY_TIMES });
 };
 
-const getLocalAgent = async (params: GetAgentParams): Promise<HttpAgent> => {
-	return await HttpAgent.create({
+const getLocalAgent = async (params: GetAgentParams): Promise<HttpAgent> =>
+	await HttpAgent.create({
 		...params,
 		host: LOCAL_REPLICA_HOST,
 		shouldFetchRootKey: true,
 		retryTimes: DEFAULT_RETRY_TIMES
 	});
-};
 
 // Unused because currently we do a window.location.reload after logout
 export const clearAgents = () => (agents = null);

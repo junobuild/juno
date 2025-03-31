@@ -1,8 +1,8 @@
 <script lang="ts">
 	import type { ResultConsentInfo } from '@dfinity/oisy-wallet-signer';
 	import { nonNullish } from '@dfinity/utils';
-	import { i18n } from '$lib/stores/i18n.store';
 	import Warning from '$lib/components/ui/Warning.svelte';
+	import { i18n } from '$lib/stores/i18n.store';
 
 	interface Props {
 		consentInfo: ResultConsentInfo | undefined;

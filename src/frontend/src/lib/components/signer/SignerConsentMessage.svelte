@@ -7,13 +7,13 @@
 	} from '@dfinity/oisy-wallet-signer';
 	import { isNullish, nonNullish } from '@dfinity/utils';
 	import { getContext } from 'svelte';
+	import { fade } from 'svelte/transition';
+	import SignerConsentMessageWarning from '$lib/components/signer/SignerConsentMessageWarning.svelte';
+	import SignerOrigin from '$lib/components/signer/SignerOrigin.svelte';
+	import JsonCode from '$lib/components/ui/JsonCode.svelte';
+	import SpinnerParagraph from '$lib/components/ui/SpinnerParagraph.svelte';
 	import { SIGNER_CONTEXT_KEY, type SignerContext } from '$lib/stores/signer.store';
 	import { toasts } from '$lib/stores/toasts.store';
-	import SpinnerParagraph from '$lib/components/ui/SpinnerParagraph.svelte';
-	import { fade } from 'svelte/transition';
-	import SignerOrigin from '$lib/components/signer/SignerOrigin.svelte';
-	import SignerConsentMessageWarning from '$lib/components/signer/SignerConsentMessageWarning.svelte';
-	import JsonCode from '$lib/components/ui/JsonCode.svelte';
 
 	const {
 		consentMessagePrompt: { payload, reset: resetPrompt },
@@ -125,7 +125,7 @@
 </script>
 
 {#if loading}
-	<SpinnerParagraph>$i18n.signer.consent_message.text.loading</SpinnerParagraph>
+	<SpinnerParagraph>Loading consent message...</SpinnerParagraph>
 {:else if nonNullish(text)}
 	{@const { title, content } = text}
 

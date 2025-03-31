@@ -1,9 +1,9 @@
 <script lang="ts">
 	import { isNullish, nonNullish } from '@dfinity/utils';
 	import { getContext, type Snippet } from 'svelte';
+	import { authStore } from '$lib/stores/auth.store';
 	import { SIGNER_CONTEXT_KEY, type SignerContext } from '$lib/stores/signer.store';
 	import type { MissionControlId } from '$lib/types/mission-control';
-	import { authStore } from '$lib/stores/auth.store';
 
 	interface Props {
 		missionControlId: MissionControlId;

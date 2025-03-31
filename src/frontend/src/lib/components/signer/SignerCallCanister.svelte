@@ -1,9 +1,9 @@
 <script lang="ts">
 	import { getContext } from 'svelte';
 	import { fade } from 'svelte/transition';
+	import SpinnerParagraph from '$lib/components/ui/SpinnerParagraph.svelte';
 	import { SIGNER_CONTEXT_KEY, type SignerContext } from '$lib/stores/signer.store';
 	import { toasts } from '$lib/stores/toasts.store';
-	import SpinnerParagraph from '$lib/components/ui/SpinnerParagraph.svelte';
 
 	const {
 		callCanisterPrompt: { payload }

@@ -6,6 +6,7 @@
 	import SignerPermissions from '$lib/components/signer/SignerPermissions.svelte';
 	import { SIGNER_CONTEXT_KEY, type SignerContext } from '$lib/stores/signer.store';
 	import type { MissionControlId } from '$lib/types/mission-control';
+	import SignerConsentMessage from '$lib/components/signer/SignerConsentMessage.svelte';
 
 	interface Props {
 		missionControlId: MissionControlId;
@@ -28,5 +29,7 @@
 		</div>
 	{:else}
 		<SignerPermissions {missionControlId} />
+
+		<SignerConsentMessage />
 	{/if}
 </SignerAccounts>

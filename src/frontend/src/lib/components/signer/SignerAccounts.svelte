@@ -25,7 +25,9 @@
 		const { approve } = $payload;
 
 		approve([
-			...(nonNullish($authStore.identity) ? [{ owner: $authStore.identity.getPrincipal().toText() }] : []),
+			...(nonNullish($authStore.identity)
+				? [{ owner: $authStore.identity.getPrincipal().toText() }]
+				: []),
 			{ owner: missionControlId.toText() }
 		]);
 

@@ -87,7 +87,7 @@ impl<'js> JsBatch<'js> {
     }
 }
 
-impl<'js> JsCommitBatch {
+impl JsCommitBatch {
     pub fn from_commit_batch(commit: CommitBatch) -> Self {
         JsCommitBatch {
             batch_id: commit.batch_id.to_string(),

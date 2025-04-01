@@ -1,10 +1,10 @@
-import type { ListResults_1 } from '$declarations/satellite/satellite.did';
 import { IDL } from '@dfinity/candid';
 import { fromNullable } from '@dfinity/utils';
 import type { OnSetDocContext } from '@junobuild/functions';
 import { call, id } from '@junobuild/functions/ic-cdk';
 import { encodeDocData, setDocStore } from '@junobuild/functions/sdk';
-import { callAndSaveVersion } from '../services/set-doc.services';
+import type { ListResults_1 } from '../../../../../../declarations/satellite/satellite.did';
+import { callAndSaveVersion } from '../../services/set-doc.services';
 
 // Calling a function with records.
 const ListOrderField = IDL.Variant({

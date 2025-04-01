@@ -23,12 +23,12 @@ import {
 	toNullable
 } from '@dfinity/utils';
 import { PocketIc, type Actor } from '@hadronous/pic';
+import { toArray } from '@junobuild/utils';
 import { nanoid } from 'nanoid';
 import { afterEach, beforeEach, describe, expect, inject } from 'vitest';
 import { mockData } from '../../../mocks/doc.mocks';
 import { mockBlob } from '../../../mocks/storage.mocks';
 import { tick } from '../../../utils/pic-tests.utils';
-import { createUser as createUserUtils } from '../../../utils/satellite-doc-tests.utils';
 import {
 	SATELLITE_WASM_PATH,
 	controllersInitArgs,
@@ -68,13 +68,27 @@ describe('Satellite > Upgrade', () => {
 	};
 
 	const initUsers = async (actor: Actor<SatelliteActor_0_0_16>): Promise<Identity[]> => {
+		const { set_doc } = actor;
+
 		const user1 = Ed25519KeyIdentity.generate();
 
-		await createUserUtils({ actor, user: user1 });
+		await set_doc('#user', user1.getPrincipal().toText(), {
+			data: await toArray({
+				provider: 'internet_identity'
+			}),
+			description: toNullable(),
+			updated_at: toNullable()
+		});
 
 		const user2 = Ed25519KeyIdentity.generate();
 
-		await createUserUtils({ actor, user: user2 });
+		await set_doc('#user', user2.getPrincipal().toText(), {
+			data: await toArray({
+				provider: 'internet_identity'
+			}),
+			description: toNullable(),
+			updated_at: toNullable()
+		});
 
 		return [user1, user2];
 	};

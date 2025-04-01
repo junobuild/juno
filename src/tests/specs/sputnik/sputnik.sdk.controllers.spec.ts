@@ -6,6 +6,7 @@ import { type Actor, PocketIc } from '@hadronous/pic';
 import { afterAll, beforeAll, describe, expect, inject } from 'vitest';
 import { mockSetRule } from '../../mocks/collection.mocks';
 import { setupTestSputnik } from '../../utils/fixtures-tests.utils';
+import { createUser as createUserUtils } from '../../utils/satellite-doc-tests.utils';
 import { setDocAndFetchLogs } from '../../utils/sputnik-tests.utils';
 
 describe('Sputnik > sdk > controllers', () => {
@@ -38,6 +39,8 @@ describe('Sputnik > sdk > controllers', () => {
 		const caller = (): string =>
 			JSON.stringify(controller.getPrincipal().toUint8Array(), jsonReplacer);
 
+		const callerText = (): string => `[${controller.getPrincipal().toText()}]`;
+
 		it('should be the caller', async () => {
 			const { logs } = await setDocAndFetchLogs({
 				collection: TEST_COLLECTION,
@@ -47,7 +50,9 @@ describe('Sputnik > sdk > controllers', () => {
 				pic
 			});
 
-			const log = logs.find(([_, { message }]) => message.includes(`caller: ${caller()}`));
+			const log = logs.find(([_, { message }]) =>
+				message.includes(`${callerText()} caller: ${caller()}`)
+			);
 			expect(log).not.toBeUndefined();
 		});
 
@@ -60,7 +65,9 @@ describe('Sputnik > sdk > controllers', () => {
 				pic
 			});
 
-			const log = logs.find(([_, { message }]) => message.includes('isController: true'));
+			const log = logs.find(([_, { message }]) =>
+				message.includes(`${callerText()} isController: true`)
+			);
 			expect(log).not.toBeUndefined();
 		});
 
@@ -73,7 +80,9 @@ describe('Sputnik > sdk > controllers', () => {
 				pic
 			});
 
-			const log = logs.find(([_, { message }]) => message.includes('isAdminController: true'));
+			const log = logs.find(([_, { message }]) =>
+				message.includes(`${callerText()} isAdminController: true`)
+			);
 			expect(log).not.toBeUndefined();
 		});
 
@@ -109,15 +118,60 @@ describe('Sputnik > sdk > controllers', () => {
 		};
 
 		it('should get controllers', async () => {
-			const keyword = 'getControllers';
+			const keyword = `${callerText()} getControllers`;
 
 			await assertControllers({ keyword });
 		});
 
 		it('should get admin controllers', async () => {
-			const keyword = 'getControllers';
+			const keyword = `${callerText()} getAdminControllers`;
 
 			await assertControllers({ keyword });
+		});
+	});
+
+	describe('user', () => {
+		let user: Identity;
+
+		beforeAll(async () => {
+			const { user: u } = await createUserUtils({ actor });
+			user = u;
+
+			actor.setIdentity(user);
+		});
+
+		const caller = (): string => JSON.stringify(user.getPrincipal().toUint8Array(), jsonReplacer);
+
+		const callerText = (): string => `[${user.getPrincipal().toText()}]`;
+
+		it('should be the caller', async () => {
+			const { logs } = await setDocAndFetchLogs({
+				collection: TEST_COLLECTION,
+				actor,
+				controller,
+				canisterId,
+				pic
+			});
+
+			const log = logs.find(([_, { message }]) =>
+				message.includes(`${callerText()} caller: ${caller()}`)
+			);
+			expect(log).not.toBeUndefined();
+		});
+
+		it('should be a controller', async () => {
+			const { logs } = await setDocAndFetchLogs({
+				collection: TEST_COLLECTION,
+				actor,
+				controller,
+				canisterId,
+				pic
+			});
+
+			const log = logs.find(([_, { message }]) =>
+				message.includes(`${callerText()} isController: false`)
+			);
+			expect(log).not.toBeUndefined();
 		});
 	});
 });

@@ -40,6 +40,8 @@ export const createUser = async <T extends ActorInterface<T>>({
 }> => {
 	const identity = user ?? Ed25519KeyIdentity.generate();
 
+	actor.setIdentity(identity);
+
 	// Cast for simplicity reason and to avoid verbosity in test suite.
 	const { set_doc } = actor as unknown as SatelliteActor;
 

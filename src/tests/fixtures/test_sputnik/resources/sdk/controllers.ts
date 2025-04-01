@@ -1,3 +1,4 @@
+import { Principal } from '@dfinity/principal';
 import type { OnSetDocContext } from '@junobuild/functions';
 import {
 	getAdminControllers,
@@ -10,23 +11,25 @@ export const testSdkControllers = async ({
 	caller
 	// eslint-disable-next-line require-await
 }: OnSetDocContext) => {
-	console.log('caller:', caller);
+	const callerText = Principal.fromUint8Array(caller).toText();
+
+	console.log(`[${callerText}] caller:`, caller);
 
 	const controllers = getControllers();
 	const admin = getAdminControllers();
 
-	console.log('getControllers:', controllers);
-	console.log('getAdminControllers:', admin);
+	console.log(`[${callerText}] getControllers:`, controllers);
+	console.log(`[${callerText}] getAdminControllers:`, admin);
 
 	console.log(
-		'isController:',
+		`[${callerText}] isController:`,
 		isController({
 			caller,
 			controllers
 		})
 	);
 	console.log(
-		'isAdminController:',
+		`[${callerText}] isAdminController:`,
 		isAdminController({
 			caller,
 			controllers

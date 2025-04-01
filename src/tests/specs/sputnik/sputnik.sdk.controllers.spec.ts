@@ -310,7 +310,7 @@ describe('Sputnik > sdk > controllers', () => {
 
 			const controllers = await list_controllers();
 
-			expect(data.length).toEqual(controllers.filter((c) => 'Admin' in c[1].scope));
+			expect(data.length).toEqual(controllers.filter((c) => 'Admin' in c[1].scope).length);
 		});
 	});
 });

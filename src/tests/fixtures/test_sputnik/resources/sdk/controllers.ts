@@ -7,6 +7,8 @@ import {
 	isController
 } from '@junobuild/functions/sdk';
 
+/* eslint-disable no-console */
+
 export const testSdkControllers = async ({
 	caller
 	// eslint-disable-next-line require-await
@@ -36,3 +38,5 @@ export const testSdkControllers = async ({
 		})
 	);
 };
+
+/* eslint-enable */

@@ -304,6 +304,8 @@ describe('Sputnik > sdk > controllers', () => {
 
 			const data = await assertControllers({ keyword });
 
+			actor.setIdentity(controller);
+
 			const { list_controllers } = actor;
 
 			const controllers = await list_controllers();

@@ -3,8 +3,8 @@ import { idlFactory as idlFactorSatellite } from '$declarations/satellite/satell
 import { Ed25519KeyIdentity } from '@dfinity/identity';
 import { toNullable } from '@dfinity/utils';
 import { PocketIc, type Actor } from '@hadronous/pic';
-import { toArray } from '@junobuild/utils';
 import { afterAll, beforeAll, beforeEach, describe, inject } from 'vitest';
+import { createUser as createUserUtils } from '../../../utils/satellite-doc-tests.utils';
 import { SATELLITE_WASM_PATH, controllersInitArgs } from '../../../utils/setup-tests.utils';
 
 describe.skip('Satellite > Playground (kind of)', () => {
@@ -35,18 +35,10 @@ describe.skip('Satellite > Playground (kind of)', () => {
 	});
 
 	it('should create lots of users', async () => {
-		const { set_doc, list_docs } = actor;
+		const { list_docs } = actor;
 
 		const createUser = async (counter: number): Promise<void> => {
-			const user = Ed25519KeyIdentity.generate();
-
-			await set_doc('#user', user.getPrincipal().toText(), {
-				data: await toArray({
-					provider: 'internet_identity'
-				}),
-				description: toNullable(),
-				version: toNullable()
-			});
+			const { user } = await createUserUtils({ actor });
 
 			// eslint-disable-next-line no-console
 			console.log(`[${counter}] User ${user.getPrincipal().toText()} created.`);

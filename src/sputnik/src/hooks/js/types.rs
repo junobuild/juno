@@ -9,6 +9,31 @@ pub mod shared {
     pub type JsVersion = Version;
 
     pub type JsUserId<'js> = JsRawPrincipal<'js>;
+
+    #[derive(Clone)]
+    pub enum JsControllerScope {
+        Write,
+        Admin,
+    }
+
+    #[derive(Clone)]
+    pub struct JsMetadata(pub String, pub String);
+
+    #[derive(Clone)]
+    pub struct JsController {
+        pub metadata: Vec<JsMetadata>,
+        pub created_at: JsTimestamp,
+        pub updated_at: JsTimestamp,
+        pub expires_at: Option<JsTimestamp>,
+        pub scope: JsControllerScope,
+    }
+
+    // TODO: rename similar patterns
+    #[derive(Clone)]
+    pub struct JsControllerRecord<'js>(pub JsRawPrincipal<'js>, pub JsController);
+
+    #[derive(Clone)]
+    pub struct JsControllers<'js>(pub Vec<JsControllerRecord<'js>>);
 }
 
 pub mod hooks {

@@ -31,13 +31,13 @@ pub fn init_controllers_sdk(ctx: &Ctx) -> Result<(), JsError> {
 #[rquickjs::function]
 fn get_admin_controllers<'js>(ctx: Ctx<'js>) -> JsResult<JsControllers<'js>> {
     let controllers = get_admin_controllers_sdk();
-    Ok(JsControllers::from_controllers(&ctx, controllers)?)
+    JsControllers::from_controllers(&ctx, controllers)
 }
 
 #[rquickjs::function]
 fn get_controllers<'js>(ctx: Ctx<'js>) -> JsResult<JsControllers<'js>> {
     let controllers = get_controllers_sdk();
-    Ok(JsControllers::from_controllers(&ctx, controllers)?)
+    JsControllers::from_controllers(&ctx, controllers)
 }
 
 #[rquickjs::function]

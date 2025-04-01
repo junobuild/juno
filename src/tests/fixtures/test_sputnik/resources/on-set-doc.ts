@@ -4,10 +4,10 @@ import {
 	type OnSetDocContext,
 	type RunFunction
 } from '@junobuild/functions';
-import { testIcCdkCall } from './ic-cdk-call';
-import { testIcCdkId } from './ic-cdk-id';
-import { testSdkDeleteDocStore, testSdkSetDocStore } from './sdk';
-import { testTextEncoding } from './text-encoding';
+import { testIcCdkCall } from './apis/ic-cdk/ic-cdk-call';
+import { testIcCdkId } from './apis/ic-cdk/ic-cdk-id';
+import { testTextEncoding } from './apis/node/text-encoding';
+import { testSdkDeleteDocStore, testSdkSetDocStore } from './sdk/db';
 
 /* eslint-disable require-await, no-console */
 

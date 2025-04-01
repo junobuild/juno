@@ -11,18 +11,20 @@ pub fn into_optional_bigint_js<'js>(ctx: &Ctx<'js>, value: Option<u64>) -> JsRes
 
 pub fn from_optional_bigint_js(value: Option<BigInt>) -> JsResult<Option<u64>> {
     match value {
-        Some(bigint) => {
-            let value = bigint.to_i64()?;
-
-            if value >= 0 {
-                // to_i64 fails if value is not a number or not convertible to int64_t (too large or too small).
-                // We also assert the value is positive.
-                // That's why this cast is safe.
-                Ok(Some(value as u64))
-            } else {
-                Err(JsError::new_from_js("BigInt", "u64"))
-            }
-        }
+        Some(bigint) => Ok(Some(from_bigint_js(bigint)?)),
         None => Ok(None),
+    }
+}
+
+pub fn from_bigint_js(bigint: BigInt) -> JsResult<u64> {
+    let value = bigint.to_i64()?;
+
+    if value >= 0 {
+        // to_i64 fails if value is not a number or not convertible to int64_t (too large or too small).
+        // We also assert the value is positive.
+        // That's why this cast is safe.
+        Ok(value as u64)
+    } else {
+        Err(JsError::new_from_js("BigInt", "u64"))
     }
 }

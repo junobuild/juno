@@ -159,7 +159,7 @@ describe('Sputnik > sdk > controllers', () => {
 			expect(log).not.toBeUndefined();
 		});
 
-		it('should be a controller', async () => {
+		it('should not be a controller', async () => {
 			const { logs } = await setDocAndFetchLogs({
 				collection: TEST_COLLECTION,
 				actor,

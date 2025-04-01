@@ -16,12 +16,12 @@ import {
 	JUNO_AUTH_ERROR_NOT_CONTROLLER,
 	JUNO_STORAGE_ERROR_CANNOT_COMMIT_BATCH
 } from '@junobuild/errors';
-import { toArray } from '@junobuild/utils';
 import { readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { afterAll, beforeAll, beforeEach, describe, expect, inject } from 'vitest';
 import { mockBlob, mockHtml } from '../../../mocks/storage.mocks';
 import { assertCertification } from '../../../utils/certification-test.utils';
+import { createUser as createUserUtils } from '../../../utils/satellite-doc-tests.utils';
 import { uploadAsset } from '../../../utils/satellite-storage-tests.utils';
 import { deleteDefaultIndexHTML } from '../../../utils/satellite-tests.utils';
 import { controllersInitArgs, SATELLITE_WASM_PATH } from '../../../utils/setup-tests.utils';
@@ -641,27 +641,11 @@ describe('Satellite > Storage', () => {
 
 	describe('user', () => {
 		beforeAll(async () => {
-			const { set_doc } = actor;
-
-			actor.setIdentity(user);
-
-			await set_doc('#user', user.getPrincipal().toText(), {
-				data: await toArray({
-					provider: 'internet_identity'
-				}),
-				description: toNullable(),
-				version: toNullable()
-			});
+			await createUserUtils({ actor, user });
 
 			actor.setIdentity(user2);
 
-			await set_doc('#user', user2.getPrincipal().toText(), {
-				data: await toArray({
-					provider: 'internet_identity'
-				}),
-				description: toNullable(),
-				version: toNullable()
-			});
+			await createUserUtils({ actor, user: user2 });
 		});
 
 		describe.each([{ memory: { Heap: null } }, { memory: { Stable: null } }])(

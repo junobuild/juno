@@ -1,6 +1,10 @@
-import type { _SERVICE as SatelliteActor } from '$declarations/satellite/satellite.did';
+import type { Doc, _SERVICE as SatelliteActor } from '$declarations/satellite/satellite.did';
+import type { Identity } from '@dfinity/agent';
+import { Ed25519KeyIdentity } from '@dfinity/identity';
 import { toNullable } from '@dfinity/utils';
 import type { Actor } from '@hadronous/pic';
+import type { ActorInterface } from '@hadronous/pic/dist/pocket-ic-actor';
+import { toArray } from '@junobuild/utils';
 import { nanoid } from 'nanoid';
 import { mockData } from '../mocks/doc.mocks';
 
@@ -22,4 +26,30 @@ export const createDoc = async ({
 	});
 
 	return key;
+};
+
+export const createUser = async <T extends ActorInterface<T>>({
+	actor,
+	user
+}: {
+	actor: Actor<T>;
+	user?: Identity;
+}): Promise<{
+	user: Identity;
+	doc: Doc;
+}> => {
+	const identity = user ?? Ed25519KeyIdentity.generate();
+
+	// Cast for simplicity reason and to avoid verbosity in test suite.
+	const { set_doc } = actor as unknown as SatelliteActor;
+
+	const doc = await set_doc('#user', identity.getPrincipal().toText(), {
+		data: await toArray({
+			provider: 'internet_identity'
+		}),
+		description: toNullable(),
+		version: toNullable()
+	});
+
+	return { user: identity, doc };
 };

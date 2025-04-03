@@ -387,7 +387,7 @@ describe('Satellite > User Usage', () => {
 				const data = await toArray({});
 
 				await set_doc('#user', key, {
-					data: data,
+					data,
 					description: toNullable(),
 					version: toNullable()
 				});

@@ -35,6 +35,6 @@ export const GET = async (): Promise<Response> => {
 				)
 				.join('')}
     </urlset>`,
-		{ headers: headers }
+		{ headers }
 	);
 };

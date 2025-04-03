@@ -1,4 +1,4 @@
-<!-- source: https://fonts.google.com/icons?selected=Material%20Symbols%20Sharp%3Anew_releases%3AFILL%401%3Bwght%40400%3BGRAD%400%3Bopsz%4024-->
+<!-- source: https://fonts.google.com/icons?selected=Material%20Symbols%20Sharp%3Anew_releases%3AFILL%401%3Bwght%40400%3BGRAD%400%3Bopsz%4024 -->
 <script lang="ts">
 	interface Props {
 		size?: string;

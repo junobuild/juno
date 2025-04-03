@@ -20,7 +20,7 @@
 
 <path class="path-line" d={path} {stroke} />
 
-<style>
+<style lang="scss">
 	.path-line {
 		fill: none;
 		stroke-linejoin: round;

@@ -52,7 +52,7 @@ describe('Satellite > User Ban', () => {
 				banned: 'indefinite'
 			}),
 			description: toNullable(),
-			version: version
+			version
 		});
 	};
 
@@ -67,7 +67,7 @@ describe('Satellite > User Ban', () => {
 				banned: undefined
 			}),
 			description: toNullable(),
-			version: version
+			version
 		});
 	};
 
@@ -584,7 +584,7 @@ describe('Satellite > User Ban', () => {
 					await uploadAsset({
 						full_path: fullPath,
 						name: filename,
-						collection: collection,
+						collection,
 						actor
 					});
 				});
@@ -717,7 +717,7 @@ describe('Satellite > User Ban', () => {
 					await uploadAsset({
 						full_path: fullPath,
 						name: filename,
-						collection: collection,
+						collection,
 						actor
 					});
 				});
@@ -765,7 +765,7 @@ describe('Satellite > User Ban', () => {
 					await uploadAsset({
 						full_path: fullPath,
 						name: filename,
-						collection: collection,
+						collection,
 						actor
 					});
 				});
@@ -799,7 +799,7 @@ describe('Satellite > User Ban', () => {
 					await uploadAsset({
 						full_path: fullPath,
 						name: filename,
-						collection: collection,
+						collection,
 						actor
 					});
 				});

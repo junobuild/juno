@@ -168,7 +168,7 @@ describe('Satellite > Max changes', () => {
 			await uploadAsset({
 				full_path,
 				name,
-				collection: collection,
+				collection,
 				actor
 			});
 		};

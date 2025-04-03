@@ -211,7 +211,7 @@ describe('Sputnik > sdk > controllers', () => {
 
 			actor.setIdentity(controller);
 
-			const { set_controllers, list_controllers } = actor;
+			const { set_controllers } = actor;
 
 			await set_controllers({
 				controller: {

@@ -90,7 +90,7 @@
 	{/if}
 </g>
 
-<style>
+<style lang="scss">
 	.tick {
 		font-size: var(--font-size-ultra-small);
 	}

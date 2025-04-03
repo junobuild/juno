@@ -79,7 +79,7 @@
 			currentSettings: settings,
 			newSettings: {
 				freezingThreshold: BigInt(freezingThreshold),
-				reservedCyclesLimit: reservedCyclesLimit,
+				reservedCyclesLimit,
 				logVisibility,
 				wasmMemoryLimit: BigInt(wasmMemoryLimit),
 				memoryAllocation: BigInt(memoryAllocation),

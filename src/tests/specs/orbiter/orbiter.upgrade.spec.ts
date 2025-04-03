@@ -333,7 +333,7 @@ describe('Orbiter > Upgrade', () => {
 				newActor.setIdentity(controller);
 
 				await testTrackEvents({
-					keys: keys,
+					keys,
 					useActor: newActor
 				});
 			});

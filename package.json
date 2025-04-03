@@ -57,7 +57,7 @@
 		"emulator": "docker compose up"
 	},
 	"devDependencies": {
-		"@dfinity/eslint-config-oisy-wallet": "^0.1.2",
+		"@dfinity/eslint-config-oisy-wallet": "^0.1.5",
 		"@dfinity/response-verification": "^3.0.3",
 		"@hadronous/pic": "^0.11.0",
 		"@junobuild/cli-tools": "^0.1.6",

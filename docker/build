@@ -96,14 +96,14 @@ do
             CANISTER="sputnik"
             OUTPUT="test_sputnik"
             WITH_CERTIFICATION=1
-            BUILD_TYPE="extended"
+            BUILD_TYPE="sputnik"
             TARGET="wasm32-wasip1"
             break
             ;;
         --sputnik)
             CANISTER="sputnik"
             WITH_CERTIFICATION=1
-            BUILD_TYPE="extended"
+            BUILD_TYPE="sputnik"
             TARGET="wasm32-wasip1"
             break
             ;;

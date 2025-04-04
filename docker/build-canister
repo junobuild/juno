@@ -104,7 +104,7 @@ function build_canister() {
 
       if [ -n "$build_type" ]
       then
-        # add the type of build "stock" to the satellite. This way, we can identify whether it's the standard canister ("stock") or a custom build ("extended") of the developer.
+        # add the type of build "stock" to the satellite. This way, we can identify whether it's the standard canister ("stock"), a custom build in Rust ("extended") or JS/TS ("sputnik") of the developer.
         ic-wasm "$output_dir/$canister.wasm" -o "$output_dir/$canister.wasm" metadata juno:build -d "$build_type" -v public --keep-name-section
       fi
 

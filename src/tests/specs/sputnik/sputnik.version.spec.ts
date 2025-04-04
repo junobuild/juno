@@ -47,6 +47,12 @@ describe('Sputnik', () => {
 
 			expect(await actor.version()).toEqual(satelliteVersion);
 		});
+
+		it('should expose sputnik version', async () => {
+			const sputnikVersion = crateVersion('sputnik');
+
+			expect(await actor.sputnik_version()).toEqual(sputnikVersion);
+		});
 	});
 
 	describe('Custom', () => {
@@ -80,7 +86,7 @@ describe('Sputnik', () => {
 		it('should expose sputnik version', async () => {
 			const sputnikVersion = crateVersion('sputnik');
 
-			expect(await actor.version()).toEqual(sputnikVersion);
+			expect(await actor.sputnik_version()).toEqual(sputnikVersion);
 		});
 	});
 });

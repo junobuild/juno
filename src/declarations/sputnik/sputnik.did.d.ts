@@ -288,6 +288,7 @@ export interface _SERVICE {
 	set_many_docs: ActorMethod<[Array<[string, string, SetDoc]>], Array<[string, Doc]>>;
 	set_rule: ActorMethod<[CollectionType, string, SetRule], Rule>;
 	set_storage_config: ActorMethod<[StorageConfig], undefined>;
+	sputnik_version: ActorMethod<[], string>;
 	upload_asset_chunk: ActorMethod<[UploadChunk], UploadChunkResult>;
 	version: ActorMethod<[], string>;
 }

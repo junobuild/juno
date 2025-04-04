@@ -28,7 +28,7 @@ function create_package_json() {
   local canister=$1
   local src_root_dir=$2
   local pkg_root_dir=$3
-  local output_dir=$4
+  local package_json_dir=$4
   local custom="${5:-}"
 
   if [ -z "$src_root_dir" ]; then
@@ -36,13 +36,8 @@ function create_package_json() {
       exit 1
   fi
 
-  if [ -z "$output_dir" ]; then
-      echo "ERROR: No output directory specified."
-      exit 1
-  fi
-
   local target="${custom:-$canister}"
-  local output_file="$output_dir/$canister.package.json"
+  local output_file="$package_json_dir/juno.package.json"
   local name=""
   local version=""
   local dependency_name=""

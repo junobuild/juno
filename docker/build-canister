@@ -4,12 +4,12 @@
 function build_canister() {
     local canister=$1
     local src_root_dir=$2
-    local output_dir=$3
-    local only_deps=$4
-    local with_certification=$5
-    local build_type=$6
-    local target=$7
-    local package_json_path="${8:-$output_dir/$canister.package.json}"
+    local package_json_dir=$3
+    local output_dir=$4
+    local only_deps=$5
+    local with_certification=$6
+    local build_type=$7
+    local target=$8
     shift 8
     local extra_build_args=("$@")
 
@@ -31,11 +31,6 @@ function build_canister() {
     if [ ! -d "$output_dir" ]; then
         echo "ERROR: The output directory '$output_dir' does not exist."
         exit 1
-    fi
-
-    if [[ ! -f "$package_json_path" ]]; then
-      echo "ERROR: metadata file not found at $package_json_path"
-      exit 1
     fi
 
     TARGET="wasm32-unknown-unknown"
@@ -63,6 +58,13 @@ function build_canister() {
     echo
 
     SRC_DIR="$src_root_dir/$canister"
+
+    PACKAGE_JSON_PATH="$package_json_dir/juno.package.json";
+
+    if [[ ! -f "$PACKAGE_JSON_PATH" ]]; then
+      echo "ERROR: juno.package.json file not found at $package_json_dir"
+      exit 1
+    fi
 
     # Standardize source references
     CARGO_HOME="${CARGO_HOME:-"$HOME/.cargo"}"
@@ -112,7 +114,7 @@ function build_canister() {
       # This file contains metadata about the build such as name, version, and dependencies.
       # The presence of dependencies indicates that the module is not stock, but extended—
       # either from the satellite (e.g., serverless functions in Rust) or from Sputnik (e.g., serverless functions in JavaScript).
-      ic-wasm "$output_dir/$canister.wasm" -o "$output_dir/$canister.wasm" metadata juno:package -f "$package_json_path" -v public --keep-name-section
+      ic-wasm "$output_dir/$canister.wasm" -o "$output_dir/$canister.wasm" metadata juno:package -f "$PACKAGE_JSON_PATH" -v public --keep-name-section
 
       if [ -n "$build_type" ]
       then

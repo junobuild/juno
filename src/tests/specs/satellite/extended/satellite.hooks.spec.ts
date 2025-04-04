@@ -1,7 +1,7 @@
 import type { _SERVICE as TestSatelliteActor } from '$test-declarations/test_satellite/test_satellite.did';
 import type { Identity } from '@dfinity/agent';
-import { Principal } from '@dfinity/principal';
-import { type Actor, PocketIc } from '@hadronous/pic';
+import type { Principal } from '@dfinity/principal';
+import { type PocketIc , type Actor } from '@hadronous/pic';
 import { afterAll, beforeAll, describe, expect } from 'vitest';
 import { mockSetRule } from '../../../mocks/collection.mocks';
 import { setupTestSatellite } from '../../../utils/fixtures-tests.utils';

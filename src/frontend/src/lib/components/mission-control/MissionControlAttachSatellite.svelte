@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { Principal } from '@dfinity/principal';
+	import type { Principal } from '@dfinity/principal';
 	import { createEventDispatcher } from 'svelte';
 	import CanisterAttach from '$lib/components/canister/CanisterAttach.svelte';
 	import IconLink from '$lib/components/icons/IconLink.svelte';

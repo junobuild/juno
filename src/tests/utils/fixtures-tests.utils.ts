@@ -3,7 +3,7 @@ import { idlFactory as idlFactorySputnik } from '$declarations/sputnik/sputnik.f
 import type { _SERVICE as TestSatelliteActor } from '$test-declarations/test_satellite/test_satellite.did';
 import { idlFactory as idlTestFactorySatellite } from '$test-declarations/test_satellite/test_satellite.factory.did';
 import type { Identity } from '@dfinity/agent';
-import { IDL } from '@dfinity/candid';
+import type { IDL } from '@dfinity/candid';
 import { Ed25519KeyIdentity } from '@dfinity/identity';
 import type { Principal } from '@dfinity/principal';
 import { type Actor, type ActorInterface, PocketIc } from '@hadronous/pic';

@@ -1,7 +1,6 @@
 <script lang="ts">
 	import { run, stopPropagation } from 'svelte/legacy';
 	import Json from './Json.svelte';
-
 	import { i18n } from '$lib/stores/i18n.store';
 	import { isHash, stringifyJson, isPrincipal } from '$lib/utils/json.utils';
 	import { handleKeyPress } from '$lib/utils/keyboard.utils';

@@ -1,7 +1,7 @@
 import type { _SERVICE as MissionControlActor } from '$declarations/mission_control/mission_control.did';
 import { idlFactory as idlFactorMissionControl } from '$declarations/mission_control/mission_control.factory.did';
 import { Ed25519KeyIdentity } from '@dfinity/identity';
-import { Principal } from '@dfinity/principal';
+import type { Principal } from '@dfinity/principal';
 import { fromNullable } from '@dfinity/utils';
 import { type Actor, PocketIc } from '@hadronous/pic';
 import { afterEach, beforeEach, describe, expect, inject } from 'vitest';

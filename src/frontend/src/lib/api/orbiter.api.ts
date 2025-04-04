@@ -16,7 +16,7 @@ import { getOrbiterActor } from '$lib/api/actors/actor.juno.api';
 import type { OptionIdentity } from '$lib/types/itentity';
 import type { PageViewsParams, PageViewsPeriod } from '$lib/types/ortbiter';
 import { toBigIntNanoSeconds } from '$lib/utils/date.utils';
-import { Principal } from '@dfinity/principal';
+import type { Principal } from '@dfinity/principal';
 import { nonNullish, toNullable } from '@dfinity/utils';
 
 export const getPageViews = async ({

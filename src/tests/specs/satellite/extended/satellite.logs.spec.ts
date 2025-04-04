@@ -4,7 +4,7 @@ import type {
 	_SERVICE as TestSatelliteActor
 } from '$test-declarations/test_satellite/test_satellite.did';
 import { toNullable } from '@dfinity/utils';
-import { type Actor, PocketIc } from '@hadronous/pic';
+import { type PocketIc , type Actor } from '@hadronous/pic';
 import { fromArray } from '@junobuild/utils';
 import { afterAll, beforeAll, describe, expect } from 'vitest';
 import { mockSetRule } from '../../../mocks/collection.mocks';

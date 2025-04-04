@@ -129,6 +129,11 @@ if [ ${#CANISTER} -eq 0 ]; then
     CANISTER="mission_control"
 fi
 
+# Source the script to prepare the package.json metadata for the canister
+source "$SCRIPTS_DIR/prepare-package"
+
+create_package_json "$CANISTER" "$SRC_ROOT_DIR" "$PWD/src" "." "$OUTPUT"
+
 # Source the script to perform tasks before building the canister
 source "$SCRIPTS_DIR/pre-build-canister"
 

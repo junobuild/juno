@@ -105,6 +105,11 @@ mkdir -p "${BUILD_DIR}"
 
 mkdir -p "${DEPLOY_DIR}"
 
+# Source the script to prepare the package.json metadata for the canister
+source "$PWD/docker/prepare-package"
+
+create_package_json "$CANISTER" "$SRC_ROOT_DIR" "$PWD/src" "$BUILD_DIR" "$OUTPUT"
+
 # Ensure we rebuild the canister. This is useful locally for rebuilding canisters that have no code changes but have resource changes.
 touch "$SRC_ROOT_DIR"/"$CANISTER"/src/lib.rs
 

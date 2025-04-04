@@ -1,0 +1,100 @@
+#!/usr/bin/env bash
+
+set -euo pipefail
+
+function get_version_from_cargo() {
+  local manifest_path="$1"
+
+  if [[ ! -f "$manifest_path" ]]; then
+    echo "ERROR: Cargo.toml not found at $manifest_path"
+    exit 1
+  fi
+
+  local version
+    version=$(cargo metadata --no-deps --format-version 1 --manifest-path "$manifest_path" 2>/dev/null |
+      jq --arg manifest_path "$(realpath "$manifest_path")" -r '
+        .packages[] | select(.manifest_path == $manifest_path) | .version
+      ')
+
+  if [[ -z "$version" || "$version" == "null" ]]; then
+    echo "ERROR: Failed to extract version from $manifest_path"
+    exit 1
+  fi
+
+  echo "$version"
+}
+
+function create_package_json() {
+  local canister=$1
+  local src_root_dir=$2
+  local pkg_root_dir=$3
+  local output_dir=$4
+  local custom="${5:-}"
+
+  if [ -z "$src_root_dir" ]; then
+      echo "ERROR: No root directory for the source specified."
+      exit 1
+  fi
+
+  if [ -z "$output_dir" ]; then
+      echo "ERROR: No output directory specified."
+      exit 1
+  fi
+
+  local target="${custom:-$canister}"
+  local output_file="$output_dir/$canister.package.json"
+  local name=""
+  local version=""
+  local dependency_name=""
+  local dependency_version=""
+
+  case "$target" in
+    satellite)
+      name="@junobuild/satellite"
+      version=$(get_version_from_cargo "$src_root_dir/$canister/Cargo.toml")
+      ;;
+    sputnik)
+      name="@junobuild/sputnik"
+      version=$(get_version_from_cargo "$src_root_dir/$canister/Cargo.toml")
+      dependency_name="@junobuild/satellite"
+      dependency_version=$(get_version_from_cargo "$pkg_root_dir/satellite/Cargo.toml")
+      ;;
+    test_sputnik)
+      name="test-sputnik"
+      version="1.2.3-patch.4"
+      dependency_name="@junobuild/sputnik"
+      dependency_version=$(get_version_from_cargo "$pkg_root_dir/sputnik/Cargo.toml")
+      ;;
+    test_satellite)
+      name="test-satellite"
+      version=$(get_version_from_cargo "$src_root_dir/$canister/Cargo.toml")
+      dependency_name="@junobuild/satellite"
+      dependency_version=$(get_version_from_cargo "$pkg_root_dir/satellite/Cargo.toml")
+      ;;
+    *)
+      echo "ERROR: Unknown package type '$target'"
+      exit 1
+      ;;
+  esac
+
+  echo "Generating $output_file..."
+
+  if [ -n "$dependency_name" ]; then
+    cat <<EOF > "$output_file"
+{
+  "name": "$name",
+  "version": "$version",
+  "dependencies": {
+    "$dependency_name": "$dependency_version"
+  }
+}
+EOF
+  else
+    cat <<EOF > "$output_file"
+{
+  "name": "$name",
+  "version": "$version"
+}
+EOF
+  fi
+}

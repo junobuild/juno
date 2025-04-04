@@ -1,5 +1,6 @@
 import {
 	type inferPostMessageSchema,
+	type PostMessageDataRequestDataSchema,
 	type PostMessageDataResponseAuthSchema,
 	type PostMessageDataResponseCanisterMonitoringSchema,
 	type PostMessageDataResponseCanisterSchema,
@@ -13,8 +14,6 @@ import {
 	type PostMessageDataResponseWalletCleanUpSchema,
 	type PostMessageDataResponseWalletSchema,
 	type PostMessageRequestSchema
-,
-	type PostMessageDataRequestDataSchema
 } from '$lib/schema/post-message.schema';
 import type * as z from 'zod';
 import type { ZodType } from 'zod';

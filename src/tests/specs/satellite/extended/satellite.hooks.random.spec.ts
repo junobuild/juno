@@ -3,7 +3,7 @@ import type { _SERVICE as TestSatelliteActor } from '$test-declarations/test_sat
 import type { Identity } from '@dfinity/agent';
 import type { Principal } from '@dfinity/principal';
 import { assertNonNullish } from '@dfinity/utils';
-import { type PocketIc , type Actor } from '@hadronous/pic';
+import { type Actor, type PocketIc } from '@hadronous/pic';
 import { fromArray } from '@junobuild/utils';
 import { afterAll, beforeAll, describe, expect } from 'vitest';
 import { mockSetRule } from '../../../mocks/collection.mocks';

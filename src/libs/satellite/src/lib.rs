@@ -428,7 +428,9 @@ macro_rules! include_satellite {
 
         #[ic_cdk::query]
         pub fn build_version() -> String {
-            env!("CARGO_PKG_VERSION").to_string()
+            option_env!("CUSTOM_BUILD_VERSION")
+                .map(|version| version.to_string())
+                .unwrap_or_else(|| env!("CARGO_PKG_VERSION").to_string())
         }
 
         ic_cdk::export_candid!();

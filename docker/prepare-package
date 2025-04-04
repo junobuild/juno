@@ -49,8 +49,24 @@ function create_package_json() {
   local dependency_version=""
 
   case "$target" in
+    mission_control)
+      name="@junobuild/mission-control"
+      version=$(get_version_from_cargo "$src_root_dir/$canister/Cargo.toml")
+      ;;
     satellite)
       name="@junobuild/satellite"
+      version=$(get_version_from_cargo "$src_root_dir/$canister/Cargo.toml")
+      ;;
+    console)
+      name="@junobuild/console"
+      version=$(get_version_from_cargo "$src_root_dir/$canister/Cargo.toml")
+      ;;
+    observatory)
+      name="@junobuild/observatory"
+      version=$(get_version_from_cargo "$src_root_dir/$canister/Cargo.toml")
+      ;;
+    orbiter)
+      name="@junobuild/orbiter"
       version=$(get_version_from_cargo "$src_root_dir/$canister/Cargo.toml")
       ;;
     sputnik)

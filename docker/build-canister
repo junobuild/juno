@@ -102,6 +102,17 @@ function build_canister() {
       # adds the content of $canister.did to the `icp:public candid:service` custom section of the public metadata in the wasm
       ic-wasm "$output_dir/$canister.wasm" -o "$output_dir/$canister.wasm" metadata candid:service -f "$SRC_DIR/$canister.did" -v public --keep-name-section
 
+      # Adds the content of $canister.package.json to the `icp:public juno:package` custom section of the WASM metadata.
+      # This file contains metadata about the build such as name, version, and dependencies.
+      # The presence of dependencies indicates that the module is not stock, but extended—
+      # either from the satellite (e.g., serverless functions in Rust) or from Sputnik (e.g., serverless functions in JavaScript).
+      if [[ ! -f "$output_dir/$canister.package.json" ]]; then
+        echo "ERROR: metadata file not found at $output_dir/$canister.did"
+        exit 1
+      fi
+
+      ic-wasm "$output_dir/$canister.wasm" -o "$output_dir/$canister.wasm" metadata juno:package -f "$output_dir/$canister.package.json" -v public --keep-name-section
+
       if [ -n "$build_type" ]
       then
         # add the type of build "stock" to the satellite. This way, we can identify whether it's the standard canister ("stock") or a custom build ("extended") of the developer.

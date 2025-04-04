@@ -22,8 +22,10 @@ function pre_build_canister() {
 
 function export_test_sputnik_fixtures() {
   export DEV_SCRIPT_PATH="$PWD/target/fixtures/index.mjs"
+  export CUSTOM_BUILD_VERSION="1.2.3-patch.4"
 
   echo "[test_sputnik] DEV_SCRIPT_PATH set to $DEV_SCRIPT_PATH"
+  echo "[test_sputnik] CUSTOM_BUILD_VERSION set to $CUSTOM_BUILD_VERSION"
   echo
 }
 

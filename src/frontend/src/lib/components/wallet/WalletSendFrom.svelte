@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { AccountIdentifier } from '@dfinity/ledger-icp';
+	import type { AccountIdentifier } from '@dfinity/ledger-icp';
 	import { nonNullish } from '@dfinity/utils';
 	import { getAccountIdentifier } from '$lib/api/icp-index.api';
 	import Identifier from '$lib/components/ui/Identifier.svelte';

@@ -10,7 +10,7 @@ import {
 	fromNullable,
 	toNullable
 } from '@dfinity/utils';
-import { PocketIc, type Actor } from '@hadronous/pic';
+import { type Actor, type PocketIc } from '@hadronous/pic';
 import { readFile } from 'node:fs/promises';
 import { expect } from 'vitest';
 import { mockBlob } from '../mocks/storage.mocks';

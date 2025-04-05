@@ -10,7 +10,7 @@ import type { Option } from '$lib/types/utils';
 import { emit } from '$lib/utils/events.utils';
 import { assertAndConvertAmountToICPToken } from '$lib/utils/token.utils';
 import { waitAndRestartWallet } from '$lib/utils/wallet.utils';
-import { Principal } from '@dfinity/principal';
+import type { Principal } from '@dfinity/principal';
 import { assertNonNullish, isNullish } from '@dfinity/utils';
 import { get } from 'svelte/store';
 

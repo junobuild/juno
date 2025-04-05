@@ -4,7 +4,7 @@ import { i18n } from '$lib/stores/i18n.store';
 import { toasts } from '$lib/stores/toasts.store';
 import type { CanisterSettings } from '$lib/types/canister';
 import type { OptionIdentity } from '$lib/types/itentity';
-import { Principal } from '@dfinity/principal';
+import type { Principal } from '@dfinity/principal';
 import { isNullish, toNullable } from '@dfinity/utils';
 import { get } from 'svelte/store';
 

@@ -1,5 +1,5 @@
-import { KongSwapTokenSchema, type KongSwapTokensSchema } from '$lib/schema/kongswap.schema';
-import * as z from 'zod';
+import { type KongSwapTokenSchema, type KongSwapTokensSchema } from '$lib/schema/kongswap.schema';
+import type * as z from 'zod';
 
 export type KongSwapToken = z.infer<typeof KongSwapTokenSchema>;
 

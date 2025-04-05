@@ -36,3 +36,4 @@ mission_control-v*.wasm.gz
 console-v*.wasm.gz
 out/
 tmp/
+juno.package.json

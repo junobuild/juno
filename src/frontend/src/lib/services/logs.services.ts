@@ -8,7 +8,7 @@ import { toasts } from '$lib/stores/toasts.store';
 import type { OptionIdentity } from '$lib/types/itentity';
 import type { Log, LogDataDid, LogLevel } from '$lib/types/log';
 import type { Identity } from '@dfinity/agent';
-import { Principal } from '@dfinity/principal';
+import type { Principal } from '@dfinity/principal';
 import { isNullish, nonNullish } from '@dfinity/utils';
 import { fromArray } from '@junobuild/utils';
 import { compare } from 'semver';

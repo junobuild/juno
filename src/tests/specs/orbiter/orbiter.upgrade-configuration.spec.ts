@@ -3,7 +3,7 @@ import { idlFactory as idlFactorOrbiter0_0_7 } from '$declarations/deprecated/or
 import type { _SERVICE as OrbiterActor } from '$declarations/orbiter/orbiter.did';
 import { idlFactory as idlFactorOrbiter } from '$declarations/orbiter/orbiter.factory.did';
 import { Ed25519KeyIdentity } from '@dfinity/identity';
-import { Principal } from '@dfinity/principal';
+import type { Principal } from '@dfinity/principal';
 import { fromNullable } from '@dfinity/utils';
 import { PocketIc, type Actor } from '@hadronous/pic';
 import { afterEach, beforeEach, describe, expect, inject } from 'vitest';

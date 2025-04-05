@@ -7,7 +7,7 @@ import { toasts } from '$lib/stores/toasts.store';
 import type { OptionIdentity } from '$lib/types/itentity';
 import { type HostingProgress, HostingProgressStep } from '$lib/types/progress-hosting';
 import type { Option } from '$lib/types/utils';
-import { Principal } from '@dfinity/principal';
+import type { Principal } from '@dfinity/principal';
 import { assertNonNullish, nonNullish } from '@dfinity/utils';
 import { get } from 'svelte/store';
 

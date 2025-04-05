@@ -8,7 +8,7 @@ import { AnonymousIdentity } from '@dfinity/agent';
 import { Ed25519KeyIdentity } from '@dfinity/identity';
 import { AccountIdentifier } from '@dfinity/ledger-icp';
 import type { _SERVICE as LedgerActor } from '@dfinity/ledger-icp/dist/candid/ledger';
-import { Principal } from '@dfinity/principal';
+import type { Principal } from '@dfinity/principal';
 import { PocketIc, SubnetStateType, type Actor } from '@hadronous/pic';
 import { afterAll, beforeAll, describe, expect, inject } from 'vitest';
 import { LEDGER_ID } from '../../constants/ledger-tests.contants';

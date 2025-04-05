@@ -1,14 +1,16 @@
 import type { SatelliteIdText } from '$lib/types/satellite';
 import type { BuildType } from '@junobuild/admin';
+import type { JunoPackage } from '@junobuild/config';
 import { writable, type Readable } from 'svelte/store';
 
 export interface VersionMetadata {
-	release: string | undefined;
-	current: string | undefined;
+	release: string;
+	current: string;
+	pkg?: JunoPackage;
 }
 
 export interface SatelliteVersionMetadata extends VersionMetadata {
-	currentBuild?: string | undefined;
+	currentBuild?: string;
 	build: BuildType;
 }
 

@@ -61,14 +61,10 @@ describe('Sputnik', () => {
 			actor = c;
 		});
 
-		it('should not expose pkg build version', async () => {
+		it('should expose build version', async () => {
 			const sputnikVersion = crateVersion('sputnik');
 
-			expect(await actor.build_version()).not.toEqual(sputnikVersion);
-		});
-
-		it('should expose custom build version', async () => {
-			expect(await actor.build_version()).toEqual('1.2.3-patch.4');
+			expect(await actor.build_version()).toEqual(sputnikVersion);
 		});
 
 		it('should expose satellite version', async () => {

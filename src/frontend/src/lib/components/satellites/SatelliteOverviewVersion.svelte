@@ -5,7 +5,7 @@
 	import { i18n } from '$lib/stores/i18n.store';
 	import { versionStore } from '$lib/stores/version.store';
 	import type { SatelliteIdText } from '$lib/types/satellite';
-	import JsonCode from "$lib/components/ui/JsonCode.svelte";
+	import JsonCode from '$lib/components/ui/JsonCode.svelte';
 
 	interface Props {
 		satelliteId: SatelliteIdText;
@@ -26,16 +26,7 @@
 	let build = $derived($versionStore?.satellites[satelliteId]?.build);
 </script>
 
-{#if nonNullish(pkg)}
-	<div>
-		<Value>
-			{#snippet label()}
-				Package
-			{/snippet}
-			<JsonCode json={pkg} />
-		</Value>
-	</div>
-{:else if !extended}
+{#if !extended}
 	<div>
 		<Value>
 			{#snippet label()}
@@ -76,6 +67,17 @@
 		</p>
 	</Value>
 </div>
+
+{#if nonNullish(pkg)}
+	<div>
+		<Value>
+			{#snippet label()}
+				Package
+			{/snippet}
+			<JsonCode json={pkg} />
+		</Value>
+	</div>
+{/if}
 
 <style lang="scss">
 	.build {

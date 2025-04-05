@@ -2,45 +2,45 @@ import type { SatelliteIdText } from '$lib/types/satellite';
 import type { BuildType } from '@junobuild/admin';
 import { writable, type Readable } from 'svelte/store';
 
-export interface ReleaseVersion {
-	current: string | undefined;
+export interface VersionMetadata {
 	release: string | undefined;
+	current: string | undefined;
 }
 
-export interface ReleaseVersionSatellite extends ReleaseVersion {
+export interface SatelliteVersionMetadata extends VersionMetadata {
 	currentBuild?: string | undefined;
 	build: BuildType;
 }
 
-export interface ReleasesVersion {
-	satellites: Record<SatelliteIdText, ReleaseVersionSatellite | undefined>;
-	missionControl: ReleaseVersion | undefined;
-	orbiter: ReleaseVersion | undefined;
+export interface VersionStoreData {
+	satellites: Record<SatelliteIdText, SatelliteVersionMetadata | undefined>;
+	missionControl: VersionMetadata | undefined;
+	orbiter: VersionMetadata | undefined;
 }
 
-export interface VersionStore extends Readable<ReleasesVersion> {
-	setMissionControl: (version: ReleaseVersion) => void;
+export interface VersionStore extends Readable<VersionStoreData> {
+	setMissionControl: (version: VersionMetadata) => void;
 	setSatellite: (params: {
 		satelliteId: SatelliteIdText;
-		version: ReleaseVersionSatellite | undefined;
+		version: SatelliteVersionMetadata | undefined;
 	}) => void;
-	setOrbiter: (version: ReleaseVersion) => void;
+	setOrbiter: (version: VersionMetadata) => void;
 	reset: () => void;
 }
 
 const initVersionStore = (): VersionStore => {
-	const INITIAL: ReleasesVersion = {
+	const INITIAL: VersionStoreData = {
 		satellites: {},
 		missionControl: undefined,
 		orbiter: undefined
 	};
 
-	const { subscribe, update, set } = writable<ReleasesVersion>(INITIAL);
+	const { subscribe, update, set } = writable<VersionStoreData>(INITIAL);
 
 	return {
 		subscribe,
 
-		setMissionControl(version: ReleaseVersion) {
+		setMissionControl(version: VersionMetadata) {
 			update((state) => ({
 				...state,
 				missionControl: version
@@ -57,7 +57,7 @@ const initVersionStore = (): VersionStore => {
 			}));
 		},
 
-		setOrbiter(version: ReleaseVersion) {
+		setOrbiter(version: VersionMetadata) {
 			update((state) => ({
 				...state,
 				orbiter: version

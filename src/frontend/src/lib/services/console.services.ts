@@ -13,7 +13,7 @@ import { authStore } from '$lib/stores/auth.store';
 import { i18n } from '$lib/stores/i18n.store';
 import { missionControlIdCertifiedStore } from '$lib/stores/mission-control.store';
 import { toasts } from '$lib/stores/toasts.store';
-import { versionStore, type ReleaseVersionSatellite } from '$lib/stores/version.store';
+import { versionStore, type SatelliteVersionMetadata } from '$lib/stores/version.store';
 import type { OptionIdentity } from '$lib/types/itentity';
 import type { MissionControlId } from '$lib/types/mission-control';
 import type { Option } from '$lib/types/utils';
@@ -182,7 +182,7 @@ export const loadVersion = async ({
 
 		const satelliteInfo = async (
 			satelliteId: Principal
-		): Promise<Omit<ReleaseVersionSatellite, 'release'> | undefined> => {
+		): Promise<Omit<SatelliteVersionMetadata, 'release'> | undefined> => {
 			// Backwards compatibility for Satellite <= 0.0.14 which did not expose the end point "version_build"
 			const queryBuildVersion = async (): Promise<string | undefined> => {
 				try {

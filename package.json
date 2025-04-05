@@ -106,7 +106,7 @@
 		"@dfinity/principal": "^2.3.0",
 		"@dfinity/utils": "^2.10.0",
 		"@dfinity/zod-schemas": "^0.0.2",
-		"@junobuild/admin": "^0.1.6-next-2025-04-05",
+		"@junobuild/admin": "^0.1.6-next-2025-04-05.1",
 		"@junobuild/config": "^0.1.3-next-2025-04-05",
 		"@junobuild/core": "^0.1.9",
 		"@junobuild/utils": "^0.1.1",

@@ -204,8 +204,6 @@ export const loadVersion = async ({
 				})
 			]);
 
-			console.log(junoPkg)
-
 			if (junoPkg.status === 'fulfilled' && nonNullish(junoPkg.value)) {
 				const pkg = junoPkg.value;
 				const { name, dependencies, version } = pkg;

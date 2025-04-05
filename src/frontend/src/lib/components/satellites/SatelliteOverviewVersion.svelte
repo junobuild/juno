@@ -1,12 +1,11 @@
 <script lang="ts">
 	import { nonNullish } from '@dfinity/utils';
-	import type { BuildType } from '@junobuild/admin';
-	import { run } from 'svelte/legacy';
 	import { fade } from 'svelte/transition';
 	import Value from '$lib/components/ui/Value.svelte';
 	import { i18n } from '$lib/stores/i18n.store';
 	import { versionStore } from '$lib/stores/version.store';
 	import type { SatelliteIdText } from '$lib/types/satellite';
+	import JsonCode from "$lib/components/ui/JsonCode.svelte";
 
 	interface Props {
 		satelliteId: SatelliteIdText;
@@ -14,20 +13,29 @@
 
 	let { satelliteId }: Props = $props();
 
+	let pkg = $derived($versionStore?.satellites[satelliteId]?.pkg);
+
 	let currentBuild: string | undefined = $derived(
 		$versionStore?.satellites[satelliteId]?.currentBuild
 	);
 
-	let extended = $state(true);
-	run(() => {
-		extended =
-			nonNullish(currentBuild) && currentBuild !== $versionStore?.satellites[satelliteId]?.current;
-	});
+	let extended = $derived(
+		nonNullish(currentBuild) && currentBuild !== $versionStore?.satellites[satelliteId]?.current
+	);
 
-	let build: BuildType | undefined = $derived($versionStore?.satellites[satelliteId]?.build);
+	let build = $derived($versionStore?.satellites[satelliteId]?.build);
 </script>
 
-{#if !extended}
+{#if nonNullish(pkg)}
+	<div>
+		<Value>
+			{#snippet label()}
+				Package
+			{/snippet}
+			<JsonCode json={pkg} />
+		</Value>
+	</div>
+{:else if !extended}
 	<div>
 		<Value>
 			{#snippet label()}

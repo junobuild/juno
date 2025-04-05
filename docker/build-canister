@@ -59,11 +59,20 @@ function build_canister() {
 
     SRC_DIR="$src_root_dir/$canister"
 
-    PACKAGE_JSON_PATH="$package_json_dir/juno.package.json";
+    DID_FILE="$SRC_DIR/$canister.did"
+    PACKAGE_JSON_FILE="$package_json_dir/juno.package.json";
 
-    if [[ ! -f "$PACKAGE_JSON_PATH" ]]; then
-      echo "ERROR: juno.package.json file not found at $package_json_dir"
-      exit 1
+    # Check metadata information are provided when we are not just building the dependencies
+    if [ "$only_deps" != "1" ]; then
+      if [[ ! -f "$DID_FILE" ]]; then
+          echo "ERROR: .did file not found at $DID_FILE"
+          exit 1
+      fi
+
+      if [[ ! -f "$PACKAGE_JSON_FILE" ]]; then
+        echo "ERROR: juno.package.json file not found at $package_json_dir"
+        exit 1
+      fi
     fi
 
     # Standardize source references
@@ -108,13 +117,13 @@ function build_canister() {
           --keep-name-section
 
       # adds the content of $canister.did to the `icp:public candid:service` custom section of the public metadata in the wasm
-      ic-wasm "$output_dir/$canister.wasm" -o "$output_dir/$canister.wasm" metadata candid:service -f "$SRC_DIR/$canister.did" -v public --keep-name-section
+      ic-wasm "$output_dir/$canister.wasm" -o "$output_dir/$canister.wasm" metadata candid:service -f "$DID_FILE" -v public --keep-name-section
 
       # Adds the content of $canister.package.json to the `icp:public juno:package` custom section of the WASM metadata.
       # This file contains metadata about the build such as name, version, and dependencies.
       # The presence of dependencies indicates that the module is not stock, but extended—
       # either from the satellite (e.g., serverless functions in Rust) or from Sputnik (e.g., serverless functions in JavaScript).
-      ic-wasm "$output_dir/$canister.wasm" -o "$output_dir/$canister.wasm" metadata juno:package -f "$PACKAGE_JSON_PATH" -v public --keep-name-section
+      ic-wasm "$output_dir/$canister.wasm" -o "$output_dir/$canister.wasm" metadata juno:package -f "$PACKAGE_JSON_FILE" -v public --keep-name-section
 
       if [ -n "$build_type" ]
       then

@@ -40,8 +40,7 @@ function create_package_json() {
   local output_file="$package_json_dir/juno.package.json"
   local name=""
   local version=""
-  local dependency_name=""
-  local dependency_version=""
+  declare -A dependencies=()
 
   case "$target" in
     mission_control)
@@ -67,20 +66,18 @@ function create_package_json() {
     sputnik)
       name="@junobuild/sputnik"
       version=$(get_version_from_cargo "$src_root_dir/$canister/Cargo.toml")
-      dependency_name="@junobuild/satellite"
-      dependency_version=$(get_version_from_cargo "$pkg_root_dir/satellite/Cargo.toml")
+      dependencies["@junobuild/satellite"]=$(get_version_from_cargo "$pkg_root_dir/satellite/Cargo.toml")
       ;;
     test_sputnik)
       name="test-sputnik"
       version="1.2.3-patch.4"
-      dependency_name="@junobuild/sputnik"
-      dependency_version=$(get_version_from_cargo "$pkg_root_dir/sputnik/Cargo.toml")
+      dependencies["@junobuild/sputnik"]=$(get_version_from_cargo "$pkg_root_dir/sputnik/Cargo.toml")
+      dependencies["@junobuild/satellite"]=$(get_version_from_cargo "$pkg_root_dir/satellite/Cargo.toml")
       ;;
     test_satellite)
       name="test-satellite"
       version=$(get_version_from_cargo "$src_root_dir/$canister/Cargo.toml")
-      dependency_name="@junobuild/satellite"
-      dependency_version=$(get_version_from_cargo "$pkg_root_dir/satellite/Cargo.toml")
+      dependencies["@junobuild/satellite"]=$(get_version_from_cargo "$pkg_root_dir/satellite/Cargo.toml")
       ;;
     *)
       echo "ERROR: Unknown package type '$target'"
@@ -90,22 +87,26 @@ function create_package_json() {
 
   echo "Generating $output_file..."
 
-  if [ -n "$dependency_name" ]; then
-    cat <<EOF > "$output_file"
-{
-  "name": "$name",
-  "version": "$version",
-  "dependencies": {
-    "$dependency_name": "$dependency_version"
-  }
-}
-EOF
-  else
-    cat <<EOF > "$output_file"
-{
-  "name": "$name",
-  "version": "$version"
-}
-EOF
-  fi
+  {
+    echo "{"
+    echo "  \"name\": \"$name\","
+    echo -n "  \"version\": \"$version\""
+
+    if [ ${#dependencies[@]} -gt 0 ]; then
+      echo ","
+      echo "  \"dependencies\": {"
+      local first=1
+      for dep in "${!dependencies[@]}"; do
+        if [ $first -eq 0 ]; then echo ","; fi
+        printf "    \"%s\": \"%s\"" "$dep" "${dependencies[$dep]}"
+        first=0
+      done
+      echo
+      echo "  }"
+    else
+      echo
+    fi
+
+    echo "}"
+  } > "$output_file"
 }

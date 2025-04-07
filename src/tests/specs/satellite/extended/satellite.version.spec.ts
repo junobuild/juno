@@ -5,7 +5,7 @@ import { afterAll, beforeAll, describe, expect, inject } from 'vitest';
 import { setupTestSatellite } from '../../../utils/fixtures-tests.utils';
 import { crateVersion } from '../../../utils/version-test.utils';
 
-describe('Satellite > Extened > Version', () => {
+describe('Satellite > Extended > Version', () => {
 	let pic: PocketIc;
 	let actor: Actor<SatelliteActor>;
 

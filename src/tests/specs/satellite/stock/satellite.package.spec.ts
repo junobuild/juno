@@ -1,5 +1,4 @@
-import { SATELLITE_WASM_PATH } from '../../../utils/setup-tests.utils';
-import { readWasmVersion } from '../../../utils/setup-tests.utils';
+import { readWasmVersion, SATELLITE_WASM_PATH } from '../../../utils/setup-tests.utils';
 import { customSectionJunoPackage } from '../../../utils/wasm-tests.utils';
 
 describe('Satellite > Package', () => {

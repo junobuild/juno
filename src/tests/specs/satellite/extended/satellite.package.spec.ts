@@ -9,7 +9,7 @@ describe('Satellite > Extended > Package', () => {
 			name: 'test-satellite',
 			version: readWasmVersion('tests/fixtures/test_satellite'),
 			dependencies: {
-				'@junobuild/satellite': readWasmVersion("satellite")
+				'@junobuild/satellite': readWasmVersion('satellite')
 			}
 		};
 

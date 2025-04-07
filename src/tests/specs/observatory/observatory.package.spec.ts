@@ -1,4 +1,4 @@
-import {MISSION_CONTROL_WASM_PATH, OBSERVATORY_WASM_PATH, readWasmVersion} from '../../utils/setup-tests.utils';
+import { OBSERVATORY_WASM_PATH, readWasmVersion } from '../../utils/setup-tests.utils';
 import { customSectionJunoPackage } from '../../utils/wasm-tests.utils';
 
 describe('Observatory > Package', () => {

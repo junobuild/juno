@@ -49,8 +49,6 @@ OUTPUT=
 
 # Candid metadata supported_certificate_versions 1 and 2
 WITH_CERTIFICATION=0
-# Candid metadata juno:build
-BUILD_TYPE=
 # Source directory where to find $CANISTER/Cargo.toml
 SRC_ROOT_DIR="$PWD/src"
 # Source directory where to find $CANISTER/juno.package.json
@@ -78,7 +76,6 @@ do
         --satellite)
             CANISTER="satellite"
             WITH_CERTIFICATION=1
-            BUILD_TYPE="stock"
             break
             ;;
         --console)
@@ -98,7 +95,6 @@ do
             CANISTER="sputnik"
             OUTPUT="test_sputnik"
             WITH_CERTIFICATION=1
-            BUILD_TYPE="extended"
             TARGET="wasm32-wasip1"
             PKG_JSON_DIR="$PWD/src/tests/fixtures/$OUTPUT"
             break
@@ -106,14 +102,12 @@ do
         --sputnik)
             CANISTER="sputnik"
             WITH_CERTIFICATION=1
-            BUILD_TYPE="extended"
             TARGET="wasm32-wasip1"
             break
             ;;
         --test_satellite)
             CANISTER="test_satellite"
             WITH_CERTIFICATION=1
-            BUILD_TYPE="extended"
             SRC_ROOT_DIR="$PWD/src/tests/fixtures"
             PKG_JSON_DIR="$PWD/src/tests/fixtures/$CANISTER"
             break
@@ -151,7 +145,7 @@ pre_build_canister "$@"
 # Source the script to effectively build the canister
 source "$SCRIPTS_DIR/build-canister"
 
-build_canister "$CANISTER" "$SRC_ROOT_DIR" "$PKG_JSON_DIR" "." "$ONLY_DEPS" "$WITH_CERTIFICATION" "$BUILD_TYPE" "$TARGET"
+build_canister "$CANISTER" "$SRC_ROOT_DIR" "$PKG_JSON_DIR" "." "$ONLY_DEPS" "$WITH_CERTIFICATION" "$TARGET"
 
 # We rename the output if set and different from the canister name. Useful for test_sputnik which is the same canister built with different resources.
 if [ -n "$OUTPUT" ] && [ "$OUTPUT" != "$CANISTER" ]; then

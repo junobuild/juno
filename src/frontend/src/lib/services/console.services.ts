@@ -13,7 +13,11 @@ import { authStore } from '$lib/stores/auth.store';
 import { i18n } from '$lib/stores/i18n.store';
 import { missionControlIdCertifiedStore } from '$lib/stores/mission-control.store';
 import { toasts } from '$lib/stores/toasts.store';
-import { versionStore, type SatelliteVersionMetadata } from '$lib/stores/version.store';
+import {
+	versionStore,
+	type SatelliteVersionMetadata,
+	type VersionMetadata
+} from '$lib/stores/version.store';
 import type { OptionIdentity } from '$lib/types/itentity';
 import type { MissionControlId } from '$lib/types/mission-control';
 import type { Option } from '$lib/types/utils';
@@ -21,7 +25,8 @@ import { container } from '$lib/utils/juno.utils';
 import type { Identity } from '@dfinity/agent';
 import type { Principal } from '@dfinity/principal';
 import { assertNonNullish, fromNullable, isNullish, nonNullish } from '@dfinity/utils';
-import { satelliteBuildType } from '@junobuild/admin';
+import { findJunoPackageDependency, getJunoPackage, satelliteBuildType } from '@junobuild/admin';
+import { JUNO_PACKAGE_SATELLITE_ID } from '@junobuild/config';
 import { get } from 'svelte/store';
 
 interface Certified {
@@ -192,6 +197,49 @@ export const loadVersion = async ({
 				}
 			};
 
+			const [junoPkg] = await Promise.allSettled([
+				getJunoPackage({
+					moduleId: satelliteId,
+					identity,
+					...container()
+				})
+			]);
+
+			if (junoPkg.status === 'fulfilled' && nonNullish(junoPkg.value)) {
+				const pkg = junoPkg.value;
+				const { name, dependencies, version } = pkg;
+
+				// It's stock
+				if (name === JUNO_PACKAGE_SATELLITE_ID) {
+					return {
+						current: version,
+						pkg,
+						build: 'stock'
+					};
+				}
+
+				const satelliteDependency = findJunoPackageDependency({
+					dependencies,
+					dependencyId: JUNO_PACKAGE_SATELLITE_ID
+				});
+
+				if (isNullish(satelliteDependency)) {
+					toasts.error({
+						text: get(i18n).errors.satellite_version_not_found
+					});
+					return undefined;
+				}
+
+				const [_, satelliteVersion] = satelliteDependency;
+
+				return {
+					current: satelliteVersion,
+					pkg,
+					build: 'extended'
+				};
+			}
+
+			// Legacy way of fetch build and version information
 			const [version, buildVersion, buildType] = await Promise.allSettled([
 				satelliteVersion({ satelliteId, identity }),
 				queryBuildVersion(),
@@ -218,15 +266,44 @@ export const loadVersion = async ({
 			};
 		};
 
+		const missionControlInfo = async (
+			missionControlId: Principal
+		): Promise<Omit<VersionMetadata, 'release'>> => {
+			const [junoPkg] = await Promise.allSettled([
+				getJunoPackage({
+					moduleId: missionControlId,
+					identity,
+					...container()
+				})
+			]);
+
+			if (junoPkg.status === 'fulfilled' && nonNullish(junoPkg.value)) {
+				const pkg = junoPkg.value;
+				const { version } = pkg;
+
+				return {
+					current: version,
+					pkg
+				};
+			}
+
+			// Legacy way of fetch build and version information
+			const version = await missionControlVersion({ missionControlId, identity });
+
+			return {
+				current: version
+			};
+		};
+
 		const [satVersion, ctrlVersion, releases] = await Promise.all([
 			nonNullish(satelliteId) ? satelliteInfo(satelliteId) : empty(),
-			missionControlVersion({ missionControlId, identity }),
+			missionControlInfo(missionControlId),
 			getNewestReleasesMetadata()
 		]);
 
 		versionStore.setMissionControl({
 			release: releases.mission_control,
-			current: ctrlVersion
+			...ctrlVersion
 		});
 
 		if (isNullish(satelliteId)) {
@@ -269,13 +346,42 @@ export const loadOrbiterVersion = async ({
 
 	const identity = get(authStore).identity;
 
+	assertNonNullish(identity);
+
+	const orbiterInfo = async (orbiterId: Principal): Promise<Omit<VersionMetadata, 'release'>> => {
+		const [junoPkg] = await Promise.allSettled([
+			getJunoPackage({
+				moduleId: orbiterId,
+				identity,
+				...container()
+			})
+		]);
+
+		if (junoPkg.status === 'fulfilled' && nonNullish(junoPkg.value)) {
+			const pkg = junoPkg.value;
+			const { version } = pkg;
+
+			return {
+				current: version,
+				pkg
+			};
+		}
+
+		// Legacy way of fetch build and version information
+		const version = await orbiterVersion({ orbiterId, identity });
+
+		return {
+			current: version
+		};
+	};
+
 	const [orbVersion, releases] = await Promise.all([
-		orbiterVersion({ orbiterId: orbiter.orbiter_id, identity }),
+		orbiterInfo(orbiter.orbiter_id),
 		getNewestReleasesMetadata()
 	]);
 
 	versionStore.setOrbiter({
 		release: releases.orbiter,
-		current: orbVersion
+		...orbVersion
 	});
 };

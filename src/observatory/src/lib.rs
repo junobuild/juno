@@ -144,11 +144,6 @@ fn set_env(env: Env) {
     set_env_store(&env);
 }
 
-#[query]
-fn version() -> String {
-    env!("CARGO_PKG_VERSION").to_string()
-}
-
 // Generate did files
 
 export_candid!();

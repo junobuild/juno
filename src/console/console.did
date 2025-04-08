@@ -227,5 +227,4 @@ service : () -> {
   submit_proposal : (nat) -> (nat, Proposal);
   update_rate_config : (SegmentKind, RateConfig) -> ();
   upload_asset_chunk : (UploadChunk) -> (UploadChunkResult);
-  version : () -> (text) query;
 }

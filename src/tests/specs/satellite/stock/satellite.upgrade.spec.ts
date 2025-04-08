@@ -766,16 +766,24 @@ describe('Satellite > Upgrade', () => {
 			const satelliteVersion = crateVersion('satellite');
 
 			expect(await actor.build_version()).toEqual(satelliteVersion);
+
+			await upgrade();
+
+			expect(async () => await actor.version()).rejects.toThrowError(
+				new RegExp("Canister has no query method 'version'.", 'i')
+			);
 		});
 
-		it('should expose version', async () => {
+		it('should deprecate version', async () => {
 			const satelliteVersion = crateVersion('satellite');
 
 			expect(await actor.version()).toEqual(satelliteVersion);
 
 			await upgrade();
 
-			expect(await actor.version());
+			expect(async () => await actor.version()).rejects.toThrowError(
+				new RegExp("Canister has no query method 'version'.", 'i')
+			);
 		});
 	});
 });

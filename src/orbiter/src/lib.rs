@@ -344,11 +344,6 @@ async fn deposit_cycles(args: DepositCyclesArgs) {
         .unwrap_or_else(|e| trap(&e))
 }
 
-#[query]
-fn version() -> String {
-    env!("CARGO_PKG_VERSION").to_string()
-}
-
 #[query(guard = "caller_is_admin_controller")]
 fn memory_size() -> MemorySize {
     canister_memory_size()

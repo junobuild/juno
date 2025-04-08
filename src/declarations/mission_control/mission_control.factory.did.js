@@ -237,8 +237,7 @@ export const idlFactory = ({ IDL }) => {
 		unset_orbiter: IDL.Func([IDL.Principal], [], []),
 		unset_satellite: IDL.Func([IDL.Principal], [], []),
 		update_and_start_monitoring: IDL.Func([MonitoringStartConfig], [], []),
-		update_and_stop_monitoring: IDL.Func([MonitoringStopConfig], [], []),
-		version: IDL.Func([], [IDL.Text], ['query'])
+		update_and_stop_monitoring: IDL.Func([MonitoringStopConfig], [], [])
 	});
 };
 // @ts-ignore

@@ -261,8 +261,7 @@ export const idlFactory = ({ IDL }) => {
 			[]
 		),
 		set_track_event: IDL.Func([AnalyticKey, SetTrackEvent], [Result_3], []),
-		set_track_events: IDL.Func([IDL.Vec(IDL.Tuple(AnalyticKey, SetTrackEvent))], [Result_1], []),
-		version: IDL.Func([], [IDL.Text], ['query'])
+		set_track_events: IDL.Func([IDL.Vec(IDL.Tuple(AnalyticKey, SetTrackEvent))], [Result_1], [])
 	});
 };
 // @ts-ignore

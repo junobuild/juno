@@ -2,8 +2,8 @@
 	import { compare } from 'semver';
 	import { MISSION_CONTROL_v0_0_14 } from '$lib/constants/version.constants';
 	import { missionControlVersion } from '$lib/derived/version.derived';
-	import { loadVersion } from '$lib/services/console.services';
 	import { openMonitoringModal } from '$lib/services/monitoring.services';
+	import { loadVersion } from '$lib/services/version.loader.services';
 	import { i18n } from '$lib/stores/i18n.store';
 	import { toasts } from '$lib/stores/toasts.store';
 	import type { MissionControlId } from '$lib/types/mission-control';

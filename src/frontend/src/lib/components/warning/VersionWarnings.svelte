@@ -7,8 +7,8 @@
 	import VersionWarning from '$lib/components/warning/VersionWarning.svelte';
 	import { missionControlIdDerived } from '$lib/derived/mission-control.derived';
 	import { missionControlVersion } from '$lib/derived/version.derived';
-	import { loadVersion } from '$lib/services/console.services';
 	import { newerReleases } from '$lib/services/upgrade.services';
+	import { loadVersion } from '$lib/services/version.loader.services';
 	import { busy } from '$lib/stores/busy.store';
 	import { i18n } from '$lib/stores/i18n.store';
 	import { versionStore } from '$lib/stores/version.store';

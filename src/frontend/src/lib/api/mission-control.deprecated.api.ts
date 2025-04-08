@@ -95,3 +95,17 @@ export const listMissionControlStatuses = async ({
 	});
 	return [await list_mission_control_statuses()];
 };
+
+/**
+ * @deprecated - Replaced in Mission Control v0.0.15 with public custom section juno:package
+ */
+export const missionControlVersion = async ({
+	missionControlId,
+	identity
+}: {
+	missionControlId: MissionControlId;
+	identity: OptionIdentity;
+}): Promise<string> => {
+	const { version } = await getMissionControlActor0013({ missionControlId, identity });
+	return version();
+};

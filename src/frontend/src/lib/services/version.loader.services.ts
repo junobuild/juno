@@ -1,5 +1,5 @@
 import type { Orbiter } from '$declarations/mission_control/mission_control.did';
-import { missionControlVersion } from '$lib/api/mission-control.api';
+import { missionControlVersion } from '$lib/api/mission-control.deprecated.api';
 import { orbiterVersion } from '$lib/api/orbiter.api';
 import { satelliteBuildVersion, satelliteVersion } from '$lib/api/satellites.api';
 import { getNewestReleasesMetadata } from '$lib/rest/cdn.rest';

@@ -8,7 +8,6 @@ import {
 	addSatellitesController,
 	getSettings,
 	getUserData,
-	missionControlVersion,
 	setMetadata,
 	setMissionControlController,
 	setOrbiter,
@@ -18,7 +17,10 @@ import {
 	unsetOrbiter,
 	unsetSatellite
 } from '$lib/api/mission-control.api';
-import { setMissionControlController004 } from '$lib/api/mission-control.deprecated.api';
+import {
+	missionControlVersion,
+	setMissionControlController004
+} from '$lib/api/mission-control.deprecated.api';
 import { satelliteVersion } from '$lib/api/satellites.api';
 import { METADATA_KEY_EMAIL, METADATA_KEY_NAME } from '$lib/constants/metadata.constants';
 import {
@@ -62,7 +64,14 @@ export const setMissionControlControllerForVersion = async ({
 } & SetControllerParams) => {
 	const identity = get(authStore).identity;
 
-	const version = await missionControlVersion({ missionControlId, identity });
+	let version: string;
+	try {
+		version = await missionControlVersion({ missionControlId, identity });
+	} catch (_err: unknown) {
+		// For simplicity, since this method is meant to support very old and likely inactive Mission Control instances,
+		// we set the version to trigger the use of the latest API.
+		version = MISSION_CONTROL_v0_0_5;
+	}
 
 	const missionControlController =
 		compare(version, MISSION_CONTROL_v0_0_3) >= 0

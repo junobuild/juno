@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { nonNullish } from '@dfinity/utils';
+	import { debounce, nonNullish } from '@dfinity/utils';
 	import { fade } from 'svelte/transition';
 	import Logo from '$lib/components/core/Logo.svelte';
 	import NavbarCockpit from '$lib/components/core/NavbarCockpit.svelte';
@@ -24,9 +24,22 @@
 		launchpad = false,
 		hideHeaderOnScroll = true
 	}: Props = $props();
+
+	let hide = $state(false);
+
+	// We debounce hiding the header to avoid the effect on navigation
+	const hideHeader = () => (hide = !$layoutTitleIntersecting && hideHeaderOnScroll);
+	const debounceHideHeader = debounce(hideHeader);
+
+	$effect(() => {
+		$layoutTitleIntersecting;
+		hideHeaderOnScroll;
+
+		debounceHideHeader();
+	});
 </script>
 
-<Header hide={!$layoutTitleIntersecting && hideHeaderOnScroll}>
+<Header {hide}>
 	<div class="start">
 		{#if start === 'menu'}
 			<ButtonMenu />

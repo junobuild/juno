@@ -10,6 +10,7 @@ interface I18nCore {
 	copied: string;
 	toggle: string;
 	loading: string;
+	loading_version: string;
 	status: string;
 	sign_out: string;
 	sign_in: string;
@@ -582,6 +583,7 @@ interface I18nErrors {
 	user_ban: string;
 	user_unban: string;
 	satellite_version_not_found: string;
+	load_version: string;
 }
 
 interface I18nDocument {

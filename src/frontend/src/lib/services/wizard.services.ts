@@ -26,6 +26,7 @@ import { busy } from '$lib/stores/busy.store';
 import { i18n } from '$lib/stores/i18n.store';
 import { toasts } from '$lib/stores/toasts.store';
 import type { OptionIdentity } from '$lib/types/itentity';
+import type { MissionControlId } from '$lib/types/mission-control';
 import type { JunoModal, JunoModalCreateSegmentDetail } from '$lib/types/modal';
 import { type WizardCreateProgress, WizardCreateProgressStep } from '$lib/types/progress-wizard';
 import type { Option } from '$lib/types/utils';
@@ -80,7 +81,7 @@ const initCreateWizard = async ({
 	feeFn,
 	modalType
 }: {
-	missionControlId: Option<Principal>;
+	missionControlId: Option<MissionControlId>;
 	identity: Option<Identity>;
 	feeFn: GetFeeBalanceFn;
 	modalType: 'create_satellite' | 'create_orbiter';
@@ -106,7 +107,8 @@ const initCreateWizard = async ({
 	await loadVersion({
 		satelliteId: undefined,
 		missionControlId,
-		skipReload: true
+		skipReload: true,
+		identity
 	});
 
 	const params = {

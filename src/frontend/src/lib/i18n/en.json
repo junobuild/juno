@@ -7,6 +7,7 @@
 		"copied": "copied to clipboard",
 		"toggle": "Toggle",
 		"loading": "Loading...",
+		"loading_version": "Loading version information...",
 		"status": "Status",
 		"sign_out": "Sign-out",
 		"sign_in": "Sign-in",
@@ -565,7 +566,8 @@
 		"user_usage_not_loaded": "Unexpected error(s) while loading the user's usage.",
 		"user_ban": "Unexpected error(s) while trying to ban the user.",
 		"user_unban": "Unexpected error(s) while trying to unban the user.",
-		"satellite_version_not_found": "Unexpected error. Your Satellite implements serverless functions, but no dependency version can be resolved."
+		"satellite_version_not_found": "Unexpected error. Your Satellite implements serverless functions, but no dependency version can be resolved.",
+		"load_version": "Unexpected error(s) while loading the version of the Satellite and/or Mission Control"
 	},
 	"document": {
 		"owner": "Owner",

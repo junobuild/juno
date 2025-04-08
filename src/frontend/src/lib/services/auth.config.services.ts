@@ -1,10 +1,10 @@
 import type { Satellite } from '$declarations/mission_control/mission_control.did';
 import type { AuthenticationConfig, Rule } from '$declarations/satellite/satellite.did';
 import { getAuthConfig as getAuthConfigApi, setAuthConfig, setRule } from '$lib/api/satellites.api';
-import { satelliteVersion } from '$lib/api/satellites.deprecated.api';
 import { DEFAULT_RATE_CONFIG_TIME_PER_TOKEN_NS } from '$lib/constants/data.constants';
 import { DbCollectionType } from '$lib/constants/rules.constants';
 import { SATELLITE_v0_0_17 } from '$lib/constants/version.constants';
+import { isSatelliteFeatureSupported } from '$lib/services/feature.services';
 import { i18n } from '$lib/stores/i18n.store';
 import { toasts } from '$lib/stores/toasts.store';
 import type { OptionIdentity } from '$lib/types/itentity';
@@ -23,7 +23,6 @@ import {
 	notEmptyString,
 	toNullable
 } from '@dfinity/utils';
-import { compare } from 'semver';
 import { get } from 'svelte/store';
 
 interface UpdateAuthConfigParams {
@@ -200,12 +199,10 @@ export const getAuthConfig = async ({
 	config?: AuthenticationConfig | undefined;
 }> => {
 	try {
-		// TODO: load versions globally and use store value instead of fetching version again
-		const version = await satelliteVersion({ satelliteId, identity });
-
-		// TODO: keep a list of those version checks and remove them incrementally
-		// Also would be cleaner than to have 0.0.17 hardcoded there and there...
-		const authConfigSupported = compare(version, SATELLITE_v0_0_17) >= 0;
+		const authConfigSupported = isSatelliteFeatureSupported({
+			satelliteId,
+			requiredMinVersion: SATELLITE_v0_0_17
+		});
 
 		if (!authConfigSupported) {
 			return { result: 'skip' };

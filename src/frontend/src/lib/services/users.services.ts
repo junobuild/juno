@@ -1,26 +1,28 @@
 import { listDocs } from '$lib/api/satellites.api';
-import { listDocs008, satelliteVersion } from '$lib/api/satellites.deprecated.api';
+import { listDocs008 } from '$lib/api/satellites.deprecated.api';
 import { SATELLITE_v0_0_9 } from '$lib/constants/version.constants';
-import { authStore } from '$lib/stores/auth.store';
+import { isSatelliteFeatureSupported } from '$lib/services/feature.services';
+import type { OptionIdentity } from '$lib/types/itentity';
 import type { ListParams } from '$lib/types/list';
 import type { User } from '$lib/types/user';
 import { toKeyUser } from '$lib/utils/user.utils';
 import type { Principal } from '@dfinity/principal';
-import { compare } from 'semver';
-import { get } from 'svelte/store';
 
 export const listUsers = async ({
 	startAfter,
-	satelliteId
-}: Pick<ListParams, 'startAfter'> & { satelliteId: Principal }): Promise<{
+	satelliteId,
+	identity
+}: Pick<ListParams, 'startAfter'> & { satelliteId: Principal; identity: OptionIdentity }): Promise<{
 	users: [string, User][];
 	matches_length: bigint;
 	items_length: bigint;
 }> => {
-	const identity = get(authStore).identity;
+	const newestListDocs = isSatelliteFeatureSupported({
+		satelliteId,
+		requiredMinVersion: SATELLITE_v0_0_9
+	});
 
-	const version = await satelliteVersion({ satelliteId, identity });
-	const list = compare(version, SATELLITE_v0_0_9) >= 0 ? listDocs : listDocs008;
+	const list = newestListDocs ? listDocs : listDocs008;
 
 	const { items, matches_length, items_length } = await list({
 		collection: '#user',

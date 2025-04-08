@@ -1,6 +1,5 @@
 import type { Orbiter } from '$declarations/mission_control/mission_control.did';
 import { missionControlVersion } from '$lib/api/mission-control.deprecated.api';
-import { orbiterVersion } from '$lib/api/orbiter.api';
 import { satelliteBuildVersion, satelliteVersion } from '$lib/api/satellites.api';
 import { getNewestReleasesMetadata } from '$lib/rest/cdn.rest';
 import { authStore } from '$lib/stores/auth.store';
@@ -18,6 +17,7 @@ import { assertNonNullish, isNullish, nonNullish } from '@dfinity/utils';
 import { findJunoPackageDependency, getJunoPackage, satelliteBuildType } from '@junobuild/admin';
 import { JUNO_PACKAGE_SATELLITE_ID } from '@junobuild/config';
 import { get } from 'svelte/store';
+import {orbiterVersion} from "$lib/api/orbiter.deprecated.api";
 
 export const loadVersion = async ({
 	satelliteId,

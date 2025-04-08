@@ -97,7 +97,7 @@ export const listMissionControlStatuses = async ({
 };
 
 /**
- * @deprecated - Replaced in Mission Control v0.0.15 with public custom section juno:package
+ * @deprecated - Replaced in Mission Control > v0.0.14 with public custom section juno:package
  */
 export const missionControlVersion = async ({
 	missionControlId,

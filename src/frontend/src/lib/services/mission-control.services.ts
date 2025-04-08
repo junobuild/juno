@@ -17,11 +17,7 @@ import {
 	unsetOrbiter,
 	unsetSatellite
 } from '$lib/api/mission-control.api';
-import {
-	missionControlVersion,
-	setMissionControlController004
-} from '$lib/api/mission-control.deprecated.api';
-import { satelliteVersion } from '$lib/api/satellites.deprecated.api';
+import { setMissionControlController004 } from '$lib/api/mission-control.deprecated.api';
 import { METADATA_KEY_EMAIL, METADATA_KEY_NAME } from '$lib/constants/metadata.constants';
 import {
 	MISSION_CONTROL_v0_0_14,
@@ -48,9 +44,11 @@ import type { Metadata } from '$lib/types/metadata';
 import type { MissionControlId } from '$lib/types/mission-control';
 import type { Option } from '$lib/types/utils';
 import { isNotValidEmail } from '$lib/utils/email.utils';
+import { container } from '$lib/utils/juno.utils';
 import type { Identity } from '@dfinity/agent';
 import type { Principal } from '@dfinity/principal';
 import { fromNullable, isEmptyString, isNullish } from '@dfinity/utils';
+import { missionControlVersion, satelliteVersion } from '@junobuild/admin';
 import { compare } from 'semver';
 import { get } from 'svelte/store';
 
@@ -61,11 +59,13 @@ export const setMissionControlControllerForVersion = async ({
 	identity
 }: {
 	missionControlId: MissionControlId;
-	identity: OptionIdentity;
+	identity: Identity;
 } & SetControllerParams) => {
 	let version: string;
 	try {
-		version = await missionControlVersion({ missionControlId, identity });
+		version = await missionControlVersion({
+			missionControl: { missionControlId: missionControlId.toText(), identity, ...container() }
+		});
 	} catch (_err: unknown) {
 		// For simplicity, since this method is meant to support very old and likely inactive Mission Control instances,
 		// we set the version to trigger the use of the latest API.
@@ -97,14 +97,16 @@ export const setSatellitesControllerForVersion = async ({
 }: {
 	missionControlId: MissionControlId;
 	satelliteIds: Principal[];
-	identity: OptionIdentity;
+	identity: Identity;
 } & SetControllerParams) => {
 	const mapVersions = async (
 		satelliteId: Principal
 	): Promise<{ satelliteId: Principal; version: string }> => {
 		let version: string;
 		try {
-			version = await satelliteVersion({ satelliteId, identity });
+			version = await satelliteVersion({
+				satellite: { satelliteId: satelliteId.toText(), identity, ...container() }
+			});
 		} catch (_err: unknown) {
 			// For simplicity, this method assumes compatibility with very old Satellite instances, like instance that would have
 			// never been upgraded since the Beta phrase in 2023.

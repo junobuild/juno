@@ -68,6 +68,13 @@
 			return;
 		}
 
+		if (isNullish($authStore.identity)) {
+			toasts.error({
+				text: $i18n.authentication.not_signed_in
+			});
+			return;
+		}
+
 		busy.start();
 
 		try {

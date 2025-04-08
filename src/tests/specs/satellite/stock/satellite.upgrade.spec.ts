@@ -34,6 +34,7 @@ import {
 	controllersInitArgs,
 	downloadSatellite
 } from '../../../utils/setup-tests.utils';
+import { crateVersion } from '../../../utils/version-test.utils';
 
 describe('Satellite > Upgrade', () => {
 	let pic: PocketIc;
@@ -737,6 +738,44 @@ describe('Satellite > Upgrade', () => {
 			expect(fromNullable(max_capacity)).toBeUndefined();
 			expect(fromNullable(max_size)).toBeUndefined();
 			expect(fromNullable(rate_config)).toBeUndefined();
+		});
+	});
+
+	describe('v0.0.22 -> v0.0.23', () => {
+		// For simplicity reason we also use actor v0.0.21 as the API was similar for version.
+		let actor: Actor<SatelliteActor_0_0_21>;
+
+		beforeEach(async () => {
+			pic = await PocketIc.create(inject('PIC_URL'));
+
+			const destination = await downloadSatellite('0.0.22');
+
+			const { actor: c, canisterId: cId } = await pic.setupCanister<SatelliteActor_0_0_21>({
+				idlFactory: idlFactorSatellite_0_0_21,
+				wasm: destination,
+				arg: controllersInitArgs(controller),
+				sender: controller.getPrincipal()
+			});
+
+			actor = c;
+			canisterId = cId;
+			actor.setIdentity(controller);
+		});
+
+		it('should expose build version', async () => {
+			const satelliteVersion = crateVersion('satellite');
+
+			expect(await actor.build_version()).toEqual(satelliteVersion);
+		});
+
+		it('should expose version', async () => {
+			const satelliteVersion = crateVersion('satellite');
+
+			expect(await actor.version()).toEqual(satelliteVersion);
+
+			await upgrade();
+
+			expect(await actor.version());
 		});
 	});
 });

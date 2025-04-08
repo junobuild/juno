@@ -1,5 +1,5 @@
-import { listDocs, satelliteVersion } from '$lib/api/satellites.api';
-import { listDocs008 } from '$lib/api/satellites.deprecated.api';
+import { listDocs } from '$lib/api/satellites.api';
+import { listDocs008, satelliteVersion } from '$lib/api/satellites.deprecated.api';
 import { SATELLITE_v0_0_9 } from '$lib/constants/version.constants';
 import { authStore } from '$lib/stores/auth.store';
 import type { ListParams } from '$lib/types/list';

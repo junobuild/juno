@@ -4,8 +4,8 @@
 	import { getContext, setContext } from 'svelte';
 	import { writable } from 'svelte/store';
 	import type { Doc as DocType, Doc as DocDid } from '$declarations/satellite/satellite.did';
-	import { listDocs, satelliteVersion } from '$lib/api/satellites.api';
-	import { listDocs008 } from '$lib/api/satellites.deprecated.api';
+	import { listDocs } from '$lib/api/satellites.api';
+	import { listDocs008, satelliteVersion } from '$lib/api/satellites.deprecated.api';
 	import Data from '$lib/components/data/Data.svelte';
 	import DataCount from '$lib/components/data/DataCount.svelte';
 	import Doc from '$lib/components/docs/Doc.svelte';

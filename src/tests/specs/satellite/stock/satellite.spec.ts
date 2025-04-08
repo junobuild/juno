@@ -12,7 +12,6 @@ import {
 } from '@junobuild/errors';
 import { afterAll, beforeAll, describe, expect, inject } from 'vitest';
 import { controllersInitArgs, SATELLITE_WASM_PATH } from '../../../utils/setup-tests.utils';
-import { crateVersion } from '../../../utils/version-test.utils';
 
 describe('Satellite', () => {
 	let pic: PocketIc;
@@ -729,14 +728,6 @@ describe('Satellite', () => {
 					token: toNullable()
 				})
 			).rejects.toThrow(JUNO_STORAGE_ERROR_UPLOAD_NOT_ALLOWED);
-		});
-	});
-
-	describe('public', () => {
-		it('should expose version of the consumer', async () => {
-			const satelliteVersion = crateVersion('satellite');
-
-			expect(await actor.build_version()).toEqual(satelliteVersion);
 		});
 	});
 });

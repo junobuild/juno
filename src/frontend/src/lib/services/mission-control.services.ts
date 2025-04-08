@@ -21,7 +21,7 @@ import {
 	missionControlVersion,
 	setMissionControlController004
 } from '$lib/api/mission-control.deprecated.api';
-import { satelliteVersion } from '$lib/api/satellites.api';
+import { satelliteVersion } from '$lib/api/satellites.deprecated.api';
 import { METADATA_KEY_EMAIL, METADATA_KEY_NAME } from '$lib/constants/metadata.constants';
 import {
 	MISSION_CONTROL_v0_0_14,

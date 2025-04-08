@@ -4,6 +4,8 @@ import type { _SERVICE as MissionControlActor004 } from '$declarations/deprecate
 import { idlFactory as idlFactorMissionControl004 } from '$declarations/deprecated/mission_control-0-0-4.factory.did';
 import type { _SERVICE as OrbiterActor007 } from '$declarations/deprecated/orbiter-0-0-7.did';
 import { idlFactory as idlFactorOrbiter007 } from '$declarations/deprecated/orbiter-0-0-7.factory.did';
+import type { _SERVICE as SatelliteActor0021 } from '$declarations/deprecated/satellite-0-0-21.did';
+import { idlFactory as idlFactorSatellite0021 } from '$declarations/deprecated/satellite-0-0-21.factory.did';
 import type { _SERVICE as SatelliteActor008 } from '$declarations/deprecated/satellite-0-0-8.did';
 import { idlFactory as idlFactorSatellite008 } from '$declarations/deprecated/satellite-0-0-8.factory.did';
 import type { _SERVICE as SatelliteActor009 } from '$declarations/deprecated/satellite-0-0-9.did';
@@ -17,6 +19,7 @@ const missionControl004Actor = new ActorApi<MissionControlActor004>();
 const missionControl0013Actor = new ActorApi<MissionControlActor0013>();
 const satellite008Actor = new ActorApi<SatelliteActor008>();
 const satellite009Actor = new ActorApi<SatelliteActor009>();
+const satellite0021Actor = new ActorApi<SatelliteActor0021>();
 const orbiter007Actor = new ActorApi<OrbiterActor007>();
 
 /**
@@ -80,6 +83,21 @@ export const getSatelliteActor009 = ({
 	satellite009Actor.getActor({
 		canisterId: satelliteId,
 		idlFactory: idlFactorSatellite009,
+		identity
+	});
+/**
+ * @deprecated TODO: to be remove - backwards compatibility
+ */
+export const getSatelliteActor0021 = ({
+	satelliteId,
+	identity
+}: {
+	satelliteId: Principal;
+	identity: OptionIdentity;
+}): Promise<SatelliteActor0021> =>
+	satellite0021Actor.getActor({
+		canisterId: satelliteId,
+		idlFactory: idlFactorSatellite0021,
 		identity
 	});
 

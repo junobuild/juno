@@ -1,5 +1,6 @@
 import type { CollectionType, Rule, SetRule } from '$declarations/satellite/satellite.did';
-import { getRule, satelliteVersion, setRule as setRuleApi } from '$lib/api/satellites.api';
+import { getRule, setRule as setRuleApi } from '$lib/api/satellites.api';
+import { satelliteVersion } from '$lib/api/satellites.deprecated.api';
 import { DEFAULT_RATE_CONFIG_TIME_PER_TOKEN_NS } from '$lib/constants/data.constants';
 import {
 	DbCollectionType,

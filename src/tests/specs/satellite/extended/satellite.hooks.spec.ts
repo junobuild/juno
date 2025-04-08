@@ -6,7 +6,6 @@ import { afterAll, beforeAll, describe, expect } from 'vitest';
 import { mockSetRule } from '../../../mocks/collection.mocks';
 import { setupTestSatellite } from '../../../utils/fixtures-tests.utils';
 import { fetchLogs } from '../../../utils/mgmt-test.utils';
-import { crateVersion } from '../../../utils/version-test.utils';
 
 describe('Satellite > Hooks', () => {
 	let pic: PocketIc;
@@ -51,20 +50,6 @@ describe('Satellite > Hooks', () => {
 
 		it('should call on post_upgrade sync', async () => {
 			await assertLog('On post upgrade sync was executed');
-		});
-	});
-
-	describe('public', () => {
-		it('should expose build version', async () => {
-			const hooksVersion = crateVersion('tests/fixtures/test_satellite');
-
-			expect(await actor.build_version()).toEqual(hooksVersion);
-		});
-
-		it('should expose satellite version', async () => {
-			const satelliteVersion = crateVersion('satellite');
-
-			expect(await actor.version()).toEqual(satelliteVersion);
 		});
 	});
 });

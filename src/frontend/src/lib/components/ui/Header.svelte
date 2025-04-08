@@ -41,9 +41,8 @@
 			opacity linear var(--navbar-animation-time);
 		border-bottom: 1px solid transparent;
 
-		&.hide {
-			background: rgba(var(--color-background-rgb), 0.9);
-		}
+		background: rgba(var(--color-background-rgb), 0.9);
+		backdrop-filter: blur(3px);
 
 		@include media.min-width(xlarge) {
 			padding: calc(var(--padding-4x) - 1px) var(--padding-7x) var(--padding-4x);

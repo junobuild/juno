@@ -790,8 +790,8 @@
 		"tutorials": "指南",
 		"tutorial_framework_description": "用 Juno 和 {0}.",
 		"tutorial_serverless_functions": "在 {0} 里面写无服务函数.",
-		"tutorial_github_description": "用 GitHub Actions 发布.",
-		"tutorial_docker_description": "在Docker沙箱中运行 Satellite."
+		"tutorial_github_description": "Deploy and set up continuous integration with GitHub Actions.",
+		"tutorial_docker_description": "Get started with local development using a Docker sandbox."
 	},
 	"resources": {
 		"resources": "资源",

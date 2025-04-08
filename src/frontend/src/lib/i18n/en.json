@@ -790,8 +790,8 @@
 		"tutorials": "Guides",
 		"tutorial_framework_description": "Use Juno with {0}.",
 		"tutorial_serverless_functions": "Write serverless functions in {0}.",
-		"tutorial_github_description": "Deploy using GitHub Actions.",
-		"tutorial_docker_description": "Run a Satellite in a Docker sandbox."
+		"tutorial_github_description": "Deploy and set up continuous integration with GitHub Actions.",
+		"tutorial_docker_description": "Get started with local development using a Docker sandbox."
 	},
 	"resources": {
 		"resources": "Resources",

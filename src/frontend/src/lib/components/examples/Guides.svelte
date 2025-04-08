@@ -8,6 +8,7 @@
 	import IconReact from '$lib/components/icons/IconReact.svelte';
 	import IconRust from '$lib/components/icons/IconRust.svelte';
 	import IconSvelte from '$lib/components/icons/IconSvelte.svelte';
+	import IconTypeScript from '$lib/components/icons/IconTypeScript.svelte';
 	import IconVue from '$lib/components/icons/IconVue.svelte';
 	import Html from '$lib/components/ui/Html.svelte';
 	import { i18n } from '$lib/stores/i18n.store';
@@ -145,7 +146,25 @@
 		/>
 	</Resource>
 
-	<Resource href="https://juno.build/docs/miscellaneous/github_actions">
+	<Resource href="https://juno.build/docs/guides/typescript">
+		{#snippet icon()}
+			<IconTypeScript />
+		{/snippet}
+		{#snippet title()}
+			TypeScript
+		{/snippet}
+
+		<Html
+			text={i18nFormat($i18n.examples.tutorial_serverless_functions, [
+				{
+					placeholder: '{0}',
+					value: 'TypeScript'
+				}
+			])}
+		/>
+	</Resource>
+
+	<Resource href="https://juno.build/docs/guides/github-actions">
 		{#snippet icon()}
 			<IconGitHub size="48px" />
 		{/snippet}
@@ -156,7 +175,7 @@
 		{$i18n.examples.tutorial_github_description}
 	</Resource>
 
-	<Resource href="https://juno.build/docs/miscellaneous/local-development">
+	<Resource href="https://juno.build/docs/guides/local-development">
 		{#snippet icon()}
 			<IconDocker />
 		{/snippet}

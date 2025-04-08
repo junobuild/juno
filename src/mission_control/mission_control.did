@@ -196,5 +196,4 @@ service : () -> {
   unset_satellite : (principal) -> ();
   update_and_start_monitoring : (MonitoringStartConfig) -> ();
   update_and_stop_monitoring : (MonitoringStopConfig) -> ();
-  version : () -> (text) query;
 }

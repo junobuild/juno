@@ -223,7 +223,6 @@ export interface _SERVICE {
 	>;
 	set_track_event: ActorMethod<[AnalyticKey, SetTrackEvent], Result_3>;
 	set_track_events: ActorMethod<[Array<[AnalyticKey, SetTrackEvent]>], Result_1>;
-	version: ActorMethod<[], string>;
 }
 export declare const idlFactory: IDL.InterfaceFactory;
 export declare const init: (args: { IDL: typeof IDL }) => IDL.Type[];

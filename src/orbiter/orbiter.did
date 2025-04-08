@@ -211,5 +211,4 @@ service : () -> {
     );
   set_track_event : (AnalyticKey, SetTrackEvent) -> (Result_3);
   set_track_events : (vec record { AnalyticKey; SetTrackEvent }) -> (Result_1);
-  version : () -> (text) query;
 }

@@ -1,11 +1,11 @@
 <script lang="ts">
 	import { nonNullish } from '@dfinity/utils';
 	import { fade } from 'svelte/transition';
+	import JsonCode from '$lib/components/ui/JsonCode.svelte';
 	import Value from '$lib/components/ui/Value.svelte';
 	import { i18n } from '$lib/stores/i18n.store';
 	import { versionStore } from '$lib/stores/version.store';
 	import type { SatelliteIdText } from '$lib/types/satellite';
-	import JsonCode from '$lib/components/ui/JsonCode.svelte';
 
 	interface Props {
 		satelliteId: SatelliteIdText;

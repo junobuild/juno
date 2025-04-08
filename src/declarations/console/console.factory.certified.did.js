@@ -275,8 +275,7 @@ export const idlFactory = ({ IDL }) => {
 		set_storage_config: IDL.Func([StorageConfig], [], []),
 		submit_proposal: IDL.Func([IDL.Nat], [IDL.Nat, Proposal], []),
 		update_rate_config: IDL.Func([SegmentKind, RateConfig], [], []),
-		upload_asset_chunk: IDL.Func([UploadChunk], [UploadChunkResult], []),
-		version: IDL.Func([], [IDL.Text], [])
+		upload_asset_chunk: IDL.Func([UploadChunk], [UploadChunkResult], [])
 	});
 };
 // @ts-ignore

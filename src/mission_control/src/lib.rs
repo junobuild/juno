@@ -403,11 +403,6 @@ async fn deposit_cycles(args: DepositCyclesArgs) {
         .unwrap_or_else(|e| trap(&e))
 }
 
-#[query]
-fn version() -> String {
-    env!("CARGO_PKG_VERSION").to_string()
-}
-
 // ---------------------------------------------------------
 // Monitoring
 // ---------------------------------------------------------

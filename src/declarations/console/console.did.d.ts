@@ -261,7 +261,6 @@ export interface _SERVICE {
 	submit_proposal: ActorMethod<[bigint], [bigint, Proposal]>;
 	update_rate_config: ActorMethod<[SegmentKind, RateConfig], undefined>;
 	upload_asset_chunk: ActorMethod<[UploadChunk], UploadChunkResult>;
-	version: ActorMethod<[], string>;
 }
 export declare const idlFactory: IDL.InterfaceFactory;
 export declare const init: (args: { IDL: typeof IDL }) => IDL.Type[];

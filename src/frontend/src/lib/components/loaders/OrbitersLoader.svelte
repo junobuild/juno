@@ -4,8 +4,8 @@
 	import type { Orbiter } from '$declarations/mission_control/mission_control.did';
 	import { missionControlIdDerived } from '$lib/derived/mission-control.derived';
 	import { orbiterStore } from '$lib/derived/orbiter.derived';
-	import { loadOrbiterVersion } from '$lib/services/console.services';
 	import { loadOrbiters } from '$lib/services/orbiters.services';
+	import { loadOrbiterVersion } from '$lib/services/version.loader.services';
 	import type { Option } from '$lib/types/utils';
 
 	interface Props {

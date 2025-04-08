@@ -205,17 +205,6 @@ export const topUp = async ({
 	await actor.top_up(canisterId, { e8s });
 };
 
-export const missionControlVersion = async ({
-	missionControlId,
-	identity
-}: {
-	missionControlId: MissionControlId;
-	identity: OptionIdentity;
-}): Promise<string> => {
-	const actor = await getMissionControlActor({ missionControlId, identity });
-	return actor.version();
-};
-
 export const setSatelliteMetadata = async ({
 	missionControlId,
 	satelliteId,

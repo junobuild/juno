@@ -225,7 +225,6 @@ export interface _SERVICE {
 	unset_satellite: ActorMethod<[Principal], undefined>;
 	update_and_start_monitoring: ActorMethod<[MonitoringStartConfig], undefined>;
 	update_and_stop_monitoring: ActorMethod<[MonitoringStopConfig], undefined>;
-	version: ActorMethod<[], string>;
 }
 export declare const idlFactory: IDL.InterfaceFactory;
 export declare const init: (args: { IDL: typeof IDL }) => IDL.Type[];

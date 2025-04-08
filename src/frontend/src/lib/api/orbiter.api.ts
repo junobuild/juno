@@ -184,17 +184,6 @@ export const setOrbiterSatelliteConfigs = async ({
 	return actor.set_satellite_configs(config);
 };
 
-export const orbiterVersion = async ({
-	orbiterId,
-	identity
-}: {
-	orbiterId: Principal;
-	identity: OptionIdentity;
-}): Promise<string> => {
-	const actor = await getOrbiterActor({ orbiterId, identity });
-	return actor.version();
-};
-
 export const depositCycles = async ({
 	orbiterId,
 	cycles,

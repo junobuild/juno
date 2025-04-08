@@ -6,6 +6,7 @@
 	import CanisterSubnet from '$lib/components/canister/CanisterSubnet.svelte';
 	import MonitoringDisabled from '$lib/components/monitoring/MonitoringDisabled.svelte';
 	import OrbiterActions from '$lib/components/orbiter/OrbiterActions.svelte';
+	import SegmentVersion from '$lib/components/segments/SegmentVersion.svelte';
 	import Identifier from '$lib/components/ui/Identifier.svelte';
 	import Value from '$lib/components/ui/Value.svelte';
 	import { orbiterNotLoaded } from '$lib/derived/orbiter.derived';
@@ -39,14 +40,7 @@
 		</div>
 
 		<div>
-			<div>
-				<Value>
-					{#snippet label()}
-						{$i18n.core.version}
-					{/snippet}
-					<p>v{$versionStore?.orbiter?.current ?? '...'}</p>
-				</Value>
-			</div>
+			<SegmentVersion version={$versionStore?.orbiter?.current} />
 		</div>
 	</div>
 

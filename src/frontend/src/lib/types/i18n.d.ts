@@ -33,6 +33,7 @@ interface I18nCore {
 	theme: string;
 	user_menu: string;
 	version: string;
+	dependencies: string;
 	delete: string;
 	skip: string;
 	done: string;
@@ -580,6 +581,7 @@ interface I18nErrors {
 	user_usage_not_loaded: string;
 	user_ban: string;
 	user_unban: string;
+	satellite_version_not_found: string;
 }
 
 interface I18nDocument {

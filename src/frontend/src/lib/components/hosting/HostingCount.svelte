@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { nonNullish } from '@dfinity/utils';
 	import { compare } from 'semver';
 	import { onMount } from 'svelte';
 	import { fade } from 'svelte/transition';
@@ -21,15 +22,11 @@
 
 	onMount(async () => {
 		try {
-			// TODO: load versions globally and use store value instead of fetching version again
-			const version =
-				$versionStore.satellites[satellite.satellite_id.toText()]?.current ??
-				(await satelliteVersion({
-					satelliteId: satellite.satellite_id,
-					identity: $authStore.identity
-				}));
+			// There is guard for loading the version. If we reach this point with `undefined`, it's probably a race condition.
+			// We fallback to the newest API since the version check is only needed for backward compatibility.
+			const version = $versionStore?.satellites[satellite.satellite_id.toText()]?.current;
 
-			if (compare(version, SATELLITE_v0_0_20) < 0) {
+			if (nonNullish(version) && compare(version, SATELLITE_v0_0_20) < 0) {
 				// For simplicity reasons we do not display the information for not up-to-date Satellite.
 				// In Satellite v0.0.20, the endpoint to list the number of assets in a collection was renamed from `count_assets` to `count_collection_assets`.
 				return;

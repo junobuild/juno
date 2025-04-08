@@ -6,6 +6,7 @@
 	import { orbiterStore } from '$lib/derived/orbiter.derived';
 	import { loadOrbiters } from '$lib/services/orbiters.services';
 	import { loadOrbiterVersion } from '$lib/services/version.loader.services';
+	import { authStore } from '$lib/stores/auth.store';
 	import type { Option } from '$lib/types/utils';
 
 	interface Props {
@@ -30,7 +31,7 @@
 			return;
 		}
 
-		await loadOrbiterVersion({ orbiter, reload });
+		await loadOrbiterVersion({ orbiter, reload, identity: $authStore.identity });
 	};
 
 	$effect(() => {

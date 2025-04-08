@@ -78,7 +78,8 @@
 								missionControlId: $missionControlIdDerived,
 								controllerId: principal,
 								profile,
-								scope: 'admin'
+								scope: 'admin',
+								identity: $authStore.identity
 							})
 						]
 					: []),
@@ -89,7 +90,8 @@
 								controllerId: principal,
 								satelliteIds: selectedSatellites.map((s) => s[0]),
 								profile,
-								scope: 'admin'
+								scope: 'admin',
+								identity: $authStore.identity
 							})
 						]
 					: []),

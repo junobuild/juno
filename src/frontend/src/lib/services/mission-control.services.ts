@@ -27,7 +27,7 @@ import {
 	MISSION_CONTROL_v0_0_14,
 	MISSION_CONTROL_v0_0_3,
 	MISSION_CONTROL_v0_0_5,
-	MISSION_CONTROL_v0_0_7
+	SATELLITE_v0_0_7
 } from '$lib/constants/version.constants';
 import { satellitesStore } from '$lib/derived/satellites.derived';
 import { missionControlVersion as missionControlVersionStore } from '$lib/derived/version.derived';
@@ -54,16 +54,15 @@ import { fromNullable, isEmptyString, isNullish } from '@dfinity/utils';
 import { compare } from 'semver';
 import { get } from 'svelte/store';
 
-// TODO: to be removed in next version as only supported if < v0.0.3
 export const setMissionControlControllerForVersion = async ({
 	missionControlId,
 	controllerId,
-	profile
+	profile,
+	identity
 }: {
 	missionControlId: MissionControlId;
+	identity: OptionIdentity;
 } & SetControllerParams) => {
-	const identity = get(authStore).identity;
-
 	let version: string;
 	try {
 		version = await missionControlVersion({ missionControlId, identity });
@@ -89,22 +88,31 @@ export const setMissionControlControllerForVersion = async ({
 	});
 };
 
-// TODO: to be removed in next version as only supported if < v0.0.7
 export const setSatellitesControllerForVersion = async ({
 	missionControlId,
 	satelliteIds,
 	controllerId,
-	profile
+	profile,
+	identity
 }: {
 	missionControlId: MissionControlId;
 	satelliteIds: Principal[];
+	identity: OptionIdentity;
 } & SetControllerParams) => {
-	const identity = get(authStore).identity;
-
 	const mapVersions = async (
 		satelliteId: Principal
 	): Promise<{ satelliteId: Principal; version: string }> => {
-		const version = await satelliteVersion({ satelliteId, identity });
+		let version: string;
+		try {
+			version = await satelliteVersion({ satelliteId, identity });
+		} catch (_err: unknown) {
+			// For simplicity, this method assumes compatibility with very old Satellite instances, like instance that would have
+			// never been upgraded since the Beta phrase in 2023.
+			// We set the version to trigger the use of the latest API, since Satellite versions >= v0.0.24
+			// no longer implement the /version endpoint.
+			version = SATELLITE_v0_0_7;
+		}
+
 		return {
 			version,
 			satelliteId
@@ -121,7 +129,7 @@ export const setSatellitesControllerForVersion = async ({
 			}: { setSatelliteIds: Principal[]; addSatellitesIds: Principal[] },
 			{ satelliteId, version }
 		) => {
-			if (compare(version, MISSION_CONTROL_v0_0_7) >= 0) {
+			if (compare(version, SATELLITE_v0_0_7) >= 0) {
 				return {
 					setSatelliteIds: [...setSatelliteIds, satelliteId],
 					addSatellitesIds

@@ -2,13 +2,10 @@
 	import { isNullish, nonNullish } from '@dfinity/utils';
 	import type { BuildType } from '@junobuild/admin';
 	import { compare } from 'semver';
-	import { run } from 'svelte/legacy';
 	import type { Satellite } from '$declarations/mission_control/mission_control.did';
 	import VersionWarning from '$lib/components/warning/VersionWarning.svelte';
-	import { missionControlIdDerived } from '$lib/derived/mission-control.derived';
 	import { missionControlVersion } from '$lib/derived/version.derived';
 	import { newerReleases } from '$lib/services/upgrade.services';
-	import { loadVersion } from '$lib/services/version.loader.services';
 	import { busy } from '$lib/stores/busy.store';
 	import { i18n } from '$lib/stores/i18n.store';
 	import { versionStore } from '$lib/stores/version.store';
@@ -19,18 +16,6 @@
 	}
 
 	let { satellite = undefined }: Props = $props();
-
-	const load = async (skipReload: boolean) =>
-		await loadVersion({
-			satelliteId: satellite?.satellite_id,
-			missionControlId: $missionControlIdDerived,
-			skipReload
-		});
-
-	run(() => {
-		// @ts-expect-error TODO: to be migrated to Svelte v5
-		$missionControlIdDerived, satellite, (async () => await load(true))();
-	});
 
 	let satVersion: string | undefined = $derived(
 		nonNullish(satellite) && nonNullish(satellite?.satellite_id)
@@ -54,38 +39,29 @@
 	let orbVersion: string | undefined = $derived($versionStore?.orbiter?.current);
 	let orbRelease: string | undefined = $derived($versionStore?.orbiter?.release);
 
-	let satReady = $state(false);
-	run(() => {
-		satReady = nonNullish($versionStore) && nonNullish(satVersion) && nonNullish(satRelease);
-	});
+	let satReady = $derived(
+		nonNullish($versionStore) && nonNullish(satVersion) && nonNullish(satRelease)
+	);
 
-	let ctrlReady = $state(false);
-	run(() => {
-		ctrlReady = nonNullish($versionStore) && nonNullish(ctrlVersion) && nonNullish(ctrlRelease);
-	});
+	let ctrlReady = $derived(
+		nonNullish($versionStore) && nonNullish(ctrlVersion) && nonNullish(ctrlRelease)
+	);
 
-	let orbReady = $state(false);
-	run(() => {
-		orbReady = nonNullish($versionStore) && nonNullish(orbVersion) && nonNullish(orbRelease);
-	});
+	let orbReady = $derived(
+		nonNullish($versionStore) && nonNullish(orbVersion) && nonNullish(orbRelease)
+	);
 
-	let satWarning = $state(false);
-	run(() => {
-		satWarning =
-			nonNullish(satVersion) && nonNullish(satRelease) && compare(satVersion, satRelease) < 0;
-	});
+	let satWarning = $derived(
+		nonNullish(satVersion) && nonNullish(satRelease) && compare(satVersion, satRelease) < 0
+	);
 
-	let ctrlWarning = $state(false);
-	run(() => {
-		ctrlWarning =
-			nonNullish(ctrlVersion) && nonNullish(ctrlRelease) && compare(ctrlVersion, ctrlRelease) < 0;
-	});
+	let ctrlWarning = $derived(
+		nonNullish(ctrlVersion) && nonNullish(ctrlRelease) && compare(ctrlVersion, ctrlRelease) < 0
+	);
 
-	let orbWarning = $state(false);
-	run(() => {
-		orbWarning =
-			nonNullish(orbVersion) && nonNullish(orbRelease) && compare(orbVersion, orbRelease) < 0;
-	});
+	let orbWarning = $derived(
+		nonNullish(orbVersion) && nonNullish(orbRelease) && compare(orbVersion, orbRelease) < 0
+	);
 
 	const openModal = async ({
 		currentVersion,
@@ -150,8 +126,6 @@
 			currentVersion: orbVersion!
 		});
 </script>
-
-<svelte:window onjunoReloadVersions={async () => await load(false)} />
 
 {#if ctrlReady && ctrlWarning}
 	<VersionWarning text={$i18n.admin.mission_control_new_version} onclick={upgradeMissionControl} />

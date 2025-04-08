@@ -1,6 +1,5 @@
 import type { CollectionType, Rule, SetRule } from '$declarations/satellite/satellite.did';
 import { getRule, setRule as setRuleApi } from '$lib/api/satellites.api';
-import { satelliteVersion } from '$lib/api/satellites.deprecated.api';
 import { DEFAULT_RATE_CONFIG_TIME_PER_TOKEN_NS } from '$lib/constants/data.constants';
 import {
 	DbCollectionType,
@@ -9,13 +8,13 @@ import {
 	type PermissionText
 } from '$lib/constants/rules.constants';
 import { SATELLITE_v0_0_21 } from '$lib/constants/version.constants';
+import { isSatelliteFeatureSupported } from '$lib/services/feature.services';
 import { i18n } from '$lib/stores/i18n.store';
 import { toasts } from '$lib/stores/toasts.store';
 import type { OptionIdentity } from '$lib/types/itentity';
 import { memoryFromText, permissionFromText } from '$lib/utils/rules.utils';
 import type { Principal } from '@dfinity/principal';
 import { fromNullable, isNullish, nonNullish, toNullable } from '@dfinity/utils';
-import { compare } from 'semver';
 import { get } from 'svelte/store';
 
 export const setRule = async ({
@@ -80,12 +79,10 @@ export const getRuleUser = async ({
 	satelliteId: Principal;
 	identity: OptionIdentity;
 }): Promise<{ result: 'success' | 'error' | 'skip'; rule?: Rule | undefined }> => {
-	// TODO: load versions globally and use store value instead of fetching version again
-	const version = await satelliteVersion({ satelliteId, identity });
-
-	// TODO: keep a list of those version checks and remove them incrementally
-	// Also would be cleaner than to have 0.0.17 hardcoded there and there...
-	const rateConfigSupported = compare(version, SATELLITE_v0_0_21) >= 0;
+	const rateConfigSupported = isSatelliteFeatureSupported({
+		satelliteId,
+		requiredMinVersion: SATELLITE_v0_0_21
+	});
 
 	if (!rateConfigSupported) {
 		return { result: 'skip' };

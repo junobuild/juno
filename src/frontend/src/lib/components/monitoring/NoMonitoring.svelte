@@ -4,6 +4,7 @@
 	import { missionControlVersion } from '$lib/derived/version.derived';
 	import { openMonitoringModal } from '$lib/services/monitoring.services';
 	import { loadVersion } from '$lib/services/version.loader.services';
+	import { authStore } from '$lib/stores/auth.store';
 	import { i18n } from '$lib/stores/i18n.store';
 	import { toasts } from '$lib/stores/toasts.store';
 	import type { MissionControlId } from '$lib/types/mission-control';
@@ -18,7 +19,8 @@
 		await loadVersion({
 			satelliteId: undefined,
 			missionControlId,
-			skipReload: true
+			skipReload: true,
+			identity: $authStore.identity
 		});
 
 		if (compare($missionControlVersion?.current ?? '0.0.0', MISSION_CONTROL_v0_0_14) < 0) {

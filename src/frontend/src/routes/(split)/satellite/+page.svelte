@@ -8,12 +8,14 @@
 	import SatelliteGuard from '$lib/components/guards/SatelliteGuard.svelte';
 	import CanistersLoader from '$lib/components/loaders/CanistersLoader.svelte';
 	import OrbitersLoader from '$lib/components/loaders/OrbitersLoader.svelte';
+	import SatelliteVersionLoader from '$lib/components/loaders/SatelliteVersionLoader.svelte';
 	import SatellitesLoader from '$lib/components/loaders/SatellitesLoader.svelte';
 	import SatelliteOverview from '$lib/components/satellites/SatelliteOverview.svelte';
 	import SatelliteSettings from '$lib/components/satellites/SatelliteSettings.svelte';
 	import Tabs from '$lib/components/ui/Tabs.svelte';
 	import WalletLoader from '$lib/components/wallet/WalletLoader.svelte';
 	import Warnings from '$lib/components/warning/Warnings.svelte';
+	import { missionControlIdDerived } from '$lib/derived/mission-control.derived';
 	import { satelliteStore } from '$lib/derived/satellite.derived';
 	import {
 		type Tab,
@@ -61,15 +63,20 @@
 				<OrbitersLoader>
 					<SatelliteGuard>
 						<MissionControlGuard>
-							{#if nonNullish($satelliteStore)}
+							{#if nonNullish($satelliteStore) && nonNullish($missionControlIdDerived)}
 								<CanistersLoader monitoring satellites={[$satelliteStore]}>
-									{#if $store.tabId === $store.tabs[0].id}
-										<SatelliteOverview satellite={$satelliteStore} />
+									<SatelliteVersionLoader
+										satellite={$satelliteStore}
+										missionControlId={$missionControlIdDerived}
+									>
+										{#if $store.tabId === $store.tabs[0].id}
+											<SatelliteOverview satellite={$satelliteStore} />
 
-										<Guides />
-									{:else if $store.tabId === $store.tabs[1].id}
-										<SatelliteSettings satellite={$satelliteStore} />
-									{/if}
+											<Guides />
+										{:else if $store.tabId === $store.tabs[1].id}
+											<SatelliteSettings satellite={$satelliteStore} />
+										{/if}
+									</SatelliteVersionLoader>
 								</CanistersLoader>
 							{/if}
 						</MissionControlGuard>

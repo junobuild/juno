@@ -7,9 +7,11 @@
 	import SatelliteGuard from '$lib/components/guards/SatelliteGuard.svelte';
 	import Hosting from '$lib/components/hosting/Hosting.svelte';
 	import CanistersLoader from '$lib/components/loaders/CanistersLoader.svelte';
+	import SatelliteVersionLoader from '$lib/components/loaders/SatelliteVersionLoader.svelte';
 	import SatellitesLoader from '$lib/components/loaders/SatellitesLoader.svelte';
 	import Tabs from '$lib/components/ui/Tabs.svelte';
 	import WalletLoader from '$lib/components/wallet/WalletLoader.svelte';
+	import { missionControlIdDerived } from '$lib/derived/mission-control.derived';
 	import { satelliteStore } from '$lib/derived/satellite.derived';
 	import {
 		type Tab,
@@ -43,10 +45,15 @@
 				<SatelliteGuard>
 					<MissionControlGuard>
 						<CanistersLoader>
-							{#if nonNullish($satelliteStore)}
-								{#if $store.tabId === $store.tabs[0].id}
-									<Hosting satellite={$satelliteStore} />
-								{/if}
+							{#if nonNullish($satelliteStore) && nonNullish($missionControlIdDerived)}
+								<SatelliteVersionLoader
+									satellite={$satelliteStore}
+									missionControlId={$missionControlIdDerived}
+								>
+									{#if $store.tabId === $store.tabs[0].id}
+										<Hosting satellite={$satelliteStore} />
+									{/if}
+								</SatelliteVersionLoader>
 							{/if}
 						</CanistersLoader>
 					</MissionControlGuard>

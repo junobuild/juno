@@ -7,6 +7,7 @@
 		"copied": "已拷贝到剪切板",
 		"toggle": "切换",
 		"loading": "加载...",
+		"loading_version": "Loading version information...",
 		"status": "状态",
 		"sign_out": "退出",
 		"sign_in": "登录",
@@ -565,7 +566,8 @@
 		"user_usage_not_loaded": "加载用户的用量是出现异常错误.",
 		"user_ban": "试图禁止用户时出现异常错误.",
 		"user_unban": "试图解禁用户时出现异常错误.",
-		"satellite_version_not_found": "Unexpected error. Your Satellite implements serverless functions, but no dependency version can be resolved."
+		"satellite_version_not_found": "Unexpected error. Your Satellite implements serverless functions, but no dependency version can be resolved.",
+		"load_version": "Unexpected error(s) while loading the version of the Satellite and/or Mission Control"
 	},
 	"document": {
 		"owner": "拥有者",

@@ -5,11 +5,7 @@
 	import { writable } from 'svelte/store';
 	import type { AssetNoContent } from '$declarations/satellite/satellite.did';
 	import { listAssets } from '$lib/api/satellites.api';
-	import {
-		listAssets008,
-		listAssets009,
-		satelliteVersion
-	} from '$lib/api/satellites.deprecated.api';
+	import { listAssets008, listAssets009 } from '$lib/api/satellites.deprecated.api';
 	import Asset from '$lib/components/assets/Asset.svelte';
 	import Assets from '$lib/components/assets/Assets.svelte';
 	import Data from '$lib/components/data/Data.svelte';
@@ -19,6 +15,7 @@
 	import { listParamsStore } from '$lib/stores/list-params.store';
 	import { initPaginationContext } from '$lib/stores/pagination.store';
 	import { toasts } from '$lib/stores/toasts.store';
+	import { versionStore } from '$lib/stores/version.store';
 	import { DATA_CONTEXT_KEY, type DataContext, type DataStoreData } from '$lib/types/data.context';
 	import type { ListParams } from '$lib/types/list';
 	import { PAGINATION_CONTEXT_KEY, type PaginationContext } from '$lib/types/pagination.context';
@@ -40,19 +37,17 @@
 		}
 
 		try {
-			const version = await satelliteVersion({
-				satelliteId: $store.satelliteId,
-				identity: $authStore.identity
-			});
+			// There is guard for loading the version. If we reach this point with `undefined`, it's probably a race condition.
+			// We fallback to the newest API since the version check is only needed for backward compatibility.
+			const version = $versionStore?.satellites[$store.satelliteId.toText()]?.current;
 
-			// TODO: remove at the same time as satellite version query
 			if (isNullish(collection)) {
 				setItems({ items: undefined, matches_length: undefined, items_length: undefined });
 				return;
 			}
 
 			const list =
-				compare(version, SATELLITE_v0_0_10) >= 0
+				isNullish(version) || compare(version, SATELLITE_v0_0_10) >= 0
 					? listAssets
 					: compare(version, SATELLITE_v0_0_9) >= 0
 						? listAssets009

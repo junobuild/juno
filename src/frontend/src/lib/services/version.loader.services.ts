@@ -3,7 +3,6 @@ import { missionControlVersion } from '$lib/api/mission-control.deprecated.api';
 import { orbiterVersion } from '$lib/api/orbiter.deprecated.api';
 import { satelliteBuildVersion, satelliteVersion } from '$lib/api/satellites.deprecated.api';
 import { getNewestReleasesMetadata } from '$lib/rest/cdn.rest';
-import { authStore } from '$lib/stores/auth.store';
 import { i18n } from '$lib/stores/i18n.store';
 import { toasts } from '$lib/stores/toasts.store';
 import {
@@ -11,6 +10,8 @@ import {
 	type VersionMetadata,
 	versionStore
 } from '$lib/stores/version.store';
+import type { OptionIdentity } from '$lib/types/itentity';
+import type { MissionControlId } from '$lib/types/mission-control';
 import type { Option } from '$lib/types/utils';
 import { container } from '$lib/utils/juno.utils';
 import type { Principal } from '@dfinity/principal';
@@ -22,16 +23,14 @@ import { get } from 'svelte/store';
 export const loadVersion = async ({
 	satelliteId,
 	missionControlId,
-	skipReload
+	skipReload,
+	identity
 }: {
 	satelliteId: Principal | undefined;
-	missionControlId: Option<Principal>;
+	missionControlId: MissionControlId;
 	skipReload: boolean;
+	identity: OptionIdentity;
 }) => {
-	if (isNullish(missionControlId)) {
-		return;
-	}
-
 	// We load the satellite version once per session
 	// We might load the mission control version twice per session if user go to that view first and then to overview
 	const store = get(versionStore);
@@ -42,8 +41,7 @@ export const loadVersion = async ({
 	try {
 		const empty = (): Promise<undefined> => Promise.resolve(undefined);
 
-		const identity = get(authStore).identity;
-
+		// Optional for convenience reasons. A guard prevent the usage of the service while not being sign-in.
 		assertNonNullish(identity);
 
 		const satelliteInfo = async (
@@ -182,7 +180,7 @@ export const loadVersion = async ({
 		});
 	} catch (err: unknown) {
 		toasts.error({
-			text: `Cannot fetch the versions information.`,
+			text: get(i18n).errors.load_version,
 			detail: err
 		});
 	}
@@ -190,23 +188,25 @@ export const loadVersion = async ({
 
 export const loadOrbiterVersion = async ({
 	orbiter,
-	reload
+	reload,
+	identity
 }: {
 	orbiter: Option<Orbiter>;
 	reload: boolean;
+	identity: OptionIdentity;
 }) => {
+	// Optional for convenience reasons.
 	if (isNullish(orbiter)) {
 		return;
 	}
 
-	// We load the orbiter version once per session
+	// We load the orbiter version once per session or when explicitly needed
 	const store = get(versionStore);
 	if (nonNullish(store.orbiter) && !reload) {
 		return;
 	}
 
-	const identity = get(authStore).identity;
-
+	// Optional for convenience reasons. A guard prevent the usage of the service while not being sign-in.
 	assertNonNullish(identity);
 
 	const orbiterInfo = async (orbiterId: Principal): Promise<Omit<VersionMetadata, 'release'>> => {
@@ -238,6 +238,8 @@ export const loadOrbiterVersion = async ({
 
 	const [orbVersion, releases] = await Promise.all([
 		orbiterInfo(orbiter.orbiter_id),
+		// TODO: we can probably improve - reduce the number of queries on the CDN - by caching in store the releases metadata
+		// instead of re-querying those every time separately.
 		getNewestReleasesMetadata()
 	]);
 

@@ -6,6 +6,7 @@
 	import DataCount from '$lib/components/data/DataCount.svelte';
 	import DataPaginator from '$lib/components/data/DataPaginator.svelte';
 	import { listUsers } from '$lib/services/users.services';
+	import { authStore } from '$lib/stores/auth.store';
 	import { i18n } from '$lib/stores/i18n.store';
 	import { initPaginationContext } from '$lib/stores/pagination.store';
 	import { toasts } from '$lib/stores/toasts.store';
@@ -27,7 +28,8 @@
 		try {
 			const { users, matches_length, items_length } = await listUsers({
 				satelliteId,
-				startAfter: $startAfter
+				startAfter: $startAfter,
+				identity: $authStore.identity
 			});
 
 			setItems({ items: users, matches_length, items_length });

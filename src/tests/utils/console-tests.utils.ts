@@ -13,7 +13,7 @@ import {
 import { type Actor, type PocketIc } from '@hadronous/pic';
 import { readFile } from 'node:fs/promises';
 import { expect } from 'vitest';
-import { CONTROLLER_ERROR_MSG } from '../constants/console-tests.constants';
+import { CONTROLLER_ERROR_MSG } from '../constants/mission-control-tests.constants';
 import { mockBlob } from '../mocks/storage.mocks';
 import { tick } from './pic-tests.utils';
 import {

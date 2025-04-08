@@ -13,6 +13,7 @@ import {
 import { type Actor, type PocketIc } from '@hadronous/pic';
 import { readFile } from 'node:fs/promises';
 import { expect } from 'vitest';
+import { CONTROLLER_ERROR_MSG } from '../constants/console-tests.constants';
 import { mockBlob } from '../mocks/storage.mocks';
 import { tick } from './pic-tests.utils';
 import {
@@ -301,7 +302,8 @@ export const testSatelliteExists = async ({
 			missionControlId!
 		);
 
-		await expect(get_user()).resolves.not.toThrowError();
+		// The Mission Control has no public functions. If it rejects a call with a particular error message it means it exists.
+		await expect(get_user()).rejects.toThrow(CONTROLLER_ERROR_MSG);
 	}
 };
 

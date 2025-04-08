@@ -79,7 +79,7 @@
 		<div>
 			<Value>
 				{#snippet label()}
-					Dependencies
+					{$i18n.core.dependencies}
 				{/snippet}
 
 				<ul>

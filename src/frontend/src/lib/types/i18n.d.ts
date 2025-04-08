@@ -33,6 +33,7 @@ interface I18nCore {
 	theme: string;
 	user_menu: string;
 	version: string;
+	dependencies: string;
 	delete: string;
 	skip: string;
 	done: string;

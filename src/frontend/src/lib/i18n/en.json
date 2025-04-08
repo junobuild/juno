@@ -30,6 +30,7 @@
 		"theme": "Theme",
 		"user_menu": "User menu",
 		"version": "Version",
+		"dependencies": "Dependencies",
 		"delete": "Delete",
 		"skip": "Skip",
 		"done": "Done",

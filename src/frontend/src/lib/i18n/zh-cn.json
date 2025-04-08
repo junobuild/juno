@@ -30,6 +30,7 @@
 		"theme": "Theme",
 		"user_menu": "用户菜单",
 		"version": "版本",
+		"dependencies": "Dependencies",
 		"delete": "删除",
 		"skip": "跳过",
 		"done": "完成",

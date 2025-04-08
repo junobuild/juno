@@ -10,6 +10,8 @@
 	import Header from '$lib/components/ui/Header.svelte';
 	import { layoutTitleIntersecting } from '$lib/stores/layout-intersecting.store';
 	import { layoutNavigation } from '$lib/stores/layout-navigation.store';
+	import Banner from '$lib/components/core/Banner.svelte';
+	import { DEV } from '$lib/constants/app.constants';
 
 	interface Props {
 		start?: 'logo' | 'back' | 'menu';
@@ -39,7 +41,11 @@
 	});
 </script>
 
-<Header {hide}>
+{#snippet banner()}
+	<Banner />
+{/snippet}
+
+<Header {hide} banner={DEV ? banner : undefined}>
 	<div class="start">
 		{#if start === 'menu'}
 			<ButtonMenu />

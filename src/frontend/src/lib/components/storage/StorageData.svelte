@@ -47,7 +47,7 @@
 			}
 
 			const list =
-				compare(version, SATELLITE_v0_0_10) >= 0
+				isNullish(version) || compare(version, SATELLITE_v0_0_10) >= 0
 					? listAssets
 					: compare(version, SATELLITE_v0_0_9) >= 0
 						? listAssets009

@@ -2,6 +2,10 @@ import { Principal } from '@dfinity/principal';
 import { isNullish } from '@dfinity/utils';
 import { z } from 'zod';
 
+export const mockSputnikVersion = '1.2.3-patch.4';
+export const mockSputnikVersionCollection = 'test_version';
+export const mockSputnikVersionKey = 'sputnik-key';
+
 export const SputnikValueMockSchema = z
 	.object({
 		value: z.string()

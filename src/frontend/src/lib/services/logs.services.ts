@@ -1,7 +1,8 @@
 import type { canister_log_record } from '$declarations/ic/ic.did';
 import type { Doc } from '$declarations/satellite/satellite.did';
 import { canisterLogs as canisterLogsApi } from '$lib/api/ic.api';
-import { listDocs, satelliteVersion } from '$lib/api/satellites.api';
+import { listDocs } from '$lib/api/satellites.api';
+import { satelliteVersion } from '$lib/api/satellites.deprecated.api';
 import { SATELLITE_v0_0_16 } from '$lib/constants/version.constants';
 import { i18n } from '$lib/stores/i18n.store';
 import { toasts } from '$lib/stores/toasts.store';

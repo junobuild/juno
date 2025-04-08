@@ -4,8 +4,12 @@
 	import { getContext, setContext } from 'svelte';
 	import { writable } from 'svelte/store';
 	import type { AssetNoContent } from '$declarations/satellite/satellite.did';
-	import { listAssets, satelliteVersion } from '$lib/api/satellites.api';
-	import { listAssets008, listAssets009 } from '$lib/api/satellites.deprecated.api';
+	import { listAssets } from '$lib/api/satellites.api';
+	import {
+		listAssets008,
+		listAssets009,
+		satelliteVersion
+	} from '$lib/api/satellites.deprecated.api';
 	import Asset from '$lib/components/assets/Asset.svelte';
 	import Assets from '$lib/components/assets/Assets.svelte';
 	import Data from '$lib/components/data/Data.svelte';

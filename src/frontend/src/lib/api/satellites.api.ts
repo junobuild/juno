@@ -157,28 +157,6 @@ export const listControllers = async ({
 	return actor.list_controllers();
 };
 
-export const satelliteVersion = async ({
-	satelliteId,
-	identity
-}: {
-	satelliteId: Principal;
-	identity: OptionIdentity;
-}): Promise<string> => {
-	const { version } = await getSatelliteActor({ satelliteId, identity });
-	return version();
-};
-
-export const satelliteBuildVersion = async ({
-	satelliteId,
-	identity
-}: {
-	satelliteId: Principal;
-	identity: OptionIdentity;
-}): Promise<string> => {
-	const { build_version } = await getSatelliteActor({ satelliteId, identity });
-	return build_version();
-};
-
 export const setCustomDomain = async ({
 	domainName,
 	boundaryNodesId,

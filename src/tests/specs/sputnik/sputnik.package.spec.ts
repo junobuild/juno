@@ -1,3 +1,4 @@
+import { mockSputnikVersion } from '../../mocks/sputnik.mocks';
 import { readWasmVersion, TEST_SPUTNIK_WASM_PATH } from '../../utils/setup-tests.utils';
 import { customSectionJunoPackage } from '../../utils/wasm-tests.utils';
 
@@ -7,7 +8,7 @@ describe('Sputnik > Package', () => {
 
 		const expectedPkg = {
 			name: 'test-sputnik',
-			version: '1.2.3-patch.4',
+			version: mockSputnikVersion,
 			dependencies: {
 				'@junobuild/satellite': readWasmVersion('satellite'),
 				'@junobuild/sputnik': readWasmVersion('sputnik')

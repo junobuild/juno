@@ -12,6 +12,7 @@ import { mockData } from '../../mocks/doc.mocks';
 import { setupTestSputnik } from '../../utils/fixtures-tests.utils';
 import { fetchLogs, type IcMgmtLog } from '../../utils/mgmt-test.utils';
 import { waitServerlessFunction } from '../../utils/satellite-extended-tests.utils';
+import { initVersionMock } from '../../utils/sputnik-tests.utils';
 
 describe('Sputnik > on_delete_many_docs', () => {
 	let pic: PocketIc;
@@ -35,6 +36,8 @@ describe('Sputnik > on_delete_many_docs', () => {
 		const { set_rule } = actor;
 		await set_rule({ Db: null }, TEST_ON_COLLECTION, mockSetRule);
 		await set_rule({ Db: null }, TEST_NOT_ON_COLLECTION, mockSetRule);
+
+		await initVersionMock(actor);
 	});
 
 	afterAll(async () => {

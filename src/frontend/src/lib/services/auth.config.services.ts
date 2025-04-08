@@ -1,11 +1,7 @@
 import type { Satellite } from '$declarations/mission_control/mission_control.did';
 import type { AuthenticationConfig, Rule } from '$declarations/satellite/satellite.did';
-import {
-	getAuthConfig as getAuthConfigApi,
-	satelliteVersion,
-	setAuthConfig,
-	setRule
-} from '$lib/api/satellites.api';
+import { getAuthConfig as getAuthConfigApi, setAuthConfig, setRule } from '$lib/api/satellites.api';
+import { satelliteVersion } from '$lib/api/satellites.deprecated.api';
 import { DEFAULT_RATE_CONFIG_TIME_PER_TOKEN_NS } from '$lib/constants/data.constants';
 import { DbCollectionType } from '$lib/constants/rules.constants';
 import { SATELLITE_v0_0_17 } from '$lib/constants/version.constants';

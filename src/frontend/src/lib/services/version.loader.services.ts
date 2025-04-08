@@ -1,7 +1,7 @@
 import type { Orbiter } from '$declarations/mission_control/mission_control.did';
 import { missionControlVersion } from '$lib/api/mission-control.deprecated.api';
 import { orbiterVersion } from '$lib/api/orbiter.deprecated.api';
-import { satelliteBuildVersion, satelliteVersion } from '$lib/api/satellites.api';
+import { satelliteBuildVersion, satelliteVersion } from '$lib/api/satellites.deprecated.api';
 import { getNewestReleasesMetadata } from '$lib/rest/cdn.rest';
 import { authStore } from '$lib/stores/auth.store';
 import { i18n } from '$lib/stores/i18n.store';

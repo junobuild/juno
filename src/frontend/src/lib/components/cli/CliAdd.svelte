@@ -12,7 +12,7 @@
 	import { missionControlIdDerived } from '$lib/derived/mission-control.derived';
 	import {
 		setMissionControlControllerForVersion,
-		setSatellitesForVersion
+		setSatellitesControllerForVersion
 	} from '$lib/services/mission-control.services';
 	import { authStore } from '$lib/stores/auth.store';
 	import { busy } from '$lib/stores/busy.store';
@@ -84,7 +84,7 @@
 					: []),
 				...(selectedSatellites.length > 0
 					? [
-							setSatellitesForVersion({
+							setSatellitesControllerForVersion({
 								missionControlId: $missionControlIdDerived,
 								controllerId: principal,
 								satelliteIds: selectedSatellites.map((s) => s[0]),

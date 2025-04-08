@@ -16,14 +16,12 @@ mod sdk;
 mod storage;
 mod types;
 mod user;
-mod version;
 
 use crate::auth::types::config::AuthenticationConfig;
 use crate::db::types::config::DbConfig;
 use crate::guards::{caller_is_admin_controller, caller_is_controller};
 use crate::types::interface::Config;
 use crate::types::state::CollectionType;
-use crate::version::SATELLITE_VERSION;
 use ic_cdk::api::trap;
 use ic_cdk_macros::{init, post_upgrade, pre_upgrade, query, update};
 use junobuild_collections::types::core::CollectionKey;
@@ -384,12 +382,6 @@ pub async fn deposit_cycles(args: DepositCyclesArgs) {
 }
 
 #[doc(hidden)]
-#[query]
-pub fn version() -> String {
-    SATELLITE_VERSION.to_string()
-}
-
-#[doc(hidden)]
 #[query(guard = "caller_is_controller")]
 pub fn memory_size() -> MemorySize {
     junobuild_shared::canister::memory_size()
@@ -423,13 +415,8 @@ macro_rules! include_satellite {
             list_controllers, list_custom_domains, list_docs, list_rules, memory_size,
             post_upgrade, pre_upgrade, set_auth_config, set_controllers, set_custom_domain,
             set_db_config, set_doc, set_many_docs, set_rule, set_storage_config,
-            upload_asset_chunk, version,
+            upload_asset_chunk,
         };
-
-        #[ic_cdk::query]
-        pub fn build_version() -> String {
-            env!("CARGO_PKG_VERSION").to_string()
-        }
 
         ic_cdk::export_candid!();
     };

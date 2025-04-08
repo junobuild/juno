@@ -259,5 +259,4 @@ service : () -> {
   set_rule : (CollectionType, text, SetRule) -> (Rule);
   set_storage_config : (StorageConfig) -> ();
   upload_asset_chunk : (UploadChunk) -> (UploadChunkResult);
-  version : () -> (text) query;
 }

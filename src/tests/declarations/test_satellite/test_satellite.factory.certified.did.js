@@ -242,7 +242,6 @@ export const idlFactory = ({ IDL }) => {
 	});
 	const UploadChunkResult = IDL.Record({ chunk_id: IDL.Nat });
 	return IDL.Service({
-		build_version: IDL.Func([], [IDL.Text], []),
 		commit_asset_upload: IDL.Func([CommitBatch], [], []),
 		count_assets: IDL.Func([IDL.Text, ListParams], [IDL.Nat64], []),
 		count_collection_assets: IDL.Func([IDL.Text], [IDL.Nat64], []),
@@ -311,8 +310,7 @@ export const idlFactory = ({ IDL }) => {
 		),
 		set_rule: IDL.Func([CollectionType, IDL.Text, SetRule], [Rule], []),
 		set_storage_config: IDL.Func([StorageConfig], [], []),
-		upload_asset_chunk: IDL.Func([UploadChunk], [UploadChunkResult], []),
-		version: IDL.Func([], [IDL.Text], [])
+		upload_asset_chunk: IDL.Func([UploadChunk], [UploadChunkResult], [])
 	});
 };
 // @ts-ignore

@@ -1,2 +1,2 @@
 type Result = variant { Ok : int32; Err : text };
-service : { build_version : () -> (text) query; get_random : () -> (Result) }
+service : { get_random : () -> (Result) }

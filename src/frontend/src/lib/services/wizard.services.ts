@@ -8,7 +8,6 @@ import { getAccountIdentifier } from '$lib/api/icp-index.api';
 import { updateAndStartMonitoring } from '$lib/api/mission-control.api';
 import { missionControlMonitored } from '$lib/derived/mission-control-settings.derived';
 import { missionControlConfigMonitoring } from '$lib/derived/mission-control-user.derived';
-import { loadVersion } from '$lib/services/console.services';
 import { loadCredits } from '$lib/services/credits.services';
 import { loadSettings, loadUserData } from '$lib/services/mission-control.services';
 import {
@@ -22,6 +21,7 @@ import {
 	createSatelliteWithConfig,
 	loadSatellites
 } from '$lib/services/satellites.services';
+import { loadVersion } from '$lib/services/version.loader.services';
 import { busy } from '$lib/stores/busy.store';
 import { i18n } from '$lib/stores/i18n.store';
 import { toasts } from '$lib/stores/toasts.store';

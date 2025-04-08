@@ -6,6 +6,7 @@
 	import MissionControlActions from '$lib/components/mission-control/MissionControlActions.svelte';
 	import MissionControlDataLoader from '$lib/components/mission-control/MissionControlDataLoader.svelte';
 	import MonitoringDisabled from '$lib/components/monitoring/MonitoringDisabled.svelte';
+	import SegmentVersion from '$lib/components/segments/SegmentVersion.svelte';
 	import Identifier from '$lib/components/ui/Identifier.svelte';
 	import Value from '$lib/components/ui/Value.svelte';
 	import { authSignedIn } from '$lib/derived/auth.derived';
@@ -43,14 +44,7 @@
 			</div>
 
 			<div>
-				<div>
-					<Value>
-						{#snippet label()}
-							{$i18n.core.version}
-						{/snippet}
-						<p>v{$missionControlVersion?.current ?? '...'}</p>
-					</Value>
-				</div>
+				<SegmentVersion version={$missionControlVersion?.current} />
 			</div>
 		</div>
 

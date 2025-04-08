@@ -10,7 +10,13 @@ export interface VersionMetadata {
 }
 
 export interface SatelliteVersionMetadata extends VersionMetadata {
+	/**
+	 * @deprecated use JunoPackage instead
+	 */
 	currentBuild?: string;
+	/**
+	 * @deprecated use JunoPackage instead
+	 */
 	build: BuildType;
 }
 

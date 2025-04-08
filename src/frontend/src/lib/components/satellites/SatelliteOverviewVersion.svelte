@@ -1,7 +1,8 @@
 <script lang="ts">
 	import { nonNullish } from '@dfinity/utils';
-	import { fade } from 'svelte/transition';
-	import JsonCode from '$lib/components/ui/JsonCode.svelte';
+	import { fade, blur } from 'svelte/transition';
+	import SegmentVersion from '$lib/components/segments/SegmentVersion.svelte';
+	import Badge from '$lib/components/ui/Badge.svelte';
 	import Value from '$lib/components/ui/Value.svelte';
 	import { i18n } from '$lib/stores/i18n.store';
 	import { versionStore } from '$lib/stores/version.store';
@@ -13,7 +14,11 @@
 
 	let { satelliteId }: Props = $props();
 
+	let loaded = $derived(nonNullish($versionStore?.satellites[satelliteId]));
+
 	let pkg = $derived($versionStore?.satellites[satelliteId]?.pkg);
+
+	let deps = $derived($versionStore?.satellites[satelliteId]?.pkg?.dependencies);
 
 	let currentBuild: string | undefined = $derived(
 		$versionStore?.satellites[satelliteId]?.currentBuild
@@ -26,56 +31,75 @@
 	let build = $derived($versionStore?.satellites[satelliteId]?.build);
 </script>
 
-{#if !extended}
-	<div>
-		<Value>
-			{#snippet label()}
-				{$i18n.core.version}
-			{/snippet}
-			<p>v{$versionStore?.satellites[satelliteId]?.current ?? '...'}</p>
-		</Value>
-	</div>
-{:else}
-	<div>
-		<Value>
-			{#snippet label()}
-				{$i18n.satellites.stock_version}
-			{/snippet}
-			<p>v{$versionStore?.satellites[satelliteId]?.current ?? '...'}</p>
-		</Value>
-	</div>
+{#snippet version()}
+	<SegmentVersion version={$versionStore?.satellites[satelliteId]?.current} />
+{/snippet}
+
+{#snippet deprecatedDisplay()}
+	{#if !extended}
+		{@render version()}
+	{:else}
+		<div>
+			<Value>
+				{#snippet label()}
+					{$i18n.satellites.stock_version}
+				{/snippet}
+				<p>v{$versionStore?.satellites[satelliteId]?.current ?? '...'}</p>
+			</Value>
+		</div>
+
+		<div>
+			<Value>
+				{#snippet label()}
+					{$i18n.satellites.extended_version}
+				{/snippet}
+				<p>v{$versionStore?.satellites[satelliteId]?.currentBuild ?? '...'}</p>
+			</Value>
+		</div>
+	{/if}
 
 	<div>
 		<Value>
 			{#snippet label()}
-				{$i18n.satellites.extended_version}
+				{$i18n.satellites.build}
 			{/snippet}
-			<p>v{$versionStore?.satellites[satelliteId]?.currentBuild ?? '...'}</p>
+			<p class="build">
+				{#if nonNullish(build)}
+					<span in:fade>{build}</span>
+				{/if}
+			</p>
 		</Value>
 	</div>
-{/if}
+{/snippet}
 
-<div>
-	<Value>
-		{#snippet label()}
-			{$i18n.satellites.build}
-		{/snippet}
-		<p class="build">
-			{#if nonNullish(build)}
-				<span in:fade>{build}</span>
-			{/if}
-		</p>
-	</Value>
-</div>
+{#snippet dependencies()}
+	{#if nonNullish(deps)}
+		<div>
+			<Value>
+				{#snippet label()}
+					Dependencies
+				{/snippet}
 
-{#if nonNullish(pkg)}
-	<div>
-		<Value>
-			{#snippet label()}
-				Package
-			{/snippet}
-			<JsonCode json={pkg} />
-		</Value>
+				<ul>
+					{#each Object.entries(deps) as [key, version]}
+						<li>
+							<Badge color="tertiary">{key}@{version}</Badge>
+						</li>
+					{/each}
+				</ul>
+			</Value>
+		</div>
+	{/if}
+{/snippet}
+
+{#if loaded}
+	<div in:blur>
+		{#if nonNullish(deps)}
+			{@render version()}
+			{@render dependencies()}
+		{:else}
+			{@render deprecatedDisplay()}
+		{/if}
 	</div>
 {/if}
 
@@ -86,5 +110,15 @@
 
 	div:not(:first-of-type) {
 		padding: var(--padding) 0 0;
+	}
+
+	ul {
+		padding: var(--padding) 0;
+		margin: 0;
+		list-style: none;
+	}
+
+	li {
+		margin: 0 0 var(--padding-0_5x);
 	}
 </style>

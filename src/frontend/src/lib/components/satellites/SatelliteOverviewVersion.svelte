@@ -83,7 +83,7 @@
 				{/snippet}
 
 				<ul>
-					{#each Object.entries(deps) as [key, version]}
+					{#each Object.entries(deps) as [key, version] (key)}
 						<li>
 							<Badge color="tertiary">{key}@{version}</Badge>
 						</li>

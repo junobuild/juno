@@ -296,12 +296,12 @@ export const testSatelliteExists = async ({
 
 		expect(missionControlId).not.toBeUndefined();
 
-		const { version } = pic.createActor<MissionControlActor>(
+		const { get_user } = pic.createActor<MissionControlActor>(
 			idlFactorMissionControl,
 			missionControlId!
 		);
 
-		await expect(version()).resolves.not.toThrowError();
+		await expect(get_user()).resolves.not.toThrowError();
 	}
 };
 

@@ -22,7 +22,7 @@
 
 <Layout centered title={false}>
 	{#snippet navbar()}
-		<Navbar signIn={false} headerOpaqueOnScroll={false} />
+		<Navbar signIn={false} hideHeaderOnScroll={false} />
 	{/snippet}
 
 	{@render children()}

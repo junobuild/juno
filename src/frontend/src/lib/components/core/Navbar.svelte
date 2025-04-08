@@ -15,18 +15,18 @@
 		start?: 'logo' | 'back' | 'menu';
 		signIn?: boolean;
 		launchpad?: boolean;
-		headerOpaqueOnScroll?: boolean;
+		hideHeaderOnScroll?: boolean;
 	}
 
 	let {
 		start = 'logo',
 		signIn = true,
 		launchpad = false,
-		headerOpaqueOnScroll = true
+		hideHeaderOnScroll = true
 	}: Props = $props();
 </script>
 
-<Header opaque={!$layoutTitleIntersecting && headerOpaqueOnScroll}>
+<Header hide={!$layoutTitleIntersecting && hideHeaderOnScroll}>
 	<div class="start">
 		{#if start === 'menu'}
 			<ButtonMenu />

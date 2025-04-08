@@ -2,14 +2,14 @@
 	import type { Snippet } from 'svelte';
 
 	interface Props {
-		opaque?: boolean;
+		hide?: boolean;
 		children: Snippet;
 	}
 
-	let { opaque = false, children }: Props = $props();
+	let { hide = false, children }: Props = $props();
 </script>
 
-<header class:opaque>
+<header class:hide>
 	{@render children()}
 </header>
 
@@ -41,7 +41,7 @@
 			opacity linear var(--navbar-animation-time);
 		border-bottom: 1px solid transparent;
 
-		&.opaque {
+		&.hide {
 			background: rgba(var(--color-background-rgb), 0.9);
 		}
 
@@ -50,7 +50,7 @@
 		}
 
 		@include media.min-width(xlarge) {
-			&.opaque {
+			&.hide {
 				top: calc(-1 * var(--header-height));
 			}
 		}

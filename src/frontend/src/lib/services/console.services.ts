@@ -25,7 +25,7 @@ import { container } from '$lib/utils/juno.utils';
 import type { Identity } from '@dfinity/agent';
 import type { Principal } from '@dfinity/principal';
 import { assertNonNullish, fromNullable, isNullish, nonNullish } from '@dfinity/utils';
-import { getJunoPackage, satelliteBuildType } from '@junobuild/admin';
+import { findJunoPackageDependency, getJunoPackage, satelliteBuildType } from '@junobuild/admin';
 import { get } from 'svelte/store';
 
 interface Certified {
@@ -217,9 +217,10 @@ export const loadVersion = async ({
 					};
 				}
 
-				const satelliteDependency = Object.entries(dependencies ?? {}).find(
-					([key, _]) => key === '@junobuild/satellite'
-				);
+				const satelliteDependency = findJunoPackageDependency({
+					dependencies,
+					dependencyId: '@junobuild/satellite'
+				});
 
 				if (isNullish(satelliteDependency)) {
 					// TODO: should we throw an error if the dependency Satellite is not found?

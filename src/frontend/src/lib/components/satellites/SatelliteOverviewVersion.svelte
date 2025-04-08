@@ -14,37 +14,39 @@
 
 	let { satelliteId }: Props = $props();
 
+	let satelliteVersion = $derived($versionStore?.satellites[satelliteId]?.current);
+
 	let loaded = $derived(nonNullish($versionStore?.satellites[satelliteId]));
 
 	let pkg = $derived($versionStore?.satellites[satelliteId]?.pkg);
 
 	let deps = $derived($versionStore?.satellites[satelliteId]?.pkg?.dependencies);
 
+	let developerVersion = $derived(
+		nonNullish(deps) && nonNullish(pkg) ? pkg.version : satelliteVersion
+	);
+
+	// Deprecated version handling for Satellite < v0.0.23
+
 	let currentBuild: string | undefined = $derived(
 		$versionStore?.satellites[satelliteId]?.currentBuild
 	);
 
-	let extended = $derived(
-		nonNullish(currentBuild) && currentBuild !== $versionStore?.satellites[satelliteId]?.current
-	);
+	let extended = $derived(nonNullish(currentBuild) && currentBuild !== satelliteVersion);
 
 	let build = $derived($versionStore?.satellites[satelliteId]?.build);
 </script>
 
-{#snippet version()}
-	<SegmentVersion version={$versionStore?.satellites[satelliteId]?.current} />
-{/snippet}
-
-{#snippet deprecatedDisplay()}
+{#snippet deprecatedDisplayVersion()}
 	{#if !extended}
-		{@render version()}
+		<SegmentVersion version={satelliteVersion} />
 	{:else}
 		<div>
 			<Value>
 				{#snippet label()}
 					{$i18n.satellites.stock_version}
 				{/snippet}
-				<p>v{$versionStore?.satellites[satelliteId]?.current ?? '...'}</p>
+				<p>v{satelliteVersion ?? '...'}</p>
 			</Value>
 		</div>
 
@@ -92,13 +94,18 @@
 	{/if}
 {/snippet}
 
+{#snippet displayVersion()}
+	<SegmentVersion version={developerVersion ?? satelliteVersion} />
+{/snippet}
+
 {#if loaded}
 	<div in:blur>
 		{#if nonNullish(pkg)}
-			{@render version()}
+			{@render displayVersion()}
+
 			{@render dependencies()}
 		{:else}
-			{@render deprecatedDisplay()}
+			{@render deprecatedDisplayVersion()}
 		{/if}
 	</div>
 {/if}
@@ -113,7 +120,7 @@
 	}
 
 	ul {
-		padding: var(--padding) 0;
+		padding: var(--padding-0_25x) 0;
 		margin: 0;
 		list-style: none;
 	}

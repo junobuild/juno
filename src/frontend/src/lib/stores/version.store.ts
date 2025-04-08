@@ -5,6 +5,12 @@ import { writable, type Readable } from 'svelte/store';
 
 export interface VersionMetadata {
 	release: string;
+	/**
+	 * The version of the module as published by Juno and required in the eco-system.
+	 *
+	 * For the Satellite, if stock (no dependencies), then pkg.version
+	 * If serverless functions, then pkg.dependencies[junobuild/satellite].version
+	 */
 	current: string;
 	pkg?: JunoPackage;
 }

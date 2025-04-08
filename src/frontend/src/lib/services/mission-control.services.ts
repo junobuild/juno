@@ -90,7 +90,7 @@ export const setMissionControlControllerForVersion = async ({
 };
 
 // TODO: to be removed in next version as only supported if < v0.0.7
-export const setSatellitesForVersion = async ({
+export const setSatellitesControllerForVersion = async ({
 	missionControlId,
 	satelliteIds,
 	controllerId,

@@ -50,5 +50,4 @@ service : () -> {
   ping : (NotifyArgs) -> ();
   set_controllers : (SetControllersArgs) -> ();
   set_env : (Env) -> ();
-  version : () -> (text) query;
 }

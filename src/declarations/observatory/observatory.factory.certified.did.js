@@ -67,8 +67,7 @@ export const idlFactory = ({ IDL }) => {
 		notify: IDL.Func([NotifyArgs], [], []),
 		ping: IDL.Func([NotifyArgs], [], []),
 		set_controllers: IDL.Func([SetControllersArgs], [], []),
-		set_env: IDL.Func([Env], [], []),
-		version: IDL.Func([], [IDL.Text], [])
+		set_env: IDL.Func([Env], [], [])
 	});
 };
 // @ts-ignore

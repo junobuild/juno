@@ -10,6 +10,7 @@ import { mockSetRule } from '../../mocks/collection.mocks';
 import { mockSputnikObj, type SputnikTestListDocs } from '../../mocks/sputnik.mocks';
 import { setupTestSputnik } from '../../utils/fixtures-tests.utils';
 import { waitServerlessFunction } from '../../utils/satellite-extended-tests.utils';
+import { initVersionMock } from '../../utils/sputnik-tests.utils';
 
 describe('Sputnik > ic-cdk > call', () => {
 	let pic: PocketIc;
@@ -29,6 +30,8 @@ describe('Sputnik > ic-cdk > call', () => {
 		const { set_rule } = actor;
 		await set_rule({ Db: null }, TEST_COLLECTION, mockSetRule);
 		await set_rule({ Db: null }, MOCK_COLLECTION, mockSetRule);
+
+		await initVersionMock(actor);
 
 		await addSomeDocsToBeListed();
 	});

@@ -564,7 +564,8 @@
 		"monitoring_upgrade": "Please upgrade your Mission Control to enable the monitoring feature.",
 		"user_usage_not_loaded": "Unexpected error(s) while loading the user's usage.",
 		"user_ban": "Unexpected error(s) while trying to ban the user.",
-		"user_unban": "Unexpected error(s) while trying to unban the user."
+		"user_unban": "Unexpected error(s) while trying to unban the user.",
+		"satellite_version_not_found": "Unexpected error. Your Satellite implements serverless functions, but no dependency version can be resolved."
 	},
 	"document": {
 		"owner": "Owner",

@@ -26,6 +26,7 @@ import type { Identity } from '@dfinity/agent';
 import type { Principal } from '@dfinity/principal';
 import { assertNonNullish, fromNullable, isNullish, nonNullish } from '@dfinity/utils';
 import { findJunoPackageDependency, getJunoPackage, satelliteBuildType } from '@junobuild/admin';
+import { JUNO_PACKAGE_SATELLITE_ID } from '@junobuild/config';
 import { get } from 'svelte/store';
 
 interface Certified {
@@ -209,7 +210,7 @@ export const loadVersion = async ({
 				const { name, dependencies, version } = pkg;
 
 				// It's stock
-				if (name === '@junobuild/satellite') {
+				if (name === JUNO_PACKAGE_SATELLITE_ID) {
 					return {
 						current: version,
 						pkg,
@@ -219,11 +220,13 @@ export const loadVersion = async ({
 
 				const satelliteDependency = findJunoPackageDependency({
 					dependencies,
-					dependencyId: '@junobuild/satellite'
+					dependencyId: JUNO_PACKAGE_SATELLITE_ID
 				});
 
 				if (isNullish(satelliteDependency)) {
-					// TODO: should we throw an error if the dependency Satellite is not found?
+					toasts.error({
+						text: get(i18n).errors.satellite_version_not_found
+					});
 					return undefined;
 				}
 

@@ -564,7 +564,8 @@
 		"monitoring_upgrade": "请升级你的 Mission Control 来使用监控功能.",
 		"user_usage_not_loaded": "加载用户的用量是出现异常错误.",
 		"user_ban": "试图禁止用户时出现异常错误.",
-		"user_unban": "试图解禁用户时出现异常错误."
+		"user_unban": "试图解禁用户时出现异常错误.",
+		"satellite_version_not_found": "Unexpected error. Your Satellite implements serverless functions, but no dependency version can be resolved."
 	},
 	"document": {
 		"owner": "拥有者",

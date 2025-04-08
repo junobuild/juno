@@ -94,7 +94,7 @@
 
 {#if loaded}
 	<div in:blur>
-		{#if nonNullish(deps)}
+		{#if nonNullish(pkg)}
 			{@render version()}
 			{@render dependencies()}
 		{:else}

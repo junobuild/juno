@@ -24,7 +24,7 @@
 		"build:sputnik:fixtures": "node scripts/sputnik.build.fixtures.mjs",
 		"build:sputnik:polyfills": "node ./scripts/sputnik.polyfills.mjs",
 		"prepare": "svelte-kit sync",
-		"preview": "vite preview",
+		"preview": "vite preview --logLevel error",
 		"check": "svelte-kit sync && svelte-check --no-tsconfig",
 		"check:watch": "svelte-kit sync && svelte-check --no-tsconfig --watch",
 		"lint": "prettier --check './**/*.{ts,js,mjs,json,scss,css,svelte,html,md}' && eslint .",

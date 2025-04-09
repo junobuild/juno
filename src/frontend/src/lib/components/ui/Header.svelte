@@ -39,8 +39,9 @@
 			top ease-in var(--navbar-animation-time),
 			opacity linear var(--navbar-animation-time);
 
-		background: rgba(var(--color-background-rgb), 0.9);
-		backdrop-filter: blur(3px);
+		&.hide {
+			background: rgba(var(--color-background-rgb), 0.9);
+		}
 
 		&.with-banner {
 			--height: calc(var(--header-height) + var(--banner-height));

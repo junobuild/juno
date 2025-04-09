@@ -28,6 +28,9 @@
 		font-size: var(--font-size-very-small);
 		--canister-font-size: var(--font-size-very-small);
 
+		background: var(--color-background);
+		color: var(--color-background-contrast);
+
 		border: 1px solid var(--text-color);
 
 		:global(svg) {

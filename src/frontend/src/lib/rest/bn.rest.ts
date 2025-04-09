@@ -1,6 +1,6 @@
 import type { CustomDomain } from '$declarations/satellite/satellite.did';
 import type { CustomDomainRegistration } from '$lib/types/custom-domain';
-import { fromNullable, isNullish } from '@dfinity/utils';
+import { assertNonNullish, fromNullable, isNullish } from '@dfinity/utils';
 
 const BN_REGISTRATIONS_URL = import.meta.env.VITE_BN_REGISTRATIONS_URL;
 
@@ -10,6 +10,10 @@ export const getCustomDomainRegistration = async ({
 	const id = fromNullable(bn_id);
 
 	if (isNullish(id) || id === '') {
+		return undefined;
+	}
+
+	if (isNullish(BN_REGISTRATIONS_URL)) {
 		return undefined;
 	}
 
@@ -31,6 +35,11 @@ export const getCustomDomainRegistration = async ({
 };
 
 export const registerDomain = async ({ domainName }: { domainName: string }): Promise<string> => {
+	assertNonNullish(
+		BN_REGISTRATIONS_URL,
+		'Boundary Node API URL not defined. This service is unavailable.'
+	);
+
 	const response = await fetch(BN_REGISTRATIONS_URL, {
 		method: 'POST',
 		headers: {
@@ -50,6 +59,11 @@ export const registerDomain = async ({ domainName }: { domainName: string }): Pr
 };
 
 export const deleteDomain = async ({ bn_id }: CustomDomain): Promise<void> => {
+	assertNonNullish(
+		BN_REGISTRATIONS_URL,
+		'Boundary Node API URL not defined. This service is unavailable.'
+	);
+
 	const id = fromNullable(bn_id);
 
 	if (isNullish(id) || id === '') {

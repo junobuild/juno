@@ -5,7 +5,6 @@
 	import { fade } from 'svelte/transition';
 	import type { Satellite } from '$declarations/mission_control/mission_control.did';
 	import { countCollectionAssets } from '$lib/api/satellites.api';
-	import { satelliteVersion } from '$lib/api/satellites.deprecated.api';
 	import { SATELLITE_v0_0_20 } from '$lib/constants/version.constants';
 	import { authStore } from '$lib/stores/auth.store';
 	import { i18n } from '$lib/stores/i18n.store';

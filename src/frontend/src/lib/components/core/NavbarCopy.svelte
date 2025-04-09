@@ -47,6 +47,9 @@
 
 		font-size: var(--font-size-small);
 
+		background: var(--color-background);
+		color: var(--color-background-contrast);
+
 		padding: 0.25rem 0.5rem;
 		border-radius: var(--border-radius);
 

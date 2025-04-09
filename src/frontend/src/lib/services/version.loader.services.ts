@@ -48,6 +48,9 @@ export const loadVersion = async ({
 			satelliteId: Principal
 		): Promise<Omit<SatelliteVersionMetadata, 'release'> | undefined> => {
 			// Backwards compatibility for Satellite <= 0.0.14 which did not expose the end point "version_build"
+			/**
+			 * @deprecated - Replaced in Satellite > v0.0.22 with public custom section juno:package
+			 */
 			const queryBuildVersion = async (): Promise<string | undefined> => {
 				try {
 					return await satelliteBuildVersion({ satelliteId, identity });

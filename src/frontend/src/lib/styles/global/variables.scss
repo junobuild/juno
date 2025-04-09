@@ -6,6 +6,7 @@
 
 	--menu-width: calc(30 * var(--padding));
 
+	--banner-height: calc(3.75 * var(--padding));
 	--header-height: calc(11 * var(--padding));
 	--footer-height: calc(11 * var(--padding));
 
@@ -24,6 +25,7 @@
 	--padding-12x: calc(var(--padding) * 12);
 
 	--animation-time: 0.15s;
+	--navbar-animation-time: 0.25s;
 	--menu-animation-timing-function: cubic-bezier(0.55, 0.49, 0.44, 0.87);
 
 	--border-radius: 3px;

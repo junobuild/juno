@@ -1,4 +1,4 @@
-<aside class="banner">skylab <span>(local dev)</span></aside>
+<aside class="banner">Skylab <span>(emulator)</span></aside>
 
 <style lang="scss">
 	.banner {

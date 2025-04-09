@@ -1,16 +1,22 @@
 <script lang="ts">
+	import { nonNullish } from '@dfinity/utils';
 	import type { Snippet } from 'svelte';
 
 	interface Props {
 		hide?: boolean;
 		children: Snippet;
+		banner?: Snippet;
 	}
 
-	let { hide = false, children }: Props = $props();
+	let { hide = false, banner, children }: Props = $props();
 </script>
 
-<header class:hide>
-	{@render children()}
+<header class:hide class:with-banner={nonNullish(banner)}>
+	{@render banner?.()}
+
+	<div class="content">
+		{@render children()}
+	</div>
 </header>
 
 <style lang="scss">
@@ -22,41 +28,49 @@
 		left: 0;
 
 		width: 100%;
-		height: var(--header-height);
+
+		--height: var(--header-height);
 
 		z-index: calc(var(--z-index) + 2);
 
-		display: flex;
-		justify-content: space-between;
-		align-items: center;
-
-		color: var(--color-background-contrast);
-
 		pointer-events: none;
-
-		padding: var(--padding-2x) var(--padding-2x);
 
 		transition:
 			top ease-in var(--navbar-animation-time),
 			opacity linear var(--navbar-animation-time);
-		border-bottom: 1px solid transparent;
 
 		&.hide {
 			background: rgba(var(--color-background-rgb), 0.9);
 		}
 
-		@include media.min-width(xlarge) {
-			padding: calc(var(--padding-4x) - 1px) var(--padding-7x) var(--padding-4x);
+		&.with-banner {
+			--height: calc(var(--header-height) + var(--banner-height));
 		}
 
 		@include media.min-width(xlarge) {
 			&.hide {
-				top: calc(-1 * var(--header-height));
+				top: calc(-1 * var(--height));
 			}
 		}
 
 		:global(*) {
 			pointer-events: all;
+		}
+	}
+
+	.content {
+		display: flex;
+		justify-content: space-between;
+		align-items: center;
+
+		height: var(--header-height);
+
+		color: var(--color-background-contrast);
+
+		padding: var(--padding-2x) var(--padding-2x);
+
+		@include media.min-width(xlarge) {
+			padding: calc(var(--padding-4x) - 1px) var(--padding-7x) var(--padding-4x);
 		}
 	}
 </style>

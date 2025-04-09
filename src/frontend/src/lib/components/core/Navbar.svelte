@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { debounce, nonNullish } from '@dfinity/utils';
 	import { fade } from 'svelte/transition';
+	import Banner from '$lib/components/core/Banner.svelte';
 	import Logo from '$lib/components/core/Logo.svelte';
 	import NavbarCockpit from '$lib/components/core/NavbarCockpit.svelte';
 	import User from '$lib/components/core/User.svelte';
@@ -8,6 +9,7 @@
 	import ButtonBack from '$lib/components/ui/ButtonBack.svelte';
 	import ButtonMenu from '$lib/components/ui/ButtonMenu.svelte';
 	import Header from '$lib/components/ui/Header.svelte';
+	import { DEV } from '$lib/constants/app.constants';
 	import { layoutTitleIntersecting } from '$lib/stores/layout-intersecting.store';
 	import { layoutNavigation } from '$lib/stores/layout-navigation.store';
 
@@ -39,7 +41,11 @@
 	});
 </script>
 
-<Header {hide}>
+{#snippet banner()}
+	<Banner />
+{/snippet}
+
+<Header {hide} banner={DEV ? banner : undefined}>
 	<div class="start">
 		{#if start === 'menu'}
 			<ButtonMenu />

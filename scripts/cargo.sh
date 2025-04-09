@@ -14,7 +14,6 @@ CARGO_HOME=${CARGO_HOME:-$HOME/.cargo}
 CANISTER=
 OUTPUT=
 WITH_CERTIFICATION=0
-BUILD_TYPE=
 
 # Source directory where to find $CANISTER/Cargo.toml
 SRC_ROOT_DIR="$PWD/src"
@@ -34,7 +33,6 @@ while [[ $# -gt 0 ]]; do
     --satellite)
       WITH_CERTIFICATION=1
       CANISTER=satellite
-      BUILD_TYPE="stock"
       break
       ;;
     --console)
@@ -54,7 +52,6 @@ while [[ $# -gt 0 ]]; do
       CANISTER="sputnik"
       OUTPUT="test_sputnik"
       WITH_CERTIFICATION=1
-      BUILD_TYPE="extended"
       TARGET="wasm32-wasip1"
       PKG_JSON_DIR="$PWD/src/tests/fixtures/$OUTPUT"
       break
@@ -62,14 +59,12 @@ while [[ $# -gt 0 ]]; do
     --sputnik)
       CANISTER="sputnik"
       WITH_CERTIFICATION=1
-      BUILD_TYPE="extended"
       TARGET="wasm32-wasip1"
       break
       ;;
     --test_satellite)
       CANISTER="test_satellite"
       WITH_CERTIFICATION=1
-      BUILD_TYPE="extended"
       SRC_ROOT_DIR="$PWD/src/tests/fixtures"
       PKG_JSON_DIR="$PWD/src/tests/fixtures/$CANISTER"
       break
@@ -132,7 +127,7 @@ pre_build_canister "$@"
 source "$PWD/docker/build-canister"
 
 # Build the canister
-build_canister "$CANISTER" "$SRC_ROOT_DIR" "$PKG_JSON_DIR" "$BUILD_DIR" "$ONLY_DEPS" "$WITH_CERTIFICATION" "$BUILD_TYPE" "$TARGET"
+build_canister "$CANISTER" "$SRC_ROOT_DIR" "$PKG_JSON_DIR" "$BUILD_DIR" "$ONLY_DEPS" "$WITH_CERTIFICATION" "$TARGET"
 
 # Move the result to the deploy directory to upgrade the canister in the local replica
 mv "$BUILD_DIR/${WASM_CANISTER}.gz" "${DEPLOY_DIR}/${OUTPUT_CANISTER}.gz"

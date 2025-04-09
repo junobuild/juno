@@ -9,7 +9,7 @@
 	import ButtonBack from '$lib/components/ui/ButtonBack.svelte';
 	import ButtonMenu from '$lib/components/ui/ButtonMenu.svelte';
 	import Header from '$lib/components/ui/Header.svelte';
-	import { DEV } from '$lib/constants/app.constants';
+	import { SKYLAB } from '$lib/constants/app.constants';
 	import { layoutTitleIntersecting } from '$lib/stores/layout-intersecting.store';
 	import { layoutNavigation } from '$lib/stores/layout-navigation.store';
 
@@ -45,7 +45,7 @@
 	<BannerSkylab />
 {/snippet}
 
-<Header {hide} banner={DEV ? banner : undefined}>
+<Header {hide} banner={SKYLAB ? banner : undefined}>
 	<div class="start">
 		{#if start === 'menu'}
 			<ButtonMenu />

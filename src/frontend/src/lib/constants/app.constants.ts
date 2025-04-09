@@ -1,6 +1,7 @@
 export const APP_VERSION = VITE_APP_VERSION;
 
-export const DEV = import.meta.env.DEV;
+export const SKYLAB = import.meta.env.MODE === 'skylab';
+export const DEV = import.meta.env.DEV || SKYLAB;
 
 export const LOCAL_REPLICA_HOST = 'http://localhost:5987';
 

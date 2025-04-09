@@ -37,7 +37,7 @@
 
 		transition:
 			top ease-in var(--navbar-animation-time),
-			opacity linear var(--navbar-animation-time);
+			background ease-in-out var(--animation-time);
 
 		&.hide {
 			background: rgba(var(--color-background-rgb), 0.9);
@@ -50,6 +50,7 @@
 		@include media.min-width(xlarge) {
 			&.hide {
 				top: calc(-1 * var(--height));
+				background: initial;
 			}
 		}
 

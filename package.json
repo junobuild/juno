@@ -20,7 +20,7 @@
 		"dev": "npm run i18n && vite dev",
 		"build": "npm run build:frontend",
 		"build:frontend": "tsc --noEmit && vite build && npm run build:post-process",
-		"build:skylab": "tsc --noEmit && vite build --mode skylab",
+		"build:skylab": "tsc --noEmit && vite build --mode skylab --logLevel error",
 		"build:sputnik:fixtures": "node scripts/sputnik.build.fixtures.mjs",
 		"build:sputnik:polyfills": "node ./scripts/sputnik.polyfills.mjs",
 		"prepare": "svelte-kit sync",

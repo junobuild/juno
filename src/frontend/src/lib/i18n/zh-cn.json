@@ -307,7 +307,8 @@
 		"wallet_missing_account": "没有有效的账户来处理交易，你确定链接你的钱包了吗?",
 		"balance_not_loaded": "请稍后，你的余额还未加载.",
 		"balance_zero": "你的余额为零，请获取一些代币来发送.",
-		"wallet_upgrade": "请升级你的钱包来使用发送功能."
+		"wallet_upgrade": "请升级你的钱包来使用发送功能.",
+		"dev_get_icp": "Get ICP"
 	},
 	"authentication": {
 		"title": "认证",

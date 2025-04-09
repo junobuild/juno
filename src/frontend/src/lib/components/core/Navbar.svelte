@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { debounce, nonNullish } from '@dfinity/utils';
 	import { fade } from 'svelte/transition';
-	import Banner from '$lib/components/core/Banner.svelte';
+	import BannerSkylab from '$lib/components/core/BannerSkylab.svelte';
 	import Logo from '$lib/components/core/Logo.svelte';
 	import NavbarCockpit from '$lib/components/core/NavbarCockpit.svelte';
 	import User from '$lib/components/core/User.svelte';
@@ -42,7 +42,7 @@
 </script>
 
 {#snippet banner()}
-	<Banner />
+	<BannerSkylab />
 {/snippet}
 
 <Header {hide} banner={DEV ? banner : undefined}>

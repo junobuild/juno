@@ -316,6 +316,7 @@ interface I18nWallet {
 	balance_not_loaded: string;
 	balance_zero: string;
 	wallet_upgrade: string;
+	dev_get_icp: string;
 }
 
 interface I18nAuthentication {

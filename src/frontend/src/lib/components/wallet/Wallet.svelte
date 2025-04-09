@@ -5,6 +5,7 @@
 	import Transactions from '$lib/components/transactions/Transactions.svelte';
 	import TransactionsExport from '$lib/components/transactions/TransactionsExport.svelte';
 	import WalletBalance from '$lib/components/wallet/WalletBalance.svelte';
+	import WalletGetICP from '$lib/components/wallet/WalletGetICP.svelte';
 	import WalletIds from '$lib/components/wallet/WalletIds.svelte';
 	import { PAGINATION } from '$lib/constants/app.constants';
 	import { MISSION_CONTROL_v0_0_12 } from '$lib/constants/version.constants';
@@ -105,6 +106,8 @@
 	</div>
 
 	<div class="toolbar">
+		<WalletGetICP {missionControlId} />
+
 		<button onclick={openReceive}>{$i18n.wallet.receive}</button>
 
 		<button onclick={openSend}>{$i18n.wallet.send}</button>

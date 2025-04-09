@@ -2,7 +2,7 @@
 
 <style lang="scss">
 	.banner {
-        height: var(--banner-height);
+		height: var(--banner-height);
 
 		background: var(--color-tertiary);
 		color: var(--color-tertiary-contrast);
@@ -12,7 +12,7 @@
 		display: flex;
 		justify-content: center;
 
-        gap: var(--padding);
+		gap: var(--padding);
 
 		span {
 			font-size: var(--font-size-very-small);

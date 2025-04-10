@@ -1,10 +1,12 @@
 import { setSatellitesController } from '$lib/api/mission-control.api';
 import { SKYLAB } from '$lib/constants/app.constants';
 import { getSkylabMainIdentity } from '$lib/rest/skylab.rest';
+import { i18n } from '$lib/stores/i18n.store';
 import type { SetControllerParams } from '$lib/types/controllers';
 import type { MissionControlId } from '$lib/types/mission-control';
 import type { Identity } from '@dfinity/agent';
 import type { Principal } from '@dfinity/principal';
+import { get } from 'svelte/store';
 
 /**
  * In the Skylab emulator environment, where developers use a version of the Console UI deployed within the container,
@@ -51,9 +53,7 @@ const unsafeSetSkylabController = async ({
 	) => Promise<void>;
 }) => {
 	if (!SKYLAB) {
-		throw new Error(
-			'⚠️ This function should never ever be executed outside the emulator environment. Setting a controller at this step is strictly for the emulator (and yes, it would fail anyway).'
-		);
+		throw new Error(get(i18n).emulator.error_never_execute);
 	}
 
 	const mainIdentity = await getSkylabMainIdentity();
@@ -61,7 +61,7 @@ const unsafeSetSkylabController = async ({
 	await addController({
 		controllerId: mainIdentity,
 		missionControlId,
-		profile: '⚠️ Emulator',
+		profile: `👾 ${get(i18n).emulator.emulator}`,
 		scope: 'admin'
 	});
 };

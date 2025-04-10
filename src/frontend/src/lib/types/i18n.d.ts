@@ -830,7 +830,9 @@ interface I18nResources {
 
 interface I18nEmulator {
 	get_icp: string;
+	emulator: string;
 	setting_emulator_controller: string;
+	error_never_execute: string;
 	error_get_identities: string;
 	error_no_main_identity: string;
 }

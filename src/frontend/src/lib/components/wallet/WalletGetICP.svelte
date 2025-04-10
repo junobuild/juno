@@ -4,6 +4,7 @@
 	import { i18n } from '$lib/stores/i18n.store';
 	import type { MissionControlId } from '$lib/types/mission-control';
 	import { emit } from '$lib/utils/events.utils';
+	import { emulatorLedgerTransfer } from '$lib/rest/skylab.rest';
 
 	interface Props {
 		missionControlId: MissionControlId;
@@ -14,7 +15,7 @@
 	let confetti = $state(false);
 
 	const onClick = async () => {
-		await fetch(`http://localhost:5999/ledger/transfer/?to=${missionControlId.toText()}`);
+		await emulatorLedgerTransfer({ missionControlId });
 
 		emit({ message: 'junoRestartWallet' });
 

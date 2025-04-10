@@ -1,4 +1,5 @@
 import { i18n } from '$lib/stores/i18n.store';
+import type { Principal } from '@dfinity/principal';
 import { assertNonNullish, isNullish } from '@dfinity/utils';
 import { type PrincipalText, PrincipalTextSchema } from '@dfinity/zod-schemas';
 import { get } from 'svelte/store';
@@ -28,4 +29,16 @@ export const getSkylabMainIdentity = async (): Promise<PrincipalText> => {
 	}
 
 	return PrincipalTextSchema.parse(identity);
+};
+
+export const emulatorLedgerTransfer = async ({
+	missionControlId
+}: {
+	missionControlId: Principal;
+}) => {
+	const SKYLAB_ADMIN_URL = import.meta.env.VITE_SKYLAB_ADMIN_URL;
+
+	assertNonNullish(SKYLAB_ADMIN_URL);
+
+	await fetch(`${SKYLAB_ADMIN_URL}/ledger/transfer/?to=${missionControlId.toText()}`);
 };

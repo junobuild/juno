@@ -18,6 +18,7 @@
 		"build:csp": "node scripts/build.csp.mjs",
 		"build:post-process": "npm run build:csp",
 		"dev": "npm run i18n && vite dev",
+		"dev:skylab": "npm run i18n && vite dev --mode skylab",
 		"build": "npm run build:frontend",
 		"build:frontend": "tsc --noEmit && vite build && npm run build:post-process",
 		"build:skylab": "tsc --noEmit && vite build --mode skylab --logLevel error",

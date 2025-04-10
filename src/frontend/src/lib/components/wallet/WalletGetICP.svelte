@@ -1,10 +1,10 @@
 <script lang="ts">
 	import ConfettiSpread from '$lib/components/ui/ConfettiSpread.svelte';
 	import { DEV } from '$lib/constants/app.constants';
+	import { emulatorLedgerTransfer } from '$lib/rest/emulator.rest';
 	import { i18n } from '$lib/stores/i18n.store';
 	import type { MissionControlId } from '$lib/types/mission-control';
 	import { emit } from '$lib/utils/events.utils';
-	import { emulatorLedgerTransfer } from '$lib/rest/emulator.rest';
 
 	interface Props {
 		missionControlId: MissionControlId;

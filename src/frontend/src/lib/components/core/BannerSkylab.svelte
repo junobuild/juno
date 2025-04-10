@@ -1,4 +1,8 @@
-<aside class="banner">Skylab <span>(emulator)</span></aside>
+<script lang="ts">
+	import IconSpaceStation from '$lib/components/icons/IconSpaceStation.svelte';
+</script>
+
+<aside class="banner"><IconSpaceStation /> Dev Console</aside>
 
 <style lang="scss">
 	.banner {
@@ -14,10 +18,5 @@
 		align-items: center;
 
 		gap: var(--padding);
-
-		span {
-			font-size: var(--font-size-very-small);
-			font-weight: initial;
-		}
 	}
 </style>

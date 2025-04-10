@@ -4,12 +4,12 @@ import { assertNonNullish, isNullish } from '@dfinity/utils';
 import { type PrincipalText, PrincipalTextSchema } from '@dfinity/zod-schemas';
 import { get } from 'svelte/store';
 
-export const getSkylabMainIdentity = async (): Promise<PrincipalText> => {
-	const SKYLAB_ADMIN_URL = import.meta.env.VITE_SKYLAB_ADMIN_URL;
+export const getEmulatorMainIdentity = async (): Promise<PrincipalText> => {
+	const VITE_EMULATOR_ADMIN_URL = import.meta.env.VITE_EMULATOR_ADMIN_URL;
 
-	assertNonNullish(SKYLAB_ADMIN_URL);
+	assertNonNullish(VITE_EMULATOR_ADMIN_URL);
 
-	const response = await fetch(`${SKYLAB_ADMIN_URL}/admin/identities`, {
+	const response = await fetch(`${VITE_EMULATOR_ADMIN_URL}/admin/identities`, {
 		method: 'GET',
 		headers: {
 			'Content-Type': 'application/json'
@@ -36,9 +36,9 @@ export const emulatorLedgerTransfer = async ({
 }: {
 	missionControlId: Principal;
 }) => {
-	const SKYLAB_ADMIN_URL = import.meta.env.VITE_SKYLAB_ADMIN_URL;
+	const VITE_EMULATOR_ADMIN_URL = import.meta.env.VITE_EMULATOR_ADMIN_URL;
 
-	assertNonNullish(SKYLAB_ADMIN_URL);
+	assertNonNullish(VITE_EMULATOR_ADMIN_URL);
 
-	await fetch(`${SKYLAB_ADMIN_URL}/ledger/transfer/?to=${missionControlId.toText()}`);
+	await fetch(`${VITE_EMULATOR_ADMIN_URL}/ledger/transfer/?to=${missionControlId.toText()}`);
 };

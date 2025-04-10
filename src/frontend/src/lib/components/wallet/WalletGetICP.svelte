@@ -4,7 +4,7 @@
 	import { i18n } from '$lib/stores/i18n.store';
 	import type { MissionControlId } from '$lib/types/mission-control';
 	import { emit } from '$lib/utils/events.utils';
-	import { emulatorLedgerTransfer } from '$lib/rest/skylab.rest';
+	import { emulatorLedgerTransfer } from '$lib/rest/emulator.rest';
 
 	interface Props {
 		missionControlId: MissionControlId;

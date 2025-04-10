@@ -1,6 +1,6 @@
 import { setSatellitesController } from '$lib/api/mission-control.api';
 import { SKYLAB } from '$lib/constants/app.constants';
-import { getSkylabMainIdentity } from '$lib/rest/skylab.rest';
+import { getEmulatorMainIdentity } from '$lib/rest/emulator.rest';
 import { i18n } from '$lib/stores/i18n.store';
 import type { SetControllerParams } from '$lib/types/controllers';
 import type { MissionControlId } from '$lib/types/mission-control';
@@ -15,7 +15,7 @@ import { get } from 'svelte/store';
  *
  * To prevent any abuse, these functions are guarded by the SKYLAB flag, and the URL is blocked by the CSP in production.
  */
-export const unsafeSetSkylabControllerForSatellite = async ({
+export const unsafeSetEmulatorControllerForSatellite = async ({
 	missionControlId,
 	satelliteId,
 	identity
@@ -35,13 +35,13 @@ export const unsafeSetSkylabControllerForSatellite = async ({
 			identity
 		});
 
-	await unsafeSetSkylabController({
+	await unsafeSetEmulatorController({
 		missionControlId,
 		addController: add
 	});
 };
 
-const unsafeSetSkylabController = async ({
+const unsafeSetEmulatorController = async ({
 	missionControlId,
 	addController
 }: {
@@ -56,7 +56,7 @@ const unsafeSetSkylabController = async ({
 		throw new Error(get(i18n).emulator.error_never_execute);
 	}
 
-	const mainIdentity = await getSkylabMainIdentity();
+	const mainIdentity = await getEmulatorMainIdentity();
 
 	await addController({
 		controllerId: mainIdentity,

@@ -10,6 +10,7 @@ import { SKYLAB } from '$lib/constants/app.constants';
 import { missionControlMonitored } from '$lib/derived/mission-control-settings.derived';
 import { missionControlConfigMonitoring } from '$lib/derived/mission-control-user.derived';
 import { loadCredits } from '$lib/services/credits.services';
+import { unsafeSetEmulatorControllerForSatellite } from '$lib/services/emulator.services';
 import { loadSettings, loadUserData } from '$lib/services/mission-control.services';
 import {
 	createOrbiter,
@@ -22,7 +23,6 @@ import {
 	createSatelliteWithConfig,
 	loadSatellites
 } from '$lib/services/satellites.services';
-import { unsafeSetSkylabControllerForSatellite } from '$lib/services/skylab.services';
 import { loadVersion } from '$lib/services/version.loader.services';
 import { busy } from '$lib/stores/busy.store';
 import { i18n } from '$lib/stores/i18n.store';
@@ -277,7 +277,7 @@ export const createSatelliteWizard = async ({
 	}): Promise<void> => {
 		assertNonNullish(missionControlId);
 
-		await unsafeSetSkylabControllerForSatellite({
+		await unsafeSetEmulatorControllerForSatellite({
 			missionControlId,
 			satelliteId: segment.satellite_id,
 			identity

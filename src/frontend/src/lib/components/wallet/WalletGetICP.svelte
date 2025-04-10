@@ -29,5 +29,5 @@
 		<ConfettiSpread />
 	{/if}
 
-	<button onclick={onClick}>{$i18n.wallet.dev_get_icp}</button>
+	<button onclick={onClick}>{$i18n.emulator.get_icp}</button>
 {/if}

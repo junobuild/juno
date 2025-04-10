@@ -316,7 +316,6 @@ interface I18nWallet {
 	balance_not_loaded: string;
 	balance_zero: string;
 	wallet_upgrade: string;
-	dev_get_icp: string;
 }
 
 interface I18nAuthentication {
@@ -829,6 +828,15 @@ interface I18nResources {
 	changelog_description: string;
 }
 
+interface I18nEmulator {
+	get_icp: string;
+	emulator: string;
+	setting_emulator_controller: string;
+	error_never_execute: string;
+	error_get_identities: string;
+	error_no_main_identity: string;
+}
+
 interface I18n {
 	lang: Languages;
 	core: I18nCore;
@@ -857,4 +865,5 @@ interface I18n {
 	preferences: I18nPreferences;
 	examples: I18nExamples;
 	resources: I18nResources;
+	emulator: I18nEmulator;
 }

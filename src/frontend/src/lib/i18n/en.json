@@ -307,8 +307,7 @@
 		"wallet_missing_account": "No account available to request the transaction. Have you connected your wallet?",
 		"balance_not_loaded": "Please wait, your balance is not yet loaded.",
 		"balance_zero": "Your balance is zero. Get some tokens to start sending.",
-		"wallet_upgrade": "Please upgrade your wallet to enable the sending feature.",
-		"dev_get_icp": "Get ICP"
+		"wallet_upgrade": "Please upgrade your wallet to enable the sending feature."
 	},
 	"authentication": {
 		"title": "Authentication",
@@ -799,5 +798,13 @@
 		"resources_description": "View a collection of sample code, applications, and microservices build with Juno",
 		"changelog": "Releases",
 		"changelog_description": "See the last updates and improvements."
+	},
+	"emulator": {
+		"get_icp": "Get ICP",
+		"emulator": "Emulator",
+		"setting_emulator_controller": "Setting the emulator as a controller (Dev Only ⚠️)",
+		"error_never_execute": "⚠️ This function should never ever be executed outside the emulator environment. Setting a controller at this step is strictly for the emulator (and yes, it would fail anyway).",
+		"error_get_identities": "Fetching the emulator identities failed.",
+		"error_no_main_identity": "The emulator does not expose any main identity."
 	}
 }

@@ -307,8 +307,7 @@
 		"wallet_missing_account": "没有有效的账户来处理交易，你确定链接你的钱包了吗?",
 		"balance_not_loaded": "请稍后，你的余额还未加载.",
 		"balance_zero": "你的余额为零，请获取一些代币来发送.",
-		"wallet_upgrade": "请升级你的钱包来使用发送功能.",
-		"dev_get_icp": "Get ICP"
+		"wallet_upgrade": "请升级你的钱包来使用发送功能."
 	},
 	"authentication": {
 		"title": "认证",
@@ -799,5 +798,13 @@
 		"resources_description": "查看利用Juno开发的代码，应用，为服务等例子",
 		"changelog": "发布",
 		"changelog_description": "看最近的更新和优化."
+	},
+	"emulator": {
+		"get_icp": "Get ICP",
+		"emulator": "Emulator",
+		"setting_emulator_controller": "Setting the emulator as a controller (Dev Only ⚠️)",
+		"error_never_execute": "⚠️ This function should never ever be executed outside the emulator environment. Setting a controller at this step is strictly for the emulator (and yes, it would fail anyway).",
+		"error_get_identities": "Fetching the emulator identities failed.",
+		"error_no_main_identity": "The emulator does not expose any main identity."
 	}
 }

@@ -11,7 +11,7 @@ import type { Principal } from '@dfinity/principal';
  * we need a way to grant the inner CLI (running inside the Docker container) access to the Satellites.
  * Without this, we can't offer live reload capabilities — which, in my opinion, is really important during development.
  *
- * To prevent any abuse, these functions are guarded by the SKYLAB flag, and the URL is blocked by the CSP.
+ * To prevent any abuse, these functions are guarded by the SKYLAB flag, and the URL is blocked by the CSP in production.
  */
 export const unsafeSetSkylabControllerForSatellite = async ({
 	missionControlId,

@@ -801,7 +801,7 @@
 	"emulator": {
 		"get_icp": "Get ICP",
 		"emulator": "Emulator",
-		"setting_emulator_controller": "Setting the emulator as a controller (Dev Only ⚠️)",
+		"setting_emulator_controller": "Setting the emulator as a controller (DEV only)",
 		"error_never_execute": "⚠️ This function should never ever be executed outside the emulator environment. Setting a controller at this step is strictly for the emulator (and yes, it would fail anyway).",
 		"error_get_identities": "Fetching the emulator identities failed.",
 		"error_no_main_identity": "The emulator does not expose any main identity."

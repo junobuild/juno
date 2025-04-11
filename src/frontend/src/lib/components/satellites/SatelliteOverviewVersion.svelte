@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { nonNullish } from '@dfinity/utils';
+	import { isNullish, nonNullish } from '@dfinity/utils';
 	import { fade, blur } from 'svelte/transition';
 	import SegmentVersion from '$lib/components/segments/SegmentVersion.svelte';
 	import Badge from '$lib/components/ui/Badge.svelte';
@@ -38,26 +38,11 @@
 </script>
 
 {#snippet deprecatedDisplayVersion()}
-	{#if !extended}
-		<SegmentVersion version={satelliteVersion} />
-	{:else}
-		<div>
-			<Value>
-				{#snippet label()}
-					{$i18n.satellites.stock_version}
-				{/snippet}
-				<p>v{satelliteVersion ?? '...'}</p>
-			</Value>
-		</div>
-
-		<div>
-			<Value>
-				{#snippet label()}
-					{$i18n.satellites.extended_version}
-				{/snippet}
-				<p>v{$versionStore?.satellites[satelliteId]?.currentBuild ?? '...'}</p>
-			</Value>
-		</div>
+	{#if extended}
+		<SegmentVersion
+			label={$i18n.satellites.extended_version}
+			version={$versionStore?.satellites[satelliteId]?.currentBuild}
+		/>
 	{/if}
 
 	<div>
@@ -94,15 +79,14 @@
 	{/if}
 {/snippet}
 
-{#snippet displayVersion()}
-	<SegmentVersion version={developerVersion ?? satelliteVersion} />
-{/snippet}
+<SegmentVersion
+	label={extended && isNullish(pkg) ? $i18n.satellites.stock_version : $i18n.core.version}
+	version={developerVersion ?? satelliteVersion}
+/>
 
 {#if loaded}
 	<div in:blur>
 		{#if nonNullish(pkg)}
-			{@render displayVersion()}
-
 			{@render dependencies()}
 		{:else}
 			{@render deprecatedDisplayVersion()}

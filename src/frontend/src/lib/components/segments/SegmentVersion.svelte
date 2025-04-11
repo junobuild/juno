@@ -5,15 +5,16 @@
 
 	interface Props {
 		version: string | undefined;
+		label?: string;
 	}
 
-	let { version }: Props = $props();
+	let { version, label: labelText }: Props = $props();
 </script>
 
 <div>
 	<Value>
 		{#snippet label()}
-			{$i18n.core.version}
+			{labelText ?? $i18n.core.version}
 		{/snippet}
 		<p><Badge color="primary">v{version ?? '...'}</Badge></p>
 	</Value>

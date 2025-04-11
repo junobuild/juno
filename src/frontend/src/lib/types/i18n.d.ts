@@ -10,7 +10,6 @@ interface I18nCore {
 	copied: string;
 	toggle: string;
 	loading: string;
-	loading_version: string;
 	status: string;
 	sign_out: string;
 	sign_in: string;

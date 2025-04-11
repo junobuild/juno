@@ -41,23 +41,12 @@
 	{#if !extended}
 		<SegmentVersion version={satelliteVersion} />
 	{:else}
-		<div>
-			<Value>
-				{#snippet label()}
-					{$i18n.satellites.stock_version}
-				{/snippet}
-				<p>v{satelliteVersion ?? '...'}</p>
-			</Value>
-		</div>
+		<SegmentVersion label={$i18n.satellites.stock_version} version={satelliteVersion} />
 
-		<div>
-			<Value>
-				{#snippet label()}
-					{$i18n.satellites.extended_version}
-				{/snippet}
-				<p>v{$versionStore?.satellites[satelliteId]?.currentBuild ?? '...'}</p>
-			</Value>
-		</div>
+		<SegmentVersion
+			label={$i18n.satellites.extended_version}
+			version={$versionStore?.satellites[satelliteId]?.currentBuild}
+		/>
 	{/if}
 
 	<div>
@@ -99,15 +88,15 @@
 {/snippet}
 
 {#if loaded}
-	<div in:blur>
-		{#if nonNullish(pkg)}
-			{@render displayVersion()}
+	{#if nonNullish(pkg)}
+		{@render displayVersion()}
 
-			{@render dependencies()}
-		{:else}
-			{@render deprecatedDisplayVersion()}
-		{/if}
-	</div>
+		{@render dependencies()}
+	{:else}
+		{@render deprecatedDisplayVersion()}
+	{/if}
+{:else}
+	{@render displayVersion()}
 {/if}
 
 <style lang="scss">

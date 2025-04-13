@@ -1,6 +1,6 @@
 <script lang="ts">
 	import ConfettiSpread from '$lib/components/ui/ConfettiSpread.svelte';
-	import { DEV } from '$lib/constants/app.constants';
+	import { isDev } from '$lib/env/app.env';
 	import { emulatorLedgerTransfer } from '$lib/rest/emulator.rest';
 	import { i18n } from '$lib/stores/i18n.store';
 	import type { MissionControlId } from '$lib/types/mission-control';
@@ -25,7 +25,7 @@
 	};
 </script>
 
-{#if DEV}
+{#if isDev()}
 	{#if confetti}
 		<ConfettiSpread />
 	{/if}

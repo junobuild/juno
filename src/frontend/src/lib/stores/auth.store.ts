@@ -2,10 +2,10 @@ import {
 	AUTH_MAX_TIME_TO_LIVE,
 	AUTH_POPUP_HEIGHT,
 	AUTH_POPUP_WIDTH,
-	DEV,
 	INTERNET_IDENTITY_CANISTER_ID,
 	LOCAL_REPLICA_HOST
 } from '$lib/constants/app.constants';
+import { isDev } from '$lib/env/app.env';
 import { SignInError, SignInInitError, SignInUserInterruptError } from '$lib/types/errors';
 import type { OptionIdentity } from '$lib/types/itentity';
 import type { Option } from '$lib/types/utils';
@@ -56,7 +56,7 @@ const initAuthStore = (): AuthStore => {
 					return;
 				}
 
-				const identityProvider = DEV
+				const identityProvider = isDev()
 					? /apple/i.test(navigator?.vendor)
 						? `${LOCAL_REPLICA_HOST}?canisterId=${INTERNET_IDENTITY_CANISTER_ID}`
 						: `http://${INTERNET_IDENTITY_CANISTER_ID}.${new URL(LOCAL_REPLICA_HOST).host}`

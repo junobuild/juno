@@ -1,4 +1,5 @@
-import { DEV, LOCAL_REPLICA_HOST } from '$lib/constants/app.constants';
+import { LOCAL_REPLICA_HOST } from '$lib/constants/app.constants';
+import { isDev } from '$lib/env/app.env';
 import type { Option } from '$lib/types/utils';
 import { HttpAgent, type Identity } from '@dfinity/agent';
 import { isNullish } from '@dfinity/utils';
@@ -32,7 +33,7 @@ export const getAgent = async ({ identity }: GetAgentParams): Promise<HttpAgent>
 };
 
 const createAgent = async (params: GetAgentParams): Promise<HttpAgent> => {
-	if (DEV) {
+	if (isDev()) {
 		return await getLocalAgent(params);
 	}
 

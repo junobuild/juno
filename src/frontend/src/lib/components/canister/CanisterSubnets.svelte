@@ -5,7 +5,7 @@
 	import { getDefaultSubnets } from '$lib/api/cmc.api';
 	import Value from '$lib/components/ui/Value.svelte';
 	import { JUNO_SUBNET_ID } from '$lib/constants/app.constants';
-	import { isProd } from '$lib/env/app.env';
+	import { isProd, isSkylab } from '$lib/env/app.env';
 	import subnets from '$lib/env/subnets.json';
 	import { i18n } from '$lib/stores/i18n.store';
 	import type { Subnet } from '$lib/types/subnet';
@@ -36,9 +36,17 @@
 		}
 
 		// The local docker image supports only a single subnet which is not a mainnet ID.
-		// So we add it at the top and we still display the other subnets that way we can assert visually it looks ok while still being able to use the facture on one specific subnet.
 		const localSubnets = await getDefaultSubnets();
 
+		// For skylab we display only the local subnets as those are the one available
+		if (isSkylab()) {
+			extendedSubnets = [
+				...localSubnets.map((subnet) => ({ subnetId: subnet.toText(), specialization: 'local' }))
+			];
+			return;
+		}
+
+		// For local development, we add it at the top and we still display the other subnets that way we can assert visually it looks ok while still being able to use the facture on one specific subnet.
 		extendedSubnets = [
 			...localSubnets.map((subnet) => ({ subnetId: subnet.toText(), specialization: 'local' })),
 			...subnets

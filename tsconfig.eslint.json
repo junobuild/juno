@@ -11,6 +11,7 @@
 		"./src/**/*.svelte",
 		"./env.utils.ts",
 		"./vitest.setup.ts",
+		"./vitest.global.ts",
 		"./vitest.config.ts",
 		"./tailwind.config.js",
 		"./svelte.config.js",

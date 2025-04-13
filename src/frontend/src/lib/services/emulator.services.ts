@@ -1,5 +1,5 @@
 import { setSatellitesController } from '$lib/api/mission-control.api';
-import { SKYLAB } from '$lib/constants/app.constants';
+import { isNotSkylab } from '$lib/env/app.env';
 import { getEmulatorMainIdentity } from '$lib/rest/emulator.rest';
 import { i18n } from '$lib/stores/i18n.store';
 import type { SetControllerParams } from '$lib/types/controllers';
@@ -52,7 +52,7 @@ const unsafeSetEmulatorController = async ({
 		} & SetControllerParams
 	) => Promise<void>;
 }) => {
-	if (!SKYLAB) {
+	if (isNotSkylab()) {
 		throw new Error(get(i18n).emulator.error_never_execute);
 	}
 

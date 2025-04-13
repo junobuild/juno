@@ -6,9 +6,9 @@ import type {
 import { getOrbiterFee, getSatelliteFee } from '$lib/api/console.api';
 import { getAccountIdentifier } from '$lib/api/icp-index.api';
 import { updateAndStartMonitoring } from '$lib/api/mission-control.api';
-import { SKYLAB } from '$lib/constants/app.constants';
 import { missionControlMonitored } from '$lib/derived/mission-control-settings.derived';
 import { missionControlConfigMonitoring } from '$lib/derived/mission-control-user.derived';
+import { isSkylab } from '$lib/env/app.env';
 import { loadCredits } from '$lib/services/credits.services';
 import { unsafeSetEmulatorControllerForSatellite } from '$lib/services/emulator.services';
 import { loadSettings, loadUserData } from '$lib/services/mission-control.services';
@@ -292,7 +292,7 @@ export const createSatelliteWizard = async ({
 		reloadFn: loadSatellites,
 		monitoringFn,
 		errorLabel: 'satellite_unexpected_error',
-		...(SKYLAB && { finalizingFn: unsafeFinalizingFn })
+		...(isSkylab() && { finalizingFn: unsafeFinalizingFn })
 	});
 };
 

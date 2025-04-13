@@ -4,11 +4,12 @@
 	import { run } from 'svelte/legacy';
 	import { getDefaultSubnets } from '$lib/api/cmc.api';
 	import Value from '$lib/components/ui/Value.svelte';
-	import { DEV, JUNO_SUBNET_ID } from '$lib/constants/app.constants';
+	import { JUNO_SUBNET_ID } from '$lib/constants/app.constants';
 	import subnets from '$lib/env/subnets.json';
 	import { i18n } from '$lib/stores/i18n.store';
 	import type { Subnet } from '$lib/types/subnet';
 	import { shortenWithMiddleEllipsis } from '$lib/utils/format.utils';
+	import { isProd } from '$lib/env/app.env';
 
 	interface Props {
 		subnetId: PrincipalText | undefined;
@@ -29,7 +30,7 @@
 	);
 
 	const extendSubnets = async () => {
-		if (!DEV) {
+		if (isProd()) {
 			extendedSubnets = subnets;
 			return;
 		}

@@ -1,5 +1,6 @@
-import { DEV, LOCAL_REPLICA_HOST } from '$lib/constants/app.constants';
+import { LOCAL_REPLICA_HOST } from '$lib/constants/app.constants';
+import { isDev } from '$lib/env/app.env';
 import type { ActorParameters } from '@junobuild/admin';
 
 export const container = (): Partial<Pick<ActorParameters, 'container'>> =>
-	DEV ? { container: LOCAL_REPLICA_HOST } : {};
+	isDev() ? { container: LOCAL_REPLICA_HOST } : {};

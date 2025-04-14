@@ -12,7 +12,7 @@ import { Ed25519KeyIdentity } from '@dfinity/identity';
 import type { Principal } from '@dfinity/principal';
 import { assertNonNullish, fromNullable, toNullable } from '@dfinity/utils';
 import { type Actor, PocketIc } from '@hadronous/pic';
-import {inject } from 'vitest';
+import { inject } from 'vitest';
 import { CONSOLE_ID } from '../../constants/console-tests.constants';
 import { OBSERVATORY_ID } from '../../constants/observatory-tests.constants';
 import { deploySegments, initMissionControls } from '../../utils/console-tests.utils';

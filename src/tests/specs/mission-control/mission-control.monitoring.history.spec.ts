@@ -11,7 +11,7 @@ import { Ed25519KeyIdentity } from '@dfinity/identity';
 import type { Principal } from '@dfinity/principal';
 import { assertNonNullish, fromNullable, toNullable } from '@dfinity/utils';
 import { type Actor, PocketIc } from '@hadronous/pic';
-import {inject } from 'vitest';
+import { inject } from 'vitest';
 import {
 	missionControlUserInitArgs,
 	setupMissionControlModules

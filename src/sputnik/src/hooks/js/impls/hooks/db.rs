@@ -6,8 +6,9 @@ use crate::hooks::js::types::hooks::{
 use crate::hooks::js::types::interface::{JsDelDoc, JsSetDoc};
 use crate::js::types::candid::JsRawPrincipal;
 use junobuild_satellite::{
-    AssertDeleteDocContext, AssertSetDocContext, OnDeleteDocContext, OnDeleteFilteredDocsContext,
-    OnDeleteManyDocsContext, OnSetDocContext, OnSetManyDocsContext,
+    AssertDeleteDocContext, AssertSetDocContext, Doc, DocAssertDelete, DocAssertSet, DocContext,
+    DocUpsert, OnDeleteDocContext, OnDeleteFilteredDocsContext, OnDeleteManyDocsContext,
+    OnSetDocContext, OnSetManyDocsContext,
 };
 use rquickjs::{Ctx, Error as JsError, IntoJs, Object, Result as JsResult, Value};
 
@@ -15,19 +16,7 @@ impl<'js> JsHookContext<'js, JsDocContext<JsDocUpsert<'js>>> {
     pub fn from_on_set_doc(ctx: &Ctx<'js>, original: OnSetDocContext) -> Result<Self, JsError> {
         let js_context = JsHookContext {
             caller: JsRawPrincipal::from_principal(ctx, &original.caller)?,
-            data: JsDocContext {
-                key: original.data.key,
-                collection: original.data.collection,
-                data: JsDocUpsert {
-                    before: original
-                        .data
-                        .data
-                        .before
-                        .map(|doc| JsDoc::from_doc(ctx, doc))
-                        .transpose()?,
-                    after: JsDoc::from_doc(ctx, original.data.data.after)?,
-                },
-            },
+            data: JsDocContext::from_context_doc_upsert(ctx, original.data)?,
         };
 
         Ok(js_context)
@@ -42,20 +31,7 @@ impl<'js> JsHookContext<'js, Vec<JsDocContext<JsDocUpsert<'js>>>> {
         let data: Vec<JsDocContext<JsDocUpsert<'js>>> = original
             .data
             .into_iter()
-            .map(|doc_ctx| {
-                Ok(JsDocContext {
-                    key: doc_ctx.key,
-                    collection: doc_ctx.collection,
-                    data: JsDocUpsert {
-                        before: doc_ctx
-                            .data
-                            .before
-                            .map(|doc| JsDoc::from_doc(ctx, doc))
-                            .transpose()?,
-                        after: JsDoc::from_doc(ctx, doc_ctx.data.after)?,
-                    },
-                })
-            })
+            .map(|doc_ctx| JsDocContext::from_context_doc_upsert(ctx, doc_ctx))
             .collect::<Result<Vec<JsDocContext<JsDocUpsert<'js>>>, JsError>>()?;
 
         Ok(JsHookContext {
@@ -72,15 +48,7 @@ impl<'js> JsHookContext<'js, JsDocContext<Option<JsDoc<'js>>>> {
     ) -> Result<Self, JsError> {
         let js_context = JsHookContext {
             caller: JsRawPrincipal::from_principal(ctx, &original.caller)?,
-            data: JsDocContext {
-                key: original.data.key,
-                collection: original.data.collection,
-                data: original
-                    .data
-                    .data
-                    .map(|doc| JsDoc::from_doc(ctx, doc))
-                    .transpose()?,
-            },
+            data: JsDocContext::from_context_option_doc(ctx, original.data)?,
         };
 
         Ok(js_context)
@@ -95,16 +63,7 @@ impl<'js> JsHookContext<'js, Vec<JsDocContext<Option<JsDoc<'js>>>>> {
         let data: Vec<JsDocContext<Option<JsDoc<'js>>>> = original
             .data
             .into_iter()
-            .map(|doc_ctx| {
-                Ok(JsDocContext {
-                    key: doc_ctx.key,
-                    collection: doc_ctx.collection,
-                    data: doc_ctx
-                        .data
-                        .map(|doc| JsDoc::from_doc(ctx, doc))
-                        .transpose()?,
-                })
-            })
+            .map(|doc_ctx| JsDocContext::from_context_option_doc(ctx, doc_ctx))
             .collect::<Result<Vec<JsDocContext<Option<JsDoc<'js>>>>, JsError>>()?;
 
         Ok(JsHookContext {
@@ -128,19 +87,7 @@ impl<'js> JsHookContext<'js, JsDocContext<JsDocAssertSet<'js>>> {
     ) -> Result<Self, JsError> {
         let js_context = JsHookContext {
             caller: JsRawPrincipal::from_principal(ctx, &original.caller)?,
-            data: JsDocContext {
-                key: original.data.key,
-                collection: original.data.collection,
-                data: JsDocAssertSet {
-                    current: original
-                        .data
-                        .data
-                        .current
-                        .map(|doc| JsDoc::from_doc(ctx, doc))
-                        .transpose()?,
-                    proposed: JsSetDoc::from_set_doc(ctx, original.data.data.proposed)?,
-                },
-            },
+            data: JsDocContext::from_context_assert_set(ctx, original.data)?,
         };
 
         Ok(js_context)
@@ -154,22 +101,86 @@ impl<'js> JsHookContext<'js, JsDocContext<JsDocAssertDelete<'js>>> {
     ) -> Result<Self, JsError> {
         let js_context = JsHookContext {
             caller: JsRawPrincipal::from_principal(ctx, &original.caller)?,
-            data: JsDocContext {
-                key: original.data.key,
-                collection: original.data.collection,
-                data: JsDocAssertDelete {
-                    current: original
-                        .data
-                        .data
-                        .current
-                        .map(|doc| JsDoc::from_doc(ctx, doc))
-                        .transpose()?,
-                    proposed: JsDelDoc::from_del_doc(original.data.data.proposed),
-                },
-            },
+            data: JsDocContext::from_context_assert_delete(ctx, original.data)?,
         };
 
         Ok(js_context)
+    }
+}
+
+impl<'js> JsDocContext<JsDocUpsert<'js>> {
+    pub fn from_context_doc_upsert(
+        ctx: &Ctx<'js>,
+        doc_ctx: DocContext<DocUpsert>,
+    ) -> Result<Self, JsError> {
+        Ok(JsDocContext {
+            key: doc_ctx.key,
+            collection: doc_ctx.collection,
+            data: JsDocUpsert {
+                before: doc_ctx
+                    .data
+                    .before
+                    .map(|doc| JsDoc::from_doc(ctx, doc))
+                    .transpose()?,
+                after: JsDoc::from_doc(ctx, doc_ctx.data.after)?,
+            },
+        })
+    }
+}
+
+impl<'js> JsDocContext<Option<JsDoc<'js>>> {
+    pub fn from_context_option_doc(
+        ctx: &Ctx<'js>,
+        doc_ctx: DocContext<Option<Doc>>,
+    ) -> Result<Self, JsError> {
+        Ok(JsDocContext {
+            key: doc_ctx.key,
+            collection: doc_ctx.collection,
+            data: doc_ctx
+                .data
+                .map(|doc| JsDoc::from_doc(ctx, doc))
+                .transpose()?,
+        })
+    }
+}
+
+impl<'js> JsDocContext<JsDocAssertSet<'js>> {
+    pub fn from_context_assert_set(
+        ctx: &Ctx<'js>,
+        doc_ctx: DocContext<DocAssertSet>,
+    ) -> Result<Self, JsError> {
+        Ok(JsDocContext {
+            key: doc_ctx.key,
+            collection: doc_ctx.collection,
+            data: JsDocAssertSet {
+                current: doc_ctx
+                    .data
+                    .current
+                    .map(|doc| JsDoc::from_doc(ctx, doc))
+                    .transpose()?,
+                proposed: JsSetDoc::from_set_doc(ctx, doc_ctx.data.proposed)?,
+            },
+        })
+    }
+}
+
+impl<'js> JsDocContext<JsDocAssertDelete<'js>> {
+    pub fn from_context_assert_delete(
+        ctx: &Ctx<'js>,
+        doc_ctx: DocContext<DocAssertDelete>,
+    ) -> Result<Self, JsError> {
+        Ok(JsDocContext {
+            key: doc_ctx.key,
+            collection: doc_ctx.collection,
+            data: JsDocAssertDelete {
+                current: doc_ctx
+                    .data
+                    .current
+                    .map(|doc| JsDoc::from_doc(ctx, doc))
+                    .transpose()?,
+                proposed: JsDelDoc::from_del_doc(doc_ctx.data.proposed),
+            },
+        })
     }
 }
 

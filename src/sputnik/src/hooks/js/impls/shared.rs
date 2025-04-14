@@ -155,7 +155,7 @@ impl<'js> FromJs<'js> for JsControllerScope {
         match s.as_str() {
             "write" => Ok(Self::Write),
             "admin" => Ok(Self::Admin),
-            _ => Err(JsError::new_from_js("JsRawData", "Vec<u8>")),
+            _ => Err(JsError::new_from_js("JsControllerScope", "ControllerScope")),
         }
     }
 }

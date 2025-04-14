@@ -4,7 +4,7 @@ import { AnonymousIdentity } from '@dfinity/agent';
 import { Ed25519KeyIdentity } from '@dfinity/identity';
 import type { Principal } from '@dfinity/principal';
 import { PocketIc, type Actor } from '@hadronous/pic';
-import { afterAll, beforeAll, describe, expect, inject } from 'vitest';
+import { inject } from 'vitest';
 import { CONTROLLER_ERROR_MSG } from '../../constants/mission-control-tests.constants';
 import {
 	missionControlUserInitArgs,

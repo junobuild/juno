@@ -3,7 +3,7 @@ import type { Identity } from '@dfinity/agent';
 import type { Principal } from '@dfinity/principal';
 import { jsonReplacer } from '@dfinity/utils';
 import { type Actor, PocketIc } from '@hadronous/pic';
-import { afterAll, beforeAll, describe, inject } from 'vitest';
+import {inject } from 'vitest';
 import { mockSetRule } from '../../mocks/collection.mocks';
 import { mockSputnikObj } from '../../mocks/sputnik.mocks';
 import { setupTestSputnik } from '../../utils/fixtures-tests.utils';

@@ -15,7 +15,7 @@ import {
 	JUNO_ERROR_VERSION_OUTDATED_OR_FUTURE
 } from '@junobuild/errors';
 import { nanoid } from 'nanoid';
-import { afterAll, beforeAll, describe, expect, inject } from 'vitest';
+import { inject } from 'vitest';
 import {
 	pageViewMock,
 	performanceMetricMock,

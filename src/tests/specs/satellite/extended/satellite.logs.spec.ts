@@ -6,7 +6,6 @@ import type {
 import { toNullable } from '@dfinity/utils';
 import { type Actor, type PocketIc } from '@hadronous/pic';
 import { fromArray } from '@junobuild/utils';
-import { afterAll, beforeAll, describe, expect } from 'vitest';
 import { mockSetRule } from '../../../mocks/collection.mocks';
 import { mockListParams } from '../../../mocks/list.mocks';
 import { setupTestSatellite } from '../../../utils/fixtures-tests.utils';

@@ -1,4 +1,3 @@
-use crate::hooks::js::impls::shared::JsBigInt;
 use crate::hooks::js::impls::utils::{
     from_bigint_js, from_bigint_js_to_usize, into_bigint_from_usize,
     into_optional_bigint_from_usize,
@@ -113,112 +112,6 @@ impl<'js> JsListResults<'js, JsDoc<'js>> {
 // ---------------------------------------------------------
 // IntoJs
 // ---------------------------------------------------------
-
-impl<'js> IntoJs<'js> for JsListPaginate<'js> {
-    fn into_js(self, ctx: &Ctx<'js>) -> JsResult<Value<'js>> {
-        let obj = Object::new(ctx.clone())?;
-
-        if let Some(start_after) = self.start_after {
-            obj.set("start_after", start_after)?;
-        }
-
-        if let Some(limit) = self.limit {
-            obj.set("limit", limit)?;
-        }
-
-        Ok(obj.into_value())
-    }
-}
-
-impl<'js> IntoJs<'js> for JsListOrderField {
-    fn into_js(self, _ctx: &Ctx<'js>) -> JsResult<Value<'js>> {
-        match self {
-            JsListOrderField::Keys => "keys",
-            JsListOrderField::CreatedAt => "created_at",
-            JsListOrderField::UpdatedAt => "updated_at",
-        };
-
-        Err(JsError::new_from_js("ListOrderField", "JsListOrderField"))
-    }
-}
-
-impl<'js> IntoJs<'js> for JsListOrder {
-    fn into_js(self, ctx: &Ctx<'js>) -> JsResult<Value<'js>> {
-        let obj = Object::new(ctx.clone())?;
-        obj.set("desc", self.desc)?;
-        obj.set("field", self.field.into_js(ctx)?)?;
-        Ok(obj.into_value())
-    }
-}
-
-impl<'js> IntoJs<'js> for JsTimestampMatcher {
-    fn into_js(self, ctx: &Ctx<'js>) -> JsResult<Value<'js>> {
-        let obj = Object::new(ctx.clone())?;
-
-        match self {
-            JsTimestampMatcher::Equal(ts) => {
-                obj.set("equal", JsBigInt(ts).into_js(ctx)?)?;
-            }
-            JsTimestampMatcher::GreaterThan(ts) => {
-                obj.set("greater_than", JsBigInt(ts).into_js(ctx)?)?;
-            }
-            JsTimestampMatcher::LessThan(ts) => {
-                obj.set("less_than", JsBigInt(ts).into_js(ctx)?)?;
-            }
-            JsTimestampMatcher::Between(start, end) => {
-                obj.set(
-                    "between",
-                    vec![JsBigInt(start).into_js(ctx)?, JsBigInt(end).into_js(ctx)?],
-                )?;
-            }
-        }
-
-        Ok(obj.into_value())
-    }
-}
-
-impl<'js> IntoJs<'js> for JsListMatcher {
-    fn into_js(self, ctx: &Ctx<'js>) -> JsResult<Value<'js>> {
-        let obj = Object::new(ctx.clone())?;
-
-        if let Some(key) = self.key {
-            obj.set("key", key)?;
-        }
-        if let Some(description) = self.description {
-            obj.set("description", description)?;
-        }
-        if let Some(created_at) = self.created_at {
-            obj.set("created_at", created_at.into_js(ctx)?)?;
-        }
-        if let Some(updated_at) = self.updated_at {
-            obj.set("updated_at", updated_at.into_js(ctx)?)?;
-        }
-
-        Ok(obj.into_value())
-    }
-}
-
-impl<'js> IntoJs<'js> for JsListParams<'js> {
-    fn into_js(self, ctx: &Ctx<'js>) -> JsResult<Value<'js>> {
-        let obj = Object::new(ctx.clone())?;
-        obj.set("collection", self.collection)?;
-
-        if let Some(matcher) = self.matcher {
-            obj.set("matcher", matcher.into_js(ctx)?)?;
-        }
-        if let Some(paginate) = self.paginate {
-            obj.set("paginate", paginate.into_js(ctx)?)?;
-        }
-        if let Some(order) = self.order {
-            obj.set("order", order.into_js(ctx)?)?;
-        }
-        if let Some(owner) = self.owner {
-            obj.set("owner", owner)?;
-        }
-
-        Ok(obj.into_value())
-    }
-}
 
 impl<'js> IntoJs<'js> for JsListResults<'js, JsDoc<'js>> {
     fn into_js(self, ctx: &Ctx<'js>) -> JsResult<Value<'js>> {
@@ -366,7 +259,6 @@ impl<'js> FromJs<'js> for JsListParams<'js> {
             .transpose()?;
 
         Ok(Self {
-            collection: obj.get("collection")?,
             matcher,
             paginate,
             order,

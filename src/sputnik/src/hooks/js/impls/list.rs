@@ -216,14 +216,12 @@ impl<'js> FromJs<'js> for JsListMatcher {
         let obj = Object::from_value(value)?;
 
         let created_at = obj
-            .get::<_, Value>("created_at")
-            .ok()
+            .get::<_, Option<Value>>("created_at")?
             .map(|value| JsTimestampMatcher::from_js(ctx, value))
             .transpose()?;
 
         let updated_at = obj
-            .get::<_, Value>("updated_at")
-            .ok()
+            .get::<_, Option<Value>>("updated_at")?
             .map(|value| JsTimestampMatcher::from_js(ctx, value))
             .transpose()?;
 
@@ -241,22 +239,16 @@ impl<'js> FromJs<'js> for JsListParams<'js> {
         let obj = Object::from_value(value)?;
 
         let matcher = obj
-            .get::<_, Value>("matcher")
-            .ok()
-            .map(|v| JsListMatcher::from_js(ctx, v))
-            .transpose()?;
+            .get::<_, Option<Value>>("matcher")?
+            .map(|v| JsListMatcher::from_js(ctx, v)).transpose()?;
 
         let paginate = obj
-            .get::<_, Value>("paginate")
-            .ok()
-            .map(|v| JsListPaginate::from_js(ctx, v))
-            .transpose()?;
+            .get::<_, Option<Value>>("paginate")?
+            .map(|v| JsListPaginate::from_js(ctx, v)).transpose()?;
 
         let order = obj
-            .get::<_, Value>("order")
-            .ok()
-            .map(|v| JsListOrder::from_js(ctx, v))
-            .transpose()?;
+            .get::<_, Option<Value>>("order")?
+            .map(|v| JsListOrder::from_js(ctx, v)).transpose()?;
 
         Ok(Self {
             matcher,

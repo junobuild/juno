@@ -13,7 +13,7 @@ import {
 	JUNO_DATASTORE_ERROR_USER_NOT_ALLOWED
 } from '@junobuild/errors';
 import { toArray } from '@junobuild/utils';
-import { afterAll, beforeAll, describe, expect, inject } from 'vitest';
+import { inject } from 'vitest';
 import { controllersInitArgs, SATELLITE_WASM_PATH } from '../../../utils/setup-tests.utils';
 
 describe('Satellite > User', () => {

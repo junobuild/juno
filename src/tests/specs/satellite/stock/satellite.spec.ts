@@ -10,7 +10,7 @@ import {
 	JUNO_ERROR_VERSION_OUTDATED_OR_FUTURE,
 	JUNO_STORAGE_ERROR_UPLOAD_NOT_ALLOWED
 } from '@junobuild/errors';
-import { afterAll, beforeAll, describe, expect, inject } from 'vitest';
+import { inject } from 'vitest';
 import { controllersInitArgs, SATELLITE_WASM_PATH } from '../../../utils/setup-tests.utils';
 
 describe('Satellite', () => {

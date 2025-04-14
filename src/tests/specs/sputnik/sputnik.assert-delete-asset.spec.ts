@@ -3,7 +3,7 @@ import type { Identity } from '@dfinity/agent';
 import type { Principal } from '@dfinity/principal';
 import { fromNullable } from '@dfinity/utils';
 import { type Actor, PocketIc } from '@hadronous/pic';
-import { afterAll, beforeAll, describe, expect, inject } from 'vitest';
+import { inject } from 'vitest';
 import { mockSetRule } from '../../mocks/collection.mocks';
 import { setupTestSputnik } from '../../utils/fixtures-tests.utils';
 import { fetchLogs, type IcMgmtLog } from '../../utils/mgmt-test.utils';

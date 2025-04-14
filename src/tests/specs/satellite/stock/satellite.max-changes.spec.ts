@@ -5,7 +5,7 @@ import { Ed25519KeyIdentity } from '@dfinity/identity';
 import { fromNullable, nonNullish, toNullable } from '@dfinity/utils';
 import { type Actor, PocketIc } from '@hadronous/pic';
 import { JUNO_DATASTORE_ERROR_USER_USAGE_CHANGE_LIMIT_REACHED } from '@junobuild/errors';
-import { afterAll, beforeAll, describe, expect, inject } from 'vitest';
+import { inject } from 'vitest';
 import { createDoc as createDocUtils } from '../../../utils/satellite-doc-tests.utils';
 import { uploadAsset } from '../../../utils/satellite-storage-tests.utils';
 import { controllersInitArgs, SATELLITE_WASM_PATH } from '../../../utils/setup-tests.utils';

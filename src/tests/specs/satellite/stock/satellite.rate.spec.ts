@@ -9,7 +9,7 @@ import { Ed25519KeyIdentity } from '@dfinity/identity';
 import { assertNonNullish, fromNullable, isNullish, nonNullish, toNullable } from '@dfinity/utils';
 import { PocketIc, type Actor } from '@hadronous/pic';
 import { toArray } from '@junobuild/utils';
-import { afterAll, beforeAll, describe, expect, inject } from 'vitest';
+import { inject } from 'vitest';
 import { SATELLITE_WASM_PATH, controllersInitArgs } from '../../../utils/setup-tests.utils';
 
 describe('Satellite > Rate', () => {

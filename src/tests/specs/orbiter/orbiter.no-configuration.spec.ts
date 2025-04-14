@@ -10,7 +10,7 @@ import { idlFactory as idlFactorOrbiter } from '$declarations/orbiter/orbiter.fa
 import { Ed25519KeyIdentity } from '@dfinity/identity';
 import { PocketIc, type Actor } from '@hadronous/pic';
 import { nanoid } from 'nanoid';
-import { afterAll, beforeAll, describe, expect, inject } from 'vitest';
+import { inject } from 'vitest';
 import {
 	pageViewMock,
 	performanceMetricMock,

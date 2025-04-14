@@ -9,7 +9,7 @@ import { toNullable } from '@dfinity/utils';
 import { PocketIc, type Actor } from '@hadronous/pic';
 import { readFileSync } from 'node:fs';
 import { join } from 'node:path';
-import { afterAll, beforeAll, describe, expect, inject } from 'vitest';
+import { inject } from 'vitest';
 import { assertCertification } from '../../../utils/certification-test.utils';
 import { deleteDefaultIndexHTML } from '../../../utils/satellite-tests.utils';
 import { SATELLITE_WASM_PATH, controllersInitArgs } from '../../../utils/setup-tests.utils';

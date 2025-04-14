@@ -8,7 +8,7 @@ import { testIcCdkCall } from './apis/ic-cdk/ic-cdk-call';
 import { testIcCdkId } from './apis/ic-cdk/ic-cdk-id';
 import { testTextEncoding } from './apis/node/text-encoding';
 import { testSdkControllers } from './sdk/controllers';
-import { testSdkDeleteDocStore, testSdkGetDocStore, testSdkSetDocStore } from './sdk/db';
+import {testSdkDeleteDocStore, testSdkGetDocStore, testSdkListDocsStore, testSdkSetDocStore} from './sdk/db';
 
 /* eslint-disable require-await, no-console */
 
@@ -26,7 +26,8 @@ const collections = [
 	'test-textencoding',
 	'test-deletedoc',
 	'test-getdoc',
-	'test-sdk-controllers'
+	'test-sdk-controllers',
+	'test-listdocs'
 ] as const;
 
 type OnSetDocCollection = (typeof collections)[number];
@@ -42,6 +43,7 @@ export const onSetDoc = defineHook<OnSetDoc>({
 			'test-textencoding': testTextEncoding,
 			'test-deletedoc': testSdkDeleteDocStore,
 			'test-getdoc': testSdkGetDocStore,
+			'test-listdocs': testSdkListDocsStore,
 			'test-sdk-controllers': testSdkControllers
 		};
 

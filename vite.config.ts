@@ -1,13 +1,8 @@
 import { sveltekit } from '@sveltejs/kit/vite';
-import { readFileSync } from 'fs';
 import { dirname, resolve } from 'path';
-import { fileURLToPath } from 'url';
 import { defineConfig, type UserConfig } from 'vite';
 import { nodePolyfills } from 'vite-plugin-node-polyfills';
-
-const file = fileURLToPath(new URL('package.json', import.meta.url));
-const json = readFileSync(file, 'utf8');
-const { version } = JSON.parse(json);
+import { CSS_CONFIG_OPTIONS, defineViteReplacements } from './vite.utils';
 
 const config: UserConfig = {
 	plugins: [sveltekit(), nodePolyfills()],
@@ -16,13 +11,7 @@ const config: UserConfig = {
 			$declarations: resolve('./src/declarations')
 		}
 	},
-	css: {
-		preprocessorOptions: {
-			scss: {
-				api: 'modern-compiler'
-			}
-		}
-	},
+	...CSS_CONFIG_OPTIONS,
 	build: {
 		target: 'es2020',
 		rollupOptions: {
@@ -52,7 +41,7 @@ export default defineConfig(
 	(): UserConfig => ({
 		...config,
 		define: {
-			VITE_APP_VERSION: JSON.stringify(version)
+			...defineViteReplacements()
 		}
 	})
 );

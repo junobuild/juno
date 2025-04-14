@@ -5,16 +5,12 @@ import { Principal } from '@dfinity/principal';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import i18Mock from '../../mocks/i18n.mock';
 import { mockIdentity } from '../../mocks/identity.mock';
+import { mockMissionControlId } from '../../mocks/modules.mock';
 
 vi.mock('$lib/api/mission-control.api');
 vi.mock('$lib/rest/emulator.rest');
 
-vi.mock('$app/environment', () => ({
-	browser: true
-}));
-
 describe('emulator.services', () => {
-	const mockMissionControlId = Principal.fromText('rdmx6-jaaaa-aaaaa-aaadq-cai');
 	const mockSatelliteId = Principal.fromText('jx5yt-yyaaa-aaaal-abzbq-cai');
 	const mockPrincipalText = 'xlmdg-vkosz-ceopx-7wtgu-g3xmd-koiyc-awqaq-7modz-zf6r6-364rh-oqe';
 

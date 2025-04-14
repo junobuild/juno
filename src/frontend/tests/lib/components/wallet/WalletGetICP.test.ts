@@ -1,6 +1,5 @@
 import WalletGetICP from '$lib/components/wallet/WalletGetICP.svelte';
 import { render } from '@testing-library/svelte';
-import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { mockMissionControlId } from '../../../mocks/modules.mock';
 
 describe('WalletGetICP', () => {

@@ -5,7 +5,7 @@ import { Principal } from '@dfinity/principal';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import i18Mock from '../../mocks/i18n.mock';
 import { mockIdentity } from '../../mocks/identity.mock';
-import {mockMissionControlId} from "../../mocks/modules.mock";
+import { mockMissionControlId } from '../../mocks/modules.mock';
 
 vi.mock('$lib/api/mission-control.api');
 vi.mock('$lib/rest/emulator.rest');

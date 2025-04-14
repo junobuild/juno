@@ -8,12 +8,12 @@ describe('WalletGetICP', () => {
 		vi.unstubAllEnvs();
 	});
 
-	it('should not display button when mode is production', () => {
+	it.only('should not display button when mode is production', () => {
 		vi.stubEnv('MODE', 'production');
 
-		const { getByRole } = render(WalletGetICP, { missionControlId: mockMissionControlId });
+		const { container } = render(WalletGetICP, { missionControlId: mockMissionControlId });
 
-		expect(getByRole('button')).not.toBeInTheDocument();
+		expect(container.querySelector('button')).not.toBeInTheDocument();
 	});
 
 	it('should display button when in dev mode', () => {

@@ -44,7 +44,7 @@
 		"i18n": "node scripts/i18n.mjs && prettier --write ./src/frontend/src/lib/types/i18n.d.ts --log-level silent",
 		"observatory:statuses": "node scripts/observatory.statuses.mjs",
 		"clippy": "./scripts/clippy.sh",
-		"test": "tsc --project tsconfig.spec.json --noEmit && vitest",
+		"test": "tsc --project tsconfig.spec.json --noEmit && vitest --dir src/tests",
 		"test:frontend": "tsc --project tsconfig.spec.json --noEmit && vitest --config ./vitest.frontend.config.ts --dir src/frontend",
 		"build:console": "scripts/cargo.sh --console",
 		"build:observatory": "scripts/cargo.sh --observatory",

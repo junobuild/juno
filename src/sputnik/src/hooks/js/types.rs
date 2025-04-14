@@ -188,7 +188,7 @@ pub mod interface {
 
 pub mod list {
     use crate::hooks::js::types::hooks::JsKey;
-    use crate::hooks::js::types::shared::{JsCollectionKey, JsTimestamp, JsUserId};
+    use crate::hooks::js::types::shared::{JsTimestamp, JsUserId};
     use rquickjs::BigInt;
 
     #[derive(Clone)]
@@ -228,7 +228,6 @@ pub mod list {
 
     #[derive(Clone)]
     pub struct JsListParams<'js> {
-        pub collection: JsCollectionKey,
         pub matcher: Option<JsListMatcher>,
         pub paginate: Option<JsListPaginate<'js>>,
         pub order: Option<JsListOrder>,

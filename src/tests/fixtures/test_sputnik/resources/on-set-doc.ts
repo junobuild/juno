@@ -8,7 +8,12 @@ import { testIcCdkCall } from './apis/ic-cdk/ic-cdk-call';
 import { testIcCdkId } from './apis/ic-cdk/ic-cdk-id';
 import { testTextEncoding } from './apis/node/text-encoding';
 import { testSdkControllers } from './sdk/controllers';
-import {testSdkDeleteDocStore, testSdkGetDocStore, testSdkListDocsStore, testSdkSetDocStore} from './sdk/db';
+import {
+	testSdkDeleteDocStore,
+	testSdkGetDocStore,
+	testSdkListDocsStore,
+	testSdkSetDocStore
+} from './sdk/db';
 
 /* eslint-disable require-await, no-console */
 

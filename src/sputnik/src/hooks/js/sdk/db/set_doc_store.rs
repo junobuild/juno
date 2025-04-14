@@ -1,4 +1,4 @@
-use crate::hooks::js::types::hooks::JsKey;
+use crate::hooks::js::types::hooks::{JsDocContext, JsDocUpsert, JsKey};
 use crate::hooks::js::types::interface::JsSetDoc;
 use crate::hooks::js::types::shared::{JsCollectionKey, JsUserId};
 use junobuild_satellite::set_doc_store as set_doc_store_sdk;
@@ -19,9 +19,11 @@ fn set_doc_store<'js>(
     collection: JsCollectionKey,
     key: JsKey,
     value: JsSetDoc<'js>,
-) -> JsResult<()> {
-    set_doc_store_sdk(caller.to_principal()?, collection, key, value.to_doc()?)
+) -> JsResult<JsDocContext<JsDocUpsert<'js>>> {
+    let context = set_doc_store_sdk(caller.to_principal()?, collection, key, value.to_doc()?)
         .map_err(|e| Exception::throw_message(&ctx, &e))?;
 
-    Ok(())
+    let js_context = JsDocContext::from_context_doc_upsert(&ctx, context)?;
+
+    Ok(js_context)
 }

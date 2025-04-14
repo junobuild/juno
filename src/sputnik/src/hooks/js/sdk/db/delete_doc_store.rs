@@ -1,4 +1,5 @@
-use crate::hooks::js::types::hooks::JsKey;
+use crate::hooks::js::types::db::JsDoc;
+use crate::hooks::js::types::hooks::{JsDocContext, JsKey};
 use crate::hooks::js::types::interface::JsDelDoc;
 use crate::hooks::js::types::shared::{JsCollectionKey, JsUserId};
 use junobuild_satellite::delete_doc_store as delete_doc_store_sdk;
@@ -22,9 +23,11 @@ fn delete_doc_store<'js>(
     collection: JsCollectionKey,
     key: JsKey,
     value: JsDelDoc,
-) -> JsResult<()> {
-    delete_doc_store_sdk(caller.to_principal()?, collection, key, value.to_doc()?)
+) -> JsResult<JsDocContext<Option<JsDoc<'js>>>> {
+    let context = delete_doc_store_sdk(caller.to_principal()?, collection, key, value.to_doc()?)
         .map_err(|e| Exception::throw_message(&ctx, &e))?;
 
-    Ok(())
+    let js_context = JsDocContext::from_context_option_doc(&ctx, context)?;
+
+    Ok(js_context)
 }

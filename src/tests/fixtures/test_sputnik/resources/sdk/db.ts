@@ -21,7 +21,7 @@ export const testSdkSetDocStore = async (context: OnSetDocContext) => {
 
 	const encodedData = encodeDocData(updateData);
 
-	setDocStore({
+	const result = setDocStore({
 		caller: id(),
 		collection: context.data.collection,
 		key: context.data.key,
@@ -30,6 +30,19 @@ export const testSdkSetDocStore = async (context: OnSetDocContext) => {
 			data: encodedData
 		}
 	});
+
+	const {
+		data: { before, after }
+	} = result;
+
+	assertNonNullish(before);
+
+	assertNonNullish(before.version);
+	assertNonNullish(after.version);
+
+	if (after.version !== before.version + 1n) {
+		throw new Error('Version should have been incremented.');
+	}
 };
 
 export const testSdkDeleteDocStore = async ({
@@ -37,7 +50,7 @@ export const testSdkDeleteDocStore = async ({
 	data: { collection, key, data }
 	// eslint-disable-next-line require-await
 }: OnSetDocContext) => {
-	deleteDocStore({
+	const result = deleteDocStore({
 		caller,
 		collection,
 		key,
@@ -45,6 +58,8 @@ export const testSdkDeleteDocStore = async ({
 			version: data.after.version
 		}
 	});
+
+	assertNonNullish(result.data);
 };
 
 export const testSdkGetDocStore = async ({

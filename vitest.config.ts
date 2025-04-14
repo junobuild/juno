@@ -1,10 +1,10 @@
 import { resolve } from 'node:path';
 import { defineConfig } from 'vitest/config';
+import {defineVitestAlias} from "./vitest.utils";
 
 export default defineConfig({
 	test: {
 		globalSetup: './vitest.global.ts',
-		setupFiles: ['./vitest.setup.ts'],
 		globals: true,
 		watch: false,
 		silent: false,
@@ -26,19 +26,6 @@ export default defineConfig({
 		hookTimeout: 60000
 	},
 	resolve: {
-		alias: [
-			{
-				find: '$test-declarations',
-				replacement: resolve(__dirname, 'src/tests/declarations')
-			},
-			{
-				find: '$declarations',
-				replacement: resolve(__dirname, 'src/declarations')
-			},
-			{
-				find: '$lib',
-				replacement: resolve(__dirname, 'src/frontend/src/lib')
-			}
-		]
+		alias: defineVitestAlias()
 	}
 });

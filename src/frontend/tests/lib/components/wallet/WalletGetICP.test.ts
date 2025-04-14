@@ -1,6 +1,6 @@
-import { describe, it, expect } from 'vitest';
-import { render } from '@testing-library/svelte';
 import WalletGetICP from '$lib/components/wallet/WalletGetICP.svelte';
+import { render } from '@testing-library/svelte';
+import { describe, expect, it } from 'vitest';
 import { mockMissionControlId } from '../../../mocks/modules.mock';
 
 describe('WalletGetICP', () => {
@@ -19,7 +19,7 @@ describe('WalletGetICP', () => {
 
 	it('should display button when in skylab mode', () => {
 		vi.stubEnv('DEV', false);
-		vi.stubEnv('MODE', "skylab");
+		vi.stubEnv('MODE', 'skylab');
 
 		const { getByRole } = render(WalletGetICP, { missionControlId: mockMissionControlId });
 

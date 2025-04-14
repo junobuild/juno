@@ -22,5 +22,5 @@ fn get_doc_store<'js>(
     let doc = get_doc_store_sdk(caller.to_principal()?, collection, key)
         .map_err(|e| Exception::throw_message(&ctx, &e))?;
 
-    Ok(doc.map(|doc| JsDoc::from_doc(&ctx, doc)).transpose()?)
+    doc.map(|doc| JsDoc::from_doc(&ctx, doc)).transpose()
 }

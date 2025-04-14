@@ -21,7 +21,7 @@ export const testSdkSetDocStore = async (context: OnSetDocContext) => {
 
 	const encodedData = encodeDocData(updateData);
 
-	let result = setDocStore({
+	const result = setDocStore({
 		caller: id(),
 		collection: context.data.collection,
 		key: context.data.key,

@@ -1,6 +1,5 @@
-import { resolve } from 'node:path';
 import { defineConfig } from 'vitest/config';
-import {defineVitestAlias} from "./vitest.utils";
+import { defineVitestAlias } from './vitest.utils';
 
 export default defineConfig({
 	test: {

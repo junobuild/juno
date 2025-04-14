@@ -185,3 +185,62 @@ pub mod interface {
         pub chunk_ids: Vec<JsChunkId>,
     }
 }
+
+pub mod list {
+    use crate::hooks::js::types::hooks::JsKey;
+    use crate::hooks::js::types::shared::{JsCollectionKey, JsTimestamp, JsUserId};
+    use rquickjs::BigInt;
+
+    #[derive(Clone)]
+    pub struct JsListPaginate<'js> {
+        pub start_after: Option<JsKey>,
+        pub limit: Option<BigInt<'js>>,
+    }
+
+    #[derive(Clone)]
+    pub enum JsListOrderField {
+        Keys,
+        CreatedAt,
+        UpdatedAt,
+    }
+
+    #[derive(Clone)]
+    pub struct JsListOrder {
+        pub desc: bool,
+        pub field: JsListOrderField,
+    }
+
+    #[derive(Clone)]
+    pub enum JsTimestampMatcher {
+        Equal(JsTimestamp),
+        GreaterThan(JsTimestamp),
+        LessThan(JsTimestamp),
+        Between(JsTimestamp, JsTimestamp),
+    }
+
+    #[derive(Clone)]
+    pub struct JsListMatcher {
+        pub key: Option<JsKey>,
+        pub description: Option<String>,
+        pub created_at: Option<JsTimestampMatcher>,
+        pub updated_at: Option<JsTimestampMatcher>,
+    }
+
+    #[derive(Clone)]
+    pub struct JsListParams<'js> {
+        pub collection: JsCollectionKey,
+        pub matcher: Option<JsListMatcher>,
+        pub paginate: Option<JsListPaginate<'js>>,
+        pub order: Option<JsListOrder>,
+        pub owner: Option<JsUserId<'js>>,
+    }
+
+    #[derive(Clone)]
+    pub struct JsListResults<'js, T> {
+        pub items: Vec<(JsKey, T)>,
+        pub items_length: BigInt<'js>,
+        pub items_page: Option<BigInt<'js>>,
+        pub matches_length: BigInt<'js>,
+        pub matches_pages: Option<BigInt<'js>>,
+    }
+}

@@ -153,13 +153,9 @@ export const testSdkListDocsStore = async ({
 	});
 };
 
-export const testSdkCountCollectionDocsStore = async ({
-	caller,
-	data: { collection, key, data }
-	// eslint-disable-next-line require-await
-}: OnSetDocContext) => {
+export const testSdkCountCollectionDocsStore = async () => {
 	const count = countCollectionDocsStore({
-		collection: 'demo-listdocs'
+		collection: 'demo-countcollectiondocs'
 	});
 
 	console.log('Count:', count);

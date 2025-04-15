@@ -49,9 +49,3 @@
 		<p>{$i18n.errors.cli_missing_params}</p>
 	{/if}
 </div>
-
-<style lang="scss">
-	.section {
-		--spinner-paragraph-margin: 0;
-	}
-</style>

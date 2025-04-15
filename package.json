@@ -67,7 +67,7 @@
 		"@junobuild/config-loader": "^0.2.1",
 		"@junobuild/console": "^0.1.7",
 		"@junobuild/errors": "^0.0.7",
-		"@junobuild/functions": "^0.0.15-next-2025-04-15.1",
+		"@junobuild/functions": "^0.0.15-next-2025-04-15.3",
 		"@junobuild/storage": "^0.1.7",
 		"@ltd/j-toml": "^1.38.0",
 		"@sveltejs/adapter-static": "^3.0.8",

@@ -2,6 +2,7 @@ import { assertNonNullish, jsonReplacer } from '@dfinity/utils';
 import type { OnSetDocContext } from '@junobuild/functions';
 import { id } from '@junobuild/functions/ic-cdk';
 import {
+	countCollectionDocsStore,
 	decodeDocData,
 	deleteDocStore,
 	encodeDocData,
@@ -150,4 +151,16 @@ export const testSdkListDocsStore = async ({
 			})
 		}
 	});
+};
+
+export const testSdkCountCollectionDocsStore = async ({
+	caller,
+	data: { collection, key, data }
+	// eslint-disable-next-line require-await
+}: OnSetDocContext) => {
+	const count = countCollectionDocsStore({
+		collection: 'demo-listdocs'
+	});
+
+	console.log('Count:', count);
 };

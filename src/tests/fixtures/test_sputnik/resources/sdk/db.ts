@@ -6,9 +6,10 @@ import {
 	deleteDocStore,
 	encodeDocData,
 	getDocStore,
+	listDocsStore,
 	setDocStore
 } from '@junobuild/functions/sdk';
-import type { SputnikMock } from '../../../../mocks/sputnik.mocks';
+import type { SputnikMock, SputnikTestListDocs } from '../../../../mocks/sputnik.mocks';
 
 // eslint-disable-next-line require-await
 export const testSdkSetDocStore = async (context: OnSetDocContext) => {
@@ -99,6 +100,54 @@ export const testSdkGetDocStore = async ({
 		doc: {
 			version: doc.version,
 			data: updatedData
+		}
+	});
+};
+
+export const testSdkListDocsStore = async ({
+	caller,
+	data: { collection, key, data }
+	// eslint-disable-next-line require-await
+}: OnSetDocContext) => {
+	const result = listDocsStore({
+		caller: id(),
+		collection: 'demo-listdocs',
+		params: {
+			matcher: {
+				key: 'key-match',
+				description: 'desc-match'
+			},
+			owner: caller,
+			order: {
+				desc: true,
+				field: 'created_at'
+			},
+			paginate: {
+				start_after: undefined,
+				limit: 10n
+			}
+		}
+	});
+
+	for (const [key, item] of result.items) {
+		// eslint-disable-next-line no-console
+		console.log(
+			`${key} / ${item.description ?? ''}: ${JSON.stringify(decodeDocData(item.data), jsonReplacer)}`
+		);
+	}
+
+	setDocStore({
+		caller,
+		collection,
+		key,
+		doc: {
+			version: data.after.version,
+			data: encodeDocData<SputnikTestListDocs>({
+				items_length: result.items_length,
+				items_page: result.items_page,
+				matches_length: result.matches_length,
+				matches_pages: result.matches_pages
+			})
 		}
 	});
 };

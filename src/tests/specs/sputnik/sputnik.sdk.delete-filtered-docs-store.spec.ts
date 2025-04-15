@@ -6,11 +6,11 @@ import { type Actor, PocketIc } from '@hadronous/pic';
 import { nanoid } from 'nanoid';
 import { inject } from 'vitest';
 import { mockSetRule } from '../../mocks/collection.mocks';
+import { mockListParams } from '../../mocks/list.mocks';
 import { setupTestSputnik } from '../../utils/fixtures-tests.utils';
 import { fetchLogs } from '../../utils/mgmt-test.utils';
 import { waitServerlessFunction } from '../../utils/satellite-extended-tests.utils';
 import { addSomeDocsToBeListed, initVersionMock } from '../../utils/sputnik-tests.utils';
-import {mockListParams} from "../../mocks/list.mocks";
 
 describe('Sputnik > sdk > deleteFilteredDocsStore', () => {
 	let pic: PocketIc;

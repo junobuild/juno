@@ -11,14 +11,14 @@ import { fetchLogs } from '../../utils/mgmt-test.utils';
 import { waitServerlessFunction } from '../../utils/satellite-extended-tests.utils';
 import { addSomeDocsToBeListed, initVersionMock } from '../../utils/sputnik-tests.utils';
 
-describe('Sputnik > sdk > countCollectionDocsStore', () => {
+describe('Sputnik > sdk > countDocsStore', () => {
 	let pic: PocketIc;
 	let actor: Actor<SputnikActor>;
 	let canisterId: Principal;
 	let controller: Identity;
 
-	const TEST_COLLECTION = 'test-countcollectiondocs';
-	const MOCK_COLLECTION = 'demo-countcollectiondocs';
+	const TEST_COLLECTION = 'test-countdocs';
+	const MOCK_COLLECTION = 'demo-countdocs';
 
 	let keys: string[];
 
@@ -82,6 +82,6 @@ describe('Sputnik > sdk > countCollectionDocsStore', () => {
 
 		const count = BigInt((countMsg?.[1].message ?? '').replace('Count:', ''));
 
-		expect(count).toEqual(BigInt(keys.length));
+		expect(count).toEqual(2n);
 	});
 });

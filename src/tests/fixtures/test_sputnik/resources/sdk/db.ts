@@ -109,7 +109,7 @@ export const testSdkListDocsStore = async ({
 	data: { collection, key, data }
 	// eslint-disable-next-line require-await
 }: OnSetDocContext) => {
-	let result = listDocsStore({
+	const result = listDocsStore({
 		caller: id(),
 		collection: 'demo-listdocs',
 		params: {

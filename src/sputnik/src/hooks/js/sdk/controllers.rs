@@ -11,19 +11,19 @@ pub fn init_controllers_sdk(ctx: &Ctx) -> Result<(), JsError> {
     let global = ctx.globals();
 
     global.set(
-        "__juno_satellite_datastore_get_admin_controllers",
+        "__juno_satellite_get_admin_controllers",
         js_get_admin_controllers,
     )?;
     global.set(
-        "__juno_satellite_datastore_get_controllers",
+        "__juno_satellite_get_controllers",
         js_get_controllers,
     )?;
 
     global.set(
-        "__juno_satellite_datastore_is_admin_controller",
+        "__juno_satellite_is_admin_controller",
         js_is_admin_controller,
     )?;
-    global.set("__juno_satellite_datastore_is_controller", js_is_controller)?;
+    global.set("__juno_satellite_is_controller", js_is_controller)?;
 
     Ok(())
 }

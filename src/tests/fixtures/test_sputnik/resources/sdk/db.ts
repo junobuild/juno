@@ -5,6 +5,7 @@ import {
 	countCollectionDocsStore,
 	countDocsStore,
 	decodeDocData,
+	deleteDocsStore,
 	deleteDocStore,
 	encodeDocData,
 	getDocStore,
@@ -190,4 +191,11 @@ export const testSdkCountDocsStore = async ({
 
 	// eslint-disable-next-line no-console
 	console.log('Count:', count);
+};
+
+// eslint-disable-next-line require-await
+export const testSdkDeleteDocsStore = async () => {
+	deleteDocsStore({
+		collection: 'demo-deletedocs'
+	});
 };

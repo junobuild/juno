@@ -2,6 +2,7 @@ import type { Doc } from '$declarations/satellite/satellite.did';
 import type { _SERVICE as SputnikActor } from '$declarations/sputnik/sputnik.did';
 import type { Identity } from '@dfinity/agent';
 import { Ed25519KeyIdentity } from '@dfinity/identity';
+import type { Principal } from '@dfinity/principal';
 import { assertNonNullish, fromNullable, toNullable } from '@dfinity/utils';
 import { type Actor, PocketIc } from '@hadronous/pic';
 import { fromArray, toArray } from '@junobuild/utils';
@@ -10,11 +11,10 @@ import { inject } from 'vitest';
 import { mockSetRule } from '../../mocks/collection.mocks';
 import { mockSputnikObj, type SputnikTestListDocs } from '../../mocks/sputnik.mocks';
 import { setupTestSputnik } from '../../utils/fixtures-tests.utils';
+import { fetchLogs } from '../../utils/mgmt-test.utils';
 import { tick } from '../../utils/pic-tests.utils';
 import { waitServerlessFunction } from '../../utils/satellite-extended-tests.utils';
 import { initVersionMock } from '../../utils/sputnik-tests.utils';
-import {fetchLogs} from "../../utils/mgmt-test.utils";
-import type {Principal} from "@dfinity/principal";
 
 describe('Sputnik > ic-cdk > call', () => {
 	let pic: PocketIc;
@@ -55,8 +55,8 @@ describe('Sputnik > ic-cdk > call', () => {
 	const KEY_1 = `key-match-${nanoid()}`;
 	const KEY_2 = `excluded-${nanoid()}`;
 	const KEY_3 = `key-match-${nanoid()}`;
-	const KEY_4 = `key-match-${nanoid()}`
-	const KEY_5 = `key-match-${nanoid()}`
+	const KEY_4 = `key-match-${nanoid()}`;
+	const KEY_5 = `key-match-${nanoid()}`;
 
 	const addSomeDocsToBeListed = async () => {
 		const { set_doc } = actor;
@@ -170,6 +170,6 @@ describe('Sputnik > ic-cdk > call', () => {
 		expect(logKey5).toBeUndefined();
 
 		// Sorting
-		expect(logs[0][1].message.includes(KEY_4)).toBe(true)
+		expect(logs[0][1].message.includes(KEY_4)).toBe(true);
 	});
 });

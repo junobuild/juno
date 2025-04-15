@@ -1,5 +1,5 @@
 import { assertNonNullish, jsonReplacer } from '@dfinity/utils';
-import type { OnSetDocContext } from '@junobuild/functions';
+import type { ListParams, OnSetDocContext } from '@junobuild/functions';
 import { id } from '@junobuild/functions/ic-cdk';
 import {
 	countCollectionDocsStore,
@@ -7,6 +7,7 @@ import {
 	decodeDocData,
 	deleteDocsStore,
 	deleteDocStore,
+	deleteFilteredDocsStore,
 	encodeDocData,
 	getDocStore,
 	listDocsStore,
@@ -107,6 +108,22 @@ export const testSdkGetDocStore = async ({
 	});
 };
 
+const listParams = ({ caller }: Pick<OnSetDocContext, 'caller'>): ListParams => ({
+	matcher: {
+		key: 'key-match',
+		description: 'desc-match'
+	},
+	owner: caller,
+	order: {
+		desc: true,
+		field: 'created_at'
+	},
+	paginate: {
+		start_after: undefined,
+		limit: 10n
+	}
+});
+
 export const testSdkListDocsStore = async ({
 	caller,
 	data: { collection, key, data }
@@ -115,21 +132,7 @@ export const testSdkListDocsStore = async ({
 	const result = listDocsStore({
 		caller: id(),
 		collection: 'demo-listdocs',
-		params: {
-			matcher: {
-				key: 'key-match',
-				description: 'desc-match'
-			},
-			owner: caller,
-			order: {
-				desc: true,
-				field: 'created_at'
-			},
-			paginate: {
-				start_after: undefined,
-				limit: 10n
-			}
-		}
+		params: listParams({ caller })
 	});
 
 	for (const [key, item] of result.items) {
@@ -172,21 +175,7 @@ export const testSdkCountDocsStore = async ({
 	const count = countDocsStore({
 		caller: id(),
 		collection: 'demo-countdocs',
-		params: {
-			matcher: {
-				key: 'key-match',
-				description: 'desc-match'
-			},
-			owner: caller,
-			order: {
-				desc: true,
-				field: 'created_at'
-			},
-			paginate: {
-				start_after: undefined,
-				limit: 10n
-			}
-		}
+		params: listParams({ caller })
 	});
 
 	// eslint-disable-next-line no-console
@@ -198,4 +187,18 @@ export const testSdkDeleteDocsStore = async () => {
 	deleteDocsStore({
 		collection: 'demo-deletedocs'
 	});
+};
+
+export const testSdkDeleteFilteredDocsStore = async ({
+	caller
+	// eslint-disable-next-line require-await
+}: OnSetDocContext) => {
+	const result = deleteFilteredDocsStore({
+		caller: id(),
+		collection: 'demo-deletefiltereddocs',
+		params: listParams({ caller })
+	});
+
+	// eslint-disable-next-line no-console
+	console.log('Count:', result.length);
 };

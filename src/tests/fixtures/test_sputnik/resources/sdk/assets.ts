@@ -19,7 +19,7 @@ export const testSdkCountAssetsStore = async ({
 }: OnSetDocContext) => {
 	const count = countAssetsStore({
 		caller: id(),
-		collection: 'demo-countdocs',
+		collection: 'demo-countassets',
 		params: listParams({ caller })
 	});
 

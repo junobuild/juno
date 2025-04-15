@@ -5,8 +5,8 @@ import { type Actor, PocketIc } from '@hadronous/pic';
 import { inject } from 'vitest';
 import { mockSetRule } from '../../mocks/collection.mocks';
 import { setupTestSputnik } from '../../utils/fixtures-tests.utils';
+import { tick } from '../../utils/pic-tests.utils';
 import { setDocAndFetchLogs } from '../../utils/sputnik-tests.utils';
-import {tick} from "../../utils/pic-tests.utils";
 
 describe('Sputnik > math', () => {
 	let pic: PocketIc;
@@ -48,8 +48,6 @@ describe('Sputnik > math', () => {
 		const values = logs
 			.filter(([_, { message }]) => message.includes('Random:'))
 			.map(([_, { message }]) => message.replace('Random:', '').trim());
-
-		console.log(values);
 
 		expect(new Set(values).size).toEqual(logs.length);
 	});

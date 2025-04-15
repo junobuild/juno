@@ -60,15 +60,9 @@ impl<'js> JsHookContext<'js, Vec<JsDocContext<Option<JsDoc<'js>>>>> {
         ctx: &Ctx<'js>,
         original: OnDeleteManyDocsContext,
     ) -> Result<Self, JsError> {
-        let data: Vec<JsDocContext<Option<JsDoc<'js>>>> = original
-            .data
-            .into_iter()
-            .map(|doc_ctx| JsDocContext::from_context_option_doc(ctx, doc_ctx))
-            .collect::<Result<Vec<JsDocContext<Option<JsDoc<'js>>>>, JsError>>()?;
-
         Ok(JsHookContext {
             caller: JsRawPrincipal::from_principal(ctx, &original.caller)?,
-            data,
+            data: JsDocContext::from_many_context_option_docs(ctx, original.data)?,
         })
     }
 
@@ -141,6 +135,15 @@ impl<'js> JsDocContext<Option<JsDoc<'js>>> {
                 .map(|doc| JsDoc::from_doc(ctx, doc))
                 .transpose()?,
         })
+    }
+
+    pub fn from_many_context_option_docs(
+        ctx: &Ctx<'js>,
+        docs: Vec<DocContext<Option<Doc>>>,
+    ) -> Result<Vec<Self>, JsError> {
+        docs.into_iter()
+            .map(|doc_ctx| Self::from_context_option_doc(ctx, doc_ctx))
+            .collect()
     }
 }
 

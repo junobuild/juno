@@ -8,6 +8,7 @@ import { testIcCdkCall } from './apis/ic-cdk/ic-cdk-call';
 import { testIcCdkId } from './apis/ic-cdk/ic-cdk-id';
 import { testMathRandom } from './apis/node/math';
 import { testTextEncoding } from './apis/node/text-encoding';
+import { testSdkCountAssetsStore, testSdkCountCollectionAssetsStore } from './sdk/assets';
 import { testSdkControllers } from './sdk/controllers';
 import {
 	testSdkCountCollectionDocsStore,
@@ -41,6 +42,8 @@ const collections = [
 	'test-listdocs',
 	'test-countcollectiondocs',
 	'test-countdocs',
+	'test-countcollectionassets',
+	'test-countassets',
 	'test-deletedocs',
 	'test-deletefiltereddocs'
 ] as const;
@@ -63,6 +66,8 @@ export const onSetDoc = defineHook<OnSetDoc>({
 			'test-sdk-controllers': testSdkControllers,
 			'test-countcollectiondocs': testSdkCountCollectionDocsStore,
 			'test-countdocs': testSdkCountDocsStore,
+			'test-countcollectionassets': testSdkCountCollectionAssetsStore,
+			'test-countassets': testSdkCountAssetsStore,
 			'test-deletedocs': testSdkDeleteDocsStore,
 			'test-deletefiltereddocs': testSdkDeleteFilteredDocsStore
 		};

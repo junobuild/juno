@@ -5,11 +5,13 @@ import { mockBlob } from '../mocks/storage.mocks';
 
 export const uploadAsset = async ({
 	full_path,
+	description,
 	name,
 	collection,
 	actor
 }: {
 	full_path: string;
+	description?: string;
 	name: string;
 	collection: string;
 	actor: Actor<SatelliteActor>;
@@ -18,7 +20,7 @@ export const uploadAsset = async ({
 
 	const file = await init_asset_upload({
 		collection,
-		description: toNullable(),
+		description: toNullable(description),
 		encoding_type: [],
 		full_path,
 		name,

@@ -160,6 +160,7 @@ export const testSdkCountCollectionDocsStore = async () => {
 		collection: 'demo-countcollectiondocs'
 	});
 
+	// eslint-disable-next-line no-console
 	console.log('Count:', count);
 };
 
@@ -187,5 +188,6 @@ export const testSdkCountDocsStore = async ({
 		}
 	});
 
+	// eslint-disable-next-line no-console
 	console.log('Count:', count);
 };

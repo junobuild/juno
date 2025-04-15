@@ -20,8 +20,6 @@ describe('Sputnik > sdk > countDocsStore', () => {
 	const TEST_COLLECTION = 'test-countdocs';
 	const MOCK_COLLECTION = 'demo-countdocs';
 
-	let keys: string[];
-
 	beforeAll(async () => {
 		pic = await PocketIc.create(inject('PIC_URL'));
 
@@ -42,7 +40,7 @@ describe('Sputnik > sdk > countDocsStore', () => {
 
 		await initVersionMock(actor);
 
-		keys = await addSomeDocsToBeListed({
+		await addSomeDocsToBeListed({
 			collection: MOCK_COLLECTION,
 			actor,
 			controller,

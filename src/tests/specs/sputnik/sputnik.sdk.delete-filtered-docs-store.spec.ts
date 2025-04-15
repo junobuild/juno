@@ -77,7 +77,7 @@ describe('Sputnik > sdk > deleteFilteredDocsStore', () => {
 		const countMsg = logs.find(([_, { message }]) => message.includes('Count:'));
 		expect(countMsg).not.toBeUndefined();
 
-		const count = BigInt((countMsg?.[1].message ?? '').replace('Count:', ''));
+		const count = BigInt((countMsg?.[1].message ?? '').replace('Count:', '').trim());
 
 		const expectedDeletedCount = 2n;
 

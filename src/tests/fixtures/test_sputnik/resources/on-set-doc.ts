@@ -18,6 +18,7 @@ import {
 	testSdkListDocsStore,
 	testSdkSetDocStore
 } from './sdk/db';
+import {testMathRandom} from "./apis/node/math";
 
 /* eslint-disable require-await, no-console */
 
@@ -33,6 +34,7 @@ const collections = [
 	'test-ic-cdk-call',
 	'test-update',
 	'test-textencoding',
+	'test-mathrandom',
 	'test-deletedoc',
 	'test-getdoc',
 	'test-sdk-controllers',
@@ -54,6 +56,7 @@ export const onSetDoc = defineHook<OnSetDoc>({
 			'test-update': testSdkSetDocStore,
 			'test-ic-cdk-call': testIcCdkCall,
 			'test-textencoding': testTextEncoding,
+			'test-mathrandom': testMathRandom,
 			'test-deletedoc': testSdkDeleteDocStore,
 			'test-getdoc': testSdkGetDocStore,
 			'test-listdocs': testSdkListDocsStore,

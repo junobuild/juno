@@ -1,5 +1,6 @@
-use crate::hooks::js::impls::shared::JsBigInt;
-use crate::hooks::js::impls::utils::{from_optional_bigint_js, into_optional_bigint_js};
+use crate::hooks::js::impls::utils::{
+    from_optional_bigint_js, into_bigint_js, into_optional_bigint_js,
+};
 use crate::hooks::js::types::db::JsDoc;
 use crate::hooks::js::types::hooks::JsRawData;
 use crate::hooks::js::types::interface::{JsDelDoc, JsSetDoc};
@@ -88,8 +89,8 @@ impl<'js> IntoJs<'js> for JsDoc<'js> {
         obj.set("data", self.data)?;
         obj.set("description", self.description)?;
 
-        obj.set("created_at", JsBigInt(self.created_at).into_js(ctx)?)?;
-        obj.set("updated_at", JsBigInt(self.updated_at).into_js(ctx)?)?;
+        obj.set("created_at", into_bigint_js(ctx, self.created_at))?;
+        obj.set("updated_at", into_bigint_js(ctx, self.updated_at))?;
 
         obj.set("version", into_optional_bigint_js(ctx, self.version)?)?;
 

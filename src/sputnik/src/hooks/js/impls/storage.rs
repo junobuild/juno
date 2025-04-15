@@ -1,5 +1,4 @@
-use crate::hooks::js::impls::shared::JsBigInt;
-use crate::hooks::js::impls::utils::into_optional_bigint_js;
+use crate::hooks::js::impls::utils::{into_bigint_js, into_optional_bigint_js};
 use crate::hooks::js::types::interface::JsCommitBatch;
 use crate::hooks::js::types::storage::{
     JsAsset, JsAssetEncoding, JsAssetEncodings, JsAssetKey, JsBatch, JsBlobOrKey, JsHash,
@@ -134,7 +133,7 @@ impl<'js> IntoJs<'js> for JsAssetKey<'js> {
 impl<'js> IntoJs<'js> for JsAssetEncoding<'js> {
     fn into_js(self, ctx: &Ctx<'js>) -> JsResult<Value<'js>> {
         let obj = Object::new(ctx.clone())?;
-        obj.set("created_at", JsBigInt(self.modified).into_js(ctx)?)?;
+        obj.set("created_at", into_bigint_js(ctx, self.modified))?;
         obj.set("content_chunks", self.content_chunks.into_js(ctx)?)?;
         obj.set("total_length", self.total_length.into_js(ctx)?)?;
         obj.set("sha256", self.sha256.into_js(ctx)?)?;
@@ -158,8 +157,8 @@ impl<'js> IntoJs<'js> for JsAsset<'js> {
         obj.set("headers", self.headers.into_js(ctx)?)?;
         obj.set("encodings", self.encodings.into_js(ctx)?)?;
 
-        obj.set("created_at", JsBigInt(self.created_at).into_js(ctx)?)?;
-        obj.set("updated_at", JsBigInt(self.updated_at).into_js(ctx)?)?;
+        obj.set("created_at", into_bigint_js(ctx, self.created_at))?;
+        obj.set("updated_at", into_bigint_js(ctx, self.updated_at))?;
 
         obj.set("version", into_optional_bigint_js(ctx, self.version)?)?;
 
@@ -172,7 +171,7 @@ impl<'js> IntoJs<'js> for JsBatch<'js> {
         let obj = Object::new(ctx.clone())?;
         obj.set("key", self.key.into_js(ctx)?)?;
         obj.set("reference_id", self.reference_id)?;
-        obj.set("expires_at", JsBigInt(self.expires_at).into_js(ctx)?)?;
+        obj.set("expires_at", into_bigint_js(ctx, self.expires_at))?;
         obj.set("encoding_type", self.encoding_type)?;
 
         Ok(obj.into_value())

@@ -1,5 +1,5 @@
 use crate::hooks::js::impls::utils::{
-    from_bigint_js, from_optional_bigint_js, into_optional_bigint_js,
+    from_bigint_js, from_optional_bigint_js, into_bigint_js, into_optional_bigint_js,
 };
 use crate::hooks::js::types::shared::{
     JsController, JsControllerRecord, JsControllerScope, JsControllers, JsMetadata,
@@ -77,16 +77,6 @@ impl<'js> JsControllers<'js> {
 // IntoJs
 // ---------------------------------------------------------
 
-// TODO: extract to types shared maybe?
-pub struct JsBigInt(pub u64);
-
-impl<'js> IntoJs<'js> for JsBigInt {
-    fn into_js(self, ctx: &Ctx<'js>) -> JsResult<Value<'js>> {
-        let bigint = BigInt::from_u64(ctx.clone(), self.0)?;
-        Ok(bigint.into_value())
-    }
-}
-
 impl<'js> IntoJs<'js> for JsControllerScope {
     fn into_js(self, ctx: &Ctx<'js>) -> JsResult<Value<'js>> {
         let s = match self {
@@ -104,9 +94,8 @@ impl<'js> IntoJs<'js> for JsController {
 
         obj.set("metadata", self.metadata.into_js(ctx))?;
 
-        // TODO: create into_bigint_js
-        obj.set("created_at", JsBigInt(self.created_at).into_js(ctx)?)?;
-        obj.set("updated_at", JsBigInt(self.updated_at).into_js(ctx)?)?;
+        obj.set("created_at", into_bigint_js(ctx, self.created_at))?;
+        obj.set("updated_at", into_bigint_js(ctx, self.updated_at))?;
 
         obj.set("expires_at", into_optional_bigint_js(ctx, self.expires_at)?)?;
 

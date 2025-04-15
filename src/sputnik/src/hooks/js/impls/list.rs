@@ -240,15 +240,18 @@ impl<'js> FromJs<'js> for JsListParams<'js> {
 
         let matcher = obj
             .get::<_, Option<Value>>("matcher")?
-            .map(|v| JsListMatcher::from_js(ctx, v)).transpose()?;
+            .map(|v| JsListMatcher::from_js(ctx, v))
+            .transpose()?;
 
         let paginate = obj
             .get::<_, Option<Value>>("paginate")?
-            .map(|v| JsListPaginate::from_js(ctx, v)).transpose()?;
+            .map(|v| JsListPaginate::from_js(ctx, v))
+            .transpose()?;
 
         let order = obj
             .get::<_, Option<Value>>("order")?
-            .map(|v| JsListOrder::from_js(ctx, v)).transpose()?;
+            .map(|v| JsListOrder::from_js(ctx, v))
+            .transpose()?;
 
         Ok(Self {
             matcher,

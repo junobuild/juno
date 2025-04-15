@@ -1,9 +1,12 @@
-use crate::hooks::js::impls::shared::JsBigInt;
 use rquickjs::{BigInt, Ctx, Error as JsError, IntoJs, Result as JsResult, Value};
+
+pub fn into_bigint_js<'js>(ctx: &Ctx<'js>, value: u64) -> JsResult<BigInt<'js>> {
+    BigInt::from_u64(ctx.clone(), value)
+}
 
 pub fn into_optional_bigint_js<'js>(ctx: &Ctx<'js>, value: Option<u64>) -> JsResult<Value<'js>> {
     if let Some(value) = value {
-        JsBigInt(value).into_js(ctx)
+        into_bigint_js(ctx, value).into_js(ctx)
     } else {
         Ok(Value::new_undefined(ctx.clone()))
     }

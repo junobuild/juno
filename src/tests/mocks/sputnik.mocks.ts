@@ -42,6 +42,7 @@ export interface SputnikTestListDocs {
 	items_length: bigint;
 	items_page: bigint | undefined;
 	matches_length: bigint;
+	matches_pages?: bigint;
 }
 
 export interface SputnikTestTextEncodingData {

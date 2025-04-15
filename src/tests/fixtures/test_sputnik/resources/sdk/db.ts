@@ -113,12 +113,28 @@ export const testSdkListDocsStore = async ({
 		caller: id(),
 		collection: 'demo-listdocs',
 		params: {
+			matcher: {
+				key: 'key-match',
+				description: 'desc-match'
+			},
+			owner: caller,
+			order: {
+				desc: true,
+				field: 'created_at'
+			},
 			paginate: {
 				start_after: undefined,
 				limit: 10n
 			}
 		}
 	});
+
+	for (const [key, item] of result.items) {
+		// eslint-disable-next-line no-console
+		console.log(
+			`${key} / ${item.description ?? ''}: ${JSON.stringify(decodeDocData(item.data), jsonReplacer)}`
+		);
+	}
 
 	setDocStore({
 		caller,
@@ -129,7 +145,8 @@ export const testSdkListDocsStore = async ({
 			data: encodeDocData<SputnikTestListDocs>({
 				items_length: result.items_length,
 				items_page: result.items_page,
-				matches_length: result.matches_length
+				matches_length: result.matches_length,
+				matches_pages: result.matches_pages
 			})
 		}
 	});

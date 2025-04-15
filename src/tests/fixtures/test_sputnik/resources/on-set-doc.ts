@@ -19,6 +19,7 @@ import {
 	testSdkListDocsStore,
 	testSdkSetDocStore
 } from './sdk/docs';
+import {testSdkCountAssetsStore, testSdkCountCollectionAssetsStore} from "./sdk/assets";
 
 /* eslint-disable require-await, no-console */
 
@@ -41,6 +42,8 @@ const collections = [
 	'test-listdocs',
 	'test-countcollectiondocs',
 	'test-countdocs',
+	'test-countcollectionassets',
+	'test-countassets',
 	'test-deletedocs',
 	'test-deletefiltereddocs'
 ] as const;
@@ -63,6 +66,8 @@ export const onSetDoc = defineHook<OnSetDoc>({
 			'test-sdk-controllers': testSdkControllers,
 			'test-countcollectiondocs': testSdkCountCollectionDocsStore,
 			'test-countdocs': testSdkCountDocsStore,
+			'test-countcollectionassets': testSdkCountCollectionAssetsStore,
+			'test-countassets': testSdkCountAssetsStore,
 			'test-deletedocs': testSdkDeleteDocsStore,
 			'test-deletefiltereddocs': testSdkDeleteFilteredDocsStore
 		};

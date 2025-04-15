@@ -16,6 +16,7 @@ import { fetchLogs, type IcMgmtLog } from './mgmt-test.utils';
 import { tick } from './pic-tests.utils';
 import { createDoc as createDocUtils } from './satellite-doc-tests.utils';
 import { waitServerlessFunction } from './satellite-extended-tests.utils';
+import { uploadAsset } from './satellite-storage-tests.utils';
 
 export const setDocAndFetchLogs = async ({
 	collection,
@@ -151,6 +152,70 @@ export const addSomeDocsToBeListed = async ({
 		}),
 		description: toNullable('desc-match'),
 		version: toNullable()
+	});
+
+	actor.setIdentity(controller);
+
+	return [KEY_1, KEY_2, KEY_3, KEY_4, KEY_5];
+};
+
+export const addSomeAssetsToBeListed = async ({
+	collection,
+	actor,
+	pic,
+	controller
+}: { collection: string } & Omit<SetupFixtureCanister<SputnikActor>, 'canisterId'>): Promise<
+	string[]
+> => {
+	const KEY_1 = `key-match-${nanoid()}`;
+	const KEY_2 = `excluded-${nanoid()}`;
+	const KEY_3 = `key-match-${nanoid()}`;
+	const KEY_4 = `key-match-${nanoid()}`;
+	const KEY_5 = `key-match-${nanoid()}`;
+
+	await uploadAsset({
+		name: KEY_1,
+		description: 'desc-match',
+		full_path: `/${collection}/${KEY_1}`,
+		collection,
+		actor
+	});
+
+	await uploadAsset({
+		name: KEY_2,
+		description: 'desc-match',
+		full_path: `/${collection}/${KEY_2}`,
+		collection,
+		actor
+	});
+
+	await tick(pic);
+
+	await uploadAsset({
+		name: KEY_3,
+		description: 'excluded',
+		full_path: `/${collection}/${KEY_3}`,
+		collection,
+		actor
+	});
+
+	await uploadAsset({
+		name: KEY_4,
+		description: 'desc-match',
+		full_path: `/${collection}/${KEY_4}`,
+		collection,
+		actor
+	});
+
+	const user = Ed25519KeyIdentity.generate();
+	actor.setIdentity(user);
+
+	await uploadAsset({
+		name: KEY_5,
+		description: 'desc-match',
+		full_path: `/${collection}/${KEY_5}`,
+		collection,
+		actor
 	});
 
 	actor.setIdentity(controller);

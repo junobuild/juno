@@ -5,7 +5,7 @@ import { mockBlob } from '../mocks/storage.mocks';
 
 export const uploadAsset = async ({
 	full_path,
-									  description,
+	description,
 	name,
 	collection,
 	actor

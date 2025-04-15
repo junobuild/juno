@@ -1,5 +1,5 @@
 import { assertNonNullish, jsonReplacer } from '@dfinity/utils';
-import type { ListParams, OnSetDocContext } from '@junobuild/functions';
+import type { OnSetDocContext } from '@junobuild/functions';
 import { id } from '@junobuild/functions/ic-cdk';
 import {
 	countCollectionDocsStore,
@@ -14,7 +14,7 @@ import {
 	setDocStore
 } from '@junobuild/functions/sdk';
 import type { SputnikMock, SputnikTestListDocs } from '../../../../mocks/sputnik.mocks';
-import {listParams} from "./utils";
+import { listParams } from './utils';
 
 // eslint-disable-next-line require-await
 export const testSdkSetDocStore = async (context: OnSetDocContext) => {

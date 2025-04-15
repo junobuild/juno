@@ -8,6 +8,7 @@ import { testIcCdkCall } from './apis/ic-cdk/ic-cdk-call';
 import { testIcCdkId } from './apis/ic-cdk/ic-cdk-id';
 import { testMathRandom } from './apis/node/math';
 import { testTextEncoding } from './apis/node/text-encoding';
+import { testSdkCountAssetsStore, testSdkCountCollectionAssetsStore } from './sdk/assets';
 import { testSdkControllers } from './sdk/controllers';
 import {
 	testSdkCountCollectionDocsStore,
@@ -19,7 +20,6 @@ import {
 	testSdkListDocsStore,
 	testSdkSetDocStore
 } from './sdk/docs';
-import {testSdkCountAssetsStore, testSdkCountCollectionAssetsStore} from "./sdk/assets";
 
 /* eslint-disable require-await, no-console */
 

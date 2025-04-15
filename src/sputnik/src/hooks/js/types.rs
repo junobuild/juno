@@ -1,3 +1,7 @@
+pub mod primitives {
+    pub struct JsUsize(pub usize);
+}
+
 pub mod shared {
     use crate::js::types::candid::JsRawPrincipal;
     use junobuild_collections::types::core::CollectionKey;

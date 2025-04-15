@@ -2,6 +2,8 @@ import { assertNonNullish, jsonReplacer } from '@dfinity/utils';
 import type { OnSetDocContext } from '@junobuild/functions';
 import { id } from '@junobuild/functions/ic-cdk';
 import {
+	countCollectionDocsStore,
+	countDocsStore,
 	decodeDocData,
 	deleteDocStore,
 	encodeDocData,
@@ -150,4 +152,42 @@ export const testSdkListDocsStore = async ({
 			})
 		}
 	});
+};
+
+// eslint-disable-next-line require-await
+export const testSdkCountCollectionDocsStore = async () => {
+	const count = countCollectionDocsStore({
+		collection: 'demo-countcollectiondocs'
+	});
+
+	// eslint-disable-next-line no-console
+	console.log('Count:', count);
+};
+
+export const testSdkCountDocsStore = async ({
+	caller
+	// eslint-disable-next-line require-await
+}: OnSetDocContext) => {
+	const count = countDocsStore({
+		caller: id(),
+		collection: 'demo-countdocs',
+		params: {
+			matcher: {
+				key: 'key-match',
+				description: 'desc-match'
+			},
+			owner: caller,
+			order: {
+				desc: true,
+				field: 'created_at'
+			},
+			paginate: {
+				start_after: undefined,
+				limit: 10n
+			}
+		}
+	});
+
+	// eslint-disable-next-line no-console
+	console.log('Count:', count);
 };

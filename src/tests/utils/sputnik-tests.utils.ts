@@ -1,15 +1,19 @@
 import type { _SERVICE as SputnikActor } from '$declarations/sputnik/sputnik.did';
+import { Ed25519KeyIdentity } from '@dfinity/identity';
 import { toNullable } from '@dfinity/utils';
 import type { Actor } from '@hadronous/pic';
 import { toArray } from '@junobuild/utils';
+import { nanoid } from 'nanoid';
 import { mockSetRule } from '../mocks/collection.mocks';
 import {
+	mockSputnikObj,
 	mockSputnikVersion,
 	mockSputnikVersionCollection,
 	mockSputnikVersionKey
 } from '../mocks/sputnik.mocks';
 import type { SetupFixtureCanister } from './fixtures-tests.utils';
 import { fetchLogs, type IcMgmtLog } from './mgmt-test.utils';
+import { tick } from './pic-tests.utils';
 import { createDoc as createDocUtils } from './satellite-doc-tests.utils';
 import { waitServerlessFunction } from './satellite-extended-tests.utils';
 
@@ -81,4 +85,75 @@ export const initVersionMock = async (actor: Actor<SputnikActor>) => {
 		description: toNullable(),
 		version: toNullable()
 	});
+};
+
+export const addSomeDocsToBeListed = async ({
+	collection,
+	actor,
+	pic,
+	controller
+}: { collection: string } & Omit<SetupFixtureCanister<SputnikActor>, 'canisterId'>): Promise<
+	string[]
+> => {
+	const KEY_1 = `key-match-${nanoid()}`;
+	const KEY_2 = `excluded-${nanoid()}`;
+	const KEY_3 = `key-match-${nanoid()}`;
+	const KEY_4 = `key-match-${nanoid()}`;
+	const KEY_5 = `key-match-${nanoid()}`;
+
+	const { set_doc } = actor;
+
+	await set_doc(collection, KEY_1, {
+		data: await toArray({
+			...mockSputnikObj,
+			id: 1n
+		}),
+		description: toNullable('desc-match'),
+		version: toNullable()
+	});
+
+	await set_doc(collection, KEY_2, {
+		data: await toArray({
+			...mockSputnikObj,
+			id: 2n
+		}),
+		description: toNullable('desc-match'),
+		version: toNullable()
+	});
+
+	await tick(pic);
+
+	await set_doc(collection, KEY_3, {
+		data: await toArray({
+			...mockSputnikObj,
+			id: 3n
+		}),
+		description: toNullable('excluded'),
+		version: toNullable()
+	});
+
+	await set_doc(collection, KEY_4, {
+		data: await toArray({
+			...mockSputnikObj,
+			id: 4n
+		}),
+		description: toNullable('desc-match'),
+		version: toNullable()
+	});
+
+	const user = Ed25519KeyIdentity.generate();
+	actor.setIdentity(user);
+
+	await set_doc(collection, KEY_5, {
+		data: await toArray({
+			...mockSputnikObj,
+			id: 5n
+		}),
+		description: toNullable('desc-match'),
+		version: toNullable()
+	});
+
+	actor.setIdentity(controller);
+
+	return [KEY_1, KEY_2, KEY_3, KEY_4, KEY_5];
 };

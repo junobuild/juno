@@ -16,7 +16,7 @@ import { tick } from '../../utils/pic-tests.utils';
 import { waitServerlessFunction } from '../../utils/satellite-extended-tests.utils';
 import { initVersionMock } from '../../utils/sputnik-tests.utils';
 
-describe('Sputnik > ic-cdk > call', () => {
+describe('Sputnik > sdk > listDocsStore', () => {
 	let pic: PocketIc;
 	let actor: Actor<SputnikActor>;
 	let canisterId: Principal;

@@ -9,7 +9,11 @@ import { testIcCdkId } from './apis/ic-cdk/ic-cdk-id';
 import { testBlob } from './apis/node/blob';
 import { testMathRandom } from './apis/node/math';
 import { testTextEncoding } from './apis/node/text-encoding';
-import {testSdkCountAssetsStore, testSdkCountCollectionAssetsStore, testSdkSetAssetHandler} from './sdk/assets';
+import {
+	testSdkCountAssetsStore,
+	testSdkCountCollectionAssetsStore,
+	testSdkSetAssetHandler
+} from './sdk/assets';
 import { testSdkControllers } from './sdk/controllers';
 import {
 	testSdkCountCollectionDocsStore,

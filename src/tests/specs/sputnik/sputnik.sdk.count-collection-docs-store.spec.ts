@@ -9,7 +9,7 @@ import { mockSetRule } from '../../mocks/collection.mocks';
 import { setupTestSputnik } from '../../utils/fixtures-tests.utils';
 import { fetchLogs } from '../../utils/mgmt-test.utils';
 import { waitServerlessFunction } from '../../utils/satellite-extended-tests.utils';
-import { addSomeDocsToBeListed, initVersionMock } from '../../utils/sputnik-tests.utils';
+import { addSomeDocsToBeListed } from '../../utils/sputnik-tests.utils';
 
 describe('Sputnik > sdk > countCollectionDocsStore', () => {
 	let pic: PocketIc;
@@ -39,8 +39,6 @@ describe('Sputnik > sdk > countCollectionDocsStore', () => {
 			read: { Public: null },
 			write: { Public: null }
 		});
-
-		await initVersionMock(actor);
 
 		keys = await addSomeDocsToBeListed({
 			collection: MOCK_COLLECTION,

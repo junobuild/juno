@@ -4,7 +4,6 @@ import type { Principal } from '@dfinity/principal';
 import { toNullable } from '@dfinity/utils';
 import { type Actor, PocketIc } from '@hadronous/pic';
 import { nanoid } from 'nanoid';
-import { inject } from 'vitest';
 import { mockSetRule } from '../../mocks/collection.mocks';
 import { setupTestSputnik } from '../../utils/fixtures-tests.utils';
 import { fetchLogs } from '../../utils/mgmt-test.utils';
@@ -23,8 +22,6 @@ describe('Sputnik > sdk > countCollectionAssetsStore', () => {
 	let keys: string[];
 
 	beforeAll(async () => {
-		pic = await PocketIc.create(inject('PIC_URL'));
-
 		const { pic: p, actor: a, controller: c, canisterId: cId } = await setupTestSputnik();
 
 		pic = p;

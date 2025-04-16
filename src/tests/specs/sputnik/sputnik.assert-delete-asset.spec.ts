@@ -3,7 +3,6 @@ import type { Identity } from '@dfinity/agent';
 import type { Principal } from '@dfinity/principal';
 import { fromNullable } from '@dfinity/utils';
 import { type Actor, PocketIc } from '@hadronous/pic';
-import { inject } from 'vitest';
 import { mockSetRule } from '../../mocks/collection.mocks';
 import { setupTestSputnik } from '../../utils/fixtures-tests.utils';
 import { fetchLogs, type IcMgmtLog } from '../../utils/mgmt-test.utils';
@@ -19,8 +18,6 @@ describe('Sputnik > assert_delete_asset', () => {
 	const TEST_NOT_ASSERTED_COLLECTION = 'test';
 
 	beforeAll(async () => {
-		pic = await PocketIc.create(inject('PIC_URL'));
-
 		const { pic: p, actor: a, canisterId: cId, controller: c } = await setupTestSputnik();
 
 		pic = p;

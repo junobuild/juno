@@ -4,7 +4,6 @@ import type { Identity } from '@dfinity/agent';
 import { Principal } from '@dfinity/principal';
 import { assertNonNullish, jsonReplacer, jsonReviver } from '@dfinity/utils';
 import { type Actor, PocketIc } from '@hadronous/pic';
-import { inject } from 'vitest';
 import { mockSetRule } from '../../mocks/collection.mocks';
 import { setupTestSputnik } from '../../utils/fixtures-tests.utils';
 import { createUser as createUserUtils } from '../../utils/satellite-doc-tests.utils';
@@ -61,8 +60,6 @@ describe('Sputnik > sdk > controllers', () => {
 	};
 
 	beforeAll(async () => {
-		pic = await PocketIc.create(inject('PIC_URL'));
-
 		const { pic: p, actor: a, controller: c, canisterId: cId } = await setupTestSputnik();
 
 		pic = p;

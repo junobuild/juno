@@ -3,7 +3,6 @@ import type { Identity } from '@dfinity/agent';
 import type { Principal } from '@dfinity/principal';
 import { jsonReplacer } from '@dfinity/utils';
 import { type Actor, PocketIc } from '@hadronous/pic';
-import { inject } from 'vitest';
 import { mockSetRule } from '../../mocks/collection.mocks';
 import { mockSputnikObj } from '../../mocks/sputnik.mocks';
 import { setupTestSputnik } from '../../utils/fixtures-tests.utils';
@@ -18,8 +17,6 @@ describe('Sputnik > assert_set_doc', () => {
 	const TEST_ASSERTED_COLLECTION = 'test-console';
 
 	beforeAll(async () => {
-		pic = await PocketIc.create(inject('PIC_URL'));
-
 		const { pic: p, actor: a, canisterId: cId, controller: c } = await setupTestSputnik();
 
 		pic = p;

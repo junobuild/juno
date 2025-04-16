@@ -5,7 +5,6 @@ import { fromNullable, toNullable } from '@dfinity/utils';
 import { type Actor, PocketIc } from '@hadronous/pic';
 import { toArray } from '@junobuild/utils';
 import { nanoid } from 'nanoid';
-import { inject } from 'vitest';
 import { mockSetRule } from '../../mocks/collection.mocks';
 import type { SputnikValueMock } from '../../mocks/sputnik.mocks';
 import { setupTestSputnik } from '../../utils/fixtures-tests.utils';
@@ -21,8 +20,6 @@ describe('Sputnik > assert_delete_doc', () => {
 	const TEST_NOT_ASSERTED_COLLECTION = 'test';
 
 	beforeAll(async () => {
-		pic = await PocketIc.create(inject('PIC_URL'));
-
 		const { pic: p, actor: a, canisterId: cId, controller: c } = await setupTestSputnik();
 
 		pic = p;

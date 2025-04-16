@@ -6,7 +6,6 @@ import { type Actor, PocketIc } from '@hadronous/pic';
 import { fromArray } from '@junobuild/utils';
 import { nanoid } from 'nanoid';
 import { valid } from 'semver';
-import { inject } from 'vitest';
 import { mockSetRule } from '../../mocks/collection.mocks';
 import { mockData } from '../../mocks/doc.mocks';
 import { setupTestSputnik } from '../../utils/fixtures-tests.utils';
@@ -24,8 +23,6 @@ describe('Sputnik > on_set_many_docs', () => {
 	const TEST_NOT_ON_COLLECTION = 'test';
 
 	beforeAll(async () => {
-		pic = await PocketIc.create(inject('PIC_URL'));
-
 		const { pic: p, actor: a, canisterId: cId, controller: c } = await setupTestSputnik();
 
 		pic = p;

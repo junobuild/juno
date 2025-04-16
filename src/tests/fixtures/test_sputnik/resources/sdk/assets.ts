@@ -1,6 +1,12 @@
-import type { OnSetDocContext } from '@junobuild/functions';
+import { arrayBufferToUint8Array } from '@dfinity/utils';
+import type { AssetKey, HeaderFields, OnSetDocContext } from '@junobuild/functions';
 import { id } from '@junobuild/functions/ic-cdk';
-import { countAssetsStore, countCollectionAssetsStore } from '@junobuild/functions/sdk';
+import {
+	countAssetsStore,
+	countCollectionAssetsStore,
+	setAssetHandler
+} from '@junobuild/functions/sdk';
+import { mockBlob } from '../../../../mocks/storage.mocks';
 import { listParams } from './utils';
 
 // eslint-disable-next-line require-await
@@ -25,4 +31,28 @@ export const testSdkCountAssetsStore = async ({
 
 	// eslint-disable-next-line no-console
 	console.log('Count:', count);
+};
+
+// eslint-disable-next-line require-await
+export const testSdkSetAssetHandler = async () => {
+	const collection = 'demo-setassethandler';
+	const name = 'hello.html';
+	const full_path = `/${name}`;
+
+	const key: AssetKey = {
+		name,
+		full_path,
+		collection,
+		owner: id().toUint8Array()
+	};
+
+	const headers: HeaderFields = [['content-type', 'text/html']];
+
+	const content = arrayBufferToUint8Array(await mockBlob.arrayBuffer());
+
+	setAssetHandler({
+		key,
+		headers,
+		content
+	});
 };

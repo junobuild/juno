@@ -14,6 +14,7 @@ import {
 	TEST_SATELLITE_WASM_PATH,
 	TEST_SPUTNIK_WASM_PATH
 } from './setup-tests.utils';
+import {nonNullish} from "@dfinity/utils";
 
 export interface SetupFixtureCanister<T extends ActorInterface<T>> {
 	pic: PocketIc;
@@ -32,9 +33,10 @@ export const setupTestSatellite = async (
 	});
 
 export const setupTestSputnik = async (
-	{ withUpgrade }: { withUpgrade: boolean } = { withUpgrade: true }
+	{ withUpgrade, currentDate }: { withUpgrade: boolean, currentDate?: Date } = { withUpgrade: true }
 ): Promise<SetupFixtureCanister<SputnikActor>> =>
 	await setupFixtureCanister({
+		currentDate,
 		withUpgrade,
 		idlFactory: idlFactorySputnik,
 		wasm: TEST_SPUTNIK_WASM_PATH
@@ -43,15 +45,21 @@ export const setupTestSputnik = async (
 const setupFixtureCanister = async <T extends ActorInterface<T>>({
 	withUpgrade,
 	idlFactory,
-	wasm
+	wasm,
+	currentDate
 }: {
 	withUpgrade: boolean;
 	idlFactory: IDL.InterfaceFactory;
 	wasm: string;
+	currentDate?: Date
 }): Promise<SetupFixtureCanister<T>> => {
 	const controller = Ed25519KeyIdentity.generate();
 
 	const pic = await PocketIc.create(inject('PIC_URL'));
+
+	if (nonNullish(currentDate)) {
+		await pic.setTime(currentDate.getTime());
+	}
 
 	const { actor: c, canisterId } = await pic.setupCanister<T>({
 		idlFactory,

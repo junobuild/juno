@@ -6,6 +6,7 @@ import {
 } from '@junobuild/functions';
 import { testIcCdkCall } from './apis/ic-cdk/ic-cdk-call';
 import { testIcCdkId } from './apis/ic-cdk/ic-cdk-id';
+import { testBlob } from './apis/node/blob';
 import { testMathRandom } from './apis/node/math';
 import { testTextEncoding } from './apis/node/text-encoding';
 import {testSdkCountAssetsStore, testSdkCountCollectionAssetsStore, testSdkSetAssetHandler} from './sdk/assets';
@@ -36,6 +37,7 @@ const collections = [
 	'test-update',
 	'test-textencoding',
 	'test-mathrandom',
+	'test-blob',
 	'test-deletedoc',
 	'test-getdoc',
 	'test-sdk-controllers',
@@ -61,6 +63,7 @@ export const onSetDoc = defineHook<OnSetDoc>({
 			'test-ic-cdk-call': testIcCdkCall,
 			'test-textencoding': testTextEncoding,
 			'test-mathrandom': testMathRandom,
+			'test-blob': testBlob,
 			'test-deletedoc': testSdkDeleteDocStore,
 			'test-getdoc': testSdkGetDocStore,
 			'test-listdocs': testSdkListDocsStore,

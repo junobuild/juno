@@ -1,6 +1,6 @@
 mod llrt;
 
-use crate::js::apis::node::blob::llrt::blob::init;
+use crate::js::apis::node::blob::llrt::polyfill::init;
 use rquickjs::{Ctx, Error as JsError};
 
 // ===========================================================================================

@@ -5,8 +5,8 @@ use rquickjs::{Ctx, Error as JsError};
 
 // ===========================================================================================
 // ⚠️ SOURCE NOTICE ⚠️
-// This module is copied from the Javy project:
-// https://github.com/bytecodealliance/javy/tree/main/crates/javy/src/apis/text_encoding
+// This module is copied from the LLRT project:
+// https://github.com/awslabs/llrt/blob/main/modules/llrt_http/src/blob.rs
 //
 // If you modify this file, ensure compatibility with upstream changes where applicable.
 // ===========================================================================================

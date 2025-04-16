@@ -108,12 +108,15 @@ pub mod db {
 pub mod storage {
     use crate::hooks::js::types::shared::{JsTimestamp, JsUserId, JsVersion};
     use crate::js::types::candid::JsUint8Array;
+    use junobuild_storage::types::state::FullPath;
 
     pub type JsBlob<'js> = JsUint8Array<'js>;
 
     pub type JsBlobOrKey<'js> = JsBlob<'js>;
 
     pub type JsHash<'js> = JsUint8Array<'js>;
+
+    pub type JsFullPath = FullPath;
 
     #[derive(Clone)]
     pub struct JsHeaderFieldRecord(pub String, pub String);
@@ -135,7 +138,7 @@ pub mod storage {
     #[derive(Clone)]
     pub struct JsAssetKey<'js> {
         pub name: String,
-        pub full_path: String,
+        pub full_path: JsFullPath,
         pub token: Option<String>,
         pub collection: String,
         pub owner: JsUserId<'js>,

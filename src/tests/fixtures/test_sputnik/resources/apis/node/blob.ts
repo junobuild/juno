@@ -1,4 +1,4 @@
-/* eslint-disable require-await, no-console */
+/* eslint-disable no-console */
 
 import { mockBlob } from '../../../../../mocks/storage.mocks';
 

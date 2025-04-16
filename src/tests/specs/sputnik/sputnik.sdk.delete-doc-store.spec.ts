@@ -1,6 +1,6 @@
 import type { _SERVICE as SputnikActor } from '$declarations/sputnik/sputnik.did';
 import { fromNullable, toNullable } from '@dfinity/utils';
-import { type PocketIc , type Actor } from '@hadronous/pic';
+import { type Actor, type PocketIc } from '@hadronous/pic';
 import { toArray } from '@junobuild/utils';
 import { nanoid } from 'nanoid';
 import { mockSetRule } from '../../mocks/collection.mocks';

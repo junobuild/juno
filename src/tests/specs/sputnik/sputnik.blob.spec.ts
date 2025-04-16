@@ -2,7 +2,7 @@ import type { _SERVICE as SputnikActor } from '$declarations/sputnik/sputnik.did
 import type { Identity } from '@dfinity/agent';
 import type { Principal } from '@dfinity/principal';
 import { assertNonNullish, jsonReplacer } from '@dfinity/utils';
-import { type PocketIc , type Actor } from '@hadronous/pic';
+import { type Actor, type PocketIc } from '@hadronous/pic';
 import { mockSetRule } from '../../mocks/collection.mocks';
 import { mockBlob } from '../../mocks/storage.mocks';
 import { setupTestSputnik } from '../../utils/fixtures-tests.utils';

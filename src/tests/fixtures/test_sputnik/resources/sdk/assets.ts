@@ -37,7 +37,7 @@ export const testSdkCountAssetsStore = async ({
 export const testSdkSetAssetHandler = async () => {
 	const collection = 'demo-setassethandler';
 	const name = 'hello.html';
-	const full_path = `/${name}`;
+	const full_path = `/${collection}/${name}`;
 
 	const key: AssetKey = {
 		name,

@@ -6,6 +6,7 @@ import type { Identity } from '@dfinity/agent';
 import type { IDL } from '@dfinity/candid';
 import { Ed25519KeyIdentity } from '@dfinity/identity';
 import type { Principal } from '@dfinity/principal';
+import { nonNullish } from '@dfinity/utils';
 import { type Actor, type ActorInterface, PocketIc } from '@hadronous/pic';
 import { inject } from 'vitest';
 import { tick } from './pic-tests.utils';
@@ -32,9 +33,10 @@ export const setupTestSatellite = async (
 	});
 
 export const setupTestSputnik = async (
-	{ withUpgrade }: { withUpgrade: boolean } = { withUpgrade: true }
+	{ withUpgrade, currentDate }: { withUpgrade: boolean; currentDate?: Date } = { withUpgrade: true }
 ): Promise<SetupFixtureCanister<SputnikActor>> =>
 	await setupFixtureCanister({
+		currentDate,
 		withUpgrade,
 		idlFactory: idlFactorySputnik,
 		wasm: TEST_SPUTNIK_WASM_PATH
@@ -43,15 +45,21 @@ export const setupTestSputnik = async (
 const setupFixtureCanister = async <T extends ActorInterface<T>>({
 	withUpgrade,
 	idlFactory,
-	wasm
+	wasm,
+	currentDate
 }: {
 	withUpgrade: boolean;
 	idlFactory: IDL.InterfaceFactory;
 	wasm: string;
+	currentDate?: Date;
 }): Promise<SetupFixtureCanister<T>> => {
 	const controller = Ed25519KeyIdentity.generate();
 
 	const pic = await PocketIc.create(inject('PIC_URL'));
+
+	if (nonNullish(currentDate)) {
+		await pic.setTime(currentDate.getTime());
+	}
 
 	const { actor: c, canisterId } = await pic.setupCanister<T>({
 		idlFactory,

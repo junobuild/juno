@@ -2,13 +2,13 @@ use crate::hooks::js::impls::utils::{into_bigint_js, into_optional_bigint_js};
 use crate::hooks::js::types::interface::JsCommitBatch;
 use crate::hooks::js::types::storage::{
     JsAsset, JsAssetEncoding, JsAssetEncodingRecord, JsAssetKey, JsBatch, JsBlobOrKey, JsHash,
-    JsHeaderField,
+    JsHeaderFieldRecord, JsHeaderFields,
 };
 use crate::js::types::candid::JsRawPrincipal;
 use junobuild_storage::http::types::HeaderField;
 use junobuild_storage::types::interface::CommitBatch;
 use junobuild_storage::types::store::{Asset, AssetEncoding, AssetKey, Batch};
-use rquickjs::{Array, Ctx, Error as JsError, IntoJs, Object, Result as JsResult, Value};
+use rquickjs::{Array, Ctx, Error as JsError, FromJs, IntoJs, Object, Result as JsResult, Value};
 
 impl<'js> JsAssetKey<'js> {
     pub fn from_asset_key(ctx: &Ctx<'js>, key: AssetKey) -> JsResult<JsAssetKey<'js>> {
@@ -19,6 +19,17 @@ impl<'js> JsAssetKey<'js> {
             collection: key.collection,
             owner: JsRawPrincipal::from_principal(ctx, &key.owner)?,
             description: key.description,
+        })
+    }
+
+    pub fn to_asset_key(&self) -> JsResult<AssetKey> {
+        Ok(AssetKey {
+            name: self.name.clone(),
+            full_path: self.full_path.clone(),
+            token: self.token.clone(),
+            collection: self.collection.clone(),
+            owner: self.owner.to_principal()?,
+            description: self.description.clone(),
         })
     }
 }
@@ -58,11 +69,13 @@ impl<'js> JsAsset<'js> {
             })
             .collect::<Result<Vec<JsAssetEncodingRecord<'js>>, JsError>>()?;
 
-        let headers: Vec<JsHeaderField> = asset
-            .headers
-            .into_iter()
-            .map(|HeaderField(key, value)| JsHeaderField(key, value))
-            .collect();
+        let headers: JsHeaderFields = JsHeaderFields(
+            asset
+                .headers
+                .into_iter()
+                .map(|HeaderField(key, value)| JsHeaderFieldRecord(key, value))
+                .collect(),
+        );
 
         Ok(JsAsset {
             key,
@@ -90,11 +103,13 @@ impl JsCommitBatch {
     pub fn from_commit_batch(commit: CommitBatch) -> Self {
         JsCommitBatch {
             batch_id: commit.batch_id.to_string(),
-            headers: commit
-                .headers
-                .into_iter()
-                .map(|HeaderField(k, v)| JsHeaderField(k, v))
-                .collect(),
+            headers: JsHeaderFields(
+                commit
+                    .headers
+                    .into_iter()
+                    .map(|HeaderField(k, v)| JsHeaderFieldRecord(k, v))
+                    .collect(),
+            ),
             chunk_ids: commit
                 .chunk_ids
                 .into_iter()
@@ -104,15 +119,40 @@ impl JsCommitBatch {
     }
 }
 
+impl From<JsHeaderFieldRecord> for HeaderField {
+    fn from(JsHeaderFieldRecord(name, value): JsHeaderFieldRecord) -> Self {
+        HeaderField(name, value)
+    }
+}
+
+impl JsHeaderFields {
+    pub fn to_header_fields(&self) -> Vec<HeaderField> {
+        self.0
+            .iter()
+            .map(|JsHeaderFieldRecord(k, v)| HeaderField(k.clone(), v.clone()))
+            .collect()
+    }
+}
+
 // ---------------------------------------------------------
 // IntoJs
 // ---------------------------------------------------------
 
-impl<'js> IntoJs<'js> for JsHeaderField {
+impl<'js> IntoJs<'js> for JsHeaderFieldRecord {
     fn into_js(self, ctx: &Ctx<'js>) -> JsResult<Value<'js>> {
         let arr = Array::new(ctx.clone())?;
         arr.set(0, self.0)?;
         arr.set(1, self.1)?;
+        Ok(arr.into_value())
+    }
+}
+
+impl<'js> IntoJs<'js> for JsHeaderFields {
+    fn into_js(self, ctx: &Ctx<'js>) -> JsResult<Value<'js>> {
+        let arr = Array::new(ctx.clone())?;
+        for (i, record) in self.0.into_iter().enumerate() {
+            arr.set(i, record.into_js(ctx)?)?;
+        }
         Ok(arr.into_value())
     }
 }
@@ -185,5 +225,51 @@ impl<'js> IntoJs<'js> for JsCommitBatch {
         obj.set("headers", self.headers.into_js(ctx)?)?;
         obj.set("chunk_ids", self.chunk_ids.into_js(ctx)?)?;
         Ok(obj.into_value())
+    }
+}
+
+// ---------------------------------------------------------
+// FromJs
+// ---------------------------------------------------------
+
+impl<'js> FromJs<'js> for JsHeaderFieldRecord {
+    fn from_js(_ctx: &Ctx<'js>, value: Value<'js>) -> JsResult<Self> {
+        let arr = Array::from_value(value)?;
+
+        let key = arr.get(0)?;
+        let value = arr.get(1)?;
+
+        Ok(Self(key, value))
+    }
+}
+
+impl<'js> FromJs<'js> for JsHeaderFields {
+    fn from_js(ctx: &Ctx<'js>, value: Value<'js>) -> JsResult<Self> {
+        let arr = Array::from_value(value)?;
+
+        let mut headers = Vec::with_capacity(arr.len());
+
+        for i in 0..arr.len() {
+            let val: Value = arr.get(i)?;
+            let header = JsHeaderFieldRecord::from_js(ctx, val)?;
+            headers.push(header);
+        }
+
+        Ok(Self(headers))
+    }
+}
+
+impl<'js> FromJs<'js> for JsAssetKey<'js> {
+    fn from_js(_ctx: &Ctx<'js>, value: Value<'js>) -> JsResult<Self> {
+        let obj = Object::from_value(value)?;
+
+        Ok(JsAssetKey {
+            name: obj.get("name")?,
+            full_path: obj.get("full_path")?,
+            token: obj.get("token").ok(),
+            collection: obj.get("collection")?,
+            owner: obj.get("owner")?,
+            description: obj.get("description").ok(),
+        })
     }
 }

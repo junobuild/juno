@@ -9,7 +9,11 @@ import { testIcCdkId } from './apis/ic-cdk/ic-cdk-id';
 import { testBlob } from './apis/node/blob';
 import { testMathRandom } from './apis/node/math';
 import { testTextEncoding } from './apis/node/text-encoding';
-import { testSdkCountAssetsStore, testSdkCountCollectionAssetsStore } from './sdk/assets';
+import {
+	testSdkCountAssetsStore,
+	testSdkCountCollectionAssetsStore,
+	testSdkSetAssetHandler
+} from './sdk/assets';
 import { testSdkControllers } from './sdk/controllers';
 import {
 	testSdkCountCollectionDocsStore,
@@ -47,7 +51,8 @@ const collections = [
 	'test-countcollectionassets',
 	'test-countassets',
 	'test-deletedocs',
-	'test-deletefiltereddocs'
+	'test-deletefiltereddocs',
+	'test-setassethandler'
 ] as const;
 
 type OnSetDocCollection = (typeof collections)[number];
@@ -72,7 +77,8 @@ export const onSetDoc = defineHook<OnSetDoc>({
 			'test-countcollectionassets': testSdkCountCollectionAssetsStore,
 			'test-countassets': testSdkCountAssetsStore,
 			'test-deletedocs': testSdkDeleteDocsStore,
-			'test-deletefiltereddocs': testSdkDeleteFilteredDocsStore
+			'test-deletefiltereddocs': testSdkDeleteFilteredDocsStore,
+			'test-setassethandler': testSdkSetAssetHandler
 		};
 
 		await fn[context.data.collection as OnSetDocCollection]?.(context);

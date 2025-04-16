@@ -12,7 +12,7 @@ import { type SputnikTestListDocs } from '../../mocks/sputnik.mocks';
 import { setupTestSputnik } from '../../utils/fixtures-tests.utils';
 import { fetchLogs } from '../../utils/mgmt-test.utils';
 import { waitServerlessFunction } from '../../utils/satellite-extended-tests.utils';
-import { addSomeDocsToBeListed, initVersionMock } from '../../utils/sputnik-tests.utils';
+import { addSomeDocsToBeListed } from '../../utils/sputnik-tests.utils';
 
 describe('Sputnik > sdk > listDocsStore', () => {
 	let pic: PocketIc;
@@ -46,8 +46,6 @@ describe('Sputnik > sdk > listDocsStore', () => {
 			read: { Public: null },
 			write: { Public: null }
 		});
-
-		await initVersionMock(actor);
 
 		const [key1, key2, key3, key4, key5] = await addSomeDocsToBeListed({
 			collection: MOCK_COLLECTION,

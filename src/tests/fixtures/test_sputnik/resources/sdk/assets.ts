@@ -33,7 +33,6 @@ export const testSdkCountAssetsStore = async ({
 	console.log('Count:', count);
 };
 
-// eslint-disable-next-line require-await
 export const testSdkSetAssetHandler = async () => {
 	const collection = 'demo-setassethandler';
 	const name = 'hello.html';

@@ -1,9 +1,8 @@
 import type { _SERVICE as SputnikActor } from '$declarations/sputnik/sputnik.did';
 import { assertNonNullish, fromNullable, toNullable } from '@dfinity/utils';
-import { type Actor, PocketIc } from '@hadronous/pic';
+import { type PocketIc , type Actor } from '@hadronous/pic';
 import { fromArray, toArray } from '@junobuild/utils';
 import { nanoid } from 'nanoid';
-import { inject } from 'vitest';
 import { mockSetRule } from '../../mocks/collection.mocks';
 import { type SputnikTestTextEncodingData } from '../../mocks/sputnik.mocks';
 import { setupTestSputnik } from '../../utils/fixtures-tests.utils';
@@ -16,8 +15,6 @@ describe('Sputnik > text-encoding', () => {
 	const TEST_COLLECTION = 'test-textencoding';
 
 	beforeAll(async () => {
-		pic = await PocketIc.create(inject('PIC_URL'));
-
 		const { pic: p, actor: a } = await setupTestSputnik();
 
 		pic = p;

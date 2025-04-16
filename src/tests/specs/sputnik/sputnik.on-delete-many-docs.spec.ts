@@ -2,11 +2,10 @@ import type { _SERVICE as SputnikActor } from '$declarations/sputnik/sputnik.did
 import type { Identity } from '@dfinity/agent';
 import type { Principal } from '@dfinity/principal';
 import { assertNonNullish, fromNullable, toNullable } from '@dfinity/utils';
-import { type Actor, PocketIc } from '@hadronous/pic';
+import { type PocketIc , type Actor } from '@hadronous/pic';
 import { fromArray } from '@junobuild/utils';
 import { nanoid } from 'nanoid';
 import { valid } from 'semver';
-import { inject } from 'vitest';
 import { mockSetRule } from '../../mocks/collection.mocks';
 import { mockData } from '../../mocks/doc.mocks';
 import { setupTestSputnik } from '../../utils/fixtures-tests.utils';
@@ -24,8 +23,6 @@ describe('Sputnik > on_delete_many_docs', () => {
 	const TEST_NOT_ON_COLLECTION = 'test';
 
 	beforeAll(async () => {
-		pic = await PocketIc.create(inject('PIC_URL'));
-
 		const { pic: p, actor: a, canisterId: cId, controller: c } = await setupTestSputnik();
 
 		pic = p;

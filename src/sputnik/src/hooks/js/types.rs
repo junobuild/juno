@@ -21,18 +21,17 @@ pub mod shared {
     }
 
     #[derive(Clone)]
-    pub struct JsMetadata(pub String, pub String);
+    pub struct JsMetadataRecord(pub String, pub String);
 
     #[derive(Clone)]
     pub struct JsController {
-        pub metadata: Vec<JsMetadata>,
+        pub metadata: Vec<JsMetadataRecord>,
         pub created_at: JsTimestamp,
         pub updated_at: JsTimestamp,
         pub expires_at: Option<JsTimestamp>,
         pub scope: JsControllerScope,
     }
 
-    // TODO: rename similar patterns
     #[derive(Clone)]
     pub struct JsControllerRecord<'js>(pub JsRawPrincipal<'js>, pub JsController);
 
@@ -128,7 +127,7 @@ pub mod storage {
     }
 
     #[derive(Clone)]
-    pub struct JsAssetEncodings<'js>(pub String, pub JsAssetEncoding<'js>);
+    pub struct JsAssetEncodingRecord<'js>(pub String, pub JsAssetEncoding<'js>);
 
     #[derive(Clone)]
     pub struct JsAssetKey<'js> {
@@ -144,7 +143,7 @@ pub mod storage {
     pub struct JsAsset<'js> {
         pub key: JsAssetKey<'js>,
         pub headers: Vec<JsHeaderField>,
-        pub encodings: Vec<JsAssetEncodings<'js>>,
+        pub encodings: Vec<JsAssetEncodingRecord<'js>>,
         pub created_at: JsTimestamp,
         pub updated_at: JsTimestamp,
         pub version: Option<JsVersion>,

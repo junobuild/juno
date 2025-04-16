@@ -2,7 +2,7 @@ use crate::hooks::js::impls::utils::{
     from_bigint_js, from_optional_bigint_js, into_bigint_js, into_optional_bigint_js,
 };
 use crate::hooks::js::types::shared::{
-    JsController, JsControllerRecord, JsControllerScope, JsControllers, JsMetadata,
+    JsController, JsControllerRecord, JsControllerScope, JsControllers, JsMetadataRecord,
 };
 use crate::js::types::candid::JsRawPrincipal;
 use junobuild_shared::types::state::{Controller, ControllerScope, Controllers, Timestamp};
@@ -16,7 +16,7 @@ impl<'js> JsController {
             metadata: controller
                 .metadata
                 .into_iter()
-                .map(|(key, value)| JsMetadata(key, value))
+                .map(|(key, value)| JsMetadataRecord(key, value))
                 .collect(),
             created_at: controller.created_at,
             updated_at: controller.updated_at,
@@ -33,7 +33,7 @@ impl<'js> JsController {
             metadata: self
                 .metadata
                 .iter()
-                .map(|JsMetadata(key, value)| (key.clone(), value.clone()))
+                .map(|JsMetadataRecord(key, value)| (key.clone(), value.clone()))
                 .collect(),
             created_at: self.created_at,
             updated_at: self.updated_at,
@@ -114,7 +114,7 @@ impl<'js> IntoJs<'js> for JsControllerRecord<'js> {
     }
 }
 
-impl<'js> IntoJs<'js> for JsMetadata {
+impl<'js> IntoJs<'js> for JsMetadataRecord {
     fn into_js(self, ctx: &Ctx<'js>) -> JsResult<Value<'js>> {
         let arr = Array::new(ctx.clone())?;
         arr.set(0, self.0)?;
@@ -149,7 +149,7 @@ impl<'js> FromJs<'js> for JsControllerScope {
     }
 }
 
-impl<'js> FromJs<'js> for JsMetadata {
+impl<'js> FromJs<'js> for JsMetadataRecord {
     fn from_js(_ctx: &Ctx<'js>, value: Value<'js>) -> JsResult<Self> {
         let arr = Array::from_value(value)?;
 
@@ -164,7 +164,7 @@ impl<'js> FromJs<'js> for JsController {
     fn from_js(ctx: &Ctx<'js>, value: Value<'js>) -> JsResult<Self> {
         let obj = Object::from_value(value)?;
 
-        let raw_metadata: Vec<JsMetadata> = obj.get("metadata")?;
+        let raw_metadata: Vec<JsMetadataRecord> = obj.get("metadata")?;
         let metadata = raw_metadata.into_iter().collect();
 
         let created_at: Timestamp = from_bigint_js(obj.get("created_at")?)?;

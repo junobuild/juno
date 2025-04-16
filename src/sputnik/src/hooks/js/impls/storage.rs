@@ -1,7 +1,7 @@
 use crate::hooks::js::impls::utils::{into_bigint_js, into_optional_bigint_js};
 use crate::hooks::js::types::interface::JsCommitBatch;
 use crate::hooks::js::types::storage::{
-    JsAsset, JsAssetEncoding, JsAssetEncodings, JsAssetKey, JsBatch, JsBlobOrKey, JsHash,
+    JsAsset, JsAssetEncoding, JsAssetEncodingRecord, JsAssetKey, JsBatch, JsBlobOrKey, JsHash,
     JsHeaderField,
 };
 use crate::js::types::candid::JsRawPrincipal;
@@ -49,14 +49,14 @@ impl<'js> JsAsset<'js> {
     pub fn from_asset(ctx: &Ctx<'js>, asset: Asset) -> JsResult<JsAsset<'js>> {
         let key: JsAssetKey<'js> = JsAssetKey::from_asset_key(ctx, asset.key)?;
 
-        let encodings: Vec<JsAssetEncodings<'js>> = asset
+        let encodings: Vec<JsAssetEncodingRecord<'js>> = asset
             .encodings
             .into_iter()
             .map(|(encoding_type, encoding)| {
                 let js_encoding = JsAssetEncoding::from_encoding(ctx, encoding)?;
-                Ok(JsAssetEncodings(encoding_type, js_encoding))
+                Ok(JsAssetEncodingRecord(encoding_type, js_encoding))
             })
-            .collect::<Result<Vec<JsAssetEncodings<'js>>, JsError>>()?;
+            .collect::<Result<Vec<JsAssetEncodingRecord<'js>>, JsError>>()?;
 
         let headers: Vec<JsHeaderField> = asset
             .headers
@@ -141,7 +141,7 @@ impl<'js> IntoJs<'js> for JsAssetEncoding<'js> {
     }
 }
 
-impl<'js> IntoJs<'js> for JsAssetEncodings<'js> {
+impl<'js> IntoJs<'js> for JsAssetEncodingRecord<'js> {
     fn into_js(self, ctx: &Ctx<'js>) -> JsResult<Value<'js>> {
         let arr = Array::new(ctx.clone())?;
         arr.set(0, self.0)?;

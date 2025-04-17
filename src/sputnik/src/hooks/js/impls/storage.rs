@@ -1,4 +1,4 @@
-use crate::hooks::js::impls::utils::{into_bigint_js, into_optional_bigint_js};
+use crate::hooks::js::impls::utils::{from_bigint_js, into_bigint_js, into_optional_bigint_js};
 use crate::hooks::js::types::interface::{
     JsAssetEncodingNoContent, JsAssetEncodingNotContentRecord, JsAssetNoContent, JsCommitBatch,
 };
@@ -9,7 +9,7 @@ use crate::hooks::js::types::storage::{
 use crate::js::types::candid::JsRawPrincipal;
 use junobuild_storage::http::types::HeaderField;
 use junobuild_storage::types::interface::{AssetEncodingNoContent, AssetNoContent, CommitBatch};
-use junobuild_storage::types::store::{Asset, AssetEncoding, AssetKey, Batch};
+use junobuild_storage::types::store::{Asset, AssetEncoding, AssetKey, Batch, BlobOrKey};
 use rquickjs::{Array, Ctx, Error as JsError, FromJs, IntoJs, Object, Result as JsResult, Value};
 
 impl<'js> JsAssetKey<'js> {
@@ -53,6 +53,32 @@ impl<'js> JsAssetEncoding<'js> {
             modified: encoding.modified,
             content_chunks,
             total_length: encoding.total_length.to_string(),
+            sha256,
+        })
+    }
+
+    pub fn to_encoding(&self) -> JsResult<AssetEncoding> {
+        let content_chunks: Vec<BlobOrKey> = self
+            .content_chunks
+            .iter()
+            .map(|chunk| chunk.to_bytes().map(|b| b.to_vec()))
+            .collect::<JsResult<Vec<BlobOrKey>>>()?;
+
+        let sha256: [u8; 32] = self
+            .sha256
+            .to_bytes()?
+            .try_into()
+            .map_err(|_| JsError::new_from_js("JsAssetEncoding", "sha256 must be 32 bytes"))?;
+
+        let total_length = self
+            .total_length
+            .parse::<u64>()
+            .map_err(|_| JsError::new_from_js("JsAssetEncoding", "Invalid total_length"))?;
+
+        Ok(AssetEncoding {
+            modified: self.modified,
+            content_chunks,
+            total_length: total_length.into(), // into BigInt
             sha256,
         })
     }
@@ -358,6 +384,21 @@ impl<'js> FromJs<'js> for JsAssetKey<'js> {
             collection: obj.get("collection")?,
             owner: obj.get("owner")?,
             description: obj.get("description").ok(),
+        })
+    }
+}
+
+impl<'js> FromJs<'js> for JsAssetEncoding<'js> {
+    fn from_js(ctx: &Ctx<'js>, value: Value<'js>) -> JsResult<Self> {
+        let obj = Object::from_js(ctx, value)?;
+
+        let modified = from_bigint_js(obj.get("modified")?)?;
+
+        Ok(JsAssetEncoding {
+            modified,
+            content_chunks: obj.get("content_chunks")?,
+            total_length: obj.get("total_length")?,
+            sha256: obj.get("sha256")?,
         })
     }
 }

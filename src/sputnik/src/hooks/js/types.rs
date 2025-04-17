@@ -39,6 +39,14 @@ pub mod shared {
     pub struct JsControllers<'js>(pub Vec<JsControllerRecord<'js>>);
 }
 
+pub mod rules {
+    #[derive(Clone)]
+    pub enum JsMemory {
+        Heap,
+        Stable,
+    }
+}
+
 pub mod hooks {
     use crate::hooks::js::types::db::JsDoc;
     use crate::hooks::js::types::interface::{JsCommitBatch, JsDelDoc, JsSetDoc};

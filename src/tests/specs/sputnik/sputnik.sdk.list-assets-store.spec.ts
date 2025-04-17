@@ -11,7 +11,7 @@ import { type SputnikTestListDocs } from '../../mocks/sputnik.mocks';
 import { setupTestSputnik } from '../../utils/fixtures-tests.utils';
 import { fetchLogs } from '../../utils/mgmt-test.utils';
 import { waitServerlessFunction } from '../../utils/satellite-extended-tests.utils';
-import { addSomeAssetsToBeListed, addSomeDocsToBeListed } from '../../utils/sputnik-tests.utils';
+import { addSomeAssetsToBeListed } from '../../utils/sputnik-tests.utils';
 
 describe('Sputnik > sdk > listAssetsStore', () => {
 	let pic: PocketIc;

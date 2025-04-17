@@ -102,7 +102,7 @@ export const testSdkDeleteFilteredAssetsStore = async ({
 
 export const testSdkGetAssetStore = async ({
 	caller,
-	data: { collection, key, data }
+	data: { data }
 	// eslint-disable-next-line require-await
 }: OnSetDocContext) => {
 	const fullPath = decodeDocData<string>(data.after.data);
@@ -113,12 +113,13 @@ export const testSdkGetAssetStore = async ({
 		full_path: fullPath
 	});
 
+	// eslint-disable-next-line no-console
 	console.log('Nullish:', isNullish(asset));
 };
 
 export const testSdkListAssetsStore = async ({
 	caller,
-	data: { collection, key, data }
+	data: { key, data }
 	// eslint-disable-next-line require-await
 }: OnSetDocContext) => {
 	const result = listAssetsStore({

@@ -173,7 +173,7 @@ impl<'js> IntoJs<'js> for JsAssetKey<'js> {
 impl<'js> IntoJs<'js> for JsAssetEncoding<'js> {
     fn into_js(self, ctx: &Ctx<'js>) -> JsResult<Value<'js>> {
         let obj = Object::new(ctx.clone())?;
-        obj.set("created_at", into_bigint_js(ctx, self.modified))?;
+        obj.set("modified", into_bigint_js(ctx, self.modified))?;
         obj.set("content_chunks", self.content_chunks.into_js(ctx)?)?;
         obj.set("total_length", self.total_length.into_js(ctx)?)?;
         obj.set("sha256", self.sha256.into_js(ctx)?)?;

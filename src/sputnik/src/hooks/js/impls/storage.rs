@@ -1,4 +1,3 @@
-use crate::hooks::js::impls::utils::{into_bigint_js, into_optional_bigint_js};
 use crate::hooks::js::types::interface::{
     JsAssetEncodingNoContent, JsAssetEncodingNotContentRecord, JsAssetNoContent, JsCommitBatch,
 };
@@ -7,6 +6,7 @@ use crate::hooks::js::types::storage::{
     JsHeaderFieldRecord, JsHeaderFields,
 };
 use crate::js::types::candid::JsRawPrincipal;
+use crate::js::utils::primitives::{into_bigint_js, into_optional_bigint_js};
 use junobuild_storage::http::types::HeaderField;
 use junobuild_storage::types::interface::{AssetEncodingNoContent, AssetNoContent, CommitBatch};
 use junobuild_storage::types::store::{Asset, AssetEncoding, AssetKey, Batch};

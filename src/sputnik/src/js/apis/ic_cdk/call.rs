@@ -1,6 +1,6 @@
 use crate::errors::js::JUNO_SPUTNIK_ERROR_IC_CDK_CALL_RAW;
+use crate::js::inner_utils::throw_js_exception;
 use crate::js::types::candid::{JsCallRawArgs, JsCallRawResult, JsRawPrincipal};
-use crate::js::utils::throw_js_exception;
 use anyhow::Result;
 use ic_cdk::api::call::call_raw;
 use rquickjs::{Ctx, Error as JsError, Result as JsResult, String};

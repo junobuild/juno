@@ -5,4 +5,4 @@ pub mod module;
 pub mod runtime;
 mod utils;
 
-pub use apis::types;
+pub mod types;

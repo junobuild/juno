@@ -12,6 +12,7 @@ import { testTextEncoding } from './apis/node/text-encoding';
 import {
 	testSdkCountAssetsStore,
 	testSdkCountCollectionAssetsStore,
+	testSdkDeleteAssetStore,
 	testSdkSetAssetHandler
 } from './sdk/assets';
 import { testSdkControllers } from './sdk/controllers';
@@ -52,7 +53,8 @@ const collections = [
 	'test-countassets',
 	'test-deletedocs',
 	'test-deletefiltereddocs',
-	'test-setassethandler'
+	'test-setassethandler',
+	'test-deleteasset'
 ] as const;
 
 type OnSetDocCollection = (typeof collections)[number];
@@ -78,7 +80,8 @@ export const onSetDoc = defineHook<OnSetDoc>({
 			'test-countassets': testSdkCountAssetsStore,
 			'test-deletedocs': testSdkDeleteDocsStore,
 			'test-deletefiltereddocs': testSdkDeleteFilteredDocsStore,
-			'test-setassethandler': testSdkSetAssetHandler
+			'test-setassethandler': testSdkSetAssetHandler,
+			'test-deleteasset': testSdkDeleteAssetStore
 		};
 
 		await fn[context.data.collection as OnSetDocCollection]?.(context);

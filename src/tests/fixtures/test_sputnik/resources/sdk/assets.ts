@@ -3,7 +3,7 @@ import type { AssetKey, HeaderFields, OnSetDocContext } from '@junobuild/functio
 import { id } from '@junobuild/functions/ic-cdk';
 import {
 	countAssetsStore,
-	countCollectionAssetsStore, decodeDocData, deleteAssetStore,
+	countCollectionAssetsStore, decodeDocData, deleteAssetsStore, deleteAssetStore,
 	deleteDocStore,
 	setAssetHandler
 } from '@junobuild/functions/sdk';
@@ -68,5 +68,12 @@ export const testSdkDeleteAssetStore = async ({
 		caller,
 		collection: 'demo-deleteasset',
 		full_path: fullPath
+	});
+};
+
+// eslint-disable-next-line require-await
+export const testSdkDeleteAssetsStore = async () => {
+	deleteAssetsStore({
+		collection: 'demo-deleteassets'
 	});
 };

@@ -1,7 +1,7 @@
 mod apis;
 pub mod constants;
 mod dev;
-mod js_utils;
+mod inner_utils;
 pub mod module;
 mod primitives;
 pub mod runtime;

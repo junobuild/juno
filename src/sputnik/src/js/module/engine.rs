@@ -2,7 +2,7 @@ use crate::errors::js::{
     JUNO_SPUTNIK_ERROR_MODULE_DECLARE, JUNO_SPUTNIK_ERROR_MODULE_EVALUATE,
     JUNO_SPUTNIK_ERROR_MODULE_EXECUTE, JUNO_SPUTNIK_ERROR_MODULE_EXECUTE_ASYNC_PROMISE,
 };
-use crate::js::js_utils::throw_js_exception;
+use crate::js::inner_utils::throw_js_exception;
 use rquickjs::{CatchResultExt, CaughtError, Ctx, Error as JsError, Module};
 
 pub async fn evaluate_async_module<'js>(

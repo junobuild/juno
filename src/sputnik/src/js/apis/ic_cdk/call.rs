@@ -1,5 +1,5 @@
 use crate::errors::js::JUNO_SPUTNIK_ERROR_IC_CDK_CALL_RAW;
-use crate::js::js_utils::throw_js_exception;
+use crate::js::inner_utils::throw_js_exception;
 use crate::js::types::candid::{JsCallRawArgs, JsCallRawResult, JsRawPrincipal};
 use anyhow::Result;
 use ic_cdk::api::call::call_raw;

@@ -5,7 +5,7 @@ use crate::errors::js::{
 };
 use crate::js::apis::init_apis;
 use crate::js::dev::script::declare_dev_script;
-use crate::js::js_utils::format_js_error;
+use crate::js::inner_utils::format_js_error;
 use rquickjs::{
     async_with, AsyncContext, AsyncRuntime, CatchResultExt, Context, Ctx, Error as JsError, Runtime,
 };

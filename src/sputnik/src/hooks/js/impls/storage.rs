@@ -237,7 +237,7 @@ impl<'js> IntoJs<'js> for JsAssetEncoding<'js> {
 impl<'js> IntoJs<'js> for JsAssetEncodingNoContent<'js> {
     fn into_js(self, ctx: &Ctx<'js>) -> JsResult<Value<'js>> {
         let obj = Object::new(ctx.clone())?;
-        obj.set("created_at", into_bigint_js(ctx, self.modified))?;
+        obj.set("modified", into_bigint_js(ctx, self.modified))?;
         obj.set("total_length", self.total_length.into_js(ctx)?)?;
         obj.set("sha256", self.sha256.into_js(ctx)?)?;
         Ok(obj.into_value())

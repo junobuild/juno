@@ -20,13 +20,6 @@ pub fn into_bigint_from_usize<'js>(ctx: &Ctx<'js>, value: usize) -> JsResult<Big
     BigInt::from_u64(ctx.clone(), value)
 }
 
-pub fn into_optional_bigint_from_usize<'js>(
-    ctx: &Ctx<'js>,
-    value: Option<usize>,
-) -> JsResult<Option<BigInt<'js>>> {
-    value.map(|v| into_bigint_from_usize(ctx, v)).transpose()
-}
-
 pub fn from_optional_bigint_js(value: Option<BigInt>) -> JsResult<Option<u64>> {
     match value {
         Some(bigint) => Ok(Some(from_bigint_js(bigint)?)),

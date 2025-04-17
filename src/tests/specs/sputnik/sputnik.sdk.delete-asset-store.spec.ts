@@ -16,7 +16,7 @@ describe('Sputnik > sdk > deleteAssetStore', () => {
 	const MOCK_COLLECTION = 'demo-deleteasset';
 
 	beforeAll(async () => {
-		const { pic: p, actor: a, controller: c, canisterId: cId } = await setupTestSputnik();
+		const { pic: p, actor: a } = await setupTestSputnik();
 
 		pic = p;
 		actor = a;

@@ -14,7 +14,8 @@ import {
 	testSdkCountCollectionAssetsStore,
 	testSdkDeleteAssetsStore,
 	testSdkDeleteAssetStore,
-	testSdkDeleteFilteredAssetsStore, testSdkGetAssetStore,
+	testSdkDeleteFilteredAssetsStore,
+	testSdkGetAssetStore,
 	testSdkSetAssetHandler
 } from './sdk/assets';
 import { testSdkControllers } from './sdk/controllers';
@@ -59,7 +60,7 @@ const collections = [
 	'test-deleteasset',
 	'test-deleteassets',
 	'test-deletefilteredassets',
-	'test-getasset',
+	'test-getasset'
 ] as const;
 
 type OnSetDocCollection = (typeof collections)[number];

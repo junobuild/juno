@@ -8,9 +8,13 @@ import {
 	deleteAssetsStore,
 	deleteAssetStore,
 	deleteFilteredAssetsStore,
+	encodeDocData,
 	getAssetStore,
-	setAssetHandler
+	listAssetsStore,
+	setAssetHandler,
+	setDocStore
 } from '@junobuild/functions/sdk';
+import type { SputnikTestListDocs } from '../../../../mocks/sputnik.mocks';
 import { mockBlob } from '../../../../mocks/storage.mocks';
 import { listParams } from './utils';
 
@@ -110,4 +114,36 @@ export const testSdkGetAssetStore = async ({
 	});
 
 	console.log('Nullish:', isNullish(asset));
+};
+
+export const testSdkListAssetsStore = async ({
+	caller,
+	data: { collection, key, data }
+	// eslint-disable-next-line require-await
+}: OnSetDocContext) => {
+	const result = listAssetsStore({
+		caller: id(),
+		collection: 'demo-listassets',
+		params: listParams({ caller })
+	});
+
+	for (const [key, item] of result.items) {
+		// eslint-disable-next-line no-console
+		console.log(`${key}: ${item.key.full_path}`);
+	}
+
+	setDocStore({
+		caller,
+		collection: 'demo-listassets',
+		key,
+		doc: {
+			version: data.after.version,
+			data: encodeDocData<SputnikTestListDocs>({
+				items_length: result.items_length,
+				items_page: result.items_page,
+				matches_length: result.matches_length,
+				matches_pages: result.matches_pages
+			})
+		}
+	});
 };

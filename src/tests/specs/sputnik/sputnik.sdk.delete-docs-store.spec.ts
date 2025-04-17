@@ -40,7 +40,7 @@ describe('Sputnik > sdk > deleteDocsStore', () => {
 		await pic?.tearDown();
 	});
 
-	const setDoc = async (): Promise<void> => {
+	const triggerHook = async (): Promise<void> => {
 		const { set_doc } = actor;
 
 		const key = nanoid();
@@ -55,7 +55,7 @@ describe('Sputnik > sdk > deleteDocsStore', () => {
 	};
 
 	it('should delete all documents', async () => {
-		await setDoc();
+		await triggerHook();
 
 		const { list_docs } = actor;
 

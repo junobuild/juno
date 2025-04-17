@@ -9,7 +9,7 @@ pub fn init_delete_filtered_assets_store(ctx: &Ctx) -> Result<(), JsError> {
     let global = ctx.globals();
 
     global.set(
-        "__juno_satellite_datastore_delete_filtered_assets_store",
+        "__juno_satellite_storage_delete_filtered_assets_store",
         js_delete_filtered_assets_store,
     )?;
 

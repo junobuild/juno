@@ -11,8 +11,10 @@ import { testMathRandom } from './apis/node/math';
 import { testTextEncoding } from './apis/node/text-encoding';
 import {
 	testSdkCountAssetsStore,
-	testSdkCountCollectionAssetsStore, testSdkDeleteAssetsStore,
+	testSdkCountCollectionAssetsStore,
+	testSdkDeleteAssetsStore,
 	testSdkDeleteAssetStore,
+	testSdkDeleteFilteredAssetsStore,
 	testSdkSetAssetHandler
 } from './sdk/assets';
 import { testSdkControllers } from './sdk/controllers';
@@ -55,7 +57,8 @@ const collections = [
 	'test-deletefiltereddocs',
 	'test-setassethandler',
 	'test-deleteasset',
-	'test-deleteassets'
+	'test-deleteassets',
+	'test-deletefilteredassets'
 ] as const;
 
 type OnSetDocCollection = (typeof collections)[number];
@@ -83,7 +86,8 @@ export const onSetDoc = defineHook<OnSetDoc>({
 			'test-deletefiltereddocs': testSdkDeleteFilteredDocsStore,
 			'test-setassethandler': testSdkSetAssetHandler,
 			'test-deleteasset': testSdkDeleteAssetStore,
-			"test-deleteassets": testSdkDeleteAssetsStore
+			'test-deleteassets': testSdkDeleteAssetsStore,
+			'test-deletefilteredassets': testSdkDeleteFilteredAssetsStore
 		};
 
 		await fn[context.data.collection as OnSetDocCollection]?.(context);

@@ -1,14 +1,11 @@
 import type { _SERVICE as SputnikActor } from '$declarations/sputnik/sputnik.did';
 import type { Identity } from '@dfinity/agent';
 import type { Principal } from '@dfinity/principal';
-import { assertNonNullish, fromNullable, toNullable } from '@dfinity/utils';
+import { assertNonNullish, fromNullable } from '@dfinity/utils';
 import { type Actor, type PocketIc } from '@hadronous/pic';
-import { toArray } from '@junobuild/utils';
 import { nanoid } from 'nanoid';
 import { mockSetRule } from '../../mocks/collection.mocks';
 import { setupTestSputnik } from '../../utils/fixtures-tests.utils';
-import { fetchLogs } from '../../utils/mgmt-test.utils';
-import { waitServerlessFunction } from '../../utils/satellite-extended-tests.utils';
 import { uploadAsset } from '../../utils/satellite-storage-tests.utils';
 
 describe('Sputnik > sdk > getContentChunksStore', () => {
@@ -47,7 +44,7 @@ describe('Sputnik > sdk > getContentChunksStore', () => {
 			actor
 		});
 
-		const {get_asset} = actor;
+		const { get_asset } = actor;
 
 		const assetNoContent = await get_asset(MOCK_COLLECTION, fullPath);
 
@@ -56,6 +53,5 @@ describe('Sputnik > sdk > getContentChunksStore', () => {
 		assertNonNullish(asset);
 
 		console.log(asset.encodings);
-
 	});
 });

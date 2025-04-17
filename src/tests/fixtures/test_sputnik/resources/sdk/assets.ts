@@ -4,6 +4,10 @@ import { id } from '@junobuild/functions/ic-cdk';
 import {
 	countAssetsStore,
 	countCollectionAssetsStore,
+	decodeDocData,
+	deleteAssetsStore,
+	deleteAssetStore,
+	deleteFilteredAssetsStore,
 	setAssetHandler
 } from '@junobuild/functions/sdk';
 import { mockBlob } from '../../../../mocks/storage.mocks';
@@ -54,4 +58,39 @@ export const testSdkSetAssetHandler = async () => {
 		headers,
 		content
 	});
+};
+
+export const testSdkDeleteAssetStore = async ({
+	caller,
+	data: { data }
+	// eslint-disable-next-line require-await
+}: OnSetDocContext) => {
+	const fullPath = decodeDocData<string>(data.after.data);
+
+	deleteAssetStore({
+		caller,
+		collection: 'demo-deleteasset',
+		full_path: fullPath
+	});
+};
+
+// eslint-disable-next-line require-await
+export const testSdkDeleteAssetsStore = async () => {
+	deleteAssetsStore({
+		collection: 'demo-deleteassets'
+	});
+};
+
+export const testSdkDeleteFilteredAssetsStore = async ({
+	caller
+	// eslint-disable-next-line require-await
+}: OnSetDocContext) => {
+	const result = deleteFilteredAssetsStore({
+		caller: id(),
+		collection: 'demo-deletefilteredassets',
+		params: listParams({ caller })
+	});
+
+	// eslint-disable-next-line no-console
+	console.log('Count:', result.length);
 };

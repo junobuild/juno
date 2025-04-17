@@ -7,15 +7,15 @@ import { mockSetRule } from '../../mocks/collection.mocks';
 import { mockListParams } from '../../mocks/list.mocks';
 import { setupTestSputnik } from '../../utils/fixtures-tests.utils';
 import { waitServerlessFunction } from '../../utils/satellite-extended-tests.utils';
-import { addSomeDocsToBeListed } from '../../utils/sputnik-tests.utils';
+import { addSomeAssetsToBeListed } from '../../utils/sputnik-tests.utils';
 
-describe('Sputnik > sdk > deleteDocsStore', () => {
+describe('Sputnik > sdk > testSdkDeleteAssetsStore', () => {
 	let pic: PocketIc;
 	let actor: Actor<SputnikActor>;
 	let controller: Identity;
 
-	const TEST_COLLECTION = 'test-deletedocs';
-	const MOCK_COLLECTION = 'demo-deletedocs';
+	const TEST_COLLECTION = 'test-deleteassets';
+	const MOCK_COLLECTION = 'demo-deleteassets';
 
 	beforeAll(async () => {
 		const { pic: p, actor: a, controller: c } = await setupTestSputnik();
@@ -26,9 +26,13 @@ describe('Sputnik > sdk > deleteDocsStore', () => {
 
 		const { set_rule } = actor;
 		await set_rule({ Db: null }, TEST_COLLECTION, mockSetRule);
-		await set_rule({ Db: null }, MOCK_COLLECTION, mockSetRule);
+		await set_rule({ Storage: null }, MOCK_COLLECTION, {
+			...mockSetRule,
+			read: { Public: null },
+			write: { Public: null }
+		});
 
-		await addSomeDocsToBeListed({
+		await addSomeAssetsToBeListed({
 			collection: MOCK_COLLECTION,
 			actor,
 			controller,
@@ -54,13 +58,13 @@ describe('Sputnik > sdk > deleteDocsStore', () => {
 		await waitServerlessFunction(pic);
 	};
 
-	it('should delete all documents', async () => {
+	it('should delete all assets', async () => {
 		await triggerHook();
 
-		const { list_docs } = actor;
+		const { list_assets } = actor;
 
-		const docs = await list_docs(MOCK_COLLECTION, mockListParams);
+		const assets = await list_assets(MOCK_COLLECTION, mockListParams);
 
-		expect(docs.items_length).toEqual(0n);
+		expect(assets.items_length).toEqual(0n);
 	});
 });

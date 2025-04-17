@@ -1,4 +1,4 @@
-import { arrayBufferToUint8Array } from '@dfinity/utils';
+import { arrayBufferToUint8Array, isNullish } from '@dfinity/utils';
 import type { AssetKey, HeaderFields, OnSetDocContext } from '@junobuild/functions';
 import { id } from '@junobuild/functions/ic-cdk';
 import {
@@ -8,6 +8,7 @@ import {
 	deleteAssetsStore,
 	deleteAssetStore,
 	deleteFilteredAssetsStore,
+	getAssetStore,
 	setAssetHandler
 } from '@junobuild/functions/sdk';
 import { mockBlob } from '../../../../mocks/storage.mocks';
@@ -93,4 +94,20 @@ export const testSdkDeleteFilteredAssetsStore = async ({
 
 	// eslint-disable-next-line no-console
 	console.log('Count:', result.length);
+};
+
+export const testSdkGetAssetStore = async ({
+	caller,
+	data: { collection, key, data }
+	// eslint-disable-next-line require-await
+}: OnSetDocContext) => {
+	const fullPath = decodeDocData<string>(data.after.data);
+
+	const asset = getAssetStore({
+		caller,
+		collection: 'demo-getasset',
+		full_path: fullPath
+	});
+
+	console.log('Nullish:', isNullish(asset));
 };

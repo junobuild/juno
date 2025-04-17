@@ -21,7 +21,7 @@ fn list_docs_store<'js>(
     caller: JsUserId<'js>,
     collection: JsCollectionKey,
     params: JsListParams<'js>,
-) -> JsResult<JsListResults<'js, JsDoc<'js>>> {
+) -> JsResult<JsListResults<JsDoc<'js>>> {
     let results = list_docs_store_sdk(caller.to_principal()?, collection, &params.to_params()?)
         .map_err(|e| Exception::throw_message(&ctx, &e))?;
 

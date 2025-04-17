@@ -1,7 +1,4 @@
-use crate::hooks::js::impls::utils::{
-    from_bigint_js, from_bigint_js_to_usize, into_bigint_from_usize,
-    into_optional_bigint_from_usize,
-};
+use crate::hooks::js::impls::utils::from_bigint_js;
 use crate::hooks::js::types::db::JsDoc;
 use crate::hooks::js::types::hooks::JsKey;
 use crate::hooks::js::types::interface::JsAssetNoContent;
@@ -9,6 +6,7 @@ use crate::hooks::js::types::list::{
     JsListMatcher, JsListOrder, JsListOrderField, JsListPaginate, JsListParams, JsListResults,
     JsTimestampMatcher,
 };
+use crate::hooks::js::types::primitives::JsUsize;
 use junobuild_satellite::Doc;
 use junobuild_shared::types::list::{
     ListMatcher, ListOrder, ListOrderField, ListPaginate, ListParams, ListResults, TimestampMatcher,
@@ -52,15 +50,11 @@ impl JsListMatcher {
     }
 }
 
-impl<'js> JsListPaginate<'js> {
+impl JsListPaginate {
     pub fn to_paginate(&self) -> JsResult<ListPaginate> {
         Ok(ListPaginate {
             start_after: self.start_after.clone(),
-            limit: self
-                .limit
-                .as_ref()
-                .map(|b| from_bigint_js_to_usize(b.clone()))
-                .transpose()?,
+            limit: self.limit.as_ref().map(|b| b.to_usize()),
         })
     }
 }
@@ -95,7 +89,7 @@ impl JsTimestampMatcher {
     }
 }
 
-impl<'js> JsListResults<'js, JsDoc<'js>> {
+impl<'js> JsListResults<JsDoc<'js>> {
     pub fn from_doc_results(ctx: &Ctx<'js>, results: &ListResults<Doc>) -> JsResult<Self> {
         Ok(Self {
             items: results
@@ -103,15 +97,17 @@ impl<'js> JsListResults<'js, JsDoc<'js>> {
                 .iter()
                 .map(|(key, doc)| Ok((key.clone(), JsDoc::from_doc(ctx, doc.clone())?)))
                 .collect::<JsResult<Vec<(JsKey, JsDoc<'js>)>>>()?,
-            items_length: into_bigint_from_usize(ctx, results.items_length)?,
-            items_page: into_optional_bigint_from_usize(ctx, results.items_page)?,
-            matches_length: into_bigint_from_usize(ctx, results.matches_length)?,
-            matches_pages: into_optional_bigint_from_usize(ctx, results.matches_pages)?,
+            items_length: JsUsize(results.items_length),
+            items_page: results.items_page.map(|items_page| JsUsize(items_page)),
+            matches_length: JsUsize(results.matches_length),
+            matches_pages: results
+                .matches_pages
+                .map(|matches_pages| JsUsize(matches_pages)),
         })
     }
 }
 
-impl<'js> JsListResults<'js, JsAssetNoContent<'js>> {
+impl<'js> JsListResults<JsAssetNoContent<'js>> {
     pub fn from_asset_no_content_results(
         ctx: &Ctx<'js>,
         results: &ListResults<AssetNoContent>,
@@ -127,10 +123,12 @@ impl<'js> JsListResults<'js, JsAssetNoContent<'js>> {
                     ))
                 })
                 .collect::<JsResult<Vec<(JsKey, JsAssetNoContent<'js>)>>>()?,
-            items_length: into_bigint_from_usize(ctx, results.items_length)?,
-            items_page: into_optional_bigint_from_usize(ctx, results.items_page)?,
-            matches_length: into_bigint_from_usize(ctx, results.matches_length)?,
-            matches_pages: into_optional_bigint_from_usize(ctx, results.matches_pages)?,
+            items_length: JsUsize(results.items_length),
+            items_page: results.items_page.map(|items_page| JsUsize(items_page)),
+            matches_length: JsUsize(results.matches_length),
+            matches_pages: results
+                .matches_pages
+                .map(|matches_pages| JsUsize(matches_pages)),
         })
     }
 }
@@ -139,7 +137,7 @@ impl<'js> JsListResults<'js, JsAssetNoContent<'js>> {
 // IntoJs
 // ---------------------------------------------------------
 
-impl<'js> IntoJs<'js> for JsListResults<'js, JsDoc<'js>> {
+impl<'js> IntoJs<'js> for JsListResults<JsDoc<'js>> {
     fn into_js(self, ctx: &Ctx<'js>) -> JsResult<Value<'js>> {
         let obj = Object::new(ctx.clone())?;
 
@@ -162,7 +160,7 @@ impl<'js> IntoJs<'js> for JsListResults<'js, JsDoc<'js>> {
     }
 }
 
-impl<'js> IntoJs<'js> for JsListResults<'js, JsAssetNoContent<'js>> {
+impl<'js> IntoJs<'js> for JsListResults<JsAssetNoContent<'js>> {
     fn into_js(self, ctx: &Ctx<'js>) -> JsResult<Value<'js>> {
         let obj = Object::new(ctx.clone())?;
 
@@ -189,7 +187,7 @@ impl<'js> IntoJs<'js> for JsListResults<'js, JsAssetNoContent<'js>> {
 // FromJs
 // ---------------------------------------------------------
 
-impl<'js> FromJs<'js> for JsListPaginate<'js> {
+impl<'js> FromJs<'js> for JsListPaginate {
     fn from_js(_ctx: &Ctx<'js>, value: Value<'js>) -> JsResult<Self> {
         let obj = Object::from_value(value)?;
 

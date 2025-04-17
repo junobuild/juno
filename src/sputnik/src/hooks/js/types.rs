@@ -1,4 +1,5 @@
 pub mod primitives {
+    #[derive(Clone)]
     pub struct JsUsize(pub usize);
 }
 
@@ -217,13 +218,13 @@ pub mod interface {
 
 pub mod list {
     use crate::hooks::js::types::hooks::JsKey;
+    use crate::hooks::js::types::primitives::JsUsize;
     use crate::hooks::js::types::shared::{JsTimestamp, JsUserId};
-    use rquickjs::BigInt;
 
     #[derive(Clone)]
-    pub struct JsListPaginate<'js> {
+    pub struct JsListPaginate {
         pub start_after: Option<JsKey>,
-        pub limit: Option<BigInt<'js>>,
+        pub limit: Option<JsUsize>,
     }
 
     #[derive(Clone)]
@@ -258,17 +259,17 @@ pub mod list {
     #[derive(Clone)]
     pub struct JsListParams<'js> {
         pub matcher: Option<JsListMatcher>,
-        pub paginate: Option<JsListPaginate<'js>>,
+        pub paginate: Option<JsListPaginate>,
         pub order: Option<JsListOrder>,
         pub owner: Option<JsUserId<'js>>,
     }
 
     #[derive(Clone)]
-    pub struct JsListResults<'js, T> {
+    pub struct JsListResults<T> {
         pub items: Vec<(JsKey, T)>,
-        pub items_length: BigInt<'js>,
-        pub items_page: Option<BigInt<'js>>,
-        pub matches_length: BigInt<'js>,
-        pub matches_pages: Option<BigInt<'js>>,
+        pub items_length: JsUsize,
+        pub items_page: Option<JsUsize>,
+        pub matches_length: JsUsize,
+        pub matches_pages: Option<JsUsize>,
     }
 }

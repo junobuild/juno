@@ -21,7 +21,7 @@ fn list_assets_store<'js>(
     caller: JsUserId<'js>,
     collection: JsCollectionKey,
     params: JsListParams<'js>,
-) -> JsResult<JsListResults<'js, JsAssetNoContent<'js>>> {
+) -> JsResult<JsListResults<JsAssetNoContent<'js>>> {
     let results = list_assets_store_sdk(caller.to_principal()?, &collection, &params.to_params()?)
         .map_err(|e| Exception::throw_message(&ctx, &e))?;
 

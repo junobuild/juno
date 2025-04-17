@@ -4,6 +4,7 @@ use crate::hooks::js::impls::utils::{
 };
 use crate::hooks::js::types::db::JsDoc;
 use crate::hooks::js::types::hooks::JsKey;
+use crate::hooks::js::types::interface::JsAssetNoContent;
 use crate::hooks::js::types::list::{
     JsListMatcher, JsListOrder, JsListOrderField, JsListPaginate, JsListParams, JsListResults,
     JsTimestampMatcher,
@@ -12,6 +13,7 @@ use junobuild_satellite::Doc;
 use junobuild_shared::types::list::{
     ListMatcher, ListOrder, ListOrderField, ListPaginate, ListParams, ListResults, TimestampMatcher,
 };
+use junobuild_storage::types::interface::AssetNoContent;
 use rquickjs::{
     Array, BigInt, Ctx, Error as JsError, FromJs, IntoJs, Object, Result as JsResult, Value,
 };
@@ -109,11 +111,58 @@ impl<'js> JsListResults<'js, JsDoc<'js>> {
     }
 }
 
+impl<'js> JsListResults<'js, JsAssetNoContent<'js>> {
+    pub fn from_asset_no_content_results(
+        ctx: &Ctx<'js>,
+        results: &ListResults<AssetNoContent>,
+    ) -> JsResult<Self> {
+        Ok(Self {
+            items: results
+                .items
+                .iter()
+                .map(|(key, asset)| {
+                    Ok((
+                        key.clone(),
+                        JsAssetNoContent::from_asset_no_content(ctx, asset.clone())?,
+                    ))
+                })
+                .collect::<JsResult<Vec<(JsKey, JsAssetNoContent<'js>)>>>()?,
+            items_length: into_bigint_from_usize(ctx, results.items_length)?,
+            items_page: into_optional_bigint_from_usize(ctx, results.items_page)?,
+            matches_length: into_bigint_from_usize(ctx, results.matches_length)?,
+            matches_pages: into_optional_bigint_from_usize(ctx, results.matches_pages)?,
+        })
+    }
+}
+
 // ---------------------------------------------------------
 // IntoJs
 // ---------------------------------------------------------
 
 impl<'js> IntoJs<'js> for JsListResults<'js, JsDoc<'js>> {
+    fn into_js(self, ctx: &Ctx<'js>) -> JsResult<Value<'js>> {
+        let obj = Object::new(ctx.clone())?;
+
+        let js_items = Array::new(ctx.clone())?;
+
+        for (i, (key, doc)) in self.items.into_iter().enumerate() {
+            let arr = Array::new(ctx.clone())?;
+            arr.set(0, key.into_js(ctx))?;
+            arr.set(1, doc.into_js(ctx)?)?;
+            js_items.set(i, arr)?;
+        }
+
+        obj.set("items", js_items)?;
+        obj.set("items_length", self.items_length)?;
+        obj.set("items_page", self.items_page)?;
+        obj.set("matches_length", self.matches_length)?;
+        obj.set("matches_pages", self.matches_pages)?;
+
+        Ok(obj.into_value())
+    }
+}
+
+impl<'js> IntoJs<'js> for JsListResults<'js, JsAssetNoContent<'js>> {
     fn into_js(self, ctx: &Ctx<'js>) -> JsResult<Value<'js>> {
         let obj = Object::new(ctx.clone())?;
 

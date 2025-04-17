@@ -1,12 +1,14 @@
 use crate::hooks::js::impls::utils::{into_bigint_js, into_optional_bigint_js};
-use crate::hooks::js::types::interface::JsCommitBatch;
+use crate::hooks::js::types::interface::{
+    JsAssetEncodingNoContent, JsAssetEncodingNotContentRecord, JsAssetNoContent, JsCommitBatch,
+};
 use crate::hooks::js::types::storage::{
     JsAsset, JsAssetEncoding, JsAssetEncodingRecord, JsAssetKey, JsBatch, JsBlobOrKey, JsHash,
     JsHeaderFieldRecord, JsHeaderFields,
 };
 use crate::js::types::candid::JsRawPrincipal;
 use junobuild_storage::http::types::HeaderField;
-use junobuild_storage::types::interface::CommitBatch;
+use junobuild_storage::types::interface::{AssetEncodingNoContent, AssetNoContent, CommitBatch};
 use junobuild_storage::types::store::{Asset, AssetEncoding, AssetKey, Batch};
 use rquickjs::{Array, Ctx, Error as JsError, FromJs, IntoJs, Object, Result as JsResult, Value};
 
@@ -56,6 +58,21 @@ impl<'js> JsAssetEncoding<'js> {
     }
 }
 
+impl<'js> JsAssetEncodingNoContent<'js> {
+    pub fn from_encoding_no_content(
+        ctx: &Ctx<'js>,
+        encoding: AssetEncodingNoContent,
+    ) -> JsResult<JsAssetEncodingNoContent<'js>> {
+        let sha256: JsHash<'js> = JsHash::from_bytes(ctx, &encoding.sha256)?;
+
+        Ok(JsAssetEncodingNoContent {
+            modified: encoding.modified,
+            total_length: encoding.total_length.to_string(),
+            sha256,
+        })
+    }
+}
+
 impl<'js> JsAsset<'js> {
     pub fn from_asset(ctx: &Ctx<'js>, asset: Asset) -> JsResult<JsAsset<'js>> {
         let key: JsAssetKey<'js> = JsAssetKey::from_asset_key(ctx, asset.key)?;
@@ -78,6 +95,42 @@ impl<'js> JsAsset<'js> {
         );
 
         Ok(JsAsset {
+            key,
+            headers,
+            encodings,
+            created_at: asset.created_at,
+            updated_at: asset.updated_at,
+            version: asset.version,
+        })
+    }
+}
+
+impl<'js> JsAssetNoContent<'js> {
+    pub fn from_asset_no_content(
+        ctx: &Ctx<'js>,
+        asset: AssetNoContent,
+    ) -> JsResult<JsAssetNoContent<'js>> {
+        let key: JsAssetKey<'js> = JsAssetKey::from_asset_key(ctx, asset.key)?;
+
+        let encodings: Vec<JsAssetEncodingNotContentRecord<'js>> = asset
+            .encodings
+            .into_iter()
+            .map(|(encoding_type, encoding)| {
+                let js_encoding =
+                    JsAssetEncodingNoContent::from_encoding_no_content(ctx, encoding)?;
+                Ok(JsAssetEncodingNotContentRecord(encoding_type, js_encoding))
+            })
+            .collect::<Result<Vec<JsAssetEncodingNotContentRecord<'js>>, JsError>>()?;
+
+        let headers: JsHeaderFields = JsHeaderFields(
+            asset
+                .headers
+                .into_iter()
+                .map(|HeaderField(key, value)| JsHeaderFieldRecord(key, value))
+                .collect(),
+        );
+
+        Ok(JsAssetNoContent {
             key,
             headers,
             encodings,
@@ -181,6 +234,16 @@ impl<'js> IntoJs<'js> for JsAssetEncoding<'js> {
     }
 }
 
+impl<'js> IntoJs<'js> for JsAssetEncodingNoContent<'js> {
+    fn into_js(self, ctx: &Ctx<'js>) -> JsResult<Value<'js>> {
+        let obj = Object::new(ctx.clone())?;
+        obj.set("created_at", into_bigint_js(ctx, self.modified))?;
+        obj.set("total_length", self.total_length.into_js(ctx)?)?;
+        obj.set("sha256", self.sha256.into_js(ctx)?)?;
+        Ok(obj.into_value())
+    }
+}
+
 impl<'js> IntoJs<'js> for JsAssetEncodingRecord<'js> {
     fn into_js(self, ctx: &Ctx<'js>) -> JsResult<Value<'js>> {
         let arr = Array::new(ctx.clone())?;
@@ -190,7 +253,32 @@ impl<'js> IntoJs<'js> for JsAssetEncodingRecord<'js> {
     }
 }
 
+impl<'js> IntoJs<'js> for JsAssetEncodingNotContentRecord<'js> {
+    fn into_js(self, ctx: &Ctx<'js>) -> JsResult<Value<'js>> {
+        let arr = Array::new(ctx.clone())?;
+        arr.set(0, self.0)?;
+        arr.set(1, self.1.into_js(ctx)?)?;
+        Ok(arr.into_value())
+    }
+}
+
 impl<'js> IntoJs<'js> for JsAsset<'js> {
+    fn into_js(self, ctx: &Ctx<'js>) -> JsResult<Value<'js>> {
+        let obj = Object::new(ctx.clone())?;
+        obj.set("key", self.key.into_js(ctx)?)?;
+        obj.set("headers", self.headers.into_js(ctx)?)?;
+        obj.set("encodings", self.encodings.into_js(ctx)?)?;
+
+        obj.set("created_at", into_bigint_js(ctx, self.created_at))?;
+        obj.set("updated_at", into_bigint_js(ctx, self.updated_at))?;
+
+        obj.set("version", into_optional_bigint_js(ctx, self.version)?)?;
+
+        Ok(obj.into_value())
+    }
+}
+
+impl<'js> IntoJs<'js> for JsAssetNoContent<'js> {
     fn into_js(self, ctx: &Ctx<'js>) -> JsResult<Value<'js>> {
         let obj = Object::new(ctx.clone())?;
         obj.set("key", self.key.into_js(ctx)?)?;

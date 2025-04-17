@@ -168,8 +168,8 @@ pub mod storage {
 
 pub mod interface {
     use crate::hooks::js::types::hooks::JsRawData;
-    use crate::hooks::js::types::shared::JsVersion;
-    use crate::hooks::js::types::storage::JsHeaderFields;
+    use crate::hooks::js::types::shared::{JsTimestamp, JsVersion};
+    use crate::hooks::js::types::storage::{JsAssetKey, JsHash, JsHeaderFields};
     use junobuild_shared::types::state::Version;
 
     #[derive(Clone)]
@@ -192,6 +192,26 @@ pub mod interface {
         pub batch_id: JsBatchId,
         pub headers: JsHeaderFields,
         pub chunk_ids: Vec<JsChunkId>,
+    }
+
+    #[derive(Clone)]
+    pub struct JsAssetEncodingNoContent<'js> {
+        pub modified: JsTimestamp,
+        pub total_length: String,
+        pub sha256: JsHash<'js>,
+    }
+
+    #[derive(Clone)]
+    pub struct JsAssetEncodingNotContentRecord<'js>(pub String, pub JsAssetEncodingNoContent<'js>);
+
+    #[derive(Clone)]
+    pub struct JsAssetNoContent<'js> {
+        pub key: JsAssetKey<'js>,
+        pub headers: JsHeaderFields,
+        pub encodings: Vec<JsAssetEncodingNotContentRecord<'js>>,
+        pub created_at: JsTimestamp,
+        pub updated_at: JsTimestamp,
+        pub version: Option<JsVersion>,
     }
 }
 

@@ -1,25 +1,32 @@
 import type { _SERVICE as SputnikActor } from '$declarations/sputnik/sputnik.did';
-import { fromNullable, toNullable } from '@dfinity/utils';
+import type { Identity } from '@dfinity/agent';
+import type { Principal } from '@dfinity/principal';
+import { toNullable } from '@dfinity/utils';
 import { type Actor, type PocketIc } from '@hadronous/pic';
 import { toArray } from '@junobuild/utils';
 import { nanoid } from 'nanoid';
 import { mockSetRule } from '../../mocks/collection.mocks';
 import { setupTestSputnik } from '../../utils/fixtures-tests.utils';
+import { fetchLogs } from '../../utils/mgmt-test.utils';
 import { waitServerlessFunction } from '../../utils/satellite-extended-tests.utils';
 import { uploadAsset } from '../../utils/satellite-storage-tests.utils';
 
-describe('Sputnik > sdk > deleteAssetStore', () => {
+describe('Sputnik > sdk > getAssetStore', () => {
 	let pic: PocketIc;
 	let actor: Actor<SputnikActor>;
+	let canisterId: Principal;
+	let controller: Identity;
 
-	const TEST_COLLECTION = 'test-deleteasset';
-	const MOCK_COLLECTION = 'demo-deleteasset';
+	const TEST_COLLECTION = 'test-getasset';
+	const MOCK_COLLECTION = 'demo-getasset';
 
 	beforeAll(async () => {
-		const { pic: p, actor: a } = await setupTestSputnik();
+		const { pic: p, actor: a, canisterId: cId, controller: c } = await setupTestSputnik();
 
 		pic = p;
 		actor = a;
+		canisterId = cId;
+		controller = c;
 
 		const { set_rule } = actor;
 		await set_rule({ Db: null }, TEST_COLLECTION, mockSetRule);
@@ -44,7 +51,7 @@ describe('Sputnik > sdk > deleteAssetStore', () => {
 		await waitServerlessFunction(pic);
 	};
 
-	it('should delete asset', async () => {
+	it('should get asset', async () => {
 		const fullPath = `/${MOCK_COLLECTION}/hello.html`;
 
 		await uploadAsset({
@@ -54,16 +61,19 @@ describe('Sputnik > sdk > deleteAssetStore', () => {
 			actor
 		});
 
-		const { get_asset } = actor;
-
-		const asset = await get_asset(MOCK_COLLECTION, fullPath);
-
-		expect(fromNullable(asset)).not.toBeUndefined();
-
 		await triggerHook(fullPath);
 
-		const assetAfterHook = await get_asset(MOCK_COLLECTION, fullPath);
+		const logs = await fetchLogs({
+			canisterId,
+			controller,
+			pic
+		});
 
-		expect(fromNullable(assetAfterHook)).toBeUndefined();
+		const nullishMsg = logs.find(([_, { message }]) => message.includes('Nullish:'));
+		expect(nullishMsg).not.toBeUndefined();
+
+		expect((nullishMsg?.[1].message ?? 'true').replace('Nullish:', '').trim() === 'false').toEqual(
+			true
+		);
 	});
 });

@@ -1,10 +1,10 @@
-use crate::hooks::js::impls::utils::{
-    from_bigint_js, from_optional_bigint_js, into_bigint_js, into_optional_bigint_js,
-};
 use crate::hooks::js::types::shared::{
     JsController, JsControllerRecord, JsControllerScope, JsControllers, JsMetadataRecord,
 };
 use crate::js::types::candid::JsRawPrincipal;
+use crate::js::utils::primitives::{
+    from_bigint_js, from_optional_bigint_js, into_bigint_js, into_optional_bigint_js,
+};
 use junobuild_shared::types::state::{Controller, ControllerScope, Controllers, Timestamp};
 use rquickjs::{
     Array, BigInt, Ctx, Error as JsError, FromJs, IntoJs, Object, Result as JsResult, Value,

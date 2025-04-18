@@ -6,6 +6,7 @@ use crate::hooks::js::types::storage::{
     JsHeaderFieldRecord, JsHeaderFields,
 };
 use crate::js::types::candid::JsRawPrincipal;
+use crate::js::types::primitives::JsU128Compat;
 use crate::js::utils::primitives::{from_bigint_js, into_bigint_js, into_optional_bigint_js};
 use junobuild_storage::http::types::HeaderField;
 use junobuild_storage::types::interface::{AssetEncodingNoContent, AssetNoContent, CommitBatch};
@@ -52,7 +53,7 @@ impl<'js> JsAssetEncoding<'js> {
         Ok(JsAssetEncoding {
             modified: encoding.modified,
             content_chunks,
-            total_length: encoding.total_length.to_string(),
+            total_length: JsU128Compat(encoding.total_length),
             sha256,
         })
     }
@@ -70,15 +71,12 @@ impl<'js> JsAssetEncoding<'js> {
             .try_into()
             .map_err(|_| JsError::new_from_js("JsAssetEncoding", "sha256 must be 32 bytes"))?;
 
-        let total_length = self
-            .total_length
-            .parse::<u64>()
-            .map_err(|_| JsError::new_from_js("JsAssetEncoding", "Invalid total_length"))?;
+        let total_length = self.total_length.to_u128();
 
         Ok(AssetEncoding {
             modified: self.modified,
             content_chunks,
-            total_length: total_length.into(), // into BigInt
+            total_length,
             sha256,
         })
     }
@@ -93,7 +91,7 @@ impl<'js> JsAssetEncodingNoContent<'js> {
 
         Ok(JsAssetEncodingNoContent {
             modified: encoding.modified,
-            total_length: encoding.total_length.to_string(),
+            total_length: JsU128Compat(encoding.total_length),
             sha256,
         })
     }

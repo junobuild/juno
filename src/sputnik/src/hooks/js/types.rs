@@ -112,6 +112,7 @@ pub mod db {
 pub mod storage {
     use crate::hooks::js::types::shared::{JsTimestamp, JsUserId, JsVersion};
     use crate::js::types::candid::JsUint8Array;
+    use crate::js::types::primitives::JsU128Compat;
     use junobuild_storage::types::state::FullPath;
 
     pub type JsBlob<'js> = JsUint8Array<'js>;
@@ -132,7 +133,7 @@ pub mod storage {
     pub struct JsAssetEncoding<'js> {
         pub modified: JsTimestamp,
         pub content_chunks: Vec<JsBlobOrKey<'js>>,
-        pub total_length: String,
+        pub total_length: JsU128Compat,
         pub sha256: JsHash<'js>,
     }
 
@@ -174,6 +175,7 @@ pub mod interface {
     use crate::hooks::js::types::hooks::JsRawData;
     use crate::hooks::js::types::shared::{JsTimestamp, JsVersion};
     use crate::hooks::js::types::storage::{JsAssetKey, JsHash, JsHeaderFields};
+    use crate::js::types::primitives::JsU128Compat;
     use junobuild_shared::types::state::Version;
 
     #[derive(Clone)]
@@ -201,7 +203,7 @@ pub mod interface {
     #[derive(Clone)]
     pub struct JsAssetEncodingNoContent<'js> {
         pub modified: JsTimestamp,
-        pub total_length: String,
+        pub total_length: JsU128Compat,
         pub sha256: JsHash<'js>,
     }
 

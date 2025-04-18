@@ -24,6 +24,14 @@ pub mod primitives {
         BigInt::from_u64(ctx.clone(), value)
     }
 
+    pub fn into_bigint_from_u128<'js>(ctx: &Ctx<'js>, value: u128) -> JsResult<BigInt<'js>> {
+        let value: u64 = value.try_into().map_err(|_| {
+            rquickjs::Error::new_from_js("u128", "Failed to convert u128 to u64 for BigInt")
+        })?;
+
+        BigInt::from_u64(ctx.clone(), value)
+    }
+
     pub fn from_optional_bigint_js(value: Option<BigInt>) -> JsResult<Option<u64>> {
         match value {
             Some(bigint) => Ok(Some(from_bigint_js(bigint)?)),
@@ -50,5 +58,10 @@ pub mod primitives {
         value
             .try_into()
             .map_err(|_| JsError::new_from_js("BigInt", "usize"))
+    }
+
+    pub fn from_bigint_js_to_u128(bigint: BigInt) -> JsResult<u128> {
+        let value = from_bigint_js(bigint)?;
+        Ok(value as u128)
     }
 }

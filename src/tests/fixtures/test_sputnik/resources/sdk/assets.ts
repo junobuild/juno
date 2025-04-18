@@ -1,4 +1,4 @@
-import { arrayBufferToUint8Array, isNullish } from '@dfinity/utils';
+import { arrayBufferToUint8Array, assertNonNullish, isNullish } from '@dfinity/utils';
 import type { AssetKey, HeaderFields, OnSetDocContext } from '@junobuild/functions';
 import { id } from '@junobuild/functions/ic-cdk';
 import {
@@ -10,6 +10,7 @@ import {
 	deleteFilteredAssetsStore,
 	encodeDocData,
 	getAssetStore,
+	getContentChunksStore,
 	listAssetsStore,
 	setAssetHandler,
 	setDocStore
@@ -147,4 +148,31 @@ export const testSdkListAssetsStore = async ({
 			})
 		}
 	});
+};
+
+// eslint-disable-next-line require-await
+export const testSdkGetContentChunksStore = async ({ caller }: OnSetDocContext) => {
+	const asset = getAssetStore({
+		caller,
+		collection: 'demo-getchunks',
+		full_path: '/demo-getchunks/hello.html'
+	});
+
+	assertNonNullish(asset);
+
+	const encoding = asset.encodings.find(([key, _]) => key === 'identity');
+
+	assertNonNullish(encoding);
+
+	const chunk = getContentChunksStore({
+		encoding: encoding[1],
+		chunk_index: 0n,
+		memory: 'stable'
+	});
+
+	const decoder = new TextDecoder();
+	const responseBody = decoder.decode(chunk);
+
+	// eslint-disable-next-line no-console
+	console.log('Chunk:', responseBody);
 };

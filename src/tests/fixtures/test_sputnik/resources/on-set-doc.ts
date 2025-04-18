@@ -17,6 +17,7 @@ import {
 	testSdkDeleteAssetStore,
 	testSdkDeleteFilteredAssetsStore,
 	testSdkGetAssetStore,
+	testSdkGetContentChunksStore,
 	testSdkListAssetsStore,
 	testSdkSetAssetHandler
 } from './sdk/assets';
@@ -64,7 +65,8 @@ const collections = [
 	'test-deleteassets',
 	'test-deletefilteredassets',
 	'test-getasset',
-	'test-listassets'
+	'test-listassets',
+	'test-getchunks'
 ] as const;
 
 type OnSetDocCollection = (typeof collections)[number];
@@ -96,7 +98,8 @@ export const onSetDoc = defineHook<OnSetDoc>({
 			'test-deleteassets': testSdkDeleteAssetsStore,
 			'test-deletefilteredassets': testSdkDeleteFilteredAssetsStore,
 			'test-getasset': testSdkGetAssetStore,
-			'test-listassets': testSdkListAssetsStore
+			'test-listassets': testSdkListAssetsStore,
+			'test-getchunks': testSdkGetContentChunksStore
 		};
 
 		await fn[context.data.collection as OnSetDocCollection]?.(context);

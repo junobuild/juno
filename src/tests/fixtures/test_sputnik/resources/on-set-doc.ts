@@ -6,6 +6,7 @@ import {
 } from '@junobuild/functions';
 import { testIcCdkCall } from './apis/ic-cdk/ic-cdk-call';
 import { testIcCdkId } from './apis/ic-cdk/ic-cdk-id';
+import { testIcCdkTime } from './apis/ic-cdk/ic-cdk-time';
 import { testBlob } from './apis/node/blob';
 import { testMathRandom } from './apis/node/math';
 import { testTextEncoding } from './apis/node/text-encoding';
@@ -43,6 +44,7 @@ const collections = [
 	'test-onsetdoc',
 	'test-ic-cdk-id',
 	'test-ic-cdk-call',
+	'test-ic-cdk-time',
 	'test-update',
 	'test-textencoding',
 	'test-mathrandom',
@@ -73,6 +75,7 @@ export const onSetDoc = defineHook<OnSetDoc>({
 		const fn: Record<OnSetDocCollection, RunFunction<OnSetDocContext>> = {
 			'test-onsetdoc': testSetDoc,
 			'test-ic-cdk-id': testIcCdkId,
+			'test-ic-cdk-time': testIcCdkTime,
 			'test-update': testSdkSetDocStore,
 			'test-ic-cdk-call': testIcCdkCall,
 			'test-textencoding': testTextEncoding,

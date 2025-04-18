@@ -1,5 +1,5 @@
-use crate::hooks::js::impls::utils::{from_bigint_js_to_usize, into_bigint_from_usize};
-use crate::hooks::js::types::primitives::JsUsize;
+use crate::js::types::primitives::JsUsize;
+use crate::js::utils::primitives::{from_bigint_js_to_usize, into_bigint_from_usize};
 use rquickjs::{BigInt, Ctx, FromJs, IntoJs, Result as JsResult, Value};
 
 impl JsUsize {

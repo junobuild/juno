@@ -1,14 +1,17 @@
 [package]
 name = "junobuild-satellite"
-version = "0.0.22-patch.6"
+version = "0.0.22-patch.7"
 authors.workspace = true
 edition.workspace = true
 repository.workspace = true
-description = "Extend Juno satellite functionality."
+description = "Core implementation of a Juno Satellite."
 homepage.workspace = true
 documentation = "https://docs.rs/junobuild-satellite"
 readme = "README.md"
 license-file = "LICENSE.md"
+
+[package.metadata.juno.satellite]
+version = "0.0.22"
 
 [package.metadata.docs.rs]
 targets = ["wasm32-unknown-unknown"]

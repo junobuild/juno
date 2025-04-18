@@ -1,8 +1,3 @@
-pub mod primitives {
-    #[derive(Clone)]
-    pub struct JsUsize(pub usize);
-}
-
 pub mod shared {
     use crate::js::types::candid::JsRawPrincipal;
     use junobuild_collections::types::core::CollectionKey;
@@ -226,8 +221,8 @@ pub mod interface {
 
 pub mod list {
     use crate::hooks::js::types::hooks::JsKey;
-    use crate::hooks::js::types::primitives::JsUsize;
     use crate::hooks::js::types::shared::{JsTimestamp, JsUserId};
+    use crate::js::types::primitives::JsUsize;
 
     #[derive(Clone)]
     pub struct JsListPaginate {

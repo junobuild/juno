@@ -118,7 +118,7 @@ function build_canister() {
       # adds the content of $canister.did to the `icp:public candid:service` custom section of the public metadata in the wasm
       ic-wasm "$output_dir/$canister.wasm" -o "$output_dir/$canister.wasm" metadata candid:service -f "$DID_FILE" -v public --keep-name-section
 
-      # Adds the content of $canister.package.json to the `icp:public juno:package` custom section of the WASM metadata.
+      # Adds the content of juno.package.json to the `icp:public juno:package` custom section of the WASM metadata.
       # This file contains metadata about the build such as name, version, and dependencies.
       # The presence of dependencies indicates that the module is not stock, but extended—
       # either from the satellite (e.g., serverless functions in Rust) or from Sputnik (e.g., serverless functions in JavaScript).

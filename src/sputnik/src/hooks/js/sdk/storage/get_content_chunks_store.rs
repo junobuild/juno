@@ -1,8 +1,8 @@
 use crate::hooks::js::types::rules::JsMemory;
 use crate::hooks::js::types::storage::{JsAssetEncoding, JsBlob};
+use crate::js::types::primitives::JsUsize;
 use junobuild_satellite::get_content_chunks_store as get_content_chunks_store_sdk;
 use rquickjs::{Ctx, Error as JsError, Result as JsResult};
-use crate::js::types::primitives::JsUsize;
 
 pub fn init_get_content_chunks_store(ctx: &Ctx) -> Result<(), JsError> {
     let global = ctx.globals();

@@ -107,6 +107,20 @@ pub fn delete_asset_store(
     secure_delete_asset_impl(&context, full_path, &config)
 }
 
+/// Delete multiple assets from a collection.
+///
+/// This function deletes multiple assets from a collection's store based on the specified collection key.
+/// It returns a `Result<(), String>` where `Ok(())` indicates successful deletion, or an error message
+/// as `Err(String)` if the deletion encounters issues.
+///
+/// # Parameters
+/// - `collection`: A reference to the `CollectionKey` representing the collection from which to delete assets.
+///
+/// # Returns
+/// - `Ok(())`: Indicates successful deletion of assets.
+/// - `Err(String)`: An error message if the deletion operation fails.
+///
+/// This function allows you to securely delete multiple assets from a Juno collection's of the Storage.
 pub fn delete_assets_store(collection: &CollectionKey) -> Result<(), String> {
     let rule = get_state_rule(collection)?;
 

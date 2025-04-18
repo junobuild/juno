@@ -10,6 +10,9 @@ documentation = "https://docs.rs/junobuild-satellite"
 readme = "README.md"
 license-file = "LICENSE.md"
 
+[package.metadata.juno.satellite]
+version = "0.0.22"
+
 [package.metadata.docs.rs]
 targets = ["wasm32-unknown-unknown"]
 rustc-args = ['--cfg', "getrandom_backend=\"custom\""]

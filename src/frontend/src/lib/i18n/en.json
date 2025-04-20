@@ -426,6 +426,7 @@
 		"debug": "Debug",
 		"warning": "Warning",
 		"error": "Error",
+		"unknown": "Unknown",
 		"message": "Message",
 		"empty": "No logs collected.",
 		"expand": "Expand message",

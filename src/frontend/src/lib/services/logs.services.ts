@@ -18,7 +18,7 @@ export const listLogs = async ({
 	satelliteId,
 	identity,
 	desc = true,
-	levels = ['Info', 'Debug', 'Warning', 'Error']
+	levels = ['Info', 'Debug', 'Warning', 'Error', 'Unknown']
 }: {
 	satelliteId: Principal;
 	identity: OptionIdentity;
@@ -123,7 +123,7 @@ const canisterLogs = async (params: {
 			`[ic]-${idx}`,
 			{
 				message: await blob.text(),
-				level: 'Error',
+				level: 'Unknown',
 				timestamp
 			}
 		];

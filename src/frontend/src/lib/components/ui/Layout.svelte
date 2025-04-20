@@ -8,6 +8,7 @@
 
 	interface Props {
 		centered?: boolean;
+		fullWidth?: boolean;
 		title?: boolean;
 		topMargin?: 'default' | 'wide';
 		menu?: Snippet;
@@ -18,6 +19,7 @@
 
 	let {
 		centered = false,
+		fullWidth = false,
 		title = true,
 		topMargin = 'default',
 		menu,
@@ -32,7 +34,7 @@
 		{@render navbar?.()}
 
 		<div class="page">
-			<main class:centered class:with-footer={nonNullish(footer)}>
+			<main class:centered class:full-width={fullWidth} class:with-footer={nonNullish(footer)}>
 				{#if title}
 					{#if nonNullish($layoutNavigation)}
 						{@const SvelteComponent = $layoutNavigation.data.icon}
@@ -77,10 +79,16 @@
 	}
 
 	main {
-		max-width: calc(media.$breakpoint-extra-large - 100px);
+		max-width: 1440px;
 		overflow-x: hidden;
 
 		padding: 0 var(--padding-2x) var(--padding-6x);
+
+		transition: max-width var(--animation-time) var(--menu-animation-timing-function);
+
+		&.full-width {
+			max-width: 100%;
+		}
 
 		@include media.min-width(xlarge) {
 			padding: 0 var(--padding-10x) var(--padding-6x);

@@ -24,7 +24,7 @@
 	let { satelliteId }: Props = $props();
 
 	let desc = $state(true);
-	let levels: LogLevelType[] = $state(['Info', 'Debug', 'Warning', 'Error']);
+	let levels: LogLevelType[] = $state(['Info', 'Debug', 'Warning', 'Error', 'Unknown']);
 
 	const list = async () => {
 		const { results, error } = await listLogs({

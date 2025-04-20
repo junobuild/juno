@@ -1,4 +1,4 @@
-export type LogLevel = 'Debug' | 'Info' | 'Warning' | 'Error';
+export type LogLevel = 'Debug' | 'Info' | 'Warning' | 'Error' | 'Unknown';
 
 export interface LogDataDid {
 	message: string;

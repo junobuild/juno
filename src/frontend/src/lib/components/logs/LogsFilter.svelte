@@ -57,6 +57,12 @@
 				><span>{$i18n.functions.error}</span></label
 			>
 		</Checkbox>
+
+		<Checkbox>
+			<input type="checkbox" bind:group={levels} value="Unknown" id="unknown" /><label for="unknown"
+				><span>{$i18n.functions.unknown}</span></label
+			>
+		</Checkbox>
 	</CheckboxGroup>
 </PopoverApply>
 

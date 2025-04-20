@@ -110,4 +110,9 @@
 	output {
 		margin: var(--padding) 0 var(--padding-2x);
 	}
+
+	.timestamp span {
+		margin: var(--padding-0_5x) 0 0;
+		display: block;
+	}
 </style>

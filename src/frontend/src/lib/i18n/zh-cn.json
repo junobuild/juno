@@ -426,6 +426,7 @@
 		"debug": "调试",
 		"warning": "警告",
 		"error": "错误",
+		"unknown": "Unknown",
 		"message": "消息",
 		"empty": "没有日志.",
 		"expand": "扩展消息",

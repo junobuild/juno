@@ -440,6 +440,7 @@ interface I18nFunctions {
 	debug: string;
 	warning: string;
 	error: string;
+	unknown: string;
 	message: string;
 	empty: string;
 	expand: string;

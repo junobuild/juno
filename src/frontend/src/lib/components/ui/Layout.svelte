@@ -86,6 +86,10 @@
 
 		transition: max-width var(--animation-time) var(--menu-animation-timing-function);
 
+		&.centered {
+			max-width: calc(media.$breakpoint-extra-large - 100px);
+		}
+
 		&.full-width {
 			max-width: 100%;
 		}

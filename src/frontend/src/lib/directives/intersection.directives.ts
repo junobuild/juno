@@ -19,8 +19,8 @@ const dispatchIntersecting = ({
 	element.dispatchEvent($event);
 };
 
-export const onIntersection = (element: HTMLElement) => {
-	const options: IntersectionObserverInit = {
+export const onIntersection = (element: HTMLElement, customOptions?: IntersectionObserverInit) => {
+	const options: IntersectionObserverInit = customOptions ?? {
 		threshold: INTERSECTION_THRESHOLD,
 		rootMargin: INTERSECTION_ROOT_MARGIN
 	};

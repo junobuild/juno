@@ -17,25 +17,18 @@
 		start?: 'logo' | 'back' | 'menu';
 		signIn?: boolean;
 		launchpad?: boolean;
-		hideHeaderOnScroll?: boolean;
 	}
 
-	let {
-		start = 'logo',
-		signIn = true,
-		launchpad = false,
-		hideHeaderOnScroll = true
-	}: Props = $props();
+	let { start = 'logo', signIn = true, launchpad = false }: Props = $props();
 
 	let hide = $state(false);
 
 	// We debounce hiding the header to avoid the effect on navigation
-	const hideHeader = () => (hide = !$layoutTitleIntersecting && hideHeaderOnScroll);
+	const hideHeader = () => (hide = !$layoutTitleIntersecting);
 	const debounceHideHeader = debounce(hideHeader);
 
 	$effect(() => {
 		$layoutTitleIntersecting;
-		hideHeaderOnScroll;
 
 		debounceHideHeader();
 	});

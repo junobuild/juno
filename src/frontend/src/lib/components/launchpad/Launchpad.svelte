@@ -22,6 +22,12 @@
 			loading = true;
 		})();
 	});
+
+	const customOnIntersection = (element: HTMLElement) =>
+		onIntersection(element, {
+			threshold: 0.8,
+			rootMargin: '-50px 0px'
+		});
 </script>
 
 {#if loading || ($satellitesStore?.length ?? 0n) === 0}
@@ -32,13 +38,17 @@
 			<p class="loading">{$i18n.satellites.loading_launchpad}</p>
 		</div>
 	{:else}
-		<section use:onIntersection onjunoIntersecting={onLayoutTitleIntersection}>
+		<section use:customOnIntersection onjunoIntersecting={onLayoutTitleIntersection}>
 			<SatelliteNew />
 		</section>
 	{/if}
 {:else if ($satellitesStore?.length ?? 0) >= 1}
-	<div in:fade use:onIntersection onjunoIntersecting={onLayoutTitleIntersection}>
-		<section class="cockpit">
+	<div in:fade>
+		<section
+			class="cockpit"
+			use:customOnIntersection
+			onjunoIntersecting={onLayoutTitleIntersection}
+		>
 			<Cockpit />
 		</section>
 

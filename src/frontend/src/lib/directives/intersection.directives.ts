@@ -19,6 +19,7 @@ const dispatchIntersecting = ({
 	element.dispatchEvent($event);
 };
 
+// eslint-disable-next-line local-rules/prefer-object-params
 export const onIntersection = (element: HTMLElement, customOptions?: IntersectionObserverInit) => {
 	const options: IntersectionObserverInit = customOptions ?? {
 		threshold: INTERSECTION_THRESHOLD,

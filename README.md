@@ -31,7 +31,7 @@
 
 ## 🚀 Introduction
 
-Juno is a reimagined open-source platform built for modern developers who want more control, strong security, and zero operational complexity.
+Juno is a reimagined serverless platform built for modern developers who want more control, strong security, and zero operational complexity.
 
 It offers a familiar cloud-like experience—without the DevOps overhead—powered by decentralized infrastructure.
 

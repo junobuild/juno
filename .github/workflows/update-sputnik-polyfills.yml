@@ -2,7 +2,7 @@ name: Update Sputnik Polyfills
 
 on:
   schedule:
-    - cron: '30 3 * * MON'
+    - cron: '30 3 1-7 * 1'
   workflow_dispatch:
 
 jobs:

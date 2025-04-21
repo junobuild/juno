@@ -12,7 +12,7 @@
 
 </div>
 
-[Juno] is a blockchainless (or zero-knowledge) development platform for creating innovative applications.
+[Juno] is an open-source, next-gen serverless platform that helps developers build and ship secure projects at scale.
 
 - 🔑 Authentication [[Docs](https://juno.build/docs/build/authentication)]
 - 📦 Datastore [[Docs](https://juno.build/docs/build/datastore)]
@@ -31,11 +31,13 @@
 
 ## 🚀 Introduction
 
-Juno is a blockchain-as-a-service (“blockchainless”) platform that empowers developers to build decentralized apps efficiently. Similar to Web2 cloud service platforms but with significant improvements, it offers a comprehensive toolkit to scaffold secure and efficient projects running on the blockchain.
+Juno is a next-gen, open-source serverless platform that helps developers build and ship secure ideas at scale.
 
-With Juno, developers can integrate features such as authentication, data and file storage, hosting, serverless functions, or on-chain analytics provided by smart contracts. This allows them to scaffold projects using familiar patterns while maintaining complete control over their work.
+It offers a familiar cloud-like experience—without the DevOps overhead—powered by decentralized infrastructure.
 
-In short, Juno is the Google Firebase alternative for Web3 ⚡️🤯.
+With built-in support for authentication, storage, hosting, serverless functions, and even on-chain logic, Juno simplifies the entire backend. Everything runs in one container, giving developers full ownership and security by design.
+
+In short, Juno is what Firebase would look like if it were built for the future. ⚡️
 
 ## 💁‍♂️️ Links & Resources
 

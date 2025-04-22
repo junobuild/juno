@@ -28,7 +28,7 @@ pub fn on_http_request_update(request: &HttpRequest) -> HttpResponse<'static> {
 
 type RouteHandler = for<'a> fn(&'a HttpRequest) -> HttpResponse<'static>;
 
-pub fn http_request_handler(
+fn http_request_handler(
     request: &HttpRequest,
     handler: RouteHandler,
 ) -> HttpResponse<'static> {

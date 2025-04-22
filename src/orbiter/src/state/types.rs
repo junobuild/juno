@@ -2,6 +2,7 @@ pub mod state {
     use crate::state::memory::init_stable_state;
     use crate::state::types::memory::{StoredPageView, StoredTrackEvent};
     use candid::CandidType;
+    use ic_http_certification::{HttpCertification, HttpCertificationTree, HttpResponse};
     use ic_stable_structures::StableBTreeMap;
     use junobuild_shared::types::memory::Memory;
     use junobuild_shared::types::state::{
@@ -9,7 +10,6 @@ pub mod state {
     };
     use serde::{Deserialize, Serialize};
     use std::collections::HashMap;
-    use ic_http_certification::{HttpCertification, HttpCertificationTree, HttpResponse};
 
     #[derive(Serialize, Deserialize)]
     pub struct State {
@@ -153,7 +153,7 @@ pub mod state {
     #[derive(Default, Clone)]
     pub struct StorageRuntimeState {
         pub tree: HttpCertificationTree,
-        pub responses: HashMap<String, CertifiedHttpResponse<'static>>
+        pub responses: HashMap<String, CertifiedHttpResponse<'static>>,
     }
 
     #[derive(Debug, Clone)]

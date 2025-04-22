@@ -5,11 +5,11 @@ mod constants;
 mod controllers;
 mod events;
 mod guards;
+mod http;
 mod msg;
 mod serializers;
 mod state;
 mod types;
-mod http;
 
 use crate::analytics::{
     analytics_page_views_clients, analytics_page_views_metrics, analytics_page_views_top_10,
@@ -27,6 +27,7 @@ use crate::controllers::store::{
     set_controllers as set_controllers_store,
 };
 use crate::guards::{caller_is_admin_controller, caller_is_controller};
+use crate::http::requests::on_http_request;
 use crate::types::interface::{
     AnalyticsClientsPageViews, AnalyticsMetricsPageViews, AnalyticsTop10PageViews,
     AnalyticsTrackEvents, AnalyticsWebVitalsPerformanceMetrics, DelSatelliteConfig, GetAnalytics,
@@ -59,7 +60,6 @@ use state::memory::{get_memory_upgrades, init_stable_state, STATE};
 use state::types::state::{
     AnalyticKey, HeapState, PageView, PerformanceMetric, SatelliteConfigs, State, TrackEvent,
 };
-use crate::http::requests::on_http_request;
 
 #[init]
 fn init() {
@@ -110,10 +110,7 @@ fn http_request(request: HttpRequest) -> HttpResponse<'static> {
 
 /// Page views
 
-#[deprecated(
-    since = "0.1.0",
-    note = "prefer HTTP POST request"
-)]
+#[deprecated(since = "0.1.0", note = "prefer HTTP POST request")]
 #[update]
 fn set_page_view(key: AnalyticKey, page_view: SetPageView) -> Result<PageView, String> {
     assert_page_views_enabled(&get_satellite_config(&page_view.satellite_id))?;
@@ -121,10 +118,7 @@ fn set_page_view(key: AnalyticKey, page_view: SetPageView) -> Result<PageView, S
     insert_page_view(key, page_view)
 }
 
-#[deprecated(
-    since = "0.1.0",
-    note = "prefer HTTP POST request"
-)]
+#[deprecated(since = "0.1.0", note = "prefer HTTP POST request")]
 #[update]
 fn set_page_views(
     page_views: Vec<(AnalyticKey, SetPageView)>,
@@ -179,10 +173,7 @@ fn get_page_views_analytics_clients(filter: GetAnalytics) -> AnalyticsClientsPag
 
 /// Track events
 
-#[deprecated(
-    since = "0.1.0",
-    note = "prefer HTTP POST request"
-)]
+#[deprecated(since = "0.1.0", note = "prefer HTTP POST request")]
 #[update]
 fn set_track_event(key: AnalyticKey, track_event: SetTrackEvent) -> Result<TrackEvent, String> {
     assert_track_events_enabled(&get_satellite_config(&track_event.satellite_id))?;
@@ -190,10 +181,7 @@ fn set_track_event(key: AnalyticKey, track_event: SetTrackEvent) -> Result<Track
     insert_track_event(key, track_event)
 }
 
-#[deprecated(
-    since = "0.1.0",
-    note = "prefer HTTP POST request"
-)]
+#[deprecated(since = "0.1.0", note = "prefer HTTP POST request")]
 #[update]
 fn set_track_events(
     track_events: Vec<(AnalyticKey, SetTrackEvent)>,

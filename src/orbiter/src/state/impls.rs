@@ -7,7 +7,10 @@ use crate::serializers::bounded::{
 use crate::serializers::constants::{ANALYTIC_KEY_MAX_SIZE, ANALYTIC_SATELLITE_KEY_MAX_SIZE};
 use crate::state::memory::init_stable_state;
 use crate::state::types::memory::{StoredPageView, StoredTrackEvent};
-use crate::state::types::state::{AnalyticKey, AnalyticSatelliteKey, HeapState, PageView, PerformanceMetric, RuntimeState, SatelliteConfigs, State, TrackEvent};
+use crate::state::types::state::{
+    AnalyticKey, AnalyticSatelliteKey, HeapState, PageView, PerformanceMetric, RuntimeState,
+    SatelliteConfigs, State, TrackEvent,
+};
 use ciborium::from_reader;
 use ic_stable_structures::storable::Bound;
 use ic_stable_structures::Storable;

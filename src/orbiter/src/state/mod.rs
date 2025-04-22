@@ -1,4 +1,4 @@
 mod impls;
 pub mod memory;
-pub mod types;
 pub mod services;
+pub mod types;

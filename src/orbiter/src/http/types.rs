@@ -1,5 +1,5 @@
 pub mod interface {
-    use serde::{Serialize};
+    use serde::Serialize;
 
     #[derive(Debug, Clone, Serialize)]
     pub enum ApiResponse<'a, T = ()> {

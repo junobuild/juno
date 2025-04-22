@@ -11,6 +11,7 @@ mod msg;
 mod serializers;
 mod store;
 mod types;
+mod http;
 
 use crate::analytics::{
     analytics_page_views_clients, analytics_page_views_metrics, analytics_page_views_top_10,
@@ -47,6 +48,7 @@ use ciborium::{from_reader, into_writer};
 use ic_cdk::api::call::{arg_data, ArgDecoderConfig};
 use ic_cdk::trap;
 use ic_cdk_macros::{export_candid, init, post_upgrade, pre_upgrade, query, update};
+use ic_http_certification::{HttpRequest, HttpResponse};
 use junobuild_shared::canister::memory_size as canister_memory_size;
 use junobuild_shared::constants_shared::MAX_NUMBER_OF_SATELLITE_CONTROLLERS;
 use junobuild_shared::controllers::{
@@ -99,8 +101,27 @@ fn post_upgrade() {
     STATE.with(|s| *s.borrow_mut() = state);
 }
 
+/// HTTP
+
+// TODO: example https://github.com/dfinity/response-verification/blob/main/examples/http-certification/json-api/src/backend/src/lib.rs#L433
+
+#[query]
+fn http_request(request: HttpRequest) -> HttpResponse<'static> {
+    
+}
+
+fn certify_not_found_response() {
+    let body = ErrorResponse::not_found().encode();
+    let mut response = create_response(StatusCode::NOT_FOUND, body);
+}
+
+
 /// Page views
 
+#[deprecated(
+    since = "0.1.0",
+    note = "prefer HTTP POST request"
+)]
 #[update]
 fn set_page_view(key: AnalyticKey, page_view: SetPageView) -> Result<PageView, String> {
     assert_page_views_enabled(&get_satellite_config(&page_view.satellite_id))?;
@@ -108,6 +129,10 @@ fn set_page_view(key: AnalyticKey, page_view: SetPageView) -> Result<PageView, S
     insert_page_view(key, page_view)
 }
 
+#[deprecated(
+    since = "0.1.0",
+    note = "prefer HTTP POST request"
+)]
 #[update]
 fn set_page_views(
     page_views: Vec<(AnalyticKey, SetPageView)>,
@@ -162,6 +187,10 @@ fn get_page_views_analytics_clients(filter: GetAnalytics) -> AnalyticsClientsPag
 
 /// Track events
 
+#[deprecated(
+    since = "0.1.0",
+    note = "prefer HTTP POST request"
+)]
 #[update]
 fn set_track_event(key: AnalyticKey, track_event: SetTrackEvent) -> Result<TrackEvent, String> {
     assert_track_events_enabled(&get_satellite_config(&track_event.satellite_id))?;
@@ -169,6 +198,10 @@ fn set_track_event(key: AnalyticKey, track_event: SetTrackEvent) -> Result<Track
     insert_track_event(key, track_event)
 }
 
+#[deprecated(
+    since = "0.1.0",
+    note = "prefer HTTP POST request"
+)]
 #[update]
 fn set_track_events(
     track_events: Vec<(AnalyticKey, SetTrackEvent)>,

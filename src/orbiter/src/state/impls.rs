@@ -1,4 +1,3 @@
-use crate::memory::init_stable_state;
 use crate::serializers::bounded::{
     deserialize_bounded_analytic_key, deserialize_bounded_analytic_satellite_key,
     deserialize_bounded_page_view, deserialize_bounded_track_event, serialize_bounded_analytic_key,
@@ -6,8 +5,9 @@ use crate::serializers::bounded::{
     serialize_bounded_track_event,
 };
 use crate::serializers::constants::{ANALYTIC_KEY_MAX_SIZE, ANALYTIC_SATELLITE_KEY_MAX_SIZE};
-use crate::types::memory::{StoredPageView, StoredTrackEvent};
-use crate::types::state::{
+use crate::state::memory::init_stable_state;
+use crate::state::types::memory::{StoredPageView, StoredTrackEvent};
+use crate::state::types::state::{
     AnalyticKey, AnalyticSatelliteKey, HeapState, PageView, PerformanceMetric, SatelliteConfigs,
     State, TrackEvent,
 };

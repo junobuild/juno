@@ -1,6 +1,6 @@
-use crate::memory::STATE;
+use crate::state::memory::STATE;
+use crate::state::types::state::{SatelliteConfig, SatelliteConfigs};
 use crate::types::interface::{DelSatelliteConfig, SetSatelliteConfig};
-use crate::types::state::{SatelliteConfig, SatelliteConfigs};
 use ic_cdk::api::time;
 use junobuild_shared::assert::assert_version;
 use junobuild_shared::types::state::{SatelliteId, Timestamp};

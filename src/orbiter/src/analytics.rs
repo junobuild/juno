@@ -1,11 +1,11 @@
+use crate::state::types::state::{
+    AnalyticKey, PageView, PerformanceData, PerformanceMetric, PerformanceMetricName, TrackEvent,
+    WebVitalsMetric,
+};
 use crate::types::interface::{
     AnalyticsBrowsersPageViews, AnalyticsClientsPageViews, AnalyticsDevicesPageViews,
     AnalyticsMetricsPageViews, AnalyticsTop10PageViews, AnalyticsTrackEvents,
     AnalyticsWebVitalsPageMetrics, AnalyticsWebVitalsPerformanceMetrics,
-};
-use crate::types::state::{
-    AnalyticKey, PageView, PerformanceData, PerformanceMetric, PerformanceMetricName, TrackEvent,
-    WebVitalsMetric,
 };
 use junobuild_shared::day::calendar_date;
 use junobuild_shared::types::utils::CalendarDate;

@@ -2,14 +2,14 @@ use crate::assert::constraints::{
     assert_analytic_key_length, assert_bot, assert_page_view_length, assert_satellite_id,
     assert_session_id, assert_track_event_length,
 };
-use crate::filters::{filter_analytics, filter_satellites_analytics};
-use crate::memory::STATE;
-use crate::types::interface::{GetAnalytics, SetPageView, SetPerformanceMetric, SetTrackEvent};
-use crate::types::memory::{StoredPageView, StoredTrackEvent};
-use crate::types::state::{
+use crate::events::filters::{filter_analytics, filter_satellites_analytics};
+use crate::state::memory::STATE;
+use crate::state::types::memory::{StoredPageView, StoredTrackEvent};
+use crate::state::types::state::{
     AnalyticKey, AnalyticSatelliteKey, PageView, PerformanceMetric, SatelliteConfig, StableState,
     TrackEvent,
 };
+use crate::types::interface::{GetAnalytics, SetPageView, SetPerformanceMetric, SetTrackEvent};
 use ic_cdk::api::time;
 use junobuild_shared::assert::{assert_timestamp, assert_version};
 use junobuild_shared::types::state::{SatelliteId, Timestamp};

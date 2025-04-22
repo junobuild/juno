@@ -1,6 +1,6 @@
 use ic_http_certification::StatusCode;
 use serde::Serialize;
-use crate::http::types::ApiResponse;
+use crate::http::types::interface::ApiResponse;
 
 impl<'a, T: Serialize> ApiResponse<'a, T> {
     pub fn ok(data: &'a T) -> ApiResponse<'a, T> {

@@ -2,7 +2,7 @@ use ic_http_certification::{DefaultCelBuilder, DefaultResponseCertification, Def
 use lazy_static::lazy_static;
 use crate::http::constants::NOT_FOUND_PATH;
 use crate::http::store::insert_certified_response;
-use crate::http::types::ErrorResponse;
+use crate::http::types::interface::ErrorResponse;
 use crate::http::utils::create_json_response;
 use crate::state::types::state::CertifiedHttpResponse;
 

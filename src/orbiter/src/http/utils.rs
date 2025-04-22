@@ -1,4 +1,3 @@
-use crate::http::types::interface::ErrorResponse;
 use ic_http_certification::{HttpResponse, StatusCode};
 
 pub fn create_json_response(status_code: StatusCode, body: Vec<u8>) -> HttpResponse<'static> {

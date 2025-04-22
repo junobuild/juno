@@ -27,7 +27,7 @@ use crate::controllers::store::{
     set_controllers as set_controllers_store,
 };
 use crate::guards::{caller_is_admin_controller, caller_is_controller};
-use crate::http::requests::on_http_request;
+use crate::http::requests::{on_http_request, on_http_request_update};
 use crate::types::interface::{
     AnalyticsClientsPageViews, AnalyticsMetricsPageViews, AnalyticsTop10PageViews,
     AnalyticsTrackEvents, AnalyticsWebVitalsPerformanceMetrics, DelSatelliteConfig, GetAnalytics,
@@ -106,6 +106,11 @@ fn post_upgrade() {
 #[query]
 fn http_request(request: HttpRequest) -> HttpResponse<'static> {
     on_http_request(&request)
+}
+
+#[update]
+fn http_request_update(request: HttpRequest) -> HttpResponse<'static> {
+    on_http_request_update(&request)
 }
 
 /// Page views

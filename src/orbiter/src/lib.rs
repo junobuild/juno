@@ -59,6 +59,7 @@ use state::memory::{get_memory_upgrades, init_stable_state, STATE};
 use state::types::state::{
     AnalyticKey, HeapState, PageView, PerformanceMetric, SatelliteConfigs, State, TrackEvent,
 };
+use crate::http::requests::on_http_request;
 
 #[init]
 fn init() {
@@ -74,6 +75,7 @@ fn init() {
         *state.borrow_mut() = State {
             stable: init_stable_state(),
             heap,
+            ..State::default()
         };
     });
 }
@@ -101,18 +103,10 @@ fn post_upgrade() {
 
 /// HTTP
 
-// TODO: example https://github.com/dfinity/response-verification/blob/main/examples/http-certification/json-api/src/backend/src/lib.rs#L433
-
 #[query]
 fn http_request(request: HttpRequest) -> HttpResponse<'static> {
-    
+    on_http_request(&request)
 }
-
-fn certify_not_found_response() {
-    let body = ErrorResponse::not_found().encode();
-    let mut response = create_response(StatusCode::NOT_FOUND, body);
-}
-
 
 /// Page views
 

@@ -1,6 +1,7 @@
 use ic_http_certification::{HttpResponse, StatusCode};
+use crate::http::types::ErrorResponse;
 
-pub fn create_response(status_code: StatusCode, body: Vec<u8>) -> HttpResponse<'static> {
+pub fn create_json_response(status_code: StatusCode, body: Vec<u8>) -> HttpResponse<'static> {
     HttpResponse::builder()
         .with_status_code(status_code)
         .with_headers(vec![
@@ -19,4 +20,10 @@ pub fn create_response(status_code: StatusCode, body: Vec<u8>) -> HttpResponse<'
         ])
         .with_body(body)
         .build()
+}
+
+
+pub fn create_not_found_response() -> HttpResponse<'static> {
+    let body = ErrorResponse::not_found().encode();
+    create_json_response(StatusCode::NOT_FOUND, body)
 }

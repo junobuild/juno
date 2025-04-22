@@ -9,6 +9,7 @@ pub mod state {
     };
     use serde::{Deserialize, Serialize};
     use std::collections::HashMap;
+    use ic_http_certification::{HttpCertification, HttpCertificationTree, HttpResponse};
 
     #[derive(Serialize, Deserialize)]
     pub struct State {
@@ -18,6 +19,9 @@ pub mod state {
 
         // Indirect stable state: State that lives on the heap, but is saved into stable memory on upgrades.
         pub heap: HeapState,
+
+        #[serde(skip, default)]
+        pub runtime: RuntimeState,
     }
 
     pub type Key = String;
@@ -139,6 +143,23 @@ pub mod state {
         BackForwardCache,
         Prerender,
         Restore,
+    }
+
+    #[derive(Default, Clone)]
+    pub struct RuntimeState {
+        pub storage: StorageRuntimeState,
+    }
+
+    #[derive(Default, Clone)]
+    pub struct StorageRuntimeState {
+        pub tree: HttpCertificationTree,
+        pub responses: HashMap<String, CertifiedHttpResponse<'static>>
+    }
+
+    #[derive(Debug, Clone)]
+    pub struct CertifiedHttpResponse<'a> {
+        pub response: HttpResponse<'a>,
+        pub certification: HttpCertification,
     }
 }
 

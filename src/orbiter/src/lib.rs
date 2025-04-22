@@ -3,13 +3,11 @@ mod assert;
 mod config;
 mod constants;
 mod controllers;
-mod filters;
+mod events;
 mod guards;
-mod impls;
-mod memory;
 mod msg;
 mod serializers;
-mod store;
+mod state;
 mod types;
 
 use crate::analytics::{
@@ -28,22 +26,18 @@ use crate::controllers::store::{
     set_controllers as set_controllers_store,
 };
 use crate::guards::{caller_is_admin_controller, caller_is_controller};
-use crate::memory::{get_memory_upgrades, init_stable_state, STATE};
-use crate::store::{
-    get_page_views as get_page_views_store,
-    get_performance_metrics as get_performance_metrics_store, get_satellite_config,
-    get_track_events as get_track_events_store, insert_page_view, insert_performance_metric,
-    insert_track_event,
-};
 use crate::types::interface::{
     AnalyticsClientsPageViews, AnalyticsMetricsPageViews, AnalyticsTop10PageViews,
     AnalyticsTrackEvents, AnalyticsWebVitalsPerformanceMetrics, DelSatelliteConfig, GetAnalytics,
     SetPageView, SetPerformanceMetric, SetSatelliteConfig, SetTrackEvent,
 };
-use crate::types::state::{
-    AnalyticKey, HeapState, PageView, PerformanceMetric, SatelliteConfigs, State, TrackEvent,
-};
 use ciborium::{from_reader, into_writer};
+use events::store::{
+    get_page_views as get_page_views_store,
+    get_performance_metrics as get_performance_metrics_store, get_satellite_config,
+    get_track_events as get_track_events_store, insert_page_view, insert_performance_metric,
+    insert_track_event,
+};
 use ic_cdk::api::call::{arg_data, ArgDecoderConfig};
 use ic_cdk::trap;
 use ic_cdk_macros::{export_candid, init, post_upgrade, pre_upgrade, query, update};
@@ -59,6 +53,10 @@ use junobuild_shared::types::interface::{
 use junobuild_shared::types::memory::Memory;
 use junobuild_shared::types::state::{ControllerScope, Controllers, SatelliteId};
 use junobuild_shared::upgrade::{read_post_upgrade, write_pre_upgrade};
+use state::memory::{get_memory_upgrades, init_stable_state, STATE};
+use state::types::state::{
+    AnalyticKey, HeapState, PageView, PerformanceMetric, SatelliteConfigs, State, TrackEvent,
+};
 
 #[init]
 fn init() {

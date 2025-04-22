@@ -1,5 +1,5 @@
+use crate::state::types::state::{AnalyticKey, AnalyticSatelliteKey};
 use crate::types::interface::GetAnalytics;
-use crate::types::state::{AnalyticKey, AnalyticSatelliteKey};
 use junobuild_shared::types::state::SatelliteId;
 use std::ops::RangeBounds;
 

@@ -3,8 +3,8 @@ use crate::constants::{
     STRING_MAX_LENGTH,
 };
 use crate::msg::ERROR_BOT_CALL;
+use crate::state::types::state::AnalyticKey;
 use crate::types::interface::{SetPageView, SetTrackEvent};
-use crate::types::state::AnalyticKey;
 use isbot::Bots;
 use junobuild_shared::types::state::SatelliteId;
 use junobuild_shared::utils::principal_not_equal;

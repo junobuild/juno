@@ -1,4 +1,4 @@
-use crate::types::state::{StableState, State};
+use crate::state::types::state::{StableState, State};
 use ic_stable_structures::memory_manager::{MemoryId, MemoryManager};
 use ic_stable_structures::DefaultMemoryImpl;
 use ic_stable_structures::StableBTreeMap;

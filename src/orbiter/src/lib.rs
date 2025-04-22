@@ -27,8 +27,9 @@ use crate::controllers::store::{
     delete_controllers as delete_controllers_store, get_admin_controllers, get_controllers,
     set_controllers as set_controllers_store,
 };
+use crate::events::helpers::assert_and_insert_set_page_view;
 use crate::guards::{caller_is_admin_controller, caller_is_controller};
-use crate::handlers::{handle_http_request_update, handle_set_page_view};
+use crate::handlers::handle_http_request_update;
 use crate::http::requests::{on_http_request, on_http_request_update};
 use crate::http::upgrade::defer_init_certified_responses;
 use crate::types::interface::{
@@ -125,7 +126,7 @@ fn http_request_update(request: HttpRequest) -> HttpResponse<'static> {
 #[deprecated(since = "0.1.0", note = "prefer HTTP POST request")]
 #[update]
 fn set_page_view(key: AnalyticKey, page_view: SetPageView) -> Result<PageView, String> {
-    handle_set_page_view(key, page_view)
+    assert_and_insert_set_page_view(key, page_view)
 }
 
 #[deprecated(since = "0.1.0", note = "prefer HTTP POST request")]

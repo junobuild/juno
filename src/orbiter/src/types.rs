@@ -5,7 +5,9 @@ pub mod core {
 }
 
 pub mod interface {
-    use crate::state::types::state::{AnalyticKey, PageViewDevice, PerformanceData, PerformanceMetricName, SessionId};
+    use crate::state::types::state::{
+        AnalyticKey, PageViewDevice, PerformanceData, PerformanceMetricName, SessionId,
+    };
     use candid::CandidType;
     use junobuild_shared::types::state::{
         Metadata, OrbiterSatelliteFeatures, SatelliteId, Timestamp, Version,
@@ -15,11 +17,11 @@ pub mod interface {
     use std::collections::HashMap;
 
     #[derive(CandidType, Deserialize, Clone)]
-    pub struct PageView {
+    pub struct PageViewPayload {
         pub key: AnalyticKey,
         pub page_view: SetPageView,
     }
-    
+
     #[derive(CandidType, Deserialize, Clone)]
     pub struct SetPageView {
         pub title: String,

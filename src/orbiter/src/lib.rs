@@ -5,12 +5,12 @@ mod constants;
 mod controllers;
 mod events;
 mod guards;
+pub mod handlers;
 mod http;
 mod msg;
 mod serializers;
 mod state;
 mod types;
-pub mod handlers;
 
 use crate::analytics::{
     analytics_page_views_clients, analytics_page_views_metrics, analytics_page_views_top_10,
@@ -28,6 +28,7 @@ use crate::controllers::store::{
     set_controllers as set_controllers_store,
 };
 use crate::guards::{caller_is_admin_controller, caller_is_controller};
+use crate::handlers::{handle_http_request_update, handle_set_page_view};
 use crate::http::requests::{on_http_request, on_http_request_update};
 use crate::types::interface::{
     AnalyticsClientsPageViews, AnalyticsMetricsPageViews, AnalyticsTop10PageViews,
@@ -61,7 +62,6 @@ use state::memory::{get_memory_upgrades, init_stable_state, STATE};
 use state::types::state::{
     AnalyticKey, HeapState, PageView, PerformanceMetric, SatelliteConfigs, State, TrackEvent,
 };
-use crate::handlers::handle_http_request;
 
 #[init]
 fn init() {
@@ -112,7 +112,7 @@ fn http_request(request: HttpRequest) -> HttpResponse<'static> {
 
 #[update]
 fn http_request_update(request: HttpRequest) -> HttpResponse<'static> {
-    on_http_request_update(&request, handle_http_request)
+    on_http_request_update(&request, handle_http_request_update)
 }
 
 /// Page views
@@ -120,9 +120,7 @@ fn http_request_update(request: HttpRequest) -> HttpResponse<'static> {
 #[deprecated(since = "0.1.0", note = "prefer HTTP POST request")]
 #[update]
 fn set_page_view(key: AnalyticKey, page_view: SetPageView) -> Result<PageView, String> {
-    assert_page_views_enabled(&get_satellite_config(&page_view.satellite_id))?;
-
-    insert_page_view(key, page_view)
+    handle_set_page_view(key, page_view)
 }
 
 #[deprecated(since = "0.1.0", note = "prefer HTTP POST request")]

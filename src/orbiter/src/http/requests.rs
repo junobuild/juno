@@ -3,9 +3,9 @@ use crate::http::not_found::{
     create_uncertified_not_found_response, prepare_certified_not_found_response,
 };
 use crate::http::store::get_certified_response;
-use ic_http_certification::{HttpRequest, HttpResponse, StatusCode};
 use crate::http::utils::create_json_response;
 use crate::types::core::UpdateHandler;
+use ic_http_certification::{HttpRequest, HttpResponse, StatusCode};
 // ---------------------------------------------------------
 // Source for the HTTP implementation:
 // https://github.com/dfinity/response-verification/blob/main/examples/http-certification/json-api/src/backend/src/lib.rs
@@ -19,14 +19,17 @@ pub fn on_http_request(request: &HttpRequest) -> HttpResponse<'static> {
     http_request_handler(request, &upgrade_http_request)
 }
 
-pub fn on_http_request_update(request: &HttpRequest, update_handler: UpdateHandler) -> HttpResponse<'static> {
+pub fn on_http_request_update(
+    request: &HttpRequest,
+    update_handler: UpdateHandler,
+) -> HttpResponse<'static> {
     let set_page_view = |request: &HttpRequest| -> HttpResponse<'static> {
         let result = update_handler(request);
-        
+
         if let Ok(body) = result {
             return create_json_response(StatusCode::CREATED, body);
         }
-        
+
         // TODO: TODO: we can maybe throw a better exception?
         create_uncertified_not_found_response()
     };

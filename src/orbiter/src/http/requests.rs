@@ -3,6 +3,7 @@ use crate::http::not_found::{
     create_uncertified_not_found_response, prepare_certified_not_found_response,
 };
 use crate::http::store::get_certified_response;
+use crate::http::types::interface::ApiResponse;
 use crate::http::utils::create_json_response;
 use crate::types::core::UpdateHandler;
 use ic_http_certification::{HttpRequest, HttpResponse, StatusCode};
@@ -19,25 +20,27 @@ pub fn on_http_request(request: &HttpRequest) -> HttpResponse<'static> {
     http_request_handler(request, &upgrade_http_request)
 }
 
-pub fn on_http_request_update(
+pub fn on_http_request_update<T: serde::Serialize>(
     request: &HttpRequest,
-    update_handler: UpdateHandler,
+    update_handler: UpdateHandler<T>,
 ) -> HttpResponse<'static> {
-    let set_page_view = |request: &HttpRequest| -> HttpResponse<'static> {
+    let handle_http_request_update = |request: &HttpRequest| -> HttpResponse<'static> {
         let result = update_handler(request);
 
-        if let Ok(body) = result {
-            return create_json_response(StatusCode::CREATED, body);
+        match result {
+            Ok(data) => {
+                let body = ApiResponse::ok(&data).encode();
+                create_json_response(StatusCode::CREATED, body)
+            }
+            Err(err) => {
+                let body = ApiResponse::<T>::err(StatusCode::INTERNAL_SERVER_ERROR, err).encode();
+                create_json_response(StatusCode::INTERNAL_SERVER_ERROR, body)
+            }
         }
-
-        // TODO: TODO: we can maybe throw a better exception?
-        create_uncertified_not_found_response()
     };
 
-    http_request_handler(request, &set_page_view)
+    http_request_handler(request, &handle_http_request_update)
 }
-
-type RouteHandler = dyn Fn(&HttpRequest) -> HttpResponse<'static>;
 
 fn http_request_handler(
     request: &HttpRequest,

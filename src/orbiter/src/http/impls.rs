@@ -18,7 +18,7 @@ impl<'a, T: Serialize> ApiResponse<'a, T> {
         )
     }
 
-    fn err(code: StatusCode, message: String) -> Self {
+    pub fn err(code: StatusCode, message: String) -> Self {
         Self::Err {
             code: code.as_u16(),
             message,

@@ -30,6 +30,7 @@ use crate::controllers::store::{
 use crate::guards::{caller_is_admin_controller, caller_is_controller};
 use crate::handlers::{handle_http_request_update, handle_set_page_view};
 use crate::http::requests::{on_http_request, on_http_request_update};
+use crate::http::upgrade::defer_init_certified_responses;
 use crate::types::interface::{
     AnalyticsClientsPageViews, AnalyticsMetricsPageViews, AnalyticsTop10PageViews,
     AnalyticsTrackEvents, AnalyticsWebVitalsPerformanceMetrics, DelSatelliteConfig, GetAnalytics,
@@ -62,7 +63,6 @@ use state::memory::{get_memory_upgrades, init_stable_state, STATE};
 use state::types::state::{
     AnalyticKey, HeapState, PageView, PerformanceMetric, SatelliteConfigs, State, TrackEvent,
 };
-use crate::http::upgrade::defer_init_certified_responses;
 
 #[init]
 fn init() {

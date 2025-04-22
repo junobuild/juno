@@ -4,13 +4,11 @@ use crate::state::types::state::{AnalyticKey, PageView};
 use crate::types::interface::{PageViewPayload, SetPageView};
 use ic_http_certification::HttpRequest;
 
-pub fn handle_http_request_update(request: &HttpRequest) -> Result<Vec<u8>, String> {
+pub fn handle_http_request_update(request: &HttpRequest) -> Result<PageView, String> {
     let PageViewPayload { key, page_view }: PageViewPayload =
         serde_json::from_slice(request.body()).map_err(|e| e.to_string())?;
 
-    let result = handle_set_page_view(key, page_view);
-
-    serde_json::to_vec(&result).map_err(|e| e.to_string())
+    handle_set_page_view(key, page_view)
 }
 
 pub fn handle_set_page_view(key: AnalyticKey, page_view: SetPageView) -> Result<PageView, String> {

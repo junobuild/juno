@@ -1,7 +1,7 @@
 pub mod core {
     use ic_http_certification::HttpRequest;
 
-    pub type UpdateHandler = fn(&HttpRequest) -> Result<Vec<u8>, String>;
+    pub type UpdateHandler<T> = fn(&HttpRequest) -> Result<T, String>;
 }
 
 pub mod interface {

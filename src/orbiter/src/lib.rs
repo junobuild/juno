@@ -62,6 +62,7 @@ use state::memory::{get_memory_upgrades, init_stable_state, STATE};
 use state::types::state::{
     AnalyticKey, HeapState, PageView, PerformanceMetric, SatelliteConfigs, State, TrackEvent,
 };
+use crate::http::upgrade::defer_init_certified_responses;
 
 #[init]
 fn init() {
@@ -80,6 +81,8 @@ fn init() {
             ..State::default()
         };
     });
+
+    defer_init_certified_responses();
 }
 
 #[pre_upgrade]
@@ -101,6 +104,8 @@ fn post_upgrade() {
         .expect("Failed to decode the state of the orbiter in post_upgrade hook.");
 
     STATE.with(|s| *s.borrow_mut() = state);
+
+    defer_init_certified_responses();
 }
 
 /// HTTP

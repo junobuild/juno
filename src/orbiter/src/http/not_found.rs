@@ -36,7 +36,7 @@ lazy_static! {
     static ref NOT_FOUND_CEL_EXPR: String = NOT_FOUND_CEL_EXPR_DEF.to_string();
 }
 
-pub fn certify_not_found_response() {
+pub fn init_certified_not_found_response() {
     let body = ErrorResponse::not_found().encode();
     let mut response = create_json_response(StatusCode::NOT_FOUND, body);
 

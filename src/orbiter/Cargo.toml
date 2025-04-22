@@ -11,6 +11,7 @@ crate-type = ["cdylib"]
 candid.workspace = true
 ic-cdk.workspace = true
 ic-cdk-macros.workspace = true
+ic-cdk-timers.workspace = true
 ic-stable-structures.workspace = true
 ic-http-certification = "3.0.3"
 serde.workspace = true

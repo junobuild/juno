@@ -1169,6 +1169,7 @@ dependencies = [
  "ciborium",
  "ic-cdk",
  "ic-cdk-macros",
+ "ic-cdk-timers",
  "ic-http-certification",
  "ic-stable-structures",
  "isbot",

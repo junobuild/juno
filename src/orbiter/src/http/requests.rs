@@ -3,34 +3,42 @@ use crate::http::not_found::{
     create_uncertified_not_found_response, prepare_certified_not_found_response,
 };
 use crate::http::store::get_certified_response;
-use ic_http_certification::{HttpRequest, HttpResponse};
-
+use ic_http_certification::{HttpRequest, HttpResponse, StatusCode};
+use crate::http::utils::create_json_response;
+use crate::types::core::UpdateHandler;
 // ---------------------------------------------------------
 // Source for the HTTP implementation:
 // https://github.com/dfinity/response-verification/blob/main/examples/http-certification/json-api/src/backend/src/lib.rs
 // ---------------------------------------------------------
 
 pub fn on_http_request(request: &HttpRequest) -> HttpResponse<'static> {
-    fn upgrade_http_request(_http_request: &HttpRequest) -> HttpResponse<'static> {
+    let upgrade_http_request = |request: &HttpRequest| -> HttpResponse<'static> {
         HttpResponse::builder().with_upgrade(true).build()
-    }
+    };
 
-    http_request_handler(request, upgrade_http_request)
+    http_request_handler(request, &upgrade_http_request)
 }
 
-pub fn on_http_request_update(request: &HttpRequest) -> HttpResponse<'static> {
-    fn set_page_view(request: &HttpRequest) -> HttpResponse<'static> {
-        return create_uncertified_not_found_response();
-    }
+pub fn on_http_request_update(request: &HttpRequest, update_handler: UpdateHandler) -> HttpResponse<'static> {
+    let set_page_view = |request: &HttpRequest| -> HttpResponse<'static> {
+        let result = update_handler(request);
+        
+        if let Ok(body) = result {
+            return create_json_response(StatusCode::CREATED, body);
+        }
+        
+        // TODO: TODO: we can maybe throw a better exception?
+        create_uncertified_not_found_response()
+    };
 
-    http_request_handler(request, set_page_view)
+    http_request_handler(request, &set_page_view)
 }
 
-type RouteHandler = for<'a> fn(&'a HttpRequest) -> HttpResponse<'static>;
+type RouteHandler = dyn Fn(&HttpRequest) -> HttpResponse<'static>;
 
 fn http_request_handler(
     request: &HttpRequest,
-    handler: RouteHandler,
+    handler: &dyn Fn(&HttpRequest) -> HttpResponse<'static>,
 ) -> HttpResponse<'static> {
     let uri_request_path = request.get_path();
 

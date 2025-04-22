@@ -10,6 +10,7 @@ mod msg;
 mod serializers;
 mod state;
 mod types;
+pub mod handlers;
 
 use crate::analytics::{
     analytics_page_views_clients, analytics_page_views_metrics, analytics_page_views_top_10,
@@ -60,6 +61,7 @@ use state::memory::{get_memory_upgrades, init_stable_state, STATE};
 use state::types::state::{
     AnalyticKey, HeapState, PageView, PerformanceMetric, SatelliteConfigs, State, TrackEvent,
 };
+use crate::handlers::handle_http_request;
 
 #[init]
 fn init() {
@@ -110,7 +112,7 @@ fn http_request(request: HttpRequest) -> HttpResponse<'static> {
 
 #[update]
 fn http_request_update(request: HttpRequest) -> HttpResponse<'static> {
-    on_http_request_update(&request)
+    on_http_request_update(&request, handle_http_request)
 }
 
 /// Page views

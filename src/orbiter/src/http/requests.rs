@@ -12,7 +12,7 @@ use ic_http_certification::{HttpRequest, HttpResponse, StatusCode};
 // ---------------------------------------------------------
 
 pub fn on_http_request(request: &HttpRequest) -> HttpResponse<'static> {
-    let upgrade_http_request = |request: &HttpRequest| -> HttpResponse<'static> {
+    let upgrade_http_request = |_request: &HttpRequest| -> HttpResponse<'static> {
         HttpResponse::builder().with_upgrade(true).build()
     };
 

@@ -97,7 +97,9 @@ fn post_upgrade() {
     STATE.with(|s| *s.borrow_mut() = state);
 }
 
-/// Page views
+// ---------------------------------------------------------
+// Page views
+// ---------------------------------------------------------
 
 #[update]
 fn set_page_view(key: AnalyticKey, page_view: SetPageView) -> Result<PageView, String> {
@@ -158,7 +160,9 @@ fn get_page_views_analytics_clients(filter: GetAnalytics) -> AnalyticsClientsPag
     analytics_page_views_clients(&page_views)
 }
 
-/// Track events
+// ---------------------------------------------------------
+// Track events
+// ---------------------------------------------------------
 
 #[update]
 fn set_track_event(key: AnalyticKey, track_event: SetTrackEvent) -> Result<TrackEvent, String> {
@@ -207,7 +211,9 @@ fn get_track_events_analytics(filter: GetAnalytics) -> AnalyticsTrackEvents {
     analytics_track_events(&track_events)
 }
 
-/// Performance metrics
+// ---------------------------------------------------------
+// Performance metrics
+// ---------------------------------------------------------
 
 #[update]
 fn set_performance_metric(
@@ -263,9 +269,9 @@ fn get_performance_metrics_analytics_web_vitals(
     analytics_performance_metrics_web_vitals(&metrics)
 }
 
-///
-/// Controllers
-///
+// --------------------------------------------------------- 
+// Controllers
+// ---------------------------------------------------------
 
 #[update(guard = "caller_is_admin_controller")]
 fn set_controllers(
@@ -306,9 +312,9 @@ fn list_controllers() -> Controllers {
     get_controllers()
 }
 
-///
-/// Origins
-///
+// ---------------------------------------------------------
+// Origins
+// ---------------------------------------------------------
 
 #[update(guard = "caller_is_admin_controller")]
 fn set_satellite_configs(configs: Vec<(SatelliteId, SetSatelliteConfig)>) -> SatelliteConfigs {
@@ -333,7 +339,9 @@ fn list_satellite_configs() -> SatelliteConfigs {
     get_satellite_configs()
 }
 
-/// Mgmt
+// ---------------------------------------------------------
+// Mgmt
+// ---------------------------------------------------------
 
 #[update(guard = "caller_is_admin_controller")]
 async fn deposit_cycles(args: DepositCyclesArgs) {

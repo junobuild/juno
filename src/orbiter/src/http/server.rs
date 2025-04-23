@@ -7,10 +7,6 @@ use crate::http::state::store::get_certified_response;
 use crate::http::types::handler::HttpRequestHandler;
 use crate::http::utils::create_json_response;
 use ic_http_certification::{HttpRequest, HttpResponse};
-// ---------------------------------------------------------
-// Source for the HTTP implementation:
-// https://github.com/dfinity/response-verification/blob/main/examples/http-certification/json-api/src/backend/src/lib.rs
-// ---------------------------------------------------------
 
 pub fn on_http_request(
     request: &HttpRequest,

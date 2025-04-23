@@ -69,7 +69,6 @@ pub fn init_not_allowed_responses(
             certification,
         };
 
-        // TODO: we probably can do this only once
         let tree_path = HttpCertificationPath::exact(path);
 
         insert_certified_response(

@@ -1,19 +1,37 @@
 pub mod interface {
-    use crate::state::types::state::{
-        AnalyticKey, PageViewDevice, PerformanceData, PerformanceMetricName, SessionId,
-    };
+    use crate::state::types::state::{Key, PageViewDevice, PerformanceData, PerformanceMetricName, SessionId};
     use candid::CandidType;
     use junobuild_shared::types::state::{
         Metadata, OrbiterSatelliteFeatures, SatelliteId, Timestamp, Version,
     };
     use junobuild_shared::types::utils::CalendarDate;
-    use serde::Deserialize;
+    use serde::{Deserialize};
     use std::collections::HashMap;
+    use junobuild_utils::{DocDataBigInt, DocDataPrincipal};
 
-    #[derive(CandidType, Deserialize, Clone)]
+    #[derive(Deserialize)]
     pub struct PageViewPayload {
-        pub key: AnalyticKey,
-        pub page_view: SetPageView,
+        pub key: AnalyticKeyPayload,
+        pub page_view: SetPageViewPayload,
+    }
+
+    #[derive(Deserialize)]
+    pub struct AnalyticKeyPayload {
+        pub collected_at: DocDataBigInt,
+        pub key: Key,
+    }
+
+    #[derive(Deserialize)]
+    pub struct SetPageViewPayload {
+        pub title: String,
+        pub href: String,
+        pub referrer: Option<String>,
+        pub device: PageViewDevice,
+        pub time_zone: String,
+        pub user_agent: Option<String>,
+        pub satellite_id: DocDataPrincipal,
+        pub session_id: SessionId,
+        pub version: Option<DocDataBigInt>,
     }
 
     pub type PageViewsPayload = Vec<PageViewPayload>;

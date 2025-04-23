@@ -8,7 +8,7 @@ pub fn handle_insert_page_view(request: &HttpRequest) -> Result<PageView, String
     let PageViewPayload { key, page_view }: PageViewPayload =
         decode_doc_data::<PageViewPayload>(&request.body()).map_err(|e| e.to_string())?;
 
-    assert_and_insert_page_view(key, page_view)
+    assert_and_insert_page_view(key.into_domain(), page_view.into_domain())
 }
 
 pub fn handle_insert_page_views(request: &HttpRequest) -> Result<(), String> {
@@ -18,11 +18,13 @@ pub fn handle_insert_page_views(request: &HttpRequest) -> Result<(), String> {
     let mut errors: Vec<(AnalyticKey, String)> = Vec::new();
 
     for PageViewPayload { key, page_view } in page_views {
-        let result = assert_and_insert_page_view(key.clone(), page_view);
+        let key_domain = key.into_domain();
+        
+        let result = assert_and_insert_page_view(key_domain.clone(), page_view.into_domain());
 
         match result {
             Ok(_) => {}
-            Err(err) => errors.push((key, err)),
+            Err(err) => errors.push((key_domain, err)),
         }
     }
 

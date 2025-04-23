@@ -1,9 +1,3 @@
-pub mod core {
-    use ic_http_certification::HttpRequest;
-
-    pub type UpdateHandler<T> = fn(&HttpRequest) -> Result<T, String>;
-}
-
 pub mod interface {
     use crate::state::types::state::{
         AnalyticKey, PageViewDevice, PerformanceData, PerformanceMetricName, SessionId,
@@ -21,6 +15,8 @@ pub mod interface {
         pub key: AnalyticKey,
         pub page_view: SetPageView,
     }
+
+    pub type PageViewsPayload = Vec<PageViewPayload>;
 
     #[derive(CandidType, Deserialize, Clone)]
     pub struct SetPageView {

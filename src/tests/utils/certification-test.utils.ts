@@ -1,5 +1,5 @@
-import type { HttpResponse as SatelliteHttpResponse } from '$declarations/satellite/satellite.did';
 import type { HttpResponse as OrbiterHttpResponse } from '$declarations/orbiter/orbiter.did';
+import type { HttpResponse as SatelliteHttpResponse } from '$declarations/satellite/satellite.did';
 import type { Principal } from '@dfinity/principal';
 import { verifyRequestResponsePair, type Request } from '@dfinity/response-verification';
 import { assertNonNullish } from '@dfinity/utils';

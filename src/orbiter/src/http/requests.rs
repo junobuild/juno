@@ -1,50 +1,44 @@
-use crate::http::constants::{NOT_FOUND_PATH, VIEWS_PATH};
+use crate::http::constants::NOT_FOUND_PATH;
 use crate::http::not_found::{
     create_uncertified_not_found_response, prepare_certified_not_found_response,
 };
 use crate::http::store::get_certified_response;
-use crate::http::types::interface::ApiResponse;
+use crate::http::types::handler::HttpRequestHandler;
 use crate::http::utils::create_json_response;
-use crate::types::core::UpdateHandler;
-use ic_http_certification::{HttpRequest, HttpResponse, StatusCode};
+use ic_http_certification::{HttpRequest, HttpResponse};
+
 // ---------------------------------------------------------
 // Source for the HTTP implementation:
 // https://github.com/dfinity/response-verification/blob/main/examples/http-certification/json-api/src/backend/src/lib.rs
 // ---------------------------------------------------------
 
-pub fn on_http_request(request: &HttpRequest) -> HttpResponse<'static> {
+pub fn on_http_request(
+    request: &HttpRequest,
+    handler: &dyn HttpRequestHandler,
+) -> HttpResponse<'static> {
     let upgrade_http_request = |_request: &HttpRequest| -> HttpResponse<'static> {
         HttpResponse::builder().with_upgrade(true).build()
     };
 
-    http_request_handler(request, &upgrade_http_request)
+    http_request_handler(request, handler, &upgrade_http_request)
 }
 
-pub fn on_http_request_update<T: serde::Serialize>(
+pub fn on_http_request_update(
     request: &HttpRequest,
-    update_handler: UpdateHandler<T>,
+    handler: &dyn HttpRequestHandler,
 ) -> HttpResponse<'static> {
     let handle_http_request_update = |request: &HttpRequest| -> HttpResponse<'static> {
-        let result = update_handler(request);
-
-        match result {
-            Ok(data) => {
-                let body = ApiResponse::ok(&data).encode();
-                create_json_response(StatusCode::CREATED, body)
-            }
-            Err(err) => {
-                let body = ApiResponse::<T>::err(StatusCode::INTERNAL_SERVER_ERROR, err).encode();
-                create_json_response(StatusCode::INTERNAL_SERVER_ERROR, body)
-            }
-        }
+        let (status_code, body) = handler.handle_update(request);
+        create_json_response(status_code, body)
     };
 
-    http_request_handler(request, &handle_http_request_update)
+    http_request_handler(request, handler, &handle_http_request_update)
 }
 
 fn http_request_handler(
     request: &HttpRequest,
-    handler: &dyn Fn(&HttpRequest) -> HttpResponse<'static>,
+    handler: &dyn HttpRequestHandler,
+    response_handler: &dyn Fn(&HttpRequest) -> HttpResponse<'static>,
 ) -> HttpResponse<'static> {
     let uri_request_path = request.get_path();
 
@@ -55,11 +49,9 @@ fn http_request_handler(
 
     let request_path = uri_request_path.unwrap();
 
-    if request_path == VIEWS_PATH {
-        let method = request.method().to_string();
-
-        if method != "POST" {
-            return handler(&request);
+    if handler.is_known_route(request) {
+        if handler.is_allowed_method(request) {
+            return response_handler(&request);
         }
 
         // TODO: Technically here it would be more accurate to return a METHOD_NOT_ALLOWED response

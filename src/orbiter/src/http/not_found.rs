@@ -12,7 +12,6 @@ use ic_http_certification::{
     CERTIFICATE_EXPRESSION_HEADER_NAME,
 };
 use lazy_static::lazy_static;
-
 // ---------------------------------------------------------
 // Source for the HTTP implementation:
 // https://github.com/dfinity/response-verification/blob/main/examples/http-certification/json-api/src/backend/src/lib.rs

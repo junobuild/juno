@@ -22,3 +22,4 @@ url.workspace = true
 regex.workspace = true
 lazy_static = "1.5.0"
 junobuild-shared = { path = "../libs/shared" }
+junobuild-utils = { path = "../libs/utils" }

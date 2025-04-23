@@ -5,7 +5,7 @@ mod constants;
 mod controllers;
 mod events;
 mod guards;
-pub mod handlers;
+mod handler;
 mod http;
 mod msg;
 mod serializers;
@@ -27,9 +27,10 @@ use crate::controllers::store::{
     delete_controllers as delete_controllers_store, get_admin_controllers, get_controllers,
     set_controllers as set_controllers_store,
 };
-use crate::events::helpers::assert_and_insert_set_page_view;
+use crate::events::helpers::assert_and_insert_page_view;
+use crate::events::store::insert_page_view;
 use crate::guards::{caller_is_admin_controller, caller_is_controller};
-use crate::handlers::handle_http_request_update;
+use crate::handler::orbiter::OrbiterHttpRequestHandler;
 use crate::http::requests::{on_http_request, on_http_request_update};
 use crate::http::upgrade::defer_init_certified_responses;
 use crate::types::interface::{
@@ -41,8 +42,7 @@ use ciborium::{from_reader, into_writer};
 use events::store::{
     get_page_views as get_page_views_store,
     get_performance_metrics as get_performance_metrics_store, get_satellite_config,
-    get_track_events as get_track_events_store, insert_page_view, insert_performance_metric,
-    insert_track_event,
+    get_track_events as get_track_events_store, insert_performance_metric, insert_track_event,
 };
 use ic_cdk::api::call::{arg_data, ArgDecoderConfig};
 use ic_cdk::trap;
@@ -113,12 +113,14 @@ fn post_upgrade() {
 
 #[query]
 fn http_request(request: HttpRequest) -> HttpResponse<'static> {
-    on_http_request(&request)
+    let handler = OrbiterHttpRequestHandler;
+    on_http_request(&request, &handler)
 }
 
 #[update]
 fn http_request_update(request: HttpRequest) -> HttpResponse<'static> {
-    on_http_request_update(&request, handle_http_request_update)
+    let handler = OrbiterHttpRequestHandler;
+    on_http_request_update(&request, &handler)
 }
 
 /// Page views
@@ -126,7 +128,7 @@ fn http_request_update(request: HttpRequest) -> HttpResponse<'static> {
 #[deprecated(since = "0.1.0", note = "prefer HTTP POST request")]
 #[update]
 fn set_page_view(key: AnalyticKey, page_view: SetPageView) -> Result<PageView, String> {
-    assert_and_insert_set_page_view(key, page_view)
+    assert_and_insert_page_view(key, page_view)
 }
 
 #[deprecated(since = "0.1.0", note = "prefer HTTP POST request")]

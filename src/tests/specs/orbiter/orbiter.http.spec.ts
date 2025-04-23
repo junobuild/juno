@@ -1,11 +1,18 @@
-import type { _SERVICE as OrbiterActor } from '$declarations/orbiter/orbiter.did';
+import type {
+	AnalyticKey,
+	_SERVICE as OrbiterActor,
+	OrbiterSatelliteFeatures,
+	SetPageView
+} from '$declarations/orbiter/orbiter.did';
 import { idlFactory as idlFactorOrbiter } from '$declarations/orbiter/orbiter.factory.did';
 import type { HttpRequest } from '$declarations/satellite/satellite.did';
 import { Ed25519KeyIdentity } from '@dfinity/identity';
 import type { Principal } from '@dfinity/principal';
-import { toNullable } from '@dfinity/utils';
+import { jsonReplacer, toNullable } from '@dfinity/utils';
 import { type Actor, PocketIc } from '@hadronous/pic';
+import { nanoid } from 'nanoid';
 import { inject } from 'vitest';
+import { pageViewMock, satelliteIdMock } from '../../mocks/orbiter.mocks';
 import { assertCertification } from '../../utils/certification-test.utils';
 import { tick } from '../../utils/pic-tests.utils';
 import { controllersInitArgs, ORBITER_WASM_PATH } from '../../utils/setup-tests.utils';
@@ -75,6 +82,93 @@ describe('Orbiter', () => {
 				response,
 				currentDate,
 				statusCode: 404
+			});
+		});
+	});
+
+	describe('configured', () => {
+		beforeAll(async () => {
+			actor.setIdentity(controller);
+
+			const allFeatures: OrbiterSatelliteFeatures = {
+				page_views: true,
+				performance_metrics: true,
+				track_events: true
+			};
+
+			const { set_satellite_configs } = actor;
+
+			await set_satellite_configs([
+				[
+					satelliteIdMock,
+					{
+						version: [],
+						features: [allFeatures]
+					}
+				]
+			]);
+		});
+
+		describe('user', () => {
+			const user = Ed25519KeyIdentity.generate();
+
+			beforeAll(() => {
+				actor.setIdentity(user);
+			});
+
+			const key = nanoid();
+
+			interface PageViewPayload {
+				key: AnalyticKey;
+				page_view: SetPageView;
+			}
+
+			const pagesViews: PageViewPayload[] = [
+				{
+					key: { key, collected_at: 123n },
+					page_view: pageViewMock
+				},
+				{
+					key: { key: nanoid(), collected_at: 123n },
+					page_view: pageViewMock
+				}
+			];
+
+			it('should upgrade http_request', async () => {
+				const { http_request } = actor;
+
+				console.log(JSON.stringify(pagesViews, jsonReplacer))
+
+				const request: HttpRequest = {
+					body: new TextEncoder().encode(JSON.stringify(pagesViews, jsonReplacer)),
+					certificate_version: toNullable(2),
+					headers: [],
+					method: 'POST',
+					url: '/views'
+				};
+
+				const response = await http_request(request);
+
+				console.log(response)
+			});
+
+			it('should set page views', async () => {
+				const { http_request_update } = actor;
+
+				const request: HttpRequest = {
+					body: new TextEncoder().encode(JSON.stringify(pagesViews, jsonReplacer)),
+					certificate_version: toNullable(2),
+					headers: [],
+					method: 'POST',
+					url: '/views'
+				};
+
+				const response = await http_request_update(request);
+
+				const decoder = new TextDecoder();
+				const responseBody = decoder.decode(response.body as Uint8Array<ArrayBufferLike>);
+
+				console.log(response, responseBody)
 			});
 		});
 	});

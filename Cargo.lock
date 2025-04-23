@@ -1174,6 +1174,7 @@ dependencies = [
  "ic-stable-structures",
  "isbot",
  "junobuild-shared",
+ "junobuild-utils 0.1.0",
  "lazy_static",
  "regex",
  "serde",

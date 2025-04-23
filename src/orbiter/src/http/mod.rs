@@ -3,6 +3,6 @@ mod impls;
 mod not_found;
 pub mod requests;
 mod store;
-mod types;
+pub mod types;
 pub mod upgrade;
 mod utils;

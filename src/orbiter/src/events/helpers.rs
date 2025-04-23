@@ -3,7 +3,7 @@ use crate::events::store::{get_satellite_config, insert_page_view};
 use crate::state::types::state::{AnalyticKey, PageView};
 use crate::types::interface::SetPageView;
 
-pub fn assert_and_insert_set_page_view(
+pub fn assert_and_insert_page_view(
     key: AnalyticKey,
     page_view: SetPageView,
 ) -> Result<PageView, String> {

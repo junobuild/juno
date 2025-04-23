@@ -11,3 +11,13 @@ pub mod interface {
 
     pub type ErrorResponse<'a> = ApiResponse<'a, ()>;
 }
+
+pub mod handler {
+    use ic_http_certification::{HttpRequest, StatusCode};
+
+    pub trait HttpRequestHandler {
+        fn is_known_route(&self, request: &HttpRequest) -> bool;
+        fn is_allowed_method(&self, request: &HttpRequest) -> bool;
+        fn handle_update(&self, request: &HttpRequest) -> (StatusCode, Vec<u8>);
+    }
+}

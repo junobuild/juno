@@ -21,19 +21,19 @@ export interface SetPageViewPayload {
 
 export interface SetTrackEventPayload {
 	name: string;
-	metadata: [string, string][];
+	metadata?: Record<string, string>;
 	satellite_id: Principal;
 	session_id: string;
 	version?: bigint;
 	user_agent?: string;
 }
 
-export type PageViewPayload = SetPageViewPayload & {
+export type PageViewPayload = Omit<SetPageViewPayload, "user_agent"> & {
 	updated_at: bigint;
 	created_at: bigint;
 };
 
-export type TrackEventPayload = SetTrackEventPayload & {
+export type TrackEventPayload = Omit<SetTrackEventPayload, "user_agent"> & {
 	updated_at: bigint;
 	created_at: bigint;
 };
@@ -94,10 +94,10 @@ export const trackEventMock: SetTrackEvent = {
 
 export const trackEventPayloadMock: SetTrackEventPayload = {
 	name: 'my_event',
-	metadata: [
-		['event1', 'Lorem ipsum dolor sit amet'],
-		['event2', ' Praesent congue, mauris id commodo vulputate']
-	],
+	metadata: {
+		event1: 'Lorem ipsum dolor sit amet',
+		event2: ' Praesent congue, mauris id commodo vulputate'
+	},
 	satellite_id: satelliteIdMock,
 	session_id: sessionId,
 	user_agent: 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:125.0) Gecko/20100101 Firefox/125.0'

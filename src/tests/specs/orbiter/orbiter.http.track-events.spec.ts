@@ -11,9 +11,8 @@ import { type Actor, PocketIc } from '@hadronous/pic';
 import { nanoid } from 'nanoid';
 import { inject } from 'vitest';
 import {
-	type PageViewPayload,
 	satelliteIdMock,
-	type SetTrackEventPayload,
+	type SetTrackEventPayload, type TrackEventPayload,
 	trackEventPayloadMock
 } from '../../mocks/orbiter.mocks';
 import { toBodyJson } from '../../utils/orbiter-test.utils';
@@ -161,11 +160,13 @@ describe('Orbiter > HTTP > Page views', () => {
 
 					const {
 						ok: { data }
-					}: { ok: { data: PageViewPayload } } = JSON.parse(responseBody, jsonReviver);
+					}: { ok: { data: TrackEventPayload } } = JSON.parse(responseBody, jsonReviver);
 
 					const { version, created_at, updated_at, ...rest } = data;
 
-					expect(rest).toEqual(trackEventPayloadMock);
+					const {user_agent: _, ...restMock} = trackEventPayloadMock;
+
+					expect(rest).toEqual(restMock);
 					expect(version).toEqual(1n);
 					expect(created_at).toBeGreaterThan(0n);
 					expect(updated_at).toBeGreaterThan(0n);
@@ -217,7 +218,7 @@ describe('Orbiter > HTTP > Page views', () => {
 
 					const {
 						ok: { data }
-					}: { ok: { data: PageViewPayload } } = JSON.parse(responseBody, jsonReviver);
+					}: { ok: { data: TrackEventPayload } } = JSON.parse(responseBody, jsonReviver);
 
 					const { version } = data;
 
@@ -316,7 +317,7 @@ describe('Orbiter > HTTP > Page views', () => {
 						body: toBodyJson(
 							trackEvents.map((trackEvent) => ({
 								...trackEvent,
-								page_view: {
+								track_event: {
 									...trackEvent.track_event,
 									version: 1n
 								}

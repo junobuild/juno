@@ -28,12 +28,48 @@ export interface SetTrackEventPayload {
 	user_agent?: string;
 }
 
+export type PerformanceMetricName = "CLS" | "FCP" | "INP" | "LCP" | "TTFB";
+
+export type PerformanceData = {
+	WebVitalsMetric: WebVitalsMetric;
+};
+
+export interface WebVitalsMetric {
+	value: number;
+	delta: number;
+	id: string;
+	navigation_type?: NavigationType;
+}
+
+export type NavigationType =
+	| "Navigate"
+	| "Reload"
+	| "BackForward"
+	| "BackForwardCache"
+	| "Prerender"
+	| "Restore";
+
+export interface SetPerformanceMetricPayload {
+	href: string;
+	metric_name: PerformanceMetricName;
+	data: PerformanceData;
+	user_agent?: string;
+	satellite_id: Principal;
+	session_id: string;
+	version?: bigint;
+}
+
 export type PageViewPayload = SetPageViewPayload & {
 	updated_at: bigint;
 	created_at: bigint;
 };
 
 export type TrackEventPayload = Omit<SetTrackEventPayload, 'user_agent'> & {
+	updated_at: bigint;
+	created_at: bigint;
+};
+
+export type PerformanceMetricPayload = Omit<SetPerformanceMetricPayload, 'user_agent'> & {
 	updated_at: bigint;
 	created_at: bigint;
 };
@@ -120,4 +156,20 @@ export const performanceMetricMock: SetPerformanceMetric = {
 	user_agent: [
 		'Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:125.0) Gecko/20100101 Firefox/125.0'
 	]
+};
+
+export const performanceMetricPayloadMock: SetPerformanceMetricPayload = {
+	session_id: sessionId,
+	data: {
+		WebVitalsMetric: {
+			id: nanoid(),
+			value: 1.23,
+			navigation_type: "Navigate",
+			delta: 0.5
+		}
+	},
+	href: 'https://test.com',
+	metric_name: "LCP",
+	satellite_id: satelliteIdMock,
+	user_agent: 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:125.0) Gecko/20100101 Firefox/125.0'
 };

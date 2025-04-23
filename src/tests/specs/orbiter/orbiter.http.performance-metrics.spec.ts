@@ -12,15 +12,15 @@ import { nanoid } from 'nanoid';
 import { inject } from 'vitest';
 import {
 	satelliteIdMock,
-	type SetTrackEventPayload,
-	type TrackEventPayload,
-	trackEventPayloadMock
+	type SetPerformanceMetricPayload,
+	type PerformanceMetricPayload,
+	performanceMetricPayloadMock
 } from '../../mocks/orbiter.mocks';
 import { toBodyJson } from '../../utils/orbiter-test.utils';
 import { tick } from '../../utils/pic-tests.utils';
 import { controllersInitArgs, ORBITER_WASM_PATH } from '../../utils/setup-tests.utils';
 
-describe('Orbiter > HTTP > Track events', () => {
+describe('Orbiter > HTTP > Performance metrics', () => {
 	let pic: PocketIc;
 	let actor: Actor<OrbiterActor>;
 
@@ -58,24 +58,24 @@ describe('Orbiter > HTTP > Track events', () => {
 	});
 
 	describe('With configuration', () => {
-		interface SetTrackEventRequest {
+		interface SetPerformanceRequest {
 			key: AnalyticKey;
-			track_event: SetTrackEventPayload;
+			performance_metric: SetPerformanceMetricPayload;
 		}
 
-		const trackEvent: SetTrackEventRequest = {
+		const performanceMetric: SetPerformanceRequest = {
 			key: { key: nanoid(), collected_at: 1230n },
-			track_event: trackEventPayloadMock
+			performance_metric: performanceMetricPayloadMock
 		};
 
-		const trackEvents: SetTrackEventRequest[] = [
+		const performanceMetrics: SetPerformanceRequest[] = [
 			{
 				key: { key: nanoid(), collected_at: 1230n },
-				track_event: trackEventPayloadMock
+				performance_metric: performanceMetricPayloadMock
 			},
 			{
 				key: { key: nanoid(), collected_at: 1240n },
-				track_event: trackEventPayloadMock
+				performance_metric: performanceMetricPayloadMock
 			}
 		];
 
@@ -108,8 +108,8 @@ describe('Orbiter > HTTP > Track events', () => {
 				actor.setIdentity(user);
 			});
 
-			describe('track event', () => {
-				const body = toBodyJson(trackEvent);
+			describe('performance metric', () => {
+				const body = toBodyJson(performanceMetric);
 
 				it('should upgrade http_request', async () => {
 					const { http_request } = actor;
@@ -119,7 +119,7 @@ describe('Orbiter > HTTP > Track events', () => {
 						certificate_version: toNullable(2),
 						headers: [],
 						method: 'POST',
-						url: '/event'
+						url: '/metric'
 					};
 
 					const response = await http_request(request);
@@ -135,7 +135,7 @@ describe('Orbiter > HTTP > Track events', () => {
 						certificate_version: toNullable(2),
 						headers: [],
 						method,
-						url: '/event'
+						url: '/metric'
 					};
 
 					const response = await http_request(request);
@@ -143,7 +143,7 @@ describe('Orbiter > HTTP > Track events', () => {
 					expect(fromNullable(response.upgrade)).toBeUndefined();
 				});
 
-				it('should set a track event', async () => {
+				it('should set a performance metric', async () => {
 					const { http_request_update } = actor;
 
 					const request: HttpRequest = {
@@ -151,7 +151,7 @@ describe('Orbiter > HTTP > Track events', () => {
 						certificate_version: toNullable(2),
 						headers: [],
 						method: 'POST',
-						url: '/event'
+						url: '/metric'
 					};
 
 					const response = await http_request_update(request);
@@ -161,11 +161,11 @@ describe('Orbiter > HTTP > Track events', () => {
 
 					const {
 						ok: { data }
-					}: { ok: { data: TrackEventPayload } } = JSON.parse(responseBody, jsonReviver);
+					}: { ok: { data: PerformanceMetricPayload } } = JSON.parse(responseBody, jsonReviver);
 
 					const { version, created_at, updated_at, ...rest } = data;
 
-					const { user_agent: _, ...restMock } = trackEventPayloadMock;
+					const { user_agent: _, ...restMock } = performanceMetricPayloadMock;
 
 					expect(rest).toEqual(restMock);
 					expect(version).toEqual(1n);
@@ -174,7 +174,7 @@ describe('Orbiter > HTTP > Track events', () => {
 					expect(created_at).toEqual(updated_at);
 				});
 
-				it('should fail at updating track event without version', async () => {
+				it('should fail at updating performance metric without version', async () => {
 					const { http_request_update } = actor;
 
 					const request: HttpRequest = {
@@ -182,7 +182,7 @@ describe('Orbiter > HTTP > Track events', () => {
 						certificate_version: toNullable(2),
 						headers: [],
 						method: 'POST',
-						url: '/event'
+						url: '/metric'
 					};
 
 					const response = await http_request_update(request);
@@ -195,21 +195,21 @@ describe('Orbiter > HTTP > Track events', () => {
 					expect(result).toEqual(RESPONSE_500_NO_VERSION_PROVIDED);
 				});
 
-				it('should update a track event', async () => {
+				it('should update a performance metric', async () => {
 					const { http_request_update } = actor;
 
 					const request: HttpRequest = {
 						body: toBodyJson({
-							...trackEvent,
-							track_event: {
-								...trackEvent.track_event,
+							...performanceMetric,
+							performance_metric: {
+								...performanceMetric.performance_metric,
 								version: 1n
 							}
 						}),
 						certificate_version: toNullable(2),
 						headers: [],
 						method: 'POST',
-						url: '/event'
+						url: '/metric'
 					};
 
 					const response = await http_request_update(request);
@@ -219,7 +219,7 @@ describe('Orbiter > HTTP > Track events', () => {
 
 					const {
 						ok: { data }
-					}: { ok: { data: TrackEventPayload } } = JSON.parse(responseBody, jsonReviver);
+					}: { ok: { data: PerformanceMetricPayload } } = JSON.parse(responseBody, jsonReviver);
 
 					const { version } = data;
 
@@ -227,8 +227,8 @@ describe('Orbiter > HTTP > Track events', () => {
 				});
 			});
 
-			describe('track events', () => {
-				const body = toBodyJson(trackEvents);
+			describe('performance metrics', () => {
+				const body = toBodyJson(performanceMetrics);
 
 				it('should upgrade http_request', async () => {
 					const { http_request } = actor;
@@ -238,7 +238,7 @@ describe('Orbiter > HTTP > Track events', () => {
 						certificate_version: toNullable(2),
 						headers: [],
 						method: 'POST',
-						url: '/events'
+						url: '/metrics'
 					};
 
 					const response = await http_request(request);
@@ -254,7 +254,7 @@ describe('Orbiter > HTTP > Track events', () => {
 						certificate_version: toNullable(2),
 						headers: [],
 						method,
-						url: '/events'
+						url: '/metrics'
 					};
 
 					const response = await http_request(request);
@@ -262,7 +262,7 @@ describe('Orbiter > HTTP > Track events', () => {
 					expect(fromNullable(response.upgrade)).toBeUndefined();
 				});
 
-				it('should set track events', async () => {
+				it('should set performance metrics', async () => {
 					const { http_request_update } = actor;
 
 					const request: HttpRequest = {
@@ -270,7 +270,7 @@ describe('Orbiter > HTTP > Track events', () => {
 						certificate_version: toNullable(2),
 						headers: [],
 						method: 'POST',
-						url: '/events'
+						url: '/metrics'
 					};
 
 					const response = await http_request_update(request);
@@ -283,7 +283,7 @@ describe('Orbiter > HTTP > Track events', () => {
 					expect(result).toEqual(RESPONSE_OK);
 				});
 
-				it('should fail at updating track events without version', async () => {
+				it('should fail at updating performance metrics without version', async () => {
 					const { http_request_update } = actor;
 
 					const request: HttpRequest = {
@@ -291,7 +291,7 @@ describe('Orbiter > HTTP > Track events', () => {
 						certificate_version: toNullable(2),
 						headers: [],
 						method: 'POST',
-						url: '/events'
+						url: '/metrics'
 					};
 
 					const response = await http_request_update(request);
@@ -304,22 +304,22 @@ describe('Orbiter > HTTP > Track events', () => {
 					expect(result).toEqual({
 						err: {
 							code: 500,
-							message: trackEvents
+							message: performanceMetrics
 								.map(({ key }) => `${key.key}: juno.error.no_version_provided`)
 								.join(', ')
 						}
 					});
 				});
 
-				it('should update track events', async () => {
+				it('should update performance metrics', async () => {
 					const { http_request_update } = actor;
 
 					const request: HttpRequest = {
 						body: toBodyJson(
-							trackEvents.map((trackEvent) => ({
-								...trackEvent,
-								track_event: {
-									...trackEvent.track_event,
+							performanceMetrics.map((performanceMetric) => ({
+								...performanceMetric,
+								performance_metric: {
+									...performanceMetric.performance_metric,
 									version: 1n
 								}
 							}))
@@ -327,7 +327,7 @@ describe('Orbiter > HTTP > Track events', () => {
 						certificate_version: toNullable(2),
 						headers: [],
 						method: 'POST',
-						url: '/events'
+						url: '/metrics'
 					};
 
 					const response = await http_request_update(request);
@@ -347,10 +347,10 @@ describe('Orbiter > HTTP > Track events', () => {
 				actor.setIdentity(controller);
 			});
 
-			it('should retrieve all track events', async () => {
-				const { get_track_events } = actor;
+			it('should retrieve all performance metrics', async () => {
+				const { get_performance_metrics } = actor;
 
-				const result = await get_track_events({
+				const result = await get_performance_metrics({
 					from: [],
 					to: [],
 					satellite_id: [satelliteIdMock]
@@ -358,12 +358,12 @@ describe('Orbiter > HTTP > Track events', () => {
 
 				expect(Array.isArray(result)).toBe(true);
 
-				expect(result.length).toEqual([trackEvent, ...trackEvents].length);
+				expect(result.length).toEqual([performanceMetric, ...performanceMetrics].length);
 
 				result.forEach(([key, pageView]) => {
 					expect(key.collected_at).toBeGreaterThanOrEqual(1230n);
 					expect(key.collected_at).toBeLessThanOrEqual(1240n);
-					expect(pageView.name).toBe('my_event');
+					expect(pageView.metric_name).toBe({LCP: null});
 					expect(fromNullable(pageView.version)).toBe(2n);
 				});
 			});

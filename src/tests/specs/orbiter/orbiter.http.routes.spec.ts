@@ -84,7 +84,7 @@ describe('Orbiter > HTTP > Routes', () => {
 		);
 	});
 
-	describe.each(['/view/something', '/views/something', '/event/something', '/events/something'])(
+	describe.each(['/view/something', '/views/something', '/event/something', '/events/something', '/metric/something', '/metrics/something'])(
 		'Sub-route not found for %s',
 		(url) => {
 			it.each(NON_POST_METHODS)(
@@ -124,7 +124,7 @@ describe('Orbiter > HTTP > Routes', () => {
 		}
 	);
 
-	describe.each(['/view', '/views', '/event', '/events'])('Route not allowed for %s', (url) => {
+	describe.each(['/view', '/views', '/event', '/events', '/metric', '/metrics'])('Route not allowed for %s', (url) => {
 		it.each(NON_POST_METHODS)(
 			'should return a certified not allowed response for %s',
 			async (method) => {

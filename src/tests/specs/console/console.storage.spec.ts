@@ -394,7 +394,7 @@ describe('Console > Storage', () => {
 							sha256: fromNullable(sha256)!,
 							proposal_id: proposalId
 						})
-					).resolves.not.toThrowError();
+					).resolves.not.toThrow();
 				});
 
 				it('should have updated proposal to executed', async () => {
@@ -453,6 +453,7 @@ describe('Console > Storage', () => {
 					});
 
 					const decoder = new TextDecoder();
+
 					expect(decoder.decode(body as Uint8Array<ArrayBufferLike>)).toEqual(mockHtml);
 				});
 

@@ -117,7 +117,7 @@ describe('Sputnik > assert_delete_asset', () => {
 
 		expect(asset).not.toBeUndefined();
 
-		await expect(del_asset(TEST_ASSERTED_COLLECTION, full_path)).resolves.not.toThrowError();
+		await expect(del_asset(TEST_ASSERTED_COLLECTION, full_path)).resolves.not.toThrow();
 
 		const afterAsset = fromNullable(await get_asset(TEST_ASSERTED_COLLECTION, full_path));
 
@@ -137,7 +137,7 @@ describe('Sputnik > assert_delete_asset', () => {
 
 		expect(asset).not.toBeUndefined();
 
-		await expect(del_asset(TEST_ASSERTED_COLLECTION, full_path)).rejects.toThrowError(
+		await expect(del_asset(TEST_ASSERTED_COLLECTION, full_path)).rejects.toThrow(
 			new RegExp('test.html name not allowed', 'i')
 		);
 	});

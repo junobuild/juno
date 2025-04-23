@@ -154,6 +154,7 @@ describe('Satellite', () => {
 			await set_rule({ Db: null }, 'test2', setRule);
 
 			const rules = await list_rules({ Db: null });
+
 			expect(rules).toHaveLength(2);
 
 			const [_, { version }] = rules[1];
@@ -194,6 +195,7 @@ describe('Satellite', () => {
 			});
 
 			const updatedControllers = await list_controllers();
+
 			expect(updatedControllers).toHaveLength(1);
 			expect(updatedControllers[0][0].toText()).toEqual(controller.getPrincipal().toText());
 		});
@@ -352,7 +354,7 @@ describe('Satellite', () => {
 							read: { Public: null }
 						});
 
-						expect(true).toBe(false);
+						expect(true).toBeFalsy();
 					} catch (error: unknown) {
 						expect((error as Error).message).toContain(errorMessage);
 					}
@@ -373,7 +375,7 @@ describe('Satellite', () => {
 							write: { Public: null }
 						});
 
-						expect(true).toBe(false);
+						expect(true).toBeFalsy();
 					} catch (error: unknown) {
 						expect((error as Error).message).toContain(errorMessage);
 					}
@@ -399,7 +401,7 @@ describe('Satellite', () => {
 									: toNullable({ Stable: null })
 						});
 
-						expect(true).toBe(false);
+						expect(true).toBeFalsy();
 					} catch (error: unknown) {
 						expect((error as Error).message).toContain(errorMessage);
 					}
@@ -420,7 +422,7 @@ describe('Satellite', () => {
 							mutable_permissions: [true]
 						});
 
-						expect(true).toBe(false);
+						expect(true).toBeFalsy();
 					} catch (error: unknown) {
 						expect((error as Error).message).toContain(errorMessage);
 					}
@@ -441,7 +443,7 @@ describe('Satellite', () => {
 							max_size: [666n]
 						});
 
-						expect(true).toBe(false);
+						expect(true).toBeFalsy();
 					} catch (error: unknown) {
 						expect((error as Error).message).toContain(errorMessage);
 					}
@@ -462,7 +464,7 @@ describe('Satellite', () => {
 							max_capacity: [666]
 						});
 
-						expect(true).toBe(false);
+						expect(true).toBeFalsy();
 					} catch (error: unknown) {
 						expect((error as Error).message).toContain(errorMessage);
 					}
@@ -483,7 +485,7 @@ describe('Satellite', () => {
 							rate_config: []
 						});
 
-						expect(true).toBe(false);
+						expect(true).toBeFalsy();
 					} catch (error: unknown) {
 						expect((error as Error).message).toContain('Rate config cannot be disabled.');
 					}
@@ -596,7 +598,7 @@ describe('Satellite', () => {
 						version: [123n]
 					});
 
-					expect(true).toBe(false);
+					expect(true).toBeFalsy();
 				} catch (error: unknown) {
 					expect((error as Error).message).toContain(JUNO_ERROR_VERSION_OUTDATED_OR_FUTURE);
 				}

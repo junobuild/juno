@@ -24,6 +24,7 @@ const customSection = async ({
 
 	// Read the public custom section
 	const pkgSections = WebAssembly.Module.customSections(wasmModule, sectionName);
+
 	expect(pkgSections).toHaveLength(1);
 
 	// Parse content to object

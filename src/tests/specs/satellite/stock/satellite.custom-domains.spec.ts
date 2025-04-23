@@ -58,6 +58,7 @@ describe('Satellite > Custom domains', () => {
 
 			// We assumed previous test has run
 			const asset = await get_asset('#dapp', '/.well-known/ic-domains');
+
 			expect(asset[0]?.key.full_path).toEqual('/.well-known/ic-domains');
 		});
 
@@ -67,6 +68,7 @@ describe('Satellite > Custom domains', () => {
 			await del_assets('#dapp');
 
 			const asset = await get_asset('#dapp', '/.well-known/ic-domains');
+
 			expect(asset[0]?.key.full_path).toEqual('/.well-known/ic-domains');
 		});
 

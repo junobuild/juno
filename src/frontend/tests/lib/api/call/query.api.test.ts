@@ -26,7 +26,7 @@ describe('query.api', () => {
 
 		expect(request).toHaveBeenCalledTimes(2);
 		expect(onLoad).toHaveBeenCalledTimes(2);
-		expect(onError).not.toBeCalled();
+		expect(onError).not.toHaveBeenCalled();
 	});
 
 	it('should work w/o await call', async () => {
@@ -45,7 +45,7 @@ describe('query.api', () => {
 
 		expect(request).toHaveBeenCalledTimes(2);
 		expect(onLoad).toHaveBeenCalledTimes(2);
-		expect(onError).not.toBeCalled();
+		expect(onError).not.toHaveBeenCalled();
 	});
 
 	it('should support "query_and_update" strategy', async () => {
@@ -113,9 +113,9 @@ describe('query.api', () => {
 			identity
 		});
 
-		expect(onLoad).not.toBeCalled();
-		expect(onError).toBeCalledTimes(2);
-		expect(onError).toBeCalledWith({
+		expect(onLoad).not.toHaveBeenCalled();
+		expect(onError).toHaveBeenCalledTimes(2);
+		expect(onError).toHaveBeenCalledWith({
 			certified: false,
 			error: 'test',
 			identity
@@ -136,20 +136,20 @@ describe('query.api', () => {
 			identity
 		});
 
-		expect(onLoad).not.toBeCalled();
-		expect(onError).toBeCalledTimes(2);
-		expect(onCertifiedError).toBeCalledTimes(1);
-		expect(onError).toBeCalledWith({
+		expect(onLoad).not.toHaveBeenCalled();
+		expect(onError).toHaveBeenCalledTimes(2);
+		expect(onCertifiedError).toHaveBeenCalledTimes(1);
+		expect(onError).toHaveBeenCalledWith({
 			certified: false,
 			error: 'test',
 			identity
 		});
-		expect(onError).toBeCalledWith({
+		expect(onError).toHaveBeenCalledWith({
 			certified: true,
 			error: 'test',
 			identity
 		});
-		expect(onCertifiedError).toBeCalledWith({
+		expect(onCertifiedError).toHaveBeenCalledWith({
 			error: 'test',
 			identity
 		});
@@ -178,10 +178,10 @@ describe('query.api', () => {
 		});
 		await new Promise((resolve) => setTimeout(resolve, 10));
 
-		expect(queryDone).toBe(true);
-		expect(request).toBeCalledTimes(2);
-		expect(onLoad).toBeCalledTimes(1);
-		expect(onError).not.toBeCalled();
+		expect(queryDone).toBeTruthy();
+		expect(request).toHaveBeenCalledTimes(2);
+		expect(onLoad).toHaveBeenCalledTimes(1);
+		expect(onError).not.toHaveBeenCalled();
 	});
 
 	it('should resolve promise when the first response is done', async () => {
@@ -204,15 +204,17 @@ describe('query.api', () => {
 		);
 		const onLoad = vi.fn();
 
-		expect(updateDone).toBe(false);
-		expect(queryDone).toBe(false);
+		expect(updateDone).toBeFalsy();
+		expect(queryDone).toBeFalsy();
+
 		await queryAndUpdate<number, unknown>({
 			request,
 			onLoad,
 			identity
 		});
+
 		expect(updateDone).toBeTruthy();
-		expect(queryDone).toBe(false);
+		expect(queryDone).toBeFalsy();
 	});
 
 	it('should not resolve promise when the first response is done', async () => {
@@ -235,14 +237,16 @@ describe('query.api', () => {
 		);
 		const onLoad = vi.fn();
 
-		expect(updateDone).toBe(false);
-		expect(queryDone).toBe(false);
+		expect(updateDone).toBeFalsy();
+		expect(queryDone).toBeFalsy();
+
 		await queryAndUpdate<number, unknown>({
 			request,
 			onLoad,
 			identity,
 			resolution: 'all_settled'
 		});
+
 		expect(updateDone).toBeTruthy();
 		expect(queryDone).toBeTruthy();
 	});

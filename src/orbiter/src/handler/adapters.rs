@@ -6,7 +6,7 @@ use junobuild_utils::decode_doc_data;
 
 pub fn handle_insert_page_view(request: &HttpRequest) -> Result<PageViewPayload, String> {
     let SetPageViewRequest { key, page_view }: SetPageViewRequest =
-        decode_doc_data::<SetPageViewRequest>(&request.body()).map_err(|e| e.to_string())?;
+        decode_doc_data::<SetPageViewRequest>(request.body()).map_err(|e| e.to_string())?;
 
     let inserted_page_view =
         assert_and_insert_page_view(key.into_domain(), page_view.into_domain())?;
@@ -16,7 +16,7 @@ pub fn handle_insert_page_view(request: &HttpRequest) -> Result<PageViewPayload,
 
 pub fn handle_insert_page_views(request: &HttpRequest) -> Result<(), String> {
     let page_views: PageViewsPayload =
-        decode_doc_data::<PageViewsPayload>(&request.body()).map_err(|e| e.to_string())?;
+        decode_doc_data::<PageViewsPayload>(request.body()).map_err(|e| e.to_string())?;
 
     let mut errors: Vec<(AnalyticKey, String)> = Vec::new();
 

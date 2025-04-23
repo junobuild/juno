@@ -79,7 +79,6 @@ fn init() {
         *state.borrow_mut() = State {
             stable: init_stable_state(),
             heap,
-            ..State::default()
         };
     });
 
@@ -297,7 +296,7 @@ fn get_performance_metrics_analytics_web_vitals(
     analytics_performance_metrics_web_vitals(&metrics)
 }
 
-// --------------------------------------------------------- 
+// ---------------------------------------------------------
 // Controllers
 // ---------------------------------------------------------
 

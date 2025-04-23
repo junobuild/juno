@@ -5,7 +5,7 @@ use ic_http_certification::utils::add_v2_certificate_header;
 use ic_http_certification::{HttpCertificationPath, HttpCertificationTreeEntry, HttpResponse};
 
 pub fn prepare_certified_response(
-    request_path: &String,
+    request_path: &str,
     certified_response: CertifiedHttpResponse<'static>,
     certified_path: &HttpCertificationPath<'static>,
 ) -> Result<HttpResponse<'static>, String> {
@@ -13,7 +13,7 @@ pub fn prepare_certified_response(
 
     let cert = data_certificate();
 
-    if let None = cert {
+    if cert.is_none() {
         return Err("No data certificate available.".to_string());
     }
 
@@ -28,7 +28,7 @@ pub fn prepare_certified_response(
             &http_tree
                 .witness(
                     &HttpCertificationTreeEntry::new(&tree_path, certified_response.certification),
-                    &request_path,
+                    request_path,
                 )
                 .unwrap(),
             &tree_path.to_expr_path(),

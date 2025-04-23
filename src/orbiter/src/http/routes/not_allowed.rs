@@ -55,7 +55,7 @@ pub fn init_certified_not_allowed_responses() {
 
 pub fn init_not_allowed_responses(
     path: &str,
-    cel_expr: &String,
+    cel_expr: &str,
     cel_expr_dev: &DefaultFullCelExpression<'static>,
 ) {
     [
@@ -81,7 +81,7 @@ pub fn init_not_allowed_responses(
         // insert the `Ic-CertificationExpression` header with the stringified CEL expression as its value
         response.add_header((
             CERTIFICATE_EXPRESSION_HEADER_NAME.to_string(),
-            cel_expr.clone(),
+            cel_expr.to_string(),
         ));
 
         // create the certification for this response and CEL expression pair
@@ -106,10 +106,10 @@ pub fn init_not_allowed_responses(
 }
 
 pub fn prepare_certified_not_allowed_response(
-    request_path: &String,
+    request_path: &str,
     certified_response: CertifiedHttpResponse<'static>,
 ) -> Result<HttpResponse<'static>, String> {
-    match request_path.as_str() {
+    match request_path {
         VIEW_PATH => prepare_certified_response(request_path, certified_response, &VIEW_TREE_PATH),
         VIEWS_PATH => {
             prepare_certified_response(request_path, certified_response, &VIEWS_TREE_PATH)

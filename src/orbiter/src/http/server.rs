@@ -49,7 +49,7 @@ fn serve_request(
         let method = request.method().to_string();
 
         if handler.is_allowed_method(&method) {
-            return response_handler(&request);
+            return response_handler(request);
         }
 
         let not_allowed = get_certified_response(&request_path, &Some(method.clone()));

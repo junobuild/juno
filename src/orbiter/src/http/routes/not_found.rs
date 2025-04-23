@@ -59,7 +59,7 @@ pub fn init_certified_not_found_response() {
 }
 
 pub fn prepare_certified_not_found_response(
-    request_path: &String,
+    request_path: &str,
     certified_response: CertifiedHttpResponse<'static>,
 ) -> Result<HttpResponse<'static>, String> {
     prepare_certified_response(request_path, certified_response, &NOT_FOUND_TREE_PATH)

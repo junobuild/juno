@@ -98,11 +98,11 @@ impl<'js> JsListResults<JsDoc<'js>> {
                 .map(|(key, doc)| Ok((key.clone(), JsDoc::from_doc(ctx, doc.clone())?)))
                 .collect::<JsResult<Vec<(JsKey, JsDoc<'js>)>>>()?,
             items_length: JsUsize(results.items_length),
-            items_page: results.items_page.map(|items_page| JsUsize(items_page)),
+            items_page: results.items_page.map(JsUsize),
             matches_length: JsUsize(results.matches_length),
             matches_pages: results
                 .matches_pages
-                .map(|matches_pages| JsUsize(matches_pages)),
+                .map(JsUsize),
         })
     }
 }
@@ -124,11 +124,11 @@ impl<'js> JsListResults<JsAssetNoContent<'js>> {
                 })
                 .collect::<JsResult<Vec<(JsKey, JsAssetNoContent<'js>)>>>()?,
             items_length: JsUsize(results.items_length),
-            items_page: results.items_page.map(|items_page| JsUsize(items_page)),
+            items_page: results.items_page.map(JsUsize),
             matches_length: JsUsize(results.matches_length),
             matches_pages: results
                 .matches_pages
-                .map(|matches_pages| JsUsize(matches_pages)),
+                .map(JsUsize),
         })
     }
 }

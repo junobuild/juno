@@ -1,16 +1,18 @@
 pub mod interface {
-    use crate::state::types::state::{Key, PageViewDevice, PerformanceData, PerformanceMetricName, SessionId};
+    use crate::state::types::state::{
+        Key, PageViewDevice, PerformanceData, PerformanceMetricName, SessionId,
+    };
     use candid::CandidType;
     use junobuild_shared::types::state::{
         Metadata, OrbiterSatelliteFeatures, SatelliteId, Timestamp, Version,
     };
     use junobuild_shared::types::utils::CalendarDate;
-    use serde::{Deserialize};
-    use std::collections::HashMap;
     use junobuild_utils::{DocDataBigInt, DocDataPrincipal};
+    use serde::{Deserialize, Serialize};
+    use std::collections::HashMap;
 
     #[derive(Deserialize)]
-    pub struct PageViewPayload {
+    pub struct SetPageViewRequest {
         pub key: AnalyticKeyPayload,
         pub page_view: SetPageViewPayload,
     }
@@ -34,7 +36,25 @@ pub mod interface {
         pub version: Option<DocDataBigInt>,
     }
 
-    pub type PageViewsPayload = Vec<PageViewPayload>;
+    #[derive(Serialize, Deserialize)]
+    pub struct PageViewPayload {
+        pub title: String,
+        pub href: String,
+        #[serde(skip_serializing_if = "Option::is_none")]
+        pub referrer: Option<String>,
+        pub device: PageViewDevice,
+        pub time_zone: String,
+        #[serde(skip_serializing_if = "Option::is_none")]
+        pub user_agent: Option<String>,
+        pub satellite_id: DocDataPrincipal,
+        pub session_id: SessionId,
+        pub created_at: DocDataBigInt,
+        pub updated_at: DocDataBigInt,
+        #[serde(skip_serializing_if = "Option::is_none")]
+        pub version: Option<DocDataBigInt>,
+    }
+
+    pub type PageViewsPayload = Vec<SetPageViewRequest>;
 
     #[derive(CandidType, Deserialize, Clone)]
     pub struct SetPageView {

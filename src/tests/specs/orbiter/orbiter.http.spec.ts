@@ -1,19 +1,24 @@
 import type {
 	AnalyticKey,
 	_SERVICE as OrbiterActor,
-	OrbiterSatelliteFeatures,
-	SetPageView
+	OrbiterSatelliteFeatures
 } from '$declarations/orbiter/orbiter.did';
 import { idlFactory as idlFactorOrbiter } from '$declarations/orbiter/orbiter.factory.did';
 import type { HttpRequest } from '$declarations/satellite/satellite.did';
 import { Ed25519KeyIdentity } from '@dfinity/identity';
 import type { Principal } from '@dfinity/principal';
-import { jsonReplacer, toNullable } from '@dfinity/utils';
+import { fromNullable, jsonReplacer, jsonReviver, toNullable } from '@dfinity/utils';
 import { type Actor, PocketIc } from '@hadronous/pic';
 import { nanoid } from 'nanoid';
 import { inject } from 'vitest';
-import { pageViewMock, satelliteIdMock } from '../../mocks/orbiter.mocks';
+import {
+	type PageViewPayload,
+	pageViewPayloadMock,
+	satelliteIdMock,
+	type SetPageViewPayload
+} from '../../mocks/orbiter.mocks';
 import { assertCertification } from '../../utils/certification-test.utils';
+import { toBodyJson } from '../../utils/orbiter-test.utils';
 import { tick } from '../../utils/pic-tests.utils';
 import { controllersInitArgs, ORBITER_WASM_PATH } from '../../utils/setup-tests.utils';
 
@@ -25,6 +30,12 @@ describe('Orbiter', () => {
 	const controller = Ed25519KeyIdentity.generate();
 
 	const currentDate = new Date(2021, 6, 10, 0, 0, 0, 0);
+
+	const NON_POST_METHODS = ['GET', 'PUT', 'PATCH', 'DELETE'];
+
+	const RESPONSE_OK = { ok: { data: null } };
+	const RESPONSE_404 = { err: { code: 404, message: 'Not found' } };
+	const RESPONSE_500 = { err: { code: 500, message: 'juno.error.no_version_provided' } };
 
 	beforeAll(async () => {
 		pic = await PocketIc.create(inject('PIC_URL'));
@@ -73,7 +84,7 @@ describe('Orbiter', () => {
 			const decoder = new TextDecoder();
 			const responseBody = decoder.decode(response.body as Uint8Array<ArrayBufferLike>);
 
-			expect(JSON.parse(responseBody)).toEqual({ err: { code: 404, message: 'Not found' } });
+			expect(JSON.parse(responseBody)).toEqual(RESPONSE_404);
 
 			await assertCertification({
 				canisterId,
@@ -118,39 +129,112 @@ describe('Orbiter', () => {
 
 			const key = nanoid();
 
-			interface PageViewPayload {
+			interface SetPageViewRequest {
 				key: AnalyticKey;
-				page_view: SetPageView;
+				page_view: SetPageViewPayload;
 			}
 
-			const pagesViews: PageViewPayload[] = [
+			describe('page view', () => {
+				const pageView: SetPageViewRequest = {
+					key: { key: nanoid(), collected_at: 123n },
+					page_view: pageViewPayloadMock
+				};
+
+				const body = toBodyJson(pageView);
+
+				it('should upgrade http_request', async () => {
+					const { http_request } = actor;
+
+					const request: HttpRequest = {
+						body,
+						certificate_version: toNullable(2),
+						headers: [],
+						method: 'POST',
+						url: '/view'
+					};
+
+					const response = await http_request(request);
+
+					expect(fromNullable(response.upgrade)).toEqual(true);
+				});
+
+				it.each(NON_POST_METHODS)('should not upgrade http_request for %s', async (method) => {
+					const { http_request } = actor;
+
+					const request: HttpRequest = {
+						body,
+						certificate_version: toNullable(2),
+						headers: [],
+						method,
+						url: '/view'
+					};
+
+					const response = await http_request(request);
+
+					expect(fromNullable(response.upgrade)).toBeUndefined();
+				});
+
+				it('should set a page view', async () => {
+					const { http_request_update } = actor;
+
+					const request: HttpRequest = {
+						body,
+						certificate_version: toNullable(2),
+						headers: [],
+						method: 'POST',
+						url: '/view'
+					};
+
+					const response = await http_request_update(request);
+
+					const decoder = new TextDecoder();
+					const responseBody = decoder.decode(response.body as Uint8Array<ArrayBufferLike>);
+
+					const {
+						ok: { data }
+					}: { ok: { data: PageViewPayload } } = JSON.parse(responseBody, jsonReviver);
+
+					const { version, created_at, updated_at, ...rest } = data;
+
+					expect(rest).toEqual(pageViewPayloadMock);
+					expect(version).toEqual(1n);
+					expect(created_at).toBeGreaterThan(0n);
+					expect(updated_at).toBeGreaterThan(0n);
+					expect(created_at).toEqual(updated_at);
+				});
+
+				it('should fail at updating page view without version', async () => {
+					const { http_request_update } = actor;
+
+					const request: HttpRequest = {
+						body,
+						certificate_version: toNullable(2),
+						headers: [],
+						method: 'POST',
+						url: '/view'
+					};
+
+					const response = await http_request_update(request);
+
+					const decoder = new TextDecoder();
+					const responseBody = decoder.decode(response.body as Uint8Array<ArrayBufferLike>);
+
+					const result = JSON.parse(responseBody, jsonReviver);
+
+					expect(result).toEqual(RESPONSE_500);
+				});
+			});
+
+			const pagesViews: SetPageViewRequest[] = [
 				{
 					key: { key, collected_at: 123n },
-					page_view: pageViewMock
+					page_view: pageViewPayloadMock
 				},
 				{
 					key: { key: nanoid(), collected_at: 123n },
-					page_view: pageViewMock
+					page_view: pageViewPayloadMock
 				}
 			];
-
-			it('should upgrade http_request', async () => {
-				const { http_request } = actor;
-
-				console.log(JSON.stringify(pagesViews, jsonReplacer))
-
-				const request: HttpRequest = {
-					body: new TextEncoder().encode(JSON.stringify(pagesViews, jsonReplacer)),
-					certificate_version: toNullable(2),
-					headers: [],
-					method: 'POST',
-					url: '/views'
-				};
-
-				const response = await http_request(request);
-
-				console.log(response)
-			});
 
 			it('should set page views', async () => {
 				const { http_request_update } = actor;
@@ -168,7 +252,7 @@ describe('Orbiter', () => {
 				const decoder = new TextDecoder();
 				const responseBody = decoder.decode(response.body as Uint8Array<ArrayBufferLike>);
 
-				console.log(response, responseBody)
+				console.log(response, responseBody);
 			});
 		});
 	});

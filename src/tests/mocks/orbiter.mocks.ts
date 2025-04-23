@@ -1,4 +1,5 @@
 import type {
+	PageViewDevice,
 	SetPageView,
 	SetPerformanceMetric,
 	SetTrackEvent
@@ -28,6 +29,36 @@ export const pageViewMock: SetPageView = {
 	],
 	version: [],
 	updated_at: []
+};
+
+export interface SetPageViewPayload {
+	title: string;
+	referrer?: string;
+	time_zone: string;
+	session_id: string;
+	href: string;
+	satellite_id: Principal;
+	device: PageViewDevice;
+	version?: bigint;
+	user_agent?: string;
+}
+
+export type PageViewPayload = SetPageViewPayload & {
+	updated_at: bigint;
+	created_at: bigint;
+}
+
+export const pageViewPayloadMock: SetPageViewPayload = {
+	href: 'https://test.com',
+	device: {
+		inner_height: 300,
+		inner_width: 600
+	},
+	satellite_id: satelliteIdMock,
+	session_id: sessionId,
+	title: 'Test',
+	time_zone: timeZone,
+	user_agent: 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:125.0) Gecko/20100101 Firefox/125.0'
 };
 
 export const trackEventMock: SetTrackEvent = {

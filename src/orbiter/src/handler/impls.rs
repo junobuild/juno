@@ -1,7 +1,6 @@
 use crate::state::types::state::{AnalyticKey, PageView};
-use crate::types::interface::{
-    AnalyticKeyPayload, PageViewPayload, SetPageView, SetPageViewPayload,
-};
+use crate::types::interface::http::{AnalyticKeyPayload, PageViewPayload, SetPageViewPayload};
+use crate::types::interface::SetPageView;
 use junobuild_utils::{DocDataBigInt, DocDataPrincipal};
 
 impl AnalyticKeyPayload {

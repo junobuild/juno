@@ -1,60 +1,14 @@
 pub mod interface {
     use crate::state::types::state::{
-        Key, PageViewDevice, PerformanceData, PerformanceMetricName, SessionId,
+        PageViewDevice, PerformanceData, PerformanceMetricName, SessionId,
     };
     use candid::CandidType;
     use junobuild_shared::types::state::{
         Metadata, OrbiterSatelliteFeatures, SatelliteId, Timestamp, Version,
     };
     use junobuild_shared::types::utils::CalendarDate;
-    use junobuild_utils::{DocDataBigInt, DocDataPrincipal};
-    use serde::{Deserialize, Serialize};
+    use serde::{Deserialize};
     use std::collections::HashMap;
-
-    #[derive(Deserialize)]
-    pub struct SetPageViewRequest {
-        pub key: AnalyticKeyPayload,
-        pub page_view: SetPageViewPayload,
-    }
-
-    #[derive(Deserialize)]
-    pub struct AnalyticKeyPayload {
-        pub collected_at: DocDataBigInt,
-        pub key: Key,
-    }
-
-    #[derive(Deserialize)]
-    pub struct SetPageViewPayload {
-        pub title: String,
-        pub href: String,
-        pub referrer: Option<String>,
-        pub device: PageViewDevice,
-        pub time_zone: String,
-        pub user_agent: Option<String>,
-        pub satellite_id: DocDataPrincipal,
-        pub session_id: SessionId,
-        pub version: Option<DocDataBigInt>,
-    }
-
-    #[derive(Serialize, Deserialize)]
-    pub struct PageViewPayload {
-        pub title: String,
-        pub href: String,
-        #[serde(skip_serializing_if = "Option::is_none")]
-        pub referrer: Option<String>,
-        pub device: PageViewDevice,
-        pub time_zone: String,
-        #[serde(skip_serializing_if = "Option::is_none")]
-        pub user_agent: Option<String>,
-        pub satellite_id: DocDataPrincipal,
-        pub session_id: SessionId,
-        pub created_at: DocDataBigInt,
-        pub updated_at: DocDataBigInt,
-        #[serde(skip_serializing_if = "Option::is_none")]
-        pub version: Option<DocDataBigInt>,
-    }
-
-    pub type PageViewsPayload = Vec<SetPageViewRequest>;
 
     #[derive(CandidType, Deserialize, Clone)]
     pub struct SetPageView {
@@ -174,5 +128,57 @@ pub mod interface {
         pub inp: Option<f64>,
         pub lcp: Option<f64>,
         pub ttfb: Option<f64>,
+    }
+
+    pub mod http {
+        use crate::state::types::state::{Key, PageViewDevice, SessionId};
+        use candid::Deserialize;
+        use junobuild_utils::{DocDataBigInt, DocDataPrincipal};
+        use serde::Serialize;
+
+        #[derive(Deserialize)]
+        pub struct SetPageViewRequest {
+            pub key: AnalyticKeyPayload,
+            pub page_view: SetPageViewPayload,
+        }
+
+        #[derive(Deserialize)]
+        pub struct AnalyticKeyPayload {
+            pub collected_at: DocDataBigInt,
+            pub key: Key,
+        }
+
+        #[derive(Deserialize)]
+        pub struct SetPageViewPayload {
+            pub title: String,
+            pub href: String,
+            pub referrer: Option<String>,
+            pub device: PageViewDevice,
+            pub time_zone: String,
+            pub user_agent: Option<String>,
+            pub satellite_id: DocDataPrincipal,
+            pub session_id: SessionId,
+            pub version: Option<DocDataBigInt>,
+        }
+
+        #[derive(Serialize, Deserialize)]
+        pub struct PageViewPayload {
+            pub title: String,
+            pub href: String,
+            #[serde(skip_serializing_if = "Option::is_none")]
+            pub referrer: Option<String>,
+            pub device: PageViewDevice,
+            pub time_zone: String,
+            #[serde(skip_serializing_if = "Option::is_none")]
+            pub user_agent: Option<String>,
+            pub satellite_id: DocDataPrincipal,
+            pub session_id: SessionId,
+            pub created_at: DocDataBigInt,
+            pub updated_at: DocDataBigInt,
+            #[serde(skip_serializing_if = "Option::is_none")]
+            pub version: Option<DocDataBigInt>,
+        }
+
+        pub type PageViewsPayload = Vec<SetPageViewRequest>;
     }
 }

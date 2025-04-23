@@ -107,7 +107,7 @@ describe('Sputnik > assert_upload_asset', () => {
 
 		await expect(
 			upload({ collection: TEST_ASSERTED_COLLECTION, name, full_path })
-		).resolves.not.toThrowError();
+		).resolves.not.toThrow();
 
 		const { get_asset } = actor;
 
@@ -123,7 +123,7 @@ describe('Sputnik > assert_upload_asset', () => {
 
 		await expect(
 			upload({ collection: TEST_ASSERTED_COLLECTION, name, full_path })
-		).rejects.toThrowError(new RegExp('test.html name not allowed', 'i'));
+		).rejects.toThrow(new RegExp('test.html name not allowed', 'i'));
 
 		const { get_asset } = actor;
 

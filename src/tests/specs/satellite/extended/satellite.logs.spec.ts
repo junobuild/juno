@@ -112,12 +112,14 @@ describe('Satellite > Logging', () => {
 		expect(logs).toHaveLength(13);
 
 		const keys = new Set([...logs.map(([key, _]) => key)]);
+
 		expect(keys).toHaveLength(13);
 
 		// Log key is format!("{}-{}", time(), nonce)
 		// When we create doc and log with serverless without tick, the time should be the same
 		// Therefore, without nonce, the count of entry should be smaller than the effective count of time we logged
 		const trimmedKey = new Set([...logs.map(([key, _]) => key.split('-')[0])]);
+
 		expect(trimmedKey.size).toBeLessThan(13);
 	});
 

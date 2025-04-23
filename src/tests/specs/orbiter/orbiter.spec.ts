@@ -72,7 +72,7 @@ describe('Orbiter', () => {
 							}
 						]
 					])
-				).resolves.not.toThrowError();
+				).resolves.not.toThrow();
 			});
 
 			it('should not configure satellite if no version', async () => {
@@ -104,7 +104,7 @@ describe('Orbiter', () => {
 							}
 						]
 					])
-				).rejects.toThrowError(new RegExp(JUNO_ERROR_VERSION_OUTDATED_OR_FUTURE, 'i'));
+				).rejects.toThrow(new RegExp(JUNO_ERROR_VERSION_OUTDATED_OR_FUTURE, 'i'));
 			});
 		});
 
@@ -125,7 +125,7 @@ describe('Orbiter', () => {
 					[{ key: nanoid(), collected_at: 123n }, pageViewMock]
 				];
 
-				await expect(set_page_views(pagesViews)).resolves.not.toThrowError();
+				await expect(set_page_views(pagesViews)).resolves.not.toThrow();
 			});
 
 			it('should not set page views if no version', async () => {
@@ -174,7 +174,7 @@ describe('Orbiter', () => {
 					[{ key: nanoid(), collected_at: 123n }, trackEventMock]
 				];
 
-				await expect(set_track_events(trackEvents)).resolves.not.toThrowError();
+				await expect(set_track_events(trackEvents)).resolves.not.toThrow();
 			});
 
 			it('should not set track events if no version', async () => {
@@ -223,7 +223,7 @@ describe('Orbiter', () => {
 					[{ key: nanoid(), collected_at: 123n }, performanceMetricMock]
 				];
 
-				await expect(set_performance_metrics(performanceMetrics)).resolves.not.toThrowError();
+				await expect(set_performance_metrics(performanceMetrics)).resolves.not.toThrow();
 			});
 
 			it('should not set performance metrics if no version', async () => {
@@ -323,8 +323,9 @@ describe('Orbiter', () => {
 						satellite_id: [satelliteIdMock]
 					});
 
-					expect(Array.isArray(result)).toBe(true);
-					expect(result.length).toEqual(pagesViews.length);
+					expect(Array.isArray(result)).toBeTruthy();
+					expect(result).toHaveLength(pagesViews.length);
+
 					result.forEach(([key, pageView]) => {
 						expect(key.collected_at).toBeGreaterThanOrEqual(1000n);
 						expect(key.collected_at).toBeLessThanOrEqual(5000n);
@@ -349,8 +350,9 @@ describe('Orbiter', () => {
 						satellite_id: [satelliteIdMock]
 					});
 
-					expect(Array.isArray(result)).toBe(true);
-					expect(result.length).toEqual(trackEvents.length);
+					expect(Array.isArray(result)).toBeTruthy();
+					expect(result).toHaveLength(trackEvents.length);
+
 					result.forEach(([key, trackEvent]) => {
 						expect(key.collected_at).toBeGreaterThanOrEqual(1000n);
 						expect(key.collected_at).toBeLessThanOrEqual(5000n);
@@ -375,8 +377,9 @@ describe('Orbiter', () => {
 						satellite_id: [satelliteIdMock]
 					});
 
-					expect(Array.isArray(result)).toBe(true);
+					expect(Array.isArray(result)).toBeTruthy();
 					expect(result.length).toBeGreaterThan(0);
+
 					result.forEach(([key, performanceMetric]) => {
 						expect(key.collected_at).toBeGreaterThanOrEqual(1000n);
 						expect(key.collected_at).toBeLessThanOrEqual(5000n);

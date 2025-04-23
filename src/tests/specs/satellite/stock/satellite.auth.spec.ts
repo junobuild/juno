@@ -54,6 +54,7 @@ describe('Satellite > Authentication', () => {
 			const { get_auth_config } = actor;
 
 			const config = await get_auth_config();
+
 			expect(config).toEqual([]);
 		});
 
@@ -108,6 +109,7 @@ describe('Satellite > Authentication', () => {
 			await set_auth_config(config);
 
 			const result = await get_auth_config();
+
 			expect(result).toEqual([config]);
 		});
 
@@ -124,6 +126,7 @@ describe('Satellite > Authentication', () => {
 
 			const decoder = new TextDecoder();
 			const responseBody = decoder.decode(body as Uint8Array<ArrayBufferLike>);
+
 			expect(responseBody).toEqual(JSON.stringify({ alternativeOrigins: [canisterIdUrl] }));
 			expect(JSON.parse(responseBody).alternativeOrigins).toEqual([canisterIdUrl]);
 		});
@@ -148,6 +151,7 @@ describe('Satellite > Authentication', () => {
 			await set_auth_config(config);
 
 			const result = await get_auth_config();
+
 			expect(result).toEqual([config]);
 		});
 
@@ -164,6 +168,7 @@ describe('Satellite > Authentication', () => {
 
 			const decoder = new TextDecoder();
 			const responseBody = decoder.decode(body as Uint8Array<ArrayBufferLike>);
+
 			expect(responseBody).toEqual(
 				JSON.stringify({ alternativeOrigins: [canisterIdUrl, ...externalAlternativeOriginsUrls] })
 			);
@@ -188,6 +193,7 @@ describe('Satellite > Authentication', () => {
 			await set_auth_config(config);
 
 			const result = await get_auth_config();
+
 			expect(result).toEqual([config]);
 		});
 
@@ -215,6 +221,7 @@ describe('Satellite > Authentication', () => {
 			await set_auth_config(config);
 
 			const result = await get_auth_config();
+
 			expect(result).toEqual([config]);
 		});
 

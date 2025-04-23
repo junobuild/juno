@@ -248,6 +248,7 @@ describe('Satellite > Storage', () => {
 			});
 
 			const decoder = new TextDecoder();
+
 			expect(decoder.decode(body as Uint8Array<ArrayBufferLike>)).toEqual(mockHtml);
 		});
 
@@ -374,6 +375,7 @@ describe('Satellite > Storage', () => {
 					});
 
 					const decoder = new TextDecoder();
+
 					expect(decoder.decode(body as Uint8Array<ArrayBufferLike>)).toEqual(mockHtml);
 				});
 
@@ -383,6 +385,7 @@ describe('Satellite > Storage', () => {
 					await del_assets('#dapp');
 
 					const assetUploaded = await get_asset(collection, `/${collection}/hello.html`);
+
 					expect(fromNullable(assetUploaded)).not.toBeUndefined();
 				});
 
@@ -412,7 +415,7 @@ describe('Satellite > Storage', () => {
 
 					const full_path = `/${collection}/update.html`;
 
-					await expect(del_asset(collection, full_path)).resolves.not.toThrowError();
+					await expect(del_asset(collection, full_path)).resolves.not.toThrow();
 
 					const asset = fromNullable(await get_asset(collection, full_path));
 
@@ -463,6 +466,7 @@ describe('Satellite > Storage', () => {
 				expect(status_code).toEqual(200);
 
 				const decoder = new TextDecoder();
+
 				expect(decoder.decode(body as Uint8Array<ArrayBufferLike>)).toEqual(HTML);
 			});
 
@@ -578,6 +582,7 @@ describe('Satellite > Storage', () => {
 				expect(status_code).toEqual(200);
 
 				const decoder = new TextDecoder();
+
 				expect(decoder.decode(body as Uint8Array<ArrayBufferLike>)).toEqual(mockHtml);
 			});
 
@@ -631,6 +636,7 @@ describe('Satellite > Storage', () => {
 				expect(status_code).toEqual(200);
 
 				const decoder = new TextDecoder();
+
 				expect(decoder.decode(body as Uint8Array<ArrayBufferLike>)).toEqual(mockHtml);
 			});
 		});
@@ -721,6 +727,7 @@ describe('Satellite > Storage', () => {
 					});
 
 					const decoder = new TextDecoder();
+
 					expect(decoder.decode(body as Uint8Array<ArrayBufferLike>)).toEqual(SVG);
 				});
 
@@ -734,6 +741,7 @@ describe('Satellite > Storage', () => {
 					const assetUpdated = fromNullable(
 						await get_asset(collection, `/${collection}/hello.svg`)
 					);
+
 					expect(assetUpdated).not.toBeUndefined();
 					expect(assetUpdated?.key.owner.toText()).not.toBeUndefined();
 					expect(assetUpdated?.key.owner.toText()).toEqual(user.getPrincipal().toText());
@@ -775,9 +783,11 @@ describe('Satellite > Storage', () => {
 						};
 
 						const { items_length, items } = await list_assets(collection, paramsCreatedAt);
+
 						expect(items_length).toBe(10n);
 
 						const countCreatedAt = await count_assets(collection, paramsCreatedAt);
+
 						expect(countCreatedAt).toBe(10n);
 
 						const paramsGreaterThan: ListParams = {
@@ -798,9 +808,11 @@ describe('Satellite > Storage', () => {
 							collection,
 							paramsGreaterThan
 						);
+
 						expect(items_length_from).toBe(5n);
 
 						const countGreaterThan = await count_assets(collection, paramsGreaterThan);
+
 						expect(countGreaterThan).toBe(5n);
 
 						const paramsLessThan: ListParams = {
@@ -818,9 +830,11 @@ describe('Satellite > Storage', () => {
 						};
 
 						const { items_length: items_length_to } = await list_assets(collection, paramsLessThan);
+
 						expect(items_length_to).toBe(4n);
 
 						const countLessThan = await count_assets(collection, paramsLessThan);
+
 						expect(countLessThan).toBe(4n);
 
 						const paramsBetween: ListParams = {
@@ -841,9 +855,11 @@ describe('Satellite > Storage', () => {
 							collection,
 							paramsBetween
 						);
+
 						expect(items_length_between).toBe(5n);
 
 						const countBetween = await count_assets(collection, paramsBetween);
+
 						expect(countBetween).toBe(5n);
 					});
 
@@ -861,9 +877,11 @@ describe('Satellite > Storage', () => {
 						};
 
 						const { items_length, items } = await list_assets(collection, paramsUpdatedAt);
+
 						expect(items_length).toBe(10n);
 
 						const countUpdatedAt = await count_assets(collection, paramsUpdatedAt);
+
 						expect(countUpdatedAt).toBe(10n);
 
 						const paramsGreaterThan: ListParams = {
@@ -884,9 +902,11 @@ describe('Satellite > Storage', () => {
 							collection,
 							paramsGreaterThan
 						);
+
 						expect(items_length_from).toBe(5n);
 
 						const countGreaterThan = await count_assets(collection, paramsGreaterThan);
+
 						expect(countGreaterThan).toBe(5n);
 
 						const paramsLessThan: ListParams = {
@@ -904,9 +924,11 @@ describe('Satellite > Storage', () => {
 						};
 
 						const { items_length: items_length_to } = await list_assets(collection, paramsLessThan);
+
 						expect(items_length_to).toBe(4n);
 
 						const countLessThan = await count_assets(collection, paramsLessThan);
+
 						expect(countLessThan).toBe(4n);
 
 						const paramsBetween: ListParams = {
@@ -927,9 +949,11 @@ describe('Satellite > Storage', () => {
 							collection,
 							paramsBetween
 						);
+
 						expect(items_length_between).toBe(5n);
 
 						const countBetween = await count_assets(collection, paramsBetween);
+
 						expect(countBetween).toBe(5n);
 					});
 				});
@@ -1024,6 +1048,7 @@ describe('Satellite > Storage', () => {
 						};
 
 						const remainingAssets = await list_assets(collection, listParams);
+
 						expect(remainingAssets.items.map((item) => item[1].key.full_path)).toEqual([
 							`/${collection}/asset3.svg`
 						]);
@@ -1046,6 +1071,7 @@ describe('Satellite > Storage', () => {
 						actor.setIdentity(user2);
 
 						const user2Assets = await list_assets(collection, listParamsUser2);
+
 						expect(user2Assets.items.map((item) => item[1].key.full_path)).toEqual([
 							`/${collection}/user2_asset.svg`
 						]);
@@ -1088,6 +1114,7 @@ describe('Satellite > Storage', () => {
 						actor.setIdentity(user);
 
 						const remainingAssets = await list_assets(collection, listParams);
+
 						expect(remainingAssets.items_length).toBeGreaterThan(0n);
 					});
 				});
@@ -1108,7 +1135,7 @@ describe('Satellite > Storage', () => {
 			try {
 				await del_rule({ Storage: null }, collection, { version: [1n] });
 
-				expect(true).toBe(false);
+				expect(true).toBeFalsy();
 			} catch (error: unknown) {
 				expect((error as Error).message).toContain(
 					`The "${collection}" collection in Storage is not empty.`
@@ -1126,7 +1153,7 @@ describe('Satellite > Storage', () => {
 					collection: collectionUnknown
 				});
 
-				expect(true).toBe(false);
+				expect(true).toBeFalsy();
 			} catch (error: unknown) {
 				expect((error as Error).message).toContain(
 					`Collection "${collectionUnknown}" not found in Storage.`

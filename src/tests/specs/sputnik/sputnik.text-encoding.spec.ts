@@ -66,10 +66,10 @@ describe('Sputnik > text-encoding', () => {
 		const resultData: SputnikTestTextEncodingData = await fromArray(doc.data);
 
 		expect(resultData.output?.decoded.value).toEqual(mockString);
-		expect(resultData.output?.decoded.labelNotSupported).toBe(true);
-		expect(resultData.output?.decoded.inputIsNotArrayBuffer).toBe(true);
+		expect(resultData.output?.decoded.labelNotSupported).toBeTruthy();
+		expect(resultData.output?.decoded.inputIsNotArrayBuffer).toBeTruthy();
 
 		expect(resultData.output?.encoded.value).toEqual(utf8Bytes);
-		expect(resultData.output?.encoded.encodeIntoNotSupported).toBe(true);
+		expect(resultData.output?.encoded.encodeIntoNotSupported).toBeTruthy();
 	});
 });

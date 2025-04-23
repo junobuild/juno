@@ -7,7 +7,7 @@ import { idlFactory as idlFactorOrbiter } from '$declarations/orbiter/orbiter.fa
 import type { HttpRequest } from '$declarations/satellite/satellite.did';
 import { Ed25519KeyIdentity } from '@dfinity/identity';
 import type { Principal } from '@dfinity/principal';
-import { fromNullable, jsonReplacer, jsonReviver, toNullable } from '@dfinity/utils';
+import { fromNullable, jsonReviver, toNullable } from '@dfinity/utils';
 import { type Actor, PocketIc } from '@hadronous/pic';
 import { nanoid } from 'nanoid';
 import { inject } from 'vitest';
@@ -35,7 +35,9 @@ describe('Orbiter', () => {
 
 	const RESPONSE_OK = { ok: { data: null } };
 	const RESPONSE_404 = { err: { code: 404, message: 'Not found' } };
-	const RESPONSE_500 = { err: { code: 500, message: 'juno.error.no_version_provided' } };
+	const RESPONSE_500_NO_VERSION_PROVIDED = {
+		err: { code: 500, message: 'juno.error.no_version_provided' }
+	};
 
 	beforeAll(async () => {
 		pic = await PocketIc.create(inject('PIC_URL'));
@@ -126,8 +128,6 @@ describe('Orbiter', () => {
 			beforeAll(() => {
 				actor.setIdentity(user);
 			});
-
-			const key = nanoid();
 
 			interface SetPageViewRequest {
 				key: AnalyticKey;
@@ -221,7 +221,7 @@ describe('Orbiter', () => {
 
 					const result = JSON.parse(responseBody, jsonReviver);
 
-					expect(result).toEqual(RESPONSE_500);
+					expect(result).toEqual(RESPONSE_500_NO_VERSION_PROVIDED);
 				});
 
 				it('should update a page view', async () => {
@@ -256,34 +256,129 @@ describe('Orbiter', () => {
 				});
 			});
 
-			const pagesViews: SetPageViewRequest[] = [
-				{
-					key: { key, collected_at: 123n },
-					page_view: pageViewPayloadMock
-				},
-				{
-					key: { key: nanoid(), collected_at: 123n },
-					page_view: pageViewPayloadMock
-				}
-			];
+			describe('page views', () => {
+				const pagesViews: SetPageViewRequest[] = [
+					{
+						key: { key: nanoid(), collected_at: 123n },
+						page_view: pageViewPayloadMock
+					},
+					{
+						key: { key: nanoid(), collected_at: 124n },
+						page_view: pageViewPayloadMock
+					}
+				];
 
-			it('should set page views', async () => {
-				const { http_request_update } = actor;
+				const body = toBodyJson(pagesViews);
 
-				const request: HttpRequest = {
-					body: new TextEncoder().encode(JSON.stringify(pagesViews, jsonReplacer)),
-					certificate_version: toNullable(2),
-					headers: [],
-					method: 'POST',
-					url: '/views'
-				};
+				it('should upgrade http_request', async () => {
+					const { http_request } = actor;
 
-				const response = await http_request_update(request);
+					const request: HttpRequest = {
+						body,
+						certificate_version: toNullable(2),
+						headers: [],
+						method: 'POST',
+						url: '/views'
+					};
 
-				const decoder = new TextDecoder();
-				const responseBody = decoder.decode(response.body as Uint8Array<ArrayBufferLike>);
+					const response = await http_request(request);
 
-				console.log(response, responseBody);
+					expect(fromNullable(response.upgrade)).toEqual(true);
+				});
+
+				it.each(NON_POST_METHODS)('should not upgrade http_request for %s', async (method) => {
+					const { http_request } = actor;
+
+					const request: HttpRequest = {
+						body,
+						certificate_version: toNullable(2),
+						headers: [],
+						method,
+						url: '/views'
+					};
+
+					const response = await http_request(request);
+
+					expect(fromNullable(response.upgrade)).toBeUndefined();
+				});
+
+				it('should set page views', async () => {
+					const { http_request_update } = actor;
+
+					const request: HttpRequest = {
+						body,
+						certificate_version: toNullable(2),
+						headers: [],
+						method: 'POST',
+						url: '/views'
+					};
+
+					const response = await http_request_update(request);
+
+					const decoder = new TextDecoder();
+					const responseBody = decoder.decode(response.body as Uint8Array<ArrayBufferLike>);
+
+					const result = JSON.parse(responseBody, jsonReviver);
+
+					expect(result).toEqual(RESPONSE_OK);
+				});
+
+				it('should fail at updating page views without version', async () => {
+					const { http_request_update } = actor;
+
+					const request: HttpRequest = {
+						body,
+						certificate_version: toNullable(2),
+						headers: [],
+						method: 'POST',
+						url: '/views'
+					};
+
+					const response = await http_request_update(request);
+
+					const decoder = new TextDecoder();
+					const responseBody = decoder.decode(response.body as Uint8Array<ArrayBufferLike>);
+
+					const result = JSON.parse(responseBody, jsonReviver);
+
+					expect(result).toEqual({
+						err: {
+							code: 500,
+							message: pagesViews
+								.map(({ key }) => `${key.key}: juno.error.no_version_provided`)
+								.join(', ')
+						}
+					});
+				});
+
+				it('should update page views', async () => {
+					const { http_request_update } = actor;
+
+					const request: HttpRequest = {
+						body: toBodyJson(
+							pagesViews.map((pageView) => ({
+								...pageView,
+								page_view: {
+									...pageView.page_view,
+									version: 1n
+								}
+							}))
+						),
+						certificate_version: toNullable(2),
+						headers: [],
+						method: 'POST',
+						url: '/views'
+					};
+
+					const response = await http_request_update(request);
+
+					const decoder = new TextDecoder();
+					const responseBody = decoder.decode(response.body as Uint8Array<ArrayBufferLike>);
+
+					const result = JSON.parse(responseBody, jsonReviver);
+
+					expect(result).toEqual(RESPONSE_OK);
+				});
 			});
 		});
 	});

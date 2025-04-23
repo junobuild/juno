@@ -1,86 +1,38 @@
 use crate::http::constants::{EVENTS_PATH, EVENT_PATH, VIEWS_PATH, VIEW_PATH};
 use crate::http::routes::services::prepare_certified_response;
+use crate::http::routes::setup::build_certified_exact_route;
+use crate::http::routes::types::CertifiedExactRoute;
 use crate::http::state::store::insert_certified_response;
 use crate::http::state::types::CertifiedHttpResponse;
 use crate::http::types::interface::ErrorResponse;
 use crate::http::utils::create_json_response;
 use ic_http_certification::{
-    DefaultCelBuilder, DefaultFullCelExpression, DefaultResponseCertification, HttpCertification,
-    HttpCertificationPath, HttpRequest, HttpResponse, Method, StatusCode,
+    HttpCertification, HttpCertificationPath, HttpRequest, HttpResponse, Method, StatusCode,
     CERTIFICATE_EXPRESSION_HEADER_NAME,
 };
 use lazy_static::lazy_static;
 
 lazy_static! {
-    static ref VIEW_TREE_PATH: HttpCertificationPath<'static> =
-        HttpCertificationPath::exact(VIEW_PATH);
-
-    static ref VIEWS_TREE_PATH: HttpCertificationPath<'static> =
-        HttpCertificationPath::exact(VIEWS_PATH);
-    
-    static ref EVENT_TREE_PATH: HttpCertificationPath<'static> =
-        HttpCertificationPath::exact(EVENT_PATH);
-
-    static ref EVENTS_TREE_PATH: HttpCertificationPath<'static> =
-        HttpCertificationPath::exact(EVENTS_PATH);
-
-    // define a full CEL expression that will certify the following:
-    // - request
-    //   - method
-    //   - body
-    //   - no headers
-    //   - no query parameters
-    // - response
-    //   - status code
-    //   - body
-    //   - all headers
-    // this CEL expression will be used for all routes except for the not found route
-    static ref VIEW_CEL_EXPR_DEF: DefaultFullCelExpression<'static> = DefaultCelBuilder::full_certification()
-        .with_request_headers(vec![])
-        .with_request_query_parameters(vec![])
-        .with_response_certification(DefaultResponseCertification::response_header_exclusions(
-            vec![],
-        ))
-        .build();
-    static ref VIEW_CEL_EXPR: String = VIEW_CEL_EXPR_DEF.to_string();
-
-    static ref VIEWS_CEL_EXPR_DEF: DefaultFullCelExpression<'static> = DefaultCelBuilder::full_certification()
-        .with_request_headers(vec![])
-        .with_request_query_parameters(vec![])
-        .with_response_certification(DefaultResponseCertification::response_header_exclusions(
-            vec![],
-        ))
-        .build();
-    static ref VIEWS_CEL_EXPR: String = VIEWS_CEL_EXPR_DEF.to_string();
-    
-    static ref EVENT_CEL_EXPR_DEF: DefaultFullCelExpression<'static> = DefaultCelBuilder::full_certification()
-        .with_request_headers(vec![])
-        .with_request_query_parameters(vec![])
-        .with_response_certification(DefaultResponseCertification::response_header_exclusions(
-            vec![],
-        ))
-        .build();
-    static ref EVENT_CEL_EXPR: String = EVENT_CEL_EXPR_DEF.to_string();
-
-    static ref EVENTS_CEL_EXPR_DEF: DefaultFullCelExpression<'static> = DefaultCelBuilder::full_certification()
-        .with_request_headers(vec![])
-        .with_request_query_parameters(vec![])
-        .with_response_certification(DefaultResponseCertification::response_header_exclusions(
-            vec![],
-        ))
-        .build();
-    static ref EVENTS_CEL_EXPR: String = EVENTS_CEL_EXPR_DEF.to_string();
+    static ref VIEW_ROUTE: CertifiedExactRoute = build_certified_exact_route(VIEW_PATH);
+    static ref VIEWS_ROUTE: CertifiedExactRoute = build_certified_exact_route(VIEWS_PATH);
+    static ref EVENT_ROUTE: CertifiedExactRoute = build_certified_exact_route(EVENT_PATH);
+    static ref EVENTS_ROUTE: CertifiedExactRoute = build_certified_exact_route(EVENTS_PATH);
 }
 
 pub fn init_certified_not_allowed_responses() {
-    init_not_allowed_responses(VIEW_PATH, &VIEW_CEL_EXPR, &VIEW_CEL_EXPR_DEF);
-    init_not_allowed_responses(VIEWS_PATH, &VIEWS_CEL_EXPR, &VIEWS_CEL_EXPR_DEF);
+    init_not_allowed_responses(&VIEW_ROUTE);
+    init_not_allowed_responses(&VIEWS_ROUTE);
+    init_not_allowed_responses(&EVENT_ROUTE);
+    init_not_allowed_responses(&EVENTS_ROUTE);
 }
 
 pub fn init_not_allowed_responses(
-    path: &str,
-    cel_expr: &str,
-    cel_expr_dev: &DefaultFullCelExpression<'static>,
+    CertifiedExactRoute {
+        path,
+        tree_path: _,
+        cel_expr,
+        cel_expr_def,
+    }: &CertifiedExactRoute,
 ) {
     [
         Method::GET,
@@ -110,7 +62,7 @@ pub fn init_not_allowed_responses(
 
         // create the certification for this response and CEL expression pair
         let certification =
-            HttpCertification::full(cel_expr_dev, &request, &response, None).unwrap();
+            HttpCertification::full(cel_expr_def, &request, &response, None).unwrap();
 
         let certified_response: CertifiedHttpResponse = CertifiedHttpResponse {
             response,
@@ -134,9 +86,17 @@ pub fn prepare_certified_not_allowed_response(
     certified_response: CertifiedHttpResponse<'static>,
 ) -> Result<HttpResponse<'static>, String> {
     match request_path {
-        VIEW_PATH => prepare_certified_response(request_path, certified_response, &VIEW_TREE_PATH),
+        VIEW_PATH => {
+            prepare_certified_response(request_path, certified_response, &VIEW_ROUTE.tree_path)
+        }
         VIEWS_PATH => {
-            prepare_certified_response(request_path, certified_response, &VIEWS_TREE_PATH)
+            prepare_certified_response(request_path, certified_response, &VIEWS_ROUTE.tree_path)
+        }
+        EVENT_PATH => {
+            prepare_certified_response(request_path, certified_response, &EVENT_ROUTE.tree_path)
+        }
+        EVENTS_PATH => {
+            prepare_certified_response(request_path, certified_response, &EVENTS_ROUTE.tree_path)
         }
         _ => Err(
             "Unknown request path to prepare not allowed response. This is unexpected".to_string(),

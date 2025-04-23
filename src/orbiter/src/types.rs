@@ -132,14 +132,14 @@ pub mod interface {
 
     pub mod http {
         use crate::state::types::state::{Key, PageViewDevice, SessionId};
+        use junobuild_shared::types::state::Metadata;
         use junobuild_utils::{DocDataBigInt, DocDataPrincipal};
-        use serde::{Serialize, Deserialize};
-        use junobuild_shared::types::state::{Metadata};
+        use serde::{Deserialize, Serialize};
 
         pub type TimestampPayload = DocDataBigInt;
         pub type VersionPayload = Option<DocDataBigInt>;
         pub type SatelliteIdPayload = DocDataPrincipal;
-        
+
         #[derive(Deserialize)]
         pub struct SetPageViewRequest {
             pub key: AnalyticKeyPayload,

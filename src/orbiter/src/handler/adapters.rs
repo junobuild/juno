@@ -1,6 +1,6 @@
 use crate::events::helpers::assert_and_insert_page_view;
 use crate::state::types::state::AnalyticKey;
-use crate::types::interface::http::{PageViewPayload, SetPageViewsRequest, SetPageViewRequest};
+use crate::types::interface::http::{PageViewPayload, SetPageViewRequest, SetPageViewsRequest};
 use ic_http_certification::HttpRequest;
 use junobuild_utils::decode_doc_data;
 

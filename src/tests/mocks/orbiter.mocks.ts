@@ -28,7 +28,7 @@ export interface SetTrackEventPayload {
 	user_agent?: string;
 }
 
-export type PerformanceMetricName = "CLS" | "FCP" | "INP" | "LCP" | "TTFB";
+export type PerformanceMetricName = 'CLS' | 'FCP' | 'INP' | 'LCP' | 'TTFB';
 
 export type PerformanceData = {
 	WebVitalsMetric: WebVitalsMetric;
@@ -42,12 +42,12 @@ export interface WebVitalsMetric {
 }
 
 export type NavigationType =
-	| "Navigate"
-	| "Reload"
-	| "BackForward"
-	| "BackForwardCache"
-	| "Prerender"
-	| "Restore";
+	| 'Navigate'
+	| 'Reload'
+	| 'BackForward'
+	| 'BackForwardCache'
+	| 'Prerender'
+	| 'Restore';
 
 export interface SetPerformanceMetricPayload {
 	href: string;
@@ -164,12 +164,12 @@ export const performanceMetricPayloadMock: SetPerformanceMetricPayload = {
 		WebVitalsMetric: {
 			id: nanoid(),
 			value: 1.23,
-			navigation_type: "Navigate",
+			navigation_type: 'Navigate',
 			delta: 0.5
 		}
 	},
 	href: 'https://test.com',
-	metric_name: "LCP",
+	metric_name: 'LCP',
 	satellite_id: satelliteIdMock,
 	user_agent: 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:125.0) Gecko/20100101 Firefox/125.0'
 };

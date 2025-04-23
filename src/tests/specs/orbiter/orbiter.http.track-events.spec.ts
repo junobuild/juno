@@ -360,11 +360,11 @@ describe('Orbiter > HTTP > Track events', () => {
 
 				expect(result.length).toEqual([trackEvent, ...trackEvents].length);
 
-				result.forEach(([key, pageView]) => {
+				result.forEach(([key, trackEvent]) => {
 					expect(key.collected_at).toBeGreaterThanOrEqual(1230n);
 					expect(key.collected_at).toBeLessThanOrEqual(1240n);
-					expect(pageView.name).toBe('my_event');
-					expect(fromNullable(pageView.version)).toBe(2n);
+					expect(trackEvent.name).toBe('my_event');
+					expect(fromNullable(trackEvent.version)).toBe(2n);
 				});
 			});
 		});

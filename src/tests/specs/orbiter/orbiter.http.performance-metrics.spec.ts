@@ -11,10 +11,10 @@ import { type Actor, PocketIc } from '@hadronous/pic';
 import { nanoid } from 'nanoid';
 import { inject } from 'vitest';
 import {
-	satelliteIdMock,
-	type SetPerformanceMetricPayload,
 	type PerformanceMetricPayload,
-	performanceMetricPayloadMock
+	performanceMetricPayloadMock,
+	satelliteIdMock,
+	type SetPerformanceMetricPayload
 } from '../../mocks/orbiter.mocks';
 import { toBodyJson } from '../../utils/orbiter-test.utils';
 import { tick } from '../../utils/pic-tests.utils';
@@ -360,11 +360,11 @@ describe('Orbiter > HTTP > Performance metrics', () => {
 
 				expect(result.length).toEqual([performanceMetric, ...performanceMetrics].length);
 
-				result.forEach(([key, pageView]) => {
+				result.forEach(([key, performanceMetric]) => {
 					expect(key.collected_at).toBeGreaterThanOrEqual(1230n);
 					expect(key.collected_at).toBeLessThanOrEqual(1240n);
-					expect(pageView.metric_name).toBe({LCP: null});
-					expect(fromNullable(pageView.version)).toBe(2n);
+					expect(performanceMetric.metric_name).toEqual({ LCP: null });
+					expect(fromNullable(performanceMetric.version)).toBe(2n);
 				});
 			});
 		});

@@ -12,7 +12,8 @@ import { nanoid } from 'nanoid';
 import { inject } from 'vitest';
 import {
 	satelliteIdMock,
-	type SetTrackEventPayload, type TrackEventPayload,
+	type SetTrackEventPayload,
+	type TrackEventPayload,
 	trackEventPayloadMock
 } from '../../mocks/orbiter.mocks';
 import { toBodyJson } from '../../utils/orbiter-test.utils';
@@ -39,7 +40,7 @@ describe('Orbiter > HTTP > Page views', () => {
 
 		await pic.setTime(currentDate.getTime());
 
-		const { actor: c, canisterId: cId } = await pic.setupCanister<OrbiterActor>({
+		const { actor: c } = await pic.setupCanister<OrbiterActor>({
 			idlFactory: idlFactorOrbiter,
 			wasm: ORBITER_WASM_PATH,
 			arg: controllersInitArgs(controller),
@@ -164,7 +165,7 @@ describe('Orbiter > HTTP > Page views', () => {
 
 					const { version, created_at, updated_at, ...rest } = data;
 
-					const {user_agent: _, ...restMock} = trackEventPayloadMock;
+					const { user_agent: _, ...restMock } = trackEventPayloadMock;
 
 					expect(rest).toEqual(restMock);
 					expect(version).toEqual(1n);

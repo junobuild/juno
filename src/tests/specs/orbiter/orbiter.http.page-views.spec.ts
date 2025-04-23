@@ -40,7 +40,7 @@ describe('Orbiter > HTTP > Page views', () => {
 
 		await pic.setTime(currentDate.getTime());
 
-		const { actor: c, canisterId: cId } = await pic.setupCanister<OrbiterActor>({
+		const { actor: c } = await pic.setupCanister<OrbiterActor>({
 			idlFactory: idlFactorOrbiter,
 			wasm: ORBITER_WASM_PATH,
 			arg: controllersInitArgs(controller),

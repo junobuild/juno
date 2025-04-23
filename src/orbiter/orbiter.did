@@ -56,6 +56,19 @@ type GetAnalytics = record {
   from : opt nat64;
   satellite_id : opt principal;
 };
+type HttpRequest = record {
+  url : text;
+  method : text;
+  body : blob;
+  headers : vec record { text; text };
+  certificate_version : opt nat16;
+};
+type HttpResponse = record {
+  body : blob;
+  headers : vec record { text; text };
+  upgrade : opt bool;
+  status_code : nat16;
+};
 type MemorySize = record { stable : nat64; heap : nat64 };
 type NavigationType = variant {
   Navigate;
@@ -192,6 +205,8 @@ service : () -> {
       vec record { AnalyticKey; TrackEvent },
     ) query;
   get_track_events_analytics : (GetAnalytics) -> (AnalyticsTrackEvents) query;
+  http_request : (HttpRequest) -> (HttpResponse) query;
+  http_request_update : (HttpRequest) -> (HttpResponse);
   list_controllers : () -> (vec record { principal; Controller }) query;
   list_satellite_configs : () -> (
       vec record { principal; OrbiterSatelliteConfig },

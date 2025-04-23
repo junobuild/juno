@@ -31,7 +31,7 @@ use crate::events::helpers::assert_and_insert_page_view;
 use crate::events::store::insert_page_view;
 use crate::guards::{caller_is_admin_controller, caller_is_controller};
 use crate::handler::orbiter::OrbiterHttpRequestHandler;
-use crate::http::requests::{on_http_request, on_http_request_update};
+use crate::http::server::{on_http_request, on_http_request_update};
 use crate::http::upgrade::defer_init_certified_responses;
 use crate::types::interface::{
     AnalyticsClientsPageViews, AnalyticsMetricsPageViews, AnalyticsTop10PageViews,

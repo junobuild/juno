@@ -20,7 +20,7 @@ pub fn on_http_request(
         HttpResponse::builder().with_upgrade(true).build()
     };
 
-    http_request_handler(request, handler, &upgrade_http_request)
+    serve_request(request, handler, &upgrade_http_request)
 }
 
 pub fn on_http_request_update(
@@ -32,10 +32,10 @@ pub fn on_http_request_update(
         create_json_response(status_code, body)
     };
 
-    http_request_handler(request, handler, &handle_http_request_update)
+    serve_request(request, handler, &handle_http_request_update)
 }
 
-fn http_request_handler(
+fn serve_request(
     request: &HttpRequest,
     handler: &dyn HttpRequestHandler,
     response_handler: &dyn Fn(&HttpRequest) -> HttpResponse<'static>,

@@ -1,6 +1,6 @@
 pub mod constants;
 mod impls;
-pub mod requests;
+pub mod server;
 mod state;
 pub mod types;
 pub mod upgrade;

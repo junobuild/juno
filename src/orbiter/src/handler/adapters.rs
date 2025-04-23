@@ -1,6 +1,6 @@
 use crate::events::helpers::assert_and_insert_page_view;
 use crate::state::types::state::AnalyticKey;
-use crate::types::interface::http::{PageViewPayload, PageViewsPayload, SetPageViewRequest};
+use crate::types::interface::http::{PageViewPayload, SetPageViewsRequest, SetPageViewRequest};
 use ic_http_certification::HttpRequest;
 use junobuild_utils::decode_doc_data;
 
@@ -15,8 +15,8 @@ pub fn handle_insert_page_view(request: &HttpRequest) -> Result<PageViewPayload,
 }
 
 pub fn handle_insert_page_views(request: &HttpRequest) -> Result<(), String> {
-    let page_views: PageViewsPayload =
-        decode_doc_data::<PageViewsPayload>(request.body()).map_err(|e| e.to_string())?;
+    let page_views: SetPageViewsRequest =
+        decode_doc_data::<SetPageViewsRequest>(request.body()).map_err(|e| e.to_string())?;
 
     let mut errors: Vec<(AnalyticKey, String)> = Vec::new();
 

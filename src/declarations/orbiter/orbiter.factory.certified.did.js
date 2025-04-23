@@ -133,6 +133,19 @@ export const idlFactory = ({ IDL }) => {
 	const AnalyticsTrackEvents = IDL.Record({
 		total: IDL.Vec(IDL.Tuple(IDL.Text, IDL.Nat32))
 	});
+	const HttpRequest = IDL.Record({
+		url: IDL.Text,
+		method: IDL.Text,
+		body: IDL.Vec(IDL.Nat8),
+		headers: IDL.Vec(IDL.Tuple(IDL.Text, IDL.Text)),
+		certificate_version: IDL.Opt(IDL.Nat16)
+	});
+	const HttpResponse = IDL.Record({
+		body: IDL.Vec(IDL.Nat8),
+		headers: IDL.Vec(IDL.Tuple(IDL.Text, IDL.Text)),
+		upgrade: IDL.Opt(IDL.Bool),
+		status_code: IDL.Nat16
+	});
 	const OrbiterSatelliteFeatures = IDL.Record({
 		performance_metrics: IDL.Bool,
 		track_events: IDL.Bool,
@@ -219,6 +232,8 @@ export const idlFactory = ({ IDL }) => {
 		),
 		get_track_events: IDL.Func([GetAnalytics], [IDL.Vec(IDL.Tuple(AnalyticKey, TrackEvent))], []),
 		get_track_events_analytics: IDL.Func([GetAnalytics], [AnalyticsTrackEvents], []),
+		http_request: IDL.Func([HttpRequest], [HttpResponse], []),
+		http_request_update: IDL.Func([HttpRequest], [HttpResponse], []),
 		list_controllers: IDL.Func([], [IDL.Vec(IDL.Tuple(IDL.Principal, Controller))], []),
 		list_satellite_configs: IDL.Func(
 			[],

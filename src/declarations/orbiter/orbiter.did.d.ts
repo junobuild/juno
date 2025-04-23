@@ -76,6 +76,19 @@ export interface GetAnalytics {
 	from: [] | [bigint];
 	satellite_id: [] | [Principal];
 }
+export interface HttpRequest {
+	url: string;
+	method: string;
+	body: Uint8Array | number[];
+	headers: Array<[string, string]>;
+	certificate_version: [] | [number];
+}
+export interface HttpResponse {
+	body: Uint8Array | number[];
+	headers: Array<[string, string]>;
+	upgrade: [] | [boolean];
+	status_code: number;
+}
 export interface MemorySize {
 	stable: bigint;
 	heap: bigint;
@@ -209,6 +222,8 @@ export interface _SERVICE {
 	>;
 	get_track_events: ActorMethod<[GetAnalytics], Array<[AnalyticKey, TrackEvent]>>;
 	get_track_events_analytics: ActorMethod<[GetAnalytics], AnalyticsTrackEvents>;
+	http_request: ActorMethod<[HttpRequest], HttpResponse>;
+	http_request_update: ActorMethod<[HttpRequest], HttpResponse>;
 	list_controllers: ActorMethod<[], Array<[Principal, Controller]>>;
 	list_satellite_configs: ActorMethod<[], Array<[Principal, OrbiterSatelliteConfig]>>;
 	memory_size: ActorMethod<[], MemorySize>;

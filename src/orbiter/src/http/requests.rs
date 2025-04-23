@@ -1,4 +1,5 @@
 use crate::http::constants::NOT_FOUND_PATH;
+use crate::http::not_allowed::prepare_certified_not_allowed_response;
 use crate::http::not_found::{
     create_uncertified_not_found_response, prepare_certified_not_found_response,
 };
@@ -6,7 +7,6 @@ use crate::http::state::store::get_certified_response;
 use crate::http::types::handler::HttpRequestHandler;
 use crate::http::utils::create_json_response;
 use ic_http_certification::{HttpRequest, HttpResponse};
-
 // ---------------------------------------------------------
 // Source for the HTTP implementation:
 // https://github.com/dfinity/response-verification/blob/main/examples/http-certification/json-api/src/backend/src/lib.rs
@@ -50,17 +50,28 @@ fn http_request_handler(
     let request_path = uri_request_path.unwrap();
 
     if handler.is_known_route(request) {
-        if handler.is_allowed_method(request) {
+        let method = request.method().to_string();
+
+        if handler.is_allowed_method(&method) {
             return response_handler(&request);
         }
 
-        // TODO: Technically here it would be more accurate to return a METHOD_NOT_ALLOWED response
+        let not_allowed = get_certified_response(&request_path, &Some(method.clone()));
+
+        if let Some(not_allowed) = not_allowed {
+            let response = prepare_certified_not_allowed_response(&request_path, not_allowed);
+
+            // TODO: I guess technically it can be another type of error if None
+            if let Ok(response) = response {
+                return response;
+            }
+        }
     }
 
-    let not_found = get_certified_response(NOT_FOUND_PATH);
+    let not_found = get_certified_response(&NOT_FOUND_PATH.to_string(), &None);
 
     if let Some(not_found) = not_found {
-        let response = prepare_certified_not_found_response(request_path, not_found);
+        let response = prepare_certified_not_found_response(&request_path, not_found);
 
         // TODO: I guess technically it can be another type of error if None
         if let Ok(response) = response {

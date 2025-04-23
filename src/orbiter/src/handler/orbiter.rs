@@ -1,5 +1,5 @@
 use crate::handler::adapters::{handle_insert_page_view, handle_insert_page_views};
-use crate::handler::constants::{KNOWN_ROUTES, VIEWS_PATH, VIEW_PATH};
+use crate::http::constants::{KNOWN_ROUTES, VIEWS_PATH, VIEW_PATH};
 use crate::http::types::handler::HttpRequestHandler;
 use crate::http::types::interface::ApiResponse;
 use ic_http_certification::{HttpRequest, StatusCode};
@@ -11,8 +11,8 @@ impl HttpRequestHandler for OrbiterHttpRequestHandler {
         matches!(request.get_path().as_deref(), Ok(path) if KNOWN_ROUTES.contains(&path))
     }
 
-    fn is_allowed_method(&self, request: &HttpRequest) -> bool {
-        request.method() == "POST"
+    fn is_allowed_method(&self, method: &String) -> bool {
+        method == "POST"
     }
 
     fn handle_update(&self, request: &HttpRequest) -> (StatusCode, Vec<u8>) {

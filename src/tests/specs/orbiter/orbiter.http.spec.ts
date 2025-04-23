@@ -35,6 +35,7 @@ describe('Orbiter > Http', () => {
 
 	const RESPONSE_OK = { ok: { data: null } };
 	const RESPONSE_404 = { err: { code: 404, message: 'Not found' } };
+	const RESPONSE_405 = { err: { code: 405, message: 'Method not allowed' } };
 	const RESPONSE_500_NO_VERSION_PROVIDED = {
 		err: { code: 500, message: 'juno.error.no_version_provided' }
 	};
@@ -62,7 +63,7 @@ describe('Orbiter > Http', () => {
 		await pic?.tearDown();
 	});
 
-	describe.each(['/something', '/', '/view/something'])('Route not found %s', (url) => {
+	describe.each(['/something', '/'])('Route not found for %s', (url) => {
 		it.each([...NON_POST_METHODS, 'POST'])(
 			'should return a certified not found response for %s',
 			async (method) => {
@@ -94,6 +95,80 @@ describe('Orbiter > Http', () => {
 					response,
 					currentDate,
 					statusCode: 404
+				});
+			}
+		);
+	});
+
+	describe.each(['/view/something'])('Sub-route not found for %s', (url) => {
+		it.each(NON_POST_METHODS)(
+			'should return a certified not found response for %s',
+			async (method) => {
+				const { http_request } = actor;
+
+				const request: HttpRequest = {
+					body: [],
+					certificate_version: toNullable(2),
+					headers: [],
+					method,
+					url
+				};
+
+				const response = await http_request(request);
+
+				expect(
+					response.headers.find(([key, _value]) => key.toLowerCase() === 'content-type')?.[1]
+				).toEqual('application/json');
+
+				const decoder = new TextDecoder();
+				const responseBody = decoder.decode(response.body as Uint8Array<ArrayBufferLike>);
+
+				expect(JSON.parse(responseBody)).toEqual(RESPONSE_404);
+
+				await assertCertification({
+					canisterId,
+					pic,
+					request,
+					response,
+					currentDate,
+					statusCode: 404
+				});
+			}
+		);
+	});
+
+	describe.each(['/view', '/views'])('Route not allowed for %s', (url) => {
+		it.each(NON_POST_METHODS)(
+			'should return a certified not allowed response for %s',
+			async (method) => {
+				const { http_request } = actor;
+
+				const request: HttpRequest = {
+					body: [],
+					certificate_version: toNullable(2),
+					headers: [],
+					method,
+					url
+				};
+
+				const response = await http_request(request);
+
+				expect(
+					response.headers.find(([key, _value]) => key.toLowerCase() === 'content-type')?.[1]
+				).toEqual('application/json');
+
+				const decoder = new TextDecoder();
+				const responseBody = decoder.decode(response.body as Uint8Array<ArrayBufferLike>);
+
+				expect(JSON.parse(responseBody)).toEqual(RESPONSE_405);
+
+				await assertCertification({
+					canisterId,
+					pic,
+					request,
+					response,
+					currentDate,
+					statusCode: 405
 				});
 			}
 		);

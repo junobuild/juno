@@ -1,14 +1,12 @@
 use crate::http::constants::NOT_FOUND_PATH;
-use crate::http::state::services::read_state;
+use crate::http::services::prepare_certified_response;
 use crate::http::state::store::insert_certified_response;
 use crate::http::state::types::CertifiedHttpResponse;
 use crate::http::types::interface::ErrorResponse;
 use crate::http::utils::create_json_response;
-use ic_cdk::api::data_certificate;
-use ic_http_certification::utils::add_v2_certificate_header;
 use ic_http_certification::{
     DefaultCelBuilder, DefaultResponseCertification, DefaultResponseOnlyCelExpression,
-    HttpCertification, HttpCertificationPath, HttpCertificationTreeEntry, HttpResponse, StatusCode,
+    HttpCertification, HttpCertificationPath, HttpResponse, StatusCode,
     CERTIFICATE_EXPRESSION_HEADER_NAME,
 };
 use lazy_static::lazy_static;
@@ -50,40 +48,21 @@ pub fn init_certified_not_found_response() {
         certification,
     };
 
-    insert_certified_response(&NOT_FOUND_PATH, &certified_response);
+    let tree_path = HttpCertificationPath::wildcard(NOT_FOUND_PATH);
+
+    insert_certified_response(
+        &NOT_FOUND_PATH.to_string(),
+        &None,
+        &tree_path,
+        &certified_response,
+    );
 }
 
 pub fn prepare_certified_not_found_response(
-    request_path: String,
+    request_path: &String,
     certified_response: CertifiedHttpResponse<'static>,
 ) -> Result<HttpResponse<'static>, String> {
-    let mut response = certified_response.response.clone();
-
-    let cert = data_certificate();
-
-    if let None = cert {
-        return Err("No data certificate available.".to_string());
-    }
-
-    read_state(|state| {
-        let http_tree = &state.storage.tree;
-
-        let tree_path = NOT_FOUND_TREE_PATH.to_owned();
-
-        add_v2_certificate_header(
-            &cert.unwrap(),
-            &mut response,
-            &http_tree
-                .witness(
-                    &HttpCertificationTreeEntry::new(&tree_path, certified_response.certification),
-                    &request_path,
-                )
-                .unwrap(),
-            &tree_path.to_expr_path(),
-        );
-    });
-
-    Ok(response.clone())
+    prepare_certified_response(request_path, certified_response, &NOT_FOUND_TREE_PATH)
 }
 
 pub fn create_uncertified_not_found_response() -> HttpResponse<'static> {

@@ -1,37 +1,52 @@
 use crate::http::state::services::{mutate_state, read_state};
-use crate::http::state::types::{CertifiedHttpResponse, StorageRuntimeState};
+use crate::http::state::types::{CertifiedHttpResponse, Method, Path, StorageRuntimeState};
 use ic_cdk::api::set_certified_data;
 use ic_http_certification::{HttpCertification, HttpCertificationPath, HttpCertificationTreeEntry};
 
-pub fn insert_certified_response(path: &str, response: &CertifiedHttpResponse<'static>) {
+pub fn insert_certified_response(
+    path: &Path,
+    method: &Option<Method>,
+    tree_path: &HttpCertificationPath,
+    response: &CertifiedHttpResponse<'static>,
+) {
     mutate_state(|state| {
         // 1. We save the response - header, body, certificate, etc.
-        insert_response(&mut state.storage, path, response);
+        insert_response(&mut state.storage, path, method, response);
 
         // 2. We validate the response by appending its existence into the certification tree
-        certify_response(&mut state.storage, path, &response.certification);
+        certify_response(&mut state.storage, tree_path, &response.certification);
     });
 }
 
-pub fn get_certified_response(path: &str) -> Option<CertifiedHttpResponse<'static>> {
-    read_state(|state| state.storage.responses.get(path).cloned())
+pub fn get_certified_response(
+    path: &Path,
+    method: &Option<Method>,
+) -> Option<CertifiedHttpResponse<'static>> {
+    read_state(|state| {
+        state
+            .storage
+            .responses
+            .get(&(method.clone(), path.clone()))
+            .cloned()
+    })
 }
 
 fn insert_response(
     storage: &mut StorageRuntimeState,
-    path: &str,
+    path: &Path,
+    method: &Option<Method>,
     response: &CertifiedHttpResponse<'static>,
 ) {
-    storage.responses.insert(path.to_string(), response.clone());
+    storage
+        .responses
+        .insert((method.clone(), path.clone()), response.clone());
 }
 
 fn certify_response(
     storage: &mut StorageRuntimeState,
-    path: &str,
+    tree_path: &HttpCertificationPath,
     certification: &HttpCertification,
 ) {
-    let tree_path = HttpCertificationPath::wildcard(path);
-
     let entry = HttpCertificationTreeEntry::new(tree_path, certification);
 
     storage.tree.insert(&entry);

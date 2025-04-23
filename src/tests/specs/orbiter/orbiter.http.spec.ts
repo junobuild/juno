@@ -223,6 +223,37 @@ describe('Orbiter', () => {
 
 					expect(result).toEqual(RESPONSE_500);
 				});
+
+				it('should update a page view', async () => {
+					const { http_request_update } = actor;
+
+					const request: HttpRequest = {
+						body: toBodyJson({
+							...pageView,
+							page_view: {
+								...pageView.page_view,
+								version: 1n
+							}
+						}),
+						certificate_version: toNullable(2),
+						headers: [],
+						method: 'POST',
+						url: '/view'
+					};
+
+					const response = await http_request_update(request);
+
+					const decoder = new TextDecoder();
+					const responseBody = decoder.decode(response.body as Uint8Array<ArrayBufferLike>);
+
+					const {
+						ok: { data }
+					}: { ok: { data: PageViewPayload } } = JSON.parse(responseBody, jsonReviver);
+
+					const { version } = data;
+
+					expect(version).toEqual(2n);
+				});
 			});
 
 			const pagesViews: SetPageViewRequest[] = [

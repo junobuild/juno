@@ -84,44 +84,47 @@ describe('Orbiter > HTTP > Routes', () => {
 		);
 	});
 
-	describe.each(['/view/something'])('Sub-route not found for %s', (url) => {
-		it.each(NON_POST_METHODS)(
-			'should return a certified not found response for %s',
-			async (method) => {
-				const { http_request } = actor;
+	describe.each(['/view/something', '/views/something', '/event/something', '/events/something'])(
+		'Sub-route not found for %s',
+		(url) => {
+			it.each(NON_POST_METHODS)(
+				'should return a certified not found response for %s',
+				async (method) => {
+					const { http_request } = actor;
 
-				const request: HttpRequest = {
-					body: [],
-					certificate_version: toNullable(2),
-					headers: [],
-					method,
-					url
-				};
+					const request: HttpRequest = {
+						body: [],
+						certificate_version: toNullable(2),
+						headers: [],
+						method,
+						url
+					};
 
-				const response = await http_request(request);
+					const response = await http_request(request);
 
-				expect(
-					response.headers.find(([key, _value]) => key.toLowerCase() === 'content-type')?.[1]
-				).toEqual('application/json');
+					expect(
+						response.headers.find(([key, _value]) => key.toLowerCase() === 'content-type')?.[1]
+					).toEqual('application/json');
 
-				const decoder = new TextDecoder();
-				const responseBody = decoder.decode(response.body as Uint8Array<ArrayBufferLike>);
+					const decoder = new TextDecoder();
+					const responseBody = decoder.decode(response.body as Uint8Array<ArrayBufferLike>);
 
-				expect(JSON.parse(responseBody)).toEqual(RESPONSE_404);
+					expect(JSON.parse(responseBody)).toEqual(RESPONSE_404);
 
-				await assertCertification({
-					canisterId,
-					pic,
-					request,
-					response,
-					currentDate,
-					statusCode: 404
-				});
-			}
-		);
-	});
+					await assertCertification({
+						canisterId,
+						pic,
+						request,
+						response,
+						currentDate,
+						statusCode: 404
+					});
+				}
+			);
+		}
+	);
 
-	describe.each(['/view', '/views'])('Route not allowed for %s', (url) => {
+	describe.each(['/view', '/views', '/event', '/events'])('Route not allowed for %s', (url) => {
 		it.each(NON_POST_METHODS)(
 			'should return a certified not allowed response for %s',
 			async (method) => {

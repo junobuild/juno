@@ -121,9 +121,9 @@ describe('Sputnik > assert_upload_asset', () => {
 		const name = 'test.html';
 		const full_path = `/${TEST_ASSERTED_COLLECTION}/${name}`;
 
-		await expect(
-			upload({ collection: TEST_ASSERTED_COLLECTION, name, full_path })
-		).rejects.toThrow(new RegExp('test.html name not allowed', 'i'));
+		await expect(upload({ collection: TEST_ASSERTED_COLLECTION, name, full_path })).rejects.toThrow(
+			new RegExp('test.html name not allowed', 'i')
+		);
 
 		const { get_asset } = actor;
 

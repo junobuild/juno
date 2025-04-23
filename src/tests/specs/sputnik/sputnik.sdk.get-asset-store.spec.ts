@@ -73,6 +73,8 @@ describe('Sputnik > sdk > getAssetStore', () => {
 
 		expect(nullishMsg).not.toBeUndefined();
 
-		expect((nullishMsg?.[1].message ?? 'true').replace('Nullish:', '').trim() === 'false').toBeTruthy();
+		expect(
+			(nullishMsg?.[1].message ?? 'true').replace('Nullish:', '').trim() === 'false'
+		).toBeTruthy();
 	});
 });

@@ -7,6 +7,37 @@ import type {
 import { Principal } from '@dfinity/principal';
 import { nanoid } from 'nanoid';
 
+export interface SetPageViewPayload {
+	title: string;
+	referrer?: string;
+	time_zone: string;
+	session_id: string;
+	href: string;
+	satellite_id: Principal;
+	device: PageViewDevice;
+	version?: bigint;
+	user_agent?: string;
+}
+
+export interface SetTrackEventPayload {
+	name: string;
+	metadata: [string, string][];
+	satellite_id: Principal;
+	session_id: string;
+	version?: bigint;
+	user_agent?: string;
+}
+
+export type PageViewPayload = SetPageViewPayload & {
+	updated_at: bigint;
+	created_at: bigint;
+};
+
+export type TrackEventPayload = SetTrackEventPayload & {
+	updated_at: bigint;
+	created_at: bigint;
+};
+
 export const satelliteIdMock = Principal.fromText('ck4tp-3iaaa-aaaal-ab7da-cai');
 
 const { timeZone } = Intl.DateTimeFormat().resolvedOptions();
@@ -29,23 +60,6 @@ export const pageViewMock: SetPageView = {
 	],
 	version: [],
 	updated_at: []
-};
-
-export interface SetPageViewPayload {
-	title: string;
-	referrer?: string;
-	time_zone: string;
-	session_id: string;
-	href: string;
-	satellite_id: Principal;
-	device: PageViewDevice;
-	version?: bigint;
-	user_agent?: string;
-}
-
-export type PageViewPayload = SetPageViewPayload & {
-	updated_at: bigint;
-	created_at: bigint;
 };
 
 export const pageViewPayloadMock: SetPageViewPayload = {
@@ -76,6 +90,17 @@ export const trackEventMock: SetTrackEvent = {
 	],
 	version: [],
 	updated_at: []
+};
+
+export const trackEventPayloadMock: SetTrackEventPayload = {
+	name: 'my_event',
+	metadata: [
+		['event1', 'Lorem ipsum dolor sit amet'],
+		['event2', ' Praesent congue, mauris id commodo vulputate']
+	],
+	satellite_id: satelliteIdMock,
+	session_id: sessionId,
+	user_agent: 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:125.0) Gecko/20100101 Firefox/125.0'
 };
 
 export const performanceMetricMock: SetPerformanceMetric = {

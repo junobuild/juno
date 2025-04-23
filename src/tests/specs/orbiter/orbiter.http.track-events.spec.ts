@@ -12,9 +12,9 @@ import { nanoid } from 'nanoid';
 import { inject } from 'vitest';
 import {
 	type PageViewPayload,
-	pageViewPayloadMock,
 	satelliteIdMock,
-	type SetPageViewPayload
+	type SetTrackEventPayload,
+	trackEventPayloadMock
 } from '../../mocks/orbiter.mocks';
 import { toBodyJson } from '../../utils/orbiter-test.utils';
 import { tick } from '../../utils/pic-tests.utils';
@@ -58,24 +58,24 @@ describe('Orbiter > HTTP > Page views', () => {
 	});
 
 	describe('With configuration', () => {
-		interface SetPageViewRequest {
+		interface SetTrackEventRequest {
 			key: AnalyticKey;
-			page_view: SetPageViewPayload;
+			track_event: SetTrackEventPayload;
 		}
 
-		const pageView: SetPageViewRequest = {
+		const trackEvent: SetTrackEventRequest = {
 			key: { key: nanoid(), collected_at: 1230n },
-			page_view: pageViewPayloadMock
+			track_event: trackEventPayloadMock
 		};
 
-		const pagesViews: SetPageViewRequest[] = [
+		const trackEvents: SetTrackEventRequest[] = [
 			{
 				key: { key: nanoid(), collected_at: 1230n },
-				page_view: pageViewPayloadMock
+				track_event: trackEventPayloadMock
 			},
 			{
 				key: { key: nanoid(), collected_at: 1240n },
-				page_view: pageViewPayloadMock
+				track_event: trackEventPayloadMock
 			}
 		];
 
@@ -108,8 +108,8 @@ describe('Orbiter > HTTP > Page views', () => {
 				actor.setIdentity(user);
 			});
 
-			describe('page view', () => {
-				const body = toBodyJson(pageView);
+			describe('track event', () => {
+				const body = toBodyJson(trackEvent);
 
 				it('should upgrade http_request', async () => {
 					const { http_request } = actor;
@@ -119,7 +119,7 @@ describe('Orbiter > HTTP > Page views', () => {
 						certificate_version: toNullable(2),
 						headers: [],
 						method: 'POST',
-						url: '/view'
+						url: '/event'
 					};
 
 					const response = await http_request(request);
@@ -135,7 +135,7 @@ describe('Orbiter > HTTP > Page views', () => {
 						certificate_version: toNullable(2),
 						headers: [],
 						method,
-						url: '/view'
+						url: '/event'
 					};
 
 					const response = await http_request(request);
@@ -143,7 +143,7 @@ describe('Orbiter > HTTP > Page views', () => {
 					expect(fromNullable(response.upgrade)).toBeUndefined();
 				});
 
-				it('should set a page view', async () => {
+				it('should set a track event', async () => {
 					const { http_request_update } = actor;
 
 					const request: HttpRequest = {
@@ -151,7 +151,7 @@ describe('Orbiter > HTTP > Page views', () => {
 						certificate_version: toNullable(2),
 						headers: [],
 						method: 'POST',
-						url: '/view'
+						url: '/event'
 					};
 
 					const response = await http_request_update(request);
@@ -165,14 +165,14 @@ describe('Orbiter > HTTP > Page views', () => {
 
 					const { version, created_at, updated_at, ...rest } = data;
 
-					expect(rest).toEqual(pageViewPayloadMock);
+					expect(rest).toEqual(trackEventPayloadMock);
 					expect(version).toEqual(1n);
 					expect(created_at).toBeGreaterThan(0n);
 					expect(updated_at).toBeGreaterThan(0n);
 					expect(created_at).toEqual(updated_at);
 				});
 
-				it('should fail at updating page view without version', async () => {
+				it('should fail at updating track event without version', async () => {
 					const { http_request_update } = actor;
 
 					const request: HttpRequest = {
@@ -180,7 +180,7 @@ describe('Orbiter > HTTP > Page views', () => {
 						certificate_version: toNullable(2),
 						headers: [],
 						method: 'POST',
-						url: '/view'
+						url: '/event'
 					};
 
 					const response = await http_request_update(request);
@@ -193,21 +193,21 @@ describe('Orbiter > HTTP > Page views', () => {
 					expect(result).toEqual(RESPONSE_500_NO_VERSION_PROVIDED);
 				});
 
-				it('should update a page view', async () => {
+				it('should update a track event', async () => {
 					const { http_request_update } = actor;
 
 					const request: HttpRequest = {
 						body: toBodyJson({
-							...pageView,
-							page_view: {
-								...pageView.page_view,
+							...trackEvent,
+							track_event: {
+								...trackEvent.track_event,
 								version: 1n
 							}
 						}),
 						certificate_version: toNullable(2),
 						headers: [],
 						method: 'POST',
-						url: '/view'
+						url: '/event'
 					};
 
 					const response = await http_request_update(request);
@@ -225,8 +225,8 @@ describe('Orbiter > HTTP > Page views', () => {
 				});
 			});
 
-			describe('page views', () => {
-				const body = toBodyJson(pagesViews);
+			describe('track events', () => {
+				const body = toBodyJson(trackEvents);
 
 				it('should upgrade http_request', async () => {
 					const { http_request } = actor;
@@ -236,7 +236,7 @@ describe('Orbiter > HTTP > Page views', () => {
 						certificate_version: toNullable(2),
 						headers: [],
 						method: 'POST',
-						url: '/views'
+						url: '/events'
 					};
 
 					const response = await http_request(request);
@@ -252,7 +252,7 @@ describe('Orbiter > HTTP > Page views', () => {
 						certificate_version: toNullable(2),
 						headers: [],
 						method,
-						url: '/views'
+						url: '/events'
 					};
 
 					const response = await http_request(request);
@@ -260,7 +260,7 @@ describe('Orbiter > HTTP > Page views', () => {
 					expect(fromNullable(response.upgrade)).toBeUndefined();
 				});
 
-				it('should set page views', async () => {
+				it('should set track events', async () => {
 					const { http_request_update } = actor;
 
 					const request: HttpRequest = {
@@ -268,7 +268,7 @@ describe('Orbiter > HTTP > Page views', () => {
 						certificate_version: toNullable(2),
 						headers: [],
 						method: 'POST',
-						url: '/views'
+						url: '/events'
 					};
 
 					const response = await http_request_update(request);
@@ -281,7 +281,7 @@ describe('Orbiter > HTTP > Page views', () => {
 					expect(result).toEqual(RESPONSE_OK);
 				});
 
-				it('should fail at updating page views without version', async () => {
+				it('should fail at updating track events without version', async () => {
 					const { http_request_update } = actor;
 
 					const request: HttpRequest = {
@@ -289,7 +289,7 @@ describe('Orbiter > HTTP > Page views', () => {
 						certificate_version: toNullable(2),
 						headers: [],
 						method: 'POST',
-						url: '/views'
+						url: '/events'
 					};
 
 					const response = await http_request_update(request);
@@ -302,22 +302,22 @@ describe('Orbiter > HTTP > Page views', () => {
 					expect(result).toEqual({
 						err: {
 							code: 500,
-							message: pagesViews
+							message: trackEvents
 								.map(({ key }) => `${key.key}: juno.error.no_version_provided`)
 								.join(', ')
 						}
 					});
 				});
 
-				it('should update page views', async () => {
+				it('should update track events', async () => {
 					const { http_request_update } = actor;
 
 					const request: HttpRequest = {
 						body: toBodyJson(
-							pagesViews.map((pageView) => ({
-								...pageView,
+							trackEvents.map((trackEvent) => ({
+								...trackEvent,
 								page_view: {
-									...pageView.page_view,
+									...trackEvent.track_event,
 									version: 1n
 								}
 							}))
@@ -325,7 +325,7 @@ describe('Orbiter > HTTP > Page views', () => {
 						certificate_version: toNullable(2),
 						headers: [],
 						method: 'POST',
-						url: '/views'
+						url: '/events'
 					};
 
 					const response = await http_request_update(request);
@@ -345,10 +345,10 @@ describe('Orbiter > HTTP > Page views', () => {
 				actor.setIdentity(controller);
 			});
 
-			it('should retrieve all page views', async () => {
-				const { get_page_views } = actor;
+			it('should retrieve all track events', async () => {
+				const { get_track_events } = actor;
 
-				const result = await get_page_views({
+				const result = await get_track_events({
 					from: [],
 					to: [],
 					satellite_id: [satelliteIdMock]
@@ -356,12 +356,12 @@ describe('Orbiter > HTTP > Page views', () => {
 
 				expect(Array.isArray(result)).toBe(true);
 
-				expect(result.length).toEqual([pageView, ...pagesViews].length);
+				expect(result.length).toEqual([trackEvent, ...trackEvents].length);
 
 				result.forEach(([key, pageView]) => {
 					expect(key.collected_at).toBeGreaterThanOrEqual(1230n);
 					expect(key.collected_at).toBeLessThanOrEqual(1240n);
-					expect(pageView.href).toBe('https://test.com');
+					expect(pageView.name).toBe('my_event');
 					expect(fromNullable(pageView.version)).toBe(2n);
 				});
 			});

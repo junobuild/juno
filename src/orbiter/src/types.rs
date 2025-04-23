@@ -7,7 +7,7 @@ pub mod interface {
         Metadata, OrbiterSatelliteFeatures, SatelliteId, Timestamp, Version,
     };
     use junobuild_shared::types::utils::CalendarDate;
-    use serde::{Deserialize};
+    use serde::Deserialize;
     use std::collections::HashMap;
 
     #[derive(CandidType, Deserialize, Clone)]

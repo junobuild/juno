@@ -132,10 +132,14 @@ pub mod interface {
 
     pub mod http {
         use crate::state::types::state::{Key, PageViewDevice, SessionId};
-        use candid::Deserialize;
         use junobuild_utils::{DocDataBigInt, DocDataPrincipal};
-        use serde::Serialize;
+        use serde::{Serialize, Deserialize};
+        use junobuild_shared::types::state::{Metadata};
 
+        pub type TimestampPayload = DocDataBigInt;
+        pub type VersionPayload = Option<DocDataBigInt>;
+        pub type SatelliteIdPayload = DocDataPrincipal;
+        
         #[derive(Deserialize)]
         pub struct SetPageViewRequest {
             pub key: AnalyticKeyPayload,
@@ -143,8 +147,17 @@ pub mod interface {
         }
 
         #[derive(Deserialize)]
+        pub struct SetTrackEventRequest {
+            pub key: AnalyticKeyPayload,
+            pub track_event: SetTrackEventPayload,
+        }
+
+        pub type SetPageViewsRequest = Vec<SetPageViewRequest>;
+        pub type SetTrackEventsRequest = Vec<SetTrackEventRequest>;
+
+        #[derive(Deserialize)]
         pub struct AnalyticKeyPayload {
-            pub collected_at: DocDataBigInt,
+            pub collected_at: TimestampPayload,
             pub key: Key,
         }
 
@@ -156,9 +169,19 @@ pub mod interface {
             pub device: PageViewDevice,
             pub time_zone: String,
             pub user_agent: Option<String>,
-            pub satellite_id: DocDataPrincipal,
+            pub satellite_id: SatelliteIdPayload,
             pub session_id: SessionId,
-            pub version: Option<DocDataBigInt>,
+            pub version: VersionPayload,
+        }
+
+        #[derive(Deserialize)]
+        pub struct SetTrackEventPayload {
+            pub name: String,
+            pub metadata: Option<Metadata>,
+            pub user_agent: Option<String>,
+            pub satellite_id: SatelliteIdPayload,
+            pub session_id: SessionId,
+            pub version: VersionPayload,
         }
 
         #[derive(Serialize, Deserialize)]
@@ -171,14 +194,25 @@ pub mod interface {
             pub time_zone: String,
             #[serde(skip_serializing_if = "Option::is_none")]
             pub user_agent: Option<String>,
-            pub satellite_id: DocDataPrincipal,
+            pub satellite_id: SatelliteIdPayload,
             pub session_id: SessionId,
-            pub created_at: DocDataBigInt,
-            pub updated_at: DocDataBigInt,
+            pub created_at: TimestampPayload,
+            pub updated_at: TimestampPayload,
             #[serde(skip_serializing_if = "Option::is_none")]
-            pub version: Option<DocDataBigInt>,
+            pub version: VersionPayload,
         }
 
-        pub type PageViewsPayload = Vec<SetPageViewRequest>;
+        #[derive(Serialize, Deserialize)]
+        pub struct TrackEvent {
+            pub name: String,
+            #[serde(skip_serializing_if = "Option::is_none")]
+            pub metadata: Option<Metadata>,
+            pub satellite_id: SatelliteIdPayload,
+            pub session_id: SessionId,
+            pub created_at: TimestampPayload,
+            pub updated_at: TimestampPayload,
+            #[serde(skip_serializing_if = "Option::is_none")]
+            pub version: VersionPayload,
+        }
     }
 }

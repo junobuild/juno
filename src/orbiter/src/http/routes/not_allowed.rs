@@ -1,4 +1,4 @@
-use crate::http::constants::{VIEWS_PATH, VIEW_PATH};
+use crate::http::constants::{EVENTS_PATH, EVENT_PATH, VIEWS_PATH, VIEW_PATH};
 use crate::http::routes::services::prepare_certified_response;
 use crate::http::state::store::insert_certified_response;
 use crate::http::state::types::CertifiedHttpResponse;
@@ -17,6 +17,12 @@ lazy_static! {
 
     static ref VIEWS_TREE_PATH: HttpCertificationPath<'static> =
         HttpCertificationPath::exact(VIEWS_PATH);
+    
+    static ref EVENT_TREE_PATH: HttpCertificationPath<'static> =
+        HttpCertificationPath::exact(EVENT_PATH);
+
+    static ref EVENTS_TREE_PATH: HttpCertificationPath<'static> =
+        HttpCertificationPath::exact(EVENTS_PATH);
 
     // define a full CEL expression that will certify the following:
     // - request
@@ -46,6 +52,24 @@ lazy_static! {
         ))
         .build();
     static ref VIEWS_CEL_EXPR: String = VIEWS_CEL_EXPR_DEF.to_string();
+    
+    static ref EVENT_CEL_EXPR_DEF: DefaultFullCelExpression<'static> = DefaultCelBuilder::full_certification()
+        .with_request_headers(vec![])
+        .with_request_query_parameters(vec![])
+        .with_response_certification(DefaultResponseCertification::response_header_exclusions(
+            vec![],
+        ))
+        .build();
+    static ref EVENT_CEL_EXPR: String = EVENT_CEL_EXPR_DEF.to_string();
+
+    static ref EVENTS_CEL_EXPR_DEF: DefaultFullCelExpression<'static> = DefaultCelBuilder::full_certification()
+        .with_request_headers(vec![])
+        .with_request_query_parameters(vec![])
+        .with_response_certification(DefaultResponseCertification::response_header_exclusions(
+            vec![],
+        ))
+        .build();
+    static ref EVENTS_CEL_EXPR: String = EVENTS_CEL_EXPR_DEF.to_string();
 }
 
 pub fn init_certified_not_allowed_responses() {

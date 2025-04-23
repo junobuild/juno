@@ -2,7 +2,7 @@ use crate::http::constants::NOT_FOUND_PATH;
 use crate::http::not_found::{
     create_uncertified_not_found_response, prepare_certified_not_found_response,
 };
-use crate::http::store::get_certified_response;
+use crate::http::state::store::get_certified_response;
 use crate::http::types::handler::HttpRequestHandler;
 use crate::http::utils::create_json_response;
 use ic_http_certification::{HttpRequest, HttpResponse};

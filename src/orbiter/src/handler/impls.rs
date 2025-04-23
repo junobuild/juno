@@ -1,6 +1,8 @@
-use junobuild_utils::{DocDataBigInt, DocDataPrincipal};
 use crate::state::types::state::{AnalyticKey, PageView};
-use crate::types::interface::{AnalyticKeyPayload, PageViewPayload, SetPageView, SetPageViewPayload};
+use crate::types::interface::{
+    AnalyticKeyPayload, PageViewPayload, SetPageView, SetPageViewPayload,
+};
+use junobuild_utils::{DocDataBigInt, DocDataPrincipal};
 
 impl AnalyticKeyPayload {
     pub fn into_domain(self) -> AnalyticKey {
@@ -37,11 +39,19 @@ impl PageViewPayload {
             device: page_view.device,
             user_agent: page_view.user_agent,
             time_zone: page_view.time_zone,
-            satellite_id: DocDataPrincipal { value: page_view.satellite_id },
+            satellite_id: DocDataPrincipal {
+                value: page_view.satellite_id,
+            },
             session_id: page_view.session_id,
-            created_at: DocDataBigInt { value: page_view.created_at },
-            updated_at: DocDataBigInt { value: page_view.updated_at },
-            version: page_view.version.map(|version| DocDataBigInt { value: version }),
+            created_at: DocDataBigInt {
+                value: page_view.created_at,
+            },
+            updated_at: DocDataBigInt {
+                value: page_view.updated_at,
+            },
+            version: page_view
+                .version
+                .map(|version| DocDataBigInt { value: version }),
         }
     }
 }

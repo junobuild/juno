@@ -1,9 +1,9 @@
 use crate::http::constants::NOT_FOUND_PATH;
-use crate::http::store::insert_certified_response;
+use crate::http::state::services::read_state;
+use crate::http::state::store::insert_certified_response;
+use crate::http::state::types::CertifiedHttpResponse;
 use crate::http::types::interface::ErrorResponse;
 use crate::http::utils::create_json_response;
-use crate::state::services::read_state;
-use crate::state::types::state::CertifiedHttpResponse;
 use ic_cdk::api::data_certificate;
 use ic_http_certification::utils::add_v2_certificate_header;
 use ic_http_certification::{
@@ -12,10 +12,6 @@ use ic_http_certification::{
     CERTIFICATE_EXPRESSION_HEADER_NAME,
 };
 use lazy_static::lazy_static;
-// ---------------------------------------------------------
-// Source for the HTTP implementation:
-// https://github.com/dfinity/response-verification/blob/main/examples/http-certification/json-api/src/backend/src/lib.rs
-// ---------------------------------------------------------
 
 lazy_static! {
     static ref NOT_FOUND_TREE_PATH: HttpCertificationPath<'static> =
@@ -70,7 +66,7 @@ pub fn prepare_certified_not_found_response(
     }
 
     read_state(|state| {
-        let http_tree = &state.runtime.storage.tree;
+        let http_tree = &state.storage.tree;
 
         let tree_path = NOT_FOUND_TREE_PATH.to_owned();
 

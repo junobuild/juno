@@ -1,20 +1,20 @@
-use crate::state::services::{mutate_state, read_state};
-use crate::state::types::state::{CertifiedHttpResponse, StorageRuntimeState};
+use crate::http::state::services::{mutate_state, read_state};
+use crate::http::state::types::{CertifiedHttpResponse, StorageRuntimeState};
 use ic_cdk::api::set_certified_data;
 use ic_http_certification::{HttpCertification, HttpCertificationPath, HttpCertificationTreeEntry};
 
 pub fn insert_certified_response(path: &str, response: &CertifiedHttpResponse<'static>) {
     mutate_state(|state| {
         // 1. We save the response - header, body, certificate, etc.
-        insert_response(&mut state.runtime.storage, path, response);
+        insert_response(&mut state.storage, path, response);
 
         // 2. We validate the response by appending its existence into the certification tree
-        certify_response(&mut state.runtime.storage, path, &response.certification);
+        certify_response(&mut state.storage, path, &response.certification);
     });
 }
 
 pub fn get_certified_response(path: &str) -> Option<CertifiedHttpResponse<'static>> {
-    read_state(|state| state.runtime.storage.responses.get(path).cloned())
+    read_state(|state| state.storage.responses.get(path).cloned())
 }
 
 fn insert_response(

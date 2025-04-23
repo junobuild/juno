@@ -2,7 +2,6 @@ pub mod state {
     use crate::state::memory::init_stable_state;
     use crate::state::types::memory::{StoredPageView, StoredTrackEvent};
     use candid::CandidType;
-    use ic_http_certification::{HttpCertification, HttpCertificationTree, HttpResponse};
     use ic_stable_structures::StableBTreeMap;
     use junobuild_shared::types::memory::Memory;
     use junobuild_shared::types::state::{
@@ -19,9 +18,6 @@ pub mod state {
 
         // Indirect stable state: State that lives on the heap, but is saved into stable memory on upgrades.
         pub heap: HeapState,
-
-        #[serde(skip, default)]
-        pub runtime: RuntimeState,
     }
 
     pub type Key = String;
@@ -143,23 +139,6 @@ pub mod state {
         BackForwardCache,
         Prerender,
         Restore,
-    }
-
-    #[derive(Default, Clone)]
-    pub struct RuntimeState {
-        pub storage: StorageRuntimeState,
-    }
-
-    #[derive(Default, Clone)]
-    pub struct StorageRuntimeState {
-        pub tree: HttpCertificationTree,
-        pub responses: HashMap<String, CertifiedHttpResponse<'static>>,
-    }
-
-    #[derive(Debug, Clone)]
-    pub struct CertifiedHttpResponse<'a> {
-        pub response: HttpResponse<'a>,
-        pub certification: HttpCertification,
     }
 }
 

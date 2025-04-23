@@ -46,7 +46,7 @@ export interface SetPageViewPayload {
 export type PageViewPayload = SetPageViewPayload & {
 	updated_at: bigint;
 	created_at: bigint;
-}
+};
 
 export const pageViewPayloadMock: SetPageViewPayload = {
 	href: 'https://test.com',

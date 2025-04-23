@@ -1,5 +1,5 @@
 use crate::http::constants::{VIEWS_PATH, VIEW_PATH};
-use crate::http::services::prepare_certified_response;
+use crate::http::routes::services::prepare_certified_response;
 use crate::http::state::store::insert_certified_response;
 use crate::http::state::types::CertifiedHttpResponse;
 use crate::http::types::interface::ErrorResponse;

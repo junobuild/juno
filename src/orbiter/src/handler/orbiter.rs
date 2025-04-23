@@ -1,8 +1,13 @@
 use crate::handler::adapters::page_views::{handle_insert_page_view, handle_insert_page_views};
+use crate::handler::adapters::performance_metrics::{
+    handle_insert_performance_metric, handle_insert_performance_metrics,
+};
 use crate::handler::adapters::track_events::{
     handle_insert_track_event, handle_insert_track_events,
 };
-use crate::http::constants::{EVENTS_PATH, EVENT_PATH, KNOWN_ROUTES, VIEWS_PATH, VIEW_PATH};
+use crate::http::constants::{
+    EVENTS_PATH, EVENT_PATH, KNOWN_ROUTES, METRICS_PATH, METRIC_PATH, VIEWS_PATH, VIEW_PATH,
+};
 use crate::http::types::handler::HttpRequestHandler;
 use crate::http::types::interface::ApiResponse;
 use ic_http_certification::{HttpRequest, StatusCode};
@@ -40,6 +45,10 @@ impl HttpRequestHandler for OrbiterHttpRequestHandler {
             EVENTS_PATH => {
                 handle_insert_track_events(request).map(|_| ApiResponse::<()>::ok(&()).encode())
             }
+            METRIC_PATH => handle_insert_performance_metric(request)
+                .map(|page_view| ApiResponse::ok(&page_view).encode()),
+            METRICS_PATH => handle_insert_performance_metrics(request)
+                .map(|_| ApiResponse::<()>::ok(&()).encode()),
             // Likely unexpected given is_known_route and is_allowed_method both were proven before reaching this handler.
             _ => Err(format!("Unsupported path: {}", request_path)),
         };

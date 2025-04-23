@@ -1,9 +1,9 @@
-use crate::state::types::state::{AnalyticKey, PageView, TrackEvent};
+use crate::state::types::state::{AnalyticKey, PageView, PerformanceMetric, TrackEvent};
 use crate::types::interface::http::{
-    AnalyticKeyPayload, PageViewPayload, SetPageViewPayload, SetTrackEventPayload,
-    TrackEventPayload,
+    AnalyticKeyPayload, PageViewPayload, PerformanceMetricPayload, SetPageViewPayload,
+    SetPerformanceMetricPayload, SetTrackEventPayload, TrackEventPayload,
 };
-use crate::types::interface::{SetPageView, SetTrackEvent};
+use crate::types::interface::{SetPageView, SetPerformanceMetric, SetTrackEvent};
 use junobuild_utils::{DocDataBigInt, DocDataPrincipal};
 
 impl AnalyticKeyPayload {
@@ -88,6 +88,43 @@ impl TrackEventPayload {
                 value: track_event.updated_at,
             },
             version: track_event
+                .version
+                .map(|version| DocDataBigInt { value: version }),
+        }
+    }
+}
+
+impl SetPerformanceMetricPayload {
+    pub fn into_domain(self) -> SetPerformanceMetric {
+        SetPerformanceMetric {
+            href: self.href,
+            metric_name: self.metric_name,
+            data: self.data,
+            user_agent: self.user_agent,
+            satellite_id: self.satellite_id.value,
+            session_id: self.session_id,
+            version: self.version.map(|version| version.value),
+        }
+    }
+}
+
+impl PerformanceMetricPayload {
+    pub fn from_domain(performance_metric: PerformanceMetric) -> Self {
+        Self {
+            href: performance_metric.href,
+            metric_name: performance_metric.metric_name,
+            data: performance_metric.data,
+            satellite_id: DocDataPrincipal {
+                value: performance_metric.satellite_id,
+            },
+            session_id: performance_metric.session_id,
+            created_at: DocDataBigInt {
+                value: performance_metric.created_at,
+            },
+            updated_at: DocDataBigInt {
+                value: performance_metric.updated_at,
+            },
+            version: performance_metric
                 .version
                 .map(|version| DocDataBigInt { value: version }),
         }

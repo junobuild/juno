@@ -16,7 +16,6 @@ use crate::analytics::{
     analytics_page_views_clients, analytics_page_views_metrics, analytics_page_views_top_10,
     analytics_performance_metrics_web_vitals, analytics_track_events,
 };
-use crate::assert::config::assert_performance_metrics_enabled;
 use crate::config::store::{
     del_satellite_config as del_satellite_config_store, get_satellite_configs,
     set_satellite_config as set_satellite_config_store,
@@ -25,7 +24,10 @@ use crate::controllers::store::{
     delete_controllers as delete_controllers_store, get_admin_controllers, get_controllers,
     set_controllers as set_controllers_store,
 };
-use crate::events::helpers::{assert_and_insert_page_view, assert_and_insert_track_event};
+use crate::events::helpers::{
+    assert_and_insert_page_view, assert_and_insert_performance_metric,
+    assert_and_insert_track_event,
+};
 use crate::guards::{caller_is_admin_controller, caller_is_controller};
 use crate::handler::orbiter::OrbiterHttpRequestHandler;
 use crate::http::server::{on_http_request, on_http_request_update};
@@ -38,8 +40,8 @@ use crate::types::interface::{
 use ciborium::{from_reader, into_writer};
 use events::store::{
     get_page_views as get_page_views_store,
-    get_performance_metrics as get_performance_metrics_store, get_satellite_config,
-    get_track_events as get_track_events_store, insert_performance_metric,
+    get_performance_metrics as get_performance_metrics_store,
+    get_track_events as get_track_events_store,
 };
 use ic_cdk::api::call::{arg_data, ArgDecoderConfig};
 use ic_cdk::trap;
@@ -235,25 +237,22 @@ fn get_track_events_analytics(filter: GetAnalytics) -> AnalyticsTrackEvents {
 // Performance metrics
 // ---------------------------------------------------------
 
+#[deprecated(since = "0.1.0", note = "prefer HTTP POST request")]
 #[update]
 fn set_performance_metric(
     key: AnalyticKey,
     performance_metric: SetPerformanceMetric,
 ) -> Result<PerformanceMetric, String> {
-    assert_performance_metrics_enabled(&get_satellite_config(&performance_metric.satellite_id))?;
-
-    insert_performance_metric(key, performance_metric)
+    assert_and_insert_performance_metric(key, performance_metric)
 }
 
+#[deprecated(since = "0.1.0", note = "prefer HTTP POST request")]
 #[update]
 fn set_performance_metrics(
     performance_metrics: Vec<(AnalyticKey, SetPerformanceMetric)>,
 ) -> Result<(), Vec<(AnalyticKey, String)>> {
     fn insert(key: AnalyticKey, performance_metric: SetPerformanceMetric) -> Result<(), String> {
-        assert_performance_metrics_enabled(&get_satellite_config(
-            &performance_metric.satellite_id,
-        ))?;
-        insert_performance_metric(key, performance_metric)?;
+        assert_and_insert_performance_metric(key, performance_metric)?;
 
         Ok(())
     }

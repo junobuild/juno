@@ -1,4 +1,6 @@
-use crate::http::constants::{EVENTS_PATH, EVENT_PATH, VIEWS_PATH, VIEW_PATH};
+use crate::http::constants::{
+    EVENTS_PATH, EVENT_PATH, METRICS_PATH, METRIC_PATH, VIEWS_PATH, VIEW_PATH,
+};
 use crate::http::routes::services::prepare_certified_response;
 use crate::http::routes::setup::build_certified_exact_route;
 use crate::http::routes::types::CertifiedExactRoute;
@@ -17,6 +19,8 @@ lazy_static! {
     static ref VIEWS_ROUTE: CertifiedExactRoute = build_certified_exact_route(VIEWS_PATH);
     static ref EVENT_ROUTE: CertifiedExactRoute = build_certified_exact_route(EVENT_PATH);
     static ref EVENTS_ROUTE: CertifiedExactRoute = build_certified_exact_route(EVENTS_PATH);
+    static ref METRIC_ROUTE: CertifiedExactRoute = build_certified_exact_route(METRIC_PATH);
+    static ref METRICS_ROUTE: CertifiedExactRoute = build_certified_exact_route(METRICS_PATH);
 }
 
 pub fn init_certified_not_allowed_responses() {
@@ -24,6 +28,8 @@ pub fn init_certified_not_allowed_responses() {
     init_not_allowed_responses(&VIEWS_ROUTE);
     init_not_allowed_responses(&EVENT_ROUTE);
     init_not_allowed_responses(&EVENTS_ROUTE);
+    init_not_allowed_responses(&METRIC_ROUTE);
+    init_not_allowed_responses(&METRICS_ROUTE);
 }
 
 pub fn init_not_allowed_responses(
@@ -96,6 +102,12 @@ pub fn prepare_certified_not_allowed_response(
         }
         EVENTS_PATH => {
             prepare_certified_response(request_path, certified_response, &EVENTS_ROUTE.tree_path)
+        }
+        METRIC_PATH => {
+            prepare_certified_response(request_path, certified_response, &METRIC_ROUTE.tree_path)
+        }
+        METRICS_PATH => {
+            prepare_certified_response(request_path, certified_response, &METRICS_ROUTE.tree_path)
         }
         _ => Err(
             "Unknown request path to prepare not allowed response. This is unexpected".to_string(),

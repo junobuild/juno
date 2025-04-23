@@ -131,8 +131,10 @@ pub mod interface {
     }
 
     pub mod http {
-        use crate::state::types::state::{Key, PageViewDevice, SessionId};
-        use junobuild_shared::types::state::Metadata;
+        use crate::state::types::state::{
+            Key, PageViewDevice, PerformanceData, PerformanceMetricName, SessionId,
+        };
+        use junobuild_shared::types::state::{Metadata};
         use junobuild_utils::{DocDataBigInt, DocDataPrincipal};
         use serde::{Deserialize, Serialize};
 
@@ -152,8 +154,15 @@ pub mod interface {
             pub track_event: SetTrackEventPayload,
         }
 
+        #[derive(Deserialize)]
+        pub struct SetPerformanceMetricRequest {
+            pub key: AnalyticKeyPayload,
+            pub performance_metric: SetPerformanceMetricPayload,
+        }
+
         pub type SetPageViewsRequest = Vec<SetPageViewRequest>;
         pub type SetTrackEventsRequest = Vec<SetTrackEventRequest>;
+        pub type SetPerformanceMetricsRequest = Vec<SetPerformanceMetricRequest>;
 
         #[derive(Deserialize)]
         pub struct AnalyticKeyPayload {
@@ -184,7 +193,18 @@ pub mod interface {
             pub version: VersionPayload,
         }
 
-        #[derive(Serialize, Deserialize)]
+        #[derive(Deserialize)]
+        pub struct SetPerformanceMetricPayload {
+            pub href: String,
+            pub metric_name: PerformanceMetricName,
+            pub data: PerformanceData,
+            pub user_agent: Option<String>,
+            pub satellite_id: SatelliteIdPayload,
+            pub session_id: SessionId,
+            pub version: VersionPayload,
+        }
+
+        #[derive(Serialize)]
         pub struct PageViewPayload {
             pub title: String,
             pub href: String,
@@ -202,11 +222,24 @@ pub mod interface {
             pub version: VersionPayload,
         }
 
-        #[derive(Serialize, Deserialize)]
+        #[derive(Serialize)]
         pub struct TrackEventPayload {
             pub name: String,
             #[serde(skip_serializing_if = "Option::is_none")]
             pub metadata: Option<Metadata>,
+            pub satellite_id: SatelliteIdPayload,
+            pub session_id: SessionId,
+            pub created_at: TimestampPayload,
+            pub updated_at: TimestampPayload,
+            #[serde(skip_serializing_if = "Option::is_none")]
+            pub version: VersionPayload,
+        }
+
+        #[derive(Serialize)]
+        pub struct PerformanceMetricPayload {
+            pub href: String,
+            pub metric_name: PerformanceMetricName,
+            pub data: PerformanceData,
             pub satellite_id: SatelliteIdPayload,
             pub session_id: SessionId,
             pub created_at: TimestampPayload,

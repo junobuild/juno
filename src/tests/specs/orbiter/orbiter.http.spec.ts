@@ -22,7 +22,7 @@ import { toBodyJson } from '../../utils/orbiter-test.utils';
 import { tick } from '../../utils/pic-tests.utils';
 import { controllersInitArgs, ORBITER_WASM_PATH } from '../../utils/setup-tests.utils';
 
-describe('Orbiter', () => {
+describe('Orbiter > Http', () => {
 	let pic: PocketIc;
 	let canisterId: Principal;
 	let actor: Actor<OrbiterActor>;
@@ -62,41 +62,41 @@ describe('Orbiter', () => {
 		await pic?.tearDown();
 	});
 
-	describe('Route not found', () => {
-		it('should return a certified not found response', async () => {
-			const { http_request } = actor;
+	describe.each(['/something', '/', '/view/something'])('Route not found %s', (url) => {
+		it.each([...NON_POST_METHODS, 'POST'])(
+			'should return a certified not found response for %s',
+			async (method) => {
+				const { http_request } = actor;
 
-			// TODO: tests methodes
-			// TODO: tests various routes including root /
+				const request: HttpRequest = {
+					body: [],
+					certificate_version: toNullable(2),
+					headers: [],
+					method,
+					url
+				};
 
-			const request: HttpRequest = {
-				body: [],
-				certificate_version: toNullable(2),
-				headers: [],
-				method: 'POST',
-				url: '/something'
-			};
+				const response = await http_request(request);
 
-			const response = await http_request(request);
+				expect(
+					response.headers.find(([key, _value]) => key.toLowerCase() === 'content-type')?.[1]
+				).toEqual('application/json');
 
-			expect(
-				response.headers.find(([key, _value]) => key.toLowerCase() === 'content-type')?.[1]
-			).toEqual('application/json');
+				const decoder = new TextDecoder();
+				const responseBody = decoder.decode(response.body as Uint8Array<ArrayBufferLike>);
 
-			const decoder = new TextDecoder();
-			const responseBody = decoder.decode(response.body as Uint8Array<ArrayBufferLike>);
+				expect(JSON.parse(responseBody)).toEqual(RESPONSE_404);
 
-			expect(JSON.parse(responseBody)).toEqual(RESPONSE_404);
-
-			await assertCertification({
-				canisterId,
-				pic,
-				request,
-				response,
-				currentDate,
-				statusCode: 404
-			});
-		});
+				await assertCertification({
+					canisterId,
+					pic,
+					request,
+					response,
+					currentDate,
+					statusCode: 404
+				});
+			}
+		);
 	});
 
 	describe('configured', () => {

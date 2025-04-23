@@ -16,9 +16,7 @@ use crate::analytics::{
     analytics_page_views_clients, analytics_page_views_metrics, analytics_page_views_top_10,
     analytics_performance_metrics_web_vitals, analytics_track_events,
 };
-use crate::assert::config::{
-    assert_page_views_enabled, assert_performance_metrics_enabled, assert_track_events_enabled,
-};
+use crate::assert::config::assert_performance_metrics_enabled;
 use crate::config::store::{
     del_satellite_config as del_satellite_config_store, get_satellite_configs,
     set_satellite_config as set_satellite_config_store,
@@ -27,8 +25,7 @@ use crate::controllers::store::{
     delete_controllers as delete_controllers_store, get_admin_controllers, get_controllers,
     set_controllers as set_controllers_store,
 };
-use crate::events::helpers::assert_and_insert_page_view;
-use crate::events::store::insert_page_view;
+use crate::events::helpers::{assert_and_insert_page_view, assert_and_insert_track_event};
 use crate::guards::{caller_is_admin_controller, caller_is_controller};
 use crate::handler::orbiter::OrbiterHttpRequestHandler;
 use crate::http::server::{on_http_request, on_http_request_update};
@@ -42,7 +39,7 @@ use ciborium::{from_reader, into_writer};
 use events::store::{
     get_page_views as get_page_views_store,
     get_performance_metrics as get_performance_metrics_store, get_satellite_config,
-    get_track_events as get_track_events_store, insert_performance_metric, insert_track_event,
+    get_track_events as get_track_events_store, insert_performance_metric,
 };
 use ic_cdk::api::call::{arg_data, ArgDecoderConfig};
 use ic_cdk::trap;
@@ -138,8 +135,7 @@ fn set_page_views(
     page_views: Vec<(AnalyticKey, SetPageView)>,
 ) -> Result<(), Vec<(AnalyticKey, String)>> {
     fn insert(key: AnalyticKey, page_view: SetPageView) -> Result<(), String> {
-        assert_page_views_enabled(&get_satellite_config(&page_view.satellite_id))?;
-        insert_page_view(key, page_view)?;
+        assert_and_insert_page_view(key, page_view)?;
 
         Ok(())
     }
@@ -192,9 +188,7 @@ fn get_page_views_analytics_clients(filter: GetAnalytics) -> AnalyticsClientsPag
 #[deprecated(since = "0.1.0", note = "prefer HTTP POST request")]
 #[update]
 fn set_track_event(key: AnalyticKey, track_event: SetTrackEvent) -> Result<TrackEvent, String> {
-    assert_track_events_enabled(&get_satellite_config(&track_event.satellite_id))?;
-
-    insert_track_event(key, track_event)
+    assert_and_insert_track_event(key, track_event)
 }
 
 #[deprecated(since = "0.1.0", note = "prefer HTTP POST request")]
@@ -203,8 +197,7 @@ fn set_track_events(
     track_events: Vec<(AnalyticKey, SetTrackEvent)>,
 ) -> Result<(), Vec<(AnalyticKey, String)>> {
     fn insert(key: AnalyticKey, track_event: SetTrackEvent) -> Result<(), String> {
-        assert_track_events_enabled(&get_satellite_config(&track_event.satellite_id))?;
-        insert_track_event(key, track_event)?;
+        assert_and_insert_track_event(key, track_event)?;
 
         Ok(())
     }

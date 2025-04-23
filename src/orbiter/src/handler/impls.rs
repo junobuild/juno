@@ -1,6 +1,9 @@
-use crate::state::types::state::{AnalyticKey, PageView};
-use crate::types::interface::http::{AnalyticKeyPayload, PageViewPayload, SetPageViewPayload};
-use crate::types::interface::SetPageView;
+use crate::state::types::state::{AnalyticKey, PageView, TrackEvent};
+use crate::types::interface::http::{
+    AnalyticKeyPayload, PageViewPayload, SetPageViewPayload, SetTrackEventPayload,
+    TrackEventPayload,
+};
+use crate::types::interface::{SetPageView, SetTrackEvent};
 use junobuild_utils::{DocDataBigInt, DocDataPrincipal};
 
 impl AnalyticKeyPayload {
@@ -49,6 +52,42 @@ impl PageViewPayload {
                 value: page_view.updated_at,
             },
             version: page_view
+                .version
+                .map(|version| DocDataBigInt { value: version }),
+        }
+    }
+}
+
+impl SetTrackEventPayload {
+    pub fn into_domain(self) -> SetTrackEvent {
+        SetTrackEvent {
+            name: self.name,
+            metadata: self.metadata,
+            user_agent: self.user_agent,
+            satellite_id: self.satellite_id.value,
+            session_id: self.session_id,
+            updated_at: None,
+            version: self.version.map(|version| version.value),
+        }
+    }
+}
+
+impl TrackEventPayload {
+    pub fn from_domain(track_event: TrackEvent) -> Self {
+        Self {
+            name: track_event.name,
+            metadata: track_event.metadata,
+            satellite_id: DocDataPrincipal {
+                value: track_event.satellite_id,
+            },
+            session_id: track_event.session_id,
+            created_at: DocDataBigInt {
+                value: track_event.created_at,
+            },
+            updated_at: DocDataBigInt {
+                value: track_event.updated_at,
+            },
+            version: track_event
                 .version
                 .map(|version| DocDataBigInt { value: version }),
         }

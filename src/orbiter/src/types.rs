@@ -203,7 +203,7 @@ pub mod interface {
         }
 
         #[derive(Serialize, Deserialize)]
-        pub struct TrackEvent {
+        pub struct TrackEventPayload {
             pub name: String,
             #[serde(skip_serializing_if = "Option::is_none")]
             pub metadata: Option<Metadata>,

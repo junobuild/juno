@@ -28,7 +28,7 @@ export interface SetTrackEventPayload {
 	user_agent?: string;
 }
 
-export type PageViewPayload = Omit<SetPageViewPayload, 'user_agent'> & {
+export type PageViewPayload = SetPageViewPayload & {
 	updated_at: bigint;
 	created_at: bigint;
 };

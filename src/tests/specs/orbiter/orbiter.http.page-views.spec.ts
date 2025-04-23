@@ -165,9 +165,7 @@ describe('Orbiter > HTTP > Page views', () => {
 
 					const { version, created_at, updated_at, ...rest } = data;
 
-					const { user_agent: _, ...restMock } = pageViewPayloadMock;
-
-					expect(rest).toEqual(restMock);
+					expect(rest).toEqual(pageViewPayloadMock);
 					expect(version).toEqual(1n);
 					expect(created_at).toBeGreaterThan(0n);
 					expect(updated_at).toBeGreaterThan(0n);

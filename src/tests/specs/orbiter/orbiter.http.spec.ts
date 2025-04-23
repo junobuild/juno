@@ -175,6 +175,26 @@ describe('Orbiter > Http', () => {
 	});
 
 	describe('configured', () => {
+		interface SetPageViewRequest {
+			key: AnalyticKey;
+			page_view: SetPageViewPayload;
+		}
+
+		const pageView: SetPageViewRequest = {
+			key: { key: nanoid(), collected_at: 1230n },
+			page_view: pageViewPayloadMock
+		};
+
+		const pagesViews: SetPageViewRequest[] = [
+			{
+				key: { key: nanoid(), collected_at: 1230n },
+				page_view: pageViewPayloadMock
+			},
+			{
+				key: { key: nanoid(), collected_at: 1240n },
+				page_view: pageViewPayloadMock
+			}
+		];
 		beforeAll(async () => {
 			actor.setIdentity(controller);
 
@@ -204,17 +224,7 @@ describe('Orbiter > Http', () => {
 				actor.setIdentity(user);
 			});
 
-			interface SetPageViewRequest {
-				key: AnalyticKey;
-				page_view: SetPageViewPayload;
-			}
-
 			describe('page view', () => {
-				const pageView: SetPageViewRequest = {
-					key: { key: nanoid(), collected_at: 123n },
-					page_view: pageViewPayloadMock
-				};
-
 				const body = toBodyJson(pageView);
 
 				it('should upgrade http_request', async () => {
@@ -332,17 +342,6 @@ describe('Orbiter > Http', () => {
 			});
 
 			describe('page views', () => {
-				const pagesViews: SetPageViewRequest[] = [
-					{
-						key: { key: nanoid(), collected_at: 123n },
-						page_view: pageViewPayloadMock
-					},
-					{
-						key: { key: nanoid(), collected_at: 124n },
-						page_view: pageViewPayloadMock
-					}
-				];
-
 				const body = toBodyJson(pagesViews);
 
 				it('should upgrade http_request', async () => {
@@ -453,6 +452,33 @@ describe('Orbiter > Http', () => {
 					const result = JSON.parse(responseBody, jsonReviver);
 
 					expect(result).toEqual(RESPONSE_OK);
+				});
+			});
+		});
+
+		describe('controller', () => {
+			beforeAll(() => {
+				actor.setIdentity(controller);
+			});
+
+			it('should retrieve all page views', async () => {
+				const { get_page_views } = actor;
+
+				const result = await get_page_views({
+					from: [],
+					to: [],
+					satellite_id: [satelliteIdMock]
+				});
+
+				expect(Array.isArray(result)).toBe(true);
+
+				expect(result.length).toEqual([pageView, ...pagesViews].length);
+
+				result.forEach(([key, pageView]) => {
+					expect(key.collected_at).toBeGreaterThanOrEqual(1230n);
+					expect(key.collected_at).toBeLessThanOrEqual(1240n);
+					expect(pageView.href).toBe('https://test.com');
+					expect(fromNullable(pageView.version)).toBe(2n);
 				});
 			});
 		});

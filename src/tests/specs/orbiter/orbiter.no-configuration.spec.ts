@@ -95,7 +95,7 @@ describe('Orbiter > No configuration', () => {
 			);
 		});
 
-		it('should not set page views', async () => {
+		it('should not set track events', async () => {
 			const { set_track_events } = actor;
 
 			const trackEvents: [AnalyticKey, SetTrackEvent][] = [

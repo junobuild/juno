@@ -1,4 +1,4 @@
-use crate::http::types::interface::ApiResponse;
+use crate::http::types::interface::{ApiResponse, ResponseBody};
 use ic_http_certification::StatusCode;
 use serde::Serialize;
 
@@ -25,7 +25,7 @@ impl<'a, T: Serialize> ApiResponse<'a, T> {
         }
     }
 
-    pub fn encode(&self) -> Vec<u8> {
+    pub fn encode(&self) -> ResponseBody {
         serde_json::to_vec(self).expect("Failed to serialize value")
     }
 }

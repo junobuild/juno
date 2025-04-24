@@ -9,7 +9,7 @@ use crate::http::constants::{
     EVENTS_PATH, EVENT_PATH, KNOWN_ROUTES, METRICS_PATH, METRIC_PATH, VIEWS_PATH, VIEW_PATH,
 };
 use crate::http::types::handler::HttpRequestHandler;
-use crate::http::types::interface::ApiResponse;
+use crate::http::types::interface::{ApiResponse, ResponseBody};
 use ic_http_certification::{HttpRequest, StatusCode};
 
 pub struct OrbiterHttpRequestHandler;
@@ -23,7 +23,7 @@ impl HttpRequestHandler for OrbiterHttpRequestHandler {
         method == "POST"
     }
 
-    fn handle_update(&self, request: &HttpRequest) -> (StatusCode, Vec<u8>) {
+    fn handle_update(&self, request: &HttpRequest) -> (StatusCode, ResponseBody) {
         let uri_request_path = request.get_path();
 
         if let Err(err) = uri_request_path {

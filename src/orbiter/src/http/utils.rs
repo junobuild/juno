@@ -1,6 +1,7 @@
+use crate::http::types::interface::ResponseBody;
 use ic_http_certification::{HttpResponse, StatusCode};
 
-pub fn create_json_response(status_code: StatusCode, body: Vec<u8>) -> HttpResponse<'static> {
+pub fn create_json_response(status_code: StatusCode, body: ResponseBody) -> HttpResponse<'static> {
     HttpResponse::builder()
         .with_status_code(status_code)
         .with_headers(vec![

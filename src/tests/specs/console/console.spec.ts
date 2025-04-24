@@ -32,8 +32,8 @@ describe('Console', () => {
 	});
 
 	it('should throw errors if too many users are created quickly', async () => {
-		await expect(
-			async () => await initMissionControls({ actor, pic, length: 2 })
-		).rejects.toThrowError(new RegExp('Rate limit reached, try again later', 'i'));
+		await expect(async () => await initMissionControls({ actor, pic, length: 2 })).rejects.toThrow(
+			new RegExp('Rate limit reached, try again later', 'i')
+		);
 	});
 });

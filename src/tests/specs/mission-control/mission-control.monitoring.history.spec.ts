@@ -81,7 +81,7 @@ describe('Mission Control > History', () => {
 
 		const results = await get_monitoring_history(filter);
 
-		expect(results.length).toEqual(0);
+		expect(results).toHaveLength(0);
 	};
 
 	const testHistory = async ({
@@ -101,7 +101,7 @@ describe('Mission Control > History', () => {
 
 		const results = await get_monitoring_history(filter);
 
-		expect(results.length).toEqual(expectedLength);
+		expect(results).toHaveLength(expectedLength);
 
 		results.forEach((result) => {
 			const [key, history] = result;
@@ -253,10 +253,12 @@ describe('Mission Control > History', () => {
 
 				const [beforeKey1] = before[1];
 				const [afterKey0] = after[0];
+
 				expect(beforeKey1.created_at).toEqual(afterKey0.created_at);
 
 				const [beforeKey2] = before[2];
 				const [afterKey1] = after[1];
+
 				expect(beforeKey2.created_at).toEqual(afterKey1.created_at);
 
 				expect(

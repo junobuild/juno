@@ -70,10 +70,11 @@ describe('Sputnik > sdk > getAssetStore', () => {
 		});
 
 		const nullishMsg = logs.find(([_, { message }]) => message.includes('Nullish:'));
+
 		expect(nullishMsg).not.toBeUndefined();
 
-		expect((nullishMsg?.[1].message ?? 'true').replace('Nullish:', '').trim() === 'false').toEqual(
-			true
-		);
+		expect(
+			(nullishMsg?.[1].message ?? 'true').replace('Nullish:', '').trim() === 'false'
+		).toBeTruthy();
 	});
 });

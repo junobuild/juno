@@ -89,6 +89,7 @@ describe('Mission control > Upgrade', () => {
 			expect(satellites[0][1].updated_at).toBeGreaterThan(0n);
 
 			const [_, satName] = satellites[0][1].metadata.find(([key]) => key === 'name') ?? [];
+
 			expect(satName).toEqual(satelliteName);
 
 			const orbiters = await list_orbiters();
@@ -101,6 +102,7 @@ describe('Mission control > Upgrade', () => {
 			expect(orbiters[0][1].updated_at).toBeGreaterThan(0n);
 
 			const [__, orbName] = orbiters[0][1].metadata.find(([key]) => key === 'name') ?? [];
+
 			expect(orbName).toEqual(orbiterName);
 		};
 

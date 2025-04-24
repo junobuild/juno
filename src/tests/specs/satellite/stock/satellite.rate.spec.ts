@@ -116,7 +116,7 @@ describe('Satellite > Rate', () => {
 				// DEFAULT 100 per minutes. So 1 for very first token + 100
 				await testDocs({ length: 102, collection: '#user' });
 
-				expect(true).toBe(false);
+				expect(true).toBeFalsy();
 			} catch (error: unknown) {
 				expect((error as Error).message).toContain('Rate limit reached, try again later.');
 			}
@@ -137,13 +137,13 @@ describe('Satellite > Rate', () => {
 
 			const docs = await testDocs({ length, collection: '#user' });
 
-			expect(docs.length).toBe(length);
+			expect(docs).toHaveLength(length);
 
 			try {
 				// One too many
 				await testDocs({ length: 1, collection: '#user' });
 
-				expect(true).toBe(false);
+				expect(true).toBeFalsy();
 			} catch (error: unknown) {
 				expect((error as Error).message).toContain('Rate limit reached, try again later.');
 			}
@@ -214,7 +214,7 @@ describe('Satellite > Rate', () => {
 				try {
 					await testDocs({ length: 11, collection });
 
-					expect(true).toBe(false);
+					expect(true).toBeFalsy();
 				} catch (error: unknown) {
 					expect((error as Error).message).toContain('Rate limit reached, try again later.');
 				}
@@ -275,7 +275,7 @@ describe('Satellite > Rate', () => {
 				try {
 					await deleteDocs(docs);
 
-					expect(true).toBe(false);
+					expect(true).toBeFalsy();
 				} catch (error: unknown) {
 					expect((error as Error).message).toContain('Rate limit reached, try again later.');
 				}
@@ -344,7 +344,7 @@ describe('Satellite > Rate', () => {
 				try {
 					await testBatches(11);
 
-					expect(true).toBe(false);
+					expect(true).toBeFalsy();
 				} catch (error: unknown) {
 					expect((error as Error).message).toContain('Rate limit reached, try again later.');
 				}
@@ -415,7 +415,7 @@ describe('Satellite > Rate', () => {
 				try {
 					await testChunks(batches);
 
-					expect(true).toBe(false);
+					expect(true).toBeFalsy();
 				} catch (error: unknown) {
 					expect((error as Error).message).toContain('Rate limit reached, try again later.');
 				}

@@ -75,7 +75,8 @@ describe('Orbiter > Upgrade > Configuration', () => {
 			const { list_satellite_configs } = newActor;
 
 			const configs = await list_satellite_configs();
-			expect(configs.length).toBe(0);
+
+			expect(configs).toHaveLength(0);
 		});
 
 		it('should migrate configuration disabled to none', async () => {
@@ -91,7 +92,7 @@ describe('Orbiter > Upgrade > Configuration', () => {
 						}
 					]
 				])
-			).resolves.not.toThrowError();
+			).resolves.not.toThrow();
 
 			await upgradeVersion();
 
@@ -101,7 +102,8 @@ describe('Orbiter > Upgrade > Configuration', () => {
 			const { list_satellite_configs } = newActor;
 
 			const configs = await list_satellite_configs();
-			expect(configs.length).toBe(1);
+
+			expect(configs).toHaveLength(1);
 
 			expect(configs[0][0].toText()).toEqual(satelliteIdMock.toText());
 			expect(fromNullable(configs[0][1].version)).toBe(1n);
@@ -121,7 +123,7 @@ describe('Orbiter > Upgrade > Configuration', () => {
 						}
 					]
 				])
-			).resolves.not.toThrowError();
+			).resolves.not.toThrow();
 
 			await upgradeVersion();
 
@@ -131,7 +133,8 @@ describe('Orbiter > Upgrade > Configuration', () => {
 			const { list_satellite_configs } = newActor;
 
 			const configs = await list_satellite_configs();
-			expect(configs.length).toBe(1);
+
+			expect(configs).toHaveLength(1);
 
 			expect(configs[0][0].toText()).toEqual(satelliteIdMock.toText());
 			expect(fromNullable(configs[0][1].version)).toBe(1n);
@@ -157,7 +160,7 @@ describe('Orbiter > Upgrade > Configuration', () => {
 						}
 					]
 				])
-			).resolves.not.toThrowError();
+			).resolves.not.toThrow();
 
 			await upgradeVersion();
 
@@ -169,7 +172,8 @@ describe('Orbiter > Upgrade > Configuration', () => {
 			const { list_satellite_configs } = newActor;
 
 			const configs = await list_satellite_configs();
-			expect(configs.length).toBe(1);
+
+			expect(configs).toHaveLength(1);
 
 			expect(configs[0][0].toText()).toEqual(satelliteIdMock.toText());
 			expect(fromNullable(configs[0][1].version)).toBe(1n);

@@ -116,6 +116,7 @@ describe.each([{ memory: { Heap: null } }, { memory: { Stable: null } }])(
 				};
 
 				const results = await Promise.all(keys.map(delDoc));
+
 				expect(results).toHaveLength(10);
 			});
 
@@ -167,7 +168,7 @@ describe.each([{ memory: { Heap: null } }, { memory: { Stable: null } }])(
 						...doc!,
 						version: [123n]
 					})
-				).rejects.toThrowError(new RegExp(JUNO_ERROR_VERSION_OUTDATED_OR_FUTURE, 'i'));
+				).rejects.toThrow(new RegExp(JUNO_ERROR_VERSION_OUTDATED_OR_FUTURE, 'i'));
 			});
 		});
 
@@ -190,6 +191,7 @@ describe.each([{ memory: { Heap: null } }, { memory: { Stable: null } }])(
 				const { get_db_config } = actor;
 
 				const config = await get_db_config();
+
 				expect(config).toEqual([]);
 			});
 
@@ -208,6 +210,7 @@ describe.each([{ memory: { Heap: null } }, { memory: { Stable: null } }])(
 				await set_db_config(config);
 
 				const result = await get_db_config();
+
 				expect(result).toEqual([config]);
 
 				// Redo for next test
@@ -243,9 +246,11 @@ describe.each([{ memory: { Heap: null } }, { memory: { Stable: null } }])(
 				};
 
 				const { items_length, items } = await list_docs(TEST_COLLECTION, paramsCreatedAt);
+
 				expect(items_length).toBe(10n);
 
 				const countCreatedAt = await count_docs(TEST_COLLECTION, paramsCreatedAt);
+
 				expect(countCreatedAt).toBe(10n);
 
 				const paramsGreaterThan: ListParams = {
@@ -266,9 +271,11 @@ describe.each([{ memory: { Heap: null } }, { memory: { Stable: null } }])(
 					TEST_COLLECTION,
 					paramsGreaterThan
 				);
+
 				expect(items_length_from).toBe(5n);
 
 				const countGreaterThan = await count_docs(TEST_COLLECTION, paramsGreaterThan);
+
 				expect(countGreaterThan).toBe(5n);
 
 				const paramsLessThen: ListParams = {
@@ -286,9 +293,11 @@ describe.each([{ memory: { Heap: null } }, { memory: { Stable: null } }])(
 				};
 
 				const { items_length: items_length_to } = await list_docs(TEST_COLLECTION, paramsLessThen);
+
 				expect(items_length_to).toBe(4n);
 
 				const countLessThan = await count_docs(TEST_COLLECTION, paramsLessThen);
+
 				expect(countLessThan).toBe(4n);
 
 				const paramsBetween: ListParams = {
@@ -309,9 +318,11 @@ describe.each([{ memory: { Heap: null } }, { memory: { Stable: null } }])(
 					TEST_COLLECTION,
 					paramsBetween
 				);
+
 				expect(items_length_between).toBe(5n);
 
 				const countBetween = await count_docs(TEST_COLLECTION, paramsBetween);
+
 				expect(countBetween).toBe(5n);
 			});
 
@@ -329,9 +340,11 @@ describe.each([{ memory: { Heap: null } }, { memory: { Stable: null } }])(
 				};
 
 				const { items_length, items } = await list_docs(TEST_COLLECTION, paramsUpdatedAt);
+
 				expect(items_length).toBe(10n);
 
 				const countUpdatedAt = await count_docs(TEST_COLLECTION, paramsUpdatedAt);
+
 				expect(countUpdatedAt).toBe(10n);
 
 				const paramsGreaterThan: ListParams = {
@@ -352,9 +365,11 @@ describe.each([{ memory: { Heap: null } }, { memory: { Stable: null } }])(
 					TEST_COLLECTION,
 					paramsGreaterThan
 				);
+
 				expect(items_length_from).toBe(5n);
 
 				const countGreaterThan = await count_docs(TEST_COLLECTION, paramsGreaterThan);
+
 				expect(countGreaterThan).toBe(5n);
 
 				const paramsLessThan: ListParams = {
@@ -372,9 +387,11 @@ describe.each([{ memory: { Heap: null } }, { memory: { Stable: null } }])(
 				};
 
 				const { items_length: items_length_to } = await list_docs(TEST_COLLECTION, paramsLessThan);
+
 				expect(items_length_to).toBe(4n);
 
 				const countLessThan = await count_docs(TEST_COLLECTION, paramsLessThan);
+
 				expect(countLessThan).toBe(4n);
 
 				const paramsBetween: ListParams = {
@@ -395,9 +412,11 @@ describe.each([{ memory: { Heap: null } }, { memory: { Stable: null } }])(
 					TEST_COLLECTION,
 					paramsBetween
 				);
+
 				expect(items_length_between).toBe(5n);
 
 				const countBetween = await count_docs(TEST_COLLECTION, paramsBetween);
+
 				expect(countBetween).toBe(5n);
 			});
 		});
@@ -440,14 +459,17 @@ describe.each([{ memory: { Heap: null } }, { memory: { Stable: null } }])(
 				};
 
 				const initialCount = await count_docs(TEST_COLLECTION, filterParams);
+
 				expect(initialCount).toBe(10n);
 
 				await del_filtered_docs(TEST_COLLECTION, filterParams);
 
 				const finalCount = await count_docs(TEST_COLLECTION, filterParams);
+
 				expect(finalCount).toBe(0n);
 
 				const { items_length } = await list_docs(TEST_COLLECTION, filterParams);
+
 				expect(items_length).toBe(0n);
 			});
 
@@ -479,11 +501,13 @@ describe.each([{ memory: { Heap: null } }, { memory: { Stable: null } }])(
 				};
 
 				const initialSpecificCount = await count_docs(TEST_COLLECTION, filterParamsSpecific);
+
 				expect(initialSpecificCount).toBe(5n);
 
 				await del_filtered_docs(TEST_COLLECTION, filterParamsSpecific);
 
 				const finalSpecificCount = await count_docs(TEST_COLLECTION, filterParamsSpecific);
+
 				expect(finalSpecificCount).toBe(0n);
 			});
 
@@ -514,6 +538,7 @@ describe.each([{ memory: { Heap: null } }, { memory: { Stable: null } }])(
 				actor.setIdentity(controller);
 
 				const initialCount = await count_collection_docs(TEST_COLLECTION);
+
 				expect(initialCount).toBe(11n);
 
 				actor.setIdentity(user1);
@@ -521,14 +546,17 @@ describe.each([{ memory: { Heap: null } }, { memory: { Stable: null } }])(
 				await del_filtered_docs(TEST_COLLECTION, filterParams);
 
 				const finalCount = await count_docs(TEST_COLLECTION, filterParams);
+
 				expect(finalCount).toBe(0n);
 
 				const { items_length } = await list_docs(TEST_COLLECTION, filterParams);
+
 				expect(items_length).toBe(0n);
 
 				actor.setIdentity(controller);
 
 				const updatedCount = await count_collection_docs(TEST_COLLECTION);
+
 				expect(updatedCount).toBe(6n);
 			});
 
@@ -569,6 +597,7 @@ describe.each([{ memory: { Heap: null } }, { memory: { Stable: null } }])(
 				await del_filtered_docs(TEST_COLLECTION, filterDelete);
 
 				const finalSpecificCount = await count_docs(TEST_COLLECTION, filterList);
+
 				expect(finalSpecificCount).toBe(2n);
 			});
 		});
@@ -706,7 +735,7 @@ describe.each([{ memory: { Heap: null } }, { memory: { Stable: null } }])(
 				try {
 					await del_rule({ Db: null }, TEST_COLLECTION, { version: [1n] });
 
-					expect(true).toBe(false);
+					expect(true).toBeFalsy();
 				} catch (error: unknown) {
 					expect((error as Error).message).toContain(
 						`The "${TEST_COLLECTION}" collection in Datastore is not empty.`
@@ -726,7 +755,7 @@ describe.each([{ memory: { Heap: null } }, { memory: { Stable: null } }])(
 						version: toNullable()
 					});
 
-					expect(true).toBe(false);
+					expect(true).toBeFalsy();
 				} catch (error: unknown) {
 					expect((error as Error).message).toContain(
 						`Collection "${collectionUnknown}" not found in Datastore.`
@@ -782,7 +811,7 @@ describe.each([{ memory: { Heap: null } }, { memory: { Stable: null } }])(
 				});
 
 				it('should not allow to set a document', async () => {
-					await expect(createDoc()).rejects.toThrowError(new RegExp(errorMsg, 'i'));
+					await expect(createDoc()).rejects.toThrow(new RegExp(errorMsg, 'i'));
 				});
 
 				it('should not allow to set many documents', async () => {

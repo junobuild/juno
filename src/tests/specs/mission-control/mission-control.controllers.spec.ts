@@ -71,7 +71,7 @@ describe('Mission Control > Controllers', () => {
 	it('should not be able to set an orbiter because mission control is effectively not a controller', async () => {
 		const { set_orbiter } = actor;
 
-		await expect(set_orbiter(orbiterId, ['Hello'])).rejects.toThrowError(
+		await expect(set_orbiter(orbiterId, ['Hello'])).rejects.toThrow(
 			new RegExp(ORBITER_CONTROLLER_ERR_MSG)
 		);
 	});
@@ -79,7 +79,7 @@ describe('Mission Control > Controllers', () => {
 	it('should not be able to set a satellite because mission control is effectively not a controller', async () => {
 		const { set_satellite } = actor;
 
-		await expect(set_satellite(satelliteId, ['Hello'])).rejects.toThrowError(
+		await expect(set_satellite(satelliteId, ['Hello'])).rejects.toThrow(
 			new RegExp(JUNO_AUTH_ERROR_NOT_ADMIN_CONTROLLER)
 		);
 	});

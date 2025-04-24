@@ -48,6 +48,7 @@ describe('Sputnik > sdk > getDocStore', () => {
 		assertNonNullish(doc);
 
 		const resultData: SputnikMock = await fromArray(doc.data);
+
 		expect(resultData.value).toEqual('Validated');
 
 		expect(doc.version).toEqual([2n]);

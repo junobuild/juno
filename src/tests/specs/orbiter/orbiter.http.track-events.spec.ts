@@ -156,7 +156,7 @@ describe('Orbiter > HTTP > Track events', () => {
 
 					const response = await http_request_update(request);
 
-					expect(response.status_code).toEqual(201);
+					expect(response.status_code).toEqual(200);
 
 					const decoder = new TextDecoder();
 					const responseBody = decoder.decode(response.body as Uint8Array<ArrayBufferLike>);
@@ -277,7 +277,7 @@ describe('Orbiter > HTTP > Track events', () => {
 
 					const response = await http_request_update(request);
 
-					expect(response.status_code).toEqual(201);
+					expect(response.status_code).toEqual(200);
 
 					const decoder = new TextDecoder();
 					const responseBody = decoder.decode(response.body as Uint8Array<ArrayBufferLike>);

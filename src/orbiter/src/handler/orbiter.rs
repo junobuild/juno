@@ -54,7 +54,7 @@ impl HttpRequestHandler for OrbiterHttpRequestHandler {
         };
 
         match result {
-            Ok(body) => (StatusCode::CREATED, body),
+            Ok(body) => (StatusCode::OK, body),
             Err(err) => {
                 let body = ApiResponse::<()>::err(StatusCode::INTERNAL_SERVER_ERROR, err).encode();
                 (StatusCode::INTERNAL_SERVER_ERROR, body)

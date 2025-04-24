@@ -156,6 +156,8 @@ describe('Orbiter > HTTP > Performance metrics', () => {
 
 					const response = await http_request_update(request);
 
+					expect(response.status_code).toEqual(201);
+
 					const decoder = new TextDecoder();
 					const responseBody = decoder.decode(response.body as Uint8Array<ArrayBufferLike>);
 
@@ -274,6 +276,8 @@ describe('Orbiter > HTTP > Performance metrics', () => {
 					};
 
 					const response = await http_request_update(request);
+
+					expect(response.status_code).toEqual(201);
 
 					const decoder = new TextDecoder();
 					const responseBody = decoder.decode(response.body as Uint8Array<ArrayBufferLike>);

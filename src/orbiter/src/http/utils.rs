@@ -30,7 +30,7 @@ pub fn create_cors_preflight_response() -> HttpResponse<'static> {
         .with_status_code(StatusCode::NO_CONTENT)
         .with_headers(vec![
             ("Access-Control-Allow-Origin".to_string(), "*".to_string()),
-            ("Access-Control-Allow-Methods".to_string(), "GET, POST, OPTIONS".to_string()),
+            ("Access-Control-Allow-Methods".to_string(), "POST, OPTIONS".to_string()),
             ("Access-Control-Allow-Headers".to_string(), "Content-Type".to_string()),
         ])
         .with_body(vec![])

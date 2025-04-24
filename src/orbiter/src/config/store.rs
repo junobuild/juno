@@ -59,6 +59,7 @@ fn set_satellite_config_impl(
 
     let new_config = SatelliteConfig {
         features: config.features.clone(),
+        restricted_origins: None,
         created_at,
         updated_at,
         version: Some(version),

@@ -6,6 +6,7 @@ pub mod state {
     use serde::{Deserialize, Serialize};
     use std::cmp::Ordering;
     use std::collections::HashMap;
+    use crate::types::core::DomainName;
 
     pub type UserId = Principal;
 
@@ -108,6 +109,7 @@ pub mod state {
     #[derive(CandidType, Serialize, Deserialize, Clone)]
     pub struct OrbiterSatelliteConfig {
         pub features: Option<OrbiterSatelliteFeatures>,
+        pub restricted_origins: Option<Vec<DomainName>>,
         pub created_at: Timestamp,
         pub updated_at: Timestamp,
         pub version: Option<Version>,

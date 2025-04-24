@@ -16,7 +16,6 @@ pub fn create_json_response(status_code: StatusCode, body: Vec<u8>) -> HttpRespo
                 "no-store, max-age=0".to_string(),
             ),
             ("pragma".to_string(), "no-cache".to_string()),
-            ("Access-Control-Allow-Origin".to_string(), "*".to_string()),
         ])
         .with_body(body)
         .build()

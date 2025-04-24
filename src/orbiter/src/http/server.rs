@@ -26,6 +26,7 @@ pub fn on_http_request_update(
     handler: &dyn HttpRequestHandler,
 ) -> HttpResponse<'static> {
     let handle_http_request_update = |request: &HttpRequest| -> HttpResponse<'static> {
+        // TODO: extand with CORS headers
         let (status_code, body) = handler.handle_update(request);
         create_json_response(status_code, body)
     };

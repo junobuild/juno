@@ -50,12 +50,12 @@ describe('Mission Control', () => {
 		satelliteId = cId;
 	});
 
-	afterAll(async () => {
-		await pic?.tearDown();
-	});
-
 	beforeEach(() => {
 		actor.setIdentity(controller);
+	});
+
+	afterAll(async () => {
+		await pic?.tearDown();
 	});
 
 	it('should throw errors on set satellite because the user of the mission control has been incorrectly set to another identity than the controller', async () => {

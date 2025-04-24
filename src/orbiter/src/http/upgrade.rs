@@ -1,4 +1,4 @@
-use crate::http::routes::not_allowed::init_certified_not_allowed_responses;
+use crate::http::routes::api::init_certified_api_responses;
 use crate::http::routes::not_found::init_certified_not_found_response;
 use ic_cdk::spawn;
 use ic_cdk_timers::set_timer;
@@ -9,6 +9,6 @@ pub fn defer_init_certified_responses() {
 }
 
 async fn init_certified_responses() {
-    init_certified_not_allowed_responses();
+    init_certified_api_responses();
     init_certified_not_found_response();
 }

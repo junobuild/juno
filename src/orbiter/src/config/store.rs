@@ -24,6 +24,15 @@ pub fn del_satellite_config(
     })
 }
 
+pub fn get_satellite_config(satellite_id: &SatelliteId) -> Option<SatelliteConfig> {
+    STATE.with(|state| {
+        let binding = state.borrow();
+        let config = binding.heap.config.get(satellite_id);
+
+        config.cloned()
+    })
+}
+
 pub fn get_satellite_configs() -> SatelliteConfigs {
     STATE.with(|state| state.borrow().heap.config.clone())
 }

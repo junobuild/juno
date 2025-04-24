@@ -117,7 +117,7 @@ describe('Satellite > User', () => {
 					del_doc('#user', user.getPrincipal().toText(), {
 						version: fromNullable(before)?.version ?? []
 					})
-				).resolves.not.toThrowError();
+				).resolves.not.toThrow();
 			});
 		});
 
@@ -303,7 +303,7 @@ describe('Satellite > User', () => {
 						description: toNullable(),
 						version: fromNullable(before)?.version ?? []
 					})
-				).resolves.not.toThrowError();
+				).resolves.not.toThrow();
 			});
 		});
 
@@ -333,7 +333,7 @@ describe('Satellite > User', () => {
 					del_doc('#user', user.getPrincipal().toText(), {
 						version: fromNullable(before)?.version ?? []
 					})
-				).resolves.not.toThrowError();
+				).resolves.not.toThrow();
 			});
 		});
 	});
@@ -400,7 +400,7 @@ describe('Satellite > User', () => {
 					del_doc('#user', user.getPrincipal().toText(), {
 						version: before.version
 					})
-				).resolves.not.toThrowError();
+				).resolves.not.toThrow();
 			});
 
 			it('should delete a banned user', async () => {
@@ -435,7 +435,7 @@ describe('Satellite > User', () => {
 					del_doc('#user', user.getPrincipal().toText(), {
 						version: afterBan.version
 					})
-				).resolves.not.toThrowError();
+				).resolves.not.toThrow();
 			});
 		});
 

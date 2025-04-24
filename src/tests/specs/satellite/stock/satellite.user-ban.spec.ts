@@ -339,7 +339,7 @@ describe('Satellite > User Ban', () => {
 				});
 
 				it('should not set documents if banned', async () => {
-					await expect(createDocs()).resolves.not.toThrowError();
+					await expect(createDocs()).resolves.not.toThrow();
 
 					await banUser({ user, version: [1n] });
 
@@ -347,12 +347,12 @@ describe('Satellite > User Ban', () => {
 				});
 
 				it('should set documents if unbanned', async () => {
-					await expect(createDocs()).resolves.not.toThrowError();
+					await expect(createDocs()).resolves.not.toThrow();
 
 					await banUser({ user, version: [1n] });
 					await unbanUser({ user, version: [2n] });
 
-					await expect(createDocs()).resolves.not.toThrowError();
+					await expect(createDocs()).resolves.not.toThrow();
 				});
 			});
 
@@ -372,7 +372,7 @@ describe('Satellite > User Ban', () => {
 				});
 
 				it('should not delete document if banned', async () => {
-					await expect(deleteDoc()).resolves.not.toThrowError();
+					await expect(deleteDoc()).resolves.not.toThrow();
 
 					await banUser({ user, version: [1n] });
 
@@ -380,12 +380,12 @@ describe('Satellite > User Ban', () => {
 				});
 
 				it('should delete document if unbanned', async () => {
-					await expect(deleteDoc()).resolves.not.toThrowError();
+					await expect(deleteDoc()).resolves.not.toThrow();
 
 					await banUser({ user, version: [1n] });
 					await unbanUser({ user, version: [2n] });
 
-					await expect(deleteDoc()).resolves.not.toThrowError();
+					await expect(deleteDoc()).resolves.not.toThrow();
 				});
 			});
 
@@ -410,7 +410,7 @@ describe('Satellite > User Ban', () => {
 				});
 
 				it('should not delete documents if banned', async () => {
-					await expect(deleteDocs()).resolves.not.toThrowError();
+					await expect(deleteDocs()).resolves.not.toThrow();
 
 					await banUser({ user, version: [1n] });
 
@@ -418,12 +418,12 @@ describe('Satellite > User Ban', () => {
 				});
 
 				it('should delete documents if unbanned', async () => {
-					await expect(deleteDocs()).resolves.not.toThrowError();
+					await expect(deleteDocs()).resolves.not.toThrow();
 
 					await banUser({ user, version: [1n] });
 					await unbanUser({ user, version: [2n] });
 
-					await expect(deleteDocs()).resolves.not.toThrowError();
+					await expect(deleteDocs()).resolves.not.toThrow();
 				});
 			});
 
@@ -441,7 +441,7 @@ describe('Satellite > User Ban', () => {
 				});
 
 				it('should not delete documents if banned', async () => {
-					await expect(deleteFilteredDocs()).resolves.not.toThrowError();
+					await expect(deleteFilteredDocs()).resolves.not.toThrow();
 
 					await banUser({ user, version: [1n] });
 
@@ -449,12 +449,12 @@ describe('Satellite > User Ban', () => {
 				});
 
 				it('should get documents if unbanned', async () => {
-					await expect(deleteFilteredDocs()).resolves.not.toThrowError();
+					await expect(deleteFilteredDocs()).resolves.not.toThrow();
 
 					await banUser({ user, version: [1n] });
 					await unbanUser({ user, version: [2n] });
 
-					await expect(deleteFilteredDocs()).resolves.not.toThrowError();
+					await expect(deleteFilteredDocs()).resolves.not.toThrow();
 				});
 			});
 
@@ -472,7 +472,7 @@ describe('Satellite > User Ban', () => {
 				});
 
 				it('should not list documents if banned', async () => {
-					await expect(listDocs()).resolves.not.toThrowError();
+					await expect(listDocs()).resolves.not.toThrow();
 
 					await banUser({ user, version: [1n] });
 
@@ -480,12 +480,12 @@ describe('Satellite > User Ban', () => {
 				});
 
 				it('should list documents if unbanned', async () => {
-					await expect(listDocs()).resolves.not.toThrowError();
+					await expect(listDocs()).resolves.not.toThrow();
 
 					await banUser({ user, version: [1n] });
 					await unbanUser({ user, version: [2n] });
 
-					await expect(listDocs()).resolves.not.toThrowError();
+					await expect(listDocs()).resolves.not.toThrow();
 				});
 			});
 
@@ -503,7 +503,7 @@ describe('Satellite > User Ban', () => {
 				});
 
 				it('should not count documents if banned', async () => {
-					await expect(countDocs()).resolves.not.toThrowError();
+					await expect(countDocs()).resolves.not.toThrow();
 
 					await banUser({ user, version: [1n] });
 
@@ -511,12 +511,12 @@ describe('Satellite > User Ban', () => {
 				});
 
 				it('should count documents if unbanned', async () => {
-					await expect(countDocs()).resolves.not.toThrowError();
+					await expect(countDocs()).resolves.not.toThrow();
 
 					await banUser({ user, version: [1n] });
 					await unbanUser({ user, version: [2n] });
 
-					await expect(countDocs()).resolves.not.toThrowError();
+					await expect(countDocs()).resolves.not.toThrow();
 				});
 			});
 		});
@@ -560,7 +560,7 @@ describe('Satellite > User Ban', () => {
 				});
 
 				it('should not init asset upload if banned', async () => {
-					await expect(initAsset()).resolves.not.toThrowError();
+					await expect(initAsset()).resolves.not.toThrow();
 
 					await banUser({ user, version: [1n] });
 
@@ -568,12 +568,12 @@ describe('Satellite > User Ban', () => {
 				});
 
 				it('should init asset upload if unbanned', async () => {
-					await expect(initAsset()).resolves.not.toThrowError();
+					await expect(initAsset()).resolves.not.toThrow();
 
 					await banUser({ user, version: [1n] });
 					await unbanUser({ user, version: [2n] });
 
-					await expect(initAsset()).resolves.not.toThrowError();
+					await expect(initAsset()).resolves.not.toThrow();
 				});
 			});
 
@@ -629,7 +629,7 @@ describe('Satellite > User Ban', () => {
 				});
 
 				it('should not delete assets if banned', async () => {
-					await expect(deleteFilteredAssets()).resolves.not.toThrowError();
+					await expect(deleteFilteredAssets()).resolves.not.toThrow();
 
 					await banUser({ user, version: [1n] });
 
@@ -639,12 +639,12 @@ describe('Satellite > User Ban', () => {
 				});
 
 				it('should get assets if unbanned', async () => {
-					await expect(deleteFilteredAssets()).resolves.not.toThrowError();
+					await expect(deleteFilteredAssets()).resolves.not.toThrow();
 
 					await banUser({ user, version: [1n] });
 					await unbanUser({ user, version: [2n] });
 
-					await expect(deleteFilteredAssets()).resolves.not.toThrowError();
+					await expect(deleteFilteredAssets()).resolves.not.toThrow();
 				});
 			});
 
@@ -662,7 +662,7 @@ describe('Satellite > User Ban', () => {
 				});
 
 				it('should not list assets if banned', async () => {
-					await expect(listAssets()).resolves.not.toThrowError();
+					await expect(listAssets()).resolves.not.toThrow();
 
 					await banUser({ user, version: [1n] });
 
@@ -670,12 +670,12 @@ describe('Satellite > User Ban', () => {
 				});
 
 				it('should list assets if unbanned', async () => {
-					await expect(listAssets()).resolves.not.toThrowError();
+					await expect(listAssets()).resolves.not.toThrow();
 
 					await banUser({ user, version: [1n] });
 					await unbanUser({ user, version: [2n] });
 
-					await expect(listAssets()).resolves.not.toThrowError();
+					await expect(listAssets()).resolves.not.toThrow();
 				});
 			});
 
@@ -693,7 +693,7 @@ describe('Satellite > User Ban', () => {
 				});
 
 				it('should not count assets if banned', async () => {
-					await expect(countAssets()).resolves.not.toThrowError();
+					await expect(countAssets()).resolves.not.toThrow();
 
 					await banUser({ user, version: [1n] });
 
@@ -701,12 +701,12 @@ describe('Satellite > User Ban', () => {
 				});
 
 				it('should count assets if unbanned', async () => {
-					await expect(countAssets()).resolves.not.toThrowError();
+					await expect(countAssets()).resolves.not.toThrow();
 
 					await banUser({ user, version: [1n] });
 					await unbanUser({ user, version: [2n] });
 
-					await expect(countAssets()).resolves.not.toThrowError();
+					await expect(countAssets()).resolves.not.toThrow();
 				});
 			});
 
@@ -780,7 +780,7 @@ describe('Satellite > User Ban', () => {
 					await banUser({ user, version: [1n] });
 					await unbanUser({ user, version: [2n] });
 
-					await expect(deleteAsset()).resolves.not.toThrowError();
+					await expect(deleteAsset()).resolves.not.toThrow();
 				});
 			});
 
@@ -814,7 +814,7 @@ describe('Satellite > User Ban', () => {
 					await banUser({ user, version: [1n] });
 					await unbanUser({ user, version: [2n] });
 
-					await expect(deleteAssets()).resolves.not.toThrowError();
+					await expect(deleteAssets()).resolves.not.toThrow();
 				});
 			});
 		});

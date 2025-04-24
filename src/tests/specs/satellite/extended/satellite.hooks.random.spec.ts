@@ -44,7 +44,7 @@ describe('Satellite > Hooks > Random', () => {
 
 		const { items: logs } = await list_docs('#log', mockListParams);
 
-		expect(logs.length).toEqual(0);
+		expect(logs).toHaveLength(0);
 	});
 
 	it('should call on init_random_seed after upgrade', async () => {
@@ -60,7 +60,7 @@ describe('Satellite > Hooks > Random', () => {
 
 		const { items: logs } = await list_docs('#log', mockListParams);
 
-		expect(logs.length).toEqual(1);
+		expect(logs).toHaveLength(1);
 
 		const [log] = logs;
 		const [__, doc] = log;

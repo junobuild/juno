@@ -338,7 +338,7 @@ describe('Satellite > Upgrade', () => {
 					version: toNullable()
 				};
 
-				await expect(set_rule({ Db: null }, 'test', setUpdateRule)).resolves.not.toThrowError();
+				await expect(set_rule({ Db: null }, 'test', setUpdateRule)).resolves.not.toThrow();
 			});
 
 			it('should be able to update rule after upgrade only once without version provided', async () => {
@@ -364,7 +364,7 @@ describe('Satellite > Upgrade', () => {
 				};
 
 				// We do not provide the version so it counts as a first set
-				await expect(set_rule({ Db: null }, 'test', setNewRule)).resolves.not.toThrowError();
+				await expect(set_rule({ Db: null }, 'test', setNewRule)).resolves.not.toThrow();
 			});
 		});
 
@@ -412,7 +412,7 @@ describe('Satellite > Upgrade', () => {
 					version: toNullable()
 				};
 
-				await expect(set_doc(collection, key, setUpdateDoc)).resolves.not.toThrowError();
+				await expect(set_doc(collection, key, setUpdateDoc)).resolves.not.toThrow();
 			});
 
 			it('should be able to update doc after upgrade only once without version provided', async () => {
@@ -439,7 +439,7 @@ describe('Satellite > Upgrade', () => {
 				};
 
 				// We do not provide the version so it counts as a first set
-				await expect(set_doc(collection, key, setNewDoc)).resolves.not.toThrowError();
+				await expect(set_doc(collection, key, setNewDoc)).resolves.not.toThrow();
 			});
 		});
 
@@ -769,7 +769,7 @@ describe('Satellite > Upgrade', () => {
 
 			await upgrade();
 
-			expect(async () => await actor.version()).rejects.toThrowError(
+			await expect(async () => await actor.version()).rejects.toThrow(
 				new RegExp("Canister has no query method 'version'.", 'i')
 			);
 		});
@@ -781,7 +781,7 @@ describe('Satellite > Upgrade', () => {
 
 			await upgrade();
 
-			expect(async () => await actor.version()).rejects.toThrowError(
+			await expect(async () => await actor.version()).rejects.toThrow(
 				new RegExp("Canister has no query method 'version'.", 'i')
 			);
 		});

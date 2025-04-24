@@ -253,7 +253,7 @@ describe('Orbiter > Upgrade', () => {
 						}
 					]
 				])
-			).resolves.not.toThrowError();
+			).resolves.not.toThrow();
 		});
 
 		describe('Page views', { timeout: 1200000 }, () => {

@@ -44,10 +44,11 @@ describe('Satellite > Random', () => {
 
 		const result = await get_random();
 
-		expect('Err' in result).toBe(true);
+		expect('Err' in result).toBeTruthy();
 
 		if ('Ok' in result) {
-			expect(true).toBe(false);
+			expect(true).toBeFalsy();
+
 			return;
 		}
 
@@ -65,10 +66,11 @@ describe('Satellite > Random', () => {
 
 		const result = await get_random();
 
-		expect('Ok' in result).toBe(true);
+		expect('Ok' in result).toBeTruthy();
 
 		if ('Err' in result) {
-			expect(true).toBe(false);
+			expect(true).toBeFalsy();
+
 			return;
 		}
 
@@ -88,11 +90,13 @@ describe('Satellite > Random', () => {
 		const results = await Promise.all(Array.from({ length }).map(() => getRandom()));
 
 		const oks = results.filter((result) => 'Ok' in result);
-		expect(oks.length).toEqual(length);
+
+		expect(oks).toHaveLength(length);
 
 		const numbers = oks.map((result) => (result as unknown as { Ok: number }).Ok);
 
 		const uniqueNumbers = new Set(numbers);
+
 		expect(uniqueNumbers.size).toEqual(length);
 	});
 });

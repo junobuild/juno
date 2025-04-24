@@ -2,9 +2,7 @@ use crate::assert::config::{
     assert_page_views_enabled, assert_performance_metrics_enabled, assert_track_events_enabled,
 };
 use crate::config::store::get_satellite_config;
-use crate::events::store::{
-    insert_page_view, insert_performance_metric, insert_track_event,
-};
+use crate::events::store::{insert_page_view, insert_performance_metric, insert_track_event};
 use crate::state::types::state::{AnalyticKey, PageView, PerformanceMetric, TrackEvent};
 use crate::types::interface::{SetPageView, SetPerformanceMetric, SetTrackEvent};
 

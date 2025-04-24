@@ -134,7 +134,7 @@ pub mod interface {
         use crate::state::types::state::{
             Key, PageViewDevice, PerformanceData, PerformanceMetricName, SessionId,
         };
-        use junobuild_shared::types::state::{Metadata};
+        use junobuild_shared::types::state::Metadata;
         use junobuild_utils::{DocDataBigInt, DocDataPrincipal};
         use serde::{Deserialize, Serialize};
 

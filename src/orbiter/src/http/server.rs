@@ -14,7 +14,7 @@ pub fn on_http_request(
 ) -> HttpResponse<'static> {
     let upgrade_http_request = |_request: &HttpRequest| -> HttpResponse<'static> {
         // TODO: should NOT upgrade if unknown satellite ID
-        
+
         HttpResponse::builder().with_upgrade(true).build()
     };
 

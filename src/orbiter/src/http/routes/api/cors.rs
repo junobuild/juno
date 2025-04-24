@@ -24,7 +24,11 @@ fn create_cors_preflight_response() -> HttpResponse<'static> {
     HttpResponse::builder()
         .with_status_code(StatusCode::NO_CONTENT)
         .with_headers(vec![
-            // TODO: restrict domains.join.or_else(*)
+            // For performance and cost reasons, we do not handle OPTIONS with update calls.
+            // Instead, we allow all origins here to avoid needing dynamic logic with a certified query.
+            //
+            // Developers can still specify a more restrictive origin in the POST response
+            // (handled via http_request_update, where dynamic headers can be certified).
             ("Access-Control-Allow-Origin".to_string(), "*".to_string()),
             (
                 "Access-Control-Allow-Methods".to_string(),

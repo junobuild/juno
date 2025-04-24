@@ -1,4 +1,4 @@
-use crate::http::routes::types::CertifiedExactRoute;
+use crate::http::routes::api::types::CertifiedExactRoute;
 use ic_http_certification::{
     DefaultCelBuilder, DefaultFullCelExpression, DefaultResponseCertification,
     HttpCertificationPath,

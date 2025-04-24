@@ -6,13 +6,12 @@ use crate::events::filters::{filter_analytics, filter_satellites_analytics};
 use crate::state::memory::STATE;
 use crate::state::types::memory::{StoredPageView, StoredTrackEvent};
 use crate::state::types::state::{
-    AnalyticKey, AnalyticSatelliteKey, PageView, PerformanceMetric, StableState,
-    TrackEvent,
+    AnalyticKey, AnalyticSatelliteKey, PageView, PerformanceMetric, StableState, TrackEvent,
 };
 use crate::types::interface::{GetAnalytics, SetPageView, SetPerformanceMetric, SetTrackEvent};
 use ic_cdk::api::time;
 use junobuild_shared::assert::{assert_timestamp, assert_version};
-use junobuild_shared::types::state::{Timestamp};
+use junobuild_shared::types::state::Timestamp;
 use junobuild_shared::version::next_version;
 
 pub fn insert_page_view(key: AnalyticKey, page_view: SetPageView) -> Result<PageView, String> {

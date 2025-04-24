@@ -1,5 +1,5 @@
 use crate::http::constants::NOT_FOUND_PATH;
-use crate::http::routes::not_allowed::prepare_certified_not_allowed_response;
+use crate::http::routes::api::services::prepare_certified_not_allowed_response;
 use crate::http::routes::not_found::{
     create_uncertified_not_found_response, prepare_certified_not_found_response,
 };
@@ -14,7 +14,7 @@ pub fn on_http_request(
 ) -> HttpResponse<'static> {
     let upgrade_http_request = |_request: &HttpRequest| -> HttpResponse<'static> {
         // TODO: should NOT upgrade if unknown satellite ID
-        
+
         HttpResponse::builder().with_upgrade(true).build()
     };
 

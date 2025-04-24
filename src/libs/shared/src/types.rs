@@ -1,4 +1,5 @@
 pub mod state {
+    use crate::types::core::DomainName;
     use crate::types::monitoring::CyclesBalance;
     use candid::Principal;
     use candid::{CandidType, Nat};
@@ -6,7 +7,6 @@ pub mod state {
     use serde::{Deserialize, Serialize};
     use std::cmp::Ordering;
     use std::collections::HashMap;
-    use crate::types::core::DomainName;
 
     pub type UserId = Principal;
 

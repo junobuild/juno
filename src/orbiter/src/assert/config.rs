@@ -43,3 +43,4 @@ pub fn assert_performance_metrics_enabled(config: &Option<SatelliteConfig>) -> R
         ERROR_PERFORMANCE_METRICS_FEATURE_DISABLED,
     )
 }
+

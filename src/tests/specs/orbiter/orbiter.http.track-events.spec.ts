@@ -1,5 +1,4 @@
 import type {
-	AnalyticKey,
 	_SERVICE as OrbiterActor,
 	OrbiterSatelliteFeatures
 } from '$declarations/orbiter/orbiter.did';
@@ -12,7 +11,8 @@ import { nanoid } from 'nanoid';
 import { inject } from 'vitest';
 import {
 	satelliteIdMock,
-	type SetTrackEventPayload,
+	type SetTrackEventRequest,
+	type SetTrackEventsRequest,
 	type TrackEventPayload,
 	trackEventPayloadMock
 } from '../../mocks/orbiter.mocks';
@@ -58,26 +58,25 @@ describe('Orbiter > HTTP > Track events', () => {
 	});
 
 	describe('With configuration', () => {
-		interface SetTrackEventRequest {
-			key: AnalyticKey;
-			track_event: SetTrackEventPayload;
-		}
-
 		const trackEvent: SetTrackEventRequest = {
+			satellite_id: satelliteIdMock.toText(),
 			key: { key: nanoid(), collected_at: 1230n },
 			track_event: trackEventPayloadMock
 		};
 
-		const trackEvents: SetTrackEventRequest[] = [
-			{
-				key: { key: nanoid(), collected_at: 1230n },
-				track_event: trackEventPayloadMock
-			},
-			{
-				key: { key: nanoid(), collected_at: 1240n },
-				track_event: trackEventPayloadMock
-			}
-		];
+		const trackEvents: SetTrackEventsRequest = {
+			satellite_id: satelliteIdMock.toText(),
+			track_events: [
+				{
+					key: { key: nanoid(), collected_at: 1230n },
+					track_event: trackEventPayloadMock
+				},
+				{
+					key: { key: nanoid(), collected_at: 1240n },
+					track_event: trackEventPayloadMock
+				}
+			]
+		};
 
 		beforeAll(async () => {
 			actor.setIdentity(controller);
@@ -149,10 +148,7 @@ describe('Orbiter > HTTP > Track events', () => {
 					const request: HttpRequest = {
 						body: toBodyJson({
 							...trackEvent,
-							track_event: {
-								...trackEventPayloadMock,
-								satellite_id: satelliteIdMock // Should be principal as text
-							}
+							satellite_id: satelliteIdMock // Should be principal as text
 						}),
 						certificate_version: toNullable(2),
 						headers: [],
@@ -363,7 +359,7 @@ describe('Orbiter > HTTP > Track events', () => {
 					expect(result).toEqual({
 						err: {
 							code: 500,
-							message: trackEvents
+							message: trackEvents.track_events
 								.map(({ key }) => `${key.key}: juno.error.no_version_provided`)
 								.join(', ')
 						}
@@ -374,15 +370,16 @@ describe('Orbiter > HTTP > Track events', () => {
 					const { http_request_update } = actor;
 
 					const request: HttpRequest = {
-						body: toBodyJson(
-							trackEvents.map((trackEvent) => ({
+						body: toBodyJson({
+							...trackEvents,
+							track_events: trackEvents.track_events.map((trackEvent) => ({
 								...trackEvent,
 								track_event: {
 									...trackEvent.track_event,
 									version: 1n
 								}
 							}))
-						),
+						}),
 						certificate_version: toNullable(2),
 						headers: [],
 						method: 'POST',
@@ -417,7 +414,7 @@ describe('Orbiter > HTTP > Track events', () => {
 
 				expect(Array.isArray(result)).toBe(true);
 
-				expect(result.length).toEqual([trackEvent, ...trackEvents].length);
+				expect(result.length).toEqual([trackEvent, ...trackEvents.track_events].length);
 
 				result.forEach(([key, trackEvent]) => {
 					expect(key.collected_at).toBeGreaterThanOrEqual(1230n);

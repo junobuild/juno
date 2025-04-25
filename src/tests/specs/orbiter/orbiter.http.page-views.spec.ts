@@ -1,5 +1,4 @@
 import type {
-	AnalyticKey,
 	_SERVICE as OrbiterActor,
 	OrbiterSatelliteFeatures
 } from '$declarations/orbiter/orbiter.did';
@@ -14,7 +13,8 @@ import {
 	type PageViewPayload,
 	pageViewPayloadMock,
 	satelliteIdMock,
-	type SetPageViewPayload
+	type SetPageViewRequest,
+	type SetPageViewsRequest
 } from '../../mocks/orbiter.mocks';
 import { toBodyJson } from '../../utils/orbiter-test.utils';
 import { tick } from '../../utils/pic-tests.utils';
@@ -58,26 +58,25 @@ describe('Orbiter > HTTP > Page views', () => {
 	});
 
 	describe('With configuration', () => {
-		interface SetPageViewRequest {
-			key: AnalyticKey;
-			page_view: SetPageViewPayload;
-		}
-
 		const pageView: SetPageViewRequest = {
+			satellite_id: satelliteIdMock.toText(),
 			key: { key: nanoid(), collected_at: 1230n },
 			page_view: pageViewPayloadMock
 		};
 
-		const pagesViews: SetPageViewRequest[] = [
-			{
-				key: { key: nanoid(), collected_at: 1230n },
-				page_view: pageViewPayloadMock
-			},
-			{
-				key: { key: nanoid(), collected_at: 1240n },
-				page_view: pageViewPayloadMock
-			}
-		];
+		const pagesViews: SetPageViewsRequest = {
+			satellite_id: satelliteIdMock.toText(),
+			page_views: [
+				{
+					key: { key: nanoid(), collected_at: 1230n },
+					page_view: pageViewPayloadMock
+				},
+				{
+					key: { key: nanoid(), collected_at: 1240n },
+					page_view: pageViewPayloadMock
+				}
+			]
+		};
 
 		beforeAll(async () => {
 			actor.setIdentity(controller);
@@ -149,10 +148,7 @@ describe('Orbiter > HTTP > Page views', () => {
 					const request: HttpRequest = {
 						body: toBodyJson({
 							...pageView,
-							page_view: {
-								...pageViewPayloadMock,
-								satellite_id: satelliteIdMock // Should be principal as text
-							}
+							satellite_id: satelliteIdMock // Should be principal as text
 						}),
 						certificate_version: toNullable(2),
 						headers: [],
@@ -361,7 +357,7 @@ describe('Orbiter > HTTP > Page views', () => {
 					expect(result).toEqual({
 						err: {
 							code: 500,
-							message: pagesViews
+							message: pagesViews.page_views
 								.map(({ key }) => `${key.key}: juno.error.no_version_provided`)
 								.join(', ')
 						}
@@ -372,15 +368,16 @@ describe('Orbiter > HTTP > Page views', () => {
 					const { http_request_update } = actor;
 
 					const request: HttpRequest = {
-						body: toBodyJson(
-							pagesViews.map((pageView) => ({
+						body: toBodyJson({
+							...pagesViews,
+							page_views: pagesViews.page_views.map((pageView) => ({
 								...pageView,
 								page_view: {
 									...pageView.page_view,
 									version: 1n
 								}
 							}))
-						),
+						}),
 						certificate_version: toNullable(2),
 						headers: [],
 						method: 'POST',
@@ -415,7 +412,7 @@ describe('Orbiter > HTTP > Page views', () => {
 
 				expect(Array.isArray(result)).toBe(true);
 
-				expect(result.length).toEqual([pageView, ...pagesViews].length);
+				expect(result.length).toEqual([pageView, ...pagesViews.page_views].length);
 
 				result.forEach(([key, pageView]) => {
 					expect(key.collected_at).toBeGreaterThanOrEqual(1230n);

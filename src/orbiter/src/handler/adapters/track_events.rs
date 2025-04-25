@@ -1,18 +1,24 @@
 use crate::events::helpers::assert_and_insert_track_event;
 use crate::state::types::state::AnalyticKey;
 use crate::types::interface::http::{
-    SetTrackEventRequest, SetTrackEventsRequest, TrackEventPayload,
+    SetTrackEventPayload, SetTrackEventRequest, SetTrackEventsRequest, SetTrackEventsRequestEntry,
+    TrackEventPayload,
 };
 use ic_http_certification::HttpRequest;
 use junobuild_utils::decode_doc_data;
 
 pub fn handle_insert_track_event(request: &HttpRequest) -> Result<TrackEventPayload, String> {
-    let SetTrackEventRequest { key, track_event }: SetTrackEventRequest =
+    let SetTrackEventRequest {
+        key,
+        track_event,
+        satellite_id,
+    }: SetTrackEventRequest =
         decode_doc_data::<SetTrackEventRequest>(request.body()).map_err(|e| e.to_string())?;
 
     let inserted_track_event = assert_and_insert_track_event(
         key.into_domain(),
-        track_event.into_domain().map_err(|e| e.to_string())?,
+        SetTrackEventPayload::convert_to_setter(track_event, &satellite_id)
+            .map_err(|e| e.to_string())?,
     )?;
 
     Ok(TrackEventPayload::from_domain(inserted_track_event))
@@ -24,12 +30,13 @@ pub fn handle_insert_track_events(request: &HttpRequest) -> Result<(), String> {
 
     let mut errors: Vec<(AnalyticKey, String)> = Vec::new();
 
-    for SetTrackEventRequest { key, track_event } in track_events {
+    for SetTrackEventsRequestEntry { key, track_event } in track_events.track_events {
         let key_domain = key.into_domain();
 
         let result = assert_and_insert_track_event(
             key_domain.clone(),
-            track_event.into_domain().map_err(|e| e.to_string())?,
+            SetTrackEventPayload::convert_to_setter(track_event, &track_events.satellite_id)
+                .map_err(|e| e.to_string())?,
         );
 
         match result {

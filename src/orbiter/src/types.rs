@@ -135,12 +135,16 @@ pub mod interface {
             Key, PageViewDevice, PerformanceData, PerformanceMetricName, SessionId,
         };
         use junobuild_shared::types::state::Metadata;
-        use junobuild_utils::{DocDataBigInt, DocDataPrincipal};
+        use junobuild_utils::DocDataBigInt;
         use serde::{Deserialize, Serialize};
 
         pub type TimestampPayload = DocDataBigInt;
         pub type VersionPayload = Option<DocDataBigInt>;
-        pub type SatelliteIdPayload = DocDataPrincipal;
+
+        // We use textual representation of Principal for performance reason on the client side.
+        // This way the frontend can spare the need to bloat the JS bundle.
+        pub type PrincipalText = String;
+        pub type SatelliteIdText = PrincipalText;
 
         #[derive(Deserialize)]
         pub struct SetPageViewRequest {
@@ -178,7 +182,7 @@ pub mod interface {
             pub device: PageViewDevice,
             pub time_zone: String,
             pub user_agent: Option<String>,
-            pub satellite_id: SatelliteIdPayload,
+            pub satellite_id: SatelliteIdText,
             pub session_id: SessionId,
             pub version: VersionPayload,
         }
@@ -188,7 +192,7 @@ pub mod interface {
             pub name: String,
             pub metadata: Option<Metadata>,
             pub user_agent: Option<String>,
-            pub satellite_id: SatelliteIdPayload,
+            pub satellite_id: SatelliteIdText,
             pub session_id: SessionId,
             pub version: VersionPayload,
         }
@@ -199,7 +203,7 @@ pub mod interface {
             pub metric_name: PerformanceMetricName,
             pub data: PerformanceData,
             pub user_agent: Option<String>,
-            pub satellite_id: SatelliteIdPayload,
+            pub satellite_id: SatelliteIdText,
             pub session_id: SessionId,
             pub version: VersionPayload,
         }
@@ -214,7 +218,7 @@ pub mod interface {
             pub time_zone: String,
             #[serde(skip_serializing_if = "Option::is_none")]
             pub user_agent: Option<String>,
-            pub satellite_id: SatelliteIdPayload,
+            pub satellite_id: SatelliteIdText,
             pub session_id: SessionId,
             pub created_at: TimestampPayload,
             pub updated_at: TimestampPayload,
@@ -227,7 +231,7 @@ pub mod interface {
             pub name: String,
             #[serde(skip_serializing_if = "Option::is_none")]
             pub metadata: Option<Metadata>,
-            pub satellite_id: SatelliteIdPayload,
+            pub satellite_id: SatelliteIdText,
             pub session_id: SessionId,
             pub created_at: TimestampPayload,
             pub updated_at: TimestampPayload,
@@ -240,7 +244,7 @@ pub mod interface {
             pub href: String,
             pub metric_name: PerformanceMetricName,
             pub data: PerformanceData,
-            pub satellite_id: SatelliteIdPayload,
+            pub satellite_id: SatelliteIdText,
             pub session_id: SessionId,
             pub created_at: TimestampPayload,
             pub updated_at: TimestampPayload,

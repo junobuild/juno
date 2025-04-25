@@ -8,8 +8,8 @@ use crate::handler::adapters::track_events::{
 use crate::http::constants::{
     EVENTS_PATH, EVENT_PATH, KNOWN_ROUTES, METRICS_PATH, METRIC_PATH, VIEWS_PATH, VIEW_PATH,
 };
-use crate::http::types::handler::HttpRequestHandler;
-use crate::http::types::interface::{ApiResponse, ResponseBody};
+use crate::http::types::handler::{HandledUpdateResult, HttpRequestHandler};
+use crate::http::types::interface::{ApiResponse, ResponseBody, ResponseHeaders};
 use ic_http_certification::{HttpRequest, StatusCode};
 
 pub struct OrbiterHttpRequestHandler;
@@ -23,18 +23,18 @@ impl HttpRequestHandler for OrbiterHttpRequestHandler {
         method == "POST"
     }
 
-    fn handle_update(&self, request: &HttpRequest) -> (StatusCode, ResponseBody) {
+    fn handle_update(&self, request: &HttpRequest) -> HandledUpdateResult {
         let uri_request_path = request.get_path();
 
         if let Err(err) = uri_request_path {
             // Likely unexpected given is_known_route and is_allowed_method both were proven before reaching this handler.
             let body = ApiResponse::<()>::err(StatusCode::BAD_REQUEST, err.to_string()).encode();
-            return (StatusCode::BAD_REQUEST, body);
+            return HandledUpdateResult::new(StatusCode::BAD_REQUEST, body, None);
         }
 
         let request_path = uri_request_path.unwrap();
 
-        let result = match request_path.as_str() {
+        let response_body = match request_path.as_str() {
             VIEW_PATH => handle_insert_page_view(request)
                 .map(|page_view| ApiResponse::ok(&page_view).encode()),
             VIEWS_PATH => {
@@ -53,11 +53,11 @@ impl HttpRequestHandler for OrbiterHttpRequestHandler {
             _ => Err(format!("Unsupported path: {}", request_path)),
         };
 
-        match result {
-            Ok(body) => (StatusCode::OK, body),
+        match response_body {
+            Ok(body) => HandledUpdateResult::new(StatusCode::OK, body),
             Err(err) => {
                 let body = ApiResponse::<()>::err(StatusCode::INTERNAL_SERVER_ERROR, err).encode();
-                (StatusCode::INTERNAL_SERVER_ERROR, body)
+                HandledUpdateResult::new(StatusCode::INTERNAL_SERVER_ERROR, body, None)
             }
         }
     }

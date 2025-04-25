@@ -1,3 +1,4 @@
+use ic_http_certification::StatusCode;
 use crate::state::types::state::{AnalyticKey, PageView, PerformanceMetric, TrackEvent};
 use crate::types::interface::http::{
     AnalyticKeyPayload, PageViewPayload, PerformanceMetricPayload, SetPageViewPayload,
@@ -5,6 +6,8 @@ use crate::types::interface::http::{
 };
 use crate::types::interface::{SetPageView, SetPerformanceMetric, SetTrackEvent};
 use junobuild_utils::{DocDataBigInt, DocDataPrincipal};
+use crate::http::types::handler::HandledUpdateResult;
+use crate::http::types::interface::{ResponseBody, ResponseHeaders};
 
 impl AnalyticKeyPayload {
     pub fn into_domain(self) -> AnalyticKey {
@@ -127,6 +130,20 @@ impl PerformanceMetricPayload {
             version: performance_metric
                 .version
                 .map(|version| DocDataBigInt { value: version }),
+        }
+    }
+}
+
+impl HandledUpdateResult {
+    pub fn new(
+        status_code: StatusCode,
+        body: ResponseBody,
+        headers: Option<ResponseHeaders>,
+    ) -> Self {
+        Self {
+            status_code,
+            body,
+            headers,
         }
     }
 }

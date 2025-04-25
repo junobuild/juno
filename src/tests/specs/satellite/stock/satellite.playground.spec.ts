@@ -26,12 +26,12 @@ describe.skip('Satellite > Playground (kind of)', () => {
 		actor = c;
 	});
 
-	afterAll(async () => {
-		await pic?.tearDown();
-	});
-
 	beforeEach(() => {
 		actor.setIdentity(controller);
+	});
+
+	afterAll(async () => {
+		await pic?.tearDown();
 	});
 
 	it('should create lots of users', async () => {

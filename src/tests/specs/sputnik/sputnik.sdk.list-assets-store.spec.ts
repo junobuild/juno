@@ -103,22 +103,27 @@ describe('Sputnik > sdk > listAssetsStore', () => {
 
 		// Matcher
 		const logKey1 = logs.find(([_, { message }]) => message.includes(KEY_1));
+
 		expect(logKey1).not.toBeUndefined();
 
 		const logKey2 = logs.find(([_, { message }]) => message.includes(KEY_2));
+
 		expect(logKey2).toBeUndefined();
 
 		const logKey3 = logs.find(([_, { message }]) => message.includes(KEY_3));
+
 		expect(logKey3).toBeUndefined();
 
 		const logKey4 = logs.find(([_, { message }]) => message.includes(KEY_4));
+
 		expect(logKey4).not.toBeUndefined();
 
 		// Owner
 		const logKey5 = logs.find(([_, { message }]) => message.includes(KEY_5));
+
 		expect(logKey5).toBeUndefined();
 
 		// Sorting
-		expect(logs[0][1].message.includes(KEY_4)).toBe(true);
+		expect(logs[0][1].message).toContain(KEY_4);
 	});
 });

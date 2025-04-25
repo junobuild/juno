@@ -51,6 +51,7 @@ describe('Console > Metadata', () => {
 
 			const decoder = new TextDecoder();
 			const responseBody = decoder.decode(body as Uint8Array<ArrayBufferLike>);
+
 			expect(responseBody).toEqual(
 				JSON.stringify({
 					mission_controls: [WASM_VERSIONS.mission_control],

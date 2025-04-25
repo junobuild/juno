@@ -79,6 +79,7 @@ export const adminCustomDomainsTests = <T extends SatelliteActor | ConsoleActor>
 		});
 
 		const decoder = new TextDecoder();
+
 		expect(decoder.decode(body as Uint8Array<ArrayBufferLike>)).toContain('hello.com');
 		expect(decoder.decode(body as Uint8Array<ArrayBufferLike>)).toContain('test2.com');
 	});
@@ -108,6 +109,7 @@ export const adminCustomDomainsTests = <T extends SatelliteActor | ConsoleActor>
 		});
 
 		const decoder = new TextDecoder();
+
 		expect(decoder.decode(body as Uint8Array<ArrayBufferLike>)).not.toContain('hello.com');
 	});
 
@@ -123,6 +125,7 @@ export const adminCustomDomainsTests = <T extends SatelliteActor | ConsoleActor>
 		});
 
 		const decoder = new TextDecoder();
+
 		expect(decoder.decode(body as Uint8Array<ArrayBufferLike>)).toContain('test3.com');
 		expect(decoder.decode(body as Uint8Array<ArrayBufferLike>)).toContain('test2.com');
 	});

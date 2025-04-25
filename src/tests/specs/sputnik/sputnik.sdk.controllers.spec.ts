@@ -93,6 +93,7 @@ describe('Sputnik > sdk > controllers', () => {
 			const log = logs.find(([_, { message }]) =>
 				message.includes(`${callerText()} caller: ${caller()}`)
 			);
+
 			expect(log).not.toBeUndefined();
 		});
 
@@ -108,6 +109,7 @@ describe('Sputnik > sdk > controllers', () => {
 			const log = logs.find(([_, { message }]) =>
 				message.includes(`${callerText()} isController: true`)
 			);
+
 			expect(log).not.toBeUndefined();
 		});
 
@@ -123,6 +125,7 @@ describe('Sputnik > sdk > controllers', () => {
 			const log = logs.find(([_, { message }]) =>
 				message.includes(`${callerText()} isAdminController: true`)
 			);
+
 			expect(log).not.toBeUndefined();
 		});
 
@@ -165,6 +168,7 @@ describe('Sputnik > sdk > controllers', () => {
 			const log = logs.find(([_, { message }]) =>
 				message.includes(`${callerText()} caller: ${caller()}`)
 			);
+
 			expect(log).not.toBeUndefined();
 		});
 
@@ -180,6 +184,7 @@ describe('Sputnik > sdk > controllers', () => {
 			const log = logs.find(([_, { message }]) =>
 				message.includes(`${callerText()} isController: false`)
 			);
+
 			expect(log).not.toBeUndefined();
 		});
 
@@ -195,6 +200,7 @@ describe('Sputnik > sdk > controllers', () => {
 			const log = logs.find(([_, { message }]) =>
 				message.includes(`${callerText()} isAdminController: false`)
 			);
+
 			expect(log).not.toBeUndefined();
 		});
 	});
@@ -238,6 +244,7 @@ describe('Sputnik > sdk > controllers', () => {
 			const log = logs.find(([_, { message }]) =>
 				message.includes(`${callerText()} caller: ${caller()}`)
 			);
+
 			expect(log).not.toBeUndefined();
 		});
 
@@ -253,6 +260,7 @@ describe('Sputnik > sdk > controllers', () => {
 			const log = logs.find(([_, { message }]) =>
 				message.includes(`${callerText()} isController: true`)
 			);
+
 			expect(log).not.toBeUndefined();
 		});
 
@@ -268,6 +276,7 @@ describe('Sputnik > sdk > controllers', () => {
 			const log = logs.find(([_, { message }]) =>
 				message.includes(`${callerText()} isAdminController: false`)
 			);
+
 			expect(log).not.toBeUndefined();
 		});
 
@@ -307,7 +316,7 @@ describe('Sputnik > sdk > controllers', () => {
 
 			const controllers = await list_controllers();
 
-			expect(data.length).toEqual(controllers.filter((c) => 'Admin' in c[1].scope).length);
+			expect(data).toHaveLength(controllers.filter((c) => 'Admin' in c[1].scope).length);
 		});
 	});
 });

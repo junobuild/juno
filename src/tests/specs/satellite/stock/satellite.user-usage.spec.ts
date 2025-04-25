@@ -308,7 +308,7 @@ describe('Satellite > User Usage', () => {
 					actorIdentity
 				});
 
-			it('should not get usage ', async () => {
+			it('should not get usage', async () => {
 				actor.setIdentity(user);
 
 				await createDoc();
@@ -366,6 +366,7 @@ describe('Satellite > User Usage', () => {
 				});
 
 				const doc = await get_doc('#log', key);
+
 				expect(fromNullable(doc)).not.toBeUndefined();
 
 				const { doc: usageDoc } = await get_user_usage({
@@ -373,6 +374,7 @@ describe('Satellite > User Usage', () => {
 					collectionType: COLLECTION_TYPE,
 					userId: controller.getPrincipal()
 				});
+
 				expect(usageDoc).toBeUndefined();
 			});
 
@@ -393,6 +395,7 @@ describe('Satellite > User Usage', () => {
 				});
 
 				const doc = await get_doc('#user', key);
+
 				expect(fromNullable(doc)).not.toBeUndefined();
 
 				const { doc: usageDoc } = await get_user_usage({
@@ -400,6 +403,7 @@ describe('Satellite > User Usage', () => {
 					collectionType: COLLECTION_TYPE,
 					userId: controller.getPrincipal()
 				});
+
 				expect(usageDoc).toBeUndefined();
 			});
 
@@ -415,6 +419,7 @@ describe('Satellite > User Usage', () => {
 				});
 
 				const doc = await get_doc('#log', key);
+
 				expect(fromNullable(doc)).not.toBeUndefined();
 
 				const { doc: usageDoc } = await get_user_usage({
@@ -422,6 +427,7 @@ describe('Satellite > User Usage', () => {
 					collectionType: COLLECTION_TYPE,
 					userId: controller.getPrincipal()
 				});
+
 				expect(usageDoc).toBeUndefined();
 			});
 		});
@@ -654,7 +660,7 @@ describe('Satellite > User Usage', () => {
 					actorIdentity
 				});
 
-			it('should not get usage ', async () => {
+			it('should not get usage', async () => {
 				actor.setIdentity(user);
 
 				await upload({ index: 100 });
@@ -714,6 +720,7 @@ describe('Satellite > User Usage', () => {
 				});
 
 				const asset = await get_asset('#dapp', full_path);
+
 				expect(fromNullable(asset)).not.toBeUndefined();
 
 				const { doc: usageDoc } = await get_user_usage({
@@ -721,6 +728,7 @@ describe('Satellite > User Usage', () => {
 					collectionType: COLLECTION_TYPE,
 					userId: controller.getPrincipal()
 				});
+
 				expect(usageDoc).toBeUndefined();
 			});
 		});

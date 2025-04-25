@@ -70,7 +70,7 @@ export const setDocAndAssertLogsLength = async ({
 
 	const logsWithKey = logs.filter(([_, { message }]) => message.includes(docKey));
 
-	expect(logsWithKey.length).toEqual(length);
+	expect(logsWithKey).toHaveLength(length);
 };
 
 /**

@@ -100,9 +100,7 @@ impl<'js> JsListResults<JsDoc<'js>> {
             items_length: JsUsize(results.items_length),
             items_page: results.items_page.map(JsUsize),
             matches_length: JsUsize(results.matches_length),
-            matches_pages: results
-                .matches_pages
-                .map(JsUsize),
+            matches_pages: results.matches_pages.map(JsUsize),
         })
     }
 }
@@ -126,9 +124,7 @@ impl<'js> JsListResults<JsAssetNoContent<'js>> {
             items_length: JsUsize(results.items_length),
             items_page: results.items_page.map(JsUsize),
             matches_length: JsUsize(results.matches_length),
-            matches_pages: results
-                .matches_pages
-                .map(JsUsize),
+            matches_pages: results.matches_pages.map(JsUsize),
         })
     }
 }

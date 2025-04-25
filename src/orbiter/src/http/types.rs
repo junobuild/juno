@@ -18,7 +18,7 @@ pub mod interface {
 }
 
 pub mod handler {
-    use crate::http::types::interface::{ResponseBody};
+    use crate::http::types::interface::ResponseBody;
     use ic_http_certification::{HttpRequest, StatusCode};
     use junobuild_shared::types::core::DomainName;
 
@@ -27,7 +27,7 @@ pub mod handler {
         fn is_allowed_method(&self, method: &str) -> bool;
         fn handle_update(&self, request: &HttpRequest) -> HandledUpdateResult;
     }
-    
+
     pub struct HandledUpdateResult {
         pub status_code: StatusCode,
         pub body: ResponseBody,

@@ -1,13 +1,15 @@
 use crate::events::helpers::assert_and_insert_track_event;
+use crate::handler::adapters::response_builder::build_payload_response;
+use crate::http::types::handler::HandledUpdateResult;
 use crate::state::types::state::AnalyticKey;
 use crate::types::interface::http::{
-    SetTrackEventPayload, SetTrackEventRequest, SetTrackEventsRequest, SetTrackEventsRequestEntry,
-    TrackEventPayload,
+    PageViewPayload, SetTrackEventPayload, SetTrackEventRequest, SetTrackEventsRequest,
+    SetTrackEventsRequestEntry, TrackEventPayload,
 };
 use ic_http_certification::HttpRequest;
 use junobuild_utils::decode_doc_data;
 
-pub fn handle_insert_track_event(request: &HttpRequest) -> Result<TrackEventPayload, String> {
+pub fn handle_insert_track_event(request: &HttpRequest) -> Result<HandledUpdateResult, String> {
     let SetTrackEventRequest {
         key,
         track_event,
@@ -21,10 +23,12 @@ pub fn handle_insert_track_event(request: &HttpRequest) -> Result<TrackEventPayl
             .map_err(|e| e.to_string())?,
     )?;
 
-    Ok(TrackEventPayload::from_domain(inserted_track_event))
+    let payload = TrackEventPayload::from_domain(inserted_track_event);
+
+    build_payload_response(payload, &satellite_id)
 }
 
-pub fn handle_insert_track_events(request: &HttpRequest) -> Result<(), String> {
+pub fn handle_insert_track_events(request: &HttpRequest) -> Result<HandledUpdateResult, String> {
     let track_events: SetTrackEventsRequest =
         decode_doc_data::<SetTrackEventsRequest>(request.body()).map_err(|e| e.to_string())?;
 
@@ -55,5 +59,5 @@ pub fn handle_insert_track_events(request: &HttpRequest) -> Result<(), String> {
         return Err(error_string);
     }
 
-    Ok(())
+    build_payload_response((), &track_events.satellite_id)
 }

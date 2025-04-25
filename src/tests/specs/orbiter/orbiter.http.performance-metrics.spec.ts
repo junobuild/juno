@@ -1,5 +1,4 @@
 import type {
-	AnalyticKey,
 	_SERVICE as OrbiterActor,
 	OrbiterSatelliteFeatures
 } from '$declarations/orbiter/orbiter.did';
@@ -14,7 +13,8 @@ import {
 	type PerformanceMetricPayload,
 	performanceMetricPayloadMock,
 	satelliteIdMock,
-	type SetPerformanceMetricPayload
+	type SetPerformanceRequest,
+	type SetPerformancesRequest
 } from '../../mocks/orbiter.mocks';
 import { toBodyJson } from '../../utils/orbiter-test.utils';
 import { tick } from '../../utils/pic-tests.utils';
@@ -58,26 +58,25 @@ describe('Orbiter > HTTP > Performance metrics', () => {
 	});
 
 	describe('With configuration', () => {
-		interface SetPerformanceRequest {
-			key: AnalyticKey;
-			performance_metric: SetPerformanceMetricPayload;
-		}
-
 		const performanceMetric: SetPerformanceRequest = {
+			satellite_id: satelliteIdMock.toText(),
 			key: { key: nanoid(), collected_at: 1230n },
 			performance_metric: performanceMetricPayloadMock
 		};
 
-		const performanceMetrics: SetPerformanceRequest[] = [
-			{
-				key: { key: nanoid(), collected_at: 1230n },
-				performance_metric: performanceMetricPayloadMock
-			},
-			{
-				key: { key: nanoid(), collected_at: 1240n },
-				performance_metric: performanceMetricPayloadMock
-			}
-		];
+		const performanceMetrics: SetPerformancesRequest = {
+			satellite_id: satelliteIdMock.toText(),
+			performance_metrics: [
+				{
+					key: { key: nanoid(), collected_at: 1230n },
+					performance_metric: performanceMetricPayloadMock
+				},
+				{
+					key: { key: nanoid(), collected_at: 1240n },
+					performance_metric: performanceMetricPayloadMock
+				}
+			]
+		};
 
 		beforeAll(async () => {
 			actor.setIdentity(controller);
@@ -149,10 +148,7 @@ describe('Orbiter > HTTP > Performance metrics', () => {
 					const request: HttpRequest = {
 						body: toBodyJson({
 							...performanceMetric,
-							performance_metric: {
-								...performanceMetricPayloadMock,
-								satellite_id: satelliteIdMock // Should be principal as text
-							}
+							satellite_id: satelliteIdMock // Should be principal as text
 						}),
 						certificate_version: toNullable(2),
 						headers: [],
@@ -363,7 +359,7 @@ describe('Orbiter > HTTP > Performance metrics', () => {
 					expect(result).toEqual({
 						err: {
 							code: 500,
-							message: performanceMetrics
+							message: performanceMetrics.performance_metrics
 								.map(({ key }) => `${key.key}: juno.error.no_version_provided`)
 								.join(', ')
 						}
@@ -374,15 +370,18 @@ describe('Orbiter > HTTP > Performance metrics', () => {
 					const { http_request_update } = actor;
 
 					const request: HttpRequest = {
-						body: toBodyJson(
-							performanceMetrics.map((performanceMetric) => ({
-								...performanceMetric,
-								performance_metric: {
-									...performanceMetric.performance_metric,
-									version: 1n
-								}
-							}))
-						),
+						body: toBodyJson({
+							...performanceMetrics,
+							performance_metrics: performanceMetrics.performance_metrics.map(
+								(performanceMetric) => ({
+									...performanceMetric,
+									performance_metric: {
+										...performanceMetric.performance_metric,
+										version: 1n
+									}
+								})
+							)
+						}),
 						certificate_version: toNullable(2),
 						headers: [],
 						method: 'POST',
@@ -417,7 +416,9 @@ describe('Orbiter > HTTP > Performance metrics', () => {
 
 				expect(Array.isArray(result)).toBe(true);
 
-				expect(result.length).toEqual([performanceMetric, ...performanceMetrics].length);
+				expect(result.length).toEqual(
+					[performanceMetric, ...performanceMetrics.performance_metrics].length
+				);
 
 				result.forEach(([key, performanceMetric]) => {
 					expect(key.collected_at).toBeGreaterThanOrEqual(1230n);

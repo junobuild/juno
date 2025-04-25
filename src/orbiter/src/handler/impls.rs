@@ -48,7 +48,6 @@ impl PageViewPayload {
             device: page_view.device,
             user_agent: page_view.user_agent,
             time_zone: page_view.time_zone,
-            satellite_id: page_view.satellite_id.to_text(),
             session_id: page_view.session_id,
             created_at: DocDataBigInt {
                 value: page_view.created_at,
@@ -87,7 +86,6 @@ impl TrackEventPayload {
         Self {
             name: track_event.name,
             metadata: track_event.metadata,
-            satellite_id: track_event.satellite_id.to_text(),
             session_id: track_event.session_id,
             created_at: DocDataBigInt {
                 value: track_event.created_at,
@@ -127,7 +125,6 @@ impl PerformanceMetricPayload {
             href: performance_metric.href,
             metric_name: performance_metric.metric_name,
             data: performance_metric.data,
-            satellite_id: performance_metric.satellite_id.to_text(),
             session_id: performance_metric.session_id,
             created_at: DocDataBigInt {
                 value: performance_metric.created_at,

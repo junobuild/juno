@@ -250,7 +250,6 @@ pub mod interface {
             pub time_zone: String,
             #[serde(skip_serializing_if = "Option::is_none")]
             pub user_agent: Option<String>,
-            pub satellite_id: SatelliteIdText,
             pub session_id: SessionId,
             pub created_at: TimestampPayload,
             pub updated_at: TimestampPayload,
@@ -263,7 +262,6 @@ pub mod interface {
             pub name: String,
             #[serde(skip_serializing_if = "Option::is_none")]
             pub metadata: Option<Metadata>,
-            pub satellite_id: SatelliteIdText,
             pub session_id: SessionId,
             pub created_at: TimestampPayload,
             pub updated_at: TimestampPayload,
@@ -276,7 +274,6 @@ pub mod interface {
             pub href: String,
             pub metric_name: PerformanceMetricName,
             pub data: PerformanceData,
-            pub satellite_id: SatelliteIdText,
             pub session_id: SessionId,
             pub created_at: TimestampPayload,
             pub updated_at: TimestampPayload,

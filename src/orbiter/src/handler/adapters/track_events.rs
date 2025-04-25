@@ -3,7 +3,7 @@ use crate::handler::adapters::response_builder::build_payload_response;
 use crate::http::types::handler::HandledUpdateResult;
 use crate::state::types::state::AnalyticKey;
 use crate::types::interface::http::{
-    PageViewPayload, SetTrackEventPayload, SetTrackEventRequest, SetTrackEventsRequest,
+    SetTrackEventPayload, SetTrackEventRequest, SetTrackEventsRequest,
     SetTrackEventsRequestEntry, TrackEventPayload,
 };
 use ic_http_certification::HttpRequest;

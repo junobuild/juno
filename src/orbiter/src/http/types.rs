@@ -1,5 +1,4 @@
 pub mod interface {
-    use ic_http_certification::HeaderField;
     use junobuild_shared::types::core::Blob;
     use serde::Serialize;
 
@@ -14,7 +13,6 @@ pub mod interface {
     pub type ErrorResponse<'a> = ApiResponse<'a, ()>;
 
     pub type ResponseBody = Blob;
-    pub type ResponseHeaders = Vec<HeaderField>;
 }
 
 pub mod handler {

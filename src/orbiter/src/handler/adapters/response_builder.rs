@@ -4,9 +4,10 @@ use crate::http::types::interface::ApiResponse;
 use crate::msg::ERROR_FEATURE_DISABLED;
 use crate::types::interface::http::SatelliteIdText;
 use candid::Principal;
-use ic_http_certification::{HeaderField, StatusCode};
+use ic_http_certification::{StatusCode};
+use serde::Serialize;
 
-pub fn build_payload_response<T>(
+pub fn build_payload_response<T: Serialize>(
     payload: T,
     satellite_id_text: &SatelliteIdText,
 ) -> Result<HandledUpdateResult, String> {

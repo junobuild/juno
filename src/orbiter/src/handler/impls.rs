@@ -1,7 +1,7 @@
 use crate::state::types::state::{AnalyticKey, PageView, PerformanceMetric, TrackEvent};
 use crate::types::interface::http::{
-    AnalyticKeyPayload, PageViewPayload, PerformanceMetricPayload, SetPageViewPayload,
-    SetPerformanceMetricPayload, SetTrackEventPayload, TrackEventPayload,
+    AnalyticKeyPayload, PageViewPayload, PerformanceMetricPayload, SatelliteIdText,
+    SetPageViewPayload, SetPerformanceMetricPayload, SetTrackEventPayload, TrackEventPayload,
 };
 use crate::types::interface::{SetPageView, SetPerformanceMetric, SetTrackEvent};
 use candid::types::principal::PrincipalError;
@@ -18,18 +18,21 @@ impl AnalyticKeyPayload {
 }
 
 impl SetPageViewPayload {
-    pub fn into_domain(self) -> Result<SetPageView, PrincipalError> {
+    pub fn convert_to_setter(
+        payload: SetPageViewPayload,
+        satellite_id: &SatelliteIdText,
+    ) -> Result<SetPageView, PrincipalError> {
         let page_view = SetPageView {
-            title: self.title,
-            href: self.href,
-            referrer: self.referrer,
-            device: self.device,
-            time_zone: self.time_zone,
-            user_agent: self.user_agent,
-            satellite_id: Principal::from_text(self.satellite_id)?,
-            session_id: self.session_id,
+            title: payload.title,
+            href: payload.href,
+            referrer: payload.referrer,
+            device: payload.device,
+            time_zone: payload.time_zone,
+            user_agent: payload.user_agent,
+            satellite_id: Principal::from_text(satellite_id)?,
+            session_id: payload.session_id,
             updated_at: None,
-            version: self.version.map(|version| version.value),
+            version: payload.version.map(|version| version.value),
         };
 
         Ok(page_view)
@@ -61,15 +64,18 @@ impl PageViewPayload {
 }
 
 impl SetTrackEventPayload {
-    pub fn into_domain(self) -> Result<SetTrackEvent, PrincipalError> {
+    pub fn convert_to_setter(
+        payload: SetTrackEventPayload,
+        satellite_id: &SatelliteIdText,
+    ) -> Result<SetTrackEvent, PrincipalError> {
         let track_event = SetTrackEvent {
-            name: self.name,
-            metadata: self.metadata,
-            user_agent: self.user_agent,
-            satellite_id: Principal::from_text(self.satellite_id)?,
-            session_id: self.session_id,
+            name: payload.name,
+            metadata: payload.metadata,
+            user_agent: payload.user_agent,
+            satellite_id: Principal::from_text(satellite_id)?,
+            session_id: payload.session_id,
             updated_at: None,
-            version: self.version.map(|version| version.value),
+            version: payload.version.map(|version| version.value),
         };
 
         Ok(track_event)
@@ -97,15 +103,18 @@ impl TrackEventPayload {
 }
 
 impl SetPerformanceMetricPayload {
-    pub fn into_domain(self) -> Result<SetPerformanceMetric, PrincipalError> {
+    pub fn convert_to_setter(
+        payload: SetPerformanceMetricPayload,
+        satellite_id: &SatelliteIdText,
+    ) -> Result<SetPerformanceMetric, PrincipalError> {
         let metric = SetPerformanceMetric {
-            href: self.href,
-            metric_name: self.metric_name,
-            data: self.data,
-            user_agent: self.user_agent,
-            satellite_id: Principal::from_text(self.satellite_id)?,
-            session_id: self.session_id,
-            version: self.version.map(|version| version.value),
+            href: payload.href,
+            metric_name: payload.metric_name,
+            data: payload.data,
+            user_agent: payload.user_agent,
+            satellite_id: Principal::from_text(satellite_id)?,
+            session_id: payload.session_id,
+            version: payload.version.map(|version| version.value),
         };
 
         Ok(metric)

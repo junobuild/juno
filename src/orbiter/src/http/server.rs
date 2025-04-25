@@ -4,7 +4,7 @@ use crate::http::routes::not_found::{
     create_uncertified_not_found_response, prepare_certified_not_found_response,
 };
 use crate::http::state::store::get_certified_response;
-use crate::http::types::handler::HttpRequestHandler;
+use crate::http::types::handler::{HandledUpdateResult, HttpRequestHandler};
 use crate::http::utils::create_json_response;
 use ic_http_certification::{HttpRequest, HttpResponse};
 
@@ -26,8 +26,7 @@ pub fn on_http_request_update(
     handler: &dyn HttpRequestHandler,
 ) -> HttpResponse<'static> {
     let handle_http_request_update = |request: &HttpRequest| -> HttpResponse<'static> {
-        // TODO: extand with CORS headers
-        let (status_code, body) = handler.handle_update(request);
+        let HandledUpdateResult { status_code, body, headers } = handler.handle_update(request);
         create_json_response(status_code, body)
     };
 

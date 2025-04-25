@@ -18,8 +18,9 @@ pub mod interface {
 }
 
 pub mod handler {
-    use crate::http::types::interface::{ResponseBody, ResponseHeaders};
+    use crate::http::types::interface::{ResponseBody};
     use ic_http_certification::{HttpRequest, StatusCode};
+    use junobuild_shared::types::core::DomainName;
 
     pub trait HttpRequestHandler {
         fn is_known_route(&self, request: &HttpRequest) -> bool;
@@ -30,6 +31,6 @@ pub mod handler {
     pub struct HandledUpdateResult {
         pub status_code: StatusCode,
         pub body: ResponseBody,
-        pub headers: Option<ResponseHeaders>,
+        pub restricted_origin: Option<DomainName>,
     }
 }

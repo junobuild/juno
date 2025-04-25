@@ -143,6 +143,37 @@ describe('Orbiter > HTTP > Performance metrics', () => {
 					expect(fromNullable(response.upgrade)).toBeUndefined();
 				});
 
+				it('should not set a performance metric with invalid satellite id', async () => {
+					const { http_request_update } = actor;
+
+					const request: HttpRequest = {
+						body: toBodyJson({
+							...performanceMetric,
+							performance_metric: {
+								...performanceMetricPayloadMock,
+								satellite_id: satelliteIdMock // Should be principal as text
+							}
+						}),
+						certificate_version: toNullable(2),
+						headers: [],
+						method: 'POST',
+						url: '/metric'
+					};
+
+					const response = await http_request_update(request);
+
+					expect(response.status_code).toEqual(500);
+
+					const decoder = new TextDecoder();
+					const responseBody = decoder.decode(response.body as Uint8Array<ArrayBufferLike>);
+
+					const {
+						err: { message }
+					}: { err: { message: string } } = JSON.parse(responseBody, jsonReviver);
+
+					expect(message.includes('invalid type')).toBeTruthy();
+				});
+
 				it('should set a performance metric', async () => {
 					const { http_request_update } = actor;
 
@@ -262,6 +293,30 @@ describe('Orbiter > HTTP > Performance metrics', () => {
 					const response = await http_request(request);
 
 					expect(fromNullable(response.upgrade)).toBeUndefined();
+				});
+
+				it('should not set pperformance metrics with invalid satellite id', async () => {
+					const { http_request_update } = actor;
+
+					const request: HttpRequest = {
+						body: toBodyJson({
+							performance_metrics: [
+								{
+									...performanceMetric,
+									...performanceMetricPayloadMock,
+									satellite_id: satelliteIdMock // Should be principal as text
+								}
+							]
+						}),
+						certificate_version: toNullable(2),
+						headers: [],
+						method: 'POST',
+						url: '/metrics'
+					};
+
+					const response = await http_request_update(request);
+
+					expect(response.status_code).toEqual(500);
 				});
 
 				it('should set performance metrics', async () => {

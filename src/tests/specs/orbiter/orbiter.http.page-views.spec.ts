@@ -143,6 +143,37 @@ describe('Orbiter > HTTP > Page views', () => {
 					expect(fromNullable(response.upgrade)).toBeUndefined();
 				});
 
+				it('should not set a page view with invalid satellite id', async () => {
+					const { http_request_update } = actor;
+
+					const request: HttpRequest = {
+						body: toBodyJson({
+							...pageView,
+							page_view: {
+								...pageViewPayloadMock,
+								satellite_id: satelliteIdMock // Should be principal as text
+							}
+						}),
+						certificate_version: toNullable(2),
+						headers: [],
+						method: 'POST',
+						url: '/view'
+					};
+
+					const response = await http_request_update(request);
+
+					expect(response.status_code).toEqual(500);
+
+					const decoder = new TextDecoder();
+					const responseBody = decoder.decode(response.body as Uint8Array<ArrayBufferLike>);
+
+					const {
+						err: { message }
+					}: { err: { message: string } } = JSON.parse(responseBody, jsonReviver);
+
+					expect(message.includes('invalid type')).toBeTruthy();
+				});
+
 				it('should set a page view', async () => {
 					const { http_request_update } = actor;
 
@@ -260,6 +291,30 @@ describe('Orbiter > HTTP > Page views', () => {
 					const response = await http_request(request);
 
 					expect(fromNullable(response.upgrade)).toBeUndefined();
+				});
+
+				it('should not set page views with invalid satellite id', async () => {
+					const { http_request_update } = actor;
+
+					const request: HttpRequest = {
+						body: toBodyJson({
+							page_views: [
+								{
+									...pageView,
+									...pageViewPayloadMock,
+									satellite_id: satelliteIdMock // Should be principal as text
+								}
+							]
+						}),
+						certificate_version: toNullable(2),
+						headers: [],
+						method: 'POST',
+						url: '/views'
+					};
+
+					const response = await http_request_update(request);
+
+					expect(response.status_code).toEqual(500);
 				});
 
 				it('should set page views', async () => {

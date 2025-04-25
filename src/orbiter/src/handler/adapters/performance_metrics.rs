@@ -15,8 +15,12 @@ pub fn handle_insert_performance_metric(
     }: SetPerformanceMetricRequest = decode_doc_data::<SetPerformanceMetricRequest>(request.body())
         .map_err(|e| e.to_string())?;
 
-    let inserted_performance_metric =
-        assert_and_insert_performance_metric(key.into_domain(), performance_metric.into_domain())?;
+    let inserted_performance_metric = assert_and_insert_performance_metric(
+        key.into_domain(),
+        performance_metric
+            .into_domain()
+            .map_err(|e| e.to_string())?,
+    )?;
 
     Ok(PerformanceMetricPayload::from_domain(
         inserted_performance_metric,
@@ -39,7 +43,9 @@ pub fn handle_insert_performance_metrics(request: &HttpRequest) -> Result<(), St
 
         let result = assert_and_insert_performance_metric(
             key_domain.clone(),
-            performance_metric.into_domain(),
+            performance_metric
+                .into_domain()
+                .map_err(|e| e.to_string())?,
         );
 
         match result {

@@ -8,8 +8,10 @@ pub fn handle_insert_page_view(request: &HttpRequest) -> Result<PageViewPayload,
     let SetPageViewRequest { key, page_view }: SetPageViewRequest =
         decode_doc_data::<SetPageViewRequest>(request.body()).map_err(|e| e.to_string())?;
 
-    let inserted_page_view =
-        assert_and_insert_page_view(key.into_domain(), page_view.into_domain())?;
+    let inserted_page_view = assert_and_insert_page_view(
+        key.into_domain(),
+        page_view.into_domain().map_err(|e| e.to_string())?,
+    )?;
 
     Ok(PageViewPayload::from_domain(inserted_page_view))
 }
@@ -23,7 +25,10 @@ pub fn handle_insert_page_views(request: &HttpRequest) -> Result<(), String> {
     for SetPageViewRequest { key, page_view } in page_views {
         let key_domain = key.into_domain();
 
-        let result = assert_and_insert_page_view(key_domain.clone(), page_view.into_domain());
+        let result = assert_and_insert_page_view(
+            key_domain.clone(),
+            page_view.into_domain().map_err(|e| e.to_string())?,
+        );
 
         match result {
             Ok(_) => {}

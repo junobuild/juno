@@ -9,7 +9,7 @@ use crate::http::constants::{
     EVENTS_PATH, EVENT_PATH, KNOWN_ROUTES, METRICS_PATH, METRIC_PATH, VIEWS_PATH, VIEW_PATH,
 };
 use crate::http::types::handler::{HandledUpdateResult, HttpRequestHandler};
-use crate::http::types::interface::{ApiResponse};
+use crate::http::types::interface::ApiResponse;
 use ic_http_certification::{HttpRequest, StatusCode};
 
 pub struct OrbiterHttpRequestHandler;

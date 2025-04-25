@@ -4,6 +4,7 @@ import type {
 	SetPerformanceMetric,
 	SetTrackEvent
 } from '$declarations/orbiter/orbiter.did';
+import type { SatelliteIdText } from '$lib/types/satellite';
 import { Principal } from '@dfinity/principal';
 import { nanoid } from 'nanoid';
 
@@ -13,7 +14,7 @@ export interface SetPageViewPayload {
 	time_zone: string;
 	session_id: string;
 	href: string;
-	satellite_id: Principal;
+	satellite_id: SatelliteIdText;
 	device: PageViewDevice;
 	version?: bigint;
 	user_agent?: string;
@@ -22,7 +23,7 @@ export interface SetPageViewPayload {
 export interface SetTrackEventPayload {
 	name: string;
 	metadata?: Record<string, string>;
-	satellite_id: Principal;
+	satellite_id: SatelliteIdText;
 	session_id: string;
 	version?: bigint;
 	user_agent?: string;
@@ -54,7 +55,7 @@ export interface SetPerformanceMetricPayload {
 	metric_name: PerformanceMetricName;
 	data: PerformanceData;
 	user_agent?: string;
-	satellite_id: Principal;
+	satellite_id: SatelliteIdText;
 	session_id: string;
 	version?: bigint;
 }
@@ -104,7 +105,7 @@ export const pageViewPayloadMock: SetPageViewPayload = {
 		inner_height: 300,
 		inner_width: 600
 	},
-	satellite_id: satelliteIdMock,
+	satellite_id: satelliteIdMock.toText(),
 	session_id: sessionId,
 	title: 'Test',
 	time_zone: timeZone,
@@ -134,7 +135,7 @@ export const trackEventPayloadMock: SetTrackEventPayload = {
 		event1: 'Lorem ipsum dolor sit amet',
 		event2: ' Praesent congue, mauris id commodo vulputate'
 	},
-	satellite_id: satelliteIdMock,
+	satellite_id: satelliteIdMock.toText(),
 	session_id: sessionId,
 	user_agent: 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:125.0) Gecko/20100101 Firefox/125.0'
 };
@@ -170,6 +171,6 @@ export const performanceMetricPayloadMock: SetPerformanceMetricPayload = {
 	},
 	href: 'https://test.com',
 	metric_name: 'LCP',
-	satellite_id: satelliteIdMock,
+	satellite_id: satelliteIdMock.toText(),
 	user_agent: 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:125.0) Gecko/20100101 Firefox/125.0'
 };

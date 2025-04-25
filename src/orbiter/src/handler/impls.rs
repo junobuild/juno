@@ -4,7 +4,9 @@ use crate::types::interface::http::{
     SetPerformanceMetricPayload, SetTrackEventPayload, TrackEventPayload,
 };
 use crate::types::interface::{SetPageView, SetPerformanceMetric, SetTrackEvent};
-use junobuild_utils::{DocDataBigInt, DocDataPrincipal};
+use candid::types::principal::PrincipalError;
+use candid::Principal;
+use junobuild_utils::DocDataBigInt;
 
 impl AnalyticKeyPayload {
     pub fn into_domain(self) -> AnalyticKey {
@@ -16,19 +18,21 @@ impl AnalyticKeyPayload {
 }
 
 impl SetPageViewPayload {
-    pub fn into_domain(self) -> SetPageView {
-        SetPageView {
+    pub fn into_domain(self) -> Result<SetPageView, PrincipalError> {
+        let page_view = SetPageView {
             title: self.title,
             href: self.href,
             referrer: self.referrer,
             device: self.device,
             time_zone: self.time_zone,
             user_agent: self.user_agent,
-            satellite_id: self.satellite_id.value,
+            satellite_id: Principal::from_text(self.satellite_id)?,
             session_id: self.session_id,
             updated_at: None,
             version: self.version.map(|version| version.value),
-        }
+        };
+
+        Ok(page_view)
     }
 }
 
@@ -41,9 +45,7 @@ impl PageViewPayload {
             device: page_view.device,
             user_agent: page_view.user_agent,
             time_zone: page_view.time_zone,
-            satellite_id: DocDataPrincipal {
-                value: page_view.satellite_id,
-            },
+            satellite_id: page_view.satellite_id.to_text(),
             session_id: page_view.session_id,
             created_at: DocDataBigInt {
                 value: page_view.created_at,
@@ -59,16 +61,18 @@ impl PageViewPayload {
 }
 
 impl SetTrackEventPayload {
-    pub fn into_domain(self) -> SetTrackEvent {
-        SetTrackEvent {
+    pub fn into_domain(self) -> Result<SetTrackEvent, PrincipalError> {
+        let track_event = SetTrackEvent {
             name: self.name,
             metadata: self.metadata,
             user_agent: self.user_agent,
-            satellite_id: self.satellite_id.value,
+            satellite_id: Principal::from_text(self.satellite_id)?,
             session_id: self.session_id,
             updated_at: None,
             version: self.version.map(|version| version.value),
-        }
+        };
+
+        Ok(track_event)
     }
 }
 
@@ -77,9 +81,7 @@ impl TrackEventPayload {
         Self {
             name: track_event.name,
             metadata: track_event.metadata,
-            satellite_id: DocDataPrincipal {
-                value: track_event.satellite_id,
-            },
+            satellite_id: track_event.satellite_id.to_text(),
             session_id: track_event.session_id,
             created_at: DocDataBigInt {
                 value: track_event.created_at,
@@ -95,16 +97,18 @@ impl TrackEventPayload {
 }
 
 impl SetPerformanceMetricPayload {
-    pub fn into_domain(self) -> SetPerformanceMetric {
-        SetPerformanceMetric {
+    pub fn into_domain(self) -> Result<SetPerformanceMetric, PrincipalError> {
+        let metric = SetPerformanceMetric {
             href: self.href,
             metric_name: self.metric_name,
             data: self.data,
             user_agent: self.user_agent,
-            satellite_id: self.satellite_id.value,
+            satellite_id: Principal::from_text(self.satellite_id)?,
             session_id: self.session_id,
             version: self.version.map(|version| version.value),
-        }
+        };
+
+        Ok(metric)
     }
 }
 
@@ -114,9 +118,7 @@ impl PerformanceMetricPayload {
             href: performance_metric.href,
             metric_name: performance_metric.metric_name,
             data: performance_metric.data,
-            satellite_id: DocDataPrincipal {
-                value: performance_metric.satellite_id,
-            },
+            satellite_id: performance_metric.satellite_id.to_text(),
             session_id: performance_metric.session_id,
             created_at: DocDataBigInt {
                 value: performance_metric.created_at,

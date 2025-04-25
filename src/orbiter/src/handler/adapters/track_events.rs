@@ -10,8 +10,10 @@ pub fn handle_insert_track_event(request: &HttpRequest) -> Result<TrackEventPayl
     let SetTrackEventRequest { key, track_event }: SetTrackEventRequest =
         decode_doc_data::<SetTrackEventRequest>(request.body()).map_err(|e| e.to_string())?;
 
-    let inserted_track_event =
-        assert_and_insert_track_event(key.into_domain(), track_event.into_domain())?;
+    let inserted_track_event = assert_and_insert_track_event(
+        key.into_domain(),
+        track_event.into_domain().map_err(|e| e.to_string())?,
+    )?;
 
     Ok(TrackEventPayload::from_domain(inserted_track_event))
 }
@@ -25,7 +27,10 @@ pub fn handle_insert_track_events(request: &HttpRequest) -> Result<(), String> {
     for SetTrackEventRequest { key, track_event } in track_events {
         let key_domain = key.into_domain();
 
-        let result = assert_and_insert_track_event(key_domain.clone(), track_event.into_domain());
+        let result = assert_and_insert_track_event(
+            key_domain.clone(),
+            track_event.into_domain().map_err(|e| e.to_string())?,
+        );
 
         match result {
             Ok(_) => {}

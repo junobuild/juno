@@ -143,6 +143,37 @@ describe('Orbiter > HTTP > Track events', () => {
 					expect(fromNullable(response.upgrade)).toBeUndefined();
 				});
 
+				it('should not set a track event with invalid satellite id', async () => {
+					const { http_request_update } = actor;
+
+					const request: HttpRequest = {
+						body: toBodyJson({
+							...trackEvent,
+							track_event: {
+								...trackEventPayloadMock,
+								satellite_id: satelliteIdMock // Should be principal as text
+							}
+						}),
+						certificate_version: toNullable(2),
+						headers: [],
+						method: 'POST',
+						url: '/event'
+					};
+
+					const response = await http_request_update(request);
+
+					expect(response.status_code).toEqual(500);
+
+					const decoder = new TextDecoder();
+					const responseBody = decoder.decode(response.body as Uint8Array<ArrayBufferLike>);
+
+					const {
+						err: { message }
+					}: { err: { message: string } } = JSON.parse(responseBody, jsonReviver);
+
+					expect(message.includes('invalid type')).toBeTruthy();
+				});
+
 				it('should set a track event', async () => {
 					const { http_request_update } = actor;
 
@@ -262,6 +293,30 @@ describe('Orbiter > HTTP > Track events', () => {
 					const response = await http_request(request);
 
 					expect(fromNullable(response.upgrade)).toBeUndefined();
+				});
+
+				it('should not set track events with invalid satellite id', async () => {
+					const { http_request_update } = actor;
+
+					const request: HttpRequest = {
+						body: toBodyJson({
+							track_events: [
+								{
+									...trackEvent,
+									...trackEventPayloadMock,
+									satellite_id: satelliteIdMock // Should be principal as text
+								}
+							]
+						}),
+						certificate_version: toNullable(2),
+						headers: [],
+						method: 'POST',
+						url: '/events'
+					};
+
+					const response = await http_request_update(request);
+
+					expect(response.status_code).toEqual(500);
 				});
 
 				it('should set track events', async () => {

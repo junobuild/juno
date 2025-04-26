@@ -3,7 +3,7 @@ use crate::http::routes::api::routes::{
     EVENTS_ROUTE, EVENT_ROUTE, METRICS_ROUTE, METRIC_ROUTE, VIEWS_ROUTE, VIEW_ROUTE,
 };
 use crate::http::routes::api::types::CertifiedExactRoute;
-use crate::http::types::interface::ErrorResponse;
+use crate::http::types::response::ErrorResponse;
 use crate::http::utils::create_json_response;
 use ic_http_certification::{HttpResponse, Method, StatusCode};
 

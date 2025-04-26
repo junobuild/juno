@@ -1,4 +1,4 @@
-use crate::http::types::interface::ResponseBody;
+use crate::http::types::response::ResponseBody;
 use ic_http_certification::{HttpResponse, StatusCode};
 use junobuild_shared::types::core::DomainName;
 

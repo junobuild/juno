@@ -1,8 +1,6 @@
+use crate::http::types::request::HttpRequestMethod;
 use ic_http_certification::{HttpCertification, HttpCertificationTree, HttpResponse};
 use std::collections::HashMap;
-
-pub type Method = String;
-pub type Path = String;
 
 #[derive(Default, Clone)]
 pub struct RuntimeState {
@@ -12,7 +10,7 @@ pub struct RuntimeState {
 #[derive(Default, Clone)]
 pub struct StorageRuntimeState {
     pub tree: HttpCertificationTree,
-    pub responses: HashMap<(Option<Method>, String), CertifiedHttpResponse<'static>>,
+    pub responses: HashMap<(Option<HttpRequestMethod>, String), CertifiedHttpResponse<'static>>,
 }
 
 #[derive(Debug, Clone)]

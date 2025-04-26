@@ -1,5 +1,5 @@
 use crate::http::types::handler::HandledUpdateResult;
-use crate::http::types::interface::{ApiResponse, ResponseBody};
+use crate::http::types::response::{ApiResponse, ResponseBody};
 use ic_http_certification::StatusCode;
 use junobuild_shared::types::core::DomainName;
 use serde::Serialize;

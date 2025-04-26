@@ -94,6 +94,7 @@ describe('Orbiter > HTTP > Performance metrics', () => {
 					satelliteIdMock,
 					{
 						version: [],
+						restricted_origin: [],
 						features: [allFeatures]
 					}
 				]

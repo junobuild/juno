@@ -57,29 +57,7 @@ describe('Orbiter > HTTP > CORS', () => {
 		await tick(pic);
 	});
 
-	describe('Without restricted domain configuration', () => {
-		beforeAll(async () => {
-			actor.setIdentity(controller);
-
-			const allFeatures: OrbiterSatelliteFeatures = {
-				page_views: true,
-				performance_metrics: true,
-				track_events: true
-			};
-
-			const { set_satellite_configs } = actor;
-
-			await set_satellite_configs([
-				[
-					satelliteIdMock,
-					{
-						version: [],
-						features: [allFeatures]
-					}
-				]
-			]);
-		});
-
+	const assertCORS = (allowedOriginForPOST = '*') => {
 		it.each(URLS)('should return * for OPTIONS to %s', async (url) => {
 			const { http_request } = actor;
 
@@ -133,7 +111,7 @@ describe('Orbiter > HTTP > CORS', () => {
 				]
 			};
 
-			it('should return * for POST to /view', async () => {
+			it(`should return ${allowedOriginForPOST} for POST to /views`, async () => {
 				const { http_request_update } = actor;
 
 				const request: HttpRequest = {
@@ -150,10 +128,12 @@ describe('Orbiter > HTTP > CORS', () => {
 
 				expect(status_code).toEqual(200);
 
-				expect(headers.find(([key, _]) => key === 'Access-Control-Allow-Origin')?.[1]).toEqual('*');
+				expect(headers.find(([key, _]) => key === 'Access-Control-Allow-Origin')?.[1]).toEqual(
+					allowedOriginForPOST
+				);
 			});
 
-			it('should return * for POST to /views', async () => {
+			it(`should return ${allowedOriginForPOST} for POST to /views`, async () => {
 				const { http_request_update } = actor;
 
 				const request: HttpRequest = {
@@ -170,7 +150,9 @@ describe('Orbiter > HTTP > CORS', () => {
 
 				expect(status_code).toEqual(200);
 
-				expect(headers.find(([key, _]) => key === 'Access-Control-Allow-Origin')?.[1]).toEqual('*');
+				expect(headers.find(([key, _]) => key === 'Access-Control-Allow-Origin')?.[1]).toEqual(
+					allowedOriginForPOST
+				);
 			});
 		});
 
@@ -191,7 +173,7 @@ describe('Orbiter > HTTP > CORS', () => {
 				]
 			};
 
-			it('should return * for POST to /event', async () => {
+			it(`should return ${allowedOriginForPOST} for POST to /event`, async () => {
 				const { http_request_update } = actor;
 
 				const request: HttpRequest = {
@@ -208,10 +190,12 @@ describe('Orbiter > HTTP > CORS', () => {
 
 				expect(status_code).toEqual(200);
 
-				expect(headers.find(([key, _]) => key === 'Access-Control-Allow-Origin')?.[1]).toEqual('*');
+				expect(headers.find(([key, _]) => key === 'Access-Control-Allow-Origin')?.[1]).toEqual(
+					allowedOriginForPOST
+				);
 			});
 
-			it('should return * for POST to /events', async () => {
+			it(`should return ${allowedOriginForPOST} for POST to /events`, async () => {
 				const { http_request_update } = actor;
 
 				const request: HttpRequest = {
@@ -228,7 +212,9 @@ describe('Orbiter > HTTP > CORS', () => {
 
 				expect(status_code).toEqual(200);
 
-				expect(headers.find(([key, _]) => key === 'Access-Control-Allow-Origin')?.[1]).toEqual('*');
+				expect(headers.find(([key, _]) => key === 'Access-Control-Allow-Origin')?.[1]).toEqual(
+					allowedOriginForPOST
+				);
 			});
 		});
 
@@ -249,7 +235,7 @@ describe('Orbiter > HTTP > CORS', () => {
 				]
 			};
 
-			it('should return * for POST to /metric', async () => {
+			it(`should return ${allowedOriginForPOST} for POST to /metric`, async () => {
 				const { http_request_update } = actor;
 
 				const request: HttpRequest = {
@@ -266,10 +252,12 @@ describe('Orbiter > HTTP > CORS', () => {
 
 				expect(status_code).toEqual(200);
 
-				expect(headers.find(([key, _]) => key === 'Access-Control-Allow-Origin')?.[1]).toEqual('*');
+				expect(headers.find(([key, _]) => key === 'Access-Control-Allow-Origin')?.[1]).toEqual(
+					allowedOriginForPOST
+				);
 			});
 
-			it('should return * for POST to /metrics', async () => {
+			it(`should return ${allowedOriginForPOST} for POST to /metrics`, async () => {
 				const { http_request_update } = actor;
 
 				const request: HttpRequest = {
@@ -286,8 +274,66 @@ describe('Orbiter > HTTP > CORS', () => {
 
 				expect(status_code).toEqual(200);
 
-				expect(headers.find(([key, _]) => key === 'Access-Control-Allow-Origin')?.[1]).toEqual('*');
+				expect(headers.find(([key, _]) => key === 'Access-Control-Allow-Origin')?.[1]).toEqual(
+					allowedOriginForPOST
+				);
 			});
 		});
+	};
+
+	describe('Without restricted domain configuration', () => {
+		beforeAll(async () => {
+			actor.setIdentity(controller);
+
+			const allFeatures: OrbiterSatelliteFeatures = {
+				page_views: true,
+				performance_metrics: true,
+				track_events: true
+			};
+
+			const { set_satellite_configs } = actor;
+
+			await set_satellite_configs([
+				[
+					satelliteIdMock,
+					{
+						version: [],
+						restricted_origin: [],
+						features: [allFeatures]
+					}
+				]
+			]);
+		});
+
+		assertCORS();
+	});
+
+	describe('With restricted domain configuration', () => {
+		const restrictedDomain = 'https://mydomain.com';
+
+		beforeAll(async () => {
+			actor.setIdentity(controller);
+
+			const allFeatures: OrbiterSatelliteFeatures = {
+				page_views: true,
+				performance_metrics: true,
+				track_events: true
+			};
+
+			const { set_satellite_configs } = actor;
+
+			await set_satellite_configs([
+				[
+					satelliteIdMock,
+					{
+						version: [1n],
+						restricted_origin: [restrictedDomain],
+						features: [allFeatures]
+					}
+				]
+			]);
+		});
+
+		assertCORS(restrictedDomain);
 	});
 });

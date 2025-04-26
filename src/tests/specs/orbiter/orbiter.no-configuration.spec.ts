@@ -70,6 +70,7 @@ describe('Orbiter > No configuration', () => {
 					satelliteIdMock,
 					{
 						version: config?.[1].version ?? [],
+						restricted_origin: [],
 						features: features as [] | [OrbiterSatelliteFeatures]
 					}
 				]

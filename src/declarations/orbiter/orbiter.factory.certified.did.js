@@ -154,6 +154,7 @@ export const idlFactory = ({ IDL }) => {
 	const OrbiterSatelliteConfig = IDL.Record({
 		updated_at: IDL.Nat64,
 		features: IDL.Opt(OrbiterSatelliteFeatures),
+		restricted_origin: IDL.Opt(IDL.Text),
 		created_at: IDL.Nat64,
 		version: IDL.Opt(IDL.Nat64)
 	});

@@ -103,6 +103,7 @@ export type NavigationType =
 export interface OrbiterSatelliteConfig {
 	updated_at: bigint;
 	features: [] | [OrbiterSatelliteFeatures];
+	restricted_origin: [] | [string];
 	created_at: bigint;
 	version: [] | [bigint];
 }

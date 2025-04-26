@@ -3,13 +3,13 @@ pub mod interface {
         PageViewDevice, PerformanceData, PerformanceMetricName, SessionId,
     };
     use candid::CandidType;
+    use junobuild_shared::types::core::DomainName;
     use junobuild_shared::types::state::{
         Metadata, OrbiterSatelliteFeatures, SatelliteId, Timestamp, Version,
     };
     use junobuild_shared::types::utils::CalendarDate;
     use serde::Deserialize;
     use std::collections::HashMap;
-    use junobuild_shared::types::core::DomainName;
 
     #[derive(CandidType, Deserialize, Clone)]
     pub struct SetPageView {

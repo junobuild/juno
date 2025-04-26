@@ -3,8 +3,8 @@ use crate::handler::adapters::response_builder::build_payload_response;
 use crate::http::types::handler::HandledUpdateResult;
 use crate::state::types::state::AnalyticKey;
 use crate::types::interface::http::{
-    PerformanceMetricPayload, SetPerformanceMetricPayload,
-    SetPerformanceMetricRequest, SetPerformanceMetricsRequest, SetPerformanceMetricsRequestEntry,
+    PerformanceMetricPayload, SetPerformanceMetricPayload, SetPerformanceMetricRequest,
+    SetPerformanceMetricsRequest, SetPerformanceMetricsRequestEntry,
 };
 use ic_http_certification::HttpRequest;
 use junobuild_utils::decode_doc_data;

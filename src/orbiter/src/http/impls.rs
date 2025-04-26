@@ -1,6 +1,7 @@
 use crate::http::types::handler::HandledUpdateResult;
 use crate::http::types::interface::{ApiResponse, ResponseBody};
 use ic_http_certification::StatusCode;
+use junobuild_shared::types::core::DomainName;
 use serde::Serialize;
 
 impl<'a, T: Serialize> ApiResponse<'a, T> {
@@ -32,7 +33,15 @@ impl<'a, T: Serialize> ApiResponse<'a, T> {
 }
 
 impl HandledUpdateResult {
-    pub fn new(status_code: StatusCode, body: ResponseBody) -> Self {
-        Self { status_code, body }
+    pub fn new(
+        status_code: StatusCode,
+        body: ResponseBody,
+        restricted_origin: Option<DomainName>,
+    ) -> Self {
+        Self {
+            status_code,
+            body,
+            restricted_origin,
+        }
     }
 }

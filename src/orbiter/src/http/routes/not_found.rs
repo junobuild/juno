@@ -31,7 +31,7 @@ lazy_static! {
 
 pub fn init_certified_not_found_response() {
     let body = ErrorResponse::not_found().encode();
-    let mut response = create_json_response(StatusCode::NOT_FOUND, body);
+    let mut response = create_json_response(StatusCode::NOT_FOUND, body, None);
 
     // insert the `Ic-CertificationExpression` header with the stringified CEL expression as its value
     response.add_header((
@@ -67,5 +67,5 @@ pub fn prepare_certified_not_found_response(
 
 pub fn create_uncertified_not_found_response() -> HttpResponse<'static> {
     let body = ErrorResponse::not_found().encode();
-    create_json_response(StatusCode::NOT_FOUND, body)
+    create_json_response(StatusCode::NOT_FOUND, body, None)
 }

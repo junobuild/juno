@@ -9,6 +9,7 @@ pub mod interface {
     use junobuild_shared::types::utils::CalendarDate;
     use serde::Deserialize;
     use std::collections::HashMap;
+    use junobuild_shared::types::core::DomainName;
 
     #[derive(CandidType, Deserialize, Clone)]
     pub struct SetPageView {
@@ -64,6 +65,7 @@ pub mod interface {
     #[derive(CandidType, Deserialize, Clone)]
     pub struct SetSatelliteConfig {
         pub features: Option<OrbiterSatelliteFeatures>,
+        pub restricted_origin: Option<DomainName>,
         pub version: Option<Version>,
     }
 

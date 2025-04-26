@@ -23,7 +23,6 @@ fn init_not_allowed_responses(certified_route: &CertifiedExactRoute) {
         Method::HEAD,
         Method::PUT,
         Method::PATCH,
-        Method::OPTIONS,
         Method::TRACE,
         Method::CONNECT,
     ]
@@ -31,7 +30,7 @@ fn init_not_allowed_responses(certified_route: &CertifiedExactRoute) {
     .for_each(|method| {
         fn create_not_allowed_response() -> HttpResponse<'static> {
             let body = ErrorResponse::not_allowed().encode();
-            create_json_response(StatusCode::METHOD_NOT_ALLOWED, body)
+            create_json_response(StatusCode::METHOD_NOT_ALLOWED, body, None)
         }
 
         init_certified_response(certified_route, method, create_not_allowed_response);

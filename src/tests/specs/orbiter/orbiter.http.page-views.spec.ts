@@ -94,6 +94,7 @@ describe('Orbiter > HTTP > Page views', () => {
 					satelliteIdMock,
 					{
 						version: [],
+						restricted_origin: [],
 						features: [allFeatures]
 					}
 				]

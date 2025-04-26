@@ -81,6 +81,7 @@ type NavigationType = variant {
 type OrbiterSatelliteConfig = record {
   updated_at : nat64;
   features : opt OrbiterSatelliteFeatures;
+  restricted_origin : opt text;
   created_at : nat64;
   version : opt nat64;
 };
@@ -151,6 +152,7 @@ type SetPerformanceMetric = record {
 };
 type SetSatelliteConfig = record {
   features : opt OrbiterSatelliteFeatures;
+  restricted_origin : opt text;
   version : opt nat64;
 };
 type SetTrackEvent = record {

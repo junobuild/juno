@@ -154,6 +154,7 @@ export const idlFactory = ({ IDL }) => {
 	const OrbiterSatelliteConfig = IDL.Record({
 		updated_at: IDL.Nat64,
 		features: IDL.Opt(OrbiterSatelliteFeatures),
+		restricted_origin: IDL.Opt(IDL.Text),
 		created_at: IDL.Nat64,
 		version: IDL.Opt(IDL.Nat64)
 	});
@@ -196,6 +197,7 @@ export const idlFactory = ({ IDL }) => {
 	const Result_2 = IDL.Variant({ Ok: PerformanceMetric, Err: IDL.Text });
 	const SetSatelliteConfig = IDL.Record({
 		features: IDL.Opt(OrbiterSatelliteFeatures),
+		restricted_origin: IDL.Opt(IDL.Text),
 		version: IDL.Opt(IDL.Nat64)
 	});
 	const SetTrackEvent = IDL.Record({

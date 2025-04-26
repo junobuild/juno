@@ -94,6 +94,7 @@ describe('Orbiter > HTTP > Track events', () => {
 					satelliteIdMock,
 					{
 						version: [],
+						restricted_origin: [],
 						features: [allFeatures]
 					}
 				]

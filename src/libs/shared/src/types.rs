@@ -1,4 +1,5 @@
 pub mod state {
+    use crate::types::core::DomainName;
     use crate::types::monitoring::CyclesBalance;
     use candid::Principal;
     use candid::{CandidType, Nat};
@@ -108,6 +109,7 @@ pub mod state {
     #[derive(CandidType, Serialize, Deserialize, Clone)]
     pub struct OrbiterSatelliteConfig {
         pub features: Option<OrbiterSatelliteFeatures>,
+        pub restricted_origin: Option<DomainName>,
         pub created_at: Timestamp,
         pub updated_at: Timestamp,
         pub version: Option<Version>,

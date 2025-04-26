@@ -1,15 +1,17 @@
 use crate::events::helpers::assert_and_insert_performance_metric;
+use crate::handler::adapters::response_builder::build_payload_response;
+use crate::http::types::handler::HandledUpdateResult;
 use crate::state::types::state::AnalyticKey;
 use crate::types::interface::http::{
-    PerformanceMetricPayload, SetPerformanceMetricPayload, SetPerformanceMetricRequest,
-    SetPerformanceMetricsRequest, SetPerformanceMetricsRequestEntry,
+    PerformanceMetricPayload, SetPerformanceMetricPayload,
+    SetPerformanceMetricRequest, SetPerformanceMetricsRequest, SetPerformanceMetricsRequestEntry,
 };
 use ic_http_certification::HttpRequest;
 use junobuild_utils::decode_doc_data;
 
 pub fn handle_insert_performance_metric(
     request: &HttpRequest,
-) -> Result<PerformanceMetricPayload, String> {
+) -> Result<HandledUpdateResult, String> {
     let SetPerformanceMetricRequest {
         key,
         performance_metric,
@@ -23,12 +25,14 @@ pub fn handle_insert_performance_metric(
             .map_err(|e| e.to_string())?,
     )?;
 
-    Ok(PerformanceMetricPayload::from_domain(
-        inserted_performance_metric,
-    ))
+    let payload = PerformanceMetricPayload::from_domain(inserted_performance_metric);
+
+    build_payload_response(payload, &satellite_id)
 }
 
-pub fn handle_insert_performance_metrics(request: &HttpRequest) -> Result<(), String> {
+pub fn handle_insert_performance_metrics(
+    request: &HttpRequest,
+) -> Result<HandledUpdateResult, String> {
     let performance_metrics: SetPerformanceMetricsRequest =
         decode_doc_data::<SetPerformanceMetricsRequest>(request.body())
             .map_err(|e| e.to_string())?;
@@ -67,5 +71,5 @@ pub fn handle_insert_performance_metrics(request: &HttpRequest) -> Result<(), St
         return Err(error_string);
     }
 
-    Ok(())
+    build_payload_response((), &performance_metrics.satellite_id)
 }

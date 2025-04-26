@@ -26,8 +26,12 @@ pub fn on_http_request_update(
     handler: &dyn HttpRequestHandler,
 ) -> HttpResponse<'static> {
     let handle_http_request_update = |request: &HttpRequest| -> HttpResponse<'static> {
-        let HandledUpdateResult { status_code, body } = handler.handle_update(request);
-        create_json_response(status_code, body)
+        let HandledUpdateResult {
+            status_code,
+            body,
+            restricted_origin,
+        } = handler.handle_update(request);
+        create_json_response(status_code, body, restricted_origin)
     };
 
     serve_request(request, handler, &handle_http_request_update)

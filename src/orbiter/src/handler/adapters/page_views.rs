@@ -1,4 +1,6 @@
 use crate::events::helpers::assert_and_insert_page_view;
+use crate::handler::adapters::response_builder::build_payload_response;
+use crate::http::types::handler::HandledUpdateResult;
 use crate::state::types::state::AnalyticKey;
 use crate::types::interface::http::{
     PageViewPayload, SetPageViewPayload, SetPageViewRequest, SetPageViewsRequest,
@@ -7,7 +9,7 @@ use crate::types::interface::http::{
 use ic_http_certification::HttpRequest;
 use junobuild_utils::decode_doc_data;
 
-pub fn handle_insert_page_view(request: &HttpRequest) -> Result<PageViewPayload, String> {
+pub fn handle_insert_page_view(request: &HttpRequest) -> Result<HandledUpdateResult, String> {
     let SetPageViewRequest {
         key,
         page_view,
@@ -21,10 +23,12 @@ pub fn handle_insert_page_view(request: &HttpRequest) -> Result<PageViewPayload,
             .map_err(|e| e.to_string())?,
     )?;
 
-    Ok(PageViewPayload::from_domain(inserted_page_view))
+    let payload = PageViewPayload::from_domain(inserted_page_view);
+
+    build_payload_response(payload, &satellite_id)
 }
 
-pub fn handle_insert_page_views(request: &HttpRequest) -> Result<(), String> {
+pub fn handle_insert_page_views(request: &HttpRequest) -> Result<HandledUpdateResult, String> {
     let page_views: SetPageViewsRequest =
         decode_doc_data::<SetPageViewsRequest>(request.body()).map_err(|e| e.to_string())?;
 
@@ -55,5 +59,5 @@ pub fn handle_insert_page_views(request: &HttpRequest) -> Result<(), String> {
         return Err(error_string);
     }
 
-    Ok(())
+    build_payload_response((), &page_views.satellite_id)
 }

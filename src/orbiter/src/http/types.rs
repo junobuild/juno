@@ -29,12 +29,15 @@ pub mod handler {
 
     pub trait HttpRequestHandler {
         fn is_known_route(&self, request: &HttpRequest) -> bool;
-        fn is_upgradable_method(&self, method: &Method) -> bool;
+
+        fn should_use_handler(&self, method: &Method) -> bool;
+
         fn assert_request_upgrade_allowed(
             &self,
             request_path: &HttpRequestPath,
             body: &HttpRequestBody,
         ) -> Result<(), String>;
+
         fn handle_update(
             &self,
             request_path: &HttpRequestPath,

@@ -1,6 +1,8 @@
 use crate::http::constants::NOT_FOUND_PATH;
 use crate::http::routes::api::services::prepare_certified_response_for_requested_path;
-use crate::http::routes::not_found::{create_uncertified_not_found_response, prepare_certified_not_found_response};
+use crate::http::routes::not_found::{
+    create_uncertified_not_found_response, prepare_certified_not_found_response,
+};
 use crate::http::state::store::get_certified_response;
 use crate::http::types::handler::{HandledUpdateResult, HttpRequestHandler};
 use crate::http::types::request::{HttpRequestBody, HttpRequestPath};
@@ -64,7 +66,7 @@ fn serve_request(
     if handler.is_known_route(request) {
         let method = request.method();
 
-        if handler.is_upgradable_method(method) {
+        if handler.should_use_handler(method) {
             return response_handler(&request_path, method, request.body());
         }
 

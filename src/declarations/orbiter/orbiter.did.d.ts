@@ -182,6 +182,7 @@ export interface SetPerformanceMetric {
 }
 export interface SetSatelliteConfig {
 	features: [] | [OrbiterSatelliteFeatures];
+	restricted_origin: [] | [string];
 	version: [] | [bigint];
 }
 export interface SetTrackEvent {

@@ -152,6 +152,7 @@ type SetPerformanceMetric = record {
 };
 type SetSatelliteConfig = record {
   features : opt OrbiterSatelliteFeatures;
+  restricted_origin : opt text;
   version : opt nat64;
 };
 type SetTrackEvent = record {

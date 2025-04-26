@@ -54,7 +54,7 @@ fn serve_request(
     if handler.is_known_route(request) {
         let method = request.method().to_string();
 
-        if handler.is_upgradable_method(&method) {
+        if handler.should_use_handler(&method) {
             return response_handler(request);
         }
 

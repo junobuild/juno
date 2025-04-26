@@ -19,7 +19,7 @@ impl HttpRequestHandler for OrbiterHttpRequestHandler {
         matches!(request.get_path().as_deref(), Ok(path) if KNOWN_ROUTES.contains(&path))
     }
 
-    fn is_upgradable_method(&self, method: &str) -> bool {
+    fn should_use_handler(&self, method: &str) -> bool {
         method == "POST"
     }
 

@@ -22,7 +22,7 @@ pub mod handler {
 
     pub trait HttpRequestHandler {
         fn is_known_route(&self, request: &HttpRequest) -> bool;
-        fn is_allowed_method(&self, method: &str) -> bool;
+        fn is_upgradable_method(&self, method: &str) -> bool;
         fn handle_update(&self, request: &HttpRequest) -> HandledUpdateResult;
     }
 

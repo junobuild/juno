@@ -1,8 +1,6 @@
 use crate::http::constants::NOT_FOUND_PATH;
-use crate::http::routes::api::services::prepare_certified_not_allowed_response;
-use crate::http::routes::not_found::{
-    create_uncertified_not_found_response, prepare_certified_not_found_response,
-};
+use crate::http::routes::api::services::prepare_certified_response_for_requested_path;
+use crate::http::routes::not_found::{create_uncertified_not_found_response, prepare_certified_not_found_response};
 use crate::http::state::store::get_certified_response;
 use crate::http::types::handler::{HandledUpdateResult, HttpRequestHandler};
 use crate::http::types::request::{HttpRequestBody, HttpRequestPath};
@@ -24,7 +22,7 @@ pub fn on_http_request(
             return HttpResponse::builder().with_upgrade(true).build();
         }
 
-        not_allowed_response(request_path, method)
+        certified_response(request_path, method)
     };
 
     serve_request(request, handler, &upgrade_http_request)
@@ -66,21 +64,24 @@ fn serve_request(
     if handler.is_known_route(request) {
         let method = request.method();
 
-        if handler.is_allowed_method(method) {
+        if handler.is_upgradable_method(method) {
             return response_handler(&request_path, method, request.body());
         }
 
-        return not_allowed_response(&request_path, method);
+        // e.g. not_allowed for method not supported by know route or responses to OPTIONS
+        return certified_response(&request_path, method);
     }
 
     not_found_response(&request_path)
 }
 
-fn not_allowed_response(request_path: &HttpRequestPath, method: &Method) -> HttpResponse<'static> {
-    let not_allowed = get_certified_response(request_path, &Some(method.to_string().clone()));
+fn certified_response(request_path: &HttpRequestPath, method: &Method) -> HttpResponse<'static> {
+    let certified_response =
+        get_certified_response(request_path, &Some(method.to_string().clone()));
 
-    if let Some(not_allowed) = not_allowed {
-        let response = prepare_certified_not_allowed_response(request_path, not_allowed);
+    if let Some(certified_response) = certified_response {
+        let response =
+            prepare_certified_response_for_requested_path(request_path, certified_response);
 
         // TODO: technically it can be an INTERNAL_SERVER_ERROR (I guess)
         if let Ok(response) = response {

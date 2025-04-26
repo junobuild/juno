@@ -8,7 +8,7 @@ use crate::http::routes::services::prepare_certified_response;
 use crate::http::state::types::CertifiedHttpResponse;
 use ic_http_certification::HttpResponse;
 
-pub fn prepare_certified_not_allowed_response(
+pub fn prepare_certified_response_for_requested_path(
     request_path: &str,
     certified_response: CertifiedHttpResponse<'static>,
 ) -> Result<HttpResponse<'static>, String> {

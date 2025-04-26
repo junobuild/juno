@@ -1,5 +1,5 @@
 use crate::http::constants::NOT_FOUND_PATH;
-use crate::http::routes::api::services::prepare_certified_not_allowed_response;
+use crate::http::routes::api::services::prepare_certified_response_for_requested_path;
 use crate::http::routes::not_found::{
     create_uncertified_not_found_response, prepare_certified_not_found_response,
 };
@@ -58,10 +58,12 @@ fn serve_request(
             return response_handler(request);
         }
 
-        let not_allowed = get_certified_response(&request_path, &Some(method.clone()));
+        // e.g. not_allowed for method not supported by know route or responses to OPTIONS
+        let certified_response = get_certified_response(&request_path, &Some(method.clone()));
 
-        if let Some(not_allowed) = not_allowed {
-            let response = prepare_certified_not_allowed_response(&request_path, not_allowed);
+        if let Some(certified_response) = certified_response {
+            let response =
+                prepare_certified_response_for_requested_path(&request_path, certified_response);
 
             // TODO: I guess technically it can be another type of error if None
             if let Ok(response) = response {

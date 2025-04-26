@@ -48,7 +48,7 @@ describe('Orbiter > HTTP > Routes', () => {
 	});
 
 	describe.each(['/something', '/'])('Route not found for %s', (url) => {
-		it.each([...NON_POST_METHODS, 'POST'])(
+		it.each([...NON_POST_METHODS, 'OPTIONS', 'POST'])(
 			'should return a certified not found response for %s',
 			async (method) => {
 				const { http_request } = actor;

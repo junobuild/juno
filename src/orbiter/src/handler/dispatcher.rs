@@ -18,9 +18,9 @@ use crate::http::types::request::{HttpRequestBody, HttpRequestPath};
 use crate::http::types::response::ApiResponse;
 use ic_http_certification::{HttpRequest, Method, StatusCode};
 
-pub struct OrbiterHttpRequestHandler;
+pub struct Dispatcher;
 
-impl HttpRequestHandler for OrbiterHttpRequestHandler {
+impl HttpRequestHandler for Dispatcher {
     fn is_known_route(&self, request: &HttpRequest) -> bool {
         matches!(request.get_path().as_deref(), Ok(path) if KNOWN_ROUTES.contains(&path))
     }

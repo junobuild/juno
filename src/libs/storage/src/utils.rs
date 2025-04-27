@@ -7,6 +7,7 @@ use crate::types::state::FullPath;
 use crate::types::store::{Asset, AssetEncoding, AssetKey};
 use candid::Principal;
 use junobuild_collections::assert::stores::assert_permission;
+use junobuild_collections::constants::assets::COLLECTION_ASSET_KEY;
 use junobuild_collections::types::core::CollectionKey;
 use junobuild_collections::types::rules::Permission;
 use junobuild_shared::list::{filter_timestamps, matcher_regex};
@@ -119,7 +120,7 @@ pub fn should_include_asset_for_deletion(collection: &CollectionKey, asset_path:
         WELL_KNOWN_II_ALTERNATIVE_ORIGINS.to_string(),
     ];
 
-    collection != "#dapp" || !excluded_paths.contains(asset_path)
+    collection != COLLECTION_ASSET_KEY || !excluded_paths.contains(asset_path)
 }
 
 pub fn map_content_type_headers(content_type: &str) -> Vec<HeaderField> {

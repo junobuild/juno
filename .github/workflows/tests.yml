@@ -158,7 +158,7 @@ jobs:
           path: .
 
       - name: Tests
-        run: npm run test --shard=${{ matrix.shardIndex }}/${{ matrix.shardTotal }}
+        run: npm run test -- --shard=${{ matrix.shardIndex }}/${{ matrix.shardTotal }}
 
   may-merge:
     needs: ['tests']

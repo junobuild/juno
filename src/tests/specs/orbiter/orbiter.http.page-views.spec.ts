@@ -326,7 +326,7 @@ describe('Orbiter > HTTP > Page views', () => {
 					expect(fromNullable(response.upgrade)).toBeUndefined();
 				});
 
-				it.only.each([
+				it.each([
 					[
 						'invalid payload',
 						{

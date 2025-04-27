@@ -5,6 +5,7 @@ import type {
 import { idlFactory as idlFactorOrbiter } from '$declarations/orbiter/orbiter.factory.did';
 import type { HttpRequest } from '$declarations/satellite/satellite.did';
 import { Ed25519KeyIdentity } from '@dfinity/identity';
+import type { Principal } from '@dfinity/principal';
 import { fromNullable, jsonReviver, toNullable } from '@dfinity/utils';
 import { type Actor, PocketIc } from '@hadronous/pic';
 import { nanoid } from 'nanoid';
@@ -16,12 +17,14 @@ import {
 	type TrackEventPayload,
 	trackEventPayloadMock
 } from '../../mocks/orbiter.mocks';
+import { assertCertification } from '../../utils/certification-test.utils';
 import { toBodyJson } from '../../utils/orbiter-test.utils';
 import { tick } from '../../utils/pic-tests.utils';
 import { controllersInitArgs, ORBITER_WASM_PATH } from '../../utils/setup-tests.utils';
 
 describe('Orbiter > HTTP > Track events', () => {
 	let pic: PocketIc;
+	let canisterId: Principal;
 	let actor: Actor<OrbiterActor>;
 
 	const controller = Ed25519KeyIdentity.generate();
@@ -40,7 +43,7 @@ describe('Orbiter > HTTP > Track events', () => {
 
 		await pic.setTime(currentDate.getTime());
 
-		const { actor: c } = await pic.setupCanister<OrbiterActor>({
+		const { actor: c, canisterId: cid } = await pic.setupCanister<OrbiterActor>({
 			idlFactory: idlFactorOrbiter,
 			wasm: ORBITER_WASM_PATH,
 			arg: controllersInitArgs(controller),
@@ -48,6 +51,7 @@ describe('Orbiter > HTTP > Track events', () => {
 		});
 
 		actor = c;
+		canisterId = cid;
 
 		// Certified responses are initialized asynchronously
 		await tick(pic);
@@ -163,7 +167,16 @@ describe('Orbiter > HTTP > Track events', () => {
 
 					expect(fromNullable(response.upgrade)).toBeUndefined();
 
-					expect(response.status_code).toEqual(404);
+					expect(response.status_code).toEqual(400);
+
+					await assertCertification({
+						canisterId,
+						pic,
+						request,
+						response,
+						currentDate,
+						statusCode: 400
+					});
 				});
 
 				it('should not set a track event with invalid satellite id', async () => {
@@ -346,7 +359,16 @@ describe('Orbiter > HTTP > Track events', () => {
 
 					expect(fromNullable(response.upgrade)).toBeUndefined();
 
-					expect(response.status_code).toEqual(404);
+					expect(response.status_code).toEqual(400);
+
+					await assertCertification({
+						canisterId,
+						pic,
+						request,
+						response,
+						currentDate,
+						statusCode: 400
+					});
 				});
 
 				it('should not set track events with invalid satellite id', async () => {

@@ -1,6 +1,7 @@
 use crate::http::routes::api::init::init_certified_response;
 use crate::http::routes::api::routes::{
-    EVENTS_ROUTE, EVENT_ROUTE, METRICS_ROUTE, METRIC_ROUTE, VIEWS_ROUTE, VIEW_ROUTE,
+    EVENTS_FULL_ROUTE, EVENT_FULL_ROUTE, METRICS_FULL_ROUTE, METRIC_FULL_ROUTE, VIEWS_FULL_ROUTE,
+    VIEW_FULL_ROUTE,
 };
 use crate::http::routes::api::types::CertifiedExactRoute;
 use crate::http::types::response::ErrorResponse;
@@ -8,12 +9,12 @@ use crate::http::utils::create_json_response;
 use ic_http_certification::{HttpResponse, Method, StatusCode};
 
 pub fn init_certified_not_allowed_responses() {
-    init_not_allowed_responses(&VIEW_ROUTE);
-    init_not_allowed_responses(&VIEWS_ROUTE);
-    init_not_allowed_responses(&EVENT_ROUTE);
-    init_not_allowed_responses(&EVENTS_ROUTE);
-    init_not_allowed_responses(&METRIC_ROUTE);
-    init_not_allowed_responses(&METRICS_ROUTE);
+    init_not_allowed_responses(&VIEW_FULL_ROUTE);
+    init_not_allowed_responses(&VIEWS_FULL_ROUTE);
+    init_not_allowed_responses(&EVENT_FULL_ROUTE);
+    init_not_allowed_responses(&EVENTS_FULL_ROUTE);
+    init_not_allowed_responses(&METRIC_FULL_ROUTE);
+    init_not_allowed_responses(&METRICS_FULL_ROUTE);
 }
 
 fn init_not_allowed_responses(certified_route: &CertifiedExactRoute) {

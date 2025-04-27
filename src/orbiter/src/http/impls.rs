@@ -20,6 +20,10 @@ impl<'a, T: Serialize> ApiResponse<'a, T> {
         )
     }
 
+    pub fn bad_request() -> Self {
+        Self::err(StatusCode::BAD_REQUEST, "Bad request".to_string())
+    }
+
     pub fn err(code: StatusCode, message: String) -> Self {
         Self::Err {
             code: code.as_u16(),

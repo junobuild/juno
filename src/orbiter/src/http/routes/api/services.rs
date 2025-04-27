@@ -15,23 +15,33 @@ pub fn prepare_certified_response_for_requested_path(
 ) -> Result<HttpResponse<'static>, String> {
     match request_path {
         VIEW_PATH => {
-            prepare_certified_response(request_path, certified_response, &VIEW_ROUTE.tree_path)
+            prepare_certified_response(request_path, certified_response, &VIEW_FULL_ROUTE.tree_path)
         }
-        VIEWS_PATH => {
-            prepare_certified_response(request_path, certified_response, &VIEWS_ROUTE.tree_path)
-        }
-        EVENT_PATH => {
-            prepare_certified_response(request_path, certified_response, &EVENT_ROUTE.tree_path)
-        }
-        EVENTS_PATH => {
-            prepare_certified_response(request_path, certified_response, &EVENTS_ROUTE.tree_path)
-        }
-        METRIC_PATH => {
-            prepare_certified_response(request_path, certified_response, &METRIC_ROUTE.tree_path)
-        }
-        METRICS_PATH => {
-            prepare_certified_response(request_path, certified_response, &METRICS_ROUTE.tree_path)
-        }
+        VIEWS_PATH => prepare_certified_response(
+            request_path,
+            certified_response,
+            &VIEWS_FULL_ROUTE.tree_path,
+        ),
+        EVENT_PATH => prepare_certified_response(
+            request_path,
+            certified_response,
+            &EVENT_FULL_ROUTE.tree_path,
+        ),
+        EVENTS_PATH => prepare_certified_response(
+            request_path,
+            certified_response,
+            &EVENTS_FULL_ROUTE.tree_path,
+        ),
+        METRIC_PATH => prepare_certified_response(
+            request_path,
+            certified_response,
+            &METRIC_FULL_ROUTE.tree_path,
+        ),
+        METRICS_PATH => prepare_certified_response(
+            request_path,
+            certified_response,
+            &METRICS_FULL_ROUTE.tree_path,
+        ),
         _ => Err(
             "Unknown request path to prepare not allowed response. This is unexpected".to_string(),
         ),

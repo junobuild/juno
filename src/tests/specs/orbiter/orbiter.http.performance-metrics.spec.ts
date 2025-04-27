@@ -20,6 +20,7 @@ import { toBodyJson } from '../../utils/orbiter-test.utils';
 import { tick } from '../../utils/pic-tests.utils';
 import { controllersInitArgs, ORBITER_WASM_PATH } from '../../utils/setup-tests.utils';
 import type { Principal } from '@dfinity/principal';
+import { assertCertification } from '../../utils/certification-test.utils';
 
 describe('Orbiter > HTTP > Performance metrics', () => {
 	let pic: PocketIc;
@@ -172,7 +173,16 @@ describe('Orbiter > HTTP > Performance metrics', () => {
 
 					expect(fromNullable(response.upgrade)).toBeUndefined();
 
-					expect(response.status_code).toEqual(404);
+					expect(response.status_code).toEqual(400);
+
+					await assertCertification({
+						canisterId,
+						pic,
+						request,
+						response,
+						currentDate,
+						statusCode: 400
+					});
 				});
 
 				it('should not set a performance metric with invalid satellite id', async () => {
@@ -361,7 +371,16 @@ describe('Orbiter > HTTP > Performance metrics', () => {
 
 					expect(fromNullable(response.upgrade)).toBeUndefined();
 
-					expect(response.status_code).toEqual(404);
+					expect(response.status_code).toEqual(400);
+
+					await assertCertification({
+						canisterId,
+						pic,
+						request,
+						response,
+						currentDate,
+						statusCode: 400
+					});
 				});
 
 				it('should not set pperformance metrics with invalid satellite id', async () => {

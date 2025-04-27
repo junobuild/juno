@@ -1,6 +1,6 @@
 use crate::config::store::get_satellite_config;
 use crate::http::types::handler::HandledUpdateResult;
-use crate::http::types::interface::ApiResponse;
+use crate::http::types::response::ApiResponse;
 use crate::msg::ERROR_FEATURE_DISABLED;
 use crate::types::interface::http::SatelliteIdText;
 use candid::Principal;

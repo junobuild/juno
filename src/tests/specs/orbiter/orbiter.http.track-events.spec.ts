@@ -143,6 +143,29 @@ describe('Orbiter > HTTP > Track events', () => {
 					expect(fromNullable(response.upgrade)).toBeUndefined();
 				});
 
+				it.each([
+					['invalid payload', { ...trackEvent, key: 'invalid' }],
+					['empty payload', { key: trackEvent.key, satellite_id: trackEvent.satellite_id }],
+					['unknown satellite id', { ...trackEvent, satellite_id: 'nkzsw-gyaaa-aaaal-ada3a-cai' }]
+					// eslint-disable-next-line local-rules/prefer-object-params
+				])('should not upgrade http_request for %s', async (_title, payload) => {
+					const { http_request } = actor;
+
+					const request: HttpRequest = {
+						body: toBodyJson(payload),
+						certificate_version: toNullable(2),
+						headers: [],
+						method: 'POST',
+						url: '/event'
+					};
+
+					const response = await http_request(request);
+
+					expect(fromNullable(response.upgrade)).toBeUndefined();
+
+					expect(response.status_code).toEqual(404);
+				});
+
 				it('should not set a track event with invalid satellite id', async () => {
 					const { http_request_update } = actor;
 
@@ -290,6 +313,40 @@ describe('Orbiter > HTTP > Track events', () => {
 					const response = await http_request(request);
 
 					expect(fromNullable(response.upgrade)).toBeUndefined();
+				});
+
+				it.each([
+					[
+						'invalid payload',
+						{
+							...trackEvents,
+							track_events: [
+								{
+									...trackEvents.track_events[0],
+									key: 'invalid'
+								}
+							]
+						}
+					],
+					['empty payload', { satellite_id: trackEvents.satellite_id, performanceMetrics: [] }],
+					['unknown satellite id', { ...trackEvents, satellite_id: 'nkzsw-gyaaa-aaaal-ada3a-cai' }]
+					// eslint-disable-next-line local-rules/prefer-object-params
+				])('should not upgrade http_request for %s', async (_title, payload) => {
+					const { http_request } = actor;
+
+					const request: HttpRequest = {
+						body: toBodyJson(payload),
+						certificate_version: toNullable(2),
+						headers: [],
+						method: 'POST',
+						url: '/events'
+					};
+
+					const response = await http_request(request);
+
+					expect(fromNullable(response.upgrade)).toBeUndefined();
+
+					expect(response.status_code).toEqual(404);
 				});
 
 				it('should not set track events with invalid satellite id', async () => {

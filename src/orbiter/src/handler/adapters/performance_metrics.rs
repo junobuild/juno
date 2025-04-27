@@ -1,23 +1,33 @@
+use crate::assert::config::assert_performance_metrics_enabled;
 use crate::events::helpers::assert_and_insert_performance_metric;
+use crate::handler::adapters::assert::assert_request;
 use crate::handler::adapters::response_builder::build_payload_response;
 use crate::http::types::handler::HandledUpdateResult;
+use crate::http::types::request::HttpRequestBody;
 use crate::state::types::state::AnalyticKey;
 use crate::types::interface::http::{
     PerformanceMetricPayload, SetPerformanceMetricPayload, SetPerformanceMetricRequest,
     SetPerformanceMetricsRequest, SetPerformanceMetricsRequestEntry,
 };
-use ic_http_certification::HttpRequest;
 use junobuild_utils::decode_doc_data;
 
+pub fn assert_request_performance_metric(body: &HttpRequestBody) -> Result<(), String> {
+    assert_request::<SetPerformanceMetricRequest>(body, assert_performance_metrics_enabled)
+}
+
+pub fn assert_request_performance_metrics(body: &HttpRequestBody) -> Result<(), String> {
+    assert_request::<SetPerformanceMetricsRequest>(body, assert_performance_metrics_enabled)
+}
+
 pub fn handle_insert_performance_metric(
-    request: &HttpRequest,
+    body: &HttpRequestBody,
 ) -> Result<HandledUpdateResult, String> {
     let SetPerformanceMetricRequest {
         key,
         performance_metric,
         satellite_id,
-    }: SetPerformanceMetricRequest = decode_doc_data::<SetPerformanceMetricRequest>(request.body())
-        .map_err(|e| e.to_string())?;
+    }: SetPerformanceMetricRequest =
+        decode_doc_data::<SetPerformanceMetricRequest>(body).map_err(|e| e.to_string())?;
 
     let inserted_performance_metric = assert_and_insert_performance_metric(
         key.into_domain(),
@@ -31,11 +41,10 @@ pub fn handle_insert_performance_metric(
 }
 
 pub fn handle_insert_performance_metrics(
-    request: &HttpRequest,
+    body: &HttpRequestBody,
 ) -> Result<HandledUpdateResult, String> {
     let performance_metrics: SetPerformanceMetricsRequest =
-        decode_doc_data::<SetPerformanceMetricsRequest>(request.body())
-            .map_err(|e| e.to_string())?;
+        decode_doc_data::<SetPerformanceMetricsRequest>(body).map_err(|e| e.to_string())?;
 
     let mut errors: Vec<(AnalyticKey, String)> = Vec::new();
 

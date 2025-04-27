@@ -2,7 +2,7 @@ use crate::http::constants::NOT_FOUND_PATH;
 use crate::http::routes::services::prepare_certified_response;
 use crate::http::state::store::insert_certified_response;
 use crate::http::state::types::CertifiedHttpResponse;
-use crate::http::types::interface::ErrorResponse;
+use crate::http::types::response::ErrorResponse;
 use crate::http::utils::create_json_response;
 use ic_http_certification::{
     DefaultCelBuilder, DefaultResponseCertification, DefaultResponseOnlyCelExpression,

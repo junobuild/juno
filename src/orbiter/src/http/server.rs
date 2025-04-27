@@ -5,17 +5,27 @@ use crate::http::routes::not_found::{
 };
 use crate::http::state::store::get_certified_response;
 use crate::http::types::handler::{HandledUpdateResult, HttpRequestHandler};
+use crate::http::types::request::{HttpRequestBody, HttpRequestPath};
 use crate::http::utils::create_json_response;
-use ic_http_certification::{HttpRequest, HttpResponse};
+use ic_http_certification::{HttpRequest, HttpResponse, Method};
 
 pub fn on_http_request(
     request: &HttpRequest,
     handler: &dyn HttpRequestHandler,
 ) -> HttpResponse<'static> {
-    let upgrade_http_request = |_request: &HttpRequest| -> HttpResponse<'static> {
-        // TODO: should NOT upgrade if unknown satellite ID
+    let upgrade_http_request = |request_path: &HttpRequestPath,
+                                method: &Method,
+                                body: &HttpRequestBody|
+     -> HttpResponse<'static> {
+        if handler
+            .assert_request_upgrade_allowed(request_path, body)
+            .is_ok()
+        {
+            return HttpResponse::builder().with_upgrade(true).build();
+        }
 
-        HttpResponse::builder().with_upgrade(true).build()
+        // TODO: responde with BAD REQUEST
+        certified_response(request_path, method)
     };
 
     serve_request(request, handler, &upgrade_http_request)
@@ -25,12 +35,15 @@ pub fn on_http_request_update(
     request: &HttpRequest,
     handler: &dyn HttpRequestHandler,
 ) -> HttpResponse<'static> {
-    let handle_http_request_update = |request: &HttpRequest| -> HttpResponse<'static> {
+    let handle_http_request_update = |request_path: &HttpRequestPath,
+                                      _method: &Method,
+                                      body: &HttpRequestBody|
+     -> HttpResponse<'static> {
         let HandledUpdateResult {
             status_code,
             body,
             restricted_origin,
-        } = handler.handle_update(request);
+        } = handler.handle_update(request_path, body);
         create_json_response(status_code, body, restricted_origin)
     };
 
@@ -40,7 +53,7 @@ pub fn on_http_request_update(
 fn serve_request(
     request: &HttpRequest,
     handler: &dyn HttpRequestHandler,
-    response_handler: &dyn Fn(&HttpRequest) -> HttpResponse<'static>,
+    response_handler: &dyn Fn(&HttpRequestPath, &Method, &HttpRequestBody) -> HttpResponse<'static>,
 ) -> HttpResponse<'static> {
     let uri_request_path = request.get_path();
 
@@ -52,32 +65,43 @@ fn serve_request(
     let request_path = uri_request_path.unwrap();
 
     if handler.is_known_route(request) {
-        let method = request.method().to_string();
+        let method = request.method();
 
-        if handler.should_use_handler(&method) {
-            return response_handler(request);
+        if handler.should_use_handler(method) {
+            return response_handler(&request_path, method, request.body());
         }
 
         // e.g. not_allowed for method not supported by know route or responses to OPTIONS
-        let certified_response = get_certified_response(&request_path, &Some(method.clone()));
+        return certified_response(&request_path, method);
+    }
 
-        if let Some(certified_response) = certified_response {
-            let response =
-                prepare_certified_response_for_requested_path(&request_path, certified_response);
+    not_found_response(&request_path)
+}
 
-            // TODO: I guess technically it can be another type of error if None
-            if let Ok(response) = response {
-                return response;
-            }
+fn certified_response(request_path: &HttpRequestPath, method: &Method) -> HttpResponse<'static> {
+    let certified_response =
+        get_certified_response(request_path, &Some(method.to_string().clone()));
+
+    if let Some(certified_response) = certified_response {
+        let response =
+            prepare_certified_response_for_requested_path(request_path, certified_response);
+
+        // TODO: technically it can be an INTERNAL_SERVER_ERROR (I guess)
+        if let Ok(response) = response {
+            return response;
         }
     }
 
+    // Fallback if for some unexpected reason not_allowed was not defined and used
+    not_found_response(request_path)
+}
+
+fn not_found_response(request_path: &HttpRequestPath) -> HttpResponse<'static> {
     let not_found = get_certified_response(&NOT_FOUND_PATH.to_string(), &None);
 
     if let Some(not_found) = not_found {
-        let response = prepare_certified_not_found_response(&request_path, not_found);
+        let response = prepare_certified_not_found_response(request_path, not_found);
 
-        // TODO: I guess technically it can be another type of error if None
         if let Ok(response) = response {
             return response;
         }

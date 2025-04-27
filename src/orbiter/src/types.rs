@@ -150,6 +150,7 @@ pub mod interface {
 
         pub trait SetRequest {
             fn satellite_id(&self) -> &str;
+            fn empty_payload(&self) -> bool;
         }
 
         #[derive(Deserialize)]

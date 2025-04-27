@@ -145,6 +145,7 @@ describe('Orbiter > HTTP > Track events', () => {
 
 				it.each([
 					['invalid payload', { ...trackEvent, key: 'invalid' }],
+					['empty payload', { key: trackEvent.key, satellite_id: trackEvent.satellite_id }],
 					['unknown satellite id', { ...trackEvent, satellite_id: 'nkzsw-gyaaa-aaaal-ada3a-cai' }]
 					// eslint-disable-next-line local-rules/prefer-object-params
 				])('should not upgrade http_request for %s', async (_title, payload) => {
@@ -327,6 +328,7 @@ describe('Orbiter > HTTP > Track events', () => {
 							]
 						}
 					],
+					['empty payload', { satellite_id: trackEvents.satellite_id, performanceMetrics: [] }],
 					['unknown satellite id', { ...trackEvents, satellite_id: 'nkzsw-gyaaa-aaaal-ada3a-cai' }]
 					// eslint-disable-next-line local-rules/prefer-object-params
 				])('should not upgrade http_request for %s', async (_title, payload) => {

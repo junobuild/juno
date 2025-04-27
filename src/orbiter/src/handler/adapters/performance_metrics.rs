@@ -1,6 +1,6 @@
 use crate::assert::config::assert_performance_metrics_enabled;
 use crate::events::helpers::assert_and_insert_performance_metric;
-use crate::handler::adapters::assert::assert_request_feature_enabled;
+use crate::handler::adapters::assert::assert_request;
 use crate::handler::adapters::response_builder::build_payload_response;
 use crate::http::types::handler::HandledUpdateResult;
 use crate::http::types::request::HttpRequestBody;
@@ -12,17 +12,11 @@ use crate::types::interface::http::{
 use junobuild_utils::decode_doc_data;
 
 pub fn assert_request_performance_metric(body: &HttpRequestBody) -> Result<(), String> {
-    assert_request_feature_enabled::<SetPerformanceMetricRequest>(
-        body,
-        assert_performance_metrics_enabled,
-    )
+    assert_request::<SetPerformanceMetricRequest>(body, assert_performance_metrics_enabled)
 }
 
 pub fn assert_request_performance_metrics(body: &HttpRequestBody) -> Result<(), String> {
-    assert_request_feature_enabled::<SetPerformanceMetricsRequest>(
-        body,
-        assert_performance_metrics_enabled,
-    )
+    assert_request::<SetPerformanceMetricsRequest>(body, assert_performance_metrics_enabled)
 }
 
 pub fn handle_insert_performance_metric(

@@ -145,6 +145,7 @@ describe('Orbiter > HTTP > Page views', () => {
 
 				it.each([
 					['invalid payload', { ...pageView, key: 'invalid' }],
+					['empty payload', { key: pageView.key, satellite_id: pageView.satellite_id }],
 					['unknown satellite id', { ...pageView, satellite_id: 'nkzsw-gyaaa-aaaal-ada3a-cai' }]
 					// eslint-disable-next-line local-rules/prefer-object-params
 				])('should not upgrade http_request for %s', async (_title, payload) => {
@@ -325,6 +326,7 @@ describe('Orbiter > HTTP > Page views', () => {
 							]
 						}
 					],
+					['empty payload', { satellite_id: pagesViews.satellite_id, page_views: [] }],
 					['unknown satellite id', { ...pagesViews, satellite_id: 'nkzsw-gyaaa-aaaal-ada3a-cai' }]
 					// eslint-disable-next-line local-rules/prefer-object-params
 				])('should not upgrade http_request for %s', async (_title, payload) => {

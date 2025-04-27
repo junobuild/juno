@@ -146,6 +146,10 @@ describe('Orbiter > HTTP > Performance metrics', () => {
 				it.each([
 					['invalid payload', { ...performanceMetric, key: 'invalid' }],
 					[
+						'empty payload',
+						{ key: performanceMetric.key, satellite_id: performanceMetric.satellite_id }
+					],
+					[
 						'unknown satellite id',
 						{ ...performanceMetric, satellite_id: 'nkzsw-gyaaa-aaaal-ada3a-cai' }
 					]
@@ -329,6 +333,10 @@ describe('Orbiter > HTTP > Performance metrics', () => {
 								}
 							]
 						}
+					],
+					[
+						'empty payload',
+						{ satellite_id: performanceMetrics.satellite_id, performanceMetrics: [] }
 					],
 					[
 						'unknown satellite id',

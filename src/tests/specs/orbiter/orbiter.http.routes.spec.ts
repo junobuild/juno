@@ -51,7 +51,8 @@ describe('Orbiter > HTTP > Routes', () => {
 	describe.each([
 		['With body', toBodyJson({ hello: 'world' })],
 		['Without body', []]
-	])('%s', async (_, body) => {
+		// eslint-disable-next-line local-rules/prefer-object-params
+	])('%s', (_, body) => {
 		describe.each(['/something', '/'])('Route not found for %s', (url) => {
 			it.each([...NON_POST_METHODS, 'OPTIONS', 'POST'])(
 				'should return a certified not found response for %s',

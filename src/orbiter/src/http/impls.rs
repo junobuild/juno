@@ -1,6 +1,7 @@
 use crate::http::types::handler::HandledUpdateResult;
-use crate::http::types::interface::{ApiResponse, ResponseBody};
+use crate::http::types::response::{ApiResponse, ResponseBody};
 use ic_http_certification::StatusCode;
+use junobuild_shared::types::core::DomainName;
 use serde::Serialize;
 
 impl<'a, T: Serialize> ApiResponse<'a, T> {
@@ -19,6 +20,10 @@ impl<'a, T: Serialize> ApiResponse<'a, T> {
         )
     }
 
+    pub fn bad_request() -> Self {
+        Self::err(StatusCode::BAD_REQUEST, "Bad request".to_string())
+    }
+
     pub fn err(code: StatusCode, message: String) -> Self {
         Self::Err {
             code: code.as_u16(),
@@ -32,7 +37,15 @@ impl<'a, T: Serialize> ApiResponse<'a, T> {
 }
 
 impl HandledUpdateResult {
-    pub fn new(status_code: StatusCode, body: ResponseBody) -> Self {
-        Self { status_code, body }
+    pub fn new(
+        status_code: StatusCode,
+        body: ResponseBody,
+        restricted_origin: Option<DomainName>,
+    ) -> Self {
+        Self {
+            status_code,
+            body,
+            restricted_origin,
+        }
     }
 }

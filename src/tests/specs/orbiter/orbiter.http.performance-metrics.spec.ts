@@ -1,11 +1,11 @@
 import type {
-	AnalyticKey,
 	_SERVICE as OrbiterActor,
 	OrbiterSatelliteFeatures
 } from '$declarations/orbiter/orbiter.did';
 import { idlFactory as idlFactorOrbiter } from '$declarations/orbiter/orbiter.factory.did';
 import type { HttpRequest } from '$declarations/satellite/satellite.did';
 import { Ed25519KeyIdentity } from '@dfinity/identity';
+import type { Principal } from '@dfinity/principal';
 import { fromNullable, jsonReviver, toNullable } from '@dfinity/utils';
 import { type Actor, PocketIc } from '@hadronous/pic';
 import { nanoid } from 'nanoid';
@@ -14,14 +14,17 @@ import {
 	type PerformanceMetricPayload,
 	performanceMetricPayloadMock,
 	satelliteIdMock,
-	type SetPerformanceMetricPayload
+	type SetPerformanceRequest,
+	type SetPerformancesRequest
 } from '../../mocks/orbiter.mocks';
+import { assertCertification } from '../../utils/certification-test.utils';
 import { toBodyJson } from '../../utils/orbiter-test.utils';
 import { tick } from '../../utils/pic-tests.utils';
 import { controllersInitArgs, ORBITER_WASM_PATH } from '../../utils/setup-tests.utils';
 
 describe('Orbiter > HTTP > Performance metrics', () => {
 	let pic: PocketIc;
+	let canisterId: Principal;
 	let actor: Actor<OrbiterActor>;
 
 	const controller = Ed25519KeyIdentity.generate();
@@ -40,7 +43,7 @@ describe('Orbiter > HTTP > Performance metrics', () => {
 
 		await pic.setTime(currentDate.getTime());
 
-		const { actor: c } = await pic.setupCanister<OrbiterActor>({
+		const { actor: c, canisterId: cid } = await pic.setupCanister<OrbiterActor>({
 			idlFactory: idlFactorOrbiter,
 			wasm: ORBITER_WASM_PATH,
 			arg: controllersInitArgs(controller),
@@ -48,6 +51,7 @@ describe('Orbiter > HTTP > Performance metrics', () => {
 		});
 
 		actor = c;
+		canisterId = cid;
 
 		// Certified responses are initialized asynchronously
 		await tick(pic);
@@ -58,26 +62,25 @@ describe('Orbiter > HTTP > Performance metrics', () => {
 	});
 
 	describe('With configuration', () => {
-		interface SetPerformanceRequest {
-			key: AnalyticKey;
-			performance_metric: SetPerformanceMetricPayload;
-		}
-
 		const performanceMetric: SetPerformanceRequest = {
+			satellite_id: satelliteIdMock.toText(),
 			key: { key: nanoid(), collected_at: 1230n },
 			performance_metric: performanceMetricPayloadMock
 		};
 
-		const performanceMetrics: SetPerformanceRequest[] = [
-			{
-				key: { key: nanoid(), collected_at: 1230n },
-				performance_metric: performanceMetricPayloadMock
-			},
-			{
-				key: { key: nanoid(), collected_at: 1240n },
-				performance_metric: performanceMetricPayloadMock
-			}
-		];
+		const performanceMetrics: SetPerformancesRequest = {
+			satellite_id: satelliteIdMock.toText(),
+			performance_metrics: [
+				{
+					key: { key: nanoid(), collected_at: 1230n },
+					performance_metric: performanceMetricPayloadMock
+				},
+				{
+					key: { key: nanoid(), collected_at: 1240n },
+					performance_metric: performanceMetricPayloadMock
+				}
+			]
+		};
 
 		beforeAll(async () => {
 			actor.setIdentity(controller);
@@ -95,6 +98,7 @@ describe('Orbiter > HTTP > Performance metrics', () => {
 					satelliteIdMock,
 					{
 						version: [],
+						restricted_origin: [],
 						features: [allFeatures]
 					}
 				]
@@ -143,16 +147,51 @@ describe('Orbiter > HTTP > Performance metrics', () => {
 					expect(fromNullable(response.upgrade)).toBeUndefined();
 				});
 
+				it.each([
+					['invalid payload', { ...performanceMetric, key: 'invalid' }],
+					[
+						'empty payload',
+						{ key: performanceMetric.key, satellite_id: performanceMetric.satellite_id }
+					],
+					[
+						'unknown satellite id',
+						{ ...performanceMetric, satellite_id: 'nkzsw-gyaaa-aaaal-ada3a-cai' }
+					]
+					// eslint-disable-next-line local-rules/prefer-object-params
+				])('should not upgrade http_request for %s', async (_title, payload) => {
+					const { http_request } = actor;
+
+					const request: HttpRequest = {
+						body: toBodyJson(payload),
+						certificate_version: toNullable(2),
+						headers: [],
+						method: 'POST',
+						url: '/metric'
+					};
+
+					const response = await http_request(request);
+
+					expect(fromNullable(response.upgrade)).toBeUndefined();
+
+					expect(response.status_code).toEqual(400);
+
+					await assertCertification({
+						canisterId,
+						pic,
+						request,
+						response,
+						currentDate,
+						statusCode: 400
+					});
+				});
+
 				it('should not set a performance metric with invalid satellite id', async () => {
 					const { http_request_update } = actor;
 
 					const request: HttpRequest = {
 						body: toBodyJson({
 							...performanceMetric,
-							performance_metric: {
-								...performanceMetricPayloadMock,
-								satellite_id: satelliteIdMock // Should be principal as text
-							}
+							satellite_id: satelliteIdMock // Should be principal as text
 						}),
 						certificate_version: toNullable(2),
 						headers: [],
@@ -295,6 +334,55 @@ describe('Orbiter > HTTP > Performance metrics', () => {
 					expect(fromNullable(response.upgrade)).toBeUndefined();
 				});
 
+				it.each([
+					[
+						'invalid payload',
+						{
+							...performanceMetrics,
+							performance_metrics: [
+								{
+									...performanceMetrics.performance_metrics[0],
+									key: 'invalid'
+								}
+							]
+						}
+					],
+					[
+						'empty payload',
+						{ satellite_id: performanceMetrics.satellite_id, performanceMetrics: [] }
+					],
+					[
+						'unknown satellite id',
+						{ ...performanceMetrics, satellite_id: 'nkzsw-gyaaa-aaaal-ada3a-cai' }
+					]
+					// eslint-disable-next-line local-rules/prefer-object-params
+				])('should not upgrade http_request for %s', async (_title, payload) => {
+					const { http_request } = actor;
+
+					const request: HttpRequest = {
+						body: toBodyJson(payload),
+						certificate_version: toNullable(2),
+						headers: [],
+						method: 'POST',
+						url: '/metrics'
+					};
+
+					const response = await http_request(request);
+
+					expect(fromNullable(response.upgrade)).toBeUndefined();
+
+					expect(response.status_code).toEqual(400);
+
+					await assertCertification({
+						canisterId,
+						pic,
+						request,
+						response,
+						currentDate,
+						statusCode: 400
+					});
+				});
+
 				it('should not set pperformance metrics with invalid satellite id', async () => {
 					const { http_request_update } = actor;
 
@@ -363,7 +451,7 @@ describe('Orbiter > HTTP > Performance metrics', () => {
 					expect(result).toEqual({
 						err: {
 							code: 500,
-							message: performanceMetrics
+							message: performanceMetrics.performance_metrics
 								.map(({ key }) => `${key.key}: juno.error.no_version_provided`)
 								.join(', ')
 						}
@@ -374,15 +462,18 @@ describe('Orbiter > HTTP > Performance metrics', () => {
 					const { http_request_update } = actor;
 
 					const request: HttpRequest = {
-						body: toBodyJson(
-							performanceMetrics.map((performanceMetric) => ({
-								...performanceMetric,
-								performance_metric: {
-									...performanceMetric.performance_metric,
-									version: 1n
-								}
-							}))
-						),
+						body: toBodyJson({
+							...performanceMetrics,
+							performance_metrics: performanceMetrics.performance_metrics.map(
+								(performanceMetric) => ({
+									...performanceMetric,
+									performance_metric: {
+										...performanceMetric.performance_metric,
+										version: 1n
+									}
+								})
+							)
+						}),
 						certificate_version: toNullable(2),
 						headers: [],
 						method: 'POST',
@@ -417,7 +508,9 @@ describe('Orbiter > HTTP > Performance metrics', () => {
 
 				expect(Array.isArray(result)).toBe(true);
 
-				expect(result.length).toEqual([performanceMetric, ...performanceMetrics].length);
+				expect(result.length).toEqual(
+					[performanceMetric, ...performanceMetrics.performance_metrics].length
+				);
 
 				result.forEach(([key, performanceMetric]) => {
 					expect(key.collected_at).toBeGreaterThanOrEqual(1230n);

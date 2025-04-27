@@ -97,6 +97,10 @@ jobs:
   tests:
     runs-on: ubuntu-latest
     needs: docker-build
+    strategy:
+      matrix:
+        shardIndex: [1, 2, 3, 4]
+        shardTotal: [4]
 
     steps:
       - name: Checkout
@@ -154,7 +158,7 @@ jobs:
           path: .
 
       - name: Tests
-        run: npm run test
+        run: npm run test -- --shard=${{ matrix.shardIndex }}/${{ matrix.shardTotal }}
 
   may-merge:
     needs: ['tests']

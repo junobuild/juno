@@ -262,6 +262,7 @@ const listOrbiterSatelliteConfigs = async ({
 		satelliteId,
 		{
 			...rest,
+			restricted_origin: toNullable(),
 			features: enabled ? [enabledFeatures] : []
 		}
 	]);
@@ -287,6 +288,7 @@ export const setOrbiterSatelliteConfigs = async ({
 				Principal.fromText(satelliteId),
 				{
 					features: value.enabled ? [features ?? enabledFeatures] : [],
+					restricted_origin: toNullable(),
 					version: nonNullish(value.config) ? value.config.version : []
 				}
 			]),
@@ -311,6 +313,7 @@ export const setOrbiterSatelliteConfigs = async ({
 		satelliteId,
 		{
 			...rest,
+			restricted_origin: toNullable(),
 			features: enabled ? [enabledFeatures] : []
 		}
 	]);

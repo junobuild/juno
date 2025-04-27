@@ -103,6 +103,7 @@ export type NavigationType =
 export interface OrbiterSatelliteConfig {
 	updated_at: bigint;
 	features: [] | [OrbiterSatelliteFeatures];
+	restricted_origin: [] | [string];
 	created_at: bigint;
 	version: [] | [bigint];
 }
@@ -181,6 +182,7 @@ export interface SetPerformanceMetric {
 }
 export interface SetSatelliteConfig {
 	features: [] | [OrbiterSatelliteFeatures];
+	restricted_origin: [] | [string];
 	version: [] | [bigint];
 }
 export interface SetTrackEvent {

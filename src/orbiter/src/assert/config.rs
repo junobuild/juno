@@ -19,6 +19,7 @@ where
     }
     Err(error_message.to_string())
 }
+
 pub fn assert_page_views_enabled(config: &Option<SatelliteConfig>) -> Result<(), String> {
     assert_feature_enabled(
         config,

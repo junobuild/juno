@@ -1,27 +1,30 @@
 import type {
-	AnalyticKey,
 	_SERVICE as OrbiterActor,
 	OrbiterSatelliteFeatures
 } from '$declarations/orbiter/orbiter.did';
 import { idlFactory as idlFactorOrbiter } from '$declarations/orbiter/orbiter.factory.did';
 import type { HttpRequest } from '$declarations/satellite/satellite.did';
 import { Ed25519KeyIdentity } from '@dfinity/identity';
+import type { Principal } from '@dfinity/principal';
 import { fromNullable, jsonReviver, toNullable } from '@dfinity/utils';
 import { type Actor, PocketIc } from '@hadronous/pic';
 import { nanoid } from 'nanoid';
 import { inject } from 'vitest';
 import {
 	satelliteIdMock,
-	type SetTrackEventPayload,
+	type SetTrackEventRequest,
+	type SetTrackEventsRequest,
 	type TrackEventPayload,
 	trackEventPayloadMock
 } from '../../mocks/orbiter.mocks';
+import { assertCertification } from '../../utils/certification-test.utils';
 import { toBodyJson } from '../../utils/orbiter-test.utils';
 import { tick } from '../../utils/pic-tests.utils';
 import { controllersInitArgs, ORBITER_WASM_PATH } from '../../utils/setup-tests.utils';
 
 describe('Orbiter > HTTP > Track events', () => {
 	let pic: PocketIc;
+	let canisterId: Principal;
 	let actor: Actor<OrbiterActor>;
 
 	const controller = Ed25519KeyIdentity.generate();
@@ -40,7 +43,7 @@ describe('Orbiter > HTTP > Track events', () => {
 
 		await pic.setTime(currentDate.getTime());
 
-		const { actor: c } = await pic.setupCanister<OrbiterActor>({
+		const { actor: c, canisterId: cid } = await pic.setupCanister<OrbiterActor>({
 			idlFactory: idlFactorOrbiter,
 			wasm: ORBITER_WASM_PATH,
 			arg: controllersInitArgs(controller),
@@ -48,6 +51,7 @@ describe('Orbiter > HTTP > Track events', () => {
 		});
 
 		actor = c;
+		canisterId = cid;
 
 		// Certified responses are initialized asynchronously
 		await tick(pic);
@@ -58,26 +62,25 @@ describe('Orbiter > HTTP > Track events', () => {
 	});
 
 	describe('With configuration', () => {
-		interface SetTrackEventRequest {
-			key: AnalyticKey;
-			track_event: SetTrackEventPayload;
-		}
-
 		const trackEvent: SetTrackEventRequest = {
+			satellite_id: satelliteIdMock.toText(),
 			key: { key: nanoid(), collected_at: 1230n },
 			track_event: trackEventPayloadMock
 		};
 
-		const trackEvents: SetTrackEventRequest[] = [
-			{
-				key: { key: nanoid(), collected_at: 1230n },
-				track_event: trackEventPayloadMock
-			},
-			{
-				key: { key: nanoid(), collected_at: 1240n },
-				track_event: trackEventPayloadMock
-			}
-		];
+		const trackEvents: SetTrackEventsRequest = {
+			satellite_id: satelliteIdMock.toText(),
+			track_events: [
+				{
+					key: { key: nanoid(), collected_at: 1230n },
+					track_event: trackEventPayloadMock
+				},
+				{
+					key: { key: nanoid(), collected_at: 1240n },
+					track_event: trackEventPayloadMock
+				}
+			]
+		};
 
 		beforeAll(async () => {
 			actor.setIdentity(controller);
@@ -95,6 +98,7 @@ describe('Orbiter > HTTP > Track events', () => {
 					satelliteIdMock,
 					{
 						version: [],
+						restricted_origin: [],
 						features: [allFeatures]
 					}
 				]
@@ -143,16 +147,45 @@ describe('Orbiter > HTTP > Track events', () => {
 					expect(fromNullable(response.upgrade)).toBeUndefined();
 				});
 
+				it.each([
+					['invalid payload', { ...trackEvent, key: 'invalid' }],
+					['empty payload', { key: trackEvent.key, satellite_id: trackEvent.satellite_id }],
+					['unknown satellite id', { ...trackEvent, satellite_id: 'nkzsw-gyaaa-aaaal-ada3a-cai' }]
+					// eslint-disable-next-line local-rules/prefer-object-params
+				])('should not upgrade http_request for %s', async (_title, payload) => {
+					const { http_request } = actor;
+
+					const request: HttpRequest = {
+						body: toBodyJson(payload),
+						certificate_version: toNullable(2),
+						headers: [],
+						method: 'POST',
+						url: '/event'
+					};
+
+					const response = await http_request(request);
+
+					expect(fromNullable(response.upgrade)).toBeUndefined();
+
+					expect(response.status_code).toEqual(400);
+
+					await assertCertification({
+						canisterId,
+						pic,
+						request,
+						response,
+						currentDate,
+						statusCode: 400
+					});
+				});
+
 				it('should not set a track event with invalid satellite id', async () => {
 					const { http_request_update } = actor;
 
 					const request: HttpRequest = {
 						body: toBodyJson({
 							...trackEvent,
-							track_event: {
-								...trackEventPayloadMock,
-								satellite_id: satelliteIdMock // Should be principal as text
-							}
+							satellite_id: satelliteIdMock // Should be principal as text
 						}),
 						certificate_version: toNullable(2),
 						headers: [],
@@ -295,6 +328,49 @@ describe('Orbiter > HTTP > Track events', () => {
 					expect(fromNullable(response.upgrade)).toBeUndefined();
 				});
 
+				it.each([
+					[
+						'invalid payload',
+						{
+							...trackEvents,
+							track_events: [
+								{
+									...trackEvents.track_events[0],
+									key: 'invalid'
+								}
+							]
+						}
+					],
+					['empty payload', { satellite_id: trackEvents.satellite_id, performanceMetrics: [] }],
+					['unknown satellite id', { ...trackEvents, satellite_id: 'nkzsw-gyaaa-aaaal-ada3a-cai' }]
+					// eslint-disable-next-line local-rules/prefer-object-params
+				])('should not upgrade http_request for %s', async (_title, payload) => {
+					const { http_request } = actor;
+
+					const request: HttpRequest = {
+						body: toBodyJson(payload),
+						certificate_version: toNullable(2),
+						headers: [],
+						method: 'POST',
+						url: '/events'
+					};
+
+					const response = await http_request(request);
+
+					expect(fromNullable(response.upgrade)).toBeUndefined();
+
+					expect(response.status_code).toEqual(400);
+
+					await assertCertification({
+						canisterId,
+						pic,
+						request,
+						response,
+						currentDate,
+						statusCode: 400
+					});
+				});
+
 				it('should not set track events with invalid satellite id', async () => {
 					const { http_request_update } = actor;
 
@@ -363,7 +439,7 @@ describe('Orbiter > HTTP > Track events', () => {
 					expect(result).toEqual({
 						err: {
 							code: 500,
-							message: trackEvents
+							message: trackEvents.track_events
 								.map(({ key }) => `${key.key}: juno.error.no_version_provided`)
 								.join(', ')
 						}
@@ -374,15 +450,16 @@ describe('Orbiter > HTTP > Track events', () => {
 					const { http_request_update } = actor;
 
 					const request: HttpRequest = {
-						body: toBodyJson(
-							trackEvents.map((trackEvent) => ({
+						body: toBodyJson({
+							...trackEvents,
+							track_events: trackEvents.track_events.map((trackEvent) => ({
 								...trackEvent,
 								track_event: {
 									...trackEvent.track_event,
 									version: 1n
 								}
 							}))
-						),
+						}),
 						certificate_version: toNullable(2),
 						headers: [],
 						method: 'POST',
@@ -417,7 +494,7 @@ describe('Orbiter > HTTP > Track events', () => {
 
 				expect(Array.isArray(result)).toBe(true);
 
-				expect(result.length).toEqual([trackEvent, ...trackEvents].length);
+				expect(result.length).toEqual([trackEvent, ...trackEvents.track_events].length);
 
 				result.forEach(([key, trackEvent]) => {
 					expect(key.collected_at).toBeGreaterThanOrEqual(1230n);

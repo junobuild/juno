@@ -3,6 +3,7 @@ pub mod interface {
         PageViewDevice, PerformanceData, PerformanceMetricName, SessionId,
     };
     use candid::CandidType;
+    use junobuild_shared::types::core::DomainName;
     use junobuild_shared::types::state::{
         Metadata, OrbiterSatelliteFeatures, SatelliteId, Timestamp, Version,
     };
@@ -64,6 +65,7 @@ pub mod interface {
     #[derive(CandidType, Deserialize, Clone)]
     pub struct SetSatelliteConfig {
         pub features: Option<OrbiterSatelliteFeatures>,
+        pub restricted_origin: Option<DomainName>,
         pub version: Option<Version>,
     }
 
@@ -146,27 +148,67 @@ pub mod interface {
         pub type PrincipalText = String;
         pub type SatelliteIdText = PrincipalText;
 
+        pub trait SetRequest {
+            fn satellite_id(&self) -> &str;
+            fn empty_payload(&self) -> bool;
+        }
+
         #[derive(Deserialize)]
         pub struct SetPageViewRequest {
+            pub satellite_id: SatelliteIdText,
             pub key: AnalyticKeyPayload,
             pub page_view: SetPageViewPayload,
         }
 
         #[derive(Deserialize)]
         pub struct SetTrackEventRequest {
+            pub satellite_id: SatelliteIdText,
             pub key: AnalyticKeyPayload,
             pub track_event: SetTrackEventPayload,
         }
 
         #[derive(Deserialize)]
         pub struct SetPerformanceMetricRequest {
+            pub satellite_id: SatelliteIdText,
             pub key: AnalyticKeyPayload,
             pub performance_metric: SetPerformanceMetricPayload,
         }
 
-        pub type SetPageViewsRequest = Vec<SetPageViewRequest>;
-        pub type SetTrackEventsRequest = Vec<SetTrackEventRequest>;
-        pub type SetPerformanceMetricsRequest = Vec<SetPerformanceMetricRequest>;
+        #[derive(Deserialize)]
+        pub struct SetPageViewsRequest {
+            pub satellite_id: SatelliteIdText,
+            pub page_views: Vec<SetPageViewsRequestEntry>,
+        }
+
+        #[derive(Deserialize)]
+        pub struct SetPageViewsRequestEntry {
+            pub key: AnalyticKeyPayload,
+            pub page_view: SetPageViewPayload,
+        }
+
+        #[derive(Deserialize)]
+        pub struct SetTrackEventsRequest {
+            pub satellite_id: SatelliteIdText,
+            pub track_events: Vec<SetTrackEventsRequestEntry>,
+        }
+
+        #[derive(Deserialize)]
+        pub struct SetTrackEventsRequestEntry {
+            pub key: AnalyticKeyPayload,
+            pub track_event: SetTrackEventPayload,
+        }
+
+        #[derive(Deserialize)]
+        pub struct SetPerformanceMetricsRequest {
+            pub satellite_id: SatelliteIdText,
+            pub performance_metrics: Vec<SetPerformanceMetricsRequestEntry>,
+        }
+
+        #[derive(Deserialize)]
+        pub struct SetPerformanceMetricsRequestEntry {
+            pub key: AnalyticKeyPayload,
+            pub performance_metric: SetPerformanceMetricPayload,
+        }
 
         #[derive(Deserialize)]
         pub struct AnalyticKeyPayload {
@@ -182,7 +224,6 @@ pub mod interface {
             pub device: PageViewDevice,
             pub time_zone: String,
             pub user_agent: Option<String>,
-            pub satellite_id: SatelliteIdText,
             pub session_id: SessionId,
             pub version: VersionPayload,
         }
@@ -192,7 +233,6 @@ pub mod interface {
             pub name: String,
             pub metadata: Option<Metadata>,
             pub user_agent: Option<String>,
-            pub satellite_id: SatelliteIdText,
             pub session_id: SessionId,
             pub version: VersionPayload,
         }
@@ -203,7 +243,6 @@ pub mod interface {
             pub metric_name: PerformanceMetricName,
             pub data: PerformanceData,
             pub user_agent: Option<String>,
-            pub satellite_id: SatelliteIdText,
             pub session_id: SessionId,
             pub version: VersionPayload,
         }
@@ -218,7 +257,6 @@ pub mod interface {
             pub time_zone: String,
             #[serde(skip_serializing_if = "Option::is_none")]
             pub user_agent: Option<String>,
-            pub satellite_id: SatelliteIdText,
             pub session_id: SessionId,
             pub created_at: TimestampPayload,
             pub updated_at: TimestampPayload,
@@ -231,7 +269,6 @@ pub mod interface {
             pub name: String,
             #[serde(skip_serializing_if = "Option::is_none")]
             pub metadata: Option<Metadata>,
-            pub satellite_id: SatelliteIdText,
             pub session_id: SessionId,
             pub created_at: TimestampPayload,
             pub updated_at: TimestampPayload,
@@ -244,7 +281,6 @@ pub mod interface {
             pub href: String,
             pub metric_name: PerformanceMetricName,
             pub data: PerformanceData,
-            pub satellite_id: SatelliteIdText,
             pub session_id: SessionId,
             pub created_at: TimestampPayload,
             pub updated_at: TimestampPayload,

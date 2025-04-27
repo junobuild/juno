@@ -68,6 +68,7 @@ describe('Orbiter', () => {
 							satelliteIdMock,
 							{
 								version: [],
+								restricted_origin: [],
 								features: [allFeatures]
 							}
 						]
@@ -84,6 +85,7 @@ describe('Orbiter', () => {
 							satelliteIdMock,
 							{
 								version: [],
+								restricted_origin: [],
 								features: [allFeatures]
 							}
 						]
@@ -100,6 +102,7 @@ describe('Orbiter', () => {
 							satelliteIdMock,
 							{
 								version: [123n],
+								restricted_origin: [],
 								features: [allFeatures]
 							}
 						]

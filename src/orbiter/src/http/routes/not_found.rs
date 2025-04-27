@@ -2,7 +2,7 @@ use crate::http::constants::NOT_FOUND_PATH;
 use crate::http::routes::services::prepare_certified_response;
 use crate::http::state::store::insert_certified_response;
 use crate::http::state::types::CertifiedHttpResponse;
-use crate::http::types::interface::ErrorResponse;
+use crate::http::types::response::ErrorResponse;
 use crate::http::utils::create_json_response;
 use ic_http_certification::{
     DefaultCelBuilder, DefaultResponseCertification, DefaultResponseOnlyCelExpression,
@@ -31,7 +31,7 @@ lazy_static! {
 
 pub fn init_certified_not_found_response() {
     let body = ErrorResponse::not_found().encode();
-    let mut response = create_json_response(StatusCode::NOT_FOUND, body);
+    let mut response = create_json_response(StatusCode::NOT_FOUND, body, None);
 
     // insert the `Ic-CertificationExpression` header with the stringified CEL expression as its value
     response.add_header((
@@ -67,5 +67,5 @@ pub fn prepare_certified_not_found_response(
 
 pub fn create_uncertified_not_found_response() -> HttpResponse<'static> {
     let body = ErrorResponse::not_found().encode();
-    create_json_response(StatusCode::NOT_FOUND, body)
+    create_json_response(StatusCode::NOT_FOUND, body, None)
 }

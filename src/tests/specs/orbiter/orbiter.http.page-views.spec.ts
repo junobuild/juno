@@ -1,11 +1,11 @@
 import type {
-	AnalyticKey,
 	_SERVICE as OrbiterActor,
 	OrbiterSatelliteFeatures
 } from '$declarations/orbiter/orbiter.did';
 import { idlFactory as idlFactorOrbiter } from '$declarations/orbiter/orbiter.factory.did';
 import type { HttpRequest } from '$declarations/satellite/satellite.did';
 import { Ed25519KeyIdentity } from '@dfinity/identity';
+import type { Principal } from '@dfinity/principal';
 import { fromNullable, jsonReviver, toNullable } from '@dfinity/utils';
 import { type Actor, PocketIc } from '@hadronous/pic';
 import { nanoid } from 'nanoid';
@@ -14,14 +14,17 @@ import {
 	type PageViewPayload,
 	pageViewPayloadMock,
 	satelliteIdMock,
-	type SetPageViewPayload
+	type SetPageViewRequest,
+	type SetPageViewsRequest
 } from '../../mocks/orbiter.mocks';
+import { assertCertification } from '../../utils/certification-test.utils';
 import { toBodyJson } from '../../utils/orbiter-test.utils';
 import { tick } from '../../utils/pic-tests.utils';
 import { controllersInitArgs, ORBITER_WASM_PATH } from '../../utils/setup-tests.utils';
 
 describe('Orbiter > HTTP > Page views', () => {
 	let pic: PocketIc;
+	let canisterId: Principal;
 	let actor: Actor<OrbiterActor>;
 
 	const controller = Ed25519KeyIdentity.generate();
@@ -40,7 +43,7 @@ describe('Orbiter > HTTP > Page views', () => {
 
 		await pic.setTime(currentDate.getTime());
 
-		const { actor: c } = await pic.setupCanister<OrbiterActor>({
+		const { actor: c, canisterId: cid } = await pic.setupCanister<OrbiterActor>({
 			idlFactory: idlFactorOrbiter,
 			wasm: ORBITER_WASM_PATH,
 			arg: controllersInitArgs(controller),
@@ -48,6 +51,7 @@ describe('Orbiter > HTTP > Page views', () => {
 		});
 
 		actor = c;
+		canisterId = cid;
 
 		// Certified responses are initialized asynchronously
 		await tick(pic);
@@ -58,26 +62,25 @@ describe('Orbiter > HTTP > Page views', () => {
 	});
 
 	describe('With configuration', () => {
-		interface SetPageViewRequest {
-			key: AnalyticKey;
-			page_view: SetPageViewPayload;
-		}
-
 		const pageView: SetPageViewRequest = {
+			satellite_id: satelliteIdMock.toText(),
 			key: { key: nanoid(), collected_at: 1230n },
 			page_view: pageViewPayloadMock
 		};
 
-		const pagesViews: SetPageViewRequest[] = [
-			{
-				key: { key: nanoid(), collected_at: 1230n },
-				page_view: pageViewPayloadMock
-			},
-			{
-				key: { key: nanoid(), collected_at: 1240n },
-				page_view: pageViewPayloadMock
-			}
-		];
+		const pagesViews: SetPageViewsRequest = {
+			satellite_id: satelliteIdMock.toText(),
+			page_views: [
+				{
+					key: { key: nanoid(), collected_at: 1230n },
+					page_view: pageViewPayloadMock
+				},
+				{
+					key: { key: nanoid(), collected_at: 1240n },
+					page_view: pageViewPayloadMock
+				}
+			]
+		};
 
 		beforeAll(async () => {
 			actor.setIdentity(controller);
@@ -95,6 +98,7 @@ describe('Orbiter > HTTP > Page views', () => {
 					satelliteIdMock,
 					{
 						version: [],
+						restricted_origin: [],
 						features: [allFeatures]
 					}
 				]
@@ -143,16 +147,45 @@ describe('Orbiter > HTTP > Page views', () => {
 					expect(fromNullable(response.upgrade)).toBeUndefined();
 				});
 
+				it.each([
+					['invalid payload', { ...pageView, key: 'invalid' }],
+					['empty payload', { key: pageView.key, satellite_id: pageView.satellite_id }],
+					['unknown satellite id', { ...pageView, satellite_id: 'nkzsw-gyaaa-aaaal-ada3a-cai' }]
+					// eslint-disable-next-line local-rules/prefer-object-params
+				])('should not upgrade http_request for %s', async (_title, payload) => {
+					const { http_request } = actor;
+
+					const request: HttpRequest = {
+						body: toBodyJson(payload),
+						certificate_version: toNullable(2),
+						headers: [],
+						method: 'POST',
+						url: '/view'
+					};
+
+					const response = await http_request(request);
+
+					expect(fromNullable(response.upgrade)).toBeUndefined();
+
+					expect(response.status_code).toEqual(400);
+
+					await assertCertification({
+						canisterId,
+						pic,
+						request,
+						response,
+						currentDate,
+						statusCode: 400
+					});
+				});
+
 				it('should not set a page view with invalid satellite id', async () => {
 					const { http_request_update } = actor;
 
 					const request: HttpRequest = {
 						body: toBodyJson({
 							...pageView,
-							page_view: {
-								...pageViewPayloadMock,
-								satellite_id: satelliteIdMock // Should be principal as text
-							}
+							satellite_id: satelliteIdMock // Should be principal as text
 						}),
 						certificate_version: toNullable(2),
 						headers: [],
@@ -293,6 +326,49 @@ describe('Orbiter > HTTP > Page views', () => {
 					expect(fromNullable(response.upgrade)).toBeUndefined();
 				});
 
+				it.each([
+					[
+						'invalid payload',
+						{
+							...pagesViews,
+							page_views: [
+								{
+									...pagesViews.page_views[0],
+									key: 'invalid'
+								}
+							]
+						}
+					],
+					['empty payload', { satellite_id: pagesViews.satellite_id, page_views: [] }],
+					['unknown satellite id', { ...pagesViews, satellite_id: 'nkzsw-gyaaa-aaaal-ada3a-cai' }]
+					// eslint-disable-next-line local-rules/prefer-object-params
+				])('should not upgrade http_request for %s', async (_title, payload) => {
+					const { http_request } = actor;
+
+					const request: HttpRequest = {
+						body: toBodyJson(payload),
+						certificate_version: toNullable(2),
+						headers: [],
+						method: 'POST',
+						url: '/views'
+					};
+
+					const response = await http_request(request);
+
+					expect(fromNullable(response.upgrade)).toBeUndefined();
+
+					expect(response.status_code).toEqual(400);
+
+					await assertCertification({
+						canisterId,
+						pic,
+						request,
+						response,
+						currentDate,
+						statusCode: 400
+					});
+				});
+
 				it('should not set page views with invalid satellite id', async () => {
 					const { http_request_update } = actor;
 
@@ -361,7 +437,7 @@ describe('Orbiter > HTTP > Page views', () => {
 					expect(result).toEqual({
 						err: {
 							code: 500,
-							message: pagesViews
+							message: pagesViews.page_views
 								.map(({ key }) => `${key.key}: juno.error.no_version_provided`)
 								.join(', ')
 						}
@@ -372,15 +448,16 @@ describe('Orbiter > HTTP > Page views', () => {
 					const { http_request_update } = actor;
 
 					const request: HttpRequest = {
-						body: toBodyJson(
-							pagesViews.map((pageView) => ({
+						body: toBodyJson({
+							...pagesViews,
+							page_views: pagesViews.page_views.map((pageView) => ({
 								...pageView,
 								page_view: {
 									...pageView.page_view,
 									version: 1n
 								}
 							}))
-						),
+						}),
 						certificate_version: toNullable(2),
 						headers: [],
 						method: 'POST',
@@ -415,7 +492,7 @@ describe('Orbiter > HTTP > Page views', () => {
 
 				expect(Array.isArray(result)).toBe(true);
 
-				expect(result.length).toEqual([pageView, ...pagesViews].length);
+				expect(result.length).toEqual([pageView, ...pagesViews.page_views].length);
 
 				result.forEach(([key, pageView]) => {
 					expect(key.collected_at).toBeGreaterThanOrEqual(1230n);

@@ -1,7 +1,12 @@
-use crate::http::types::interface::ResponseBody;
+use crate::http::types::response::ResponseBody;
 use ic_http_certification::{HttpResponse, StatusCode};
+use junobuild_shared::types::core::DomainName;
 
-pub fn create_json_response(status_code: StatusCode, body: ResponseBody) -> HttpResponse<'static> {
+pub fn create_json_response(
+    status_code: StatusCode,
+    body: ResponseBody,
+    restricted_origin: Option<DomainName>,
+) -> HttpResponse<'static> {
     HttpResponse::builder()
         .with_status_code(status_code)
         .with_headers(vec![
@@ -17,6 +22,10 @@ pub fn create_json_response(status_code: StatusCode, body: ResponseBody) -> Http
                 "no-store, max-age=0".to_string(),
             ),
             ("pragma".to_string(), "no-cache".to_string()),
+            (
+                "Access-Control-Allow-Origin".to_string(),
+                restricted_origin.unwrap_or("*".to_string()).to_string(),
+            ),
         ])
         .with_body(body)
         .build()

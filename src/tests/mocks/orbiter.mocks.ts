@@ -1,4 +1,5 @@
 import type {
+	AnalyticKey,
 	PageViewDevice,
 	SetPageView,
 	SetPerformanceMetric,
@@ -8,22 +9,46 @@ import type { SatelliteIdText } from '$lib/types/satellite';
 import { Principal } from '@dfinity/principal';
 import { nanoid } from 'nanoid';
 
+export interface SetPageViewsRequestEntry {
+	key: AnalyticKey;
+	page_view: SetPageViewPayload;
+}
+
+export type SetPageViewRequest = {
+	satellite_id: SatelliteIdText;
+} & SetPageViewsRequestEntry;
+
+export type SetPageViewsRequest = Pick<SetPageViewRequest, 'satellite_id'> & {
+	page_views: SetPageViewsRequestEntry[];
+};
+
 export interface SetPageViewPayload {
 	title: string;
 	referrer?: string;
 	time_zone: string;
 	session_id: string;
 	href: string;
-	satellite_id: SatelliteIdText;
 	device: PageViewDevice;
 	version?: bigint;
 	user_agent?: string;
 }
 
+export interface SetTrackEventRequestEntry {
+	key: AnalyticKey;
+	track_event: SetTrackEventPayload;
+}
+
+export type SetTrackEventRequest = {
+	satellite_id: SatelliteIdText;
+} & SetTrackEventRequestEntry;
+
+export type SetTrackEventsRequest = Pick<SetPageViewRequest, 'satellite_id'> & {
+	track_events: SetTrackEventRequestEntry[];
+};
+
 export interface SetTrackEventPayload {
 	name: string;
 	metadata?: Record<string, string>;
-	satellite_id: SatelliteIdText;
 	session_id: string;
 	version?: bigint;
 	user_agent?: string;
@@ -50,12 +75,24 @@ export type NavigationType =
 	| 'Prerender'
 	| 'Restore';
 
+export interface SetPerformanceRequestEntry {
+	key: AnalyticKey;
+	performance_metric: SetPerformanceMetricPayload;
+}
+
+export type SetPerformanceRequest = {
+	satellite_id: SatelliteIdText;
+} & SetPerformanceRequestEntry;
+
+export type SetPerformancesRequest = Pick<SetPageViewRequest, 'satellite_id'> & {
+	performance_metrics: SetPerformanceRequestEntry[];
+};
+
 export interface SetPerformanceMetricPayload {
 	href: string;
 	metric_name: PerformanceMetricName;
 	data: PerformanceData;
 	user_agent?: string;
-	satellite_id: SatelliteIdText;
 	session_id: string;
 	version?: bigint;
 }
@@ -105,7 +142,6 @@ export const pageViewPayloadMock: SetPageViewPayload = {
 		inner_height: 300,
 		inner_width: 600
 	},
-	satellite_id: satelliteIdMock.toText(),
 	session_id: sessionId,
 	title: 'Test',
 	time_zone: timeZone,
@@ -135,7 +171,6 @@ export const trackEventPayloadMock: SetTrackEventPayload = {
 		event1: 'Lorem ipsum dolor sit amet',
 		event2: ' Praesent congue, mauris id commodo vulputate'
 	},
-	satellite_id: satelliteIdMock.toText(),
 	session_id: sessionId,
 	user_agent: 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:125.0) Gecko/20100101 Firefox/125.0'
 };
@@ -171,6 +206,5 @@ export const performanceMetricPayloadMock: SetPerformanceMetricPayload = {
 	},
 	href: 'https://test.com',
 	metric_name: 'LCP',
-	satellite_id: satelliteIdMock.toText(),
 	user_agent: 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:125.0) Gecko/20100101 Firefox/125.0'
 };

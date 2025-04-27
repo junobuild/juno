@@ -1,6 +1,6 @@
 use crate::assert::config::assert_page_views_enabled;
-use crate::config::store::get_satellite_config;
 use crate::events::helpers::assert_and_insert_page_view;
+use crate::handler::adapters::assert::assert_request_feature_enabled;
 use crate::handler::adapters::response_builder::build_payload_response;
 use crate::http::types::handler::HandledUpdateResult;
 use crate::http::types::request::HttpRequestBody;
@@ -9,23 +9,14 @@ use crate::types::interface::http::{
     PageViewPayload, SetPageViewPayload, SetPageViewRequest, SetPageViewsRequest,
     SetPageViewsRequestEntry,
 };
-use candid::Principal;
 use junobuild_utils::decode_doc_data;
 
 pub fn assert_request_page_view(body: &HttpRequestBody) -> Result<(), String> {
-    let payload = decode_doc_data::<SetPageViewRequest>(body).map_err(|e| e.to_string())?;
-
-    assert_page_views_enabled(&get_satellite_config(
-        &Principal::from_text(payload.satellite_id).map_err(|e| e.to_string())?,
-    ))
+    assert_request_feature_enabled::<SetPageViewRequest>(body, assert_page_views_enabled)
 }
 
 pub fn assert_request_page_views(body: &HttpRequestBody) -> Result<(), String> {
-    let payload = decode_doc_data::<SetPageViewsRequest>(body).map_err(|e| e.to_string())?;
-
-    assert_page_views_enabled(&get_satellite_config(
-        &Principal::from_text(payload.satellite_id).map_err(|e| e.to_string())?,
-    ))
+    assert_request_feature_enabled::<SetPageViewsRequest>(body, assert_page_views_enabled)
 }
 
 pub fn handle_insert_page_view(body: &HttpRequestBody) -> Result<HandledUpdateResult, String> {

@@ -148,6 +148,10 @@ pub mod interface {
         pub type PrincipalText = String;
         pub type SatelliteIdText = PrincipalText;
 
+        pub trait SetRequest {
+            fn satellite_id(&self) -> &str;
+        }
+
         #[derive(Deserialize)]
         pub struct SetPageViewRequest {
             pub satellite_id: SatelliteIdText,

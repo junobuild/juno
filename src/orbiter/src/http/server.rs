@@ -24,6 +24,7 @@ pub fn on_http_request(
             return HttpResponse::builder().with_upgrade(true).build();
         }
 
+        // TODO: responde with BAD REQUEST
         certified_response(request_path, method)
     };
 

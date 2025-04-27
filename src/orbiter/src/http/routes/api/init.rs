@@ -1,4 +1,4 @@
-use crate::http::routes::api::types::CertifiedExactRoute;
+use crate::http::routes::api::types::{CertifiedCelExprDef, CertifiedExactRoute};
 use crate::http::state::store::insert_certified_response;
 use crate::http::state::types::CertifiedHttpResponse;
 use ic_http_certification::{
@@ -30,8 +30,11 @@ pub fn init_certified_response(
         .build();
 
     // create the certification for this response and CEL expression pair
-    let certification = HttpCertification::full(cel_expr_def, &request, &response, None).unwrap();
-
+    let certification = match cel_expr_def {
+        CertifiedCelExprDef::ResponseOnly(cel_expr_def) => HttpCertification::response_only(cel_expr_def, &response, None).unwrap(),
+        CertifiedCelExprDef::Full(cel_expr_def) => HttpCertification::full(cel_expr_def, &request, &response, None).unwrap()
+    };
+    
     let certified_response: CertifiedHttpResponse = CertifiedHttpResponse {
         response,
         certification,

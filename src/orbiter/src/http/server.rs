@@ -24,8 +24,7 @@ pub fn on_http_request(
             return HttpResponse::builder().with_upgrade(true).build();
         }
 
-        // TODO: responde with BAD REQUEST
-        certified_response(request_path, method)
+        known_route_certified_response(request_path, method)
     };
 
     serve_request(request, handler, &upgrade_http_request)
@@ -71,28 +70,33 @@ fn serve_request(
             return response_handler(&request_path, method, request.body());
         }
 
-        // e.g. not_allowed for method not supported by know route or responses to OPTIONS
-        return certified_response(&request_path, method);
+        return known_route_certified_response(&request_path, method);
     }
 
     not_found_response(&request_path)
 }
 
-fn certified_response(request_path: &HttpRequestPath, method: &Method) -> HttpResponse<'static> {
+// For know routes
+// OPTIONS -> 204 NO_CONTENT for cors
+// POST -> 400 BAD_REQUEST
+// DELETE, PATCH, etc. -> 405 NOT_ALLOWED
+fn known_route_certified_response(
+    request_path: &HttpRequestPath,
+    method: &Method,
+) -> HttpResponse<'static> {
     let certified_response =
         get_certified_response(request_path, &Some(method.to_string().clone()));
-
+    
     if let Some(certified_response) = certified_response {
         let response =
             prepare_certified_response_for_requested_path(request_path, certified_response);
 
-        // TODO: technically it can be an INTERNAL_SERVER_ERROR (I guess)
         if let Ok(response) = response {
             return response;
         }
     }
-
-    // Fallback if for some unexpected reason not_allowed was not defined and used
+    
+    // Fallback to not found if for some unexpected reason no response was defined
     not_found_response(request_path)
 }
 

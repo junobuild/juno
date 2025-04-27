@@ -19,9 +19,11 @@ import {
 import { toBodyJson } from '../../utils/orbiter-test.utils';
 import { tick } from '../../utils/pic-tests.utils';
 import { controllersInitArgs, ORBITER_WASM_PATH } from '../../utils/setup-tests.utils';
+import type { Principal } from '@dfinity/principal';
 
 describe('Orbiter > HTTP > Performance metrics', () => {
 	let pic: PocketIc;
+	let canisterId: Principal;
 	let actor: Actor<OrbiterActor>;
 
 	const controller = Ed25519KeyIdentity.generate();
@@ -40,7 +42,7 @@ describe('Orbiter > HTTP > Performance metrics', () => {
 
 		await pic.setTime(currentDate.getTime());
 
-		const { actor: c } = await pic.setupCanister<OrbiterActor>({
+		const { actor: c, canisterId: cid } = await pic.setupCanister<OrbiterActor>({
 			idlFactory: idlFactorOrbiter,
 			wasm: ORBITER_WASM_PATH,
 			arg: controllersInitArgs(controller),
@@ -48,6 +50,7 @@ describe('Orbiter > HTTP > Performance metrics', () => {
 		});
 
 		actor = c;
+		canisterId = cid;
 
 		// Certified responses are initialized asynchronously
 		await tick(pic);

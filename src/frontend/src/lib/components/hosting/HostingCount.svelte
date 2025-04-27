@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { nonNullish } from '@dfinity/utils';
 	import { compare } from 'semver';
-	import { onMount } from 'svelte';
+	import { untrack } from 'svelte';
 	import { fade } from 'svelte/transition';
 	import type { Satellite } from '$declarations/mission_control/mission_control.did';
 	import { countCollectionAssets } from '$lib/api/satellites.api';
@@ -19,10 +19,8 @@
 
 	let assets = $state(0n);
 
-	onMount(async () => {
+	const load = async () => {
 		try {
-			// There is guard for loading the version. If we reach this point with `undefined`, it's probably a race condition.
-			// We fallback to the newest API since the version check is only needed for backward compatibility.
 			const version = $versionStore?.satellites[satellite.satellite_id.toText()]?.current;
 
 			if (nonNullish(version) && compare(version, SATELLITE_v0_0_20) < 0) {
@@ -42,6 +40,14 @@
 				detail: err
 			});
 		}
+	};
+
+	$effect(() => {
+		$versionStore;
+
+		untrack(() => {
+			load();
+		});
 	});
 </script>
 

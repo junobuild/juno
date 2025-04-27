@@ -1,8 +1,7 @@
 <script lang="ts">
 	import type { Principal } from '@dfinity/principal';
 	import { isNullish, nonNullish } from '@dfinity/utils';
-	import { getContext } from 'svelte';
-	import { run } from 'svelte/legacy';
+	import { getContext, untrack } from 'svelte';
 	import { fade } from 'svelte/transition';
 	import type { AssetNoContent } from '$declarations/satellite/satellite.did';
 	import { deleteAssets } from '$lib/api/satellites.api';
@@ -16,6 +15,7 @@
 	import { authStore } from '$lib/stores/auth.store';
 	import { i18n } from '$lib/stores/i18n.store';
 	import { listParamsStore } from '$lib/stores/list-params.store';
+	import { versionStore } from '$lib/stores/version.store';
 	import { type DataContext, DATA_CONTEXT_KEY } from '$lib/types/data.context';
 	import { type PaginationContext, PAGINATION_CONTEXT_KEY } from '$lib/types/pagination.context';
 	import { type RulesContext, RULES_CONTEXT_KEY } from '$lib/types/rules.context';
@@ -24,10 +24,7 @@
 
 	const { store, hasAnyRules }: RulesContext = getContext<RulesContext>(RULES_CONTEXT_KEY);
 
-	let collection: string | undefined = $state();
-	run(() => {
-		collection = $store.rule?.[0];
-	});
+	let collection = $derived($store.rule?.[0]);
 
 	const {
 		store: paginationStore,
@@ -37,10 +34,7 @@
 		PAGINATION_CONTEXT_KEY
 	);
 
-	let empty = $state(false);
-	run(() => {
-		empty = $paginationStore.items?.length === 0 && nonNullish(collection);
-	});
+	let empty = $derived($paginationStore.items?.length === 0 && nonNullish(collection));
 
 	const { store: assetsStore, resetData }: DataContext<AssetNoContent> =
 		getContext<DataContext<AssetNoContent>>(DATA_CONTEXT_KEY);
@@ -51,9 +45,14 @@
 		await list();
 	};
 
-	run(() => {
-		// @ts-expect-error TODO: to be migrated to Svelte v5
-		collection, $listParamsStore, (async () => await load())();
+	$effect(() => {
+		collection;
+		$listParamsStore;
+		$versionStore;
+
+		untrack(() => {
+			load();
+		});
 	});
 
 	/**

@@ -34,17 +34,19 @@
 
 	const list = async () => {
 		try {
-			// There is guard for loading the version. If we reach this point with `undefined`, it's probably a race condition.
-			// We fallback to the newest API since the version check is only needed for backward compatibility.
-			const version = $versionStore?.satellites[$store.satelliteId.toText()]?.current;
-
 			if (isNullish(collection)) {
 				setItems({ items: undefined, matches_length: undefined, items_length: undefined });
 				return;
 			}
 
-			const list =
-				isNullish(version) || compare(version, SATELLITE_v0_0_9) >= 0 ? listDocs : listDocs008;
+			const version = $versionStore?.satellites[$store.satelliteId.toText()]?.current;
+
+			if (isNullish(version)) {
+				setItems({ items: undefined, matches_length: undefined, items_length: undefined });
+				return;
+			}
+
+			const list = compare(version, SATELLITE_v0_0_9) >= 0 ? listDocs : listDocs008;
 
 			const { items, matches_length, items_length } = await list({
 				collection,

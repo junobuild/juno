@@ -322,7 +322,7 @@ describe('Orbiter > HTTP > Performance metrics', () => {
 						'invalid payload',
 						{
 							...performanceMetrics,
-							page_views: [
+							performance_metrics: [
 								{
 									...performanceMetrics.performance_metrics[0],
 									key: 'invalid'

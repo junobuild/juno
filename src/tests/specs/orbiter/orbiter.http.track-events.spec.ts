@@ -319,7 +319,7 @@ describe('Orbiter > HTTP > Track events', () => {
 						'invalid payload',
 						{
 							...trackEvents,
-							page_views: [
+							track_events: [
 								{
 									...trackEvents.track_events[0],
 									key: 'invalid'

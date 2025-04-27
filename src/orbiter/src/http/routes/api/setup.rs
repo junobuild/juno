@@ -1,5 +1,8 @@
 use crate::http::routes::api::types::{CertifiedCelExprDef, CertifiedExactRoute};
-use ic_http_certification::{DefaultCelBuilder, DefaultFullCelExpression, DefaultResponseCertification, DefaultResponseOnlyCelExpression, HttpCertificationPath};
+use ic_http_certification::{
+    DefaultCelBuilder, DefaultFullCelExpression, DefaultResponseCertification,
+    DefaultResponseOnlyCelExpression, HttpCertificationPath,
+};
 
 pub fn build_full_certified_exact_route(path: &'static str) -> CertifiedExactRoute {
     // define a full CEL expression that will certify the following:

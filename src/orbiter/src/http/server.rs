@@ -86,7 +86,7 @@ fn known_route_certified_response(
 ) -> HttpResponse<'static> {
     let certified_response =
         get_certified_response(request_path, &Some(method.to_string().clone()));
-    
+
     if let Some(certified_response) = certified_response {
         let response =
             prepare_certified_response_for_requested_path(request_path, certified_response);
@@ -95,7 +95,7 @@ fn known_route_certified_response(
             return response;
         }
     }
-    
+
     // Fallback to not found if for some unexpected reason no response was defined
     not_found_response(request_path)
 }

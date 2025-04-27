@@ -1,4 +1,6 @@
-use ic_http_certification::{DefaultFullCelExpression, DefaultResponseOnlyCelExpression, HttpCertificationPath};
+use ic_http_certification::{
+    DefaultFullCelExpression, DefaultResponseOnlyCelExpression, HttpCertificationPath,
+};
 
 pub struct CertifiedExactRoute {
     pub path: String,

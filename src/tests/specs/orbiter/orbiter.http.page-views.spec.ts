@@ -5,6 +5,7 @@ import type {
 import { idlFactory as idlFactorOrbiter } from '$declarations/orbiter/orbiter.factory.did';
 import type { HttpRequest } from '$declarations/satellite/satellite.did';
 import { Ed25519KeyIdentity } from '@dfinity/identity';
+import type { Principal } from '@dfinity/principal';
 import { fromNullable, jsonReviver, toNullable } from '@dfinity/utils';
 import { type Actor, PocketIc } from '@hadronous/pic';
 import { nanoid } from 'nanoid';
@@ -16,11 +17,10 @@ import {
 	type SetPageViewRequest,
 	type SetPageViewsRequest
 } from '../../mocks/orbiter.mocks';
+import { assertCertification } from '../../utils/certification-test.utils';
 import { toBodyJson } from '../../utils/orbiter-test.utils';
 import { tick } from '../../utils/pic-tests.utils';
 import { controllersInitArgs, ORBITER_WASM_PATH } from '../../utils/setup-tests.utils';
-import type { Principal } from '@dfinity/principal';
-import { assertCertification } from '../../utils/certification-test.utils';
 
 describe('Orbiter > HTTP > Page views', () => {
 	let pic: PocketIc;
@@ -43,7 +43,7 @@ describe('Orbiter > HTTP > Page views', () => {
 
 		await pic.setTime(currentDate.getTime());
 
-		const { actor: c, canisterId: cid} = await pic.setupCanister<OrbiterActor>({
+		const { actor: c, canisterId: cid } = await pic.setupCanister<OrbiterActor>({
 			idlFactory: idlFactorOrbiter,
 			wasm: ORBITER_WASM_PATH,
 			arg: controllersInitArgs(controller),

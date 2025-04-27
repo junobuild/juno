@@ -2,7 +2,8 @@ use crate::http::constants::{
     EVENTS_PATH, EVENT_PATH, METRICS_PATH, METRIC_PATH, VIEWS_PATH, VIEW_PATH,
 };
 use crate::http::routes::api::routes::{
-    EVENTS_FULL_ROUTE, EVENT_FULL_ROUTE, METRICS_FULL_ROUTE, METRIC_FULL_ROUTE, VIEWS_FULL_ROUTE, VIEW_FULL_ROUTE,
+    EVENTS_FULL_ROUTE, EVENT_FULL_ROUTE, METRICS_FULL_ROUTE, METRIC_FULL_ROUTE, VIEWS_FULL_ROUTE,
+    VIEW_FULL_ROUTE,
 };
 use crate::http::routes::services::prepare_certified_response;
 use crate::http::state::types::CertifiedHttpResponse;

@@ -1,6 +1,7 @@
 use crate::http::routes::api::init::init_certified_response;
 use crate::http::routes::api::routes::{
-    EVENTS_FULL_ROUTE, EVENT_FULL_ROUTE, METRICS_FULL_ROUTE, METRIC_FULL_ROUTE, VIEWS_FULL_ROUTE, VIEW_FULL_ROUTE,
+    EVENTS_FULL_ROUTE, EVENT_FULL_ROUTE, METRICS_FULL_ROUTE, METRIC_FULL_ROUTE, VIEWS_FULL_ROUTE,
+    VIEW_FULL_ROUTE,
 };
 use crate::http::routes::api::types::CertifiedExactRoute;
 use crate::http::types::response::ErrorResponse;

@@ -31,10 +31,14 @@ pub fn init_certified_response(
 
     // create the certification for this response and CEL expression pair
     let certification = match cel_expr_def {
-        CertifiedCelExprDef::ResponseOnly(cel_expr_def) => HttpCertification::response_only(cel_expr_def, &response, None).unwrap(),
-        CertifiedCelExprDef::Full(cel_expr_def) => HttpCertification::full(cel_expr_def, &request, &response, None).unwrap()
+        CertifiedCelExprDef::ResponseOnly(cel_expr_def) => {
+            HttpCertification::response_only(cel_expr_def, &response, None).unwrap()
+        }
+        CertifiedCelExprDef::Full(cel_expr_def) => {
+            HttpCertification::full(cel_expr_def, &request, &response, None).unwrap()
+        }
     };
-    
+
     let certified_response: CertifiedHttpResponse = CertifiedHttpResponse {
         response,
         certification,

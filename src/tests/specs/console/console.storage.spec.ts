@@ -668,7 +668,7 @@ describe('Console > Storage', () => {
 		});
 	});
 
-	describe('anonymous', () => {
+	describe('anonymous (again)', () => {
 		beforeAll(() => {
 			actor.setIdentity(new AnonymousIdentity());
 		});

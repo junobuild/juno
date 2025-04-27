@@ -128,7 +128,7 @@ describe('Orbiter > HTTP > Page views', () => {
 
 					const response = await http_request(request);
 
-					expect(fromNullable(response.upgrade)).toEqual(true);
+					expect(fromNullable(response.upgrade)).toBeTruthy();
 				});
 
 				it.each(NON_POST_METHODS)('should not upgrade http_request for %s', async (method) => {
@@ -307,7 +307,7 @@ describe('Orbiter > HTTP > Page views', () => {
 
 					const response = await http_request(request);
 
-					expect(fromNullable(response.upgrade)).toEqual(true);
+					expect(fromNullable(response.upgrade)).toBeTruthy();
 				});
 
 				it.each(NON_POST_METHODS)('should not upgrade http_request for %s', async (method) => {
@@ -490,9 +490,9 @@ describe('Orbiter > HTTP > Page views', () => {
 					satellite_id: [satelliteIdMock]
 				});
 
-				expect(Array.isArray(result)).toBe(true);
+				expect(Array.isArray(result)).toBeTruthy();
 
-				expect(result.length).toEqual([pageView, ...pagesViews.page_views].length);
+				expect(result).toHaveLength([pageView, ...pagesViews.page_views].length);
 
 				result.forEach(([key, pageView]) => {
 					expect(key.collected_at).toBeGreaterThanOrEqual(1230n);

@@ -533,7 +533,7 @@ describe('Mission Control > Monitoring', () => {
 			await testOrbiterMonitoring({ expectedEnabled: true });
 		});
 
-		it('should have a running monitoring status', async () => {
+		it('should have a running monitoring status after start', async () => {
 			const { get_monitoring_status } = actor;
 
 			const { cycles } = await get_monitoring_status();
@@ -551,7 +551,7 @@ describe('Mission Control > Monitoring', () => {
 			await testOrbiterMonitoring({ expectedEnabled: false });
 		});
 
-		it('should have a stopped monitoring status', async () => {
+		it('should have a stopped monitoring status after stop', async () => {
 			const { get_monitoring_status } = actor;
 
 			const { cycles } = await get_monitoring_status();

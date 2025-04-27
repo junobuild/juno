@@ -128,7 +128,7 @@ describe('Orbiter > HTTP > Track events', () => {
 
 					const response = await http_request(request);
 
-					expect(fromNullable(response.upgrade)).toEqual(true);
+					expect(fromNullable(response.upgrade)).toBeTruthy();
 				});
 
 				it.each(NON_POST_METHODS)('should not upgrade http_request for %s', async (method) => {
@@ -309,7 +309,7 @@ describe('Orbiter > HTTP > Track events', () => {
 
 					const response = await http_request(request);
 
-					expect(fromNullable(response.upgrade)).toEqual(true);
+					expect(fromNullable(response.upgrade)).toBeTruthy();
 				});
 
 				it.each(NON_POST_METHODS)('should not upgrade http_request for %s', async (method) => {
@@ -492,9 +492,9 @@ describe('Orbiter > HTTP > Track events', () => {
 					satellite_id: [satelliteIdMock]
 				});
 
-				expect(Array.isArray(result)).toBe(true);
+				expect(Array.isArray(result)).toBeTruthy();
 
-				expect(result.length).toEqual([trackEvent, ...trackEvents.track_events].length);
+				expect(result).toHaveLength([trackEvent, ...trackEvents.track_events].length);
 
 				result.forEach(([key, trackEvent]) => {
 					expect(key.collected_at).toBeGreaterThanOrEqual(1230n);

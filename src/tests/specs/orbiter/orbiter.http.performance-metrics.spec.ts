@@ -128,7 +128,7 @@ describe('Orbiter > HTTP > Performance metrics', () => {
 
 					const response = await http_request(request);
 
-					expect(fromNullable(response.upgrade)).toEqual(true);
+					expect(fromNullable(response.upgrade)).toBeTruthy();
 				});
 
 				it.each(NON_POST_METHODS)('should not upgrade http_request for %s', async (method) => {
@@ -315,7 +315,7 @@ describe('Orbiter > HTTP > Performance metrics', () => {
 
 					const response = await http_request(request);
 
-					expect(fromNullable(response.upgrade)).toEqual(true);
+					expect(fromNullable(response.upgrade)).toBeTruthy();
 				});
 
 				it.each(NON_POST_METHODS)('should not upgrade http_request for %s', async (method) => {
@@ -506,9 +506,9 @@ describe('Orbiter > HTTP > Performance metrics', () => {
 					satellite_id: [satelliteIdMock]
 				});
 
-				expect(Array.isArray(result)).toBe(true);
+				expect(Array.isArray(result)).toBeTruthy();
 
-				expect(result.length).toEqual(
+				expect(result).toHaveLength(
 					[performanceMetric, ...performanceMetrics.performance_metrics].length
 				);
 

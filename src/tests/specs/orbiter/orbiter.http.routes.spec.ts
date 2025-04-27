@@ -7,6 +7,7 @@ import { toNullable } from '@dfinity/utils';
 import { type Actor, PocketIc } from '@hadronous/pic';
 import { inject } from 'vitest';
 import { assertCertification } from '../../utils/certification-test.utils';
+import { toBodyJson } from '../../utils/orbiter-test.utils';
 import { tick } from '../../utils/pic-tests.utils';
 import { controllersInitArgs, ORBITER_WASM_PATH } from '../../utils/setup-tests.utils';
 
@@ -47,97 +48,19 @@ describe('Orbiter > HTTP > Routes', () => {
 		await pic?.tearDown();
 	});
 
-	describe.each(['/something', '/'])('Route not found for %s', (url) => {
-		it.each([...NON_POST_METHODS, 'OPTIONS', 'POST'])(
-			'should return a certified not found response for %s',
-			async (method) => {
-				const { http_request } = actor;
-
-				const request: HttpRequest = {
-					body: [],
-					certificate_version: toNullable(2),
-					headers: [],
-					method,
-					url
-				};
-
-				const response = await http_request(request);
-
-				expect(
-					response.headers.find(([key, _value]) => key.toLowerCase() === 'content-type')?.[1]
-				).toEqual('application/json');
-
-				const decoder = new TextDecoder();
-				const responseBody = decoder.decode(response.body as Uint8Array<ArrayBufferLike>);
-
-				expect(JSON.parse(responseBody)).toEqual(RESPONSE_404);
-
-				await assertCertification({
-					canisterId,
-					pic,
-					request,
-					response,
-					currentDate,
-					statusCode: 404
-				});
-			}
-		);
-	});
-
 	describe.each([
-		'/view/something',
-		'/views/something',
-		'/event/something',
-		'/events/something',
-		'/metric/something',
-		'/metrics/something'
-	])('Sub-route not found for %s', (url) => {
-		it.each(NON_POST_METHODS)(
-			'should return a certified not found response for %s',
-			async (method) => {
-				const { http_request } = actor;
-
-				const request: HttpRequest = {
-					body: [],
-					certificate_version: toNullable(2),
-					headers: [],
-					method,
-					url
-				};
-
-				const response = await http_request(request);
-
-				expect(
-					response.headers.find(([key, _value]) => key.toLowerCase() === 'content-type')?.[1]
-				).toEqual('application/json');
-
-				const decoder = new TextDecoder();
-				const responseBody = decoder.decode(response.body as Uint8Array<ArrayBufferLike>);
-
-				expect(JSON.parse(responseBody)).toEqual(RESPONSE_404);
-
-				await assertCertification({
-					canisterId,
-					pic,
-					request,
-					response,
-					currentDate,
-					statusCode: 404
-				});
-			}
-		);
-	});
-
-	describe.each(['/view', '/views', '/event', '/events', '/metric', '/metrics'])(
-		'Route not allowed for %s',
-		(url) => {
-			it.each(NON_POST_METHODS)(
-				'should return a certified not allowed response for %s',
+		['With body', toBodyJson({ hello: 'world' })],
+		['Without body', []]
+		// eslint-disable-next-line local-rules/prefer-object-params
+	])('%s', (_, body) => {
+		describe.each(['/something', '/'])('Route not found for %s', (url) => {
+			it.each([...NON_POST_METHODS, 'OPTIONS', 'POST'])(
+				'should return a certified not found response for %s',
 				async (method) => {
 					const { http_request } = actor;
 
 					const request: HttpRequest = {
-						body: [],
+						body,
 						certificate_version: toNullable(2),
 						headers: [],
 						method,
@@ -153,7 +76,7 @@ describe('Orbiter > HTTP > Routes', () => {
 					const decoder = new TextDecoder();
 					const responseBody = decoder.decode(response.body as Uint8Array<ArrayBufferLike>);
 
-					expect(JSON.parse(responseBody)).toEqual(RESPONSE_405);
+					expect(JSON.parse(responseBody)).toEqual(RESPONSE_404);
 
 					await assertCertification({
 						canisterId,
@@ -161,10 +84,94 @@ describe('Orbiter > HTTP > Routes', () => {
 						request,
 						response,
 						currentDate,
-						statusCode: 405
+						statusCode: 404
 					});
 				}
 			);
-		}
-	);
+		});
+
+		describe.each([
+			'/view/something',
+			'/views/something',
+			'/event/something',
+			'/events/something',
+			'/metric/something',
+			'/metrics/something'
+		])('Sub-route not found for %s', (url) => {
+			it.each(NON_POST_METHODS)(
+				'should return a certified not found response for %s',
+				async (method) => {
+					const { http_request } = actor;
+
+					const request: HttpRequest = {
+						body,
+						certificate_version: toNullable(2),
+						headers: [],
+						method,
+						url
+					};
+
+					const response = await http_request(request);
+
+					expect(
+						response.headers.find(([key, _value]) => key.toLowerCase() === 'content-type')?.[1]
+					).toEqual('application/json');
+
+					const decoder = new TextDecoder();
+					const responseBody = decoder.decode(response.body as Uint8Array<ArrayBufferLike>);
+
+					expect(JSON.parse(responseBody)).toEqual(RESPONSE_404);
+
+					await assertCertification({
+						canisterId,
+						pic,
+						request,
+						response,
+						currentDate,
+						statusCode: 404
+					});
+				}
+			);
+		});
+
+		describe.each(['/view', '/views', '/event', '/events', '/metric', '/metrics'])(
+			'Route not allowed for %s',
+			(url) => {
+				it.each(NON_POST_METHODS)(
+					'should return a certified not allowed response for %s',
+					async (method) => {
+						const { http_request } = actor;
+
+						const request: HttpRequest = {
+							body,
+							certificate_version: toNullable(2),
+							headers: [],
+							method,
+							url
+						};
+
+						const response = await http_request(request);
+
+						expect(
+							response.headers.find(([key, _value]) => key.toLowerCase() === 'content-type')?.[1]
+						).toEqual('application/json');
+
+						const decoder = new TextDecoder();
+						const responseBody = decoder.decode(response.body as Uint8Array<ArrayBufferLike>);
+
+						expect(JSON.parse(responseBody)).toEqual(RESPONSE_405);
+
+						await assertCertification({
+							canisterId,
+							pic,
+							request,
+							response,
+							currentDate,
+							statusCode: 405
+						});
+					}
+				);
+			}
+		);
+	});
 });

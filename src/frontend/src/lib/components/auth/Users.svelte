@@ -1,7 +1,7 @@
 <script lang="ts">
 	import type { Principal } from '@dfinity/principal';
 	import { isNullish, nonNullish } from '@dfinity/utils';
-	import { getContext, onMount, setContext } from 'svelte';
+	import { getContext, setContext, untrack } from 'svelte';
 	import User from '$lib/components/auth/User.svelte';
 	import DataCount from '$lib/components/data/DataCount.svelte';
 	import DataPaginator from '$lib/components/data/DataPaginator.svelte';
@@ -10,6 +10,7 @@
 	import { i18n } from '$lib/stores/i18n.store';
 	import { initPaginationContext } from '$lib/stores/pagination.store';
 	import { toasts } from '$lib/stores/toasts.store';
+	import { versionStore } from '$lib/stores/version.store';
 	import { PAGINATION_CONTEXT_KEY, type PaginationContext } from '$lib/types/pagination.context';
 	import type { User as UserType } from '$lib/types/user';
 
@@ -21,6 +22,13 @@
 
 	const list = async () => {
 		if (isNullish(satelliteId)) {
+			setItems({ items: undefined, matches_length: undefined, items_length: undefined });
+			return;
+		}
+
+		const version = $versionStore?.satellites[satelliteId.toText()]?.current;
+
+		if (isNullish(version)) {
 			setItems({ items: undefined, matches_length: undefined, items_length: undefined });
 			return;
 		}
@@ -52,7 +60,13 @@
 		startAfter
 	}: PaginationContext<UserType> = getContext<PaginationContext<UserType>>(PAGINATION_CONTEXT_KEY);
 
-	onMount(async () => await list());
+	$effect(() => {
+		$versionStore;
+
+		untrack(() => {
+			list();
+		});
+	});
 
 	let empty = $derived($paginationStore.items?.length === 0);
 

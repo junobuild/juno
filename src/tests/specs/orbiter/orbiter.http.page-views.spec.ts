@@ -143,6 +143,28 @@ describe('Orbiter > HTTP > Page views', () => {
 					expect(fromNullable(response.upgrade)).toBeUndefined();
 				});
 
+				it.each([
+					['invalid payload', { ...pageView, key: 'invalid' }],
+					['unknown satellite id', { ...pageView, satellite_id: 'nkzsw-gyaaa-aaaal-ada3a-cai' }]
+					// eslint-disable-next-line local-rules/prefer-object-params
+				])('should not upgrade http_request for %s', async (_title, payload) => {
+					const { http_request } = actor;
+
+					const request: HttpRequest = {
+						body: toBodyJson(payload),
+						certificate_version: toNullable(2),
+						headers: [],
+						method: 'POST',
+						url: '/view'
+					};
+
+					const response = await http_request(request);
+
+					expect(fromNullable(response.upgrade)).toBeUndefined();
+
+					expect(response.status_code).toEqual(404);
+				});
+
 				it('should not set a page view with invalid satellite id', async () => {
 					const { http_request_update } = actor;
 
@@ -288,6 +310,39 @@ describe('Orbiter > HTTP > Page views', () => {
 					const response = await http_request(request);
 
 					expect(fromNullable(response.upgrade)).toBeUndefined();
+				});
+
+				it.each([
+					[
+						'invalid payload',
+						{
+							...pagesViews,
+							page_views: [
+								{
+									...pagesViews.page_views[0],
+									key: 'invalid'
+								}
+							]
+						}
+					],
+					['unknown satellite id', { ...pagesViews, satellite_id: 'nkzsw-gyaaa-aaaal-ada3a-cai' }]
+					// eslint-disable-next-line local-rules/prefer-object-params
+				])('should not upgrade http_request for %s', async (_title, payload) => {
+					const { http_request } = actor;
+
+					const request: HttpRequest = {
+						body: toBodyJson(payload),
+						certificate_version: toNullable(2),
+						headers: [],
+						method: 'POST',
+						url: '/views'
+					};
+
+					const response = await http_request(request);
+
+					expect(fromNullable(response.upgrade)).toBeUndefined();
+
+					expect(response.status_code).toEqual(404);
 				});
 
 				it('should not set page views with invalid satellite id', async () => {

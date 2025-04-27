@@ -143,6 +143,31 @@ describe('Orbiter > HTTP > Performance metrics', () => {
 					expect(fromNullable(response.upgrade)).toBeUndefined();
 				});
 
+				it.each([
+					['invalid payload', { ...performanceMetric, key: 'invalid' }],
+					[
+						'unknown satellite id',
+						{ ...performanceMetric, satellite_id: 'nkzsw-gyaaa-aaaal-ada3a-cai' }
+					]
+					// eslint-disable-next-line local-rules/prefer-object-params
+				])('should not upgrade http_request for %s', async (_title, payload) => {
+					const { http_request } = actor;
+
+					const request: HttpRequest = {
+						body: toBodyJson(payload),
+						certificate_version: toNullable(2),
+						headers: [],
+						method: 'POST',
+						url: '/metric'
+					};
+
+					const response = await http_request(request);
+
+					expect(fromNullable(response.upgrade)).toBeUndefined();
+
+					expect(response.status_code).toEqual(404);
+				});
+
 				it('should not set a performance metric with invalid satellite id', async () => {
 					const { http_request_update } = actor;
 
@@ -290,6 +315,42 @@ describe('Orbiter > HTTP > Performance metrics', () => {
 					const response = await http_request(request);
 
 					expect(fromNullable(response.upgrade)).toBeUndefined();
+				});
+
+				it.each([
+					[
+						'invalid payload',
+						{
+							...performanceMetrics,
+							page_views: [
+								{
+									...performanceMetrics.performance_metrics[0],
+									key: 'invalid'
+								}
+							]
+						}
+					],
+					[
+						'unknown satellite id',
+						{ ...performanceMetrics, satellite_id: 'nkzsw-gyaaa-aaaal-ada3a-cai' }
+					]
+					// eslint-disable-next-line local-rules/prefer-object-params
+				])('should not upgrade http_request for %s', async (_title, payload) => {
+					const { http_request } = actor;
+
+					const request: HttpRequest = {
+						body: toBodyJson(payload),
+						certificate_version: toNullable(2),
+						headers: [],
+						method: 'POST',
+						url: '/metrics'
+					};
+
+					const response = await http_request(request);
+
+					expect(fromNullable(response.upgrade)).toBeUndefined();
+
+					expect(response.status_code).toEqual(404);
 				});
 
 				it('should not set pperformance metrics with invalid satellite id', async () => {

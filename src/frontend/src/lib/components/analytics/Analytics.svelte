@@ -19,8 +19,8 @@
 	import { orbiterFeatures } from '$lib/derived/orbiter-satellites.derived';
 	import { orbiterStore } from '$lib/derived/orbiter.derived';
 	import { satelliteStore } from '$lib/derived/satellite.derived';
+	import { getAnalyticsPageViewsPerDay } from '$lib/services/orbiter.paginated.services';
 	import {
-		getAnalyticsPageViews,
 		getAnalyticsPerformanceMetrics,
 		getAnalyticsTrackEvents,
 		loadOrbiterConfigs
@@ -32,7 +32,7 @@
 	import type {
 		AnalyticsPageViews as AnalyticsPageViewsType,
 		PageViewsParams,
-		PageViewsPeriod
+		PageViewsOptionPeriod
 	} from '$lib/types/ortbiter';
 
 	let loading: 'in_progress' | 'success' | 'error' = $state('in_progress');
@@ -41,7 +41,7 @@
 	let trackEvents: AnalyticsTrackEvents | undefined = $state(undefined);
 	let performanceMetrics: AnalyticsWebVitalsPerformanceMetrics | undefined = $state(undefined);
 
-	let period: PageViewsPeriod = $state({
+	let period: PageViewsOptionPeriod = $state({
 		from: addMonths(new Date(), -1)
 	});
 
@@ -66,17 +66,25 @@
 			return;
 		}
 
+		const { from, ...restPeriod } = period;
+
+		if (isNullish(from)) {
+			toasts.warn($i18n.analytics.warn_no_from);
+			return;
+		}
+
 		try {
 			const params: PageViewsParams = {
 				satelliteId: $satelliteStore?.satellite_id,
 				orbiterId: $orbiterStore.orbiter_id,
 				identity: $authStore.identity,
-				...period
+				from,
+				...restPeriod
 			};
 
 			// We need the page views to display some statistics currently
 			const promises = [
-				getAnalyticsPageViews({ params, orbiterVersion: $versionStore.orbiter.current }),
+				getAnalyticsPageViewsPerDay({ params, orbiterVersion: $versionStore.orbiter.current }),
 				...[
 					$orbiterFeatures?.track_events === true
 						? getAnalyticsTrackEvents({ params, orbiterVersion: $versionStore.orbiter.current })
@@ -116,7 +124,7 @@
 		$orbiterStore, $satelliteStore, $versionStore, period, debouncePageViews();
 	});
 
-	const selectPeriod = (detail: PageViewsPeriod) => (period = detail);
+	const selectPeriod = (detail: PageViewsOptionPeriod) => (period = detail);
 </script>
 
 {#if loading === 'in_progress'}

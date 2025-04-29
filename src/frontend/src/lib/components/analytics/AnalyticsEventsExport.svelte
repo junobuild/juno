@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { jsonReplacer } from '@dfinity/utils';
+	import { isNullish, jsonReplacer } from '@dfinity/utils';
 	import type { Orbiter } from '$declarations/mission_control/mission_control.did';
 	import { getTrackEvents } from '$lib/api/orbiter.api';
 	import { satelliteStore } from '$lib/derived/satellite.derived';
@@ -7,11 +7,11 @@
 	import { busy } from '$lib/stores/busy.store';
 	import { i18n } from '$lib/stores/i18n.store';
 	import { toasts } from '$lib/stores/toasts.store';
-	import type { PageViewsParams, PageViewsPeriod } from '$lib/types/ortbiter';
+	import type { PageViewsParams, PageViewsOptionPeriod } from '$lib/types/ortbiter';
 	import { filenameTimestamp, JSON_PICKER_OPTIONS, saveToFileSystem } from '$lib/utils/save.utils';
 
 	interface Props {
-		period?: PageViewsPeriod;
+		period?: PageViewsOptionPeriod;
 		orbiter: Orbiter;
 	}
 
@@ -21,11 +21,19 @@
 		busy.start();
 
 		try {
+			const { from, ...restPeriod } = period;
+
+			if (isNullish(from)) {
+				toasts.warn($i18n.analytics.warn_no_from);
+				return;
+			}
+
 			const params: PageViewsParams = {
 				satelliteId: $satelliteStore?.satellite_id,
 				orbiterId: orbiter.orbiter_id,
 				identity: $authStore.identity,
-				...period
+				from,
+				...restPeriod
 			};
 
 			const trackEvents = await getTrackEvents(params);

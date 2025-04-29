@@ -391,6 +391,7 @@ interface I18nAnalytics {
 	page_views: string;
 	configuration_description: string;
 	tracked_metrics: string;
+	warn_no_from: string;
 }
 
 interface I18nHosting {

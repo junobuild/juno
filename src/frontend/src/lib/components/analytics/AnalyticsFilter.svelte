@@ -5,10 +5,10 @@
 	import AnalyticsToolbar from '$lib/components/analytics/AnalyticsToolbar.svelte';
 	import Value from '$lib/components/ui/Value.svelte';
 	import { i18n } from '$lib/stores/i18n.store';
-	import type { PageViewsPeriod } from '$lib/types/ortbiter';
+	import type { PageViewsOptionPeriod } from '$lib/types/ortbiter';
 
 	interface Props {
-		selectPeriod: (period: PageViewsPeriod) => void;
+		selectPeriod: (period: PageViewsOptionPeriod) => void;
 	}
 
 	let { selectPeriod }: Props = $props();

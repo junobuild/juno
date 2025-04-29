@@ -16,6 +16,7 @@ type AnalyticsDevicesPageViews = record {
   mobile : float64;
 };
 type AnalyticsMetricsPageViews = record {
+  total_sessions : opt nat64;
   bounce_rate : float64;
   average_page_views_per_session : float64;
   daily_total_page_views : vec record { CalendarDate; nat32 };

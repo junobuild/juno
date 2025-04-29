@@ -10,9 +10,11 @@ import type { Principal } from '@dfinity/principal';
 import type { PrincipalText } from '@dfinity/zod-schemas';
 
 export interface PageViewsPeriod {
-	from?: Date;
+	from: Date;
 	to?: Date;
 }
+
+export type PageViewsOptionPeriod = Partial<PageViewsPeriod>;
 
 export type PageViewsParams = {
 	satelliteId?: Principal;

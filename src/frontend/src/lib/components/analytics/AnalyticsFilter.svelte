@@ -9,11 +9,14 @@
 	import SpinnerParagraph from '$lib/components/ui/SpinnerParagraph.svelte';
 	import Value from '$lib/components/ui/Value.svelte';
 	import { i18n } from '$lib/stores/i18n.store';
-	import type { PageViewsOptionPeriod, AnalyticsPeriodicity } from '$lib/types/ortbiter';
+	import type {
+		PageViewsOptionPeriod,
+		AnalyticsPeriodicity as AnalyticsPeriodicityType
+	} from '$lib/types/ortbiter';
 
 	interface Props {
 		selectPeriod: (period: PageViewsOptionPeriod) => void;
-		selectPeriodicity: (periodicity: AnalyticsPeriodicity) => void;
+		selectPeriodicity: (periodicity: AnalyticsPeriodicityType) => void;
 		loadAnalytics: () => Promise<void>;
 	}
 
@@ -35,7 +38,7 @@
 		dirty = true;
 	};
 
-	const onPeriodicityChange = (periodicity: AnalyticsPeriodicity) => {
+	const onPeriodicityChange = (periodicity: AnalyticsPeriodicityType) => {
 		selectPeriodicity(periodicity);
 
 		dirty = true;

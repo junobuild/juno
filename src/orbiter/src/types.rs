@@ -60,6 +60,13 @@ pub mod interface {
         pub satellite_id: Option<SatelliteId>,
         pub from: Option<Timestamp>,
         pub to: Option<Timestamp>,
+        pub method: Option<AnalyticsMethod>,
+    }
+
+    #[derive(CandidType, Deserialize, Clone)]
+    pub enum AnalyticsMethod {
+        Precomputed,
+        Raw,        
     }
 
     #[derive(CandidType, Deserialize, Clone)]

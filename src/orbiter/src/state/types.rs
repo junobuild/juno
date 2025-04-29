@@ -9,6 +9,7 @@ pub mod state {
     };
     use serde::{Deserialize, Serialize};
     use std::collections::HashMap;
+    use crate::state::types::state::analytics::{DailyPageViewsStable, DailySessionViewsStable, SatellitesDailyPageViewsStable, SatellitesDailySessionViewsStable};
 
     #[derive(Serialize, Deserialize)]
     pub struct State {
@@ -40,6 +41,11 @@ pub mod state {
         pub satellites_page_views: SatellitesPageViewsStable,
         pub satellites_track_events: SatellitesTrackEventsStable,
         pub satellites_performance_metrics: SatellitesPerformanceMetricsStable,
+        
+        pub daily_page_views: DailyPageViewsStable,
+        pub satellites_daily_page_views: SatellitesDailyPageViewsStable,
+        pub daily_session_views: DailySessionViewsStable,
+        pub satellites_daily_session_views: SatellitesDailySessionViewsStable,
     }
 
     pub type SatelliteConfig = OrbiterSatelliteConfig;
@@ -139,6 +145,61 @@ pub mod state {
         BackForwardCache,
         Prerender,
         Restore,
+    }
+    
+    pub mod analytics {
+        use std::collections::HashSet;
+        use candid::{CandidType, Deserialize};
+        use ic_stable_structures::StableBTreeMap;
+        use serde::Serialize;
+        use junobuild_shared::types::memory::Memory;
+        use junobuild_shared::types::state::{SatelliteId, Timestamp, Version};
+        use crate::state::types::state::SessionId;
+
+        pub type DailyPageViewsStable = StableBTreeMap<DailyAnalyticKey, DailyPageViews, Memory>;
+        pub type SatellitesDailyPageViewsStable = StableBTreeMap<DailyAnalyticSatelliteKey, DailyAnalyticKey, Memory>;
+        pub type DailySessionViewsStable = StableBTreeMap<DailySessionsAnalyticKey, DailySessionViews, Memory>;
+        pub type SatellitesDailySessionViewsStable = StableBTreeMap<DailySessionsAnalyticSatelliteKey, DailySessionsAnalyticKey, Memory>;
+
+        pub type StartOfDayKey = Timestamp;
+
+        #[derive(CandidType, Serialize, Deserialize, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
+        pub struct DailyAnalyticKey {
+            pub start_of_day: Timestamp,
+        }
+
+        #[derive(CandidType, Serialize, Deserialize, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
+        pub struct DailyAnalyticSatelliteKey {
+            pub satellite_id: SatelliteId,
+            pub start_of_day: Timestamp,
+        }
+
+        #[derive(CandidType, Serialize, Deserialize, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
+        pub struct DailySessionsAnalyticKey {
+            pub start_of_day: Timestamp,
+            pub session_id: SessionId,
+        }
+        
+        #[derive(CandidType, Serialize, Deserialize, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
+        pub struct DailySessionsAnalyticSatelliteKey {
+            pub satellite_id: SatelliteId,
+            pub start_of_day: Timestamp,
+            pub session_id: SessionId,
+        }
+        
+        #[derive(CandidType, Serialize, Deserialize, Clone)]
+        pub struct DailyPageViews {
+            pub count: u32,
+            pub version: Option<Version>,
+        }
+
+        #[derive(CandidType, Serialize, Deserialize, Clone)]
+        pub struct DailySessionViews {
+            pub count: u32,
+            pub hrefs: HashSet<String>,
+            pub version: Option<Version>,
+        }
+        
     }
 }
 

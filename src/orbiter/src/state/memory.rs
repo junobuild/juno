@@ -6,12 +6,18 @@ use junobuild_shared::types::memory::Memory;
 use std::cell::RefCell;
 
 const UPGRADES: MemoryId = MemoryId::new(0);
+
 const PAGE_VIEWS: MemoryId = MemoryId::new(1);
 const TRACK_EVENTS: MemoryId = MemoryId::new(2);
 const SATELLITES_PAGE_VIEWS: MemoryId = MemoryId::new(3);
 const SATELLITES_TRACK_EVENTS: MemoryId = MemoryId::new(4);
 const PERFORMANCE_METRICS: MemoryId = MemoryId::new(5);
 const SATELLITES_PERFORMANCE_METRICS: MemoryId = MemoryId::new(6);
+
+const DAILY_TOTAL_PAGE_VIEWS: MemoryId = MemoryId::new(100);
+const SATELLITES_DAILY_TOTAL_PAGE_VIEWS: MemoryId = MemoryId::new(101);
+const DAILY_SESSIONS: MemoryId = MemoryId::new(102);
+const SATELLITES_DAILY_SESSIONS: MemoryId = MemoryId::new(103);
 
 thread_local! {
     pub static STATE: RefCell<State> = RefCell::default();
@@ -38,5 +44,9 @@ pub fn init_stable_state() -> StableState {
         satellites_performance_metrics: StableBTreeMap::init(get_memory(
             SATELLITES_PERFORMANCE_METRICS,
         )),
+        daily_page_views: StableBTreeMap::init(get_memory(DAILY_TOTAL_PAGE_VIEWS)),
+        satellites_daily_page_views: StableBTreeMap::init(get_memory(SATELLITES_DAILY_TOTAL_PAGE_VIEWS)),
+        daily_session_views: StableBTreeMap::init(get_memory(DAILY_SESSIONS)),
+        satellites_daily_session_views: StableBTreeMap::init(get_memory(SATELLITES_DAILY_SESSIONS)),
     }
 }

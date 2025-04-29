@@ -8,6 +8,7 @@ pub fn filter_analytics(
         from,
         to,
         satellite_id: _,
+        method: _
     }: &GetAnalytics,
 ) -> impl RangeBounds<AnalyticKey> {
     let start_key = AnalyticKey {
@@ -28,6 +29,7 @@ pub fn filter_satellites_analytics(
         from,
         to,
         satellite_id: _,
+        method: _
     }: &GetAnalytics,
     satellite_id: SatelliteId,
 ) -> impl RangeBounds<AnalyticSatelliteKey> {

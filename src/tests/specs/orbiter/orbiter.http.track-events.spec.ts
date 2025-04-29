@@ -17,7 +17,6 @@ import {
 	type TrackEventPayload,
 	trackEventPayloadMock
 } from '../../mocks/orbiter.mocks';
-import { assertCertification } from '../../utils/certification-test.utils';
 import { toBodyJson } from '../../utils/orbiter-test.utils';
 import { tick } from '../../utils/pic-tests.utils';
 import { controllersInitArgs, ORBITER_WASM_PATH } from '../../utils/setup-tests.utils';
@@ -333,7 +332,7 @@ describe('Orbiter > HTTP > Track events', () => {
 					['empty payload', { satellite_id: trackEvents.satellite_id, performanceMetrics: [] }],
 					['unknown satellite id', { ...trackEvents, satellite_id: 'nkzsw-gyaaa-aaaal-ada3a-cai' }]
 					// eslint-disable-next-line local-rules/prefer-object-params
-				])('should not upgrade http_request for %s', async (_title, payload) => {
+				])('should upgrade http_request for %s', async (_title, payload) => {
 					const { http_request } = actor;
 
 					const request: HttpRequest = {
@@ -346,18 +345,7 @@ describe('Orbiter > HTTP > Track events', () => {
 
 					const response = await http_request(request);
 
-					expect(fromNullable(response.upgrade)).toBeUndefined();
-
-					expect(response.status_code).toEqual(400);
-
-					await assertCertification({
-						canisterId,
-						pic,
-						request,
-						response,
-						currentDate,
-						statusCode: 400
-					});
+					expect(fromNullable(response.upgrade)).toBeTruthy();
 				});
 
 				it('should not set track events with invalid satellite id', async () => {

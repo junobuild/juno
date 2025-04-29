@@ -4,7 +4,7 @@ import type {
 } from '$declarations/orbiter/orbiter.did';
 import { getAnalyticsPageViews } from '$lib/services/orbiters.services';
 import type { AnalyticsPageViews, PageViewsParams } from '$lib/types/ortbiter';
-import { fromNullable, isNullish, toNullable } from '@dfinity/utils';
+import { isNullish } from '@dfinity/utils';
 import { eachHourOfInterval } from 'date-fns';
 
 export const getAnalyticsPageViewsPerDay = async ({
@@ -16,7 +16,7 @@ export const getAnalyticsPageViewsPerDay = async ({
 }): Promise<AnalyticsPageViews> => {
 	const periods = buildPeriods({ params });
 
-	const dailyMetrics = await getDailyAnalyticsPageViews({
+	const dailyMetrics = await getAnalyticsPageViewsForPeriods({
 		orbiterVersion,
 		params,
 		periods
@@ -179,27 +179,24 @@ const aggregateMetrics = ({
 				return (ratePeriod * sessionsPeriod + averageRate * totalSessions) / total;
 			};
 
-			const totalSessionsPeriod = fromNullable(totalSessions);
-			const totalSessionsAcc = fromNullable(accTotalSessions);
-
 			return {
 				...metrics,
 				bounce_rate: average({
-					totalSessions: Number(totalSessionsAcc ?? accUniqueSessions),
+					totalSessions: Number(accTotalSessions ?? accUniqueSessions),
 					averageRate: accBounceRate,
 					ratePeriod: bounceRate,
-					sessionsPeriod: Number(totalSessionsPeriod ?? uniqueSessions)
+					sessionsPeriod: Number(totalSessions ?? uniqueSessions)
 				}),
 				average_page_views_per_session: average({
-					totalSessions: Number(totalSessionsAcc ?? accUniqueSessions),
+					totalSessions: Number(accTotalSessions ?? accUniqueSessions),
 					averageRate: accAveragePageViewsPerSessions,
 					ratePeriod: averagePageViewsPerSessions,
-					sessionsPeriod: Number(totalSessionsPeriod ?? uniqueSessions)
+					sessionsPeriod: Number(totalSessions ?? uniqueSessions)
 				}),
 				total_page_views: accTotalPageViews + totalPageViews,
 				unique_page_views: accUniquePageViews + uniquePageViews,
 				unique_sessions: accUniqueSessions + uniqueSessions,
-				total_sessions: toNullable((totalSessionsAcc ?? 0n) + (totalSessionsPeriod ?? 0n)),
+				total_sessions: (accTotalSessions ?? 0n) + (totalSessions ?? 0n),
 				daily_total_page_views: {
 					...acc.daily_total_page_views,
 					...metrics.daily_total_page_views
@@ -210,7 +207,7 @@ const aggregateMetrics = ({
 	return { metrics };
 };
 
-const getDailyAnalyticsPageViews = async ({
+const getAnalyticsPageViewsForPeriods = async ({
 	orbiterVersion,
 	params,
 	periods

@@ -91,7 +91,7 @@ pub fn analytics_page_views_metrics(
 
     AnalyticsMetricsPageViews {
         daily_total_page_views,
-        total_sessions: Some(total_sessions),
+        total_sessions,
         unique_sessions: unique_sessions_count,
         unique_page_views,
         total_page_views,

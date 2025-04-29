@@ -17,7 +17,7 @@
 	interface Props {
 		selectPeriod: (period: PageViewsOptionPeriod) => void;
 		selectPeriodicity: (periodicity: AnalyticsPeriodicityType) => void;
-		loadAnalytics: () => Promise<void>;
+		loadAnalytics: () => Promise<{ result: 'ok' | 'error' | 'skip' }>;
 	}
 
 	let { selectPeriod, selectPeriodicity, loadAnalytics }: Props = $props();
@@ -26,8 +26,7 @@
 	let to = $state('');
 
 	let dirty = $state(false);
-	let status = $state<'idle' | 'loading' | 'loaded'>('idle');
-	let loading = $derived(status === 'loading');
+	let loading = $state(false);
 
 	const onChange = () => {
 		selectPeriod({
@@ -47,15 +46,17 @@
 	afterNavigate(() => (dirty = true));
 
 	const applyFilters = async () => {
-		status = 'loading';
+		loading = true;
 
-		await loadAnalytics();
+		const { result } = await loadAnalytics();
 
-		status = 'loaded';
-		setTimeout(() => {
-			status = 'idle';
-			dirty = false;
-		}, 1500);
+		loading = false;
+
+		if (result === 'error') {
+			return;
+		}
+
+		dirty = false;
 	};
 </script>
 
@@ -105,41 +106,22 @@
 				</Value>
 			</div>
 
-			<AnalyticsPeriodicity selectPeriodicity={onPeriodicityChange} />
+			<AnalyticsPeriodicity selectPeriodicity={onPeriodicityChange} disabled={loading} />
 		</div>
 	{/snippet}
 </AnalyticsToolbar>
 
 {#if dirty}
-	<div class="toolbar" transition:slide>
-		{#if status !== 'idle'}
-			<div class="loading">
-				{#if status === 'loading'}
-					<SpinnerParagraph>{$i18n.analytics.loading}</SpinnerParagraph>
-				{:else if status === 'loaded'}
-					<span class="loaded" in:fade>{$i18n.analytics.analytics_updated}</span>
-				{/if}
-			</div>
-		{:else if !loading}
+	<div class="toolbar" class:loading transition:slide>
+		{#if !loading}
 			<button type="button" onclick={applyFilters}>{$i18n.core.apply}</button>
 		{/if}
 	</div>
 {/if}
 
 <style lang="scss">
-	.toolbar {
+	.toolbar:not(.loading) {
 		margin: 0 0 var(--padding-4x);
-	}
-
-	.loading {
-		display: block;
-		padding: 0 0 calc(var(--padding-1_5x) - 1px);
-	}
-
-	.loaded {
-		display: inline-block;
-		font-size: var(--font-size-small);
-		padding: var(--padding-3x) 0 0;
 	}
 
 	.end {

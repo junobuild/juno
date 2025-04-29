@@ -11,9 +11,10 @@
 
 	interface Props {
 		selectPeriodicity: (periodicity: AnalyticsPeriodicity) => void;
+		disabled: boolean;
 	}
 
-	let { selectPeriodicity }: Props = $props();
+	let { selectPeriodicity, disabled }: Props = $props();
 
 	let visible: boolean = $state(false);
 
@@ -38,7 +39,7 @@
 	};
 </script>
 
-<button class="square" onclick={open}>
+<button class="square" onclick={open} {disabled}>
 	<IconTune />
 	<span class="visually-hidden">{$i18n.analytics.adjust_periodicity}</span>
 </button>

@@ -380,7 +380,7 @@
 		"configuration_description": "选择你想跟踪分析的 Satellites .",
 		"tracked_metrics": "跟踪指标",
 		"warn_no_from": "To filter the analytics, a start date must be set. Please select one.",
-		"analytics_updated": "Analytics updated ✅",
+		"analytics_updated": "Analytics updated",
 		"adjust_periodicity": "Adjust periodicity",
 		"periodicity": "Periodicity",
 		"four_hours": "4 hours",

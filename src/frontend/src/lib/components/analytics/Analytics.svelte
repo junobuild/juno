@@ -34,7 +34,7 @@
 		PageViewsOptionPeriod,
 		AnalyticsPeriodicity
 	} from '$lib/types/ortbiter';
-	import {getLocalStorageAnalyticsPeriodicity} from "$lib/utils/local-storage.utils";
+	import { getLocalStorageAnalyticsPeriodicity } from '$lib/utils/local-storage.utils';
 
 	let loading: 'in_progress' | 'success' | 'error' = $state('in_progress');
 

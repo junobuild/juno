@@ -1,10 +1,13 @@
 <script lang="ts">
 	import IconTune from '$lib/components/icons/IconTune.svelte';
 	import Popover from '$lib/components/ui/Popover.svelte';
-	import { i18n } from '$lib/stores/i18n.store';
 	import Value from '$lib/components/ui/Value.svelte';
+	import { i18n } from '$lib/stores/i18n.store';
 	import type { AnalyticsPeriodicity } from '$lib/types/ortbiter';
-	import {getLocalStorageAnalyticsPeriodicity, setLocalStorageItem} from '$lib/utils/local-storage.utils';
+	import {
+		getLocalStorageAnalyticsPeriodicity,
+		setLocalStorageItem
+	} from '$lib/utils/local-storage.utils';
 
 	interface Props {
 		selectPeriodicity: (periodicity: AnalyticsPeriodicity) => void;
@@ -52,6 +55,7 @@
 				<option value={12}> {$i18n.analytics.half_day} </option>
 				<option value={24}> {$i18n.analytics.one_day} </option>
 				<option value={168}> {$i18n.analytics.a_week} </option>
+				<option value={720}> {$i18n.analytics.a_month} </option>
 			</select>
 		</Value>
 

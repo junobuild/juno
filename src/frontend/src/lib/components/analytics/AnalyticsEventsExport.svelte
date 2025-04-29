@@ -7,12 +7,16 @@
 	import { busy } from '$lib/stores/busy.store';
 	import { i18n } from '$lib/stores/i18n.store';
 	import { toasts } from '$lib/stores/toasts.store';
-    import type {PageViewsParams, PageViewsOptionPeriod, AnalyticsPeriodicity} from '$lib/types/ortbiter';
+	import type {
+		PageViewsParams,
+		PageViewsOptionPeriod,
+		AnalyticsPeriodicity
+	} from '$lib/types/ortbiter';
 	import { filenameTimestamp, JSON_PICKER_OPTIONS, saveToFileSystem } from '$lib/utils/save.utils';
 
 	interface Props {
 		period?: PageViewsOptionPeriod;
-        periodicity: AnalyticsPeriodicity;
+		periodicity: AnalyticsPeriodicity;
 		orbiter: Orbiter;
 	}
 
@@ -33,7 +37,7 @@
 				satelliteId: $satelliteStore?.satellite_id,
 				orbiterId: orbiter.orbiter_id,
 				identity: $authStore.identity,
-                ...periodicity,
+				...periodicity,
 				from,
 				...restPeriod
 			};

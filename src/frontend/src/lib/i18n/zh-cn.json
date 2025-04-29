@@ -388,6 +388,7 @@
 		"half_day": "Half day",
 		"one_day": "1 day",
 		"a_week": "A week",
+		"a_month": "A month",
 		"why_periodicity": "The Console gathers analytics using pagination — it fetches data between your selected dates based on a time interval, which can range from a few hours up to a week. If you experience issues collecting data due to a high volume of views and events (first, congratulations!), you can try adjusting the interval to improve reliability.",
 		"periodicity_impact": "Keep in mind that smaller intervals mean more queries — leading to higher load on your Orbiter and extra work for the UI."
 	},

@@ -3,13 +3,13 @@
 	import { addMonths, format } from 'date-fns';
 	import { slide, fade } from 'svelte/transition';
 	import { afterNavigate } from '$app/navigation';
+	import AnalyticsPeriodicity from '$lib/components/analytics/AnalyticsPeriodicity.svelte';
 	import AnalyticsSatellitesPicker from '$lib/components/analytics/AnalyticsSatellitesPicker.svelte';
 	import AnalyticsToolbar from '$lib/components/analytics/AnalyticsToolbar.svelte';
 	import SpinnerParagraph from '$lib/components/ui/SpinnerParagraph.svelte';
 	import Value from '$lib/components/ui/Value.svelte';
 	import { i18n } from '$lib/stores/i18n.store';
-	import type {PageViewsOptionPeriod, AnalyticsPeriodicity} from '$lib/types/ortbiter';
-	import AnalyticsPeriodicity from "$lib/components/analytics/AnalyticsPeriodicity.svelte";
+	import type { PageViewsOptionPeriod, AnalyticsPeriodicity } from '$lib/types/ortbiter';
 
 	interface Props {
 		selectPeriod: (period: PageViewsOptionPeriod) => void;
@@ -39,7 +39,7 @@
 		selectPeriodicity(periodicity);
 
 		dirty = true;
-	}
+	};
 
 	afterNavigate(() => (dirty = true));
 
@@ -91,7 +91,14 @@
 						{$i18n.core.to}
 					{/snippet}
 
-					<input bind:value={to} id="to" name="to" type="date" onchange={onChange} disabled={loading} />
+					<input
+						bind:value={to}
+						id="to"
+						name="to"
+						type="date"
+						onchange={onChange}
+						disabled={loading}
+					/>
 				</Value>
 			</div>
 

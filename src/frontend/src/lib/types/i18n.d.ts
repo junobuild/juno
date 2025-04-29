@@ -400,6 +400,7 @@ interface I18nAnalytics {
 	half_day: string;
 	one_day: string;
 	a_week: string;
+	a_month: string;
 	why_periodicity: string;
 	periodicity_impact: string;
 }

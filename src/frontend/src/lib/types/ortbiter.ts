@@ -16,11 +16,16 @@ export interface PageViewsPeriod {
 
 export type PageViewsOptionPeriod = Partial<PageViewsPeriod>;
 
+export interface AnalyticsPeriodicity {
+	periodicity: 4 | 8 | 12 | 24 | 168;
+}
+
 export type PageViewsParams = {
 	satelliteId?: Principal;
 	orbiterId: Principal;
 	identity: OptionIdentity;
-} & PageViewsPeriod;
+} & PageViewsPeriod &
+	AnalyticsPeriodicity;
 
 export type DateStartOfTheDay = string;
 

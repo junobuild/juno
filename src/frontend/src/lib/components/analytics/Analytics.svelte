@@ -31,8 +31,10 @@
 	import type {
 		AnalyticsPageViews as AnalyticsPageViewsType,
 		PageViewsParams,
-		PageViewsOptionPeriod
+		PageViewsOptionPeriod,
+		AnalyticsPeriodicity
 	} from '$lib/types/ortbiter';
+	import {getLocalStorageAnalyticsPeriodicity} from "$lib/utils/local-storage.utils";
 
 	let loading: 'in_progress' | 'success' | 'error' = $state('in_progress');
 
@@ -40,9 +42,11 @@
 	let trackEvents: AnalyticsTrackEvents | undefined = $state(undefined);
 	let performanceMetrics: AnalyticsWebVitalsPerformanceMetrics | undefined = $state(undefined);
 
-	let period: PageViewsOptionPeriod = $state({
+	let period = $state<PageViewsOptionPeriod>({
 		from: addMonths(new Date(), -1)
 	});
+
+	let periodicity = $state<AnalyticsPeriodicity>(getLocalStorageAnalyticsPeriodicity());
 
 	const loadAnalytics = async () => {
 		if (isNullish($orbiterStore)) {
@@ -77,6 +81,7 @@
 				satelliteId: $satelliteStore?.satellite_id,
 				orbiterId: $orbiterStore.orbiter_id,
 				identity: $authStore.identity,
+				...periodicity,
 				from,
 				...restPeriod
 			};
@@ -126,6 +131,7 @@
 	});
 
 	const selectPeriod = (detail: PageViewsOptionPeriod) => (period = detail);
+	const selectPeriodicity = (detail: AnalyticsPeriodicity) => (periodicity = detail);
 </script>
 
 {#if loading === 'in_progress'}
@@ -134,7 +140,7 @@
 	</div>
 {:else}
 	{#if nonNullish($orbiterStore)}
-		<AnalyticsFilter {selectPeriod} {loadAnalytics} />
+		<AnalyticsFilter {selectPeriod} {selectPeriodicity} {loadAnalytics} />
 	{/if}
 
 	{#if isNullish($orbiterStore) && loading === 'success'}
@@ -159,7 +165,7 @@
 
 			<AnalyticsEvents {trackEvents} />
 
-			<AnalyticsEventsExport orbiter={$orbiterStore} {period} />
+			<AnalyticsEventsExport orbiter={$orbiterStore} {period} {periodicity} />
 		{/if}
 	{/if}
 

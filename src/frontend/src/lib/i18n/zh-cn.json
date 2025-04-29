@@ -380,7 +380,16 @@
 		"configuration_description": "选择你想跟踪分析的 Satellites .",
 		"tracked_metrics": "跟踪指标",
 		"warn_no_from": "To filter the analytics, a start date must be set. Please select one.",
-		"analytics_updated": "Analytics updated ✅"
+		"analytics_updated": "Analytics updated ✅",
+		"adjust_periodicity": "Adjust periodicity",
+		"periodicity": "Periodicity",
+		"four_hours": "4 hours",
+		"eight_hours": "8 hours",
+		"half_day": "Half day",
+		"one_day": "1 day",
+		"a_week": "A week",
+		"why_periodicity": "The Console gathers analytics using pagination — it fetches data between your selected dates based on a time interval, which can range from a few hours up to a week. If you experience issues collecting data due to a high volume of views and events (first, congratulations!), you can try adjusting the interval to improve reliability.",
+		"periodicity_impact": "Keep in mind that smaller intervals mean more queries — leading to higher load on your Orbiter and extra work for the UI."
 	},
 	"hosting": {
 		"title": "网站托管",

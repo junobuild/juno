@@ -8,14 +8,16 @@
 	import SpinnerParagraph from '$lib/components/ui/SpinnerParagraph.svelte';
 	import Value from '$lib/components/ui/Value.svelte';
 	import { i18n } from '$lib/stores/i18n.store';
-	import type { PageViewsOptionPeriod } from '$lib/types/ortbiter';
+	import type {PageViewsOptionPeriod, AnalyticsPeriodicity} from '$lib/types/ortbiter';
+	import AnalyticsPeriodicity from "$lib/components/analytics/AnalyticsPeriodicity.svelte";
 
 	interface Props {
 		selectPeriod: (period: PageViewsOptionPeriod) => void;
+		selectPeriodicity: (periodicity: AnalyticsPeriodicity) => void;
 		loadAnalytics: () => Promise<void>;
 	}
 
-	let { selectPeriod, loadAnalytics }: Props = $props();
+	let { selectPeriod, selectPeriodicity, loadAnalytics }: Props = $props();
 
 	let from = $state(format(addMonths(new Date(), -1), 'yyyy-MM-dd'));
 	let to = $state('');
@@ -32,6 +34,12 @@
 
 		dirty = true;
 	};
+
+	const onPeriodicityChange = (periodicity: AnalyticsPeriodicity) => {
+		selectPeriodicity(periodicity);
+
+		dirty = true;
+	}
 
 	afterNavigate(() => (dirty = true));
 
@@ -76,13 +84,19 @@
 	{/snippet}
 
 	{#snippet end()}
-		<Value ref="to">
-			{#snippet label()}
-				{$i18n.core.to}
-			{/snippet}
+		<div class="end">
+			<div class="input">
+				<Value ref="to">
+					{#snippet label()}
+						{$i18n.core.to}
+					{/snippet}
 
-			<input bind:value={to} id="to" name="to" type="date" onchange={onChange} disabled={loading} />
-		</Value>
+					<input bind:value={to} id="to" name="to" type="date" onchange={onChange} disabled={loading} />
+				</Value>
+			</div>
+
+			<AnalyticsPeriodicity selectPeriodicity={onPeriodicityChange} />
+		</div>
 	{/snippet}
 </AnalyticsToolbar>
 
@@ -116,5 +130,16 @@
 		display: inline-block;
 		font-size: var(--font-size-small);
 		padding: var(--padding-3x) 0 0;
+	}
+
+	.end {
+		display: flex;
+		align-items: flex-end;
+
+		gap: var(--padding-2x);
+
+		.input {
+			width: 100%;
+		}
 	}
 </style>

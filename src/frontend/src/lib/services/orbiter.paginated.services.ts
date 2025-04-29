@@ -231,15 +231,19 @@ const getAnalyticsPageViewsForPeriods = async ({
 
 type Periods = Required<Pick<PageViewsParams, 'from' | 'to'>>[];
 
-const buildPeriods = ({ params }: { params: Pick<PageViewsParams, 'from' | 'to'> }): Periods => {
-	const { from, to } = params;
+const buildPeriods = ({
+	params
+}: {
+	params: Pick<PageViewsParams, 'from' | 'to' | 'periodicity'>;
+}): Periods => {
+	const { from, to, periodicity } = params;
 
 	const days = eachHourOfInterval(
 		{
 			start: from,
 			end: to ?? new Date()
 		},
-		{ step: 12 }
+		{ step: periodicity }
 	);
 
 	const periods = [];

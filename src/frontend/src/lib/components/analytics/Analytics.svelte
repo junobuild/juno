@@ -1,7 +1,6 @@
 <script lang="ts">
 	import { isNullish, nonNullish, debounce } from '@dfinity/utils';
 	import { addMonths } from 'date-fns';
-	import { run } from 'svelte/legacy';
 	import type {
 		AnalyticsTrackEvents,
 		AnalyticsWebVitalsPerformanceMetrics
@@ -117,11 +116,13 @@
 		}
 	};
 
-	const debouncePageViews = debounce(loadAnalytics);
+	const debounceLoadAnalytics = debounce(loadAnalytics);
 
-	run(() => {
-		// @ts-expect-error TODO: to be migrated to Svelte v5
-		$orbiterStore, $satelliteStore, $versionStore, period, debouncePageViews();
+	$effect(() => {
+		$orbiterStore;
+		$versionStore;
+
+		debounceLoadAnalytics();
 	});
 
 	const selectPeriod = (detail: PageViewsOptionPeriod) => (period = detail);
@@ -133,7 +134,7 @@
 	</div>
 {:else}
 	{#if nonNullish($orbiterStore)}
-		<AnalyticsFilter {selectPeriod} />
+		<AnalyticsFilter {selectPeriod} {loadAnalytics} />
 	{/if}
 
 	{#if isNullish($orbiterStore) && loading === 'success'}

@@ -379,7 +379,8 @@
 		"page_views": "Page views",
 		"configuration_description": "Select the Satellites you would like to track analytics for.",
 		"tracked_metrics": "Tracked metrics",
-		"warn_no_from": "To filter the analytics, a start date must be set. Please select one."
+		"warn_no_from": "To filter the analytics, a start date must be set. Please select one.",
+		"analytics_updated": "Analytics updated ✅"
 	},
 	"hosting": {
 		"title": "Hosting",

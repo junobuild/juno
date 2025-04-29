@@ -379,7 +379,8 @@
 		"page_views": "页面浏览",
 		"configuration_description": "选择你想跟踪分析的 Satellites .",
 		"tracked_metrics": "跟踪指标",
-		"warn_no_from": "To filter the analytics, a start date must be set. Please select one."
+		"warn_no_from": "To filter the analytics, a start date must be set. Please select one.",
+		"analytics_updated": "Analytics updated ✅"
 	},
 	"hosting": {
 		"title": "网站托管",

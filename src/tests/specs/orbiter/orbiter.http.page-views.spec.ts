@@ -17,7 +17,6 @@ import {
 	type SetPageViewRequest,
 	type SetPageViewsRequest
 } from '../../mocks/orbiter.mocks';
-import { assertCertification } from '../../utils/certification-test.utils';
 import { toBodyJson } from '../../utils/orbiter-test.utils';
 import { tick } from '../../utils/pic-tests.utils';
 import { controllersInitArgs, ORBITER_WASM_PATH } from '../../utils/setup-tests.utils';
@@ -152,7 +151,7 @@ describe('Orbiter > HTTP > Page views', () => {
 					['empty payload', { key: pageView.key, satellite_id: pageView.satellite_id }],
 					['unknown satellite id', { ...pageView, satellite_id: 'nkzsw-gyaaa-aaaal-ada3a-cai' }]
 					// eslint-disable-next-line local-rules/prefer-object-params
-				])('should not upgrade http_request for %s', async (_title, payload) => {
+				])('should upgrade http_request for %s', async (_title, payload) => {
 					const { http_request } = actor;
 
 					const request: HttpRequest = {
@@ -165,18 +164,7 @@ describe('Orbiter > HTTP > Page views', () => {
 
 					const response = await http_request(request);
 
-					expect(fromNullable(response.upgrade)).toBeUndefined();
-
-					expect(response.status_code).toEqual(400);
-
-					await assertCertification({
-						canisterId,
-						pic,
-						request,
-						response,
-						currentDate,
-						statusCode: 400
-					});
+					expect(fromNullable(response.upgrade)).toBeTruthy();
 				});
 
 				it('should not set a page view with invalid satellite id', async () => {
@@ -342,7 +330,7 @@ describe('Orbiter > HTTP > Page views', () => {
 					['empty payload', { satellite_id: pagesViews.satellite_id, page_views: [] }],
 					['unknown satellite id', { ...pagesViews, satellite_id: 'nkzsw-gyaaa-aaaal-ada3a-cai' }]
 					// eslint-disable-next-line local-rules/prefer-object-params
-				])('should not upgrade http_request for %s', async (_title, payload) => {
+				])('should upgrade http_request for %s', async (_title, payload) => {
 					const { http_request } = actor;
 
 					const request: HttpRequest = {
@@ -355,18 +343,7 @@ describe('Orbiter > HTTP > Page views', () => {
 
 					const response = await http_request(request);
 
-					expect(fromNullable(response.upgrade)).toBeUndefined();
-
-					expect(response.status_code).toEqual(400);
-
-					await assertCertification({
-						canisterId,
-						pic,
-						request,
-						response,
-						currentDate,
-						statusCode: 400
-					});
+					expect(fromNullable(response.upgrade)).toBeTruthy();
 				});
 
 				it('should not set page views with invalid satellite id', async () => {

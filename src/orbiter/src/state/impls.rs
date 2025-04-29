@@ -7,16 +7,15 @@ use crate::serializers::bounded::{
 use crate::serializers::constants::{ANALYTIC_KEY_MAX_SIZE, ANALYTIC_SATELLITE_KEY_MAX_SIZE};
 use crate::state::memory::init_stable_state;
 use crate::state::types::memory::{StoredPageView, StoredTrackEvent};
-use crate::state::types::state::{
-    AnalyticKey, AnalyticSatelliteKey, HeapState, PageView, PerformanceMetric, SatelliteConfigs,
-    State, TrackEvent,
-};
+use crate::state::types::state::{AnalyticKey, AnalyticSatelliteKey, HeapState, PageView, PerformanceMetric, SatelliteConfigs, SessionId, State, TrackEvent};
 use ciborium::from_reader;
 use ic_stable_structures::storable::Bound;
 use ic_stable_structures::Storable;
 use junobuild_shared::serializers::{deserialize_from_bytes, serialize_to_bytes};
 use junobuild_shared::types::state::{Controllers, SatelliteId, Version, Versioned};
 use std::borrow::Cow;
+use junobuild_shared::day::start_of_day;
+use crate::state::types::state::analytics::{DailyPageViews, DailyAnalyticKey, DailyAnalyticSatelliteKey, DailySessionViews, DailySessionsAnalyticKey, DailySessionsAnalyticSatelliteKey};
 
 impl Default for State {
     fn default() -> Self {
@@ -164,6 +163,90 @@ impl Storable for AnalyticSatelliteKey {
     };
 }
 
+impl Storable for DailyPageViews {
+    fn to_bytes(&self) -> Cow<[u8]> {
+        serialize_to_bytes(self)
+    }
+
+    fn from_bytes(bytes: Cow<[u8]>) -> Self {
+        deserialize_from_bytes(bytes)
+    }
+
+    const BOUND: Bound = Bound::Unbounded;
+}
+
+impl Storable for DailySessionViews {
+    fn to_bytes(&self) -> Cow<[u8]> {
+        serialize_to_bytes(self)
+    }
+
+    fn from_bytes(bytes: Cow<[u8]>) -> Self {
+        deserialize_from_bytes(bytes)
+    }
+
+    const BOUND: Bound = Bound::Unbounded;
+}
+
+impl Storable for DailyAnalyticKey {
+    fn to_bytes(&self) -> Cow<[u8]> {
+        serialize_to_bytes(self)
+    }
+
+    fn from_bytes(bytes: Cow<[u8]>) -> Self {
+        deserialize_from_bytes(bytes)
+    }
+
+    const BOUND: Bound = Bound::Unbounded;
+}
+
+impl Storable for DailyAnalyticSatelliteKey {
+    fn to_bytes(&self) -> Cow<[u8]> {
+        serialize_to_bytes(self)
+    }
+
+    fn from_bytes(bytes: Cow<[u8]>) -> Self {
+        deserialize_from_bytes(bytes)
+    }
+
+    const BOUND: Bound = Bound::Unbounded;
+}
+
+impl Storable for DailySessionsAnalyticKey {
+    fn to_bytes(&self) -> Cow<[u8]> {
+        serialize_to_bytes(self)
+    }
+
+    fn from_bytes(bytes: Cow<[u8]>) -> Self {
+        deserialize_from_bytes(bytes)
+    }
+
+    const BOUND: Bound = Bound::Unbounded;
+}
+
+impl Storable for DailySessionsAnalyticSatelliteKey {
+    fn to_bytes(&self) -> Cow<[u8]> {
+        serialize_to_bytes(self)
+    }
+
+    fn from_bytes(bytes: Cow<[u8]>) -> Self {
+        deserialize_from_bytes(bytes)
+    }
+
+    const BOUND: Bound = Bound::Unbounded;
+}
+
+impl Versioned for DailyPageViews {
+    fn version(&self) -> Option<Version> {
+        self.version
+    }
+}
+
+impl Versioned for DailySessionViews {
+    fn version(&self) -> Option<Version> {
+        self.version
+    }
+}
+
 // ---------------------------------------------------------
 // Key conversion
 // ---------------------------------------------------------
@@ -174,6 +257,42 @@ impl AnalyticSatelliteKey {
             satellite_id: *satellite_id,
             collected_at: key.collected_at,
             key: key.key.clone(),
+        }
+    }
+}
+
+impl DailyAnalyticKey {
+    pub fn from_analytic_key(key: &AnalyticKey) -> Result<Self, String> {
+        Ok(Self {
+            start_of_day: start_of_day(&key.collected_at)?,
+        })
+    }
+}
+
+impl DailySessionsAnalyticKey {
+    pub fn from_analytic_key_and_page_view(key: &AnalyticKey, page_view: &PageView) -> Result<Self, String> {
+        Ok(Self {
+            start_of_day: start_of_day(&key.collected_at)?,
+            session_id: page_view.session_id.clone(),
+        })
+    }
+}
+
+impl DailyAnalyticSatelliteKey {
+    pub fn from_key(key: &DailyAnalyticKey, satellite_id: &SatelliteId) -> Self {
+        DailyAnalyticSatelliteKey {
+            satellite_id: *satellite_id,
+            start_of_day: key.start_of_day,
+        }
+    }
+}
+
+impl DailySessionsAnalyticSatelliteKey {
+    pub fn from_key(key: &DailySessionsAnalyticKey, satellite_id: &SatelliteId, session_id: &SessionId) -> Self {
+        DailySessionsAnalyticSatelliteKey {
+            satellite_id: *satellite_id,
+            start_of_day: key.start_of_day,
+            session_id: session_id.clone(),
         }
     }
 }

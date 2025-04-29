@@ -1,4 +1,3 @@
-mod analytics;
 mod assert;
 mod config;
 mod constants;
@@ -12,8 +11,9 @@ mod msg;
 mod serializers;
 mod state;
 mod types;
+mod analytics;
 
-use crate::analytics::{
+use analytics::raw::{
     analytics_page_views_clients, analytics_page_views_metrics, analytics_page_views_top_10,
     analytics_performance_metrics_web_vitals, analytics_track_events,
 };

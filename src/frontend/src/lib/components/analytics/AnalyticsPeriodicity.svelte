@@ -1,5 +1,5 @@
 <script lang="ts">
-	import IconTune from '$lib/components/icons/IconTune.svelte';
+	import IconScience from '$lib/components/icons/IconScience.svelte';
 	import Popover from '$lib/components/ui/Popover.svelte';
 	import Value from '$lib/components/ui/Value.svelte';
 	import { i18n } from '$lib/stores/i18n.store';
@@ -40,7 +40,7 @@
 </script>
 
 <button class="square" onclick={open} {disabled}>
-	<IconTune />
+	<IconScience />
 	<span class="visually-hidden">{$i18n.analytics.adjust_periodicity}</span>
 </button>
 

@@ -1,12 +1,11 @@
 <script lang="ts">
 	import { nonNullish } from '@dfinity/utils';
 	import { addMonths, format } from 'date-fns';
-	import { slide, fade } from 'svelte/transition';
+	import { slide } from 'svelte/transition';
 	import { afterNavigate } from '$app/navigation';
 	import AnalyticsPeriodicity from '$lib/components/analytics/AnalyticsPeriodicity.svelte';
 	import AnalyticsSatellitesPicker from '$lib/components/analytics/AnalyticsSatellitesPicker.svelte';
 	import AnalyticsToolbar from '$lib/components/analytics/AnalyticsToolbar.svelte';
-	import SpinnerParagraph from '$lib/components/ui/SpinnerParagraph.svelte';
 	import Value from '$lib/components/ui/Value.svelte';
 	import { i18n } from '$lib/stores/i18n.store';
 	import type {

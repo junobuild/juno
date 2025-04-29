@@ -28,7 +28,7 @@
 		visible = true;
 	};
 
-	const handleSubmit = async ($event: SubmitEvent) => {
+	const handleSubmit = ($event: SubmitEvent) => {
 		$event.preventDefault();
 
 		selectPeriodicity({ periodicity });

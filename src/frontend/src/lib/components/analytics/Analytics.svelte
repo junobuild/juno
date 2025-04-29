@@ -16,6 +16,7 @@
 	import AnalyticsPerformanceMetrics from '$lib/components/analytics/AnalyticsPerformanceMetrics.svelte';
 	import NoAnalytics from '$lib/components/analytics/NoAnalytics.svelte';
 	import SpinnerParagraph from '$lib/components/ui/SpinnerParagraph.svelte';
+	import Warning from '$lib/components/ui/Warning.svelte';
 	import { orbiterFeatures } from '$lib/derived/orbiter-satellites.derived';
 	import { orbitersStore, orbiterStore } from '$lib/derived/orbiter.derived';
 	import { satelliteStore } from '$lib/derived/satellite.derived';
@@ -36,7 +37,6 @@
 		AnalyticsPeriodicity
 	} from '$lib/types/ortbiter';
 	import { getLocalStorageAnalyticsPeriodicity } from '$lib/utils/local-storage.utils';
-	import Warning from '$lib/components/ui/Warning.svelte';
 
 	let loadingOrbiter: 'in_progress' | 'done' | 'error' = $state('in_progress');
 	let reloadingAnalytics: 'idle' | 'in_progress' | 'loaded' | 'error' = $state('idle');

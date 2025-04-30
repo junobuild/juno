@@ -369,6 +369,8 @@ interface I18nAnalytics {
 	orbiter: string;
 	devices: string;
 	mobile: string;
+	tablet: string;
+	laptop: string;
 	desktop: string;
 	others: string;
 	browsers: string;

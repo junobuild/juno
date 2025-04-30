@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { i18n } from '$lib/stores/i18n.store';
 	import type { AnalyticsPageViews } from '$lib/types/orbiter';
+	import {nonNullish} from "@dfinity/utils";
 
 	interface Props {
 		pageViews: AnalyticsPageViews;
@@ -10,9 +11,9 @@
 
 	let { clients } = $derived(pageViews);
 
-	let { devices } = $derived(clients);
+	let { sizes } = $derived(clients);
 
-	let { desktop, mobile, others } = $derived(devices);
+	let { mobile, tablet, laptop, desktop } = $derived(sizes);
 </script>
 
 <div class="table-container">
@@ -30,12 +31,16 @@
 				<td>{mobile > 0 ? (mobile * 100).toFixed(2) : 0}<small>%</small></td>
 			</tr>
 			<tr>
-				<td>{$i18n.analytics.desktop}</td>
-				<td>{desktop > 0 ? (desktop * 100).toFixed(2) : 0}<small>%</small></td>
+				<td>{$i18n.analytics.tablet}</td>
+				<td>{tablet > 0 ? (tablet * 100).toFixed(2) : 0}<small>%</small></td>
 			</tr>
 			<tr>
-				<td>{$i18n.analytics.others}</td>
-				<td>{others > 0 ? (others * 100).toFixed(2) : 0}<small>%</small></td>
+				<td>{$i18n.analytics.laptop}</td>
+				<td>{laptop > 0 ? (laptop * 100).toFixed(2) : 0}<small>%</small></td>
+			</tr>
+			<tr>
+				<td>{$i18n.analytics.desktop}</td>
+				<td>{desktop > 0 ? (desktop * 100).toFixed(2) : 0}<small>%</small></td>
 			</tr>
 		</tbody>
 	</table>

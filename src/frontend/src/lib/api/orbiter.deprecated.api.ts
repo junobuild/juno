@@ -2,7 +2,10 @@ import type {
 	OrbiterSatelliteConfig as SatelliteConfig,
 	SetSatelliteConfig
 } from '$declarations/deprecated/orbiter-0-0-7.did';
-import type { AnalyticsMetricsPageViews } from '$declarations/deprecated/orbiter-0-0-8.did';
+import type {
+	AnalyticsClientsPageViews,
+	AnalyticsMetricsPageViews
+} from '$declarations/deprecated/orbiter-0-0-8.did';
 import { getOrbiterActor007, getOrbiterActor008 } from '$lib/api/actors/actor.deprecated.api';
 import type { OptionIdentity } from '$lib/types/itentity';
 import type { PageViewsParams } from '$lib/types/orbiter';
@@ -66,6 +69,24 @@ export const getAnalyticsMetricsPageViews008 = async ({
 }: PageViewsParams): Promise<AnalyticsMetricsPageViews> => {
 	const { get_page_views_analytics_metrics } = await getOrbiterActor008({ orbiterId, identity });
 	return await get_page_views_analytics_metrics({
+		satellite_id: toNullable(satelliteId),
+		from: nonNullish(from) ? [toBigIntNanoSeconds(from)] : [],
+		to: nonNullish(to) ? [toBigIntNanoSeconds(to)] : []
+	});
+};
+
+/**
+ * @deprecated total_sessions was introduced in v1.0.0
+ */
+export const getAnalyticsClientsPageViews008 = async ({
+	satelliteId,
+	orbiterId,
+	from,
+	to,
+	identity
+}: PageViewsParams): Promise<AnalyticsClientsPageViews> => {
+	const { get_page_views_analytics_clients } = await getOrbiterActor008({ orbiterId, identity });
+	return await get_page_views_analytics_clients({
 		satellite_id: toNullable(satelliteId),
 		from: nonNullish(from) ? [toBigIntNanoSeconds(from)] : [],
 		to: nonNullish(to) ? [toBigIntNanoSeconds(to)] : []

@@ -1,6 +1,6 @@
 import type {
 	AnalyticsBrowsersPageViews,
-	AnalyticsDevicesPageViews
+	AnalyticsOperatingSystemsPageViews, AnalyticsSizesPageViews
 } from '$declarations/orbiter/orbiter.did';
 import { getAnalyticsPageViews } from '$lib/services/orbiters.services';
 import type { AnalyticsPageViews, PageViewsParams } from '$lib/types/orbiter';
@@ -87,10 +87,20 @@ const aggregateClients = ({
 		others: 0
 	};
 
-	const devicesSum: Record<string, number> = {
-		desktop: 0,
+	const sizesSum: Record<string, number> = {
 		mobile: 0,
-		others: 0
+		tablet: 0,
+		others: 0,
+		laptop: 0
+	};
+
+	const osSum: Record<string, number> = {
+		ios: 0,
+		macos: 0,
+		others: 0,
+		linux: 0,
+		android: 0,
+		windows: 0,
 	};
 
 	for (const { clients, metrics } of dailyMetrics) {
@@ -103,9 +113,15 @@ const aggregateClients = ({
 				periodTotalPageViews;
 		}
 
-		for (const device in clients.devices) {
-			devicesSum[device] +=
-				(clients.devices[device as keyof AnalyticsDevicesPageViews] ?? 0) * periodTotalPageViews;
+		for (const os in clients.operating_systems ?? {}) {
+			osSum[os] +=
+				((clients.operating_systems as Record<string, number> | undefined)?.[os] ?? 0) *
+				periodTotalPageViews;
+		}
+
+		for (const size in clients.sizes ?? {}) {
+			sizesSum[size] +=
+				(clients.sizes[size as keyof AnalyticsSizesPageViews] ?? 0) * periodTotalPageViews;
 		}
 	}
 
@@ -118,13 +134,15 @@ const aggregateClients = ({
 			{}
 		);
 
+	const operating_systems = mapClientsMetrics(osSum);
 	const browsers = mapClientsMetrics(browsersSum);
-	const devices = mapClientsMetrics(devicesSum);
+	const sizes = mapClientsMetrics(sizesSum);
 
 	return {
 		clients: {
+			operating_systems: operating_systems as unknown as AnalyticsOperatingSystemsPageViews,
 			browsers: browsers as unknown as AnalyticsBrowsersPageViews,
-			devices: devices as unknown as AnalyticsDevicesPageViews
+			sizes: sizes as unknown as AnalyticsSizesPageViews
 		}
 	};
 };

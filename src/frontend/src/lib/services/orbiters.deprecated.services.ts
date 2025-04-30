@@ -1,14 +1,14 @@
 import type {
-	AnalyticKey,
-	AnalyticsDevicesPageViews,
-	AnalyticsMetricsPageViews,
+	AnalyticKey, AnalyticsClientsPageViews,
+	AnalyticsMetricsPageViews, AnalyticsSizesPageViews,
 	AnalyticsTop10PageViews,
 	AnalyticsTrackEvents,
 	PageView
 } from '$declarations/orbiter/orbiter.did';
 import { getPageViews, getTrackEvents } from '$lib/api/orbiter.api';
-import { getAnalyticsMetricsPageViews008 } from '$lib/api/orbiter.deprecated.api';
+import { getAnalyticsClientsPageViews008, getAnalyticsMetricsPageViews008 } from '$lib/api/orbiter.deprecated.api';
 import type {
+	AnalyticsClients,
 	AnalyticsMetrics,
 	AnalyticsPageViews,
 	DateStartOfTheDay,
@@ -32,6 +32,22 @@ export const getDeprecatedAnalyticsMetricsPageViews = async (
 	};
 };
 
+export const getDeprecatedAnalyticsClientsPageViews = async (
+	params: PageViewsParams
+): Promise<AnalyticsClients> => {
+	const { browsers, devices } = await getAnalyticsClientsPageViews008(params);
+
+	return {
+		browsers,
+		sizes: {
+			desktop: devices.desktop + devices.others,
+			mobile: devices.mobile,
+			laptop: 0,
+			tablet: 0
+		}
+	};
+};
+
 export const getDeprecatedAnalyticsPageViews = async (
 	params: PageViewsParams
 ): Promise<AnalyticsPageViews> => {
@@ -42,7 +58,7 @@ export const getDeprecatedAnalyticsPageViews = async (
 		metrics: mapDeprecatedAnalyticsMetricsPageViews(pageViews),
 		top10: mapDeprecatedAnalyticsTop10PageViews(pageViews),
 		clients: {
-			devices: mapDeprecatedAnalyticsDevicesPageViews(pageViews)
+			sizes: mapDeprecatedAnalyticsSizesPageViews(pageViews)
 		}
 	};
 };
@@ -178,19 +194,19 @@ const mapDeprecatedAnalyticsTop10PageViews = (
 	};
 };
 
-const mapDeprecatedAnalyticsDevicesPageViews = (
+const mapDeprecatedAnalyticsSizesPageViews = (
 	pageViews: [AnalyticKey, PageView][]
-): AnalyticsDevicesPageViews => {
+): AnalyticsSizesPageViews => {
 	const total = pageViews.length;
 
-	const { desktop, mobile, others } = pageViews.reduce(
+	const { desktop, mobile } = pageViews.reduce(
 		(acc, [_, { user_agent }]) => {
 			const userAgent = fromNullable(user_agent);
 
 			if (isNullish(userAgent)) {
 				return {
 					...acc,
-					other: acc.others + 1
+					desktop: acc.desktop + 1
 				};
 			}
 
@@ -211,13 +227,13 @@ const mapDeprecatedAnalyticsDevicesPageViews = (
 		{
 			mobile: 0,
 			desktop: 0,
-			others: 0
 		}
 	);
 
 	return {
 		mobile: total > 0 ? mobile / total : 0,
 		desktop: total > 0 ? desktop / total : 0,
-		others: total > 0 ? others / total : 0
+		laptop: 0,
+		tablet: 0,
 	};
 };

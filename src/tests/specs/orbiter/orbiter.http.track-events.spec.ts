@@ -5,7 +5,6 @@ import type {
 import { idlFactory as idlFactorOrbiter } from '$declarations/orbiter/orbiter.factory.did';
 import type { HttpRequest } from '$declarations/satellite/satellite.did';
 import { Ed25519KeyIdentity } from '@dfinity/identity';
-import type { Principal } from '@dfinity/principal';
 import { fromNullable, jsonReviver, toNullable } from '@dfinity/utils';
 import { type Actor, PocketIc } from '@hadronous/pic';
 import { nanoid } from 'nanoid';
@@ -17,14 +16,12 @@ import {
 	type TrackEventPayload,
 	trackEventPayloadMock
 } from '../../mocks/orbiter.mocks';
-import { assertCertification } from '../../utils/certification-test.utils';
 import { toBodyJson } from '../../utils/orbiter-test.utils';
 import { tick } from '../../utils/pic-tests.utils';
 import { controllersInitArgs, ORBITER_WASM_PATH } from '../../utils/setup-tests.utils';
 
 describe('Orbiter > HTTP > Track events', () => {
 	let pic: PocketIc;
-	let canisterId: Principal;
 	let actor: Actor<OrbiterActor>;
 
 	const controller = Ed25519KeyIdentity.generate();
@@ -43,7 +40,7 @@ describe('Orbiter > HTTP > Track events', () => {
 
 		await pic.setTime(currentDate.getTime());
 
-		const { actor: c, canisterId: cid } = await pic.setupCanister<OrbiterActor>({
+		const { actor: c } = await pic.setupCanister<OrbiterActor>({
 			idlFactory: idlFactorOrbiter,
 			wasm: ORBITER_WASM_PATH,
 			arg: controllersInitArgs(controller),
@@ -51,7 +48,6 @@ describe('Orbiter > HTTP > Track events', () => {
 		});
 
 		actor = c;
-		canisterId = cid;
 
 		// Certified responses are initialized asynchronously
 		await tick(pic);
@@ -147,12 +143,14 @@ describe('Orbiter > HTTP > Track events', () => {
 					expect(fromNullable(response.upgrade)).toBeUndefined();
 				});
 
-				it.each([
+				const invalidPayloads: [string, Record<string, unknown>][] = [
 					['invalid payload', { ...trackEvent, key: 'invalid' }],
 					['empty payload', { key: trackEvent.key, satellite_id: trackEvent.satellite_id }],
 					['unknown satellite id', { ...trackEvent, satellite_id: 'nkzsw-gyaaa-aaaal-ada3a-cai' }]
-					// eslint-disable-next-line local-rules/prefer-object-params
-				])('should not upgrade http_request for %s', async (_title, payload) => {
+				];
+
+				// eslint-disable-next-line local-rules/prefer-object-params
+				it.each(invalidPayloads)('should upgrade http_request for %s', async (_title, payload) => {
 					const { http_request } = actor;
 
 					const request: HttpRequest = {
@@ -165,18 +163,82 @@ describe('Orbiter > HTTP > Track events', () => {
 
 					const response = await http_request(request);
 
-					expect(fromNullable(response.upgrade)).toBeUndefined();
+					expect(fromNullable(response.upgrade)).toBeTruthy();
+				});
 
-					expect(response.status_code).toEqual(400);
+				it('should return a bad request for invalid type', async () => {
+					const { http_request_update } = actor;
 
-					await assertCertification({
-						canisterId,
-						pic,
-						request,
-						response,
-						currentDate,
-						statusCode: 400
-					});
+					const request: HttpRequest = {
+						body: toBodyJson(invalidPayloads[0][1]),
+						certificate_version: toNullable(2),
+						headers: [],
+						method: 'POST',
+						url: '/event'
+					};
+
+					const response = await http_request_update(request);
+
+					expect(response.status_code).toEqual(500);
+
+					const decoder = new TextDecoder();
+					const responseBody = decoder.decode(response.body as Uint8Array<ArrayBufferLike>);
+
+					const {
+						err: { message }
+					}: { err: { message: string } } = JSON.parse(responseBody, jsonReviver);
+
+					expect(message.includes('invalid type: string "invalid"')).toBeTruthy();
+				});
+
+				it('should return a bad request for missing field', async () => {
+					const { http_request_update } = actor;
+
+					const request: HttpRequest = {
+						body: toBodyJson(invalidPayloads[1][1]),
+						certificate_version: toNullable(2),
+						headers: [],
+						method: 'POST',
+						url: '/event'
+					};
+
+					const response = await http_request_update(request);
+
+					expect(response.status_code).toEqual(500);
+
+					const decoder = new TextDecoder();
+					const responseBody = decoder.decode(response.body as Uint8Array<ArrayBufferLike>);
+
+					const {
+						err: { message }
+					}: { err: { message: string } } = JSON.parse(responseBody, jsonReviver);
+
+					expect(message.includes('missing field `track_event`')).toBeTruthy();
+				});
+
+				it('should return a bad request for unknown satellite', async () => {
+					const { http_request_update } = actor;
+
+					const request: HttpRequest = {
+						body: toBodyJson(invalidPayloads[2][1]),
+						certificate_version: toNullable(2),
+						headers: [],
+						method: 'POST',
+						url: '/event'
+					};
+
+					const response = await http_request_update(request);
+
+					expect(response.status_code).toEqual(500);
+
+					const decoder = new TextDecoder();
+					const responseBody = decoder.decode(response.body as Uint8Array<ArrayBufferLike>);
+
+					const {
+						err: { message }
+					}: { err: { message: string } } = JSON.parse(responseBody, jsonReviver);
+
+					expect(message).toEqual('error_track_events_feature_disabled');
 				});
 
 				it('should not set a track event with invalid satellite id', async () => {
@@ -328,7 +390,7 @@ describe('Orbiter > HTTP > Track events', () => {
 					expect(fromNullable(response.upgrade)).toBeUndefined();
 				});
 
-				it.each([
+				const invalidPayloads: [string, Record<string, unknown>][] = [
 					[
 						'invalid payload',
 						{
@@ -341,10 +403,12 @@ describe('Orbiter > HTTP > Track events', () => {
 							]
 						}
 					],
-					['empty payload', { satellite_id: trackEvents.satellite_id, performanceMetrics: [] }],
+					['empty payload', { satellite_id: trackEvents.satellite_id, track_events: [] }],
 					['unknown satellite id', { ...trackEvents, satellite_id: 'nkzsw-gyaaa-aaaal-ada3a-cai' }]
-					// eslint-disable-next-line local-rules/prefer-object-params
-				])('should not upgrade http_request for %s', async (_title, payload) => {
+				];
+
+				// eslint-disable-next-line local-rules/prefer-object-params
+				it.each(invalidPayloads)('should upgrade http_request for %s', async (_title, payload) => {
 					const { http_request } = actor;
 
 					const request: HttpRequest = {
@@ -357,18 +421,73 @@ describe('Orbiter > HTTP > Track events', () => {
 
 					const response = await http_request(request);
 
-					expect(fromNullable(response.upgrade)).toBeUndefined();
+					expect(fromNullable(response.upgrade)).toBeTruthy();
+				});
 
-					expect(response.status_code).toEqual(400);
+				it('should return a bad request for invalid type', async () => {
+					const { http_request_update } = actor;
 
-					await assertCertification({
-						canisterId,
-						pic,
-						request,
-						response,
-						currentDate,
-						statusCode: 400
-					});
+					const request: HttpRequest = {
+						body: toBodyJson(invalidPayloads[0][1]),
+						certificate_version: toNullable(2),
+						headers: [],
+						method: 'POST',
+						url: '/events'
+					};
+
+					const response = await http_request_update(request);
+
+					expect(response.status_code).toEqual(500);
+
+					const decoder = new TextDecoder();
+					const responseBody = decoder.decode(response.body as Uint8Array<ArrayBufferLike>);
+
+					const {
+						err: { message }
+					}: { err: { message: string } } = JSON.parse(responseBody, jsonReviver);
+
+					expect(message.includes('invalid type: string "invalid"')).toBeTruthy();
+				});
+
+				it('should return ok for empty payload', async () => {
+					const { http_request_update } = actor;
+
+					const request: HttpRequest = {
+						body: toBodyJson(invalidPayloads[1][1]),
+						certificate_version: toNullable(2),
+						headers: [],
+						method: 'POST',
+						url: '/events'
+					};
+
+					const response = await http_request_update(request);
+
+					expect(response.status_code).toEqual(200);
+				});
+
+				it('should return a bad request for unknown satellite', async () => {
+					const { http_request_update } = actor;
+
+					const request: HttpRequest = {
+						body: toBodyJson(invalidPayloads[2][1]),
+						certificate_version: toNullable(2),
+						headers: [],
+						method: 'POST',
+						url: '/events'
+					};
+
+					const response = await http_request_update(request);
+
+					expect(response.status_code).toEqual(500);
+
+					const decoder = new TextDecoder();
+					const responseBody = decoder.decode(response.body as Uint8Array<ArrayBufferLike>);
+
+					const {
+						err: { message }
+					}: { err: { message: string } } = JSON.parse(responseBody, jsonReviver);
+
+					expect(message.includes('error_track_events_feature_disabled')).toBeTruthy();
 				});
 
 				it('should not set track events with invalid satellite id', async () => {

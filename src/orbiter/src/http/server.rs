@@ -13,19 +13,10 @@ pub fn on_http_request(
     request: &HttpRequest,
     handler: &dyn HttpRequestHandler,
 ) -> HttpResponse<'static> {
-    let upgrade_http_request = |request_path: &HttpRequestPath,
-                                method: &Method,
-                                body: &HttpRequestBody|
-     -> HttpResponse<'static> {
-        if handler
-            .assert_request_upgrade_allowed(request_path, body)
-            .is_ok()
-        {
-            return HttpResponse::builder().with_upgrade(true).build();
-        }
-
-        known_route_certified_response(request_path, method)
-    };
+    let upgrade_http_request =
+        |_request_path: &HttpRequestPath, _body: &HttpRequestBody| -> HttpResponse<'static> {
+            HttpResponse::builder().with_upgrade(true).build()
+        };
 
     serve_request(request, handler, &upgrade_http_request)
 }
@@ -34,17 +25,15 @@ pub fn on_http_request_update(
     request: &HttpRequest,
     handler: &dyn HttpRequestHandler,
 ) -> HttpResponse<'static> {
-    let handle_http_request_update = |request_path: &HttpRequestPath,
-                                      _method: &Method,
-                                      body: &HttpRequestBody|
-     -> HttpResponse<'static> {
-        let HandledUpdateResult {
-            status_code,
-            body,
-            restricted_origin,
-        } = handler.handle_update(request_path, body);
-        create_json_response(status_code, body, restricted_origin)
-    };
+    let handle_http_request_update =
+        |request_path: &HttpRequestPath, body: &HttpRequestBody| -> HttpResponse<'static> {
+            let HandledUpdateResult {
+                status_code,
+                body,
+                restricted_origin,
+            } = handler.handle_update(request_path, body);
+            create_json_response(status_code, body, restricted_origin)
+        };
 
     serve_request(request, handler, &handle_http_request_update)
 }
@@ -52,7 +41,7 @@ pub fn on_http_request_update(
 fn serve_request(
     request: &HttpRequest,
     handler: &dyn HttpRequestHandler,
-    response_handler: &dyn Fn(&HttpRequestPath, &Method, &HttpRequestBody) -> HttpResponse<'static>,
+    response_handler: &dyn Fn(&HttpRequestPath, &HttpRequestBody) -> HttpResponse<'static>,
 ) -> HttpResponse<'static> {
     let uri_request_path = request.get_path();
 
@@ -67,7 +56,7 @@ fn serve_request(
         let method = request.method();
 
         if handler.should_use_handler(method) {
-            return response_handler(&request_path, method, request.body());
+            return response_handler(&request_path, request.body());
         }
 
         return known_route_certified_response(&request_path, method);
@@ -78,7 +67,6 @@ fn serve_request(
 
 // For know routes
 // OPTIONS -> 204 NO_CONTENT for cors
-// POST -> 400 BAD_REQUEST
 // DELETE, PATCH, etc. -> 405 NOT_ALLOWED
 fn known_route_certified_response(
     request_path: &HttpRequestPath,

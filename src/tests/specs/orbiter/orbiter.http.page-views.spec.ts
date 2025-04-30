@@ -5,7 +5,6 @@ import type {
 import { idlFactory as idlFactorOrbiter } from '$declarations/orbiter/orbiter.factory.did';
 import type { HttpRequest } from '$declarations/satellite/satellite.did';
 import { Ed25519KeyIdentity } from '@dfinity/identity';
-import type { Principal } from '@dfinity/principal';
 import { fromNullable, jsonReviver, toNullable } from '@dfinity/utils';
 import { type Actor, PocketIc } from '@hadronous/pic';
 import { nanoid } from 'nanoid';
@@ -17,14 +16,12 @@ import {
 	type SetPageViewRequest,
 	type SetPageViewsRequest
 } from '../../mocks/orbiter.mocks';
-import { assertCertification } from '../../utils/certification-test.utils';
 import { toBodyJson } from '../../utils/orbiter-test.utils';
 import { tick } from '../../utils/pic-tests.utils';
 import { controllersInitArgs, ORBITER_WASM_PATH } from '../../utils/setup-tests.utils';
 
 describe('Orbiter > HTTP > Page views', () => {
 	let pic: PocketIc;
-	let canisterId: Principal;
 	let actor: Actor<OrbiterActor>;
 
 	const controller = Ed25519KeyIdentity.generate();
@@ -43,7 +40,7 @@ describe('Orbiter > HTTP > Page views', () => {
 
 		await pic.setTime(currentDate.getTime());
 
-		const { actor: c, canisterId: cid } = await pic.setupCanister<OrbiterActor>({
+		const { actor: c } = await pic.setupCanister<OrbiterActor>({
 			idlFactory: idlFactorOrbiter,
 			wasm: ORBITER_WASM_PATH,
 			arg: controllersInitArgs(controller),
@@ -51,7 +48,6 @@ describe('Orbiter > HTTP > Page views', () => {
 		});
 
 		actor = c;
-		canisterId = cid;
 
 		// Certified responses are initialized asynchronously
 		await tick(pic);
@@ -147,36 +143,105 @@ describe('Orbiter > HTTP > Page views', () => {
 					expect(fromNullable(response.upgrade)).toBeUndefined();
 				});
 
-				it.each([
+				const invalidPayloads: [string, Record<string, unknown>][] = [
 					['invalid payload', { ...pageView, key: 'invalid' }],
 					['empty payload', { key: pageView.key, satellite_id: pageView.satellite_id }],
 					['unknown satellite id', { ...pageView, satellite_id: 'nkzsw-gyaaa-aaaal-ada3a-cai' }]
+				];
+
+				it.each(invalidPayloads)(
+					'should upgrade http_request for %s',
 					// eslint-disable-next-line local-rules/prefer-object-params
-				])('should not upgrade http_request for %s', async (_title, payload) => {
-					const { http_request } = actor;
+					async (_title, payload) => {
+						const { http_request } = actor;
+
+						const request: HttpRequest = {
+							body: toBodyJson(payload),
+							certificate_version: toNullable(2),
+							headers: [],
+							method: 'POST',
+							url: '/view'
+						};
+
+						const response = await http_request(request);
+
+						expect(fromNullable(response.upgrade)).toBeTruthy();
+					}
+				);
+
+				it('should return a bad request for invalid type', async () => {
+					const { http_request_update } = actor;
 
 					const request: HttpRequest = {
-						body: toBodyJson(payload),
+						body: toBodyJson(invalidPayloads[0][1]),
 						certificate_version: toNullable(2),
 						headers: [],
 						method: 'POST',
 						url: '/view'
 					};
 
-					const response = await http_request(request);
+					const response = await http_request_update(request);
 
-					expect(fromNullable(response.upgrade)).toBeUndefined();
+					expect(response.status_code).toEqual(500);
 
-					expect(response.status_code).toEqual(400);
+					const decoder = new TextDecoder();
+					const responseBody = decoder.decode(response.body as Uint8Array<ArrayBufferLike>);
 
-					await assertCertification({
-						canisterId,
-						pic,
-						request,
-						response,
-						currentDate,
-						statusCode: 400
-					});
+					const {
+						err: { message }
+					}: { err: { message: string } } = JSON.parse(responseBody, jsonReviver);
+
+					expect(message.includes('invalid type: string "invalid"')).toBeTruthy();
+				});
+
+				it('should return a bad request for missing field', async () => {
+					const { http_request_update } = actor;
+
+					const request: HttpRequest = {
+						body: toBodyJson(invalidPayloads[1][1]),
+						certificate_version: toNullable(2),
+						headers: [],
+						method: 'POST',
+						url: '/view'
+					};
+
+					const response = await http_request_update(request);
+
+					expect(response.status_code).toEqual(500);
+
+					const decoder = new TextDecoder();
+					const responseBody = decoder.decode(response.body as Uint8Array<ArrayBufferLike>);
+
+					const {
+						err: { message }
+					}: { err: { message: string } } = JSON.parse(responseBody, jsonReviver);
+
+					expect(message.includes('missing field `page_view`')).toBeTruthy();
+				});
+
+				it('should return a bad request for unknown satellite', async () => {
+					const { http_request_update } = actor;
+
+					const request: HttpRequest = {
+						body: toBodyJson(invalidPayloads[2][1]),
+						certificate_version: toNullable(2),
+						headers: [],
+						method: 'POST',
+						url: '/view'
+					};
+
+					const response = await http_request_update(request);
+
+					expect(response.status_code).toEqual(500);
+
+					const decoder = new TextDecoder();
+					const responseBody = decoder.decode(response.body as Uint8Array<ArrayBufferLike>);
+
+					const {
+						err: { message }
+					}: { err: { message: string } } = JSON.parse(responseBody, jsonReviver);
+
+					expect(message).toEqual('error_page_views_feature_disabled');
 				});
 
 				it('should not set a page view with invalid satellite id', async () => {
@@ -326,7 +391,7 @@ describe('Orbiter > HTTP > Page views', () => {
 					expect(fromNullable(response.upgrade)).toBeUndefined();
 				});
 
-				it.each([
+				const invalidPayloads: [string, Record<string, unknown>][] = [
 					[
 						'invalid payload',
 						{
@@ -341,8 +406,10 @@ describe('Orbiter > HTTP > Page views', () => {
 					],
 					['empty payload', { satellite_id: pagesViews.satellite_id, page_views: [] }],
 					['unknown satellite id', { ...pagesViews, satellite_id: 'nkzsw-gyaaa-aaaal-ada3a-cai' }]
-					// eslint-disable-next-line local-rules/prefer-object-params
-				])('should not upgrade http_request for %s', async (_title, payload) => {
+				];
+
+				// eslint-disable-next-line local-rules/prefer-object-params
+				it.each(invalidPayloads)('should upgrade http_request for %s', async (_title, payload) => {
 					const { http_request } = actor;
 
 					const request: HttpRequest = {
@@ -355,18 +422,73 @@ describe('Orbiter > HTTP > Page views', () => {
 
 					const response = await http_request(request);
 
-					expect(fromNullable(response.upgrade)).toBeUndefined();
+					expect(fromNullable(response.upgrade)).toBeTruthy();
+				});
 
-					expect(response.status_code).toEqual(400);
+				it('should return a bad request for invalid type', async () => {
+					const { http_request_update } = actor;
 
-					await assertCertification({
-						canisterId,
-						pic,
-						request,
-						response,
-						currentDate,
-						statusCode: 400
-					});
+					const request: HttpRequest = {
+						body: toBodyJson(invalidPayloads[0][1]),
+						certificate_version: toNullable(2),
+						headers: [],
+						method: 'POST',
+						url: '/views'
+					};
+
+					const response = await http_request_update(request);
+
+					expect(response.status_code).toEqual(500);
+
+					const decoder = new TextDecoder();
+					const responseBody = decoder.decode(response.body as Uint8Array<ArrayBufferLike>);
+
+					const {
+						err: { message }
+					}: { err: { message: string } } = JSON.parse(responseBody, jsonReviver);
+
+					expect(message.includes('invalid type: string "invalid"')).toBeTruthy();
+				});
+
+				it('should return ok for empty payload', async () => {
+					const { http_request_update } = actor;
+
+					const request: HttpRequest = {
+						body: toBodyJson(invalidPayloads[1][1]),
+						certificate_version: toNullable(2),
+						headers: [],
+						method: 'POST',
+						url: '/views'
+					};
+
+					const response = await http_request_update(request);
+
+					expect(response.status_code).toEqual(200);
+				});
+
+				it('should return a bad request for unknown satellite', async () => {
+					const { http_request_update } = actor;
+
+					const request: HttpRequest = {
+						body: toBodyJson(invalidPayloads[2][1]),
+						certificate_version: toNullable(2),
+						headers: [],
+						method: 'POST',
+						url: '/views'
+					};
+
+					const response = await http_request_update(request);
+
+					expect(response.status_code).toEqual(500);
+
+					const decoder = new TextDecoder();
+					const responseBody = decoder.decode(response.body as Uint8Array<ArrayBufferLike>);
+
+					const {
+						err: { message }
+					}: { err: { message: string } } = JSON.parse(responseBody, jsonReviver);
+
+					expect(message.includes('error_page_views_feature_disabled')).toBeTruthy();
 				});
 
 				it('should not set page views with invalid satellite id', async () => {

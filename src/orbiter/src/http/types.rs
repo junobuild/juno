@@ -32,12 +32,6 @@ pub mod handler {
 
         fn should_use_handler(&self, method: &Method) -> bool;
 
-        fn assert_request_upgrade_allowed(
-            &self,
-            request_path: &HttpRequestPath,
-            body: &HttpRequestBody,
-        ) -> Result<(), String>;
-
         fn handle_update(
             &self,
             request_path: &HttpRequestPath,

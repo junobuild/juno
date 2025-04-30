@@ -1,6 +1,4 @@
-use crate::assert::config::assert_track_events_enabled;
 use crate::events::helpers::assert_and_insert_track_event;
-use crate::handler::adapters::assert::assert_request;
 use crate::handler::adapters::response_builder::build_payload_response;
 use crate::http::types::handler::HandledUpdateResult;
 use crate::http::types::request::HttpRequestBody;
@@ -10,14 +8,6 @@ use crate::types::interface::http::{
     TrackEventPayload,
 };
 use junobuild_utils::decode_doc_data;
-
-pub fn assert_request_track_event(body: &HttpRequestBody) -> Result<(), String> {
-    assert_request::<SetTrackEventRequest>(body, assert_track_events_enabled)
-}
-
-pub fn assert_request_track_events(body: &HttpRequestBody) -> Result<(), String> {
-    assert_request::<SetTrackEventsRequest>(body, assert_track_events_enabled)
-}
 
 pub fn handle_insert_track_event(body: &HttpRequestBody) -> Result<HandledUpdateResult, String> {
     let SetTrackEventRequest {

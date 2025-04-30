@@ -71,12 +71,21 @@ pub mod state {
         pub referrer: Option<String>,
         pub device: PageViewDevice,
         pub user_agent: Option<String>,
+        pub client: Option<PageViewClient>,
         pub time_zone: String,
         pub satellite_id: SatelliteId,
         pub session_id: SessionId,
         pub created_at: Timestamp,
         pub updated_at: Timestamp,
         pub version: Option<Version>,
+    }
+
+    #[derive(CandidType, Serialize, Deserialize, Clone)]
+    pub struct PageViewClient {
+        pub browser: String,
+        #[serde(rename = "os")]
+        pub operating_system: String,
+        pub device: String,
     }
 
     #[derive(Default, CandidType, Serialize, Deserialize, Clone)]

@@ -157,6 +157,7 @@ pub fn deserialize_bounded_page_view(bytes: Cow<[u8]>) -> PageView {
             inner_height,
         },
         user_agent: user_agent_opt,
+        client: None,
         time_zone,
         satellite_id,
         session_id,

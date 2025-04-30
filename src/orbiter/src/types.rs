@@ -102,11 +102,12 @@ pub mod interface {
     }
 
     #[derive(CandidType, Deserialize, Clone)]
-    pub struct AnalyticsSizesPageViews {
+    pub struct AnalyticsDevicesPageViews {
         pub mobile: f64,
         pub tablet: f64,
         pub laptop: f64,
         pub desktop: f64,
+        pub others: f64,
     }
 
     #[derive(CandidType, Deserialize, Clone)]
@@ -120,7 +121,7 @@ pub mod interface {
 
     #[derive(CandidType, Deserialize, Clone)]
     pub struct AnalyticsClientsPageViews {
-        pub sizes: AnalyticsSizesPageViews,
+        pub sizes: AnalyticsDevicesPageViews,
         pub browsers: AnalyticsBrowsersPageViews,
         pub operating_systems: AnalyticsOperatingSystemsPageViews,
     }
@@ -147,7 +148,7 @@ pub mod interface {
 
     pub mod http {
         use crate::state::types::state::{
-            Key, PageViewDevice, PerformanceData, PerformanceMetricName, SessionId,
+            Key, PageViewClient, PageViewDevice, PerformanceData, PerformanceMetricName, SessionId,
         };
         use junobuild_shared::types::state::Metadata;
         use junobuild_utils::DocDataBigInt;
@@ -265,6 +266,8 @@ pub mod interface {
             pub time_zone: String,
             #[serde(skip_serializing_if = "Option::is_none")]
             pub user_agent: Option<String>,
+            #[serde(skip_serializing_if = "Option::is_none")]
+            pub client: Option<PageViewClient>,
             pub session_id: SessionId,
             pub created_at: TimestampPayload,
             pub updated_at: TimestampPayload,

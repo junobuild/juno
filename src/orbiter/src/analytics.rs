@@ -1,33 +1,24 @@
 use crate::state::types::state::{
-    AnalyticKey, PageView, PageViewDevice, PerformanceData, PerformanceMetric,
+    AnalyticKey, PageView, PageViewClient, PerformanceData, PerformanceMetric,
     PerformanceMetricName, TrackEvent, WebVitalsMetric,
 };
 use crate::types::interface::{
-    AnalyticsBrowsersPageViews, AnalyticsClientsPageViews, AnalyticsMetricsPageViews,
-    AnalyticsOperatingSystemsPageViews, AnalyticsSizesPageViews, AnalyticsTop10PageViews,
+    AnalyticsBrowsersPageViews, AnalyticsClientsPageViews, AnalyticsDevicesPageViews,
+    AnalyticsMetricsPageViews, AnalyticsOperatingSystemsPageViews, AnalyticsTop10PageViews,
     AnalyticsTrackEvents, AnalyticsWebVitalsPageMetrics, AnalyticsWebVitalsPerformanceMetrics,
 };
 use junobuild_shared::day::calendar_date;
 use junobuild_shared::types::utils::CalendarDate;
 use std::cmp::Ordering;
 use std::collections::{HashMap, HashSet};
-use uaparser::{Parser, UserAgentParser};
 use url::Url;
 
-struct OperatingSystems {
-    ios: u32,
-    android: u32,
-    windows: u32,
-    macos: u32,
-    linux: u32,
-    others: u32,
-}
-
-struct Sizes {
+struct Devices {
     mobile: u32,
     tablet: u32,
     laptop: u32,
     desktop: u32,
+    others: u32,
 }
 
 struct Browsers {
@@ -35,6 +26,15 @@ struct Browsers {
     opera: u32,
     firefox: u32,
     safari: u32,
+    others: u32,
+}
+
+struct OperatingSystems {
+    ios: u32,
+    android: u32,
+    windows: u32,
+    macos: u32,
+    linux: u32,
     others: u32,
 }
 
@@ -123,11 +123,12 @@ pub fn analytics_page_views_top_10(
 pub fn analytics_page_views_clients(
     page_views: &Vec<(AnalyticKey, PageView)>,
 ) -> AnalyticsClientsPageViews {
-    let mut total_sizes = Sizes {
+    let mut total_devices = Devices {
         mobile: 0,
         tablet: 0,
         laptop: 0,
         desktop: 0,
+        others: 0,
     };
 
     let mut total_browsers = Browsers {
@@ -147,22 +148,10 @@ pub fn analytics_page_views_clients(
         others: 0,
     };
 
-    let ua_parser = UserAgentParser::from_yaml("../resources/regexes.yaml").ok();
-
-    for (
-        _,
-        PageView {
-            user_agent, device, ..
-        },
-    ) in page_views
-    {
-        analytics_sizes(device, &mut total_sizes);
-        analytics_browser_and_os(
-            user_agent,
-            &ua_parser,
-            &mut total_browsers,
-            &mut total_operating_systems,
-        );
+    for (_, PageView { client, .. }) in page_views {
+        analytics_devices(client, &mut total_devices);
+        analytics_browsers(client, &mut total_browsers);
+        analytics_operating_systems(client, &mut total_operating_systems);
     }
 
     let total = page_views.len();
@@ -175,11 +164,12 @@ pub fn analytics_page_views_clients(
         }
     }
 
-    let sizes = AnalyticsSizesPageViews {
-        desktop: normalize(total_sizes.desktop, total),
-        laptop: normalize(total_sizes.laptop, total),
-        tablet: normalize(total_sizes.tablet, total),
-        mobile: normalize(total_sizes.mobile, total),
+    let sizes = AnalyticsDevicesPageViews {
+        desktop: normalize(total_devices.desktop, total),
+        laptop: normalize(total_devices.laptop, total),
+        tablet: normalize(total_devices.tablet, total),
+        mobile: normalize(total_devices.mobile, total),
+        others: normalize(total_devices.others, total),
     };
 
     let browsers = AnalyticsBrowsersPageViews {
@@ -400,54 +390,63 @@ fn analytics_pages(href: &str, pages: &mut HashMap<String, u32>) {
     *pages.entry(page).or_insert(0) += 1;
 }
 
-fn analytics_sizes(PageViewDevice { inner_width, .. }: &PageViewDevice, sizes: &mut Sizes) {
-    match inner_width {
-        0 => {}
-        1..=575 => sizes.mobile += 1,
-        576..=991 => sizes.tablet += 1,
-        992..=1439 => sizes.laptop += 1,
-        _ => sizes.desktop += 1,
+fn analytics_devices(client: &Option<PageViewClient>, devices: &mut Devices) {
+    if let Some(PageViewClient {
+        device,
+        operating_system,
+        ..
+    }) = client
+    {
+        if device.contains("iphone")
+            || device.contains("android")
+            || operating_system.contains("android")
+        {
+            devices.mobile += 1;
+        } else if device.contains("ipad") || device.contains("tablet") {
+            devices.tablet += 1;
+        } else if device.contains("mac")
+            || device.contains("windows")
+            || operating_system.contains("mac")
+            || operating_system.contains("windows")
+            || operating_system.contains("linux")
+        {
+            devices.desktop += 1;
+        } else {
+            devices.others += 1;
+        }
+    } else {
+        devices.others += 1;
     }
 }
 
-fn analytics_browser_and_os(
-    user_agent: &Option<String>,
-    ua_parser: &Option<UserAgentParser>,
-    browsers: &mut Browsers,
-    operating_systems: &mut OperatingSystems,
-) {
-    if let (Some(ua), Some(parser)) = (user_agent, ua_parser) {
-        let client = parser.parse(ua);
-
-        let browser_family = client.user_agent.family.to_lowercase();
-        if browser_family.contains("chrome") || browser_family.contains("crios") {
-            browsers.chrome += 1;
-        } else if browser_family.contains("firefox") {
-            browsers.firefox += 1;
-        } else if browser_family.contains("safari") {
-            browsers.safari += 1;
-        } else if browser_family.contains("opera") || browser_family.contains("opr") {
-            browsers.opera += 1;
-        } else {
-            browsers.others += 1;
-        }
-
-        let os_family = client.os.family.to_lowercase();
-        if os_family.contains("ios") {
-            operating_systems.ios += 1;
-        } else if os_family.contains("android") {
-            operating_systems.android += 1;
-        } else if os_family.contains("windows") {
-            operating_systems.windows += 1;
-        } else if os_family.contains("mac") {
-            operating_systems.macos += 1;
-        } else if os_family.contains("linux") {
-            operating_systems.linux += 1;
-        } else {
-            operating_systems.others += 1;
+fn analytics_browsers(client: &Option<PageViewClient>, browsers: &mut Browsers) {
+    if let Some(PageViewClient { browser, .. }) = client {
+        match browser.as_str() {
+            b if b.contains("chrome") || b.contains("crios") => browsers.chrome += 1,
+            b if b.contains("firefox") => browsers.firefox += 1,
+            b if b.contains("safari") && !b.contains("chrome") => browsers.safari += 1,
+            b if b.contains("opera") || b.contains("opr") => browsers.opera += 1,
+            _ => browsers.others += 1,
         }
     } else {
         browsers.others += 1;
-        operating_systems.others += 1;
+    }
+}
+
+fn analytics_operating_systems(client: &Option<PageViewClient>, os_counts: &mut OperatingSystems) {
+    if let Some(PageViewClient {
+        operating_system, ..
+    }) = client
+    {
+        match operating_system.as_str() {
+            os if os.contains("ios") => os_counts.ios += 1,
+            os if os.contains("android") => os_counts.android += 1,
+            os if os.contains("windows") => os_counts.windows += 1,
+            os if os.contains("mac") => os_counts.macos += 1,
+            os if os.contains("linux") => os_counts.linux += 1,
+            _ => os_counts.others += 1,
+        }
+    } else {
+        os_counts.others += 1;
     }
 }

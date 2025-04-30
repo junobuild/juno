@@ -47,6 +47,7 @@ impl PageViewPayload {
             referrer: page_view.referrer,
             device: page_view.device,
             user_agent: page_view.user_agent,
+            client: page_view.client,
             time_zone: page_view.time_zone,
             session_id: page_view.session_id,
             created_at: DocDataBigInt {

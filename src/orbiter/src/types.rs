@@ -105,7 +105,6 @@ pub mod interface {
     pub struct AnalyticsDevicesPageViews {
         pub mobile: f64,
         pub tablet: f64,
-        pub laptop: f64,
         pub desktop: f64,
         pub others: f64,
     }

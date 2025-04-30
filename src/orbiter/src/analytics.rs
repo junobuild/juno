@@ -16,7 +16,6 @@ use url::Url;
 struct Devices {
     mobile: u32,
     tablet: u32,
-    laptop: u32,
     desktop: u32,
     others: u32,
 }
@@ -126,7 +125,6 @@ pub fn analytics_page_views_clients(
     let mut total_devices = Devices {
         mobile: 0,
         tablet: 0,
-        laptop: 0,
         desktop: 0,
         others: 0,
     };
@@ -166,7 +164,6 @@ pub fn analytics_page_views_clients(
 
     let devices = AnalyticsDevicesPageViews {
         desktop: normalize(total_devices.desktop, total),
-        laptop: normalize(total_devices.laptop, total),
         tablet: normalize(total_devices.tablet, total),
         mobile: normalize(total_devices.mobile, total),
         others: normalize(total_devices.others, total),

@@ -35,8 +35,8 @@ export type AnalyticsMetrics = Omit<AnalyticsMetricsPageViews, 'daily_total_page
 	daily_total_page_views: Record<DateStartOfTheDay, number>;
 };
 
-export type AnalyticsClients = Partial<Omit<AnalyticsClientsPageViews, 'sizes'>> &
-	Pick<AnalyticsClientsPageViews, 'sizes'>;
+export type AnalyticsClients = Partial<Omit<AnalyticsClientsPageViews, 'devices'>> &
+	Pick<AnalyticsClientsPageViews, 'devices'>;
 
 export interface AnalyticsPageViews {
 	metrics: AnalyticsMetrics;

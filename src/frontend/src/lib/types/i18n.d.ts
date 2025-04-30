@@ -370,7 +370,6 @@ interface I18nAnalytics {
 	devices: string;
 	mobile: string;
 	tablet: string;
-	laptop: string;
 	desktop: string;
 	others: string;
 	browsers: string;

@@ -1,7 +1,7 @@
 import type {
 	AnalyticsBrowsersPageViews,
-	AnalyticsOperatingSystemsPageViews,
-	AnalyticsSizesPageViews
+	AnalyticsDevicesPageViews,
+	AnalyticsOperatingSystemsPageViews
 } from '$declarations/orbiter/orbiter.did';
 import { getAnalyticsPageViews } from '$lib/services/orbiters.services';
 import type { AnalyticsPageViews, PageViewsParams } from '$lib/types/orbiter';
@@ -88,11 +88,12 @@ const aggregateClients = ({
 		others: 0
 	};
 
-	const sizesSum: Record<string, number> = {
+	const devicesSum: Record<string, number> = {
 		mobile: 0,
 		tablet: 0,
 		laptop: 0,
-		desktop: 0
+		desktop: 0,
+		others: 0
 	};
 
 	const osSum: Record<string, number> = {
@@ -120,9 +121,9 @@ const aggregateClients = ({
 				periodTotalPageViews;
 		}
 
-		for (const size in clients.sizes ?? {}) {
-			sizesSum[size] +=
-				(clients.sizes[size as keyof AnalyticsSizesPageViews] ?? 0) * periodTotalPageViews;
+		for (const device in clients.devices ?? {}) {
+			devicesSum[device] +=
+				(clients.devices[device as keyof AnalyticsDevicesPageViews] ?? 0) * periodTotalPageViews;
 		}
 	}
 
@@ -137,13 +138,13 @@ const aggregateClients = ({
 
 	const operating_systems = mapClientsMetrics(osSum);
 	const browsers = mapClientsMetrics(browsersSum);
-	const sizes = mapClientsMetrics(sizesSum);
+	const devices = mapClientsMetrics(devicesSum);
 
 	return {
 		clients: {
 			operating_systems: operating_systems as unknown as AnalyticsOperatingSystemsPageViews,
 			browsers: browsers as unknown as AnalyticsBrowsersPageViews,
-			sizes: sizes as unknown as AnalyticsSizesPageViews
+			devices: devices as unknown as AnalyticsDevicesPageViews
 		}
 	};
 };

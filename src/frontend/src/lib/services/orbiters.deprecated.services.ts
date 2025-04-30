@@ -1,7 +1,7 @@
 import type {
 	AnalyticKey,
+	AnalyticsDevicesPageViews,
 	AnalyticsMetricsPageViews,
-	AnalyticsSizesPageViews,
 	AnalyticsTop10PageViews,
 	AnalyticsTrackEvents,
 	PageView
@@ -43,11 +43,11 @@ export const getDeprecatedAnalyticsClientsPageViews = async (
 
 	return {
 		browsers,
-		sizes: {
-			desktop: devices.desktop + devices.others,
+		devices: {
+			desktop: devices.desktop,
 			mobile: devices.mobile,
-			laptop: 0,
-			tablet: 0
+			tablet: 0,
+			others: devices.others
 		}
 	};
 };
@@ -62,7 +62,7 @@ export const getDeprecatedAnalyticsPageViews = async (
 		metrics: mapDeprecatedAnalyticsMetricsPageViews(pageViews),
 		top10: mapDeprecatedAnalyticsTop10PageViews(pageViews),
 		clients: {
-			sizes: mapDeprecatedAnalyticsSizesPageViews(pageViews)
+			devices: mapDeprecatedAnalyticsDevicesPageViews(pageViews)
 		}
 	};
 };
@@ -198,19 +198,19 @@ const mapDeprecatedAnalyticsTop10PageViews = (
 	};
 };
 
-const mapDeprecatedAnalyticsSizesPageViews = (
+const mapDeprecatedAnalyticsDevicesPageViews = (
 	pageViews: [AnalyticKey, PageView][]
-): AnalyticsSizesPageViews => {
+): AnalyticsDevicesPageViews => {
 	const total = pageViews.length;
 
-	const { desktop, mobile } = pageViews.reduce(
+	const { desktop, mobile, others } = pageViews.reduce(
 		(acc, [_, { user_agent }]) => {
 			const userAgent = fromNullable(user_agent);
 
 			if (isNullish(userAgent)) {
 				return {
 					...acc,
-					desktop: acc.desktop + 1
+					other: acc.others + 1
 				};
 			}
 
@@ -230,14 +230,15 @@ const mapDeprecatedAnalyticsSizesPageViews = (
 		},
 		{
 			mobile: 0,
-			desktop: 0
+			desktop: 0,
+			others: 0
 		}
 	);
 
 	return {
 		mobile: total > 0 ? mobile / total : 0,
 		desktop: total > 0 ? desktop / total : 0,
-		laptop: 0,
-		tablet: 0
+		tablet: 0,
+		others: total > 0 ? others / total : 0
 	};
 };

@@ -20,7 +20,6 @@ export interface AnalyticsClientsPageViews {
 }
 export interface AnalyticsDevicesPageViews {
 	desktop: number;
-	laptop: number;
 	others: number;
 	tablet: number;
 	mobile: number;

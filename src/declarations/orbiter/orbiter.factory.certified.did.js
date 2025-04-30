@@ -68,7 +68,6 @@ export const idlFactory = ({ IDL }) => {
 	});
 	const AnalyticsDevicesPageViews = IDL.Record({
 		desktop: IDL.Float64,
-		laptop: IDL.Float64,
 		others: IDL.Float64,
 		tablet: IDL.Float64,
 		mobile: IDL.Float64

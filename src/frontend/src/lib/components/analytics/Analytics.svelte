@@ -35,7 +35,7 @@
 		PageViewsParams,
 		PageViewsOptionPeriod,
 		AnalyticsPeriodicity
-	} from '$lib/types/ortbiter';
+	} from '$lib/types/orbiter';
 	import { getLocalStorageAnalyticsPeriodicity } from '$lib/utils/local-storage.utils';
 
 	let loadingOrbiter: 'in_progress' | 'done' | 'error' = $state('in_progress');

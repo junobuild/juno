@@ -38,7 +38,7 @@ import type {
 	AnalyticsPageViews,
 	OrbiterSatelliteConfigEntry,
 	PageViewsParams
-} from '$lib/types/ortbiter';
+} from '$lib/types/orbiter';
 import type { SatelliteIdText } from '$lib/types/satellite';
 import type { Option } from '$lib/types/utils';
 import type { Identity } from '@dfinity/agent';

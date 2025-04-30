@@ -4,7 +4,7 @@
 	import { fade } from 'svelte/transition';
 	import Chart from '$lib/components/charts/Chart.svelte';
 	import type { ChartsData } from '$lib/types/chart';
-	import type { AnalyticsPageViews } from '$lib/types/ortbiter';
+	import type { AnalyticsPageViews } from '$lib/types/orbiter';
 	import { last } from '$lib/utils/utils';
 
 	interface Props {

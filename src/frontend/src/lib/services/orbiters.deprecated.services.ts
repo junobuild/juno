@@ -13,7 +13,7 @@ import type {
 	AnalyticsPageViews,
 	DateStartOfTheDay,
 	PageViewsParams
-} from '$lib/types/ortbiter';
+} from '$lib/types/orbiter';
 import { fromBigIntNanoSeconds } from '$lib/utils/date.utils';
 import { isAndroid, isAndroidTablet, isIPhone } from '$lib/utils/device.utils';
 import { fromNullable, isNullish, nonNullish } from '@dfinity/utils';

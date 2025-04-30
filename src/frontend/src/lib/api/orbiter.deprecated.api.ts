@@ -5,7 +5,7 @@ import type {
 import type { AnalyticsMetricsPageViews } from '$declarations/deprecated/orbiter-0-0-8.did';
 import { getOrbiterActor007, getOrbiterActor008 } from '$lib/api/actors/actor.deprecated.api';
 import type { OptionIdentity } from '$lib/types/itentity';
-import type { PageViewsParams } from '$lib/types/ortbiter';
+import type { PageViewsParams } from '$lib/types/orbiter';
 import { toBigIntNanoSeconds } from '$lib/utils/date.utils';
 import type { Principal } from '@dfinity/principal';
 import { nonNullish, toNullable } from '@dfinity/utils';

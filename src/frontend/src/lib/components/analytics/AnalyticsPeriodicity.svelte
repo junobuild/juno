@@ -3,7 +3,7 @@
 	import Popover from '$lib/components/ui/Popover.svelte';
 	import Value from '$lib/components/ui/Value.svelte';
 	import { i18n } from '$lib/stores/i18n.store';
-	import type { AnalyticsPeriodicity } from '$lib/types/ortbiter';
+	import type { AnalyticsPeriodicity } from '$lib/types/orbiter';
 	import {
 		getLocalStorageAnalyticsPeriodicity,
 		setLocalStorageItem

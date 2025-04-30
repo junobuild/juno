@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { nonNullish } from '@dfinity/utils';
 	import { i18n } from '$lib/stores/i18n.store';
-	import type { AnalyticsPageViews } from '$lib/types/ortbiter';
+	import type { AnalyticsPageViews } from '$lib/types/orbiter';
 
 	interface Props {
 		pageViews: AnalyticsPageViews;

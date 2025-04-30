@@ -19,7 +19,7 @@
 	import { toasts } from '$lib/stores/toasts.store';
 	import { versionStore } from '$lib/stores/version.store';
 	import type { JunoModalDetail, JunoModalEditOrbiterConfigDetail } from '$lib/types/modal';
-	import type { OrbiterSatelliteConfigEntry } from '$lib/types/ortbiter';
+	import type { OrbiterSatelliteConfigEntry } from '$lib/types/orbiter';
 	import type { SatelliteIdText } from '$lib/types/satellite';
 
 	interface Props {

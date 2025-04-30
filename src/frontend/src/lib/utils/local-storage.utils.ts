@@ -4,7 +4,7 @@ import { DEFAULT_LIST_PARAMS } from '$lib/constants/data.constants';
 import type { ListParamsStoreData } from '$lib/stores/list-params.store';
 import type { Languages } from '$lib/types/languages';
 import { SatellitesLayout } from '$lib/types/layout';
-import type { AnalyticsPeriodicity } from '$lib/types/ortbiter';
+import type { AnalyticsPeriodicity } from '$lib/types/orbiter';
 import { Theme } from '$lib/types/theme';
 import { nonNullish } from '@dfinity/utils';
 

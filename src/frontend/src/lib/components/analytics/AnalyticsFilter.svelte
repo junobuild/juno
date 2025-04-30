@@ -11,7 +11,7 @@
 	import type {
 		PageViewsOptionPeriod,
 		AnalyticsPeriodicity as AnalyticsPeriodicityType
-	} from '$lib/types/ortbiter';
+	} from '$lib/types/orbiter';
 
 	interface Props {
 		selectPeriod: (period: PageViewsOptionPeriod) => void;

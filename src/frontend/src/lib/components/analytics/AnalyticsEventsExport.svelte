@@ -11,7 +11,7 @@
 		PageViewsParams,
 		PageViewsOptionPeriod,
 		AnalyticsPeriodicity
-	} from '$lib/types/ortbiter';
+	} from '$lib/types/orbiter';
 	import { filenameTimestamp, JSON_PICKER_OPTIONS, saveToFileSystem } from '$lib/utils/save.utils';
 
 	interface Props {

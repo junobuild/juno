@@ -1,12 +1,16 @@
 import type {
-	AnalyticKey, AnalyticsClientsPageViews,
-	AnalyticsMetricsPageViews, AnalyticsSizesPageViews,
+	AnalyticKey,
+	AnalyticsMetricsPageViews,
+	AnalyticsSizesPageViews,
 	AnalyticsTop10PageViews,
 	AnalyticsTrackEvents,
 	PageView
 } from '$declarations/orbiter/orbiter.did';
 import { getPageViews, getTrackEvents } from '$lib/api/orbiter.api';
-import { getAnalyticsClientsPageViews008, getAnalyticsMetricsPageViews008 } from '$lib/api/orbiter.deprecated.api';
+import {
+	getAnalyticsClientsPageViews008,
+	getAnalyticsMetricsPageViews008
+} from '$lib/api/orbiter.deprecated.api';
 import type {
 	AnalyticsClients,
 	AnalyticsMetrics,
@@ -226,7 +230,7 @@ const mapDeprecatedAnalyticsSizesPageViews = (
 		},
 		{
 			mobile: 0,
-			desktop: 0,
+			desktop: 0
 		}
 	);
 
@@ -234,6 +238,6 @@ const mapDeprecatedAnalyticsSizesPageViews = (
 		mobile: total > 0 ? mobile / total : 0,
 		desktop: total > 0 ? desktop / total : 0,
 		laptop: 0,
-		tablet: 0,
+		tablet: 0
 	};
 };

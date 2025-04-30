@@ -14,9 +14,16 @@ export interface AnalyticsBrowsersPageViews {
 	chrome: number;
 }
 export interface AnalyticsClientsPageViews {
-	sizes: AnalyticsSizesPageViews;
 	browsers: AnalyticsBrowsersPageViews;
 	operating_systems: AnalyticsOperatingSystemsPageViews;
+	devices: AnalyticsDevicesPageViews;
+}
+export interface AnalyticsDevicesPageViews {
+	desktop: number;
+	laptop: number;
+	others: number;
+	tablet: number;
+	mobile: number;
 }
 export interface AnalyticsMetricsPageViews {
 	total_sessions: bigint;
@@ -34,12 +41,6 @@ export interface AnalyticsOperatingSystemsPageViews {
 	linux: number;
 	android: number;
 	windows: number;
-}
-export interface AnalyticsSizesPageViews {
-	desktop: number;
-	laptop: number;
-	tablet: number;
-	mobile: number;
 }
 export interface AnalyticsTop10PageViews {
 	referrers: Array<[string, number]>;
@@ -124,6 +125,7 @@ export interface OrbiterSatelliteFeatures {
 	page_views: boolean;
 }
 export interface PageView {
+	client: [] | [PageViewClient];
 	title: string;
 	updated_at: bigint;
 	referrer: [] | [string];
@@ -135,6 +137,11 @@ export interface PageView {
 	device: PageViewDevice;
 	version: [] | [bigint];
 	user_agent: [] | [string];
+}
+export interface PageViewClient {
+	os: string;
+	device: string;
+	browser: string;
 }
 export interface PageViewDevice {
 	inner_height: number;

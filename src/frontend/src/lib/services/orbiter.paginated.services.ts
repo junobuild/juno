@@ -1,6 +1,7 @@
 import type {
 	AnalyticsBrowsersPageViews,
-	AnalyticsOperatingSystemsPageViews, AnalyticsSizesPageViews
+	AnalyticsOperatingSystemsPageViews,
+	AnalyticsSizesPageViews
 } from '$declarations/orbiter/orbiter.did';
 import { getAnalyticsPageViews } from '$lib/services/orbiters.services';
 import type { AnalyticsPageViews, PageViewsParams } from '$lib/types/orbiter';
@@ -100,7 +101,7 @@ const aggregateClients = ({
 		others: 0,
 		linux: 0,
 		android: 0,
-		windows: 0,
+		windows: 0
 	};
 
 	for (const { clients, metrics } of dailyMetrics) {

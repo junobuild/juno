@@ -33,7 +33,7 @@
 		grid-template-columns: repeat(2, calc((100% - var(--padding-1_5x)) / 2));
 
 		column-gap: var(--padding-1_5x);
-		padding: var(--padding-2x) 0;
+		padding: var(--padding-2x) 0 var(--padding);
 
 		@include media.min-width(large) {
 			grid-template-columns: repeat(3, calc((100% - (2 * var(--padding-4x))) / 3));

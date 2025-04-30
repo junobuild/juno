@@ -1,11 +1,13 @@
 import type {
 	AnalyticKey,
 	AnalyticsDevicesPageViews,
+	AnalyticsMetricsPageViews,
 	AnalyticsTop10PageViews,
 	AnalyticsTrackEvents,
 	PageView
 } from '$declarations/orbiter/orbiter.did';
 import { getPageViews, getTrackEvents } from '$lib/api/orbiter.api';
+import { getAnalyticsMetricsPageViews008 } from '$lib/api/orbiter.deprecated.api';
 import type {
 	AnalyticsMetrics,
 	AnalyticsPageViews,
@@ -17,6 +19,19 @@ import { isAndroid, isAndroidTablet, isIPhone } from '$lib/utils/device.utils';
 import { fromNullable, isNullish, nonNullish } from '@dfinity/utils';
 import { startOfDay } from 'date-fns';
 
+export const getDeprecatedAnalyticsMetricsPageViews = async (
+	params: PageViewsParams
+): Promise<AnalyticsMetricsPageViews> => {
+	const { unique_sessions, ...rest } = await getAnalyticsMetricsPageViews008(params);
+
+	return {
+		...rest,
+		unique_sessions,
+		// Introduce a relatively negligible (to some extension) difference when presenting analytics averages. Better than throwing errors.
+		total_sessions: BigInt(unique_sessions)
+	};
+};
+
 export const getDeprecatedAnalyticsPageViews = async (
 	params: PageViewsParams
 ): Promise<AnalyticsPageViews> => {
@@ -24,10 +39,10 @@ export const getDeprecatedAnalyticsPageViews = async (
 	const pageViews = await getPageViews(params);
 
 	return {
-		metrics: getDeprecatedAnalyticsMetricsPageViews(pageViews),
-		top10: getDeprecatedAnalyticsTop10PageViews(pageViews),
+		metrics: mapDeprecatedAnalyticsMetricsPageViews(pageViews),
+		top10: mapDeprecatedAnalyticsTop10PageViews(pageViews),
 		clients: {
-			devices: getDeprecatedAnalyticsDevicesPageViews(pageViews)
+			devices: mapDeprecatedAnalyticsDevicesPageViews(pageViews)
 		}
 	};
 };
@@ -50,7 +65,7 @@ export const getDeprecatedAnalyticsTrackEvents = async (
 	};
 };
 
-const getDeprecatedAnalyticsMetricsPageViews = (
+const mapDeprecatedAnalyticsMetricsPageViews = (
 	pageViews: [AnalyticKey, PageView][]
 ): AnalyticsMetrics => {
 	const totalPageViews = pageViews.reduce<Record<DateStartOfTheDay, number>>(
@@ -100,6 +115,8 @@ const getDeprecatedAnalyticsMetricsPageViews = (
 
 	return {
 		unique_sessions: BigInt(uniqueSessions),
+		// Introduce a relatively negligible difference when presenting analytics averages. Better than throwing errors.
+		total_sessions: BigInt(uniqueSessions),
 		unique_page_views: BigInt(uniquePageViews),
 		total_page_views: pageViews.length,
 		daily_total_page_views: totalPageViews,
@@ -108,7 +125,7 @@ const getDeprecatedAnalyticsMetricsPageViews = (
 	};
 };
 
-const getDeprecatedAnalyticsTop10PageViews = (
+const mapDeprecatedAnalyticsTop10PageViews = (
 	pageViews: [AnalyticKey, PageView][]
 ): AnalyticsTop10PageViews => {
 	const referrers = pageViews
@@ -161,7 +178,7 @@ const getDeprecatedAnalyticsTop10PageViews = (
 	};
 };
 
-const getDeprecatedAnalyticsDevicesPageViews = (
+const mapDeprecatedAnalyticsDevicesPageViews = (
 	pageViews: [AnalyticKey, PageView][]
 ): AnalyticsDevicesPageViews => {
 	const total = pageViews.length;

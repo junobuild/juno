@@ -10,15 +10,25 @@ import type { Principal } from '@dfinity/principal';
 import type { PrincipalText } from '@dfinity/zod-schemas';
 
 export interface PageViewsPeriod {
-	from?: Date;
+	from: Date;
 	to?: Date;
+}
+
+export type PageViewsOptionPeriod = Partial<PageViewsPeriod>;
+
+// One day = 24 hours
+// A week = 7 days = 168 hours
+// A month = 30 days = 720 hours
+export interface AnalyticsPeriodicity {
+	periodicity: 4 | 8 | 12 | 24 | 168 | 720;
 }
 
 export type PageViewsParams = {
 	satelliteId?: Principal;
 	orbiterId: Principal;
 	identity: OptionIdentity;
-} & PageViewsPeriod;
+} & PageViewsPeriod &
+	AnalyticsPeriodicity;
 
 export type DateStartOfTheDay = string;
 

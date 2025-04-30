@@ -77,6 +77,7 @@ pub mod interface {
     #[derive(CandidType, Deserialize, Clone)]
     pub struct AnalyticsMetricsPageViews {
         pub daily_total_page_views: HashMap<CalendarDate, u32>,
+        pub total_sessions: usize,
         pub unique_sessions: usize,
         pub unique_page_views: usize,
         pub total_page_views: u32,

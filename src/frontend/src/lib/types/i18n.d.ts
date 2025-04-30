@@ -391,6 +391,18 @@ interface I18nAnalytics {
 	page_views: string;
 	configuration_description: string;
 	tracked_metrics: string;
+	warn_no_from: string;
+	analytics_updated: string;
+	adjust_periodicity: string;
+	periodicity: string;
+	four_hours: string;
+	eight_hours: string;
+	half_day: string;
+	one_day: string;
+	a_week: string;
+	a_month: string;
+	why_periodicity: string;
+	periodicity_impact: string;
 }
 
 interface I18nHosting {

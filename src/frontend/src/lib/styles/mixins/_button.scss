@@ -91,6 +91,8 @@
 	width: var(--padding-3x);
 	padding: var(--padding-0_25x);
 	margin: 0;
+
+	@include visually-hidden;
 }
 
 @mixin icon {
@@ -99,6 +101,10 @@
 	background: inherit;
 	margin: 0;
 
+	@include visually-hidden;
+}
+
+@mixin visually-hidden {
 	span {
 		width: 100%;
 		@include text.truncate;

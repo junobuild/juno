@@ -67,7 +67,6 @@ export const idlFactory = ({ IDL }) => {
 		year: IDL.Int32
 	});
 	const AnalyticsMetricsPageViews = IDL.Record({
-		total_sessions: IDL.Nat64,
 		bounce_rate: IDL.Float64,
 		average_page_views_per_session: IDL.Float64,
 		daily_total_page_views: IDL.Vec(IDL.Tuple(CalendarDate, IDL.Nat32)),

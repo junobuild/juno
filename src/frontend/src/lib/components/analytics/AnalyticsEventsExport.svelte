@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { jsonReplacer } from '@dfinity/utils';
+	import { isNullish, jsonReplacer } from '@dfinity/utils';
 	import type { Orbiter } from '$declarations/mission_control/mission_control.did';
 	import { getTrackEvents } from '$lib/api/orbiter.api';
 	import { satelliteStore } from '$lib/derived/satellite.derived';
@@ -7,25 +7,39 @@
 	import { busy } from '$lib/stores/busy.store';
 	import { i18n } from '$lib/stores/i18n.store';
 	import { toasts } from '$lib/stores/toasts.store';
-	import type { PageViewsParams, PageViewsPeriod } from '$lib/types/ortbiter';
+	import type {
+		PageViewsParams,
+		PageViewsOptionPeriod,
+		AnalyticsPeriodicity
+	} from '$lib/types/ortbiter';
 	import { filenameTimestamp, JSON_PICKER_OPTIONS, saveToFileSystem } from '$lib/utils/save.utils';
 
 	interface Props {
-		period?: PageViewsPeriod;
+		period?: PageViewsOptionPeriod;
+		periodicity: AnalyticsPeriodicity;
 		orbiter: Orbiter;
 	}
 
-	let { period = {}, orbiter }: Props = $props();
+	let { period = {}, periodicity, orbiter }: Props = $props();
 
 	const exportEvents = async () => {
 		busy.start();
 
 		try {
+			const { from, ...restPeriod } = period;
+
+			if (isNullish(from)) {
+				toasts.warn($i18n.analytics.warn_no_from);
+				return;
+			}
+
 			const params: PageViewsParams = {
 				satelliteId: $satelliteStore?.satellite_id,
 				orbiterId: orbiter.orbiter_id,
 				identity: $authStore.identity,
-				...period
+				...periodicity,
+				from,
+				...restPeriod
 			};
 
 			const trackEvents = await getTrackEvents(params);

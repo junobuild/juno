@@ -8,6 +8,12 @@
 	import type { SatelliteIdText } from '$lib/types/satellite';
 	import { navigateToAnalytics } from '$lib/utils/nav.utils';
 
+	interface Props {
+		disabled?: boolean;
+	}
+
+	let { disabled = false }: Props = $props();
+
 	const navigate = async () =>
 		await navigateToAnalytics(
 			nonNullish(satelliteIdText) ? Principal.fromText(satelliteIdText) : undefined
@@ -48,6 +54,7 @@
 	class="big"
 	bind:value={satelliteIdText}
 	onchange={navigate}
+	{disabled}
 >
 	<option value={undefined}>{$i18n.analytics.all_satellites}</option>
 

@@ -121,7 +121,7 @@ pub mod interface {
 
     #[derive(CandidType, Deserialize, Clone)]
     pub struct AnalyticsClientsPageViews {
-        pub sizes: AnalyticsDevicesPageViews,
+        pub devices: AnalyticsDevicesPageViews,
         pub browsers: AnalyticsBrowsersPageViews,
         pub operating_systems: AnalyticsOperatingSystemsPageViews,
     }

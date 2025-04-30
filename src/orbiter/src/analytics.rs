@@ -164,7 +164,7 @@ pub fn analytics_page_views_clients(
         }
     }
 
-    let sizes = AnalyticsDevicesPageViews {
+    let devices = AnalyticsDevicesPageViews {
         desktop: normalize(total_devices.desktop, total),
         laptop: normalize(total_devices.laptop, total),
         tablet: normalize(total_devices.tablet, total),
@@ -190,7 +190,7 @@ pub fn analytics_page_views_clients(
     };
 
     AnalyticsClientsPageViews {
-        sizes,
+        devices,
         browsers,
         operating_systems,
     }
@@ -424,7 +424,7 @@ fn analytics_browsers(client: &Option<PageViewClient>, browsers: &mut Browsers) 
         match browser.as_str() {
             b if b.contains("chrome") || b.contains("crios") => browsers.chrome += 1,
             b if b.contains("firefox") => browsers.firefox += 1,
-            b if b.contains("safari") && !b.contains("chrome") => browsers.safari += 1,
+            b if b.contains("safari") && !b.contains("chrome") && !b.contains("crios") => browsers.safari += 1,
             b if b.contains("opera") || b.contains("opr") => browsers.opera += 1,
             _ => browsers.others += 1,
         }

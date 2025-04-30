@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { isNullish, nonNullish, debounce } from '@dfinity/utils';
 	import { addMonths } from 'date-fns';
-	import { run } from 'svelte/legacy';
+	import { fade } from 'svelte/transition';
 	import type {
 		AnalyticsTrackEvents,
 		AnalyticsWebVitalsPerformanceMetrics
@@ -16,11 +16,12 @@
 	import AnalyticsPerformanceMetrics from '$lib/components/analytics/AnalyticsPerformanceMetrics.svelte';
 	import NoAnalytics from '$lib/components/analytics/NoAnalytics.svelte';
 	import SpinnerParagraph from '$lib/components/ui/SpinnerParagraph.svelte';
+	import Warning from '$lib/components/ui/Warning.svelte';
 	import { orbiterFeatures } from '$lib/derived/orbiter-satellites.derived';
-	import { orbiterStore } from '$lib/derived/orbiter.derived';
+	import { orbitersStore, orbiterStore } from '$lib/derived/orbiter.derived';
 	import { satelliteStore } from '$lib/derived/satellite.derived';
+	import { getAnalyticsPageViewsPerDay } from '$lib/services/orbiter.paginated.services';
 	import {
-		getAnalyticsPageViews,
 		getAnalyticsPerformanceMetrics,
 		getAnalyticsTrackEvents,
 		loadOrbiterConfigs
@@ -32,38 +33,38 @@
 	import type {
 		AnalyticsPageViews as AnalyticsPageViewsType,
 		PageViewsParams,
-		PageViewsPeriod
+		PageViewsOptionPeriod,
+		AnalyticsPeriodicity
 	} from '$lib/types/ortbiter';
+	import { getLocalStorageAnalyticsPeriodicity } from '$lib/utils/local-storage.utils';
 
-	let loading: 'in_progress' | 'success' | 'error' = $state('in_progress');
+	let loadingOrbiter: 'in_progress' | 'done' | 'error' = $state('in_progress');
+	let reloadingAnalytics: 'idle' | 'in_progress' | 'loaded' | 'error' = $state('idle');
 
 	let pageViews: AnalyticsPageViewsType | undefined = $state(undefined);
 	let trackEvents: AnalyticsTrackEvents | undefined = $state(undefined);
 	let performanceMetrics: AnalyticsWebVitalsPerformanceMetrics | undefined = $state(undefined);
 
-	let period: PageViewsPeriod = $state({
+	let period = $state<PageViewsOptionPeriod>({
 		from: addMonths(new Date(), -1)
 	});
 
-	const loadAnalytics = async () => {
+	let periodicity = $state<AnalyticsPeriodicity>(getLocalStorageAnalyticsPeriodicity());
+
+	const loadAnalytics = async (): Promise<{ result: 'ok' | 'error' | 'skip' }> => {
 		if (isNullish($orbiterStore)) {
-			loading = 'success';
-			return;
+			return { result: 'skip' };
 		}
 
 		if (isNullish($versionStore.orbiter) || isNullish($versionStore.orbiter?.current)) {
-			return;
+			return { result: 'skip' };
 		}
 
-		const { result } = await loadOrbiterConfigs({
-			orbiterId: $orbiterStore.orbiter_id,
-			orbiterVersion: $versionStore.orbiter.current,
-			reload: false
-		});
+		const { from, ...restPeriod } = period;
 
-		if (result === 'error') {
-			loading = 'error';
-			return;
+		if (isNullish(from)) {
+			toasts.warn($i18n.analytics.warn_no_from);
+			return { result: 'skip' };
 		}
 
 		try {
@@ -71,12 +72,14 @@
 				satelliteId: $satelliteStore?.satellite_id,
 				orbiterId: $orbiterStore.orbiter_id,
 				identity: $authStore.identity,
-				...period
+				...periodicity,
+				from,
+				...restPeriod
 			};
 
 			// We need the page views to display some statistics currently
 			const promises = [
-				getAnalyticsPageViews({ params, orbiterVersion: $versionStore.orbiter.current }),
+				getAnalyticsPageViewsPerDay({ params, orbiterVersion: $versionStore.orbiter.current }),
 				...[
 					$orbiterFeatures?.track_events === true
 						? getAnalyticsTrackEvents({ params, orbiterVersion: $versionStore.orbiter.current })
@@ -98,69 +101,137 @@
 			trackEvents = events as AnalyticsTrackEvents | undefined;
 			performanceMetrics = metrics as AnalyticsWebVitalsPerformanceMetrics | undefined;
 
-			loading = 'success';
+			return { result: 'ok' };
 		} catch (err: unknown) {
 			toasts.error({
 				text: $i18n.errors.analytics_load_error,
 				detail: err
 			});
 
-			loading = 'error';
+			return { result: 'error' };
 		}
 	};
 
-	const debouncePageViews = debounce(loadAnalytics);
+	const reloadAnalytics = async (): Promise<{ result: 'ok' | 'error' | 'skip' }> => {
+		reloadingAnalytics = 'in_progress';
 
-	run(() => {
-		// @ts-expect-error TODO: to be migrated to Svelte v5
-		$orbiterStore, $satelliteStore, $versionStore, period, debouncePageViews();
+		const { result } = await loadAnalytics();
+
+		if (result !== 'ok') {
+			reloadingAnalytics = 'error';
+			return { result };
+		}
+
+		reloadingAnalytics = 'loaded';
+		toasts.success($i18n.analytics.analytics_updated);
+
+		setTimeout(() => {
+			reloadingAnalytics = 'idle';
+		}, 1500);
+
+		return { result };
+	};
+
+	const init = async () => {
+		if ($orbitersStore === undefined) {
+			return;
+		}
+
+		if (isNullish($orbiterStore)) {
+			loadingOrbiter = 'done';
+			return;
+		}
+
+		if (isNullish($versionStore.orbiter) || isNullish($versionStore.orbiter?.current)) {
+			return;
+		}
+
+		const { result } = await loadOrbiterConfigs({
+			orbiterId: $orbiterStore.orbiter_id,
+			orbiterVersion: $versionStore.orbiter.current,
+			reload: false
+		});
+
+		if (result === 'error') {
+			loadingOrbiter = 'error';
+			return;
+		}
+
+		loadingOrbiter = 'done';
+
+		await loadAnalytics();
+	};
+
+	const debounceInit = debounce(init);
+
+	$effect(() => {
+		$orbitersStore;
+		$versionStore;
+
+		debounceInit();
 	});
 
-	const selectPeriod = (detail: PageViewsPeriod) => (period = detail);
+	const selectPeriod = (detail: PageViewsOptionPeriod) => (period = detail);
+	const selectPeriodicity = (detail: AnalyticsPeriodicity) => (periodicity = detail);
 </script>
 
-{#if loading === 'in_progress'}
+{#if loadingOrbiter === 'in_progress'}
 	<div class="loading">
 		<SpinnerParagraph>{$i18n.analytics.loading}</SpinnerParagraph>
 	</div>
-{:else}
-	{#if nonNullish($orbiterStore)}
-		<AnalyticsFilter {selectPeriod} />
-	{/if}
-
-	{#if isNullish($orbiterStore) && loading === 'success'}
-		<NoAnalytics />
-	{:else if nonNullish($orbiterStore) && loading === 'error'}
-		<p>{$i18n.analytics.error_msg}</p>
-	{:else if nonNullish($orbiterStore) && nonNullish(pageViews)}
-		<AnalyticsChart data={pageViews} />
-
-		<AnalyticsMetrics {pageViews} />
-
-		<AnalyticsPageViews {pageViews} />
-
-		{#if nonNullish(performanceMetrics) && performanceMetrics.pages.length > 0}
-			<hr />
-
-			<AnalyticsPerformanceMetrics {performanceMetrics} />
-		{/if}
-
-		{#if nonNullish(trackEvents) && trackEvents.total.length > 0}
-			<hr />
-
-			<AnalyticsEvents {trackEvents} />
-
-			<AnalyticsEventsExport orbiter={$orbiterStore} {period} />
-		{/if}
-	{/if}
-
+{:else if loadingOrbiter !== 'error'}
 	{#if isNullish($orbiterStore)}
+		<NoAnalytics />
+
 		<AnalyticsNew />
+	{:else}
+		<AnalyticsFilter {selectPeriod} {selectPeriodicity} loadAnalytics={reloadAnalytics} />
+
+		{#if reloadingAnalytics === 'error'}
+			<div in:fade><Warning>{$i18n.analytics.error_msg}</Warning></div>
+		{:else if reloadingAnalytics === 'in_progress'}
+			<div class="loading-data" in:fade>
+				<SpinnerParagraph>{$i18n.analytics.loading}</SpinnerParagraph>
+			</div>
+		{/if}
+
+		{#if nonNullish(pageViews)}
+			<AnalyticsChart data={pageViews} />
+
+			<AnalyticsMetrics {pageViews} />
+
+			<AnalyticsPageViews {pageViews} />
+
+			{#if nonNullish(performanceMetrics) && performanceMetrics.pages.length > 0}
+				<hr />
+
+				<AnalyticsPerformanceMetrics {performanceMetrics} />
+			{/if}
+
+			{#if nonNullish(trackEvents) && trackEvents.total.length > 0}
+				<hr />
+
+				<AnalyticsEvents {trackEvents} />
+
+				<AnalyticsEventsExport orbiter={$orbiterStore} {period} {periodicity} />
+			{/if}
+		{/if}
 	{/if}
 {/if}
 
 <style lang="scss">
 	.loading {
-		margin: calc(var(--padding-3x) + var(--padding-0_5x)) 0 0;
+		margin: var(--padding-3x) 0 0;
+	}
+
+	.loading-data {
+		margin: var(--padding-2x) 0 var(--padding-6x);
+		--spinner-paragraph-margin: 0;
+	}
+
+	.loaded {
+		display: inline-block;
+		font-size: var(--font-size-small);
+		padding: 0 0 var(--padding-2x);
 	}
 </style>

@@ -1,8 +1,10 @@
 import { browser } from '$app/environment';
+import { DEFAULT_ANALYTICS_PERIODICITY } from '$lib/constants/analytics.constants';
 import { DEFAULT_LIST_PARAMS } from '$lib/constants/data.constants';
 import type { ListParamsStoreData } from '$lib/stores/list-params.store';
 import type { Languages } from '$lib/types/languages';
 import { SatellitesLayout } from '$lib/types/layout';
+import type { AnalyticsPeriodicity } from '$lib/types/ortbiter';
 import { Theme } from '$lib/types/theme';
 import { nonNullish } from '@dfinity/utils';
 
@@ -83,5 +85,23 @@ export const getLocalStorageSatellitesLayout = (): SatellitesLayout => {
 		// We use the local storage for the operational part of the app but, not crucial
 		console.error(err);
 		return SatellitesLayout.CARDS;
+	}
+};
+
+export const getLocalStorageAnalyticsPeriodicity = (): AnalyticsPeriodicity => {
+	try {
+		const { analytics_periodicity }: Storage = browser
+			? localStorage
+			: ({
+					analytics_periodicity: JSON.stringify(DEFAULT_ANALYTICS_PERIODICITY)
+				} as unknown as Storage);
+
+		return nonNullish(analytics_periodicity)
+			? JSON.parse(analytics_periodicity)
+			: DEFAULT_ANALYTICS_PERIODICITY;
+	} catch (err: unknown) {
+		// We use the local storage for the operational part of the app but, not crucial
+		console.error(err);
+		return DEFAULT_ANALYTICS_PERIODICITY;
 	}
 };

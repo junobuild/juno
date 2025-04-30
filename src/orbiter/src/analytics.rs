@@ -394,22 +394,15 @@ fn analytics_devices(client: &Option<PageViewClient>, devices: &mut Devices) {
         ..
     }) = client
     {
-        if device.contains("iphone")
-            || device.contains("android")
-            || operating_system.contains("android")
-        {
+        let device = device.as_deref().unwrap_or("desktop").to_ascii_lowercase();
+        let os = operating_system.to_ascii_lowercase();
+
+        if device.contains("iphone") || device.contains("android") || os.contains("android") {
             devices.mobile += 1;
         } else if device.contains("ipad") || device.contains("tablet") {
             devices.tablet += 1;
-        } else if device.contains("mac")
-            || device.contains("windows")
-            || operating_system.contains("mac")
-            || operating_system.contains("windows")
-            || operating_system.contains("linux")
-        {
-            devices.desktop += 1;
         } else {
-            devices.others += 1;
+            devices.desktop += 1;
         }
     } else {
         devices.others += 1;
@@ -418,10 +411,12 @@ fn analytics_devices(client: &Option<PageViewClient>, devices: &mut Devices) {
 
 fn analytics_browsers(client: &Option<PageViewClient>, browsers: &mut Browsers) {
     if let Some(PageViewClient { browser, .. }) = client {
-        match browser.as_str() {
+        match browser.to_ascii_lowercase().as_str() {
             b if b.contains("chrome") || b.contains("crios") => browsers.chrome += 1,
             b if b.contains("firefox") => browsers.firefox += 1,
-            b if b.contains("safari") && !b.contains("chrome") && !b.contains("crios") => browsers.safari += 1,
+            b if b.contains("safari") && !b.contains("chrome") && !b.contains("crios") => {
+                browsers.safari += 1
+            }
             b if b.contains("opera") || b.contains("opr") => browsers.opera += 1,
             _ => browsers.others += 1,
         }
@@ -435,7 +430,7 @@ fn analytics_operating_systems(client: &Option<PageViewClient>, os_counts: &mut 
         operating_system, ..
     }) = client
     {
-        match operating_system.as_str() {
+        match operating_system.to_ascii_lowercase().as_str() {
             os if os.contains("ios") => os_counts.ios += 1,
             os if os.contains("android") => os_counts.android += 1,
             os if os.contains("windows") => os_counts.windows += 1,

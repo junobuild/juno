@@ -6,8 +6,7 @@ use crate::events::filters::{filter_analytics, filter_satellites_analytics};
 use crate::state::memory::STATE;
 use crate::state::types::memory::{StoredPageView, StoredTrackEvent};
 use crate::state::types::state::{
-    AnalyticKey, AnalyticSatelliteKey, PageView, PageViewClient, PerformanceMetric, StableState,
-    TrackEvent,
+    AnalyticKey, AnalyticSatelliteKey, PageView, PerformanceMetric, StableState, TrackEvent,
 };
 use crate::types::interface::{GetAnalytics, SetPageView, SetPerformanceMetric, SetTrackEvent};
 use ic_cdk::api::time;
@@ -15,19 +14,13 @@ use junobuild_shared::assert::{assert_timestamp, assert_version};
 use junobuild_shared::types::state::Timestamp;
 use junobuild_shared::version::next_version;
 
-pub fn insert_page_view(
-    key: AnalyticKey,
-    page_view: SetPageView,
-    client: &Option<PageViewClient>,
-) -> Result<PageView, String> {
-    STATE
-        .with(|state| insert_page_view_impl(key, page_view, client, &mut state.borrow_mut().stable))
+pub fn insert_page_view(key: AnalyticKey, page_view: SetPageView) -> Result<PageView, String> {
+    STATE.with(|state| insert_page_view_impl(key, page_view, &mut state.borrow_mut().stable))
 }
 
 fn insert_page_view_impl(
     key: AnalyticKey,
     page_view: SetPageView,
-    client: &Option<PageViewClient>,
     state: &mut StableState,
 ) -> Result<PageView, String> {
     assert_bot(&page_view.user_agent)?;
@@ -103,7 +96,7 @@ fn insert_page_view_impl(
         referrer: page_view.referrer,
         device: page_view.device,
         user_agent: page_view.user_agent,
-        client: client.clone(),
+        client: page_view.client,
         time_zone: page_view.time_zone,
         satellite_id: page_view.satellite_id,
         session_id,

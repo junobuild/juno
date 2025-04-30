@@ -1,6 +1,6 @@
 pub mod interface {
     use crate::state::types::state::{
-        PageViewDevice, PerformanceData, PerformanceMetricName, SessionId,
+        PageViewClient, PageViewDevice, PerformanceData, PerformanceMetricName, SessionId,
     };
     use candid::CandidType;
     use junobuild_shared::types::core::DomainName;
@@ -19,6 +19,7 @@ pub mod interface {
         pub device: PageViewDevice,
         pub time_zone: String,
         pub user_agent: Option<String>,
+        pub client: Option<PageViewClient>,
         pub satellite_id: SatelliteId,
         pub session_id: SessionId,
         #[deprecated(
@@ -147,7 +148,7 @@ pub mod interface {
 
     pub mod http {
         use crate::state::types::state::{
-            Key, PageViewClient, PageViewDevice, PerformanceData, PerformanceMetricName, SessionId,
+            Key, PageViewDevice, PerformanceData, PerformanceMetricName, SessionId,
         };
         use junobuild_shared::types::state::Metadata;
         use junobuild_utils::DocDataBigInt;
@@ -232,6 +233,7 @@ pub mod interface {
             pub device: PageViewDevice,
             pub time_zone: String,
             pub user_agent: Option<String>,
+            pub client: Option<PageViewClientPayload>,
             pub session_id: SessionId,
             pub version: VersionPayload,
         }
@@ -266,12 +268,21 @@ pub mod interface {
             #[serde(skip_serializing_if = "Option::is_none")]
             pub user_agent: Option<String>,
             #[serde(skip_serializing_if = "Option::is_none")]
-            pub client: Option<PageViewClient>,
+            pub client: Option<PageViewClientPayload>,
             pub session_id: SessionId,
             pub created_at: TimestampPayload,
             pub updated_at: TimestampPayload,
             #[serde(skip_serializing_if = "Option::is_none")]
             pub version: VersionPayload,
+        }
+
+        #[derive(Deserialize, Serialize)]
+        pub struct PageViewClientPayload {
+            pub browser: String,
+            #[serde(rename = "os")]
+            pub operating_system: String,
+            #[serde(skip_serializing_if = "Option::is_none")]
+            pub device: Option<String>,
         }
 
         #[derive(Serialize)]

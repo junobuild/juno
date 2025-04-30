@@ -1,7 +1,10 @@
-use crate::state::types::state::{AnalyticKey, PageView, PerformanceMetric, TrackEvent};
+use crate::state::types::state::{
+    AnalyticKey, PageView, PageViewClient, PerformanceMetric, TrackEvent,
+};
 use crate::types::interface::http::{
-    AnalyticKeyPayload, PageViewPayload, PerformanceMetricPayload, SatelliteIdText,
-    SetPageViewPayload, SetPerformanceMetricPayload, SetTrackEventPayload, TrackEventPayload,
+    AnalyticKeyPayload, PageViewClientPayload, PageViewPayload, PerformanceMetricPayload,
+    SatelliteIdText, SetPageViewPayload, SetPerformanceMetricPayload, SetTrackEventPayload,
+    TrackEventPayload,
 };
 use crate::types::interface::{SetPageView, SetPerformanceMetric, SetTrackEvent};
 use candid::types::principal::PrincipalError;
@@ -29,6 +32,7 @@ impl SetPageViewPayload {
             device: payload.device,
             time_zone: payload.time_zone,
             user_agent: payload.user_agent,
+            client: payload.client.map(PageViewClient::convert_to_setter),
             satellite_id: Principal::from_text(satellite_id)?,
             session_id: payload.session_id,
             updated_at: None,
@@ -36,6 +40,16 @@ impl SetPageViewPayload {
         };
 
         Ok(page_view)
+    }
+}
+
+impl PageViewClient {
+    pub fn convert_to_setter(payload: PageViewClientPayload) -> Self {
+        Self {
+            browser: payload.browser,
+            operating_system: payload.operating_system,
+            device: payload.device,
+        }
     }
 }
 
@@ -47,7 +61,7 @@ impl PageViewPayload {
             referrer: page_view.referrer,
             device: page_view.device,
             user_agent: page_view.user_agent,
-            client: page_view.client,
+            client: page_view.client.map(PageViewClientPayload::from_domain),
             time_zone: page_view.time_zone,
             session_id: page_view.session_id,
             created_at: DocDataBigInt {
@@ -59,6 +73,16 @@ impl PageViewPayload {
             version: page_view
                 .version
                 .map(|version| DocDataBigInt { value: version }),
+        }
+    }
+}
+
+impl PageViewClientPayload {
+    pub fn from_domain(client: PageViewClient) -> Self {
+        Self {
+            browser: client.browser,
+            operating_system: client.operating_system,
+            device: client.device,
         }
     }
 }

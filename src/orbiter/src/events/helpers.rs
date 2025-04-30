@@ -2,7 +2,6 @@ use crate::assert::config::{
     assert_page_views_enabled, assert_performance_metrics_enabled, assert_track_events_enabled,
 };
 use crate::config::store::get_satellite_config;
-use crate::events::parsers::parse_page_view_client;
 use crate::events::store::{insert_page_view, insert_performance_metric, insert_track_event};
 use crate::state::types::state::{AnalyticKey, PageView, PerformanceMetric, TrackEvent};
 use crate::types::interface::{SetPageView, SetPerformanceMetric, SetTrackEvent};
@@ -13,9 +12,7 @@ pub fn assert_and_insert_page_view(
 ) -> Result<PageView, String> {
     assert_page_views_enabled(&get_satellite_config(&page_view.satellite_id))?;
 
-    let client = parse_page_view_client(&page_view);
-
-    insert_page_view(key, page_view, &client)
+    insert_page_view(key, page_view)
 }
 
 pub fn assert_and_insert_track_event(

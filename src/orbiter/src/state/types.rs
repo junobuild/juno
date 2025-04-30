@@ -85,7 +85,7 @@ pub mod state {
         pub browser: String,
         #[serde(rename = "os")]
         pub operating_system: String,
-        pub device: String,
+        pub device: Option<String>,
     }
 
     #[derive(Default, CandidType, Serialize, Deserialize, Clone)]

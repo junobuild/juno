@@ -7,13 +7,9 @@ type AnalyticsBrowsersPageViews = record {
   chrome : float64;
 };
 type AnalyticsClientsPageViews = record {
+  sizes : AnalyticsSizesPageViews;
   browsers : AnalyticsBrowsersPageViews;
-  devices : AnalyticsDevicesPageViews;
-};
-type AnalyticsDevicesPageViews = record {
-  desktop : float64;
-  others : float64;
-  mobile : float64;
+  operating_systems : AnalyticsOperatingSystemsPageViews;
 };
 type AnalyticsMetricsPageViews = record {
   total_sessions : nat64;
@@ -23,6 +19,20 @@ type AnalyticsMetricsPageViews = record {
   total_page_views : nat32;
   unique_page_views : nat64;
   unique_sessions : nat64;
+};
+type AnalyticsOperatingSystemsPageViews = record {
+  ios : float64;
+  macos : float64;
+  others : float64;
+  linux : float64;
+  android : float64;
+  windows : float64;
+};
+type AnalyticsSizesPageViews = record {
+  desktop : float64;
+  laptop : float64;
+  tablet : float64;
+  mobile : float64;
 };
 type AnalyticsTop10PageViews = record {
   referrers : vec record { text; nat32 };

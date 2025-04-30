@@ -92,10 +92,21 @@ pub mod interface {
     }
 
     #[derive(CandidType, Deserialize, Clone)]
-    pub struct AnalyticsDevicesPageViews {
-        pub mobile: f64,
-        pub desktop: f64,
+    pub struct AnalyticsOperatingSystemsPageViews {
+        pub ios: f64,
+        pub android: f64,
+        pub windows: f64,
+        pub macos: f64,
+        pub linux: f64,
         pub others: f64,
+    }
+
+    #[derive(CandidType, Deserialize, Clone)]
+    pub struct AnalyticsSizesPageViews {
+        pub mobile: f64,
+        pub tablet: f64,
+        pub laptop: f64,
+        pub desktop: f64,
     }
 
     #[derive(CandidType, Deserialize, Clone)]
@@ -109,8 +120,9 @@ pub mod interface {
 
     #[derive(CandidType, Deserialize, Clone)]
     pub struct AnalyticsClientsPageViews {
-        pub devices: AnalyticsDevicesPageViews,
+        pub sizes: AnalyticsSizesPageViews,
         pub browsers: AnalyticsBrowsersPageViews,
+        pub operating_systems: AnalyticsOperatingSystemsPageViews,
     }
 
     #[derive(CandidType, Deserialize, Clone)]

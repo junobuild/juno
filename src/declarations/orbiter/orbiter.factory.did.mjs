@@ -45,6 +45,12 @@ export const idlFactory = ({ IDL }) => {
 		version: IDL.Opt(IDL.Nat64),
 		user_agent: IDL.Opt(IDL.Text)
 	});
+	const AnalyticsSizesPageViews = IDL.Record({
+		desktop: IDL.Float64,
+		laptop: IDL.Float64,
+		tablet: IDL.Float64,
+		mobile: IDL.Float64
+	});
 	const AnalyticsBrowsersPageViews = IDL.Record({
 		safari: IDL.Float64,
 		opera: IDL.Float64,
@@ -52,14 +58,18 @@ export const idlFactory = ({ IDL }) => {
 		firefox: IDL.Float64,
 		chrome: IDL.Float64
 	});
-	const AnalyticsDevicesPageViews = IDL.Record({
-		desktop: IDL.Float64,
+	const AnalyticsOperatingSystemsPageViews = IDL.Record({
+		ios: IDL.Float64,
+		macos: IDL.Float64,
 		others: IDL.Float64,
-		mobile: IDL.Float64
+		linux: IDL.Float64,
+		android: IDL.Float64,
+		windows: IDL.Float64
 	});
 	const AnalyticsClientsPageViews = IDL.Record({
+		sizes: AnalyticsSizesPageViews,
 		browsers: AnalyticsBrowsersPageViews,
-		devices: AnalyticsDevicesPageViews
+		operating_systems: AnalyticsOperatingSystemsPageViews
 	});
 	const CalendarDate = IDL.Record({
 		day: IDL.Nat8,

@@ -14,13 +14,9 @@ export interface AnalyticsBrowsersPageViews {
 	chrome: number;
 }
 export interface AnalyticsClientsPageViews {
+	sizes: AnalyticsSizesPageViews;
 	browsers: AnalyticsBrowsersPageViews;
-	devices: AnalyticsDevicesPageViews;
-}
-export interface AnalyticsDevicesPageViews {
-	desktop: number;
-	others: number;
-	mobile: number;
+	operating_systems: AnalyticsOperatingSystemsPageViews;
 }
 export interface AnalyticsMetricsPageViews {
 	total_sessions: bigint;
@@ -30,6 +26,20 @@ export interface AnalyticsMetricsPageViews {
 	total_page_views: number;
 	unique_page_views: bigint;
 	unique_sessions: bigint;
+}
+export interface AnalyticsOperatingSystemsPageViews {
+	ios: number;
+	macos: number;
+	others: number;
+	linux: number;
+	android: number;
+	windows: number;
+}
+export interface AnalyticsSizesPageViews {
+	desktop: number;
+	laptop: number;
+	tablet: number;
+	mobile: number;
 }
 export interface AnalyticsTop10PageViews {
 	referrers: Array<[string, number]>;

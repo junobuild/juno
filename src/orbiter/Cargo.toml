@@ -18,8 +18,8 @@ serde.workspace = true
 serde_json.workspace = true
 ciborium.workspace = true
 isbot = "0.1.3"
+uaparser = "0.6.4"
 url.workspace = true
-regex.workspace = true
 lazy_static = "1.5.0"
 junobuild-shared = { path = "../libs/shared" }
 junobuild-utils = { path = "../libs/utils" }

@@ -31,9 +31,6 @@ describe('Orbiter > HTTP > Page views', () => {
 	const NON_POST_METHODS = ['GET', 'PUT', 'PATCH', 'DELETE'];
 
 	const RESPONSE_OK = { ok: { data: null } };
-	const RESPONSE_500_NO_VERSION_PROVIDED = {
-		err: { code: 500, message: 'juno.error.no_version_provided' }
-	};
 
 	beforeAll(async () => {
 		pic = await PocketIc.create(inject('PIC_URL'));
@@ -182,7 +179,7 @@ describe('Orbiter > HTTP > Page views', () => {
 
 					const response = await http_request_update(request);
 
-					expect(response.status_code).toEqual(500);
+					expect(response.status_code).toEqual(400);
 
 					const decoder = new TextDecoder();
 					const responseBody = decoder.decode(response.body as Uint8Array<ArrayBufferLike>);
@@ -207,7 +204,7 @@ describe('Orbiter > HTTP > Page views', () => {
 
 					const response = await http_request_update(request);
 
-					expect(response.status_code).toEqual(500);
+					expect(response.status_code).toEqual(400);
 
 					const decoder = new TextDecoder();
 					const responseBody = decoder.decode(response.body as Uint8Array<ArrayBufferLike>);
@@ -219,7 +216,7 @@ describe('Orbiter > HTTP > Page views', () => {
 					expect(message.includes('missing field `page_view`')).toBeTruthy();
 				});
 
-				it('should return a bad request for unknown satellite', async () => {
+				it('should return forbidden for unknown satellite', async () => {
 					const { http_request_update } = actor;
 
 					const request: HttpRequest = {
@@ -232,7 +229,7 @@ describe('Orbiter > HTTP > Page views', () => {
 
 					const response = await http_request_update(request);
 
-					expect(response.status_code).toEqual(500);
+					expect(response.status_code).toEqual(403);
 
 					const decoder = new TextDecoder();
 					const responseBody = decoder.decode(response.body as Uint8Array<ArrayBufferLike>);
@@ -260,7 +257,7 @@ describe('Orbiter > HTTP > Page views', () => {
 
 					const response = await http_request_update(request);
 
-					expect(response.status_code).toEqual(500);
+					expect(response.status_code).toEqual(400);
 
 					const decoder = new TextDecoder();
 					const responseBody = decoder.decode(response.body as Uint8Array<ArrayBufferLike>);
@@ -321,7 +318,7 @@ describe('Orbiter > HTTP > Page views', () => {
 
 					const result = JSON.parse(responseBody, jsonReviver);
 
-					expect(result).toEqual(RESPONSE_500_NO_VERSION_PROVIDED);
+					expect(result).toEqual({ err: { code: 403, message: 'juno.error.no_version_provided' } });
 				});
 
 				it('should update a page view', async () => {
@@ -438,7 +435,7 @@ describe('Orbiter > HTTP > Page views', () => {
 
 					const response = await http_request_update(request);
 
-					expect(response.status_code).toEqual(500);
+					expect(response.status_code).toEqual(400);
 
 					const decoder = new TextDecoder();
 					const responseBody = decoder.decode(response.body as Uint8Array<ArrayBufferLike>);
@@ -466,7 +463,7 @@ describe('Orbiter > HTTP > Page views', () => {
 					expect(response.status_code).toEqual(200);
 				});
 
-				it('should return a bad request for unknown satellite', async () => {
+				it('should return forbidden for unknown satellite', async () => {
 					const { http_request_update } = actor;
 
 					const request: HttpRequest = {
@@ -479,7 +476,7 @@ describe('Orbiter > HTTP > Page views', () => {
 
 					const response = await http_request_update(request);
 
-					expect(response.status_code).toEqual(500);
+					expect(response.status_code).toEqual(403);
 
 					const decoder = new TextDecoder();
 					const responseBody = decoder.decode(response.body as Uint8Array<ArrayBufferLike>);
@@ -512,7 +509,7 @@ describe('Orbiter > HTTP > Page views', () => {
 
 					const response = await http_request_update(request);
 
-					expect(response.status_code).toEqual(500);
+					expect(response.status_code).toEqual(400);
 				});
 
 				it('should set page views', async () => {
@@ -558,7 +555,7 @@ describe('Orbiter > HTTP > Page views', () => {
 
 					expect(result).toEqual({
 						err: {
-							code: 500,
+							code: 403,
 							message: pagesViews.page_views
 								.map(({ key }) => `${key.key}: juno.error.no_version_provided`)
 								.join(', ')

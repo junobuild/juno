@@ -194,7 +194,7 @@ describe('Orbiter > HTTP > Performance metrics', () => {
 						err: { message }
 					}: { err: { message: string } } = JSON.parse(responseBody, jsonReviver);
 
-					expect(message.includes('invalid type: string \"invalid\"')).toBeTruthy();
+					expect(message.includes('invalid type: string "invalid"')).toBeTruthy();
 				});
 
 				it('should return a bad request for missing field', async () => {
@@ -396,7 +396,7 @@ describe('Orbiter > HTTP > Performance metrics', () => {
 					expect(fromNullable(response.upgrade)).toBeUndefined();
 				});
 
-				it.each([
+				const invalidPayloads: [string, Record<string, unknown>][] = [
 					[
 						'invalid payload',
 						{
@@ -411,14 +411,16 @@ describe('Orbiter > HTTP > Performance metrics', () => {
 					],
 					[
 						'empty payload',
-						{ satellite_id: performanceMetrics.satellite_id, performanceMetrics: [] }
+						{ satellite_id: performanceMetrics.satellite_id, performance_metrics: [] }
 					],
 					[
 						'unknown satellite id',
 						{ ...performanceMetrics, satellite_id: 'nkzsw-gyaaa-aaaal-ada3a-cai' }
 					]
-					// eslint-disable-next-line local-rules/prefer-object-params
-				])('should upgrade http_request for %s', async (_title, payload) => {
+				];
+
+				// eslint-disable-next-line local-rules/prefer-object-params
+				it.each(invalidPayloads)('should upgrade http_request for %s', async (_title, payload) => {
 					const { http_request } = actor;
 
 					const request: HttpRequest = {
@@ -434,7 +436,73 @@ describe('Orbiter > HTTP > Performance metrics', () => {
 					expect(fromNullable(response.upgrade)).toBeTruthy();
 				});
 
-				it('should not set pperformance metrics with invalid satellite id', async () => {
+				it('should return a bad request for invalid type', async () => {
+					const { http_request_update } = actor;
+
+					const request: HttpRequest = {
+						body: toBodyJson(invalidPayloads[0][1]),
+						certificate_version: toNullable(2),
+						headers: [],
+						method: 'POST',
+						url: '/metrics'
+					};
+
+					const response = await http_request_update(request);
+
+					expect(response.status_code).toEqual(500);
+
+					const decoder = new TextDecoder();
+					const responseBody = decoder.decode(response.body as Uint8Array<ArrayBufferLike>);
+
+					const {
+						err: { message }
+					}: { err: { message: string } } = JSON.parse(responseBody, jsonReviver);
+
+					expect(message.includes('invalid type: string "invalid"')).toBeTruthy();
+				});
+
+				it('should return ok for empty payload', async () => {
+					const { http_request_update } = actor;
+
+					const request: HttpRequest = {
+						body: toBodyJson(invalidPayloads[1][1]),
+						certificate_version: toNullable(2),
+						headers: [],
+						method: 'POST',
+						url: '/metrics'
+					};
+
+					const response = await http_request_update(request);
+
+					expect(response.status_code).toEqual(200);
+				});
+
+				it('should return a bad request for unknown satellite', async () => {
+					const { http_request_update } = actor;
+
+					const request: HttpRequest = {
+						body: toBodyJson(invalidPayloads[2][1]),
+						certificate_version: toNullable(2),
+						headers: [],
+						method: 'POST',
+						url: '/metrics'
+					};
+
+					const response = await http_request_update(request);
+
+					expect(response.status_code).toEqual(500);
+
+					const decoder = new TextDecoder();
+					const responseBody = decoder.decode(response.body as Uint8Array<ArrayBufferLike>);
+
+					const {
+						err: { message }
+					}: { err: { message: string } } = JSON.parse(responseBody, jsonReviver);
+
+					expect(message.includes('error_performance_metrics_feature_disabled')).toBeTruthy();
+				});
+
+				it('should not set performance metrics with invalid satellite id', async () => {
 					const { http_request_update } = actor;
 
 					const request: HttpRequest = {

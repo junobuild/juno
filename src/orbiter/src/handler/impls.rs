@@ -1,11 +1,5 @@
-use crate::state::types::state::{
-    AnalyticKey, PageView, PageViewClient, PerformanceMetric, TrackEvent,
-};
-use crate::types::interface::http::{
-    AnalyticKeyPayload, PageViewClientPayload, PageViewPayload, PerformanceMetricPayload,
-    SatelliteIdText, SetPageViewPayload, SetPerformanceMetricPayload, SetTrackEventPayload,
-    TrackEventPayload,
-};
+use crate::state::types::state::{AnalyticKey, PageView, PageViewClient, PageViewDevice, PerformanceMetric, TrackEvent};
+use crate::types::interface::http::{AnalyticKeyPayload, PageViewClientPayload, PageViewDevicePayload, PageViewPayload, PerformanceMetricPayload, SatelliteIdText, SetPageViewPayload, SetPerformanceMetricPayload, SetTrackEventPayload, TrackEventPayload};
 use crate::types::interface::{SetPageView, SetPerformanceMetric, SetTrackEvent};
 use candid::types::principal::PrincipalError;
 use candid::Principal;
@@ -29,7 +23,7 @@ impl SetPageViewPayload {
             title: payload.title,
             href: payload.href,
             referrer: payload.referrer,
-            device: payload.device,
+            device: PageViewDevice::convert_to_setter(payload.device),
             time_zone: payload.time_zone,
             user_agent: payload.user_agent,
             client: payload.client.map(PageViewClient::convert_to_setter),
@@ -53,13 +47,24 @@ impl PageViewClient {
     }
 }
 
+impl PageViewDevice {
+    pub fn convert_to_setter(payload: PageViewDevicePayload) -> Self {
+        Self {
+            inner_width: payload.inner_width,
+            inner_height: payload.inner_height,
+            screen_width: payload.screen_width,
+            screen_height: payload.screen_height,
+        }
+    }
+}
+
 impl PageViewPayload {
     pub fn from_domain(page_view: PageView) -> Self {
         Self {
             title: page_view.title,
             href: page_view.href,
             referrer: page_view.referrer,
-            device: page_view.device,
+            device: PageViewDevicePayload::from_domain(page_view.device),
             user_agent: page_view.user_agent,
             client: page_view.client.map(PageViewClientPayload::from_domain),
             time_zone: page_view.time_zone,
@@ -83,6 +88,17 @@ impl PageViewClientPayload {
             browser: client.browser,
             operating_system: client.operating_system,
             device: client.device,
+        }
+    }
+}
+
+impl PageViewDevicePayload {
+    pub fn from_domain(client: PageViewDevice) -> Self {
+        Self {
+            inner_width: client.inner_width,
+            inner_height: client.inner_height,
+            screen_width: client.screen_width,
+            screen_height: client.screen_height
         }
     }
 }

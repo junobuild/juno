@@ -1,15 +1,9 @@
-use crate::state::types::state::{
-    AnalyticKey, PageView, PageViewClient, PerformanceData, PerformanceMetric,
-    PerformanceMetricName, TrackEvent, WebVitalsMetric,
-};
-use crate::types::interface::{
-    AnalyticsBrowsersPageViews, AnalyticsClientsPageViews, AnalyticsDevicesPageViews,
-    AnalyticsMetricsPageViews, AnalyticsOperatingSystemsPageViews, AnalyticsTop10PageViews,
-    AnalyticsTrackEvents, AnalyticsWebVitalsPageMetrics, AnalyticsWebVitalsPerformanceMetrics,
-};
+use crate::state::types::state::{AnalyticKey, PageView, PageViewClient, PageViewDevice, PerformanceData, PerformanceMetric, PerformanceMetricName, TrackEvent, WebVitalsMetric};
+use crate::types::interface::{AnalyticsBrowsersPageViews, AnalyticsClientsPageViews, AnalyticsDevicesPageViews, AnalyticsMetricsPageViews, AnalyticsOperatingSystemsPageViews, AnalyticsSizesPageViews, AnalyticsTop10PageViews, AnalyticsTrackEvents, AnalyticsWebVitalsPageMetrics, AnalyticsWebVitalsPerformanceMetrics};
 use junobuild_shared::day::calendar_date;
 use junobuild_shared::types::utils::CalendarDate;
 use std::cmp::Ordering;
+use regex::Regex;
 use std::collections::{HashMap, HashSet};
 use url::Url;
 
@@ -18,6 +12,13 @@ struct Devices {
     tablet: u32,
     desktop: u32,
     others: u32,
+}
+
+struct Sizes {
+    mobile: u32,
+    tablet: u32,
+    laptop: u32,
+    desktop: u32,
 }
 
 struct Browsers {
@@ -35,6 +36,19 @@ struct OperatingSystems {
     macos: u32,
     linux: u32,
     others: u32,
+}
+
+struct DevicesRegex {
+    mobile: Regex,
+    android: Regex,
+    iphone: Regex,
+}
+
+struct BrowsersRegex {
+    chrome: Regex,
+    opera: Regex,
+    firefox: Regex,
+    safari: Regex,
 }
 
 pub fn analytics_page_views_metrics(
@@ -129,6 +143,13 @@ pub fn analytics_page_views_clients(
         others: 0,
     };
 
+    let mut total_sizes = Sizes {
+        mobile: 0,
+        tablet: 0,
+        laptop: 0,
+        desktop: 0,
+    };
+
     let mut total_browsers = Browsers {
         chrome: 0,
         opera: 0,
@@ -146,10 +167,32 @@ pub fn analytics_page_views_clients(
         others: 0,
     };
 
-    for (_, PageView { client, .. }) in page_views {
-        analytics_devices(client, &mut total_devices);
-        analytics_browsers(client, &mut total_browsers);
-        analytics_operating_systems(client, &mut total_operating_systems);
+    let devices_regex: DevicesRegex = DevicesRegex {
+        mobile: Regex::new(r"(?i)mobile").unwrap(),
+        android: Regex::new(r"(?i)android|sink").unwrap(),
+        iphone: Regex::new(r"(?i)iPhone|iPod").unwrap(),
+    };
+
+    let browsers_regex: BrowsersRegex = BrowsersRegex {
+        chrome: Regex::new(r"(?i)chrome|chromium|crios").unwrap(),
+        opera: Regex::new(r"(?i)opera|opr").unwrap(),
+        firefox: Regex::new(r"(?i)firefox|fxios").unwrap(),
+        safari: Regex::new(r"(?i)safari").unwrap(),
+    };
+
+    for (_, PageView { user_agent, client, device, .. }) in page_views {
+        // Modern metrics introduces in v0.1.0
+        if let Some(client) = client {
+            analytics_client_devices(client, &mut total_devices);
+            analytics_client_browsers(client, &mut total_browsers);
+            analytics_client_operating_systems(client, &mut total_operating_systems);
+        } else {
+            // Legacy way to average devices and browsers
+            analytics_devices(user_agent, &devices_regex, &mut total_devices);
+            analytics_browsers(user_agent, &browsers_regex, &mut total_browsers);
+        }
+
+        analytics_sizes(device, &mut total_sizes);
     }
 
     let total = page_views.len();
@@ -169,6 +212,13 @@ pub fn analytics_page_views_clients(
         others: normalize(total_devices.others, total),
     };
 
+    let sizes = AnalyticsSizesPageViews {
+        desktop: normalize(total_sizes.desktop, total),
+        laptop: normalize(total_sizes.laptop, total),
+        tablet: normalize(total_sizes.tablet, total),
+        mobile: normalize(total_sizes.mobile, total),
+    };
+
     let browsers = AnalyticsBrowsersPageViews {
         chrome: normalize(total_browsers.chrome, total),
         opera: normalize(total_browsers.opera, total),
@@ -186,10 +236,22 @@ pub fn analytics_page_views_clients(
         others: normalize(total_operating_systems.others, total),
     };
 
+    let with_size = total_sizes.desktop > 0
+        || total_sizes.laptop > 0
+        || total_sizes.tablet > 0
+        || total_sizes.mobile > 0;
+
+    let with_os = total_operating_systems.android > 0
+        || total_operating_systems.ios > 0
+        || total_operating_systems.linux > 0
+        || total_operating_systems.macos > 0
+        || total_operating_systems.windows > 0;
+    
     AnalyticsClientsPageViews {
         devices,
         browsers,
-        operating_systems,
+        sizes: if with_size { Some(sizes) } else { None },
+        operating_systems: if with_os { Some(operating_systems) } else { None },
     }
 }
 
@@ -387,20 +449,17 @@ fn analytics_pages(href: &str, pages: &mut HashMap<String, u32>) {
     *pages.entry(page).or_insert(0) += 1;
 }
 
-fn analytics_devices(client: &Option<PageViewClient>, devices: &mut Devices) {
-    if let Some(PageViewClient {
-        device,
-        operating_system,
-        ..
-    }) = client
-    {
-        let device = device.as_deref().unwrap_or("desktop").to_ascii_lowercase();
-        let os = operating_system.to_ascii_lowercase();
-
-        if device.contains("iphone") || device.contains("android") || os.contains("android") {
+#[deprecated(since = "0.1.0", note = "prefer analytics_client_devices")]
+fn analytics_devices(
+    user_agent: &Option<String>,
+    devices_regex: &DevicesRegex,
+    devices: &mut Devices,
+) {
+    if let Some(ua) = user_agent {
+        if devices_regex.iphone.is_match(ua)
+            || (devices_regex.android.is_match(ua) && !devices_regex.mobile.is_match(ua))
+        {
             devices.mobile += 1;
-        } else if device.contains("ipad") || device.contains("tablet") {
-            devices.tablet += 1;
         } else {
             devices.desktop += 1;
         }
@@ -409,36 +468,74 @@ fn analytics_devices(client: &Option<PageViewClient>, devices: &mut Devices) {
     }
 }
 
-fn analytics_browsers(client: &Option<PageViewClient>, browsers: &mut Browsers) {
-    if let Some(PageViewClient { browser, .. }) = client {
-        match browser.to_ascii_lowercase().as_str() {
-            b if b.contains("chrome") || b.contains("crios") => browsers.chrome += 1,
-            b if b.contains("firefox") => browsers.firefox += 1,
-            b if b.contains("safari") && !b.contains("chrome") && !b.contains("crios") => {
-                browsers.safari += 1
-            }
-            b if b.contains("opera") || b.contains("opr") => browsers.opera += 1,
-            _ => browsers.others += 1,
+fn analytics_client_devices(PageViewClient {device, operating_system, ..}: &PageViewClient, devices: &mut Devices) {
+    let device = device.as_deref().unwrap_or("desktop").to_ascii_lowercase();
+    let os = operating_system.to_ascii_lowercase();
+
+    if device.contains("iphone") || device.contains("android") || os.contains("android") {
+        devices.mobile += 1;
+    } else if device.contains("ipad") || device.contains("tablet") {
+        devices.tablet += 1;
+    } else {
+        devices.desktop += 1;
+    }
+}
+
+#[deprecated(since = "0.1.0", note = "prefer analytics_client_browsers")]
+fn analytics_browsers(
+    user_agent: &Option<String>,
+    browsers_regex: &BrowsersRegex,
+    browsers: &mut Browsers,
+) {
+    if let Some(ua) = user_agent {
+        if browsers_regex.chrome.is_match(ua) {
+            browsers.chrome += 1;
+        } else if browsers_regex.opera.is_match(ua) {
+            browsers.opera += 1;
+        } else if browsers_regex.firefox.is_match(ua) {
+            browsers.firefox += 1;
+        } else if browsers_regex.safari.is_match(ua) {
+            browsers.safari += 1;
+        } else {
+            browsers.others += 1;
         }
     } else {
         browsers.others += 1;
     }
 }
 
-fn analytics_operating_systems(client: &Option<PageViewClient>, os_counts: &mut OperatingSystems) {
-    if let Some(PageViewClient {
-        operating_system, ..
-    }) = client
-    {
-        match operating_system.to_ascii_lowercase().as_str() {
-            os if os.contains("ios") => os_counts.ios += 1,
-            os if os.contains("android") => os_counts.android += 1,
-            os if os.contains("windows") => os_counts.windows += 1,
-            os if os.contains("mac") => os_counts.macos += 1,
-            os if os.contains("linux") => os_counts.linux += 1,
-            _ => os_counts.others += 1,
+
+fn analytics_client_browsers(PageViewClient {browser, ..}: &PageViewClient, browsers: &mut Browsers) {
+    match browser.to_ascii_lowercase().as_str() {
+        b if b.contains("chrome") || b.contains("crios") => browsers.chrome += 1,
+        b if b.contains("firefox") => browsers.firefox += 1,
+        b if b.contains("safari") && !b.contains("chrome") && !b.contains("crios") => {
+            browsers.safari += 1
         }
-    } else {
-        os_counts.others += 1;
+        b if b.contains("opera") || b.contains("opr") => browsers.opera += 1,
+        _ => browsers.others += 1,
+    }
+}
+
+fn analytics_client_operating_systems(PageViewClient {operating_system, ..}: &PageViewClient, os_counts: &mut OperatingSystems) {
+    match operating_system.to_ascii_lowercase().as_str() {
+        os if os.contains("ios") => os_counts.ios += 1,
+        os if os.contains("android") => os_counts.android += 1,
+        os if os.contains("windows") => os_counts.windows += 1,
+        os if os.contains("mac") => os_counts.macos += 1,
+        os if os.contains("linux") => os_counts.linux += 1,
+        _ => os_counts.others += 1,
+    }
+}
+
+fn analytics_sizes(PageViewDevice { screen_width, .. }: &PageViewDevice, sizes: &mut Sizes) {
+    if let Some(screen_width) = screen_width {
+        match screen_width {
+            0 => {}
+            1..=575 => sizes.mobile += 1,
+            576..=991 => sizes.tablet += 1,
+            992..=1439 => sizes.laptop += 1,
+            _ => sizes.desktop += 1,
+        }
     }
 }

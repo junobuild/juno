@@ -14,8 +14,9 @@ export interface AnalyticsBrowsersPageViews {
 	chrome: number;
 }
 export interface AnalyticsClientsPageViews {
+	sizes: [] | [AnalyticsSizesPageViews];
 	browsers: AnalyticsBrowsersPageViews;
-	operating_systems: AnalyticsOperatingSystemsPageViews;
+	operating_systems: [] | [AnalyticsOperatingSystemsPageViews];
 	devices: AnalyticsDevicesPageViews;
 }
 export interface AnalyticsDevicesPageViews {
@@ -40,6 +41,12 @@ export interface AnalyticsOperatingSystemsPageViews {
 	linux: number;
 	android: number;
 	windows: number;
+}
+export interface AnalyticsSizesPageViews {
+	desktop: number;
+	laptop: number;
+	tablet: number;
+	mobile: number;
 }
 export interface AnalyticsTop10PageViews {
 	referrers: Array<[string, number]>;
@@ -139,11 +146,13 @@ export interface PageView {
 }
 export interface PageViewClient {
 	os: string;
-	device: string;
+	device: [] | [string];
 	browser: string;
 }
 export interface PageViewDevice {
 	inner_height: number;
+	screen_height: [] | [number];
+	screen_width: [] | [number];
 	inner_width: number;
 }
 export type PerformanceData = { WebVitalsMetric: WebVitalsMetric };
@@ -177,6 +186,7 @@ export interface SetControllersArgs {
 	controllers: Array<Principal>;
 }
 export interface SetPageView {
+	client: [] | [PageViewClient];
 	title: string;
 	updated_at: [] | [bigint];
 	referrer: [] | [string];

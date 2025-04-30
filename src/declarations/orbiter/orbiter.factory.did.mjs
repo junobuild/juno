@@ -30,11 +30,13 @@ export const idlFactory = ({ IDL }) => {
 	});
 	const PageViewClient = IDL.Record({
 		os: IDL.Text,
-		device: IDL.Text,
+		device: IDL.Opt(IDL.Text),
 		browser: IDL.Text
 	});
 	const PageViewDevice = IDL.Record({
 		inner_height: IDL.Nat16,
+		screen_height: IDL.Opt(IDL.Nat16),
+		screen_width: IDL.Opt(IDL.Nat16),
 		inner_width: IDL.Nat16
 	});
 	const PageView = IDL.Record({
@@ -50,6 +52,12 @@ export const idlFactory = ({ IDL }) => {
 		device: PageViewDevice,
 		version: IDL.Opt(IDL.Nat64),
 		user_agent: IDL.Opt(IDL.Text)
+	});
+	const AnalyticsSizesPageViews = IDL.Record({
+		desktop: IDL.Float64,
+		laptop: IDL.Float64,
+		tablet: IDL.Float64,
+		mobile: IDL.Float64
 	});
 	const AnalyticsBrowsersPageViews = IDL.Record({
 		safari: IDL.Float64,
@@ -73,8 +81,9 @@ export const idlFactory = ({ IDL }) => {
 		mobile: IDL.Float64
 	});
 	const AnalyticsClientsPageViews = IDL.Record({
+		sizes: IDL.Opt(AnalyticsSizesPageViews),
 		browsers: AnalyticsBrowsersPageViews,
-		operating_systems: AnalyticsOperatingSystemsPageViews,
+		operating_systems: IDL.Opt(AnalyticsOperatingSystemsPageViews),
 		devices: AnalyticsDevicesPageViews
 	});
 	const CalendarDate = IDL.Record({
@@ -186,6 +195,7 @@ export const idlFactory = ({ IDL }) => {
 		controllers: IDL.Vec(IDL.Principal)
 	});
 	const SetPageView = IDL.Record({
+		client: IDL.Opt(PageViewClient),
 		title: IDL.Text,
 		updated_at: IDL.Opt(IDL.Nat64),
 		referrer: IDL.Opt(IDL.Text),

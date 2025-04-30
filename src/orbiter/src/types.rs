@@ -111,6 +111,14 @@ pub mod interface {
     }
 
     #[derive(CandidType, Deserialize, Clone)]
+    pub struct AnalyticsSizesPageViews {
+        pub mobile: f64,
+        pub tablet: f64,
+        pub laptop: f64,
+        pub desktop: f64,
+    }
+
+    #[derive(CandidType, Deserialize, Clone)]
     pub struct AnalyticsBrowsersPageViews {
         pub chrome: f64,
         pub opera: f64,
@@ -123,7 +131,8 @@ pub mod interface {
     pub struct AnalyticsClientsPageViews {
         pub devices: AnalyticsDevicesPageViews,
         pub browsers: AnalyticsBrowsersPageViews,
-        pub operating_systems: AnalyticsOperatingSystemsPageViews,
+        pub sizes: Option<AnalyticsSizesPageViews>,
+        pub operating_systems: Option<AnalyticsOperatingSystemsPageViews>,
     }
 
     #[derive(CandidType, Deserialize, Clone)]
@@ -148,7 +157,7 @@ pub mod interface {
 
     pub mod http {
         use crate::state::types::state::{
-            Key, PageViewDevice, PerformanceData, PerformanceMetricName, SessionId,
+            Key, PerformanceData, PerformanceMetricName, SessionId,
         };
         use junobuild_shared::types::state::Metadata;
         use junobuild_utils::DocDataBigInt;
@@ -230,7 +239,7 @@ pub mod interface {
             pub title: String,
             pub href: String,
             pub referrer: Option<String>,
-            pub device: PageViewDevice,
+            pub device: PageViewDevicePayload,
             pub time_zone: String,
             pub user_agent: Option<String>,
             pub client: Option<PageViewClientPayload>,
@@ -263,7 +272,7 @@ pub mod interface {
             pub href: String,
             #[serde(skip_serializing_if = "Option::is_none")]
             pub referrer: Option<String>,
-            pub device: PageViewDevice,
+            pub device: PageViewDevicePayload,
             pub time_zone: String,
             #[serde(skip_serializing_if = "Option::is_none")]
             pub user_agent: Option<String>,
@@ -283,6 +292,16 @@ pub mod interface {
             pub operating_system: String,
             #[serde(skip_serializing_if = "Option::is_none")]
             pub device: Option<String>,
+        }
+
+        #[derive(Deserialize, Serialize)]
+        pub struct PageViewDevicePayload {
+            pub inner_width: u16,
+            pub inner_height: u16,
+            #[serde(skip_serializing_if = "Option::is_none")]
+            pub screen_width: Option<u16>,
+            #[serde(skip_serializing_if = "Option::is_none")]
+            pub screen_height: Option<u16>,
         }
 
         #[derive(Serialize)]

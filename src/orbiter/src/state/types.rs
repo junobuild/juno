@@ -92,6 +92,8 @@ pub mod state {
     pub struct PageViewDevice {
         pub inner_width: u16,
         pub inner_height: u16,
+        pub screen_width: Option<u16>,
+        pub screen_height: Option<u16>,
     }
 
     #[derive(CandidType, Serialize, Deserialize, Clone)]

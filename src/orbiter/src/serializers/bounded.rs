@@ -155,6 +155,8 @@ pub fn deserialize_bounded_page_view(bytes: Cow<[u8]>) -> PageView {
         device: PageViewDevice {
             inner_width,
             inner_height,
+            screen_width: None,
+            screen_height: None,
         },
         user_agent: user_agent_opt,
         client: None,

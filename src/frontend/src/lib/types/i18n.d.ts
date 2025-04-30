@@ -373,6 +373,7 @@ interface I18nAnalytics {
 	desktop: string;
 	others: string;
 	browsers: string;
+	operating_systems: string;
 	attach: string;
 	attach_id: string;
 	score: string;

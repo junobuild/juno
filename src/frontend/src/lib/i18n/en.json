@@ -361,6 +361,7 @@
 		"desktop": "Desktop",
 		"others": "Others",
 		"browsers": "Browsers",
+		"operating_systems": "Operating systems",
 		"attach": "Attach analytics",
 		"attach_id": "Enter Orbiter ID",
 		"score": "Score",

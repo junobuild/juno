@@ -4,6 +4,7 @@
 	import AnalyticsPages from '$lib/components/analytics/AnalyticsPages.svelte';
 	import AnalyticsReferrers from '$lib/components/analytics/AnalyticsReferrers.svelte';
 	import type { AnalyticsPageViews } from '$lib/types/orbiter';
+	import AnalyticsOS from '$lib/components/analytics/AnalyticsOS.svelte';
 
 	interface Props {
 		pageViews: AnalyticsPageViews;
@@ -23,6 +24,8 @@
 		<AnalyticsDevices {pageViews} />
 
 		<AnalyticsBrowsers {pageViews} />
+
+		<AnalyticsOS {pageViews} />
 	</div>
 {/if}
 

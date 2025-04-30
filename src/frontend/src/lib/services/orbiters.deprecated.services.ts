@@ -1,5 +1,6 @@
 import type {
 	AnalyticKey,
+	AnalyticsClientsPageViews,
 	AnalyticsDevicesPageViews,
 	AnalyticsMetricsPageViews,
 	AnalyticsTop10PageViews,
@@ -12,7 +13,6 @@ import {
 	getAnalyticsMetricsPageViews008
 } from '$lib/api/orbiter.deprecated.api';
 import type {
-	AnalyticsClients,
 	AnalyticsMetrics,
 	AnalyticsPageViews,
 	DateStartOfTheDay,
@@ -38,7 +38,7 @@ export const getDeprecatedAnalyticsMetricsPageViews = async (
 
 export const getDeprecatedAnalyticsClientsPageViews = async (
 	params: PageViewsParams
-): Promise<AnalyticsClients> => {
+): Promise<AnalyticsClientsPageViews> => {
 	const { browsers, devices } = await getAnalyticsClientsPageViews008(params);
 
 	return {
@@ -48,7 +48,9 @@ export const getDeprecatedAnalyticsClientsPageViews = async (
 			mobile: devices.mobile,
 			tablet: 0,
 			others: devices.others
-		}
+		},
+		sizes: [],
+		operating_systems: []
 	};
 };
 

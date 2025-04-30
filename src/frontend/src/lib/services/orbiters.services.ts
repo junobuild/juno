@@ -44,7 +44,7 @@ import type { SatelliteIdText } from '$lib/types/satellite';
 import type { Option } from '$lib/types/utils';
 import type { Identity } from '@dfinity/agent';
 import { Principal } from '@dfinity/principal';
-import { assertNonNullish, isNullish, nonNullish, toNullable } from '@dfinity/utils';
+import { assertNonNullish, fromNullable, isNullish, nonNullish, toNullable } from '@dfinity/utils';
 import { compare } from 'semver';
 import { get } from 'svelte/store';
 
@@ -212,7 +212,12 @@ export const getAnalyticsPageViews = async ({
 				)
 			},
 			top10,
-			clients
+			clients: {
+				devices: clients.devices,
+				browsers: clients.browsers,
+				sizes: fromNullable(clients.sizes),
+				operating_systems: fromNullable(clients.operating_systems)
+			}
 		};
 	}
 

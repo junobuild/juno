@@ -358,6 +358,7 @@
 		"devices": "Devices",
 		"mobile": "Mobile",
 		"tablet": "Tablet",
+		"laptop": "Laptop",
 		"desktop": "Desktop",
 		"others": "Others",
 		"browsers": "Browsers",

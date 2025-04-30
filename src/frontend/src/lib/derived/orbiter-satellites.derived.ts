@@ -4,7 +4,7 @@ import type {
 } from '$declarations/orbiter/orbiter.did';
 import { orbiterConfigs } from '$lib/derived/orbiter.derived';
 import { satellitesStore } from '$lib/derived/satellites.derived';
-import type { OrbiterSatelliteConfigEntry } from '$lib/types/ortbiter';
+import type { OrbiterSatelliteConfigEntry } from '$lib/types/orbiter';
 import type { SatelliteIdText } from '$lib/types/satellite';
 import { satelliteName } from '$lib/utils/satellite.utils';
 import { first } from '$lib/utils/utils';

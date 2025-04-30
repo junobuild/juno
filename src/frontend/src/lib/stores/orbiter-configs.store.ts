@@ -1,5 +1,5 @@
 import type { OrbiterSatelliteConfig } from '$declarations/orbiter/orbiter.did';
-import type { OrbiterIdText } from '$lib/types/ortbiter';
+import type { OrbiterIdText } from '$lib/types/orbiter';
 import type { Principal } from '@dfinity/principal';
 import { type Readable, writable } from 'svelte/store';
 

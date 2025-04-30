@@ -3,7 +3,7 @@
 	import AnalyticsDevices from '$lib/components/analytics/AnalyticsDevices.svelte';
 	import AnalyticsPages from '$lib/components/analytics/AnalyticsPages.svelte';
 	import AnalyticsReferrers from '$lib/components/analytics/AnalyticsReferrers.svelte';
-	import type { AnalyticsPageViews } from '$lib/types/ortbiter';
+	import type { AnalyticsPageViews } from '$lib/types/orbiter';
 
 	interface Props {
 		pageViews: AnalyticsPageViews;

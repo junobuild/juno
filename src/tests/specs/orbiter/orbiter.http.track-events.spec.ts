@@ -31,9 +31,6 @@ describe('Orbiter > HTTP > Track events', () => {
 	const NON_POST_METHODS = ['GET', 'PUT', 'PATCH', 'DELETE'];
 
 	const RESPONSE_OK = { ok: { data: null } };
-	const RESPONSE_500_NO_VERSION_PROVIDED = {
-		err: { code: 500, message: 'juno.error.no_version_provided' }
-	};
 
 	beforeAll(async () => {
 		pic = await PocketIc.create(inject('PIC_URL'));
@@ -179,7 +176,7 @@ describe('Orbiter > HTTP > Track events', () => {
 
 					const response = await http_request_update(request);
 
-					expect(response.status_code).toEqual(500);
+					expect(response.status_code).toEqual(400);
 
 					const decoder = new TextDecoder();
 					const responseBody = decoder.decode(response.body as Uint8Array<ArrayBufferLike>);
@@ -204,7 +201,7 @@ describe('Orbiter > HTTP > Track events', () => {
 
 					const response = await http_request_update(request);
 
-					expect(response.status_code).toEqual(500);
+					expect(response.status_code).toEqual(400);
 
 					const decoder = new TextDecoder();
 					const responseBody = decoder.decode(response.body as Uint8Array<ArrayBufferLike>);
@@ -216,7 +213,7 @@ describe('Orbiter > HTTP > Track events', () => {
 					expect(message.includes('missing field `track_event`')).toBeTruthy();
 				});
 
-				it('should return a bad request for unknown satellite', async () => {
+				it('should return forbidden for unknown satellite', async () => {
 					const { http_request_update } = actor;
 
 					const request: HttpRequest = {
@@ -229,7 +226,7 @@ describe('Orbiter > HTTP > Track events', () => {
 
 					const response = await http_request_update(request);
 
-					expect(response.status_code).toEqual(500);
+					expect(response.status_code).toEqual(403);
 
 					const decoder = new TextDecoder();
 					const responseBody = decoder.decode(response.body as Uint8Array<ArrayBufferLike>);
@@ -257,7 +254,7 @@ describe('Orbiter > HTTP > Track events', () => {
 
 					const response = await http_request_update(request);
 
-					expect(response.status_code).toEqual(500);
+					expect(response.status_code).toEqual(400);
 
 					const decoder = new TextDecoder();
 					const responseBody = decoder.decode(response.body as Uint8Array<ArrayBufferLike>);
@@ -320,7 +317,7 @@ describe('Orbiter > HTTP > Track events', () => {
 
 					const result = JSON.parse(responseBody, jsonReviver);
 
-					expect(result).toEqual(RESPONSE_500_NO_VERSION_PROVIDED);
+					expect(result).toEqual({ err: { code: 403, message: 'juno.error.no_version_provided' } });
 				});
 
 				it('should update a track event', async () => {
@@ -437,7 +434,7 @@ describe('Orbiter > HTTP > Track events', () => {
 
 					const response = await http_request_update(request);
 
-					expect(response.status_code).toEqual(500);
+					expect(response.status_code).toEqual(400);
 
 					const decoder = new TextDecoder();
 					const responseBody = decoder.decode(response.body as Uint8Array<ArrayBufferLike>);
@@ -465,7 +462,7 @@ describe('Orbiter > HTTP > Track events', () => {
 					expect(response.status_code).toEqual(200);
 				});
 
-				it('should return a bad request for unknown satellite', async () => {
+				it('should return forbidden for unknown satellite', async () => {
 					const { http_request_update } = actor;
 
 					const request: HttpRequest = {
@@ -478,7 +475,7 @@ describe('Orbiter > HTTP > Track events', () => {
 
 					const response = await http_request_update(request);
 
-					expect(response.status_code).toEqual(500);
+					expect(response.status_code).toEqual(403);
 
 					const decoder = new TextDecoder();
 					const responseBody = decoder.decode(response.body as Uint8Array<ArrayBufferLike>);
@@ -511,7 +508,7 @@ describe('Orbiter > HTTP > Track events', () => {
 
 					const response = await http_request_update(request);
 
-					expect(response.status_code).toEqual(500);
+					expect(response.status_code).toEqual(400);
 				});
 
 				it('should set track events', async () => {
@@ -557,7 +554,7 @@ describe('Orbiter > HTTP > Track events', () => {
 
 					expect(result).toEqual({
 						err: {
-							code: 500,
+							code: 403,
 							message: trackEvents.track_events
 								.map(({ key }) => `${key.key}: juno.error.no_version_provided`)
 								.join(', ')

@@ -12,7 +12,7 @@ import type { CanisterSegmentWithLabel, CanisterSettings } from '$lib/types/cani
 import type { SetControllerParams } from '$lib/types/controllers';
 import type { CustomDomains } from '$lib/types/custom-domain';
 import type { MissionControlId } from '$lib/types/mission-control';
-import type { OrbiterSatelliteConfigEntry } from '$lib/types/ortbiter';
+import type { OrbiterSatelliteConfigEntry } from '$lib/types/orbiter';
 import type { SatelliteIdText } from '$lib/types/satellite';
 import type { User as UserListed } from '$lib/types/user';
 import type { UserUsageCollection } from '$lib/types/user-usage';

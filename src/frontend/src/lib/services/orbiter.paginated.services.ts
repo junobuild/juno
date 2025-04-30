@@ -3,7 +3,7 @@ import type {
 	AnalyticsDevicesPageViews
 } from '$declarations/orbiter/orbiter.did';
 import { getAnalyticsPageViews } from '$lib/services/orbiters.services';
-import type { AnalyticsPageViews, PageViewsParams } from '$lib/types/ortbiter';
+import type { AnalyticsPageViews, PageViewsParams } from '$lib/types/orbiter';
 import { isNullish } from '@dfinity/utils';
 import { eachHourOfInterval } from 'date-fns';
 

@@ -7,30 +7,36 @@ use crate::types::interface::http::{
     SetTrackEventPayload, SetTrackEventRequest, SetTrackEventsRequest, SetTrackEventsRequestEntry,
     TrackEventPayload,
 };
+use ic_http_certification::StatusCode;
 use junobuild_utils::decode_doc_data;
 
-pub fn handle_insert_track_event(body: &HttpRequestBody) -> Result<HandledUpdateResult, String> {
+pub fn handle_insert_track_event(
+    body: &HttpRequestBody,
+) -> Result<HandledUpdateResult, (StatusCode, String)> {
     let SetTrackEventRequest {
         key,
         track_event,
         satellite_id,
-    }: SetTrackEventRequest =
-        decode_doc_data::<SetTrackEventRequest>(body).map_err(|e| e.to_string())?;
+    }: SetTrackEventRequest = decode_doc_data::<SetTrackEventRequest>(body)
+        .map_err(|e| (StatusCode::BAD_REQUEST, e.to_string()))?;
 
     let inserted_track_event = assert_and_insert_track_event(
         key.into_domain(),
         SetTrackEventPayload::convert_to_setter(track_event, &satellite_id)
-            .map_err(|e| e.to_string())?,
-    )?;
+            .map_err(|e| (StatusCode::BAD_REQUEST, e.to_string()))?,
+    )
+    .map_err(|e| (StatusCode::FORBIDDEN, e.to_string()))?;
 
     let payload = TrackEventPayload::from_domain(inserted_track_event);
 
     build_payload_response(payload, &satellite_id)
 }
 
-pub fn handle_insert_track_events(body: &HttpRequestBody) -> Result<HandledUpdateResult, String> {
-    let track_events: SetTrackEventsRequest =
-        decode_doc_data::<SetTrackEventsRequest>(body).map_err(|e| e.to_string())?;
+pub fn handle_insert_track_events(
+    body: &HttpRequestBody,
+) -> Result<HandledUpdateResult, (StatusCode, String)> {
+    let track_events: SetTrackEventsRequest = decode_doc_data::<SetTrackEventsRequest>(body)
+        .map_err(|e| (StatusCode::BAD_REQUEST, e.to_string()))?;
 
     let mut errors: Vec<(AnalyticKey, String)> = Vec::new();
 
@@ -40,7 +46,7 @@ pub fn handle_insert_track_events(body: &HttpRequestBody) -> Result<HandledUpdat
         let result = assert_and_insert_track_event(
             key_domain.clone(),
             SetTrackEventPayload::convert_to_setter(track_event, &track_events.satellite_id)
-                .map_err(|e| e.to_string())?,
+                .map_err(|e| (StatusCode::BAD_REQUEST, e.to_string()))?,
         );
 
         match result {
@@ -56,7 +62,7 @@ pub fn handle_insert_track_events(body: &HttpRequestBody) -> Result<HandledUpdat
             .collect::<Vec<_>>()
             .join(", ");
 
-        return Err(error_string);
+        return Err((StatusCode::FORBIDDEN, error_string));
     }
 
     build_payload_response((), &track_events.satellite_id)

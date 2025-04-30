@@ -37,12 +37,15 @@ impl HttpRequestHandler for Dispatcher {
             METRIC_PATH => handle_insert_performance_metric(body),
             METRICS_PATH => handle_insert_performance_metrics(body),
             // Likely unexpected given is_known_route and is_allowed_method both were proven before reaching this handler.
-            _ => Err(format!("Unsupported path: {}", request_path)),
+            _ => Err((
+                StatusCode::NOT_IMPLEMENTED,
+                format!("Unsupported path: {}", request_path),
+            )),
         };
 
-        response_data.unwrap_or_else(|err| {
-            let body = ApiResponse::<()>::err(StatusCode::INTERNAL_SERVER_ERROR, err).encode();
-            HandledUpdateResult::new(StatusCode::INTERNAL_SERVER_ERROR, body, None)
+        response_data.unwrap_or_else(|(status_code, message)| {
+            let body = ApiResponse::<()>::err(status_code, message).encode();
+            HandledUpdateResult::new(status_code, body, None)
         })
     }
 }

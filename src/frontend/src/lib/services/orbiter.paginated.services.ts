@@ -90,8 +90,8 @@ const aggregateClients = ({
 	const sizesSum: Record<string, number> = {
 		mobile: 0,
 		tablet: 0,
-		others: 0,
-		laptop: 0
+		laptop: 0,
+		desktop: 0
 	};
 
 	const osSum: Record<string, number> = {

@@ -47,9 +47,8 @@ export const getDeprecatedAnalyticsClientsPageViews = async (
 			desktop: devices.desktop,
 			mobile: devices.mobile,
 			tablet: 0,
-			others: devices.others
+			laptop: 0
 		},
-		sizes: [],
 		operating_systems: []
 	};
 };
@@ -205,14 +204,14 @@ const mapDeprecatedAnalyticsDevicesPageViews = (
 ): AnalyticsDevicesPageViews => {
 	const total = pageViews.length;
 
-	const { desktop, mobile, others } = pageViews.reduce(
+	const { desktop, mobile } = pageViews.reduce(
 		(acc, [_, { user_agent }]) => {
 			const userAgent = fromNullable(user_agent);
 
 			if (isNullish(userAgent)) {
 				return {
 					...acc,
-					other: acc.others + 1
+					desktop: acc.desktop + 1
 				};
 			}
 
@@ -232,15 +231,14 @@ const mapDeprecatedAnalyticsDevicesPageViews = (
 		},
 		{
 			mobile: 0,
-			desktop: 0,
-			others: 0
+			desktop: 0
 		}
 	);
 
 	return {
 		mobile: total > 0 ? mobile / total : 0,
-		desktop: total > 0 ? desktop / total : 0,
 		tablet: 0,
-		others: total > 0 ? others / total : 0
+		laptop: 0,
+		desktop: total > 0 ? desktop / total : 0
 	};
 };

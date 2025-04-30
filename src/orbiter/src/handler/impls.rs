@@ -1,5 +1,11 @@
-use crate::state::types::state::{AnalyticKey, PageView, PageViewClient, PageViewDevice, PerformanceMetric, TrackEvent};
-use crate::types::interface::http::{AnalyticKeyPayload, PageViewClientPayload, PageViewDevicePayload, PageViewPayload, PerformanceMetricPayload, SatelliteIdText, SetPageViewPayload, SetPerformanceMetricPayload, SetTrackEventPayload, TrackEventPayload};
+use crate::state::types::state::{
+    AnalyticKey, PageView, PageViewClient, PageViewDevice, PerformanceMetric, TrackEvent,
+};
+use crate::types::interface::http::{
+    AnalyticKeyPayload, PageViewClientPayload, PageViewDevicePayload, PageViewPayload,
+    PerformanceMetricPayload, SatelliteIdText, SetPageViewPayload, SetPerformanceMetricPayload,
+    SetTrackEventPayload, TrackEventPayload,
+};
 use crate::types::interface::{SetPageView, SetPerformanceMetric, SetTrackEvent};
 use candid::types::principal::PrincipalError;
 use candid::Principal;
@@ -98,7 +104,7 @@ impl PageViewDevicePayload {
             inner_width: client.inner_width,
             inner_height: client.inner_height,
             screen_width: client.screen_width,
-            screen_height: client.screen_height
+            screen_height: client.screen_height,
         }
     }
 }

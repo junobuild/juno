@@ -14,14 +14,13 @@ export interface AnalyticsBrowsersPageViews {
 	chrome: number;
 }
 export interface AnalyticsClientsPageViews {
-	sizes: [] | [AnalyticsSizesPageViews];
 	browsers: AnalyticsBrowsersPageViews;
 	operating_systems: [] | [AnalyticsOperatingSystemsPageViews];
 	devices: AnalyticsDevicesPageViews;
 }
 export interface AnalyticsDevicesPageViews {
 	desktop: number;
-	others: number;
+	laptop: number;
 	tablet: number;
 	mobile: number;
 }
@@ -41,12 +40,6 @@ export interface AnalyticsOperatingSystemsPageViews {
 	linux: number;
 	android: number;
 	windows: number;
-}
-export interface AnalyticsSizesPageViews {
-	desktop: number;
-	laptop: number;
-	tablet: number;
-	mobile: number;
 }
 export interface AnalyticsTop10PageViews {
 	referrers: Array<[string, number]>;

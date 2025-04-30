@@ -195,6 +195,8 @@ export const getAnalyticsPageViews = async ({
 
 		const { daily_total_page_views, ...rest } = metrics;
 
+		const { operating_systems, ...restClients } = clients;
+
 		return {
 			metrics: {
 				...rest,
@@ -213,10 +215,8 @@ export const getAnalyticsPageViews = async ({
 			},
 			top10,
 			clients: {
-				devices: clients.devices,
-				browsers: clients.browsers,
-				sizes: fromNullable(clients.sizes),
-				operating_systems: fromNullable(clients.operating_systems)
+				...restClients,
+				operating_systems: fromNullable(operating_systems)
 			}
 		};
 	}

@@ -1,6 +1,5 @@
 import type {
 	AnalyticKey,
-	PageViewDevice,
 	SetPageView,
 	SetPerformanceMetric,
 	SetTrackEvent
@@ -28,9 +27,23 @@ export interface SetPageViewPayload {
 	time_zone: string;
 	session_id: string;
 	href: string;
-	device: PageViewDevice;
+	device: PageViewDevicePayload;
 	version?: bigint;
 	user_agent?: string;
+	client?: PageViewClientPayload;
+}
+
+export interface PageViewDevicePayload {
+	inner_height: number;
+	inner_width: number;
+	screen_height?: number;
+	screen_width?: number;
+}
+
+export interface PageViewClientPayload {
+	browser: string;
+	os: string;
+	device?: string;
 }
 
 export interface SetTrackEventRequestEntry {
@@ -122,7 +135,9 @@ export const pageViewMock: SetPageView = {
 	href: 'https://test.com',
 	device: {
 		inner_height: 300,
-		inner_width: 600
+		inner_width: 600,
+		screen_width: [1920],
+		screen_height: [1080]
 	},
 	satellite_id: satelliteIdMock,
 	referrer: [],
@@ -132,6 +147,13 @@ export const pageViewMock: SetPageView = {
 	user_agent: [
 		'Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:125.0) Gecko/20100101 Firefox/125.0'
 	],
+	client: [
+		{
+			browser: 'Firefox',
+			device: ['desktop'],
+			os: 'Mac os'
+		}
+	],
 	version: [],
 	updated_at: []
 };
@@ -140,12 +162,20 @@ export const pageViewPayloadMock: SetPageViewPayload = {
 	href: 'https://test.com',
 	device: {
 		inner_height: 300,
-		inner_width: 600
+		inner_width: 600,
+		screen_width: 1920,
+		screen_height: 1080
 	},
 	session_id: sessionId,
 	title: 'Test',
 	time_zone: timeZone,
-	user_agent: 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:125.0) Gecko/20100101 Firefox/125.0'
+	user_agent:
+		'Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:125.0) Gecko/20100101 Firefox/125.0',
+	client: {
+		browser: 'Firefox',
+		device: 'desktop',
+		os: 'Mac os'
+	}
 };
 
 export const trackEventMock: SetTrackEvent = {

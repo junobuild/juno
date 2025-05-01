@@ -28,11 +28,19 @@ export const idlFactory = ({ IDL }) => {
 		key: IDL.Text,
 		collected_at: IDL.Nat64
 	});
+	const PageViewClient = IDL.Record({
+		os: IDL.Text,
+		device: IDL.Opt(IDL.Text),
+		browser: IDL.Text
+	});
 	const PageViewDevice = IDL.Record({
 		inner_height: IDL.Nat16,
+		screen_height: IDL.Opt(IDL.Nat16),
+		screen_width: IDL.Opt(IDL.Nat16),
 		inner_width: IDL.Nat16
 	});
 	const PageView = IDL.Record({
+		client: IDL.Opt(PageViewClient),
 		title: IDL.Text,
 		updated_at: IDL.Nat64,
 		referrer: IDL.Opt(IDL.Text),
@@ -52,13 +60,23 @@ export const idlFactory = ({ IDL }) => {
 		firefox: IDL.Float64,
 		chrome: IDL.Float64
 	});
+	const AnalyticsOperatingSystemsPageViews = IDL.Record({
+		ios: IDL.Float64,
+		macos: IDL.Float64,
+		others: IDL.Float64,
+		linux: IDL.Float64,
+		android: IDL.Float64,
+		windows: IDL.Float64
+	});
 	const AnalyticsDevicesPageViews = IDL.Record({
 		desktop: IDL.Float64,
-		others: IDL.Float64,
+		laptop: IDL.Float64,
+		tablet: IDL.Float64,
 		mobile: IDL.Float64
 	});
 	const AnalyticsClientsPageViews = IDL.Record({
 		browsers: AnalyticsBrowsersPageViews,
+		operating_systems: IDL.Opt(AnalyticsOperatingSystemsPageViews),
 		devices: AnalyticsDevicesPageViews
 	});
 	const CalendarDate = IDL.Record({
@@ -170,6 +188,7 @@ export const idlFactory = ({ IDL }) => {
 		controllers: IDL.Vec(IDL.Principal)
 	});
 	const SetPageView = IDL.Record({
+		client: IDL.Opt(PageViewClient),
 		title: IDL.Text,
 		updated_at: IDL.Opt(IDL.Nat64),
 		referrer: IDL.Opt(IDL.Text),

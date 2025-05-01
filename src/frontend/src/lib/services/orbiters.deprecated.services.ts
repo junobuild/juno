@@ -1,5 +1,6 @@
 import type {
 	AnalyticKey,
+	AnalyticsClientsPageViews,
 	AnalyticsDevicesPageViews,
 	AnalyticsMetricsPageViews,
 	AnalyticsTop10PageViews,
@@ -7,7 +8,10 @@ import type {
 	PageView
 } from '$declarations/orbiter/orbiter.did';
 import { getPageViews, getTrackEvents } from '$lib/api/orbiter.api';
-import { getAnalyticsMetricsPageViews008 } from '$lib/api/orbiter.deprecated.api';
+import {
+	getAnalyticsClientsPageViews008,
+	getAnalyticsMetricsPageViews008
+} from '$lib/api/orbiter.deprecated.api';
 import type {
 	AnalyticsMetrics,
 	AnalyticsPageViews,
@@ -29,6 +33,23 @@ export const getDeprecatedAnalyticsMetricsPageViews = async (
 		unique_sessions,
 		// Introduce a relatively negligible (to some extension) difference when presenting analytics averages. Better than throwing errors.
 		total_sessions: BigInt(unique_sessions)
+	};
+};
+
+export const getDeprecatedAnalyticsClientsPageViews = async (
+	params: PageViewsParams
+): Promise<AnalyticsClientsPageViews> => {
+	const { browsers, devices } = await getAnalyticsClientsPageViews008(params);
+
+	return {
+		browsers,
+		devices: {
+			desktop: devices.desktop,
+			mobile: devices.mobile,
+			tablet: 0,
+			laptop: 0
+		},
+		operating_systems: []
 	};
 };
 
@@ -183,14 +204,14 @@ const mapDeprecatedAnalyticsDevicesPageViews = (
 ): AnalyticsDevicesPageViews => {
 	const total = pageViews.length;
 
-	const { desktop, mobile, others } = pageViews.reduce(
+	const { desktop, mobile } = pageViews.reduce(
 		(acc, [_, { user_agent }]) => {
 			const userAgent = fromNullable(user_agent);
 
 			if (isNullish(userAgent)) {
 				return {
 					...acc,
-					other: acc.others + 1
+					desktop: acc.desktop + 1
 				};
 			}
 
@@ -210,14 +231,14 @@ const mapDeprecatedAnalyticsDevicesPageViews = (
 		},
 		{
 			mobile: 0,
-			desktop: 0,
-			others: 0
+			desktop: 0
 		}
 	);
 
 	return {
 		mobile: total > 0 ? mobile / total : 0,
-		desktop: total > 0 ? desktop / total : 0,
-		others: total > 0 ? others / total : 0
+		tablet: 0,
+		laptop: 0,
+		desktop: total > 0 ? desktop / total : 0
 	};
 };

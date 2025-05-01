@@ -8,11 +8,13 @@ type AnalyticsBrowsersPageViews = record {
 };
 type AnalyticsClientsPageViews = record {
   browsers : AnalyticsBrowsersPageViews;
+  operating_systems : opt AnalyticsOperatingSystemsPageViews;
   devices : AnalyticsDevicesPageViews;
 };
 type AnalyticsDevicesPageViews = record {
   desktop : float64;
-  others : float64;
+  laptop : float64;
+  tablet : float64;
   mobile : float64;
 };
 type AnalyticsMetricsPageViews = record {
@@ -23,6 +25,14 @@ type AnalyticsMetricsPageViews = record {
   total_page_views : nat32;
   unique_page_views : nat64;
   unique_sessions : nat64;
+};
+type AnalyticsOperatingSystemsPageViews = record {
+  ios : float64;
+  macos : float64;
+  others : float64;
+  linux : float64;
+  android : float64;
+  windows : float64;
 };
 type AnalyticsTop10PageViews = record {
   referrers : vec record { text; nat32 };
@@ -92,6 +102,7 @@ type OrbiterSatelliteFeatures = record {
   page_views : bool;
 };
 type PageView = record {
+  client : opt PageViewClient;
   title : text;
   updated_at : nat64;
   referrer : opt text;
@@ -104,7 +115,13 @@ type PageView = record {
   version : opt nat64;
   user_agent : opt text;
 };
-type PageViewDevice = record { inner_height : nat16; inner_width : nat16 };
+type PageViewClient = record { os : text; device : opt text; browser : text };
+type PageViewDevice = record {
+  inner_height : nat16;
+  screen_height : opt nat16;
+  screen_width : opt nat16;
+  inner_width : nat16;
+};
 type PerformanceData = variant { WebVitalsMetric : WebVitalsMetric };
 type PerformanceMetric = record {
   updated_at : nat64;
@@ -131,6 +148,7 @@ type SetControllersArgs = record {
   controllers : vec principal;
 };
 type SetPageView = record {
+  client : opt PageViewClient;
   title : text;
   updated_at : opt nat64;
   referrer : opt text;

@@ -96,6 +96,7 @@ fn insert_page_view_impl(
         referrer: page_view.referrer,
         device: page_view.device,
         user_agent: page_view.user_agent,
+        client: page_view.client,
         time_zone: page_view.time_zone,
         satellite_id: page_view.satellite_id,
         session_id,

@@ -24,6 +24,7 @@ import { ORBITER_v0_0_4, ORBITER_v0_0_5, ORBITER_v0_0_8 } from '$lib/constants/v
 import { orbiterConfigs } from '$lib/derived/orbiter.derived';
 import { loadDataStore } from '$lib/services/loader.services';
 import {
+	getDeprecatedAnalyticsClientsPageViews,
 	getDeprecatedAnalyticsMetricsPageViews,
 	getDeprecatedAnalyticsPageViews,
 	getDeprecatedAnalyticsTrackEvents
@@ -43,7 +44,7 @@ import type { SatelliteIdText } from '$lib/types/satellite';
 import type { Option } from '$lib/types/utils';
 import type { Identity } from '@dfinity/agent';
 import { Principal } from '@dfinity/principal';
-import { assertNonNullish, isNullish, nonNullish, toNullable } from '@dfinity/utils';
+import { assertNonNullish, fromNullable, isNullish, nonNullish, toNullable } from '@dfinity/utils';
 import { compare } from 'semver';
 import { get } from 'svelte/store';
 
@@ -181,13 +182,20 @@ export const getAnalyticsPageViews = async ({
 				? getAnalyticsMetricsPageViews
 				: getDeprecatedAnalyticsMetricsPageViews;
 
+		const getClients =
+			compare(orbiterVersion, ORBITER_v0_0_8) > 0
+				? getAnalyticsClientsPageViews
+				: getDeprecatedAnalyticsClientsPageViews;
+
 		const [metrics, top10, clients] = await Promise.all([
 			getMetrics(params),
 			getAnalyticsTop10PageViews(params),
-			getAnalyticsClientsPageViews(params)
+			getClients(params)
 		]);
 
 		const { daily_total_page_views, ...rest } = metrics;
+
+		const { operating_systems, ...restClients } = clients;
 
 		return {
 			metrics: {
@@ -206,7 +214,10 @@ export const getAnalyticsPageViews = async ({
 				)
 			},
 			top10,
-			clients
+			clients: {
+				...restClients,
+				operating_systems: fromNullable(operating_systems)
+			}
 		};
 	}
 

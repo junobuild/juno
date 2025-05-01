@@ -412,7 +412,7 @@ describe('Orbiter', () => {
 					expect(result).toHaveProperty('devices');
 					expect(result.devices).toHaveProperty('desktop');
 					expect(result.devices).toHaveProperty('mobile');
-					expect(result.devices).toHaveProperty('others');
+					expect(result.devices).toHaveProperty('laptop');
 
 					expect(result.browsers.firefox).toEqual(1);
 					expect(result.devices.desktop).toEqual(1);

@@ -15,11 +15,13 @@ export interface AnalyticsBrowsersPageViews {
 }
 export interface AnalyticsClientsPageViews {
 	browsers: AnalyticsBrowsersPageViews;
+	operating_systems: [] | [AnalyticsOperatingSystemsPageViews];
 	devices: AnalyticsDevicesPageViews;
 }
 export interface AnalyticsDevicesPageViews {
 	desktop: number;
-	others: number;
+	laptop: number;
+	tablet: number;
 	mobile: number;
 }
 export interface AnalyticsMetricsPageViews {
@@ -30,6 +32,14 @@ export interface AnalyticsMetricsPageViews {
 	total_page_views: number;
 	unique_page_views: bigint;
 	unique_sessions: bigint;
+}
+export interface AnalyticsOperatingSystemsPageViews {
+	ios: number;
+	macos: number;
+	others: number;
+	linux: number;
+	android: number;
+	windows: number;
 }
 export interface AnalyticsTop10PageViews {
 	referrers: Array<[string, number]>;
@@ -114,6 +124,7 @@ export interface OrbiterSatelliteFeatures {
 	page_views: boolean;
 }
 export interface PageView {
+	client: [] | [PageViewClient];
 	title: string;
 	updated_at: bigint;
 	referrer: [] | [string];
@@ -126,8 +137,15 @@ export interface PageView {
 	version: [] | [bigint];
 	user_agent: [] | [string];
 }
+export interface PageViewClient {
+	os: string;
+	device: [] | [string];
+	browser: string;
+}
 export interface PageViewDevice {
 	inner_height: number;
+	screen_height: [] | [number];
+	screen_width: [] | [number];
 	inner_width: number;
 }
 export type PerformanceData = { WebVitalsMetric: WebVitalsMetric };
@@ -161,6 +179,7 @@ export interface SetControllersArgs {
 	controllers: Array<Principal>;
 }
 export interface SetPageView {
+	client: [] | [PageViewClient];
 	title: string;
 	updated_at: [] | [bigint];
 	referrer: [] | [string];

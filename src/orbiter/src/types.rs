@@ -1,6 +1,6 @@
 pub mod interface {
     use crate::state::types::state::{
-        PageViewDevice, PerformanceData, PerformanceMetricName, SessionId,
+        PageViewClient, PageViewDevice, PerformanceData, PerformanceMetricName, SessionId,
     };
     use candid::CandidType;
     use junobuild_shared::types::core::DomainName;
@@ -19,6 +19,7 @@ pub mod interface {
         pub device: PageViewDevice,
         pub time_zone: String,
         pub user_agent: Option<String>,
+        pub client: Option<PageViewClient>,
         pub satellite_id: SatelliteId,
         pub session_id: SessionId,
         #[deprecated(
@@ -92,10 +93,21 @@ pub mod interface {
     }
 
     #[derive(CandidType, Deserialize, Clone)]
+    pub struct AnalyticsOperatingSystemsPageViews {
+        pub ios: f64,
+        pub android: f64,
+        pub windows: f64,
+        pub macos: f64,
+        pub linux: f64,
+        pub others: f64,
+    }
+
+    #[derive(CandidType, Deserialize, Clone)]
     pub struct AnalyticsDevicesPageViews {
         pub mobile: f64,
+        pub tablet: f64,
+        pub laptop: f64,
         pub desktop: f64,
-        pub others: f64,
     }
 
     #[derive(CandidType, Deserialize, Clone)]
@@ -111,6 +123,7 @@ pub mod interface {
     pub struct AnalyticsClientsPageViews {
         pub devices: AnalyticsDevicesPageViews,
         pub browsers: AnalyticsBrowsersPageViews,
+        pub operating_systems: Option<AnalyticsOperatingSystemsPageViews>,
     }
 
     #[derive(CandidType, Deserialize, Clone)]
@@ -134,9 +147,7 @@ pub mod interface {
     }
 
     pub mod http {
-        use crate::state::types::state::{
-            Key, PageViewDevice, PerformanceData, PerformanceMetricName, SessionId,
-        };
+        use crate::state::types::state::{Key, PerformanceData, PerformanceMetricName, SessionId};
         use junobuild_shared::types::state::Metadata;
         use junobuild_utils::DocDataBigInt;
         use serde::{Deserialize, Serialize};
@@ -217,9 +228,10 @@ pub mod interface {
             pub title: String,
             pub href: String,
             pub referrer: Option<String>,
-            pub device: PageViewDevice,
+            pub device: PageViewDevicePayload,
             pub time_zone: String,
             pub user_agent: Option<String>,
+            pub client: Option<PageViewClientPayload>,
             pub session_id: SessionId,
             pub version: VersionPayload,
         }
@@ -249,15 +261,36 @@ pub mod interface {
             pub href: String,
             #[serde(skip_serializing_if = "Option::is_none")]
             pub referrer: Option<String>,
-            pub device: PageViewDevice,
+            pub device: PageViewDevicePayload,
             pub time_zone: String,
             #[serde(skip_serializing_if = "Option::is_none")]
             pub user_agent: Option<String>,
+            #[serde(skip_serializing_if = "Option::is_none")]
+            pub client: Option<PageViewClientPayload>,
             pub session_id: SessionId,
             pub created_at: TimestampPayload,
             pub updated_at: TimestampPayload,
             #[serde(skip_serializing_if = "Option::is_none")]
             pub version: VersionPayload,
+        }
+
+        #[derive(Deserialize, Serialize)]
+        pub struct PageViewClientPayload {
+            pub browser: String,
+            #[serde(rename = "os")]
+            pub operating_system: String,
+            #[serde(skip_serializing_if = "Option::is_none")]
+            pub device: Option<String>,
+        }
+
+        #[derive(Deserialize, Serialize)]
+        pub struct PageViewDevicePayload {
+            pub inner_width: u16,
+            pub inner_height: u16,
+            #[serde(skip_serializing_if = "Option::is_none")]
+            pub screen_width: Option<u16>,
+            #[serde(skip_serializing_if = "Option::is_none")]
+            pub screen_height: Option<u16>,
         }
 
         #[derive(Serialize)]

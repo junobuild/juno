@@ -159,9 +159,10 @@ describe('Orbiter > Analytics', () => {
 					? singlePageViewSessions / Object.keys(sessionsViews).length
 					: 0;
 
-			const uniquePageViews = Object.values(sessionsUniqueViews).reduce((acc, value) => {
-				return acc + value.size;
-			}, 0);
+			const uniquePageViews = Object.values(sessionsUniqueViews).reduce(
+				(acc, value) => acc + value.size,
+				0
+			);
 
 			// In this test all page views are collected the same day so for simplicity reasons its the same value.
 			const dailyTotalPageViews = totalPageViews;

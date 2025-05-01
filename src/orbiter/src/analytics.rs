@@ -17,8 +17,8 @@ use url::Url;
 struct Devices {
     mobile: u32,
     tablet: u32,
-    desktop: u32,
     laptop: u32,
+    desktop: u32,
 }
 
 struct Browsers {

@@ -3,14 +3,16 @@ import type {
 	_SERVICE as OrbiterActor,
 	OrbiterSatelliteFeatures,
 	PageView,
+	PageViewClient,
 	SetPageView
 } from '$declarations/orbiter/orbiter.did';
 import { idlFactory as idlFactorOrbiter } from '$declarations/orbiter/orbiter.factory.did';
 import { Ed25519KeyIdentity } from '@dfinity/identity';
-import { jsonReviver } from '@dfinity/utils';
+import { fromNullable, isNullish, jsonReviver, toNullable } from '@dfinity/utils';
 import { type Actor, PocketIc } from '@hadronous/pic';
 import { readFile } from 'node:fs/promises';
 import { join } from 'node:path';
+import UAParser from 'ua-parser-js';
 import { inject } from 'vitest';
 import { satelliteIdMock } from '../../mocks/orbiter.mocks';
 import { tick } from '../../utils/pic-tests.utils';
@@ -23,6 +25,8 @@ describe('Orbiter > Analytics', () => {
 	const controller = Ed25519KeyIdentity.generate();
 
 	let pageViewsMock: [AnalyticKey, PageView][];
+
+	const ONE_DAY = 86_400_000_000_000n;
 
 	const initMock = async () => {
 		const content = await readFile(
@@ -53,26 +57,78 @@ describe('Orbiter > Analytics', () => {
 		]);
 	};
 
-	const uploadPageViews = async ({ collected_at }: { collected_at: bigint }) => {
+	const uploadPageViews = async ({
+		collected_at,
+		withSizeMock = false,
+		withUAParser = false
+	}: {
+		collected_at: bigint;
+		withSizeMock?: boolean;
+		withUAParser?: boolean;
+	}) => {
+		const screen_width = [575, 991, 1439, 1920];
+
 		const setPageViewsData = pageViewsMock.map<[AnalyticKey, SetPageView]>(
-			([key, { version: ___, created_at: _, updated_at: __, satellite_id, device, ...value }]) => [
-				{
-					...key,
-					collected_at
-				},
-				{
-					...value,
-					updated_at: [],
-					version: [],
-					client: [],
-					satellite_id: satelliteIdMock,
-					device: {
-						...device,
-						screen_width: [],
-						screen_height: []
+			(
+				[
+					key,
+					{
+						version: ___,
+						created_at: _,
+						updated_at: __,
+						satellite_id,
+						device,
+						user_agent,
+						...value
 					}
-				}
-			]
+				],
+				i
+			) => {
+				const parseClient = (): PageViewClient | undefined => {
+					if (!withUAParser) {
+						return undefined;
+					}
+
+					const userAgent = fromNullable(user_agent);
+
+					if (isNullish(userAgent)) {
+						return undefined;
+					}
+
+					const parser = new UAParser(userAgent);
+					const { browser, os, device } = parser.getResult();
+
+					if (isNullish(browser.name) || isNullish(os.name)) {
+						return undefined;
+					}
+
+					return {
+						browser: browser.name,
+						os: os.name,
+						device: toNullable(device?.type)
+					};
+				};
+
+				return [
+					{
+						...key,
+						collected_at
+					},
+					{
+						...value,
+						user_agent,
+						updated_at: [],
+						version: [],
+						client: toNullable(parseClient()),
+						satellite_id: satelliteIdMock,
+						device: {
+							...device,
+							screen_width: withSizeMock ? [screen_width[i % screen_width.length]] : [],
+							screen_height: []
+						}
+					}
+				];
+			}
 		);
 
 		const it = setPageViewsData.values();
@@ -185,6 +241,183 @@ describe('Orbiter > Analytics', () => {
 				total_page_views: totalPageViews,
 				unique_page_views: BigInt(uniquePageViews),
 				unique_sessions: BigInt(uniqueSessions)
+			});
+		});
+
+		it('should get the top10 pages', async () => {
+			const { get_page_views_analytics_top_10 } = actor;
+
+			const result = await get_page_views_analytics_top_10({
+				satellite_id: [satelliteIdMock],
+				from: [collected_at],
+				to: [collected_at + 1000n]
+			});
+
+			expect(result).toEqual({
+				pages: [
+					['/', 92],
+					['/hello/', 26],
+					['/info/', 17],
+					['/explore/', 13],
+					['/coolio/', 8],
+					['/settings/', 5]
+				],
+				referrers: [
+					['demo.com', 30],
+					['source.com', 15],
+					['com.twitter.android', 7],
+					['www.google.com', 1]
+				]
+			});
+		});
+
+		it('should get the clients information', async () => {
+			const { get_page_views_analytics_clients } = actor;
+
+			const result = await get_page_views_analytics_clients({
+				satellite_id: [satelliteIdMock],
+				from: [collected_at],
+				to: [collected_at + 1000n]
+			});
+
+			expect(result).toEqual({
+				browsers: {
+					chrome: 0.5962732919254659,
+					firefox: 0.037267080745341616,
+					opera: 0,
+					others: 0,
+					safari: 0.36645962732919257
+				},
+				devices: {
+					desktop: 0.6273291925465838,
+					laptop: 0,
+					mobile: 0.37267080745341613,
+					tablet: 0
+				},
+				operating_systems: []
+			});
+		});
+	});
+
+	describe('Analytics with screen data', () => {
+		const collected_at = 1742076030479000000n + ONE_DAY;
+
+		beforeAll(async () => {
+			await uploadPageViews({ collected_at, withSizeMock: true });
+		});
+
+		it('should get the clients information', async () => {
+			const { get_page_views_analytics_clients } = actor;
+
+			const result = await get_page_views_analytics_clients({
+				satellite_id: [satelliteIdMock],
+				from: [collected_at],
+				to: [collected_at + 1000n]
+			});
+
+			expect(result).toEqual({
+				browsers: {
+					chrome: 0.5962732919254659,
+					firefox: 0.037267080745341616,
+					opera: 0,
+					others: 0,
+					safari: 0.36645962732919257
+				},
+				devices: {
+					desktop: 0.2484472049689441,
+					laptop: 0.2484472049689441,
+					mobile: 0.2546583850931677,
+					tablet: 0.2484472049689441
+				},
+				operating_systems: []
+			});
+		});
+	});
+
+	describe('Analytics with UA parsed data', () => {
+		const collected_at = 1742076030479000000n + ONE_DAY + ONE_DAY;
+
+		beforeAll(async () => {
+			await uploadPageViews({ collected_at, withUAParser: true });
+		});
+
+		it('should get the data based on extract ua data', async () => {
+			const { get_page_views_analytics_clients } = actor;
+
+			const result = await get_page_views_analytics_clients({
+				satellite_id: [satelliteIdMock],
+				from: [collected_at],
+				to: [collected_at + 1000n]
+			});
+
+			expect(result).toEqual({
+				browsers: {
+					chrome: 0.5962732919254659,
+					firefox: 0.037267080745341616,
+					opera: 0,
+					others: 0,
+					safari: 0.36645962732919257
+				},
+				devices: {
+					desktop: 0.6894409937888198,
+					laptop: 0,
+					mobile: 0.3105590062111801,
+					tablet: 0
+				},
+				operating_systems: [
+					{
+						android: 0.3105590062111801,
+						ios: 0.37267080745341613,
+						linux: 0,
+						macos: 0.13043478260869565,
+						others: 0.006211180124223602,
+						windows: 0.18012422360248448
+					}
+				]
+			});
+		});
+	});
+
+	describe('Analytics with UA parsed data and screen size', () => {
+		const collected_at = 1742076030479000000n + ONE_DAY + ONE_DAY + ONE_DAY;
+
+		beforeAll(async () => {
+			await uploadPageViews({ collected_at, withUAParser: true, withSizeMock: true });
+		});
+
+		it('should get the data based on extract ua data except devices from size', async () => {
+			const { get_page_views_analytics_clients } = actor;
+
+			const result = await get_page_views_analytics_clients({
+				satellite_id: [satelliteIdMock],
+				from: [collected_at],
+				to: [collected_at + 1000n]
+			});
+
+			expect(result).toEqual({
+				browsers: {
+					chrome: 0.5962732919254659,
+					firefox: 0.037267080745341616,
+					opera: 0,
+					others: 0,
+					safari: 0.36645962732919257
+				},
+				devices: {
+					desktop: 0.2484472049689441,
+					laptop: 0.2484472049689441,
+					mobile: 0.2546583850931677,
+					tablet: 0.2484472049689441
+				},
+				operating_systems: [
+					{
+						android: 0.3105590062111801,
+						ios: 0.37267080745341613,
+						linux: 0,
+						macos: 0.13043478260869565,
+						others: 0.006211180124223602,
+						windows: 0.18012422360248448
+					}
+				]
 			});
 		});
 	});

@@ -78,6 +78,7 @@
 		"@types/d3": "^7.4.3",
 		"@types/node": "^22.14.1",
 		"@types/semver": "^7.7.0",
+		"@types/ua-parser-js": "^0.7.39",
 		"@types/wicg-file-system-access": "^2023.10.6",
 		"autoprefixer": "^10.4.21",
 		"conf": "^13.1.0",
@@ -123,6 +124,7 @@
 		"nanoid": "^5.1.5",
 		"semver": "^7.7.1",
 		"svelte-confetti": "^2.3.1",
+		"ua-parser-js": "^1.0.40",
 		"zod": "^3.24.2"
 	},
 	"engines": {

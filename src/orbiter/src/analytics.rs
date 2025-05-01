@@ -172,8 +172,7 @@ pub fn analytics_page_views_clients(
         firefox: Regex::new(r"(?i)firefox|fxios").unwrap(),
         safari: Regex::new(r"(?i)safari").unwrap(),
     };
-
-    // The newest methods to gather analytics have been introduced in v0.1.0
+    
     for (
         _,
         PageView {
@@ -184,19 +183,28 @@ pub fn analytics_page_views_clients(
         },
     ) in page_views
     {
+        // The fallback methods use simple regular expressions and are therefore less accurate than interpreting the parsed User-Agent string data.
+        // We can't parse the UA on the canister side because the necessary crate is too resource-intensive — integrating it lead to exceeding the execution limits.
+        // For this reason, the frontend can optionally include a UA parser. It’s optional because it adds a few kilobytes to the app bundle.
+
         if let Some(client) = client {
             analytics_browsers(client, &mut total_browsers);
             analytics_operating_systems(client, &mut total_operating_systems);
         } else {
-            analytics_browsers_legacy(user_agent, &browsers_regex, &mut total_browsers);
+            analytics_browsers_fallback(user_agent, &browsers_regex, &mut total_browsers);
         }
 
+        // We primarily use screen width to determine the device type. While this may be less precise than identifying the exact device,
+        // it provides a good estimate, especially since web apps are typically built responsively.
+        // Additionally, both UA parsing and regex-based approaches have reliability limitations.
+        // Screen size collection was introduced in v0.1.0 — hence the need for fallbacks when unavailable.
+        
         if let Some(screen_width) = device.screen_width {
             analytics_devices_with_sizes(&screen_width, &mut total_devices);
         } else if let Some(client) = client {
             analytics_devices_with_parsed_ua_data(client, &mut total_devices);
         } else {
-            analytics_devices_legacy(user_agent, &devices_regex, &mut total_devices);
+            analytics_devices_fallback(user_agent, &devices_regex, &mut total_devices);
         }
     }
 
@@ -445,8 +453,7 @@ fn analytics_pages(href: &str, pages: &mut HashMap<String, u32>) {
     *pages.entry(page).or_insert(0) += 1;
 }
 
-#[deprecated(since = "0.1.0", note = "prefer analytics_client_devices")]
-fn analytics_devices_legacy(
+fn analytics_devices_fallback(
     user_agent: &Option<String>,
     devices_regex: &DevicesRegex,
     devices: &mut Devices,
@@ -484,8 +491,7 @@ fn analytics_devices_with_parsed_ua_data(
     }
 }
 
-#[deprecated(since = "0.1.0", note = "prefer analytics_client_browsers")]
-fn analytics_browsers_legacy(
+fn analytics_browsers_fallback(
     user_agent: &Option<String>,
     browsers_regex: &BrowsersRegex,
     browsers: &mut Browsers,

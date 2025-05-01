@@ -101,7 +101,6 @@ pub fn analytics_page_views_metrics(
 
     AnalyticsMetricsPageViews {
         daily_total_page_views,
-        total_sessions,
         unique_sessions: unique_sessions_count,
         unique_page_views,
         total_page_views,
@@ -172,7 +171,7 @@ pub fn analytics_page_views_clients(
         firefox: Regex::new(r"(?i)firefox|fxios").unwrap(),
         safari: Regex::new(r"(?i)safari").unwrap(),
     };
-    
+
     for (
         _,
         PageView {
@@ -198,7 +197,7 @@ pub fn analytics_page_views_clients(
         // it provides a good estimate, especially since web apps are typically built responsively.
         // Additionally, both UA parsing and regex-based approaches have reliability limitations.
         // Screen size collection was introduced in v0.1.0 — hence the need for fallbacks when unavailable.
-        
+
         if let Some(screen_width) = device.screen_width {
             analytics_devices_with_sizes(&screen_width, &mut total_devices);
         } else if let Some(client) = client {

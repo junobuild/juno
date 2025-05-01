@@ -4,7 +4,7 @@
 		"type": "application",
 		"canisters": {
 			"stopped": 122,
-			"running": 7850
+			"running": 7851
 		},
 		"nodes": {
 			"up": 13,
@@ -16,10 +16,10 @@
 		"type": "application",
 		"canisters": {
 			"stopped": 3,
-			"running": 34974
+			"running": 35659
 		},
 		"nodes": {
-			"up": 13,
+			"up": 12,
 			"total": 13
 		}
 	},
@@ -28,7 +28,7 @@
 		"type": "application",
 		"canisters": {
 			"stopped": 50,
-			"running": 11964
+			"running": 12615
 		},
 		"nodes": {
 			"up": 13,
@@ -40,7 +40,7 @@
 		"type": "application",
 		"canisters": {
 			"stopped": 651,
-			"running": 34922
+			"running": 34929
 		},
 		"nodes": {
 			"up": 13,
@@ -52,7 +52,7 @@
 		"type": "application",
 		"canisters": {
 			"stopped": 12,
-			"running": 880
+			"running": 882
 		},
 		"nodes": {
 			"up": 13,
@@ -63,11 +63,11 @@
 		"subnetId": "cv73p-6v7zi-u67oy-7jc3h-qspsz-g5lrj-4fn7k-xrax3-thek2-sl46v-jae",
 		"type": "application",
 		"canisters": {
-			"stopped": 182,
-			"running": 51440
+			"stopped": 188,
+			"running": 51450
 		},
 		"nodes": {
-			"up": 13,
+			"up": 12,
 			"total": 13
 		}
 	},
@@ -76,7 +76,7 @@
 		"type": "application",
 		"canisters": {
 			"stopped": 100,
-			"running": 35761
+			"running": 35773
 		},
 		"nodes": {
 			"up": 13,
@@ -88,7 +88,7 @@
 		"type": "application",
 		"canisters": {
 			"stopped": 7,
-			"running": 6193
+			"running": 6289
 		},
 		"nodes": {
 			"up": 13,
@@ -100,7 +100,7 @@
 		"type": "application",
 		"canisters": {
 			"stopped": 1,
-			"running": 20470
+			"running": 20478
 		},
 		"nodes": {
 			"up": 13,
@@ -112,7 +112,7 @@
 		"type": "application",
 		"canisters": {
 			"stopped": 50,
-			"running": 33933
+			"running": 33940
 		},
 		"nodes": {
 			"up": 13,
@@ -124,7 +124,7 @@
 		"type": "application",
 		"canisters": {
 			"stopped": 5,
-			"running": 641
+			"running": 645
 		},
 		"nodes": {
 			"up": 13,
@@ -136,7 +136,7 @@
 		"type": "application",
 		"canisters": {
 			"stopped": 5,
-			"running": 27307
+			"running": 27316
 		},
 		"nodes": {
 			"up": 13,
@@ -148,7 +148,7 @@
 		"type": "application",
 		"canisters": {
 			"stopped": 123,
-			"running": 40127
+			"running": 40132
 		},
 		"nodes": {
 			"up": 12,
@@ -160,7 +160,7 @@
 		"type": "application",
 		"canisters": {
 			"stopped": 94,
-			"running": 55394
+			"running": 55396
 		},
 		"nodes": {
 			"up": 13,
@@ -172,7 +172,7 @@
 		"type": "application",
 		"canisters": {
 			"stopped": 37,
-			"running": 31965
+			"running": 31973
 		},
 		"nodes": {
 			"up": 13,
@@ -184,7 +184,7 @@
 		"type": "application",
 		"canisters": {
 			"stopped": 62,
-			"running": 56991
+			"running": 57029
 		},
 		"nodes": {
 			"up": 13,
@@ -195,8 +195,8 @@
 		"subnetId": "opn46-zyspe-hhmyp-4zu6u-7sbrh-dok77-m7dch-im62f-vyimr-a3n2c-4ae",
 		"type": "application",
 		"canisters": {
-			"stopped": 47,
-			"running": 40508
+			"stopped": 48,
+			"running": 40518
 		},
 		"nodes": {
 			"up": 13,
@@ -208,7 +208,7 @@
 		"type": "application",
 		"canisters": {
 			"stopped": 64,
-			"running": 32289
+			"running": 32292
 		},
 		"nodes": {
 			"up": 13,
@@ -220,7 +220,7 @@
 		"type": "application",
 		"canisters": {
 			"stopped": 19,
-			"running": 52964
+			"running": 52966
 		},
 		"nodes": {
 			"up": 13,
@@ -232,7 +232,7 @@
 		"type": "application",
 		"canisters": {
 			"stopped": 5,
-			"running": 402
+			"running": 404
 		},
 		"nodes": {
 			"up": 13,
@@ -244,10 +244,10 @@
 		"type": "application",
 		"canisters": {
 			"stopped": 1,
-			"running": 182
+			"running": 192
 		},
 		"nodes": {
-			"up": 13,
+			"up": 12,
 			"total": 13
 		}
 	},
@@ -256,7 +256,7 @@
 		"type": "application",
 		"canisters": {
 			"stopped": 16,
-			"running": 6812
+			"running": 6831
 		},
 		"nodes": {
 			"up": 13,
@@ -268,11 +268,11 @@
 		"specialization": "european",
 		"type": "application",
 		"canisters": {
-			"stopped": 570,
-			"running": 24674
+			"stopped": 573,
+			"running": 24697
 		},
 		"nodes": {
-			"up": 13,
+			"up": 12,
 			"total": 13
 		}
 	},
@@ -282,10 +282,10 @@
 		"type": "application",
 		"canisters": {
 			"stopped": 8,
-			"running": 2665
+			"running": 2681
 		},
 		"nodes": {
-			"up": 33,
+			"up": 32,
 			"total": 34
 		}
 	}

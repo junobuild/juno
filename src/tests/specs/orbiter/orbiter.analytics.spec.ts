@@ -26,7 +26,7 @@ describe('Orbiter > Analytics', () => {
 
 	const initMock = async () => {
 		const content = await readFile(
-			join(process.cwd(), 'src', 'tests/mocks/orbiter.mocks.json'),
+			join(process.cwd(), 'src', 'tests/mocks/analytics.mocks.json'),
 			'utf-8'
 		);
 		pageViewsMock = JSON.parse(content, jsonReviver);

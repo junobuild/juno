@@ -136,8 +136,8 @@ export const pageViewMock: SetPageView = {
 	device: {
 		inner_height: 300,
 		inner_width: 600,
-		screen_height: [1424],
-		screen_width: [919]
+		screen_width: [1920],
+		screen_height: [1080]
 	},
 	satellite_id: satelliteIdMock,
 	referrer: [],
@@ -149,7 +149,7 @@ export const pageViewMock: SetPageView = {
 	],
 	client: [
 		{
-			browser: 'Chrome',
+			browser: 'Firefox',
 			device: ['desktop'],
 			os: 'Mac os'
 		}
@@ -164,7 +164,7 @@ export const pageViewPayloadMock: SetPageViewPayload = {
 		inner_height: 300,
 		inner_width: 600,
 		screen_width: 1920,
-		screen_height: 1440
+		screen_height: 1080
 	},
 	session_id: sessionId,
 	title: 'Test',
@@ -172,7 +172,7 @@ export const pageViewPayloadMock: SetPageViewPayload = {
 	user_agent:
 		'Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:125.0) Gecko/20100101 Firefox/125.0',
 	client: {
-		browser: 'Chrome',
+		browser: 'Firefox',
 		device: 'desktop',
 		os: 'Mac os'
 	}

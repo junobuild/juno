@@ -28,7 +28,8 @@ export type PageViewsParams = {
 	satelliteId?: Principal;
 	orbiterId: Principal;
 	identity: OptionIdentity;
-} & PageViewsFilters;
+} & Omit<PageViewsFilters, 'from'> &
+	Required<Pick<PageViewsFilters, 'from'>>;
 
 export type DateStartOfTheDay = string;
 

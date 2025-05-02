@@ -21,6 +21,7 @@
 	import type { JunoModalDetail, JunoModalEditOrbiterConfigDetail } from '$lib/types/modal';
 	import type { OrbiterSatelliteConfigEntry } from '$lib/types/orbiter';
 	import type { SatelliteIdText } from '$lib/types/satellite';
+	import { DEFAULT_FEATURES } from '$lib/constants/analytics.constants';
 
 	interface Props {
 		detail: JunoModalDetail;
@@ -73,27 +74,21 @@
 
 	const onPageViewsToggle = () => {
 		features = {
-			...(nonNullish(features)
-				? features
-				: { page_views: true, track_events: true, performance_metrics: true }),
+			...(nonNullish(features) ? features : DEFAULT_FEATURES),
 			page_views: features?.page_views !== true
 		};
 	};
 
 	const onTrackEventsToggle = () => {
 		features = {
-			...(nonNullish(features)
-				? features
-				: { page_views: true, track_events: true, performance_metrics: true }),
+			...(nonNullish(features) ? features : DEFAULT_FEATURES),
 			track_events: features?.track_events !== true
 		};
 	};
 
 	const onPerformanceToggle = () => {
 		features = {
-			...(nonNullish(features)
-				? features
-				: { page_views: true, track_events: true, performance_metrics: true }),
+			...(nonNullish(features) ? features : DEFAULT_FEATURES),
 			performance_metrics: features?.performance_metrics !== true
 		};
 	};
@@ -230,7 +225,7 @@
 									<Checkbox>
 										<input
 											type="checkbox"
-											checked={isNullish(features) || features?.performance_metrics === true}
+											checked={features?.performance_metrics === true}
 											onchange={onPerformanceToggle}
 										/>
 										<span>{$i18n.analytics.web_vitals}</span>

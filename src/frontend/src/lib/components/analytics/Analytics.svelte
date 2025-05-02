@@ -123,7 +123,7 @@
 		}
 
 		reloadingAnalytics = 'loaded';
-		toasts.success({ text: $i18n.analytics.analytics_updated });
+		toasts.success({ text: $i18n.analytics.analytics_updated, color: 'secondary' });
 
 		setTimeout(() => {
 			reloadingAnalytics = 'idle';

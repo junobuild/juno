@@ -27,8 +27,8 @@
 	const dispatch = createEventDispatcher();
 
 	const onSuccess = () => {
-		toasts.success(
-			i18nCapitalize(
+		toasts.success({
+			text: i18nCapitalize(
 				i18nFormat($i18n.canisters.attach_success, [
 					{
 						placeholder: '{0}',
@@ -36,7 +36,7 @@
 					}
 				])
 			)
-		);
+		});
 
 		dispatch('junoAttach');
 	};

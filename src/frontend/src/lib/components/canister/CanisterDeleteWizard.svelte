@@ -99,8 +99,8 @@
 
 			close();
 
-			toasts.success(
-				i18nCapitalize(
+			toasts.success({
+				text: i18nCapitalize(
 					i18nFormat($i18n.canisters.delete_success, [
 						{
 							placeholder: '{0}',
@@ -108,7 +108,7 @@
 						}
 					])
 				)
-			);
+			});
 		} catch (err: unknown) {
 			step = 'error';
 

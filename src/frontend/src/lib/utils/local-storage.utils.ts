@@ -88,7 +88,7 @@ export const getLocalStorageSatellitesLayout = (): SatellitesLayout => {
 	}
 };
 
-export const getLocalStorageAnalyticsPeriodicity = (): AnalyticsPeriodicity => {
+export const getLocalStorageAnalyticsPeriodicity = (): { periodicity: AnalyticsPeriodicity } => {
 	try {
 		const { analytics_periodicity }: Storage = browser
 			? localStorage

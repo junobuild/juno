@@ -17,19 +17,18 @@ export interface PageViewsPeriod {
 
 export type PageViewsOptionPeriod = Partial<PageViewsPeriod>;
 
+export type PageViewsFilters = Partial<PageViewsPeriod> & { periodicity: AnalyticsPeriodicity };
+
 // One day = 24 hours
 // A week = 7 days = 168 hours
 // A month = 30 days = 720 hours
-export interface AnalyticsPeriodicity {
-	periodicity: 4 | 8 | 12 | 24 | 168 | 720;
-}
+export type AnalyticsPeriodicity = 4 | 8 | 12 | 24 | 168 | 720;
 
 export type PageViewsParams = {
 	satelliteId?: Principal;
 	orbiterId: Principal;
 	identity: OptionIdentity;
-} & PageViewsPeriod &
-	AnalyticsPeriodicity;
+} & PageViewsFilters;
 
 export type DateStartOfTheDay = string;
 

@@ -1,6 +1,5 @@
 <script lang="ts">
 	import { isNullish, nonNullish, debounce } from '@dfinity/utils';
-	import { addMonths } from 'date-fns';
 	import { fade } from 'svelte/transition';
 	import type {
 		AnalyticsTrackEvents,
@@ -26,17 +25,15 @@
 		getAnalyticsTrackEvents,
 		loadOrbiterConfigs
 	} from '$lib/services/orbiters.services';
+	import { analyticsFiltersStore } from '$lib/stores/analytics-filters.store';
 	import { authStore } from '$lib/stores/auth.store';
 	import { i18n } from '$lib/stores/i18n.store';
 	import { toasts } from '$lib/stores/toasts.store';
 	import { versionStore } from '$lib/stores/version.store';
 	import type {
 		AnalyticsPageViews as AnalyticsPageViewsType,
-		PageViewsParams,
-		PageViewsOptionPeriod,
-		AnalyticsPeriodicity
+		PageViewsParams
 	} from '$lib/types/orbiter';
-	import { getLocalStorageAnalyticsPeriodicity } from '$lib/utils/local-storage.utils';
 
 	let loadingOrbiter: 'in_progress' | 'done' | 'error' = $state('in_progress');
 	let reloadingAnalytics: 'idle' | 'in_progress' | 'loaded' | 'error' = $state('idle');
@@ -44,12 +41,6 @@
 	let pageViews: AnalyticsPageViewsType | undefined = $state(undefined);
 	let trackEvents: AnalyticsTrackEvents | undefined = $state(undefined);
 	let performanceMetrics: AnalyticsWebVitalsPerformanceMetrics | undefined = $state(undefined);
-
-	let period = $state<PageViewsOptionPeriod>({
-		from: addMonths(new Date(), -1)
-	});
-
-	let periodicity = $state<AnalyticsPeriodicity>(getLocalStorageAnalyticsPeriodicity());
 
 	const loadAnalytics = async (): Promise<{ result: 'ok' | 'error' | 'skip' }> => {
 		if (isNullish($orbiterStore)) {
@@ -60,7 +51,7 @@
 			return { result: 'skip' };
 		}
 
-		const { from, ...restPeriod } = period;
+		const { from, ...restPeriod } = $analyticsFiltersStore;
 
 		if (isNullish(from)) {
 			toasts.warn($i18n.analytics.warn_no_from);
@@ -72,7 +63,6 @@
 				satelliteId: $satelliteStore?.satellite_id,
 				orbiterId: $orbiterStore.orbiter_id,
 				identity: $authStore.identity,
-				...periodicity,
 				from,
 				...restPeriod
 			};
@@ -170,9 +160,6 @@
 
 		debounceInit();
 	});
-
-	const selectPeriod = (detail: PageViewsOptionPeriod) => (period = detail);
-	const selectPeriodicity = (detail: AnalyticsPeriodicity) => (periodicity = detail);
 </script>
 
 {#if loadingOrbiter === 'in_progress'}
@@ -185,7 +172,7 @@
 
 		<AnalyticsNew />
 	{:else}
-		<AnalyticsFilter {selectPeriod} {selectPeriodicity} loadAnalytics={reloadAnalytics} />
+		<AnalyticsFilter loadAnalytics={reloadAnalytics} />
 
 		{#if reloadingAnalytics === 'error'}
 			<div in:fade><Warning>{$i18n.analytics.error_msg}</Warning></div>
@@ -213,7 +200,7 @@
 
 				<AnalyticsEvents {trackEvents} />
 
-				<AnalyticsEventsExport orbiter={$orbiterStore} {period} {periodicity} />
+				<AnalyticsEventsExport orbiter={$orbiterStore} />
 			{/if}
 		{/if}
 	{/if}

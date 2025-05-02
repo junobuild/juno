@@ -1,34 +1,34 @@
 <script lang="ts">
 	import { nonNullish } from '@dfinity/utils';
-	import { addMonths, format } from 'date-fns';
+	import { format } from 'date-fns';
 	import { slide } from 'svelte/transition';
 	import { afterNavigate } from '$app/navigation';
 	import AnalyticsPeriodicity from '$lib/components/analytics/AnalyticsPeriodicity.svelte';
 	import AnalyticsSatellitesPicker from '$lib/components/analytics/AnalyticsSatellitesPicker.svelte';
 	import AnalyticsToolbar from '$lib/components/analytics/AnalyticsToolbar.svelte';
 	import Value from '$lib/components/ui/Value.svelte';
+	import { analyticsFiltersStore } from '$lib/stores/analytics-filters.store';
 	import { i18n } from '$lib/stores/i18n.store';
-	import type {
-		PageViewsOptionPeriod,
-		AnalyticsPeriodicity as AnalyticsPeriodicityType
-	} from '$lib/types/orbiter';
+	import type { AnalyticsPeriodicity as AnalyticsPeriodicityType } from '$lib/types/orbiter';
 
 	interface Props {
-		selectPeriod: (period: PageViewsOptionPeriod) => void;
-		selectPeriodicity: (periodicity: AnalyticsPeriodicityType) => void;
 		loadAnalytics: () => Promise<{ result: 'ok' | 'error' | 'skip' }>;
 	}
 
-	let { selectPeriod, selectPeriodicity, loadAnalytics }: Props = $props();
+	let { loadAnalytics }: Props = $props();
 
-	let from = $state(format(addMonths(new Date(), -1), 'yyyy-MM-dd'));
-	let to = $state('');
+	let from = $state(
+		nonNullish($analyticsFiltersStore.from) ? format($analyticsFiltersStore.from, 'yyyy-MM-dd') : ''
+	);
+	let to = $state(
+		nonNullish($analyticsFiltersStore.to) ? format($analyticsFiltersStore.to, 'yyyy-MM-dd') : ''
+	);
 
 	let dirty = $state(false);
 	let loading = $state(false);
 
 	const onChange = () => {
-		selectPeriod({
+		analyticsFiltersStore.setPeriod({
 			from: nonNullish(from) && from !== '' ? new Date(from) : undefined,
 			to: nonNullish(to) && to !== '' ? new Date(to) : undefined
 		});
@@ -37,7 +37,7 @@
 	};
 
 	const onPeriodicityChange = (periodicity: AnalyticsPeriodicityType) => {
-		selectPeriodicity(periodicity);
+		analyticsFiltersStore.setPeriodicity(periodicity);
 
 		dirty = true;
 	};

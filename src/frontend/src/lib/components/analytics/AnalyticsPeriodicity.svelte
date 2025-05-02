@@ -2,12 +2,10 @@
 	import IconScience from '$lib/components/icons/IconScience.svelte';
 	import Popover from '$lib/components/ui/Popover.svelte';
 	import Value from '$lib/components/ui/Value.svelte';
+	import { analyticsFiltersStore } from '$lib/stores/analytics-filters.store';
 	import { i18n } from '$lib/stores/i18n.store';
 	import type { AnalyticsPeriodicity } from '$lib/types/orbiter';
-	import {
-		getLocalStorageAnalyticsPeriodicity,
-		setLocalStorageItem
-	} from '$lib/utils/local-storage.utils';
+	import { setLocalStorageItem } from '$lib/utils/local-storage.utils';
 
 	interface Props {
 		selectPeriodicity: (periodicity: AnalyticsPeriodicity) => void;
@@ -18,9 +16,7 @@
 
 	let visible: boolean = $state(false);
 
-	let periodicity = $state<AnalyticsPeriodicity['periodicity']>(
-		getLocalStorageAnalyticsPeriodicity().periodicity
-	);
+	let periodicity = $state<AnalyticsPeriodicity>($analyticsFiltersStore.periodicity);
 
 	const open = ($event: MouseEvent | TouchEvent) => {
 		$event.stopPropagation();
@@ -31,7 +27,7 @@
 	const handleSubmit = ($event: SubmitEvent) => {
 		$event.preventDefault();
 
-		selectPeriodicity({ periodicity });
+		selectPeriodicity(periodicity);
 
 		setLocalStorageItem({ key: 'analytics_periodicity', value: JSON.stringify({ periodicity }) });
 

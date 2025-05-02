@@ -104,9 +104,10 @@ pub mod interface {
     #[derive(CandidType, Deserialize, Clone)]
     pub struct AnalyticsDevicesPageViews {
         pub mobile: f64,
-        pub tablet: f64,
-        pub laptop: f64,
+        pub tablet: Option<f64>,
+        pub laptop: Option<f64>,
         pub desktop: f64,
+        pub others: f64,
     }
 
     #[derive(CandidType, Deserialize, Clone)]

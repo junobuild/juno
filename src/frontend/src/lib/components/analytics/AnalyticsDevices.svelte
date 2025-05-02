@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { nonNullish } from '@dfinity/utils';
+	import { fromNullable, nonNullish } from '@dfinity/utils';
 	import { i18n } from '$lib/stores/i18n.store';
 	import type { AnalyticsPageViews } from '$lib/types/orbiter';
 
@@ -13,7 +13,10 @@
 
 	let { devices } = $derived(clients);
 
-	let { mobile, tablet, desktop, laptop } = $derived(devices);
+	let { mobile, tablet: tabletDid, desktop, laptop: desktopDid, others } = $derived(devices);
+
+	let tablet = $derived(fromNullable(tabletDid));
+	let laptop = $derived(fromNullable(desktopDid));
 </script>
 
 <div class="table-container">
@@ -30,10 +33,12 @@
 				<td>{$i18n.analytics.mobile}</td>
 				<td>{mobile > 0 ? (mobile * 100).toFixed(2) : 0}<small>%</small></td>
 			</tr>
-			<tr>
-				<td>{$i18n.analytics.tablet}</td>
-				<td>{tablet > 0 ? (tablet * 100).toFixed(2) : 0}<small>%</small></td>
-			</tr>
+			{#if nonNullish(tablet) && tablet > 0}
+				<tr>
+					<td>{$i18n.analytics.tablet}</td>
+					<td>{tablet > 0 ? (tablet * 100).toFixed(2) : 0}<small>%</small></td>
+				</tr>
+			{/if}
 			{#if nonNullish(laptop) && laptop > 0}
 				<tr>
 					<td>{$i18n.analytics.laptop}</td>
@@ -44,6 +49,12 @@
 				<td>{$i18n.analytics.desktop}</td>
 				<td>{desktop > 0 ? (desktop * 100).toFixed(2) : 0}<small>%</small></td>
 			</tr>
+			{#if others > 0}
+				<tr>
+					<td>{$i18n.analytics.others}</td>
+					<td>{others > 0 ? (others * 100).toFixed(2) : 0}<small>%</small></td>
+				</tr>
+			{/if}
 		</tbody>
 	</table>
 </div>

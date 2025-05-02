@@ -19,6 +19,7 @@ struct Devices {
     tablet: u32,
     laptop: u32,
     desktop: u32,
+    others: u32,
 }
 
 struct Browsers {
@@ -140,6 +141,7 @@ pub fn analytics_page_views_clients(
         tablet: 0,
         laptop: 0,
         desktop: 0,
+        others: 0,
     };
 
     let mut total_browsers = Browsers {
@@ -219,9 +221,10 @@ pub fn analytics_page_views_clients(
 
     let devices = AnalyticsDevicesPageViews {
         desktop: normalize(total_devices.desktop, total),
-        tablet: normalize(total_devices.tablet, total),
-        laptop: normalize(total_devices.laptop, total),
+        tablet: Some(normalize(total_devices.tablet, total)),
+        laptop: Some(normalize(total_devices.laptop, total)),
         mobile: normalize(total_devices.mobile, total),
+        others: normalize(total_devices.others, total),
     };
 
     let browsers = AnalyticsBrowsersPageViews {
@@ -466,7 +469,7 @@ fn analytics_devices_fallback(
             devices.desktop += 1;
         }
     } else {
-        devices.desktop += 1;
+        devices.others += 1;
     }
 }
 

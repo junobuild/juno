@@ -4,9 +4,15 @@ import type {
 	AnalyticsOperatingSystemsPageViews
 } from '$declarations/orbiter/orbiter.did';
 import { getAnalyticsPageViews } from '$lib/services/orbiters.services';
-import type { AnalyticsPageViews, PageViewsParams } from '$lib/types/orbiter';
+import type {
+	AnalyticsPageViews,
+	PageViewsParams,
+	PageViewsPeriod,
+	PageViewsPeriods
+} from '$lib/types/orbiter';
+import { batchAnalyticsRequests } from '$lib/utils/orbiter.paginated.utils';
+import { buildAnalyticsPeriods } from '$lib/utils/orbiter.utils';
 import { fromNullable, isNullish, toNullable } from '@dfinity/utils';
-import { eachHourOfInterval } from 'date-fns';
 
 export const getAnalyticsPageViewsPerDay = async ({
 	orbiterVersion,
@@ -15,7 +21,7 @@ export const getAnalyticsPageViewsPerDay = async ({
 	params: PageViewsParams;
 	orbiterVersion: string;
 }): Promise<AnalyticsPageViews> => {
-	const periods = buildPeriods({ params });
+	const periods = buildAnalyticsPeriods({ params });
 
 	const dailyMetrics = await getAnalyticsPageViewsForPeriods({
 		orbiterVersion,
@@ -270,45 +276,19 @@ const getAnalyticsPageViewsForPeriods = async ({
 }: {
 	params: PageViewsParams;
 	orbiterVersion: string;
-	periods: Periods;
-}): Promise<AnalyticsPageViews[]> =>
-	await Promise.all(
-		periods.map(({ from, to }) =>
-			getAnalyticsPageViews({
-				orbiterVersion,
-				params: {
-					...params,
-					from,
-					to
-				}
-			})
-		)
-	);
-
-type Periods = Required<Pick<PageViewsParams, 'from' | 'to'>>[];
-
-const buildPeriods = ({
-	params
-}: {
-	params: Pick<PageViewsParams, 'from' | 'to' | 'periodicity'>;
-}): Periods => {
-	const { from, to, periodicity } = params;
-
-	const days = eachHourOfInterval(
-		{
-			start: from,
-			end: to ?? new Date()
-		},
-		{ step: periodicity }
-	);
-
-	const periods = [];
-	for (let i = 0; i <= days.length - 2; i++) {
-		periods.push({
-			from: days[i],
-			to: days[i + 1]
+	periods: PageViewsPeriods;
+}): Promise<AnalyticsPageViews[]> => {
+	const fn = ({ period }: { period: Required<PageViewsPeriod> }): Promise<AnalyticsPageViews> =>
+		getAnalyticsPageViews({
+			orbiterVersion,
+			params: {
+				...params,
+				...period
+			}
 		});
-	}
 
-	return periods;
+	return await batchAnalyticsRequests<AnalyticsPageViews>({
+		periods,
+		fn
+	});
 };

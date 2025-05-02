@@ -19,7 +19,7 @@
 	import { orbiterFeatures } from '$lib/derived/orbiter-satellites.derived';
 	import { orbitersStore, orbiterStore } from '$lib/derived/orbiter.derived';
 	import { satelliteStore } from '$lib/derived/satellite.derived';
-	import { getAnalyticsPageViewsPerDay } from '$lib/services/orbiter.paginated.services';
+	import { getAnalyticsPageViewsPerDay } from '$lib/services/orbiter.page-views.paginated.services';
 	import {
 		getAnalyticsPerformanceMetrics,
 		getAnalyticsTrackEvents,

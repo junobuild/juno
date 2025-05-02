@@ -155,9 +155,19 @@ const aggregateClients = ({
 	const browsers = mapClientsMetrics(browsersSum);
 	const devices = mapClientsMetrics(devicesSum);
 
+	const withOperatingSystems =
+		operating_systems.android > 0 ||
+		operating_systems.ios > 0 ||
+		operating_systems.linux > 0 ||
+		operating_systems.macos > 0 ||
+		operating_systems.others > 0 ||
+		operating_systems.windows > 0;
+
 	return {
 		clients: {
-			operating_systems: operating_systems as unknown as AnalyticsOperatingSystemsPageViews,
+			operating_systems: withOperatingSystems
+				? (operating_systems as unknown as AnalyticsOperatingSystemsPageViews)
+				: undefined,
 			browsers: browsers as unknown as AnalyticsBrowsersPageViews,
 			devices: devices as unknown as AnalyticsDevicesPageViews
 		}

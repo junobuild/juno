@@ -16,7 +16,7 @@
 		"type": "application",
 		"canisters": {
 			"stopped": 3,
-			"running": 35659
+			"running": 35749
 		},
 		"nodes": {
 			"up": 12,
@@ -52,7 +52,7 @@
 		"type": "application",
 		"canisters": {
 			"stopped": 12,
-			"running": 882
+			"running": 883
 		},
 		"nodes": {
 			"up": 13,
@@ -64,10 +64,10 @@
 		"type": "application",
 		"canisters": {
 			"stopped": 188,
-			"running": 51450
+			"running": 51451
 		},
 		"nodes": {
-			"up": 12,
+			"up": 13,
 			"total": 13
 		}
 	},
@@ -88,7 +88,7 @@
 		"type": "application",
 		"canisters": {
 			"stopped": 7,
-			"running": 6289
+			"running": 6290
 		},
 		"nodes": {
 			"up": 13,
@@ -100,7 +100,7 @@
 		"type": "application",
 		"canisters": {
 			"stopped": 1,
-			"running": 20478
+			"running": 20479
 		},
 		"nodes": {
 			"up": 13,
@@ -136,7 +136,7 @@
 		"type": "application",
 		"canisters": {
 			"stopped": 5,
-			"running": 27316
+			"running": 27317
 		},
 		"nodes": {
 			"up": 13,
@@ -148,7 +148,7 @@
 		"type": "application",
 		"canisters": {
 			"stopped": 123,
-			"running": 40132
+			"running": 40137
 		},
 		"nodes": {
 			"up": 12,
@@ -184,7 +184,7 @@
 		"type": "application",
 		"canisters": {
 			"stopped": 62,
-			"running": 57029
+			"running": 57032
 		},
 		"nodes": {
 			"up": 13,
@@ -196,7 +196,7 @@
 		"type": "application",
 		"canisters": {
 			"stopped": 48,
-			"running": 40518
+			"running": 40522
 		},
 		"nodes": {
 			"up": 13,
@@ -208,7 +208,7 @@
 		"type": "application",
 		"canisters": {
 			"stopped": 64,
-			"running": 32292
+			"running": 32293
 		},
 		"nodes": {
 			"up": 13,
@@ -247,7 +247,7 @@
 			"running": 192
 		},
 		"nodes": {
-			"up": 12,
+			"up": 13,
 			"total": 13
 		}
 	},
@@ -256,7 +256,7 @@
 		"type": "application",
 		"canisters": {
 			"stopped": 16,
-			"running": 6831
+			"running": 6857
 		},
 		"nodes": {
 			"up": 13,
@@ -269,10 +269,10 @@
 		"type": "application",
 		"canisters": {
 			"stopped": 573,
-			"running": 24697
+			"running": 24699
 		},
 		"nodes": {
-			"up": 12,
+			"up": 13,
 			"total": 13
 		}
 	},
@@ -282,10 +282,10 @@
 		"type": "application",
 		"canisters": {
 			"stopped": 8,
-			"running": 2681
+			"running": 2684
 		},
 		"nodes": {
-			"up": 32,
+			"up": 33,
 			"total": 34
 		}
 	}

@@ -82,7 +82,7 @@ const aggregateTop10 = ({
 		top10: {
 			referrers: mapTop10(referrers),
 			pages: mapTop10(pages),
-			time_zones: toNullable(mapTop10(timeZones)),
+			time_zones: toNullable(mapTop10(timeZones))
 		}
 	};
 };

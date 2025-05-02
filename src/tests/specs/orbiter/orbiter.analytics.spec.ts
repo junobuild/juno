@@ -76,7 +76,7 @@ describe('Orbiter > Analytics', () => {
 						version: ___,
 						created_at: _,
 						updated_at: __,
-						satellite_id,
+						satellite_id: ____,
 						device,
 						user_agent,
 						...value

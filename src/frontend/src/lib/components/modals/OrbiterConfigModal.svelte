@@ -10,6 +10,7 @@
 	import Identifier from '$lib/components/ui/Identifier.svelte';
 	import Modal from '$lib/components/ui/Modal.svelte';
 	import SpinnerModal from '$lib/components/ui/SpinnerModal.svelte';
+	import { DEFAULT_FEATURES } from '$lib/constants/analytics.constants';
 	import { ORBITER_v0_0_8 } from '$lib/constants/version.constants';
 	import { setOrbiterSatelliteConfigs } from '$lib/services/orbiters.services';
 	import { authStore } from '$lib/stores/auth.store';
@@ -48,7 +49,7 @@
 		if (
 			features?.page_views === false ||
 			features?.track_events === false ||
-			features?.performance_metrics === false
+			features?.performance_metrics === true
 		) {
 			collapsibleRef?.open();
 		}
@@ -73,27 +74,21 @@
 
 	const onPageViewsToggle = () => {
 		features = {
-			...(nonNullish(features)
-				? features
-				: { page_views: true, track_events: true, performance_metrics: true }),
+			...(nonNullish(features) ? features : DEFAULT_FEATURES),
 			page_views: features?.page_views !== true
 		};
 	};
 
 	const onTrackEventsToggle = () => {
 		features = {
-			...(nonNullish(features)
-				? features
-				: { page_views: true, track_events: true, performance_metrics: true }),
+			...(nonNullish(features) ? features : DEFAULT_FEATURES),
 			track_events: features?.track_events !== true
 		};
 	};
 
 	const onPerformanceToggle = () => {
 		features = {
-			...(nonNullish(features)
-				? features
-				: { page_views: true, track_events: true, performance_metrics: true }),
+			...(nonNullish(features) ? features : DEFAULT_FEATURES),
 			performance_metrics: features?.performance_metrics !== true
 		};
 	};
@@ -230,7 +225,7 @@
 									<Checkbox>
 										<input
 											type="checkbox"
-											checked={isNullish(features) || features?.performance_metrics === true}
+											checked={features?.performance_metrics === true}
 											onchange={onPerformanceToggle}
 										/>
 										<span>{$i18n.analytics.web_vitals}</span>

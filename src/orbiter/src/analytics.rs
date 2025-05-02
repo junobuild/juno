@@ -114,10 +114,12 @@ pub fn analytics_page_views_top_10(
 ) -> AnalyticsTop10PageViews {
     let mut referrers: HashMap<String, u32> = HashMap::new();
     let mut pages: HashMap<String, u32> = HashMap::new();
+    let mut time_zones: HashMap<String, u32> = HashMap::new();
 
-    for (_, PageView { referrer, href, .. }) in page_views {
+    for (_, PageView { referrer, href, time_zone, .. }) in page_views {
         analytics_referrers(referrer, &mut referrers);
         analytics_pages(href, &mut pages);
+        analytics_time_zones(time_zone, &mut time_zones);
     }
 
     fn top_10(data: HashMap<String, u32>) -> Vec<(String, u32)> {
@@ -129,6 +131,7 @@ pub fn analytics_page_views_top_10(
     AnalyticsTop10PageViews {
         referrers: top_10(referrers),
         pages: top_10(pages),
+        time_zones: Some(top_10(time_zones))
     }
 }
 
@@ -450,6 +453,10 @@ fn analytics_pages(href: &str, pages: &mut HashMap<String, u32>) {
         Err(_) => href.to_string(),
     };
     *pages.entry(page).or_insert(0) += 1;
+}
+
+fn analytics_time_zones(time_zone: &str, time_zones: &mut HashMap<String, u32>) {
+    *time_zones.entry(time_zone.to_owned()).or_insert(0) += 1;
 }
 
 fn analytics_devices_fallback(

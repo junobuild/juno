@@ -94,7 +94,8 @@ export const idlFactory = ({ IDL }) => {
 	});
 	const AnalyticsTop10PageViews = IDL.Record({
 		referrers: IDL.Vec(IDL.Tuple(IDL.Text, IDL.Nat32)),
-		pages: IDL.Vec(IDL.Tuple(IDL.Text, IDL.Nat32))
+		pages: IDL.Vec(IDL.Tuple(IDL.Text, IDL.Nat32)),
+		time_zones: IDL.Opt(IDL.Vec(IDL.Tuple(IDL.Text, IDL.Nat32)))
 	});
 	const NavigationType = IDL.Variant({
 		Navigate: IDL.Null,

@@ -266,6 +266,20 @@ describe('Orbiter > Analytics', () => {
 					['source.com', 15],
 					['com.twitter.android', 7],
 					['www.google.com', 1]
+				],
+				time_zones: [
+					[
+						['America/New_York', 29],
+						['Europe/Madrid', 15],
+						['Europe/London', 14],
+						['America/Los_Angeles', 13],
+						['Europe/Oslo', 12],
+						['Europe/Amsterdam', 11],
+						['Africa/Lagos', 9],
+						['Asia/Tokyo', 8],
+						['Europe/Stockholm', 7],
+						['Asia/Manila', 7]
+					]
 				]
 			});
 		});

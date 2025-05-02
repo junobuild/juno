@@ -36,6 +36,7 @@ type AnalyticsOperatingSystemsPageViews = record {
 type AnalyticsTop10PageViews = record {
   referrers : vec record { text; nat32 };
   pages : vec record { text; nat32 };
+  time_zones : opt vec record { text; nat32 };
 };
 type AnalyticsTrackEvents = record { total : vec record { text; nat32 } };
 type AnalyticsWebVitalsPageMetrics = record {

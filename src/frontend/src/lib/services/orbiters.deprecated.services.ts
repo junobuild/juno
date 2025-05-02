@@ -16,7 +16,7 @@ import type {
 } from '$lib/types/orbiter';
 import { fromBigIntNanoSeconds } from '$lib/utils/date.utils';
 import { isAndroid, isAndroidTablet, isIPhone } from '$lib/utils/device.utils';
-import { fromNullable, isNullish, nonNullish } from '@dfinity/utils';
+import { fromNullable, isNullish, nonNullish, toNullable } from '@dfinity/utils';
 import { startOfDay } from 'date-fns';
 
 export const getDeprecatedAnalyticsClientsPageViews = async (
@@ -176,7 +176,8 @@ const mapDeprecatedAnalyticsTop10PageViews = (
 
 	return {
 		referrers: referrersEntries,
-		pages: pagesEntries
+		pages: pagesEntries,
+		time_zones: toNullable()
 	};
 };
 

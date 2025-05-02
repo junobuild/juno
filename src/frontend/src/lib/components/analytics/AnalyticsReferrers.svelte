@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { i18n } from '$lib/stores/i18n.store';
 	import type { AnalyticsPageViews } from '$lib/types/orbiter';
+	import { formatCompactNumber } from '$lib/utils/number.utils';
 
 	interface Props {
 		pageViews: AnalyticsPageViews;
@@ -25,7 +26,7 @@
 				{#each top10.referrers as [referrer, count] (referrer)}
 					<tr>
 						<td>{referrer}</td>
-						<td>{count}</td>
+						<td class="value">{formatCompactNumber(count)}</td>
 					</tr>
 				{/each}
 			</tbody>
@@ -35,6 +36,11 @@
 
 <style lang="scss">
 	.count {
-		width: 20%;
+		width: 35%;
+	}
+
+	.count,
+	.value {
+		text-align: right;
 	}
 </style>

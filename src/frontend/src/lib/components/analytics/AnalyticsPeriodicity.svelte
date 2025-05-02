@@ -80,6 +80,7 @@
 
 	.square {
 		margin: var(--padding) 0 var(--padding-2x);
+		align-self: center;
 	}
 
 	@include dialog.edit;

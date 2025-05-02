@@ -24,37 +24,48 @@
 		<thead>
 			<tr>
 				<th> {$i18n.analytics.devices} </th>
-				<th> </th>
+				<th class="count"> </th>
 			</tr>
 		</thead>
 
 		<tbody>
 			<tr>
 				<td>{$i18n.analytics.mobile}</td>
-				<td>{mobile > 0 ? (mobile * 100).toFixed(2) : 0}<small>%</small></td>
+				<td class="value">{mobile > 0 ? (mobile * 100).toFixed(2) : 0}<small>%</small></td>
 			</tr>
 			{#if nonNullish(tablet) && tablet > 0}
 				<tr>
 					<td>{$i18n.analytics.tablet}</td>
-					<td>{tablet > 0 ? (tablet * 100).toFixed(2) : 0}<small>%</small></td>
+					<td class="value">{tablet > 0 ? (tablet * 100).toFixed(2) : 0}<small>%</small></td>
 				</tr>
 			{/if}
 			{#if nonNullish(laptop) && laptop > 0}
 				<tr>
 					<td>{$i18n.analytics.laptop}</td>
-					<td>{laptop > 0 ? (laptop * 100).toFixed(2) : 0}<small>%</small></td>
+					<td class="value">{laptop > 0 ? (laptop * 100).toFixed(2) : 0}<small>%</small></td>
 				</tr>
 			{/if}
 			<tr>
 				<td>{$i18n.analytics.desktop}</td>
-				<td>{desktop > 0 ? (desktop * 100).toFixed(2) : 0}<small>%</small></td>
+				<td class="value">{desktop > 0 ? (desktop * 100).toFixed(2) : 0}<small>%</small></td>
 			</tr>
 			{#if others > 0}
 				<tr>
 					<td>{$i18n.analytics.others}</td>
-					<td>{others > 0 ? (others * 100).toFixed(2) : 0}<small>%</small></td>
+					<td class="value">{others > 0 ? (others * 100).toFixed(2) : 0}<small>%</small></td>
 				</tr>
 			{/if}
 		</tbody>
 	</table>
 </div>
+
+<style lang="scss">
+	.count {
+		width: 35%;
+	}
+
+	.count,
+	.value {
+		text-align: right;
+	}
+</style>

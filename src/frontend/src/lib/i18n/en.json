@@ -523,6 +523,7 @@
 		"top_up_error": "Error while topping up the module.",
 		"analytics_load_error": "Error while loading the analytics data.",
 		"analytics_tracked_events_export": "Unexpected error(s) while exporting the tracked events.",
+		"analytics_page_views_export": "Unexpected error(s) while exporting the page views.",
 		"satellites_loading": "Error while loading the list of satellites.",
 		"orbiters_loading": "Error while loading the list of orbiters.",
 		"orbiter_configuration_missing": "Satellites and configuration must be provided.",

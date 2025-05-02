@@ -12,6 +12,7 @@
 	import AnalyticsMetrics from '$lib/components/analytics/AnalyticsMetrics.svelte';
 	import AnalyticsNew from '$lib/components/analytics/AnalyticsNew.svelte';
 	import AnalyticsPageViews from '$lib/components/analytics/AnalyticsPageViews.svelte';
+	import AnalyticsPagesExport from '$lib/components/analytics/AnalyticsPagesExport.svelte';
 	import AnalyticsPerformanceMetrics from '$lib/components/analytics/AnalyticsPerformanceMetrics.svelte';
 	import NoAnalytics from '$lib/components/analytics/NoAnalytics.svelte';
 	import SpinnerParagraph from '$lib/components/ui/SpinnerParagraph.svelte';
@@ -188,6 +189,10 @@
 			<AnalyticsChart data={pageViews} />
 
 			<AnalyticsPageViews {pageViews} />
+
+			{#if nonNullish(pageViews) && pageViews?.metrics.total_page_views > 0}
+				<AnalyticsPagesExport orbiter={$orbiterStore} />
+			{/if}
 
 			{#if nonNullish(performanceMetrics) && performanceMetrics.pages.length > 0}
 				<hr />

@@ -365,6 +365,7 @@ interface I18nAnalytics {
 	tracked_events: string;
 	count: string;
 	referrers: string;
+	time_zones: string;
 	pages: string;
 	orbiter: string;
 	devices: string;

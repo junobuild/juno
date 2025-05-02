@@ -89,6 +89,7 @@ pub mod interface {
     pub struct AnalyticsTop10PageViews {
         pub referrers: Vec<(String, u32)>,
         pub pages: Vec<(String, u32)>,
+        pub time_zones: Option<Vec<(String, u32)>>,
     }
 
     #[derive(CandidType, Deserialize, Clone)]

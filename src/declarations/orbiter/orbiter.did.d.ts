@@ -44,6 +44,7 @@ export interface AnalyticsOperatingSystemsPageViews {
 export interface AnalyticsTop10PageViews {
 	referrers: Array<[string, number]>;
 	pages: Array<[string, number]>;
+	time_zones: [] | [Array<[string, number]>];
 }
 export interface AnalyticsTrackEvents {
 	total: Array<[string, number]>;

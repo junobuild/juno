@@ -5,7 +5,7 @@ import type {
 } from '$declarations/orbiter/orbiter.did';
 import { getAnalyticsPageViews } from '$lib/services/orbiters.services';
 import type { AnalyticsPageViews, PageViewsParams } from '$lib/types/orbiter';
-import { fromNullable, isNullish } from '@dfinity/utils';
+import { fromNullable, isNullish, toNullable } from '@dfinity/utils';
 import { eachHourOfInterval } from 'date-fns';
 
 export const getAnalyticsPageViewsPerDay = async ({
@@ -35,16 +35,25 @@ const aggregateTop10 = ({
 }: {
 	dailyMetrics: AnalyticsPageViews[];
 }): Pick<AnalyticsPageViews, 'top10'> => {
-	const { referrers, pages } = dailyMetrics
+	const { referrers, pages, timeZones } = dailyMetrics
 		.map(({ top10 }) => top10)
-		.reduce<{ referrers: Record<string, number>; pages: Record<string, number> }>(
-			(acc, { referrers, pages }) => {
+		.reduce<{
+			referrers: Record<string, number>;
+			pages: Record<string, number>;
+			timeZones: Record<string, number>;
+		}>(
+			(acc, { referrers, pages, time_zones }) => {
 				const cumulatedReferrers = referrers.map(([referrer, count]) => [
 					referrer,
 					count + (acc.referrers[referrer] ?? 0)
 				]);
 
 				const cumulatedPages = pages.map(([page, count]) => [page, count + (acc.pages[page] ?? 0)]);
+
+				const cumulatedTimeZones = (fromNullable(time_zones) ?? []).map(([timeZone, count]) => [
+					timeZone,
+					count + (acc.pages[timeZone] ?? 0)
+				]);
 
 				return {
 					pages: {
@@ -54,10 +63,14 @@ const aggregateTop10 = ({
 					referrers: {
 						...acc.referrers,
 						...Object.fromEntries(cumulatedReferrers)
+					},
+					timeZones: {
+						...acc.timeZones,
+						...Object.fromEntries(cumulatedTimeZones)
 					}
 				};
 			},
-			{ referrers: {}, pages: {} }
+			{ referrers: {}, pages: {}, timeZones: {} }
 		);
 
 	const mapTop10 = (records: Record<string, number>): [string, number][] =>
@@ -68,7 +81,8 @@ const aggregateTop10 = ({
 	return {
 		top10: {
 			referrers: mapTop10(referrers),
-			pages: mapTop10(pages)
+			pages: mapTop10(pages),
+			time_zones: toNullable(mapTop10(timeZones))
 		}
 	};
 };

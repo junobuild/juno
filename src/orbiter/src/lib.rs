@@ -125,14 +125,12 @@ fn http_request_update(request: HttpRequest) -> HttpResponse<'static> {
 // Page views
 // ---------------------------------------------------------
 
-#[deprecated(since = "0.1.0", note = "prefer HTTP POST request")]
-#[update]
+#[update(guard = "caller_is_controller")]
 fn set_page_view(key: AnalyticKey, page_view: SetPageView) -> Result<PageView, String> {
     assert_and_insert_page_view(key, page_view)
 }
 
-#[deprecated(since = "0.1.0", note = "prefer HTTP POST request")]
-#[update]
+#[update(guard = "caller_is_controller")]
 fn set_page_views(
     page_views: Vec<(AnalyticKey, SetPageView)>,
 ) -> Result<(), Vec<(AnalyticKey, String)>> {
@@ -187,14 +185,12 @@ fn get_page_views_analytics_clients(filter: GetAnalytics) -> AnalyticsClientsPag
 // Track events
 // ---------------------------------------------------------
 
-#[deprecated(since = "0.1.0", note = "prefer HTTP POST request")]
-#[update]
+#[update(guard = "caller_is_controller")]
 fn set_track_event(key: AnalyticKey, track_event: SetTrackEvent) -> Result<TrackEvent, String> {
     assert_and_insert_track_event(key, track_event)
 }
 
-#[deprecated(since = "0.1.0", note = "prefer HTTP POST request")]
-#[update]
+#[update(guard = "caller_is_controller")]
 fn set_track_events(
     track_events: Vec<(AnalyticKey, SetTrackEvent)>,
 ) -> Result<(), Vec<(AnalyticKey, String)>> {
@@ -237,8 +233,7 @@ fn get_track_events_analytics(filter: GetAnalytics) -> AnalyticsTrackEvents {
 // Performance metrics
 // ---------------------------------------------------------
 
-#[deprecated(since = "0.1.0", note = "prefer HTTP POST request")]
-#[update]
+#[update(guard = "caller_is_controller")]
 fn set_performance_metric(
     key: AnalyticKey,
     performance_metric: SetPerformanceMetric,
@@ -246,8 +241,7 @@ fn set_performance_metric(
     assert_and_insert_performance_metric(key, performance_metric)
 }
 
-#[deprecated(since = "0.1.0", note = "prefer HTTP POST request")]
-#[update]
+#[update(guard = "caller_is_controller")]
 fn set_performance_metrics(
     performance_metrics: Vec<(AnalyticKey, SetPerformanceMetric)>,
 ) -> Result<(), Vec<(AnalyticKey, String)>> {

@@ -34,7 +34,7 @@
 			...restPeriod
 		};
 
-		await exportTrackEvents({ params });
+		await exportTrackEvents(params);
 
 		busy.stop();
 	};

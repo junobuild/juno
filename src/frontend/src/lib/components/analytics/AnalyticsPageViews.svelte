@@ -37,7 +37,7 @@
 	@use '../../styles/mixins/grid';
 
 	.container {
-		margin: var(--padding-4x) 0;
+		margin: var(--padding-4x) 0 var(--padding);
 
 		@include media.min-width(medium) {
 			@include grid.two-columns;

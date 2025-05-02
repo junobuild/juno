@@ -523,6 +523,7 @@
 		"top_up_error": "充值module时出错.",
 		"analytics_load_error": "记载统计数据时出错.",
 		"analytics_tracked_events_export": "导出追踪事件日志时出错",
+		"analytics_page_views_export": "Unexpected error(s) while exporting the page views.",
 		"satellites_loading": "加载 satellite 列表时出错.",
 		"orbiters_loading": "加载 orbiter 列表时出错.",
 		"orbiter_configuration_missing": "请提供 Satellites 和配置.",

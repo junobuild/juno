@@ -3,6 +3,11 @@ import { formatDistanceToNow } from 'date-fns';
 export const nowInBigIntNanoSeconds = (): bigint => BigInt(Date.now()) * BigInt(1e6);
 
 export const formatToDate = (nanoseconds: bigint): string => {
+	const date = new Date(Number(nanoseconds / 1_000_000n));
+	return formatDateToDateString(date);
+};
+
+export const formatDateToDateString = (date: Date): string => {
 	const options: Intl.DateTimeFormatOptions = {
 		month: 'short',
 		day: 'numeric',
@@ -12,7 +17,6 @@ export const formatToDate = (nanoseconds: bigint): string => {
 		hour12: false
 	};
 
-	const date = new Date(Number(nanoseconds / 1_000_000n));
 	return date.toLocaleDateString('en', options);
 };
 

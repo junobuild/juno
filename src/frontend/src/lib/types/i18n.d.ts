@@ -539,6 +539,7 @@ interface I18nErrors {
 	top_up_error: string;
 	analytics_load_error: string;
 	analytics_tracked_events_export: string;
+	analytics_page_views_export: string;
 	satellites_loading: string;
 	orbiters_loading: string;
 	orbiter_configuration_missing: string;

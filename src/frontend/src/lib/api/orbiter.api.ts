@@ -27,6 +27,7 @@ export const getPageViews = async ({
 	identity
 }: PageViewsParams): Promise<[AnalyticKey, PageView][]> => {
 	const { get_page_views } = await getOrbiterActor({ orbiterId, identity });
+
 	return getAnalytics({
 		satelliteId,
 		from,

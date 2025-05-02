@@ -15,7 +15,7 @@ export interface PageViewsPeriod {
 	to?: Date;
 }
 
-export type PageViewsOptionPeriod = Partial<PageViewsPeriod>;
+export type PageViewsPeriods = Required<PageViewsPeriod>[];
 
 export type PageViewsFilters = Partial<PageViewsPeriod> & { periodicity: AnalyticsPeriodicity };
 

@@ -10,6 +10,7 @@
 	import Identifier from '$lib/components/ui/Identifier.svelte';
 	import Modal from '$lib/components/ui/Modal.svelte';
 	import SpinnerModal from '$lib/components/ui/SpinnerModal.svelte';
+	import { DEFAULT_FEATURES } from '$lib/constants/analytics.constants';
 	import { ORBITER_v0_0_8 } from '$lib/constants/version.constants';
 	import { setOrbiterSatelliteConfigs } from '$lib/services/orbiters.services';
 	import { authStore } from '$lib/stores/auth.store';
@@ -21,7 +22,6 @@
 	import type { JunoModalDetail, JunoModalEditOrbiterConfigDetail } from '$lib/types/modal';
 	import type { OrbiterSatelliteConfigEntry } from '$lib/types/orbiter';
 	import type { SatelliteIdText } from '$lib/types/satellite';
-	import { DEFAULT_FEATURES } from '$lib/constants/analytics.constants';
 
 	interface Props {
 		detail: JunoModalDetail;
@@ -49,7 +49,7 @@
 		if (
 			features?.page_views === false ||
 			features?.track_events === false ||
-			features?.performance_metrics === false
+			features?.performance_metrics === true
 		) {
 			collapsibleRef?.open();
 		}

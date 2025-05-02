@@ -5,6 +5,7 @@
 	import AnalyticsPages from '$lib/components/analytics/AnalyticsPages.svelte';
 	import AnalyticsReferrers from '$lib/components/analytics/AnalyticsReferrers.svelte';
 	import type { AnalyticsPageViews } from '$lib/types/orbiter';
+	import AnalyticsTimeZones from '$lib/components/analytics/AnalyticsTimeZones.svelte';
 
 	interface Props {
 		pageViews: AnalyticsPageViews;
@@ -20,6 +21,8 @@
 		<AnalyticsReferrers {pageViews} />
 
 		<AnalyticsPages {pageViews} />
+
+		<AnalyticsTimeZones {pageViews} />
 
 		<AnalyticsDevices {pageViews} />
 

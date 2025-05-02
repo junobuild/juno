@@ -13,6 +13,7 @@
 		AnalyticsPeriodicity
 	} from '$lib/types/orbiter';
 	import { filenameTimestamp, JSON_PICKER_OPTIONS, saveToFileSystem } from '$lib/utils/save.utils';
+	import { exportTrackEvents } from '$lib/services/orbiter.export.services';
 
 	interface Props {
 		period?: PageViewsOptionPeriod;
@@ -23,42 +24,25 @@
 	let { period = {}, periodicity, orbiter }: Props = $props();
 
 	const exportEvents = async () => {
+		const { from, ...restPeriod } = period;
+
+		if (isNullish(from)) {
+			toasts.warn($i18n.analytics.warn_no_from);
+			return;
+		}
+
 		busy.start();
 
-		try {
-			const { from, ...restPeriod } = period;
+		const params: PageViewsParams = {
+			satelliteId: $satelliteStore?.satellite_id,
+			orbiterId: orbiter.orbiter_id,
+			identity: $authStore.identity,
+			...periodicity,
+			from,
+			...restPeriod
+		};
 
-			if (isNullish(from)) {
-				toasts.warn($i18n.analytics.warn_no_from);
-				return;
-			}
-
-			const params: PageViewsParams = {
-				satelliteId: $satelliteStore?.satellite_id,
-				orbiterId: orbiter.orbiter_id,
-				identity: $authStore.identity,
-				...periodicity,
-				from,
-				...restPeriod
-			};
-
-			const trackEvents = await getTrackEvents(params);
-
-			const json = JSON.stringify(trackEvents, jsonReplacer);
-
-			await saveToFileSystem({
-				blob: new Blob([json], {
-					type: 'application/json'
-				}),
-				filename: `Juno_Analytics_Tracked_Events_${filenameTimestamp()}.json`,
-				type: JSON_PICKER_OPTIONS
-			});
-		} catch (err: unknown) {
-			toasts.error({
-				text: $i18n.errors.analytics_tracked_events_export,
-				detail: err
-			});
-		}
+		await exportTrackEvents({ params });
 
 		busy.stop();
 	};

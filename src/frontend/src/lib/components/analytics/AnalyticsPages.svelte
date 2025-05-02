@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { i18n } from '$lib/stores/i18n.store';
 	import type { AnalyticsPageViews } from '$lib/types/orbiter';
-	import { formatCompactNumber, formatNumber } from '$lib/utils/number.utils';
+	import { formatCompactNumber } from '$lib/utils/number.utils';
 
 	interface Props {
 		pageViews: AnalyticsPageViews;

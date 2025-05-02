@@ -13,8 +13,9 @@ type AnalyticsClientsPageViews = record {
 };
 type AnalyticsDevicesPageViews = record {
   desktop : float64;
-  laptop : float64;
-  tablet : float64;
+  laptop : opt float64;
+  others : float64;
+  tablet : opt float64;
   mobile : float64;
 };
 type AnalyticsMetricsPageViews = record {

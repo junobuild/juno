@@ -29,8 +29,9 @@ export const getDeprecatedAnalyticsClientsPageViews = async (
 		devices: {
 			desktop: devices.desktop,
 			mobile: devices.mobile,
-			tablet: 0,
-			laptop: 0
+			tablet: toNullable(),
+			laptop: toNullable(),
+			others: devices.others
 		},
 		operating_systems: []
 	};
@@ -186,14 +187,14 @@ const mapDeprecatedAnalyticsDevicesPageViews = (
 ): AnalyticsDevicesPageViews => {
 	const total = pageViews.length;
 
-	const { desktop, mobile } = pageViews.reduce(
+	const { desktop, mobile, others } = pageViews.reduce(
 		(acc, [_, { user_agent }]) => {
 			const userAgent = fromNullable(user_agent);
 
 			if (isNullish(userAgent)) {
 				return {
 					...acc,
-					desktop: acc.desktop + 1
+					other: acc.others + 1
 				};
 			}
 
@@ -213,14 +214,16 @@ const mapDeprecatedAnalyticsDevicesPageViews = (
 		},
 		{
 			mobile: 0,
-			desktop: 0
+			desktop: 0,
+			others: 0
 		}
 	);
 
 	return {
 		mobile: total > 0 ? mobile / total : 0,
-		tablet: 0,
-		laptop: 0,
-		desktop: total > 0 ? desktop / total : 0
+		tablet: toNullable(),
+		laptop: toNullable(),
+		desktop: total > 0 ? desktop / total : 0,
+		others
 	};
 };

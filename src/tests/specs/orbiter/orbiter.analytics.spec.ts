@@ -303,9 +303,10 @@ describe('Orbiter > Analytics', () => {
 				},
 				devices: {
 					desktop: 0.6273291925465838,
-					laptop: 0,
+					laptop: toNullable(0),
 					mobile: 0.37267080745341613,
-					tablet: 0
+					tablet: toNullable(0),
+					others: 0
 				},
 				operating_systems: []
 			});
@@ -338,9 +339,10 @@ describe('Orbiter > Analytics', () => {
 				},
 				devices: {
 					desktop: 0.2484472049689441,
-					laptop: 0.2484472049689441,
+					laptop: toNullable(0.2484472049689441),
 					mobile: 0.2546583850931677,
-					tablet: 0.2484472049689441
+					tablet: toNullable(0.2484472049689441),
+					others: 0
 				},
 				operating_systems: []
 			});
@@ -373,9 +375,10 @@ describe('Orbiter > Analytics', () => {
 				},
 				devices: {
 					desktop: 0.6894409937888198,
-					laptop: 0,
+					laptop: toNullable(0),
 					mobile: 0.3105590062111801,
-					tablet: 0
+					tablet: toNullable(0),
+					others: 0
 				},
 				operating_systems: [
 					{
@@ -417,9 +420,10 @@ describe('Orbiter > Analytics', () => {
 				},
 				devices: {
 					desktop: 0.2484472049689441,
-					laptop: 0.2484472049689441,
+					laptop: toNullable(0.2484472049689441),
 					mobile: 0.2546583850931677,
-					tablet: 0.2484472049689441
+					tablet: toNullable(0.2484472049689441),
+					others: 0
 				},
 				operating_systems: [
 					{

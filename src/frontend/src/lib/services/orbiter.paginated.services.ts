@@ -136,8 +136,23 @@ const aggregateClients = ({
 		}
 
 		for (const device in clients.devices ?? {}) {
-			devicesSum[device] +=
-				(clients.devices[device as keyof AnalyticsDevicesPageViews] ?? 0) * periodTotalPageViews;
+			switch (device) {
+				case 'mobile':
+					devicesSum.mobile += (clients.devices.mobile ?? 0) * periodTotalPageViews;
+					break;
+				case 'desktop':
+					devicesSum.desktop += (clients.devices.desktop ?? 0) * periodTotalPageViews;
+					break;
+				case 'others':
+					devicesSum.others += (clients.devices.others ?? 0) * periodTotalPageViews;
+					break;
+				case 'laptop':
+					devicesSum.laptop += (fromNullable(clients.devices.laptop) ?? 0) * periodTotalPageViews;
+					break;
+				case 'tablet':
+					devicesSum.tablet += (fromNullable(clients.devices.tablet) ?? 0) * periodTotalPageViews;
+					break;
+			}
 		}
 	}
 

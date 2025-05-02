@@ -39,8 +39,12 @@
 	.container {
 		margin: var(--padding-4x) 0;
 
-		@include media.min-width(large) {
+		@include media.min-width(medium) {
 			@include grid.two-columns;
+		}
+
+		@include media.min-width(large) {
+			@include grid.three-columns;
 		}
 	}
 </style>

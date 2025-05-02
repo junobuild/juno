@@ -196,9 +196,9 @@
 		{/if}
 
 		{#if nonNullish(pageViews)}
-			<AnalyticsChart data={pageViews} />
-
 			<AnalyticsMetrics {pageViews} />
+
+			<AnalyticsChart data={pageViews} />
 
 			<AnalyticsPageViews {pageViews} />
 

@@ -2,16 +2,12 @@ import type {
 	AnalyticKey,
 	AnalyticsClientsPageViews,
 	AnalyticsDevicesPageViews,
-	AnalyticsMetricsPageViews,
 	AnalyticsTop10PageViews,
 	AnalyticsTrackEvents,
 	PageView
 } from '$declarations/orbiter/orbiter.did';
 import { getPageViews, getTrackEvents } from '$lib/api/orbiter.api';
-import {
-	getAnalyticsClientsPageViews008,
-	getAnalyticsMetricsPageViews008
-} from '$lib/api/orbiter.deprecated.api';
+import { getAnalyticsClientsPageViews008 } from '$lib/api/orbiter.deprecated.api';
 import type {
 	AnalyticsMetrics,
 	AnalyticsPageViews,
@@ -22,19 +18,6 @@ import { fromBigIntNanoSeconds } from '$lib/utils/date.utils';
 import { isAndroid, isAndroidTablet, isIPhone } from '$lib/utils/device.utils';
 import { fromNullable, isNullish, nonNullish } from '@dfinity/utils';
 import { startOfDay } from 'date-fns';
-
-export const getDeprecatedAnalyticsMetricsPageViews = async (
-	params: PageViewsParams
-): Promise<AnalyticsMetricsPageViews> => {
-	const { unique_sessions, ...rest } = await getAnalyticsMetricsPageViews008(params);
-
-	return {
-		...rest,
-		unique_sessions,
-		// Introduce a relatively negligible (to some extension) difference when presenting analytics averages. Better than throwing errors.
-		total_sessions: BigInt(unique_sessions)
-	};
-};
 
 export const getDeprecatedAnalyticsClientsPageViews = async (
 	params: PageViewsParams
@@ -136,8 +119,6 @@ const mapDeprecatedAnalyticsMetricsPageViews = (
 
 	return {
 		unique_sessions: BigInt(uniqueSessions),
-		// Introduce a relatively negligible difference when presenting analytics averages. Better than throwing errors.
-		total_sessions: BigInt(uniqueSessions),
 		unique_page_views: BigInt(uniquePageViews),
 		total_page_views: pageViews.length,
 		daily_total_page_views: totalPageViews,

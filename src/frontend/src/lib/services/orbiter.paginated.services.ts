@@ -165,7 +165,6 @@ const aggregateMetrics = ({
 				total_page_views: totalPageViews,
 				unique_page_views: uniquePageViews,
 				unique_sessions: uniqueSessions,
-				total_sessions: totalSessions,
 				bounce_rate: bounceRate,
 				average_page_views_per_session: averagePageViewsPerSessions
 			} = metrics;
@@ -174,7 +173,6 @@ const aggregateMetrics = ({
 				total_page_views: accTotalPageViews,
 				unique_page_views: accUniquePageViews,
 				unique_sessions: accUniqueSessions,
-				total_sessions: accTotalSessions,
 				bounce_rate: accBounceRate,
 				average_page_views_per_session: accAveragePageViewsPerSessions
 			} = acc;
@@ -202,21 +200,20 @@ const aggregateMetrics = ({
 			return {
 				...metrics,
 				bounce_rate: average({
-					totalSessions: Number(accTotalSessions ?? accUniqueSessions),
+					totalSessions: Number(accUniqueSessions),
 					averageRate: accBounceRate,
 					ratePeriod: bounceRate,
-					sessionsPeriod: Number(totalSessions ?? uniqueSessions)
+					sessionsPeriod: Number(uniqueSessions)
 				}),
 				average_page_views_per_session: average({
-					totalSessions: Number(accTotalSessions ?? accUniqueSessions),
+					totalSessions: Number(accUniqueSessions),
 					averageRate: accAveragePageViewsPerSessions,
 					ratePeriod: averagePageViewsPerSessions,
-					sessionsPeriod: Number(totalSessions ?? uniqueSessions)
+					sessionsPeriod: Number(uniqueSessions)
 				}),
 				total_page_views: accTotalPageViews + totalPageViews,
 				unique_page_views: accUniquePageViews + uniquePageViews,
 				unique_sessions: accUniqueSessions + uniqueSessions,
-				total_sessions: (accTotalSessions ?? 0n) + (totalSessions ?? 0n),
 				daily_total_page_views: {
 					...acc.daily_total_page_views,
 					...metrics.daily_total_page_views

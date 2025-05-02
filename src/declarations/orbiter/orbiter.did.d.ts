@@ -25,7 +25,6 @@ export interface AnalyticsDevicesPageViews {
 	mobile: number;
 }
 export interface AnalyticsMetricsPageViews {
-	total_sessions: bigint;
 	bounce_rate: number;
 	average_page_views_per_session: number;
 	daily_total_page_views: Array<[CalendarDate, number]>;

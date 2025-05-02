@@ -25,7 +25,6 @@ import { orbiterConfigs } from '$lib/derived/orbiter.derived';
 import { loadDataStore } from '$lib/services/loader.services';
 import {
 	getDeprecatedAnalyticsClientsPageViews,
-	getDeprecatedAnalyticsMetricsPageViews,
 	getDeprecatedAnalyticsPageViews,
 	getDeprecatedAnalyticsTrackEvents
 } from '$lib/services/orbiters.deprecated.services';
@@ -177,18 +176,13 @@ export const getAnalyticsPageViews = async ({
 	orbiterVersion: string;
 }): Promise<AnalyticsPageViews> => {
 	if (compare(orbiterVersion, ORBITER_v0_0_4) >= 0) {
-		const getMetrics =
-			compare(orbiterVersion, ORBITER_v0_0_8) > 0
-				? getAnalyticsMetricsPageViews
-				: getDeprecatedAnalyticsMetricsPageViews;
-
 		const getClients =
 			compare(orbiterVersion, ORBITER_v0_0_8) > 0
 				? getAnalyticsClientsPageViews
 				: getDeprecatedAnalyticsClientsPageViews;
 
 		const [metrics, top10, clients] = await Promise.all([
-			getMetrics(params),
+			getAnalyticsMetricsPageViews(params),
 			getAnalyticsTop10PageViews(params),
 			getClients(params)
 		]);

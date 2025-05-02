@@ -61,8 +61,8 @@
 
 			close();
 
-			toasts.success(
-				i18nCapitalize(
+			toasts.success({
+				text: i18nCapitalize(
 					i18nFormat($i18n.canisters.detach_success, [
 						{
 							placeholder: '{0}',
@@ -70,7 +70,7 @@
 						}
 					])
 				)
-			);
+			});
 		} catch (err: unknown) {
 			toasts.error({
 				text: $i18n.errors.segment_detach,

@@ -123,14 +123,14 @@
 				identity: $authStore.identity
 			});
 
-			toasts.success(
-				i18nFormat(isNullish(rule) ? $i18n.collections.added : $i18n.collections.updated, [
+			toasts.success({
+				text: i18nFormat(isNullish(rule) ? $i18n.collections.added : $i18n.collections.updated, [
 					{
 						placeholder: '{0}',
 						value: collection
 					}
 				])
-			);
+			});
 
 			await reload({ identity: $authStore.identity });
 

@@ -49,14 +49,14 @@
 
 			await reload({ identity: $authStore.identity });
 
-			toasts.success(
-				i18nFormat($i18n.collections.deleted, [
+			toasts.success({
+				text: i18nFormat($i18n.collections.deleted, [
 					{
 						placeholder: '{0}',
 						value: collection
 					}
 				])
-			);
+			});
 
 			dispatch('junoCollectionSuccess');
 		} catch (err: unknown) {

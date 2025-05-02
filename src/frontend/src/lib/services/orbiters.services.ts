@@ -20,6 +20,7 @@ import {
 	listOrbiterSatelliteConfigs007,
 	setOrbiterSatelliteConfigs007 as setOrbiterSatelliteConfigsDeprecatedApi
 } from '$lib/api/orbiter.deprecated.api';
+import { DEFAULT_FEATURES } from '$lib/constants/analytics.constants';
 import { ORBITER_v0_0_4, ORBITER_v0_0_5, ORBITER_v0_0_8 } from '$lib/constants/version.constants';
 import { orbiterConfigs } from '$lib/derived/orbiter.derived';
 import { loadDataStore } from '$lib/services/loader.services';
@@ -248,7 +249,8 @@ export const getAnalyticsPerformanceMetrics = async ({
 	return undefined;
 };
 
-const enabledFeatures = {
+// We originally migrated the features to be all enabled but, in v0.1.0 decided to make the performance metrics disabled by default.
+const deprecatedEnabledFeatures = {
 	performance_metrics: true,
 	track_events: true,
 	page_views: true
@@ -274,7 +276,7 @@ const listOrbiterSatelliteConfigs = async ({
 		{
 			...rest,
 			restricted_origin: toNullable(),
-			features: enabled ? [enabledFeatures] : []
+			features: enabled ? [deprecatedEnabledFeatures] : []
 		}
 	]);
 };
@@ -298,7 +300,7 @@ export const setOrbiterSatelliteConfigs = async ({
 			config: Object.entries(config).map(([satelliteId, value]) => [
 				Principal.fromText(satelliteId),
 				{
-					features: value.enabled ? [features ?? enabledFeatures] : [],
+					features: value.enabled ? [features ?? DEFAULT_FEATURES] : [],
 					restricted_origin: toNullable(),
 					version: nonNullish(value.config) ? value.config.version : []
 				}
@@ -325,7 +327,7 @@ export const setOrbiterSatelliteConfigs = async ({
 		{
 			...rest,
 			restricted_origin: toNullable(),
-			features: enabled ? [enabledFeatures] : []
+			features: enabled ? [deprecatedEnabledFeatures] : []
 		}
 	]);
 };

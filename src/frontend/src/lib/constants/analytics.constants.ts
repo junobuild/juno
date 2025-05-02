@@ -1,4 +1,10 @@
 import type { AnalyticsPeriodicity } from '$lib/types/orbiter';
 
-// A week
+// A month
 export const DEFAULT_ANALYTICS_PERIODICITY: AnalyticsPeriodicity = { periodicity: 720 };
+
+export const DEFAULT_FEATURES = {
+	page_views: true,
+	track_events: true,
+	performance_metrics: false
+};

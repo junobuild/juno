@@ -225,7 +225,6 @@ describe('Orbiter > Analytics', () => {
 			const averagePageViewsPerSession = dailyTotalPageViews / uniqueSessions;
 
 			expect(result).toEqual({
-				total_sessions: 70n,
 				bounce_rate: bounceRate,
 				average_page_views_per_session: averagePageViewsPerSession,
 				daily_total_page_views: [

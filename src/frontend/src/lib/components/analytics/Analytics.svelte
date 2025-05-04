@@ -20,8 +20,8 @@
 	import { orbiterFeatures } from '$lib/derived/orbiter-satellites.derived';
 	import { orbitersStore, orbiterStore } from '$lib/derived/orbiter.derived';
 	import { satelliteStore } from '$lib/derived/satellite.derived';
-	import { getAnalyticsPerformanceMetrics } from '$lib/services/orbiter/_orbiter.services';
 	import { getAnalyticsPageViewsForPeriods } from '$lib/services/orbiter/orbiter.pagination.page-views.services';
+	import { getAnalyticsPerformanceMetricsForPeriods } from '$lib/services/orbiter/orbiter.pagination.performance-metrics.services';
 	import { getAnalyticsTrackEventsForPeriods } from '$lib/services/orbiter/orbiter.pagination.track-events.services';
 	import { loadOrbiterConfigs } from '$lib/services/orbiter/orbiters.services';
 	import { analyticsFiltersStore } from '$lib/stores/analytics-filters.store';
@@ -79,7 +79,7 @@
 				],
 				...[
 					$orbiterFeatures?.performance_metrics === true
-						? getAnalyticsPerformanceMetrics({
+						? getAnalyticsPerformanceMetricsForPeriods({
 								params,
 								orbiterVersion: $versionStore.orbiter.current
 							})

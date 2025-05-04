@@ -20,7 +20,7 @@
 	import { orbiterFeatures } from '$lib/derived/orbiter-satellites.derived';
 	import { orbitersStore, orbiterStore } from '$lib/derived/orbiter.derived';
 	import { satelliteStore } from '$lib/derived/satellite.derived';
-	import { getAnalyticsPageViewsPerDay } from '$lib/services/orbiter.page-views.paginated.services';
+	import { getAnalyticsPageViewsForPeriods } from '$lib/services/orbiter.pagination.page-views.services';
 	import {
 		getAnalyticsPerformanceMetrics,
 		getAnalyticsTrackEvents,
@@ -70,7 +70,7 @@
 
 			// We need the page views to display some statistics currently
 			const promises = [
-				getAnalyticsPageViewsPerDay({ params, orbiterVersion: $versionStore.orbiter.current }),
+				getAnalyticsPageViewsForPeriods({ params, orbiterVersion: $versionStore.orbiter.current }),
 				...[
 					$orbiterFeatures?.track_events === true
 						? getAnalyticsTrackEvents({ params, orbiterVersion: $versionStore.orbiter.current })

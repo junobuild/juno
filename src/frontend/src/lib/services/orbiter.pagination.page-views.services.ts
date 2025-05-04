@@ -14,7 +14,7 @@ import { batchAnalyticsRequests } from '$lib/utils/orbiter.paginated.utils';
 import { buildAnalyticsPeriods } from '$lib/utils/orbiter.utils';
 import { fromNullable, isNullish, toNullable } from '@dfinity/utils';
 
-export const getAnalyticsPageViewsPerDay = async ({
+export const getAnalyticsPageViewsForPeriods = async ({
 	orbiterVersion,
 	params
 }: {
@@ -23,7 +23,7 @@ export const getAnalyticsPageViewsPerDay = async ({
 }): Promise<AnalyticsPageViews> => {
 	const periods = buildAnalyticsPeriods({ params });
 
-	const dailyMetrics = await getAnalyticsPageViewsForPeriods({
+	const dailyMetrics = await getPageViews({
 		orbiterVersion,
 		params,
 		periods
@@ -269,7 +269,7 @@ const aggregateMetrics = ({
 	return { metrics };
 };
 
-const getAnalyticsPageViewsForPeriods = async ({
+const getPageViews = async ({
 	orbiterVersion,
 	params,
 	periods

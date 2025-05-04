@@ -21,6 +21,7 @@
 	import { orbitersStore, orbiterStore } from '$lib/derived/orbiter.derived';
 	import { satelliteStore } from '$lib/derived/satellite.derived';
 	import { getAnalyticsPageViewsForPeriods } from '$lib/services/orbiter.pagination.page-views.services';
+	import { getAnalyticsTrackEventsForPeriods } from '$lib/services/orbiter.pagination.track-events.services';
 	import {
 		getAnalyticsPerformanceMetrics,
 		loadOrbiterConfigs
@@ -34,7 +35,6 @@
 		AnalyticsPageViews as AnalyticsPageViewsType,
 		PageViewsParams
 	} from '$lib/types/orbiter';
-	import { getAnalyticsTrackEventsForPeriods } from '$lib/services/orbiter.pagination.track-events.services';
 
 	let loadingOrbiter: 'in_progress' | 'done' | 'error' = $state('in_progress');
 	let reloadingAnalytics: 'idle' | 'in_progress' | 'loaded' | 'error' = $state('idle');

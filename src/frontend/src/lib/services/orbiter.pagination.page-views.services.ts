@@ -23,25 +23,25 @@ export const getAnalyticsPageViewsForPeriods = async ({
 }): Promise<AnalyticsPageViews> => {
 	const periods = buildAnalyticsPeriods({ params });
 
-	const dailyMetrics = await getPageViews({
+	const periodsMetrics = await getPageViews({
 		orbiterVersion,
 		params,
 		periods
 	});
 
 	return {
-		...aggregateMetrics({ dailyMetrics }),
-		...aggregateTop10({ dailyMetrics }),
-		...aggregateClients({ dailyMetrics })
+		...aggregateMetrics({ periodsMetrics }),
+		...aggregateTop10({ periodsMetrics }),
+		...aggregateClients({ periodsMetrics })
 	};
 };
 
 const aggregateTop10 = ({
-	dailyMetrics
+	periodsMetrics
 }: {
-	dailyMetrics: AnalyticsPageViews[];
+	periodsMetrics: AnalyticsPageViews[];
 }): Pick<AnalyticsPageViews, 'top10'> => {
-	const { referrers, pages, timeZones } = dailyMetrics
+	const { referrers, pages, timeZones } = periodsMetrics
 		.map(({ top10 }) => top10)
 		.reduce<{
 			referrers: Record<string, number>;
@@ -94,9 +94,9 @@ const aggregateTop10 = ({
 };
 
 const aggregateClients = ({
-	dailyMetrics
+	periodsMetrics
 }: {
-	dailyMetrics: AnalyticsPageViews[];
+	periodsMetrics: AnalyticsPageViews[];
 }): Pick<AnalyticsPageViews, 'clients'> => {
 	let totalPageViews = 0;
 
@@ -125,7 +125,7 @@ const aggregateClients = ({
 		windows: 0
 	};
 
-	for (const { clients, metrics } of dailyMetrics) {
+	for (const { clients, metrics } of periodsMetrics) {
 		const periodTotalPageViews = metrics.total_page_views;
 		totalPageViews += periodTotalPageViews;
 
@@ -195,11 +195,11 @@ const aggregateClients = ({
 };
 
 const aggregateMetrics = ({
-	dailyMetrics
+	periodsMetrics
 }: {
-	dailyMetrics: AnalyticsPageViews[];
+	periodsMetrics: AnalyticsPageViews[];
 }): Pick<AnalyticsPageViews, 'metrics'> => {
-	const metrics = dailyMetrics
+	const metrics = periodsMetrics
 		.map(({ metrics }) => metrics)
 		.reduce((acc, metrics) => {
 			if (isNullish(acc)) {

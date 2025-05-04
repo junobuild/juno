@@ -20,12 +20,10 @@
 	import { orbiterFeatures } from '$lib/derived/orbiter-satellites.derived';
 	import { orbitersStore, orbiterStore } from '$lib/derived/orbiter.derived';
 	import { satelliteStore } from '$lib/derived/satellite.derived';
+	import { getAnalyticsPerformanceMetrics } from '$lib/services/orbiter/_orbiter.services';
 	import { getAnalyticsPageViewsForPeriods } from '$lib/services/orbiter/orbiter.pagination.page-views.services';
 	import { getAnalyticsTrackEventsForPeriods } from '$lib/services/orbiter/orbiter.pagination.track-events.services';
-	import {
-		getAnalyticsPerformanceMetrics,
-		loadOrbiterConfigs
-	} from '$lib/services/orbiter/orbiters.services';
+	import { loadOrbiterConfigs } from '$lib/services/orbiter/orbiters.services';
 	import { analyticsFiltersStore } from '$lib/stores/analytics-filters.store';
 	import { authStore } from '$lib/stores/auth.store';
 	import { i18n } from '$lib/stores/i18n.store';

@@ -1,4 +1,5 @@
 <script lang="ts">
+	import type { Snippet } from 'svelte';
 	import Value from '$lib/components/ui/Value.svelte';
 	import { i18n } from '$lib/stores/i18n.store';
 	import type { AnalyticsPageViews } from '$lib/types/orbiter';
@@ -6,9 +7,10 @@
 
 	interface Props {
 		pageViews: AnalyticsPageViews;
+		charts: Snippet;
 	}
 
-	let { pageViews }: Props = $props();
+	let { pageViews, charts }: Props = $props();
 
 	let { metrics } = $derived(pageViews);
 </script>
@@ -66,6 +68,8 @@
 			</Value>
 		</div>
 	</div>
+
+	{@render charts()}
 </div>
 
 <style lang="scss">

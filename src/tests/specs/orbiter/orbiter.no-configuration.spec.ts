@@ -42,8 +42,6 @@ describe('Orbiter > No configuration', () => {
 		await pic?.tearDown();
 	});
 
-	const user = Ed25519KeyIdentity.generate();
-
 	describe.each([
 		{ features: [] },
 		{

@@ -34,7 +34,7 @@
 			...restPeriod
 		};
 
-		await exportPageViews({ params });
+		await exportPageViews(params);
 
 		busy.stop();
 	};

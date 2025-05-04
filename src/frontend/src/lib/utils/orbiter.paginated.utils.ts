@@ -1,6 +1,6 @@
 import type { PageViewsPeriod, PageViewsPeriods } from '$lib/types/orbiter';
 
-interface BatchPeriodsRequestsParams<Result> {
+export interface BatchPeriodsRequestsParams<Result> {
 	periods: PageViewsPeriods;
 	fn: (params: { period: Required<PageViewsPeriod> }) => Promise<Result>;
 }

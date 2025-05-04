@@ -5,8 +5,14 @@ import type {
 } from '$declarations/deprecated/orbiter-0-0-6.did';
 import { idlFactory as idlFactorOrbiter0_0_6 } from '$declarations/deprecated/orbiter-0-0-6.factory.did';
 import type {
+	_SERVICE as OrbiterActor0_0_8,
+	SetPageView as SetPageView0_0_8
+} from '$declarations/deprecated/orbiter-0-0-8.did';
+import { idlFactory as idlFactorOrbiter0_0_8 } from '$declarations/deprecated/orbiter-0-0-8.factory.did';
+import type {
 	AnalyticKey,
 	_SERVICE as OrbiterActor,
+	OrbiterSatelliteFeatures,
 	SetPageView,
 	SetTrackEvent
 } from '$declarations/orbiter/orbiter.did';
@@ -27,7 +33,6 @@ import {
 
 describe('Orbiter > Upgrade', () => {
 	let pic: PocketIc;
-	let actor: Actor<OrbiterActor0_0_6>;
 	let canisterId: Principal;
 
 	const controller = Ed25519KeyIdentity.generate();
@@ -35,11 +40,6 @@ describe('Orbiter > Upgrade', () => {
 	afterEach(async () => {
 		await pic?.tearDown();
 	});
-
-	const upgrade = async () => {
-		await upgradeVersion0_0_8();
-		await upgradeCurrent();
-	};
 
 	const upgradeCurrent = async () => {
 		await tick(pic);
@@ -51,45 +51,10 @@ describe('Orbiter > Upgrade', () => {
 		});
 	};
 
-	const upgradeVersion0_0_8 = async () => {
-		await tick(pic);
-
-		const destination = await downloadOrbiter('0.0.8');
-
-		await pic.upgradeCanister({
-			canisterId,
-			wasm: destination,
-			sender: controller.getPrincipal()
-		});
-	};
-
-	const setPageViews0_0_6 = async (): Promise<AnalyticKey[]> => {
+	const setPageViews = async (
+		actor: Actor<OrbiterActor | OrbiterActor0_0_6 | OrbiterActor0_0_8>
+	): Promise<AnalyticKey[]> => {
 		const { set_page_views } = actor;
-
-		const keys = Array.from({ length: 100 }).map((_, i) => ({
-			key: nanoid(),
-			collected_at: BigInt(i)
-		}));
-
-		const { version: _, ...rest } = pageViewMock;
-
-		const pagesViews: [AnalyticKey, SetPageView0_0_6][] = keys.map((key) => [
-			key,
-			{
-				...rest,
-				updated_at: []
-			}
-		]);
-
-		const results = await set_page_views(pagesViews);
-
-		expect('Err' in results).toBeFalsy();
-
-		return keys;
-	};
-
-	const setPageViews = async (useActor: Actor<OrbiterActor>): Promise<AnalyticKey[]> => {
-		const { set_page_views } = useActor;
 
 		const keys = Array.from({ length: 100 }).map((_, i) => ({
 			key: nanoid(),
@@ -107,12 +72,12 @@ describe('Orbiter > Upgrade', () => {
 
 	const testPageViews = async ({
 		keys,
-		useActor
+		actor
 	}: {
 		keys: AnalyticKey[];
-		useActor?: Actor<OrbiterActor | OrbiterActor0_0_6>;
+		actor: Actor<OrbiterActor | OrbiterActor0_0_6 | OrbiterActor0_0_8>;
 	}) => {
-		const { get_page_views } = useActor ?? actor;
+		const { get_page_views } = actor;
 
 		const results = await get_page_views({
 			to: toNullable(),
@@ -145,33 +110,10 @@ describe('Orbiter > Upgrade', () => {
 		}
 	};
 
-	const setTrackEvents0_0_6 = async (): Promise<AnalyticKey[]> => {
+	const setTrackEvents = async (
+		actor: Actor<OrbiterActor | OrbiterActor0_0_6 | OrbiterActor0_0_8>
+	): Promise<AnalyticKey[]> => {
 		const { set_track_events } = actor;
-
-		const keys = Array.from({ length: 100 }).map((_, i) => ({
-			key: nanoid(),
-			collected_at: BigInt(i)
-		}));
-
-		const { version: _, ...rest } = trackEventMock;
-
-		const trackEvents: [AnalyticKey, SetTrackEvent0_0_6][] = keys.map((key) => [
-			key,
-			{
-				...rest,
-				updated_at: []
-			}
-		]);
-
-		const results = await set_track_events(trackEvents);
-
-		expect('Err' in results).toBeFalsy();
-
-		return keys;
-	};
-
-	const setTrackEvents = async (useActor: Actor<OrbiterActor>): Promise<AnalyticKey[]> => {
-		const { set_track_events } = useActor;
 
 		const keys = Array.from({ length: 100 }).map((_, i) => ({
 			key: nanoid(),
@@ -189,12 +131,12 @@ describe('Orbiter > Upgrade', () => {
 
 	const testTrackEvents = async ({
 		keys,
-		useActor
+		actor
 	}: {
 		keys: AnalyticKey[];
-		useActor?: Actor<OrbiterActor | OrbiterActor0_0_6>;
+		actor: Actor<OrbiterActor | OrbiterActor0_0_6 | OrbiterActor0_0_8>;
 	}) => {
-		const { get_track_events } = useActor ?? actor;
+		const { get_track_events } = actor;
 
 		const results = await get_track_events({
 			to: toNullable(),
@@ -225,6 +167,75 @@ describe('Orbiter > Upgrade', () => {
 	};
 
 	describe('v0.0.6 -> v0.0.7', () => {
+		let actor: Actor<OrbiterActor0_0_6>;
+
+		const upgrade = async () => {
+			await upgradeVersion0_0_8();
+			await upgradeCurrent();
+		};
+
+		const upgradeVersion0_0_8 = async () => {
+			await tick(pic);
+
+			const destination = await downloadOrbiter('0.0.8');
+
+			await pic.upgradeCanister({
+				canisterId,
+				wasm: destination,
+				sender: controller.getPrincipal()
+			});
+		};
+
+		const setPageViews0_0_6 = async (): Promise<AnalyticKey[]> => {
+			const { set_page_views } = actor;
+
+			const keys = Array.from({ length: 100 }).map((_, i) => ({
+				key: nanoid(),
+				collected_at: BigInt(i)
+			}));
+
+			const { version: _, ...rest } = pageViewMock;
+
+			const pagesViews: [AnalyticKey, SetPageView0_0_6][] = keys.map((key) => [
+				key,
+				{
+					...rest,
+					updated_at: []
+				}
+			]);
+
+			const results = await set_page_views(pagesViews);
+
+			expect('Err' in results).toBeFalsy();
+
+			return keys;
+		};
+
+		const setTrackEvents0_0_6 = async (): Promise<AnalyticKey[]> => {
+			const { set_track_events } = actor;
+
+			const keys = Array.from({ length: 100 }).map((_, i) => ({
+				key: nanoid(),
+				collected_at: BigInt(i)
+			}));
+
+			const { version: _, ...rest } = trackEventMock;
+
+			const trackEvents: [AnalyticKey, SetTrackEvent0_0_6][] = keys.map((key) => [
+				key,
+				{
+					...rest,
+					updated_at: []
+				}
+			]);
+
+			const results = await set_track_events(trackEvents);
+
+			expect('Err' in results).toBeFalsy();
+
+			return keys;
+		};
+
 		beforeEach(async () => {
 			pic = await PocketIc.create(inject('PIC_URL'));
 
@@ -260,20 +271,20 @@ describe('Orbiter > Upgrade', () => {
 			it('should still list all entries after upgrade', async () => {
 				const originalKeys = await setPageViews0_0_6();
 
-				await testPageViews({ keys: originalKeys });
+				await testPageViews({ keys: originalKeys, actor });
 
 				await upgrade();
 
 				const newActor = pic.createActor<OrbiterActor>(idlFactorOrbiter, canisterId);
 				newActor.setIdentity(controller);
 
-				await testPageViews({ keys: originalKeys, useActor: newActor });
+				await testPageViews({ keys: originalKeys, actor: newActor });
 			});
 
 			it('should be able to collect new entry and list both bounded and unbounded serialized data', async () => {
 				const keysBeforeUpgrade = await setPageViews0_0_6();
 
-				await testPageViews({ keys: keysBeforeUpgrade });
+				await testPageViews({ keys: keysBeforeUpgrade, actor });
 
 				await upgrade();
 
@@ -284,7 +295,7 @@ describe('Orbiter > Upgrade', () => {
 
 				await testPageViews({
 					keys: [...keysBeforeUpgrade, ...keysAfterUpgrade],
-					useActor: newActor
+					actor: newActor
 				});
 			});
 
@@ -325,7 +336,7 @@ describe('Orbiter > Upgrade', () => {
 			it('should still list all entries after upgrade', async () => {
 				const keys = await setTrackEvents0_0_6();
 
-				await testTrackEvents({ keys });
+				await testTrackEvents({ keys, actor });
 
 				await upgrade();
 
@@ -334,14 +345,14 @@ describe('Orbiter > Upgrade', () => {
 
 				await testTrackEvents({
 					keys,
-					useActor: newActor
+					actor: newActor
 				});
 			});
 
 			it('should be able to collect new entry and list both bounded and unbounded serialized data', async () => {
 				const keysBeforeUpgrade = await setTrackEvents0_0_6();
 
-				await testTrackEvents({ keys: keysBeforeUpgrade });
+				await testTrackEvents({ keys: keysBeforeUpgrade, actor });
 
 				await upgrade();
 
@@ -352,7 +363,7 @@ describe('Orbiter > Upgrade', () => {
 
 				await testTrackEvents({
 					keys: [...keysBeforeUpgrade, ...keysAfterUpgrade],
-					useActor: newActor
+					actor: newActor
 				});
 			});
 
@@ -387,6 +398,78 @@ describe('Orbiter > Upgrade', () => {
 
 				expect('Err' in results).toBeFalsy();
 			});
+		});
+	});
+
+	describe('v0.0.8 -> v0.1.0', () => {
+		let actor: Actor<OrbiterActor0_0_8>;
+
+		const setPageViews0_0_8 = async (): Promise<AnalyticKey[]> => {
+			const { set_page_views } = actor;
+
+			const keys = Array.from({ length: 100 }).map((_, i) => ({
+				key: nanoid(),
+				collected_at: BigInt(i)
+			}));
+
+			const pagesViews: [AnalyticKey, SetPageView0_0_8][] = keys.map((key) => [key, pageViewMock]);
+
+			const results = await set_page_views(pagesViews);
+
+			expect('Err' in results).toBeFalsy();
+
+			return keys;
+		};
+
+		beforeEach(async () => {
+			pic = await PocketIc.create(inject('PIC_URL'));
+
+			const destination = await downloadOrbiter('0.0.8');
+
+			const { actor: c, canisterId: cId } = await pic.setupCanister<OrbiterActor0_0_8>({
+				idlFactory: idlFactorOrbiter0_0_8,
+				wasm: destination,
+				arg: controllersInitArgs(controller),
+				sender: controller.getPrincipal()
+			});
+
+			actor = c;
+			canisterId = cId;
+			actor.setIdentity(controller);
+
+			const { set_satellite_configs } = actor;
+
+			const allFeatures: OrbiterSatelliteFeatures = {
+				page_views: true,
+				performance_metrics: true,
+				track_events: true
+			};
+
+			await expect(
+				set_satellite_configs([
+					[
+						satelliteIdMock,
+						{
+							version: [],
+							restricted_origin: [],
+							features: [allFeatures]
+						}
+					]
+				])
+			).resolves.not.toThrow();
+		});
+
+		it('should still list all page views after upgrade (with new optional fields)', async () => {
+			const originalKeys = await setPageViews0_0_8();
+
+			await testPageViews({ keys: originalKeys, actor });
+
+			await upgradeCurrent();
+
+			const newActor = pic.createActor<OrbiterActor>(idlFactorOrbiter, canisterId);
+			newActor.setIdentity(controller);
+
+			await testPageViews({ keys: originalKeys, actor: newActor });
 		});
 	});
 });

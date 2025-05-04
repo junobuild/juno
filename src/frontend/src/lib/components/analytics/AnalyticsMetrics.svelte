@@ -3,12 +3,14 @@
 	import { i18n } from '$lib/stores/i18n.store';
 	import type { AnalyticsPageViews } from '$lib/types/orbiter';
 	import { formatCompactNumber, formatNumber } from '$lib/utils/number.utils';
+	import type {Snippet} from "svelte";
 
 	interface Props {
 		pageViews: AnalyticsPageViews;
+		charts: Snippet;
 	}
 
-	let { pageViews }: Props = $props();
+	let { pageViews, charts }: Props = $props();
 
 	let { metrics } = $derived(pageViews);
 </script>
@@ -66,6 +68,8 @@
 			</Value>
 		</div>
 	</div>
+
+	{@render charts()}
 </div>
 
 <style lang="scss">

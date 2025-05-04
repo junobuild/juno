@@ -184,9 +184,15 @@
 		{/if}
 
 		{#if nonNullish(pageViews)}
-			<AnalyticsMetrics {pageViews} />
-
-			<AnalyticsChart data={pageViews} />
+			<div in:fade>
+				<AnalyticsMetrics {pageViews}>
+					{#snippet charts()}
+						{#if nonNullish(pageViews)}
+							<AnalyticsChart data={pageViews} />
+						{/if}
+					{/snippet}
+				</AnalyticsMetrics>
+			</div>
 
 			<AnalyticsPageViews {pageViews} />
 

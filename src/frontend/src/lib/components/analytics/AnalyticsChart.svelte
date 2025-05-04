@@ -83,15 +83,22 @@
 
 <style lang="scss">
 	@use '../../styles/mixins/shadow';
+	@use '../../styles/mixins/media';
 
 	.chart-container {
 		width: 100%;
 		height: 300px;
 		fill: var(--value-color);
 
-		margin: 0 0 var(--padding-4x);
-		padding: var(--padding-2x) var(--padding-6x);
+		margin: 0 0 var(--padding-6x);
+		padding: 0 var(--padding-2x);
 
-		@include shadow.strong-card;
+		@include media.min-width(medium) {
+			padding: 0 var(--padding-8x);
+		}
+
+		@include media.min-width(large) {
+			margin: 0 0 var(--padding-4x);
+		}
 	}
 </style>

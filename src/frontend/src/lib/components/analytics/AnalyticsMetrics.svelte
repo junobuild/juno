@@ -3,7 +3,7 @@
 	import { i18n } from '$lib/stores/i18n.store';
 	import type { AnalyticsPageViews } from '$lib/types/orbiter';
 	import { formatCompactNumber, formatNumber } from '$lib/utils/number.utils';
-	import type {Snippet} from "svelte";
+	import type { Snippet } from 'svelte';
 
 	interface Props {
 		pageViews: AnalyticsPageViews;

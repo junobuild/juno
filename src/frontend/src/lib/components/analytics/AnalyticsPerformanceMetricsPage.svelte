@@ -71,7 +71,7 @@
 			<tr>
 				<th class="description"> {$i18n.analytics.metric} </th>
 				<th class="score"> {$i18n.analytics.score} </th>
-				<th> {$i18n.analytics.rating} </th>
+				<th class="rating"> {$i18n.analytics.rating} </th>
 			</tr>
 		</thead>
 
@@ -80,7 +80,7 @@
 				<tr>
 					<td><Html text={$i18n.analytics.ttfb} /></td>
 					<td class="score">{formatNumber(fromNullable(ttfb) ?? 0)}</td>
-					<td>{$i18n.analytics[ttfbRating]}</td>
+					<td class="rating">{$i18n.analytics[ttfbRating]}</td>
 				</tr>
 			{/if}
 
@@ -88,7 +88,7 @@
 				<tr>
 					<td><Html text={$i18n.analytics.fcp} /></td>
 					<td class="score">{formatNumber(fromNullable(fcp) ?? 0)}</td>
-					<td>{$i18n.analytics[fcpRating]}</td>
+					<td class="rating">{$i18n.analytics[fcpRating]}</td>
 				</tr>
 			{/if}
 
@@ -96,7 +96,7 @@
 				<tr>
 					<td><Html text={$i18n.analytics.lcp} /></td>
 					<td class="score">{formatNumber(fromNullable(lcp) ?? 0)}</td>
-					<td>{$i18n.analytics[lcpRating]}</td>
+					<td class="rating">{$i18n.analytics[lcpRating]}</td>
 				</tr>
 			{/if}
 
@@ -104,7 +104,7 @@
 				<tr>
 					<td><Html text={$i18n.analytics.cls} /></td>
 					<td class="score">{formatNumber(fromNullable(cls) ?? 0)}</td>
-					<td>{$i18n.analytics[clsRating]}</td>
+					<td class="rating">{$i18n.analytics[clsRating]}</td>
 				</tr>
 			{/if}
 
@@ -112,7 +112,7 @@
 				<tr>
 					<td><Html text={$i18n.analytics.inp} /></td>
 					<td class="score">{formatNumber(fromNullable(inp) ?? 0)}</td>
-					<td>{$i18n.analytics[inpRating]}</td>
+					<td class="rating">{$i18n.analytics[inpRating]}</td>
 				</tr>
 			{/if}
 		</tbody>
@@ -135,6 +135,14 @@
 		@include media.min-width(medium) {
 			display: table-cell;
 			vertical-align: middle;
+		}
+	}
+
+	.rating {
+		text-align: right;
+
+		@include media.min-width(medium) {
+			width: 25%;
 		}
 	}
 </style>

@@ -120,7 +120,15 @@ describe('Orbiter', () => {
 
 			const key = nanoid();
 
-			it('should set page views', async () => {
+			it('should throw on set page view', async () => {
+				const { set_page_view } = actor;
+
+				await expect(set_page_view({ key, collected_at: 123n }, pageViewMock)).rejects.toThrow(
+					'Caller is not a controller of the orbiter.'
+				);
+			});
+
+			it('should throw on set page views', async () => {
 				const { set_page_views } = actor;
 
 				const pagesViews: [AnalyticKey, SetPageView][] = [
@@ -128,48 +136,20 @@ describe('Orbiter', () => {
 					[{ key: nanoid(), collected_at: 123n }, pageViewMock]
 				];
 
-				await expect(set_page_views(pagesViews)).resolves.not.toThrow();
-			});
-
-			it('should not set page views if no version', async () => {
-				const { set_page_views } = actor;
-
-				const pagesViews: [AnalyticKey, SetPageView][] = [
-					[{ key, collected_at: 123n }, pageViewMock]
-				];
-
-				const results = await set_page_views(pagesViews);
-
-				expect('Err' in results).toBeTruthy();
-
-				(results as { Err: Array<[AnalyticKey, string]> }).Err.forEach(([_, msg]) =>
-					expect(msg).toEqual(JUNO_ERROR_NO_VERSION_PROVIDED)
+				await expect(set_page_views(pagesViews)).rejects.toThrow(
+					'Caller is not a controller of the orbiter.'
 				);
 			});
 
-			it('should not set page views if invalid version', async () => {
-				const { set_page_views } = actor;
+			it('should throw on set track event', async () => {
+				const { set_track_event } = actor;
 
-				const pagesViews: [AnalyticKey, SetPageView][] = [
-					[
-						{ key, collected_at: 123n },
-						{
-							...pageViewMock,
-							version: [123n]
-						}
-					]
-				];
-
-				const results = await set_page_views(pagesViews);
-
-				expect('Err' in results).toBeTruthy();
-
-				(results as { Err: Array<[AnalyticKey, string]> }).Err.forEach(([_, msg]) =>
-					expect(msg).toContain(JUNO_ERROR_VERSION_OUTDATED_OR_FUTURE)
+				await expect(set_track_event({ key, collected_at: 123n }, trackEventMock)).rejects.toThrow(
+					'Caller is not a controller of the orbiter.'
 				);
 			});
 
-			it('should set track events', async () => {
+			it('should throw on set track events', async () => {
 				const { set_track_events } = actor;
 
 				const trackEvents: [AnalyticKey, SetTrackEvent][] = [
@@ -177,48 +157,20 @@ describe('Orbiter', () => {
 					[{ key: nanoid(), collected_at: 123n }, trackEventMock]
 				];
 
-				await expect(set_track_events(trackEvents)).resolves.not.toThrow();
-			});
-
-			it('should not set track events if no version', async () => {
-				const { set_track_events } = actor;
-
-				const trackEvents: [AnalyticKey, SetTrackEvent][] = [
-					[{ key, collected_at: 123n }, trackEventMock]
-				];
-
-				const results = await set_track_events(trackEvents);
-
-				expect('Err' in results).toBeTruthy();
-
-				(results as { Err: Array<[AnalyticKey, string]> }).Err.forEach(([_, msg]) =>
-					expect(msg).toEqual(JUNO_ERROR_NO_VERSION_PROVIDED)
+				await expect(set_track_events(trackEvents)).rejects.toThrow(
+					'Caller is not a controller of the orbiter.'
 				);
 			});
 
-			it('should not set track events if invalid version', async () => {
-				const { set_track_events } = actor;
+			it('should throw on set performance metric', async () => {
+				const { set_performance_metric } = actor;
 
-				const trackEvents: [AnalyticKey, SetTrackEvent][] = [
-					[
-						{ key, collected_at: 123n },
-						{
-							...trackEventMock,
-							version: [123n]
-						}
-					]
-				];
-
-				const results = await set_track_events(trackEvents);
-
-				expect('Err' in results).toBeTruthy();
-
-				(results as { Err: Array<[AnalyticKey, string]> }).Err.forEach(([_, msg]) =>
-					expect(msg).toContain(JUNO_ERROR_VERSION_OUTDATED_OR_FUTURE)
-				);
+				await expect(
+					set_performance_metric({ key, collected_at: 123n }, performanceMetricMock)
+				).rejects.toThrow('Caller is not a controller of the orbiter.');
 			});
 
-			it('should set performance metrics', async () => {
+			it('should throw on set performance metrics', async () => {
 				const { set_performance_metrics } = actor;
 
 				const performanceMetrics: [AnalyticKey, SetPerformanceMetric][] = [
@@ -226,44 +178,8 @@ describe('Orbiter', () => {
 					[{ key: nanoid(), collected_at: 123n }, performanceMetricMock]
 				];
 
-				await expect(set_performance_metrics(performanceMetrics)).resolves.not.toThrow();
-			});
-
-			it('should not set performance metrics if no version', async () => {
-				const { set_performance_metrics } = actor;
-
-				const performanceMetrics: [AnalyticKey, SetPerformanceMetric][] = [
-					[{ key, collected_at: 123n }, performanceMetricMock]
-				];
-
-				const results = await set_performance_metrics(performanceMetrics);
-
-				expect('Err' in results).toBeTruthy();
-
-				(results as { Err: Array<[AnalyticKey, string]> }).Err.forEach(([_, msg]) =>
-					expect(msg).toEqual(JUNO_ERROR_NO_VERSION_PROVIDED)
-				);
-			});
-
-			it('should not set performance metrics if invalid version', async () => {
-				const { set_performance_metrics } = actor;
-
-				const performanceMetrics: [AnalyticKey, SetPerformanceMetric][] = [
-					[
-						{ key, collected_at: 123n },
-						{
-							...performanceMetricMock,
-							version: [123n] // Assuming an invalid version format for testing
-						}
-					]
-				];
-
-				const results = await set_performance_metrics(performanceMetrics);
-
-				expect('Err' in results).toBeTruthy();
-
-				(results as { Err: Array<[AnalyticKey, string]> }).Err.forEach(([_, msg]) =>
-					expect(msg).toContain(JUNO_ERROR_VERSION_OUTDATED_OR_FUTURE)
+				await expect(set_performance_metrics(performanceMetrics)).rejects.toThrow(
+					'Caller is not a controller of the orbiter.'
 				);
 			});
 
@@ -304,200 +220,377 @@ describe('Orbiter', () => {
 			});
 		});
 
-		describe('controller read', () => {
+		describe('controller', () => {
 			beforeAll(() => {
 				actor.setIdentity(controller);
 			});
 
-			describe('list', () => {
-				it('should retrieve page views', async () => {
-					const { set_page_views, get_page_views } = actor;
+			describe('write', () => {
+				const key = nanoid();
+
+				it('should set page view', async () => {
+					const { set_page_view } = actor;
+
+					await expect(
+						set_page_view({ key: nanoid(), collected_at: 123567890n }, pageViewMock)
+					).resolves.not.toThrow();
+				});
+
+				it('should set page views', async () => {
+					const { set_page_views } = actor;
 
 					const pagesViews: [AnalyticKey, SetPageView][] = [
-						[{ key: nanoid(), collected_at: 1230n }, pageViewMock],
-						[{ key: nanoid(), collected_at: 4560n }, pageViewMock]
+						[{ key, collected_at: 123n }, pageViewMock],
+						[{ key: nanoid(), collected_at: 123n }, pageViewMock]
 					];
 
-					await set_page_views(pagesViews);
-
-					const result = await get_page_views({
-						from: [1000n],
-						to: [5000n],
-						satellite_id: [satelliteIdMock]
-					});
-
-					expect(Array.isArray(result)).toBeTruthy();
-					expect(result).toHaveLength(pagesViews.length);
-
-					result.forEach(([key, pageView]) => {
-						expect(key.collected_at).toBeGreaterThanOrEqual(1000n);
-						expect(key.collected_at).toBeLessThanOrEqual(5000n);
-						expect(pageView.href).toBe('https://test.com');
-						expect(fromNullable(pageView.version)).toBe(1n);
-					});
+					await expect(set_page_views(pagesViews)).resolves.not.toThrow();
 				});
 
-				it('should retrieve track events', async () => {
-					const { set_track_events, get_track_events } = actor;
+				it('should not set page views if no version', async () => {
+					const { set_page_views } = actor;
+
+					const pagesViews: [AnalyticKey, SetPageView][] = [
+						[{ key, collected_at: 123n }, pageViewMock]
+					];
+
+					const results = await set_page_views(pagesViews);
+
+					expect('Err' in results).toBeTruthy();
+
+					(results as { Err: Array<[AnalyticKey, string]> }).Err.forEach(([_, msg]) =>
+						expect(msg).toEqual(JUNO_ERROR_NO_VERSION_PROVIDED)
+					);
+				});
+
+				it('should not set page views if invalid version', async () => {
+					const { set_page_views } = actor;
+
+					const pagesViews: [AnalyticKey, SetPageView][] = [
+						[
+							{ key, collected_at: 123n },
+							{
+								...pageViewMock,
+								version: [123n]
+							}
+						]
+					];
+
+					const results = await set_page_views(pagesViews);
+
+					expect('Err' in results).toBeTruthy();
+
+					(results as { Err: Array<[AnalyticKey, string]> }).Err.forEach(([_, msg]) =>
+						expect(msg).toContain(JUNO_ERROR_VERSION_OUTDATED_OR_FUTURE)
+					);
+				});
+
+				it('should set track event', async () => {
+					const { set_track_event } = actor;
+
+					await expect(
+						set_track_event({ key, collected_at: 1234567890n }, trackEventMock)
+					).resolves.not.toThrow();
+				});
+
+				it('should set track events', async () => {
+					const { set_track_events } = actor;
 
 					const trackEvents: [AnalyticKey, SetTrackEvent][] = [
-						[{ key: nanoid(), collected_at: 1230n }, trackEventMock],
-						[{ key: nanoid(), collected_at: 4560n }, trackEventMock]
+						[{ key, collected_at: 123n }, trackEventMock],
+						[{ key: nanoid(), collected_at: 123n }, trackEventMock]
 					];
 
-					await set_track_events(trackEvents);
-
-					const result = await get_track_events({
-						from: [1000n],
-						to: [5000n],
-						satellite_id: [satelliteIdMock]
-					});
-
-					expect(Array.isArray(result)).toBeTruthy();
-					expect(result).toHaveLength(trackEvents.length);
-
-					result.forEach(([key, trackEvent]) => {
-						expect(key.collected_at).toBeGreaterThanOrEqual(1000n);
-						expect(key.collected_at).toBeLessThanOrEqual(5000n);
-						expect(trackEvent.name).toBe('my_event');
-						expect(fromNullable(trackEvent.version)).toBe(1n);
-					});
+					await expect(set_track_events(trackEvents)).resolves.not.toThrow();
 				});
 
-				it('should retrieve performance metrics', async () => {
-					const { set_performance_metrics, get_performance_metrics } = actor;
+				it('should not set track events if no version', async () => {
+					const { set_track_events } = actor;
 
-					const performanceMetrics: [AnalyticKey, SetPerformanceMetric][] = [
-						[{ key: nanoid(), collected_at: 1230n }, performanceMetricMock],
-						[{ key: nanoid(), collected_at: 4560n }, performanceMetricMock]
+					const trackEvents: [AnalyticKey, SetTrackEvent][] = [
+						[{ key, collected_at: 123n }, trackEventMock]
 					];
 
-					await set_performance_metrics(performanceMetrics);
+					const results = await set_track_events(trackEvents);
 
-					const result = await get_performance_metrics({
-						from: [1000n],
-						to: [5000n],
-						satellite_id: [satelliteIdMock]
-					});
+					expect('Err' in results).toBeTruthy();
 
-					expect(Array.isArray(result)).toBeTruthy();
-					expect(result.length).toBeGreaterThan(0);
+					(results as { Err: Array<[AnalyticKey, string]> }).Err.forEach(([_, msg]) =>
+						expect(msg).toEqual(JUNO_ERROR_NO_VERSION_PROVIDED)
+					);
+				});
 
-					result.forEach(([key, performanceMetric]) => {
-						expect(key.collected_at).toBeGreaterThanOrEqual(1000n);
-						expect(key.collected_at).toBeLessThanOrEqual(5000n);
-						expect(performanceMetric.metric_name).toEqual({ LCP: null });
-						expect(fromNullable(performanceMetric.version)).toBe(1n);
-					});
+				it('should not set track events if invalid version', async () => {
+					const { set_track_events } = actor;
+
+					const trackEvents: [AnalyticKey, SetTrackEvent][] = [
+						[
+							{ key, collected_at: 123n },
+							{
+								...trackEventMock,
+								version: [123n]
+							}
+						]
+					];
+
+					const results = await set_track_events(trackEvents);
+
+					expect('Err' in results).toBeTruthy();
+
+					(results as { Err: Array<[AnalyticKey, string]> }).Err.forEach(([_, msg]) =>
+						expect(msg).toContain(JUNO_ERROR_VERSION_OUTDATED_OR_FUTURE)
+					);
+				});
+
+				it('should set performance metric', async () => {
+					const { set_performance_metric } = actor;
+
+					await expect(
+						set_performance_metric({ key, collected_at: 1234567890n }, performanceMetricMock)
+					).resolves.not.toThrow();
+				});
+
+				it('should set performance metrics', async () => {
+					const { set_performance_metrics } = actor;
+
+					const performanceMetrics: [AnalyticKey, SetPerformanceMetric][] = [
+						[{ key, collected_at: 123n }, performanceMetricMock],
+						[{ key: nanoid(), collected_at: 123n }, performanceMetricMock]
+					];
+
+					await expect(set_performance_metrics(performanceMetrics)).resolves.not.toThrow();
+				});
+
+				it('should not set performance metrics if no version', async () => {
+					const { set_performance_metrics } = actor;
+
+					const performanceMetrics: [AnalyticKey, SetPerformanceMetric][] = [
+						[{ key, collected_at: 123n }, performanceMetricMock]
+					];
+
+					const results = await set_performance_metrics(performanceMetrics);
+
+					expect('Err' in results).toBeTruthy();
+
+					(results as { Err: Array<[AnalyticKey, string]> }).Err.forEach(([_, msg]) =>
+						expect(msg).toEqual(JUNO_ERROR_NO_VERSION_PROVIDED)
+					);
+				});
+
+				it('should not set performance metrics if invalid version', async () => {
+					const { set_performance_metrics } = actor;
+
+					const performanceMetrics: [AnalyticKey, SetPerformanceMetric][] = [
+						[
+							{ key, collected_at: 123n },
+							{
+								...performanceMetricMock,
+								version: [123n] // Assuming an invalid version format for testing
+							}
+						]
+					];
+
+					const results = await set_performance_metrics(performanceMetrics);
+
+					expect('Err' in results).toBeTruthy();
+
+					(results as { Err: Array<[AnalyticKey, string]> }).Err.forEach(([_, msg]) =>
+						expect(msg).toContain(JUNO_ERROR_VERSION_OUTDATED_OR_FUTURE)
+					);
 				});
 			});
 
-			describe('aggregate', () => {
-				it('should retrieve page views analytics clients', async () => {
-					const { get_page_views_analytics_clients } = actor;
+			describe('read', () => {
+				describe('list', () => {
+					it('should retrieve page views', async () => {
+						const { set_page_views, get_page_views } = actor;
 
-					const result = await get_page_views_analytics_clients({
-						from: [1000n],
-						to: [5000n],
-						satellite_id: [satelliteIdMock]
+						const pagesViews: [AnalyticKey, SetPageView][] = [
+							[{ key: nanoid(), collected_at: 1230n }, pageViewMock],
+							[{ key: nanoid(), collected_at: 4560n }, pageViewMock]
+						];
+
+						await set_page_views(pagesViews);
+
+						const result = await get_page_views({
+							from: [1000n],
+							to: [5000n],
+							satellite_id: [satelliteIdMock]
+						});
+
+						expect(Array.isArray(result)).toBeTruthy();
+						expect(result).toHaveLength(pagesViews.length);
+
+						result.forEach(([key, pageView]) => {
+							expect(key.collected_at).toBeGreaterThanOrEqual(1000n);
+							expect(key.collected_at).toBeLessThanOrEqual(5000n);
+							expect(pageView.href).toBe('https://test.com');
+							expect(fromNullable(pageView.version)).toBe(1n);
+						});
 					});
 
-					expect(result).toHaveProperty('browsers');
-					expect(result.browsers).toHaveProperty('chrome');
-					expect(result.browsers).toHaveProperty('safari');
-					expect(result.browsers).toHaveProperty('firefox');
-					expect(result.browsers).toHaveProperty('opera');
-					expect(result.browsers).toHaveProperty('others');
+					it('should retrieve track events', async () => {
+						const { set_track_events, get_track_events } = actor;
 
-					expect(result).toHaveProperty('devices');
-					expect(result.devices).toHaveProperty('desktop');
-					expect(result.devices).toHaveProperty('mobile');
-					expect(result.devices).toHaveProperty('laptop');
+						const trackEvents: [AnalyticKey, SetTrackEvent][] = [
+							[{ key: nanoid(), collected_at: 1230n }, trackEventMock],
+							[{ key: nanoid(), collected_at: 4560n }, trackEventMock]
+						];
 
-					expect(result.browsers.firefox).toEqual(1);
-					expect(result.devices.desktop).toEqual(1);
+						await set_track_events(trackEvents);
+
+						const result = await get_track_events({
+							from: [1000n],
+							to: [5000n],
+							satellite_id: [satelliteIdMock]
+						});
+
+						expect(Array.isArray(result)).toBeTruthy();
+						expect(result).toHaveLength(trackEvents.length);
+
+						result.forEach(([key, trackEvent]) => {
+							expect(key.collected_at).toBeGreaterThanOrEqual(1000n);
+							expect(key.collected_at).toBeLessThanOrEqual(5000n);
+							expect(trackEvent.name).toBe('my_event');
+							expect(fromNullable(trackEvent.version)).toBe(1n);
+						});
+					});
+
+					it('should retrieve performance metrics', async () => {
+						const { set_performance_metrics, get_performance_metrics } = actor;
+
+						const performanceMetrics: [AnalyticKey, SetPerformanceMetric][] = [
+							[{ key: nanoid(), collected_at: 1230n }, performanceMetricMock],
+							[{ key: nanoid(), collected_at: 4560n }, performanceMetricMock]
+						];
+
+						await set_performance_metrics(performanceMetrics);
+
+						const result = await get_performance_metrics({
+							from: [1000n],
+							to: [5000n],
+							satellite_id: [satelliteIdMock]
+						});
+
+						expect(Array.isArray(result)).toBeTruthy();
+						expect(result.length).toBeGreaterThan(0);
+
+						result.forEach(([key, performanceMetric]) => {
+							expect(key.collected_at).toBeGreaterThanOrEqual(1000n);
+							expect(key.collected_at).toBeLessThanOrEqual(5000n);
+							expect(performanceMetric.metric_name).toEqual({ LCP: null });
+							expect(fromNullable(performanceMetric.version)).toBe(1n);
+						});
+					});
 				});
 
-				it('should retrieve page views analytics metrics', async () => {
-					const { get_page_views_analytics_metrics } = actor;
+				describe('aggregate', () => {
+					it('should retrieve page views analytics clients', async () => {
+						const { get_page_views_analytics_clients } = actor;
 
-					const result = await get_page_views_analytics_metrics({
-						from: [1000n],
-						to: [5000n],
-						satellite_id: [satelliteIdMock]
+						const result = await get_page_views_analytics_clients({
+							from: [1000n],
+							to: [5000n],
+							satellite_id: [satelliteIdMock]
+						});
+
+						expect(result).toHaveProperty('browsers');
+						expect(result.browsers).toHaveProperty('chrome');
+						expect(result.browsers).toHaveProperty('safari');
+						expect(result.browsers).toHaveProperty('firefox');
+						expect(result.browsers).toHaveProperty('opera');
+						expect(result.browsers).toHaveProperty('others');
+
+						expect(result).toHaveProperty('devices');
+						expect(result.devices).toHaveProperty('desktop');
+						expect(result.devices).toHaveProperty('mobile');
+						expect(result.devices).toHaveProperty('laptop');
+
+						expect(result.browsers.firefox).toEqual(1);
+						expect(result.devices.desktop).toEqual(1);
 					});
 
-					expect(result).toHaveProperty('bounce_rate');
-					expect(result).toHaveProperty('average_page_views_per_session');
-					expect(result).toHaveProperty('daily_total_page_views');
-					expect(result).toHaveProperty('total_page_views');
-					expect(result).toHaveProperty('unique_page_views');
-					expect(result).toHaveProperty('unique_sessions');
+					it('should retrieve page views analytics metrics', async () => {
+						const { get_page_views_analytics_metrics } = actor;
 
-					expect(result.average_page_views_per_session).toEqual(2);
-					expect(result.total_page_views).toEqual(2);
-					expect(result.unique_page_views).toEqual(1n);
-					expect(result.unique_sessions).toEqual(1n);
+						const result = await get_page_views_analytics_metrics({
+							from: [1000n],
+							to: [5000n],
+							satellite_id: [satelliteIdMock]
+						});
+
+						expect(result).toHaveProperty('bounce_rate');
+						expect(result).toHaveProperty('average_page_views_per_session');
+						expect(result).toHaveProperty('daily_total_page_views');
+						expect(result).toHaveProperty('total_page_views');
+						expect(result).toHaveProperty('unique_page_views');
+						expect(result).toHaveProperty('unique_sessions');
+
+						expect(result.average_page_views_per_session).toEqual(2);
+						expect(result.total_page_views).toEqual(2);
+						expect(result.unique_page_views).toEqual(1n);
+						expect(result.unique_sessions).toEqual(1n);
+					});
+
+					it('should retrieve page views analytics top 10', async () => {
+						const { get_page_views_analytics_top_10 } = actor;
+
+						const result = await get_page_views_analytics_top_10({
+							from: [1000n],
+							to: [5000n],
+							satellite_id: [satelliteIdMock]
+						});
+
+						expect(result).toHaveProperty('referrers');
+						expect(result.referrers).toBeInstanceOf(Array);
+						expect(result.referrers.length).toBeLessThanOrEqual(10);
+
+						expect(result).toHaveProperty('pages');
+						expect(result.pages).toBeInstanceOf(Array);
+						expect(result.pages.length).toBeLessThanOrEqual(10);
+
+						expect(result.pages.find((page) => page[0] === '/')?.[1]).toEqual(2);
+					});
 				});
 
-				it('should retrieve page views analytics top 10', async () => {
-					const { get_page_views_analytics_top_10 } = actor;
+				it('should retrieve performance metrics analytics web vitals', async () => {
+					const { get_performance_metrics_analytics_web_vitals } = actor;
 
-					const result = await get_page_views_analytics_top_10({
+					const result = await get_performance_metrics_analytics_web_vitals({
 						from: [1000n],
 						to: [5000n],
 						satellite_id: [satelliteIdMock]
 					});
 
-					expect(result).toHaveProperty('referrers');
-					expect(result.referrers).toBeInstanceOf(Array);
-					expect(result.referrers.length).toBeLessThanOrEqual(10);
+					expect(result).toHaveProperty('overall');
+					expect(result.overall).toHaveProperty('cls');
+					expect(result.overall).toHaveProperty('fcp');
+					expect(result.overall).toHaveProperty('inp');
+					expect(result.overall).toHaveProperty('lcp');
+					expect(result.overall).toHaveProperty('ttfb');
 
 					expect(result).toHaveProperty('pages');
 					expect(result.pages).toBeInstanceOf(Array);
-					expect(result.pages.length).toBeLessThanOrEqual(10);
+					expect(result.pages.length).toBeGreaterThan(0);
 
-					expect(result.pages.find((page) => page[0] === '/')?.[1]).toEqual(2);
-				});
-			});
-
-			it('should retrieve performance metrics analytics web vitals', async () => {
-				const { get_performance_metrics_analytics_web_vitals } = actor;
-
-				const result = await get_performance_metrics_analytics_web_vitals({
-					from: [1000n],
-					to: [5000n],
-					satellite_id: [satelliteIdMock]
+					expect(fromNullable(result.overall.lcp)).toEqual(1.23);
 				});
 
-				expect(result).toHaveProperty('overall');
-				expect(result.overall).toHaveProperty('cls');
-				expect(result.overall).toHaveProperty('fcp');
-				expect(result.overall).toHaveProperty('inp');
-				expect(result.overall).toHaveProperty('lcp');
-				expect(result.overall).toHaveProperty('ttfb');
+				it('should retrieve track events analytics', async () => {
+					const { get_track_events_analytics } = actor;
 
-				expect(result).toHaveProperty('pages');
-				expect(result.pages).toBeInstanceOf(Array);
-				expect(result.pages.length).toBeGreaterThan(0);
+					const result = await get_track_events_analytics({
+						from: [1000n],
+						to: [5000n],
+						satellite_id: [satelliteIdMock]
+					});
 
-				expect(fromNullable(result.overall.lcp)).toEqual(1.23);
-			});
+					expect(result).toHaveProperty('total');
+					expect(result.total).toBeInstanceOf(Array);
+					expect(result.total.length).toBeGreaterThan(0);
 
-			it('should retrieve track events analytics', async () => {
-				const { get_track_events_analytics } = actor;
-
-				const result = await get_track_events_analytics({
-					from: [1000n],
-					to: [5000n],
-					satellite_id: [satelliteIdMock]
+					expect(result.total.find((entry) => entry[0] === 'my_event')?.[1]).toEqual(2);
 				});
-
-				expect(result).toHaveProperty('total');
-				expect(result.total).toBeInstanceOf(Array);
-				expect(result.total.length).toBeGreaterThan(0);
-
-				expect(result.total.find((entry) => entry[0] === 'my_event')?.[1]).toEqual(2);
 			});
 		});
 	});

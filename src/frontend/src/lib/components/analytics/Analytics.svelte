@@ -217,7 +217,7 @@
 	}
 
 	.loading-data {
-		margin: var(--padding-2x) 0 var(--padding-6x);
+		margin: calc(var(--padding-2x) + var(--padding-0_25x)) 0 var(--padding-6x);
 		--spinner-paragraph-margin: 0;
 	}
 

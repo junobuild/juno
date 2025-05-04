@@ -3,7 +3,7 @@
 	import type { AnalyticsWebVitalsPageMetrics } from '$declarations/orbiter/orbiter.did';
 	import Html from '$lib/components/ui/Html.svelte';
 	import { i18n } from '$lib/stores/i18n.store';
-	import { formatCompactNumber } from '$lib/utils/number.utils';
+	import { formatNumber } from '$lib/utils/number.utils';
 
 	interface Props {
 		metrics: AnalyticsWebVitalsPageMetrics;
@@ -79,7 +79,7 @@
 			{#if nonNullish(ttfbRating)}
 				<tr>
 					<td><Html text={$i18n.analytics.ttfb} /></td>
-					<td class="score">{formatCompactNumber(fromNullable(ttfb) ?? 0)}</td>
+					<td class="score">{formatNumber(fromNullable(ttfb) ?? 0)}</td>
 					<td>{$i18n.analytics[ttfbRating]}</td>
 				</tr>
 			{/if}
@@ -87,7 +87,7 @@
 			{#if nonNullish(fcpRating)}
 				<tr>
 					<td><Html text={$i18n.analytics.fcp} /></td>
-					<td class="score">{formatCompactNumber(fromNullable(fcp) ?? 0)}</td>
+					<td class="score">{formatNumber(fromNullable(fcp) ?? 0)}</td>
 					<td>{$i18n.analytics[fcpRating]}</td>
 				</tr>
 			{/if}
@@ -95,7 +95,7 @@
 			{#if nonNullish(lcpRating)}
 				<tr>
 					<td><Html text={$i18n.analytics.lcp} /></td>
-					<td class="score">{formatCompactNumber(fromNullable(lcp) ?? 0)}</td>
+					<td class="score">{formatNumber(fromNullable(lcp) ?? 0)}</td>
 					<td>{$i18n.analytics[lcpRating]}</td>
 				</tr>
 			{/if}
@@ -103,7 +103,7 @@
 			{#if nonNullish(clsRating)}
 				<tr>
 					<td><Html text={$i18n.analytics.cls} /></td>
-					<td class="score">{formatCompactNumber(fromNullable(cls) ?? 0)}</td>
+					<td class="score">{formatNumber(fromNullable(cls) ?? 0)}</td>
 					<td>{$i18n.analytics[clsRating]}</td>
 				</tr>
 			{/if}
@@ -111,7 +111,7 @@
 			{#if nonNullish(inpRating)}
 				<tr>
 					<td><Html text={$i18n.analytics.inp} /></td>
-					<td class="score">{formatCompactNumber(fromNullable(inp) ?? 0)}</td>
+					<td class="score">{formatNumber(fromNullable(inp) ?? 0)}</td>
 					<td>{$i18n.analytics[inpRating]}</td>
 				</tr>
 			{/if}

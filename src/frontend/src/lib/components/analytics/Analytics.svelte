@@ -34,7 +34,7 @@
 		AnalyticsPageViews as AnalyticsPageViewsType,
 		PageViewsParams
 	} from '$lib/types/orbiter';
-	import {getAnalyticsTrackEventsForPeriods} from "$lib/services/orbiter.pagination.track-events.services";
+	import { getAnalyticsTrackEventsForPeriods } from '$lib/services/orbiter.pagination.track-events.services';
 
 	let loadingOrbiter: 'in_progress' | 'done' | 'error' = $state('in_progress');
 	let reloadingAnalytics: 'idle' | 'in_progress' | 'loaded' | 'error' = $state('idle');
@@ -73,7 +73,10 @@
 				getAnalyticsPageViewsForPeriods({ params, orbiterVersion: $versionStore.orbiter.current }),
 				...[
 					$orbiterFeatures?.track_events === true
-						? getAnalyticsTrackEventsForPeriods({ params, orbiterVersion: $versionStore.orbiter.current })
+						? getAnalyticsTrackEventsForPeriods({
+								params,
+								orbiterVersion: $versionStore.orbiter.current
+							})
 						: Promise.resolve()
 				],
 				...[

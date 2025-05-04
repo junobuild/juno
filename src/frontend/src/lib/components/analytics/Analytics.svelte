@@ -21,9 +21,9 @@
 	import { orbitersStore, orbiterStore } from '$lib/derived/orbiter.derived';
 	import { satelliteStore } from '$lib/derived/satellite.derived';
 	import { getAnalyticsPageViewsForPeriods } from '$lib/services/orbiter.pagination.page-views.services';
+	import { getAnalyticsTrackEventsForPeriods } from '$lib/services/orbiter.pagination.track-events.services';
 	import {
 		getAnalyticsPerformanceMetrics,
-		getAnalyticsTrackEvents,
 		loadOrbiterConfigs
 	} from '$lib/services/orbiters.services';
 	import { analyticsFiltersStore } from '$lib/stores/analytics-filters.store';
@@ -73,7 +73,10 @@
 				getAnalyticsPageViewsForPeriods({ params, orbiterVersion: $versionStore.orbiter.current }),
 				...[
 					$orbiterFeatures?.track_events === true
-						? getAnalyticsTrackEvents({ params, orbiterVersion: $versionStore.orbiter.current })
+						? getAnalyticsTrackEventsForPeriods({
+								params,
+								orbiterVersion: $versionStore.orbiter.current
+							})
 						: Promise.resolve()
 				],
 				...[

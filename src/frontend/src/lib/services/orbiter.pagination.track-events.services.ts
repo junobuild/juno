@@ -19,8 +19,6 @@ export const getAnalyticsTrackEventsForPeriods = async ({
 		periods
 	});
 
-	console.log(aggregateMetrics({ periodsMetrics }));
-
 	return aggregateMetrics({ periodsMetrics });
 };
 

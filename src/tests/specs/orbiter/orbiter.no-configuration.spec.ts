@@ -75,8 +75,6 @@ describe('Orbiter > No configuration', () => {
 					}
 				]
 			]);
-
-			actor.setIdentity(user);
 		});
 
 		it('should not set page views', async () => {

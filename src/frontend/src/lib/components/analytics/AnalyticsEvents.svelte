@@ -12,6 +12,7 @@
 	let allEvents = $derived(trackEvents.total);
 
 	let events: Array<[string, number]> = $derived(
+		// eslint-disable-next-line local-rules/prefer-object-params
 		allEvents.toSorted(([keyA, _], [keyB, __]) => keyA.localeCompare(keyB))
 	);
 

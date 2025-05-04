@@ -11,7 +11,7 @@
 	import {
 		initMonitoringWorker,
 		type MonitoringWorker
-	} from '$lib/services/worker.monitoring.services';
+	} from '$lib/services/workers/worker.monitoring.services';
 	import { i18n } from '$lib/stores/i18n.store';
 	import { toasts } from '$lib/stores/toasts.store';
 	import type { CanisterSegment } from '$lib/types/canister';

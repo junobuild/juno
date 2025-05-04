@@ -4,7 +4,7 @@
 	import AuthConfigForm from '$lib/components/auth/AuthConfigForm.svelte';
 	import Modal from '$lib/components/ui/Modal.svelte';
 	import SpinnerModal from '$lib/components/ui/SpinnerModal.svelte';
-	import { updateAuthConfig } from '$lib/services/auth.config.services';
+	import { updateAuthConfig } from '$lib/services/auth/auth.config.services';
 	import { authStore } from '$lib/stores/auth.store';
 	import { wizardBusy } from '$lib/stores/busy.store';
 	import { i18n } from '$lib/stores/i18n.store';

@@ -28,7 +28,7 @@ import {
 	getDeprecatedAnalyticsClientsPageViews,
 	getDeprecatedAnalyticsPageViews,
 	getDeprecatedAnalyticsTrackEvents
-} from '$lib/services/orbiters.deprecated.services';
+} from '$lib/services/orbiter/orbiters.deprecated.services';
 import { authStore } from '$lib/stores/auth.store';
 import { i18n } from '$lib/stores/i18n.store';
 import { orbitersConfigsStore } from '$lib/stores/orbiter-configs.store';

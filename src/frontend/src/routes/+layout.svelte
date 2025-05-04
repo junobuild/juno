@@ -6,11 +6,11 @@
 	import Overlays from '$lib/components/core/Overlays.svelte';
 	import Spinner from '$lib/components/ui/Spinner.svelte';
 	import { layoutNavigationTitle } from '$lib/derived/layout-navigation.derived';
-	import { displayAndCleanLogoutMsg } from '$lib/services/auth.services';
+	import { displayAndCleanLogoutMsg } from '$lib/services/auth/auth.services';
 	import { initMissionControl } from '$lib/services/console.services';
 	import { syncSnapshots } from '$lib/services/snapshots.services';
 	import { syncSubnets } from '$lib/services/subnets.services';
-	import { initAuthWorker } from '$lib/services/worker.auth.services';
+	import { initAuthWorker } from '$lib/services/workers/worker.auth.services';
 	import { type AuthStoreData, authStore } from '$lib/stores/auth.store';
 	import { i18n } from '$lib/stores/i18n.store';
 	import '$lib/styles/global.scss';

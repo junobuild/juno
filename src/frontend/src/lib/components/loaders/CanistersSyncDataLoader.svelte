@@ -5,7 +5,10 @@
 	import type { Satellite } from '$declarations/mission_control/mission_control.did';
 	import { orbiterNotLoaded } from '$lib/derived/orbiter.derived';
 	import { satellitesNotLoaded } from '$lib/derived/satellites.derived';
-	import { type CyclesWorker, initCyclesWorker } from '$lib/services/worker.cycles.services';
+	import {
+		type CyclesWorker,
+		initCyclesWorker
+	} from '$lib/services/workers/worker.cycles.services';
 	import type { CanisterSegment } from '$lib/types/canister';
 
 	interface Props {

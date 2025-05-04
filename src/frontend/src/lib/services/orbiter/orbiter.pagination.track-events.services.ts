@@ -1,5 +1,5 @@
 import type { AnalyticsTrackEvents } from '$declarations/orbiter/orbiter.did';
-import { getAnalyticsTrackEvents } from '$lib/services/orbiters.services';
+import { getAnalyticsTrackEvents } from '$lib/services/orbiter/orbiters.services';
 import type { PageViewsParams, PageViewsPeriod, PageViewsPeriods } from '$lib/types/orbiter';
 import { batchAnalyticsRequests } from '$lib/utils/orbiter.paginated.utils';
 import { buildAnalyticsPeriods } from '$lib/utils/orbiter.utils';

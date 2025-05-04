@@ -3,7 +3,7 @@ import type {
 	AnalyticsDevicesPageViews,
 	AnalyticsOperatingSystemsPageViews
 } from '$declarations/orbiter/orbiter.did';
-import { getAnalyticsPageViews } from '$lib/services/orbiters.services';
+import { getAnalyticsPageViews } from '$lib/services/orbiter/orbiters.services';
 import type {
 	AnalyticsPageViews,
 	PageViewsParams,

@@ -1,4 +1,4 @@
-import { idleSignOut } from '$lib/services/auth.services';
+import { idleSignOut } from '$lib/services/auth/auth.services';
 import { authRemainingTimeStore, type AuthStoreData } from '$lib/stores/auth.store';
 import type { PostMessage, PostMessageDataResponseAuth } from '$lib/types/post-message';
 

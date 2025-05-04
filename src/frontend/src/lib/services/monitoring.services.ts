@@ -20,7 +20,7 @@ import { missionControlUserData } from '$lib/derived/mission-control-user.derive
 import { orbiterNotLoaded, orbiterStore } from '$lib/derived/orbiter.derived';
 import { satellitesNotLoaded, satellitesStore } from '$lib/derived/satellites.derived';
 import { loadSettings, loadUserData } from '$lib/services/mission-control.services';
-import { loadOrbiters } from '$lib/services/orbiters.services';
+import { loadOrbiters } from '$lib/services/orbiter/orbiters.services';
 import { execute } from '$lib/services/progress.services';
 import { loadSatellites } from '$lib/services/satellites.services';
 import { i18n } from '$lib/stores/i18n.store';

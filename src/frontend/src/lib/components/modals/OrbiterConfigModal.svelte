@@ -12,7 +12,7 @@
 	import SpinnerModal from '$lib/components/ui/SpinnerModal.svelte';
 	import { DEFAULT_FEATURES } from '$lib/constants/analytics.constants';
 	import { ORBITER_v0_0_8 } from '$lib/constants/version.constants';
-	import { setOrbiterSatelliteConfigs } from '$lib/services/orbiters.services';
+	import { setOrbiterSatelliteConfigs } from '$lib/services/orbiter/orbiters.services';
 	import { authStore } from '$lib/stores/auth.store';
 	import { isBusy, wizardBusy } from '$lib/stores/busy.store';
 	import { i18n } from '$lib/stores/i18n.store';

@@ -4,7 +4,7 @@
 	import type { Orbiter } from '$declarations/mission_control/mission_control.did';
 	import { missionControlIdDerived } from '$lib/derived/mission-control.derived';
 	import { orbiterStore } from '$lib/derived/orbiter.derived';
-	import { loadOrbiters } from '$lib/services/orbiters.services';
+	import { loadOrbiters } from '$lib/services/orbiter/orbiters.services';
 	import { loadOrbiterVersion } from '$lib/services/version.loader.services';
 	import { authStore } from '$lib/stores/auth.store';
 	import type { Option } from '$lib/types/utils';

@@ -2,7 +2,7 @@
 	import { createEventDispatcher } from 'svelte';
 	import ExternalLink from '$lib/components/ui/ExternalLink.svelte';
 	import Popover from '$lib/components/ui/Popover.svelte';
-	import { signIn } from '$lib/services/auth.services';
+	import { signIn } from '$lib/services/auth/auth.services';
 	import { isBusy } from '$lib/stores/busy.store';
 	import { i18n } from '$lib/stores/i18n.store';
 

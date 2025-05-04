@@ -2,7 +2,10 @@
 	import { isNullish } from '@dfinity/utils';
 	import { onDestroy, onMount, type Snippet } from 'svelte';
 	import { missionControlIdDerived } from '$lib/derived/mission-control.derived';
-	import { type WalletWorker, initWalletWorker } from '$lib/services/worker.wallet.services';
+	import {
+		type WalletWorker,
+		initWalletWorker
+	} from '$lib/services/workers/worker.wallet.services';
 
 	interface Props {
 		children?: Snippet;

@@ -3,7 +3,7 @@ import {
 	getMissionControl as getMissionControlApi,
 	initMissionControl as initMissionControlApi
 } from '$lib/api/console.api';
-import { missionControlErrorSignOut } from '$lib/services/auth.services';
+import { missionControlErrorSignOut } from '$lib/services/auth/auth.services';
 import { i18n } from '$lib/stores/i18n.store';
 import { missionControlIdCertifiedStore } from '$lib/stores/mission-control.store';
 import { toasts } from '$lib/stores/toasts.store';

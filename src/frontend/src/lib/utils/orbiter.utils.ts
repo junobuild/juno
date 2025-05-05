@@ -16,7 +16,8 @@ export const buildAnalyticsPeriods = ({
 
 	// We need to cap the periodicity because eachHourOfInterval returns empty if for example the periodicity is a mont, 720h, but there are less hours between the two dates
 	const periodEndHours = addHours(from, periodicity);
-	const cappedPeriodicity = periodEndHours.getTime() > end.getTime() ? differenceInHours(end, from) : periodicity;
+	const cappedPeriodicity =
+		periodEndHours.getTime() > end.getTime() ? differenceInHours(end, from) : periodicity;
 
 	const hours = eachHourOfInterval(
 		{

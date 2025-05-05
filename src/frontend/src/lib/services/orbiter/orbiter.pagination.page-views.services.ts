@@ -5,6 +5,7 @@ import type {
 } from '$declarations/orbiter/orbiter.did';
 import { getAnalyticsPageViews } from '$lib/services/orbiter/_orbiter.services';
 import type {
+	AnalyticsMetrics,
 	AnalyticsPageViews,
 	PageViewsParams,
 	PageViewsPeriod,
@@ -12,7 +13,7 @@ import type {
 } from '$lib/types/orbiter';
 import { batchAnalyticsRequests } from '$lib/utils/orbiter.paginated.utils';
 import { buildAnalyticsPeriods } from '$lib/utils/orbiter.utils';
-import { fromNullable, isNullish, toNullable } from '@dfinity/utils';
+import { fromNullable, toNullable } from '@dfinity/utils';
 
 export const getAnalyticsPageViewsForPeriods = async ({
 	orbiterVersion,
@@ -201,70 +202,76 @@ const aggregateMetrics = ({
 }): Pick<AnalyticsPageViews, 'metrics'> => {
 	const metrics = periodsMetrics
 		.map(({ metrics }) => metrics)
-		.reduce((acc, metrics) => {
-			if (isNullish(acc)) {
-				return metrics;
+		.reduce<AnalyticsMetrics>(
+			(acc, metrics) => {
+				const {
+					total_page_views: totalPageViews,
+					unique_page_views: uniquePageViews,
+					unique_sessions: uniqueSessions,
+					bounce_rate: bounceRate,
+					average_page_views_per_session: averagePageViewsPerSessions
+				} = metrics;
+
+				const {
+					total_page_views: accTotalPageViews,
+					unique_page_views: accUniquePageViews,
+					unique_sessions: accUniqueSessions,
+					bounce_rate: accBounceRate,
+					average_page_views_per_session: accAveragePageViewsPerSessions
+				} = acc;
+
+				const average = ({
+					averageRate,
+					ratePeriod,
+					totalSessions,
+					sessionsPeriod
+				}: {
+					averageRate: number;
+					ratePeriod: number;
+					totalSessions: number;
+					sessionsPeriod: number;
+				}): number => {
+					const total = totalSessions + sessionsPeriod;
+
+					if (total === 0) {
+						return 0;
+					}
+
+					return (ratePeriod * sessionsPeriod + averageRate * totalSessions) / total;
+				};
+
+				return {
+					...metrics,
+					bounce_rate: average({
+						totalSessions: Number(accUniqueSessions),
+						averageRate: accBounceRate,
+						ratePeriod: bounceRate,
+						sessionsPeriod: Number(uniqueSessions)
+					}),
+					average_page_views_per_session: average({
+						totalSessions: Number(accUniqueSessions),
+						averageRate: accAveragePageViewsPerSessions,
+						ratePeriod: averagePageViewsPerSessions,
+						sessionsPeriod: Number(uniqueSessions)
+					}),
+					total_page_views: accTotalPageViews + totalPageViews,
+					unique_page_views: accUniquePageViews + uniquePageViews,
+					unique_sessions: accUniqueSessions + uniqueSessions,
+					daily_total_page_views: {
+						...acc.daily_total_page_views,
+						...metrics.daily_total_page_views
+					}
+				};
+			},
+			{
+				bounce_rate: 0,
+				average_page_views_per_session: 0,
+				total_page_views: 0,
+				unique_page_views: 0n,
+				unique_sessions: 0n,
+				daily_total_page_views: {}
 			}
-
-			const {
-				total_page_views: totalPageViews,
-				unique_page_views: uniquePageViews,
-				unique_sessions: uniqueSessions,
-				bounce_rate: bounceRate,
-				average_page_views_per_session: averagePageViewsPerSessions
-			} = metrics;
-
-			const {
-				total_page_views: accTotalPageViews,
-				unique_page_views: accUniquePageViews,
-				unique_sessions: accUniqueSessions,
-				bounce_rate: accBounceRate,
-				average_page_views_per_session: accAveragePageViewsPerSessions
-			} = acc;
-
-			const average = ({
-				averageRate,
-				ratePeriod,
-				totalSessions,
-				sessionsPeriod
-			}: {
-				averageRate: number;
-				ratePeriod: number;
-				totalSessions: number;
-				sessionsPeriod: number;
-			}): number => {
-				const total = totalSessions + sessionsPeriod;
-
-				if (total === 0) {
-					return 0;
-				}
-
-				return (ratePeriod * sessionsPeriod + averageRate * totalSessions) / total;
-			};
-
-			return {
-				...metrics,
-				bounce_rate: average({
-					totalSessions: Number(accUniqueSessions),
-					averageRate: accBounceRate,
-					ratePeriod: bounceRate,
-					sessionsPeriod: Number(uniqueSessions)
-				}),
-				average_page_views_per_session: average({
-					totalSessions: Number(accUniqueSessions),
-					averageRate: accAveragePageViewsPerSessions,
-					ratePeriod: averagePageViewsPerSessions,
-					sessionsPeriod: Number(uniqueSessions)
-				}),
-				total_page_views: accTotalPageViews + totalPageViews,
-				unique_page_views: accUniquePageViews + uniquePageViews,
-				unique_sessions: accUniqueSessions + uniqueSessions,
-				daily_total_page_views: {
-					...acc.daily_total_page_views,
-					...metrics.daily_total_page_views
-				}
-			};
-		});
+		);
 
 	return { metrics };
 };

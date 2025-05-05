@@ -201,7 +201,7 @@ pub fn analytics_page_views_clients(
         // We primarily use screen width to determine the device type. While this may be less precise than identifying the exact device,
         // it provides a good estimate, especially since web apps are typically built responsively.
         // Additionally, both UA parsing and regex-based approaches have reliability limitations.
-        // Screen size collection was introduced in v0.2.0 — hence the need for fallbacks when unavailable.
+        // Screen size collection was introduced in v0.0.9 — hence the need for fallbacks when unavailable.
 
         if let Some(screen_width) = device.screen_width {
             analytics_devices_with_sizes(&screen_width, &mut total_devices);

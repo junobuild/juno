@@ -401,7 +401,7 @@ describe('Orbiter > Upgrade', () => {
 		});
 	});
 
-	describe('v0.0.8 -> v0.0.9', () => {
+	describe('v0.0.8 -> v0.2.0', () => {
 		let actor: Actor<OrbiterActor0_0_8>;
 
 		const setPageViews0_0_8 = async (): Promise<AnalyticKey[]> => {

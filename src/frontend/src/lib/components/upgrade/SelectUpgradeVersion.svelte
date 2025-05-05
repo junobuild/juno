@@ -54,7 +54,11 @@
 			return;
 		}
 
-		const { canUpgrade } = checkUpgradeVersion({ currentVersion, selectedVersion });
+		// If there is a single newer release then it can be upgraded because all previous versions have been upgraded iteratively.
+		const { canUpgrade } =
+			newerReleases.length === 1
+				? { canUpgrade: true }
+				: checkUpgradeVersion({ currentVersion, selectedVersion });
 
 		if (!canUpgrade) {
 			toasts.error({

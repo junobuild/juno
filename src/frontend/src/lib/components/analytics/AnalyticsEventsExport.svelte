@@ -2,7 +2,7 @@
 	import { isNullish } from '@dfinity/utils';
 	import type { Orbiter } from '$declarations/mission_control/mission_control.did';
 	import { satelliteStore } from '$lib/derived/satellite.derived';
-	import { exportTrackEvents } from '$lib/services/orbiter.export.services';
+	import { exportTrackEvents } from '$lib/services/orbiter/orbiter.export.services';
 	import { analyticsFiltersStore } from '$lib/stores/analytics-filters.store';
 	import { authStore } from '$lib/stores/auth.store';
 	import { busy } from '$lib/stores/busy.store';
@@ -34,7 +34,7 @@
 			...restPeriod
 		};
 
-		await exportTrackEvents({ params });
+		await exportTrackEvents(params);
 
 		busy.stop();
 	};

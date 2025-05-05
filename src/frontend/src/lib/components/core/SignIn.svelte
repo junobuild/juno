@@ -1,7 +1,7 @@
 <script lang="ts">
 	import SignInHelp from '$lib/components/core/SignInHelp.svelte';
 	import IconIc from '$lib/components/icons/IconIC.svelte';
-	import { signIn } from '$lib/services/auth.services';
+	import { signIn } from '$lib/services/auth/auth.services';
 	import { isBusy } from '$lib/stores/busy.store';
 	import { i18n } from '$lib/stores/i18n.store';
 

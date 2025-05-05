@@ -16,7 +16,7 @@ import {
 	createOrbiter,
 	createOrbiterWithConfig,
 	loadOrbiters
-} from '$lib/services/orbiters.services';
+} from '$lib/services/orbiter/orbiters.services';
 import { execute } from '$lib/services/progress.services';
 import {
 	createSatellite,

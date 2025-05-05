@@ -3,7 +3,7 @@
 	import type { AnalyticsWebVitalsPageMetrics } from '$declarations/orbiter/orbiter.did';
 	import Html from '$lib/components/ui/Html.svelte';
 	import { i18n } from '$lib/stores/i18n.store';
-	import { formatCompactNumber } from '$lib/utils/number.utils';
+	import { formatNumber } from '$lib/utils/number.utils';
 
 	interface Props {
 		metrics: AnalyticsWebVitalsPageMetrics;
@@ -71,7 +71,7 @@
 			<tr>
 				<th class="description"> {$i18n.analytics.metric} </th>
 				<th class="score"> {$i18n.analytics.score} </th>
-				<th> {$i18n.analytics.rating} </th>
+				<th class="rating"> {$i18n.analytics.rating} </th>
 			</tr>
 		</thead>
 
@@ -79,40 +79,40 @@
 			{#if nonNullish(ttfbRating)}
 				<tr>
 					<td><Html text={$i18n.analytics.ttfb} /></td>
-					<td class="score">{formatCompactNumber(fromNullable(ttfb) ?? 0)}</td>
-					<td>{$i18n.analytics[ttfbRating]}</td>
+					<td class="score">{formatNumber(fromNullable(ttfb) ?? 0)}</td>
+					<td class="rating">{$i18n.analytics[ttfbRating]}</td>
 				</tr>
 			{/if}
 
 			{#if nonNullish(fcpRating)}
 				<tr>
 					<td><Html text={$i18n.analytics.fcp} /></td>
-					<td class="score">{formatCompactNumber(fromNullable(fcp) ?? 0)}</td>
-					<td>{$i18n.analytics[fcpRating]}</td>
+					<td class="score">{formatNumber(fromNullable(fcp) ?? 0)}</td>
+					<td class="rating">{$i18n.analytics[fcpRating]}</td>
 				</tr>
 			{/if}
 
 			{#if nonNullish(lcpRating)}
 				<tr>
 					<td><Html text={$i18n.analytics.lcp} /></td>
-					<td class="score">{formatCompactNumber(fromNullable(lcp) ?? 0)}</td>
-					<td>{$i18n.analytics[lcpRating]}</td>
+					<td class="score">{formatNumber(fromNullable(lcp) ?? 0)}</td>
+					<td class="rating">{$i18n.analytics[lcpRating]}</td>
 				</tr>
 			{/if}
 
 			{#if nonNullish(clsRating)}
 				<tr>
 					<td><Html text={$i18n.analytics.cls} /></td>
-					<td class="score">{formatCompactNumber(fromNullable(cls) ?? 0)}</td>
-					<td>{$i18n.analytics[clsRating]}</td>
+					<td class="score">{formatNumber(fromNullable(cls) ?? 0)}</td>
+					<td class="rating">{$i18n.analytics[clsRating]}</td>
 				</tr>
 			{/if}
 
 			{#if nonNullish(inpRating)}
 				<tr>
 					<td><Html text={$i18n.analytics.inp} /></td>
-					<td class="score">{formatCompactNumber(fromNullable(inp) ?? 0)}</td>
-					<td>{$i18n.analytics[inpRating]}</td>
+					<td class="score">{formatNumber(fromNullable(inp) ?? 0)}</td>
+					<td class="rating">{$i18n.analytics[inpRating]}</td>
 				</tr>
 			{/if}
 		</tbody>
@@ -135,6 +135,14 @@
 		@include media.min-width(medium) {
 			display: table-cell;
 			vertical-align: middle;
+		}
+	}
+
+	.rating {
+		text-align: right;
+
+		@include media.min-width(medium) {
+			width: 25%;
 		}
 	}
 </style>

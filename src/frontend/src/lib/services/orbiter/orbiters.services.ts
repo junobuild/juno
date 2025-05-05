@@ -1,18 +1,11 @@
 import type { Orbiter } from '$declarations/mission_control/mission_control.did';
 import type {
-	AnalyticsTrackEvents,
-	AnalyticsWebVitalsPerformanceMetrics,
 	OrbiterSatelliteConfig,
 	OrbiterSatelliteFeatures,
 	OrbiterSatelliteConfig as SatelliteConfig
 } from '$declarations/orbiter/orbiter.did';
 import { getMissionControlActor } from '$lib/api/actors/actor.juno.api';
 import {
-	getAnalyticsClientsPageViews,
-	getAnalyticsMetricsPageViews,
-	getAnalyticsTop10PageViews,
-	getPerformanceMetricsAnalyticsWebVitals,
-	getTrackEventsAnalytics,
 	listOrbiterSatelliteConfigs as listOrbiterSatelliteConfigsApi,
 	setOrbiterSatelliteConfigs as setOrbiterSatelliteConfigsApi
 } from '$lib/api/orbiter.api';
@@ -21,30 +14,21 @@ import {
 	setOrbiterSatelliteConfigs007 as setOrbiterSatelliteConfigsDeprecatedApi
 } from '$lib/api/orbiter.deprecated.api';
 import { DEFAULT_FEATURES } from '$lib/constants/analytics.constants';
-import { ORBITER_v0_0_4, ORBITER_v0_0_5, ORBITER_v0_0_8 } from '$lib/constants/version.constants';
+import { ORBITER_v0_0_8 } from '$lib/constants/version.constants';
 import { orbiterConfigs } from '$lib/derived/orbiter.derived';
 import { loadDataStore } from '$lib/services/loader.services';
-import {
-	getDeprecatedAnalyticsClientsPageViews,
-	getDeprecatedAnalyticsPageViews,
-	getDeprecatedAnalyticsTrackEvents
-} from '$lib/services/orbiters.deprecated.services';
 import { authStore } from '$lib/stores/auth.store';
 import { i18n } from '$lib/stores/i18n.store';
 import { orbitersConfigsStore } from '$lib/stores/orbiter-configs.store';
 import { orbitersUncertifiedStore } from '$lib/stores/orbiter.store';
 import { toasts } from '$lib/stores/toasts.store';
 import type { OptionIdentity } from '$lib/types/itentity';
-import type {
-	AnalyticsPageViews,
-	OrbiterSatelliteConfigEntry,
-	PageViewsParams
-} from '$lib/types/orbiter';
+import type { OrbiterSatelliteConfigEntry } from '$lib/types/orbiter';
 import type { SatelliteIdText } from '$lib/types/satellite';
 import type { Option } from '$lib/types/utils';
 import type { Identity } from '@dfinity/agent';
 import { Principal } from '@dfinity/principal';
-import { assertNonNullish, fromNullable, isNullish, nonNullish, toNullable } from '@dfinity/utils';
+import { assertNonNullish, isNullish, nonNullish, toNullable } from '@dfinity/utils';
 import { compare } from 'semver';
 import { get } from 'svelte/store';
 
@@ -167,86 +151,6 @@ export const loadOrbiterConfigs = async ({
 
 		return { result: 'error' };
 	}
-};
-
-export const getAnalyticsPageViews = async ({
-	orbiterVersion,
-	params
-}: {
-	params: PageViewsParams;
-	orbiterVersion: string;
-}): Promise<AnalyticsPageViews> => {
-	if (compare(orbiterVersion, ORBITER_v0_0_4) >= 0) {
-		const getClients =
-			compare(orbiterVersion, ORBITER_v0_0_8) > 0
-				? getAnalyticsClientsPageViews
-				: getDeprecatedAnalyticsClientsPageViews;
-
-		const [metrics, top10, clients] = await Promise.all([
-			getAnalyticsMetricsPageViews(params),
-			getAnalyticsTop10PageViews(params),
-			getClients(params)
-		]);
-
-		const { daily_total_page_views, ...rest } = metrics;
-
-		const { operating_systems, ...restClients } = clients;
-
-		return {
-			metrics: {
-				...rest,
-				daily_total_page_views: daily_total_page_views.reduce(
-					(acc, [{ day, year, month }, value]) => {
-						const date = new Date(year, month - 1, day);
-						const key = date.getTime();
-
-						return {
-							...acc,
-							[key]: value
-						};
-					},
-					{}
-				)
-			},
-			top10,
-			clients: {
-				...restClients,
-				operating_systems: fromNullable(operating_systems)
-			}
-		};
-	}
-
-	// TODO: support for deprecated version of the Orbiter where the analytics are calculated in the frontend. To be removed.
-	return getDeprecatedAnalyticsPageViews(params);
-};
-
-export const getAnalyticsTrackEvents = async ({
-	orbiterVersion,
-	params
-}: {
-	params: PageViewsParams;
-	orbiterVersion: string;
-}): Promise<AnalyticsTrackEvents> => {
-	if (compare(orbiterVersion, ORBITER_v0_0_5) >= 0) {
-		return await getTrackEventsAnalytics(params);
-	}
-
-	// TODO: support for deprecated version of the Orbiter where the analytics are calculated in the frontend. To be removed.
-	return await getDeprecatedAnalyticsTrackEvents(params);
-};
-
-export const getAnalyticsPerformanceMetrics = async ({
-	orbiterVersion,
-	params
-}: {
-	params: PageViewsParams;
-	orbiterVersion: string;
-}): Promise<AnalyticsWebVitalsPerformanceMetrics | undefined> => {
-	if (compare(orbiterVersion, ORBITER_v0_0_8) >= 0) {
-		return await getPerformanceMetricsAnalyticsWebVitals(params);
-	}
-
-	return undefined;
 };
 
 // We originally migrated the features to be all enabled but, in v0.1.0 decided to make the performance metrics disabled by default.

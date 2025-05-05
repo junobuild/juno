@@ -22,7 +22,7 @@
 	import { missionControlIdDerived } from '$lib/derived/mission-control.derived';
 	import { orbiterStore } from '$lib/derived/orbiter.derived';
 	import { missionControlVersion } from '$lib/derived/version.derived';
-	import { loadOrbiters } from '$lib/services/orbiters.services';
+	import { loadOrbiters } from '$lib/services/orbiter/orbiters.services';
 	import { i18n } from '$lib/stores/i18n.store';
 	import type { CanisterData } from '$lib/types/canister';
 

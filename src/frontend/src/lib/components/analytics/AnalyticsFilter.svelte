@@ -1,8 +1,6 @@
 <script lang="ts">
 	import { nonNullish } from '@dfinity/utils';
 	import { format } from 'date-fns';
-	import { slide } from 'svelte/transition';
-	import { afterNavigate } from '$app/navigation';
 	import AnalyticsPeriodicity from '$lib/components/analytics/AnalyticsPeriodicity.svelte';
 	import AnalyticsSatellitesPicker from '$lib/components/analytics/AnalyticsSatellitesPicker.svelte';
 	import AnalyticsToolbar from '$lib/components/analytics/AnalyticsToolbar.svelte';
@@ -24,7 +22,6 @@
 		nonNullish($analyticsFiltersStore.to) ? format($analyticsFiltersStore.to, 'yyyy-MM-dd') : ''
 	);
 
-	let dirty = $state(false);
 	let loading = $state(false);
 
 	const onChange = () => {
@@ -32,17 +29,11 @@
 			from: nonNullish(from) && from !== '' ? new Date(from) : undefined,
 			to: nonNullish(to) && to !== '' ? new Date(to) : undefined
 		});
-
-		dirty = true;
 	};
 
 	const onPeriodicityChange = (periodicity: AnalyticsPeriodicityType) => {
 		analyticsFiltersStore.setPeriodicity(periodicity);
-
-		dirty = true;
 	};
-
-	afterNavigate(() => (dirty = true));
 
 	const applyFilters = async () => {
 		loading = true;
@@ -54,8 +45,6 @@
 		if (result === 'error') {
 			return;
 		}
-
-		dirty = false;
 	};
 </script>
 
@@ -110,13 +99,11 @@
 	{/snippet}
 </AnalyticsToolbar>
 
-{#if dirty}
-	<div class="toolbar" class:loading transition:slide>
-		{#if !loading}
-			<button type="button" onclick={applyFilters}>{$i18n.core.apply}</button>
-		{/if}
-	</div>
-{/if}
+<div class="toolbar" class:loading>
+	{#if !loading}
+		<button type="button" onclick={applyFilters}>{$i18n.core.apply}</button>
+	{/if}
+</div>
 
 <style lang="scss">
 	.toolbar:not(.loading) {

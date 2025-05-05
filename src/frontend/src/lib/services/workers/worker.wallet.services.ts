@@ -3,7 +3,7 @@ import {
 	onSyncWallet,
 	onWalletCleanUp,
 	onWalletError
-} from '$lib/services/wallet.loader.services';
+} from '$lib/services/wallet/wallet.loader.services';
 import type { MissionControlId } from '$lib/types/mission-control';
 import type {
 	PostMessage,

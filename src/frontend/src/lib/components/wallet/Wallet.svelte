@@ -13,7 +13,7 @@
 	import { balance, balanceNotLoaded } from '$lib/derived/balance.derived';
 	import { transactions } from '$lib/derived/transactions.derived';
 	import { missionControlVersion } from '$lib/derived/version.derived';
-	import { loadNextTransactions } from '$lib/services/wallet.services';
+	import { loadNextTransactions } from '$lib/services/wallet/wallet.services';
 	import { authStore } from '$lib/stores/auth.store';
 	import { i18n } from '$lib/stores/i18n.store';
 	import { toasts } from '$lib/stores/toasts.store';

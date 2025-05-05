@@ -153,7 +153,7 @@ export const loadOrbiterConfigs = async ({
 	}
 };
 
-// We originally migrated the features to be all enabled but, in v0.1.0 decided to make the performance metrics disabled by default.
+// We originally migrated the features to be all enabled but, in v0.2.0 decided to make the performance metrics disabled by default.
 const deprecatedEnabledFeatures = {
 	performance_metrics: true,
 	track_events: true,

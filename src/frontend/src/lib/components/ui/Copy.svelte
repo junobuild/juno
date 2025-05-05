@@ -20,7 +20,7 @@
 	);
 
 	const copyToClipboard = async ($event: UIEvent) => {
-		$event.stopPropagation();
+		$event.preventDefault();
 
 		await navigator.clipboard.writeText(value);
 

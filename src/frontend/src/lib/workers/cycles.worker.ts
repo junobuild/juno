@@ -108,8 +108,7 @@ const syncIcStatusCanisters = async ({
 	trillionRatio: bigint;
 }) => {
 	const syncStatusAndMemoryPerCanister = async ({
-		canisterId,
-		segment
+		canisterId
 	}: CanisterSegment): Promise<CanisterSyncData> => {
 		try {
 			const canisterInfo = await canisterStatus({ canisterId, identity });

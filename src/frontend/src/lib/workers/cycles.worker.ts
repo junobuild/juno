@@ -1,8 +1,5 @@
-import type { MemorySize } from '$declarations/satellite/satellite.did';
 import { icpXdrConversionRate } from '$lib/api/cmc.api';
 import { canisterStatus } from '$lib/api/ic.api';
-import { memorySize as memorySizeOrbiter } from '$lib/api/orbiter.worker.api';
-import { memorySize as memorySizeSatellite } from '$lib/api/satellites.worker.api';
 import {
 	CYCLES_WARNING,
 	MEMORY_HEAP_WARNING,
@@ -19,7 +16,7 @@ import {
 	loadIdentity
 } from '$lib/utils/worker.utils';
 import type { Identity } from '@dfinity/agent';
-import { isNullish, nonNullish } from '@dfinity/utils';
+import { isNullish } from '@dfinity/utils';
 import { set } from 'idb-keyval';
 
 export const onCyclesMessage = async ({ data: dataMsg }: MessageEvent<PostMessageRequest>) => {
@@ -115,32 +112,12 @@ const syncIcStatusCanisters = async ({
 		segment
 	}: CanisterSegment): Promise<CanisterSyncData> => {
 		try {
-			const [canisterResult, memorySizeResult] = await Promise.allSettled([
-				canisterStatus({ canisterId, identity }),
-				...(segment === 'satellite'
-					? [memorySizeSatellite({ satelliteId: canisterId, identity })]
-					: segment === 'orbiter'
-						? [memorySizeOrbiter({ orbiterId: canisterId, identity })]
-						: [])
-			]);
-
-			if (canisterResult.status === 'rejected') {
-				throw canisterResult.reason;
-			}
-
-			const { value: canisterInfo } = canisterResult;
-
-			// We silence those error because we managed the canister status.
-			// Satellites and orbiters which were not migrated for example will throw an error because the end point won't be exposed.
-			if (memorySizeResult?.status === 'rejected') {
-				console.error(`Error fetching memory size information: `, memorySizeResult.reason);
-			}
+			const canisterInfo = await canisterStatus({ canisterId, identity });
 
 			const canister = mapCanisterSyncData({
 				canisterInfo,
 				trillionRatio,
-				canisterId: canisterInfo.canisterId,
-				memory: memorySizeResult?.status === 'fulfilled' ? memorySizeResult.value : undefined
+				canisterId: canisterInfo.canisterId
 			});
 
 			// We emit the canister data this way the UI can render asynchronously render the information without waiting for all canisters status to be fetched.
@@ -171,13 +148,11 @@ const syncIcStatusCanisters = async ({
 const mapCanisterSyncData = ({
 	canisterId,
 	trillionRatio,
-	canisterInfo: { canisterId: _, cycles, ...rest },
-	memory
+	canisterInfo: { canisterId: _, memoryMetrics, cycles, ...rest }
 }: {
 	canisterId: string;
 	trillionRatio: bigint;
 	canisterInfo: CanisterInfo;
-	memory: MemorySize | undefined;
 }): CanisterSyncData => ({
 	id: canisterId,
 	sync: 'synced',
@@ -185,12 +160,12 @@ const mapCanisterSyncData = ({
 		icp: cyclesToICP({ cycles, trillionRatio }),
 		warning: {
 			cycles: cycles < CYCLES_WARNING,
-			heap: (memory?.heap ?? 0n) >= MEMORY_HEAP_WARNING
+			heap: (memoryMetrics.wasmMemorySize ?? 0n) >= MEMORY_HEAP_WARNING
 		},
 		canister: {
 			cycles,
+			memoryMetrics,
 			...rest
-		},
-		...(nonNullish(memory) && { memory })
+		}
 	}
 });

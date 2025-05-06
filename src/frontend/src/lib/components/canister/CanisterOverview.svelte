@@ -26,7 +26,7 @@
 			{#snippet label()}
 				{$i18n.core.status}
 			{/snippet}
-			<Canister {canisterId} bind:data bind:sync />
+			<Canister {canisterId} bind:data bind:sync displayMemoryTotal={false} />
 		</Value>
 	</div>
 
@@ -48,7 +48,7 @@
 
 <style lang="scss">
 	.status {
-		min-height: calc(100px + var(--padding-2_5x));
+		min-height: calc(78px + var(--padding-2_5x));
 		min-width: 170px;
 	}
 </style>

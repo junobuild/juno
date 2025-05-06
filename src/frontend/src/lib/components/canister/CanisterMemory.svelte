@@ -26,6 +26,8 @@
 
 	let warning = $derived(canisterData?.warning?.heap === true);
 
+	let memorySizeInTotal = $derived(canister?.memorySize);
+
 	let memoryMetrics = $derived(canister?.memoryMetrics);
 	let wasmMemorySize = $derived(memoryMetrics?.wasmMemorySize);
 	let stableMemorySize = $derived(memoryMetrics?.stableMemorySize);
@@ -45,6 +47,11 @@
 		{#snippet label()}
 			{$i18n.canisters.memory}
 		{/snippet}
+
+		<p class="total">
+			{nonNullish(memorySizeInTotal) ? formatBytes(Number(memorySizeInTotal)) : '???'}
+			<small>{$i18n.canisters.in_total}</small>
+		</p>
 
 		<p>
 			{nonNullish(wasmMemorySize) ? formatBytes(Number(wasmMemorySize)) : '???'}
@@ -96,12 +103,20 @@
 
 <style lang="scss">
 	.memory {
-		min-height: calc(104px + var(--padding-2_5x));
+		min-height: calc(174px + var(--padding-2_5x));
 	}
 
 	p {
 		&:not(:last-of-type) {
 			margin: 0 0 var(--padding-0_25x);
 		}
+	}
+
+	.total {
+		padding: 0 0 var(--padding-2x);
+	}
+
+	p:not(.total) {
+		font-size: var(--font-size-small);
 	}
 </style>

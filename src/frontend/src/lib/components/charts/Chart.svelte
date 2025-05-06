@@ -10,6 +10,7 @@
 	interface Props {
 		chartsData: ChartsData[];
 		axisWithText?: boolean;
+		tickSpacingInDays?: number;
 		padding?:
 			| {
 					top?: number;
@@ -20,7 +21,7 @@
 			| undefined;
 	}
 
-	let { chartsData, axisWithText = true, padding }: Props = $props();
+	let { chartsData, axisWithText = true, padding, tickSpacingInDays = 3 }: Props = $props();
 
 	let ticks: string[] = $derived(Object.values(chartsData).map(({ x: a }) => a));
 
@@ -28,7 +29,7 @@
 		const date = new Date(parseInt(`${d}`));
 		const day = date.getDate();
 
-		return day % 3 === 0 ? formatToDay(date) : '';
+		return day % tickSpacingInDays === 0 ? formatToDay(date) : '';
 	};
 </script>
 

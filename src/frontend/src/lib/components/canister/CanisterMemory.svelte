@@ -11,6 +11,7 @@
 		Segment
 	} from '$lib/types/canister';
 	import { formatBytes } from '$lib/utils/number.utils.js';
+	import CanisterMemoryChart from '$lib/components/canister/CanisterMemoryChart.svelte';
 
 	interface Props {
 		canisterId: Principal;
@@ -28,6 +29,7 @@
 	let memorySizeInTotal = $derived(canister?.memorySize);
 
 	let memoryMetrics = $derived(canister?.memoryMetrics);
+
 	let wasmMemorySize = $derived(memoryMetrics?.wasmMemorySize);
 	let stableMemorySize = $derived(memoryMetrics?.stableMemorySize);
 	let globalMemorySize = $derived(memoryMetrics?.globalMemorySize);
@@ -87,13 +89,13 @@
 		{/if}
 
 		<p>
-			{nonNullish(wasmBinarySize) ? formatBytes(Number(wasmBinarySize)) : '???'}
-			<small>{$i18n.canisters.of_code}</small>
+			{nonNullish(customSectionsSize) ? formatBytes(Number(customSectionsSize)) : '???'}
+			<small>{$i18n.canisters.of_custom_sections}</small>
 		</p>
 
 		<p>
-			{nonNullish(customSectionsSize) ? formatBytes(Number(customSectionsSize)) : '???'}
-			<small>{$i18n.canisters.of_custom_sections}</small>
+			{nonNullish(wasmBinarySize) ? formatBytes(Number(wasmBinarySize)) : '???'}
+			<small>{$i18n.canisters.of_code}</small>
 		</p>
 
 		{#if (canisterHistorySize ?? 0n) > ONE_KB}
@@ -102,6 +104,8 @@
 				<small>{$i18n.canisters.in_history}</small>
 			</p>
 		{/if}
+
+		<CanisterMemoryChart {canister} {segment} />
 	</CanisterValue>
 </div>
 

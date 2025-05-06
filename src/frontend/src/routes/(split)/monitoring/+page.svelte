@@ -24,6 +24,7 @@
 		type TabsData
 	} from '$lib/types/tabs.context';
 	import { initTabId } from '$lib/utils/tabs.utils';
+	import MissionControlVersion from '$lib/components/mission-control/MissionControlVersion.svelte';
 
 	const tabDashboard = {
 		id: Symbol('1'),
@@ -70,19 +71,21 @@
 		<WalletLoader>
 			<SatellitesLoader>
 				<OrbitersLoader>
-					<MissionControlGuard>
-						<CanistersLoader monitoring satellites={$sortedSatellites}>
-							{#if nonNullish($missionControlIdDerived)}
-								<MissionControlDataLoader missionControlId={$missionControlIdDerived} reload>
-									{#if $store.tabId === $store.tabs[0].id}
-										<MonitoringDashboard missionControlId={$missionControlIdDerived} />
-									{:else if $store.tabId === $store.tabs[1].id && $hasMissionControlSettings}
-										<MonitoringSettings missionControlId={$missionControlIdDerived} />
-									{/if}
-								</MissionControlDataLoader>
-							{/if}
-						</CanistersLoader>
-					</MissionControlGuard>
+					<MissionControlVersion>
+						<MissionControlGuard>
+							<CanistersLoader monitoring satellites={$sortedSatellites}>
+								{#if nonNullish($missionControlIdDerived)}
+									<MissionControlDataLoader missionControlId={$missionControlIdDerived} reload>
+										{#if $store.tabId === $store.tabs[0].id}
+											<MonitoringDashboard missionControlId={$missionControlIdDerived} />
+										{:else if $store.tabId === $store.tabs[1].id && $hasMissionControlSettings}
+											<MonitoringSettings missionControlId={$missionControlIdDerived} />
+										{/if}
+									</MissionControlDataLoader>
+								{/if}
+							</CanistersLoader>
+						</MissionControlGuard>
+					</MissionControlVersion>
 				</OrbitersLoader>
 			</SatellitesLoader>
 		</WalletLoader>

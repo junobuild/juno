@@ -30,9 +30,9 @@
 		</Value>
 	</div>
 
-	<CanisterQueries canister={data?.canister} {sync} />
-
 	<CanisterDailyConsumption canister={data?.canister} {sync} />
+
+	<CanisterQueries canister={data?.canister} {sync} />
 </div>
 
 <div>

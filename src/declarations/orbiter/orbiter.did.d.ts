@@ -101,10 +101,6 @@ export interface HttpResponse {
 	upgrade: [] | [boolean];
 	status_code: number;
 }
-export interface MemorySize {
-	stable: bigint;
-	heap: bigint;
-}
 export type NavigationType =
 	| { Navigate: null }
 	| { Restore: null }
@@ -249,7 +245,6 @@ export interface _SERVICE {
 	http_request_update: ActorMethod<[HttpRequest], HttpResponse>;
 	list_controllers: ActorMethod<[], Array<[Principal, Controller]>>;
 	list_satellite_configs: ActorMethod<[], Array<[Principal, OrbiterSatelliteConfig]>>;
-	memory_size: ActorMethod<[], MemorySize>;
 	set_controllers: ActorMethod<[SetControllersArgs], Array<[Principal, Controller]>>;
 	set_page_view: ActorMethod<[AnalyticKey, SetPageView], Result>;
 	set_page_views: ActorMethod<[Array<[AnalyticKey, SetPageView]>], Result_1>;

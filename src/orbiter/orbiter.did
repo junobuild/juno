@@ -81,7 +81,6 @@ type HttpResponse = record {
   upgrade : opt bool;
   status_code : nat16;
 };
-type MemorySize = record { stable : nat64; heap : nat64 };
 type NavigationType = variant {
   Navigate;
   Restore;
@@ -233,7 +232,6 @@ service : () -> {
   list_satellite_configs : () -> (
       vec record { principal; OrbiterSatelliteConfig },
     ) query;
-  memory_size : () -> (MemorySize) query;
   set_controllers : (SetControllersArgs) -> (
       vec record { principal; Controller },
     );

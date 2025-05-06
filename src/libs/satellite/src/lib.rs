@@ -31,7 +31,7 @@ use junobuild_shared::types::core::DomainName;
 use junobuild_shared::types::core::{Blob, Key};
 use junobuild_shared::types::domain::CustomDomains;
 use junobuild_shared::types::interface::{
-    DeleteControllersArgs, DepositCyclesArgs, MemorySize, SetControllersArgs,
+    DeleteControllersArgs, DepositCyclesArgs, SetControllersArgs,
 };
 use junobuild_shared::types::list::ListParams;
 use junobuild_shared::types::list::ListResults;
@@ -381,12 +381,6 @@ pub async fn deposit_cycles(args: DepositCyclesArgs) {
         .unwrap_or_else(|e| trap(&e))
 }
 
-#[doc(hidden)]
-#[query(guard = "caller_is_controller")]
-pub fn memory_size() -> MemorySize {
-    junobuild_shared::canister::memory_size()
-}
-
 /// Include the stock Juno satellite features into your Juno application.
 ///
 /// The `include_satellite!` macro allows you to easily import and use all the essential features and
@@ -412,7 +406,7 @@ macro_rules! include_satellite {
             del_rule, deposit_cycles, get_asset, get_auth_config, get_config, get_db_config,
             get_doc, get_many_assets, get_many_docs, get_storage_config, http_request,
             http_request_streaming_callback, init, init_asset_upload, list_assets,
-            list_controllers, list_custom_domains, list_docs, list_rules, memory_size,
+            list_controllers, list_custom_domains, list_docs, list_rules,
             post_upgrade, pre_upgrade, set_auth_config, set_controllers, set_custom_domain,
             set_db_config, set_doc, set_many_docs, set_rule, set_storage_config,
             upload_asset_chunk,

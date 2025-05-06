@@ -143,10 +143,6 @@ export interface ListResults_1 {
 	items_length: bigint;
 }
 export type Memory = { Heap: null } | { Stable: null };
-export interface MemorySize {
-	stable: bigint;
-	heap: bigint;
-}
 export type Permission =
 	| { Controllers: null }
 	| { Private: null }
@@ -278,7 +274,6 @@ export interface _SERVICE {
 	list_custom_domains: ActorMethod<[], Array<[string, CustomDomain]>>;
 	list_docs: ActorMethod<[string, ListParams], ListResults_1>;
 	list_rules: ActorMethod<[CollectionType], Array<[string, Rule]>>;
-	memory_size: ActorMethod<[], MemorySize>;
 	set_auth_config: ActorMethod<[AuthenticationConfig], undefined>;
 	set_controllers: ActorMethod<[SetControllersArgs], Array<[Principal, Controller]>>;
 	set_custom_domain: ActorMethod<[string, [] | [string]], undefined>;

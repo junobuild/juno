@@ -37,7 +37,6 @@
 
 <div>
 	<CanisterMemory
-		{canisterId}
 		canister={data?.canister}
 		canisterData={data}
 		{sync}

@@ -1,5 +1,4 @@
 <script lang="ts">
-	import type { Principal } from '@dfinity/principal';
 	import { nonNullish } from '@dfinity/utils';
 	import CanisterMemoryChart from '$lib/components/canister/CanisterMemoryChart.svelte';
 	import CanisterValue from '$lib/components/canister/CanisterValue.svelte';
@@ -14,7 +13,6 @@
 	import { formatBytes } from '$lib/utils/number.utils.js';
 
 	interface Props {
-		canisterId: Principal;
 		canister: CanisterDataInfo | undefined;
 		canisterData: CanisterData | undefined;
 		sync: CanisterSyncStatus | undefined;
@@ -22,7 +20,7 @@
 		segment: Segment;
 	}
 
-	let { canisterId, canister, canisterData, sync, heapWarningLabel, segment }: Props = $props();
+	let { canister, canisterData, sync, heapWarningLabel, segment }: Props = $props();
 
 	let warning = $derived(canisterData?.warning?.heap === true);
 

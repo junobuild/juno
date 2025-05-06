@@ -12,9 +12,9 @@
 
 </div>
 
-[Juno] is an open-source, reimagined serverless platform built for modern developers who want more control, strong security, and zero operational complexity.
+[Juno] is an open-source, reimagined serverless platform built for modern developers who want strong security, and zero operational complexity.
 
-It offers a familiar cloud-like experience — powered by decentralized infrastructure — by running each project in its own unstoppable WASM container, fully controlled by you.
+It offers a familiar cloud-like experience — powered by decentralized infrastructure — by running each project in its own unstoppable WASM container, exclusively controlled by you.
 
 - 🔑 Authentication [[Docs](https://juno.build/docs/build/authentication)]
 - 📦 Datastore [[Docs](https://juno.build/docs/build/datastore)]

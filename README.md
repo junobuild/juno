@@ -12,7 +12,9 @@
 
 </div>
 
-[Juno] is an open-source, next-gen serverless platform that helps developers build and ship secure projects at scale.
+[Juno] is an open-source, reimagined serverless platform built for modern developers who want more control, strong security, and zero operational complexity.
+
+It offers a familiar cloud-like experience — powered by decentralized infrastructure — by running each project in its own unstoppable WASM container, fully controlled by you.
 
 - 🔑 Authentication [[Docs](https://juno.build/docs/build/authentication)]
 - 📦 Datastore [[Docs](https://juno.build/docs/build/datastore)]
@@ -28,16 +30,6 @@
 ![A screenshot of the Juno Console](./src/frontend/static/images/console_screenshot.png)
 
 <br />
-
-## 🚀 Introduction
-
-Juno is a reimagined serverless platform built for modern developers who want more control, strong security, and zero operational complexity.
-
-It offers a familiar cloud-like experience—without the DevOps overhead—powered by decentralized infrastructure.
-
-With built-in support for authentication, storage, hosting, serverless functions, and even on-chain logic, Juno simplifies the entire backend. Everything runs in one container, giving developers full ownership and security by design.
-
-In short, Juno is what Firebase would look like if it were built for the future. ⚡️
 
 ## 💁‍♂️️ Links & Resources
 

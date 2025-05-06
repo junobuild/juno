@@ -5,42 +5,100 @@
 	import SnapshotsMemory from '$lib/components/snapshot/SnapshotsMemory.svelte';
 	import InlineWarning from '$lib/components/ui/InlineWarning.svelte';
 	import { i18n } from '$lib/stores/i18n.store';
-	import type { CanisterData, CanisterSyncStatus } from '$lib/types/canister';
+	import type {
+		CanisterData,
+		CanisterDataInfo,
+		CanisterSyncStatus,
+		Segment
+	} from '$lib/types/canister';
 	import { formatBytes } from '$lib/utils/number.utils.js';
 
 	interface Props {
 		canisterId: Principal;
+		canister: CanisterDataInfo | undefined;
 		canisterData: CanisterData | undefined;
 		sync: CanisterSyncStatus | undefined;
 		heapWarningLabel?: string | undefined;
+		segment: Segment;
 	}
 
-	let { canisterId, canisterData, sync, heapWarningLabel }: Props = $props();
-
-	let memory = $derived(canisterData?.memory);
+	let { canisterId, canister, canisterData, sync, heapWarningLabel, segment }: Props = $props();
 
 	let warning = $derived(canisterData?.warning?.heap === true);
+
+	let memoryMetrics = $derived(canister?.memoryMetrics);
+	let wasmMemorySize = $derived(memoryMetrics?.wasmMemorySize);
+	let stableMemorySize = $derived(memoryMetrics?.stableMemorySize);
+	let globalMemorySize = $derived(memoryMetrics?.globalMemorySize);
+	let wasmBinarySize = $derived(memoryMetrics?.wasmBinarySize);
+	let wasmChunkStoreSize = $derived(memoryMetrics?.wasmChunkStoreSize);
+	let customSectionsSize = $derived(memoryMetrics?.customSectionsSize);
+	let canisterHistorySize = $derived(memoryMetrics?.canisterHistorySize);
+
+	const ONE_MB = 1000 * 1000;
+	const ONE_KB = 1000;
+	$inspect(memoryMetrics);
 </script>
 
-<CanisterValue {sync} rows={2}>
-	{#snippet label()}
-		{$i18n.canisters.memory}
-	{/snippet}
-	<p>
-		{nonNullish(memory) ? formatBytes(Number(memory.heap)) : '???'}
-		<small
-			>{$i18n.canisters.on_heap}
-			{#if warning}<InlineWarning title={heapWarningLabel} />{/if}</small
-		>
-	</p>
-	<p>
-		{nonNullish(memory) ? formatBytes(Number(memory.stable)) : '???'}
-		<small>{$i18n.canisters.on_stable}</small>
-	</p>
-	<SnapshotsMemory {canisterId} />
-</CanisterValue>
+<div class="memory">
+	<CanisterValue {sync} rows={2}>
+		{#snippet label()}
+			{$i18n.canisters.memory}
+		{/snippet}
+
+		<p>
+			{nonNullish(wasmMemorySize) ? formatBytes(Number(wasmMemorySize)) : '???'}
+			<small
+				>{$i18n.canisters.on_heap}
+				{#if warning}<InlineWarning title={heapWarningLabel} />{/if}</small
+			>
+		</p>
+
+		<p>
+			{nonNullish(stableMemorySize) ? formatBytes(Number(stableMemorySize)) : '???'}
+			<small>{$i18n.canisters.on_stable}</small>
+		</p>
+
+		{#if (globalMemorySize ?? 0n) > ONE_MB}
+			<p>
+				{nonNullish(globalMemorySize) ? formatBytes(Number(globalMemorySize)) : '???'}
+				<small>{$i18n.canisters.in_global}</small>
+			</p>
+		{/if}
+
+		{#if ['mission_control'].includes(segment) && (wasmChunkStoreSize ?? 0n) > 0n}
+			<p>
+				{nonNullish(wasmChunkStoreSize) ? formatBytes(Number(wasmChunkStoreSize)) : '???'}
+				<small>{$i18n.canisters.in_chunks}</small>
+			</p>
+		{/if}
+
+		<SnapshotsMemory {canisterId} />
+
+		<p>
+			{nonNullish(wasmBinarySize) ? formatBytes(Number(wasmBinarySize)) : '???'}
+			<small>{$i18n.canisters.of_code}</small>
+		</p>
+
+		<p>
+			{nonNullish(customSectionsSize) ? formatBytes(Number(customSectionsSize)) : '???'}
+			<small>{$i18n.canisters.of_custom_sections}</small>
+		</p>
+
+		{#if (canisterHistorySize ?? 0n) > ONE_KB}
+			<p>
+				{nonNullish(canisterHistorySize) ? formatBytes(Number(canisterHistorySize)) : '???'}
+				<small>{$i18n.canisters.in_history}</small>
+			</p>
+		{/if}
+	</CanisterValue>
+</div>
 
 <style lang="scss">
+	.memory {
+		min-height: calc(104px + var(--padding-2_5x));
+	}
+
 	p {
 		&:not(:last-of-type) {
 			margin: 0 0 var(--padding-0_25x);

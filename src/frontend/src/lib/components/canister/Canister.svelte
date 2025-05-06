@@ -15,6 +15,7 @@
 	interface Props {
 		canisterId: Principal;
 		display?: boolean;
+		displayMemoryTotal?: boolean;
 		row?: boolean;
 		data?: CanisterData | undefined;
 		sync?: CanisterSyncStatus | undefined;
@@ -23,6 +24,7 @@
 	let {
 		canisterId,
 		display = true,
+		displayMemoryTotal = true,
 		row = false,
 		data = $bindable(undefined),
 		sync = $bindable(undefined)
@@ -56,13 +58,17 @@
 			<p class="cycles">
 				<CanisterTCycles {data} />
 			</p>
-			<p>
-				{formatBytes(Number(memorySize))} <small>{$i18n.canisters.in_total}</small>
-			</p>
+			{#if displayMemoryTotal}
+				<p>
+					{formatBytes(Number(memorySize))} <small>{$i18n.canisters.in_total}</small>
+				</p>
+			{/if}
 		{:else if sync === 'loading'}
 			<p class="skeleton"><SkeletonText /></p>
 			<p class="skeleton"><SkeletonText /></p>
-			<p class="skeleton"><SkeletonText /></p>
+			{#if displayMemoryTotal}
+				<p class="skeleton"><SkeletonText /></p>
+			{/if}
 		{/if}
 	</div>
 {/if}

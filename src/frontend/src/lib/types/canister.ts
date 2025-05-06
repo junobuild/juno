@@ -1,4 +1,3 @@
-import type { MemorySize } from '$declarations/satellite/satellite.did';
 import type { CanisterIdTextSchema } from '$lib/schema/canister.schema';
 import type { ChartsData, TimeOfDayChartData } from '$lib/types/chart';
 import type { MonitoringHistory, MonitoringMetadata } from '$lib/types/monitoring';
@@ -70,7 +69,6 @@ export interface CanisterData {
 	icp: number;
 	warning: CanisterWarning;
 	canister: CanisterDataInfo;
-	memory?: MemorySize;
 }
 
 export interface CanisterMonitoringCharts {

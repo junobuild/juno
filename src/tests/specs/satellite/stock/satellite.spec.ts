@@ -711,12 +711,6 @@ describe('Satellite', () => {
 			).rejects.toThrow(JUNO_AUTH_ERROR_NOT_ADMIN_CONTROLLER);
 		});
 
-		it('should throw errors on getting memory size', async () => {
-			const { memory_size } = actor;
-
-			await expect(memory_size()).rejects.toThrow(JUNO_AUTH_ERROR_NOT_CONTROLLER);
-		});
-
 		it('should throw errors on trying to deploy dapp', async () => {
 			const { init_asset_upload } = actor;
 

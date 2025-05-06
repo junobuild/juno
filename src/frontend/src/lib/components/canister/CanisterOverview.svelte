@@ -30,15 +30,20 @@
 		</Value>
 	</div>
 
-	{#if ['satellite', 'orbiter'].includes(segment)}
-		<CanisterMemory {canisterId} canisterData={data} {sync} {heapWarningLabel} />
-	{/if}
-</div>
-
-<div>
 	<CanisterQueries canister={data?.canister} {sync} />
 
 	<CanisterDailyConsumption canister={data?.canister} {sync} />
+</div>
+
+<div>
+	<CanisterMemory
+		{canisterId}
+		canister={data?.canister}
+		canisterData={data}
+		{sync}
+		{heapWarningLabel}
+		{segment}
+	/>
 </div>
 
 <style lang="scss">

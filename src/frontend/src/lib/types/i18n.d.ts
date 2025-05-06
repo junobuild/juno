@@ -177,6 +177,11 @@ interface I18nCanisters {
 	on_heap: string;
 	on_stable: string;
 	on_snapshot: string;
+	in_global: string;
+	of_code: string;
+	in_chunks: string;
+	of_custom_sections: string;
+	in_history: string;
 	warning_mission_control_low_cycles: string;
 	warning_satellite_low_cycles: string;
 	warning_orbiter_low_cycles: string;

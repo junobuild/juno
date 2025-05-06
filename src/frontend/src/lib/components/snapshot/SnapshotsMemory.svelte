@@ -26,3 +26,9 @@
 		</p>
 	{/if}
 </SnapshotsLoader>
+
+<style lang="scss">
+	p {
+		margin: 0 0 var(--padding-0_25x);
+	}
+</style>

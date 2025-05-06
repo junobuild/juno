@@ -27,6 +27,6 @@
 
 <style lang="scss">
 	.consumption {
-		min-height: calc(48px + var(--padding-2_5x));
+		min-height: calc(54px + var(--padding-2_5x));
 	}
 </style>

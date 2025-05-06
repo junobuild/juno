@@ -1,6 +1,7 @@
 <script lang="ts">
 	import type { Principal } from '@dfinity/principal';
 	import { nonNullish } from '@dfinity/utils';
+	import CanisterMemoryChart from '$lib/components/canister/CanisterMemoryChart.svelte';
 	import CanisterValue from '$lib/components/canister/CanisterValue.svelte';
 	import InlineWarning from '$lib/components/ui/InlineWarning.svelte';
 	import { i18n } from '$lib/stores/i18n.store';
@@ -28,6 +29,7 @@
 	let memorySizeInTotal = $derived(canister?.memorySize);
 
 	let memoryMetrics = $derived(canister?.memoryMetrics);
+
 	let wasmMemorySize = $derived(memoryMetrics?.wasmMemorySize);
 	let stableMemorySize = $derived(memoryMetrics?.stableMemorySize);
 	let globalMemorySize = $derived(memoryMetrics?.globalMemorySize);
@@ -87,13 +89,13 @@
 		{/if}
 
 		<p>
-			{nonNullish(wasmBinarySize) ? formatBytes(Number(wasmBinarySize)) : '???'}
-			<small>{$i18n.canisters.of_code}</small>
+			{nonNullish(customSectionsSize) ? formatBytes(Number(customSectionsSize)) : '???'}
+			<small>{$i18n.canisters.of_custom_sections}</small>
 		</p>
 
 		<p>
-			{nonNullish(customSectionsSize) ? formatBytes(Number(customSectionsSize)) : '???'}
-			<small>{$i18n.canisters.of_custom_sections}</small>
+			{nonNullish(wasmBinarySize) ? formatBytes(Number(wasmBinarySize)) : '???'}
+			<small>{$i18n.canisters.of_code}</small>
 		</p>
 
 		{#if (canisterHistorySize ?? 0n) > ONE_KB}
@@ -102,6 +104,8 @@
 				<small>{$i18n.canisters.in_history}</small>
 			</p>
 		{/if}
+
+		<CanisterMemoryChart {canister} {segment} />
 	</CanisterValue>
 </div>
 

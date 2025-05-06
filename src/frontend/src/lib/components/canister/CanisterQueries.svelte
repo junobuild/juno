@@ -13,17 +13,17 @@
 	let { canister, sync }: Props = $props();
 
 	let numInstructionsTotal: bigint | undefined = $derived(
-		canister?.queryStats?.numInstructionsTotal
+		canister?.queryStats.numInstructionsTotal
 	);
 
-	let numCallsTotal: bigint | undefined = $derived(canister?.queryStats?.numCallsTotal);
+	let numCallsTotal: bigint | undefined = $derived(canister?.queryStats.numCallsTotal);
 
 	let responsePayloadBytesTotal: bigint | undefined = $derived(
-		canister?.queryStats?.responsePayloadBytesTotal
+		canister?.queryStats.responsePayloadBytesTotal
 	);
 
 	let requestPayloadBytesTotal: bigint | undefined = $derived(
-		canister?.queryStats?.requestPayloadBytesTotal
+		canister?.queryStats.requestPayloadBytesTotal
 	);
 </script>
 

@@ -72,6 +72,7 @@ export interface canister_log_record {
 }
 export interface canister_settings {
 	freezing_threshold: [] | [bigint];
+	wasm_memory_threshold: [] | [bigint];
 	controllers: [] | [Array<Principal>];
 	reserved_cycles_limit: [] | [bigint];
 	log_visibility: [] | [log_visibility];
@@ -83,6 +84,16 @@ export interface canister_status_args {
 	canister_id: canister_id;
 }
 export interface canister_status_result {
+	memory_metrics: {
+		wasm_binary_size: bigint;
+		wasm_chunk_store_size: bigint;
+		canister_history_size: bigint;
+		stable_memory_size: bigint;
+		snapshots_size: bigint;
+		wasm_memory_size: bigint;
+		global_memory_size: bigint;
+		custom_sections_size: bigint;
+	};
 	status: { stopped: null } | { stopping: null } | { running: null };
 	memory_size: bigint;
 	cycles: bigint;
@@ -145,6 +156,7 @@ export interface create_canister_result {
 }
 export interface definite_canister_settings {
 	freezing_threshold: bigint;
+	wasm_memory_threshold: bigint;
 	controllers: Array<Principal>;
 	reserved_cycles_limit: bigint;
 	log_visibility: log_visibility;
@@ -258,6 +270,9 @@ export interface provisional_top_up_canister_args {
 export type raw_rand_result = Uint8Array | number[];
 export type satoshi = bigint;
 export type schnorr_algorithm = { ed25519: null } | { bip340secp256k1: null };
+export type schnorr_aux = {
+	bip341: { merkle_root_hash: Uint8Array | number[] };
+};
 export interface schnorr_public_key_args {
 	key_id: { algorithm: schnorr_algorithm; name: string };
 	canister_id: [] | [canister_id];
@@ -276,6 +291,7 @@ export interface sign_with_ecdsa_result {
 	signature: Uint8Array | number[];
 }
 export interface sign_with_schnorr_args {
+	aux: [] | [schnorr_aux];
 	key_id: { algorithm: schnorr_algorithm; name: string };
 	derivation_path: Array<Uint8Array | number[]>;
 	message: Uint8Array | number[];

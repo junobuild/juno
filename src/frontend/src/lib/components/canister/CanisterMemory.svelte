@@ -39,7 +39,6 @@
 
 	const ONE_MB = 1000 * 1000;
 	const ONE_KB = 1000;
-	$inspect(memoryMetrics);
 </script>
 
 <div class="memory">

@@ -54,9 +54,9 @@ export interface CanisterInfo {
 	status: CanisterStatus;
 	canisterId: string;
 	idleCyclesBurnedPerDay?: bigint;
-	queryStats?: CanisterQueryStats;
-	settings?: CanisterSettings;
-	memoryMetrics?: CanisterMemoryMetrics;
+	queryStats: CanisterQueryStats;
+	settings: CanisterSettings;
+	memoryMetrics: CanisterMemoryMetrics;
 }
 
 export interface CanisterWarning {

@@ -117,7 +117,16 @@ pub fn analytics_page_views_top_10(
     let mut pages: HashMap<String, u32> = HashMap::new();
     let mut time_zones: HashMap<String, u32> = HashMap::new();
 
-    for (_, PageView { referrer, href, time_zone, .. }) in page_views {
+    for (
+        _,
+        PageView {
+            referrer,
+            href,
+            time_zone,
+            ..
+        },
+    ) in page_views
+    {
         analytics_referrers(referrer, &mut referrers);
         analytics_pages(href, &mut pages);
         analytics_time_zones(time_zone, &mut time_zones);
@@ -132,7 +141,7 @@ pub fn analytics_page_views_top_10(
     AnalyticsTop10PageViews {
         referrers: top_10(referrers),
         pages: top_10(pages),
-        time_zones: Some(top_10(time_zones))
+        time_zones: Some(top_10(time_zones)),
     }
 }
 

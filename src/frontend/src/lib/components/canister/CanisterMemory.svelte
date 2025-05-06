@@ -42,7 +42,7 @@
 </script>
 
 <div class="memory">
-	<CanisterValue {sync} rows={2}>
+	<CanisterValue {sync} rows={3}>
 		{#snippet label()}
 			{$i18n.canisters.memory}
 		{/snippet}
@@ -103,6 +103,7 @@
 <style lang="scss">
 	.memory {
 		min-height: calc(174px + var(--padding-2_5x));
+		min-width: 200px;
 	}
 
 	p {

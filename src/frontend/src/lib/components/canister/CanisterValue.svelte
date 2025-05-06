@@ -30,6 +30,10 @@
 
 <style lang="scss">
 	p {
-		height: 24px;
+		min-width: 100%;
+
+		&:not(:last-of-type) {
+			margin: 0 0 var(--padding-0_25x);
+		}
 	}
 </style>

@@ -8,6 +8,7 @@
 	import OrbitersLoader from '$lib/components/loaders/OrbitersLoader.svelte';
 	import SatellitesLoader from '$lib/components/loaders/SatellitesLoader.svelte';
 	import MissionControlDataLoader from '$lib/components/mission-control/MissionControlDataLoader.svelte';
+	import MissionControlVersion from '$lib/components/mission-control/MissionControlVersion.svelte';
 	import MonitoringDashboard from '$lib/components/monitoring/MonitoringDashboard.svelte';
 	import MonitoringSettings from '$lib/components/monitoring/MonitoringSettings.svelte';
 	import Tabs from '$lib/components/ui/Tabs.svelte';
@@ -24,7 +25,6 @@
 		type TabsData
 	} from '$lib/types/tabs.context';
 	import { initTabId } from '$lib/utils/tabs.utils';
-	import MissionControlVersion from '$lib/components/mission-control/MissionControlVersion.svelte';
 
 	const tabDashboard = {
 		id: Symbol('1'),

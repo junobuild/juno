@@ -11,7 +11,6 @@
 		Segment
 	} from '$lib/types/canister';
 	import { formatBytes } from '$lib/utils/number.utils.js';
-	import SnapshotsLoader from '$lib/components/snapshot/SnapshotsLoader.svelte';
 
 	interface Props {
 		canisterId: Principal;

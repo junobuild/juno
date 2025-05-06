@@ -50,6 +50,16 @@ export const canisterStatus = async ({
 			request_payload_bytes_total: requestPayloadBytesTotal,
 			response_payload_bytes_total: responsePayloadBytesTotal
 		},
+		memory_metrics: {
+			wasm_binary_size: wasmBinarySize,
+			wasm_chunk_store_size: wasmChunkStoreSize,
+			canister_history_size: canisterHistorySize,
+			stable_memory_size: stableMemorySize,
+			snapshots_size: snapshotsSize,
+			wasm_memory_size: wasmMemorySize,
+			global_memory_size: globalMemorySize,
+			custom_sections_size: customSectionsSize
+		},
 		settings: {
 			freezing_threshold: freezingThreshold,
 			controllers,
@@ -74,6 +84,16 @@ export const canisterStatus = async ({
 			numCallsTotal,
 			requestPayloadBytesTotal,
 			responsePayloadBytesTotal
+		},
+		memoryMetrics: {
+			wasmBinarySize,
+			wasmChunkStoreSize,
+			canisterHistorySize,
+			stableMemorySize,
+			snapshotsSize,
+			wasmMemorySize,
+			globalMemorySize,
+			customSectionsSize
 		},
 		settings: {
 			freezingThreshold,

@@ -26,6 +26,17 @@ export interface CanisterQueryStats {
 	responsePayloadBytesTotal: bigint;
 }
 
+export interface CanisterMemoryMetrics {
+	wasmBinarySize: bigint;
+	wasmChunkStoreSize: bigint;
+	canisterHistorySize: bigint;
+	stableMemorySize: bigint;
+	snapshotsSize: bigint;
+	wasmMemorySize: bigint;
+	globalMemorySize: bigint;
+	customSectionsSize: bigint;
+}
+
 export type Segment = 'satellite' | 'mission_control' | 'orbiter';
 
 export interface CanisterSegment {
@@ -45,6 +56,7 @@ export interface CanisterInfo {
 	idleCyclesBurnedPerDay?: bigint;
 	queryStats?: CanisterQueryStats;
 	settings?: CanisterSettings;
+	memoryMetrics?: CanisterMemoryMetrics;
 }
 
 export interface CanisterWarning {

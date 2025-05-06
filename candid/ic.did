@@ -1,4 +1,4 @@
-// Generated from dfinity/portal commit 7b300dc97a1636f8134410e9a40f3556acf9b496 for file 'docs/references/_attachments/ic.did'
+// Generated from dfinity/portal commit 39bbfcbae104623ffca6743ed139f851bf7561de for file 'docs/references/_attachments/ic.did'
 type canister_id = principal;
 type wasm_module = blob;
 type snapshot_id = blob;
@@ -17,6 +17,7 @@ type canister_settings = record {
     reserved_cycles_limit : opt nat;
     log_visibility : opt log_visibility;
     wasm_memory_limit : opt nat;
+    wasm_memory_threshold : opt nat;
 };
 
 type definite_canister_settings = record {
@@ -27,6 +28,7 @@ type definite_canister_settings = record {
     reserved_cycles_limit : nat;
     log_visibility : log_visibility;
     wasm_memory_limit : nat;
+    wasm_memory_threshold: nat;
 };
 
 type change_origin = variant {
@@ -249,6 +251,16 @@ type canister_status_result = record {
     settings : definite_canister_settings;
     module_hash : opt blob;
     memory_size : nat;
+    memory_metrics : record {
+        wasm_memory_size : nat;
+        stable_memory_size : nat;
+        global_memory_size : nat;
+        wasm_binary_size : nat;
+        custom_sections_size : nat;
+        canister_history_size : nat;
+        wasm_chunk_store_size : nat;
+        snapshots_size : nat;
+    };
     cycles : nat;
     reserved_cycles : nat;
     idle_cycles_burned_per_day : nat;
@@ -324,10 +336,17 @@ type schnorr_public_key_result = record {
     chain_code : blob;
 };
 
+type schnorr_aux = variant {
+    bip341: record {
+      merkle_root_hash: blob;
+   }
+};
+
 type sign_with_schnorr_args = record {
     message : blob;
     derivation_path : vec blob;
     key_id : record { algorithm : schnorr_algorithm; name : text };
+    aux: opt schnorr_aux;
 };
 
 type sign_with_schnorr_result = record {

@@ -64,10 +64,12 @@ export interface CanisterWarning {
 	heap: boolean;
 }
 
+export type CanisterDataInfo = Omit<CanisterInfo, 'canisterId'>;
+
 export interface CanisterData {
 	icp: number;
 	warning: CanisterWarning;
-	canister: Omit<CanisterInfo, 'canisterId'>;
+	canister: CanisterDataInfo;
 	memory?: MemorySize;
 }
 

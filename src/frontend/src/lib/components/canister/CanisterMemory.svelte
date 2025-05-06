@@ -1,6 +1,7 @@
 <script lang="ts">
 	import type { Principal } from '@dfinity/principal';
 	import { nonNullish } from '@dfinity/utils';
+	import CanisterMemoryChart from '$lib/components/canister/CanisterMemoryChart.svelte';
 	import CanisterValue from '$lib/components/canister/CanisterValue.svelte';
 	import InlineWarning from '$lib/components/ui/InlineWarning.svelte';
 	import { i18n } from '$lib/stores/i18n.store';
@@ -11,7 +12,6 @@
 		Segment
 	} from '$lib/types/canister';
 	import { formatBytes } from '$lib/utils/number.utils.js';
-	import CanisterMemoryChart from '$lib/components/canister/CanisterMemoryChart.svelte';
 
 	interface Props {
 		canisterId: Principal;

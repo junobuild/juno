@@ -28,10 +28,12 @@
 
 	/** @param {Number} total
 	 *  @param {Number} i */
+	// eslint-disable-next-line local-rules/prefer-object-params
 	const anchor = (total: number, i: number): string => {
 		if (i === 0 || i === total / 2) {
 			return 'middle';
-		} else if (i < total / 2) {
+		}
+		if (i < total / 2) {
 			return 'start';
 		}
 		return 'end';
@@ -42,7 +44,7 @@
 	<circle cx="0" cy="0" r={max} class="line bg" stroke-width="1" fill-opacity="0.1"></circle>
 	<circle cx="0" cy="0" r={max / 2} stroke-width="1" fill="none" class="line"></circle>
 
-	{#each $config.x as label, i}
+	{#each $config.x as label, i (i)}
 		{@const thisAngleSlice = angleSlice * i - Math.PI / 2}
 		<line
 			class="line"

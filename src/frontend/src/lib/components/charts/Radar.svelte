@@ -3,8 +3,8 @@
   Generates an SVG radar chart.
  -->
 <script lang="ts">
-	import { getContext } from 'svelte';
 	import { line, curveCardinalClosed } from 'd3-shape';
+	import { getContext } from 'svelte';
 
 	// eslint-disable-next-line @typescript-eslint/ban-ts-comment
 	// @ts-ignore
@@ -52,25 +52,15 @@
 	let path = $derived(
 		line()
 			.curve(curveCardinalClosed)
+			// eslint-disable-next-line local-rules/prefer-object-params
 			.x((d, i) => (d as unknown as number) * Math.cos(angleSlice * i - Math.PI / 2))
+			// eslint-disable-next-line local-rules/prefer-object-params
 			.y((d, i) => (d as unknown as number) * Math.sin(angleSlice * i - Math.PI / 2))
 	);
-
-	/* The non-D3 line generator way. */
-	// $: path = valus => 'M' + values
-	//   .map(d => {
-	//     return $rGet(d).map((val, i) => {
-	//       return [
-	//         val * Math.cos(angleSlice * i - Math.PI / 2),
-	//         val * Math.sin(angleSlice * i - Math.PI / 2)
-	//       ].join(',');
-	//     });
-	//   })
-	//   .join('L') + 'z';
 </script>
 
 <g transform="translate({$width / 2}, {$height / 2})">
-	{#each $data as row}
+	{#each $data as row, index (index)}
 		{@const xVals = $xGet(row)}
 		<!-- Draw a line connecting all the dots -->
 		<path
@@ -83,7 +73,7 @@
 		></path>
 
 		<!-- Plot each dots -->
-		{#each xVals as circleR, i}
+		{#each xVals as circleR, i (i)}
 			{@const thisAngleSlice = angleSlice * i - Math.PI / 2}
 			<circle
 				cx={circleR * Math.cos(thisAngleSlice)}

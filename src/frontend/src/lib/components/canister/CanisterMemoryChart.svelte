@@ -1,7 +1,7 @@
 <script lang="ts">
 	import ChartRadar from '$lib/components/charts/ChartRadar.svelte';
-	import type { CanisterDataInfo, Segment } from '$lib/types/canister';
 	import { i18n } from '$lib/stores/i18n.store';
+	import type { CanisterDataInfo, Segment } from '$lib/types/canister';
 
 	interface Props {
 		canister: CanisterDataInfo | undefined;
@@ -43,8 +43,6 @@
 			[$i18n.canisters.in_history]: Number(canisterHistorySize ?? 0n)
 		})
 	});
-
-	$inspect(chartsData);
 </script>
 
 <div class="chart-container">

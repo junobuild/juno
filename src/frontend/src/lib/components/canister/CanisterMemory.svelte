@@ -2,7 +2,6 @@
 	import type { Principal } from '@dfinity/principal';
 	import { nonNullish } from '@dfinity/utils';
 	import CanisterValue from '$lib/components/canister/CanisterValue.svelte';
-	import SnapshotsMemory from '$lib/components/snapshot/SnapshotsMemory.svelte';
 	import InlineWarning from '$lib/components/ui/InlineWarning.svelte';
 	import { i18n } from '$lib/stores/i18n.store';
 	import type {
@@ -12,6 +11,7 @@
 		Segment
 	} from '$lib/types/canister';
 	import { formatBytes } from '$lib/utils/number.utils.js';
+	import SnapshotsLoader from '$lib/components/snapshot/SnapshotsLoader.svelte';
 
 	interface Props {
 		canisterId: Principal;
@@ -36,6 +36,7 @@
 	let wasmChunkStoreSize = $derived(memoryMetrics?.wasmChunkStoreSize);
 	let customSectionsSize = $derived(memoryMetrics?.customSectionsSize);
 	let canisterHistorySize = $derived(memoryMetrics?.canisterHistorySize);
+	let snapshotsSize = $derived(memoryMetrics?.snapshotsSize);
 
 	const ONE_MB = 1000 * 1000;
 	const ONE_KB = 1000;
@@ -79,7 +80,12 @@
 			</p>
 		{/if}
 
-		<SnapshotsMemory {canisterId} />
+		{#if (snapshotsSize ?? 0n) > 0n}
+			<p>
+				{nonNullish(snapshotsSize) ? formatBytes(Number(snapshotsSize)) : '???'}
+				<small>{$i18n.canisters.on_snapshot}</small>
+			</p>
+		{/if}
 
 		<p>
 			{nonNullish(wasmBinarySize) ? formatBytes(Number(wasmBinarySize)) : '???'}

@@ -8,6 +8,7 @@
 	import OrbitersLoader from '$lib/components/loaders/OrbitersLoader.svelte';
 	import SatellitesLoader from '$lib/components/loaders/SatellitesLoader.svelte';
 	import MissionControlDataLoader from '$lib/components/mission-control/MissionControlDataLoader.svelte';
+	import MissionControlVersion from '$lib/components/mission-control/MissionControlVersion.svelte';
 	import MonitoringDashboard from '$lib/components/monitoring/MonitoringDashboard.svelte';
 	import MonitoringSettings from '$lib/components/monitoring/MonitoringSettings.svelte';
 	import Tabs from '$lib/components/ui/Tabs.svelte';
@@ -70,19 +71,21 @@
 		<WalletLoader>
 			<SatellitesLoader>
 				<OrbitersLoader>
-					<MissionControlGuard>
-						<CanistersLoader monitoring satellites={$sortedSatellites}>
-							{#if nonNullish($missionControlIdDerived)}
-								<MissionControlDataLoader missionControlId={$missionControlIdDerived} reload>
-									{#if $store.tabId === $store.tabs[0].id}
-										<MonitoringDashboard missionControlId={$missionControlIdDerived} />
-									{:else if $store.tabId === $store.tabs[1].id && $hasMissionControlSettings}
-										<MonitoringSettings missionControlId={$missionControlIdDerived} />
-									{/if}
-								</MissionControlDataLoader>
-							{/if}
-						</CanistersLoader>
-					</MissionControlGuard>
+					<MissionControlVersion>
+						<MissionControlGuard>
+							<CanistersLoader monitoring satellites={$sortedSatellites}>
+								{#if nonNullish($missionControlIdDerived)}
+									<MissionControlDataLoader missionControlId={$missionControlIdDerived} reload>
+										{#if $store.tabId === $store.tabs[0].id}
+											<MonitoringDashboard missionControlId={$missionControlIdDerived} />
+										{:else if $store.tabId === $store.tabs[1].id && $hasMissionControlSettings}
+											<MonitoringSettings missionControlId={$missionControlIdDerived} />
+										{/if}
+									</MissionControlDataLoader>
+								{/if}
+							</CanistersLoader>
+						</MissionControlGuard>
+					</MissionControlVersion>
 				</OrbitersLoader>
 			</SatellitesLoader>
 		</WalletLoader>

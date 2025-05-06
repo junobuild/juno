@@ -56,7 +56,7 @@
 			{nonNullish(wasmMemorySize) ? formatBytes(Number(wasmMemorySize)) : '???'}
 			<small
 				>{$i18n.canisters.on_heap}
-				{#if warning}<InlineWarning title={heapWarningLabel} />{/if}</small
+				{#if warning}<InlineWarning title={heapWarningLabel} iconSize="16" />{/if}</small
 			>
 		</p>
 

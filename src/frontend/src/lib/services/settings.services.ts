@@ -58,7 +58,9 @@ export const updateSettings = async ({
 		),
 		wasm_memory_limit: toNullable(
 			wasmMemoryLimit === currentSettings.wasmMemoryLimit ? undefined : wasmMemoryLimit
-		)
+		),
+		// Function on_low_wasm_memory is not implemented (currently) in any Juno modules. That is why the settings is also unused.
+		wasm_memory_threshold: toNullable()
 	};
 
 	if (

@@ -56,6 +56,12 @@ fn serve_request(
         let method = request.method();
 
         if handler.should_use_handler(method) {
+            // The route is known and the method is allowed - e.g. POST on /views
+            // Now check if this specific request should be preventively rejected (e.g. bot)
+            if handler.should_reject_request(request) {
+                return not_found_response(&request_path)
+            }
+
             return response_handler(&request_path, request.body());
         }
 

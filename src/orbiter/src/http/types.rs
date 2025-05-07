@@ -32,6 +32,8 @@ pub mod handler {
 
         fn should_use_handler(&self, method: &Method) -> bool;
 
+        fn should_reject_request(&self, request: &HttpRequest) -> bool;
+
         fn handle_update(
             &self,
             request_path: &HttpRequestPath,

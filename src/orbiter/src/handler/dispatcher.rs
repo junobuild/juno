@@ -12,12 +12,22 @@ use crate::http::types::handler::{HandledUpdateResult, HttpRequestHandler};
 use crate::http::types::request::{HttpRequestBody, HttpRequestPath};
 use crate::http::types::response::ApiResponse;
 use ic_http_certification::{HttpRequest, Method, StatusCode};
+use crate::assert::constraints::assert_bot;
 
 pub struct Dispatcher;
 
 impl HttpRequestHandler for Dispatcher {
     fn is_known_route(&self, request: &HttpRequest) -> bool {
         matches!(request.get_path().as_deref(), Ok(path) if KNOWN_ROUTES.contains(&path))
+    }
+
+    fn should_reject_request(&self, request: &HttpRequest) -> bool {
+        let user_agent = request.headers()
+            .iter()
+            .find(|(key, _)| key.to_lowercase() == "user-agent")
+            .map(|(_, value)| value.clone());
+
+        user_agent.is_none() || assert_bot(&user_agent).is_err()
     }
 
     fn should_use_handler(&self, method: &Method) -> bool {

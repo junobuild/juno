@@ -136,7 +136,6 @@ pub mod state {
 
 pub mod interface {
     use crate::mgmt::types::cmc::SubnetId;
-    use crate::types::core::Bytes;
     use crate::types::state::{
         ControllerId, ControllerScope, Metadata, MissionControlId, NotificationKind, Segment,
         Timestamp, UserId,
@@ -199,8 +198,8 @@ pub mod interface {
 
     #[derive(CandidType, Deserialize, Clone)]
     pub struct MemorySize {
-        pub heap: Bytes,
-        pub stable: Bytes,
+        pub heap: u64,
+        pub stable: u64,
     }
 
     #[derive(CandidType, Serialize, Deserialize, Clone)]
@@ -267,9 +266,6 @@ pub mod core {
     pub trait Hashable {
         fn hash(&self) -> Hash;
     }
-
-    /// A shorthand for example to represents the type of the memory size in bytes.
-    pub type Bytes = usize;
 }
 
 pub mod list {
@@ -351,14 +347,13 @@ pub mod domain {
 }
 
 pub mod config {
-    use crate::types::core::Bytes;
     use candid::{CandidType, Deserialize};
     use serde::Serialize;
 
     #[derive(CandidType, Serialize, Deserialize, Clone)]
     pub struct ConfigMaxMemorySize {
-        pub heap: Option<Bytes>,
-        pub stable: Option<Bytes>,
+        pub heap: Option<usize>,
+        pub stable: Option<usize>,
     }
 }
 

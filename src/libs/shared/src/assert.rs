@@ -175,7 +175,7 @@ pub fn assert_max_memory_size(
         let MemorySize { heap, stable } = memory_size();
 
         if let Some(max_heap) = max_memory_size.heap {
-            if heap > max_heap {
+            if heap > max_heap as u64 {
                 return Err(format!(
                     "Heap memory usage exceeded: {} bytes used, {} bytes allowed.",
                     heap, max_heap
@@ -184,7 +184,7 @@ pub fn assert_max_memory_size(
         }
 
         if let Some(max_stable) = max_memory_size.stable {
-            if stable > max_stable {
+            if stable > max_stable as u64 {
                 return Err(format!(
                     "Stable memory usage exceeded: {} bytes used, {} bytes allowed.",
                     stable, max_stable

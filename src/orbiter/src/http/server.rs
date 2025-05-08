@@ -5,7 +5,7 @@ use crate::http::routes::not_found::{
 };
 use crate::http::state::store::get_certified_response;
 use crate::http::types::handler::{HandledUpdateResult, HttpRequestHandler};
-use crate::http::types::request::{HttpRequestBody, HttpRequestPath};
+use crate::http::types::request::{HttpRequestBody, HttpRequestHeaders, HttpRequestPath};
 use crate::http::utils::create_json_response;
 use ic_http_certification::{HttpRequest, HttpResponse, Method};
 
@@ -14,9 +14,10 @@ pub fn on_http_request(
     handler: &dyn HttpRequestHandler,
 ) -> HttpResponse<'static> {
     let upgrade_http_request =
-        |_request_path: &HttpRequestPath, _body: &HttpRequestBody| -> HttpResponse<'static> {
-            HttpResponse::builder().with_upgrade(true).build()
-        };
+        |_request_path: &HttpRequestPath,
+         _body: &HttpRequestBody,
+         _headers: &HttpRequestHeaders|
+         -> HttpResponse<'static> { HttpResponse::builder().with_upgrade(true).build() };
 
     serve_request(request, handler, &upgrade_http_request)
 }
@@ -25,15 +26,17 @@ pub fn on_http_request_update(
     request: &HttpRequest,
     handler: &dyn HttpRequestHandler,
 ) -> HttpResponse<'static> {
-    let handle_http_request_update =
-        |request_path: &HttpRequestPath, body: &HttpRequestBody| -> HttpResponse<'static> {
-            let HandledUpdateResult {
-                status_code,
-                body,
-                restricted_origin,
-            } = handler.handle_update(request_path, body);
-            create_json_response(status_code, body, restricted_origin)
-        };
+    let handle_http_request_update = |request_path: &HttpRequestPath,
+                                      body: &HttpRequestBody,
+                                      headers: &HttpRequestHeaders|
+     -> HttpResponse<'static> {
+        let HandledUpdateResult {
+            status_code,
+            body,
+            restricted_origin,
+        } = handler.handle_update(request_path, body, headers);
+        create_json_response(status_code, body, restricted_origin)
+    };
 
     serve_request(request, handler, &handle_http_request_update)
 }
@@ -41,7 +44,11 @@ pub fn on_http_request_update(
 fn serve_request(
     request: &HttpRequest,
     handler: &dyn HttpRequestHandler,
-    response_handler: &dyn Fn(&HttpRequestPath, &HttpRequestBody) -> HttpResponse<'static>,
+    response_handler: &dyn Fn(
+        &HttpRequestPath,
+        &HttpRequestBody,
+        &HttpRequestHeaders,
+    ) -> HttpResponse<'static>,
 ) -> HttpResponse<'static> {
     let uri_request_path = request.get_path();
 
@@ -56,7 +63,7 @@ fn serve_request(
         let method = request.method();
 
         if handler.should_use_handler(method) {
-            return response_handler(&request_path, request.body());
+            return response_handler(&request_path, request.body(), request.headers());
         }
 
         return known_route_certified_response(&request_path, method);

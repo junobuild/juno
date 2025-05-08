@@ -2,10 +2,8 @@ use crate::constants::{
     KEY_MAX_LENGTH, LONG_STRING_MAX_LENGTH, METADATA_MAX_ELEMENTS, SHORT_STRING_MAX_LENGTH,
     STRING_MAX_LENGTH,
 };
-use crate::msg::ERROR_BOT_CALL;
 use crate::state::types::state::AnalyticKey;
 use crate::types::interface::{SetPageView, SetTrackEvent};
-use isbot::Bots;
 use junobuild_shared::types::state::SatelliteId;
 use junobuild_shared::utils::principal_not_equal;
 
@@ -118,21 +116,6 @@ fn assert_session_id_length(session_id: &str) -> Result<(), String> {
             "An analytic session ID must not be longer than {}.",
             KEY_MAX_LENGTH
         ));
-    }
-
-    Ok(())
-}
-
-pub fn assert_bot(user_agent: &Option<String>) -> Result<(), String> {
-    match user_agent.clone() {
-        None => {}
-        Some(user_agent) => {
-            let bots = Bots::default();
-
-            if bots.is_bot(&user_agent) {
-                return Err(ERROR_BOT_CALL.to_string());
-            }
-        }
     }
 
     Ok(())

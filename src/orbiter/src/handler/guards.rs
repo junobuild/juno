@@ -1,7 +1,7 @@
-use crate::assert::constraints::assert_bot;
 use crate::http::types::request::HttpRequestHeaders;
-use crate::msg::ERROR_MISSING_USER_AGENT;
+use crate::msg::{ERROR_BOT_CALL, ERROR_MISSING_USER_AGENT};
 use ic_http_certification::StatusCode;
+use isbot::Bots;
 
 /// This function is used to enforce the presence of the `User-Agent` header
 /// and to detect and block requests from known bots. The goal is to avoid
@@ -19,8 +19,18 @@ pub fn assert_request_headers(headers: &HttpRequestHeaders) -> Result<(), (Statu
         ));
     }
 
-    if let Err(bot_err) = assert_bot(&user_agent) {
+    if let Err(bot_err) = assert_bot(&user_agent.unwrap()) {
         return Err((StatusCode::FORBIDDEN, bot_err));
+    }
+
+    Ok(())
+}
+
+fn assert_bot(user_agent: &str) -> Result<(), String> {
+    let bots = Bots::default();
+
+    if bots.is_bot(&user_agent) {
+        return Err(ERROR_BOT_CALL.to_string());
     }
 
     Ok(())

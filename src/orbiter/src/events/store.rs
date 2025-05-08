@@ -1,6 +1,6 @@
 use crate::assert::constraints::{
-    assert_analytic_key_length, assert_bot, assert_page_view_length, assert_satellite_id,
-    assert_session_id, assert_track_event_length,
+    assert_analytic_key_length, assert_page_view_length, assert_satellite_id, assert_session_id,
+    assert_track_event_length,
 };
 use crate::events::filters::{filter_analytics, filter_satellites_analytics};
 use crate::state::memory::STATE;
@@ -23,7 +23,6 @@ fn insert_page_view_impl(
     page_view: SetPageView,
     state: &mut StableState,
 ) -> Result<PageView, String> {
-    assert_bot(&page_view.user_agent)?;
     assert_analytic_key_length(&key)?;
     assert_page_view_length(&page_view)?;
 
@@ -132,7 +131,6 @@ fn insert_track_event_impl(
     track_event: SetTrackEvent,
     state: &mut StableState,
 ) -> Result<TrackEvent, String> {
-    assert_bot(&track_event.user_agent)?;
     assert_analytic_key_length(&key)?;
     assert_track_event_length(&track_event)?;
 
@@ -243,7 +241,6 @@ fn insert_performance_metric_impl(
     performance_metric: SetPerformanceMetric,
     state: &mut StableState,
 ) -> Result<PerformanceMetric, String> {
-    assert_bot(&performance_metric.user_agent)?;
     assert_analytic_key_length(&key)?;
 
     let current_performance_metric = state.performance_metrics.get(&key);

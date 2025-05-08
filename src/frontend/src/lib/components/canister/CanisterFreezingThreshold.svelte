@@ -66,38 +66,38 @@
 				>{formatTCycles(cyclesReserve ?? 0n)}T <small>cycles</small></span
 			>
 
-			<span class="label space">Current Balance:</span>
-			<div class="progress-bar-container space">
+			<span class="label">Current Balance:</span>
+			<div class="progress-bar-container">
 				<div
 					class="progress-bar"
 					class:progress-bar-warning={warning}
 					style={`width: ${progressionBalance}%`}
 				></div>
 			</div>
-			<span class="progress-bar-value space"
+			<span class="progress-bar-value"
 				>{formatTCycles(cyclesBalance ?? 0n)}T <small>cycles</small></span
 			>
 
-			<p>
+			<p class="space">
 				<span class="label">Status:</span>
 				<span>
 					{#if ratio >= 1}
 						<span class="safe"><IconCheckCircle size="16px" /></span> Safe
 						<small
-							>— {formatNumber(ratio * 100, { minFraction: 0, maxFraction: 0 })}<small>%</small> of required
-							reserve</small
+							>— {formatNumber(ratio * 100, { minFraction: 0, maxFraction: 0 })}<small>%</small> of cycles
+							needed</small
 						>
 					{:else if ratio >= 0.9}
 						<InlineWarning title="Low" iconSize="16" /> <strong>Low</strong>
 						<small
-							>— {formatNumber(ratio * 100, { minFraction: 0, maxFraction: 0 })}<small>%</small> of required
-							reserve</small
+							>— {formatNumber(ratio * 100, { minFraction: 0, maxFraction: 0 })}<small>%</small> of cycles
+							needed</small
 						>
 					{:else}
 						<IconError size="20px" /> <strong>At Risk</strong>
 						<small
 							>— Only {formatNumber(ratio * 100, { minFraction: 0, maxFraction: 0 })}<small>%</small
-							> of required reserve</small
+							> of cycles needed</small
 						>
 					{/if}
 				</span>
@@ -126,6 +126,12 @@
 	.progress-bar-container {
 		flex: 2;
 		display: flex;
+
+		grid-column: 1 / 3;
+
+		@include media.min-width(large) {
+			grid-column: auto;
+		}
 	}
 
 	.progress-bar {
@@ -162,7 +168,7 @@
 	}
 
 	.space {
-		padding: 0 0 var(--padding-2x);
+		padding: var(--padding-2_5x) 0 0;
 	}
 
 	.safe {

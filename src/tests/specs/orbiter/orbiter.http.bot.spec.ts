@@ -19,7 +19,6 @@ import {
 	type SetTrackEventsRequest,
 	trackEventPayloadMock
 } from '../../mocks/orbiter.mocks';
-import { assertCertification } from '../../utils/certification-test.utils';
 import { toBodyJson } from '../../utils/orbiter-test.utils';
 import { tick } from '../../utils/pic-tests.utils';
 import { controllersInitArgs, ORBITER_WASM_PATH } from '../../utils/setup-tests.utils';
@@ -61,11 +60,12 @@ describe('Orbiter > HTTP > Bot', () => {
 			'With User-Agent header bot',
 			[
 				['User-Agent', 'Mozilla/5.0 (compatible; Googlebot/2.1; +http://www.google.com/bot.html)']
-			] as [string, string][]
+			] as [string, string][],
+			403
 		],
-		['Without User-Agent header', []]
+		['Without User-Agent header', [], 400]
 		// eslint-disable-next-line local-rules/prefer-object-params
-	])('%s', (_, requestHeaders) => {
+	])('%s', (_, requestHeaders, expectedStatusCode) => {
 		const assertRequestNotFound = async (request: HttpRequest) => {
 			const { http_request_update } = actor;
 
@@ -73,16 +73,7 @@ describe('Orbiter > HTTP > Bot', () => {
 
 			const { status_code } = response;
 
-			expect(status_code).toEqual(404);
-
-			await assertCertification({
-				canisterId,
-				pic,
-				request,
-				response,
-				currentDate,
-				statusCode: 404
-			});
+			expect(status_code).toEqual(expectedStatusCode);
 		};
 
 		describe('Page views', () => {

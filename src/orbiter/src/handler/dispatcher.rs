@@ -5,29 +5,20 @@ use crate::handler::adapters::performance_metrics::{
 use crate::handler::adapters::track_events::{
     handle_insert_track_event, handle_insert_track_events,
 };
+use crate::handler::guards::assert_request_headers;
 use crate::http::constants::{
     EVENTS_PATH, EVENT_PATH, KNOWN_ROUTES, METRICS_PATH, METRIC_PATH, VIEWS_PATH, VIEW_PATH,
 };
 use crate::http::types::handler::{HandledUpdateResult, HttpRequestHandler};
-use crate::http::types::request::{HttpRequestBody, HttpRequestPath};
+use crate::http::types::request::{HttpRequestBody, HttpRequestHeaders, HttpRequestPath};
 use crate::http::types::response::ApiResponse;
 use ic_http_certification::{HttpRequest, Method, StatusCode};
-use crate::assert::constraints::assert_bot;
 
 pub struct Dispatcher;
 
 impl HttpRequestHandler for Dispatcher {
     fn is_known_route(&self, request: &HttpRequest) -> bool {
         matches!(request.get_path().as_deref(), Ok(path) if KNOWN_ROUTES.contains(&path))
-    }
-
-    fn should_reject_request(&self, request: &HttpRequest) -> bool {
-        let user_agent = request.headers()
-            .iter()
-            .find(|(key, _)| key.to_lowercase() == "user-agent")
-            .map(|(_, value)| value.clone());
-
-        user_agent.is_none() || assert_bot(&user_agent).is_err()
     }
 
     fn should_use_handler(&self, method: &Method) -> bool {
@@ -38,7 +29,13 @@ impl HttpRequestHandler for Dispatcher {
         &self,
         request_path: &HttpRequestPath,
         body: &HttpRequestBody,
+        headers: &HttpRequestHeaders,
     ) -> HandledUpdateResult {
+        if let Err((status_code, message)) = assert_request_headers(headers) {
+            let body = ApiResponse::<()>::err(status_code, message).encode();
+            return HandledUpdateResult::new(status_code, body, None);
+        }
+
         let response_data = match request_path.as_str() {
             VIEW_PATH => handle_insert_page_view(body),
             VIEWS_PATH => handle_insert_page_views(body),

@@ -16,13 +16,16 @@ pub mod response {
 }
 
 pub mod request {
+    use ic_http_certification::HeaderField;
+
     pub type HttpRequestBody = [u8];
+    pub type HttpRequestHeaders = [HeaderField];
     pub type HttpRequestPath = String;
     pub type HttpRequestMethod = String;
 }
 
 pub mod handler {
-    use crate::http::types::request::{HttpRequestBody, HttpRequestPath};
+    use crate::http::types::request::{HttpRequestBody, HttpRequestHeaders, HttpRequestPath};
     use crate::http::types::response::ResponseBody;
     use ic_http_certification::{HttpRequest, Method, StatusCode};
     use junobuild_shared::types::core::DomainName;
@@ -32,12 +35,11 @@ pub mod handler {
 
         fn should_use_handler(&self, method: &Method) -> bool;
 
-        fn should_reject_request(&self, request: &HttpRequest) -> bool;
-
         fn handle_update(
             &self,
             request_path: &HttpRequestPath,
             body: &HttpRequestBody,
+            headers: &HttpRequestHeaders,
         ) -> HandledUpdateResult;
     }
 

@@ -20,7 +20,7 @@ import {
 	type SetPerformancesRequest,
 	type SetTrackEventRequest,
 	type SetTrackEventsRequest,
-	trackEventPayloadMock
+	trackEventPayloadMock, userAgentHeadersMock
 } from '../../mocks/orbiter.mocks';
 import { assertCertification } from '../../utils/certification-test.utils';
 import { toBodyJson } from '../../utils/orbiter-test.utils';
@@ -117,7 +117,7 @@ describe('Orbiter > HTTP > CORS', () => {
 				const request: HttpRequest = {
 					body: toBodyJson(pageView),
 					certificate_version: toNullable(2),
-					headers: [],
+					headers: userAgentHeadersMock,
 					method: 'POST',
 					url: '/view'
 				};
@@ -139,7 +139,7 @@ describe('Orbiter > HTTP > CORS', () => {
 				const request: HttpRequest = {
 					body: toBodyJson(pageViews),
 					certificate_version: toNullable(2),
-					headers: [],
+					headers: userAgentHeadersMock,
 					method: 'POST',
 					url: '/views'
 				};
@@ -179,7 +179,7 @@ describe('Orbiter > HTTP > CORS', () => {
 				const request: HttpRequest = {
 					body: toBodyJson(trackEvent),
 					certificate_version: toNullable(2),
-					headers: [],
+					headers: userAgentHeadersMock,
 					method: 'POST',
 					url: '/event'
 				};
@@ -201,7 +201,7 @@ describe('Orbiter > HTTP > CORS', () => {
 				const request: HttpRequest = {
 					body: toBodyJson(trackEvents),
 					certificate_version: toNullable(2),
-					headers: [],
+					headers: userAgentHeadersMock,
 					method: 'POST',
 					url: '/events'
 				};
@@ -241,7 +241,7 @@ describe('Orbiter > HTTP > CORS', () => {
 				const request: HttpRequest = {
 					body: toBodyJson(performanceMetricEvent),
 					certificate_version: toNullable(2),
-					headers: [],
+					headers: userAgentHeadersMock,
 					method: 'POST',
 					url: '/metric'
 				};
@@ -263,7 +263,7 @@ describe('Orbiter > HTTP > CORS', () => {
 				const request: HttpRequest = {
 					body: toBodyJson(performanceMetricEvents),
 					certificate_version: toNullable(2),
-					headers: [],
+					headers: userAgentHeadersMock,
 					method: 'POST',
 					url: '/metrics'
 				};

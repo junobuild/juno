@@ -7,14 +7,16 @@
 	import { i18n } from '$lib/stores/i18n.store';
 	import type { CanisterData, CanisterSyncStatus, Segment } from '$lib/types/canister';
 	import CanisterFreezingThreshold from "$lib/components/canister/CanisterFreezingThreshold.svelte";
+	import type {Snippet} from "svelte";
 
 	interface Props {
 		canisterId: Principal;
 		segment: Segment;
 		heapWarningLabel?: string | undefined;
+		cyclesUsage?: Snippet;
 	}
 
-	let { canisterId, segment, heapWarningLabel = undefined }: Props = $props();
+	let { canisterId, segment, heapWarningLabel = undefined, cyclesUsage }: Props = $props();
 
 	let data: CanisterData | undefined = $state();
 	let sync: CanisterSyncStatus | undefined = $state();
@@ -26,11 +28,9 @@
 			{#snippet label()}
 				{$i18n.core.status}
 			{/snippet}
-			<Canister {canisterId} bind:data bind:sync displayMemoryTotal={false} />
+			<Canister {canisterId} bind:data bind:sync displayMemoryTotal={false} displayCycles={false} />
 		</Value>
 	</div>
-
-	<CanisterFreezingThreshold canister={data?.canister} {sync} />
 
 	<CanisterQueries canister={data?.canister} {sync} />
 </div>
@@ -45,9 +45,15 @@
 	/>
 </div>
 
+<div>
+
+	<CanisterFreezingThreshold canister={data?.canister} {sync} />
+
+	{@render cyclesUsage?.()}
+</div>
+
 <style lang="scss">
 	.status {
-		min-height: calc(78px + var(--padding-2_5x));
-		min-width: 170px;
+		min-height: calc(38px + var(--padding-2_5x));
 	}
 </style>

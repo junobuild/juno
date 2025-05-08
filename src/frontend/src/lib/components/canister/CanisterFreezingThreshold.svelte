@@ -6,6 +6,11 @@
 	import { secondsToDuration } from '$lib/utils/date.utils';
 	import Value from '$lib/components/ui/Value.svelte';
 	import { formatNumber } from '$lib/utils/number.utils';
+	import IconCheckCircle from '$lib/components/icons/IconCheckCircle.svelte';
+	import IconWarning from "$lib/components/icons/IconWarning.svelte";
+	import InlineWarning from "$lib/components/ui/InlineWarning.svelte";
+	import IconClose from "$lib/components/icons/IconClose.svelte";
+	import IconError from "$lib/components/icons/IconError.svelte";
 
 	interface Props {
 		canister: CanisterDataInfo | undefined;
@@ -14,7 +19,7 @@
 
 	let { canister, sync }: Props = $props();
 
-	let idleCyclesBurnedPerDay = $derived(canister?.idleCyclesBurnedPerDay * 1115n ?? 0n);
+	let idleCyclesBurnedPerDay = $derived(canister?.idleCyclesBurnedPerDay * 1123n ?? 0n);
 	let freezingThreshold = $derived(canister?.settings.freezingThreshold ?? 0n);
 
 	let cyclesReserve = $derived((idleCyclesBurnedPerDay * freezingThreshold) / 86_400n);
@@ -49,68 +54,89 @@
 		{/snippet}
 
 		<div class="container">
-			<span class="label">{$i18n.canisters.freezing_threshold}:</span>
-			<span class="description">{secondsToDuration(freezingThreshold ?? 0n)}</span>
+			<p>
+				<span class="label space">{$i18n.canisters.freezing_threshold}:</span>
+				<span class="space">{secondsToDuration(freezingThreshold ?? 0n)}</span>
+			</p>
 
 			<span class="label">Required Reserve:</span>
-			<div class="progress-bar" style={`width: ${progressionReserve}%`}></div>
+			<div class="progress-bar-container">
+				<div class="progress-bar" style={`width: ${progressionReserve}%`}></div>
+			</div>
 			<span class="progress-bar-value"
 				>{formatTCycles(cyclesReserve ?? 0n)}T <small>cycles</small></span
 			>
 
-			<span class="label">Current Balance:</span>
-			<div
-				class="progress-bar"
-				class:progress-bar-warning={warning}
-				style={`width: ${progressionBalance}%`}
-			></div>
-			<span class="progress-bar-value"
+			<span class="label space">Current Balance:</span>
+			<div class="progress-bar-container space">
+				<div
+					class="progress-bar"
+					class:progress-bar-warning={warning}
+					style={`width: ${progressionBalance}%`}
+				></div>
+			</div>
+			<span class="progress-bar-value space"
 				>{formatTCycles(cyclesBalance ?? 0n)}T <small>cycles</small></span
 			>
 
-			<span class="label">Status:</span>
-			<span class="description">
-				{#if ratio >= 1}
-					✅ Safe <small
-						>— {formatNumber(ratio * 100, { minFraction: 0, maxFraction: 0 })}<small>%</small> of required
-						reserve</small
-					>
-				{:else if ratio >= 0.9}
-					⚠️ Low <small
-						>— {formatNumber(ratio * 100, { minFraction: 0, maxFraction: 0 })}<small>%</small> of required
-						reserve</small
-					>
-				{:else}
-					❌ At Risk <small
-						>— Only {formatNumber(ratio * 100, { minFraction: 0, maxFraction: 0 })}<small>%</small> of
-						required reserve</small
-					>
-				{/if}
-			</span>
+			<p>
+				<span class="label">Status:</span>
+				<span>
+					{#if ratio >= 1}
+						<span class="safe"><IconCheckCircle size="16px" /></span> Safe
+						<small
+							>— {formatNumber(ratio * 100, { minFraction: 0, maxFraction: 0 })}<small>%</small> of required
+							reserve</small
+						>
+					{:else if ratio >= 0.9}
+						<InlineWarning title="Low" iconSize="16" /> <strong>Low</strong>
+						<small
+							>— {formatNumber(ratio * 100, { minFraction: 0, maxFraction: 0 })}<small>%</small> of required
+							reserve</small
+						>
+					{:else}
+						<IconError size="20px" /> <strong>At Risk</strong>
+						<small
+							>— Only {formatNumber(ratio * 100, { minFraction: 0, maxFraction: 0 })}<small>%</small
+							> of required reserve</small
+						>
+					{/if}
+				</span>
+			</p>
 		</div>
 	</CanisterValue>
 </div>
 
 <style lang="scss">
+	@use '../../styles/mixins/media';
+
 	.freezing {
 		min-height: calc(54px + var(--padding-2_5x));
+
+		@include media.min-width(large) {
+			max-width: 80%;
+		}
 	}
 
 	.container {
 		display: grid;
 		grid-template-columns: auto 1fr auto;
-		column-gap: var(--padding-2x);
+		column-gap: var(--padding);
+	}
+
+	.progress-bar-container {
+		flex: 2;
+		display: flex;
 	}
 
 	.progress-bar {
-		flex: 2;
-
 		background: rgba(var(--color-primary-rgb), 0.25);
 		border: 1px solid var(--color-primary);
 
 		border-radius: var(--border-radius);
 
-		margin: 2px 0;
+		height: var(--padding-2x);
+		align-self: center;
 
 		transition: width var(--animation-time) ease-out;
 
@@ -126,9 +152,21 @@
 
 	.progress-bar-value {
 		font-size: var(--font-size-small);
+
+		align-self: center;
 	}
 
-	.description {
-		grid-column: 2 / 4;
+	p {
+		grid-column: 1 / 4;
+
+		--icon-text-align: middle;
+	}
+
+	.space {
+		padding: 0 0 var(--padding-2x);
+	}
+
+	.safe {
+		color: var(--color-success);
 	}
 </style>

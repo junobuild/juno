@@ -20,6 +20,6 @@
 
 <style lang="scss">
 	svg {
-		vertical-align: text-bottom;
+		vertical-align: var(--icon-text-align, text-bottom);
 	}
 </style>

@@ -1,15 +1,12 @@
 <script lang="ts">
 	import { fromNullishNullable } from '@dfinity/utils';
 	import type { Orbiter } from '$declarations/mission_control/mission_control.did';
-	import CanisterMonitoring from '$lib/components/canister/CanisterMonitoring.svelte';
 	import CanisterOverview from '$lib/components/canister/CanisterOverview.svelte';
 	import CanisterSubnet from '$lib/components/canister/CanisterSubnet.svelte';
-	import MonitoringDisabled from '$lib/components/monitoring/MonitoringDisabled.svelte';
 	import OrbiterActions from '$lib/components/orbiter/OrbiterActions.svelte';
 	import SegmentVersion from '$lib/components/segments/SegmentVersion.svelte';
 	import Identifier from '$lib/components/ui/Identifier.svelte';
 	import Value from '$lib/components/ui/Value.svelte';
-	import { orbiterNotLoaded } from '$lib/derived/orbiter.derived';
 	import { i18n } from '$lib/stores/i18n.store';
 	import { versionStore } from '$lib/stores/version.store';
 
@@ -56,10 +53,6 @@
 			segment="orbiter"
 			heapWarningLabel={$i18n.canisters.warning_orbiter_heap_memory}
 		/>
-
-		<CanisterMonitoring canisterId={orbiter.orbiter_id}>
-			<MonitoringDisabled {monitoring} loading={$orbiterNotLoaded} />
-		</CanisterMonitoring>
 	</div>
 </div>
 

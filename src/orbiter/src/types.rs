@@ -34,6 +34,9 @@ pub mod interface {
     pub struct SetTrackEvent {
         pub name: String,
         pub metadata: Option<Metadata>,
+        #[deprecated(
+            note = "User agent was previously collected to assert bots, but this is now handled using HTTP request headers."
+        )]
         pub user_agent: Option<String>,
         pub satellite_id: SatelliteId,
         pub session_id: SessionId,
@@ -50,6 +53,9 @@ pub mod interface {
         pub href: String,
         pub metric_name: PerformanceMetricName,
         pub data: PerformanceData,
+        #[deprecated(
+            note = "User agent was previously collected to assert bots, but this is now handled using HTTP request headers."
+        )]
         pub user_agent: Option<String>,
         pub satellite_id: SatelliteId,
         pub session_id: SessionId,

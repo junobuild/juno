@@ -44,7 +44,7 @@
 		<CanisterOverview {canisterId} segment={segment.segment} />
 
 		<CanisterMonitoringData {canisterId} bind:monitoringData>
-			<div>
+			<div class="status">
 				<MonitoringStrategyStatus {monitoring} />
 
 				{#if nonNullish(lastExecutionTime)}
@@ -100,9 +100,13 @@
 		}
 	}
 
-	.chart {
+	.chart, .status {
 		@include media.min-width(medium) {
 			grid-column: 1 / 3;
 		}
+	}
+
+	.status {
+		margin: var(--padding-6x) 0 var(--padding-4x);
 	}
 </style>

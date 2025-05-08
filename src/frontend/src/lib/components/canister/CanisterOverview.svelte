@@ -6,7 +6,8 @@
 	import Value from '$lib/components/ui/Value.svelte';
 	import { i18n } from '$lib/stores/i18n.store';
 	import type { CanisterData, CanisterSyncStatus, Segment } from '$lib/types/canister';
-	import CanisterFreezingThreshold from '$lib/components/canister/CanisterFreezingThreshold.svelte';
+	import CanisterSurvivalCheck from '$lib/components/canister/CanisterSurvivalCheck.svelte';
+	import CanisterCyclesBalance from "$lib/components/canister/CanisterCyclesBalance.svelte";
 
 	interface Props {
 		canisterId: Principal;
@@ -44,7 +45,9 @@
 </div>
 
 <div>
-	<CanisterFreezingThreshold canister={data?.canister} {sync} />
+	<CanisterCyclesBalance canister={data?.canister} {sync} />
+
+	<CanisterSurvivalCheck canister={data?.canister} {sync} />
 </div>
 
 <style lang="scss">

@@ -7,10 +7,10 @@
 	import Value from '$lib/components/ui/Value.svelte';
 	import { formatNumber } from '$lib/utils/number.utils';
 	import IconCheckCircle from '$lib/components/icons/IconCheckCircle.svelte';
-	import IconWarning from "$lib/components/icons/IconWarning.svelte";
-	import InlineWarning from "$lib/components/ui/InlineWarning.svelte";
-	import IconClose from "$lib/components/icons/IconClose.svelte";
-	import IconError from "$lib/components/icons/IconError.svelte";
+	import IconWarning from '$lib/components/icons/IconWarning.svelte';
+	import InlineWarning from '$lib/components/ui/InlineWarning.svelte';
+	import IconClose from '$lib/components/icons/IconClose.svelte';
+	import IconError from '$lib/components/icons/IconError.svelte';
 
 	interface Props {
 		canister: CanisterDataInfo | undefined;
@@ -19,7 +19,7 @@
 
 	let { canister, sync }: Props = $props();
 
-	let idleCyclesBurnedPerDay = $derived(canister?.idleCyclesBurnedPerDay * 1123n ?? 0n);
+	let idleCyclesBurnedPerDay = $derived(canister?.idleCyclesBurnedPerDay ?? 0n);
 	let freezingThreshold = $derived(canister?.settings.freezingThreshold ?? 0n);
 
 	let cyclesReserve = $derived((idleCyclesBurnedPerDay * freezingThreshold) / 86_400n);
@@ -79,7 +79,7 @@
 			>
 
 			<p class="space">
-				<span class="label">Status:</span>
+				<span class="label">Safety:</span>
 				<span>
 					{#if ratio >= 1}
 						<span class="safe"><IconCheckCircle size="16px" /></span> Safe
@@ -168,7 +168,7 @@
 	}
 
 	.space {
-		padding: var(--padding-2_5x) 0 0;
+		padding: var(--padding-3x) 0 0;
 	}
 
 	.safe {

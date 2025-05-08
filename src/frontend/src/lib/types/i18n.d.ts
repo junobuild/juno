@@ -117,7 +117,6 @@ interface I18nCanisters {
 	top_up_mission_control_done: string;
 	top_up_satellite_done: string;
 	top_up_orbiter_done: string;
-	daily_consumption: string;
 	queries: string;
 	calls: string;
 	instructions: string;
@@ -162,6 +161,7 @@ interface I18nCanisters {
 	detach_success: string;
 	delete_success: string;
 	cycles: string;
+	available_cycles: string;
 	transfer_cycles: string;
 	review_and_confirm_transfer_cycles: string;
 	transfer_cycles_action: string;

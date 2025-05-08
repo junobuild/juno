@@ -55,11 +55,10 @@
 
 		<div class="container">
 			<p>
-				<span class="label space">{$i18n.canisters.freezing_threshold}:</span>
-				<span class="space">{secondsToDuration(freezingThreshold ?? 0n)}</span>
+				The grace period is set to {secondsToDuration(freezingThreshold ?? 0n)}.
 			</p>
 
-			<span class="label">Required Reserve:</span>
+			<span class="label">Cycles needed:</span>
 			<div class="progress-bar-container">
 				<div class="progress-bar" style={`width: ${progressionReserve}%`}></div>
 			</div>

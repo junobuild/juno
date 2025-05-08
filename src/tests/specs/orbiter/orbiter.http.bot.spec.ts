@@ -2,7 +2,6 @@ import type { _SERVICE as OrbiterActor } from '$declarations/orbiter/orbiter.did
 import { idlFactory as idlFactorOrbiter } from '$declarations/orbiter/orbiter.factory.did';
 import type { HttpRequest } from '$declarations/satellite/satellite.did';
 import { Ed25519KeyIdentity } from '@dfinity/identity';
-import type { Principal } from '@dfinity/principal';
 import { toNullable } from '@dfinity/utils';
 import { type Actor, PocketIc } from '@hadronous/pic';
 import { nanoid } from 'nanoid';
@@ -25,23 +24,18 @@ import { controllersInitArgs, ORBITER_WASM_PATH } from '../../utils/setup-tests.
 
 describe('Orbiter > HTTP > Bot', () => {
 	let pic: PocketIc;
-	let canisterId: Principal;
 	let actor: Actor<OrbiterActor>;
 
 	const controller = Ed25519KeyIdentity.generate();
 
 	const currentDate = new Date(2021, 6, 10, 0, 0, 0, 0);
 
-	const URLS = ['/view', '/views', '/event', '/events', '/metric', '/metrics'];
-
-	const NON_POST_METHODS = ['GET', 'PUT', 'PATCH', 'DELETE'];
-
 	beforeAll(async () => {
 		pic = await PocketIc.create(inject('PIC_URL'));
 
 		await pic.setTime(currentDate.getTime());
 
-		const { actor: c, canisterId: cId } = await pic.setupCanister<OrbiterActor>({
+		const { actor: c } = await pic.setupCanister<OrbiterActor>({
 			idlFactory: idlFactorOrbiter,
 			wasm: ORBITER_WASM_PATH,
 			arg: controllersInitArgs(controller),
@@ -49,7 +43,6 @@ describe('Orbiter > HTTP > Bot', () => {
 		});
 
 		actor = c;
-		canisterId = cId;
 
 		// Certified responses are initialized asynchronously
 		await tick(pic);
@@ -93,7 +86,7 @@ describe('Orbiter > HTTP > Bot', () => {
 				]
 			};
 
-			it(`should return not found for POST to /views`, async () => {
+			it(`should return not found for POST to /view`, async () => {
 				const request: HttpRequest = {
 					body: toBodyJson(pageView),
 					certificate_version: toNullable(2),

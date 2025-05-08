@@ -14,7 +14,8 @@ import {
 	type SetTrackEventRequest,
 	type SetTrackEventsRequest,
 	type TrackEventPayload,
-	trackEventPayloadMock, userAgentHeadersMock
+	trackEventPayloadMock,
+	userAgentHeadersMock
 } from '../../mocks/orbiter.mocks';
 import { toBodyJson } from '../../utils/orbiter-test.utils';
 import { tick } from '../../utils/pic-tests.utils';

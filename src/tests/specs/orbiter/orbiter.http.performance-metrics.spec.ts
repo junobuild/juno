@@ -14,7 +14,8 @@ import {
 	performanceMetricPayloadMock,
 	satelliteIdMock,
 	type SetPerformanceRequest,
-	type SetPerformancesRequest, userAgentHeadersMock
+	type SetPerformancesRequest,
+	userAgentHeadersMock
 } from '../../mocks/orbiter.mocks';
 import { toBodyJson } from '../../utils/orbiter-test.utils';
 import { tick } from '../../utils/pic-tests.utils';

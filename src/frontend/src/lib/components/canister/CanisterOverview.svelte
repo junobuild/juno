@@ -6,17 +6,15 @@
 	import Value from '$lib/components/ui/Value.svelte';
 	import { i18n } from '$lib/stores/i18n.store';
 	import type { CanisterData, CanisterSyncStatus, Segment } from '$lib/types/canister';
-	import CanisterFreezingThreshold from "$lib/components/canister/CanisterFreezingThreshold.svelte";
-	import type {Snippet} from "svelte";
+	import CanisterFreezingThreshold from '$lib/components/canister/CanisterFreezingThreshold.svelte';
 
 	interface Props {
 		canisterId: Principal;
 		segment: Segment;
 		heapWarningLabel?: string | undefined;
-		cyclesUsage?: Snippet;
 	}
 
-	let { canisterId, segment, heapWarningLabel = undefined, cyclesUsage }: Props = $props();
+	let { canisterId, segment, heapWarningLabel = undefined }: Props = $props();
 
 	let data: CanisterData | undefined = $state();
 	let sync: CanisterSyncStatus | undefined = $state();
@@ -46,10 +44,7 @@
 </div>
 
 <div>
-
 	<CanisterFreezingThreshold canister={data?.canister} {sync} />
-
-	{@render cyclesUsage?.()}
 </div>
 
 <style lang="scss">

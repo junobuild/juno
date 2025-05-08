@@ -14,7 +14,8 @@ import {
 	pageViewPayloadMock,
 	satelliteIdMock,
 	type SetPageViewRequest,
-	type SetPageViewsRequest
+	type SetPageViewsRequest,
+	userAgentHeadersMock
 } from '../../mocks/orbiter.mocks';
 import { toBodyJson } from '../../utils/orbiter-test.utils';
 import { tick } from '../../utils/pic-tests.utils';
@@ -114,7 +115,7 @@ describe('Orbiter > HTTP > Page views', () => {
 					const request: HttpRequest = {
 						body,
 						certificate_version: toNullable(2),
-						headers: [],
+						headers: userAgentHeadersMock,
 						method: 'POST',
 						url: '/view'
 					};
@@ -130,7 +131,7 @@ describe('Orbiter > HTTP > Page views', () => {
 					const request: HttpRequest = {
 						body,
 						certificate_version: toNullable(2),
-						headers: [],
+						headers: userAgentHeadersMock,
 						method,
 						url: '/view'
 					};
@@ -155,7 +156,7 @@ describe('Orbiter > HTTP > Page views', () => {
 						const request: HttpRequest = {
 							body: toBodyJson(payload),
 							certificate_version: toNullable(2),
-							headers: [],
+							headers: userAgentHeadersMock,
 							method: 'POST',
 							url: '/view'
 						};
@@ -172,7 +173,7 @@ describe('Orbiter > HTTP > Page views', () => {
 					const request: HttpRequest = {
 						body: toBodyJson(invalidPayloads[0][1]),
 						certificate_version: toNullable(2),
-						headers: [],
+						headers: userAgentHeadersMock,
 						method: 'POST',
 						url: '/view'
 					};
@@ -197,7 +198,7 @@ describe('Orbiter > HTTP > Page views', () => {
 					const request: HttpRequest = {
 						body: toBodyJson(invalidPayloads[1][1]),
 						certificate_version: toNullable(2),
-						headers: [],
+						headers: userAgentHeadersMock,
 						method: 'POST',
 						url: '/view'
 					};
@@ -222,7 +223,7 @@ describe('Orbiter > HTTP > Page views', () => {
 					const request: HttpRequest = {
 						body: toBodyJson(invalidPayloads[2][1]),
 						certificate_version: toNullable(2),
-						headers: [],
+						headers: userAgentHeadersMock,
 						method: 'POST',
 						url: '/view'
 					};
@@ -250,7 +251,7 @@ describe('Orbiter > HTTP > Page views', () => {
 							satellite_id: satelliteIdMock // Should be principal as text
 						}),
 						certificate_version: toNullable(2),
-						headers: [],
+						headers: userAgentHeadersMock,
 						method: 'POST',
 						url: '/view'
 					};
@@ -275,7 +276,7 @@ describe('Orbiter > HTTP > Page views', () => {
 					const request: HttpRequest = {
 						body,
 						certificate_version: toNullable(2),
-						headers: [],
+						headers: userAgentHeadersMock,
 						method: 'POST',
 						url: '/view'
 					};
@@ -306,7 +307,7 @@ describe('Orbiter > HTTP > Page views', () => {
 					const request: HttpRequest = {
 						body,
 						certificate_version: toNullable(2),
-						headers: [],
+						headers: userAgentHeadersMock,
 						method: 'POST',
 						url: '/view'
 					};
@@ -333,7 +334,7 @@ describe('Orbiter > HTTP > Page views', () => {
 							}
 						}),
 						certificate_version: toNullable(2),
-						headers: [],
+						headers: userAgentHeadersMock,
 						method: 'POST',
 						url: '/view'
 					};
@@ -362,7 +363,7 @@ describe('Orbiter > HTTP > Page views', () => {
 					const request: HttpRequest = {
 						body,
 						certificate_version: toNullable(2),
-						headers: [],
+						headers: userAgentHeadersMock,
 						method: 'POST',
 						url: '/views'
 					};
@@ -378,7 +379,7 @@ describe('Orbiter > HTTP > Page views', () => {
 					const request: HttpRequest = {
 						body,
 						certificate_version: toNullable(2),
-						headers: [],
+						headers: userAgentHeadersMock,
 						method,
 						url: '/views'
 					};
@@ -412,7 +413,7 @@ describe('Orbiter > HTTP > Page views', () => {
 					const request: HttpRequest = {
 						body: toBodyJson(payload),
 						certificate_version: toNullable(2),
-						headers: [],
+						headers: userAgentHeadersMock,
 						method: 'POST',
 						url: '/views'
 					};
@@ -428,7 +429,7 @@ describe('Orbiter > HTTP > Page views', () => {
 					const request: HttpRequest = {
 						body: toBodyJson(invalidPayloads[0][1]),
 						certificate_version: toNullable(2),
-						headers: [],
+						headers: userAgentHeadersMock,
 						method: 'POST',
 						url: '/views'
 					};
@@ -453,7 +454,7 @@ describe('Orbiter > HTTP > Page views', () => {
 					const request: HttpRequest = {
 						body: toBodyJson(invalidPayloads[1][1]),
 						certificate_version: toNullable(2),
-						headers: [],
+						headers: userAgentHeadersMock,
 						method: 'POST',
 						url: '/views'
 					};
@@ -469,7 +470,7 @@ describe('Orbiter > HTTP > Page views', () => {
 					const request: HttpRequest = {
 						body: toBodyJson(invalidPayloads[2][1]),
 						certificate_version: toNullable(2),
-						headers: [],
+						headers: userAgentHeadersMock,
 						method: 'POST',
 						url: '/views'
 					};
@@ -502,7 +503,7 @@ describe('Orbiter > HTTP > Page views', () => {
 							]
 						}),
 						certificate_version: toNullable(2),
-						headers: [],
+						headers: userAgentHeadersMock,
 						method: 'POST',
 						url: '/views'
 					};
@@ -518,7 +519,7 @@ describe('Orbiter > HTTP > Page views', () => {
 					const request: HttpRequest = {
 						body,
 						certificate_version: toNullable(2),
-						headers: [],
+						headers: userAgentHeadersMock,
 						method: 'POST',
 						url: '/views'
 					};
@@ -541,7 +542,7 @@ describe('Orbiter > HTTP > Page views', () => {
 					const request: HttpRequest = {
 						body,
 						certificate_version: toNullable(2),
-						headers: [],
+						headers: userAgentHeadersMock,
 						method: 'POST',
 						url: '/views'
 					};
@@ -578,7 +579,7 @@ describe('Orbiter > HTTP > Page views', () => {
 							}))
 						}),
 						certificate_version: toNullable(2),
-						headers: [],
+						headers: userAgentHeadersMock,
 						method: 'POST',
 						url: '/views'
 					};

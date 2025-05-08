@@ -14,7 +14,8 @@ import {
 	type SetTrackEventRequest,
 	type SetTrackEventsRequest,
 	type TrackEventPayload,
-	trackEventPayloadMock
+	trackEventPayloadMock,
+	userAgentHeadersMock
 } from '../../mocks/orbiter.mocks';
 import { toBodyJson } from '../../utils/orbiter-test.utils';
 import { tick } from '../../utils/pic-tests.utils';
@@ -114,7 +115,7 @@ describe('Orbiter > HTTP > Track events', () => {
 					const request: HttpRequest = {
 						body,
 						certificate_version: toNullable(2),
-						headers: [],
+						headers: userAgentHeadersMock,
 						method: 'POST',
 						url: '/event'
 					};
@@ -130,7 +131,7 @@ describe('Orbiter > HTTP > Track events', () => {
 					const request: HttpRequest = {
 						body,
 						certificate_version: toNullable(2),
-						headers: [],
+						headers: userAgentHeadersMock,
 						method,
 						url: '/event'
 					};
@@ -153,7 +154,7 @@ describe('Orbiter > HTTP > Track events', () => {
 					const request: HttpRequest = {
 						body: toBodyJson(payload),
 						certificate_version: toNullable(2),
-						headers: [],
+						headers: userAgentHeadersMock,
 						method: 'POST',
 						url: '/event'
 					};
@@ -169,7 +170,7 @@ describe('Orbiter > HTTP > Track events', () => {
 					const request: HttpRequest = {
 						body: toBodyJson(invalidPayloads[0][1]),
 						certificate_version: toNullable(2),
-						headers: [],
+						headers: userAgentHeadersMock,
 						method: 'POST',
 						url: '/event'
 					};
@@ -194,7 +195,7 @@ describe('Orbiter > HTTP > Track events', () => {
 					const request: HttpRequest = {
 						body: toBodyJson(invalidPayloads[1][1]),
 						certificate_version: toNullable(2),
-						headers: [],
+						headers: userAgentHeadersMock,
 						method: 'POST',
 						url: '/event'
 					};
@@ -219,7 +220,7 @@ describe('Orbiter > HTTP > Track events', () => {
 					const request: HttpRequest = {
 						body: toBodyJson(invalidPayloads[2][1]),
 						certificate_version: toNullable(2),
-						headers: [],
+						headers: userAgentHeadersMock,
 						method: 'POST',
 						url: '/event'
 					};
@@ -247,7 +248,7 @@ describe('Orbiter > HTTP > Track events', () => {
 							satellite_id: satelliteIdMock // Should be principal as text
 						}),
 						certificate_version: toNullable(2),
-						headers: [],
+						headers: userAgentHeadersMock,
 						method: 'POST',
 						url: '/event'
 					};
@@ -272,7 +273,7 @@ describe('Orbiter > HTTP > Track events', () => {
 					const request: HttpRequest = {
 						body,
 						certificate_version: toNullable(2),
-						headers: [],
+						headers: userAgentHeadersMock,
 						method: 'POST',
 						url: '/event'
 					};
@@ -305,7 +306,7 @@ describe('Orbiter > HTTP > Track events', () => {
 					const request: HttpRequest = {
 						body,
 						certificate_version: toNullable(2),
-						headers: [],
+						headers: userAgentHeadersMock,
 						method: 'POST',
 						url: '/event'
 					};
@@ -332,7 +333,7 @@ describe('Orbiter > HTTP > Track events', () => {
 							}
 						}),
 						certificate_version: toNullable(2),
-						headers: [],
+						headers: userAgentHeadersMock,
 						method: 'POST',
 						url: '/event'
 					};
@@ -361,7 +362,7 @@ describe('Orbiter > HTTP > Track events', () => {
 					const request: HttpRequest = {
 						body,
 						certificate_version: toNullable(2),
-						headers: [],
+						headers: userAgentHeadersMock,
 						method: 'POST',
 						url: '/events'
 					};
@@ -377,7 +378,7 @@ describe('Orbiter > HTTP > Track events', () => {
 					const request: HttpRequest = {
 						body,
 						certificate_version: toNullable(2),
-						headers: [],
+						headers: userAgentHeadersMock,
 						method,
 						url: '/events'
 					};
@@ -411,7 +412,7 @@ describe('Orbiter > HTTP > Track events', () => {
 					const request: HttpRequest = {
 						body: toBodyJson(payload),
 						certificate_version: toNullable(2),
-						headers: [],
+						headers: userAgentHeadersMock,
 						method: 'POST',
 						url: '/events'
 					};
@@ -427,7 +428,7 @@ describe('Orbiter > HTTP > Track events', () => {
 					const request: HttpRequest = {
 						body: toBodyJson(invalidPayloads[0][1]),
 						certificate_version: toNullable(2),
-						headers: [],
+						headers: userAgentHeadersMock,
 						method: 'POST',
 						url: '/events'
 					};
@@ -452,7 +453,7 @@ describe('Orbiter > HTTP > Track events', () => {
 					const request: HttpRequest = {
 						body: toBodyJson(invalidPayloads[1][1]),
 						certificate_version: toNullable(2),
-						headers: [],
+						headers: userAgentHeadersMock,
 						method: 'POST',
 						url: '/events'
 					};
@@ -468,7 +469,7 @@ describe('Orbiter > HTTP > Track events', () => {
 					const request: HttpRequest = {
 						body: toBodyJson(invalidPayloads[2][1]),
 						certificate_version: toNullable(2),
-						headers: [],
+						headers: userAgentHeadersMock,
 						method: 'POST',
 						url: '/events'
 					};
@@ -501,7 +502,7 @@ describe('Orbiter > HTTP > Track events', () => {
 							]
 						}),
 						certificate_version: toNullable(2),
-						headers: [],
+						headers: userAgentHeadersMock,
 						method: 'POST',
 						url: '/events'
 					};
@@ -517,7 +518,7 @@ describe('Orbiter > HTTP > Track events', () => {
 					const request: HttpRequest = {
 						body,
 						certificate_version: toNullable(2),
-						headers: [],
+						headers: userAgentHeadersMock,
 						method: 'POST',
 						url: '/events'
 					};
@@ -540,7 +541,7 @@ describe('Orbiter > HTTP > Track events', () => {
 					const request: HttpRequest = {
 						body,
 						certificate_version: toNullable(2),
-						headers: [],
+						headers: userAgentHeadersMock,
 						method: 'POST',
 						url: '/events'
 					};
@@ -577,7 +578,7 @@ describe('Orbiter > HTTP > Track events', () => {
 							}))
 						}),
 						certificate_version: toNullable(2),
-						headers: [],
+						headers: userAgentHeadersMock,
 						method: 'POST',
 						url: '/events'
 					};

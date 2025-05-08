@@ -127,6 +127,11 @@ export type PerformanceMetricPayload = Omit<SetPerformanceMetricPayload, 'user_a
 
 export const satelliteIdMock = Principal.fromText('ck4tp-3iaaa-aaaal-ab7da-cai');
 
+const userAgentMock =
+	'Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:125.0) Gecko/20100101 Firefox/125.0';
+
+export const userAgentHeadersMock: [string, string][] = [['User-Agent', userAgentMock]];
+
 const { timeZone } = Intl.DateTimeFormat().resolvedOptions();
 
 const sessionId = nanoid();
@@ -144,9 +149,7 @@ export const pageViewMock: SetPageView = {
 	session_id: sessionId,
 	title: 'Test',
 	time_zone: timeZone,
-	user_agent: [
-		'Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:125.0) Gecko/20100101 Firefox/125.0'
-	],
+	user_agent: [userAgentMock],
 	client: [
 		{
 			browser: 'Firefox',
@@ -169,8 +172,7 @@ export const pageViewPayloadMock: SetPageViewPayload = {
 	session_id: sessionId,
 	title: 'Test',
 	time_zone: timeZone,
-	user_agent:
-		'Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:125.0) Gecko/20100101 Firefox/125.0',
+	user_agent: userAgentMock,
 	client: {
 		browser: 'Firefox',
 		device: 'desktop',
@@ -188,9 +190,7 @@ export const trackEventMock: SetTrackEvent = {
 	],
 	satellite_id: satelliteIdMock,
 	session_id: sessionId,
-	user_agent: [
-		'Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:125.0) Gecko/20100101 Firefox/125.0'
-	],
+	user_agent: [userAgentMock],
 	version: [],
 	updated_at: []
 };
@@ -202,7 +202,7 @@ export const trackEventPayloadMock: SetTrackEventPayload = {
 		event2: ' Praesent congue, mauris id commodo vulputate'
 	},
 	session_id: sessionId,
-	user_agent: 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:125.0) Gecko/20100101 Firefox/125.0'
+	user_agent: userAgentMock
 };
 
 export const performanceMetricMock: SetPerformanceMetric = {
@@ -219,9 +219,7 @@ export const performanceMetricMock: SetPerformanceMetric = {
 	metric_name: { LCP: null },
 	satellite_id: satelliteIdMock,
 	version: [],
-	user_agent: [
-		'Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:125.0) Gecko/20100101 Firefox/125.0'
-	]
+	user_agent: [userAgentMock]
 };
 
 export const performanceMetricPayloadMock: SetPerformanceMetricPayload = {
@@ -236,5 +234,5 @@ export const performanceMetricPayloadMock: SetPerformanceMetricPayload = {
 	},
 	href: 'https://test.com',
 	metric_name: 'LCP',
-	user_agent: 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:125.0) Gecko/20100101 Firefox/125.0'
+	user_agent: userAgentMock
 };

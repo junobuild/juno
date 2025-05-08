@@ -1,7 +1,6 @@
 <script lang="ts">
 	import type { Principal } from '@dfinity/principal';
 	import Canister from '$lib/components/canister/Canister.svelte';
-	import CanisterDailyConsumption from '$lib/components/canister/CanisterDailyConsumption.svelte';
 	import CanisterMemory from '$lib/components/canister/CanisterMemory.svelte';
 	import CanisterQueries from '$lib/components/canister/CanisterQueries.svelte';
 	import Value from '$lib/components/ui/Value.svelte';
@@ -32,8 +31,6 @@
 	</div>
 
 	<CanisterFreezingThreshold canister={data?.canister} {sync} />
-
-	<CanisterDailyConsumption canister={data?.canister} {sync} />
 
 	<CanisterQueries canister={data?.canister} {sync} />
 </div>

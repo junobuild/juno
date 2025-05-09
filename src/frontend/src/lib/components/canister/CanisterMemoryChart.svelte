@@ -60,7 +60,7 @@
 
 		@include media.min-width(medium) {
 			height: 150px;
-			width: 300px;
+			width: 310px;
 
 			position: absolute;
 			transform: translate(-20%);

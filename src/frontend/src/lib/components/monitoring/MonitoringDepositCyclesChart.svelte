@@ -34,6 +34,6 @@
 		height: 258px;
 
 		margin: var(--padding-0_5x) 0 var(--padding-4x);
-		padding: var(--padding) var(--padding-2x) var(--padding-2x);
+		padding: 0 0 var(--padding-2x);
 	}
 </style>

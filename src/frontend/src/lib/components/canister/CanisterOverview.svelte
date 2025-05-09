@@ -3,12 +3,12 @@
 	import Canister from '$lib/components/canister/Canister.svelte';
 	import CanisterCyclesBalance from '$lib/components/canister/CanisterCyclesBalance.svelte';
 	import CanisterHealthCheck from '$lib/components/canister/CanisterHealthCheck.svelte';
+	import CanisterIdleConsumption from '$lib/components/canister/CanisterIdleConsumption.svelte';
 	import CanisterMemory from '$lib/components/canister/CanisterMemory.svelte';
 	import CanisterQueries from '$lib/components/canister/CanisterQueries.svelte';
 	import Value from '$lib/components/ui/Value.svelte';
 	import { i18n } from '$lib/stores/i18n.store';
 	import type { CanisterData, CanisterSyncStatus, Segment } from '$lib/types/canister';
-	import CanisterIdleConsumption from '$lib/components/canister/CanisterIdleConsumption.svelte';
 
 	interface Props {
 		canisterId: Principal;

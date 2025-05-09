@@ -8,6 +8,7 @@
 	import { freezingThresholdCycles } from '$lib/utils/canister.utils';
 	import { formatTCycles } from '$lib/utils/cycles.utils';
 	import { i18nFormat } from '$lib/utils/i18n.utils';
+	import Html from '$lib/components/ui/Html.svelte';
 
 	interface Props {
 		monitoring: Monitoring | undefined;
@@ -35,16 +36,18 @@
 				{$i18n.monitoring.auto_refill}
 			{/snippet}
 
-			{i18nFormat($i18n.monitoring.auto_refill_strategy_with_cycles_needed, [
-				{
-					placeholder: '{0}',
-					value: formatTCycles(monitoringStrategy.BelowThreshold.fund_cycles)
-				},
-				{
-					placeholder: '{1}',
-					value: formatTCycles(cyclesTrigger)
-				}
-			])}
+			<Html
+				text={i18nFormat($i18n.monitoring.auto_refill_strategy_with_cycles_needed, [
+					{
+						placeholder: '{0}',
+						value: formatTCycles(monitoringStrategy.BelowThreshold.fund_cycles)
+					},
+					{
+						placeholder: '{1}',
+						value: formatTCycles(cyclesTrigger)
+					}
+				])}
+			/>
 		</CanisterValue>
 	{:else}
 		<MonitoringDisabled {monitoring} loading={false} />

@@ -799,7 +799,7 @@
 		"auto_refill": "自动充值",
 		"auto_refill_disabled": "自动充值禁用",
 		"auto_refill_strategy": "Top-up {0}T Cycles if the balance drops below the required amount",
-		"auto_refill_strategy_with_cycles_needed": "Top-up {0} T Cycles if the balance drops below {1} T Cycles (grace period requirement + trigger threshold)",
+		"auto_refill_strategy_with_cycles_needed": "Top-up {0} T Cycles if the balance drops below {1} T Cycles <small>(grace period requirement + trigger threshold)</small>.",
 		"email_notifications": "邮件提醒",
 		"receive_email": "你想收到邮件提醒在模块被充值时候? 输入邮件地址用于提醒，或者保持空的如果你不想被提醒.",
 		"notifications": "提醒",

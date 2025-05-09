@@ -41,7 +41,7 @@
 			...searchParams.entries().filter(([key, value]) => notEmptyString(value) && key !== 'tab')
 		];
 
-		return `${origin}${pathname}${params.length > 0 ? '?' : ''}${params.map(([key, value]) => `${key}=${value}`).join('&')}${notEmptyString(text) ? `&tab=${text.toLowerCase()}` : ''}`;
+		return `${origin}${pathname}${notEmptyString(text) ? `?tab=${text.toLowerCase()}` : ''}${params.length > 0 ? '&' : ''}${params.map(([key, value]) => `${key}=${value}`).join('&')}`;
 	};
 </script>
 

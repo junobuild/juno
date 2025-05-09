@@ -5,6 +5,7 @@
 	import InlineWarning from '$lib/components/ui/InlineWarning.svelte';
 	import { i18n } from '$lib/stores/i18n.store';
 	import type { CanisterDataInfo, CanisterSyncStatus } from '$lib/types/canister';
+	import { freezingThresholdCycles } from '$lib/utils/canister.utils';
 	import { formatTCycles } from '$lib/utils/cycles.utils.js';
 	import { secondsToDuration } from '$lib/utils/date.utils';
 	import { i18nFormat } from '$lib/utils/i18n.utils';
@@ -17,32 +18,31 @@
 
 	let { canister, sync }: Props = $props();
 
-	let idleCyclesBurnedPerDay = $derived(canister?.idleCyclesBurnedPerDay ?? 0n);
 	let freezingThreshold = $derived(canister?.settings.freezingThreshold ?? 0n);
 
-	let cyclesReserve = $derived((idleCyclesBurnedPerDay * freezingThreshold) / 86_400n);
+	let cyclesNeeded = $derived(freezingThresholdCycles(canister));
 
 	let cyclesBalance = $derived(canister?.cycles ?? 0n);
 
-	let maxType = $derived(cyclesReserve > cyclesBalance ? 'freeze' : 'balance');
+	let maxType = $derived(cyclesNeeded > cyclesBalance ? 'freeze' : 'balance');
 
 	let progressionReserve = $derived(
-		maxType === 'freeze' && cyclesReserve > 0n
+		maxType === 'freeze' && cyclesNeeded > 0n
 			? 100
 			: cyclesBalance > 0n
-				? (100 * Number(cyclesReserve)) / Number(cyclesBalance)
+				? (100 * Number(cyclesNeeded)) / Number(cyclesBalance)
 				: 0
 	);
 	let progressionBalance = $derived(
 		maxType === 'balance' && cyclesBalance > 0n
 			? 100
-			: cyclesReserve > 0n
-				? (100 * Number(cyclesBalance)) / Number(cyclesReserve)
+			: cyclesNeeded > 0n
+				? (100 * Number(cyclesBalance)) / Number(cyclesNeeded)
 				: 0
 	);
 
-	let warning = $derived(maxType === 'freeze' && cyclesReserve > 0n);
-	let ratio = $derived(cyclesReserve > 0 ? Number(cyclesBalance) / Number(cyclesReserve) : 0);
+	let warning = $derived(maxType === 'freeze' && cyclesNeeded > 0n);
+	let ratio = $derived(cyclesNeeded > 0 ? Number(cyclesBalance) / Number(cyclesNeeded) : 0);
 </script>
 
 <div class="freezing">
@@ -66,10 +66,12 @@
 				<div class="progress-bar" style={`width: ${progressionReserve}%`}></div>
 			</div>
 			<span class="progress-bar-value" id="cycles-needed"
-				>{formatTCycles(cyclesReserve ?? 0n)}T <small>cycles</small></span
+				>{formatTCycles(cyclesNeeded ?? 0n)}T <small>cycles</small></span
 			>
 
-			<label class="progress-bar-label" for="current-balance">{$i18n.canisters.current_balance}:</label>
+			<label class="progress-bar-label" for="current-balance"
+				>{$i18n.canisters.current_balance}:</label
+			>
 			<div class="progress-bar-container">
 				<div
 					class="progress-bar"

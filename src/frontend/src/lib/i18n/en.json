@@ -798,7 +798,7 @@
 		"strategy_for_modules": "This auto-refill strategy will be suggested as the default for monitoring newly created modules.",
 		"auto_refill": "Auto-refill",
 		"auto_refill_disabled": "Auto-refill disabled",
-		"auto_refill_strategy": "Top-up {0}T Cycles if the remaining threshold falls below {1}",
+		"auto_refill_strategy": "Top-up {0}T Cycles if the balance drops below the required amount",
 		"email_notifications": "Email Notifications",
 		"receive_email": "Do you want to receive email notifications when a module is refilled? Enter your email below to enable notifications or leave it blank if you prefer no notifications.",
 		"notifications": "Notifications",

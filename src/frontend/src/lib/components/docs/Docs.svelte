@@ -75,7 +75,7 @@
 		{$i18n.datastore.documents}
 
 		{#snippet actions()}
-			<DocUpload on:junoUploaded={reload}>
+			<DocUpload onfileuploaded={reload}>
 				{#snippet action()}
 					{$i18n.document.create_document}
 				{/snippet}

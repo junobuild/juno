@@ -85,7 +85,7 @@
 		{key ?? ''}
 
 		{#snippet actions()}
-			<AssetUpload on:junoUploaded={reload} {asset}>
+			<AssetUpload onfileuploaded={reload} {asset}>
 				{#snippet action()}
 					{$i18n.asset.replace_file}
 				{/snippet}

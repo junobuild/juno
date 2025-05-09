@@ -87,7 +87,7 @@
 		{key ?? ''}
 
 		{#snippet actions()}
-			<DocUpload on:junoUploaded={reloadRules} {doc} docKey={key}>
+			<DocUpload onfileuploaded={reloadRules} {doc} docKey={key}>
 				{#snippet action()}
 					{$i18n.document.replace_document}
 				{/snippet}

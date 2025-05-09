@@ -332,7 +332,7 @@
 		"main_domain": "Main domain (\"derivation origin\")",
 		"not_configured": "Not configured",
 		"edit_configuration": "Update the configuration of your authentication using the form below.",
-		"main_domain_warn": "You are about to change your main domain. Please ensure this is the desired action, as all existing users will no longer be recognized by your app.",
+		"main_domain_warn": "You are about to change your primary domain. Please ensure this is the desired action, as all existing users will no longer be recognized by your app.",
 		"external_alternative_origins": "External alternative origins",
 		"external_alternative_origins_placeholder": "A comma-separated list of external domains to allow for derivation"
 	},
@@ -427,7 +427,7 @@
 		"host": "Host",
 		"value": "Value",
 		"config_custom_domain_in_progress": "Setting up custom domain...",
-		"config_auth_config_in_progress": "Configuring main domain for authentication...",
+		"config_auth_config_in_progress": "Configuring primary domain for authentication...",
 		"add_custom_domain": "Add custom domain",
 		"description": "Enter the exact domain name you want people to see when they visit your satellite. It can be a domain (yourdomain.com) or a subdomain (app.yourdomain.com).",
 		"custom_domain": "Custom domain",
@@ -445,7 +445,8 @@
 		"skip_delete_domain": "Skip custom domain deletion in Boundary Nodes",
 		"files_deployed": "files deployed",
 		"set_auth_domain_title": "Set domain for authentication",
-		"set_auth_domain_question": "Would you like to use <strong>{0}</strong> as the main domain for all user sign-ins?<br/><br/>This setting, also known as \"derivation origin\", ensures that users are recognized on your app, regardless of whether they use the default URL or any other custom domain you might configure later.<br><br>For example, a user signing on at {1} will receive the same identifier (principal) as when signing on at {2}.",
+		"set_auth_domain_question": "Would you like to use <strong>{0}</strong> as the primary domain for all user sign-ins?",
+		"need_more_info": "Need more info? See the",
 		"domain_name": "Domain name"
 	},
 	"functions": {

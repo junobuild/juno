@@ -43,7 +43,7 @@
 		}
 
 		dns = toCustomDomainDns({ domainName: domainNameInput, canisterId: satellite.satellite_id });
-		step = 'auth';
+		onFormNext();
 		edit = true;
 	});
 
@@ -116,7 +116,7 @@
 			{edit}
 			on:junoSubmit={async () => await setupCustomDomain()}
 			on:junoBack={() => (step = 'init')}
-			on:junoClose
+			on:junoClose={close}
 		/>
 	{:else if step === 'in_progress'}
 		<ProgressHosting {progress} withConfig={nonNullish(editConfig)} />

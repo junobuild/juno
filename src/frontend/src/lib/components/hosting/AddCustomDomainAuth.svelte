@@ -1,5 +1,6 @@
 <script lang="ts">
 	import type { AuthenticationConfig } from '$declarations/satellite/satellite.did';
+	import ExternalLink from '$lib/components/ui/ExternalLink.svelte';
 	import Html from '$lib/components/ui/Html.svelte';
 	import { i18n } from '$lib/stores/i18n.store';
 	import { buildSetAuthenticationConfig } from '$lib/utils/auth.config.utils';
@@ -30,19 +31,18 @@
 			{
 				placeholder: '{0}',
 				value: domainNameInput
-			},
-			{
-				placeholder: '{1}',
-				value: domainNameInput.startsWith('www')
-					? domainNameInput.replace('www.', '')
-					: `www.${domainNameInput}`
-			},
-			{
-				placeholder: '{2}',
-				value: domainNameInput
 			}
 		])}
 	/>
+</p>
+
+<p>
+	{$i18n.hosting.need_more_info}
+	<ExternalLink
+		underline
+		href="https://juno.build/docs/build/authentication/#domain-based-user-identity"
+		>documentation</ExternalLink
+	>.
 </p>
 
 <div class="toolbar">

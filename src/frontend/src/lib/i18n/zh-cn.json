@@ -332,7 +332,7 @@
 		"main_domain": "主域名(\"derivation origin\")",
 		"not_configured": "未配置",
 		"edit_configuration": "用如下表格更新你的认证配置.",
-		"main_domain_warn": "你将要修改主域名. 请再次确认, 现有所有用户将无法识别由于修改.",
+		"main_domain_warn": "You are about to change your primary domain. Please ensure this is the desired action, as all existing users will no longer be recognized by your app.",
 		"external_alternative_origins": "外部 alternative origins",
 		"external_alternative_origins_placeholder": "以逗号分隔的用于派生的外部域名列表"
 	},
@@ -427,7 +427,7 @@
 		"host": "主机",
 		"value": "值",
 		"config_custom_domain_in_progress": "设置自定义域名...",
-		"config_auth_config_in_progress": "配置用于认证的主域名...",
+		"config_auth_config_in_progress": "Configuring primary domain for authentication...",
 		"add_custom_domain": "增加域名",
 		"description": "输入准确的域名用于用户访问你的 satellite. 它可以是二级级域名(yourdomain.com)或者是子域名 (app.yourdomain.com).",
 		"custom_domain": "定制域名",
@@ -445,7 +445,8 @@
 		"skip_delete_domain": "跳过在Boundary节点删除定制域名",
 		"files_deployed": "文件已经部署",
 		"set_auth_domain_title": "设置用于认证的域名",
-		"set_auth_domain_question": "你想用 <strong>{0}</strong> 作为所有用户登录的主域名吗？?<br/><br/>这个设置就是熟知的 \"derivation origin\", 用来确保无论用户通过任何域名登录，都会被识别为相同的身份(principal).",
+		"set_auth_domain_question": "Would you like to use <strong>{0}</strong> as the primary domain for all user sign-ins?",
+		"need_more_info": "Need more info? See the",
 		"domain_name": "域名"
 	},
 	"functions": {

@@ -1,7 +1,6 @@
 <script lang="ts">
 	import { isNullish } from '@dfinity/utils';
-	import { createEventDispatcher, type Snippet } from 'svelte';
-	import { run, stopPropagation } from 'svelte/legacy';
+	import type { Snippet } from 'svelte';
 	import IconUpload from '$lib/components/icons/IconUpload.svelte';
 	import Popover from '$lib/components/ui/Popover.svelte';
 	import Value from '$lib/components/ui/Value.svelte';
@@ -15,9 +14,18 @@
 		description?: Snippet;
 		children?: Snippet;
 		confirm?: Snippet;
+		uploadFile: (file: File | undefined) => Promise<void>;
 	}
 
-	let { disabled = false, action, title, description, children, confirm }: Props = $props();
+	let {
+		disabled = false,
+		action,
+		title,
+		description,
+		children,
+		confirm,
+		uploadFile
+	}: Props = $props();
 
 	let visible: boolean = $state(false);
 	const close = () => (visible = false);
@@ -27,13 +35,13 @@
 	const onChangeFile = ($event: Event) =>
 		(file = ($event as unknown as { target: EventTarget & HTMLInputElement }).target?.files?.[0]);
 
-	let disableUpload = $state(true);
-	run(() => {
-		disableUpload = isNullish(file) || $isBusy || disabled;
-	});
+	let disableUpload = $derived(isNullish(file) || $isBusy || disabled);
 
-	const dispatch = createEventDispatcher();
-	const upload = () => dispatch('junoUpload', file);
+	const upload = async ($event: UIEvent) => {
+		$event.preventDefault();
+
+		await uploadFile(file);
+	};
 </script>
 
 <button class="menu" type="button" onclick={() => (visible = true)}
@@ -56,11 +64,11 @@
 		{@render children?.()}
 
 		<div>
-			<button type="button" onclick={stopPropagation(close)} disabled={$isBusy}>
+			<button type="button" onclick={close} disabled={$isBusy}>
 				{$i18n.core.cancel}
 			</button>
 
-			<button type="button" onclick={stopPropagation(upload)} disabled={disableUpload}>
+			<button type="button" onclick={upload} disabled={disableUpload}>
 				{@render confirm?.()}
 			</button>
 		</div>

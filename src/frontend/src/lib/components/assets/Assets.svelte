@@ -77,7 +77,7 @@
 		{$i18n.storage.assets}
 
 		{#snippet actions()}
-			<AssetUpload on:junoUploaded={reload}>
+			<AssetUpload onfileuploaded={reload}>
 				{#snippet action()}
 					{$i18n.asset.upload_file}
 				{/snippet}

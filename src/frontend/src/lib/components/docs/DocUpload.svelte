@@ -9,8 +9,7 @@
 	} from '@dfinity/utils';
 	import { setDoc } from '@junobuild/core';
 	import { nanoid } from 'nanoid';
-	import { createEventDispatcher, getContext, type Snippet } from 'svelte';
-	import { run } from 'svelte/legacy';
+	import { getContext, type Snippet } from 'svelte';
 	import type { Doc } from '$declarations/satellite/satellite.did';
 	import DataUpload from '$lib/components/data/DataUpload.svelte';
 	import IconAutoRenew from '$lib/components/icons/IconAutoRenew.svelte';
@@ -29,6 +28,7 @@
 		action?: Snippet;
 		title?: Snippet;
 		description?: Snippet;
+		onfileuploaded: () => void;
 	}
 
 	let {
@@ -36,7 +36,8 @@
 		doc = undefined,
 		action,
 		title,
-		description: descriptionSnippet
+		description: descriptionSnippet,
+		onfileuploaded
 	}: Props = $props();
 
 	const { store }: RulesContext = getContext<RulesContext>(RULES_CONTEXT_KEY);
@@ -45,23 +46,21 @@
 
 	let satelliteId: Principal = $derived($store.satelliteId);
 
-	let key: string | undefined = $state();
+	let key = $state<string | undefined>();
 	const initKey = (k: string | undefined) => (key = k);
-	run(() => {
+	$effect(() => {
 		initKey(docKey);
 	});
 
-	let description: string | undefined = $state();
+	let description = $state<string | undefined>();
 	const initDescription = (d: string | undefined) => (description = d);
-	run(() => {
+	$effect(() => {
 		initDescription(fromNullishNullable(doc?.description));
 	});
 
 	const generateKey = () => (key = nanoid());
 
-	const dispatch = createEventDispatcher();
-
-	const upload = async ({ detail: file }: CustomEvent<File | undefined>) => {
+	const upload = async (file: File | undefined) => {
 		if (isNullish(file)) {
 			// Upload is disabled if not valid
 			toasts.error({
@@ -110,7 +109,7 @@
 				}
 			});
 
-			dispatch('junoUploaded');
+			onfileuploaded();
 
 			close();
 		} catch (err: unknown) {
@@ -123,14 +122,11 @@
 		busy.stop();
 	};
 
-	let mode: 'create' | 'replace' = $state('create');
-	run(() => {
-		mode = nonNullish(doc) && nonNullish(docKey) ? 'replace' : 'create';
-	});
+	let mode = $derived(nonNullish(doc) && nonNullish(docKey) ? 'replace' : 'create');
 </script>
 
 <DataUpload
-	on:junoUpload={upload}
+	uploadFile={upload}
 	disabled={isEmptyString(key)}
 	{action}
 	{title}

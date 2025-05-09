@@ -2,7 +2,7 @@
 	import type { Principal } from '@dfinity/principal';
 	import { fromNullable, isNullish, nonNullish } from '@dfinity/utils';
 	import { uploadFile } from '@junobuild/core';
-	import { createEventDispatcher, getContext, type Snippet } from 'svelte';
+	import { getContext, type Snippet } from 'svelte';
 	import type { AssetNoContent } from '$declarations/satellite/satellite.did';
 	import DataUpload from '$lib/components/data/DataUpload.svelte';
 	import { authStore } from '$lib/stores/auth.store';
@@ -17,9 +17,10 @@
 		action?: Snippet;
 		title?: Snippet;
 		description?: Snippet;
+		onfileuploaded: () => void;
 	}
 
-	let { asset = undefined, action, title, description }: Props = $props();
+	let { asset = undefined, action, title, description, onfileuploaded }: Props = $props();
 
 	const { store }: RulesContext = getContext<RulesContext>(RULES_CONTEXT_KEY);
 
@@ -27,9 +28,7 @@
 
 	let satelliteId: Principal = $derived($store.satelliteId);
 
-	const dispatch = createEventDispatcher();
-
-	const upload = async ({ detail: file }: CustomEvent<File | undefined>) => {
+	const upload = async (file: File | undefined) => {
 		if (isNullish(file)) {
 			// Upload is disabled if not valid
 			toasts.error({
@@ -71,7 +70,7 @@
 				}
 			});
 
-			dispatch('junoUploaded');
+			onfileuploaded();
 
 			close();
 		} catch (err: unknown) {
@@ -85,7 +84,7 @@
 	};
 </script>
 
-<DataUpload on:junoUpload={upload} {action} {title} {description}>
+<DataUpload uploadFile={upload} {action} {title} {description}>
 	{#snippet confirm()}
 		{$i18n.asset.upload}
 	{/snippet}

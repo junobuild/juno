@@ -36,12 +36,15 @@
 		const pathname = currentUrl?.pathname ?? '/';
 
 		const searchParams = new URLSearchParams(currentUrl?.search);
+		searchParams.delete('tab');
 
-		const params = [
-			...searchParams.entries().filter(([key, value]) => notEmptyString(value) && key !== 'tab')
-		];
+		if (notEmptyString(text)) {
+			searchParams.append('tab', text.toLowerCase());
+		}
 
-		return `${origin}${pathname}${notEmptyString(text) ? `?tab=${text.toLowerCase()}` : ''}${params.length > 0 ? '&' : ''}${params.map(([key, value]) => `${key}=${value}`).join('&')}`;
+		const params = searchParams.toString();
+
+		return `${origin}${pathname}${notEmptyString(params) ? `?${params}` : ''}`;
 	};
 </script>
 

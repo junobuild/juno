@@ -17,8 +17,8 @@
 
 	let { canisterId, segment, heapWarningLabel = undefined }: Props = $props();
 
-	let data: CanisterData | undefined = $state();
-	let sync: CanisterSyncStatus | undefined = $state();
+	let data = $state<CanisterData | undefined>(undefined);
+	let sync = $state<CanisterSyncStatus | undefined>(undefined);
 </script>
 
 <div>

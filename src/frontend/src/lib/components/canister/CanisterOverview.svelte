@@ -49,9 +49,3 @@
 <div>
 	<CanisterSurvivalCheck canister={data?.canister} {sync} />
 </div>
-
-<style lang="scss">
-	.status {
-		min-height: calc(38px + var(--padding-2_5x));
-	}
-</style>

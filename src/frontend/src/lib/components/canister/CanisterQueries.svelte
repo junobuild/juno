@@ -71,8 +71,4 @@
 			margin: 0 0 var(--padding-0_25x);
 		}
 	}
-
-	.queries {
-		min-height: calc(126px + var(--padding-2_5x));
-	}
 </style>

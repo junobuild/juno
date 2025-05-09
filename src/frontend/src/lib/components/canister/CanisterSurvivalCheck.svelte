@@ -61,7 +61,7 @@
 				])}
 			</p>
 
-			<label for="cycles-needed">{$i18n.canisters.cycles_needed}:</label>
+			<label class="progress-bar-label" for="cycles-needed">{$i18n.canisters.cycles_needed}:</label>
 			<div class="progress-bar-container">
 				<div class="progress-bar" style={`width: ${progressionReserve}%`}></div>
 			</div>
@@ -69,7 +69,7 @@
 				>{formatTCycles(cyclesReserve ?? 0n)}T <small>cycles</small></span
 			>
 
-			<label for="current-balance">{$i18n.canisters.current_balance}:</label>
+			<label class="progress-bar-label" for="current-balance">{$i18n.canisters.current_balance}:</label>
 			<div class="progress-bar-container">
 				<div
 					class="progress-bar"
@@ -126,6 +126,14 @@
 		display: grid;
 		grid-template-columns: auto 1fr auto;
 		column-gap: var(--padding);
+	}
+
+	.progress-bar-label {
+		grid-column: 1 / 4;
+
+		@include media.min-width(large) {
+			grid-column: auto;
+		}
 	}
 
 	.progress-bar-container {

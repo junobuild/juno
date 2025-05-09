@@ -111,11 +111,12 @@
 	@use '../../styles/mixins/media';
 
 	.memory {
-		min-height: calc(174px + var(--padding-2_5x));
 		min-width: 200px;
+		min-height: calc(408px + var(--padding-2_5x));
 
 		@include media.min-width(medium) {
 			position: relative;
+			min-height: calc(174px + var(--padding-2_5x));
 			padding-bottom: 180px;
 		}
 	}
@@ -127,6 +128,6 @@
 	}
 
 	.total {
-		padding: 0 0 var(--padding-2x);
+		padding: 0 0 var(--padding-2_5x);
 	}
 </style>

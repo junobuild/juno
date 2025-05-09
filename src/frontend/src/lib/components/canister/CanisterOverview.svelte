@@ -13,12 +13,17 @@
 		canisterId: Principal;
 		segment: Segment;
 		heapWarningLabel?: string | undefined;
+		data?: CanisterData | undefined;
+		sync?: CanisterSyncStatus | undefined;
 	}
 
-	let { canisterId, segment, heapWarningLabel = undefined }: Props = $props();
-
-	let data = $state<CanisterData | undefined>(undefined);
-	let sync = $state<CanisterSyncStatus | undefined>(undefined);
+	let {
+		canisterId,
+		segment,
+		heapWarningLabel = undefined,
+		data = $bindable(undefined),
+		sync = $bindable(undefined)
+	}: Props = $props();
 </script>
 
 <div>

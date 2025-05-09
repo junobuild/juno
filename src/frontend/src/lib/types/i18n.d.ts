@@ -824,6 +824,7 @@ interface I18nMonitoring {
 	auto_refill: string;
 	auto_refill_disabled: string;
 	auto_refill_strategy: string;
+	auto_refill_strategy_with_cycles_needed: string;
 	email_notifications: string;
 	receive_email: string;
 	notifications: string;

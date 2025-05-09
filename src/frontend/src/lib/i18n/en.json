@@ -799,6 +799,7 @@
 		"auto_refill": "Auto-refill",
 		"auto_refill_disabled": "Auto-refill disabled",
 		"auto_refill_strategy": "Top-up {0}T Cycles if the balance drops below the required amount",
+		"auto_refill_strategy_with_cycles_needed": "Top-up {0} T Cycles if the balance drops below {1} T Cycles (grace period requirement + trigger threshold)",
 		"email_notifications": "Email Notifications",
 		"receive_email": "Do you want to receive email notifications when a module is refilled? Enter your email below to enable notifications or leave it blank if you prefer no notifications.",
 		"notifications": "Notifications",

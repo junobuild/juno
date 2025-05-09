@@ -55,6 +55,8 @@
 			segment={segment.segment}
 		/>
 
+		<hr />
+
 		<CanisterMonitoringData {canisterId} bind:monitoringData>
 			<div class="status">
 				<MonitoringStrategyStatus {monitoring} {canisterData} {canisterSyncStatus} />
@@ -123,6 +125,15 @@
 
 		@include media.min-width(medium) {
 			margin: var(--padding-6x) 0 var(--padding-4x);
+			grid-column: 1 / 4;
+		}
+	}
+
+	hr {
+		margin: var(--padding-4x) 0 var(--padding-2x);
+
+		@include media.min-width(medium) {
+			margin: var(--padding-6x) 0 var(--padding-2x);
 			grid-column: 1 / 4;
 		}
 	}

@@ -14,7 +14,7 @@
 	let cycles = $derived(canister?.cycles);
 </script>
 
-<div class="consumption">
+<div class="balance">
 	<CanisterValue {sync}>
 		{#snippet label()}
 			{$i18n.canisters.available_cycles}
@@ -26,7 +26,7 @@
 </div>
 
 <style lang="scss">
-	.consumption {
+	.balance {
 		margin: 0 0 var(--padding-2_5x);
 	}
 </style>

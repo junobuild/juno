@@ -219,7 +219,7 @@
 		"delete_snapshot": "删除快照",
 		"delete_snapshot_confirm": "你确定要删除你的 {1} 快照  {0}  ?",
 		"loading_segments": "加载你的模块",
-		"survival_check": "Survival Check",
+		"health_check": "Health Check",
 		"grace_period": "The grace period is set to {0}.",
 		"current_balance": "Current balance",
 		"safety": "Safety",

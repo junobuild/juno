@@ -223,7 +223,7 @@ interface I18nCanisters {
 	delete_snapshot: string;
 	delete_snapshot_confirm: string;
 	loading_segments: string;
-	survival_check: string;
+	health_check: string;
 	grace_period: string;
 	current_balance: string;
 	safety: string;

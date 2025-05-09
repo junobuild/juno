@@ -219,7 +219,7 @@
 		"delete_snapshot": "Delete snapshot",
 		"delete_snapshot_confirm": "Are you sure you want to delete the snapshot {0} of your {1}?",
 		"loading_segments": "Loading your modules",
-		"survival_check": "Survival Check",
+		"health_check": "Health Check",
 		"grace_period": "The grace period is set to {0}.",
 		"current_balance": "Current balance",
 		"safety": "Safety",

@@ -48,7 +48,7 @@
 <div class="freezing">
 	<CanisterValue {sync} rows={3}>
 		{#snippet label()}
-			{$i18n.canisters.survival_check}
+			{$i18n.canisters.health_check}
 		{/snippet}
 
 		<div class="container">

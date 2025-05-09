@@ -100,7 +100,8 @@
 		}
 	}
 
-	.chart, .status {
+	.chart,
+	.status {
 		@include media.min-width(medium) {
 			grid-column: 1 / 3;
 		}

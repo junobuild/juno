@@ -1,5 +1,4 @@
 <script lang="ts">
-	import { fromNullishNullable } from '@dfinity/utils';
 	import type { Satellite } from '$declarations/mission_control/mission_control.did';
 	import CanisterOverview from '$lib/components/canister/CanisterOverview.svelte';
 	import CanisterSubnet from '$lib/components/canister/CanisterSubnet.svelte';
@@ -19,10 +18,6 @@
 	let { satellite }: Props = $props();
 
 	let satelliteId: SatelliteIdText = $derived(satellite.satellite_id.toText());
-
-	let monitoring = $derived(
-		fromNullishNullable(fromNullishNullable(satellite.settings)?.monitoring)
-	);
 </script>
 
 <div class="card-container with-title">

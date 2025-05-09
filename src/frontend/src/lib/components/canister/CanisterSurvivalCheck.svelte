@@ -1,14 +1,14 @@
 <script lang="ts">
 	import CanisterValue from '$lib/components/canister/CanisterValue.svelte';
+	import IconCheckCircle from '$lib/components/icons/IconCheckCircle.svelte';
+	import IconError from '$lib/components/icons/IconError.svelte';
+	import InlineWarning from '$lib/components/ui/InlineWarning.svelte';
 	import { i18n } from '$lib/stores/i18n.store';
 	import type { CanisterDataInfo, CanisterSyncStatus } from '$lib/types/canister';
 	import { formatTCycles } from '$lib/utils/cycles.utils.js';
 	import { secondsToDuration } from '$lib/utils/date.utils';
-	import { formatNumber } from '$lib/utils/number.utils';
-	import IconCheckCircle from '$lib/components/icons/IconCheckCircle.svelte';
-	import InlineWarning from '$lib/components/ui/InlineWarning.svelte';
-	import IconError from '$lib/components/icons/IconError.svelte';
 	import { i18nFormat } from '$lib/utils/i18n.utils';
+	import { formatNumber } from '$lib/utils/number.utils';
 
 	interface Props {
 		canister: CanisterDataInfo | undefined;

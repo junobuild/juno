@@ -31,6 +31,8 @@
 		</Value>
 	</div>
 
+	<CanisterCyclesBalance canister={data?.canister} {sync} />
+
 	<CanisterQueries canister={data?.canister} {sync} />
 </div>
 
@@ -45,8 +47,6 @@
 </div>
 
 <div>
-	<CanisterCyclesBalance canister={data?.canister} {sync} />
-
 	<CanisterSurvivalCheck canister={data?.canister} {sync} />
 </div>
 

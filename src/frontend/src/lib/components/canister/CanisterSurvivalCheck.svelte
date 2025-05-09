@@ -4,13 +4,11 @@
 	import type { CanisterDataInfo, CanisterSyncStatus } from '$lib/types/canister';
 	import { formatTCycles } from '$lib/utils/cycles.utils.js';
 	import { secondsToDuration } from '$lib/utils/date.utils';
-	import Value from '$lib/components/ui/Value.svelte';
 	import { formatNumber } from '$lib/utils/number.utils';
 	import IconCheckCircle from '$lib/components/icons/IconCheckCircle.svelte';
-	import IconWarning from '$lib/components/icons/IconWarning.svelte';
 	import InlineWarning from '$lib/components/ui/InlineWarning.svelte';
-	import IconClose from '$lib/components/icons/IconClose.svelte';
 	import IconError from '$lib/components/icons/IconError.svelte';
+	import { i18nFormat } from '$lib/utils/i18n.utils';
 
 	interface Props {
 		canister: CanisterDataInfo | undefined;
@@ -50,23 +48,28 @@
 <div class="freezing">
 	<CanisterValue {sync} rows={3}>
 		{#snippet label()}
-			Survival Check
+			{$i18n.canisters.survival_check}
 		{/snippet}
 
 		<div class="container">
 			<p>
-				The grace period is set to {secondsToDuration(freezingThreshold ?? 0n)}.
+				{i18nFormat($i18n.canisters.grace_period, [
+					{
+						placeholder: '{0}',
+						value: secondsToDuration(freezingThreshold ?? 0n)
+					}
+				])}
 			</p>
 
-			<span class="label">Cycles needed:</span>
+			<label for="cycles-needed">{$i18n.canisters.cycles_needed}:</label>
 			<div class="progress-bar-container">
 				<div class="progress-bar" style={`width: ${progressionReserve}%`}></div>
 			</div>
-			<span class="progress-bar-value"
+			<span class="progress-bar-value" id="cycles-needed"
 				>{formatTCycles(cyclesReserve ?? 0n)}T <small>cycles</small></span
 			>
 
-			<span class="label">Current Balance:</span>
+			<label for="current-balance">{$i18n.canisters.current_balance}:</label>
 			<div class="progress-bar-container">
 				<div
 					class="progress-bar"
@@ -74,30 +77,32 @@
 					style={`width: ${progressionBalance}%`}
 				></div>
 			</div>
-			<span class="progress-bar-value"
+			<span class="progress-bar-value" id="current-balance"
 				>{formatTCycles(cyclesBalance ?? 0n)}T <small>cycles</small></span
 			>
 
 			<p class="space">
-				<span class="label">Safety:</span>
-				<span>
+				<label for="safety">{$i18n.canisters.safety}:</label>
+				<span id="safety">
 					{#if ratio >= 1}
-						<span class="safe"><IconCheckCircle size="16px" /></span> Safe
+						<span class="safe"><IconCheckCircle size="16px" /></span>
+						{$i18n.canisters.safe}
 						<small
-							>— {formatNumber(ratio * 100, { minFraction: 0, maxFraction: 0 })}<small>%</small> of cycles
-							needed</small
+							>— {formatNumber(ratio * 100, { minFraction: 0, maxFraction: 0 })}<small>%</small>
+							{$i18n.canisters.of_cycles_needed}</small
 						>
 					{:else if ratio >= 0.9}
-						<InlineWarning title="Low" iconSize="16" /> <strong>Low</strong>
+						<InlineWarning title="Low" iconSize="16" /> <strong>{$i18n.canisters.low}</strong>
 						<small
-							>— {formatNumber(ratio * 100, { minFraction: 0, maxFraction: 0 })}<small>%</small> of cycles
-							needed</small
+							>— {formatNumber(ratio * 100, { minFraction: 0, maxFraction: 0 })}<small>%</small>
+							{$i18n.canisters.of_cycles_needed}</small
 						>
 					{:else}
-						<IconError size="20px" /> <strong>At Risk</strong>
+						<IconError size="20px" /> <strong>{$i18n.canisters.risk}</strong>
 						<small
-							>— Only {formatNumber(ratio * 100, { minFraction: 0, maxFraction: 0 })}<small>%</small
-							> of cycles needed</small
+							>— {$i18n.canisters.only}
+							{formatNumber(ratio * 100, { minFraction: 0, maxFraction: 0 })}<small>%</small>
+							{$i18n.canisters.of_cycles_needed}</small
 						>
 					{/if}
 				</span>
@@ -151,7 +156,7 @@
 		}
 	}
 
-	.label {
+	label {
 		color: var(--value-color);
 	}
 

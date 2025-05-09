@@ -158,6 +158,7 @@
 		"delete_success": "{0} 已删除.",
 		"cycles": "Cycles",
 		"available_cycles": "Available Cycles",
+		"cycles_needed": "Cycles needed",
 		"transfer_cycles": "转移 Cycles",
 		"review_and_confirm_transfer_cycles": "再检查如下信息并确认转账处理.",
 		"transfer_cycles_action": "转移",
@@ -217,7 +218,16 @@
 		"edit_snapshot": "编辑快照",
 		"delete_snapshot": "删除快照",
 		"delete_snapshot_confirm": "你确定要删除你的 {1} 快照  {0}  ?",
-		"loading_segments": "加载你的模块"
+		"loading_segments": "加载你的模块",
+		"survival_check": "Survival Check",
+		"grace_period": "The grace period is set to {0}.",
+		"current_balance": "Current balance",
+		"safety": "Safety",
+		"safe": "Safe",
+		"low": "Low",
+		"risk": "At risk",
+		"of_cycles_needed": "of cycles needed",
+		"only": "Only"
 	},
 	"sign_in": {
 		"quote_1": "Stars can't shine without darkness.",

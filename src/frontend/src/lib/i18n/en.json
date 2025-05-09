@@ -113,6 +113,7 @@
 		"top_up_mission_control_done": "Your mission control center has been topped-up.",
 		"top_up_satellite_done": "Your satellite has been topped-up.",
 		"top_up_orbiter_done": "Your orbiter has been topped-up.",
+		"daily_consumption": "Daily Idle Consumption",
 		"queries": "Queries",
 		"calls": "calls",
 		"instructions": "instructions",

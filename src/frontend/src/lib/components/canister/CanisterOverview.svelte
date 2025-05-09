@@ -8,6 +8,7 @@
 	import Value from '$lib/components/ui/Value.svelte';
 	import { i18n } from '$lib/stores/i18n.store';
 	import type { CanisterData, CanisterSyncStatus, Segment } from '$lib/types/canister';
+	import CanisterIdleConsumption from '$lib/components/canister/CanisterIdleConsumption.svelte';
 
 	interface Props {
 		canisterId: Principal;
@@ -37,6 +38,8 @@
 	</div>
 
 	<CanisterCyclesBalance canister={data?.canister} {sync} />
+
+	<CanisterIdleConsumption canister={data?.canister} {sync} />
 
 	<CanisterQueries canister={data?.canister} {sync} />
 </div>

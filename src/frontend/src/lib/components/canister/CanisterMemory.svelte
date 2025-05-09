@@ -129,8 +129,4 @@
 	.total {
 		padding: 0 0 var(--padding-2x);
 	}
-
-	p:not(.total) {
-		font-size: var(--font-size-small);
-	}
 </style>

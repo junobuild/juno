@@ -16,6 +16,7 @@
 		canisterId: Principal;
 		display?: boolean;
 		displayMemoryTotal?: boolean;
+		displayCycles?: boolean;
 		row?: boolean;
 		data?: CanisterData | undefined;
 		sync?: CanisterSyncStatus | undefined;
@@ -25,6 +26,7 @@
 		canisterId,
 		display = true,
 		displayMemoryTotal = true,
+		displayCycles = true,
 		row = false,
 		data = $bindable(undefined),
 		sync = $bindable(undefined)
@@ -55,9 +57,11 @@
 	<div class:row>
 		{#if ['synced', 'syncing'].includes(sync ?? '')}
 			<p class="status"><CanisterIndicator {data} /><span>{status ?? '???'}</span></p>
-			<p class="cycles">
-				<CanisterTCycles {data} />
-			</p>
+			{#if displayCycles}
+				<p class="cycles">
+					<CanisterTCycles {data} />
+				</p>
+			{/if}
 			{#if displayMemoryTotal}
 				<p>
 					{formatBytes(Number(memorySize))} <small>{$i18n.canisters.in_total}</small>
@@ -65,7 +69,9 @@
 			{/if}
 		{:else if sync === 'loading'}
 			<p class="skeleton"><SkeletonText /></p>
-			<p class="skeleton"><SkeletonText /></p>
+			{#if displayCycles}
+				<p class="skeleton"><SkeletonText /></p>
+			{/if}
 			{#if displayMemoryTotal}
 				<p class="skeleton"><SkeletonText /></p>
 			{/if}

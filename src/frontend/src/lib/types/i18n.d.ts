@@ -117,7 +117,6 @@ interface I18nCanisters {
 	top_up_mission_control_done: string;
 	top_up_satellite_done: string;
 	top_up_orbiter_done: string;
-	daily_consumption: string;
 	queries: string;
 	calls: string;
 	instructions: string;
@@ -162,6 +161,8 @@ interface I18nCanisters {
 	detach_success: string;
 	delete_success: string;
 	cycles: string;
+	available_cycles: string;
+	cycles_needed: string;
 	transfer_cycles: string;
 	review_and_confirm_transfer_cycles: string;
 	transfer_cycles_action: string;
@@ -222,6 +223,15 @@ interface I18nCanisters {
 	delete_snapshot: string;
 	delete_snapshot_confirm: string;
 	loading_segments: string;
+	survival_check: string;
+	grace_period: string;
+	current_balance: string;
+	safety: string;
+	safe: string;
+	low: string;
+	risk: string;
+	of_cycles_needed: string;
+	only: string;
 }
 
 interface I18nSign_in {

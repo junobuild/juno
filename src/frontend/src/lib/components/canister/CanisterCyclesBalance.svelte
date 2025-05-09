@@ -11,16 +11,16 @@
 
 	let { canister, sync }: Props = $props();
 
-	let idleCyclesBurnedPerDay: bigint | undefined = $derived(canister?.idleCyclesBurnedPerDay);
+	let cycles = $derived(canister?.cycles);
 </script>
 
 <div class="consumption">
 	<CanisterValue {sync}>
 		{#snippet label()}
-			{$i18n.canisters.daily_consumption}
+			{$i18n.canisters.available_cycles}
 		{/snippet}
 		<span>
-			{formatTCycles(idleCyclesBurnedPerDay ?? 0n)}T <small>cycles</small>
+			{formatTCycles(cycles ?? 0n)}T <small>cycles</small>
 		</span>
 	</CanisterValue>
 </div>

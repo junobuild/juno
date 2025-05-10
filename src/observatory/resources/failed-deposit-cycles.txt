@@ -1,0 +1,15 @@
+An attempt to deposit cycles on your {{module}} has failed!
+
+Module: {{module}} ({{name}})
+
+Time: {{timestamp}}
+
+View your module {{url}}
+
+or copy and paste this URL into your browser: {{url}} {{url}}
+
+--------------------------------------------------------------------------------
+
+If you have any questions, please reply to this email to get in touch with us.
+
+Juno Build ・ c/o The Hub Zürich Association ・ Sihlquai 131 ・ 8005 Zürich, CH

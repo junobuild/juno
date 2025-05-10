@@ -1,7 +1,7 @@
 use crate::hooks::random::invoke_on_init_random_seed;
 use crate::memory::internal::STATE;
 use getrandom::Error;
-use ic_cdk::spawn;
+use ic_cdk::futures::spawn;
 use ic_cdk_timers::set_timer;
 use junobuild_shared::random::get_random_seed;
 use rand::RngCore;

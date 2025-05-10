@@ -1,5 +1,5 @@
-use canfund::manager::record::CanisterRecord;
-use junobuild_shared::types::monitoring::CyclesBalance;
+use canfund::manager::record::{CanisterRecord, FundingErrorCode};
+use junobuild_shared::types::monitoring::{CyclesBalance, FundingFailure, FundingErrorCode as InternalFundingErrorCode};
 
 pub fn get_deposited_cycles(record: &CanisterRecord) -> Option<CyclesBalance> {
     if let Some(cycles) = record.get_cycles() {
@@ -22,4 +22,35 @@ pub fn get_deposited_cycles(record: &CanisterRecord) -> Option<CyclesBalance> {
     } else {
         None
     }
+}
+
+pub fn get_funding_failure(record: &CanisterRecord) -> Option<FundingFailure> {
+    if let Some(cycles) = record.get_cycles() {
+        fn convert_funding_error_code(code: &FundingErrorCode) -> InternalFundingErrorCode {
+            match code {
+                FundingErrorCode::InsufficientCycles => InternalFundingErrorCode::InsufficientCycles,
+                FundingErrorCode::DepositFailed => InternalFundingErrorCode::DepositFailed,
+                FundingErrorCode::ObtainCyclesFailed => InternalFundingErrorCode::ObtainCyclesFailed,
+                FundingErrorCode::BalanceCheckFailed => InternalFundingErrorCode::BalanceCheckFailed,
+                FundingErrorCode::Other(s) => InternalFundingErrorCode::Other(s.to_string()),
+            }
+        }
+        
+        let funding_failure =
+            record
+                .get_funding_failure()
+                .clone()
+                .map(|funding_failure| FundingFailure {
+                    error_code: convert_funding_error_code(&funding_failure.error_code),
+                    timestamp: funding_failure.timestamp,
+                });
+
+       if let Some(funding_failure) = funding_failure {
+           if funding_failure.timestamp >= cycles.timestamp {
+               return Some(funding_failure);
+           }
+       }
+    }
+
+    None
 }

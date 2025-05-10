@@ -125,12 +125,18 @@ pub mod state {
     #[derive(CandidType, Serialize, Deserialize, Clone)]
     pub enum NotificationKind {
         DepositedCyclesEmail(DepositedCyclesEmailNotification),
+        FailedCyclesDepositEmail(FailedCyclesDepositEmailNotification),
     }
 
     #[derive(CandidType, Serialize, Deserialize, Clone)]
     pub struct DepositedCyclesEmailNotification {
         pub to: String,
         pub deposited_cycles: CyclesBalance,
+    }
+
+    #[derive(CandidType, Serialize, Deserialize, Clone)]
+    pub struct FailedCyclesDepositEmailNotification {
+        pub to: String,
     }
 }
 
@@ -365,6 +371,22 @@ pub mod monitoring {
     #[derive(CandidType, Serialize, Deserialize, Clone)]
     pub struct CyclesBalance {
         pub amount: u128,
+        pub timestamp: Timestamp,
+    }
+
+    #[derive(CandidType, Serialize, Deserialize, Clone)]
+    pub enum FundingErrorCode {
+        #[default]
+        InsufficientCycles, // Funding canister has insufficient cycles
+        DepositFailed,      // The deposit of cycles failed
+        ObtainCyclesFailed, // Obtaining cycles failed
+        BalanceCheckFailed, // Fetching cycles balance failed
+        Other(String),      // Other errors with a custom message
+    }
+
+    #[derive(CandidType, Serialize, Deserialize, Clone)]
+    pub struct FundingFailure {
+        pub error_code: FundingErrorCode,
         pub timestamp: Timestamp,
     }
 }

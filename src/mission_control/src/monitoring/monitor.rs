@@ -9,7 +9,7 @@ use crate::types::interface::{
     GetMonitoringHistory, MonitoringStartConfig, MonitoringStatus, MonitoringStopConfig,
 };
 use crate::types::state::{MonitoringHistory, MonitoringHistoryKey};
-use ic_cdk::spawn;
+use ic_cdk::futures::spawn;
 use ic_cdk::trap;
 use ic_cdk_timers::set_timer;
 use std::time::Duration;

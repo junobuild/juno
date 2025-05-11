@@ -1,6 +1,6 @@
 pub mod state {
     use crate::types::core::DomainName;
-    use crate::types::monitoring::CyclesBalance;
+    use crate::types::monitoring::{CyclesBalance, FundingFailure};
     use candid::Principal;
     use candid::{CandidType, Nat};
     use ic_cdk::api::management_canister::main::CanisterStatusType;
@@ -125,12 +125,19 @@ pub mod state {
     #[derive(CandidType, Serialize, Deserialize, Clone)]
     pub enum NotificationKind {
         DepositedCyclesEmail(DepositedCyclesEmailNotification),
+        FailedCyclesDepositEmail(FailedCyclesDepositEmailNotification),
     }
 
     #[derive(CandidType, Serialize, Deserialize, Clone)]
     pub struct DepositedCyclesEmailNotification {
         pub to: String,
         pub deposited_cycles: CyclesBalance,
+    }
+
+    #[derive(CandidType, Serialize, Deserialize, Clone)]
+    pub struct FailedCyclesDepositEmailNotification {
+        pub to: String,
+        pub funding_failure: FundingFailure,
     }
 }
 
@@ -365,6 +372,21 @@ pub mod monitoring {
     #[derive(CandidType, Serialize, Deserialize, Clone)]
     pub struct CyclesBalance {
         pub amount: u128,
+        pub timestamp: Timestamp,
+    }
+
+    #[derive(CandidType, Serialize, Deserialize, Clone)]
+    pub enum FundingErrorCode {
+        InsufficientCycles, // Funding canister has insufficient cycles
+        DepositFailed,      // The deposit of cycles failed
+        ObtainCyclesFailed, // Obtaining cycles failed
+        BalanceCheckFailed, // Fetching cycles balance failed
+        Other(String),      // Other errors with a custom message
+    }
+
+    #[derive(CandidType, Serialize, Deserialize, Clone)]
+    pub struct FundingFailure {
+        pub error_code: FundingErrorCode,
         pub timestamp: Timestamp,
     }
 }

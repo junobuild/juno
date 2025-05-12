@@ -1,5 +1,7 @@
 use canfund::manager::record::{CanisterRecord, FundingErrorCode};
-use junobuild_shared::types::monitoring::{CyclesBalance, FundingFailure, FundingErrorCode as InternalFundingErrorCode};
+use junobuild_shared::types::monitoring::{
+    CyclesBalance, FundingErrorCode as InternalFundingErrorCode, FundingFailure,
+};
 
 pub fn get_deposited_cycles(record: &CanisterRecord) -> Option<CyclesBalance> {
     if let Some(cycles) = record.get_cycles() {
@@ -28,14 +30,20 @@ pub fn get_funding_failure(record: &CanisterRecord) -> Option<FundingFailure> {
     if let Some(cycles) = record.get_cycles() {
         fn convert_funding_error_code(code: &FundingErrorCode) -> InternalFundingErrorCode {
             match code {
-                FundingErrorCode::InsufficientCycles => InternalFundingErrorCode::InsufficientCycles,
+                FundingErrorCode::InsufficientCycles => {
+                    InternalFundingErrorCode::InsufficientCycles
+                }
                 FundingErrorCode::DepositFailed => InternalFundingErrorCode::DepositFailed,
-                FundingErrorCode::ObtainCyclesFailed => InternalFundingErrorCode::ObtainCyclesFailed,
-                FundingErrorCode::BalanceCheckFailed => InternalFundingErrorCode::BalanceCheckFailed,
+                FundingErrorCode::ObtainCyclesFailed => {
+                    InternalFundingErrorCode::ObtainCyclesFailed
+                }
+                FundingErrorCode::BalanceCheckFailed => {
+                    InternalFundingErrorCode::BalanceCheckFailed
+                }
                 FundingErrorCode::Other(s) => InternalFundingErrorCode::Other(s.to_string()),
             }
         }
-        
+
         let funding_failure =
             record
                 .get_funding_failure()
@@ -45,11 +53,11 @@ pub fn get_funding_failure(record: &CanisterRecord) -> Option<FundingFailure> {
                     timestamp: funding_failure.timestamp,
                 });
 
-       if let Some(funding_failure) = funding_failure {
-           if funding_failure.timestamp >= cycles.timestamp {
-               return Some(funding_failure);
-           }
-       }
+        if let Some(funding_failure) = funding_failure {
+            if funding_failure.timestamp >= cycles.timestamp {
+                return Some(funding_failure);
+            }
+        }
     }
 
     None

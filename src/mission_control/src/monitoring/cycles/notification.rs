@@ -1,4 +1,4 @@
-use crate::monitoring::cycles::utils::get_deposited_cycles;
+use crate::monitoring::cycles::utils::{get_deposited_cycles, get_funding_failure};
 use crate::monitoring::observatory::notify_observatory;
 use crate::segments::store::{get_orbiter, get_satellite};
 use crate::user::store::{get_config, get_metadata, get_user};
@@ -7,9 +7,10 @@ use ic_cdk::api::management_canister::main::CanisterId;
 use ic_cdk::{id, print, spawn};
 use ic_cdk_timers::set_timer;
 use junobuild_shared::types::interface::NotifyArgs;
-use junobuild_shared::types::monitoring::CyclesBalance;
+use junobuild_shared::types::monitoring::{CyclesBalance, FundingFailure};
 use junobuild_shared::types::state::{
-    DepositedCyclesEmailNotification, Metadata, NotificationKind, Segment, SegmentKind,
+    DepositedCyclesEmailNotification, FailedCyclesDepositEmailNotification, Metadata,
+    NotificationKind, Segment, SegmentKind,
 };
 use junobuild_shared::utils::principal_equal;
 use std::collections::HashMap;
@@ -24,19 +25,56 @@ async fn notify(records: HashMap<CanisterId, CanisterRecord>) {
         let deposited_cycles = get_deposited_cycles(record);
 
         if let Some(deposited_cycles) = deposited_cycles {
-            let args = prepare_args(canister_id, &deposited_cycles);
+            let args = prepare_cycles_args(canister_id, &deposited_cycles);
+            try_notify_observatory(&args).await;
+        }
 
-            if let Some(args) = args {
-                if let Err(e) = notify_observatory(&args).await {
-                    // Maybe in the future, we can track the potential transmission of the notification error, but for now, we’ll simply log it.
-                    print(e);
-                }
-            }
+        let funding_failure = get_funding_failure(record);
+
+        if let Some(funding_failure) = funding_failure {
+            let args = prepare_failed_cycles_args(canister_id, &funding_failure);
+            try_notify_observatory(&args).await;
         }
     }
 }
 
-fn prepare_args(canister_id: &CanisterId, deposited_cycles: &CyclesBalance) -> Option<NotifyArgs> {
+async fn try_notify_observatory(args: &Option<NotifyArgs>) {
+    if let Some(args) = args {
+        if let Err(e) = notify_observatory(&args).await {
+            // Maybe in the future, we can track the potential transmission of the notification error, but for now, we’ll simply log it.
+            print(e);
+        }
+    }
+}
+
+fn prepare_cycles_args(
+    canister_id: &CanisterId,
+    deposited_cycles: &CyclesBalance,
+) -> Option<NotifyArgs> {
+    prepare_args(canister_id, |email| {
+        NotificationKind::DepositedCyclesEmail(DepositedCyclesEmailNotification {
+            to: email,
+            deposited_cycles: deposited_cycles.clone(),
+        })
+    })
+}
+
+fn prepare_failed_cycles_args(
+    canister_id: &CanisterId,
+    funding_failure: &FundingFailure,
+) -> Option<NotifyArgs> {
+    prepare_args(canister_id, |email| {
+        NotificationKind::FailedCyclesDepositEmail(FailedCyclesDepositEmailNotification {
+            to: email,
+            funding_failure: funding_failure.clone(),
+        })
+    })
+}
+
+fn prepare_args<F>(canister_id: &CanisterId, build_kind: F) -> Option<NotifyArgs>
+where
+    F: FnOnce(String) -> NotificationKind,
+{
     let config = get_config()?.monitoring?.cycles?.notification?;
 
     if !config.enabled {
@@ -52,10 +90,7 @@ fn prepare_args(canister_id: &CanisterId, deposited_cycles: &CyclesBalance) -> O
     Some(NotifyArgs {
         user,
         segment,
-        kind: NotificationKind::DepositedCyclesEmail(DepositedCyclesEmailNotification {
-            to: email.clone(),
-            deposited_cycles: deposited_cycles.clone(),
-        }),
+        kind: build_kind(email),
     })
 }
 

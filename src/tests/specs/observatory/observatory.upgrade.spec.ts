@@ -8,7 +8,7 @@ import { mockMissionControlId } from '../../../frontend/tests/mocks/modules.mock
 import { missionControlUserInitArgs } from '../../utils/mission-control-tests.utils';
 import {
 	mockObservatoryProxyBearerKey,
-	testDepositCyclesNotification
+	testDepositedCyclesNotification
 } from '../../utils/observatory-tests.utils';
 import { tick } from '../../utils/pic-tests.utils';
 import { downloadObservatory, OBSERVATORY_WASM_PATH } from '../../utils/setup-tests.utils';
@@ -69,7 +69,7 @@ describe('Observatory > Upgrade', () => {
 
 		describe('Deposit cycles notifications', () => {
 			it('should still notify Mission Control with previous interface', async () => {
-				await testDepositCyclesNotification({
+				await testDepositedCyclesNotification({
 					kind: { MissionControl: null },
 					url: 'https://console.juno.build/mission-control',
 					moduleName: 'Mission Control',
@@ -79,7 +79,7 @@ describe('Observatory > Upgrade', () => {
 			});
 
 			it('should still notify Orbiter with previous interface', async () => {
-				await testDepositCyclesNotification({
+				await testDepositedCyclesNotification({
 					kind: { Orbiter: null },
 					url: 'https://console.juno.build/analytics',
 					moduleName: 'Orbiter',
@@ -89,7 +89,7 @@ describe('Observatory > Upgrade', () => {
 			});
 
 			it('should still notify Satellite with previous interface', async () => {
-				await testDepositCyclesNotification({
+				await testDepositedCyclesNotification({
 					kind: { Satellite: null },
 					url: `https://console.juno.build/satellite/?s=${mockMissionControlId.toText()}`,
 					moduleName: 'Satellite',
@@ -99,7 +99,7 @@ describe('Observatory > Upgrade', () => {
 			});
 
 			it('should notify Satellite with name', async () => {
-				await testDepositCyclesNotification({
+				await testDepositedCyclesNotification({
 					kind: { Satellite: null },
 					url: `https://console.juno.build/satellite/?s=${mockMissionControlId.toText()}`,
 					moduleName: 'Satellite',

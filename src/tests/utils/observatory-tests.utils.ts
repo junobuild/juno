@@ -24,13 +24,22 @@ const DEPOSITED_CYCLES_TEMPLATE_HTML = readFileSync(
 	'utf-8'
 );
 
-export const testDepositCyclesNotification = async ({
+const FAILED_DEPOSIT_CYCLES_TEMPLATE_TEXT = readFileSync(
+	join(process.cwd(), 'src/observatory/resources/failed-deposit-cycles.txt'),
+	'utf-8'
+);
+
+const FAILED_DEPOSIT_CYCLES_TEMPLATE_HTML = readFileSync(
+	join(process.cwd(), 'src/observatory/resources/failed-deposit-cycles.html'),
+	'utf-8'
+);
+
+export const testDepositedCyclesNotification = async ({
 	kind,
-	url: expectedUrl,
-	moduleName,
 	metadataName,
+	moduleName,
 	actor,
-	pic
+	...rest
 }: {
 	kind: SegmentKind;
 	url: string;
@@ -59,6 +68,77 @@ export const testDepositCyclesNotification = async ({
 		user: Ed25519KeyIdentity.generate().getPrincipal()
 	});
 
+	await assertNotification({
+		templateText: DEPOSITED_CYCLES_TEMPLATE_TEXT,
+		templateHtml: DEPOSITED_CYCLES_TEMPLATE_HTML,
+		expectedSubject: `🚀 0.00012346 T Cycles Deposited on Your ${moduleName}`,
+		moduleName,
+		metadataName,
+		...rest
+	});
+};
+
+export const testFailedDepositCyclesNotification = async ({
+	kind,
+	metadataName,
+	moduleName,
+	actor,
+	...rest
+}: {
+	kind: SegmentKind;
+	url: string;
+	moduleName: 'Mission Control' | 'Satellite' | 'Orbiter';
+	metadataName?: string;
+	actor: ObservatoryActor;
+	pic: PocketIc;
+}) => {
+	const { ping } = actor;
+
+	await ping({
+		kind: {
+			FailedCyclesDepositEmail: {
+				to: 'test@test.com',
+				funding_failure: {
+					error_code: { DepositFailed: null },
+					timestamp: 1747036399590000000n
+				}
+			}
+		},
+		segment: {
+			id: mockMissionControlId,
+			metadata: nonNullish(metadataName) ? [[['name', metadataName]]] : [],
+			kind
+		},
+		user: Ed25519KeyIdentity.generate().getPrincipal()
+	});
+
+	await assertNotification({
+		templateText: FAILED_DEPOSIT_CYCLES_TEMPLATE_TEXT,
+		templateHtml: FAILED_DEPOSIT_CYCLES_TEMPLATE_HTML,
+		expectedSubject: `❗️Cycles Deposit Failed on Your ${moduleName}`,
+		moduleName,
+		metadataName,
+		...rest
+	});
+};
+
+const assertNotification = async ({
+	url: expectedUrl,
+	moduleName,
+	metadataName,
+	pic,
+	templateHtml,
+	templateText,
+	expectedSubject
+}: {
+	url: string;
+	moduleName: 'Mission Control' | 'Satellite' | 'Orbiter';
+	metadataName?: string;
+	pic: PocketIc;
+	templateHtml: string;
+	templateText: string;
+	expectedSubject: string;
+}) => {
 	await tick(pic);
 
 	const [pendingHttpOutCall] = await pic.getPendingHttpsOutcalls();
@@ -90,7 +170,7 @@ export const testDepositCyclesNotification = async ({
 	const { from, subject, text, html } = JSON.parse(decoder.decode(body));
 
 	expect(from).toEqual('Juno <notify@notifications.juno.build>');
-	expect(subject).toEqual(`🚀 0.00012346 T Cycles Deposited on Your ${moduleName}`);
+	expect(subject).toEqual(expectedSubject);
 
 	const parseTemplate = (template: string): string =>
 		template
@@ -104,8 +184,8 @@ export const testDepositCyclesNotification = async ({
 			.replaceAll('{{timestamp}}', '2025-05-12T07:53:19+00:00')
 			.replaceAll('{{url}}', expectedUrl);
 
-	expect(text).toEqual(parseTemplate(DEPOSITED_CYCLES_TEMPLATE_TEXT));
-	expect(html).toEqual(parseTemplate(DEPOSITED_CYCLES_TEMPLATE_HTML));
+	expect(text).toEqual(parseTemplate(templateText));
+	expect(html).toEqual(parseTemplate(templateHtml));
 
 	// Finalize
 	await pic.mockPendingHttpsOutcall({

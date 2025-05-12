@@ -3,7 +3,7 @@ pub mod state {
     use candid::{CandidType, Principal};
     use ic_stable_structures::StableBTreeMap;
     use junobuild_shared::types::memory::Memory;
-    use junobuild_shared::types::monitoring::CyclesBalance;
+    use junobuild_shared::types::monitoring::{CyclesBalance, FundingFailure};
     use junobuild_shared::types::state::{
         ArchiveTime, Controllers, Metadata, OrbiterId, SegmentId, SegmentStatusResult, Timestamp,
     };
@@ -176,6 +176,7 @@ pub mod state {
     pub struct MonitoringHistoryCycles {
         pub cycles: CyclesBalance,
         pub deposited_cycles: Option<CyclesBalance>,
+        pub funding_failure: Option<FundingFailure>,
     }
 }
 

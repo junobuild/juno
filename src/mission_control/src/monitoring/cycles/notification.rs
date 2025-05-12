@@ -1,6 +1,8 @@
 use crate::monitoring::cycles::utils::{get_deposited_cycles, get_funding_failure};
+use crate::monitoring::monitor::get_monitoring_history;
 use crate::monitoring::observatory::notify_observatory;
 use crate::segments::store::{get_orbiter, get_satellite};
+use crate::types::interface::GetMonitoringHistory;
 use crate::user::store::{get_config, get_metadata, get_user};
 use canfund::manager::record::CanisterRecord;
 use ic_cdk::api::management_canister::main::CanisterId;
@@ -32,10 +34,35 @@ async fn notify(records: HashMap<CanisterId, CanisterRecord>) {
         let funding_failure = get_funding_failure(record);
 
         if let Some(funding_failure) = funding_failure {
-            let args = prepare_failed_cycles_args(canister_id, &funding_failure);
-            try_notify_observatory(&args).await;
+            if should_notify_funding_failure(canister_id, &funding_failure) {
+                let args = prepare_failed_cycles_args(canister_id, &funding_failure);
+                try_notify_observatory(&args).await;
+            }
         }
     }
+}
+
+// We send no more than one funding failure email a day to keep devs from being spammed.
+fn should_notify_funding_failure(
+    canister_id: &CanisterId,
+    funding_failure: &FundingFailure,
+) -> bool {
+    let one_day_ago = funding_failure.timestamp.saturating_sub(86_400_000_000_000); // 1 day in nanoseconds
+
+    let recent_monitoring_history = get_monitoring_history(&GetMonitoringHistory {
+        segment_id: canister_id.clone(),
+        from: Some(one_day_ago),
+        to: None,
+    });
+
+    let has_recent_funding_failure = recent_monitoring_history.iter().any(|(_, history)| {
+        history
+            .cycles
+            .as_ref()
+            .map_or(false, |cycles| cycles.funding_failure.is_some())
+    });
+
+    !has_recent_funding_failure
 }
 
 async fn try_notify_observatory(args: &Option<NotifyArgs>) {

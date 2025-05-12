@@ -6,7 +6,8 @@ import { inject } from 'vitest';
 import { mockMissionControlId } from '../../../frontend/tests/mocks/modules.mock';
 import {
 	mockObservatoryProxyBearerKey,
-	testDepositedCyclesNotification, testFailedDepositCyclesNotification
+	testDepositedCyclesNotification,
+	testFailedDepositCyclesNotification
 } from '../../utils/observatory-tests.utils';
 import { tick } from '../../utils/pic-tests.utils';
 import { OBSERVATORY_WASM_PATH } from '../../utils/setup-tests.utils';

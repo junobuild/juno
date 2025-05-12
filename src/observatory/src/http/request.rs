@@ -17,9 +17,15 @@ pub async fn post_email(
 ) -> Result<(), String> {
     let request = get_email_request(idempotency_key, api_key, email)?;
 
+    ic_cdk::print("About to HTTP call".to_string());
+
     match http_request_outcall(request, SEND_EMAIL_CYCLES).await {
-        Ok((_response,)) => Ok(()),
+        Ok((_response,)) => {
+            ic_cdk::print("Ok ????".to_string());
+            Ok(())
+        },
         Err((r, m)) => {
+            ic_cdk::print("Err ????".to_string());
             let message = format!("HTTP request error. RejectionCode: {:?}, Error: {}", r, m);
             Err(format!("‼️ --> {}.", message))
         }
@@ -32,7 +38,7 @@ fn get_email_request(
     email: &EmailRequestBody,
 ) -> Result<CanisterHttpRequestArgument, String> {
     let email_notifications_url =
-        "https://europe-west6-juno-observatory.cloudfunctions.net/observatory/notifications/email";
+        "http://127.0.0.1:4444/observatory/notifications/email";
 
     let request_headers = vec![
         HttpHeader {

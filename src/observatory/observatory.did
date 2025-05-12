@@ -13,6 +13,21 @@ type DepositedCyclesEmailNotification = record {
   deposited_cycles : CyclesBalance;
 };
 type Env = record { email_api_key : opt text };
+type FailedCyclesDepositEmailNotification = record {
+  to : text;
+  funding_failure : FundingFailure;
+};
+type FundingErrorCode = variant {
+  BalanceCheckFailed;
+  ObtainCyclesFailed;
+  DepositFailed;
+  InsufficientCycles;
+  Other : text;
+};
+type FundingFailure = record {
+  timestamp : nat64;
+  error_code : FundingErrorCode;
+};
 type GetNotifications = record {
   to : opt nat64;
   from : opt nat64;
@@ -20,6 +35,7 @@ type GetNotifications = record {
 };
 type NotificationKind = variant {
   DepositedCyclesEmail : DepositedCyclesEmailNotification;
+  FailedCyclesDepositEmail : FailedCyclesDepositEmailNotification;
 };
 type NotifyArgs = record {
   kind : NotificationKind;

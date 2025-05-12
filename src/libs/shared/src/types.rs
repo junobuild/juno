@@ -1,6 +1,6 @@
 pub mod state {
     use crate::types::core::DomainName;
-    use crate::types::monitoring::CyclesBalance;
+    use crate::types::monitoring::{CyclesBalance, FundingFailure};
     use candid::Principal;
     use candid::{CandidType, Nat};
     use ic_cdk::api::management_canister::main::CanisterStatusType;
@@ -137,6 +137,7 @@ pub mod state {
     #[derive(CandidType, Serialize, Deserialize, Clone)]
     pub struct FailedCyclesDepositEmailNotification {
         pub to: String,
+        pub funding_failure: FundingFailure,
     }
 }
 
@@ -376,7 +377,6 @@ pub mod monitoring {
 
     #[derive(CandidType, Serialize, Deserialize, Clone)]
     pub enum FundingErrorCode {
-        #[default]
         InsufficientCycles, // Funding canister has insufficient cycles
         DepositFailed,      // The deposit of cycles failed
         ObtainCyclesFailed, // Obtaining cycles failed

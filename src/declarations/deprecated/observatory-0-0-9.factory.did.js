@@ -32,24 +32,8 @@ export const idlFactory = ({ IDL }) => {
 		to: IDL.Text,
 		deposited_cycles: CyclesBalance
 	});
-	const FundingErrorCode = IDL.Variant({
-		BalanceCheckFailed: IDL.Null,
-		ObtainCyclesFailed: IDL.Null,
-		DepositFailed: IDL.Null,
-		InsufficientCycles: IDL.Null,
-		Other: IDL.Text
-	});
-	const FundingFailure = IDL.Record({
-		timestamp: IDL.Nat64,
-		error_code: FundingErrorCode
-	});
-	const FailedCyclesDepositEmailNotification = IDL.Record({
-		to: IDL.Text,
-		funding_failure: FundingFailure
-	});
 	const NotificationKind = IDL.Variant({
-		DepositedCyclesEmail: DepositedCyclesEmailNotification,
-		FailedCyclesDepositEmail: FailedCyclesDepositEmailNotification
+		DepositedCyclesEmail: DepositedCyclesEmailNotification
 	});
 	const SegmentKind = IDL.Variant({
 		Orbiter: IDL.Null,

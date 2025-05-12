@@ -9,11 +9,12 @@ use junobuild_shared::types::state::NotificationKind;
 pub async fn send_notification(key: NotificationKey) {
     let notification = get_notification(&key).unwrap_or_else(|| trap("Notification not found."));
 
-    let result = match &notification.kind {
-        NotificationKind::DepositedCyclesEmail(email) => {
-            send_email(&key, &email.to, &notification).await
-        }
+    let email_to = match &notification.kind {
+        NotificationKind::DepositedCyclesEmail(email) => &email.to,
+        NotificationKind::FailedCyclesDepositEmail(email) => &email.to,
     };
+
+    let result = send_email(&key, &email_to, &notification).await;
 
     let updated_notification = match result {
         Ok(_) => Notification::sent(&notification),

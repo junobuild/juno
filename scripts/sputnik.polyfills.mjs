@@ -82,7 +82,7 @@ const resources = [
 		transform: transformTextEncodingPolyfill
 	},
 	{
-		src: '/awslabs/llrt/refs/heads/main/modules/llrt_http/src/blob.rs',
+		src: '/awslabs/llrt/refs/heads/main/modules/llrt_buffer/src/blob.rs',
 		dest: join(process.cwd(), 'src/sputnik/src/js/apis/node/blob/llrt/polyfill.rs'),
 		transform: transformBlobPolyfill
 	}

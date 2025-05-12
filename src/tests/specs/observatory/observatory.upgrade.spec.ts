@@ -1,6 +1,5 @@
 import type { _SERVICE as ObservatoryActor_0_0_9 } from '$declarations/deprecated/observatory-0-0-9.did';
 import { idlFactory as idlFactorObservatory_0_0_8 } from '$declarations/deprecated/observatory-0-0-9.factory.did';
-import type { _SERVICE as ObservatoryActor } from '$declarations/observatory/observatory.did';
 import { Ed25519KeyIdentity } from '@dfinity/identity';
 import type { Principal } from '@dfinity/principal';
 import { type Actor, PocketIc } from '@hadronous/pic';
@@ -16,7 +15,7 @@ import { downloadObservatory, OBSERVATORY_WASM_PATH } from '../../utils/setup-te
 
 describe('Observatory > Upgrade', () => {
 	let pic: PocketIc;
-	let actor: Actor<ObservatoryActor>;
+	let actor: Actor<ObservatoryActor_0_0_9>;
 	let observatoryId: Principal;
 
 	const controller = Ed25519KeyIdentity.generate();

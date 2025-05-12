@@ -1,8 +1,10 @@
 import type { _SERVICE as ObservatoryActor } from '$declarations/observatory/observatory.did';
 import { idlFactory as idlFactorObservatory } from '$declarations/observatory/observatory.factory.did';
 import { Ed25519KeyIdentity } from '@dfinity/identity';
-import { assertNonNullish, nowInBigIntNanoSeconds } from '@dfinity/utils';
+import { assertNonNullish } from '@dfinity/utils';
 import { type Actor, PocketIc } from '@hadronous/pic';
+import { readFileSync } from 'node:fs';
+import { join } from 'node:path';
 import { inject } from 'vitest';
 import { mockMissionControlId } from '../../../frontend/tests/mocks/modules.mock';
 import { toBodyJson } from '../../utils/orbiter-test.utils';
@@ -16,6 +18,16 @@ describe('Observatory > Ping', () => {
 	const controller = Ed25519KeyIdentity.generate();
 
 	const EMAIL_API_KEY = 'test-key';
+
+	const DEPOSITED_CYCLES_TEMPLATE_TEXT = readFileSync(
+		join(process.cwd(), 'src/observatory/resources/deposited-cycles.txt'),
+		'utf-8'
+	);
+
+	const DEPOSITED_CYCLES_TEMPLATE_HTML = readFileSync(
+		join(process.cwd(), 'src/observatory/resources/deposited-cycles.html'),
+		'utf-8'
+	);
 
 	beforeAll(async () => {
 		pic = await PocketIc.create(inject('PIC_URL'));
@@ -52,7 +64,7 @@ describe('Observatory > Ping', () => {
 					to: 'test@test.com',
 					deposited_cycles: {
 						amount: 123456789n,
-						timestamp: nowInBigIntNanoSeconds()
+						timestamp: 1747036399590000000n
 					}
 				}
 			},
@@ -89,6 +101,26 @@ describe('Observatory > Ping', () => {
 		expect(idempotencyKey[0]).toEqual(mockMissionControlId.toText());
 		expect(BigInt(idempotencyKey[1])).toBeGreaterThan(0n);
 		expect(Number(idempotencyKey[1])).toBeGreaterThan(0);
+
+		const decoder = new TextDecoder();
+		const { from, subject, text, html } = JSON.parse(
+			decoder.decode(body as Uint8Array<ArrayBufferLike>)
+		);
+
+		expect(from).toEqual('Juno <notify@notifications.juno.build>');
+		expect(subject).toEqual('🚀 0.00012346 T Cycles Deposited on Your Mission Control');
+
+		const parseTemplate = (template: string): string =>
+			template
+				.replaceAll('{{cycles}}', '0.00012346')
+				.replaceAll('{{module}}', 'Mission Control')
+				.replaceAll(' ({{name}})', '')
+				.replaceAll(' (<!-- -->{{name}}<!-- -->)', '')
+				.replaceAll('{{timestamp}}', '2025-05-12T07:53:19+00:00')
+				.replaceAll('{{url}}', 'https://console.juno.build/mission-control');
+
+		expect(text).toEqual(parseTemplate(DEPOSITED_CYCLES_TEMPLATE_TEXT));
+		expect(html).toEqual(parseTemplate(DEPOSITED_CYCLES_TEMPLATE_HTML));
 
 		// Finalize
 		await pic.mockPendingHttpsOutcall({

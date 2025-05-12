@@ -24,14 +24,30 @@ export interface DepositedCyclesEmailNotification {
 export interface Env {
 	email_api_key: [] | [string];
 }
+export interface FailedCyclesDepositEmailNotification {
+	to: string;
+	funding_failure: FundingFailure;
+}
+export type FundingErrorCode =
+	| { BalanceCheckFailed: null }
+	| { ObtainCyclesFailed: null }
+	| { DepositFailed: null }
+	| { InsufficientCycles: null }
+	| { Other: string };
+export interface FundingFailure {
+	timestamp: bigint;
+	error_code: FundingErrorCode;
+}
 export interface GetNotifications {
 	to: [] | [bigint];
 	from: [] | [bigint];
 	segment_id: [] | [Principal];
 }
-export type NotificationKind = {
-	DepositedCyclesEmail: DepositedCyclesEmailNotification;
-};
+export type NotificationKind =
+	| {
+			DepositedCyclesEmail: DepositedCyclesEmailNotification;
+	  }
+	| { FailedCyclesDepositEmail: FailedCyclesDepositEmailNotification };
 export interface NotifyArgs {
 	kind: NotificationKind;
 	user: Principal;

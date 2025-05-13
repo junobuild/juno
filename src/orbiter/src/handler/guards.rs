@@ -29,7 +29,7 @@ pub fn assert_request_headers(headers: &HttpRequestHeaders) -> Result<(), (Statu
 fn assert_bot(user_agent: &str) -> Result<(), String> {
     let bots = Bots::default();
 
-    if bots.is_bot(&user_agent) {
+    if bots.is_bot(user_agent) {
         return Err(ERROR_BOT_CALL.to_string());
     }
 

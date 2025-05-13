@@ -14,7 +14,7 @@ pub async fn send_notification(key: NotificationKey) {
         NotificationKind::FailedCyclesDepositEmail(email) => &email.to,
     };
 
-    let result = send_email(&key, &email_to, &notification).await;
+    let result = send_email(&key, email_to, &notification).await;
 
     let updated_notification = match result {
         Ok(_) => Notification::sent(&notification),

@@ -53,7 +53,7 @@ fn should_notify_funding_failure(
         .saturating_sub(DELAY_BETWEEN_FUNDING_FAILURE_NOTIFICATION_NS);
 
     let recent_monitoring_history = get_monitoring_history(&GetMonitoringHistory {
-        segment_id: canister_id.clone(),
+        segment_id: *canister_id,
         from: Some(one_day_ago),
         to: Some(funding_failure.timestamp.saturating_sub(1)),
     });
@@ -62,7 +62,7 @@ fn should_notify_funding_failure(
         history
             .cycles
             .as_ref()
-            .map_or(false, |cycles| cycles.funding_failure.is_some())
+            .is_some_and(|cycles| cycles.funding_failure.is_some())
     });
 
     !has_recent_funding_failure
@@ -70,7 +70,7 @@ fn should_notify_funding_failure(
 
 async fn try_notify_observatory(args: &Option<NotifyArgs>) {
     if let Some(args) = args {
-        if let Err(e) = notify_observatory(&args).await {
+        if let Err(e) = notify_observatory(args).await {
             // Maybe in the future, we can track the potential transmission of the notification error, but for now, we’ll simply log it.
             print(e);
         }

@@ -39,7 +39,6 @@ pub fn get_funding_failure(record: &CanisterRecord) -> Option<FundingFailure> {
 
     record
         .get_funding_failure()
-        .clone()
         .map(|funding_failure| FundingFailure {
             error_code: convert_funding_error_code(&funding_failure.error_code),
             timestamp: funding_failure.timestamp,

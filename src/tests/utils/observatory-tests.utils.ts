@@ -76,7 +76,7 @@ export const testDepositedCyclesNotification = async ({
 		moduleName,
 		metadataName,
 		expectedIdempotencyKeySegmentId: mockMissionControlId,
-		expectedCycles: "0.00012346",
+		expectedCycles: '0.00012346',
 		...rest
 	});
 };
@@ -178,11 +178,11 @@ export const assertNotificationHttpsOutcalls = async ({
 	const { from, subject, text, html } = JSON.parse(decoder.decode(body));
 
 	expect(from).toEqual('Juno <notify@notifications.juno.build>');
-	expect(subject).toEqual(templateTitle.replaceAll('{{cycles}}', expectedCycles ?? ""));
+	expect(subject).toEqual(templateTitle.replaceAll('{{cycles}}', expectedCycles ?? ''));
 
 	const parseTemplate = (template: string): string =>
 		template
-			.replaceAll('{{cycles}}', expectedCycles ?? "")
+			.replaceAll('{{cycles}}', expectedCycles ?? '')
 			.replaceAll('{{module}}', moduleName)
 			.replaceAll(' ({{name}})', nonNullish(metadataName) ? ` (${metadataName})` : '')
 			.replaceAll(

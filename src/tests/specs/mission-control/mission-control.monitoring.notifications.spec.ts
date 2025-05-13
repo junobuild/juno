@@ -316,20 +316,12 @@ describe('Mission Control > Notifications', () => {
 			missionControlActor = mActor;
 
 			const missionControlCurrentCycles = await pic.getCyclesBalance(missionControlId);
-			const satelliteCurrentCycles = await pic.getCyclesBalance(satelliteId);
-
-			const satelliteStrategy: CyclesMonitoringStrategy = {
-				BelowThreshold: {
-					// This way the satellite already requires cycles
-					min_cycles: BigInt(satelliteCurrentCycles) + 100_000_000_000n,
-					fund_cycles: 140_000n
-				}
-			};
 
 			const missionControlStrategy: CyclesMonitoringStrategy = {
 				BelowThreshold: {
-					// This way the mission control cannot provide cycles
-					min_cycles: BigInt(missionControlCurrentCycles),
+					// This way the mission control would need to convert ICP to cycles
+					// but given it does not hold ICP, will fail at trying to auto-refill.
+					min_cycles: BigInt(missionControlCurrentCycles) + 100_000_000_000n,
 					fund_cycles: 100_000n
 				}
 			};
@@ -337,10 +329,7 @@ describe('Mission Control > Notifications', () => {
 			config = {
 				cycles_config: [
 					{
-						satellites_strategy: toNullable({
-							ids: [satelliteId],
-							strategy: satelliteStrategy
-						}),
+						satellites_strategy: toNullable(),
 						orbiters_strategy: toNullable(),
 						mission_control_strategy: toNullable(missionControlStrategy)
 					}

@@ -1,6 +1,6 @@
 #!/bin/bash
 
-BASE_URL="https://github.com/junobuild/observatory-templates/releases/download/v0.2.0"
+BASE_URL="https://github.com/junobuild/observatory-templates/releases/download/v0.2.1"
 FILES=("deposited-cycles.html" "deposited-cycles.txt" "failed-deposit-cycles.html" "failed-deposit-cycles.txt")
 TARGET_DIR="src/observatory/resources"
 

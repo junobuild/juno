@@ -24,6 +24,8 @@ import {
 	assertNotificationHttpsOutcalls,
 	DEPOSITED_CYCLES_TEMPLATE_HTML,
 	DEPOSITED_CYCLES_TEMPLATE_TEXT,
+	FAILED_DEPOSIT_CYCLES_TEMPLATE_HTML,
+	FAILED_DEPOSIT_CYCLES_TEMPLATE_TEXT,
 	mockObservatoryProxyBearerKey
 } from '../../utils/observatory-tests.utils';
 import { tick } from '../../utils/pic-tests.utils';
@@ -294,6 +296,148 @@ describe('Mission Control > Notifications', () => {
 					failed: 1n,
 					pending: 0n,
 					sent: 1n
+				});
+			});
+		});
+	});
+
+	describe('Failed deposit cycles', () => {
+		let missionControlActor: Actor<MissionControlActor>;
+
+		let satelliteId: Principal;
+
+		let config: MonitoringStartConfig;
+
+		beforeEach(async () => {
+			const { missionControlId, satelliteId: satId, missionControlActor: mActor } = await setup();
+
+			satelliteId = satId;
+
+			missionControlActor = mActor;
+
+			const missionControlCurrentCycles = await pic.getCyclesBalance(missionControlId);
+			const satelliteCurrentCycles = await pic.getCyclesBalance(satelliteId);
+
+			const satelliteStrategy: CyclesMonitoringStrategy = {
+				BelowThreshold: {
+					// This way the satellite already requires cycles
+					min_cycles: BigInt(satelliteCurrentCycles) + 100_000_000_000n,
+					fund_cycles: 140_000n
+				}
+			};
+
+			const missionControlStrategy: CyclesMonitoringStrategy = {
+				BelowThreshold: {
+					// This way the mission control cannot provide cycles
+					min_cycles: BigInt(missionControlCurrentCycles),
+					fund_cycles: 100_000n
+				}
+			};
+
+			config = {
+				cycles_config: [
+					{
+						satellites_strategy: toNullable({
+							ids: [satelliteId],
+							strategy: satelliteStrategy
+						}),
+						orbiters_strategy: toNullable(),
+						mission_control_strategy: toNullable(missionControlStrategy)
+					}
+				]
+			};
+		});
+
+		describe('Observatory without Email API key', () => {
+			beforeEach(async () => {
+				const { set_env } = observatoryActor;
+
+				await set_env({
+					email_api_key: []
+				});
+			});
+
+			it(
+				'should notify deposited cycles but observatory cannot send notification',
+				{ timeout: 600000 },
+				async () => {
+					await assertObservatoryStatus({
+						failed: 1n,
+						pending: 0n,
+						sent: 1n
+					});
+
+					// Start monitoring
+					const { update_and_start_monitoring } = missionControlActor;
+
+					await update_and_start_monitoring(config);
+
+					// One pending notification should be registered in the Observatory
+					await vi.waitFor(async () => {
+						await pic.tick();
+
+						await assertObservatoryStatus({
+							failed: 1n,
+							pending: 1n,
+							sent: 1n
+						});
+					});
+
+					// The notification should fail because no api key for the proxy is registered
+					await vi.waitFor(async () => {
+						await pic.tick();
+
+						await assertObservatoryStatus({
+							failed: 2n,
+							pending: 0n,
+							sent: 1n
+						});
+					});
+				}
+			);
+		});
+
+		describe('Observatory with Email API key', () => {
+			beforeEach(async () => {
+				const { set_env } = observatoryActor;
+
+				await set_env({
+					email_api_key: [mockObservatoryProxyBearerKey]
+				});
+			});
+
+			it('should notify deposited cycles', { timeout: 600000 }, async () => {
+				// Start monitoring
+				const { update_and_start_monitoring } = missionControlActor;
+
+				await update_and_start_monitoring(config);
+
+				// One pending notification should be registered in the Observatory
+				await vi.waitFor(async () => {
+					await pic.tick();
+
+					await assertObservatoryStatus({
+						failed: 2n,
+						pending: 1n,
+						sent: 1n
+					});
+				});
+
+				await assertNotificationHttpsOutcalls({
+					templateText: FAILED_DEPOSIT_CYCLES_TEMPLATE_TEXT,
+					templateHtml: FAILED_DEPOSIT_CYCLES_TEMPLATE_HTML,
+					templateTitle: `❗️Cycles Deposit Failed on Your Satellite`,
+					moduleName: 'Satellite',
+					url: `https://console.juno.build/satellite/?s=${satelliteId.toText()}`,
+					expectedIdempotencyKeySegmentId: satelliteId,
+					pic
+				});
+
+				// The notification should have been sent
+				await assertObservatoryStatus({
+					failed: 2n,
+					pending: 0n,
+					sent: 2n
 				});
 			});
 		});

@@ -53,9 +53,6 @@ fn obtain_cycles_options() -> ObtainCyclesOptions {
 
 fn funding_callback() -> ObserverCallback {
     Rc::new(|records: HashMap<CanisterId, CanisterRecord>| {
-        
-        ic_cdk::print("___________ funding_callback called _____________");
-        
         save_monitoring_history(&records);
 
         defer_notify(records);

@@ -25,10 +25,6 @@ pub fn defer_notify(records: HashMap<CanisterId, CanisterRecord>) {
 
 async fn notify(records: HashMap<CanisterId, CanisterRecord>) {
     for (canister_id, record) in records.iter() {
-
-
-        ic_cdk::print(format!("___________ RECORD _____________ {:?}", record.get_funding_failure()));
-        
         let deposited_cycles = get_deposited_cycles(record);
 
         if let Some(deposited_cycles) = deposited_cycles {
@@ -39,17 +35,9 @@ async fn notify(records: HashMap<CanisterId, CanisterRecord>) {
         let funding_failure = get_funding_failure(record);
 
         if let Some(funding_failure) = funding_failure {
-            
-            ic_cdk::print("--------------------------------> FAILURE");
-            
             if should_notify_funding_failure(canister_id, &funding_failure) {
-
-                ic_cdk::print("--------------------------------> NOTIFY");
-                
                 let args = prepare_failed_cycles_args(canister_id, &funding_failure);
                 try_notify_observatory(&args).await;
-            } else {
-                ic_cdk::print("--------------------------------> NO");
             }
         }
     }

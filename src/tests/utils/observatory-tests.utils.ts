@@ -4,6 +4,7 @@ import type {
 	SegmentKind
 } from '$declarations/observatory/observatory.did';
 import { Ed25519KeyIdentity } from '@dfinity/identity';
+import type { Principal } from '@dfinity/principal';
 import { assertNonNullish, nonNullish } from '@dfinity/utils';
 import type { PocketIc } from '@hadronous/pic';
 import { readFileSync } from 'node:fs';
@@ -14,22 +15,22 @@ import { tick } from './pic-tests.utils';
 
 export const mockObservatoryProxyBearerKey = 'test-key';
 
-const DEPOSITED_CYCLES_TEMPLATE_TEXT = readFileSync(
+export const DEPOSITED_CYCLES_TEMPLATE_TEXT = readFileSync(
 	join(process.cwd(), 'src/observatory/resources/deposited-cycles.txt'),
 	'utf-8'
 );
 
-const DEPOSITED_CYCLES_TEMPLATE_HTML = readFileSync(
+export const DEPOSITED_CYCLES_TEMPLATE_HTML = readFileSync(
 	join(process.cwd(), 'src/observatory/resources/deposited-cycles.html'),
 	'utf-8'
 );
 
-const FAILED_DEPOSIT_CYCLES_TEMPLATE_TEXT = readFileSync(
+export const FAILED_DEPOSIT_CYCLES_TEMPLATE_TEXT = readFileSync(
 	join(process.cwd(), 'src/observatory/resources/failed-deposit-cycles.txt'),
 	'utf-8'
 );
 
-const FAILED_DEPOSIT_CYCLES_TEMPLATE_HTML = readFileSync(
+export const FAILED_DEPOSIT_CYCLES_TEMPLATE_HTML = readFileSync(
 	join(process.cwd(), 'src/observatory/resources/failed-deposit-cycles.html'),
 	'utf-8'
 );
@@ -68,12 +69,14 @@ export const testDepositedCyclesNotification = async ({
 		user: Ed25519KeyIdentity.generate().getPrincipal()
 	});
 
-	await assertNotification({
+	await assertNotificationHttpsOutcalls({
 		templateText: DEPOSITED_CYCLES_TEMPLATE_TEXT,
 		templateHtml: DEPOSITED_CYCLES_TEMPLATE_HTML,
-		expectedSubject: `🚀 0.00012346 T Cycles Deposited on Your ${moduleName}`,
+		templateTitle: `🚀 {{cycles}} T Cycles Deposited on Your ${moduleName}`,
 		moduleName,
 		metadataName,
+		expectedIdempotencyKeySegmentId: mockMissionControlId,
+		expectedCycles: '0.00012346',
 		...rest
 	});
 };
@@ -112,24 +115,27 @@ export const testFailedDepositCyclesNotification = async ({
 		user: Ed25519KeyIdentity.generate().getPrincipal()
 	});
 
-	await assertNotification({
+	await assertNotificationHttpsOutcalls({
 		templateText: FAILED_DEPOSIT_CYCLES_TEMPLATE_TEXT,
 		templateHtml: FAILED_DEPOSIT_CYCLES_TEMPLATE_HTML,
-		expectedSubject: `❗️Cycles Deposit Failed on Your ${moduleName}`,
+		templateTitle: `❗️Cycles Deposit Failed on Your ${moduleName}`,
 		moduleName,
 		metadataName,
+		expectedIdempotencyKeySegmentId: mockMissionControlId,
 		...rest
 	});
 };
 
-const assertNotification = async ({
+export const assertNotificationHttpsOutcalls = async ({
 	url: expectedUrl,
 	moduleName,
 	metadataName,
 	pic,
 	templateHtml,
 	templateText,
-	expectedSubject
+	templateTitle,
+	expectedCycles,
+	expectedIdempotencyKeySegmentId
 }: {
 	url: string;
 	moduleName: 'Mission Control' | 'Satellite' | 'Orbiter';
@@ -137,7 +143,9 @@ const assertNotification = async ({
 	pic: PocketIc;
 	templateHtml: string;
 	templateText: string;
-	expectedSubject: string;
+	templateTitle: string;
+	expectedCycles?: string;
+	expectedIdempotencyKeySegmentId: Principal;
 }) => {
 	await tick(pic);
 
@@ -162,7 +170,7 @@ const assertNotification = async ({
 	// e.g. rdmx6-jaaaa-aaaaa-aaadq-cai___1620328630000000105___747495116
 	const idempotencyKey = headers['idempotency-key'].split('___');
 
-	expect(idempotencyKey[0]).toEqual(mockMissionControlId.toText());
+	expect(idempotencyKey[0]).toEqual(expectedIdempotencyKeySegmentId.toText());
 	expect(BigInt(idempotencyKey[1])).toBeGreaterThan(0n);
 	expect(Number(idempotencyKey[1])).toBeGreaterThan(0);
 
@@ -170,11 +178,11 @@ const assertNotification = async ({
 	const { from, subject, text, html } = JSON.parse(decoder.decode(body));
 
 	expect(from).toEqual('Juno <notify@notifications.juno.build>');
-	expect(subject).toEqual(expectedSubject);
+	expect(subject).toEqual(templateTitle.replaceAll('{{cycles}}', expectedCycles ?? ''));
 
 	const parseTemplate = (template: string): string =>
 		template
-			.replaceAll('{{cycles}}', '0.00012346')
+			.replaceAll('{{cycles}}', expectedCycles ?? '')
 			.replaceAll('{{module}}', moduleName)
 			.replaceAll(' ({{name}})', nonNullish(metadataName) ? ` (${metadataName})` : '')
 			.replaceAll(

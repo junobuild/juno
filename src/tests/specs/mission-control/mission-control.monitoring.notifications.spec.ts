@@ -17,6 +17,12 @@ import { CONSOLE_ID } from '../../constants/console-tests.constants';
 import { OBSERVATORY_ID } from '../../constants/observatory-tests.constants';
 import { deploySegments, initMissionControls } from '../../utils/console-tests.utils';
 import { setupMissionControlModules } from '../../utils/mission-control-tests.utils';
+import {
+	assertNotificationHttpsOutcalls,
+	DEPOSITED_CYCLES_TEMPLATE_HTML,
+	DEPOSITED_CYCLES_TEMPLATE_TEXT,
+	mockObservatoryProxyBearerKey
+} from '../../utils/observatory-tests.utils';
 import { tick } from '../../utils/pic-tests.utils';
 import { CONSOLE_WASM_PATH, OBSERVATORY_WASM_PATH } from '../../utils/setup-tests.utils';
 
@@ -31,6 +37,8 @@ describe('Mission Control > Notifications', () => {
 	beforeAll(async () => {
 		pic = await PocketIc.create(inject('PIC_URL'));
 
+		await pic.setTime(new Date('2025-05-12T07:53:19+00:00').getTime());
+
 		const { actor: c } = await pic.setupCanister<ConsoleActor>({
 			idlFactory: idlFactorConsole,
 			wasm: CONSOLE_WASM_PATH,
@@ -43,7 +51,7 @@ describe('Mission Control > Notifications', () => {
 
 		await deploySegments(actor);
 
-		const { canisterId } = await pic.setupCanister<ObservatoryActor>({
+		const { canisterId, actor: observatoryActor } = await pic.setupCanister<ObservatoryActor>({
 			idlFactory: idlFactorObservatory,
 			wasm: OBSERVATORY_WASM_PATH,
 			sender: controller.getPrincipal(),
@@ -51,8 +59,16 @@ describe('Mission Control > Notifications', () => {
 		});
 
 		observatoryId = canisterId;
+		observatoryActor.setIdentity(controller);
 
+		// The random seed generator init is deferred
 		await tick(pic);
+
+		const { set_env } = observatoryActor;
+
+		await set_env({
+			email_api_key: [mockObservatoryProxyBearerKey]
+		});
 	});
 
 	afterAll(async () => {
@@ -136,7 +152,7 @@ describe('Mission Control > Notifications', () => {
 			BelowThreshold: {
 				// This way the satellite already requires cycles
 				min_cycles: BigInt(satelliteCurrentCycles) + 100_000_000_000n,
-				fund_cycles: 100_000n
+				fund_cycles: 140_000n
 			}
 		};
 
@@ -180,21 +196,28 @@ describe('Mission Control > Notifications', () => {
 			});
 		});
 
-		// The notification should fail because no api key for the proxy is registered
-		await vi.waitFor(async () => {
-			await pic.tick();
+		await assertNotificationHttpsOutcalls({
+			templateText: DEPOSITED_CYCLES_TEMPLATE_TEXT,
+			templateHtml: DEPOSITED_CYCLES_TEMPLATE_HTML,
+			templateTitle: `🚀 {{cycles}} T Cycles Deposited on Your Satellite`,
+			moduleName: 'Satellite',
+			url: `https://console.juno.build/satellite/?s=${satelliteId.toText()}`,
+			expectedIdempotencyKeySegmentId: satelliteId,
+			expectedCycles: '0.00000014',
+			pic
+		});
 
-			const statusFailed = await get_notify_status({
-				segment_id: toNullable(),
-				from: toNullable(),
-				to: toNullable()
-			});
+		// The notification should have been sent
+		const statusFailed = await get_notify_status({
+			segment_id: toNullable(),
+			from: toNullable(),
+			to: toNullable()
+		});
 
-			expect(statusFailed).toEqual({
-				failed: 1n,
-				pending: 0n,
-				sent: 0n
-			});
+		expect(statusFailed).toEqual({
+			failed: 0n,
+			pending: 0n,
+			sent: 1n
 		});
 	});
 });

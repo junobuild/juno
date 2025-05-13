@@ -36,7 +36,6 @@ describe('Mission Control > Notifications', () => {
 
 	const controller = Ed25519KeyIdentity.generate();
 
-	let observatoryId: Principal;
 	let observatoryActor: Actor<ObservatoryActor>;
 
 	beforeAll(async () => {
@@ -66,14 +65,13 @@ describe('Mission Control > Notifications', () => {
 
 		await deploySegments(consoleActor);
 
-		const { canisterId, actor: oActor } = await pic.setupCanister<ObservatoryActor>({
+		const { actor: oActor } = await pic.setupCanister<ObservatoryActor>({
 			idlFactory: idlFactorObservatory,
 			wasm: OBSERVATORY_WASM_PATH,
 			sender: controller.getPrincipal(),
 			targetCanisterId: OBSERVATORY_ID
 		});
 
-		observatoryId = canisterId;
 		observatoryActor = oActor;
 
 		observatoryActor.setIdentity(controller);
@@ -215,7 +213,7 @@ describe('Mission Control > Notifications', () => {
 			});
 
 			it(
-				'should notify deposited cycles but observatory cannot send notification ',
+				'should notify deposited cycles but observatory cannot send notification',
 				{ timeout: 600000 },
 				async () => {
 					await assertObservatoryStatus({

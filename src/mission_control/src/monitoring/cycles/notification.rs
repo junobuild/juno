@@ -52,7 +52,7 @@ fn should_notify_funding_failure(
     let recent_monitoring_history = get_monitoring_history(&GetMonitoringHistory {
         segment_id: canister_id.clone(),
         from: Some(one_day_ago),
-        to: None,
+        to: Some(funding_failure.timestamp.saturating_sub(1)),
     });
 
     let has_recent_funding_failure = recent_monitoring_history.iter().any(|(_, history)| {

@@ -107,7 +107,7 @@ fn filter_monitoring_history_range(
     let end_key = MonitoringHistoryKey {
         segment_id: *segment_id,
         created_at: to.unwrap_or(u64::MAX),
-        nonce: i32::MAX,
+        nonce: i32::MIN, // We want to get all entries up to the to timestamp excluded
     };
 
     start_key..end_key

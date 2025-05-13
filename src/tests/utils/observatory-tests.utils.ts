@@ -135,7 +135,8 @@ export const assertNotificationHttpsOutcalls = async ({
 	templateText,
 	templateTitle,
 	expectedCycles,
-	expectedIdempotencyKeySegmentId
+	expectedIdempotencyKeySegmentId,
+	expectedTimestamp = '2025-05-12T07:53:19+00:00'
 }: {
 	url: string;
 	moduleName: 'Mission Control' | 'Satellite' | 'Orbiter';
@@ -146,6 +147,7 @@ export const assertNotificationHttpsOutcalls = async ({
 	templateTitle: string;
 	expectedCycles?: string;
 	expectedIdempotencyKeySegmentId: Principal;
+	expectedTimestamp?: string;
 }) => {
 	await tick(pic);
 
@@ -189,7 +191,7 @@ export const assertNotificationHttpsOutcalls = async ({
 				' (<!-- -->{{name}}<!-- -->)',
 				nonNullish(metadataName) ? ` (<!-- -->${metadataName}<!-- -->)` : ''
 			)
-			.replaceAll('{{timestamp}}', '2025-05-12T07:53:19+00:00')
+			.replaceAll('{{timestamp}}', expectedTimestamp)
 			.replaceAll('{{url}}', expectedUrl);
 
 	expect(text).toEqual(parseTemplate(templateText));

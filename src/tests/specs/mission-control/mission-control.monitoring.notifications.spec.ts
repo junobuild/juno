@@ -205,6 +205,20 @@ describe('Mission Control > Notifications', () => {
 			};
 		});
 
+		afterEach(async () => {
+			const { update_and_stop_monitoring } = missionControlActor;
+
+			await update_and_stop_monitoring({
+				cycles_config: [
+					{
+						satellite_ids: toNullable([satelliteId]),
+						orbiter_ids: toNullable(),
+						try_mission_control: toNullable(true)
+					}
+				]
+			});
+		});
+
 		describe('Observatory without Email API key', () => {
 			beforeEach(async () => {
 				const { set_env } = observatoryActor;
@@ -309,11 +323,7 @@ describe('Mission Control > Notifications', () => {
 		let config: MonitoringStartConfig;
 
 		beforeEach(async () => {
-			const {
-				missionControlId: mcId,
-				satelliteId: satId,
-				missionControlActor: mActor
-			} = await setup();
+			const { missionControlId: mcId, missionControlActor: mActor } = await setup();
 
 			missionControlId = mcId;
 
@@ -339,6 +349,20 @@ describe('Mission Control > Notifications', () => {
 					}
 				]
 			};
+		});
+
+		afterEach(async () => {
+			const { update_and_stop_monitoring } = missionControlActor;
+
+			await update_and_stop_monitoring({
+				cycles_config: [
+					{
+						satellite_ids: toNullable(),
+						orbiter_ids: toNullable(),
+						try_mission_control: toNullable(true)
+					}
+				]
+			});
 		});
 
 		describe('Observatory without Email API key', () => {
@@ -399,7 +423,13 @@ describe('Mission Control > Notifications', () => {
 				});
 			});
 
-			it('should notify deposited cycles', { timeout: 600000 }, async () => {
+			const assertFailedDepositNotification = async ({
+				notifyStatus: { failed, sent },
+				expectedTimestamp
+			}: {
+				notifyStatus: Omit<NotifyStatus, 'pending'>;
+				expectedTimestamp?: string;
+			}) => {
 				// Start monitoring
 				const { update_and_start_monitoring } = missionControlActor;
 
@@ -411,9 +441,9 @@ describe('Mission Control > Notifications', () => {
 						await pic.tick();
 
 						await assertObservatoryStatus({
-							failed: 2n,
+							failed,
 							pending: 1n,
-							sent: 1n
+							sent
 						});
 					},
 					{
@@ -429,14 +459,83 @@ describe('Mission Control > Notifications', () => {
 					moduleName: 'Mission Control',
 					url: 'https://console.juno.build/mission-control',
 					expectedIdempotencyKeySegmentId: missionControlId,
+					expectedTimestamp,
 					pic
 				});
 
 				// The notification should have been sent
 				await assertObservatoryStatus({
+					failed,
+					pending: 0n,
+					sent: sent + 1n
+				});
+			};
+
+			it('should notify deposited cycles', { timeout: 600000 }, async () => {
+				await assertFailedDepositNotification({
+					notifyStatus: {
+						failed: 2n,
+						sent: 1n
+					}
+				});
+			});
+
+			it('should not send failure notification if same day', { timeout: 600000 }, async () => {
+				// Config, start and send first failure notification
+				await assertFailedDepositNotification({
+					notifyStatus: {
+						failed: 2n,
+						sent: 2n
+					}
+				});
+
+				const { start_monitoring, stop_monitoring } = missionControlActor;
+
+				// Now stop monitoring.
+				await stop_monitoring();
+
+				// Jump in time.
+				await pic.advanceTime(1_000 * 60 * 50); // Less than an hour later to avoid dealing with Observatory processing other notifications
+
+				// Start monitoring again
+				await start_monitoring();
+
+				// Wait a bit.
+				await tick(pic);
+
+				// No new notification should be sent
+				await assertObservatoryStatus({
 					failed: 2n,
 					pending: 0n,
-					sent: 2n
+					sent: 3n
+				});
+			});
+
+			it('should send failure notification if next day', { timeout: 600000 }, async () => {
+				// Config, start and send first failure notification
+				await assertFailedDepositNotification({
+					notifyStatus: {
+						failed: 2n,
+						sent: 3n
+					},
+					expectedTimestamp: '2025-05-12T08:43:19+00:00' // We advanced time in previous test
+				});
+
+				const { stop_monitoring } = missionControlActor;
+
+				// Now stop monitoring.
+				await stop_monitoring();
+
+				// Jump in time.
+				await pic.advanceTime(1_000 * 60 * 60 * 24 + 50 * 60 * 1000); // Less than a day and n hour later to avoid dealing with Observatory processing other notifications
+
+				// Should restart monitoring and send failed deposit notification
+				await assertFailedDepositNotification({
+					notifyStatus: {
+						failed: 2n,
+						sent: 4n
+					},
+					expectedTimestamp: '2025-05-13T09:33:19+00:00' // One day and few minutes later
 				});
 			});
 		});

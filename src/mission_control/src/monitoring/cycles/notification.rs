@@ -1,3 +1,4 @@
+use crate::constants::DELAY_BETWEEN_FUNDING_FAILURE_NOTIFICATION_NS;
 use crate::monitoring::cycles::utils::{get_deposited_cycles, get_funding_failure};
 use crate::monitoring::monitor::get_monitoring_history;
 use crate::monitoring::observatory::notify_observatory;
@@ -47,7 +48,9 @@ fn should_notify_funding_failure(
     canister_id: &CanisterId,
     funding_failure: &FundingFailure,
 ) -> bool {
-    let one_day_ago = funding_failure.timestamp.saturating_sub(86_400_000_000_000); // 1 day in nanoseconds
+    let one_day_ago = funding_failure
+        .timestamp
+        .saturating_sub(DELAY_BETWEEN_FUNDING_FAILURE_NOTIFICATION_NS);
 
     let recent_monitoring_history = get_monitoring_history(&GetMonitoringHistory {
         segment_id: canister_id.clone(),

@@ -1,5 +1,5 @@
 use crate::constants::RETAIN_ARCHIVE_STATUSES_NS;
-use crate::monitoring::cycles::utils::get_deposited_cycles;
+use crate::monitoring::cycles::utils::{get_deposited_cycles, get_funding_failure};
 use crate::monitoring::store::stable::{
     delete_monitoring_history, get_monitoring_history_keys, insert_cycles_monitoring_history,
 };
@@ -23,6 +23,7 @@ pub fn save_monitoring_history(records: &HashMap<CanisterId, CanisterRecord>) {
 fn insert_monitoring_history(canister_id: &CanisterId, record: &CanisterRecord) {
     if let Some(cycles) = record.get_cycles() {
         let deposited_cycles = get_deposited_cycles(record);
+        let funding_failure = get_funding_failure(record);
 
         let history_entry: MonitoringHistoryCycles = MonitoringHistoryCycles {
             cycles: CyclesBalance {
@@ -30,6 +31,7 @@ fn insert_monitoring_history(canister_id: &CanisterId, record: &CanisterRecord) 
                 timestamp: cycles.timestamp,
             },
             deposited_cycles,
+            funding_failure,
         };
 
         insert_cycles_monitoring_history(canister_id, &history_entry).unwrap_or_else(|e| {

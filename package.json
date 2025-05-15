@@ -125,7 +125,7 @@
 		"nanoid": "^5.1.5",
 		"semver": "^7.7.2",
 		"svelte-confetti": "^2.3.1",
-		"ua-parser-js": "^2.0.3",
+		"ua-parser-js": "^1.0.40",
 		"zod": "^3.24.4"
 	},
 	"engines": {

@@ -60,6 +60,16 @@ export interface DepositedCyclesEmailNotification {
 	to: [] | [string];
 	enabled: boolean;
 }
+export type FundingErrorCode =
+	| { BalanceCheckFailed: null }
+	| { ObtainCyclesFailed: null }
+	| { DepositFailed: null }
+	| { InsufficientCycles: null }
+	| { Other: string };
+export interface FundingFailure {
+	timestamp: bigint;
+	error_code: FundingErrorCode;
+}
 export interface GetMonitoringHistory {
 	to: [] | [bigint];
 	from: [] | [bigint];
@@ -82,6 +92,7 @@ export interface MonitoringHistory {
 export interface MonitoringHistoryCycles {
 	deposited_cycles: [] | [CyclesBalance];
 	cycles: CyclesBalance;
+	funding_failure: [] | [FundingFailure];
 }
 export interface MonitoringHistoryKey {
 	segment_id: Principal;

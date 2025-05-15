@@ -1,4 +1,6 @@
 use crate::memory::STATE;
+use crate::storage::strategy_impls::CdnHeap;
+use junobuild_cdn::state::heap::get_asset as cdn_get_asset;
 use junobuild_collections::msg::msg_storage_collection_not_found;
 use junobuild_collections::types::core::CollectionKey;
 use junobuild_collections::types::rules::Rule;
@@ -10,12 +12,7 @@ use junobuild_storage::types::state::{AssetsHeap, FullPath, StorageHeapState};
 use junobuild_storage::types::store::Asset;
 
 pub fn get_asset(full_path: &FullPath) -> Option<Asset> {
-    STATE.with(|state| get_asset_impl(full_path, &state.borrow().heap.storage.assets))
-}
-
-fn get_asset_impl(full_path: &FullPath, assets: &AssetsHeap) -> Option<Asset> {
-    let value = assets.get(full_path);
-    value.cloned()
+    cdn_get_asset(&CdnHeap, full_path)
 }
 
 pub fn insert_asset(full_path: &FullPath, asset: &Asset) {

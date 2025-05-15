@@ -1,5 +1,5 @@
 // Collection {} is reserved and cannot be modified.
-pub const JUNO_COLLECTIONS_ERROR_MODIFY_RESERVED_COLLECTION: &str = "juno.collections.error.modify_reserved";
+pub const JUNO_COLLECTIONS_ERROR_MODIFY_RESERVED_COLLECTION: &str = "juno.collections.error.modify_reserved_collection";
 // The collection name matches a system collection.
 pub const JUNO_COLLECTIONS_ERROR_RESERVED_NAME: &str = "juno.collections.error.reserved_name";
 // Collection {} is reserved.

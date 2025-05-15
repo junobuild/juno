@@ -46,6 +46,7 @@
 
 	let takeSnapshot = $state(true);
 
+	// eslint-disable-next-line svelte/prefer-writable-derived
 	let step: 'init' | 'confirm' | 'download' | 'review' | 'in_progress' | 'ready' | 'error' =
 		$state('init');
 	$effect(() => {

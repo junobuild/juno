@@ -928,7 +928,10 @@ version = "0.0.1"
 dependencies = [
  "candid",
  "ic-cdk",
+ "junobuild-collections",
+ "junobuild-shared",
  "junobuild-storage",
+ "serde",
 ]
 
 [[package]]

@@ -340,7 +340,7 @@ describe('Satellite', () => {
 			});
 
 			describe('errors', () => {
-				const errorMessage = `${JUNO_COLLECTIONS_ERROR_MODIFY_RESERVED_COLLECTION}_collection (${collection})`;
+				const errorMessage = `${JUNO_COLLECTIONS_ERROR_MODIFY_RESERVED_COLLECTION} (${collection})`;
 
 				it('should throw if read is changed on system collection', async () => {
 					const { get_rule, set_rule } = actor;

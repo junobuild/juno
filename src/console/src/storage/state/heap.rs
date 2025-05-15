@@ -1,6 +1,6 @@
 use crate::memory::STATE;
 use crate::storage::strategy_impls::CdnHeap;
-use junobuild_cdn::state::heap::get_asset as cdn_get_asset;
+use junobuild_cdn::state::heap::{get_asset as cdn_get_asset, insert_asset as cdn_insert_asset};
 use junobuild_collections::msg::msg_storage_collection_not_found;
 use junobuild_collections::types::core::CollectionKey;
 use junobuild_collections::types::rules::Rule;
@@ -16,17 +16,7 @@ pub fn get_asset(full_path: &FullPath) -> Option<Asset> {
 }
 
 pub fn insert_asset(full_path: &FullPath, asset: &Asset) {
-    STATE.with(|state| {
-        insert_asset_impl(
-            full_path,
-            asset,
-            &mut state.borrow_mut().heap.storage.assets,
-        )
-    })
-}
-
-fn insert_asset_impl(full_path: &FullPath, asset: &Asset, assets: &mut AssetsHeap) {
-    assets.insert(full_path.clone(), asset.clone());
+    cdn_insert_asset(&CdnHeap, full_path, asset)
 }
 
 pub fn delete_asset(full_path: &FullPath) -> Option<Asset> {

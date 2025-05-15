@@ -9,6 +9,8 @@ import { Ed25519KeyIdentity } from '@dfinity/identity';
 import { fromNullable, toNullable } from '@dfinity/utils';
 import { type Actor, PocketIc } from '@hadronous/pic';
 import {
+	JUNO_COLLECTIONS_ERROR_COLLECTION_NOT_EMPTY,
+	JUNO_COLLECTIONS_ERROR_COLLECTION_NOT_FOUND,
 	JUNO_ERROR_NO_VERSION_PROVIDED,
 	JUNO_ERROR_VERSION_OUTDATED_OR_FUTURE
 } from '@junobuild/errors';
@@ -738,7 +740,7 @@ describe.each([{ memory: { Heap: null } }, { memory: { Stable: null } }])(
 					expect(true).toBeFalsy();
 				} catch (error: unknown) {
 					expect((error as Error).message).toContain(
-						`The "${TEST_COLLECTION}" collection in Datastore is not empty.`
+						`${JUNO_COLLECTIONS_ERROR_COLLECTION_NOT_EMPTY} (Datastore - ${TEST_COLLECTION})`
 					);
 				}
 			});
@@ -758,7 +760,7 @@ describe.each([{ memory: { Heap: null } }, { memory: { Stable: null } }])(
 					expect(true).toBeFalsy();
 				} catch (error: unknown) {
 					expect((error as Error).message).toContain(
-						`Collection "${collectionUnknown}" not found in Datastore.`
+						`${JUNO_COLLECTIONS_ERROR_COLLECTION_NOT_FOUND} (Datastore - ${collectionUnknown})`
 					);
 				}
 			});

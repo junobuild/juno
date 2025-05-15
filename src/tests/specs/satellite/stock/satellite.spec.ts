@@ -6,6 +6,9 @@ import { type Actor, PocketIc } from '@hadronous/pic';
 import {
 	JUNO_AUTH_ERROR_NOT_ADMIN_CONTROLLER,
 	JUNO_AUTH_ERROR_NOT_CONTROLLER,
+	JUNO_COLLECTIONS_ERROR_DELETE_PREFIX_RESERVED,
+	JUNO_COLLECTIONS_ERROR_MODIFY_RESERVED_COLLECTION,
+	JUNO_COLLECTIONS_ERROR_RATE_CONFIG_ENABLED,
 	JUNO_ERROR_NO_VERSION_PROVIDED,
 	JUNO_ERROR_VERSION_OUTDATED_OR_FUTURE,
 	JUNO_STORAGE_ERROR_UPLOAD_NOT_ALLOWED
@@ -337,7 +340,7 @@ describe('Satellite', () => {
 			});
 
 			describe('errors', () => {
-				const errorMessage = `Collection ${collection} is reserved and cannot be modified.`;
+				const errorMessage = `${JUNO_COLLECTIONS_ERROR_MODIFY_RESERVED_COLLECTION}_collection (${collection})`;
 
 				it('should throw if read is changed on system collection', async () => {
 					const { get_rule, set_rule } = actor;
@@ -487,7 +490,7 @@ describe('Satellite', () => {
 
 						expect(true).toBeFalsy();
 					} catch (error: unknown) {
-						expect((error as Error).message).toContain('Rate config cannot be disabled.');
+						expect((error as Error).message).toContain(JUNO_COLLECTIONS_ERROR_RATE_CONFIG_ENABLED);
 					}
 				});
 			});
@@ -567,7 +570,7 @@ describe('Satellite', () => {
 						del_rule({ Db: null }, systemCollection, {
 							version
 						})
-					).rejects.toThrow('Collection starting with # cannot be deleted');
+					).rejects.toThrow(`${JUNO_COLLECTIONS_ERROR_DELETE_PREFIX_RESERVED} (#)`);
 				});
 			});
 		});

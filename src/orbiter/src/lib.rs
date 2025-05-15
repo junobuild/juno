@@ -1,3 +1,5 @@
+#![deny(clippy::disallowed_methods)]
+
 mod analytics;
 mod assert;
 mod config;

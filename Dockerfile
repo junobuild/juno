@@ -88,6 +88,8 @@ FROM deps AS build_mission_control
 
 COPY . .
 
+RUN ./docker/clippy --mission_control
+
 RUN touch src/*/src/lib.rs
 RUN touch src/libs/*/src/lib.rs
 RUN touch src/tests/fixtures/*/src/lib.rs
@@ -98,6 +100,8 @@ RUN sha256sum /mission_control.wasm.gz
 FROM deps AS build_satellite
 
 COPY . .
+
+RUN ./docker/clippy --satellite
 
 RUN touch src/*/src/lib.rs
 RUN touch src/libs/*/src/lib.rs
@@ -110,6 +114,8 @@ FROM deps AS build_console
 
 COPY . .
 
+RUN ./docker/clippy --console
+
 RUN touch src/*/src/lib.rs
 RUN touch src/libs/*/src/lib.rs
 RUN touch src/tests/fixtures/*/src/lib.rs
@@ -120,6 +126,8 @@ RUN sha256sum /console.wasm.gz
 FROM deps AS build_observatory
 
 COPY . .
+
+RUN ./docker/clippy --observatory
 
 RUN touch src/*/src/lib.rs
 RUN touch src/libs/*/src/lib.rs
@@ -132,6 +140,8 @@ FROM deps AS build_orbiter
 
 COPY . .
 
+RUN ./docker/clippy --orbiter
+
 RUN touch src/*/src/lib.rs
 RUN touch src/libs/*/src/lib.rs
 RUN touch src/tests/fixtures/*/src/lib.rs
@@ -142,6 +152,8 @@ RUN sha256sum /orbiter.wasm.gz
 FROM deps AS build_sputnik
 
 COPY . .
+
+RUN ./docker/clippy --sputnik
 
 RUN touch src/*/src/lib.rs
 RUN touch src/libs/*/src/lib.rs

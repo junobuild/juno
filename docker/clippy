@@ -1,0 +1,26 @@
+#!/usr/bin/env bash
+
+set -euo pipefail
+
+function clippy_wasm32() {
+  local member=$1
+
+  RUSTFLAGS='--cfg getrandom_backend="custom"' cargo clippy --target=wasm32-unknown-unknown -p "$member" -- -A deprecated
+}
+
+function clippy_wasi() {
+  local member=$1
+
+  RUSTFLAGS='--cfg getrandom_backend="custom"' cargo clippy --target=wasm32-wasip1 -p "$member" -- -A deprecated
+}
+
+case "$1" in
+  --console)          clippy_wasm32 console ;;
+  --observatory)      clippy_wasm32 observatory ;;
+  --mission_control)  clippy_wasm32 mission_control ;;
+  --orbiter)          clippy_wasm32 orbiter ;;
+  --satellite)        clippy_wasm32 satellite ;;
+  --test_satellite)   clippy_wasm32 test_satellite ;;
+  --sputnik)          clippy_wasi sputnik ;;
+  *) echo "❌ Unknown argument: $1"; exit 1 ;;
+esac

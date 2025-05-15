@@ -9,8 +9,6 @@ pub fn caller_is_admin_controller() -> Result<(), String> {
     let caller = caller();
     let controllers = get_controllers();
 
-    ic_cdk::print("Yolo");
-
     if is_admin_controller(caller, &controllers) {
         Ok(())
     } else {

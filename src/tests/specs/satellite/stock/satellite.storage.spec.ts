@@ -14,6 +14,8 @@ import { type Actor, PocketIc } from '@hadronous/pic';
 import {
 	JUNO_AUTH_ERROR_NOT_ADMIN_CONTROLLER,
 	JUNO_AUTH_ERROR_NOT_CONTROLLER,
+	JUNO_COLLECTIONS_ERROR_COLLECTION_NOT_EMPTY,
+	JUNO_COLLECTIONS_ERROR_COLLECTION_NOT_FOUND,
 	JUNO_STORAGE_ERROR_CANNOT_COMMIT_BATCH
 } from '@junobuild/errors';
 import { readFileSync } from 'node:fs';
@@ -1138,7 +1140,7 @@ describe('Satellite > Storage', () => {
 				expect(true).toBeFalsy();
 			} catch (error: unknown) {
 				expect((error as Error).message).toContain(
-					`The "${collection}" collection in Storage is not empty.`
+					`${JUNO_COLLECTIONS_ERROR_COLLECTION_NOT_EMPTY} (Storage - ${collection})`
 				);
 			}
 		});
@@ -1156,7 +1158,7 @@ describe('Satellite > Storage', () => {
 				expect(true).toBeFalsy();
 			} catch (error: unknown) {
 				expect((error as Error).message).toContain(
-					`Collection "${collectionUnknown}" not found in Storage.`
+					`${JUNO_COLLECTIONS_ERROR_COLLECTION_NOT_FOUND} (Storage - ${collectionUnknown})`
 				);
 			}
 		});

@@ -581,6 +581,7 @@ describe.each([{ memory: { Heap: null } }, { memory: { Stable: null } }])(
 
 				expect(docs.items_length).toBe(6n);
 
+				// eslint-disable-next prefer-destructuring
 				const firstKey = docs.items[0][0];
 
 				const filterDelete: ListParams = {

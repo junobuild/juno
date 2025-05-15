@@ -765,7 +765,7 @@ describe('Satellite > Upgrade', () => {
 		it('should expose build version', async () => {
 			const satelliteVersion = crateVersion('satellite');
 
-			expect(await actor.build_version()).toEqual(satelliteVersion);
+			await expect(actor.build_version()).resolves.toEqual(satelliteVersion);
 
 			await upgrade();
 
@@ -777,7 +777,7 @@ describe('Satellite > Upgrade', () => {
 		it('should deprecate version', async () => {
 			const satelliteVersion = crateVersion('satellite');
 
-			expect(await actor.version()).toEqual(satelliteVersion);
+			await expect(actor.version()).resolves.toEqual(satelliteVersion);
 
 			await upgrade();
 

@@ -61,9 +61,21 @@ export const idlFactory = ({ IDL }) => {
 		timestamp: IDL.Nat64,
 		amount: IDL.Nat
 	});
+	const FundingErrorCode = IDL.Variant({
+		BalanceCheckFailed: IDL.Null,
+		ObtainCyclesFailed: IDL.Null,
+		DepositFailed: IDL.Null,
+		InsufficientCycles: IDL.Null,
+		Other: IDL.Text
+	});
+	const FundingFailure = IDL.Record({
+		timestamp: IDL.Nat64,
+		error_code: FundingErrorCode
+	});
 	const MonitoringHistoryCycles = IDL.Record({
 		deposited_cycles: IDL.Opt(CyclesBalance),
-		cycles: CyclesBalance
+		cycles: CyclesBalance,
+		funding_failure: IDL.Opt(FundingFailure)
 	});
 	const MonitoringHistory = IDL.Record({
 		cycles: IDL.Opt(MonitoringHistoryCycles)

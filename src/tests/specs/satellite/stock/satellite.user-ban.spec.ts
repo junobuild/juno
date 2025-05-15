@@ -5,7 +5,7 @@ import type {
 	SetDoc
 } from '$declarations/satellite/satellite.did';
 import { idlFactory as idlFactorSatellite } from '$declarations/satellite/satellite.factory.did';
-import { type Identity } from '@dfinity/agent';
+import type { Identity } from '@dfinity/agent';
 import { Ed25519KeyIdentity } from '@dfinity/identity';
 import { fromNullable, toNullable } from '@dfinity/utils';
 import { type Actor, PocketIc } from '@hadronous/pic';
@@ -154,12 +154,16 @@ describe('Satellite > User Ban', () => {
 			expect(item2).not.toBeUndefined();
 			expect(item3).not.toBeUndefined();
 
-			expect(await fromArray(item1?.[1].data ?? [])).toEqual({
+			await expect(fromArray(item1?.[1].data ?? [])).resolves.toEqual({
 				provider: 'internet_identity',
 				banned: 'indefinite'
 			});
-			expect(await fromArray(item2?.[1].data ?? [])).toEqual({ provider: 'internet_identity' });
-			expect(await fromArray(item3?.[1].data ?? [])).toEqual({ provider: 'internet_identity' });
+			await expect(fromArray(item2?.[1].data ?? [])).resolves.toEqual({
+				provider: 'internet_identity'
+			});
+			await expect(fromArray(item3?.[1].data ?? [])).resolves.toEqual({
+				provider: 'internet_identity'
+			});
 		});
 	});
 

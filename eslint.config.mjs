@@ -11,6 +11,12 @@ export default [
 		}
 	},
 	{
+		files: ['src/frontend/src/lib/stores/**/*'],
+		rules: {
+			'prefer-arrow/prefer-arrow-functions': 'off'
+		}
+	},
+	{
 		ignores: [
 			'**/.DS_Store',
 			'**/node_modules',

@@ -323,6 +323,7 @@ describe('Console > Storage', () => {
 					expect(proposal.updated_at).toBeGreaterThan(proposal.created_at);
 					expect(fromNullable(proposal.version) ?? 0n).toEqual(2n);
 
+					// eslint-disable-next-line prefer-destructuring
 					sha256 = proposal.sha256;
 				});
 

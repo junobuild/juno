@@ -216,6 +216,7 @@ describe('Satellite > User Usage', () => {
 
 				const { items } = await list_docs(TEST_COLLECTION, NO_FILTER_PARAMS);
 
+				// eslint-disable-next prefer-destructuring
 				const doc = items[0][1];
 
 				await del_doc(TEST_COLLECTION, items[0][0], {
@@ -572,6 +573,7 @@ describe('Satellite > User Usage', () => {
 
 				const { items } = await list_assets(TEST_COLLECTION, NO_FILTER_PARAMS);
 
+				// eslint-disable-next prefer-destructuring
 				const asset = items[0][1];
 
 				await del_asset(TEST_COLLECTION, asset.key.full_path);

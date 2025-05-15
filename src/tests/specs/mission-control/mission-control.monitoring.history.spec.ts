@@ -251,12 +251,16 @@ describe('Mission Control > History', () => {
 					after.find(([key, _]) => key.created_at === before[0][0].created_at)
 				).toBeUndefined();
 
+				// eslint-disable-next prefer-destructuring
 				const [beforeKey1] = before[1];
+				// eslint-disable-next prefer-destructuring
 				const [afterKey0] = after[0];
 
 				expect(beforeKey1.created_at).toEqual(afterKey0.created_at);
 
+				// eslint-disable-next prefer-destructuring
 				const [beforeKey2] = before[2];
+				// eslint-disable-next prefer-destructuring
 				const [afterKey1] = after[1];
 
 				expect(beforeKey2.created_at).toEqual(afterKey1.created_at);

@@ -1,3 +1,5 @@
+#![allow(clippy::disallowed_methods)]
+
 use ic_cdk::update;
 use junobuild_macros::{
     on_delete_doc, on_init_random_seed, on_init_sync, on_post_upgrade_sync, on_set_doc,

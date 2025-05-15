@@ -72,6 +72,7 @@ async fn try_notify_observatory(args: &Option<NotifyArgs>) {
     if let Some(args) = args {
         if let Err(e) = notify_observatory(args).await {
             // Maybe in the future, we can track the potential transmission of the notification error, but for now, we’ll simply log it.
+            #[allow(clippy::disallowed_methods)]
             print(e);
         }
     }

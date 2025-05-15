@@ -1,3 +1,5 @@
+#![deny(clippy::disallowed_methods)]
+
 mod constants;
 mod controllers;
 mod factory;

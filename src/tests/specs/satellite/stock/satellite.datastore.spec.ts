@@ -11,6 +11,8 @@ import { type Actor, PocketIc } from '@hadronous/pic';
 import {
 	JUNO_COLLECTIONS_ERROR_COLLECTION_NOT_EMPTY,
 	JUNO_COLLECTIONS_ERROR_COLLECTION_NOT_FOUND,
+	JUNO_ERROR_MEMORY_HEAP_EXCEEDED,
+	JUNO_ERROR_MEMORY_STABLE_EXCEEDED,
 	JUNO_ERROR_NO_VERSION_PROVIDED,
 	JUNO_ERROR_VERSION_OUTDATED_OR_FUTURE
 } from '@junobuild/errors';
@@ -793,7 +795,7 @@ describe.each([{ memory: { Heap: null } }, { memory: { Stable: null } }])(
 					expectMemory: 25_231_360n
 				}
 			])('With collection', ({ memory, expectMemory }) => {
-				const errorMsg = `${'Heap' in memory ? 'Heap' : 'Stable'} memory usage exceeded: ${expectMemory} bytes used, 20000 bytes allowed.`;
+				const errorMsg = `${'Heap' in memory ? JUNO_ERROR_MEMORY_HEAP_EXCEEDED : JUNO_ERROR_MEMORY_STABLE_EXCEEDED} (${expectMemory} bytes used, 20000 bytes allowed)`;
 
 				const collection = `test_config_${'Heap' in memory ? 'heap' : 'stable'}`;
 

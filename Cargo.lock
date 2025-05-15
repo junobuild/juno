@@ -240,6 +240,7 @@ dependencies = [
  "ic-cdk-timers",
  "ic-ledger-types",
  "ic-stable-structures",
+ "junobuild-cdn",
  "junobuild-collections",
  "junobuild-shared",
  "junobuild-storage",

@@ -1,3 +1,4 @@
+use crate::memory::STATE;
 use crate::storage::state::heap::{
     delete_asset, get_asset, get_config, get_domains, get_rule, insert_asset,
 };
@@ -7,6 +8,7 @@ use crate::storage::state::stable::{
 use crate::storage::state::utils::get_content_chunks;
 use crate::storage::store::get_public_asset;
 use candid::Principal;
+use junobuild_cdn::strategies::CdnHeapStrategy;
 use junobuild_collections::types::core::CollectionKey;
 use junobuild_collections::types::rules::{Memory, Rule};
 use junobuild_shared::types::core::Blob;
@@ -16,7 +18,7 @@ use junobuild_storage::strategies::{
     StorageAssertionsStrategy, StorageStateStrategy, StorageUploadStrategy,
 };
 use junobuild_storage::types::config::StorageConfig;
-use junobuild_storage::types::state::FullPath;
+use junobuild_storage::types::state::{AssetsHeap, FullPath};
 use junobuild_storage::types::store::{
     Asset, AssetAssertUpload, AssetEncoding, Batch, EncodingType, ReferenceId,
 };
@@ -149,5 +151,23 @@ impl StorageUploadStrategy for StorageUpload {
             }
             None => Err("Cannot get asset with unknown reference / proposal ID.".to_string()),
         }
+    }
+}
+
+pub struct CdnHeap;
+
+impl CdnHeapStrategy for CdnHeap {
+    fn with_config<R>(&self, f: impl FnOnce(&StorageConfig) -> R) -> R {
+        STATE.with(|state| {
+            let storage = &state.borrow().heap.storage;
+            f(&storage.config)
+        })
+    }
+
+    fn with_assets<R>(&self, f: impl FnOnce(&AssetsHeap) -> R) -> R {
+        STATE.with(|state| {
+            let storage = &state.borrow().heap.storage;
+            f(&storage.assets)
+        })
     }
 }

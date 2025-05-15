@@ -2,7 +2,6 @@ use junobuild_storage::types::config::StorageConfig;
 use junobuild_storage::types::state::AssetsHeap;
 
 pub trait CdnHeapStrategy {
-    fn get_config(&self) -> &StorageConfig;
-
-    fn get_assets(&self) -> &AssetsHeap;
+    fn with_config<R>(&self, f: impl FnOnce(&StorageConfig) -> R) -> R;
+    fn with_assets<R>(&self, f: impl FnOnce(&AssetsHeap) -> R) -> R;
 }

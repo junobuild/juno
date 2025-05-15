@@ -9,11 +9,13 @@ pub fn init_certified_assets(
 ) {
     let mut asset_hashes = CertifiedAssetHashes::default();
 
-    let config = cdn_heap.get_config();
+    cdn_heap.with_config(|config| {
+        cdn_heap.with_assets(|assets| {
+            for (_key, asset) in assets.iter() {
+                asset_hashes.insert(asset, config);
+            }
 
-    for (_key, asset) in cdn_heap.get_assets().iter() {
-        asset_hashes.insert(asset, config);
-    }
-
-    extend_and_init_certified_assets(&mut asset_hashes, config, storage_state)
+            extend_and_init_certified_assets(&mut asset_hashes, config, storage_state);
+        });
+    });
 }

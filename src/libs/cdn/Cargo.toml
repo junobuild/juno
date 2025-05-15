@@ -1,0 +1,9 @@
+[package]
+name = "junobuild-cdn"
+version = "0.1.0"
+authors.workspace = true
+edition.workspace = true
+repository.workspace = true
+homepage.workspace = true
+
+[dependencies]

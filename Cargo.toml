@@ -13,7 +13,7 @@ members = [
 	"src/libs/collections",
 	"src/libs/storage",
 	"src/tests/fixtures/test_satellite"
-]
+, "src/libs/cdn"]
 resolver = "2"
 
 [workspace.package]

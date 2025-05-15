@@ -2,25 +2,58 @@
 
 set -euo pipefail
 
-function clippy_wasm32() {
-  local member=$1
+RELEASE=
+CANISTER=
 
-  RUSTFLAGS='--cfg getrandom_backend="custom"' cargo clippy --target=wasm32-unknown-unknown -p "$member" -- -A deprecated
+while [[ $# -gt 0 ]]; do
+  case "$1" in
+    --release)
+      RELEASE="--release"
+      shift
+      ;;
+    --console|--observatory|--mission_control|--orbiter|--satellite|--test_satellite|--sputnik)
+      if [[ -n "${CANISTER:-}" ]]; then
+        echo "❌ Only one canister can be specified"
+        exit 1
+      fi
+
+      CANISTER="$1"
+      shift
+      ;;
+    *)
+      echo "❌ Unknown argument: $1"
+      echo "Usage: $0 [--release] [--canister]"
+      exit 1
+      ;;
+  esac
+done
+
+if [[ -z "${CANISTER:-}" ]]; then
+  echo "❌ No canister specified"
+  echo "Usage: $0 [--release] [--canister]"
+  exit 1
+fi
+
+function clippy_wasm32() {
+  local canister=$1
+  local release_flag=$2
+
+  RUSTFLAGS='--cfg getrandom_backend="custom"' cargo clippy $release_flag --target=wasm32-unknown-unknown -p "$canister" -- -A deprecated
 }
 
 function clippy_wasi() {
-  local member=$1
+  local canister=$1
+  local release_flag=$2
 
-  RUSTFLAGS='--cfg getrandom_backend="custom"' cargo clippy --target=wasm32-wasip1 -p "$member" -- -A deprecated
+  RUSTFLAGS='--cfg getrandom_backend="custom"' cargo clippy $release_flag --target=wasm32-wasip1 -p "$canister" -- -A deprecated
 }
 
-case "$1" in
-  --console)          clippy_wasm32 console ;;
-  --observatory)      clippy_wasm32 observatory ;;
-  --mission_control)  clippy_wasm32 mission_control ;;
-  --orbiter)          clippy_wasm32 orbiter ;;
-  --satellite)        clippy_wasm32 satellite ;;
-  --test_satellite)   clippy_wasm32 test_satellite ;;
-  --sputnik)          clippy_wasi sputnik ;;
-  *) echo "❌ Unknown argument: $1"; exit 1 ;;
+case "$CANISTER" in
+  --console)          clippy_wasm32 console "$RELEASE" ;;
+  --observatory)      clippy_wasm32 observatory "$RELEASE" ;;
+  --mission_control)  clippy_wasm32 mission_control "$RELEASE" ;;
+  --orbiter)          clippy_wasm32 orbiter "$RELEASE" ;;
+  --satellite)        clippy_wasm32 satellite "$RELEASE" ;;
+  --test_satellite)   clippy_wasm32 test_satellite "$RELEASE" ;;
+  --sputnik)          clippy_wasi sputnik "$RELEASE" ;;
 esac

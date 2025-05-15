@@ -94,7 +94,7 @@ RUN touch src/tests/fixtures/*/src/lib.rs
 
 RUN ./docker/build
 
-RUN ./docker/clippy --mission_control
+RUN ./docker/clippy --mission_control --release
 
 RUN sha256sum /mission_control.wasm.gz
 
@@ -108,7 +108,7 @@ RUN touch src/tests/fixtures/*/src/lib.rs
 
 RUN ./docker/build --satellite
 
-RUN ./docker/clippy --satellite
+RUN ./docker/clippy --satellite --release
 
 RUN sha256sum /satellite.wasm.gz
 
@@ -122,7 +122,7 @@ RUN touch src/tests/fixtures/*/src/lib.rs
 
 RUN ./docker/build --console
 
-RUN ./docker/clippy --console
+RUN ./docker/clippy --console --release
 
 RUN sha256sum /console.wasm.gz
 
@@ -136,7 +136,7 @@ RUN touch src/tests/fixtures/*/src/lib.rs
 
 RUN ./docker/build --observatory
 
-RUN ./docker/clippy --observatory
+RUN ./docker/clippy --observatory --release
 
 RUN sha256sum /observatory.wasm.gz
 
@@ -150,7 +150,7 @@ RUN touch src/tests/fixtures/*/src/lib.rs
 
 RUN ./docker/build --orbiter
 
-RUN ./docker/clippy --orbiter
+RUN ./docker/clippy --orbiter --release
 
 RUN sha256sum /orbiter.wasm.gz
 
@@ -164,7 +164,7 @@ RUN touch src/tests/fixtures/*/src/lib.rs
 
 RUN ./docker/build --sputnik
 
-RUN ./docker/clippy --sputnik
+RUN ./docker/clippy --sputnik --release
 
 RUN sha256sum /sputnik.wasm.gz
 

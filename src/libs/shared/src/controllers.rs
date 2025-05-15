@@ -1,5 +1,9 @@
 use crate::constants_internal::REVOKED_CONTROLLERS;
 use crate::env::{CONSOLE, OBSERVATORY};
+use crate::errors::{
+    JUNO_ERROR_CONTROLLERS_ANONYMOUS_NOT_ALLOWED, JUNO_ERROR_CONTROLLERS_MAX_NUMBER,
+    JUNO_ERROR_CONTROLLERS_REVOKED_NOT_ALLOWED,
+};
 use crate::types::interface::SetController;
 use crate::types::state::{Controller, ControllerId, ControllerScope, Controllers, UserId};
 use crate::utils::{principal_anonymous, principal_equal, principal_not_anonymous};
@@ -148,8 +152,8 @@ pub fn assert_max_number_of_controllers(
 
     if current_controller_ids.len() + new_controller_ids.count() > max_controllers {
         return Err(format!(
-            "Maximum number of controllers ({}) is already reached.",
-            max_controllers
+            "{} ({})",
+            JUNO_ERROR_CONTROLLERS_MAX_NUMBER, max_controllers
         ));
     }
 
@@ -183,7 +187,7 @@ fn assert_no_anonymous_controller(controllers_ids: &[ControllerId]) -> Result<()
         .any(|controller_id| principal_anonymous(*controller_id));
 
     match has_anonymous {
-        true => Err("Anonymous controller not allowed.".to_string()),
+        true => Err(JUNO_ERROR_CONTROLLERS_ANONYMOUS_NOT_ALLOWED.to_string()),
         false => Ok(()),
     }
 }
@@ -200,7 +204,7 @@ fn assert_no_revoked_controller(controllers_ids: &[ControllerId]) -> Result<(), 
     let has_revoked = controllers_ids.iter().any(controller_revoked);
 
     match has_revoked {
-        true => Err("Revoked controller not allowed.".to_string()),
+        true => Err(JUNO_ERROR_CONTROLLERS_REVOKED_NOT_ALLOWED.to_string()),
         false => Ok(()),
     }
 }

@@ -1,6 +1,7 @@
 use crate::canister::memory_size;
 use crate::errors::{
-    JUNO_ERROR_NO_TIMESTAMP, JUNO_ERROR_NO_VERSION, JUNO_ERROR_TIMESTAMP_OUTDATED_OR_FUTURE,
+    JUNO_ERROR_MEMORY_HEAP_EXCEEDED, JUNO_ERROR_MEMORY_STABLE_EXCEEDED, JUNO_ERROR_NO_TIMESTAMP,
+    JUNO_ERROR_NO_VERSION, JUNO_ERROR_TIMESTAMP_OUTDATED_OR_FUTURE,
     JUNO_ERROR_VERSION_OUTDATED_OR_FUTURE,
 };
 use crate::types::config::ConfigMaxMemorySize;
@@ -177,8 +178,8 @@ pub fn assert_max_memory_size(
         if let Some(max_heap) = max_memory_size.heap {
             if heap > max_heap as u64 {
                 return Err(format!(
-                    "Heap memory usage exceeded: {} bytes used, {} bytes allowed.",
-                    heap, max_heap
+                    "{} ({} bytes used, {} bytes allowed)",
+                    JUNO_ERROR_MEMORY_HEAP_EXCEEDED, heap, max_heap
                 ));
             }
         }
@@ -186,8 +187,8 @@ pub fn assert_max_memory_size(
         if let Some(max_stable) = max_memory_size.stable {
             if stable > max_stable as u64 {
                 return Err(format!(
-                    "Stable memory usage exceeded: {} bytes used, {} bytes allowed.",
-                    stable, max_stable
+                    "{} ({} bytes used, {} bytes allowed)",
+                    JUNO_ERROR_MEMORY_STABLE_EXCEEDED, stable, max_stable
                 ));
             }
         }

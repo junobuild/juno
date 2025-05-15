@@ -16,6 +16,8 @@ import {
 	JUNO_AUTH_ERROR_NOT_CONTROLLER,
 	JUNO_COLLECTIONS_ERROR_COLLECTION_NOT_EMPTY,
 	JUNO_COLLECTIONS_ERROR_COLLECTION_NOT_FOUND,
+	JUNO_ERROR_MEMORY_HEAP_EXCEEDED,
+	JUNO_ERROR_MEMORY_STABLE_EXCEEDED,
 	JUNO_STORAGE_ERROR_CANNOT_COMMIT_BATCH
 } from '@junobuild/errors';
 import { readFileSync } from 'node:fs';
@@ -1188,7 +1190,7 @@ describe('Satellite > Storage', () => {
 		])('With collection', ({ memory, expectMemory, allowedMemory, preUploadCount }) => {
 			const collection = `test_${'Heap' in memory ? 'heap' : 'stable'}`;
 
-			const errorMsg = `${'Heap' in memory ? 'Heap' : 'Stable'} memory usage exceeded: ${expectMemory} bytes used, ${allowedMemory} bytes allowed.`;
+			const errorMsg = `${'Heap' in memory ? JUNO_ERROR_MEMORY_HEAP_EXCEEDED : JUNO_ERROR_MEMORY_STABLE_EXCEEDED} (${expectMemory} bytes used, ${allowedMemory} bytes allowed)`;
 
 			const HTML = readFileSync(join(process.cwd(), 'src/frontend/src/app.html'));
 

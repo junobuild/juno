@@ -815,7 +815,7 @@ describe.each([{ memory: { Heap: null } }, { memory: { Stable: null } }])(
 				});
 
 				it('should not allow to set a document', async () => {
-					await expect(createDoc()).rejects.toThrow(new RegExp(errorMsg, 'i'));
+					await expect(createDoc()).rejects.toThrow(expect.stringContaining(errorMsg));
 				});
 
 				it('should not allow to set many documents', async () => {

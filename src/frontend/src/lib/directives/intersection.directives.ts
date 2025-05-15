@@ -38,6 +38,7 @@ export const onIntersection = (element: HTMLElement, customOptions?: Intersectio
 	observer.observe(element);
 
 	return {
+		// eslint-disable-next-line prefer-arrow/prefer-arrow-functions
 		destroy() {
 			observer.disconnect();
 		}

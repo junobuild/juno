@@ -583,6 +583,7 @@ describe.each([{ memory: { Heap: null } }, { memory: { Stable: null } }])(
 
 				expect(docs.items_length).toBe(6n);
 
+				// eslint-disable-next-line prefer-destructuring
 				const firstKey = docs.items[0][0];
 
 				const filterDelete: ListParams = {
@@ -815,11 +816,9 @@ describe.each([{ memory: { Heap: null } }, { memory: { Stable: null } }])(
 				});
 
 				it('should not allow to set a document', async () => {
-					await expect(createDoc()).rejects.toThrowError(
+					await expect(createDoc()).rejects.toThrow(
 						expect.objectContaining({
-							message: expect.stringContaining(
-								errorMsg
-							)
+							message: expect.stringContaining(errorMsg)
 						})
 					);
 				});

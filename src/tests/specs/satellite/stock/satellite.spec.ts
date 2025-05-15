@@ -160,13 +160,14 @@ describe('Satellite', () => {
 
 			expect(rules).toHaveLength(2);
 
+			// eslint-disable-next-line prefer-destructuring
 			const [_, { version }] = rules[1];
 
 			await del_rule({ Db: null }, 'test2', {
 				version
 			});
 
-			expect(await list_rules({ Db: null })).toHaveLength(1);
+			await expect(list_rules({ Db: null })).resolves.toHaveLength(1);
 		});
 
 		it('should add and remove additional controller', async () => {

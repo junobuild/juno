@@ -3,6 +3,7 @@ import type { GlobalSetupContext } from 'vitest/node';
 
 let pic: PocketIcServer | undefined;
 
+// eslint-disable-next-line func-style, prefer-arrow/prefer-arrow-functions
 export async function setup({ provide }: GlobalSetupContext): Promise<void> {
 	pic = await PocketIcServer.start({
 		showCanisterLogs: true
@@ -18,6 +19,7 @@ declare module 'vitest' {
 	}
 }
 
+// eslint-disable-next-line func-style, prefer-arrow/prefer-arrow-functions
 export async function teardown(): Promise<void> {
 	await pic?.stop();
 }

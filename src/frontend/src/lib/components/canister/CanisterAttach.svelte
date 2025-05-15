@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { Principal } from '@dfinity/principal';
 	import { debounce, isNullish, nonNullish } from '@dfinity/utils';
-	import { type Snippet } from 'svelte';
+	import type { Snippet } from 'svelte';
 	import { run, preventDefault } from 'svelte/legacy';
 	import Popover from '$lib/components/ui/Popover.svelte';
 	import { missionControlIdDerived } from '$lib/derived/mission-control.derived';

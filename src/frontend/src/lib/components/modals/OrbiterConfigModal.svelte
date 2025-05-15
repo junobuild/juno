@@ -62,7 +62,7 @@
 			return;
 		}
 
-		const features = (detail as JunoModalEditOrbiterConfigDetail).features;
+		const { features } = detail as JunoModalEditOrbiterConfigDetail;
 		openOptions(features);
 
 		mounted = true;
@@ -171,8 +171,7 @@
 					</thead>
 					<tbody>
 						{#each Object.entries(config) as conf (conf[0])}
-							{@const satelliteId = conf[0]}
-							{@const entry = conf[1]}
+							{@const [satelliteId, entry] = conf}
 
 							<tr>
 								<td class="actions">

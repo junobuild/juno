@@ -17,6 +17,7 @@ export const batchAnalyticsRequests = async <Result>(
 	return results;
 };
 
+// eslint-disable-next-line func-style
 async function* batchAnalyticsRequestsByGroupOfPeriods<Result>({
 	periods,
 	fn,

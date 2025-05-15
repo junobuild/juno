@@ -3,7 +3,7 @@ import type { _SERVICE as SputnikActor } from '$declarations/sputnik/sputnik.did
 import type { Identity } from '@dfinity/agent';
 import { Principal } from '@dfinity/principal';
 import { assertNonNullish, jsonReplacer, jsonReviver } from '@dfinity/utils';
-import { type Actor, type PocketIc } from '@hadronous/pic';
+import type { Actor, PocketIc } from '@hadronous/pic';
 import { mockSetRule } from '../../mocks/collection.mocks';
 import { setupTestSputnik } from '../../utils/fixtures-tests.utils';
 import { createUser as createUserUtils } from '../../utils/satellite-doc-tests.utils';
@@ -34,7 +34,7 @@ describe('Sputnik > sdk > controllers', () => {
 
 		assertNonNullish(log);
 
-		const { message } = log[1];
+		const [_, { message }] = log;
 
 		const data: [Uint8Array, Controller][] = JSON.parse(
 			message.replace(`${keyword}:`, '').trim(),
@@ -47,7 +47,7 @@ describe('Sputnik > sdk > controllers', () => {
 
 		assertNonNullish(controllerData);
 
-		const controllerMetadata = controllerData[1];
+		const [__, controllerMetadata] = controllerData;
 
 		expect(controllerMetadata.metadata).toEqual([]);
 		expect(controllerMetadata.created_at).not.toBeUndefined();
@@ -289,7 +289,7 @@ describe('Sputnik > sdk > controllers', () => {
 
 			assertNonNullish(controllerData);
 
-			const controllerMetadata = controllerData[1];
+			const [___, controllerMetadata] = controllerData;
 
 			expect(controllerMetadata.metadata).toEqual([['hello', 'world']]);
 			expect(controllerMetadata.created_at).not.toBeUndefined();

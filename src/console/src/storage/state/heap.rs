@@ -1,6 +1,9 @@
 use crate::memory::STATE;
 use crate::storage::strategy_impls::CdnHeap;
-use junobuild_cdn::state::heap::{get_asset as cdn_get_asset, insert_asset as cdn_insert_asset};
+use junobuild_cdn::state::heap::{
+    collect_delete_assets as cdn_collect_delete_assets, delete_asset as cdn_delete_asset,
+    get_asset as cdn_get_asset, insert_asset as cdn_insert_asset,
+};
 use junobuild_collections::msg::msg_storage_collection_not_found;
 use junobuild_collections::types::core::CollectionKey;
 use junobuild_collections::types::rules::Rule;
@@ -20,18 +23,11 @@ pub fn insert_asset(full_path: &FullPath, asset: &Asset) {
 }
 
 pub fn delete_asset(full_path: &FullPath) -> Option<Asset> {
-    STATE.with(|state| delete_asset_impl(full_path, &mut state.borrow_mut().heap.storage.assets))
-}
-
-fn delete_asset_impl(full_path: &FullPath, assets: &mut AssetsHeap) -> Option<Asset> {
-    assets.remove(full_path)
+    cdn_delete_asset(&CdnHeap, full_path)
 }
 
 pub fn collect_delete_assets(collection: &CollectionKey) -> Vec<FullPath> {
-    STATE.with(|state| {
-        let state_ref = state.borrow();
-        collect_delete_assets_heap(collection, &state_ref.heap.storage.assets)
-    })
+    cdn_collect_delete_assets(&CdnHeap, collection)
 }
 
 // ---------------------------------------------------------

@@ -5,6 +5,7 @@ use crate::types::interface::SetRule;
 use crate::types::rules::{Memory, Rule, Rules};
 use junobuild_shared::assert::assert_version;
 use junobuild_shared::types::state::Version;
+use crate::errors::{JUNO_COLLECTIONS_ERROR_MODIFY_RESERVED_COLLECTION, JUNO_COLLECTIONS_ERROR_DELETE_PREFIX_RESERVED, JUNO_COLLECTIONS_ERROR_RATE_CONFIG_ENABLED, JUNO_COLLECTIONS_ERROR_RESERVED_NAME};
 
 pub fn assert_memory(current_rule: Option<&Rule>, memory: &Option<Memory>) -> Result<(), String> {
     // Validate memory type does not change
@@ -116,13 +117,14 @@ pub fn assert_system_collection_set_permission(
         || current_rule.max_capacity != user_rule.max_capacity
     {
         return Err(format!(
-            "Collection {} is reserved and cannot be modified.",
+            "{} ({})",
+            JUNO_COLLECTIONS_ERROR_MODIFY_RESERVED_COLLECTION,
             collection
         ));
     }
 
     if current_rule.rate_config.is_some() && user_rule.rate_config.is_none() {
-        return Err("Rate config cannot be disabled.".to_string());
+        return Err(JUNO_COLLECTIONS_ERROR_RATE_CONFIG_ENABLED.to_string());
     }
 
     Ok(())
@@ -133,7 +135,8 @@ pub fn assert_system_collection_delete_permission(
 ) -> Result<(), String> {
     if is_system_collection(collection) {
         return Err(format!(
-            "Collection starting with {} cannot be deleted",
+            "{} ({})",
+            JUNO_COLLECTIONS_ERROR_DELETE_PREFIX_RESERVED,
             SYS_COLLECTION_PREFIX
         ));
     }
@@ -156,7 +159,7 @@ pub fn assert_storage_reserved_collection(
     let reserved_collection = format!("{}{}", SYS_COLLECTION_PREFIX, collection);
 
     if rules.contains_key(&reserved_collection) {
-        return Err("The collection name matches a system collection.".to_string());
+        return Err(JUNO_COLLECTIONS_ERROR_RESERVED_NAME.to_string());
     }
 
     Ok(())

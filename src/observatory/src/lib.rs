@@ -1,3 +1,5 @@
+#![deny(clippy::disallowed_methods)]
+
 mod console;
 mod guards;
 mod http;

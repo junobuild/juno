@@ -1,4 +1,5 @@
 use crate::memory::STATE;
+use junobuild_cdn::proposals::ProposalsStable;
 use junobuild_cdn::storage::{AssetsStable, ContentChunksStable};
 use junobuild_cdn::strategies::{CdnHeapStrategy, CdnStableStrategy};
 use junobuild_collections::types::rules::Rules;
@@ -87,6 +88,20 @@ impl CdnStableStrategy for CdnStable {
         STATE.with(|state| {
             let mut borrow = state.borrow_mut();
             f(&mut borrow.stable.proposals_content_chunks)
+        })
+    }
+
+    fn with_proposals<R>(&self, f: impl FnOnce(&ProposalsStable) -> R) -> R {
+        STATE.with(|state| {
+            let stable = &state.borrow().stable;
+            f(&stable.proposals)
+        })
+    }
+
+    fn with_proposals_mut<R>(&self, f: impl FnOnce(&mut ProposalsStable) -> R) -> R {
+        STATE.with(|state| {
+            let mut borrow = state.borrow_mut();
+            f(&mut borrow.stable.proposals)
         })
     }
 }

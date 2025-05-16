@@ -22,4 +22,3 @@ serde.workspace = true
 junobuild-shared = "0.1.0"
 junobuild-collections = "0.1.0"
 junobuild-storage = "0.1.0"
-

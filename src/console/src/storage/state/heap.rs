@@ -1,9 +1,5 @@
 use crate::memory::STATE;
 use crate::storage::strategy_impls::CdnHeap;
-use junobuild_cdn::state::heap::{
-    collect_delete_assets as cdn_collect_delete_assets, delete_asset as cdn_delete_asset,
-    get_asset as cdn_get_asset, get_rule as cdn_get_rule, insert_asset as cdn_insert_asset,
-};
 use junobuild_collections::types::core::CollectionKey;
 use junobuild_collections::types::rules::Rule;
 use junobuild_shared::types::core::DomainName;
@@ -17,19 +13,19 @@ use junobuild_storage::types::store::Asset;
 // ---------------------------------------------------------
 
 pub fn get_asset(full_path: &FullPath) -> Option<Asset> {
-    cdn_get_asset(&CdnHeap, full_path)
+    junobuild_cdn::heap::get_asset(&CdnHeap, full_path)
 }
 
 pub fn insert_asset(full_path: &FullPath, asset: &Asset) {
-    cdn_insert_asset(&CdnHeap, full_path, asset)
+    junobuild_cdn::heap::insert_asset(&CdnHeap, full_path, asset)
 }
 
 pub fn delete_asset(full_path: &FullPath) -> Option<Asset> {
-    cdn_delete_asset(&CdnHeap, full_path)
+    junobuild_cdn::heap::delete_asset(&CdnHeap, full_path)
 }
 
 pub fn collect_delete_assets(collection: &CollectionKey) -> Vec<FullPath> {
-    cdn_collect_delete_assets(&CdnHeap, collection)
+    junobuild_cdn::heap::collect_delete_assets(&CdnHeap, collection)
 }
 
 // ---------------------------------------------------------
@@ -37,7 +33,7 @@ pub fn collect_delete_assets(collection: &CollectionKey) -> Vec<FullPath> {
 // ---------------------------------------------------------
 
 pub fn get_rule(collection: &CollectionKey) -> Result<Rule, String> {
-    cdn_get_rule(&CdnHeap, collection)
+    junobuild_cdn::heap::get_rule(&CdnHeap, collection)
 }
 
 // ---------------------------------------------------------

@@ -1,8 +1,12 @@
-use crate::metadata::update_releases_metadata;
-use crate::msg::{
-    ERROR_CANNOT_COMMIT_PROPOSAL, ERROR_CANNOT_DELETE_PROPOSAL_ASSETS,
-    ERROR_CANNOT_SUBMIT_PROPOSAL, ERROR_PROPOSAL_TYPE_NOT_SUPPORTED,
+use crate::errors::{
+    JUNO_ERROR_PROPOSALS_CANNOT_COMMIT, JUNO_ERROR_PROPOSALS_CANNOT_COMMIT_INVALID_STATUS,
+    JUNO_ERROR_PROPOSALS_CANNOT_DELETE_ASSETS,
+    JUNO_ERROR_PROPOSALS_CANNOT_DELETE_ASSETS_INVALID_STATUS, JUNO_ERROR_PROPOSALS_CANNOT_SUBMIT,
+    JUNO_ERROR_PROPOSALS_CANNOT_SUBMIT_INVALID_STATUS, JUNO_ERROR_PROPOSALS_EMPTY_ASSETS,
+    JUNO_ERROR_PROPOSALS_EMPTY_CONTENT_CHUNKS, JUNO_ERROR_PROPOSALS_INVALID_HASH,
+    JUNO_ERROR_PROPOSALS_NOT_CONTENT_CHUNKS_AT_INDEX, JUNO_ERROR_PROPOSALS_UNKNOWN_TYPE,
 };
+use crate::metadata::update_releases_metadata;
 use crate::storage::state::heap::insert_asset;
 use crate::storage::state::stable::{
     delete_asset_stable, delete_content_chunks_stable, get_assets_stable, get_content_chunks_stable,
@@ -40,7 +44,7 @@ pub fn submit_proposal(
     let proposal = get_proposal(proposal_id);
 
     match proposal {
-        None => Err(ERROR_CANNOT_SUBMIT_PROPOSAL.to_string()),
+        None => Err(JUNO_ERROR_PROPOSALS_CANNOT_SUBMIT.to_string()),
         Some(proposal) => secure_submit_proposal(caller, proposal_id, &proposal),
     }
 }
@@ -48,8 +52,8 @@ pub fn submit_proposal(
 pub fn commit_proposal(proposition: &CommitProposal) -> Result<(), CommitProposalError> {
     let proposal = get_proposal(&proposition.proposal_id).ok_or_else(|| {
         CommitProposalError::ProposalNotFound(format!(
-            "{} {}",
-            ERROR_CANNOT_COMMIT_PROPOSAL, proposition.proposal_id
+            "{} ({})",
+            JUNO_ERROR_PROPOSALS_CANNOT_COMMIT, proposition.proposal_id
         ))
     })?;
 
@@ -78,7 +82,7 @@ pub fn delete_proposal_assets(
 
         match proposal {
             None => {
-                return Err(ERROR_CANNOT_DELETE_PROPOSAL_ASSETS.to_string());
+                return Err(JUNO_ERROR_PROPOSALS_CANNOT_DELETE_ASSETS.to_string());
             }
             Some(proposal) => secure_delete_proposal_assets(caller, proposal_id, &proposal)?,
         }
@@ -94,13 +98,13 @@ fn secure_submit_proposal(
 ) -> Result<(ProposalId, Proposal), String> {
     // The one that started the upload should be the one that propose it.
     if principal_not_equal(caller, proposal.owner) {
-        return Err(ERROR_CANNOT_SUBMIT_PROPOSAL.to_string());
+        return Err(JUNO_ERROR_PROPOSALS_CANNOT_SUBMIT.to_string());
     }
 
     if proposal.status != ProposalStatus::Initialized {
         return Err(format!(
-            "Proposal cannot be submitted. Current status: {:?}",
-            proposal.status
+            "{} ({:?})",
+            JUNO_ERROR_PROPOSALS_CANNOT_SUBMIT_INVALID_STATUS, proposal.status
         ));
     }
 
@@ -134,15 +138,19 @@ fn secure_commit_proposal(
 ) -> Result<(), CommitProposalError> {
     if proposal.status != ProposalStatus::Open {
         return Err(CommitProposalError::ProposalNotOpen(format!(
-            "Proposal cannot be committed. Current status: {:?}",
-            proposal.status
+            "{} ({:?})",
+            JUNO_ERROR_PROPOSALS_CANNOT_COMMIT_INVALID_STATUS, proposal.status
         )));
     }
 
     match &proposal.sha256 {
         Some(sha256) if sha256 == &commit_proposal.sha256 => (),
         _ => {
-            return Err(CommitProposalError::InvalidSha256(format!("The provided SHA-256 hash ({}) does not match the expected value for the proposal to commit.", encode(commit_proposal.sha256))));
+            return Err(CommitProposalError::InvalidSha256(format!(
+                "{} ({})",
+                JUNO_ERROR_PROPOSALS_INVALID_HASH,
+                encode(commit_proposal.sha256)
+            )));
         }
     }
 
@@ -190,7 +198,10 @@ fn copy_committed_assets(proposal_id: &ProposalId) -> Result<(), String> {
     let assets = get_assets_stable(proposal_id);
 
     if assets.is_empty() {
-        return Err(format!("Empty assets for proposal ID {}.", proposal_id));
+        return Err(format!(
+            "{} ({})",
+            JUNO_ERROR_PROPOSALS_EMPTY_ASSETS, proposal_id
+        ));
     }
 
     for (key, asset) in assets {
@@ -202,8 +213,8 @@ fn copy_committed_assets(proposal_id: &ProposalId) -> Result<(), String> {
             for (i, _) in encoding.content_chunks.iter().enumerate() {
                 let chunks = get_content_chunks_stable(&encoding, i).ok_or_else(|| {
                     format!(
-                        "No content chunks found for encoding {} at index {}.",
-                        encoding_type, i
+                        "{} ({} - {}).",
+                        JUNO_ERROR_PROPOSALS_NOT_CONTENT_CHUNKS_AT_INDEX, encoding_type, i
                     )
                 })?;
 
@@ -212,8 +223,8 @@ fn copy_committed_assets(proposal_id: &ProposalId) -> Result<(), String> {
 
             if content_chunks.is_empty() {
                 return Err(format!(
-                    "Empty content chunks for encoding {}.",
-                    encoding_type
+                    "{} ({})",
+                    JUNO_ERROR_PROPOSALS_EMPTY_CONTENT_CHUNKS, encoding_type
                 ));
             }
 
@@ -236,13 +247,13 @@ pub fn secure_delete_proposal_assets(
 ) -> Result<(), String> {
     // The one that uploaded the assets can remove those.
     if principal_not_equal(caller, proposal.owner) {
-        return Err(ERROR_CANNOT_DELETE_PROPOSAL_ASSETS.to_string());
+        return Err(JUNO_ERROR_PROPOSALS_CANNOT_DELETE_ASSETS.to_string());
     }
 
     if proposal.status == ProposalStatus::Open {
         return Err(format!(
-            "Proposal assets cannot be deleted. Current status: {:?}",
-            proposal.status
+            "{} ({:?})",
+            JUNO_ERROR_PROPOSALS_CANNOT_DELETE_ASSETS_INVALID_STATUS, proposal.status
         ));
     }
 
@@ -266,7 +277,7 @@ fn assert_known_proposal_type(proposal: &Proposal) -> Result<(), String> {
     match &proposal.proposal_type {
         ProposalType::AssetsUpgrade(_) => (),
         ProposalType::SegmentsDeployment(_) => (),
-        _ => return Err(ERROR_PROPOSAL_TYPE_NOT_SUPPORTED.to_string()),
+        _ => return Err(JUNO_ERROR_PROPOSALS_UNKNOWN_TYPE.to_string()),
     };
 
     Ok(())

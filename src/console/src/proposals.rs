@@ -9,6 +9,7 @@ use crate::storage::state::stable::{
 };
 use crate::storage::store::{delete_assets, insert_asset_encoding};
 use crate::store::stable::{count_proposals, get_proposal, insert_proposal};
+use crate::strategies_impls::cdn::CdnStable;
 use crate::types::interface::CommitProposal;
 use candid::Principal;
 use hex::encode;
@@ -24,14 +25,7 @@ pub fn init_proposal(
     caller: Principal,
     proposal_type: &ProposalType,
 ) -> Result<(ProposalId, Proposal), String> {
-    let proposal_id =
-        u128::try_from(count_proposals() + 1).map_err(|_| "Cannot convert next proposal ID.")?;
-
-    let proposal: Proposal = Proposal::init(caller, proposal_type);
-
-    insert_proposal(&proposal_id, &proposal);
-
-    Ok((proposal_id, proposal))
+    junobuild_cdn::proposals::init_proposal(&CdnStable, caller, proposal_type)
 }
 
 pub fn submit_proposal(

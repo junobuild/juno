@@ -14,9 +14,9 @@ use junobuild_storage::stable_utils::insert_asset_encoding_stable;
 use junobuild_storage::types::config::StorageConfig;
 use junobuild_storage::types::state::{AssetsHeap, FullPath, StorageHeapState};
 use junobuild_storage::types::store::{Asset, AssetEncoding};
+use junobuild_storage::utils::clone_asset_encoding_content_chunks;
 use std::borrow::Cow;
 use std::ops::RangeBounds;
-
 // ---------------------------------------------------------
 // Assets
 // ---------------------------------------------------------
@@ -77,7 +77,10 @@ pub fn get_content_chunks(
     memory: &Memory,
 ) -> Option<Blob> {
     match memory {
-        Memory::Heap => Some(encoding.content_chunks[chunk_index].clone()),
+        Memory::Heap => {
+            let content_chunks = clone_asset_encoding_content_chunks(&encoding, chunk_index);
+            Some(content_chunks)
+        }
         Memory::Stable => STATE.with(|state| {
             get_content_chunks_stable(encoding, chunk_index, &state.borrow().stable.content_chunks)
         }),

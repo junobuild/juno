@@ -156,3 +156,7 @@ pub fn create_asset_with_content(
 
     asset
 }
+
+pub fn clone_asset_encoding_content_chunks(encoding: &AssetEncoding, chunk_index: usize) -> Blob {
+    encoding.content_chunks[chunk_index].clone()
+}

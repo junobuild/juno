@@ -5,7 +5,6 @@ use crate::storage::state::heap::{
 use crate::storage::state::stable::{
     get_asset_stable, insert_asset_encoding_stable, insert_asset_stable,
 };
-use crate::storage::state::utils::get_content_chunks;
 use crate::storage::store::get_public_asset;
 use candid::Principal;
 use junobuild_cdn::strategies::{CdnHeapStrategy, CdnStableStrategy};
@@ -23,6 +22,7 @@ use junobuild_storage::types::state::{AssetsHeap, FullPath};
 use junobuild_storage::types::store::{
     Asset, AssetAssertUpload, AssetEncoding, Batch, EncodingType, ReferenceId,
 };
+use junobuild_storage::utils::clone_asset_encoding_content_chunks;
 
 pub struct StorageAssertions;
 
@@ -57,7 +57,8 @@ impl StorageStateStrategy for StorageState {
         chunk_index: usize,
         _memory: &Memory,
     ) -> Option<Blob> {
-        get_content_chunks(encoding, chunk_index)
+        let content_chunks = clone_asset_encoding_content_chunks(encoding, chunk_index);
+        Some(content_chunks)
     }
 
     fn get_public_asset(

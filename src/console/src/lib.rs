@@ -2,12 +2,12 @@
 
 mod constants;
 mod controllers;
+mod errors;
 mod factory;
 mod guards;
 mod impls;
 mod memory;
 mod metadata;
-mod msg;
 mod proposals;
 mod storage;
 mod store;

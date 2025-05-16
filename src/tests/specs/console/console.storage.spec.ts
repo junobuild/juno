@@ -372,9 +372,7 @@ describe('Console > Storage', () => {
 							sha256,
 							proposal_id: proposalId
 						})
-					).rejects.toThrow(
-						`juno.error.proposals.invalid_hash (${uint8ArrayToHexString(sha256)})`
-					);
+					).rejects.toThrow(`juno.error.proposals.invalid_hash (${uint8ArrayToHexString(sha256)})`);
 				});
 
 				it('should not update proposal status', async () => {

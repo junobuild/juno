@@ -186,7 +186,7 @@ export const setSatelliteName = async ({
 	const updateData = new Map(metadata);
 	updateData.set(METADATA_KEY_NAME, satelliteName);
 
-	const identity = get(authStore).identity;
+	const { identity } = get(authStore);
 
 	const updatedSatellite = await setSatelliteMetadata({
 		missionControlId,
@@ -211,7 +211,7 @@ export const attachSatellite = async ({
 	missionControlId: MissionControlId;
 	satelliteId: Principal;
 }) => {
-	const identity = get(authStore).identity;
+	const { identity } = get(authStore);
 
 	await setSatellite({ missionControlId, satelliteId, identity });
 
@@ -229,7 +229,7 @@ export const detachSatellite = async ({
 	missionControlId: MissionControlId;
 	canisterId: Principal;
 }) => {
-	const identity = get(authStore).identity;
+	const { identity } = get(authStore);
 
 	await unsetSatellite({ missionControlId, satelliteId: canisterId, identity });
 
@@ -243,7 +243,7 @@ export const attachOrbiter = async (params: {
 	missionControlId: MissionControlId;
 	orbiterId: Principal;
 }) => {
-	const identity = get(authStore).identity;
+	const { identity } = get(authStore);
 
 	const orbiter = await setOrbiter({ ...params, identity });
 
@@ -257,7 +257,7 @@ export const detachOrbiter = async ({
 	missionControlId: MissionControlId;
 	canisterId: Principal;
 }) => {
-	const identity = get(authStore).identity;
+	const { identity } = get(authStore);
 
 	await unsetOrbiter({ ...rest, orbiterId: canisterId, identity });
 

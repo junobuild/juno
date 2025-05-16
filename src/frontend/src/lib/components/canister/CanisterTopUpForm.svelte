@@ -53,11 +53,7 @@
 		cycles = convertedCycles;
 	});
 
-	let displayTCycles: string | undefined = $state(undefined);
-
-	$effect(() => {
-		displayTCycles = nonNullish(cycles) ? `${formatTCycles(BigInt(cycles ?? 0))}` : '';
-	});
+	let displayTCycles = $derived(nonNullish(cycles) ? `${formatTCycles(BigInt(cycles ?? 0))}` : '');
 
 	const onSubmit = ($event: SubmitEvent) => {
 		$event.preventDefault();

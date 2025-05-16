@@ -9,6 +9,10 @@ import { Ed25519KeyIdentity } from '@dfinity/identity';
 import { fromNullable, toNullable } from '@dfinity/utils';
 import { type Actor, PocketIc } from '@hadronous/pic';
 import {
+	JUNO_COLLECTIONS_ERROR_COLLECTION_NOT_EMPTY,
+	JUNO_COLLECTIONS_ERROR_COLLECTION_NOT_FOUND,
+	JUNO_ERROR_MEMORY_HEAP_EXCEEDED,
+	JUNO_ERROR_MEMORY_STABLE_EXCEEDED,
 	JUNO_ERROR_NO_VERSION_PROVIDED,
 	JUNO_ERROR_VERSION_OUTDATED_OR_FUTURE
 } from '@junobuild/errors';
@@ -579,6 +583,7 @@ describe.each([{ memory: { Heap: null } }, { memory: { Stable: null } }])(
 
 				expect(docs.items_length).toBe(6n);
 
+				// eslint-disable-next-line prefer-destructuring
 				const firstKey = docs.items[0][0];
 
 				const filterDelete: ListParams = {
@@ -738,7 +743,7 @@ describe.each([{ memory: { Heap: null } }, { memory: { Stable: null } }])(
 					expect(true).toBeFalsy();
 				} catch (error: unknown) {
 					expect((error as Error).message).toContain(
-						`The "${TEST_COLLECTION}" collection in Datastore is not empty.`
+						`${JUNO_COLLECTIONS_ERROR_COLLECTION_NOT_EMPTY} (Datastore - ${TEST_COLLECTION})`
 					);
 				}
 			});
@@ -758,7 +763,7 @@ describe.each([{ memory: { Heap: null } }, { memory: { Stable: null } }])(
 					expect(true).toBeFalsy();
 				} catch (error: unknown) {
 					expect((error as Error).message).toContain(
-						`Collection "${collectionUnknown}" not found in Datastore.`
+						`${JUNO_COLLECTIONS_ERROR_COLLECTION_NOT_FOUND} (Datastore - ${collectionUnknown})`
 					);
 				}
 			});
@@ -791,7 +796,7 @@ describe.each([{ memory: { Heap: null } }, { memory: { Stable: null } }])(
 					expectMemory: 25_231_360n
 				}
 			])('With collection', ({ memory, expectMemory }) => {
-				const errorMsg = `${'Heap' in memory ? 'Heap' : 'Stable'} memory usage exceeded: ${expectMemory} bytes used, 20000 bytes allowed.`;
+				const errorMsg = `${'Heap' in memory ? JUNO_ERROR_MEMORY_HEAP_EXCEEDED : JUNO_ERROR_MEMORY_STABLE_EXCEEDED} (${expectMemory} bytes used, 20000 bytes allowed)`;
 
 				const collection = `test_config_${'Heap' in memory ? 'heap' : 'stable'}`;
 
@@ -811,7 +816,11 @@ describe.each([{ memory: { Heap: null } }, { memory: { Stable: null } }])(
 				});
 
 				it('should not allow to set a document', async () => {
-					await expect(createDoc()).rejects.toThrow(new RegExp(errorMsg, 'i'));
+					await expect(createDoc()).rejects.toThrow(
+						expect.objectContaining({
+							message: expect.stringContaining(errorMsg)
+						})
+					);
 				});
 
 				it('should not allow to set many documents', async () => {

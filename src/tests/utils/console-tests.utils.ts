@@ -10,7 +10,7 @@ import {
 	fromNullable,
 	toNullable
 } from '@dfinity/utils';
-import { type Actor, type PocketIc } from '@hadronous/pic';
+import type { Actor, PocketIc } from '@hadronous/pic';
 import { readFile } from 'node:fs/promises';
 import { expect } from 'vitest';
 import { CONTROLLER_ERROR_MSG } from '../constants/mission-control-tests.constants';
@@ -121,6 +121,7 @@ const uploadSegment = async ({
 		orderId++;
 	}
 
+	// eslint-disable-next-line func-style
 	async function* batchUploadChunks({
 		uploadChunks,
 		limit = 12

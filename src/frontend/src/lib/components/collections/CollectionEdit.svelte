@@ -37,11 +37,13 @@
 
 	let typeDatastore = $derived('Db' in type);
 
+	// eslint-disable-next-line svelte/prefer-writable-derived
 	let collection: string = $state('');
 	$effect(() => {
 		collection = $store.rule?.[0] ?? '';
 	});
 
+	// eslint-disable-next-line svelte/prefer-writable-derived
 	let rule: Rule | undefined = $state(undefined);
 	$effect(() => {
 		rule = $store.rule?.[1] ?? undefined;
@@ -49,11 +51,13 @@
 
 	let mode: 'new' | 'edit' = $derived(nonNullish(rule) ? 'edit' : 'new');
 
+	// eslint-disable-next-line svelte/prefer-writable-derived
 	let read: PermissionText = $state(permissionToText(PermissionManaged));
 	$effect(() => {
 		read = permissionToText(rule?.read ?? PermissionManaged);
 	});
 
+	// eslint-disable-next-line svelte/prefer-writable-derived
 	let write: PermissionText = $state(permissionToText(PermissionManaged));
 	$effect(() => {
 		write = permissionToText(rule?.write ?? PermissionManaged);
@@ -64,6 +68,7 @@
 		memoryToText(
 			fromNullishNullable(rule?.memory) ?? (isNullish(rule) ? MemoryStable : MemoryHeap)
 		);
+	// eslint-disable-next-line svelte/prefer-writable-derived
 	let memory: MemoryText = $state(memoryToText(MemoryStable));
 	$effect(() => {
 		memory = initMemory(rule);
@@ -91,11 +96,13 @@
 	};
 	$effect(() => initRateTokens(rule?.rate_config ?? []));
 
+	// eslint-disable-next-line svelte/prefer-writable-derived
 	let maxCapacity: number | undefined = $state(undefined);
 	$effect(() => {
 		maxCapacity = fromNullishNullable(rule?.max_capacity);
 	});
 
+	// eslint-disable-next-line svelte/prefer-writable-derived
 	let maxChanges: number | undefined = $state(undefined);
 	$effect(() => {
 		maxChanges = fromNullishNullable(rule?.max_changes_per_user);

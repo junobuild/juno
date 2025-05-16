@@ -49,6 +49,7 @@
 			identity: $authStore.identity
 		});
 
+		// eslint-disable-next-line prefer-destructuring
 		config = result.config;
 		supportConfig = result.result === 'success';
 	};

@@ -77,7 +77,7 @@ export const loadSatellites = async ({
 		return satellites.map(([_, satellite]) => satellite);
 	};
 
-	const identity = get(authStore).identity;
+	const { identity } = get(authStore);
 
 	return await loadDataStore<Satellite[]>({
 		identity,

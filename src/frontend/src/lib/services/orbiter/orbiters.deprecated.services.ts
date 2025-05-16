@@ -141,6 +141,7 @@ const mapDeprecatedAnalyticsTop10PageViews = (
 			let host: string;
 			try {
 				const url = new URL(ref);
+				// eslint-disable-next-line prefer-destructuring
 				host = url.host;
 			} catch (_err: unknown) {
 				host = ref;

@@ -13,7 +13,7 @@
 	import { wizardBusy } from '$lib/stores/busy.store';
 	import { i18n } from '$lib/stores/i18n.store';
 	import type { CanisterSegmentWithLabel } from '$lib/types/canister';
-	import { type TopUpProgress } from '$lib/types/progress-topup';
+	import type { TopUpProgress } from '$lib/types/progress-topup';
 
 	interface Props {
 		balance: bigint;

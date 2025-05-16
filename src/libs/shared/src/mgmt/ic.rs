@@ -1,3 +1,8 @@
+use crate::errors::{
+    JUNO_ERROR_CANISTER_CREATE_FAILED, JUNO_ERROR_CANISTER_INSTALL_CODE_FAILED,
+    JUNO_ERROR_CYCLES_DEPOSIT_BALANCE_LOW, JUNO_ERROR_CYCLES_DEPOSIT_FAILED,
+    JUNO_ERROR_SEGMENT_DELETE_FAILED, JUNO_ERROR_SEGMENT_STOP_FAILED,
+};
 use crate::mgmt::settings::{create_canister_cycles, create_canister_settings};
 use crate::mgmt::types::ic::WasmArg;
 use crate::types::interface::DepositCyclesArgs;
@@ -35,14 +40,17 @@ pub async fn create_canister_install_code(
     .await;
 
     match record {
-        Err((_, message)) => Err(["Failed to create canister.", &message].join(" - ")),
+        Err((_, message)) => Err(format!(
+            "{} ({})",
+            JUNO_ERROR_CANISTER_CREATE_FAILED, &message
+        )),
         Ok(record) => {
             let canister_id = record.0.canister_id;
 
             let install = install_code(canister_id, wasm_arg, CanisterInstallMode::Install).await;
 
             match install {
-                Err(_) => Err("Failed to install code in canister.".to_string()),
+                Err(_) => Err(JUNO_ERROR_CANISTER_INSTALL_CODE_FAILED.to_string()),
                 Ok(_) => Ok(canister_id),
             }
         }
@@ -121,8 +129,8 @@ pub async fn deposit_cycles(
 
     if balance < cycles {
         return Err(format!(
-            "Balance ({}) is lower than the amount of cycles {} to deposit.",
-            balance, cycles
+            "{} (balance {}, {} to deposit)",
+            JUNO_ERROR_CYCLES_DEPOSIT_BALANCE_LOW, balance, cycles
         ));
     }
 
@@ -135,7 +143,10 @@ pub async fn deposit_cycles(
     .await;
 
     match result {
-        Err((_, message)) => Err(["Deposit cycles failed.", &message].join(" - ")),
+        Err((_, message)) => Err(format!(
+            "{} ({})",
+            JUNO_ERROR_CYCLES_DEPOSIT_FAILED, &message
+        )),
         Ok(_) => Ok(()),
     }
 }
@@ -152,7 +163,7 @@ pub async fn stop_segment(canister_id: CanisterId) -> Result<(), String> {
     let result = stop_canister(CanisterIdRecord { canister_id }).await;
 
     match result {
-        Err((_, message)) => Err(["Cannot stop segment.", &message].join(" - ")),
+        Err((_, message)) => Err(format!("{} ({})", JUNO_ERROR_SEGMENT_STOP_FAILED, &message)),
         Ok(_) => Ok(()),
     }
 }
@@ -169,7 +180,10 @@ pub async fn delete_segment(canister_id: CanisterId) -> Result<(), String> {
     let result = delete_canister(CanisterIdRecord { canister_id }).await;
 
     match result {
-        Err((_, message)) => Err(["Cannot delete segment.", &message].join(" - ")),
+        Err((_, message)) => Err(format!(
+            "{} ({})",
+            JUNO_ERROR_SEGMENT_DELETE_FAILED, &message
+        )),
         Ok(_) => Ok(()),
     }
 }

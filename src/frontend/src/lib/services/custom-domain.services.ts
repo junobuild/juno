@@ -23,7 +23,7 @@ export const setCustomDomain = async ({
 	satelliteId: Principal;
 	domainName: string;
 }) => {
-	const identity = get(authStore).identity;
+	const { identity } = get(authStore);
 
 	// Add domain name to list of custom domain in `./well-known/ic-domains`
 	await setCustomDomainApi({
@@ -56,7 +56,7 @@ export const deleteCustomDomain = async ({
 	domainName: string;
 	deleteCustomDomain: boolean;
 }) => {
-	const identity = get(authStore).identity;
+	const { identity } = get(authStore);
 
 	if (deleteCustomDomain && nonNullish(fromNullable(customDomain.bn_id))) {
 		// Delete domain name in BN
@@ -79,7 +79,7 @@ export const listCustomDomains = async ({
 	reload: boolean;
 }): Promise<{ success: boolean }> => {
 	try {
-		const identity = get(authStore).identity;
+		const { identity } = get(authStore);
 
 		const store = get(customDomainsStore);
 		if (nonNullish(store[satelliteId.toText()]) && !reload) {

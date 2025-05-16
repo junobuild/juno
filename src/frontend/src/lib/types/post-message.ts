@@ -1,19 +1,19 @@
-import {
-	type inferPostMessageSchema,
-	type PostMessageDataRequestDataSchema,
-	type PostMessageDataResponseAuthSchema,
-	type PostMessageDataResponseCanisterMonitoringSchema,
-	type PostMessageDataResponseCanisterSchema,
-	type PostMessageDataResponseCanistersMonitoringSchema,
-	type PostMessageDataResponseCanistersSyncDataSchema,
-	type PostMessageDataResponseCanisterSyncDataSchema,
-	type PostMessageDataResponseErrorSchema,
-	type PostMessageDataResponseExchangeSchema,
-	type PostMessageDataResponseHostingSchema,
-	type PostMessageDataResponseSchema,
-	type PostMessageDataResponseWalletCleanUpSchema,
-	type PostMessageDataResponseWalletSchema,
-	type PostMessageRequestSchema
+import type {
+	inferPostMessageSchema,
+	PostMessageDataRequestDataSchema,
+	PostMessageDataResponseAuthSchema,
+	PostMessageDataResponseCanisterMonitoringSchema,
+	PostMessageDataResponseCanisterSchema,
+	PostMessageDataResponseCanistersMonitoringSchema,
+	PostMessageDataResponseCanistersSyncDataSchema,
+	PostMessageDataResponseCanisterSyncDataSchema,
+	PostMessageDataResponseErrorSchema,
+	PostMessageDataResponseExchangeSchema,
+	PostMessageDataResponseHostingSchema,
+	PostMessageDataResponseSchema,
+	PostMessageDataResponseWalletCleanUpSchema,
+	PostMessageDataResponseWalletSchema,
+	PostMessageRequestSchema
 } from '$lib/schema/post-message.schema';
 import type * as z from 'zod';
 import type { ZodType } from 'zod';

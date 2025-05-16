@@ -1,6 +1,5 @@
+use crate::errors::{JUNO_COLLECTIONS_ERROR_COLLECTION_NOT_EMPTY, JUNO_COLLECTIONS_ERROR_COLLECTION_NOT_FOUND};
 use crate::types::core::CollectionKey;
-
-pub const COLLECTION_NOT_EMPTY: &str = "Collection not empty: ";
 
 pub fn msg_db_collection_not_empty(collection: &CollectionKey) -> String {
     msg_collection_not_empty(collection, &"Datastore".to_string())
@@ -12,8 +11,8 @@ pub fn msg_storage_collection_not_empty(collection: &CollectionKey) -> String {
 
 fn msg_collection_not_empty(collection: &CollectionKey, name: &String) -> String {
     format!(
-        r#"The "{}" collection in {} is not empty."#,
-        collection, name
+        r#"{} ({} - {})"#,
+        JUNO_COLLECTIONS_ERROR_COLLECTION_NOT_EMPTY, name, collection,
     )
 }
 
@@ -26,5 +25,5 @@ pub fn msg_storage_collection_not_found(collection: &CollectionKey) -> String {
 }
 
 fn msg_collection_not_found(collection: &CollectionKey, name: &String) -> String {
-    format!(r#"Collection "{}" not found in {}."#, collection, name)
+    format!(r#"{} ({} - {})"#, JUNO_COLLECTIONS_ERROR_COLLECTION_NOT_FOUND, name, collection)
 }

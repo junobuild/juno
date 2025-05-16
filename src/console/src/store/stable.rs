@@ -1,5 +1,6 @@
 use crate::constants::E8S_PER_ICP;
 use crate::memory::STATE;
+use crate::strategies_impls::cdn::CdnStable;
 use crate::types::ledger::{Payment, PaymentStatus};
 use crate::types::state::{
     MissionControl, MissionControls, MissionControlsStable, Payments, PaymentsStable,
@@ -12,7 +13,6 @@ use junobuild_cdn::proposals::{Proposal, ProposalId, ProposalKey};
 use junobuild_shared::types::state::MissionControlId;
 use junobuild_shared::types::state::UserId;
 use junobuild_shared::utils::principal_equal;
-
 // ---------------------------------------------------------
 // Mission control centers
 // ---------------------------------------------------------
@@ -354,11 +354,7 @@ fn list_payments_impl(payments: &PaymentsStable) -> Payments {
 // ---------------------------------------------------------
 
 pub fn get_proposal(proposal_id: &ProposalId) -> Option<Proposal> {
-    STATE.with(|state| get_proposal_impl(proposal_id, &state.borrow().stable.proposals))
-}
-
-fn get_proposal_impl(proposal_id: &ProposalId, proposals: &ProposalsStable) -> Option<Proposal> {
-    proposals.get(&stable_proposal_key(proposal_id))
+    junobuild_cdn::proposals::stable::get_proposal(&CdnStable, proposal_id)
 }
 
 pub fn count_proposals() -> usize {

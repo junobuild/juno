@@ -1,7 +1,11 @@
 use candid::{CandidType, Deserialize, Principal};
+use ic_stable_structures::StableBTreeMap;
 use junobuild_shared::types::core::Hash;
+use junobuild_shared::types::memory::Memory;
 use junobuild_shared::types::state::{Timestamp, Version};
 use serde::Serialize;
+
+pub type ProposalsStable = StableBTreeMap<ProposalKey, Proposal, Memory>;
 
 pub type ProposalId = u128;
 

@@ -1,3 +1,4 @@
+use crate::proposals::ProposalsStable;
 use crate::storage::{AssetsStable, ContentChunksStable};
 use junobuild_collections::types::rules::Rules;
 use junobuild_shared::types::domain::CustomDomains;
@@ -23,4 +24,6 @@ pub trait CdnStableStrategy {
 
     fn with_content_chunks<R>(&self, f: impl FnOnce(&ContentChunksStable) -> R) -> R;
     fn with_content_chunks_mut<R>(&self, f: impl FnOnce(&mut ContentChunksStable) -> R) -> R;
+
+    fn with_proposals<R>(&self, f: impl FnOnce(&ProposalsStable) -> R) -> R;
 }

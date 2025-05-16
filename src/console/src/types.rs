@@ -5,7 +5,7 @@ pub mod state {
     use ic_ledger_types::{BlockIndex, Tokens};
     use ic_stable_structures::StableBTreeMap;
     use junobuild_cdn::proposals::{Proposal, ProposalKey, SegmentDeploymentVersion};
-    use junobuild_cdn::{AssetsStable, ContentChunksStable};
+    use junobuild_cdn::storage::{AssetsStable, ContentChunksStable};
     use junobuild_shared::rate::types::{RateConfig, RateTokens};
     use junobuild_shared::types::memory::Memory;
     use junobuild_shared::types::state::{Controllers, Timestamp};

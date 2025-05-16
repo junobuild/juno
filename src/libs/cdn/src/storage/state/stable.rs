@@ -1,7 +1,7 @@
 use crate::proposals::ProposalId;
 use crate::storage::state::types::{AssetsStable, ProposalAssetKey};
+use crate::storage::{ContentChunksStable, ProposalContentChunkKey};
 use crate::strategies::CdnStableStrategy;
-use crate::{ContentChunksStable, ProposalContentChunkKey};
 use junobuild_collections::types::core::CollectionKey;
 use junobuild_shared::serializers::deserialize_from_bytes;
 use junobuild_shared::types::core::Blob;

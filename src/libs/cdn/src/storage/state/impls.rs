@@ -1,4 +1,4 @@
-use crate::{ProposalAssetKey, ProposalContentChunkKey};
+use crate::storage::{ProposalAssetKey, ProposalContentChunkKey};
 use ic_stable_structures::storable::Bound;
 use ic_stable_structures::Storable;
 use junobuild_shared::serializers::{deserialize_from_bytes, serialize_to_bytes};

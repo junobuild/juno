@@ -12,19 +12,19 @@ use junobuild_storage::types::store::Asset;
 // ---------------------------------------------------------
 
 pub fn get_asset(full_path: &FullPath) -> Option<Asset> {
-    junobuild_cdn::heap::get_asset(&CdnHeap, full_path)
+    junobuild_cdn::storage::heap::get_asset(&CdnHeap, full_path)
 }
 
 pub fn insert_asset(full_path: &FullPath, asset: &Asset) {
-    junobuild_cdn::heap::insert_asset(&CdnHeap, full_path, asset)
+    junobuild_cdn::storage::heap::insert_asset(&CdnHeap, full_path, asset)
 }
 
 pub fn delete_asset(full_path: &FullPath) -> Option<Asset> {
-    junobuild_cdn::heap::delete_asset(&CdnHeap, full_path)
+    junobuild_cdn::storage::heap::delete_asset(&CdnHeap, full_path)
 }
 
 pub fn collect_delete_assets(collection: &CollectionKey) -> Vec<FullPath> {
-    junobuild_cdn::heap::collect_delete_assets(&CdnHeap, collection)
+    junobuild_cdn::storage::heap::collect_delete_assets(&CdnHeap, collection)
 }
 
 // ---------------------------------------------------------
@@ -32,7 +32,7 @@ pub fn collect_delete_assets(collection: &CollectionKey) -> Vec<FullPath> {
 // ---------------------------------------------------------
 
 pub fn get_rule(collection: &CollectionKey) -> Result<Rule, String> {
-    junobuild_cdn::heap::get_rule(&CdnHeap, collection)
+    junobuild_cdn::storage::heap::get_rule(&CdnHeap, collection)
 }
 
 // ---------------------------------------------------------
@@ -40,11 +40,11 @@ pub fn get_rule(collection: &CollectionKey) -> Result<Rule, String> {
 // ---------------------------------------------------------
 
 pub fn get_config() -> StorageConfig {
-    junobuild_cdn::heap::get_config(&CdnHeap)
+    junobuild_cdn::storage::heap::get_config(&CdnHeap)
 }
 
 pub fn insert_config(config: &StorageConfig) {
-    junobuild_cdn::heap::insert_config(&CdnHeap, config)
+    junobuild_cdn::storage::heap::insert_config(&CdnHeap, config)
 }
 
 // ---------------------------------------------------------
@@ -52,17 +52,17 @@ pub fn insert_config(config: &StorageConfig) {
 // ---------------------------------------------------------
 
 pub fn get_domains() -> CustomDomains {
-    junobuild_cdn::heap::get_domains(&CdnHeap)
+    junobuild_cdn::storage::heap::get_domains(&CdnHeap)
 }
 
 pub fn get_domain(domain_name: &DomainName) -> Option<CustomDomain> {
-    junobuild_cdn::heap::get_domain(&CdnHeap, domain_name)
+    junobuild_cdn::storage::heap::get_domain(&CdnHeap, domain_name)
 }
 
 pub fn insert_domain(domain_name: &DomainName, custom_domain: &CustomDomain) {
-    junobuild_cdn::heap::insert_domain(&CdnHeap, domain_name, custom_domain)
+    junobuild_cdn::storage::heap::insert_domain(&CdnHeap, domain_name, custom_domain)
 }
 
 pub fn delete_domain(domain_name: &DomainName) {
-    junobuild_cdn::heap::delete_domain(&CdnHeap, domain_name)
+    junobuild_cdn::storage::heap::delete_domain(&CdnHeap, domain_name)
 }

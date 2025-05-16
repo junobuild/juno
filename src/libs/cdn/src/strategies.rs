@@ -1,5 +1,4 @@
-use crate::storage::state::types::AssetsStable;
-use crate::ContentChunksStable;
+use crate::storage::{AssetsStable, ContentChunksStable};
 use junobuild_collections::types::rules::Rules;
 use junobuild_shared::types::domain::CustomDomains;
 use junobuild_storage::types::config::StorageConfig;

@@ -1,4 +1,4 @@
-use crate::proposals::state::types::ProposalId;
+use crate::proposals::ProposalId;
 use candid::{CandidType, Deserialize};
 use ic_stable_structures::StableBTreeMap;
 use junobuild_collections::types::core::CollectionKey;

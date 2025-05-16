@@ -8,7 +8,7 @@ use crate::store::heap::get_controllers;
 use crate::store::stable::get_proposal;
 use crate::strategies_impls::storage::StorageState;
 use candid::Principal;
-use junobuild_cdn::ProposalId;
+use junobuild_cdn::proposals::ProposalId;
 use junobuild_collections::types::core::CollectionKey;
 use junobuild_collections::types::rules::Memory;
 use junobuild_shared::list::list_values;

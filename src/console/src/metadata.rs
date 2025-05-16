@@ -2,7 +2,7 @@ use crate::constants::{RELEASES_COLLECTION_KEY, RELEASES_METADATA_JSON};
 use crate::storage::state::heap::{get_asset, insert_asset};
 use crate::store::heap::{get_releases_metadata, set_releases_metadata};
 use ic_cdk::id;
-use junobuild_cdn::SegmentsDeploymentOptions;
+use junobuild_cdn::proposals::SegmentsDeploymentOptions;
 use junobuild_storage::types::store::{Asset, AssetKey};
 use junobuild_storage::utils::{create_asset_with_content, map_content_type_headers};
 use serde_json::to_string;

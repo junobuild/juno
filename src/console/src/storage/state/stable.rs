@@ -1,5 +1,6 @@
 use crate::strategies_impls::cdn::CdnStable;
-use junobuild_cdn::{ProposalAssetKey, ProposalId};
+use junobuild_cdn::proposals::ProposalId;
+use junobuild_cdn::ProposalAssetKey;
 use junobuild_collections::types::core::CollectionKey;
 use junobuild_shared::types::core::Blob;
 use junobuild_storage::types::state::FullPath;

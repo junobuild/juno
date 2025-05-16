@@ -4,9 +4,8 @@ pub mod state {
     use candid::CandidType;
     use ic_ledger_types::{BlockIndex, Tokens};
     use ic_stable_structures::StableBTreeMap;
-    use junobuild_cdn::{
-        AssetsStable, ContentChunksStable, Proposal, ProposalKey, SegmentDeploymentVersion,
-    };
+    use junobuild_cdn::proposals::{Proposal, ProposalKey, SegmentDeploymentVersion};
+    use junobuild_cdn::{AssetsStable, ContentChunksStable};
     use junobuild_shared::rate::types::{RateConfig, RateTokens};
     use junobuild_shared::types::memory::Memory;
     use junobuild_shared::types::state::{Controllers, Timestamp};
@@ -110,7 +109,7 @@ pub mod state {
 
 pub mod interface {
     use candid::CandidType;
-    use junobuild_cdn::ProposalId;
+    use junobuild_cdn::proposals::ProposalId;
     use junobuild_shared::types::core::Hash;
     use junobuild_storage::types::config::StorageConfig;
     use serde::{Deserialize, Serialize};

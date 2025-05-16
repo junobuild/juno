@@ -8,7 +8,7 @@ use crate::types::state::{
 use ic_cdk::api::time;
 use ic_ledger_types::BlockIndex;
 use ic_ledger_types::Tokens;
-use junobuild_cdn::{Proposal, ProposalId, ProposalKey};
+use junobuild_cdn::proposals::{Proposal, ProposalId, ProposalKey};
 use junobuild_shared::types::state::MissionControlId;
 use junobuild_shared::types::state::UserId;
 use junobuild_shared::utils::principal_equal;

@@ -1,4 +1,4 @@
-use crate::{Proposal, ProposalKey, ProposalStatus, ProposalType};
+use crate::proposals::{Proposal, ProposalKey, ProposalStatus, ProposalType};
 use candid::Principal;
 use ic_cdk::api::time;
 use ic_stable_structures::storable::Bound;

@@ -1,4 +1,4 @@
-use crate::proposals::state::types::ProposalId;
+use crate::proposals::ProposalId;
 use crate::storage::state::types::{AssetsStable, ProposalAssetKey};
 use crate::strategies::CdnStableStrategy;
 use crate::{ContentChunksStable, ProposalContentChunkKey};

@@ -299,7 +299,7 @@ describe('Console > Storage', () => {
 					const unknownProposalId = proposalId + 1n;
 
 					await expect(submit_proposal(unknownProposalId)).rejects.toThrow(
-						'Cannot submit proposal.'
+						'juno.error.proposals.cannot_submit'
 					);
 				});
 
@@ -345,7 +345,7 @@ describe('Console > Storage', () => {
 					const { submit_proposal } = actor;
 
 					await expect(submit_proposal(proposalId)).rejects.toThrow(
-						'Proposal cannot be submitted. Current status: Open'
+						'juno.error.proposals.cannot_submit_invalid_status (Open)'
 					);
 				});
 
@@ -359,7 +359,7 @@ describe('Console > Storage', () => {
 							sha256: Array.from({ length: 32 }).map((_, i) => i),
 							proposal_id: proposalId + 1n
 						})
-					).rejects.toThrow(`Cannot commit proposal. ${unknownProposalId}`);
+					).rejects.toThrow(`juno.error.proposals.cannot_commit (${unknownProposalId})`);
 				});
 
 				it('should fail at committing a proposal with incorrect sha256', async () => {
@@ -373,7 +373,7 @@ describe('Console > Storage', () => {
 							proposal_id: proposalId
 						})
 					).rejects.toThrow(
-						`The provided SHA-256 hash (${uint8ArrayToHexString(sha256)}) does not match the expected value for the proposal to commit.`
+						`juno.error.proposals.invalid_hash (${uint8ArrayToHexString(sha256)})`
 					);
 				});
 
@@ -548,7 +548,7 @@ describe('Console > Storage', () => {
 					sha256: fromNullable(sha256)!,
 					proposal_id: proposalId
 				})
-			).rejects.toThrow(`Empty assets for proposal ID ${proposalId}.`);
+			).rejects.toThrow(`juno.error.proposals.empty_assets (${proposalId})`);
 
 			const proposal = fromNullable(await get_proposal(proposalId));
 

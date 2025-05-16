@@ -9,11 +9,11 @@ use crate::storage::state::stable::{
 };
 use crate::storage::store::{delete_assets, insert_asset_encoding};
 use crate::store::stable::{count_proposals, get_proposal, insert_proposal};
-use crate::types::core::CommitProposalError;
 use crate::types::interface::CommitProposal;
-use crate::types::state::{Proposal, ProposalId, ProposalStatus, ProposalType};
 use candid::Principal;
 use hex::encode;
+use junobuild_cdn::proposals::CommitProposalError;
+use junobuild_cdn::proposals::{Proposal, ProposalId, ProposalStatus, ProposalType};
 use junobuild_collections::constants::assets::COLLECTION_ASSET_KEY;
 use junobuild_shared::types::core::{Hash, Hashable};
 use junobuild_shared::utils::principal_not_equal;

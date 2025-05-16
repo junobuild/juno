@@ -44,8 +44,8 @@ use crate::store::stable::{
 };
 use crate::types::interface::{CommitProposal, Config, DeleteProposalAssets};
 use crate::types::state::{
-    Fees, HeapState, InvitationCode, MissionControl, MissionControls, Proposal, ProposalId,
-    ProposalType, Rates, ReleasesMetadata, State,
+    Fees, HeapState, InvitationCode, MissionControl, MissionControls, Rates, ReleasesMetadata,
+    State,
 };
 use candid::Principal;
 use ciborium::{from_reader, into_writer};
@@ -54,6 +54,7 @@ use ic_cdk::api::caller;
 use ic_cdk::{id, trap};
 use ic_cdk_macros::{export_candid, init, post_upgrade, pre_upgrade, query, update};
 use ic_ledger_types::Tokens;
+use junobuild_cdn::proposals::{Proposal, ProposalId, ProposalType};
 use junobuild_collections::types::core::CollectionKey;
 use junobuild_shared::controllers::init_controllers;
 use junobuild_shared::rate::types::RateConfig;

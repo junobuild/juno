@@ -1,14 +1,14 @@
 pub mod state {
     use crate::memory::init_stable_state;
     use crate::types::ledger::Payment;
-    use candid::{CandidType, Principal};
+    use candid::CandidType;
     use ic_ledger_types::{BlockIndex, Tokens};
     use ic_stable_structures::StableBTreeMap;
+    use junobuild_cdn::proposals::{Proposal, ProposalKey, SegmentDeploymentVersion};
     use junobuild_cdn::{AssetsStable, ContentChunksStable};
     use junobuild_shared::rate::types::{RateConfig, RateTokens};
-    use junobuild_shared::types::core::Hash;
     use junobuild_shared::types::memory::Memory;
-    use junobuild_shared::types::state::{Controllers, Timestamp, Version};
+    use junobuild_shared::types::state::{Controllers, Timestamp};
     use junobuild_shared::types::state::{MissionControlId, UserId};
     use junobuild_storage::types::state::StorageHeapState;
     use serde::{Deserialize, Serialize};
@@ -62,7 +62,7 @@ pub mod state {
         pub updated_at: Timestamp,
     }
 
-    pub type ReleaseVersion = String;
+    pub type ReleaseVersion = SegmentDeploymentVersion;
 
     #[derive(Default, CandidType, Serialize, Deserialize, Clone)]
     pub struct ReleasesMetadata {
@@ -105,58 +105,11 @@ pub mod state {
         pub satellite: Fee,
         pub orbiter: Fee,
     }
-
-    pub type ProposalId = u128;
-
-    #[derive(CandidType, Serialize, Deserialize, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
-    pub struct ProposalKey {
-        pub proposal_id: ProposalId,
-    }
-
-    #[derive(CandidType, Serialize, Deserialize, Clone)]
-    pub struct Proposal {
-        pub owner: Principal,
-        pub sha256: Option<Hash>,
-        pub status: ProposalStatus,
-        pub executed_at: Option<Timestamp>,
-        pub created_at: Timestamp,
-        pub updated_at: Timestamp,
-        pub version: Option<Version>,
-        pub proposal_type: ProposalType,
-    }
-
-    #[derive(CandidType, Serialize, Deserialize, Clone)]
-    pub enum ProposalType {
-        AssetsUpgrade(AssetsUpgradeOptions),
-        SegmentsDeployment(SegmentsDeploymentOptions),
-    }
-
-    #[derive(CandidType, Serialize, Deserialize, Clone)]
-    pub struct AssetsUpgradeOptions {
-        pub clear_existing_assets: Option<bool>,
-    }
-
-    #[derive(CandidType, Serialize, Deserialize, Clone)]
-    pub struct SegmentsDeploymentOptions {
-        pub satellite_version: Option<ReleaseVersion>,
-        pub mission_control_version: Option<ReleaseVersion>,
-        pub orbiter: Option<ReleaseVersion>,
-    }
-
-    #[derive(CandidType, Serialize, Deserialize, Clone, Debug, PartialEq)]
-    pub enum ProposalStatus {
-        Initialized,
-        Open,
-        Rejected,
-        Accepted,
-        Executed,
-        Failed,
-    }
 }
 
 pub mod interface {
-    use crate::types::state::ProposalId;
     use candid::CandidType;
+    use junobuild_cdn::proposals::ProposalId;
     use junobuild_shared::types::core::Hash;
     use junobuild_storage::types::config::StorageConfig;
     use serde::{Deserialize, Serialize};
@@ -199,17 +152,5 @@ pub mod ledger {
         Acknowledged,
         Completed,
         Refunded,
-    }
-}
-
-pub mod core {
-    #[derive(Debug)]
-    pub enum CommitProposalError {
-        ProposalNotFound(String),
-        ProposalNotOpen(String),
-        InvalidSha256(String),
-        InvalidType(String),
-        CommitAssetsIssue(String),
-        PostCommitAssetsIssue(String),
     }
 }

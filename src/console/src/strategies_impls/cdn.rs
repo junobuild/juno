@@ -97,4 +97,11 @@ impl CdnStableStrategy for CdnStable {
             f(&stable.proposals)
         })
     }
+
+    fn with_proposals_mut<R>(&self, f: impl FnOnce(&mut ProposalsStable) -> R) -> R {
+        STATE.with(|state| {
+            let mut borrow = state.borrow_mut();
+            f(&mut borrow.stable.proposals)
+        })
+    }
 }

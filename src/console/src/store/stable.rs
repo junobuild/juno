@@ -3,13 +3,12 @@ use crate::memory::STATE;
 use crate::strategies_impls::cdn::CdnStable;
 use crate::types::ledger::{Payment, PaymentStatus};
 use crate::types::state::{
-    MissionControl, MissionControls, MissionControlsStable, Payments, PaymentsStable,
-    ProposalsStable, StableState,
+    MissionControl, MissionControls, MissionControlsStable, Payments, PaymentsStable, StableState,
 };
 use ic_cdk::api::time;
 use ic_ledger_types::BlockIndex;
 use ic_ledger_types::Tokens;
-use junobuild_cdn::proposals::{Proposal, ProposalId, ProposalKey};
+use junobuild_cdn::proposals::{Proposal, ProposalId};
 use junobuild_shared::types::state::MissionControlId;
 use junobuild_shared::types::state::UserId;
 use junobuild_shared::utils::principal_equal;
@@ -358,33 +357,9 @@ pub fn get_proposal(proposal_id: &ProposalId) -> Option<Proposal> {
 }
 
 pub fn count_proposals() -> usize {
-    STATE.with(|state| count_proposals_impl(&state.borrow().stable.proposals))
-}
-
-fn count_proposals_impl(proposals: &ProposalsStable) -> usize {
-    proposals.iter().count()
+    junobuild_cdn::proposals::stable::count_proposals(&CdnStable)
 }
 
 pub fn insert_proposal(proposal_id: &ProposalId, proposal: &Proposal) {
-    STATE.with(|state| {
-        insert_proposal_impl(
-            proposal_id,
-            proposal,
-            &mut state.borrow_mut().stable.proposals,
-        )
-    })
-}
-
-fn insert_proposal_impl(
-    proposal_id: &ProposalId,
-    proposal: &Proposal,
-    proposals: &mut ProposalsStable,
-) {
-    proposals.insert(stable_proposal_key(proposal_id), proposal.clone());
-}
-
-fn stable_proposal_key(proposal_id: &ProposalId) -> ProposalKey {
-    ProposalKey {
-        proposal_id: *proposal_id,
-    }
+    junobuild_cdn::proposals::stable::insert_proposal(&CdnStable, proposal_id, proposal)
 }

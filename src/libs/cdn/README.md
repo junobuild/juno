@@ -1,6 +1,6 @@
 # JunoBuild-Cdn
 
-`junobuild-cdn` is the crate that provides the CDN capabilities in [Juno](https://juno.build) modules.
+`junobuild-cdn` provides the CDN capabilities used by [Juno](https://juno.build) , including logic for serving assets and handling request-based storage workflows.
 
 ## Getting Started
 

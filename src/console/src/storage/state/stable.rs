@@ -9,7 +9,6 @@ use junobuild_storage::stable_utils::insert_asset_encoding_stable as insert_asse
 use junobuild_storage::types::state::FullPath;
 use junobuild_storage::types::store::{Asset, AssetEncoding, BlobOrKey};
 use std::borrow::Cow;
-use std::ops::RangeBounds;
 
 pub fn get_asset_stable(
     proposal_id: &ProposalId,
@@ -24,32 +23,7 @@ pub fn get_content_chunks_stable(encoding: &AssetEncoding, chunk_index: usize) -
 }
 
 pub fn get_assets_stable(proposal_id: &ProposalId) -> Vec<(AssetKey, Asset)> {
-    STATE.with(|state| get_assets_stable_impl(proposal_id, &state.borrow().stable.proposals_assets))
-}
-
-fn get_assets_stable_impl(
-    proposal_id: &ProposalId,
-    proposal_assets: &AssetsStable,
-) -> Vec<(AssetKey, Asset)> {
-    proposal_assets
-        .range(filter_assets_range(proposal_id))
-        .collect()
-}
-
-fn filter_assets_range(proposal_id: &ProposalId) -> impl RangeBounds<AssetKey> {
-    let start_key = AssetKey {
-        proposal_id: *proposal_id,
-        collection: "".to_string(),
-        full_path: "".to_string(),
-    };
-
-    let end_key = AssetKey {
-        proposal_id: *proposal_id + 1,
-        collection: "".to_string(),
-        full_path: "".to_string(),
-    };
-
-    start_key..end_key
+    junobuild_cdn::stable::get_assets(&CdnStable, proposal_id)
 }
 
 pub fn insert_asset_encoding_stable(

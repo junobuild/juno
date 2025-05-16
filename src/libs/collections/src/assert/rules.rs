@@ -1,11 +1,15 @@
 use crate::assert::collection::{is_not_system_collection, is_system_collection};
 use crate::constants::core::SYS_COLLECTION_PREFIX;
+use crate::errors::{
+    JUNO_COLLECTIONS_ERROR_DELETE_PREFIX_RESERVED,
+    JUNO_COLLECTIONS_ERROR_MODIFY_RESERVED_COLLECTION, JUNO_COLLECTIONS_ERROR_RATE_CONFIG_ENABLED,
+    JUNO_COLLECTIONS_ERROR_RESERVED_NAME,
+};
 use crate::types::core::CollectionKey;
 use crate::types::interface::SetRule;
 use crate::types::rules::{Memory, Rule, Rules};
 use junobuild_shared::assert::assert_version;
 use junobuild_shared::types::state::Version;
-use crate::errors::{JUNO_COLLECTIONS_ERROR_MODIFY_RESERVED_COLLECTION, JUNO_COLLECTIONS_ERROR_DELETE_PREFIX_RESERVED, JUNO_COLLECTIONS_ERROR_RATE_CONFIG_ENABLED, JUNO_COLLECTIONS_ERROR_RESERVED_NAME};
 
 pub fn assert_memory(current_rule: Option<&Rule>, memory: &Option<Memory>) -> Result<(), String> {
     // Validate memory type does not change
@@ -118,8 +122,7 @@ pub fn assert_system_collection_set_permission(
     {
         return Err(format!(
             "{} ({})",
-            JUNO_COLLECTIONS_ERROR_MODIFY_RESERVED_COLLECTION,
-            collection
+            JUNO_COLLECTIONS_ERROR_MODIFY_RESERVED_COLLECTION, collection
         ));
     }
 
@@ -136,8 +139,7 @@ pub fn assert_system_collection_delete_permission(
     if is_system_collection(collection) {
         return Err(format!(
             "{} ({})",
-            JUNO_COLLECTIONS_ERROR_DELETE_PREFIX_RESERVED,
-            SYS_COLLECTION_PREFIX
+            JUNO_COLLECTIONS_ERROR_DELETE_PREFIX_RESERVED, SYS_COLLECTION_PREFIX
         ));
     }
 

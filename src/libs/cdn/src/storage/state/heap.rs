@@ -1,8 +1,14 @@
 use crate::strategies::CdnHeapStrategy;
+use junobuild_collections::msg::msg_storage_collection_not_found;
 use junobuild_collections::types::core::CollectionKey;
+use junobuild_collections::types::rules::Rule;
 use junobuild_storage::heap_utils::collect_delete_assets_heap;
 use junobuild_storage::types::state::{AssetsHeap, FullPath};
 use junobuild_storage::types::store::Asset;
+
+// ---------------------------------------------------------
+// Assets
+// ---------------------------------------------------------
 
 pub fn get_asset(cdn_heap: &impl CdnHeapStrategy, full_path: &FullPath) -> Option<Asset> {
     cdn_heap.with_assets(|assets| get_asset_impl(full_path, assets))
@@ -34,4 +40,23 @@ pub fn collect_delete_assets(
     collection: &CollectionKey,
 ) -> Vec<FullPath> {
     cdn_heap.with_assets(|assets| collect_delete_assets_heap(collection, assets))
+}
+
+// ---------------------------------------------------------
+// Rules
+// ---------------------------------------------------------
+
+pub fn get_rule(
+    cdn_heap: &impl CdnHeapStrategy,
+    collection: &CollectionKey,
+) -> Result<Rule, String> {
+    let rule = cdn_heap.with_rules(|rules| {
+        let rule = rules.get(collection);
+        rule.cloned()
+    });
+
+    match rule {
+        None => Err(msg_storage_collection_not_found(collection)),
+        Some(rule) => Ok(rule),
+    }
 }

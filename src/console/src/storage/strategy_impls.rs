@@ -10,7 +10,7 @@ use crate::storage::store::get_public_asset;
 use candid::Principal;
 use junobuild_cdn::strategies::CdnHeapStrategy;
 use junobuild_collections::types::core::CollectionKey;
-use junobuild_collections::types::rules::{Memory, Rule};
+use junobuild_collections::types::rules::{Memory, Rule, Rules};
 use junobuild_shared::types::core::Blob;
 use junobuild_shared::types::domain::CustomDomains;
 use junobuild_shared::types::state::Controllers;
@@ -175,6 +175,13 @@ impl CdnHeapStrategy for CdnHeap {
         STATE.with(|state| {
             let mut borrow = state.borrow_mut();
             f(&mut borrow.heap.storage.assets)
+        })
+    }
+
+    fn with_rules<R>(&self, f: impl FnOnce(&Rules) -> R) -> R {
+        STATE.with(|state| {
+            let storage = &state.borrow().heap.storage;
+            f(&storage.rules)
         })
     }
 }

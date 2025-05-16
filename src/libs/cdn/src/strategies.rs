@@ -22,4 +22,5 @@ pub trait CdnStableStrategy {
     fn with_assets<R>(&self, f: impl FnOnce(&AssetsStable) -> R) -> R;
 
     fn with_content_chunks<R>(&self, f: impl FnOnce(&ContentChunksStable) -> R) -> R;
+    fn with_content_chunks_mut<R>(&self, f: impl FnOnce(&mut ContentChunksStable) -> R) -> R;
 }

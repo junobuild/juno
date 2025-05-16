@@ -224,4 +224,11 @@ impl CdnStableStrategy for CdnStable {
             f(&stable.proposals_content_chunks)
         })
     }
+
+    fn with_content_chunks_mut<R>(&self, f: impl FnOnce(&mut ContentChunksStable) -> R) -> R {
+        STATE.with(|state| {
+            let mut borrow = state.borrow_mut();
+            f(&mut borrow.stable.proposals_content_chunks)
+        })
+    }
 }

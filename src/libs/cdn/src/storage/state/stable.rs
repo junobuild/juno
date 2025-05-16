@@ -5,6 +5,7 @@ use crate::{ContentChunkKey, ContentChunksStable};
 use junobuild_collections::types::core::CollectionKey;
 use junobuild_shared::serializers::deserialize_from_bytes;
 use junobuild_shared::types::core::Blob;
+use junobuild_storage::stable_utils::insert_asset_encoding_stable;
 use junobuild_storage::types::state::FullPath;
 use junobuild_storage::types::store::{Asset, AssetEncoding};
 use std::borrow::Cow;
@@ -80,6 +81,25 @@ fn filter_assets_range(proposal_id: &ProposalId) -> impl RangeBounds<AssetKey> {
     start_key..end_key
 }
 
+pub fn insert_asset_encoding(
+    cdn_stable: &impl CdnStableStrategy,
+    full_path: &FullPath,
+    encoding_type: &str,
+    encoding: &AssetEncoding,
+    asset: &mut Asset,
+) {
+    cdn_stable.with_content_chunks_mut(|content_chunks| {
+        insert_asset_encoding_stable(
+            full_path,
+            encoding_type,
+            encoding,
+            asset,
+            stable_encoding_chunk_key,
+            content_chunks,
+        )
+    })
+}
+
 fn stable_asset_key(
     proposal_id: &ProposalId,
     collection: &CollectionKey,
@@ -89,5 +109,17 @@ fn stable_asset_key(
         proposal_id: *proposal_id,
         collection: collection.clone(),
         full_path: full_path.clone(),
+    }
+}
+
+fn stable_encoding_chunk_key(
+    full_path: &FullPath,
+    encoding_type: &str,
+    chunk_index: usize,
+) -> ContentChunkKey {
+    ContentChunkKey {
+        full_path: full_path.clone(),
+        encoding_type: encoding_type.to_owned(),
+        chunk_index,
     }
 }

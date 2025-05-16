@@ -5,7 +5,6 @@ use junobuild_cdn::{AssetKey, AssetsStable, ContentChunkKey, ContentChunksStable
 use junobuild_collections::types::core::CollectionKey;
 use junobuild_shared::serializers::deserialize_from_bytes;
 use junobuild_shared::types::core::Blob;
-use junobuild_storage::stable_utils::insert_asset_encoding_stable as insert_asset_encoding_stable_utils;
 use junobuild_storage::types::state::FullPath;
 use junobuild_storage::types::store::{Asset, AssetEncoding, BlobOrKey};
 use std::borrow::Cow;
@@ -32,16 +31,13 @@ pub fn insert_asset_encoding_stable(
     encoding: &AssetEncoding,
     asset: &mut Asset,
 ) {
-    STATE.with(|state| {
-        insert_asset_encoding_stable_utils(
-            full_path,
-            encoding_type,
-            encoding,
-            asset,
-            stable_encoding_chunk_key,
-            &mut state.borrow_mut().stable.proposals_content_chunks,
-        )
-    })
+    junobuild_cdn::stable::insert_asset_encoding(
+        &CdnStable,
+        full_path,
+        encoding_type,
+        encoding,
+        asset,
+    )
 }
 
 pub fn insert_asset_stable(
@@ -112,17 +108,5 @@ fn stable_asset_key(
         proposal_id: *proposal_id,
         collection: collection.clone(),
         full_path: full_path.clone(),
-    }
-}
-
-fn stable_encoding_chunk_key(
-    full_path: &FullPath,
-    encoding_type: &str,
-    chunk_index: usize,
-) -> ContentChunkKey {
-    ContentChunkKey {
-        full_path: full_path.clone(),
-        encoding_type: encoding_type.to_owned(),
-        chunk_index,
     }
 }

@@ -12,6 +12,7 @@ use junobuild_cdn::proposals::{Proposal, ProposalId};
 use junobuild_shared::types::state::MissionControlId;
 use junobuild_shared::types::state::UserId;
 use junobuild_shared::utils::principal_equal;
+
 // ---------------------------------------------------------
 // Mission control centers
 // ---------------------------------------------------------

@@ -110,19 +110,12 @@ pub mod state {
 pub mod interface {
     use candid::CandidType;
     use junobuild_cdn::proposals::ProposalId;
-    use junobuild_shared::types::core::Hash;
     use junobuild_storage::types::config::StorageConfig;
     use serde::{Deserialize, Serialize};
 
     #[derive(CandidType, Deserialize)]
     pub struct Config {
         pub storage: StorageConfig,
-    }
-
-    #[derive(CandidType, Serialize, Deserialize, Clone)]
-    pub struct CommitProposal {
-        pub proposal_id: ProposalId,
-        pub sha256: Hash,
     }
 
     #[derive(CandidType, Serialize, Deserialize, Clone)]

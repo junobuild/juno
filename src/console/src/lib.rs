@@ -42,7 +42,7 @@ use crate::store::stable::{
     get_existing_mission_control, get_mission_control, get_proposal as get_proposal_state,
     has_credits, list_mission_controls, list_payments as list_payments_state,
 };
-use crate::types::interface::{CommitProposal, Config, DeleteProposalAssets};
+use crate::types::interface::{Config, DeleteProposalAssets};
 use crate::types::state::{
     Fees, HeapState, InvitationCode, MissionControl, MissionControls, Rates, ReleasesMetadata,
     State,
@@ -54,7 +54,7 @@ use ic_cdk::api::caller;
 use ic_cdk::{id, trap};
 use ic_cdk_macros::{export_candid, init, post_upgrade, pre_upgrade, query, update};
 use ic_ledger_types::Tokens;
-use junobuild_cdn::proposals::{Proposal, ProposalId, ProposalType};
+use junobuild_cdn::proposals::{CommitProposal, Proposal, ProposalId, ProposalType};
 use junobuild_collections::types::core::CollectionKey;
 use junobuild_shared::controllers::init_controllers;
 use junobuild_shared::rate::types::RateConfig;

@@ -3,6 +3,7 @@ use junobuild_collections::msg::msg_storage_collection_not_found;
 use junobuild_collections::types::core::CollectionKey;
 use junobuild_collections::types::rules::Rule;
 use junobuild_storage::heap_utils::collect_delete_assets_heap;
+use junobuild_storage::types::config::StorageConfig;
 use junobuild_storage::types::state::{AssetsHeap, FullPath};
 use junobuild_storage::types::store::Asset;
 
@@ -59,4 +60,20 @@ pub fn get_rule(
         None => Err(msg_storage_collection_not_found(collection)),
         Some(rule) => Ok(rule),
     }
+}
+
+// ---------------------------------------------------------
+// Config
+// ---------------------------------------------------------
+
+pub fn get_config(cdn_heap: &impl CdnHeapStrategy) -> StorageConfig {
+    cdn_heap.with_config(|config| config.clone())
+}
+
+pub fn insert_config(cdn_heap: &impl CdnHeapStrategy, config: &StorageConfig) {
+    cdn_heap.with_config_mut(|current_config| insert_config_impl(config, current_config))
+}
+
+fn insert_config_impl(config: &StorageConfig, storage_config: &mut StorageConfig) {
+    *storage_config = config.clone();
 }

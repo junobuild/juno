@@ -41,11 +41,11 @@ pub fn get_rule(collection: &CollectionKey) -> Result<Rule, String> {
 // ---------------------------------------------------------
 
 pub fn get_config() -> StorageConfig {
-    STATE.with(|state| state.borrow().heap.storage.config.clone())
+    junobuild_cdn::heap::get_config(&CdnHeap)
 }
 
 pub fn insert_config(config: &StorageConfig) {
-    STATE.with(|state| insert_config_impl(config, &mut state.borrow_mut().heap.storage))
+    junobuild_cdn::heap::insert_config(&CdnHeap, config)
 }
 
 fn insert_config_impl(config: &StorageConfig, storage: &mut StorageHeapState) {

@@ -164,6 +164,13 @@ impl CdnHeapStrategy for CdnHeap {
         })
     }
 
+    fn with_config_mut<R>(&self, f: impl FnOnce(&mut StorageConfig) -> R) -> R {
+        STATE.with(|state| {
+            let mut borrow = state.borrow_mut();
+            f(&mut borrow.heap.storage.config)
+        })
+    }
+
     fn with_assets<R>(&self, f: impl FnOnce(&AssetsHeap) -> R) -> R {
         STATE.with(|state| {
             let storage = &state.borrow().heap.storage;

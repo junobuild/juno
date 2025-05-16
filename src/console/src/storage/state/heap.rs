@@ -1,11 +1,10 @@
-use crate::memory::STATE;
 use crate::storage::strategy_impls::CdnHeap;
 use junobuild_collections::types::core::CollectionKey;
 use junobuild_collections::types::rules::Rule;
 use junobuild_shared::types::core::DomainName;
 use junobuild_shared::types::domain::{CustomDomain, CustomDomains};
 use junobuild_storage::types::config::StorageConfig;
-use junobuild_storage::types::state::{FullPath, StorageHeapState};
+use junobuild_storage::types::state::FullPath;
 use junobuild_storage::types::store::Asset;
 
 // ---------------------------------------------------------
@@ -48,50 +47,22 @@ pub fn insert_config(config: &StorageConfig) {
     junobuild_cdn::heap::insert_config(&CdnHeap, config)
 }
 
-fn insert_config_impl(config: &StorageConfig, storage: &mut StorageHeapState) {
-    storage.config = config.clone();
-}
-
 // ---------------------------------------------------------
 // Custom domains
 // ---------------------------------------------------------
 
 pub fn get_domains() -> CustomDomains {
-    STATE.with(|state| state.borrow().heap.storage.custom_domains.clone())
+    junobuild_cdn::heap::get_domains(&CdnHeap)
 }
 
 pub fn get_domain(domain_name: &DomainName) -> Option<CustomDomain> {
-    STATE.with(|state| {
-        let domains = state.borrow().heap.storage.custom_domains.clone();
-        let domain = domains.get(domain_name);
-        domain.cloned()
-    })
+    junobuild_cdn::heap::get_domain(&CdnHeap, domain_name)
 }
 
 pub fn insert_domain(domain_name: &DomainName, custom_domain: &CustomDomain) {
-    STATE.with(|state| {
-        insert_domain_impl(
-            domain_name,
-            custom_domain,
-            &mut state.borrow_mut().heap.storage,
-        )
-    })
+    junobuild_cdn::heap::insert_domain(&CdnHeap, domain_name, custom_domain)
 }
 
 pub fn delete_domain(domain_name: &DomainName) {
-    STATE.with(|state| delete_domain_impl(domain_name, &mut state.borrow_mut().heap.storage))
-}
-
-fn insert_domain_impl(
-    domain_name: &DomainName,
-    custom_domain: &CustomDomain,
-    storage: &mut StorageHeapState,
-) {
-    storage
-        .custom_domains
-        .insert(domain_name.clone(), custom_domain.clone());
-}
-
-fn delete_domain_impl(domain_name: &DomainName, storage: &mut StorageHeapState) {
-    storage.custom_domains.remove(domain_name);
+    junobuild_cdn::heap::delete_domain(&CdnHeap, domain_name)
 }

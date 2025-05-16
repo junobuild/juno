@@ -191,4 +191,18 @@ impl CdnHeapStrategy for CdnHeap {
             f(&storage.rules)
         })
     }
+
+    fn with_domains<R>(&self, f: impl FnOnce(&CustomDomains) -> R) -> R {
+        STATE.with(|state| {
+            let storage = &state.borrow().heap.storage;
+            f(&storage.custom_domains)
+        })
+    }
+
+    fn with_domains_mut<R>(&self, f: impl FnOnce(&mut CustomDomains) -> R) -> R {
+        STATE.with(|state| {
+            let mut borrow = state.borrow_mut();
+            f(&mut borrow.heap.storage.custom_domains)
+        })
+    }
 }

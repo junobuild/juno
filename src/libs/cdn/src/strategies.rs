@@ -1,4 +1,5 @@
 use crate::storage::types::state::AssetsStable;
+use crate::ContentChunksStable;
 use junobuild_collections::types::rules::Rules;
 use junobuild_shared::types::domain::CustomDomains;
 use junobuild_storage::types::config::StorageConfig;
@@ -19,4 +20,6 @@ pub trait CdnHeapStrategy {
 
 pub trait CdnStableStrategy {
     fn with_assets<R>(&self, f: impl FnOnce(&AssetsStable) -> R) -> R;
+
+    fn with_content_chunks<R>(&self, f: impl FnOnce(&ContentChunksStable) -> R) -> R;
 }

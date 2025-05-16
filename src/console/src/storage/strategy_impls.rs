@@ -9,7 +9,7 @@ use crate::storage::state::utils::get_content_chunks;
 use crate::storage::store::get_public_asset;
 use candid::Principal;
 use junobuild_cdn::strategies::{CdnHeapStrategy, CdnStableStrategy};
-use junobuild_cdn::AssetsStable;
+use junobuild_cdn::{AssetsStable, ContentChunksStable};
 use junobuild_collections::types::core::CollectionKey;
 use junobuild_collections::types::rules::{Memory, Rule, Rules};
 use junobuild_shared::types::core::Blob;
@@ -215,6 +215,13 @@ impl CdnStableStrategy for CdnStable {
         STATE.with(|state| {
             let stable = &state.borrow().stable;
             f(&stable.proposals_assets)
+        })
+    }
+
+    fn with_content_chunks<R>(&self, f: impl FnOnce(&ContentChunksStable) -> R) -> R {
+        STATE.with(|state| {
+            let stable = &state.borrow().stable;
+            f(&stable.proposals_content_chunks)
         })
     }
 }

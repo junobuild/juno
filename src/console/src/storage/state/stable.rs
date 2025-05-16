@@ -20,23 +20,7 @@ pub fn get_asset_stable(
 }
 
 pub fn get_content_chunks_stable(encoding: &AssetEncoding, chunk_index: usize) -> Option<Blob> {
-    STATE.with(|state| {
-        get_content_chunks_stable_impl(
-            encoding,
-            chunk_index,
-            &state.borrow().stable.proposals_content_chunks,
-        )
-    })
-}
-
-fn get_content_chunks_stable_impl(
-    encoding: &AssetEncoding,
-    chunk_index: usize,
-    content_chunks: &ContentChunksStable,
-) -> Option<Blob> {
-    let key: ContentChunkKey =
-        deserialize_from_bytes(Cow::Owned(encoding.content_chunks[chunk_index].clone()));
-    content_chunks.get(&key)
+    junobuild_cdn::stable::get_content_chunks(&CdnStable, encoding, chunk_index)
 }
 
 pub fn get_assets_stable(proposal_id: &ProposalId) -> Vec<(AssetKey, Asset)> {

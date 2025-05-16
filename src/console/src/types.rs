@@ -1,10 +1,10 @@
 pub mod state {
     use crate::memory::init_stable_state;
-    use crate::storage::types::state::{AssetsStable, ContentChunksStable};
     use crate::types::ledger::Payment;
     use candid::{CandidType, Principal};
     use ic_ledger_types::{BlockIndex, Tokens};
     use ic_stable_structures::StableBTreeMap;
+    use junobuild_cdn::{AssetsStable, ContentChunksStable};
     use junobuild_shared::rate::types::{RateConfig, RateTokens};
     use junobuild_shared::types::core::Hash;
     use junobuild_shared::types::memory::Memory;

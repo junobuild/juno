@@ -1,6 +1,7 @@
 use crate::memory::STATE;
-use crate::storage::types::state::{AssetKey, AssetsStable, ContentChunkKey, ContentChunksStable};
+use crate::storage::strategy_impls::CdnStable;
 use crate::types::state::ProposalId;
+use junobuild_cdn::{AssetKey, AssetsStable, ContentChunkKey, ContentChunksStable};
 use junobuild_collections::types::core::CollectionKey;
 use junobuild_shared::serializers::deserialize_from_bytes;
 use junobuild_shared::types::core::Blob;
@@ -15,14 +16,7 @@ pub fn get_asset_stable(
     collection: &CollectionKey,
     full_path: &FullPath,
 ) -> Option<Asset> {
-    STATE.with(|state| {
-        get_asset_stable_impl(
-            proposal_id,
-            collection,
-            full_path,
-            &state.borrow().stable.proposals_assets,
-        )
-    })
+    junobuild_cdn::stable::get_asset(&CdnStable, proposal_id, collection, full_path)
 }
 
 pub fn get_content_chunks_stable(encoding: &AssetEncoding, chunk_index: usize) -> Option<Blob> {
@@ -72,15 +66,6 @@ fn filter_assets_range(proposal_id: &ProposalId) -> impl RangeBounds<AssetKey> {
     };
 
     start_key..end_key
-}
-
-fn get_asset_stable_impl(
-    proposal_id: &ProposalId,
-    collection: &CollectionKey,
-    full_path: &FullPath,
-    assets: &AssetsStable,
-) -> Option<Asset> {
-    assets.get(&stable_asset_key(proposal_id, collection, full_path))
 }
 
 pub fn insert_asset_encoding_stable(

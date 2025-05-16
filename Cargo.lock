@@ -929,10 +929,12 @@ version = "0.0.1"
 dependencies = [
  "candid",
  "ic-cdk",
+ "ic-stable-structures",
  "junobuild-collections",
  "junobuild-shared",
  "junobuild-storage",
  "serde",
+ "sha2",
 ]
 
 [[package]]

@@ -18,7 +18,9 @@ rustdoc-args = ['--cfg', "getrandom_backend=\"custom\""]
 [dependencies]
 candid.workspace = true
 ic-cdk.workspace = true
+ic-stable-structures.workspace = true
 serde.workspace = true
+sha2.workspace = true
 junobuild-shared = "0.1.0"
 junobuild-collections = "0.1.0"
 junobuild-storage = "0.1.0"

@@ -8,7 +8,8 @@ use crate::storage::state::stable::{
 use crate::storage::state::utils::get_content_chunks;
 use crate::storage::store::get_public_asset;
 use candid::Principal;
-use junobuild_cdn::strategies::CdnHeapStrategy;
+use junobuild_cdn::strategies::{CdnHeapStrategy, CdnStableStrategy};
+use junobuild_cdn::AssetsStable;
 use junobuild_collections::types::core::CollectionKey;
 use junobuild_collections::types::rules::{Memory, Rule, Rules};
 use junobuild_shared::types::core::Blob;
@@ -157,20 +158,6 @@ impl StorageUploadStrategy for StorageUpload {
 pub struct CdnHeap;
 
 impl CdnHeapStrategy for CdnHeap {
-    fn with_config<R>(&self, f: impl FnOnce(&StorageConfig) -> R) -> R {
-        STATE.with(|state| {
-            let storage = &state.borrow().heap.storage;
-            f(&storage.config)
-        })
-    }
-
-    fn with_config_mut<R>(&self, f: impl FnOnce(&mut StorageConfig) -> R) -> R {
-        STATE.with(|state| {
-            let mut borrow = state.borrow_mut();
-            f(&mut borrow.heap.storage.config)
-        })
-    }
-
     fn with_assets<R>(&self, f: impl FnOnce(&AssetsHeap) -> R) -> R {
         STATE.with(|state| {
             let storage = &state.borrow().heap.storage;
@@ -182,6 +169,20 @@ impl CdnHeapStrategy for CdnHeap {
         STATE.with(|state| {
             let mut borrow = state.borrow_mut();
             f(&mut borrow.heap.storage.assets)
+        })
+    }
+
+    fn with_config<R>(&self, f: impl FnOnce(&StorageConfig) -> R) -> R {
+        STATE.with(|state| {
+            let storage = &state.borrow().heap.storage;
+            f(&storage.config)
+        })
+    }
+
+    fn with_config_mut<R>(&self, f: impl FnOnce(&mut StorageConfig) -> R) -> R {
+        STATE.with(|state| {
+            let mut borrow = state.borrow_mut();
+            f(&mut borrow.heap.storage.config)
         })
     }
 
@@ -203,6 +204,17 @@ impl CdnHeapStrategy for CdnHeap {
         STATE.with(|state| {
             let mut borrow = state.borrow_mut();
             f(&mut borrow.heap.storage.custom_domains)
+        })
+    }
+}
+
+pub struct CdnStable;
+
+impl CdnStableStrategy for CdnStable {
+    fn with_assets<R>(&self, f: impl FnOnce(&AssetsStable) -> R) -> R {
+        STATE.with(|state| {
+            let stable = &state.borrow().stable;
+            f(&stable.proposals_assets)
         })
     }
 }

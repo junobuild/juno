@@ -1,4 +1,4 @@
-use crate::{AssetKey, ContentChunkKey};
+use crate::{ProposalAssetKey, ProposalContentChunkKey};
 use ic_stable_structures::storable::Bound;
 use ic_stable_structures::Storable;
 use junobuild_shared::serializers::{deserialize_from_bytes, serialize_to_bytes};
@@ -6,7 +6,7 @@ use junobuild_shared::types::core::{Hash, Hashable};
 use sha2::{Digest, Sha256};
 use std::borrow::Cow;
 
-impl Storable for AssetKey {
+impl Storable for ProposalAssetKey {
     fn to_bytes(&self) -> Cow<[u8]> {
         serialize_to_bytes(self)
     }
@@ -18,7 +18,7 @@ impl Storable for AssetKey {
     const BOUND: Bound = Bound::Unbounded;
 }
 
-impl Storable for ContentChunkKey {
+impl Storable for ProposalContentChunkKey {
     fn to_bytes(&self) -> Cow<[u8]> {
         serialize_to_bytes(self)
     }
@@ -30,7 +30,7 @@ impl Storable for ContentChunkKey {
     const BOUND: Bound = Bound::Unbounded;
 }
 
-impl Hashable for AssetKey {
+impl Hashable for ProposalAssetKey {
     fn hash(&self) -> Hash {
         let mut hasher = Sha256::new();
 

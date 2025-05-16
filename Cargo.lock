@@ -240,6 +240,7 @@ dependencies = [
  "ic-cdk-timers",
  "ic-ledger-types",
  "ic-stable-structures",
+ "junobuild-cdn",
  "junobuild-collections",
  "junobuild-shared",
  "junobuild-storage",
@@ -921,6 +922,20 @@ name = "itoa"
 version = "1.0.10"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "b1a46d1a171d865aa5f83f92695765caa047a9b4cbae2cbf37dbd613a793fd4c"
+
+[[package]]
+name = "junobuild-cdn"
+version = "0.0.1"
+dependencies = [
+ "candid",
+ "ic-cdk",
+ "ic-stable-structures",
+ "junobuild-collections",
+ "junobuild-shared",
+ "junobuild-storage",
+ "serde",
+ "sha2",
+]
 
 [[package]]
 name = "junobuild-collections"

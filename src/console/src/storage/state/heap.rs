@@ -1,50 +1,30 @@
-use crate::memory::STATE;
-use junobuild_collections::msg::msg_storage_collection_not_found;
+use crate::storage::strategy_impls::CdnHeap;
 use junobuild_collections::types::core::CollectionKey;
 use junobuild_collections::types::rules::Rule;
 use junobuild_shared::types::core::DomainName;
 use junobuild_shared::types::domain::{CustomDomain, CustomDomains};
-use junobuild_storage::heap_utils::collect_delete_assets_heap;
 use junobuild_storage::types::config::StorageConfig;
-use junobuild_storage::types::state::{AssetsHeap, FullPath, StorageHeapState};
+use junobuild_storage::types::state::FullPath;
 use junobuild_storage::types::store::Asset;
 
-pub fn get_asset(full_path: &FullPath) -> Option<Asset> {
-    STATE.with(|state| get_asset_impl(full_path, &state.borrow().heap.storage.assets))
-}
+// ---------------------------------------------------------
+// Assets
+// ---------------------------------------------------------
 
-fn get_asset_impl(full_path: &FullPath, assets: &AssetsHeap) -> Option<Asset> {
-    let value = assets.get(full_path);
-    value.cloned()
+pub fn get_asset(full_path: &FullPath) -> Option<Asset> {
+    junobuild_cdn::heap::get_asset(&CdnHeap, full_path)
 }
 
 pub fn insert_asset(full_path: &FullPath, asset: &Asset) {
-    STATE.with(|state| {
-        insert_asset_impl(
-            full_path,
-            asset,
-            &mut state.borrow_mut().heap.storage.assets,
-        )
-    })
-}
-
-fn insert_asset_impl(full_path: &FullPath, asset: &Asset, assets: &mut AssetsHeap) {
-    assets.insert(full_path.clone(), asset.clone());
+    junobuild_cdn::heap::insert_asset(&CdnHeap, full_path, asset)
 }
 
 pub fn delete_asset(full_path: &FullPath) -> Option<Asset> {
-    STATE.with(|state| delete_asset_impl(full_path, &mut state.borrow_mut().heap.storage.assets))
-}
-
-fn delete_asset_impl(full_path: &FullPath, assets: &mut AssetsHeap) -> Option<Asset> {
-    assets.remove(full_path)
+    junobuild_cdn::heap::delete_asset(&CdnHeap, full_path)
 }
 
 pub fn collect_delete_assets(collection: &CollectionKey) -> Vec<FullPath> {
-    STATE.with(|state| {
-        let state_ref = state.borrow();
-        collect_delete_assets_heap(collection, &state_ref.heap.storage.assets)
-    })
+    junobuild_cdn::heap::collect_delete_assets(&CdnHeap, collection)
 }
 
 // ---------------------------------------------------------
@@ -52,17 +32,7 @@ pub fn collect_delete_assets(collection: &CollectionKey) -> Vec<FullPath> {
 // ---------------------------------------------------------
 
 pub fn get_rule(collection: &CollectionKey) -> Result<Rule, String> {
-    let rule = STATE.with(|state| {
-        let rules = &state.borrow().heap.storage.rules.clone();
-        let rule = rules.get(collection);
-
-        rule.cloned()
-    });
-
-    match rule {
-        None => Err(msg_storage_collection_not_found(collection)),
-        Some(rule) => Ok(rule),
-    }
+    junobuild_cdn::heap::get_rule(&CdnHeap, collection)
 }
 
 // ---------------------------------------------------------
@@ -70,15 +40,11 @@ pub fn get_rule(collection: &CollectionKey) -> Result<Rule, String> {
 // ---------------------------------------------------------
 
 pub fn get_config() -> StorageConfig {
-    STATE.with(|state| state.borrow().heap.storage.config.clone())
+    junobuild_cdn::heap::get_config(&CdnHeap)
 }
 
 pub fn insert_config(config: &StorageConfig) {
-    STATE.with(|state| insert_config_impl(config, &mut state.borrow_mut().heap.storage))
-}
-
-fn insert_config_impl(config: &StorageConfig, storage: &mut StorageHeapState) {
-    storage.config = config.clone();
+    junobuild_cdn::heap::insert_config(&CdnHeap, config)
 }
 
 // ---------------------------------------------------------
@@ -86,41 +52,17 @@ fn insert_config_impl(config: &StorageConfig, storage: &mut StorageHeapState) {
 // ---------------------------------------------------------
 
 pub fn get_domains() -> CustomDomains {
-    STATE.with(|state| state.borrow().heap.storage.custom_domains.clone())
+    junobuild_cdn::heap::get_domains(&CdnHeap)
 }
 
 pub fn get_domain(domain_name: &DomainName) -> Option<CustomDomain> {
-    STATE.with(|state| {
-        let domains = state.borrow().heap.storage.custom_domains.clone();
-        let domain = domains.get(domain_name);
-        domain.cloned()
-    })
+    junobuild_cdn::heap::get_domain(&CdnHeap, domain_name)
 }
 
 pub fn insert_domain(domain_name: &DomainName, custom_domain: &CustomDomain) {
-    STATE.with(|state| {
-        insert_domain_impl(
-            domain_name,
-            custom_domain,
-            &mut state.borrow_mut().heap.storage,
-        )
-    })
+    junobuild_cdn::heap::insert_domain(&CdnHeap, domain_name, custom_domain)
 }
 
 pub fn delete_domain(domain_name: &DomainName) {
-    STATE.with(|state| delete_domain_impl(domain_name, &mut state.borrow_mut().heap.storage))
-}
-
-fn insert_domain_impl(
-    domain_name: &DomainName,
-    custom_domain: &CustomDomain,
-    storage: &mut StorageHeapState,
-) {
-    storage
-        .custom_domains
-        .insert(domain_name.clone(), custom_domain.clone());
-}
-
-fn delete_domain_impl(domain_name: &DomainName, storage: &mut StorageHeapState) {
-    storage.custom_domains.remove(domain_name);
+    junobuild_cdn::heap::delete_domain(&CdnHeap, domain_name)
 }

@@ -25,3 +25,4 @@ semver = "1.0.25"
 junobuild-shared = { path = "../libs/shared" }
 junobuild-storage = { path = "../libs/storage" }
 junobuild-collections = { path = "../libs/collections" }
+junobuild-cdn = { path = "../libs/cdn" }

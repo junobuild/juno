@@ -54,6 +54,7 @@ COPY src/libs/shared/Cargo.toml src/libs/shared/Cargo.toml
 COPY src/libs/utils/Cargo.toml src/libs/utils/Cargo.toml
 COPY src/libs/collections/Cargo.toml src/libs/collections/Cargo.toml
 COPY src/libs/storage/Cargo.toml src/libs/storage/Cargo.toml
+COPY src/libs/cdn/Cargo.toml src/libs/cdn/Cargo.toml
 ENV CARGO_TARGET_DIR=/cargo_target
 RUN mkdir -p src/console/src \
     && touch src/console/src/lib.rs \
@@ -81,6 +82,8 @@ RUN mkdir -p src/console/src \
     && touch src/libs/collections/src/lib.rs \
     && mkdir -p src/libs/storage/src \
     && touch src/libs/storage/src/lib.rs \
+    && mkdir -p src/libs/cdn/src \
+    && touch src/libs/cdn/src/lib.rs \
     && ./docker/build-deps \
     && rm -rf src
 

@@ -1,4 +1,4 @@
-use crate::storage::strategy_impls::CdnStable;
+use crate::strategies_impls::cdn::CdnStable;
 use crate::types::state::ProposalId;
 use junobuild_cdn::AssetKey;
 use junobuild_collections::types::core::CollectionKey;

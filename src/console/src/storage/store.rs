@@ -4,9 +4,9 @@ use crate::storage::state::heap::{
     collect_delete_assets, delete_asset, delete_domain, get_asset, get_config, get_domain,
     get_domains, insert_asset, insert_config, insert_domain,
 };
-use crate::storage::strategy_impls::StorageState;
 use crate::store::heap::get_controllers;
 use crate::store::stable::get_proposal;
+use crate::strategies_impls::storage::StorageState;
 use crate::types::state::ProposalId;
 use candid::Principal;
 use junobuild_collections::types::core::CollectionKey;

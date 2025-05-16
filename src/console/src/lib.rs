@@ -11,6 +11,7 @@ mod msg;
 mod proposals;
 mod storage;
 mod store;
+mod strategies_impls;
 mod types;
 mod wasm;
 
@@ -30,7 +31,6 @@ use crate::storage::store::{
     init_asset_upload as init_asset_upload_store, list_assets as list_assets_store,
     set_config_store as set_storage_config_store, set_domain_store,
 };
-use crate::storage::strategy_impls::{StorageAssertions, StorageState, StorageUpload};
 use crate::store::heap::{
     add_invitation_code as add_invitation_code_store, delete_controllers, get_controllers,
     get_orbiter_fee, get_satellite_fee, set_controllers as set_controllers_store,
@@ -80,6 +80,7 @@ use junobuild_storage::types::interface::{
 };
 use memory::{get_memory_upgrades, init_stable_state};
 use std::collections::HashMap;
+use strategies_impls::storage::{StorageAssertions, StorageState, StorageUpload};
 use types::state::Payments;
 
 #[init]

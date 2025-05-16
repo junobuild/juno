@@ -1,4 +1,4 @@
-use crate::storage::strategy_impls::CdnHeap;
+use crate::strategies_impls::cdn::CdnHeap;
 use junobuild_collections::types::core::CollectionKey;
 use junobuild_collections::types::rules::Rule;
 use junobuild_shared::types::core::DomainName;

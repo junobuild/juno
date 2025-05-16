@@ -1,4 +1,3 @@
-use crate::memory::STATE;
 use crate::storage::state::heap::{
     delete_asset, get_asset, get_config, get_domains, get_rule, insert_asset,
 };
@@ -7,10 +6,8 @@ use crate::storage::state::stable::{
 };
 use crate::storage::store::get_public_asset;
 use candid::Principal;
-use junobuild_cdn::strategies::{CdnHeapStrategy, CdnStableStrategy};
-use junobuild_cdn::{AssetsStable, ContentChunksStable};
 use junobuild_collections::types::core::CollectionKey;
-use junobuild_collections::types::rules::{Memory, Rule, Rules};
+use junobuild_collections::types::rules::{Memory, Rule};
 use junobuild_shared::types::core::Blob;
 use junobuild_shared::types::domain::CustomDomains;
 use junobuild_shared::types::state::Controllers;
@@ -18,7 +15,7 @@ use junobuild_storage::strategies::{
     StorageAssertionsStrategy, StorageStateStrategy, StorageUploadStrategy,
 };
 use junobuild_storage::types::config::StorageConfig;
-use junobuild_storage::types::state::{AssetsHeap, FullPath};
+use junobuild_storage::types::state::FullPath;
 use junobuild_storage::types::store::{
     Asset, AssetAssertUpload, AssetEncoding, Batch, EncodingType, ReferenceId,
 };
@@ -153,90 +150,5 @@ impl StorageUploadStrategy for StorageUpload {
             }
             None => Err("Cannot get asset with unknown reference / proposal ID.".to_string()),
         }
-    }
-}
-
-pub struct CdnHeap;
-
-impl CdnHeapStrategy for CdnHeap {
-    fn with_assets<R>(&self, f: impl FnOnce(&AssetsHeap) -> R) -> R {
-        STATE.with(|state| {
-            let storage = &state.borrow().heap.storage;
-            f(&storage.assets)
-        })
-    }
-
-    fn with_assets_mut<R>(&self, f: impl FnOnce(&mut AssetsHeap) -> R) -> R {
-        STATE.with(|state| {
-            let mut borrow = state.borrow_mut();
-            f(&mut borrow.heap.storage.assets)
-        })
-    }
-
-    fn with_config<R>(&self, f: impl FnOnce(&StorageConfig) -> R) -> R {
-        STATE.with(|state| {
-            let storage = &state.borrow().heap.storage;
-            f(&storage.config)
-        })
-    }
-
-    fn with_config_mut<R>(&self, f: impl FnOnce(&mut StorageConfig) -> R) -> R {
-        STATE.with(|state| {
-            let mut borrow = state.borrow_mut();
-            f(&mut borrow.heap.storage.config)
-        })
-    }
-
-    fn with_rules<R>(&self, f: impl FnOnce(&Rules) -> R) -> R {
-        STATE.with(|state| {
-            let storage = &state.borrow().heap.storage;
-            f(&storage.rules)
-        })
-    }
-
-    fn with_domains<R>(&self, f: impl FnOnce(&CustomDomains) -> R) -> R {
-        STATE.with(|state| {
-            let storage = &state.borrow().heap.storage;
-            f(&storage.custom_domains)
-        })
-    }
-
-    fn with_domains_mut<R>(&self, f: impl FnOnce(&mut CustomDomains) -> R) -> R {
-        STATE.with(|state| {
-            let mut borrow = state.borrow_mut();
-            f(&mut borrow.heap.storage.custom_domains)
-        })
-    }
-}
-
-pub struct CdnStable;
-
-impl CdnStableStrategy for CdnStable {
-    fn with_assets<R>(&self, f: impl FnOnce(&AssetsStable) -> R) -> R {
-        STATE.with(|state| {
-            let stable = &state.borrow().stable;
-            f(&stable.proposals_assets)
-        })
-    }
-
-    fn with_assets_mut<R>(&self, f: impl FnOnce(&mut AssetsStable) -> R) -> R {
-        STATE.with(|state| {
-            let mut borrow = state.borrow_mut();
-            f(&mut borrow.stable.proposals_assets)
-        })
-    }
-
-    fn with_content_chunks<R>(&self, f: impl FnOnce(&ContentChunksStable) -> R) -> R {
-        STATE.with(|state| {
-            let stable = &state.borrow().stable;
-            f(&stable.proposals_content_chunks)
-        })
-    }
-
-    fn with_content_chunks_mut<R>(&self, f: impl FnOnce(&mut ContentChunksStable) -> R) -> R {
-        STATE.with(|state| {
-            let mut borrow = state.borrow_mut();
-            f(&mut borrow.stable.proposals_content_chunks)
-        })
     }
 }

@@ -928,6 +928,7 @@ name = "junobuild-cdn"
 version = "0.0.1"
 dependencies = [
  "candid",
+ "hex",
  "ic-cdk",
  "ic-stable-structures",
  "junobuild-collections",

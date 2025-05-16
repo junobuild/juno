@@ -1,7 +1,7 @@
 use crate::metadata::update_releases_metadata;
 use crate::msg::{
     ERROR_CANNOT_COMMIT_PROPOSAL, ERROR_CANNOT_DELETE_PROPOSAL_ASSETS,
-    ERROR_CANNOT_SUBMIT_PROPOSAL, ERROR_PROPOSAL_TYPE_NOT_SUPPORTED,
+    ERROR_PROPOSAL_TYPE_NOT_SUPPORTED,
 };
 use crate::storage::state::heap::insert_asset;
 use crate::storage::state::stable::{
@@ -16,7 +16,6 @@ use hex::encode;
 use junobuild_cdn::proposals::CommitProposalError;
 use junobuild_cdn::proposals::{Proposal, ProposalId, ProposalStatus, ProposalType};
 use junobuild_collections::constants::assets::COLLECTION_ASSET_KEY;
-use junobuild_shared::types::core::{Hash, Hashable};
 use junobuild_shared::utils::principal_not_equal;
 use junobuild_storage::types::store::AssetEncoding;
 use sha2::{Digest, Sha256};
@@ -32,12 +31,7 @@ pub fn submit_proposal(
     caller: Principal,
     proposal_id: &ProposalId,
 ) -> Result<(ProposalId, Proposal), String> {
-    let proposal = get_proposal(proposal_id);
-
-    match proposal {
-        None => Err(ERROR_CANNOT_SUBMIT_PROPOSAL.to_string()),
-        Some(proposal) => secure_submit_proposal(caller, proposal_id, &proposal),
-    }
+    junobuild_cdn::proposals::submit_proposal(&CdnStable, caller, proposal_id)
 }
 
 pub fn commit_proposal(proposition: &CommitProposal) -> Result<(), CommitProposalError> {
@@ -80,47 +74,6 @@ pub fn delete_proposal_assets(
     }
 
     Ok(())
-}
-
-fn secure_submit_proposal(
-    caller: Principal,
-    proposal_id: &ProposalId,
-    proposal: &Proposal,
-) -> Result<(ProposalId, Proposal), String> {
-    // The one that started the upload should be the one that propose it.
-    if principal_not_equal(caller, proposal.owner) {
-        return Err(ERROR_CANNOT_SUBMIT_PROPOSAL.to_string());
-    }
-
-    if proposal.status != ProposalStatus::Initialized {
-        return Err(format!(
-            "Proposal cannot be submitted. Current status: {:?}",
-            proposal.status
-        ));
-    }
-
-    assert_known_proposal_type(proposal)?;
-
-    let assets = get_assets_stable(proposal_id);
-
-    let mut hasher = Sha256::new();
-
-    for (key, asset) in assets {
-        hasher.update(key.hash());
-        hasher.update(asset.hash());
-
-        for (_, encoding) in asset.encodings {
-            hasher.update(encoding.hash());
-        }
-    }
-
-    let hash: Hash = hasher.finalize().into();
-
-    let proposal: Proposal = Proposal::open(proposal, hash);
-
-    insert_proposal(proposal_id, &proposal);
-
-    Ok((*proposal_id, proposal))
 }
 
 fn secure_commit_proposal(

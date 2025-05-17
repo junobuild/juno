@@ -13,7 +13,7 @@ fn get_proposal_impl(proposal_id: &ProposalId, proposals: &ProposalsStable) -> O
 }
 
 pub fn count_proposals(cdn_stable: &impl CdnStableStrategy) -> usize {
-    cdn_stable.with_proposals(|proposals| count_proposals_impl(proposals))
+    cdn_stable.with_proposals(count_proposals_impl)
 }
 
 fn count_proposals_impl(proposals: &ProposalsStable) -> usize {

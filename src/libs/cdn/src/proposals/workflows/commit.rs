@@ -5,9 +5,9 @@ use crate::proposals::errors::{
 };
 use crate::proposals::stable::{get_proposal, insert_proposal};
 use crate::proposals::workflows::assert::assert_known_proposal_type;
-use crate::proposals::workflows::store::insert_asset_encoding;
 use crate::proposals::{CommitProposal, CommitProposalError, Proposal, ProposalId, ProposalStatus};
 use crate::storage::heap::insert_asset;
+use crate::storage::heap::store::insert_asset_encoding;
 use crate::storage::stable::{get_assets, get_content_chunks};
 use crate::strategies::{CdnHeapStrategy, CdnStableStrategy, CdnWorkflowStrategy};
 use hex::encode;

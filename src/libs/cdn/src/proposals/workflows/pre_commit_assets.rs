@@ -1,5 +1,5 @@
-use crate::proposals::workflows::store::delete_assets;
 use crate::proposals::{Proposal, ProposalType};
+use crate::storage::heap::store::delete_assets;
 use crate::strategies::CdnHeapStrategy;
 use junobuild_collections::constants::assets::COLLECTION_ASSET_KEY;
 

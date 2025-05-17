@@ -1,7 +1,7 @@
 use crate::memory::STATE;
 use crate::storage::certified_assets::runtime::init_certified_assets as init_runtime_certified_assets;
 use crate::storage::state::heap::{
-    delete_domain, get_asset, get_config, get_domain, get_domains, insert_config, insert_domain,
+    delete_domain, get_config, get_domain, get_domains, insert_config, insert_domain,
 };
 use crate::store::heap::get_controllers;
 use crate::store::stable::get_proposal;
@@ -9,7 +9,6 @@ use crate::strategies_impls::storage::StorageState;
 use candid::Principal;
 use junobuild_cdn::proposals::ProposalId;
 use junobuild_collections::types::core::CollectionKey;
-use junobuild_collections::types::rules::Memory;
 use junobuild_shared::list::list_values;
 use junobuild_shared::types::core::DomainName;
 use junobuild_shared::types::domain::CustomDomains;
@@ -21,25 +20,10 @@ use junobuild_storage::types::interface::{AssetNoContent, InitAssetKey};
 use junobuild_storage::types::runtime_state::BatchId;
 use junobuild_storage::types::state::FullPath;
 use junobuild_storage::types::store::Asset;
-use junobuild_storage::utils::{get_token_protected_asset, map_asset_no_content};
+use junobuild_storage::utils::{map_asset_no_content};
 use junobuild_storage::well_known::update::update_custom_domains_asset;
 use junobuild_storage::well_known::utils::build_custom_domain;
 use regex::Regex;
-
-pub fn get_public_asset(full_path: FullPath, token: Option<String>) -> Option<(Asset, Memory)> {
-    let asset = get_asset(&full_path);
-
-    match asset {
-        None => None,
-        Some(asset) => match &asset.key.token {
-            None => Some((asset.clone(), Memory::Heap)),
-            Some(asset_token) => {
-                let protected_asset = get_token_protected_asset(&asset, asset_token, token);
-                protected_asset.map(|protected_asset| (protected_asset, Memory::Heap))
-            }
-        },
-    }
-}
 
 pub fn list_assets(
     collection: &CollectionKey,

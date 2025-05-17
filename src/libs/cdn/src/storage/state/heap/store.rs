@@ -1,8 +1,29 @@
-use crate::storage::heap::{collect_delete_assets, delete_asset, get_asset, insert_asset};
+use crate::storage::heap::state::{collect_delete_assets, delete_asset, get_asset, insert_asset};
 use crate::strategies::CdnHeapStrategy;
 use junobuild_collections::types::core::CollectionKey;
+use junobuild_collections::types::rules::Memory;
 use junobuild_storage::types::state::FullPath;
-use junobuild_storage::types::store::{AssetEncoding, EncodingType};
+use junobuild_storage::types::store::{Asset, AssetEncoding, EncodingType};
+use junobuild_storage::utils::get_token_protected_asset;
+
+pub fn get_public_asset(
+    cdn_heap: &impl CdnHeapStrategy,
+    full_path: FullPath,
+    token: Option<String>,
+) -> Option<(Asset, Memory)> {
+    let asset = get_asset(cdn_heap, &full_path);
+
+    match asset {
+        None => None,
+        Some(asset) => match &asset.key.token {
+            None => Some((asset.clone(), Memory::Heap)),
+            Some(asset_token) => {
+                let protected_asset = get_token_protected_asset(&asset, asset_token, token);
+                protected_asset.map(|protected_asset| (protected_asset, Memory::Heap))
+            }
+        },
+    }
+}
 
 pub fn insert_asset_encoding(
     cdn_heap: &impl CdnHeapStrategy,

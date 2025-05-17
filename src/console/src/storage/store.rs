@@ -1,8 +1,7 @@
 use crate::memory::STATE;
 use crate::storage::certified_assets::runtime::init_certified_assets as init_runtime_certified_assets;
 use crate::storage::state::heap::{
-    collect_delete_assets, delete_asset, delete_domain, get_asset, get_config, get_domain,
-    get_domains, insert_asset, insert_config, insert_domain,
+    delete_domain, get_asset, get_config, get_domain, get_domains, insert_config, insert_domain,
 };
 use crate::store::heap::get_controllers;
 use crate::store::stable::get_proposal;
@@ -21,7 +20,7 @@ use junobuild_storage::types::config::StorageConfig;
 use junobuild_storage::types::interface::{AssetNoContent, InitAssetKey};
 use junobuild_storage::types::runtime_state::BatchId;
 use junobuild_storage::types::state::FullPath;
-use junobuild_storage::types::store::{Asset, AssetEncoding, EncodingType};
+use junobuild_storage::types::store::Asset;
 use junobuild_storage::utils::{get_token_protected_asset, map_asset_no_content};
 use junobuild_storage::well_known::update::update_custom_domains_asset;
 use junobuild_storage::well_known::utils::build_custom_domain;
@@ -40,25 +39,6 @@ pub fn get_public_asset(full_path: FullPath, token: Option<String>) -> Option<(A
             }
         },
     }
-}
-
-pub fn insert_asset_encoding(
-    full_path: &FullPath,
-    encoding_type: &EncodingType,
-    encoding: &AssetEncoding,
-) -> Result<(), String> {
-    let mut asset = match get_asset(full_path) {
-        Some(asset) => asset,
-        None => return Err(format!("No asset found for {}", full_path)),
-    };
-
-    asset
-        .encodings
-        .insert(encoding_type.to_owned(), encoding.clone());
-
-    insert_asset(full_path, &asset);
-
-    Ok(())
 }
 
 pub fn list_assets(
@@ -88,14 +68,6 @@ fn list_assets_impl(
         items_page: values.items_page,
         matches_length: values.matches_length,
         matches_pages: values.matches_pages,
-    }
-}
-
-pub fn delete_assets(collection: &CollectionKey) {
-    let full_paths = collect_delete_assets(collection);
-
-    for full_path in full_paths {
-        delete_asset(&full_path);
     }
 }
 

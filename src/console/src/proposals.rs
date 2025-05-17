@@ -1,27 +1,17 @@
 use crate::metadata::update_releases_metadata;
-use crate::storage::state::heap::insert_asset;
 use crate::storage::state::stable::{
-    delete_asset_stable, delete_content_chunks_stable, get_assets_stable, get_content_chunks_stable,
+    delete_asset_stable, delete_content_chunks_stable, get_assets_stable,
 };
-use crate::storage::store::{delete_assets, insert_asset_encoding};
-use crate::store::stable::{get_proposal, insert_proposal};
-use crate::strategies_impls::cdn::CdnStable;
+use crate::store::stable::get_proposal;
+use crate::strategies_impls::cdn::{CdnHeap, CdnStable, CdnWorkflow};
 use candid::Principal;
-use hex::encode;
 use junobuild_cdn::proposals::errors::{
-    JUNO_ERROR_PROPOSALS_CANNOT_COMMIT, JUNO_ERROR_PROPOSALS_CANNOT_COMMIT_INVALID_STATUS,
     JUNO_ERROR_PROPOSALS_CANNOT_DELETE_ASSETS,
-    JUNO_ERROR_PROPOSALS_CANNOT_DELETE_ASSETS_INVALID_STATUS, JUNO_ERROR_PROPOSALS_CANNOT_SUBMIT,
-    JUNO_ERROR_PROPOSALS_CANNOT_SUBMIT_INVALID_STATUS, JUNO_ERROR_PROPOSALS_EMPTY_ASSETS,
-    JUNO_ERROR_PROPOSALS_EMPTY_CONTENT_CHUNKS, JUNO_ERROR_PROPOSALS_INVALID_HASH,
-    JUNO_ERROR_PROPOSALS_NOT_CONTENT_CHUNKS_AT_INDEX, JUNO_ERROR_PROPOSALS_UNKNOWN_TYPE,
+    JUNO_ERROR_PROPOSALS_CANNOT_DELETE_ASSETS_INVALID_STATUS, JUNO_ERROR_PROPOSALS_UNKNOWN_TYPE,
 };
 use junobuild_cdn::proposals::{CommitProposal, CommitProposalError};
 use junobuild_cdn::proposals::{Proposal, ProposalId, ProposalStatus, ProposalType};
-use junobuild_collections::constants::assets::COLLECTION_ASSET_KEY;
 use junobuild_shared::utils::principal_not_equal;
-use junobuild_storage::types::store::AssetEncoding;
-use sha2::{Digest, Sha256};
 
 pub fn init_proposal(
     caller: Principal,
@@ -38,27 +28,7 @@ pub fn submit_proposal(
 }
 
 pub fn commit_proposal(proposition: &CommitProposal) -> Result<(), CommitProposalError> {
-    let proposal = get_proposal(&proposition.proposal_id).ok_or_else(|| {
-        CommitProposalError::ProposalNotFound(format!(
-            "{} ({})",
-            JUNO_ERROR_PROPOSALS_CANNOT_COMMIT, proposition.proposal_id
-        ))
-    })?;
-
-    match secure_commit_proposal(proposition, &proposal) {
-        Ok(_) => {
-            let executed_proposal = Proposal::execute(&proposal);
-            insert_proposal(&proposition.proposal_id, &executed_proposal);
-            Ok(())
-        }
-        Err(e @ CommitProposalError::CommitAssetsIssue(_))
-        | Err(e @ CommitProposalError::PostCommitAssetsIssue(_)) => {
-            let failed_proposal = Proposal::fail(&proposal);
-            insert_proposal(&proposition.proposal_id, &failed_proposal);
-            Err(e)
-        }
-        Err(e) => Err(e),
-    }
+    junobuild_cdn::proposals::commit_proposal(&CdnHeap, &CdnStable, &CdnWorkflow, proposition)
 }
 
 pub fn delete_proposal_assets(
@@ -79,108 +49,11 @@ pub fn delete_proposal_assets(
     Ok(())
 }
 
-fn secure_commit_proposal(
-    commit_proposal: &CommitProposal,
-    proposal: &Proposal,
-) -> Result<(), CommitProposalError> {
-    if proposal.status != ProposalStatus::Open {
-        return Err(CommitProposalError::ProposalNotOpen(format!(
-            "{} ({:?})",
-            JUNO_ERROR_PROPOSALS_CANNOT_COMMIT_INVALID_STATUS, proposal.status
-        )));
-    }
-
-    match &proposal.sha256 {
-        Some(sha256) if sha256 == &commit_proposal.sha256 => (),
-        _ => {
-            return Err(CommitProposalError::InvalidSha256(format!(
-                "{} ({})",
-                JUNO_ERROR_PROPOSALS_INVALID_HASH,
-                encode(commit_proposal.sha256)
-            )));
-        }
-    }
-
-    assert_known_proposal_type(proposal).map_err(CommitProposalError::InvalidType)?;
-
-    // Mark proposal as accepted.
-    let accepted_proposal = Proposal::accept(proposal);
-    insert_proposal(&commit_proposal.proposal_id, &accepted_proposal);
-
-    pre_commit_assets(proposal);
-
-    copy_committed_assets(&commit_proposal.proposal_id)
-        .map_err(CommitProposalError::CommitAssetsIssue)?;
-
-    post_commit_assets(proposal).map_err(CommitProposalError::PostCommitAssetsIssue)?;
-
-    Ok(())
-}
-
-fn pre_commit_assets(proposal: &Proposal) {
-    match &proposal.proposal_type {
-        ProposalType::AssetsUpgrade(ref options) => {
-            // Clear existing assets if required.
-            if let Some(true) = options.clear_existing_assets {
-                delete_assets(&COLLECTION_ASSET_KEY.to_string());
-            }
-        }
-        ProposalType::SegmentsDeployment(_) => (),
-    }
-}
-
-fn post_commit_assets(proposal: &Proposal) -> Result<(), String> {
+pub fn post_commit_assets(proposal: &Proposal) -> Result<(), String> {
     match &proposal.proposal_type {
         ProposalType::AssetsUpgrade(_) => (),
         ProposalType::SegmentsDeployment(ref options) => {
             return update_releases_metadata(options);
-        }
-    }
-
-    Ok(())
-}
-
-fn copy_committed_assets(proposal_id: &ProposalId) -> Result<(), String> {
-    // Copy from stable memory to heap.
-    let assets = get_assets_stable(proposal_id);
-
-    if assets.is_empty() {
-        return Err(format!(
-            "{} ({})",
-            JUNO_ERROR_PROPOSALS_EMPTY_ASSETS, proposal_id
-        ));
-    }
-
-    for (key, asset) in assets {
-        insert_asset(&key.full_path, &asset);
-
-        for (encoding_type, encoding) in asset.encodings {
-            let mut content_chunks = Vec::new();
-
-            for (i, _) in encoding.content_chunks.iter().enumerate() {
-                let chunks = get_content_chunks_stable(&encoding, i).ok_or_else(|| {
-                    format!(
-                        "{} ({} - {}).",
-                        JUNO_ERROR_PROPOSALS_NOT_CONTENT_CHUNKS_AT_INDEX, encoding_type, i
-                    )
-                })?;
-
-                content_chunks.push(chunks);
-            }
-
-            if content_chunks.is_empty() {
-                return Err(format!(
-                    "{} ({})",
-                    JUNO_ERROR_PROPOSALS_EMPTY_CONTENT_CHUNKS, encoding_type
-                ));
-            }
-
-            let encoding_with_content = AssetEncoding {
-                content_chunks,
-                ..encoding
-            };
-
-            insert_asset_encoding(&key.full_path, &encoding_type, &encoding_with_content)?;
         }
     }
 

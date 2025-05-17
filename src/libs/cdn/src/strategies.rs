@@ -1,4 +1,4 @@
-use crate::proposals::ProposalsStable;
+use crate::proposals::{Proposal, ProposalsStable};
 use crate::storage::{AssetsStable, ContentChunksStable};
 use junobuild_collections::types::rules::Rules;
 use junobuild_shared::types::domain::CustomDomains;
@@ -27,4 +27,9 @@ pub trait CdnStableStrategy {
 
     fn with_proposals<R>(&self, f: impl FnOnce(&ProposalsStable) -> R) -> R;
     fn with_proposals_mut<R>(&self, f: impl FnOnce(&mut ProposalsStable) -> R) -> R;
+}
+
+pub trait CdnWorkflowStrategy {
+    fn pre_commit_assets(&self, proposal: &Proposal);
+    fn post_commit_assets(&self, proposal: &Proposal) -> Result<(), String>;
 }

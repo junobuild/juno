@@ -1,5 +1,6 @@
 #![deny(clippy::disallowed_methods)]
 
+mod cdn;
 mod constants;
 mod controllers;
 mod factory;
@@ -7,25 +8,18 @@ mod guards;
 mod impls;
 mod memory;
 mod metadata;
-mod proposals;
-mod storage;
 mod store;
-mod strategies_impls;
 mod types;
 mod wasm;
 
+use crate::cdn::certified_assets::upgrade::defer_init_certified_assets;
+use crate::cdn::state::stable::get_proposal as get_proposal_state;
+use crate::cdn::store::init_asset_upload as init_asset_upload_store;
 use crate::factory::mission_control::init_user_mission_control;
 use crate::factory::orbiter::create_orbiter as create_orbiter_console;
 use crate::factory::satellite::create_satellite as create_satellite_console;
 use crate::guards::{caller_is_admin_controller, caller_is_observatory};
 use crate::memory::{init_storage_heap_state, STATE};
-use crate::proposals::{
-    commit_proposal as make_commit_proposal,
-    delete_proposal_assets as delete_proposal_assets_proposal, init_proposal as make_init_proposal,
-    submit_proposal as make_submit_proposal,
-};
-use crate::storage::certified_assets::upgrade::defer_init_certified_assets;
-use crate::storage::store::init_asset_upload as init_asset_upload_store;
 use crate::store::heap::{
     add_invitation_code as add_invitation_code_store, delete_controllers, get_controllers,
     get_orbiter_fee, get_satellite_fee, set_controllers as set_controllers_store,
@@ -34,16 +28,22 @@ use crate::store::heap::{
 };
 use crate::store::stable::{
     add_credits as add_credits_store, get_credits as get_credits_store,
-    get_existing_mission_control, get_mission_control, get_proposal as get_proposal_state,
-    has_credits, list_mission_controls, list_payments as list_payments_state,
+    get_existing_mission_control, get_mission_control, has_credits, list_mission_controls,
+    list_payments as list_payments_state,
 };
-use crate::strategies_impls::cdn::CdnHeap;
 use crate::types::interface::{Config, DeleteProposalAssets};
 use crate::types::state::{
     Fees, HeapState, InvitationCode, MissionControl, MissionControls, Rates, ReleasesMetadata,
     State,
 };
 use candid::Principal;
+use cdn::proposals::{
+    commit_proposal as make_commit_proposal,
+    delete_proposal_assets as delete_proposal_assets_proposal, init_proposal as make_init_proposal,
+    submit_proposal as make_submit_proposal,
+};
+use cdn::strategies_impls::cdn::CdnHeap;
+use cdn::strategies_impls::storage::{StorageAssertions, StorageState, StorageUpload};
 use ciborium::{from_reader, into_writer};
 use ic_cdk::api::call::ManualReply;
 use ic_cdk::api::caller;
@@ -77,7 +77,6 @@ use junobuild_storage::types::interface::{
 };
 use memory::{get_memory_upgrades, init_stable_state};
 use std::collections::HashMap;
-use strategies_impls::storage::{StorageAssertions, StorageState, StorageUpload};
 use types::state::Payments;
 
 #[init]

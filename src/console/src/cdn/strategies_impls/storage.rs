@@ -1,10 +1,10 @@
-use crate::storage::state::heap::{
+use crate::cdn::state::heap::{
     delete_asset, get_asset, get_config, get_domains, get_rule, insert_asset,
 };
-use crate::storage::state::stable::{
+use crate::cdn::state::stable::{
     get_asset_stable, insert_asset_encoding_stable, insert_asset_stable,
 };
-use crate::strategies_impls::cdn::CdnHeap;
+use crate::cdn::strategies_impls::cdn::CdnHeap;
 use candid::Principal;
 use junobuild_collections::types::core::CollectionKey;
 use junobuild_collections::types::rules::{Memory, Rule};

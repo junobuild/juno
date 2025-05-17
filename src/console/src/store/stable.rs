@@ -1,6 +1,6 @@
+use crate::cdn::strategies_impls::cdn::CdnStable;
 use crate::constants::E8S_PER_ICP;
 use crate::memory::STATE;
-use crate::strategies_impls::cdn::CdnStable;
 use crate::types::ledger::{Payment, PaymentStatus};
 use crate::types::state::{
     MissionControl, MissionControls, MissionControlsStable, Payments, PaymentsStable, StableState,
@@ -347,12 +347,4 @@ pub fn list_payments() -> Payments {
 
 fn list_payments_impl(payments: &PaymentsStable) -> Payments {
     payments.iter().collect()
-}
-
-// ---------------------------------------------------------
-// Proposals
-// ---------------------------------------------------------
-
-pub fn get_proposal(proposal_id: &ProposalId) -> Option<Proposal> {
-    junobuild_cdn::proposals::stable::get_proposal(&CdnStable, proposal_id)
 }

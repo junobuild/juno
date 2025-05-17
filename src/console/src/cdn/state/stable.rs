@@ -1,8 +1,12 @@
-use crate::strategies_impls::cdn::CdnStable;
-use junobuild_cdn::proposals::ProposalId;
+use crate::cdn::strategies_impls::cdn::CdnStable;
+use junobuild_cdn::proposals::{Proposal, ProposalId};
 use junobuild_collections::types::core::CollectionKey;
 use junobuild_storage::types::state::FullPath;
 use junobuild_storage::types::store::{Asset, AssetEncoding};
+
+// ---------------------------------------------------------
+// Storage
+// ---------------------------------------------------------
 
 pub fn get_asset_stable(
     proposal_id: &ProposalId,
@@ -40,4 +44,12 @@ pub fn insert_asset_stable(
         full_path,
         asset,
     )
+}
+
+// ---------------------------------------------------------
+// Proposals
+// ---------------------------------------------------------
+
+pub fn get_proposal(proposal_id: &ProposalId) -> Option<Proposal> {
+    junobuild_cdn::proposals::stable::get_proposal(&CdnStable, proposal_id)
 }

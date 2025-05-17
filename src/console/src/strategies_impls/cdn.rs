@@ -1,7 +1,8 @@
 use crate::memory::STATE;
-use junobuild_cdn::proposals::ProposalsStable;
+use crate::proposals::post_commit_assets;
+use junobuild_cdn::proposals::{Proposal, ProposalsStable};
 use junobuild_cdn::storage::{AssetsStable, ContentChunksStable};
-use junobuild_cdn::strategies::{CdnHeapStrategy, CdnStableStrategy};
+use junobuild_cdn::strategies::{CdnHeapStrategy, CdnStableStrategy, CdnWorkflowStrategy};
 use junobuild_collections::types::rules::Rules;
 use junobuild_shared::types::domain::CustomDomains;
 use junobuild_storage::types::config::StorageConfig;
@@ -103,5 +104,17 @@ impl CdnStableStrategy for CdnStable {
             let mut borrow = state.borrow_mut();
             f(&mut borrow.stable.proposals)
         })
+    }
+}
+
+pub struct CdnWorkflow;
+
+impl CdnWorkflowStrategy for CdnWorkflow {
+    fn pre_commit_assets(&self, proposal: &Proposal) {
+        junobuild_cdn::proposals::pre_commit_assets(&CdnHeap, proposal);
+    }
+
+    fn post_commit_assets(&self, proposal: &Proposal) -> Result<(), String> {
+        post_commit_assets(proposal)
     }
 }

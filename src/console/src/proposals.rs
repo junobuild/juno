@@ -1,284 +1,41 @@
-use crate::errors::{
-    JUNO_ERROR_PROPOSALS_CANNOT_COMMIT, JUNO_ERROR_PROPOSALS_CANNOT_COMMIT_INVALID_STATUS,
-    JUNO_ERROR_PROPOSALS_CANNOT_DELETE_ASSETS,
-    JUNO_ERROR_PROPOSALS_CANNOT_DELETE_ASSETS_INVALID_STATUS, JUNO_ERROR_PROPOSALS_CANNOT_SUBMIT,
-    JUNO_ERROR_PROPOSALS_CANNOT_SUBMIT_INVALID_STATUS, JUNO_ERROR_PROPOSALS_EMPTY_ASSETS,
-    JUNO_ERROR_PROPOSALS_EMPTY_CONTENT_CHUNKS, JUNO_ERROR_PROPOSALS_INVALID_HASH,
-    JUNO_ERROR_PROPOSALS_NOT_CONTENT_CHUNKS_AT_INDEX, JUNO_ERROR_PROPOSALS_UNKNOWN_TYPE,
-};
 use crate::metadata::update_releases_metadata;
-use crate::storage::state::heap::insert_asset;
-use crate::storage::state::stable::{
-    delete_asset_stable, delete_content_chunks_stable, get_assets_stable, get_content_chunks_stable,
-};
-use crate::storage::store::{delete_assets, insert_asset_encoding};
-use crate::store::stable::{count_proposals, get_proposal, insert_proposal};
+use crate::strategies_impls::cdn::{CdnHeap, CdnStable, CdnWorkflow};
 use candid::Principal;
-use hex::encode;
 use junobuild_cdn::proposals::{CommitProposal, CommitProposalError};
-use junobuild_cdn::proposals::{Proposal, ProposalId, ProposalStatus, ProposalType};
-use junobuild_collections::constants::assets::COLLECTION_ASSET_KEY;
-use junobuild_shared::types::core::{Hash, Hashable};
-use junobuild_shared::utils::principal_not_equal;
-use junobuild_storage::types::store::AssetEncoding;
-use sha2::{Digest, Sha256};
+use junobuild_cdn::proposals::{Proposal, ProposalId, ProposalType};
 
 pub fn init_proposal(
     caller: Principal,
     proposal_type: &ProposalType,
 ) -> Result<(ProposalId, Proposal), String> {
-    let proposal_id =
-        u128::try_from(count_proposals() + 1).map_err(|_| "Cannot convert next proposal ID.")?;
-
-    let proposal: Proposal = Proposal::init(caller, proposal_type);
-
-    insert_proposal(&proposal_id, &proposal);
-
-    Ok((proposal_id, proposal))
+    junobuild_cdn::proposals::init_proposal(&CdnStable, caller, proposal_type)
 }
 
 pub fn submit_proposal(
     caller: Principal,
     proposal_id: &ProposalId,
 ) -> Result<(ProposalId, Proposal), String> {
-    let proposal = get_proposal(proposal_id);
-
-    match proposal {
-        None => Err(JUNO_ERROR_PROPOSALS_CANNOT_SUBMIT.to_string()),
-        Some(proposal) => secure_submit_proposal(caller, proposal_id, &proposal),
-    }
+    junobuild_cdn::proposals::submit_proposal(&CdnStable, caller, proposal_id)
 }
 
 pub fn commit_proposal(proposition: &CommitProposal) -> Result<(), CommitProposalError> {
-    let proposal = get_proposal(&proposition.proposal_id).ok_or_else(|| {
-        CommitProposalError::ProposalNotFound(format!(
-            "{} ({})",
-            JUNO_ERROR_PROPOSALS_CANNOT_COMMIT, proposition.proposal_id
-        ))
-    })?;
-
-    match secure_commit_proposal(proposition, &proposal) {
-        Ok(_) => {
-            let executed_proposal = Proposal::execute(&proposal);
-            insert_proposal(&proposition.proposal_id, &executed_proposal);
-            Ok(())
-        }
-        Err(e @ CommitProposalError::CommitAssetsIssue(_))
-        | Err(e @ CommitProposalError::PostCommitAssetsIssue(_)) => {
-            let failed_proposal = Proposal::fail(&proposal);
-            insert_proposal(&proposition.proposal_id, &failed_proposal);
-            Err(e)
-        }
-        Err(e) => Err(e),
-    }
+    junobuild_cdn::proposals::commit_proposal(&CdnHeap, &CdnStable, &CdnWorkflow, proposition)
 }
 
 pub fn delete_proposal_assets(
     caller: Principal,
     proposal_ids: &Vec<ProposalId>,
 ) -> Result<(), String> {
-    for proposal_id in proposal_ids {
-        let proposal = get_proposal(proposal_id);
-
-        match proposal {
-            None => {
-                return Err(JUNO_ERROR_PROPOSALS_CANNOT_DELETE_ASSETS.to_string());
-            }
-            Some(proposal) => secure_delete_proposal_assets(caller, proposal_id, &proposal)?,
-        }
-    }
-
-    Ok(())
+    junobuild_cdn::proposals::delete_proposal_assets(&CdnStable, caller, proposal_ids)
 }
 
-fn secure_submit_proposal(
-    caller: Principal,
-    proposal_id: &ProposalId,
-    proposal: &Proposal,
-) -> Result<(ProposalId, Proposal), String> {
-    // The one that started the upload should be the one that propose it.
-    if principal_not_equal(caller, proposal.owner) {
-        return Err(JUNO_ERROR_PROPOSALS_CANNOT_SUBMIT.to_string());
-    }
-
-    if proposal.status != ProposalStatus::Initialized {
-        return Err(format!(
-            "{} ({:?})",
-            JUNO_ERROR_PROPOSALS_CANNOT_SUBMIT_INVALID_STATUS, proposal.status
-        ));
-    }
-
-    assert_known_proposal_type(proposal)?;
-
-    let assets = get_assets_stable(proposal_id);
-
-    let mut hasher = Sha256::new();
-
-    for (key, asset) in assets {
-        hasher.update(key.hash());
-        hasher.update(asset.hash());
-
-        for (_, encoding) in asset.encodings {
-            hasher.update(encoding.hash());
-        }
-    }
-
-    let hash: Hash = hasher.finalize().into();
-
-    let proposal: Proposal = Proposal::open(proposal, hash);
-
-    insert_proposal(proposal_id, &proposal);
-
-    Ok((*proposal_id, proposal))
-}
-
-fn secure_commit_proposal(
-    commit_proposal: &CommitProposal,
-    proposal: &Proposal,
-) -> Result<(), CommitProposalError> {
-    if proposal.status != ProposalStatus::Open {
-        return Err(CommitProposalError::ProposalNotOpen(format!(
-            "{} ({:?})",
-            JUNO_ERROR_PROPOSALS_CANNOT_COMMIT_INVALID_STATUS, proposal.status
-        )));
-    }
-
-    match &proposal.sha256 {
-        Some(sha256) if sha256 == &commit_proposal.sha256 => (),
-        _ => {
-            return Err(CommitProposalError::InvalidSha256(format!(
-                "{} ({})",
-                JUNO_ERROR_PROPOSALS_INVALID_HASH,
-                encode(commit_proposal.sha256)
-            )));
-        }
-    }
-
-    assert_known_proposal_type(proposal).map_err(CommitProposalError::InvalidType)?;
-
-    // Mark proposal as accepted.
-    let accepted_proposal = Proposal::accept(proposal);
-    insert_proposal(&commit_proposal.proposal_id, &accepted_proposal);
-
-    pre_commit_assets(proposal);
-
-    copy_committed_assets(&commit_proposal.proposal_id)
-        .map_err(CommitProposalError::CommitAssetsIssue)?;
-
-    post_commit_assets(proposal).map_err(CommitProposalError::PostCommitAssetsIssue)?;
-
-    Ok(())
-}
-
-fn pre_commit_assets(proposal: &Proposal) {
-    match &proposal.proposal_type {
-        ProposalType::AssetsUpgrade(ref options) => {
-            // Clear existing assets if required.
-            if let Some(true) = options.clear_existing_assets {
-                delete_assets(&COLLECTION_ASSET_KEY.to_string());
-            }
-        }
-        ProposalType::SegmentsDeployment(_) => (),
-    }
-}
-
-fn post_commit_assets(proposal: &Proposal) -> Result<(), String> {
+pub fn post_commit_assets(proposal: &Proposal) -> Result<(), String> {
     match &proposal.proposal_type {
         ProposalType::AssetsUpgrade(_) => (),
         ProposalType::SegmentsDeployment(ref options) => {
             return update_releases_metadata(options);
         }
     }
-
-    Ok(())
-}
-
-fn copy_committed_assets(proposal_id: &ProposalId) -> Result<(), String> {
-    // Copy from stable memory to heap.
-    let assets = get_assets_stable(proposal_id);
-
-    if assets.is_empty() {
-        return Err(format!(
-            "{} ({})",
-            JUNO_ERROR_PROPOSALS_EMPTY_ASSETS, proposal_id
-        ));
-    }
-
-    for (key, asset) in assets {
-        insert_asset(&key.full_path, &asset);
-
-        for (encoding_type, encoding) in asset.encodings {
-            let mut content_chunks = Vec::new();
-
-            for (i, _) in encoding.content_chunks.iter().enumerate() {
-                let chunks = get_content_chunks_stable(&encoding, i).ok_or_else(|| {
-                    format!(
-                        "{} ({} - {}).",
-                        JUNO_ERROR_PROPOSALS_NOT_CONTENT_CHUNKS_AT_INDEX, encoding_type, i
-                    )
-                })?;
-
-                content_chunks.push(chunks);
-            }
-
-            if content_chunks.is_empty() {
-                return Err(format!(
-                    "{} ({})",
-                    JUNO_ERROR_PROPOSALS_EMPTY_CONTENT_CHUNKS, encoding_type
-                ));
-            }
-
-            let encoding_with_content = AssetEncoding {
-                content_chunks,
-                ..encoding
-            };
-
-            insert_asset_encoding(&key.full_path, &encoding_type, &encoding_with_content)?;
-        }
-    }
-
-    Ok(())
-}
-
-pub fn secure_delete_proposal_assets(
-    caller: Principal,
-    proposal_id: &ProposalId,
-    proposal: &Proposal,
-) -> Result<(), String> {
-    // The one that uploaded the assets can remove those.
-    if principal_not_equal(caller, proposal.owner) {
-        return Err(JUNO_ERROR_PROPOSALS_CANNOT_DELETE_ASSETS.to_string());
-    }
-
-    if proposal.status == ProposalStatus::Open {
-        return Err(format!(
-            "{} ({:?})",
-            JUNO_ERROR_PROPOSALS_CANNOT_DELETE_ASSETS_INVALID_STATUS, proposal.status
-        ));
-    }
-
-    assert_known_proposal_type(proposal)?;
-
-    let assets = get_assets_stable(proposal_id);
-
-    for (key, asset) in assets {
-        for (_, encoding) in asset.encodings.iter() {
-            delete_content_chunks_stable(&encoding.content_chunks);
-        }
-
-        delete_asset_stable(&key);
-    }
-
-    Ok(())
-}
-
-fn assert_known_proposal_type(proposal: &Proposal) -> Result<(), String> {
-    #[allow(unreachable_patterns)]
-    match &proposal.proposal_type {
-        ProposalType::AssetsUpgrade(_) => (),
-        ProposalType::SegmentsDeployment(_) => (),
-        _ => return Err(JUNO_ERROR_PROPOSALS_UNKNOWN_TYPE.to_string()),
-    };
 
     Ok(())
 }

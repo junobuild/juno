@@ -2,7 +2,6 @@
 
 mod constants;
 mod controllers;
-mod errors;
 mod factory;
 mod guards;
 mod impls;

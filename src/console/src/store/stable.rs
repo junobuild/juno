@@ -356,11 +356,3 @@ fn list_payments_impl(payments: &PaymentsStable) -> Payments {
 pub fn get_proposal(proposal_id: &ProposalId) -> Option<Proposal> {
     junobuild_cdn::proposals::stable::get_proposal(&CdnStable, proposal_id)
 }
-
-pub fn count_proposals() -> usize {
-    junobuild_cdn::proposals::stable::count_proposals(&CdnStable)
-}
-
-pub fn insert_proposal(proposal_id: &ProposalId, proposal: &Proposal) {
-    junobuild_cdn::proposals::stable::insert_proposal(&CdnStable, proposal_id, proposal)
-}

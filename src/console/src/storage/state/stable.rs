@@ -1,10 +1,8 @@
 use crate::strategies_impls::cdn::CdnStable;
 use junobuild_cdn::proposals::ProposalId;
-use junobuild_cdn::storage::ProposalAssetKey;
 use junobuild_collections::types::core::CollectionKey;
-use junobuild_shared::types::core::Blob;
 use junobuild_storage::types::state::FullPath;
-use junobuild_storage::types::store::{Asset, AssetEncoding, BlobOrKey};
+use junobuild_storage::types::store::{Asset, AssetEncoding};
 
 pub fn get_asset_stable(
     proposal_id: &ProposalId,
@@ -12,14 +10,6 @@ pub fn get_asset_stable(
     full_path: &FullPath,
 ) -> Option<Asset> {
     junobuild_cdn::storage::stable::get_asset(&CdnStable, proposal_id, collection, full_path)
-}
-
-pub fn get_content_chunks_stable(encoding: &AssetEncoding, chunk_index: usize) -> Option<Blob> {
-    junobuild_cdn::storage::stable::get_content_chunks(&CdnStable, encoding, chunk_index)
-}
-
-pub fn get_assets_stable(proposal_id: &ProposalId) -> Vec<(ProposalAssetKey, Asset)> {
-    junobuild_cdn::storage::stable::get_assets(&CdnStable, proposal_id)
 }
 
 pub fn insert_asset_encoding_stable(
@@ -50,12 +40,4 @@ pub fn insert_asset_stable(
         full_path,
         asset,
     )
-}
-
-pub fn delete_asset_stable(key: &ProposalAssetKey) -> Option<Asset> {
-    junobuild_cdn::storage::stable::delete_asset(&CdnStable, key)
-}
-
-pub fn delete_content_chunks_stable(content_chunks_keys: &[BlobOrKey]) {
-    junobuild_cdn::storage::stable::delete_content_chunks(&CdnStable, content_chunks_keys)
 }

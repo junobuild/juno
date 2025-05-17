@@ -23,10 +23,6 @@ pub fn delete_asset(full_path: &FullPath) -> Option<Asset> {
     junobuild_cdn::storage::heap::delete_asset(&CdnHeap, full_path)
 }
 
-pub fn collect_delete_assets(collection: &CollectionKey) -> Vec<FullPath> {
-    junobuild_cdn::storage::heap::collect_delete_assets(&CdnHeap, collection)
-}
-
 // ---------------------------------------------------------
 // Rules
 // ---------------------------------------------------------

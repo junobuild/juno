@@ -26,8 +26,7 @@ use crate::proposals::{
 };
 use crate::storage::certified_assets::upgrade::defer_init_certified_assets;
 use crate::storage::store::{
-    delete_domain_store, get_config_store as get_storage_config_store, get_custom_domains_store,
-    init_asset_upload as init_asset_upload_store, set_config_store as set_storage_config_store,
+    delete_domain_store, get_custom_domains_store, init_asset_upload as init_asset_upload_store,
     set_domain_store,
 };
 use crate::store::heap::{
@@ -361,7 +360,7 @@ fn init_asset_upload(init: InitAssetKey, proposal_id: ProposalId) -> InitUploadR
 #[update(guard = "caller_is_admin_controller")]
 fn upload_asset_chunk(chunk: UploadChunk) -> UploadChunkResult {
     let caller = caller();
-    let config = get_storage_config_store();
+    let config = junobuild_cdn::storage::heap::get_config(&CdnHeap);
 
     let result = create_chunk(caller, &config, chunk);
 
@@ -376,7 +375,7 @@ fn commit_asset_upload(commit: CommitBatch) {
     let caller = caller();
 
     let controllers: Controllers = get_controllers();
-    let config = get_storage_config_store();
+    let config = junobuild_cdn::storage::heap::get_config(&CdnHeap);
 
     commit_batch_storage(
         caller,
@@ -406,7 +405,7 @@ pub fn list_assets(collection: CollectionKey, filter: ListParams) -> ListResults
 
 #[update(guard = "caller_is_admin_controller")]
 pub fn get_config() -> Config {
-    let storage = get_storage_config_store();
+    let storage = junobuild_cdn::storage::heap::get_config(&CdnHeap);
     Config { storage }
 }
 
@@ -416,12 +415,12 @@ pub fn get_config() -> Config {
 
 #[update(guard = "caller_is_admin_controller")]
 pub fn set_storage_config(config: StorageConfig) {
-    set_storage_config_store(&config);
+    junobuild_cdn::storage::set_config_store(&CdnHeap, &StorageState, &config);
 }
 
 #[query(guard = "caller_is_admin_controller")]
 pub fn get_storage_config() -> StorageConfig {
-    get_storage_config_store()
+    junobuild_cdn::storage::heap::get_config(&CdnHeap)
 }
 
 // ---------------------------------------------------------

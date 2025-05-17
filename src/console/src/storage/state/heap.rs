@@ -39,10 +39,6 @@ pub fn get_config() -> StorageConfig {
     junobuild_cdn::storage::heap::get_config(&CdnHeap)
 }
 
-pub fn insert_config(config: &StorageConfig) {
-    junobuild_cdn::storage::heap::insert_config(&CdnHeap, config)
-}
-
 // ---------------------------------------------------------
 // Custom domains
 // ---------------------------------------------------------

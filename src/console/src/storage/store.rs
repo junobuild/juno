@@ -1,6 +1,5 @@
-use crate::storage::certified_assets::runtime::init_certified_assets as init_runtime_certified_assets;
 use crate::storage::state::heap::{
-    delete_domain, get_config, get_domain, get_domains, insert_config, insert_domain,
+    delete_domain, get_config, get_domain, get_domains, insert_domain,
 };
 use crate::store::heap::get_controllers;
 use crate::store::stable::get_proposal;
@@ -10,7 +9,6 @@ use junobuild_cdn::proposals::ProposalId;
 use junobuild_shared::types::core::DomainName;
 use junobuild_shared::types::domain::CustomDomains;
 use junobuild_storage::store::create_batch;
-use junobuild_storage::types::config::StorageConfig;
 use junobuild_storage::types::interface::InitAssetKey;
 use junobuild_storage::types::runtime_state::BatchId;
 use junobuild_storage::well_known::update::update_custom_domains_asset;
@@ -67,20 +65,6 @@ fn assert_releases_keys(InitAssetKey { full_path, .. }: &InitAssetKey) -> Result
     }
 
     Ok(())
-}
-
-// ---------------------------------------------------------
-// Config
-// ---------------------------------------------------------
-
-pub fn set_config_store(config: &StorageConfig) {
-    insert_config(config);
-
-    init_runtime_certified_assets();
-}
-
-pub fn get_config_store() -> StorageConfig {
-    get_config()
 }
 
 // ---------------------------------------------------------

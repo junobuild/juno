@@ -10,6 +10,10 @@ use junobuild_storage::types::state::FullPath;
 use junobuild_storage::types::store::{Asset, AssetEncoding, EncodingType};
 use junobuild_storage::utils::{get_token_protected_asset, map_asset_no_content};
 
+// ---------------------------------------------------------
+// Assets
+// ---------------------------------------------------------
+
 pub fn list_assets(
     cdn_heap: &impl CdnHeapStrategy,
     collection: &CollectionKey,

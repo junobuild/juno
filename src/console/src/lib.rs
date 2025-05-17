@@ -25,10 +25,7 @@ use crate::proposals::{
     submit_proposal as make_submit_proposal,
 };
 use crate::storage::certified_assets::upgrade::defer_init_certified_assets;
-use crate::storage::store::{
-    delete_domain_store, get_custom_domains_store, init_asset_upload as init_asset_upload_store,
-    set_domain_store,
-};
+use crate::storage::store::init_asset_upload as init_asset_upload_store;
 use crate::store::heap::{
     add_invitation_code as add_invitation_code_store, delete_controllers, get_controllers,
     get_orbiter_fee, get_satellite_fee, set_controllers as set_controllers_store,
@@ -429,17 +426,19 @@ pub fn get_storage_config() -> StorageConfig {
 
 #[query(guard = "caller_is_admin_controller")]
 pub fn list_custom_domains() -> CustomDomains {
-    get_custom_domains_store()
+    junobuild_cdn::storage::heap::get_domains(&CdnHeap)
 }
 
 #[update(guard = "caller_is_admin_controller")]
 pub fn set_custom_domain(domain_name: DomainName, bn_id: Option<String>) {
-    set_domain_store(&domain_name, &bn_id).unwrap_or_else(|e| trap(&e));
+    junobuild_cdn::storage::set_domain_store(&CdnHeap, &StorageState, &domain_name, &bn_id)
+        .unwrap_or_else(|e| trap(&e));
 }
 
 #[update(guard = "caller_is_admin_controller")]
 pub fn del_custom_domain(domain_name: DomainName) {
-    delete_domain_store(&domain_name).unwrap_or_else(|e| trap(&e));
+    junobuild_cdn::storage::delete_domain_store(&CdnHeap, &StorageState, &domain_name)
+        .unwrap_or_else(|e| trap(&e));
 }
 
 // ---------------------------------------------------------

@@ -1,8 +1,7 @@
 use crate::strategies_impls::cdn::CdnHeap;
 use junobuild_collections::types::core::CollectionKey;
 use junobuild_collections::types::rules::Rule;
-use junobuild_shared::types::core::DomainName;
-use junobuild_shared::types::domain::{CustomDomain, CustomDomains};
+use junobuild_shared::types::domain::CustomDomains;
 use junobuild_storage::types::config::StorageConfig;
 use junobuild_storage::types::state::FullPath;
 use junobuild_storage::types::store::Asset;
@@ -45,16 +44,4 @@ pub fn get_config() -> StorageConfig {
 
 pub fn get_domains() -> CustomDomains {
     junobuild_cdn::storage::heap::get_domains(&CdnHeap)
-}
-
-pub fn get_domain(domain_name: &DomainName) -> Option<CustomDomain> {
-    junobuild_cdn::storage::heap::get_domain(&CdnHeap, domain_name)
-}
-
-pub fn insert_domain(domain_name: &DomainName, custom_domain: &CustomDomain) {
-    junobuild_cdn::storage::heap::insert_domain(&CdnHeap, domain_name, custom_domain)
-}
-
-pub fn delete_domain(domain_name: &DomainName) {
-    junobuild_cdn::storage::heap::delete_domain(&CdnHeap, domain_name)
 }

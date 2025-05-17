@@ -78,7 +78,7 @@ pub fn get_content_chunks(
 ) -> Option<Blob> {
     match memory {
         Memory::Heap => {
-            let content_chunks = clone_asset_encoding_content_chunks(&encoding, chunk_index);
+            let content_chunks = clone_asset_encoding_content_chunks(encoding, chunk_index);
             Some(content_chunks)
         }
         Memory::Stable => STATE.with(|state| {

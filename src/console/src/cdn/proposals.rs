@@ -1,5 +1,5 @@
+use crate::cdn::strategies_impls::cdn::{CdnHeap, CdnStable, CdnWorkflow};
 use crate::metadata::update_releases_metadata;
-use crate::strategies_impls::cdn::{CdnHeap, CdnStable, CdnWorkflow};
 use candid::Principal;
 use junobuild_cdn::proposals::{CommitProposal, CommitProposalError};
 use junobuild_cdn::proposals::{Proposal, ProposalId, ProposalType};

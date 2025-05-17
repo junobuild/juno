@@ -1,7 +1,7 @@
-use crate::storage::state::heap::get_config;
+use crate::cdn::state::heap::get_config;
+use crate::cdn::state::stable::get_proposal;
+use crate::cdn::strategies_impls::storage::StorageState;
 use crate::store::heap::get_controllers;
-use crate::store::stable::get_proposal;
-use crate::strategies_impls::storage::StorageState;
 use candid::Principal;
 use junobuild_cdn::proposals::ProposalId;
 use junobuild_storage::store::create_batch;

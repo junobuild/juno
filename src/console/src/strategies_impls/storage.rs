@@ -4,7 +4,7 @@ use crate::storage::state::heap::{
 use crate::storage::state::stable::{
     get_asset_stable, insert_asset_encoding_stable, insert_asset_stable,
 };
-use crate::storage::store::get_public_asset;
+use crate::strategies_impls::cdn::CdnHeap;
 use candid::Principal;
 use junobuild_collections::types::core::CollectionKey;
 use junobuild_collections::types::rules::{Memory, Rule};
@@ -63,7 +63,7 @@ impl StorageStateStrategy for StorageState {
         full_path: FullPath,
         token: Option<String>,
     ) -> Option<(Asset, Memory)> {
-        get_public_asset(full_path, token)
+        junobuild_cdn::storage::heap::get_public_asset(&CdnHeap, full_path, token)
     }
 
     fn get_rule(&self, collection: &CollectionKey) -> Result<Rule, String> {

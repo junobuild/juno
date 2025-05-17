@@ -25,11 +25,7 @@ use crate::proposals::{
     submit_proposal as make_submit_proposal,
 };
 use crate::storage::certified_assets::upgrade::defer_init_certified_assets;
-use crate::storage::store::{
-    delete_domain_store, get_config_store as get_storage_config_store, get_custom_domains_store,
-    init_asset_upload as init_asset_upload_store, list_assets as list_assets_store,
-    set_config_store as set_storage_config_store, set_domain_store,
-};
+use crate::storage::store::init_asset_upload as init_asset_upload_store;
 use crate::store::heap::{
     add_invitation_code as add_invitation_code_store, delete_controllers, get_controllers,
     get_orbiter_fee, get_satellite_fee, set_controllers as set_controllers_store,
@@ -41,6 +37,7 @@ use crate::store::stable::{
     get_existing_mission_control, get_mission_control, get_proposal as get_proposal_state,
     has_credits, list_mission_controls, list_payments as list_payments_state,
 };
+use crate::strategies_impls::cdn::CdnHeap;
 use crate::types::interface::{Config, DeleteProposalAssets};
 use crate::types::state::{
     Fees, HeapState, InvitationCode, MissionControl, MissionControls, Rates, ReleasesMetadata,
@@ -360,7 +357,7 @@ fn init_asset_upload(init: InitAssetKey, proposal_id: ProposalId) -> InitUploadR
 #[update(guard = "caller_is_admin_controller")]
 fn upload_asset_chunk(chunk: UploadChunk) -> UploadChunkResult {
     let caller = caller();
-    let config = get_storage_config_store();
+    let config = junobuild_cdn::storage::heap::get_config(&CdnHeap);
 
     let result = create_chunk(caller, &config, chunk);
 
@@ -375,7 +372,7 @@ fn commit_asset_upload(commit: CommitBatch) {
     let caller = caller();
 
     let controllers: Controllers = get_controllers();
-    let config = get_storage_config_store();
+    let config = junobuild_cdn::storage::heap::get_config(&CdnHeap);
 
     commit_batch_storage(
         caller,
@@ -391,7 +388,7 @@ fn commit_asset_upload(commit: CommitBatch) {
 
 #[query(guard = "caller_is_admin_controller")]
 pub fn list_assets(collection: CollectionKey, filter: ListParams) -> ListResults<AssetNoContent> {
-    let result = list_assets_store(&collection, &filter);
+    let result = junobuild_cdn::storage::heap::list_assets(&CdnHeap, &collection, &filter);
 
     match result {
         Ok(result) => result,
@@ -405,7 +402,7 @@ pub fn list_assets(collection: CollectionKey, filter: ListParams) -> ListResults
 
 #[update(guard = "caller_is_admin_controller")]
 pub fn get_config() -> Config {
-    let storage = get_storage_config_store();
+    let storage = junobuild_cdn::storage::heap::get_config(&CdnHeap);
     Config { storage }
 }
 
@@ -415,12 +412,12 @@ pub fn get_config() -> Config {
 
 #[update(guard = "caller_is_admin_controller")]
 pub fn set_storage_config(config: StorageConfig) {
-    set_storage_config_store(&config);
+    junobuild_cdn::storage::set_config_store(&CdnHeap, &StorageState, &config);
 }
 
 #[query(guard = "caller_is_admin_controller")]
 pub fn get_storage_config() -> StorageConfig {
-    get_storage_config_store()
+    junobuild_cdn::storage::heap::get_config(&CdnHeap)
 }
 
 // ---------------------------------------------------------
@@ -429,17 +426,19 @@ pub fn get_storage_config() -> StorageConfig {
 
 #[query(guard = "caller_is_admin_controller")]
 pub fn list_custom_domains() -> CustomDomains {
-    get_custom_domains_store()
+    junobuild_cdn::storage::heap::get_domains(&CdnHeap)
 }
 
 #[update(guard = "caller_is_admin_controller")]
 pub fn set_custom_domain(domain_name: DomainName, bn_id: Option<String>) {
-    set_domain_store(&domain_name, &bn_id).unwrap_or_else(|e| trap(&e));
+    junobuild_cdn::storage::set_domain_store(&CdnHeap, &StorageState, &domain_name, &bn_id)
+        .unwrap_or_else(|e| trap(&e));
 }
 
 #[update(guard = "caller_is_admin_controller")]
 pub fn del_custom_domain(domain_name: DomainName) {
-    delete_domain_store(&domain_name).unwrap_or_else(|e| trap(&e));
+    junobuild_cdn::storage::delete_domain_store(&CdnHeap, &StorageState, &domain_name)
+        .unwrap_or_else(|e| trap(&e));
 }
 
 // ---------------------------------------------------------

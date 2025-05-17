@@ -27,8 +27,8 @@ use crate::proposals::{
 use crate::storage::certified_assets::upgrade::defer_init_certified_assets;
 use crate::storage::store::{
     delete_domain_store, get_config_store as get_storage_config_store, get_custom_domains_store,
-    init_asset_upload as init_asset_upload_store, list_assets as list_assets_store,
-    set_config_store as set_storage_config_store, set_domain_store,
+    init_asset_upload as init_asset_upload_store, set_config_store as set_storage_config_store,
+    set_domain_store,
 };
 use crate::store::heap::{
     add_invitation_code as add_invitation_code_store, delete_controllers, get_controllers,
@@ -41,6 +41,7 @@ use crate::store::stable::{
     get_existing_mission_control, get_mission_control, get_proposal as get_proposal_state,
     has_credits, list_mission_controls, list_payments as list_payments_state,
 };
+use crate::strategies_impls::cdn::CdnHeap;
 use crate::types::interface::{Config, DeleteProposalAssets};
 use crate::types::state::{
     Fees, HeapState, InvitationCode, MissionControl, MissionControls, Rates, ReleasesMetadata,
@@ -391,7 +392,7 @@ fn commit_asset_upload(commit: CommitBatch) {
 
 #[query(guard = "caller_is_admin_controller")]
 pub fn list_assets(collection: CollectionKey, filter: ListParams) -> ListResults<AssetNoContent> {
-    let result = list_assets_store(&collection, &filter);
+    let result = junobuild_cdn::storage::heap::list_assets(&CdnHeap, &collection, &filter);
 
     match result {
         Ok(result) => result,

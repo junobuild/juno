@@ -1,6 +1,10 @@
 use crate::guards::caller_is_user_or_admin_controller;
 use crate::monitoring::monitor::{
-    update_and_start_monitoring_with_config, update_and_stop_monitoring_with_config,
+    get_monitoring_history as get_any_monitoring_history,
+    get_monitoring_status as get_any_monitoring_status,
+    start_monitoring as start_monitoring_with_current_config,
+    stop_monitoring as stop_any_monitoring, update_and_start_monitoring_with_config,
+    update_and_stop_monitoring_with_config,
 };
 use crate::types::interface::{
     GetMonitoringHistory, MonitoringStartConfig, MonitoringStatus, MonitoringStopConfig,
@@ -11,12 +15,12 @@ use ic_cdk_macros::{query, update};
 
 #[update(guard = "caller_is_user_or_admin_controller")]
 fn start_monitoring() {
-    crate::monitoring::monitor::start_monitoring().unwrap_or_else(|e| trap(&e));
+    start_monitoring_with_current_config().unwrap_or_else(|e| trap(&e));
 }
 
 #[update(guard = "caller_is_user_or_admin_controller")]
 fn stop_monitoring() {
-    crate::monitoring::monitor::stop_monitoring().unwrap_or_else(|e| trap(&e));
+    stop_any_monitoring().unwrap_or_else(|e| trap(&e));
 }
 
 #[update(guard = "caller_is_user_or_admin_controller")]
@@ -31,12 +35,12 @@ fn update_and_stop_monitoring(config: MonitoringStopConfig) {
 
 #[query(guard = "caller_is_user_or_admin_controller")]
 fn get_monitoring_status() -> MonitoringStatus {
-    crate::monitoring::monitor::get_monitoring_status()
+    get_any_monitoring_status()
 }
 
 #[query(guard = "caller_is_user_or_admin_controller")]
 fn get_monitoring_history(
     filter: GetMonitoringHistory,
 ) -> Vec<(MonitoringHistoryKey, MonitoringHistory)> {
-    crate::monitoring::monitor::get_monitoring_history(&filter)
+    get_any_monitoring_history(&filter)
 }

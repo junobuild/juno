@@ -1,3 +1,7 @@
+use crate::controllers::mission_control::{
+    delete_mission_control_controllers as delete_controllers_to_mission_control,
+    set_mission_control_controllers as set_controllers_to_mission_control,
+};
 use crate::controllers::store::get_controllers;
 use crate::guards::caller_is_user_or_admin_controller;
 use ic_cdk::trap;
@@ -18,7 +22,7 @@ async fn add_mission_control_controllers(controllers: Vec<UserId>) {
         scope: ControllerScope::Admin,
     };
 
-    crate::controllers::mission_control::set_mission_control_controllers(&controllers, &controller)
+    set_controllers_to_mission_control(&controllers, &controller)
         .await
         .unwrap_or_else(|e| trap(&e));
 }
@@ -29,7 +33,7 @@ async fn add_mission_control_controllers(controllers: Vec<UserId>) {
 )]
 #[update(guard = "caller_is_user_or_admin_controller")]
 async fn remove_mission_control_controllers(controllers: Vec<ControllerId>) {
-    crate::controllers::mission_control::delete_mission_control_controllers(&controllers)
+    delete_controllers_to_mission_control(&controllers)
         .await
         .unwrap_or_else(|e| trap(&e));
 }
@@ -39,14 +43,14 @@ async fn set_mission_control_controllers(
     controllers: Vec<ControllerId>,
     controller: SetController,
 ) {
-    crate::controllers::mission_control::set_mission_control_controllers(&controllers, &controller)
+    set_controllers_to_mission_control(&controllers, &controller)
         .await
         .unwrap_or_else(|e| trap(&e));
 }
 
 #[update(guard = "caller_is_user_or_admin_controller")]
 async fn del_mission_control_controllers(controllers: Vec<ControllerId>) {
-    crate::controllers::mission_control::delete_mission_control_controllers(&controllers)
+    delete_controllers_to_mission_control(&controllers)
         .await
         .unwrap_or_else(|e| trap(&e));
 }

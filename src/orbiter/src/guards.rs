@@ -1,4 +1,4 @@
-use crate::STATE;
+use crate::state::memory::STATE;
 use ic_cdk::caller;
 use junobuild_shared::controllers::{is_admin_controller, is_controller};
 use junobuild_shared::types::state::Controllers;

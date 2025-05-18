@@ -21,7 +21,6 @@ pub mod state {
 
     pub type Controllers = HashMap<ControllerId, Controller>;
 
-    pub type ArchiveTime = u64;
     pub type Timestamp = u64;
 
     pub type Version = u64;
@@ -70,26 +69,6 @@ pub mod state {
         pub compute_allocation: Nat,
         pub memory_allocation: Nat,
         pub freezing_threshold: Nat,
-    }
-
-    #[deprecated]
-    #[derive(CandidType, Serialize, Deserialize, Clone)]
-    pub struct SegmentStatus {
-        pub id: Principal,
-        pub metadata: Option<Metadata>,
-        pub status: SegmentCanisterStatus,
-        pub status_at: Timestamp,
-    }
-
-    #[deprecated]
-    pub type SegmentStatusResult = Result<SegmentStatus, String>;
-
-    #[deprecated]
-    #[derive(CandidType, Deserialize, Clone)]
-    pub struct SegmentsStatuses {
-        pub mission_control: SegmentStatusResult,
-        pub satellites: Option<Vec<SegmentStatusResult>>,
-        pub orbiters: Option<Vec<SegmentStatusResult>>,
     }
 
     #[derive(CandidType, Serialize, Deserialize, Clone)]

@@ -1,3 +1,4 @@
+use crate::guards::caller_is_admin_controller;
 use crate::store::heap::{
     get_orbiter_fee, get_satellite_fee, set_create_orbiter_fee, set_create_satellite_fee,
 };
@@ -11,7 +12,6 @@ use ic_cdk_macros::{query, update};
 use ic_ledger_types::Tokens;
 use junobuild_shared::types::interface::GetCreateCanisterFeeArgs;
 use junobuild_shared::types::state::{SegmentKind, UserId};
-use crate::guards::caller_is_admin_controller;
 
 #[query(guard = "caller_is_admin_controller")]
 fn list_payments() -> Payments {

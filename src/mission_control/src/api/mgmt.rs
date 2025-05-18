@@ -1,5 +1,11 @@
 use crate::guards::caller_is_user_or_admin_controller;
 use crate::types::state::{Config, MissionControlSettings, User};
+use crate::user::store::{
+    get_config as get_config_store, get_metadata as get_metadata_store,
+    get_settings as get_settings_store, get_user as get_user_store,
+    get_user_data as get_user_data_store, set_config as set_config_store,
+    set_metadata as set_metadata_store,
+};
 use candid::Principal;
 use ic_cdk::trap;
 use ic_cdk_macros::{query, update};
@@ -11,37 +17,37 @@ use junobuild_shared::types::state::{Metadata, UserId};
 
 #[query(guard = "caller_is_user_or_admin_controller")]
 fn get_user() -> UserId {
-    crate::user::store::get_user()
+    get_user_store()
 }
 
 #[query(guard = "caller_is_user_or_admin_controller")]
 fn get_user_data() -> User {
-    crate::user::store::get_user_data()
+    get_user_data_store()
 }
 
 #[query(guard = "caller_is_user_or_admin_controller")]
 fn get_metadata() -> Metadata {
-    crate::user::store::get_metadata()
+    get_metadata_store()
 }
 
 #[update(guard = "caller_is_user_or_admin_controller")]
 fn set_metadata(metadata: Metadata) {
-    crate::user::store::set_metadata(&metadata)
+    set_metadata_store(&metadata)
 }
 
 #[query(guard = "caller_is_user_or_admin_controller")]
 fn get_config() -> Option<Config> {
-    crate::user::store::get_config()
+    get_config_store()
 }
 
 #[update(guard = "caller_is_user_or_admin_controller")]
 fn set_config(config: Option<Config>) {
-    crate::user::store::set_config(&config)
+    set_config_store(&config)
 }
 
 #[query(guard = "caller_is_user_or_admin_controller")]
 fn get_settings() -> Option<MissionControlSettings> {
-    crate::user::store::get_settings()
+    get_settings_store()
 }
 
 #[update(guard = "caller_is_user_or_admin_controller")]

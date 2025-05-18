@@ -2,6 +2,8 @@ pub mod state {
     use crate::memory::init_stable_state;
     use candid::{CandidType, Principal};
     use ic_stable_structures::StableBTreeMap;
+    use junobuild_cdn::proposals::ProposalsStable;
+    use junobuild_cdn::storage::{AssetsStable, ContentChunksStable};
     use junobuild_shared::types::memory::Memory;
     use junobuild_shared::types::monitoring::{CyclesBalance, FundingFailure};
     use junobuild_shared::types::state::{
@@ -10,7 +12,6 @@ pub mod state {
     use junobuild_shared::types::state::{SatelliteId, UserId};
     use serde::{Deserialize, Serialize};
     use std::collections::{BTreeMap, HashMap};
-    use junobuild_cdn::storage::{AssetsStable, ContentChunksStable};
 
     pub type Satellites = HashMap<SatelliteId, Satellite>;
     pub type Orbiters = HashMap<OrbiterId, Orbiter>;

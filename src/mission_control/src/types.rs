@@ -10,6 +10,7 @@ pub mod state {
     use junobuild_shared::types::state::{SatelliteId, UserId};
     use serde::{Deserialize, Serialize};
     use std::collections::{BTreeMap, HashMap};
+    use junobuild_cdn::storage::{AssetsStable, ContentChunksStable};
 
     pub type Satellites = HashMap<SatelliteId, Satellite>;
     pub type Orbiters = HashMap<OrbiterId, Orbiter>;
@@ -34,6 +35,9 @@ pub mod state {
 
     pub struct StableState {
         pub monitoring_history: MonitoringHistoryStable,
+        pub proposals_assets: AssetsStable,
+        pub proposals_content_chunks: ContentChunksStable,
+        pub proposals: ProposalsStable,
     }
 
     #[derive(Default, CandidType, Serialize, Deserialize, Clone)]

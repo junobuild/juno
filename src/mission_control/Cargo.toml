@@ -21,3 +21,6 @@ getrandom.workspace = true
 rand.workspace = true
 canfund = "0.8.3"
 junobuild-shared = { path = "../libs/shared" }
+junobuild-storage = { path = "../libs/storage" }
+junobuild-collections = { path = "../libs/collections" }
+junobuild-cdn = { path = "../libs/cdn" }

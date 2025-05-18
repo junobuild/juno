@@ -1,11 +1,7 @@
-use crate::proposals::{Proposal, ProposalId, ProposalKey};
+use crate::proposals::ProposalId;
 use candid::{CandidType, Deserialize};
-use ic_stable_structures::StableBTreeMap;
 use junobuild_shared::types::core::Hash;
-use junobuild_shared::types::memory::Memory;
 use serde::Serialize;
-
-pub type ProposalsStable = StableBTreeMap<ProposalKey, Proposal, Memory>;
 
 #[derive(Debug)]
 pub enum CommitProposalError {

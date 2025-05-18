@@ -4,7 +4,7 @@ pub mod state {
     use candid::CandidType;
     use ic_ledger_types::{BlockIndex, Tokens};
     use ic_stable_structures::StableBTreeMap;
-    use junobuild_cdn::proposals::{ProposalsStable, SegmentDeploymentVersion};
+    use junobuild_cdn::proposals::{Proposal, ProposalKey, SegmentDeploymentVersion};
     use junobuild_cdn::storage::{AssetsStable, ContentChunksStable};
     use junobuild_shared::rate::types::{RateConfig, RateTokens};
     use junobuild_shared::types::memory::Memory;
@@ -20,6 +20,7 @@ pub mod state {
 
     pub type MissionControlsStable = StableBTreeMap<UserId, MissionControl, Memory>;
     pub type PaymentsStable = StableBTreeMap<BlockIndex, Payment, Memory>;
+    pub type ProposalsStable = StableBTreeMap<ProposalKey, Proposal, Memory>;
 
     #[derive(Serialize, Deserialize)]
     pub struct State {

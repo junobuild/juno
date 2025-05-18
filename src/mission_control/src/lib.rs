@@ -12,6 +12,7 @@ mod random;
 mod segments;
 mod types;
 mod user;
+mod cdn;
 
 use crate::types::interface::CreateCanisterConfig;
 use crate::types::interface::GetMonitoringHistory;

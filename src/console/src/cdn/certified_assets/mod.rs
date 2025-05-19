@@ -1,2 +1,2 @@
-pub mod runtime;
+mod runtime;
 pub mod upgrade;

@@ -22,6 +22,7 @@ import { PocketIc, type Actor } from '@hadronous/pic';
 import { beforeAll, describe, expect, inject } from 'vitest';
 import { CONTROLLER_ERROR_MSG } from '../../constants/console-tests.constants';
 import { mockBlob, mockHtml } from '../../mocks/storage.mocks';
+import { testNotAllowedCdnMethods } from '../../utils/cdn-tests.utils';
 import { assertCertification } from '../../utils/certification-tests.utils';
 import { uploadFile } from '../../utils/console-tests.utils';
 import { sha256ToBase64String } from '../../utils/crypto-tests.utils';
@@ -144,20 +145,7 @@ describe('Console > Cdn', () => {
 			).rejects.toThrow(CONTROLLER_ERROR_MSG);
 		});
 
-		it('should throw errors on setting config', async () => {
-			const { set_storage_config } = actor;
-
-			await expect(
-				set_storage_config({
-					headers: [],
-					iframe: toNullable(),
-					redirects: toNullable(),
-					rewrites: [],
-					raw_access: toNullable(),
-					max_memory_size: toNullable()
-				})
-			).rejects.toThrow(CONTROLLER_ERROR_MSG);
-		});
+		testNotAllowedCdnMethods({ actor: () => actor, errorMsg: CONTROLLER_ERROR_MSG });
 	});
 
 	describe('admin', () => {

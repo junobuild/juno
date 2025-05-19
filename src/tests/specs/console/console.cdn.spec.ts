@@ -148,6 +148,15 @@ describe('Console > Cdn', () => {
 		testNotAllowedCdnMethods({ actor: () => actor, errorMsg: CONTROLLER_ERROR_MSG });
 	});
 
+	describe('Some identity', () => {
+		beforeAll(() => {
+			const user = Ed25519KeyIdentity.generate();
+			actor.setIdentity(user);
+		});
+
+		testNotAllowedCdnMethods({ actor: () => actor, errorMsg: CONTROLLER_ERROR_MSG });
+	});
+
 	describe('admin', () => {
 		beforeAll(() => {
 			actor.setIdentity(controller);

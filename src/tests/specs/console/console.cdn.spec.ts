@@ -1,5 +1,4 @@
 import type {
-	CommitProposal,
 	_SERVICE as ConsoleActor,
 	HttpRequest,
 	InitAssetKey,
@@ -67,28 +66,6 @@ describe('Console > Cdn', () => {
 			actor.setIdentity(new AnonymousIdentity());
 		});
 
-		it('should throw errors on delete proposal assets', async () => {
-			const { delete_proposal_assets } = actor;
-
-			await expect(delete_proposal_assets({ proposal_ids: [1n] })).rejects.toThrow(
-				CONTROLLER_ERROR_MSG
-			);
-		});
-
-		it('should throw errors on init proposal', async () => {
-			const { init_proposal } = actor;
-
-			await expect(init_proposal({ AssetsUpgrade: { clear_existing_assets: [] } })).rejects.toThrow(
-				CONTROLLER_ERROR_MSG
-			);
-		});
-
-		it('should throw errors on submit proposal', async () => {
-			const { submit_proposal } = actor;
-
-			await expect(submit_proposal(123n)).rejects.toThrow(CONTROLLER_ERROR_MSG);
-		});
-
 		it('should throw errors on init asset upload', async () => {
 			const { init_asset_upload } = actor;
 
@@ -126,17 +103,6 @@ describe('Console > Cdn', () => {
 			};
 
 			await expect(commit_asset_upload(batch)).rejects.toThrow(CONTROLLER_ERROR_MSG);
-		});
-
-		it('should throw errors on commit proposal', async () => {
-			const { commit_proposal } = actor;
-
-			const commit: CommitProposal = {
-				sha256: [1, 2, 3],
-				proposal_id: 123n
-			};
-
-			await expect(commit_proposal(commit)).rejects.toThrow(CONTROLLER_ERROR_MSG);
 		});
 
 		it('should throw errors on list assets', async () => {

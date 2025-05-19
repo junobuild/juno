@@ -2,6 +2,7 @@ import type { _SERVICE as MissionControlActor } from '$declarations/mission_cont
 import { idlFactory as idlFactorMissionControl } from '$declarations/mission_control/mission_control.factory.did';
 import { AnonymousIdentity } from '@dfinity/agent';
 import { Ed25519KeyIdentity } from '@dfinity/identity';
+import { fromNullable, toNullable } from '@dfinity/utils';
 import { PocketIc, type Actor } from '@hadronous/pic';
 import { inject } from 'vitest';
 import { CONTROLLER_ERROR_MSG } from '../../constants/mission-control-tests.constants';
@@ -53,7 +54,7 @@ describe('Mission Control > Cdn > Custom Domains', () => {
 
 		adminCustomDomainsTests({ actor: () => actor });
 
-		/* it('should not delete asset ic-domains when deleting all assets', async () => {
+		it('should not delete asset ic-domains when deleting all assets', async () => {
 			const { http_request, init_proposal, submit_proposal, commit_proposal } = actor;
 
 			const [proposalId, _] = await init_proposal({
@@ -82,7 +83,8 @@ describe('Mission Control > Cdn > Custom Domains', () => {
 			expect(status_code).toEqual(200);
 		});
 
-		it('should throw error if try to upload ic-domains', async () => {
+		// TODO
+		/** it('should throw error if try to upload ic-domains', async () => {
 			const { init_asset_upload, init_proposal } = actor;
 
 			const [proposalId, _] = await init_proposal({
@@ -104,6 +106,6 @@ describe('Mission Control > Cdn > Custom Domains', () => {
 					proposalId
 				)
 			).rejects.toThrow('/.well-known/ic-domains is a reserved asset.');
-		}); */
+		});*/
 	});
 });

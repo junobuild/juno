@@ -10,6 +10,7 @@ pub mod state {
     use junobuild_shared::types::state::{SatelliteId, UserId};
     use serde::{Deserialize, Serialize};
     use std::collections::HashMap;
+    use junobuild_storage::types::state::StorageHeapState;
 
     pub type Satellites = HashMap<SatelliteId, Satellite>;
     pub type Orbiters = HashMap<OrbiterId, Orbiter>;
@@ -40,6 +41,7 @@ pub mod state {
         pub controllers: Controllers,
         pub orbiters: Orbiters,
         pub settings: Option<MissionControlSettings>,
+        pub storage: StorageHeapState,
     }
 
     #[derive(Default, CandidType, Serialize, Deserialize, Clone)]

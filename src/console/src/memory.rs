@@ -1,11 +1,8 @@
-use crate::constants::DEFAULT_RELEASES_COLLECTIONS;
 use crate::types::state::{StableState, State};
 use ic_stable_structures::memory_manager::{MemoryId, MemoryManager};
 use ic_stable_structures::DefaultMemoryImpl;
 use ic_stable_structures::StableBTreeMap;
-use junobuild_collections::constants::assets::DEFAULT_ASSETS_COLLECTIONS;
 use junobuild_shared::types::memory::Memory;
-use junobuild_storage::types::state::StorageHeapState;
 use std::cell::RefCell;
 
 const UPGRADES: MemoryId = MemoryId::new(0);
@@ -54,12 +51,4 @@ pub fn init_stable_state() -> StableState {
         proposals_content_chunks: StableBTreeMap::init(get_memory_content_chunks()),
         proposals: StableBTreeMap::init(get_memory_proposals()),
     }
-}
-
-pub fn init_storage_heap_state() -> StorageHeapState {
-    let mut collections = Vec::with_capacity(2);
-    collections.extend_from_slice(&DEFAULT_ASSETS_COLLECTIONS);
-    collections.extend_from_slice(&DEFAULT_RELEASES_COLLECTIONS);
-
-    StorageHeapState::new_with_storage_collections(collections)
 }

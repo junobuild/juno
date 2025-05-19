@@ -1,12 +1,12 @@
 use crate::cdn::state::heap::{get_asset, insert_asset};
-use crate::constants::{RELEASES_METADATA_JSON};
+use crate::constants::RELEASES_METADATA_JSON;
 use crate::store::heap::{get_releases_metadata, set_releases_metadata};
 use ic_cdk::id;
+use junobuild_cdn::constants::RELEASES_COLLECTION_KEY;
 use junobuild_cdn::proposals::SegmentsDeploymentOptions;
 use junobuild_storage::types::store::{Asset, AssetKey};
 use junobuild_storage::utils::{create_asset_with_content, map_content_type_headers};
 use serde_json::to_string;
-use junobuild_cdn::constants::RELEASES_COLLECTION_KEY;
 
 pub fn update_releases_metadata(options: &SegmentsDeploymentOptions) -> Result<(), String> {
     let mut metadata = get_releases_metadata();

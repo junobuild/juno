@@ -7,7 +7,6 @@ import type {
 	UploadChunk
 } from '$declarations/console/console.did';
 import { idlFactory as idlFactorConsole } from '$declarations/console/console.factory.did';
-import type { StorageConfig } from '$declarations/satellite/satellite.did';
 import { AnonymousIdentity } from '@dfinity/agent';
 import { Ed25519KeyIdentity } from '@dfinity/identity';
 import type { Principal } from '@dfinity/principal';
@@ -22,7 +21,7 @@ import { PocketIc, type Actor } from '@hadronous/pic';
 import { beforeAll, describe, expect, inject } from 'vitest';
 import { CONTROLLER_ERROR_MSG } from '../../constants/console-tests.constants';
 import { mockBlob, mockHtml } from '../../mocks/storage.mocks';
-import { testNotAllowedCdnMethods } from '../../utils/cdn-tests.utils';
+import { testControlledCdnMethods, testNotAllowedCdnMethods } from '../../utils/cdn-tests.utils';
 import { assertCertification } from '../../utils/certification-tests.utils';
 import { uploadFile } from '../../utils/console-tests.utils';
 import { sha256ToBase64String } from '../../utils/crypto-tests.utils';
@@ -60,7 +59,7 @@ describe('Console > Cdn', () => {
 		await pic?.tearDown();
 	});
 
-	describe('anonymous', () => {
+	describe('Anonymous', () => {
 		beforeAll(() => {
 			actor.setIdentity(new AnonymousIdentity());
 		});
@@ -157,29 +156,12 @@ describe('Console > Cdn', () => {
 		testNotAllowedCdnMethods({ actor: () => actor, errorMsg: CONTROLLER_ERROR_MSG });
 	});
 
-	describe('admin', () => {
+	describe('Admin', () => {
 		beforeAll(() => {
 			actor.setIdentity(controller);
 		});
 
-		it('should set and get config', async () => {
-			const { set_storage_config, get_storage_config } = actor;
-
-			const config: StorageConfig = {
-				headers: [['*', [['Cache-Control', 'no-cache']]]],
-				iframe: toNullable({ Deny: null }),
-				redirects: [],
-				rewrites: [],
-				raw_access: toNullable(),
-				max_memory_size: toNullable()
-			};
-
-			await set_storage_config(config);
-
-			const savedConfig = await get_storage_config();
-
-			expect(savedConfig).toEqual(config);
-		});
+		testControlledCdnMethods({ actor: () => actor });
 
 		describe.each([
 			{

@@ -3,6 +3,7 @@ import type { _SERVICE as MissionControlActor } from '$declarations/mission_cont
 import { toNullable } from '@dfinity/utils';
 import type { Actor } from '@hadronous/pic';
 import { expect } from 'vitest';
+import type {StorageConfig} from "$declarations/satellite/satellite.did";
 
 /* eslint-disable vitest/require-top-level-describe */
 
@@ -47,4 +48,28 @@ export const testNotAllowedCdnMethods = ({
 	});
 };
 
+export const testControlledCdnMethods = ({
+											 actor,
+										 }: {
+	actor: () => Actor<MissionControlActor | ConsoleActor>;
+}) => {
+	it('should set and get config', async () => {
+		const { set_storage_config, get_storage_config } = actor();
+
+		const config: StorageConfig = {
+			headers: [['*', [['Cache-Control', 'no-cache']]]],
+			iframe: toNullable({ Deny: null }),
+			redirects: [],
+			rewrites: [],
+			raw_access: toNullable(),
+			max_memory_size: toNullable()
+		};
+
+		await set_storage_config(config);
+
+		const savedConfig = await get_storage_config();
+
+		expect(savedConfig).toEqual(config);
+	});
+}
 /* eslint-enable */

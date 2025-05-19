@@ -41,6 +41,9 @@ use junobuild_shared::types::domain::CustomDomains;
 use junobuild_shared::types::interface::{DepositCyclesArgs, SetController};
 use junobuild_shared::types::state::{ControllerId, Controllers, OrbiterId, SatelliteId};
 use junobuild_shared::types::state::{Metadata, UserId};
+use junobuild_storage::http::types::{
+    HttpRequest, HttpResponse, StreamingCallbackHttpResponse, StreamingCallbackToken,
+};
 use junobuild_storage::types::config::StorageConfig;
 
 export_candid!();

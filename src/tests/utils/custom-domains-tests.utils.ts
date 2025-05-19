@@ -35,7 +35,7 @@ export const anonymousCustomDomainsTests = <
 };
 
 export const adminCustomDomainsTests = <
-	T extends SatelliteActor | ConsoleActor
+	T extends SatelliteActor | ConsoleActor | MissionControlActor
 >({
 	actor
 }: {

@@ -5,7 +5,10 @@ import { Ed25519KeyIdentity } from '@dfinity/identity';
 import { PocketIc, type Actor } from '@hadronous/pic';
 import { inject } from 'vitest';
 import { CONTROLLER_ERROR_MSG } from '../../constants/mission-control-tests.constants';
-import { anonymousCustomDomainsTests } from '../../utils/custom-domains-tests.utils';
+import {
+	adminCustomDomainsTests,
+	anonymousCustomDomainsTests
+} from '../../utils/custom-domains-tests.utils';
 import { missionControlUserInitArgs } from '../../utils/mission-control-tests.utils';
 import { MISSION_CONTROL_WASM_PATH } from '../../utils/setup-tests.utils';
 
@@ -43,15 +46,14 @@ describe('Mission Control > Cdn > Custom Domains', () => {
 		anonymousCustomDomainsTests({ actor: () => actor, errorMsg: CONTROLLER_ERROR_MSG });
 	});
 
-	// TODO: enable once http_request added
-	/* describe('admin', () => {
+	describe('admin', () => {
 		beforeAll(() => {
 			actor.setIdentity(controller);
 		});
 
 		adminCustomDomainsTests({ actor: () => actor });
 
-		it('should not delete asset ic-domains when deleting all assets', async () => {
+		/* it('should not delete asset ic-domains when deleting all assets', async () => {
 			const { http_request, init_proposal, submit_proposal, commit_proposal } = actor;
 
 			const [proposalId, _] = await init_proposal({
@@ -102,6 +104,6 @@ describe('Mission Control > Cdn > Custom Domains', () => {
 					proposalId
 				)
 			).rejects.toThrow('/.well-known/ic-domains is a reserved asset.');
-		});
-	});*/
+		}); */
+	});
 });

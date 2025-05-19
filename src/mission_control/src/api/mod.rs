@@ -1,5 +1,6 @@
 mod cdn;
 mod controllers;
+mod http;
 mod mgmt;
 mod monitoring;
 mod orbiters;

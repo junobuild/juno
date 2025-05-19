@@ -124,6 +124,39 @@ export const idlFactory = ({ IDL }) => {
 		created_at: IDL.Nat64,
 		config: IDL.Opt(Config)
 	});
+	const HttpRequest = IDL.Record({
+		url: IDL.Text,
+		method: IDL.Text,
+		body: IDL.Vec(IDL.Nat8),
+		headers: IDL.Vec(IDL.Tuple(IDL.Text, IDL.Text)),
+		certificate_version: IDL.Opt(IDL.Nat16)
+	});
+	const Memory = IDL.Variant({ Heap: IDL.Null, Stable: IDL.Null });
+	const StreamingCallbackToken = IDL.Record({
+		memory: Memory,
+		token: IDL.Opt(IDL.Text),
+		sha256: IDL.Opt(IDL.Vec(IDL.Nat8)),
+		headers: IDL.Vec(IDL.Tuple(IDL.Text, IDL.Text)),
+		index: IDL.Nat64,
+		encoding_type: IDL.Text,
+		full_path: IDL.Text
+	});
+	const StreamingStrategy = IDL.Variant({
+		Callback: IDL.Record({
+			token: StreamingCallbackToken,
+			callback: IDL.Func([], [], ['query'])
+		})
+	});
+	const HttpResponse = IDL.Record({
+		body: IDL.Vec(IDL.Nat8),
+		headers: IDL.Vec(IDL.Tuple(IDL.Text, IDL.Text)),
+		streaming_strategy: IDL.Opt(StreamingStrategy),
+		status_code: IDL.Nat16
+	});
+	const StreamingCallbackHttpResponse = IDL.Record({
+		token: IDL.Opt(StreamingCallbackToken),
+		body: IDL.Vec(IDL.Nat8)
+	});
 	const Tokens = IDL.Record({ e8s: IDL.Nat64 });
 	const Timestamp = IDL.Record({ timestamp_nanos: IDL.Nat64 });
 	const TransferArgs = IDL.Record({
@@ -236,6 +269,12 @@ export const idlFactory = ({ IDL }) => {
 		get_storage_config: IDL.Func([], [StorageConfig], ['query']),
 		get_user: IDL.Func([], [IDL.Principal], ['query']),
 		get_user_data: IDL.Func([], [User], ['query']),
+		http_request: IDL.Func([HttpRequest], [HttpResponse], ['query']),
+		http_request_streaming_callback: IDL.Func(
+			[StreamingCallbackToken],
+			[StreamingCallbackHttpResponse],
+			['query']
+		),
 		icp_transfer: IDL.Func([TransferArgs], [Result], []),
 		icrc_transfer: IDL.Func([IDL.Principal, TransferArg], [Result_1], []),
 		list_custom_domains: IDL.Func([], [IDL.Vec(IDL.Tuple(IDL.Text, CustomDomain))], ['query']),

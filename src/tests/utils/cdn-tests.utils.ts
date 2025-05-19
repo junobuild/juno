@@ -1,9 +1,9 @@
 import type { _SERVICE as ConsoleActor } from '$declarations/console/console.did';
 import type { _SERVICE as MissionControlActor } from '$declarations/mission_control/mission_control.did';
+import type { StorageConfig } from '$declarations/satellite/satellite.did';
 import { toNullable } from '@dfinity/utils';
 import type { Actor } from '@hadronous/pic';
 import { expect } from 'vitest';
-import type {StorageConfig} from "$declarations/satellite/satellite.did";
 
 /* eslint-disable vitest/require-top-level-describe */
 
@@ -37,8 +37,8 @@ export const testNotAllowedCdnMethods = ({
 };
 
 export const testControlledCdnMethods = ({
-											 actor,
-										 }: {
+	actor
+}: {
 	actor: () => Actor<MissionControlActor | ConsoleActor>;
 }) => {
 	it('should set and get config', async () => {
@@ -59,5 +59,5 @@ export const testControlledCdnMethods = ({
 
 		expect(savedConfig).toEqual(config);
 	});
-}
+};
 /* eslint-enable */

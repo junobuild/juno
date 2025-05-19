@@ -6,7 +6,10 @@ import type { Principal } from '@dfinity/principal';
 import { type Actor, PocketIc } from '@hadronous/pic';
 import { beforeAll, describe, inject } from 'vitest';
 import { CONTROLLER_ERROR_MSG } from '../../constants/mission-control-tests.constants';
-import { testControlledCdnMethods, testNotAllowedCdnMethods } from '../../utils/cdn-tests.utils';
+import {
+	testControlledCdnMethods,
+	testNotAllowedCdnMethods
+} from '../../utils/cdn-assertions-tests.utils';
 import { missionControlUserInitArgs } from '../../utils/mission-control-tests.utils';
 import { MISSION_CONTROL_WASM_PATH } from '../../utils/setup-tests.utils';
 

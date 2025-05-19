@@ -10,7 +10,7 @@ import type { PocketIc } from '@hadronous/pic';
 import { readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { mockMissionControlId } from '../../frontend/tests/mocks/modules.mock';
-import { toBodyJson } from './orbiter-test.utils';
+import { toBodyJson } from './orbiter-tests.utils';
 import { tick } from './pic-tests.utils';
 
 export const mockObservatoryProxyBearerKey = 'test-key';

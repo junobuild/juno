@@ -22,7 +22,7 @@ import { PocketIc, type Actor } from '@hadronous/pic';
 import { beforeAll, describe, expect, inject } from 'vitest';
 import { CONTROLLER_ERROR_MSG } from '../../constants/console-tests.constants';
 import { mockBlob, mockHtml } from '../../mocks/storage.mocks';
-import { assertCertification } from '../../utils/certification-test.utils';
+import { assertCertification } from '../../utils/certification-tests.utils';
 import { uploadFile } from '../../utils/console-tests.utils';
 import { sha256ToBase64String } from '../../utils/crypto-tests.utils';
 import { tick } from '../../utils/pic-tests.utils';

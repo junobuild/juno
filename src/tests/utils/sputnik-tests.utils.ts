@@ -12,7 +12,7 @@ import {
 	mockSputnikVersionKey
 } from '../mocks/sputnik.mocks';
 import type { SetupFixtureCanister } from './fixtures-tests.utils';
-import { fetchLogs, type IcMgmtLog } from './mgmt-test.utils';
+import { fetchLogs, type IcMgmtLog } from './mgmt-tests.utils';
 import { tick } from './pic-tests.utils';
 import { createDoc as createDocUtils } from './satellite-doc-tests.utils';
 import { waitServerlessFunction } from './satellite-extended-tests.utils';

@@ -4,7 +4,7 @@ import type { Principal } from '@dfinity/principal';
 import type { Actor, PocketIc } from '@hadronous/pic';
 import { mockSetRule } from '../../../mocks/collection.mocks';
 import { setupTestSatellite } from '../../../utils/fixtures-tests.utils';
-import { fetchLogs } from '../../../utils/mgmt-test.utils';
+import { fetchLogs } from '../../../utils/mgmt-tests.utils';
 
 describe('Satellite > Hooks', () => {
 	let pic: PocketIc;

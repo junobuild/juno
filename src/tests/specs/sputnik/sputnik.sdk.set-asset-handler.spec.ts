@@ -6,7 +6,7 @@ import type { Actor, PocketIc } from '@hadronous/pic';
 import { nanoid } from 'nanoid';
 import { mockSetRule } from '../../mocks/collection.mocks';
 import { mockHtml } from '../../mocks/storage.mocks';
-import { assertCertification } from '../../utils/certification-test.utils';
+import { assertCertification } from '../../utils/certification-tests.utils';
 import { setupTestSputnik } from '../../utils/fixtures-tests.utils';
 import { waitServerlessFunction } from '../../utils/satellite-extended-tests.utils';
 

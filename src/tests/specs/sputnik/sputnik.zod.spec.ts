@@ -8,7 +8,7 @@ import { nanoid } from 'nanoid';
 import { mockSetRule } from '../../mocks/collection.mocks';
 import { mockSputnikObj } from '../../mocks/sputnik.mocks';
 import { setupTestSputnik } from '../../utils/fixtures-tests.utils';
-import { fetchLogs } from '../../utils/mgmt-test.utils';
+import { fetchLogs } from '../../utils/mgmt-tests.utils';
 import { waitServerlessFunction } from '../../utils/satellite-extended-tests.utils';
 
 describe('Sputnik > assert_set_doc', () => {

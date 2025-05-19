@@ -1,9 +1,11 @@
 import type { _SERVICE as ConsoleActor } from '$declarations/console/console.did';
+import type { _SERVICE as MissionControlActor } from '$declarations/mission_control/mission_control.did';
 import type { _SERVICE as SatelliteActor } from '$declarations/satellite/satellite.did';
 import { assertNonNullish, fromNullable, toNullable } from '@dfinity/utils';
-import { expect } from 'vitest';
 
-export const anonymousCustomDomainsTests = <T extends SatelliteActor | ConsoleActor>({
+export const anonymousCustomDomainsTests = <
+	T extends SatelliteActor | ConsoleActor | MissionControlActor
+>({
 	actor,
 	errorMsg
 }: {
@@ -32,7 +34,9 @@ export const anonymousCustomDomainsTests = <T extends SatelliteActor | ConsoleAc
 	});
 };
 
-export const adminCustomDomainsTests = <T extends SatelliteActor | ConsoleActor>({
+export const adminCustomDomainsTests = <
+	T extends SatelliteActor | ConsoleActor
+>({
 	actor
 }: {
 	actor: () => T;

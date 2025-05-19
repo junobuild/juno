@@ -1,30 +1,29 @@
-import type { _SERVICE as ConsoleActor } from '$declarations/console/console.did';
-import { idlFactory as idlFactorConsole } from '$declarations/console/console.factory.did';
+import type { _SERVICE as MissionControlActor } from '$declarations/mission_control/mission_control.did';
+import { idlFactory as idlFactorMissionControl } from '$declarations/mission_control/mission_control.factory.did';
 import { AnonymousIdentity } from '@dfinity/agent';
 import { Ed25519KeyIdentity } from '@dfinity/identity';
-import { fromNullable, toNullable } from '@dfinity/utils';
 import { PocketIc, type Actor } from '@hadronous/pic';
 import { inject } from 'vitest';
-import { CONTROLLER_ERROR_MSG } from '../../constants/console-tests.constants';
-import { uploadFile } from '../../utils/console-tests.utils';
-import {
-	adminCustomDomainsTests,
-	anonymousCustomDomainsTests
-} from '../../utils/custom-domains-tests.utils';
-import { CONSOLE_WASM_PATH } from '../../utils/setup-tests.utils';
+import { CONTROLLER_ERROR_MSG } from '../../constants/mission-control-tests.constants';
+import { anonymousCustomDomainsTests } from '../../utils/custom-domains-tests.utils';
+import { missionControlUserInitArgs } from '../../utils/mission-control-tests.utils';
+import { MISSION_CONTROL_WASM_PATH } from '../../utils/setup-tests.utils';
 
-describe('Console > Custom Domains', () => {
+describe('Mission Control > Cdn > Custom Domains', () => {
 	let pic: PocketIc;
-	let actor: Actor<ConsoleActor>;
+	let actor: Actor<MissionControlActor>;
 
 	const controller = Ed25519KeyIdentity.generate();
+
+	const userInitArgs = (): ArrayBuffer => missionControlUserInitArgs(controller.getPrincipal());
 
 	beforeAll(async () => {
 		pic = await PocketIc.create(inject('PIC_URL'));
 
-		const { actor: c } = await pic.setupCanister<ConsoleActor>({
-			idlFactory: idlFactorConsole,
-			wasm: CONSOLE_WASM_PATH,
+		const { actor: c } = await pic.setupCanister<MissionControlActor>({
+			idlFactory: idlFactorMissionControl,
+			wasm: MISSION_CONTROL_WASM_PATH,
+			arg: userInitArgs(),
 			sender: controller.getPrincipal()
 		});
 
@@ -44,7 +43,8 @@ describe('Console > Custom Domains', () => {
 		anonymousCustomDomainsTests({ actor: () => actor, errorMsg: CONTROLLER_ERROR_MSG });
 	});
 
-	describe('admin', () => {
+	// TODO: enable once http_request added
+	/* describe('admin', () => {
 		beforeAll(() => {
 			actor.setIdentity(controller);
 		});
@@ -103,5 +103,5 @@ describe('Console > Custom Domains', () => {
 				)
 			).rejects.toThrow('/.well-known/ic-domains is a reserved asset.');
 		});
-	});
+	});*/
 });

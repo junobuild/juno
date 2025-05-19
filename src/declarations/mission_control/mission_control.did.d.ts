@@ -85,6 +85,20 @@ export interface GetMonitoringHistory {
 	from: [] | [bigint];
 	segment_id: Principal;
 }
+export interface HttpRequest {
+	url: string;
+	method: string;
+	body: Uint8Array | number[];
+	headers: Array<[string, string]>;
+	certificate_version: [] | [number];
+}
+export interface HttpResponse {
+	body: Uint8Array | number[];
+	headers: Array<[string, string]>;
+	streaming_strategy: [] | [StreamingStrategy];
+	status_code: number;
+}
+export type Memory = { Heap: null } | { Stable: null };
 export interface MissionControlSettings {
 	updated_at: bigint;
 	created_at: bigint;
@@ -160,6 +174,25 @@ export interface StorageConfigRedirect {
 	status_code: number;
 	location: string;
 }
+export interface StreamingCallbackHttpResponse {
+	token: [] | [StreamingCallbackToken];
+	body: Uint8Array | number[];
+}
+export interface StreamingCallbackToken {
+	memory: Memory;
+	token: [] | [string];
+	sha256: [] | [Uint8Array | number[]];
+	headers: Array<[string, string]>;
+	index: bigint;
+	encoding_type: string;
+	full_path: string;
+}
+export type StreamingStrategy = {
+	Callback: {
+		token: StreamingCallbackToken;
+		callback: [Principal, string];
+	};
+};
 export interface Timestamp {
 	timestamp_nanos: bigint;
 }
@@ -233,6 +266,11 @@ export interface _SERVICE {
 	get_storage_config: ActorMethod<[], StorageConfig>;
 	get_user: ActorMethod<[], Principal>;
 	get_user_data: ActorMethod<[], User>;
+	http_request: ActorMethod<[HttpRequest], HttpResponse>;
+	http_request_streaming_callback: ActorMethod<
+		[StreamingCallbackToken],
+		StreamingCallbackHttpResponse
+	>;
 	icp_transfer: ActorMethod<[TransferArgs], Result>;
 	icrc_transfer: ActorMethod<[Principal, TransferArg], Result_1>;
 	list_custom_domains: ActorMethod<[], Array<[string, CustomDomain]>>;

@@ -65,6 +65,20 @@ type GetMonitoringHistory = record {
   from : opt nat64;
   segment_id : principal;
 };
+type HttpRequest = record {
+  url : text;
+  method : text;
+  body : blob;
+  headers : vec record { text; text };
+  certificate_version : opt nat16;
+};
+type HttpResponse = record {
+  body : blob;
+  headers : vec record { text; text };
+  streaming_strategy : opt StreamingStrategy;
+  status_code : nat16;
+};
+type Memory = variant { Heap; Stable };
 type MissionControlSettings = record {
   updated_at : nat64;
   created_at : nat64;
@@ -127,6 +141,25 @@ type StorageConfig = record {
 type StorageConfigIFrame = variant { Deny; AllowAny; SameOrigin };
 type StorageConfigRawAccess = variant { Deny; Allow };
 type StorageConfigRedirect = record { status_code : nat16; location : text };
+type StreamingCallbackHttpResponse = record {
+  token : opt StreamingCallbackToken;
+  body : blob;
+};
+type StreamingCallbackToken = record {
+  memory : Memory;
+  token : opt text;
+  sha256 : opt blob;
+  headers : vec record { text; text };
+  index : nat64;
+  encoding_type : text;
+  full_path : text;
+};
+type StreamingStrategy = variant {
+  Callback : record {
+    token : StreamingCallbackToken;
+    callback : func () -> () query;
+  };
+};
 type Timestamp = record { timestamp_nanos : nat64 };
 type Tokens = record { e8s : nat64 };
 type TransferArg = record {
@@ -193,6 +226,10 @@ service : () -> {
   get_storage_config : () -> (StorageConfig) query;
   get_user : () -> (principal) query;
   get_user_data : () -> (User) query;
+  http_request : (HttpRequest) -> (HttpResponse) query;
+  http_request_streaming_callback : (StreamingCallbackToken) -> (
+      StreamingCallbackHttpResponse,
+    ) query;
   icp_transfer : (TransferArgs) -> (Result);
   icrc_transfer : (principal, TransferArg) -> (Result_1);
   list_custom_domains : () -> (vec record { text; CustomDomain }) query;

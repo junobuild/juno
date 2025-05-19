@@ -39,10 +39,6 @@ describe('Mission control > Upgrade', () => {
 	const init = async (version: string) => {
 		const destination = await downloadMissionControl(version);
 
-		const {} = await pic.createCanister({
-			sender: controller.getPrincipal()
-		});
-
 		const { actor: c, canisterId: mId } = await pic.setupCanister<MissionControlActor>({
 			idlFactory: idlFactorMissionControl,
 			wasm: destination,

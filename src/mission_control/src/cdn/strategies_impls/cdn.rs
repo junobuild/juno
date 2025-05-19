@@ -1,4 +1,3 @@
-use crate::cdn::proposals::post_commit_assets;
 use crate::memory::STATE;
 use junobuild_cdn::proposals::{Proposal, ProposalsStable};
 use junobuild_cdn::storage::{AssetsStable, ContentChunksStable};

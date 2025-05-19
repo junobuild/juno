@@ -10,6 +10,7 @@ use canfund::manager::options::{CyclesThreshold, FundStrategy};
 use ic_cdk::api::time;
 use ic_stable_structures::storable::Bound;
 use ic_stable_structures::Storable;
+use junobuild_cdn::lifecycle::init_cdn_storage_heap_state;
 use junobuild_shared::serializers::{deserialize_from_bytes, serialize_to_bytes};
 use junobuild_shared::types::state::{Metadata, OrbiterId, SatelliteId, UserId};
 use std::borrow::Cow;
@@ -32,6 +33,7 @@ impl From<&UserId> for HeapState {
             controllers: HashMap::new(),
             orbiters: Orbiters::new(),
             settings: None,
+            storage: init_cdn_storage_heap_state(),
         }
     }
 }

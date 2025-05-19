@@ -8,9 +8,9 @@ pub mod state {
     use junobuild_shared::types::monitoring::{CyclesBalance, FundingFailure};
     use junobuild_shared::types::state::{Controllers, Metadata, OrbiterId, SegmentId, Timestamp};
     use junobuild_shared::types::state::{SatelliteId, UserId};
+    use junobuild_storage::types::state::StorageHeapState;
     use serde::{Deserialize, Serialize};
     use std::collections::HashMap;
-    use junobuild_storage::types::state::StorageHeapState;
 
     pub type Satellites = HashMap<SatelliteId, Satellite>;
     pub type Orbiters = HashMap<OrbiterId, Orbiter>;

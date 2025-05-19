@@ -1,6 +1,7 @@
 #![deny(clippy::disallowed_methods)]
 
 mod api;
+mod cdn;
 mod constants;
 mod controllers;
 mod guards;
@@ -13,7 +14,6 @@ mod segments;
 mod types;
 mod upgrade;
 mod user;
-mod cdn;
 
 use crate::types::interface::CreateCanisterConfig;
 use crate::types::interface::GetMonitoringHistory;

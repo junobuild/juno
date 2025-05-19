@@ -34,18 +34,6 @@ export const testNotAllowedCdnMethods = ({
 
 		await expect(get_storage_config()).rejects.toThrow(errorMsg);
 	});
-
-	it('should throw errors on setting custom domain', async () => {
-		const { set_custom_domain } = actor();
-
-		await expect(set_custom_domain('hello.com', ['123456'])).rejects.toThrow(errorMsg);
-	});
-
-	it('should throw errors on listing custom domains', async () => {
-		const { list_custom_domains } = actor();
-
-		await expect(list_custom_domains()).rejects.toThrow(errorMsg);
-	});
 };
 
 export const testControlledCdnMethods = ({

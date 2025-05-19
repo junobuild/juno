@@ -6,6 +6,13 @@ export interface Account {
 	owner: Principal;
 	subaccount: [] | [Uint8Array | number[]];
 }
+export interface AssetsUpgradeOptions {
+	clear_existing_assets: [] | [boolean];
+}
+export interface CommitProposal {
+	sha256: Uint8Array | number[];
+	proposal_id: bigint;
+}
 export interface Config {
 	monitoring: [] | [MonitoringConfig];
 }
@@ -139,6 +146,26 @@ export interface Orbiter {
 	created_at: bigint;
 	settings: [] | [Settings];
 }
+export interface Proposal {
+	status: ProposalStatus;
+	updated_at: bigint;
+	sha256: [] | [Uint8Array | number[]];
+	executed_at: [] | [bigint];
+	owner: Principal;
+	created_at: bigint;
+	version: [] | [bigint];
+	proposal_type: ProposalType;
+}
+export type ProposalStatus =
+	| { Initialized: null }
+	| { Failed: null }
+	| { Open: null }
+	| { Rejected: null }
+	| { Executed: null }
+	| { Accepted: null };
+export type ProposalType =
+	| { AssetsUpgrade: AssetsUpgradeOptions }
+	| { SegmentsDeployment: SegmentsDeploymentOptions };
 export type Result = { Ok: bigint } | { Err: TransferError };
 export type Result_1 = { Ok: bigint } | { Err: TransferError_1 };
 export interface Satellite {
@@ -147,6 +174,11 @@ export interface Satellite {
 	created_at: bigint;
 	satellite_id: Principal;
 	settings: [] | [Settings];
+}
+export interface SegmentsDeploymentOptions {
+	orbiter: [] | [string];
+	mission_control_version: [] | [string];
+	satellite_version: [] | [string];
 }
 export interface SegmentsMonitoringStrategy {
 	ids: Array<Principal>;
@@ -244,6 +276,7 @@ export interface User {
 export interface _SERVICE {
 	add_mission_control_controllers: ActorMethod<[Array<Principal>], undefined>;
 	add_satellites_controllers: ActorMethod<[Array<Principal>, Array<Principal>], undefined>;
+	commit_proposal: ActorMethod<[CommitProposal], null>;
 	create_orbiter: ActorMethod<[[] | [string]], Orbiter>;
 	create_orbiter_with_config: ActorMethod<[CreateCanisterConfig], Orbiter>;
 	create_satellite: ActorMethod<[string], Satellite>;
@@ -262,6 +295,7 @@ export interface _SERVICE {
 		Array<[MonitoringHistoryKey, MonitoringHistory]>
 	>;
 	get_monitoring_status: ActorMethod<[], MonitoringStatus>;
+	get_proposal: ActorMethod<[bigint], [] | [Proposal]>;
 	get_settings: ActorMethod<[], [] | [MissionControlSettings]>;
 	get_storage_config: ActorMethod<[], StorageConfig>;
 	get_user: ActorMethod<[], Principal>;
@@ -273,6 +307,7 @@ export interface _SERVICE {
 	>;
 	icp_transfer: ActorMethod<[TransferArgs], Result>;
 	icrc_transfer: ActorMethod<[Principal, TransferArg], Result_1>;
+	init_proposal: ActorMethod<[ProposalType], [bigint, Proposal]>;
 	list_custom_domains: ActorMethod<[], Array<[string, CustomDomain]>>;
 	list_mission_control_controllers: ActorMethod<[], Array<[Principal, Controller]>>;
 	list_orbiters: ActorMethod<[], Array<[Principal, Orbiter]>>;
@@ -298,6 +333,7 @@ export interface _SERVICE {
 	set_storage_config: ActorMethod<[StorageConfig], undefined>;
 	start_monitoring: ActorMethod<[], undefined>;
 	stop_monitoring: ActorMethod<[], undefined>;
+	submit_proposal: ActorMethod<[bigint], [bigint, Proposal]>;
 	top_up: ActorMethod<[Principal, Tokens], undefined>;
 	unset_orbiter: ActorMethod<[Principal], undefined>;
 	unset_satellite: ActorMethod<[Principal], undefined>;

@@ -2,10 +2,13 @@ pub mod state {
     use crate::memory::init_stable_state;
     use candid::CandidType;
     use ic_stable_structures::StableBTreeMap;
+    use junobuild_cdn::proposals::ProposalsStable;
+    use junobuild_cdn::storage::{AssetsStable, ContentChunksStable};
     use junobuild_shared::types::memory::Memory;
     use junobuild_shared::types::monitoring::{CyclesBalance, FundingFailure};
     use junobuild_shared::types::state::{Controllers, Metadata, OrbiterId, SegmentId, Timestamp};
     use junobuild_shared::types::state::{SatelliteId, UserId};
+    use junobuild_storage::types::state::StorageHeapState;
     use serde::{Deserialize, Serialize};
     use std::collections::HashMap;
 
@@ -26,6 +29,9 @@ pub mod state {
 
     pub struct StableState {
         pub monitoring_history: MonitoringHistoryStable,
+        pub proposals_assets: AssetsStable,
+        pub proposals_content_chunks: ContentChunksStable,
+        pub proposals: ProposalsStable,
     }
 
     #[derive(Default, CandidType, Serialize, Deserialize, Clone)]
@@ -35,6 +41,7 @@ pub mod state {
         pub controllers: Controllers,
         pub orbiters: Orbiters,
         pub settings: Option<MissionControlSettings>,
+        pub storage: StorageHeapState,
     }
 
     #[derive(Default, CandidType, Serialize, Deserialize, Clone)]

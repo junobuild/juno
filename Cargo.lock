@@ -1116,7 +1116,10 @@ dependencies = [
  "ic-ledger-types",
  "ic-stable-structures",
  "icrc-ledger-types",
+ "junobuild-cdn",
+ "junobuild-collections",
  "junobuild-shared",
+ "junobuild-storage",
  "rand",
  "serde",
 ]

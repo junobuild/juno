@@ -1,3 +1,4 @@
+mod cdn;
 mod controllers;
 mod mgmt;
 mod monitoring;

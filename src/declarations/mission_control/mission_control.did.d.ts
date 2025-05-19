@@ -9,6 +9,10 @@ export interface Account {
 export interface Config {
 	monitoring: [] | [MonitoringConfig];
 }
+export interface ConfigMaxMemorySize {
+	stable: [] | [bigint];
+	heap: [] | [bigint];
+}
 export interface Controller {
 	updated_at: bigint;
 	metadata: Array<[string, string]>;
@@ -20,6 +24,12 @@ export type ControllerScope = { Write: null } | { Admin: null };
 export interface CreateCanisterConfig {
 	subnet_id: [] | [Principal];
 	name: [] | [string];
+}
+export interface CustomDomain {
+	updated_at: bigint;
+	created_at: bigint;
+	version: [] | [bigint];
+	bn_id: [] | [string];
 }
 export interface CyclesBalance {
 	timestamp: bigint;
@@ -136,6 +146,20 @@ export interface SetController {
 export interface Settings {
 	monitoring: [] | [Monitoring];
 }
+export interface StorageConfig {
+	iframe: [] | [StorageConfigIFrame];
+	rewrites: Array<[string, string]>;
+	headers: Array<[string, Array<[string, string]>]>;
+	max_memory_size: [] | [ConfigMaxMemorySize];
+	raw_access: [] | [StorageConfigRawAccess];
+	redirects: [] | [Array<[string, StorageConfigRedirect]>];
+}
+export type StorageConfigIFrame = { Deny: null } | { AllowAny: null } | { SameOrigin: null };
+export type StorageConfigRawAccess = { Deny: null } | { Allow: null };
+export interface StorageConfigRedirect {
+	status_code: number;
+	location: string;
+}
 export interface Timestamp {
 	timestamp_nanos: bigint;
 }
@@ -191,6 +215,7 @@ export interface _SERVICE {
 	create_orbiter_with_config: ActorMethod<[CreateCanisterConfig], Orbiter>;
 	create_satellite: ActorMethod<[string], Satellite>;
 	create_satellite_with_config: ActorMethod<[CreateCanisterConfig], Satellite>;
+	del_custom_domain: ActorMethod<[string], undefined>;
 	del_mission_control_controllers: ActorMethod<[Array<Principal>], undefined>;
 	del_orbiter: ActorMethod<[Principal, bigint], undefined>;
 	del_orbiters_controllers: ActorMethod<[Array<Principal>, Array<Principal>], undefined>;
@@ -205,16 +230,19 @@ export interface _SERVICE {
 	>;
 	get_monitoring_status: ActorMethod<[], MonitoringStatus>;
 	get_settings: ActorMethod<[], [] | [MissionControlSettings]>;
+	get_storage_config: ActorMethod<[], StorageConfig>;
 	get_user: ActorMethod<[], Principal>;
 	get_user_data: ActorMethod<[], User>;
 	icp_transfer: ActorMethod<[TransferArgs], Result>;
 	icrc_transfer: ActorMethod<[Principal, TransferArg], Result_1>;
+	list_custom_domains: ActorMethod<[], Array<[string, CustomDomain]>>;
 	list_mission_control_controllers: ActorMethod<[], Array<[Principal, Controller]>>;
 	list_orbiters: ActorMethod<[], Array<[Principal, Orbiter]>>;
 	list_satellites: ActorMethod<[], Array<[Principal, Satellite]>>;
 	remove_mission_control_controllers: ActorMethod<[Array<Principal>], undefined>;
 	remove_satellites_controllers: ActorMethod<[Array<Principal>, Array<Principal>], undefined>;
 	set_config: ActorMethod<[[] | [Config]], undefined>;
+	set_custom_domain: ActorMethod<[string, [] | [string]], undefined>;
 	set_metadata: ActorMethod<[Array<[string, string]>], undefined>;
 	set_mission_control_controllers: ActorMethod<[Array<Principal>, SetController], undefined>;
 	set_orbiter: ActorMethod<[Principal, [] | [string]], Orbiter>;
@@ -229,6 +257,7 @@ export interface _SERVICE {
 		[Array<Principal>, Array<Principal>, SetController],
 		undefined
 	>;
+	set_storage_config: ActorMethod<[StorageConfig], undefined>;
 	start_monitoring: ActorMethod<[], undefined>;
 	stop_monitoring: ActorMethod<[], undefined>;
 	top_up: ActorMethod<[Principal, Tokens], undefined>;

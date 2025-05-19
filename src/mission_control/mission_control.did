@@ -1,5 +1,6 @@
 type Account = record { owner : principal; subaccount : opt blob };
 type Config = record { monitoring : opt MonitoringConfig };
+type ConfigMaxMemorySize = record { stable : opt nat64; heap : opt nat64 };
 type Controller = record {
   updated_at : nat64;
   metadata : vec record { text; text };
@@ -11,6 +12,12 @@ type ControllerScope = variant { Write; Admin };
 type CreateCanisterConfig = record {
   subnet_id : opt principal;
   name : opt text;
+};
+type CustomDomain = record {
+  updated_at : nat64;
+  created_at : nat64;
+  version : opt nat64;
+  bn_id : opt text;
 };
 type CyclesBalance = record { timestamp : nat64; amount : nat };
 type CyclesMonitoring = record {
@@ -109,6 +116,17 @@ type SetController = record {
   expires_at : opt nat64;
 };
 type Settings = record { monitoring : opt Monitoring };
+type StorageConfig = record {
+  iframe : opt StorageConfigIFrame;
+  rewrites : vec record { text; text };
+  headers : vec record { text; vec record { text; text } };
+  max_memory_size : opt ConfigMaxMemorySize;
+  raw_access : opt StorageConfigRawAccess;
+  redirects : opt vec record { text; StorageConfigRedirect };
+};
+type StorageConfigIFrame = variant { Deny; AllowAny; SameOrigin };
+type StorageConfigRawAccess = variant { Deny; Allow };
+type StorageConfigRedirect = record { status_code : nat16; location : text };
 type Timestamp = record { timestamp_nanos : nat64 };
 type Tokens = record { e8s : nat64 };
 type TransferArg = record {
@@ -158,6 +176,7 @@ service : () -> {
   create_orbiter_with_config : (CreateCanisterConfig) -> (Orbiter);
   create_satellite : (text) -> (Satellite);
   create_satellite_with_config : (CreateCanisterConfig) -> (Satellite);
+  del_custom_domain : (text) -> ();
   del_mission_control_controllers : (vec principal) -> ();
   del_orbiter : (principal, nat) -> ();
   del_orbiters_controllers : (vec principal, vec principal) -> ();
@@ -171,10 +190,12 @@ service : () -> {
     ) query;
   get_monitoring_status : () -> (MonitoringStatus) query;
   get_settings : () -> (opt MissionControlSettings) query;
+  get_storage_config : () -> (StorageConfig) query;
   get_user : () -> (principal) query;
   get_user_data : () -> (User) query;
   icp_transfer : (TransferArgs) -> (Result);
   icrc_transfer : (principal, TransferArg) -> (Result_1);
+  list_custom_domains : () -> (vec record { text; CustomDomain }) query;
   list_mission_control_controllers : () -> (
       vec record { principal; Controller },
     ) query;
@@ -183,6 +204,7 @@ service : () -> {
   remove_mission_control_controllers : (vec principal) -> ();
   remove_satellites_controllers : (vec principal, vec principal) -> ();
   set_config : (opt Config) -> ();
+  set_custom_domain : (text, opt text) -> ();
   set_metadata : (vec record { text; text }) -> ();
   set_mission_control_controllers : (vec principal, SetController) -> ();
   set_orbiter : (principal, opt text) -> (Orbiter);
@@ -201,6 +223,7 @@ service : () -> {
       vec principal,
       SetController,
     ) -> ();
+  set_storage_config : (StorageConfig) -> ();
   start_monitoring : () -> ();
   stop_monitoring : () -> ();
   top_up : (principal, Tokens) -> ();

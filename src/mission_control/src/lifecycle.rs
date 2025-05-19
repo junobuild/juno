@@ -41,7 +41,7 @@ fn post_upgrade() {
     let memory = get_memory_upgrades();
     let state_bytes = read_post_upgrade(&memory);
 
-    // TODO:
+    // TODO: replace UpgradeState by State after release
     let state: UpgradeState = from_reader(&*state_bytes)
         .expect("Failed to decode the state of the mission control in post_upgrade hook.");
 

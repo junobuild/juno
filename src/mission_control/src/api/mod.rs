@@ -4,3 +4,4 @@ mod monitoring;
 mod orbiters;
 mod satellites;
 mod wallet;
+mod cdn;

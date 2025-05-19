@@ -2,7 +2,6 @@ import type {
 	Config,
 	CyclesMonitoringStrategy,
 	_SERVICE as MissionControlActor,
-	Monitoring,
 	MonitoringStartConfig,
 	MonitoringStopConfig
 } from '$declarations/mission_control/mission_control.did';
@@ -19,6 +18,11 @@ import {
 	missionControlUserInitArgs,
 	setupMissionControlModules
 } from '../../utils/mission-control-tests.utils';
+import {
+	testMissionControlMonitoring,
+	testOrbiterMonitoring,
+	testSatellitesMonitoring
+} from '../../utils/monitoring-tests.utils';
 import { MISSION_CONTROL_WASM_PATH } from '../../utils/setup-tests.utils';
 
 describe('Mission Control > Monitoring', () => {
@@ -222,76 +226,6 @@ describe('Mission Control > Monitoring', () => {
 			);
 		});
 
-		const testMonitoring = ({
-			monitoring,
-			expectedEnabled,
-			expectedStrategy = strategy
-		}: {
-			monitoring: Monitoring | undefined;
-			expectedEnabled: boolean;
-			expectedStrategy?: CyclesMonitoringStrategy;
-		}) => {
-			const cycles = fromNullable(monitoring?.cycles ?? []);
-			const cyclesStrategy = fromNullable(cycles?.strategy ?? []);
-
-			expect(cycles?.enabled).toBe(expectedEnabled);
-			expect(cyclesStrategy?.BelowThreshold.fund_cycles).toEqual(
-				expectedStrategy.BelowThreshold.fund_cycles
-			);
-			expect(cyclesStrategy?.BelowThreshold.min_cycles).toEqual(
-				expectedStrategy.BelowThreshold.min_cycles
-			);
-		};
-
-		const testMissionControlMonitoring = async ({
-			expectedEnabled,
-			expectedStrategy
-		}: {
-			expectedEnabled: boolean;
-			expectedStrategy?: CyclesMonitoringStrategy;
-		}) => {
-			const { get_settings } = actor;
-
-			const settings = fromNullable(await get_settings());
-			const monitoring = fromNullable(settings?.monitoring ?? []);
-
-			testMonitoring({ monitoring, expectedEnabled, expectedStrategy });
-		};
-
-		const testSatellitesMonitoring = async ({
-			expectedEnabled,
-			expectedStrategy
-		}: {
-			expectedEnabled: boolean;
-			expectedStrategy?: CyclesMonitoringStrategy;
-		}) => {
-			const { list_satellites } = actor;
-
-			const [[_, satellite]] = await list_satellites();
-
-			const settings = fromNullable(satellite.settings);
-			const monitoring = fromNullable(settings?.monitoring ?? []);
-
-			testMonitoring({ monitoring, expectedEnabled, expectedStrategy });
-		};
-
-		const testOrbiterMonitoring = async ({
-			expectedEnabled,
-			expectedStrategy
-		}: {
-			expectedEnabled: boolean;
-			expectedStrategy?: CyclesMonitoringStrategy;
-		}) => {
-			const { list_orbiters } = actor;
-
-			const [[_, orbiter]] = await list_orbiters();
-
-			const settings = fromNullable(orbiter.settings);
-			const monitoring = fromNullable(settings?.monitoring ?? []);
-
-			testMonitoring({ monitoring, expectedEnabled, expectedStrategy });
-		};
-
 		it('should config and start monitoring for mission control', async () => {
 			const { update_and_start_monitoring } = actor;
 
@@ -307,7 +241,11 @@ describe('Mission Control > Monitoring', () => {
 
 			await update_and_start_monitoring(config);
 
-			await testMissionControlMonitoring({ expectedEnabled: true });
+			await testMissionControlMonitoring({
+				expectedEnabled: true,
+				expectedStrategy: strategy,
+				actor
+			});
 		});
 
 		it('should have a running monitoring status', async () => {
@@ -336,7 +274,7 @@ describe('Mission Control > Monitoring', () => {
 
 			await update_and_start_monitoring(config);
 
-			await testSatellitesMonitoring({ expectedEnabled: true });
+			await testSatellitesMonitoring({ expectedEnabled: true, expectedStrategy: strategy, actor });
 		});
 
 		it('should config and start monitoring for orbiter', async () => {
@@ -357,7 +295,7 @@ describe('Mission Control > Monitoring', () => {
 
 			await update_and_start_monitoring(config);
 
-			await testOrbiterMonitoring({ expectedEnabled: true });
+			await testOrbiterMonitoring({ expectedEnabled: true, expectedStrategy: strategy, actor });
 		});
 
 		it('should fail at configuring monitoring for unknown satellite', async () => {
@@ -471,8 +409,8 @@ describe('Mission Control > Monitoring', () => {
 
 			await update_and_stop_monitoring(config);
 
-			await testSatellitesMonitoring({ expectedEnabled: false });
-			await testOrbiterMonitoring({ expectedEnabled: true });
+			await testSatellitesMonitoring({ expectedEnabled: false, expectedStrategy: strategy, actor });
+			await testOrbiterMonitoring({ expectedEnabled: true, expectedStrategy: strategy, actor });
 		});
 
 		it('should stop monitoring for orbiter', async () => {
@@ -490,8 +428,8 @@ describe('Mission Control > Monitoring', () => {
 
 			await update_and_stop_monitoring(config);
 
-			await testSatellitesMonitoring({ expectedEnabled: false });
-			await testOrbiterMonitoring({ expectedEnabled: false });
+			await testSatellitesMonitoring({ expectedEnabled: false, expectedStrategy: strategy, actor });
+			await testOrbiterMonitoring({ expectedEnabled: false, expectedStrategy: strategy, actor });
 		});
 
 		it('should stop monitoring for mission control', async () => {
@@ -509,10 +447,14 @@ describe('Mission Control > Monitoring', () => {
 
 			await update_and_stop_monitoring(config);
 
-			await testMissionControlMonitoring({ expectedEnabled: false });
+			await testMissionControlMonitoring({
+				expectedEnabled: false,
+				expectedStrategy: strategy,
+				actor
+			});
 
-			await testSatellitesMonitoring({ expectedEnabled: false });
-			await testOrbiterMonitoring({ expectedEnabled: false });
+			await testSatellitesMonitoring({ expectedEnabled: false, expectedStrategy: strategy, actor });
+			await testOrbiterMonitoring({ expectedEnabled: false, expectedStrategy: strategy, actor });
 		});
 
 		it('should have a stopped monitoring status', async () => {
@@ -528,9 +470,13 @@ describe('Mission Control > Monitoring', () => {
 
 			await start_monitoring();
 
-			await testMissionControlMonitoring({ expectedEnabled: true });
-			await testSatellitesMonitoring({ expectedEnabled: true });
-			await testOrbiterMonitoring({ expectedEnabled: true });
+			await testMissionControlMonitoring({
+				expectedEnabled: true,
+				expectedStrategy: strategy,
+				actor
+			});
+			await testSatellitesMonitoring({ expectedEnabled: true, expectedStrategy: strategy, actor });
+			await testOrbiterMonitoring({ expectedEnabled: true, expectedStrategy: strategy, actor });
 		});
 
 		it('should have a running monitoring status after start', async () => {
@@ -546,9 +492,13 @@ describe('Mission Control > Monitoring', () => {
 
 			await stop_monitoring();
 
-			await testMissionControlMonitoring({ expectedEnabled: false });
-			await testSatellitesMonitoring({ expectedEnabled: false });
-			await testOrbiterMonitoring({ expectedEnabled: false });
+			await testMissionControlMonitoring({
+				expectedEnabled: false,
+				expectedStrategy: strategy,
+				actor
+			});
+			await testSatellitesMonitoring({ expectedEnabled: false, expectedStrategy: strategy, actor });
+			await testOrbiterMonitoring({ expectedEnabled: false, expectedStrategy: strategy, actor });
 		});
 
 		it('should have a stopped monitoring status after stop', async () => {
@@ -576,7 +526,8 @@ describe('Mission Control > Monitoring', () => {
 
 			await testMissionControlMonitoring({
 				expectedEnabled: true,
-				expectedStrategy: updateStrategy
+				expectedStrategy: updateStrategy,
+				actor
 			});
 		});
 
@@ -598,7 +549,11 @@ describe('Mission Control > Monitoring', () => {
 
 			await update_and_start_monitoring(config);
 
-			await testSatellitesMonitoring({ expectedEnabled: true, expectedStrategy: updateStrategy });
+			await testSatellitesMonitoring({
+				expectedEnabled: true,
+				expectedStrategy: updateStrategy,
+				actor
+			});
 		});
 
 		it('should update config for orbiter', async () => {
@@ -619,7 +574,11 @@ describe('Mission Control > Monitoring', () => {
 
 			await update_and_start_monitoring(config);
 
-			await testOrbiterMonitoring({ expectedEnabled: true, expectedStrategy: updateStrategy });
+			await testOrbiterMonitoring({
+				expectedEnabled: true,
+				expectedStrategy: updateStrategy,
+				actor
+			});
 		});
 
 		const config: Config = {

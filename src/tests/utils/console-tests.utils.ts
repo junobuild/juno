@@ -4,26 +4,20 @@ import type { _SERVICE as MissionControlActor } from '$declarations/mission_cont
 import { idlFactory as idlFactorMissionControl } from '$declarations/mission_control/mission_control.factory.did';
 import type { Identity } from '@dfinity/agent';
 import { Ed25519KeyIdentity } from '@dfinity/identity';
-import {
-	arrayBufferToUint8Array,
-	assertNonNullish,
-	fromNullable,
-	toNullable
-} from '@dfinity/utils';
+import { assertNonNullish, fromNullable, toNullable } from '@dfinity/utils';
 import type { Actor, PocketIc } from '@hadronous/pic';
 import { readFile } from 'node:fs/promises';
 import { expect } from 'vitest';
 import { CONTROLLER_ERROR_MSG } from '../constants/mission-control-tests.constants';
-import { mockBlob } from '../mocks/storage.mocks';
 import { tick } from './pic-tests.utils';
 import {
+	downloadMissionControl,
+	downloadOrbiter,
+	downloadSatellite,
 	MISSION_CONTROL_WASM_PATH,
 	ORBITER_WASM_PATH,
 	SATELLITE_WASM_PATH,
-	WASM_VERSIONS,
-	downloadMissionControl,
-	downloadOrbiter,
-	downloadSatellite
+	WASM_VERSIONS
 } from './setup-tests.utils';
 
 const installRelease = async ({
@@ -306,38 +300,4 @@ export const testSatelliteExists = async ({
 		// The Mission Control has no public functions. If it rejects a call with a particular error message it means it exists.
 		await expect(get_user()).rejects.toThrow(CONTROLLER_ERROR_MSG);
 	}
-};
-
-export const uploadFile = async ({
-	actor,
-	proposalId
-}: {
-	actor: Actor<ConsoleActor>;
-	proposalId: bigint;
-}) => {
-	const { init_asset_upload, commit_asset_upload, upload_asset_chunk } = actor;
-
-	const file = await init_asset_upload(
-		{
-			collection: '#dapp',
-			description: toNullable(),
-			encoding_type: [],
-			full_path: '/hello3.html',
-			name: 'hello3.html',
-			token: toNullable()
-		},
-		proposalId
-	);
-
-	const chunk = await upload_asset_chunk({
-		batch_id: file.batch_id,
-		content: arrayBufferToUint8Array(await mockBlob.arrayBuffer()),
-		order_id: [0n]
-	});
-
-	await commit_asset_upload({
-		batch_id: file.batch_id,
-		chunk_ids: [chunk.chunk_id],
-		headers: []
-	});
 };

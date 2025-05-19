@@ -13,7 +13,7 @@ import {
 } from '../../utils/custom-domains-tests.utils';
 import { CONSOLE_WASM_PATH } from '../../utils/setup-tests.utils';
 
-describe('Console > Custom Domains', () => {
+describe('Console > Cdn > Custom Domains', () => {
 	let pic: PocketIc;
 	let actor: Actor<ConsoleActor>;
 

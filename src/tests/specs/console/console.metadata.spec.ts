@@ -5,7 +5,8 @@ import { Ed25519KeyIdentity } from '@dfinity/identity';
 import { fromNullable, toNullable } from '@dfinity/utils';
 import { PocketIc, type Actor } from '@hadronous/pic';
 import { beforeAll, describe, expect, inject } from 'vitest';
-import { deploySegments, uploadFile } from '../../utils/console-tests.utils';
+import { uploadFile } from '../../utils/cdn-tests.utils';
+import { deploySegments } from '../../utils/console-tests.utils';
 import { CONSOLE_WASM_PATH, WASM_VERSIONS } from '../../utils/setup-tests.utils';
 
 describe('Console > Metadata', () => {

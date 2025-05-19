@@ -25,8 +25,8 @@ import {
 	testControlledCdnMethods,
 	testNotAllowedCdnMethods
 } from '../../utils/cdn-assertions-tests.utils';
+import { uploadFile } from '../../utils/cdn-tests.utils';
 import { assertCertification } from '../../utils/certification-tests.utils';
-import { uploadFile } from '../../utils/console-tests.utils';
 import { sha256ToBase64String } from '../../utils/crypto-tests.utils';
 import { tick } from '../../utils/pic-tests.utils';
 import { CONSOLE_WASM_PATH } from '../../utils/setup-tests.utils';

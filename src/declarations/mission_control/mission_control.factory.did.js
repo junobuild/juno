@@ -35,6 +35,9 @@ export const idlFactory = ({ IDL }) => {
 		satellite_id: IDL.Principal,
 		settings: IDL.Opt(Settings)
 	});
+	const DeleteProposalAssets = IDL.Record({
+		proposal_ids: IDL.Vec(IDL.Nat)
+	});
 	const DepositCyclesArgs = IDL.Record({
 		cycles: IDL.Nat,
 		destination_id: IDL.Principal
@@ -291,6 +294,7 @@ export const idlFactory = ({ IDL }) => {
 		del_orbiters_controllers: IDL.Func([IDL.Vec(IDL.Principal), IDL.Vec(IDL.Principal)], [], []),
 		del_satellite: IDL.Func([IDL.Principal, IDL.Nat], [], []),
 		del_satellites_controllers: IDL.Func([IDL.Vec(IDL.Principal), IDL.Vec(IDL.Principal)], [], []),
+		delete_proposal_assets: IDL.Func([DeleteProposalAssets], [], []),
 		deposit_cycles: IDL.Func([DepositCyclesArgs], [], []),
 		get_config: IDL.Func([], [IDL.Opt(Config)], ['query']),
 		get_metadata: IDL.Func([], [IDL.Vec(IDL.Tuple(IDL.Text, IDL.Text))], ['query']),

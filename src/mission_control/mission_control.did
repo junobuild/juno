@@ -46,6 +46,7 @@ type CyclesMonitoringStopConfig = record {
 };
 type CyclesMonitoringStrategy = variant { BelowThreshold : CyclesThreshold };
 type CyclesThreshold = record { fund_cycles : nat; min_cycles : nat };
+type DeleteProposalAssets = record { proposal_ids : vec nat };
 type DepositCyclesArgs = record { cycles : nat; destination_id : principal };
 type DepositedCyclesEmailNotification = record {
   to : opt text;
@@ -245,6 +246,7 @@ service : () -> {
   del_orbiters_controllers : (vec principal, vec principal) -> ();
   del_satellite : (principal, nat) -> ();
   del_satellites_controllers : (vec principal, vec principal) -> ();
+  delete_proposal_assets : (DeleteProposalAssets) -> ();
   deposit_cycles : (DepositCyclesArgs) -> ();
   get_config : () -> (opt Config) query;
   get_metadata : () -> (vec record { text; text }) query;

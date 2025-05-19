@@ -69,6 +69,9 @@ export interface CyclesThreshold {
 	fund_cycles: bigint;
 	min_cycles: bigint;
 }
+export interface DeleteProposalAssets {
+	proposal_ids: Array<bigint>;
+}
 export interface DepositCyclesArgs {
 	cycles: bigint;
 	destination_id: Principal;
@@ -287,6 +290,7 @@ export interface _SERVICE {
 	del_orbiters_controllers: ActorMethod<[Array<Principal>, Array<Principal>], undefined>;
 	del_satellite: ActorMethod<[Principal, bigint], undefined>;
 	del_satellites_controllers: ActorMethod<[Array<Principal>, Array<Principal>], undefined>;
+	delete_proposal_assets: ActorMethod<[DeleteProposalAssets], undefined>;
 	deposit_cycles: ActorMethod<[DepositCyclesArgs], undefined>;
 	get_config: ActorMethod<[], [] | [Config]>;
 	get_metadata: ActorMethod<[], Array<[string, string]>>;

@@ -6,8 +6,8 @@ import type { Principal } from '@dfinity/principal';
 import { toNullable } from '@dfinity/utils';
 import { type Actor, PocketIc } from '@hadronous/pic';
 import { inject } from 'vitest';
-import { assertCertification } from '../../utils/certification-test.utils';
-import { toBodyJson } from '../../utils/orbiter-test.utils';
+import { assertCertification } from '../../utils/certification-tests.utils';
+import { toBodyJson } from '../../utils/orbiter-tests.utils';
 import { tick } from '../../utils/pic-tests.utils';
 import { controllersInitArgs, ORBITER_WASM_PATH } from '../../utils/setup-tests.utils';
 

@@ -5,7 +5,7 @@ import type { Actor, PocketIc } from '@hadronous/pic';
 import { mockSetRule } from '../../mocks/collection.mocks';
 import { mockListParams } from '../../mocks/list.mocks';
 import { setupTestSputnik } from '../../utils/fixtures-tests.utils';
-import { fetchLogs, type IcMgmtLog } from '../../utils/mgmt-test.utils';
+import { fetchLogs, type IcMgmtLog } from '../../utils/mgmt-tests.utils';
 import { waitServerlessFunction } from '../../utils/satellite-extended-tests.utils';
 import { uploadAsset } from '../../utils/satellite-storage-tests.utils';
 

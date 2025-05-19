@@ -34,7 +34,7 @@ import {
 	controllersInitArgs,
 	downloadSatellite
 } from '../../../utils/setup-tests.utils';
-import { crateVersion } from '../../../utils/version-test.utils';
+import { crateVersion } from '../../../utils/version-tests.utils';
 
 describe('Satellite > Upgrade', () => {
 	let pic: PocketIc;

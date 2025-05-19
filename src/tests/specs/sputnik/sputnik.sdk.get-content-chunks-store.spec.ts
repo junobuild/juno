@@ -7,7 +7,7 @@ import { nanoid } from 'nanoid';
 import { mockSetRule } from '../../mocks/collection.mocks';
 import { mockHtml } from '../../mocks/storage.mocks';
 import { setupTestSputnik } from '../../utils/fixtures-tests.utils';
-import { fetchLogs } from '../../utils/mgmt-test.utils';
+import { fetchLogs } from '../../utils/mgmt-tests.utils';
 import { waitServerlessFunction } from '../../utils/satellite-extended-tests.utils';
 import { uploadAsset } from '../../utils/satellite-storage-tests.utils';
 

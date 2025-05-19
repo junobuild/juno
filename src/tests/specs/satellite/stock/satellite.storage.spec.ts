@@ -24,7 +24,7 @@ import { readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { afterAll, beforeAll, beforeEach, describe, expect, inject } from 'vitest';
 import { mockBlob, mockHtml } from '../../../mocks/storage.mocks';
-import { assertCertification } from '../../../utils/certification-test.utils';
+import { assertCertification } from '../../../utils/certification-tests.utils';
 import { createUser as createUserUtils } from '../../../utils/satellite-doc-tests.utils';
 import { uploadAsset } from '../../../utils/satellite-storage-tests.utils';
 import { deleteDefaultIndexHTML } from '../../../utils/satellite-tests.utils';

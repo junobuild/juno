@@ -18,7 +18,7 @@ import {
 	type SetTrackEventsRequest,
 	trackEventPayloadMock
 } from '../../mocks/orbiter.mocks';
-import { toBodyJson } from '../../utils/orbiter-test.utils';
+import { toBodyJson } from '../../utils/orbiter-tests.utils';
 import { tick } from '../../utils/pic-tests.utils';
 import { controllersInitArgs, ORBITER_WASM_PATH } from '../../utils/setup-tests.utils';
 

@@ -8,7 +8,7 @@ import { nanoid } from 'nanoid';
 import { mockSetRule } from '../../mocks/collection.mocks';
 import type { SputnikValueMock } from '../../mocks/sputnik.mocks';
 import { setupTestSputnik } from '../../utils/fixtures-tests.utils';
-import { fetchLogs, type IcMgmtLog } from '../../utils/mgmt-test.utils';
+import { fetchLogs, type IcMgmtLog } from '../../utils/mgmt-tests.utils';
 
 describe('Sputnik > assert_delete_doc', () => {
 	let pic: PocketIc;

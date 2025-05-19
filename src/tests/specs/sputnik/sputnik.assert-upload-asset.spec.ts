@@ -5,7 +5,7 @@ import { fromNullable } from '@dfinity/utils';
 import type { Actor, PocketIc } from '@hadronous/pic';
 import { mockSetRule } from '../../mocks/collection.mocks';
 import { setupTestSputnik } from '../../utils/fixtures-tests.utils';
-import { fetchLogs, type IcMgmtLog } from '../../utils/mgmt-test.utils';
+import { fetchLogs, type IcMgmtLog } from '../../utils/mgmt-tests.utils';
 import { uploadAsset } from '../../utils/satellite-storage-tests.utils';
 
 describe('Sputnik > assert_upload_asset', () => {

@@ -9,7 +9,7 @@ import { valid } from 'semver';
 import { mockSetRule } from '../../mocks/collection.mocks';
 import { mockData } from '../../mocks/doc.mocks';
 import { setupTestSputnik } from '../../utils/fixtures-tests.utils';
-import { fetchLogs, type IcMgmtLog } from '../../utils/mgmt-test.utils';
+import { fetchLogs, type IcMgmtLog } from '../../utils/mgmt-tests.utils';
 import { waitServerlessFunction } from '../../utils/satellite-extended-tests.utils';
 import { initVersionMock } from '../../utils/sputnik-tests.utils';
 

@@ -2,9 +2,9 @@ use crate::memory::init_stable_state;
 use crate::types::core::{Segment, SettingsMonitoring};
 use crate::types::state::CyclesMonitoringStrategy::BelowThreshold;
 use crate::types::state::{
-    Archive, ArchiveStatuses, Config, CyclesMonitoring, CyclesMonitoringStrategy, HeapState,
-    MissionControlSettings, Monitoring, MonitoringHistory, MonitoringHistoryKey, Orbiter, Orbiters,
-    Satellite, Settings, State, User,
+    Config, CyclesMonitoring, CyclesMonitoringStrategy, HeapState, MissionControlSettings,
+    Monitoring, MonitoringHistory, MonitoringHistoryKey, Orbiter, Orbiters, Satellite, Settings,
+    State, User,
 };
 use canfund::manager::options::{CyclesThreshold, FundStrategy};
 use ic_cdk::api::time;
@@ -13,7 +13,7 @@ use ic_stable_structures::Storable;
 use junobuild_shared::serializers::{deserialize_from_bytes, serialize_to_bytes};
 use junobuild_shared::types::state::{Metadata, OrbiterId, SatelliteId, UserId};
 use std::borrow::Cow;
-use std::collections::{BTreeMap, HashMap};
+use std::collections::HashMap;
 
 impl Default for State {
     fn default() -> Self {
@@ -30,7 +30,6 @@ impl From<&UserId> for HeapState {
             user: User::from(user),
             satellites: HashMap::new(),
             controllers: HashMap::new(),
-            archive: Archive::new(),
             orbiters: Orbiters::new(),
             settings: None,
         }
@@ -47,18 +46,6 @@ impl From<&UserId> for User {
             config: None,
             created_at: now,
             updated_at: now,
-        }
-    }
-}
-
-impl Archive {
-    pub fn new() -> Self {
-        Archive {
-            statuses: ArchiveStatuses {
-                mission_control: BTreeMap::new(),
-                satellites: HashMap::new(),
-                orbiters: HashMap::new(),
-            },
         }
     }
 }

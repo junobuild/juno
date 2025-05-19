@@ -39,10 +39,20 @@ describe('Mission control > Upgrade', () => {
 	const init = async (version: string) => {
 		const destination = await downloadMissionControl(version);
 
+		const {} = await pic.createCanister({
+			sender: controller.getPrincipal()
+		});
+
 		const { actor: c, canisterId: mId } = await pic.setupCanister<MissionControlActor>({
 			idlFactory: idlFactorMissionControl,
 			wasm: destination,
 			arg: missionControlUserInitArgs(controller.getPrincipal()),
+			sender: controller.getPrincipal()
+		});
+
+		await pic.updateCanisterSettings({
+			canisterId: mId,
+			controllers: [controller.getPrincipal(), mId],
 			sender: controller.getPrincipal()
 		});
 
@@ -223,6 +233,35 @@ describe('Mission control > Upgrade', () => {
 			await testMonitoringHistory({ segmentId: orbiterId, expectedLength: 1, actor });
 		};
 
+		const controller1 = Ed25519KeyIdentity.generate();
+		const controller2 = Ed25519KeyIdentity.generate();
+
+		const initMoreControllers = async () => {
+			const { set_mission_control_controllers } = actor;
+
+			await set_mission_control_controllers(
+				[controller1.getPrincipal(), controller2.getPrincipal()],
+				{
+					scope: { Write: null },
+					metadata: [['hello', 'world']],
+					expires_at: []
+				}
+			);
+		};
+
+		const testMoreControllers = async () => {
+			const { list_mission_control_controllers } = actor;
+
+			const results = await list_mission_control_controllers();
+
+			expect(
+				results.find(([id, _]) => id.toText() === controller1.getPrincipal().toText())
+			).not.toBeUndefined();
+			expect(
+				results.find(([id, _]) => id.toText() === controller2.getPrincipal().toText())
+			).not.toBeUndefined();
+		};
+
 		beforeEach(async () => {
 			pic = await PocketIc.create(inject('PIC_URL'));
 
@@ -249,6 +288,10 @@ describe('Mission control > Upgrade', () => {
 
 			await testMonitoring();
 
+			await initMoreControllers();
+
+			await testMoreControllers();
+
 			await upgradeLatest();
 
 			actor = pic.createActor<MissionControlActor>(idlFactorMissionControl, missionControlId);
@@ -258,6 +301,8 @@ describe('Mission control > Upgrade', () => {
 			await testUser();
 
 			await testMonitoring();
+
+			await testMoreControllers();
 		});
 	});
 });

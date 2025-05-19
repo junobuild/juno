@@ -2,6 +2,7 @@ use crate::cdn::certified_assets::upgrade::defer_init_certified_assets;
 use crate::cdn::strategies_impls::cdn::{CdnHeap, CdnStable, CdnWorkflow};
 use crate::cdn::strategies_impls::storage::StorageState;
 use crate::guards::caller_is_user_or_admin_controller;
+use crate::types::interface::DeleteProposalAssets;
 use ic_cdk::api::call::ManualReply;
 use ic_cdk::{caller, trap};
 use ic_cdk_macros::{query, update};
@@ -45,6 +46,15 @@ fn commit_proposal(proposal: CommitProposal) -> ManualReply<()> {
         }
         Err(e) => ManualReply::reject(e.to_string()),
     }
+}
+
+// TODO: ADMIN controller can delete proposal's assets of any proposals - not limited to proposal.owner === caller
+#[update(guard = "caller_is_user_or_admin_controller")]
+fn delete_proposal_assets(DeleteProposalAssets { proposal_ids }: DeleteProposalAssets) {
+    let caller = caller();
+
+    junobuild_cdn::proposals::delete_proposal_assets(&CdnStable, caller, &proposal_ids)
+        .unwrap_or_else(|e| trap(&e));
 }
 
 // ---------------------------------------------------------

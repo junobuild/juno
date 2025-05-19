@@ -36,8 +36,11 @@ use ic_ledger_types::TransferArgs;
 use ic_ledger_types::TransferResult;
 use icrc_ledger_types::icrc1::transfer::TransferArg;
 use junobuild_shared::ledger::types::icrc::IcrcTransferResult;
+use junobuild_shared::types::core::DomainName;
+use junobuild_shared::types::domain::CustomDomains;
 use junobuild_shared::types::interface::{DepositCyclesArgs, SetController};
 use junobuild_shared::types::state::{ControllerId, Controllers, OrbiterId, SatelliteId};
 use junobuild_shared::types::state::{Metadata, UserId};
+use junobuild_storage::types::config::StorageConfig;
 
 export_candid!();

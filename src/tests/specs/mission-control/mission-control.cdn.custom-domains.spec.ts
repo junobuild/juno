@@ -54,7 +54,8 @@ describe('Mission Control > Cdn > Custom Domains', () => {
 
 		adminCustomDomainsTests({ actor: () => actor });
 
-		it('should not delete asset ic-domains when deleting all assets', async () => {
+		// TODO need assets
+		/** it('should not delete asset ic-domains when deleting all assets', async () => {
 			const { http_request, init_proposal, submit_proposal, commit_proposal } = actor;
 
 			const [proposalId, _] = await init_proposal({
@@ -83,8 +84,7 @@ describe('Mission Control > Cdn > Custom Domains', () => {
 			expect(status_code).toEqual(200);
 		});
 
-		// TODO
-		/** it('should throw error if try to upload ic-domains', async () => {
+		it('should throw error if try to upload ic-domains', async () => {
 			const { init_asset_upload, init_proposal } = actor;
 
 			const [proposalId, _] = await init_proposal({

@@ -9,13 +9,14 @@ import type {
 import { idlFactory as idlFactorMissionControl } from '$declarations/mission_control/mission_control.factory.did';
 import { Ed25519KeyIdentity } from '@dfinity/identity';
 import type { Principal } from '@dfinity/principal';
-import { assertNonNullish, fromNullable, toNullable } from '@dfinity/utils';
+import { toNullable } from '@dfinity/utils';
 import { type Actor, PocketIc } from '@hadronous/pic';
 import { inject } from 'vitest';
 import {
 	missionControlUserInitArgs,
 	setupMissionControlModules
 } from '../../utils/mission-control-tests.utils';
+import { testMonitoringHistory } from '../../utils/monitoring-tests.utils';
 import { tick } from '../../utils/pic-tests.utils';
 import { MISSION_CONTROL_WASM_PATH } from '../../utils/setup-tests.utils';
 
@@ -84,47 +85,6 @@ describe('Mission Control > History', () => {
 		expect(results).toHaveLength(0);
 	};
 
-	const testHistory = async ({
-		segmentId,
-		expectedLength
-	}: {
-		segmentId: Principal;
-		expectedLength: number;
-	}): Promise<[MonitoringHistoryKey, MonitoringHistory][]> => {
-		const { get_monitoring_history } = actor;
-
-		const filter: GetMonitoringHistory = {
-			segment_id: segmentId,
-			from: toNullable(),
-			to: toNullable()
-		};
-
-		const results = await get_monitoring_history(filter);
-
-		expect(results).toHaveLength(expectedLength);
-
-		results.forEach((result) => {
-			const [key, history] = result;
-
-			expect(key.segment_id.toText()).toEqual(segmentId.toText());
-			expect(key.created_at).toBeGreaterThan(0n);
-
-			const cycles = fromNullable(history.cycles);
-
-			assertNonNullish(cycles);
-
-			expect(cycles.cycles.amount).toBeGreaterThan(0n);
-			expect(cycles.cycles.timestamp).toBeGreaterThan(0n);
-
-			expect(fromNullable(cycles.deposited_cycles)).toBeUndefined();
-		});
-
-		return results.sort(
-			([{ created_at: aCreatedAt }, _], [{ created_at: bCreateAt }, __]) =>
-				Number(aCreatedAt) - Number(bCreateAt)
-		);
-	};
-
 	describe('init', () => {
 		it('should not have monitoring history for mission control', async () => {
 			await testEmptyHistory(missionControlId);
@@ -179,15 +139,15 @@ describe('Mission Control > History', () => {
 			});
 
 			it('should have monitoring history for mission control', async () => {
-				await testHistory({ segmentId: missionControlId, expectedLength: 1 });
+				await testMonitoringHistory({ segmentId: missionControlId, expectedLength: 1, actor });
 			});
 
 			it('should have monitoring history for satellite', async () => {
-				await testHistory({ segmentId: satelliteId, expectedLength: 1 });
+				await testMonitoringHistory({ segmentId: satelliteId, expectedLength: 1, actor });
 			});
 
 			it('should have monitoring history for orbiter', async () => {
-				await testHistory({ segmentId: orbiterId, expectedLength: 1 });
+				await testMonitoringHistory({ segmentId: orbiterId, expectedLength: 1, actor });
 			});
 		});
 
@@ -200,15 +160,15 @@ describe('Mission Control > History', () => {
 				});
 
 				it('should have monitoring history for mission control', async () => {
-					await testHistory({ segmentId: missionControlId, expectedLength: 2 });
+					await testMonitoringHistory({ segmentId: missionControlId, expectedLength: 2, actor });
 				});
 
 				it('should have monitoring history for satellite', async () => {
-					await testHistory({ segmentId: satelliteId, expectedLength: 2 });
+					await testMonitoringHistory({ segmentId: satelliteId, expectedLength: 2, actor });
 				});
 
 				it('should have monitoring history for orbiter', async () => {
-					await testHistory({ segmentId: orbiterId, expectedLength: 2 });
+					await testMonitoringHistory({ segmentId: orbiterId, expectedLength: 2, actor });
 				});
 			});
 
@@ -222,15 +182,15 @@ describe('Mission Control > History', () => {
 				});
 
 				it('should have monitoring history for mission control', async () => {
-					await testHistory({ segmentId: missionControlId, expectedLength: 3 });
+					await testMonitoringHistory({ segmentId: missionControlId, expectedLength: 3, actor });
 				});
 
 				it('should have monitoring history for satellite', async () => {
-					await testHistory({ segmentId: satelliteId, expectedLength: 3 });
+					await testMonitoringHistory({ segmentId: satelliteId, expectedLength: 3, actor });
 				});
 
 				it('should have monitoring history for orbiter', async () => {
-					await testHistory({ segmentId: orbiterId, expectedLength: 3 });
+					await testMonitoringHistory({ segmentId: orbiterId, expectedLength: 3, actor });
 				});
 			});
 		});
@@ -271,12 +231,21 @@ describe('Mission Control > History', () => {
 			};
 
 			beforeAll(async () => {
-				missionControlHistory = await testHistory({
+				missionControlHistory = await testMonitoringHistory({
 					segmentId: missionControlId,
-					expectedLength: 3
+					expectedLength: 3,
+					actor
 				});
-				satelliteHistory = await testHistory({ segmentId: satelliteId, expectedLength: 3 });
-				orbiterHistory = await testHistory({ segmentId: orbiterId, expectedLength: 3 });
+				satelliteHistory = await testMonitoringHistory({
+					segmentId: satelliteId,
+					expectedLength: 3,
+					actor
+				});
+				orbiterHistory = await testMonitoringHistory({
+					segmentId: orbiterId,
+					expectedLength: 3,
+					actor
+				});
 
 				const thirtyDays = 1000 * 60 * 60 * 24 * 30;
 
@@ -287,27 +256,30 @@ describe('Mission Control > History', () => {
 			});
 
 			it('should have monitoring history for mission control', async () => {
-				const updatedHistory = await testHistory({
+				const updatedHistory = await testMonitoringHistory({
 					segmentId: missionControlId,
-					expectedLength: 3
+					expectedLength: 3,
+					actor
 				});
 
 				testCleanedHistory({ before: missionControlHistory, after: updatedHistory });
 			});
 
 			it('should have monitoring history for satellite', async () => {
-				const updatedHistory = await testHistory({
+				const updatedHistory = await testMonitoringHistory({
 					segmentId: satelliteId,
-					expectedLength: 3
+					expectedLength: 3,
+					actor
 				});
 
 				testCleanedHistory({ before: satelliteHistory, after: updatedHistory });
 			});
 
 			it('should have monitoring history for orbiter', async () => {
-				const updatedHistory = await testHistory({
+				const updatedHistory = await testMonitoringHistory({
 					segmentId: orbiterId,
-					expectedLength: 3
+					expectedLength: 3,
+					actor
 				});
 
 				testCleanedHistory({ before: orbiterHistory, after: updatedHistory });

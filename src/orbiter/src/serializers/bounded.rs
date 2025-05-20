@@ -163,6 +163,7 @@ pub fn deserialize_bounded_page_view(bytes: Cow<[u8]>) -> PageView {
         time_zone,
         satellite_id,
         session_id,
+        campaign: None,
         created_at,
         updated_at,
         version: None,

@@ -1,7 +1,4 @@
-use crate::assert::constraints::{
-    assert_analytic_key_length, assert_page_view_length, assert_satellite_id, assert_session_id,
-    assert_track_event_length,
-};
+use crate::assert::constraints::{assert_analytic_key_length, assert_page_view_campaign_length, assert_page_view_length, assert_satellite_id, assert_session_id, assert_track_event_length};
 use crate::events::filters::{filter_analytics, filter_satellites_analytics};
 use crate::state::memory::STATE;
 use crate::state::types::memory::{StoredPageView, StoredTrackEvent};
@@ -25,6 +22,7 @@ fn insert_page_view_impl(
 ) -> Result<PageView, String> {
     assert_analytic_key_length(&key)?;
     assert_page_view_length(&page_view)?;
+    assert_page_view_campaign_length(&page_view)?;
 
     let current_page_view = state.page_views.get(&key);
 
@@ -99,6 +97,7 @@ fn insert_page_view_impl(
         time_zone: page_view.time_zone,
         satellite_id: page_view.satellite_id,
         session_id,
+        campaign: page_view.campaign,
         created_at,
         updated_at: now,
         version: Some(version),

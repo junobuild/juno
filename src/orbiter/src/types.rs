@@ -1,7 +1,5 @@
 pub mod interface {
-    use crate::state::types::state::{
-        PageViewClient, PageViewDevice, PerformanceData, PerformanceMetricName, SessionId,
-    };
+    use crate::state::types::state::{PageViewCampaign, PageViewClient, PageViewDevice, PerformanceData, PerformanceMetricName, SessionId};
     use candid::CandidType;
     use junobuild_shared::types::core::DomainName;
     use junobuild_shared::types::state::{
@@ -22,6 +20,7 @@ pub mod interface {
         pub client: Option<PageViewClient>,
         pub satellite_id: SatelliteId,
         pub session_id: SessionId,
+        pub campaign: Option<PageViewCampaign>,
         #[deprecated(
             since = "0.0.7",
             note = "Support for backwards compatibility. It has been replaced by version for overwrite checks."
@@ -96,6 +95,8 @@ pub mod interface {
         pub referrers: Vec<(String, u32)>,
         pub pages: Vec<(String, u32)>,
         pub time_zones: Option<Vec<(String, u32)>>,
+        pub utm_sources: Option<Vec<(String, u32)>>,
+        pub utm_campaigns: Option<Vec<(String, u32)>>,
     }
 
     #[derive(CandidType, Deserialize, Clone)]
@@ -238,8 +239,10 @@ pub mod interface {
             pub device: PageViewDevicePayload,
             pub time_zone: String,
             pub user_agent: Option<String>,
-            pub client: Option<PageViewClientPayload>,
+            pub client: Option<PageViewClientPayload>, // TODO: Option::is_none
             pub session_id: SessionId,
+            #[serde(skip_serializing_if = "Option::is_none")]
+            pub campaign: Option<PageViewCampaignPayload>,
             pub version: VersionPayload,
         }
 
@@ -298,6 +301,19 @@ pub mod interface {
             pub screen_width: Option<u16>,
             #[serde(skip_serializing_if = "Option::is_none")]
             pub screen_height: Option<u16>,
+        }
+
+        #[derive(Deserialize, Serialize)]
+        pub struct PageViewCampaignPayload {
+            pub utm_source: String,
+            #[serde(skip_serializing_if = "Option::is_none")]
+            pub utm_medium: Option<String>,
+            #[serde(skip_serializing_if = "Option::is_none")]
+            pub utm_campaign: Option<String>,
+            #[serde(skip_serializing_if = "Option::is_none")]
+            pub utm_term: Option<String>,
+            #[serde(skip_serializing_if = "Option::is_none")]
+            pub utm_content: Option<String>,
         }
 
         #[derive(Serialize)]

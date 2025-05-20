@@ -1,11 +1,10 @@
-use crate::constants::{
-    KEY_MAX_LENGTH, LONG_STRING_MAX_LENGTH, METADATA_MAX_ELEMENTS, SHORT_STRING_MAX_LENGTH,
-    STRING_MAX_LENGTH,
-};
+use crate::constants::{KEY_MAX_LENGTH, LONG_STRING_MAX_LENGTH, METADATA_MAX_ELEMENTS, SHORT_STRING_MAX_LENGTH, STRING_MAX_LENGTH, UTM_MAX_LENGTH};
 use crate::state::types::state::AnalyticKey;
 use crate::types::interface::{SetPageView, SetTrackEvent};
 use junobuild_shared::types::state::SatelliteId;
 use junobuild_shared::utils::principal_not_equal;
+
+// TODO: error key
 
 pub fn assert_analytic_key_length(key: &AnalyticKey) -> Result<(), String> {
     if key.key.len() > KEY_MAX_LENGTH {
@@ -107,6 +106,55 @@ pub fn assert_page_view_length(page_view: &SetPageView) -> Result<(), String> {
         ));
     }
 
+    Ok(())
+}
+
+pub fn assert_page_view_campaign_length(page_view: &SetPageView) -> Result<(), String> {
+    if let Some(campaign) = &page_view.campaign {
+        if campaign.utm_source.len() > UTM_MAX_LENGTH {
+            return Err(format!(
+                "utm_source {} is longer than {}.",
+                campaign.utm_source, UTM_MAX_LENGTH
+            ));
+        }
+
+        if let Some(medium) = &campaign.utm_medium {
+            if medium.len() > UTM_MAX_LENGTH {
+                return Err(format!(
+                    "utm_medium {} is longer than {}.",
+                    medium, UTM_MAX_LENGTH
+                ));
+            }
+        }
+
+        if let Some(campaign_name) = &campaign.utm_campaign {
+            if campaign_name.len() > UTM_MAX_LENGTH {
+                return Err(format!(
+                    "utm_campaign {} is longer than {}.",
+                    campaign_name, UTM_MAX_LENGTH
+                ));
+            }
+        }
+
+        if let Some(term) = &campaign.utm_term {
+            if term.len() > UTM_MAX_LENGTH {
+                return Err(format!(
+                    "utm_term {} is longer than {}.",
+                    term, UTM_MAX_LENGTH
+                ));
+            }
+        }
+
+        if let Some(content) = &campaign.utm_content {
+            if content.len() > UTM_MAX_LENGTH {
+                return Err(format!(
+                    "utm_content {} is longer than {}.",
+                    content, UTM_MAX_LENGTH
+                ));
+            }
+        }
+    }
+    
     Ok(())
 }
 

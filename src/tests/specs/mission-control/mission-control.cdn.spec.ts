@@ -2,7 +2,6 @@ import type { _SERVICE as MissionControlActor } from '$declarations/mission_cont
 import { idlFactory as idlFactorMissionControl } from '$declarations/mission_control/mission_control.factory.did';
 import { AnonymousIdentity } from '@dfinity/agent';
 import { Ed25519KeyIdentity } from '@dfinity/identity';
-import type { Principal } from '@dfinity/principal';
 import { type Actor, PocketIc } from '@hadronous/pic';
 import { beforeAll, describe, inject } from 'vitest';
 import { CONTROLLER_ERROR_MSG } from '../../constants/mission-control-tests.constants';
@@ -17,8 +16,6 @@ describe('Mission Control > Cdn', () => {
 	let pic: PocketIc;
 	let actor: Actor<MissionControlActor>;
 
-	let canisterId: Principal;
-
 	const controller = Ed25519KeyIdentity.generate();
 
 	const currentDate = new Date(2021, 6, 10, 0, 0, 0, 0);
@@ -30,7 +27,7 @@ describe('Mission Control > Cdn', () => {
 
 		await pic.setTime(currentDate.getTime());
 
-		const { actor: c, canisterId: cId } = await pic.setupCanister<MissionControlActor>({
+		const { actor: c } = await pic.setupCanister<MissionControlActor>({
 			idlFactory: idlFactorMissionControl,
 			wasm: MISSION_CONTROL_WASM_PATH,
 			arg: userInitArgs(),
@@ -39,8 +36,6 @@ describe('Mission Control > Cdn', () => {
 
 		actor = c;
 		actor.setIdentity(controller);
-
-		canisterId = cId;
 	});
 
 	afterAll(async () => {

@@ -103,7 +103,7 @@ pub mod state {
         pub utm_medium: Option<String>, // The name of the channel where the link is placed. e.g. "Email" or "Social".
         pub utm_campaign: Option<String>, // The name of your individual campaign. e.g. "Black+Friday".
         pub utm_term: Option<String>, // The name of the keyword for your paid search ad campaign.
-        pub utm_content: Option<String>, // The name of the specific link. You may be having multiple links pointing to the same location. 
+        pub utm_content: Option<String>, // The name of the specific link. You may be having multiple links pointing to the same location.
     }
 
     #[derive(CandidType, Serialize, Deserialize, Clone)]

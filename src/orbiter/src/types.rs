@@ -1,5 +1,8 @@
 pub mod interface {
-    use crate::state::types::state::{PageViewCampaign, PageViewClient, PageViewDevice, PerformanceData, PerformanceMetricName, SessionId};
+    use crate::state::types::state::{
+        PageViewCampaign, PageViewClient, PageViewDevice, PerformanceData, PerformanceMetricName,
+        SessionId,
+    };
     use candid::CandidType;
     use junobuild_shared::types::core::DomainName;
     use junobuild_shared::types::state::{
@@ -277,6 +280,8 @@ pub mod interface {
             pub user_agent: Option<String>,
             #[serde(skip_serializing_if = "Option::is_none")]
             pub client: Option<PageViewClientPayload>,
+            #[serde(skip_serializing_if = "Option::is_none")]
+            pub campaign: Option<PageViewCampaignPayload>,
             pub session_id: SessionId,
             pub created_at: TimestampPayload,
             pub updated_at: TimestampPayload,

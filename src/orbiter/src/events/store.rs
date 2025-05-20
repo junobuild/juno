@@ -1,4 +1,7 @@
-use crate::assert::constraints::{assert_analytic_key_length, assert_page_view_campaign_length, assert_page_view_length, assert_satellite_id, assert_session_id, assert_track_event_length};
+use crate::assert::constraints::{
+    assert_analytic_key_length, assert_page_view_campaign_length, assert_page_view_length,
+    assert_satellite_id, assert_session_id, assert_track_event_length,
+};
 use crate::events::filters::{filter_analytics, filter_satellites_analytics};
 use crate::state::memory::STATE;
 use crate::state::types::memory::{StoredPageView, StoredTrackEvent};

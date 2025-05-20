@@ -1,4 +1,7 @@
-use crate::state::types::state::{AnalyticKey, PageView, PageViewCampaign, PageViewClient, PerformanceData, PerformanceMetric, PerformanceMetricName, TrackEvent, WebVitalsMetric};
+use crate::state::types::state::{
+    AnalyticKey, PageView, PageViewCampaign, PageViewClient, PerformanceData, PerformanceMetric,
+    PerformanceMetricName, TrackEvent, WebVitalsMetric,
+};
 use crate::types::interface::{
     AnalyticsBrowsersPageViews, AnalyticsClientsPageViews, AnalyticsDevicesPageViews,
     AnalyticsMetricsPageViews, AnalyticsOperatingSystemsPageViews, AnalyticsTop10PageViews,
@@ -115,7 +118,7 @@ pub fn analytics_page_views_top_10(
     let mut time_zones: HashMap<String, u32> = HashMap::new();
     let mut utm_sources: HashMap<String, u32> = HashMap::new();
     let mut utm_campaigns: HashMap<String, u32> = HashMap::new();
-    
+
     for (
         _,
         PageView {
@@ -482,8 +485,17 @@ fn analytics_time_zones(time_zone: &str, time_zones: &mut HashMap<String, u32>) 
     *time_zones.entry(time_zone.to_owned()).or_insert(0) += 1;
 }
 
-fn analytics_campaigns(campaign: &Option<PageViewCampaign>, utm_sources: &mut HashMap<String, u32>, utm_campaigns: &mut HashMap<String, u32>) {
-    if let Some(PageViewCampaign { utm_source, utm_campaign, .. }) = campaign {
+fn analytics_campaigns(
+    campaign: &Option<PageViewCampaign>,
+    utm_sources: &mut HashMap<String, u32>,
+    utm_campaigns: &mut HashMap<String, u32>,
+) {
+    if let Some(PageViewCampaign {
+        utm_source,
+        utm_campaign,
+        ..
+    }) = campaign
+    {
         *utm_sources.entry(utm_source.to_owned()).or_insert(0) += 1;
 
         if let Some(utm_campaign) = utm_campaign {

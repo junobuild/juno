@@ -1,4 +1,7 @@
-use crate::constants::{KEY_MAX_LENGTH, LONG_STRING_MAX_LENGTH, METADATA_MAX_ELEMENTS, SHORT_STRING_MAX_LENGTH, STRING_MAX_LENGTH, UTM_MAX_LENGTH};
+use crate::constants::{
+    KEY_MAX_LENGTH, LONG_STRING_MAX_LENGTH, METADATA_MAX_ELEMENTS, SHORT_STRING_MAX_LENGTH,
+    STRING_MAX_LENGTH, UTM_MAX_LENGTH,
+};
 use crate::state::types::state::AnalyticKey;
 use crate::types::interface::{SetPageView, SetTrackEvent};
 use junobuild_shared::types::state::SatelliteId;
@@ -154,7 +157,7 @@ pub fn assert_page_view_campaign_length(page_view: &SetPageView) -> Result<(), S
             }
         }
     }
-    
+
     Ok(())
 }
 

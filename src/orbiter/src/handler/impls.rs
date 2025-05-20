@@ -1,5 +1,12 @@
-use crate::state::types::state::{AnalyticKey, PageView, PageViewCampaign, PageViewClient, PageViewDevice, PerformanceMetric, TrackEvent};
-use crate::types::interface::http::{AnalyticKeyPayload, PageViewCampaignPayload, PageViewClientPayload, PageViewDevicePayload, PageViewPayload, PerformanceMetricPayload, SatelliteIdText, SetPageViewPayload, SetPerformanceMetricPayload, SetTrackEventPayload, TrackEventPayload};
+use crate::state::types::state::{
+    AnalyticKey, PageView, PageViewCampaign, PageViewClient, PageViewDevice, PerformanceMetric,
+    TrackEvent,
+};
+use crate::types::interface::http::{
+    AnalyticKeyPayload, PageViewCampaignPayload, PageViewClientPayload, PageViewDevicePayload,
+    PageViewPayload, PerformanceMetricPayload, SatelliteIdText, SetPageViewPayload,
+    SetPerformanceMetricPayload, SetTrackEventPayload, TrackEventPayload,
+};
 use crate::types::interface::{SetPageView, SetPerformanceMetric, SetTrackEvent};
 use candid::types::principal::PrincipalError;
 use candid::Principal;
@@ -82,6 +89,7 @@ impl PageViewPayload {
             client: page_view.client.map(PageViewClientPayload::from_domain),
             time_zone: page_view.time_zone,
             session_id: page_view.session_id,
+            campaign: page_view.campaign.map(PageViewCampaignPayload::from_domain),
             created_at: DocDataBigInt {
                 value: page_view.created_at,
             },
@@ -112,6 +120,18 @@ impl PageViewDevicePayload {
             inner_height: client.inner_height,
             screen_width: client.screen_width,
             screen_height: client.screen_height,
+        }
+    }
+}
+
+impl PageViewCampaignPayload {
+    pub fn from_domain(campaign: PageViewCampaign) -> Self {
+        Self {
+            utm_source: campaign.utm_source,
+            utm_medium: campaign.utm_medium,
+            utm_campaign: campaign.utm_campaign,
+            utm_term: campaign.utm_term,
+            utm_content: campaign.utm_content,
         }
     }
 }

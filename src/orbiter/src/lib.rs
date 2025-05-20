@@ -36,7 +36,7 @@ use ic_cdk_macros::export_candid;
 use ic_http_certification::HttpRequest;
 use ic_http_certification::HttpResponse;
 use junobuild_shared::types::interface::{
-    DeleteControllersArgs, DepositCyclesArgs, SetControllersArgs,
+    DeleteControllersArgs, DepositCyclesArgs, MemorySize, SetControllersArgs,
 };
 use junobuild_shared::types::state::{Controllers, SatelliteId};
 

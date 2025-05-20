@@ -7,8 +7,6 @@ use crate::types::interface::{SetPageView, SetTrackEvent};
 use junobuild_shared::types::state::SatelliteId;
 use junobuild_shared::utils::principal_not_equal;
 
-// TODO: error key
-
 pub fn assert_analytic_key_length(key: &AnalyticKey) -> Result<(), String> {
     if key.key.len() > KEY_MAX_LENGTH {
         return Err(format!(

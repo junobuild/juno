@@ -1,7 +1,7 @@
-use crate::cdn::state::heap::{
+use crate::cdn::helpers::heap::{
     delete_asset, get_asset, get_config, get_domains, get_rule, insert_asset,
 };
-use crate::cdn::state::stable::{
+use crate::cdn::helpers::stable::{
     get_asset_stable, insert_asset_encoding_stable, insert_asset_stable,
 };
 use crate::cdn::strategies_impls::cdn::CdnHeap;

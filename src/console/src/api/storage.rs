@@ -1,4 +1,4 @@
-use crate::cdn::store::init_asset_upload as init_asset_upload_store;
+use crate::cdn::helpers::store::init_asset_upload as init_asset_upload_store;
 use crate::cdn::strategies_impls::cdn::CdnHeap;
 use crate::cdn::strategies_impls::storage::{StorageAssertions, StorageState, StorageUpload};
 use crate::guards::caller_is_admin_controller;

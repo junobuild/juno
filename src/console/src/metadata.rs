@@ -1,4 +1,4 @@
-use crate::cdn::state::heap::{get_asset, insert_asset};
+use crate::cdn::helpers::heap::{get_asset, insert_asset};
 use crate::constants::RELEASES_METADATA_JSON;
 use crate::store::heap::{get_releases_metadata, set_releases_metadata};
 use ic_cdk::id;

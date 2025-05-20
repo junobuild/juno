@@ -44,6 +44,8 @@ export interface AnalyticsOperatingSystemsPageViews {
 export interface AnalyticsTop10PageViews {
 	referrers: Array<[string, number]>;
 	pages: Array<[string, number]>;
+	utm_campaigns: [] | [Array<[string, number]>];
+	utm_sources: [] | [Array<[string, number]>];
 	time_zones: [] | [Array<[string, number]>];
 }
 export interface AnalyticsTrackEvents {
@@ -127,12 +129,20 @@ export interface PageView {
 	referrer: [] | [string];
 	time_zone: string;
 	session_id: string;
+	campaign: [] | [PageViewCampaign];
 	href: string;
 	created_at: bigint;
 	satellite_id: Principal;
 	device: PageViewDevice;
 	version: [] | [bigint];
 	user_agent: [] | [string];
+}
+export interface PageViewCampaign {
+	utm_content: [] | [string];
+	utm_medium: [] | [string];
+	utm_source: string;
+	utm_term: [] | [string];
+	utm_campaign: [] | [string];
 }
 export interface PageViewClient {
 	os: string;
@@ -182,6 +192,7 @@ export interface SetPageView {
 	referrer: [] | [string];
 	time_zone: string;
 	session_id: string;
+	campaign: [] | [PageViewCampaign];
 	href: string;
 	satellite_id: Principal;
 	device: PageViewDevice;

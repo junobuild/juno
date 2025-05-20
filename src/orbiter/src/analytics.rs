@@ -1,5 +1,5 @@
 use crate::state::types::state::{
-    AnalyticKey, PageView, PageViewClient, PerformanceData, PerformanceMetric,
+    AnalyticKey, PageView, PageViewCampaign, PageViewClient, PerformanceData, PerformanceMetric,
     PerformanceMetricName, TrackEvent, WebVitalsMetric,
 };
 use crate::types::interface::{
@@ -116,6 +116,8 @@ pub fn analytics_page_views_top_10(
     let mut referrers: HashMap<String, u32> = HashMap::new();
     let mut pages: HashMap<String, u32> = HashMap::new();
     let mut time_zones: HashMap<String, u32> = HashMap::new();
+    let mut utm_sources: HashMap<String, u32> = HashMap::new();
+    let mut utm_campaigns: HashMap<String, u32> = HashMap::new();
 
     for (
         _,
@@ -123,6 +125,7 @@ pub fn analytics_page_views_top_10(
             referrer,
             href,
             time_zone,
+            campaign,
             ..
         },
     ) in page_views
@@ -130,6 +133,7 @@ pub fn analytics_page_views_top_10(
         analytics_referrers(referrer, &mut referrers);
         analytics_pages(href, &mut pages);
         analytics_time_zones(time_zone, &mut time_zones);
+        analytics_campaigns(campaign, &mut utm_sources, &mut utm_campaigns);
     }
 
     fn top_10(data: HashMap<String, u32>) -> Vec<(String, u32)> {
@@ -138,10 +142,20 @@ pub fn analytics_page_views_top_10(
         entries.into_iter().take(10).collect()
     }
 
+    fn top_10_optional(data: HashMap<String, u32>) -> Option<Vec<(String, u32)>> {
+        if data.is_empty() {
+            None
+        } else {
+            Some(top_10(data))
+        }
+    }
+
     AnalyticsTop10PageViews {
         referrers: top_10(referrers),
         pages: top_10(pages),
-        time_zones: Some(top_10(time_zones)),
+        time_zones: Some(top_10(time_zones)), // TODO top_10_optional
+        utm_sources: top_10_optional(utm_sources),
+        utm_campaigns: top_10_optional(utm_campaigns),
     }
 }
 
@@ -469,6 +483,25 @@ fn analytics_pages(href: &str, pages: &mut HashMap<String, u32>) {
 
 fn analytics_time_zones(time_zone: &str, time_zones: &mut HashMap<String, u32>) {
     *time_zones.entry(time_zone.to_owned()).or_insert(0) += 1;
+}
+
+fn analytics_campaigns(
+    campaign: &Option<PageViewCampaign>,
+    utm_sources: &mut HashMap<String, u32>,
+    utm_campaigns: &mut HashMap<String, u32>,
+) {
+    if let Some(PageViewCampaign {
+        utm_source,
+        utm_campaign,
+        ..
+    }) = campaign
+    {
+        *utm_sources.entry(utm_source.to_owned()).or_insert(0) += 1;
+
+        if let Some(utm_campaign) = utm_campaign {
+            *utm_campaigns.entry(utm_campaign.to_owned()).or_insert(0) += 1;
+        }
+    }
 }
 
 fn analytics_devices_fallback(

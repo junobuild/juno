@@ -370,6 +370,8 @@
 		"count": "数量",
 		"referrers": "前十个引用",
 		"time_zones": "Top 10 time zones",
+		"utm_sources": "Top 10 campaigns (sources)",
+		"utm_campaigns": "Top 10 campaigns (names)",
 		"pages": "前10页",
 		"orbiter": "Orbiter",
 		"devices": "设备",

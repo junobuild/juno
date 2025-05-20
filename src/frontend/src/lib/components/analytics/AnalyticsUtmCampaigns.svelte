@@ -1,8 +1,8 @@
 <script lang="ts">
 	import { fromNullable, nonNullish } from '@dfinity/utils';
+	import AnalyticsTable from '$lib/components/analytics/AnalyticsTable.svelte';
 	import { i18n } from '$lib/stores/i18n.store';
 	import type { AnalyticsPageViews } from '$lib/types/orbiter';
-	import { formatCompactNumber } from '$lib/utils/number.utils';
 
 	interface Props {
 		pageViews: AnalyticsPageViews;
@@ -16,34 +16,7 @@
 </script>
 
 {#if nonNullish(utmCampaigns) && utmCampaigns.length > 0}
-	<div class="table-container">
-		<table>
-			<thead>
-				<tr>
-					<th> {$i18n.analytics.utm_campaigns} </th>
-					<th class="count"> {$i18n.analytics.count} </th>
-				</tr>
-			</thead>
-
-			<tbody>
-				{#each utmCampaigns as [utmCampaign, count] (utmCampaign)}
-					<tr>
-						<td>{utmCampaign}</td>
-						<td class="value">{formatCompactNumber(count)}</td>
-					</tr>
-				{/each}
-			</tbody>
-		</table>
-	</div>
+	<AnalyticsTable events={utmCampaigns}>
+		{$i18n.analytics.utm_campaigns}
+	</AnalyticsTable>
 {/if}
-
-<style lang="scss">
-	.count {
-		width: 35%;
-	}
-
-	.count,
-	.value {
-		text-align: right;
-	}
-</style>

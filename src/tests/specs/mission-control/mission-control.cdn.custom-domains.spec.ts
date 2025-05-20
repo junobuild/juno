@@ -46,7 +46,7 @@ describe('Mission Control > Cdn > Custom Domains', () => {
 		anonymousCustomDomainsTests({ actor: () => actor, errorMsg: CONTROLLER_ERROR_MSG });
 	});
 
-	describe.todo('admin', () => {
+	describe.skip('admin', () => {
 		beforeAll(() => {
 			actor.setIdentity(controller);
 		});

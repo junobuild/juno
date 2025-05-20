@@ -1,3 +1,4 @@
+use crate::cdn::helpers::heap::get_storage_config;
 use crate::cdn::strategies_impls::cdn::{CdnHeap, CdnStable};
 use candid::Principal;
 use junobuild_collections::types::core::CollectionKey;
@@ -65,7 +66,7 @@ impl StorageStateStrategy for StorageState {
     }
 
     fn get_config(&self) -> StorageConfig {
-        junobuild_cdn::storage::heap::get_config(&CdnHeap)
+        get_storage_config()
     }
 
     fn get_domains(&self) -> CustomDomains {

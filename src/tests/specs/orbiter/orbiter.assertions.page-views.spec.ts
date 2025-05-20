@@ -60,6 +60,7 @@ describe('Orbiter > Assertions > Page Views', () => {
 			{ key: 'x'.repeat(37), collected_at: 123567890n },
 			pageViewMock
 		);
+
 		expect(result).toEqual({ Err: 'An analytic key must not be longer than 36.' });
 	});
 
@@ -73,6 +74,7 @@ describe('Orbiter > Assertions > Page Views', () => {
 				session_id: 'x'.repeat(37)
 			}
 		);
+
 		expect(result).toEqual({ Err: 'An analytic session ID must not be longer than 36.' });
 	});
 
@@ -88,6 +90,7 @@ describe('Orbiter > Assertions > Page Views', () => {
 				title
 			}
 		);
+
 		expect(result).toEqual({ Err: `Page event title ${title} is longer than 1024.` });
 	});
 
@@ -103,6 +106,7 @@ describe('Orbiter > Assertions > Page Views', () => {
 				href
 			}
 		);
+
 		expect(result).toEqual({ Err: `Page event href ${href} is longer than 1024.` });
 	});
 
@@ -118,13 +122,14 @@ describe('Orbiter > Assertions > Page Views', () => {
 				referrer: [referrer]
 			}
 		);
+
 		expect(result).toEqual({ Err: `Page event referrer ${referrer} is longer than 4096.` });
 	});
 
 	it('should not set page view for invalid user agent length', async () => {
 		const { set_page_view } = actor;
 
-		const userAgent = 'x'.repeat(1025)
+		const userAgent = 'x'.repeat(1025);
 
 		const result = await set_page_view(
 			{ key: nanoid(), collected_at: 123567890n },
@@ -133,6 +138,7 @@ describe('Orbiter > Assertions > Page Views', () => {
 				user_agent: [userAgent]
 			}
 		);
+
 		expect(result).toEqual({ Err: `Page event user_agent ${userAgent} is longer than 1024.` });
 	});
 
@@ -148,6 +154,7 @@ describe('Orbiter > Assertions > Page Views', () => {
 				time_zone: timeZone
 			}
 		);
+
 		expect(result).toEqual({ Err: `Page event time_zone ${timeZone} is longer than 256.` });
 	});
 });

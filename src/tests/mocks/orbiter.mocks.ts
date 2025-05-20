@@ -166,13 +166,15 @@ export const pageViewMock: SetPageView = {
 			os: 'Mac os'
 		}
 	],
-	campaign: [{
-		utm_source: 'newsletter',
-		utm_medium: ['email'],
-		utm_campaign: ['spring_launch'],
-		utm_term: ['rust-sdk'],
-		utm_content: ['cta-button']
-	}],
+	campaign: [
+		{
+			utm_source: 'newsletter',
+			utm_medium: ['email'],
+			utm_campaign: ['spring_launch'],
+			utm_term: ['rust-sdk'],
+			utm_content: ['cta-button']
+		}
+	],
 	version: [],
 	updated_at: []
 };

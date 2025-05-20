@@ -4,6 +4,7 @@ import type {
 } from '$declarations/orbiter/orbiter.did';
 import { idlFactory as idlFactorOrbiter } from '$declarations/orbiter/orbiter.factory.did';
 import { Ed25519KeyIdentity } from '@dfinity/identity';
+import { toNullable } from '@dfinity/utils';
 import { type Actor, PocketIc } from '@hadronous/pic';
 import { nanoid } from 'nanoid';
 import { inject } from 'vitest';
@@ -156,5 +157,127 @@ describe('Orbiter > Assertions > Page Views', () => {
 		);
 
 		expect(result).toEqual({ Err: `Page event time_zone ${timeZone} is longer than 256.` });
+	});
+
+	describe('Campaign', () => {
+		it('should not set page view for invalid utm_source length', async () => {
+			const { set_page_view } = actor;
+
+			const utm = 'x'.repeat(101);
+
+			const result = await set_page_view(
+				{ key: nanoid(), collected_at: 123567890n },
+				{
+					...pageViewMock,
+					campaign: [
+						{
+							utm_source: utm,
+							utm_medium: toNullable(),
+							utm_content: toNullable(),
+							utm_term: toNullable(),
+							utm_campaign: toNullable()
+						}
+					]
+				}
+			);
+
+			expect(result).toEqual({ Err: `utm_source ${utm} is longer than 100.` });
+		});
+
+		it('should not set page view for invalid utm_medium length', async () => {
+			const { set_page_view } = actor;
+
+			const utm = 'x'.repeat(101);
+
+			const result = await set_page_view(
+				{ key: nanoid(), collected_at: 123567890n },
+				{
+					...pageViewMock,
+					campaign: [
+						{
+							utm_source: 'newsletter',
+							utm_medium: toNullable(utm),
+							utm_content: toNullable(),
+							utm_term: toNullable(),
+							utm_campaign: toNullable()
+						}
+					]
+				}
+			);
+
+			expect(result).toEqual({ Err: `utm_medium ${utm} is longer than 100.` });
+		});
+
+		it('should not set page view for invalid utm_content length', async () => {
+			const { set_page_view } = actor;
+
+			const utm = 'x'.repeat(101);
+
+			const result = await set_page_view(
+				{ key: nanoid(), collected_at: 123567890n },
+				{
+					...pageViewMock,
+					campaign: [
+						{
+							utm_source: 'newsletter',
+							utm_medium: toNullable(),
+							utm_content: toNullable(utm),
+							utm_term: toNullable(),
+							utm_campaign: toNullable()
+						}
+					]
+				}
+			);
+
+			expect(result).toEqual({ Err: `utm_content ${utm} is longer than 100.` });
+		});
+
+		it('should not set page view for invalid utm_term length', async () => {
+			const { set_page_view } = actor;
+
+			const utm = 'x'.repeat(101);
+
+			const result = await set_page_view(
+				{ key: nanoid(), collected_at: 123567890n },
+				{
+					...pageViewMock,
+					campaign: [
+						{
+							utm_source: 'newsletter',
+							utm_medium: toNullable(),
+							utm_content: toNullable(),
+							utm_term: toNullable(utm),
+							utm_campaign: toNullable()
+						}
+					]
+				}
+			);
+
+			expect(result).toEqual({ Err: `utm_term ${utm} is longer than 100.` });
+		});
+
+		it('should not set page view for invalid utm_campaign length', async () => {
+			const { set_page_view } = actor;
+
+			const utm = 'x'.repeat(101);
+
+			const result = await set_page_view(
+				{ key: nanoid(), collected_at: 123567890n },
+				{
+					...pageViewMock,
+					campaign: [
+						{
+							utm_source: 'newsletter',
+							utm_medium: toNullable(),
+							utm_content: toNullable(),
+							utm_term: toNullable(),
+							utm_campaign: toNullable(utm)
+						}
+					]
+				}
+			);
+
+			expect(result).toEqual({ Err: `utm_campaign ${utm} is longer than 100.` });
+		});
 	});
 });

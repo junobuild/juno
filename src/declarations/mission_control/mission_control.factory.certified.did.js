@@ -1,5 +1,9 @@
 // @ts-ignore
 export const idlFactory = ({ IDL }) => {
+	const CommitProposal = IDL.Record({
+		sha256: IDL.Vec(IDL.Nat8),
+		proposal_id: IDL.Nat
+	});
 	const CyclesThreshold = IDL.Record({
 		fund_cycles: IDL.Nat,
 		min_cycles: IDL.Nat
@@ -30,6 +34,9 @@ export const idlFactory = ({ IDL }) => {
 		created_at: IDL.Nat64,
 		satellite_id: IDL.Principal,
 		settings: IDL.Opt(Settings)
+	});
+	const DeleteProposalAssets = IDL.Record({
+		proposal_ids: IDL.Vec(IDL.Nat)
 	});
 	const DepositCyclesArgs = IDL.Record({
 		cycles: IDL.Nat,
@@ -86,6 +93,36 @@ export const idlFactory = ({ IDL }) => {
 	});
 	const MonitoringStatus = IDL.Record({
 		cycles: IDL.Opt(CyclesMonitoringStatus)
+	});
+	const ProposalStatus = IDL.Variant({
+		Initialized: IDL.Null,
+		Failed: IDL.Null,
+		Open: IDL.Null,
+		Rejected: IDL.Null,
+		Executed: IDL.Null,
+		Accepted: IDL.Null
+	});
+	const AssetsUpgradeOptions = IDL.Record({
+		clear_existing_assets: IDL.Opt(IDL.Bool)
+	});
+	const SegmentsDeploymentOptions = IDL.Record({
+		orbiter: IDL.Opt(IDL.Text),
+		mission_control_version: IDL.Opt(IDL.Text),
+		satellite_version: IDL.Opt(IDL.Text)
+	});
+	const ProposalType = IDL.Variant({
+		AssetsUpgrade: AssetsUpgradeOptions,
+		SegmentsDeployment: SegmentsDeploymentOptions
+	});
+	const Proposal = IDL.Record({
+		status: ProposalStatus,
+		updated_at: IDL.Nat64,
+		sha256: IDL.Opt(IDL.Vec(IDL.Nat8)),
+		executed_at: IDL.Opt(IDL.Nat64),
+		owner: IDL.Principal,
+		created_at: IDL.Nat64,
+		version: IDL.Opt(IDL.Nat64),
+		proposal_type: ProposalType
 	});
 	const MissionControlSettings = IDL.Record({
 		updated_at: IDL.Nat64,
@@ -246,6 +283,7 @@ export const idlFactory = ({ IDL }) => {
 	return IDL.Service({
 		add_mission_control_controllers: IDL.Func([IDL.Vec(IDL.Principal)], [], []),
 		add_satellites_controllers: IDL.Func([IDL.Vec(IDL.Principal), IDL.Vec(IDL.Principal)], [], []),
+		commit_proposal: IDL.Func([CommitProposal], [IDL.Null], []),
 		create_orbiter: IDL.Func([IDL.Opt(IDL.Text)], [Orbiter], []),
 		create_orbiter_with_config: IDL.Func([CreateCanisterConfig], [Orbiter], []),
 		create_satellite: IDL.Func([IDL.Text], [Satellite], []),
@@ -256,6 +294,7 @@ export const idlFactory = ({ IDL }) => {
 		del_orbiters_controllers: IDL.Func([IDL.Vec(IDL.Principal), IDL.Vec(IDL.Principal)], [], []),
 		del_satellite: IDL.Func([IDL.Principal, IDL.Nat], [], []),
 		del_satellites_controllers: IDL.Func([IDL.Vec(IDL.Principal), IDL.Vec(IDL.Principal)], [], []),
+		delete_proposal_assets: IDL.Func([DeleteProposalAssets], [], []),
 		deposit_cycles: IDL.Func([DepositCyclesArgs], [], []),
 		get_config: IDL.Func([], [IDL.Opt(Config)], []),
 		get_metadata: IDL.Func([], [IDL.Vec(IDL.Tuple(IDL.Text, IDL.Text))], []),
@@ -265,6 +304,7 @@ export const idlFactory = ({ IDL }) => {
 			[]
 		),
 		get_monitoring_status: IDL.Func([], [MonitoringStatus], []),
+		get_proposal: IDL.Func([IDL.Nat], [IDL.Opt(Proposal)], []),
 		get_settings: IDL.Func([], [IDL.Opt(MissionControlSettings)], []),
 		get_storage_config: IDL.Func([], [StorageConfig], []),
 		get_user: IDL.Func([], [IDL.Principal], []),
@@ -277,6 +317,7 @@ export const idlFactory = ({ IDL }) => {
 		),
 		icp_transfer: IDL.Func([TransferArgs], [Result], []),
 		icrc_transfer: IDL.Func([IDL.Principal, TransferArg], [Result_1], []),
+		init_proposal: IDL.Func([ProposalType], [IDL.Nat, Proposal], []),
 		list_custom_domains: IDL.Func([], [IDL.Vec(IDL.Tuple(IDL.Text, CustomDomain))], []),
 		list_mission_control_controllers: IDL.Func(
 			[],
@@ -320,6 +361,7 @@ export const idlFactory = ({ IDL }) => {
 		set_storage_config: IDL.Func([StorageConfig], [], []),
 		start_monitoring: IDL.Func([], [], []),
 		stop_monitoring: IDL.Func([], [], []),
+		submit_proposal: IDL.Func([IDL.Nat], [IDL.Nat, Proposal], []),
 		top_up: IDL.Func([IDL.Principal, Tokens], [], []),
 		unset_orbiter: IDL.Func([IDL.Principal], [], []),
 		unset_satellite: IDL.Func([IDL.Principal], [], []),

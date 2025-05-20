@@ -176,6 +176,7 @@ pub mod core {
 pub mod interface {
     use crate::types::state::CyclesMonitoringStrategy;
     use candid::CandidType;
+    use junobuild_cdn::proposals::ProposalId;
     use junobuild_shared::mgmt::types::cmc::SubnetId;
     use junobuild_shared::types::state::{OrbiterId, SatelliteId, SegmentId, Timestamp};
     use serde::{Deserialize, Serialize};
@@ -232,5 +233,10 @@ pub mod interface {
         pub segment_id: SegmentId,
         pub from: Option<Timestamp>,
         pub to: Option<Timestamp>,
+    }
+
+    #[derive(CandidType, Serialize, Deserialize, Clone)]
+    pub struct DeleteProposalAssets {
+        pub proposal_ids: Vec<ProposalId>,
     }
 }

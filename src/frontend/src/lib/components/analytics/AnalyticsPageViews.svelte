@@ -5,9 +5,9 @@
 	import AnalyticsPages from '$lib/components/analytics/AnalyticsPages.svelte';
 	import AnalyticsReferrers from '$lib/components/analytics/AnalyticsReferrers.svelte';
 	import AnalyticsTimeZones from '$lib/components/analytics/AnalyticsTimeZones.svelte';
-	import type { AnalyticsPageViews } from '$lib/types/orbiter';
-	import AnalyticsUtmSources from '$lib/components/analytics/AnalyticsUtmSources.svelte';
 	import AnalyticsUtmCampaigns from '$lib/components/analytics/AnalyticsUtmCampaigns.svelte';
+	import AnalyticsUtmSources from '$lib/components/analytics/AnalyticsUtmSources.svelte';
+	import type { AnalyticsPageViews } from '$lib/types/orbiter';
 
 	interface Props {
 		pageViews: AnalyticsPageViews;

@@ -5,7 +5,7 @@ import type {
 } from '$declarations/orbiter/orbiter.did';
 import { idlFactory as idlFactorOrbiter } from '$declarations/orbiter/orbiter.factory.did';
 import { Ed25519KeyIdentity } from '@dfinity/identity';
-import { jsonReviver, toNullable } from '@dfinity/utils';
+import { fromNullable, jsonReviver, toNullable } from '@dfinity/utils';
 import { type Actor, PocketIc } from '@hadronous/pic';
 import { readFile } from 'node:fs/promises';
 import { join } from 'node:path';
@@ -138,7 +138,18 @@ describe('Orbiter > Analytics', () => {
 				to: [collected_at + 1000n]
 			});
 
-			expect(result).toEqual({
+			const sortedTimeZones = [...(fromNullable(result.time_zones) ?? [])].sort((a, b) => {
+				if (b[1] !== a[1]) {
+					return b[1] - a[1];
+				}
+
+				return a[0].localeCompare(b[0]);
+			});
+
+			expect({
+				...result,
+				time_zones: [sortedTimeZones]
+			}).toEqual({
 				pages: [
 					['/', 92],
 					['/hello/', 26],
@@ -163,8 +174,8 @@ describe('Orbiter > Analytics', () => {
 						['Europe/Amsterdam', 11],
 						['Africa/Lagos', 9],
 						['Asia/Tokyo', 8],
-						['Europe/Stockholm', 7],
-						['Asia/Manila', 7]
+						['Asia/Manila', 7],
+						['Europe/Stockholm', 7]
 					]
 				],
 				utm_campaigns: [],

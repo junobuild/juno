@@ -242,9 +242,8 @@ pub mod interface {
             pub device: PageViewDevicePayload,
             pub time_zone: String,
             pub user_agent: Option<String>,
-            pub client: Option<PageViewClientPayload>, // TODO: Option::is_none
+            pub client: Option<PageViewClientPayload>,
             pub session_id: SessionId,
-            #[serde(skip_serializing_if = "Option::is_none")]
             pub campaign: Option<PageViewCampaignPayload>,
             pub version: VersionPayload,
         }

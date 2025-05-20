@@ -1,8 +1,8 @@
 <script lang="ts">
 	import { fromNullable, nonNullish } from '@dfinity/utils';
+	import AnalyticsTable from '$lib/components/analytics/AnalyticsTable.svelte';
 	import { i18n } from '$lib/stores/i18n.store';
 	import type { AnalyticsPageViews } from '$lib/types/orbiter';
-	import { formatCompactNumber } from '$lib/utils/number.utils';
 
 	interface Props {
 		pageViews: AnalyticsPageViews;
@@ -16,34 +16,7 @@
 </script>
 
 {#if nonNullish(timeZones) && timeZones.length > 0}
-	<div class="table-container">
-		<table>
-			<thead>
-				<tr>
-					<th> {$i18n.analytics.time_zones} </th>
-					<th class="count"> {$i18n.analytics.count} </th>
-				</tr>
-			</thead>
-
-			<tbody>
-				{#each timeZones as [timeZone, count] (timeZone)}
-					<tr>
-						<td>{timeZone}</td>
-						<td class="value">{formatCompactNumber(count)}</td>
-					</tr>
-				{/each}
-			</tbody>
-		</table>
-	</div>
+	<AnalyticsTable events={timeZones}>
+		{$i18n.analytics.time_zones}
+	</AnalyticsTable>
 {/if}
-
-<style lang="scss">
-	.count {
-		width: 35%;
-	}
-
-	.count,
-	.value {
-		text-align: right;
-	}
-</style>

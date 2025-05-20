@@ -153,7 +153,7 @@ pub fn analytics_page_views_top_10(
     AnalyticsTop10PageViews {
         referrers: top_10(referrers),
         pages: top_10(pages),
-        time_zones: Some(top_10(time_zones)), // TODO top_10_optional
+        time_zones: Some(top_10(time_zones)),
         utm_sources: top_10_optional(utm_sources),
         utm_campaigns: top_10_optional(utm_campaigns),
     }

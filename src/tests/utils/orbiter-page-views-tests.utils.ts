@@ -61,6 +61,7 @@ export const uploadPageViews = async ({
 					satellite_id: ____,
 					device,
 					user_agent,
+					campaign,
 					...value
 				}
 			],
@@ -107,7 +108,8 @@ export const uploadPageViews = async ({
 						...device,
 						screen_width: withSizeMock ? [screen_width[i % screen_width.length]] : [],
 						screen_height: []
-					}
+					},
+					campaign: campaign ?? []
 				}
 			];
 		}

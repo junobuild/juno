@@ -166,7 +166,9 @@ describe('Orbiter > Analytics', () => {
 						['Europe/Stockholm', 7],
 						['Asia/Manila', 7]
 					]
-				]
+				],
+				utm_campaigns: [],
+				utm_sources: []
 			});
 		});
 

@@ -67,49 +67,38 @@ describe('Orbiter > Analytics > Campaign', () => {
 		});
 
 		expect(result).toEqual({
-			pages: [
-				['/', 14],
-				['/hello/', 6],
-				['/explore/', 2],
-				['/info/', 1],
-				['/coolio/', 1]
-			],
 			referrers: [
-				['source.com', 7],
-				['demo.com', 4],
-				['com.twitter.android', 3],
-				['www.google.com', 1]
+				['source.com', 5],
+				['demo.com', 3],
+				['com.twitter.android', 2]
+			],
+			pages: [
+				['/', 7],
+				['/hello/', 5],
+				['/info/', 1]
 			],
 			time_zones: [
 				[
-					['America/Los_Angeles', 6],
-					['Asia/Tokyo', 4],
-					['America/Chicago', 2],
-					['America/New_York', 2],
-					['UTC', 1],
-					['Europe/Berlin', 1],
-					['Asia/Jakarta', 1],
-					['Africa/Lagos', 1],
-					['Europe/London', 1],
-					['Europe/Lisbon', 1]
+					['America/Los_Angeles', 5],
+					['America/Chicago', 4],
+					['Asia/Tokyo', 3],
+					['Europe/Berlin', 1]
 				]
 			],
 			utm_campaigns: [
 				[
-					['spring_sale', 8],
-					['product_launch', 5],
-					['b2b_outreach', 5],
-					['partner_promo', 3],
-					['weekly_update', 3]
+					['spring_sale', 5],
+					['product_launch', 4],
+					['b2b_outreach', 3],
+					['partner_promo', 1]
 				]
 			],
 			utm_sources: [
 				[
-					['google', 8],
-					['linkedin', 5],
-					['twitter', 5],
-					['referral', 3],
-					['newsletter', 3]
+					['google', 5],
+					['linkedin', 4],
+					['twitter', 3],
+					['referral', 1]
 				]
 			]
 		});

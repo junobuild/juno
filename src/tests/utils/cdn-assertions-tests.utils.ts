@@ -29,10 +29,12 @@ import { tick } from './pic-tests.utils';
 
 export const testNotAllowedCdnMethods = ({
 	actor,
-	errorMsg
+	errorMsgAdminController,
+	errorMsgController
 }: {
 	actor: () => Actor<MissionControlActor | ConsoleActor>;
-	errorMsg: string;
+	errorMsgAdminController: string;
+	errorMsgController?: string;
 }) => {
 	it('should throw errors on init asset upload', async () => {
 		const { init_asset_upload } = actor();
@@ -46,7 +48,9 @@ export const testNotAllowedCdnMethods = ({
 			full_path: '/hello.html'
 		};
 
-		await expect(init_asset_upload(key, 123n)).rejects.toThrow(errorMsg);
+		await expect(init_asset_upload(key, 123n)).rejects.toThrow(
+			errorMsgController ?? errorMsgAdminController
+		);
 	});
 
 	it('should throw errors on propose assets upgrade', async () => {
@@ -58,7 +62,9 @@ export const testNotAllowedCdnMethods = ({
 			order_id: []
 		};
 
-		await expect(upload_asset_chunk(chunk)).rejects.toThrow(errorMsg);
+		await expect(upload_asset_chunk(chunk)).rejects.toThrow(
+			errorMsgController ?? errorMsgAdminController
+		);
 	});
 
 	it('should throw errors on commit asset upload', async () => {
@@ -70,7 +76,9 @@ export const testNotAllowedCdnMethods = ({
 			chunk_ids: [123n]
 		};
 
-		await expect(commit_asset_upload(batch)).rejects.toThrow(errorMsg);
+		await expect(commit_asset_upload(batch)).rejects.toThrow(
+			errorMsgController ?? errorMsgAdminController
+		);
 	});
 
 	it('should throw errors on list assets', async () => {
@@ -78,7 +86,7 @@ export const testNotAllowedCdnMethods = ({
 
 		await expect(
 			list_assets('#dapp', { matcher: [], order: [], owner: [], paginate: [] })
-		).rejects.toThrow(errorMsg);
+		).rejects.toThrow(errorMsgController ?? errorMsgAdminController);
 	});
 
 	it('should throw errors on setting config', async () => {
@@ -93,33 +101,37 @@ export const testNotAllowedCdnMethods = ({
 				raw_access: toNullable(),
 				max_memory_size: toNullable()
 			})
-		).rejects.toThrow(errorMsg);
+		).rejects.toThrow(errorMsgAdminController);
 	});
 
 	it('should throw errors on getting storage config', async () => {
 		const { get_storage_config } = actor();
 
-		await expect(get_storage_config()).rejects.toThrow(errorMsg);
+		await expect(get_storage_config()).rejects.toThrow(errorMsgAdminController);
 	});
 
 	it('should throw errors on delete proposal assets', async () => {
 		const { delete_proposal_assets } = actor();
 
-		await expect(delete_proposal_assets({ proposal_ids: [1n] })).rejects.toThrow(errorMsg);
+		await expect(delete_proposal_assets({ proposal_ids: [1n] })).rejects.toThrow(
+			errorMsgAdminController
+		);
 	});
 
 	it('should throw errors on init proposal', async () => {
 		const { init_proposal } = actor();
 
 		await expect(init_proposal({ AssetsUpgrade: { clear_existing_assets: [] } })).rejects.toThrow(
-			errorMsg
+			errorMsgController ?? errorMsgAdminController
 		);
 	});
 
 	it('should throw errors on submit proposal', async () => {
 		const { submit_proposal } = actor();
 
-		await expect(submit_proposal(123n)).rejects.toThrow(errorMsg);
+		await expect(submit_proposal(123n)).rejects.toThrow(
+			errorMsgController ?? errorMsgAdminController
+		);
 	});
 
 	it('should throw errors on commit proposal', async () => {
@@ -130,22 +142,14 @@ export const testNotAllowedCdnMethods = ({
 			proposal_id: 123n
 		};
 
-		await expect(commit_proposal(commit)).rejects.toThrow(errorMsg);
+		await expect(commit_proposal(commit)).rejects.toThrow(errorMsgAdminController);
 	});
 };
 
-export const testControlledCdnMethods = ({
-	actor,
-	pic,
-	controller,
-	canisterId,
-	currentDate
+export const testCdnConfig = ({
+	actor
 }: {
 	actor: () => Actor<MissionControlActor | ConsoleActor>;
-	pic: () => PocketIc;
-	controller: () => Identity;
-	canisterId: () => Principal;
-	currentDate: Date;
 }) => {
 	it('should set and get config', async () => {
 		const { set_storage_config, get_storage_config } = actor();
@@ -165,7 +169,28 @@ export const testControlledCdnMethods = ({
 
 		expect(savedConfig).toEqual(config);
 	});
+};
 
+export const testControlledCdnMethods = ({
+	actor,
+	pic,
+	caller,
+	canisterId,
+	currentDate,
+	expected_proposal_id = 1n,
+	fullPaths = {
+		assetsUpgrade: '/hello.html',
+		segmentsDeployment: '/releases/satellite-v0.0.18.wasm.gz'
+	}
+}: {
+	actor: (params?: { requireController: boolean }) => Actor<MissionControlActor | ConsoleActor>;
+	pic: () => PocketIc;
+	caller: () => Identity;
+	canisterId: () => Principal;
+	currentDate: Date;
+	expected_proposal_id?: bigint;
+	fullPaths?: { assetsUpgrade: string; segmentsDeployment: string };
+}) => {
 	describe.each([
 		{
 			proposal_type: {
@@ -174,8 +199,8 @@ export const testControlledCdnMethods = ({
 				}
 			} as ProposalType,
 			collection: '#dapp',
-			full_path: '/hello.html',
-			expected_proposal_id: 1n
+			full_path: fullPaths.assetsUpgrade,
+			expected_proposal_id
 		},
 		{
 			proposal_type: {
@@ -186,8 +211,8 @@ export const testControlledCdnMethods = ({
 				}
 			} as ProposalType,
 			collection: '#releases',
-			full_path: '/releases/satellite-v0.0.18.wasm.gz',
-			expected_proposal_id: 2n
+			full_path: fullPaths.segmentsDeployment,
+			expected_proposal_id: expected_proposal_id + 1n
 		}
 	])(
 		'Proposal, upload and serve',
@@ -207,7 +232,7 @@ export const testControlledCdnMethods = ({
 				expect(proposal.status).toEqual({ Initialized: null });
 				expect(fromNullable(proposal.sha256)).toBeUndefined();
 				expect(fromNullable(proposal.executed_at)).toBeUndefined();
-				expect(proposal.owner.toText()).toEqual(controller().getPrincipal().toText());
+				expect(proposal.owner.toText()).toEqual(caller().getPrincipal().toText());
 				expect(proposal.proposal_type).toEqual(proposal_type);
 				expect(proposal.created_at).not.toBeUndefined();
 				expect(proposal.created_at).toBeGreaterThan(0n);
@@ -296,7 +321,7 @@ export const testControlledCdnMethods = ({
 				expect(proposal.status).toEqual({ Open: null });
 				expect(sha256ToBase64String(fromNullable(proposal.sha256) ?? [])).not.toBeUndefined();
 				expect(fromNullable(proposal.executed_at)).toBeUndefined();
-				expect(proposal.owner.toText()).toEqual(controller().getPrincipal().toText());
+				expect(proposal.owner.toText()).toEqual(caller().getPrincipal().toText());
 				expect(proposal.proposal_type).toEqual(proposal_type);
 				expect(proposal.created_at).not.toBeUndefined();
 				expect(proposal.created_at).toBeGreaterThan(0n);
@@ -332,7 +357,7 @@ export const testControlledCdnMethods = ({
 			});
 
 			it('should fail at committing a proposal if unknown', async () => {
-				const { commit_proposal } = actor();
+				const { commit_proposal } = actor({ requireController: true });
 
 				const unknownProposalId = proposalId + 1n;
 
@@ -345,7 +370,7 @@ export const testControlledCdnMethods = ({
 			});
 
 			it('should fail at committing a proposal with incorrect sha256', async () => {
-				const { commit_proposal } = actor();
+				const { commit_proposal } = actor({ requireController: true });
 
 				const sha256 = Array.from({ length: 32 }).map((_, i) => i);
 
@@ -368,7 +393,7 @@ export const testControlledCdnMethods = ({
 			});
 
 			it('should commit proposal', async () => {
-				const { commit_proposal } = actor();
+				const { commit_proposal } = actor({ requireController: true });
 
 				await expect(
 					commit_proposal({
@@ -458,7 +483,7 @@ export const testControlledCdnMethods = ({
 	);
 
 	it('should clear assets with proposal', async () => {
-		const { http_request, init_proposal, commit_proposal, submit_proposal } = actor();
+		const { http_request, init_proposal, submit_proposal } = actor();
 
 		const [proposalId, __] = await init_proposal({
 			AssetsUpgrade: {
@@ -470,6 +495,8 @@ export const testControlledCdnMethods = ({
 
 		const [_, proposal] = await submit_proposal(proposalId);
 
+		const { commit_proposal } = actor({ requireController: true });
+
 		await commit_proposal({
 			sha256: fromNullable(proposal.sha256)!,
 			proposal_id: proposalId
@@ -480,7 +507,7 @@ export const testControlledCdnMethods = ({
 			certificate_version: toNullable(),
 			headers: [],
 			method: 'GET',
-			url: '/hello.html'
+			url: fullPaths.assetsUpgrade
 		});
 
 		expect(status_code).toEqual(404);
@@ -504,14 +531,14 @@ export const testControlledCdnMethods = ({
 			certificate_version: toNullable(),
 			headers: [],
 			method: 'GET',
-			url: '/releases/satellite-v0.0.18.wasm.gz'
+			url: fullPaths.segmentsDeployment
 		});
 
 		expect(status_code).toBe(200);
 	});
 
 	it('should mark proposal as failed', async () => {
-		const { init_proposal, commit_proposal, submit_proposal, get_proposal } = actor();
+		const { init_proposal, submit_proposal, get_proposal } = actor();
 
 		const [proposalId, __] = await init_proposal({
 			AssetsUpgrade: {
@@ -522,6 +549,8 @@ export const testControlledCdnMethods = ({
 		// We do not upload any chunks and commit batch to make the proposal fail.
 
 		const [_, { sha256 }] = await submit_proposal(proposalId);
+
+		const { commit_proposal } = actor({ requireController: true });
 
 		await expect(
 			commit_proposal({
@@ -537,4 +566,37 @@ export const testControlledCdnMethods = ({
 		expect(proposal.status).toEqual({ Failed: null });
 	});
 };
+
+export const testCdnGetProposal = ({
+	actor,
+	owner,
+	proposalId = 1n
+}: {
+	actor: () => Actor<MissionControlActor | ConsoleActor>;
+	owner: () => Identity;
+	proposalId?: bigint;
+}) => {
+	it('should get proposal', async () => {
+		const { get_proposal } = actor();
+
+		const proposal = fromNullable(await get_proposal(proposalId));
+
+		assertNonNullish(proposal);
+
+		expect(proposal.status).toEqual({ Executed: null });
+		expect(sha256ToBase64String(fromNullable(proposal.sha256) ?? [])).not.toBeUndefined();
+		expect(fromNullable(proposal.executed_at)).not.toBeUndefined();
+		expect(proposal.owner.toText()).toEqual(owner().getPrincipal().toText());
+		expect(proposal.proposal_type).toEqual({
+			AssetsUpgrade: { clear_existing_assets: toNullable() }
+		});
+		expect(proposal.created_at).not.toBeUndefined();
+		expect(proposal.created_at).toBeGreaterThan(0n);
+		expect(proposal.updated_at).not.toBeUndefined();
+		expect(proposal.updated_at).toBeGreaterThan(0n);
+		expect(proposal.updated_at).toBeGreaterThan(proposal.created_at);
+		expect(fromNullable(proposal.version) ?? 0n).toEqual(3n);
+	});
+};
+
 /* eslint-enable */

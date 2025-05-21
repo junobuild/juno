@@ -12,7 +12,7 @@ import type { Principal } from '@dfinity/principal';
 import { fromNullable, nonNullish, toNullable } from '@dfinity/utils';
 import { PocketIc, type Actor } from '@hadronous/pic';
 import { inject } from 'vitest';
-import { CONTROLLER_ERROR_MSG } from '../../constants/mission-control-tests.constants';
+import { MISSION_CONTROL_ADMIN_CONTROLLER_ERROR_MSG } from '../../constants/mission-control-tests.constants';
 import { satelliteIdMock } from '../../mocks/orbiter.mocks';
 import {
 	missionControlUserInitArgs,
@@ -76,20 +76,20 @@ describe('Mission Control > Monitoring', () => {
 		it('should throw errors on start monitoring', async () => {
 			const { start_monitoring } = actor;
 
-			await expect(start_monitoring()).rejects.toThrow(CONTROLLER_ERROR_MSG);
+			await expect(start_monitoring()).rejects.toThrow(MISSION_CONTROL_ADMIN_CONTROLLER_ERROR_MSG);
 		});
 
 		it('should throw errors on stop monitoring', async () => {
 			const { stop_monitoring } = actor;
 
-			await expect(stop_monitoring()).rejects.toThrow(CONTROLLER_ERROR_MSG);
+			await expect(stop_monitoring()).rejects.toThrow(MISSION_CONTROL_ADMIN_CONTROLLER_ERROR_MSG);
 		});
 
 		it('should throw errors on update and start monitoring', async () => {
 			const { update_and_start_monitoring } = actor;
 
 			await expect(update_and_start_monitoring({ cycles_config: [] })).rejects.toThrow(
-				CONTROLLER_ERROR_MSG
+				MISSION_CONTROL_ADMIN_CONTROLLER_ERROR_MSG
 			);
 		});
 
@@ -100,13 +100,15 @@ describe('Mission Control > Monitoring', () => {
 				update_and_stop_monitoring({
 					cycles_config: []
 				})
-			).rejects.toThrow(CONTROLLER_ERROR_MSG);
+			).rejects.toThrow(MISSION_CONTROL_ADMIN_CONTROLLER_ERROR_MSG);
 		});
 
 		it('should throw errors on get monitoring status', async () => {
 			const { get_monitoring_status } = actor;
 
-			await expect(get_monitoring_status()).rejects.toThrow(CONTROLLER_ERROR_MSG);
+			await expect(get_monitoring_status()).rejects.toThrow(
+				MISSION_CONTROL_ADMIN_CONTROLLER_ERROR_MSG
+			);
 		});
 
 		it('should throw errors on get monitoring history', async () => {
@@ -118,19 +120,19 @@ describe('Mission Control > Monitoring', () => {
 					from: toNullable(),
 					to: toNullable()
 				})
-			).rejects.toThrow(CONTROLLER_ERROR_MSG);
+			).rejects.toThrow(MISSION_CONTROL_ADMIN_CONTROLLER_ERROR_MSG);
 		});
 
 		it('should throw errors on get config', async () => {
 			const { get_config } = actor;
 
-			await expect(get_config()).rejects.toThrow(CONTROLLER_ERROR_MSG);
+			await expect(get_config()).rejects.toThrow(MISSION_CONTROL_ADMIN_CONTROLLER_ERROR_MSG);
 		});
 
 		it('should throw errors on set config', async () => {
 			const { set_config } = actor;
 
-			await expect(set_config([])).rejects.toThrow(CONTROLLER_ERROR_MSG);
+			await expect(set_config([])).rejects.toThrow(MISSION_CONTROL_ADMIN_CONTROLLER_ERROR_MSG);
 		});
 	};
 

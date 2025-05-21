@@ -3,20 +3,16 @@ import { idlFactory as idlFactorConsole } from '$declarations/console/console.fa
 import { AnonymousIdentity } from '@dfinity/agent';
 import { Ed25519KeyIdentity } from '@dfinity/identity';
 import type { Principal } from '@dfinity/principal';
-import {
-	arrayBufferToUint8Array,
-	assertNonNullish,
-	fromNullable,
-	toNullable
-} from '@dfinity/utils';
+import { arrayBufferToUint8Array, fromNullable, toNullable } from '@dfinity/utils';
 import { PocketIc, type Actor } from '@hadronous/pic';
 import { beforeAll, describe, expect, inject } from 'vitest';
 import { CONTROLLER_ERROR_MSG } from '../../constants/console-tests.constants';
 import {
+	testCdnConfig,
+	testCdnGetProposal,
 	testControlledCdnMethods,
 	testNotAllowedCdnMethods
 } from '../../utils/cdn-assertions-tests.utils';
-import { sha256ToBase64String } from '../../utils/crypto-tests.utils';
 import { CONSOLE_WASM_PATH } from '../../utils/setup-tests.utils';
 
 describe('Console > Cdn', () => {
@@ -55,7 +51,7 @@ describe('Console > Cdn', () => {
 			actor.setIdentity(new AnonymousIdentity());
 		});
 
-		testNotAllowedCdnMethods({ actor: () => actor, errorMsg: CONTROLLER_ERROR_MSG });
+		testNotAllowedCdnMethods({ actor: () => actor, errorMsgAdminController: CONTROLLER_ERROR_MSG });
 	});
 
 	describe('Some identity', () => {
@@ -64,7 +60,7 @@ describe('Console > Cdn', () => {
 			actor.setIdentity(user);
 		});
 
-		testNotAllowedCdnMethods({ actor: () => actor, errorMsg: CONTROLLER_ERROR_MSG });
+		testNotAllowedCdnMethods({ actor: () => actor, errorMsgAdminController: CONTROLLER_ERROR_MSG });
 	});
 
 	describe('Admin', () => {
@@ -72,11 +68,15 @@ describe('Console > Cdn', () => {
 			actor.setIdentity(controller);
 		});
 
+		testCdnConfig({
+			actor: () => actor
+		});
+
 		testControlledCdnMethods({
 			actor: () => actor,
 			currentDate,
 			canisterId: () => canisterId,
-			controller: () => controller,
+			caller: () => controller,
 			pic: () => pic
 		});
 
@@ -197,26 +197,9 @@ describe('Console > Cdn', () => {
 			actor.setIdentity(new AnonymousIdentity());
 		});
 
-		it('should get proposal', async () => {
-			const { get_proposal } = actor;
-
-			const proposal = fromNullable(await get_proposal(1n));
-
-			assertNonNullish(proposal);
-
-			expect(proposal.status).toEqual({ Executed: null });
-			expect(sha256ToBase64String(fromNullable(proposal.sha256) ?? [])).not.toBeUndefined();
-			expect(fromNullable(proposal.executed_at)).not.toBeUndefined();
-			expect(proposal.owner.toText()).toEqual(controller.getPrincipal().toText());
-			expect(proposal.proposal_type).toEqual({
-				AssetsUpgrade: { clear_existing_assets: toNullable() }
-			});
-			expect(proposal.created_at).not.toBeUndefined();
-			expect(proposal.created_at).toBeGreaterThan(0n);
-			expect(proposal.updated_at).not.toBeUndefined();
-			expect(proposal.updated_at).toBeGreaterThan(0n);
-			expect(proposal.updated_at).toBeGreaterThan(proposal.created_at);
-			expect(fromNullable(proposal.version) ?? 0n).toEqual(3n);
+		testCdnGetProposal({
+			actor: () => actor,
+			owner: () => controller
 		});
 	});
 });

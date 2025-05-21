@@ -1,12 +1,18 @@
+import type { _SERVICE as ConsoleActor } from '$declarations/console/console.did';
 import type { _SERVICE as MissionControlActor } from '$declarations/mission_control/mission_control.did';
 import { idlFactory as idlFactorMissionControl } from '$declarations/mission_control/mission_control.factory.did';
 import { AnonymousIdentity } from '@dfinity/agent';
 import { Ed25519KeyIdentity } from '@dfinity/identity';
 import type { Principal } from '@dfinity/principal';
 import { type Actor, PocketIc } from '@hadronous/pic';
-import { beforeAll, describe, inject } from 'vitest';
-import { MISSION_CONTROL_ADMIN_CONTROLLER_ERROR_MSG } from '../../constants/mission-control-tests.constants';
+import { beforeAll, describe, expect, inject } from 'vitest';
 import {
+	MISSION_CONTROL_ADMIN_CONTROLLER_ERROR_MSG,
+	MISSION_CONTROL_CONTROLLER_ERROR_MSG
+} from '../../constants/mission-control-tests.constants';
+import {
+	testCdnConfig,
+	testCdnGetProposal,
 	testControlledCdnMethods,
 	testNotAllowedCdnMethods
 } from '../../utils/cdn-assertions-tests.utils';
@@ -37,6 +43,12 @@ describe('Mission Control > Cdn', () => {
 			sender: controller.getPrincipal()
 		});
 
+		await pic.updateCanisterSettings({
+			canisterId: cId,
+			controllers: [controller.getPrincipal(), cId],
+			sender: controller.getPrincipal()
+		});
+
 		actor = c;
 		actor.setIdentity(controller);
 
@@ -47,12 +59,35 @@ describe('Mission Control > Cdn', () => {
 		await pic?.tearDown();
 	});
 
+	const testNotAllowedCdnMethodsInMissionControl = ({
+		actor,
+		errorMsg
+	}: {
+		actor: () => Actor<MissionControlActor | ConsoleActor>;
+		errorMsg: string;
+	}) => {
+		it('should throw errors on get proposal', async () => {
+			const { get_proposal } = actor();
+
+			await expect(get_proposal(1n)).rejects.toThrow(errorMsg);
+		});
+	};
+
 	describe('Anonymous', () => {
 		beforeAll(() => {
 			actor.setIdentity(new AnonymousIdentity());
 		});
 
-		testNotAllowedCdnMethods({ actor: () => actor, errorMsg: MISSION_CONTROL_ADMIN_CONTROLLER_ERROR_MSG });
+		testNotAllowedCdnMethods({
+			actor: () => actor,
+			errorMsgAdminController: MISSION_CONTROL_ADMIN_CONTROLLER_ERROR_MSG,
+			errorMsgController: MISSION_CONTROL_CONTROLLER_ERROR_MSG
+		});
+
+		testNotAllowedCdnMethodsInMissionControl({
+			actor: () => actor,
+			errorMsg: MISSION_CONTROL_CONTROLLER_ERROR_MSG
+		});
 	});
 
 	describe('Some identity', () => {
@@ -61,7 +96,16 @@ describe('Mission Control > Cdn', () => {
 			actor.setIdentity(user);
 		});
 
-		testNotAllowedCdnMethods({ actor: () => actor, errorMsg: MISSION_CONTROL_ADMIN_CONTROLLER_ERROR_MSG });
+		testNotAllowedCdnMethods({
+			actor: () => actor,
+			errorMsgAdminController: MISSION_CONTROL_ADMIN_CONTROLLER_ERROR_MSG,
+			errorMsgController: MISSION_CONTROL_CONTROLLER_ERROR_MSG
+		});
+
+		testNotAllowedCdnMethodsInMissionControl({
+			actor: () => actor,
+			errorMsg: MISSION_CONTROL_CONTROLLER_ERROR_MSG
+		});
 	});
 
 	describe('Admin', () => {
@@ -69,12 +113,67 @@ describe('Mission Control > Cdn', () => {
 			actor.setIdentity(controller);
 		});
 
+		testCdnConfig({
+			actor: () => actor
+		});
+
 		testControlledCdnMethods({
 			actor: () => actor,
 			currentDate,
 			canisterId: () => canisterId,
-			controller: () => controller,
+			caller: () => controller,
 			pic: () => pic
+		});
+
+		testCdnGetProposal({
+			actor: () => actor,
+			owner: () => controller
+		});
+	});
+
+	describe('Read+write controller', () => {
+		const user = Ed25519KeyIdentity.generate();
+
+		beforeAll(async () => {
+			actor.setIdentity(controller);
+
+			const { set_mission_control_controllers } = actor;
+
+			await set_mission_control_controllers([user.getPrincipal()], {
+				scope: { Write: null },
+				metadata: [],
+				expires_at: []
+			});
+
+			actor.setIdentity(user);
+		});
+
+		testControlledCdnMethods({
+			actor: (params) => {
+				if (params?.requireController === true) {
+					actor.setIdentity(controller);
+				} else {
+					actor.setIdentity(user);
+				}
+
+				return actor;
+			},
+			currentDate,
+			canisterId: () => canisterId,
+			caller: () => user,
+			pic: () => pic,
+			expected_proposal_id: 5n
+		});
+
+		testCdnGetProposal({
+			actor: () => actor,
+			owner: () => user,
+			proposalId: 5n
+		});
+
+		testCdnGetProposal({
+			actor: () => actor,
+			owner: () => controller
 		});
 	});
 });

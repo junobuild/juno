@@ -3,7 +3,7 @@ use crate::cdn::helpers::store::init_asset_upload as init_asset_upload_store;
 use crate::cdn::strategies_impls::cdn::CdnHeap;
 use crate::cdn::strategies_impls::storage::{StorageAssertions, StorageState, StorageUpload};
 use crate::controllers::store::get_controllers_with_user;
-use crate::guards::caller_is_user_or_admin_controller;
+use crate::guards::{caller_is_user_or_controller};
 use ic_cdk::api::caller;
 use ic_cdk::trap;
 use ic_cdk_macros::{query, update};
@@ -16,13 +16,11 @@ use junobuild_storage::types::interface::{
     AssetNoContent, CommitBatch, InitAssetKey, InitUploadResult, UploadChunk, UploadChunkResult,
 };
 
-// TODO: caller_is_controller
-
 // ---------------------------------------------------------
 // Storage
 // ---------------------------------------------------------
 
-#[update(guard = "caller_is_user_or_admin_controller")]
+#[update(guard = "caller_is_user_or_controller")]
 fn init_asset_upload(init: InitAssetKey, proposal_id: ProposalId) -> InitUploadResult {
     let caller = caller();
 
@@ -34,7 +32,7 @@ fn init_asset_upload(init: InitAssetKey, proposal_id: ProposalId) -> InitUploadR
     }
 }
 
-#[update(guard = "caller_is_user_or_admin_controller")]
+#[update(guard = "caller_is_user_or_controller")]
 fn upload_asset_chunk(chunk: UploadChunk) -> UploadChunkResult {
     let caller = caller();
     let config = get_storage_config();
@@ -47,7 +45,7 @@ fn upload_asset_chunk(chunk: UploadChunk) -> UploadChunkResult {
     }
 }
 
-#[update(guard = "caller_is_user_or_admin_controller")]
+#[update(guard = "caller_is_user_or_controller")]
 fn commit_asset_upload(commit: CommitBatch) {
     let caller = caller();
 
@@ -66,7 +64,7 @@ fn commit_asset_upload(commit: CommitBatch) {
     .unwrap_or_else(|e| trap(&e));
 }
 
-#[query(guard = "caller_is_user_or_admin_controller")]
+#[query(guard = "caller_is_user_or_controller")]
 pub fn list_assets(collection: CollectionKey, filter: ListParams) -> ListResults<AssetNoContent> {
     let result = junobuild_cdn::storage::heap::list_assets(&CdnHeap, &collection, &filter);
 

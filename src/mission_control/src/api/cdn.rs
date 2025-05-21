@@ -1,4 +1,5 @@
 use crate::cdn::certified_assets::upgrade::defer_init_certified_assets;
+use crate::cdn::helpers::heap::get_storage_config as get_cdn_storage_config;
 use crate::cdn::strategies_impls::cdn::{CdnHeap, CdnStable, CdnWorkflow};
 use crate::cdn::strategies_impls::storage::StorageState;
 use crate::guards::caller_is_user_or_admin_controller;
@@ -68,7 +69,7 @@ pub fn set_storage_config(config: StorageConfig) {
 
 #[query(guard = "caller_is_user_or_admin_controller")]
 pub fn get_storage_config() -> StorageConfig {
-    junobuild_cdn::storage::heap::get_config(&CdnHeap)
+    get_cdn_storage_config()
 }
 
 // ---------------------------------------------------------

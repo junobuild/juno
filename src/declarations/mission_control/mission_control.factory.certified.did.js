@@ -1,5 +1,10 @@
 // @ts-ignore
 export const idlFactory = ({ IDL }) => {
+	const CommitBatch = IDL.Record({
+		batch_id: IDL.Nat,
+		headers: IDL.Vec(IDL.Tuple(IDL.Text, IDL.Text)),
+		chunk_ids: IDL.Vec(IDL.Nat)
+	});
 	const CommitProposal = IDL.Record({
 		sha256: IDL.Vec(IDL.Nat8),
 		proposal_id: IDL.Nat
@@ -238,6 +243,71 @@ export const idlFactory = ({ IDL }) => {
 		InsufficientFunds: IDL.Record({ balance: IDL.Nat })
 	});
 	const Result_1 = IDL.Variant({ Ok: IDL.Nat, Err: TransferError_1 });
+	const InitAssetKey = IDL.Record({
+		token: IDL.Opt(IDL.Text),
+		collection: IDL.Text,
+		name: IDL.Text,
+		description: IDL.Opt(IDL.Text),
+		encoding_type: IDL.Opt(IDL.Text),
+		full_path: IDL.Text
+	});
+	const InitUploadResult = IDL.Record({ batch_id: IDL.Nat });
+	const ListOrderField = IDL.Variant({
+		UpdatedAt: IDL.Null,
+		Keys: IDL.Null,
+		CreatedAt: IDL.Null
+	});
+	const ListOrder = IDL.Record({ field: ListOrderField, desc: IDL.Bool });
+	const TimestampMatcher = IDL.Variant({
+		Equal: IDL.Nat64,
+		Between: IDL.Tuple(IDL.Nat64, IDL.Nat64),
+		GreaterThan: IDL.Nat64,
+		LessThan: IDL.Nat64
+	});
+	const ListMatcher = IDL.Record({
+		key: IDL.Opt(IDL.Text),
+		updated_at: IDL.Opt(TimestampMatcher),
+		description: IDL.Opt(IDL.Text),
+		created_at: IDL.Opt(TimestampMatcher)
+	});
+	const ListPaginate = IDL.Record({
+		start_after: IDL.Opt(IDL.Text),
+		limit: IDL.Opt(IDL.Nat64)
+	});
+	const ListParams = IDL.Record({
+		order: IDL.Opt(ListOrder),
+		owner: IDL.Opt(IDL.Principal),
+		matcher: IDL.Opt(ListMatcher),
+		paginate: IDL.Opt(ListPaginate)
+	});
+	const AssetKey = IDL.Record({
+		token: IDL.Opt(IDL.Text),
+		collection: IDL.Text,
+		owner: IDL.Principal,
+		name: IDL.Text,
+		description: IDL.Opt(IDL.Text),
+		full_path: IDL.Text
+	});
+	const AssetEncodingNoContent = IDL.Record({
+		modified: IDL.Nat64,
+		sha256: IDL.Vec(IDL.Nat8),
+		total_length: IDL.Nat
+	});
+	const AssetNoContent = IDL.Record({
+		key: AssetKey,
+		updated_at: IDL.Nat64,
+		encodings: IDL.Vec(IDL.Tuple(IDL.Text, AssetEncodingNoContent)),
+		headers: IDL.Vec(IDL.Tuple(IDL.Text, IDL.Text)),
+		created_at: IDL.Nat64,
+		version: IDL.Opt(IDL.Nat64)
+	});
+	const ListResults = IDL.Record({
+		matches_pages: IDL.Opt(IDL.Nat64),
+		matches_length: IDL.Nat64,
+		items_page: IDL.Opt(IDL.Nat64),
+		items: IDL.Vec(IDL.Tuple(IDL.Text, AssetNoContent)),
+		items_length: IDL.Nat64
+	});
 	const CustomDomain = IDL.Record({
 		updated_at: IDL.Nat64,
 		created_at: IDL.Nat64,
@@ -280,9 +350,16 @@ export const idlFactory = ({ IDL }) => {
 	const MonitoringStopConfig = IDL.Record({
 		cycles_config: IDL.Opt(CyclesMonitoringStopConfig)
 	});
+	const UploadChunk = IDL.Record({
+		content: IDL.Vec(IDL.Nat8),
+		batch_id: IDL.Nat,
+		order_id: IDL.Opt(IDL.Nat)
+	});
+	const UploadChunkResult = IDL.Record({ chunk_id: IDL.Nat });
 	return IDL.Service({
 		add_mission_control_controllers: IDL.Func([IDL.Vec(IDL.Principal)], [], []),
 		add_satellites_controllers: IDL.Func([IDL.Vec(IDL.Principal), IDL.Vec(IDL.Principal)], [], []),
+		commit_asset_upload: IDL.Func([CommitBatch], [], []),
 		commit_proposal: IDL.Func([CommitProposal], [IDL.Null], []),
 		create_orbiter: IDL.Func([IDL.Opt(IDL.Text)], [Orbiter], []),
 		create_orbiter_with_config: IDL.Func([CreateCanisterConfig], [Orbiter], []),
@@ -317,7 +394,9 @@ export const idlFactory = ({ IDL }) => {
 		),
 		icp_transfer: IDL.Func([TransferArgs], [Result], []),
 		icrc_transfer: IDL.Func([IDL.Principal, TransferArg], [Result_1], []),
+		init_asset_upload: IDL.Func([InitAssetKey, IDL.Nat], [InitUploadResult], []),
 		init_proposal: IDL.Func([ProposalType], [IDL.Nat, Proposal], []),
+		list_assets: IDL.Func([IDL.Text, ListParams], [ListResults], []),
 		list_custom_domains: IDL.Func([], [IDL.Vec(IDL.Tuple(IDL.Text, CustomDomain))], []),
 		list_mission_control_controllers: IDL.Func(
 			[],
@@ -366,7 +445,8 @@ export const idlFactory = ({ IDL }) => {
 		unset_orbiter: IDL.Func([IDL.Principal], [], []),
 		unset_satellite: IDL.Func([IDL.Principal], [], []),
 		update_and_start_monitoring: IDL.Func([MonitoringStartConfig], [], []),
-		update_and_stop_monitoring: IDL.Func([MonitoringStopConfig], [], [])
+		update_and_stop_monitoring: IDL.Func([MonitoringStopConfig], [], []),
+		upload_asset_chunk: IDL.Func([UploadChunk], [UploadChunkResult], [])
 	});
 };
 // @ts-ignore

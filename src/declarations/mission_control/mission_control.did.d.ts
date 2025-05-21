@@ -6,8 +6,34 @@ export interface Account {
 	owner: Principal;
 	subaccount: [] | [Uint8Array | number[]];
 }
+export interface AssetEncodingNoContent {
+	modified: bigint;
+	sha256: Uint8Array | number[];
+	total_length: bigint;
+}
+export interface AssetKey {
+	token: [] | [string];
+	collection: string;
+	owner: Principal;
+	name: string;
+	description: [] | [string];
+	full_path: string;
+}
+export interface AssetNoContent {
+	key: AssetKey;
+	updated_at: bigint;
+	encodings: Array<[string, AssetEncodingNoContent]>;
+	headers: Array<[string, string]>;
+	created_at: bigint;
+	version: [] | [bigint];
+}
 export interface AssetsUpgradeOptions {
 	clear_existing_assets: [] | [boolean];
+}
+export interface CommitBatch {
+	batch_id: bigint;
+	headers: Array<[string, string]>;
+	chunk_ids: Array<bigint>;
 }
 export interface CommitProposal {
 	sha256: Uint8Array | number[];
@@ -107,6 +133,45 @@ export interface HttpResponse {
 	headers: Array<[string, string]>;
 	streaming_strategy: [] | [StreamingStrategy];
 	status_code: number;
+}
+export interface InitAssetKey {
+	token: [] | [string];
+	collection: string;
+	name: string;
+	description: [] | [string];
+	encoding_type: [] | [string];
+	full_path: string;
+}
+export interface InitUploadResult {
+	batch_id: bigint;
+}
+export interface ListMatcher {
+	key: [] | [string];
+	updated_at: [] | [TimestampMatcher];
+	description: [] | [string];
+	created_at: [] | [TimestampMatcher];
+}
+export interface ListOrder {
+	field: ListOrderField;
+	desc: boolean;
+}
+export type ListOrderField = { UpdatedAt: null } | { Keys: null } | { CreatedAt: null };
+export interface ListPaginate {
+	start_after: [] | [string];
+	limit: [] | [bigint];
+}
+export interface ListParams {
+	order: [] | [ListOrder];
+	owner: [] | [Principal];
+	matcher: [] | [ListMatcher];
+	paginate: [] | [ListPaginate];
+}
+export interface ListResults {
+	matches_pages: [] | [bigint];
+	matches_length: bigint;
+	items_page: [] | [bigint];
+	items: Array<[string, AssetNoContent]>;
+	items_length: bigint;
 }
 export type Memory = { Heap: null } | { Stable: null };
 export interface MissionControlSettings {
@@ -231,6 +296,11 @@ export type StreamingStrategy = {
 export interface Timestamp {
 	timestamp_nanos: bigint;
 }
+export type TimestampMatcher =
+	| { Equal: bigint }
+	| { Between: [bigint, bigint] }
+	| { GreaterThan: bigint }
+	| { LessThan: bigint };
 export interface Tokens {
 	e8s: bigint;
 }
@@ -269,6 +339,14 @@ export type TransferError_1 =
 	| { CreatedInFuture: { ledger_time: bigint } }
 	| { TooOld: null }
 	| { InsufficientFunds: { balance: bigint } };
+export interface UploadChunk {
+	content: Uint8Array | number[];
+	batch_id: bigint;
+	order_id: [] | [bigint];
+}
+export interface UploadChunkResult {
+	chunk_id: bigint;
+}
 export interface User {
 	updated_at: bigint;
 	metadata: Array<[string, string]>;
@@ -279,6 +357,7 @@ export interface User {
 export interface _SERVICE {
 	add_mission_control_controllers: ActorMethod<[Array<Principal>], undefined>;
 	add_satellites_controllers: ActorMethod<[Array<Principal>, Array<Principal>], undefined>;
+	commit_asset_upload: ActorMethod<[CommitBatch], undefined>;
 	commit_proposal: ActorMethod<[CommitProposal], null>;
 	create_orbiter: ActorMethod<[[] | [string]], Orbiter>;
 	create_orbiter_with_config: ActorMethod<[CreateCanisterConfig], Orbiter>;
@@ -311,7 +390,9 @@ export interface _SERVICE {
 	>;
 	icp_transfer: ActorMethod<[TransferArgs], Result>;
 	icrc_transfer: ActorMethod<[Principal, TransferArg], Result_1>;
+	init_asset_upload: ActorMethod<[InitAssetKey, bigint], InitUploadResult>;
 	init_proposal: ActorMethod<[ProposalType], [bigint, Proposal]>;
+	list_assets: ActorMethod<[string, ListParams], ListResults>;
 	list_custom_domains: ActorMethod<[], Array<[string, CustomDomain]>>;
 	list_mission_control_controllers: ActorMethod<[], Array<[Principal, Controller]>>;
 	list_orbiters: ActorMethod<[], Array<[Principal, Orbiter]>>;
@@ -343,6 +424,7 @@ export interface _SERVICE {
 	unset_satellite: ActorMethod<[Principal], undefined>;
 	update_and_start_monitoring: ActorMethod<[MonitoringStartConfig], undefined>;
 	update_and_stop_monitoring: ActorMethod<[MonitoringStopConfig], undefined>;
+	upload_asset_chunk: ActorMethod<[UploadChunk], UploadChunkResult>;
 }
 export declare const idlFactory: IDL.InterfaceFactory;
 export declare const init: (args: { IDL: typeof IDL }) => IDL.Type[];

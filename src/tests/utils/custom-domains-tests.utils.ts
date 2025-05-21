@@ -2,14 +2,14 @@ import type { _SERVICE as ConsoleActor } from '$declarations/console/console.did
 import type { _SERVICE as MissionControlActor } from '$declarations/mission_control/mission_control.did';
 import type { _SERVICE as SatelliteActor } from '$declarations/satellite/satellite.did';
 import { assertNonNullish, fromNullable, toNullable } from '@dfinity/utils';
+import type { Actor } from '@hadronous/pic';
+import { uploadFile } from './cdn-tests.utils';
 
-export const anonymousCustomDomainsTests = <
-	T extends SatelliteActor | ConsoleActor | MissionControlActor
->({
+export const anonymousCustomDomainsTests = ({
 	actor,
 	errorMsg
 }: {
-	actor: () => T;
+	actor: () => Actor<SatelliteActor | ConsoleActor | MissionControlActor>;
 	errorMsg: string;
 }) => {
 	// eslint-disable-next-line vitest/require-top-level-describe
@@ -34,12 +34,10 @@ export const anonymousCustomDomainsTests = <
 	});
 };
 
-export const adminCustomDomainsTests = <
-	T extends SatelliteActor | ConsoleActor | MissionControlActor
->({
+export const adminCustomDomainsTests = ({
 	actor
 }: {
-	actor: () => T;
+	actor: () => Actor<SatelliteActor | ConsoleActor | MissionControlActor>;
 }) => {
 	// eslint-disable-next-line vitest/require-top-level-describe
 	it('should set custom domain', async () => {
@@ -139,5 +137,66 @@ export const adminCustomDomainsTests = <
 
 		expect(decoder.decode(body as Uint8Array<ArrayBufferLike>)).toContain('test3.com');
 		expect(decoder.decode(body as Uint8Array<ArrayBufferLike>)).toContain('test2.com');
+	});
+};
+
+export const adminCustomDomainsWithProposalTests = ({
+	actor
+}: {
+	actor: () => Actor<ConsoleActor | MissionControlActor>;
+}) => {
+	// eslint-disable-next-line vitest/require-top-level-describe
+	it('should not delete asset ic-domains when deleting all assets', async () => {
+		const { http_request, init_proposal, submit_proposal, commit_proposal } = actor();
+
+		const [proposalId, _] = await init_proposal({
+			AssetsUpgrade: {
+				clear_existing_assets: toNullable(true)
+			}
+		});
+
+		await uploadFile({ proposalId, actor: actor() });
+
+		const [__, proposal] = await submit_proposal(proposalId);
+
+		await commit_proposal({
+			sha256: fromNullable(proposal.sha256)!,
+			proposal_id: proposalId
+		});
+
+		const { status_code } = await http_request({
+			body: [],
+			certificate_version: toNullable(),
+			headers: [],
+			method: 'GET',
+			url: '/.well-known/ic-domains'
+		});
+
+		expect(status_code).toEqual(200);
+	});
+
+	// eslint-disable-next-line vitest/require-top-level-describe
+	it('should throw error if try to upload ic-domains', async () => {
+		const { init_asset_upload, init_proposal } = actor();
+
+		const [proposalId, _] = await init_proposal({
+			AssetsUpgrade: {
+				clear_existing_assets: toNullable()
+			}
+		});
+
+		await expect(
+			init_asset_upload(
+				{
+					collection: '#dapp',
+					description: toNullable(),
+					encoding_type: [],
+					full_path: '/.well-known/ic-domains',
+					name: 'ic-domains',
+					token: toNullable()
+				},
+				proposalId
+			)
+		).rejects.toThrow('/.well-known/ic-domains is a reserved asset.');
 	});
 };

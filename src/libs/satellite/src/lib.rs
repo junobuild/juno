@@ -31,7 +31,7 @@ use junobuild_shared::types::core::DomainName;
 use junobuild_shared::types::core::{Blob, Key};
 use junobuild_shared::types::domain::CustomDomains;
 use junobuild_shared::types::interface::{
-    DeleteControllersArgs, DepositCyclesArgs, SetControllersArgs,
+    DeleteControllersArgs, DepositCyclesArgs, MemorySize, SetControllersArgs,
 };
 use junobuild_shared::types::list::ListParams;
 use junobuild_shared::types::list::ListResults;
@@ -379,6 +379,12 @@ pub async fn deposit_cycles(args: DepositCyclesArgs) {
     junobuild_shared::mgmt::ic::deposit_cycles(args)
         .await
         .unwrap_or_else(|e| trap(&e))
+}
+
+#[doc(hidden)]
+#[query(guard = "caller_is_controller")]
+pub fn memory_size() -> MemorySize {
+    junobuild_shared::canister::memory_size()
 }
 
 /// Include the stock Juno satellite features into your Juno application.

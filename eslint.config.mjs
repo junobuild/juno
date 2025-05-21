@@ -7,7 +7,10 @@ export default [
 	{
 		rules: {
 			// TODO: re-enable this rule when it includes `expect` statements nested in callable functions.
-			'vitest/expect-expect': ['off']
+			'vitest/expect-expect': ['off'],
+			// Following rule is annoying for my workflow as it is conflicting when I'm implementing iteratively
+			// features that share similar logic across modules.
+			'vitest/no-commented-out-tests': ['off']
 		}
 	},
 	{

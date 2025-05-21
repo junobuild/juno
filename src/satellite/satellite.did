@@ -119,6 +119,7 @@ type ListResults_1 = record {
   items_length : nat64;
 };
 type Memory = variant { Heap; Stable };
+type MemorySize = record { stable : nat64; heap : nat64 };
 type Permission = variant { Controllers; Private; Public; Managed };
 type RateConfig = record { max_tokens : nat64; time_per_token_ns : nat64 };
 type Rule = record {
@@ -244,6 +245,7 @@ service : () -> {
   list_custom_domains : () -> (vec record { text; CustomDomain }) query;
   list_docs : (text, ListParams) -> (ListResults_1) query;
   list_rules : (CollectionType) -> (vec record { text; Rule }) query;
+  memory_size : () -> (MemorySize) query;
   set_auth_config : (AuthenticationConfig) -> ();
   set_controllers : (SetControllersArgs) -> (
       vec record { principal; Controller },

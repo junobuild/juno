@@ -729,5 +729,11 @@ describe('Satellite', () => {
 				})
 			).rejects.toThrow(JUNO_STORAGE_ERROR_UPLOAD_NOT_ALLOWED);
 		});
+
+		it('should throw errors on memory size', async () => {
+			const { memory_size } = actor;
+
+			await expect(memory_size()).rejects.toThrow(JUNO_AUTH_ERROR_NOT_CONTROLLER);
+		});
 	});
 });

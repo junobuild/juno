@@ -75,6 +75,7 @@ pub mod state {
         pub time_zone: String,
         pub satellite_id: SatelliteId,
         pub session_id: SessionId,
+        pub campaign: Option<PageViewCampaign>,
         pub created_at: Timestamp,
         pub updated_at: Timestamp,
         pub version: Option<Version>,
@@ -94,6 +95,15 @@ pub mod state {
         pub inner_height: u16,
         pub screen_width: Option<u16>,
         pub screen_height: Option<u16>,
+    }
+
+    #[derive(Default, CandidType, Serialize, Deserialize, Clone)]
+    pub struct PageViewCampaign {
+        pub utm_source: String, // The name of the campaign source where you plan to share the link.
+        pub utm_medium: Option<String>, // The name of the channel where the link is placed. e.g. "Email" or "Social".
+        pub utm_campaign: Option<String>, // The name of your individual campaign. e.g. "Black+Friday".
+        pub utm_term: Option<String>, // The name of the keyword for your paid search ad campaign.
+        pub utm_content: Option<String>, // The name of the specific link. You may be having multiple links pointing to the same location.
     }
 
     #[derive(CandidType, Serialize, Deserialize, Clone)]

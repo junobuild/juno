@@ -31,6 +31,7 @@ export interface SetPageViewPayload {
 	version?: bigint;
 	user_agent?: string;
 	client?: PageViewClientPayload;
+	campaign?: SetPageViewCampaignPayload;
 }
 
 export interface PageViewDevicePayload {
@@ -38,6 +39,14 @@ export interface PageViewDevicePayload {
 	inner_width: number;
 	screen_height?: number;
 	screen_width?: number;
+}
+
+export interface SetPageViewCampaignPayload {
+	utm_source: string;
+	utm_medium?: string;
+	utm_campaign?: string;
+	utm_term?: string;
+	utm_content?: string;
 }
 
 export interface PageViewClientPayload {
@@ -157,6 +166,15 @@ export const pageViewMock: SetPageView = {
 			os: 'Mac os'
 		}
 	],
+	campaign: [
+		{
+			utm_source: 'newsletter',
+			utm_medium: ['email'],
+			utm_campaign: ['spring_launch'],
+			utm_term: ['rust-sdk'],
+			utm_content: ['cta-button']
+		}
+	],
 	version: [],
 	updated_at: []
 };
@@ -177,6 +195,13 @@ export const pageViewPayloadMock: SetPageViewPayload = {
 		browser: 'Firefox',
 		device: 'desktop',
 		os: 'Mac os'
+	},
+	campaign: {
+		utm_source: 'newsletter',
+		utm_medium: 'email',
+		utm_campaign: 'spring_launch',
+		utm_term: 'rust-sdk',
+		utm_content: 'cta-button'
 	}
 };
 

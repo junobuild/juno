@@ -5,7 +5,7 @@ import { Ed25519KeyIdentity } from '@dfinity/identity';
 import type { Principal } from '@dfinity/principal';
 import { PocketIc, type Actor } from '@hadronous/pic';
 import { inject } from 'vitest';
-import { CONTROLLER_ERROR_MSG } from '../../constants/mission-control-tests.constants';
+import { MISSION_CONTROL_ADMIN_CONTROLLER_ERROR_MSG } from '../../constants/mission-control-tests.constants';
 import {
 	missionControlUserInitArgs,
 	setupMissionControlModules
@@ -57,25 +57,25 @@ describe('Mission Control > Set / Unset', () => {
 		it('should throw errors on set orbiter', async () => {
 			const { set_orbiter } = actor;
 
-			await expect(set_orbiter(orbiterId, [])).rejects.toThrow(CONTROLLER_ERROR_MSG);
+			await expect(set_orbiter(orbiterId, [])).rejects.toThrow(MISSION_CONTROL_ADMIN_CONTROLLER_ERROR_MSG);
 		});
 
 		it('should throw errors on unset orbiter', async () => {
 			const { unset_orbiter } = actor;
 
-			await expect(unset_orbiter(orbiterId)).rejects.toThrow(CONTROLLER_ERROR_MSG);
+			await expect(unset_orbiter(orbiterId)).rejects.toThrow(MISSION_CONTROL_ADMIN_CONTROLLER_ERROR_MSG);
 		});
 
 		it('should throw errors on set satellite', async () => {
 			const { set_satellite } = actor;
 
-			await expect(set_satellite(satelliteId, [])).rejects.toThrow(CONTROLLER_ERROR_MSG);
+			await expect(set_satellite(satelliteId, [])).rejects.toThrow(MISSION_CONTROL_ADMIN_CONTROLLER_ERROR_MSG);
 		});
 
 		it('should throw errors on unset satellite', async () => {
 			const { unset_satellite } = actor;
 
-			await expect(unset_satellite(satelliteId)).rejects.toThrow(CONTROLLER_ERROR_MSG);
+			await expect(unset_satellite(satelliteId)).rejects.toThrow(MISSION_CONTROL_ADMIN_CONTROLLER_ERROR_MSG);
 		});
 	};
 

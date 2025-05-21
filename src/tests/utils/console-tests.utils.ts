@@ -8,7 +8,7 @@ import { assertNonNullish, fromNullable, toNullable } from '@dfinity/utils';
 import type { Actor, PocketIc } from '@hadronous/pic';
 import { readFile } from 'node:fs/promises';
 import { expect } from 'vitest';
-import { CONTROLLER_ERROR_MSG } from '../constants/mission-control-tests.constants';
+import { MISSION_CONTROL_ADMIN_CONTROLLER_ERROR_MSG } from '../constants/mission-control-tests.constants';
 import { tick } from './pic-tests.utils';
 import {
 	downloadMissionControl,
@@ -298,6 +298,6 @@ export const testSatelliteExists = async ({
 		);
 
 		// The Mission Control has no public functions. If it rejects a call with a particular error message it means it exists.
-		await expect(get_user()).rejects.toThrow(CONTROLLER_ERROR_MSG);
+		await expect(get_user()).rejects.toThrow(MISSION_CONTROL_ADMIN_CONTROLLER_ERROR_MSG);
 	}
 };

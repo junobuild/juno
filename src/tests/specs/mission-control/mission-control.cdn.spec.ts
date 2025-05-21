@@ -5,7 +5,7 @@ import { Ed25519KeyIdentity } from '@dfinity/identity';
 import type { Principal } from '@dfinity/principal';
 import { type Actor, PocketIc } from '@hadronous/pic';
 import { beforeAll, describe, inject } from 'vitest';
-import { CONTROLLER_ERROR_MSG } from '../../constants/mission-control-tests.constants';
+import { MISSION_CONTROL_ADMIN_CONTROLLER_ERROR_MSG } from '../../constants/mission-control-tests.constants';
 import {
 	testControlledCdnMethods,
 	testNotAllowedCdnMethods
@@ -52,7 +52,7 @@ describe('Mission Control > Cdn', () => {
 			actor.setIdentity(new AnonymousIdentity());
 		});
 
-		testNotAllowedCdnMethods({ actor: () => actor, errorMsg: CONTROLLER_ERROR_MSG });
+		testNotAllowedCdnMethods({ actor: () => actor, errorMsg: MISSION_CONTROL_ADMIN_CONTROLLER_ERROR_MSG });
 	});
 
 	describe('Some identity', () => {
@@ -61,7 +61,7 @@ describe('Mission Control > Cdn', () => {
 			actor.setIdentity(user);
 		});
 
-		testNotAllowedCdnMethods({ actor: () => actor, errorMsg: CONTROLLER_ERROR_MSG });
+		testNotAllowedCdnMethods({ actor: () => actor, errorMsg: MISSION_CONTROL_ADMIN_CONTROLLER_ERROR_MSG });
 	});
 
 	describe('Admin', () => {

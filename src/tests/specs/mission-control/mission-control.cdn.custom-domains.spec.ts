@@ -4,7 +4,7 @@ import { AnonymousIdentity } from '@dfinity/agent';
 import { Ed25519KeyIdentity } from '@dfinity/identity';
 import { PocketIc, type Actor } from '@hadronous/pic';
 import { inject } from 'vitest';
-import { CONTROLLER_ERROR_MSG } from '../../constants/mission-control-tests.constants';
+import { MISSION_CONTROL_ADMIN_CONTROLLER_ERROR_MSG } from '../../constants/mission-control-tests.constants';
 import {
 	adminCustomDomainsTests,
 	adminCustomDomainsWithProposalTests,
@@ -44,7 +44,7 @@ describe('Mission Control > Cdn > Custom Domains', () => {
 			actor.setIdentity(new AnonymousIdentity());
 		});
 
-		anonymousCustomDomainsTests({ actor: () => actor, errorMsg: CONTROLLER_ERROR_MSG });
+		anonymousCustomDomainsTests({ actor: () => actor, errorMsg: MISSION_CONTROL_ADMIN_CONTROLLER_ERROR_MSG });
 	});
 
 	describe('admin', () => {

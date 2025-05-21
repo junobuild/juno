@@ -2,13 +2,12 @@ import type { _SERVICE as ConsoleActor } from '$declarations/console/console.did
 import { idlFactory as idlFactorConsole } from '$declarations/console/console.factory.did';
 import { AnonymousIdentity } from '@dfinity/agent';
 import { Ed25519KeyIdentity } from '@dfinity/identity';
-import { fromNullable, toNullable } from '@dfinity/utils';
 import { PocketIc, type Actor } from '@hadronous/pic';
 import { inject } from 'vitest';
 import { CONTROLLER_ERROR_MSG } from '../../constants/console-tests.constants';
-import { uploadFile } from '../../utils/cdn-tests.utils';
 import {
-	adminCustomDomainsTests, adminCustomDomainsWithProposalTests,
+	adminCustomDomainsTests,
+	adminCustomDomainsWithProposalTests,
 	anonymousCustomDomainsTests
 } from '../../utils/custom-domains-tests.utils';
 import { CONSOLE_WASM_PATH } from '../../utils/setup-tests.utils';

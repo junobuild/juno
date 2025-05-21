@@ -148,6 +148,10 @@ describe('Mission Control > Cdn', () => {
 			actor.setIdentity(user);
 		});
 
+		beforeEach(() => {
+			actor.setIdentity(user);
+		});
+
 		testControlledCdnMethods({
 			actor: (params) => {
 				if (params?.requireController === true) {
@@ -174,6 +178,25 @@ describe('Mission Control > Cdn', () => {
 		testCdnGetProposal({
 			actor: () => actor,
 			owner: () => controller
+		});
+
+		it('should fail at committing a proposal', async () => {
+			const { commit_proposal } = actor;
+
+			await expect(
+				commit_proposal({
+					sha256: Array.from({ length: 32 }).map((_, i) => i),
+					proposal_id: 5n
+				})
+			).rejects.toThrow(MISSION_CONTROL_ADMIN_CONTROLLER_ERROR_MSG);
+		});
+
+		it('should throw errors on delete proposal assets', async () => {
+			const { delete_proposal_assets } = actor;
+
+			await expect(delete_proposal_assets({ proposal_ids: [1n] })).rejects.toThrow(
+				MISSION_CONTROL_ADMIN_CONTROLLER_ERROR_MSG
+			);
 		});
 	});
 });

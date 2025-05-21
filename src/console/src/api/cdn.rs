@@ -1,10 +1,10 @@
 use crate::cdn::certified_assets::upgrade::defer_init_certified_assets;
+use crate::cdn::helpers::stable::get_proposal as get_proposal_state;
 use crate::cdn::proposals::{
     commit_proposal as make_commit_proposal,
     delete_proposal_assets as delete_proposal_assets_proposal, init_proposal as make_init_proposal,
     submit_proposal as make_submit_proposal,
 };
-use crate::cdn::state::stable::get_proposal as get_proposal_state;
 use crate::cdn::strategies_impls::cdn::CdnHeap;
 use crate::cdn::strategies_impls::storage::StorageState;
 use crate::guards::caller_is_admin_controller;

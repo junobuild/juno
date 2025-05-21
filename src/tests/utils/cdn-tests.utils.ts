@@ -1,4 +1,5 @@
 import type { _SERVICE as ConsoleActor } from '$declarations/console/console.did';
+import type { _SERVICE as MissionControlActor } from '$declarations/mission_control/mission_control.did';
 import { arrayBufferToUint8Array, toNullable } from '@dfinity/utils';
 import type { Actor } from '@hadronous/pic';
 import { mockBlob } from '../mocks/storage.mocks';
@@ -7,7 +8,7 @@ export const uploadFile = async ({
 	actor,
 	proposalId
 }: {
-	actor: Actor<ConsoleActor>;
+	actor: Actor<ConsoleActor | MissionControlActor>;
 	proposalId: bigint;
 }) => {
 	const { init_asset_upload, commit_asset_upload, upload_asset_chunk } = actor;

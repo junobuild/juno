@@ -15,6 +15,9 @@ use junobuild_storage::store::{commit_batch as commit_batch_storage, create_chun
 use junobuild_storage::types::interface::{
     AssetNoContent, CommitBatch, InitAssetKey, InitUploadResult, UploadChunk, UploadChunkResult,
 };
+
+// TODO: caller_is_controller
+
 // ---------------------------------------------------------
 // Storage
 // ---------------------------------------------------------

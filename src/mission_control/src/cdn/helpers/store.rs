@@ -1,7 +1,7 @@
 use crate::cdn::helpers::heap::get_storage_config;
 use crate::cdn::helpers::stable::get_proposal;
 use crate::cdn::strategies_impls::storage::StorageState;
-use crate::controllers::store::get_controllers;
+use crate::controllers::store::get_controllers_with_user;
 use candid::Principal;
 use junobuild_cdn::proposals::ProposalId;
 use junobuild_storage::store::create_batch;
@@ -22,7 +22,7 @@ pub fn init_asset_upload(
     // TODO: assert full_path
     // assert_releases_keys(&init)?;
 
-    let controllers = get_controllers();
+    let controllers = get_controllers_with_user();
     let config = get_storage_config();
 
     create_batch(

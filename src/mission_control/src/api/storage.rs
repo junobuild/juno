@@ -2,7 +2,7 @@ use crate::cdn::helpers::heap::get_storage_config;
 use crate::cdn::helpers::store::init_asset_upload as init_asset_upload_store;
 use crate::cdn::strategies_impls::cdn::CdnHeap;
 use crate::cdn::strategies_impls::storage::{StorageAssertions, StorageState, StorageUpload};
-use crate::controllers::store::get_controllers;
+use crate::controllers::store::get_controllers_with_user;
 use crate::guards::caller_is_user_or_admin_controller;
 use ic_cdk::api::caller;
 use ic_cdk::trap;
@@ -51,7 +51,7 @@ fn upload_asset_chunk(chunk: UploadChunk) -> UploadChunkResult {
 fn commit_asset_upload(commit: CommitBatch) {
     let caller = caller();
 
-    let controllers: Controllers = get_controllers();
+    let controllers: Controllers = get_controllers_with_user();
     let config = get_storage_config();
 
     commit_batch_storage(

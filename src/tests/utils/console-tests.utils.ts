@@ -298,6 +298,6 @@ export const testSatelliteExists = async ({
 		);
 
 		// The Mission Control has no public functions. If it rejects a call with a particular error message it means it exists.
-		await expect(get_user()).rejects.toThrow(MISSION_CONTROL_ADMIN_CONTROLLER_ERROR_MSG);
+		await expect(get_user()).rejects.toThrow("Caller is not the owner or a controller of the mission control.");
 	}
 };

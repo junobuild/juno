@@ -106,7 +106,9 @@ describe('Mission Control > Monitoring', () => {
 		it('should throw errors on get monitoring status', async () => {
 			const { get_monitoring_status } = actor;
 
-			await expect(get_monitoring_status()).rejects.toThrow(MISSION_CONTROL_ADMIN_CONTROLLER_ERROR_MSG);
+			await expect(get_monitoring_status()).rejects.toThrow(
+				MISSION_CONTROL_ADMIN_CONTROLLER_ERROR_MSG
+			);
 		});
 
 		it('should throw errors on get monitoring history', async () => {

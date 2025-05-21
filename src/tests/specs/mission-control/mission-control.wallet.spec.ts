@@ -83,13 +83,17 @@ describe('Mission Control > Wallet', () => {
 			it('should throw errors on icp transfer', async () => {
 				const { icp_transfer } = actor;
 
-				await expect(icp_transfer(args)).rejects.toThrow(MISSION_CONTROL_ADMIN_CONTROLLER_ERROR_MSG);
+				await expect(icp_transfer(args)).rejects.toThrow(
+					MISSION_CONTROL_ADMIN_CONTROLLER_ERROR_MSG
+				);
 			});
 
 			it('should throw errors on icrc transfer', async () => {
 				const { icrc_transfer } = actor;
 
-				await expect(icrc_transfer(LEDGER_ID, arg)).rejects.toThrow(MISSION_CONTROL_ADMIN_CONTROLLER_ERROR_MSG);
+				await expect(icrc_transfer(LEDGER_ID, arg)).rejects.toThrow(
+					MISSION_CONTROL_ADMIN_CONTROLLER_ERROR_MSG
+				);
 			});
 		};
 

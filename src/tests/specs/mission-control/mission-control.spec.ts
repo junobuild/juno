@@ -64,7 +64,9 @@ describe('Mission Control', () => {
 		it('should throw errors on set metadata', async () => {
 			const { set_metadata } = actor;
 
-			await expect(set_metadata(metadata)).rejects.toThrow(MISSION_CONTROL_ADMIN_CONTROLLER_ERROR_MSG);
+			await expect(set_metadata(metadata)).rejects.toThrow(
+				MISSION_CONTROL_ADMIN_CONTROLLER_ERROR_MSG
+			);
 		});
 
 		it('should throw errors on get settings', async () => {

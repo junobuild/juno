@@ -44,7 +44,10 @@ describe('Mission Control > Cdn > Custom Domains', () => {
 			actor.setIdentity(new AnonymousIdentity());
 		});
 
-		anonymousCustomDomainsTests({ actor: () => actor, errorMsg: MISSION_CONTROL_ADMIN_CONTROLLER_ERROR_MSG });
+		anonymousCustomDomainsTests({
+			actor: () => actor,
+			errorMsg: MISSION_CONTROL_ADMIN_CONTROLLER_ERROR_MSG
+		});
 	});
 
 	describe('admin', () => {

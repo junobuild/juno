@@ -37,6 +37,8 @@ type AnalyticsOperatingSystemsPageViews = record {
 type AnalyticsTop10PageViews = record {
   referrers : vec record { text; nat32 };
   pages : vec record { text; nat32 };
+  utm_campaigns : opt vec record { text; nat32 };
+  utm_sources : opt vec record { text; nat32 };
   time_zones : opt vec record { text; nat32 };
 };
 type AnalyticsTrackEvents = record { total : vec record { text; nat32 } };
@@ -81,6 +83,7 @@ type HttpResponse = record {
   upgrade : opt bool;
   status_code : nat16;
 };
+type MemorySize = record { stable : nat64; heap : nat64 };
 type NavigationType = variant {
   Navigate;
   Restore;
@@ -108,12 +111,20 @@ type PageView = record {
   referrer : opt text;
   time_zone : text;
   session_id : text;
+  campaign : opt PageViewCampaign;
   href : text;
   created_at : nat64;
   satellite_id : principal;
   device : PageViewDevice;
   version : opt nat64;
   user_agent : opt text;
+};
+type PageViewCampaign = record {
+  utm_content : opt text;
+  utm_medium : opt text;
+  utm_source : text;
+  utm_term : opt text;
+  utm_campaign : opt text;
 };
 type PageViewClient = record { os : text; device : opt text; browser : text };
 type PageViewDevice = record {
@@ -154,6 +165,7 @@ type SetPageView = record {
   referrer : opt text;
   time_zone : text;
   session_id : text;
+  campaign : opt PageViewCampaign;
   href : text;
   satellite_id : principal;
   device : PageViewDevice;
@@ -232,6 +244,7 @@ service : () -> {
   list_satellite_configs : () -> (
       vec record { principal; OrbiterSatelliteConfig },
     ) query;
+  memory_size : () -> (MemorySize) query;
   set_controllers : (SetControllersArgs) -> (
       vec record { principal; Controller },
     );

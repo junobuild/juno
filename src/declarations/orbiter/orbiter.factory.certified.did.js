@@ -33,6 +33,13 @@ export const idlFactory = ({ IDL }) => {
 		device: IDL.Opt(IDL.Text),
 		browser: IDL.Text
 	});
+	const PageViewCampaign = IDL.Record({
+		utm_content: IDL.Opt(IDL.Text),
+		utm_medium: IDL.Opt(IDL.Text),
+		utm_source: IDL.Text,
+		utm_term: IDL.Opt(IDL.Text),
+		utm_campaign: IDL.Opt(IDL.Text)
+	});
 	const PageViewDevice = IDL.Record({
 		inner_height: IDL.Nat16,
 		screen_height: IDL.Opt(IDL.Nat16),
@@ -46,6 +53,7 @@ export const idlFactory = ({ IDL }) => {
 		referrer: IDL.Opt(IDL.Text),
 		time_zone: IDL.Text,
 		session_id: IDL.Text,
+		campaign: IDL.Opt(PageViewCampaign),
 		href: IDL.Text,
 		created_at: IDL.Nat64,
 		satellite_id: IDL.Principal,
@@ -96,6 +104,8 @@ export const idlFactory = ({ IDL }) => {
 	const AnalyticsTop10PageViews = IDL.Record({
 		referrers: IDL.Vec(IDL.Tuple(IDL.Text, IDL.Nat32)),
 		pages: IDL.Vec(IDL.Tuple(IDL.Text, IDL.Nat32)),
+		utm_campaigns: IDL.Opt(IDL.Vec(IDL.Tuple(IDL.Text, IDL.Nat32))),
+		utm_sources: IDL.Opt(IDL.Vec(IDL.Tuple(IDL.Text, IDL.Nat32))),
 		time_zones: IDL.Opt(IDL.Vec(IDL.Tuple(IDL.Text, IDL.Nat32)))
 	});
 	const NavigationType = IDL.Variant({
@@ -178,6 +188,7 @@ export const idlFactory = ({ IDL }) => {
 		created_at: IDL.Nat64,
 		version: IDL.Opt(IDL.Nat64)
 	});
+	const MemorySize = IDL.Record({ stable: IDL.Nat64, heap: IDL.Nat64 });
 	const SetController = IDL.Record({
 		metadata: IDL.Vec(IDL.Tuple(IDL.Text, IDL.Text)),
 		scope: ControllerScope,
@@ -194,6 +205,7 @@ export const idlFactory = ({ IDL }) => {
 		referrer: IDL.Opt(IDL.Text),
 		time_zone: IDL.Text,
 		session_id: IDL.Text,
+		campaign: IDL.Opt(PageViewCampaign),
 		href: IDL.Text,
 		satellite_id: IDL.Principal,
 		device: PageViewDevice,
@@ -262,6 +274,7 @@ export const idlFactory = ({ IDL }) => {
 			[IDL.Vec(IDL.Tuple(IDL.Principal, OrbiterSatelliteConfig))],
 			[]
 		),
+		memory_size: IDL.Func([], [MemorySize], []),
 		set_controllers: IDL.Func(
 			[SetControllersArgs],
 			[IDL.Vec(IDL.Tuple(IDL.Principal, Controller))],

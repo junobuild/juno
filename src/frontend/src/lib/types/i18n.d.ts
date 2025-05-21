@@ -382,6 +382,8 @@ interface I18nAnalytics {
 	count: string;
 	referrers: string;
 	time_zones: string;
+	utm_sources: string;
+	utm_campaigns: string;
 	pages: string;
 	orbiter: string;
 	devices: string;

@@ -218,6 +218,12 @@ describe('Orbiter', () => {
 					})
 				).rejects.toThrow('Caller is not a controller of the orbiter.');
 			});
+
+			it('should throw on memory size', async () => {
+				const { memory_size } = actor;
+
+				await expect(memory_size()).rejects.toThrow('Caller is not a controller of the orbiter.');
+			});
 		});
 
 		describe('For controller', () => {

@@ -370,6 +370,8 @@
 		"count": "Count",
 		"referrers": "Top 10 referrers",
 		"time_zones": "Top 10 time zones",
+		"utm_sources": "Top 10 campaigns (sources)",
+		"utm_campaigns": "Top 10 campaigns (names)",
 		"pages": "Top 10 pages",
 		"orbiter": "Orbiter",
 		"devices": "Devices",

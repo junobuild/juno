@@ -179,7 +179,9 @@ const mapDeprecatedAnalyticsTop10PageViews = (
 	return {
 		referrers: referrersEntries,
 		pages: pagesEntries,
-		time_zones: toNullable()
+		time_zones: toNullable(),
+		utm_sources: toNullable(),
+		utm_campaigns: toNullable()
 	};
 };
 

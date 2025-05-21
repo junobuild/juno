@@ -42,14 +42,16 @@ const aggregateTop10 = ({
 }: {
 	periodsMetrics: AnalyticsPageViews[];
 }): Pick<AnalyticsPageViews, 'top10'> => {
-	const { referrers, pages, timeZones } = periodsMetrics
+	const { referrers, pages, timeZones, utmCampaigns, utmSources } = periodsMetrics
 		.map(({ top10 }) => top10)
 		.reduce<{
 			referrers: Record<string, number>;
 			pages: Record<string, number>;
 			timeZones: Record<string, number>;
+			utmSources: Record<string, number>;
+			utmCampaigns: Record<string, number>;
 		}>(
-			(acc, { referrers, pages, time_zones }) => {
+			(acc, { referrers, pages, time_zones, utm_sources, utm_campaigns }) => {
 				const cumulatedReferrers = referrers.map(([referrer, count]) => [
 					referrer,
 					count + (acc.referrers[referrer] ?? 0)
@@ -61,6 +63,15 @@ const aggregateTop10 = ({
 					timeZone,
 					count + (acc.pages[timeZone] ?? 0)
 				]);
+
+				const cumulatedUtmSources = (fromNullable(utm_sources) ?? []).map(([utmSource, count]) => [
+					utmSource,
+					count + (acc.pages[utmSource] ?? 0)
+				]);
+
+				const cumulatedUtmCampaigns = (fromNullable(utm_campaigns) ?? []).map(
+					([utmCampaign, count]) => [utmCampaign, count + (acc.pages[utmCampaign] ?? 0)]
+				);
 
 				return {
 					pages: {
@@ -74,10 +85,18 @@ const aggregateTop10 = ({
 					timeZones: {
 						...acc.timeZones,
 						...Object.fromEntries(cumulatedTimeZones)
+					},
+					utmSources: {
+						...acc.utmSources,
+						...Object.fromEntries(cumulatedUtmSources)
+					},
+					utmCampaigns: {
+						...acc.utmCampaigns,
+						...Object.fromEntries(cumulatedUtmCampaigns)
 					}
 				};
 			},
-			{ referrers: {}, pages: {}, timeZones: {} }
+			{ referrers: {}, pages: {}, timeZones: {}, utmSources: {}, utmCampaigns: {} }
 		);
 
 	const mapTop10 = (records: Record<string, number>): [string, number][] =>
@@ -85,11 +104,18 @@ const aggregateTop10 = ({
 			.sort(([, a], [, b]) => b - a)
 			.slice(0, 10);
 
+	const mapOptionalTop10 = (records: Record<string, number>): [] | [[string, number][]] => {
+		const top10 = mapTop10(records);
+		return toNullable(top10.length === 0 ? undefined : top10);
+	};
+
 	return {
 		top10: {
 			referrers: mapTop10(referrers),
 			pages: mapTop10(pages),
-			time_zones: toNullable(mapTop10(timeZones))
+			time_zones: toNullable(mapTop10(timeZones)),
+			utm_sources: mapOptionalTop10(utmSources),
+			utm_campaigns: mapOptionalTop10(utmCampaigns)
 		}
 	};
 };
@@ -184,13 +210,23 @@ const aggregateClients = ({
 		operating_systems.others > 0 ||
 		operating_systems.windows > 0;
 
+	const { mobile, tablet, laptop, desktop, others } = devices;
+
+	const resultDevices: AnalyticsDevicesPageViews = {
+		mobile,
+		tablet: toNullable(tablet > 0 ? tablet : undefined),
+		laptop: toNullable(laptop > 0 ? laptop : undefined),
+		desktop,
+		others
+	};
+
 	return {
 		clients: {
 			operating_systems: withOperatingSystems
 				? (operating_systems as unknown as AnalyticsOperatingSystemsPageViews)
 				: undefined,
 			browsers: browsers as unknown as AnalyticsBrowsersPageViews,
-			devices: devices as unknown as AnalyticsDevicesPageViews
+			devices: resultDevices
 		}
 	};
 };

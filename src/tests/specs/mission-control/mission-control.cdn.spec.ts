@@ -166,7 +166,11 @@ describe('Mission Control > Cdn', () => {
 			canisterId: () => canisterId,
 			caller: () => user,
 			pic: () => pic,
-			expected_proposal_id: 5n
+			expected_proposal_id: 5n,
+			fullPaths: {
+				assetsUpgrade: '/world.html',
+				segmentsDeployment: '/releases/my-satellite-v0.1.1.wasm.gz'
+			}
 		});
 
 		testCdnGetProposal({

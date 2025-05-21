@@ -177,7 +177,11 @@ export const testControlledCdnMethods = ({
 	caller,
 	canisterId,
 	currentDate,
-	expected_proposal_id = 1n
+	expected_proposal_id = 1n,
+	fullPaths = {
+		assetsUpgrade: '/hello.html',
+		segmentsDeployment: '/releases/satellite-v0.0.18.wasm.gz'
+	}
 }: {
 	actor: (params?: { requireController: boolean }) => Actor<MissionControlActor | ConsoleActor>;
 	pic: () => PocketIc;
@@ -185,6 +189,7 @@ export const testControlledCdnMethods = ({
 	canisterId: () => Principal;
 	currentDate: Date;
 	expected_proposal_id?: bigint;
+	fullPaths?: { assetsUpgrade: string; segmentsDeployment: string };
 }) => {
 	describe.each([
 		{
@@ -194,7 +199,7 @@ export const testControlledCdnMethods = ({
 				}
 			} as ProposalType,
 			collection: '#dapp',
-			full_path: `/hello-${expected_proposal_id}.html`,
+			full_path: fullPaths.assetsUpgrade,
 			expected_proposal_id
 		},
 		{
@@ -206,7 +211,7 @@ export const testControlledCdnMethods = ({
 				}
 			} as ProposalType,
 			collection: '#releases',
-			full_path: `/releases/satellite-v0.0.18-${expected_proposal_id}.wasm.gz`,
+			full_path: fullPaths.segmentsDeployment,
 			expected_proposal_id: expected_proposal_id + 1n
 		}
 	])(
@@ -502,7 +507,7 @@ export const testControlledCdnMethods = ({
 			certificate_version: toNullable(),
 			headers: [],
 			method: 'GET',
-			url: `/hello-${expected_proposal_id}.html`
+			url: fullPaths.assetsUpgrade
 		});
 
 		expect(status_code).toEqual(404);
@@ -526,7 +531,7 @@ export const testControlledCdnMethods = ({
 			certificate_version: toNullable(),
 			headers: [],
 			method: 'GET',
-			url: `/releases/satellite-v0.0.18-${expected_proposal_id}.wasm.gz`
+			url: fullPaths.segmentsDeployment
 		});
 
 		expect(status_code).toBe(200);

@@ -1,9 +1,7 @@
 import type {
 	_SERVICE as ConsoleActor,
 	HttpRequest,
-	InitAssetKey,
-	ProposalType,
-	UploadChunk
+	ProposalType
 } from '$declarations/console/console.did';
 import { idlFactory as idlFactorConsole } from '$declarations/console/console.factory.did';
 import { AnonymousIdentity } from '@dfinity/agent';
@@ -64,53 +62,6 @@ describe('Console > Cdn', () => {
 	describe('Anonymous', () => {
 		beforeAll(() => {
 			actor.setIdentity(new AnonymousIdentity());
-		});
-
-		it('should throw errors on init asset upload', async () => {
-			const { init_asset_upload } = actor;
-
-			const key: InitAssetKey = {
-				token: toNullable(),
-				collection: '#dapp',
-				name: 'hello',
-				description: toNullable(),
-				encoding_type: toNullable(),
-				full_path: '/hello.html'
-			};
-
-			await expect(init_asset_upload(key, 123n)).rejects.toThrow(CONTROLLER_ERROR_MSG);
-		});
-
-		it('should throw errors on propose assets upgrade', async () => {
-			const { upload_asset_chunk } = actor;
-
-			const chunk: UploadChunk = {
-				content: [1, 2, 3],
-				batch_id: 123n,
-				order_id: []
-			};
-
-			await expect(upload_asset_chunk(chunk)).rejects.toThrow(CONTROLLER_ERROR_MSG);
-		});
-
-		it('should throw errors on commit asset upload', async () => {
-			const { commit_asset_upload } = actor;
-
-			const batch = {
-				batch_id: 123n,
-				headers: [],
-				chunk_ids: [123n]
-			};
-
-			await expect(commit_asset_upload(batch)).rejects.toThrow(CONTROLLER_ERROR_MSG);
-		});
-
-		it('should throw errors on list assets', async () => {
-			const { list_assets } = actor;
-
-			await expect(
-				list_assets('#dapp', { matcher: [], order: [], owner: [], paginate: [] })
-			).rejects.toThrow(CONTROLLER_ERROR_MSG);
 		});
 
 		testNotAllowedCdnMethods({ actor: () => actor, errorMsg: CONTROLLER_ERROR_MSG });

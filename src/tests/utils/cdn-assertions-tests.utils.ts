@@ -1,4 +1,9 @@
-import type { CommitProposal, _SERVICE as ConsoleActor } from '$declarations/console/console.did';
+import type {
+	CommitProposal,
+	_SERVICE as ConsoleActor,
+	InitAssetKey,
+	UploadChunk
+} from '$declarations/console/console.did';
 import type { _SERVICE as MissionControlActor } from '$declarations/mission_control/mission_control.did';
 import type { StorageConfig } from '$declarations/satellite/satellite.did';
 import { toNullable } from '@dfinity/utils';
@@ -14,6 +19,53 @@ export const testNotAllowedCdnMethods = ({
 	actor: () => Actor<MissionControlActor | ConsoleActor>;
 	errorMsg: string;
 }) => {
+	it('should throw errors on init asset upload', async () => {
+		const { init_asset_upload } = actor();
+
+		const key: InitAssetKey = {
+			token: toNullable(),
+			collection: '#dapp',
+			name: 'hello',
+			description: toNullable(),
+			encoding_type: toNullable(),
+			full_path: '/hello.html'
+		};
+
+		await expect(init_asset_upload(key, 123n)).rejects.toThrow(errorMsg);
+	});
+
+	it('should throw errors on propose assets upgrade', async () => {
+		const { upload_asset_chunk } = actor();
+
+		const chunk: UploadChunk = {
+			content: [1, 2, 3],
+			batch_id: 123n,
+			order_id: []
+		};
+
+		await expect(upload_asset_chunk(chunk)).rejects.toThrow(errorMsg);
+	});
+
+	it('should throw errors on commit asset upload', async () => {
+		const { commit_asset_upload } = actor();
+
+		const batch = {
+			batch_id: 123n,
+			headers: [],
+			chunk_ids: [123n]
+		};
+
+		await expect(commit_asset_upload(batch)).rejects.toThrow(errorMsg);
+	});
+
+	it('should throw errors on list assets', async () => {
+		const { list_assets } = actor();
+
+		await expect(
+			list_assets('#dapp', { matcher: [], order: [], owner: [], paginate: [] })
+		).rejects.toThrow(errorMsg);
+	});
+
 	it('should throw errors on setting config', async () => {
 		const { set_storage_config } = actor();
 

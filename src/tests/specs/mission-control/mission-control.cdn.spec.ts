@@ -180,7 +180,7 @@ describe('Mission Control > Cdn', () => {
 			owner: () => controller
 		});
 
-		it('should fail at committing a proposal', async () => {
+		it('should throw errors at committing a proposal', async () => {
 			const { commit_proposal } = actor;
 
 			await expect(

@@ -1,5 +1,5 @@
-use crate::cdn::state::heap::get_config;
-use crate::cdn::state::stable::get_proposal;
+use crate::cdn::helpers::heap::get_config;
+use crate::cdn::helpers::stable::get_proposal;
 use crate::cdn::strategies_impls::storage::StorageState;
 use crate::store::heap::get_controllers;
 use candid::Principal;

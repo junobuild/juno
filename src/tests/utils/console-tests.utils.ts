@@ -8,7 +8,6 @@ import { assertNonNullish, fromNullable, toNullable } from '@dfinity/utils';
 import type { Actor, PocketIc } from '@hadronous/pic';
 import { readFile } from 'node:fs/promises';
 import { expect } from 'vitest';
-import { MISSION_CONTROL_ADMIN_CONTROLLER_ERROR_MSG } from '../constants/mission-control-tests.constants';
 import { tick } from './pic-tests.utils';
 import {
 	downloadMissionControl,
@@ -290,14 +289,16 @@ export const testSatelliteExists = async ({
 
 		const missionControlId = fromNullable(mission_control_id);
 
-		expect(missionControlId).not.toBeUndefined();
+		assertNonNullish(missionControlId);
 
 		const { get_user } = pic.createActor<MissionControlActor>(
 			idlFactorMissionControl,
-			missionControlId!
+			missionControlId
 		);
 
 		// The Mission Control has no public functions. If it rejects a call with a particular error message it means it exists.
-		await expect(get_user()).rejects.toThrow("Caller is not the owner or a controller of the mission control.");
+		await expect(get_user()).rejects.toThrow(
+			'Caller is not the owner or a controller of the mission control.'
+		);
 	}
 };

@@ -20,7 +20,7 @@ use junobuild_storage::types::interface::{
 // ---------------------------------------------------------
 
 #[update(guard = "caller_is_admin_controller")]
-fn init_asset_upload(init: InitAssetKey, proposal_id: ProposalId) -> InitUploadResult {
+fn init_proposal_asset_upload(init: InitAssetKey, proposal_id: ProposalId) -> InitUploadResult {
     let caller = caller();
 
     let result = init_asset_upload_store(caller, init, proposal_id);
@@ -32,7 +32,7 @@ fn init_asset_upload(init: InitAssetKey, proposal_id: ProposalId) -> InitUploadR
 }
 
 #[update(guard = "caller_is_admin_controller")]
-fn upload_asset_chunk(chunk: UploadChunk) -> UploadChunkResult {
+fn upload_proposal_asset_chunk(chunk: UploadChunk) -> UploadChunkResult {
     let caller = caller();
     let config = junobuild_cdn::storage::heap::get_config(&CdnHeap);
 
@@ -45,7 +45,7 @@ fn upload_asset_chunk(chunk: UploadChunk) -> UploadChunkResult {
 }
 
 #[update(guard = "caller_is_admin_controller")]
-fn commit_asset_upload(commit: CommitBatch) {
+fn commit_proposal_asset_upload(commit: CommitBatch) {
     let caller = caller();
 
     let controllers: Controllers = get_controllers();

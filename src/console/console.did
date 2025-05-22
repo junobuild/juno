@@ -193,8 +193,8 @@ service : () -> {
   add_credits : (principal, Tokens) -> ();
   add_invitation_code : (text) -> ();
   assert_mission_control_center : (AssertMissionControlCenterArgs) -> () query;
-  commit_asset_upload : (CommitBatch) -> ();
   commit_proposal : (CommitProposal) -> (null);
+  commit_proposal_asset_upload : (CommitBatch) -> ();
   create_orbiter : (CreateCanisterArgs) -> (principal);
   create_satellite : (CreateCanisterArgs) -> (principal);
   del_controllers : (DeleteControllersArgs) -> ();
@@ -211,8 +211,8 @@ service : () -> {
   http_request_streaming_callback : (StreamingCallbackToken) -> (
       StreamingCallbackHttpResponse,
     ) query;
-  init_asset_upload : (InitAssetKey, nat) -> (InitUploadResult);
   init_proposal : (ProposalType) -> (nat, Proposal);
+  init_proposal_asset_upload : (InitAssetKey, nat) -> (InitUploadResult);
   init_user_mission_control_center : () -> (MissionControl);
   list_assets : (text, ListParams) -> (ListResults) query;
   list_custom_domains : () -> (vec record { text; CustomDomain }) query;
@@ -226,5 +226,5 @@ service : () -> {
   set_storage_config : (StorageConfig) -> ();
   submit_proposal : (nat) -> (nat, Proposal);
   update_rate_config : (SegmentKind, RateConfig) -> ();
-  upload_asset_chunk : (UploadChunk) -> (UploadChunkResult);
+  upload_proposal_asset_chunk : (UploadChunk) -> (UploadChunkResult);
 }

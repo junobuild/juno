@@ -37,7 +37,7 @@ export const testNotAllowedCdnMethods = ({
 	errorMsgController?: string;
 }) => {
 	it('should throw errors on init asset upload', async () => {
-		const { init_asset_upload } = actor();
+		const { init_proposal_asset_upload } = actor();
 
 		const key: InitAssetKey = {
 			token: toNullable(),
@@ -48,13 +48,13 @@ export const testNotAllowedCdnMethods = ({
 			full_path: '/hello.html'
 		};
 
-		await expect(init_asset_upload(key, 123n)).rejects.toThrow(
+		await expect(init_proposal_asset_upload(key, 123n)).rejects.toThrow(
 			errorMsgController ?? errorMsgAdminController
 		);
 	});
 
 	it('should throw errors on propose assets upgrade', async () => {
-		const { upload_asset_chunk } = actor();
+		const { upload_proposal_asset_chunk } = actor();
 
 		const chunk: UploadChunk = {
 			content: [1, 2, 3],
@@ -62,13 +62,13 @@ export const testNotAllowedCdnMethods = ({
 			order_id: []
 		};
 
-		await expect(upload_asset_chunk(chunk)).rejects.toThrow(
+		await expect(upload_proposal_asset_chunk(chunk)).rejects.toThrow(
 			errorMsgController ?? errorMsgAdminController
 		);
 	});
 
 	it('should throw errors on commit asset upload', async () => {
-		const { commit_asset_upload } = actor();
+		const { commit_proposal_asset_upload } = actor();
 
 		const batch = {
 			batch_id: 123n,
@@ -76,7 +76,7 @@ export const testNotAllowedCdnMethods = ({
 			chunk_ids: [123n]
 		};
 
-		await expect(commit_asset_upload(batch)).rejects.toThrow(
+		await expect(commit_proposal_asset_upload(batch)).rejects.toThrow(
 			errorMsgController ?? errorMsgAdminController
 		);
 	});
@@ -242,12 +242,12 @@ export const testControlledCdnMethods = ({
 			});
 
 			it('should fail at uploading asset for unknown proposal', async () => {
-				const { init_asset_upload } = actor();
+				const { init_proposal_asset_upload } = actor();
 
 				const unknownProposalId = proposalId + 1n;
 
 				await expect(
-					init_asset_upload(
+					init_proposal_asset_upload(
 						{
 							collection,
 							description: toNullable(),
@@ -262,10 +262,14 @@ export const testControlledCdnMethods = ({
 			});
 
 			it('should upload asset', async () => {
-				const { http_request, commit_asset_upload, upload_asset_chunk, init_asset_upload } =
-					actor();
+				const {
+					http_request,
+					commit_proposal_asset_upload,
+					upload_proposal_asset_chunk,
+					init_proposal_asset_upload
+				} = actor();
 
-				const file = await init_asset_upload(
+				const file = await init_proposal_asset_upload(
 					{
 						collection,
 						description: toNullable(),
@@ -277,13 +281,13 @@ export const testControlledCdnMethods = ({
 					proposalId
 				);
 
-				const chunk = await upload_asset_chunk({
+				const chunk = await upload_proposal_asset_chunk({
 					batch_id: file.batch_id,
 					content: arrayBufferToUint8Array(await mockBlob.arrayBuffer()),
 					order_id: [0n]
 				});
 
-				await commit_asset_upload({
+				await commit_proposal_asset_upload({
 					batch_id: file.batch_id,
 					chunk_ids: [chunk.chunk_id],
 					headers: []

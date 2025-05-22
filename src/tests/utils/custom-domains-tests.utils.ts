@@ -177,7 +177,7 @@ export const adminCustomDomainsWithProposalTests = ({
 
 	// eslint-disable-next-line vitest/require-top-level-describe
 	it('should throw error if try to upload ic-domains', async () => {
-		const { init_asset_upload, init_proposal } = actor();
+		const { init_proposal_asset_upload, init_proposal } = actor();
 
 		const [proposalId, _] = await init_proposal({
 			AssetsUpgrade: {
@@ -186,7 +186,7 @@ export const adminCustomDomainsWithProposalTests = ({
 		});
 
 		await expect(
-			init_asset_upload(
+			init_proposal_asset_upload(
 				{
 					collection: '#dapp',
 					description: toNullable(),

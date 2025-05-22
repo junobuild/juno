@@ -54,9 +54,7 @@ fn commit_proposal(proposal: CommitProposal) -> ManualReply<()> {
 
 #[update(guard = "caller_is_admin_controller")]
 fn delete_proposal_assets(DeleteProposalAssets { proposal_ids }: DeleteProposalAssets) {
-    let caller = caller();
-
-    delete_proposal_assets_proposal(caller, &proposal_ids).unwrap_or_else(|e| trap(&e));
+    delete_proposal_assets_proposal(&proposal_ids).unwrap_or_else(|e| trap(&e));
 }
 
 // ---------------------------------------------------------

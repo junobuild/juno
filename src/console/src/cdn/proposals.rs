@@ -23,10 +23,9 @@ pub fn commit_proposal(proposition: &CommitProposal) -> Result<(), CommitProposa
 }
 
 pub fn delete_proposal_assets(
-    caller: Principal,
     proposal_ids: &Vec<ProposalId>,
 ) -> Result<(), String> {
-    junobuild_cdn::proposals::delete_proposal_assets(&CdnStable, caller, proposal_ids)
+    junobuild_cdn::proposals::delete_proposal_assets(&CdnStable, proposal_ids)
 }
 
 pub fn post_commit_assets(proposal: &Proposal) -> Result<(), String> {

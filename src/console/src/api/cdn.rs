@@ -8,7 +8,7 @@ use crate::cdn::proposals::{
 use crate::cdn::strategies_impls::cdn::CdnHeap;
 use crate::cdn::strategies_impls::storage::StorageState;
 use crate::guards::caller_is_admin_controller;
-use crate::types::interface::{Config, DeleteProposalAssets};
+use crate::types::interface::DeleteProposalAssets;
 use ic_cdk::api::call::ManualReply;
 use ic_cdk::api::caller;
 use ic_cdk::trap;
@@ -16,7 +16,6 @@ use ic_cdk_macros::{query, update};
 use junobuild_cdn::proposals::{CommitProposal, Proposal, ProposalId, ProposalType};
 use junobuild_shared::types::core::DomainName;
 use junobuild_shared::types::domain::CustomDomains;
-use junobuild_storage::types::config::StorageConfig;
 
 // ---------------------------------------------------------
 // Proposal
@@ -55,30 +54,6 @@ fn commit_proposal(proposal: CommitProposal) -> ManualReply<()> {
 #[update(guard = "caller_is_admin_controller")]
 fn delete_proposal_assets(DeleteProposalAssets { proposal_ids }: DeleteProposalAssets) {
     delete_proposal_assets_proposal(&proposal_ids).unwrap_or_else(|e| trap(&e));
-}
-
-// ---------------------------------------------------------
-// Config
-// ---------------------------------------------------------
-
-#[update(guard = "caller_is_admin_controller")]
-pub fn get_config() -> Config {
-    let storage = junobuild_cdn::storage::heap::get_config(&CdnHeap);
-    Config { storage }
-}
-
-// ---------------------------------------------------------
-// Storage config
-// ---------------------------------------------------------
-
-#[update(guard = "caller_is_admin_controller")]
-pub fn set_storage_config(config: StorageConfig) {
-    junobuild_cdn::storage::set_config_store(&CdnHeap, &StorageState, &config);
-}
-
-#[query(guard = "caller_is_admin_controller")]
-pub fn get_storage_config() -> StorageConfig {
-    junobuild_cdn::storage::heap::get_config(&CdnHeap)
 }
 
 // ---------------------------------------------------------

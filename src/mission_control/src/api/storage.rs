@@ -3,7 +3,7 @@ use crate::cdn::helpers::store::init_asset_upload as init_asset_upload_store;
 use crate::cdn::strategies_impls::cdn::CdnHeap;
 use crate::cdn::strategies_impls::storage::{StorageAssertions, StorageState, StorageUpload};
 use crate::controllers::store::get_controllers_with_user;
-use crate::guards::{caller_is_user_or_controller};
+use crate::guards::caller_is_user_or_controller;
 use ic_cdk::api::caller;
 use ic_cdk::trap;
 use ic_cdk_macros::{query, update};

@@ -1,9 +1,10 @@
 use crate::logs::types::logs::{Log, LogLevel};
 use crate::random::runtime::random;
-use crate::{set_doc_store, Key, SetDoc};
+use crate::{set_doc_store, SetDoc};
 use ic_cdk::api::time;
 use ic_cdk::id;
 use junobuild_collections::constants::db::COLLECTION_LOG_KEY;
+use junobuild_shared::types::core::Key;
 use junobuild_utils::encode_doc_data;
 use serde::Serialize;
 

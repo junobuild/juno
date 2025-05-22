@@ -66,11 +66,5 @@ fn commit_asset_upload(commit: CommitBatch) {
 
 #[query(guard = "caller_is_user_or_controller")]
 pub fn list_assets(collection: CollectionKey, filter: ListParams) -> ListResults<AssetNoContent> {
-    let result = junobuild_cdn::storage::heap::list_assets(&CdnHeap, &collection, &filter);
-
-    // TODO: error msg
-    match result {
-        Ok(result) => result,
-        Err(error) => trap(&["Assets cannot be listed: ".to_string(), error].join("")),
-    }
+    junobuild_cdn::storage::heap::list_assets(&CdnHeap, &collection, &filter)
 }

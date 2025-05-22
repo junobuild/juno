@@ -18,10 +18,10 @@ pub fn list_assets(
     cdn_heap: &impl CdnHeapStrategy,
     collection: &CollectionKey,
     filters: &ListParams,
-) -> Result<ListResults<AssetNoContent>, String> {
+) -> ListResults<AssetNoContent> {
     cdn_heap.with_assets(|assets| {
         let assets = collect_assets_heap(collection, assets);
-        Ok(list_assets_impl(&assets, filters))
+        list_assets_impl(&assets, filters)
     })
 }
 

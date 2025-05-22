@@ -1,4 +1,5 @@
 mod cdn;
+mod config;
 mod controllers;
 mod economy;
 mod factory;

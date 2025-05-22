@@ -48,12 +48,9 @@ fn commit_proposal(proposal: CommitProposal) -> ManualReply<()> {
     }
 }
 
-// TODO: ADMIN controller can delete proposal's assets of any proposals - not limited to proposal.owner === caller
 #[update(guard = "caller_is_user_or_admin_controller")]
 fn delete_proposal_assets(DeleteProposalAssets { proposal_ids }: DeleteProposalAssets) {
-    let caller = caller();
-
-    junobuild_cdn::proposals::delete_proposal_assets(&CdnStable, caller, &proposal_ids)
+    junobuild_cdn::proposals::delete_proposal_assets(&CdnStable, &proposal_ids)
         .unwrap_or_else(|e| trap(&e));
 }
 

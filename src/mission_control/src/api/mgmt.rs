@@ -1,9 +1,8 @@
 use crate::guards::caller_is_user_or_admin_controller;
-use crate::types::state::{Config, MissionControlSettings, User};
+use crate::types::state::{MissionControlSettings, User};
 use crate::user::store::{
-    get_config as get_config_store, get_metadata as get_metadata_store,
-    get_settings as get_settings_store, get_user as get_user_store,
-    get_user_data as get_user_data_store, set_config as set_config_store,
+    get_metadata as get_metadata_store, get_settings as get_settings_store,
+    get_user as get_user_store, get_user_data as get_user_data_store,
     set_metadata as set_metadata_store,
 };
 use candid::Principal;
@@ -33,16 +32,6 @@ fn get_metadata() -> Metadata {
 #[update(guard = "caller_is_user_or_admin_controller")]
 fn set_metadata(metadata: Metadata) {
     set_metadata_store(&metadata)
-}
-
-#[query(guard = "caller_is_user_or_admin_controller")]
-fn get_config() -> Option<Config> {
-    get_config_store()
-}
-
-#[update(guard = "caller_is_user_or_admin_controller")]
-fn set_config(config: Option<Config>) {
-    set_config_store(&config)
 }
 
 #[query(guard = "caller_is_user_or_admin_controller")]

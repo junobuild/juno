@@ -44,7 +44,7 @@ pub fn get_controllers_with_user() -> Controllers {
 
 fn get_controllers_with_user_impl(state: &mut HeapState) -> Controllers {
     // Unlikely, but covers a legacy design where the user might be missing (which was a design mistake).
-    if let None = state.user.user {
+    if state.user.user.is_none() {
         return state.controllers.clone();
     }
 

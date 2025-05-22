@@ -19,9 +19,7 @@ pub fn delete_proposal_assets(
             None => {
                 return Err(JUNO_ERROR_PROPOSALS_CANNOT_DELETE_ASSETS.to_string());
             }
-            Some(proposal) => {
-                secure_delete_proposal_assets(cdn_stable, proposal_id, &proposal)?
-            }
+            Some(proposal) => secure_delete_proposal_assets(cdn_stable, proposal_id, &proposal)?,
         }
     }
 

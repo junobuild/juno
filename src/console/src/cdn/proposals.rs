@@ -22,9 +22,7 @@ pub fn commit_proposal(proposition: &CommitProposal) -> Result<(), CommitProposa
     junobuild_cdn::proposals::commit_proposal(&CdnHeap, &CdnStable, &CdnWorkflow, proposition)
 }
 
-pub fn delete_proposal_assets(
-    proposal_ids: &Vec<ProposalId>,
-) -> Result<(), String> {
+pub fn delete_proposal_assets(proposal_ids: &Vec<ProposalId>) -> Result<(), String> {
     junobuild_cdn::proposals::delete_proposal_assets(&CdnStable, proposal_ids)
 }
 

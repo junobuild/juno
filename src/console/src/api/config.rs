@@ -9,9 +9,7 @@ use junobuild_storage::types::config::StorageConfig;
 // Config
 // ---------------------------------------------------------
 
-// TODO: fixme query
-
-#[update(guard = "caller_is_admin_controller")]
+#[query(guard = "caller_is_admin_controller")]
 pub fn get_config() -> Config {
     let storage = junobuild_cdn::storage::heap::get_config(&CdnHeap);
     Config { storage }

@@ -1,5 +1,6 @@
 #![doc = include_str!("../README.md")]
 
+mod api;
 mod auth;
 mod controllers;
 mod db;
@@ -7,11 +8,11 @@ mod errors;
 mod guards;
 mod hooks;
 mod impls;
+mod lifecycle;
 mod logs;
 mod memory;
 mod random;
 mod rules;
-mod satellite;
 mod sdk;
 mod storage;
 mod types;
@@ -28,7 +29,7 @@ use junobuild_collections::types::core::CollectionKey;
 use junobuild_collections::types::interface::{DelRule, SetRule};
 use junobuild_collections::types::rules::Rule;
 use junobuild_shared::types::core::DomainName;
-use junobuild_shared::types::core::{Blob, Key};
+use junobuild_shared::types::core::Key;
 use junobuild_shared::types::domain::CustomDomains;
 use junobuild_shared::types::interface::{
     DeleteControllersArgs, DepositCyclesArgs, MemorySize, SetControllersArgs,
@@ -58,19 +59,19 @@ pub use sdk::internal;
 #[doc(hidden)]
 #[init]
 pub fn init() {
-    satellite::init();
+    lifecycle::init();
 }
 
 #[doc(hidden)]
 #[pre_upgrade]
 pub fn pre_upgrade() {
-    satellite::pre_upgrade();
+    lifecycle::pre_upgrade();
 }
 
 #[doc(hidden)]
 #[post_upgrade]
 pub fn post_upgrade() {
-    satellite::post_upgrade();
+    lifecycle::post_upgrade();
 }
 
 // ---------------------------------------------------------
@@ -80,67 +81,67 @@ pub fn post_upgrade() {
 #[doc(hidden)]
 #[update]
 pub fn set_doc(collection: CollectionKey, key: Key, doc: SetDoc) -> Doc {
-    satellite::set_doc(collection, key, doc)
+    api::db::set_doc(collection, key, doc)
 }
 
 #[doc(hidden)]
 #[query]
 pub fn get_doc(collection: CollectionKey, key: Key) -> Option<Doc> {
-    satellite::get_doc(collection, key)
+    api::db::get_doc(collection, key)
 }
 
 #[doc(hidden)]
 #[update]
 pub fn del_doc(collection: CollectionKey, key: Key, doc: DelDoc) {
-    satellite::del_doc(collection, key, doc);
+    api::db::del_doc(collection, key, doc);
 }
 
 #[doc(hidden)]
 #[query]
 pub fn list_docs(collection: CollectionKey, filter: ListParams) -> ListResults<Doc> {
-    satellite::list_docs(collection, filter)
+    api::db::list_docs(collection, filter)
 }
 
 #[doc(hidden)]
 #[query]
 pub fn count_docs(collection: CollectionKey, filter: ListParams) -> usize {
-    satellite::count_docs(collection, filter)
+    api::db::count_docs(collection, filter)
 }
 
 #[doc(hidden)]
 #[query]
 pub fn get_many_docs(docs: Vec<(CollectionKey, Key)>) -> Vec<(Key, Option<Doc>)> {
-    satellite::get_many_docs(docs)
+    api::db::get_many_docs(docs)
 }
 
 #[doc(hidden)]
 #[update]
 pub fn set_many_docs(docs: Vec<(CollectionKey, Key, SetDoc)>) -> Vec<(Key, Doc)> {
-    satellite::set_many_docs(docs)
+    api::db::set_many_docs(docs)
 }
 
 #[doc(hidden)]
 #[update]
 pub fn del_many_docs(docs: Vec<(CollectionKey, Key, DelDoc)>) {
-    satellite::del_many_docs(docs)
+    api::db::del_many_docs(docs)
 }
 
 #[doc(hidden)]
 #[update]
 pub fn del_filtered_docs(collection: CollectionKey, filter: ListParams) {
-    satellite::del_filtered_docs(collection, filter)
+    api::db::del_filtered_docs(collection, filter)
 }
 
 #[doc(hidden)]
 #[update(guard = "caller_is_controller")]
 pub fn del_docs(collection: CollectionKey) {
-    satellite::del_docs(collection)
+    api::db::del_docs(collection)
 }
 
 #[doc(hidden)]
 #[query(guard = "caller_is_controller")]
 pub fn count_collection_docs(collection: CollectionKey) -> usize {
-    satellite::count_collection_docs(collection)
+    api::db::count_collection_docs(collection)
 }
 
 // ---------------------------------------------------------
@@ -150,25 +151,25 @@ pub fn count_collection_docs(collection: CollectionKey) -> usize {
 #[doc(hidden)]
 #[query(guard = "caller_is_admin_controller")]
 pub fn get_rule(collection_type: CollectionType, collection: CollectionKey) -> Option<Rule> {
-    satellite::get_rule(&collection_type, &collection)
+    api::rules::get_rule(&collection_type, &collection)
 }
 
 #[doc(hidden)]
 #[query(guard = "caller_is_admin_controller")]
 pub fn list_rules(collection_type: CollectionType) -> Vec<(CollectionKey, Rule)> {
-    satellite::list_rules(collection_type)
+    api::rules::list_rules(collection_type)
 }
 
 #[doc(hidden)]
 #[update(guard = "caller_is_admin_controller")]
 pub fn set_rule(collection_type: CollectionType, collection: CollectionKey, rule: SetRule) -> Rule {
-    satellite::set_rule(collection_type, collection, rule)
+    api::rules::set_rule(collection_type, collection, rule)
 }
 
 #[doc(hidden)]
 #[update(guard = "caller_is_admin_controller")]
 pub fn del_rule(collection_type: CollectionType, collection: CollectionKey, rule: DelRule) {
-    satellite::del_rule(collection_type, collection, rule)
+    api::rules::del_rule(collection_type, collection, rule)
 }
 
 // ---------------------------------------------------------
@@ -178,19 +179,19 @@ pub fn del_rule(collection_type: CollectionType, collection: CollectionKey, rule
 #[doc(hidden)]
 #[update(guard = "caller_is_admin_controller")]
 pub fn set_controllers(args: SetControllersArgs) -> Controllers {
-    satellite::set_controllers(args)
+    api::controllers::set_controllers(args)
 }
 
 #[doc(hidden)]
 #[update(guard = "caller_is_admin_controller")]
 pub fn del_controllers(args: DeleteControllersArgs) -> Controllers {
-    satellite::del_controllers(args)
+    api::controllers::del_controllers(args)
 }
 
 #[doc(hidden)]
 #[query(guard = "caller_is_admin_controller")]
 pub fn list_controllers() -> Controllers {
-    satellite::list_controllers()
+    api::controllers::list_controllers()
 }
 
 // ---------------------------------------------------------
@@ -200,19 +201,19 @@ pub fn list_controllers() -> Controllers {
 #[doc(hidden)]
 #[query(guard = "caller_is_admin_controller")]
 pub fn list_custom_domains() -> CustomDomains {
-    satellite::list_custom_domains()
+    api::cdn::list_custom_domains()
 }
 
 #[doc(hidden)]
 #[update(guard = "caller_is_admin_controller")]
 pub fn set_custom_domain(domain_name: DomainName, bn_id: Option<String>) {
-    satellite::set_custom_domain(domain_name, bn_id);
+    api::cdn::set_custom_domain(domain_name, bn_id);
 }
 
 #[doc(hidden)]
 #[update(guard = "caller_is_admin_controller")]
 pub fn del_custom_domain(domain_name: DomainName) {
-    satellite::del_custom_domain(domain_name);
+    api::cdn::del_custom_domain(domain_name);
 }
 
 // ---------------------------------------------------------
@@ -222,7 +223,7 @@ pub fn del_custom_domain(domain_name: DomainName) {
 #[doc(hidden)]
 #[update(guard = "caller_is_admin_controller")]
 pub fn get_config() -> Config {
-    satellite::get_config()
+    api::config::get_config()
 }
 
 // ---------------------------------------------------------
@@ -232,13 +233,13 @@ pub fn get_config() -> Config {
 #[doc(hidden)]
 #[update(guard = "caller_is_admin_controller")]
 pub fn set_auth_config(config: AuthenticationConfig) {
-    satellite::set_auth_config(config);
+    api::config::set_auth_config(config);
 }
 
 #[doc(hidden)]
 #[query(guard = "caller_is_admin_controller")]
 pub fn get_auth_config() -> Option<AuthenticationConfig> {
-    satellite::get_auth_config()
+    api::config::get_auth_config()
 }
 
 // ---------------------------------------------------------
@@ -248,13 +249,13 @@ pub fn get_auth_config() -> Option<AuthenticationConfig> {
 #[doc(hidden)]
 #[update(guard = "caller_is_admin_controller")]
 pub fn set_db_config(config: DbConfig) {
-    satellite::set_db_config(config);
+    api::config::set_db_config(config);
 }
 
 #[doc(hidden)]
 #[query(guard = "caller_is_admin_controller")]
 pub fn get_db_config() -> Option<DbConfig> {
-    satellite::get_db_config()
+    api::config::get_db_config()
 }
 
 // ---------------------------------------------------------
@@ -264,13 +265,13 @@ pub fn get_db_config() -> Option<DbConfig> {
 #[doc(hidden)]
 #[update(guard = "caller_is_admin_controller")]
 pub fn set_storage_config(config: StorageConfig) {
-    satellite::set_storage_config(config);
+    api::config::set_storage_config(config);
 }
 
 #[doc(hidden)]
 #[query(guard = "caller_is_admin_controller")]
 pub fn get_storage_config() -> StorageConfig {
-    satellite::get_storage_config()
+    api::config::get_storage_config()
 }
 
 // ---------------------------------------------------------
@@ -280,7 +281,7 @@ pub fn get_storage_config() -> StorageConfig {
 #[doc(hidden)]
 #[query]
 pub fn http_request(request: HttpRequest) -> HttpResponse {
-    satellite::http_request(request)
+    api::http::http_request(request)
 }
 
 #[doc(hidden)]
@@ -288,7 +289,7 @@ pub fn http_request(request: HttpRequest) -> HttpResponse {
 pub fn http_request_streaming_callback(
     callback: StreamingCallbackToken,
 ) -> StreamingCallbackHttpResponse {
-    satellite::http_request_streaming_callback(callback)
+    api::http::http_request_streaming_callback(callback)
 }
 
 // ---------------------------------------------------------
@@ -298,67 +299,67 @@ pub fn http_request_streaming_callback(
 #[doc(hidden)]
 #[update]
 pub fn init_asset_upload(init: InitAssetKey) -> InitUploadResult {
-    satellite::init_asset_upload(init)
+    api::storage::init_asset_upload(init)
 }
 
 #[doc(hidden)]
 #[update]
 pub fn upload_asset_chunk(chunk: UploadChunk) -> UploadChunkResult {
-    satellite::upload_asset_chunk(chunk)
+    api::storage::upload_asset_chunk(chunk)
 }
 
 #[doc(hidden)]
 #[update]
 pub fn commit_asset_upload(commit: CommitBatch) {
-    satellite::commit_asset_upload(commit);
+    api::storage::commit_asset_upload(commit);
 }
 
 #[doc(hidden)]
 #[query]
 pub fn list_assets(collection: CollectionKey, filter: ListParams) -> ListResults<AssetNoContent> {
-    satellite::list_assets(collection, filter)
+    api::storage::list_assets(collection, filter)
 }
 
 #[doc(hidden)]
 #[query]
 pub fn count_assets(collection: CollectionKey, filter: ListParams) -> usize {
-    satellite::count_assets(collection, filter)
+    api::storage::count_assets(collection, filter)
 }
 
 #[doc(hidden)]
 #[update]
 pub fn del_asset(collection: CollectionKey, full_path: FullPath) {
-    satellite::del_asset(collection, full_path);
+    api::storage::del_asset(collection, full_path);
 }
 
 #[doc(hidden)]
 #[update]
 pub fn del_many_assets(assets: Vec<(CollectionKey, String)>) {
-    satellite::del_many_assets(assets);
+    api::storage::del_many_assets(assets);
 }
 
 #[doc(hidden)]
 #[update]
 pub fn del_filtered_assets(collection: CollectionKey, filter: ListParams) {
-    satellite::del_filtered_assets(collection, filter)
+    api::storage::del_filtered_assets(collection, filter)
 }
 
 #[doc(hidden)]
 #[update(guard = "caller_is_controller")]
 pub fn del_assets(collection: CollectionKey) {
-    satellite::del_assets(collection);
+    api::storage::del_assets(collection);
 }
 
 #[doc(hidden)]
 #[query(guard = "caller_is_controller")]
 pub fn count_collection_assets(collection: CollectionKey) -> usize {
-    satellite::count_collection_assets(collection)
+    api::storage::count_collection_assets(collection)
 }
 
 #[doc(hidden)]
 #[query]
 pub fn get_asset(collection: CollectionKey, full_path: FullPath) -> Option<AssetNoContent> {
-    satellite::get_asset(collection, full_path)
+    api::storage::get_asset(collection, full_path)
 }
 
 #[doc(hidden)]
@@ -366,7 +367,7 @@ pub fn get_asset(collection: CollectionKey, full_path: FullPath) -> Option<Asset
 pub fn get_many_assets(
     assets: Vec<(CollectionKey, FullPath)>,
 ) -> Vec<(FullPath, Option<AssetNoContent>)> {
-    satellite::get_many_assets(assets)
+    api::storage::get_many_assets(assets)
 }
 
 // ---------------------------------------------------------

@@ -11,9 +11,10 @@ export const uploadFile = async ({
 	actor: Actor<ConsoleActor | MissionControlActor>;
 	proposalId: bigint;
 }) => {
-	const { init_asset_upload, commit_asset_upload, upload_asset_chunk } = actor;
+	const { init_proposal_asset_upload, commit_proposal_asset_upload, upload_proposal_asset_chunk } =
+		actor;
 
-	const file = await init_asset_upload(
+	const file = await init_proposal_asset_upload(
 		{
 			collection: '#dapp',
 			description: toNullable(),
@@ -25,13 +26,13 @@ export const uploadFile = async ({
 		proposalId
 	);
 
-	const chunk = await upload_asset_chunk({
+	const chunk = await upload_proposal_asset_chunk({
 		batch_id: file.batch_id,
 		content: arrayBufferToUint8Array(await mockBlob.arrayBuffer()),
 		order_id: [0n]
 	});
 
-	await commit_asset_upload({
+	await commit_proposal_asset_upload({
 		batch_id: file.batch_id,
 		chunk_ids: [chunk.chunk_id],
 		headers: []

@@ -98,7 +98,7 @@ describe('Console > Metadata', () => {
 		});
 
 		it('should throw error if try to upload metadata.json', async () => {
-			const { init_asset_upload, init_proposal } = actor;
+			const { init_proposal_asset_upload, init_proposal } = actor;
 
 			const [proposalId, _] = await init_proposal({
 				AssetsUpgrade: {
@@ -107,7 +107,7 @@ describe('Console > Metadata', () => {
 			});
 
 			await expect(
-				init_asset_upload(
+				init_proposal_asset_upload(
 					{
 						collection: '#releases',
 						description: toNullable(),

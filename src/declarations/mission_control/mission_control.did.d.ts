@@ -357,8 +357,8 @@ export interface User {
 export interface _SERVICE {
 	add_mission_control_controllers: ActorMethod<[Array<Principal>], undefined>;
 	add_satellites_controllers: ActorMethod<[Array<Principal>, Array<Principal>], undefined>;
-	commit_asset_upload: ActorMethod<[CommitBatch], undefined>;
 	commit_proposal: ActorMethod<[CommitProposal], null>;
+	commit_proposal_asset_upload: ActorMethod<[CommitBatch], undefined>;
 	create_orbiter: ActorMethod<[[] | [string]], Orbiter>;
 	create_orbiter_with_config: ActorMethod<[CreateCanisterConfig], Orbiter>;
 	create_satellite: ActorMethod<[string], Satellite>;
@@ -390,8 +390,8 @@ export interface _SERVICE {
 	>;
 	icp_transfer: ActorMethod<[TransferArgs], Result>;
 	icrc_transfer: ActorMethod<[Principal, TransferArg], Result_1>;
-	init_asset_upload: ActorMethod<[InitAssetKey, bigint], InitUploadResult>;
 	init_proposal: ActorMethod<[ProposalType], [bigint, Proposal]>;
+	init_proposal_asset_upload: ActorMethod<[InitAssetKey, bigint], InitUploadResult>;
 	list_assets: ActorMethod<[string, ListParams], ListResults>;
 	list_custom_domains: ActorMethod<[], Array<[string, CustomDomain]>>;
 	list_mission_control_controllers: ActorMethod<[], Array<[Principal, Controller]>>;
@@ -424,7 +424,7 @@ export interface _SERVICE {
 	unset_satellite: ActorMethod<[Principal], undefined>;
 	update_and_start_monitoring: ActorMethod<[MonitoringStartConfig], undefined>;
 	update_and_stop_monitoring: ActorMethod<[MonitoringStopConfig], undefined>;
-	upload_asset_chunk: ActorMethod<[UploadChunk], UploadChunkResult>;
+	upload_proposal_asset_chunk: ActorMethod<[UploadChunk], UploadChunkResult>;
 }
 export declare const idlFactory: IDL.InterfaceFactory;
 export declare const init: (args: { IDL: typeof IDL }) => IDL.Type[];

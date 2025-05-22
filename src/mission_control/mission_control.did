@@ -304,8 +304,8 @@ type User = record {
 service : () -> {
   add_mission_control_controllers : (vec principal) -> ();
   add_satellites_controllers : (vec principal, vec principal) -> ();
-  commit_asset_upload : (CommitBatch) -> ();
   commit_proposal : (CommitProposal) -> (null);
+  commit_proposal_asset_upload : (CommitBatch) -> ();
   create_orbiter : (opt text) -> (Orbiter);
   create_orbiter_with_config : (CreateCanisterConfig) -> (Orbiter);
   create_satellite : (text) -> (Satellite);
@@ -335,8 +335,8 @@ service : () -> {
     ) query;
   icp_transfer : (TransferArgs) -> (Result);
   icrc_transfer : (principal, TransferArg) -> (Result_1);
-  init_asset_upload : (InitAssetKey, nat) -> (InitUploadResult);
   init_proposal : (ProposalType) -> (nat, Proposal);
+  init_proposal_asset_upload : (InitAssetKey, nat) -> (InitUploadResult);
   list_assets : (text, ListParams) -> (ListResults) query;
   list_custom_domains : () -> (vec record { text; CustomDomain }) query;
   list_mission_control_controllers : () -> (
@@ -375,5 +375,5 @@ service : () -> {
   unset_satellite : (principal) -> ();
   update_and_start_monitoring : (MonitoringStartConfig) -> ();
   update_and_stop_monitoring : (MonitoringStopConfig) -> ();
-  upload_asset_chunk : (UploadChunk) -> (UploadChunkResult);
+  upload_proposal_asset_chunk : (UploadChunk) -> (UploadChunkResult);
 }

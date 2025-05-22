@@ -66,7 +66,8 @@ const uploadSegment = async ({
 	actor: Actor<ConsoleActor>;
 	proposalId: bigint;
 }) => {
-	const { init_asset_upload, upload_asset_chunk, commit_asset_upload } = actor;
+	const { init_proposal_asset_upload, upload_proposal_asset_chunk, commit_proposal_asset_upload } =
+		actor;
 
 	const name = `${segment}-v${version}.wasm.gz`;
 	const fullPath = `/releases/${name}`;
@@ -85,7 +86,7 @@ const uploadSegment = async ({
 
 	const data = new Blob([await readFile(wasmPath)]);
 
-	const { batch_id: batchId } = await init_asset_upload(
+	const { batch_id: batchId } = await init_proposal_asset_upload(
 		{
 			collection: '#releases',
 			description: toNullable(),
@@ -136,7 +137,7 @@ const uploadSegment = async ({
 	}
 
 	const uploadChunk = async ({ batchId, chunk, orderId }: UploadChunk) =>
-		upload_asset_chunk({
+		upload_proposal_asset_chunk({
 			batch_id: batchId,
 			content: new Uint8Array(await chunk.arrayBuffer()),
 			order_id: toNullable(orderId)
@@ -156,7 +157,7 @@ const uploadSegment = async ({
 			? [['Content-Type', data.type]]
 			: undefined;
 
-	await commit_asset_upload({
+	await commit_proposal_asset_upload({
 		batch_id: batchId,
 		chunk_ids: chunkIds.map(({ chunk_id }) => chunk_id),
 		headers: [...headers, ...(contentType ?? [])]

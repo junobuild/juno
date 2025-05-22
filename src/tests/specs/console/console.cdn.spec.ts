@@ -93,7 +93,7 @@ describe('Console > Cdn', () => {
 				'orbiter.txt'
 			])(`Assert upload %s`, (filename) => {
 				it('should throw error if try to upload without version', async () => {
-					const { init_asset_upload, init_proposal } = actor;
+					const { init_proposal_asset_upload, init_proposal } = actor;
 
 					const [proposalId, _] = await init_proposal({
 						AssetsUpgrade: {
@@ -102,7 +102,7 @@ describe('Console > Cdn', () => {
 					});
 
 					await expect(
-						init_asset_upload(
+						init_proposal_asset_upload(
 							{
 								collection: '#releases',
 								description: toNullable(),
@@ -124,9 +124,9 @@ describe('Console > Cdn', () => {
 				http_request,
 				commit_proposal,
 				submit_proposal,
-				commit_asset_upload,
-				upload_asset_chunk,
-				init_asset_upload
+				commit_proposal_asset_upload,
+				upload_proposal_asset_chunk,
+				init_proposal_asset_upload
 			} = actor;
 
 			const [proposalId, __] = await init_proposal({
@@ -136,7 +136,7 @@ describe('Console > Cdn', () => {
 			});
 
 			const upload = async (gzip: boolean) => {
-				const file = await init_asset_upload(
+				const file = await init_proposal_asset_upload(
 					{
 						collection: '#dapp',
 						description: toNullable(),
@@ -152,13 +152,13 @@ describe('Console > Cdn', () => {
 					type: 'text/javascript; charset=utf-8'
 				});
 
-				const chunk = await upload_asset_chunk({
+				const chunk = await upload_proposal_asset_chunk({
 					batch_id: file.batch_id,
 					content: arrayBufferToUint8Array(await blob.arrayBuffer()),
 					order_id: [0n]
 				});
 
-				await commit_asset_upload({
+				await commit_proposal_asset_upload({
 					batch_id: file.batch_id,
 					chunk_ids: [chunk.chunk_id],
 					headers: []

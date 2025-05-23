@@ -7,6 +7,7 @@ use crate::storage::certified_assets::upgrade::defer_init_certified_assets;
 use crate::types::state::{HeapState, RuntimeState, State};
 use ciborium::{from_reader, into_writer};
 use ic_cdk::api::call::{arg_data, ArgDecoderConfig};
+use junobuild_cdn::lifecycle::init_cdn_storage_heap_state;
 use junobuild_shared::controllers::init_controllers;
 use junobuild_shared::types::interface::SegmentArgs;
 use junobuild_shared::types::memory::Memory;
@@ -18,6 +19,8 @@ pub fn init() {
 
     let heap = HeapState {
         controllers: init_controllers(&controllers),
+        // TODO: collections #release -> _juno reserved path
+        storage: init_cdn_storage_heap_state(),
         ..HeapState::default()
     };
 

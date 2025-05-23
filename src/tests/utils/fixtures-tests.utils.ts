@@ -9,7 +9,7 @@ import type { Principal } from '@dfinity/principal';
 import { nonNullish } from '@dfinity/utils';
 import { type Actor, type ActorInterface, PocketIc } from '@hadronous/pic';
 import { inject } from 'vitest';
-import { setupChunkedCanister } from './pic-setup-tests.utils';
+import { setupChunkedCanister, upgradeChunkedCanister } from './pic-setup-tests.utils';
 import { tick } from './pic-tests.utils';
 import {
 	controllersInitArgs,
@@ -122,6 +122,13 @@ const upgradeFixtureCanister = async <T extends ActorInterface<T>>({
 		wasm,
 		sender: controller.getPrincipal()
 	});
+	
+	await upgradeChunkedCanister({
+		pic,
+		canisterId,
+		wasmPath: wasm,
+		sender: controller
+	})
 
 	// Wait for post_upgrade to kicks in since we defer instantiation of random
 	await tick(pic);

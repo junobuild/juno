@@ -1,7 +1,12 @@
 import { type Identity, MANAGEMENT_CANISTER_ID } from '@dfinity/agent';
 import { IDL } from '@dfinity/candid';
 import { Principal } from '@dfinity/principal';
-import { arrayBufferToUint8Array, hexStringToUint8Array, toNullable } from '@dfinity/utils';
+import {
+	arrayBufferToUint8Array,
+	hexStringToUint8Array,
+	nonNullish,
+	toNullable
+} from '@dfinity/utils';
 import type { ActorInterface, CanisterFixture, PocketIc } from '@hadronous/pic';
 import { uint8ArraySha256 } from '@junobuild/admin';
 import { readFile } from 'node:fs/promises';
@@ -85,28 +90,59 @@ interface install_chunked_code_args {
 
 // Program
 
-interface SetupParams {
+interface PicParams {
 	pic: PocketIc;
 	sender: Identity;
 }
 
-interface SetupChunkedCanisterParams extends SetupParams {
+interface SetupChunkedCanisterParams extends PicParams {
 	wasmPath: string;
-	arg: ArrayBuffer;
+	arg?: ArrayBuffer;
 	idlFactory: IDL.InterfaceFactory;
 }
+
+type UpgradeChunkedCanisterParams = Omit<SetupChunkedCanisterParams, 'idlFactory'> & {
+	canisterId: Principal;
+};
 
 export const setupChunkedCanister = async <T extends ActorInterface<T> = ActorInterface>({
 	pic,
 	sender,
-	wasmPath,
-	arg,
-	idlFactory
+	idlFactory,
+	...rest
 }: SetupChunkedCanisterParams): Promise<CanisterFixture<T>> => {
 	const canisterId = await pic.createCanister({
 		sender: sender.getPrincipal()
 	});
 
+	await installCanister({
+		pic,
+		sender,
+		canisterId,
+		...rest,
+		mode: { install: null }
+	});
+
+	const actor = pic.createActor<T>(idlFactory, canisterId);
+
+	return { canisterId, actor };
+};
+
+export const upgradeChunkedCanister = async (params: UpgradeChunkedCanisterParams) => {
+	await installCanister({
+		...params,
+		mode: { upgrade: [] }
+	});
+};
+
+const installCanister = async ({
+	pic,
+	sender,
+	wasmPath,
+	arg,
+	canisterId,
+	mode
+}: UpgradeChunkedCanisterParams & { mode: canister_install_mode }) => {
 	await clearChunkStoreApi({ canisterId, pic, sender });
 
 	const wasm = await readFile(wasmPath);
@@ -134,19 +170,16 @@ export const setupChunkedCanister = async <T extends ActorInterface<T> = ActorIn
 		chunkHashesList: chunkIds
 			.sort(({ orderId: orderIdA }, { orderId: orderIdB }) => orderIdA - orderIdB)
 			.map(({ chunkHash }) => chunkHash),
-		wasmModuleHash: await uint8ArraySha256(wasm)
+		wasmModuleHash: await uint8ArraySha256(wasm),
+		mode
 	});
-
-	const actor = pic.createActor<T>(idlFactory, canisterId);
-
-	return { canisterId, actor };
 };
 
 const clearChunkStoreApi = async ({
 	canisterId,
 	pic,
 	sender
-}: SetupParams & { canisterId: Principal }) => {
+}: PicParams & { canisterId: Principal }) => {
 	const payload: clear_chunk_store_args = {
 		canister_id: canisterId
 	};
@@ -203,7 +236,7 @@ async function* batchUploadChunks({
 	uploadChunks,
 	limit = 12,
 	...rest
-}: SetupParams & { canisterId: Principal } & {
+}: PicParams & { canisterId: Principal } & {
 	uploadChunks: UploadChunkParams[];
 	limit?: number;
 }): AsyncGenerator<UploadChunkResult[], void> {
@@ -226,7 +259,7 @@ const uploadChunk = async ({
 	...rest
 }: {
 	uploadChunk: UploadChunkParams;
-} & SetupParams & {
+} & PicParams & {
 		canisterId: Principal;
 	}): Promise<UploadChunkResult> => {
 	const chunkHash = await uploadChunkApi({
@@ -245,7 +278,7 @@ const uploadChunkApi = async ({
 	chunk,
 	pic,
 	sender
-}: SetupParams & { canisterId: Principal } & Pick<UploadChunkParams, 'chunk'>) => {
+}: PicParams & { canisterId: Principal } & Pick<UploadChunkParams, 'chunk'>) => {
 	const payload: upload_chunk_args = {
 		canister_id: canisterId,
 		chunk: new Uint8Array(await chunk.arrayBuffer())
@@ -273,16 +306,18 @@ const installChunkedCodeApi = async ({
 	chunkHashesList,
 	wasmModuleHash,
 	sender,
-	pic
+	pic,
+	mode
 }: Omit<SetupChunkedCanisterParams, 'wasmPath' | 'idlFactory'> & {
 	canisterId: Principal;
 	wasmModuleHash: string;
 	chunkHashesList: Array<chunk_hash>;
+	mode: canister_install_mode;
 }) => {
 	const payload: install_chunked_code_args = {
-		arg: arrayBufferToUint8Array(initArg),
+		arg: nonNullish(initArg) ? arrayBufferToUint8Array(initArg) : new Uint8Array(),
 		wasm_module_hash: hexStringToUint8Array(wasmModuleHash),
-		mode: { install: null },
+		mode,
 		chunk_hashes_list: chunkHashesList,
 		sender_canister_version: toNullable(),
 		store_canister: toNullable(),

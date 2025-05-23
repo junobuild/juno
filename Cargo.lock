@@ -968,6 +968,7 @@ dependencies = [
  "ic-cdk-macros",
  "ic-cdk-timers",
  "ic-stable-structures",
+ "junobuild-cdn",
  "junobuild-collections",
  "junobuild-shared",
  "junobuild-storage",

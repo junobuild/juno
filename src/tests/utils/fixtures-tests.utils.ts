@@ -122,13 +122,13 @@ const upgradeFixtureCanister = async <T extends ActorInterface<T>>({
 		wasm,
 		sender: controller.getPrincipal()
 	});
-	
+
 	await upgradeChunkedCanister({
 		pic,
 		canisterId,
 		wasmPath: wasm,
 		sender: controller
-	})
+	});
 
 	// Wait for post_upgrade to kicks in since we defer instantiation of random
 	await tick(pic);

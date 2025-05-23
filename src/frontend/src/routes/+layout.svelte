@@ -3,6 +3,7 @@
 	import { onMount, type Snippet } from 'svelte';
 	import { run } from 'svelte/legacy';
 	import { browser } from '$app/environment';
+	import { onNavigate } from '$app/navigation';
 	import Overlays from '$lib/components/core/Overlays.svelte';
 	import Spinner from '$lib/components/ui/Spinner.svelte';
 	import { layoutNavigationTitle } from '$lib/derived/layout-navigation.derived';
@@ -56,6 +57,20 @@
 	$effect(() => {
 		$layoutNavigationTitle;
 		debounceSetNavTitle();
+	});
+
+	// Source: https://svelte.dev/blog/view-transitions
+	onNavigate((navigation) => {
+		if (!document.startViewTransition) {
+			return;
+		}
+
+		return new Promise((resolve) => {
+			document.startViewTransition(async () => {
+				resolve();
+				await navigation.complete;
+			});
+		});
 	});
 </script>
 

@@ -16,7 +16,7 @@ const INSTALL_MAX_CHUNK_SIZE = 1_000_000;
 // Clear chunk store did
 
 const canister_id = IDL.Principal;
-const clear_chunk_store_args = IDL.Record({ canister_id: canister_id });
+const clear_chunk_store_args = IDL.Record({ canister_id });
 
 export type canister_id = Principal;
 export interface clear_chunk_store_args {
@@ -147,7 +147,7 @@ const installCanister = async ({
 
 	const wasm = await readFile(wasmPath);
 
-	const uploadChunks = await wasmToChunks({ wasm: new Uint8Array(wasm) });
+	const uploadChunks = wasmToChunks({ wasm: new Uint8Array(wasm) });
 
 	// Upload chunks to the IC in batch - i.e. 12 chunks uploaded at a time.
 	let chunkIds: UploadChunkResult[] = [];
@@ -206,11 +206,7 @@ interface UploadChunkResult extends UploadChunkOrderId {
 	chunkHash: chunk_hash;
 }
 
-const wasmToChunks = async ({
-	wasm
-}: {
-	wasm: Uint8Array<ArrayBuffer>;
-}): Promise<UploadChunkParams[]> => {
+const wasmToChunks = ({ wasm }: { wasm: Uint8Array<ArrayBuffer> }): UploadChunkParams[] => {
 	const blob = new Blob([wasm]);
 
 	const uploadChunks: UploadChunkParams[] = [];
@@ -232,6 +228,7 @@ const wasmToChunks = async ({
 	return uploadChunks;
 };
 
+// eslint-disable-next-line func-style
 async function* batchUploadChunks({
 	uploadChunks,
 	limit = 12,

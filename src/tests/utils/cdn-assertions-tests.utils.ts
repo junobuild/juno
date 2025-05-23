@@ -84,14 +84,6 @@ export const testNotAllowedCdnMethods = ({
 		);
 	});
 
-	it('should throw errors on list assets', async () => {
-		const { list_assets } = actor();
-
-		await expect(
-			list_assets('#dapp', { matcher: [], order: [], owner: [], paginate: [] })
-		).rejects.toThrow(errorMsgController ?? errorMsgAdminController);
-	});
-
 	it('should throw errors on setting config', async () => {
 		const { set_storage_config } = actor();
 
@@ -146,6 +138,24 @@ export const testNotAllowedCdnMethods = ({
 		};
 
 		await expect(commit_proposal(commit)).rejects.toThrow(errorMsgAdminController);
+	});
+};
+
+export const testGuardedAssetsCdnMethods = ({
+	actor,
+	errorMsgAdminController,
+	errorMsgController
+}: {
+	actor: () => Actor<SatelliteActor | MissionControlActor | ConsoleActor>;
+	errorMsgAdminController: string;
+	errorMsgController?: string;
+}) => {
+	it('should throw errors on list assets', async () => {
+		const { list_assets } = actor();
+
+		await expect(
+			list_assets('#dapp', { matcher: [], order: [], owner: [], paginate: [] })
+		).rejects.toThrow(errorMsgController ?? errorMsgAdminController);
 	});
 };
 

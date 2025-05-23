@@ -14,6 +14,7 @@ import {
 	testCdnConfig,
 	testCdnGetProposal,
 	testControlledCdnMethods,
+	testGuardedAssetsCdnMethods,
 	testNotAllowedCdnMethods
 } from '../../utils/cdn-assertions-tests.utils';
 import { missionControlUserInitArgs } from '../../utils/mission-control-tests.utils';
@@ -84,6 +85,12 @@ describe('Mission Control > Cdn', () => {
 			errorMsgController: MISSION_CONTROL_CONTROLLER_ERROR_MSG
 		});
 
+		testGuardedAssetsCdnMethods({
+			actor: () => actor,
+			errorMsgAdminController: MISSION_CONTROL_ADMIN_CONTROLLER_ERROR_MSG,
+			errorMsgController: MISSION_CONTROL_CONTROLLER_ERROR_MSG
+		});
+
 		testNotAllowedCdnMethodsInMissionControl({
 			actor: () => actor,
 			errorMsg: MISSION_CONTROL_CONTROLLER_ERROR_MSG
@@ -97,6 +104,12 @@ describe('Mission Control > Cdn', () => {
 		});
 
 		testNotAllowedCdnMethods({
+			actor: () => actor,
+			errorMsgAdminController: MISSION_CONTROL_ADMIN_CONTROLLER_ERROR_MSG,
+			errorMsgController: MISSION_CONTROL_CONTROLLER_ERROR_MSG
+		});
+
+		testGuardedAssetsCdnMethods({
 			actor: () => actor,
 			errorMsgAdminController: MISSION_CONTROL_ADMIN_CONTROLLER_ERROR_MSG,
 			errorMsgController: MISSION_CONTROL_CONTROLLER_ERROR_MSG

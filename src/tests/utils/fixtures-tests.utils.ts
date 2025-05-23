@@ -117,12 +117,6 @@ const upgradeFixtureCanister = async <T extends ActorInterface<T>>({
 	wasm
 }: Omit<SetupFixtureCanister<T>, 'actor'> & { wasm: string }) => {
 	// The random number generator is only initialized on upgrade because dev that do not use serverless functions do not need it
-	await pic.upgradeCanister({
-		canisterId,
-		wasm,
-		sender: controller.getPrincipal()
-	});
-
 	await upgradeChunkedCanister({
 		pic,
 		canisterId,

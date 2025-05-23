@@ -23,6 +23,9 @@ export interface AssetNoContent {
 	created_at: bigint;
 	version: [] | [bigint];
 }
+export interface AssetsUpgradeOptions {
+	clear_existing_assets: [] | [boolean];
+}
 export interface AuthenticationConfig {
 	internet_identity: [] | [AuthenticationConfigInternetIdentity];
 }
@@ -35,6 +38,10 @@ export interface CommitBatch {
 	batch_id: bigint;
 	headers: Array<[string, string]>;
 	chunk_ids: Array<bigint>;
+}
+export interface CommitProposal {
+	sha256: Uint8Array | number[];
+	proposal_id: bigint;
 }
 export interface Config {
 	db: [] | [DbConfig];
@@ -70,6 +77,9 @@ export interface DelRule {
 }
 export interface DeleteControllersArgs {
 	controllers: Array<Principal>;
+}
+export interface DeleteProposalAssets {
+	proposal_ids: Array<bigint>;
 }
 export interface DepositCyclesArgs {
 	cycles: bigint;
@@ -152,6 +162,26 @@ export type Permission =
 	| { Private: null }
 	| { Public: null }
 	| { Managed: null };
+export interface Proposal {
+	status: ProposalStatus;
+	updated_at: bigint;
+	sha256: [] | [Uint8Array | number[]];
+	executed_at: [] | [bigint];
+	owner: Principal;
+	created_at: bigint;
+	version: [] | [bigint];
+	proposal_type: ProposalType;
+}
+export type ProposalStatus =
+	| { Initialized: null }
+	| { Failed: null }
+	| { Open: null }
+	| { Rejected: null }
+	| { Executed: null }
+	| { Accepted: null };
+export type ProposalType =
+	| { AssetsUpgrade: AssetsUpgradeOptions }
+	| { SegmentsDeployment: SegmentsDeploymentOptions };
 export interface RateConfig {
 	max_tokens: bigint;
 	time_per_token_ns: bigint;
@@ -168,6 +198,11 @@ export interface Rule {
 	rate_config: [] | [RateConfig];
 	write: Permission;
 	max_changes_per_user: [] | [number];
+}
+export interface SegmentsDeploymentOptions {
+	orbiter: [] | [string];
+	mission_control_version: [] | [string];
+	satellite_version: [] | [string];
 }
 export interface SetController {
 	metadata: Array<[string, string]>;
@@ -242,6 +277,8 @@ export interface UploadChunkResult {
 }
 export interface _SERVICE {
 	commit_asset_upload: ActorMethod<[CommitBatch], undefined>;
+	commit_proposal: ActorMethod<[CommitProposal], null>;
+	commit_proposal_asset_upload: ActorMethod<[CommitBatch], undefined>;
 	count_assets: ActorMethod<[string, ListParams], bigint>;
 	count_collection_assets: ActorMethod<[string], bigint>;
 	count_collection_docs: ActorMethod<[string], bigint>;
@@ -257,6 +294,7 @@ export interface _SERVICE {
 	del_many_assets: ActorMethod<[Array<[string, string]>], undefined>;
 	del_many_docs: ActorMethod<[Array<[string, string, DelDoc]>], undefined>;
 	del_rule: ActorMethod<[CollectionType, string, DelRule], undefined>;
+	delete_proposal_assets: ActorMethod<[DeleteProposalAssets], undefined>;
 	deposit_cycles: ActorMethod<[DepositCyclesArgs], undefined>;
 	get_asset: ActorMethod<[string, string], [] | [AssetNoContent]>;
 	get_auth_config: ActorMethod<[], [] | [AuthenticationConfig]>;
@@ -265,6 +303,7 @@ export interface _SERVICE {
 	get_doc: ActorMethod<[string, string], [] | [Doc]>;
 	get_many_assets: ActorMethod<[Array<[string, string]>], Array<[string, [] | [AssetNoContent]]>>;
 	get_many_docs: ActorMethod<[Array<[string, string]>], Array<[string, [] | [Doc]]>>;
+	get_proposal: ActorMethod<[bigint], [] | [Proposal]>;
 	get_rule: ActorMethod<[CollectionType, string], [] | [Rule]>;
 	get_storage_config: ActorMethod<[], StorageConfig>;
 	http_request: ActorMethod<[HttpRequest], HttpResponse>;
@@ -273,6 +312,8 @@ export interface _SERVICE {
 		StreamingCallbackHttpResponse
 	>;
 	init_asset_upload: ActorMethod<[InitAssetKey], InitUploadResult>;
+	init_proposal: ActorMethod<[ProposalType], [bigint, Proposal]>;
+	init_proposal_asset_upload: ActorMethod<[InitAssetKey, bigint], InitUploadResult>;
 	list_assets: ActorMethod<[string, ListParams], ListResults>;
 	list_controllers: ActorMethod<[], Array<[Principal, Controller]>>;
 	list_custom_domains: ActorMethod<[], Array<[string, CustomDomain]>>;
@@ -287,7 +328,9 @@ export interface _SERVICE {
 	set_many_docs: ActorMethod<[Array<[string, string, SetDoc]>], Array<[string, Doc]>>;
 	set_rule: ActorMethod<[CollectionType, string, SetRule], Rule>;
 	set_storage_config: ActorMethod<[StorageConfig], undefined>;
+	submit_proposal: ActorMethod<[bigint], [bigint, Proposal]>;
 	upload_asset_chunk: ActorMethod<[UploadChunk], UploadChunkResult>;
+	upload_proposal_asset_chunk: ActorMethod<[UploadChunk], UploadChunkResult>;
 }
 export declare const idlFactory: IDL.InterfaceFactory;
 export declare const init: (args: { IDL: typeof IDL }) => IDL.Type[];

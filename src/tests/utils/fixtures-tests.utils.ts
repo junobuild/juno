@@ -9,6 +9,7 @@ import type { Principal } from '@dfinity/principal';
 import { nonNullish } from '@dfinity/utils';
 import { type Actor, type ActorInterface, PocketIc } from '@hadronous/pic';
 import { inject } from 'vitest';
+import { setupChunkedCanister } from './pic-setup-tests.utils';
 import { tick } from './pic-tests.utils';
 import {
 	controllersInitArgs,
@@ -61,11 +62,12 @@ const setupFixtureCanister = async <T extends ActorInterface<T>>({
 		await pic.setTime(currentDate.getTime());
 	}
 
-	const { actor: c, canisterId } = await pic.setupCanister<T>({
+	const { actor: c, canisterId } = await setupChunkedCanister<T>({
+		pic,
 		idlFactory,
-		wasm,
+		wasmPath: wasm,
 		arg: controllersInitArgs(controller),
-		sender: controller.getPrincipal()
+		sender: controller
 	});
 
 	const actor = c;

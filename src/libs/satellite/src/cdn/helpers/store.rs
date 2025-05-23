@@ -1,7 +1,7 @@
 use crate::cdn::helpers::stable::get_proposal;
+use crate::cdn::strategies_impls::storage::CdnStorageState;
 use crate::get_controllers;
 use crate::storage::store::get_config_store;
-use crate::storage::strategy_impls::StorageState;
 use candid::Principal;
 use junobuild_cdn::proposals::ProposalId;
 use junobuild_storage::store::create_batch;
@@ -31,6 +31,6 @@ pub fn init_asset_upload(
         &config,
         init,
         Some(proposal_id),
-        &StorageState,
+        &CdnStorageState,
     )
 }

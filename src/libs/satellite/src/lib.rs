@@ -221,7 +221,7 @@ pub fn commit_proposal(proposal: CommitProposal) -> ManualReply<()> {
     api::cdn::commit_proposal(&proposal)
 }
 
-#[update(guard = "caller_is_controller")]
+#[update(guard = "caller_is_admin_controller")]
 pub fn delete_proposal_assets(params: DeleteProposalAssets) {
     api::cdn::delete_proposal_assets(&params)
 }

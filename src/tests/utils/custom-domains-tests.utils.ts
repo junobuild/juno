@@ -143,7 +143,7 @@ export const adminCustomDomainsTests = ({
 export const adminCustomDomainsWithProposalTests = ({
 	actor
 }: {
-	actor: () => Actor<ConsoleActor | MissionControlActor>;
+	actor: () => Actor<SatelliteActor | ConsoleActor | MissionControlActor>;
 }) => {
 	// eslint-disable-next-line vitest/require-top-level-describe
 	it('should not delete asset ic-domains when deleting all assets', async () => {

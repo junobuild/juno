@@ -45,6 +45,10 @@ describe('Satellite > Cdn', () => {
 		actor.setIdentity(controller);
 
 		canisterId = cId;
+
+		// We do not want the index.html as redirect for the test suite.
+		const { del_assets } = actor;
+		await del_assets('#dapp');
 	});
 
 	afterAll(async () => {

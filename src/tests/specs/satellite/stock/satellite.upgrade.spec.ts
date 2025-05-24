@@ -762,15 +762,15 @@ describe('Satellite > Upgrade', () => {
 			actor.setIdentity(controller);
 		});
 
-		it('should expose build version', async () => {
+		it('should deprecated build version', async () => {
 			const satelliteVersion = crateVersion('satellite');
 
 			await expect(actor.build_version()).resolves.toEqual(satelliteVersion);
 
 			await upgrade();
 
-			await expect(async () => await actor.version()).rejects.toThrow(
-				new RegExp("Canister has no query method 'version'.", 'i')
+			await expect(async () => await actor.build_version()).rejects.toThrow(
+				new RegExp("Canister has no query method 'build_version'.", 'i')
 			);
 		});
 

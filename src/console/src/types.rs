@@ -5,7 +5,7 @@ pub mod state {
     use ic_ledger_types::{BlockIndex, Tokens};
     use ic_stable_structures::StableBTreeMap;
     use junobuild_cdn::proposals::{ProposalsStable, SegmentDeploymentVersion};
-    use junobuild_cdn::storage::{AssetsStable, ContentChunksStable};
+    use junobuild_cdn::storage::{ProposalAssetsStable, ProposalContentChunksStable};
     use junobuild_shared::rate::types::{RateConfig, RateTokens};
     use junobuild_shared::types::memory::Memory;
     use junobuild_shared::types::state::{Controllers, Timestamp};
@@ -33,8 +33,8 @@ pub mod state {
     pub struct StableState {
         pub mission_controls: MissionControlsStable,
         pub payments: PaymentsStable,
-        pub proposals_assets: AssetsStable,
-        pub proposals_content_chunks: ContentChunksStable,
+        pub proposals_assets: ProposalAssetsStable,
+        pub proposals_content_chunks: ProposalContentChunksStable,
         pub proposals: ProposalsStable,
     }
 

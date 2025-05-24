@@ -5,6 +5,7 @@ pub mod state {
     use crate::storage::types::state::{AssetsStable, ContentChunksStable};
     use candid::CandidType;
     use junobuild_cdn::proposals::ProposalsStable;
+    use junobuild_cdn::storage::{ProposalAssetsStable, ProposalContentChunksStable};
     use junobuild_shared::types::state::Controllers;
     use junobuild_storage::types::state::StorageHeapState;
     use rand::rngs::StdRng;
@@ -28,8 +29,8 @@ pub mod state {
         pub db: DbStable,
         pub assets: AssetsStable,
         pub content_chunks: ContentChunksStable,
-        pub proposals_assets: junobuild_cdn::storage::AssetsStable,
-        pub proposals_content_chunks: junobuild_cdn::storage::ContentChunksStable,
+        pub proposals_assets: ProposalAssetsStable,
+        pub proposals_content_chunks: ProposalContentChunksStable,
         pub proposals: ProposalsStable,
     }
 

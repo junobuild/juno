@@ -1,6 +1,6 @@
 use crate::proposals::ProposalId;
-use crate::storage::state::types::{AssetsStable, ProposalAssetKey};
-use crate::storage::{ContentChunksStable, ProposalContentChunkKey};
+use crate::storage::state::types::{ProposalAssetKey, ProposalAssetsStable};
+use crate::storage::{ProposalContentChunkKey, ProposalContentChunksStable};
 use crate::strategies::CdnStableStrategy;
 use junobuild_collections::types::core::CollectionKey;
 use junobuild_shared::serializers::deserialize_from_bytes;
@@ -24,7 +24,7 @@ fn get_asset_impl(
     proposal_id: &ProposalId,
     collection: &CollectionKey,
     full_path: &FullPath,
-    assets: &AssetsStable,
+    assets: &ProposalAssetsStable,
 ) -> Option<Asset> {
     assets.get(&proposal_asset_key(proposal_id, collection, full_path))
 }
@@ -42,7 +42,7 @@ pub fn get_content_chunks(
 fn get_content_chunks_impl(
     encoding: &AssetEncoding,
     chunk_index: usize,
-    content_chunks: &ContentChunksStable,
+    content_chunks: &ProposalContentChunksStable,
 ) -> Option<Blob> {
     let key: ProposalContentChunkKey =
         deserialize_from_bytes(Cow::Owned(encoding.content_chunks[chunk_index].clone()));
@@ -58,7 +58,7 @@ pub fn get_assets(
 
 fn get_assets_impl(
     proposal_id: &ProposalId,
-    proposal_assets: &AssetsStable,
+    proposal_assets: &ProposalAssetsStable,
 ) -> Vec<(ProposalAssetKey, Asset)> {
     proposal_assets
         .range(filter_assets_range(proposal_id))
@@ -117,7 +117,7 @@ fn insert_asset_impl(
     collection: &CollectionKey,
     full_path: &FullPath,
     asset: &Asset,
-    assets: &mut AssetsStable,
+    assets: &mut ProposalAssetsStable,
 ) {
     assets.insert(
         proposal_asset_key(proposal_id, collection, full_path),
@@ -129,7 +129,7 @@ pub fn delete_asset(cdn_stable: &impl CdnStableStrategy, key: &ProposalAssetKey)
     cdn_stable.with_assets_mut(|assets| delete_asset_impl(key, assets))
 }
 
-fn delete_asset_impl(key: &ProposalAssetKey, assets: &mut AssetsStable) -> Option<Asset> {
+fn delete_asset_impl(key: &ProposalAssetKey, assets: &mut ProposalAssetsStable) -> Option<Asset> {
     assets.remove(key)
 }
 
@@ -144,7 +144,7 @@ pub fn delete_content_chunks(
 
 fn delete_content_chunks_impl(
     content_chunks_keys: &[BlobOrKey],
-    content_chunks: &mut ContentChunksStable,
+    content_chunks: &mut ProposalContentChunksStable,
 ) {
     for chunk in content_chunks_keys.iter() {
         let key: ProposalContentChunkKey = deserialize_from_bytes(Cow::Owned(chunk.clone()));

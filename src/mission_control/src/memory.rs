@@ -7,9 +7,6 @@ use std::cell::RefCell;
 
 const UPGRADES: MemoryId = MemoryId::new(0);
 const MONITORING_HISTORY: MemoryId = MemoryId::new(1);
-const ASSETS: MemoryId = MemoryId::new(2);
-const CONTENT_CHUNKS: MemoryId = MemoryId::new(3);
-const PROPOSALS: MemoryId = MemoryId::new(4);
 
 thread_local! {
     pub static STATE: RefCell<State> = RefCell::default();
@@ -32,23 +29,8 @@ fn get_memory_monitoring_history() -> Memory {
     MEMORY_MANAGER.with(|m| m.borrow().get(MONITORING_HISTORY))
 }
 
-fn get_memory_assets() -> Memory {
-    MEMORY_MANAGER.with(|m| m.borrow().get(ASSETS))
-}
-
-fn get_memory_content_chunks() -> Memory {
-    MEMORY_MANAGER.with(|m| m.borrow().get(CONTENT_CHUNKS))
-}
-
-fn get_memory_proposals() -> Memory {
-    MEMORY_MANAGER.with(|m| m.borrow().get(PROPOSALS))
-}
-
 pub fn init_stable_state() -> StableState {
     StableState {
         monitoring_history: StableBTreeMap::init(get_memory_monitoring_history()),
-        proposals_assets: StableBTreeMap::init(get_memory_assets()),
-        proposals_content_chunks: StableBTreeMap::init(get_memory_content_chunks()),
-        proposals: StableBTreeMap::init(get_memory_proposals()),
     }
 }

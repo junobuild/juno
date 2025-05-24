@@ -1,5 +1,4 @@
 import type { _SERVICE as ConsoleActor } from '$declarations/console/console.did';
-import type { _SERVICE as MissionControlActor } from '$declarations/mission_control/mission_control.did';
 import type { _SERVICE as SatelliteActor } from '$declarations/satellite/satellite.did';
 import { assertNonNullish, fromNullable, toNullable } from '@dfinity/utils';
 import type { Actor } from '@hadronous/pic';
@@ -9,7 +8,7 @@ export const anonymousCustomDomainsTests = ({
 	actor,
 	errorMsg
 }: {
-	actor: () => Actor<SatelliteActor | ConsoleActor | MissionControlActor>;
+	actor: () => Actor<SatelliteActor | ConsoleActor>;
 	errorMsg: string;
 }) => {
 	// eslint-disable-next-line vitest/require-top-level-describe
@@ -37,7 +36,7 @@ export const anonymousCustomDomainsTests = ({
 export const adminCustomDomainsTests = ({
 	actor
 }: {
-	actor: () => Actor<SatelliteActor | ConsoleActor | MissionControlActor>;
+	actor: () => Actor<SatelliteActor | ConsoleActor>;
 }) => {
 	// eslint-disable-next-line vitest/require-top-level-describe
 	it('should set custom domain', async () => {
@@ -143,7 +142,7 @@ export const adminCustomDomainsTests = ({
 export const adminCustomDomainsWithProposalTests = ({
 	actor
 }: {
-	actor: () => Actor<SatelliteActor | ConsoleActor | MissionControlActor>;
+	actor: () => Actor<SatelliteActor | ConsoleActor>;
 }) => {
 	// eslint-disable-next-line vitest/require-top-level-describe
 	it('should not delete asset ic-domains when deleting all assets', async () => {

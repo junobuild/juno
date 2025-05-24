@@ -53,13 +53,15 @@
 	@use '../../styles/mixins/text';
 
 	div {
+		margin: 0 0 var(--padding-2_5x);
+
 		:global(a) {
-			min-width: 100%;
+			width: 100%;
+			max-width: 100%;
 		}
 	}
 
 	.host {
-		max-width: 65%;
 		@include text.truncate;
 	}
 </style>

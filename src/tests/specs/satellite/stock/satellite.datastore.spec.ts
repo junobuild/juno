@@ -789,11 +789,11 @@ describe.each([{ memory: { Heap: null } }, { memory: { Stable: null } }])(
 			describe.each([
 				{
 					memory: { Heap: null },
-					expectMemory: 3_932_160n
+					expectMemory: 3_997_696n
 				},
 				{
 					memory: { Stable: null },
-					expectMemory: 25_231_360n
+					expectMemory: 50_397_184n
 				}
 			])('With collection', ({ memory, expectMemory }) => {
 				const errorMsg = `${'Heap' in memory ? JUNO_ERROR_MEMORY_HEAP_EXCEEDED : JUNO_ERROR_MEMORY_STABLE_EXCEEDED} (${expectMemory} bytes used, 20000 bytes allowed)`;

@@ -1167,8 +1167,8 @@ describe('Satellite > Storage', () => {
 	});
 
 	describe('More configuration', () => {
-		const maxHeapMemorySize = 3_997_695n;
-		const maxStableMemorySize = 2_000_000n;
+		const maxHeapMemorySize = 4_063_231n;
+		const maxStableMemorySize = 50_000_000n;
 
 		beforeAll(() => {
 			actor.setIdentity(controller);
@@ -1183,7 +1183,7 @@ describe('Satellite > Storage', () => {
 			},
 			{
 				memory: { Stable: null },
-				expectMemory: 25_231_360n,
+				expectMemory: 50_397_184n,
 				allowedMemory: maxStableMemorySize,
 				preUploadCount: 0
 			}

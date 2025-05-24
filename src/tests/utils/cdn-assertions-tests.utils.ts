@@ -6,7 +6,6 @@ import type {
 	ProposalType,
 	UploadChunk
 } from '$declarations/console/console.did';
-import type { _SERVICE as MissionControlActor } from '$declarations/mission_control/mission_control.did';
 import type {
 	_SERVICE as SatelliteActor,
 	StorageConfig
@@ -35,7 +34,7 @@ export const testNotAllowedCdnMethods = ({
 	errorMsgAdminController,
 	errorMsgController
 }: {
-	actor: () => Actor<SatelliteActor | MissionControlActor | ConsoleActor>;
+	actor: () => Actor<SatelliteActor | ConsoleActor>;
 	errorMsgAdminController: string;
 	errorMsgController?: string;
 }) => {
@@ -146,7 +145,7 @@ export const testGuardedAssetsCdnMethods = ({
 	errorMsgAdminController,
 	errorMsgController
 }: {
-	actor: () => Actor<SatelliteActor | MissionControlActor | ConsoleActor>;
+	actor: () => Actor<SatelliteActor | ConsoleActor>;
 	errorMsgAdminController: string;
 	errorMsgController?: string;
 }) => {
@@ -162,7 +161,7 @@ export const testGuardedAssetsCdnMethods = ({
 export const testCdnConfig = ({
 	actor
 }: {
-	actor: () => Actor<SatelliteActor | MissionControlActor | ConsoleActor>;
+	actor: () => Actor<SatelliteActor | ConsoleActor>;
 }) => {
 	it('should set and get config', async () => {
 		const { set_storage_config, get_storage_config } = actor();
@@ -198,7 +197,7 @@ export const testControlledCdnMethods = ({
 }: {
 	actor: (params?: {
 		requireController: boolean;
-	}) => Actor<SatelliteActor | MissionControlActor | ConsoleActor>;
+	}) => Actor<SatelliteActor | ConsoleActor>;
 	pic: () => PocketIc;
 	caller: () => Identity;
 	canisterId: () => Principal;
@@ -591,7 +590,7 @@ export const testCdnGetProposal = ({
 	owner,
 	proposalId = 1n
 }: {
-	actor: () => Actor<SatelliteActor | MissionControlActor | ConsoleActor>;
+	actor: () => Actor<SatelliteActor | ConsoleActor>;
 	owner: () => Identity;
 	proposalId?: bigint;
 }) => {

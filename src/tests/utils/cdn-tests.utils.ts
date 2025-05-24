@@ -1,5 +1,4 @@
 import type { _SERVICE as ConsoleActor } from '$declarations/console/console.did';
-import type { _SERVICE as MissionControlActor } from '$declarations/mission_control/mission_control.did';
 import type { _SERVICE as SatelliteActor } from '$declarations/satellite/satellite.did';
 import { arrayBufferToUint8Array, toNullable } from '@dfinity/utils';
 import type { Actor } from '@hadronous/pic';
@@ -9,7 +8,7 @@ export const uploadFile = async ({
 	actor,
 	proposalId
 }: {
-	actor: Actor<SatelliteActor | ConsoleActor | MissionControlActor>;
+	actor: Actor<SatelliteActor | ConsoleActor>;
 	proposalId: bigint;
 }) => {
 	const { init_proposal_asset_upload, commit_proposal_asset_upload, upload_proposal_asset_chunk } =

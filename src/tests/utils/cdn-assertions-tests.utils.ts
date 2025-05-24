@@ -537,7 +537,7 @@ export const testControlledCdnMethods = ({
 		expect(status_code_200).toEqual(200);
 	});
 
-	it('should still serve asset after #dApp has been cleared', async () => {
+	it('should still serve asset on #releases after #dapp has been cleared', async () => {
 		const { http_request } = actor();
 
 		const { status_code } = await http_request({

@@ -11,6 +11,7 @@ mod monitoring;
 mod random;
 mod segments;
 mod types;
+mod upgrade;
 mod user;
 
 use crate::types::interface::CreateCanisterConfig;

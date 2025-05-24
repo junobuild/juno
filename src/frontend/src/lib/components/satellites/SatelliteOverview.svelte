@@ -23,10 +23,14 @@
 <div class="card-container with-title">
 	<span class="title">{$i18n.satellites.overview}</span>
 
-	<div class="columns-3 fit-column-1">
+	<div class="columns-3">
 		<div>
 			<SatelliteName {satellite} />
 
+			<SatelliteOverviewCustomDomain {satellite} />
+		</div>
+
+		<div>
 			<Value>
 				{#snippet label()}
 					{$i18n.satellites.id}
@@ -35,8 +39,6 @@
 			</Value>
 
 			<CanisterSubnet canisterId={satellite.satellite_id} />
-
-			<SatelliteOverviewCustomDomain {satellite} />
 		</div>
 
 		<div>

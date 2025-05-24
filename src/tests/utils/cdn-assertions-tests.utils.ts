@@ -158,11 +158,7 @@ export const testGuardedAssetsCdnMethods = ({
 	});
 };
 
-export const testCdnConfig = ({
-	actor
-}: {
-	actor: () => Actor<SatelliteActor | ConsoleActor>;
-}) => {
+export const testCdnConfig = ({ actor }: { actor: () => Actor<SatelliteActor | ConsoleActor> }) => {
 	it('should set and get config', async () => {
 		const { set_storage_config, get_storage_config } = actor();
 
@@ -195,9 +191,7 @@ export const testControlledCdnMethods = ({
 		segmentsDeployment: '/releases/satellite-v0.0.18.wasm.gz'
 	}
 }: {
-	actor: (params?: {
-		requireController: boolean;
-	}) => Actor<SatelliteActor | ConsoleActor>;
+	actor: (params?: { requireController: boolean }) => Actor<SatelliteActor | ConsoleActor>;
 	pic: () => PocketIc;
 	caller: () => Identity;
 	canisterId: () => Principal;

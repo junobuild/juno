@@ -117,7 +117,13 @@ describe('Satellite > Cdn', () => {
 			currentDate,
 			canisterId: () => canisterId,
 			caller: () => controller,
-			pic: () => pic
+			pic: () => pic,
+			fullPaths: {
+				assetsUpgrade: '/hello.html',
+				segmentsDeployment: '/_juno/releases/satellite-v0.0.18.wasm.gz',
+				assetsCollection: "#dapp",
+				segmentsCollection: "#_juno"
+			}
 		});
 
 		testCdnGetProposal({
@@ -167,7 +173,9 @@ describe('Satellite > Cdn', () => {
 			expected_proposal_id: 5n,
 			fullPaths: {
 				assetsUpgrade: '/world.html',
-				segmentsDeployment: '/releases/my-satellite-v0.1.1.wasm.gz'
+				segmentsDeployment: '/_juno/releases/my-satellite-v0.1.1.wasm.gz',
+				assetsCollection: "#dapp",
+				segmentsCollection: "#_juno"
 			}
 		});
 

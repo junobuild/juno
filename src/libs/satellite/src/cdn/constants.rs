@@ -2,10 +2,10 @@ use junobuild_collections::types::interface::SetRule;
 use junobuild_collections::types::rules::Memory;
 use junobuild_collections::types::rules::Permission::Controllers;
 
-pub const RELEASES_COLLECTION_KEY: &str = "#releases";
+pub const CDN_JUNO_COLLECTION_KEY: &str = "#_juno";
 
-pub const DEFAULT_RELEASES_COLLECTIONS: [(&str, SetRule); 1] = [(
-    RELEASES_COLLECTION_KEY,
+pub const DEFAULT_CDN_JUNO_COLLECTIONS: [(&str, SetRule); 1] = [(
+    CDN_JUNO_COLLECTION_KEY,
     SetRule {
         read: Controllers,
         write: Controllers,

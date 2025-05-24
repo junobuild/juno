@@ -1,22 +1,22 @@
-use crate::memory::{get_memory_upgrades, init_runtime_state, init_stable_state, STATE};
-use crate::monitoring::monitor::defer_restart_monitoring;
+use crate::memory::manager::{get_memory_upgrades, init_runtime_state, init_stable_state, STATE};
 use crate::random::defer_init_random_seed;
 use crate::types::state::{HeapState, State};
-use crate::upgrade::types::upgrade::UpgradeState;
 use ciborium::{from_reader, into_writer};
-use ic_cdk::api::call::{arg_data, ArgDecoderConfig};
+use ic_cdk::caller;
 use ic_cdk_macros::{init, post_upgrade, pre_upgrade};
-use junobuild_shared::types::interface::MissionControlArgs;
+use junobuild_shared::controllers::init_controllers;
 use junobuild_shared::upgrade::{read_post_upgrade, write_pre_upgrade};
 
 #[init]
 fn init() {
-    let call_arg = arg_data::<(Option<MissionControlArgs>,)>(ArgDecoderConfig::default()).0;
-    let user = call_arg.unwrap().user;
+    let manager = caller();
 
     STATE.with(|state| {
         *state.borrow_mut() = State {
-            heap: HeapState::from(&user),
+            heap: HeapState {
+                controllers: init_controllers(&[manager]),
+                env: None,
+            },
             stable: init_stable_state(),
         };
     });
@@ -41,20 +41,12 @@ fn post_upgrade() {
     let memory = get_memory_upgrades();
     let state_bytes = read_post_upgrade(&memory);
 
-    // TODO: replace UpgradeState by State after release
-    let state: UpgradeState = from_reader(&*state_bytes)
-        .expect("Failed to decode the state of the mission control in post_upgrade hook.");
+    let state: State = from_reader(&*state_bytes)
+        .expect("Failed to decode the state of the observatory in post_upgrade hook.");
 
-    STATE.with(|s| {
-        *s.borrow_mut() = State {
-            stable: state.stable,
-            heap: HeapState::from(&state.heap),
-        }
-    });
+    STATE.with(|s| *s.borrow_mut() = state);
 
     init_runtime_state();
 
     defer_init_random_seed();
-
-    defer_restart_monitoring();
 }

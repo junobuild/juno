@@ -1,6 +1,6 @@
 use crate::cdn::certified_assets::upgrade::defer_init_certified_assets;
 use crate::cdn::lifecycle::init_cdn_storage_heap_state;
-use crate::memory::{get_memory_upgrades, init_stable_state, STATE};
+use crate::memory::manager::{get_memory_upgrades, init_stable_state, STATE};
 use crate::types::state::{Fees, HeapState, Rates, ReleasesMetadata, State};
 use ciborium::{from_reader, into_writer};
 use ic_cdk::caller;

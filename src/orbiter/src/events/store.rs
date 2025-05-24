@@ -3,7 +3,7 @@ use crate::assert::constraints::{
     assert_satellite_id, assert_session_id, assert_track_event_length,
 };
 use crate::events::filters::{filter_analytics, filter_satellites_analytics};
-use crate::state::memory::STATE;
+use crate::state::memory::manager::STATE;
 use crate::state::types::memory::{StoredPageView, StoredTrackEvent};
 use crate::state::types::state::{
     AnalyticKey, AnalyticSatelliteKey, PageView, PerformanceMetric, StableState, TrackEvent,

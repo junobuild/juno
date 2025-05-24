@@ -1,5 +1,5 @@
 pub mod state {
-    use crate::memory::init_stable_state;
+    use crate::memory::manager::init_stable_state;
     use crate::types::ledger::Payment;
     use candid::CandidType;
     use ic_ledger_types::{BlockIndex, Tokens};

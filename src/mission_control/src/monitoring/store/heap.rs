@@ -1,4 +1,4 @@
-use crate::memory::STATE;
+use crate::memory::manager::STATE;
 use crate::types::state::{
     CyclesMonitoringStrategy, HeapState, MissionControlSettings, Orbiters, Satellites, Settings,
 };

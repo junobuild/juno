@@ -1,5 +1,5 @@
 use crate::constants::E8S_PER_ICP;
-use crate::memory::STATE;
+use crate::memory::manager::STATE;
 use crate::types::ledger::{Payment, PaymentStatus};
 use crate::types::state::{
     MissionControl, MissionControls, MissionControlsStable, Payments, PaymentsStable, StableState,

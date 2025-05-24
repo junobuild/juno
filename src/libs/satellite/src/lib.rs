@@ -9,7 +9,6 @@ mod errors;
 mod guards;
 mod hooks;
 mod impls;
-mod lifecycle;
 mod logs;
 mod memory;
 mod random;
@@ -48,7 +47,7 @@ use junobuild_storage::types::interface::{
     AssetNoContent, CommitBatch, InitAssetKey, InitUploadResult, UploadChunk, UploadChunkResult,
 };
 use junobuild_storage::types::state::FullPath;
-
+use memory::lifecycle;
 // ============================================================================================
 // These types are made available for use in Serverless Functions.
 // ============================================================================================

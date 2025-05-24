@@ -1167,8 +1167,8 @@ describe('Satellite > Storage', () => {
 	});
 
 	describe('More configuration', () => {
-		const maxHeapMemorySize = 4_003_231n;
-		const maxStableMemorySize = 50_000_000n;
+		const maxHeapMemorySize = 4_003_232n;
+		const maxStableMemorySize = 2_000_000n;
 
 		beforeAll(() => {
 			actor.setIdentity(controller);

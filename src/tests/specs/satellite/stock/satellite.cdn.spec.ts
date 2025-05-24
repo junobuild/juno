@@ -1,5 +1,4 @@
 import type { _SERVICE as ConsoleActor } from '$declarations/console/console.did';
-import type { _SERVICE as MissionControlActor } from '$declarations/mission_control/mission_control.did';
 import type { _SERVICE as SatelliteActor } from '$declarations/satellite/satellite.did';
 import { idlFactory as idlFactorSatellite } from '$declarations/satellite/satellite.factory.did';
 import { AnonymousIdentity } from '@dfinity/agent';
@@ -59,7 +58,7 @@ describe('Satellite > Cdn', () => {
 		actor,
 		errorMsg
 	}: {
-		actor: () => Actor<SatelliteActor | MissionControlActor | ConsoleActor>;
+		actor: () => Actor<SatelliteActor | ConsoleActor>;
 		errorMsg: string;
 	}) => {
 		it('should throw errors on get proposal', async () => {

@@ -1,6 +1,6 @@
 use crate::memory::internal::STATE;
 use junobuild_cdn::proposals::{Proposal, ProposalsStable};
-use junobuild_cdn::storage::{AssetsStable, ContentChunksStable};
+use junobuild_cdn::storage::{ProposalAssetsStable, ProposalContentChunksStable};
 use junobuild_cdn::strategies::{CdnHeapStrategy, CdnStableStrategy, CdnWorkflowStrategy};
 use junobuild_collections::types::rules::Rules;
 use junobuild_shared::types::domain::CustomDomains;
@@ -63,28 +63,31 @@ impl CdnHeapStrategy for CdnHeap {
 pub struct CdnStable;
 
 impl CdnStableStrategy for CdnStable {
-    fn with_assets<R>(&self, f: impl FnOnce(&AssetsStable) -> R) -> R {
+    fn with_assets<R>(&self, f: impl FnOnce(&ProposalAssetsStable) -> R) -> R {
         STATE.with(|state| {
             let stable = &state.borrow().stable;
             f(&stable.proposals_assets)
         })
     }
 
-    fn with_assets_mut<R>(&self, f: impl FnOnce(&mut AssetsStable) -> R) -> R {
+    fn with_assets_mut<R>(&self, f: impl FnOnce(&mut ProposalAssetsStable) -> R) -> R {
         STATE.with(|state| {
             let mut borrow = state.borrow_mut();
             f(&mut borrow.stable.proposals_assets)
         })
     }
 
-    fn with_content_chunks<R>(&self, f: impl FnOnce(&ContentChunksStable) -> R) -> R {
+    fn with_content_chunks<R>(&self, f: impl FnOnce(&ProposalContentChunksStable) -> R) -> R {
         STATE.with(|state| {
             let stable = &state.borrow().stable;
             f(&stable.proposals_content_chunks)
         })
     }
 
-    fn with_content_chunks_mut<R>(&self, f: impl FnOnce(&mut ContentChunksStable) -> R) -> R {
+    fn with_content_chunks_mut<R>(
+        &self,
+        f: impl FnOnce(&mut ProposalContentChunksStable) -> R,
+    ) -> R {
         STATE.with(|state| {
             let mut borrow = state.borrow_mut();
             f(&mut borrow.stable.proposals_content_chunks)

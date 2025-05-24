@@ -8,9 +8,8 @@ use junobuild_storage::types::state::FullPath;
 use junobuild_storage::types::store::{Asset, EncodingType};
 use serde::Serialize;
 
-// TODO: prefix with Proposal
-pub type AssetsStable = StableBTreeMap<ProposalAssetKey, Asset, Memory>;
-pub type ContentChunksStable = StableBTreeMap<ProposalContentChunkKey, Blob, Memory>;
+pub type ProposalAssetsStable = StableBTreeMap<ProposalAssetKey, Asset, Memory>;
+pub type ProposalContentChunksStable = StableBTreeMap<ProposalContentChunkKey, Blob, Memory>;
 
 #[derive(CandidType, Serialize, Deserialize, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct ProposalAssetKey {

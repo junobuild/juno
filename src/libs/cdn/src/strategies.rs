@@ -1,5 +1,5 @@
 use crate::proposals::{Proposal, ProposalsStable};
-use crate::storage::{AssetsStable, ContentChunksStable};
+use crate::storage::{ProposalAssetsStable, ProposalContentChunksStable};
 use junobuild_collections::types::rules::Rules;
 use junobuild_shared::types::domain::CustomDomains;
 use junobuild_storage::types::config::StorageConfig;
@@ -19,11 +19,14 @@ pub trait CdnHeapStrategy {
 }
 
 pub trait CdnStableStrategy {
-    fn with_assets<R>(&self, f: impl FnOnce(&AssetsStable) -> R) -> R;
-    fn with_assets_mut<R>(&self, f: impl FnOnce(&mut AssetsStable) -> R) -> R;
+    fn with_assets<R>(&self, f: impl FnOnce(&ProposalAssetsStable) -> R) -> R;
+    fn with_assets_mut<R>(&self, f: impl FnOnce(&mut ProposalAssetsStable) -> R) -> R;
 
-    fn with_content_chunks<R>(&self, f: impl FnOnce(&ContentChunksStable) -> R) -> R;
-    fn with_content_chunks_mut<R>(&self, f: impl FnOnce(&mut ContentChunksStable) -> R) -> R;
+    fn with_content_chunks<R>(&self, f: impl FnOnce(&ProposalContentChunksStable) -> R) -> R;
+    fn with_content_chunks_mut<R>(
+        &self,
+        f: impl FnOnce(&mut ProposalContentChunksStable) -> R,
+    ) -> R;
 
     fn with_proposals<R>(&self, f: impl FnOnce(&ProposalsStable) -> R) -> R;
     fn with_proposals_mut<R>(&self, f: impl FnOnce(&mut ProposalsStable) -> R) -> R;

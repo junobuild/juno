@@ -786,7 +786,7 @@ describe('Satellite > Upgrade', () => {
 			);
 		});
 
-		it.only('should create collection #_juno', async () => {
+		it('should create collection #_juno', async () => {
 			await upgrade();
 
 			const { get_rule } = actor;

@@ -785,5 +785,27 @@ describe('Satellite > Upgrade', () => {
 				new RegExp("Canister has no query method 'version'.", 'i')
 			);
 		});
+
+		it.only('should create collection #_juno', async () => {
+			await upgrade();
+
+			const { get_rule } = actor;
+
+			const result = await get_rule({ Storage: null }, '#_juno');
+
+			const rule = fromNullable(result);
+
+			assertNonNullish(rule);
+
+			const { updated_at, created_at, memory, mutable_permissions, read, write, version } = rule;
+
+			expect(memory).toEqual(toNullable({ Heap: null }));
+			expect(read).toEqual({ Controllers: null });
+			expect(write).toEqual({ Controllers: null });
+			expect(mutable_permissions).toEqual([false]);
+			expect(created_at).toBeGreaterThan(0n);
+			expect(updated_at).toBeGreaterThan(0n);
+			expect(fromNullable(version)).toBeUndefined();
+		});
 	});
 });

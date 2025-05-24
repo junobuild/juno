@@ -8,6 +8,7 @@ import { JUNO_AUTH_ERROR_NOT_ADMIN_CONTROLLER } from '@junobuild/errors';
 import { inject } from 'vitest';
 import {
 	adminCustomDomainsTests,
+	adminCustomDomainsWithProposalTests,
 	anonymousCustomDomainsTests
 } from '../../../utils/custom-domains-tests.utils';
 import { controllersInitArgs, SATELLITE_WASM_PATH } from '../../../utils/setup-tests.utils';
@@ -52,6 +53,8 @@ describe('Satellite > Custom domains', () => {
 		});
 
 		adminCustomDomainsTests({ actor: () => actor });
+
+		adminCustomDomainsWithProposalTests({ actor: () => actor });
 
 		it('should create asset ic-domains', async () => {
 			const { get_asset } = actor;

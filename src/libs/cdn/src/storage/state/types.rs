@@ -8,6 +8,7 @@ use junobuild_storage::types::state::FullPath;
 use junobuild_storage::types::store::{Asset, EncodingType};
 use serde::Serialize;
 
+// TODO: prefix with Proposal
 pub type AssetsStable = StableBTreeMap<ProposalAssetKey, Asset, Memory>;
 pub type ContentChunksStable = StableBTreeMap<ProposalContentChunkKey, Blob, Memory>;
 

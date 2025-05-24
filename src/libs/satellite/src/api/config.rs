@@ -8,6 +8,8 @@ use junobuild_storage::types::config::StorageConfig;
 // Config
 // ---------------------------------------------------------
 
+// TODO: top file level use crate:...
+
 pub fn get_config() -> Config {
     let storage = crate::storage::store::get_config_store();
     let db = crate::db::store::get_config_store();

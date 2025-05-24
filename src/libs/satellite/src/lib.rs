@@ -2,6 +2,7 @@
 
 mod api;
 mod auth;
+mod cdn;
 mod controllers;
 mod db;
 mod errors;
@@ -21,10 +22,12 @@ mod user;
 use crate::auth::types::config::AuthenticationConfig;
 use crate::db::types::config::DbConfig;
 use crate::guards::{caller_is_admin_controller, caller_is_controller};
-use crate::types::interface::Config;
+use crate::types::interface::{Config, DeleteProposalAssets};
 use crate::types::state::CollectionType;
+use ic_cdk::api::call::ManualReply;
 use ic_cdk::api::trap;
 use ic_cdk_macros::{init, post_upgrade, pre_upgrade, query, update};
+use junobuild_cdn::proposals::{CommitProposal, Proposal, ProposalId, ProposalType};
 use junobuild_collections::types::core::CollectionKey;
 use junobuild_collections::types::interface::{DelRule, SetRule};
 use junobuild_collections::types::rules::Rule;
@@ -192,6 +195,54 @@ pub fn del_controllers(args: DeleteControllersArgs) -> Controllers {
 #[query(guard = "caller_is_admin_controller")]
 pub fn list_controllers() -> Controllers {
     api::controllers::list_controllers()
+}
+
+// ---------------------------------------------------------
+// Proposal
+// ---------------------------------------------------------
+
+#[query(guard = "caller_is_controller")]
+pub fn get_proposal(proposal_id: ProposalId) -> Option<Proposal> {
+    api::cdn::get_proposal(&proposal_id)
+}
+
+#[update(guard = "caller_is_controller")]
+pub fn init_proposal(proposal_type: ProposalType) -> (ProposalId, Proposal) {
+    api::cdn::init_proposal(&proposal_type)
+}
+
+#[update(guard = "caller_is_controller")]
+pub fn submit_proposal(proposal_id: ProposalId) -> (ProposalId, Proposal) {
+    api::cdn::submit_proposal(&proposal_id)
+}
+
+#[update(guard = "caller_is_admin_controller", manual_reply = true)]
+pub fn commit_proposal(proposal: CommitProposal) -> ManualReply<()> {
+    api::cdn::commit_proposal(&proposal)
+}
+
+#[update(guard = "caller_is_admin_controller")]
+pub fn delete_proposal_assets(params: DeleteProposalAssets) {
+    api::cdn::delete_proposal_assets(&params)
+}
+
+// ---------------------------------------------------------
+// Internal storage
+// ---------------------------------------------------------
+
+#[update(guard = "caller_is_controller")]
+pub fn init_proposal_asset_upload(init: InitAssetKey, proposal_id: ProposalId) -> InitUploadResult {
+    api::cdn::init_proposal_asset_upload(init, proposal_id)
+}
+
+#[update(guard = "caller_is_controller")]
+pub fn upload_proposal_asset_chunk(chunk: UploadChunk) -> UploadChunkResult {
+    api::cdn::upload_proposal_asset_chunk(chunk)
+}
+
+#[update(guard = "caller_is_controller")]
+pub fn commit_proposal_asset_upload(commit: CommitBatch) {
+    api::cdn::commit_proposal_asset_upload(commit)
 }
 
 // ---------------------------------------------------------
@@ -407,15 +458,17 @@ pub fn memory_size() -> MemorySize {
 macro_rules! include_satellite {
     () => {
         use junobuild_satellite::{
-            commit_asset_upload, count_assets, count_collection_assets, count_collection_docs,
-            count_docs, del_asset, del_assets, del_controllers, del_custom_domain, del_doc,
-            del_docs, del_filtered_assets, del_filtered_docs, del_many_assets, del_many_docs,
-            del_rule, deposit_cycles, get_asset, get_auth_config, get_config, get_db_config,
-            get_doc, get_many_assets, get_many_docs, get_storage_config, http_request,
-            http_request_streaming_callback, init, init_asset_upload, list_assets,
-            list_controllers, list_custom_domains, list_docs, list_rules, post_upgrade,
-            pre_upgrade, set_auth_config, set_controllers, set_custom_domain, set_db_config,
-            set_doc, set_many_docs, set_rule, set_storage_config, upload_asset_chunk,
+            commit_asset_upload, commit_proposal, commit_proposal_asset_upload, count_assets,
+            count_collection_assets, count_collection_docs, count_docs, del_asset, del_assets,
+            del_controllers, del_custom_domain, del_doc, del_docs, del_filtered_assets,
+            del_filtered_docs, del_many_assets, del_many_docs, del_rule, delete_proposal_assets,
+            deposit_cycles, get_asset, get_auth_config, get_config, get_db_config, get_doc,
+            get_many_assets, get_many_docs, get_proposal, get_storage_config, http_request,
+            http_request_streaming_callback, init, init_asset_upload, init_proposal,
+            init_proposal_asset_upload, list_assets, list_controllers, list_custom_domains,
+            list_docs, list_rules, post_upgrade, pre_upgrade, set_auth_config, set_controllers,
+            set_custom_domain, set_db_config, set_doc, set_many_docs, set_rule, set_storage_config,
+            submit_proposal, upload_asset_chunk, upload_proposal_asset_chunk,
         };
 
         ic_cdk::export_candid!();

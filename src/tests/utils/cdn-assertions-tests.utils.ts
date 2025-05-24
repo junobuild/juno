@@ -7,7 +7,10 @@ import type {
 	UploadChunk
 } from '$declarations/console/console.did';
 import type { _SERVICE as MissionControlActor } from '$declarations/mission_control/mission_control.did';
-import type { StorageConfig } from '$declarations/satellite/satellite.did';
+import type {
+	_SERVICE as SatelliteActor,
+	StorageConfig
+} from '$declarations/satellite/satellite.did';
 import type { Identity } from '@dfinity/agent';
 import type { Principal } from '@dfinity/principal';
 import {
@@ -32,7 +35,7 @@ export const testNotAllowedCdnMethods = ({
 	errorMsgAdminController,
 	errorMsgController
 }: {
-	actor: () => Actor<MissionControlActor | ConsoleActor>;
+	actor: () => Actor<SatelliteActor | MissionControlActor | ConsoleActor>;
 	errorMsgAdminController: string;
 	errorMsgController?: string;
 }) => {
@@ -79,14 +82,6 @@ export const testNotAllowedCdnMethods = ({
 		await expect(commit_proposal_asset_upload(batch)).rejects.toThrow(
 			errorMsgController ?? errorMsgAdminController
 		);
-	});
-
-	it('should throw errors on list assets', async () => {
-		const { list_assets } = actor();
-
-		await expect(
-			list_assets('#dapp', { matcher: [], order: [], owner: [], paginate: [] })
-		).rejects.toThrow(errorMsgController ?? errorMsgAdminController);
 	});
 
 	it('should throw errors on setting config', async () => {
@@ -146,10 +141,28 @@ export const testNotAllowedCdnMethods = ({
 	});
 };
 
+export const testGuardedAssetsCdnMethods = ({
+	actor,
+	errorMsgAdminController,
+	errorMsgController
+}: {
+	actor: () => Actor<SatelliteActor | MissionControlActor | ConsoleActor>;
+	errorMsgAdminController: string;
+	errorMsgController?: string;
+}) => {
+	it('should throw errors on list assets', async () => {
+		const { list_assets } = actor();
+
+		await expect(
+			list_assets('#dapp', { matcher: [], order: [], owner: [], paginate: [] })
+		).rejects.toThrow(errorMsgController ?? errorMsgAdminController);
+	});
+};
+
 export const testCdnConfig = ({
 	actor
 }: {
-	actor: () => Actor<MissionControlActor | ConsoleActor>;
+	actor: () => Actor<SatelliteActor | MissionControlActor | ConsoleActor>;
 }) => {
 	it('should set and get config', async () => {
 		const { set_storage_config, get_storage_config } = actor();
@@ -183,7 +196,9 @@ export const testControlledCdnMethods = ({
 		segmentsDeployment: '/releases/satellite-v0.0.18.wasm.gz'
 	}
 }: {
-	actor: (params?: { requireController: boolean }) => Actor<MissionControlActor | ConsoleActor>;
+	actor: (params?: {
+		requireController: boolean;
+	}) => Actor<SatelliteActor | MissionControlActor | ConsoleActor>;
 	pic: () => PocketIc;
 	caller: () => Identity;
 	canisterId: () => Principal;
@@ -576,7 +591,7 @@ export const testCdnGetProposal = ({
 	owner,
 	proposalId = 1n
 }: {
-	actor: () => Actor<MissionControlActor | ConsoleActor>;
+	actor: () => Actor<SatelliteActor | MissionControlActor | ConsoleActor>;
 	owner: () => Identity;
 	proposalId?: bigint;
 }) => {

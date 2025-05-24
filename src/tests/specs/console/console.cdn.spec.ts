@@ -11,6 +11,7 @@ import {
 	testCdnConfig,
 	testCdnGetProposal,
 	testControlledCdnMethods,
+	testGuardedAssetsCdnMethods,
 	testNotAllowedCdnMethods
 } from '../../utils/cdn-assertions-tests.utils';
 import { CONSOLE_WASM_PATH } from '../../utils/setup-tests.utils';
@@ -52,6 +53,11 @@ describe('Console > Cdn', () => {
 		});
 
 		testNotAllowedCdnMethods({ actor: () => actor, errorMsgAdminController: CONTROLLER_ERROR_MSG });
+
+		testGuardedAssetsCdnMethods({
+			actor: () => actor,
+			errorMsgAdminController: CONTROLLER_ERROR_MSG
+		});
 	});
 
 	describe('Some identity', () => {
@@ -61,6 +67,11 @@ describe('Console > Cdn', () => {
 		});
 
 		testNotAllowedCdnMethods({ actor: () => actor, errorMsgAdminController: CONTROLLER_ERROR_MSG });
+
+		testGuardedAssetsCdnMethods({
+			actor: () => actor,
+			errorMsgAdminController: CONTROLLER_ERROR_MSG
+		});
 	});
 
 	describe('Admin', () => {

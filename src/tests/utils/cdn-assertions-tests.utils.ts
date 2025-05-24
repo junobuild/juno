@@ -220,7 +220,7 @@ export const testControlledCdnMethods = ({
 					satellite_version: ['0.0.18']
 				}
 			} as ProposalType,
-			collection: fullPaths.assetsCollection,
+			collection: fullPaths.segmentsCollection,
 			full_path: fullPaths.segmentsDeployment,
 			expected_proposal_id: expected_proposal_id + 1n
 		}

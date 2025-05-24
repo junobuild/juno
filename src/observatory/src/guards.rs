@@ -1,4 +1,4 @@
-use crate::memory::STATE;
+use crate::memory::manager::STATE;
 use ic_cdk::caller;
 use junobuild_shared::controllers::is_admin_controller as is_admin_controller_impl;
 use junobuild_shared::types::state::Controllers;

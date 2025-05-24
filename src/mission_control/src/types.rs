@@ -1,5 +1,5 @@
 pub mod state {
-    use crate::memory::init_stable_state;
+    use crate::memory::manager::init_stable_state;
     use candid::CandidType;
     use ic_stable_structures::StableBTreeMap;
     use junobuild_shared::types::memory::Memory;

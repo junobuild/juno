@@ -1,4 +1,4 @@
-use crate::state::memory::STATE;
+use crate::state::memory::manager::STATE;
 use crate::state::types::state::{SatelliteConfig, SatelliteConfigs};
 use crate::types::interface::{DelSatelliteConfig, SetSatelliteConfig};
 use ic_cdk::api::time;

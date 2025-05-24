@@ -1,4 +1,4 @@
-use crate::memory::RUNTIME_STATE;
+use crate::memory::manager::RUNTIME_STATE;
 use getrandom::Error;
 use ic_cdk::spawn;
 use ic_cdk_timers::set_timer;

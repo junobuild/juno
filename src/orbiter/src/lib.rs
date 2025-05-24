@@ -10,7 +10,6 @@ mod events;
 mod guards;
 mod handler;
 mod http;
-mod lifecycle;
 mod msg;
 mod serializers;
 mod state;
@@ -35,11 +34,10 @@ use crate::types::interface::SetTrackEvent;
 use ic_cdk_macros::export_candid;
 use ic_http_certification::HttpRequest;
 use ic_http_certification::HttpResponse;
+use junobuild_shared::types::interface::MemorySize;
 use junobuild_shared::types::interface::{
-    DeleteControllersArgs, DepositCyclesArgs, MemorySize, SetControllersArgs,
+    DeleteControllersArgs, DepositCyclesArgs, SetControllersArgs,
 };
 use junobuild_shared::types::state::{Controllers, SatelliteId};
-
-// Generate did files
 
 export_candid!();

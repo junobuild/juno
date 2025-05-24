@@ -1,4 +1,4 @@
-use crate::memory::STATE;
+use crate::memory::manager::STATE;
 use crate::random::random;
 use crate::store::filter::filter_notifications_range;
 use crate::types::interface::GetNotifications;

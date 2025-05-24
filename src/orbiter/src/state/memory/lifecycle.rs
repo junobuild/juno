@@ -1,5 +1,5 @@
 use crate::http::upgrade::defer_init_certified_responses;
-use crate::state::memory::{get_memory_upgrades, init_stable_state, STATE};
+use crate::state::memory::manager::{get_memory_upgrades, init_stable_state, STATE};
 use crate::state::types::state::{HeapState, State};
 use ciborium::{from_reader, into_writer};
 use ic_cdk::api::call::{arg_data, ArgDecoderConfig};

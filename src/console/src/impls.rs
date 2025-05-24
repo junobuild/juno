@@ -1,5 +1,5 @@
 use crate::constants::{ORBITER_CREATION_FEE_ICP, SATELLITE_CREATION_FEE_ICP};
-use crate::memory::init_stable_state;
+use crate::memory::manager::init_stable_state;
 use crate::types::ledger::Payment;
 use crate::types::state::{Fee, Fees, HeapState, MissionControl, Rate, Rates, State};
 use ic_cdk::api::time;

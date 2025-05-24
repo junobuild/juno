@@ -1,5 +1,5 @@
 pub mod state {
-    use crate::state::memory::init_stable_state;
+    use crate::state::memory::manager::init_stable_state;
     use crate::state::types::memory::{StoredPageView, StoredTrackEvent};
     use candid::CandidType;
     use ic_stable_structures::StableBTreeMap;

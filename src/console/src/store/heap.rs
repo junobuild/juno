@@ -1,4 +1,4 @@
-use crate::memory::STATE;
+use crate::memory::manager::STATE;
 use crate::types::state::{
     Fee, Fees, HeapState, InvitationCode, InvitationCodeRedeem, InvitationCodes, MissionControls,
     Payments, Rate, ReleaseVersion, ReleasesMetadata,

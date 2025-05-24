@@ -1,4 +1,4 @@
-use crate::memory::init_stable_state;
+use crate::memory::manager::init_stable_state;
 use crate::types::core::{Segment, SettingsMonitoring};
 use crate::types::state::CyclesMonitoringStrategy::BelowThreshold;
 use crate::types::state::{

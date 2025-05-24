@@ -5,7 +5,7 @@ use crate::serializers::bounded::{
     serialize_bounded_track_event,
 };
 use crate::serializers::constants::{ANALYTIC_KEY_MAX_SIZE, ANALYTIC_SATELLITE_KEY_MAX_SIZE};
-use crate::state::memory::init_stable_state;
+use crate::state::memory::manager::init_stable_state;
 use crate::state::types::memory::{StoredPageView, StoredTrackEvent};
 use crate::state::types::state::{
     AnalyticKey, AnalyticSatelliteKey, HeapState, PageView, PerformanceMetric, SatelliteConfigs,

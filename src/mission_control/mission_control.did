@@ -1,34 +1,5 @@
 type Account = record { owner : principal; subaccount : opt blob };
-type AssetEncodingNoContent = record {
-  modified : nat64;
-  sha256 : blob;
-  total_length : nat;
-};
-type AssetKey = record {
-  token : opt text;
-  collection : text;
-  owner : principal;
-  name : text;
-  description : opt text;
-  full_path : text;
-};
-type AssetNoContent = record {
-  key : AssetKey;
-  updated_at : nat64;
-  encodings : vec record { text; AssetEncodingNoContent };
-  headers : vec record { text; text };
-  created_at : nat64;
-  version : opt nat64;
-};
-type AssetsUpgradeOptions = record { clear_existing_assets : opt bool };
-type CommitBatch = record {
-  batch_id : nat;
-  headers : vec record { text; text };
-  chunk_ids : vec nat;
-};
-type CommitProposal = record { sha256 : blob; proposal_id : nat };
 type Config = record { monitoring : opt MonitoringConfig };
-type ConfigMaxMemorySize = record { stable : opt nat64; heap : opt nat64 };
 type Controller = record {
   updated_at : nat64;
   metadata : vec record { text; text };
@@ -40,12 +11,6 @@ type ControllerScope = variant { Write; Admin };
 type CreateCanisterConfig = record {
   subnet_id : opt principal;
   name : opt text;
-};
-type CustomDomain = record {
-  updated_at : nat64;
-  created_at : nat64;
-  version : opt nat64;
-  bn_id : opt text;
 };
 type CyclesBalance = record { timestamp : nat64; amount : nat };
 type CyclesMonitoring = record {
@@ -72,7 +37,6 @@ type CyclesMonitoringStopConfig = record {
 };
 type CyclesMonitoringStrategy = variant { BelowThreshold : CyclesThreshold };
 type CyclesThreshold = record { fund_cycles : nat; min_cycles : nat };
-type DeleteProposalAssets = record { proposal_ids : vec nat };
 type DepositCyclesArgs = record { cycles : nat; destination_id : principal };
 type DepositedCyclesEmailNotification = record {
   to : opt text;
@@ -94,51 +58,6 @@ type GetMonitoringHistory = record {
   from : opt nat64;
   segment_id : principal;
 };
-type HttpRequest = record {
-  url : text;
-  method : text;
-  body : blob;
-  headers : vec record { text; text };
-  certificate_version : opt nat16;
-};
-type HttpResponse = record {
-  body : blob;
-  headers : vec record { text; text };
-  streaming_strategy : opt StreamingStrategy;
-  status_code : nat16;
-};
-type InitAssetKey = record {
-  token : opt text;
-  collection : text;
-  name : text;
-  description : opt text;
-  encoding_type : opt text;
-  full_path : text;
-};
-type InitUploadResult = record { batch_id : nat };
-type ListMatcher = record {
-  key : opt text;
-  updated_at : opt TimestampMatcher;
-  description : opt text;
-  created_at : opt TimestampMatcher;
-};
-type ListOrder = record { field : ListOrderField; desc : bool };
-type ListOrderField = variant { UpdatedAt; Keys; CreatedAt };
-type ListPaginate = record { start_after : opt text; limit : opt nat64 };
-type ListParams = record {
-  order : opt ListOrder;
-  owner : opt principal;
-  matcher : opt ListMatcher;
-  paginate : opt ListPaginate;
-};
-type ListResults = record {
-  matches_pages : opt nat64;
-  matches_length : nat64;
-  items_page : opt nat64;
-  items : vec record { text; AssetNoContent };
-  items_length : nat64;
-};
-type Memory = variant { Heap; Stable };
 type MissionControlSettings = record {
   updated_at : nat64;
   created_at : nat64;
@@ -171,28 +90,6 @@ type Orbiter = record {
   created_at : nat64;
   settings : opt Settings;
 };
-type Proposal = record {
-  status : ProposalStatus;
-  updated_at : nat64;
-  sha256 : opt blob;
-  executed_at : opt nat64;
-  owner : principal;
-  created_at : nat64;
-  version : opt nat64;
-  proposal_type : ProposalType;
-};
-type ProposalStatus = variant {
-  Initialized;
-  Failed;
-  Open;
-  Rejected;
-  Executed;
-  Accepted;
-};
-type ProposalType = variant {
-  AssetsUpgrade : AssetsUpgradeOptions;
-  SegmentsDeployment : SegmentsDeploymentOptions;
-};
 type Result = variant { Ok : nat64; Err : TransferError };
 type Result_1 = variant { Ok : nat; Err : TransferError_1 };
 type Satellite = record {
@@ -201,11 +98,6 @@ type Satellite = record {
   created_at : nat64;
   satellite_id : principal;
   settings : opt Settings;
-};
-type SegmentsDeploymentOptions = record {
-  orbiter : opt text;
-  mission_control_version : opt text;
-  satellite_version : opt text;
 };
 type SegmentsMonitoringStrategy = record {
   ids : vec principal;
@@ -217,43 +109,7 @@ type SetController = record {
   expires_at : opt nat64;
 };
 type Settings = record { monitoring : opt Monitoring };
-type StorageConfig = record {
-  iframe : opt StorageConfigIFrame;
-  rewrites : vec record { text; text };
-  headers : vec record { text; vec record { text; text } };
-  max_memory_size : opt ConfigMaxMemorySize;
-  raw_access : opt StorageConfigRawAccess;
-  redirects : opt vec record { text; StorageConfigRedirect };
-};
-type StorageConfigIFrame = variant { Deny; AllowAny; SameOrigin };
-type StorageConfigRawAccess = variant { Deny; Allow };
-type StorageConfigRedirect = record { status_code : nat16; location : text };
-type StreamingCallbackHttpResponse = record {
-  token : opt StreamingCallbackToken;
-  body : blob;
-};
-type StreamingCallbackToken = record {
-  memory : Memory;
-  token : opt text;
-  sha256 : opt blob;
-  headers : vec record { text; text };
-  index : nat64;
-  encoding_type : text;
-  full_path : text;
-};
-type StreamingStrategy = variant {
-  Callback : record {
-    token : StreamingCallbackToken;
-    callback : func () -> () query;
-  };
-};
 type Timestamp = record { timestamp_nanos : nat64 };
-type TimestampMatcher = variant {
-  Equal : nat64;
-  Between : record { nat64; nat64 };
-  GreaterThan : nat64;
-  LessThan : nat64;
-};
 type Tokens = record { e8s : nat64 };
 type TransferArg = record {
   to : Account;
@@ -288,12 +144,6 @@ type TransferError_1 = variant {
   TooOld;
   InsufficientFunds : record { balance : nat };
 };
-type UploadChunk = record {
-  content : blob;
-  batch_id : nat;
-  order_id : opt nat;
-};
-type UploadChunkResult = record { chunk_id : nat };
 type User = record {
   updated_at : nat64;
   metadata : vec record { text; text };
@@ -304,19 +154,15 @@ type User = record {
 service : () -> {
   add_mission_control_controllers : (vec principal) -> ();
   add_satellites_controllers : (vec principal, vec principal) -> ();
-  commit_proposal : (CommitProposal) -> (null);
-  commit_proposal_asset_upload : (CommitBatch) -> ();
   create_orbiter : (opt text) -> (Orbiter);
   create_orbiter_with_config : (CreateCanisterConfig) -> (Orbiter);
   create_satellite : (text) -> (Satellite);
   create_satellite_with_config : (CreateCanisterConfig) -> (Satellite);
-  del_custom_domain : (text) -> ();
   del_mission_control_controllers : (vec principal) -> ();
   del_orbiter : (principal, nat) -> ();
   del_orbiters_controllers : (vec principal, vec principal) -> ();
   del_satellite : (principal, nat) -> ();
   del_satellites_controllers : (vec principal, vec principal) -> ();
-  delete_proposal_assets : (DeleteProposalAssets) -> ();
   deposit_cycles : (DepositCyclesArgs) -> ();
   get_config : () -> (opt Config) query;
   get_metadata : () -> (vec record { text; text }) query;
@@ -324,21 +170,11 @@ service : () -> {
       vec record { MonitoringHistoryKey; MonitoringHistory },
     ) query;
   get_monitoring_status : () -> (MonitoringStatus) query;
-  get_proposal : (nat) -> (opt Proposal) query;
   get_settings : () -> (opt MissionControlSettings) query;
-  get_storage_config : () -> (StorageConfig) query;
   get_user : () -> (principal) query;
   get_user_data : () -> (User) query;
-  http_request : (HttpRequest) -> (HttpResponse) query;
-  http_request_streaming_callback : (StreamingCallbackToken) -> (
-      StreamingCallbackHttpResponse,
-    ) query;
   icp_transfer : (TransferArgs) -> (Result);
   icrc_transfer : (principal, TransferArg) -> (Result_1);
-  init_proposal : (ProposalType) -> (nat, Proposal);
-  init_proposal_asset_upload : (InitAssetKey, nat) -> (InitUploadResult);
-  list_assets : (text, ListParams) -> (ListResults) query;
-  list_custom_domains : () -> (vec record { text; CustomDomain }) query;
   list_mission_control_controllers : () -> (
       vec record { principal; Controller },
     ) query;
@@ -347,7 +183,6 @@ service : () -> {
   remove_mission_control_controllers : (vec principal) -> ();
   remove_satellites_controllers : (vec principal, vec principal) -> ();
   set_config : (opt Config) -> ();
-  set_custom_domain : (text, opt text) -> ();
   set_metadata : (vec record { text; text }) -> ();
   set_mission_control_controllers : (vec principal, SetController) -> ();
   set_orbiter : (principal, opt text) -> (Orbiter);
@@ -366,14 +201,11 @@ service : () -> {
       vec principal,
       SetController,
     ) -> ();
-  set_storage_config : (StorageConfig) -> ();
   start_monitoring : () -> ();
   stop_monitoring : () -> ();
-  submit_proposal : (nat) -> (nat, Proposal);
   top_up : (principal, Tokens) -> ();
   unset_orbiter : (principal) -> ();
   unset_satellite : (principal) -> ();
   update_and_start_monitoring : (MonitoringStartConfig) -> ();
   update_and_stop_monitoring : (MonitoringStopConfig) -> ();
-  upload_proposal_asset_chunk : (UploadChunk) -> (UploadChunkResult);
 }

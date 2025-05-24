@@ -1,4 +1,3 @@
-use crate::cdn::certified_assets::upgrade::defer_init_certified_assets;
 use crate::memory::{get_memory_upgrades, init_runtime_state, init_stable_state, STATE};
 use crate::monitoring::monitor::defer_restart_monitoring;
 use crate::random::defer_init_random_seed;
@@ -25,8 +24,6 @@ fn init() {
     init_runtime_state();
 
     defer_init_random_seed();
-
-    defer_init_certified_assets();
 }
 
 #[pre_upgrade]
@@ -60,6 +57,4 @@ fn post_upgrade() {
     defer_init_random_seed();
 
     defer_restart_monitoring();
-
-    defer_init_certified_assets();
 }

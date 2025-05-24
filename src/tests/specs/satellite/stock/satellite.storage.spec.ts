@@ -1167,7 +1167,7 @@ describe('Satellite > Storage', () => {
 	});
 
 	describe('More configuration', () => {
-		const maxHeapMemorySize = 4_003_233n;
+		const maxHeapMemorySize = 400_003_233n;
 		const maxStableMemorySize = 2_000_000n;
 
 		beforeAll(() => {

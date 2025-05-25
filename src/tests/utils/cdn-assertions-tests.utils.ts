@@ -20,13 +20,13 @@ import {
 	uint8ArrayToHexString
 } from '@dfinity/utils';
 import type { Actor, PocketIc } from '@hadronous/pic';
+import { JUNO_CDN_STORAGE_ERROR_NO_PROPOSAL_FOUND } from '@junobuild/errors';
 import { describe, expect } from 'vitest';
 import { mockBlob, mockHtml } from '../mocks/storage.mocks';
 import { uploadFile } from './cdn-tests.utils';
 import { assertCertification } from './certification-tests.utils';
 import { sha256ToBase64String } from './crypto-tests.utils';
 import { tick } from './pic-tests.utils';
-import { JUNO_CDN_STORAGE_ERROR_NO_PROPOSAL_FOUND } from '@junobuild/errors';
 
 /* eslint-disable vitest/require-top-level-describe */
 

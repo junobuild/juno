@@ -1,6 +1,7 @@
 use crate::constants::{WELL_KNOWN_CUSTOM_DOMAINS, WELL_KNOWN_II_ALTERNATIVE_ORIGINS};
 use crate::errors::{
     JUNO_STORAGE_ERROR_CANNOT_COMMIT_BATCH, JUNO_STORAGE_ERROR_UPLOAD_NOT_ALLOWED,
+    JUNO_STORAGE_ERROR_UPLOAD_PATH_COLLECTION_PREFIX,
 };
 use crate::runtime::increment_and_assert_rate;
 use crate::strategies::{StorageAssertionsStrategy, StorageStateStrategy};
@@ -207,7 +208,7 @@ fn assert_key(
     if collection.clone() != *dapp_collection
         && !full_path.starts_with(&["/", collection_path, "/"].join(""))
     {
-        return Err("Asset path must be prefixed with collection key.");
+        return Err(JUNO_STORAGE_ERROR_UPLOAD_PATH_COLLECTION_PREFIX);
     }
 
     Ok(())

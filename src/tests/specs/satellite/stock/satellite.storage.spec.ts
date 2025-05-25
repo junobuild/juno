@@ -18,7 +18,8 @@ import {
 	JUNO_COLLECTIONS_ERROR_COLLECTION_NOT_FOUND,
 	JUNO_ERROR_MEMORY_HEAP_EXCEEDED,
 	JUNO_ERROR_MEMORY_STABLE_EXCEEDED,
-	JUNO_STORAGE_ERROR_CANNOT_COMMIT_BATCH
+	JUNO_STORAGE_ERROR_CANNOT_COMMIT_BATCH,
+	JUNO_STORAGE_ERROR_UPLOAD_PATH_COLLECTION_PREFIX
 } from '@junobuild/errors';
 import { readFileSync } from 'node:fs';
 import { join } from 'node:path';
@@ -329,7 +330,7 @@ describe('Satellite > Storage', () => {
 							name: 'hello.html',
 							token: toNullable()
 						})
-					).rejects.toThrow('Asset path must be prefixed with collection key.');
+					).rejects.toThrow(JUNO_STORAGE_ERROR_UPLOAD_PATH_COLLECTION_PREFIX);
 				});
 
 				it('should deploy asset', async () => {

@@ -1,4 +1,4 @@
-use crate::proposals::workflows::errors::JUNO_ERROR_PROPOSALS_UNKNOWN_TYPE;
+use crate::proposals::errors::JUNO_ERROR_PROPOSALS_UNKNOWN_TYPE;
 use crate::proposals::{Proposal, ProposalType};
 
 pub fn assert_known_proposal_type(proposal: &Proposal) -> Result<(), String> {

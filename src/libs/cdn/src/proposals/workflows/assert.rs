@@ -1,4 +1,4 @@
-use crate::proposals::errors::JUNO_ERROR_PROPOSALS_UNKNOWN_TYPE;
+use crate::proposals::errors::JUNO_CDN_PROPOSALS_ERROR_UNKNOWN_TYPE;
 use crate::proposals::{Proposal, ProposalType};
 
 pub fn assert_known_proposal_type(proposal: &Proposal) -> Result<(), String> {
@@ -6,7 +6,7 @@ pub fn assert_known_proposal_type(proposal: &Proposal) -> Result<(), String> {
     match &proposal.proposal_type {
         ProposalType::AssetsUpgrade(_) => (),
         ProposalType::SegmentsDeployment(_) => (),
-        _ => return Err(JUNO_ERROR_PROPOSALS_UNKNOWN_TYPE.to_string()),
+        _ => return Err(JUNO_CDN_PROPOSALS_ERROR_UNKNOWN_TYPE.to_string()),
     };
 
     Ok(())

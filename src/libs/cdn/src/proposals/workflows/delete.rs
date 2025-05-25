@@ -1,6 +1,6 @@
 use crate::proposals::errors::{
-    JUNO_ERROR_PROPOSALS_CANNOT_DELETE_ASSETS,
-    JUNO_ERROR_PROPOSALS_CANNOT_DELETE_ASSETS_INVALID_STATUS,
+    JUNO_CDN_PROPOSALS_ERROR_CANNOT_DELETE_ASSETS,
+    JUNO_CDN_PROPOSALS_ERROR_CANNOT_DELETE_ASSETS_INVALID_STATUS,
 };
 use crate::proposals::stable::get_proposal;
 use crate::proposals::workflows::assert::assert_known_proposal_type;
@@ -17,7 +17,7 @@ pub fn delete_proposal_assets(
 
         match proposal {
             None => {
-                return Err(JUNO_ERROR_PROPOSALS_CANNOT_DELETE_ASSETS.to_string());
+                return Err(JUNO_CDN_PROPOSALS_ERROR_CANNOT_DELETE_ASSETS.to_string());
             }
             Some(proposal) => secure_delete_proposal_assets(cdn_stable, proposal_id, &proposal)?,
         }
@@ -34,7 +34,7 @@ pub fn secure_delete_proposal_assets(
     if proposal.status == ProposalStatus::Open {
         return Err(format!(
             "{} ({:?})",
-            JUNO_ERROR_PROPOSALS_CANNOT_DELETE_ASSETS_INVALID_STATUS, proposal.status
+            JUNO_CDN_PROPOSALS_ERROR_CANNOT_DELETE_ASSETS_INVALID_STATUS, proposal.status
         ));
     }
 

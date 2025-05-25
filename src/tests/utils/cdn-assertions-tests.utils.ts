@@ -20,7 +20,14 @@ import {
 	uint8ArrayToHexString
 } from '@dfinity/utils';
 import type { Actor, PocketIc } from '@hadronous/pic';
-import { JUNO_CDN_STORAGE_ERROR_NO_PROPOSAL_FOUND } from '@junobuild/errors';
+import {
+	JUNO_CDN_PROPOSALS_ERROR_CANNOT_COMMIT,
+	JUNO_CDN_PROPOSALS_ERROR_CANNOT_SUBMIT,
+	JUNO_CDN_PROPOSALS_ERROR_CANNOT_SUBMIT_INVALID_STATUS,
+	JUNO_CDN_PROPOSALS_ERROR_EMPTY_ASSETS,
+	JUNO_CDN_PROPOSALS_ERROR_INVALID_HASH,
+	JUNO_CDN_STORAGE_ERROR_NO_PROPOSAL_FOUND
+} from '@junobuild/errors';
 import { describe, expect } from 'vitest';
 import { mockBlob, mockHtml } from '../mocks/storage.mocks';
 import { uploadFile } from './cdn-tests.utils';
@@ -326,7 +333,7 @@ export const testControlledCdnMethods = ({
 				const unknownProposalId = proposalId + 1n;
 
 				await expect(submit_proposal(unknownProposalId)).rejects.toThrow(
-					'juno.error.proposals.cannot_submit'
+					JUNO_CDN_PROPOSALS_ERROR_CANNOT_SUBMIT
 				);
 			});
 
@@ -372,7 +379,7 @@ export const testControlledCdnMethods = ({
 				const { submit_proposal } = actor();
 
 				await expect(submit_proposal(proposalId)).rejects.toThrow(
-					'juno.error.proposals.cannot_submit_invalid_status (Open)'
+					`${JUNO_CDN_PROPOSALS_ERROR_CANNOT_SUBMIT_INVALID_STATUS} (Open)`
 				);
 			});
 
@@ -386,7 +393,7 @@ export const testControlledCdnMethods = ({
 						sha256: Array.from({ length: 32 }).map((_, i) => i),
 						proposal_id: proposalId + 1n
 					})
-				).rejects.toThrow(`juno.error.proposals.cannot_commit (${unknownProposalId})`);
+				).rejects.toThrow(`${JUNO_CDN_PROPOSALS_ERROR_CANNOT_COMMIT} (${unknownProposalId})`);
 			});
 
 			it('should fail at committing a proposal with incorrect sha256', async () => {
@@ -399,7 +406,9 @@ export const testControlledCdnMethods = ({
 						sha256,
 						proposal_id: proposalId
 					})
-				).rejects.toThrow(`juno.error.proposals.invalid_hash (${uint8ArrayToHexString(sha256)})`);
+				).rejects.toThrow(
+					`${JUNO_CDN_PROPOSALS_ERROR_INVALID_HASH} (${uint8ArrayToHexString(sha256)})`
+				);
 			});
 
 			it('should not update proposal status', async () => {
@@ -577,7 +586,7 @@ export const testControlledCdnMethods = ({
 				sha256: fromNullable(sha256)!,
 				proposal_id: proposalId
 			})
-		).rejects.toThrow(`juno.error.proposals.empty_assets (${proposalId})`);
+		).rejects.toThrow(`${JUNO_CDN_PROPOSALS_ERROR_EMPTY_ASSETS} (${proposalId})`);
 
 		const proposal = fromNullable(await get_proposal(proposalId));
 

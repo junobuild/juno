@@ -2,6 +2,7 @@ use crate::hooks::lifecycle::{
     invoke_on_init, invoke_on_init_sync, invoke_on_post_upgrade, invoke_on_post_upgrade_sync,
 };
 use crate::memory::internal::{get_memory_for_upgrade, init_stable_state, STATE};
+use crate::memory::upgrade::init_juno_collection;
 use crate::memory::utils::init_storage_heap_state;
 use crate::random::init::defer_init_random_seed;
 use crate::storage::certified_assets::upgrade::defer_init_certified_assets;
@@ -12,7 +13,6 @@ use junobuild_shared::controllers::init_controllers;
 use junobuild_shared::types::interface::SegmentArgs;
 use junobuild_shared::types::memory::Memory;
 use junobuild_shared::upgrade::{read_post_upgrade, write_pre_upgrade};
-use crate::memory::upgrade::init_juno_collection;
 
 pub fn init() {
     let call_arg = arg_data::<(Option<SegmentArgs>,)>(ArgDecoderConfig::default()).0;

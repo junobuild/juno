@@ -121,8 +121,8 @@ describe('Satellite > Cdn', () => {
 			fullPaths: {
 				assetsUpgrade: '/hello.html',
 				segmentsDeployment: '/_juno/releases/satellite-v0.0.18.wasm.gz',
-				assetsCollection: "#dapp",
-				segmentsCollection: "#_juno"
+				assetsCollection: '#dapp',
+				segmentsCollection: '#_juno'
 			}
 		});
 
@@ -174,8 +174,8 @@ describe('Satellite > Cdn', () => {
 			fullPaths: {
 				assetsUpgrade: '/world.html',
 				segmentsDeployment: '/_juno/releases/my-satellite-v0.1.1.wasm.gz',
-				assetsCollection: "#dapp",
-				segmentsCollection: "#_juno"
+				assetsCollection: '#dapp',
+				segmentsCollection: '#_juno'
 			}
 		});
 

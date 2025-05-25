@@ -8,6 +8,7 @@ use junobuild_storage::store::create_batch;
 use junobuild_storage::types::interface::InitAssetKey;
 use junobuild_storage::types::runtime_state::BatchId;
 use regex::Regex;
+use junobuild_cdn::storage::errors::JUNO_CDN_STORAGE_ERROR_NO_PROPOSAL_FOUND;
 
 pub fn init_asset_upload(
     caller: Principal,
@@ -17,7 +18,7 @@ pub fn init_asset_upload(
     let proposal = get_proposal(&proposal_id);
 
     if proposal.is_none() {
-        return Err(format!("No proposal found for {}", proposal_id));
+        return Err(format!("{} ({})", JUNO_CDN_STORAGE_ERROR_NO_PROPOSAL_FOUND, proposal_id));
     }
 
     assert_releases_keys(&init)?;

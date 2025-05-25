@@ -4,6 +4,7 @@ use crate::get_controllers;
 use crate::storage::store::get_config_store;
 use candid::Principal;
 use junobuild_cdn::proposals::ProposalId;
+use junobuild_cdn::storage::errors::JUNO_CDN_STORAGE_ERROR_NO_PROPOSAL_FOUND;
 use junobuild_storage::store::create_batch;
 use junobuild_storage::types::interface::InitAssetKey;
 use junobuild_storage::types::runtime_state::BatchId;
@@ -16,7 +17,7 @@ pub fn init_asset_upload(
     let proposal = get_proposal(&proposal_id);
 
     if proposal.is_none() {
-        return Err(format!("No proposal found for {}", proposal_id));
+        return Err(format!("{} ({})", JUNO_CDN_STORAGE_ERROR_NO_PROPOSAL_FOUND, proposal_id));
     }
 
     // TODO: assert full_path

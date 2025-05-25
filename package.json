@@ -66,7 +66,7 @@
 		"@junobuild/config": "^0.1.8",
 		"@junobuild/config-loader": "^0.2.1",
 		"@junobuild/console": "^0.1.7",
-		"@junobuild/errors": "^0.0.11-next-2025-05-25",
+		"@junobuild/errors": "^0.0.11-next-2025-05-25.1",
 		"@junobuild/functions": "^0.1.0",
 		"@junobuild/storage": "^0.1.8",
 		"@ltd/j-toml": "^1.38.0",

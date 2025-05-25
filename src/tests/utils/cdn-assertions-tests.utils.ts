@@ -26,6 +26,7 @@ import { uploadFile } from './cdn-tests.utils';
 import { assertCertification } from './certification-tests.utils';
 import { sha256ToBase64String } from './crypto-tests.utils';
 import { tick } from './pic-tests.utils';
+import { JUNO_CDN_STORAGE_ERROR_NO_PROPOSAL_FOUND } from '@junobuild/errors';
 
 /* eslint-disable vitest/require-top-level-describe */
 
@@ -273,7 +274,7 @@ export const testControlledCdnMethods = ({
 						},
 						unknownProposalId
 					)
-				).rejects.toThrow(`No proposal found for ${unknownProposalId}`);
+				).rejects.toThrow(`${JUNO_CDN_STORAGE_ERROR_NO_PROPOSAL_FOUND} (${unknownProposalId})`);
 			});
 
 			it('should upload asset', async () => {

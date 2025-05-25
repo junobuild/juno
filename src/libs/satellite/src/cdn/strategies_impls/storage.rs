@@ -1,6 +1,10 @@
 use crate::cdn::strategies_impls::cdn::{CdnHeap, CdnStable};
 use crate::storage::store::get_config_store;
 use candid::Principal;
+use junobuild_cdn::storage::errors::{
+    JUNO_CDN_STORAGE_ERROR_CANNOT_GET_ASSET_UNKNOWN_REFERENCE_ID,
+    JUNO_CDN_STORAGE_ERROR_CANNOT_INSERT_ASSET_UNKNOWN_REFERENCE_ID,
+};
 use junobuild_collections::types::core::CollectionKey;
 use junobuild_collections::types::rules::{Memory, Rule};
 use junobuild_shared::types::core::Blob;
@@ -122,8 +126,6 @@ impl StorageUploadStrategy for CdnStorageUpload {
         );
     }
 
-    // TODO: error msg
-
     fn insert_asset(&self, batch: &Batch, asset: &Asset, _rule: &Rule) -> Result<(), String> {
         match &batch.reference_id {
             Some(reference_id) => {
@@ -136,7 +138,9 @@ impl StorageUploadStrategy for CdnStorageUpload {
                 );
                 Ok(())
             }
-            None => Err("Cannot insert asset with unknown reference / proposal ID.".to_string()),
+            None => {
+                Err(JUNO_CDN_STORAGE_ERROR_CANNOT_INSERT_ASSET_UNKNOWN_REFERENCE_ID.to_string())
+            }
         }
     }
 
@@ -157,7 +161,7 @@ impl StorageUploadStrategy for CdnStorageUpload {
                 );
                 Ok(asset)
             }
-            None => Err("Cannot get asset with unknown reference / proposal ID.".to_string()),
+            None => Err(JUNO_CDN_STORAGE_ERROR_CANNOT_GET_ASSET_UNKNOWN_REFERENCE_ID.to_string()),
         }
     }
 }

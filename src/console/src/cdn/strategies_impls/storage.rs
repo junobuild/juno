@@ -6,6 +6,10 @@ use crate::cdn::helpers::stable::{
 };
 use crate::cdn::strategies_impls::cdn::CdnHeap;
 use candid::Principal;
+use junobuild_cdn::storage::errors::{
+    JUNO_CDN_STORAGE_ERROR_CANNOT_GET_ASSET_UNKNOWN_REFERENCE_ID,
+    JUNO_CDN_STORAGE_ERROR_CANNOT_INSERT_ASSET_UNKNOWN_REFERENCE_ID,
+};
 use junobuild_collections::types::core::CollectionKey;
 use junobuild_collections::types::rules::{Memory, Rule};
 use junobuild_shared::types::core::Blob;
@@ -132,7 +136,9 @@ impl StorageUploadStrategy for StorageUpload {
                 );
                 Ok(())
             }
-            None => Err("Cannot insert asset with unknown reference / proposal ID.".to_string()),
+            None => {
+                Err(JUNO_CDN_STORAGE_ERROR_CANNOT_INSERT_ASSET_UNKNOWN_REFERENCE_ID.to_string())
+            }
         }
     }
 
@@ -148,7 +154,7 @@ impl StorageUploadStrategy for StorageUpload {
                 let asset = get_asset_stable(reference_id, collection, full_path);
                 Ok(asset)
             }
-            None => Err("Cannot get asset with unknown reference / proposal ID.".to_string()),
+            None => Err(JUNO_CDN_STORAGE_ERROR_CANNOT_GET_ASSET_UNKNOWN_REFERENCE_ID.to_string()),
         }
     }
 }

@@ -20,6 +20,7 @@ import {
 	uint8ArrayToHexString
 } from '@dfinity/utils';
 import type { Actor, PocketIc } from '@hadronous/pic';
+import { JUNO_CDN_STORAGE_ERROR_NO_PROPOSAL_FOUND } from '@junobuild/errors';
 import { describe, expect } from 'vitest';
 import { mockBlob, mockHtml } from '../mocks/storage.mocks';
 import { uploadFile } from './cdn-tests.utils';
@@ -273,7 +274,7 @@ export const testControlledCdnMethods = ({
 						},
 						unknownProposalId
 					)
-				).rejects.toThrow(`No proposal found for ${unknownProposalId}`);
+				).rejects.toThrow(`${JUNO_CDN_STORAGE_ERROR_NO_PROPOSAL_FOUND} (${unknownProposalId})`);
 			});
 
 			it('should upload asset', async () => {

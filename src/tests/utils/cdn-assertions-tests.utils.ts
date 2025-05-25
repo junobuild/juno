@@ -190,7 +190,7 @@ export const testControlledCdnMethods = ({
 		assetsUpgrade: '/hello.html',
 		segmentsDeployment: '/releases/satellite-v0.0.18.wasm.gz',
 		assetsCollection: '#dapp',
-		segmentsCollection: "#releases"
+		segmentsCollection: '#releases'
 	}
 }: {
 	actor: (params?: { requireController: boolean }) => Actor<SatelliteActor | ConsoleActor>;
@@ -199,7 +199,12 @@ export const testControlledCdnMethods = ({
 	canisterId: () => Principal;
 	currentDate: Date;
 	expected_proposal_id?: bigint;
-	fullPaths?: { assetsUpgrade: string; segmentsDeployment: string; assetsCollection: string; segmentsCollection: string };
+	fullPaths?: {
+		assetsUpgrade: string;
+		segmentsDeployment: string;
+		assetsCollection: string;
+		segmentsCollection: string;
+	};
 }) => {
 	describe.each([
 		{

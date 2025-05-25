@@ -1,8 +1,8 @@
+use crate::cdn::constants::{CDN_JUNO_COLLECTION_KEY, DEFAULT_CDN_JUNO_COLLECTIONS};
+use crate::memory::internal::STATE;
 use ic_cdk::api::time;
 use junobuild_collections::types::interface::SetRule;
 use junobuild_collections::types::rules::{Memory, Rule, Rules};
-use crate::cdn::constants::{CDN_JUNO_COLLECTION_KEY, DEFAULT_CDN_JUNO_COLLECTIONS};
-use crate::memory::internal::STATE;
 
 // TODO: One time upgrade - To be removed.
 

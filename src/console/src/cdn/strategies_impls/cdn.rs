@@ -1,5 +1,5 @@
 use crate::cdn::proposals::post_commit_assets;
-use crate::memory::STATE;
+use crate::memory::manager::STATE;
 use junobuild_cdn::proposals::{Proposal, ProposalsStable};
 use junobuild_cdn::storage::{ProposalAssetsStable, ProposalContentChunksStable};
 use junobuild_cdn::strategies::{CdnHeapStrategy, CdnStableStrategy, CdnWorkflowStrategy};

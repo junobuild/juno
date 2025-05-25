@@ -2,7 +2,7 @@
 // History
 // ---------------------------------------------------------
 
-use crate::memory::STATE;
+use crate::memory::manager::STATE;
 use crate::random::random;
 use crate::types::interface::GetMonitoringHistory;
 use crate::types::state::{

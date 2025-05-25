@@ -1,5 +1,5 @@
 pub mod upgrade {
-    use crate::memory::init_stable_state;
+    use crate::memory::manager::init_stable_state;
     use crate::types::state::{MissionControlSettings, Orbiters, Satellites, StableState, User};
     use candid::{CandidType, Principal};
     use junobuild_shared::types::state::{Controllers, Metadata, SegmentCanisterStatus, Timestamp};

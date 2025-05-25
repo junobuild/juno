@@ -7,7 +7,6 @@ mod controllers;
 mod factory;
 mod guards;
 mod impls;
-mod lifecycle;
 mod memory;
 mod metadata;
 mod store;
@@ -38,9 +37,9 @@ use junobuild_shared::types::interface::{
 };
 use junobuild_shared::types::list::{ListParams, ListResults};
 use junobuild_shared::types::state::{SegmentKind, UserId};
-use junobuild_storage::http::types::{
-    HttpRequest, HttpResponse, StreamingCallbackHttpResponse, StreamingCallbackToken,
-};
+use junobuild_storage::http::types::StreamingCallbackHttpResponse;
+use junobuild_storage::http::types::StreamingCallbackToken;
+use junobuild_storage::http::types::{HttpRequest, HttpResponse};
 use junobuild_storage::types::config::StorageConfig;
 use junobuild_storage::types::interface::AssetNoContent;
 use junobuild_storage::types::interface::CommitBatch;

@@ -1,4 +1,5 @@
 mod certified_assets;
+pub mod errors;
 mod state;
 mod store;
 

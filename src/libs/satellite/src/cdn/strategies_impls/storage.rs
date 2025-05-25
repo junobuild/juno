@@ -1,10 +1,10 @@
 use crate::cdn::strategies_impls::cdn::{CdnHeap, CdnStable};
-use crate::errors::storage::{
+use crate::storage::store::get_config_store;
+use candid::Principal;
+use junobuild_cdn::storage::errors::{
     JUNO_STORAGE_ERROR_CANNOT_GET_ASSET_UNKNOWN_REFERENCE_ID,
     JUNO_STORAGE_ERROR_CANNOT_INSERT_ASSET_UNKNOWN_REFERENCE_ID,
 };
-use crate::storage::store::get_config_store;
-use candid::Principal;
 use junobuild_collections::types::core::CollectionKey;
 use junobuild_collections::types::rules::{Memory, Rule};
 use junobuild_shared::types::core::Blob;

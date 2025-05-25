@@ -188,7 +188,9 @@ export const testControlledCdnMethods = ({
 	expected_proposal_id = 1n,
 	fullPaths = {
 		assetsUpgrade: '/hello.html',
-		segmentsDeployment: '/releases/satellite-v0.0.18.wasm.gz'
+		segmentsDeployment: '/releases/satellite-v0.0.18.wasm.gz',
+		assetsCollection: '#dapp',
+		segmentsCollection: '#releases'
 	}
 }: {
 	actor: (params?: { requireController: boolean }) => Actor<SatelliteActor | ConsoleActor>;
@@ -197,7 +199,12 @@ export const testControlledCdnMethods = ({
 	canisterId: () => Principal;
 	currentDate: Date;
 	expected_proposal_id?: bigint;
-	fullPaths?: { assetsUpgrade: string; segmentsDeployment: string };
+	fullPaths?: {
+		assetsUpgrade: string;
+		segmentsDeployment: string;
+		assetsCollection: string;
+		segmentsCollection: string;
+	};
 }) => {
 	describe.each([
 		{
@@ -206,7 +213,7 @@ export const testControlledCdnMethods = ({
 					clear_existing_assets: toNullable()
 				}
 			} as ProposalType,
-			collection: '#dapp',
+			collection: fullPaths.assetsCollection,
 			full_path: fullPaths.assetsUpgrade,
 			expected_proposal_id
 		},
@@ -218,7 +225,7 @@ export const testControlledCdnMethods = ({
 					satellite_version: ['0.0.18']
 				}
 			} as ProposalType,
-			collection: '#releases',
+			collection: fullPaths.segmentsCollection,
 			full_path: fullPaths.segmentsDeployment,
 			expected_proposal_id: expected_proposal_id + 1n
 		}
@@ -535,7 +542,7 @@ export const testControlledCdnMethods = ({
 		expect(status_code_200).toEqual(200);
 	});
 
-	it('should still serve asset after #dApp has been cleared', async () => {
+	it('should still serve asset on #releases after #dapp has been cleared', async () => {
 		const { http_request } = actor();
 
 		const { status_code } = await http_request({

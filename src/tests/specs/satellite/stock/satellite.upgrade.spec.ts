@@ -762,15 +762,15 @@ describe('Satellite > Upgrade', () => {
 			actor.setIdentity(controller);
 		});
 
-		it('should expose build version', async () => {
+		it('should deprecated build version', async () => {
 			const satelliteVersion = crateVersion('satellite');
 
 			await expect(actor.build_version()).resolves.toEqual(satelliteVersion);
 
 			await upgrade();
 
-			await expect(async () => await actor.version()).rejects.toThrow(
-				new RegExp("Canister has no query method 'version'.", 'i')
+			await expect(async () => await actor.build_version()).rejects.toThrow(
+				new RegExp("Canister has no query method 'build_version'.", 'i')
 			);
 		});
 
@@ -784,6 +784,28 @@ describe('Satellite > Upgrade', () => {
 			await expect(async () => await actor.version()).rejects.toThrow(
 				new RegExp("Canister has no query method 'version'.", 'i')
 			);
+		});
+
+		it('should create collection #_juno', async () => {
+			await upgrade();
+
+			const { get_rule } = actor;
+
+			const result = await get_rule({ Storage: null }, '#_juno');
+
+			const rule = fromNullable(result);
+
+			assertNonNullish(rule);
+
+			const { updated_at, created_at, memory, mutable_permissions, read, write, version } = rule;
+
+			expect(memory).toEqual(toNullable({ Heap: null }));
+			expect(read).toEqual({ Controllers: null });
+			expect(write).toEqual({ Controllers: null });
+			expect(mutable_permissions).toEqual([false]);
+			expect(created_at).toBeGreaterThan(0n);
+			expect(updated_at).toBeGreaterThan(0n);
+			expect(fromNullable(version)).toBeUndefined();
 		});
 	});
 });

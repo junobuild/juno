@@ -1,6 +1,7 @@
 use crate::constants::{WELL_KNOWN_CUSTOM_DOMAINS, WELL_KNOWN_II_ALTERNATIVE_ORIGINS};
 use crate::errors::{
     JUNO_STORAGE_ERROR_CANNOT_COMMIT_BATCH, JUNO_STORAGE_ERROR_UPLOAD_NOT_ALLOWED,
+    JUNO_STORAGE_ERROR_UPLOAD_PATH_COLLECTION_PREFIX,
 };
 use crate::runtime::increment_and_assert_rate;
 use crate::strategies::{StorageAssertionsStrategy, StorageStateStrategy};
@@ -151,6 +152,30 @@ fn assert_memory_size(config: &StorageConfig) -> Result<(), String> {
     assert_max_memory_size(&config.max_memory_size)
 }
 
+/// Asserts whether a given caller is allowed to upload an asset to a specified collection and full_path.
+///
+/// This function performs several checks:
+/// 1. Ensures the asset path is not targeting restricted well-known paths (used for custom domains or II alternative origins).
+/// 2. Verifies that the caller is a controller if uploading to the default assets collection (`#dapp`) or any system collection (collections starting with `#`).
+/// 3. Validates that the asset path is properly prefixed with the collection name (excluding system prefix `#`) if not uploading to `#dapp`.
+///
+/// # Arguments
+/// * `caller` - The principal trying to upload the asset.
+/// * `full_path` - The full path where the asset is to be stored.
+/// * `collection` - The collection key (e.g., `#dapp`, `user-assets`, etc.).
+/// * `controllers` - A list of principals allowed to control the storage.
+///
+/// # Returns
+/// * `Ok(())` if all assertions pass.
+/// * `Err(&'static str)` if any of the checks fail, with a descriptive error message.
+///
+/// # Errors
+/// * `JUNO_STORAGE_ERROR_UPLOAD_NOT_ALLOWED` if the caller is not authorized to write to a protected collection.
+/// * `"Asset path must be prefixed with collection key."` if the asset path does not follow the expected prefix structure.
+///
+/// # Notes
+/// - Some paths like `/.well-known/ic-domains` and `/.well-known/ii-alternative-origins` are protected and handled specially.
+/// - System collections are identified by the prefix `#` and have stricter permissions.
 fn assert_key(
     caller: Principal,
     full_path: &FullPath,
@@ -183,7 +208,7 @@ fn assert_key(
     if collection.clone() != *dapp_collection
         && !full_path.starts_with(&["/", collection_path, "/"].join(""))
     {
-        return Err("Asset path must be prefixed with collection key.");
+        return Err(JUNO_STORAGE_ERROR_UPLOAD_PATH_COLLECTION_PREFIX);
     }
 
     Ok(())

@@ -17,7 +17,10 @@ pub fn init_asset_upload(
     let proposal = get_proposal(&proposal_id);
 
     if proposal.is_none() {
-        return Err(format!("{} ({})", JUNO_CDN_STORAGE_ERROR_NO_PROPOSAL_FOUND, proposal_id));
+        return Err(format!(
+            "{} ({})",
+            JUNO_CDN_STORAGE_ERROR_NO_PROPOSAL_FOUND, proposal_id
+        ));
     }
 
     // TODO: assert full_path

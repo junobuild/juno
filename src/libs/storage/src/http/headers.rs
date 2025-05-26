@@ -12,11 +12,16 @@ pub fn build_headers(
     encoding_type: &EncodingType,
     config: &StorageConfig,
 ) -> Vec<HeaderField> {
-    let mut headers: HashMap<String, String> = asset
-        .headers
-        .iter()
-        .map(|HeaderField(key, value)| (key.to_lowercase(), value.clone()))
+    // Starts with the headers build from the configuration
+    let mut headers: HashMap<String, String> = build_config_headers(&asset.key.full_path, config)
+        .into_iter()
+        .map(|HeaderField(key, value)| (key.to_lowercase(), value))
         .collect();
+
+    // Asset-level headers take precedence on the config - a specific header is more important than default configuration.
+    for HeaderField(key, value) in &asset.headers {
+        headers.insert(key.to_lowercase(), value.clone());
+    }
 
     // The Accept-Ranges HTTP response header is a marker used by the server to advertise its support for partial requests from the client for file downloads.
     headers.insert("accept-ranges".to_string(), "bytes".to_string());
@@ -38,11 +43,6 @@ pub fn build_headers(
 
     if encoding_type.clone() != *ASSET_ENCODING_NO_COMPRESSION {
         headers.insert("content-encoding".to_string(), encoding_type.to_string());
-    }
-
-    // Headers build from the configuration
-    for HeaderField(key, value) in build_config_headers(&asset.key.full_path, config) {
-        headers.insert(key.to_lowercase(), value);
     }
 
     headers

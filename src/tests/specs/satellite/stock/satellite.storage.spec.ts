@@ -1377,8 +1377,7 @@ describe('Satellite > Storage', () => {
 						['x-content-type-options', 'test'],
 						['strict-transport-security', 'test'],
 						['referrer-policy', 'test'],
-						['x-frame-options', 'test'],
-						['cache-control', 'no-cache']
+						['x-frame-options', 'test']
 					];
 
 					await upload({ full_path, name, collection, headers: customHeaders });
@@ -1400,6 +1399,34 @@ describe('Satellite > Storage', () => {
 					assertHeaders({
 						headers
 					});
+				});
+
+				it('should user asset headers over configs', async () => {
+					const { http_request } = actor;
+
+					const name = 'hello-665544.html';
+					const full_path = `/${collection}/${name}`;
+
+					const customCacheControl = 'public, max-age=3600';
+
+					const customHeaders: [string, string][] = [['cache-control', customCacheControl]];
+
+					await upload({ full_path, name, collection, headers: customHeaders });
+
+					const request: HttpRequest = {
+						body: [],
+						certificate_version: toNullable(2),
+						headers: [],
+						method: 'GET',
+						url: full_path
+					};
+
+					const response = await http_request(request);
+
+					const { headers } = response;
+
+					const cacheControlHeaderDev = headers.find(([key, _]) => key === 'cache-control');
+					expect(cacheControlHeaderDev?.[1]).toEqual(customCacheControl);
 				});
 			}
 		);

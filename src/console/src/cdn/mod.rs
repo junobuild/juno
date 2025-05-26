@@ -1,3 +1,4 @@
+mod assert;
 pub mod certified_assets;
 pub mod constants;
 pub mod helpers;

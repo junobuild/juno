@@ -1,6 +1,6 @@
 use crate::cdn::helpers::heap::get_config;
 use crate::cdn::helpers::stable::get_proposal;
-use crate::cdn::strategies_impls::storage::StorageState;
+use crate::cdn::strategies_impls::storage::{StorageAssertions, StorageState};
 use crate::store::heap::get_controllers;
 use candid::Principal;
 use junobuild_cdn::proposals::ProposalId;
@@ -26,6 +26,7 @@ pub fn init_asset_upload(
         ));
     }
 
+    // TODO: move to strategy assertion
     assert_releases_keys(&init)?;
 
     let controllers = get_controllers();
@@ -37,6 +38,7 @@ pub fn init_asset_upload(
         &config,
         init,
         Some(proposal_id),
+        &StorageAssertions,
         &StorageState,
     )
 }

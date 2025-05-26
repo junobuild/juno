@@ -1,3 +1,4 @@
+use crate::cdn::assert::assert_cdn_asset_keys;
 use crate::cdn::helpers::heap::{
     delete_asset, get_asset, get_config, get_domains, get_rule, insert_asset,
 };
@@ -28,6 +29,10 @@ use junobuild_storage::utils::clone_asset_encoding_content_chunks;
 pub struct StorageAssertions;
 
 impl StorageAssertionsStrategy for StorageAssertions {
+    fn assert_key(&self, full_path: &FullPath, collection: &CollectionKey) -> Result<(), String> {
+        assert_cdn_asset_keys(full_path, collection)
+    }
+
     fn invoke_assert_upload_asset(
         &self,
         _caller: &Principal,

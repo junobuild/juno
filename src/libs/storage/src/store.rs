@@ -39,9 +39,17 @@ pub fn create_batch(
     config: &StorageConfig,
     init: InitAssetKey,
     reference_id: Option<ReferenceId>,
+    assertions: &impl StorageAssertionsStrategy,
     storage_state: &impl StorageStateStrategy,
 ) -> Result<BatchId, String> {
-    assert_create_batch(caller, controllers, config, &init, storage_state)?;
+    assert_create_batch(
+        caller,
+        controllers,
+        config,
+        &init,
+        assertions,
+        storage_state,
+    )?;
 
     // Assert supported encoding type
     get_encoding_type(&init.encoding_type)?;
@@ -176,7 +184,7 @@ fn secure_commit_chunks(
     storage_state: &impl StorageStateStrategy,
     storage_upload: &impl StorageUploadStrategy,
 ) -> Result<Asset, String> {
-    let rule = assert_commit_batch(caller, controllers, batch, storage_state)?;
+    let rule = assert_commit_batch(caller, controllers, batch, assertions, storage_state)?;
 
     let current = storage_upload.get_asset(
         &batch.reference_id,

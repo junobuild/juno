@@ -8,13 +8,15 @@ export const uploadAsset = async ({
 	description,
 	name,
 	collection,
-	actor
+	actor,
+	headers = []
 }: {
 	full_path: string;
 	description?: string;
 	name: string;
 	collection: string;
 	actor: Actor<SatelliteActor>;
+	headers?: [string, string][];
 }) => {
 	const { commit_asset_upload, upload_asset_chunk, init_asset_upload } = actor;
 
@@ -36,6 +38,6 @@ export const uploadAsset = async ({
 	await commit_asset_upload({
 		batch_id: file.batch_id,
 		chunk_ids: [chunk.chunk_id],
-		headers: []
+		headers
 	});
 };

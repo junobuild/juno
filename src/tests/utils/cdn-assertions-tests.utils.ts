@@ -36,6 +36,7 @@ import { uploadFile } from './cdn-tests.utils';
 import { assertCertification } from './certification-tests.utils';
 import { sha256ToBase64String } from './crypto-tests.utils';
 import { tick } from './pic-tests.utils';
+import { assertHeaders } from './storage-tests.utils';
 
 /* eslint-disable vitest/require-top-level-describe */
 
@@ -173,7 +174,7 @@ export const testCdnConfig = ({ actor }: { actor: () => Actor<SatelliteActor | C
 		const { set_storage_config, get_storage_config } = actor();
 
 		const config: StorageConfig = {
-			headers: [['*', [['Cache-Control', 'no-cache']]]],
+			headers: [['*', [['cache-control', 'no-cache']]]],
 			iframe: toNullable({ Deny: null }),
 			redirects: [],
 			rewrites: [],
@@ -463,23 +464,9 @@ export const testControlledCdnMethods = ({
 
 				expect(status_code).toBe(200);
 
-				const rest = headers.filter(([header, _]) => header !== 'IC-Certificate');
-
-				/* eslint-disable no-useless-escape */
-				expect(rest).toEqual([
-					['accept-ranges', 'bytes'],
-					['etag', '"03ee66f1452916b4f91a504c1e9babfa201b6d64c26a82b2cf03c3ed49d91585"'],
-					['X-Content-Type-Options', 'nosniff'],
-					['Strict-Transport-Security', 'max-age=31536000 ; includeSubDomains'],
-					['Referrer-Policy', 'same-origin'],
-					['X-Frame-Options', 'DENY'],
-					['Cache-Control', 'no-cache'],
-					[
-						'IC-CertificateExpression',
-						'default_certification(ValidationArgs{certification:Certification{no_request_certification:Empty{},response_certification:ResponseCertification{certified_response_headers:ResponseHeaderList{headers:[\"accept-ranges\",\"etag\",\"X-Content-Type-Options\",\"Strict-Transport-Security\",\"Referrer-Policy\",\"X-Frame-Options\",\"Cache-Control\"]}}}})'
-					]
-				]);
-				/* eslint-enable no-useless-escape */
+				assertHeaders({
+					headers
+				});
 
 				await assertCertification({
 					canisterId: canisterId(),
@@ -752,13 +739,13 @@ export const testCdnStorageSettings = ({
 		const { headers } = await http_request({
 			body: [],
 			certificate_version: toNullable(),
-			headers: [['Accept-Encoding', 'gzip, deflate, br']],
+			headers: [['accept-encoding', 'gzip, deflate, br']],
 			method: 'GET',
 			url: '/index.js'
 		});
 
 		expect(
-			headers.find(([key, value]) => key === 'Content-Encoding' && value === 'gzip')
+			headers.find(([key, value]) => key === 'content-encoding' && value === 'gzip')
 		).not.toBeUndefined();
 	});
 };

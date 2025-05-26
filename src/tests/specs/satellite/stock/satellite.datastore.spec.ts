@@ -789,7 +789,7 @@ describe.each([{ memory: { Heap: null } }, { memory: { Stable: null } }])(
 			describe.each([
 				{
 					memory: { Heap: null },
-					expectMemory: 3_932_160n
+					expectMemory: 3_997_696n
 				},
 				{
 					memory: { Stable: null },

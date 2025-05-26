@@ -739,7 +739,7 @@ export const testCdnStorageSettings = ({
 		const { headers } = await http_request({
 			body: [],
 			certificate_version: toNullable(),
-			headers: [['Accept-Encoding', 'gzip, deflate, br']],
+			headers: [['accept-encoding', 'gzip, deflate, br']],
 			method: 'GET',
 			url: '/index.js'
 		});

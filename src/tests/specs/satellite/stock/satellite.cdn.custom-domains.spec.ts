@@ -4,7 +4,10 @@ import { AnonymousIdentity } from '@dfinity/agent';
 import { Ed25519KeyIdentity } from '@dfinity/identity';
 import { toNullable } from '@dfinity/utils';
 import { type Actor, PocketIc } from '@hadronous/pic';
-import { JUNO_AUTH_ERROR_NOT_ADMIN_CONTROLLER } from '@junobuild/errors';
+import {
+	JUNO_AUTH_ERROR_NOT_ADMIN_CONTROLLER,
+	JUNO_STORAGE_ERROR_RESERVED_ASSET
+} from '@junobuild/errors';
 import { inject } from 'vitest';
 import {
 	adminCustomDomainsTests,
@@ -87,7 +90,7 @@ describe('Satellite > Custom domains', () => {
 					name: 'ic-domains',
 					token: toNullable()
 				})
-			).rejects.toThrow('/.well-known/ic-domains is a reserved asset.');
+			).rejects.toThrow(`${JUNO_STORAGE_ERROR_RESERVED_ASSET} (/.well-known/ic-domains)`);
 		});
 
 		it('should not expose /.well-known/ic-domains after all domains are deleted', async () => {

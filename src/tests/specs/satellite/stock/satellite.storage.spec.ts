@@ -158,7 +158,12 @@ describe('Satellite > Storage', () => {
 		});
 	});
 
-	const upload = async (params: { full_path: string; name: string; collection: string }) => {
+	const upload = async (params: {
+		full_path: string;
+		name: string;
+		collection: string;
+		headers?: [string, string][];
+	}) => {
 		await uploadAsset({
 			...params,
 			actor
@@ -1328,5 +1333,75 @@ describe('Satellite > Storage', () => {
 				});
 			});
 		});
+	});
+
+	describe('More assertions', () => {
+		const unsetConfigMaxMemory = async () => {
+			const { set_storage_config } = actor;
+
+			const storage: StorageConfig = {
+				headers: [['*', [['cache-control', 'no-cache']]]],
+				iframe: toNullable({ Deny: null }),
+				redirects: [],
+				rewrites: [],
+				raw_access: toNullable(),
+				max_memory_size: toNullable({
+					heap: [],
+					stable: []
+				})
+			};
+
+			await set_storage_config(storage);
+		};
+
+		beforeAll(async () => {
+			actor.setIdentity(controller);
+
+			await unsetConfigMaxMemory();
+		});
+
+		describe.each([{ memory: { Heap: null } }, { memory: { Stable: null } }])(
+			'With collection',
+			({ memory }) => {
+				const collection = `test_${'Heap' in memory ? 'heap' : 'stable'}`;
+
+				it('should not overwrite default headers', async () => {
+					const { http_request } = actor;
+
+					const name = 'hello-9998877.html';
+					const full_path = `/${collection}/${name}`;
+
+					const customHeaders: [string, string][] = [
+						['accept-ranges', 'test'],
+						['etag', 'test'],
+						['x-content-type-options', 'test'],
+						['strict-transport-security', 'test'],
+						['referrer-policy', 'test'],
+						['x-frame-options', 'test'],
+						['cache-control', 'no-cache']
+					];
+
+					await upload({ full_path, name, collection, headers: customHeaders });
+
+					const request: HttpRequest = {
+						body: [],
+						certificate_version: toNullable(2),
+						headers: [],
+						method: 'GET',
+						url: full_path
+					};
+
+					const response = await http_request(request);
+
+					const { headers } = response;
+
+					expect(headers.find(([_, value]) => value === 'test')).to.toBeUndefined();
+
+					assertHeaders({
+						headers
+					});
+				});
+			}
+		);
 	});
 });

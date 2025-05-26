@@ -5,6 +5,7 @@ import { Ed25519KeyIdentity } from '@dfinity/identity';
 import type { Principal } from '@dfinity/principal';
 import { arrayBufferToUint8Array, fromNullable, toNullable } from '@dfinity/utils';
 import { PocketIc, type Actor } from '@hadronous/pic';
+import { JUNO_CDN_STORAGE_ERROR_INVALID_RELEASES_PATH } from '@junobuild/errors';
 import { beforeAll, describe, expect, inject } from 'vitest';
 import { CONTROLLER_ERROR_MSG } from '../../constants/console-tests.constants';
 import {
@@ -124,7 +125,7 @@ describe('Console > Cdn', () => {
 							},
 							proposalId
 						)
-					).rejects.toThrow(`/releases/${filename} does not match the required pattern.`);
+					).rejects.toThrow(`${JUNO_CDN_STORAGE_ERROR_INVALID_RELEASES_PATH} (${filename}`);
 				});
 			});
 		});

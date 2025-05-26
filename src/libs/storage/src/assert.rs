@@ -200,7 +200,7 @@ fn assert_key(
         return Err(JUNO_STORAGE_ERROR_UPLOAD_NOT_ALLOWED);
     }
 
-    // Asset uploaded by users should be prefixed with the collection. That way developers can organize assets to particular folders.
+    // Assets uploaded to a collection other than #dapp must be prefixed with the collection name (excluding the system collection prefix, if present).
     let collection_path = collection
         .strip_prefix(SYS_COLLECTION_PREFIX)
         .unwrap_or(collection);

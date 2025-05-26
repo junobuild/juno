@@ -331,7 +331,7 @@ fn secure_list_assets_impl(
         Memory::Heap => STATE.with(|state| {
             let state_ref = state.borrow();
             let assets = collect_assets_heap(context.collection, &state_ref.heap.storage.assets);
-            Ok(list_assets_impl(&assets, context, &rule, filters))
+            list_assets_impl(&assets, context, &rule, filters)
         }),
         Memory::Stable => STATE.with(|state| {
             let stable = get_assets_stable(context.collection, &state.borrow().stable.assets);
@@ -339,7 +339,7 @@ fn secure_list_assets_impl(
                 .iter()
                 .map(|(_, asset)| (&asset.key.full_path, asset))
                 .collect();
-            Ok(list_assets_impl(&assets, context, &rule, filters))
+            list_assets_impl(&assets, context, &rule, filters)
         }),
     }
 }
@@ -353,7 +353,7 @@ fn list_assets_impl(
     }: &StoreContext,
     rule: &Rule,
     filters: &ListParams,
-) -> ListResults<AssetNoContent> {
+) -> Result<ListResults<AssetNoContent>, String> {
     let matches = filter_values(
         caller,
         controllers,
@@ -361,11 +361,11 @@ fn list_assets_impl(
         collection.clone(),
         filters,
         assets,
-    );
+    )?;
 
     let values = list_values(&matches, filters);
 
-    ListResults::<AssetNoContent> {
+    let result = ListResults::<AssetNoContent> {
         items: values
             .items
             .into_iter()
@@ -375,7 +375,9 @@ fn list_assets_impl(
         items_page: values.items_page,
         matches_length: values.matches_length,
         matches_pages: values.matches_pages,
-    }
+    };
+
+    Ok(result)
 }
 
 fn secure_delete_asset_impl(

@@ -284,7 +284,7 @@ fn get_docs_impl<'a>(
     filters: &ListParams,
     rule: &Rule,
 ) -> Result<ListResults<Doc>, String> {
-    let matches = filter_values(caller, controllers, &rule.read, docs, filters);
+    let matches = filter_values(caller, controllers, &rule.read, docs, filters)?;
 
     let results = list_values(&matches, filters);
 

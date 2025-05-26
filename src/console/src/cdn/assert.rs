@@ -4,6 +4,7 @@ use junobuild_cdn::storage::errors::{
 };
 use junobuild_collections::types::core::CollectionKey;
 use junobuild_shared::regex::build_regex;
+use junobuild_storage::errors::JUNO_STORAGE_ERROR_RESERVED_ASSET;
 use junobuild_storage::types::state::FullPath;
 
 pub fn assert_cdn_asset_keys(
@@ -29,7 +30,7 @@ fn assert_releases_keys(full_path: &FullPath) -> Result<(), String> {
     if full_path == "/releases/metadata.json" {
         return Err(format!(
             "{} ({})",
-            JUNO_CDN_STORAGE_ERROR_INVALID_RELEASES_PATH, full_path
+            JUNO_STORAGE_ERROR_RESERVED_ASSET, full_path
         ));
     }
 

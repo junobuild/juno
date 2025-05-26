@@ -12,7 +12,7 @@ pub fn assert_cdn_asset_keys(
     full_path: &FullPath,
     collection: &CollectionKey,
 ) -> Result<(), String> {
-    match collection {
+    match collection.as_str() {
         CDN_JUNO_COLLECTION_KEY => assert_releases_keys(full_path),
         _ => {
             if full_path.starts_with(CDN_JUNO_COLLECTION_PATH) {

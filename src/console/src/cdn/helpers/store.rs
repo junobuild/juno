@@ -45,7 +45,10 @@ pub fn init_asset_upload(
 
 fn assert_releases_keys(InitAssetKey { full_path, .. }: &InitAssetKey) -> Result<(), String> {
     if full_path == "/releases/metadata.json" {
-        return Err(format!("{} is a reserved asset.", full_path).to_string());
+        return Err(format!(
+            "{} ({})",
+            JUNO_CDN_STORAGE_ERROR_INVALID_RELEASES_PATH, full_path
+        ));
     }
 
     if full_path.starts_with("/releases/satellite")

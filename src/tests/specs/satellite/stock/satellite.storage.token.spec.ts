@@ -5,7 +5,6 @@ import type {
 } from '$declarations/satellite/satellite.did';
 import { idlFactory as idlFactorSatellite } from '$declarations/satellite/satellite.factory.did';
 import { Ed25519KeyIdentity } from '@dfinity/identity';
-import type { Principal } from '@dfinity/principal';
 import { toNullable } from '@dfinity/utils';
 import { type Actor, PocketIc } from '@hadronous/pic';
 import { nanoid } from 'nanoid';
@@ -166,9 +165,11 @@ describe('Satellite > Storage > Token', () => {
 				const { headers } = response;
 
 				const xRobotsTag = headers.find(([key, _]) => key === 'x-robots-tag');
+
 				expect(xRobotsTag?.[1]).toEqual('noindex, nofollow');
 
 				const cacheControl = headers.find(([key, _]) => key === 'cache-control');
+
 				expect(cacheControl?.[1]).toEqual('private, no-store');
 			});
 
@@ -197,6 +198,7 @@ describe('Satellite > Storage > Token', () => {
 				const { headers } = response;
 
 				const cacheControl = headers.find(([key, _]) => key === 'cache-control');
+
 				expect(cacheControl?.[1]).toEqual('private, no-store');
 			});
 		}

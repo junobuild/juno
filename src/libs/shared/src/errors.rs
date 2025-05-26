@@ -43,3 +43,5 @@ pub const JUNO_ERROR_CMC_CALL_CREATE_CANISTER_FAILED: &str =
 pub const JUNO_ERROR_CMC_CREATE_CANISTER_FAILED: &str = "juno.error.cmc.create_canister_failed";
 // Failed to install code with CMC
 pub const JUNO_ERROR_CMC_INSTALL_CODE_FAILED: &str = "juno.error.cmc.install_code_failed";
+// Invalid regex
+pub const JUNO_ERROR_INVALID_REGEX: &str = "juno.error.invalid_regex";

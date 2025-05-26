@@ -7,10 +7,10 @@ use junobuild_cdn::proposals::ProposalId;
 use junobuild_cdn::storage::errors::{
     JUNO_CDN_STORAGE_ERROR_INVALID_RELEASES_PATH, JUNO_CDN_STORAGE_ERROR_NO_PROPOSAL_FOUND,
 };
+use junobuild_shared::regex::build_regex;
 use junobuild_storage::store::create_batch;
 use junobuild_storage::types::interface::InitAssetKey;
 use junobuild_storage::types::runtime_state::BatchId;
-use regex::Regex;
 
 pub fn init_asset_upload(
     caller: Principal,
@@ -50,9 +50,9 @@ fn assert_releases_keys(InitAssetKey { full_path, .. }: &InitAssetKey) -> Result
         || full_path.starts_with("/releases/mission_control")
         || full_path.starts_with("/releases/orbiter")
     {
-        let re =
-            Regex::new(r"^/releases/(satellite|mission_control|orbiter)-v\d+\.\d+\.\d+\.wasm\.gz$")
-                .unwrap();
+        let re = build_regex(
+            r"^/releases/(satellite|mission_control|orbiter)-v\d+\.\d+\.\d+\.wasm\.gz$",
+        )?;
 
         return if re.is_match(full_path) {
             Ok(())

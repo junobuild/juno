@@ -18,6 +18,7 @@ pub mod list;
 pub mod mgmt;
 pub mod random;
 pub mod rate;
+pub mod regex;
 pub mod serializers;
 #[doc(hidden)]
 pub mod types;

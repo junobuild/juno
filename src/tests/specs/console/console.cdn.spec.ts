@@ -3,13 +3,13 @@ import { idlFactory as idlFactorConsole } from '$declarations/console/console.fa
 import { AnonymousIdentity } from '@dfinity/agent';
 import { Ed25519KeyIdentity } from '@dfinity/identity';
 import type { Principal } from '@dfinity/principal';
-import { arrayBufferToUint8Array, fromNullable, toNullable } from '@dfinity/utils';
 import { PocketIc, type Actor } from '@hadronous/pic';
-import { beforeAll, describe, expect, inject } from 'vitest';
+import { beforeAll, describe, inject } from 'vitest';
 import { CONTROLLER_ERROR_MSG } from '../../constants/console-tests.constants';
 import {
 	testCdnConfig,
 	testCdnGetProposal,
+	testCdnStorageSettings,
 	testControlledCdnMethods,
 	testGuardedAssetsCdnMethods,
 	testNotAllowedCdnMethods,
@@ -96,77 +96,9 @@ describe('Console > Cdn', () => {
 			actor: () => actor
 		});
 
-		it('should serve with content encoding', async () => {
-			const {
-				init_proposal,
-				http_request,
-				commit_proposal,
-				submit_proposal,
-				commit_proposal_asset_upload,
-				upload_proposal_asset_chunk,
-				init_proposal_asset_upload
-			} = actor;
-
-			const [proposalId, __] = await init_proposal({
-				AssetsUpgrade: {
-					clear_existing_assets: toNullable()
-				}
-			});
-
-			const upload = async (gzip: boolean) => {
-				const file = await init_proposal_asset_upload(
-					{
-						collection: '#dapp',
-						description: toNullable(),
-						encoding_type: gzip ? ['gzip'] : [],
-						full_path: '/index.js',
-						name: 'index.gz',
-						token: toNullable()
-					},
-					proposalId
-				);
-
-				const blob = new Blob(['<script>console.log(123)</script>'], {
-					type: 'text/javascript; charset=utf-8'
-				});
-
-				const chunk = await upload_proposal_asset_chunk({
-					batch_id: file.batch_id,
-					content: arrayBufferToUint8Array(await blob.arrayBuffer()),
-					order_id: [0n]
-				});
-
-				await commit_proposal_asset_upload({
-					batch_id: file.batch_id,
-					chunk_ids: [chunk.chunk_id],
-					headers: []
-				});
-			};
-
-			await upload(true);
-			await upload(false);
-
-			// Advance time for updated_at
-			await pic.advanceTime(100);
-
-			const [_, proposal] = await submit_proposal(proposalId);
-
-			await commit_proposal({
-				sha256: fromNullable(proposal.sha256)!,
-				proposal_id: proposalId
-			});
-
-			const { headers } = await http_request({
-				body: [],
-				certificate_version: toNullable(),
-				headers: [['Accept-Encoding', 'gzip, deflate, br']],
-				method: 'GET',
-				url: '/index.js'
-			});
-
-			expect(
-				headers.find(([key, value]) => key === 'Content-Encoding' && value === 'gzip')
-			).not.toBeUndefined();
+		testCdnStorageSettings({
+			actor: () => actor,
+			pic: () => pic
 		});
 	});
 

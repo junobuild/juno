@@ -44,7 +44,7 @@ fn assert_releases_keys(
     InitAssetKey { full_path, .. }: &InitAssetKey,
 ) -> Result<(), String> {
     match &proposal.proposal_type {
-        ProposalType::AssetsUpgrade(ref options) => (),
+        ProposalType::AssetsUpgrade(ref _options) => (),
         ProposalType::SegmentsDeployment(_) => {
             let re = Regex::new(r"^/_juno/releases/satellite[^/]*\.wasm\.gz$")
                 .map_err(|e| format!("Invalid regex: {}", e))?;

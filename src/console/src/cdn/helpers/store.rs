@@ -8,6 +8,7 @@ use junobuild_cdn::storage::errors::{
     JUNO_CDN_STORAGE_ERROR_INVALID_RELEASES_PATH, JUNO_CDN_STORAGE_ERROR_NO_PROPOSAL_FOUND,
 };
 use junobuild_shared::regex::build_regex;
+use junobuild_storage::errors::JUNO_STORAGE_ERROR_RESERVED_ASSET;
 use junobuild_storage::store::create_batch;
 use junobuild_storage::types::interface::InitAssetKey;
 use junobuild_storage::types::runtime_state::BatchId;
@@ -47,7 +48,7 @@ fn assert_releases_keys(InitAssetKey { full_path, .. }: &InitAssetKey) -> Result
     if full_path == "/releases/metadata.json" {
         return Err(format!(
             "{} ({})",
-            JUNO_CDN_STORAGE_ERROR_INVALID_RELEASES_PATH, full_path
+            JUNO_STORAGE_ERROR_RESERVED_ASSET, full_path
         ));
     }
 

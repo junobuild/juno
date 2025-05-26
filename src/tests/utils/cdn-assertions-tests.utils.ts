@@ -26,6 +26,7 @@ import {
 	JUNO_CDN_PROPOSALS_ERROR_CANNOT_SUBMIT_INVALID_STATUS,
 	JUNO_CDN_PROPOSALS_ERROR_EMPTY_ASSETS,
 	JUNO_CDN_PROPOSALS_ERROR_INVALID_HASH,
+	JUNO_CDN_STORAGE_ERROR_INVALID_RELEASES_PATH,
 	JUNO_CDN_STORAGE_ERROR_NO_PROPOSAL_FOUND
 } from '@junobuild/errors';
 import { describe, expect } from 'vitest';
@@ -593,6 +594,58 @@ export const testControlledCdnMethods = ({
 		assertNonNullish(proposal);
 
 		expect(proposal.status).toEqual({ Failed: null });
+	});
+};
+
+export const testReleasesProposal = ({
+	actor,
+	moduleNames = [
+		'satellite.wasm.gz',
+		'mission_control.wasm.gz',
+		'orbiter.wasm.gz',
+		'satellite.wasm',
+		'mission_control.wasm',
+		'orbiter.wasm',
+		'satellite.txt',
+		'mission_control.txt',
+		'orbiter.txt'
+	],
+	collection = '#releases',
+	fullPathPrefix = '/releases'
+}: {
+	actor: () => Actor<SatelliteActor | ConsoleActor>;
+	moduleNames?: string[];
+	collection?: string;
+	fullPathPrefix?: string;
+}) => {
+	describe('Releases assertions', () => {
+		describe.each(moduleNames)(`Assert upload %s`, (filename) => {
+			it('should throw error if full path does not match pattern', async () => {
+				const { init_proposal_asset_upload, init_proposal } = actor();
+
+				const [proposalId, _] = await init_proposal({
+					AssetsUpgrade: {
+						clear_existing_assets: toNullable()
+					}
+				});
+
+				const fullPath = `${fullPathPrefix}/${filename}`;
+
+				await expect(
+					init_proposal_asset_upload(
+						{
+							collection,
+							description: toNullable(),
+							encoding_type: [],
+							full_path: fullPath,
+							name: filename,
+							token: toNullable()
+						},
+						proposalId
+					)
+				).rejects.toThrow(`${JUNO_CDN_STORAGE_ERROR_INVALID_RELEASES_PATH} (${fullPath}`);
+			});
+		});
 	});
 };
 

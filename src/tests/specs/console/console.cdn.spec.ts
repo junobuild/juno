@@ -12,7 +12,8 @@ import {
 	testCdnGetProposal,
 	testControlledCdnMethods,
 	testGuardedAssetsCdnMethods,
-	testNotAllowedCdnMethods
+	testNotAllowedCdnMethods,
+	testReleasesProposal
 } from '../../utils/cdn-assertions-tests.utils';
 import { CONSOLE_WASM_PATH } from '../../utils/setup-tests.utils';
 
@@ -91,42 +92,8 @@ describe('Console > Cdn', () => {
 			pic: () => pic
 		});
 
-		describe('Releases assertions', () => {
-			describe.each([
-				'satellite.wasm.gz',
-				'mission_control.wasm.gz',
-				'orbiter.wasm.gz',
-				'satellite.wasm',
-				'mission_control.wasm',
-				'orbiter.wasm',
-				'satellite.txt',
-				'mission_control.txt',
-				'orbiter.txt'
-			])(`Assert upload %s`, (filename) => {
-				it('should throw error if try to upload without version', async () => {
-					const { init_proposal_asset_upload, init_proposal } = actor;
-
-					const [proposalId, _] = await init_proposal({
-						AssetsUpgrade: {
-							clear_existing_assets: toNullable()
-						}
-					});
-
-					await expect(
-						init_proposal_asset_upload(
-							{
-								collection: '#releases',
-								description: toNullable(),
-								encoding_type: [],
-								full_path: `/releases/${filename}`,
-								name: filename,
-								token: toNullable()
-							},
-							proposalId
-						)
-					).rejects.toThrow(`/releases/${filename} does not match the required pattern.`);
-				});
-			});
+		testReleasesProposal({
+			actor: () => actor
 		});
 
 		it('should serve with content encoding', async () => {

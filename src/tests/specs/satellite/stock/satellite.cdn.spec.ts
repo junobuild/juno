@@ -13,6 +13,7 @@ import { beforeAll, describe, expect, inject } from 'vitest';
 import {
 	testCdnConfig,
 	testCdnGetProposal,
+	testCdnStorageSettings,
 	testControlledCdnMethods,
 	testNotAllowedCdnMethods,
 	testReleasesProposal
@@ -236,6 +237,11 @@ describe('Satellite > Cdn', () => {
 			],
 			collection: '#_juno',
 			fullPathPrefix: '/_juno/releases'
+		});
+
+		testCdnStorageSettings({
+			actor: () => actor,
+			pic: () => pic
 		});
 	});
 });

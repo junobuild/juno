@@ -1426,6 +1426,7 @@ describe('Satellite > Storage', () => {
 					const { headers } = response;
 
 					const cacheControlHeaderDev = headers.find(([key, _]) => key === 'cache-control');
+
 					expect(cacheControlHeaderDev?.[1]).toEqual(customCacheControl);
 				});
 			}

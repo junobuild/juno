@@ -14,7 +14,7 @@ export const assertHeaders = ({ headers }: { headers: [string, string][] }) => {
 		['cache-control', 'no-cache'],
 		[
 			'IC-CertificateExpression',
-			'default_certification(ValidationArgs{certification:Certification{no_request_certification:Empty{},response_certification:ResponseCertification{certified_response_headers:ResponseHeaderList{headers:[\"accept-ranges\",\"cache-control\",\"etag\",\"referrer-policy\",\"strict-transport-security\",\"x-content-type-options\",\"x-frame-options\"]}}}})'
+			'default_certification(ValidationArgs{certification:Certification{no_request_certification:Empty{},response_certification:ResponseCertification{certified_response_headers:ResponseHeaderList{headers:["accept-ranges","cache-control","etag","referrer-policy","strict-transport-security","x-content-type-options","x-frame-options"]}}}})'
 		]
 	];
 

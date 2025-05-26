@@ -1,3 +1,4 @@
+use crate::cdn::assert::assert_cdn_asset_keys;
 use crate::hooks::storage::invoke_assert_upload_asset;
 use crate::storage::state::{
     delete_asset, get_asset, get_config, get_domains, get_rule, insert_asset, insert_asset_encoding,
@@ -22,6 +23,10 @@ use junobuild_storage::types::store::{
 pub struct StorageAssertions;
 
 impl StorageAssertionsStrategy for StorageAssertions {
+    fn assert_key(&self, full_path: &FullPath, collection: &CollectionKey) -> Result<(), String> {
+        assert_cdn_asset_keys(full_path, collection)
+    }
+
     fn invoke_assert_upload_asset(
         &self,
         caller: &Principal,

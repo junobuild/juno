@@ -26,11 +26,18 @@ pub fn assert_create_batch(
     controllers: &Controllers,
     config: &StorageConfig,
     init: &InitAssetKey,
+    assertions: &impl StorageAssertionsStrategy,
     storage_state: &impl StorageStateStrategy,
 ) -> Result<(), String> {
     assert_memory_size(config)?;
 
-    assert_key(caller, &init.full_path, &init.collection, controllers)?;
+    assert_key(
+        caller,
+        &init.full_path,
+        &init.collection,
+        assertions,
+        controllers,
+    )?;
 
     assert_description_length(&init.description)?;
 
@@ -59,6 +66,7 @@ pub fn assert_commit_batch(
     caller: Principal,
     controllers: &Controllers,
     batch: &Batch,
+    assertions: &impl StorageAssertionsStrategy,
     storage_state: &impl StorageStateStrategy,
 ) -> Result<Rule, String> {
     // The one that started the batch should be the one that commits it
@@ -70,6 +78,7 @@ pub fn assert_commit_batch(
         caller,
         &batch.key.full_path,
         &batch.key.collection,
+        assertions,
         controllers,
     )?;
 
@@ -158,6 +167,7 @@ fn assert_memory_size(config: &StorageConfig) -> Result<(), String> {
 /// 1. Ensures the asset path is not targeting restricted well-known paths (used for custom domains or II alternative origins).
 /// 2. Verifies that the caller is a controller if uploading to the default assets collection (`#dapp`) or any system collection (collections starting with `#`).
 /// 3. Validates that the asset path is properly prefixed with the collection name (excluding system prefix `#`) if not uploading to `#dapp`.
+/// 4. Calls the strategy assertion this way the consumer can implement custom validation on the full_path and collection.
 ///
 /// # Arguments
 /// * `caller` - The principal trying to upload the asset.
@@ -180,8 +190,9 @@ fn assert_key(
     caller: Principal,
     full_path: &FullPath,
     collection: &CollectionKey,
+    assertions: &impl StorageAssertionsStrategy,
     controllers: &Controllers,
-) -> Result<(), &'static str> {
+) -> Result<(), String> {
     // /.well-known/ic-domains is automatically generated for custom domains
     assert_well_known_key(full_path, WELL_KNOWN_CUSTOM_DOMAINS)?;
 
@@ -192,12 +203,12 @@ fn assert_key(
 
     // Only controllers can write in collection #dapp
     if collection.clone() == *dapp_collection && !is_controller(caller, controllers) {
-        return Err(JUNO_STORAGE_ERROR_UPLOAD_NOT_ALLOWED);
+        return Err(JUNO_STORAGE_ERROR_UPLOAD_NOT_ALLOWED.to_string());
     }
 
     // Only controllers can write in reserved collections starting with #
     if is_system_collection(collection) && !is_controller(caller, controllers) {
-        return Err(JUNO_STORAGE_ERROR_UPLOAD_NOT_ALLOWED);
+        return Err(JUNO_STORAGE_ERROR_UPLOAD_NOT_ALLOWED.to_string());
     }
 
     // Assets uploaded to a collection other than #dapp must be prefixed with the collection name (excluding the system collection prefix, if present).
@@ -208,16 +219,17 @@ fn assert_key(
     if collection.clone() != *dapp_collection
         && !full_path.starts_with(&["/", collection_path, "/"].join(""))
     {
-        return Err(JUNO_STORAGE_ERROR_UPLOAD_PATH_COLLECTION_PREFIX);
+        return Err(JUNO_STORAGE_ERROR_UPLOAD_PATH_COLLECTION_PREFIX.to_string());
     }
+
+    assertions.assert_key(full_path, collection)?;
 
     Ok(())
 }
 
-fn assert_well_known_key(full_path: &str, reserved_path: &str) -> Result<(), &'static str> {
+fn assert_well_known_key(full_path: &str, reserved_path: &str) -> Result<(), String> {
     if full_path == reserved_path {
-        let error = format!("{} is a reserved asset.", reserved_path);
-        return Err(Box::leak(error.into_boxed_str()));
+        return Err(format!("{} is a reserved asset.", reserved_path));
     }
     Ok(())
 }

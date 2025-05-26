@@ -11,6 +11,8 @@ use junobuild_shared::types::domain::CustomDomains;
 use junobuild_shared::types::state::Controllers;
 
 pub trait StorageAssertionsStrategy {
+    fn assert_key(&self, full_path: &FullPath, collection: &CollectionKey) -> Result<(), String>;
+
     fn invoke_assert_upload_asset(
         &self,
         caller: &Principal,

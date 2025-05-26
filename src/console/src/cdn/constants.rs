@@ -4,6 +4,8 @@ use junobuild_collections::types::rules::Permission::Controllers;
 
 pub const RELEASES_COLLECTION_KEY: &str = "#releases";
 
+pub const RELEASES_COLLECTION_PATH: &str = "/releases/";
+
 pub const DEFAULT_RELEASES_COLLECTIONS: [(&str, SetRule); 1] = [(
     RELEASES_COLLECTION_KEY,
     SetRule {

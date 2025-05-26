@@ -4,6 +4,8 @@ use junobuild_collections::types::rules::Permission::Controllers;
 
 pub const CDN_JUNO_COLLECTION_KEY: &str = "#_juno";
 
+pub const CDN_JUNO_COLLECTION_PATH: &str = "/_juno/";
+
 pub const DEFAULT_CDN_JUNO_COLLECTIONS: [(&str, SetRule); 1] = [(
     CDN_JUNO_COLLECTION_KEY,
     SetRule {

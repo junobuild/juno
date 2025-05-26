@@ -575,7 +575,15 @@ fn secure_create_batch_impl(
 
     assert_create_batch(caller, controllers, &rule)?;
 
-    create_batch(caller, controllers, config, init, None, &StorageState)
+    create_batch(
+        caller,
+        controllers,
+        config,
+        init,
+        None,
+        &StorageAssertions,
+        &StorageState,
+    )
 }
 
 // ---------------------------------------------------------

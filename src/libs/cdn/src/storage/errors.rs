@@ -12,3 +12,7 @@ pub const JUNO_CDN_STORAGE_ERROR_NO_PROPOSAL_FOUND: &str =
 // {} does not match the required pattern.
 pub const JUNO_CDN_STORAGE_ERROR_INVALID_RELEASES_PATH: &str =
     "juno.cdn.storage.error.invalid_releases_path";
+
+// An asset is uploaded with the CDN prefix but using the #dapp collection
+pub const JUNO_CDN_STORAGE_ERROR_INVALID_COLLECTION: &str =
+    "juno.cdn.storage.error.invalid_collection";

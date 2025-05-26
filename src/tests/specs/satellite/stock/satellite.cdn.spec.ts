@@ -14,7 +14,8 @@ import {
 	testCdnConfig,
 	testCdnGetProposal,
 	testControlledCdnMethods,
-	testNotAllowedCdnMethods
+	testNotAllowedCdnMethods,
+	testReleasesProposal
 } from '../../../utils/cdn-assertions-tests.utils';
 import { controllersInitArgs, SATELLITE_WASM_PATH } from '../../../utils/setup-tests.utils';
 
@@ -207,6 +208,34 @@ describe('Satellite > Cdn', () => {
 			await expect(delete_proposal_assets({ proposal_ids: [1n] })).rejects.toThrow(
 				JUNO_AUTH_ERROR_NOT_ADMIN_CONTROLLER
 			);
+		});
+	});
+
+	describe('Admin for releases', () => {
+		beforeAll(() => {
+			actor.setIdentity(controller);
+		});
+
+		testCdnConfig({
+			actor: () => actor
+		});
+
+		testReleasesProposal({
+			actor: () => actor,
+			moduleNames: [
+				'mission_control.wasm.gz',
+				'orbiter.wasm.gz',
+				'mission_control-v0.1.1.wasm.gz',
+				'orbiter-v0.0.1.wasm.gz',
+				'satellite.wasm',
+				'mission_control.wasm',
+				'orbiter.wasm',
+				'satellite.txt',
+				'mission_control.txt',
+				'orbiter.txt'
+			],
+			collection: '#_juno',
+			fullPathPrefix: '/_juno/releases'
 		});
 	});
 });

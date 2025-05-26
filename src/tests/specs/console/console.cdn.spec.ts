@@ -5,7 +5,6 @@ import { Ed25519KeyIdentity } from '@dfinity/identity';
 import type { Principal } from '@dfinity/principal';
 import { arrayBufferToUint8Array, fromNullable, toNullable } from '@dfinity/utils';
 import { PocketIc, type Actor } from '@hadronous/pic';
-import { JUNO_CDN_STORAGE_ERROR_INVALID_RELEASES_PATH } from '@junobuild/errors';
 import { beforeAll, describe, expect, inject } from 'vitest';
 import { CONTROLLER_ERROR_MSG } from '../../constants/console-tests.constants';
 import {
@@ -13,7 +12,8 @@ import {
 	testCdnGetProposal,
 	testControlledCdnMethods,
 	testGuardedAssetsCdnMethods,
-	testNotAllowedCdnMethods
+	testNotAllowedCdnMethods,
+	testReleasesProposal
 } from '../../utils/cdn-assertions-tests.utils';
 import { CONSOLE_WASM_PATH } from '../../utils/setup-tests.utils';
 
@@ -92,42 +92,8 @@ describe('Console > Cdn', () => {
 			pic: () => pic
 		});
 
-		describe('Releases assertions', () => {
-			describe.each([
-				'satellite.wasm.gz',
-				'mission_control.wasm.gz',
-				'orbiter.wasm.gz',
-				'satellite.wasm',
-				'mission_control.wasm',
-				'orbiter.wasm',
-				'satellite.txt',
-				'mission_control.txt',
-				'orbiter.txt'
-			])(`Assert upload %s`, (filename) => {
-				it('should throw error if try to upload without version', async () => {
-					const { init_proposal_asset_upload, init_proposal } = actor;
-
-					const [proposalId, _] = await init_proposal({
-						AssetsUpgrade: {
-							clear_existing_assets: toNullable()
-						}
-					});
-
-					await expect(
-						init_proposal_asset_upload(
-							{
-								collection: '#releases',
-								description: toNullable(),
-								encoding_type: [],
-								full_path: `/releases/${filename}`,
-								name: filename,
-								token: toNullable()
-							},
-							proposalId
-						)
-					).rejects.toThrow(`${JUNO_CDN_STORAGE_ERROR_INVALID_RELEASES_PATH} (${filename}`);
-				});
-			});
+		testReleasesProposal({
+			actor: () => actor
 		});
 
 		it('should serve with content encoding', async () => {

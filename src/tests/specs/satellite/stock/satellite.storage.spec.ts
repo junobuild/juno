@@ -32,6 +32,7 @@ import { createUser as createUserUtils } from '../../../utils/satellite-doc-test
 import { uploadAsset } from '../../../utils/satellite-storage-tests.utils';
 import { deleteDefaultIndexHTML } from '../../../utils/satellite-tests.utils';
 import { controllersInitArgs, SATELLITE_WASM_PATH } from '../../../utils/setup-tests.utils';
+import { assertHeaders } from '../../../utils/storage-tests.utils';
 
 describe('Satellite > Storage', () => {
 	let pic: PocketIc;
@@ -173,7 +174,7 @@ describe('Satellite > Storage', () => {
 			const { set_storage_config, get_config } = actor;
 
 			const storage: StorageConfig = {
-				headers: [['*', [['Cache-Control', 'no-cache']]]],
+				headers: [['*', [['cache-control', 'no-cache']]]],
 				iframe: toNullable({ Deny: null }),
 				redirects: [],
 				rewrites: [],
@@ -228,23 +229,9 @@ describe('Satellite > Storage', () => {
 
 			const { headers, body } = response;
 
-			const rest = headers.filter(([header, _]) => header !== 'IC-Certificate');
-
-			/* eslint-disable no-useless-escape */
-			expect(rest).toEqual([
-				['accept-ranges', 'bytes'],
-				['etag', '"03ee66f1452916b4f91a504c1e9babfa201b6d64c26a82b2cf03c3ed49d91585"'],
-				['X-Content-Type-Options', 'nosniff'],
-				['Strict-Transport-Security', 'max-age=31536000 ; includeSubDomains'],
-				['Referrer-Policy', 'same-origin'],
-				['X-Frame-Options', 'DENY'],
-				['Cache-Control', 'no-cache'],
-				[
-					'IC-CertificateExpression',
-					'default_certification(ValidationArgs{certification:Certification{no_request_certification:Empty{},response_certification:ResponseCertification{certified_response_headers:ResponseHeaderList{headers:[\"accept-ranges\",\"etag\",\"X-Content-Type-Options\",\"Strict-Transport-Security\",\"Referrer-Policy\",\"X-Frame-Options\",\"Cache-Control\"]}}}})'
-				]
-			]);
-			/* eslint-enable no-useless-escape */
+			assertHeaders({
+				headers
+			});
 
 			await assertCertification({
 				canisterId,
@@ -374,23 +361,9 @@ describe('Satellite > Storage', () => {
 
 					const { headers, body } = response;
 
-					const rest = headers.filter(([header, _]) => header !== 'IC-Certificate');
-
-					/* eslint-disable no-useless-escape */
-					expect(rest).toEqual([
-						['accept-ranges', 'bytes'],
-						['etag', '"03ee66f1452916b4f91a504c1e9babfa201b6d64c26a82b2cf03c3ed49d91585"'],
-						['X-Content-Type-Options', 'nosniff'],
-						['Strict-Transport-Security', 'max-age=31536000 ; includeSubDomains'],
-						['Referrer-Policy', 'same-origin'],
-						['X-Frame-Options', 'DENY'],
-						['Cache-Control', 'no-cache'],
-						[
-							'IC-CertificateExpression',
-							'default_certification(ValidationArgs{certification:Certification{no_request_certification:Empty{},response_certification:ResponseCertification{certified_response_headers:ResponseHeaderList{headers:[\"accept-ranges\",\"etag\",\"X-Content-Type-Options\",\"Strict-Transport-Security\",\"Referrer-Policy\",\"X-Frame-Options\",\"Cache-Control\"]}}}})'
-						]
-					]);
-					/* eslint-enable no-useless-escape */
+					assertHeaders({
+						headers
+					});
 
 					await assertCertification({
 						canisterId,
@@ -500,7 +473,7 @@ describe('Satellite > Storage', () => {
 				const { set_storage_config, get_config } = actor;
 
 				const storage: StorageConfig = {
-					headers: [['*', [['Cache-Control', 'no-cache']]]],
+					headers: [['*', [['cache-control', 'no-cache']]]],
 					iframe: toNullable({ Deny: null }),
 					redirects: [
 						[
@@ -1263,7 +1236,7 @@ describe('Satellite > Storage', () => {
 				const { set_storage_config } = actor;
 
 				const storage: StorageConfig = {
-					headers: [['*', [['Cache-Control', 'no-cache']]]],
+					headers: [['*', [['cache-control', 'no-cache']]]],
 					iframe: toNullable({ Deny: null }),
 					redirects: [],
 					rewrites: [],

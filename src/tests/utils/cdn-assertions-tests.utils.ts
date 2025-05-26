@@ -745,7 +745,7 @@ export const testCdnStorageSettings = ({
 		});
 
 		expect(
-			headers.find(([key, value]) => key === 'Content-Encoding' && value === 'gzip')
+			headers.find(([key, value]) => key === 'content-encoding' && value === 'gzip')
 		).not.toBeUndefined();
 	});
 };

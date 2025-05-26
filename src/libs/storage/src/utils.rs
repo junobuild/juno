@@ -32,10 +32,10 @@ pub fn filter_values<'a>(
         owner,
     }: &'a ListParams,
     assets: &'a [(&'a FullPath, &'a Asset)],
-) -> Vec<(&'a FullPath, &'a Asset)> {
-    let (regex_key, regex_description) = matcher_regex(matcher);
+) -> Result<Vec<(&'a FullPath, &'a Asset)>, String> {
+    let (regex_key, regex_description) = matcher_regex(matcher)?;
 
-    assets
+    let result = assets
         .iter()
         .filter_map(|(key, asset)| {
             if filter_collection(collection.clone(), asset)
@@ -50,7 +50,9 @@ pub fn filter_values<'a>(
                 None
             }
         })
-        .collect()
+        .collect();
+
+    Ok(result)
 }
 
 fn filter_full_path(regex: &Option<Regex>, asset: &Asset) -> bool {

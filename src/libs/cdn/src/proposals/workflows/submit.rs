@@ -1,5 +1,5 @@
 use crate::proposals::errors::{
-    JUNO_ERROR_PROPOSALS_CANNOT_SUBMIT, JUNO_ERROR_PROPOSALS_CANNOT_SUBMIT_INVALID_STATUS,
+    JUNO_CDN_PROPOSALS_ERROR_CANNOT_SUBMIT, JUNO_CDN_PROPOSALS_ERROR_CANNOT_SUBMIT_INVALID_STATUS,
 };
 use crate::proposals::stable::{get_proposal, insert_proposal};
 use crate::proposals::workflows::assert::assert_known_proposal_type;
@@ -19,7 +19,7 @@ pub fn submit_proposal(
     let proposal = get_proposal(cdn_stable, proposal_id);
 
     match proposal {
-        None => Err(JUNO_ERROR_PROPOSALS_CANNOT_SUBMIT.to_string()),
+        None => Err(JUNO_CDN_PROPOSALS_ERROR_CANNOT_SUBMIT.to_string()),
         Some(proposal) => secure_submit_proposal(cdn_stable, caller, proposal_id, &proposal),
     }
 }
@@ -32,13 +32,13 @@ fn secure_submit_proposal(
 ) -> Result<(ProposalId, Proposal), String> {
     // The one that started the upload should be the one that propose it.
     if principal_not_equal(caller, proposal.owner) {
-        return Err(JUNO_ERROR_PROPOSALS_CANNOT_SUBMIT.to_string());
+        return Err(JUNO_CDN_PROPOSALS_ERROR_CANNOT_SUBMIT.to_string());
     }
 
     if proposal.status != ProposalStatus::Initialized {
         return Err(format!(
             "{} ({:?})",
-            JUNO_ERROR_PROPOSALS_CANNOT_SUBMIT_INVALID_STATUS, proposal.status
+            JUNO_CDN_PROPOSALS_ERROR_CANNOT_SUBMIT_INVALID_STATUS, proposal.status
         ));
     }
 

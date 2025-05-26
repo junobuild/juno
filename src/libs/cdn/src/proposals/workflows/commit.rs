@@ -1,7 +1,7 @@
 use crate::proposals::errors::{
-    JUNO_ERROR_PROPOSALS_CANNOT_COMMIT, JUNO_ERROR_PROPOSALS_CANNOT_COMMIT_INVALID_STATUS,
-    JUNO_ERROR_PROPOSALS_EMPTY_ASSETS, JUNO_ERROR_PROPOSALS_EMPTY_CONTENT_CHUNKS,
-    JUNO_ERROR_PROPOSALS_INVALID_HASH, JUNO_ERROR_PROPOSALS_NOT_CONTENT_CHUNKS_AT_INDEX,
+    JUNO_CDN_PROPOSALS_ERROR_CANNOT_COMMIT, JUNO_CDN_PROPOSALS_ERROR_CANNOT_COMMIT_INVALID_STATUS,
+    JUNO_CDN_PROPOSALS_ERROR_EMPTY_ASSETS, JUNO_CDN_PROPOSALS_ERROR_EMPTY_CONTENT_CHUNKS,
+    JUNO_CDN_PROPOSALS_ERROR_INVALID_HASH, JUNO_CDN_PROPOSALS_ERROR_NOT_CONTENT_CHUNKS_AT_INDEX,
 };
 use crate::proposals::stable::{get_proposal, insert_proposal};
 use crate::proposals::workflows::assert::assert_known_proposal_type;
@@ -22,7 +22,7 @@ pub fn commit_proposal(
     let proposal = get_proposal(cdn_stable, &proposition.proposal_id).ok_or_else(|| {
         CommitProposalError::ProposalNotFound(format!(
             "{} ({})",
-            JUNO_ERROR_PROPOSALS_CANNOT_COMMIT, proposition.proposal_id
+            JUNO_CDN_PROPOSALS_ERROR_CANNOT_COMMIT, proposition.proposal_id
         ))
     })?;
 
@@ -52,7 +52,7 @@ fn secure_commit_proposal(
     if proposal.status != ProposalStatus::Open {
         return Err(CommitProposalError::ProposalNotOpen(format!(
             "{} ({:?})",
-            JUNO_ERROR_PROPOSALS_CANNOT_COMMIT_INVALID_STATUS, proposal.status
+            JUNO_CDN_PROPOSALS_ERROR_CANNOT_COMMIT_INVALID_STATUS, proposal.status
         )));
     }
 
@@ -61,7 +61,7 @@ fn secure_commit_proposal(
         _ => {
             return Err(CommitProposalError::InvalidSha256(format!(
                 "{} ({})",
-                JUNO_ERROR_PROPOSALS_INVALID_HASH,
+                JUNO_CDN_PROPOSALS_ERROR_INVALID_HASH,
                 encode(commit_proposal.sha256)
             )));
         }
@@ -96,7 +96,7 @@ fn copy_committed_assets(
     if assets.is_empty() {
         return Err(format!(
             "{} ({})",
-            JUNO_ERROR_PROPOSALS_EMPTY_ASSETS, proposal_id
+            JUNO_CDN_PROPOSALS_ERROR_EMPTY_ASSETS, proposal_id
         ));
     }
 
@@ -110,7 +110,7 @@ fn copy_committed_assets(
                 let chunks = get_content_chunks(cdn_stable, &encoding, i).ok_or_else(|| {
                     format!(
                         "{} ({} - {}).",
-                        JUNO_ERROR_PROPOSALS_NOT_CONTENT_CHUNKS_AT_INDEX, encoding_type, i
+                        JUNO_CDN_PROPOSALS_ERROR_NOT_CONTENT_CHUNKS_AT_INDEX, encoding_type, i
                     )
                 })?;
 
@@ -120,7 +120,7 @@ fn copy_committed_assets(
             if content_chunks.is_empty() {
                 return Err(format!(
                     "{} ({})",
-                    JUNO_ERROR_PROPOSALS_EMPTY_CONTENT_CHUNKS, encoding_type
+                    JUNO_CDN_PROPOSALS_ERROR_EMPTY_CONTENT_CHUNKS, encoding_type
                 ));
             }
 

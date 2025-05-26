@@ -1,5 +1,6 @@
 #![allow(dead_code)]
 
+use crate::cdn::constants::CDN_JUNO_COLLECTION_KEY;
 use crate::types::hooks::{
     AssertDeleteAssetContext, AssertUploadAssetContext, OnDeleteAssetContext,
     OnDeleteFilteredAssetsContext, OnDeleteManyAssetsContext, OnUploadAssetContext,
@@ -36,7 +37,7 @@ pub fn invoke_upload_asset(caller: &UserId, asset: &Asset) {
     #[cfg(feature = "on_upload_asset")]
     {
         // We perform this check here for performance reason given that this callback might be called when the developer deploys their frontend dapps
-        if is_asset_collection(&asset.key.collection) {
+        if is_system_collection(&asset.key.collection) {
             return;
         }
 
@@ -63,7 +64,7 @@ pub fn invoke_on_delete_asset(caller: &UserId, asset: &Option<Asset>) {
     {
         // We perform this check here for performance reason in case this hook gets ever called when the developer deletes any assets of the dapps
         if let Some(asset) = asset {
-            if is_asset_collection(&asset.key.collection) {
+            if is_system_collection(&asset.key.collection) {
                 return;
             }
         }
@@ -141,7 +142,7 @@ pub fn invoke_assert_upload_asset(
     #[cfg(feature = "assert_upload_asset")]
     {
         // We perform this check here for performance reason given that this callback might be called when the developer deploys their frontend dapps
-        if is_asset_collection(&asset.batch.key.collection) {
+        if is_system_collection(&asset.batch.key.collection) {
             return Ok(());
         }
 
@@ -167,7 +168,7 @@ pub fn invoke_assert_delete_asset(caller: &UserId, asset: &Asset) -> Result<(), 
     #[cfg(feature = "assert_delete_asset")]
     {
         // We perform this check here for performance reason in case this hook gets ever called when the developer deletes any assets of the dapps
-        if is_asset_collection(&asset.key.collection) {
+        if is_system_collection(&asset.key.collection) {
             return Ok(());
         }
 
@@ -190,7 +191,7 @@ pub fn invoke_assert_delete_asset(caller: &UserId, asset: &Asset) -> Result<(), 
 
 #[allow(clippy::unnecessary_map_or)]
 fn should_invoke_asset_hook(collections: Option<Vec<String>>, collection: &CollectionKey) -> bool {
-    is_not_asset_collection(collection) && collections.map_or(true, |c| c.contains(collection))
+    is_not_system_collection(collection) && collections.map_or(true, |c| c.contains(collection))
 }
 
 #[allow(clippy::unnecessary_map_or)]
@@ -203,7 +204,7 @@ fn filter_assets(
         .filter(|asset| match asset {
             None => false,
             Some(asset) => {
-                is_not_asset_collection(&asset.key.collection)
+                is_not_system_collection(&asset.key.collection)
                     && collections.as_ref().map_or(true, |cols| {
                         cols.contains(&asset.key.collection.to_string())
                     })
@@ -213,10 +214,11 @@ fn filter_assets(
         .collect()
 }
 
-fn is_asset_collection(collection: &CollectionKey) -> bool {
-    collection == COLLECTION_ASSET_KEY
+// We skip system collections for performance reason given that the hook might be called when the developer deploys their frontend dapps or update their serverless functions.
+fn is_system_collection(collection: &CollectionKey) -> bool {
+    collection == COLLECTION_ASSET_KEY || collection == CDN_JUNO_COLLECTION_KEY
 }
 
-fn is_not_asset_collection(collection: &CollectionKey) -> bool {
-    !is_asset_collection(collection)
+fn is_not_system_collection(collection: &CollectionKey) -> bool {
+    !is_system_collection(collection)
 }

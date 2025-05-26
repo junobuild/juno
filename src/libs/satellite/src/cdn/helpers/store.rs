@@ -25,8 +25,6 @@ pub fn init_asset_upload(
         )
     })?;
 
-    // TODO: hook
-
     // TODO: move to strategy assertion
     assert_releases_keys(&proposal, &init)?;
 

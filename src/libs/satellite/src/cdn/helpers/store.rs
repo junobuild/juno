@@ -14,12 +14,14 @@ pub fn init_asset_upload(
     init: InitAssetKey,
     proposal_id: ProposalId,
 ) -> Result<BatchId, String> {
-    let proposal = get_proposal(&proposal_id).ok_or_else(|| {
-        format!(
+    let proposal = get_proposal(&proposal_id);
+
+    if proposal.is_none() {
+        return Err(format!(
             "{} ({})",
             JUNO_CDN_STORAGE_ERROR_NO_PROPOSAL_FOUND, proposal_id
-        )
-    })?;
+        ));
+    }
 
     // TODO: hook
 

@@ -23,6 +23,14 @@ pub fn build_headers(
         headers.insert(key.to_lowercase(), value.clone());
     }
 
+    // If the asset is accessible only via a query token,
+    // we set a few headers to prevent indexing and caching by crawlers or intermediaries.
+    if asset.key.token.is_some() {
+        for HeaderField(key, value) in token_headers() {
+            headers.insert(key.to_lowercase(), value);
+        }
+    }
+
     // The Accept-Ranges HTTP response header is a marker used by the server to advertise its support for partial requests from the client for file downloads.
     headers.insert("accept-ranges".to_string(), "bytes".to_string());
 
@@ -96,6 +104,19 @@ fn iframe_headers(iframe: &StorageConfigIFrame) -> Option<HeaderField> {
         )),
         StorageConfigIFrame::AllowAny => None,
     }
+}
+
+fn token_headers() -> Vec<HeaderField> {
+    vec![
+        // Prevents search engines from indexing the asset or following links from it.
+        HeaderField("X-Robots-Tag".to_string(), "noindex, nofollow".to_string()),
+        // Ensures the asset is not cached anywhere (neither in shared caches nor in the browser),
+        // and is considered private to the requesting user.
+        HeaderField(
+            "Cache-Control".to_string(),
+            "private, no-store".to_string(),
+        ),
+    ]
 }
 
 pub fn build_config_headers(

@@ -1335,7 +1335,7 @@ describe('Satellite > Storage', () => {
 		});
 	});
 
-	describe('More assertions', () => {
+	describe('Headers assertions', () => {
 		const unsetConfigMaxMemory = async () => {
 			const { set_storage_config } = actor;
 
@@ -1401,7 +1401,7 @@ describe('Satellite > Storage', () => {
 					});
 				});
 
-				it('should user asset headers over configs', async () => {
+				it('should use asset headers over configs', async () => {
 					const { http_request } = actor;
 
 					const name = 'hello-665544.html';

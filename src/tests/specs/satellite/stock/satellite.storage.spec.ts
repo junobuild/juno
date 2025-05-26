@@ -23,6 +23,7 @@ import {
 	JUNO_STORAGE_ERROR_RESERVED_ASSET,
 	JUNO_STORAGE_ERROR_UPLOAD_PATH_COLLECTION_PREFIX
 } from '@junobuild/errors';
+import { nanoid } from 'nanoid';
 import { readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { afterAll, beforeAll, beforeEach, describe, expect, inject } from 'vitest';
@@ -162,6 +163,7 @@ describe('Satellite > Storage', () => {
 		full_path: string;
 		name: string;
 		collection: string;
+		token?: string;
 		headers?: [string, string][];
 	}) => {
 		await uploadAsset({
@@ -1335,7 +1337,7 @@ describe('Satellite > Storage', () => {
 		});
 	});
 
-	describe('More assertions', () => {
+	describe('Headers assertions', () => {
 		const unsetConfigMaxMemory = async () => {
 			const { set_storage_config } = actor;
 
@@ -1401,7 +1403,7 @@ describe('Satellite > Storage', () => {
 					});
 				});
 
-				it('should user asset headers over configs', async () => {
+				it('should use asset headers over configs', async () => {
 					const { http_request } = actor;
 
 					const name = 'hello-665544.html';
@@ -1428,6 +1430,83 @@ describe('Satellite > Storage', () => {
 					const cacheControlHeaderDev = headers.find(([key, _]) => key === 'cache-control');
 
 					expect(cacheControlHeaderDev?.[1]).toEqual(customCacheControl);
+				});
+			}
+		);
+	});
+
+	describe('Token', () => {
+		const uploadAssetWithToken = async ({
+			collection,
+			headers
+		}: {
+			collection: string;
+			headers?: [string, string][];
+		}): Promise<{ fullPathWithToken: string }> => {
+			const name = `hello-${nanoid()}.html`;
+			const full_path = `/${collection}/${name}`;
+			const token = nanoid();
+
+			await upload({ full_path, name, collection, token, headers });
+
+			return { fullPathWithToken: `${full_path}?token=${token}` };
+		};
+
+		describe.each([{ memory: { Heap: null } }, { memory: { Stable: null } }])(
+			'With collection',
+			({ memory }) => {
+				const collection = `test_${'Heap' in memory ? 'heap' : 'stable'}`;
+
+				it('should prevent indexing and caching by crawlers or intermediaries with headers', async () => {
+					const { http_request } = actor;
+
+					const { fullPathWithToken } = await uploadAssetWithToken({ collection });
+
+					const request: HttpRequest = {
+						body: [],
+						certificate_version: toNullable(2),
+						headers: [],
+						method: 'GET',
+						url: fullPathWithToken
+					};
+
+					const response = await http_request(request);
+
+					const { headers } = response;
+
+					const xRobotsTag = headers.find(([key, _]) => key === 'x-robots-tag');
+					expect(xRobotsTag?.[1]).toEqual('noindex, nofollow');
+
+					const cacheControl = headers.find(([key, _]) => key === 'cache-control');
+					expect(cacheControl?.[1]).toEqual('private, no-store');
+				});
+
+				it('should use cache-control no-store header over asset and configs', async () => {
+					const { http_request } = actor;
+
+					const customCacheControl = 'public, max-age=3600';
+
+					const customHeaders: [string, string][] = [['cache-control', customCacheControl]];
+
+					const { fullPathWithToken } = await uploadAssetWithToken({
+						collection,
+						headers: customHeaders
+					});
+
+					const request: HttpRequest = {
+						body: [],
+						certificate_version: toNullable(2),
+						headers: [],
+						method: 'GET',
+						url: fullPathWithToken
+					};
+
+					const response = await http_request(request);
+
+					const { headers } = response;
+
+					const cacheControl = headers.find(([key, _]) => key === 'cache-control');
+					expect(cacheControl?.[1]).toEqual('private, no-store');
 				});
 			}
 		);

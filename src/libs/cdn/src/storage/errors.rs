@@ -8,3 +8,7 @@ pub const JUNO_CDN_STORAGE_ERROR_CANNOT_GET_ASSET_UNKNOWN_REFERENCE_ID: &str =
 // No proposal found for {}
 pub const JUNO_CDN_STORAGE_ERROR_NO_PROPOSAL_FOUND: &str =
     "juno.cdn.storage.error.no_proposal_found";
+
+// {} does not match the required pattern.
+pub const JUNO_CDN_STORAGE_ERROR_INVALID_RELEASES_PATH: &str =
+    "juno.cdn.storage.error.invalid_releases_path";

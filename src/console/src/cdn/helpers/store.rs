@@ -4,7 +4,9 @@ use crate::cdn::strategies_impls::storage::StorageState;
 use crate::store::heap::get_controllers;
 use candid::Principal;
 use junobuild_cdn::proposals::ProposalId;
-use junobuild_cdn::storage::errors::JUNO_CDN_STORAGE_ERROR_NO_PROPOSAL_FOUND;
+use junobuild_cdn::storage::errors::{
+    JUNO_CDN_STORAGE_ERROR_INVALID_RELEASES_PATH, JUNO_CDN_STORAGE_ERROR_NO_PROPOSAL_FOUND,
+};
 use junobuild_storage::store::create_batch;
 use junobuild_storage::types::interface::InitAssetKey;
 use junobuild_storage::types::runtime_state::BatchId;
@@ -56,8 +58,8 @@ fn assert_releases_keys(InitAssetKey { full_path, .. }: &InitAssetKey) -> Result
             Ok(())
         } else {
             Err(format!(
-                "{} does not match the required pattern.",
-                full_path
+                "{} ({})",
+                JUNO_CDN_STORAGE_ERROR_INVALID_RELEASES_PATH, full_path
             ))
         };
     }

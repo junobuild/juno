@@ -3,20 +3,26 @@ use crate::cdn::strategies_impls::storage::CdnStorageState;
 use crate::get_controllers;
 use crate::storage::store::get_config_store;
 use candid::Principal;
-use regex::Regex;
 use junobuild_cdn::proposals::{Proposal, ProposalId, ProposalType};
-use junobuild_cdn::storage::errors::JUNO_CDN_STORAGE_ERROR_NO_PROPOSAL_FOUND;
+use junobuild_cdn::storage::errors::{
+    JUNO_CDN_STORAGE_ERROR_INVALID_RELEASES_PATH, JUNO_CDN_STORAGE_ERROR_NO_PROPOSAL_FOUND,
+};
 use junobuild_storage::store::create_batch;
 use junobuild_storage::types::interface::InitAssetKey;
 use junobuild_storage::types::runtime_state::BatchId;
+use regex::Regex;
 
 pub fn init_asset_upload(
     caller: Principal,
     init: InitAssetKey,
     proposal_id: ProposalId,
 ) -> Result<BatchId, String> {
-    let proposal = get_proposal(&proposal_id)
-        .ok_or_else(|| format!("{} ({})", JUNO_CDN_STORAGE_ERROR_NO_PROPOSAL_FOUND, proposal_id))?;
+    let proposal = get_proposal(&proposal_id).ok_or_else(|| {
+        format!(
+            "{} ({})",
+            JUNO_CDN_STORAGE_ERROR_NO_PROPOSAL_FOUND, proposal_id
+        )
+    })?;
 
     assert_releases_keys(&proposal, &init)?;
 
@@ -33,21 +39,24 @@ pub fn init_asset_upload(
     )
 }
 
-fn assert_releases_keys(proposal: &Proposal, InitAssetKey { full_path, .. }: &InitAssetKey) -> Result<(), String> {
+fn assert_releases_keys(
+    proposal: &Proposal,
+    InitAssetKey { full_path, .. }: &InitAssetKey,
+) -> Result<(), String> {
     match &proposal.proposal_type {
         ProposalType::AssetsUpgrade(ref options) => (),
         ProposalType::SegmentsDeployment(_) => {
-            let re =
-                Regex::new(r"^/_juno/releases/satellite[^/]*\.wasm\.gz$").map_err(|e| format!("Invalid regex: {}", e))?;
+            let re = Regex::new(r"^/_juno/releases/satellite[^/]*\.wasm\.gz$")
+                .map_err(|e| format!("Invalid regex: {}", e))?;
 
             if !re.is_match(full_path) {
                 return Err(format!(
-                    "{} does not match the required pattern.",
-                    full_path
+                    "{} ({})",
+                    JUNO_CDN_STORAGE_ERROR_INVALID_RELEASES_PATH, full_path
                 ));
             }
-        },
+        }
     }
-    
+
     Ok(())
 }

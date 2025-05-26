@@ -14,6 +14,7 @@ import { type Actor, PocketIc } from '@hadronous/pic';
 import {
 	JUNO_AUTH_ERROR_NOT_ADMIN_CONTROLLER,
 	JUNO_AUTH_ERROR_NOT_CONTROLLER,
+	JUNO_CDN_STORAGE_ERROR_INVALID_COLLECTION,
 	JUNO_COLLECTIONS_ERROR_COLLECTION_NOT_EMPTY,
 	JUNO_COLLECTIONS_ERROR_COLLECTION_NOT_FOUND,
 	JUNO_ERROR_MEMORY_HEAP_EXCEEDED,
@@ -276,6 +277,25 @@ describe('Satellite > Storage', () => {
 				});
 			}
 		);
+
+		describe('Cdn', () => {
+			it(`should throw errors on upload to _juno`, async () => {
+				const { init_asset_upload } = actor;
+
+				await expect(
+					init_asset_upload({
+						collection: '#dapp',
+						description: toNullable(),
+						encoding_type: [],
+						full_path: '/_juno/something.txt',
+						name: 'something.txt',
+						token: toNullable()
+					})
+				).rejects.toThrow(
+					`${JUNO_CDN_STORAGE_ERROR_INVALID_COLLECTION} (/_juno/something.txt - #dapp)`
+				);
+			});
+		});
 
 		describe.each([{ memory: { Heap: null } }, { memory: { Stable: null } }])(
 			'With collection',

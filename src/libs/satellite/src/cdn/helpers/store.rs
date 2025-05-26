@@ -27,8 +27,6 @@ pub fn init_asset_upload(
 
     assert_releases_keys(&proposal, &init)?;
 
-    // TODO: regex unwrap
-
     let controllers = get_controllers();
     let config = get_config_store();
 

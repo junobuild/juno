@@ -1,13 +1,15 @@
 import type { _SERVICE as ConsoleActor } from '$declarations/console/console.did';
-import type { _SERVICE as SatelliteActor } from '$declarations/satellite/satellite.did';
+import type { _SERVICE as SatelliteActor, SetRule } from '$declarations/satellite/satellite.did';
 import { idlFactory as idlFactorSatellite } from '$declarations/satellite/satellite.factory.did';
 import { AnonymousIdentity } from '@dfinity/agent';
 import { Ed25519KeyIdentity } from '@dfinity/identity';
 import type { Principal } from '@dfinity/principal';
+import { toNullable } from '@dfinity/utils';
 import { type Actor, PocketIc } from '@hadronous/pic';
 import {
 	JUNO_AUTH_ERROR_NOT_ADMIN_CONTROLLER,
-	JUNO_AUTH_ERROR_NOT_CONTROLLER
+	JUNO_AUTH_ERROR_NOT_CONTROLLER,
+	JUNO_STORAGE_ERROR_UPLOAD_PATH_COLLECTION_PREFIX
 } from '@junobuild/errors';
 import { beforeAll, describe, expect, inject } from 'vitest';
 import {
@@ -213,8 +215,31 @@ describe('Satellite > Cdn', () => {
 	});
 
 	describe('Admin for releases', () => {
-		beforeAll(() => {
+		const INVALID_COLLECTION = 'test_invalid_collection_for_release';
+
+		const validModuleFullPaths = [
+			'/_juno/releases/satellite-v0.0.18.wasm.gz',
+			'/_juno/releases/satellite.wasm.gz'
+		];
+
+		beforeAll(async () => {
 			actor.setIdentity(controller);
+
+			const { set_rule } = actor;
+
+			const setRule: SetRule = {
+				memory: toNullable({ Heap: null }),
+				max_size: toNullable(),
+				max_capacity: toNullable(),
+				read: { Managed: null },
+				mutable_permissions: toNullable(),
+				write: { Managed: null },
+				version: toNullable(),
+				rate_config: toNullable(),
+				max_changes_per_user: toNullable()
+			};
+
+			await set_rule({ Storage: null }, INVALID_COLLECTION, setRule);
 		});
 
 		testCdnConfig({
@@ -223,7 +248,7 @@ describe('Satellite > Cdn', () => {
 
 		testReleasesProposal({
 			actor: () => actor,
-			moduleNames: [
+			invalidModuleNames: [
 				'mission_control.wasm.gz',
 				'orbiter.wasm.gz',
 				'mission_control-v0.1.1.wasm.gz',
@@ -235,8 +260,35 @@ describe('Satellite > Cdn', () => {
 				'mission_control.txt',
 				'orbiter.txt'
 			],
-			collection: '#_juno',
+			validModuleFullPaths,
+			validCollection: '#_juno',
 			fullPathPrefix: '/_juno/releases'
+		});
+
+		describe.each(validModuleFullPaths)(`Assert upload value path start with %s`, (fullPath) => {
+			it('should throw error if full_path is not prefixed with collection', async () => {
+				const { init_proposal_asset_upload, init_proposal } = actor;
+
+				const [proposalId, _] = await init_proposal({
+					AssetsUpgrade: {
+						clear_existing_assets: toNullable()
+					}
+				});
+
+				await expect(
+					init_proposal_asset_upload(
+						{
+							collection: INVALID_COLLECTION,
+							description: toNullable(),
+							encoding_type: [],
+							full_path: fullPath,
+							name: fullPath,
+							token: toNullable()
+						},
+						proposalId
+					)
+				).rejects.toThrow(`${JUNO_STORAGE_ERROR_UPLOAD_PATH_COLLECTION_PREFIX}`);
+			});
 		});
 
 		testCdnStorageSettings({

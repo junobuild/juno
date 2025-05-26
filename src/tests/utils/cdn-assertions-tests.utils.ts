@@ -26,6 +26,7 @@ import {
 	JUNO_CDN_PROPOSALS_ERROR_CANNOT_SUBMIT_INVALID_STATUS,
 	JUNO_CDN_PROPOSALS_ERROR_EMPTY_ASSETS,
 	JUNO_CDN_PROPOSALS_ERROR_INVALID_HASH,
+	JUNO_CDN_STORAGE_ERROR_INVALID_COLLECTION,
 	JUNO_CDN_STORAGE_ERROR_INVALID_RELEASES_PATH,
 	JUNO_CDN_STORAGE_ERROR_NO_PROPOSAL_FOUND
 } from '@junobuild/errors';
@@ -599,7 +600,7 @@ export const testControlledCdnMethods = ({
 
 export const testReleasesProposal = ({
 	actor,
-	moduleNames = [
+	invalidModuleNames = [
 		'satellite.wasm.gz',
 		'mission_control.wasm.gz',
 		'orbiter.wasm.gz',
@@ -610,16 +611,22 @@ export const testReleasesProposal = ({
 		'mission_control.txt',
 		'orbiter.txt'
 	],
-	collection = '#releases',
+	validModuleFullPaths = [
+		'/releases/satellite-v0.0.18.wasm.gz',
+		'/releases/mission_control-v0.2.18.wasm.gz',
+		'/releases/orbiter-v1.0.18.wasm.gz'
+	],
+	validCollection = '#releases',
 	fullPathPrefix = '/releases'
 }: {
 	actor: () => Actor<SatelliteActor | ConsoleActor>;
-	moduleNames?: string[];
-	collection?: string;
+	invalidModuleNames?: string[];
+	validModuleFullPaths?: string[];
+	validCollection?: string;
 	fullPathPrefix?: string;
 }) => {
 	describe('Releases assertions', () => {
-		describe.each(moduleNames)(`Assert upload %s`, (filename) => {
+		describe.each(invalidModuleNames)(`Assert upload invalid path %s`, (filename) => {
 			it('should throw error if full path does not match pattern', async () => {
 				const { init_proposal_asset_upload, init_proposal } = actor();
 
@@ -634,7 +641,7 @@ export const testReleasesProposal = ({
 				await expect(
 					init_proposal_asset_upload(
 						{
-							collection,
+							collection: validCollection,
 							description: toNullable(),
 							encoding_type: [],
 							full_path: fullPath,
@@ -644,6 +651,32 @@ export const testReleasesProposal = ({
 						proposalId
 					)
 				).rejects.toThrow(`${JUNO_CDN_STORAGE_ERROR_INVALID_RELEASES_PATH} (${fullPath}`);
+			});
+		});
+
+		describe.each(validModuleFullPaths)(`Assert upload value path %s`, (fullPath) => {
+			it('should throw error if collection is #dapp', async () => {
+				const { init_proposal_asset_upload, init_proposal } = actor();
+
+				const [proposalId, _] = await init_proposal({
+					AssetsUpgrade: {
+						clear_existing_assets: toNullable()
+					}
+				});
+
+				await expect(
+					init_proposal_asset_upload(
+						{
+							collection: '#dapp',
+							description: toNullable(),
+							encoding_type: [],
+							full_path: fullPath,
+							name: fullPath,
+							token: toNullable()
+						},
+						proposalId
+					)
+				).rejects.toThrow(`${JUNO_CDN_STORAGE_ERROR_INVALID_COLLECTION} (${fullPath} - #dapp)`);
 			});
 		});
 	});

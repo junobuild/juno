@@ -1,7 +1,7 @@
 use crate::constants::{WELL_KNOWN_CUSTOM_DOMAINS, WELL_KNOWN_II_ALTERNATIVE_ORIGINS};
 use crate::errors::{
-    JUNO_STORAGE_ERROR_CANNOT_COMMIT_BATCH, JUNO_STORAGE_ERROR_UPLOAD_NOT_ALLOWED,
-    JUNO_STORAGE_ERROR_UPLOAD_PATH_COLLECTION_PREFIX,
+    JUNO_STORAGE_ERROR_CANNOT_COMMIT_BATCH, JUNO_STORAGE_ERROR_RESERVED_ASSET,
+    JUNO_STORAGE_ERROR_UPLOAD_NOT_ALLOWED, JUNO_STORAGE_ERROR_UPLOAD_PATH_COLLECTION_PREFIX,
 };
 use crate::runtime::increment_and_assert_rate;
 use crate::strategies::{StorageAssertionsStrategy, StorageStateStrategy};
@@ -229,7 +229,10 @@ fn assert_key(
 
 fn assert_well_known_key(full_path: &str, reserved_path: &str) -> Result<(), String> {
     if full_path == reserved_path {
-        return Err(format!("{} is a reserved asset.", reserved_path));
+        return Err(format!(
+            "{} ({})",
+            JUNO_STORAGE_ERROR_RESERVED_ASSET, reserved_path
+        ));
     }
     Ok(())
 }

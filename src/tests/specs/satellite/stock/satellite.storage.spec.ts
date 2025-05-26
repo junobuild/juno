@@ -20,6 +20,7 @@ import {
 	JUNO_ERROR_MEMORY_HEAP_EXCEEDED,
 	JUNO_ERROR_MEMORY_STABLE_EXCEEDED,
 	JUNO_STORAGE_ERROR_CANNOT_COMMIT_BATCH,
+	JUNO_STORAGE_ERROR_RESERVED_ASSET,
 	JUNO_STORAGE_ERROR_UPLOAD_PATH_COLLECTION_PREFIX
 } from '@junobuild/errors';
 import { readFileSync } from 'node:fs';
@@ -273,7 +274,7 @@ describe('Satellite > Storage', () => {
 							name: 'ic-domains',
 							token: toNullable()
 						})
-					).rejects.toThrow(`${full_path} is a reserved asset.`);
+					).rejects.toThrow(`${JUNO_STORAGE_ERROR_RESERVED_ASSET} (${full_path})`);
 				});
 			}
 		);

@@ -5,7 +5,7 @@ use crate::types::state::{Fees, HeapState, Rates, ReleasesMetadata, State};
 use ciborium::{from_reader, into_writer};
 use ic_cdk::caller;
 use ic_cdk_macros::{init, post_upgrade, pre_upgrade};
-use junobuild_shared::controllers::init_controllers;
+use junobuild_shared::controllers::init_admin_controllers;
 use junobuild_shared::upgrade::{read_post_upgrade, write_pre_upgrade};
 use std::collections::HashMap;
 
@@ -17,7 +17,7 @@ fn init() {
         mission_controls: HashMap::new(),
         payments: HashMap::new(),
         invitation_codes: HashMap::new(),
-        controllers: init_controllers(&[manager]),
+        controllers: init_admin_controllers(&[manager]),
         rates: Rates::default(),
         fees: Fees::default(),
         storage: init_cdn_storage_heap_state(),

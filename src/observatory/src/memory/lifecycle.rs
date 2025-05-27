@@ -4,7 +4,7 @@ use crate::types::state::{HeapState, State};
 use ciborium::{from_reader, into_writer};
 use ic_cdk::caller;
 use ic_cdk_macros::{init, post_upgrade, pre_upgrade};
-use junobuild_shared::controllers::init_controllers;
+use junobuild_shared::controllers::init_admin_controllers;
 use junobuild_shared::upgrade::{read_post_upgrade, write_pre_upgrade};
 
 #[init]
@@ -14,7 +14,7 @@ fn init() {
     STATE.with(|state| {
         *state.borrow_mut() = State {
             heap: HeapState {
-                controllers: init_controllers(&[manager]),
+                controllers: init_admin_controllers(&[manager]),
                 env: None,
             },
             stable: init_stable_state(),

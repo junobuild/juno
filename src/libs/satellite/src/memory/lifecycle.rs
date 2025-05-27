@@ -9,7 +9,7 @@ use crate::storage::certified_assets::upgrade::defer_init_certified_assets;
 use crate::types::state::{HeapState, RuntimeState, State};
 use ciborium::{from_reader, into_writer};
 use ic_cdk::api::call::{arg_data, ArgDecoderConfig};
-use junobuild_shared::controllers::init_controllers;
+use junobuild_shared::controllers::init_admin_controllers;
 use junobuild_shared::types::interface::SegmentArgs;
 use junobuild_shared::types::memory::Memory;
 use junobuild_shared::upgrade::{read_post_upgrade, write_pre_upgrade};
@@ -19,7 +19,7 @@ pub fn init() {
     let SegmentArgs { controllers } = call_arg.unwrap();
 
     let heap = HeapState {
-        controllers: init_controllers(&controllers),
+        controllers: init_admin_controllers(&controllers),
         storage: init_storage_heap_state(),
         ..HeapState::default()
     };

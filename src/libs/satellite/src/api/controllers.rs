@@ -1,3 +1,4 @@
+use crate::controllers::store::{delete_controllers, set_controllers as set_controllers_store};
 use crate::{get_admin_controllers, get_controllers};
 use ic_cdk::trap;
 use junobuild_shared::constants_shared::MAX_NUMBER_OF_SATELLITE_CONTROLLERS;
@@ -28,14 +29,16 @@ pub fn set_controllers(
 
     assert_controllers(&controllers).unwrap_or_else(|e| trap(&e));
 
-    crate::controllers::store::set_controllers(&controllers, &controller);
+    set_controllers_store(&controllers, &controller);
+
     get_controllers()
 }
 
 pub fn del_controllers(
     DeleteControllersArgs { controllers }: DeleteControllersArgs,
 ) -> Controllers {
-    crate::controllers::store::delete_controllers(&controllers);
+    delete_controllers(&controllers);
+
     get_controllers()
 }
 

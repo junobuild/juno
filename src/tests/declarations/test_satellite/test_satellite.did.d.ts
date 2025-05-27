@@ -59,7 +59,7 @@ export interface Controller {
 	scope: ControllerScope;
 	expires_at: [] | [bigint];
 }
-export type ControllerScope = { Write: null } | { Admin: null };
+export type ControllerScope = { Write: null } | { Admin: null } | { Automation: null };
 export interface CustomDomain {
 	updated_at: bigint;
 	created_at: bigint;

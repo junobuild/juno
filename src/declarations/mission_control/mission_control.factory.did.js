@@ -145,7 +145,8 @@ export const idlFactory = ({ IDL }) => {
 	const Result_1 = IDL.Variant({ Ok: IDL.Nat, Err: TransferError_1 });
 	const ControllerScope = IDL.Variant({
 		Write: IDL.Null,
-		Admin: IDL.Null
+		Admin: IDL.Null,
+		Automation: IDL.Null
 	});
 	const Controller = IDL.Record({
 		updated_at: IDL.Nat64,

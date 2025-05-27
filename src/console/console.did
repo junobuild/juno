@@ -32,7 +32,7 @@ type CommitBatch = record {
 type CommitProposal = record { sha256 : blob; proposal_id : nat };
 type Config = record { storage : StorageConfig };
 type ConfigMaxMemorySize = record { stable : opt nat64; heap : opt nat64 };
-type ControllerScope = variant { Write; Admin };
+type ControllerScope = variant { Write; Admin; Automation };
 type CreateCanisterArgs = record {
   block_index : opt nat64;
   subnet_id : opt principal;

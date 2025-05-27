@@ -61,7 +61,7 @@ type Controller = record {
   scope : ControllerScope;
   expires_at : opt nat64;
 };
-type ControllerScope = variant { Write; Admin };
+type ControllerScope = variant { Write; Admin; Automation };
 type DelSatelliteConfig = record { version : opt nat64 };
 type DeleteControllersArgs = record { controllers : vec principal };
 type DepositCyclesArgs = record { cycles : nat; destination_id : principal };

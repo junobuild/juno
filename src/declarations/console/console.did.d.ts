@@ -46,7 +46,7 @@ export interface ConfigMaxMemorySize {
 	stable: [] | [bigint];
 	heap: [] | [bigint];
 }
-export type ControllerScope = { Write: null } | { Admin: null };
+export type ControllerScope = { Write: null } | { Admin: null } | { Automation: null };
 export interface CreateCanisterArgs {
 	block_index: [] | [bigint];
 	subnet_id: [] | [Principal];

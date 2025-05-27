@@ -5,7 +5,7 @@ type Controller = record {
   scope : ControllerScope;
   expires_at : opt nat64;
 };
-type ControllerScope = variant { Write; Admin };
+type ControllerScope = variant { Write; Admin; Automation };
 type CyclesBalance = record { timestamp : nat64; amount : nat };
 type DeleteControllersArgs = record { controllers : vec principal };
 type DepositedCyclesEmailNotification = record {

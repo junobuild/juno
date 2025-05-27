@@ -19,7 +19,7 @@ use std::collections::HashMap;
 ///
 /// # Returns
 /// A `Controllers` collection populated with the specified new controllers.
-pub fn init_controllers(new_controllers: &[UserId]) -> Controllers {
+pub fn init_admin_controllers(new_controllers: &[UserId]) -> Controllers {
     let mut controllers: Controllers = Controllers::new();
 
     let controller_data: SetController = SetController {

@@ -112,10 +112,7 @@ fn token_headers() -> Vec<HeaderField> {
         HeaderField("X-Robots-Tag".to_string(), "noindex, nofollow".to_string()),
         // Ensures the asset is not cached anywhere (neither in shared caches nor in the browser),
         // and is considered private to the requesting user.
-        HeaderField(
-            "Cache-Control".to_string(),
-            "private, no-store".to_string(),
-        ),
+        HeaderField("Cache-Control".to_string(), "private, no-store".to_string()),
     ]
 }
 

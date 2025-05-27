@@ -31,9 +31,9 @@ describe('Console > Controllers', () => {
 		await pic?.tearDown();
 	});
 
-	const assertControllers = (actor: ConsoleActor) => {
+	const assertControllers = (actor: () => ConsoleActor) => {
 		it('should throw errors on creating controller', async () => {
-			const { set_controllers } = actor;
+			const { set_controllers } = actor();
 
 			const controller = Ed25519KeyIdentity.generate();
 
@@ -50,13 +50,13 @@ describe('Console > Controllers', () => {
 		});
 
 		it('should throw errors on list controllers', async () => {
-			const { list_controllers } = actor;
+			const { list_controllers } = actor();
 
 			await expect(list_controllers()).rejects.toThrow(CONTROLLER_ERROR_MSG);
 		});
 
 		it('should throw errors on deleting controller', async () => {
-			const { del_controllers } = actor;
+			const { del_controllers } = actor();
 
 			await expect(
 				del_controllers({
@@ -71,7 +71,7 @@ describe('Console > Controllers', () => {
 			actor.setIdentity(new AnonymousIdentity());
 		});
 
-		assertControllers(actor);
+		assertControllers(() => actor);
 	});
 
 	describe('Some user', () => {
@@ -81,6 +81,6 @@ describe('Console > Controllers', () => {
 			actor.setIdentity(user);
 		});
 
-		assertControllers(actor);
+		assertControllers(() => actor);
 	});
 });

@@ -36,6 +36,7 @@ use junobuild_shared::types::interface::{
     GetCreateCanisterFeeArgs, SetControllersArgs,
 };
 use junobuild_shared::types::list::{ListParams, ListResults};
+use junobuild_shared::types::state::Controllers;
 use junobuild_shared::types::state::{SegmentKind, UserId};
 use junobuild_storage::http::types::StreamingCallbackHttpResponse;
 use junobuild_storage::http::types::StreamingCallbackToken;

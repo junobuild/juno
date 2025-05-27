@@ -49,6 +49,7 @@ pub mod state {
     pub enum ControllerScope {
         Write,
         Admin,
+        Automation,
     }
 
     #[derive(CandidType, Serialize, Deserialize, Clone)]

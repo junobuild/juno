@@ -109,8 +109,8 @@ pub fn is_admin_controller(caller: UserId, controllers: &Controllers) -> bool {
         && controllers
             .iter()
             .any(|(&controller_id, controller)| match controller.scope {
-                ControllerScope::Write => false,
                 ControllerScope::Admin => principal_equal(controller_id, caller),
+                _ => false,
             })
 }
 
@@ -260,8 +260,8 @@ pub fn filter_admin_controllers(controllers: &Controllers) -> Controllers {
         .clone()
         .into_iter()
         .filter(|(_, controller)| match controller.scope {
-            ControllerScope::Write => false,
             ControllerScope::Admin => true,
+            _ => false,
         })
         .collect()
 }

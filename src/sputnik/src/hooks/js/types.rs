@@ -14,6 +14,7 @@ pub mod shared {
     pub enum JsControllerScope {
         Write,
         Admin,
+        Automation,
     }
 
     #[derive(Clone)]

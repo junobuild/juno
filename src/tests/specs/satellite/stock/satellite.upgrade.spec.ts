@@ -807,5 +807,67 @@ describe('Satellite > Upgrade', () => {
 			expect(updated_at).toBeGreaterThan(0n);
 			expect(fromNullable(version)).toBeUndefined();
 		});
+
+		it('should preserve controllers even if scope enum is extended', async () => {
+			const user1 = Ed25519KeyIdentity.generate();
+			const user2 = Ed25519KeyIdentity.generate();
+			const admin1 = Ed25519KeyIdentity.generate();
+
+			const { set_controllers } = actor;
+
+			await set_controllers({
+				controller: {
+					scope: { Write: null },
+					metadata: [['hello', 'world']],
+					expires_at: []
+				},
+				controllers: [user1.getPrincipal(), user2.getPrincipal()]
+			});
+
+			await set_controllers({
+				controller: {
+					scope: { Admin: null },
+					metadata: [['super', 'top']],
+					expires_at: []
+				},
+				controllers: [admin1.getPrincipal()]
+			});
+
+			const assertControllers = async (actor: SatelliteActor | SatelliteActor_0_0_21) => {
+				const { list_controllers } = actor;
+
+				const controllers = await list_controllers();
+
+				expect(
+					controllers.find(([p, _]) => p.toText() === controller.getPrincipal().toText())
+				).not.toBeUndefined();
+
+				const assertWriteController = (controller: Principal) => {
+					const maybeUser = controllers.find(([p, _]) => p.toText() === controller.toText());
+					assertNonNullish(maybeUser);
+					expect(maybeUser[1].scope).toEqual({ Write: null });
+					expect(maybeUser[1].metadata).toEqual([['hello', 'world']]);
+				};
+
+				assertWriteController(user1.getPrincipal());
+				assertWriteController(user2.getPrincipal());
+
+				const maybeAdmin = controllers.find(
+					([p, _]) => p.toText() === admin1.getPrincipal().toText()
+				);
+				assertNonNullish(maybeAdmin);
+				expect(maybeAdmin[1].scope).toEqual({ Admin: null });
+				expect(maybeAdmin[1].metadata).toEqual([['super', 'top']]);
+			};
+
+			await assertControllers(actor);
+
+			await upgrade();
+
+			const newActor = pic.createActor<SatelliteActor>(idlFactorSatellite, canisterId);
+			newActor.setIdentity(controller);
+
+			await assertControllers(newActor);
+		});
 	});
 });

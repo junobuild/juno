@@ -9,6 +9,8 @@ import type {
 	SetPageView as SetPageView0_0_8
 } from '$declarations/deprecated/orbiter-0-0-8.did';
 import { idlFactory as idlFactorOrbiter0_0_8 } from '$declarations/deprecated/orbiter-0-0-8.factory.did';
+import type { _SERVICE as OrbiterActor0_2_0 } from '$declarations/deprecated/orbiter-0-2-0.did';
+import { idlFactory as idlFactorOrbiter0_2_0 } from '$declarations/deprecated/orbiter-0-2-0.factory.did';
 import type {
 	AnalyticKey,
 	_SERVICE as OrbiterActor,
@@ -19,7 +21,7 @@ import type {
 import { idlFactory as idlFactorOrbiter } from '$declarations/orbiter/orbiter.factory.did';
 import { Ed25519KeyIdentity } from '@dfinity/identity';
 import type { Principal } from '@dfinity/principal';
-import { fromNullable, toNullable } from '@dfinity/utils';
+import { assertNonNullish, fromNullable, toNullable } from '@dfinity/utils';
 import { PocketIc, type Actor } from '@hadronous/pic';
 import { nanoid } from 'nanoid';
 import { afterEach, beforeEach, describe, expect, inject } from 'vitest';
@@ -470,6 +472,89 @@ describe('Orbiter > Upgrade', () => {
 			newActor.setIdentity(controller);
 
 			await testPageViews({ keys: originalKeys, actor: newActor });
+		});
+	});
+
+	describe('v0.2.0 -> v0.2.1', () => {
+		let actor: Actor<OrbiterActor0_2_0>;
+
+		beforeEach(async () => {
+			pic = await PocketIc.create(inject('PIC_URL'));
+
+			const destination = await downloadOrbiter('0.2.0');
+
+			const { actor: c, canisterId: cId } = await pic.setupCanister<OrbiterActor0_2_0>({
+				idlFactory: idlFactorOrbiter0_2_0,
+				wasm: destination,
+				arg: controllersInitArgs(controller),
+				sender: controller.getPrincipal()
+			});
+
+			actor = c;
+			canisterId = cId;
+			actor.setIdentity(controller);
+		});
+
+		it('should preserve controllers even if scope enum is extended', async () => {
+			const user1 = Ed25519KeyIdentity.generate();
+			const user2 = Ed25519KeyIdentity.generate();
+			const admin1 = Ed25519KeyIdentity.generate();
+
+			const { set_controllers } = actor;
+
+			await set_controllers({
+				controller: {
+					scope: { Write: null },
+					metadata: [['hello', 'world']],
+					expires_at: []
+				},
+				controllers: [user1.getPrincipal(), user2.getPrincipal()]
+			});
+
+			await set_controllers({
+				controller: {
+					scope: { Admin: null },
+					metadata: [['super', 'top']],
+					expires_at: []
+				},
+				controllers: [admin1.getPrincipal()]
+			});
+
+			const assertControllers = async (actor: OrbiterActor | OrbiterActor0_2_0) => {
+				const { list_controllers } = actor;
+
+				const controllers = await list_controllers();
+
+				expect(
+					controllers.find(([p, _]) => p.toText() === controller.getPrincipal().toText())
+				).not.toBeUndefined();
+
+				const assertWriteController = (controller: Principal) => {
+					const maybeUser = controllers.find(([p, _]) => p.toText() === controller.toText());
+					assertNonNullish(maybeUser);
+					expect(maybeUser[1].scope).toEqual({ Write: null });
+					expect(maybeUser[1].metadata).toEqual([['hello', 'world']]);
+				};
+
+				assertWriteController(user1.getPrincipal());
+				assertWriteController(user2.getPrincipal());
+
+				const maybeAdmin = controllers.find(
+					([p, _]) => p.toText() === admin1.getPrincipal().toText()
+				);
+				assertNonNullish(maybeAdmin);
+				expect(maybeAdmin[1].scope).toEqual({ Admin: null });
+				expect(maybeAdmin[1].metadata).toEqual([['super', 'top']]);
+			};
+
+			await assertControllers(actor);
+
+			await upgradeCurrent();
+
+			const newActor = pic.createActor<OrbiterActor>(idlFactorOrbiter, canisterId);
+			newActor.setIdentity(controller);
+
+			await assertControllers(newActor);
 		});
 	});
 });

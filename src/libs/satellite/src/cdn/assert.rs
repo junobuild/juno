@@ -48,6 +48,8 @@ pub fn assert_cdn_write_on_system_collection(
     collection: &CollectionKey,
     controllers: &Controllers,
 ) -> bool {
+    // Only controllers with scope "Admin" or "Write" can write in reserved collections starting with #
+    // ...unless the collection is #_juno and the controller is "Submit".
     if collection == CDN_JUNO_COLLECTION_KEY {
         return is_controller(caller, controllers);
     }

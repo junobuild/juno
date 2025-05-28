@@ -201,13 +201,15 @@ fn assert_key(
 
     let dapp_collection = DEFAULT_ASSETS_COLLECTIONS[0].0;
 
-    // Only controllers can write in collection #dapp
+    // Only controllers with scope "Admin" or "Write" can write in collection #dapp
     if collection.clone() == *dapp_collection && !controller_can_write(caller, controllers) {
         return Err(JUNO_STORAGE_ERROR_UPLOAD_NOT_ALLOWED.to_string());
     }
 
-    // Only controllers can write in reserved collections starting with #
-    if is_system_collection(collection) && !controller_can_write(caller, controllers) {
+    // Whether a controller is allowed to write in reserved collections starting with `#`.
+    if is_system_collection(collection)
+        && !assertions.assert_write_on_system_collection(caller, collection, controllers)
+    {
         return Err(JUNO_STORAGE_ERROR_UPLOAD_NOT_ALLOWED.to_string());
     }
 

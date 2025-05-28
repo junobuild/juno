@@ -30,7 +30,6 @@ impl StorageAssertionsStrategy for CdnStorageAssertions {
     fn assert_key(&self, full_path: &FullPath, collection: &CollectionKey) -> Result<(), String> {
         assert_cdn_asset_keys(full_path, collection)
     }
-    
 
     fn assert_write_on_dapp_collection(
         &self,

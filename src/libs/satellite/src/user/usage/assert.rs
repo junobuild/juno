@@ -9,7 +9,7 @@ use crate::SetDoc;
 use junobuild_collections::assert::collection::is_system_collection;
 use junobuild_collections::constants::db::COLLECTION_USER_USAGE_KEY;
 use junobuild_collections::types::core::CollectionKey;
-use junobuild_shared::controllers::is_controller;
+use junobuild_shared::controllers::controller_can_write;
 use junobuild_shared::types::state::{Controllers, UserId};
 use junobuild_utils::decode_doc_data;
 // ---------------------------------------------------------
@@ -59,7 +59,7 @@ fn increment_and_assert_usage(
     }
 
     // We only collect usage for users
-    if is_controller(caller, controllers) {
+    if controller_can_write(caller, controllers) {
         return Ok(());
     }
 

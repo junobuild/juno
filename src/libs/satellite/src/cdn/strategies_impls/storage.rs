@@ -1,6 +1,6 @@
 use crate::cdn::assert::{
-    assert_cdn_asset_keys, assert_cdn_write_on_dapp_collection,
-    assert_cdn_write_on_system_collection,
+    assert_cdn_asset_keys, assert_cdn_create_permission, assert_cdn_update_permission,
+    assert_cdn_write_on_dapp_collection, assert_cdn_write_on_system_collection,
 };
 use crate::cdn::strategies_impls::cdn::{CdnHeap, CdnStable};
 use crate::storage::store::get_config_store;
@@ -10,7 +10,7 @@ use junobuild_cdn::storage::errors::{
     JUNO_CDN_STORAGE_ERROR_CANNOT_INSERT_ASSET_UNKNOWN_REFERENCE_ID,
 };
 use junobuild_collections::types::core::CollectionKey;
-use junobuild_collections::types::rules::{Memory, Rule};
+use junobuild_collections::types::rules::{Memory, Permission, Rule};
 use junobuild_shared::types::core::Blob;
 use junobuild_shared::types::domain::CustomDomains;
 use junobuild_shared::types::state::Controllers;
@@ -46,6 +46,27 @@ impl StorageAssertionsStrategy for CdnStorageAssertions {
         controllers: &Controllers,
     ) -> bool {
         assert_cdn_write_on_system_collection(caller, collection, controllers)
+    }
+
+    fn assert_create_permission(
+        &self,
+        permission: &Permission,
+        caller: Principal,
+        collection: &CollectionKey,
+        controllers: &Controllers,
+    ) -> bool {
+        assert_cdn_create_permission(permission, caller, collection, controllers)
+    }
+
+    fn assert_update_permission(
+        &self,
+        permission: &Permission,
+        owner: Principal,
+        caller: Principal,
+        collection: &CollectionKey,
+        controllers: &Controllers,
+    ) -> bool {
+        assert_cdn_update_permission(permission, owner, caller, collection, controllers)
     }
 
     fn invoke_assert_upload_asset(

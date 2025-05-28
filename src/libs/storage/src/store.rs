@@ -195,7 +195,14 @@ fn secure_commit_chunks(
 
     match current {
         None => {
-            assert_commit_chunks_new_asset(caller, controllers, config, &rule)?;
+            assert_commit_chunks_new_asset(
+                caller,
+                &batch.key.collection,
+                controllers,
+                config,
+                &rule,
+                assertions,
+            )?;
 
             commit_chunks(
                 caller,
@@ -234,7 +241,15 @@ fn secure_commit_chunks_update(
     assertions: &impl StorageAssertionsStrategy,
     storage_upload: &impl StorageUploadStrategy,
 ) -> Result<Asset, String> {
-    assert_commit_chunks_update(caller, controllers, config, batch, &rule, &current)?;
+    assert_commit_chunks_update(
+        caller,
+        controllers,
+        config,
+        batch,
+        &rule,
+        &current,
+        assertions,
+    )?;
 
     commit_chunks(
         caller,

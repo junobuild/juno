@@ -133,22 +133,6 @@ pub fn is_admin_controller(caller: UserId, controllers: &Controllers) -> bool {
             })
 }
 
-/// Checks if a caller is a controller regardless of its scope (admin, write or submit).
-///
-/// # Arguments
-/// - `caller`: `UserId` of the caller.
-/// - `controllers`: Reference to the current set of controllers.
-///
-/// # Returns
-/// `true` if the caller is a controller (not anonymous, calling itself or one of the known controllers), otherwise `false`.
-pub fn is_controller(caller: UserId, controllers: &Controllers) -> bool {
-    principal_not_anonymous(caller)
-        && (caller_is_self(caller)
-        || controllers
-        .iter()
-        .any(|(&controller_id, _)| principal_equal(controller_id, caller)))
-}
-
 /// Converts the controllers set into a vector of controller IDs.
 ///
 /// # Arguments

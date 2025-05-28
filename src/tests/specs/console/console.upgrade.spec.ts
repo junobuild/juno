@@ -1,8 +1,13 @@
+import type { _SERVICE as ConsoleActor_0_0_14 } from '$declarations/deprecated/console-0-0-14.did';
+import { idlFactory as idlFactoryConsole_0_0_14 } from '$declarations/deprecated/console-0-0-14.factory.did';
 import type { _SERVICE as ConsoleActor_0_0_8 } from '$declarations/deprecated/console-0-0-8-patch1.did';
 import { idlFactory as idlFactorConsole_0_0_8 } from '$declarations/deprecated/console-0-0-8-patch1.factory.did';
+import type { _SERVICE as ConsoleActor } from '$declarations/orbiter/orbiter.did';
+import { idlFactory as idlFactorConsole } from '$declarations/orbiter/orbiter.factory.did';
 import type { Identity } from '@dfinity/agent';
 import { Ed25519KeyIdentity } from '@dfinity/identity';
 import type { Principal } from '@dfinity/principal';
+import { assertNonNullish } from '@dfinity/utils';
 import { PocketIc, type Actor } from '@hadronous/pic';
 import { afterEach, beforeEach, describe, expect, inject } from 'vitest';
 import {
@@ -11,7 +16,11 @@ import {
 	testSatelliteExists
 } from '../../utils/console-tests.utils';
 import { tick } from '../../utils/pic-tests.utils';
-import { downloadConsole } from '../../utils/setup-tests.utils';
+import {
+	CONSOLE_WASM_PATH,
+	controllersInitArgs,
+	downloadConsole
+} from '../../utils/setup-tests.utils';
 
 describe('Console > Upgrade', () => {
 	let pic: PocketIc;
@@ -32,6 +41,16 @@ describe('Console > Upgrade', () => {
 		await pic.upgradeCanister({
 			canisterId,
 			wasm: destination,
+			sender: controller.getPrincipal()
+		});
+	};
+
+	const upgrade = async () => {
+		await tick(pic);
+
+		await pic.upgradeCanister({
+			canisterId,
+			wasm: CONSOLE_WASM_PATH,
 			sender: controller.getPrincipal()
 		});
 	};
@@ -120,6 +139,89 @@ describe('Console > Upgrade', () => {
 					});
 				}
 			);
+		});
+	});
+
+	describe('v0.0.14 -> v0.1.0', () => {
+		let actor: Actor<ConsoleActor_0_0_14>;
+
+		beforeEach(async () => {
+			pic = await PocketIc.create(inject('PIC_URL'));
+
+			const destination = await downloadConsole({ junoVersion: '0.0.37', version: '0.0.14' });
+
+			const { actor: c, canisterId: cId } = await pic.setupCanister<ConsoleActor_0_0_14>({
+				idlFactory: idlFactoryConsole_0_0_14,
+				wasm: destination,
+				arg: controllersInitArgs(controller),
+				sender: controller.getPrincipal()
+			});
+
+			actor = c;
+			canisterId = cId;
+			actor.setIdentity(controller);
+		});
+
+		it('should preserve controllers even if scope enum is extended', async () => {
+			const user1 = Ed25519KeyIdentity.generate();
+			const user2 = Ed25519KeyIdentity.generate();
+			const admin1 = Ed25519KeyIdentity.generate();
+
+			const { set_controllers } = actor;
+
+			await set_controllers({
+				controller: {
+					scope: { Write: null },
+					metadata: [['hello', 'world']],
+					expires_at: []
+				},
+				controllers: [user1.getPrincipal(), user2.getPrincipal()]
+			});
+
+			await set_controllers({
+				controller: {
+					scope: { Admin: null },
+					metadata: [['super', 'top']],
+					expires_at: []
+				},
+				controllers: [admin1.getPrincipal()]
+			});
+
+			const assertControllers = async (actor: ConsoleActor) => {
+				const { list_controllers } = actor;
+
+				const controllers = await list_controllers();
+
+				expect(
+					controllers.find(([p, _]) => p.toText() === controller.getPrincipal().toText())
+				).not.toBeUndefined();
+
+				const assertWriteController = (controller: Principal) => {
+					const maybeUser = controllers.find(([p, _]) => p.toText() === controller.toText());
+					assertNonNullish(maybeUser);
+
+					expect(maybeUser[1].scope).toEqual({ Write: null });
+					expect(maybeUser[1].metadata).toEqual([['hello', 'world']]);
+				};
+
+				assertWriteController(user1.getPrincipal());
+				assertWriteController(user2.getPrincipal());
+
+				const maybeAdmin = controllers.find(
+					([p, _]) => p.toText() === admin1.getPrincipal().toText()
+				);
+				assertNonNullish(maybeAdmin);
+
+				expect(maybeAdmin[1].scope).toEqual({ Admin: null });
+				expect(maybeAdmin[1].metadata).toEqual([['super', 'top']]);
+			};
+
+			await upgrade();
+
+			const newActor = pic.createActor<ConsoleActor>(idlFactorConsole, canisterId);
+			newActor.setIdentity(controller);
+
+			await assertControllers(newActor);
 		});
 	});
 });

@@ -1,4 +1,7 @@
-use crate::cdn::assert::{assert_cdn_asset_keys, assert_cdn_write_on_system_collection};
+use crate::cdn::assert::{
+    assert_cdn_asset_keys, assert_cdn_write_on_dapp_collection,
+    assert_cdn_write_on_system_collection,
+};
 use crate::cdn::strategies_impls::cdn::{CdnHeap, CdnStable};
 use crate::storage::store::get_config_store;
 use candid::Principal;
@@ -26,6 +29,14 @@ pub struct CdnStorageAssertions;
 impl StorageAssertionsStrategy for CdnStorageAssertions {
     fn assert_key(&self, full_path: &FullPath, collection: &CollectionKey) -> Result<(), String> {
         assert_cdn_asset_keys(full_path, collection)
+    }
+
+    fn assert_write_on_dapp_collection(
+        &self,
+        caller: Principal,
+        controllers: &Controllers,
+    ) -> bool {
+        assert_cdn_write_on_dapp_collection(caller, controllers)
     }
 
     fn assert_write_on_system_collection(

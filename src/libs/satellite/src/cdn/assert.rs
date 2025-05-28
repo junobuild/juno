@@ -43,6 +43,11 @@ fn assert_releases_keys(full_path: &FullPath) -> Result<(), String> {
     Ok(())
 }
 
+pub fn assert_cdn_write_on_dapp_collection(caller: Principal, controllers: &Controllers) -> bool {
+    // When using proposals, we allow any controllers to upload - submit - an asset to be served from #dapp collection
+    is_controller(caller, controllers)
+}
+
 pub fn assert_cdn_write_on_system_collection(
     caller: Principal,
     collection: &CollectionKey,

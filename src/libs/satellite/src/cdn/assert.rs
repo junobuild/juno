@@ -4,7 +4,8 @@ use junobuild_cdn::storage::errors::{
     JUNO_CDN_STORAGE_ERROR_INVALID_COLLECTION, JUNO_CDN_STORAGE_ERROR_INVALID_RELEASES_PATH,
 };
 use junobuild_collections::assert::stores::{
-    assert_create_permission_with, assert_permission_with,
+    assert_create_permission, assert_create_permission_with, assert_permission,
+    assert_permission_with,
 };
 use junobuild_collections::constants::assets::COLLECTION_ASSET_KEY;
 use junobuild_collections::types::core::CollectionKey;
@@ -78,7 +79,7 @@ pub fn assert_cdn_create_permission(
         return assert_create_permission_with(permission, caller, controllers, is_controller);
     }
 
-    assert_create_permission_with(permission, caller, controllers, controller_can_write)
+    assert_create_permission(permission, caller, controllers)
 }
 
 pub fn assert_cdn_update_permission(
@@ -93,5 +94,5 @@ pub fn assert_cdn_update_permission(
         return assert_permission_with(permission, owner, caller, controllers, is_controller);
     }
 
-    assert_permission_with(permission, owner, caller, controllers, controller_can_write)
+    assert_permission(permission, owner, caller, controllers)
 }

@@ -70,7 +70,7 @@ impl StorageAssertionsStrategy for StorageAssertions {
         _collection: &CollectionKey,
         controllers: &Controllers,
     ) -> bool {
-        assert_permission(permission, caller, owner, controllers)
+        assert_permission(permission, owner, caller, controllers)
     }
 
     fn invoke_assert_upload_asset(

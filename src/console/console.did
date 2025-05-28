@@ -32,6 +32,13 @@ type CommitBatch = record {
 type CommitProposal = record { sha256 : blob; proposal_id : nat };
 type Config = record { storage : StorageConfig };
 type ConfigMaxMemorySize = record { stable : opt nat64; heap : opt nat64 };
+type Controller = record {
+  updated_at : nat64;
+  metadata : vec record { text; text };
+  created_at : nat64;
+  scope : ControllerScope;
+  expires_at : opt nat64;
+};
 type ControllerScope = variant { Write; Admin; Automation };
 type CreateCanisterArgs = record {
   block_index : opt nat64;
@@ -215,6 +222,7 @@ service : () -> {
   init_proposal_asset_upload : (InitAssetKey, nat) -> (InitUploadResult);
   init_user_mission_control_center : () -> (MissionControl);
   list_assets : (text, ListParams) -> (ListResults) query;
+  list_controllers : () -> (vec record { principal; Controller }) query;
   list_custom_domains : () -> (vec record { text; CustomDomain }) query;
   list_payments : () -> (vec record { nat64; Payment }) query;
   list_user_mission_control_centers : () -> (

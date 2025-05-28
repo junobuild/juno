@@ -187,6 +187,18 @@ export const idlFactory = ({ IDL }) => {
 		items: IDL.Vec(IDL.Tuple(IDL.Text, AssetNoContent)),
 		items_length: IDL.Nat64
 	});
+	const ControllerScope = IDL.Variant({
+		Write: IDL.Null,
+		Admin: IDL.Null,
+		Automation: IDL.Null
+	});
+	const Controller = IDL.Record({
+		updated_at: IDL.Nat64,
+		metadata: IDL.Vec(IDL.Tuple(IDL.Text, IDL.Text)),
+		created_at: IDL.Nat64,
+		scope: ControllerScope,
+		expires_at: IDL.Opt(IDL.Nat64)
+	});
 	const CustomDomain = IDL.Record({
 		updated_at: IDL.Nat64,
 		created_at: IDL.Nat64,
@@ -205,11 +217,6 @@ export const idlFactory = ({ IDL }) => {
 		mission_control_id: IDL.Opt(IDL.Principal),
 		created_at: IDL.Nat64,
 		block_index_refunded: IDL.Opt(IDL.Nat64)
-	});
-	const ControllerScope = IDL.Variant({
-		Write: IDL.Null,
-		Admin: IDL.Null,
-		Automation: IDL.Null
 	});
 	const SetController = IDL.Record({
 		metadata: IDL.Vec(IDL.Tuple(IDL.Text, IDL.Text)),
@@ -263,6 +270,7 @@ export const idlFactory = ({ IDL }) => {
 		init_proposal_asset_upload: IDL.Func([InitAssetKey, IDL.Nat], [InitUploadResult], []),
 		init_user_mission_control_center: IDL.Func([], [MissionControl], []),
 		list_assets: IDL.Func([IDL.Text, ListParams], [ListResults], ['query']),
+		list_controllers: IDL.Func([], [IDL.Vec(IDL.Tuple(IDL.Principal, Controller))], ['query']),
 		list_custom_domains: IDL.Func([], [IDL.Vec(IDL.Tuple(IDL.Text, CustomDomain))], ['query']),
 		list_payments: IDL.Func([], [IDL.Vec(IDL.Tuple(IDL.Nat64, Payment))], ['query']),
 		list_user_mission_control_centers: IDL.Func(

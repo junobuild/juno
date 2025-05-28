@@ -1,3 +1,4 @@
+import type { _SERVICE as MissionControlActor_0_0_14 } from '$declarations/deprecated/mission_control-0-0-14.did';
 import type {
 	CyclesMonitoringStrategy,
 	GetMonitoringHistory,
@@ -9,7 +10,6 @@ import type {
 import type { Principal } from '@dfinity/principal';
 import { assertNonNullish, fromNullable, toNullable } from '@dfinity/utils';
 import type { Actor } from '@hadronous/pic';
-import type { _SERVICE as MissionControlActor_0_0_14 } from '$declarations/deprecated/mission_control-0-0-14.did';
 
 const testMonitoring = ({
 	monitoring,

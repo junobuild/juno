@@ -103,7 +103,6 @@ describe('Satellite > Cdn', () => {
 			errorMsgController: JUNO_AUTH_ERROR_NOT_CONTROLLER
 		});
 
-
 		testNotAllowedCdnMethodsInMSatellite({
 			actor: () => actor,
 			errorMsg: JUNO_AUTH_ERROR_NOT_WRITE_CONTROLLER

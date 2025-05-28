@@ -6,8 +6,9 @@ use crate::storage::state::{
 use crate::storage::store::{get_content_chunks_store, get_public_asset_store};
 use crate::user::usage::assert::increment_and_assert_storage_usage;
 use candid::Principal;
+use junobuild_collections::assert::stores::{assert_create_permission, assert_permission};
 use junobuild_collections::types::core::CollectionKey;
-use junobuild_collections::types::rules::{Memory, Rule};
+use junobuild_collections::types::rules::{Memory, Permission, Rule};
 use junobuild_shared::controllers::controller_can_write;
 use junobuild_shared::types::core::Blob;
 use junobuild_shared::types::domain::CustomDomains;
@@ -43,6 +44,27 @@ impl StorageAssertionsStrategy for StorageAssertions {
         controllers: &Controllers,
     ) -> bool {
         controller_can_write(caller, controllers)
+    }
+
+    fn assert_create_permission(
+        &self,
+        permission: &Permission,
+        caller: Principal,
+        _collection: &CollectionKey,
+        controllers: &Controllers,
+    ) -> bool {
+        assert_create_permission(permission, caller, controllers)
+    }
+
+    fn assert_update_permission(
+        &self,
+        permission: &Permission,
+        owner: Principal,
+        caller: Principal,
+        _collection: &CollectionKey,
+        controllers: &Controllers,
+    ) -> bool {
+        assert_permission(permission, caller, owner, controllers)
     }
 
     fn invoke_assert_upload_asset(

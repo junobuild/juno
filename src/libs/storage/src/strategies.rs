@@ -5,7 +5,7 @@ use crate::types::store::{
 };
 use candid::Principal;
 use junobuild_collections::types::core::CollectionKey;
-use junobuild_collections::types::rules::{Memory, Rule};
+use junobuild_collections::types::rules::{Memory, Permission, Rule};
 use junobuild_shared::types::core::Blob;
 use junobuild_shared::types::domain::CustomDomains;
 use junobuild_shared::types::state::Controllers;
@@ -18,6 +18,23 @@ pub trait StorageAssertionsStrategy {
 
     fn assert_write_on_system_collection(
         &self,
+        caller: Principal,
+        collection: &CollectionKey,
+        controllers: &Controllers,
+    ) -> bool;
+
+    fn assert_create_permission(
+        &self,
+        permission: &Permission,
+        caller: Principal,
+        collection: &CollectionKey,
+        controllers: &Controllers,
+    ) -> bool;
+
+    fn assert_update_permission(
+        &self,
+        permission: &Permission,
+        owner: Principal,
         caller: Principal,
         collection: &CollectionKey,
         controllers: &Controllers,

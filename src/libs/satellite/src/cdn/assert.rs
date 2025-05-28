@@ -90,8 +90,8 @@ pub fn assert_cdn_update_permission(
 ) -> bool {
     // Through a proposal, any controller - including "Submit" - can provide an update of an asset for the #_juno or #dapp collections.
     if collection == CDN_JUNO_COLLECTION_KEY || collection == COLLECTION_ASSET_KEY {
-        return assert_permission_with(permission, caller, owner, controllers, is_controller);
+        return assert_permission_with(permission, owner, caller, controllers, is_controller);
     }
 
-    assert_permission_with(permission, caller, owner, controllers, controller_can_write)
+    assert_permission_with(permission, owner, caller, controllers, controller_can_write)
 }

@@ -435,7 +435,7 @@ pub async fn deposit_cycles(args: DepositCyclesArgs) {
 }
 
 #[doc(hidden)]
-#[query(guard = "caller_is_controller_with_write")]
+#[query(guard = "caller_is_controller")]
 pub fn memory_size() -> MemorySize {
     junobuild_shared::canister::memory_size()
 }

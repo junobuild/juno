@@ -46,6 +46,13 @@ export interface ConfigMaxMemorySize {
 	stable: [] | [bigint];
 	heap: [] | [bigint];
 }
+export interface Controller {
+	updated_at: bigint;
+	metadata: Array<[string, string]>;
+	created_at: bigint;
+	scope: ControllerScope;
+	expires_at: [] | [bigint];
+}
 export type ControllerScope = { Write: null } | { Admin: null };
 export interface CreateCanisterArgs {
 	block_index: [] | [bigint];
@@ -251,6 +258,7 @@ export interface _SERVICE {
 	init_proposal_asset_upload: ActorMethod<[InitAssetKey, bigint], InitUploadResult>;
 	init_user_mission_control_center: ActorMethod<[], MissionControl>;
 	list_assets: ActorMethod<[string, ListParams], ListResults>;
+	list_controllers: ActorMethod<[], Array<[Principal, Controller]>>;
 	list_custom_domains: ActorMethod<[], Array<[string, CustomDomain]>>;
 	list_payments: ActorMethod<[], Array<[bigint, Payment]>>;
 	list_user_mission_control_centers: ActorMethod<[], Array<[Principal, MissionControl]>>;

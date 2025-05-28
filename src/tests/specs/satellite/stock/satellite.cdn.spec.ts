@@ -7,7 +7,8 @@ import type { Principal } from '@dfinity/principal';
 import { toNullable } from '@dfinity/utils';
 import { type Actor, PocketIc } from '@hadronous/pic';
 import {
-	JUNO_AUTH_ERROR_NOT_ADMIN_CONTROLLER, JUNO_AUTH_ERROR_NOT_CONTROLLER,
+	JUNO_AUTH_ERROR_NOT_ADMIN_CONTROLLER,
+	JUNO_AUTH_ERROR_NOT_CONTROLLER,
 	JUNO_AUTH_ERROR_NOT_WRITE_CONTROLLER,
 	JUNO_STORAGE_ERROR_UPLOAD_PATH_COLLECTION_PREFIX
 } from '@junobuild/errors';
@@ -105,7 +106,7 @@ describe('Satellite > Cdn', () => {
 
 		testNotAllowedCdnMethodsInMSatellite({
 			actor: () => actor,
-			errorMsg: JUNO_AUTH_ERROR_NOT_WRITE_CONTROLLER
+			errorMsg: JUNO_AUTH_ERROR_NOT_CONTROLLER
 		});
 	});
 
@@ -204,14 +205,14 @@ describe('Satellite > Cdn', () => {
 					sha256: Array.from({ length: 32 }).map((_, i) => i),
 					proposal_id: 5n
 				})
-			).rejects.toThrow(JUNO_AUTH_ERROR_NOT_ADMIN_CONTROLLER);
+			).rejects.toThrow(JUNO_AUTH_ERROR_NOT_WRITE_CONTROLLER);
 		});
 
 		it('should throw errors on delete proposal assets', async () => {
 			const { delete_proposal_assets } = actor;
 
 			await expect(delete_proposal_assets({ proposal_ids: [1n] })).rejects.toThrow(
-				JUNO_AUTH_ERROR_NOT_ADMIN_CONTROLLER
+				JUNO_AUTH_ERROR_NOT_WRITE_CONTROLLER
 			);
 		});
 	});

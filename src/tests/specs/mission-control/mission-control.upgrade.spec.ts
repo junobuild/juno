@@ -343,6 +343,7 @@ describe('Mission control > Upgrade', () => {
 				const assertWriteController = (controller: Principal) => {
 					const maybeUser = controllers.find(([p, _]) => p.toText() === controller.toText());
 					assertNonNullish(maybeUser);
+
 					expect(maybeUser[1].scope).toEqual({ Write: null });
 					expect(maybeUser[1].metadata).toEqual([['hello', 'world']]);
 				};
@@ -354,6 +355,7 @@ describe('Mission control > Upgrade', () => {
 					([p, _]) => p.toText() === admin1.getPrincipal().toText()
 				);
 				assertNonNullish(maybeAdmin);
+
 				expect(maybeAdmin[1].scope).toEqual({ Admin: null });
 				expect(maybeAdmin[1].metadata).toEqual([['super', 'top']]);
 			};

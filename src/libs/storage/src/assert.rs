@@ -200,18 +200,18 @@ fn assert_key(
 
     let dapp_collection = DEFAULT_ASSETS_COLLECTIONS[0].0;
 
-    // Whether a caller is allowed to write in reserved collections `#dapp`.
-    if collection.clone() == *dapp_collection
-        && !assertions.assert_write_on_dapp_collection(caller, controllers)
-    {
-        return Err(JUNO_STORAGE_ERROR_UPLOAD_NOT_ALLOWED.to_string());
-    }
+    if is_system_collection(collection) {
+        let allowed = if collection.clone() == *dapp_collection {
+            // Whether a caller is allowed to write in reserved collections `#dapp`.
+            assertions.assert_write_on_dapp_collection(caller, controllers)
+        } else {
+            // Whether a caller is allowed to write in reserved collections starting with `#`.
+            assertions.assert_write_on_system_collection(caller, collection, controllers)
+        };
 
-    // Whether a caller is allowed to write in reserved collections starting with `#`.
-    if is_system_collection(collection)
-        && !assertions.assert_write_on_system_collection(caller, collection, controllers)
-    {
-        return Err(JUNO_STORAGE_ERROR_UPLOAD_NOT_ALLOWED.to_string());
+        if !allowed {
+            return Err(JUNO_STORAGE_ERROR_UPLOAD_NOT_ALLOWED.to_string());
+        }
     }
 
     // Assets uploaded to a collection other than #dapp must be prefixed with the collection name (excluding the system collection prefix, if present).

@@ -8,6 +8,7 @@ use crate::user::usage::assert::increment_and_assert_storage_usage;
 use candid::Principal;
 use junobuild_collections::types::core::CollectionKey;
 use junobuild_collections::types::rules::{Memory, Rule};
+use junobuild_shared::controllers::controller_can_write;
 use junobuild_shared::types::core::Blob;
 use junobuild_shared::types::domain::CustomDomains;
 use junobuild_shared::types::state::Controllers;
@@ -25,6 +26,15 @@ pub struct StorageAssertions;
 impl StorageAssertionsStrategy for StorageAssertions {
     fn assert_key(&self, full_path: &FullPath, collection: &CollectionKey) -> Result<(), String> {
         assert_cdn_asset_keys(full_path, collection)
+    }
+
+    fn assert_write_on_system_collection(
+        &self,
+        caller: Principal,
+        _collection: &CollectionKey,
+        controllers: &Controllers,
+    ) -> bool {
+        controller_can_write(caller, controllers)
     }
 
     fn invoke_assert_upload_asset(

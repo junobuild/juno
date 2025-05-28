@@ -13,6 +13,13 @@ use junobuild_shared::types::state::Controllers;
 pub trait StorageAssertionsStrategy {
     fn assert_key(&self, full_path: &FullPath, collection: &CollectionKey) -> Result<(), String>;
 
+    fn assert_write_on_system_collection(
+        &self,
+        caller: Principal,
+        collection: &CollectionKey,
+        controllers: &Controllers,
+    ) -> bool;
+
     fn invoke_assert_upload_asset(
         &self,
         caller: &Principal,

@@ -17,7 +17,7 @@ use junobuild_collections::constants::core::SYS_COLLECTION_PREFIX;
 use junobuild_collections::types::core::CollectionKey;
 use junobuild_collections::types::rules::Rule;
 use junobuild_shared::assert::{assert_description_length, assert_max_memory_size};
-use junobuild_shared::controllers::is_controller;
+use junobuild_shared::controllers::is_write_controller;
 use junobuild_shared::types::state::Controllers;
 use junobuild_shared::utils::principal_not_equal;
 
@@ -202,12 +202,12 @@ fn assert_key(
     let dapp_collection = DEFAULT_ASSETS_COLLECTIONS[0].0;
 
     // Only controllers can write in collection #dapp
-    if collection.clone() == *dapp_collection && !is_controller(caller, controllers) {
+    if collection.clone() == *dapp_collection && !is_write_controller(caller, controllers) {
         return Err(JUNO_STORAGE_ERROR_UPLOAD_NOT_ALLOWED.to_string());
     }
 
     // Only controllers can write in reserved collections starting with #
-    if is_system_collection(collection) && !is_controller(caller, controllers) {
+    if is_system_collection(collection) && !is_write_controller(caller, controllers) {
         return Err(JUNO_STORAGE_ERROR_UPLOAD_NOT_ALLOWED.to_string());
     }
 

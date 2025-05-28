@@ -5,7 +5,7 @@ use crate::user::usage::assert::increment_and_assert_storage_usage;
 use candid::Principal;
 use junobuild_collections::assert::stores::{assert_permission, public_permission};
 use junobuild_collections::types::rules::{Permission, Rule};
-use junobuild_shared::controllers::is_controller;
+use junobuild_shared::controllers::is_write_controller;
 use junobuild_shared::types::state::Controllers;
 use junobuild_storage::errors::{
     JUNO_STORAGE_ERROR_ASSET_NOT_FOUND, JUNO_STORAGE_ERROR_CANNOT_READ_ASSET,
@@ -51,7 +51,7 @@ pub fn assert_create_batch(
 
     if !(public_permission(&rule.write)
         || is_known_user(caller)
-        || is_controller(caller, controllers))
+        || is_write_controller(caller, controllers))
     {
         return Err(JUNO_STORAGE_ERROR_UPLOAD_NOT_ALLOWED.to_string());
     }

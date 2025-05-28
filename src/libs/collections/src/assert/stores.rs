@@ -1,6 +1,6 @@
 use crate::types::rules::Permission;
 use candid::Principal;
-use junobuild_shared::controllers::is_controller;
+use junobuild_shared::controllers::is_write_controller;
 use junobuild_shared::types::state::Controllers;
 use junobuild_shared::utils::{principal_not_anonymous, principal_not_anonymous_and_equal};
 
@@ -13,8 +13,10 @@ pub fn assert_permission(
     match permission {
         Permission::Public => true,
         Permission::Private => assert_caller(caller, owner),
-        Permission::Managed => assert_caller(caller, owner) || is_controller(caller, controllers),
-        Permission::Controllers => is_controller(caller, controllers),
+        Permission::Managed => {
+            assert_caller(caller, owner) || is_write_controller(caller, controllers)
+        }
+        Permission::Controllers => is_write_controller(caller, controllers),
     }
 }
 
@@ -29,7 +31,7 @@ pub fn assert_create_permission(
         Permission::Public => true,
         Permission::Private => assert_not_anonymous(caller),
         Permission::Managed => assert_not_anonymous(caller),
-        Permission::Controllers => is_controller(caller, controllers),
+        Permission::Controllers => is_write_controller(caller, controllers),
     }
 }
 

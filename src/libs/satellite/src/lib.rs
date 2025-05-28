@@ -20,7 +20,9 @@ mod user;
 
 use crate::auth::types::config::AuthenticationConfig;
 use crate::db::types::config::DbConfig;
-use crate::guards::{caller_is_admin_controller, caller_is_controller_with_write, caller_is_controller};
+use crate::guards::{
+    caller_is_admin_controller, caller_is_controller, caller_is_controller_with_write,
+};
 use crate::types::interface::{Config, DeleteProposalAssets};
 use crate::types::state::CollectionType;
 use ic_cdk::api::call::ManualReply;

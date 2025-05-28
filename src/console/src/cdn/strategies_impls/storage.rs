@@ -73,6 +73,17 @@ impl StorageAssertionsStrategy for StorageAssertions {
         assert_permission(permission, owner, caller, controllers)
     }
 
+    fn assert_list_permission(
+        &self,
+        permission: &Permission,
+        owner: Principal,
+        caller: Principal,
+        _collection: &CollectionKey,
+        controllers: &Controllers,
+    ) -> bool {
+        assert_permission(permission, owner, caller, controllers)
+    }
+
     fn invoke_assert_upload_asset(
         &self,
         _caller: &Principal,

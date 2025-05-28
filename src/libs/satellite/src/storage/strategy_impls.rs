@@ -1,5 +1,6 @@
 use crate::cdn::assert::assert_cdn_asset_keys;
 use crate::hooks::storage::invoke_assert_upload_asset;
+use crate::storage::assert::assert_storage_list_permission;
 use crate::storage::state::{
     delete_asset, get_asset, get_config, get_domains, get_rule, insert_asset, insert_asset_encoding,
 };
@@ -65,6 +66,17 @@ impl StorageAssertionsStrategy for StorageAssertions {
         controllers: &Controllers,
     ) -> bool {
         assert_permission(permission, owner, caller, controllers)
+    }
+
+    fn assert_list_permission(
+        &self,
+        permission: &Permission,
+        owner: Principal,
+        caller: Principal,
+        collection: &CollectionKey,
+        controllers: &Controllers,
+    ) -> bool {
+        assert_storage_list_permission(permission, owner, caller, collection, controllers)
     }
 
     fn invoke_assert_upload_asset(

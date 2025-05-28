@@ -3,9 +3,13 @@ use crate::types::store::StoreContext;
 use crate::user::core::assert::{assert_user_is_not_banned, is_known_user};
 use crate::user::usage::assert::increment_and_assert_storage_usage;
 use candid::Principal;
-use junobuild_collections::assert::stores::{assert_permission, public_permission};
+use junobuild_collections::assert::stores::{
+    assert_permission, assert_permission_with, public_permission,
+};
+use junobuild_collections::constants::assets::COLLECTION_ASSET_KEY;
+use junobuild_collections::types::core::CollectionKey;
 use junobuild_collections::types::rules::{Permission, Rule};
-use junobuild_shared::controllers::controller_can_write;
+use junobuild_shared::controllers::{controller_can_write, is_controller};
 use junobuild_shared::types::state::Controllers;
 use junobuild_storage::errors::{
     JUNO_STORAGE_ERROR_ASSET_NOT_FOUND, JUNO_STORAGE_ERROR_CANNOT_READ_ASSET,
@@ -40,6 +44,23 @@ pub fn assert_list_assets(
     assert_user_is_not_banned(caller, controllers)?;
 
     Ok(())
+}
+
+pub fn assert_storage_list_permission(
+    permission: &Permission,
+    owner: Principal,
+    caller: Principal,
+    collection: &CollectionKey,
+    controllers: &Controllers,
+) -> bool {
+    // Special case. We need to allow controllers with the "Submit" scope to list #dapp assets — which are public anyway —
+    // because when used with the CLI, it needs to know which assets are currently deployed in order to only submit those
+    // that are different.
+    if collection == COLLECTION_ASSET_KEY {
+        return assert_permission_with(permission, owner, caller, controllers, is_controller);
+    }
+
+    assert_permission(permission, owner, caller, controllers)
 }
 
 pub fn assert_create_batch(

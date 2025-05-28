@@ -30,6 +30,8 @@ describe('Satellite > Cdn', () => {
 	let canisterId: Principal;
 
 	const controller = Ed25519KeyIdentity.generate();
+	const controllerReadWrite = Ed25519KeyIdentity.generate();
+	const controllerSubmit = Ed25519KeyIdentity.generate();
 
 	const currentDate = new Date(2021, 6, 10, 0, 0, 0, 0);
 
@@ -140,8 +142,6 @@ describe('Satellite > Cdn', () => {
 	});
 
 	describe('Read+write controller', () => {
-		const user = Ed25519KeyIdentity.generate();
-
 		beforeAll(async () => {
 			actor.setIdentity(controller);
 
@@ -153,29 +153,21 @@ describe('Satellite > Cdn', () => {
 					metadata: [],
 					expires_at: []
 				},
-				controllers: [user.getPrincipal()]
+				controllers: [controllerReadWrite.getPrincipal()]
 			});
 
-			actor.setIdentity(user);
+			actor.setIdentity(controllerReadWrite);
 		});
 
 		beforeEach(() => {
-			actor.setIdentity(user);
+			actor.setIdentity(controllerReadWrite);
 		});
 
 		testControlledCdnMethods({
-			actor: (params) => {
-				if (params?.requireController === true) {
-					actor.setIdentity(controller);
-				} else {
-					actor.setIdentity(user);
-				}
-
-				return actor;
-			},
+			actor: () => actor,
 			currentDate,
 			canisterId: () => canisterId,
-			caller: () => user,
+			caller: () => controllerReadWrite,
 			pic: () => pic,
 			expected_proposal_id: 5n,
 			fullPaths: {
@@ -188,32 +180,14 @@ describe('Satellite > Cdn', () => {
 
 		testCdnGetProposal({
 			actor: () => actor,
-			owner: () => user,
+			owner: () => controllerReadWrite,
 			proposalId: 5n
 		});
 
 		testCdnGetProposal({
 			actor: () => actor,
-			owner: () => controller
-		});
-
-		it('should throw errors at committing a proposal', async () => {
-			const { commit_proposal } = actor;
-
-			await expect(
-				commit_proposal({
-					sha256: Array.from({ length: 32 }).map((_, i) => i),
-					proposal_id: 5n
-				})
-			).rejects.toThrow(JUNO_AUTH_ERROR_NOT_WRITE_CONTROLLER);
-		});
-
-		it('should throw errors on delete proposal assets', async () => {
-			const { delete_proposal_assets } = actor;
-
-			await expect(delete_proposal_assets({ proposal_ids: [1n] })).rejects.toThrow(
-				JUNO_AUTH_ERROR_NOT_WRITE_CONTROLLER
-			);
+			owner: () => controller,
+			proposalId: 5n
 		});
 	});
 
@@ -297,6 +271,89 @@ describe('Satellite > Cdn', () => {
 		testCdnStorageSettings({
 			actor: () => actor,
 			pic: () => pic
+		});
+	});
+
+	describe('Submit controller', () => {
+		beforeAll(async () => {
+			actor.setIdentity(controller);
+
+			const { set_controllers } = actor;
+
+			await set_controllers({
+				controller: {
+					scope: { Submit: null },
+					metadata: [],
+					expires_at: []
+				},
+				controllers: [controllerSubmit.getPrincipal()]
+			});
+
+			actor.setIdentity(controllerSubmit);
+		});
+
+		beforeEach(() => {
+			actor.setIdentity(controllerSubmit);
+		});
+
+		testControlledCdnMethods({
+			actor: (params) => {
+				if (params?.requireController === true) {
+					actor.setIdentity(controller);
+				} else {
+					actor.setIdentity(controllerSubmit);
+				}
+
+				return actor;
+			},
+			currentDate,
+			canisterId: () => canisterId,
+			caller: () => controllerSubmit,
+			pic: () => pic,
+			expected_proposal_id: 24n,
+			fullPaths: {
+				assetsUpgrade: '/magic.html',
+				segmentsDeployment: '/_juno/releases/satellite-v2.1.1.wasm.gz',
+				assetsCollection: '#dapp',
+				segmentsCollection: '#_juno'
+			}
+		});
+
+		testCdnGetProposal({
+			actor: () => actor,
+			owner: () => controllerReadWrite,
+			proposalId: 24n
+		});
+
+		testCdnGetProposal({
+			actor: () => actor,
+			owner: () => controllerSubmit,
+			proposalId: 24n
+		});
+
+		testCdnGetProposal({
+			actor: () => actor,
+			owner: () => controller,
+			proposalId: 24n
+		});
+
+		it('should throw errors at committing a proposal', async () => {
+			const { commit_proposal } = actor;
+
+			await expect(
+				commit_proposal({
+					sha256: Array.from({ length: 32 }).map((_, i) => i),
+					proposal_id: 24n
+				})
+			).rejects.toThrow(JUNO_AUTH_ERROR_NOT_WRITE_CONTROLLER);
+		});
+
+		it('should throw errors on delete proposal assets', async () => {
+			const { delete_proposal_assets } = actor;
+
+			await expect(delete_proposal_assets({ proposal_ids: [1n] })).rejects.toThrow(
+				JUNO_AUTH_ERROR_NOT_WRITE_CONTROLLER
+			);
 		});
 	});
 });

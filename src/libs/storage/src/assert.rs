@@ -122,7 +122,13 @@ pub fn assert_commit_chunks_update(
         return Err("Provided collection does not match existing collection.".to_string());
     }
 
-    if !assertions.assert_update_permission(&rule.write, current.key.owner, caller, &batch.key.collection, controllers) {
+    if !assertions.assert_update_permission(
+        &rule.write,
+        current.key.owner,
+        caller,
+        &batch.key.collection,
+        controllers,
+    ) {
         return Err(JUNO_STORAGE_ERROR_CANNOT_COMMIT_BATCH.to_string());
     }
 

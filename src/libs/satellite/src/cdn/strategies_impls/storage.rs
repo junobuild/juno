@@ -1,4 +1,7 @@
-use crate::cdn::assert::{assert_cdn_asset_keys, assert_cdn_create_permission, assert_cdn_update_permission, assert_cdn_write_on_dapp_collection, assert_cdn_write_on_system_collection};
+use crate::cdn::assert::{
+    assert_cdn_asset_keys, assert_cdn_create_permission, assert_cdn_update_permission,
+    assert_cdn_write_on_dapp_collection, assert_cdn_write_on_system_collection,
+};
 use crate::cdn::strategies_impls::cdn::{CdnHeap, CdnStable};
 use crate::storage::store::get_config_store;
 use candid::Principal;

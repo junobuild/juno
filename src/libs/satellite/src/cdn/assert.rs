@@ -3,7 +3,9 @@ use candid::Principal;
 use junobuild_cdn::storage::errors::{
     JUNO_CDN_STORAGE_ERROR_INVALID_COLLECTION, JUNO_CDN_STORAGE_ERROR_INVALID_RELEASES_PATH,
 };
-use junobuild_collections::assert::stores::{assert_create_permission_with, assert_permission_with};
+use junobuild_collections::assert::stores::{
+    assert_create_permission_with, assert_permission_with,
+};
 use junobuild_collections::constants::assets::COLLECTION_ASSET_KEY;
 use junobuild_collections::types::core::CollectionKey;
 use junobuild_collections::types::rules::Permission;

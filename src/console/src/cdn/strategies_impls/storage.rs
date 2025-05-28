@@ -34,6 +34,14 @@ impl StorageAssertionsStrategy for StorageAssertions {
         assert_cdn_asset_keys(full_path, collection)
     }
 
+    fn assert_write_on_dapp_collection(
+        &self,
+        caller: Principal,
+        controllers: &Controllers,
+    ) -> bool {
+        controller_can_write(caller, controllers)
+    }
+
     fn assert_write_on_system_collection(
         &self,
         caller: Principal,

@@ -13,6 +13,9 @@ use junobuild_shared::types::state::Controllers;
 pub trait StorageAssertionsStrategy {
     fn assert_key(&self, full_path: &FullPath, collection: &CollectionKey) -> Result<(), String>;
 
+    fn assert_write_on_dapp_collection(&self, caller: Principal, controllers: &Controllers)
+        -> bool;
+
     fn assert_write_on_system_collection(
         &self,
         caller: Principal,

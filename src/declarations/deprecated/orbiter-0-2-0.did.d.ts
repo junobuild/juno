@@ -74,7 +74,7 @@ export interface Controller {
 	scope: ControllerScope;
 	expires_at: [] | [bigint];
 }
-export type ControllerScope = { Write: null } | { Admin: null } | { Submit: null };
+export type ControllerScope = { Write: null } | { Admin: null };
 export interface DelSatelliteConfig {
 	version: [] | [bigint];
 }

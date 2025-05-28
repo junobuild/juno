@@ -5,8 +5,7 @@ export const idlFactory = ({ IDL }) => {
 	});
 	const ControllerScope = IDL.Variant({
 		Write: IDL.Null,
-		Admin: IDL.Null,
-		Submit: IDL.Null
+		Admin: IDL.Null
 	});
 	const Controller = IDL.Record({
 		updated_at: IDL.Nat64,
@@ -251,31 +250,47 @@ export const idlFactory = ({ IDL }) => {
 		),
 		del_satellite_config: IDL.Func([IDL.Principal, DelSatelliteConfig], [], []),
 		deposit_cycles: IDL.Func([DepositCyclesArgs], [], []),
-		get_page_views: IDL.Func([GetAnalytics], [IDL.Vec(IDL.Tuple(AnalyticKey, PageView))], []),
-		get_page_views_analytics_clients: IDL.Func([GetAnalytics], [AnalyticsClientsPageViews], []),
-		get_page_views_analytics_metrics: IDL.Func([GetAnalytics], [AnalyticsMetricsPageViews], []),
-		get_page_views_analytics_top_10: IDL.Func([GetAnalytics], [AnalyticsTop10PageViews], []),
+		get_page_views: IDL.Func(
+			[GetAnalytics],
+			[IDL.Vec(IDL.Tuple(AnalyticKey, PageView))],
+			['query']
+		),
+		get_page_views_analytics_clients: IDL.Func(
+			[GetAnalytics],
+			[AnalyticsClientsPageViews],
+			['query']
+		),
+		get_page_views_analytics_metrics: IDL.Func(
+			[GetAnalytics],
+			[AnalyticsMetricsPageViews],
+			['query']
+		),
+		get_page_views_analytics_top_10: IDL.Func([GetAnalytics], [AnalyticsTop10PageViews], ['query']),
 		get_performance_metrics: IDL.Func(
 			[GetAnalytics],
 			[IDL.Vec(IDL.Tuple(AnalyticKey, PerformanceMetric))],
-			[]
+			['query']
 		),
 		get_performance_metrics_analytics_web_vitals: IDL.Func(
 			[GetAnalytics],
 			[AnalyticsWebVitalsPerformanceMetrics],
-			[]
+			['query']
 		),
-		get_track_events: IDL.Func([GetAnalytics], [IDL.Vec(IDL.Tuple(AnalyticKey, TrackEvent))], []),
-		get_track_events_analytics: IDL.Func([GetAnalytics], [AnalyticsTrackEvents], []),
-		http_request: IDL.Func([HttpRequest], [HttpResponse], []),
+		get_track_events: IDL.Func(
+			[GetAnalytics],
+			[IDL.Vec(IDL.Tuple(AnalyticKey, TrackEvent))],
+			['query']
+		),
+		get_track_events_analytics: IDL.Func([GetAnalytics], [AnalyticsTrackEvents], ['query']),
+		http_request: IDL.Func([HttpRequest], [HttpResponse], ['query']),
 		http_request_update: IDL.Func([HttpRequest], [HttpResponse], []),
-		list_controllers: IDL.Func([], [IDL.Vec(IDL.Tuple(IDL.Principal, Controller))], []),
+		list_controllers: IDL.Func([], [IDL.Vec(IDL.Tuple(IDL.Principal, Controller))], ['query']),
 		list_satellite_configs: IDL.Func(
 			[],
 			[IDL.Vec(IDL.Tuple(IDL.Principal, OrbiterSatelliteConfig))],
-			[]
+			['query']
 		),
-		memory_size: IDL.Func([], [MemorySize], []),
+		memory_size: IDL.Func([], [MemorySize], ['query']),
 		set_controllers: IDL.Func(
 			[SetControllersArgs],
 			[IDL.Vec(IDL.Tuple(IDL.Principal, Controller))],

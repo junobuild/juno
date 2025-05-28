@@ -109,7 +109,7 @@ export const idlFactory = ({ IDL }) => {
 	const StreamingStrategy = IDL.Variant({
 		Callback: IDL.Record({
 			token: StreamingCallbackToken,
-			callback: IDL.Func([], [], [])
+			callback: IDL.Func([], [], ['query'])
 		})
 	});
 	const HttpResponse = IDL.Record({
@@ -187,18 +187,6 @@ export const idlFactory = ({ IDL }) => {
 		items: IDL.Vec(IDL.Tuple(IDL.Text, AssetNoContent)),
 		items_length: IDL.Nat64
 	});
-	const ControllerScope = IDL.Variant({
-		Write: IDL.Null,
-		Admin: IDL.Null,
-		Submit: IDL.Null
-	});
-	const Controller = IDL.Record({
-		updated_at: IDL.Nat64,
-		metadata: IDL.Vec(IDL.Tuple(IDL.Text, IDL.Text)),
-		created_at: IDL.Nat64,
-		scope: ControllerScope,
-		expires_at: IDL.Opt(IDL.Nat64)
-	});
 	const CustomDomain = IDL.Record({
 		updated_at: IDL.Nat64,
 		created_at: IDL.Nat64,
@@ -217,6 +205,10 @@ export const idlFactory = ({ IDL }) => {
 		mission_control_id: IDL.Opt(IDL.Principal),
 		created_at: IDL.Nat64,
 		block_index_refunded: IDL.Opt(IDL.Nat64)
+	});
+	const ControllerScope = IDL.Variant({
+		Write: IDL.Null,
+		Admin: IDL.Null
 	});
 	const SetController = IDL.Record({
 		metadata: IDL.Vec(IDL.Tuple(IDL.Text, IDL.Text)),
@@ -245,7 +237,7 @@ export const idlFactory = ({ IDL }) => {
 	return IDL.Service({
 		add_credits: IDL.Func([IDL.Principal, Tokens], [], []),
 		add_invitation_code: IDL.Func([IDL.Text], [], []),
-		assert_mission_control_center: IDL.Func([AssertMissionControlCenterArgs], [], []),
+		assert_mission_control_center: IDL.Func([AssertMissionControlCenterArgs], [], ['query']),
 		commit_proposal: IDL.Func([CommitProposal], [IDL.Null], []),
 		commit_proposal_asset_upload: IDL.Func([CommitBatch], [], []),
 		create_orbiter: IDL.Func([CreateCanisterArgs], [IDL.Principal], []),
@@ -253,30 +245,29 @@ export const idlFactory = ({ IDL }) => {
 		del_controllers: IDL.Func([DeleteControllersArgs], [], []),
 		del_custom_domain: IDL.Func([IDL.Text], [], []),
 		delete_proposal_assets: IDL.Func([DeleteProposalAssets], [], []),
-		get_config: IDL.Func([], [Config], []),
-		get_create_orbiter_fee: IDL.Func([GetCreateCanisterFeeArgs], [IDL.Opt(Tokens)], []),
-		get_create_satellite_fee: IDL.Func([GetCreateCanisterFeeArgs], [IDL.Opt(Tokens)], []),
-		get_credits: IDL.Func([], [Tokens], []),
-		get_proposal: IDL.Func([IDL.Nat], [IDL.Opt(Proposal)], []),
-		get_storage_config: IDL.Func([], [StorageConfig], []),
-		get_user_mission_control_center: IDL.Func([], [IDL.Opt(MissionControl)], []),
-		http_request: IDL.Func([HttpRequest], [HttpResponse], []),
+		get_config: IDL.Func([], [Config], ['query']),
+		get_create_orbiter_fee: IDL.Func([GetCreateCanisterFeeArgs], [IDL.Opt(Tokens)], ['query']),
+		get_create_satellite_fee: IDL.Func([GetCreateCanisterFeeArgs], [IDL.Opt(Tokens)], ['query']),
+		get_credits: IDL.Func([], [Tokens], ['query']),
+		get_proposal: IDL.Func([IDL.Nat], [IDL.Opt(Proposal)], ['query']),
+		get_storage_config: IDL.Func([], [StorageConfig], ['query']),
+		get_user_mission_control_center: IDL.Func([], [IDL.Opt(MissionControl)], ['query']),
+		http_request: IDL.Func([HttpRequest], [HttpResponse], ['query']),
 		http_request_streaming_callback: IDL.Func(
 			[StreamingCallbackToken],
 			[StreamingCallbackHttpResponse],
-			[]
+			['query']
 		),
 		init_proposal: IDL.Func([ProposalType], [IDL.Nat, Proposal], []),
 		init_proposal_asset_upload: IDL.Func([InitAssetKey, IDL.Nat], [InitUploadResult], []),
 		init_user_mission_control_center: IDL.Func([], [MissionControl], []),
-		list_assets: IDL.Func([IDL.Text, ListParams], [ListResults], []),
-		list_controllers: IDL.Func([], [IDL.Vec(IDL.Tuple(IDL.Principal, Controller))], []),
-		list_custom_domains: IDL.Func([], [IDL.Vec(IDL.Tuple(IDL.Text, CustomDomain))], []),
-		list_payments: IDL.Func([], [IDL.Vec(IDL.Tuple(IDL.Nat64, Payment))], []),
+		list_assets: IDL.Func([IDL.Text, ListParams], [ListResults], ['query']),
+		list_custom_domains: IDL.Func([], [IDL.Vec(IDL.Tuple(IDL.Text, CustomDomain))], ['query']),
+		list_payments: IDL.Func([], [IDL.Vec(IDL.Tuple(IDL.Nat64, Payment))], ['query']),
 		list_user_mission_control_centers: IDL.Func(
 			[],
 			[IDL.Vec(IDL.Tuple(IDL.Principal, MissionControl))],
-			[]
+			['query']
 		),
 		set_controllers: IDL.Func([SetControllersArgs], [], []),
 		set_custom_domain: IDL.Func([IDL.Text, IDL.Opt(IDL.Text)], [], []),

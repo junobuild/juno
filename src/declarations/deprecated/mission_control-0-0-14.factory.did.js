@@ -145,8 +145,7 @@ export const idlFactory = ({ IDL }) => {
 	const Result_1 = IDL.Variant({ Ok: IDL.Nat, Err: TransferError_1 });
 	const ControllerScope = IDL.Variant({
 		Write: IDL.Null,
-		Admin: IDL.Null,
-		Submit: IDL.Null
+		Admin: IDL.Null
 	});
 	const Controller = IDL.Record({
 		updated_at: IDL.Nat64,
@@ -193,26 +192,26 @@ export const idlFactory = ({ IDL }) => {
 		del_satellite: IDL.Func([IDL.Principal, IDL.Nat], [], []),
 		del_satellites_controllers: IDL.Func([IDL.Vec(IDL.Principal), IDL.Vec(IDL.Principal)], [], []),
 		deposit_cycles: IDL.Func([DepositCyclesArgs], [], []),
-		get_config: IDL.Func([], [IDL.Opt(Config)], []),
-		get_metadata: IDL.Func([], [IDL.Vec(IDL.Tuple(IDL.Text, IDL.Text))], []),
+		get_config: IDL.Func([], [IDL.Opt(Config)], ['query']),
+		get_metadata: IDL.Func([], [IDL.Vec(IDL.Tuple(IDL.Text, IDL.Text))], ['query']),
 		get_monitoring_history: IDL.Func(
 			[GetMonitoringHistory],
 			[IDL.Vec(IDL.Tuple(MonitoringHistoryKey, MonitoringHistory))],
-			[]
+			['query']
 		),
-		get_monitoring_status: IDL.Func([], [MonitoringStatus], []),
-		get_settings: IDL.Func([], [IDL.Opt(MissionControlSettings)], []),
-		get_user: IDL.Func([], [IDL.Principal], []),
-		get_user_data: IDL.Func([], [User], []),
+		get_monitoring_status: IDL.Func([], [MonitoringStatus], ['query']),
+		get_settings: IDL.Func([], [IDL.Opt(MissionControlSettings)], ['query']),
+		get_user: IDL.Func([], [IDL.Principal], ['query']),
+		get_user_data: IDL.Func([], [User], ['query']),
 		icp_transfer: IDL.Func([TransferArgs], [Result], []),
 		icrc_transfer: IDL.Func([IDL.Principal, TransferArg], [Result_1], []),
 		list_mission_control_controllers: IDL.Func(
 			[],
 			[IDL.Vec(IDL.Tuple(IDL.Principal, Controller))],
-			[]
+			['query']
 		),
-		list_orbiters: IDL.Func([], [IDL.Vec(IDL.Tuple(IDL.Principal, Orbiter))], []),
-		list_satellites: IDL.Func([], [IDL.Vec(IDL.Tuple(IDL.Principal, Satellite))], []),
+		list_orbiters: IDL.Func([], [IDL.Vec(IDL.Tuple(IDL.Principal, Orbiter))], ['query']),
+		list_satellites: IDL.Func([], [IDL.Vec(IDL.Tuple(IDL.Principal, Satellite))], ['query']),
 		remove_mission_control_controllers: IDL.Func([IDL.Vec(IDL.Principal)], [], []),
 		remove_satellites_controllers: IDL.Func(
 			[IDL.Vec(IDL.Principal), IDL.Vec(IDL.Principal)],

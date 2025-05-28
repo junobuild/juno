@@ -1,9 +1,12 @@
 import type { _SERVICE as ObservatoryActor_0_0_9 } from '$declarations/deprecated/observatory-0-0-9.did';
 import { idlFactory as idlFactorObservatory_0_0_8 } from '$declarations/deprecated/observatory-0-0-9.factory.did';
+import type { _SERVICE as ObservatoryActor } from '$declarations/observatory/observatory.did';
+import { idlFactory as idlFactorObservatory } from '$declarations/observatory/observatory.factory.did';
 import { Ed25519KeyIdentity } from '@dfinity/identity';
 import type { Principal } from '@dfinity/principal';
+import { assertNonNullish } from '@dfinity/utils';
 import { type Actor, PocketIc } from '@hadronous/pic';
-import { beforeEach, describe, inject } from 'vitest';
+import { beforeEach, describe, expect, inject } from 'vitest';
 import { mockMissionControlId } from '../../../frontend/tests/mocks/modules.mock';
 import { missionControlUserInitArgs } from '../../utils/mission-control-tests.utils';
 import {
@@ -108,6 +111,70 @@ describe('Observatory > Upgrade', () => {
 					pic
 				});
 			});
+		});
+
+		it('should preserve controllers even if scope enum is extended', async () => {
+			const user1 = Ed25519KeyIdentity.generate();
+			const user2 = Ed25519KeyIdentity.generate();
+			const admin1 = Ed25519KeyIdentity.generate();
+
+			const { set_controllers } = actor;
+
+			await set_controllers({
+				controller: {
+					scope: { Write: null },
+					metadata: [['hello', 'world']],
+					expires_at: []
+				},
+				controllers: [user1.getPrincipal(), user2.getPrincipal()]
+			});
+
+			await set_controllers({
+				controller: {
+					scope: { Admin: null },
+					metadata: [['super', 'top']],
+					expires_at: []
+				},
+				controllers: [admin1.getPrincipal()]
+			});
+
+			const assertControllers = async (actor: ObservatoryActor | ObservatoryActor_0_0_9) => {
+				const { list_controllers } = actor;
+
+				const controllers = await list_controllers();
+
+				expect(
+					controllers.find(([p, _]) => p.toText() === controller.getPrincipal().toText())
+				).not.toBeUndefined();
+
+				const assertWriteController = (controller: Principal) => {
+					const maybeUser = controllers.find(([p, _]) => p.toText() === controller.toText());
+					assertNonNullish(maybeUser);
+
+					expect(maybeUser[1].scope).toEqual({ Write: null });
+					expect(maybeUser[1].metadata).toEqual([['hello', 'world']]);
+				};
+
+				assertWriteController(user1.getPrincipal());
+				assertWriteController(user2.getPrincipal());
+
+				const maybeAdmin = controllers.find(
+					([p, _]) => p.toText() === admin1.getPrincipal().toText()
+				);
+				assertNonNullish(maybeAdmin);
+
+				expect(maybeAdmin[1].scope).toEqual({ Admin: null });
+				expect(maybeAdmin[1].metadata).toEqual([['super', 'top']]);
+			};
+
+			await assertControllers(actor);
+
+			await upgradeCurrent();
+
+			const newActor = pic.createActor<ObservatoryActor>(idlFactorObservatory, observatoryId);
+			newActor.setIdentity(controller);
+
+			await assertControllers(newActor);
 		});
 	});
 });

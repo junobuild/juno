@@ -1,3 +1,4 @@
+import type { _SERVICE as MissionControlActor_0_0_14 } from '$declarations/deprecated/mission_control-0-0-14.did';
 import type {
 	CyclesMonitoringStrategy,
 	GetMonitoringHistory,
@@ -38,7 +39,7 @@ export const testMissionControlMonitoring = async ({
 }: {
 	expectedEnabled: boolean;
 	expectedStrategy: CyclesMonitoringStrategy;
-	actor: Actor<MissionControlActor>;
+	actor: Actor<MissionControlActor | MissionControlActor_0_0_14>;
 }) => {
 	const { get_settings } = actor;
 
@@ -55,7 +56,7 @@ export const testSatellitesMonitoring = async ({
 }: {
 	expectedEnabled: boolean;
 	expectedStrategy: CyclesMonitoringStrategy;
-	actor: Actor<MissionControlActor>;
+	actor: Actor<MissionControlActor | MissionControlActor_0_0_14>;
 }) => {
 	const { list_satellites } = actor;
 
@@ -74,7 +75,7 @@ export const testOrbiterMonitoring = async ({
 }: {
 	expectedEnabled: boolean;
 	expectedStrategy: CyclesMonitoringStrategy;
-	actor: Actor<MissionControlActor>;
+	actor: Actor<MissionControlActor | MissionControlActor_0_0_14>;
 }) => {
 	const { list_orbiters } = actor;
 
@@ -93,7 +94,7 @@ export const testMonitoringHistory = async ({
 }: {
 	segmentId: Principal;
 	expectedLength: number;
-	actor: Actor<MissionControlActor>;
+	actor: Actor<MissionControlActor | MissionControlActor_0_0_14>;
 }): Promise<[MonitoringHistoryKey, MonitoringHistory][]> => {
 	const { get_monitoring_history } = actor;
 

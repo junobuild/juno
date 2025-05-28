@@ -2,6 +2,10 @@ import type { ActorMethod } from '@dfinity/agent';
 import type { IDL } from '@dfinity/candid';
 import type { Principal } from '@dfinity/principal';
 
+export interface AssertMissionControlCenterArgs {
+	mission_control_id: Principal;
+	user: Principal;
+}
 export interface AssetEncodingNoContent {
 	modified: bigint;
 	sha256: Uint8Array | number[];
@@ -26,14 +30,6 @@ export interface AssetNoContent {
 export interface AssetsUpgradeOptions {
 	clear_existing_assets: [] | [boolean];
 }
-export interface AuthenticationConfig {
-	internet_identity: [] | [AuthenticationConfigInternetIdentity];
-}
-export interface AuthenticationConfigInternetIdentity {
-	derivation_origin: [] | [string];
-	external_alternative_origins: [] | [Array<string>];
-}
-export type CollectionType = { Db: null } | { Storage: null };
 export interface CommitBatch {
 	batch_id: bigint;
 	headers: Array<[string, string]>;
@@ -44,36 +40,23 @@ export interface CommitProposal {
 	proposal_id: bigint;
 }
 export interface Config {
-	db: [] | [DbConfig];
-	authentication: [] | [AuthenticationConfig];
 	storage: StorageConfig;
 }
 export interface ConfigMaxMemorySize {
 	stable: [] | [bigint];
 	heap: [] | [bigint];
 }
-export interface Controller {
-	updated_at: bigint;
-	metadata: Array<[string, string]>;
-	created_at: bigint;
-	scope: ControllerScope;
-	expires_at: [] | [bigint];
+export type ControllerScope = { Write: null } | { Admin: null };
+export interface CreateCanisterArgs {
+	block_index: [] | [bigint];
+	subnet_id: [] | [Principal];
+	user: Principal;
 }
-export type ControllerScope = { Write: null } | { Admin: null } | { Submit: null };
 export interface CustomDomain {
 	updated_at: bigint;
 	created_at: bigint;
 	version: [] | [bigint];
 	bn_id: [] | [string];
-}
-export interface DbConfig {
-	max_memory_size: [] | [ConfigMaxMemorySize];
-}
-export interface DelDoc {
-	version: [] | [bigint];
-}
-export interface DelRule {
-	version: [] | [bigint];
 }
 export interface DeleteControllersArgs {
 	controllers: Array<Principal>;
@@ -81,17 +64,8 @@ export interface DeleteControllersArgs {
 export interface DeleteProposalAssets {
 	proposal_ids: Array<bigint>;
 }
-export interface DepositCyclesArgs {
-	cycles: bigint;
-	destination_id: Principal;
-}
-export interface Doc {
-	updated_at: bigint;
-	owner: Principal;
-	data: Uint8Array | number[];
-	description: [] | [string];
-	created_at: bigint;
-	version: [] | [bigint];
+export interface GetCreateCanisterFeeArgs {
+	user: Principal;
 }
 export interface HttpRequest {
 	url: string;
@@ -145,23 +119,23 @@ export interface ListResults {
 	items: Array<[string, AssetNoContent]>;
 	items_length: bigint;
 }
-export interface ListResults_1 {
-	matches_pages: [] | [bigint];
-	matches_length: bigint;
-	items_page: [] | [bigint];
-	items: Array<[string, Doc]>;
-	items_length: bigint;
-}
 export type Memory = { Heap: null } | { Stable: null };
-export interface MemorySize {
-	stable: bigint;
-	heap: bigint;
+export interface MissionControl {
+	updated_at: bigint;
+	credits: Tokens;
+	mission_control_id: [] | [Principal];
+	owner: Principal;
+	created_at: bigint;
 }
-export type Permission =
-	| { Controllers: null }
-	| { Private: null }
-	| { Public: null }
-	| { Managed: null };
+export interface Payment {
+	status: PaymentStatus;
+	updated_at: bigint;
+	block_index_payment: bigint;
+	mission_control_id: [] | [Principal];
+	created_at: bigint;
+	block_index_refunded: [] | [bigint];
+}
+export type PaymentStatus = { Refunded: null } | { Acknowledged: null } | { Completed: null };
 export interface Proposal {
 	status: ProposalStatus;
 	updated_at: bigint;
@@ -186,20 +160,7 @@ export interface RateConfig {
 	max_tokens: bigint;
 	time_per_token_ns: bigint;
 }
-export type Result = { Ok: number } | { Err: string };
-export interface Rule {
-	max_capacity: [] | [number];
-	memory: [] | [Memory];
-	updated_at: bigint;
-	max_size: [] | [bigint];
-	read: Permission;
-	created_at: bigint;
-	version: [] | [bigint];
-	mutable_permissions: [] | [boolean];
-	rate_config: [] | [RateConfig];
-	write: Permission;
-	max_changes_per_user: [] | [number];
-}
+export type SegmentKind = { Orbiter: null } | { MissionControl: null } | { Satellite: null };
 export interface SegmentsDeploymentOptions {
 	orbiter: [] | [string];
 	mission_control_version: [] | [string];
@@ -213,22 +174,6 @@ export interface SetController {
 export interface SetControllersArgs {
 	controller: SetController;
 	controllers: Array<Principal>;
-}
-export interface SetDoc {
-	data: Uint8Array | number[];
-	description: [] | [string];
-	version: [] | [bigint];
-}
-export interface SetRule {
-	max_capacity: [] | [number];
-	memory: [] | [Memory];
-	max_size: [] | [bigint];
-	read: Permission;
-	version: [] | [bigint];
-	mutable_permissions: [] | [boolean];
-	rate_config: [] | [RateConfig];
-	write: Permission;
-	max_changes_per_user: [] | [number];
 }
 export interface StorageConfig {
 	iframe: [] | [StorageConfigIFrame];
@@ -268,6 +213,9 @@ export type TimestampMatcher =
 	| { Between: [bigint, bigint] }
 	| { GreaterThan: bigint }
 	| { LessThan: bigint };
+export interface Tokens {
+	e8s: bigint;
+}
 export interface UploadChunk {
 	content: Uint8Array | number[];
 	batch_id: bigint;
@@ -277,61 +225,41 @@ export interface UploadChunkResult {
 	chunk_id: bigint;
 }
 export interface _SERVICE {
-	commit_asset_upload: ActorMethod<[CommitBatch], undefined>;
+	add_credits: ActorMethod<[Principal, Tokens], undefined>;
+	add_invitation_code: ActorMethod<[string], undefined>;
+	assert_mission_control_center: ActorMethod<[AssertMissionControlCenterArgs], undefined>;
 	commit_proposal: ActorMethod<[CommitProposal], null>;
 	commit_proposal_asset_upload: ActorMethod<[CommitBatch], undefined>;
-	count_assets: ActorMethod<[string, ListParams], bigint>;
-	count_collection_assets: ActorMethod<[string], bigint>;
-	count_collection_docs: ActorMethod<[string], bigint>;
-	count_docs: ActorMethod<[string, ListParams], bigint>;
-	del_asset: ActorMethod<[string, string], undefined>;
-	del_assets: ActorMethod<[string], undefined>;
-	del_controllers: ActorMethod<[DeleteControllersArgs], Array<[Principal, Controller]>>;
+	create_orbiter: ActorMethod<[CreateCanisterArgs], Principal>;
+	create_satellite: ActorMethod<[CreateCanisterArgs], Principal>;
+	del_controllers: ActorMethod<[DeleteControllersArgs], undefined>;
 	del_custom_domain: ActorMethod<[string], undefined>;
-	del_doc: ActorMethod<[string, string, DelDoc], undefined>;
-	del_docs: ActorMethod<[string], undefined>;
-	del_filtered_assets: ActorMethod<[string, ListParams], undefined>;
-	del_filtered_docs: ActorMethod<[string, ListParams], undefined>;
-	del_many_assets: ActorMethod<[Array<[string, string]>], undefined>;
-	del_many_docs: ActorMethod<[Array<[string, string, DelDoc]>], undefined>;
-	del_rule: ActorMethod<[CollectionType, string, DelRule], undefined>;
 	delete_proposal_assets: ActorMethod<[DeleteProposalAssets], undefined>;
-	deposit_cycles: ActorMethod<[DepositCyclesArgs], undefined>;
-	get_asset: ActorMethod<[string, string], [] | [AssetNoContent]>;
-	get_auth_config: ActorMethod<[], [] | [AuthenticationConfig]>;
 	get_config: ActorMethod<[], Config>;
-	get_db_config: ActorMethod<[], [] | [DbConfig]>;
-	get_doc: ActorMethod<[string, string], [] | [Doc]>;
-	get_many_assets: ActorMethod<[Array<[string, string]>], Array<[string, [] | [AssetNoContent]]>>;
-	get_many_docs: ActorMethod<[Array<[string, string]>], Array<[string, [] | [Doc]]>>;
+	get_create_orbiter_fee: ActorMethod<[GetCreateCanisterFeeArgs], [] | [Tokens]>;
+	get_create_satellite_fee: ActorMethod<[GetCreateCanisterFeeArgs], [] | [Tokens]>;
+	get_credits: ActorMethod<[], Tokens>;
 	get_proposal: ActorMethod<[bigint], [] | [Proposal]>;
-	get_random: ActorMethod<[], Result>;
-	get_rule: ActorMethod<[CollectionType, string], [] | [Rule]>;
 	get_storage_config: ActorMethod<[], StorageConfig>;
+	get_user_mission_control_center: ActorMethod<[], [] | [MissionControl]>;
 	http_request: ActorMethod<[HttpRequest], HttpResponse>;
 	http_request_streaming_callback: ActorMethod<
 		[StreamingCallbackToken],
 		StreamingCallbackHttpResponse
 	>;
-	init_asset_upload: ActorMethod<[InitAssetKey], InitUploadResult>;
 	init_proposal: ActorMethod<[ProposalType], [bigint, Proposal]>;
 	init_proposal_asset_upload: ActorMethod<[InitAssetKey, bigint], InitUploadResult>;
+	init_user_mission_control_center: ActorMethod<[], MissionControl>;
 	list_assets: ActorMethod<[string, ListParams], ListResults>;
-	list_controllers: ActorMethod<[], Array<[Principal, Controller]>>;
 	list_custom_domains: ActorMethod<[], Array<[string, CustomDomain]>>;
-	list_docs: ActorMethod<[string, ListParams], ListResults_1>;
-	list_rules: ActorMethod<[CollectionType], Array<[string, Rule]>>;
-	memory_size: ActorMethod<[], MemorySize>;
-	set_auth_config: ActorMethod<[AuthenticationConfig], undefined>;
-	set_controllers: ActorMethod<[SetControllersArgs], Array<[Principal, Controller]>>;
+	list_payments: ActorMethod<[], Array<[bigint, Payment]>>;
+	list_user_mission_control_centers: ActorMethod<[], Array<[Principal, MissionControl]>>;
+	set_controllers: ActorMethod<[SetControllersArgs], undefined>;
 	set_custom_domain: ActorMethod<[string, [] | [string]], undefined>;
-	set_db_config: ActorMethod<[DbConfig], undefined>;
-	set_doc: ActorMethod<[string, string, SetDoc], Doc>;
-	set_many_docs: ActorMethod<[Array<[string, string, SetDoc]>], Array<[string, Doc]>>;
-	set_rule: ActorMethod<[CollectionType, string, SetRule], Rule>;
+	set_fee: ActorMethod<[SegmentKind, Tokens], undefined>;
 	set_storage_config: ActorMethod<[StorageConfig], undefined>;
 	submit_proposal: ActorMethod<[bigint], [bigint, Proposal]>;
-	upload_asset_chunk: ActorMethod<[UploadChunk], UploadChunkResult>;
+	update_rate_config: ActorMethod<[SegmentKind, RateConfig], undefined>;
 	upload_proposal_asset_chunk: ActorMethod<[UploadChunk], UploadChunkResult>;
 }
 export declare const idlFactory: IDL.InterfaceFactory;

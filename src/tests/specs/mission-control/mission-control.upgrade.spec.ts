@@ -1,3 +1,5 @@
+import type { _SERVICE as MissionControlActor_0_0_14 } from '$declarations/deprecated/mission_control-0-0-14.did';
+import { idlFactory as idlFactorMissionControl_0_0_14 } from '$declarations/deprecated/mission_control-0-0-14.factory.did';
 import type {
 	CyclesMonitoringStrategy,
 	_SERVICE as MissionControlActor,
@@ -6,7 +8,7 @@ import type {
 import { idlFactory as idlFactorMissionControl } from '$declarations/mission_control/mission_control.factory.did';
 import { Ed25519KeyIdentity } from '@dfinity/identity';
 import type { Principal } from '@dfinity/principal';
-import { fromNullable, toNullable } from '@dfinity/utils';
+import { assertNonNullish, fromNullable, toNullable } from '@dfinity/utils';
 import { type Actor, PocketIc } from '@hadronous/pic';
 import { afterEach, beforeEach, describe, expect, inject } from 'vitest';
 import {
@@ -24,7 +26,7 @@ import { downloadMissionControl, MISSION_CONTROL_WASM_PATH } from '../../utils/s
 
 describe('Mission control > Upgrade', () => {
 	let pic: PocketIc;
-	let actor: Actor<MissionControlActor>;
+	let actor: Actor<MissionControlActor_0_0_14>;
 
 	let missionControlId: Principal;
 	let orbiterId: Principal;
@@ -39,8 +41,8 @@ describe('Mission control > Upgrade', () => {
 	const init = async (version: string) => {
 		const destination = await downloadMissionControl(version);
 
-		const { actor: c, canisterId: mId } = await pic.setupCanister<MissionControlActor>({
-			idlFactory: idlFactorMissionControl,
+		const { actor: c, canisterId: mId } = await pic.setupCanister<MissionControlActor_0_0_14>({
+			idlFactory: idlFactorMissionControl_0_0_14,
 			wasm: destination,
 			arg: missionControlUserInitArgs(controller.getPrincipal()),
 			sender: controller.getPrincipal()
@@ -144,7 +146,10 @@ describe('Mission control > Upgrade', () => {
 
 				await upgrade0_0_14();
 
-				actor = pic.createActor<MissionControlActor>(idlFactorMissionControl, missionControlId);
+				actor = pic.createActor<MissionControlActor_0_0_14>(
+					idlFactorMissionControl,
+					missionControlId
+				);
 				actor.setIdentity(controller);
 
 				await testModules();
@@ -155,7 +160,10 @@ describe('Mission control > Upgrade', () => {
 		it('should migrate with no settings', async () => {
 			await upgrade0_0_14();
 
-			actor = pic.createActor<MissionControlActor>(idlFactorMissionControl, missionControlId);
+			actor = pic.createActor<MissionControlActor_0_0_14>(
+				idlFactorMissionControl,
+				missionControlId
+			);
 			actor.setIdentity(controller);
 
 			const { get_settings } = actor;
@@ -290,7 +298,10 @@ describe('Mission control > Upgrade', () => {
 
 			await upgradeLatest();
 
-			actor = pic.createActor<MissionControlActor>(idlFactorMissionControl, missionControlId);
+			actor = pic.createActor<MissionControlActor_0_0_14>(
+				idlFactorMissionControl,
+				missionControlId
+			);
 			actor.setIdentity(controller);
 
 			await testModules();
@@ -299,6 +310,67 @@ describe('Mission control > Upgrade', () => {
 			await testMonitoring();
 
 			await testMoreControllers();
+		});
+
+		it('should preserve controllers even if scope enum is extended', async () => {
+			const user1 = Ed25519KeyIdentity.generate();
+			const user2 = Ed25519KeyIdentity.generate();
+			const admin1 = Ed25519KeyIdentity.generate();
+
+			const { set_mission_control_controllers } = actor;
+
+			await set_mission_control_controllers([user1.getPrincipal(), user2.getPrincipal()], {
+				scope: { Write: null },
+				metadata: [['hello', 'world']],
+				expires_at: []
+			});
+
+			await set_mission_control_controllers([admin1.getPrincipal()], {
+				scope: { Admin: null },
+				metadata: [['super', 'top']],
+				expires_at: []
+			});
+
+			const assertControllers = async (actor: MissionControlActor | MissionControlActor_0_0_14) => {
+				const { list_mission_control_controllers, get_user } = actor;
+
+				const controllers = await list_mission_control_controllers();
+
+				const user = await get_user();
+
+				expect(user.toText()).toEqual(controller.getPrincipal().toText());
+
+				const assertWriteController = (controller: Principal) => {
+					const maybeUser = controllers.find(([p, _]) => p.toText() === controller.toText());
+					assertNonNullish(maybeUser);
+
+					expect(maybeUser[1].scope).toEqual({ Write: null });
+					expect(maybeUser[1].metadata).toEqual([['hello', 'world']]);
+				};
+
+				assertWriteController(user1.getPrincipal());
+				assertWriteController(user2.getPrincipal());
+
+				const maybeAdmin = controllers.find(
+					([p, _]) => p.toText() === admin1.getPrincipal().toText()
+				);
+				assertNonNullish(maybeAdmin);
+
+				expect(maybeAdmin[1].scope).toEqual({ Admin: null });
+				expect(maybeAdmin[1].metadata).toEqual([['super', 'top']]);
+			};
+
+			await assertControllers(actor);
+
+			await upgradeLatest();
+
+			const newActor = pic.createActor<MissionControlActor>(
+				idlFactorMissionControl,
+				missionControlId
+			);
+			newActor.setIdentity(controller);
+
+			await assertControllers(newActor);
 		});
 	});
 });

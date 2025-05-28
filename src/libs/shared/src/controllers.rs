@@ -79,6 +79,7 @@ pub fn delete_controllers(remove_controllers: &[UserId], controllers: &mut Contr
     }
 }
 
+// TODO: rename to is_write_controller
 /// Checks if a caller is a controller.
 ///
 /// # Arguments
@@ -92,7 +93,10 @@ pub fn is_controller(caller: UserId, controllers: &Controllers) -> bool {
         && (caller_is_self(caller)
             || controllers
                 .iter()
-                .any(|(&controller_id, _)| principal_equal(controller_id, caller)))
+                .any(|(&controller_id, controller)| match controller.scope {
+                    ControllerScope::Submit => false,
+                    _ => principal_equal(controller_id, caller),
+                }))
 }
 
 /// Checks if a caller is an admin controller.
@@ -109,8 +113,8 @@ pub fn is_admin_controller(caller: UserId, controllers: &Controllers) -> bool {
         && controllers
             .iter()
             .any(|(&controller_id, controller)| match controller.scope {
-                ControllerScope::Write => false,
                 ControllerScope::Admin => principal_equal(controller_id, caller),
+                _ => false,
             })
 }
 
@@ -260,8 +264,8 @@ pub fn filter_admin_controllers(controllers: &Controllers) -> Controllers {
         .clone()
         .into_iter()
         .filter(|(_, controller)| match controller.scope {
-            ControllerScope::Write => false,
             ControllerScope::Admin => true,
+            _ => false,
         })
         .collect()
 }

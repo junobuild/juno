@@ -18,7 +18,6 @@ fn set_controllers(
     }: SetControllersArgs,
 ) -> Controllers {
     match controller.scope {
-        ControllerScope::Write => {}
         ControllerScope::Admin => {
             let max_controllers = assert_max_number_of_controllers(
                 &get_admin_controllers(),
@@ -30,6 +29,7 @@ fn set_controllers(
                 trap(&err)
             }
         }
+        _ => (),
     }
 
     assert_controllers(&controllers).unwrap_or_else(|e| trap(&e));

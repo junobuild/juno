@@ -20,8 +20,8 @@ pub async fn set_mission_control_controllers(
                 controllers,
                 MAX_NUMBER_OF_MISSION_CONTROL_CONTROLLERS,
             )?;
-        },
-        _ => ()
+        }
+        _ => (),
     }
 
     assert_controllers(controllers)?;

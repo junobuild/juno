@@ -79,6 +79,7 @@ pub fn delete_controllers(remove_controllers: &[UserId], controllers: &mut Contr
     }
 }
 
+// TODO: rename to is_write_controller
 /// Checks if a caller is a controller.
 ///
 /// # Arguments
@@ -92,7 +93,10 @@ pub fn is_controller(caller: UserId, controllers: &Controllers) -> bool {
         && (caller_is_self(caller)
             || controllers
                 .iter()
-                .any(|(&controller_id, _)| principal_equal(controller_id, caller)))
+                .any(|(&controller_id, controller)| match controller.scope {
+                    ControllerScope::Submit => false,
+                    _ => principal_equal(controller_id, caller),
+                }))
 }
 
 /// Checks if a caller is an admin controller.

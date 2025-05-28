@@ -23,8 +23,8 @@ pub fn set_controllers(
             if let Err(err) = max_controllers {
                 trap(&err)
             }
-        },
-        _ => ()
+        }
+        _ => (),
     }
 
     assert_controllers(&controllers).unwrap_or_else(|e| trap(&e));

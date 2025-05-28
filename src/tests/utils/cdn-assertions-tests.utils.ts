@@ -486,7 +486,7 @@ export const testControlledCdnMethods = ({
 			});
 
 			it('should list assets', async () => {
-				const { list_assets } = actor({requireController: true});
+				const { list_assets } = actor({ requireController: true });
 
 				const assets = await list_assets(collection, {
 					matcher: [],

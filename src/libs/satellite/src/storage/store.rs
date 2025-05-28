@@ -33,6 +33,7 @@ use junobuild_storage::runtime::{
     update_certified_asset as update_runtime_certified_asset,
 };
 use junobuild_storage::store::{commit_batch as commit_batch_storage, create_batch, create_chunk};
+use junobuild_storage::strategies::StorageAssertionsStrategy;
 use junobuild_storage::types::config::StorageConfig;
 use junobuild_storage::types::interface::{AssetNoContent, CommitBatch, InitAssetKey, UploadChunk};
 use junobuild_storage::types::runtime_state::{BatchId, ChunkId};
@@ -331,7 +332,7 @@ fn secure_list_assets_impl(
         Memory::Heap => STATE.with(|state| {
             let state_ref = state.borrow();
             let assets = collect_assets_heap(context.collection, &state_ref.heap.storage.assets);
-            list_assets_impl(&assets, context, &rule, filters)
+            list_assets_impl(&assets, context, &rule, filters, &StorageAssertions)
         }),
         Memory::Stable => STATE.with(|state| {
             let stable = get_assets_stable(context.collection, &state.borrow().stable.assets);
@@ -339,7 +340,7 @@ fn secure_list_assets_impl(
                 .iter()
                 .map(|(_, asset)| (&asset.key.full_path, asset))
                 .collect();
-            list_assets_impl(&assets, context, &rule, filters)
+            list_assets_impl(&assets, context, &rule, filters, &StorageAssertions)
         }),
     }
 }
@@ -353,6 +354,7 @@ fn list_assets_impl(
     }: &StoreContext,
     rule: &Rule,
     filters: &ListParams,
+    assertions: &impl StorageAssertionsStrategy,
 ) -> Result<ListResults<AssetNoContent>, String> {
     let matches = filter_values(
         caller,
@@ -361,6 +363,7 @@ fn list_assets_impl(
         collection.clone(),
         filters,
         assets,
+        assertions,
     )?;
 
     let values = list_values(&matches, filters);

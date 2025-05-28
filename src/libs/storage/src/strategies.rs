@@ -40,6 +40,15 @@ pub trait StorageAssertionsStrategy {
         controllers: &Controllers,
     ) -> bool;
 
+    fn assert_list_permission(
+        &self,
+        permission: &Permission,
+        owner: Principal,
+        caller: Principal,
+        collection: &CollectionKey,
+        controllers: &Controllers,
+    ) -> bool;
+
     fn invoke_assert_upload_asset(
         &self,
         caller: &Principal,

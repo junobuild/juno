@@ -9,6 +9,7 @@ use junobuild_cdn::storage::errors::{
     JUNO_CDN_STORAGE_ERROR_CANNOT_GET_ASSET_UNKNOWN_REFERENCE_ID,
     JUNO_CDN_STORAGE_ERROR_CANNOT_INSERT_ASSET_UNKNOWN_REFERENCE_ID,
 };
+use junobuild_collections::assert::stores::assert_permission;
 use junobuild_collections::types::core::CollectionKey;
 use junobuild_collections::types::rules::{Memory, Permission, Rule};
 use junobuild_shared::types::core::Blob;
@@ -67,6 +68,17 @@ impl StorageAssertionsStrategy for CdnStorageAssertions {
         controllers: &Controllers,
     ) -> bool {
         assert_cdn_update_permission(permission, owner, caller, collection, controllers)
+    }
+
+    fn assert_list_permission(
+        &self,
+        permission: &Permission,
+        owner: Principal,
+        caller: Principal,
+        _collection: &CollectionKey,
+        controllers: &Controllers,
+    ) -> bool {
+        assert_permission(permission, owner, caller, controllers)
     }
 
     fn invoke_assert_upload_asset(

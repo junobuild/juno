@@ -292,7 +292,12 @@ export const testControlledCdnMethods = ({
 			});
 
 			it('should upload asset', async () => {
-				const { http_request, upload_proposal_asset_chunk, init_proposal_asset_upload } = actor();
+				const {
+					http_request,
+					upload_proposal_asset_chunk,
+					init_proposal_asset_upload,
+					commit_proposal_asset_upload
+				} = actor();
 
 				const file = await init_proposal_asset_upload(
 					{
@@ -311,8 +316,6 @@ export const testControlledCdnMethods = ({
 					content: arrayBufferToUint8Array(await mockBlob.arrayBuffer()),
 					order_id: [0n]
 				});
-
-				const { commit_proposal_asset_upload } = actor({ requireController: true });
 
 				await commit_proposal_asset_upload({
 					batch_id: file.batch_id,

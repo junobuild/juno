@@ -295,62 +295,124 @@ describe('Satellite > Cdn', () => {
 			actor.setIdentity(controllerSubmit);
 		});
 
-		testControlledCdnMethods({
-			actor: (params) => {
-				if (params?.requireController === true) {
-					actor.setIdentity(controller);
-				} else {
-					actor.setIdentity(controllerSubmit);
+		describe('Admin commit', () => {
+			testControlledCdnMethods({
+				actor: (params) => {
+					if (params?.requireController === true) {
+						actor.setIdentity(controller);
+					} else {
+						actor.setIdentity(controllerSubmit);
+					}
+
+					return actor;
+				},
+				currentDate,
+				canisterId: () => canisterId,
+				caller: () => controllerSubmit,
+				pic: () => pic,
+				expected_proposal_id: 24n,
+				fullPaths: {
+					assetsUpgrade: '/magic.html',
+					segmentsDeployment: '/_juno/releases/satellite-v2.1.1.wasm.gz',
+					assetsCollection: '#dapp',
+					segmentsCollection: '#_juno'
 				}
+			});
 
-				return actor;
-			},
-			currentDate,
-			canisterId: () => canisterId,
-			caller: () => controllerSubmit,
-			pic: () => pic,
-			expected_proposal_id: 24n,
-			fullPaths: {
-				assetsUpgrade: '/magic.html',
-				segmentsDeployment: '/_juno/releases/satellite-v2.1.1.wasm.gz',
-				assetsCollection: '#dapp',
-				segmentsCollection: '#_juno'
-			}
+			testCdnGetProposal({
+				actor: () => actor,
+				owner: () => controllerSubmit,
+				proposalId: 24n
+			});
+
+			testCdnGetProposal({
+				actor: () => actor,
+				owner: () => controllerReadWrite,
+				proposalId: 5n
+			});
+
+			testCdnGetProposal({
+				actor: () => actor,
+				owner: () => controller
+			});
+
+			testCdnGetProposal({
+				actor: () => {
+					actor.setIdentity(controllerReadWrite);
+					return actor;
+				},
+				owner: () => controllerSubmit,
+				proposalId: 24n
+			});
+
+			testCdnGetProposal({
+				actor: () => {
+					actor.setIdentity(controller);
+					return actor;
+				},
+				owner: () => controllerSubmit,
+				proposalId: 24n
+			});
 		});
 
-		testCdnGetProposal({
-			actor: () => actor,
-			owner: () => controllerSubmit,
-			proposalId: 24n
-		});
+		describe('Write commit', () => {
+			testControlledCdnMethods({
+				actor: (params) => {
+					if (params?.requireController === true) {
+						actor.setIdentity(controllerReadWrite);
+					} else {
+						actor.setIdentity(controllerSubmit);
+					}
 
-		testCdnGetProposal({
-			actor: () => actor,
-			owner: () => controllerReadWrite,
-			proposalId: 5n
-		});
+					return actor;
+				},
+				currentDate,
+				canisterId: () => canisterId,
+				caller: () => controllerSubmit,
+				pic: () => pic,
+				expected_proposal_id: 28n,
+				fullPaths: {
+					assetsUpgrade: '/book.html',
+					segmentsDeployment: '/_juno/releases/satellite-v3.1.1.wasm.gz',
+					assetsCollection: '#dapp',
+					segmentsCollection: '#_juno'
+				}
+			});
 
-		testCdnGetProposal({
-			actor: () => actor,
-			owner: () => controller
-		});
+			testCdnGetProposal({
+				actor: () => actor,
+				owner: () => controllerSubmit,
+				proposalId: 28n
+			});
 
-		testCdnGetProposal({
-			actor: () => {
-				actor.setIdentity(controllerReadWrite);
-				return actor;
-			},
-			owner: () => controllerSubmit,
-			proposalId: 24n
-		});
+			testCdnGetProposal({
+				actor: () => actor,
+				owner: () => controllerReadWrite,
+				proposalId: 5n
+			});
 
-		testCdnGetProposal({
-			actor: () => {
-				actor.setIdentity(controller);
-				return actor;
-			},
-			owner: () => controllerSubmit,
-			proposalId: 24n
+			testCdnGetProposal({
+				actor: () => actor,
+				owner: () => controller
+			});
+
+			testCdnGetProposal({
+				actor: () => {
+					actor.setIdentity(controllerReadWrite);
+					return actor;
+				},
+				owner: () => controllerSubmit,
+				proposalId: 28n
+			});
+
+			testCdnGetProposal({
+				actor: () => {
+					actor.setIdentity(controller);
+					return actor;
+				},
+				owner: () => controllerSubmit,
+				proposalId: 28n
+			});
 		});
 
 		it('should throw errors at committing a proposal', async () => {
@@ -359,7 +421,7 @@ describe('Satellite > Cdn', () => {
 			await expect(
 				commit_proposal({
 					sha256: Array.from({ length: 32 }).map((_, i) => i),
-					proposal_id: 24n
+					proposal_id: 28n
 				})
 			).rejects.toThrow(JUNO_AUTH_ERROR_NOT_WRITE_CONTROLLER);
 		});

@@ -79,7 +79,7 @@ pub fn delete_controllers(remove_controllers: &[UserId], controllers: &mut Contr
     }
 }
 
-/// Checks if a caller is a controller with write scope (permissions).
+/// Checks if a caller is a controller with admin or write scope (permissions).
 ///
 /// # Arguments
 /// - `caller`: `UserId` of the caller.
@@ -87,7 +87,7 @@ pub fn delete_controllers(remove_controllers: &[UserId], controllers: &mut Contr
 ///
 /// # Returns
 /// `true` if the caller is a controller (not anonymous, calling itself or one of the known controllers), otherwise `false`.
-pub fn is_write_controller(caller: UserId, controllers: &Controllers) -> bool {
+pub fn controller_can_write(caller: UserId, controllers: &Controllers) -> bool {
     principal_not_anonymous(caller)
         && (caller_is_self(caller)
             || controllers

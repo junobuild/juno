@@ -9,7 +9,7 @@ use candid::Principal;
 use ic_cdk::id;
 use junobuild_collections::constants::db::COLLECTION_USER_KEY;
 use junobuild_collections::types::core::CollectionKey;
-use junobuild_shared::controllers::is_write_controller;
+use junobuild_shared::controllers::controller_can_write;
 use junobuild_shared::types::core::Key;
 use junobuild_shared::types::state::Controllers;
 use junobuild_shared::utils::principal_not_equal;
@@ -69,7 +69,7 @@ pub fn assert_user_write_permission(
         return Ok(());
     }
 
-    if is_write_controller(caller, controllers) {
+    if controller_can_write(caller, controllers) {
         return Ok(());
     }
 
@@ -87,7 +87,7 @@ pub fn assert_user_is_not_banned(
     controllers: &Controllers,
 ) -> Result<(), String> {
     // This way we spare loading the user for controllers calls and, we for example allow controllers to delete banned users
-    if is_write_controller(caller, controllers) {
+    if controller_can_write(caller, controllers) {
         return Ok(());
     }
 

@@ -53,7 +53,7 @@ export interface Controller {
 	scope: ControllerScope;
 	expires_at: [] | [bigint];
 }
-export type ControllerScope = { Write: null } | { Admin: null } | { Automation: null };
+export type ControllerScope = { Write: null } | { Admin: null } | { Submit: null };
 export interface CreateCanisterArgs {
 	block_index: [] | [bigint];
 	subnet_id: [] | [Principal];

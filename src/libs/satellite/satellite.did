@@ -47,7 +47,7 @@ type Controller = record {
   scope : ControllerScope;
   expires_at : opt nat64;
 };
-type ControllerScope = variant { Write; Admin; Automation };
+type ControllerScope = variant { Write; Admin; Submit };
 type CustomDomain = record {
   updated_at : nat64;
   created_at : nat64;

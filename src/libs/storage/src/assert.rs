@@ -1,7 +1,8 @@
 use crate::constants::{WELL_KNOWN_CUSTOM_DOMAINS, WELL_KNOWN_II_ALTERNATIVE_ORIGINS};
 use crate::errors::{
-    JUNO_STORAGE_ERROR_CANNOT_COMMIT_BATCH, JUNO_STORAGE_ERROR_RESERVED_ASSET,
-    JUNO_STORAGE_ERROR_UPLOAD_NOT_ALLOWED, JUNO_STORAGE_ERROR_UPLOAD_PATH_COLLECTION_PREFIX,
+    JUNO_STORAGE_ERROR_CANNOT_COMMIT_BATCH, JUNO_STORAGE_ERROR_CANNOT_COMMIT_INVALID_COLLECTION,
+    JUNO_STORAGE_ERROR_RESERVED_ASSET, JUNO_STORAGE_ERROR_UPLOAD_NOT_ALLOWED,
+    JUNO_STORAGE_ERROR_UPLOAD_PATH_COLLECTION_PREFIX,
 };
 use crate::runtime::increment_and_assert_rate;
 use crate::strategies::{StorageAssertionsStrategy, StorageStateStrategy};
@@ -116,10 +117,9 @@ pub fn assert_commit_chunks_update(
     current: &Asset,
     assertions: &impl StorageAssertionsStrategy,
 ) -> Result<(), String> {
-    // TODO: error label
     // The collection of the existing asset should be the same as the one we commit
     if batch.key.collection != current.key.collection {
-        return Err("Provided collection does not match existing collection.".to_string());
+        return Err(JUNO_STORAGE_ERROR_CANNOT_COMMIT_INVALID_COLLECTION.to_string());
     }
 
     if !assertions.assert_update_permission(

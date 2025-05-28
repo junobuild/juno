@@ -11,7 +11,6 @@ use crate::types::state::FullPath;
 use crate::types::store::{Asset, AssetAssertUpload, Batch};
 use candid::Principal;
 use junobuild_collections::assert::collection::is_system_collection;
-use junobuild_collections::assert::stores::{assert_create_permission, assert_permission};
 use junobuild_collections::constants::assets::DEFAULT_ASSETS_COLLECTIONS;
 use junobuild_collections::constants::core::SYS_COLLECTION_PREFIX;
 use junobuild_collections::types::core::CollectionKey;
@@ -93,11 +92,13 @@ pub fn assert_commit_batch(
 
 pub fn assert_commit_chunks_new_asset(
     caller: Principal,
+    collection: &CollectionKey,
     controllers: &Controllers,
     config: &StorageConfig,
     rule: &Rule,
+    assertions: &impl StorageAssertionsStrategy,
 ) -> Result<(), String> {
-    if !assert_create_permission(&rule.write, caller, controllers) {
+    if !assertions.assert_create_permission(&rule.write, caller, collection, controllers) {
         return Err(JUNO_STORAGE_ERROR_CANNOT_COMMIT_BATCH.to_string());
     }
 
@@ -113,13 +114,15 @@ pub fn assert_commit_chunks_update(
     batch: &Batch,
     rule: &Rule,
     current: &Asset,
+    assertions: &impl StorageAssertionsStrategy,
 ) -> Result<(), String> {
+    // TODO: error label
     // The collection of the existing asset should be the same as the one we commit
     if batch.key.collection != current.key.collection {
         return Err("Provided collection does not match existing collection.".to_string());
     }
 
-    if !assert_permission(&rule.write, current.key.owner, caller, controllers) {
+    if !assertions.assert_update_permission(&rule.write, current.key.owner, caller, &batch.key.collection, controllers) {
         return Err(JUNO_STORAGE_ERROR_CANNOT_COMMIT_BATCH.to_string());
     }
 

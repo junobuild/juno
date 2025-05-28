@@ -186,8 +186,7 @@ describe('Satellite > Cdn', () => {
 
 		testCdnGetProposal({
 			actor: () => actor,
-			owner: () => controller,
-			proposalId: 5n
+			owner: () => controller
 		});
 	});
 
@@ -321,19 +320,36 @@ describe('Satellite > Cdn', () => {
 
 		testCdnGetProposal({
 			actor: () => actor,
-			owner: () => controllerReadWrite,
-			proposalId: 24n
-		});
-
-		testCdnGetProposal({
-			actor: () => actor,
 			owner: () => controllerSubmit,
 			proposalId: 24n
 		});
 
 		testCdnGetProposal({
 			actor: () => actor,
-			owner: () => controller,
+			owner: () => controllerReadWrite,
+			proposalId: 5n
+		});
+
+		testCdnGetProposal({
+			actor: () => actor,
+			owner: () => controller
+		});
+
+		testCdnGetProposal({
+			actor: () => {
+				actor.setIdentity(controllerReadWrite);
+				return actor;
+			},
+			owner: () => controllerSubmit,
+			proposalId: 24n
+		});
+
+		testCdnGetProposal({
+			actor: () => {
+				actor.setIdentity(controller);
+				return actor;
+			},
+			owner: () => controllerSubmit,
 			proposalId: 24n
 		});
 

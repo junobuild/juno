@@ -20,7 +20,9 @@ mod user;
 
 use crate::auth::types::config::AuthenticationConfig;
 use crate::db::types::config::DbConfig;
-use crate::guards::{caller_is_admin_controller, caller_is_controller_with_write};
+use crate::guards::{
+    caller_is_admin_controller, caller_is_controller, caller_is_controller_with_write,
+};
 use crate::types::interface::{Config, DeleteProposalAssets};
 use crate::types::state::CollectionType;
 use ic_cdk::api::call::ManualReply;
@@ -200,27 +202,27 @@ pub fn list_controllers() -> Controllers {
 // Proposal
 // ---------------------------------------------------------
 
-#[query(guard = "caller_is_controller_with_write")]
+#[query(guard = "caller_is_controller")]
 pub fn get_proposal(proposal_id: ProposalId) -> Option<Proposal> {
     api::cdn::get_proposal(&proposal_id)
 }
 
-#[update(guard = "caller_is_controller_with_write")]
+#[update(guard = "caller_is_controller")]
 pub fn init_proposal(proposal_type: ProposalType) -> (ProposalId, Proposal) {
     api::cdn::init_proposal(&proposal_type)
 }
 
-#[update(guard = "caller_is_controller_with_write")]
+#[update(guard = "caller_is_controller")]
 pub fn submit_proposal(proposal_id: ProposalId) -> (ProposalId, Proposal) {
     api::cdn::submit_proposal(&proposal_id)
 }
 
-#[update(guard = "caller_is_admin_controller", manual_reply = true)]
+#[update(guard = "caller_is_controller_with_write", manual_reply = true)]
 pub fn commit_proposal(proposal: CommitProposal) -> ManualReply<()> {
     api::cdn::commit_proposal(&proposal)
 }
 
-#[update(guard = "caller_is_admin_controller")]
+#[update(guard = "caller_is_controller_with_write")]
 pub fn delete_proposal_assets(params: DeleteProposalAssets) {
     api::cdn::delete_proposal_assets(&params)
 }
@@ -229,17 +231,17 @@ pub fn delete_proposal_assets(params: DeleteProposalAssets) {
 // Internal storage
 // ---------------------------------------------------------
 
-#[update(guard = "caller_is_controller_with_write")]
+#[update(guard = "caller_is_controller")]
 pub fn init_proposal_asset_upload(init: InitAssetKey, proposal_id: ProposalId) -> InitUploadResult {
     api::cdn::init_proposal_asset_upload(init, proposal_id)
 }
 
-#[update(guard = "caller_is_controller_with_write")]
+#[update(guard = "caller_is_controller")]
 pub fn upload_proposal_asset_chunk(chunk: UploadChunk) -> UploadChunkResult {
     api::cdn::upload_proposal_asset_chunk(chunk)
 }
 
-#[update(guard = "caller_is_controller_with_write")]
+#[update(guard = "caller_is_controller")]
 pub fn commit_proposal_asset_upload(commit: CommitBatch) {
     api::cdn::commit_proposal_asset_upload(commit)
 }

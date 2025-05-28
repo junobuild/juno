@@ -86,7 +86,7 @@ pub fn delete_controllers(remove_controllers: &[UserId], controllers: &mut Contr
 /// - `controllers`: Reference to the current set of controllers.
 ///
 /// # Returns
-/// `true` if the caller is a controller (not anonymous, calling itself or one of the known controllers), otherwise `false`.
+/// `true` if the caller is a controller (not anonymous, calling itself or one of the known write or admin controllers), otherwise `false`.
 pub fn controller_can_write(caller: UserId, controllers: &Controllers) -> bool {
     principal_not_anonymous(caller)
         && (caller_is_self(caller)

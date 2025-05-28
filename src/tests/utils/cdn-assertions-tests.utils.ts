@@ -43,11 +43,13 @@ import { assertHeaders } from './storage-tests.utils';
 export const testNotAllowedCdnMethods = ({
 	actor,
 	errorMsgAdminController,
+	errorMsgWriteController,
 	errorMsgController
 }: {
 	actor: () => Actor<SatelliteActor | ConsoleActor>;
 	errorMsgAdminController: string;
 	errorMsgController?: string;
+	errorMsgWriteController?: string;
 }) => {
 	it('should throw errors on init asset upload', async () => {
 		const { init_proposal_asset_upload } = actor();
@@ -62,7 +64,7 @@ export const testNotAllowedCdnMethods = ({
 		};
 
 		await expect(init_proposal_asset_upload(key, 123n)).rejects.toThrow(
-			errorMsgController ?? errorMsgAdminController
+			errorMsgController ?? errorMsgWriteController ?? errorMsgAdminController
 		);
 	});
 
@@ -76,7 +78,7 @@ export const testNotAllowedCdnMethods = ({
 		};
 
 		await expect(upload_proposal_asset_chunk(chunk)).rejects.toThrow(
-			errorMsgController ?? errorMsgAdminController
+			errorMsgController ?? errorMsgWriteController ?? errorMsgAdminController
 		);
 	});
 
@@ -90,7 +92,7 @@ export const testNotAllowedCdnMethods = ({
 		};
 
 		await expect(commit_proposal_asset_upload(batch)).rejects.toThrow(
-			errorMsgController ?? errorMsgAdminController
+			errorMsgController ?? errorMsgWriteController ?? errorMsgAdminController
 		);
 	});
 
@@ -119,7 +121,7 @@ export const testNotAllowedCdnMethods = ({
 		const { delete_proposal_assets } = actor();
 
 		await expect(delete_proposal_assets({ proposal_ids: [1n] })).rejects.toThrow(
-			errorMsgAdminController
+			errorMsgWriteController ?? errorMsgAdminController
 		);
 	});
 
@@ -127,7 +129,7 @@ export const testNotAllowedCdnMethods = ({
 		const { init_proposal } = actor();
 
 		await expect(init_proposal({ AssetsUpgrade: { clear_existing_assets: [] } })).rejects.toThrow(
-			errorMsgController ?? errorMsgAdminController
+			errorMsgController ?? errorMsgWriteController ?? errorMsgAdminController
 		);
 	});
 
@@ -135,7 +137,7 @@ export const testNotAllowedCdnMethods = ({
 		const { submit_proposal } = actor();
 
 		await expect(submit_proposal(123n)).rejects.toThrow(
-			errorMsgController ?? errorMsgAdminController
+			errorMsgController ?? errorMsgWriteController ?? errorMsgAdminController
 		);
 	});
 
@@ -147,7 +149,9 @@ export const testNotAllowedCdnMethods = ({
 			proposal_id: 123n
 		};
 
-		await expect(commit_proposal(commit)).rejects.toThrow(errorMsgAdminController);
+		await expect(commit_proposal(commit)).rejects.toThrow(
+			errorMsgWriteController ?? errorMsgAdminController
+		);
 	});
 };
 
@@ -290,9 +294,9 @@ export const testControlledCdnMethods = ({
 			it('should upload asset', async () => {
 				const {
 					http_request,
-					commit_proposal_asset_upload,
 					upload_proposal_asset_chunk,
-					init_proposal_asset_upload
+					init_proposal_asset_upload,
+					commit_proposal_asset_upload
 				} = actor();
 
 				const file = await init_proposal_asset_upload(
@@ -482,7 +486,7 @@ export const testControlledCdnMethods = ({
 			});
 
 			it('should list assets', async () => {
-				const { list_assets } = actor();
+				const { list_assets } = actor({ requireController: true });
 
 				const assets = await list_assets(collection, {
 					matcher: [],

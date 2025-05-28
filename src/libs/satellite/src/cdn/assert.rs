@@ -1,9 +1,12 @@
 use crate::cdn::constants::{CDN_JUNO_COLLECTION_KEY, CDN_JUNO_COLLECTION_PATH};
+use candid::Principal;
 use junobuild_cdn::storage::errors::{
     JUNO_CDN_STORAGE_ERROR_INVALID_COLLECTION, JUNO_CDN_STORAGE_ERROR_INVALID_RELEASES_PATH,
 };
 use junobuild_collections::types::core::CollectionKey;
+use junobuild_shared::controllers::{controller_can_write, is_controller};
 use junobuild_shared::regex::build_regex;
+use junobuild_shared::types::state::Controllers;
 use junobuild_storage::types::state::FullPath;
 
 // TODO: storage module uses cdn because of this reference. Refactor modules.
@@ -38,4 +41,16 @@ fn assert_releases_keys(full_path: &FullPath) -> Result<(), String> {
     }
 
     Ok(())
+}
+
+pub fn assert_cdn_write_on_system_collection(
+    caller: Principal,
+    collection: &CollectionKey,
+    controllers: &Controllers,
+) -> bool {
+    if collection == CDN_JUNO_COLLECTION_KEY {
+        return is_controller(caller, controllers);
+    }
+
+    controller_can_write(caller, controllers)
 }

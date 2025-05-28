@@ -13,7 +13,7 @@ import { arrayBufferToUint8Array, fromNullable, toNullable } from '@dfinity/util
 import { type Actor, PocketIc } from '@hadronous/pic';
 import {
 	JUNO_AUTH_ERROR_NOT_ADMIN_CONTROLLER,
-	JUNO_AUTH_ERROR_NOT_CONTROLLER,
+	JUNO_AUTH_ERROR_NOT_WRITE_CONTROLLER,
 	JUNO_CDN_STORAGE_ERROR_INVALID_COLLECTION,
 	JUNO_COLLECTIONS_ERROR_COLLECTION_NOT_EMPTY,
 	JUNO_COLLECTIONS_ERROR_COLLECTION_NOT_FOUND,
@@ -73,7 +73,7 @@ describe('Satellite > Storage', () => {
 		it('should throw errors on delete all assets', async () => {
 			const { del_assets } = actor;
 
-			await expect(del_assets('#dapp')).rejects.toThrow(JUNO_AUTH_ERROR_NOT_CONTROLLER);
+			await expect(del_assets('#dapp')).rejects.toThrow(JUNO_AUTH_ERROR_NOT_WRITE_CONTROLLER);
 		});
 
 		it('should throw errors on setting config', async () => {

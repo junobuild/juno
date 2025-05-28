@@ -5,7 +5,7 @@ import { assertNonNullish, fromNullable, toNullable } from '@dfinity/utils';
 import { type Actor, PocketIc } from '@hadronous/pic';
 import {
 	JUNO_AUTH_ERROR_NOT_ADMIN_CONTROLLER,
-	JUNO_AUTH_ERROR_NOT_CONTROLLER,
+	JUNO_AUTH_ERROR_NOT_WRITE_CONTROLLER,
 	JUNO_COLLECTIONS_ERROR_DELETE_PREFIX_RESERVED,
 	JUNO_COLLECTIONS_ERROR_MODIFY_RESERVED_COLLECTION,
 	JUNO_COLLECTIONS_ERROR_RATE_CONFIG_ENABLED,
@@ -683,25 +683,29 @@ describe('Satellite', () => {
 		it('should throw errors on deleting docs', async () => {
 			const { del_docs } = actor;
 
-			await expect(del_docs('test')).rejects.toThrow(JUNO_AUTH_ERROR_NOT_CONTROLLER);
+			await expect(del_docs('test')).rejects.toThrow(JUNO_AUTH_ERROR_NOT_WRITE_CONTROLLER);
 		});
 
 		it('should throw errors on counting docs', async () => {
 			const { count_collection_docs } = actor;
 
-			await expect(count_collection_docs('test')).rejects.toThrow(JUNO_AUTH_ERROR_NOT_CONTROLLER);
+			await expect(count_collection_docs('test')).rejects.toThrow(
+				JUNO_AUTH_ERROR_NOT_WRITE_CONTROLLER
+			);
 		});
 
 		it('should throw errors on deleting assets', async () => {
 			const { del_assets } = actor;
 
-			await expect(del_assets('test')).rejects.toThrow(JUNO_AUTH_ERROR_NOT_CONTROLLER);
+			await expect(del_assets('test')).rejects.toThrow(JUNO_AUTH_ERROR_NOT_WRITE_CONTROLLER);
 		});
 
 		it('should throw errors on counting assets', async () => {
 			const { count_collection_assets } = actor;
 
-			await expect(count_collection_assets('test')).rejects.toThrow(JUNO_AUTH_ERROR_NOT_CONTROLLER);
+			await expect(count_collection_assets('test')).rejects.toThrow(
+				JUNO_AUTH_ERROR_NOT_WRITE_CONTROLLER
+			);
 		});
 
 		it('should throw errors on deposit cycles', async () => {
@@ -733,7 +737,7 @@ describe('Satellite', () => {
 		it('should throw errors on memory size', async () => {
 			const { memory_size } = actor;
 
-			await expect(memory_size()).rejects.toThrow(JUNO_AUTH_ERROR_NOT_CONTROLLER);
+			await expect(memory_size()).rejects.toThrow(JUNO_AUTH_ERROR_NOT_WRITE_CONTROLLER);
 		});
 	});
 });

@@ -20,7 +20,7 @@ mod user;
 
 use crate::auth::types::config::AuthenticationConfig;
 use crate::db::types::config::DbConfig;
-use crate::guards::{caller_is_admin_controller, caller_is_controller};
+use crate::guards::{caller_is_admin_controller, caller_is_controller_with_write};
 use crate::types::interface::{Config, DeleteProposalAssets};
 use crate::types::state::CollectionType;
 use ic_cdk::api::call::ManualReply;
@@ -135,13 +135,13 @@ pub fn del_filtered_docs(collection: CollectionKey, filter: ListParams) {
 }
 
 #[doc(hidden)]
-#[update(guard = "caller_is_controller")]
+#[update(guard = "caller_is_controller_with_write")]
 pub fn del_docs(collection: CollectionKey) {
     api::db::del_docs(collection)
 }
 
 #[doc(hidden)]
-#[query(guard = "caller_is_controller")]
+#[query(guard = "caller_is_controller_with_write")]
 pub fn count_collection_docs(collection: CollectionKey) -> usize {
     api::db::count_collection_docs(collection)
 }
@@ -200,17 +200,17 @@ pub fn list_controllers() -> Controllers {
 // Proposal
 // ---------------------------------------------------------
 
-#[query(guard = "caller_is_controller")]
+#[query(guard = "caller_is_controller_with_write")]
 pub fn get_proposal(proposal_id: ProposalId) -> Option<Proposal> {
     api::cdn::get_proposal(&proposal_id)
 }
 
-#[update(guard = "caller_is_controller")]
+#[update(guard = "caller_is_controller_with_write")]
 pub fn init_proposal(proposal_type: ProposalType) -> (ProposalId, Proposal) {
     api::cdn::init_proposal(&proposal_type)
 }
 
-#[update(guard = "caller_is_controller")]
+#[update(guard = "caller_is_controller_with_write")]
 pub fn submit_proposal(proposal_id: ProposalId) -> (ProposalId, Proposal) {
     api::cdn::submit_proposal(&proposal_id)
 }
@@ -229,17 +229,17 @@ pub fn delete_proposal_assets(params: DeleteProposalAssets) {
 // Internal storage
 // ---------------------------------------------------------
 
-#[update(guard = "caller_is_controller")]
+#[update(guard = "caller_is_controller_with_write")]
 pub fn init_proposal_asset_upload(init: InitAssetKey, proposal_id: ProposalId) -> InitUploadResult {
     api::cdn::init_proposal_asset_upload(init, proposal_id)
 }
 
-#[update(guard = "caller_is_controller")]
+#[update(guard = "caller_is_controller_with_write")]
 pub fn upload_proposal_asset_chunk(chunk: UploadChunk) -> UploadChunkResult {
     api::cdn::upload_proposal_asset_chunk(chunk)
 }
 
-#[update(guard = "caller_is_controller")]
+#[update(guard = "caller_is_controller_with_write")]
 pub fn commit_proposal_asset_upload(commit: CommitBatch) {
     api::cdn::commit_proposal_asset_upload(commit)
 }
@@ -395,13 +395,13 @@ pub fn del_filtered_assets(collection: CollectionKey, filter: ListParams) {
 }
 
 #[doc(hidden)]
-#[update(guard = "caller_is_controller")]
+#[update(guard = "caller_is_controller_with_write")]
 pub fn del_assets(collection: CollectionKey) {
     api::storage::del_assets(collection);
 }
 
 #[doc(hidden)]
-#[query(guard = "caller_is_controller")]
+#[query(guard = "caller_is_controller_with_write")]
 pub fn count_collection_assets(collection: CollectionKey) -> usize {
     api::storage::count_collection_assets(collection)
 }
@@ -433,7 +433,7 @@ pub async fn deposit_cycles(args: DepositCyclesArgs) {
 }
 
 #[doc(hidden)]
-#[query(guard = "caller_is_controller")]
+#[query(guard = "caller_is_controller_with_write")]
 pub fn memory_size() -> MemorySize {
     junobuild_shared::canister::memory_size()
 }

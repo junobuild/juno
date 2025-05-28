@@ -8,7 +8,7 @@ import { toNullable } from '@dfinity/utils';
 import { type Actor, PocketIc } from '@hadronous/pic';
 import {
 	JUNO_AUTH_ERROR_NOT_ADMIN_CONTROLLER,
-	JUNO_AUTH_ERROR_NOT_CONTROLLER,
+	JUNO_AUTH_ERROR_NOT_WRITE_CONTROLLER,
 	JUNO_STORAGE_ERROR_UPLOAD_PATH_COLLECTION_PREFIX
 } from '@junobuild/errors';
 import { beforeAll, describe, expect, inject } from 'vitest';
@@ -80,12 +80,12 @@ describe('Satellite > Cdn', () => {
 		testNotAllowedCdnMethods({
 			actor: () => actor,
 			errorMsgAdminController: JUNO_AUTH_ERROR_NOT_ADMIN_CONTROLLER,
-			errorMsgController: JUNO_AUTH_ERROR_NOT_CONTROLLER
+			errorMsgController: JUNO_AUTH_ERROR_NOT_WRITE_CONTROLLER
 		});
 
 		testNotAllowedCdnMethodsInMSatellite({
 			actor: () => actor,
-			errorMsg: JUNO_AUTH_ERROR_NOT_CONTROLLER
+			errorMsg: JUNO_AUTH_ERROR_NOT_WRITE_CONTROLLER
 		});
 	});
 
@@ -98,12 +98,12 @@ describe('Satellite > Cdn', () => {
 		testNotAllowedCdnMethods({
 			actor: () => actor,
 			errorMsgAdminController: JUNO_AUTH_ERROR_NOT_ADMIN_CONTROLLER,
-			errorMsgController: JUNO_AUTH_ERROR_NOT_CONTROLLER
+			errorMsgController: JUNO_AUTH_ERROR_NOT_WRITE_CONTROLLER
 		});
 
 		testNotAllowedCdnMethodsInMSatellite({
 			actor: () => actor,
-			errorMsg: JUNO_AUTH_ERROR_NOT_CONTROLLER
+			errorMsg: JUNO_AUTH_ERROR_NOT_WRITE_CONTROLLER
 		});
 	});
 

@@ -279,6 +279,7 @@ export interface _SERVICE {
 	list_payments: ActorMethod<[], Array<[bigint, Payment]>>;
 	list_proposals: ActorMethod<[ListProposalsParams], ListProposalResults>;
 	list_user_mission_control_centers: ActorMethod<[], Array<[Principal, MissionControl]>>;
+	reject_proposal: ActorMethod<[CommitProposal], null>;
 	set_controllers: ActorMethod<[SetControllersArgs], undefined>;
 	set_custom_domain: ActorMethod<[string, [] | [string]], undefined>;
 	set_fee: ActorMethod<[SegmentKind, Tokens], undefined>;

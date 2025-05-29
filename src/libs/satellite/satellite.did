@@ -290,6 +290,7 @@ service : () -> {
   list_proposals : (ListProposalsParams) -> (ListProposalResults) query;
   list_rules : (CollectionType) -> (vec record { text; Rule }) query;
   memory_size : () -> (MemorySize) query;
+  reject_proposal : (CommitProposal) -> (null);
   set_auth_config : (AuthenticationConfig) -> ();
   set_controllers : (SetControllersArgs) -> (
       vec record { principal; Controller },

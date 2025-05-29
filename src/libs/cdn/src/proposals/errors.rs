@@ -4,11 +4,18 @@ pub const JUNO_CDN_PROPOSALS_ERROR_CANNOT_SUBMIT: &str = "juno.cdn.proposals.err
 pub const JUNO_CDN_PROPOSALS_ERROR_CANNOT_SUBMIT_INVALID_STATUS: &str =
     "juno.cdn.proposals.error.cannot_submit_invalid_status";
 
+// Cannot reject proposal.
+pub const JUNO_CDN_PROPOSALS_ERROR_CANNOT_REJECT: &str = "juno.cdn.proposals.error.cannot_reject";
+// Proposal cannot be rejected. Current status:
+pub const JUNO_CDN_PROPOSALS_ERROR_CANNOT_REJECT_INVALID_STATUS: &str =
+    "juno.cdn.proposals.error.cannot_reject_invalid_status";
+
 // Cannot commit proposal.
 pub const JUNO_CDN_PROPOSALS_ERROR_CANNOT_COMMIT: &str = "juno.cdn.proposals.error.cannot_commit";
 // Proposal cannot be committed. Current status:
 pub const JUNO_CDN_PROPOSALS_ERROR_CANNOT_COMMIT_INVALID_STATUS: &str =
     "juno.cdn.proposals.error.cannot_commit_invalid_status";
+
 // The provided SHA-256 hash ({}) does not match the expected value for the proposal to commit.
 pub const JUNO_CDN_PROPOSALS_ERROR_INVALID_HASH: &str = "juno.cdn.proposals.error.invalid_hash";
 

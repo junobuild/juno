@@ -3,7 +3,8 @@ use crate::cdn::helpers::stable::get_proposal as get_proposal_state;
 use crate::cdn::proposals::{
     commit_proposal as make_commit_proposal, count_proposals as count_proposals_state,
     delete_proposal_assets as delete_proposal_assets_proposal, init_proposal as make_init_proposal,
-    list_proposals as list_proposals_state, submit_proposal as make_submit_proposal,
+    list_proposals as list_proposals_state, reject_proposal as make_reject_proposal,
+    submit_proposal as make_submit_proposal,
 };
 use crate::cdn::strategies_impls::cdn::CdnHeap;
 use crate::cdn::strategies_impls::storage::StorageState;
@@ -15,6 +16,7 @@ use ic_cdk::trap;
 use ic_cdk_macros::{query, update};
 use junobuild_cdn::proposals::{
     CommitProposal, ListProposalResults, ListProposalsParams, Proposal, ProposalId, ProposalType,
+    RejectProposal,
 };
 use junobuild_shared::types::core::DomainName;
 use junobuild_shared::types::domain::CustomDomains;
@@ -50,6 +52,14 @@ fn submit_proposal(proposal_id: ProposalId) -> (ProposalId, Proposal) {
     let caller = caller();
 
     make_submit_proposal(caller, &proposal_id).unwrap_or_else(|e| trap(&e))
+}
+
+#[update(guard = "caller_is_admin_controller", manual_reply = true)]
+fn reject_proposal(proposal: RejectProposal) -> ManualReply<()> {
+    match make_reject_proposal(&proposal) {
+        Ok(_) => ManualReply::one(()),
+        Err(e) => ManualReply::reject(e.to_string()),
+    }
 }
 
 #[update(guard = "caller_is_admin_controller", manual_reply = true)]

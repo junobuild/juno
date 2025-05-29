@@ -2,7 +2,8 @@ use crate::cdn::strategies_impls::cdn::{CdnHeap, CdnStable, CdnWorkflow};
 use crate::metadata::update_releases_metadata;
 use candid::Principal;
 use junobuild_cdn::proposals::{
-    CommitProposal, CommitProposalError, ListProposalResults, ListProposalsParams,
+    CommitProposal, CommitProposalError, ListProposalResults, ListProposalsParams, RejectProposal,
+    RejectProposalError,
 };
 use junobuild_cdn::proposals::{Proposal, ProposalId, ProposalType};
 
@@ -26,6 +27,10 @@ pub fn submit_proposal(
     proposal_id: &ProposalId,
 ) -> Result<(ProposalId, Proposal), String> {
     junobuild_cdn::proposals::submit_proposal(&CdnStable, caller, proposal_id)
+}
+
+pub fn reject_proposal(proposition: &RejectProposal) -> Result<(), RejectProposalError> {
+    junobuild_cdn::proposals::reject_proposal(&CdnStable, proposition)
 }
 
 pub fn commit_proposal(proposition: &CommitProposal) -> Result<(), CommitProposalError> {

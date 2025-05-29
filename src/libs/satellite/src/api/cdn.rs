@@ -14,6 +14,7 @@ use ic_cdk::api::call::ManualReply;
 use ic_cdk::{caller, trap};
 use junobuild_cdn::proposals::{
     CommitProposal, ListProposalResults, ListProposalsParams, Proposal, ProposalId, ProposalType,
+    RejectProposal,
 };
 use junobuild_shared::types::core::DomainName;
 use junobuild_shared::types::domain::CustomDomains;
@@ -51,6 +52,13 @@ pub fn submit_proposal(proposal_id: &ProposalId) -> (ProposalId, Proposal) {
 
     junobuild_cdn::proposals::submit_proposal(&CdnStable, caller, proposal_id)
         .unwrap_or_else(|e| trap(&e))
+}
+
+pub fn reject_proposal(proposal: &RejectProposal) -> ManualReply<()> {
+    match junobuild_cdn::proposals::reject_proposal(&CdnStable, proposal) {
+        Ok(_) => ManualReply::one(()),
+        Err(e) => ManualReply::reject(e.to_string()),
+    }
 }
 
 pub fn commit_proposal(proposal: &CommitProposal) -> ManualReply<()> {

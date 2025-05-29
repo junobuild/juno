@@ -450,7 +450,7 @@ describe('Satellite > Cdn', () => {
 	});
 
 	describe('List', () => {
-		beforeAll(async () => {
+		beforeAll(() => {
 			actor.setIdentity(controller);
 		});
 

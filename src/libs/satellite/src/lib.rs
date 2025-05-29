@@ -485,9 +485,10 @@ macro_rules! include_satellite {
             get_many_assets, get_many_docs, get_proposal, get_storage_config, http_request,
             http_request_streaming_callback, init, init_asset_upload, init_proposal,
             init_proposal_asset_upload, list_assets, list_controllers, list_custom_domains,
-            list_docs, list_proposals, list_rules, post_upgrade, pre_upgrade, set_auth_config,
-            set_controllers, set_custom_domain, set_db_config, set_doc, set_many_docs, set_rule,
-            set_storage_config, submit_proposal, upload_asset_chunk, upload_proposal_asset_chunk,
+            list_docs, list_proposals, list_rules, post_upgrade, pre_upgrade, reject_proposal,
+            set_auth_config, set_controllers, set_custom_domain, set_db_config, set_doc,
+            set_many_docs, set_rule, set_storage_config, submit_proposal, upload_asset_chunk,
+            upload_proposal_asset_chunk,
         };
 
         ic_cdk::export_candid!();

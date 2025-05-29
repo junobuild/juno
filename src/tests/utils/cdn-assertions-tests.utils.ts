@@ -23,6 +23,7 @@ import type { Actor, PocketIc } from '@hadronous/pic';
 import {
 	JUNO_CDN_PROPOSALS_ERROR_CANNOT_COMMIT,
 	JUNO_CDN_PROPOSALS_ERROR_CANNOT_REJECT,
+	JUNO_CDN_PROPOSALS_ERROR_CANNOT_REJECT_INVALID_STATUS,
 	JUNO_CDN_PROPOSALS_ERROR_CANNOT_SUBMIT,
 	JUNO_CDN_PROPOSALS_ERROR_CANNOT_SUBMIT_INVALID_STATUS,
 	JUNO_CDN_PROPOSALS_ERROR_EMPTY_ASSETS,
@@ -257,7 +258,7 @@ export const testControlledCdnMethods = ({
 			} as ProposalType,
 			collection: fullPaths.segmentsCollection,
 			full_path: fullPaths.segmentsDeployment,
-			expected_proposal_id: expected_proposal_id + 1n
+			expected_proposal_id: expected_proposal_id + 2n // The proposal committed and the one we reject
 		}
 	])(
 		'Proposal, upload and serve',
@@ -306,9 +307,8 @@ export const testControlledCdnMethods = ({
 				).rejects.toThrow(`${JUNO_CDN_STORAGE_ERROR_NO_PROPOSAL_FOUND} (${unknownProposalId})`);
 			});
 
-			it('should upload asset', async () => {
+			const uploadProposalAsset = async (proposalId: bigint) => {
 				const {
-					http_request,
 					upload_proposal_asset_chunk,
 					init_proposal_asset_upload,
 					commit_proposal_asset_upload
@@ -337,6 +337,12 @@ export const testControlledCdnMethods = ({
 					chunk_ids: [chunk.chunk_id],
 					headers: []
 				});
+			};
+
+			it('should upload asset', async () => {
+				await uploadProposalAsset(proposalId);
+
+				const { http_request } = actor();
 
 				const { status_code } = await http_request({
 					body: [],
@@ -543,6 +549,94 @@ export const testControlledCdnMethods = ({
 				}
 
 				expect(assets.items.find(([fullPath]) => fullPath === full_path)).not.toBeUndefined();
+			});
+
+			describe('Reject', () => {
+				let rejectProposalId: bigint;
+				let rejectSha256: [] | [Uint8Array | number[]];
+
+				beforeAll(async () => {
+					const { init_proposal } = actor();
+
+					const [id, _] = await init_proposal(proposal_type);
+
+					rejectProposalId = id;
+
+					await uploadProposalAsset(id);
+				});
+
+				it('should fail at rejecting committed proposal', async () => {
+					const { reject_proposal } = actor({ requireController: true });
+
+					await expect(
+						reject_proposal({
+							sha256: fromNullable(sha256)!,
+							proposal_id: proposalId
+						})
+					).rejects.toThrow(`${JUNO_CDN_PROPOSALS_ERROR_CANNOT_REJECT_INVALID_STATUS} (Executed)`);
+				});
+
+				it('should fail at rejecting proposal not open', async () => {
+					const { reject_proposal } = actor({ requireController: true });
+
+					await expect(
+						reject_proposal({
+							sha256: fromNullable(sha256)!,
+							proposal_id: rejectProposalId
+						})
+					).rejects.toThrow(
+						`${JUNO_CDN_PROPOSALS_ERROR_CANNOT_REJECT_INVALID_STATUS} (Initialized)`
+					);
+				});
+
+				it('should fail at rejecting proposal with invalid sha256', async () => {
+					const { submit_proposal } = actor();
+
+					const [__, { sha256: sha }] = await submit_proposal(rejectProposalId);
+
+					rejectSha256 = sha;
+
+					const { reject_proposal } = actor({ requireController: true });
+
+					await expect(
+						reject_proposal({
+							sha256: fromNullable(sha256)!,
+							proposal_id: rejectProposalId
+						})
+					).rejects.toThrow(
+						`${JUNO_CDN_PROPOSALS_ERROR_INVALID_HASH} (${uint8ArrayToHexString(fromNullable(sha256) ?? [])})`
+					);
+				});
+
+				it('should reject proposal', async () => {
+					const { get_proposal } = actor();
+
+					const { reject_proposal } = actor({ requireController: true });
+
+					await expect(
+						reject_proposal({
+							sha256: fromNullable(rejectSha256)!,
+							proposal_id: rejectProposalId
+						})
+					).resolves.not.toThrow();
+
+					const proposal = fromNullable(await get_proposal(rejectProposalId));
+
+					assertNonNullish(proposal);
+
+					expect(proposal.status).toEqual({ Rejected: null });
+				});
+
+				it('should fail at rejecting proposal already rejected', async () => {
+					const { reject_proposal } = actor({ requireController: true });
+
+					await expect(
+						reject_proposal({
+							sha256: fromNullable(rejectSha256)!,
+							proposal_id: rejectProposalId
+						})
+					).rejects.toThrow(`${JUNO_CDN_PROPOSALS_ERROR_CANNOT_REJECT_INVALID_STATUS} (Rejected)`);
+				});
 			});
 		}
 	);
@@ -831,7 +925,7 @@ export const testCdnGetProposal = ({
 
 export const testCdnCountProposals = ({
 	actor,
-	proposalsLength = 17n
+	proposalsLength = 19n
 }: {
 	actor: () => Actor<SatelliteActor | ConsoleActor>;
 	proposalsLength?: bigint;
@@ -845,7 +939,7 @@ export const testCdnCountProposals = ({
 
 export const testCdnListProposals = ({
 	actor,
-	proposalsLength = 17n
+	proposalsLength = 19n
 }: {
 	actor: () => Actor<SatelliteActor | ConsoleActor>;
 	proposalsLength?: bigint;

@@ -183,7 +183,7 @@ describe('Satellite > Cdn', () => {
 			canisterId: () => canisterId,
 			caller: () => controllerReadWrite,
 			pic: () => pic,
-			expected_proposal_id: 5n,
+			expected_proposal_id: 7n,
 			fullPaths: {
 				assetsUpgrade: '/world.html',
 				segmentsDeployment: '/_juno/releases/satellite-v0.1.1.wasm.gz',
@@ -195,7 +195,7 @@ describe('Satellite > Cdn', () => {
 		testCdnGetProposal({
 			actor: () => actor,
 			owner: () => controllerReadWrite,
-			proposalId: 5n
+			proposalId: 7n
 		});
 
 		testCdnGetProposal({
@@ -324,7 +324,7 @@ describe('Satellite > Cdn', () => {
 				canisterId: () => canisterId,
 				caller: () => controllerSubmit,
 				pic: () => pic,
-				expected_proposal_id: 24n,
+				expected_proposal_id: 28n,
 				fullPaths: {
 					assetsUpgrade: '/magic.html',
 					segmentsDeployment: '/_juno/releases/satellite-v2.1.1.wasm.gz',
@@ -336,13 +336,13 @@ describe('Satellite > Cdn', () => {
 			testCdnGetProposal({
 				actor: () => actor,
 				owner: () => controllerSubmit,
-				proposalId: 24n
+				proposalId: 28n
 			});
 
 			testCdnGetProposal({
 				actor: () => actor,
 				owner: () => controllerReadWrite,
-				proposalId: 5n
+				proposalId: 7n
 			});
 
 			testCdnGetProposal({
@@ -356,7 +356,7 @@ describe('Satellite > Cdn', () => {
 					return actor;
 				},
 				owner: () => controllerSubmit,
-				proposalId: 24n
+				proposalId: 28n
 			});
 
 			testCdnGetProposal({
@@ -365,7 +365,7 @@ describe('Satellite > Cdn', () => {
 					return actor;
 				},
 				owner: () => controllerSubmit,
-				proposalId: 24n
+				proposalId: 28n
 			});
 		});
 
@@ -384,7 +384,7 @@ describe('Satellite > Cdn', () => {
 				canisterId: () => canisterId,
 				caller: () => controllerSubmit,
 				pic: () => pic,
-				expected_proposal_id: 28n,
+				expected_proposal_id: 34n,
 				fullPaths: {
 					assetsUpgrade: '/book.html',
 					segmentsDeployment: '/_juno/releases/satellite-v3.1.1.wasm.gz',
@@ -402,7 +402,7 @@ describe('Satellite > Cdn', () => {
 			testCdnGetProposal({
 				actor: () => actor,
 				owner: () => controllerReadWrite,
-				proposalId: 5n
+				proposalId: 7n
 			});
 
 			testCdnGetProposal({
@@ -456,12 +456,12 @@ describe('Satellite > Cdn', () => {
 
 		testCdnListProposals({
 			actor: () => actor,
-			proposalsLength: 31n
+			proposalsLength: 39n
 		});
 
 		testCdnCountProposals({
 			actor: () => actor,
-			proposalsLength: 31n
+			proposalsLength: 39n
 		});
 	});
 });

@@ -8,7 +8,7 @@ import { beforeAll, describe, inject } from 'vitest';
 import { CONTROLLER_ERROR_MSG } from '../../constants/console-tests.constants';
 import {
 	testCdnConfig,
-	testCdnGetProposal,
+	testCdnGetProposal, testCdnListProposals,
 	testCdnStorageSettings,
 	testControlledCdnMethods,
 	testGuardedAssetsCdnMethods,
@@ -110,6 +110,10 @@ describe('Console > Cdn', () => {
 		testCdnGetProposal({
 			actor: () => actor,
 			owner: () => controller
+		});
+
+		testCdnListProposals({
+			actor: () => actor,
 		});
 	});
 });

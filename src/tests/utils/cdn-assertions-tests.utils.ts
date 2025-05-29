@@ -31,6 +31,7 @@ import {
 	JUNO_CDN_STORAGE_ERROR_NO_PROPOSAL_FOUND
 } from '@junobuild/errors';
 import { describe, expect } from 'vitest';
+import { mockListProposalsParams } from '../mocks/list.mocks';
 import { mockBlob, mockHtml } from '../mocks/storage.mocks';
 import { uploadFile } from './cdn-tests.utils';
 import { assertCertification } from './certification-tests.utils';
@@ -783,6 +784,18 @@ export const testCdnGetProposal = ({
 		expect(proposal.updated_at).toBeGreaterThan(0n);
 		expect(proposal.updated_at).toBeGreaterThan(proposal.created_at);
 		expect(fromNullable(proposal.version) ?? 0n).toEqual(3n);
+	});
+};
+
+export const testCdnListProposals = ({
+	actor
+}: {
+	actor: () => Actor<SatelliteActor | ConsoleActor>;
+}) => {
+	it('should list all proposals', async () => {
+		const { list_proposals } = actor();
+
+		console.log(await list_proposals(mockListProposalsParams));
 	});
 };
 

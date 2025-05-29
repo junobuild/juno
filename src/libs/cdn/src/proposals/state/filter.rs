@@ -1,6 +1,8 @@
 use crate::proposals::{ListProposalsParams, ProposalKey};
 use std::ops::RangeBounds;
 
+const FIRST_PROPOSAL_ID: u128 = 1;
+
 pub fn filter_proposals_range(
     ListProposalsParams { paginate }: &ListProposalsParams,
 ) -> impl RangeBounds<ProposalKey> {
@@ -10,8 +12,8 @@ pub fn filter_proposals_range(
                 .start_after
                 .as_ref()
                 .map(|proposal_id| proposal_id.saturating_add(1))
-                .unwrap_or(u128::MIN),
-            None => u128::MIN,
+                .unwrap_or(FIRST_PROPOSAL_ID),
+            None => FIRST_PROPOSAL_ID,
         },
     };
 

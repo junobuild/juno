@@ -8,8 +8,10 @@ pub fn init_proposal(
     caller: Principal,
     proposal_type: &ProposalType,
 ) -> Result<(ProposalId, Proposal), String> {
-    let proposal_id = u128::try_from(count_proposals(cdn_stable) + 1)
-        .map_err(|_| "Cannot convert next proposal ID.")?;
+    let proposal_id = u128::try_from(count_proposals(cdn_stable))
+        .map_err(|_| "Cannot convert next proposal ID.".to_string())?
+        .checked_add(1)
+        .ok_or("Next proposal ID would overflow.".to_string())?;
 
     let proposal: Proposal = Proposal::init(caller, proposal_type);
 

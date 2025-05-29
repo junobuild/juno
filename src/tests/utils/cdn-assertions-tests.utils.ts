@@ -794,7 +794,7 @@ export const testCdnCountProposals = ({
 	actor: () => Actor<SatelliteActor | ConsoleActor>;
 	proposalsLength?: bigint;
 }) => {
-	it('should list all proposals', async () => {
+	it('should count all proposals', async () => {
 		const { count_proposals } = actor();
 
 		await expect(count_proposals()).resolves.toEqual(proposalsLength);

@@ -1,7 +1,6 @@
 import type { _SERVICE as SatelliteActor } from '$declarations/satellite/satellite.did';
 import { idlFactory as idlFactorSatellite } from '$declarations/satellite/satellite.factory.did';
 import { Ed25519KeyIdentity } from '@dfinity/identity';
-import type { Principal } from '@dfinity/principal';
 import { type Actor, PocketIc } from '@hadronous/pic';
 import { beforeAll, describe, inject } from 'vitest';
 import { mockListParams } from '../../../mocks/list.mocks';
@@ -12,8 +11,6 @@ describe('Satellite > Controllers', () => {
 	let pic: PocketIc;
 	let actor: Actor<SatelliteActor>;
 
-	let canisterId: Principal;
-
 	const controller = Ed25519KeyIdentity.generate();
 
 	const currentDate = new Date(2021, 6, 10, 0, 0, 0, 0);
@@ -23,7 +20,7 @@ describe('Satellite > Controllers', () => {
 
 		await pic.setTime(currentDate.getTime());
 
-		const { actor: c, canisterId: cId } = await pic.setupCanister<SatelliteActor>({
+		const { actor: c } = await pic.setupCanister<SatelliteActor>({
 			idlFactory: idlFactorSatellite,
 			wasm: SATELLITE_WASM_PATH,
 			arg: controllersInitArgs(controller),
@@ -32,8 +29,6 @@ describe('Satellite > Controllers', () => {
 
 		actor = c;
 		actor.setIdentity(controller);
-
-		canisterId = cId;
 	});
 
 	afterAll(async () => {

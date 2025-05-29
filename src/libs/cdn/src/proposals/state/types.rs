@@ -55,3 +55,16 @@ pub enum ProposalStatus {
     Executed,
     Failed,
 }
+
+#[derive(CandidType, Deserialize, Clone)]
+pub struct ListProposalsParams {
+    pub paginate: Option<ListProposalsPaginate>,
+}
+
+#[derive(Default, CandidType, Deserialize, Clone)]
+pub struct ListProposalsPaginate {
+    pub start_after: Option<ProposalId>,
+    pub limit: Option<u128>,
+}
+
+pub type ProposalList = Vec<(ProposalKey, Proposal)>;

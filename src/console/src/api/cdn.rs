@@ -2,7 +2,8 @@ use crate::cdn::certified_assets::upgrade::defer_init_certified_assets;
 use crate::cdn::helpers::stable::get_proposal as get_proposal_state;
 use crate::cdn::proposals::{
     commit_proposal as make_commit_proposal,
-    delete_proposal_assets as delete_proposal_assets_proposal, init_proposal as make_init_proposal,
+    delete_proposal_assets as delete_proposal_assets_proposal,
+    list_proposals as list_proposals_state, init_proposal as make_init_proposal,
     submit_proposal as make_submit_proposal,
 };
 use crate::cdn::strategies_impls::cdn::CdnHeap;
@@ -13,7 +14,9 @@ use ic_cdk::api::call::ManualReply;
 use ic_cdk::api::caller;
 use ic_cdk::trap;
 use ic_cdk_macros::{query, update};
-use junobuild_cdn::proposals::{CommitProposal, Proposal, ProposalId, ProposalType};
+use junobuild_cdn::proposals::{
+    CommitProposal, ListProposalsParams, Proposal, ProposalId, ProposalList, ProposalType,
+};
 use junobuild_shared::types::core::DomainName;
 use junobuild_shared::types::domain::CustomDomains;
 
@@ -24,6 +27,11 @@ use junobuild_shared::types::domain::CustomDomains;
 #[query]
 fn get_proposal(proposal_id: ProposalId) -> Option<Proposal> {
     get_proposal_state(&proposal_id)
+}
+
+#[query]
+fn list_proposals_(filter: ListProposalsParams) -> ProposalList {
+    list_proposals_state(&filter)
 }
 
 #[update(guard = "caller_is_admin_controller")]

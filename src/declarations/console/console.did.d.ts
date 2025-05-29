@@ -119,6 +119,13 @@ export interface ListParams {
 	matcher: [] | [ListMatcher];
 	paginate: [] | [ListPaginate];
 }
+export interface ListProposalsPaginate {
+	start_after: [] | [bigint];
+	limit: [] | [bigint];
+}
+export interface ListProposalsParams {
+	paginate: [] | [ListProposalsPaginate];
+}
 export interface ListResults {
 	matches_pages: [] | [bigint];
 	matches_length: bigint;
@@ -152,6 +159,9 @@ export interface Proposal {
 	created_at: bigint;
 	version: [] | [bigint];
 	proposal_type: ProposalType;
+}
+export interface ProposalKey {
+	proposal_id: bigint;
 }
 export type ProposalStatus =
 	| { Initialized: null }
@@ -261,6 +271,7 @@ export interface _SERVICE {
 	list_controllers: ActorMethod<[], Array<[Principal, Controller]>>;
 	list_custom_domains: ActorMethod<[], Array<[string, CustomDomain]>>;
 	list_payments: ActorMethod<[], Array<[bigint, Payment]>>;
+	list_proposals_: ActorMethod<[ListProposalsParams], Array<[ProposalKey, Proposal]>>;
 	list_user_mission_control_centers: ActorMethod<[], Array<[Principal, MissionControl]>>;
 	set_controllers: ActorMethod<[SetControllersArgs], undefined>;
 	set_custom_domain: ActorMethod<[string, [] | [string]], undefined>;

@@ -28,7 +28,9 @@ use crate::types::state::CollectionType;
 use ic_cdk::api::call::ManualReply;
 use ic_cdk::api::trap;
 use ic_cdk_macros::{init, post_upgrade, pre_upgrade, query, update};
-use junobuild_cdn::proposals::{CommitProposal, Proposal, ProposalId, ProposalType};
+use junobuild_cdn::proposals::{
+    CommitProposal, ListProposalsParams, Proposal, ProposalId, ProposalList, ProposalType,
+};
 use junobuild_collections::types::core::CollectionKey;
 use junobuild_collections::types::interface::{DelRule, SetRule};
 use junobuild_collections::types::rules::Rule;
@@ -205,6 +207,11 @@ pub fn list_controllers() -> Controllers {
 #[query(guard = "caller_is_controller")]
 pub fn get_proposal(proposal_id: ProposalId) -> Option<Proposal> {
     api::cdn::get_proposal(&proposal_id)
+}
+
+#[query(guard = "caller_is_controller")]
+pub fn list_proposals(filter: ListProposalsParams) -> ProposalList {
+    api::cdn::list_proposals(&filter)
 }
 
 #[update(guard = "caller_is_controller")]
@@ -467,9 +474,9 @@ macro_rules! include_satellite {
             get_many_assets, get_many_docs, get_proposal, get_storage_config, http_request,
             http_request_streaming_callback, init, init_asset_upload, init_proposal,
             init_proposal_asset_upload, list_assets, list_controllers, list_custom_domains,
-            list_docs, list_rules, post_upgrade, pre_upgrade, set_auth_config, set_controllers,
-            set_custom_domain, set_db_config, set_doc, set_many_docs, set_rule, set_storage_config,
-            submit_proposal, upload_asset_chunk, upload_proposal_asset_chunk,
+            list_docs, list_proposals, list_rules, post_upgrade, pre_upgrade, set_auth_config,
+            set_controllers, set_custom_domain, set_db_config, set_doc, set_many_docs, set_rule,
+            set_storage_config, submit_proposal, upload_asset_chunk, upload_proposal_asset_chunk,
         };
 
         ic_cdk::export_candid!();

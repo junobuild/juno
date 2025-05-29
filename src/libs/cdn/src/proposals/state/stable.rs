@@ -1,4 +1,7 @@
-use crate::proposals::{Proposal, ProposalId, ProposalKey, ProposalsStable};
+use crate::proposals::state::filter::filter_proposals_range;
+use crate::proposals::{
+    ListProposalsParams, Proposal, ProposalId, ProposalKey, ProposalList, ProposalsStable,
+};
 use crate::strategies::CdnStableStrategy;
 
 pub fn get_proposal(
@@ -10,6 +13,17 @@ pub fn get_proposal(
 
 fn get_proposal_impl(proposal_id: &ProposalId, proposals: &ProposalsStable) -> Option<Proposal> {
     proposals.get(&proposal_key(proposal_id))
+}
+
+pub fn list_proposals(
+    cdn_stable: &impl CdnStableStrategy,
+    filters: &ListProposalsParams,
+) -> ProposalList {
+    cdn_stable.with_proposals(|proposals| list_proposals_impl(filters, proposals))
+}
+
+fn list_proposals_impl(filters: &ListProposalsParams, proposals: &ProposalsStable) -> ProposalList {
+    proposals.range(filter_proposals_range(filters)).collect()
 }
 
 pub fn count_proposals(cdn_stable: &impl CdnStableStrategy) -> usize {

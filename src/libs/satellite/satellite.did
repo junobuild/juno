@@ -105,6 +105,8 @@ type ListParams = record {
   matcher : opt ListMatcher;
   paginate : opt ListPaginate;
 };
+type ListProposalsPaginate = record { start_after : opt nat; limit : opt nat };
+type ListProposalsParams = record { paginate : opt ListProposalsPaginate };
 type ListResults = record {
   matches_pages : opt nat64;
   matches_length : nat64;
@@ -132,6 +134,7 @@ type Proposal = record {
   version : opt nat64;
   proposal_type : ProposalType;
 };
+type ProposalKey = record { proposal_id : nat };
 type ProposalStatus = variant {
   Initialized;
   Failed;
@@ -278,6 +281,9 @@ service : () -> {
   list_controllers : () -> (vec record { principal; Controller }) query;
   list_custom_domains : () -> (vec record { text; CustomDomain }) query;
   list_docs : (text, ListParams) -> (ListResults_1) query;
+  list_proposals : (ListProposalsParams) -> (
+      vec record { ProposalKey; Proposal },
+    ) query;
   list_rules : (CollectionType) -> (vec record { text; Rule }) query;
   memory_size : () -> (MemorySize) query;
   set_auth_config : (AuthenticationConfig) -> ();

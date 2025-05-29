@@ -91,6 +91,13 @@ type ListParams = record {
   matcher : opt ListMatcher;
   paginate : opt ListPaginate;
 };
+type ListProposalResults = record {
+  matches_length : nat64;
+  items : vec record { ProposalKey; Proposal };
+  items_length : nat64;
+};
+type ListProposalsPaginate = record { start_after : opt nat; limit : opt nat };
+type ListProposalsParams = record { paginate : opt ListProposalsPaginate };
 type ListResults = record {
   matches_pages : opt nat64;
   matches_length : nat64;
@@ -125,6 +132,7 @@ type Proposal = record {
   version : opt nat64;
   proposal_type : ProposalType;
 };
+type ProposalKey = record { proposal_id : nat };
 type ProposalStatus = variant {
   Initialized;
   Failed;
@@ -202,6 +210,7 @@ service : () -> {
   assert_mission_control_center : (AssertMissionControlCenterArgs) -> () query;
   commit_proposal : (CommitProposal) -> (null);
   commit_proposal_asset_upload : (CommitBatch) -> ();
+  count_proposals : () -> (nat64) query;
   create_orbiter : (CreateCanisterArgs) -> (principal);
   create_satellite : (CreateCanisterArgs) -> (principal);
   del_controllers : (DeleteControllersArgs) -> ();
@@ -225,6 +234,7 @@ service : () -> {
   list_controllers : () -> (vec record { principal; Controller }) query;
   list_custom_domains : () -> (vec record { text; CustomDomain }) query;
   list_payments : () -> (vec record { nat64; Payment }) query;
+  list_proposals : (ListProposalsParams) -> (ListProposalResults) query;
   list_user_mission_control_centers : () -> (
       vec record { principal; MissionControl },
     ) query;

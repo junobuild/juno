@@ -7,7 +7,6 @@ import { beforeAll, describe, inject } from 'vitest';
 import { mockListParams } from '../../../mocks/list.mocks';
 import { uploadAsset } from '../../../utils/satellite-storage-tests.utils';
 import { controllersInitArgs, SATELLITE_WASM_PATH } from '../../../utils/setup-tests.utils';
-import { isNullish } from '@dfinity/utils';
 
 describe('Satellite > Controllers', () => {
 	let pic: PocketIc;
@@ -90,6 +89,7 @@ describe('Satellite > Controllers', () => {
 
 			for (let i = 0; i < ITEMS.length; i++) {
 				const asset = items.find(([fullPath, _]) => fullPath === `/hello/hello-${i}.html`);
+
 				expect(asset).not.toBeUndefined();
 			}
 		});

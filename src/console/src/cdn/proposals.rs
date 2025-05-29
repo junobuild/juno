@@ -1,8 +1,18 @@
 use crate::cdn::strategies_impls::cdn::{CdnHeap, CdnStable, CdnWorkflow};
 use crate::metadata::update_releases_metadata;
 use candid::Principal;
-use junobuild_cdn::proposals::{CommitProposal, CommitProposalError};
+use junobuild_cdn::proposals::{
+    CommitProposal, CommitProposalError, ListProposalResults, ListProposalsParams,
+};
 use junobuild_cdn::proposals::{Proposal, ProposalId, ProposalType};
+
+pub fn list_proposals(filter: &ListProposalsParams) -> ListProposalResults {
+    junobuild_cdn::proposals::stable::list_proposals(&CdnStable, filter)
+}
+
+pub fn count_proposals() -> usize {
+    junobuild_cdn::proposals::stable::count_proposals(&CdnStable)
+}
 
 pub fn init_proposal(
     caller: Principal,

@@ -12,7 +12,9 @@ use crate::storage::store::{
 use crate::types::interface::DeleteProposalAssets;
 use ic_cdk::api::call::ManualReply;
 use ic_cdk::{caller, trap};
-use junobuild_cdn::proposals::{CommitProposal, Proposal, ProposalId, ProposalType};
+use junobuild_cdn::proposals::{
+    CommitProposal, ListProposalResults, ListProposalsParams, Proposal, ProposalId, ProposalType,
+};
 use junobuild_shared::types::core::DomainName;
 use junobuild_shared::types::domain::CustomDomains;
 use junobuild_shared::types::state::Controllers;
@@ -27,6 +29,14 @@ use junobuild_storage::types::interface::{
 
 pub fn get_proposal(proposal_id: &ProposalId) -> Option<Proposal> {
     cdn_get_proposal(proposal_id)
+}
+
+pub fn list_proposals(filter: &ListProposalsParams) -> ListProposalResults {
+    junobuild_cdn::proposals::stable::list_proposals(&CdnStable, filter)
+}
+
+pub fn count_proposals() -> usize {
+    junobuild_cdn::proposals::stable::count_proposals(&CdnStable)
 }
 
 pub fn init_proposal(proposal_type: &ProposalType) -> (ProposalId, Proposal) {

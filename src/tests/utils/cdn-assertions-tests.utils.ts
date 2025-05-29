@@ -31,6 +31,7 @@ import {
 	JUNO_CDN_STORAGE_ERROR_NO_PROPOSAL_FOUND
 } from '@junobuild/errors';
 import { describe, expect } from 'vitest';
+import { mockListProposalsParams } from '../mocks/list.mocks';
 import { mockBlob, mockHtml } from '../mocks/storage.mocks';
 import { uploadFile } from './cdn-tests.utils';
 import { assertCertification } from './certification-tests.utils';
@@ -783,6 +784,121 @@ export const testCdnGetProposal = ({
 		expect(proposal.updated_at).toBeGreaterThan(0n);
 		expect(proposal.updated_at).toBeGreaterThan(proposal.created_at);
 		expect(fromNullable(proposal.version) ?? 0n).toEqual(3n);
+	});
+};
+
+export const testCdnCountProposals = ({
+	actor,
+	proposalsLength = 17n
+}: {
+	actor: () => Actor<SatelliteActor | ConsoleActor>;
+	proposalsLength?: bigint;
+}) => {
+	it('should list all proposals', async () => {
+		const { count_proposals } = actor();
+
+		await expect(count_proposals()).resolves.toEqual(proposalsLength);
+	});
+};
+
+export const testCdnListProposals = ({
+	actor,
+	proposalsLength = 17n
+}: {
+	actor: () => Actor<SatelliteActor | ConsoleActor>;
+	proposalsLength?: bigint;
+}) => {
+	it('should list all proposals', async () => {
+		const { list_proposals } = actor();
+
+		const { items, items_length, matches_length } = await list_proposals(mockListProposalsParams);
+
+		expect(items).toHaveLength(Number(proposalsLength));
+		expect(items_length).toEqual(proposalsLength);
+		expect(matches_length).toEqual(proposalsLength);
+	});
+
+	it('should list start after', async () => {
+		const { list_proposals } = actor();
+
+		const startAfter = 5n;
+
+		const { items, items_length, matches_length } = await list_proposals({
+			...mockListProposalsParams,
+			paginate: toNullable({
+				start_after: toNullable(startAfter),
+				limit: toNullable()
+			})
+		});
+
+		expect(items).toHaveLength(Number(proposalsLength - startAfter));
+		expect(items_length).toEqual(proposalsLength - startAfter);
+		expect(matches_length).toEqual(proposalsLength);
+
+		expect(items[0][0].proposal_id).toEqual(startAfter + 1n);
+	});
+
+	it('should list limit', async () => {
+		const { list_proposals } = actor();
+
+		const limit = 10n;
+
+		const { items, items_length, matches_length } = await list_proposals({
+			...mockListProposalsParams,
+			paginate: toNullable({
+				start_after: toNullable(),
+				limit: toNullable(limit)
+			})
+		});
+
+		expect(items).toHaveLength(Number(limit));
+		expect(items_length).toEqual(limit);
+		expect(matches_length).toEqual(proposalsLength);
+
+		expect(items[0][0].proposal_id).toEqual(1n);
+		expect(items[items.length - 1][0].proposal_id).toEqual(limit);
+	});
+
+	it('should list start after and limit', async () => {
+		const { list_proposals } = actor();
+
+		const startAfter = 5n;
+		const limit = 10n;
+
+		const { items, items_length, matches_length } = await list_proposals({
+			...mockListProposalsParams,
+			paginate: toNullable({
+				start_after: toNullable(startAfter),
+				limit: toNullable(limit)
+			})
+		});
+
+		expect(items).toHaveLength(Number(limit));
+		expect(items_length).toEqual(limit);
+		expect(matches_length).toEqual(proposalsLength);
+
+		expect(items[0][0].proposal_id).toEqual(startAfter + 1n);
+		expect(items[items.length - 1][0].proposal_id).toEqual(limit + startAfter);
+	});
+
+	it('should list less limit if length is reached', async () => {
+		const { list_proposals } = actor();
+
+		const length = 4n;
+		const startAfter = proposalsLength - length;
+		const limit = 10n;
+
+		const { items, items_length, matches_length } = await list_proposals({
+			...mockListProposalsParams,
+			paginate: toNullable({
+				start_after: toNullable(startAfter),
+				limit: toNullable(limit)
+			})
+		});
+
+		expect(items).toHaveLength(Number(length));
+		expect(items_length).toEqual(length);
+		expect(matches_length).toEqual(proposalsLength);
 	});
 };
 

@@ -218,6 +218,19 @@ export const idlFactory = ({ IDL }) => {
 		created_at: IDL.Nat64,
 		block_index_refunded: IDL.Opt(IDL.Nat64)
 	});
+	const ListProposalsPaginate = IDL.Record({
+		start_after: IDL.Opt(IDL.Nat),
+		limit: IDL.Opt(IDL.Nat)
+	});
+	const ListProposalsParams = IDL.Record({
+		paginate: IDL.Opt(ListProposalsPaginate)
+	});
+	const ProposalKey = IDL.Record({ proposal_id: IDL.Nat });
+	const ListProposalResults = IDL.Record({
+		matches_length: IDL.Nat64,
+		items: IDL.Vec(IDL.Tuple(ProposalKey, Proposal)),
+		items_length: IDL.Nat64
+	});
 	const SetController = IDL.Record({
 		metadata: IDL.Vec(IDL.Tuple(IDL.Text, IDL.Text)),
 		scope: ControllerScope,
@@ -248,6 +261,7 @@ export const idlFactory = ({ IDL }) => {
 		assert_mission_control_center: IDL.Func([AssertMissionControlCenterArgs], [], []),
 		commit_proposal: IDL.Func([CommitProposal], [IDL.Null], []),
 		commit_proposal_asset_upload: IDL.Func([CommitBatch], [], []),
+		count_proposals: IDL.Func([], [IDL.Nat64], []),
 		create_orbiter: IDL.Func([CreateCanisterArgs], [IDL.Principal], []),
 		create_satellite: IDL.Func([CreateCanisterArgs], [IDL.Principal], []),
 		del_controllers: IDL.Func([DeleteControllersArgs], [], []),
@@ -273,6 +287,7 @@ export const idlFactory = ({ IDL }) => {
 		list_controllers: IDL.Func([], [IDL.Vec(IDL.Tuple(IDL.Principal, Controller))], []),
 		list_custom_domains: IDL.Func([], [IDL.Vec(IDL.Tuple(IDL.Text, CustomDomain))], []),
 		list_payments: IDL.Func([], [IDL.Vec(IDL.Tuple(IDL.Nat64, Payment))], []),
+		list_proposals: IDL.Func([ListProposalsParams], [ListProposalResults], []),
 		list_user_mission_control_centers: IDL.Func(
 			[],
 			[IDL.Vec(IDL.Tuple(IDL.Principal, MissionControl))],

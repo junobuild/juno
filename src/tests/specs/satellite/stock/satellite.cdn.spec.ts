@@ -1,4 +1,3 @@
-import type { _SERVICE as ConsoleActor } from '$declarations/console/console.did';
 import type { _SERVICE as SatelliteActor, SetRule } from '$declarations/satellite/satellite.did';
 import { idlFactory as idlFactorSatellite } from '$declarations/satellite/satellite.factory.did';
 import { AnonymousIdentity } from '@dfinity/agent';
@@ -13,9 +12,12 @@ import {
 	JUNO_STORAGE_ERROR_UPLOAD_PATH_COLLECTION_PREFIX
 } from '@junobuild/errors';
 import { beforeAll, describe, expect, inject } from 'vitest';
+import { mockListProposalsParams } from '../../../mocks/list.mocks';
 import {
 	testCdnConfig,
+	testCdnCountProposals,
 	testCdnGetProposal,
+	testCdnListProposals,
 	testCdnStorageSettings,
 	testControlledCdnMethods,
 	testNotAllowedCdnMethods,
@@ -61,17 +63,29 @@ describe('Satellite > Cdn', () => {
 		await pic?.tearDown();
 	});
 
-	const testNotAllowedCdnMethodsInMSatellite = ({
+	const testNotAllowedCdnMethodsInSatellite = ({
 		actor,
 		errorMsg
 	}: {
-		actor: () => Actor<SatelliteActor | ConsoleActor>;
+		actor: () => Actor<SatelliteActor>;
 		errorMsg: string;
 	}) => {
 		it('should throw errors on get proposal', async () => {
 			const { get_proposal } = actor();
 
 			await expect(get_proposal(1n)).rejects.toThrow(errorMsg);
+		});
+
+		it('should throw errors on lists proposals', async () => {
+			const { list_proposals } = actor();
+
+			await expect(list_proposals(mockListProposalsParams)).rejects.toThrow(errorMsg);
+		});
+
+		it('should throw errors on count proposals', async () => {
+			const { count_proposals } = actor();
+
+			await expect(count_proposals()).rejects.toThrow(errorMsg);
 		});
 	};
 
@@ -87,7 +101,7 @@ describe('Satellite > Cdn', () => {
 			errorMsgController: JUNO_AUTH_ERROR_NOT_CONTROLLER
 		});
 
-		testNotAllowedCdnMethodsInMSatellite({
+		testNotAllowedCdnMethodsInSatellite({
 			actor: () => actor,
 			errorMsg: JUNO_AUTH_ERROR_NOT_CONTROLLER
 		});
@@ -106,7 +120,7 @@ describe('Satellite > Cdn', () => {
 			errorMsgController: JUNO_AUTH_ERROR_NOT_CONTROLLER
 		});
 
-		testNotAllowedCdnMethodsInMSatellite({
+		testNotAllowedCdnMethodsInSatellite({
 			actor: () => actor,
 			errorMsg: JUNO_AUTH_ERROR_NOT_CONTROLLER
 		});
@@ -432,6 +446,22 @@ describe('Satellite > Cdn', () => {
 			await expect(delete_proposal_assets({ proposal_ids: [1n] })).rejects.toThrow(
 				JUNO_AUTH_ERROR_NOT_WRITE_CONTROLLER
 			);
+		});
+	});
+
+	describe('List', () => {
+		beforeAll(async () => {
+			actor.setIdentity(controller);
+		});
+
+		testCdnListProposals({
+			actor: () => actor,
+			proposalsLength: 31n
+		});
+
+		testCdnCountProposals({
+			actor: () => actor,
+			proposalsLength: 31n
 		});
 	});
 });

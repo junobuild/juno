@@ -24,6 +24,8 @@ use ic_cdk::api::call::ManualReply;
 use ic_cdk_macros::export_candid;
 use ic_ledger_types::Tokens;
 use junobuild_cdn::proposals::CommitProposal;
+use junobuild_cdn::proposals::ListProposalResults;
+use junobuild_cdn::proposals::ListProposalsParams;
 use junobuild_cdn::proposals::Proposal;
 use junobuild_cdn::proposals::ProposalId;
 use junobuild_cdn::proposals::ProposalType;

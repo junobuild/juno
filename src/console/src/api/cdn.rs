@@ -54,7 +54,7 @@ fn submit_proposal(proposal_id: ProposalId) -> (ProposalId, Proposal) {
     make_submit_proposal(caller, &proposal_id).unwrap_or_else(|e| trap(&e))
 }
 
-#[update(guard = "caller_is_admin_controller")]
+#[update(guard = "caller_is_admin_controller", manual_reply = true)]
 fn reject_proposal(proposal: RejectProposal) -> ManualReply<()> {
     match make_reject_proposal(&proposal) {
         Ok(_) => ManualReply::one(()),

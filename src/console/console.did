@@ -228,7 +228,7 @@ service : () -> {
   list_controllers : () -> (vec record { principal; Controller }) query;
   list_custom_domains : () -> (vec record { text; CustomDomain }) query;
   list_payments : () -> (vec record { nat64; Payment }) query;
-  list_proposals_ : (ListProposalsParams) -> (
+  list_proposals : (ListProposalsParams) -> (
       vec record { ProposalKey; Proposal },
     ) query;
   list_user_mission_control_centers : () -> (

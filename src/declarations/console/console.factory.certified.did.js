@@ -281,7 +281,7 @@ export const idlFactory = ({ IDL }) => {
 		list_controllers: IDL.Func([], [IDL.Vec(IDL.Tuple(IDL.Principal, Controller))], []),
 		list_custom_domains: IDL.Func([], [IDL.Vec(IDL.Tuple(IDL.Text, CustomDomain))], []),
 		list_payments: IDL.Func([], [IDL.Vec(IDL.Tuple(IDL.Nat64, Payment))], []),
-		list_proposals_: IDL.Func(
+		list_proposals: IDL.Func(
 			[ListProposalsParams],
 			[IDL.Vec(IDL.Tuple(ProposalKey, Proposal))],
 			[]

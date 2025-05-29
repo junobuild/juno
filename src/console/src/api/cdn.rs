@@ -30,7 +30,7 @@ fn get_proposal(proposal_id: ProposalId) -> Option<Proposal> {
 }
 
 #[query]
-fn list_proposals_(filter: ListProposalsParams) -> ProposalList {
+fn list_proposals(filter: ListProposalsParams) -> ProposalList {
     list_proposals_state(&filter)
 }
 

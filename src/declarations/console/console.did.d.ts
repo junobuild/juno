@@ -271,7 +271,7 @@ export interface _SERVICE {
 	list_controllers: ActorMethod<[], Array<[Principal, Controller]>>;
 	list_custom_domains: ActorMethod<[], Array<[string, CustomDomain]>>;
 	list_payments: ActorMethod<[], Array<[bigint, Payment]>>;
-	list_proposals_: ActorMethod<[ListProposalsParams], Array<[ProposalKey, Proposal]>>;
+	list_proposals: ActorMethod<[ListProposalsParams], Array<[ProposalKey, Proposal]>>;
 	list_user_mission_control_centers: ActorMethod<[], Array<[Principal, MissionControl]>>;
 	set_controllers: ActorMethod<[SetControllersArgs], undefined>;
 	set_custom_domain: ActorMethod<[string, [] | [string]], undefined>;

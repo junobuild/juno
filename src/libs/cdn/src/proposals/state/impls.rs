@@ -69,6 +69,19 @@ impl Proposal {
         }
     }
 
+    pub fn reject(current_proposal: &Proposal) -> Self {
+        let now = time();
+
+        let version = Self::get_next_version(&Some(current_proposal.clone()));
+
+        Proposal {
+            status: ProposalStatus::Rejected,
+            updated_at: now,
+            version: Some(version),
+            ..current_proposal.clone()
+        }
+    }
+
     pub fn accept(current_proposal: &Proposal) -> Self {
         let now = time();
 

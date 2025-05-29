@@ -11,4 +11,5 @@ pub use workflows::commit::*;
 pub use workflows::delete::*;
 pub use workflows::init::*;
 pub use workflows::pre_commit_assets::*;
+pub use workflows::reject::*;
 pub use workflows::submit::*;

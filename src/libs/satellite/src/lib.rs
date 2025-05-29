@@ -30,6 +30,7 @@ use ic_cdk::api::trap;
 use ic_cdk_macros::{init, post_upgrade, pre_upgrade, query, update};
 use junobuild_cdn::proposals::{
     CommitProposal, ListProposalResults, ListProposalsParams, Proposal, ProposalId, ProposalType,
+    RejectProposal,
 };
 use junobuild_collections::types::core::CollectionKey;
 use junobuild_collections::types::interface::{DelRule, SetRule};
@@ -227,6 +228,11 @@ pub fn init_proposal(proposal_type: ProposalType) -> (ProposalId, Proposal) {
 #[update(guard = "caller_is_controller")]
 pub fn submit_proposal(proposal_id: ProposalId) -> (ProposalId, Proposal) {
     api::cdn::submit_proposal(&proposal_id)
+}
+
+#[update(guard = "caller_is_controller_with_write", manual_reply = true)]
+pub fn reject_proposal(proposal: RejectProposal) -> ManualReply<()> {
+    api::cdn::reject_proposal(&proposal)
 }
 
 #[update(guard = "caller_is_controller_with_write", manual_reply = true)]

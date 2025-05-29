@@ -293,6 +293,7 @@ export const idlFactory = ({ IDL }) => {
 			[IDL.Vec(IDL.Tuple(IDL.Principal, MissionControl))],
 			['query']
 		),
+		reject_proposal: IDL.Func([CommitProposal], [IDL.Null], []),
 		set_controllers: IDL.Func([SetControllersArgs], [], []),
 		set_custom_domain: IDL.Func([IDL.Text, IDL.Opt(IDL.Text)], [], []),
 		set_fee: IDL.Func([SegmentKind, Tokens], [], []),

@@ -339,6 +339,7 @@ export interface _SERVICE {
 	list_proposals: ActorMethod<[ListProposalsParams], ListProposalResults>;
 	list_rules: ActorMethod<[CollectionType], Array<[string, Rule]>>;
 	memory_size: ActorMethod<[], MemorySize>;
+	reject_proposal: ActorMethod<[CommitProposal], null>;
 	set_auth_config: ActorMethod<[AuthenticationConfig], undefined>;
 	set_controllers: ActorMethod<[SetControllersArgs], Array<[Principal, Controller]>>;
 	set_custom_domain: ActorMethod<[string, [] | [string]], undefined>;

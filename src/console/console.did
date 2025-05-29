@@ -238,6 +238,7 @@ service : () -> {
   list_user_mission_control_centers : () -> (
       vec record { principal; MissionControl },
     ) query;
+  reject_proposal : (CommitProposal) -> (null);
   set_controllers : (SetControllersArgs) -> ();
   set_custom_domain : (text, opt text) -> ();
   set_fee : (SegmentKind, Tokens) -> ();

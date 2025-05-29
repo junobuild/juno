@@ -448,7 +448,8 @@ describe('Satellite > Cdn', () => {
 		});
 
 		testCdnListProposals({
-			actor: () => actor
+			actor: () => actor,
+			proposalsLength: 31n
 		});
 	});
 });

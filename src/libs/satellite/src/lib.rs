@@ -29,7 +29,7 @@ use ic_cdk::api::call::ManualReply;
 use ic_cdk::api::trap;
 use ic_cdk_macros::{init, post_upgrade, pre_upgrade, query, update};
 use junobuild_cdn::proposals::{
-    CommitProposal, ListProposalsParams, Proposal, ProposalId, ProposalList, ProposalType,
+    CommitProposal, ListProposalResults, ListProposalsParams, Proposal, ProposalId, ProposalType,
 };
 use junobuild_collections::types::core::CollectionKey;
 use junobuild_collections::types::interface::{DelRule, SetRule};
@@ -210,7 +210,7 @@ pub fn get_proposal(proposal_id: ProposalId) -> Option<Proposal> {
 }
 
 #[query(guard = "caller_is_controller")]
-pub fn list_proposals(filter: ListProposalsParams) -> ProposalList {
+pub fn list_proposals(filter: ListProposalsParams) -> ListProposalResults {
     api::cdn::list_proposals(&filter)
 }
 

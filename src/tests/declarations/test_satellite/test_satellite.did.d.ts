@@ -138,6 +138,11 @@ export interface ListParams {
 	matcher: [] | [ListMatcher];
 	paginate: [] | [ListPaginate];
 }
+export interface ListProposalResults {
+	matches_length: bigint;
+	items: Array<[ProposalKey, Proposal]>;
+	items_length: bigint;
+}
 export interface ListProposalsPaginate {
 	start_after: [] | [bigint];
 	limit: [] | [bigint];
@@ -330,7 +335,7 @@ export interface _SERVICE {
 	list_controllers: ActorMethod<[], Array<[Principal, Controller]>>;
 	list_custom_domains: ActorMethod<[], Array<[string, CustomDomain]>>;
 	list_docs: ActorMethod<[string, ListParams], ListResults_1>;
-	list_proposals: ActorMethod<[ListProposalsParams], Array<[ProposalKey, Proposal]>>;
+	list_proposals: ActorMethod<[ListProposalsParams], ListProposalResults>;
 	list_rules: ActorMethod<[CollectionType], Array<[string, Rule]>>;
 	memory_size: ActorMethod<[], MemorySize>;
 	set_auth_config: ActorMethod<[AuthenticationConfig], undefined>;

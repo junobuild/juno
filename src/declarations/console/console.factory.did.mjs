@@ -226,6 +226,11 @@ export const idlFactory = ({ IDL }) => {
 		paginate: IDL.Opt(ListProposalsPaginate)
 	});
 	const ProposalKey = IDL.Record({ proposal_id: IDL.Nat });
+	const ListProposalResults = IDL.Record({
+		matches_length: IDL.Nat64,
+		items: IDL.Vec(IDL.Tuple(ProposalKey, Proposal)),
+		items_length: IDL.Nat64
+	});
 	const SetController = IDL.Record({
 		metadata: IDL.Vec(IDL.Tuple(IDL.Text, IDL.Text)),
 		scope: ControllerScope,
@@ -281,11 +286,7 @@ export const idlFactory = ({ IDL }) => {
 		list_controllers: IDL.Func([], [IDL.Vec(IDL.Tuple(IDL.Principal, Controller))], ['query']),
 		list_custom_domains: IDL.Func([], [IDL.Vec(IDL.Tuple(IDL.Text, CustomDomain))], ['query']),
 		list_payments: IDL.Func([], [IDL.Vec(IDL.Tuple(IDL.Nat64, Payment))], ['query']),
-		list_proposals: IDL.Func(
-			[ListProposalsParams],
-			[IDL.Vec(IDL.Tuple(ProposalKey, Proposal))],
-			['query']
-		),
+		list_proposals: IDL.Func([ListProposalsParams], [ListProposalResults], ['query']),
 		list_user_mission_control_centers: IDL.Func(
 			[],
 			[IDL.Vec(IDL.Tuple(IDL.Principal, MissionControl))],

@@ -254,6 +254,11 @@ export const idlFactory = ({ IDL }) => {
 		paginate: IDL.Opt(ListProposalsPaginate)
 	});
 	const ProposalKey = IDL.Record({ proposal_id: IDL.Nat });
+	const ListProposalResults = IDL.Record({
+		matches_length: IDL.Nat64,
+		items: IDL.Vec(IDL.Tuple(ProposalKey, Proposal)),
+		items_length: IDL.Nat64
+	});
 	const MemorySize = IDL.Record({ stable: IDL.Nat64, heap: IDL.Nat64 });
 	const SetController = IDL.Record({
 		metadata: IDL.Vec(IDL.Tuple(IDL.Text, IDL.Text)),
@@ -342,11 +347,7 @@ export const idlFactory = ({ IDL }) => {
 		list_controllers: IDL.Func([], [IDL.Vec(IDL.Tuple(IDL.Principal, Controller))], []),
 		list_custom_domains: IDL.Func([], [IDL.Vec(IDL.Tuple(IDL.Text, CustomDomain))], []),
 		list_docs: IDL.Func([IDL.Text, ListParams], [ListResults_1], []),
-		list_proposals: IDL.Func(
-			[ListProposalsParams],
-			[IDL.Vec(IDL.Tuple(ProposalKey, Proposal))],
-			[]
-		),
+		list_proposals: IDL.Func([ListProposalsParams], [ListProposalResults], []),
 		list_rules: IDL.Func([CollectionType], [IDL.Vec(IDL.Tuple(IDL.Text, Rule))], []),
 		memory_size: IDL.Func([], [MemorySize], []),
 		set_auth_config: IDL.Func([AuthenticationConfig], [], []),

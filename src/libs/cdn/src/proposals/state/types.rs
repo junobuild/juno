@@ -67,4 +67,9 @@ pub struct ListProposalsPaginate {
     pub limit: Option<u128>,
 }
 
-pub type ProposalList = Vec<(ProposalKey, Proposal)>;
+#[derive(Default, CandidType, Deserialize, Clone)]
+pub struct ListProposalResults {
+    pub items: Vec<(ProposalKey, Proposal)>,
+    pub items_length: usize,
+    pub matches_length: usize,
+}

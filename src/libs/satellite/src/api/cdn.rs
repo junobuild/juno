@@ -13,7 +13,7 @@ use crate::types::interface::DeleteProposalAssets;
 use ic_cdk::api::call::ManualReply;
 use ic_cdk::{caller, trap};
 use junobuild_cdn::proposals::{
-    CommitProposal, ListProposalsParams, Proposal, ProposalId, ProposalList, ProposalType,
+    CommitProposal, ListProposalResults, ListProposalsParams, Proposal, ProposalId, ProposalType,
 };
 use junobuild_shared::types::core::DomainName;
 use junobuild_shared::types::domain::CustomDomains;
@@ -31,7 +31,7 @@ pub fn get_proposal(proposal_id: &ProposalId) -> Option<Proposal> {
     cdn_get_proposal(proposal_id)
 }
 
-pub fn list_proposals(filter: &ListProposalsParams) -> ProposalList {
+pub fn list_proposals(filter: &ListProposalsParams) -> ListProposalResults {
     junobuild_cdn::proposals::stable::list_proposals(&CdnStable, filter)
 }
 

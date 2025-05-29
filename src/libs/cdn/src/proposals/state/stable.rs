@@ -1,6 +1,6 @@
 use crate::proposals::state::filter::filter_proposals_range;
 use crate::proposals::{
-    ListProposalsParams, Proposal, ProposalId, ProposalKey, ProposalList, ProposalsStable,
+    ListProposalResults, ListProposalsParams, Proposal, ProposalId, ProposalKey, ProposalsStable,
 };
 use crate::strategies::CdnStableStrategy;
 
@@ -18,12 +18,26 @@ fn get_proposal_impl(proposal_id: &ProposalId, proposals: &ProposalsStable) -> O
 pub fn list_proposals(
     cdn_stable: &impl CdnStableStrategy,
     filters: &ListProposalsParams,
-) -> ProposalList {
+) -> ListProposalResults {
     cdn_stable.with_proposals(|proposals| list_proposals_impl(filters, proposals))
 }
 
-fn list_proposals_impl(filters: &ListProposalsParams, proposals: &ProposalsStable) -> ProposalList {
-    proposals.range(filter_proposals_range(filters)).collect()
+fn list_proposals_impl(
+    filters: &ListProposalsParams,
+    proposals: &ProposalsStable,
+) -> ListProposalResults {
+    let items: Vec<(ProposalKey, Proposal)> =
+        proposals.range(filter_proposals_range(filters)).collect();
+
+    let items_length = items.len();
+
+    let count = proposals.iter().count();
+
+    ListProposalResults {
+        items,
+        items_length,
+        matches_length: count,
+    }
 }
 
 pub fn count_proposals(cdn_stable: &impl CdnStableStrategy) -> usize {

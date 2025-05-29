@@ -15,6 +15,7 @@ import { beforeAll, describe, expect, inject } from 'vitest';
 import { mockListProposalsParams } from '../../../mocks/list.mocks';
 import {
 	testCdnConfig,
+	testCdnCountProposals,
 	testCdnGetProposal,
 	testCdnListProposals,
 	testCdnStorageSettings,
@@ -79,6 +80,12 @@ describe('Satellite > Cdn', () => {
 			const { list_proposals } = actor();
 
 			await expect(list_proposals(mockListProposalsParams)).rejects.toThrow(errorMsg);
+		});
+
+		it('should throw errors on count proposals', async () => {
+			const { count_proposals } = actor();
+
+			await expect(count_proposals()).rejects.toThrow(errorMsg);
 		});
 	};
 
@@ -448,6 +455,11 @@ describe('Satellite > Cdn', () => {
 		});
 
 		testCdnListProposals({
+			actor: () => actor,
+			proposalsLength: 31n
+		});
+
+		testCdnCountProposals({
 			actor: () => actor,
 			proposalsLength: 31n
 		});

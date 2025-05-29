@@ -300,6 +300,7 @@ export const idlFactory = ({ IDL }) => {
 		count_collection_assets: IDL.Func([IDL.Text], [IDL.Nat64], []),
 		count_collection_docs: IDL.Func([IDL.Text], [IDL.Nat64], []),
 		count_docs: IDL.Func([IDL.Text, ListParams], [IDL.Nat64], []),
+		count_proposals: IDL.Func([], [IDL.Nat64], []),
 		del_asset: IDL.Func([IDL.Text, IDL.Text], [], []),
 		del_assets: IDL.Func([IDL.Text], [], []),
 		del_controllers: IDL.Func(

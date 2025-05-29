@@ -252,6 +252,7 @@ export interface _SERVICE {
 	assert_mission_control_center: ActorMethod<[AssertMissionControlCenterArgs], undefined>;
 	commit_proposal: ActorMethod<[CommitProposal], null>;
 	commit_proposal_asset_upload: ActorMethod<[CommitBatch], undefined>;
+	count_proposals: ActorMethod<[], bigint>;
 	create_orbiter: ActorMethod<[CreateCanisterArgs], Principal>;
 	create_satellite: ActorMethod<[CreateCanisterArgs], Principal>;
 	del_controllers: ActorMethod<[DeleteControllersArgs], undefined>;

@@ -89,6 +89,7 @@ describe('Satellite > Controllers', () => {
 
 			for (let i = 0; i < ITEMS.length; i++) {
 				const asset = items.find(([fullPath, _]) => fullPath === `/hello/hello-${i}.html`);
+
 				expect(asset).not.toBeUndefined();
 			}
 		});

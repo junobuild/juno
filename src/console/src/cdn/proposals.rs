@@ -10,6 +10,10 @@ pub fn list_proposals(filter: &ListProposalsParams) -> ListProposalResults {
     junobuild_cdn::proposals::stable::list_proposals(&CdnStable, filter)
 }
 
+pub fn count_proposals() -> usize {
+    junobuild_cdn::proposals::stable::count_proposals(&CdnStable)
+}
+
 pub fn init_proposal(
     caller: Principal,
     proposal_type: &ProposalType,

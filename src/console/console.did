@@ -210,6 +210,7 @@ service : () -> {
   assert_mission_control_center : (AssertMissionControlCenterArgs) -> () query;
   commit_proposal : (CommitProposal) -> (null);
   commit_proposal_asset_upload : (CommitBatch) -> ();
+  count_proposals : () -> (nat64) query;
   create_orbiter : (CreateCanisterArgs) -> (principal);
   create_satellite : (CreateCanisterArgs) -> (principal);
   del_controllers : (DeleteControllersArgs) -> ();

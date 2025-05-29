@@ -248,6 +248,7 @@ service : () -> {
   count_collection_assets : (text) -> (nat64) query;
   count_collection_docs : (text) -> (nat64) query;
   count_docs : (text, ListParams) -> (nat64) query;
+  count_proposals : () -> (nat64) query;
   del_asset : (text, text) -> ();
   del_assets : (text) -> ();
   del_controllers : (DeleteControllersArgs) -> (

@@ -261,6 +261,7 @@ export const idlFactory = ({ IDL }) => {
 		assert_mission_control_center: IDL.Func([AssertMissionControlCenterArgs], [], []),
 		commit_proposal: IDL.Func([CommitProposal], [IDL.Null], []),
 		commit_proposal_asset_upload: IDL.Func([CommitBatch], [], []),
+		count_proposals: IDL.Func([], [IDL.Nat64], []),
 		create_orbiter: IDL.Func([CreateCanisterArgs], [IDL.Principal], []),
 		create_satellite: IDL.Func([CreateCanisterArgs], [IDL.Principal], []),
 		del_controllers: IDL.Func([DeleteControllersArgs], [], []),

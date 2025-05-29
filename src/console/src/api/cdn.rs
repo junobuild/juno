@@ -1,7 +1,7 @@
 use crate::cdn::certified_assets::upgrade::defer_init_certified_assets;
 use crate::cdn::helpers::stable::get_proposal as get_proposal_state;
 use crate::cdn::proposals::{
-    commit_proposal as make_commit_proposal,
+    commit_proposal as make_commit_proposal, count_proposals as count_proposals_state,
     delete_proposal_assets as delete_proposal_assets_proposal, init_proposal as make_init_proposal,
     list_proposals as list_proposals_state, submit_proposal as make_submit_proposal,
 };
@@ -31,6 +31,11 @@ fn get_proposal(proposal_id: ProposalId) -> Option<Proposal> {
 #[query]
 fn list_proposals(filter: ListProposalsParams) -> ListProposalResults {
     list_proposals_state(&filter)
+}
+
+#[query]
+fn count_proposals() -> usize {
+    count_proposals_state()
 }
 
 #[update(guard = "caller_is_admin_controller")]

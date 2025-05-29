@@ -299,6 +299,7 @@ export interface _SERVICE {
 	count_collection_assets: ActorMethod<[string], bigint>;
 	count_collection_docs: ActorMethod<[string], bigint>;
 	count_docs: ActorMethod<[string, ListParams], bigint>;
+	count_proposals: ActorMethod<[], bigint>;
 	del_asset: ActorMethod<[string, string], undefined>;
 	del_assets: ActorMethod<[string], undefined>;
 	del_controllers: ActorMethod<[DeleteControllersArgs], Array<[Principal, Controller]>>;

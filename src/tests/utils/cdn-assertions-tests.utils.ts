@@ -787,6 +787,20 @@ export const testCdnGetProposal = ({
 	});
 };
 
+export const testCdnCountProposals = ({
+	actor,
+	proposalsLength = 17n
+}: {
+	actor: () => Actor<SatelliteActor | ConsoleActor>;
+	proposalsLength?: bigint;
+}) => {
+	it('should list all proposals', async () => {
+		const { count_proposals } = actor();
+
+		await expect(count_proposals()).resolves.toEqual(proposalsLength);
+	});
+};
+
 export const testCdnListProposals = ({
 	actor,
 	proposalsLength = 17n
@@ -799,7 +813,7 @@ export const testCdnListProposals = ({
 
 		const { items, items_length, matches_length } = await list_proposals(mockListProposalsParams);
 
-		expect(items.length).toEqual(Number(proposalsLength));
+		expect(items).toHaveLength(Number(proposalsLength));
 		expect(items_length).toEqual(proposalsLength);
 		expect(matches_length).toEqual(proposalsLength);
 	});
@@ -813,11 +827,11 @@ export const testCdnListProposals = ({
 			...mockListProposalsParams,
 			paginate: toNullable({
 				start_after: toNullable(startAfter),
-				limit: toNullable(),
+				limit: toNullable()
 			})
 		});
 
-		expect(items.length).toEqual(Number(proposalsLength - startAfter));
+		expect(items).toHaveLength(Number(proposalsLength - startAfter));
 		expect(items_length).toEqual(proposalsLength - startAfter);
 		expect(matches_length).toEqual(proposalsLength);
 
@@ -833,11 +847,11 @@ export const testCdnListProposals = ({
 			...mockListProposalsParams,
 			paginate: toNullable({
 				start_after: toNullable(),
-				limit: toNullable(limit),
+				limit: toNullable(limit)
 			})
 		});
 
-		expect(items.length).toEqual(Number(limit));
+		expect(items).toHaveLength(Number(limit));
 		expect(items_length).toEqual(limit);
 		expect(matches_length).toEqual(proposalsLength);
 
@@ -855,11 +869,11 @@ export const testCdnListProposals = ({
 			...mockListProposalsParams,
 			paginate: toNullable({
 				start_after: toNullable(startAfter),
-				limit: toNullable(limit),
+				limit: toNullable(limit)
 			})
 		});
 
-		expect(items.length).toEqual(Number(limit));
+		expect(items).toHaveLength(Number(limit));
 		expect(items_length).toEqual(limit);
 		expect(matches_length).toEqual(proposalsLength);
 
@@ -878,11 +892,11 @@ export const testCdnListProposals = ({
 			...mockListProposalsParams,
 			paginate: toNullable({
 				start_after: toNullable(startAfter),
-				limit: toNullable(limit),
+				limit: toNullable(limit)
 			})
 		});
 
-		expect(items.length).toEqual(Number(length));
+		expect(items).toHaveLength(Number(length));
 		expect(items_length).toEqual(length);
 		expect(matches_length).toEqual(proposalsLength);
 	});

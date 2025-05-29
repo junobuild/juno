@@ -214,6 +214,11 @@ pub fn list_proposals(filter: ListProposalsParams) -> ListProposalResults {
     api::cdn::list_proposals(&filter)
 }
 
+#[query(guard = "caller_is_controller")]
+pub fn count_proposals() -> usize {
+    api::cdn::count_proposals()
+}
+
 #[update(guard = "caller_is_controller")]
 pub fn init_proposal(proposal_type: ProposalType) -> (ProposalId, Proposal) {
     api::cdn::init_proposal(&proposal_type)
@@ -467,8 +472,8 @@ macro_rules! include_satellite {
     () => {
         use junobuild_satellite::{
             commit_asset_upload, commit_proposal, commit_proposal_asset_upload, count_assets,
-            count_collection_assets, count_collection_docs, count_docs, del_asset, del_assets,
-            del_controllers, del_custom_domain, del_doc, del_docs, del_filtered_assets,
+            count_collection_assets, count_collection_docs, count_docs, count_proposals, del_asset,
+            del_assets, del_controllers, del_custom_domain, del_doc, del_docs, del_filtered_assets,
             del_filtered_docs, del_many_assets, del_many_docs, del_rule, delete_proposal_assets,
             deposit_cycles, get_asset, get_auth_config, get_config, get_db_config, get_doc,
             get_many_assets, get_many_docs, get_proposal, get_storage_config, http_request,

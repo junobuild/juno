@@ -30,3 +30,10 @@ pub const JUNO_CDN_PROPOSALS_ERROR_CANNOT_DELETE_ASSETS: &str =
 // Proposal assets cannot be deleted. Current status:
 pub const JUNO_CDN_PROPOSALS_ERROR_CANNOT_DELETE_ASSETS_INVALID_STATUS: &str =
     "juno.cdn.proposals.error.cannot_delete_assets_invalid_status";
+
+// Cannot convert next proposal ID.
+pub const JUNO_CDN_PROPOSALS_ERROR_NEXT_ID_CONVERT: &str =
+    "juno.cdn.proposals.error.next_id_convert";
+// Next proposal ID would overflow.
+pub const JUNO_CDN_PROPOSALS_ERROR_NEXT_ID_OVERFLOW: &str =
+    "juno.cdn.proposals.error.next_id_overflow";

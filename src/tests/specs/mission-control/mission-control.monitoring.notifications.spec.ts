@@ -378,10 +378,15 @@ describe('Mission Control > Notifications', () => {
 				'should notify deposited cycles but observatory cannot send notification',
 				{ timeout: 600000 },
 				async () => {
-					await assertObservatoryStatus({
-						failed: 1n,
-						pending: 0n,
-						sent: 1n
+					// Flaky in CI
+					await vi.waitFor(async () => {
+						await pic.tick();
+
+						await assertObservatoryStatus({
+							failed: 1n,
+							pending: 0n,
+							sent: 1n
+						});
 					});
 
 					// Start monitoring

@@ -51,5 +51,5 @@ pub fn insert_asset_stable(
 // ---------------------------------------------------------
 
 pub fn get_proposal(proposal_id: &ProposalId) -> Option<Proposal> {
-    junobuild_cdn::proposals::stable::get_proposal(&CdnStable, proposal_id)
+    junobuild_cdn::proposals::get_proposal(&CdnStable, proposal_id)
 }

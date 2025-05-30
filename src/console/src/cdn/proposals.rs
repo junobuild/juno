@@ -8,11 +8,11 @@ use junobuild_cdn::proposals::{
 use junobuild_cdn::proposals::{Proposal, ProposalId, ProposalType};
 
 pub fn list_proposals(filter: &ListProposalsParams) -> ListProposalResults {
-    junobuild_cdn::proposals::stable::list_proposals(&CdnStable, filter)
+    junobuild_cdn::proposals::list_proposals(&CdnStable, filter)
 }
 
 pub fn count_proposals() -> usize {
-    junobuild_cdn::proposals::stable::count_proposals(&CdnStable)
+    junobuild_cdn::proposals::count_proposals(&CdnStable)
 }
 
 pub fn init_proposal(

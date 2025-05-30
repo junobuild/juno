@@ -33,11 +33,11 @@ pub fn get_proposal(proposal_id: &ProposalId) -> Option<Proposal> {
 }
 
 pub fn list_proposals(filter: &ListProposalsParams) -> ListProposalResults {
-    junobuild_cdn::proposals::stable::list_proposals(&CdnStable, filter)
+    junobuild_cdn::proposals::list_proposals(&CdnStable, filter)
 }
 
 pub fn count_proposals() -> usize {
-    junobuild_cdn::proposals::stable::count_proposals(&CdnStable)
+    junobuild_cdn::proposals::count_proposals(&CdnStable)
 }
 
 pub fn init_proposal(proposal_type: &ProposalType) -> (ProposalId, Proposal) {

@@ -2,7 +2,7 @@ use crate::proposals::errors::{
     JUNO_CDN_PROPOSALS_ERROR_CANNOT_DELETE_ASSETS,
     JUNO_CDN_PROPOSALS_ERROR_CANNOT_DELETE_ASSETS_INVALID_STATUS,
 };
-use crate::proposals::stable::get_proposal;
+use crate::proposals::get_proposal;
 use crate::proposals::workflows::assert::assert_known_proposal_type;
 use crate::proposals::{Proposal, ProposalId, ProposalStatus};
 use crate::storage::stable::{delete_asset, delete_content_chunks, get_assets};

@@ -2,8 +2,8 @@ use crate::proposals::errors::{
     JUNO_CDN_PROPOSALS_ERROR_CANNOT_REJECT, JUNO_CDN_PROPOSALS_ERROR_CANNOT_REJECT_INVALID_STATUS,
     JUNO_CDN_PROPOSALS_ERROR_INVALID_HASH,
 };
-use crate::proposals::stable::{get_proposal, insert_proposal};
 use crate::proposals::workflows::assert::assert_known_proposal_type;
+use crate::proposals::{get_proposal, insert_proposal};
 use crate::proposals::{Proposal, ProposalStatus, RejectProposal, RejectProposalError};
 use crate::strategies::CdnStableStrategy;
 use hex::encode;

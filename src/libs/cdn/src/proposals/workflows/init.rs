@@ -1,7 +1,7 @@
 use crate::proposals::errors::{
     JUNO_CDN_PROPOSALS_ERROR_NEXT_ID_CONVERT, JUNO_CDN_PROPOSALS_ERROR_NEXT_ID_OVERFLOW,
 };
-use crate::proposals::stable::{count_proposals, insert_proposal};
+use crate::proposals::{count_proposals, insert_proposal};
 use crate::proposals::{Proposal, ProposalId, ProposalType};
 use crate::strategies::CdnStableStrategy;
 use candid::Principal;

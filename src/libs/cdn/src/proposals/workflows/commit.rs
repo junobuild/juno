@@ -3,8 +3,8 @@ use crate::proposals::errors::{
     JUNO_CDN_PROPOSALS_ERROR_EMPTY_ASSETS, JUNO_CDN_PROPOSALS_ERROR_EMPTY_CONTENT_CHUNKS,
     JUNO_CDN_PROPOSALS_ERROR_INVALID_HASH, JUNO_CDN_PROPOSALS_ERROR_NOT_CONTENT_CHUNKS_AT_INDEX,
 };
-use crate::proposals::stable::{get_proposal, insert_proposal};
 use crate::proposals::workflows::assert::assert_known_proposal_type;
+use crate::proposals::{get_proposal, insert_proposal};
 use crate::proposals::{CommitProposal, CommitProposalError, Proposal, ProposalId, ProposalStatus};
 use crate::storage::heap::insert_asset;
 use crate::storage::heap::store::insert_asset_encoding;

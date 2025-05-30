@@ -944,7 +944,7 @@ export const testCdnListProposals = ({
 	actor: () => Actor<SatelliteActor | ConsoleActor>;
 	proposalsLength?: bigint;
 }) => {
-	describe("Asc", () => {
+	describe('Asc', () => {
 		it('should list all proposals', async () => {
 			const { list_proposals } = actor();
 
@@ -1039,13 +1039,13 @@ export const testCdnListProposals = ({
 		});
 	});
 
-	describe("Desc", () => {
+	describe('Desc', () => {
 		const descListProposalsParams = {
 			...mockListProposalsParams,
 			order: toNullable({
 				desc: true
 			})
-		}
+		};
 
 		it('should list all proposals', async () => {
 			const { list_proposals } = actor();
@@ -1139,7 +1139,7 @@ export const testCdnListProposals = ({
 			expect(items_length).toEqual(length);
 			expect(matches_length).toEqual(proposalsLength);
 		});
-	})
+	});
 };
 
 /* eslint-enable */

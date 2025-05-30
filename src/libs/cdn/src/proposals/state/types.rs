@@ -59,12 +59,18 @@ pub enum ProposalStatus {
 #[derive(CandidType, Deserialize, Clone)]
 pub struct ListProposalsParams {
     pub paginate: Option<ListProposalsPaginate>,
+    pub order: Option<ListProposalsOrder>,
 }
 
 #[derive(Default, CandidType, Deserialize, Clone)]
 pub struct ListProposalsPaginate {
     pub start_after: Option<ProposalId>,
     pub limit: Option<u128>,
+}
+
+#[derive(Default, CandidType, Deserialize, Clone)]
+pub struct ListProposalsOrder {
+    pub desc: bool,
 }
 
 #[derive(Default, CandidType, Deserialize, Clone)]

@@ -246,11 +246,13 @@ export const idlFactory = ({ IDL }) => {
 		items: IDL.Vec(IDL.Tuple(IDL.Text, Doc)),
 		items_length: IDL.Nat64
 	});
+	const ListProposalsOrder = IDL.Record({ desc: IDL.Bool });
 	const ListProposalsPaginate = IDL.Record({
 		start_after: IDL.Opt(IDL.Nat),
 		limit: IDL.Opt(IDL.Nat)
 	});
 	const ListProposalsParams = IDL.Record({
+		order: IDL.Opt(ListProposalsOrder),
 		paginate: IDL.Opt(ListProposalsPaginate)
 	});
 	const ProposalKey = IDL.Record({ proposal_id: IDL.Nat });

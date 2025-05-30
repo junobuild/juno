@@ -124,11 +124,15 @@ export interface ListProposalResults {
 	items: Array<[ProposalKey, Proposal]>;
 	items_length: bigint;
 }
+export interface ListProposalsOrder {
+	desc: boolean;
+}
 export interface ListProposalsPaginate {
 	start_after: [] | [bigint];
 	limit: [] | [bigint];
 }
 export interface ListProposalsParams {
+	order: [] | [ListProposalsOrder];
 	paginate: [] | [ListProposalsPaginate];
 }
 export interface ListResults {

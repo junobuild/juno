@@ -218,11 +218,13 @@ export const idlFactory = ({ IDL }) => {
 		created_at: IDL.Nat64,
 		block_index_refunded: IDL.Opt(IDL.Nat64)
 	});
+	const ListProposalsOrder = IDL.Record({ desc: IDL.Bool });
 	const ListProposalsPaginate = IDL.Record({
 		start_after: IDL.Opt(IDL.Nat),
 		limit: IDL.Opt(IDL.Nat)
 	});
 	const ListProposalsParams = IDL.Record({
+		order: IDL.Opt(ListProposalsOrder),
 		paginate: IDL.Opt(ListProposalsPaginate)
 	});
 	const ProposalKey = IDL.Record({ proposal_id: IDL.Nat });

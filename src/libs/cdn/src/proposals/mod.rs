@@ -4,7 +4,8 @@ mod state;
 mod types;
 mod workflows;
 
-pub use state::stable::*;
+pub use state::stable::{count_proposals, get_proposal, insert_proposal};
+pub use state::store::*;
 pub use state::types::*;
 pub use types::*;
 pub use workflows::commit::*;

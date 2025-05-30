@@ -944,98 +944,202 @@ export const testCdnListProposals = ({
 	actor: () => Actor<SatelliteActor | ConsoleActor>;
 	proposalsLength?: bigint;
 }) => {
-	it('should list all proposals', async () => {
-		const { list_proposals } = actor();
+	describe("Asc", () => {
+		it('should list all proposals', async () => {
+			const { list_proposals } = actor();
 
-		const { items, items_length, matches_length } = await list_proposals(mockListProposalsParams);
+			const { items, items_length, matches_length } = await list_proposals(mockListProposalsParams);
 
-		expect(items).toHaveLength(Number(proposalsLength));
-		expect(items_length).toEqual(proposalsLength);
-		expect(matches_length).toEqual(proposalsLength);
-	});
-
-	it('should list start after', async () => {
-		const { list_proposals } = actor();
-
-		const startAfter = 5n;
-
-		const { items, items_length, matches_length } = await list_proposals({
-			...mockListProposalsParams,
-			paginate: toNullable({
-				start_after: toNullable(startAfter),
-				limit: toNullable()
-			})
+			expect(items).toHaveLength(Number(proposalsLength));
+			expect(items_length).toEqual(proposalsLength);
+			expect(matches_length).toEqual(proposalsLength);
 		});
 
-		expect(items).toHaveLength(Number(proposalsLength - startAfter));
-		expect(items_length).toEqual(proposalsLength - startAfter);
-		expect(matches_length).toEqual(proposalsLength);
+		it('should list start after', async () => {
+			const { list_proposals } = actor();
 
-		expect(items[0][0].proposal_id).toEqual(startAfter + 1n);
-	});
+			const startAfter = 5n;
 
-	it('should list limit', async () => {
-		const { list_proposals } = actor();
+			const { items, items_length, matches_length } = await list_proposals({
+				...mockListProposalsParams,
+				paginate: toNullable({
+					start_after: toNullable(startAfter),
+					limit: toNullable()
+				})
+			});
 
-		const limit = 10n;
+			expect(items).toHaveLength(Number(proposalsLength - startAfter));
+			expect(items_length).toEqual(proposalsLength - startAfter);
+			expect(matches_length).toEqual(proposalsLength);
 
-		const { items, items_length, matches_length } = await list_proposals({
-			...mockListProposalsParams,
-			paginate: toNullable({
-				start_after: toNullable(),
-				limit: toNullable(limit)
-			})
+			expect(items[0][0].proposal_id).toEqual(startAfter + 1n);
 		});
 
-		expect(items).toHaveLength(Number(limit));
-		expect(items_length).toEqual(limit);
-		expect(matches_length).toEqual(proposalsLength);
+		it('should list limit', async () => {
+			const { list_proposals } = actor();
 
-		expect(items[0][0].proposal_id).toEqual(1n);
-		expect(items[items.length - 1][0].proposal_id).toEqual(limit);
-	});
+			const limit = 10n;
 
-	it('should list start after and limit', async () => {
-		const { list_proposals } = actor();
+			const { items, items_length, matches_length } = await list_proposals({
+				...mockListProposalsParams,
+				paginate: toNullable({
+					start_after: toNullable(),
+					limit: toNullable(limit)
+				})
+			});
 
-		const startAfter = 5n;
-		const limit = 10n;
+			expect(items).toHaveLength(Number(limit));
+			expect(items_length).toEqual(limit);
+			expect(matches_length).toEqual(proposalsLength);
 
-		const { items, items_length, matches_length } = await list_proposals({
-			...mockListProposalsParams,
-			paginate: toNullable({
-				start_after: toNullable(startAfter),
-				limit: toNullable(limit)
-			})
+			expect(items[0][0].proposal_id).toEqual(1n);
+			expect(items[items.length - 1][0].proposal_id).toEqual(limit);
 		});
 
-		expect(items).toHaveLength(Number(limit));
-		expect(items_length).toEqual(limit);
-		expect(matches_length).toEqual(proposalsLength);
+		it('should list start after and limit', async () => {
+			const { list_proposals } = actor();
 
-		expect(items[0][0].proposal_id).toEqual(startAfter + 1n);
-		expect(items[items.length - 1][0].proposal_id).toEqual(limit + startAfter);
-	});
+			const startAfter = 5n;
+			const limit = 10n;
 
-	it('should list less limit if length is reached', async () => {
-		const { list_proposals } = actor();
+			const { items, items_length, matches_length } = await list_proposals({
+				...mockListProposalsParams,
+				paginate: toNullable({
+					start_after: toNullable(startAfter),
+					limit: toNullable(limit)
+				})
+			});
 
-		const length = 4n;
-		const startAfter = proposalsLength - length;
-		const limit = 10n;
+			expect(items).toHaveLength(Number(limit));
+			expect(items_length).toEqual(limit);
+			expect(matches_length).toEqual(proposalsLength);
 
-		const { items, items_length, matches_length } = await list_proposals({
-			...mockListProposalsParams,
-			paginate: toNullable({
-				start_after: toNullable(startAfter),
-				limit: toNullable(limit)
-			})
+			expect(items[0][0].proposal_id).toEqual(startAfter + 1n);
+			expect(items[items.length - 1][0].proposal_id).toEqual(limit + startAfter);
 		});
 
-		expect(items).toHaveLength(Number(length));
-		expect(items_length).toEqual(length);
-		expect(matches_length).toEqual(proposalsLength);
+		it('should list less limit if length is reached', async () => {
+			const { list_proposals } = actor();
+
+			const length = 4n;
+			const startAfter = proposalsLength - length;
+			const limit = 10n;
+
+			const { items, items_length, matches_length } = await list_proposals({
+				...mockListProposalsParams,
+				paginate: toNullable({
+					start_after: toNullable(startAfter),
+					limit: toNullable(limit)
+				})
+			});
+
+			expect(items).toHaveLength(Number(length));
+			expect(items_length).toEqual(length);
+			expect(matches_length).toEqual(proposalsLength);
+		});
 	});
+
+	describe("Desc", () => {
+		const descListProposalsParams = {
+			...mockListProposalsParams,
+			order: toNullable({
+				desc: true
+			})
+		}
+
+		it('should list all proposals', async () => {
+			const { list_proposals } = actor();
+
+			const { items, items_length, matches_length } = await list_proposals(descListProposalsParams);
+
+			expect(items).toHaveLength(Number(proposalsLength));
+			expect(items_length).toEqual(proposalsLength);
+			expect(matches_length).toEqual(proposalsLength);
+		});
+
+		it('should list start after', async () => {
+			const { list_proposals } = actor();
+
+			const startAfter = 5n;
+
+			const { items, items_length, matches_length } = await list_proposals({
+				...descListProposalsParams,
+				paginate: toNullable({
+					start_after: toNullable(startAfter),
+					limit: toNullable()
+				})
+			});
+
+			expect(items).toHaveLength(Number(startAfter - 1n));
+			expect(items_length).toEqual(startAfter - 1n);
+			expect(matches_length).toEqual(proposalsLength);
+
+			expect(items[0][0].proposal_id).toEqual(startAfter - 1n);
+		});
+
+		it('should list limit', async () => {
+			const { list_proposals } = actor();
+
+			const limit = 10n;
+
+			const { items, items_length, matches_length } = await list_proposals({
+				...descListProposalsParams,
+				paginate: toNullable({
+					start_after: toNullable(),
+					limit: toNullable(limit)
+				})
+			});
+
+			expect(items).toHaveLength(Number(limit));
+			expect(items_length).toEqual(limit);
+			expect(matches_length).toEqual(proposalsLength);
+
+			expect(items[0][0].proposal_id).toEqual(proposalsLength);
+			expect(items[items.length - 1][0].proposal_id).toEqual(proposalsLength + 1n - limit);
+		});
+
+		it('should list start after and limit', async () => {
+			const { list_proposals } = actor();
+
+			const startAfter = 15n;
+			const limit = 10n;
+
+			const { items, items_length, matches_length } = await list_proposals({
+				...descListProposalsParams,
+				paginate: toNullable({
+					start_after: toNullable(startAfter),
+					limit: toNullable(limit)
+				})
+			});
+
+			expect(items).toHaveLength(Number(limit));
+			expect(items_length).toEqual(limit);
+			expect(matches_length).toEqual(proposalsLength);
+
+			expect(items[0][0].proposal_id).toEqual(startAfter - 1n);
+			expect(items[items.length - 1][0].proposal_id).toEqual(startAfter - limit);
+		});
+
+		it('should list less limit if length is reached', async () => {
+			const { list_proposals } = actor();
+
+			const length = 4n;
+			const startAfter = 1n + length;
+			const limit = 10n;
+
+			const { items, items_length, matches_length } = await list_proposals({
+				...descListProposalsParams,
+				paginate: toNullable({
+					start_after: toNullable(startAfter),
+					limit: toNullable(limit)
+				})
+			});
+
+			expect(items).toHaveLength(Number(length));
+			expect(items_length).toEqual(length);
+			expect(matches_length).toEqual(proposalsLength);
+		});
+	})
 };
 
 /* eslint-enable */

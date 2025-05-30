@@ -9,5 +9,6 @@ export const mockListParams: ListParams = {
 };
 
 export const mockListProposalsParams: ListProposalsParams = {
-	paginate: toNullable()
+	paginate: toNullable(),
+	order: toNullable()
 };

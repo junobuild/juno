@@ -24,8 +24,10 @@ pub fn list_proposals(
         }
 
         (None, true) => {
-            let end = u128::try_from(count_proposals(cdn_stable)).unwrap_or(u128::MAX);
-            let start = end.saturating_sub(DEFAULT_MAX_PROPOSALS.saturating_sub(1));
+            let end = u128::try_from(count_proposals(cdn_stable))
+                .unwrap_or(u128::MAX)
+                .saturating_add(1);
+            let start = end.saturating_sub(DEFAULT_MAX_PROPOSALS);
             (start, end)
         }
 
@@ -40,8 +42,12 @@ pub fn list_proposals(
         }
 
         (Some(paginate), true) => {
-            let end = paginate.start_after.unwrap_or(u128::MAX);
-            let start = end.saturating_sub(limit.saturating_sub(1));
+            let end = paginate.start_after.unwrap_or(
+                u128::try_from(count_proposals(cdn_stable))
+                    .unwrap_or(u128::MAX)
+                    .saturating_add(1),
+            );
+            let start = end.saturating_sub(limit);
             (start, end)
         }
     };

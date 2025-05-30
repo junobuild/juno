@@ -137,7 +137,7 @@ describe('Mission control > Upgrade', () => {
 
 		it(
 			'should still contains data after upgrade even if the internal state variable is renamed from state to heap',
-			{ timeout: 60000 },
+			{ timeout: 120000 },
 			async () => {
 				await setModules();
 

@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { nonNullish } from '@dfinity/utils';
 	import { onMount } from 'svelte';
+	import { fade } from 'svelte/transition';
 	import type { Satellite } from '$declarations/mission_control/mission_control.did';
 	import ExternalLink from '$lib/components/ui/ExternalLink.svelte';
 	import Value from '$lib/components/ui/Value.svelte';
@@ -11,7 +12,6 @@
 	import { listCustomDomains } from '$lib/services/custom-domain.services';
 	import { i18n } from '$lib/stores/i18n.store';
 	import { satelliteUrl } from '$lib/utils/satellite.utils';
-	import { fade } from 'svelte/transition';
 
 	interface Props {
 		satellite: Satellite;

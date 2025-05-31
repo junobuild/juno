@@ -254,6 +254,7 @@ export interface _SERVICE {
 	add_credits: ActorMethod<[Principal, Tokens], undefined>;
 	add_invitation_code: ActorMethod<[string], undefined>;
 	assert_mission_control_center: ActorMethod<[AssertMissionControlCenterArgs], undefined>;
+	commit_asset_upload: ActorMethod<[CommitBatch], undefined>;
 	commit_proposal: ActorMethod<[CommitProposal], null>;
 	commit_proposal_asset_upload: ActorMethod<[CommitBatch], undefined>;
 	count_proposals: ActorMethod<[], bigint>;
@@ -274,6 +275,7 @@ export interface _SERVICE {
 		[StreamingCallbackToken],
 		StreamingCallbackHttpResponse
 	>;
+	init_asset_upload: ActorMethod<[InitAssetKey, bigint], InitUploadResult>;
 	init_proposal: ActorMethod<[ProposalType], [bigint, Proposal]>;
 	init_proposal_asset_upload: ActorMethod<[InitAssetKey, bigint], InitUploadResult>;
 	init_user_mission_control_center: ActorMethod<[], MissionControl>;
@@ -290,6 +292,7 @@ export interface _SERVICE {
 	set_storage_config: ActorMethod<[StorageConfig], undefined>;
 	submit_proposal: ActorMethod<[bigint], [bigint, Proposal]>;
 	update_rate_config: ActorMethod<[SegmentKind, RateConfig], undefined>;
+	upload_asset_chunk: ActorMethod<[UploadChunk], UploadChunkResult>;
 	upload_proposal_asset_chunk: ActorMethod<[UploadChunk], UploadChunkResult>;
 }
 export declare const idlFactory: IDL.InterfaceFactory;

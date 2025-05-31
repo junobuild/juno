@@ -11,6 +11,7 @@
 	import { listCustomDomains } from '$lib/services/custom-domain.services';
 	import { i18n } from '$lib/stores/i18n.store';
 	import { satelliteUrl } from '$lib/utils/satellite.utils';
+	import { fade } from 'svelte/transition';
 
 	interface Props {
 		satellite: Satellite;
@@ -25,13 +26,13 @@
 		});
 	});
 
-	let defaultUrl: string = $derived(satelliteUrl(satellite.satellite_id.toText()));
+	let defaultUrl = $derived(satelliteUrl(satellite.satellite_id.toText()));
 
-	let href: string = $derived(
+	let href = $derived(
 		nonNullish($satelliteCustomDomain) ? `https://${$satelliteCustomDomain}` : defaultUrl
 	);
 
-	let host: string = $derived($satelliteCustomDomain ?? new URL(defaultUrl).host);
+	let host = $derived($satelliteCustomDomain ?? $i18n.hosting.default_url);
 </script>
 
 <div>
@@ -39,9 +40,11 @@
 		{#snippet label()}
 			{$i18n.hosting.title}
 		{/snippet}
-		{#if $satelliteCustomDomainsLoaded}
-			<ExternalLink {href} ariaLabel={$i18n.hosting.custom_domain}
-				><span class="host">{host}</span></ExternalLink
+		{#if $satelliteCustomDomainsLoaded && nonNullish(host)}
+			<span in:fade
+				><ExternalLink {href} ariaLabel={$i18n.hosting.custom_domain}
+					><span class="host">{host}</span></ExternalLink
+				></span
 			>
 		{:else}
 			<span>&ZeroWidthSpace;</span>

@@ -450,7 +450,8 @@
 		"set_auth_domain_title": "设置用于认证的域名",
 		"set_auth_domain_question": "Would you like to use <strong>{0}</strong> as the primary domain for all user sign-ins?",
 		"need_more_info": "Need more info? See the",
-		"domain_name": "域名"
+		"domain_name": "域名",
+		"default_url": "Default URL"
 	},
 	"functions": {
 		"title": "功能",

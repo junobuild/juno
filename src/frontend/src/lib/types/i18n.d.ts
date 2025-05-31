@@ -464,6 +464,7 @@ interface I18nHosting {
 	set_auth_domain_question: string;
 	need_more_info: string;
 	domain_name: string;
+	default_url: string;
 }
 
 interface I18nFunctions {

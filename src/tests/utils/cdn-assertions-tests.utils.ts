@@ -22,6 +22,8 @@ import {
 import type { Actor, PocketIc } from '@hadronous/pic';
 import {
 	JUNO_CDN_PROPOSALS_ERROR_CANNOT_COMMIT,
+	JUNO_CDN_PROPOSALS_ERROR_CANNOT_DELETE_ASSETS,
+	JUNO_CDN_PROPOSALS_ERROR_CANNOT_DELETE_ASSETS_INVALID_STATUS,
 	JUNO_CDN_PROPOSALS_ERROR_CANNOT_REJECT,
 	JUNO_CDN_PROPOSALS_ERROR_CANNOT_REJECT_INVALID_STATUS,
 	JUNO_CDN_PROPOSALS_ERROR_CANNOT_SUBMIT,
@@ -403,6 +405,16 @@ export const testControlledCdnMethods = ({
 				expect(status_code).toBe(404);
 			});
 
+			it('should fail at deleting assets for a proposal open', async () => {
+				const { delete_proposal_assets } = actor({ requireController: true });
+
+				await expect(
+					delete_proposal_assets({
+						proposal_ids: [proposalId]
+					})
+				).rejects.toThrow(`${JUNO_CDN_PROPOSALS_ERROR_CANNOT_DELETE_ASSETS_INVALID_STATUS} (Open)`);
+			});
+
 			it('should fail at submitting a proposal if already open', async () => {
 				const { submit_proposal } = actor();
 
@@ -496,6 +508,24 @@ export const testControlledCdnMethods = ({
 				assertNonNullish(proposal);
 
 				expect(proposal.status).toEqual({ Executed: null });
+			});
+
+			describe('Delete proposal assets', () => {
+				it('should throw errors on delete unknown proposal', async () => {
+					const { delete_proposal_assets } = actor({ requireController: true });
+
+					await expect(delete_proposal_assets({ proposal_ids: [1000n] })).rejects.toThrow(
+						JUNO_CDN_PROPOSALS_ERROR_CANNOT_DELETE_ASSETS
+					);
+				});
+
+				it('should succeed at deleting proposal assets', async () => {
+					const { delete_proposal_assets } = actor({ requireController: true });
+
+					await expect(
+						delete_proposal_assets({ proposal_ids: [proposalId] })
+					).resolves.not.toThrow();
+				});
 			});
 
 			it('should serve asset', async () => {

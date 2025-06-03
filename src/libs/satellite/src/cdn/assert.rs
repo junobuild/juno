@@ -1,6 +1,9 @@
 use crate::cdn::constants::{CDN_JUNO_COLLECTION_KEY, CDN_JUNO_COLLECTION_PATH};
 use candid::Principal;
-use junobuild_cdn::storage::errors::{JUNO_CDN_STORAGE_ERROR_INVALID_COLLECTION, JUNO_CDN_STORAGE_ERROR_INVALID_RELEASES_DESCRIPTION, JUNO_CDN_STORAGE_ERROR_INVALID_RELEASES_PATH, JUNO_CDN_STORAGE_ERROR_MISSING_RELEASES_DESCRIPTION};
+use junobuild_cdn::storage::assert_releases_description;
+use junobuild_cdn::storage::errors::{
+    JUNO_CDN_STORAGE_ERROR_INVALID_COLLECTION, JUNO_CDN_STORAGE_ERROR_INVALID_RELEASES_PATH,
+};
 use junobuild_collections::assert::stores::{
     assert_create_permission, assert_create_permission_with, assert_permission,
     assert_permission_with,
@@ -21,7 +24,12 @@ pub fn assert_cdn_asset_keys(
     collection: &CollectionKey,
 ) -> Result<(), String> {
     match collection.as_str() {
-        CDN_JUNO_COLLECTION_KEY => assert_releases_keys(full_path, description),
+        CDN_JUNO_COLLECTION_KEY => {
+            assert_releases_keys(full_path)?;
+            assert_releases_description(description)?;
+
+            Ok(())
+        }
         _ => {
             if full_path.starts_with(CDN_JUNO_COLLECTION_PATH) {
                 return Err(format!(
@@ -35,25 +43,13 @@ pub fn assert_cdn_asset_keys(
     }
 }
 
-fn assert_releases_keys(full_path: &FullPath, description: &Option<String>) -> Result<(), String> {
+fn assert_releases_keys(full_path: &FullPath) -> Result<(), String> {
     let full_path_re = build_regex(r"^/_juno/releases/satellite[^/]*\.wasm\.gz$")?;
 
     if !full_path_re.is_match(full_path) {
         return Err(format!(
             "{} ({})",
             JUNO_CDN_STORAGE_ERROR_INVALID_RELEASES_PATH, full_path
-        ));
-    }
-
-    let desc = description.as_deref().ok_or_else(|| {
-        JUNO_CDN_STORAGE_ERROR_MISSING_RELEASES_DESCRIPTION
-    })?;
-
-    let desc_re = build_regex(r"^change=\d+;version=[^;]+$")?;
-    if !desc_re.is_match(&desc) {
-        return Err(format!(
-            "{} ({})",
-            JUNO_CDN_STORAGE_ERROR_INVALID_RELEASES_DESCRIPTION, desc
         ));
     }
 

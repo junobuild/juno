@@ -31,7 +31,9 @@ import {
 	JUNO_CDN_PROPOSALS_ERROR_EMPTY_ASSETS,
 	JUNO_CDN_PROPOSALS_ERROR_INVALID_HASH,
 	JUNO_CDN_STORAGE_ERROR_INVALID_COLLECTION,
+	JUNO_CDN_STORAGE_ERROR_INVALID_RELEASES_DESCRIPTION,
 	JUNO_CDN_STORAGE_ERROR_INVALID_RELEASES_PATH,
+	JUNO_CDN_STORAGE_ERROR_MISSING_RELEASES_DESCRIPTION,
 	JUNO_CDN_STORAGE_ERROR_NO_PROPOSAL_FOUND
 } from '@junobuild/errors';
 import { describe, expect } from 'vitest';
@@ -812,6 +814,56 @@ export const testReleasesProposal = ({
 			});
 		});
 
+		describe.each(validModuleFullPaths)('Asset requires description', (fullPath) => {
+			it('should throw error if description is missing', async () => {
+				const { init_proposal_asset_upload, init_proposal } = actor();
+
+				const [proposalId, _] = await init_proposal({
+					AssetsUpgrade: {
+						clear_existing_assets: toNullable()
+					}
+				});
+
+				await expect(
+					init_proposal_asset_upload(
+						{
+							collection: validCollection,
+							description: toNullable(),
+							encoding_type: [],
+							full_path: fullPath,
+							name: fullPath,
+							token: toNullable()
+						},
+						proposalId
+					)
+				).rejects.toThrow(JUNO_CDN_STORAGE_ERROR_MISSING_RELEASES_DESCRIPTION);
+			});
+
+			it('should throw error if description is using an invalid pattern', async () => {
+				const { init_proposal_asset_upload, init_proposal } = actor();
+
+				const [proposalId, _] = await init_proposal({
+					AssetsUpgrade: {
+						clear_existing_assets: toNullable()
+					}
+				});
+
+				await expect(
+					init_proposal_asset_upload(
+						{
+							collection: validCollection,
+							description: toNullable('test'),
+							encoding_type: [],
+							full_path: fullPath,
+							name: fullPath,
+							token: toNullable()
+						},
+						proposalId
+					)
+				).rejects.toThrow(`${JUNO_CDN_STORAGE_ERROR_INVALID_RELEASES_DESCRIPTION} (test)`);
+			});
+		});
+
 		describe.each(validModuleFullPaths)(`Assert upload value path %s`, (fullPath) => {
 			it('should throw error if collection is #dapp', async () => {
 				const { init_proposal_asset_upload, init_proposal } = actor();
@@ -955,7 +1007,7 @@ export const testCdnGetProposal = ({
 
 export const testCdnCountProposals = ({
 	actor,
-	proposalsLength = 19n
+	proposalsLength = 25n
 }: {
 	actor: () => Actor<SatelliteActor | ConsoleActor>;
 	proposalsLength?: bigint;
@@ -969,7 +1021,7 @@ export const testCdnCountProposals = ({
 
 export const testCdnListProposals = ({
 	actor,
-	proposalsLength = 19n
+	proposalsLength = 25n
 }: {
 	actor: () => Actor<SatelliteActor | ConsoleActor>;
 	proposalsLength?: bigint;

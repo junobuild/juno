@@ -8,9 +8,7 @@ import { type Actor, PocketIc } from '@hadronous/pic';
 import {
 	JUNO_AUTH_ERROR_NOT_ADMIN_CONTROLLER,
 	JUNO_AUTH_ERROR_NOT_CONTROLLER,
-	JUNO_AUTH_ERROR_NOT_WRITE_CONTROLLER, JUNO_CDN_STORAGE_ERROR_INVALID_RELEASES_DESCRIPTION,
-	JUNO_CDN_STORAGE_ERROR_INVALID_RELEASES_PATH,
-	JUNO_CDN_STORAGE_ERROR_MISSING_RELEASES_DESCRIPTION,
+	JUNO_AUTH_ERROR_NOT_WRITE_CONTROLLER,
 	JUNO_STORAGE_ERROR_UPLOAD_PATH_COLLECTION_PREFIX
 } from '@junobuild/errors';
 import { beforeAll, describe, expect, inject } from 'vitest';
@@ -214,9 +212,6 @@ describe('Satellite > Cdn', () => {
 			'/_juno/releases/satellite.wasm.gz'
 		];
 
-		const FULL_PATH_PREFIX = '/_juno/releases';
-		const VALID_COLLECTION = '#_juno';
-
 		beforeAll(async () => {
 			actor.setIdentity(controller);
 
@@ -256,61 +251,8 @@ describe('Satellite > Cdn', () => {
 				'orbiter.txt'
 			],
 			validModuleFullPaths,
-			validCollection: VALID_COLLECTION,
-			fullPathPrefix: FULL_PATH_PREFIX
-		});
-
-		describe("Asset requires description", () => {
-			const filename = `satellite-${crypto.randomUUID()}.wasm.gz`;
-			const fullPath = `${FULL_PATH_PREFIX}/${filename}`;
-
-			it('should throw error if description is missing', async () => {
-				const { init_proposal_asset_upload, init_proposal } = actor;
-
-				const [proposalId, _] = await init_proposal({
-					AssetsUpgrade: {
-						clear_existing_assets: toNullable()
-					}
-				});
-
-				await expect(
-					init_proposal_asset_upload(
-						{
-							collection: VALID_COLLECTION,
-							description: toNullable(),
-							encoding_type: [],
-							full_path: fullPath,
-							name: filename,
-							token: toNullable()
-						},
-						proposalId
-					)
-				).rejects.toThrow(JUNO_CDN_STORAGE_ERROR_MISSING_RELEASES_DESCRIPTION);
-			});
-
-			it('should throw error if description is using an invalid pattern', async () => {
-				const { init_proposal_asset_upload, init_proposal } = actor;
-
-				const [proposalId, _] = await init_proposal({
-					AssetsUpgrade: {
-						clear_existing_assets: toNullable()
-					}
-				});
-
-				await expect(
-					init_proposal_asset_upload(
-						{
-							collection: VALID_COLLECTION,
-							description: toNullable("test"),
-							encoding_type: [],
-							full_path: fullPath,
-							name: filename,
-							token: toNullable(),
-						},
-						proposalId
-					)
-				).rejects.toThrow(`${JUNO_CDN_STORAGE_ERROR_INVALID_RELEASES_DESCRIPTION} (test)`);
-			});
+			validCollection: '#_juno',
+			fullPathPrefix: '/_juno/releases'
 		});
 
 		describe.each(validModuleFullPaths)(`Assert upload value path start with %s`, (fullPath) => {
@@ -382,7 +324,7 @@ describe('Satellite > Cdn', () => {
 				canisterId: () => canisterId,
 				caller: () => controllerSubmit,
 				pic: () => pic,
-				expected_proposal_id: 30n,
+				expected_proposal_id: 32n,
 				fullPaths: {
 					assetsUpgrade: '/magic.html',
 					segmentsDeployment: '/_juno/releases/satellite-v2.1.1.wasm.gz',
@@ -394,7 +336,7 @@ describe('Satellite > Cdn', () => {
 			testCdnGetProposal({
 				actor: () => actor,
 				owner: () => controllerSubmit,
-				proposalId: 30n
+				proposalId: 32n
 			});
 
 			testCdnGetProposal({
@@ -414,7 +356,7 @@ describe('Satellite > Cdn', () => {
 					return actor;
 				},
 				owner: () => controllerSubmit,
-				proposalId: 30n
+				proposalId: 32n
 			});
 
 			testCdnGetProposal({
@@ -423,7 +365,7 @@ describe('Satellite > Cdn', () => {
 					return actor;
 				},
 				owner: () => controllerSubmit,
-				proposalId: 30n
+				proposalId: 32n
 			});
 		});
 
@@ -442,7 +384,7 @@ describe('Satellite > Cdn', () => {
 				canisterId: () => canisterId,
 				caller: () => controllerSubmit,
 				pic: () => pic,
-				expected_proposal_id: 36n,
+				expected_proposal_id: 38n,
 				fullPaths: {
 					assetsUpgrade: '/book.html',
 					segmentsDeployment: '/_juno/releases/satellite-v3.1.1.wasm.gz',
@@ -454,7 +396,7 @@ describe('Satellite > Cdn', () => {
 			testCdnGetProposal({
 				actor: () => actor,
 				owner: () => controllerSubmit,
-				proposalId: 30n
+				proposalId: 32n
 			});
 
 			testCdnGetProposal({
@@ -474,7 +416,7 @@ describe('Satellite > Cdn', () => {
 					return actor;
 				},
 				owner: () => controllerSubmit,
-				proposalId: 30n
+				proposalId: 32n
 			});
 
 			testCdnGetProposal({
@@ -483,7 +425,7 @@ describe('Satellite > Cdn', () => {
 					return actor;
 				},
 				owner: () => controllerSubmit,
-				proposalId: 30n
+				proposalId: 32n
 			});
 		});
 
@@ -493,7 +435,7 @@ describe('Satellite > Cdn', () => {
 			await expect(
 				commit_proposal({
 					sha256: Array.from({ length: 32 }).map((_, i) => i),
-					proposal_id: 30n
+					proposal_id: 32n
 				})
 			).rejects.toThrow(JUNO_AUTH_ERROR_NOT_WRITE_CONTROLLER);
 		});
@@ -514,12 +456,12 @@ describe('Satellite > Cdn', () => {
 
 		testCdnListProposals({
 			actor: () => actor,
-			proposalsLength: 41n
+			proposalsLength: 43n
 		});
 
 		testCdnCountProposals({
 			actor: () => actor,
-			proposalsLength: 41n
+			proposalsLength: 43n
 		});
 	});
 });

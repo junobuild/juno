@@ -26,7 +26,12 @@ use junobuild_storage::types::store::{
 pub struct StorageAssertions;
 
 impl StorageAssertionsStrategy for StorageAssertions {
-    fn assert_key(&self, full_path: &FullPath, description: &Option<String>, collection: &CollectionKey) -> Result<(), String> {
+    fn assert_key(
+        &self,
+        full_path: &FullPath,
+        description: &Option<String>,
+        collection: &CollectionKey,
+    ) -> Result<(), String> {
         assert_cdn_asset_keys(full_path, description, collection)
     }
 

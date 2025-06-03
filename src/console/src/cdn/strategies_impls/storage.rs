@@ -31,7 +31,7 @@ use junobuild_storage::utils::clone_asset_encoding_content_chunks;
 pub struct StorageAssertions;
 
 impl StorageAssertionsStrategy for StorageAssertions {
-    fn assert_key(&self, full_path: &FullPath, collection: &CollectionKey) -> Result<(), String> {
+    fn assert_key(&self, full_path: &FullPath, _description: &Option<String>, collection: &CollectionKey) -> Result<(), String> {
         assert_cdn_asset_keys(full_path, collection)
     }
 

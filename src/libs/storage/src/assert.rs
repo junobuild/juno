@@ -33,6 +33,7 @@ pub fn assert_create_batch(
     assert_key(
         caller,
         &init.full_path,
+        &init.description,
         &init.collection,
         assertions,
         controllers,
@@ -76,6 +77,7 @@ pub fn assert_commit_batch(
     assert_key(
         caller,
         &batch.key.full_path,
+        &batch.key.description,
         &batch.key.collection,
         assertions,
         controllers,
@@ -180,6 +182,7 @@ fn assert_memory_size(config: &StorageConfig) -> Result<(), String> {
 /// # Arguments
 /// * `caller` - The principal trying to upload the asset.
 /// * `full_path` - The full path where the asset is to be stored.
+/// * `description` - The optional description of the asset.
 /// * `collection` - The collection key (e.g., `#dapp`, `user-assets`, etc.).
 /// * `controllers` - A list of principals allowed to control the storage.
 ///
@@ -197,6 +200,7 @@ fn assert_memory_size(config: &StorageConfig) -> Result<(), String> {
 fn assert_key(
     caller: Principal,
     full_path: &FullPath,
+    description: &Option<String>,
     collection: &CollectionKey,
     assertions: &impl StorageAssertionsStrategy,
     controllers: &Controllers,
@@ -234,7 +238,7 @@ fn assert_key(
         return Err(JUNO_STORAGE_ERROR_UPLOAD_PATH_COLLECTION_PREFIX.to_string());
     }
 
-    assertions.assert_key(full_path, collection)?;
+    assertions.assert_key(full_path, description, collection)?;
 
     Ok(())
 }

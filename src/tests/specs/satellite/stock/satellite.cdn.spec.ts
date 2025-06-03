@@ -144,6 +144,7 @@ describe('Satellite > Cdn', () => {
 			fullPaths: {
 				assetsUpgrade: '/hello.html',
 				segmentsDeployment: '/_juno/releases/satellite-v0.0.18.wasm.gz',
+				segmentsVersion: '0.0.18',
 				assetsCollection: '#dapp',
 				segmentsCollection: '#_juno'
 			}
@@ -187,6 +188,7 @@ describe('Satellite > Cdn', () => {
 			fullPaths: {
 				assetsUpgrade: '/world.html',
 				segmentsDeployment: '/_juno/releases/satellite-v0.1.1.wasm.gz',
+				segmentsVersion: '0.1.1',
 				assetsCollection: '#dapp',
 				segmentsCollection: '#_juno'
 			}
@@ -328,6 +330,7 @@ describe('Satellite > Cdn', () => {
 				fullPaths: {
 					assetsUpgrade: '/magic.html',
 					segmentsDeployment: '/_juno/releases/satellite-v2.1.1.wasm.gz',
+					segmentsVersion: '2.1.1',
 					assetsCollection: '#dapp',
 					segmentsCollection: '#_juno'
 				}
@@ -388,6 +391,7 @@ describe('Satellite > Cdn', () => {
 				fullPaths: {
 					assetsUpgrade: '/book.html',
 					segmentsDeployment: '/_juno/releases/satellite-v3.1.1.wasm.gz',
+					segmentsVersion: '3.1.1',
 					assetsCollection: '#dapp',
 					segmentsCollection: '#_juno'
 				}

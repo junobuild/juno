@@ -224,6 +224,7 @@ export const testControlledCdnMethods = ({
 	fullPaths = {
 		assetsUpgrade: '/hello.html',
 		segmentsDeployment: '/releases/satellite-v0.0.18.wasm.gz',
+		segmentsVersion: '0.0.18',
 		assetsCollection: '#dapp',
 		segmentsCollection: '#releases'
 	}
@@ -237,6 +238,7 @@ export const testControlledCdnMethods = ({
 	fullPaths?: {
 		assetsUpgrade: string;
 		segmentsDeployment: string;
+		segmentsVersion: string;
 		assetsCollection: string;
 		segmentsCollection: string;
 	};
@@ -250,6 +252,7 @@ export const testControlledCdnMethods = ({
 			} as ProposalType,
 			collection: fullPaths.assetsCollection,
 			full_path: fullPaths.assetsUpgrade,
+			version: fullPaths.segmentsVersion,
 			expected_proposal_id
 		},
 		{
@@ -262,11 +265,13 @@ export const testControlledCdnMethods = ({
 			} as ProposalType,
 			collection: fullPaths.segmentsCollection,
 			full_path: fullPaths.segmentsDeployment,
+			description: (proposalId: bigint) =>
+				`change=${proposalId};version=v${fullPaths.segmentsVersion}`,
 			expected_proposal_id: expected_proposal_id + 2n // The proposal committed and the one we reject
 		}
 	])(
 		'Proposal, upload and serve',
-		({ proposal_type, collection, full_path, expected_proposal_id }) => {
+		({ proposal_type, collection, full_path, expected_proposal_id, description }) => {
 			let sha256: [] | [Uint8Array | number[]];
 			let proposalId: bigint;
 
@@ -321,7 +326,7 @@ export const testControlledCdnMethods = ({
 				const file = await init_proposal_asset_upload(
 					{
 						collection,
-						description: toNullable(`change=${Number(proposalId)};version=v3.2.0`),
+						description: toNullable(description?.(proposalId)),
 						encoding_type: [],
 						full_path,
 						name: 'hello.html',

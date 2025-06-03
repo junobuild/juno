@@ -49,7 +49,7 @@ fn update_releases_metadata_asset() -> Result<(), String> {
     Ok(())
 }
 
-pub fn map_releases_metadata_asset(metadata: &str, existing_asset: Option<Asset>) -> Asset {
+fn map_releases_metadata_asset(metadata: &str, existing_asset: Option<Asset>) -> Asset {
     let key = AssetKey {
         name: RELEASES_METADATA_JSON.to_string(),
         full_path: RELEASES_METADATA_JSON.to_string(),

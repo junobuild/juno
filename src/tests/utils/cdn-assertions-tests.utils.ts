@@ -319,7 +319,7 @@ export const testControlledCdnMethods = ({
 				const file = await init_proposal_asset_upload(
 					{
 						collection,
-						description: toNullable(),
+						description: toNullable(`change=${Number(proposalId)};version=v3.2.0`),
 						encoding_type: [],
 						full_path,
 						name: 'hello.html',

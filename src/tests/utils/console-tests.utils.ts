@@ -1,4 +1,5 @@
 import type { _SERVICE as ConsoleActor } from '$declarations/console/console.did';
+import type { _SERVICE as ConsoleActor_0_0_14 } from '$declarations/deprecated/console-0-0-14.did';
 import type { _SERVICE as ConsoleActor_0_0_8 } from '$declarations/deprecated/console-0-0-8-patch1.did';
 import type { _SERVICE as MissionControlActor } from '$declarations/mission_control/mission_control.did';
 import { idlFactory as idlFactorMissionControl } from '$declarations/mission_control/mission_control.factory.did';
@@ -19,7 +20,7 @@ import {
 	WASM_VERSIONS
 } from './setup-tests.utils';
 
-const installRelease = async ({
+const installReleaseWithDeprecatedFlow = async ({
 	download,
 	segment,
 	version,
@@ -63,11 +64,23 @@ const uploadSegment = async ({
 }: {
 	segment: 'satellite' | 'mission_control' | 'orbiter';
 	version: string;
-	actor: Actor<ConsoleActor>;
+	actor: Actor<ConsoleActor | ConsoleActor_0_0_14>;
 	proposalId: bigint;
 }) => {
-	const { init_proposal_asset_upload, upload_proposal_asset_chunk, commit_proposal_asset_upload } =
-		actor;
+	const init_proposal_asset_upload =
+		'init_asset_upload' in actor
+			? (actor as ConsoleActor_0_0_14).init_asset_upload
+			: (actor as ConsoleActor).init_proposal_asset_upload;
+
+	const upload_proposal_asset_chunk =
+		'upload_asset_chunk' in actor
+			? (actor as ConsoleActor_0_0_14).upload_asset_chunk
+			: (actor as ConsoleActor).upload_proposal_asset_chunk;
+
+	const commit_proposal_asset_upload =
+		'commit_asset_upload' in actor
+			? (actor as ConsoleActor_0_0_14).commit_asset_upload
+			: (actor as ConsoleActor).commit_proposal_asset_upload;
 
 	const name = `${segment}-v${version}.wasm.gz`;
 	const fullPath = `/releases/${name}`;
@@ -164,7 +177,7 @@ const uploadSegment = async ({
 	});
 };
 
-export const deploySegments = async (actor: Actor<ConsoleActor>) => {
+export const deploySegments = async (actor: Actor<ConsoleActor | ConsoleActor_0_0_14>) => {
 	const { init_proposal, submit_proposal, commit_proposal } = actor;
 
 	const [proposalId, _] = await init_proposal({
@@ -208,22 +221,22 @@ export const deploySegments = async (actor: Actor<ConsoleActor>) => {
 	});
 };
 
-export const installReleases = async (actor: Actor<ConsoleActor_0_0_8>) => {
-	await installRelease({
+export const installReleasesWithDeprecatedFlow = async (actor: Actor<ConsoleActor_0_0_8>) => {
+	await installReleaseWithDeprecatedFlow({
 		download: downloadSatellite,
 		version: versionSatellite,
 		segment: { Satellite: null },
 		actor
 	});
 
-	await installRelease({
+	await installReleaseWithDeprecatedFlow({
 		download: downloadOrbiter,
 		version: versionOrbiter,
 		segment: { Orbiter: null },
 		actor
 	});
 
-	await installRelease({
+	await installReleaseWithDeprecatedFlow({
 		download: downloadMissionControl,
 		version: versionMissionControl,
 		segment: { MissionControl: null },
@@ -248,7 +261,7 @@ export const initMissionControls = async ({
 	pic,
 	length
 }: {
-	actor: Actor<ConsoleActor | ConsoleActor_0_0_8>;
+	actor: Actor<ConsoleActor | ConsoleActor_0_0_8 | ConsoleActor_0_0_14>;
 	pic: PocketIc;
 	length: number;
 }): Promise<Identity[]> => {
@@ -272,7 +285,7 @@ export const testSatelliteExists = async ({
 	pic
 }: {
 	users: Identity[];
-	actor: Actor<ConsoleActor | ConsoleActor_0_0_8>;
+	actor: Actor<ConsoleActor | ConsoleActor_0_0_8 | ConsoleActor_0_0_14>;
 	pic: PocketIc;
 }) => {
 	const { list_user_mission_control_centers } = actor;
@@ -297,9 +310,20 @@ export const testSatelliteExists = async ({
 			missionControlId
 		);
 
-		// The Mission Control has no public functions. If it rejects a call with a particular error message it means it exists.
-		await expect(get_user()).rejects.toThrow(
-			'Caller is not the owner or a controller of the mission control.'
-		);
+		try {
+			await get_user();
+
+			expect(true).toBeFalsy();
+		} catch (err: unknown) {
+			// The Mission Control has no public functions. If it rejects a call with a particular error message it means it exists.
+			expect(
+				(err as Error).message.includes(
+					'Caller is not the owner or a controller of the mission control.'
+				) ||
+					(err as Error).message.includes(
+						'Caller is not an admin controller of the mission control.'
+					)
+			).toBeTruthy();
+		}
 	}
 };

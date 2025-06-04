@@ -11,7 +11,12 @@ use junobuild_shared::types::domain::CustomDomains;
 use junobuild_shared::types::state::Controllers;
 
 pub trait StorageAssertionsStrategy {
-    fn assert_key(&self, full_path: &FullPath, collection: &CollectionKey) -> Result<(), String>;
+    fn assert_key(
+        &self,
+        full_path: &FullPath,
+        description: &Option<String>,
+        collection: &CollectionKey,
+    ) -> Result<(), String>;
 
     fn assert_write_on_dapp_collection(&self, caller: Principal, controllers: &Controllers)
         -> bool;

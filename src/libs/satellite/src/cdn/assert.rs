@@ -1,5 +1,6 @@
-use crate::cdn::constants::{CDN_JUNO_COLLECTION_KEY, CDN_JUNO_COLLECTION_PATH};
+use crate::cdn::constants::{CDN_JUNO_PATH, CDN_JUNO_RELEASES_COLLECTION_KEY};
 use candid::Principal;
+use junobuild_cdn::storage::assert_releases_description;
 use junobuild_cdn::storage::errors::{
     JUNO_CDN_STORAGE_ERROR_INVALID_COLLECTION, JUNO_CDN_STORAGE_ERROR_INVALID_RELEASES_PATH,
 };
@@ -19,12 +20,18 @@ use junobuild_storage::types::state::FullPath;
 
 pub fn assert_cdn_asset_keys(
     full_path: &FullPath,
+    description: &Option<String>,
     collection: &CollectionKey,
 ) -> Result<(), String> {
     match collection.as_str() {
-        CDN_JUNO_COLLECTION_KEY => assert_releases_keys(full_path),
+        CDN_JUNO_RELEASES_COLLECTION_KEY => {
+            assert_releases_keys(full_path)?;
+            assert_releases_description(description)?;
+
+            Ok(())
+        }
         _ => {
-            if full_path.starts_with(CDN_JUNO_COLLECTION_PATH) {
+            if full_path.starts_with(CDN_JUNO_PATH) {
                 return Err(format!(
                     "{} ({} - {})",
                     JUNO_CDN_STORAGE_ERROR_INVALID_COLLECTION, full_path, collection
@@ -37,9 +44,9 @@ pub fn assert_cdn_asset_keys(
 }
 
 fn assert_releases_keys(full_path: &FullPath) -> Result<(), String> {
-    let re = build_regex(r"^/_juno/releases/satellite[^/]*\.wasm\.gz$")?;
+    let full_path_re = build_regex(r"^/_juno/releases/satellite[^/]*\.wasm\.gz$")?;
 
-    if !re.is_match(full_path) {
+    if !full_path_re.is_match(full_path) {
         return Err(format!(
             "{} ({})",
             JUNO_CDN_STORAGE_ERROR_INVALID_RELEASES_PATH, full_path
@@ -61,7 +68,7 @@ pub fn assert_cdn_write_on_system_collection(
 ) -> bool {
     // Only controllers with scope "Admin" or "Write" can write in reserved collections starting with #
     // ...unless the collection is #_juno and the controller is "Submit".
-    if collection == CDN_JUNO_COLLECTION_KEY {
+    if collection == CDN_JUNO_RELEASES_COLLECTION_KEY {
         return is_controller(caller, controllers);
     }
 
@@ -75,7 +82,7 @@ pub fn assert_cdn_create_permission(
     controllers: &Controllers,
 ) -> bool {
     // Through a proposal, any controller - including "Submit" - can provide an asset for the #_juno or #dapp collections.
-    if collection == CDN_JUNO_COLLECTION_KEY || collection == COLLECTION_ASSET_KEY {
+    if collection == CDN_JUNO_RELEASES_COLLECTION_KEY || collection == COLLECTION_ASSET_KEY {
         return assert_create_permission_with(permission, caller, controllers, is_controller);
     }
 
@@ -90,7 +97,7 @@ pub fn assert_cdn_update_permission(
     controllers: &Controllers,
 ) -> bool {
     // Through a proposal, any controller - including "Submit" - can provide an update of an asset for the #_juno or #dapp collections.
-    if collection == CDN_JUNO_COLLECTION_KEY || collection == COLLECTION_ASSET_KEY {
+    if collection == CDN_JUNO_RELEASES_COLLECTION_KEY || collection == COLLECTION_ASSET_KEY {
         return assert_permission_with(permission, owner, caller, controllers, is_controller);
     }
 

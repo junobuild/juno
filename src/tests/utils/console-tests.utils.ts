@@ -89,7 +89,7 @@ const uploadSegment = async ({
 	const { batch_id: batchId } = await init_proposal_asset_upload(
 		{
 			collection: '#releases',
-			description: toNullable(),
+			description: toNullable(`change=${proposalId};version=v${version}`),
 			encoding_type: ['identity'],
 			full_path: fullPath,
 			name,

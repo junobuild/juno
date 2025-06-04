@@ -53,6 +53,8 @@ pub fn init_stable_state() -> StableState {
     }
 }
 
+// TODO: One time upgrade - To be removed.
+
 // ⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️
 // ⚠️ The introduction of the CDN requires a breaking change due to how content chunks are handled.
 // ⚠️ Therefore we're starting fresh.

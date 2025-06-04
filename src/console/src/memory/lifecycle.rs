@@ -44,6 +44,7 @@ fn pre_upgrade() {
 
 #[post_upgrade]
 fn post_upgrade() {
+    // TODO: To be removed
     // ⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️
     // ⚠️ Clearing memory must be executed before the state is initialized.
     // ⚠️ e.g. Memory ID might be reused or the types of the data and keys might change.

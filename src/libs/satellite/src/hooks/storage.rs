@@ -1,6 +1,6 @@
 #![allow(dead_code)]
 
-use crate::cdn::constants::CDN_JUNO_COLLECTION_KEY;
+use crate::cdn::constants::CDN_JUNO_RELEASES_COLLECTION_KEY;
 use crate::types::hooks::{
     AssertDeleteAssetContext, AssertUploadAssetContext, OnDeleteAssetContext,
     OnDeleteFilteredAssetsContext, OnDeleteManyAssetsContext, OnUploadAssetContext,
@@ -216,7 +216,7 @@ fn filter_assets(
 
 // We skip system collections for performance reason given that the hook might be called when the developer deploys their frontend dapps or update their serverless functions.
 fn is_system_collection(collection: &CollectionKey) -> bool {
-    collection == COLLECTION_ASSET_KEY || collection == CDN_JUNO_COLLECTION_KEY
+    collection == COLLECTION_ASSET_KEY || collection == CDN_JUNO_RELEASES_COLLECTION_KEY
 }
 
 fn is_not_system_collection(collection: &CollectionKey) -> bool {

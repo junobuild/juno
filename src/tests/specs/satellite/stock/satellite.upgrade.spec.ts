@@ -786,12 +786,12 @@ describe('Satellite > Upgrade', () => {
 			);
 		});
 
-		it('should create collection #_juno', async () => {
+		it('should create collection #_juno/releases', async () => {
 			await upgrade();
 
 			const { get_rule } = actor;
 
-			const result = await get_rule({ Storage: null }, '#_juno');
+			const result = await get_rule({ Storage: null }, '#_juno/releases');
 
 			const rule = fromNullable(result);
 

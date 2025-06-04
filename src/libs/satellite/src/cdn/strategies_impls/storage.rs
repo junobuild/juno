@@ -28,8 +28,13 @@ use junobuild_storage::utils::clone_asset_encoding_content_chunks;
 pub struct CdnStorageAssertions;
 
 impl StorageAssertionsStrategy for CdnStorageAssertions {
-    fn assert_key(&self, full_path: &FullPath, collection: &CollectionKey) -> Result<(), String> {
-        assert_cdn_asset_keys(full_path, collection)
+    fn assert_key(
+        &self,
+        full_path: &FullPath,
+        description: &Option<String>,
+        collection: &CollectionKey,
+    ) -> Result<(), String> {
+        assert_cdn_asset_keys(full_path, description, collection)
     }
 
     fn assert_write_on_dapp_collection(

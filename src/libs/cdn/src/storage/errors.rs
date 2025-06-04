@@ -13,6 +13,12 @@ pub const JUNO_CDN_STORAGE_ERROR_NO_PROPOSAL_FOUND: &str =
 pub const JUNO_CDN_STORAGE_ERROR_INVALID_RELEASES_PATH: &str =
     "juno.cdn.storage.error.invalid_releases_path";
 
+pub const JUNO_CDN_STORAGE_ERROR_MISSING_RELEASES_DESCRIPTION: &str =
+    "juno.cdn.storage.error.missing_releases_description";
+
+pub const JUNO_CDN_STORAGE_ERROR_INVALID_RELEASES_DESCRIPTION: &str =
+    "juno.cdn.storage.error.invalid_releases_description";
+
 // An asset is uploaded with the CDN prefix but using the #dapp collection
 pub const JUNO_CDN_STORAGE_ERROR_INVALID_COLLECTION: &str =
     "juno.cdn.storage.error.invalid_collection";

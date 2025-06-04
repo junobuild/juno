@@ -31,7 +31,9 @@ import {
 	JUNO_CDN_PROPOSALS_ERROR_EMPTY_ASSETS,
 	JUNO_CDN_PROPOSALS_ERROR_INVALID_HASH,
 	JUNO_CDN_STORAGE_ERROR_INVALID_COLLECTION,
+	JUNO_CDN_STORAGE_ERROR_INVALID_RELEASES_DESCRIPTION,
 	JUNO_CDN_STORAGE_ERROR_INVALID_RELEASES_PATH,
+	JUNO_CDN_STORAGE_ERROR_MISSING_RELEASES_DESCRIPTION,
 	JUNO_CDN_STORAGE_ERROR_NO_PROPOSAL_FOUND
 } from '@junobuild/errors';
 import { describe, expect } from 'vitest';
@@ -222,6 +224,7 @@ export const testControlledCdnMethods = ({
 	fullPaths = {
 		assetsUpgrade: '/hello.html',
 		segmentsDeployment: '/releases/satellite-v0.0.18.wasm.gz',
+		segmentsVersion: '0.0.18',
 		assetsCollection: '#dapp',
 		segmentsCollection: '#releases'
 	}
@@ -235,6 +238,7 @@ export const testControlledCdnMethods = ({
 	fullPaths?: {
 		assetsUpgrade: string;
 		segmentsDeployment: string;
+		segmentsVersion: string;
 		assetsCollection: string;
 		segmentsCollection: string;
 	};
@@ -248,6 +252,7 @@ export const testControlledCdnMethods = ({
 			} as ProposalType,
 			collection: fullPaths.assetsCollection,
 			full_path: fullPaths.assetsUpgrade,
+			version: fullPaths.segmentsVersion,
 			expected_proposal_id
 		},
 		{
@@ -260,11 +265,13 @@ export const testControlledCdnMethods = ({
 			} as ProposalType,
 			collection: fullPaths.segmentsCollection,
 			full_path: fullPaths.segmentsDeployment,
+			description: (proposalId: bigint) =>
+				`change=${proposalId};version=v${fullPaths.segmentsVersion}`,
 			expected_proposal_id: expected_proposal_id + 2n // The proposal committed and the one we reject
 		}
 	])(
 		'Proposal, upload and serve',
-		({ proposal_type, collection, full_path, expected_proposal_id }) => {
+		({ proposal_type, collection, full_path, expected_proposal_id, description }) => {
 			let sha256: [] | [Uint8Array | number[]];
 			let proposalId: bigint;
 
@@ -319,7 +326,7 @@ export const testControlledCdnMethods = ({
 				const file = await init_proposal_asset_upload(
 					{
 						collection,
-						description: toNullable(),
+						description: toNullable(description?.(proposalId)),
 						encoding_type: [],
 						full_path,
 						name: 'hello.html',
@@ -812,6 +819,56 @@ export const testReleasesProposal = ({
 			});
 		});
 
+		describe.each(validModuleFullPaths)('Asset requires description', (fullPath) => {
+			it('should throw error if description is missing', async () => {
+				const { init_proposal_asset_upload, init_proposal } = actor();
+
+				const [proposalId, _] = await init_proposal({
+					AssetsUpgrade: {
+						clear_existing_assets: toNullable()
+					}
+				});
+
+				await expect(
+					init_proposal_asset_upload(
+						{
+							collection: validCollection,
+							description: toNullable(),
+							encoding_type: [],
+							full_path: fullPath,
+							name: fullPath,
+							token: toNullable()
+						},
+						proposalId
+					)
+				).rejects.toThrow(JUNO_CDN_STORAGE_ERROR_MISSING_RELEASES_DESCRIPTION);
+			});
+
+			it('should throw error if description is using an invalid pattern', async () => {
+				const { init_proposal_asset_upload, init_proposal } = actor();
+
+				const [proposalId, _] = await init_proposal({
+					AssetsUpgrade: {
+						clear_existing_assets: toNullable()
+					}
+				});
+
+				await expect(
+					init_proposal_asset_upload(
+						{
+							collection: validCollection,
+							description: toNullable('test'),
+							encoding_type: [],
+							full_path: fullPath,
+							name: fullPath,
+							token: toNullable()
+						},
+						proposalId
+					)
+				).rejects.toThrow(`${JUNO_CDN_STORAGE_ERROR_INVALID_RELEASES_DESCRIPTION} (test)`);
+			});
+		});
+
 		describe.each(validModuleFullPaths)(`Assert upload value path %s`, (fullPath) => {
 			it('should throw error if collection is #dapp', async () => {
 				const { init_proposal_asset_upload, init_proposal } = actor();
@@ -955,7 +1012,7 @@ export const testCdnGetProposal = ({
 
 export const testCdnCountProposals = ({
 	actor,
-	proposalsLength = 19n
+	proposalsLength = 25n
 }: {
 	actor: () => Actor<SatelliteActor | ConsoleActor>;
 	proposalsLength?: bigint;
@@ -969,7 +1026,7 @@ export const testCdnCountProposals = ({
 
 export const testCdnListProposals = ({
 	actor,
-	proposalsLength = 19n
+	proposalsLength = 25n
 }: {
 	actor: () => Actor<SatelliteActor | ConsoleActor>;
 	proposalsLength?: bigint;

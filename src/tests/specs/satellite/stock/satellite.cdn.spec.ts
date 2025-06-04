@@ -144,6 +144,7 @@ describe('Satellite > Cdn', () => {
 			fullPaths: {
 				assetsUpgrade: '/hello.html',
 				segmentsDeployment: '/_juno/releases/satellite-v0.0.18.wasm.gz',
+				segmentsVersion: '0.0.18',
 				assetsCollection: '#dapp',
 				segmentsCollection: '#_juno'
 			}
@@ -187,6 +188,7 @@ describe('Satellite > Cdn', () => {
 			fullPaths: {
 				assetsUpgrade: '/world.html',
 				segmentsDeployment: '/_juno/releases/satellite-v0.1.1.wasm.gz',
+				segmentsVersion: '0.1.1',
 				assetsCollection: '#dapp',
 				segmentsCollection: '#_juno'
 			}
@@ -324,10 +326,11 @@ describe('Satellite > Cdn', () => {
 				canisterId: () => canisterId,
 				caller: () => controllerSubmit,
 				pic: () => pic,
-				expected_proposal_id: 28n,
+				expected_proposal_id: 32n,
 				fullPaths: {
 					assetsUpgrade: '/magic.html',
 					segmentsDeployment: '/_juno/releases/satellite-v2.1.1.wasm.gz',
+					segmentsVersion: '2.1.1',
 					assetsCollection: '#dapp',
 					segmentsCollection: '#_juno'
 				}
@@ -336,7 +339,7 @@ describe('Satellite > Cdn', () => {
 			testCdnGetProposal({
 				actor: () => actor,
 				owner: () => controllerSubmit,
-				proposalId: 28n
+				proposalId: 32n
 			});
 
 			testCdnGetProposal({
@@ -356,7 +359,7 @@ describe('Satellite > Cdn', () => {
 					return actor;
 				},
 				owner: () => controllerSubmit,
-				proposalId: 28n
+				proposalId: 32n
 			});
 
 			testCdnGetProposal({
@@ -365,7 +368,7 @@ describe('Satellite > Cdn', () => {
 					return actor;
 				},
 				owner: () => controllerSubmit,
-				proposalId: 28n
+				proposalId: 32n
 			});
 		});
 
@@ -384,10 +387,11 @@ describe('Satellite > Cdn', () => {
 				canisterId: () => canisterId,
 				caller: () => controllerSubmit,
 				pic: () => pic,
-				expected_proposal_id: 34n,
+				expected_proposal_id: 38n,
 				fullPaths: {
 					assetsUpgrade: '/book.html',
 					segmentsDeployment: '/_juno/releases/satellite-v3.1.1.wasm.gz',
+					segmentsVersion: '3.1.1',
 					assetsCollection: '#dapp',
 					segmentsCollection: '#_juno'
 				}
@@ -396,7 +400,7 @@ describe('Satellite > Cdn', () => {
 			testCdnGetProposal({
 				actor: () => actor,
 				owner: () => controllerSubmit,
-				proposalId: 28n
+				proposalId: 32n
 			});
 
 			testCdnGetProposal({
@@ -416,7 +420,7 @@ describe('Satellite > Cdn', () => {
 					return actor;
 				},
 				owner: () => controllerSubmit,
-				proposalId: 28n
+				proposalId: 32n
 			});
 
 			testCdnGetProposal({
@@ -425,7 +429,7 @@ describe('Satellite > Cdn', () => {
 					return actor;
 				},
 				owner: () => controllerSubmit,
-				proposalId: 28n
+				proposalId: 32n
 			});
 		});
 
@@ -435,7 +439,7 @@ describe('Satellite > Cdn', () => {
 			await expect(
 				commit_proposal({
 					sha256: Array.from({ length: 32 }).map((_, i) => i),
-					proposal_id: 28n
+					proposal_id: 32n
 				})
 			).rejects.toThrow(JUNO_AUTH_ERROR_NOT_WRITE_CONTROLLER);
 		});
@@ -456,12 +460,12 @@ describe('Satellite > Cdn', () => {
 
 		testCdnListProposals({
 			actor: () => actor,
-			proposalsLength: 39n
+			proposalsLength: 43n
 		});
 
 		testCdnCountProposals({
 			actor: () => actor,
-			proposalsLength: 39n
+			proposalsLength: 43n
 		});
 	});
 });

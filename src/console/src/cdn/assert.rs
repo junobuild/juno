@@ -1,4 +1,5 @@
 use crate::cdn::constants::{RELEASES_COLLECTION_KEY, RELEASES_COLLECTION_PATH};
+use junobuild_cdn::storage::assert_releases_description;
 use junobuild_cdn::storage::errors::{
     JUNO_CDN_STORAGE_ERROR_INVALID_COLLECTION, JUNO_CDN_STORAGE_ERROR_INVALID_RELEASES_PATH,
 };
@@ -9,10 +10,16 @@ use junobuild_storage::types::state::FullPath;
 
 pub fn assert_cdn_asset_keys(
     full_path: &FullPath,
+    description: &Option<String>,
     collection: &CollectionKey,
 ) -> Result<(), String> {
     match collection.as_str() {
-        RELEASES_COLLECTION_KEY => assert_releases_keys(full_path),
+        RELEASES_COLLECTION_KEY => {
+            assert_releases_keys(full_path)?;
+            assert_releases_description(description)?;
+
+            Ok(())
+        }
         _ => {
             if full_path.starts_with(RELEASES_COLLECTION_PATH) {
                 return Err(format!(

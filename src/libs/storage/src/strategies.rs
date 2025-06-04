@@ -115,12 +115,13 @@ pub trait StorageStateStrategy {
 pub trait StorageUploadStrategy {
     fn insert_asset_encoding(
         &self,
+        reference_id: &Option<ReferenceId>,
         full_path: &FullPath,
         encoding_type: &EncodingType,
         encoding: &AssetEncoding,
         asset: &mut Asset,
         rule: &Rule,
-    );
+    ) -> Result<(), String>;
 
     fn insert_asset(&self, batch: &Batch, asset: &Asset, rule: &Rule) -> Result<(), String>;
 

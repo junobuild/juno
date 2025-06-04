@@ -9,6 +9,7 @@ use crate::cdn::strategies_impls::cdn::CdnHeap;
 use candid::Principal;
 use junobuild_cdn::storage::errors::{
     JUNO_CDN_STORAGE_ERROR_CANNOT_GET_ASSET_UNKNOWN_REFERENCE_ID,
+    JUNO_CDN_STORAGE_ERROR_CANNOT_INSERT_ASSET_ENCODING_UNKNOWN_REFERENCE_ID,
     JUNO_CDN_STORAGE_ERROR_CANNOT_INSERT_ASSET_UNKNOWN_REFERENCE_ID,
 };
 use junobuild_collections::assert::stores::{assert_create_permission, assert_permission};
@@ -177,13 +178,29 @@ pub struct StorageUpload;
 impl StorageUploadStrategy for StorageUpload {
     fn insert_asset_encoding(
         &self,
+        reference_id: &Option<ReferenceId>,
         full_path: &FullPath,
         encoding_type: &EncodingType,
         encoding: &AssetEncoding,
         asset: &mut Asset,
         _rule: &Rule,
-    ) {
-        insert_asset_encoding_stable(full_path, encoding_type, encoding, asset);
+    ) -> Result<(), String> {
+        match reference_id {
+            Some(reference_id) => {
+                insert_asset_encoding_stable(
+                    reference_id,
+                    full_path,
+                    encoding_type,
+                    encoding,
+                    asset,
+                );
+                Ok(())
+            }
+            None => Err(
+                JUNO_CDN_STORAGE_ERROR_CANNOT_INSERT_ASSET_ENCODING_UNKNOWN_REFERENCE_ID
+                    .to_string(),
+            ),
+        }
     }
 
     fn insert_asset(&self, batch: &Batch, asset: &Asset, _rule: &Rule) -> Result<(), String> {

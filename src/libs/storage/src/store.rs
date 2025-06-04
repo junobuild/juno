@@ -111,6 +111,7 @@ pub fn create_chunk(
     let batch = get_runtime_batch(&batch_id);
 
     match batch {
+        // TODO: error label
         None => Err("Batch not found.".to_string()),
         Some(b) => {
             assert_create_chunk(caller, config, &b)?;
@@ -304,6 +305,7 @@ fn commit_chunks(
         let chunk = get_runtime_chunk(chunk_id);
 
         match chunk {
+            // TODO: error label
             None => {
                 return Err("Chunk does not exist.".to_string());
             }
@@ -328,6 +330,7 @@ fn commit_chunks(
     }
 
     if content_chunks.is_empty() {
+        // TODO: error label
         return Err("No chunk to commit.".to_string());
     }
 
@@ -351,18 +354,20 @@ fn commit_chunks(
         Some(max_size) => {
             if encoding.total_length > max_size {
                 clear_runtime_batch(&batch_id, &chunk_ids);
+                // TODO: error label
                 return Err("Asset exceed max allowed size.".to_string());
             }
         }
     }
 
     storage_upload.insert_asset_encoding(
-        &batch.clone().key.full_path,
+        &batch.reference_id,
+        &batch.key.full_path,
         &encoding_type,
         &encoding,
         &mut asset,
         rule,
-    );
+    )?;
 
     storage_upload.insert_asset(batch, &asset, rule)?;
 

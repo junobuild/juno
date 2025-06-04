@@ -4,6 +4,9 @@ pub const JUNO_CDN_STORAGE_ERROR_CANNOT_INSERT_ASSET_UNKNOWN_REFERENCE_ID: &str 
 // Cannot get asset with unknown reference / proposal ID.
 pub const JUNO_CDN_STORAGE_ERROR_CANNOT_GET_ASSET_UNKNOWN_REFERENCE_ID: &str =
     "juno.cdn.storage.error.cannot_get_asset_unknown_reference_id";
+// Cannot insert asset encoding with unknown reference / proposal ID.
+pub const JUNO_CDN_STORAGE_ERROR_CANNOT_INSERT_ASSET_ENCODING_UNKNOWN_REFERENCE_ID: &str =
+    "juno.cdn.storage.error.cannot_insert_asset_encoding_unknown_reference_id";
 
 // No proposal found for {}
 pub const JUNO_CDN_STORAGE_ERROR_NO_PROPOSAL_FOUND: &str =

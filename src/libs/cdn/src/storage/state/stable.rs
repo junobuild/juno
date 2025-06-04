@@ -83,18 +83,27 @@ fn filter_assets_range(proposal_id: &ProposalId) -> impl RangeBounds<ProposalAss
 
 pub fn insert_asset_encoding(
     cdn_stable: &impl CdnStableStrategy,
+    proposal_id: &ProposalId,
     full_path: &FullPath,
     encoding_type: &str,
     encoding: &AssetEncoding,
     asset: &mut Asset,
 ) {
+    let stable_key_fn = {
+        let proposal_id = *proposal_id;
+
+        move |full_path: &FullPath, encoding_type: &str, chunk_index: usize| {
+            proposal_encoding_chunk_key(&proposal_id, full_path, encoding_type, chunk_index)
+        }
+    };
+
     cdn_stable.with_content_chunks_mut(|content_chunks| {
         insert_asset_encoding_stable(
             full_path,
             encoding_type,
             encoding,
             asset,
-            proposal_encoding_chunk_key,
+            stable_key_fn,
             content_chunks,
         )
     })
@@ -165,11 +174,13 @@ fn proposal_asset_key(
 }
 
 fn proposal_encoding_chunk_key(
+    proposal_id: &ProposalId,
     full_path: &FullPath,
     encoding_type: &str,
     chunk_index: usize,
 ) -> ProposalContentChunkKey {
     ProposalContentChunkKey {
+        proposal_id: *proposal_id,
         full_path: full_path.clone(),
         encoding_type: encoding_type.to_owned(),
         chunk_index,

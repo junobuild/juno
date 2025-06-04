@@ -146,7 +146,7 @@ describe('Satellite > Cdn', () => {
 				segmentsDeployment: '/_juno/releases/satellite-v0.0.18.wasm.gz',
 				segmentsVersion: '0.0.18',
 				assetsCollection: '#dapp',
-				segmentsCollection: '#_juno'
+				segmentsCollection: '#_juno/releases'
 			}
 		});
 
@@ -190,7 +190,7 @@ describe('Satellite > Cdn', () => {
 				segmentsDeployment: '/_juno/releases/satellite-v0.1.1.wasm.gz',
 				segmentsVersion: '0.1.1',
 				assetsCollection: '#dapp',
-				segmentsCollection: '#_juno'
+				segmentsCollection: '#_juno/releases'
 			}
 		});
 
@@ -253,7 +253,7 @@ describe('Satellite > Cdn', () => {
 				'orbiter.txt'
 			],
 			validModuleFullPaths,
-			validCollection: '#_juno',
+			validCollection: '#_juno/releases',
 			fullPathPrefix: '/_juno/releases'
 		});
 
@@ -332,7 +332,7 @@ describe('Satellite > Cdn', () => {
 					segmentsDeployment: '/_juno/releases/satellite-v2.1.1.wasm.gz',
 					segmentsVersion: '2.1.1',
 					assetsCollection: '#dapp',
-					segmentsCollection: '#_juno'
+					segmentsCollection: '#_juno/releases'
 				}
 			});
 
@@ -393,7 +393,7 @@ describe('Satellite > Cdn', () => {
 					segmentsDeployment: '/_juno/releases/satellite-v3.1.1.wasm.gz',
 					segmentsVersion: '3.1.1',
 					assetsCollection: '#dapp',
-					segmentsCollection: '#_juno'
+					segmentsCollection: '#_juno/releases'
 				}
 			});
 

@@ -1,4 +1,6 @@
-use crate::cdn::constants::{CDN_JUNO_COLLECTION_KEY, DEFAULT_CDN_JUNO_COLLECTIONS};
+use crate::cdn::constants::{
+    CDN_JUNO_RELEASES_COLLECTION_KEY, DEFAULT_CDN_JUNO_RELEASES_COLLECTIONS,
+};
 use crate::memory::internal::STATE;
 use ic_cdk::api::time;
 use junobuild_collections::types::interface::SetRule;
@@ -11,7 +13,7 @@ pub fn init_juno_collection() {
     STATE.with(|state| {
         let rules = &mut state.borrow_mut().heap.storage.rules;
 
-        if !rules.contains_key(CDN_JUNO_COLLECTION_KEY) {
+        if !rules.contains_key(CDN_JUNO_RELEASES_COLLECTION_KEY) {
             init_juno_collection_impl(rules);
         }
     });
@@ -20,7 +22,7 @@ pub fn init_juno_collection() {
 fn init_juno_collection_impl(rules: &mut Rules) {
     let now = time();
 
-    let cdn_set_rule: SetRule = DEFAULT_CDN_JUNO_COLLECTIONS[0].1.clone();
+    let cdn_set_rule: SetRule = DEFAULT_CDN_JUNO_RELEASES_COLLECTIONS[0].1.clone();
 
     let cdn_rule: Rule = Rule {
         read: cdn_set_rule.read,
@@ -36,5 +38,5 @@ fn init_juno_collection_impl(rules: &mut Rules) {
         rate_config: cdn_set_rule.rate_config,
     };
 
-    rules.insert(CDN_JUNO_COLLECTION_KEY.to_string(), cdn_rule);
+    rules.insert(CDN_JUNO_RELEASES_COLLECTION_KEY.to_string(), cdn_rule);
 }

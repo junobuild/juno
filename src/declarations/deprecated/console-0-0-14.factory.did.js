@@ -5,14 +5,14 @@ export const idlFactory = ({ IDL }) => {
 		mission_control_id: IDL.Principal,
 		user: IDL.Principal
 	});
-	const CommitProposal = IDL.Record({
-		sha256: IDL.Vec(IDL.Nat8),
-		proposal_id: IDL.Nat
-	});
 	const CommitBatch = IDL.Record({
 		batch_id: IDL.Nat,
 		headers: IDL.Vec(IDL.Tuple(IDL.Text, IDL.Text)),
 		chunk_ids: IDL.Vec(IDL.Nat)
+	});
+	const CommitProposal = IDL.Record({
+		sha256: IDL.Vec(IDL.Nat8),
+		proposal_id: IDL.Nat
 	});
 	const CreateCanisterArgs = IDL.Record({
 		block_index: IDL.Opt(IDL.Nat64),
@@ -219,7 +219,7 @@ export const idlFactory = ({ IDL }) => {
 		controller: SetController,
 		controllers: IDL.Vec(IDL.Principal)
 	});
-	const SegmentKind = IDL.Variant({
+	const SegmentType = IDL.Variant({
 		Orbiter: IDL.Null,
 		MissionControl: IDL.Null,
 		Satellite: IDL.Null
@@ -238,14 +238,14 @@ export const idlFactory = ({ IDL }) => {
 		add_credits: IDL.Func([IDL.Principal, Tokens], [], []),
 		add_invitation_code: IDL.Func([IDL.Text], [], []),
 		assert_mission_control_center: IDL.Func([AssertMissionControlCenterArgs], [], ['query']),
+		commit_asset_upload: IDL.Func([CommitBatch], [], []),
 		commit_proposal: IDL.Func([CommitProposal], [IDL.Null], []),
-		commit_proposal_asset_upload: IDL.Func([CommitBatch], [], []),
 		create_orbiter: IDL.Func([CreateCanisterArgs], [IDL.Principal], []),
 		create_satellite: IDL.Func([CreateCanisterArgs], [IDL.Principal], []),
 		del_controllers: IDL.Func([DeleteControllersArgs], [], []),
 		del_custom_domain: IDL.Func([IDL.Text], [], []),
 		delete_proposal_assets: IDL.Func([DeleteProposalAssets], [], []),
-		get_config: IDL.Func([], [Config], ['query']),
+		get_config: IDL.Func([], [Config], []),
 		get_create_orbiter_fee: IDL.Func([GetCreateCanisterFeeArgs], [IDL.Opt(Tokens)], ['query']),
 		get_create_satellite_fee: IDL.Func([GetCreateCanisterFeeArgs], [IDL.Opt(Tokens)], ['query']),
 		get_credits: IDL.Func([], [Tokens], ['query']),
@@ -258,8 +258,8 @@ export const idlFactory = ({ IDL }) => {
 			[StreamingCallbackHttpResponse],
 			['query']
 		),
+		init_asset_upload: IDL.Func([InitAssetKey, IDL.Nat], [InitUploadResult], []),
 		init_proposal: IDL.Func([ProposalType], [IDL.Nat, Proposal], []),
-		init_proposal_asset_upload: IDL.Func([InitAssetKey, IDL.Nat], [InitUploadResult], []),
 		init_user_mission_control_center: IDL.Func([], [MissionControl], []),
 		list_assets: IDL.Func([IDL.Text, ListParams], [ListResults], ['query']),
 		list_custom_domains: IDL.Func([], [IDL.Vec(IDL.Tuple(IDL.Text, CustomDomain))], ['query']),
@@ -271,11 +271,12 @@ export const idlFactory = ({ IDL }) => {
 		),
 		set_controllers: IDL.Func([SetControllersArgs], [], []),
 		set_custom_domain: IDL.Func([IDL.Text, IDL.Opt(IDL.Text)], [], []),
-		set_fee: IDL.Func([SegmentKind, Tokens], [], []),
+		set_fee: IDL.Func([SegmentType, Tokens], [], []),
 		set_storage_config: IDL.Func([StorageConfig], [], []),
 		submit_proposal: IDL.Func([IDL.Nat], [IDL.Nat, Proposal], []),
-		update_rate_config: IDL.Func([SegmentKind, RateConfig], [], []),
-		upload_proposal_asset_chunk: IDL.Func([UploadChunk], [UploadChunkResult], [])
+		update_rate_config: IDL.Func([SegmentType, RateConfig], [], []),
+		upload_asset_chunk: IDL.Func([UploadChunk], [UploadChunkResult], []),
+		version: IDL.Func([], [IDL.Text], ['query'])
 	});
 };
 // @ts-ignore

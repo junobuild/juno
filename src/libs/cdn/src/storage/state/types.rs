@@ -20,6 +20,7 @@ pub struct ProposalAssetKey {
 
 #[derive(CandidType, Serialize, Deserialize, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct ProposalContentChunkKey {
+    pub proposal_id: ProposalId,
     pub full_path: FullPath,
     pub encoding_type: EncodingType,
     pub chunk_index: usize,

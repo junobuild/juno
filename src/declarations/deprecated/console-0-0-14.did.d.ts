@@ -160,7 +160,7 @@ export interface RateConfig {
 	max_tokens: bigint;
 	time_per_token_ns: bigint;
 }
-export type SegmentKind = { Orbiter: null } | { MissionControl: null } | { Satellite: null };
+export type SegmentType = { Orbiter: null } | { MissionControl: null } | { Satellite: null };
 export interface SegmentsDeploymentOptions {
 	orbiter: [] | [string];
 	mission_control_version: [] | [string];
@@ -228,8 +228,8 @@ export interface _SERVICE {
 	add_credits: ActorMethod<[Principal, Tokens], undefined>;
 	add_invitation_code: ActorMethod<[string], undefined>;
 	assert_mission_control_center: ActorMethod<[AssertMissionControlCenterArgs], undefined>;
+	commit_asset_upload: ActorMethod<[CommitBatch], undefined>;
 	commit_proposal: ActorMethod<[CommitProposal], null>;
-	commit_proposal_asset_upload: ActorMethod<[CommitBatch], undefined>;
 	create_orbiter: ActorMethod<[CreateCanisterArgs], Principal>;
 	create_satellite: ActorMethod<[CreateCanisterArgs], Principal>;
 	del_controllers: ActorMethod<[DeleteControllersArgs], undefined>;
@@ -247,8 +247,8 @@ export interface _SERVICE {
 		[StreamingCallbackToken],
 		StreamingCallbackHttpResponse
 	>;
+	init_asset_upload: ActorMethod<[InitAssetKey, bigint], InitUploadResult>;
 	init_proposal: ActorMethod<[ProposalType], [bigint, Proposal]>;
-	init_proposal_asset_upload: ActorMethod<[InitAssetKey, bigint], InitUploadResult>;
 	init_user_mission_control_center: ActorMethod<[], MissionControl>;
 	list_assets: ActorMethod<[string, ListParams], ListResults>;
 	list_custom_domains: ActorMethod<[], Array<[string, CustomDomain]>>;
@@ -256,11 +256,12 @@ export interface _SERVICE {
 	list_user_mission_control_centers: ActorMethod<[], Array<[Principal, MissionControl]>>;
 	set_controllers: ActorMethod<[SetControllersArgs], undefined>;
 	set_custom_domain: ActorMethod<[string, [] | [string]], undefined>;
-	set_fee: ActorMethod<[SegmentKind, Tokens], undefined>;
+	set_fee: ActorMethod<[SegmentType, Tokens], undefined>;
 	set_storage_config: ActorMethod<[StorageConfig], undefined>;
 	submit_proposal: ActorMethod<[bigint], [bigint, Proposal]>;
-	update_rate_config: ActorMethod<[SegmentKind, RateConfig], undefined>;
-	upload_proposal_asset_chunk: ActorMethod<[UploadChunk], UploadChunkResult>;
+	update_rate_config: ActorMethod<[SegmentType, RateConfig], undefined>;
+	upload_asset_chunk: ActorMethod<[UploadChunk], UploadChunkResult>;
+	version: ActorMethod<[], string>;
 }
 export declare const idlFactory: IDL.InterfaceFactory;
 export declare const init: (args: { IDL: typeof IDL }) => IDL.Type[];

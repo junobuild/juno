@@ -1,4 +1,4 @@
-use crate::storage::types::state::{StableEncodingChunkKey, StableKey};
+use crate::assets::storage::types::state::{StableEncodingChunkKey, StableKey};
 use ic_stable_structures::storable::Bound;
 use ic_stable_structures::Storable;
 use junobuild_shared::serializers::{deserialize_from_bytes, serialize_to_bytes};

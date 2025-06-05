@@ -1,4 +1,4 @@
-use crate::cdn::strategies_impls::cdn::CdnStable;
+use crate::assets::cdn::strategies_impls::cdn::CdnStable;
 use junobuild_cdn::proposals::{Proposal, ProposalId};
 
 // ---------------------------------------------------------

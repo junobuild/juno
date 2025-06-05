@@ -9,7 +9,9 @@ import {
 	JUNO_AUTH_ERROR_NOT_WRITE_CONTROLLER,
 	JUNO_COLLECTIONS_ERROR_DELETE_PREFIX_RESERVED,
 	JUNO_COLLECTIONS_ERROR_MODIFY_RESERVED_COLLECTION,
+	JUNO_COLLECTIONS_ERROR_PREFIX_RESERVED,
 	JUNO_COLLECTIONS_ERROR_RATE_CONFIG_ENABLED,
+	JUNO_COLLECTIONS_ERROR_RESERVED_COLLECTION,
 	JUNO_ERROR_NO_VERSION_PROVIDED,
 	JUNO_ERROR_VERSION_OUTDATED_OR_FUTURE,
 	JUNO_STORAGE_ERROR_UPLOAD_NOT_ALLOWED
@@ -542,7 +544,7 @@ describe('Satellite', () => {
 					const { set_rule } = actor;
 
 					await expect(set_rule({ Db: null }, '#test', setRule)).rejects.toThrow(
-						'Collection starts with #, a reserved prefix'
+						JUNO_COLLECTIONS_ERROR_PREFIX_RESERVED
 					);
 				});
 
@@ -551,7 +553,7 @@ describe('Satellite', () => {
 					const { set_rule } = actor;
 
 					await expect(set_rule({ Db: null }, '#test', setRule)).rejects.not.toThrow(
-						'Collection #test is reserved.'
+						JUNO_COLLECTIONS_ERROR_RESERVED_COLLECTION
 					);
 				});
 

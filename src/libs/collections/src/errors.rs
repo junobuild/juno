@@ -16,3 +16,5 @@ pub const JUNO_COLLECTIONS_ERROR_DELETE_PREFIX_RESERVED: &str =
 pub const JUNO_COLLECTIONS_ERROR_COLLECTION_NOT_EMPTY: &str = "juno.collections.error.not_empty";
 // Collection "{}" not found in {}.
 pub const JUNO_COLLECTIONS_ERROR_COLLECTION_NOT_FOUND: &str = "juno.collections.error.not_found";
+// Collection starts with {}, a reserved prefix
+pub const JUNO_COLLECTIONS_ERROR_PREFIX_RESERVED: &str = "juno.collections.error.prefix_reserved";

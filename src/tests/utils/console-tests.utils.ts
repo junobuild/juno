@@ -14,6 +14,7 @@ import {
 import type { Actor, PocketIc } from '@hadronous/pic';
 import { readFile } from 'node:fs/promises';
 import { expect } from 'vitest';
+import { mockScript } from '../mocks/storage.mocks';
 import { tick } from './pic-tests.utils';
 import {
 	downloadMissionControl,
@@ -24,7 +25,6 @@ import {
 	SATELLITE_WASM_PATH,
 	WASM_VERSIONS
 } from './setup-tests.utils';
-import { mockScript } from '../mocks/storage.mocks';
 
 const installReleaseWithDeprecatedFlow = async ({
 	download,
@@ -341,7 +341,7 @@ export const uploadFileWithProposal = async ({
 }: {
 	actor: Actor<ConsoleActor | ConsoleActor_0_0_14>;
 	pic: PocketIc;
-	fullPath?: string
+	fullPath?: string;
 }): Promise<{ proposalId: bigint; fullPath: string }> => {
 	const init_proposal_asset_upload =
 		'init_asset_upload' in actor

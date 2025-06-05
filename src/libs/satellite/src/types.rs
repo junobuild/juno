@@ -1,8 +1,8 @@
 pub mod state {
+    use crate::assets::storage::types::state::{AssetsStable, ContentChunksStable};
     use crate::auth::types::state::AuthenticationHeapState;
     use crate::db::types::state::{DbHeapState, DbRuntimeState, DbStable};
     use crate::memory::internal::init_stable_state;
-    use crate::storage::types::state::{AssetsStable, ContentChunksStable};
     use candid::CandidType;
     use junobuild_cdn::proposals::ProposalsStable;
     use junobuild_cdn::storage::{ProposalAssetsStable, ProposalContentChunksStable};

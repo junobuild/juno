@@ -1,8 +1,8 @@
 #![doc = include_str!("../README.md")]
 
 mod api;
+mod assets;
 mod auth;
-mod cdn;
 mod controllers;
 mod db;
 mod errors;
@@ -14,7 +14,6 @@ mod memory;
 mod random;
 mod rules;
 mod sdk;
-mod storage;
 mod types;
 mod user;
 

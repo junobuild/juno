@@ -1,7 +1,7 @@
-use crate::memory::internal::STATE;
-use crate::storage::types::state::{
+use crate::assets::storage::types::state::{
     AssetsStable, ContentChunksStable, StableEncodingChunkKey, StableKey,
 };
+use crate::memory::internal::STATE;
 use crate::types::state::StableState;
 use junobuild_collections::msg::msg_storage_collection_not_found;
 use junobuild_collections::types::core::CollectionKey;

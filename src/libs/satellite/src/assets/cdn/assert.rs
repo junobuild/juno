@@ -1,4 +1,4 @@
-use crate::cdn::constants::{CDN_JUNO_PATH, CDN_JUNO_RELEASES_COLLECTION_KEY};
+use crate::assets::cdn::constants::{CDN_JUNO_PATH, CDN_JUNO_RELEASES_COLLECTION_KEY};
 use candid::Principal;
 use junobuild_cdn::storage::assert_releases_description;
 use junobuild_cdn::storage::errors::{

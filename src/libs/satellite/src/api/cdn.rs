@@ -1,14 +1,14 @@
-use crate::cdn::helpers::stable::get_proposal as cdn_get_proposal;
-use crate::cdn::helpers::store::init_asset_upload as init_asset_upload_store;
-use crate::cdn::strategies_impls::cdn::{CdnHeap, CdnStable, CdnWorkflow};
-use crate::cdn::strategies_impls::storage::{
+use crate::assets::cdn::helpers::stable::get_proposal as cdn_get_proposal;
+use crate::assets::cdn::helpers::store::init_asset_upload as init_asset_upload_store;
+use crate::assets::cdn::strategies_impls::cdn::{CdnHeap, CdnStable, CdnWorkflow};
+use crate::assets::cdn::strategies_impls::storage::{
     CdnStorageAssertions, CdnStorageState, CdnStorageUpload,
 };
-use crate::get_controllers;
-use crate::storage::certified_assets::upgrade::defer_init_certified_assets;
-use crate::storage::store::{
+use crate::assets::storage::certified_assets::upgrade::defer_init_certified_assets;
+use crate::assets::storage::store::{
     delete_domain_store, get_config_store, get_custom_domains_store, set_domain_store,
 };
+use crate::get_controllers;
 use crate::types::interface::DeleteProposalAssets;
 use ic_cdk::api::call::ManualReply;
 use ic_cdk::{caller, trap};

@@ -30,12 +30,10 @@ fn list_proposals_impl(
 
     let items_length = items.len();
 
-    let count = proposals.iter().count();
-
     ListProposalResults {
         items,
         items_length,
-        matches_length: count,
+        matches_length: items_length,
     }
 }
 

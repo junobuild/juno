@@ -2,8 +2,8 @@ use crate::assert::collection::{is_not_system_collection, is_system_collection};
 use crate::constants::core::SYS_COLLECTION_PREFIX;
 use crate::errors::{
     JUNO_COLLECTIONS_ERROR_DELETE_PREFIX_RESERVED,
-    JUNO_COLLECTIONS_ERROR_MODIFY_RESERVED_COLLECTION, JUNO_COLLECTIONS_ERROR_RATE_CONFIG_ENABLED,
-    JUNO_COLLECTIONS_ERROR_RESERVED_NAME,
+    JUNO_COLLECTIONS_ERROR_MODIFY_RESERVED_COLLECTION, JUNO_COLLECTIONS_ERROR_PREFIX_RESERVED,
+    JUNO_COLLECTIONS_ERROR_RATE_CONFIG_ENABLED, JUNO_COLLECTIONS_ERROR_RESERVED_NAME,
 };
 use crate::types::core::CollectionKey;
 use crate::types::interface::SetRule;
@@ -106,12 +106,8 @@ pub fn assert_system_collection_set_permission(
     }
 
     // System collections cannot be created with a setter call but can be edited under certain circumstances.
-    let current_rule = current_rule.ok_or_else(|| {
-        format!(
-            "Collection starts with {}, a reserved prefix",
-            SYS_COLLECTION_PREFIX
-        )
-    })?;
+    let current_rule =
+        current_rule.ok_or_else(|| JUNO_COLLECTIONS_ERROR_PREFIX_RESERVED.to_string())?;
 
     if current_rule.read != user_rule.read
         || current_rule.write != user_rule.write

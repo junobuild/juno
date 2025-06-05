@@ -1,7 +1,7 @@
-use crate::cdn::helpers::stable::get_proposal;
-use crate::cdn::strategies_impls::storage::{CdnStorageAssertions, CdnStorageState};
+use crate::assets::cdn::helpers::stable::get_proposal;
+use crate::assets::cdn::strategies_impls::storage::{CdnStorageAssertions, CdnStorageState};
+use crate::assets::storage::store::get_config_store;
 use crate::get_controllers;
-use crate::storage::store::get_config_store;
 use candid::Principal;
 use junobuild_cdn::proposals::ProposalId;
 use junobuild_cdn::storage::errors::JUNO_CDN_STORAGE_ERROR_NO_PROPOSAL_FOUND;

@@ -1,6 +1,6 @@
+use crate::assets::storage::store::assert_assets_collection_empty_store;
 use crate::db::store::{delete_collection_store, init_collection_store};
 use crate::memory::internal::STATE;
-use crate::storage::store::assert_assets_collection_empty_store;
 use junobuild_collections::store::{del_rule, filter_rules, set_rule};
 use junobuild_collections::types::core::CollectionKey;
 use junobuild_collections::types::interface::{DelRule, SetRule};

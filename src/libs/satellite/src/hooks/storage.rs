@@ -1,6 +1,6 @@
 #![allow(dead_code)]
 
-use crate::cdn::constants::CDN_JUNO_RELEASES_COLLECTION_KEY;
+use crate::assets::cdn::constants::CDN_JUNO_RELEASES_COLLECTION_KEY;
 use crate::types::hooks::{
     AssertDeleteAssetContext, AssertUploadAssetContext, OnDeleteAssetContext,
     OnDeleteFilteredAssetsContext, OnDeleteManyAssetsContext, OnUploadAssetContext,

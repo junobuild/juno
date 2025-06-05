@@ -1,4 +1,4 @@
-use crate::storage::strategy_impls::StorageState;
+use crate::assets::storage::strategy_impls::StorageState;
 use junobuild_storage::http::types::{
     HttpRequest, HttpResponse, StreamingCallbackHttpResponse, StreamingCallbackToken,
 };

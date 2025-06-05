@@ -1,8 +1,8 @@
+use crate::assets::storage::store::{commit_batch_store, create_batch_store, create_chunk_store};
 use crate::hooks::storage::{
     invoke_on_delete_asset, invoke_on_delete_filtered_assets, invoke_on_delete_many_assets,
     invoke_upload_asset,
 };
-use crate::storage::store::{commit_batch_store, create_batch_store, create_chunk_store};
 use crate::{
     count_assets_store, count_collection_assets_store, delete_asset_store, delete_assets_store,
     delete_filtered_assets_store, get_asset_store, list_assets_store,

@@ -1,4 +1,4 @@
-use crate::cdn::constants::DEFAULT_CDN_JUNO_RELEASES_COLLECTIONS;
+use crate::assets::cdn::constants::DEFAULT_CDN_JUNO_RELEASES_COLLECTIONS;
 use junobuild_collections::constants::assets::DEFAULT_ASSETS_COLLECTIONS;
 use junobuild_storage::types::state::StorageHeapState;
 

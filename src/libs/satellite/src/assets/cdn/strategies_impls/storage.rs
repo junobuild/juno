@@ -1,9 +1,9 @@
-use crate::cdn::assert::{
+use crate::assets::cdn::assert::{
     assert_cdn_asset_keys, assert_cdn_create_permission, assert_cdn_update_permission,
     assert_cdn_write_on_dapp_collection, assert_cdn_write_on_system_collection,
 };
-use crate::cdn::strategies_impls::cdn::{CdnHeap, CdnStable};
-use crate::storage::store::get_config_store;
+use crate::assets::cdn::strategies_impls::cdn::{CdnHeap, CdnStable};
+use crate::assets::storage::store::get_config_store;
 use candid::Principal;
 use junobuild_cdn::storage::errors::{
     JUNO_CDN_STORAGE_ERROR_CANNOT_GET_ASSET_UNKNOWN_REFERENCE_ID,

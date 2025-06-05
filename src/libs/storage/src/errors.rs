@@ -19,4 +19,3 @@ pub const JUNO_STORAGE_ERROR_CHUNK_TO_COMMIT_NOT_FOUND: &str =
 // Asset exceed max allowed size
 pub const JUNO_STORAGE_ERROR_ASSET_MAX_ALLOWED_SIZE: &str =
     "juno.storage.error.asset_max_allowed_size";
-

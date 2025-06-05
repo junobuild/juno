@@ -3,7 +3,11 @@ use crate::assert::{
     assert_commit_chunks_update, assert_create_batch, assert_create_chunk,
 };
 use crate::constants::{ASSET_ENCODING_NO_COMPRESSION, ENCODING_CERTIFICATION_ORDER};
-use crate::errors::JUNO_STORAGE_ERROR_CANNOT_COMMIT_BATCH;
+use crate::errors::{
+    JUNO_STORAGE_ERROR_ASSET_MAX_ALLOWED_SIZE, JUNO_STORAGE_ERROR_BATCH_NOT_FOUND,
+    JUNO_STORAGE_ERROR_CANNOT_COMMIT_BATCH, JUNO_STORAGE_ERROR_CHUNK_NOT_FOUND,
+    JUNO_STORAGE_ERROR_CHUNK_NOT_INCLUDED_IN_BATCH, JUNO_STORAGE_ERROR_CHUNK_TO_COMMIT_NOT_FOUND,
+};
 use crate::runtime::{
     clear_batch as clear_runtime_batch, clear_expired_batches as clear_expired_runtime_batches,
     clear_expired_chunks as clear_expired_runtime_chunks, get_batch as get_runtime_batch,
@@ -111,8 +115,7 @@ pub fn create_chunk(
     let batch = get_runtime_batch(&batch_id);
 
     match batch {
-        // TODO: error label
-        None => Err("Batch not found.".to_string()),
+        None => Err(JUNO_STORAGE_ERROR_BATCH_NOT_FOUND.to_string()),
         Some(b) => {
             assert_create_chunk(caller, config, &b)?;
 
@@ -305,13 +308,12 @@ fn commit_chunks(
         let chunk = get_runtime_chunk(chunk_id);
 
         match chunk {
-            // TODO: error label
             None => {
-                return Err("Chunk does not exist.".to_string());
+                return Err(JUNO_STORAGE_ERROR_CHUNK_NOT_FOUND.to_string());
             }
             Some(c) => {
                 if batch_id != c.batch_id {
-                    return Err("Chunk not included in the provided batch.".to_string());
+                    return Err(JUNO_STORAGE_ERROR_CHUNK_NOT_INCLUDED_IN_BATCH.to_string());
                 }
 
                 chunks.push(c);
@@ -330,8 +332,7 @@ fn commit_chunks(
     }
 
     if content_chunks.is_empty() {
-        // TODO: error label
-        return Err("No chunk to commit.".to_string());
+        return Err(JUNO_STORAGE_ERROR_CHUNK_TO_COMMIT_NOT_FOUND.to_string());
     }
 
     // We clone the key with the new information provided by the upload (name, full_path, token, etc.) to set the new key.
@@ -354,8 +355,7 @@ fn commit_chunks(
         Some(max_size) => {
             if encoding.total_length > max_size {
                 clear_runtime_batch(&batch_id, &chunk_ids);
-                // TODO: error label
-                return Err("Asset exceed max allowed size.".to_string());
+                return Err(JUNO_STORAGE_ERROR_ASSET_MAX_ALLOWED_SIZE.to_string());
             }
         }
     }

@@ -1,4 +1,4 @@
-use crate::assets::cdn::constants::{CDN_JUNO_PATH, CDN_JUNO_RELEASES_COLLECTION_KEY};
+use crate::assets::constants::{CDN_JUNO_PATH, CDN_JUNO_RELEASES_COLLECTION_KEY};
 use junobuild_cdn::storage::assert_releases_description;
 use junobuild_cdn::storage::errors::{
     JUNO_CDN_STORAGE_ERROR_INVALID_COLLECTION, JUNO_CDN_STORAGE_ERROR_INVALID_RELEASES_PATH,

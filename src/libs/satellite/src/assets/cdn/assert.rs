@@ -1,4 +1,4 @@
-use crate::assets::cdn::constants::CDN_JUNO_RELEASES_COLLECTION_KEY;
+use crate::assets::constants::CDN_JUNO_RELEASES_COLLECTION_KEY;
 use candid::Principal;
 use junobuild_collections::assert::stores::{
     assert_create_permission, assert_create_permission_with, assert_permission,

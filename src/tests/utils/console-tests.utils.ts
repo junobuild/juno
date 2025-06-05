@@ -5,7 +5,12 @@ import type { _SERVICE as MissionControlActor } from '$declarations/mission_cont
 import { idlFactory as idlFactorMissionControl } from '$declarations/mission_control/mission_control.factory.did';
 import type { Identity } from '@dfinity/agent';
 import { Ed25519KeyIdentity } from '@dfinity/identity';
-import { assertNonNullish, fromNullable, toNullable } from '@dfinity/utils';
+import {
+	arrayBufferToUint8Array,
+	assertNonNullish,
+	fromNullable,
+	toNullable
+} from '@dfinity/utils';
 import type { Actor, PocketIc } from '@hadronous/pic';
 import { readFile } from 'node:fs/promises';
 import { expect } from 'vitest';
@@ -19,6 +24,7 @@ import {
 	SATELLITE_WASM_PATH,
 	WASM_VERSIONS
 } from './setup-tests.utils';
+import { mockScript } from '../mocks/storage.mocks';
 
 const installReleaseWithDeprecatedFlow = async ({
 	download,
@@ -326,4 +332,126 @@ export const testSatelliteExists = async ({
 			).toBeTruthy();
 		}
 	}
+};
+
+export const uploadFileWithProposal = async ({
+	actor,
+	pic,
+	fullPath = '/index.js'
+}: {
+	actor: Actor<ConsoleActor | ConsoleActor_0_0_14>;
+	pic: PocketIc;
+	fullPath?: string
+}): Promise<{ proposalId: bigint; fullPath: string }> => {
+	const init_proposal_asset_upload =
+		'init_asset_upload' in actor
+			? (actor as ConsoleActor_0_0_14).init_asset_upload
+			: (actor as ConsoleActor).init_proposal_asset_upload;
+
+	const upload_proposal_asset_chunk =
+		'upload_asset_chunk' in actor
+			? (actor as ConsoleActor_0_0_14).upload_asset_chunk
+			: (actor as ConsoleActor).upload_proposal_asset_chunk;
+
+	const commit_proposal_asset_upload =
+		'commit_asset_upload' in actor
+			? (actor as ConsoleActor_0_0_14).commit_asset_upload
+			: (actor as ConsoleActor).commit_proposal_asset_upload;
+
+	const { init_proposal, http_request, commit_proposal, submit_proposal } = actor;
+
+	const [proposalId, __] = await init_proposal({
+		AssetsUpgrade: {
+			clear_existing_assets: toNullable()
+		}
+	});
+
+	const upload = async (gzip: boolean) => {
+		const file = await init_proposal_asset_upload(
+			{
+				collection: '#dapp',
+				description: toNullable(),
+				encoding_type: gzip ? ['gzip'] : [],
+				full_path: fullPath,
+				name: 'index.gz',
+				token: toNullable()
+			},
+			proposalId
+		);
+
+		const blob = new Blob([mockScript], {
+			type: 'text/javascript; charset=utf-8'
+		});
+
+		const chunk = await upload_proposal_asset_chunk({
+			batch_id: file.batch_id,
+			content: arrayBufferToUint8Array(await blob.arrayBuffer()),
+			order_id: [0n]
+		});
+
+		await commit_proposal_asset_upload({
+			batch_id: file.batch_id,
+			chunk_ids: [chunk.chunk_id],
+			headers: []
+		});
+	};
+
+	await upload(true);
+	await upload(false);
+
+	// Advance time for updated_at
+	await pic.advanceTime(100);
+
+	const [_, proposal] = await submit_proposal(proposalId);
+
+	await commit_proposal({
+		sha256: fromNullable(proposal.sha256)!,
+		proposal_id: proposalId
+	});
+
+	await assertAssetServed({
+		actor,
+		fullPath,
+		body: mockScript
+	});
+
+	const { headers } = await http_request({
+		body: [],
+		certificate_version: toNullable(),
+		headers: [['accept-encoding', 'gzip, deflate, br']],
+		method: 'GET',
+		url: fullPath
+	});
+
+	expect(
+		headers.find(([key, value]) => key.toLowerCase() === 'content-encoding' && value === 'gzip')
+	).not.toBeUndefined();
+
+	return { proposalId, fullPath };
+};
+
+export const assertAssetServed = async ({
+	actor,
+	fullPath,
+	body: content
+}: {
+	actor: Actor<ConsoleActor | ConsoleActor_0_0_14>;
+	fullPath: string;
+	body: string;
+}) => {
+	const { http_request } = actor;
+
+	const { status_code, body } = await http_request({
+		body: [],
+		certificate_version: toNullable(),
+		headers: [['accept-encoding', 'gzip, deflate, br']],
+		method: 'GET',
+		url: fullPath
+	});
+
+	expect(status_code).toEqual(200);
+
+	const decoder = new TextDecoder();
+
+	expect(decoder.decode(body as Uint8Array<ArrayBufferLike>)).toEqual(content);
 };

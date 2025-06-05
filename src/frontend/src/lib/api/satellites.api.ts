@@ -6,6 +6,8 @@ import type {
 	Doc,
 	ListResults as ListAssets,
 	ListResults_1 as ListDocs,
+	ListRulesParams,
+	ListRulesResults,
 	Rule,
 	SetDoc,
 	SetRule
@@ -83,14 +85,16 @@ export const listAssets = async ({
 export const listRules = async ({
 	satelliteId,
 	type,
+	filter,
 	identity
 }: {
 	satelliteId: Principal;
 	type: CollectionType;
+	filter: ListRulesParams;
 	identity: OptionIdentity;
-}): Promise<[string, Rule][]> => {
-	const actor = await getSatelliteActor({ satelliteId, identity });
-	return actor.list_rules(type);
+}): Promise<ListRulesResults> => {
+	const { list_rules } = await getSatelliteActor({ satelliteId, identity });
+	return list_rules(type, filter);
 };
 
 export const getRule = async ({

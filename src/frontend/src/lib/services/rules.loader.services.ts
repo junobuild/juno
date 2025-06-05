@@ -1,6 +1,7 @@
 import type { CollectionType } from '$declarations/satellite/satellite.did';
 import { listRules } from '$lib/api/satellites.api';
-import { listRulesDeprecated } from '$lib/api/satellites.deprecated.api';
+import { listRules0022, listRulesDeprecated } from '$lib/api/satellites.deprecated.api';
+import { filterSystemRules } from '$lib/constants/rules.constants';
 import { toasts } from '$lib/stores/toasts.store';
 import type { OptionIdentity } from '$lib/types/itentity';
 import type { RulesData } from '$lib/types/rules.context';
@@ -19,10 +20,24 @@ export const reloadContextRules = async ({
 	identity: OptionIdentity;
 }) => {
 	try {
-		const rules = await listRules({ satelliteId, type, identity });
+		// TODO: support system filter
+		const { items: rules } = await listRules({
+			satelliteId,
+			type,
+			filter: filterSystemRules,
+			identity
+		});
 		store.set({ satelliteId, rules, rule: undefined });
 	} catch (err: unknown) {
 		// TODO: remove backward compatibility stuffs
+		try {
+			const rules = await listRules0022({ satelliteId, identity, type });
+			store.set({ satelliteId, rules, rule: undefined });
+			return;
+		} catch (_: unknown) {
+			// Ignore error of the workaround
+		}
+
 		try {
 			const rules = await listRulesDeprecated({ satelliteId, identity, type });
 			store.set({ satelliteId, rules, rule: undefined });

@@ -3,7 +3,7 @@ import { listDocs008 } from '$lib/api/satellites.deprecated.api';
 import { SATELLITE_v0_0_9 } from '$lib/constants/version.constants';
 import { isSatelliteFeatureSupported } from '$lib/services/feature.services';
 import type { OptionIdentity } from '$lib/types/itentity';
-import type { ListParams } from '$lib/types/list';
+import type { ListFilter, ListParams } from '$lib/types/list';
 import type { User } from '$lib/types/user';
 import { toKeyUser } from '$lib/utils/user.utils';
 import type { Principal } from '@dfinity/principal';
@@ -11,8 +11,13 @@ import type { Principal } from '@dfinity/principal';
 export const listUsers = async ({
 	startAfter,
 	satelliteId,
+	filter,
 	identity
-}: Pick<ListParams, 'startAfter'> & { satelliteId: Principal; identity: OptionIdentity }): Promise<{
+}: Pick<ListParams, 'startAfter'> & {
+	satelliteId: Principal;
+	filter: ListFilter;
+	identity: OptionIdentity;
+}): Promise<{
 	users: [string, User][];
 	matches_length: bigint;
 	items_length: bigint;
@@ -33,7 +38,7 @@ export const listUsers = async ({
 				desc: true,
 				field: 'created_at'
 			},
-			filter: {}
+			filter
 		},
 		identity
 	});

@@ -3,11 +3,13 @@
 	import { isNullish, nonNullish } from '@dfinity/utils';
 	import { getContext, setContext, untrack } from 'svelte';
 	import User from '$lib/components/auth/User.svelte';
+	import UserFilter from '$lib/components/auth/UserFilter.svelte';
 	import DataCount from '$lib/components/data/DataCount.svelte';
 	import DataPaginator from '$lib/components/data/DataPaginator.svelte';
 	import { listUsers } from '$lib/services/user/users.services';
 	import { authStore } from '$lib/stores/auth.store';
 	import { i18n } from '$lib/stores/i18n.store';
+	import { listParamsStore } from '$lib/stores/list-params.store';
 	import { initPaginationContext } from '$lib/stores/pagination.store';
 	import { toasts } from '$lib/stores/toasts.store';
 	import { versionStore } from '$lib/stores/version.store';
@@ -37,6 +39,7 @@
 			const { users, matches_length, items_length } = await listUsers({
 				satelliteId,
 				startAfter: $startAfter,
+				filter: $listParamsStore.filter,
 				identity: $authStore.identity
 			});
 
@@ -62,6 +65,7 @@
 
 	$effect(() => {
 		$versionStore;
+		$listParamsStore;
 
 		untrack(() => {
 			list();
@@ -78,6 +82,11 @@
 </script>
 
 <svelte:window bind:innerWidth />
+
+<div class="actions">
+	<span>{$i18n.authentication.users}</span>
+	<UserFilter />
+</div>
 
 <div class="table-container">
 	<table>
@@ -113,6 +122,12 @@
 
 <style lang="scss">
 	@use '../../styles/mixins/media';
+
+	.actions {
+		display: flex;
+		justify-content: space-between;
+		margin-bottom: var(--padding-2x);
+	}
 
 	.tools {
 		width: 60px;

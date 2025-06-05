@@ -5,6 +5,7 @@ use junobuild_collections::store::{del_rule, set_rule};
 use junobuild_collections::types::core::CollectionKey;
 use junobuild_collections::types::interface::{DelRule, SetRule};
 use junobuild_collections::types::rules::{Memory, Rule};
+
 // ---------------------------------------------------------
 // Rules
 // ---------------------------------------------------------

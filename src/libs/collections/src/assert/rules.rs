@@ -105,8 +105,6 @@ pub fn assert_system_collection_set_permission(
         return Ok(());
     }
 
-    // TODO: error label
-
     // System collections cannot be created with a setter call but can be edited under certain circumstances.
     let current_rule = current_rule.ok_or_else(|| {
         format!(

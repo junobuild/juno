@@ -1057,7 +1057,7 @@ export const testCdnListProposals = ({
 
 			expect(items).toHaveLength(Number(proposalsLength - startAfter));
 			expect(items_length).toEqual(proposalsLength - startAfter);
-			expect(matches_length).toEqual(proposalsLength);
+			expect(matches_length).toEqual(proposalsLength - startAfter);
 
 			expect(items[0][0].proposal_id).toEqual(startAfter + 1n);
 		});
@@ -1077,7 +1077,7 @@ export const testCdnListProposals = ({
 
 			expect(items).toHaveLength(Number(limit));
 			expect(items_length).toEqual(limit);
-			expect(matches_length).toEqual(proposalsLength);
+			expect(matches_length).toEqual(limit);
 
 			expect(items[0][0].proposal_id).toEqual(1n);
 			expect(items[items.length - 1][0].proposal_id).toEqual(limit);
@@ -1099,7 +1099,7 @@ export const testCdnListProposals = ({
 
 			expect(items).toHaveLength(Number(limit));
 			expect(items_length).toEqual(limit);
-			expect(matches_length).toEqual(proposalsLength);
+			expect(matches_length).toEqual(limit);
 
 			expect(items[0][0].proposal_id).toEqual(startAfter + 1n);
 			expect(items[items.length - 1][0].proposal_id).toEqual(limit + startAfter);
@@ -1122,7 +1122,7 @@ export const testCdnListProposals = ({
 
 			expect(items).toHaveLength(Number(length));
 			expect(items_length).toEqual(length);
-			expect(matches_length).toEqual(proposalsLength);
+			expect(matches_length).toEqual(length);
 		});
 	});
 
@@ -1159,7 +1159,7 @@ export const testCdnListProposals = ({
 
 			expect(items).toHaveLength(Number(startAfter - 1n));
 			expect(items_length).toEqual(startAfter - 1n);
-			expect(matches_length).toEqual(proposalsLength);
+			expect(matches_length).toEqual(startAfter - 1n);
 
 			expect(items[0][0].proposal_id).toEqual(startAfter - 1n);
 		});
@@ -1179,7 +1179,7 @@ export const testCdnListProposals = ({
 
 			expect(items).toHaveLength(Number(limit));
 			expect(items_length).toEqual(limit);
-			expect(matches_length).toEqual(proposalsLength);
+			expect(matches_length).toEqual(limit);
 
 			expect(items[0][0].proposal_id).toEqual(proposalsLength);
 			expect(items[items.length - 1][0].proposal_id).toEqual(proposalsLength + 1n - limit);
@@ -1201,7 +1201,7 @@ export const testCdnListProposals = ({
 
 			expect(items).toHaveLength(Number(limit));
 			expect(items_length).toEqual(limit);
-			expect(matches_length).toEqual(proposalsLength);
+			expect(matches_length).toEqual(limit);
 
 			expect(items[0][0].proposal_id).toEqual(startAfter - 1n);
 			expect(items[items.length - 1][0].proposal_id).toEqual(startAfter - limit);
@@ -1224,7 +1224,7 @@ export const testCdnListProposals = ({
 
 			expect(items).toHaveLength(Number(length));
 			expect(items_length).toEqual(length);
-			expect(matches_length).toEqual(proposalsLength);
+			expect(matches_length).toEqual(length);
 		});
 	});
 };

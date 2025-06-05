@@ -1,5 +1,6 @@
+use crate::assets::assert::assert_cdn_asset_keys;
 use crate::assets::cdn::assert::{
-    assert_cdn_asset_keys, assert_cdn_create_permission, assert_cdn_update_permission,
+    assert_cdn_create_permission, assert_cdn_update_permission,
     assert_cdn_write_on_dapp_collection, assert_cdn_write_on_system_collection,
 };
 use crate::assets::cdn::strategies_impls::cdn::{CdnHeap, CdnStable};

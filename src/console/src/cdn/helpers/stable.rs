@@ -17,6 +17,7 @@ pub fn get_asset_stable(
 }
 
 pub fn insert_asset_encoding_stable(
+    proposal_id: &ProposalId,
     full_path: &FullPath,
     encoding_type: &str,
     encoding: &AssetEncoding,
@@ -24,6 +25,7 @@ pub fn insert_asset_encoding_stable(
 ) {
     junobuild_cdn::storage::stable::insert_asset_encoding(
         &CdnStable,
+        proposal_id,
         full_path,
         encoding_type,
         encoding,

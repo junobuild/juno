@@ -1,6 +1,6 @@
 use crate::cdn::certified_assets::upgrade::defer_init_certified_assets;
 use crate::cdn::lifecycle::init_cdn_storage_heap_state;
-use crate::memory::manager::{get_memory_upgrades, init_stable_state, STATE};
+use crate::memory::manager::{free_stable_memory, get_memory_upgrades, init_stable_state, STATE};
 use crate::types::state::{Fees, HeapState, Rates, ReleasesMetadata, State};
 use ciborium::{from_reader, into_writer};
 use ic_cdk::caller;
@@ -44,6 +44,13 @@ fn pre_upgrade() {
 
 #[post_upgrade]
 fn post_upgrade() {
+    // TODO: To be removed
+    // ⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️
+    // ⚠️ Clearing memory must be executed before the state is initialized.
+    // ⚠️ e.g. Memory ID might be reused or the types of the data and keys might change.
+    // ⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️
+    free_stable_memory();
+
     let memory = get_memory_upgrades();
     let state_bytes = read_post_upgrade(&memory);
 

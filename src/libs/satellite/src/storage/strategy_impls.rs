@@ -169,13 +169,15 @@ pub struct StorageUpload;
 impl StorageUploadStrategy for StorageUpload {
     fn insert_asset_encoding(
         &self,
+        _reference_id: &Option<ReferenceId>,
         full_path: &FullPath,
         encoding_type: &EncodingType,
         encoding: &AssetEncoding,
         asset: &mut Asset,
         rule: &Rule,
-    ) {
+    ) -> Result<(), String> {
         insert_asset_encoding(full_path, encoding_type, encoding, asset, rule);
+        Ok(())
     }
 
     fn insert_asset(&self, batch: &Batch, asset: &Asset, rule: &Rule) -> Result<(), String> {

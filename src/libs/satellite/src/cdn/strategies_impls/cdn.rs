@@ -117,8 +117,7 @@ impl CdnWorkflowStrategy for CdnWorkflow {
     }
 
     fn post_commit_assets(&self, _proposal: &Proposal) -> Result<(), String> {
-        // TODO
-        // post_commit_assets(proposal)
+        // Unused in Satellite.
         Ok(())
     }
 }

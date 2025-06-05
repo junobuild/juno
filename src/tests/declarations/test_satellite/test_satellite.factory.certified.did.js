@@ -262,6 +262,13 @@ export const idlFactory = ({ IDL }) => {
 		items: IDL.Vec(IDL.Tuple(ProposalKey, Proposal)),
 		items_length: IDL.Nat64
 	});
+	const ListRulesMatcher = IDL.Record({ include_system: IDL.Bool });
+	const ListRulesParams = IDL.Record({ matcher: IDL.Opt(ListRulesMatcher) });
+	const ListRulesResults = IDL.Record({
+		matches_length: IDL.Nat64,
+		items: IDL.Vec(IDL.Tuple(IDL.Text, Rule)),
+		items_length: IDL.Nat64
+	});
 	const MemorySize = IDL.Record({ stable: IDL.Nat64, heap: IDL.Nat64 });
 	const SetController = IDL.Record({
 		metadata: IDL.Vec(IDL.Tuple(IDL.Text, IDL.Text)),
@@ -353,7 +360,7 @@ export const idlFactory = ({ IDL }) => {
 		list_custom_domains: IDL.Func([], [IDL.Vec(IDL.Tuple(IDL.Text, CustomDomain))], []),
 		list_docs: IDL.Func([IDL.Text, ListParams], [ListResults_1], []),
 		list_proposals: IDL.Func([ListProposalsParams], [ListProposalResults], []),
-		list_rules: IDL.Func([CollectionType], [IDL.Vec(IDL.Tuple(IDL.Text, Rule))], []),
+		list_rules: IDL.Func([CollectionType, ListRulesParams], [ListRulesResults], []),
 		memory_size: IDL.Func([], [MemorySize], []),
 		reject_proposal: IDL.Func([CommitProposal], [IDL.Null], []),
 		set_auth_config: IDL.Func([AuthenticationConfig], [], []),

@@ -176,7 +176,8 @@ describe('Satellite', () => {
 			});
 
 			const { items_length } = await list_rules({ Db: null }, mockListRules);
-			expect(items_length).toEqual(1);
+
+			expect(items_length).toEqual(1n);
 		});
 
 		it('should add and remove additional controller', async () => {

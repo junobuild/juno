@@ -1,10 +1,8 @@
 <script lang="ts">
 	import { onMount, type Snippet } from 'svelte';
 	import type { Satellite } from '$declarations/mission_control/mission_control.did';
-	import {
-		loadMissionControlVersion,
-		loadSatelliteVersion
-	} from '$lib/services/version.loader.services';
+	import { loadMissionControlVersion } from '$lib/services/version/version.mission-control.services';
+	import { loadSatelliteVersion } from '$lib/services/version/version.satellite.services';
 	import { authStore } from '$lib/stores/auth.store';
 	import type { MissionControlId } from '$lib/types/mission-control';
 

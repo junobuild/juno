@@ -2,7 +2,7 @@
 	import { isNullish } from '@dfinity/utils';
 	import { type Snippet, untrack } from 'svelte';
 	import { missionControlIdDerived } from '$lib/derived/mission-control.derived';
-	import { loadMissionControlVersion } from '$lib/services/version.loader.services';
+	import { loadMissionControlVersion } from '$lib/services/version/version.mission-control.services';
 	import { authStore } from '$lib/stores/auth.store';
 
 	interface Props {

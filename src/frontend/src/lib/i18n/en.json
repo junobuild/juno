@@ -699,8 +699,8 @@
 		"private": "Private",
 		"managed": "Managed",
 		"controllers": "Controllers",
-		"empty": "Your collection <strong>{0}</strong> is empty.",
-		"empty_private": "Your collection <strong>{0}</strong> read permission is set to private.",
+		"empty": "The collection <strong>{0}</strong> is empty.",
+		"empty_private": "The collection <strong>{0}</strong> read permission is set to private.",
 		"added": "Collection {0} added.",
 		"updated": "Collection {0} updated.",
 		"deleted": "Collection {0} deleted.",
@@ -711,7 +711,9 @@
 		"stable": "Stable",
 		"immutable": "Make permissions immutable",
 		"clear_collection": "Clear collection",
-		"options": "Options"
+		"options": "Options",
+		"show_system_collections": "Show system collections",
+		"hide_system_collections": "Hide system collections"
 	},
 	"sort": {
 		"title": "Sort results",

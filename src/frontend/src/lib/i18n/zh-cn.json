@@ -711,7 +711,9 @@
 		"stable": "稳定",
 		"immutable": "将权限改为只读",
 		"clear_collection": "清除文件集",
-		"options": "选项"
+		"options": "选项",
+		"show_system_collections": "Show system collections",
+		"hide_system_collections": "Hide system collections"
 	},
 	"sort": {
 		"title": "排序结果",

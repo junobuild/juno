@@ -31,6 +31,7 @@ pub mod rules {
         pub max_capacity: Option<u32>,
         pub max_changes_per_user: Option<u32>,
         pub max_docs_per_user: Option<u32>,
+        pub controller_bypass_max_docs: Option<bool>,
         pub created_at: Timestamp,
         pub updated_at: Timestamp,
         pub version: Option<Version>,
@@ -78,6 +79,7 @@ pub mod interface {
         pub max_capacity: Option<u32>,
         pub max_changes_per_user: Option<u32>,
         pub max_docs_per_user: Option<u32>,
+        pub controller_bypass_max_docs: Option<bool>,
         pub version: Option<Version>,
         pub rate_config: Option<RateConfig>,
     }

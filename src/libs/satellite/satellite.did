@@ -177,6 +177,7 @@ type Rule = record {
   write : Permission;
   max_changes_per_user : opt nat32;
   max_docs_per_user : opt nat32;
+  controller_bypass_max_docs : opt bool;
 };
 type SegmentsDeploymentOptions = record {
   orbiter : opt text;
@@ -208,6 +209,7 @@ type SetRule = record {
   write : Permission;
   max_changes_per_user : opt nat32;
   max_docs_per_user : opt nat32;
+  controller_bypass_max_docs : opt bool;
 };
 type StorageConfig = record {
   iframe : opt StorageConfigIFrame;

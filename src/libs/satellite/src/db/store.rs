@@ -116,60 +116,56 @@ fn get_doc_impl(context: &StoreContext, key: Key, rule: &Rule) -> Result<Option<
 /// Counts the number of documents owned by a specific user within a given collection.
 ///
 /// This function is crucial for enforcing the `max_docs_per_user` rule.
+/// It has been optimized to iterate directly over the underlying data structures
+/// (HashMap for Heap, StableBTreeMap for Stable memory) rather than loading all
+/// documents into an intermediate Vec, making it more memory-efficient for large collections.
 ///
 /// # How it works:
 /// 1. Fetches the rule for the collection to determine its memory type (Heap or Stable).
-///    This is important because Heap and Stable memory collections store their data
-///    in different underlying structures.
-/// 2. Based on the memory type, it retrieves all documents (or document entries)
-///    for that collection.
-///    - For `Memory::Heap`, it accesses `state.heap.db.db` (a HashMap of HashMaps)
-///      and gets the specific collection's document map.
-///    - For `Memory::Stable`, it accesses `state.stable.db` (a HashMap of StableBTreeMaps)
-///      and gets the specific collection's stable document map.
-/// 3. It then iterates over these documents/entries.
+/// 2. Based on the memory type, it accesses the specific collection's document map directly
+///    from the global STATE.
+///    - For `Memory::Heap`, it gets a reference to the `HashMap<Key, Doc>`.
+///    - For `Memory::Stable`, it gets a reference to the `StableBTreeMap<KeyBytes, Doc>`.
+/// 3. It then iterates over the *values* (the `Doc` objects) of this map.
 /// 4. For each document, it compares the `doc.owner` field with the provided `owner` principal.
 /// 5. It counts how many documents match this ownership criterion.
-/// 6. If the collection itself doesn't exist (e.g., `get_docs_heap` or `get_docs_stable`
-///    return an error indicating this), it's treated as the user owning 0 documents in it.
-///    Other errors during document retrieval are propagated.
+/// 6. If the collection itself doesn't exist in the state, it's treated as the user owning 0
+///    documents in it (returns `Ok(0)`). Other errors during rule fetching are propagated.
 pub fn count_docs_by_owner_store(
     collection: &CollectionKey,
     owner: &UserId, // UserId is typically a Principal
 ) -> Result<usize, String> {
-    // Step 1: Fetch the collection's rule to determine its memory strategy (Heap vs. Stable).
+    // Step 1: Fetch the collection's rule to determine its memory strategy.
     let rule = get_state_rule(collection)?;
 
-    // Step 2 & 3: Access the appropriate store based on memory type and retrieve documents.
+    // Step 2 & 3: Access the appropriate store and iterate directly over its values.
     match rule.mem() {
         Memory::Heap => {
-            // Attempt to get all documents from the Heap-based store for this collection.
-            // `get_docs_heap` returns a Vec of key-value pairs (&Key, &Doc).
-            match STATE.with(|state| get_docs_heap(collection, &state.borrow().heap.db.db)) {
-                Ok(docs) => { // `docs` is Vec<(&Key, &Doc)>
-                    // Step 4 & 5: Iterate and filter by owner, then count.
-                    let count = docs.iter().filter(|(_, doc_ref)| doc_ref.owner == *owner).count();
+            // Access the main HashMap of Heap collections.
+            match STATE.with(|state| state.borrow().heap.db.db.get(collection)) {
+                Some(docs_map) => { // docs_map is &HashMap<Key, Doc>
+                    // Step 4 & 5: Iterate over the documents (values of the HashMap)
+                    // directly, filter by owner, and count. This avoids creating an
+                    // intermediate Vec of all documents.
+                    let count = docs_map.values().filter(|doc_ref| doc_ref.owner == *owner).count();
                     Ok(count)
                 }
-                // Step 6: Handle non-existent collection as 0 documents for the owner.
-                Err(e) if e.to_lowercase().contains("does not exist") || e.to_lowercase().contains("not found") => Ok(0),
-                // Propagate other errors.
-                Err(e) => Err(e),
+                // Step 6: If the collection does not exist in the heap db, user owns 0 docs in it.
+                None => Ok(0),
             }
         }
         Memory::Stable => {
-            // Attempt to get all document entries from the Stable memory-based store.
-            // `get_docs_stable` returns a Vec of `DocEntry` structs.
-            match STATE.with(|state| get_docs_stable(collection, &state.borrow().stable.db)) {
-                Ok(doc_entries) => { // `doc_entries` is Vec<DocEntry>, where DocEntry contains the actual Doc
-                    // Step 4 & 5: Iterate over entries, access the `value` (which is the Doc), filter by owner, then count.
-                    let count = doc_entries.iter().filter(|entry| entry.value.owner == *owner).count();
+            // Access the main HashMap of Stable memory collections.
+            match STATE.with(|state| state.borrow().stable.db.get(collection)) {
+                Some(stable_map) => { // stable_map is &StableBTreeMap<KeyBytes, Doc>
+                    // Step 4 & 5: Iterate over the documents (values of the StableBTreeMap)
+                    // directly, filter by owner, and count. This is generally more efficient
+                    // than loading all entries into a Vec first.
+                    let count = stable_map.values().filter(|doc_ref| doc_ref.owner == *owner).count();
                     Ok(count)
                 }
-                // Step 6: Handle non-existent collection as 0 documents for the owner.
-                Err(e) if e.to_lowercase().contains("does not exist") || e.to_lowercase().contains("not found") => Ok(0),
-                // Propagate other errors.
-                Err(e) => Err(e),
+                // Step 6: If the collection does not exist in the stable db, user owns 0 docs in it.
+                None => Ok(0),
             }
         }
     }
@@ -244,24 +240,39 @@ fn set_doc_impl(
 
     // Check for 'max_docs_per_user' rule if it's defined for the collection.
     if let Some(max_docs) = rule.max_docs_per_user {
-        // This limit is only enforced when a new document is being created.
-        // Updates to existing documents by their owner should not be prevented by this rule,
-        // as the user already "owns" that document slot.
-        if current_doc.is_none() {
-            // Count how many documents the current caller (potential owner of the new doc)
-            // already owns in this specific collection.
-            // This call now uses the dedicated `count_docs_by_owner_store` function.
-            let user_doc_count = count_docs_by_owner_store(&context.collection, &context.caller)?;
+        // Determine if the current caller is eligible for a bypass.
+        let mut bypass_limit_check = false;
+        // `rule.controller_bypass_max_docs` is Option<bool>.
+        // `unwrap_or(false)` means if the field is not set (None), it defaults to false (no bypass).
+        if rule.controller_bypass_max_docs.unwrap_or(false) {
+            // The bypass flag is true in the rule. Now check if the caller is a controller.
+            // context.controllers is &Vec<Principal>, context.caller is Principal.
+            if context.controllers.contains(&context.caller) {
+                // Caller is a controller and bypass is enabled in the rule.
+                bypass_limit_check = true;
+            }
+        }
 
-            // Compare the user's current document count against the defined limit.
-            // If the count is already at or above the limit, the new document cannot be created.
-            if user_doc_count >= (max_docs as usize) {
-                // Return an error indicating the user has reached their document quota for this collection.
-                // JUNO_ERROR_MAX_DOCS_PER_USER_EXCEEDED is a standardized error code.
-                return Err(format!(
-                    "{} ({} documents owned, {} documents allowed in collection '{}')",
-                    JUNO_ERROR_MAX_DOCS_PER_USER_EXCEEDED, user_doc_count, max_docs, context.collection
-                ));
+        // Only enforce the limit if the bypass check is not active for the current caller.
+        if !bypass_limit_check {
+            // This limit is only enforced when a new document is being created.
+            // Updates to existing documents by their owner should not be prevented by this rule,
+            // as the user already "owns" that document slot.
+            if current_doc.is_none() {
+                // Count how many documents the current caller (potential owner of the new doc)
+                // already owns in this specific collection.
+                let user_doc_count = count_docs_by_owner_store(&context.collection, &context.caller)?;
+
+                // Compare the user's current document count against the defined limit.
+                // If the count is already at or above the limit, the new document cannot be created.
+                if user_doc_count >= (max_docs as usize) {
+                    // Return an error indicating the user has reached their document quota for this collection.
+                    // JUNO_ERROR_MAX_DOCS_PER_USER_EXCEEDED is a standardized error code.
+                    return Err(format!(
+                        "{} ({} documents owned, {} documents allowed in collection '{}')",
+                        JUNO_ERROR_MAX_DOCS_PER_USER_EXCEEDED, user_doc_count, max_docs, context.collection
+                    ));
+                }
             }
         }
     }

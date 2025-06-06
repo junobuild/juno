@@ -696,6 +696,7 @@
 		"max_changes_placeholder": "A maximum number of changes a user can make",
 		"max_docs_per_user": "Max Documents per User (placeholder)",
 		"max_docs_per_user_placeholder": "e.g., 10 (placeholder)",
+		"controller_bypass_max_docs_label": "Allow controllers to bypass this limit (placeholder)",
 		"no_rate_limit": "No restriction",
 		"public": "Public",
 		"private": "Private",

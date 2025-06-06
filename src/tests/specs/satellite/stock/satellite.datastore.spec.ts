@@ -613,18 +613,21 @@ describe.each([{ memory: { Heap: null } }, { memory: { Stable: null } }])(
 			const user2 = Ed25519KeyIdentity.generate();
 			// controller variable is from the outer scope
 
-			const MAX_DOCS_COLLECTION = `max_docs_collection_${nanoid()}`;
+			const MAX_DOCS_COLLECTION = `max_docs_collection_${nanoid()}`; // Used for limit checks, bypass OFF by default/explicitly
 			const NO_LIMIT_COLLECTION = `no_limit_collection_${nanoid()}`;
+			const MAX_DOCS_CONTROLLER_BYPASS_COLLECTION = `max_docs_controller_bypass_${nanoid()}`; // Used for bypass checks
 			const MAX_DOCS_LIMIT = 2;
 
 			beforeAll(async () => {
 				actor.setIdentity(controller);
 
-				const ruleWithLimit: SetRule = {
+				// Rule for MAX_DOCS_COLLECTION: Limit enabled, bypass explicitly false
+				const ruleWithLimitBypassFalse: SetRule = {
 					memory: toNullable(memory),
 					read: { Managed: null },
 					write: { Managed: null },
 					max_docs_per_user: toNullable(MAX_DOCS_LIMIT),
+					controller_bypass_max_docs: toNullable(false), // Bypass OFF
 					max_size: toNullable(),
 					max_capacity: toNullable(),
 					mutable_permissions: toNullable(),
@@ -632,13 +635,15 @@ describe.each([{ memory: { Heap: null } }, { memory: { Stable: null } }])(
 					rate_config: toNullable(),
 					max_changes_per_user: toNullable()
 				};
-				await actor.set_rule({ Db: null }, MAX_DOCS_COLLECTION, ruleWithLimit);
+				await actor.set_rule({ Db: null }, MAX_DOCS_COLLECTION, ruleWithLimitBypassFalse);
 
+				// Rule for NO_LIMIT_COLLECTION: No document limit
 				const ruleWithoutLimit: SetRule = {
 					memory: toNullable(memory),
 					read: { Managed: null },
 					write: { Managed: null },
 					max_docs_per_user: toNullable(), // No limit
+					controller_bypass_max_docs: toNullable(), // Does not matter here
 					max_size: toNullable(),
 					max_capacity: toNullable(),
 					mutable_permissions: toNullable(),
@@ -647,6 +652,26 @@ describe.each([{ memory: { Heap: null } }, { memory: { Stable: null } }])(
 					max_changes_per_user: toNullable()
 				};
 				await actor.set_rule({ Db: null }, NO_LIMIT_COLLECTION, ruleWithoutLimit);
+
+				// Rule for MAX_DOCS_CONTROLLER_BYPASS_COLLECTION: Limit enabled, bypass explicitly true
+				const ruleWithLimitBypassTrue: SetRule = {
+					memory: toNullable(memory),
+					read: { Managed: null },
+					write: { Managed: null },
+					max_docs_per_user: toNullable(MAX_DOCS_LIMIT),
+					controller_bypass_max_docs: toNullable(true), // Bypass ON
+					max_size: toNullable(),
+					max_capacity: toNullable(),
+					mutable_permissions: toNullable(),
+					version: toNullable(),
+					rate_config: toNullable(),
+					max_changes_per_user: toNullable()
+				};
+				await actor.set_rule(
+					{ Db: null },
+					MAX_DOCS_CONTROLLER_BYPASS_COLLECTION,
+					ruleWithLimitBypassTrue
+				);
 			});
 
 			it('user can set documents up to the limit', async () => {
@@ -753,15 +778,73 @@ describe.each([{ memory: { Heap: null } }, { memory: { Stable: null } }])(
 				expect(items_length).toBe(BigInt(MAX_DOCS_LIMIT + 2));
 			});
 
-			it('controller is not affected by the user-specific limit', async () => {
+			it('controller is limited for their own documents when bypass is false/not set', async () => {
 				actor.setIdentity(controller);
+				// Use MAX_DOCS_COLLECTION where controller_bypass_max_docs is false
+				for (let i = 0; i < MAX_DOCS_LIMIT; i++) {
+					await actor.set_doc(MAX_DOCS_COLLECTION, `ctrl-limited-doc-${i}`, {
+						data: mockData,
+						description: toNullable(),
+						version: toNullable()
+					});
+				}
+				// Then, try to exceed the limit
 				await expect(
-					actor.set_doc(MAX_DOCS_COLLECTION, 'controller-doc-in-limited-collection', {
+					actor.set_doc(MAX_DOCS_COLLECTION, 'ctrl-limited-doc-exceed', {
 						data: mockData,
 						description: toNullable(),
 						version: toNullable()
 					})
-				).resolves.not.toThrow();
+				).rejects.toThrow(
+					new RegExp(
+						`^${JUNO_ERROR_MAX_DOCS_PER_USER_EXCEEDED} \\(${MAX_DOCS_LIMIT} documents owned, ${MAX_DOCS_LIMIT} documents allowed in collection '${MAX_DOCS_COLLECTION}'\\)`
+					)
+				);
+			});
+
+			it('controller can exceed limit when bypass is true', async () => {
+				actor.setIdentity(controller);
+				// Try to set more docs than MAX_DOCS_LIMIT in the bypass-enabled collection
+				for (let i = 0; i < MAX_DOCS_LIMIT + 1; i++) {
+					await expect(
+						actor.set_doc(
+							MAX_DOCS_CONTROLLER_BYPASS_COLLECTION,
+							`ctrl-bypass-doc-${i}`,
+							{ data: mockData, description: toNullable(), version: toNullable() }
+						)
+					).resolves.not.toThrow();
+				}
+				const { items_length } = await actor.list_docs(MAX_DOCS_CONTROLLER_BYPASS_COLLECTION, {
+					owner: toNullable(controller.getPrincipal()),
+					paginate: toNullable(),
+					matcher: toNullable(),
+					order: toNullable()
+				});
+				expect(items_length).toBe(BigInt(MAX_DOCS_LIMIT + 1));
+			});
+
+			it('normal user is still limited when bypass is true (for controllers)', async () => {
+				actor.setIdentity(user1); // A normal user
+				// First, set docs up to the limit for user1 in the bypass-enabled collection
+				for (let i = 0; i < MAX_DOCS_LIMIT; i++) {
+					await actor.set_doc(
+						MAX_DOCS_CONTROLLER_BYPASS_COLLECTION,
+						`user1-ctrlbypass-doc-${i}`,
+						{ data: mockData, description: toNullable(), version: toNullable() }
+					);
+				}
+				// Then, try to exceed the limit
+				await expect(
+					actor.set_doc(
+						MAX_DOCS_CONTROLLER_BYPASS_COLLECTION,
+						'user1-ctrlbypass-doc-exceed',
+						{ data: mockData, description: toNullable(), version: toNullable() }
+					)
+				).rejects.toThrow(
+					new RegExp(
+						`^${JUNO_ERROR_MAX_DOCS_PER_USER_EXCEEDED} \\(${MAX_DOCS_LIMIT} documents owned, ${MAX_DOCS_LIMIT} documents allowed in collection '${MAX_DOCS_CONTROLLER_BYPASS_COLLECTION}'\\)`
+					)
+				);
 			});
 		});
 

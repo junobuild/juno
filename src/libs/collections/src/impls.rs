@@ -54,6 +54,9 @@ impl Rule {
             // is taken directly from the `SetRule` input provided by the user.
             // If `user_rule.max_docs_per_user` is `None`, this means no limit is applied.
             max_docs_per_user: user_rule.max_docs_per_user,
+            // Pass the Option<bool> directly from user_rule for controller_bypass_max_docs.
+            // The enforcement logic will treat None as false (i.e., controller does not bypass).
+            controller_bypass_max_docs: user_rule.controller_bypass_max_docs,
             created_at,
             updated_at,
             version: Some(version),
@@ -93,6 +96,9 @@ impl Rule {
                     // This limit is generally not intended for direct modification on system collections
                     // via the standard `set_rule` path for user collections.
                     max_docs_per_user: current_rule.max_docs_per_user,
+                    // For system rules, controller_bypass_max_docs also retains its value
+                    // from the existing current_rule. This feature is primarily for user collections.
+                    controller_bypass_max_docs: current_rule.controller_bypass_max_docs,
                     created_at,
                     updated_at,
                     version: Some(version),

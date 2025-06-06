@@ -111,11 +111,19 @@
 	// Holds the current value for the 'Max Documents per User' input field.
 	// It's undefined if not set.
 	let maxDocsPerUser: number | undefined = $state(undefined);
+	// Holds the current state of the 'Allow controllers to bypass max docs limit' checkbox.
+	// Defaults to false.
+	let controllerBypassMaxDocs: boolean = $state(false);
 	// Reactive effect to initialize and update `maxDocsPerUser` whenever the `rule` prop changes.
 	// `fromNullishNullable` converts the `opt nat32` from the rule (which might be null or undefined in JS)
 	// into a number or undefined for the input field.
 	$effect(() => {
 		maxDocsPerUser = fromNullishNullable(rule?.max_docs_per_user);
+		// Initialize controllerBypassMaxDocs from the rule.
+		// `rule.controller_bypass_max_docs` is `[] | [boolean]` (opt bool from Candid).
+		// `?.[0]` accesses the boolean value if present, otherwise `undefined`.
+		// `?? false` defaults to false if the option wasn't set or was null.
+		controllerBypassMaxDocs = rule?.controller_bypass_max_docs?.[0] ?? false;
 	});
 
 	const onSubmit = async ($event: SubmitEvent) => {
@@ -140,6 +148,9 @@
 				// If it's undefined (e.g., user cleared the input), it will be submitted as such,
 				// effectively removing the limit if it was previously set.
 				maxDocsPerUser,
+				// Pass the boolean state of the controllerBypassMaxDocs checkbox.
+				// This will be `true` or `false`.
+				controllerBypassMaxDocs,
 				mutablePermissions: !immutable,
 				identity: $authStore.identity
 			});
@@ -210,6 +221,9 @@
 			nonNullish(fromNullishNullable(r?.max_capacity)) ||
 			nonNullish(fromNullishNullable(r?.max_changes_per_user)) ||
 			nonNullish(fromNullishNullable(r?.max_docs_per_user)) ||
+			// Expand if controller_bypass_max_docs is explicitly set to true.
+			// `r.controller_bypass_max_docs?.[0]` accesses the boolean from `[] | [boolean]`.
+			(r?.controller_bypass_max_docs?.[0] === true) ||
 			nonNullish(fromNullishNullable(r?.max_size)) ||
 			nonNullish(fromNullishNullable(r?.rate_config)) ||
 			fromNullishNullable(r?.mutable_permissions) === false;
@@ -325,6 +339,17 @@
 							/>
 						</Value>
 					</div>
+				{/if}
+
+				<!-- Checkbox to allow controllers to bypass the max_docs_per_user limit. -->
+				<!-- Also only shown for datastore collections as it's related to max_docs_per_user. -->
+				{#if typeDatastore}
+					<Checkbox>
+						<label class="bypass">
+							<input type="checkbox" bind:checked={controllerBypassMaxDocs} />
+							<span>{$i18n.collections.controller_bypass_max_docs_label}</span>
+						</label>
+					</Checkbox>
 				{/if}
 
 				{#if typeDatastore}

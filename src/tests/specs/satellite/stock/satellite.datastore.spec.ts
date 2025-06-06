@@ -11,6 +11,7 @@ import { type Actor, PocketIc } from '@hadronous/pic';
 import {
 	JUNO_COLLECTIONS_ERROR_COLLECTION_NOT_EMPTY,
 	JUNO_COLLECTIONS_ERROR_COLLECTION_NOT_FOUND,
+	JUNO_ERROR_MAX_DOCS_PER_USER_EXCEEDED,
 	JUNO_ERROR_MEMORY_HEAP_EXCEEDED,
 	JUNO_ERROR_MEMORY_STABLE_EXCEEDED,
 	JUNO_ERROR_NO_VERSION_PROVIDED,
@@ -604,6 +605,163 @@ describe.each([{ memory: { Heap: null } }, { memory: { Stable: null } }])(
 				const finalSpecificCount = await count_docs(TEST_COLLECTION, filterList);
 
 				expect(finalSpecificCount).toBe(2n);
+			});
+		});
+
+		describe('Max Docs Per User', () => {
+			const user1 = Ed25519KeyIdentity.generate();
+			const user2 = Ed25519KeyIdentity.generate();
+			// controller variable is from the outer scope
+
+			const MAX_DOCS_COLLECTION = `max_docs_collection_${nanoid()}`;
+			const NO_LIMIT_COLLECTION = `no_limit_collection_${nanoid()}`;
+			const MAX_DOCS_LIMIT = 2;
+
+			beforeAll(async () => {
+				actor.setIdentity(controller);
+
+				const ruleWithLimit: SetRule = {
+					memory: toNullable(memory),
+					read: { Managed: null },
+					write: { Managed: null },
+					max_docs_per_user: toNullable(MAX_DOCS_LIMIT),
+					max_size: toNullable(),
+					max_capacity: toNullable(),
+					mutable_permissions: toNullable(),
+					version: toNullable(),
+					rate_config: toNullable(),
+					max_changes_per_user: toNullable()
+				};
+				await actor.set_rule({ Db: null }, MAX_DOCS_COLLECTION, ruleWithLimit);
+
+				const ruleWithoutLimit: SetRule = {
+					memory: toNullable(memory),
+					read: { Managed: null },
+					write: { Managed: null },
+					max_docs_per_user: toNullable(), // No limit
+					max_size: toNullable(),
+					max_capacity: toNullable(),
+					mutable_permissions: toNullable(),
+					version: toNullable(),
+					rate_config: toNullable(),
+					max_changes_per_user: toNullable()
+				};
+				await actor.set_rule({ Db: null }, NO_LIMIT_COLLECTION, ruleWithoutLimit);
+			});
+
+			it('user can set documents up to the limit', async () => {
+				actor.setIdentity(user1);
+				for (let i = 0; i < MAX_DOCS_LIMIT; i++) {
+					await actor.set_doc(MAX_DOCS_COLLECTION, `user1-doc-${i}`, {
+						data: mockData,
+						description: toNullable(),
+						version: toNullable()
+					});
+				}
+
+				const { items_length } = await actor.list_docs(MAX_DOCS_COLLECTION, {
+					owner: toNullable(user1.getPrincipal()),
+					paginate: toNullable(),
+					matcher: toNullable(),
+					order: toNullable()
+				});
+				expect(items_length).toBe(BigInt(MAX_DOCS_LIMIT));
+			});
+
+			it('user cannot set documents beyond the limit', async () => {
+				actor.setIdentity(user1); // user1 already has MAX_DOCS_LIMIT documents
+
+				await expect(
+					actor.set_doc(MAX_DOCS_COLLECTION, 'user1-doc-exceed', {
+						data: mockData,
+						description: toNullable(),
+						version: toNullable()
+					})
+				).rejects.toThrow(
+					new RegExp(
+						`^${JUNO_ERROR_MAX_DOCS_PER_USER_EXCEEDED} \\(${MAX_DOCS_LIMIT} documents owned, ${MAX_DOCS_LIMIT} documents allowed in collection '${MAX_DOCS_COLLECTION}'\\)`
+					)
+				);
+			});
+
+			it('another user can set documents in the same collection up to their limit', async () => {
+				actor.setIdentity(user2);
+				for (let i = 0; i < MAX_DOCS_LIMIT; i++) {
+					await actor.set_doc(MAX_DOCS_COLLECTION, `user2-doc-${i}`, {
+						data: mockData,
+						description: toNullable(),
+						version: toNullable()
+					});
+				}
+
+				const { items_length } = await actor.list_docs(MAX_DOCS_COLLECTION, {
+					owner: toNullable(user2.getPrincipal()),
+					paginate: toNullable(),
+					matcher: toNullable(),
+					order: toNullable()
+				});
+				expect(items_length).toBe(BigInt(MAX_DOCS_LIMIT));
+
+				await expect(
+					actor.set_doc(MAX_DOCS_COLLECTION, 'user2-doc-exceed', {
+						data: mockData,
+						description: toNullable(),
+						version: toNullable()
+					})
+				).rejects.toThrow(
+					new RegExp(
+						`^${JUNO_ERROR_MAX_DOCS_PER_USER_EXCEEDED} \\(${MAX_DOCS_LIMIT} documents owned, ${MAX_DOCS_LIMIT} documents allowed in collection '${MAX_DOCS_COLLECTION}'\\)`
+					)
+				);
+			});
+
+			it('updating an existing document does not count towards the limit', async () => {
+				actor.setIdentity(user1);
+				const existingDocKey = 'user1-doc-0'; // Created in the first test for user1
+
+				const docBeforeUpdate = fromNullable(await actor.get_doc(MAX_DOCS_COLLECTION, existingDocKey));
+				expect(docBeforeUpdate).not.toBeUndefined();
+
+				const newData = new Uint8Array([10, 20, 30]);
+				await expect(
+					actor.set_doc(MAX_DOCS_COLLECTION, existingDocKey, {
+						data: newData,
+						description: docBeforeUpdate!.description,
+						version: docBeforeUpdate!.version
+					})
+				).resolves.not.toThrow();
+
+				const updatedDoc = fromNullable(await actor.get_doc(MAX_DOCS_COLLECTION, existingDocKey));
+				expect(updatedDoc?.data).toEqual(newData);
+			});
+
+			it('user can set documents without restriction in a collection with no limit', async () => {
+				actor.setIdentity(user1);
+				for (let i = 0; i < MAX_DOCS_LIMIT + 2; i++) {
+					await actor.set_doc(NO_LIMIT_COLLECTION, `user1-nolimit-doc-${i}`, {
+						data: mockData,
+						description: toNullable(),
+						version: toNullable()
+					});
+				}
+				const { items_length } = await actor.list_docs(NO_LIMIT_COLLECTION, {
+					owner: toNullable(user1.getPrincipal()),
+					paginate: toNullable(),
+					matcher: toNullable(),
+					order: toNullable()
+				});
+				expect(items_length).toBe(BigInt(MAX_DOCS_LIMIT + 2));
+			});
+
+			it('controller is not affected by the user-specific limit', async () => {
+				actor.setIdentity(controller);
+				await expect(
+					actor.set_doc(MAX_DOCS_COLLECTION, 'controller-doc-in-limited-collection', {
+						data: mockData,
+						description: toNullable(),
+						version: toNullable()
+					})
+				).resolves.not.toThrow();
 			});
 		});
 

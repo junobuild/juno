@@ -18,6 +18,8 @@ pub const JUNO_ERROR_CONTROLLERS_REVOKED_NOT_ALLOWED: &str =
 pub const JUNO_ERROR_MEMORY_STABLE_EXCEEDED: &str = "juno.error.memory.stable_exceeded";
 // Heap memory usage exceeded: {} bytes used, {} bytes allowed.
 pub const JUNO_ERROR_MEMORY_HEAP_EXCEEDED: &str = "juno.error.memory.heap_exceeded";
+// Max documents per user exceeded: {} documents owned, {} documents allowed.
+pub const JUNO_ERROR_MAX_DOCS_PER_USER_EXCEEDED: &str = "juno.error.max_docs_per_user_exceeded";
 // Balance ({}) is lower than the amount of cycles {} to deposit.
 pub const JUNO_ERROR_CYCLES_DEPOSIT_BALANCE_LOW: &str = "juno.error.cycles.deposit_balance_low";
 // Deposit cycles failed.

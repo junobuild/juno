@@ -694,6 +694,8 @@
 		"rate_limit_placeholder": "A limit on writes and deletes per minute",
 		"max_changes": "Max changes per user",
 		"max_changes_placeholder": "A maximum number of changes a user can make",
+		"max_docs_per_user": "Max Documents per User (placeholder)",
+		"max_docs_per_user_placeholder": "e.g., 10 (placeholder)",
 		"no_rate_limit": "No restriction",
 		"public": "Public",
 		"private": "Private",

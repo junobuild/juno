@@ -15,6 +15,7 @@ use crate::memory::internal::STATE;
 use crate::types::store::StoreContext;
 use candid::Principal;
 use junobuild_collections::msg::msg_db_collection_not_empty;
+use junobuild_shared::errors::JUNO_ERROR_MAX_DOCS_PER_USER_EXCEEDED;
 use junobuild_collections::types::core::CollectionKey;
 use junobuild_collections::types::rules::{Memory, Rule};
 use junobuild_shared::list::list_values;
@@ -112,6 +113,36 @@ fn get_doc_impl(context: &StoreContext, key: Key, rule: &Rule) -> Result<Option<
     }
 }
 
+pub fn count_docs_by_owner_store(
+    collection: &CollectionKey,
+    owner: &UserId,
+) -> Result<usize, String> {
+    let rule = get_state_rule(collection)?;
+
+    match rule.mem() {
+        Memory::Heap => {
+            match STATE.with(|state| get_docs_heap(collection, &state.borrow().heap.db.db)) {
+                Ok(docs) => { // docs is Vec<(&Key, &Doc)>
+                    let count = docs.iter().filter(|(_, doc_ref)| doc_ref.owner == *owner).count();
+                    Ok(count)
+                }
+                Err(e) if e.to_lowercase().contains("does not exist") || e.to_lowercase().contains("not found") => Ok(0),
+                Err(e) => Err(e),
+            }
+        }
+        Memory::Stable => {
+            match STATE.with(|state| get_docs_stable(collection, &state.borrow().stable.db)) {
+                Ok(doc_entries) => { // doc_entries is Vec<DocEntry>
+                    let count = doc_entries.iter().filter(|entry| entry.value.owner == *owner).count();
+                    Ok(count)
+                }
+                Err(e) if e.to_lowercase().contains("does not exist") || e.to_lowercase().contains("not found") => Ok(0),
+                Err(e) => Err(e),
+            }
+        }
+    }
+}
+
 // ---------------------------------------------------------
 // Insert
 // ---------------------------------------------------------
@@ -187,13 +218,12 @@ fn set_doc_impl(
             // For now, we'll use a placeholder value.
             // Ensure `count_docs_by_owner_store` is properly defined or imported later.
 
-            // TEMPORARY: Simulate the count_docs_by_owner_store call
-            let user_doc_count = 0; // Replace with: count_docs_by_owner_store(&context.collection, &context.caller)?;
+            let user_doc_count = count_docs_by_owner_store(&context.collection, &context.caller)?;
 
             if user_doc_count >= (max_docs as usize) {
                 return Err(format!(
-                    "User cannot create new documents. Maximum ({}) reached in collection '{}'.",
-                    max_docs, context.collection
+                    "{} ({} documents owned, {} documents allowed in collection '{}')",
+                    JUNO_ERROR_MAX_DOCS_PER_USER_EXCEEDED, user_doc_count, max_docs, context.collection
                 ));
             }
         }

@@ -1,11 +1,7 @@
 <script lang="ts">
 	import { getContext, onMount, type Snippet } from 'svelte';
-	import CollectionSelection from '$lib/components/collections/CollectionSelection.svelte';
 	import CollectionsEmpty from '$lib/components/collections/CollectionsEmpty.svelte';
 	import DataNav from '$lib/components/data/DataNav.svelte';
-	import IconVisibility from '$lib/components/icons/IconVisibility.svelte';
-	import IconVisibilityOff from '$lib/components/icons/IconVisibilityOff.svelte';
-	import { i18n } from '$lib/stores/i18n.store';
 	import type { CollectionRule } from '$lib/types/collection';
 	import { RULES_CONTEXT_KEY, type RulesContext } from '$lib/types/rules.context';
 	import { type TabsContext, TABS_CONTEXT_KEY } from '$lib/types/tabs.context';
@@ -13,10 +9,11 @@
 	interface Props {
 		children: Snippet;
 		count?: Snippet;
+		header: Snippet;
 		onclose: () => void;
 	}
 
-	let { children, count, onclose }: Props = $props();
+	let { children, count, onclose, header }: Props = $props();
 
 	// Rules
 	const { store }: RulesContext = getContext<RulesContext>(RULES_CONTEXT_KEY);
@@ -47,21 +44,7 @@
 <section>
 	<DataNav onedit={selectionCollection} onclose={close} />
 
-	<CollectionSelection {includeSysCollections} onedit={selectionCollection}>
-		{#snippet includeSysCollectionsAction()}
-			<button
-				class="menu"
-				type="button"
-				onclick={() => (includeSysCollections = !includeSysCollections)}
-			>
-				{#if includeSysCollections}
-					<IconVisibilityOff size="20px" /> {$i18n.collections.hide_system_collections}
-				{:else}
-					<IconVisibility size="20px" /> {$i18n.collections.show_system_collections}
-				{/if}</button
-			>
-		{/snippet}
-	</CollectionSelection>
+	{@render header()}
 
 	{@render children()}
 

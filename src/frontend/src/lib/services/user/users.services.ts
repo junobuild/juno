@@ -24,14 +24,14 @@ export const listUsers = async ({
 	matches_length: bigint;
 	items_length: bigint;
 }> => {
-	const list = isSatelliteFeatureSupported({
+	const newestListDocs = isSatelliteFeatureSupported({
 		satelliteId,
 		requiredMinVersion: SATELLITE_v0_0_9
 	})
 		? listDocs
 		: listDocs008;
 
-	const { items, matches_length, items_length } = await list({
+	const { items, matches_length, items_length } = await newestListDocs({
 		collection: '#user',
 		satelliteId,
 		params: {

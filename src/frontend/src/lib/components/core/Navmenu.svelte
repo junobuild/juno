@@ -94,15 +94,6 @@
 
 		<div>
 			<a
-				href={`/upgrade-dock${queryParam}`}
-				class:selected={isRouteSelected({ routeId, path: 'upgrade-dock' })}
-				class="link not-themed"
-			>
-				<IconUpgradeDock size="20px" />
-				<span>{$i18n.upgrade_dock.title}</span>
-			</a>
-
-			<a
 				href={`/analytics${queryParam}`}
 				class:selected={isRouteSelected({ routeId, path: 'analytics' })}
 				class="link not-themed"
@@ -136,6 +127,15 @@
 			>
 				<IconWallet />
 				<span>{$i18n.wallet.title}</span>
+			</a>
+
+			<a
+				href={`/upgrade-dock${queryParam}`}
+				class:selected={isRouteSelected({ routeId, path: 'upgrade-dock' })}
+				class="link not-themed"
+			>
+				<IconUpgradeDock size="20px" />
+				<span>{$i18n.upgrade_dock.title}</span>
 			</a>
 		</div>
 	</nav>

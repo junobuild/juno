@@ -496,7 +496,7 @@
 		"cli_unexpected_error": "Unexpected error(s) while adding your controller.",
 		"satellite_name_missing": "A name for the satellite must be provided.",
 		"satellite_unexpected_error": "Unexpected error(s) while creating the satellite.",
-		"satellite_no_found": "Satellite not found. Return to <a href=\"/\">start</a> to find your satellites.",
+		"satellite_no_found": "Nothing here. Return to your <a href=\"/\">launchpad</a> to find your satellites.",
 		"satellite_name_update": "Unexpected error(s) while trying to rename your satellite.",
 		"satellite_missing_name": "A name must be provided.",
 		"satellites_not_loaded": "The satellites data are not yet loaded.",

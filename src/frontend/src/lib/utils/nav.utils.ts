@@ -65,3 +65,11 @@ export const loadRouteTab = ($event: LoadEvent): RouteTab => {
 		tab: searchParams?.get('tab')
 	};
 };
+
+export const isRouteSelected = ({
+	routeId,
+	path
+}: {
+	routeId: string | null;
+	path: string;
+}): boolean => routeId?.includes(path) ?? false;

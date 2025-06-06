@@ -9,6 +9,7 @@
 	import Asset from '$lib/components/assets/Asset.svelte';
 	import Assets from '$lib/components/assets/Assets.svelte';
 	import Data from '$lib/components/data/Data.svelte';
+	import DataCollectionsHeaderWithFilter from '$lib/components/data/DataCollectionsHeaderWithFilter.svelte';
 	import DataCount from '$lib/components/data/DataCount.svelte';
 	import { SATELLITE_v0_0_10, SATELLITE_v0_0_9 } from '$lib/constants/version.constants';
 	import { authStore } from '$lib/stores/auth.store';
@@ -95,5 +96,9 @@
 
 	{#snippet count()}
 		<DataCount />
+	{/snippet}
+
+	{#snippet header()}
+		<DataCollectionsHeaderWithFilter onclose={resetData} />
 	{/snippet}
 </Data>

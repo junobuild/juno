@@ -7,6 +7,7 @@
 	import { listDocs } from '$lib/api/satellites.api';
 	import { listDocs008 } from '$lib/api/satellites.deprecated.api';
 	import Data from '$lib/components/data/Data.svelte';
+	import DataCollectionsHeaderWithoutFilter from '$lib/components/data/DataCollectionsHeaderWithoutFilter.svelte';
 	import DataCount from '$lib/components/data/DataCount.svelte';
 	import Doc from '$lib/components/docs/Doc.svelte';
 	import DocForm from '$lib/components/docs/DocHeader.svelte';
@@ -87,5 +88,9 @@
 
 	{#snippet count()}
 		<DataCount />
+	{/snippet}
+
+	{#snippet header()}
+		<DataCollectionsHeaderWithoutFilter onclose={resetData} />
 	{/snippet}
 </Data>

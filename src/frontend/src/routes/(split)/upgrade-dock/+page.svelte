@@ -1,13 +1,13 @@
 <script lang="ts">
+	import { setContext } from 'svelte';
+	import { writable } from 'svelte/store';
 	import {
 		type Tab,
 		TABS_CONTEXT_KEY,
 		type TabsContext,
 		type TabsData
 	} from '$lib/types/tabs.context';
-	import { writable } from 'svelte/store';
 	import { initTabId } from '$lib/utils/tabs.utils';
-	import { setContext } from 'svelte';
 
 	const tabs: Tab[] = [
 		{

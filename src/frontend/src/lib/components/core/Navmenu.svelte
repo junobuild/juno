@@ -13,13 +13,13 @@
 	import IconSatellite from '$lib/components/icons/IconSatellite.svelte';
 	import IconStorage from '$lib/components/icons/IconStorage.svelte';
 	import IconTelescope from '$lib/components/icons/IconTelescope.svelte';
+	import IconUpgradeDock from '$lib/components/icons/IconUpgradeDock.svelte';
 	import IconWallet from '$lib/components/icons/IconWallet.svelte';
 	import Menu from '$lib/components/ui/Menu.svelte';
 	import { pageSatelliteId } from '$lib/derived/page.derived.svelte';
 	import { isSatelliteRoute } from '$lib/derived/route.derived.svelte';
 	import { i18n } from '$lib/stores/i18n.store';
 	import { isRouteSelected } from '$lib/utils/nav.utils';
-	import IconUpgradeDock from '$lib/components/icons/IconUpgradeDock.svelte';
 
 	let routeId: string | null = $derived(page.route.id);
 

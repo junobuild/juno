@@ -11,7 +11,7 @@ const satellitePaths = [
 	'hosting'
 ];
 
-let routeId: string | null = $derived(page.route.id);
+const routeId: string | null = $derived(page.route.id);
 
 type PageSatelliteIdStoreData = boolean | undefined;
 

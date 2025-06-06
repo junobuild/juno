@@ -16,8 +16,8 @@
 	import IconWallet from '$lib/components/icons/IconWallet.svelte';
 	import Menu from '$lib/components/ui/Menu.svelte';
 	import { pageSatelliteId } from '$lib/derived/page.derived.svelte';
-	import { i18n } from '$lib/stores/i18n.store';
 	import { isSatelliteRoute } from '$lib/derived/route.derived.svelte';
+	import { i18n } from '$lib/stores/i18n.store';
 	import { isRouteSelected } from '$lib/utils/nav.utils';
 
 	let routeId: string | null = $derived(page.route.id);

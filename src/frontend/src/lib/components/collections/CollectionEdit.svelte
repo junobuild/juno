@@ -108,6 +108,11 @@
 		maxChanges = fromNullishNullable(rule?.max_changes_per_user);
 	});
 
+	let maxDocsPerUser: number | undefined = $state(undefined);
+	$effect(() => {
+		maxDocsPerUser = fromNullishNullable(rule?.max_docs_per_user);
+	});
+
 	const onSubmit = async ($event: SubmitEvent) => {
 		$event.preventDefault();
 
@@ -126,6 +131,7 @@
 				maxCapacity,
 				maxTokens,
 				maxChanges,
+				maxDocsPerUser,
 				mutablePermissions: !immutable,
 				identity: $authStore.identity
 			});
@@ -190,6 +196,7 @@
 		const toggleOptions =
 			nonNullish(fromNullishNullable(r?.max_capacity)) ||
 			nonNullish(fromNullishNullable(r?.max_changes_per_user)) ||
+			nonNullish(fromNullishNullable(r?.max_docs_per_user)) ||
 			nonNullish(fromNullishNullable(r?.max_size)) ||
 			nonNullish(fromNullishNullable(r?.rate_config)) ||
 			fromNullishNullable(r?.mutable_permissions) === false;
@@ -278,6 +285,27 @@
 						/>
 					</Value>
 				</div>
+
+				{#if typeDatastore}
+					<div>
+						<Value>
+							{#snippet label()}
+								{$i18n.collections.max_docs_per_user}
+							{/snippet}
+							<Input
+								inputType="number"
+								placeholder={$i18n.collections.max_docs_per_user_placeholder}
+								name="maxDocsPerUser"
+								required={false}
+								bind:value={maxDocsPerUser}
+								onblur={() =>
+									(maxDocsPerUser = nonNullish(maxDocsPerUser)
+										? Math.trunc(maxDocsPerUser)
+										: undefined)}
+							/>
+						</Value>
+					</div>
+				{/if}
 
 				{#if typeDatastore}
 					<div>

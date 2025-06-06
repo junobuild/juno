@@ -176,6 +176,7 @@ type Rule = record {
   rate_config : opt RateConfig;
   write : Permission;
   max_changes_per_user : opt nat32;
+  max_docs_per_user : opt nat32;
 };
 type SegmentsDeploymentOptions = record {
   orbiter : opt text;
@@ -206,6 +207,7 @@ type SetRule = record {
   rate_config : opt RateConfig;
   write : Permission;
   max_changes_per_user : opt nat32;
+  max_docs_per_user : opt nat32;
 };
 type StorageConfig = record {
   iframe : opt StorageConfigIFrame;

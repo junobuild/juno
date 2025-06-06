@@ -179,6 +179,26 @@ fn set_doc_impl(
 
     assert_set_doc(context, config, &key, &value, rule, &current_doc)?;
 
+    if let Some(max_docs) = rule.max_docs_per_user {
+        // Only perform the check if it's a new document being created.
+        if current_doc.is_none() {
+            // Placeholder for the actual count_docs_by_owner_store call.
+            // This function needs to be defined/imported and will be implemented in the next step.
+            // For now, we'll use a placeholder value.
+            // Ensure `count_docs_by_owner_store` is properly defined or imported later.
+
+            // TEMPORARY: Simulate the count_docs_by_owner_store call
+            let user_doc_count = 0; // Replace with: count_docs_by_owner_store(&context.collection, &context.caller)?;
+
+            if user_doc_count >= (max_docs as usize) {
+                return Err(format!(
+                    "User cannot create new documents. Maximum ({}) reached in collection '{}'.",
+                    max_docs, context.collection
+                ));
+            }
+        }
+    }
+
     let doc: Doc = Doc::prepare(context.caller, &current_doc, value);
 
     let (_evicted_doc, after) = insert_state_doc(context.collection, &key, &doc, rule)?;

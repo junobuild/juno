@@ -6,6 +6,7 @@ import type { OptionIdentity } from '$lib/types/itentity';
 import type { ListFilter, ListParams } from '$lib/types/list';
 import type { User } from '$lib/types/user';
 import { toKeyUser } from '$lib/utils/user.utils';
+import type { Principal } from '@dfinity/principal';
 
 
 

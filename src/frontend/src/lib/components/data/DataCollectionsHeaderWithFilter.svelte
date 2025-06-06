@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { getContext } from 'svelte';
+	import { getContext, onMount } from 'svelte';
 	import CollectionSelection from '$lib/components/collections/CollectionSelection.svelte';
 	import IconVisibility from '$lib/components/icons/IconVisibility.svelte';
 	import IconVisibilityOff from '$lib/components/icons/IconVisibilityOff.svelte';
@@ -10,9 +10,10 @@
 
 	interface Props {
 		onclose: () => void;
+		includeSysCollections: boolean;
 	}
 
-	let { onclose }: Props = $props();
+	let { onclose, includeSysCollections = $bindable(false) }: Props = $props();
 
 	const { store }: RulesContext = getContext<RulesContext>(RULES_CONTEXT_KEY);
 
@@ -22,13 +23,20 @@
 	};
 
 	let filterParams = $state(getLocalListRulesParams());
-	let includeSysCollections = $derived(filterParams.includeSystem);
+
+	const setIncludeSysCollection = () => {
+		includeSysCollections = filterParams.includeSystem;
+	};
+
+	onMount(setIncludeSysCollection);
 
 	const toggleIncludeSysCollections = () => {
 		filterParams = {
 			...filterParams,
 			includeSystem: !filterParams.includeSystem
 		};
+
+		setIncludeSysCollection();
 
 		setLocalStorageItem({ key: 'list_rules_params', value: JSON.stringify(filterParams) });
 	};

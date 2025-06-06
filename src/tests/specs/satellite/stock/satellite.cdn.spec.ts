@@ -37,9 +37,6 @@ describe('Satellite > Cdn', () => {
 
 	const currentDate = new Date(2021, 6, 10, 0, 0, 0, 0);
 
-	// TODO: Redo 32n for release
-	const EXPECTED_PROPOSALS_BASE_COUNT = 28n;
-
 	beforeAll(async () => {
 		pic = await PocketIc.create(inject('PIC_URL'));
 
@@ -329,7 +326,7 @@ describe('Satellite > Cdn', () => {
 				canisterId: () => canisterId,
 				caller: () => controllerSubmit,
 				pic: () => pic,
-				expected_proposal_id: EXPECTED_PROPOSALS_BASE_COUNT,
+				expected_proposal_id: 32n,
 				fullPaths: {
 					assetsUpgrade: '/magic.html',
 					segmentsDeployment: '/_juno/releases/satellite-v2.1.1.wasm.gz',
@@ -342,7 +339,7 @@ describe('Satellite > Cdn', () => {
 			testCdnGetProposal({
 				actor: () => actor,
 				owner: () => controllerSubmit,
-				proposalId: EXPECTED_PROPOSALS_BASE_COUNT
+				proposalId: 32n
 			});
 
 			testCdnGetProposal({
@@ -362,7 +359,7 @@ describe('Satellite > Cdn', () => {
 					return actor;
 				},
 				owner: () => controllerSubmit,
-				proposalId: EXPECTED_PROPOSALS_BASE_COUNT
+				proposalId: 32n
 			});
 
 			testCdnGetProposal({
@@ -371,7 +368,7 @@ describe('Satellite > Cdn', () => {
 					return actor;
 				},
 				owner: () => controllerSubmit,
-				proposalId: EXPECTED_PROPOSALS_BASE_COUNT
+				proposalId: 32n
 			});
 		});
 
@@ -390,7 +387,7 @@ describe('Satellite > Cdn', () => {
 				canisterId: () => canisterId,
 				caller: () => controllerSubmit,
 				pic: () => pic,
-				expected_proposal_id: EXPECTED_PROPOSALS_BASE_COUNT + 6n,
+				expected_proposal_id: 38n,
 				fullPaths: {
 					assetsUpgrade: '/book.html',
 					segmentsDeployment: '/_juno/releases/satellite-v3.1.1.wasm.gz',
@@ -403,7 +400,7 @@ describe('Satellite > Cdn', () => {
 			testCdnGetProposal({
 				actor: () => actor,
 				owner: () => controllerSubmit,
-				proposalId: EXPECTED_PROPOSALS_BASE_COUNT
+				proposalId: 32n
 			});
 
 			testCdnGetProposal({
@@ -423,7 +420,7 @@ describe('Satellite > Cdn', () => {
 					return actor;
 				},
 				owner: () => controllerSubmit,
-				proposalId: EXPECTED_PROPOSALS_BASE_COUNT
+				proposalId: 32n
 			});
 
 			testCdnGetProposal({
@@ -432,7 +429,7 @@ describe('Satellite > Cdn', () => {
 					return actor;
 				},
 				owner: () => controllerSubmit,
-				proposalId: EXPECTED_PROPOSALS_BASE_COUNT
+				proposalId: 32n
 			});
 		});
 
@@ -442,7 +439,7 @@ describe('Satellite > Cdn', () => {
 			await expect(
 				commit_proposal({
 					sha256: Array.from({ length: 32 }).map((_, i) => i),
-					proposal_id: EXPECTED_PROPOSALS_BASE_COUNT
+					proposal_id: 32n
 				})
 			).rejects.toThrow(JUNO_AUTH_ERROR_NOT_WRITE_CONTROLLER);
 		});
@@ -463,12 +460,12 @@ describe('Satellite > Cdn', () => {
 
 		testCdnListProposals({
 			actor: () => actor,
-			proposalsLength: EXPECTED_PROPOSALS_BASE_COUNT + 11n
+			proposalsLength: 43n
 		});
 
 		testCdnCountProposals({
 			actor: () => actor,
-			proposalsLength: EXPECTED_PROPOSALS_BASE_COUNT + 11n
+			proposalsLength: 43n
 		});
 	});
 });

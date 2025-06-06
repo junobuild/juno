@@ -108,7 +108,12 @@
 		maxChanges = fromNullishNullable(rule?.max_changes_per_user);
 	});
 
+	// Holds the current value for the 'Max Documents per User' input field.
+	// It's undefined if not set.
 	let maxDocsPerUser: number | undefined = $state(undefined);
+	// Reactive effect to initialize and update `maxDocsPerUser` whenever the `rule` prop changes.
+	// `fromNullishNullable` converts the `opt nat32` from the rule (which might be null or undefined in JS)
+	// into a number or undefined for the input field.
 	$effect(() => {
 		maxDocsPerUser = fromNullishNullable(rule?.max_docs_per_user);
 	});
@@ -131,6 +136,9 @@
 				maxCapacity,
 				maxTokens,
 				maxChanges,
+				// The current value from the 'maxDocsPerUser' input field is passed here.
+				// If it's undefined (e.g., user cleared the input), it will be submitted as such,
+				// effectively removing the limit if it was previously set.
 				maxDocsPerUser,
 				mutablePermissions: !immutable,
 				identity: $authStore.identity
@@ -193,6 +201,11 @@
 
 		toggleCollection = $store.rule?.[0];
 
+		// This condition determines if the "Options" collapsible section should be opened by default
+		// when a rule is loaded for editing.
+		// It checks if any of the advanced/optional rule settings (including the new max_docs_per_user)
+		// have a value or if permissions are set to immutable.
+		// If any of these are true, it suggests advanced options are in use, so the section is expanded.
 		const toggleOptions =
 			nonNullish(fromNullishNullable(r?.max_capacity)) ||
 			nonNullish(fromNullishNullable(r?.max_changes_per_user)) ||
@@ -286,10 +299,14 @@
 					</Value>
 				</div>
 
+				<!-- This entire section for 'Max Documents per User' is conditionally rendered. -->
+				<!-- It only appears if the current collection 'type' is 'Db' (typeDatastore is true), -->
+				<!-- as this limit is specific to datastore collections. -->
 				{#if typeDatastore}
 					<div>
 						<Value>
 							{#snippet label()}
+								<!-- Internationalized label for the input field. -->
 								{$i18n.collections.max_docs_per_user}
 							{/snippet}
 							<Input
@@ -298,6 +315,9 @@
 								name="maxDocsPerUser"
 								required={false}
 								bind:value={maxDocsPerUser}
+								// When the input loses focus (onblur), ensure the value is an integer.
+								// If the input is empty or invalid, nonNullish helps reset it to undefined.
+								// Math.trunc is used to remove any decimal part.
 								onblur={() =>
 									(maxDocsPerUser = nonNullish(maxDocsPerUser)
 										? Math.trunc(maxDocsPerUser)

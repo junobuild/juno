@@ -50,6 +50,9 @@ impl Rule {
             max_size: user_rule.max_size,
             max_capacity: user_rule.max_capacity,
             max_changes_per_user: user_rule.max_changes_per_user,
+            // For user-defined collections, the `max_docs_per_user` limit
+            // is taken directly from the `SetRule` input provided by the user.
+            // If `user_rule.max_docs_per_user` is `None`, this means no limit is applied.
             max_docs_per_user: user_rule.max_docs_per_user,
             created_at,
             updated_at,
@@ -72,6 +75,12 @@ impl Rule {
                 let (created_at, version, updated_at) =
                     Self::initialize_common_fields(&Some(current_rule));
 
+                // For system collections (e.g., those starting with '#'), most rule
+                // properties are immutable or have special behavior.
+                // The `max_docs_per_user` limit is primarily a user-centric feature
+                // and typically not applicable or modifiable for system collections directly
+                // through this path. Thus, we preserve its existing value from the current rule.
+                // Other fields like `rate_config` might be updatable as per `assert_system_collection_set_permission`.
                 let rule = Rule {
                     read: current_rule.read.clone(),
                     write: current_rule.write.clone(),
@@ -80,6 +89,9 @@ impl Rule {
                     max_size: current_rule.max_size,
                     max_capacity: current_rule.max_capacity,
                     max_changes_per_user: current_rule.max_changes_per_user,
+                    // For system rules, `max_docs_per_user` retains its value from the existing `current_rule`.
+                    // This limit is generally not intended for direct modification on system collections
+                    // via the standard `set_rule` path for user collections.
                     max_docs_per_user: current_rule.max_docs_per_user,
                     created_at,
                     updated_at,

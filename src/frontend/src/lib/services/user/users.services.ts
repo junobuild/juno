@@ -8,8 +8,6 @@ import type { User } from '$lib/types/user';
 import { toKeyUser } from '$lib/utils/user.utils';
 import type { Principal } from '@dfinity/principal';
 
-
-
 export const listUsers = async ({
 	startAfter,
 	satelliteId,

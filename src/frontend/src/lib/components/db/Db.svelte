@@ -5,7 +5,7 @@
 	import DbData from '$lib/components/db/DbData.svelte';
 	import { DbCollectionType } from '$lib/constants/rules.constants';
 	import { authStore } from '$lib/stores/auth.store';
-	import { initRulesContext } from '$lib/stores/rules.store';
+	import { initRulesContext } from '$lib/stores/rules.context.store';
 	import { RULES_CONTEXT_KEY, type RulesContext } from '$lib/types/rules.context';
 	import { TABS_CONTEXT_KEY, type TabsContext } from '$lib/types/tabs.context';
 

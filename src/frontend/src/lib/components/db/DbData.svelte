@@ -15,7 +15,7 @@
 	import { authStore } from '$lib/stores/auth.store';
 	import { i18n } from '$lib/stores/i18n.store';
 	import { listParamsStore } from '$lib/stores/list-params.store';
-	import { initPaginationContext } from '$lib/stores/pagination.store';
+	import { initPaginationContext } from '$lib/stores/pagination.context.store';
 	import { toasts } from '$lib/stores/toasts.store';
 	import { versionStore } from '$lib/stores/version.store';
 	import { DATA_CONTEXT_KEY, type DataContext, type DataStoreData } from '$lib/types/data.context';

@@ -22,3 +22,7 @@ export interface ListParams {
 	order: ListOrder;
 	filter: ListFilter;
 }
+
+export interface ListRulesParams {
+	includeSystem: boolean;
+}

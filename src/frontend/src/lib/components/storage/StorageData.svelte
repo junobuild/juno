@@ -87,9 +87,11 @@
 	const { store }: RulesContext = getContext<RulesContext>(RULES_CONTEXT_KEY);
 
 	let collection: string | undefined = $derived($store.rule?.[0]);
+
+	let includeSysCollections = $state(false);
 </script>
 
-<Data onclose={resetData}>
+<Data onclose={resetData} displayEmpty={!includeSysCollections}>
 	<Assets />
 
 	<Asset />
@@ -99,6 +101,6 @@
 	{/snippet}
 
 	{#snippet header()}
-		<DataCollectionsHeaderWithFilter onclose={resetData} />
+		<DataCollectionsHeaderWithFilter bind:includeSysCollections onclose={resetData} />
 	{/snippet}
 </Data>

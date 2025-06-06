@@ -11,9 +11,10 @@
 		count?: Snippet;
 		header: Snippet;
 		onclose: () => void;
+		displayEmpty?: boolean;
 	}
 
-	let { children, count, onclose, header }: Props = $props();
+	let { children, count, onclose, header, displayEmpty = true }: Props = $props();
 
 	// Rules
 	const { store }: RulesContext = getContext<RulesContext>(RULES_CONTEXT_KEY);
@@ -37,8 +38,6 @@
 		closeData();
 		store.update((data) => ({ ...data, rule: undefined }));
 	};
-
-	let includeSysCollections = $state(false);
 </script>
 
 <section>
@@ -48,7 +47,7 @@
 
 	{@render children()}
 
-	{#if !includeSysCollections}
+	{#if displayEmpty}
 		<CollectionsEmpty onclick={selectTab} />
 	{/if}
 </section>

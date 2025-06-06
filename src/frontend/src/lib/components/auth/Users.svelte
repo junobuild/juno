@@ -77,21 +77,19 @@
 	let innerWidth = $state(0);
 
 	let colspan = $derived(
-		innerWidth >= 1024 ? 5 : innerWidth >= 768 ? 4 : innerWidth >= 576 ? 3 : 2
+		innerWidth >= 1024 ? 6 : innerWidth >= 768 ? 5 : innerWidth >= 576 ? 4 : 3
 	);
 </script>
 
 <svelte:window bind:innerWidth />
 
-<div class="actions">
-	<span>{$i18n.authentication.users}</span>
-	<UserFilter />
-</div>
-
 <div class="table-container">
 	<table>
 		<thead>
 			<tr>
+				<th class="filter-column">
+					<UserFilter />
+				</th>
 				<th class="tools"></th>
 				<th class="identifier"> {$i18n.users.identifier} </th>
 				<th class="providers"> {$i18n.users.provider} </th>
@@ -102,7 +100,7 @@
 
 		<tbody>
 			{#if nonNullish($paginationStore.items)}
-				{#each $paginationStore.items as [key, user] (key)}
+				{#each $paginationStore.items ?? [] as [key, user] (key)}
 					<User {user} {satelliteId} />
 				{/each}
 
@@ -123,10 +121,13 @@
 <style lang="scss">
 	@use '../../styles/mixins/media';
 
-	.actions {
-		display: flex;
-		justify-content: space-between;
-		margin-bottom: var(--padding-2x);
+	.table-container {
+		padding: 0 0 var(--padding);
+	}
+
+	.filter-column {
+		width: 48px;
+		padding: var(--padding-0_5x);
 	}
 
 	.tools {
@@ -171,5 +172,10 @@
 		.providers {
 			width: inherit;
 		}
+	}
+
+	th {
+		padding-top: 0;
+		padding-bottom: var(--padding-0_25x);
 	}
 </style>

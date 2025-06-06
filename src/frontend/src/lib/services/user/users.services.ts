@@ -7,6 +7,7 @@ import type { ListFilter, ListParams } from '$lib/types/list';
 import type { User } from '$lib/types/user';
 import { toKeyUser } from '$lib/utils/user.utils';
 import type { Principal } from '@dfinity/principal';
+import { Principal as PrincipalClass } from '@dfinity/principal';
 
 export const listUsers = async ({
 	startAfter,
@@ -22,12 +23,12 @@ export const listUsers = async ({
 	matches_length: bigint;
 	items_length: bigint;
 }> => {
-	const newestListDocs = isSatelliteFeatureSupported({
+	const list = isSatelliteFeatureSupported({
 		satelliteId,
 		requiredMinVersion: SATELLITE_v0_0_9
-	});
-
-	const list = newestListDocs ? listDocs : listDocs008;
+	})
+		? listDocs
+		: listDocs008;
 
 	const { items, matches_length, items_length } = await list({
 		collection: '#user',

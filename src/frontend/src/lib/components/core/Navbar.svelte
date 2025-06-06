@@ -12,6 +12,7 @@
 	import { isSkylab } from '$lib/env/app.env';
 	import { layoutTitleIntersecting } from '$lib/stores/layout-intersecting.store';
 	import { layoutNavigation } from '$lib/stores/layout-navigation.store';
+	import { isSatelliteRoute } from '$lib/derived/route.derived.svelte';
 
 	interface Props {
 		start?: 'logo' | 'back' | 'menu';
@@ -48,7 +49,7 @@
 			<Logo />
 		{/if}
 
-		{#if nonNullish($layoutNavigation?.data.satellite)}
+		{#if $isSatelliteRoute}
 			<div in:fade>
 				<SatellitesSwitcher />
 			</div>

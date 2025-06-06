@@ -16,6 +16,10 @@
 	<button class="text" onclick={() => (visible = true)} bind:this={button}
 		><span>{satelliteName($satelliteStore)}</span> <IconArrowDropDown /></button
 	>
+{:else}
+	<button class="text" onclick={() => (visible = true)} bind:this={button}
+		><span>{$i18n.satellites.see_all_satellites}</span> <IconArrowDropDown /></button
+	>
 {/if}
 
 <Popover bind:visible anchor={button}>

@@ -496,7 +496,7 @@
 		"cli_unexpected_error": "在增加你的控制者时出现不可预见的错误.",
 		"satellite_name_missing": "必须提供一个名字给 satellite.",
 		"satellite_unexpected_error": "创建 satellite时出现未知错误.",
-		"satellite_no_found": "Satellite没找到，返回 <a href=\"/\">开始</a>去找你的 satellites.",
+		"satellite_no_found": "Nothing here. Return to your <a href=\"/\">launchpad</a> to find your satellites.",
 		"satellite_name_update": "试图修改你的 satellite 名字出现异常.",
 		"satellite_missing_name": "必须提供一个名字.",
 		"satellites_not_loaded": "The satellites 数据不能加载.",

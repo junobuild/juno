@@ -9,7 +9,7 @@ export const satelliteStore: Readable<Option<Satellite>> = derived(
 	[satellitesStore, pageSatelliteId],
 	([$satellites, $pageSatelliteId]) => {
 		if (isNullish($pageSatelliteId)) {
-			return undefined;
+			return null;
 		}
 
 		// Satellites not loaded yet

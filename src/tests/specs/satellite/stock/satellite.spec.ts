@@ -140,6 +140,15 @@ describe('Satellite', () => {
 			expect(updated_at).toBeGreaterThan(0n);
 		});
 
+		it('should list collections and system collection', async () => {
+			const { list_rules } = actor;
+
+			const { items } = await list_rules({ Db: null }, mockListRules);
+
+			expect(items.find(([c]) => c === 'test')).not.toBeUndefined();
+			expect(items.find(([c]) => c === '#user')).not.toBeUndefined();
+		});
+
 		it('should get collection', async () => {
 			const { get_rule } = actor;
 
@@ -284,9 +293,15 @@ describe('Satellite', () => {
 
 		describe.each([
 			{ collectionType: { Db: null }, collection: '#user' },
+			{ collectionType: { Db: null }, collection: '#user-usage' },
+			{ collectionType: { Db: null }, collection: '#log' },
 			{
 				collectionType: { Storage: null },
 				collection: '#dapp'
+			},
+			{
+				collectionType: { Storage: null },
+				collection: '#_juno/releases'
 			}
 		])('System collection %s', ({ collectionType, collection }) => {
 			it('should not list system collections', async () => {
@@ -295,6 +310,36 @@ describe('Satellite', () => {
 				const { items: results } = await list_rules(collectionType, mockListRules);
 
 				expect(results.find(([c]) => c === collection)).toBeUndefined();
+			});
+
+			it('should not list system collections when explicitly excluded', async () => {
+				const { list_rules } = actor;
+
+				const { items: results } = await list_rules(collectionType, {
+					...mockListRules,
+					matcher: [
+						{
+							include_system: false
+						}
+					]
+				});
+
+				expect(results.find(([c]) => c === collection)).toBeUndefined();
+			});
+
+			it('should list system collections', async () => {
+				const { list_rules } = actor;
+
+				const { items: results } = await list_rules(collectionType, {
+					...mockListRules,
+					matcher: [
+						{
+							include_system: true
+						}
+					]
+				});
+
+				expect(results.find(([c]) => c === collection)).not.toBeUndefined();
 			});
 
 			it('should edit system collection', async () => {

@@ -20,33 +20,29 @@ import { findJunoPackageDependency, getJunoPackage, satelliteBuildType } from '@
 import { JUNO_PACKAGE_SATELLITE_ID } from '@junobuild/config';
 import { get } from 'svelte/store';
 
-export const loadVersion = async ({
+export const loadSatelliteVersion = async ({
 	satelliteId,
-	missionControlId,
 	skipReload,
 	identity
 }: {
-	satelliteId: Principal | undefined;
+	satelliteId: Principal;
 	missionControlId: MissionControlId;
 	skipReload: boolean;
 	identity: OptionIdentity;
 }) => {
 	// We load the satellite version once per session
-	// We might load the mission control version twice per session if user go to that view first and then to overview
 	const store = get(versionStore);
-	if (nonNullish(satelliteId) && nonNullish(store.satellites[satelliteId.toText()]) && skipReload) {
+	if (nonNullish(store.satellites[satelliteId.toText()]) && skipReload) {
 		return;
 	}
 
 	try {
-		const empty = (): Promise<undefined> => Promise.resolve(undefined);
-
 		// Optional for convenience reasons. A guard prevent the usage of the service while not being sign-in.
 		assertNonNullish(identity);
 
-		const satelliteInfo = async (
-			satelliteId: Principal
-		): Promise<Omit<SatelliteVersionMetadata, 'release'> | undefined> => {
+		const satelliteInfo = async (): Promise<
+			Omit<SatelliteVersionMetadata, 'release'> | undefined
+		> => {
 			// Backwards compatibility for Satellite <= 0.0.14 which did not expose the end point "version_build"
 			/**
 			 * @deprecated - Replaced in Satellite > v0.0.22 with public custom section juno:package
@@ -128,9 +124,49 @@ export const loadVersion = async ({
 			};
 		};
 
-		const missionControlInfo = async (
-			missionControlId: Principal
-		): Promise<Omit<VersionMetadata, 'release'>> => {
+		const [satVersion, releases] = await Promise.all([
+			satelliteInfo(),
+			getNewestReleasesMetadata()
+		]);
+
+		versionStore.setSatellite({
+			satelliteId: satelliteId.toText(),
+			version: nonNullish(satVersion)
+				? {
+						release: releases.satellite,
+						...satVersion
+					}
+				: undefined
+		});
+	} catch (err: unknown) {
+		toasts.error({
+			text: get(i18n).errors.load_version,
+			detail: err
+		});
+	}
+};
+
+export const loadMissionControlVersion = async ({
+	missionControlId,
+	skipReload,
+	identity
+}: {
+	missionControlId: MissionControlId;
+	skipReload: boolean;
+	identity: OptionIdentity;
+}) => {
+	// We load the satellite version once per session
+	// We might load the mission control version twice per session if user go to that view first and then to overview
+	const store = get(versionStore);
+	if (skipReload && nonNullish(store.missionControl)) {
+		return;
+	}
+
+	try {
+		// Optional for convenience reasons. A guard prevent the usage of the service while not being sign-in.
+		assertNonNullish(identity);
+
+		const missionControlInfo = async (): Promise<Omit<VersionMetadata, 'release'>> => {
 			const [junoPkg] = await Promise.allSettled([
 				getJunoPackage({
 					moduleId: missionControlId,
@@ -157,29 +193,14 @@ export const loadVersion = async ({
 			};
 		};
 
-		const [satVersion, ctrlVersion, releases] = await Promise.all([
-			nonNullish(satelliteId) ? satelliteInfo(satelliteId) : empty(),
-			missionControlInfo(missionControlId),
+		const [ctrlVersion, releases] = await Promise.all([
+			missionControlInfo(),
 			getNewestReleasesMetadata()
 		]);
 
 		versionStore.setMissionControl({
 			release: releases.mission_control,
 			...ctrlVersion
-		});
-
-		if (isNullish(satelliteId)) {
-			return;
-		}
-
-		versionStore.setSatellite({
-			satelliteId: satelliteId.toText(),
-			version: nonNullish(satVersion)
-				? {
-						release: releases.satellite,
-						...satVersion
-					}
-				: undefined
 		});
 	} catch (err: unknown) {
 		toasts.error({

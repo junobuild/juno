@@ -9,6 +9,7 @@ import type {
 } from '$declarations/satellite/satellite.did';
 import {
 	getSatelliteActor0021,
+	getSatelliteActor0022,
 	getSatelliteActor008,
 	getSatelliteActor009
 } from '$lib/api/actors/actor.deprecated.api';
@@ -177,4 +178,20 @@ export const satelliteBuildVersion = async ({
 	// For simplicity reason we just use an old actor (21 instead of 22) as the API did not change until it was fully deprecated.
 	const { build_version } = await getSatelliteActor0021({ satelliteId, identity });
 	return build_version();
+};
+
+/**
+ * @deprecated TODO: to be remove - backwards compatibility
+ */
+export const listRules0022 = async ({
+	satelliteId,
+	type,
+	identity
+}: {
+	satelliteId: Principal;
+	type: CollectionType;
+	identity: OptionIdentity;
+}): Promise<[string, Rule][]> => {
+	const actor = await getSatelliteActor0022({ satelliteId, identity });
+	return actor.list_rules(type);
 };

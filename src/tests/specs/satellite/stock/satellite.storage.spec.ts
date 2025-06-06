@@ -26,6 +26,7 @@ import {
 import { readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { afterAll, beforeAll, beforeEach, describe, expect, inject } from 'vitest';
+import { mockListRules } from '../../../mocks/list.mocks';
 import { mockBlob, mockHtml } from '../../../mocks/storage.mocks';
 import { assertCertification } from '../../../utils/certification-tests.utils';
 import { createUser as createUserUtils } from '../../../utils/satellite-doc-tests.utils';
@@ -312,9 +313,12 @@ describe('Satellite > Storage', () => {
 
 					await set_rule({ Storage: null }, collection, setRule);
 
-					const collectionResults = await list_rules({
-						Storage: null
-					});
+					const { items: collectionResults } = await list_rules(
+						{
+							Storage: null
+						},
+						mockListRules
+					);
 
 					const collectionResult = collectionResults.find(([c, _]) => c === collection);
 

@@ -13,7 +13,7 @@
 	import { listLogs } from '$lib/services/logs.services';
 	import { authStore } from '$lib/stores/auth.store';
 	import { i18n } from '$lib/stores/i18n.store';
-	import { initPaginationContext } from '$lib/stores/pagination.store';
+	import { initPaginationContext } from '$lib/stores/pagination.context.store';
 	import type { Log as LogType, LogLevel as LogLevelType } from '$lib/types/log';
 	import { PAGINATION_CONTEXT_KEY, type PaginationContext } from '$lib/types/pagination.context';
 

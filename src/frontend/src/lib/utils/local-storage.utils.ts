@@ -1,9 +1,10 @@
 import { browser } from '$app/environment';
 import { DEFAULT_ANALYTICS_PERIODICITY } from '$lib/constants/analytics.constants';
-import { DEFAULT_LIST_PARAMS } from '$lib/constants/data.constants';
+import { DEFAULT_LIST_PARAMS, DEFAULT_LIST_RULES_PARAMS } from '$lib/constants/data.constants';
 import type { ListParamsStoreData } from '$lib/stores/list-params.store';
 import type { Languages } from '$lib/types/languages';
 import { SatellitesLayout } from '$lib/types/layout';
+import type { ListRulesParams } from '$lib/types/list';
 import type { AnalyticsPeriodicity } from '$lib/types/orbiter';
 import { Theme } from '$lib/types/theme';
 import { nonNullish } from '@dfinity/utils';
@@ -44,6 +45,22 @@ export const getLocalListParams = (): ListParamsStoreData => {
 		// We use the local storage for the operational part of the app but, not crucial
 		console.error(err);
 		return DEFAULT_LIST_PARAMS;
+	}
+};
+
+export const getLocalListRulesParams = (): ListRulesParams => {
+	try {
+		const { list_rules_params }: Storage = browser
+			? localStorage
+			: ({ list_rules_params: JSON.stringify(DEFAULT_LIST_RULES_PARAMS) } as unknown as Storage);
+
+		return nonNullish(list_rules_params)
+			? JSON.parse(list_rules_params)
+			: DEFAULT_LIST_RULES_PARAMS;
+	} catch (err: unknown) {
+		// We use the local storage for the operational part of the app but, not crucial
+		console.error(err);
+		return DEFAULT_LIST_RULES_PARAMS;
 	}
 };
 

@@ -1,4 +1,4 @@
-use crate::assets::cdn::constants::{
+use crate::assets::constants::{
     CDN_JUNO_RELEASES_COLLECTION_KEY, DEFAULT_CDN_JUNO_RELEASES_COLLECTIONS,
 };
 use crate::memory::internal::STATE;

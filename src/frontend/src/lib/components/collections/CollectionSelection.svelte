@@ -1,6 +1,6 @@
 <script lang="ts">
-	import { nonNullish } from '@dfinity/utils';
-	import { getContext } from 'svelte';
+	import { getContext, type Snippet } from 'svelte';
+	import DataCollectionsHeader from '$lib/components/data/DataCollectionsHeader.svelte';
 	import IconNew from '$lib/components/icons/IconNew.svelte';
 	import { i18n } from '$lib/stores/i18n.store';
 	import type { CollectionRule } from '$lib/types/collection';
@@ -10,37 +10,46 @@
 		start?: boolean;
 		onstart?: () => void;
 		onedit: (rule: CollectionRule) => void;
+		includeSysCollections?: boolean;
+		includeSysCollectionsAction?: Snippet;
 	}
 
-	let { start = false, onedit, onstart }: Props = $props();
+	let {
+		start = false,
+		includeSysCollections = false,
+		includeSysCollectionsAction,
+		onedit,
+		onstart
+	}: Props = $props();
 
-	const { store, hasAnyRules, sortedRules }: RulesContext =
-		getContext<RulesContext>(RULES_CONTEXT_KEY);
+	const { sortedRules, devRules }: RulesContext = getContext<RulesContext>(RULES_CONTEXT_KEY);
 
 	const edit = (rule: CollectionRule) => onedit(rule);
 
 	const startCollection = () => onstart?.();
+
+	let rules = $derived(includeSysCollections ? $sortedRules : $devRules);
 </script>
 
-<p class="title collections">Collections</p>
+<p class="title collections">
+	<DataCollectionsHeader actions={includeSysCollectionsAction}>
+		{$i18n.collections.title}
+	</DataCollectionsHeader>
+</p>
 
-{#if start || $hasAnyRules}
-	<div class="collections">
-		{#if start}
-			<button class="text action start" onclick={startCollection}
-				><IconNew size="12px" /> <span>{$i18n.collections.start_collection}</span></button
-			>
-		{/if}
+<div class="collections">
+	{#if start}
+		<button class="text action start" onclick={startCollection}
+			><IconNew size="12px" /> <span>{$i18n.collections.start_collection}</span></button
+		>
+	{/if}
 
-		{#if nonNullish($store.rules)}
-			{#each $sortedRules as col (col[0])}
-				<button class="text action" class:offset={start} onclick={() => edit(col)}
-					><span>{col[0]}</span></button
-				>
-			{/each}
-		{/if}
-	</div>
-{/if}
+	{#each rules as col (col[0])}
+		<button class="text action" class:offset={start} onclick={() => edit(col)}
+			><span>{col[0]}</span></button
+		>
+	{/each}
+</div>
 
 <style lang="scss">
 	@use '../../styles/mixins/media';

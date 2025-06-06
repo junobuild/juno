@@ -360,6 +360,7 @@ describe('Console > Upgrade', () => {
 					pic,
 					fullPath: '/index.js'
 				});
+
 				expect(proposalOne).toEqual(2n);
 
 				const { proposalId: proposalTwo } = await uploadFileWithProposal({
@@ -367,11 +368,13 @@ describe('Console > Upgrade', () => {
 					pic,
 					fullPath: '/index1.js'
 				});
+
 				expect(proposalTwo).toEqual(3n);
 
 				await upgrade();
 
 				const { proposalId } = await uploadFileWithProposal({ actor, pic, fullPath: '/index2.js' });
+
 				expect(proposalId).toEqual(1n);
 			});
 		});

@@ -9,12 +9,15 @@ import {
 	JUNO_AUTH_ERROR_NOT_WRITE_CONTROLLER,
 	JUNO_COLLECTIONS_ERROR_DELETE_PREFIX_RESERVED,
 	JUNO_COLLECTIONS_ERROR_MODIFY_RESERVED_COLLECTION,
+	JUNO_COLLECTIONS_ERROR_PREFIX_RESERVED,
 	JUNO_COLLECTIONS_ERROR_RATE_CONFIG_ENABLED,
+	JUNO_COLLECTIONS_ERROR_RESERVED_COLLECTION,
 	JUNO_ERROR_NO_VERSION_PROVIDED,
 	JUNO_ERROR_VERSION_OUTDATED_OR_FUTURE,
 	JUNO_STORAGE_ERROR_UPLOAD_NOT_ALLOWED
 } from '@junobuild/errors';
 import { inject } from 'vitest';
+import { mockListRules } from '../../../mocks/list.mocks';
 import { controllersInitArgs, SATELLITE_WASM_PATH } from '../../../utils/setup-tests.utils';
 
 describe('Satellite', () => {
@@ -81,10 +84,9 @@ describe('Satellite', () => {
 
 			await set_rule({ Db: null }, 'test', setRule);
 
-			const [[collection, { memory, version, created_at, updated_at, read, write }], _] =
-				await list_rules({
-					Db: null
-				});
+			const { items } = await list_rules({ Db: null }, mockListRules);
+
+			const [[collection, { memory, version, created_at, updated_at, read, write }], _] = items;
 
 			expect(collection).toEqual('test');
 			expect(memory).toEqual(toNullable({ Stable: null }));
@@ -102,10 +104,14 @@ describe('Satellite', () => {
 
 			await set_rule({ Storage: null }, 'test_storage', setRule);
 
-			const [[collection, { memory, version, created_at, updated_at, read, write }], _] =
-				await list_rules({
+			const { items } = await list_rules(
+				{
 					Storage: null
-				});
+				},
+				mockListRules
+			);
+
+			const [[collection, { memory, version, created_at, updated_at, read, write }], _] = items;
 
 			expect(collection).toEqual('test_storage');
 			expect(memory).toEqual(toNullable({ Stable: null }));
@@ -119,10 +125,11 @@ describe('Satellite', () => {
 		it('should list collections', async () => {
 			const { list_rules } = actor;
 
+			const { items } = await list_rules({ Db: null }, mockListRules);
 			const [
 				[collection, { updated_at, created_at, memory, mutable_permissions, read, write }],
 				_
-			] = await list_rules({ Db: null });
+			] = items;
 
 			expect(collection).toEqual('test');
 			expect(memory).toEqual(toNullable({ Stable: null }));
@@ -131,6 +138,25 @@ describe('Satellite', () => {
 			expect(mutable_permissions).toEqual([true]);
 			expect(created_at).toBeGreaterThan(0n);
 			expect(updated_at).toBeGreaterThan(0n);
+		});
+
+		it('should list collections and system collection', async () => {
+			const { list_rules } = actor;
+
+			const { items } = await list_rules(
+				{ Db: null },
+				{
+					...mockListRules,
+					matcher: [
+						{
+							include_system: true
+						}
+					]
+				}
+			);
+
+			expect(items.find(([c]) => c === 'test')).not.toBeUndefined();
+			expect(items.find(([c]) => c === '#user')).not.toBeUndefined();
 		});
 
 		it('should get collection', async () => {
@@ -157,7 +183,7 @@ describe('Satellite', () => {
 
 			await set_rule({ Db: null }, 'test2', setRule);
 
-			const rules = await list_rules({ Db: null });
+			const { items: rules } = await list_rules({ Db: null }, mockListRules);
 
 			expect(rules).toHaveLength(2);
 
@@ -168,7 +194,9 @@ describe('Satellite', () => {
 				version
 			});
 
-			await expect(list_rules({ Db: null })).resolves.toHaveLength(1);
+			const { items_length } = await list_rules({ Db: null }, mockListRules);
+
+			expect(items_length).toEqual(1n);
 		});
 
 		it('should add and remove additional controller', async () => {
@@ -275,17 +303,53 @@ describe('Satellite', () => {
 
 		describe.each([
 			{ collectionType: { Db: null }, collection: '#user' },
+			{ collectionType: { Db: null }, collection: '#user-usage' },
+			{ collectionType: { Db: null }, collection: '#log' },
 			{
 				collectionType: { Storage: null },
 				collection: '#dapp'
+			},
+			{
+				collectionType: { Storage: null },
+				collection: '#_juno/releases'
 			}
 		])('System collection %s', ({ collectionType, collection }) => {
 			it('should not list system collections', async () => {
 				const { list_rules } = actor;
 
-				const results = await list_rules(collectionType);
+				const { items: results } = await list_rules(collectionType, mockListRules);
 
 				expect(results.find(([c]) => c === collection)).toBeUndefined();
+			});
+
+			it('should not list system collections when explicitly excluded', async () => {
+				const { list_rules } = actor;
+
+				const { items: results } = await list_rules(collectionType, {
+					...mockListRules,
+					matcher: [
+						{
+							include_system: false
+						}
+					]
+				});
+
+				expect(results.find(([c]) => c === collection)).toBeUndefined();
+			});
+
+			it('should list system collections', async () => {
+				const { list_rules } = actor;
+
+				const { items: results } = await list_rules(collectionType, {
+					...mockListRules,
+					matcher: [
+						{
+							include_system: true
+						}
+					]
+				});
+
+				expect(results.find(([c]) => c === collection)).not.toBeUndefined();
 			});
 
 			it('should edit system collection', async () => {
@@ -542,7 +606,7 @@ describe('Satellite', () => {
 					const { set_rule } = actor;
 
 					await expect(set_rule({ Db: null }, '#test', setRule)).rejects.toThrow(
-						'Collection starts with #, a reserved prefix'
+						JUNO_COLLECTIONS_ERROR_PREFIX_RESERVED
 					);
 				});
 
@@ -551,7 +615,7 @@ describe('Satellite', () => {
 					const { set_rule } = actor;
 
 					await expect(set_rule({ Db: null }, '#test', setRule)).rejects.not.toThrow(
-						'Collection #test is reserved.'
+						JUNO_COLLECTIONS_ERROR_RESERVED_COLLECTION
 					);
 				});
 
@@ -629,7 +693,9 @@ describe('Satellite', () => {
 		it('should throw errors on list collections', async () => {
 			const { list_rules } = actor;
 
-			await expect(list_rules({ Db: null })).rejects.toThrow(JUNO_AUTH_ERROR_NOT_ADMIN_CONTROLLER);
+			await expect(list_rules({ Db: null }, mockListRules)).rejects.toThrow(
+				JUNO_AUTH_ERROR_NOT_ADMIN_CONTROLLER
+			);
 		});
 
 		it('should throw errors on getting a collection', async () => {

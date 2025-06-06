@@ -42,15 +42,19 @@ export const initRulesContext = ({
 		await reloadRules({ identity });
 	};
 
-	const hasAnyRules = derived(store, ({ rules }) => (rules?.length ?? 0) > 0);
-
-	const emptyRules = derived(hasAnyRules, (hasAnyRules) => !hasAnyRules);
-
 	const sortedRules = derived(store, ({ rules }) =>
 		(rules ?? []).sort(([collectionA, _], [collectionB, __]) =>
 			collectionA.localeCompare(collectionB)
 		)
 	);
+
+	const devRules = derived(sortedRules, (rules) =>
+		rules.filter(([key, _]) => !key.startsWith('#'))
+	);
+
+	const hasAnyRules = derived(devRules, (rules) => (rules?.length ?? 0) > 0);
+
+	const emptyRules = derived(hasAnyRules, (hasAnyRules) => !hasAnyRules);
 
 	return {
 		store,
@@ -58,6 +62,7 @@ export const initRulesContext = ({
 		init: initRules,
 		hasAnyRules,
 		emptyRules,
-		sortedRules
+		sortedRules,
+		devRules
 	};
 };

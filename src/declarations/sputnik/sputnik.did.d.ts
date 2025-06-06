@@ -168,6 +168,17 @@ export interface ListResults_1 {
 	items: Array<[string, Doc]>;
 	items_length: bigint;
 }
+export interface ListRulesMatcher {
+	include_system: boolean;
+}
+export interface ListRulesParams {
+	matcher: [] | [ListRulesMatcher];
+}
+export interface ListRulesResults {
+	matches_length: bigint;
+	items: Array<[string, Rule]>;
+	items_length: bigint;
+}
 export type Memory = { Heap: null } | { Stable: null };
 export interface MemorySize {
 	stable: bigint;
@@ -339,7 +350,7 @@ export interface _SERVICE {
 	list_custom_domains: ActorMethod<[], Array<[string, CustomDomain]>>;
 	list_docs: ActorMethod<[string, ListParams], ListResults_1>;
 	list_proposals: ActorMethod<[ListProposalsParams], ListProposalResults>;
-	list_rules: ActorMethod<[CollectionType], Array<[string, Rule]>>;
+	list_rules: ActorMethod<[CollectionType, ListRulesParams], ListRulesResults>;
 	memory_size: ActorMethod<[], MemorySize>;
 	reject_proposal: ActorMethod<[CommitProposal], null>;
 	set_auth_config: ActorMethod<[AuthenticationConfig], undefined>;

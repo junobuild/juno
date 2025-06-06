@@ -1,5 +1,5 @@
 use crate::db::internal::{unsafe_delete_doc, unsafe_get_doc, unsafe_set_doc};
-use crate::rules::store::{get_rule_db, get_rules_db, get_rules_storage};
+use crate::rules::store::{get_non_system_rules_db, get_non_system_rules_storage, get_rule_db};
 use crate::types::state::CollectionType;
 use crate::user::usage::types::state::{UserUsageData, UserUsageKey};
 use crate::SetDoc;
@@ -73,8 +73,8 @@ fn delete_user_usage_for_collections(
     user_usage_rule: &Rule,
 ) -> Result<(), String> {
     let rules = match collection_type {
-        CollectionType::Db => get_rules_db(),
-        CollectionType::Storage => get_rules_storage(),
+        CollectionType::Db => get_non_system_rules_db(),
+        CollectionType::Storage => get_non_system_rules_storage(),
     };
 
     for (collection_key, _) in rules {

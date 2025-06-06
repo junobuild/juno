@@ -60,7 +60,8 @@ pub mod rules {
 }
 
 pub mod interface {
-    use crate::types::rules::{Memory, Permission};
+    use crate::types::core::CollectionKey;
+    use crate::types::rules::{Memory, Permission, Rule};
     use candid::CandidType;
     use junobuild_shared::rate::types::RateConfig;
     use junobuild_shared::types::state::Version;
@@ -82,5 +83,22 @@ pub mod interface {
     #[derive(Default, CandidType, Deserialize, Clone)]
     pub struct DelRule {
         pub version: Option<Version>,
+    }
+
+    #[derive(Default, CandidType, Deserialize, Clone)]
+    pub struct ListRulesParams {
+        pub matcher: Option<ListRulesMatcher>,
+    }
+
+    #[derive(Default, CandidType, Deserialize, Clone)]
+    pub struct ListRulesMatcher {
+        pub include_system: bool,
+    }
+
+    #[derive(Default, CandidType, Deserialize, Clone)]
+    pub struct ListRulesResults {
+        pub items: Vec<(CollectionKey, Rule)>,
+        pub items_length: usize,
+        pub matches_length: usize,
     }
 }

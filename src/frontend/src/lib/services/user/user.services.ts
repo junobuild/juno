@@ -1,6 +1,13 @@
-import type { CollectionType } from '$declarations/satellite/satellite.did';
+import type { CollectionType, Rule } from '$declarations/satellite/satellite.did';
 import { getDoc, listRules, setDoc } from '$lib/api/satellites.api';
-import { DbCollectionType, StorageCollectionType } from '$lib/constants/rules.constants';
+import { listRules0022 } from '$lib/api/satellites.deprecated.api';
+import {
+	DbCollectionType,
+	filterSystemRules,
+	StorageCollectionType
+} from '$lib/constants/rules.constants';
+import { SATELLITE_v0_1_0 } from '$lib/constants/version.constants';
+import { isSatelliteFeatureSupported } from '$lib/services/feature.services';
 import { busy } from '$lib/stores/busy.store';
 import { i18n } from '$lib/stores/i18n.store';
 import { toasts } from '$lib/stores/toasts.store';
@@ -77,9 +84,28 @@ const loadUserUsages = async ({
 }: { identity: Identity } & Omit<OpenUserDetailParams, 'identity'>): Promise<
 	UserUsageCollection[]
 > => {
+	const newestListRules = isSatelliteFeatureSupported({
+		satelliteId,
+		requiredMinVersion: SATELLITE_v0_1_0
+	});
+
+	const modernListRules = async (collectionType: CollectionType): Promise<[string, Rule][]> => {
+		const { items } = await listRules({
+			satelliteId,
+			type: collectionType,
+			filter: filterSystemRules,
+			identity
+		});
+		return items;
+	};
+
 	const [dbRules, storageRules] = await Promise.all([
-		listRules({ satelliteId, type: DbCollectionType, identity }),
-		listRules({ satelliteId, type: StorageCollectionType, identity })
+		newestListRules
+			? modernListRules(DbCollectionType)
+			: listRules0022({ satelliteId, type: DbCollectionType, identity }),
+		newestListRules
+			? modernListRules(StorageCollectionType)
+			: listRules0022({ satelliteId, type: DbCollectionType, identity })
 	]);
 
 	const loadUsage = async ({

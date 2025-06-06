@@ -32,7 +32,9 @@ use junobuild_cdn::proposals::{
     RejectProposal,
 };
 use junobuild_collections::types::core::CollectionKey;
-use junobuild_collections::types::interface::{DelRule, SetRule};
+use junobuild_collections::types::interface::{
+    DelRule, ListRulesParams, ListRulesResults, SetRule,
+};
 use junobuild_collections::types::rules::Rule;
 use junobuild_shared::types::core::DomainName;
 use junobuild_shared::types::core::Key;
@@ -162,8 +164,8 @@ pub fn get_rule(collection_type: CollectionType, collection: CollectionKey) -> O
 
 #[doc(hidden)]
 #[query(guard = "caller_is_admin_controller")]
-pub fn list_rules(collection_type: CollectionType) -> Vec<(CollectionKey, Rule)> {
-    api::rules::list_rules(collection_type)
+pub fn list_rules(collection_type: CollectionType, filter: ListRulesParams) -> ListRulesResults {
+    api::rules::list_rules(&collection_type, &filter)
 }
 
 #[doc(hidden)]

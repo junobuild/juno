@@ -1,11 +1,13 @@
 use crate::rules::store::{
-    del_rule_db, del_rule_storage, get_rule_db, get_rule_storage, get_rules_db, get_rules_storage,
-    set_rule_db, set_rule_storage,
+    del_rule_db, del_rule_storage, get_rule_db, get_rule_storage, list_rules_db,
+    list_rules_storage, set_rule_db, set_rule_storage,
 };
 use crate::types::state::CollectionType;
 use ic_cdk::trap;
 use junobuild_collections::types::core::CollectionKey;
-use junobuild_collections::types::interface::{DelRule, SetRule};
+use junobuild_collections::types::interface::{
+    DelRule, ListRulesParams, ListRulesResults, SetRule,
+};
 use junobuild_collections::types::rules::Rule;
 
 pub fn get_rule(collection_type: &CollectionType, collection: &CollectionKey) -> Option<Rule> {
@@ -15,10 +17,10 @@ pub fn get_rule(collection_type: &CollectionType, collection: &CollectionKey) ->
     }
 }
 
-pub fn list_rules(collection_type: CollectionType) -> Vec<(CollectionKey, Rule)> {
+pub fn list_rules(collection_type: &CollectionType, filter: &ListRulesParams) -> ListRulesResults {
     match collection_type {
-        CollectionType::Db => get_rules_db(),
-        CollectionType::Storage => get_rules_storage(),
+        CollectionType::Db => list_rules_db(filter),
+        CollectionType::Storage => list_rules_storage(filter),
     }
 }
 

@@ -25,11 +25,11 @@ export const listUsers = async ({
 	const newestListDocs = isSatelliteFeatureSupported({
 		satelliteId,
 		requiredMinVersion: SATELLITE_v0_0_9
-	})
-		? listDocs
-		: listDocs008;
+	});
 
-	const { items, matches_length, items_length } = await newestListDocs({
+	const list = newestListDocs ? listDocs : listDocs008;
+
+	const { items, matches_length, items_length } = await list({
 		collection: '#user',
 		satelliteId,
 		params: {
@@ -38,7 +38,7 @@ export const listUsers = async ({
 				desc: true,
 				field: 'created_at'
 			},
-			filter
+			filter: {}
 		},
 		identity
 	});

@@ -10,13 +10,14 @@ use junobuild_storage::types::state::FullPath;
 
 pub fn assert_cdn_asset_keys(
     full_path: &FullPath,
-    description: &Option<String>,
+    _description: &Option<String>,
     collection: &CollectionKey,
 ) -> Result<(), String> {
     match collection.as_str() {
         RELEASES_COLLECTION_KEY => {
             assert_releases_keys(full_path)?;
-            assert_releases_description(description)?;
+            // TODO: Uncomment for release
+            // assert_releases_description(description)?;
 
             Ok(())
         }

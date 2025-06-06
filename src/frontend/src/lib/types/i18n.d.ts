@@ -733,6 +733,8 @@ interface I18nCollections {
 	immutable: string;
 	clear_collection: string;
 	options: string;
+	show_system_collections: string;
+	hide_system_collections: string;
 }
 
 interface I18nSort {

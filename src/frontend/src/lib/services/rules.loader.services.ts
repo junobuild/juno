@@ -20,11 +20,17 @@ export const reloadContextRules = async ({
 	identity: OptionIdentity;
 }) => {
 	try {
-		// TODO: support system filter
 		const { items: rules } = await listRules({
 			satelliteId,
 			type,
-			filter: filterSystemRules,
+			filter: {
+				...filterSystemRules,
+				matcher: [
+					{
+						include_system: true
+					}
+				]
+			},
 			identity
 		});
 		store.set({ satelliteId, rules, rule: undefined });

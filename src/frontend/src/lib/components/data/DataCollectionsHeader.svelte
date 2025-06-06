@@ -1,11 +1,8 @@
 <script lang="ts">
 	import { nonNullish } from '@dfinity/utils';
-	import { getContext, type Snippet } from 'svelte';
+	import type { Snippet } from 'svelte';
 	import { fade } from 'svelte/transition';
 	import DataActions from '$lib/components/data/DataActions.svelte';
-	import DataFilter from '$lib/components/data/DataFilter.svelte';
-	import DataOrder from '$lib/components/data/DataOrder.svelte';
-	import { RULES_CONTEXT_KEY, type RulesContext } from '$lib/types/rules.context';
 
 	interface Props {
 		children: Snippet;
@@ -13,19 +10,13 @@
 	}
 
 	let { children, actions }: Props = $props();
-
-	const { store }: RulesContext = getContext<RulesContext>(RULES_CONTEXT_KEY);
-
-	let collectionSelected = $derived(nonNullish($store.rule));
 </script>
 
 <div class="actions">
 	<span>{@render children()}</span>
 
-	{#if collectionSelected}
+	{#if nonNullish(actions)}
 		<div transition:fade>
-			<DataFilter />
-			<DataOrder />
 			<DataActions>
 				{@render actions?.()}
 			</DataActions>

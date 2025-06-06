@@ -3,6 +3,9 @@
 	import CollectionSelection from '$lib/components/collections/CollectionSelection.svelte';
 	import CollectionsEmpty from '$lib/components/collections/CollectionsEmpty.svelte';
 	import DataNav from '$lib/components/data/DataNav.svelte';
+	import IconVisibility from '$lib/components/icons/IconVisibility.svelte';
+	import IconVisibilityOff from '$lib/components/icons/IconVisibilityOff.svelte';
+	import { i18n } from '$lib/stores/i18n.store';
 	import type { CollectionRule } from '$lib/types/collection';
 	import { RULES_CONTEXT_KEY, type RulesContext } from '$lib/types/rules.context';
 	import { type TabsContext, TABS_CONTEXT_KEY } from '$lib/types/tabs.context';
@@ -37,16 +40,34 @@
 		closeData();
 		store.update((data) => ({ ...data, rule: undefined }));
 	};
+
+	let includeSysCollections = $state(false);
 </script>
 
 <section>
 	<DataNav onedit={selectionCollection} onclose={close} />
 
-	<CollectionSelection onedit={selectionCollection} />
+	<CollectionSelection {includeSysCollections} onedit={selectionCollection}>
+		{#snippet includeSysCollectionsAction()}
+			<button
+				class="menu"
+				type="button"
+				onclick={() => (includeSysCollections = !includeSysCollections)}
+			>
+				{#if includeSysCollections}
+					<IconVisibilityOff size="20px" /> {$i18n.collections.hide_system_collections}
+				{:else}
+					<IconVisibility size="20px" /> {$i18n.collections.show_system_collections}
+				{/if}</button
+			>
+		{/snippet}
+	</CollectionSelection>
 
 	{@render children()}
 
-	<CollectionsEmpty onclick={selectTab} />
+	{#if !includeSysCollections}
+		<CollectionsEmpty onclick={selectTab} />
+	{/if}
 </section>
 
 <div class="count">

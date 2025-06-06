@@ -1,6 +1,15 @@
 <script lang="ts">
+	import { nonNullish } from '@dfinity/utils';
 	import { setContext } from 'svelte';
 	import { writable } from 'svelte/store';
+	import UpgradeDock from '$lib/components/dock/UpgradeDock.svelte';
+	import IdentityGuard from '$lib/components/guards/IdentityGuard.svelte';
+	import MissionControlGuard from '$lib/components/guards/MissionControlGuard.svelte';
+	import OrbitersLoader from '$lib/components/loaders/OrbitersLoader.svelte';
+	import SatellitesLoader from '$lib/components/loaders/SatellitesLoader.svelte';
+	import Tabs from '$lib/components/ui/Tabs.svelte';
+	import WalletLoader from '$lib/components/wallet/WalletLoader.svelte';
+	import { missionControlIdDerived } from '$lib/derived/mission-control.derived';
 	import {
 		type Tab,
 		TABS_CONTEXT_KEY,
@@ -8,15 +17,6 @@
 		type TabsData
 	} from '$lib/types/tabs.context';
 	import { initTabId } from '$lib/utils/tabs.utils';
-	import IdentityGuard from '$lib/components/guards/IdentityGuard.svelte';
-	import Tabs from '$lib/components/ui/Tabs.svelte';
-	import WalletLoader from '$lib/components/wallet/WalletLoader.svelte';
-	import SatellitesLoader from '$lib/components/loaders/SatellitesLoader.svelte';
-	import OrbitersLoader from '$lib/components/loaders/OrbitersLoader.svelte';
-	import MissionControlGuard from '$lib/components/guards/MissionControlGuard.svelte';
-	import { nonNullish } from '@dfinity/utils';
-	import { missionControlIdDerived } from '$lib/derived/mission-control.derived';
-	import UpgradeDock from '$lib/components/dock/UpgradeDock.svelte';
 
 	const tabs: Tab[] = [
 		{

@@ -19,6 +19,7 @@
 	import { isSatelliteRoute } from '$lib/derived/route.derived.svelte';
 	import { i18n } from '$lib/stores/i18n.store';
 	import { isRouteSelected } from '$lib/utils/nav.utils';
+	import IconUpgradeDock from '$lib/components/icons/IconUpgradeDock.svelte';
 
 	let routeId: string | null = $derived(page.route.id);
 
@@ -92,6 +93,15 @@
 		{/if}
 
 		<div>
+			<a
+				href={`/upgrade-dock${queryParam}`}
+				class:selected={isRouteSelected({ routeId, path: 'upgrade-dock' })}
+				class="link not-themed"
+			>
+				<IconUpgradeDock size="20px" />
+				<span>{$i18n.upgrade_dock.title}</span>
+			</a>
+
 			<a
 				href={`/analytics${queryParam}`}
 				class:selected={isRouteSelected({ routeId, path: 'analytics' })}

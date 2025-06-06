@@ -6,6 +6,7 @@
 	import { i18n } from '$lib/stores/i18n.store';
 	import type { CollectionRule } from '$lib/types/collection';
 	import { RULES_CONTEXT_KEY, type RulesContext } from '$lib/types/rules.context';
+	import { getLocalListRulesParams, setLocalStorageItem } from '$lib/utils/local-storage.utils';
 
 	interface Props {
 		onclose: () => void;
@@ -20,16 +21,22 @@
 		store.update((data) => ({ ...data, rule }));
 	};
 
-	let includeSysCollections = $state(false);
+	let filterParams = $state(getLocalListRulesParams());
+	let includeSysCollections = $derived(filterParams.includeSystem);
+
+	const toggleIncludeSysCollections = () => {
+		filterParams = {
+			...filterParams,
+			includeSystem: !filterParams.includeSystem
+		};
+
+		setLocalStorageItem({ key: 'list_rules_params', value: JSON.stringify(filterParams) });
+	};
 </script>
 
 <CollectionSelection {includeSysCollections} onedit={selectionCollection}>
 	{#snippet includeSysCollectionsAction()}
-		<button
-			class="menu"
-			type="button"
-			onclick={() => (includeSysCollections = !includeSysCollections)}
-		>
+		<button class="menu" type="button" onclick={toggleIncludeSysCollections}>
 			{#if includeSysCollections}
 				<IconVisibilityOff size="20px" /> {$i18n.collections.hide_system_collections}
 			{:else}

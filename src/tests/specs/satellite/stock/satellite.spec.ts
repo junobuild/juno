@@ -143,7 +143,17 @@ describe('Satellite', () => {
 		it('should list collections and system collection', async () => {
 			const { list_rules } = actor;
 
-			const { items } = await list_rules({ Db: null }, mockListRules);
+			const { items } = await list_rules(
+				{ Db: null },
+				{
+					...mockListRules,
+					matcher: [
+						{
+							include_system: true
+						}
+					]
+				}
+			);
 
 			expect(items.find(([c]) => c === 'test')).not.toBeUndefined();
 			expect(items.find(([c]) => c === '#user')).not.toBeUndefined();

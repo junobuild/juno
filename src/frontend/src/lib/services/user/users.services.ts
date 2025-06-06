@@ -6,8 +6,8 @@ import type { OptionIdentity } from '$lib/types/itentity';
 import type { ListFilter, ListParams } from '$lib/types/list';
 import type { User } from '$lib/types/user';
 import { toKeyUser } from '$lib/utils/user.utils';
-import type { Principal } from '@dfinity/principal';
-import { Principal as PrincipalClass } from '@dfinity/principal';
+
+
 
 export const listUsers = async ({
 	startAfter,

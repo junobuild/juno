@@ -30,7 +30,7 @@
 	});
 </script>
 
-<PopoverApply ariaLabel={$i18n.filter.title} onapply={apply} bind:visible>
+<PopoverApply ariaLabel={$i18n.filter.title} onapply={apply} bind:visible direction="ltr">
 	{#snippet icon()}
 		<IconFilter size="18px" />
 	{/snippet}

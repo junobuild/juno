@@ -3,8 +3,8 @@
 	import { getContext, type Snippet } from 'svelte';
 	import { fade } from 'svelte/transition';
 	import DataActions from '$lib/components/data/DataActions.svelte';
-	import ListParamsFilter from '$lib/components/list/ListParamsFilter.svelte';
 	import DataOrder from '$lib/components/data/DataOrder.svelte';
+	import ListParamsFilter from '$lib/components/list/ListParamsFilter.svelte';
 	import { RULES_CONTEXT_KEY, type RulesContext } from '$lib/types/rules.context';
 
 	interface Props {

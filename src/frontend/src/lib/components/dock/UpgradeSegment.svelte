@@ -4,6 +4,8 @@
 	import IconUser from '$lib/components/icons/IconUser.svelte';
 	import { i18n } from '$lib/stores/i18n.store';
 	import type { VersionMetadata } from '$lib/stores/version.store';
+	import ButtonIcon from "$lib/components/ui/ButtonIcon.svelte";
+	import IconArrowCircleUp from "$lib/components/icons/IconArrowCircleUp.svelte";
 
 	interface Props {
 		segmentLabel: string;
@@ -15,7 +17,15 @@
 </script>
 
 <tr>
-	<td>TODO</td>
+	<td>
+		<ButtonIcon {onclick}>
+			{#snippet icon()}
+				<IconArrowCircleUp />
+			{/snippet}
+
+			{$i18n.canisters.upgrade}
+		</ButtonIcon>
+	</td>
 	<td>{segmentLabel}</td>
 	<td>{version.current}</td>
 	<td>{version.release}</td>

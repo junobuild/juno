@@ -1,18 +1,22 @@
 <script lang="ts">
-	import AnalyticsSatellitesPicker from '$lib/components/analytics/AnalyticsSatellitesPicker.svelte';
 	import Toolbar from '$lib/components/ui/Toolbar.svelte';
-	import Value from '$lib/components/ui/Value.svelte';
-	import { i18n } from '$lib/stores/i18n.store';
 	import { satellitesStore } from '$lib/derived/satellites.derived';
-	import type { SatellitePickerProps } from '$lib/components/satellites/SatellitesPicker.svelte';
+	import SatellitesPicker, {
+		type SatellitePickerProps
+	} from '$lib/components/satellites/SatellitesPicker.svelte';
 	import { satelliteName } from '$lib/utils/satellite.utils';
+	import type { Principal } from '@dfinity/principal';
+	import { navigateToUpgradeDock } from '$lib/utils/nav.utils';
 
-	let satellites = $derived<SatellitePickerProps['satellites']>(
-		Object.entries($satellitesStore ?? []).reduce<SatellitePickerProps['satellites']>(
-			(acc, [satelliteId, satellite]) => [
+	const navigate = async (satelliteId: Principal | undefined) =>
+		await navigateToUpgradeDock(satelliteId);
+
+	let satellites = $derived(
+		($satellitesStore ?? []).reduce<SatellitePickerProps['satellites']>(
+			(acc, satellite) => [
 				...acc,
 				{
-					satelliteId,
+					satelliteId: satellite.satellite_id.toText(),
 					satName: satelliteName(satellite)
 				}
 			],
@@ -23,11 +27,6 @@
 
 <Toolbar>
 	{#snippet start()}
-		<Value>
-			{#snippet label()}
-				{$i18n.analytics.satellites}
-			{/snippet}
-			<AnalyticsSatellitesPicker />
-		</Value>
+		<SatellitesPicker {satellites} {navigate} />
 	{/snippet}
 </Toolbar>

@@ -5,7 +5,7 @@
 	import { missionControlIdDerived } from '$lib/derived/mission-control.derived';
 	import { orbiterStore } from '$lib/derived/orbiter.derived';
 	import { loadOrbiters } from '$lib/services/orbiter/orbiters.services';
-	import { loadOrbiterVersion } from '$lib/services/version/version.orbiter.services';
+	import { reloadOrbiterVersion } from '$lib/services/version/version.orbiter.services';
 	import { authStore } from '$lib/stores/auth.store';
 	import type { Option } from '$lib/types/utils';
 
@@ -22,16 +22,16 @@
 
 	const loadVersion = async ({
 		orbiter,
-		reload
+		skipReload
 	}: {
 		orbiter: Option<Orbiter>;
-		reload: boolean;
+		skipReload: boolean;
 	}) => {
 		if (!withVersion) {
 			return;
 		}
 
-		await loadOrbiterVersion({ orbiter, reload, identity: $authStore.identity });
+		await reloadOrbiterVersion({ orbiter, skipReload, identity: $authStore.identity });
 	};
 
 	$effect(() => {
@@ -39,12 +39,13 @@
 	});
 
 	$effect(() => {
-		loadVersion({ orbiter: $orbiterStore, reload: false });
+		loadVersion({ orbiter: $orbiterStore, skipReload: true });
 	});
 </script>
 
 <svelte:window
-	onjunoReloadVersions={async () => await loadVersion({ orbiter: $orbiterStore, reload: true })}
+	onjunoReloadVersions={async () =>
+		await loadVersion({ orbiter: $orbiterStore, skipReload: false })}
 />
 
 {@render children()}

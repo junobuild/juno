@@ -3,7 +3,7 @@
 	import { MISSION_CONTROL_v0_0_14 } from '$lib/constants/version.constants';
 	import { missionControlVersion } from '$lib/derived/version.derived';
 	import { openMonitoringModal } from '$lib/services/monitoring.services';
-	import { loadMissionControlVersion } from '$lib/services/version/version.mission-control.services';
+	import { reloadMissionControlVersion } from '$lib/services/version/version.mission-control.services';
 	import { authStore } from '$lib/stores/auth.store';
 	import { i18n } from '$lib/stores/i18n.store';
 	import { toasts } from '$lib/stores/toasts.store';
@@ -16,7 +16,7 @@
 	let { missionControlId }: Props = $props();
 
 	const openModal = async () => {
-		await loadMissionControlVersion({
+		await reloadMissionControlVersion({
 			missionControlId,
 			skipReload: true,
 			identity: $authStore.identity

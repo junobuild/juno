@@ -29,7 +29,6 @@
 </script>
 
 <tr>
-	<td class="filter-cell"></td>
 	<td class="actions">
 		<div class="actions-tools">
 			<ButtonTableAction icon="info" ariaLabel={$i18n.users.view_details} onaction={openModal} />

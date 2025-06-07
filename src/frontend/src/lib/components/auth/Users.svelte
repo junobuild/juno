@@ -15,6 +15,9 @@
 	import { versionStore } from '$lib/stores/version.store';
 	import { PAGINATION_CONTEXT_KEY, type PaginationContext } from '$lib/types/pagination.context';
 	import type { User as UserType } from '$lib/types/user';
+	import LogsOrder from '$lib/components/logs/LogsOrder.svelte';
+	import LogsFilter from '$lib/components/logs/LogsFilter.svelte';
+	import LogsRefresh from '$lib/components/logs/LogsRefresh.svelte';
 
 	interface Props {
 		satelliteId: Principal;
@@ -77,7 +80,7 @@
 	let innerWidth = $state(0);
 
 	let colspan = $derived(
-		innerWidth >= 1024 ? 6 : innerWidth >= 768 ? 5 : innerWidth >= 576 ? 4 : 3
+		innerWidth >= 1024 ? 5 : innerWidth >= 768 ? 4 : innerWidth >= 576 ? 3 : 2
 	);
 </script>
 
@@ -87,9 +90,13 @@
 	<table>
 		<thead>
 			<tr>
-				<th class="filter-column">
-					<UserFilter />
+				<th {colspan}>
+					<div class="actions">
+						<UserFilter />
+					</div>
 				</th>
+			</tr>
+			<tr>
 				<th class="tools"></th>
 				<th class="identifier"> {$i18n.users.identifier} </th>
 				<th class="providers"> {$i18n.users.provider} </th>
@@ -121,13 +128,8 @@
 <style lang="scss">
 	@use '../../styles/mixins/media';
 
-	.table-container {
-		padding: 0 0 var(--padding);
-	}
-
-	.filter-column {
-		width: 48px;
-		padding: var(--padding-0_5x);
+	table {
+		table-layout: auto;
 	}
 
 	.tools {
@@ -174,8 +176,9 @@
 		}
 	}
 
-	th {
-		padding-top: 0;
-		padding-bottom: var(--padding-0_25x);
+	.actions {
+		display: flex;
+		gap: var(--padding-1_5x);
+		padding: var(--padding) 0;
 	}
 </style>

@@ -4,6 +4,15 @@
 	import { i18n } from '$lib/stores/i18n.store';
 	import { listParamsStore } from '$lib/stores/list-params.store';
 
+	interface Props {
+		matcherFilter?: boolean;
+		ownerFilter?: boolean;
+		direction?: 'rtl' | 'ltr';
+		key?: { label: string; placeholder: string };
+	}
+
+	let { matcherFilter = true, ownerFilter = true, direction, key }: Props = $props();
+
 	let matcher = $state($listParamsStore.filter.matcher ?? '');
 	let owner = $state($listParamsStore.filter.owner ?? '');
 
@@ -32,34 +41,38 @@
 	});
 </script>
 
-<PopoverApply ariaLabel={$i18n.filter.title} onapply={apply} bind:visible>
+<PopoverApply ariaLabel={$i18n.filter.title} onapply={apply} bind:visible {direction}>
 	{#snippet icon()}
 		<IconFilter size="18px" />
 	{/snippet}
 
-	<label for="filter-keys">{$i18n.filter.filter_keys}</label>
+	{#if matcherFilter}
+		<label for="filter-keys">{key?.label ?? $i18n.filter.filter_keys}</label>
 
-	<input
-		bind:value={matcher}
-		id="filter-keys"
-		name="filter-keys"
-		type="text"
-		placeholder={$i18n.filter.placeholder_keys}
-		autocomplete="off"
-		data-1p-ignore
-	/>
+		<input
+			bind:value={matcher}
+			id="filter-keys"
+			name="filter-keys"
+			type="text"
+			placeholder={key?.placeholder ?? $i18n.filter.placeholder_keys}
+			autocomplete="off"
+			data-1p-ignore
+		/>
+	{/if}
 
-	<label for="filter-owner" class="owner">{$i18n.filter.filter_owner}</label>
+	{#if ownerFilter}
+		<label for="filter-owner" class="owner">{$i18n.filter.filter_owner}</label>
 
-	<input
-		bind:value={owner}
-		id="filter-owner"
-		name="filter-owner"
-		type="text"
-		placeholder={$i18n.filter.placeholder_owners}
-		autocomplete="off"
-		data-1p-ignore
-	/>
+		<input
+			bind:value={owner}
+			id="filter-owner"
+			name="filter-owner"
+			type="text"
+			placeholder={$i18n.filter.placeholder_owners}
+			autocomplete="off"
+			data-1p-ignore
+		/>
+	{/if}
 </PopoverApply>
 
 <style lang="scss">

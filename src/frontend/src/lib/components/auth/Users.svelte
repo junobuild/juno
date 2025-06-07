@@ -3,11 +3,13 @@
 	import { isNullish, nonNullish } from '@dfinity/utils';
 	import { getContext, setContext, untrack } from 'svelte';
 	import User from '$lib/components/auth/User.svelte';
+	import UserFilter from '$lib/components/auth/UserFilter.svelte';
 	import DataCount from '$lib/components/data/DataCount.svelte';
 	import DataPaginator from '$lib/components/data/DataPaginator.svelte';
 	import { listUsers } from '$lib/services/user/users.services';
 	import { authStore } from '$lib/stores/auth.store';
 	import { i18n } from '$lib/stores/i18n.store';
+	import { listParamsStore } from '$lib/stores/list-params.store';
 	import { initPaginationContext } from '$lib/stores/pagination.context.store';
 	import { toasts } from '$lib/stores/toasts.store';
 	import { versionStore } from '$lib/stores/version.store';
@@ -37,6 +39,7 @@
 			const { users, matches_length, items_length } = await listUsers({
 				satelliteId,
 				startAfter: $startAfter,
+				filter: $listParamsStore.filter,
 				identity: $authStore.identity
 			});
 
@@ -62,6 +65,7 @@
 
 	$effect(() => {
 		$versionStore;
+		$listParamsStore;
 
 		untrack(() => {
 			list();
@@ -73,7 +77,7 @@
 	let innerWidth = $state(0);
 
 	let colspan = $derived(
-		innerWidth >= 1024 ? 5 : innerWidth >= 768 ? 4 : innerWidth >= 576 ? 3 : 2
+		innerWidth >= 1024 ? 6 : innerWidth >= 768 ? 5 : innerWidth >= 576 ? 4 : 3
 	);
 </script>
 
@@ -83,6 +87,9 @@
 	<table>
 		<thead>
 			<tr>
+				<th class="filter-column">
+					<UserFilter />
+				</th>
 				<th class="tools"></th>
 				<th class="identifier"> {$i18n.users.identifier} </th>
 				<th class="providers"> {$i18n.users.provider} </th>
@@ -113,6 +120,15 @@
 
 <style lang="scss">
 	@use '../../styles/mixins/media';
+
+	.table-container {
+		padding: 0 0 var(--padding);
+	}
+
+	.filter-column {
+		width: 48px;
+		padding: var(--padding-0_5x);
+	}
 
 	.tools {
 		width: 60px;
@@ -156,5 +172,10 @@
 		.providers {
 			width: inherit;
 		}
+	}
+
+	th {
+		padding-top: 0;
+		padding-bottom: var(--padding-0_25x);
 	}
 </style>

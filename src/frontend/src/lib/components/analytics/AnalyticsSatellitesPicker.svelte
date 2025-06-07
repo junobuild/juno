@@ -16,7 +16,7 @@
 		await navigateToAnalytics(satelliteId);
 
 	let satellites = $derived<SatellitePickerProps['satellites']>(
-		Object.entries($orbiterSatellitesConfig).reduce(
+		Object.entries($orbiterSatellitesConfig).reduce<SatellitePickerProps['satellites']>(
 			(acc, [satelliteId, { name: satName, enabled }]) => [
 				...acc,
 				...(enabled
@@ -28,8 +28,7 @@
 						]
 					: [])
 			],
-			// eslint-disable-next-line @typescript-eslint/prefer-reduce-type-parameter
-			[] as { satelliteId: string; satName: string }[]
+			[]
 		)
 	);
 </script>

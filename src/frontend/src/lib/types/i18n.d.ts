@@ -779,6 +779,7 @@ interface I18nUsers {
 	are_you_sure_unban: string;
 	ban_explanation: string;
 	unban_explanation: string;
+	identifier_placeholder: string;
 }
 
 interface I18nMonitoring {

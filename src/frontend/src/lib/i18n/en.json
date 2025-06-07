@@ -754,7 +754,8 @@
 		"are_you_sure_ban": "Do you want to ban this user?",
 		"are_you_sure_unban": "Do you want to unban this user?",
 		"ban_explanation": "You can ban this user to prevent them from accessing, updating, creating, or deleting any data in the Datastore or Storage. This action can be reverted later by unbanning the user.",
-		"unban_explanation": "You can unban this user to restore their access to get, update, create, or delete data in the Datastore or Storage."
+		"unban_explanation": "You can unban this user to restore their access to get, update, create, or delete data in the Datastore or Storage.",
+		"identifier_placeholder": "Filter users by ID"
 	},
 	"monitoring": {
 		"title": "Monitoring",

@@ -5,7 +5,7 @@
 	import CanisterUpgradeOptions from '$lib/components/canister/CanisterUpgradeOptions.svelte';
 	import IconWarning from '$lib/components/icons/IconWarning.svelte';
 	import Html from '$lib/components/ui/Html.svelte';
-	import { downloadWasm } from '$lib/services/upgrade.services';
+	import { downloadWasm } from '$lib/services/upgrade/upgrade.services';
 	import { wizardBusy } from '$lib/stores/busy.store';
 	import { i18n } from '$lib/stores/i18n.store';
 	import { toasts } from '$lib/stores/toasts.store';

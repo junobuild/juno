@@ -1,4 +1,4 @@
-import { downloadRelease, getReleasesMetadata } from '$lib/rest/cdn.rest';
+import { downloadRelease } from '$lib/rest/cdn.rest';
 import { loadSnapshots } from '$lib/services/snapshots.services';
 import { wizardBusy } from '$lib/stores/busy.store';
 import { i18n } from '$lib/stores/i18n.store';
@@ -10,33 +10,7 @@ import { emit } from '$lib/utils/events.utils';
 import type { Principal } from '@dfinity/principal';
 import { isNullish } from '@dfinity/utils';
 import type { UpgradeCodeParams, UpgradeCodeProgress } from '@junobuild/admin';
-import { compare } from 'semver';
 import { get } from 'svelte/store';
-
-export const newerReleases = async ({
-	currentVersion,
-	segments
-}: {
-	currentVersion: string;
-	segments: 'mission_controls' | 'satellites' | 'orbiters';
-}): Promise<{ result: string[] | undefined; error?: unknown }> => {
-	try {
-		const metadata = await getReleasesMetadata();
-
-		return {
-			result: metadata[segments].filter((version) => compare(currentVersion, version) === -1)
-		};
-	} catch (error: unknown) {
-		const labels = get(i18n);
-
-		toasts.error({
-			text: labels.errors.upgrade_load_versions,
-			detail: error
-		});
-
-		return { result: undefined, error };
-	}
-};
 
 export const downloadWasm = async (params: {
 	segment: 'satellite' | 'mission_control' | 'orbiter';

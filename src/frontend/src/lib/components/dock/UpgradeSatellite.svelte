@@ -1,12 +1,12 @@
 <script lang="ts">
 	import { assertNonNullish, nonNullish } from '@dfinity/utils';
+	import type { BuildType } from '@junobuild/admin';
 	import { compare } from 'semver';
 	import type { Satellite } from '$declarations/mission_control/mission_control.did';
 	import UpgradeSegment from '$lib/components/dock/UpgradeSegment.svelte';
+	import { openUpgradeModal } from '$lib/services/upgrade/upgrade.init.services';
 	import { versionStore } from '$lib/stores/version.store';
 	import { satelliteName } from '$lib/utils/satellite.utils';
-	import { openUpgradeModal } from '$lib/services/upgrade/upgrade.init.services';
-	import type { BuildType } from '@junobuild/admin';
 
 	interface Props {
 		satellite: Satellite;

@@ -3,9 +3,9 @@
 	import { compare } from 'semver';
 	import UpgradeSegment from '$lib/components/dock/UpgradeSegment.svelte';
 	import { missionControlVersion } from '$lib/derived/version.derived';
+	import { openUpgradeModal } from '$lib/services/upgrade/upgrade.init.services';
 	import { i18n } from '$lib/stores/i18n.store';
 	import type { MissionControlId } from '$lib/types/mission-control';
-	import { openUpgradeModal } from '$lib/services/upgrade/upgrade.init.services';
 
 	interface Props {
 		missionControlId: MissionControlId;

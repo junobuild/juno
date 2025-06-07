@@ -1,11 +1,11 @@
 <script lang="ts">
+	import IconArrowCircleUp from '$lib/components/icons/IconArrowCircleUp.svelte';
 	import IconJuno from '$lib/components/icons/IconJuno.svelte';
 	import IconJunoLogo from '$lib/components/icons/IconJunoLogo.svelte';
 	import IconUser from '$lib/components/icons/IconUser.svelte';
+	import ButtonIcon from '$lib/components/ui/ButtonIcon.svelte';
 	import { i18n } from '$lib/stores/i18n.store';
 	import type { VersionMetadata } from '$lib/stores/version.store';
-	import ButtonIcon from '$lib/components/ui/ButtonIcon.svelte';
-	import IconArrowCircleUp from '$lib/components/icons/IconArrowCircleUp.svelte';
 
 	interface Props {
 		segmentLabel: string;

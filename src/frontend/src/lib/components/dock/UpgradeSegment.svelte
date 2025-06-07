@@ -4,27 +4,24 @@
 	import IconUser from '$lib/components/icons/IconUser.svelte';
 	import { i18n } from '$lib/stores/i18n.store';
 	import type { VersionMetadata } from '$lib/stores/version.store';
-	import ButtonIcon from "$lib/components/ui/ButtonIcon.svelte";
-	import IconArrowCircleUp from "$lib/components/icons/IconArrowCircleUp.svelte";
+	import ButtonIcon from '$lib/components/ui/ButtonIcon.svelte';
+	import IconArrowCircleUp from '$lib/components/icons/IconArrowCircleUp.svelte';
 
 	interface Props {
 		segmentLabel: string;
 		version: Pick<VersionMetadata, 'current' | 'release'>;
 		source: 'juno' | 'dev';
+		startUpgrade: () => Promise<void>;
 	}
 
-	let { segmentLabel, version, source }: Props = $props();
+	let { segmentLabel, version, source, startUpgrade }: Props = $props();
 </script>
 
 <tr>
 	<td>
-		<ButtonIcon {onclick}>
-			{#snippet icon()}
-				<IconArrowCircleUp />
-			{/snippet}
-
-			{$i18n.canisters.upgrade}
-		</ButtonIcon>
+		<button class="square" aria-label={$i18n.canisters.upgrade} onclick={startUpgrade}
+			><IconArrowCircleUp size="20px" /></button
+		>
 	</td>
 	<td>{segmentLabel}</td>
 	<td>{version.current}</td>
@@ -45,5 +42,9 @@
 
 	.visually-hidden {
 		@include a11y.visually-hidden;
+	}
+
+	button {
+		vertical-align: middle;
 	}
 </style>

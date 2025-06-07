@@ -15,7 +15,7 @@
 	const navigate = async (satelliteId: Principal | undefined) =>
 		await navigateToAnalytics(satelliteId);
 
-	let satellites = $derived<SatellitePickerProps['satellites']>(
+	let satellites = $derived(
 		Object.entries($orbiterSatellitesConfig).reduce<SatellitePickerProps['satellites']>(
 			(acc, [satelliteId, { name: satName, enabled }]) => [
 				...acc,

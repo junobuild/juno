@@ -878,6 +878,16 @@ interface I18nEmulator {
 	error_no_main_identity: string;
 }
 
+interface I18nUpgrade_dock {
+	title: string;
+	modules: string;
+	release: string;
+	source: string;
+	current: string;
+	dev: string;
+	changes: string;
+}
+
 interface I18n {
 	lang: Languages;
 	core: I18nCore;
@@ -907,4 +917,5 @@ interface I18n {
 	examples: I18nExamples;
 	resources: I18nResources;
 	emulator: I18nEmulator;
+	upgrade_dock: I18nUpgrade_dock;
 }

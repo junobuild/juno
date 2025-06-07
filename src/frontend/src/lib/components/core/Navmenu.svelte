@@ -13,6 +13,7 @@
 	import IconSatellite from '$lib/components/icons/IconSatellite.svelte';
 	import IconStorage from '$lib/components/icons/IconStorage.svelte';
 	import IconTelescope from '$lib/components/icons/IconTelescope.svelte';
+	import IconUpgradeDock from '$lib/components/icons/IconUpgradeDock.svelte';
 	import IconWallet from '$lib/components/icons/IconWallet.svelte';
 	import Menu from '$lib/components/ui/Menu.svelte';
 	import { pageSatelliteId } from '$lib/derived/page.derived.svelte';
@@ -126,6 +127,15 @@
 			>
 				<IconWallet />
 				<span>{$i18n.wallet.title}</span>
+			</a>
+
+			<a
+				href={`/upgrade-dock${queryParam}`}
+				class:selected={isRouteSelected({ routeId, path: 'upgrade-dock' })}
+				class="link not-themed"
+			>
+				<IconUpgradeDock size="20px" />
+				<span>{$i18n.upgrade_dock.title}</span>
 			</a>
 		</div>
 	</nav>

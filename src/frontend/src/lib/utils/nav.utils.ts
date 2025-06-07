@@ -11,11 +11,17 @@ export const overviewLink = (satelliteId: Option<Principal>): string =>
 export const analyticsLink = (satelliteId: Option<Principal>): string =>
 	`/analytics/${nonNullish(satelliteId) ? `?s=${satelliteId?.toText() ?? ''}` : ''}`;
 
+export const upgradeDockLink = (satelliteId: Option<Principal>): string =>
+	`/upgrade-dock/${nonNullish(satelliteId) ? `?s=${satelliteId?.toText() ?? ''}` : ''}`;
+
 export const navigateToSatellite = async (satelliteId: Option<Principal>) =>
 	await goto(overviewLink(satelliteId));
 
 export const navigateToAnalytics = async (satelliteId: Option<Principal>) =>
 	await goto(analyticsLink(satelliteId), { replaceState: true });
+
+export const navigateToUpgradeDock = async (satelliteId: Option<Principal>) =>
+	await goto(upgradeDockLink(satelliteId), { replaceState: true });
 
 export const back = async ({ pop }: { pop: boolean }) => {
 	if (pop) {

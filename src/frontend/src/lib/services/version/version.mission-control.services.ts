@@ -89,6 +89,6 @@ const loadMissionControlVersion = async ({
 
 		return { result: 'loaded' };
 	} catch (err: unknown) {
-		return { result: 'error', err: err };
+		return { result: 'error', err };
 	}
 };

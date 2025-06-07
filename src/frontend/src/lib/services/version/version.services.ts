@@ -20,7 +20,7 @@ export const loadVersions = async ({
 	orbiter: Option<Orbiter>;
 	satellites: Satellite[];
 	identity: OptionIdentity;
-}): Promise<{result: "loaded" | "error"}> => {
+}): Promise<{ result: 'loaded' | 'error' }> => {
 	const commonParams = {
 		identity,
 		skipReload: true,
@@ -51,12 +51,12 @@ export const loadVersions = async ({
 	const hasError = results.find((result) => result.result === 'error');
 
 	if (!hasError) {
-		return {result: "loaded"};
+		return { result: 'loaded' };
 	}
 
 	toasts.error({
 		text: get(i18n).errors.load_version
 	});
 
-	return {result: "error"};
+	return { result: 'error' };
 };

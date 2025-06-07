@@ -6,4 +6,7 @@ export interface LoadVersionBaseParams {
 	toastError?: boolean;
 }
 
-export type LoadVersionResult = { result: 'loaded' } | {result: "skipped"} | { result: 'error'; err: unknown };
+export type LoadVersionResult =
+	| { result: 'loaded' }
+	| { result: 'skipped' }
+	| { result: 'error'; err: unknown };

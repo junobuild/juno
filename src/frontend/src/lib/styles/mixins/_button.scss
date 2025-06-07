@@ -3,6 +3,7 @@
 @use './grid';
 @use './media';
 @use './disabled';
+@use './a11y';
 
 @mixin primary {
 	outline: 0;
@@ -109,20 +110,8 @@
 		width: 100%;
 		@include text.truncate;
 
-		/*
-         * Utility class to hide content visually while keeping it screen reader-accessible.
-         * Source:
-         * - https://www.sarasoueidan.com/blog/accessible-icon-buttons/
-         * - https://www.scottohara.me/blog/2017/04/14/inclusively-hidden.html
-         */
 		&.visually-hidden {
-			clip: rect(0 0 0 0);
-			clip-path: inset(100%);
-			height: 1px;
-			overflow: hidden;
-			position: absolute;
-			white-space: nowrap;
-			width: 1px;
+			@include a11y.visually-hidden;
 		}
 	}
 }

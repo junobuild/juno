@@ -849,6 +849,11 @@
 		"error_no_main_identity": "The emulator does not expose any main identity."
 	},
 	"upgrade_dock": {
-		"title": "Upgrade Dock"
+		"title": "Upgrade Dock",
+		"modules": "Modules",
+		"release": "Release",
+		"source": "Source",
+		"current": "Current",
+		"dev": "Developer"
 	}
 }

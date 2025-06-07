@@ -18,7 +18,6 @@
 		await Promise.allSettled([
 			reloadSatelliteVersion({
 				satelliteId: satellite.satellite_id,
-				missionControlId,
 				skipReload: skipSatelliteReload,
 				identity: $authStore.identity
 			}),

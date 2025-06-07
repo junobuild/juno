@@ -880,6 +880,11 @@ interface I18nEmulator {
 
 interface I18nUpgrade_dock {
 	title: string;
+	modules: string;
+	release: string;
+	source: string;
+	current: string;
+	dev: string;
 }
 
 interface I18n {

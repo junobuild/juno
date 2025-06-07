@@ -21,7 +21,7 @@
 	const tabs: Tab[] = [
 		{
 			id: Symbol('1'),
-			labelKey: 'upgrade_dock.title'
+			labelKey: 'upgrade_dock.changes'
 		}
 	];
 

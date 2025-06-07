@@ -1,7 +1,6 @@
 <script lang="ts">
 	import { debounce } from '@dfinity/utils';
 	import type { Snippet } from 'svelte';
-	import { fade } from 'svelte/transition';
 	import SpinnerParagraph from '$lib/components/ui/SpinnerParagraph.svelte';
 	import { orbiterNotLoaded, orbiterStore } from '$lib/derived/orbiter.derived';
 	import { satellitesNotLoaded, satellitesStore } from '$lib/derived/satellites.derived';
@@ -61,7 +60,7 @@
 		<SpinnerParagraph>{$i18n.core.loading}</SpinnerParagraph>
 	</div>
 {:else}
-	<div in:fade>
+	<div>
 		{@render children()}
 	</div>
 {/if}

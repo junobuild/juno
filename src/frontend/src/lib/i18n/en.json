@@ -854,6 +854,7 @@
 		"release": "Release",
 		"source": "Source",
 		"current": "Current",
-		"dev": "Developer"
+		"dev": "Developer",
+		"changes": "Changes"
 	}
 }

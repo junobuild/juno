@@ -11,8 +11,12 @@ import type { Principal } from '@dfinity/principal';
 export const listUsers = async ({
 	startAfter,
 	satelliteId,
+	filter,
 	identity
-}: Pick<ListParams, 'startAfter'> & { satelliteId: Principal; identity: OptionIdentity }): Promise<{
+}: Pick<ListParams, 'startAfter' | 'filter'> & {
+	satelliteId: Principal;
+	identity: OptionIdentity;
+}): Promise<{
 	users: [string, User][];
 	matches_length: bigint;
 	items_length: bigint;
@@ -33,7 +37,7 @@ export const listUsers = async ({
 				desc: true,
 				field: 'created_at'
 			},
-			filter: {}
+			filter
 		},
 		identity
 	});

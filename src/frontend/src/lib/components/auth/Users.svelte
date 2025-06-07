@@ -6,9 +6,6 @@
 	import UserFilter from '$lib/components/auth/UserFilter.svelte';
 	import DataCount from '$lib/components/data/DataCount.svelte';
 	import DataPaginator from '$lib/components/data/DataPaginator.svelte';
-	import LogsFilter from '$lib/components/logs/LogsFilter.svelte';
-	import LogsOrder from '$lib/components/logs/LogsOrder.svelte';
-	import LogsRefresh from '$lib/components/logs/LogsRefresh.svelte';
 	import { listUsers } from '$lib/services/user/users.services';
 	import { authStore } from '$lib/stores/auth.store';
 	import { i18n } from '$lib/stores/i18n.store';

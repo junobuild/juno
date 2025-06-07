@@ -3,7 +3,7 @@
 	import { format } from 'date-fns';
 	import AnalyticsPeriodicity from '$lib/components/analytics/AnalyticsPeriodicity.svelte';
 	import AnalyticsSatellitesPicker from '$lib/components/analytics/AnalyticsSatellitesPicker.svelte';
-	import AnalyticsToolbar from '$lib/components/analytics/AnalyticsToolbar.svelte';
+	import Toolbar from '$lib/components/ui/Toolbar.svelte';
 	import Value from '$lib/components/ui/Value.svelte';
 	import { analyticsFiltersStore } from '$lib/stores/analytics-filters.store';
 	import { i18n } from '$lib/stores/i18n.store';
@@ -48,7 +48,7 @@
 	};
 </script>
 
-<AnalyticsToolbar>
+<Toolbar>
 	{#snippet start()}
 		<Value>
 			{#snippet label()}
@@ -97,7 +97,7 @@
 			<AnalyticsPeriodicity selectPeriodicity={onPeriodicityChange} disabled={loading} />
 		</div>
 	{/snippet}
-</AnalyticsToolbar>
+</Toolbar>
 
 <div class="toolbar" class:loading>
 	{#if !loading}

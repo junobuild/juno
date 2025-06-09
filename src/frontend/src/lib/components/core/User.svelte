@@ -111,7 +111,7 @@
 				onclick={close}
 			>
 				<IconAnalytics />
-				<span>{$i18n.upgrade_dock.title}</span>
+				<span>{$i18n.upgrade.title}</span>
 			</a>
 		{/if}
 

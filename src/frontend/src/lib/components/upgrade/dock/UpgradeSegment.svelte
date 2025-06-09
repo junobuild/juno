@@ -27,7 +27,7 @@
 	<td class="source">
 		{#if source === 'dev'}
 			<IconUser size="14px" />
-			<span class="visually-hidden">{$i18n.upgrade_dock.dev}</span>
+			<span class="visually-hidden">{$i18n.upgrade.dev}</span>
 		{:else}
 			<IconJunoLogo size="14px" />
 			<span class="visually-hidden">Juno</span>

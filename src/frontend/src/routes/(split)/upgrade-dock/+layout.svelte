@@ -16,7 +16,7 @@
 		applyColor(Color.ROSE_BONBON);
 
 		layoutNavigation.set({
-			title: $i18n.upgrade_dock.title,
+			title: $i18n.upgrade.title,
 			icon: IconUpgradeDock
 		});
 	});

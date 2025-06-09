@@ -135,7 +135,7 @@
 				class="link not-themed"
 			>
 				<IconUpgradeDock size="20px" />
-				<span>{$i18n.upgrade_dock.title}</span>
+				<span>{$i18n.upgrade.title}</span>
 			</a>
 		</div>
 	</nav>

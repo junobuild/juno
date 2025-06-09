@@ -27,10 +27,10 @@
 			<thead>
 				<tr>
 					<th class="tools"></th>
-					<th> {$i18n.upgrade_dock.modules} </th>
-					<th class="current"> {$i18n.upgrade_dock.current} </th>
-					<th> {$i18n.upgrade_dock.release} </th>
-					<th class="source"> {$i18n.upgrade_dock.source} </th>
+					<th> {$i18n.upgrade.modules} </th>
+					<th class="current"> {$i18n.upgrade.current} </th>
+					<th> {$i18n.upgrade.release} </th>
+					<th class="source"> {$i18n.upgrade.source} </th>
 				</tr>
 			</thead>
 
@@ -45,7 +45,7 @@
 
 				{#if $hasPendingUpgrades !== undefined && $hasPendingUpgrades === false}
 					<tr
-						><td {colspan}><span class="no-upgrade">{$i18n.upgrade_dock.no_upgrades}</span></td></tr
+						><td {colspan}><span class="no-upgrade">{$i18n.upgrade.no_upgrades}</span></td></tr
 					>
 				{/if}
 			</tbody>

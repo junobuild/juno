@@ -14,6 +14,9 @@ export const analyticsLink = (satelliteId: Option<Principal>): string =>
 export const upgradeDockLink = (satelliteId: Option<Principal>): string =>
 	`/upgrade-dock/${nonNullish(satelliteId) ? `?s=${satelliteId?.toText() ?? ''}` : ''}`;
 
+export const upgradeChangesLink = (satelliteId: Option<Principal>): string =>
+	`/upgrade-dock/?tab=changes${nonNullish(satelliteId) ? `&s=${satelliteId?.toText() ?? ''}` : ''}`;
+
 export const navigateToSatellite = async (satelliteId: Option<Principal>) =>
 	await goto(overviewLink(satelliteId));
 
@@ -22,6 +25,9 @@ export const navigateToAnalytics = async (satelliteId: Option<Principal>) =>
 
 export const navigateToUpgradeDock = async (satelliteId: Option<Principal>) =>
 	await goto(upgradeDockLink(satelliteId), { replaceState: true });
+
+export const navigateToChangesDock = async (satelliteId: Option<Principal>) =>
+	await goto(upgradeChangesLink(satelliteId), { replaceState: true });
 
 export const back = async ({ pop }: { pop: boolean }) => {
 	if (pop) {

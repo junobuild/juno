@@ -625,6 +625,7 @@ interface I18nErrors {
 	user_unban: string;
 	satellite_version_not_found: string;
 	load_version: string;
+	load_proposals: string;
 }
 
 interface I18nDocument {
@@ -894,6 +895,16 @@ interface I18nUpgrade_dock {
 	no_upgrades: string;
 }
 
+interface I18nChanges {
+	select_a_satellite: string;
+	no_changes: string;
+	id: string;
+	hash: string;
+	type: string;
+	assets_upgrade: string;
+	segments_deployment: string;
+}
+
 interface I18n {
 	lang: Languages;
 	core: I18nCore;
@@ -924,4 +935,5 @@ interface I18n {
 	resources: I18nResources;
 	emulator: I18nEmulator;
 	upgrade_dock: I18nUpgrade_dock;
+	changes: I18nChanges;
 }

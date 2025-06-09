@@ -1,21 +1,30 @@
 <script lang="ts">
 	import type { Principal } from '@dfinity/principal';
+	import { onMount } from 'svelte';
 	import IconFilter from '$lib/components/icons/IconFilter.svelte';
 	import SatellitesPicker, {
 		type SatellitePickerProps
 	} from '$lib/components/satellites/SatellitesPicker.svelte';
 	import PopoverApply from '$lib/components/ui/PopoverApply.svelte';
+	import { satelliteStore } from '$lib/derived/satellite.derived';
 	import { satellitesStore } from '$lib/derived/satellites.derived';
 	import { i18n } from '$lib/stores/i18n.store';
-	import { navigateToUpgradeDock } from '$lib/utils/nav.utils';
+	import { navigateToChangesDock } from '$lib/utils/nav.utils';
 	import { satelliteName } from '$lib/utils/satellite.utils';
 
-	let visible: boolean = $state(false);
+	let visible = $state(false);
 
-	const apply = async () => {};
+	let satelliteId = $state<Principal | undefined>(undefined);
 
-	const navigate = async (satelliteId: Principal | undefined) =>
-		await navigateToUpgradeDock(satelliteId);
+	onMount(() => {
+		satelliteId = $satelliteStore?.satellite_id;
+	});
+
+	const apply = async () => {
+		visible = false;
+
+		await navigateToChangesDock(satelliteId);
+	};
 
 	let satellites = $derived(
 		($satellitesStore ?? []).reduce<SatellitePickerProps['satellites']>(
@@ -36,10 +45,10 @@
 		<IconFilter size="18px" />
 	{/snippet}
 
-	<label for="modules">{$i18n.upgrade_dock.modules}</label>
+	<label for="modules">{$i18n.satellites.title}</label>
 
 	<div id="modules">
-		<SatellitesPicker {satellites} {navigate} />
+		<SatellitesPicker {satellites} onChange={(id) => (satelliteId = id)} />
 	</div>
 </PopoverApply>
 

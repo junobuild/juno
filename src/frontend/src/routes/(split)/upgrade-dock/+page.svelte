@@ -6,6 +6,7 @@
 	import MissionControlGuard from '$lib/components/guards/MissionControlGuard.svelte';
 	import Loaders from '$lib/components/loaders/Loaders.svelte';
 	import Tabs from '$lib/components/ui/Tabs.svelte';
+	import ChangesDock from '$lib/components/upgrade/changes/ChangesDock.svelte';
 	import UpgradeDock from '$lib/components/upgrade/dock/UpgradeDock.svelte';
 	import { missionControlIdDerived } from '$lib/derived/mission-control.derived';
 	import {
@@ -20,6 +21,10 @@
 		{
 			id: Symbol('1'),
 			labelKey: 'upgrade_dock.releases'
+		},
+		{
+			id: Symbol('2'),
+			labelKey: 'upgrade_dock.changes'
 		}
 	];
 
@@ -38,7 +43,11 @@
 		<Loaders>
 			<MissionControlGuard>
 				{#if nonNullish($missionControlIdDerived)}
-					<UpgradeDock missionControlId={$missionControlIdDerived} />
+					{#if $store.tabId === $store.tabs[0].id}
+						<UpgradeDock missionControlId={$missionControlIdDerived} />
+					{:else if $store.tabId === $store.tabs[1].id}
+						<ChangesDock />
+					{/if}
 				{/if}
 			</MissionControlGuard>
 		</Loaders>

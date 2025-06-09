@@ -1,7 +1,7 @@
 <script module lang="ts">
 	export interface SatellitePickerProps {
 		disabled?: boolean;
-		navigate: (satelliteId: Principal | undefined) => Promise<void>;
+		onChange: (satelliteId: Principal | undefined) => void;
 		satellites: { satelliteId: string; satName: string }[];
 	}
 </script>
@@ -14,12 +14,12 @@
 	import { i18n } from '$lib/stores/i18n.store';
 	import type { SatelliteIdText } from '$lib/types/satellite';
 
-	let { disabled = false, navigate, satellites }: SatellitePickerProps = $props();
+	let { disabled = false, onChange, satellites }: SatellitePickerProps = $props();
 
-	let satelliteIdText: SatelliteIdText | undefined = $state(undefined);
+	let satelliteIdText = $state<SatelliteIdText | undefined>(undefined);
 
-	const onchange = async () =>
-		await navigate(nonNullish(satelliteIdText) ? Principal.fromText(satelliteIdText) : undefined);
+	const onSelect = () =>
+		onChange(nonNullish(satelliteIdText) ? Principal.fromText(satelliteIdText) : undefined);
 
 	onMount(() => {
 		satelliteIdText =
@@ -35,7 +35,7 @@
 	name="satellite"
 	class="big"
 	bind:value={satelliteIdText}
-	{onchange}
+	onchange={onSelect}
 	{disabled}
 >
 	<option value={undefined}>{$i18n.analytics.all_satellites}</option>

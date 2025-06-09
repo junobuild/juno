@@ -608,7 +608,8 @@
 		"user_ban": "试图禁止用户时出现异常错误.",
 		"user_unban": "试图解禁用户时出现异常错误.",
 		"satellite_version_not_found": "Unexpected error. Your Satellite implements serverless functions, but no dependency version can be resolved.",
-		"load_version": "Unexpected error(s) while loading the version of the Satellite and/or Mission Control"
+		"load_version": "Unexpected error(s) while loading the version of your module(s).",
+		"load_proposals": "Unexpected error(s) while loading the changes of your module(s)."
 	},
 	"document": {
 		"owner": "拥有者",
@@ -862,5 +863,14 @@
 		"dev": "Developer",
 		"changes": "Changes",
 		"no_upgrades": "You're already on the latest releases. No upgrade needed."
+	},
+	"changes": {
+		"select_a_satellite": "Select a Satellite to view available changes.",
+		"no_changes": "All systems are go. No changes to apply.",
+		"id": "ID",
+		"hash": "Hash",
+		"type": "Type",
+		"assets_upgrade": "Frontend Deployment",
+		"segments_deployment": "Function Upgrade"
 	}
 }

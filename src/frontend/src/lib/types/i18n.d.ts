@@ -882,6 +882,7 @@ interface I18nUpgrade_dock {
 	title: string;
 	modules: string;
 	release: string;
+	releases: string;
 	source: string;
 	current: string;
 	dev: string;

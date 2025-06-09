@@ -11,12 +11,12 @@
 }
 
 @mixin info {
-	background: var(--color-primary);
-	color: var(--color-primary-contrast);
+	background: var(--color-tertiary);
+	color: var(--color-tertiary-contrast);
 
 	:global(a:hover),
 	:global(a:active) {
-		color: var(--color-tertiary);
+		color: var(--color-secondary);
 	}
 
 	@include alert;

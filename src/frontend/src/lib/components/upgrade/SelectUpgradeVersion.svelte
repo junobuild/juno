@@ -12,6 +12,7 @@
 	import type { Wasm } from '$lib/types/upgrade';
 	import { i18nFormat } from '$lib/utils/i18n.utils';
 	import { last } from '$lib/utils/utils';
+	import Info from "$lib/components/ui/Info.svelte";
 
 	interface Props {
 		currentVersion: string;
@@ -128,10 +129,7 @@
 		</p>
 	{/if}
 
-	<div class="warning">
-		<div class="icon"><IconWarning /></div>
-		<p><Html text={$i18n.canisters.upgrade_breaking_change} /></p>
-	</div>
+	<Info><Html text={$i18n.canisters.upgrade_breaking_change} /></Info>
 
 	<p>
 		<Html
@@ -159,21 +157,3 @@
 		<button type="submit" disabled={isNullish(selectedVersion)}>{$i18n.core.continue}</button>
 	</div>
 </form>
-
-<style lang="scss">
-	@use '../../styles/mixins/info';
-
-	.warning {
-		@include info.warning;
-
-		margin: var(--padding-2x) 0;
-
-		p {
-			margin: 0;
-		}
-
-		.icon {
-			min-width: var(--padding-4x);
-		}
-	}
-</style>

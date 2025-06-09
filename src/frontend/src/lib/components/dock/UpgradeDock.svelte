@@ -20,13 +20,6 @@
 		<table>
 			<thead>
 				<tr>
-					<th colspan="5">
-						<div class="actions">
-							<UpgradeFilter />
-						</div>
-					</th>
-				</tr>
-				<tr>
 					<th class="tools"></th>
 					<th> {$i18n.upgrade_dock.modules} </th>
 					<th> {$i18n.upgrade_dock.current} </th>

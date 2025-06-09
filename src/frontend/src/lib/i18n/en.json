@@ -852,6 +852,7 @@
 		"title": "Upgrade Dock",
 		"modules": "Modules",
 		"release": "Release",
+		"releases": "Releases",
 		"source": "Source",
 		"current": "Current",
 		"dev": "Developer",

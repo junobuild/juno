@@ -3,7 +3,7 @@
 @mixin alert {
 	display: flex;
 	align-items: center;
-	gap: var(--padding);
+	gap: var(--padding-2x);
 
 	padding: var(--padding-2x);
 	margin: var(--warning-margin, 0 0 var(--padding-4x));

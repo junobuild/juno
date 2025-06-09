@@ -20,11 +20,11 @@
 	const tabs: Tab[] = [
 		{
 			id: Symbol('1'),
-			labelKey: 'upgrade_dock.releases'
+			labelKey: 'upgrade.releases'
 		},
 		{
 			id: Symbol('2'),
-			labelKey: 'upgrade_dock.changes'
+			labelKey: 'upgrade.changes'
 		}
 	];
 

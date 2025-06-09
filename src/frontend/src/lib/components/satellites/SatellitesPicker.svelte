@@ -16,7 +16,7 @@
 
 	let { disabled = false, onChange, satellites }: SatellitePickerProps = $props();
 
-	let satelliteIdText: SatelliteIdText | undefined = $state(undefined);
+	let satelliteIdText = $state<SatelliteIdText | undefined>(undefined);
 
 	const onSelect = () =>
 		onChange(nonNullish(satelliteIdText) ? Principal.fromText(satelliteIdText) : undefined);

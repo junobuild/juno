@@ -863,5 +863,9 @@
 		"dev": "Developer",
 		"changes": "Changes",
 		"no_upgrades": "You're already on the latest releases. No upgrade needed."
+	},
+	"changes_dock": {
+		"select_a_satellite": "Select a Satellite to view available changes.",
+		"no_changes": "All systems are go. No changes to apply."
 	}
 }

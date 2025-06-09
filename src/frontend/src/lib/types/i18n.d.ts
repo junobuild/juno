@@ -895,6 +895,11 @@ interface I18nUpgrade_dock {
 	no_upgrades: string;
 }
 
+interface I18nChanges_dock {
+	select_a_satellite: string;
+	no_changes: string;
+}
+
 interface I18n {
 	lang: Languages;
 	core: I18nCore;
@@ -925,4 +930,5 @@ interface I18n {
 	resources: I18nResources;
 	emulator: I18nEmulator;
 	upgrade_dock: I18nUpgrade_dock;
+	changes_dock: I18nChanges_dock;
 }

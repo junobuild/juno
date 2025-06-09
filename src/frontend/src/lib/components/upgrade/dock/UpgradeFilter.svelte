@@ -44,7 +44,7 @@
 </PopoverApply>
 
 <style lang="scss">
-	@use '../../styles/mixins/dialog';
+	@use '../../../styles/mixins/dialog';
 
 	@include dialog.apply;
 </style>

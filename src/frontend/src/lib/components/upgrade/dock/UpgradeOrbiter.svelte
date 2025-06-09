@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { assertNonNullish, nonNullish } from '@dfinity/utils';
-	import UpgradeSegment from '$lib/components/dock/UpgradeSegment.svelte';
+	import UpgradeSegment from '$lib/components/upgrade/dock/UpgradeSegment.svelte';
 	import { orbiterVersion } from '$lib/derived/version.derived';
 	import { openUpgradeModal } from '$lib/services/upgrade/upgrade.init.services';
 	import { i18n } from '$lib/stores/i18n.store';

@@ -6,10 +6,10 @@
 	import Html from '$lib/components/ui/Html.svelte';
 	import Modal from '$lib/components/ui/Modal.svelte';
 	import SpinnerModal from '$lib/components/ui/SpinnerModal.svelte';
-	import ConfirmUpgradeVersion from '$lib/components/upgrade/ConfirmUpgradeVersion.svelte';
-	import ProgressUpgradeVersion from '$lib/components/upgrade/ProgressUpgradeVersion.svelte';
-	import ReviewUpgradeVersion from '$lib/components/upgrade/ReviewUpgradeVersion.svelte';
-	import SelectUpgradeVersion from '$lib/components/upgrade/SelectUpgradeVersion.svelte';
+	import ConfirmUpgradeVersion from '$lib/components/upgrade/execute/ConfirmUpgradeVersion.svelte';
+	import ProgressUpgradeVersion from '$lib/components/upgrade/execute/ProgressUpgradeVersion.svelte';
+	import ReviewUpgradeVersion from '$lib/components/upgrade/execute/ReviewUpgradeVersion.svelte';
+	import SelectUpgradeVersion from '$lib/components/upgrade/execute/SelectUpgradeVersion.svelte';
 	import { i18n } from '$lib/stores/i18n.store';
 	import type { Wasm } from '$lib/types/upgrade';
 	import { i18nFormat } from '$lib/utils/i18n.utils';

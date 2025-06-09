@@ -1,8 +1,8 @@
 <script lang="ts">
-	import UpgradeDockLoader from '$lib/components/dock/UpgradeDockLoader.svelte';
-	import UpgradeMissionControl from '$lib/components/dock/UpgradeMissionControl.svelte';
-	import UpgradeOrbiter from '$lib/components/dock/UpgradeOrbiter.svelte';
-	import UpgradeSatellite from '$lib/components/dock/UpgradeSatellite.svelte';
+	import UpgradeDockLoader from '$lib/components/upgrade/dock/UpgradeDockLoader.svelte';
+	import UpgradeMissionControl from '$lib/components/upgrade/dock/UpgradeMissionControl.svelte';
+	import UpgradeOrbiter from '$lib/components/upgrade/dock/UpgradeOrbiter.svelte';
+	import UpgradeSatellite from '$lib/components/upgrade/dock/UpgradeSatellite.svelte';
 	import { satellitesStore } from '$lib/derived/satellites.derived';
 	import { hasPendingUpgrades } from '$lib/derived/upgrade.derived';
 	import { i18n } from '$lib/stores/i18n.store';
@@ -54,7 +54,7 @@
 </UpgradeDockLoader>
 
 <style lang="scss">
-	@use '../../styles/mixins/media';
+	@use '../../../styles/mixins/media';
 
 	table {
 		table-layout: auto;

@@ -2,7 +2,7 @@
 	import { nonNullish } from '@dfinity/utils';
 	import { setContext } from 'svelte';
 	import { writable } from 'svelte/store';
-	import UpgradeDock from '$lib/components/dock/UpgradeDock.svelte';
+	import UpgradeDock from '$lib/components/upgrade/dock/UpgradeDock.svelte';
 	import IdentityGuard from '$lib/components/guards/IdentityGuard.svelte';
 	import MissionControlGuard from '$lib/components/guards/MissionControlGuard.svelte';
 	import OrbitersLoader from '$lib/components/loaders/OrbitersLoader.svelte';

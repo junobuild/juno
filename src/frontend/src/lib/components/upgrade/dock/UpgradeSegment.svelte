@@ -36,8 +36,8 @@
 >
 
 <style lang="scss">
-	@use '../../styles/mixins/a11y';
-	@use '../../styles/mixins/media';
+	@use '../../../styles/mixins/a11y';
+	@use '../../../styles/mixins/media';
 
 	.current {
 		display: none;

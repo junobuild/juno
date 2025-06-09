@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { assertNonNullish, nonNullish } from '@dfinity/utils';
 	import type { Satellite } from '$declarations/mission_control/mission_control.did';
-	import UpgradeSegment from '$lib/components/dock/UpgradeSegment.svelte';
+	import UpgradeSegment from '$lib/components/upgrade/dock/UpgradeSegment.svelte';
 	import { satellitesVersion } from '$lib/derived/version.derived';
 	import { openUpgradeModal } from '$lib/services/upgrade/upgrade.init.services';
 	import { satelliteName } from '$lib/utils/satellite.utils';

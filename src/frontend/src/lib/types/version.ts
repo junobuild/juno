@@ -1,3 +1,4 @@
+import type { OptionIdentity } from '$lib/types/itentity';
 import type { BuildType } from '@junobuild/admin';
 import type { JunoPackage } from '@junobuild/config';
 
@@ -23,3 +24,17 @@ export interface SatelliteVersionMetadata extends VersionMetadata {
 	 */
 	build: BuildType;
 }
+
+export interface LoadVersionBaseParams {
+	skipReload: boolean;
+	identity: OptionIdentity;
+	toastError?: boolean;
+}
+
+export type LoadVersionResult =
+	| { result: 'loaded' }
+	| { result: 'skipped' }
+	| { result: 'error'; err: unknown };
+
+export type VersionMetadataUi = VersionMetadata & { warning: boolean };
+export type SatelliteVersionMetadataUi = SatelliteVersionMetadata & { warning: boolean };

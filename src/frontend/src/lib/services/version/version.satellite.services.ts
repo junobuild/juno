@@ -3,9 +3,11 @@ import { getNewestReleasesMetadata } from '$lib/rest/cdn.rest';
 import { i18n } from '$lib/stores/i18n.store';
 import { toasts } from '$lib/stores/toasts.store';
 import { versionStore } from '$lib/stores/version.store';
-import type { OptionIdentity } from '$lib/types/itentity';
-import type { MissionControlId } from '$lib/types/mission-control';
-import type { SatelliteVersionMetadata } from '$lib/types/version';
+import type {
+	LoadVersionBaseParams,
+	LoadVersionResult,
+	SatelliteVersionMetadata
+} from '$lib/types/version';
 import { container } from '$lib/utils/juno.utils';
 import type { Principal } from '@dfinity/principal';
 import { assertNonNullish, isNullish, nonNullish } from '@dfinity/utils';
@@ -13,20 +15,39 @@ import { findJunoPackageDependency, getJunoPackage, satelliteBuildType } from '@
 import { JUNO_PACKAGE_SATELLITE_ID } from '@junobuild/config';
 import { get } from 'svelte/store';
 
-export const loadSatelliteVersion = async ({
+export const reloadSatelliteVersion = async ({
 	satelliteId,
-	skipReload,
-	identity
+	toastError = true,
+	...rest
 }: {
 	satelliteId: Principal;
-	missionControlId: MissionControlId;
-	skipReload: boolean;
-	identity: OptionIdentity;
-}) => {
+} & LoadVersionBaseParams): Promise<LoadVersionResult> => {
+	const result = await loadSatelliteVersion({
+		satelliteId,
+		...rest
+	});
+
+	if (result.result === 'error' && toastError) {
+		toasts.error({
+			text: get(i18n).errors.load_version,
+			detail: result.err
+		});
+	}
+
+	return result;
+};
+
+const loadSatelliteVersion = async ({
+	satelliteId,
+	identity,
+	skipReload
+}: {
+	satelliteId: Principal;
+} & Omit<LoadVersionBaseParams, 'toastError'>): Promise<LoadVersionResult> => {
 	// We load the satellite version once per session
 	const store = get(versionStore);
 	if (nonNullish(store.satellites[satelliteId.toText()]) && skipReload) {
-		return;
+		return { result: 'skipped' };
 	}
 
 	try {
@@ -131,10 +152,9 @@ export const loadSatelliteVersion = async ({
 					}
 				: undefined
 		});
+
+		return { result: 'loaded' };
 	} catch (err: unknown) {
-		toasts.error({
-			text: get(i18n).errors.load_version,
-			detail: err
-		});
+		return { result: 'error', err };
 	}
 };

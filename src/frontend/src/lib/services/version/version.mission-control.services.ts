@@ -3,28 +3,47 @@ import { getNewestReleasesMetadata } from '$lib/rest/cdn.rest';
 import { i18n } from '$lib/stores/i18n.store';
 import { toasts } from '$lib/stores/toasts.store';
 import { versionStore } from '$lib/stores/version.store';
-import type { OptionIdentity } from '$lib/types/itentity';
 import type { MissionControlId } from '$lib/types/mission-control';
-import type { VersionMetadata } from '$lib/types/version';
+import type { LoadVersionBaseParams, LoadVersionResult, VersionMetadata } from '$lib/types/version';
 import { container } from '$lib/utils/juno.utils';
 import { assertNonNullish, nonNullish } from '@dfinity/utils';
 import { getJunoPackage } from '@junobuild/admin';
 import { get } from 'svelte/store';
 
-export const loadMissionControlVersion = async ({
+export const reloadMissionControlVersion = async ({
 	missionControlId,
-	skipReload,
-	identity
+	toastError = true,
+	...rest
 }: {
 	missionControlId: MissionControlId;
-	skipReload: boolean;
-	identity: OptionIdentity;
-}) => {
+} & LoadVersionBaseParams): Promise<LoadVersionResult> => {
+	const result = await loadMissionControlVersion({
+		missionControlId,
+		...rest
+	});
+
+	if (result.result === 'error' && toastError) {
+		toasts.error({
+			text: get(i18n).errors.load_version,
+			detail: result.err
+		});
+	}
+
+	return result;
+};
+
+const loadMissionControlVersion = async ({
+	missionControlId,
+	identity,
+	skipReload
+}: {
+	missionControlId: MissionControlId;
+} & Omit<LoadVersionBaseParams, 'toastError'>): Promise<LoadVersionResult> => {
 	// We load the satellite version once per session
 	// We might load the mission control version twice per session if user go to that view first and then to overview
 	const store = get(versionStore);
 	if (skipReload && nonNullish(store.missionControl)) {
-		return;
+		return { result: 'skipped' };
 	}
 
 	try {
@@ -67,10 +86,9 @@ export const loadMissionControlVersion = async ({
 			release: releases.mission_control,
 			...ctrlVersion
 		});
+
+		return { result: 'loaded' };
 	} catch (err: unknown) {
-		toasts.error({
-			text: get(i18n).errors.load_version,
-			detail: err
-		});
+		return { result: 'error', err };
 	}
 };

@@ -17,6 +17,7 @@
 		type TabsData
 	} from '$lib/types/tabs.context';
 	import { initTabId } from '$lib/utils/tabs.utils';
+	import CanistersLoader from '$lib/components/loaders/CanistersLoader.svelte';
 
 	const tabs: Tab[] = [
 		{
@@ -40,11 +41,13 @@
 		<WalletLoader>
 			<SatellitesLoader>
 				<OrbitersLoader>
-					<MissionControlGuard>
-						{#if nonNullish($missionControlIdDerived)}
-							<UpgradeDock missionControlId={$missionControlIdDerived} />
-						{/if}
-					</MissionControlGuard>
+					<CanistersLoader>
+						<MissionControlGuard>
+							{#if nonNullish($missionControlIdDerived)}
+								<UpgradeDock missionControlId={$missionControlIdDerived} />
+							{/if}
+						</MissionControlGuard>
+					</CanistersLoader>
 				</OrbitersLoader>
 			</SatellitesLoader>
 		</WalletLoader>

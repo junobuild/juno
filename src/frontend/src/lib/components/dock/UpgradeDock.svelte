@@ -29,7 +29,7 @@
 			</thead>
 
 			<tbody>
-				<UpgradeMissionControl {missionControlId} />
+				<UpgradeMissionControl />
 
 				{#each $satellitesStore ?? [] as satellite (satellite.satellite_id.toText())}
 					<UpgradeSatellite {satellite} />

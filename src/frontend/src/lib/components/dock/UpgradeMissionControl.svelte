@@ -5,13 +5,6 @@
 	import { missionControlVersion } from '$lib/derived/version.derived';
 	import { openUpgradeModal } from '$lib/services/upgrade/upgrade.init.services';
 	import { i18n } from '$lib/stores/i18n.store';
-	import type { MissionControlId } from '$lib/types/mission-control';
-
-	interface Props {
-		missionControlId: MissionControlId;
-	}
-
-	let { missionControlId }: Props = $props();
 
 	let ctrlVersion = $derived($missionControlVersion?.current);
 	let ctrlRelease = $derived($missionControlVersion?.release);

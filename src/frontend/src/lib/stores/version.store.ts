@@ -1,4 +1,5 @@
 import type { SatelliteIdText } from '$lib/types/satellite';
+import type { Option } from '$lib/types/utils';
 import type { SatelliteVersionMetadata, VersionMetadata } from '$lib/types/version';
 import { type Readable, writable } from 'svelte/store';
 

@@ -24,9 +24,9 @@
 		>
 	</td>
 	<td>{segmentLabel}</td>
-	<td>{version.current}</td>
+	<td class="current">{version.current}</td>
 	<td>{version.release}</td>
-	<td>
+	<td class="source">
 		{#if source === 'dev'}
 			<IconUser size="14px" />
 			<span class="visually-hidden">{$i18n.upgrade_dock.dev}</span>
@@ -39,6 +39,23 @@
 
 <style lang="scss">
 	@use '../../styles/mixins/a11y';
+	@use '../../styles/mixins/media';
+
+	.current {
+		display: none;
+
+		@include media.min-width(small) {
+			display: table-cell;
+		}
+	}
+
+	.source {
+		display: none;
+
+		@include media.min-width(medium) {
+			display: table-cell;
+		}
+	}
 
 	.visually-hidden {
 		@include a11y.visually-hidden;

@@ -53,10 +53,7 @@
 
 	onMount(async () => await list());
 
-	let empty = $state(false);
-	run(() => {
-		empty = $store.items?.length === 0;
-	});
+	let empty = $derived($store.items?.length === 0);
 
 	let innerWidth = $state(0);
 </script>

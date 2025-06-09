@@ -14,7 +14,13 @@
 	}
 
 	let { missionControlId }: Props = $props();
+
+	let innerWidth = $state(0);
+
+	let colspan = $derived(innerWidth >= 768 ? 5 : innerWidth >= 576 ? 4 : 3);
 </script>
+
+<svelte:window bind:innerWidth />
 
 <UpgradeDockLoader {missionControlId}>
 	<div class="table-container">
@@ -23,9 +29,9 @@
 				<tr>
 					<th class="tools"></th>
 					<th> {$i18n.upgrade_dock.modules} </th>
-					<th> {$i18n.upgrade_dock.current} </th>
+					<th class="current"> {$i18n.upgrade_dock.current} </th>
 					<th> {$i18n.upgrade_dock.release} </th>
-					<th> {$i18n.upgrade_dock.source} </th>
+					<th class="source"> {$i18n.upgrade_dock.source} </th>
 				</tr>
 			</thead>
 
@@ -39,7 +45,9 @@
 				<UpgradeOrbiter />
 
 				{#if $hasPendingUpgrades !== undefined && $hasPendingUpgrades === false}
-					<tr><td colspan="4">{$i18n.upgrade_dock.no_upgrades}</td></tr>
+					<tr
+						><td {colspan}><span class="no-upgrade">{$i18n.upgrade_dock.no_upgrades}</span></td></tr
+					>
 				{/if}
 			</tbody>
 		</table>
@@ -47,11 +55,33 @@
 </UpgradeDockLoader>
 
 <style lang="scss">
+	@use '../../styles/mixins/media';
+
 	table {
 		table-layout: auto;
 	}
 
+	.current {
+		display: none;
+
+		@include media.min-width(small) {
+			display: table-cell;
+		}
+	}
+
+	.source {
+		display: none;
+
+		@include media.min-width(medium) {
+			display: table-cell;
+		}
+	}
+
 	.tools {
 		width: 60px;
+	}
+
+	.no-upgrade {
+		white-space: normal;
 	}
 </style>

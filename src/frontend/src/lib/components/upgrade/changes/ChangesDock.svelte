@@ -7,6 +7,7 @@
 	import { isEmptyString, isNullish, nonNullish } from '@dfinity/utils';
 	import ChangesFilter from '$lib/components/upgrade/changes/ChangesFilter.svelte';
 	import { satelliteName } from '$lib/utils/satellite.utils';
+    import Change from "$lib/components/upgrade/changes/Change.svelte";
 
 	let innerWidth = $state(0);
 
@@ -35,26 +36,26 @@
 				</tr>
 				<tr>
 					<th class="tools"></th>
-					<th> {$i18n.satellites.satellite} </th>
-					<th class="current"> {$i18n.upgrade_dock.current} </th>
-					<th> {$i18n.upgrade_dock.release} </th>
-					<th class="source"> {$i18n.upgrade_dock.source} </th>
-				</tr>
+					<th> {$i18n.changes.id} </th>
+					<th class="hash"> {$i18n.changes.hash} </th>
+					<th> {$i18n.changes.type} </th>
+                    <th class="created_at"> {$i18n.sort.created_at} </th>
+                </tr>
 			</thead>
 
 			<tbody>
 				{#each proposals ?? [] as proposal (proposal[0])}
-					<span>{proposal[0]}</span>
+					<Change {proposal} />
 				{/each}
 
 				{#if isEmptyString(satelliteId)}
 					<tr
 						><td {colspan}
-							><span class="no-upgrade">{$i18n.changes_dock.select_a_satellite}</span></td
+							><span class="no-upgrade">{$i18n.changes.select_a_satellite}</span></td
 						></tr
 					>
 				{:else if isNullish(proposals) || proposals.length === 0}
-					<tr><td {colspan}><span class="no-upgrade">{$i18n.changes_dock.no_changes}</span></td></tr>
+					<tr><td {colspan}><span class="no-upgrade">{$i18n.changes.no_changes}</span></td></tr>
 				{/if}
 			</tbody>
 		</table>
@@ -68,7 +69,7 @@
 		table-layout: auto;
 	}
 
-	.current {
+	.hash {
 		display: none;
 
 		@include media.min-width(small) {
@@ -76,7 +77,7 @@
 		}
 	}
 
-	.source {
+	.created_at {
 		display: none;
 
 		@include media.min-width(medium) {

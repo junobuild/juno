@@ -895,9 +895,14 @@ interface I18nUpgrade_dock {
 	no_upgrades: string;
 }
 
-interface I18nChanges_dock {
+interface I18nChanges {
 	select_a_satellite: string;
 	no_changes: string;
+	id: string;
+	hash: string;
+	type: string;
+	assets_upgrade: string;
+	segments_deployment: string;
 }
 
 interface I18n {
@@ -930,5 +935,5 @@ interface I18n {
 	resources: I18nResources;
 	emulator: I18nEmulator;
 	upgrade_dock: I18nUpgrade_dock;
-	changes_dock: I18nChanges_dock;
+	changes: I18nChanges;
 }

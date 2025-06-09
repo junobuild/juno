@@ -1,27 +1,27 @@
 <script lang="ts">
-    import UpgradeDockLoader from '$lib/components/upgrade/dock/UpgradeDockLoader.svelte';
     import UpgradeMissionControl from '$lib/components/upgrade/dock/UpgradeMissionControl.svelte';
     import UpgradeOrbiter from '$lib/components/upgrade/dock/UpgradeOrbiter.svelte';
     import UpgradeSatellite from '$lib/components/upgrade/dock/UpgradeSatellite.svelte';
     import { satellitesStore } from '$lib/derived/satellites.derived';
     import { hasPendingUpgrades } from '$lib/derived/upgrade.derived';
     import { i18n } from '$lib/stores/i18n.store';
-    import type { MissionControlId } from '$lib/types/mission-control';
-
-    interface Props {
-        missionControlId: MissionControlId;
-    }
-
-    let { missionControlId }: Props = $props();
+    import ChangesDockLoader from "$lib/components/upgrade/changes/ChangesDockLoader.svelte";
+    import {openSatellitesProposals} from "$lib/derived/proposals.derived";
+    import {satelliteStore} from "$lib/derived/satellite.derived";
+    import {nonNullish} from "@dfinity/utils";
 
     let innerWidth = $state(0);
 
     let colspan = $derived(innerWidth >= 768 ? 5 : innerWidth >= 576 ? 4 : 3);
+
+    let satelliteId = $derived($satelliteStore?.satellite_id.toText());
+
+    let proposals = $derived(nonNullish(satelliteId) ? $openSatellitesProposals[satelliteId] : undefined)
 </script>
 
 <svelte:window bind:innerWidth />
 
-<UpgradeDockLoader {missionControlId}>
+<ChangesDockLoader>
     <div class="table-container">
         <table>
             <thead>
@@ -35,13 +35,10 @@
             </thead>
 
             <tbody>
-            <UpgradeMissionControl />
 
-            {#each $satellitesStore ?? [] as satellite (satellite.satellite_id.toText())}
-                <UpgradeSatellite {satellite} />
+            {#each proposals ?? [] as proposal (proposal[0])}
+                <span>{proposal[0]}</span>
             {/each}
-
-            <UpgradeOrbiter />
 
             {#if $hasPendingUpgrades !== undefined && $hasPendingUpgrades === false}
                 <tr
@@ -51,7 +48,7 @@
             </tbody>
         </table>
     </div>
-</UpgradeDockLoader>
+</ChangesDockLoader>
 
 <style lang="scss">
   @use '../../../styles/mixins/media';

@@ -50,7 +50,7 @@
 							{#if $store.tabId === $store.tabs[0].id}
 								<UpgradeDock missionControlId={$missionControlIdDerived} />
 							{:else if $store.tabId === $store.tabs[1].id}
-								<ChangesDock missionControlId={$missionControlIdDerived} />
+								<ChangesDock />
 							{/if}
 						{/if}
 					</MissionControlGuard>

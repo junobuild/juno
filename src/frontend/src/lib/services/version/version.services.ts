@@ -60,3 +60,38 @@ export const loadVersions = async ({
 
 	return { result: 'error' };
 };
+
+export const loadSatellitesVersions = async ({
+																		 identity,
+																		 satellites,
+																	 }: {
+	satellites: Satellite[];
+	identity: OptionIdentity;
+}): Promise<{ result: 'loaded' | 'error' }> => {
+	const commonParams = {
+		identity,
+		skipReload: true,
+		toastError: false
+	};
+
+	const results = await Promise.all([
+		...satellites.map((satellite) =>
+			reloadSatelliteVersion({
+				satelliteId: satellite.satellite_id,
+				...commonParams
+			})
+		)
+	]);
+
+	const hasError = results.find((result) => result.result === 'error');
+
+	if (!hasError) {
+		return { result: 'loaded' };
+	}
+
+	toasts.error({
+		text: get(i18n).errors.load_version
+	});
+
+	return { result: 'error' };
+};

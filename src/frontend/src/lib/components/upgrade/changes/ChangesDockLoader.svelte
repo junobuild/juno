@@ -6,7 +6,12 @@
 	import { loadProposals as loadProposalsServices } from '$lib/services/proposals/proposals.services';
 	import { authStore } from '$lib/stores/auth.store';
 	import { i18n } from '$lib/stores/i18n.store';
-	import {satellitesVersionLoaded} from "$lib/derived/version.derived";
+	import {
+		satellitesVersionLoaded,
+		satellitesVersionNotLoaded
+	} from '$lib/derived/version.derived';
+	import { versionStore } from '$lib/stores/version.store';
+	import { loadSatellitesVersions } from '$lib/services/version/version.services';
 
 	interface Props {
 		children: Snippet;
@@ -21,7 +26,11 @@
 			return;
 		}
 
-		if ($satellitesVersionLoaded) {
+		if ($satellitesVersionNotLoaded) {
+			await loadSatellitesVersions({
+				satellites: $satellitesStore ?? [],
+				identity: $authStore.identity
+			});
 			return;
 		}
 
@@ -43,7 +52,7 @@
 
 	$effect(() => {
 		$satellitesNotLoaded;
-		$satellitesVersionLoaded;
+		$satellitesVersionNotLoaded;
 
 		debounceLoadProposals();
 	});

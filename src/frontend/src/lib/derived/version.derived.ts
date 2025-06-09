@@ -5,6 +5,7 @@ import type { SatelliteVersionMetadataUi, VersionMetadataUi } from '$lib/types/v
 import { isNullish, nonNullish } from '@dfinity/utils';
 import { compare } from 'semver';
 import { derived, type Readable } from 'svelte/store';
+import { orbiterLoaded } from '$lib/derived/orbiter.derived';
 
 export const missionControlVersion: Readable<VersionMetadataUi | undefined> = derived(
 	[versionStore],
@@ -65,3 +66,5 @@ export const satellitesVersionLoaded = derived(
 			$satellitesVersion?.[satellite.satellite_id.toText()] !== undefined
 		)
 );
+
+export const satellitesVersionNotLoaded = derived([satellitesVersionLoaded], ([$satellitesVersionLoaded]) => !$satellitesVersionLoaded);

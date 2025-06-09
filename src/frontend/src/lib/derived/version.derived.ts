@@ -1,3 +1,4 @@
+import { satellitesStore } from '$lib/derived/satellites.derived';
 import { versionStore } from '$lib/stores/version.store';
 import type { SatelliteIdText } from '$lib/types/satellite';
 import type { SatelliteVersionMetadataUi, VersionMetadataUi } from '$lib/types/version';
@@ -54,4 +55,13 @@ export const satellitesVersion = derived([versionStore], ([$versionStore]) =>
 		}),
 		{}
 	)
+);
+
+export const satellitesVersionLoaded = derived(
+	[satellitesStore, satellitesVersion],
+	([$satellitesStore, $satellitesVersion]) =>
+		nonNullish($satellitesStore) &&
+		$satellitesStore.every((satellite) =>
+			$satellitesVersion?.[satellite.satellite_id.toText()] !== undefined
+		)
 );

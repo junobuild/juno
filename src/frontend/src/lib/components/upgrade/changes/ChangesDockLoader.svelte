@@ -6,7 +6,7 @@
 	import { loadProposals as loadProposalsServices } from '$lib/services/proposals/proposals.services';
 	import { authStore } from '$lib/stores/auth.store';
 	import { i18n } from '$lib/stores/i18n.store';
-	import {satellitesVersion} from "$lib/derived/version.derived";
+	import {satellitesVersionLoaded} from "$lib/derived/version.derived";
 
 	interface Props {
 		children: Snippet;
@@ -18,6 +18,10 @@
 
 	const loadProposals = async () => {
 		if ($satellitesNotLoaded) {
+			return;
+		}
+
+		if ($satellitesVersionLoaded) {
 			return;
 		}
 
@@ -39,7 +43,7 @@
 
 	$effect(() => {
 		$satellitesNotLoaded;
-		$satellitesVersion;
+		$satellitesVersionLoaded;
 
 		debounceLoadProposals();
 	});

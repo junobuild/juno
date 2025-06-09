@@ -2,12 +2,12 @@
 	import { nonNullish } from '@dfinity/utils';
 	import { setContext } from 'svelte';
 	import { writable } from 'svelte/store';
-	import UpgradeDock from '$lib/components/upgrade/dock/UpgradeDock.svelte';
 	import IdentityGuard from '$lib/components/guards/IdentityGuard.svelte';
 	import MissionControlGuard from '$lib/components/guards/MissionControlGuard.svelte';
 	import OrbitersLoader from '$lib/components/loaders/OrbitersLoader.svelte';
 	import SatellitesLoader from '$lib/components/loaders/SatellitesLoader.svelte';
 	import Tabs from '$lib/components/ui/Tabs.svelte';
+	import UpgradeDock from '$lib/components/upgrade/dock/UpgradeDock.svelte';
 	import WalletLoader from '$lib/components/wallet/WalletLoader.svelte';
 	import { missionControlIdDerived } from '$lib/derived/mission-control.derived';
 	import {

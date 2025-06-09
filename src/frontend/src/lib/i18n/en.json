@@ -608,7 +608,8 @@
 		"user_ban": "Unexpected error(s) while trying to ban the user.",
 		"user_unban": "Unexpected error(s) while trying to unban the user.",
 		"satellite_version_not_found": "Unexpected error. Your Satellite implements serverless functions, but no dependency version can be resolved.",
-		"load_version": "Unexpected error(s) while loading the version of the Satellite and/or Mission Control"
+		"load_version": "Unexpected error(s) while loading the version of your module(s).",
+		"load_proposals": "Unexpected error(s) while loading the changes of your module(s)."
 	},
 	"document": {
 		"owner": "Owner",

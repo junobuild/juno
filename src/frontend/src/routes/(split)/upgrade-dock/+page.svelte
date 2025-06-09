@@ -17,11 +17,16 @@
 		type TabsData
 	} from '$lib/types/tabs.context';
 	import { initTabId } from '$lib/utils/tabs.utils';
+	import ChangesDock from '$lib/components/upgrade/changes/ChangesDock.svelte';
 
 	const tabs: Tab[] = [
 		{
 			id: Symbol('1'),
 			labelKey: 'upgrade_dock.releases'
+		},
+		{
+			id: Symbol('2'),
+			labelKey: 'upgrade_dock.changes'
 		}
 	];
 
@@ -42,7 +47,11 @@
 				<OrbitersLoader>
 					<MissionControlGuard>
 						{#if nonNullish($missionControlIdDerived)}
-							<UpgradeDock missionControlId={$missionControlIdDerived} />
+							{#if $store.tabId === $store.tabs[0].id}
+								<UpgradeDock missionControlId={$missionControlIdDerived} />
+							{:else if $store.tabId === $store.tabs[1].id}
+								<ChangesDock missionControlId={$missionControlIdDerived} />
+							{/if}
 						{/if}
 					</MissionControlGuard>
 				</OrbitersLoader>

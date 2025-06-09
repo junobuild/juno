@@ -625,6 +625,7 @@ interface I18nErrors {
 	user_unban: string;
 	satellite_version_not_found: string;
 	load_version: string;
+	load_proposals: string;
 }
 
 interface I18nDocument {

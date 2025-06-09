@@ -863,5 +863,14 @@
 		"dev": "Developer",
 		"changes": "Changes",
 		"no_upgrades": "You're already on the latest releases. No upgrade needed."
+	},
+	"changes": {
+		"select_a_satellite": "Select a Satellite to view available changes.",
+		"no_changes": "All systems are go. No changes to apply.",
+		"id": "ID",
+		"hash": "Hash",
+		"type": "Type",
+		"assets_upgrade": "Frontend Deployment",
+		"segments_deployment": "Function Upgrade"
 	}
 }

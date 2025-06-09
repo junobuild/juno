@@ -9,6 +9,9 @@
     import {openSatellitesProposals} from "$lib/derived/proposals.derived";
     import {satelliteStore} from "$lib/derived/satellite.derived";
     import {nonNullish} from "@dfinity/utils";
+    import UserFilter from "$lib/components/auth/UserFilter.svelte";
+    import ChangesFilter from "$lib/components/upgrade/changes/ChangesFilter.svelte";
+    import {satelliteName} from "$lib/utils/satellite.utils";
 
     let innerWidth = $state(0);
 
@@ -17,6 +20,8 @@
     let satelliteId = $derived($satelliteStore?.satellite_id.toText());
 
     let proposals = $derived(nonNullish(satelliteId) ? $openSatellitesProposals[satelliteId] : undefined)
+
+    $inspect(proposals, satelliteId)
 </script>
 
 <svelte:window bind:innerWidth />
@@ -25,6 +30,13 @@
     <div class="table-container">
         <table>
             <thead>
+            <tr>
+                <th {colspan}>
+                    <div class="actions">
+                        <ChangesFilter /> {#if nonNullish($satelliteStore)}{satelliteName($satelliteStore)} ({$satelliteStore.satellite_id.toText()}){/if}
+                    </div>
+                </th>
+            </tr>
             <tr>
                 <th class="tools"></th>
                 <th> {$i18n.satellites.satellite} </th>
@@ -79,5 +91,11 @@
 
   .no-upgrade {
     white-space: normal;
+  }
+
+  .actions {
+    display: flex;
+    gap: var(--padding-1_5x);
+    padding: var(--padding) 0;
   }
 </style>

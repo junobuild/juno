@@ -4,12 +4,9 @@
 	import { writable } from 'svelte/store';
 	import IdentityGuard from '$lib/components/guards/IdentityGuard.svelte';
 	import MissionControlGuard from '$lib/components/guards/MissionControlGuard.svelte';
-	import CanistersLoader from '$lib/components/loaders/CanistersLoader.svelte';
-	import OrbitersLoader from '$lib/components/loaders/OrbitersLoader.svelte';
-	import SatellitesLoader from '$lib/components/loaders/SatellitesLoader.svelte';
+	import Loaders from '$lib/components/loaders/Loaders.svelte';
 	import Tabs from '$lib/components/ui/Tabs.svelte';
 	import UpgradeDock from '$lib/components/upgrade/dock/UpgradeDock.svelte';
-	import WalletLoader from '$lib/components/wallet/WalletLoader.svelte';
 	import { missionControlIdDerived } from '$lib/derived/mission-control.derived';
 	import {
 		type Tab,
@@ -38,18 +35,12 @@
 
 <IdentityGuard>
 	<Tabs help="https://juno.build/docs/build/authentication">
-		<WalletLoader>
-			<SatellitesLoader>
-				<OrbitersLoader>
-					<CanistersLoader>
-						<MissionControlGuard>
-							{#if nonNullish($missionControlIdDerived)}
-								<UpgradeDock missionControlId={$missionControlIdDerived} />
-							{/if}
-						</MissionControlGuard>
-					</CanistersLoader>
-				</OrbitersLoader>
-			</SatellitesLoader>
-		</WalletLoader>
+		<Loaders>
+			<MissionControlGuard>
+				{#if nonNullish($missionControlIdDerived)}
+					<UpgradeDock missionControlId={$missionControlIdDerived} />
+				{/if}
+			</MissionControlGuard>
+		</Loaders>
 	</Tabs>
 </IdentityGuard>

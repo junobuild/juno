@@ -111,6 +111,10 @@ interface I18nCanisters {
 	upgrade_breaking_change: string;
 	more_upgrade: string;
 	upgrade_note: string;
+	upgrade_confirm_warning_revert: string;
+	upgrade_confirm_how_to: string;
+	rust_upgrade_guide: string;
+	typescript_upgrade_guide: string;
 	upgrade_confirm: string;
 	converted_cycles: string;
 	top_up_info: string;

@@ -7,6 +7,7 @@
 	import { satellitesStore } from '$lib/derived/satellites.derived';
 	import { i18n } from '$lib/stores/i18n.store';
 	import type { MissionControlId } from '$lib/types/mission-control';
+	import { hasPendingUpgrades } from '$lib/derived/upgrade.derived';
 
 	interface Props {
 		missionControlId: MissionControlId;
@@ -36,6 +37,10 @@
 				{/each}
 
 				<UpgradeOrbiter />
+
+				{#if $hasPendingUpgrades !== undefined && $hasPendingUpgrades === false}
+					<tr><td colspan="4">{$i18n.upgrade_dock.no_upgrades}</td></tr>
+				{/if}
 			</tbody>
 		</table>
 	</div>

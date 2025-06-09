@@ -35,3 +35,6 @@ export type LoadVersionResult =
 	| { result: 'loaded' }
 	| { result: 'skipped' }
 	| { result: 'error'; err: unknown };
+
+export type VersionMetadataUi = VersionMetadata & {warning: boolean};
+export type SatelliteVersionMetadataUi = SatelliteVersionMetadata & {warning: boolean};

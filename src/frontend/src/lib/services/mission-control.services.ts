@@ -26,7 +26,6 @@ import {
 	SATELLITE_v0_0_7
 } from '$lib/constants/version.constants';
 import { satellitesStore } from '$lib/derived/satellites.derived';
-import { missionControlVersion as missionControlVersionStore } from '$lib/derived/version.derived';
 import { loadDataStore } from '$lib/services/loader.services';
 import { loadSatellites } from '$lib/services/satellites.services';
 import { authStore } from '$lib/stores/auth.store';
@@ -51,6 +50,7 @@ import { fromNullable, isEmptyString, isNullish } from '@dfinity/utils';
 import { missionControlVersion, satelliteVersion } from '@junobuild/admin';
 import { compare } from 'semver';
 import { get } from 'svelte/store';
+import { versionStore } from '$lib/stores/version.store';
 
 export const setMissionControlControllerForVersion = async ({
 	missionControlId,
@@ -273,9 +273,9 @@ export const loadSettings = async ({
 	identity: OptionIdentity;
 	reload?: boolean;
 }): Promise<{ success: boolean }> => {
-	const versionStore = get(missionControlVersionStore);
+	const store = get(versionStore);
 
-	if (compare(versionStore?.current ?? '0.0.0', MISSION_CONTROL_v0_0_14) < 0) {
+	if (compare(store.missionControl?.current ?? '0.0.0', MISSION_CONTROL_v0_0_14) < 0) {
 		missionControlSettingsUncertifiedStore.reset();
 		return { success: true };
 	}
@@ -309,9 +309,9 @@ export const loadUserData = async ({
 	identity: OptionIdentity;
 	reload?: boolean;
 }): Promise<{ success: boolean }> => {
-	const versionStore = get(missionControlVersionStore);
+	const store = get(versionStore);
 
-	if (compare(versionStore?.current ?? '0.0.0', MISSION_CONTROL_v0_0_14) < 0) {
+	if (compare(store.missionControl?.current ?? '0.0.0', MISSION_CONTROL_v0_0_14) < 0) {
 		missionControlUserUncertifiedStore.reset();
 		return { success: true };
 	}

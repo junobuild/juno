@@ -7,6 +7,7 @@
 	import { openUpgradeModal } from '$lib/services/upgrade/upgrade.init.services';
 	import { versionStore } from '$lib/stores/version.store';
 	import { satelliteName } from '$lib/utils/satellite.utils';
+	import { satellitesVersion } from '$lib/derived/version.derived';
 
 	interface Props {
 		satellite: Satellite;
@@ -14,30 +15,23 @@
 
 	let { satellite }: Props = $props();
 
-	let version = $derived($versionStore?.satellites[satellite.satellite_id.toText()]);
-
-	let satVersion = $derived(version?.current);
-	let satRelease = $derived(version?.release);
+	let version = $derived($satellitesVersion?.[satellite.satellite_id.toText()]);
 
 	let satBuild = $derived(version?.build);
 
-	let satWarning = $derived(
-		nonNullish(satVersion) && nonNullish(satRelease) && compare(satVersion, satRelease) < 0
-	);
-
 	const startUpgrade = async () => {
 		// Component is not rendered if undefined. Hence, it's rather a TS guard rather than a meaningful check.
-		assertNonNullish(satVersion);
+		assertNonNullish(version);
 
 		await openUpgradeModal({
 			type: 'upgrade_satellite',
 			satellite,
-			currentVersion: satVersion,
+			currentVersion: version.current,
 			build: satBuild
 		});
 	};
 </script>
 
-{#if !satWarning && nonNullish(version)}
+{#if nonNullish(version) && version.warning}
 	<UpgradeSegment segmentLabel={satelliteName(satellite)} {version} source="juno" {startUpgrade} />
 {/if}

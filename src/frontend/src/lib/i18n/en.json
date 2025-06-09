@@ -856,6 +856,7 @@
 		"source": "Source",
 		"current": "Current",
 		"dev": "Developer",
-		"changes": "Changes"
+		"changes": "Changes",
+		"no_upgrades": "You're already on the latest releases. No upgrade needed."
 	}
 }

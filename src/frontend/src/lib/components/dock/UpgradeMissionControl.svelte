@@ -6,25 +6,18 @@
 	import { openUpgradeModal } from '$lib/services/upgrade/upgrade.init.services';
 	import { i18n } from '$lib/stores/i18n.store';
 
-	let ctrlVersion = $derived($missionControlVersion?.current);
-	let ctrlRelease = $derived($missionControlVersion?.release);
-
-	let ctrlWarning = $derived(
-		nonNullish(ctrlVersion) && nonNullish(ctrlRelease) && compare(ctrlVersion, ctrlRelease) < 0
-	);
-
 	const startUpgrade = async () => {
 		// Component is not rendered if undefined. Hence, it's rather a TS guard rather than a meaningful check.
-		assertNonNullish(ctrlVersion);
+		assertNonNullish($missionControlVersion);
 
 		await openUpgradeModal({
 			type: 'upgrade_mission_control',
-			currentVersion: ctrlVersion
+			currentVersion: $missionControlVersion.current
 		});
 	};
 </script>
 
-{#if !ctrlWarning && nonNullish($missionControlVersion)}
+{#if nonNullish($missionControlVersion) && $missionControlVersion.warning}
 	<UpgradeSegment
 		segmentLabel={$i18n.mission_control.title}
 		version={$missionControlVersion}

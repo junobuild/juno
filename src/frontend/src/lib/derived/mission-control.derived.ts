@@ -6,3 +6,13 @@ export const missionControlIdDerived = derived(
 	[missionControlIdCertifiedStore],
 	([$missionControlDataStore]) => $missionControlDataStore?.data
 );
+
+export const missionControlIdLoaded = derived(
+	[missionControlIdCertifiedStore],
+	([$missionControlIdCertifiedStore]) => $missionControlIdCertifiedStore !== undefined
+);
+
+export const missionControlIdNotLoaded = derived(
+	[missionControlIdLoaded],
+	([$missionControlIdLoaded]) => !$missionControlIdLoaded
+);

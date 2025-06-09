@@ -1,13 +1,13 @@
 <script lang="ts">
-	import { hasPendingUpgrades } from '$lib/derived/upgrade.derived';
-	import { i18n } from '$lib/stores/i18n.store';
+	import { isEmptyString, isNullish, nonNullish } from '@dfinity/utils';
+	import Change from '$lib/components/upgrade/changes/Change.svelte';
 	import ChangesDockLoader from '$lib/components/upgrade/changes/ChangesDockLoader.svelte';
+	import ChangesFilter from '$lib/components/upgrade/changes/ChangesFilter.svelte';
 	import { openSatellitesProposals } from '$lib/derived/proposals.derived';
 	import { satelliteStore } from '$lib/derived/satellite.derived';
-	import { isEmptyString, isNullish, nonNullish } from '@dfinity/utils';
-	import ChangesFilter from '$lib/components/upgrade/changes/ChangesFilter.svelte';
+	import { hasPendingUpgrades } from '$lib/derived/upgrade.derived';
+	import { i18n } from '$lib/stores/i18n.store';
 	import { satelliteName } from '$lib/utils/satellite.utils';
-    import Change from "$lib/components/upgrade/changes/Change.svelte";
 
 	let innerWidth = $state(0);
 
@@ -39,8 +39,8 @@
 					<th> {$i18n.changes.id} </th>
 					<th class="hash"> {$i18n.changes.hash} </th>
 					<th> {$i18n.changes.type} </th>
-                    <th class="created_at"> {$i18n.sort.created_at} </th>
-                </tr>
+					<th class="created_at"> {$i18n.sort.created_at} </th>
+				</tr>
 			</thead>
 
 			<tbody>
@@ -50,8 +50,7 @@
 
 				{#if isEmptyString(satelliteId)}
 					<tr
-						><td {colspan}
-							><span class="no-upgrade">{$i18n.changes.select_a_satellite}</span></td
+						><td {colspan}><span class="no-upgrade">{$i18n.changes.select_a_satellite}</span></td
 						></tr
 					>
 				{:else if isNullish(proposals) || proposals.length === 0}

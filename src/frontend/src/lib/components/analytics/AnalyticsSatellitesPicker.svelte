@@ -15,9 +15,9 @@
 	const navigate = async (satelliteId: Principal | undefined) =>
 		await navigateToAnalytics(satelliteId);
 
-    const onChange = (satelliteId: Principal | undefined) => {
-        navigate(satelliteId);
-    }
+	const onChange = (satelliteId: Principal | undefined) => {
+		navigate(satelliteId);
+	};
 
 	let satellites = $derived(
 		Object.entries($orbiterSatellitesConfig).reduce<SatellitePickerProps['satellites']>(

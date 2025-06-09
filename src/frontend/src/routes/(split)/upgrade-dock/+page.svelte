@@ -7,6 +7,7 @@
 	import OrbitersLoader from '$lib/components/loaders/OrbitersLoader.svelte';
 	import SatellitesLoader from '$lib/components/loaders/SatellitesLoader.svelte';
 	import Tabs from '$lib/components/ui/Tabs.svelte';
+	import ChangesDock from '$lib/components/upgrade/changes/ChangesDock.svelte';
 	import UpgradeDock from '$lib/components/upgrade/dock/UpgradeDock.svelte';
 	import WalletLoader from '$lib/components/wallet/WalletLoader.svelte';
 	import { missionControlIdDerived } from '$lib/derived/mission-control.derived';
@@ -17,7 +18,6 @@
 		type TabsData
 	} from '$lib/types/tabs.context';
 	import { initTabId } from '$lib/utils/tabs.utils';
-	import ChangesDock from '$lib/components/upgrade/changes/ChangesDock.svelte';
 
 	const tabs: Tab[] = [
 		{

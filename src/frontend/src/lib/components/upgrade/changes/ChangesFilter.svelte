@@ -1,16 +1,16 @@
 <script lang="ts">
 	import type { Principal } from '@dfinity/principal';
+	import { onMount } from 'svelte';
 	import IconFilter from '$lib/components/icons/IconFilter.svelte';
 	import SatellitesPicker, {
 		type SatellitePickerProps
 	} from '$lib/components/satellites/SatellitesPicker.svelte';
 	import PopoverApply from '$lib/components/ui/PopoverApply.svelte';
+	import { satelliteStore } from '$lib/derived/satellite.derived';
 	import { satellitesStore } from '$lib/derived/satellites.derived';
 	import { i18n } from '$lib/stores/i18n.store';
 	import { navigateToChangesDock } from '$lib/utils/nav.utils';
 	import { satelliteName } from '$lib/utils/satellite.utils';
-	import { satelliteStore } from '$lib/derived/satellite.derived';
-	import { onMount } from 'svelte';
 
 	let visible = $state(false);
 

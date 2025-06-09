@@ -62,9 +62,9 @@ export const loadVersions = async ({
 };
 
 export const loadSatellitesVersions = async ({
-																		 identity,
-																		 satellites,
-																	 }: {
+	identity,
+	satellites
+}: {
 	satellites: Satellite[];
 	identity: OptionIdentity;
 }): Promise<{ result: 'loaded' | 'error' }> => {

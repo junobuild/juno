@@ -1,9 +1,10 @@
 import type { Orbiter } from '$declarations/mission_control/mission_control.did';
 import { orbiterVersion } from '$lib/api/orbiter.deprecated.api';
 import { getNewestReleasesMetadata } from '$lib/rest/cdn.rest';
-import { type VersionMetadata, versionStore } from '$lib/stores/version.store';
+import { versionStore } from '$lib/stores/version.store';
 import type { OptionIdentity } from '$lib/types/itentity';
 import type { Option } from '$lib/types/utils';
+import type { VersionMetadata } from '$lib/types/version';
 import { container } from '$lib/utils/juno.utils';
 import type { Principal } from '@dfinity/principal';
 import { assertNonNullish, isNullish, nonNullish } from '@dfinity/utils';

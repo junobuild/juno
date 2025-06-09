@@ -2,9 +2,10 @@ import { satelliteBuildVersion, satelliteVersion } from '$lib/api/satellites.dep
 import { getNewestReleasesMetadata } from '$lib/rest/cdn.rest';
 import { i18n } from '$lib/stores/i18n.store';
 import { toasts } from '$lib/stores/toasts.store';
-import { type SatelliteVersionMetadata, versionStore } from '$lib/stores/version.store';
+import { versionStore } from '$lib/stores/version.store';
 import type { OptionIdentity } from '$lib/types/itentity';
 import type { MissionControlId } from '$lib/types/mission-control';
+import type { SatelliteVersionMetadata } from '$lib/types/version';
 import { container } from '$lib/utils/juno.utils';
 import type { Principal } from '@dfinity/principal';
 import { assertNonNullish, isNullish, nonNullish } from '@dfinity/utils';

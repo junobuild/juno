@@ -50,7 +50,7 @@ export const satellitesVersion = derived([versionStore], ([$versionStore]) =>
 						...value,
 						warning: compare(value.current, value.release) < 0
 					}
-				: value
+				: undefined
 		}),
 		{}
 	)

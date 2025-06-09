@@ -89,6 +89,8 @@ const loadMissionControlVersion = async ({
 
 		return { result: 'loaded' };
 	} catch (err: unknown) {
+		versionStore.setMissionControl(null);
+
 		return { result: 'error', err };
 	}
 };

@@ -3,18 +3,18 @@ import type { SatelliteVersionMetadata, VersionMetadata } from '$lib/types/versi
 import { type Readable, writable } from 'svelte/store';
 
 export interface VersionStoreData {
-	satellites: Record<SatelliteIdText, SatelliteVersionMetadata | undefined>;
-	missionControl: VersionMetadata | undefined;
-	orbiter: VersionMetadata | undefined;
+	satellites: Record<SatelliteIdText, SatelliteVersionMetadata | undefined | null>;
+	missionControl: Option<VersionMetadata>;
+	orbiter: Option<VersionMetadata>;
 }
 
 export interface VersionStore extends Readable<VersionStoreData> {
-	setMissionControl: (version: VersionMetadata) => void;
+	setMissionControl: (version: VersionMetadata | null) => void;
 	setSatellite: (params: {
 		satelliteId: SatelliteIdText;
-		version: SatelliteVersionMetadata | undefined;
+		version: Option<SatelliteVersionMetadata>;
 	}) => void;
-	setOrbiter: (version: VersionMetadata) => void;
+	setOrbiter: (version: VersionMetadata | null) => void;
 	reset: () => void;
 }
 
@@ -30,7 +30,7 @@ const initVersionStore = (): VersionStore => {
 	return {
 		subscribe,
 
-		setMissionControl(version: VersionMetadata) {
+		setMissionControl(version) {
 			update((state) => ({
 				...state,
 				missionControl: version
@@ -47,7 +47,7 @@ const initVersionStore = (): VersionStore => {
 			}));
 		},
 
-		setOrbiter(version: VersionMetadata) {
+		setOrbiter(version) {
 			update((state) => ({
 				...state,
 				orbiter: version

@@ -97,6 +97,8 @@ const loadOrbiterVersion = async ({
 
 		return { result: 'loaded' };
 	} catch (err: unknown) {
+		versionStore.setOrbiter(null);
+
 		return { result: 'error', err };
 	}
 };

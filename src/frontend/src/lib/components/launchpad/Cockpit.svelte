@@ -10,8 +10,8 @@
 	import IconTelescope from '$lib/components/icons/IconTelescope.svelte';
 	import IconWallet from '$lib/components/icons/IconWallet.svelte';
 	import LaunchpadLink from '$lib/components/launchpad/LaunchpadLink.svelte';
+	import MissionControlVersionLoader from '$lib/components/loaders/MissionControlVersionLoader.svelte';
 	import MissionControlDataLoader from '$lib/components/mission-control/MissionControlDataLoader.svelte';
-	import MissionControlVersion from '$lib/components/mission-control/MissionControlVersion.svelte';
 	import SkeletonText from '$lib/components/ui/SkeletonText.svelte';
 	import WalletInlineBalance from '$lib/components/wallet/WalletInlineBalance.svelte';
 	import { balance } from '$lib/derived/balance.derived';
@@ -72,7 +72,7 @@
 	</LaunchpadLink>
 </div>
 
-<MissionControlVersion />
+<MissionControlVersionLoader />
 
 {#if nonNullish($missionControlIdDerived) && nonNullish($missionControlVersion)}
 	<MissionControlDataLoader missionControlId={$missionControlIdDerived} />

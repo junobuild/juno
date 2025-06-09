@@ -4,12 +4,9 @@
 	import { writable } from 'svelte/store';
 	import IdentityGuard from '$lib/components/guards/IdentityGuard.svelte';
 	import MissionControlGuard from '$lib/components/guards/MissionControlGuard.svelte';
-	import OrbitersLoader from '$lib/components/loaders/OrbitersLoader.svelte';
-	import SatellitesLoader from '$lib/components/loaders/SatellitesLoader.svelte';
 	import Tabs from '$lib/components/ui/Tabs.svelte';
 	import ChangesDock from '$lib/components/upgrade/changes/ChangesDock.svelte';
 	import UpgradeDock from '$lib/components/upgrade/dock/UpgradeDock.svelte';
-	import WalletLoader from '$lib/components/wallet/WalletLoader.svelte';
 	import { missionControlIdDerived } from '$lib/derived/mission-control.derived';
 	import {
 		type Tab,
@@ -18,6 +15,7 @@
 		type TabsData
 	} from '$lib/types/tabs.context';
 	import { initTabId } from '$lib/utils/tabs.utils';
+	import Loaders from '$lib/components/loaders/Loaders.svelte';
 
 	const tabs: Tab[] = [
 		{
@@ -42,20 +40,16 @@
 
 <IdentityGuard>
 	<Tabs help="https://juno.build/docs/build/authentication">
-		<WalletLoader>
-			<SatellitesLoader>
-				<OrbitersLoader>
-					<MissionControlGuard>
-						{#if nonNullish($missionControlIdDerived)}
-							{#if $store.tabId === $store.tabs[0].id}
-								<UpgradeDock missionControlId={$missionControlIdDerived} />
-							{:else if $store.tabId === $store.tabs[1].id}
-								<ChangesDock />
-							{/if}
-						{/if}
-					</MissionControlGuard>
-				</OrbitersLoader>
-			</SatellitesLoader>
-		</WalletLoader>
+		<Loaders>
+			<MissionControlGuard>
+				{#if nonNullish($missionControlIdDerived)}
+					{#if $store.tabId === $store.tabs[0].id}
+						<UpgradeDock missionControlId={$missionControlIdDerived} />
+					{:else if $store.tabId === $store.tabs[1].id}
+						<ChangesDock />
+					{/if}
+				{/if}
+			</MissionControlGuard>
+		</Loaders>
 	</Tabs>
 </IdentityGuard>

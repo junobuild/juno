@@ -4,6 +4,7 @@
 	import { writable } from 'svelte/store';
 	import IdentityGuard from '$lib/components/guards/IdentityGuard.svelte';
 	import SatelliteGuard from '$lib/components/guards/SatelliteGuard.svelte';
+	import Loaders from '$lib/components/loaders/Loaders.svelte';
 	import SatelliteVersionLoader from '$lib/components/loaders/SatelliteVersionLoader.svelte';
 	import Logs from '$lib/components/logs/Logs.svelte';
 	import Tabs from '$lib/components/ui/Tabs.svelte';
@@ -16,7 +17,6 @@
 		TABS_CONTEXT_KEY
 	} from '$lib/types/tabs.context';
 	import { initTabId } from '$lib/utils/tabs.utils';
-	import Loaders from '$lib/components/loaders/Loaders.svelte';
 
 	const tabs: Tab[] = [
 		{

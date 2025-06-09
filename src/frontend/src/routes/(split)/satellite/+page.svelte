@@ -6,6 +6,7 @@
 	import IdentityGuard from '$lib/components/guards/IdentityGuard.svelte';
 	import MissionControlGuard from '$lib/components/guards/MissionControlGuard.svelte';
 	import SatelliteGuard from '$lib/components/guards/SatelliteGuard.svelte';
+	import Loaders from '$lib/components/loaders/Loaders.svelte';
 	import SatelliteVersionLoader from '$lib/components/loaders/SatelliteVersionLoader.svelte';
 	import SatelliteOverview from '$lib/components/satellites/SatelliteOverview.svelte';
 	import SatelliteSettings from '$lib/components/satellites/SatelliteSettings.svelte';
@@ -20,7 +21,6 @@
 		type TabsData
 	} from '$lib/types/tabs.context';
 	import { initTabId } from '$lib/utils/tabs.utils';
-	import Loaders from '$lib/components/loaders/Loaders.svelte';
 
 	const tabs: Tab[] = [
 		{

@@ -155,6 +155,11 @@ const loadSatelliteVersion = async ({
 
 		return { result: 'loaded' };
 	} catch (err: unknown) {
+		versionStore.setSatellite({
+			satelliteId: satelliteId.toText(),
+			version: null
+		});
+
 		return { result: 'error', err };
 	}
 };

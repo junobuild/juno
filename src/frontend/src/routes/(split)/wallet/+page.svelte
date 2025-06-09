@@ -7,7 +7,7 @@
 	import CanistersLoader from '$lib/components/loaders/CanistersLoader.svelte';
 	import Tabs from '$lib/components/ui/Tabs.svelte';
 	import Wallet from '$lib/components/wallet/Wallet.svelte';
-	import WalletLoader from '$lib/components/wallet/WalletLoader.svelte';
+	import WalletLoader from '$lib/components/loaders/WalletLoader.svelte';
 	import Warnings from '$lib/components/warning/Warnings.svelte';
 	import { authSignedIn } from '$lib/derived/auth.derived';
 	import { missionControlIdDerived } from '$lib/derived/mission-control.derived';
@@ -18,6 +18,7 @@
 		type TabsData
 	} from '$lib/types/tabs.context';
 	import { initTabId } from '$lib/utils/tabs.utils';
+	import Loaders from '$lib/components/loaders/Loaders.svelte';
 
 	const tabs: Tab[] = [
 		{
@@ -44,16 +45,14 @@
 			{/if}
 		{/snippet}
 
-		<WalletLoader>
+		<Loaders>
 			<MissionControlGuard>
-				<CanistersLoader>
-					{#if nonNullish($missionControlIdDerived)}
-						{#if $store.tabId === $store.tabs[0].id}
-							<Wallet missionControlId={$missionControlIdDerived} />
-						{/if}
+				{#if nonNullish($missionControlIdDerived)}
+					{#if $store.tabId === $store.tabs[0].id}
+						<Wallet missionControlId={$missionControlIdDerived} />
 					{/if}
-				</CanistersLoader>
+				{/if}
 			</MissionControlGuard>
-		</WalletLoader>
+		</Loaders>
 	</Tabs>
 </IdentityGuard>

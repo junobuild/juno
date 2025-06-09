@@ -9,7 +9,7 @@
 	import SatellitesLoader from '$lib/components/loaders/SatellitesLoader.svelte';
 	import Storage from '$lib/components/storage/Storage.svelte';
 	import Tabs from '$lib/components/ui/Tabs.svelte';
-	import WalletLoader from '$lib/components/wallet/WalletLoader.svelte';
+	import WalletLoader from '$lib/components/loaders/WalletLoader.svelte';
 	import { missionControlIdDerived } from '$lib/derived/mission-control.derived';
 	import { satelliteStore } from '$lib/derived/satellite.derived';
 	import {
@@ -19,6 +19,7 @@
 		TABS_CONTEXT_KEY
 	} from '$lib/types/tabs.context';
 	import { initTabId } from '$lib/utils/tabs.utils';
+	import Loaders from '$lib/components/loaders/Loaders.svelte';
 
 	const tabs: Tab[] = [
 		{
@@ -43,21 +44,17 @@
 
 <IdentityGuard>
 	<Tabs help="https://juno.build/docs/build/storage">
-		<WalletLoader>
-			<SatellitesLoader>
-				<SatelliteGuard>
-					<CanistersLoader>
-						{#if nonNullish($satelliteStore) && nonNullish($missionControlIdDerived)}
-							<SatelliteVersionLoader
-								satellite={$satelliteStore}
-								missionControlId={$missionControlIdDerived}
-							>
-								<Storage satelliteId={$satelliteStore?.satellite_id} />
-							</SatelliteVersionLoader>
-						{/if}
-					</CanistersLoader>
-				</SatelliteGuard>
-			</SatellitesLoader>
-		</WalletLoader>
+		<Loaders>
+			<SatelliteGuard>
+				{#if nonNullish($satelliteStore) && nonNullish($missionControlIdDerived)}
+					<SatelliteVersionLoader
+						satellite={$satelliteStore}
+						missionControlId={$missionControlIdDerived}
+					>
+						<Storage satelliteId={$satelliteStore?.satellite_id} />
+					</SatelliteVersionLoader>
+				{/if}
+			</SatelliteGuard>
+		</Loaders>
 	</Tabs>
 </IdentityGuard>

@@ -55,7 +55,7 @@
 	});
 </script>
 
-{#if ['in_progress', "init"].includes(loading)}
+{#if ['in_progress', 'init'].includes(loading)}
 	<div class="loading">
 		<SpinnerParagraph>{$i18n.core.loading}</SpinnerParagraph>
 	</div>

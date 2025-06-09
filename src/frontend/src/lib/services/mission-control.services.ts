@@ -37,6 +37,7 @@ import {
 import { orbitersUncertifiedStore } from '$lib/stores/orbiter.store';
 import { satellitesUncertifiedStore } from '$lib/stores/satellite.store';
 import { toasts } from '$lib/stores/toasts.store';
+import { versionStore } from '$lib/stores/version.store';
 import type { SetControllerParams } from '$lib/types/controllers';
 import type { OptionIdentity } from '$lib/types/itentity';
 import type { Metadata } from '$lib/types/metadata';
@@ -50,7 +51,6 @@ import { fromNullable, isEmptyString, isNullish } from '@dfinity/utils';
 import { missionControlVersion, satelliteVersion } from '@junobuild/admin';
 import { compare } from 'semver';
 import { get } from 'svelte/store';
-import { versionStore } from '$lib/stores/version.store';
 
 export const setMissionControlControllerForVersion = async ({
 	missionControlId,

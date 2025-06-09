@@ -32,9 +32,7 @@ export const hasPendingUpgrades: Readable<boolean | undefined> = derived(
 		return (
 			$missionControlVersion?.warning === true ||
 			$orbiterVersion?.warning === true ||
-			Object.values($satellitesVersion).find(
-				(value) => value?.warning === true
-			) !== undefined
+			Object.values($satellitesVersion).find((value) => value?.warning === true) !== undefined
 		);
 	}
 );

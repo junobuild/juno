@@ -1,6 +1,5 @@
 <script lang="ts">
 	import { onMount, type Snippet } from 'svelte';
-	import IconAnalytics from '$lib/components/icons/IconAnalytics.svelte';
 	import IconUpgradeDock from '$lib/components/icons/IconUpgradeDock.svelte';
 	import { i18n } from '$lib/stores/i18n.store';
 	import { layoutNavigation } from '$lib/stores/layout-navigation.store';

@@ -1,6 +1,5 @@
 <script lang="ts">
 	import { assertNonNullish, nonNullish } from '@dfinity/utils';
-	import { compare } from 'semver';
 	import UpgradeSegment from '$lib/components/dock/UpgradeSegment.svelte';
 	import { missionControlVersion } from '$lib/derived/version.derived';
 	import { openUpgradeModal } from '$lib/services/upgrade/upgrade.init.services';

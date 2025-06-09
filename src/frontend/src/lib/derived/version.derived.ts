@@ -12,8 +12,8 @@ export const missionControlVersion: Readable<VersionMetadataUi | undefined> = de
 			return undefined;
 		}
 
-		let current = $versionStore.missionControl.current;
-		let release = $versionStore.missionControl.release;
+		const { current } = $versionStore.missionControl;
+		const { release } = $versionStore.missionControl;
 
 		return {
 			...$versionStore.missionControl,
@@ -29,8 +29,8 @@ export const orbiterVersion: Readable<VersionMetadataUi | undefined> = derived(
 			return undefined;
 		}
 
-		let current = $versionStore.orbiter.current;
-		let release = $versionStore.orbiter.release;
+		const { current } = $versionStore.orbiter;
+		const { release } = $versionStore.orbiter;
 
 		return {
 			...$versionStore.orbiter,

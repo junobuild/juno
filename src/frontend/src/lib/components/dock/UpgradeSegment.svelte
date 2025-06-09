@@ -1,15 +1,13 @@
 <script lang="ts">
 	import IconArrowCircleUp from '$lib/components/icons/IconArrowCircleUp.svelte';
-	import IconJuno from '$lib/components/icons/IconJuno.svelte';
 	import IconJunoLogo from '$lib/components/icons/IconJunoLogo.svelte';
 	import IconUser from '$lib/components/icons/IconUser.svelte';
-	import ButtonIcon from '$lib/components/ui/ButtonIcon.svelte';
 	import { i18n } from '$lib/stores/i18n.store';
-	import type { VersionMetadata } from '$lib/stores/version.store';
+	import type { VersionMetadataUi } from '$lib/types/version';
 
 	interface Props {
 		segmentLabel: string;
-		version: Pick<VersionMetadata, 'current' | 'release'>;
+		version: Pick<VersionMetadataUi, 'current' | 'release'>;
 		source: 'juno' | 'dev';
 		startUpgrade: () => Promise<void>;
 	}

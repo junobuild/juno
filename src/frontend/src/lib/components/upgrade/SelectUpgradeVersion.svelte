@@ -3,7 +3,6 @@
 	import { checkUpgradeVersion } from '@junobuild/admin';
 	import { onMount, type Snippet } from 'svelte';
 	import CanisterUpgradeOptions from '$lib/components/canister/CanisterUpgradeOptions.svelte';
-	import IconWarning from '$lib/components/icons/IconWarning.svelte';
 	import Html from '$lib/components/ui/Html.svelte';
 	import Info from '$lib/components/ui/Info.svelte';
 	import { downloadWasm } from '$lib/services/upgrade/upgrade.services';

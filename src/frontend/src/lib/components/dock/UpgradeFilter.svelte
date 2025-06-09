@@ -12,7 +12,6 @@
 
 	let visible: boolean = $state(false);
 
-	 
 	const apply = async () => {};
 
 	const navigate = async (satelliteId: Principal | undefined) =>
@@ -40,7 +39,7 @@
 	<label for="modules">{$i18n.upgrade_dock.modules}</label>
 
 	<div id="modules">
-		<SatellitesPicker {satellites} onChange={navigate} />
+		<SatellitesPicker {satellites} {navigate} />
 	</div>
 </PopoverApply>
 

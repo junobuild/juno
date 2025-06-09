@@ -1,30 +1,6 @@
 import type { SatelliteIdText } from '$lib/types/satellite';
-import type { BuildType } from '@junobuild/admin';
-import type { JunoPackage } from '@junobuild/config';
-import { writable, type Readable } from 'svelte/store';
-
-export interface VersionMetadata {
-	release: string;
-	/**
-	 * The version of the module as published by Juno and required in the eco-system.
-	 *
-	 * For the Satellite, if stock (no dependencies), then pkg.version
-	 * If serverless functions, then pkg.dependencies[junobuild/satellite].version
-	 */
-	current: string;
-	pkg?: JunoPackage;
-}
-
-export interface SatelliteVersionMetadata extends VersionMetadata {
-	/**
-	 * @deprecated use JunoPackage instead
-	 */
-	currentBuild?: string;
-	/**
-	 * @deprecated use JunoPackage instead
-	 */
-	build: BuildType;
-}
+import type { SatelliteVersionMetadata, VersionMetadata } from '$lib/types/version';
+import { type Readable, writable } from 'svelte/store';
 
 export interface VersionStoreData {
 	satellites: Record<SatelliteIdText, SatelliteVersionMetadata | undefined>;

@@ -5,6 +5,7 @@
 	import CanisterUpgradeOptions from '$lib/components/canister/CanisterUpgradeOptions.svelte';
 	import IconWarning from '$lib/components/icons/IconWarning.svelte';
 	import Html from '$lib/components/ui/Html.svelte';
+	import Info from '$lib/components/ui/Info.svelte';
 	import { downloadWasm } from '$lib/services/upgrade/upgrade.services';
 	import { wizardBusy } from '$lib/stores/busy.store';
 	import { i18n } from '$lib/stores/i18n.store';
@@ -12,7 +13,6 @@
 	import type { Wasm } from '$lib/types/upgrade';
 	import { i18nFormat } from '$lib/utils/i18n.utils';
 	import { last } from '$lib/utils/utils';
-	import Info from "$lib/components/ui/Info.svelte";
 
 	interface Props {
 		currentVersion: string;

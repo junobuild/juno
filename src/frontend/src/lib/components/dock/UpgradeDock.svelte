@@ -1,12 +1,12 @@
 <script lang="ts">
 	import UpgradeDockLoader from '$lib/components/dock/UpgradeDockLoader.svelte';
+	import UpgradeFilter from '$lib/components/dock/UpgradeFilter.svelte';
 	import UpgradeMissionControl from '$lib/components/dock/UpgradeMissionControl.svelte';
 	import UpgradeOrbiter from '$lib/components/dock/UpgradeOrbiter.svelte';
 	import UpgradeSatellite from '$lib/components/dock/UpgradeSatellite.svelte';
 	import { satellitesStore } from '$lib/derived/satellites.derived';
 	import { i18n } from '$lib/stores/i18n.store';
 	import type { MissionControlId } from '$lib/types/mission-control';
-	import UpgradeFilter from "$lib/components/dock/UpgradeFilter.svelte";
 
 	interface Props {
 		missionControlId: MissionControlId;

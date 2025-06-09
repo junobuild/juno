@@ -60,7 +60,5 @@
 		<SpinnerParagraph>{$i18n.core.loading}</SpinnerParagraph>
 	</div>
 {:else}
-	<div>
-		{@render children()}
-	</div>
+	{@render children()}
 {/if}

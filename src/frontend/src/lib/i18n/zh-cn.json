@@ -847,5 +847,16 @@
 		"error_never_execute": "⚠️ This function should never ever be executed outside the emulator environment. Setting a controller at this step is strictly for the emulator (and yes, it would fail anyway).",
 		"error_get_identities": "Fetching the emulator identities failed.",
 		"error_no_main_identity": "The emulator does not expose any main identity."
+	},
+	"upgrade_dock": {
+		"title": "Upgrade Dock",
+		"modules": "Modules",
+		"release": "Release",
+		"releases": "Releases",
+		"source": "Source",
+		"current": "Current",
+		"dev": "Developer",
+		"changes": "Changes",
+		"no_upgrades": "You're already on the latest releases. No upgrade needed."
 	}
 }

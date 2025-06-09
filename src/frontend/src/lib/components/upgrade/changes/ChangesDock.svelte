@@ -5,7 +5,6 @@
 	import ChangesFilter from '$lib/components/upgrade/changes/ChangesFilter.svelte';
 	import { openSatellitesProposals } from '$lib/derived/proposals.derived';
 	import { satelliteStore } from '$lib/derived/satellite.derived';
-	import { hasPendingUpgrades } from '$lib/derived/upgrade.derived';
 	import { i18n } from '$lib/stores/i18n.store';
 	import { satelliteName } from '$lib/utils/satellite.utils';
 

@@ -1,12 +1,8 @@
 <script lang="ts">
 	import { fromNullable, nonNullish, uint8ArrayToHexString } from '@dfinity/utils';
-	import IconArrowCircleUp from '$lib/components/icons/IconArrowCircleUp.svelte';
-	import IconJunoLogo from '$lib/components/icons/IconJunoLogo.svelte';
-	import IconUser from '$lib/components/icons/IconUser.svelte';
 	import Identifier from '$lib/components/ui/Identifier.svelte';
 	import { i18n } from '$lib/stores/i18n.store';
 	import type { ProposalRecord } from '$lib/types/proposals';
-	import type { VersionMetadataUi } from '$lib/types/version';
 	import { formatToDate } from '$lib/utils/date.utils';
 
 	interface Props {

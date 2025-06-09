@@ -4,6 +4,7 @@
 	import { writable } from 'svelte/store';
 	import IdentityGuard from '$lib/components/guards/IdentityGuard.svelte';
 	import MissionControlGuard from '$lib/components/guards/MissionControlGuard.svelte';
+	import Loaders from '$lib/components/loaders/Loaders.svelte';
 	import Tabs from '$lib/components/ui/Tabs.svelte';
 	import ChangesDock from '$lib/components/upgrade/changes/ChangesDock.svelte';
 	import UpgradeDock from '$lib/components/upgrade/dock/UpgradeDock.svelte';
@@ -15,7 +16,6 @@
 		type TabsData
 	} from '$lib/types/tabs.context';
 	import { initTabId } from '$lib/utils/tabs.utils';
-	import Loaders from '$lib/components/loaders/Loaders.svelte';
 
 	const tabs: Tab[] = [
 		{

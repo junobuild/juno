@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { isNullish, nonNullish } from '@dfinity/utils';
+	import { untrack } from 'svelte';
 	import { goto } from '$app/navigation';
 	import IconWarning from '$lib/components/icons/IconWarning.svelte';
 	import Html from '$lib/components/ui/Html.svelte';
@@ -19,7 +20,6 @@
 	import type { MissionControlId } from '$lib/types/mission-control';
 	import { formatTCycles } from '$lib/utils/cycles.utils';
 	import { i18nCapitalize, i18nFormat } from '$lib/utils/i18n.utils';
-	import { untrack } from 'svelte';
 
 	interface Props {
 		segmentName?: string;
@@ -41,6 +41,7 @@
 	let cycles: bigint | undefined = $state(undefined);
 	$effect(() => {
 		if (isNaN(tCycles)) {
+			untrack(() => (cycles = undefined));
 			return;
 		}
 

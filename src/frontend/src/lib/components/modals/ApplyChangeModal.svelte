@@ -3,13 +3,10 @@
 	import ConfirmChange from '$lib/components/changes/wizard/ConfirmChange.svelte';
 	import Modal from '$lib/components/ui/Modal.svelte';
 	import type { JunoModalApplyProposal, JunoModalDetail } from '$lib/types/modal';
-	import type { TopUpProgress } from '$lib/types/progress-topup';
 	import type { ApplyProposalProgress } from '@junobuild/cdn';
 	import ProgressApplyChange from '$lib/components/changes/wizard/ProgressApplyChange.svelte';
 	import { applyProposal } from '$lib/services/proposals/proposals.services';
 	import { authStore } from '$lib/stores/auth.store';
-	import { i18nFormat } from '$lib/utils/i18n.utils';
-	import Html from '$lib/components/ui/Html.svelte';
 	import { i18n } from '$lib/stores/i18n.store';
 
 	interface Props {
@@ -67,7 +64,7 @@
 			<button onclick={onclose}>{$i18n.core.close}</button>
 		</div>
 	{:else if step === 'in_progress'}
-		<ProgressApplyChange {progress} {takeSnapshot} />
+		<ProgressApplyChange {progress} {takeSnapshot} {clearProposalAssets} />
 	{:else}
 		<ConfirmChange
 			{proposalId}

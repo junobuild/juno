@@ -870,6 +870,16 @@
 		"hash": "Hash",
 		"type": "Type",
 		"assets_upgrade": "Frontend Deployment",
-		"segments_deployment": "Function Upgrade"
+		"segments_deployment": "Function Upgrade",
+		"apply_change": "Apply change",
+		"snapshot_before_apply": "Snapshot before applying",
+		"confirm_assets_upgrade": "Your frontend will be updated with the assets bundled in change <strong>{0}</strong> (hash: <code>{1}</code>).",
+		"confirm_segments_deployment": "The WASM for your serverless functions will be published to your CDN as part of change <strong>{0}</strong> (hash: <code>{1}</code>).",
+		"change_preparing": "Preparing deployment...",
+		"applying_update": "Applying update...",
+		"clearing_staged_assets": "Clearing staged assets...",
+		"clear_after_apply": "Clear assets after apply",
+		"assets_upgrade_applied": "Frontend successfully updated.",
+		"segments_deployment_applied": "WASM deployed to your CDN."
 	}
 }

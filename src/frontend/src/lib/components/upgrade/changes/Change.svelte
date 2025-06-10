@@ -4,6 +4,8 @@
 	import { i18n } from '$lib/stores/i18n.store';
 	import type { ProposalRecord } from '$lib/types/proposals';
 	import { formatToDate } from '$lib/utils/date.utils';
+	import IconArrowCircleUp from "$lib/components/icons/IconArrowCircleUp.svelte";
+	import {emit} from "$lib/utils/events.utils";
 
 	interface Props {
 		proposal: ProposalRecord;
@@ -22,10 +24,24 @@
 			? $i18n.changes.assets_upgrade
 			: $i18n.changes.segments_deployment
 	);
+
+	const openApplyProposal = () => {
+		emit({
+			message: 'junoModal',
+			detail: {
+				type: 'apply_proposal',
+				detail: { proposal: proposalRecord }
+			}
+		});
+	};
 </script>
 
 <tr>
-	<td> TODO </td>
+	<td>
+		<button class="square" aria-label={$i18n.core.apply} onclick={openApplyProposal}
+		><IconArrowCircleUp size="20px" /></button
+		>
+	</td>
 	<td><Identifier small={false} identifier={`${proposal_id}`} /></td>
 	<td class="hash"
 		>{#if nonNullish(hash)}<Identifier small={false} identifier={hash} />{/if}</td

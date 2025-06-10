@@ -26,6 +26,7 @@
 	import StopMonitoringStrategyModal from '$lib/components/modals/StopMonitoringStrategyModal.svelte';
 	import UserDetailsModal from '$lib/components/modals/UserDetailsModal.svelte';
 	import type { JunoModal, JunoModalDetail } from '$lib/types/modal';
+	import ApplyProposalModal from "$lib/components/modals/ApplyProposalModal.svelte";
 
 	let modal: JunoModal<JunoModalDetail> | undefined = $state(undefined);
 
@@ -132,4 +133,8 @@
 
 {#if modal?.type === 'show_user_details' && nonNullish(modal.detail)}
 	<UserDetailsModal onclose={close} detail={modal.detail} />
+{/if}
+
+{#if modal?.type === 'apply_proposal' && nonNullish(modal.detail)}
+	<ApplyProposalModal onclose={close} detail={modal.detail} />
 {/if}

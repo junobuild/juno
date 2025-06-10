@@ -82,7 +82,8 @@
 		"fee": "Fee",
 		"preparing": "Gearing up...",
 		"refreshing_interface": "Refreshing the interface...",
-		"usage": "Usage"
+		"usage": "Usage",
+		"creating_snapshot": "Creating a snapshot..."
 	},
 	"canisters": {
 		"top_up": "Top-up",
@@ -215,11 +216,9 @@
 		"no_snapshot": "There is currently no snapshot for this {0}.",
 		"snapshot_created": "The snapshot for your {0} was created.",
 		"snapshot_restored": "The snapshot for your {0} was restored.",
-		"creating_snapshot": "Creating a snapshot...",
 		"restoring_snapshot": "Restoring a snapshot...",
 		"snapshot_preparing": "Activating snapshot execution...",
 		"snapshot_stopping": "Stopping {0}...",
-		"upgrade_snapshot": "Creating a snapshot...",
 		"edit_snapshot": "Edit snapshot",
 		"delete_snapshot": "Delete snapshot",
 		"delete_snapshot_confirm": "Are you sure you want to delete the snapshot {0} of your {1}?",
@@ -609,7 +608,8 @@
 		"user_unban": "Unexpected error(s) while trying to unban the user.",
 		"satellite_version_not_found": "Unexpected error. Your Satellite implements serverless functions, but no dependency version can be resolved.",
 		"load_version": "Unexpected error(s) while loading the version of your module(s).",
-		"load_proposals": "Unexpected error(s) while loading the changes of your module(s)."
+		"load_proposals": "Unexpected error(s) while loading the changes of your module(s).",
+		"apply_proposal_error": "Error while applying the change. Reach out Juno if the problem persists!"
 	},
 	"document": {
 		"owner": "Owner",
@@ -871,6 +871,16 @@
 		"hash": "Hash",
 		"type": "Type",
 		"assets_upgrade": "Frontend Deployment",
-		"segments_deployment": "Function Upgrade"
+		"segments_deployment": "Function Upgrade",
+		"apply_change": "Apply change",
+		"snapshot_before_apply": "Snapshot before applying",
+		"confirm_assets_upgrade": "Your frontend will be updated with the assets bundled in change <strong>{0}</strong> (hash: <code>{1}</code>).",
+		"confirm_segments_deployment": "The WASM for your serverless functions will be published to your CDN as part of change <strong>{0}</strong> (hash: <code>{1}</code>).",
+		"change_preparing": "Preparing deployment...",
+		"applying_update": "Applying update...",
+		"clearing_staged_assets": "Clearing staged assets...",
+		"clear_after_apply": "Clear assets after apply",
+		"assets_upgrade_applied": "Frontend successfully updated.",
+		"segments_deployment_applied": "WASM deployed to your CDN."
 	}
 }

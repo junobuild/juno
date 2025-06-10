@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { nonNullish } from '@dfinity/utils';
+	import ApplyChangeModal from '$lib/components/modals/ApplyChangeModal.svelte';
 	import AuthConfigModal from '$lib/components/modals/AuthConfigModal.svelte';
 	import CanisterEditSettingsModal from '$lib/components/modals/CanisterEditSettingsModal.svelte';
 	import CanisterRestoreSnapshotModal from '$lib/components/modals/CanisterRestoreSnapshotModal.svelte';
@@ -132,4 +133,8 @@
 
 {#if modal?.type === 'show_user_details' && nonNullish(modal.detail)}
 	<UserDetailsModal onclose={close} detail={modal.detail} />
+{/if}
+
+{#if modal?.type === 'apply_change' && nonNullish(modal.detail)}
+	<ApplyChangeModal onclose={close} detail={modal.detail} />
 {/if}

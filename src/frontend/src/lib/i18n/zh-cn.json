@@ -82,7 +82,8 @@
 		"fee": "费用",
 		"preparing": "准备中...",
 		"refreshing_interface": "刷新界面...",
-		"usage": "用途"
+		"usage": "用途",
+		"creating_snapshot": "创建快照..."
 	},
 	"canisters": {
 		"top_up": "充值",
@@ -215,11 +216,9 @@
 		"no_snapshot": "这个 {0} 没有快照.",
 		"snapshot_created": "你的 {0} 快照已经创建.",
 		"snapshot_restored": "你的 {0} 已经从快照恢复.",
-		"creating_snapshot": "创建快照...",
 		"restoring_snapshot": "恢复快照...",
 		"snapshot_preparing": "激活快照执行...",
 		"snapshot_stopping": "停止 {0}...",
-		"upgrade_snapshot": "创建快照...",
 		"edit_snapshot": "编辑快照",
 		"delete_snapshot": "删除快照",
 		"delete_snapshot_confirm": "你确定要删除你的 {1} 快照  {0}  ?",
@@ -609,7 +608,8 @@
 		"user_unban": "试图解禁用户时出现异常错误.",
 		"satellite_version_not_found": "Unexpected error. Your Satellite implements serverless functions, but no dependency version can be resolved.",
 		"load_version": "Unexpected error(s) while loading the version of your module(s).",
-		"load_proposals": "Unexpected error(s) while loading the changes of your module(s)."
+		"load_proposals": "Unexpected error(s) while loading the changes of your module(s).",
+		"apply_proposal_error": "Error while applying the change. Reach out Juno if the problem persists!"
 	},
 	"document": {
 		"owner": "拥有者",
@@ -871,6 +871,16 @@
 		"hash": "Hash",
 		"type": "Type",
 		"assets_upgrade": "Frontend Deployment",
-		"segments_deployment": "Function Upgrade"
+		"segments_deployment": "Function Upgrade",
+		"apply_change": "Apply change",
+		"snapshot_before_apply": "Snapshot before applying",
+		"confirm_assets_upgrade": "Your frontend will be updated with the assets bundled in change <strong>{0}</strong> (hash: <code>{1}</code>).",
+		"confirm_segments_deployment": "The WASM for your serverless functions will be published to your CDN as part of change <strong>{0}</strong> (hash: <code>{1}</code>).",
+		"change_preparing": "Preparing deployment...",
+		"applying_update": "Applying update...",
+		"clearing_staged_assets": "Clearing staged assets...",
+		"clear_after_apply": "Clear assets after apply",
+		"assets_upgrade_applied": "Frontend successfully updated.",
+		"segments_deployment_applied": "WASM deployed to your CDN."
 	}
 }

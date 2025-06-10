@@ -13,6 +13,7 @@ import type { SetControllerParams } from '$lib/types/controllers';
 import type { CustomDomains } from '$lib/types/custom-domain';
 import type { MissionControlId } from '$lib/types/mission-control';
 import type { OrbiterSatelliteConfigEntry } from '$lib/types/orbiter';
+import type { ProposalRecord } from '$lib/types/proposals';
 import type { SatelliteIdText } from '$lib/types/satellite';
 import type { User as UserListed } from '$lib/types/user';
 import type { UserUsageCollection } from '$lib/types/user-usage';
@@ -116,6 +117,11 @@ export interface JunoModalShowUserDetail {
 	usages: UserUsageCollection[];
 }
 
+export interface JunoModalApplyProposal {
+	proposal: ProposalRecord;
+	satelliteId: SatelliteIdText;
+}
+
 export type JunoModalDetail =
 	| JunoModalUpgradeSatelliteDetail
 	| JunoModalUpgradeDetail
@@ -131,7 +137,8 @@ export type JunoModalDetail =
 	| JunoModalDeleteSatelliteDetail
 	| JunoModalEditOrbiterConfigDetail
 	| JunoModalCreateMonitoringStrategyDetail
-	| JunoModalShowUserDetail;
+	| JunoModalShowUserDetail
+	| JunoModalApplyProposal;
 
 export interface JunoModal<T extends JunoModalDetail> {
 	type:
@@ -159,6 +166,7 @@ export interface JunoModal<T extends JunoModalDetail> {
 		| 'create_monitoring_strategy'
 		| 'stop_monitoring_strategy'
 		| 'show_monitoring_details'
-		| 'show_user_details';
+		| 'show_user_details'
+		| 'apply_change';
 	detail?: T;
 }

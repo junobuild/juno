@@ -86,6 +86,7 @@ interface I18nCore {
 	preparing: string;
 	refreshing_interface: string;
 	usage: string;
+	creating_snapshot: string;
 }
 
 interface I18nCanisters {
@@ -219,11 +220,9 @@ interface I18nCanisters {
 	no_snapshot: string;
 	snapshot_created: string;
 	snapshot_restored: string;
-	creating_snapshot: string;
 	restoring_snapshot: string;
 	snapshot_preparing: string;
 	snapshot_stopping: string;
-	upgrade_snapshot: string;
 	edit_snapshot: string;
 	delete_snapshot: string;
 	delete_snapshot_confirm: string;
@@ -626,6 +625,7 @@ interface I18nErrors {
 	satellite_version_not_found: string;
 	load_version: string;
 	load_proposals: string;
+	apply_proposal_error: string;
 }
 
 interface I18nDocument {
@@ -903,6 +903,16 @@ interface I18nChanges {
 	type: string;
 	assets_upgrade: string;
 	segments_deployment: string;
+	apply_change: string;
+	snapshot_before_apply: string;
+	confirm_assets_upgrade: string;
+	confirm_segments_deployment: string;
+	change_preparing: string;
+	applying_update: string;
+	clearing_staged_assets: string;
+	clear_after_apply: string;
+	assets_upgrade_applied: string;
+	segments_deployment_applied: string;
 }
 
 interface I18n {

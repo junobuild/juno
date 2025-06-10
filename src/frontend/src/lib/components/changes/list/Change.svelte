@@ -1,15 +1,19 @@
 <script lang="ts">
 	import { fromNullable, nonNullish, uint8ArrayToHexString } from '@dfinity/utils';
+	import IconArrowCircleUp from '$lib/components/icons/IconArrowCircleUp.svelte';
 	import Identifier from '$lib/components/ui/Identifier.svelte';
 	import { i18n } from '$lib/stores/i18n.store';
 	import type { ProposalRecord } from '$lib/types/proposals';
+	import type { SatelliteIdText } from '$lib/types/satellite';
 	import { formatToDate } from '$lib/utils/date.utils';
+	import { emit } from '$lib/utils/events.utils';
 
 	interface Props {
 		proposal: ProposalRecord;
+		satelliteId: SatelliteIdText;
 	}
 
-	let { proposal: proposalRecord }: Props = $props();
+	let { proposal: proposalRecord, satelliteId }: Props = $props();
 
 	let { proposal_id } = $derived(proposalRecord[0]);
 	let { sha256, proposal_type, created_at } = $derived(proposalRecord[1]);
@@ -22,10 +26,24 @@
 			? $i18n.changes.assets_upgrade
 			: $i18n.changes.segments_deployment
 	);
+
+	const openApplyProposal = () => {
+		emit({
+			message: 'junoModal',
+			detail: {
+				type: 'apply_change',
+				detail: { proposal: proposalRecord, satelliteId }
+			}
+		});
+	};
 </script>
 
 <tr>
-	<td> TODO </td>
+	<td>
+		<button class="square" aria-label={$i18n.core.apply} onclick={openApplyProposal}
+			><IconArrowCircleUp size="20px" /></button
+		>
+	</td>
 	<td><Identifier small={false} identifier={`${proposal_id}`} /></td>
 	<td class="hash"
 		>{#if nonNullish(hash)}<Identifier small={false} identifier={hash} />{/if}</td

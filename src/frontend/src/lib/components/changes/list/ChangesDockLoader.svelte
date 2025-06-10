@@ -4,7 +4,7 @@
 	import SpinnerParagraph from '$lib/components/ui/SpinnerParagraph.svelte';
 	import { satellitesNotLoaded, satellitesStore } from '$lib/derived/satellites.derived';
 	import { satellitesVersionNotLoaded } from '$lib/derived/version.derived';
-	import { loadProposals as loadProposalsServices } from '$lib/services/proposals/proposals.services';
+	import { loadProposals as loadProposalsServices } from '$lib/services/proposals/proposals.list.services';
 	import { loadSatellitesVersions } from '$lib/services/version/version.services';
 	import { authStore } from '$lib/stores/auth.store';
 	import { i18n } from '$lib/stores/i18n.store';

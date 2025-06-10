@@ -1,7 +1,7 @@
 import type { Satellite } from '$declarations/mission_control/mission_control.did';
 import { SATELLITE_v0_1_0 } from '$lib/constants/version.constants';
 import { isSatelliteFeatureSupported } from '$lib/services/feature.services';
-import { reloadSatelliteProposals } from '$lib/services/proposals/proposals.satellite.services';
+import { reloadSatelliteProposals } from '$lib/services/proposals/proposals.list.satellite.services';
 import { i18n } from '$lib/stores/i18n.store';
 import { proposalsStore } from '$lib/stores/proposals.store';
 import { toasts } from '$lib/stores/toasts.store';

@@ -1,10 +1,10 @@
 <script lang="ts">
 	import { fromNullable, nonNullish, uint8ArrayToHexString } from '@dfinity/utils';
-	import type { ApplyProposalProgress } from '@junobuild/cdn';
-	import ConfirmApplyChange from '$lib/components/changes/wizard/ConfirmApplyChange.svelte';
-	import ProgressApplyChange from '$lib/components/changes/wizard/ProgressApplyChange.svelte';
+	import type { RejectProposalProgress } from '@junobuild/cdn';
+	import ConfirmRejectChange from '$lib/components/changes/wizard/ConfirmRejectChange.svelte';
+	import ProgressRejectChange from '$lib/components/changes/wizard/ProgressRejectChange.svelte';
 	import Modal from '$lib/components/ui/Modal.svelte';
-	import { applyProposal } from '$lib/services/proposals/proposals.services';
+	import { rejectProposal } from '$lib/services/proposals/proposals.services';
 	import { authStore } from '$lib/stores/auth.store';
 	import { i18n } from '$lib/stores/i18n.store';
 	import type { JunoModalChange, JunoModalDetail } from '$lib/types/modal';
@@ -28,23 +28,21 @@
 	);
 
 	let clearProposalAssets = $state(true);
-	let takeSnapshot = $state(false);
 
 	let step: 'init' | 'in_progress' | 'ready' | 'error' = $state('init');
 
-	let progress: ApplyProposalProgress | undefined = $state(undefined);
-	const onProgress = (changeProgress: ApplyProposalProgress | undefined) =>
+	let progress: RejectProposalProgress | undefined = $state(undefined);
+	const onProgress = (changeProgress: RejectProposalProgress | undefined) =>
 		(progress = changeProgress);
 
 	const onsubmit = async ($event: SubmitEvent) => {
 		$event.preventDefault();
 
-		await applyProposal({
+		await rejectProposal({
 			satelliteId,
 			proposal: proposalRecord,
 			identity: $authStore.identity,
 			clearProposalAssets,
-			takeSnapshot,
 			nextSteps: (next) => (step = next),
 			onProgress
 		});
@@ -56,22 +54,21 @@
 		<div class="msg">
 			<p>
 				{#if 'AssetsUpgrade' in proposalType}
-					{$i18n.changes.assets_upgrade_applied}
+					{$i18n.changes.assets_upgrade_discarded}
 				{:else}
-					{$i18n.changes.segments_deployment_applied}
+					{$i18n.changes.segments_deployment_discarded}
 				{/if}
 			</p>
 			<button onclick={onclose}>{$i18n.core.close}</button>
 		</div>
 	{:else if step === 'in_progress'}
-		<ProgressApplyChange {progress} {takeSnapshot} {clearProposalAssets} />
+		<ProgressRejectChange {progress} {clearProposalAssets} />
 	{:else}
-		<ConfirmApplyChange
+		<ConfirmRejectChange
 			{proposalId}
 			{proposalType}
 			{proposalHash}
 			bind:clearProposalAssets
-			bind:takeSnapshot
 			{onclose}
 			{onsubmit}
 		/>

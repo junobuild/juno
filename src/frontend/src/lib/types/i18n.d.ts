@@ -626,6 +626,7 @@ interface I18nErrors {
 	load_version: string;
 	load_proposals: string;
 	apply_proposal_error: string;
+	reject_proposal_error: string;
 }
 
 interface I18nDocument {
@@ -913,6 +914,14 @@ interface I18nChanges {
 	clear_after_apply: string;
 	assets_upgrade_applied: string;
 	segments_deployment_applied: string;
+	reject: string;
+	rejecting: string;
+	reject_change: string;
+	reject_assets_upgrade: string;
+	reject_segments_deployment: string;
+	assets_upgrade_discarded: string;
+	segments_deployment_discarded: string;
+	reject_preparing: string;
 }
 
 interface I18n {

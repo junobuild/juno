@@ -86,7 +86,7 @@
 	}
 
 	.tools {
-		width: 60px;
+		width: 80px;
 	}
 
 	.no-upgrade {

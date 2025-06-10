@@ -1,11 +1,11 @@
 <script lang="ts">
 	import { fromNullable, nonNullish, uint8ArrayToHexString } from '@dfinity/utils';
+	import IconArrowCircleUp from '$lib/components/icons/IconArrowCircleUp.svelte';
 	import Identifier from '$lib/components/ui/Identifier.svelte';
 	import { i18n } from '$lib/stores/i18n.store';
 	import type { ProposalRecord } from '$lib/types/proposals';
 	import { formatToDate } from '$lib/utils/date.utils';
-	import IconArrowCircleUp from "$lib/components/icons/IconArrowCircleUp.svelte";
-	import {emit} from "$lib/utils/events.utils";
+	import { emit } from '$lib/utils/events.utils';
 
 	interface Props {
 		proposal: ProposalRecord;
@@ -29,7 +29,7 @@
 		emit({
 			message: 'junoModal',
 			detail: {
-				type: 'apply_proposal',
+				type: 'apply_change',
 				detail: { proposal: proposalRecord }
 			}
 		});
@@ -39,7 +39,7 @@
 <tr>
 	<td>
 		<button class="square" aria-label={$i18n.core.apply} onclick={openApplyProposal}
-		><IconArrowCircleUp size="20px" /></button
+			><IconArrowCircleUp size="20px" /></button
 		>
 	</td>
 	<td><Identifier small={false} identifier={`${proposal_id}`} /></td>

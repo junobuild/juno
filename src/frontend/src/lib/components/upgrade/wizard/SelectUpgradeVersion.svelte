@@ -2,9 +2,9 @@
 	import { isNullish } from '@dfinity/utils';
 	import { checkUpgradeVersion } from '@junobuild/admin';
 	import { onMount, type Snippet } from 'svelte';
-	import CanisterUpgradeOptions from '$lib/components/canister/CanisterUpgradeOptions.svelte';
 	import Html from '$lib/components/ui/Html.svelte';
 	import Info from '$lib/components/ui/Info.svelte';
+	import CanisterUpgradeOptions from '$lib/components/upgrade/wizard/CanisterUpgradeOptions.svelte';
 	import { downloadWasm } from '$lib/services/upgrade/upgrade.services';
 	import { wizardBusy } from '$lib/stores/busy.store';
 	import { i18n } from '$lib/stores/i18n.store';

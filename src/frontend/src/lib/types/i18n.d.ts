@@ -903,6 +903,10 @@ interface I18nChanges {
 	type: string;
 	assets_upgrade: string;
 	segments_deployment: string;
+	apply_change: string;
+	snapshot_before_apply: string;
+	confirm_assets_upgrade: string;
+	confirm_segments_deployment: string;
 }
 
 interface I18n {

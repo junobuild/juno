@@ -166,6 +166,6 @@ export interface JunoModal<T extends JunoModalDetail> {
 		| 'stop_monitoring_strategy'
 		| 'show_monitoring_details'
 		| 'show_user_details'
-		| 'apply_proposal';
+		| 'apply_change';
 	detail?: T;
 }

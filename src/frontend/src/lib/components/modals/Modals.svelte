@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { nonNullish } from '@dfinity/utils';
+	import ApplyChangeModal from '$lib/components/modals/ApplyChangeModal.svelte';
 	import AuthConfigModal from '$lib/components/modals/AuthConfigModal.svelte';
 	import CanisterEditSettingsModal from '$lib/components/modals/CanisterEditSettingsModal.svelte';
 	import CanisterRestoreSnapshotModal from '$lib/components/modals/CanisterRestoreSnapshotModal.svelte';
@@ -26,7 +27,6 @@
 	import StopMonitoringStrategyModal from '$lib/components/modals/StopMonitoringStrategyModal.svelte';
 	import UserDetailsModal from '$lib/components/modals/UserDetailsModal.svelte';
 	import type { JunoModal, JunoModalDetail } from '$lib/types/modal';
-	import ApplyProposalModal from "$lib/components/modals/ApplyProposalModal.svelte";
 
 	let modal: JunoModal<JunoModalDetail> | undefined = $state(undefined);
 
@@ -135,6 +135,6 @@
 	<UserDetailsModal onclose={close} detail={modal.detail} />
 {/if}
 
-{#if modal?.type === 'apply_proposal' && nonNullish(modal.detail)}
-	<ApplyProposalModal onclose={close} detail={modal.detail} />
+{#if modal?.type === 'apply_change' && nonNullish(modal.detail)}
+	<ApplyChangeModal onclose={close} detail={modal.detail} />
 {/if}

@@ -1,6 +1,5 @@
 <script lang="ts">
 	import { nonNullish } from '@dfinity/utils';
-	import { createEventDispatcher } from 'svelte';
 	import Copy from '$lib/components/ui/Copy.svelte';
 	import Html from '$lib/components/ui/Html.svelte';
 	import { i18n } from '$lib/stores/i18n.store';
@@ -11,11 +10,12 @@
 		domainNameInput: string;
 		dns: CustomDomainDns | undefined;
 		edit?: boolean;
+		onclose: () => void;
+		onback: () => void;
+		onsubmit: ($event: UIEvent) => Promise<void>;
 	}
 
-	let { domainNameInput, dns, edit = false }: Props = $props();
-
-	const dispatch = createEventDispatcher();
+	let { domainNameInput, dns, edit = false, onclose, onback, onsubmit }: Props = $props();
 </script>
 
 <h2>{$i18n.hosting.configure}</h2>
@@ -55,11 +55,11 @@
 
 <div class="toolbar">
 	{#if !edit}
-		<button onclick={() => dispatch('junoBack')}>{$i18n.core.back}</button>
-		<button onclick={() => dispatch('junoSubmit')}>{$i18n.core.ready}</button>
+		<button onclick={onback}>{$i18n.core.back}</button>
+		<button onclick={onsubmit}>{$i18n.core.ready}</button>
 	{:else}
-		<button onclick={() => dispatch('junoClose')}>{$i18n.core.close}</button>
-		<button onclick={() => dispatch('junoSubmit')}>{$i18n.core.submit}</button>
+		<button onclick={onclose}>{$i18n.core.close}</button>
+		<button onclick={onsubmit}>{$i18n.core.submit}</button>
 	{/if}
 </div>
 

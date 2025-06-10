@@ -57,7 +57,9 @@
 	let progress: HostingProgress | undefined = $state(undefined);
 	const onProgress = (hostingProgress: HostingProgress | undefined) => (progress = hostingProgress);
 
-	const setupCustomDomain = async () => {
+	const setupCustomDomain = async ($event: UIEvent) => {
+		$event.preventDefault();
+
 		if (isNullish(dns)) {
 			toasts.error({
 				text: $i18n.errors.hosting_missing_dns_configuration
@@ -102,7 +104,7 @@
 	};
 </script>
 
-<Modal on:junoClose={close}>
+<Modal onclose={close}>
 	{#if step === 'ready'}
 		<div class="msg">
 			<IconVerified />
@@ -114,9 +116,9 @@
 			{domainNameInput}
 			{dns}
 			{edit}
-			on:junoSubmit={async () => await setupCustomDomain()}
-			on:junoBack={() => (step = 'init')}
-			on:junoClose={close}
+			onsubmit={setupCustomDomain}
+			onback={() => (step = 'init')}
+			onclose={close}
 		/>
 	{:else if step === 'in_progress'}
 		<ProgressHosting {progress} withConfig={nonNullish(editConfig)} />

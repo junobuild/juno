@@ -80,7 +80,7 @@
 	let monitoringStrategy: CyclesMonitoringStrategy | undefined = $state();
 </script>
 
-<Modal on:junoClose={onclose}>
+<Modal {onclose}>
 	{#if step === 'ready'}
 		<Confetti />
 

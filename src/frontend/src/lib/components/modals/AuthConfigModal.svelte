@@ -63,7 +63,7 @@
 	};
 </script>
 
-<Modal on:junoClose={onclose}>
+<Modal {onclose}>
 	{#if step === 'ready'}
 		<div class="msg">
 			<p>{$i18n.core.configuration_applied}</p>

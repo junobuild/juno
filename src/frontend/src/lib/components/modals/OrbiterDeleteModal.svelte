@@ -10,9 +10,10 @@
 
 	interface Props {
 		detail: JunoModalDetail;
+		onclose: () => void;
 	}
 
-	let { detail }: Props = $props();
+	let { detail, onclose }: Props = $props();
 
 	let { cycles: currentCycles } = $derived(detail as JunoModalCycles);
 
@@ -30,7 +31,7 @@
 </script>
 
 {#if nonNullish($orbiterStore)}
-	<Modal on:junoClose>
-		<CanisterDeleteWizard {deleteFn} {currentCycles} on:junoClose segment="analytics" />
+	<Modal {onclose}>
+		<CanisterDeleteWizard {deleteFn} {currentCycles} {onclose} segment="analytics" />
 	</Modal>
 {/if}

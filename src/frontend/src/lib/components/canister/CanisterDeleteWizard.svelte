@@ -1,7 +1,5 @@
 <script lang="ts">
 	import { isNullish, nonNullish } from '@dfinity/utils';
-	import { createEventDispatcher } from 'svelte';
-	import { run, preventDefault } from 'svelte/legacy';
 	import { goto } from '$app/navigation';
 	import IconWarning from '$lib/components/icons/IconWarning.svelte';
 	import Html from '$lib/components/ui/Html.svelte';
@@ -21,6 +19,7 @@
 	import type { MissionControlId } from '$lib/types/mission-control';
 	import { formatTCycles } from '$lib/utils/cycles.utils';
 	import { i18nCapitalize, i18nFormat } from '$lib/utils/i18n.utils';
+	import { untrack } from 'svelte';
 
 	interface Props {
 		segmentName?: string;
@@ -30,26 +29,22 @@
 			missionControlId: MissionControlId;
 			cyclesToDeposit: bigint;
 		}) => Promise<void>;
+		onclose: () => void;
 	}
 
-	let { segment, segmentName, currentCycles, deleteFn }: Props = $props();
+	let { segment, segmentName, currentCycles, deleteFn, onclose }: Props = $props();
 
 	let step: 'init' | 'in_progress' | 'error' = $state('init');
-
-	const dispatch = createEventDispatcher();
-	const close = () => dispatch('junoClose');
 
 	let tCycles = $state(DEFAULT_TCYCLES_TO_RETAIN_ON_DELETION);
 
 	let cycles: bigint | undefined = $state(undefined);
-	run(() => {
-		(() => {
-			if (isNaN(tCycles)) {
-				return;
-			}
+	$effect(() => {
+		if (isNaN(tCycles)) {
+			return;
+		}
 
-			cycles = BigInt(tCycles * ONE_TRILLION);
-		})();
+		untrack(() => (cycles = BigInt(tCycles * ONE_TRILLION)));
 	});
 
 	let cyclesToDeposit: bigint = $derived(
@@ -58,7 +53,9 @@
 
 	let validConfirm = $derived(nonNullish(cycles) && cycles > 0 && cycles <= currentCycles);
 
-	const onSubmit = async () => {
+	const onSubmit = async ($event: SubmitEvent) => {
+		$event.preventDefault();
+
 		if ($authSignedOut) {
 			toasts.error({
 				text: $i18n.errors.no_identity
@@ -97,7 +94,7 @@
 
 			await goto('/', { replaceState: true });
 
-			close();
+			onclose();
 
 			toasts.success({
 				text: i18nCapitalize(
@@ -127,7 +124,7 @@
 		<p>{$i18n.canisters.delete_in_progress}</p>
 	</SpinnerModal>
 {:else}
-	<form onsubmit={preventDefault(onSubmit)}>
+	<form onsubmit={onSubmit}>
 		<h2>
 			<Html
 				text={i18nFormat($i18n.canisters.delete_title, [

@@ -28,7 +28,7 @@
 	const snapshottingStep: ProgressStep = {
 		state: 'next',
 		step: 'snapshotting',
-		text: $i18n.canisters.upgrade_snapshot
+		text: $i18n.core.creating_snapshot
 	};
 
 	let steps: Steps = $state({

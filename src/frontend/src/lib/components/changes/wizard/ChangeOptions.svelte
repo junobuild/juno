@@ -2,17 +2,23 @@
 	import CanisterSnapshotOption from '$lib/components/canister/CanisterSnapshotOption.svelte';
 	import Collapsible from '$lib/components/ui/Collapsible.svelte';
 	import { i18n } from '$lib/stores/i18n.store';
+	import CheckboxInline from "$lib/components/ui/CheckboxInline.svelte";
 
 	interface Props {
+		clearProposalAssets: boolean;
 		takeSnapshot: boolean;
 	}
 
-	let { takeSnapshot = $bindable(false) }: Props = $props();
+	let { clearProposalAssets = $bindable(true), takeSnapshot = $bindable(false) }: Props = $props();
 </script>
 
 <div class="container">
 	<Collapsible>
 		<svelte:fragment slot="header">{$i18n.core.advanced_options}</svelte:fragment>
+
+		<CheckboxInline bind:checked={clearProposalAssets}>
+			{$i18n.changes.clear_after_apply}
+		</CheckboxInline>
 
 		<CanisterSnapshotOption bind:takeSnapshot>
 			{$i18n.changes.snapshot_before_apply}

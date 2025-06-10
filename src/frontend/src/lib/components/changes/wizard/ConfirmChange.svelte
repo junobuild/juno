@@ -9,12 +9,14 @@
 		proposalId: bigint;
 		proposalHash: string | undefined;
 		proposalType: ProposalType;
+		clearProposalAssets: boolean;
 		takeSnapshot: boolean;
 		onclose: () => void;
 		onsubmit: ($event: SubmitEvent) => Promise<void>;
 	}
 
 	let {
+		clearProposalAssets = $bindable(true),
 		takeSnapshot = $bindable(false),
 		onclose,
 		onsubmit,
@@ -48,7 +50,7 @@
 		/>
 	</p>
 
-	<ChangeOptions bind:takeSnapshot />
+	<ChangeOptions bind:takeSnapshot bind:clearProposalAssets />
 
 	<div class="toolbar">
 		<button type="button" onclick={onclose}>{$i18n.core.cancel}</button>

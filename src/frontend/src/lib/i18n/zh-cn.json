@@ -82,7 +82,8 @@
 		"fee": "费用",
 		"preparing": "准备中...",
 		"refreshing_interface": "刷新界面...",
-		"usage": "用途"
+		"usage": "用途",
+		"creating_snapshot": "创建快照..."
 	},
 	"canisters": {
 		"top_up": "充值",
@@ -215,11 +216,9 @@
 		"no_snapshot": "这个 {0} 没有快照.",
 		"snapshot_created": "你的 {0} 快照已经创建.",
 		"snapshot_restored": "你的 {0} 已经从快照恢复.",
-		"creating_snapshot": "创建快照...",
 		"restoring_snapshot": "恢复快照...",
 		"snapshot_preparing": "激活快照执行...",
 		"snapshot_stopping": "停止 {0}...",
-		"upgrade_snapshot": "创建快照...",
 		"edit_snapshot": "编辑快照",
 		"delete_snapshot": "删除快照",
 		"delete_snapshot_confirm": "你确定要删除你的 {1} 快照  {0}  ?",

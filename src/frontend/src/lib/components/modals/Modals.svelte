@@ -18,6 +18,7 @@
 	import OrbiterTopUpModal from '$lib/components/modals/OrbiterTopUpModal.svelte';
 	import OrbiterTransferCyclesModal from '$lib/components/modals/OrbiterTransferCyclesModal.svelte';
 	import OrbiterUpgradeModal from '$lib/components/modals/OrbiterUpgradeModal.svelte';
+	import RejectChangeModal from '$lib/components/modals/RejectChangeModal.svelte';
 	import SatelliteCreateModal from '$lib/components/modals/SatelliteCreateModal.svelte';
 	import SatelliteDeleteModal from '$lib/components/modals/SatelliteDeleteModal.svelte';
 	import SatelliteTopUpModal from '$lib/components/modals/SatelliteTopUpModal.svelte';
@@ -137,4 +138,8 @@
 
 {#if modal?.type === 'apply_change' && nonNullish(modal.detail)}
 	<ApplyChangeModal onclose={close} detail={modal.detail} />
+{/if}
+
+{#if modal?.type === 'reject_change' && nonNullish(modal.detail)}
+	<RejectChangeModal onclose={close} detail={modal.detail} />
 {/if}

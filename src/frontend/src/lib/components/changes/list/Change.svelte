@@ -1,6 +1,8 @@
 <script lang="ts">
 	import { fromNullable, nonNullish, uint8ArrayToHexString } from '@dfinity/utils';
 	import IconArrowCircleUp from '$lib/components/icons/IconArrowCircleUp.svelte';
+	import IconCheck from '$lib/components/icons/IconCheck.svelte';
+	import IconClose from '$lib/components/icons/IconClose.svelte';
 	import Identifier from '$lib/components/ui/Identifier.svelte';
 	import { i18n } from '$lib/stores/i18n.store';
 	import type { ProposalRecord } from '$lib/types/proposals';
@@ -36,12 +38,25 @@
 			}
 		});
 	};
+
+	const openRejectProposal = () => {
+		emit({
+			message: 'junoModal',
+			detail: {
+				type: 'reject_change',
+				detail: { proposal: proposalRecord, satelliteId }
+			}
+		});
+	};
 </script>
 
 <tr>
 	<td>
 		<button class="square" aria-label={$i18n.core.apply} onclick={openApplyProposal}
-			><IconArrowCircleUp size="20px" /></button
+			><IconCheck size="20px" /></button
+		>
+		<button class="square" aria-label={$i18n.changes.reject} onclick={openRejectProposal}
+			><IconClose size="20px" /></button
 		>
 	</td>
 	<td><Identifier small={false} identifier={`${proposal_id}`} /></td>

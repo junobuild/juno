@@ -6,10 +6,15 @@
 
 	interface Props {
 		clearProposalAssets: boolean;
-		takeSnapshot: boolean;
+		takeSnapshot?: boolean;
+		withSnapshot?: boolean;
 	}
 
-	let { clearProposalAssets = $bindable(true), takeSnapshot = $bindable(false) }: Props = $props();
+	let {
+		clearProposalAssets = $bindable(true),
+		takeSnapshot = $bindable(false),
+		withSnapshot = true
+	}: Props = $props();
 </script>
 
 <div class="container">
@@ -20,9 +25,11 @@
 			{$i18n.changes.clear_after_apply}
 		</CheckboxInline>
 
-		<CanisterSnapshotOption bind:takeSnapshot>
-			{$i18n.changes.snapshot_before_apply}
-		</CanisterSnapshotOption>
+		{#if withSnapshot}
+			<CanisterSnapshotOption bind:takeSnapshot>
+				{$i18n.changes.snapshot_before_apply}
+			</CanisterSnapshotOption>
+		{/if}
 	</Collapsible>
 </div>
 

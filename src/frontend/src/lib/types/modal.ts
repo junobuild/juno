@@ -117,7 +117,7 @@ export interface JunoModalShowUserDetail {
 	usages: UserUsageCollection[];
 }
 
-export interface JunoModalApplyProposal {
+export interface JunoModalChange {
 	proposal: ProposalRecord;
 	satelliteId: SatelliteIdText;
 }
@@ -138,7 +138,7 @@ export type JunoModalDetail =
 	| JunoModalEditOrbiterConfigDetail
 	| JunoModalCreateMonitoringStrategyDetail
 	| JunoModalShowUserDetail
-	| JunoModalApplyProposal;
+	| JunoModalChange;
 
 export interface JunoModal<T extends JunoModalDetail> {
 	type:
@@ -167,6 +167,7 @@ export interface JunoModal<T extends JunoModalDetail> {
 		| 'stop_monitoring_strategy'
 		| 'show_monitoring_details'
 		| 'show_user_details'
-		| 'apply_change';
+		| 'apply_change'
+		| 'reject_change';
 	detail?: T;
 }

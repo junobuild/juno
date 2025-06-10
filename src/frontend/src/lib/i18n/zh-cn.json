@@ -609,7 +609,8 @@
 		"satellite_version_not_found": "Unexpected error. Your Satellite implements serverless functions, but no dependency version can be resolved.",
 		"load_version": "Unexpected error(s) while loading the version of your module(s).",
 		"load_proposals": "Unexpected error(s) while loading the changes of your module(s).",
-		"apply_proposal_error": "Error while applying the change. Reach out Juno if the problem persists!"
+		"apply_proposal_error": "Error while applying the change. Reach out Juno if the problem persists!",
+		"reject_proposal_error": "Error while rejecting the change. Reach out Juno if the problem persists!"
 	},
 	"document": {
 		"owner": "拥有者",
@@ -874,13 +875,21 @@
 		"segments_deployment": "Function Upgrade",
 		"apply_change": "Apply change",
 		"snapshot_before_apply": "Snapshot before applying",
-		"confirm_assets_upgrade": "Your frontend will be updated with the assets bundled in change <strong>{0}</strong> (hash: <code>{1}</code>).",
-		"confirm_segments_deployment": "The WASM for your serverless functions will be published to your CDN as part of change <strong>{0}</strong> (hash: <code>{1}</code>).",
+		"confirm_assets_upgrade": "Your frontend will be <strong>updated</strong> with the assets bundled in change <strong>{0}</strong> (hash: <code>{1}</code>).",
+		"confirm_segments_deployment": "The WASM for your serverless functions will be <strong>published</strong> to your CDN as part of change <strong>{0}</strong> (hash: <code>{1}</code>).",
 		"change_preparing": "Preparing deployment...",
 		"applying_update": "Applying update...",
 		"clearing_staged_assets": "Clearing staged assets...",
 		"clear_after_apply": "Clear assets after apply",
 		"assets_upgrade_applied": "Frontend successfully updated.",
-		"segments_deployment_applied": "WASM deployed to your CDN."
+		"segments_deployment_applied": "WASM deployed to your CDN.",
+		"reject": "Reject",
+		"rejecting": "Rejecting...",
+		"reject_change": "Reject change",
+		"reject_assets_upgrade": "The assets bundled in change <strong>{0}</strong> (hash: <code>{1}</code>) will be <strong>discarded</strong> and not deployed to your frontend.",
+		"reject_segments_deployment": "The WASM for your serverless functions in change <strong>{0}</strong> (hash: <code>{1}</code>) will be <strong>discarded</strong> not be published to your CDN.",
+		"assets_upgrade_discarded": "Frontend update discarded.",
+		"segments_deployment_discarded": "WASM deployment discarded.",
+		"reject_preparing": "Preparing rejection..."
 	}
 }

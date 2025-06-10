@@ -84,9 +84,12 @@ export const applyProposal = async ({
 			cleanUp
 		});
 
-		nextSteps('ready');
+		// Small delay to make "ready" more visual
+		setTimeout(() => {
+			nextSteps('ready');
 
-		wizardBusy.stop();
+			wizardBusy.stop();
+		}, 500);
 	} catch (err: unknown) {
 		const labels = get(i18n);
 

@@ -1,5 +1,4 @@
 <script lang="ts">
-	import { fromNullable } from '@dfinity/utils';
 	import type { ProposalType } from '@junobuild/cdn';
 	import ChangeOptions from '$lib/components/changes/wizard/ChangeOptions.svelte';
 	import Html from '$lib/components/ui/Html.svelte';

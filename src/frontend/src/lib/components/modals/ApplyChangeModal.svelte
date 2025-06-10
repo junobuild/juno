@@ -4,23 +4,21 @@
 	import ApplyChangeWizard from '$lib/components/changes/wizard/ApplyChangeWizard.svelte';
 	import SpinnerModal from '$lib/components/ui/SpinnerModal.svelte';
 	import { i18n } from '$lib/stores/i18n.store';
-	import { newerReleases } from '$lib/services/upgrade/upgrade.init.services';
-	import { satellitesVersion } from '$lib/derived/version.derived';
-	import { assertNonNullish, isNullish, nonNullish } from '@dfinity/utils';
+	import { isNullish, nonNullish } from '@dfinity/utils';
 	import CanisterUpgradeWizard, {
-		type CanisterUpgradeWizardProps
+		type CanisterUpgradeWizardProps, type CanisterUpgradeWizardStep
 	} from '$lib/components/canister/CanisterUpgradeWizard.svelte';
 	import { Principal } from '@dfinity/principal';
 	import { i18nFormat } from '$lib/utils/i18n.utils';
-	import { satelliteName } from '$lib/utils/satellite.utils';
 	import Html from '$lib/components/ui/Html.svelte';
 	import { type UpgradeCodeParams, upgradeSatellite } from '@junobuild/admin';
 	import { AnonymousIdentity } from '@dfinity/agent';
 	import { container } from '$lib/utils/juno.utils';
-	import { compare } from 'semver';
-	import { SATELLITE_v0_0_7, SATELLITE_v0_0_9 } from '$lib/constants/version.constants';
 	import { authStore } from '$lib/stores/auth.store';
 	import { missionControlIdDerived } from '$lib/derived/mission-control.derived';
+	import {findWasmAssetForProposal} from "$lib/services/cdn.services";
+	import type {Asset} from "@junobuild/storage";
+	import type {Wasm} from "$lib/types/upgrade";
 
 	interface Props {
 		detail: JunoModalDetail;
@@ -37,35 +35,31 @@
 	let upgradeBaseParams = $state<
 		| Pick<
 				CanisterUpgradeWizardProps,
-				'currentVersion' | 'newerReleases' | 'build' | 'segment' | 'canisterId' | 'onclose'
+				'showUpgradeExtendedWarning' | 'segment' | 'onclose' | 'canisterId'
 		  >
 		| undefined
 	>(undefined);
 
+	let asset = $state<Asset | undefined>(undefined);
+
 	const startUpgrade = async () => {
 		step = 'prepare_upgrade';
 
-		const version = $satellitesVersion?.[satelliteId];
+		const result = await findWasmAssetForProposal({
+			satelliteId,
+			proposal,
+			identity: $authStore.identity
+		})
 
-		// Base component for the changes is not rendered if undefined. Hence, it's rather a TS guard rather than a meaningful check.
-		assertNonNullish(version);
-
-		const { current: currentVersion } = version;
-
-		const { result, error } = await newerReleases({
-			currentVersion,
-			segments: 'satellites'
-		});
-
-		if (nonNullish(error) || isNullish(result)) {
+		if (isNullish(result)) {
 			onclose();
 			return;
 		}
 
+		asset = result;
+
 		upgradeBaseParams = {
-			currentVersion,
-			newerReleases: result,
-			build: version.build,
+			showUpgradeExtendedWarning: false,
 			segment: 'satellite',
 			canisterId: Principal.fromText(satelliteId),
 			onclose
@@ -89,6 +83,23 @@
 			deprecated: false, // Proposals supported > SATELLITE_v0_0_7,
 			deprecatedNoScope: false // Proposals supported >  SATELLITE_v0_0_9
 		});
+
+	let takeSnapshot = $state(true);
+
+	let wasm: Wasm | undefined = $state(undefined);
+
+	let upgradeStep = $state<CanisterUpgradeWizardStep>('init');
+
+	const onnext = ({
+						steps: s,
+						wasm: w
+					}: {
+		steps: 'review' | 'error' | 'download';
+		wasm?: Wasm;
+	}) => {
+		wasm = w;
+		upgradeStep = s;
+	};
 </script>
 
 <Modal {onclose}>
@@ -99,7 +110,7 @@
 			<p>{$i18n.canisters.upgrade_preparing}</p>
 		</SpinnerModal>
 	{:else if nonNullish(upgradeBaseParams) && step === 'upgrade'}
-		<CanisterUpgradeWizard {...upgradeBaseParams} upgrade={upgradeSatelliteWasm}>
+		<CanisterUpgradeWizard {...upgradeBaseParams} {takeSnapshot} {wasm} upgrade={upgradeSatelliteWasm} bind:step={upgradeStep}>
 			{#snippet intro()}
 				<h2>
 					<Html
@@ -111,6 +122,9 @@
 						])}
 					/>
 				</h2>
+
+				<p>You blahblah {asset?.downloadUrl}</p>
+
 			{/snippet}
 		</CanisterUpgradeWizard>
 	{/if}

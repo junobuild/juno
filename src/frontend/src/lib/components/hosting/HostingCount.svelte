@@ -10,6 +10,7 @@
 	import { i18n } from '$lib/stores/i18n.store';
 	import { toasts } from '$lib/stores/toasts.store';
 	import { versionStore } from '$lib/stores/version.store';
+	import {COLLECTION_DAPP} from "$lib/constants/storage.constants";
 
 	interface Props {
 		satellite: Satellite;
@@ -31,7 +32,7 @@
 
 			assets = await countCollectionAssets({
 				satelliteId: satellite.satellite_id,
-				collection: '#dapp',
+				collection: COLLECTION_DAPP,
 				identity: $authStore.identity
 			});
 		} catch (err: unknown) {

@@ -1,13 +1,26 @@
 <script lang="ts">
-	import { fromNullable, nonNullish, uint8ArrayToHexString } from '@dfinity/utils';
-	import type { ApplyProposalProgress } from '@junobuild/cdn';
-	import ConfirmApplyChange from '$lib/components/changes/wizard/ConfirmApplyChange.svelte';
-	import ProgressApplyChange from '$lib/components/changes/wizard/ProgressApplyChange.svelte';
 	import Modal from '$lib/components/ui/Modal.svelte';
-	import { applyProposal } from '$lib/services/proposals/proposals.services';
-	import { authStore } from '$lib/stores/auth.store';
+	import type { JunoModalChangeDetail, JunoModalDetail } from '$lib/types/modal';
+	import ApplyChangeWizard from '$lib/components/changes/wizard/ApplyChangeWizard.svelte';
+	import SpinnerModal from '$lib/components/ui/SpinnerModal.svelte';
 	import { i18n } from '$lib/stores/i18n.store';
-	import type { JunoModalChange, JunoModalDetail } from '$lib/types/modal';
+	import { newerReleases } from '$lib/services/upgrade/upgrade.init.services';
+	import { satellitesVersion } from '$lib/derived/version.derived';
+	import { assertNonNullish, isNullish, nonNullish } from '@dfinity/utils';
+	import CanisterUpgradeWizard, {
+		type CanisterUpgradeWizardProps
+	} from '$lib/components/canister/CanisterUpgradeWizard.svelte';
+	import { Principal } from '@dfinity/principal';
+	import { i18nFormat } from '$lib/utils/i18n.utils';
+	import { satelliteName } from '$lib/utils/satellite.utils';
+	import Html from '$lib/components/ui/Html.svelte';
+	import { type UpgradeCodeParams, upgradeSatellite } from '@junobuild/admin';
+	import { AnonymousIdentity } from '@dfinity/agent';
+	import { container } from '$lib/utils/juno.utils';
+	import { compare } from 'semver';
+	import { SATELLITE_v0_0_7, SATELLITE_v0_0_9 } from '$lib/constants/version.constants';
+	import { authStore } from '$lib/stores/auth.store';
+	import { missionControlIdDerived } from '$lib/derived/mission-control.derived';
 
 	interface Props {
 		detail: JunoModalDetail;
@@ -16,84 +29,89 @@
 
 	let { detail, onclose }: Props = $props();
 
-	let proposalRecord = $derived((detail as JunoModalChange).proposal);
-	let satelliteId = $derived((detail as JunoModalChange).satelliteId);
+	let proposal = $derived((detail as JunoModalChangeDetail).proposal);
+	let satelliteId = $derived((detail as JunoModalChangeDetail).satelliteId);
 
-	let { proposal_id: proposalId } = $derived(proposalRecord[0]);
-	let { sha256, proposal_type: proposalType } = $derived(proposalRecord[1]);
+	let step: 'change' | 'prepare_upgrade' | 'upgrade' = $state('change');
 
-	let nullishSha256 = $derived(fromNullable(sha256));
-	let proposalHash = $derived(
-		nonNullish(nullishSha256) ? uint8ArrayToHexString(nullishSha256) : undefined
-	);
+	let upgradeBaseParams = $state<
+		| Pick<
+				CanisterUpgradeWizardProps,
+				'currentVersion' | 'newerReleases' | 'build' | 'segment' | 'canisterId' | 'onclose'
+		  >
+		| undefined
+	>(undefined);
 
-	let proposalClearExistingAssets = $derived(
-		'AssetsUpgrade' in proposalType
-			? fromNullable(proposalType.AssetsUpgrade.clear_existing_assets) === true
-			: false
-	);
+	const startUpgrade = async () => {
+		step = 'prepare_upgrade';
 
-	let clearProposalAssets = $state(true);
-	let takeSnapshot = $state(false);
+		const version = $satellitesVersion?.[satelliteId];
 
-	let step: 'init' | 'in_progress' | 'ready' | 'error' = $state('init');
+		// Base component for the changes is not rendered if undefined. Hence, it's rather a TS guard rather than a meaningful check.
+		assertNonNullish(version);
 
-	let progress: ApplyProposalProgress | undefined = $state(undefined);
-	const onProgress = (changeProgress: ApplyProposalProgress | undefined) =>
-		(progress = changeProgress);
+		const { current: currentVersion } = version;
 
-	const onsubmit = async ($event: SubmitEvent) => {
-		$event.preventDefault();
-
-		await applyProposal({
-			satelliteId,
-			proposal: proposalRecord,
-			identity: $authStore.identity,
-			clearProposalAssets,
-			takeSnapshot,
-			nextSteps: (next) => (step = next),
-			onProgress
+		const { result, error } = await newerReleases({
+			currentVersion,
+			segments: 'satellites'
 		});
+
+		if (nonNullish(error) || isNullish(result)) {
+			onclose();
+			return;
+		}
+
+		upgradeBaseParams = {
+			currentVersion,
+			newerReleases: result,
+			build: version.build,
+			segment: 'satellite',
+			canisterId: Principal.fromText(satelliteId),
+			onclose
+		};
+
+		step = 'upgrade';
 	};
+
+	const upgradeSatelliteWasm = async (
+		params: Pick<UpgradeCodeParams, 'wasmModule' | 'onProgress'>
+	) =>
+		await upgradeSatellite({
+			satellite: {
+				satelliteId: satelliteId,
+				identity: $authStore.identity ?? new AnonymousIdentity(),
+				...container()
+			},
+			...params,
+			...(nonNullish($missionControlIdDerived) && { missionControlId: $missionControlIdDerived }),
+			// TODO: option to be removed
+			deprecated: false, // Proposals supported > SATELLITE_v0_0_7,
+			deprecatedNoScope: false // Proposals supported >  SATELLITE_v0_0_9
+		});
 </script>
 
 <Modal {onclose}>
-	{#if step === 'ready'}
-		<div class="msg">
-			<p>
-				{#if 'AssetsUpgrade' in proposalType}
-					{$i18n.changes.assets_upgrade_applied}
-				{:else}
-					{$i18n.changes.segments_deployment_applied}
-				{/if}
-			</p>
-			<button onclick={onclose}>{$i18n.core.close}</button>
-		</div>
-	{:else if step === 'in_progress'}
-		<ProgressApplyChange
-			{progress}
-			{proposalClearExistingAssets}
-			{takeSnapshot}
-			{clearProposalAssets}
-		/>
-	{:else}
-		<ConfirmApplyChange
-			{proposalId}
-			{proposalType}
-			{proposalHash}
-			{proposalClearExistingAssets}
-			bind:clearProposalAssets
-			bind:takeSnapshot
-			{onclose}
-			{onsubmit}
-		/>
+	{#if step === 'change'}
+		<ApplyChangeWizard {proposal} {satelliteId} {onclose} {startUpgrade} />
+	{:else if step === 'prepare_upgrade'}
+		<SpinnerModal>
+			<p>{$i18n.canisters.upgrade_preparing}</p>
+		</SpinnerModal>
+	{:else if nonNullish(upgradeBaseParams) && step === 'upgrade'}
+		<CanisterUpgradeWizard {...upgradeBaseParams} upgrade={upgradeSatelliteWasm}>
+			{#snippet intro()}
+				<h2>
+					<Html
+						text={i18nFormat($i18n.canisters.upgrade_title, [
+							{
+								placeholder: '{0}',
+								value: 'TODO'
+							}
+						])}
+					/>
+				</h2>
+			{/snippet}
+		</CanisterUpgradeWizard>
 	{/if}
 </Modal>
-
-<style lang="scss">
-	@use '../../styles/mixins/overlay';
-
-	.msg {
-		@include overlay.message;
-	}
-</style>

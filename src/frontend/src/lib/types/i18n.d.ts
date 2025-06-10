@@ -924,6 +924,7 @@ interface I18nChanges {
 	assets_upgrade_discarded: string;
 	segments_deployment_discarded: string;
 	reject_preparing: string;
+	upgrade_now: string;
 }
 
 interface I18n {

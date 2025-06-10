@@ -7,7 +7,7 @@
 	import { rejectProposal } from '$lib/services/proposals/proposals.services';
 	import { authStore } from '$lib/stores/auth.store';
 	import { i18n } from '$lib/stores/i18n.store';
-	import type { JunoModalChange, JunoModalDetail } from '$lib/types/modal';
+	import type { JunoModalChangeDetail, JunoModalDetail } from '$lib/types/modal';
 
 	interface Props {
 		detail: JunoModalDetail;
@@ -16,8 +16,8 @@
 
 	let { detail, onclose }: Props = $props();
 
-	let proposalRecord = $derived((detail as JunoModalChange).proposal);
-	let satelliteId = $derived((detail as JunoModalChange).satelliteId);
+	let proposalRecord = $derived((detail as JunoModalChangeDetail).proposal);
+	let satelliteId = $derived((detail as JunoModalChangeDetail).satelliteId);
 
 	let { proposal_id: proposalId } = $derived(proposalRecord[0]);
 	let { sha256, proposal_type: proposalType } = $derived(proposalRecord[1]);

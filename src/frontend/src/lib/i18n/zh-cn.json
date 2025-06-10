@@ -872,7 +872,7 @@
 		"hash": "Hash",
 		"type": "Type",
 		"assets_upgrade": "Frontend Deployment",
-		"segments_deployment": "Function Upgrade",
+		"segments_deployment": "Functions Upgrade",
 		"apply_change": "Apply change",
 		"snapshot_before_apply": "Snapshot before applying",
 		"confirm_assets_upgrade": "Your frontend will be <strong>updated</strong> with the assets bundled in change <strong>{0}</strong> (hash: <code>{1}</code>).",

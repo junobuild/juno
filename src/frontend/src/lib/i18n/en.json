@@ -872,7 +872,7 @@
 		"hash": "Hash",
 		"type": "Type",
 		"assets_upgrade": "Frontend Deployment",
-		"segments_deployment": "Function Upgrade",
+		"segments_deployment": "Functions Upgrade",
 		"apply_change": "Apply change",
 		"snapshot_before_apply": "Snapshot before applying",
 		"confirm_assets_upgrade": "Your frontend will be <strong>updated</strong> with the assets bundled in change <strong>{0}</strong> (hash: <code>{1}</code>).",
@@ -892,6 +892,7 @@
 		"reject_segments_deployment": "The WASM for your serverless functions in change <strong>{0}</strong> (hash: <code>{1}</code>) will be <strong>discarded</strong> not be published to your CDN.",
 		"assets_upgrade_discarded": "Frontend update discarded.",
 		"segments_deployment_discarded": "WASM deployment discarded.",
-		"reject_preparing": "Initializing rejection..."
+		"reject_preparing": "Initializing rejection...",
+		"upgrade_now": "Upgrade now"
 	}
 }

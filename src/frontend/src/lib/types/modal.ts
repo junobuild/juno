@@ -117,7 +117,7 @@ export interface JunoModalShowUserDetail {
 	usages: UserUsageCollection[];
 }
 
-export interface JunoModalChange {
+export interface JunoModalChangeDetail {
 	proposal: ProposalRecord;
 	satelliteId: SatelliteIdText;
 }
@@ -138,7 +138,7 @@ export type JunoModalDetail =
 	| JunoModalEditOrbiterConfigDetail
 	| JunoModalCreateMonitoringStrategyDetail
 	| JunoModalShowUserDetail
-	| JunoModalChange;
+	| JunoModalChangeDetail;
 
 export interface JunoModal<T extends JunoModalDetail> {
 	type:

@@ -52,7 +52,7 @@ export const openUpgradeModal = async ({
 	});
 };
 
-const newerReleases = async ({
+export const newerReleases = async ({
 	currentVersion,
 	segments
 }: {

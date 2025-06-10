@@ -608,7 +608,8 @@
 		"user_unban": "试图解禁用户时出现异常错误.",
 		"satellite_version_not_found": "Unexpected error. Your Satellite implements serverless functions, but no dependency version can be resolved.",
 		"load_version": "Unexpected error(s) while loading the version of your module(s).",
-		"load_proposals": "Unexpected error(s) while loading the changes of your module(s)."
+		"load_proposals": "Unexpected error(s) while loading the changes of your module(s).",
+		"apply_proposal_error": "Error while applying the change. Reach out Juno if the problem persists!"
 	},
 	"document": {
 		"owner": "拥有者",

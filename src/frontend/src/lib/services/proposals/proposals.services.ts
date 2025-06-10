@@ -9,7 +9,7 @@ import type { SatelliteIdText } from '$lib/types/satellite';
 import { container } from '$lib/utils/juno.utils';
 import { Principal } from '@dfinity/principal';
 import { assertNonNullish, fromNullable } from '@dfinity/utils';
-import { applyProposal as cdnApplyProposal, type ApplyProposalProgress } from '@junobuild/cdn';
+import { executeApplyProposal, type ApplyProposalProgress } from '@junobuild/cdn';
 import { get } from 'svelte/store';
 
 export interface ApplyProposalParams {
@@ -45,7 +45,7 @@ export const applyProposal = async ({
 		const nullishSha256 = fromNullable(sha256);
 		assertNonNullish(nullishSha256);
 
-		const cleanUp = async () => {
+		const postApply = async () => {
 			const canisterId = Principal.fromText(satelliteId);
 
 			await Promise.all([
@@ -66,7 +66,7 @@ export const applyProposal = async ({
 			]);
 		};
 
-		await cdnApplyProposal({
+		await executeApplyProposal({
 			cdn: {
 				satellite: {
 					satelliteId,
@@ -81,7 +81,7 @@ export const applyProposal = async ({
 			takeSnapshot,
 			clearProposalAssets,
 			onProgress,
-			cleanUp
+			postApply
 		});
 
 		// Small delay to make "ready" more visual

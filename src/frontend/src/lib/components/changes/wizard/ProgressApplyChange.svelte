@@ -96,7 +96,7 @@
 				reload: {
 					...reload,
 					state:
-						progress?.step === ApplyProposalProgressStep.CleaningUp
+						progress?.step === ApplyProposalProgressStep.PostApply
 							? mapProgressState(progress?.state)
 							: reload.state
 				}

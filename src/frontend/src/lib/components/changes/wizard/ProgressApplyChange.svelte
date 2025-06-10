@@ -1,11 +1,11 @@
 <script lang="ts">
 	import { isNullish } from '@dfinity/utils';
+	import { type ApplyProposalProgress, ApplyProposalProgressStep } from '@junobuild/cdn';
 	import { untrack } from 'svelte';
 	import WizardProgressSteps from '$lib/components/ui/WizardProgressSteps.svelte';
 	import { i18n } from '$lib/stores/i18n.store';
 	import type { ProgressStep } from '$lib/types/progress-step';
 	import { mapProgressState } from '$lib/utils/progress.utils';
-	import { type ApplyProposalProgress, ApplyProposalProgressStep } from '@junobuild/cdn';
 
 	interface Props {
 		progress: ApplyProposalProgress | undefined;

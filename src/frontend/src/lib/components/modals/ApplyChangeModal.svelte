@@ -1,13 +1,13 @@
 <script lang="ts">
 	import { fromNullable, nonNullish, uint8ArrayToHexString } from '@dfinity/utils';
-	import ConfirmChange from '$lib/components/changes/wizard/ConfirmChange.svelte';
-	import Modal from '$lib/components/ui/Modal.svelte';
-	import type { JunoModalApplyProposal, JunoModalDetail } from '$lib/types/modal';
 	import type { ApplyProposalProgress } from '@junobuild/cdn';
+	import ConfirmChange from '$lib/components/changes/wizard/ConfirmChange.svelte';
 	import ProgressApplyChange from '$lib/components/changes/wizard/ProgressApplyChange.svelte';
+	import Modal from '$lib/components/ui/Modal.svelte';
 	import { applyProposal } from '$lib/services/proposals/proposals.services';
 	import { authStore } from '$lib/stores/auth.store';
 	import { i18n } from '$lib/stores/i18n.store';
+	import type { JunoModalApplyProposal, JunoModalDetail } from '$lib/types/modal';
 
 	interface Props {
 		detail: JunoModalDetail;

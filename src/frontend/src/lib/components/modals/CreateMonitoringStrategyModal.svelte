@@ -177,7 +177,7 @@
 	};
 </script>
 
-<Modal on:junoClose={onclose} onback={step === 'mission_control' ? back : undefined}>
+<Modal {onclose} onback={step === 'mission_control' ? back : undefined}>
 	{#if step === 'ready'}
 		<div class="msg">
 			<p>

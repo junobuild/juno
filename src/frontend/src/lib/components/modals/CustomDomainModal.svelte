@@ -102,7 +102,7 @@
 	};
 </script>
 
-<Modal on:junoClose={close}>
+<Modal onclose={close}>
 	{#if step === 'ready'}
 		<div class="msg">
 			<IconVerified />

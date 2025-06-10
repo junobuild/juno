@@ -44,9 +44,7 @@
 				<UpgradeOrbiter />
 
 				{#if $hasPendingUpgrades !== undefined && $hasPendingUpgrades === false}
-					<tr
-						><td {colspan}><span class="no-upgrade">{$i18n.upgrade.no_upgrades}</span></td></tr
-					>
+					<tr><td {colspan}><span class="no-upgrade">{$i18n.upgrade.no_upgrades}</span></td></tr>
 				{/if}
 			</tbody>
 		</table>

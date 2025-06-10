@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { fromNullable } from '@dfinity/utils';
 	import type { ProposalType } from '@junobuild/cdn';
 	import ChangeOptions from '$lib/components/changes/wizard/ChangeOptions.svelte';
 	import Html from '$lib/components/ui/Html.svelte';
@@ -9,6 +10,7 @@
 		proposalId: bigint;
 		proposalHash: string | undefined;
 		proposalType: ProposalType;
+		proposalClearExistingAssets: boolean;
 		clearProposalAssets: boolean;
 		takeSnapshot: boolean;
 		onclose: () => void;
@@ -22,7 +24,8 @@
 		onsubmit,
 		proposalId,
 		proposalHash,
-		proposalType
+		proposalType,
+		proposalClearExistingAssets
 	}: Props = $props();
 
 	let label = $derived(
@@ -49,6 +52,10 @@
 			])}
 		/>
 	</p>
+
+	{#if proposalClearExistingAssets}
+		<p>{$i18n.changes.clear_existing_assets}</p>
+	{/if}
 
 	<ChangeOptions bind:takeSnapshot bind:clearProposalAssets />
 

@@ -9,11 +9,17 @@
 
 	interface Props {
 		progress: ApplyProposalProgress | undefined;
+		proposalClearExistingAssets: boolean;
 		takeSnapshot?: boolean;
 		clearProposalAssets?: boolean;
 	}
 
-	let { progress, takeSnapshot = false, clearProposalAssets = true }: Props = $props();
+	let {
+		progress,
+		proposalClearExistingAssets,
+		takeSnapshot = false,
+		clearProposalAssets = true
+	}: Props = $props();
 
 	interface Steps {
 		preparing: ProgressStep;
@@ -45,7 +51,9 @@
 		applying: {
 			state: 'next',
 			step: 'applying',
-			text: $i18n.changes.applying_update
+			text: proposalClearExistingAssets
+				? $i18n.changes.clearing_and_applying_update
+				: $i18n.changes.applying_update
 		},
 		...(clearProposalAssets && { clearingStep }),
 		reload: {

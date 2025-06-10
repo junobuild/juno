@@ -910,7 +910,9 @@ interface I18nChanges {
 	confirm_segments_deployment: string;
 	change_preparing: string;
 	applying_update: string;
+	clearing_and_applying_update: string;
 	clearing_staged_assets: string;
+	clear_existing_assets: string;
 	clear_after_apply: string;
 	assets_upgrade_applied: string;
 	segments_deployment_applied: string;

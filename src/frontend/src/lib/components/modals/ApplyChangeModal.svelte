@@ -27,6 +27,12 @@
 		nonNullish(nullishSha256) ? uint8ArrayToHexString(nullishSha256) : undefined
 	);
 
+	let proposalClearExistingAssets = $derived(
+		'AssetsUpgrade' in proposalType
+			? fromNullable(proposalType.AssetsUpgrade.clear_existing_assets) === true
+			: false
+	);
+
 	let clearProposalAssets = $state(true);
 	let takeSnapshot = $state(false);
 
@@ -64,12 +70,18 @@
 			<button onclick={onclose}>{$i18n.core.close}</button>
 		</div>
 	{:else if step === 'in_progress'}
-		<ProgressApplyChange {progress} {takeSnapshot} {clearProposalAssets} />
+		<ProgressApplyChange
+			{progress}
+			{proposalClearExistingAssets}
+			{takeSnapshot}
+			{clearProposalAssets}
+		/>
 	{:else}
 		<ConfirmApplyChange
 			{proposalId}
 			{proposalType}
 			{proposalHash}
+			{proposalClearExistingAssets}
 			bind:clearProposalAssets
 			bind:takeSnapshot
 			{onclose}

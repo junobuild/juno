@@ -879,8 +879,10 @@
 		"confirm_segments_deployment": "The WASM for your serverless functions will be <strong>published</strong> to your CDN as part of change <strong>{0}</strong> (hash: <code>{1}</code>).",
 		"change_preparing": "Preparing deployment...",
 		"applying_update": "Applying update...",
+		"clearing_and_applying_update": "Applying fresh update...",
 		"clearing_staged_assets": "Clearing staged assets...",
-		"clear_after_apply": "Clear assets after apply",
+		"clear_existing_assets": "The existing frontend assets will also be cleared before the update.",
+		"clear_after_apply": "Clear staged assets after apply",
 		"assets_upgrade_applied": "Frontend successfully updated.",
 		"segments_deployment_applied": "WASM deployed to your CDN.",
 		"reject": "Reject",
@@ -890,6 +892,6 @@
 		"reject_segments_deployment": "The WASM for your serverless functions in change <strong>{0}</strong> (hash: <code>{1}</code>) will be <strong>discarded</strong> not be published to your CDN.",
 		"assets_upgrade_discarded": "Frontend update discarded.",
 		"segments_deployment_discarded": "WASM deployment discarded.",
-		"reject_preparing": "Preparing rejection..."
+		"reject_preparing": "Initializing rejection..."
 	}
 }

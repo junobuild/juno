@@ -1,8 +1,8 @@
 <script lang="ts">
 	import { isEmptyString, isNullish, nonNullish } from '@dfinity/utils';
-	import Change from '$lib/components/upgrade/changes/Change.svelte';
-	import ChangesDockLoader from '$lib/components/upgrade/changes/ChangesDockLoader.svelte';
-	import ChangesFilter from '$lib/components/upgrade/changes/ChangesFilter.svelte';
+	import Change from '$lib/components/changes/list/Change.svelte';
+	import ChangesDockLoader from '$lib/components/changes/list/ChangesDockLoader.svelte';
+	import ChangesFilter from '$lib/components/changes/list/ChangesFilter.svelte';
 	import { openSatellitesProposals } from '$lib/derived/proposals.derived';
 	import { satelliteStore } from '$lib/derived/satellite.derived';
 	import { i18n } from '$lib/stores/i18n.store';

@@ -2,12 +2,12 @@
 	import { nonNullish } from '@dfinity/utils';
 	import { setContext } from 'svelte';
 	import { writable } from 'svelte/store';
+	import ChangesDock from '$lib/components/changes/list/ChangesDock.svelte';
 	import IdentityGuard from '$lib/components/guards/IdentityGuard.svelte';
 	import MissionControlGuard from '$lib/components/guards/MissionControlGuard.svelte';
 	import Loaders from '$lib/components/loaders/Loaders.svelte';
 	import Tabs from '$lib/components/ui/Tabs.svelte';
-	import ChangesDock from '$lib/components/upgrade/changes/ChangesDock.svelte';
-	import UpgradeDock from '$lib/components/upgrade/dock/UpgradeDock.svelte';
+	import UpgradeDock from '$lib/components/upgrade/list/UpgradeDock.svelte';
 	import { missionControlIdDerived } from '$lib/derived/mission-control.derived';
 	import {
 		type Tab,

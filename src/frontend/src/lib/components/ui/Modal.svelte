@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { nonNullish } from '@dfinity/utils';
-	import { createEventDispatcher, type Snippet } from 'svelte';
+	import type { Snippet } from 'svelte';
 	import { quintOut } from 'svelte/easing';
 	import { fade, scale } from 'svelte/transition';
 	import IconBack from '$lib/components/icons/IconBack.svelte';
@@ -13,13 +13,12 @@
 	interface Props {
 		onback?: () => void;
 		children: Snippet;
+		onclose: () => void;
 	}
 
-	let { children, onback }: Props = $props();
+	let { children, onback, onclose }: Props = $props();
 
 	let visible = $state(true);
-
-	const dispatch = createEventDispatcher();
 
 	const onClose = ($event: MouseEvent | TouchEvent) => {
 		$event.stopPropagation();
@@ -33,7 +32,7 @@
 		}
 
 		visible = false;
-		dispatch('junoClose');
+		onclose();
 	};
 </script>
 

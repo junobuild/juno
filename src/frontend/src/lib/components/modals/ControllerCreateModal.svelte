@@ -1,8 +1,7 @@
 <script lang="ts">
 	import { Ed25519KeyIdentity } from '@dfinity/identity';
 	import { isNullish, nonNullish } from '@dfinity/utils';
-	import { createEventDispatcher } from 'svelte';
-	import { run, preventDefault } from 'svelte/legacy';
+	import { untrack } from 'svelte';
 	import IconWarning from '$lib/components/icons/IconWarning.svelte';
 	import Identifier from '$lib/components/ui/Identifier.svelte';
 	import Modal from '$lib/components/ui/Modal.svelte';
@@ -18,16 +17,14 @@
 
 	interface Props {
 		detail: JunoModalDetail;
+		onclose: () => void;
 	}
 
-	let { detail }: Props = $props();
+	let { detail, onclose }: Props = $props();
 
 	let { add, load, segment } = $derived(detail as JunoModalCreateControllerDetail);
 
 	let step: 'init' | 'in_progress' | 'ready' | 'error' = $state('init');
-
-	const dispatch = createEventDispatcher();
-	const close = () => dispatch('junoClose');
 
 	let controllerId = $state('');
 	let scope: SetControllerScope = $state('write');
@@ -46,7 +43,9 @@
 		return controllerId;
 	};
 
-	const addController = async () => {
+	const addController = async ($event: SubmitEvent) => {
+		$event.preventDefault();
+
 		if (isNullish($missionControlIdDerived)) {
 			toasts.error({
 				text: $i18n.errors.no_mission_control
@@ -97,14 +96,14 @@
 	};
 
 	let action = $state('generate');
+	$effect(() => {
+		action;
 
-	run(() => {
-		// @ts-expect-error TODO: to be migrated to Svelte v5
-		action, (() => (controllerId = ''))();
+		untrack(() => (controllerId = ''));
 	});
 </script>
 
-<Modal on:junoClose>
+<Modal {onclose}>
 	{#if step === 'ready'}
 		<div class="msg">
 			<h2>{$i18n.controllers.controller_added}</h2>
@@ -147,7 +146,7 @@
 					</div>
 				{/if}
 
-				<button class="close" onclick={close}>{$i18n.core.close}</button>
+				<button class="close" onclick={onclose}>{$i18n.core.close}</button>
 			</div>
 		</div>
 	{:else if step === 'in_progress'}
@@ -165,7 +164,7 @@
 
 		<p>{$i18n.controllers.add_intro}</p>
 
-		<form class="content" onsubmit={preventDefault(addController)}>
+		<form class="content" onsubmit={addController}>
 			<div>
 				<label>
 					<input type="radio" bind:group={action} name="action" value="generate" />

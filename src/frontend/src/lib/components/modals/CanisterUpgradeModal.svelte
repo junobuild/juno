@@ -53,8 +53,6 @@
 	const onProgress = (upgradeProgress: UpgradeCodeProgress | undefined) =>
 		(progress = upgradeProgress);
 
-	const close = () => onclose();
-
 	let wasm: Wasm | undefined = $state(undefined);
 
 	const onnext = ({
@@ -69,7 +67,7 @@
 	};
 </script>
 
-<Modal on:junoClose={onclose}>
+<Modal {onclose}>
 	{#if step === 'ready'}
 		<div class="msg">
 			<p>
@@ -86,7 +84,7 @@
 					])}
 				/>
 			</p>
-			<button onclick={close}>{$i18n.core.close}</button>
+			<button onclick={onclose}>{$i18n.core.close}</button>
 		</div>
 	{:else if step === 'download'}
 		<SpinnerModal>

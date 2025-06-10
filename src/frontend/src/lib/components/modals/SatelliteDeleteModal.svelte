@@ -1,5 +1,4 @@
 <script lang="ts">
-	import { createEventDispatcher } from 'svelte';
 	import { deleteSatellite } from '$lib/api/mission-control.api';
 	import CanisterDeleteWizard from '$lib/components/canister/CanisterDeleteWizard.svelte';
 	import Html from '$lib/components/ui/Html.svelte';
@@ -14,9 +13,10 @@
 
 	interface Props {
 		detail: JunoModalDetail;
+		onclose: () => void;
 	}
 
-	let { detail }: Props = $props();
+	let { detail, onclose }: Props = $props();
 
 	let { satellite, cycles: currentCycles } = $derived(detail as JunoModalDeleteSatelliteDetail);
 
@@ -31,12 +31,9 @@
 				identity: $authStore.identity
 			})
 	);
-
-	const dispatch = createEventDispatcher();
-	const close = () => dispatch('junoClose');
 </script>
 
-<Modal on:junoClose>
+<Modal {onclose}>
 	{#if $satelliteCustomDomains.length > 0}
 		<h2>
 			<Html
@@ -53,12 +50,12 @@
 			{$i18n.canisters.delete_custom_domain}
 		</p>
 
-		<button onclick={close}>{$i18n.core.close}</button>
+		<button onclick={onclose}>{$i18n.core.close}</button>
 	{:else}
 		<CanisterDeleteWizard
 			{deleteFn}
 			{currentCycles}
-			on:junoClose
+			{onclose}
 			segment="satellite"
 			segmentName={satelliteName(satellite)}
 		/>

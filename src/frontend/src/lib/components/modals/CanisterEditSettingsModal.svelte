@@ -1,7 +1,5 @@
 <script lang="ts">
 	import { Principal } from '@dfinity/principal';
-	import { createEventDispatcher } from 'svelte';
-	import { preventDefault } from 'svelte/legacy';
 	import Html from '$lib/components/ui/Html.svelte';
 	import Input from '$lib/components/ui/Input.svelte';
 	import Modal from '$lib/components/ui/Modal.svelte';
@@ -20,9 +18,10 @@
 
 	interface Props {
 		detail: JunoModalDetail;
+		onclose: () => void;
 	}
 
-	let { detail }: Props = $props();
+	let { detail, onclose }: Props = $props();
 
 	let { segment, settings } = $derived(detail as JunoModalEditCanisterSettingsDetail);
 
@@ -65,10 +64,9 @@
 
 	let step: 'edit' | 'in_progress' | 'ready' = $state('edit');
 
-	const dispatch = createEventDispatcher();
-	const close = () => dispatch('junoClose');
+	const updateSettings = async ($event: SubmitEvent) => {
+		$event.preventDefault();
 
-	const updateSettings = async () => {
 		wizardBusy.start();
 		step = 'in_progress';
 
@@ -101,7 +99,7 @@
 	};
 </script>
 
-<Modal on:junoClose>
+<Modal {onclose}>
 	{#if step === 'ready'}
 		<div class="msg">
 			<p>
@@ -114,7 +112,7 @@
 					])}
 				/>
 			</p>
-			<button onclick={close}>{$i18n.core.close}</button>
+			<button onclick={onclose}>{$i18n.core.close}</button>
 		</div>
 	{:else if step === 'in_progress'}
 		<SpinnerModal>
@@ -129,7 +127,7 @@
 			])}
 		</p>
 
-		<form class="content" onsubmit={preventDefault(updateSettings)}>
+		<form class="content" onsubmit={updateSettings}>
 			<div class="container">
 				<div>
 					<Value>

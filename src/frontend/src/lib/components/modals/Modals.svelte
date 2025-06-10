@@ -60,11 +60,11 @@
 {/if}
 
 {#if modal?.type === 'create_controller' && nonNullish(modal.detail)}
-	<ControllerCreateModal on:junoClose={close} detail={modal.detail} />
+	<ControllerCreateModal onclose={close} detail={modal.detail} />
 {/if}
 
 {#if modal?.type === 'edit_canister_settings' && nonNullish(modal.detail)}
-	<CanisterEditSettingsModal on:junoClose={close} detail={modal.detail} />
+	<CanisterEditSettingsModal onclose={close} detail={modal.detail} />
 {/if}
 
 {#if modal?.type === 'upgrade_satellite' && nonNullish(modal.detail)}
@@ -80,11 +80,11 @@
 {/if}
 
 {#if modal?.type === 'delete_satellite' && nonNullish(modal.detail)}
-	<SatelliteDeleteModal on:junoClose={close} detail={modal.detail} />
+	<SatelliteDeleteModal onclose={close} detail={modal.detail} />
 {/if}
 
 {#if modal?.type === 'delete_orbiter' && nonNullish(modal.detail)}
-	<OrbiterDeleteModal on:junoClose={close} detail={modal.detail} />
+	<OrbiterDeleteModal onclose={close} detail={modal.detail} />
 {/if}
 
 {#if modal?.type === 'transfer_cycles_satellite' && nonNullish(modal.detail)}

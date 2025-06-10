@@ -6,6 +6,11 @@
 	import type { TopUpProgress } from '$lib/types/progress-topup';
 	import type { ApplyProposalProgress } from '@junobuild/cdn';
 	import ProgressApplyChange from '$lib/components/changes/wizard/ProgressApplyChange.svelte';
+	import { applyProposal } from '$lib/services/proposals/proposals.services';
+	import { authStore } from '$lib/stores/auth.store';
+	import { i18nFormat } from '$lib/utils/i18n.utils';
+	import Html from '$lib/components/ui/Html.svelte';
+	import { i18n } from '$lib/stores/i18n.store';
 
 	interface Props {
 		detail: JunoModalDetail;
@@ -15,6 +20,7 @@
 	let { detail, onclose }: Props = $props();
 
 	let proposalRecord = $derived((detail as JunoModalApplyProposal).proposal);
+	let satelliteId = $derived((detail as JunoModalApplyProposal).satelliteId);
 
 	let { proposal_id: proposalId } = $derived(proposalRecord[0]);
 	let { sha256, proposal_type: proposalType } = $derived(proposalRecord[1]);
@@ -36,13 +42,30 @@
 	const onsubmit = async ($event: SubmitEvent) => {
 		$event.preventDefault();
 
-
+		await applyProposal({
+			satelliteId,
+			proposal: proposalRecord,
+			identity: $authStore.identity,
+			clearProposalAssets,
+			takeSnapshot,
+			nextSteps: (next) => (step = next),
+			onProgress
+		});
 	};
 </script>
 
 <Modal {onclose}>
 	{#if step === 'ready'}
-
+		<div class="msg">
+			<p>
+				{#if 'AssetsUpgrade' in proposalType}
+					{$i18n.changes.assets_upgrade_applied}
+				{:else}
+					{$i18n.changes.segments_deployment_applied}
+				{/if}
+			</p>
+			<button onclick={onclose}>{$i18n.core.close}</button>
+		</div>
 	{:else if step === 'in_progress'}
 		<ProgressApplyChange {progress} {takeSnapshot} />
 	{:else}

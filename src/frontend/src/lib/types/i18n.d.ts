@@ -625,6 +625,7 @@ interface I18nErrors {
 	satellite_version_not_found: string;
 	load_version: string;
 	load_proposals: string;
+	apply_proposal_error: string;
 }
 
 interface I18nDocument {
@@ -910,6 +911,8 @@ interface I18nChanges {
 	applying_update: string;
 	clearing_staged_assets: string;
 	clear_after_apply: string;
+	assets_upgrade_applied: string;
+	segments_deployment_applied: string;
 }
 
 interface I18n {

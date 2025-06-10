@@ -119,6 +119,7 @@ export interface JunoModalShowUserDetail {
 
 export interface JunoModalApplyProposal {
 	proposal: ProposalRecord;
+	satelliteId: SatelliteIdText;
 }
 
 export type JunoModalDetail =

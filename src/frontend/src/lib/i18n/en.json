@@ -608,7 +608,8 @@
 		"user_unban": "Unexpected error(s) while trying to unban the user.",
 		"satellite_version_not_found": "Unexpected error. Your Satellite implements serverless functions, but no dependency version can be resolved.",
 		"load_version": "Unexpected error(s) while loading the version of your module(s).",
-		"load_proposals": "Unexpected error(s) while loading the changes of your module(s)."
+		"load_proposals": "Unexpected error(s) while loading the changes of your module(s).",
+		"apply_proposal_error": "Error while applying the change. Reach out Juno if the problem persists!"
 	},
 	"document": {
 		"owner": "Owner",
@@ -878,6 +879,8 @@
 		"change_preparing": "Preparing deployment...",
 		"applying_update": "Applying update...",
 		"clearing_staged_assets": "Clearing staged assets...",
-		"clear_after_apply": "Clear assets after apply"
+		"clear_after_apply": "Clear assets after apply",
+		"assets_upgrade_applied": "Frontend successfully updated.",
+		"segments_deployment_applied": "WASM deployed to your CDN."
 	}
 }

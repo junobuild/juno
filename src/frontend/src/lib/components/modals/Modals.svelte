@@ -1,8 +1,10 @@
 <script lang="ts">
 	import { nonNullish } from '@dfinity/utils';
+	import ApplyChangeModal from '$lib/components/modals/ApplyChangeModal.svelte';
 	import AuthConfigModal from '$lib/components/modals/AuthConfigModal.svelte';
 	import CanisterEditSettingsModal from '$lib/components/modals/CanisterEditSettingsModal.svelte';
 	import CanisterRestoreSnapshotModal from '$lib/components/modals/CanisterRestoreSnapshotModal.svelte';
+	import CdnUpgradeModal from '$lib/components/modals/CdnUpgradeModal.svelte';
 	import ControllerCreateModal from '$lib/components/modals/ControllerCreateModal.svelte';
 	import CreateMonitoringStrategyModal from '$lib/components/modals/CreateMonitoringStrategyModal.svelte';
 	import CreateSnapshotModal from '$lib/components/modals/CreateSnapshotModal.svelte';
@@ -17,6 +19,7 @@
 	import OrbiterTopUpModal from '$lib/components/modals/OrbiterTopUpModal.svelte';
 	import OrbiterTransferCyclesModal from '$lib/components/modals/OrbiterTransferCyclesModal.svelte';
 	import OrbiterUpgradeModal from '$lib/components/modals/OrbiterUpgradeModal.svelte';
+	import RejectChangeModal from '$lib/components/modals/RejectChangeModal.svelte';
 	import SatelliteCreateModal from '$lib/components/modals/SatelliteCreateModal.svelte';
 	import SatelliteDeleteModal from '$lib/components/modals/SatelliteDeleteModal.svelte';
 	import SatelliteTopUpModal from '$lib/components/modals/SatelliteTopUpModal.svelte';
@@ -59,11 +62,11 @@
 {/if}
 
 {#if modal?.type === 'create_controller' && nonNullish(modal.detail)}
-	<ControllerCreateModal on:junoClose={close} detail={modal.detail} />
+	<ControllerCreateModal onclose={close} detail={modal.detail} />
 {/if}
 
 {#if modal?.type === 'edit_canister_settings' && nonNullish(modal.detail)}
-	<CanisterEditSettingsModal on:junoClose={close} detail={modal.detail} />
+	<CanisterEditSettingsModal onclose={close} detail={modal.detail} />
 {/if}
 
 {#if modal?.type === 'upgrade_satellite' && nonNullish(modal.detail)}
@@ -79,11 +82,11 @@
 {/if}
 
 {#if modal?.type === 'delete_satellite' && nonNullish(modal.detail)}
-	<SatelliteDeleteModal on:junoClose={close} detail={modal.detail} />
+	<SatelliteDeleteModal onclose={close} detail={modal.detail} />
 {/if}
 
 {#if modal?.type === 'delete_orbiter' && nonNullish(modal.detail)}
-	<OrbiterDeleteModal on:junoClose={close} detail={modal.detail} />
+	<OrbiterDeleteModal onclose={close} detail={modal.detail} />
 {/if}
 
 {#if modal?.type === 'transfer_cycles_satellite' && nonNullish(modal.detail)}
@@ -132,4 +135,16 @@
 
 {#if modal?.type === 'show_user_details' && nonNullish(modal.detail)}
 	<UserDetailsModal onclose={close} detail={modal.detail} />
+{/if}
+
+{#if modal?.type === 'apply_change' && nonNullish(modal.detail)}
+	<ApplyChangeModal onclose={close} detail={modal.detail} />
+{/if}
+
+{#if modal?.type === 'reject_change' && nonNullish(modal.detail)}
+	<RejectChangeModal onclose={close} detail={modal.detail} />
+{/if}
+
+{#if modal?.type === 'upgrade_satellite_with_cdn' && nonNullish(modal.detail)}
+	<CdnUpgradeModal onclose={close} detail={modal.detail} />
 {/if}

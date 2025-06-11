@@ -9,12 +9,16 @@
 	let { children }: Props = $props();
 </script>
 
-<p><IconWarning /> {@render children()}</p>
+<div><span><IconWarning /></span> {@render children()}</div>
 
 <style lang="scss">
 	@use '../../styles/mixins/info';
 
-	p {
+	div {
 		@include info.warning;
+	}
+
+	span {
+		align-self: var(--warning-icon-align-self);
 	}
 </style>

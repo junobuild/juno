@@ -1,11 +1,9 @@
 <script lang="ts">
-	import { Principal } from '@dfinity/principal';
-	import { nonNullish } from '@dfinity/utils';
-	import { onMount } from 'svelte';
+	import type { Principal } from '@dfinity/principal';
+	import SatellitesPicker, {
+		type SatellitePickerProps
+	} from '$lib/components/satellites/SatellitesPicker.svelte';
 	import { orbiterSatellitesConfig } from '$lib/derived/orbiter-satellites.derived';
-	import { pageSatelliteId } from '$lib/derived/page.derived.svelte';
-	import { i18n } from '$lib/stores/i18n.store';
-	import type { SatelliteIdText } from '$lib/types/satellite';
 	import { navigateToAnalytics } from '$lib/utils/nav.utils';
 
 	interface Props {
@@ -14,15 +12,15 @@
 
 	let { disabled = false }: Props = $props();
 
-	const navigate = async () =>
-		await navigateToAnalytics(
-			nonNullish(satelliteIdText) ? Principal.fromText(satelliteIdText) : undefined
-		);
+	const navigate = async (satelliteId: Principal | undefined) =>
+		await navigateToAnalytics(satelliteId);
 
-	let satelliteIdText: SatelliteIdText | undefined = $state();
+	const onChange = (satelliteId: Principal | undefined) => {
+		navigate(satelliteId);
+	};
 
-	let satellites: { satelliteId: string; satName: string }[] = $derived(
-		Object.entries($orbiterSatellitesConfig).reduce(
+	let satellites = $derived(
+		Object.entries($orbiterSatellitesConfig).reduce<SatellitePickerProps['satellites']>(
 			(acc, [satelliteId, { name: satName, enabled }]) => [
 				...acc,
 				...(enabled
@@ -34,31 +32,9 @@
 						]
 					: [])
 			],
-			// eslint-disable-next-line @typescript-eslint/prefer-reduce-type-parameter
-			[] as { satelliteId: string; satName: string }[]
+			[]
 		)
 	);
-
-	onMount(() => {
-		satelliteIdText =
-			nonNullish($pageSatelliteId) &&
-			satellites.find(({ satelliteId }) => satelliteId === $pageSatelliteId)
-				? $pageSatelliteId
-				: undefined;
-	});
 </script>
 
-<select
-	id="satellite"
-	name="satellite"
-	class="big"
-	bind:value={satelliteIdText}
-	onchange={navigate}
-	{disabled}
->
-	<option value={undefined}>{$i18n.analytics.all_satellites}</option>
-
-	{#each satellites as { satelliteId, satName } (satName)}
-		<option value={satelliteId}>{satName}</option>
-	{/each}
-</select>
+<SatellitesPicker {disabled} {satellites} {onChange} />

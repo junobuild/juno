@@ -67,7 +67,7 @@
 	let warnExistingSnapshot = $derived(($snapshotStore?.[segment.canisterId]?.length ?? 0) > 0);
 </script>
 
-<Modal on:junoClose={onclose}>
+<Modal {onclose}>
 	{#if step === 'ready'}
 		<Confetti />
 

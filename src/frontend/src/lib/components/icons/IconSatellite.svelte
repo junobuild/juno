@@ -29,8 +29,6 @@
 >
 
 <style lang="scss">
-	@use '../../styles/mixins/media';
-
 	.icon-satellite-1 {
 		fill: none;
 		opacity: 0.25;

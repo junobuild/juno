@@ -1,44 +1,21 @@
 import type { SatelliteIdText } from '$lib/types/satellite';
-import type { BuildType } from '@junobuild/admin';
-import type { JunoPackage } from '@junobuild/config';
-import { writable, type Readable } from 'svelte/store';
-
-export interface VersionMetadata {
-	release: string;
-	/**
-	 * The version of the module as published by Juno and required in the eco-system.
-	 *
-	 * For the Satellite, if stock (no dependencies), then pkg.version
-	 * If serverless functions, then pkg.dependencies[junobuild/satellite].version
-	 */
-	current: string;
-	pkg?: JunoPackage;
-}
-
-export interface SatelliteVersionMetadata extends VersionMetadata {
-	/**
-	 * @deprecated use JunoPackage instead
-	 */
-	currentBuild?: string;
-	/**
-	 * @deprecated use JunoPackage instead
-	 */
-	build: BuildType;
-}
+import type { Option } from '$lib/types/utils';
+import type { SatelliteVersionMetadata, VersionMetadata } from '$lib/types/version';
+import { type Readable, writable } from 'svelte/store';
 
 export interface VersionStoreData {
-	satellites: Record<SatelliteIdText, SatelliteVersionMetadata | undefined>;
-	missionControl: VersionMetadata | undefined;
-	orbiter: VersionMetadata | undefined;
+	satellites: Record<SatelliteIdText, SatelliteVersionMetadata | undefined | null>;
+	missionControl: Option<VersionMetadata>;
+	orbiter: Option<VersionMetadata>;
 }
 
 export interface VersionStore extends Readable<VersionStoreData> {
-	setMissionControl: (version: VersionMetadata) => void;
+	setMissionControl: (version: VersionMetadata | null) => void;
 	setSatellite: (params: {
 		satelliteId: SatelliteIdText;
-		version: SatelliteVersionMetadata | undefined;
+		version: Option<SatelliteVersionMetadata>;
 	}) => void;
-	setOrbiter: (version: VersionMetadata) => void;
+	setOrbiter: (version: VersionMetadata | null) => void;
 	reset: () => void;
 }
 
@@ -54,7 +31,7 @@ const initVersionStore = (): VersionStore => {
 	return {
 		subscribe,
 
-		setMissionControl(version: VersionMetadata) {
+		setMissionControl(version) {
 			update((state) => ({
 				...state,
 				missionControl: version
@@ -71,7 +48,7 @@ const initVersionStore = (): VersionStore => {
 			}));
 		},
 
-		setOrbiter(version: VersionMetadata) {
+		setOrbiter(version) {
 			update((state) => ({
 				...state,
 				orbiter: version

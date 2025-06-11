@@ -63,7 +63,7 @@
 </script>
 
 {#if nonNullish($missionControlIdDerived)}
-	<Modal on:junoClose={onclose}>
+	<Modal {onclose}>
 		{#if step === 'ready'}
 			<Confetti />
 

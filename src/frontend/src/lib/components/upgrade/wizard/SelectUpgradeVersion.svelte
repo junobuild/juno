@@ -2,10 +2,10 @@
 	import { isNullish } from '@dfinity/utils';
 	import { checkUpgradeVersion } from '@junobuild/admin';
 	import { onMount, type Snippet } from 'svelte';
-	import CanisterUpgradeOptions from '$lib/components/canister/CanisterUpgradeOptions.svelte';
-	import IconWarning from '$lib/components/icons/IconWarning.svelte';
 	import Html from '$lib/components/ui/Html.svelte';
-	import { downloadWasm } from '$lib/services/upgrade.services';
+	import Info from '$lib/components/ui/Info.svelte';
+	import CanisterUpgradeOptions from '$lib/components/upgrade/wizard/CanisterUpgradeOptions.svelte';
+	import { downloadWasmFromJunoCdn } from '$lib/services/upgrade/upgrade.download.services';
 	import { wizardBusy } from '$lib/stores/busy.store';
 	import { i18n } from '$lib/stores/i18n.store';
 	import { toasts } from '$lib/stores/toasts.store';
@@ -88,7 +88,7 @@
 		onnext({ steps: 'download' });
 
 		try {
-			const wasm = await downloadWasm({ segment, version: selectedVersion });
+			const wasm = await downloadWasmFromJunoCdn({ segment, version: selectedVersion });
 
 			onnext({ steps: 'review', wasm });
 		} catch (err: unknown) {
@@ -128,10 +128,7 @@
 		</p>
 	{/if}
 
-	<div class="warning">
-		<div class="icon"><IconWarning /></div>
-		<p><Html text={$i18n.canisters.upgrade_breaking_change} /></p>
-	</div>
+	<Info><Html text={$i18n.canisters.upgrade_breaking_change} /></Info>
 
 	<p>
 		<Html
@@ -159,21 +156,3 @@
 		<button type="submit" disabled={isNullish(selectedVersion)}>{$i18n.core.continue}</button>
 	</div>
 </form>
-
-<style lang="scss">
-	@use '../../styles/mixins/info';
-
-	.warning {
-		@include info.warning;
-
-		margin: var(--padding-2x) 0;
-
-		p {
-			margin: 0;
-		}
-
-		.icon {
-			min-width: var(--padding-4x);
-		}
-	}
-</style>

@@ -61,19 +61,17 @@
 		setTimeout(() => (step = 'ready'), 500);
 	};
 
-	const close = () => onclose();
-
 	let subnetId: PrincipalText | undefined = $state();
 	let monitoringStrategy: CyclesMonitoringStrategy | undefined = $state();
 </script>
 
-<Modal on:junoClose={close}>
+<Modal {onclose}>
 	{#if step === 'ready'}
 		<Confetti />
 
 		<div class="msg">
 			<p>{$i18n.analytics.ready}</p>
-			<button onclick={close}>{$i18n.core.close}</button>
+			<button onclick={onclose}>{$i18n.core.close}</button>
 		</div>
 	{:else if step === 'in_progress'}
 		<ProgressCreate segment="orbiter" {progress} withMonitoring={nonNullish(monitoringStrategy)} />

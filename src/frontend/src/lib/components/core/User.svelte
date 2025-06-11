@@ -16,7 +16,7 @@
 	import { satellitesNotLoaded, satellitesStore } from '$lib/derived/satellites.derived';
 	import { signIn as doSignIn, signOut } from '$lib/services/auth/auth.services';
 	import { i18n } from '$lib/stores/i18n.store';
-	import { analyticsLink } from '$lib/utils/nav.utils';
+	import { analyticsLink, upgradeDockLink } from '$lib/utils/nav.utils';
 
 	interface Props {
 		signIn?: boolean;
@@ -101,6 +101,17 @@
 			<a href="/monitoring" class="menu" role="menuitem" aria-haspopup="menu" onclick={close}>
 				<IconTelescope />
 				<span>{$i18n.monitoring.title}</span>
+			</a>
+
+			<a
+				href={upgradeDockLink($satelliteStore?.satellite_id)}
+				class="menu"
+				role="menuitem"
+				aria-haspopup="menu"
+				onclick={close}
+			>
+				<IconAnalytics />
+				<span>{$i18n.upgrade.title}</span>
 			</a>
 		{/if}
 

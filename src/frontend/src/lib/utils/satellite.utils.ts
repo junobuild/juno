@@ -5,7 +5,7 @@ import { isDev } from '$lib/env/app.env';
 import type { ListParams } from '$lib/types/list';
 import { metadataName } from '$lib/utils/metadata.utils';
 import { Principal } from '@dfinity/principal';
-import { isNullish, toNullable } from '@dfinity/utils';
+import { isEmptyString, isNullish, notEmptyString, toNullable } from '@dfinity/utils';
 
 export const satelliteUrl = (satelliteId: string): string => {
 	if (isDev()) {
@@ -21,15 +21,15 @@ export const toListParams = ({
 	startAfter,
 	limit = PAGINATION,
 	order,
-	filter: { matcher, owner }
+	filter: { matcher, description, owner }
 }: ListParams): ListParamsApi => ({
 	matcher:
-		isNullish(matcher) || matcher === ''
+		isEmptyString(matcher) && isEmptyString(description)
 			? []
 			: [
 					{
-						key: toNullable(matcher),
-						description: [],
+						key: toNullable(notEmptyString(matcher) ? matcher : undefined),
+						description: toNullable(notEmptyString(description) ? description : undefined),
 						created_at: [],
 						updated_at: []
 					}

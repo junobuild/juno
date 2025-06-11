@@ -1,56 +1,14 @@
-import { downloadRelease, getReleasesMetadata } from '$lib/rest/cdn.rest';
 import { loadSnapshots } from '$lib/services/snapshots.services';
 import { wizardBusy } from '$lib/stores/busy.store';
 import { i18n } from '$lib/stores/i18n.store';
 import { toasts } from '$lib/stores/toasts.store';
 import type { OptionIdentity } from '$lib/types/itentity';
 import type { Wasm } from '$lib/types/upgrade';
-import { sha256 } from '$lib/utils/crypto.utils';
 import { emit } from '$lib/utils/events.utils';
 import type { Principal } from '@dfinity/principal';
 import { isNullish } from '@dfinity/utils';
 import type { UpgradeCodeParams, UpgradeCodeProgress } from '@junobuild/admin';
-import { compare } from 'semver';
 import { get } from 'svelte/store';
-
-export const newerReleases = async ({
-	currentVersion,
-	segments
-}: {
-	currentVersion: string;
-	segments: 'mission_controls' | 'satellites' | 'orbiters';
-}): Promise<{ result: string[] | undefined; error?: unknown }> => {
-	try {
-		const metadata = await getReleasesMetadata();
-
-		return {
-			result: metadata[segments].filter((version) => compare(currentVersion, version) === -1)
-		};
-	} catch (error: unknown) {
-		const labels = get(i18n);
-
-		toasts.error({
-			text: labels.errors.upgrade_load_versions,
-			detail: error
-		});
-
-		return { result: undefined, error };
-	}
-};
-
-export const downloadWasm = async (params: {
-	segment: 'satellite' | 'mission_control' | 'orbiter';
-	version: string;
-}): Promise<Wasm> => {
-	const wasm = await downloadRelease(params);
-	const hash = await sha256(wasm);
-
-	return {
-		wasm,
-		hash,
-		version: params.version
-	};
-};
 
 export interface UpgradeParams {
 	onProgress: (progress: UpgradeCodeProgress | undefined) => void;

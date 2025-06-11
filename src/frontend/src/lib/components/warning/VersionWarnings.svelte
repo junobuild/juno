@@ -1,15 +1,13 @@
 <script lang="ts">
-	import { isNullish, nonNullish } from '@dfinity/utils';
+	import { nonNullish } from '@dfinity/utils';
 	import type { BuildType } from '@junobuild/admin';
 	import { compare } from 'semver';
 	import type { Satellite } from '$declarations/mission_control/mission_control.did';
 	import VersionWarning from '$lib/components/warning/VersionWarning.svelte';
 	import { missionControlVersion } from '$lib/derived/version.derived';
-	import { newerReleases } from '$lib/services/upgrade.services';
-	import { busy } from '$lib/stores/busy.store';
+	import { openUpgradeModal } from '$lib/services/upgrade/upgrade.init.services';
 	import { i18n } from '$lib/stores/i18n.store';
 	import { versionStore } from '$lib/stores/version.store';
-	import { emit } from '$lib/utils/events.utils';
 
 	interface Props {
 		satellite?: Satellite | undefined;
@@ -63,51 +61,8 @@
 		nonNullish(orbVersion) && nonNullish(orbRelease) && compare(orbVersion, orbRelease) < 0
 	);
 
-	const openModal = async ({
-		currentVersion,
-		type,
-		satellite,
-		build
-	}: {
-		currentVersion: string;
-		type: 'upgrade_satellite' | 'upgrade_mission_control' | 'upgrade_orbiter';
-		satellite?: Satellite;
-		build?: BuildType;
-	}) => {
-		busy.start();
-
-		const { result, error } = await newerReleases({
-			currentVersion,
-			segments:
-				type === 'upgrade_mission_control'
-					? 'mission_controls'
-					: type === 'upgrade_orbiter'
-						? 'orbiters'
-						: 'satellites'
-		});
-
-		busy.stop();
-
-		if (nonNullish(error) || isNullish(result)) {
-			return;
-		}
-
-		emit({
-			message: 'junoModal',
-			detail: {
-				type,
-				detail: {
-					...(nonNullish(satellite) && { satellite }),
-					currentVersion,
-					newerReleases: result,
-					build
-				}
-			}
-		});
-	};
-
 	const upgradeSatellite = async () =>
-		await openModal({
+		await openUpgradeModal({
 			type: 'upgrade_satellite',
 			satellite: satellite!,
 			currentVersion: satVersion!,
@@ -115,13 +70,13 @@
 		});
 
 	const upgradeMissionControl = async () =>
-		await openModal({
+		await openUpgradeModal({
 			type: 'upgrade_mission_control',
 			currentVersion: ctrlVersion!
 		});
 
 	const upgradeOrbiter = async () =>
-		await openModal({
+		await openUpgradeModal({
 			type: 'upgrade_orbiter',
 			currentVersion: orbVersion!
 		});

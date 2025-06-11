@@ -23,7 +23,7 @@ import {
 	createSatelliteWithConfig,
 	loadSatellites
 } from '$lib/services/satellites.services';
-import { loadVersion } from '$lib/services/version.loader.services';
+import { reloadMissionControlVersion } from '$lib/services/version/version.mission-control.services';
 import { busy } from '$lib/stores/busy.store';
 import { i18n } from '$lib/stores/i18n.store';
 import { toasts } from '$lib/stores/toasts.store';
@@ -106,8 +106,7 @@ const initCreateWizard = async ({
 
 	const { fee } = resultFee;
 
-	await loadVersion({
-		satelliteId: undefined,
+	await reloadMissionControlVersion({
 		missionControlId,
 		skipReload: true,
 		identity

@@ -10,7 +10,7 @@
 		satelliteId: Principal;
 	}
 
-	let { asset, satelliteId }: Props = $props();
+	let { asset, satelliteId: _ }: Props = $props();
 
 	let { key, created_at, updated_at } = $derived(asset);
 	let { full_path, description } = $derived(key);

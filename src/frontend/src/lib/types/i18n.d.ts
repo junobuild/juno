@@ -87,6 +87,8 @@ interface I18nCore {
 	refreshing_interface: string;
 	usage: string;
 	creating_snapshot: string;
+	created: string;
+	updated: string;
 }
 
 interface I18nCanisters {
@@ -642,8 +644,6 @@ interface I18nErrors {
 
 interface I18nDocument {
 	owner: string;
-	created: string;
-	updated: string;
 	version: string;
 	data: string;
 	no_match: string;
@@ -668,8 +668,6 @@ interface I18nAsset {
 	owner: string;
 	token: string;
 	headers: string;
-	created: string;
-	updated: string;
 	version: string;
 	no_match: string;
 	delete: string;
@@ -777,8 +775,6 @@ interface I18nUsers {
 	user_details: string;
 	identifier: string;
 	provider: string;
-	created: string;
-	updated: string;
 	empty: string;
 	view_details: string;
 	persistence: string;

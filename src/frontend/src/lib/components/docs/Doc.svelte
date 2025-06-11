@@ -63,7 +63,7 @@
 		<div class="date">
 			<Value>
 				{#snippet label()}
-					{$i18n.document.created}
+					{$i18n.core.created}
 				{/snippet}
 				{formatToDate(doc.created_at)}
 			</Value>
@@ -72,7 +72,7 @@
 		<div class="date">
 			<Value>
 				{#snippet label()}
-					{$i18n.document.updated}
+					{$i18n.core.updated}
 				{/snippet}
 				{formatToDate(doc.updated_at)}
 			</Value>

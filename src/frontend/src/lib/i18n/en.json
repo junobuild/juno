@@ -619,7 +619,9 @@
 		"find_wasm_asset_for_proposal_not_executed": "Proposal has not been executed. Only executed proposals can be processed.",
 		"find_wasm_asset_for_proposal_asset_not_found": "No asset found for this change and version.",
 		"missing_juno_package": "Missing Juno metadata. The WASM does not contain a valid juno.package.json encoded in its public section.",
-		"invalid_juno_package": "Invalid Juno metadata. Unable to parse module information from juno.package.json."
+		"invalid_juno_package": "Invalid Juno metadata. Unable to parse module information from juno.package.json.",
+		"missing_satellite_version": "Unable to determine the current Satellite version.",
+		"invalid_version_cannot_downgrade": "Cannot downgrade the default functions. The selected version is older than the current Satellite version."
 	},
 	"document": {
 		"owner": "Owner",

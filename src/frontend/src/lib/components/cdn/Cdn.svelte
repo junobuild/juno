@@ -99,8 +99,8 @@
             <th class="tools"></th>
             <th class="full-path"> {$i18n.cdn.path} </th>
             <th class="description"> {$i18n.cdn.description} </th>
-            <th class="created"> {$i18n.users.created} </th>
-            <th class="updated"> {$i18n.users.updated} </th>
+            <th class="created"> {$i18n.core.created} </th>
+            <th class="updated"> {$i18n.core.updated} </th>
         </tr>
         </thead>
 

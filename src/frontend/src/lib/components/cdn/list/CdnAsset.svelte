@@ -4,6 +4,8 @@
 	import type { AssetNoContent } from '$declarations/satellite/satellite.did';
 	import Identifier from '$lib/components/ui/Identifier.svelte';
 	import { formatToDate } from '$lib/utils/date.utils';
+	import IconArrowCircleUp from '$lib/components/icons/IconArrowCircleUp.svelte';
+	import { i18n } from '$lib/stores/i18n.store';
 
 	interface Props {
 		asset: AssetNoContent;
@@ -17,7 +19,11 @@
 </script>
 
 <tr>
-	<td class="actions"> </td>
+	<td class="actions">
+		<button class="square" aria-label={$i18n.canisters.upgrade} onclick={startUpgrade}
+			><IconArrowCircleUp size="20px" /></button
+		>
+	</td>
 	<td><Identifier small={false} shortenLength={15} identifier={full_path} /></td>
 	<td class="description">
 		{description ?? ''}
@@ -27,7 +33,7 @@
 </tr>
 
 <style lang="scss">
-	@use '../../styles/mixins/media';
+	@use '../../../styles/mixins/media';
 
 	.description {
 		vertical-align: middle;

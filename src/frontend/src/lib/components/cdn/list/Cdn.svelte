@@ -3,7 +3,7 @@
 	import { isNullish, nonNullish } from '@dfinity/utils';
 	import { getContext, setContext, untrack } from 'svelte';
 	import type { AssetNoContent } from '$declarations/satellite/satellite.did';
-	import CdnAsset from '$lib/components/cdn/CdnAsset.svelte';
+	import CdnAsset from '$lib/components/cdn/list/CdnAsset.svelte';
 	import DataCount from '$lib/components/data/DataCount.svelte';
 	import DataPaginator from '$lib/components/data/DataPaginator.svelte';
 	import { listWasmAssets } from '$lib/services/proposals/proposals.cdn.services';
@@ -125,7 +125,7 @@
 <DataCount />
 
 <style lang="scss">
-	@use '../../styles/mixins/media';
+	@use '../../../styles/mixins/media';
 
 	table {
 		table-layout: auto;

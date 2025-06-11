@@ -13,6 +13,8 @@ export const readWasmMetadata = async ({ wasm: blob }: { wasm: Blob }): Promise<
 
 	const wasm = isGzip(buffer) ? await gunzip({ blob }) : buffer;
 
+	// TODO: extract to juno-js, both readCustomSectionJunoPackage and extractBuildType are used in the CLI as well.
+
 	const junoPackage = await readCustomSectionJunoPackage({ wasm });
 
 	const buildType = await extractBuildType({ wasm, junoPackage });

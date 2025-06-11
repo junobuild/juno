@@ -13,37 +13,46 @@ export const prepareWasmUpgrade = async ({
 }: {
 	asset: Asset;
 }): Promise<{ result: 'success'; wasm: Wasm } | { result: 'error'; err?: unknown }> => {
-	const result = await downloadWasmFromDevCdn({ asset });
+	try {
+		const result = await downloadWasmFromDevCdn({ asset });
 
-	const { wasm, ...rest } = result;
+		const { wasm, ...rest } = result;
 
-	const { junoPackage } = await readWasmMetadata({ wasm });
+		const { junoPackage } = await readWasmMetadata({ wasm });
 
-	if (isNullish(junoPackage)) {
-		toasts.error({
-			text: get(i18n).errors.missing_juno_package
-		});
+		if (isNullish(junoPackage)) {
+			toasts.error({
+				text: get(i18n).errors.missing_juno_package
+			});
 
-		return { result: 'error' };
-	}
-
-	const metadata = mapJunoPackageMetadata({ pkg: junoPackage });
-
-	if (isNullish(metadata)) {
-		toasts.error({
-			text: get(i18n).errors.invalid_juno_package
-		});
-
-		return { result: 'error' };
-	}
-
-	return {
-		result: 'success',
-		wasm: {
-			...rest,
-			wasm,
-			version: metadata.current,
-			developerVersion: junoPackage.version
+			return { result: 'error' };
 		}
-	};
+
+		const metadata = mapJunoPackageMetadata({ pkg: junoPackage });
+
+		if (isNullish(metadata)) {
+			toasts.error({
+				text: get(i18n).errors.invalid_juno_package
+			});
+
+			return { result: 'error' };
+		}
+
+		return {
+			result: 'success',
+			wasm: {
+				...rest,
+				wasm,
+				version: metadata.current,
+				developerVersion: junoPackage.version
+			}
+		};
+	} catch (err: unknown) {
+		toasts.error({
+			text: get(i18n).errors.upgrade_download_error,
+			detail: err
+		});
+
+		return { result: 'error', err };
+	}
 };

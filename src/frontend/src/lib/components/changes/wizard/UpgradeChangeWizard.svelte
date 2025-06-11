@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { AnonymousIdentity } from '@dfinity/agent';
 	import { Principal } from '@dfinity/principal';
-	import { assertNonNullish, isNullish, nonNullish } from '@dfinity/utils';
+	import { isNullish, nonNullish } from '@dfinity/utils';
 	import { type UpgradeCodeParams, upgradeSatellite } from '@junobuild/admin';
 	import type { Asset } from '@junobuild/storage';
 	import { onMount } from 'svelte';
@@ -106,32 +106,31 @@
 	const onSubmit = async ($event: SubmitEvent) => {
 		$event.preventDefault();
 
+		// TS guard. The form is not rendered if the asset is undefined.
+		if (isNullish(asset)) {
+			toasts.error({
+				text: $i18n.errors.find_wasm_asset_for_proposal_asset_not_found
+			});
+
+			return;
+		}
+
 		wizardBusy.start();
 
 		onnext({ steps: 'download' });
 
-		try {
-			// TS guard. The form is not rendered if the asset is undefined.
-			assertNonNullish(asset);
+		const result = await prepareWasmUpgrade({ asset });
 
-			const result = await prepareWasmUpgrade({ asset });
-
-			if (result.result === 'error') {
-				return;
-			}
-
-			const { wasm } = result;
-
-			onnext({ steps: 'review', wasm });
-		} catch (err: unknown) {
-			toasts.error({
-				text: $i18n.errors.upgrade_download_error,
-				detail: err
-			});
-
+		if (result.result === 'error') {
 			onnext({ steps: 'error' });
+			wizardBusy.stop();
+
+			return;
 		}
 
+		const { wasm } = result;
+
+		onnext({ steps: 'review', wasm });
 		wizardBusy.stop();
 	};
 </script>

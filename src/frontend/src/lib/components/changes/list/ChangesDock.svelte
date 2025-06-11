@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { isEmptyString, isNullish, nonNullish, notEmptyString } from '@dfinity/utils';
+	import { isEmptyString, isNullish, nonNullish } from '@dfinity/utils';
 	import Change from '$lib/components/changes/list/Change.svelte';
 	import ChangesDockLoader from '$lib/components/changes/list/ChangesDockLoader.svelte';
 	import ChangesFilter from '$lib/components/changes/list/ChangesFilter.svelte';

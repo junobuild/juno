@@ -905,8 +905,6 @@
 	},
 	"cdn": {
 		"title": "CDN",
-		"empty": "No WASM found for your serverless functions.",
-		"description": "Description",
-		"path": "Path"
+		"empty": "No WASM found for your serverless functions."
 	}
 }

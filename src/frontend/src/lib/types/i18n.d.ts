@@ -938,8 +938,6 @@ interface I18nChanges {
 interface I18nCdn {
 	title: string;
 	empty: string;
-	description: string;
-	path: string;
 }
 
 interface I18n {

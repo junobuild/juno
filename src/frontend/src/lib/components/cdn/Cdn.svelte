@@ -1,10 +1,14 @@
 <script lang="ts">
 	import type { Principal } from '@dfinity/principal';
 	import { isNullish, nonNullish } from '@dfinity/utils';
+	import type { Asset } from '@junobuild/storage';
 	import { getContext, setContext, untrack } from 'svelte';
+	import type { AssetNoContent } from '$declarations/satellite/satellite.did';
 	import User from '$lib/components/auth/User.svelte';
+	import CdnAsset from '$lib/components/cdn/CdnAsset.svelte';
 	import DataCount from '$lib/components/data/DataCount.svelte';
 	import DataPaginator from '$lib/components/data/DataPaginator.svelte';
+	import { listWasmAssets } from '$lib/services/proposals/proposals.cdn.services';
 	import { authStore } from '$lib/stores/auth.store';
 	import { i18n } from '$lib/stores/i18n.store';
 	import { listParamsStore } from '$lib/stores/list-params.store';
@@ -12,10 +16,6 @@
 	import { toasts } from '$lib/stores/toasts.store';
 	import { versionStore } from '$lib/stores/version.store';
 	import { PAGINATION_CONTEXT_KEY, type PaginationContext } from '$lib/types/pagination.context';
-	import { listWasmAssets } from '$lib/services/proposals/proposals.cdn.services';
-	import type { Asset } from '@junobuild/storage';
-	import CdnAsset from '$lib/components/cdn/CdnAsset.svelte';
-	import type { AssetNoContent } from '$declarations/satellite/satellite.did';
 
 	interface Props {
 		satelliteId: Principal;
@@ -99,8 +99,8 @@
 		<thead>
 			<tr>
 				<th class="tools"></th>
-				<th class="full-path"> {$i18n.cdn.path} </th>
-				<th class="description"> {$i18n.cdn.description} </th>
+				<th class="full-path"> {$i18n.asset.full_path} </th>
+				<th class="description"> {$i18n.asset.description} </th>
 				<th class="created"> {$i18n.core.created} </th>
 				<th class="updated"> {$i18n.core.updated} </th>
 			</tr>

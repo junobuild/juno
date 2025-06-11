@@ -138,8 +138,6 @@ export const listWasmAssets = async ({
 	matches_length: bigint;
 	items_length: bigint;
 }> => {
-	console.log(startAfter);
-
 	const { items, matches_length, items_length } = await listAssets({
 		collection: COLLECTION_CDN_RELEASES,
 		satelliteId,

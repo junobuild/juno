@@ -2,6 +2,7 @@
 	import { nonNullish } from '@dfinity/utils';
 	import { setContext } from 'svelte';
 	import { writable } from 'svelte/store';
+	import Cdn from "$lib/components/cdn/Cdn.svelte";
 	import IdentityGuard from '$lib/components/guards/IdentityGuard.svelte';
 	import SatelliteGuard from '$lib/components/guards/SatelliteGuard.svelte';
 	import Loaders from '$lib/components/loaders/Loaders.svelte';
@@ -22,6 +23,10 @@
 		{
 			id: Symbol('1'),
 			labelKey: 'functions.logs'
+		},
+		{
+			id: Symbol('2'),
+			labelKey: 'cdn.title'
 		}
 	];
 
@@ -44,7 +49,11 @@
 						satellite={$satelliteStore}
 						missionControlId={$missionControlIdDerived}
 					>
-						<Logs satelliteId={$satelliteStore.satellite_id} />
+						{#if $store.tabId === $store.tabs[0].id}
+							<Logs satelliteId={$satelliteStore.satellite_id} />
+						{:else if $store.tabId === $store.tabs[1].id}
+							<Cdn satelliteId={$satelliteStore.satellite_id} />
+						{/if}
 					</SatelliteVersionLoader>
 				{/if}
 			</SatelliteGuard>

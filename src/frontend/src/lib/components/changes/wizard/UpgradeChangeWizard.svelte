@@ -14,7 +14,7 @@
 	import SpinnerModal from '$lib/components/ui/SpinnerModal.svelte';
 	import CanisterUpgradeOptions from '$lib/components/upgrade/wizard/CanisterUpgradeOptions.svelte';
 	import { missionControlIdDerived } from '$lib/derived/mission-control.derived';
-	import { findWasmAssetForProposal } from '$lib/services/proposals/proposals.segments.services';
+	import { findWasmAssetForProposal } from '$lib/services/proposals/proposals.cdn.services';
 	import { prepareWasmUpgrade } from '$lib/services/upgrade/upgrade.cdn.services';
 	import { authStore } from '$lib/stores/auth.store';
 	import { wizardBusy } from '$lib/stores/busy.store';

@@ -27,7 +27,7 @@
 <tr>
 	<td class="actions"> </td>
 	<td><Identifier small={false} identifier={full_path} /></td>
-	<td class="providers">
+	<td class="description">
 		{description ?? ''}
 	</td>
 	<td class="created">{nonNullish(created_at) ? formatToDate(created_at) : ''}</td>
@@ -37,11 +37,11 @@
 <style lang="scss">
 	@use '../../styles/mixins/media';
 
-	.providers {
+	.description {
 		vertical-align: middle;
 	}
 
-	.providers {
+	.description {
 		display: none;
 
 		@include media.min-width(small) {

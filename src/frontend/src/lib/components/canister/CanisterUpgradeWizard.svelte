@@ -71,7 +71,7 @@
 					},
 					{
 						placeholder: '{1}',
-						value: `v${wasm?.version ?? ''}`
+						value: `v${wasm?.developerVersion ?? wasm?.version ?? ''}`
 					}
 				])}
 			/>

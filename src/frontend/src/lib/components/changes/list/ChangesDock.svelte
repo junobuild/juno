@@ -3,6 +3,7 @@
 	import Change from '$lib/components/changes/list/Change.svelte';
 	import ChangesDockLoader from '$lib/components/changes/list/ChangesDockLoader.svelte';
 	import ChangesFilter from '$lib/components/changes/list/ChangesFilter.svelte';
+	import ChangesMore from '$lib/components/changes/list/ChangesMore.svelte';
 	import { openSatellitesProposals } from '$lib/derived/proposals.derived';
 	import { satelliteStore } from '$lib/derived/satellite.derived';
 	import { i18n } from '$lib/stores/i18n.store';
@@ -29,7 +30,10 @@
 					<th {colspan}>
 						<div class="actions">
 							<ChangesFilter />
-							{#if nonNullish($satelliteStore)}{satelliteName($satelliteStore)} ({$satelliteStore.satellite_id.toText()}){/if}
+							{#if nonNullish($satelliteStore)}
+								<ChangesMore satelliteId={$satelliteStore.satellite_id} />
+								{satelliteName($satelliteStore)} ({$satelliteStore.satellite_id.toText()})
+							{/if}
 						</div>
 					</th>
 				</tr>

@@ -5,6 +5,7 @@
 	import { type UpgradeCodeParams, upgradeSatellite } from '@junobuild/admin';
 	import type { Asset } from '@junobuild/storage';
 	import { onMount } from 'svelte';
+	import type { Satellite } from '$declarations/mission_control/mission_control.did';
 	import CanisterUpgradeWizard, {
 		type CanisterUpgradeWizardProps,
 		type CanisterUpgradeWizardStep
@@ -23,7 +24,6 @@
 	import type { Wasm } from '$lib/types/upgrade';
 	import { i18nFormat } from '$lib/utils/i18n.utils';
 	import { container } from '$lib/utils/juno.utils';
-	import type { Satellite } from '$declarations/mission_control/mission_control.did';
 	import { satelliteName } from '$lib/utils/satellite.utils';
 
 	interface Props {

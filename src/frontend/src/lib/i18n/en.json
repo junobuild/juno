@@ -83,7 +83,9 @@
 		"preparing": "Gearing up...",
 		"refreshing_interface": "Refreshing the interface...",
 		"usage": "Usage",
-		"creating_snapshot": "Creating a snapshot..."
+		"creating_snapshot": "Creating a snapshot...",
+		"created": "Created",
+		"updated": "Updated"
 	},
 	"canisters": {
 		"top_up": "Top-up",
@@ -625,8 +627,6 @@
 	},
 	"document": {
 		"owner": "Owner",
-		"created": "Created",
-		"updated": "Updated",
 		"version": "Version",
 		"data": "Data",
 		"no_match": "No document matches your filters.",
@@ -650,8 +650,6 @@
 		"owner": "Owner",
 		"token": "Token",
 		"headers": "Headers",
-		"created": "Created",
-		"updated": "Updated",
 		"version": "Version",
 		"no_match": "No asset matches your filters.",
 		"delete": "Delete asset?",
@@ -753,8 +751,6 @@
 		"user_details": "User's details",
 		"identifier": "Identifier",
 		"provider": "Provider",
-		"created": "Created",
-		"updated": "Updated",
 		"empty": "No registered users at the moment.",
 		"view_details": "View user details",
 		"persistence": "Persistence",

@@ -1,7 +1,9 @@
+import type { AssetNoContent } from '$declarations/satellite/satellite.did';
 import { instantSatelliteVersion } from '$lib/services/feature.services';
 import { downloadWasmFromDevCdn } from '$lib/services/upgrade/upgrade.download.services';
 import { i18n } from '$lib/stores/i18n.store';
 import { toasts } from '$lib/stores/toasts.store';
+import type { OptionIdentity } from '$lib/types/itentity';
 import type { Wasm } from '$lib/types/upgrade';
 import { i18nFormat } from '$lib/utils/i18n.utils';
 import { mapJunoPackageMetadata } from '$lib/utils/version.utils';
@@ -9,19 +11,20 @@ import { readWasmMetadata } from '$lib/utils/wasm.utils';
 import type { Principal } from '@dfinity/principal';
 import { isNullish } from '@dfinity/utils';
 import { checkUpgradeVersion } from '@junobuild/admin';
-import type { Asset } from '@junobuild/storage';
 import { compare } from 'semver';
 import { get } from 'svelte/store';
 
 export const prepareWasmUpgrade = async ({
 	asset,
-	satelliteId
+	satelliteId,
+	identity
 }: {
-	asset: Asset;
+	asset: AssetNoContent;
 	satelliteId: Principal;
+	identity: OptionIdentity;
 }): Promise<{ result: 'success'; wasm: Wasm } | { result: 'error'; err?: unknown }> => {
 	try {
-		const result = await downloadWasmFromDevCdn({ asset });
+		const result = await downloadWasmFromDevCdn({ asset, satelliteId, identity });
 
 		const { wasm, ...rest } = result;
 

@@ -7,7 +7,11 @@ import type {
 	User
 } from '$declarations/mission_control/mission_control.did';
 import type { OrbiterSatelliteFeatures } from '$declarations/orbiter/orbiter.did';
-import type { AuthenticationConfig, Rule } from '$declarations/satellite/satellite.did';
+import type {
+	AssetNoContent,
+	AuthenticationConfig,
+	Rule
+} from '$declarations/satellite/satellite.did';
 import type { CanisterSegmentWithLabel, CanisterSettings } from '$lib/types/canister';
 import type { SetControllerParams } from '$lib/types/controllers';
 import type { CustomDomains } from '$lib/types/custom-domain';
@@ -121,6 +125,10 @@ export interface JunoModalChangeDetail extends JunoModalWithSatellite {
 	proposal: ProposalRecord;
 }
 
+export interface JunoModalCdnUpgradeDetail extends JunoModalWithSatellite {
+	asset: AssetNoContent;
+}
+
 export type JunoModalDetail =
 	| JunoModalUpgradeSatelliteDetail
 	| JunoModalUpgradeDetail
@@ -137,7 +145,8 @@ export type JunoModalDetail =
 	| JunoModalEditOrbiterConfigDetail
 	| JunoModalCreateMonitoringStrategyDetail
 	| JunoModalShowUserDetail
-	| JunoModalChangeDetail;
+	| JunoModalChangeDetail
+	| JunoModalCdnUpgradeDetail;
 
 export interface JunoModal<T extends JunoModalDetail> {
 	type:
@@ -167,6 +176,7 @@ export interface JunoModal<T extends JunoModalDetail> {
 		| 'show_monitoring_details'
 		| 'show_user_details'
 		| 'apply_change'
-		| 'reject_change';
+		| 'reject_change'
+		| 'upgrade_satellite_with_cdn';
 	detail?: T;
 }

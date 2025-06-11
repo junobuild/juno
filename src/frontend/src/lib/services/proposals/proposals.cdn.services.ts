@@ -4,17 +4,20 @@ import { COLLECTION_CDN_RELEASES } from '$lib/constants/storage.constants';
 import { i18n } from '$lib/stores/i18n.store';
 import { toasts } from '$lib/stores/toasts.store';
 import type { OptionIdentity } from '$lib/types/itentity';
-import type { ListParams } from '$lib/types/list';
+import type { ListOrder, ListParams } from '$lib/types/list';
 import type { ProposalRecord } from '$lib/types/proposals';
 import type { SatelliteIdText } from '$lib/types/satellite';
 import { container } from '$lib/utils/juno.utils';
 import type { Identity } from '@dfinity/agent';
-import type { Principal } from '@dfinity/principal';
+import { Principal } from '@dfinity/principal';
 import { assertNonNullish, fromNullable, isEmptyString, isNullish } from '@dfinity/utils';
 import { getProposal } from '@junobuild/cdn';
-import { listAssets as listAssetsLib } from '@junobuild/core';
-import type { Asset } from '@junobuild/storage';
 import { get } from 'svelte/store';
+
+const LIST_PROPOSALS_ORDER: ListOrder = {
+	desc: true,
+	field: 'created_at'
+};
 
 export const findWasmAssetForProposal = async ({
 	proposal: proposalRecord,
@@ -24,7 +27,7 @@ export const findWasmAssetForProposal = async ({
 	proposal: ProposalRecord;
 	satelliteId: SatelliteIdText;
 	identity: OptionIdentity;
-}): Promise<Asset | undefined> => {
+}): Promise<AssetNoContent | undefined> => {
 	try {
 		assertNonNullish(identity);
 
@@ -93,14 +96,16 @@ export const findWasmAssetForProposal = async ({
 			return undefined;
 		}
 
-		const { items } = await listAssetsLib({
+		const { items } = await listAssets({
 			collection: COLLECTION_CDN_RELEASES,
-			satellite,
-			filter: {
-				matcher: {
+			satelliteId: Principal.fromText(satelliteId),
+			params: {
+				filter: {
 					description: `change=${proposal_id};version=${version}`
-				}
-			}
+				},
+				order: LIST_PROPOSALS_ORDER
+			},
+			identity
 		});
 
 		const asset = items?.[0];
@@ -113,7 +118,8 @@ export const findWasmAssetForProposal = async ({
 			return undefined;
 		}
 
-		return asset;
+		const [_, assetNoContent] = asset;
+		return assetNoContent;
 	} catch (err: unknown) {
 		const labels = get(i18n);
 
@@ -143,10 +149,7 @@ export const listWasmAssets = async ({
 		satelliteId,
 		params: {
 			startAfter,
-			order: {
-				desc: true,
-				field: 'created_at'
-			},
+			order: LIST_PROPOSALS_ORDER,
 			filter: {}
 		},
 		identity

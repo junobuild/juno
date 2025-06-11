@@ -1,9 +1,9 @@
 <script lang="ts">
-	import type { Principal } from '@dfinity/principal';
 	import { isNullish, nonNullish } from '@dfinity/utils';
 	import { getContext, setContext, untrack } from 'svelte';
+	import type { Satellite } from '$declarations/mission_control/mission_control.did';
 	import type { AssetNoContent } from '$declarations/satellite/satellite.did';
-	import CdnAsset from '$lib/components/cdn/CdnAsset.svelte';
+	import CdnAsset from '$lib/components/cdn/list/CdnAsset.svelte';
 	import DataCount from '$lib/components/data/DataCount.svelte';
 	import DataPaginator from '$lib/components/data/DataPaginator.svelte';
 	import { listWasmAssets } from '$lib/services/proposals/proposals.cdn.services';
@@ -16,18 +16,18 @@
 	import { PAGINATION_CONTEXT_KEY, type PaginationContext } from '$lib/types/pagination.context';
 
 	interface Props {
-		satelliteId: Principal;
+		satellite: Satellite;
 	}
 
-	let { satelliteId }: Props = $props();
+	let { satellite }: Props = $props();
 
 	const list = async () => {
-		if (isNullish(satelliteId)) {
+		if (isNullish(satellite)) {
 			setItems({ items: undefined, matches_length: undefined, items_length: undefined });
 			return;
 		}
 
-		const version = $versionStore?.satellites[satelliteId.toText()]?.current;
+		const version = $versionStore?.satellites[satellite.satellite_id.toText()]?.current;
 
 		if (isNullish(version)) {
 			setItems({ items: undefined, matches_length: undefined, items_length: undefined });
@@ -45,7 +45,7 @@
 
 		try {
 			const { items, matches_length, items_length } = await listWasmAssets({
-				satelliteId,
+				satelliteId: satellite.satellite_id,
 				startAfter: $startAfter,
 				identity: $authStore.identity
 			});
@@ -107,7 +107,7 @@
 		<tbody>
 			{#if nonNullish($paginationStore.items)}
 				{#each $paginationStore.items as [key, asset] (key)}
-					<CdnAsset {asset} {satelliteId} />
+					<CdnAsset {asset} {satellite} />
 				{/each}
 
 				{#if !empty && ($paginationStore.pages ?? 0) > 1}
@@ -125,7 +125,7 @@
 <DataCount />
 
 <style lang="scss">
-	@use '../../styles/mixins/media';
+	@use '../../../styles/mixins/media';
 
 	table {
 		table-layout: auto;

@@ -13,6 +13,7 @@ export interface ListOrder {
 
 export interface ListFilter {
 	matcher?: string;
+	description?: string;
 	owner?: string;
 }
 

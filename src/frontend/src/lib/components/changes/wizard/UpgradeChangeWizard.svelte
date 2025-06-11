@@ -1,29 +1,29 @@
 <script lang="ts">
-	import { onMount } from 'svelte';
-	import type { Asset } from '@junobuild/storage';
-	import { findWasmAssetForProposal } from '$lib/services/proposals/proposals.segments.services';
-	import { assertNonNullish, isNullish, nonNullish } from '@dfinity/utils';
+	import { AnonymousIdentity } from '@dfinity/agent';
 	import { Principal } from '@dfinity/principal';
-	import SpinnerModal from '$lib/components/ui/SpinnerModal.svelte';
-	import { i18n } from '$lib/stores/i18n.store';
-	import { i18nFormat } from '$lib/utils/i18n.utils';
-	import Html from '$lib/components/ui/Html.svelte';
+	import { assertNonNullish, isNullish, nonNullish } from '@dfinity/utils';
+	import { type UpgradeCodeParams, upgradeSatellite } from '@junobuild/admin';
+	import type { Asset } from '@junobuild/storage';
+	import { onMount } from 'svelte';
 	import CanisterUpgradeWizard, {
 		type CanisterUpgradeWizardProps,
 		type CanisterUpgradeWizardStep
 	} from '$lib/components/canister/CanisterUpgradeWizard.svelte';
-	import { type UpgradeCodeParams, upgradeSatellite } from '@junobuild/admin';
-	import { AnonymousIdentity } from '@dfinity/agent';
-	import { container } from '$lib/utils/juno.utils';
-	import type { Wasm } from '$lib/types/upgrade';
-	import type { SatelliteIdText } from '$lib/types/satellite';
-	import type { ProposalRecord } from '$lib/types/proposals';
-	import { authStore } from '$lib/stores/auth.store';
-	import { missionControlIdDerived } from '$lib/derived/mission-control.derived';
-	import { wizardBusy } from '$lib/stores/busy.store';
-	import { toasts } from '$lib/stores/toasts.store';
+	import Html from '$lib/components/ui/Html.svelte';
+	import SpinnerModal from '$lib/components/ui/SpinnerModal.svelte';
 	import CanisterUpgradeOptions from '$lib/components/upgrade/wizard/CanisterUpgradeOptions.svelte';
+	import { missionControlIdDerived } from '$lib/derived/mission-control.derived';
+	import { findWasmAssetForProposal } from '$lib/services/proposals/proposals.segments.services';
 	import { prepareWasmUpgrade } from '$lib/services/upgrade/upgrade.cdn.services';
+	import { authStore } from '$lib/stores/auth.store';
+	import { wizardBusy } from '$lib/stores/busy.store';
+	import { i18n } from '$lib/stores/i18n.store';
+	import { toasts } from '$lib/stores/toasts.store';
+	import type { ProposalRecord } from '$lib/types/proposals';
+	import type { SatelliteIdText } from '$lib/types/satellite';
+	import type { Wasm } from '$lib/types/upgrade';
+	import { i18nFormat } from '$lib/utils/i18n.utils';
+	import { container } from '$lib/utils/juno.utils';
 
 	interface Props {
 		satelliteId: SatelliteIdText;
@@ -72,7 +72,7 @@
 	) =>
 		await upgradeSatellite({
 			satellite: {
-				satelliteId: satelliteId,
+				satelliteId,
 				identity: $authStore.identity ?? new AnonymousIdentity(),
 				...container()
 			},

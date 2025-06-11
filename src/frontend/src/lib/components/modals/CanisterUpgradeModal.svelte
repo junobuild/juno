@@ -1,12 +1,12 @@
 <script lang="ts">
-	import Modal from '$lib/components/ui/Modal.svelte';
+	import { nonNullish } from '@dfinity/utils';
+	import type { BuildType } from '@junobuild/admin';
 	import CanisterUpgradeWizard, {
 		type CanisterUpgradeWizardProps,
 		type CanisterUpgradeWizardStep
 	} from '$lib/components/canister/CanisterUpgradeWizard.svelte';
+	import Modal from '$lib/components/ui/Modal.svelte';
 	import SelectUpgradeVersion from '$lib/components/upgrade/wizard/SelectUpgradeVersion.svelte';
-	import type { BuildType } from '@junobuild/admin';
-	import { nonNullish } from '@dfinity/utils';
 	import type { Wasm } from '$lib/types/upgrade';
 
 	interface Props {
@@ -22,7 +22,11 @@
 		segment,
 		build,
 		...propsRest
-	}: Props & Omit<CanisterUpgradeWizardProps, 'takeSnapshot' | 'wasm' | 'step' | 'showUpgradeExtendedWarning'> = $props();
+	}: Props &
+		Omit<
+			CanisterUpgradeWizardProps,
+			'takeSnapshot' | 'wasm' | 'step' | 'showUpgradeExtendedWarning'
+		> = $props();
 
 	let buildExtended = $derived(nonNullish(build) && build === 'extended');
 
@@ -45,7 +49,15 @@
 </script>
 
 <Modal {onclose}>
-	<CanisterUpgradeWizard {onclose} {segment} {takeSnapshot} {wasm} showUpgradeExtendedWarning={buildExtended} {...propsRest} bind:step>
+	<CanisterUpgradeWizard
+		{onclose}
+		{segment}
+		{takeSnapshot}
+		{wasm}
+		showUpgradeExtendedWarning={buildExtended}
+		{...propsRest}
+		bind:step
+	>
 		{#snippet intro()}
 			<SelectUpgradeVersion
 				{newerReleases}

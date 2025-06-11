@@ -1,8 +1,8 @@
 <script lang="ts">
-	import Modal from '$lib/components/ui/Modal.svelte';
-	import type { JunoModalChangeDetail, JunoModalDetail } from '$lib/types/modal';
 	import ApplyChangeWizard from '$lib/components/changes/wizard/ApplyChangeWizard.svelte';
 	import UpgradeChangeWizard from '$lib/components/changes/wizard/UpgradeChangeWizard.svelte';
+	import Modal from '$lib/components/ui/Modal.svelte';
+	import type { JunoModalChangeDetail, JunoModalDetail } from '$lib/types/modal';
 
 	interface Props {
 		detail: JunoModalDetail;

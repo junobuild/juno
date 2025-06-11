@@ -72,8 +72,7 @@ const readDeprecatedBuildType = async ({
 	const buildType = await customSection({ wasm, sectionName: 'icp:public juno:build' });
 
 	return nonNullish(buildType) && ['stock', 'extended'].includes(buildType)
-		? // eslint-disable-next-line @typescript-eslint/no-unsafe-type-assertion
-			(buildType as BuildType)
+		? (buildType as BuildType)
 		: undefined;
 };
 

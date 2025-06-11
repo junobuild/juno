@@ -1,7 +1,7 @@
 <script module lang="ts">
+	import type { Principal } from '@dfinity/principal';
 	import type { UpgradeCodeParams } from '@junobuild/admin';
 	import type { Snippet } from 'svelte';
-	import type { Principal } from '@dfinity/principal';
 	import type { Wasm } from '$lib/types/upgrade';
 
 	export interface CanisterUpgradeWizardProps {
@@ -30,6 +30,7 @@
 
 <script lang="ts">
 	import type { UpgradeCodeProgress } from '@junobuild/admin';
+	import { onMount } from 'svelte';
 	import Html from '$lib/components/ui/Html.svelte';
 	import SpinnerModal from '$lib/components/ui/SpinnerModal.svelte';
 	import ConfirmUpgradeVersion from '$lib/components/upgrade/wizard/ConfirmUpgradeVersion.svelte';
@@ -37,7 +38,6 @@
 	import ReviewUpgradeVersion from '$lib/components/upgrade/wizard/ReviewUpgradeVersion.svelte';
 	import { i18n } from '$lib/stores/i18n.store';
 	import { i18nFormat } from '$lib/utils/i18n.utils';
-	import { onMount } from 'svelte';
 
 	let {
 		showUpgradeExtendedWarning = false,

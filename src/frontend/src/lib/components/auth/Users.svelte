@@ -97,8 +97,8 @@
 				<th class="tools"></th>
 				<th class="identifier"> {$i18n.users.identifier} </th>
 				<th class="providers"> {$i18n.users.provider} </th>
-				<th class="created"> {$i18n.users.created} </th>
-				<th class="updated"> {$i18n.users.updated} </th>
+				<th class="created"> {$i18n.core.created} </th>
+				<th class="updated"> {$i18n.core.updated} </th>
 			</tr>
 		</thead>
 

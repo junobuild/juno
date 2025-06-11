@@ -163,7 +163,7 @@
 		<div class="date">
 			<Value>
 				{#snippet label()}
-					{$i18n.asset.created}
+					{$i18n.core.created}
 				{/snippet}
 				{formatToDate(asset.created_at)}
 			</Value>
@@ -172,7 +172,7 @@
 		<div class="date">
 			<Value>
 				{#snippet label()}
-					{$i18n.asset.updated}
+					{$i18n.core.updated}
 				{/snippet}
 				{formatToDate(asset.updated_at)}
 			</Value>

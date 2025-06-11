@@ -56,14 +56,14 @@
 				<div>
 					<Value>
 						{#snippet label()}
-							{$i18n.users.created}
+							{$i18n.core.created}
 						{/snippet}
 						<p>{formatToDate(created_at)}</p>
 					</Value>
 
 					<Value>
 						{#snippet label()}
-							{$i18n.users.updated}
+							{$i18n.core.updated}
 						{/snippet}
 						<p>{formatToDate(updated_at)}</p>
 					</Value>

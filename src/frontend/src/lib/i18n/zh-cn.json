@@ -83,7 +83,9 @@
 		"preparing": "准备中...",
 		"refreshing_interface": "刷新界面...",
 		"usage": "用途",
-		"creating_snapshot": "创建快照..."
+		"creating_snapshot": "创建快照...",
+		"created": "创建于",
+		"updated": "更新于"
 	},
 	"canisters": {
 		"top_up": "充值",
@@ -625,8 +627,6 @@
 	},
 	"document": {
 		"owner": "拥有者",
-		"created": "创建于",
-		"updated": "更新于",
 		"version": "版本",
 		"data": "数据",
 		"no_match": "找不到满足条件的文档.",
@@ -650,8 +650,6 @@
 		"owner": "拥有者",
 		"token": "令牌",
 		"headers": "协议数据",
-		"created": "创建于",
-		"updated": "更新于",
 		"version": "版本",
 		"no_match": "找不到满足条件的资料.",
 		"delete": "删除资料?",
@@ -753,8 +751,6 @@
 		"user_details": "用户详细信息",
 		"identifier": "身份",
 		"provider": "提供者",
-		"created": "创建于",
-		"updated": "更新于",
 		"empty": "目前还有注册的用户.",
 		"view_details": "查看用户详细信息",
 		"persistence": "永久存储",

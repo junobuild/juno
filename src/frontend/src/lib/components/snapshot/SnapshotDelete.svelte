@@ -56,7 +56,7 @@
 				{
 					placeholder: '{0}',
 					value: nonNullish(existingSnapshot)
-						? shortenWithMiddleEllipsis(`0x${encodeSnapshotId(existingSnapshot.id)}`)
+						? shortenWithMiddleEllipsis({ text: `0x${encodeSnapshotId(existingSnapshot.id)}` })
 						: ''
 				},
 				{ placeholder: '{1}', value: segmentLabel }

@@ -935,6 +935,11 @@ interface I18nChanges {
 	upgrade_cdn_source: string;
 }
 
+interface I18nCdn {
+	title: string;
+	empty: string;
+}
+
 interface I18n {
 	lang: Languages;
 	core: I18nCore;
@@ -966,4 +971,5 @@ interface I18n {
 	emulator: I18nEmulator;
 	upgrade: I18nUpgrade;
 	changes: I18nChanges;
+	cdn: I18nCdn;
 }

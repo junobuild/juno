@@ -69,7 +69,7 @@
 
 			{#each sortedSubnets as { subnetId, specialization } (subnetId)}
 				<option value={subnetId}
-					>{shortenWithMiddleEllipsis(subnetId)}{nonNullish(specialization)
+					>{shortenWithMiddleEllipsis({ text: subnetId })}{nonNullish(specialization)
 						? ` (${specialization})`
 						: ''}</option
 				>

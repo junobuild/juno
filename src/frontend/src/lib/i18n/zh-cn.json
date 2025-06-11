@@ -902,5 +902,9 @@
 		"reject_preparing": "Initializing rejection...",
 		"upgrade_now": "Upgrade now",
 		"upgrade_cdn_source": "Your Satellite will be upgraded using the WASM available on the CDN at <code>{0}</code> ({1})."
+	},
+	"cdn": {
+		"title": "CDN",
+		"empty": "No WASM found for your serverless functions."
 	}
 }

@@ -1,13 +1,18 @@
+import type { AssetNoContent } from '$declarations/satellite/satellite.did';
+import { listAssets } from '$lib/api/satellites.api';
 import { COLLECTION_CDN_RELEASES } from '$lib/constants/storage.constants';
 import { i18n } from '$lib/stores/i18n.store';
 import { toasts } from '$lib/stores/toasts.store';
 import type { OptionIdentity } from '$lib/types/itentity';
+import type { ListParams } from '$lib/types/list';
 import type { ProposalRecord } from '$lib/types/proposals';
 import type { SatelliteIdText } from '$lib/types/satellite';
 import { container } from '$lib/utils/juno.utils';
+import type { Identity } from '@dfinity/agent';
+import type { Principal } from '@dfinity/principal';
 import { assertNonNullish, fromNullable, isEmptyString, isNullish } from '@dfinity/utils';
 import { getProposal } from '@junobuild/cdn';
-import { listAssets } from '@junobuild/core';
+import { listAssets as listAssetsLib } from '@junobuild/core';
 import type { Asset } from '@junobuild/storage';
 import { get } from 'svelte/store';
 
@@ -88,7 +93,7 @@ export const findWasmAssetForProposal = async ({
 			return undefined;
 		}
 
-		const { items } = await listAssets({
+		const { items } = await listAssetsLib({
 			collection: COLLECTION_CDN_RELEASES,
 			satellite,
 			filter: {
@@ -119,4 +124,33 @@ export const findWasmAssetForProposal = async ({
 
 		return undefined;
 	}
+};
+
+export const listWasmAssets = async ({
+	startAfter,
+	satelliteId,
+	identity
+}: Pick<ListParams, 'startAfter'> & {
+	satelliteId: Principal;
+	identity: Identity;
+}): Promise<{
+	items: [string, AssetNoContent][];
+	matches_length: bigint;
+	items_length: bigint;
+}> => {
+	const { items, matches_length, items_length } = await listAssets({
+		collection: COLLECTION_CDN_RELEASES,
+		satelliteId,
+		params: {
+			startAfter,
+			order: {
+				desc: true,
+				field: 'created_at'
+			},
+			filter: {}
+		},
+		identity
+	});
+
+	return { items, matches_length, items_length };
 };

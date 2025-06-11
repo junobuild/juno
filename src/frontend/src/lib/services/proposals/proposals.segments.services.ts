@@ -7,6 +7,9 @@ import { assertNonNullish, fromNullable, isEmptyString, isNullish } from '@dfini
 import { getProposal } from '@junobuild/cdn';
 import { listAssets } from '@junobuild/core';
 import type { Asset } from '@junobuild/storage';
+import { toasts } from '$lib/stores/toasts.store';
+import { get } from 'svelte/store';
+import { i18n } from '$lib/stores/i18n.store';
 
 export const findWasmAssetForProposal = async ({
 	proposal: proposalRecord,
@@ -23,8 +26,11 @@ export const findWasmAssetForProposal = async ({
 		const [{ proposal_id }, { sha256, proposal_type }] = proposalRecord;
 
 		if (!('SegmentsDeployment' in proposal_type)) {
-			// TODO
-			return;
+			toasts.error({
+				text: get(i18n).errors.find_wasm_asset_for_proposal_invalid_type_error,
+			});
+
+			return undefined;
 		}
 
 		const {
@@ -34,12 +40,22 @@ export const findWasmAssetForProposal = async ({
 		const version = fromNullable(satellite_version);
 
 		if (isEmptyString(version)) {
-			// TODO
-			return;
+			toasts.error({
+				text: get(i18n).errors.find_wasm_asset_for_proposal_incomplete_version_error,
+			});
+
+			return undefined;
 		}
 
 		const nullishSha256 = fromNullable(sha256);
-		assertNonNullish(nullishSha256);
+
+		if (isNullish(nullishSha256)) {
+			toasts.error({
+				text: get(i18n).errors.find_wasm_asset_for_proposal_missing_change_hash,
+			});
+
+			return undefined;
+		}
 
 		const satellite = {
 			satelliteId,
@@ -57,13 +73,19 @@ export const findWasmAssetForProposal = async ({
 		const proposal = fromNullable(proposalResult);
 
 		if (isNullish(proposal)) {
-			// TODO
-			return;
+			toasts.error({
+				text: get(i18n).errors.find_wasm_asset_for_proposal_proposal_not_found,
+			});
+
+			return undefined;
 		}
 
 		if (!('Executed' in proposal.status)) {
-			// TODO
-			return;
+			toasts.error({
+				text: get(i18n).errors.find_wasm_asset_for_proposal_not_executed,
+			});
+
+			return undefined;
 		}
 
 		const { items } = await listAssets({
@@ -79,12 +101,22 @@ export const findWasmAssetForProposal = async ({
 		const asset = items?.[0];
 
 		if (isNullish(asset)) {
-			// TODO
-			return;
+			toasts.error({
+				text: get(i18n).errors.find_wasm_asset_for_proposal_asset_not_found,
+			});
+
+			return undefined;
 		}
 
 		return asset;
-	} catch (err: unknown) {}
+	} catch (err: unknown) {
+		const labels = get(i18n);
 
-	return undefined;
+		toasts.error({
+			text: labels.errors.find_wasm_asset_for_proposal_error,
+			detail: err
+		});
+
+		return undefined;
+	}
 };

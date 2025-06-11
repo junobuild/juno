@@ -610,7 +610,14 @@
 		"load_version": "Unexpected error(s) while loading the version of your module(s).",
 		"load_proposals": "Unexpected error(s) while loading the changes of your module(s).",
 		"apply_proposal_error": "Error while applying the change. Reach out Juno if the problem persists!",
-		"reject_proposal_error": "Error while rejecting the change. Reach out Juno if the problem persists!"
+		"reject_proposal_error": "Error while rejecting the change. Reach out Juno if the problem persists!",
+		"find_wasm_asset_for_proposal_error": "Unexpected error while resolving the asset linked to the change.",
+		"find_wasm_asset_for_proposal_invalid_type_error": "Unsupported proposal type. This change is not related to a serverless function upgrade.",
+		"find_wasm_asset_for_proposal_incomplete_version_error": "Missing satellite version. This serverless function upgrade is incomplete.",
+		"find_wasm_asset_for_proposal_missing_change_hash": "Missing change hash. This change does not include a valid identifier.",
+		"find_wasm_asset_for_proposal_proposal_not_found": "Proposal not found. It may have been deleted or is no longer available.",
+		"find_wasm_asset_for_proposal_not_executed": "Proposal has not been executed. Only executed proposals can be processed.",
+		"find_wasm_asset_for_proposal_asset_not_found": "No asset found for this change and version."
 	},
 	"document": {
 		"owner": "Owner",

@@ -47,9 +47,9 @@
 			</thead>
 
 			<tbody>
-				{#if notEmptyString(satelliteId)}
+				{#if nonNullish($satelliteStore)}
 					{#each proposals ?? [] as proposal (proposal[0])}
-						<Change {proposal} {satelliteId} />
+						<Change {proposal} satellite={$satelliteStore} />
 					{/each}
 				{/if}
 

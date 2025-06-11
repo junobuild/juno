@@ -20,18 +20,21 @@
 	import { i18n } from '$lib/stores/i18n.store';
 	import { toasts } from '$lib/stores/toasts.store';
 	import type { ProposalRecord } from '$lib/types/proposals';
-	import type { SatelliteIdText } from '$lib/types/satellite';
 	import type { Wasm } from '$lib/types/upgrade';
 	import { i18nFormat } from '$lib/utils/i18n.utils';
 	import { container } from '$lib/utils/juno.utils';
+	import type { Satellite } from '$declarations/mission_control/mission_control.did';
+	import { satelliteName } from '$lib/utils/satellite.utils';
 
 	interface Props {
-		satelliteId: SatelliteIdText;
+		satellite: Satellite;
 		proposal: ProposalRecord;
 		onclose: () => void;
 	}
 
-	let { onclose, satelliteId, proposal }: Props = $props();
+	let { onclose, satellite, proposal }: Props = $props();
+
+	let satelliteId = $derived(satellite.satellite_id.toText());
 
 	let asset = $state<Asset | undefined>(undefined);
 
@@ -151,7 +154,7 @@
 					text={i18nFormat($i18n.canisters.upgrade_title, [
 						{
 							placeholder: '{0}',
-							value: 'TODO'
+							value: satelliteName(satellite)
 						}
 					])}
 				/>

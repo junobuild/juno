@@ -12,7 +12,9 @@
 	let { detail, onclose }: Props = $props();
 
 	let proposal = $derived((detail as JunoModalChangeDetail).proposal);
-	let satelliteId = $derived((detail as JunoModalChangeDetail).satelliteId);
+	let satellite = $derived((detail as JunoModalChangeDetail).satellite);
+
+	let satelliteId = $derived(satellite.satellite_id.toText());
 
 	let step: 'change' | 'upgrade' = $state('change');
 
@@ -21,7 +23,7 @@
 
 <Modal {onclose}>
 	{#if step === 'upgrade'}
-		<UpgradeChangeWizard {onclose} {satelliteId} {proposal} />
+		<UpgradeChangeWizard {onclose} {satellite} {proposal} />
 	{:else}
 		<ApplyChangeWizard {proposal} {satelliteId} {onclose} {startUpgrade} />
 	{/if}

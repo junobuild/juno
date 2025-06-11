@@ -17,7 +17,9 @@
 	let { detail, onclose }: Props = $props();
 
 	let proposalRecord = $derived((detail as JunoModalChangeDetail).proposal);
-	let satelliteId = $derived((detail as JunoModalChangeDetail).satelliteId);
+	let satellite = $derived((detail as JunoModalChangeDetail).satellite);
+
+	let satelliteId = $derived(satellite.satellite_id.toText());
 
 	let { proposal_id: proposalId } = $derived(proposalRecord[0]);
 	let { sha256, proposal_type: proposalType } = $derived(proposalRecord[1]);

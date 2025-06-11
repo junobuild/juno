@@ -5,16 +5,16 @@
 	import Identifier from '$lib/components/ui/Identifier.svelte';
 	import { i18n } from '$lib/stores/i18n.store';
 	import type { ProposalRecord } from '$lib/types/proposals';
-	import type { SatelliteIdText } from '$lib/types/satellite';
 	import { formatToDate } from '$lib/utils/date.utils';
 	import { emit } from '$lib/utils/events.utils';
+	import type { Satellite } from '$declarations/mission_control/mission_control.did';
 
 	interface Props {
 		proposal: ProposalRecord;
-		satelliteId: SatelliteIdText;
+		satellite: Satellite;
 	}
 
-	let { proposal: proposalRecord, satelliteId }: Props = $props();
+	let { proposal: proposalRecord, satellite }: Props = $props();
 
 	let { proposal_id } = $derived(proposalRecord[0]);
 	let { sha256, proposal_type, created_at } = $derived(proposalRecord[1]);
@@ -33,7 +33,7 @@
 			message: 'junoModal',
 			detail: {
 				type: 'apply_change',
-				detail: { proposal: proposalRecord, satelliteId }
+				detail: { proposal: proposalRecord, satellite }
 			}
 		});
 	};
@@ -43,7 +43,7 @@
 			message: 'junoModal',
 			detail: {
 				type: 'reject_change',
-				detail: { proposal: proposalRecord, satelliteId }
+				detail: { proposal: proposalRecord, satellite }
 			}
 		});
 	};

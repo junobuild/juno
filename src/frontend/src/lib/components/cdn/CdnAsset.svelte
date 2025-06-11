@@ -11,7 +11,7 @@
 	import { formatToDate } from '$lib/utils/date.utils';
 	import type { Asset } from '@junobuild/storage';
 	import { nonNullish } from '@dfinity/utils';
-	import type {AssetNoContent} from "$declarations/satellite/satellite.did";
+	import type { AssetNoContent } from '$declarations/satellite/satellite.did';
 
 	interface Props {
 		asset: AssetNoContent;
@@ -21,12 +21,12 @@
 	let { asset, satelliteId }: Props = $props();
 
 	let { key, created_at, updated_at } = $derived(asset);
-	let {full_path, description} = $derived(key);
+	let { full_path, description } = $derived(key);
 </script>
 
 <tr>
 	<td class="actions"> </td>
-	<td><Identifier small={false} identifier={full_path} /></td>
+	<td><Identifier small={false} shortenLength={15} identifier={full_path} /></td>
 	<td class="description">
 		{description ?? ''}
 	</td>

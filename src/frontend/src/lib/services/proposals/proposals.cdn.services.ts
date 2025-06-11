@@ -1,3 +1,5 @@
+import type { AssetNoContent } from '$declarations/satellite/satellite.did';
+import { listAssets } from '$lib/api/satellites.api';
 import { COLLECTION_CDN_RELEASES } from '$lib/constants/storage.constants';
 import { i18n } from '$lib/stores/i18n.store';
 import { toasts } from '$lib/stores/toasts.store';
@@ -13,8 +15,6 @@ import { getProposal } from '@junobuild/cdn';
 import { listAssets as listAssetsLib } from '@junobuild/core';
 import type { Asset } from '@junobuild/storage';
 import { get } from 'svelte/store';
-import { listAssets } from '$lib/api/satellites.api';
-import type { AssetNoContent } from '$declarations/satellite/satellite.did';
 
 export const findWasmAssetForProposal = async ({
 	proposal: proposalRecord,
@@ -138,8 +138,7 @@ export const listWasmAssets = async ({
 	matches_length: bigint;
 	items_length: bigint;
 }> => {
-
-	console.log(startAfter)
+	console.log(startAfter);
 
 	const { items, matches_length, items_length } = await listAssets({
 		collection: COLLECTION_CDN_RELEASES,

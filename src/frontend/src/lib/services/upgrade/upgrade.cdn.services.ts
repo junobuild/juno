@@ -3,10 +3,12 @@ import { downloadWasmFromDevCdn } from '$lib/services/upgrade/upgrade.download.s
 import { i18n } from '$lib/stores/i18n.store';
 import { toasts } from '$lib/stores/toasts.store';
 import type { Wasm } from '$lib/types/upgrade';
+import { i18nFormat } from '$lib/utils/i18n.utils';
 import { mapJunoPackageMetadata } from '$lib/utils/version.utils';
 import { readWasmMetadata } from '$lib/utils/wasm.utils';
 import type { Principal } from '@dfinity/principal';
 import { isNullish } from '@dfinity/utils';
+import { checkUpgradeVersion } from '@junobuild/admin';
 import type { Asset } from '@junobuild/storage';
 import { compare } from 'semver';
 import { get } from 'svelte/store';
@@ -53,12 +55,35 @@ export const prepareWasmUpgrade = async ({
 			return { result: 'error' };
 		}
 
-		if (compare(currentVersion, metadata.current) > 0) {
+		const { current: selectedVersion } = metadata;
+
+		const isDowngrade = compare(currentVersion, selectedVersion) < 0;
+		if (isDowngrade) {
 			toasts.error({
 				text: get(i18n).errors.invalid_version_cannot_downgrade
 			});
 
 			return { result: 'error' };
+		}
+
+		const { canUpgrade } = checkUpgradeVersion({ currentVersion, selectedVersion });
+		if (!canUpgrade) {
+			toasts.error({
+				text: i18nFormat(get(i18n).errors.upgrade_requires_iterative_version, [
+					{
+						placeholder: '{0}',
+						value: get(i18n).satellites.satellite
+					},
+					{
+						placeholder: '{1}',
+						value: currentVersion
+					},
+					{
+						placeholder: '{2}',
+						value: selectedVersion
+					}
+				])
+			});
 		}
 
 		return {

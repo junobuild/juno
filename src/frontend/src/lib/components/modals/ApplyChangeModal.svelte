@@ -1,13 +1,8 @@
 <script lang="ts">
-	import { fromNullable, nonNullish, uint8ArrayToHexString } from '@dfinity/utils';
-	import type { ApplyProposalProgress } from '@junobuild/cdn';
-	import ConfirmApplyChange from '$lib/components/changes/wizard/ConfirmApplyChange.svelte';
-	import ProgressApplyChange from '$lib/components/changes/wizard/ProgressApplyChange.svelte';
+	import ApplyChangeWizard from '$lib/components/changes/wizard/ApplyChangeWizard.svelte';
+	import UpgradeChangeWizard from '$lib/components/changes/wizard/UpgradeChangeWizard.svelte';
 	import Modal from '$lib/components/ui/Modal.svelte';
-	import { applyProposal } from '$lib/services/proposals/proposals.services';
-	import { authStore } from '$lib/stores/auth.store';
-	import { i18n } from '$lib/stores/i18n.store';
-	import type { JunoModalChange, JunoModalDetail } from '$lib/types/modal';
+	import type { JunoModalChangeDetail, JunoModalDetail } from '$lib/types/modal';
 
 	interface Props {
 		detail: JunoModalDetail;
@@ -16,84 +11,18 @@
 
 	let { detail, onclose }: Props = $props();
 
-	let proposalRecord = $derived((detail as JunoModalChange).proposal);
-	let satelliteId = $derived((detail as JunoModalChange).satelliteId);
+	let proposal = $derived((detail as JunoModalChangeDetail).proposal);
+	let satelliteId = $derived((detail as JunoModalChangeDetail).satelliteId);
 
-	let { proposal_id: proposalId } = $derived(proposalRecord[0]);
-	let { sha256, proposal_type: proposalType } = $derived(proposalRecord[1]);
+	let step: 'change' | 'upgrade' = $state('change');
 
-	let nullishSha256 = $derived(fromNullable(sha256));
-	let proposalHash = $derived(
-		nonNullish(nullishSha256) ? uint8ArrayToHexString(nullishSha256) : undefined
-	);
-
-	let proposalClearExistingAssets = $derived(
-		'AssetsUpgrade' in proposalType
-			? fromNullable(proposalType.AssetsUpgrade.clear_existing_assets) === true
-			: false
-	);
-
-	let clearProposalAssets = $state(true);
-	let takeSnapshot = $state(false);
-
-	let step: 'init' | 'in_progress' | 'ready' | 'error' = $state('init');
-
-	let progress: ApplyProposalProgress | undefined = $state(undefined);
-	const onProgress = (changeProgress: ApplyProposalProgress | undefined) =>
-		(progress = changeProgress);
-
-	const onsubmit = async ($event: SubmitEvent) => {
-		$event.preventDefault();
-
-		await applyProposal({
-			satelliteId,
-			proposal: proposalRecord,
-			identity: $authStore.identity,
-			clearProposalAssets,
-			takeSnapshot,
-			nextSteps: (next) => (step = next),
-			onProgress
-		});
-	};
+	const startUpgrade = () => (step = 'upgrade');
 </script>
 
 <Modal {onclose}>
-	{#if step === 'ready'}
-		<div class="msg">
-			<p>
-				{#if 'AssetsUpgrade' in proposalType}
-					{$i18n.changes.assets_upgrade_applied}
-				{:else}
-					{$i18n.changes.segments_deployment_applied}
-				{/if}
-			</p>
-			<button onclick={onclose}>{$i18n.core.close}</button>
-		</div>
-	{:else if step === 'in_progress'}
-		<ProgressApplyChange
-			{progress}
-			{proposalClearExistingAssets}
-			{takeSnapshot}
-			{clearProposalAssets}
-		/>
+	{#if step === 'upgrade'}
+		<UpgradeChangeWizard {onclose} {satelliteId} {proposal} />
 	{:else}
-		<ConfirmApplyChange
-			{proposalId}
-			{proposalType}
-			{proposalHash}
-			{proposalClearExistingAssets}
-			bind:clearProposalAssets
-			bind:takeSnapshot
-			{onclose}
-			{onsubmit}
-		/>
+		<ApplyChangeWizard {proposal} {satelliteId} {onclose} {startUpgrade} />
 	{/if}
 </Modal>
-
-<style lang="scss">
-	@use '../../styles/mixins/overlay';
-
-	.msg {
-		@include overlay.message;
-	}
-</style>

@@ -9,10 +9,10 @@ import type {
 	SatelliteVersionMetadata
 } from '$lib/types/version';
 import { container } from '$lib/utils/juno.utils';
+import { mapJunoPackageMetadata } from '$lib/utils/version.utils';
 import type { Principal } from '@dfinity/principal';
 import { assertNonNullish, isNullish, nonNullish } from '@dfinity/utils';
-import { findJunoPackageDependency, getJunoPackage, satelliteBuildType } from '@junobuild/admin';
-import { JUNO_PACKAGE_SATELLITE_ID } from '@junobuild/config';
+import { getJunoPackage, satelliteBuildType } from '@junobuild/admin';
 import { get } from 'svelte/store';
 
 export const reloadSatelliteVersion = async ({
@@ -79,36 +79,17 @@ const loadSatelliteVersion = async ({
 
 			if (junoPkg.status === 'fulfilled' && nonNullish(junoPkg.value)) {
 				const pkg = junoPkg.value;
-				const { name, dependencies, version } = pkg;
+				const metadata = mapJunoPackageMetadata({ pkg });
 
-				// It's stock
-				if (name === JUNO_PACKAGE_SATELLITE_ID) {
-					return {
-						current: version,
-						pkg,
-						build: 'stock'
-					};
-				}
-
-				const satelliteDependency = findJunoPackageDependency({
-					dependencies,
-					dependencyId: JUNO_PACKAGE_SATELLITE_ID
-				});
-
-				if (isNullish(satelliteDependency)) {
+				if (isNullish(metadata)) {
 					toasts.error({
 						text: get(i18n).errors.satellite_version_not_found
 					});
+
 					return undefined;
 				}
 
-				const [_, satelliteVersion] = satelliteDependency;
-
-				return {
-					current: satelliteVersion,
-					pkg,
-					build: 'extended'
-				};
+				return metadata;
 			}
 
 			// Legacy way of fetch build and version information

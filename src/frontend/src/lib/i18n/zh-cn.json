@@ -610,7 +610,16 @@
 		"load_version": "Unexpected error(s) while loading the version of your module(s).",
 		"load_proposals": "Unexpected error(s) while loading the changes of your module(s).",
 		"apply_proposal_error": "Error while applying the change. Reach out Juno if the problem persists!",
-		"reject_proposal_error": "Error while rejecting the change. Reach out Juno if the problem persists!"
+		"reject_proposal_error": "Error while rejecting the change. Reach out Juno if the problem persists!",
+		"find_wasm_asset_for_proposal_error": "Unexpected error while resolving the asset linked to the change.",
+		"find_wasm_asset_for_proposal_invalid_type_error": "Unsupported proposal type. This change is not related to a serverless function upgrade.",
+		"find_wasm_asset_for_proposal_incomplete_version_error": "Missing satellite version. This serverless function upgrade is incomplete.",
+		"find_wasm_asset_for_proposal_missing_change_hash": "Missing change hash. This change does not include a valid identifier.",
+		"find_wasm_asset_for_proposal_proposal_not_found": "Proposal not found. It may have been deleted or is no longer available.",
+		"find_wasm_asset_for_proposal_not_executed": "Proposal has not been executed. Only executed proposals can be processed.",
+		"find_wasm_asset_for_proposal_asset_not_found": "No asset found for this change and version.",
+		"missing_juno_package": "Missing Juno metadata. The WASM does not contain a valid juno.package.json encoded in its public section.",
+		"invalid_juno_package": "Invalid Juno metadata. Unable to parse module information from juno.package.json."
 	},
 	"document": {
 		"owner": "拥有者",
@@ -872,7 +881,7 @@
 		"hash": "Hash",
 		"type": "Type",
 		"assets_upgrade": "Frontend Deployment",
-		"segments_deployment": "Function Upgrade",
+		"segments_deployment": "Functions Upgrade",
 		"apply_change": "Apply change",
 		"snapshot_before_apply": "Snapshot before applying",
 		"confirm_assets_upgrade": "Your frontend will be <strong>updated</strong> with the assets bundled in change <strong>{0}</strong> (hash: <code>{1}</code>).",
@@ -892,6 +901,8 @@
 		"reject_segments_deployment": "The WASM for your serverless functions in change <strong>{0}</strong> (hash: <code>{1}</code>) will be <strong>discarded</strong> not be published to your CDN.",
 		"assets_upgrade_discarded": "Frontend update discarded.",
 		"segments_deployment_discarded": "WASM deployment discarded.",
-		"reject_preparing": "Initializing rejection..."
+		"reject_preparing": "Initializing rejection...",
+		"upgrade_now": "Upgrade now",
+		"upgrade_cdn_source": "Your Satellite will be upgraded using the WASM available on the CDN at <code>{0}</code> ({1})."
 	}
 }

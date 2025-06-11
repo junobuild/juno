@@ -627,6 +627,15 @@ interface I18nErrors {
 	load_proposals: string;
 	apply_proposal_error: string;
 	reject_proposal_error: string;
+	find_wasm_asset_for_proposal_error: string;
+	find_wasm_asset_for_proposal_invalid_type_error: string;
+	find_wasm_asset_for_proposal_incomplete_version_error: string;
+	find_wasm_asset_for_proposal_missing_change_hash: string;
+	find_wasm_asset_for_proposal_proposal_not_found: string;
+	find_wasm_asset_for_proposal_not_executed: string;
+	find_wasm_asset_for_proposal_asset_not_found: string;
+	missing_juno_package: string;
+	invalid_juno_package: string;
 }
 
 interface I18nDocument {
@@ -924,6 +933,8 @@ interface I18nChanges {
 	assets_upgrade_discarded: string;
 	segments_deployment_discarded: string;
 	reject_preparing: string;
+	upgrade_now: string;
+	upgrade_cdn_source: string;
 }
 
 interface I18n {

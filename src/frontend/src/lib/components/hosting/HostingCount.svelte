@@ -5,6 +5,7 @@
 	import { fade } from 'svelte/transition';
 	import type { Satellite } from '$declarations/mission_control/mission_control.did';
 	import { countCollectionAssets } from '$lib/api/satellites.api';
+	import { COLLECTION_DAPP } from '$lib/constants/storage.constants';
 	import { SATELLITE_v0_0_20 } from '$lib/constants/version.constants';
 	import { authStore } from '$lib/stores/auth.store';
 	import { i18n } from '$lib/stores/i18n.store';
@@ -31,7 +32,7 @@
 
 			assets = await countCollectionAssets({
 				satelliteId: satellite.satellite_id,
-				collection: '#dapp',
+				collection: COLLECTION_DAPP,
 				identity: $authStore.identity
 			});
 		} catch (err: unknown) {

@@ -893,6 +893,7 @@
 		"assets_upgrade_discarded": "Frontend update discarded.",
 		"segments_deployment_discarded": "WASM deployment discarded.",
 		"reject_preparing": "Initializing rejection...",
-		"upgrade_now": "Upgrade now"
+		"upgrade_now": "Upgrade now",
+		"upgrade_cdn_source": "Your Satellite will be upgraded using the WASM available on the CDN at <code>{0}</code> ({1})."
 	}
 }

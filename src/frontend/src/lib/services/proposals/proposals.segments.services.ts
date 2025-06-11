@@ -1,11 +1,11 @@
+import { COLLECTION_CDN_RELEASES } from '$lib/constants/storage.constants';
 import type { OptionIdentity } from '$lib/types/itentity';
 import type { ProposalRecord } from '$lib/types/proposals';
 import type { SatelliteIdText } from '$lib/types/satellite';
 import { container } from '$lib/utils/juno.utils';
-import { getProposal } from '@junobuild/cdn';
 import { assertNonNullish, fromNullable, isEmptyString, isNullish } from '@dfinity/utils';
+import { getProposal } from '@junobuild/cdn';
 import { listAssets } from '@junobuild/core';
-import { COLLECTION_CDN_RELEASES } from '$lib/constants/storage.constants';
 import type { Asset } from '@junobuild/storage';
 
 export const findWasmAssetForProposal = async ({
@@ -22,12 +22,14 @@ export const findWasmAssetForProposal = async ({
 
 		const [{ proposal_id }, { sha256, proposal_type }] = proposalRecord;
 
-		if (!("SegmentsDeployment" in proposal_type)) {
+		if (!('SegmentsDeployment' in proposal_type)) {
 			// TODO
 			return;
 		}
 
-		const {SegmentsDeployment: {satellite_version}} = proposal_type;
+		const {
+			SegmentsDeployment: { satellite_version }
+		} = proposal_type;
 
 		const version = fromNullable(satellite_version);
 
@@ -43,13 +45,13 @@ export const findWasmAssetForProposal = async ({
 			satelliteId,
 			identity,
 			...container()
-		}
+		};
 
-		const cdn = {satellite};
+		const cdn = { satellite };
 
 		const proposalResult = await getProposal({
 			cdn,
-			proposal_id,
+			proposal_id
 		});
 
 		const proposal = fromNullable(proposalResult);
@@ -59,18 +61,18 @@ export const findWasmAssetForProposal = async ({
 			return;
 		}
 
-		if (!("Executed" in proposal.status)) {
+		if (!('Executed' in proposal.status)) {
 			// TODO
 			return;
 		}
 
-		const {items} = await listAssets({
+		const { items } = await listAssets({
 			collection: COLLECTION_CDN_RELEASES,
 			satellite,
 			filter: {
 				matcher: {
 					description: `change=${proposal_id};version=${version}`
-				},
+				}
 			}
 		});
 
@@ -82,9 +84,7 @@ export const findWasmAssetForProposal = async ({
 		}
 
 		return asset;
-	} catch (err: unknown) {
-
-	}
+	} catch (err: unknown) {}
 
 	return undefined;
 };

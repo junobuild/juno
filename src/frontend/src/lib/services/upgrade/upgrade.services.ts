@@ -1,30 +1,14 @@
-import { downloadRelease } from '$lib/rest/cdn.rest';
 import { loadSnapshots } from '$lib/services/snapshots.services';
 import { wizardBusy } from '$lib/stores/busy.store';
 import { i18n } from '$lib/stores/i18n.store';
 import { toasts } from '$lib/stores/toasts.store';
 import type { OptionIdentity } from '$lib/types/itentity';
 import type { Wasm } from '$lib/types/upgrade';
-import { sha256 } from '$lib/utils/crypto.utils';
 import { emit } from '$lib/utils/events.utils';
 import type { Principal } from '@dfinity/principal';
 import { isNullish } from '@dfinity/utils';
 import type { UpgradeCodeParams, UpgradeCodeProgress } from '@junobuild/admin';
 import { get } from 'svelte/store';
-
-export const downloadWasm = async (params: {
-	segment: 'satellite' | 'mission_control' | 'orbiter';
-	version: string;
-}): Promise<Wasm> => {
-	const wasm = await downloadRelease(params);
-	const hash = await sha256(wasm);
-
-	return {
-		wasm,
-		hash,
-		version: params.version
-	};
-};
 
 export interface UpgradeParams {
 	onProgress: (progress: UpgradeCodeProgress | undefined) => void;

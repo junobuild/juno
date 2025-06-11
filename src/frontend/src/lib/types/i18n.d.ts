@@ -925,6 +925,7 @@ interface I18nChanges {
 	segments_deployment_discarded: string;
 	reject_preparing: string;
 	upgrade_now: string;
+	upgrade_cdn_source: string;
 }
 
 interface I18n {

@@ -5,7 +5,7 @@
 	import Html from '$lib/components/ui/Html.svelte';
 	import Info from '$lib/components/ui/Info.svelte';
 	import CanisterUpgradeOptions from '$lib/components/upgrade/wizard/CanisterUpgradeOptions.svelte';
-	import { downloadWasm } from '$lib/services/upgrade/upgrade.services';
+	import { downloadWasmFromJunoCdn } from '$lib/services/upgrade/upgrade.download.services';
 	import { wizardBusy } from '$lib/stores/busy.store';
 	import { i18n } from '$lib/stores/i18n.store';
 	import { toasts } from '$lib/stores/toasts.store';
@@ -88,7 +88,7 @@
 		onnext({ steps: 'download' });
 
 		try {
-			const wasm = await downloadWasm({ segment, version: selectedVersion });
+			const wasm = await downloadWasmFromJunoCdn({ segment, version: selectedVersion });
 
 			onnext({ steps: 'review', wasm });
 		} catch (err: unknown) {

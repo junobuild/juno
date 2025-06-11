@@ -634,6 +634,8 @@ interface I18nErrors {
 	find_wasm_asset_for_proposal_proposal_not_found: string;
 	find_wasm_asset_for_proposal_not_executed: string;
 	find_wasm_asset_for_proposal_asset_not_found: string;
+	missing_juno_package: string;
+	invalid_juno_package: string;
 }
 
 interface I18nDocument {

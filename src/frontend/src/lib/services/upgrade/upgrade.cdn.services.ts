@@ -4,6 +4,9 @@ import { mapJunoPackageMetadata } from '$lib/utils/version.utils';
 import { readWasmMetadata } from '$lib/utils/wasm.utils';
 import { isNullish } from '@dfinity/utils';
 import type { Asset } from '@junobuild/storage';
+import { toasts } from '$lib/stores/toasts.store';
+import { get } from 'svelte/store';
+import { i18n } from '$lib/stores/i18n.store';
 
 export const prepareWasmUpgrade = async ({
 	asset
@@ -17,14 +20,20 @@ export const prepareWasmUpgrade = async ({
 	const { junoPackage } = await readWasmMetadata({ wasm });
 
 	if (isNullish(junoPackage)) {
-		// TODO
+		toasts.error({
+			text: get(i18n).errors.missing_juno_package,
+		});
+
 		return { result: 'error' };
 	}
 
 	const metadata = mapJunoPackageMetadata({ pkg: junoPackage });
 
 	if (isNullish(metadata)) {
-		// TODO
+		toasts.error({
+			text: get(i18n).errors.invalid_juno_package,
+		});
+
 		return { result: 'error' };
 	}
 

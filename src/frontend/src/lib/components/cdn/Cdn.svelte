@@ -1,10 +1,8 @@
 <script lang="ts">
 	import type { Principal } from '@dfinity/principal';
 	import { isNullish, nonNullish } from '@dfinity/utils';
-	import type { Asset } from '@junobuild/storage';
 	import { getContext, setContext, untrack } from 'svelte';
 	import type { AssetNoContent } from '$declarations/satellite/satellite.did';
-	import User from '$lib/components/auth/User.svelte';
 	import CdnAsset from '$lib/components/cdn/CdnAsset.svelte';
 	import DataCount from '$lib/components/data/DataCount.svelte';
 	import DataPaginator from '$lib/components/data/DataPaginator.svelte';

@@ -1,16 +1,8 @@
 <script lang="ts">
 	import type { Principal } from '@dfinity/principal';
 	import { nonNullish } from '@dfinity/utils';
-	import type { Asset } from '@junobuild/storage';
 	import type { AssetNoContent } from '$declarations/satellite/satellite.did';
-	import UserBan from '$lib/components/auth/UserBan.svelte';
-	import UserProvider from '$lib/components/auth/UserProvider.svelte';
-	import ButtonTableAction from '$lib/components/ui/ButtonTableAction.svelte';
 	import Identifier from '$lib/components/ui/Identifier.svelte';
-	import { openUserDetail } from '$lib/services/user/user.services';
-	import { authStore } from '$lib/stores/auth.store';
-	import { i18n } from '$lib/stores/i18n.store';
-	import type { User } from '$lib/types/user';
 	import { formatToDate } from '$lib/utils/date.utils';
 
 	interface Props {

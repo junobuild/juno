@@ -119,7 +119,7 @@
 
 		onnext({ steps: 'download' });
 
-		const result = await prepareWasmUpgrade({ asset });
+		const result = await prepareWasmUpgrade({ asset, satelliteId: satellite.satellite_id });
 
 		if (result.result === 'error') {
 			onnext({ steps: 'error' });

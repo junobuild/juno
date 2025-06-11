@@ -636,6 +636,8 @@ interface I18nErrors {
 	find_wasm_asset_for_proposal_asset_not_found: string;
 	missing_juno_package: string;
 	invalid_juno_package: string;
+	missing_satellite_version: string;
+	invalid_version_cannot_downgrade: string;
 }
 
 interface I18nDocument {

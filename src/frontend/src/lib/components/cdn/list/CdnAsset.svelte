@@ -1,26 +1,37 @@
 <script lang="ts">
-	import type { Principal } from '@dfinity/principal';
 	import { nonNullish } from '@dfinity/utils';
+	import type { Satellite } from '$declarations/mission_control/mission_control.did';
 	import type { AssetNoContent } from '$declarations/satellite/satellite.did';
-	import Identifier from '$lib/components/ui/Identifier.svelte';
-	import { formatToDate } from '$lib/utils/date.utils';
 	import IconArrowCircleUp from '$lib/components/icons/IconArrowCircleUp.svelte';
+	import Identifier from '$lib/components/ui/Identifier.svelte';
 	import { i18n } from '$lib/stores/i18n.store';
+	import { formatToDate } from '$lib/utils/date.utils';
+	import { emit } from '$lib/utils/events.utils';
 
 	interface Props {
 		asset: AssetNoContent;
-		satelliteId: Principal;
+		satellite: Satellite;
 	}
 
-	let { asset, satelliteId: _ }: Props = $props();
+	let { asset, satellite }: Props = $props();
 
 	let { key, created_at, updated_at } = $derived(asset);
 	let { full_path, description } = $derived(key);
+
+	const openUpgrade = () => {
+		emit({
+			message: 'junoModal',
+			detail: {
+				type: 'upgrade_satellite_with_cdn',
+				detail: { asset, satellite }
+			}
+		});
+	};
 </script>
 
 <tr>
 	<td class="actions">
-		<button class="square" aria-label={$i18n.canisters.upgrade} onclick={startUpgrade}
+		<button class="square" aria-label={$i18n.canisters.upgrade} onclick={openUpgrade}
 			><IconArrowCircleUp size="20px" /></button
 		>
 	</td>

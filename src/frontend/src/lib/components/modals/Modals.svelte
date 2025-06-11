@@ -4,6 +4,7 @@
 	import AuthConfigModal from '$lib/components/modals/AuthConfigModal.svelte';
 	import CanisterEditSettingsModal from '$lib/components/modals/CanisterEditSettingsModal.svelte';
 	import CanisterRestoreSnapshotModal from '$lib/components/modals/CanisterRestoreSnapshotModal.svelte';
+	import CdnUpgradeModal from '$lib/components/modals/CdnUpgradeModal.svelte';
 	import ControllerCreateModal from '$lib/components/modals/ControllerCreateModal.svelte';
 	import CreateMonitoringStrategyModal from '$lib/components/modals/CreateMonitoringStrategyModal.svelte';
 	import CreateSnapshotModal from '$lib/components/modals/CreateSnapshotModal.svelte';
@@ -142,4 +143,8 @@
 
 {#if modal?.type === 'reject_change' && nonNullish(modal.detail)}
 	<RejectChangeModal onclose={close} detail={modal.detail} />
+{/if}
+
+{#if modal?.type === 'upgrade_satellite_with_cdn' && nonNullish(modal.detail)}
+	<CdnUpgradeModal onclose={close} detail={modal.detail} />
 {/if}

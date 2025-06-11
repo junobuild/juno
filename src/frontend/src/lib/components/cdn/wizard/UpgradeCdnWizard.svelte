@@ -1,10 +1,10 @@
 <script lang="ts">
 	import { AnonymousIdentity } from '@dfinity/agent';
 	import { Principal } from '@dfinity/principal';
-	import { isNullish, nonNullish } from '@dfinity/utils';
+	import { fromNullable, isNullish, nonNullish } from '@dfinity/utils';
 	import { type UpgradeCodeParams, upgradeSatellite } from '@junobuild/admin';
-	import type { Asset } from '@junobuild/storage';
 	import type { Satellite } from '$declarations/mission_control/mission_control.did';
+	import type { AssetNoContent } from '$declarations/satellite/satellite.did';
 	import CanisterUpgradeWizard, {
 		type CanisterUpgradeWizardProps,
 		type CanisterUpgradeWizardStep
@@ -25,7 +25,7 @@
 
 	interface Props {
 		satellite: Satellite;
-		asset: Asset | undefined;
+		asset: AssetNoContent | undefined;
 		onclose: () => void;
 	}
 
@@ -94,7 +94,11 @@
 
 		onnext({ steps: 'download' });
 
-		const result = await prepareWasmUpgrade({ asset, satelliteId: satellite.satellite_id });
+		const result = await prepareWasmUpgrade({
+			asset,
+			satelliteId: satellite.satellite_id,
+			identity: $authStore.identity
+		});
 
 		if (result.result === 'error') {
 			onnext({ steps: 'error' });
@@ -140,11 +144,11 @@
 						text={i18nFormat($i18n.changes.upgrade_cdn_source, [
 							{
 								placeholder: '{0}',
-								value: asset?.fullPath ?? ''
+								value: asset?.key.full_path ?? ''
 							},
 							{
 								placeholder: '{1}',
-								value: asset?.description ?? ''
+								value: fromNullable(asset?.key.description) ?? ''
 							}
 						])}
 					/>

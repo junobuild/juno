@@ -52,7 +52,7 @@
 						{#if $store.tabId === $store.tabs[0].id}
 							<Logs satelliteId={$satelliteStore.satellite_id} />
 						{:else if $store.tabId === $store.tabs[1].id}
-							<Cdn satelliteId={$satelliteStore.satellite_id} />
+							<Cdn satellite={$satelliteStore} />
 						{/if}
 					</SatelliteVersionLoader>
 				{/if}

@@ -1,19 +1,19 @@
 <script lang="ts">
-    import UpgradeChangeWizard from '$lib/components/changes/wizard/UpgradeChangeWizard.svelte';
-    import Modal from '$lib/components/ui/Modal.svelte';
-    import type { JunoModalChangeDetail, JunoModalDetail } from '$lib/types/modal';
+	import UpgradeCdnWizard from '$lib/components/cdn/wizard/UpgradeCdnWizard.svelte';
+	import Modal from '$lib/components/ui/Modal.svelte';
+	import type { JunoModalCdnUpgradeDetail, JunoModalDetail } from '$lib/types/modal';
 
-    interface Props {
-        detail: JunoModalDetail;
-        onclose: () => void;
-    }
+	interface Props {
+		detail: JunoModalDetail;
+		onclose: () => void;
+	}
 
-    let { detail, onclose }: Props = $props();
+	let { detail, onclose }: Props = $props();
 
-    let proposal = $derived((detail as JunoModalChangeDetail).proposal);
-    let satellite = $derived((detail as JunoModalChangeDetail).satellite);
+	let asset = $derived((detail as JunoModalCdnUpgradeDetail).asset);
+	let satellite = $derived((detail as JunoModalCdnUpgradeDetail).satellite);
 </script>
 
 <Modal {onclose}>
-    <UpgradeChangeWizard {onclose} {satellite} {proposal} />
+	<UpgradeCdnWizard {satellite} {asset} {onclose} />
 </Modal>

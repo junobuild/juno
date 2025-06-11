@@ -1,4 +1,6 @@
 import { COLLECTION_CDN_RELEASES } from '$lib/constants/storage.constants';
+import { i18n } from '$lib/stores/i18n.store';
+import { toasts } from '$lib/stores/toasts.store';
 import type { OptionIdentity } from '$lib/types/itentity';
 import type { ProposalRecord } from '$lib/types/proposals';
 import type { SatelliteIdText } from '$lib/types/satellite';
@@ -7,9 +9,7 @@ import { assertNonNullish, fromNullable, isEmptyString, isNullish } from '@dfini
 import { getProposal } from '@junobuild/cdn';
 import { listAssets } from '@junobuild/core';
 import type { Asset } from '@junobuild/storage';
-import { toasts } from '$lib/stores/toasts.store';
 import { get } from 'svelte/store';
-import { i18n } from '$lib/stores/i18n.store';
 
 export const findWasmAssetForProposal = async ({
 	proposal: proposalRecord,
@@ -27,7 +27,7 @@ export const findWasmAssetForProposal = async ({
 
 		if (!('SegmentsDeployment' in proposal_type)) {
 			toasts.error({
-				text: get(i18n).errors.find_wasm_asset_for_proposal_invalid_type_error,
+				text: get(i18n).errors.find_wasm_asset_for_proposal_invalid_type_error
 			});
 
 			return undefined;
@@ -41,7 +41,7 @@ export const findWasmAssetForProposal = async ({
 
 		if (isEmptyString(version)) {
 			toasts.error({
-				text: get(i18n).errors.find_wasm_asset_for_proposal_incomplete_version_error,
+				text: get(i18n).errors.find_wasm_asset_for_proposal_incomplete_version_error
 			});
 
 			return undefined;
@@ -51,7 +51,7 @@ export const findWasmAssetForProposal = async ({
 
 		if (isNullish(nullishSha256)) {
 			toasts.error({
-				text: get(i18n).errors.find_wasm_asset_for_proposal_missing_change_hash,
+				text: get(i18n).errors.find_wasm_asset_for_proposal_missing_change_hash
 			});
 
 			return undefined;
@@ -74,7 +74,7 @@ export const findWasmAssetForProposal = async ({
 
 		if (isNullish(proposal)) {
 			toasts.error({
-				text: get(i18n).errors.find_wasm_asset_for_proposal_proposal_not_found,
+				text: get(i18n).errors.find_wasm_asset_for_proposal_proposal_not_found
 			});
 
 			return undefined;
@@ -82,7 +82,7 @@ export const findWasmAssetForProposal = async ({
 
 		if (!('Executed' in proposal.status)) {
 			toasts.error({
-				text: get(i18n).errors.find_wasm_asset_for_proposal_not_executed,
+				text: get(i18n).errors.find_wasm_asset_for_proposal_not_executed
 			});
 
 			return undefined;
@@ -102,7 +102,7 @@ export const findWasmAssetForProposal = async ({
 
 		if (isNullish(asset)) {
 			toasts.error({
-				text: get(i18n).errors.find_wasm_asset_for_proposal_asset_not_found,
+				text: get(i18n).errors.find_wasm_asset_for_proposal_asset_not_found
 			});
 
 			return undefined;

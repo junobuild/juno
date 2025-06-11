@@ -138,7 +138,7 @@
 		"confirm_upgrade_with_snapshot": "We'll automatically create a snapshot of your current code before proceeding. Would you like to continue with the upgrade?",
 		"confirm_upgrade_without_snapshot": "No snapshot will be created. Would you like to proceed with the upgrade?",
 		"snapshot_before_upgrade": "Snapshot before upgrading",
-		"upgrade_done": "Your {0} has been has been successfully upgraded to version <strong>{1}</strong>.",
+		"upgrade_done": "Your {0} has been has been upgraded to version <strong>{1}</strong>.",
 		"upgrade": "Upgrade",
 		"delete_title": "Delete {0}",
 		"delete_explanation": "Cycles are necessary to delete the {0}, but the Internet Computer doesn't specify the exact amount required for this operation. Therefore, we recommend retaining 0.5 T Cycles on your {1} for this purpose.",

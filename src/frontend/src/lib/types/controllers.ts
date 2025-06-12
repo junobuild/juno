@@ -6,4 +6,4 @@ export interface SetControllerParams {
 	scope: SetControllerScope;
 }
 
-export type SetControllerScope = 'write' | 'admin';
+export type SetControllerScope = 'write' | 'admin' | 'submit';

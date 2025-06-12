@@ -96,7 +96,7 @@
 {:else}
 	<form onsubmit={onSubmit}>
 		<div class="columns">
-			<InputIcp bind:amount={icp} {balance} />
+			<InputIcp bind:amount={icp} {balance} fee={TOP_UP_NETWORK_FEES} />
 
 			<GridArrow small />
 

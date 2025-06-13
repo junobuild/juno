@@ -53,6 +53,20 @@ then
     run cargo install wasi2ic --version 0.2.15 --locked
 fi
 
+echo "looking for candid-extractor 0.1.4"
+if [[ ! "$(command -v candid-extractor)" || "$(candid-extractor --version)" != "candid-extractor 0.1.4" ]]
+then
+    echo "installing candid-extractor 0.1.4"
+    run cargo install candid-extractor --version 0.1.4 --locked
+fi
+
+echo "looking for junobuild-didc 0.1.0"
+if [[ ! "$(command -v junobuild-didc)" || "$(junobuild-didc --version)" != "junobuild-didc 0.1.0" ]]
+then
+    echo "installing junobuild-didc 0.1.0"
+    run cargo install junobuild-didc --version 0.1.0 --locked
+fi
+
 # make sure the packages are actually installed (rustup waits for the first invoke to lazyload)
 cargo --version
 cargo clippy --version

@@ -27,7 +27,7 @@
 	let step: 'init' | 'in_progress' | 'ready' | 'error' = $state('init');
 
 	let controllerId = $state('');
-	let scope: SetControllerScope = $state('write');
+	let scope: SetControllerScope = $state('submit');
 	let identity: string | undefined = $state();
 
 	const initController = (): string | undefined => {
@@ -195,6 +195,7 @@
 						{$i18n.controllers.scope}
 					{/snippet}
 					<select name="scope" bind:value={scope}>
+						<option value="submit">{$i18n.controllers.submit}</option>
 						<option value="write">{$i18n.controllers.write}</option>
 						<option value="admin">{$i18n.controllers.admin}</option>
 					</select>

@@ -701,6 +701,7 @@ interface I18nControllers {
 	more_delete: string;
 	admin: string;
 	write: string;
+	submit: string;
 	add_a_controller: string;
 	add_intro: string;
 	generate: string;

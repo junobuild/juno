@@ -8,5 +8,6 @@ export const toSetController = ({
 }: Omit<SetControllerParams, 'controllerId'>): SetControllerDid => ({
 	metadata: nonNullish(profile) && profile !== '' ? [['profile', profile]] : [],
 	expires_at: toNullable<bigint>(undefined),
-	scope: scope === 'admin' ? { Admin: null } : { Write: null }
+	scope:
+		scope === 'admin' ? { Admin: null } : scope === 'submit' ? { Submit: null } : { Write: null }
 });

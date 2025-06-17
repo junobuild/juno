@@ -681,6 +681,7 @@
 		"more_delete": "你可以编辑或删除其他的控制者，比如那些不需要跟环境有交互的.",
 		"admin": "管理员",
 		"write": "读写",
+		"submit": "Submit",
 		"add_a_controller": "增加 controller",
 		"add_intro": "赋予管理员或读写权限给 controller.",
 		"generate": "生成一个新的 controller",

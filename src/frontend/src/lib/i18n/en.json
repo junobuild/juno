@@ -681,6 +681,7 @@
 		"more_delete": "However, you can edit or delete additional controllers that you may have added for non-interactive environments.",
 		"admin": "Administrator",
 		"write": "Read-write",
+		"submit": "Submit",
 		"add_a_controller": "Add a controller",
 		"add_intro": "Grant administrative or read-write permissions to a controller.",
 		"generate": "Generate a new controller",

@@ -1,7 +1,7 @@
+use crate::assets::storage::store::get_custom_domains_store;
+use crate::assets::storage::strategy_impls::StorageState;
 use crate::auth::types::config::AuthenticationConfig;
 use crate::errors::auth::JUNO_AUTH_ERROR_INVALID_ORIGIN;
-use crate::storage::store::get_custom_domains_store;
-use crate::storage::strategy_impls::StorageState;
 use ic_cdk::id;
 use junobuild_shared::types::core::DomainName;
 use junobuild_storage::well_known::update::{

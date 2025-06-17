@@ -104,11 +104,16 @@ fn response_hash(headers: &[HeaderField], status_code: StatusCode, body_hash: &H
 }
 
 pub fn response_headers_expression(headers: &[HeaderField]) -> String {
-    let headers = headers
+    let mut header_names: Vec<String> = headers
         .iter()
-        .map(|field: &HeaderField| format!("\"{}\"", field.0))
-        .collect::<Vec<_>>()
-        .join(",");
+        .map(|field| format!("\"{}\"", field.0))
+        .collect();
+
+    // We sort for testing purposes so we can assert the exact certification expression
+    // without needing to manipulate or extract parts of it. This allows us to compare the entire block directly.
+    header_names.sort();
+
+    let headers = header_names.join(",");
 
     IC_CERTIFICATE_EXPRESSION.replace("{headers}", &headers)
 }

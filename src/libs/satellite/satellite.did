@@ -19,6 +19,7 @@ type AssetNoContent = record {
   created_at : nat64;
   version : opt nat64;
 };
+type AssetsUpgradeOptions = record { clear_existing_assets : opt bool };
 type AuthenticationConfig = record {
   internet_identity : opt AuthenticationConfigInternetIdentity;
 };
@@ -32,6 +33,7 @@ type CommitBatch = record {
   headers : vec record { text; text };
   chunk_ids : vec nat;
 };
+type CommitProposal = record { sha256 : blob; proposal_id : nat };
 type Config = record {
   db : opt DbConfig;
   authentication : opt AuthenticationConfig;
@@ -45,7 +47,7 @@ type Controller = record {
   scope : ControllerScope;
   expires_at : opt nat64;
 };
-type ControllerScope = variant { Write; Admin };
+type ControllerScope = variant { Write; Admin; Submit };
 type CustomDomain = record {
   updated_at : nat64;
   created_at : nat64;
@@ -56,6 +58,7 @@ type DbConfig = record { max_memory_size : opt ConfigMaxMemorySize };
 type DelDoc = record { version : opt nat64 };
 type DelRule = record { version : opt nat64 };
 type DeleteControllersArgs = record { controllers : vec principal };
+type DeleteProposalAssets = record { proposal_ids : vec nat };
 type DepositCyclesArgs = record { cycles : nat; destination_id : principal };
 type Doc = record {
   updated_at : nat64;
@@ -102,6 +105,17 @@ type ListParams = record {
   matcher : opt ListMatcher;
   paginate : opt ListPaginate;
 };
+type ListProposalResults = record {
+  matches_length : nat64;
+  items : vec record { ProposalKey; Proposal };
+  items_length : nat64;
+};
+type ListProposalsOrder = record { desc : bool };
+type ListProposalsPaginate = record { start_after : opt nat; limit : opt nat };
+type ListProposalsParams = record {
+  order : opt ListProposalsOrder;
+  paginate : opt ListProposalsPaginate;
+};
 type ListResults = record {
   matches_pages : opt nat64;
   matches_length : nat64;
@@ -116,8 +130,39 @@ type ListResults_1 = record {
   items : vec record { text; Doc };
   items_length : nat64;
 };
+type ListRulesMatcher = record { include_system : bool };
+type ListRulesParams = record { matcher : opt ListRulesMatcher };
+type ListRulesResults = record {
+  matches_length : nat64;
+  items : vec record { text; Rule };
+  items_length : nat64;
+};
 type Memory = variant { Heap; Stable };
+type MemorySize = record { stable : nat64; heap : nat64 };
 type Permission = variant { Controllers; Private; Public; Managed };
+type Proposal = record {
+  status : ProposalStatus;
+  updated_at : nat64;
+  sha256 : opt blob;
+  executed_at : opt nat64;
+  owner : principal;
+  created_at : nat64;
+  version : opt nat64;
+  proposal_type : ProposalType;
+};
+type ProposalKey = record { proposal_id : nat };
+type ProposalStatus = variant {
+  Initialized;
+  Failed;
+  Open;
+  Rejected;
+  Executed;
+  Accepted;
+};
+type ProposalType = variant {
+  AssetsUpgrade : AssetsUpgradeOptions;
+  SegmentsDeployment : SegmentsDeploymentOptions;
+};
 type RateConfig = record { max_tokens : nat64; time_per_token_ns : nat64 };
 type Rule = record {
   max_capacity : opt nat32;
@@ -131,6 +176,11 @@ type Rule = record {
   rate_config : opt RateConfig;
   write : Permission;
   max_changes_per_user : opt nat32;
+};
+type SegmentsDeploymentOptions = record {
+  orbiter : opt text;
+  mission_control_version : opt text;
+  satellite_version : opt text;
 };
 type SetController = record {
   metadata : vec record { text; text };
@@ -201,10 +251,13 @@ type UploadChunk = record {
 type UploadChunkResult = record { chunk_id : nat };
 service : () -> {
   commit_asset_upload : (CommitBatch) -> ();
+  commit_proposal : (CommitProposal) -> (null);
+  commit_proposal_asset_upload : (CommitBatch) -> ();
   count_assets : (text, ListParams) -> (nat64) query;
   count_collection_assets : (text) -> (nat64) query;
   count_collection_docs : (text) -> (nat64) query;
   count_docs : (text, ListParams) -> (nat64) query;
+  count_proposals : () -> (nat64) query;
   del_asset : (text, text) -> ();
   del_assets : (text) -> ();
   del_controllers : (DeleteControllersArgs) -> (
@@ -218,6 +271,7 @@ service : () -> {
   del_many_assets : (vec record { text; text }) -> ();
   del_many_docs : (vec record { text; text; DelDoc }) -> ();
   del_rule : (CollectionType, text, DelRule) -> ();
+  delete_proposal_assets : (DeleteProposalAssets) -> ();
   deposit_cycles : (DepositCyclesArgs) -> ();
   get_asset : (text, text) -> (opt AssetNoContent) query;
   get_auth_config : () -> (opt AuthenticationConfig) query;
@@ -230,6 +284,7 @@ service : () -> {
   get_many_docs : (vec record { text; text }) -> (
       vec record { text; opt Doc },
     ) query;
+  get_proposal : (nat) -> (opt Proposal) query;
   get_rule : (CollectionType, text) -> (opt Rule) query;
   get_storage_config : () -> (StorageConfig) query;
   http_request : (HttpRequest) -> (HttpResponse) query;
@@ -237,11 +292,16 @@ service : () -> {
       StreamingCallbackHttpResponse,
     ) query;
   init_asset_upload : (InitAssetKey) -> (InitUploadResult);
+  init_proposal : (ProposalType) -> (nat, Proposal);
+  init_proposal_asset_upload : (InitAssetKey, nat) -> (InitUploadResult);
   list_assets : (text, ListParams) -> (ListResults) query;
   list_controllers : () -> (vec record { principal; Controller }) query;
   list_custom_domains : () -> (vec record { text; CustomDomain }) query;
   list_docs : (text, ListParams) -> (ListResults_1) query;
-  list_rules : (CollectionType) -> (vec record { text; Rule }) query;
+  list_proposals : (ListProposalsParams) -> (ListProposalResults) query;
+  list_rules : (CollectionType, ListRulesParams) -> (ListRulesResults) query;
+  memory_size : () -> (MemorySize) query;
+  reject_proposal : (CommitProposal) -> (null);
   set_auth_config : (AuthenticationConfig) -> ();
   set_controllers : (SetControllersArgs) -> (
       vec record { principal; Controller },
@@ -254,5 +314,7 @@ service : () -> {
     );
   set_rule : (CollectionType, text, SetRule) -> (Rule);
   set_storage_config : (StorageConfig) -> ();
+  submit_proposal : (nat) -> (nat, Proposal);
   upload_asset_chunk : (UploadChunk) -> (UploadChunkResult);
+  upload_proposal_asset_chunk : (UploadChunk) -> (UploadChunkResult);
 }

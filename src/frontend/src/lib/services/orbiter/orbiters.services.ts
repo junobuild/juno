@@ -100,7 +100,7 @@ export const loadOrbiters = async ({
 		return orbiters.map(([_, orbiter]) => orbiter);
 	};
 
-	const identity = get(authStore).identity;
+	const { identity } = get(authStore);
 
 	return await loadDataStore<Orbiter[]>({
 		identity,
@@ -127,7 +127,7 @@ export const loadOrbiterConfigs = async ({
 	}
 
 	try {
-		const identity = get(authStore).identity;
+		const { identity } = get(authStore);
 
 		const configs = await listOrbiterSatelliteConfigs({
 			identity,

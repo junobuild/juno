@@ -12,6 +12,7 @@ members = [
 	"src/libs/utils",
 	"src/libs/collections",
 	"src/libs/storage",
+	"src/libs/cdn",
 	"src/tests/fixtures/test_satellite"
 ]
 resolver = "2"

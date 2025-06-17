@@ -2,11 +2,11 @@ use crate::constants::{
     ASSET_ENCODING_NO_COMPRESSION, WELL_KNOWN_CUSTOM_DOMAINS, WELL_KNOWN_II_ALTERNATIVE_ORIGINS,
 };
 use crate::http::types::HeaderField;
+use crate::strategies::StorageAssertionsStrategy;
 use crate::types::interface::AssetNoContent;
 use crate::types::state::FullPath;
 use crate::types::store::{Asset, AssetEncoding, AssetKey};
 use candid::Principal;
-use junobuild_collections::assert::stores::assert_permission;
 use junobuild_collections::constants::assets::COLLECTION_ASSET_KEY;
 use junobuild_collections::types::core::CollectionKey;
 use junobuild_collections::types::rules::Permission;
@@ -23,7 +23,7 @@ pub fn map_asset_no_content(asset: &Asset) -> (FullPath, AssetNoContent) {
 pub fn filter_values<'a>(
     caller: Principal,
     controllers: &'a Controllers,
-    rule: &'a Permission,
+    permission: &'a Permission,
     collection: CollectionKey,
     ListParams {
         matcher,
@@ -32,10 +32,11 @@ pub fn filter_values<'a>(
         owner,
     }: &'a ListParams,
     assets: &'a [(&'a FullPath, &'a Asset)],
-) -> Vec<(&'a FullPath, &'a Asset)> {
-    let (regex_key, regex_description) = matcher_regex(matcher);
+    assertions: &impl StorageAssertionsStrategy,
+) -> Result<Vec<(&'a FullPath, &'a Asset)>, String> {
+    let (regex_key, regex_description) = matcher_regex(matcher)?;
 
-    assets
+    let result = assets
         .iter()
         .filter_map(|(key, asset)| {
             if filter_collection(collection.clone(), asset)
@@ -43,14 +44,22 @@ pub fn filter_values<'a>(
                 && filter_description(&regex_description, asset)
                 && filter_owner(*owner, asset)
                 && filter_timestamps(matcher, *asset)
-                && assert_permission(rule, asset.key.owner, caller, controllers)
+                && assertions.assert_list_permission(
+                    permission,
+                    asset.key.owner,
+                    caller,
+                    &collection,
+                    controllers,
+                )
             {
                 Some((*key, *asset))
             } else {
                 None
             }
         })
-        .collect()
+        .collect();
+
+    Ok(result)
 }
 
 fn filter_full_path(regex: &Option<Regex>, asset: &Asset) -> bool {
@@ -155,4 +164,8 @@ pub fn create_asset_with_content(
         .insert(ASSET_ENCODING_NO_COMPRESSION.to_string(), encoding);
 
     asset
+}
+
+pub fn clone_asset_encoding_content_chunks(encoding: &AssetEncoding, chunk_index: usize) -> Blob {
+    encoding.content_chunks[chunk_index].clone()
 }

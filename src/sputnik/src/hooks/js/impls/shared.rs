@@ -24,6 +24,7 @@ impl<'js> JsController {
             scope: match controller.scope {
                 ControllerScope::Write => JsControllerScope::Write,
                 ControllerScope::Admin => JsControllerScope::Admin,
+                ControllerScope::Submit => JsControllerScope::Submit,
             },
         })
     }
@@ -41,6 +42,7 @@ impl<'js> JsController {
             scope: match self.scope {
                 JsControllerScope::Write => ControllerScope::Write,
                 JsControllerScope::Admin => ControllerScope::Admin,
+                JsControllerScope::Submit => ControllerScope::Submit,
             },
         })
     }
@@ -82,6 +84,7 @@ impl<'js> IntoJs<'js> for JsControllerScope {
         let s = match self {
             JsControllerScope::Write => "write",
             JsControllerScope::Admin => "admin",
+            JsControllerScope::Submit => "submit",
         };
 
         s.into_js(ctx)

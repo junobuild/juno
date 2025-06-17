@@ -10,14 +10,15 @@ pub mod day;
 #[doc(hidden)]
 pub mod env;
 #[doc(hidden)]
+pub mod errors;
+#[doc(hidden)]
 pub mod impls;
 pub mod ledger;
 pub mod list;
 pub mod mgmt;
-#[doc(hidden)]
-pub mod msg;
 pub mod random;
 pub mod rate;
+pub mod regex;
 pub mod serializers;
 #[doc(hidden)]
 pub mod types;

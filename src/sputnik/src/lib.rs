@@ -1,4 +1,5 @@
 #![allow(clippy::needless_lifetimes)]
+#![deny(clippy::disallowed_methods)]
 
 mod errors;
 mod hooks;

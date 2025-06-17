@@ -2,12 +2,12 @@ import type { _SERVICE as SputnikActor } from '$declarations/sputnik/sputnik.did
 import type { Identity } from '@dfinity/agent';
 import type { Principal } from '@dfinity/principal';
 import { toNullable } from '@dfinity/utils';
-import { type Actor, type PocketIc } from '@hadronous/pic';
+import type { Actor, PocketIc } from '@hadronous/pic';
 import { toArray } from '@junobuild/utils';
 import { nanoid } from 'nanoid';
 import { mockSetRule } from '../../mocks/collection.mocks';
 import { setupTestSputnik } from '../../utils/fixtures-tests.utils';
-import { fetchLogs } from '../../utils/mgmt-test.utils';
+import { fetchLogs } from '../../utils/mgmt-tests.utils';
 import { waitServerlessFunction } from '../../utils/satellite-extended-tests.utils';
 import { uploadAsset } from '../../utils/satellite-storage-tests.utils';
 

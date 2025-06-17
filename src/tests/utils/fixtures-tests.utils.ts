@@ -9,6 +9,7 @@ import type { Principal } from '@dfinity/principal';
 import { nonNullish } from '@dfinity/utils';
 import { type Actor, type ActorInterface, PocketIc } from '@hadronous/pic';
 import { inject } from 'vitest';
+import { setupChunkedCanister, upgradeChunkedCanister } from './pic-setup-tests.utils';
 import { tick } from './pic-tests.utils';
 import {
 	controllersInitArgs,
@@ -61,11 +62,12 @@ const setupFixtureCanister = async <T extends ActorInterface<T>>({
 		await pic.setTime(currentDate.getTime());
 	}
 
-	const { actor: c, canisterId } = await pic.setupCanister<T>({
+	const { actor: c, canisterId } = await setupChunkedCanister<T>({
+		pic,
 		idlFactory,
-		wasm,
+		wasmPath: wasm,
 		arg: controllersInitArgs(controller),
-		sender: controller.getPrincipal()
+		sender: controller
 	});
 
 	const actor = c;
@@ -115,10 +117,11 @@ const upgradeFixtureCanister = async <T extends ActorInterface<T>>({
 	wasm
 }: Omit<SetupFixtureCanister<T>, 'actor'> & { wasm: string }) => {
 	// The random number generator is only initialized on upgrade because dev that do not use serverless functions do not need it
-	await pic.upgradeCanister({
+	await upgradeChunkedCanister({
+		pic,
 		canisterId,
-		wasm,
-		sender: controller.getPrincipal()
+		wasmPath: wasm,
+		sender: controller
 	});
 
 	// Wait for post_upgrade to kicks in since we defer instantiation of random

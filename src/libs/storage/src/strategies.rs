@@ -5,12 +5,55 @@ use crate::types::store::{
 };
 use candid::Principal;
 use junobuild_collections::types::core::CollectionKey;
-use junobuild_collections::types::rules::{Memory, Rule};
+use junobuild_collections::types::rules::{Memory, Permission, Rule};
 use junobuild_shared::types::core::Blob;
 use junobuild_shared::types::domain::CustomDomains;
 use junobuild_shared::types::state::Controllers;
 
 pub trait StorageAssertionsStrategy {
+    fn assert_key(
+        &self,
+        full_path: &FullPath,
+        description: &Option<String>,
+        collection: &CollectionKey,
+    ) -> Result<(), String>;
+
+    fn assert_write_on_dapp_collection(&self, caller: Principal, controllers: &Controllers)
+        -> bool;
+
+    fn assert_write_on_system_collection(
+        &self,
+        caller: Principal,
+        collection: &CollectionKey,
+        controllers: &Controllers,
+    ) -> bool;
+
+    fn assert_create_permission(
+        &self,
+        permission: &Permission,
+        caller: Principal,
+        collection: &CollectionKey,
+        controllers: &Controllers,
+    ) -> bool;
+
+    fn assert_update_permission(
+        &self,
+        permission: &Permission,
+        owner: Principal,
+        caller: Principal,
+        collection: &CollectionKey,
+        controllers: &Controllers,
+    ) -> bool;
+
+    fn assert_list_permission(
+        &self,
+        permission: &Permission,
+        owner: Principal,
+        caller: Principal,
+        collection: &CollectionKey,
+        controllers: &Controllers,
+    ) -> bool;
+
     fn invoke_assert_upload_asset(
         &self,
         caller: &Principal,
@@ -72,12 +115,13 @@ pub trait StorageStateStrategy {
 pub trait StorageUploadStrategy {
     fn insert_asset_encoding(
         &self,
+        reference_id: &Option<ReferenceId>,
         full_path: &FullPath,
         encoding_type: &EncodingType,
         encoding: &AssetEncoding,
         asset: &mut Asset,
         rule: &Rule,
-    );
+    ) -> Result<(), String>;
 
     fn insert_asset(&self, batch: &Batch, asset: &Asset, rule: &Rule) -> Result<(), String>;
 

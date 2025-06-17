@@ -2,14 +2,14 @@ import type { _SERVICE as SputnikActor } from '$declarations/sputnik/sputnik.did
 import type { Identity } from '@dfinity/agent';
 import type { Principal } from '@dfinity/principal';
 import { assertNonNullish, fromNullable, toNullable } from '@dfinity/utils';
-import { type Actor, type PocketIc } from '@hadronous/pic';
+import type { Actor, PocketIc } from '@hadronous/pic';
 import { fromArray } from '@junobuild/utils';
 import { nanoid } from 'nanoid';
 import { valid } from 'semver';
 import { mockSetRule } from '../../mocks/collection.mocks';
 import { mockData } from '../../mocks/doc.mocks';
 import { setupTestSputnik } from '../../utils/fixtures-tests.utils';
-import { fetchLogs, type IcMgmtLog } from '../../utils/mgmt-test.utils';
+import { fetchLogs, type IcMgmtLog } from '../../utils/mgmt-tests.utils';
 import { waitServerlessFunction } from '../../utils/satellite-extended-tests.utils';
 import { initVersionMock } from '../../utils/sputnik-tests.utils';
 

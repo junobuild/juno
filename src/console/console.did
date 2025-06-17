@@ -32,7 +32,14 @@ type CommitBatch = record {
 type CommitProposal = record { sha256 : blob; proposal_id : nat };
 type Config = record { storage : StorageConfig };
 type ConfigMaxMemorySize = record { stable : opt nat64; heap : opt nat64 };
-type ControllerScope = variant { Write; Admin };
+type Controller = record {
+  updated_at : nat64;
+  metadata : vec record { text; text };
+  created_at : nat64;
+  scope : ControllerScope;
+  expires_at : opt nat64;
+};
+type ControllerScope = variant { Write; Admin; Submit };
 type CreateCanisterArgs = record {
   block_index : opt nat64;
   subnet_id : opt principal;
@@ -84,6 +91,17 @@ type ListParams = record {
   matcher : opt ListMatcher;
   paginate : opt ListPaginate;
 };
+type ListProposalResults = record {
+  matches_length : nat64;
+  items : vec record { ProposalKey; Proposal };
+  items_length : nat64;
+};
+type ListProposalsOrder = record { desc : bool };
+type ListProposalsPaginate = record { start_after : opt nat; limit : opt nat };
+type ListProposalsParams = record {
+  order : opt ListProposalsOrder;
+  paginate : opt ListProposalsPaginate;
+};
 type ListResults = record {
   matches_pages : opt nat64;
   matches_length : nat64;
@@ -118,6 +136,7 @@ type Proposal = record {
   version : opt nat64;
   proposal_type : ProposalType;
 };
+type ProposalKey = record { proposal_id : nat };
 type ProposalStatus = variant {
   Initialized;
   Failed;
@@ -195,12 +214,14 @@ service : () -> {
   assert_mission_control_center : (AssertMissionControlCenterArgs) -> () query;
   commit_asset_upload : (CommitBatch) -> ();
   commit_proposal : (CommitProposal) -> (null);
+  commit_proposal_asset_upload : (CommitBatch) -> ();
+  count_proposals : () -> (nat64) query;
   create_orbiter : (CreateCanisterArgs) -> (principal);
   create_satellite : (CreateCanisterArgs) -> (principal);
   del_controllers : (DeleteControllersArgs) -> ();
   del_custom_domain : (text) -> ();
   delete_proposal_assets : (DeleteProposalAssets) -> ();
-  get_config : () -> (Config);
+  get_config : () -> (Config) query;
   get_create_orbiter_fee : (GetCreateCanisterFeeArgs) -> (opt Tokens) query;
   get_create_satellite_fee : (GetCreateCanisterFeeArgs) -> (opt Tokens) query;
   get_credits : () -> (Tokens) query;
@@ -213,13 +234,17 @@ service : () -> {
     ) query;
   init_asset_upload : (InitAssetKey, nat) -> (InitUploadResult);
   init_proposal : (ProposalType) -> (nat, Proposal);
+  init_proposal_asset_upload : (InitAssetKey, nat) -> (InitUploadResult);
   init_user_mission_control_center : () -> (MissionControl);
   list_assets : (text, ListParams) -> (ListResults) query;
+  list_controllers : () -> (vec record { principal; Controller }) query;
   list_custom_domains : () -> (vec record { text; CustomDomain }) query;
   list_payments : () -> (vec record { nat64; Payment }) query;
+  list_proposals : (ListProposalsParams) -> (ListProposalResults) query;
   list_user_mission_control_centers : () -> (
       vec record { principal; MissionControl },
     ) query;
+  reject_proposal : (CommitProposal) -> (null);
   set_controllers : (SetControllersArgs) -> ();
   set_custom_domain : (text, opt text) -> ();
   set_fee : (SegmentKind, Tokens) -> ();
@@ -227,4 +252,5 @@ service : () -> {
   submit_proposal : (nat) -> (nat, Proposal);
   update_rate_config : (SegmentKind, RateConfig) -> ();
   upload_asset_chunk : (UploadChunk) -> (UploadChunkResult);
+  upload_proposal_asset_chunk : (UploadChunk) -> (UploadChunkResult);
 }

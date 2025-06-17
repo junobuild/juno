@@ -1,5 +1,9 @@
 use crate::constants_internal::REVOKED_CONTROLLERS;
 use crate::env::{CONSOLE, OBSERVATORY};
+use crate::errors::{
+    JUNO_ERROR_CONTROLLERS_ANONYMOUS_NOT_ALLOWED, JUNO_ERROR_CONTROLLERS_MAX_NUMBER,
+    JUNO_ERROR_CONTROLLERS_REVOKED_NOT_ALLOWED,
+};
 use crate::types::interface::SetController;
 use crate::types::state::{Controller, ControllerId, ControllerScope, Controllers, UserId};
 use crate::utils::{principal_anonymous, principal_equal, principal_not_anonymous};
@@ -15,7 +19,7 @@ use std::collections::HashMap;
 ///
 /// # Returns
 /// A `Controllers` collection populated with the specified new controllers.
-pub fn init_controllers(new_controllers: &[UserId]) -> Controllers {
+pub fn init_admin_controllers(new_controllers: &[UserId]) -> Controllers {
     let mut controllers: Controllers = Controllers::new();
 
     let controller_data: SetController = SetController {
@@ -75,7 +79,26 @@ pub fn delete_controllers(remove_controllers: &[UserId], controllers: &mut Contr
     }
 }
 
-/// Checks if a caller is a controller.
+/// Checks if a caller is a controller with admin or write scope (permissions).
+///
+/// # Arguments
+/// - `caller`: `UserId` of the caller.
+/// - `controllers`: Reference to the current set of controllers.
+///
+/// # Returns
+/// `true` if the caller is a controller (not anonymous, calling itself or one of the known write or admin controllers), otherwise `false`.
+pub fn controller_can_write(caller: UserId, controllers: &Controllers) -> bool {
+    principal_not_anonymous(caller)
+        && (caller_is_self(caller)
+            || controllers
+                .iter()
+                .any(|(&controller_id, controller)| match controller.scope {
+                    ControllerScope::Submit => false,
+                    _ => principal_equal(controller_id, caller),
+                }))
+}
+
+/// Checks if a caller is a controller regardless of its scope (admin, write or submit).
 ///
 /// # Arguments
 /// - `caller`: `UserId` of the caller.
@@ -105,8 +128,8 @@ pub fn is_admin_controller(caller: UserId, controllers: &Controllers) -> bool {
         && controllers
             .iter()
             .any(|(&controller_id, controller)| match controller.scope {
-                ControllerScope::Write => false,
                 ControllerScope::Admin => principal_equal(controller_id, caller),
+                _ => false,
             })
 }
 
@@ -148,8 +171,8 @@ pub fn assert_max_number_of_controllers(
 
     if current_controller_ids.len() + new_controller_ids.count() > max_controllers {
         return Err(format!(
-            "Maximum number of controllers ({}) is already reached.",
-            max_controllers
+            "{} ({})",
+            JUNO_ERROR_CONTROLLERS_MAX_NUMBER, max_controllers
         ));
     }
 
@@ -183,7 +206,7 @@ fn assert_no_anonymous_controller(controllers_ids: &[ControllerId]) -> Result<()
         .any(|controller_id| principal_anonymous(*controller_id));
 
     match has_anonymous {
-        true => Err("Anonymous controller not allowed.".to_string()),
+        true => Err(JUNO_ERROR_CONTROLLERS_ANONYMOUS_NOT_ALLOWED.to_string()),
         false => Ok(()),
     }
 }
@@ -200,7 +223,7 @@ fn assert_no_revoked_controller(controllers_ids: &[ControllerId]) -> Result<(), 
     let has_revoked = controllers_ids.iter().any(controller_revoked);
 
     match has_revoked {
-        true => Err("Revoked controller not allowed.".to_string()),
+        true => Err(JUNO_ERROR_CONTROLLERS_REVOKED_NOT_ALLOWED.to_string()),
         false => Ok(()),
     }
 }
@@ -256,8 +279,8 @@ pub fn filter_admin_controllers(controllers: &Controllers) -> Controllers {
         .clone()
         .into_iter()
         .filter(|(_, controller)| match controller.scope {
-            ControllerScope::Write => false,
             ControllerScope::Admin => true,
+            _ => false,
         })
         .collect()
 }

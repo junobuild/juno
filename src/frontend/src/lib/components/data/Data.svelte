@@ -1,6 +1,5 @@
 <script lang="ts">
 	import { getContext, onMount, type Snippet } from 'svelte';
-	import CollectionSelection from '$lib/components/collections/CollectionSelection.svelte';
 	import CollectionsEmpty from '$lib/components/collections/CollectionsEmpty.svelte';
 	import DataNav from '$lib/components/data/DataNav.svelte';
 	import type { CollectionRule } from '$lib/types/collection';
@@ -10,10 +9,12 @@
 	interface Props {
 		children: Snippet;
 		count?: Snippet;
+		header: Snippet;
 		onclose: () => void;
+		displayEmpty?: boolean;
 	}
 
-	let { children, count, onclose }: Props = $props();
+	let { children, count, onclose, header, displayEmpty = true }: Props = $props();
 
 	// Rules
 	const { store }: RulesContext = getContext<RulesContext>(RULES_CONTEXT_KEY);
@@ -42,11 +43,13 @@
 <section>
 	<DataNav onedit={selectionCollection} onclose={close} />
 
-	<CollectionSelection onedit={selectionCollection} />
+	{@render header()}
 
 	{@render children()}
 
-	<CollectionsEmpty onclick={selectTab} />
+	{#if displayEmpty}
+		<CollectionsEmpty onclick={selectTab} />
+	{/if}
 </section>
 
 <div class="count">

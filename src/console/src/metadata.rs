@@ -1,8 +1,9 @@
-use crate::constants::{RELEASES_COLLECTION_KEY, RELEASES_METADATA_JSON};
-use crate::storage::state::heap::{get_asset, insert_asset};
+use crate::cdn::constants::RELEASES_COLLECTION_KEY;
+use crate::cdn::helpers::heap::{get_asset, insert_asset};
+use crate::constants::RELEASES_METADATA_JSON;
 use crate::store::heap::{get_releases_metadata, set_releases_metadata};
-use crate::types::state::SegmentsDeploymentOptions;
 use ic_cdk::id;
+use junobuild_cdn::proposals::SegmentsDeploymentOptions;
 use junobuild_storage::types::store::{Asset, AssetKey};
 use junobuild_storage::utils::{create_asset_with_content, map_content_type_headers};
 use serde_json::to_string;
@@ -48,7 +49,7 @@ fn update_releases_metadata_asset() -> Result<(), String> {
     Ok(())
 }
 
-pub fn map_releases_metadata_asset(metadata: &str, existing_asset: Option<Asset>) -> Asset {
+fn map_releases_metadata_asset(metadata: &str, existing_asset: Option<Asset>) -> Asset {
     let key = AssetKey {
         name: RELEASES_METADATA_JSON.to_string(),
         full_path: RELEASES_METADATA_JSON.to_string(),

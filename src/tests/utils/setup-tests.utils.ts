@@ -102,6 +102,15 @@ export const downloadConsole = async ({
 	version: string;
 }): Promise<string> => await downloadGitHub({ junoVersion, wasm: `console-v${version}.wasm.gz` });
 
+export const downloadObservatory = async ({
+	junoVersion,
+	version
+}: {
+	junoVersion: string;
+	version: string;
+}): Promise<string> =>
+	await downloadGitHub({ junoVersion, wasm: `observatory-v${version}.wasm.gz` });
+
 const downloadCdn = async (wasm: string): Promise<string> =>
 	await download({ wasm, url: `https://cdn.juno.build/releases/${wasm}` });
 

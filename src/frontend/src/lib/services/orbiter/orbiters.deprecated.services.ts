@@ -141,6 +141,7 @@ const mapDeprecatedAnalyticsTop10PageViews = (
 			let host: string;
 			try {
 				const url = new URL(ref);
+				// eslint-disable-next-line prefer-destructuring
 				host = url.host;
 			} catch (_err: unknown) {
 				host = ref;
@@ -178,7 +179,9 @@ const mapDeprecatedAnalyticsTop10PageViews = (
 	return {
 		referrers: referrersEntries,
 		pages: pagesEntries,
-		time_zones: toNullable()
+		time_zones: toNullable(),
+		utm_sources: toNullable(),
+		utm_campaigns: toNullable()
 	};
 };
 

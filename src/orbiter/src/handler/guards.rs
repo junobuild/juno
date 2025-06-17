@@ -9,17 +9,20 @@ use isbot::Bots;
 pub fn assert_request_headers(headers: &HttpRequestHeaders) -> Result<(), (StatusCode, String)> {
     let user_agent = headers
         .iter()
-        .find(|(key, _)| key.to_lowercase() == "user-agent")
-        .map(|(_, value)| value.clone());
+        .find(|(key, _)| key.eq_ignore_ascii_case("user-agent"))
+        .map(|(_, value)| value);
 
-    if user_agent.is_none() {
-        return Err((
-            StatusCode::BAD_REQUEST,
-            ERROR_MISSING_USER_AGENT.to_string(),
-        ));
-    }
+    let user_agent = match user_agent {
+        Some(user_agent) => user_agent,
+        None => {
+            return Err((
+                StatusCode::BAD_REQUEST,
+                ERROR_MISSING_USER_AGENT.to_string(),
+            ));
+        }
+    };
 
-    if let Err(bot_err) = assert_bot(&user_agent.unwrap()) {
+    if let Err(bot_err) = assert_bot(user_agent) {
         return Err((StatusCode::FORBIDDEN, bot_err));
     }
 
@@ -29,7 +32,7 @@ pub fn assert_request_headers(headers: &HttpRequestHeaders) -> Result<(), (Statu
 fn assert_bot(user_agent: &str) -> Result<(), String> {
     let bots = Bots::default();
 
-    if bots.is_bot(&user_agent) {
+    if bots.is_bot(user_agent) {
         return Err(ERROR_BOT_CALL.to_string());
     }
 

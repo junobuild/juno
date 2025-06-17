@@ -44,6 +44,8 @@ export interface AnalyticsOperatingSystemsPageViews {
 export interface AnalyticsTop10PageViews {
 	referrers: Array<[string, number]>;
 	pages: Array<[string, number]>;
+	utm_campaigns: [] | [Array<[string, number]>];
+	utm_sources: [] | [Array<[string, number]>];
 	time_zones: [] | [Array<[string, number]>];
 }
 export interface AnalyticsTrackEvents {
@@ -72,7 +74,7 @@ export interface Controller {
 	scope: ControllerScope;
 	expires_at: [] | [bigint];
 }
-export type ControllerScope = { Write: null } | { Admin: null };
+export type ControllerScope = { Write: null } | { Admin: null } | { Submit: null };
 export interface DelSatelliteConfig {
 	version: [] | [bigint];
 }
@@ -101,6 +103,10 @@ export interface HttpResponse {
 	upgrade: [] | [boolean];
 	status_code: number;
 }
+export interface MemorySize {
+	stable: bigint;
+	heap: bigint;
+}
 export type NavigationType =
 	| { Navigate: null }
 	| { Restore: null }
@@ -127,12 +133,20 @@ export interface PageView {
 	referrer: [] | [string];
 	time_zone: string;
 	session_id: string;
+	campaign: [] | [PageViewCampaign];
 	href: string;
 	created_at: bigint;
 	satellite_id: Principal;
 	device: PageViewDevice;
 	version: [] | [bigint];
 	user_agent: [] | [string];
+}
+export interface PageViewCampaign {
+	utm_content: [] | [string];
+	utm_medium: [] | [string];
+	utm_source: string;
+	utm_term: [] | [string];
+	utm_campaign: [] | [string];
 }
 export interface PageViewClient {
 	os: string;
@@ -182,6 +196,7 @@ export interface SetPageView {
 	referrer: [] | [string];
 	time_zone: string;
 	session_id: string;
+	campaign: [] | [PageViewCampaign];
 	href: string;
 	satellite_id: Principal;
 	device: PageViewDevice;
@@ -245,6 +260,7 @@ export interface _SERVICE {
 	http_request_update: ActorMethod<[HttpRequest], HttpResponse>;
 	list_controllers: ActorMethod<[], Array<[Principal, Controller]>>;
 	list_satellite_configs: ActorMethod<[], Array<[Principal, OrbiterSatelliteConfig]>>;
+	memory_size: ActorMethod<[], MemorySize>;
 	set_controllers: ActorMethod<[SetControllersArgs], Array<[Principal, Controller]>>;
 	set_page_view: ActorMethod<[AnalyticKey, SetPageView], Result>;
 	set_page_views: ActorMethod<[Array<[AnalyticKey, SetPageView]>], Result_1>;

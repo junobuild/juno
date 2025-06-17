@@ -10,7 +10,7 @@ import { PocketIc, type Actor } from '@hadronous/pic';
 import { readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { inject } from 'vitest';
-import { assertCertification } from '../../../utils/certification-test.utils';
+import { assertCertification } from '../../../utils/certification-tests.utils';
 import { deleteDefaultIndexHTML } from '../../../utils/satellite-tests.utils';
 import { SATELLITE_WASM_PATH, controllersInitArgs } from '../../../utils/setup-tests.utils';
 

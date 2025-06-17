@@ -44,7 +44,7 @@
 	let canisterSyncStatus = $state<CanisterSyncStatus | undefined>(undefined);
 </script>
 
-<Modal on:junoClose={onclose}>
+<Modal {onclose}>
 	<h2>{$i18n.monitoring.title}</h2>
 
 	<div class="card-container columns-3 no-border">

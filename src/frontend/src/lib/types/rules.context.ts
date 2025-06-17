@@ -18,6 +18,7 @@ export interface RulesContext {
 	hasAnyRules: Readable<boolean>;
 	emptyRules: Readable<boolean>;
 	sortedRules: Readable<CollectionRule[]>;
+	devRules: Readable<CollectionRule[]>;
 }
 
 export const RULES_CONTEXT_KEY = Symbol('rules');

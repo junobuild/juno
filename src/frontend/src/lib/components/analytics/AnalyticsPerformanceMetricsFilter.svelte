@@ -3,7 +3,7 @@
 		AnalyticsWebVitalsPageMetrics,
 		AnalyticsWebVitalsPerformanceMetrics
 	} from '$declarations/orbiter/orbiter.did';
-	import AnalyticsToolbar from '$lib/components/analytics/AnalyticsToolbar.svelte';
+	import Toolbar from '$lib/components/ui/Toolbar.svelte';
 	import Value from '$lib/components/ui/Value.svelte';
 	import { i18n } from '$lib/stores/i18n.store';
 
@@ -17,7 +17,7 @@
 	let { pages } = $derived(performanceMetrics);
 </script>
 
-<AnalyticsToolbar>
+<Toolbar>
 	{#snippet start()}
 		<Value>
 			{#snippet label()}
@@ -33,4 +33,4 @@
 			</select>
 		</Value>
 	{/snippet}
-</AnalyticsToolbar>
+</Toolbar>

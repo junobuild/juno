@@ -13,6 +13,7 @@ export interface ListOrder {
 
 export interface ListFilter {
 	matcher?: string;
+	description?: string;
 	owner?: string;
 }
 
@@ -21,4 +22,8 @@ export interface ListParams {
 	limit?: bigint;
 	order: ListOrder;
 	filter: ListFilter;
+}
+
+export interface ListRulesParams {
+	includeSystem: boolean;
 }

@@ -6,7 +6,7 @@ import { Ed25519KeyIdentity } from '@dfinity/identity';
 import type { Principal } from '@dfinity/principal';
 import { PocketIc, type Actor } from '@hadronous/pic';
 import { inject } from 'vitest';
-import { CONTROLLER_ERROR_MSG } from '../../constants/mission-control-tests.constants';
+import { MISSION_CONTROL_ADMIN_CONTROLLER_ERROR_MSG } from '../../constants/mission-control-tests.constants';
 import { missionControlUserInitArgs } from '../../utils/mission-control-tests.utils';
 import {
 	MISSION_CONTROL_WASM_PATH,
@@ -61,6 +61,8 @@ describe('Mission Control', () => {
 	it('should throw errors on set satellite because the user of the mission control has been incorrectly set to another identity than the controller', async () => {
 		const { set_satellite } = actor;
 
-		await expect(set_satellite(satelliteId, [])).rejects.toThrow(CONTROLLER_ERROR_MSG);
+		await expect(set_satellite(satelliteId, [])).rejects.toThrow(
+			MISSION_CONTROL_ADMIN_CONTROLLER_ERROR_MSG
+		);
 	});
 });

@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { nonNullish } from '@dfinity/utils';
 	import { onMount } from 'svelte';
+	import { fade } from 'svelte/transition';
 	import type { Satellite } from '$declarations/mission_control/mission_control.did';
 	import ExternalLink from '$lib/components/ui/ExternalLink.svelte';
 	import Value from '$lib/components/ui/Value.svelte';
@@ -25,13 +26,13 @@
 		});
 	});
 
-	let defaultUrl: string = $derived(satelliteUrl(satellite.satellite_id.toText()));
+	let defaultUrl = $derived(satelliteUrl(satellite.satellite_id.toText()));
 
-	let href: string = $derived(
+	let href = $derived(
 		nonNullish($satelliteCustomDomain) ? `https://${$satelliteCustomDomain}` : defaultUrl
 	);
 
-	let host: string = $derived($satelliteCustomDomain ?? new URL(defaultUrl).host);
+	let host = $derived($satelliteCustomDomain ?? $i18n.hosting.default_url);
 </script>
 
 <div>
@@ -39,9 +40,11 @@
 		{#snippet label()}
 			{$i18n.hosting.title}
 		{/snippet}
-		{#if $satelliteCustomDomainsLoaded}
-			<ExternalLink {href} ariaLabel={$i18n.hosting.custom_domain}
-				><span class="host">{host}</span></ExternalLink
+		{#if $satelliteCustomDomainsLoaded && nonNullish(host)}
+			<span in:fade
+				><ExternalLink {href} ariaLabel={$i18n.hosting.custom_domain}
+					><span class="host">{host}</span></ExternalLink
+				></span
 			>
 		{:else}
 			<span>&ZeroWidthSpace;</span>
@@ -53,13 +56,15 @@
 	@use '../../styles/mixins/text';
 
 	div {
+		margin: 0 0 var(--padding-2_5x);
+
 		:global(a) {
-			min-width: 100%;
+			width: 100%;
+			max-width: 100%;
 		}
 	}
 
 	.host {
-		max-width: 65%;
 		@include text.truncate;
 	}
 </style>

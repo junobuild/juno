@@ -1,0 +1,27 @@
+[package]
+name = "junobuild-cdn"
+version = "0.0.1"
+authors.workspace = true
+edition.workspace = true
+repository.workspace = true
+description = "CDN logic for serving assets in Juno, backed by a request-based storage process."
+homepage.workspace = true
+documentation = "https://docs.rs/junobuild-cdn"
+readme = "README.md"
+license-file = "LICENSE.md"
+
+[package.metadata.docs.rs]
+targets = ["wasm32-unknown-unknown"]
+rustc-args = ['--cfg', "getrandom_backend=\"custom\""]
+rustdoc-args = ['--cfg', "getrandom_backend=\"custom\""]
+
+[dependencies]
+candid.workspace = true
+ic-cdk.workspace = true
+ic-stable-structures.workspace = true
+serde.workspace = true
+sha2.workspace = true
+hex.workspace = true
+junobuild-shared = "0.1.0"
+junobuild-collections = "0.1.0"
+junobuild-storage = "0.1.0"

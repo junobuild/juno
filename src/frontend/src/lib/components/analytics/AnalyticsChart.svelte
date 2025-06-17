@@ -33,7 +33,7 @@
 			return chartsPageViews;
 		}
 
-		const firstPageView = chartsPageViews[0];
+		const [firstPageView] = chartsPageViews;
 		const startDate = new Date(parseInt(firstPageView.x));
 
 		const datePlusOneDay = () => {

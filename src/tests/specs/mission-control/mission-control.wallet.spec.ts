@@ -12,7 +12,7 @@ import type { Principal } from '@dfinity/principal';
 import { PocketIc, SubnetStateType, type Actor } from '@hadronous/pic';
 import { inject } from 'vitest';
 import { LEDGER_ID } from '../../constants/ledger-tests.contants';
-import { CONTROLLER_ERROR_MSG } from '../../constants/mission-control-tests.constants';
+import { MISSION_CONTROL_ADMIN_CONTROLLER_ERROR_MSG } from '../../constants/mission-control-tests.constants';
 import { setupLedger } from '../../utils/ledger-tests.utils';
 import { missionControlUserInitArgs } from '../../utils/mission-control-tests.utils';
 import { MISSION_CONTROL_WASM_PATH } from '../../utils/setup-tests.utils';
@@ -83,13 +83,17 @@ describe('Mission Control > Wallet', () => {
 			it('should throw errors on icp transfer', async () => {
 				const { icp_transfer } = actor;
 
-				await expect(icp_transfer(args)).rejects.toThrow(CONTROLLER_ERROR_MSG);
+				await expect(icp_transfer(args)).rejects.toThrow(
+					MISSION_CONTROL_ADMIN_CONTROLLER_ERROR_MSG
+				);
 			});
 
 			it('should throw errors on icrc transfer', async () => {
 				const { icrc_transfer } = actor;
 
-				await expect(icrc_transfer(LEDGER_ID, arg)).rejects.toThrow(CONTROLLER_ERROR_MSG);
+				await expect(icrc_transfer(LEDGER_ID, arg)).rejects.toThrow(
+					MISSION_CONTROL_ADMIN_CONTROLLER_ERROR_MSG
+				);
 			});
 		};
 

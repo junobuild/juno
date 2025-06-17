@@ -1,7 +1,8 @@
 <script lang="ts">
 	import { onMount, type Snippet } from 'svelte';
 	import type { Satellite } from '$declarations/mission_control/mission_control.did';
-	import { loadVersion } from '$lib/services/version.loader.services';
+	import { reloadMissionControlVersion } from '$lib/services/version/version.mission-control.services';
+	import { reloadSatelliteVersion } from '$lib/services/version/version.satellite.services';
 	import { authStore } from '$lib/stores/auth.store';
 	import type { MissionControlId } from '$lib/types/mission-control';
 
@@ -13,13 +14,19 @@
 
 	let { missionControlId, satellite, children }: Props = $props();
 
-	const load = async (skipReload: boolean) => {
-		await loadVersion({
-			satelliteId: satellite.satellite_id,
-			missionControlId,
-			skipReload,
-			identity: $authStore.identity
-		});
+	const load = async (skipSatelliteReload: boolean) => {
+		await Promise.allSettled([
+			reloadSatelliteVersion({
+				satelliteId: satellite.satellite_id,
+				skipReload: skipSatelliteReload,
+				identity: $authStore.identity
+			}),
+			reloadMissionControlVersion({
+				missionControlId,
+				skipReload: true,
+				identity: $authStore.identity
+			})
+		]);
 	};
 
 	onMount(() => {

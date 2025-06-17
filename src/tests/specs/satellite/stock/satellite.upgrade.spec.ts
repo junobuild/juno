@@ -34,7 +34,7 @@ import {
 	controllersInitArgs,
 	downloadSatellite
 } from '../../../utils/setup-tests.utils';
-import { crateVersion } from '../../../utils/version-test.utils';
+import { crateVersion } from '../../../utils/version-tests.utils';
 
 describe('Satellite > Upgrade', () => {
 	let pic: PocketIc;
@@ -762,10 +762,22 @@ describe('Satellite > Upgrade', () => {
 			actor.setIdentity(controller);
 		});
 
-		it('should expose build version', async () => {
+		it('should deprecated build version', async () => {
 			const satelliteVersion = crateVersion('satellite');
 
-			expect(await actor.build_version()).toEqual(satelliteVersion);
+			await expect(actor.build_version()).resolves.toEqual(satelliteVersion);
+
+			await upgrade();
+
+			await expect(async () => await actor.build_version()).rejects.toThrow(
+				new RegExp("Canister has no query method 'build_version'.", 'i')
+			);
+		});
+
+		it('should deprecate version', async () => {
+			const satelliteVersion = crateVersion('satellite');
+
+			await expect(actor.version()).resolves.toEqual(satelliteVersion);
 
 			await upgrade();
 
@@ -774,16 +786,90 @@ describe('Satellite > Upgrade', () => {
 			);
 		});
 
-		it('should deprecate version', async () => {
-			const satelliteVersion = crateVersion('satellite');
+		it('should create collection #_juno/releases', async () => {
+			await upgrade();
 
-			expect(await actor.version()).toEqual(satelliteVersion);
+			const { get_rule } = actor;
+
+			const result = await get_rule({ Storage: null }, '#_juno/releases');
+
+			const rule = fromNullable(result);
+
+			assertNonNullish(rule);
+
+			const { updated_at, created_at, memory, mutable_permissions, read, write, version } = rule;
+
+			expect(memory).toEqual(toNullable({ Heap: null }));
+			expect(read).toEqual({ Controllers: null });
+			expect(write).toEqual({ Controllers: null });
+			expect(mutable_permissions).toEqual([false]);
+			expect(created_at).toBeGreaterThan(0n);
+			expect(updated_at).toBeGreaterThan(0n);
+			expect(fromNullable(version)).toBeUndefined();
+		});
+
+		it('should preserve controllers even if scope enum is extended', async () => {
+			const user1 = Ed25519KeyIdentity.generate();
+			const user2 = Ed25519KeyIdentity.generate();
+			const admin1 = Ed25519KeyIdentity.generate();
+
+			const { set_controllers } = actor;
+
+			await set_controllers({
+				controller: {
+					scope: { Write: null },
+					metadata: [['hello', 'world']],
+					expires_at: []
+				},
+				controllers: [user1.getPrincipal(), user2.getPrincipal()]
+			});
+
+			await set_controllers({
+				controller: {
+					scope: { Admin: null },
+					metadata: [['super', 'top']],
+					expires_at: []
+				},
+				controllers: [admin1.getPrincipal()]
+			});
+
+			const assertControllers = async (actor: SatelliteActor | SatelliteActor_0_0_21) => {
+				const { list_controllers } = actor;
+
+				const controllers = await list_controllers();
+
+				expect(
+					controllers.find(([p, _]) => p.toText() === controller.getPrincipal().toText())
+				).not.toBeUndefined();
+
+				const assertWriteController = (controller: Principal) => {
+					const maybeUser = controllers.find(([p, _]) => p.toText() === controller.toText());
+					assertNonNullish(maybeUser);
+
+					expect(maybeUser[1].scope).toEqual({ Write: null });
+					expect(maybeUser[1].metadata).toEqual([['hello', 'world']]);
+				};
+
+				assertWriteController(user1.getPrincipal());
+				assertWriteController(user2.getPrincipal());
+
+				const maybeAdmin = controllers.find(
+					([p, _]) => p.toText() === admin1.getPrincipal().toText()
+				);
+				assertNonNullish(maybeAdmin);
+
+				expect(maybeAdmin[1].scope).toEqual({ Admin: null });
+				expect(maybeAdmin[1].metadata).toEqual([['super', 'top']]);
+			};
+
+			await assertControllers(actor);
 
 			await upgrade();
 
-			await expect(async () => await actor.version()).rejects.toThrow(
-				new RegExp("Canister has no query method 'version'.", 'i')
-			);
+			const newActor = pic.createActor<SatelliteActor>(idlFactorSatellite, canisterId);
+			newActor.setIdentity(controller);
+
+			await assertControllers(newActor);
 		});
 	});
 });

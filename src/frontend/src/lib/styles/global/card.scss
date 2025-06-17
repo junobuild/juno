@@ -4,8 +4,18 @@
 @mixin columns-3 {
 	@include media.min-width(medium) {
 		display: grid;
-		grid-template-columns: repeat(2, auto) 1fr;
-		grid-column-gap: var(--padding-12x);
+		grid-template-columns: repeat(3, calc(var(--columns-3-width) * 0.3));
+		grid-column-gap: var(--columns-3-gap);
+
+		--columns-3-gap: var(--padding-6x);
+		--columns-3-width: calc(100% - (2 * var(--columns-3-gap)));
+	}
+
+	@include media.min-width(large) {
+		grid-template-columns: repeat(2, calc(var(--columns-3-width) * 0.26)) calc(
+				var(--columns-3-width) * 0.48
+			);
+		--columns-3-gap: var(--padding-12x);
 	}
 
 	&.fit-column-1 {

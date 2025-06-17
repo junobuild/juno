@@ -4,8 +4,10 @@ import { AnonymousIdentity } from '@dfinity/agent';
 import { Ed25519KeyIdentity } from '@dfinity/identity';
 import { fromNullable, toNullable } from '@dfinity/utils';
 import { PocketIc, type Actor } from '@hadronous/pic';
+import { JUNO_STORAGE_ERROR_RESERVED_ASSET } from '@junobuild/errors';
 import { beforeAll, describe, expect, inject } from 'vitest';
-import { deploySegments, uploadFile } from '../../utils/console-tests.utils';
+import { uploadFile } from '../../utils/cdn-tests.utils';
+import { deploySegments } from '../../utils/console-tests.utils';
 import { CONSOLE_WASM_PATH, WASM_VERSIONS } from '../../utils/setup-tests.utils';
 
 describe('Console > Metadata', () => {
@@ -97,7 +99,7 @@ describe('Console > Metadata', () => {
 		});
 
 		it('should throw error if try to upload metadata.json', async () => {
-			const { init_asset_upload, init_proposal } = actor;
+			const { init_proposal_asset_upload, init_proposal } = actor;
 
 			const [proposalId, _] = await init_proposal({
 				AssetsUpgrade: {
@@ -106,7 +108,7 @@ describe('Console > Metadata', () => {
 			});
 
 			await expect(
-				init_asset_upload(
+				init_proposal_asset_upload(
 					{
 						collection: '#releases',
 						description: toNullable(),
@@ -117,7 +119,7 @@ describe('Console > Metadata', () => {
 					},
 					proposalId
 				)
-			).rejects.toThrow('/releases/metadata.json is a reserved asset.');
+			).rejects.toThrow(`${JUNO_STORAGE_ERROR_RESERVED_ASSET} (/releases/metadata.json)`);
 		});
 	});
 });

@@ -19,5 +19,5 @@ serde.workspace = true
 ciborium.workspace = true
 getrandom.workspace = true
 rand.workspace = true
-canfund = "0.7.0"
+canfund = "0.8.3"
 junobuild-shared = { path = "../libs/shared" }

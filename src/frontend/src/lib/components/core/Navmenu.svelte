@@ -13,104 +13,89 @@
 	import IconSatellite from '$lib/components/icons/IconSatellite.svelte';
 	import IconStorage from '$lib/components/icons/IconStorage.svelte';
 	import IconTelescope from '$lib/components/icons/IconTelescope.svelte';
+	import IconUpgradeDock from '$lib/components/icons/IconUpgradeDock.svelte';
 	import IconWallet from '$lib/components/icons/IconWallet.svelte';
 	import Menu from '$lib/components/ui/Menu.svelte';
 	import { pageSatelliteId } from '$lib/derived/page.derived.svelte';
+	import { isSatelliteRoute } from '$lib/derived/route.derived.svelte';
 	import { i18n } from '$lib/stores/i18n.store';
+	import { isRouteSelected } from '$lib/utils/nav.utils';
 
 	let routeId: string | null = $derived(page.route.id);
 
 	let satelliteId: string = $derived($pageSatelliteId ?? '');
-
-	const isSelected = ({ routeId, path }: { routeId: string | null; path: string }): boolean =>
-		routeId?.includes(path) ?? false;
-
-	const satellitePaths = [
-		'satellite',
-		'authentication',
-		'datastore',
-		'storage',
-		'functions',
-		'hosting'
-	];
-
-	let satelliteSelected = $derived(
-		satellitePaths.find((path) => isSelected({ routeId, path })) !== undefined
-	);
 
 	let queryParam = $derived(notEmptyString(satelliteId) ? `/?s=${satelliteId}` : '');
 </script>
 
 <Menu>
 	<nav>
-		{#if notEmptyString(satelliteId)}
-			<a
-				class="link"
-				href={`/satellite${queryParam}`}
-				class:selected={isSelected({ routeId, path: 'satellite' })}
+		<a
+			class="link"
+			href={`/satellite${queryParam}`}
+			class:selected={isRouteSelected({ routeId, path: 'satellite' })}
+		>
+			<IconSatellite size="24px" />
+			<span>{$i18n.satellites.satellite}</span>
+		</a>
+
+		{#if $isSatelliteRoute}
+			<div
+				class="satellite-features"
+				in:slide={{ delay: 0, duration: 150, easing: quintOut, axis: 'y' }}
+				out:slide={{ delay: 0, duration: 100, easing: circOut, axis: 'y' }}
 			>
-				<IconSatellite size="24px" />
-				<span>{$i18n.satellites.satellite}</span>
-			</a>
-
-			{#if satelliteSelected}
-				<div
-					class="satellite-features"
-					in:slide={{ delay: 0, duration: 150, easing: quintOut, axis: 'y' }}
-					out:slide={{ delay: 0, duration: 100, easing: circOut, axis: 'y' }}
+				<a
+					class="link"
+					href={`/authentication${queryParam}`}
+					class:selected={isRouteSelected({ routeId, path: 'authentication' })}
 				>
-					<a
-						class="link"
-						href={`/authentication${queryParam}`}
-						class:selected={isSelected({ routeId, path: 'authentication' })}
-					>
-						<IconAuthentication size="24px" />
-						<span>{$i18n.authentication.title}</span>
-					</a>
+					<IconAuthentication size="24px" />
+					<span>{$i18n.authentication.title}</span>
+				</a>
 
-					<a
-						class="link"
-						href={`/datastore${queryParam}`}
-						class:selected={isSelected({ routeId, path: 'datastore' })}
-					>
-						<IconDatastore size="24px" />
-						<span>{$i18n.datastore.title}</span>
-					</a>
+				<a
+					class="link"
+					href={`/datastore${queryParam}`}
+					class:selected={isRouteSelected({ routeId, path: 'datastore' })}
+				>
+					<IconDatastore size="24px" />
+					<span>{$i18n.datastore.title}</span>
+				</a>
 
-					<a
-						class="link"
-						href={`/storage${queryParam}`}
-						class:selected={isSelected({ routeId, path: 'storage' })}
-					>
-						<IconStorage size="24px" />
-						<span>{$i18n.storage.title}</span>
-					</a>
+				<a
+					class="link"
+					href={`/storage${queryParam}`}
+					class:selected={isRouteSelected({ routeId, path: 'storage' })}
+				>
+					<IconStorage size="24px" />
+					<span>{$i18n.storage.title}</span>
+				</a>
 
-					<a
-						class="link"
-						href={`/functions${queryParam}`}
-						class:selected={isSelected({ routeId, path: 'functions' })}
-					>
-						<IconFunctions size="24px" />
-						<span>{$i18n.functions.title}</span>
-					</a>
+				<a
+					class="link"
+					href={`/functions${queryParam}`}
+					class:selected={isRouteSelected({ routeId, path: 'functions' })}
+				>
+					<IconFunctions size="24px" />
+					<span>{$i18n.functions.title}</span>
+				</a>
 
-					<a
-						class="link"
-						href={`/hosting${queryParam}`}
-						class:selected={isSelected({ routeId, path: 'hosting' })}
-					>
-						<IconHosting size="24px" />
-						<span>{$i18n.hosting.title}</span>
-					</a>
-				</div>
-			{/if}
+				<a
+					class="link"
+					href={`/hosting${queryParam}`}
+					class:selected={isRouteSelected({ routeId, path: 'hosting' })}
+				>
+					<IconHosting size="24px" />
+					<span>{$i18n.hosting.title}</span>
+				</a>
+			</div>
 		{/if}
 
 		<div>
 			<a
 				href={`/analytics${queryParam}`}
-				class:selected={isSelected({ routeId, path: 'analytics' })}
+				class:selected={isRouteSelected({ routeId, path: 'analytics' })}
 				class="link not-themed"
 			>
 				<IconAnalytics size="20px" />
@@ -119,7 +104,7 @@
 
 			<a
 				href={`/monitoring${queryParam}`}
-				class:selected={isSelected({ routeId, path: 'monitoring' })}
+				class:selected={isRouteSelected({ routeId, path: 'monitoring' })}
 				class="link not-themed"
 			>
 				<IconTelescope size="20px" />
@@ -128,7 +113,7 @@
 
 			<a
 				href={`/mission-control${queryParam}`}
-				class:selected={isSelected({ routeId, path: 'mission-control' })}
+				class:selected={isRouteSelected({ routeId, path: 'mission-control' })}
 				class="link not-themed"
 			>
 				<IconMissionControl size="22px" />
@@ -137,11 +122,20 @@
 
 			<a
 				href={`/wallet${queryParam}`}
-				class:selected={isSelected({ routeId, path: 'wallet' })}
+				class:selected={isRouteSelected({ routeId, path: 'wallet' })}
 				class="link not-themed"
 			>
 				<IconWallet />
 				<span>{$i18n.wallet.title}</span>
+			</a>
+
+			<a
+				href={`/upgrade-dock${queryParam}`}
+				class:selected={isRouteSelected({ routeId, path: 'upgrade-dock' })}
+				class="link not-themed"
+			>
+				<IconUpgradeDock size="20px" />
+				<span>{$i18n.upgrade.title}</span>
 			</a>
 		</div>
 	</nav>

@@ -86,6 +86,9 @@ interface I18nCore {
 	preparing: string;
 	refreshing_interface: string;
 	usage: string;
+	creating_snapshot: string;
+	created: string;
+	updated: string;
 }
 
 interface I18nCanisters {
@@ -111,6 +114,10 @@ interface I18nCanisters {
 	upgrade_breaking_change: string;
 	more_upgrade: string;
 	upgrade_note: string;
+	upgrade_confirm_warning_revert: string;
+	upgrade_confirm_how_to: string;
+	rust_upgrade_guide: string;
+	typescript_upgrade_guide: string;
 	upgrade_confirm: string;
 	converted_cycles: string;
 	top_up_info: string;
@@ -215,11 +222,9 @@ interface I18nCanisters {
 	no_snapshot: string;
 	snapshot_created: string;
 	snapshot_restored: string;
-	creating_snapshot: string;
 	restoring_snapshot: string;
 	snapshot_preparing: string;
 	snapshot_stopping: string;
-	upgrade_snapshot: string;
 	edit_snapshot: string;
 	delete_snapshot: string;
 	delete_snapshot_confirm: string;
@@ -382,6 +387,8 @@ interface I18nAnalytics {
 	count: string;
 	referrers: string;
 	time_zones: string;
+	utm_sources: string;
+	utm_campaigns: string;
 	pages: string;
 	orbiter: string;
 	devices: string;
@@ -462,6 +469,7 @@ interface I18nHosting {
 	set_auth_domain_question: string;
 	need_more_info: string;
 	domain_name: string;
+	default_url: string;
 }
 
 interface I18nFunctions {
@@ -618,12 +626,24 @@ interface I18nErrors {
 	user_unban: string;
 	satellite_version_not_found: string;
 	load_version: string;
+	load_proposals: string;
+	apply_proposal_error: string;
+	reject_proposal_error: string;
+	find_wasm_asset_for_proposal_error: string;
+	find_wasm_asset_for_proposal_invalid_type_error: string;
+	find_wasm_asset_for_proposal_incomplete_version_error: string;
+	find_wasm_asset_for_proposal_missing_change_hash: string;
+	find_wasm_asset_for_proposal_proposal_not_found: string;
+	find_wasm_asset_for_proposal_not_executed: string;
+	find_wasm_asset_for_proposal_asset_not_found: string;
+	missing_juno_package: string;
+	invalid_juno_package: string;
+	missing_satellite_version: string;
+	invalid_version_cannot_downgrade: string;
 }
 
 interface I18nDocument {
 	owner: string;
-	created: string;
-	updated: string;
 	version: string;
 	data: string;
 	no_match: string;
@@ -648,8 +668,6 @@ interface I18nAsset {
 	owner: string;
 	token: string;
 	headers: string;
-	created: string;
-	updated: string;
 	version: string;
 	no_match: string;
 	delete: string;
@@ -730,6 +748,8 @@ interface I18nCollections {
 	immutable: string;
 	clear_collection: string;
 	options: string;
+	show_system_collections: string;
+	hide_system_collections: string;
 }
 
 interface I18nSort {
@@ -755,8 +775,6 @@ interface I18nUsers {
 	user_details: string;
 	identifier: string;
 	provider: string;
-	created: string;
-	updated: string;
 	empty: string;
 	view_details: string;
 	persistence: string;
@@ -774,6 +792,7 @@ interface I18nUsers {
 	are_you_sure_unban: string;
 	ban_explanation: string;
 	unban_explanation: string;
+	identifier_placeholder: string;
 }
 
 interface I18nMonitoring {
@@ -872,6 +891,55 @@ interface I18nEmulator {
 	error_no_main_identity: string;
 }
 
+interface I18nUpgrade {
+	title: string;
+	modules: string;
+	release: string;
+	releases: string;
+	source: string;
+	current: string;
+	dev: string;
+	changes: string;
+	no_upgrades: string;
+}
+
+interface I18nChanges {
+	select_a_satellite: string;
+	no_changes: string;
+	id: string;
+	hash: string;
+	type: string;
+	assets_upgrade: string;
+	segments_deployment: string;
+	apply_change: string;
+	snapshot_before_apply: string;
+	confirm_assets_upgrade: string;
+	confirm_segments_deployment: string;
+	change_preparing: string;
+	applying_update: string;
+	clearing_and_applying_update: string;
+	clearing_staged_assets: string;
+	clear_existing_assets: string;
+	clear_after_apply: string;
+	assets_upgrade_applied: string;
+	segments_deployment_applied: string;
+	reject: string;
+	rejecting: string;
+	reject_change: string;
+	reject_assets_upgrade: string;
+	reject_segments_deployment: string;
+	assets_upgrade_discarded: string;
+	segments_deployment_discarded: string;
+	reject_preparing: string;
+	upgrade_now: string;
+	upgrade_cdn_source: string;
+}
+
+interface I18nCdn {
+	title: string;
+	empty: string;
+}
+
 interface I18n {
 	lang: Languages;
 	core: I18nCore;
@@ -901,4 +969,7 @@ interface I18n {
 	examples: I18nExamples;
 	resources: I18nResources;
 	emulator: I18nEmulator;
+	upgrade: I18nUpgrade;
+	changes: I18nChanges;
+	cdn: I18nCdn;
 }

@@ -11,7 +11,7 @@ readme = "README.md"
 license-file = "LICENSE.md"
 
 [package.metadata.juno.satellite]
-version = "0.0.22"
+version = "0.1.0"
 
 [package.metadata.docs.rs]
 targets = ["wasm32-unknown-unknown"]
@@ -69,3 +69,4 @@ junobuild-shared = "0.1.0"
 junobuild-utils = "0.1.0"
 junobuild-collections = "0.1.0"
 junobuild-storage = "0.1.0"
+junobuild-cdn = { path = "../cdn" }

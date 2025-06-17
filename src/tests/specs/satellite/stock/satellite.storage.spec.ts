@@ -13,18 +13,27 @@ import { arrayBufferToUint8Array, fromNullable, toNullable } from '@dfinity/util
 import { type Actor, PocketIc } from '@hadronous/pic';
 import {
 	JUNO_AUTH_ERROR_NOT_ADMIN_CONTROLLER,
-	JUNO_AUTH_ERROR_NOT_CONTROLLER,
-	JUNO_STORAGE_ERROR_CANNOT_COMMIT_BATCH
+	JUNO_AUTH_ERROR_NOT_WRITE_CONTROLLER,
+	JUNO_CDN_STORAGE_ERROR_INVALID_COLLECTION,
+	JUNO_COLLECTIONS_ERROR_COLLECTION_NOT_EMPTY,
+	JUNO_COLLECTIONS_ERROR_COLLECTION_NOT_FOUND,
+	JUNO_ERROR_MEMORY_HEAP_EXCEEDED,
+	JUNO_ERROR_MEMORY_STABLE_EXCEEDED,
+	JUNO_STORAGE_ERROR_CANNOT_COMMIT_BATCH,
+	JUNO_STORAGE_ERROR_RESERVED_ASSET,
+	JUNO_STORAGE_ERROR_UPLOAD_PATH_COLLECTION_PREFIX
 } from '@junobuild/errors';
 import { readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { afterAll, beforeAll, beforeEach, describe, expect, inject } from 'vitest';
+import { mockListRules } from '../../../mocks/list.mocks';
 import { mockBlob, mockHtml } from '../../../mocks/storage.mocks';
-import { assertCertification } from '../../../utils/certification-test.utils';
+import { assertCertification } from '../../../utils/certification-tests.utils';
 import { createUser as createUserUtils } from '../../../utils/satellite-doc-tests.utils';
 import { uploadAsset } from '../../../utils/satellite-storage-tests.utils';
 import { deleteDefaultIndexHTML } from '../../../utils/satellite-tests.utils';
 import { controllersInitArgs, SATELLITE_WASM_PATH } from '../../../utils/setup-tests.utils';
+import { assertHeaders } from '../../../utils/storage-tests.utils';
 
 describe('Satellite > Storage', () => {
 	let pic: PocketIc;
@@ -65,7 +74,7 @@ describe('Satellite > Storage', () => {
 		it('should throw errors on delete all assets', async () => {
 			const { del_assets } = actor;
 
-			await expect(del_assets('#dapp')).rejects.toThrow(JUNO_AUTH_ERROR_NOT_CONTROLLER);
+			await expect(del_assets('#dapp')).rejects.toThrow(JUNO_AUTH_ERROR_NOT_WRITE_CONTROLLER);
 		});
 
 		it('should throw errors on setting config', async () => {
@@ -150,7 +159,12 @@ describe('Satellite > Storage', () => {
 		});
 	});
 
-	const upload = async (params: { full_path: string; name: string; collection: string }) => {
+	const upload = async (params: {
+		full_path: string;
+		name: string;
+		collection: string;
+		headers?: [string, string][];
+	}) => {
 		await uploadAsset({
 			...params,
 			actor
@@ -166,7 +180,7 @@ describe('Satellite > Storage', () => {
 			const { set_storage_config, get_config } = actor;
 
 			const storage: StorageConfig = {
-				headers: [['*', [['Cache-Control', 'no-cache']]]],
+				headers: [['*', [['cache-control', 'no-cache']]]],
 				iframe: toNullable({ Deny: null }),
 				redirects: [],
 				rewrites: [],
@@ -221,23 +235,9 @@ describe('Satellite > Storage', () => {
 
 			const { headers, body } = response;
 
-			const rest = headers.filter(([header, _]) => header !== 'IC-Certificate');
-
-			/* eslint-disable no-useless-escape */
-			expect(rest).toEqual([
-				['accept-ranges', 'bytes'],
-				['etag', '"03ee66f1452916b4f91a504c1e9babfa201b6d64c26a82b2cf03c3ed49d91585"'],
-				['X-Content-Type-Options', 'nosniff'],
-				['Strict-Transport-Security', 'max-age=31536000 ; includeSubDomains'],
-				['Referrer-Policy', 'same-origin'],
-				['X-Frame-Options', 'DENY'],
-				['Cache-Control', 'no-cache'],
-				[
-					'IC-CertificateExpression',
-					'default_certification(ValidationArgs{certification:Certification{no_request_certification:Empty{},response_certification:ResponseCertification{certified_response_headers:ResponseHeaderList{headers:[\"accept-ranges\",\"etag\",\"X-Content-Type-Options\",\"Strict-Transport-Security\",\"Referrer-Policy\",\"X-Frame-Options\",\"Cache-Control\"]}}}})'
-				]
-			]);
-			/* eslint-enable no-useless-escape */
+			assertHeaders({
+				headers
+			});
 
 			await assertCertification({
 				canisterId,
@@ -267,10 +267,29 @@ describe('Satellite > Storage', () => {
 							name: 'ic-domains',
 							token: toNullable()
 						})
-					).rejects.toThrow(`${full_path} is a reserved asset.`);
+					).rejects.toThrow(`${JUNO_STORAGE_ERROR_RESERVED_ASSET} (${full_path})`);
 				});
 			}
 		);
+
+		describe('Cdn', () => {
+			it(`should throw errors on upload to _juno`, async () => {
+				const { init_asset_upload } = actor;
+
+				await expect(
+					init_asset_upload({
+						collection: '#dapp',
+						description: toNullable(),
+						encoding_type: [],
+						full_path: '/_juno/something.txt',
+						name: 'something.txt',
+						token: toNullable()
+					})
+				).rejects.toThrow(
+					`${JUNO_CDN_STORAGE_ERROR_INVALID_COLLECTION} (/_juno/something.txt - #dapp)`
+				);
+			});
+		});
 
 		describe.each([{ memory: { Heap: null } }, { memory: { Stable: null } }])(
 			'With collection',
@@ -294,9 +313,12 @@ describe('Satellite > Storage', () => {
 
 					await set_rule({ Storage: null }, collection, setRule);
 
-					const collectionResults = await list_rules({
-						Storage: null
-					});
+					const { items: collectionResults } = await list_rules(
+						{
+							Storage: null
+						},
+						mockListRules
+					);
 
 					const collectionResult = collectionResults.find(([c, _]) => c === collection);
 
@@ -325,7 +347,7 @@ describe('Satellite > Storage', () => {
 							name: 'hello.html',
 							token: toNullable()
 						})
-					).rejects.toThrow('Asset path must be prefixed with collection key.');
+					).rejects.toThrow(JUNO_STORAGE_ERROR_UPLOAD_PATH_COLLECTION_PREFIX);
 				});
 
 				it('should deploy asset', async () => {
@@ -348,23 +370,9 @@ describe('Satellite > Storage', () => {
 
 					const { headers, body } = response;
 
-					const rest = headers.filter(([header, _]) => header !== 'IC-Certificate');
-
-					/* eslint-disable no-useless-escape */
-					expect(rest).toEqual([
-						['accept-ranges', 'bytes'],
-						['etag', '"03ee66f1452916b4f91a504c1e9babfa201b6d64c26a82b2cf03c3ed49d91585"'],
-						['X-Content-Type-Options', 'nosniff'],
-						['Strict-Transport-Security', 'max-age=31536000 ; includeSubDomains'],
-						['Referrer-Policy', 'same-origin'],
-						['X-Frame-Options', 'DENY'],
-						['Cache-Control', 'no-cache'],
-						[
-							'IC-CertificateExpression',
-							'default_certification(ValidationArgs{certification:Certification{no_request_certification:Empty{},response_certification:ResponseCertification{certified_response_headers:ResponseHeaderList{headers:[\"accept-ranges\",\"etag\",\"X-Content-Type-Options\",\"Strict-Transport-Security\",\"Referrer-Policy\",\"X-Frame-Options\",\"Cache-Control\"]}}}})'
-						]
-					]);
-					/* eslint-enable no-useless-escape */
+					assertHeaders({
+						headers
+					});
 
 					await assertCertification({
 						canisterId,
@@ -474,7 +482,7 @@ describe('Satellite > Storage', () => {
 				const { set_storage_config, get_config } = actor;
 
 				const storage: StorageConfig = {
-					headers: [['*', [['Cache-Control', 'no-cache']]]],
+					headers: [['*', [['cache-control', 'no-cache']]]],
 					iframe: toNullable({ Deny: null }),
 					redirects: [
 						[
@@ -1138,7 +1146,7 @@ describe('Satellite > Storage', () => {
 				expect(true).toBeFalsy();
 			} catch (error: unknown) {
 				expect((error as Error).message).toContain(
-					`The "${collection}" collection in Storage is not empty.`
+					`${JUNO_COLLECTIONS_ERROR_COLLECTION_NOT_EMPTY} (Storage - ${collection})`
 				);
 			}
 		});
@@ -1156,14 +1164,14 @@ describe('Satellite > Storage', () => {
 				expect(true).toBeFalsy();
 			} catch (error: unknown) {
 				expect((error as Error).message).toContain(
-					`Collection "${collectionUnknown}" not found in Storage.`
+					`${JUNO_COLLECTIONS_ERROR_COLLECTION_NOT_FOUND} (Storage - ${collectionUnknown})`
 				);
 			}
 		});
 	});
 
 	describe('More configuration', () => {
-		const maxHeapMemorySize = 3_997_695n;
+		const maxHeapMemorySize = 3_000_000n;
 		const maxStableMemorySize = 2_000_000n;
 
 		beforeAll(() => {
@@ -1173,20 +1181,20 @@ describe('Satellite > Storage', () => {
 		describe.each([
 			{
 				memory: { Heap: null },
-				expectMemory: maxHeapMemorySize + 1n,
+				expectMemory: 4_063_232n,
 				allowedMemory: maxHeapMemorySize,
 				preUploadCount: 13
 			},
 			{
 				memory: { Stable: null },
-				expectMemory: 25_231_360n,
+				expectMemory: 50_397_184n,
 				allowedMemory: maxStableMemorySize,
 				preUploadCount: 0
 			}
 		])('With collection', ({ memory, expectMemory, allowedMemory, preUploadCount }) => {
 			const collection = `test_${'Heap' in memory ? 'heap' : 'stable'}`;
 
-			const errorMsg = `${'Heap' in memory ? 'Heap' : 'Stable'} memory usage exceeded: ${expectMemory} bytes used, ${allowedMemory} bytes allowed.`;
+			const errorMsg = `${'Heap' in memory ? JUNO_ERROR_MEMORY_HEAP_EXCEEDED : JUNO_ERROR_MEMORY_STABLE_EXCEEDED} (${expectMemory} bytes used, ${allowedMemory} bytes allowed)`;
 
 			const HTML = readFileSync(join(process.cwd(), 'src/frontend/src/app.html'));
 
@@ -1237,7 +1245,7 @@ describe('Satellite > Storage', () => {
 				const { set_storage_config } = actor;
 
 				const storage: StorageConfig = {
-					headers: [['*', [['Cache-Control', 'no-cache']]]],
+					headers: [['*', [['cache-control', 'no-cache']]]],
 					iframe: toNullable({ Deny: null }),
 					redirects: [],
 					rewrites: [],
@@ -1329,5 +1337,103 @@ describe('Satellite > Storage', () => {
 				});
 			});
 		});
+	});
+
+	describe('Headers assertions', () => {
+		const unsetConfigMaxMemory = async () => {
+			const { set_storage_config } = actor;
+
+			const storage: StorageConfig = {
+				headers: [['*', [['cache-control', 'no-cache']]]],
+				iframe: toNullable({ Deny: null }),
+				redirects: [],
+				rewrites: [],
+				raw_access: toNullable(),
+				max_memory_size: toNullable({
+					heap: [],
+					stable: []
+				})
+			};
+
+			await set_storage_config(storage);
+		};
+
+		beforeAll(async () => {
+			actor.setIdentity(controller);
+
+			await unsetConfigMaxMemory();
+		});
+
+		describe.each([{ memory: { Heap: null } }, { memory: { Stable: null } }])(
+			'With collection',
+			({ memory }) => {
+				const collection = `test_${'Heap' in memory ? 'heap' : 'stable'}`;
+
+				it('should not overwrite default headers', async () => {
+					const { http_request } = actor;
+
+					const name = 'hello-9998877.html';
+					const full_path = `/${collection}/${name}`;
+
+					const customHeaders: [string, string][] = [
+						['accept-ranges', 'test'],
+						['etag', 'test'],
+						['x-content-type-options', 'test'],
+						['strict-transport-security', 'test'],
+						['referrer-policy', 'test'],
+						['x-frame-options', 'test']
+					];
+
+					await upload({ full_path, name, collection, headers: customHeaders });
+
+					const request: HttpRequest = {
+						body: [],
+						certificate_version: toNullable(2),
+						headers: [],
+						method: 'GET',
+						url: full_path
+					};
+
+					const response = await http_request(request);
+
+					const { headers } = response;
+
+					expect(headers.find(([_, value]) => value === 'test')).to.toBeUndefined();
+
+					assertHeaders({
+						headers
+					});
+				});
+
+				it('should use asset headers over configs', async () => {
+					const { http_request } = actor;
+
+					const name = 'hello-665544.html';
+					const full_path = `/${collection}/${name}`;
+
+					const customCacheControl = 'public, max-age=3600';
+
+					const customHeaders: [string, string][] = [['cache-control', customCacheControl]];
+
+					await upload({ full_path, name, collection, headers: customHeaders });
+
+					const request: HttpRequest = {
+						body: [],
+						certificate_version: toNullable(2),
+						headers: [],
+						method: 'GET',
+						url: full_path
+					};
+
+					const response = await http_request(request);
+
+					const { headers } = response;
+
+					const cacheControlHeaderDev = headers.find(([key, _]) => key === 'cache-control');
+
+					expect(cacheControlHeaderDev?.[1]).toEqual(customCacheControl);
+				});
+			}
+		);
 	});
 });

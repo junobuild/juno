@@ -26,7 +26,6 @@ import {
 	SATELLITE_v0_0_7
 } from '$lib/constants/version.constants';
 import { satellitesStore } from '$lib/derived/satellites.derived';
-import { missionControlVersion as missionControlVersionStore } from '$lib/derived/version.derived';
 import { loadDataStore } from '$lib/services/loader.services';
 import { loadSatellites } from '$lib/services/satellites.services';
 import { authStore } from '$lib/stores/auth.store';
@@ -38,6 +37,7 @@ import {
 import { orbitersUncertifiedStore } from '$lib/stores/orbiter.store';
 import { satellitesUncertifiedStore } from '$lib/stores/satellite.store';
 import { toasts } from '$lib/stores/toasts.store';
+import { versionStore } from '$lib/stores/version.store';
 import type { SetControllerParams } from '$lib/types/controllers';
 import type { OptionIdentity } from '$lib/types/itentity';
 import type { Metadata } from '$lib/types/metadata';
@@ -186,7 +186,7 @@ export const setSatelliteName = async ({
 	const updateData = new Map(metadata);
 	updateData.set(METADATA_KEY_NAME, satelliteName);
 
-	const identity = get(authStore).identity;
+	const { identity } = get(authStore);
 
 	const updatedSatellite = await setSatelliteMetadata({
 		missionControlId,
@@ -211,7 +211,7 @@ export const attachSatellite = async ({
 	missionControlId: MissionControlId;
 	satelliteId: Principal;
 }) => {
-	const identity = get(authStore).identity;
+	const { identity } = get(authStore);
 
 	await setSatellite({ missionControlId, satelliteId, identity });
 
@@ -229,7 +229,7 @@ export const detachSatellite = async ({
 	missionControlId: MissionControlId;
 	canisterId: Principal;
 }) => {
-	const identity = get(authStore).identity;
+	const { identity } = get(authStore);
 
 	await unsetSatellite({ missionControlId, satelliteId: canisterId, identity });
 
@@ -243,7 +243,7 @@ export const attachOrbiter = async (params: {
 	missionControlId: MissionControlId;
 	orbiterId: Principal;
 }) => {
-	const identity = get(authStore).identity;
+	const { identity } = get(authStore);
 
 	const orbiter = await setOrbiter({ ...params, identity });
 
@@ -257,7 +257,7 @@ export const detachOrbiter = async ({
 	missionControlId: MissionControlId;
 	canisterId: Principal;
 }) => {
-	const identity = get(authStore).identity;
+	const { identity } = get(authStore);
 
 	await unsetOrbiter({ ...rest, orbiterId: canisterId, identity });
 
@@ -273,9 +273,9 @@ export const loadSettings = async ({
 	identity: OptionIdentity;
 	reload?: boolean;
 }): Promise<{ success: boolean }> => {
-	const versionStore = get(missionControlVersionStore);
+	const store = get(versionStore);
 
-	if (compare(versionStore?.current ?? '0.0.0', MISSION_CONTROL_v0_0_14) < 0) {
+	if (compare(store.missionControl?.current ?? '0.0.0', MISSION_CONTROL_v0_0_14) < 0) {
 		missionControlSettingsUncertifiedStore.reset();
 		return { success: true };
 	}
@@ -309,9 +309,9 @@ export const loadUserData = async ({
 	identity: OptionIdentity;
 	reload?: boolean;
 }): Promise<{ success: boolean }> => {
-	const versionStore = get(missionControlVersionStore);
+	const store = get(versionStore);
 
-	if (compare(versionStore?.current ?? '0.0.0', MISSION_CONTROL_v0_0_14) < 0) {
+	if (compare(store.missionControl?.current ?? '0.0.0', MISSION_CONTROL_v0_0_14) < 0) {
 		missionControlUserUncertifiedStore.reset();
 		return { success: true };
 	}

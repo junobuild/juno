@@ -1,9 +1,8 @@
 use crate::constants::E8S_PER_ICP;
-use crate::memory::STATE;
+use crate::memory::manager::STATE;
 use crate::types::ledger::{Payment, PaymentStatus};
 use crate::types::state::{
-    MissionControl, MissionControls, MissionControlsStable, Payments, PaymentsStable, Proposal,
-    ProposalId, ProposalKey, ProposalsStable, StableState,
+    MissionControl, MissionControls, MissionControlsStable, Payments, PaymentsStable, StableState,
 };
 use ic_cdk::api::time;
 use ic_ledger_types::BlockIndex;
@@ -346,48 +345,4 @@ pub fn list_payments() -> Payments {
 
 fn list_payments_impl(payments: &PaymentsStable) -> Payments {
     payments.iter().collect()
-}
-
-// ---------------------------------------------------------
-// Proposals
-// ---------------------------------------------------------
-
-pub fn get_proposal(proposal_id: &ProposalId) -> Option<Proposal> {
-    STATE.with(|state| get_proposal_impl(proposal_id, &state.borrow().stable.proposals))
-}
-
-fn get_proposal_impl(proposal_id: &ProposalId, proposals: &ProposalsStable) -> Option<Proposal> {
-    proposals.get(&stable_proposal_key(proposal_id))
-}
-
-pub fn count_proposals() -> usize {
-    STATE.with(|state| count_proposals_impl(&state.borrow().stable.proposals))
-}
-
-fn count_proposals_impl(proposals: &ProposalsStable) -> usize {
-    proposals.iter().count()
-}
-
-pub fn insert_proposal(proposal_id: &ProposalId, proposal: &Proposal) {
-    STATE.with(|state| {
-        insert_proposal_impl(
-            proposal_id,
-            proposal,
-            &mut state.borrow_mut().stable.proposals,
-        )
-    })
-}
-
-fn insert_proposal_impl(
-    proposal_id: &ProposalId,
-    proposal: &Proposal,
-    proposals: &mut ProposalsStable,
-) {
-    proposals.insert(stable_proposal_key(proposal_id), proposal.clone());
-}
-
-fn stable_proposal_key(proposal_id: &ProposalId) -> ProposalKey {
-    ProposalKey {
-        proposal_id: *proposal_id,
-    }
 }

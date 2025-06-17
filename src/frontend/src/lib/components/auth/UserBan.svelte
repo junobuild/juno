@@ -64,7 +64,7 @@
 			{i18nFormat(isBanned ? $i18n.users.user_banned : $i18n.users.user_active, [
 				{
 					placeholder: '{0}',
-					value: shortenWithMiddleEllipsis(user.owner.toText())
+					value: shortenWithMiddleEllipsis({ text: user.owner.toText() })
 				}
 			])}
 		</p>

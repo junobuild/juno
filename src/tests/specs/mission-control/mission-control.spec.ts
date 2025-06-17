@@ -9,7 +9,7 @@ import { Ed25519KeyIdentity } from '@dfinity/identity';
 import { fromNullable, toNullable } from '@dfinity/utils';
 import { PocketIc, type Actor } from '@hadronous/pic';
 import { inject } from 'vitest';
-import { CONTROLLER_ERROR_MSG } from '../../constants/mission-control-tests.constants';
+import { MISSION_CONTROL_ADMIN_CONTROLLER_ERROR_MSG } from '../../constants/mission-control-tests.constants';
 import { missionControlUserInitArgs } from '../../utils/mission-control-tests.utils';
 import { MISSION_CONTROL_WASM_PATH } from '../../utils/setup-tests.utils';
 
@@ -46,31 +46,33 @@ describe('Mission Control', () => {
 		it('should throw errors on get user', async () => {
 			const { get_user } = actor;
 
-			await expect(get_user()).rejects.toThrow(CONTROLLER_ERROR_MSG);
+			await expect(get_user()).rejects.toThrow(MISSION_CONTROL_ADMIN_CONTROLLER_ERROR_MSG);
 		});
 
 		it('should throw errors on get user data', async () => {
 			const { get_user_data } = actor;
 
-			await expect(get_user_data()).rejects.toThrow(CONTROLLER_ERROR_MSG);
+			await expect(get_user_data()).rejects.toThrow(MISSION_CONTROL_ADMIN_CONTROLLER_ERROR_MSG);
 		});
 
 		it('should throw errors on get metadata', async () => {
 			const { get_metadata } = actor;
 
-			await expect(get_metadata()).rejects.toThrow(CONTROLLER_ERROR_MSG);
+			await expect(get_metadata()).rejects.toThrow(MISSION_CONTROL_ADMIN_CONTROLLER_ERROR_MSG);
 		});
 
 		it('should throw errors on set metadata', async () => {
 			const { set_metadata } = actor;
 
-			await expect(set_metadata(metadata)).rejects.toThrow(CONTROLLER_ERROR_MSG);
+			await expect(set_metadata(metadata)).rejects.toThrow(
+				MISSION_CONTROL_ADMIN_CONTROLLER_ERROR_MSG
+			);
 		});
 
 		it('should throw errors on get settings', async () => {
 			const { get_settings } = actor;
 
-			await expect(get_settings()).rejects.toThrow(CONTROLLER_ERROR_MSG);
+			await expect(get_settings()).rejects.toThrow(MISSION_CONTROL_ADMIN_CONTROLLER_ERROR_MSG);
 		});
 	};
 

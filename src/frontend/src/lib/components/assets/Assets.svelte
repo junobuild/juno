@@ -130,7 +130,7 @@
 			<div in:fade>
 				{#if $paginationStore.items.length > 0}
 					{#each $paginationStore.items as item (item[0])}
-						{@const asset = item[1]}
+						{@const [_, asset] = item}
 						{@const key = asset.key.full_path}
 
 						<button class="text action" onclick={() => assetsStore.set({ key, data: asset })}

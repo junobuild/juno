@@ -1,4 +1,4 @@
-use crate::memory::RUNTIME_STATE;
+use crate::memory::manager::RUNTIME_STATE;
 use crate::types::interface::CyclesMonitoringStatus;
 use crate::types::runtime::RuntimeState;
 

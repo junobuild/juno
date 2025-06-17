@@ -7,7 +7,7 @@ type Controller = record {
   scope : ControllerScope;
   expires_at : opt nat64;
 };
-type ControllerScope = variant { Write; Admin };
+type ControllerScope = variant { Write; Admin; Submit };
 type CreateCanisterConfig = record {
   subnet_id : opt principal;
   name : opt text;
@@ -42,6 +42,17 @@ type DepositedCyclesEmailNotification = record {
   to : opt text;
   enabled : bool;
 };
+type FundingErrorCode = variant {
+  BalanceCheckFailed;
+  ObtainCyclesFailed;
+  DepositFailed;
+  InsufficientCycles;
+  Other : text;
+};
+type FundingFailure = record {
+  timestamp : nat64;
+  error_code : FundingErrorCode;
+};
 type GetMonitoringHistory = record {
   to : opt nat64;
   from : opt nat64;
@@ -58,6 +69,7 @@ type MonitoringHistory = record { cycles : opt MonitoringHistoryCycles };
 type MonitoringHistoryCycles = record {
   deposited_cycles : opt CyclesBalance;
   cycles : CyclesBalance;
+  funding_failure : opt FundingFailure;
 };
 type MonitoringHistoryKey = record {
   segment_id : principal;

@@ -1,21 +1,17 @@
 import type {
 	AnalyticKey,
 	_SERVICE as OrbiterActor,
-	OrbiterSatelliteFeatures,
-	PageView,
-	PageViewClient,
-	SetPageView
+	PageView
 } from '$declarations/orbiter/orbiter.did';
 import { idlFactory as idlFactorOrbiter } from '$declarations/orbiter/orbiter.factory.did';
 import { Ed25519KeyIdentity } from '@dfinity/identity';
-import { fromNullable, isNullish, jsonReviver, toNullable } from '@dfinity/utils';
+import { fromNullable, jsonReviver, toNullable } from '@dfinity/utils';
 import { type Actor, PocketIc } from '@hadronous/pic';
 import { readFile } from 'node:fs/promises';
 import { join } from 'node:path';
-import UAParser from 'ua-parser-js';
 import { inject } from 'vitest';
 import { satelliteIdMock } from '../../mocks/orbiter.mocks';
-import { tick } from '../../utils/pic-tests.utils';
+import { initOrbiterConfig, uploadPageViews } from '../../utils/orbiter-page-views-tests.utils';
 import { controllersInitArgs, ORBITER_WASM_PATH } from '../../utils/setup-tests.utils';
 
 describe('Orbiter > Analytics', () => {
@@ -36,116 +32,6 @@ describe('Orbiter > Analytics', () => {
 		pageViewsMock = JSON.parse(content, jsonReviver);
 	};
 
-	const initConfig = async () => {
-		const allFeatures: OrbiterSatelliteFeatures = {
-			page_views: true,
-			performance_metrics: true,
-			track_events: true
-		};
-
-		const { set_satellite_configs } = actor;
-
-		await set_satellite_configs([
-			[
-				satelliteIdMock,
-				{
-					version: [],
-					restricted_origin: [],
-					features: [allFeatures]
-				}
-			]
-		]);
-	};
-
-	const uploadPageViews = async ({
-		collected_at,
-		withSizeMock = false,
-		withUAParser = false
-	}: {
-		collected_at: bigint;
-		withSizeMock?: boolean;
-		withUAParser?: boolean;
-	}) => {
-		const screen_width = [575, 991, 1439, 1920];
-
-		const setPageViewsData = pageViewsMock.map<[AnalyticKey, SetPageView]>(
-			(
-				[
-					key,
-					{
-						version: ___,
-						created_at: _,
-						updated_at: __,
-						satellite_id: ____,
-						device,
-						user_agent,
-						...value
-					}
-				],
-				i
-			) => {
-				const parseClient = (): PageViewClient | undefined => {
-					if (!withUAParser) {
-						return undefined;
-					}
-
-					const userAgent = fromNullable(user_agent);
-
-					if (isNullish(userAgent)) {
-						return undefined;
-					}
-
-					const parser = new UAParser(userAgent);
-					const { browser, os, device } = parser.getResult();
-
-					if (isNullish(browser.name) || isNullish(os.name)) {
-						return undefined;
-					}
-
-					return {
-						browser: browser.name,
-						os: os.name,
-						device: toNullable(device?.type)
-					};
-				};
-
-				return [
-					{
-						...key,
-						collected_at
-					},
-					{
-						...value,
-						user_agent,
-						updated_at: [],
-						version: [],
-						client: toNullable(parseClient()),
-						satellite_id: satelliteIdMock,
-						device: {
-							...device,
-							screen_width: withSizeMock ? [screen_width[i % screen_width.length]] : [],
-							screen_height: []
-						}
-					}
-				];
-			}
-		);
-
-		const it = setPageViewsData.values();
-		const chunks: [AnalyticKey, SetPageView][][] = Array.from(it, (val) => [
-			val,
-			...it.take(50 - 1)
-		]);
-
-		const { set_page_views } = actor;
-
-		for (const chunk of chunks) {
-			await set_page_views(chunk);
-
-			await tick(pic);
-		}
-	};
-
 	beforeAll(async () => {
 		pic = await PocketIc.create(inject('PIC_URL'));
 
@@ -160,7 +46,7 @@ describe('Orbiter > Analytics', () => {
 
 		actor.setIdentity(controller);
 
-		await initConfig();
+		await initOrbiterConfig(actor);
 
 		await initMock();
 	});
@@ -173,7 +59,7 @@ describe('Orbiter > Analytics', () => {
 		const collected_at = 1742076030479000000n;
 
 		beforeAll(async () => {
-			await uploadPageViews({ collected_at });
+			await uploadPageViews({ pic, actor, collected_at, pageViewsMock });
 		});
 
 		it('should get page views metrics', async () => {
@@ -252,7 +138,18 @@ describe('Orbiter > Analytics', () => {
 				to: [collected_at + 1000n]
 			});
 
-			expect(result).toEqual({
+			const sortedTimeZones = [...(fromNullable(result.time_zones) ?? [])].sort((a, b) => {
+				if (b[1] !== a[1]) {
+					return b[1] - a[1];
+				}
+
+				return a[0].localeCompare(b[0]);
+			});
+
+			expect({
+				...result,
+				time_zones: [sortedTimeZones]
+			}).toEqual({
 				pages: [
 					['/', 92],
 					['/hello/', 26],
@@ -277,10 +174,12 @@ describe('Orbiter > Analytics', () => {
 						['Europe/Amsterdam', 11],
 						['Africa/Lagos', 9],
 						['Asia/Tokyo', 8],
-						['Europe/Stockholm', 7],
-						['Asia/Manila', 7]
+						['Asia/Manila', 7],
+						['Europe/Stockholm', 7]
 					]
-				]
+				],
+				utm_campaigns: [],
+				utm_sources: []
 			});
 		});
 
@@ -317,7 +216,7 @@ describe('Orbiter > Analytics', () => {
 		const collected_at = 1742076030479000000n + ONE_DAY;
 
 		beforeAll(async () => {
-			await uploadPageViews({ collected_at, withSizeMock: true });
+			await uploadPageViews({ pic, actor, collected_at, withSizeMock: true, pageViewsMock });
 		});
 
 		it('should get the clients information', async () => {
@@ -353,7 +252,7 @@ describe('Orbiter > Analytics', () => {
 		const collected_at = 1742076030479000000n + ONE_DAY + ONE_DAY;
 
 		beforeAll(async () => {
-			await uploadPageViews({ collected_at, withUAParser: true });
+			await uploadPageViews({ pic, actor, collected_at, withUAParser: true, pageViewsMock });
 		});
 
 		it('should get the data based on extract ua data', async () => {
@@ -398,7 +297,14 @@ describe('Orbiter > Analytics', () => {
 		const collected_at = 1742076030479000000n + ONE_DAY + ONE_DAY + ONE_DAY;
 
 		beforeAll(async () => {
-			await uploadPageViews({ collected_at, withUAParser: true, withSizeMock: true });
+			await uploadPageViews({
+				pic,
+				actor,
+				collected_at,
+				withUAParser: true,
+				withSizeMock: true,
+				pageViewsMock
+			});
 		});
 
 		it('should get the data based on extract ua data except devices from size', async () => {

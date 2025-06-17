@@ -1,24 +1,16 @@
 pub mod state {
-    use crate::memory::init_stable_state;
-    use candid::{CandidType, Principal};
+    use crate::memory::manager::init_stable_state;
+    use candid::CandidType;
     use ic_stable_structures::StableBTreeMap;
     use junobuild_shared::types::memory::Memory;
-    use junobuild_shared::types::monitoring::CyclesBalance;
-    use junobuild_shared::types::state::{
-        ArchiveTime, Controllers, Metadata, OrbiterId, SegmentId, SegmentStatusResult, Timestamp,
-    };
+    use junobuild_shared::types::monitoring::{CyclesBalance, FundingFailure};
+    use junobuild_shared::types::state::{Controllers, Metadata, OrbiterId, SegmentId, Timestamp};
     use junobuild_shared::types::state::{SatelliteId, UserId};
     use serde::{Deserialize, Serialize};
-    use std::collections::{BTreeMap, HashMap};
+    use std::collections::HashMap;
 
     pub type Satellites = HashMap<SatelliteId, Satellite>;
     pub type Orbiters = HashMap<OrbiterId, Orbiter>;
-
-    #[deprecated(
-        since = "0.0.14",
-        note = "Deprecated with the introduction of monitoring features that include auto top-up capabilities."
-    )]
-    pub type Statuses = BTreeMap<ArchiveTime, SegmentStatusResult>;
 
     pub type MonitoringHistoryStable =
         StableBTreeMap<MonitoringHistoryKey, MonitoringHistory, Memory>;
@@ -41,10 +33,6 @@ pub mod state {
         pub user: User,
         pub satellites: Satellites,
         pub controllers: Controllers,
-        #[deprecated(
-            note = "Deprecated with the introduction of monitoring features that include auto top-up capabilities."
-        )]
-        pub archive: Archive,
         pub orbiters: Orbiters,
         pub settings: Option<MissionControlSettings>,
     }
@@ -101,32 +89,6 @@ pub mod state {
         pub updated_at: Timestamp,
     }
 
-    #[deprecated(
-        since = "0.0.14",
-        note = "Deprecated with the introduction of monitoring features that include auto top-up capabilities."
-    )]
-    #[derive(Default, CandidType, Serialize, Deserialize, Clone)]
-    pub struct Archive {
-        pub statuses: ArchiveStatuses,
-    }
-
-    #[deprecated(
-        since = "0.0.14",
-        note = "Deprecated with the introduction of monitoring features that include auto top-up capabilities."
-    )]
-    pub type ArchiveStatusesSegments = HashMap<Principal, Statuses>;
-
-    #[deprecated(
-        since = "0.0.14",
-        note = "Deprecated with the introduction of monitoring features that include auto top-up capabilities."
-    )]
-    #[derive(Default, CandidType, Serialize, Deserialize, Clone)]
-    pub struct ArchiveStatuses {
-        pub mission_control: Statuses,
-        pub satellites: ArchiveStatusesSegments,
-        pub orbiters: ArchiveStatusesSegments,
-    }
-
     #[derive(Default, CandidType, Serialize, Deserialize, Clone)]
     pub struct Settings {
         pub monitoring: Option<Monitoring>,
@@ -176,6 +138,7 @@ pub mod state {
     pub struct MonitoringHistoryCycles {
         pub cycles: CyclesBalance,
         pub deposited_cycles: Option<CyclesBalance>,
+        pub funding_failure: Option<FundingFailure>,
     }
 }
 

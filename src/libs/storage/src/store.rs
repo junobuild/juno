@@ -3,7 +3,11 @@ use crate::assert::{
     assert_commit_chunks_update, assert_create_batch, assert_create_chunk,
 };
 use crate::constants::{ASSET_ENCODING_NO_COMPRESSION, ENCODING_CERTIFICATION_ORDER};
-use crate::errors::JUNO_STORAGE_ERROR_CANNOT_COMMIT_BATCH;
+use crate::errors::{
+    JUNO_STORAGE_ERROR_ASSET_MAX_ALLOWED_SIZE, JUNO_STORAGE_ERROR_BATCH_NOT_FOUND,
+    JUNO_STORAGE_ERROR_CANNOT_COMMIT_BATCH, JUNO_STORAGE_ERROR_CHUNK_NOT_FOUND,
+    JUNO_STORAGE_ERROR_CHUNK_NOT_INCLUDED_IN_BATCH, JUNO_STORAGE_ERROR_CHUNK_TO_COMMIT_NOT_FOUND,
+};
 use crate::runtime::{
     clear_batch as clear_runtime_batch, clear_expired_batches as clear_expired_runtime_batches,
     clear_expired_chunks as clear_expired_runtime_chunks, get_batch as get_runtime_batch,
@@ -39,9 +43,17 @@ pub fn create_batch(
     config: &StorageConfig,
     init: InitAssetKey,
     reference_id: Option<ReferenceId>,
+    assertions: &impl StorageAssertionsStrategy,
     storage_state: &impl StorageStateStrategy,
 ) -> Result<BatchId, String> {
-    assert_create_batch(caller, controllers, config, &init, storage_state)?;
+    assert_create_batch(
+        caller,
+        controllers,
+        config,
+        &init,
+        assertions,
+        storage_state,
+    )?;
 
     // Assert supported encoding type
     get_encoding_type(&init.encoding_type)?;
@@ -103,7 +115,7 @@ pub fn create_chunk(
     let batch = get_runtime_batch(&batch_id);
 
     match batch {
-        None => Err("Batch not found.".to_string()),
+        None => Err(JUNO_STORAGE_ERROR_BATCH_NOT_FOUND.to_string()),
         Some(b) => {
             assert_create_chunk(caller, config, &b)?;
 
@@ -176,7 +188,7 @@ fn secure_commit_chunks(
     storage_state: &impl StorageStateStrategy,
     storage_upload: &impl StorageUploadStrategy,
 ) -> Result<Asset, String> {
-    let rule = assert_commit_batch(caller, controllers, batch, storage_state)?;
+    let rule = assert_commit_batch(caller, controllers, batch, assertions, storage_state)?;
 
     let current = storage_upload.get_asset(
         &batch.reference_id,
@@ -187,7 +199,14 @@ fn secure_commit_chunks(
 
     match current {
         None => {
-            assert_commit_chunks_new_asset(caller, controllers, config, &rule)?;
+            assert_commit_chunks_new_asset(
+                caller,
+                &batch.key.collection,
+                controllers,
+                config,
+                &rule,
+                assertions,
+            )?;
 
             commit_chunks(
                 caller,
@@ -226,7 +245,15 @@ fn secure_commit_chunks_update(
     assertions: &impl StorageAssertionsStrategy,
     storage_upload: &impl StorageUploadStrategy,
 ) -> Result<Asset, String> {
-    assert_commit_chunks_update(caller, controllers, config, batch, &rule, &current)?;
+    assert_commit_chunks_update(
+        caller,
+        controllers,
+        config,
+        batch,
+        &rule,
+        &current,
+        assertions,
+    )?;
 
     commit_chunks(
         caller,
@@ -282,11 +309,11 @@ fn commit_chunks(
 
         match chunk {
             None => {
-                return Err("Chunk does not exist.".to_string());
+                return Err(JUNO_STORAGE_ERROR_CHUNK_NOT_FOUND.to_string());
             }
             Some(c) => {
                 if batch_id != c.batch_id {
-                    return Err("Chunk not included in the provided batch.".to_string());
+                    return Err(JUNO_STORAGE_ERROR_CHUNK_NOT_INCLUDED_IN_BATCH.to_string());
                 }
 
                 chunks.push(c);
@@ -305,7 +332,7 @@ fn commit_chunks(
     }
 
     if content_chunks.is_empty() {
-        return Err("No chunk to commit.".to_string());
+        return Err(JUNO_STORAGE_ERROR_CHUNK_TO_COMMIT_NOT_FOUND.to_string());
     }
 
     // We clone the key with the new information provided by the upload (name, full_path, token, etc.) to set the new key.
@@ -328,18 +355,19 @@ fn commit_chunks(
         Some(max_size) => {
             if encoding.total_length > max_size {
                 clear_runtime_batch(&batch_id, &chunk_ids);
-                return Err("Asset exceed max allowed size.".to_string());
+                return Err(JUNO_STORAGE_ERROR_ASSET_MAX_ALLOWED_SIZE.to_string());
             }
         }
     }
 
     storage_upload.insert_asset_encoding(
-        &batch.clone().key.full_path,
+        &batch.reference_id,
+        &batch.key.full_path,
         &encoding_type,
         &encoding,
         &mut asset,
         rule,
-    );
+    )?;
 
     storage_upload.insert_asset(batch, &asset, rule)?;
 

@@ -1,5 +1,10 @@
 use crate::assert::collection::{is_not_system_collection, is_system_collection};
 use crate::constants::core::SYS_COLLECTION_PREFIX;
+use crate::errors::{
+    JUNO_COLLECTIONS_ERROR_DELETE_PREFIX_RESERVED,
+    JUNO_COLLECTIONS_ERROR_MODIFY_RESERVED_COLLECTION, JUNO_COLLECTIONS_ERROR_PREFIX_RESERVED,
+    JUNO_COLLECTIONS_ERROR_RATE_CONFIG_ENABLED, JUNO_COLLECTIONS_ERROR_RESERVED_NAME,
+};
 use crate::types::core::CollectionKey;
 use crate::types::interface::SetRule;
 use crate::types::rules::{Memory, Rule, Rules};
@@ -101,12 +106,8 @@ pub fn assert_system_collection_set_permission(
     }
 
     // System collections cannot be created with a setter call but can be edited under certain circumstances.
-    let current_rule = current_rule.ok_or_else(|| {
-        format!(
-            "Collection starts with {}, a reserved prefix",
-            SYS_COLLECTION_PREFIX
-        )
-    })?;
+    let current_rule =
+        current_rule.ok_or_else(|| JUNO_COLLECTIONS_ERROR_PREFIX_RESERVED.to_string())?;
 
     if current_rule.read != user_rule.read
         || current_rule.write != user_rule.write
@@ -116,13 +117,13 @@ pub fn assert_system_collection_set_permission(
         || current_rule.max_capacity != user_rule.max_capacity
     {
         return Err(format!(
-            "Collection {} is reserved and cannot be modified.",
-            collection
+            "{} ({})",
+            JUNO_COLLECTIONS_ERROR_MODIFY_RESERVED_COLLECTION, collection
         ));
     }
 
     if current_rule.rate_config.is_some() && user_rule.rate_config.is_none() {
-        return Err("Rate config cannot be disabled.".to_string());
+        return Err(JUNO_COLLECTIONS_ERROR_RATE_CONFIG_ENABLED.to_string());
     }
 
     Ok(())
@@ -133,8 +134,8 @@ pub fn assert_system_collection_delete_permission(
 ) -> Result<(), String> {
     if is_system_collection(collection) {
         return Err(format!(
-            "Collection starting with {} cannot be deleted",
-            SYS_COLLECTION_PREFIX
+            "{} ({})",
+            JUNO_COLLECTIONS_ERROR_DELETE_PREFIX_RESERVED, SYS_COLLECTION_PREFIX
         ));
     }
 
@@ -156,7 +157,7 @@ pub fn assert_storage_reserved_collection(
     let reserved_collection = format!("{}{}", SYS_COLLECTION_PREFIX, collection);
 
     if rules.contains_key(&reserved_collection) {
-        return Err("The collection name matches a system collection.".to_string());
+        return Err(JUNO_COLLECTIONS_ERROR_RESERVED_NAME.to_string());
     }
 
     Ok(())

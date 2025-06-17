@@ -1,9 +1,11 @@
 pub mod state {
+    use crate::assets::storage::types::state::{AssetsStable, ContentChunksStable};
     use crate::auth::types::state::AuthenticationHeapState;
     use crate::db::types::state::{DbHeapState, DbRuntimeState, DbStable};
     use crate::memory::internal::init_stable_state;
-    use crate::storage::types::state::{AssetsStable, ContentChunksStable};
     use candid::CandidType;
+    use junobuild_cdn::proposals::ProposalsStable;
+    use junobuild_cdn::storage::{ProposalAssetsStable, ProposalContentChunksStable};
     use junobuild_shared::types::state::Controllers;
     use junobuild_storage::types::state::StorageHeapState;
     use rand::rngs::StdRng;
@@ -27,6 +29,9 @@ pub mod state {
         pub db: DbStable,
         pub assets: AssetsStable,
         pub content_chunks: ContentChunksStable,
+        pub proposals_assets: ProposalAssetsStable,
+        pub proposals_content_chunks: ProposalContentChunksStable,
+        pub proposals: ProposalsStable,
     }
 
     #[derive(Default, CandidType, Serialize, Deserialize, Clone)]
@@ -54,14 +59,20 @@ pub mod interface {
     use crate::auth::types::config::AuthenticationConfig;
     use crate::db::types::config::DbConfig;
     use candid::CandidType;
+    use junobuild_cdn::proposals::ProposalId;
     use junobuild_storage::types::config::StorageConfig;
-    use serde::Deserialize;
+    use serde::{Deserialize, Serialize};
 
     #[derive(CandidType, Deserialize)]
     pub struct Config {
         pub storage: StorageConfig,
         pub db: Option<DbConfig>,
         pub authentication: Option<AuthenticationConfig>,
+    }
+
+    #[derive(CandidType, Serialize, Deserialize, Clone)]
+    pub struct DeleteProposalAssets {
+        pub proposal_ids: Vec<ProposalId>,
     }
 }
 

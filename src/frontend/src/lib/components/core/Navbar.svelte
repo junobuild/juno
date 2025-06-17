@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { debounce, nonNullish } from '@dfinity/utils';
+	import { debounce } from '@dfinity/utils';
 	import { fade } from 'svelte/transition';
 	import BannerSkylab from '$lib/components/core/BannerSkylab.svelte';
 	import Logo from '$lib/components/core/Logo.svelte';
@@ -9,9 +9,9 @@
 	import ButtonBack from '$lib/components/ui/ButtonBack.svelte';
 	import ButtonMenu from '$lib/components/ui/ButtonMenu.svelte';
 	import Header from '$lib/components/ui/Header.svelte';
+	import { isSatelliteRoute } from '$lib/derived/route.derived.svelte';
 	import { isSkylab } from '$lib/env/app.env';
 	import { layoutTitleIntersecting } from '$lib/stores/layout-intersecting.store';
-	import { layoutNavigation } from '$lib/stores/layout-navigation.store';
 
 	interface Props {
 		start?: 'logo' | 'back' | 'menu';
@@ -48,7 +48,7 @@
 			<Logo />
 		{/if}
 
-		{#if nonNullish($layoutNavigation?.data.satellite)}
+		{#if $isSatelliteRoute}
 			<div in:fade>
 				<SatellitesSwitcher />
 			</div>

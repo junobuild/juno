@@ -82,7 +82,10 @@
 		"fee": "费用",
 		"preparing": "准备中...",
 		"refreshing_interface": "刷新界面...",
-		"usage": "用途"
+		"usage": "用途",
+		"creating_snapshot": "创建快照...",
+		"created": "创建于",
+		"updated": "更新于"
 	},
 	"canisters": {
 		"top_up": "充值",
@@ -107,7 +110,11 @@
 		"upgrade_breaking_change": "本次升级涉及到一些重大变更（影响已有功能），所以在继续之前请仔细阅读 <a href=\"https://github.com/junobuild/juno/releases\" rel=\"external noopener noreferrer\" target=\"_blank\">发布说明</a> .",
 		"more_upgrade": "这个升级后，还会有 {0} 个.",
 		"upgrade_note": "一共有 {0} 升级包为你的 {1}.升级应该按顺序执行, 从小版本开始依次向上升级. 这个过程会引导你升级到适配的版本. 重复这个流程直到你的 {2} 为最新版本.",
-		"upgrade_confirm": "你的 {0} 是<strong>扩展</strong>版本，升级为<strong>默认</strong>版本会丢失所有定制开发的功能，你确定要继续吗？",
+		"upgrade_confirm_warning_revert": "This {0} uses <strong>serverless functions</strong>. Reverting to the stock version will remove your custom features!",
+		"upgrade_confirm_how_to": "To safely upgrade instead, see the docs:",
+		"rust_upgrade_guide": "Rust upgrade guide",
+		"typescript_upgrade_guide": "TypeScript upgrade guide",
+		"upgrade_confirm": "Are you sure you want to continue?",
 		"converted_cycles": "已兑换的 Cycles",
 		"top_up_info": "你当前的 wallet 余额是 {0}.",
 		"top_up_mission_control_done": "充值你的 mission control center 完成.",
@@ -211,11 +218,9 @@
 		"no_snapshot": "这个 {0} 没有快照.",
 		"snapshot_created": "你的 {0} 快照已经创建.",
 		"snapshot_restored": "你的 {0} 已经从快照恢复.",
-		"creating_snapshot": "创建快照...",
 		"restoring_snapshot": "恢复快照...",
 		"snapshot_preparing": "激活快照执行...",
 		"snapshot_stopping": "停止 {0}...",
-		"upgrade_snapshot": "创建快照...",
 		"edit_snapshot": "编辑快照",
 		"delete_snapshot": "删除快照",
 		"delete_snapshot_confirm": "你确定要删除你的 {1} 快照  {0}  ?",
@@ -370,6 +375,8 @@
 		"count": "数量",
 		"referrers": "前十个引用",
 		"time_zones": "Top 10 time zones",
+		"utm_sources": "Top 10 campaigns (sources)",
+		"utm_campaigns": "Top 10 campaigns (names)",
 		"pages": "前10页",
 		"orbiter": "Orbiter",
 		"devices": "设备",
@@ -448,7 +455,8 @@
 		"set_auth_domain_title": "设置用于认证的域名",
 		"set_auth_domain_question": "Would you like to use <strong>{0}</strong> as the primary domain for all user sign-ins?",
 		"need_more_info": "Need more info? See the",
-		"domain_name": "域名"
+		"domain_name": "域名",
+		"default_url": "Default URL"
 	},
 	"functions": {
 		"title": "功能",
@@ -493,7 +501,7 @@
 		"cli_unexpected_error": "在增加你的控制者时出现不可预见的错误.",
 		"satellite_name_missing": "必须提供一个名字给 satellite.",
 		"satellite_unexpected_error": "创建 satellite时出现未知错误.",
-		"satellite_no_found": "Satellite没找到，返回 <a href=\"/\">开始</a>去找你的 satellites.",
+		"satellite_no_found": "Nothing here. Return to your <a href=\"/\">launchpad</a> to find your satellites.",
 		"satellite_name_update": "试图修改你的 satellite 名字出现异常.",
 		"satellite_missing_name": "必须提供一个名字.",
 		"satellites_not_loaded": "The satellites 数据不能加载.",
@@ -601,12 +609,24 @@
 		"user_ban": "试图禁止用户时出现异常错误.",
 		"user_unban": "试图解禁用户时出现异常错误.",
 		"satellite_version_not_found": "Unexpected error. Your Satellite implements serverless functions, but no dependency version can be resolved.",
-		"load_version": "Unexpected error(s) while loading the version of the Satellite and/or Mission Control"
+		"load_version": "Unexpected error(s) while loading the version of your module(s).",
+		"load_proposals": "Unexpected error(s) while loading the changes of your module(s).",
+		"apply_proposal_error": "Error while applying the change. Reach out Juno if the problem persists!",
+		"reject_proposal_error": "Error while rejecting the change. Reach out Juno if the problem persists!",
+		"find_wasm_asset_for_proposal_error": "Unexpected error while resolving the asset linked to the change.",
+		"find_wasm_asset_for_proposal_invalid_type_error": "Unsupported proposal type. This change is not related to a serverless function upgrade.",
+		"find_wasm_asset_for_proposal_incomplete_version_error": "Missing satellite version. This serverless function upgrade is incomplete.",
+		"find_wasm_asset_for_proposal_missing_change_hash": "Missing change hash. This change does not include a valid identifier.",
+		"find_wasm_asset_for_proposal_proposal_not_found": "Proposal not found. It may have been deleted or is no longer available.",
+		"find_wasm_asset_for_proposal_not_executed": "Proposal has not been executed. Only executed proposals can be processed.",
+		"find_wasm_asset_for_proposal_asset_not_found": "No asset found for this change and version.",
+		"missing_juno_package": "Missing Juno metadata. The WASM does not contain a valid juno.package.json encoded in its public section.",
+		"invalid_juno_package": "Invalid Juno metadata. Unable to parse module information from juno.package.json.",
+		"missing_satellite_version": "Unable to determine the current Satellite version.",
+		"invalid_version_cannot_downgrade": "Cannot downgrade the default functions. The selected version is older than the current Satellite version."
 	},
 	"document": {
 		"owner": "拥有者",
-		"created": "创建于",
-		"updated": "更新于",
 		"version": "版本",
 		"data": "数据",
 		"no_match": "找不到满足条件的文档.",
@@ -630,8 +650,6 @@
 		"owner": "拥有者",
 		"token": "令牌",
 		"headers": "协议数据",
-		"created": "创建于",
-		"updated": "更新于",
 		"version": "版本",
 		"no_match": "找不到满足条件的资料.",
 		"delete": "删除资料?",
@@ -708,7 +726,9 @@
 		"stable": "稳定",
 		"immutable": "将权限改为只读",
 		"clear_collection": "清除文件集",
-		"options": "选项"
+		"options": "选项",
+		"show_system_collections": "Show system collections",
+		"hide_system_collections": "Hide system collections"
 	},
 	"sort": {
 		"title": "排序结果",
@@ -731,8 +751,6 @@
 		"user_details": "用户详细信息",
 		"identifier": "身份",
 		"provider": "提供者",
-		"created": "创建于",
-		"updated": "更新于",
 		"empty": "目前还有注册的用户.",
 		"view_details": "查看用户详细信息",
 		"persistence": "永久存储",
@@ -749,7 +767,8 @@
 		"are_you_sure_ban": "你想禁止这个用户?",
 		"are_you_sure_unban": "你想解禁这个用户?",
 		"ban_explanation": "你想禁止用户操作数据池和存储数据-访问，更改，创建，删除. 该操作可以通过解禁用户来恢复.",
-		"unban_explanation": "你可以通过解禁用户来允许访问/更改/删除/创建数据池和存储数据."
+		"unban_explanation": "你可以通过解禁用户来允许访问/更改/删除/创建数据池和存储数据.",
+		"identifier_placeholder": "Filter users by ID"
 	},
 	"monitoring": {
 		"title": "监控",
@@ -841,5 +860,51 @@
 		"error_never_execute": "⚠️ This function should never ever be executed outside the emulator environment. Setting a controller at this step is strictly for the emulator (and yes, it would fail anyway).",
 		"error_get_identities": "Fetching the emulator identities failed.",
 		"error_no_main_identity": "The emulator does not expose any main identity."
+	},
+	"upgrade": {
+		"title": "Upgrade Dock",
+		"modules": "Modules",
+		"release": "Release",
+		"releases": "Releases",
+		"source": "Source",
+		"current": "Current",
+		"dev": "Developer",
+		"changes": "Changes",
+		"no_upgrades": "You're already on the latest releases. No upgrade needed."
+	},
+	"changes": {
+		"select_a_satellite": "Select a Satellite to view available changes.",
+		"no_changes": "All systems are go. No changes to apply.",
+		"id": "ID",
+		"hash": "Hash",
+		"type": "Type",
+		"assets_upgrade": "Frontend Deployment",
+		"segments_deployment": "Functions Upgrade",
+		"apply_change": "Apply change",
+		"snapshot_before_apply": "Snapshot before applying",
+		"confirm_assets_upgrade": "Your frontend will be <strong>updated</strong> with the assets bundled in change <strong>{0}</strong> (hash: <code>{1}</code>).",
+		"confirm_segments_deployment": "The WASM for your serverless functions will be <strong>published</strong> to your CDN as part of change <strong>{0}</strong> (hash: <code>{1}</code>).",
+		"change_preparing": "Preparing deployment...",
+		"applying_update": "Applying update...",
+		"clearing_and_applying_update": "Applying fresh update...",
+		"clearing_staged_assets": "Clearing staged assets...",
+		"clear_existing_assets": "The existing frontend assets will also be cleared before the update.",
+		"clear_after_apply": "Clear staged assets after apply",
+		"assets_upgrade_applied": "Frontend successfully updated.",
+		"segments_deployment_applied": "WASM deployed to your CDN.",
+		"reject": "Reject",
+		"rejecting": "Rejecting...",
+		"reject_change": "Reject change",
+		"reject_assets_upgrade": "The assets bundled in change <strong>{0}</strong> (hash: <code>{1}</code>) will be <strong>discarded</strong> and not deployed to your frontend.",
+		"reject_segments_deployment": "The WASM for your serverless functions in change <strong>{0}</strong> (hash: <code>{1}</code>) will be <strong>discarded</strong> not be published to your CDN.",
+		"assets_upgrade_discarded": "Frontend update discarded.",
+		"segments_deployment_discarded": "WASM deployment discarded.",
+		"reject_preparing": "Initializing rejection...",
+		"upgrade_now": "Upgrade now",
+		"upgrade_cdn_source": "Your Satellite will be upgraded using the WASM available on the CDN at <code>{0}</code> ({1})."
+	},
+	"cdn": {
+		"title": "CDN",
+		"empty": "No WASM found for your serverless functions."
 	}
 }

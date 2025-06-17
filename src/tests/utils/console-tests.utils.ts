@@ -5,13 +5,13 @@ import type { _SERVICE as MissionControlActor } from '$declarations/mission_cont
 import { idlFactory as idlFactorMissionControl } from '$declarations/mission_control/mission_control.factory.did';
 import type { Identity } from '@dfinity/agent';
 import { Ed25519KeyIdentity } from '@dfinity/identity';
+import type { Actor, PocketIc } from '@dfinity/pic';
 import {
 	arrayBufferToUint8Array,
 	assertNonNullish,
 	fromNullable,
 	toNullable
 } from '@dfinity/utils';
-import type { Actor, PocketIc } from '@hadronous/pic';
 import { readFile } from 'node:fs/promises';
 import { expect } from 'vitest';
 import { mockScript } from '../mocks/storage.mocks';

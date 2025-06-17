@@ -6,8 +6,8 @@ import type {
 	PageViewClient,
 	SetPageView
 } from '$declarations/orbiter/orbiter.did';
+import type { Actor, PocketIc } from '@dfinity/pic';
 import { fromNullable, isNullish, toNullable } from '@dfinity/utils';
-import type { Actor, PocketIc } from '@hadronous/pic';
 import UAParser from 'ua-parser-js';
 import { satelliteIdMock } from '../mocks/orbiter.mocks';
 import { tick } from './pic-tests.utils';

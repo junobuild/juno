@@ -2,8 +2,8 @@ import type { _SERVICE as SatelliteActor } from '$declarations/satellite/satelli
 import { idlFactory as idlFactorSatellite } from '$declarations/satellite/satellite.factory.did';
 import { AnonymousIdentity, type Identity } from '@dfinity/agent';
 import { Ed25519KeyIdentity } from '@dfinity/identity';
+import { type Actor, PocketIc } from '@dfinity/pic';
 import { fromNullable, toNullable } from '@dfinity/utils';
-import { type Actor, PocketIc } from '@hadronous/pic';
 import {
 	JUNO_DATASTORE_ERROR_CANNOT_WRITE,
 	JUNO_DATASTORE_ERROR_USER_CALLER_KEY,

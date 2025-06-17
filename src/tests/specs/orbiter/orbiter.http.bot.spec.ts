@@ -2,8 +2,8 @@ import type { _SERVICE as OrbiterActor } from '$declarations/orbiter/orbiter.did
 import { idlFactory as idlFactorOrbiter } from '$declarations/orbiter/orbiter.factory.did';
 import type { HttpRequest } from '$declarations/satellite/satellite.did';
 import { Ed25519KeyIdentity } from '@dfinity/identity';
+import { type Actor, PocketIc } from '@dfinity/pic';
 import { toNullable } from '@dfinity/utils';
-import { type Actor, PocketIc } from '@hadronous/pic';
 import { nanoid } from 'nanoid';
 import { inject } from 'vitest';
 import {

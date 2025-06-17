@@ -10,9 +10,9 @@ import type {
 import { idlFactory as idlFactorSatellite } from '$declarations/satellite/satellite.factory.did';
 import type { Identity } from '@dfinity/agent';
 import { Ed25519KeyIdentity } from '@dfinity/identity';
+import { type Actor, PocketIc } from '@dfinity/pic';
 import type { Principal } from '@dfinity/principal';
 import { assertNonNullish, fromNullable, isNullish, toNullable } from '@dfinity/utils';
-import { type Actor, PocketIc } from '@hadronous/pic';
 import {
 	JUNO_DATASTORE_ERROR_CANNOT_WRITE,
 	JUNO_DATASTORE_ERROR_USER_USAGE_INVALID_DATA

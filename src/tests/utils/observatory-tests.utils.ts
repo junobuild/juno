@@ -4,9 +4,9 @@ import type {
 	SegmentKind
 } from '$declarations/observatory/observatory.did';
 import { Ed25519KeyIdentity } from '@dfinity/identity';
+import type { PocketIc } from '@dfinity/pic';
 import type { Principal } from '@dfinity/principal';
 import { assertNonNullish, nonNullish } from '@dfinity/utils';
-import type { PocketIc } from '@hadronous/pic';
 import { readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { mockMissionControlId } from '../../frontend/tests/mocks/modules.mock';

@@ -2,8 +2,8 @@ import type { _SERVICE as MissionControlActor } from '$declarations/mission_cont
 import { idlFactory as idlFactorMissionControl } from '$declarations/mission_control/mission_control.factory.did';
 import { AnonymousIdentity } from '@dfinity/agent';
 import { Ed25519KeyIdentity } from '@dfinity/identity';
+import { PocketIc, type Actor } from '@dfinity/pic';
 import type { Principal } from '@dfinity/principal';
-import { PocketIc, type Actor } from '@hadronous/pic';
 import { inject } from 'vitest';
 import { MISSION_CONTROL_ADMIN_CONTROLLER_ERROR_MSG } from '../../constants/mission-control-tests.constants';
 import {

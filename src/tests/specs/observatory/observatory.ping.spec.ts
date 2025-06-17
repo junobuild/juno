@@ -1,7 +1,7 @@
 import type { _SERVICE as ObservatoryActor } from '$declarations/observatory/observatory.did';
 import { idlFactory as idlFactorObservatory } from '$declarations/observatory/observatory.factory.did';
 import { Ed25519KeyIdentity } from '@dfinity/identity';
-import { type Actor, PocketIc } from '@hadronous/pic';
+import { type Actor, PocketIc } from '@dfinity/pic';
 import { inject } from 'vitest';
 import { mockMissionControlId } from '../../../frontend/tests/mocks/modules.mock';
 import {

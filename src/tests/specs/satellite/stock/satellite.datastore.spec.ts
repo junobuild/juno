@@ -6,8 +6,8 @@ import type {
 } from '$declarations/satellite/satellite.did';
 import { idlFactory as idlFactorSatellite } from '$declarations/satellite/satellite.factory.did';
 import { Ed25519KeyIdentity } from '@dfinity/identity';
+import { type Actor, PocketIc } from '@dfinity/pic';
 import { fromNullable, toNullable } from '@dfinity/utils';
-import { type Actor, PocketIc } from '@hadronous/pic';
 import {
 	JUNO_COLLECTIONS_ERROR_COLLECTION_NOT_EMPTY,
 	JUNO_COLLECTIONS_ERROR_COLLECTION_NOT_FOUND,

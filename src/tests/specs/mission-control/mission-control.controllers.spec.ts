@@ -5,8 +5,8 @@ import { idlFactory as idlFactorOrbiter } from '$declarations/orbiter/orbiter.fa
 import type { _SERVICE as SatelliteActor } from '$declarations/satellite/satellite.did';
 import { idlFactory as idlFactorSatellite } from '$declarations/satellite/satellite.factory.did';
 import { Ed25519KeyIdentity } from '@dfinity/identity';
+import { type Actor, PocketIc } from '@dfinity/pic';
 import type { Principal } from '@dfinity/principal';
-import { type Actor, PocketIc } from '@hadronous/pic';
 import { JUNO_AUTH_ERROR_NOT_ADMIN_CONTROLLER } from '@junobuild/errors';
 import { inject } from 'vitest';
 import { ORBITER_CONTROLLER_ERR_MSG } from '../../constants/orbiter-tests.constants';

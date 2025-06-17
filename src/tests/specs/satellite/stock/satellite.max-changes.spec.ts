@@ -2,8 +2,8 @@ import type { ListParams, _SERVICE as SatelliteActor } from '$declarations/satel
 import { idlFactory as idlFactorSatellite } from '$declarations/satellite/satellite.factory.did';
 import type { Identity } from '@dfinity/agent';
 import { Ed25519KeyIdentity } from '@dfinity/identity';
+import { type Actor, PocketIc } from '@dfinity/pic';
 import { fromNullable, nonNullish, toNullable } from '@dfinity/utils';
-import { type Actor, PocketIc } from '@hadronous/pic';
 import { JUNO_DATASTORE_ERROR_USER_USAGE_CHANGE_LIMIT_REACHED } from '@junobuild/errors';
 import { inject } from 'vitest';
 import { createDoc as createDocUtils } from '../../../utils/satellite-doc-tests.utils';

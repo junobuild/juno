@@ -12,9 +12,10 @@
 	interface Props {
 		balance: bigint | undefined;
 		amount: string | undefined;
+		fee?: bigint;
 	}
 
-	let { amount = $bindable(), balance }: Props = $props();
+	let { amount = $bindable(), balance, fee }: Props = $props();
 
 	let token: TokenAmountV2 | undefined = $derived(amountToICPToken(amount));
 
@@ -53,7 +54,7 @@
 			footer={withUsd ? footer : undefined}
 		>
 			{#snippet end()}
-				<SendTokensMax {balance} onmax={(value) => (amount = value)} />
+				<SendTokensMax {balance} onmax={(value) => (amount = value)} {fee} />
 			{/snippet}
 		</Input>
 	</Value>

@@ -8,9 +8,10 @@
 	interface Props {
 		balance: bigint | undefined;
 		onmax: (max: string) => void;
+		fee?: bigint;
 	}
 
-	let { onmax, balance }: Props = $props();
+	let { onmax, balance, fee }: Props = $props();
 
 	const calculateMax = ($event: MouseEvent | TouchEvent) => {
 		$event.preventDefault();
@@ -20,7 +21,8 @@
 			return;
 		}
 
-		const amount = balance - IC_TRANSACTION_FEE_ICP;
+		const appliedFee = fee ?? IC_TRANSACTION_FEE_ICP;
+		const amount = balance - appliedFee;
 
 		onmax(formatICP(amount));
 	};

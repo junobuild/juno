@@ -69,6 +69,9 @@ npm run build:orbiter
 
 The following additional tools are required when building the modules:
 
+> [!NOTE]
+> The script `./docker/bootstrap` takes care of installing Rustup, the toolchain, and the following tools.
+
 ### junobuild-didc
 
 `didc` is required to generate [Candid](https://github.com/dfinity/candid) files.

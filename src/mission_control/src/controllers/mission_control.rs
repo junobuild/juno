@@ -13,6 +13,7 @@ pub async fn set_mission_control_controllers(
     controllers: &[ControllerId],
     controller: &SetController,
 ) -> Result<(), String> {
+    #[allow(clippy::single_match)]
     match controller.scope {
         ControllerScope::Admin => {
             assert_max_number_of_controllers(

@@ -1,5 +1,7 @@
 use crate::controllers::store::get_controllers;
-use crate::db::assert::{assert_delete_doc, assert_get_doc, assert_get_docs, assert_set_doc};
+use crate::db::assert::{
+    assert_delete_doc, assert_get_doc, assert_get_docs, assert_set_config, assert_set_doc,
+};
 use crate::db::state::{
     count_docs_heap, count_docs_stable, delete_collection as delete_state_collection,
     delete_doc as delete_state_doc, get_config, get_doc as get_state_doc, get_docs_heap,
@@ -8,7 +10,7 @@ use crate::db::state::{
     is_collection_empty as is_state_collection_empty,
 };
 use crate::db::types::config::DbConfig;
-use crate::db::types::interface::{DelDoc, SetDoc};
+use crate::db::types::interface::{DelDoc, SetDbConfig, SetDoc};
 use crate::db::types::state::{Doc, DocContext, DocUpsert};
 use crate::db::utils::filter_values;
 use crate::memory::internal::STATE;
@@ -504,8 +506,16 @@ fn delete_filtered_docs_store_impl(
 // Config
 // ---------------------------------------------------------
 
-pub fn set_config_store(config: &DbConfig) {
-    insert_config(config);
+pub fn set_config_store(proposed_config: &SetDbConfig) -> Result<DbConfig, String> {
+    let current_config = get_config();
+
+    assert_set_config(proposed_config, &current_config)?;
+
+    let config = DbConfig::prepare(&current_config, proposed_config);
+
+    insert_config(&config);
+
+    Ok(config)
 }
 
 pub fn get_config_store() -> Option<DbConfig> {

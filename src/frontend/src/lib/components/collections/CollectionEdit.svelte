@@ -227,7 +227,7 @@
 					<option value="Public">{$i18n.collections.public}</option>
 					<option value="Private">{$i18n.collections.private}</option>
 					<option value="Managed">{$i18n.collections.managed}</option>
-					<option value="Controllers">{$i18n.collections.controllers}</option>
+					<option value="TrustedKeys">{$i18n.collections.trusted_keys}</option>
 				</select>
 			</Value>
 		</div>
@@ -241,7 +241,7 @@
 					<option value="Public">{$i18n.collections.public}</option>
 					<option value="Private">{$i18n.collections.private}</option>
 					<option value="Managed">{$i18n.collections.managed}</option>
-					<option value="Controllers">{$i18n.collections.controllers}</option>
+					<option value="TrustedKeys">{$i18n.collections.trusted_keys}</option>
 				</select>
 			</Value>
 		</div>

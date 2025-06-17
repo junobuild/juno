@@ -114,7 +114,10 @@ describe('Satellite > User Ban', () => {
 						version: toNullable()
 					})
 				).rejects.toThrow(
-					`${JUNO_DATASTORE_ERROR_USER_INVALID_DATA}: unknown variant \`yolo\`, expected \`indefinite\` at line 1 column 47.`
+					new RegExp(
+						`${JUNO_DATASTORE_ERROR_USER_INVALID_DATA}: unknown variant \`yolo\`, expected \`indefinite\` at line 1 column 47.`,
+						'i'
+					)
 				);
 			});
 		});

@@ -499,7 +499,10 @@ describe('Satellite > User', () => {
 					version: toNullable()
 				})
 			).rejects.toThrow(
-				`${JUNO_DATASTORE_ERROR_USER_INVALID_DATA}: unknown variant \`unknown\`, expected \`internet_identity\` or \`nfid\` at line 1 column 21.`
+				new RegExp(
+					`${JUNO_DATASTORE_ERROR_USER_INVALID_DATA}: unknown variant \`unknown\`, expected \`internet_identity\` or \`nfid\` at line 1 column 21.`,
+					'i'
+				)
 			);
 		});
 

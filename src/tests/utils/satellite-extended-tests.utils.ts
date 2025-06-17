@@ -1,4 +1,4 @@
-import type { PocketIc } from '@hadronous/pic';
+import type { PocketIc } from '@dfinity/pic';
 import { tick } from './pic-tests.utils';
 
 export const waitServerlessFunction = async (pic: PocketIc) => {

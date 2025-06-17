@@ -1,7 +1,7 @@
 import type { Doc } from '$declarations/satellite/satellite.did';
 import type { _SERVICE as SputnikActor } from '$declarations/sputnik/sputnik.did';
+import type { Actor, PocketIc } from '@dfinity/pic';
 import { assertNonNullish, fromNullable, toNullable } from '@dfinity/utils';
-import type { Actor, PocketIc } from '@hadronous/pic';
 import { fromArray, toArray } from '@junobuild/utils';
 import { nanoid } from 'nanoid';
 import { valid } from 'semver';

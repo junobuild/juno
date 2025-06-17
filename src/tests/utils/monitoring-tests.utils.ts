@@ -7,9 +7,9 @@ import type {
 	MonitoringHistory,
 	MonitoringHistoryKey
 } from '$declarations/mission_control/mission_control.did';
+import type { Actor } from '@dfinity/pic';
 import type { Principal } from '@dfinity/principal';
 import { assertNonNullish, fromNullable, toNullable } from '@dfinity/utils';
-import type { Actor } from '@hadronous/pic';
 
 const testMonitoring = ({
 	monitoring,

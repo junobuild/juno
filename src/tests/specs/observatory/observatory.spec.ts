@@ -2,9 +2,9 @@ import type { _SERVICE as ObservatoryActor } from '$declarations/observatory/obs
 import { idlFactory as idlFactorObservatory } from '$declarations/observatory/observatory.factory.did';
 import { AnonymousIdentity } from '@dfinity/agent';
 import { Ed25519KeyIdentity } from '@dfinity/identity';
+import { PocketIc, type Actor } from '@dfinity/pic';
 import { Principal } from '@dfinity/principal';
 import { toNullable } from '@dfinity/utils';
-import { PocketIc, type Actor } from '@hadronous/pic';
 import { inject } from 'vitest';
 import { CALLER_NOT_CONTROLLER_OBSERVATORY_MSG } from '../../constants/observatory-tests.constants';
 import { OBSERVATORY_WASM_PATH } from '../../utils/setup-tests.utils';

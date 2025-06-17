@@ -1,9 +1,9 @@
 import type { Doc, _SERVICE as SatelliteActor } from '$declarations/satellite/satellite.did';
 import type { Identity } from '@dfinity/agent';
 import { Ed25519KeyIdentity } from '@dfinity/identity';
+import type { Actor } from '@dfinity/pic';
+import type { ActorInterface } from '@dfinity/pic/dist/pocket-ic-actor';
 import { toNullable } from '@dfinity/utils';
-import type { Actor } from '@hadronous/pic';
-import type { ActorInterface } from '@hadronous/pic/dist/pocket-ic-actor';
 import { toArray } from '@junobuild/utils';
 import { nanoid } from 'nanoid';
 import { mockData } from '../mocks/doc.mocks';

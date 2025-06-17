@@ -11,6 +11,7 @@ import type {
 	StorageConfig
 } from '$declarations/satellite/satellite.did';
 import type { Identity } from '@dfinity/agent';
+import type { Actor, PocketIc } from '@dfinity/pic';
 import type { Principal } from '@dfinity/principal';
 import {
 	arrayBufferToUint8Array,
@@ -19,7 +20,6 @@ import {
 	toNullable,
 	uint8ArrayToHexString
 } from '@dfinity/utils';
-import type { Actor, PocketIc } from '@hadronous/pic';
 import {
 	JUNO_CDN_PROPOSALS_ERROR_CANNOT_COMMIT,
 	JUNO_CDN_PROPOSALS_ERROR_CANNOT_DELETE_ASSETS,

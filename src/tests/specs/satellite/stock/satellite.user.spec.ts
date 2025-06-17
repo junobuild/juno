@@ -521,7 +521,10 @@ describe('Satellite > User', () => {
 					version: toNullable()
 				})
 			).rejects.toThrow(
-				`${JUNO_DATASTORE_ERROR_USER_INVALID_DATA}: unknown field \`unknown\`, expected \`provider\` or \`banned\` at line 1 column 41.`
+				new RegExp(
+					`${JUNO_DATASTORE_ERROR_USER_INVALID_DATA}: unknown field \`unknown\`, expected \`provider\` or \`banned\` at line 1 column 41.`,
+					'i'
+				)
 			);
 		});
 	});

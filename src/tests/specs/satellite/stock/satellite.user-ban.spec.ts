@@ -7,8 +7,8 @@ import type {
 import { idlFactory as idlFactorSatellite } from '$declarations/satellite/satellite.factory.did';
 import type { Identity } from '@dfinity/agent';
 import { Ed25519KeyIdentity } from '@dfinity/identity';
+import { type Actor, PocketIc } from '@dfinity/pic';
 import { fromNullable, toNullable } from '@dfinity/utils';
-import { type Actor, PocketIc } from '@hadronous/pic';
 import {
 	JUNO_DATASTORE_ERROR_USER_INVALID_DATA,
 	JUNO_DATASTORE_ERROR_USER_NOT_ALLOWED
@@ -114,7 +114,10 @@ describe('Satellite > User Ban', () => {
 						version: toNullable()
 					})
 				).rejects.toThrow(
-					`${JUNO_DATASTORE_ERROR_USER_INVALID_DATA}: unknown variant \`yolo\`, expected \`indefinite\` at line 1 column 47.`
+					new RegExp(
+						`${JUNO_DATASTORE_ERROR_USER_INVALID_DATA}: unknown variant \`yolo\`, expected \`indefinite\` at line 1 column 47.`,
+						'i'
+					)
 				);
 			});
 		});

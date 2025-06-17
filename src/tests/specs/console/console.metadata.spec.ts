@@ -2,8 +2,8 @@ import type { _SERVICE as ConsoleActor } from '$declarations/console/console.did
 import { idlFactory as idlFactorConsole } from '$declarations/console/console.factory.did';
 import { AnonymousIdentity } from '@dfinity/agent';
 import { Ed25519KeyIdentity } from '@dfinity/identity';
+import { PocketIc, type Actor } from '@dfinity/pic';
 import { fromNullable, toNullable } from '@dfinity/utils';
-import { PocketIc, type Actor } from '@hadronous/pic';
 import { JUNO_STORAGE_ERROR_RESERVED_ASSET } from '@junobuild/errors';
 import { beforeAll, describe, expect, inject } from 'vitest';
 import { uploadFile } from '../../utils/cdn-tests.utils';

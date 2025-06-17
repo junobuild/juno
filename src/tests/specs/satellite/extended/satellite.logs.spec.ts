@@ -3,8 +3,8 @@ import type {
 	Doc,
 	_SERVICE as TestSatelliteActor
 } from '$test-declarations/test_satellite/test_satellite.did';
+import type { Actor, PocketIc } from '@dfinity/pic';
 import { toNullable } from '@dfinity/utils';
-import type { Actor, PocketIc } from '@hadronous/pic';
 import { fromArray } from '@junobuild/utils';
 import { mockSetRule } from '../../../mocks/collection.mocks';
 import { mockListParams } from '../../../mocks/list.mocks';

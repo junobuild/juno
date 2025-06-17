@@ -1,7 +1,7 @@
 import type { _SERVICE as SatelliteActor } from '$declarations/satellite/satellite.did';
 import { idlFactory as idlFactorSatellite } from '$declarations/satellite/satellite.factory.did';
 import { Ed25519KeyIdentity } from '@dfinity/identity';
-import { type Actor, PocketIc } from '@hadronous/pic';
+import { type Actor, PocketIc } from '@dfinity/pic';
 import { beforeAll, describe, inject } from 'vitest';
 import { mockListParams } from '../../../mocks/list.mocks';
 import { uploadAsset } from '../../../utils/satellite-storage-tests.utils';

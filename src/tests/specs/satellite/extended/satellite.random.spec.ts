@@ -3,8 +3,8 @@ import type {
 	_SERVICE as TestSatelliteActor
 } from '$test-declarations/test_satellite/test_satellite.did';
 import type { Identity } from '@dfinity/agent';
+import type { Actor, PocketIc } from '@dfinity/pic';
 import type { Principal } from '@dfinity/principal';
-import type { Actor, PocketIc } from '@hadronous/pic';
 import { afterAll, beforeAll, describe } from 'vitest';
 import { mockSetRule } from '../../../mocks/collection.mocks';
 import { setupTestSatellite, upgradeTestSatellite } from '../../../utils/fixtures-tests.utils';

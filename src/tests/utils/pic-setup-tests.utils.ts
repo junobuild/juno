@@ -1,5 +1,6 @@
 import { type Identity, MANAGEMENT_CANISTER_ID } from '@dfinity/agent';
 import { IDL } from '@dfinity/candid';
+import type { ActorInterface, CanisterFixture, PocketIc } from '@dfinity/pic';
 import { Principal } from '@dfinity/principal';
 import {
 	arrayBufferToUint8Array,
@@ -7,7 +8,6 @@ import {
 	nonNullish,
 	toNullable
 } from '@dfinity/utils';
-import type { ActorInterface, CanisterFixture, PocketIc } from '@hadronous/pic';
 import { uint8ArraySha256 } from '@junobuild/admin';
 import { readFile } from 'node:fs/promises';
 

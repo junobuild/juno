@@ -1,6 +1,7 @@
 import type { _SERVICE as SatelliteActor, SetRule } from '$declarations/satellite/satellite.did';
 import { idlFactory as idlFactorSatellite } from '$declarations/satellite/satellite.factory.did';
 import { Ed25519KeyIdentity } from '@dfinity/identity';
+import { type Actor, PocketIc } from '@dfinity/pic';
 import { Principal } from '@dfinity/principal';
 import {
 	arrayOfNumberToUint8Array,
@@ -9,7 +10,6 @@ import {
 	toNullable,
 	uint8ArrayToArrayOfNumber
 } from '@dfinity/utils';
-import { type Actor, PocketIc } from '@hadronous/pic';
 import { fromArray, toArray } from '@junobuild/utils';
 import { nanoid } from 'nanoid';
 import { inject } from 'vitest';

@@ -3,8 +3,8 @@ import { idlFactory as idlFactorMissionControl } from '$declarations/mission_con
 import type { _SERVICE as SatelliteActor } from '$declarations/satellite/satellite.did';
 import { idlFactory as idlFactorSatellite } from '$declarations/satellite/satellite.factory.did';
 import { Ed25519KeyIdentity } from '@dfinity/identity';
+import { PocketIc, type Actor } from '@dfinity/pic';
 import type { Principal } from '@dfinity/principal';
-import { PocketIc, type Actor } from '@hadronous/pic';
 import { inject } from 'vitest';
 import { MISSION_CONTROL_ADMIN_CONTROLLER_ERROR_MSG } from '../../constants/mission-control-tests.constants';
 import { missionControlUserInitArgs } from '../../utils/mission-control-tests.utils';

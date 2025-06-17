@@ -2,8 +2,8 @@ import type { _SERVICE as SatelliteActor } from '$declarations/satellite/satelli
 import { idlFactory as idlFactorSatellite } from '$declarations/satellite/satellite.factory.did';
 import { AnonymousIdentity } from '@dfinity/agent';
 import { Ed25519KeyIdentity } from '@dfinity/identity';
+import { type Actor, PocketIc } from '@dfinity/pic';
 import { toNullable } from '@dfinity/utils';
-import { type Actor, PocketIc } from '@hadronous/pic';
 import {
 	JUNO_AUTH_ERROR_NOT_ADMIN_CONTROLLER,
 	JUNO_STORAGE_ERROR_RESERVED_ASSET

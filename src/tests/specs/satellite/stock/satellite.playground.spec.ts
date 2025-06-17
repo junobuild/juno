@@ -1,8 +1,8 @@
 import type { _SERVICE as SatelliteActor } from '$declarations/satellite/satellite.did';
 import { idlFactory as idlFactorSatellite } from '$declarations/satellite/satellite.factory.did';
 import { Ed25519KeyIdentity } from '@dfinity/identity';
+import { PocketIc, type Actor } from '@dfinity/pic';
 import { toNullable } from '@dfinity/utils';
-import { PocketIc, type Actor } from '@hadronous/pic';
 import { afterAll, beforeAll, beforeEach, describe, inject } from 'vitest';
 import { createUser as createUserUtils } from '../../../utils/satellite-doc-tests.utils';
 import { SATELLITE_WASM_PATH, controllersInitArgs } from '../../../utils/setup-tests.utils';

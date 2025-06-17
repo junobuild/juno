@@ -5,8 +5,8 @@ import type {
 } from '$declarations/orbiter/orbiter.did';
 import { idlFactory as idlFactorOrbiter } from '$declarations/orbiter/orbiter.factory.did';
 import { Ed25519KeyIdentity } from '@dfinity/identity';
+import { type Actor, PocketIc } from '@dfinity/pic';
 import { fromNullable, jsonReviver, toNullable } from '@dfinity/utils';
-import { type Actor, PocketIc } from '@hadronous/pic';
 import { readFile } from 'node:fs/promises';
 import { join } from 'node:path';
 import { inject } from 'vitest';

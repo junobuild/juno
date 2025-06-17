@@ -1,9 +1,9 @@
 import type { Controller } from '$declarations/satellite/satellite.did';
 import type { _SERVICE as SputnikActor } from '$declarations/sputnik/sputnik.did';
 import type { Identity } from '@dfinity/agent';
+import type { Actor, PocketIc } from '@dfinity/pic';
 import { Principal } from '@dfinity/principal';
 import { assertNonNullish, jsonReplacer, jsonReviver } from '@dfinity/utils';
-import type { Actor, PocketIc } from '@hadronous/pic';
 import { mockSetRule } from '../../mocks/collection.mocks';
 import { setupTestSputnik } from '../../utils/fixtures-tests.utils';
 import { createUser as createUserUtils } from '../../utils/satellite-doc-tests.utils';

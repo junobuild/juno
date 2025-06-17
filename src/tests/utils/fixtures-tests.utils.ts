@@ -5,9 +5,9 @@ import { idlFactory as idlTestFactorySatellite } from '$test-declarations/test_s
 import type { Identity } from '@dfinity/agent';
 import type { IDL } from '@dfinity/candid';
 import { Ed25519KeyIdentity } from '@dfinity/identity';
+import { type Actor, type ActorInterface, PocketIc } from '@dfinity/pic';
 import type { Principal } from '@dfinity/principal';
 import { nonNullish } from '@dfinity/utils';
-import { type Actor, type ActorInterface, PocketIc } from '@hadronous/pic';
 import { inject } from 'vitest';
 import { setupChunkedCanister, upgradeChunkedCanister } from './pic-setup-tests.utils';
 import { tick } from './pic-tests.utils';

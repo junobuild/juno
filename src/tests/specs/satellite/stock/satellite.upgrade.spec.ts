@@ -15,6 +15,7 @@ import type { _SERVICE as SatelliteActor, SetDoc } from '$declarations/satellite
 import { idlFactory as idlFactorSatellite } from '$declarations/satellite/satellite.factory.did';
 import type { Identity } from '@dfinity/agent';
 import { Ed25519KeyIdentity } from '@dfinity/identity';
+import { PocketIc, type Actor } from '@dfinity/pic';
 import type { Principal } from '@dfinity/principal';
 import {
 	arrayBufferToUint8Array,
@@ -22,7 +23,6 @@ import {
 	fromNullable,
 	toNullable
 } from '@dfinity/utils';
-import { PocketIc, type Actor } from '@hadronous/pic';
 import { toArray } from '@junobuild/utils';
 import { nanoid } from 'nanoid';
 import { afterEach, beforeEach, describe, expect, inject } from 'vitest';

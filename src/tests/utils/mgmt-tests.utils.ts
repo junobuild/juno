@@ -1,8 +1,8 @@
 import type { _SERVICE as IcActor, canister_log_record } from '$declarations/ic/ic.did';
 import { idlFactory as idlFactorIc } from '$declarations/ic/ic.factory.did';
 import type { Identity } from '@dfinity/agent';
+import type { PocketIc } from '@dfinity/pic';
 import { Principal } from '@dfinity/principal';
-import type { PocketIc } from '@hadronous/pic';
 
 export interface IcMgmtLog {
 	message: string;

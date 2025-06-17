@@ -4,9 +4,9 @@ import type {
 } from '$declarations/satellite/satellite.did';
 import { idlFactory as idlFactorSatellite } from '$declarations/satellite/satellite.factory.did';
 import { Ed25519KeyIdentity } from '@dfinity/identity';
+import { PocketIc, type Actor } from '@dfinity/pic';
 import type { Principal } from '@dfinity/principal';
 import { toNullable } from '@dfinity/utils';
-import { PocketIc, type Actor } from '@hadronous/pic';
 import { readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { inject } from 'vitest';

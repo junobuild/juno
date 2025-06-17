@@ -1,7 +1,7 @@
 import type { _SERVICE as SputnikActor } from '$declarations/sputnik/sputnik.did';
 import { Ed25519KeyIdentity } from '@dfinity/identity';
+import type { Actor } from '@dfinity/pic';
 import { toNullable } from '@dfinity/utils';
-import type { Actor } from '@hadronous/pic';
 import { toArray } from '@junobuild/utils';
 import { nanoid } from 'nanoid';
 import { mockSetRule } from '../mocks/collection.mocks';

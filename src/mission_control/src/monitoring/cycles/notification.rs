@@ -7,7 +7,7 @@ use crate::types::interface::GetMonitoringHistory;
 use crate::user::store::{get_config, get_metadata, get_user};
 use canfund::manager::record::CanisterRecord;
 use ic_cdk::api::management_canister::main::CanisterId;
-use ic_cdk::futures::spawn;
+use ic_cdk::futures::spawn_017_compat;
 use ic_cdk::{id, print};
 use ic_cdk_timers::set_timer;
 use junobuild_shared::types::interface::NotifyArgs;
@@ -21,7 +21,7 @@ use std::collections::HashMap;
 use std::time::Duration;
 
 pub fn defer_notify(records: HashMap<CanisterId, CanisterRecord>) {
-    set_timer(Duration::ZERO, || spawn(notify(records)));
+    set_timer(Duration::ZERO, || spawn_017_compat(notify(records)));
 }
 
 async fn notify(records: HashMap<CanisterId, CanisterRecord>) {

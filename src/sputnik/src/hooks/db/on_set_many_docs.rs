@@ -3,21 +3,19 @@ use crate::hooks::js::runtime::types::OnJsHook;
 use crate::hooks::js::sdk::init_sdk;
 use crate::js::runtime::{execute_async_js, RunAsyncJsFn};
 use crate::state::store::get_on_set_many_docs_collections;
-use ic_cdk::futures::{in_executor_context, spawn};
+use ic_cdk::futures::spawn;
 use ic_cdk::trap;
 use junobuild_satellite::OnSetManyDocsContext;
 use rquickjs::{Ctx, Error as JsError};
 
 #[no_mangle]
 pub extern "Rust" fn juno_on_set_many_docs(context: OnSetManyDocsContext) {
-    in_executor_context(|| {
-        spawn(async move {
-            let execute_context = AsyncJsFnContext { context };
+    spawn(async move {
+        let execute_context = AsyncJsFnContext { context };
 
-            if let Err(e) = execute_async_js(execute_context).await {
-                trap(&e.to_string());
-            }
-        });
+        if let Err(e) = execute_async_js(execute_context).await {
+            trap(&e.to_string());
+        }
     });
 }
 

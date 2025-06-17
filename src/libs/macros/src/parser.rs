@@ -196,11 +196,9 @@ fn parse_on_hook(
     quote! {
         #[no_mangle]
         pub extern "Rust" fn #hook_fn(#hook_param: #hook_param_type) {
-            ic_cdk::futures::in_executor_context(|| {
-                ic_cdk::futures::spawn(async {
-                    let result = #function_call;
-                    #hook_return
-                });
+            ic_cdk::futures::spawn(async {
+                let result = #function_call;
+                #hook_return
             });
         }
     }

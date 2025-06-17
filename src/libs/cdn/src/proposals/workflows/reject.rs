@@ -47,7 +47,7 @@ fn secure_reject_proposal(
 
     assert_known_proposal_type(proposal).map_err(RejectProposalError::InvalidType)?;
 
-    let rejected_proposal = Proposal::reject(&proposal);
+    let rejected_proposal = Proposal::reject(proposal);
     insert_proposal(cdn_stable, &reject_proposal.proposal_id, &rejected_proposal);
 
     Ok(())

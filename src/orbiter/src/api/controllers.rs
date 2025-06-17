@@ -17,6 +17,7 @@ fn set_controllers(
         controller,
     }: SetControllersArgs,
 ) -> Controllers {
+    #[allow(clippy::single_match)]
     match controller.scope {
         ControllerScope::Admin => {
             let max_controllers = assert_max_number_of_controllers(

@@ -24,7 +24,7 @@ repository = "https://github.com/junobuild/juno"
 homepage = "https://juno.build"
 
 [workspace.dependencies]
-candid = "0.10.13"
+candid = "0.10.14"
 ic-cdk = "0.17.1"
 ic-cdk-macros = "0.17.1"
 ic-ledger-types = "0.14.0"

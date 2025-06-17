@@ -701,6 +701,7 @@ interface I18nControllers {
 	more_delete: string;
 	admin: string;
 	write: string;
+	submit: string;
 	add_a_controller: string;
 	add_intro: string;
 	generate: string;
@@ -734,7 +735,7 @@ interface I18nCollections {
 	public: string;
 	private: string;
 	managed: string;
-	controllers: string;
+	trusted_keys: string;
 	empty: string;
 	empty_private: string;
 	added: string;

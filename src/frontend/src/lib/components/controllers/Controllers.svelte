@@ -104,12 +104,15 @@
 
 					<td class="scope">
 						{#if nonNullish(controller)}
-							{#if nonNullish(controller) && 'Write' in controller.scope}
+							{#if 'Write' in controller.scope}
 								{$i18n.controllers.write}
-							{:else}
+							{:else if 'Admin' in controller.scope}
 								{$i18n.controllers.admin}
-							{/if}{/if}</td
-					>
+							{:else if 'Submit' in controller.scope}
+								{$i18n.controllers.submit}
+							{/if}
+						{/if}
+					</td>
 				</tr>
 			{/each}
 		</tbody>

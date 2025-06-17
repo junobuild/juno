@@ -1,9 +1,9 @@
 import type { HttpResponse as OrbiterHttpResponse } from '$declarations/orbiter/orbiter.did';
 import type { HttpResponse as SatelliteHttpResponse } from '$declarations/satellite/satellite.did';
+import type { PocketIc } from '@dfinity/pic';
 import type { Principal } from '@dfinity/principal';
 import { verifyRequestResponsePair, type Request } from '@dfinity/response-verification';
 import { assertNonNullish } from '@dfinity/utils';
-import type { PocketIc } from '@hadronous/pic';
 
 const CERTIFICATE_VERSION = 2;
 
@@ -11,8 +11,8 @@ const NS_PER_MS = 1e6;
 const MS_PER_S = 1e3;
 const S_PER_MIN = 60;
 
-const getRootKey = (pic: PocketIc): Promise<ArrayBufferLike> => {
-	const subnets = pic.getApplicationSubnets();
+const getRootKey = async (pic: PocketIc): Promise<ArrayBufferLike> => {
+	const subnets = await pic.getApplicationSubnets();
 	return pic.getPubKey(subnets[0].id);
 };
 

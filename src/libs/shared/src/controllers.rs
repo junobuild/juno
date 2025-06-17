@@ -275,6 +275,7 @@ pub fn caller_is_self(caller: UserId) -> bool {
 /// # Returns
 /// A `Controllers` collection containing only admin controllers.
 pub fn filter_admin_controllers(controllers: &Controllers) -> Controllers {
+    #[allow(clippy::match_like_matches_macro)]
     controllers
         .clone()
         .into_iter()

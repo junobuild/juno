@@ -1,4 +1,4 @@
-import { PocketIcServer } from '@hadronous/pic';
+import { PocketIcServer } from '@dfinity/pic';
 import type { GlobalSetupContext } from 'vitest/node';
 
 let pic: PocketIcServer | undefined;

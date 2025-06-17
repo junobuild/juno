@@ -2,9 +2,9 @@ import type { _SERVICE as OrbiterActor } from '$declarations/orbiter/orbiter.did
 import { idlFactory as idlFactorOrbiter } from '$declarations/orbiter/orbiter.factory.did';
 import type { HttpRequest } from '$declarations/satellite/satellite.did';
 import { Ed25519KeyIdentity } from '@dfinity/identity';
+import { type Actor, PocketIc } from '@dfinity/pic';
 import type { Principal } from '@dfinity/principal';
 import { toNullable } from '@dfinity/utils';
-import { type Actor, PocketIc } from '@hadronous/pic';
 import { inject } from 'vitest';
 import { assertCertification } from '../../utils/certification-tests.utils';
 import { toBodyJson } from '../../utils/orbiter-tests.utils';

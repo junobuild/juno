@@ -1,7 +1,7 @@
 import type { _SERVICE as ConsoleActor } from '$declarations/console/console.did';
 import type { _SERVICE as SatelliteActor } from '$declarations/satellite/satellite.did';
+import type { Actor } from '@dfinity/pic';
 import { assertNonNullish, fromNullable, toNullable } from '@dfinity/utils';
-import type { Actor } from '@hadronous/pic';
 import { JUNO_STORAGE_ERROR_RESERVED_ASSET } from '@junobuild/errors';
 import { uploadFile } from './cdn-tests.utils';
 

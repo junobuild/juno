@@ -1,6 +1,6 @@
 import type { _SERVICE as SatelliteActor } from '$declarations/satellite/satellite.did';
 import type { Identity } from '@dfinity/agent';
-import type { Actor } from '@hadronous/pic';
+import type { Actor } from '@dfinity/pic';
 
 export const deleteDefaultIndexHTML = async ({
 	actor,

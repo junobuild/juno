@@ -1,8 +1,8 @@
 use crate::http::send::send_notification;
 use crate::store::stable::insert_notification;
 use crate::types::state::Notification;
-use ic_cdk::{trap};
 use ic_cdk::futures::spawn;
+use ic_cdk::trap;
 use ic_cdk_timers::set_timer;
 use junobuild_shared::types::interface::NotifyArgs;
 use std::time::Duration;

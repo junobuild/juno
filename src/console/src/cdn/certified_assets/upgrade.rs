@@ -1,5 +1,5 @@
 use crate::cdn::certified_assets::runtime::init_certified_assets as init_runtime_certified_assets;
-use ic_cdk::spawn;
+use ic_cdk::futures::spawn;
 use ic_cdk_timers::set_timer;
 use std::time::Duration;
 

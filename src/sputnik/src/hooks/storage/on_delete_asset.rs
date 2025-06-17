@@ -3,7 +3,8 @@ use crate::hooks::js::runtime::types::OnJsHook;
 use crate::hooks::js::sdk::init_sdk;
 use crate::js::runtime::{execute_async_js, RunAsyncJsFn};
 use crate::state::store::get_on_delete_asset_collections;
-use ic_cdk::{spawn, trap};
+use ic_cdk::futures::spawn;
+use ic_cdk::trap;
 use junobuild_satellite::OnDeleteAssetContext;
 use rquickjs::{Ctx, Error as JsError};
 

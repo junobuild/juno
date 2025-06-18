@@ -94,7 +94,9 @@ describe('Orbiter > Upgrade', () => {
 
 			expect(result).not.toBeUndefined();
 
-			const [{ collected_at }, pageView] = result!;
+			assertNonNullish(result);
+
+			const [{ collected_at }, pageView] = result;
 
 			expect(collected_at).toEqual(key.collected_at);
 
@@ -153,14 +155,18 @@ describe('Orbiter > Upgrade', () => {
 
 			expect(result).not.toBeUndefined();
 
-			const [{ collected_at }, trackEvent] = result!;
+			assertNonNullish(result);
+
+			const [{ collected_at }, trackEvent] = result;
 
 			expect(collected_at).toEqual(key.collected_at);
 
+			const metadata = fromNullable(trackEvent.metadata);
+
+			assertNonNullish(metadata);
+
 			expect(trackEvent.name).toEqual(trackEventMock.name);
-			expect(fromNullable(trackEvent.metadata)!.sort()).toEqual(
-				fromNullable(trackEventMock.metadata)!.sort()
-			);
+			expect(metadata.sort()).toEqual(metadata.sort());
 			expect(trackEvent.session_id).toEqual(trackEventMock.session_id);
 			expect(trackEvent.satellite_id.toText()).toEqual(trackEventMock.satellite_id.toText());
 			expect(trackEvent.created_at).toBeGreaterThan(0n);

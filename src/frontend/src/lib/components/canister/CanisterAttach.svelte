@@ -5,7 +5,7 @@
 	import { run, preventDefault } from 'svelte/legacy';
 	import Popover from '$lib/components/ui/Popover.svelte';
 	import { missionControlIdDerived } from '$lib/derived/mission-control.derived';
-	import { busy } from '$lib/stores/busy.store';
+	import { busy, isBusy } from '$lib/stores/busy.store';
 	import { i18n } from '$lib/stores/i18n.store';
 	import { toasts } from '$lib/stores/toasts.store';
 	import type { MissionControlId } from '$lib/types/mission-control';
@@ -21,7 +21,6 @@
 	let { setFn, visible = $bindable(), title, input, attach }: Props = $props();
 
 	let validConfirm = $state(false);
-	let saving = false;
 
 	let canisterId = $state('');
 
@@ -89,12 +88,12 @@
 			type="text"
 			placeholder="_____-_____-_____-_____-cai"
 			maxlength={64}
-			disabled={saving}
+			disabled={$isBusy}
 			autocomplete="off"
 			data-1p-ignore
 		/>
 
-		<button type="submit" class="submit" disabled={saving || !validConfirm}>
+		<button type="submit" class="submit" disabled={$isBusy || !validConfirm}>
 			{$i18n.core.submit}
 		</button>
 	</form>

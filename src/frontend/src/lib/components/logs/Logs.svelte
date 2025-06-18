@@ -38,7 +38,7 @@
 			return;
 		}
 
-		let length = nonNullish(results) ? BigInt(results.length) : undefined;
+		const length = nonNullish(results) ? BigInt(results.length) : undefined;
 
 		setItems({ items: results, matches_length: length, items_length: length });
 	};

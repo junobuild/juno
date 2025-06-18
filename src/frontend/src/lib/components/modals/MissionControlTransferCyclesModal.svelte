@@ -22,6 +22,9 @@
 			async (params: { cycles: bigint; destinationId: Principal }) =>
 				await depositCycles({
 					...params,
+					// TODO: resolve no-non-null-assertion
+					// We know for sure that the mission control is defined at this point.
+					// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
 					missionControlId: $missionControlIdDerived!,
 					identity: $authStore.identity
 				})

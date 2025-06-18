@@ -3,7 +3,7 @@ import { idlFactory as idlFactorConsole } from '$declarations/console/console.fa
 import { AnonymousIdentity } from '@dfinity/agent';
 import { Ed25519KeyIdentity } from '@dfinity/identity';
 import { PocketIc, type Actor } from '@dfinity/pic';
-import { fromNullable, toNullable } from '@dfinity/utils';
+import { assertNonNullish, fromNullable, toNullable } from '@dfinity/utils';
 import { JUNO_STORAGE_ERROR_RESERVED_ASSET } from '@junobuild/errors';
 import { beforeAll, describe, expect, inject } from 'vitest';
 import { uploadFile } from '../../utils/cdn-tests.utils';
@@ -82,8 +82,12 @@ describe('Console > Metadata', () => {
 
 			const [__, proposal] = await submit_proposal(proposalId);
 
+			const sha = fromNullable(proposal.sha256);
+
+			assertNonNullish(sha);
+
 			await commit_proposal({
-				sha256: fromNullable(proposal.sha256)!,
+				sha256: sha,
 				proposal_id: proposalId
 			});
 

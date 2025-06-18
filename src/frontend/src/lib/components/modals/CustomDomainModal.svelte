@@ -94,11 +94,11 @@
 	};
 
 	const onFormNext = () => {
-		let authDomain: string | undefined = fromNullishNullable(
+		const authDomain: string | undefined = fromNullishNullable(
 			fromNullishNullable(config?.internet_identity)?.derivation_origin
 		);
 
-		let existingDerivationOrigin = nonNullish(authDomain);
+		const existingDerivationOrigin = nonNullish(authDomain);
 
 		step = existingDerivationOrigin ? 'dns' : 'auth';
 	};

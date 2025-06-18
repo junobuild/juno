@@ -431,11 +431,14 @@ describe('Satellite > Upgrade', () => {
 				const doc = fromNullable(await get_doc(collection, key));
 
 				expect(doc).not.toBeUndefined();
-				expect(doc!.version).toEqual(toNullable(1n));
+
+				assertNonNullish(doc);
+
+				expect(doc.version).toEqual(toNullable(1n));
 
 				const setNewDoc: SetDoc = {
 					...setDoc,
-					version: doc!.version
+					version: doc.version
 				};
 
 				// We do not provide the version so it counts as a first set
@@ -576,7 +579,10 @@ describe('Satellite > Upgrade', () => {
 						const asset = fromNullable(await get_asset(collection, full_path));
 
 						expect(asset).not.toBeUndefined();
-						expect(fromNullable(asset!.version)).toEqual(1n);
+
+						assertNonNullish(asset);
+
+						expect(fromNullable(asset.version)).toEqual(1n);
 					}
 				);
 			});

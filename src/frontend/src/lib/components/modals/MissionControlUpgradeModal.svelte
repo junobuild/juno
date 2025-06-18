@@ -25,6 +25,9 @@
 	) =>
 		await upgradeMissionControl({
 			missionControl: {
+				// TODO: resolve no-non-null-assertion
+				// We know for sure that the mission control is defined at this point.
+				// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
 				missionControlId: $missionControlIdDerived!.toText(),
 				identity: $authStore.identity ?? new AnonymousIdentity(),
 				...container()

@@ -305,7 +305,9 @@ export const testSatelliteExists = async ({
 
 		expect(missionControl).not.toBeUndefined();
 
-		const [_, { mission_control_id }] = missionControl!;
+		assertNonNullish(missionControl);
+
+		const [_, { mission_control_id }] = missionControl;
 
 		const missionControlId = fromNullable(mission_control_id);
 
@@ -404,8 +406,11 @@ export const uploadFileWithProposal = async ({
 
 	const [_, proposal] = await submit_proposal(proposalId);
 
+	const sha = fromNullable(proposal.sha256);
+	assertNonNullish(sha);
+
 	await commit_proposal({
-		sha256: fromNullable(proposal.sha256)!,
+		sha256: sha,
 		proposal_id: proposalId
 	});
 

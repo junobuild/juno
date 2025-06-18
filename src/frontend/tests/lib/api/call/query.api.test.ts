@@ -13,7 +13,7 @@ describe('query.api', () => {
 	});
 
 	it('should request twice', async () => {
-		const request = vi.fn().mockImplementation(() => Promise.resolve({ certified: true }));
+		const request = vi.fn().mockResolvedValue({ certified: true });
 		const onLoad = vi.fn();
 		const onError = vi.fn();
 
@@ -30,7 +30,7 @@ describe('query.api', () => {
 	});
 
 	it('should work w/o await call', async () => {
-		const request = vi.fn().mockImplementation(() => Promise.resolve({ certified: true }));
+		const request = vi.fn().mockResolvedValue({ certified: true });
 		const onLoad = vi.fn();
 		const onError = vi.fn();
 
@@ -102,7 +102,7 @@ describe('query.api', () => {
 	});
 
 	it('should catch errors', async () => {
-		const request = vi.fn().mockImplementation(() => Promise.reject('test'));
+		const request = vi.fn().mockRejectedValue('test');
 		const onLoad = vi.fn();
 		const onError = vi.fn();
 
@@ -123,7 +123,7 @@ describe('query.api', () => {
 	});
 
 	it('should catch certified errors', async () => {
-		const request = vi.fn().mockImplementation(() => Promise.reject('test'));
+		const request = vi.fn().mockRejectedValue('test');
 		const onLoad = vi.fn();
 		const onError = vi.fn();
 		const onCertifiedError = vi.fn();

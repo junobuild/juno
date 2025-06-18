@@ -98,7 +98,10 @@ const collectAndZip = async <T>({
 >): Promise<Blob> => {
 	const periods = buildAnalyticsPeriods({ params });
 
-	type Result = { period: PageViewsPeriod; data: [AnalyticKey, T][] };
+	interface Result {
+		period: PageViewsPeriod;
+		data: [AnalyticKey, T][];
+	}
 
 	const executeFn = async ({ period }: { period: Required<PageViewsPeriod> }): Promise<Result> => ({
 		period,

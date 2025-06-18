@@ -71,6 +71,7 @@ const downloadFromURL = async (url: string | RequestOptions): Promise<Buffer> =>
 	await new Promise((resolve, reject) => {
 		get(url, async (res) => {
 			if (nonNullish(res.statusCode) && [301, 302].includes(res.statusCode)) {
+				// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
 				await downloadFromURL(res.headers.location!).then(resolve, reject);
 			}
 

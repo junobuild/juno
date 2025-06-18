@@ -78,9 +78,9 @@ export interface SetTrackEventPayload {
 
 export type PerformanceMetricName = 'CLS' | 'FCP' | 'INP' | 'LCP' | 'TTFB';
 
-export type PerformanceData = {
+export interface PerformanceData {
 	WebVitalsMetric: WebVitalsMetric;
-};
+}
 
 export interface WebVitalsMetric {
 	value: number;

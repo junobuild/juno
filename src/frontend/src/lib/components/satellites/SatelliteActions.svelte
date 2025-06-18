@@ -28,7 +28,7 @@
 
 	let monitoringEnabled = $derived(fromNullishNullable(monitoring?.cycles)?.enabled === true);
 
-	let detail = { satellite };
+	let detail = $derived({ satellite });
 
 	let canister = $state<CanisterSyncDataType | undefined>(undefined);
 

@@ -23,6 +23,9 @@
 	const upgradeOrbiterWasm = async (params: Pick<UpgradeCodeParams, 'wasmModule' | 'onProgress'>) =>
 		await upgradeOrbiter({
 			orbiter: {
+				// TODO: resolve no-non-null-assertion
+				// We know for sure that the orbiter is defined at this point.
+				// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
 				orbiterId: $orbiterStore!.orbiter_id.toText(),
 				identity: $authStore.identity ?? new AnonymousIdentity(),
 				...container()

@@ -16,7 +16,7 @@
 
 	let { monitoringStrategy = $bindable(), detail }: Props = $props();
 
-	let { monitoringConfig, monitoringEnabled } = detail as JunoModalCreateSegmentDetail;
+	let { monitoringConfig, monitoringEnabled } = $derived(detail as JunoModalCreateSegmentDetail);
 
 	let useDefaultStrategy = $state(false);
 	let useMonitoringStrategy: CyclesMonitoringStrategy | undefined = $state(undefined);

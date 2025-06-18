@@ -24,6 +24,9 @@
 		async (params: { missionControlId: MissionControlId; cyclesToDeposit: bigint }) =>
 			await deleteOrbiter({
 				...params,
+				// TODO: resolve no-non-null-assertion
+				// We know for sure that the orbiter is defined at this point.
+				// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
 				orbiterId: $orbiterStore!.orbiter_id,
 				identity: $authStore.identity
 			})

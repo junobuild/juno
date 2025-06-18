@@ -7,7 +7,7 @@ import type {
 import { idlFactory as idlFactorSatellite } from '$declarations/satellite/satellite.factory.did';
 import { Ed25519KeyIdentity } from '@dfinity/identity';
 import { type Actor, PocketIc } from '@dfinity/pic';
-import { fromNullable, toNullable } from '@dfinity/utils';
+import { assertNonNullish, fromNullable, toNullable } from '@dfinity/utils';
 import {
 	JUNO_COLLECTIONS_ERROR_COLLECTION_NOT_EMPTY,
 	JUNO_COLLECTIONS_ERROR_COLLECTION_NOT_FOUND,
@@ -131,14 +131,16 @@ describe.each([{ memory: { Heap: null } }, { memory: { Stable: null } }])(
 
 				const doc = fromNullable(await get_doc(TEST_COLLECTION, key));
 
+				assertNonNullish(doc);
+
 				await pic.advanceTime(100);
 
 				const updatedDoc = await set_doc(TEST_COLLECTION, key, {
-					...doc!,
-					version: doc!.version
+					...doc,
+					version: doc.version
 				});
 
-				expect(updatedDoc.updated_at).toBeGreaterThan(doc!.updated_at);
+				expect(updatedDoc.updated_at).toBeGreaterThan(doc.updated_at);
 			});
 
 			it('should not update a document if no version', async () => {
@@ -148,11 +150,13 @@ describe.each([{ memory: { Heap: null } }, { memory: { Stable: null } }])(
 
 				const doc = fromNullable(await get_doc(TEST_COLLECTION, key));
 
+				assertNonNullish(doc);
+
 				await pic.advanceTime(100);
 
 				await expect(
 					set_doc(TEST_COLLECTION, key, {
-						...doc!,
+						...doc,
 						version: []
 					})
 				).rejects.toThrow(JUNO_ERROR_NO_VERSION_PROVIDED);
@@ -165,11 +169,13 @@ describe.each([{ memory: { Heap: null } }, { memory: { Stable: null } }])(
 
 				const doc = fromNullable(await get_doc(TEST_COLLECTION, key));
 
+				assertNonNullish(doc);
+
 				await pic.advanceTime(100);
 
 				await expect(
 					set_doc(TEST_COLLECTION, key, {
-						...doc!,
+						...doc,
 						version: [123n]
 					})
 				).rejects.toThrow(new RegExp(JUNO_ERROR_VERSION_OUTDATED_OR_FUTURE, 'i'));

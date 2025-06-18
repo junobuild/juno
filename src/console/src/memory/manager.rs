@@ -52,32 +52,3 @@ pub fn init_stable_state() -> StableState {
         proposals: StableBTreeMap::init(get_memory_proposals()),
     }
 }
-
-// TODO: One time upgrade - To be removed.
-
-// ⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️
-// ⚠️ The introduction of the CDN requires a breaking change due to how content chunks are handled.
-// ⚠️ Therefore we're starting fresh.
-// ⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️
-
-pub fn free_stable_memory() {
-    MEMORY_MANAGER.with(|m| {
-        let memory_manager = m.borrow();
-
-        for memory_id in [PROPOSAL_ASSETS, PROPOSAL_CONTENT_CHUNKS, PROPOSALS] {
-            // This cleans up the memory by writing a single zero byte to the memory id,
-            // this will make the memory id available for reuse in the future.
-            //
-            // This makes sure that if `init` is called on the memory id, it will make sure
-            // it can be reused with a different datatype.
-            let memory = memory_manager.get(memory_id);
-            if memory.size() > 0 {
-                // This marks the memory as unused, this is because the StableBTreeMap
-                // implementation uses the first three bytes of the memory to store the MAGIC value [66, 84, 82]
-                // that indicates that the memory is used by the StableBTreeMap, so adding a single different byte
-                // in those first three bytes will make the memory available for reuse.
-                memory.write(0, &[0]);
-            }
-        }
-    })
-}

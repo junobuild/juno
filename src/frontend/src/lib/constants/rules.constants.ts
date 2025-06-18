@@ -12,9 +12,13 @@ export const StorageCollectionType: CollectionType = { Storage: null };
 export const PermissionPublic: Permission = { Public: null };
 export const PermissionPrivate: Permission = { Private: null };
 export const PermissionManaged: Permission = { Managed: null };
-export const PermissionControllers: Permission = { Controllers: null };
 
-export type PermissionText = 'Public' | 'Private' | 'Managed' | 'Controllers';
+// Originally named "Controllers" but later renamed visually — and only visually — to "Trusted Keys",
+// since it includes both "Admin" (controllers) and "Write" keys (which are not controllers).
+const PermissionControllers: Permission = { Controllers: null };
+export const PermissionTrustedKeys = PermissionControllers;
+
+export type PermissionText = 'Public' | 'Private' | 'Managed' | 'TrustedKeys';
 
 export const MemoryHeap: Memory = { Heap: null };
 export const MemoryStable: Memory = { Stable: null };

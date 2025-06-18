@@ -159,8 +159,11 @@ export const adminCustomDomainsWithProposalTests = ({
 
 		const [__, proposal] = await submit_proposal(proposalId);
 
+		const sha = fromNullable(proposal.sha256);
+		assertNonNullish(sha);
+
 		await commit_proposal({
-			sha256: fromNullable(proposal.sha256)!,
+			sha256: sha,
 			proposal_id: proposalId
 		});
 

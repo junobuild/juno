@@ -499,9 +499,13 @@ export const testControlledCdnMethods = ({
 			it('should commit proposal', async () => {
 				const { commit_proposal } = actor({ requireController: true });
 
+				const sha = fromNullable(sha256);
+
+				assertNonNullish(sha);
+
 				await expect(
 					commit_proposal({
-						sha256: fromNullable(sha256)!,
+						sha256: sha,
 						proposal_id: proposalId
 					})
 				).resolves.not.toThrow();
@@ -605,9 +609,13 @@ export const testControlledCdnMethods = ({
 				it('should fail at rejecting committed proposal', async () => {
 					const { reject_proposal } = actor({ requireController: true });
 
+					const sha = fromNullable(sha256);
+
+					assertNonNullish(sha);
+
 					await expect(
 						reject_proposal({
-							sha256: fromNullable(sha256)!,
+							sha256: sha,
 							proposal_id: proposalId
 						})
 					).rejects.toThrow(`${JUNO_CDN_PROPOSALS_ERROR_CANNOT_REJECT_INVALID_STATUS} (Executed)`);
@@ -616,9 +624,13 @@ export const testControlledCdnMethods = ({
 				it('should fail at rejecting proposal not open', async () => {
 					const { reject_proposal } = actor({ requireController: true });
 
+					const sha = fromNullable(sha256);
+
+					assertNonNullish(sha);
+
 					await expect(
 						reject_proposal({
-							sha256: fromNullable(sha256)!,
+							sha256: sha,
 							proposal_id: rejectProposalId
 						})
 					).rejects.toThrow(
@@ -635,9 +647,12 @@ export const testControlledCdnMethods = ({
 
 					const { reject_proposal } = actor({ requireController: true });
 
+					const rejectSha = fromNullable(sha256);
+					assertNonNullish(rejectSha);
+
 					await expect(
 						reject_proposal({
-							sha256: fromNullable(sha256)!,
+							sha256: rejectSha,
 							proposal_id: rejectProposalId
 						})
 					).rejects.toThrow(
@@ -650,9 +665,12 @@ export const testControlledCdnMethods = ({
 
 					const { reject_proposal } = actor({ requireController: true });
 
+					const sha = fromNullable(rejectSha256);
+					assertNonNullish(sha);
+
 					await expect(
 						reject_proposal({
-							sha256: fromNullable(rejectSha256)!,
+							sha256: sha,
 							proposal_id: rejectProposalId
 						})
 					).resolves.not.toThrow();
@@ -667,9 +685,12 @@ export const testControlledCdnMethods = ({
 				it('should fail at rejecting proposal already rejected', async () => {
 					const { reject_proposal } = actor({ requireController: true });
 
+					const sha = fromNullable(rejectSha256);
+					assertNonNullish(sha);
+
 					await expect(
 						reject_proposal({
-							sha256: fromNullable(rejectSha256)!,
+							sha256: sha,
 							proposal_id: rejectProposalId
 						})
 					).rejects.toThrow(`${JUNO_CDN_PROPOSALS_ERROR_CANNOT_REJECT_INVALID_STATUS} (Rejected)`);
@@ -693,8 +714,12 @@ export const testControlledCdnMethods = ({
 
 		const { commit_proposal } = actor({ requireController: true });
 
+		const sha = fromNullable(proposal.sha256);
+
+		assertNonNullish(sha);
+
 		await commit_proposal({
-			sha256: fromNullable(proposal.sha256)!,
+			sha256: sha,
 			proposal_id: proposalId
 		});
 
@@ -748,9 +773,13 @@ export const testControlledCdnMethods = ({
 
 		const { commit_proposal } = actor({ requireController: true });
 
+		const sha = fromNullable(sha256);
+
+		assertNonNullish(sha);
+
 		await expect(
 			commit_proposal({
-				sha256: fromNullable(sha256)!,
+				sha256: sha,
 				proposal_id: proposalId
 			})
 		).rejects.toThrow(`${JUNO_CDN_PROPOSALS_ERROR_EMPTY_ASSETS} (${proposalId})`);
@@ -960,8 +989,12 @@ export const testCdnStorageSettings = ({
 
 		const [_, proposal] = await submit_proposal(proposalId);
 
+		const shaCommit = fromNullable(proposal.sha256);
+
+		assertNonNullish(shaCommit);
+
 		await commit_proposal({
-			sha256: fromNullable(proposal.sha256)!,
+			sha256: shaCommit,
 			proposal_id: proposalId
 		});
 

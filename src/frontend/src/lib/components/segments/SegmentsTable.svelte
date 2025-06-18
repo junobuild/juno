@@ -76,7 +76,7 @@
 			return;
 		}
 
-		let countModules = $sortedSatellites.length + (isNullish($orbiterStore) ? 0 : 1);
+		const countModules = $sortedSatellites.length + (isNullish($orbiterStore) ? 0 : 1);
 
 		if (countModules === 0) {
 			satellites = [];

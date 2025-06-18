@@ -21,7 +21,7 @@
 
 	// Disabled for now, a bit too much in your face given that wasm memory cannot be shrink. We can always activate this warning if necessary, therefore I don't remove the code.
 	// heapWarning = data?.warning?.heap === true ?? false;
-	let heapWarning = false;
+	const heapWarning = false;
 </script>
 
 <CanisterSyncData {canisterId} bind:canister />

@@ -33,12 +33,12 @@
 		} & SetControllerParams
 	): Promise<void> => setMissionControlController({ ...params, identity: $authStore.identity });
 
-	let extraControllers: [Principal, Controller | undefined][] = [
+	let extraControllers: [Principal, Controller | undefined][] = $derived([
 		[missionControlId, undefined],
 		...(nonNullish($authStore.identity)
 			? [[$authStore.identity.getPrincipal(), undefined] as [Principal, Controller | undefined]]
 			: [])
-	];
+	]);
 </script>
 
 <Controllers

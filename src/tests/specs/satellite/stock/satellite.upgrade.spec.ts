@@ -15,6 +15,7 @@ import type { _SERVICE as SatelliteActor, SetDoc } from '$declarations/satellite
 import { idlFactory as idlFactorSatellite } from '$declarations/satellite/satellite.factory.did';
 import type { Identity } from '@dfinity/agent';
 import { Ed25519KeyIdentity } from '@dfinity/identity';
+import { PocketIc, type Actor } from '@dfinity/pic';
 import type { Principal } from '@dfinity/principal';
 import {
 	arrayBufferToUint8Array,
@@ -22,7 +23,6 @@ import {
 	fromNullable,
 	toNullable
 } from '@dfinity/utils';
-import { PocketIc, type Actor } from '@hadronous/pic';
 import { toArray } from '@junobuild/utils';
 import { nanoid } from 'nanoid';
 import { afterEach, beforeEach, describe, expect, inject } from 'vitest';
@@ -431,11 +431,14 @@ describe('Satellite > Upgrade', () => {
 				const doc = fromNullable(await get_doc(collection, key));
 
 				expect(doc).not.toBeUndefined();
-				expect(doc!.version).toEqual(toNullable(1n));
+
+				assertNonNullish(doc);
+
+				expect(doc.version).toEqual(toNullable(1n));
 
 				const setNewDoc: SetDoc = {
 					...setDoc,
-					version: doc!.version
+					version: doc.version
 				};
 
 				// We do not provide the version so it counts as a first set
@@ -576,7 +579,10 @@ describe('Satellite > Upgrade', () => {
 						const asset = fromNullable(await get_asset(collection, full_path));
 
 						expect(asset).not.toBeUndefined();
-						expect(fromNullable(asset!.version)).toEqual(1n);
+
+						assertNonNullish(asset);
+
+						expect(fromNullable(asset.version)).toEqual(1n);
 					}
 				);
 			});

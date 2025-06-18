@@ -1,7 +1,7 @@
 import type { _SERVICE as ConsoleActor } from '$declarations/console/console.did';
 import type { _SERVICE as SatelliteActor } from '$declarations/satellite/satellite.did';
+import type { Actor } from '@dfinity/pic';
 import { arrayBufferToUint8Array, toNullable } from '@dfinity/utils';
-import type { Actor } from '@hadronous/pic';
 import { mockBlob } from '../mocks/storage.mocks';
 
 export const uploadFile = async ({

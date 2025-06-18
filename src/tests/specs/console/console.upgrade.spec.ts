@@ -6,9 +6,9 @@ import type { _SERVICE as ConsoleActor_0_0_8 } from '$declarations/deprecated/co
 import { idlFactory as idlFactorConsole_0_0_8 } from '$declarations/deprecated/console-0-0-8-patch1.factory.did';
 import type { Identity } from '@dfinity/agent';
 import { Ed25519KeyIdentity } from '@dfinity/identity';
+import { PocketIc, type Actor } from '@dfinity/pic';
 import type { Principal } from '@dfinity/principal';
 import { assertNonNullish, fromNullable } from '@dfinity/utils';
-import { PocketIc, type Actor } from '@hadronous/pic';
 import { afterEach, beforeEach, describe, expect, inject } from 'vitest';
 import { mockScript } from '../../mocks/storage.mocks';
 import {

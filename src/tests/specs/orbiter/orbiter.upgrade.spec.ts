@@ -20,9 +20,9 @@ import type {
 } from '$declarations/orbiter/orbiter.did';
 import { idlFactory as idlFactorOrbiter } from '$declarations/orbiter/orbiter.factory.did';
 import { Ed25519KeyIdentity } from '@dfinity/identity';
+import { PocketIc, type Actor } from '@dfinity/pic';
 import type { Principal } from '@dfinity/principal';
 import { assertNonNullish, fromNullable, toNullable } from '@dfinity/utils';
-import { PocketIc, type Actor } from '@hadronous/pic';
 import { nanoid } from 'nanoid';
 import { afterEach, beforeEach, describe, expect, inject } from 'vitest';
 import { pageViewMock, satelliteIdMock, trackEventMock } from '../../mocks/orbiter.mocks';
@@ -94,7 +94,9 @@ describe('Orbiter > Upgrade', () => {
 
 			expect(result).not.toBeUndefined();
 
-			const [{ collected_at }, pageView] = result!;
+			assertNonNullish(result);
+
+			const [{ collected_at }, pageView] = result;
 
 			expect(collected_at).toEqual(key.collected_at);
 
@@ -153,14 +155,18 @@ describe('Orbiter > Upgrade', () => {
 
 			expect(result).not.toBeUndefined();
 
-			const [{ collected_at }, trackEvent] = result!;
+			assertNonNullish(result);
+
+			const [{ collected_at }, trackEvent] = result;
 
 			expect(collected_at).toEqual(key.collected_at);
 
+			const metadata = fromNullable(trackEvent.metadata);
+
+			assertNonNullish(metadata);
+
 			expect(trackEvent.name).toEqual(trackEventMock.name);
-			expect(fromNullable(trackEvent.metadata)!.sort()).toEqual(
-				fromNullable(trackEventMock.metadata)!.sort()
-			);
+			expect(metadata.sort()).toEqual(metadata.sort());
 			expect(trackEvent.session_id).toEqual(trackEventMock.session_id);
 			expect(trackEvent.satellite_id.toText()).toEqual(trackEventMock.satellite_id.toText());
 			expect(trackEvent.created_at).toBeGreaterThan(0n);

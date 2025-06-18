@@ -3,11 +3,11 @@ import {
 	MemoryHeap,
 	MemoryStable,
 	type MemoryText,
-	PermissionControllers,
 	PermissionManaged,
 	PermissionPrivate,
 	PermissionPublic,
-	type PermissionText
+	type PermissionText,
+	PermissionTrustedKeys
 } from '$lib/constants/rules.constants';
 
 export const permissionFromText = (text: PermissionText): Permission => {
@@ -19,7 +19,7 @@ export const permissionFromText = (text: PermissionText): Permission => {
 		case 'Managed':
 			return PermissionManaged;
 		default:
-			return PermissionControllers;
+			return PermissionTrustedKeys;
 	}
 };
 
@@ -36,7 +36,7 @@ export const permissionToText = (permission: Permission): PermissionText => {
 		return 'Managed';
 	}
 
-	return 'Controllers';
+	return 'TrustedKeys';
 };
 
 export const memoryFromText = (text: MemoryText): Memory => {

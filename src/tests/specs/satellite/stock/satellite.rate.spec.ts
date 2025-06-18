@@ -6,8 +6,8 @@ import type {
 import { idlFactory as idlFactorSatellite } from '$declarations/satellite/satellite.factory.did';
 import type { Identity } from '@dfinity/agent';
 import { Ed25519KeyIdentity } from '@dfinity/identity';
+import { PocketIc, type Actor } from '@dfinity/pic';
 import { assertNonNullish, fromNullable, isNullish, nonNullish, toNullable } from '@dfinity/utils';
-import { PocketIc, type Actor } from '@hadronous/pic';
 import { toArray } from '@junobuild/utils';
 import { inject } from 'vitest';
 import { SATELLITE_WASM_PATH, controllersInitArgs } from '../../../utils/setup-tests.utils';

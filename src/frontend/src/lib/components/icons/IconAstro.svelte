@@ -1,6 +1,6 @@
 <!-- https://astro.build/press/ -->
 <script lang="ts">
-	let width = (48 * 85) / 107;
+	const width = (48 * 85) / 107;
 </script>
 
 <svg

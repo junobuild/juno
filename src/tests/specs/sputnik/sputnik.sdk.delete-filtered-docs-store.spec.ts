@@ -1,8 +1,8 @@
 import type { _SERVICE as SputnikActor } from '$declarations/sputnik/sputnik.did';
 import type { Identity } from '@dfinity/agent';
+import type { Actor, PocketIc } from '@dfinity/pic';
 import type { Principal } from '@dfinity/principal';
 import { toNullable } from '@dfinity/utils';
-import type { Actor, PocketIc } from '@hadronous/pic';
 import { nanoid } from 'nanoid';
 import { mockSetRule } from '../../mocks/collection.mocks';
 import { mockListParams } from '../../mocks/list.mocks';

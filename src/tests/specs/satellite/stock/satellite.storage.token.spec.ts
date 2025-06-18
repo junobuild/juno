@@ -5,8 +5,8 @@ import type {
 } from '$declarations/satellite/satellite.did';
 import { idlFactory as idlFactorSatellite } from '$declarations/satellite/satellite.factory.did';
 import { Ed25519KeyIdentity } from '@dfinity/identity';
+import { type Actor, PocketIc } from '@dfinity/pic';
 import { toNullable } from '@dfinity/utils';
-import { type Actor, PocketIc } from '@hadronous/pic';
 import { nanoid } from 'nanoid';
 import { afterAll, beforeAll, describe, expect, inject } from 'vitest';
 import { uploadAsset } from '../../../utils/satellite-storage-tests.utils';

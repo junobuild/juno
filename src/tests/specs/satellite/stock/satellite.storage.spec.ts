@@ -8,9 +8,14 @@ import type {
 import { idlFactory as idlFactorSatellite } from '$declarations/satellite/satellite.factory.did';
 import { AnonymousIdentity } from '@dfinity/agent';
 import { Ed25519KeyIdentity } from '@dfinity/identity';
+import { type Actor, PocketIc } from '@dfinity/pic';
 import type { Principal } from '@dfinity/principal';
-import { arrayBufferToUint8Array, fromNullable, toNullable } from '@dfinity/utils';
-import { type Actor, PocketIc } from '@hadronous/pic';
+import {
+	arrayBufferToUint8Array,
+	assertNonNullish,
+	fromNullable,
+	toNullable
+} from '@dfinity/utils';
 import {
 	JUNO_AUTH_ERROR_NOT_ADMIN_CONTROLLER,
 	JUNO_AUTH_ERROR_NOT_WRITE_CONTROLLER,
@@ -324,8 +329,10 @@ describe('Satellite > Storage', () => {
 
 					expect(collectionResult).not.toBeUndefined();
 
+					assertNonNullish(collectionResult);
+
 					const [_, { memory: memoryResult, version, created_at, updated_at, read, write }] =
-						collectionResult!;
+						collectionResult;
 
 					expect(memoryResult).toEqual(toNullable(memory));
 					expect(read).toEqual({ Managed: null });
@@ -408,14 +415,20 @@ describe('Satellite > Storage', () => {
 					const asset = fromNullable(await get_asset(collection, full_path));
 
 					expect(asset).not.toBeUndefined();
-					expect(fromNullable(asset!.version) ?? 0n).toEqual(1n);
+
+					assertNonNullish(asset);
+
+					expect(fromNullable(asset.version) ?? 0n).toEqual(1n);
 
 					await upload({ full_path, name, collection });
 
 					const updatedAsset = fromNullable(await get_asset(collection, full_path));
 
 					expect(updatedAsset).not.toBeUndefined();
-					expect(fromNullable(updatedAsset!.version) ?? 0n).toEqual(2n);
+
+					assertNonNullish(updatedAsset);
+
+					expect(fromNullable(updatedAsset.version) ?? 0n).toEqual(2n);
 				});
 
 				it('should delete asset', async () => {

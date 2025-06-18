@@ -5,13 +5,13 @@ import type { _SERVICE as MissionControlActor } from '$declarations/mission_cont
 import { idlFactory as idlFactorMissionControl } from '$declarations/mission_control/mission_control.factory.did';
 import type { Identity } from '@dfinity/agent';
 import { Ed25519KeyIdentity } from '@dfinity/identity';
+import type { Actor, PocketIc } from '@dfinity/pic';
 import {
 	arrayBufferToUint8Array,
 	assertNonNullish,
 	fromNullable,
 	toNullable
 } from '@dfinity/utils';
-import type { Actor, PocketIc } from '@hadronous/pic';
 import { readFile } from 'node:fs/promises';
 import { expect } from 'vitest';
 import { mockScript } from '../mocks/storage.mocks';
@@ -305,7 +305,9 @@ export const testSatelliteExists = async ({
 
 		expect(missionControl).not.toBeUndefined();
 
-		const [_, { mission_control_id }] = missionControl!;
+		assertNonNullish(missionControl);
+
+		const [_, { mission_control_id }] = missionControl;
 
 		const missionControlId = fromNullable(mission_control_id);
 
@@ -404,8 +406,11 @@ export const uploadFileWithProposal = async ({
 
 	const [_, proposal] = await submit_proposal(proposalId);
 
+	const sha = fromNullable(proposal.sha256);
+	assertNonNullish(sha);
+
 	await commit_proposal({
-		sha256: fromNullable(proposal.sha256)!,
+		sha256: sha,
 		proposal_id: proposalId
 	});
 

@@ -714,7 +714,7 @@
 		"public": "Public",
 		"private": "Private",
 		"managed": "Managed",
-		"trusted_keys": "Trusted Keys",
+		"restricted": "Restricted",
 		"empty": "The collection <strong>{0}</strong> is empty.",
 		"empty_private": "The collection <strong>{0}</strong> read permission is set to private.",
 		"added": "Collection {0} added.",

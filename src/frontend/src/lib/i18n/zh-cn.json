@@ -714,7 +714,7 @@
 		"public": "公开",
 		"private": "私有",
 		"managed": "可管理的",
-		"trusted_keys": "Trusted Keys",
+		"restricted": "Restricted",
 		"empty": "你的文档集 <strong>{0}</strong> 为空.",
 		"empty_private": "你的文档集 <strong>{0}</strong> 读权限设置为私有.",
 		"added": "文档集 {0} 已曾加.",

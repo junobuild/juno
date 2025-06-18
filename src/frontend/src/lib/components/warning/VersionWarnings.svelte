@@ -64,7 +64,11 @@
 	const upgradeSatellite = async () =>
 		await openUpgradeModal({
 			type: 'upgrade_satellite',
+			// TODO: resolve no-non-null-assertion.
+			// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
 			satellite: satellite!,
+			// TODO: resolve no-non-null-assertion.
+			// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
 			currentVersion: satVersion!,
 			build: satBuild
 		});
@@ -72,12 +76,16 @@
 	const upgradeMissionControl = async () =>
 		await openUpgradeModal({
 			type: 'upgrade_mission_control',
+			// TODO: resolve no-non-null-assertion.
+			// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
 			currentVersion: ctrlVersion!
 		});
 
 	const upgradeOrbiter = async () =>
 		await openUpgradeModal({
 			type: 'upgrade_orbiter',
+			// TODO: resolve no-non-null-assertion.
+			// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
 			currentVersion: orbVersion!
 		});
 </script>

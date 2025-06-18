@@ -10,7 +10,10 @@ export default [
 			'vitest/expect-expect': ['off'],
 			// Following rule is annoying for my workflow as it is conflicting when I'm implementing iteratively
 			// features that share similar logic across modules.
-			'vitest/no-commented-out-tests': ['off']
+			'vitest/no-commented-out-tests': ['off'],
+			// It does not always make sense. For example, sometimes it reports function passed as property as being
+			// required to be prefixed with "on".
+			'svelte/require-event-prefix': ['off']
 		}
 	},
 	{

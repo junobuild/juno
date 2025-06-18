@@ -1,4 +1,5 @@
 use crate::cdn::constants::{RELEASES_COLLECTION_KEY, RELEASES_COLLECTION_PATH};
+use junobuild_cdn::storage::assert_releases_description;
 use junobuild_cdn::storage::errors::{
     JUNO_CDN_STORAGE_ERROR_INVALID_COLLECTION, JUNO_CDN_STORAGE_ERROR_INVALID_RELEASES_PATH,
 };

@@ -56,7 +56,12 @@ type CustomDomain = record {
   version : opt nat64;
   bn_id : opt text;
 };
-type DbConfig = record { max_memory_size : opt ConfigMaxMemorySize };
+type DbConfig = record {
+  updated_at : opt nat64;
+  created_at : opt nat64;
+  version : opt nat64;
+  max_memory_size : opt ConfigMaxMemorySize;
+};
 type DelDoc = record { version : opt nat64 };
 type DelRule = record { version : opt nat64 };
 type DeleteControllersArgs = record { controllers : vec principal };
@@ -193,6 +198,10 @@ type SetControllersArgs = record {
   controller : SetController;
   controllers : vec principal;
 };
+type SetDbConfig = record {
+  version : opt nat64;
+  max_memory_size : opt ConfigMaxMemorySize;
+};
 type SetDoc = record {
   data : blob;
   description : opt text;
@@ -309,7 +318,7 @@ service : () -> {
       vec record { principal; Controller },
     );
   set_custom_domain : (text, opt text) -> ();
-  set_db_config : (DbConfig) -> ();
+  set_db_config : (SetDbConfig) -> (DbConfig);
   set_doc : (text, text, SetDoc) -> (Doc);
   set_many_docs : (vec record { text; text; SetDoc }) -> (
       vec record { text; Doc },

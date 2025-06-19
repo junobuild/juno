@@ -46,3 +46,5 @@ rand = { version = "0.9.1", features = ["os_rng"] }
 junobuild-shared = { path = "./src/libs/shared" }
 junobuild-collections = { path = "./src/libs/collections" }
 junobuild-storage = { path = "./src/libs/storage" }
+junobuild-cdn = { path = "./src/libs/cdn" }
+junobuild-utils = { path = "./src/libs/utils" }

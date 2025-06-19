@@ -735,7 +735,7 @@ interface I18nCollections {
 	public: string;
 	private: string;
 	managed: string;
-	trusted_keys: string;
+	restricted: string;
 	empty: string;
 	empty_private: string;
 	added: string;

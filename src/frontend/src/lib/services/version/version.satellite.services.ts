@@ -131,7 +131,7 @@ const loadSatelliteVersion = async ({
 						release: releases.satellite,
 						...satVersion
 					}
-				: undefined
+				: null
 		});
 
 		return { result: 'loaded' };

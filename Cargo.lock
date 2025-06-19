@@ -923,15 +923,15 @@ checksum = "b1a46d1a171d865aa5f83f92695765caa047a9b4cbae2cbf37dbd613a793fd4c"
 
 [[package]]
 name = "junobuild-cdn"
-version = "0.1.0"
+version = "0.2.0"
 dependencies = [
  "candid",
  "hex",
  "ic-cdk",
  "ic-stable-structures",
- "junobuild-collections 0.1.1",
- "junobuild-shared 0.1.1",
- "junobuild-storage 0.1.1",
+ "junobuild-collections 0.2.0",
+ "junobuild-shared 0.2.0",
+ "junobuild-storage 0.2.0",
  "serde",
  "sha2",
 ]

@@ -747,7 +747,7 @@ describe('Satellite > Upgrade', () => {
 		});
 	});
 
-	describe('v0.0.22 -> v0.0.23', () => {
+	describe('v0.0.22 -> v0.1.0', () => {
 		// For simplicity reason we also use actor v0.0.21 as the API was similar for version.
 		let actor: Actor<SatelliteActor_0_0_21>;
 

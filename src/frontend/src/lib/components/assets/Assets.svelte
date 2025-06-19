@@ -61,6 +61,12 @@
 		});
 	});
 
+	$effect(() => {
+		includeSysCollections;
+
+		resetPage();
+	});
+
 	/**
 	 * Delete data
 	 */

@@ -230,7 +230,7 @@ dependencies = [
 
 [[package]]
 name = "console"
-version = "0.0.14"
+version = "0.1.0"
 dependencies = [
  "candid",
  "ciborium",
@@ -923,7 +923,7 @@ checksum = "b1a46d1a171d865aa5f83f92695765caa047a9b4cbae2cbf37dbd613a793fd4c"
 
 [[package]]
 name = "junobuild-cdn"
-version = "0.0.1"
+version = "0.2.0"
 dependencies = [
  "candid",
  "hex",
@@ -938,7 +938,7 @@ dependencies = [
 
 [[package]]
 name = "junobuild-collections"
-version = "0.1.1"
+version = "0.2.0"
 dependencies = [
  "candid",
  "ic-cdk",
@@ -959,7 +959,7 @@ dependencies = [
 
 [[package]]
 name = "junobuild-satellite"
-version = "0.1.0"
+version = "0.2.0"
 dependencies = [
  "candid",
  "ciborium",
@@ -972,7 +972,7 @@ dependencies = [
  "junobuild-collections",
  "junobuild-shared",
  "junobuild-storage",
- "junobuild-utils 0.1.0 (registry+https://github.com/rust-lang/crates.io-index)",
+ "junobuild-utils",
  "rand",
  "regex",
  "serde",
@@ -982,7 +982,7 @@ dependencies = [
 
 [[package]]
 name = "junobuild-shared"
-version = "0.1.1"
+version = "0.2.0"
 dependencies = [
  "candid",
  "ciborium",
@@ -1000,7 +1000,7 @@ dependencies = [
 
 [[package]]
 name = "junobuild-storage"
-version = "0.1.1"
+version = "0.2.0"
 dependencies = [
  "base64",
  "candid",
@@ -1024,17 +1024,6 @@ dependencies = [
 [[package]]
 name = "junobuild-utils"
 version = "0.1.0"
-dependencies = [
- "candid",
- "serde",
- "serde_json",
-]
-
-[[package]]
-name = "junobuild-utils"
-version = "0.1.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "d15e56c14bfd056a7faed5fc4bf651ad996f55cff7bcda6d1e5182647e64c0e4"
 dependencies = [
  "candid",
  "serde",
@@ -1105,7 +1094,7 @@ dependencies = [
 
 [[package]]
 name = "mission_control"
-version = "0.0.14"
+version = "0.1.0"
 dependencies = [
  "candid",
  "canfund",
@@ -1160,7 +1149,7 @@ dependencies = [
 
 [[package]]
 name = "observatory"
-version = "0.0.9"
+version = "0.1.0"
 dependencies = [
  "candid",
  "ciborium",
@@ -1178,7 +1167,7 @@ dependencies = [
 
 [[package]]
 name = "orbiter"
-version = "0.2.1"
+version = "0.2.2"
 dependencies = [
  "candid",
  "ciborium",
@@ -1189,7 +1178,7 @@ dependencies = [
  "ic-stable-structures",
  "isbot",
  "junobuild-shared",
- "junobuild-utils 0.1.0",
+ "junobuild-utils",
  "lazy_static",
  "regex",
  "serde",
@@ -1418,7 +1407,7 @@ checksum = "f98d2aa92eebf49b69786be48e4477826b256916e84a57ff2a4f21923b48eb4c"
 
 [[package]]
 name = "satellite"
-version = "0.0.22"
+version = "0.1.0"
 dependencies = [
  "candid",
  "ic-cdk",
@@ -1533,7 +1522,7 @@ checksum = "3c5e1a9a646d36c3599cd173a41282daf47c44583ad367b8e6837255952e5c67"
 
 [[package]]
 name = "sputnik"
-version = "0.1.0"
+version = "0.1.1"
 dependencies = [
  "anyhow",
  "candid",

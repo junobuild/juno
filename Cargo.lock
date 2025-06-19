@@ -230,7 +230,7 @@ dependencies = [
 
 [[package]]
 name = "console"
-version = "0.0.14"
+version = "0.1.0"
 dependencies = [
  "candid",
  "ciborium",
@@ -1122,7 +1122,7 @@ dependencies = [
 
 [[package]]
 name = "mission_control"
-version = "0.0.14"
+version = "0.1.0"
 dependencies = [
  "candid",
  "canfund",
@@ -1177,7 +1177,7 @@ dependencies = [
 
 [[package]]
 name = "observatory"
-version = "0.0.9"
+version = "0.1.0"
 dependencies = [
  "candid",
  "ciborium",
@@ -1195,7 +1195,7 @@ dependencies = [
 
 [[package]]
 name = "orbiter"
-version = "0.2.1"
+version = "0.2.2"
 dependencies = [
  "candid",
  "ciborium",
@@ -1435,7 +1435,7 @@ checksum = "f98d2aa92eebf49b69786be48e4477826b256916e84a57ff2a4f21923b48eb4c"
 
 [[package]]
 name = "satellite"
-version = "0.0.22"
+version = "0.1.0"
 dependencies = [
  "candid",
  "ic-cdk",
@@ -1550,7 +1550,7 @@ checksum = "3c5e1a9a646d36c3599cd173a41282daf47c44583ad367b8e6837255952e5c67"
 
 [[package]]
 name = "sputnik"
-version = "0.1.0"
+version = "0.1.1"
 dependencies = [
  "anyhow",
  "candid",

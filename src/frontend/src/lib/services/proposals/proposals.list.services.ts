@@ -58,9 +58,7 @@ export const loadProposals = async ({
 		return { result: 'loaded' };
 	}
 
-	toasts.error({
-		text: get(i18n).errors.load_proposals
-	});
+	toasts.warn(get(i18n).errors.load_proposals);
 
 	return { result: 'error' };
 };

@@ -37,7 +37,8 @@
 			missionControlId,
 			orbiter: $orbiterStore,
 			satellites: $satellitesStore ?? [],
-			identity: $authStore.identity
+			identity: $authStore.identity,
+			skipReload
 		});
 
 		loading = result === 'loaded' ? 'done' : 'error';

@@ -34,7 +34,6 @@ import {
 	controllersInitArgs,
 	downloadSatellite
 } from '../../../utils/setup-tests.utils';
-import { crateVersion } from '../../../utils/version-tests.utils';
 
 describe('Satellite > Upgrade', () => {
 	let pic: PocketIc;
@@ -751,10 +750,12 @@ describe('Satellite > Upgrade', () => {
 		// For simplicity reason we also use actor v0.0.21 as the API was similar for version.
 		let actor: Actor<SatelliteActor_0_0_21>;
 
+		const PREVIOUS_VERSION = '0.0.22';
+
 		beforeEach(async () => {
 			pic = await PocketIc.create(inject('PIC_URL'));
 
-			const destination = await downloadSatellite('0.0.22');
+			const destination = await downloadSatellite(PREVIOUS_VERSION);
 
 			const { actor: c, canisterId: cId } = await pic.setupCanister<SatelliteActor_0_0_21>({
 				idlFactory: idlFactorSatellite_0_0_21,
@@ -769,9 +770,7 @@ describe('Satellite > Upgrade', () => {
 		});
 
 		it('should deprecated build version', async () => {
-			const satelliteVersion = crateVersion('satellite');
-
-			await expect(actor.build_version()).resolves.toEqual(satelliteVersion);
+			await expect(actor.build_version()).resolves.toEqual(PREVIOUS_VERSION);
 
 			await upgrade();
 
@@ -781,9 +780,7 @@ describe('Satellite > Upgrade', () => {
 		});
 
 		it('should deprecate version', async () => {
-			const satelliteVersion = crateVersion('satellite');
-
-			await expect(actor.version()).resolves.toEqual(satelliteVersion);
+			await expect(actor.version()).resolves.toEqual(PREVIOUS_VERSION);
 
 			await upgrade();
 

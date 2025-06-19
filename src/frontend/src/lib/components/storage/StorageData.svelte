@@ -92,7 +92,7 @@
 </script>
 
 <Data onclose={resetData} displayEmpty={!includeSysCollections}>
-	<Assets />
+	<Assets {includeSysCollections} />
 
 	<Asset />
 

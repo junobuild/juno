@@ -1,13 +1,13 @@
 #!/usr/bin/env node
 
 import { IDL } from '@dfinity/candid';
-import { ICManagementCanister } from '@dfinity/ic-management';
-import { fromNullable, uint8ArrayToHexString } from '@dfinity/utils';
+import { UpgradeCodeProgressStep, upgradeModule } from '@junobuild/admin';
 import { fileExists } from '@junobuild/cli-tools';
 import { createHash } from 'crypto';
 import { readFile } from 'fs/promises';
 import { join } from 'node:path';
 import { icAgent, localAgent } from './actor.mjs';
+import { getIdentity } from './console.config.utils.mjs';
 import { targetMainnet } from './utils.mjs';
 
 const INSTALL_MODE_UPGRADE = {
@@ -20,46 +20,72 @@ const loadGzippedWasm = async (destination) => {
 	const buffer = await readFile(destination);
 
 	return {
-		wasm: [...new Uint8Array(buffer)],
+		wasm: buffer,
 		hash: createHash('sha256').update(buffer).digest('hex')
 	};
 };
 
-const fnAgent = targetMainnet() ? icAgent : localAgent;
+const mainnet = targetMainnet();
+
+const fnAgent = mainnet ? icAgent : localAgent;
 const agent = await fnAgent();
+
+const identity = await getIdentity(mainnet);
+
+const onProgress = ({ step, state }) => {
+	switch (step) {
+		case UpgradeCodeProgressStep.AssertingExistingCode:
+			console.log(`Validating: ${state}`);
+			break;
+		case UpgradeCodeProgressStep.StoppingCanister:
+			console.log(`Stopping: ${state}`);
+			break;
+		case UpgradeCodeProgressStep.TakingSnapshot:
+			console.log(`Creating a snapshot: ${state}`);
+			break;
+		case UpgradeCodeProgressStep.UpgradingCode:
+			console.log(`Upgrading: ${state}`);
+			break;
+		case UpgradeCodeProgressStep.RestartingCanister:
+			console.log(`Restarting: ${state}`);
+			break;
+	}
+};
 
 export const upgrade = async ({ sourceFilename, canisterId }) => {
 	const source = join(target, sourceFilename);
 
-	console.log(`About to upgrade module ${canisterId} with source ${source}...`);
+	console.log(`About to upgrade module ${canisterId.toText()} with source ${source}...`);
 
 	if (!(await fileExists(source))) {
 		throw new Error(`${source} not found.`);
 	}
 
-	const EMPTY_ARG = IDL.encode([], []);
-
-	const { installCode, canisterStatus } = ICManagementCanister.create({
-		agent
-	});
+	console.log('');
 
 	const { wasm, hash } = await loadGzippedWasm(source);
 
-	const { module_hash } = await canisterStatus(canisterId);
+	const EMPTY_ARG = IDL.encode([], []);
 
-	const currentHash = fromNullable(module_hash);
+	try {
+		await upgradeModule({
+			actor: {
+				agent,
+				identity
+			},
+			mode: INSTALL_MODE_UPGRADE,
+			canisterId,
+			wasmModule: wasm,
+			arg: new Uint8Array(EMPTY_ARG),
+			takeSnapshot: true,
+			onProgress
+		});
 
-	if (uint8ArrayToHexString(currentHash) === hash) {
-		console.log(`Module hash ${hash} already installed.`);
-		return;
+		console.log('');
+		console.log(`Module upgraded to hash ${hash}.`);
+	} catch (err) {
+		console.log('');
+		console.error('message' in err ? err.message : err);
+		process.exit(1);
 	}
-
-	await installCode({
-		mode: INSTALL_MODE_UPGRADE,
-		canisterId,
-		wasmModule: wasm,
-		arg: new Uint8Array(EMPTY_ARG)
-	});
-
-	console.log(`Module upgraded to hash ${hash}.`);
 };

@@ -75,7 +75,7 @@ export const findWasmAssetForProposal = async ({
 
 		const proposalResult = await getProposal({
 			cdn,
-			proposal_id
+			proposalId: proposal_id
 		});
 
 		const proposal = fromNullable(proposalResult);

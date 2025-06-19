@@ -6,8 +6,8 @@ import {
 	PermissionManaged,
 	PermissionPrivate,
 	PermissionPublic,
-	type PermissionText,
-	PermissionTrustedKeys
+	PermissionRestricted,
+	type PermissionText
 } from '$lib/constants/rules.constants';
 
 export const permissionFromText = (text: PermissionText): Permission => {
@@ -19,7 +19,7 @@ export const permissionFromText = (text: PermissionText): Permission => {
 		case 'Managed':
 			return PermissionManaged;
 		default:
-			return PermissionTrustedKeys;
+			return PermissionRestricted;
 	}
 };
 
@@ -36,7 +36,7 @@ export const permissionToText = (permission: Permission): PermissionText => {
 		return 'Managed';
 	}
 
-	return 'TrustedKeys';
+	return 'Restricted';
 };
 
 export const memoryFromText = (text: MemoryText): Memory => {

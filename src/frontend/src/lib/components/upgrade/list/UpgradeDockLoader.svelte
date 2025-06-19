@@ -18,7 +18,7 @@
 
 	let loading: 'init' | 'in_progress' | 'done' | 'error' = $state('init');
 
-	const loadModulesVersions = async () => {
+	const loadModulesVersions = async (skipReload?: boolean) => {
 		if ($satellitesNotLoaded) {
 			return;
 		}
@@ -54,6 +54,8 @@
 		debounceLoadVersions();
 	});
 </script>
+
+<svelte:window onjunoReloadVersions={async () => await loadModulesVersions(false)} />
 
 {#if ['in_progress', 'init'].includes(loading)}
 	<div class="loading">

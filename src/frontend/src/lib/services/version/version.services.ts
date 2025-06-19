@@ -14,16 +14,18 @@ export const loadVersions = async ({
 	identity,
 	missionControlId,
 	satellites,
-	orbiter
+	orbiter,
+	skipReload = true
 }: {
 	missionControlId: MissionControlId;
 	orbiter: Option<Orbiter>;
 	satellites: Satellite[];
 	identity: OptionIdentity;
+	skipReload?: boolean;
 }): Promise<{ result: 'loaded' | 'error' }> => {
 	const commonParams = {
 		identity,
-		skipReload: true,
+		skipReload,
 		toastError: false
 	};
 

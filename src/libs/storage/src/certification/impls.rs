@@ -90,17 +90,30 @@ impl CertifiedAssetHashes {
     pub fn insert(&mut self, asset: &Asset, config: &StorageConfig) {
         let full_path = asset.key.full_path.clone();
 
+        self.insert_most_important_v1(asset, &full_path);
+        self.insert_all_v2(asset, &full_path, config);
+    }
+    
+    // In v1, only the most important encoding is certified.
+    fn insert_most_important_v1(&mut self, asset: &Asset, full_path: &FullPath) {
         for encoding_type in ENCODING_CERTIFICATION_ORDER.iter().rev() {
             if let Some(encoding) = asset.encodings.get(*encoding_type) {
-                self.insert_v1(&full_path, encoding.sha256);
+                self.insert_v1(full_path, encoding.sha256);
+                return;
+            }
+        }
+    }
+
+    // In v2, all encoding must be certified.
+    fn insert_all_v2(&mut self, asset: &Asset, full_path: &FullPath, config: &StorageConfig) {
+        for encoding_type in ENCODING_CERTIFICATION_ORDER.iter().rev() {
+            if let Some(encoding) = asset.encodings.get(*encoding_type) {
                 self.insert_v2(
                     &full_path,
                     &build_headers(asset, encoding, &encoding_type.to_string(), config),
                     RESPONSE_STATUS_CODE_200,
                     encoding.sha256,
                 );
-
-                return;
             }
         }
     }

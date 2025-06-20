@@ -772,7 +772,7 @@ describe('Satellite > Upgrade', () => {
 		it('should deprecated build version', async () => {
 			await expect(actor.build_version()).resolves.toEqual(PREVIOUS_VERSION);
 
-			await upgrade();
+			await upgradeVersion('0.1.0');
 
 			await expect(async () => await actor.build_version()).rejects.toThrow(
 				new RegExp("Canister has no query method 'build_version'.", 'i')
@@ -782,7 +782,7 @@ describe('Satellite > Upgrade', () => {
 		it('should deprecate version', async () => {
 			await expect(actor.version()).resolves.toEqual(PREVIOUS_VERSION);
 
-			await upgrade();
+			await upgradeVersion('0.1.0');
 
 			await expect(async () => await actor.version()).rejects.toThrow(
 				new RegExp("Canister has no query method 'version'.", 'i')
@@ -790,7 +790,7 @@ describe('Satellite > Upgrade', () => {
 		});
 
 		it('should create collection #_juno/releases', async () => {
-			await upgrade();
+			await upgradeVersion('0.1.0');
 
 			const { get_rule } = actor;
 
@@ -867,7 +867,7 @@ describe('Satellite > Upgrade', () => {
 
 			await assertControllers(actor);
 
-			await upgrade();
+			await upgradeVersion('0.1.0');
 
 			const newActor = pic.createActor<SatelliteActor>(idlFactorSatellite, canisterId);
 			newActor.setIdentity(controller);

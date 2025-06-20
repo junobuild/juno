@@ -1,14 +1,14 @@
 use crate::hooks::random::invoke_on_init_random_seed;
 use crate::memory::internal::STATE;
 use getrandom::Error;
-use ic_cdk::spawn;
+use ic_cdk::futures::spawn_017_compat;
 use ic_cdk_timers::set_timer;
 use junobuild_shared::random::get_random_seed;
 use rand::RngCore;
 use std::time::Duration;
 
 pub fn defer_init_random_seed() {
-    set_timer(Duration::ZERO, || spawn(init_random_seed()));
+    set_timer(Duration::ZERO, || spawn_017_compat(init_random_seed()));
 }
 
 async fn init_random_seed() {

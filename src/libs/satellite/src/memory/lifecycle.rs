@@ -3,7 +3,6 @@ use crate::hooks::lifecycle::{
     invoke_on_init, invoke_on_init_sync, invoke_on_post_upgrade, invoke_on_post_upgrade_sync,
 };
 use crate::memory::internal::{get_memory_for_upgrade, init_stable_state, STATE};
-use crate::memory::upgrade::init_juno_collection;
 use crate::memory::utils::init_storage_heap_state;
 use crate::random::init::defer_init_random_seed;
 use crate::types::state::{HeapState, RuntimeState, State};
@@ -53,9 +52,6 @@ pub fn post_upgrade() {
     let state = from_reader(&*state_bytes)
         .expect("Failed to decode the state of the satellite in post_upgrade hook.");
     STATE.with(|s| *s.borrow_mut() = state);
-
-    // TODO: To be removed
-    init_juno_collection();
 
     defer_init_certified_assets();
     defer_init_random_seed();

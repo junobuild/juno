@@ -96,7 +96,7 @@
 		{canisterId}
 	/>
 {:else if step === 'confirm'}
-	<ConfirmUpgradeVersion {segment} {onclose} oncontinue={() => (step = 'init')} {intro} />
+	<ConfirmUpgradeVersion {segment} {onclose} oncontinue={() => (step = 'init')} />
 {:else}
 	{@render intro()}
 {/if}

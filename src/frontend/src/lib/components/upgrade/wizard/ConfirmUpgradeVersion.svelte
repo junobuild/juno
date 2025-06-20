@@ -1,5 +1,4 @@
 <script lang="ts">
-	import type { Snippet } from 'svelte';
 	import ExternalLink from '$lib/components/ui/ExternalLink.svelte';
 	import Html from '$lib/components/ui/Html.svelte';
 	import Warning from '$lib/components/ui/Warning.svelte';
@@ -8,15 +7,12 @@
 
 	interface Props {
 		segment: 'satellite' | 'mission_control' | 'orbiter';
-		intro?: Snippet;
 		onclose: () => void;
 		oncontinue: () => void;
 	}
 
-	let { segment, intro, onclose, oncontinue }: Props = $props();
+	let { segment, onclose, oncontinue }: Props = $props();
 </script>
-
-{@render intro?.()}
 
 <Warning --warning-icon-align-self="flex-start">
 	<div>

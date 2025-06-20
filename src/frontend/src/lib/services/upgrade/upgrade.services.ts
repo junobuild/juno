@@ -64,6 +64,8 @@ export const upgrade = async ({
 			});
 		}
 
+		// TODO: we can replace junoReloadVersions and use the services instead. It would make reloading the version more accurate
+		// and a bit more performant.
 		emit({ message: 'junoReloadVersions' });
 
 		// Small delay to ensure junoReloadVersions is emitted

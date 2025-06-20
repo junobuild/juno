@@ -22,6 +22,12 @@
 	import { emit } from '$lib/utils/events.utils';
 	import { i18nFormat } from '$lib/utils/i18n.utils';
 
+	interface Props {
+		includeSysCollections: boolean;
+	}
+
+	let { includeSysCollections }: Props = $props();
+
 	const { store, hasAnyRules }: RulesContext = getContext<RulesContext>(RULES_CONTEXT_KEY);
 
 	let collection = $derived($store.rule?.[0]);
@@ -53,6 +59,12 @@
 		untrack(() => {
 			load();
 		});
+	});
+
+	$effect(() => {
+		includeSysCollections;
+
+		resetPage();
 	});
 
 	/**
@@ -120,7 +132,7 @@
 	</DataCollectionHeader>
 </div>
 
-{#if $hasAnyRules}
+{#if $hasAnyRules || includeSysCollections}
 	<div
 		class="data"
 		class:data-selected={nonNullish($assetsStore?.data)}

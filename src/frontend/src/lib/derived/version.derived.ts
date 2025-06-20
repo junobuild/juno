@@ -1,6 +1,7 @@
 import { satellitesStore } from '$lib/derived/satellites.derived';
 import { versionStore } from '$lib/stores/version.store';
 import type { SatelliteIdText } from '$lib/types/satellite';
+import type { Option } from '$lib/types/utils';
 import type { SatelliteVersionMetadataUi, VersionMetadataUi } from '$lib/types/version';
 import { isNullish, nonNullish } from '@dfinity/utils';
 import { compare } from 'semver';
@@ -42,7 +43,7 @@ export const orbiterVersion: Readable<VersionMetadataUi | undefined> = derived(
 
 export const satellitesVersion = derived([versionStore], ([$versionStore]) =>
 	Object.entries($versionStore.satellites).reduce<
-		Record<SatelliteIdText, SatelliteVersionMetadataUi | undefined>
+		Record<SatelliteIdText, Option<SatelliteVersionMetadataUi>>
 	>(
 		(acc, [key, value]) => ({
 			...acc,
@@ -51,7 +52,7 @@ export const satellitesVersion = derived([versionStore], ([$versionStore]) =>
 						...value,
 						warning: compare(value.current, value.release) < 0
 					}
-				: undefined
+				: value
 		}),
 		{}
 	)

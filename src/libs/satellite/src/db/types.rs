@@ -85,6 +85,7 @@ pub mod state {
 pub mod config {
     use candid::{CandidType, Deserialize};
     use junobuild_shared::types::config::ConfigMaxMemorySize;
+    use junobuild_shared::types::state::{Timestamp, Version};
     use serde::Serialize;
 
     pub type DbConfigMaxMemorySize = ConfigMaxMemorySize;
@@ -92,10 +93,14 @@ pub mod config {
     #[derive(Default, CandidType, Serialize, Deserialize, Clone)]
     pub struct DbConfig {
         pub max_memory_size: Option<DbConfigMaxMemorySize>,
+        pub version: Option<Version>,
+        pub created_at: Option<Timestamp>,
+        pub updated_at: Option<Timestamp>,
     }
 }
 
 pub mod interface {
+    use crate::db::types::config::DbConfigMaxMemorySize;
     use candid::CandidType;
     use junobuild_shared::types::core::Blob;
     use junobuild_shared::types::state::Version;
@@ -128,6 +133,19 @@ pub mod interface {
     /// `DelDoc` is used to provide deletion parameters when removing a document.
     #[derive(Default, CandidType, Serialize, Deserialize, Clone)]
     pub struct DelDoc {
+        pub version: Option<Version>,
+    }
+
+    /// Parameters for setting the datastore configuration.
+    ///
+    /// This struct includes the following fields:
+    /// - `max_memory_size`: An optional `DbConfigMaxMemorySize` representing the maximum memory size allowed for the datastore.
+    /// - `version`: An optional `Version` used for version control to ensure update consistency. If specified, it must match the current configuration version to apply the update.
+    ///
+    /// `SetDbConfig` ensures that configuration updates are applied in a consistent and controlled manner.
+    #[derive(Default, CandidType, Serialize, Deserialize, Clone)]
+    pub struct SetDbConfig {
+        pub max_memory_size: Option<DbConfigMaxMemorySize>,
         pub version: Option<Version>,
     }
 }

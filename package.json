@@ -56,7 +56,7 @@
 		"build:test-satellite": "scripts/cargo.sh --test_satellite",
 		"build:test-sputnik": "scripts/cargo.sh --test_sputnik",
 		"build:modules": "npm run build:console && npm run build:observatory && npm run build:satellite && npm run build:mission-control && npm run build:orbiter",
-		"emulator": "docker compose up"
+		"emulator": "./scripts/emulator.sh"
 	},
 	"devDependencies": {
 		"@dfinity/eslint-config-oisy-wallet": "^0.1.13",

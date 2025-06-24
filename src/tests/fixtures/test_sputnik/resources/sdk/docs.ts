@@ -81,6 +81,7 @@ export const testSdkGetDocStore = async ({
 		collection
 	});
 
+	assertNonNullish(doc);
 	assertNonNullish(doc?.data);
 
 	const readData = decodeDocData<SputnikMock>(doc.data);

@@ -262,7 +262,7 @@
 		"ready": "Your satellite is ready!",
 		"initializing": "Initializing your new satellite...",
 		"start": "Create a satellite",
-		"description": "A satellite is a Web3 container for your project. It provides features like a simple key pair store, file storage, hosting, and authentication.",
+		"description": "A satellite is a container for your project. It provides features like a simple key pair store, file storage, hosting, and authentication.",
 		"name": "Name",
 		"satellite_name": "Satellite name",
 		"enter_name": "Enter a name for your satellite",

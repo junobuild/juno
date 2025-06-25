@@ -56,11 +56,6 @@ export const PostMessageDataResponseCanistersMonitoringSchema = z.object({
 	canisters: z.array(z.custom<CanisterSyncMonitoring>()).optional()
 });
 
-export const PostMessageDataResponseCanisterSchema = z.union([
-	PostMessageDataResponseCanistersSyncDataSchema,
-	PostMessageDataResponseCanistersMonitoringSchema
-]);
-
 export const PostMessageDataResponseHostingSchema = z.object({
 	registrationState: z.custom<CustomDomainRegistrationState>().nullable().optional()
 });
@@ -106,8 +101,6 @@ export const PostMessageRequestSchema = z.object({
 	msg: PostMessageRequestMsgSchema,
 	data: PostMessageDataRequestDataSchema
 });
-
-export const PostMessageDataResponseSchema = z.object({}).strict();
 
 export const inferPostMessageSchema = <T extends z.ZodTypeAny>(dataSchema: T) =>
 	z.object({

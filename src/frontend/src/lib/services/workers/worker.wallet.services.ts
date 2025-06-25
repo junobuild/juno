@@ -6,11 +6,10 @@ import {
 } from '$lib/services/wallet/wallet.loader.services';
 import type { MissionControlId } from '$lib/types/mission-control';
 import type {
-	PostMessage,
 	PostMessageDataResponseError,
 	PostMessageDataResponseExchange,
 	PostMessageDataResponseWallet,
-	PostMessageDataResponseWalletCleanUp
+	PostMessageDataResponseWalletCleanUp, PostMessages
 } from '$lib/types/post-message';
 
 export interface WalletWorker {
@@ -23,16 +22,7 @@ export const initWalletWorker = async (): Promise<WalletWorker> => {
 	const WalletWorker = await import('$lib/workers/workers?worker');
 	const worker: Worker = new WalletWorker.default();
 
-	worker.onmessage = ({
-		data
-	}: MessageEvent<
-		PostMessage<
-			| PostMessageDataResponseWallet
-			| PostMessageDataResponseWalletCleanUp
-			| PostMessageDataResponseError
-			| PostMessageDataResponseExchange
-		>
-	>) => {
+	worker.onmessage = ({ data }: MessageEvent<PostMessages>) => {
 		const { msg } = data;
 
 		switch (msg) {

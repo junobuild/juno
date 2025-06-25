@@ -1,22 +1,20 @@
 import { idleSignOut } from '$lib/services/auth/auth.services';
 import { authRemainingTimeStore, type AuthStoreData } from '$lib/stores/auth.store';
-import type { PostMessage, PostMessageDataResponseAuth } from '$lib/types/post-message';
+import type { PostMessageDataResponseAuth, PostMessages } from '$lib/types/post-message';
 
 export const initAuthWorker = async () => {
 	const AuthWorker = await import('$lib/workers/workers?worker');
 	const authWorker: Worker = new AuthWorker.default();
 
-	authWorker.onmessage = async ({
-		data
-	}: MessageEvent<PostMessage<PostMessageDataResponseAuth>>) => {
-		const { msg, data: value } = data;
+	authWorker.onmessage = async ({ data }: MessageEvent<PostMessages>) => {
+		const { msg } = data;
 
 		switch (msg) {
 			case 'signOutIdleTimer':
 				await idleSignOut();
 				return;
 			case 'delegationRemainingTime':
-				authRemainingTimeStore.set(value?.authRemainingTime);
+				authRemainingTimeStore.set((data.data as PostMessageDataResponseAuth)?.authRemainingTime);
 				return;
 		}
 	};

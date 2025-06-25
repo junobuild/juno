@@ -59,8 +59,6 @@ const loadMissionControlVersion = async ({
 				})
 			]);
 
-			console.log("DEBUG---->", junoPkg);
-
 			if (junoPkg.status === 'fulfilled' && nonNullish(junoPkg.value)) {
 				const pkg = junoPkg.value;
 				const { version } = pkg;

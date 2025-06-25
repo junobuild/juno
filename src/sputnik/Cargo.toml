@@ -34,5 +34,8 @@ junobuild-shared = { path = "../libs/shared" }
 junobuild-macros = { path = "../libs/macros" }
 junobuild-storage = { path = "../libs/storage" }
 ic-wasi-polyfill = "0.8.1"
-rquickjs = { git = "https://github.com/peterpeterparker/rquickjs", branch = "patch-v0.9.0", features = ["macro", "futures"] }
+rquickjs = { git = "https://github.com/peterpeterparker/rquickjs", branch = "patch-v0.9.0", features = [
+	"macro",
+	"futures"
+] }
 anyhow = "1.0.79"

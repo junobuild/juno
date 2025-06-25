@@ -15,8 +15,7 @@ import type {
 	PostMessageDataResponseWalletSchema,
 	PostMessageRequestSchema
 } from '$lib/schema/post-message.schema';
-import type * as z from 'zod';
-import type { ZodType } from 'zod';
+import type * as z from 'zod/v4';
 
 // Request
 
@@ -61,5 +60,5 @@ export type PostMessageDataResponseWalletCleanUp = z.infer<
 export type PostMessageDataResponseError = z.infer<typeof PostMessageDataResponseErrorSchema>;
 
 export type PostMessage<T extends PostMessageDataRequest | PostMessageDataResponse> = z.infer<
-	ReturnType<typeof inferPostMessageSchema<ZodType<T>>>
+	ReturnType<typeof inferPostMessageSchema<z.ZodType<T>>>
 >;

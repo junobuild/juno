@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 
 CONTAINER_NAME="juno-console"
+VOLUME="juno_console"
 
 if docker ps -a -q -f name="^/${CONTAINER_NAME}$" | grep -q .; then
   if [ "$(docker inspect -f '{{.State.Running}}' "$CONTAINER_NAME")" = "true" ]; then
@@ -16,7 +17,7 @@ else
     --name "$CONTAINER_NAME" \
     -p 5987:5987 \
     -p 5999:5999 \
-    -v juno_console:/juno/.juno \
+    -v "$VOLUME":/juno/.juno \
     -v "$(pwd)/target/deploy:/juno/target/deploy" \
     junobuild/console:latest
 fi

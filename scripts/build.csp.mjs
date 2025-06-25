@@ -15,7 +15,7 @@ const buildCsp = (htmlFile) => {
 	// 4. remove the content-security-policy tag injected by SvelteKit
 	const indexHTMLNoCSP = removeDefaultCspTag(indexHTMLWithPreloaders);
 	// 5. We calculate the sha256 values for these scripts and update the CSP
-	const indexHTMLWithCSP = updateCSP(htmlFile, indexHTMLNoCSP);
+	const indexHTMLWithCSP = updateCSP({ htmlFile, indexHtml: indexHTMLNoCSP });
 
 	writeFileSync(htmlFile, indexHTMLWithCSP);
 };
@@ -140,8 +140,7 @@ const extractStartScript = (htmlFile) => {
  * 1. svelte uses inline style for animation (scale, fly, fade, etc.)
  *    source: https://github.com/sveltejs/svelte/issues/6662
  */
-
-const updateCSP = (htmlFile, indexHtml) => {
+const updateCSP = ({ htmlFile, indexHtml }) => {
 	const sw = /<script[\s\S]*?>([\s\S]*?)<\/script>/gm;
 
 	const indexHashes = [];

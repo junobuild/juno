@@ -1,5 +1,5 @@
 import type { CustomDomain } from '$declarations/satellite/satellite.did';
-import type { PostMessage, PostMessageDataResponseHosting } from '$lib/types/post-message';
+import type { PostMessageDataResponseHosting, PostMessages } from '$lib/types/post-message';
 
 export type HostingCallback = (data: PostMessageDataResponseHosting) => void;
 
@@ -9,9 +9,7 @@ export const initHostingWorker = async () => {
 
 	let hostingCallback: HostingCallback | undefined;
 
-	hostingWorker.onmessage = ({
-		data
-	}: MessageEvent<PostMessage<PostMessageDataResponseHosting>>) => {
+	hostingWorker.onmessage = ({ data }: MessageEvent<PostMessages>) => {
 		const { msg } = data;
 
 		switch (msg) {

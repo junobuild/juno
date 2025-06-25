@@ -5,10 +5,9 @@ import {
 import type { CanisterSegment } from '$lib/types/canister';
 import type { MissionControlId } from '$lib/types/mission-control';
 import type {
-	PostMessage,
-	PostMessageDataResponseCanister,
 	PostMessageDataResponseCanisterMonitoring,
-	PostMessageDataResponseCanistersMonitoring
+	PostMessageDataResponseCanistersMonitoring,
+	PostMessages
 } from '$lib/types/post-message';
 
 export interface MonitoringWorker {
@@ -28,9 +27,7 @@ export const initMonitoringWorker = async (): Promise<MonitoringWorker> => {
 	const MonitoringWorker = await import('$lib/workers/workers?worker');
 	const monitoringWorker: Worker = new MonitoringWorker.default();
 
-	monitoringWorker.onmessage = ({
-		data
-	}: MessageEvent<PostMessage<PostMessageDataResponseCanister>>) => {
+	monitoringWorker.onmessage = ({ data }: MessageEvent<PostMessages>) => {
 		const { msg } = data;
 
 		switch (msg) {

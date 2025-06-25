@@ -3,20 +3,17 @@ import type {
 	PostMessageDataRequestDataSchema,
 	PostMessageDataResponseAuthSchema,
 	PostMessageDataResponseCanisterMonitoringSchema,
-	PostMessageDataResponseCanisterSchema,
 	PostMessageDataResponseCanistersMonitoringSchema,
 	PostMessageDataResponseCanistersSyncDataSchema,
 	PostMessageDataResponseCanisterSyncDataSchema,
 	PostMessageDataResponseErrorSchema,
 	PostMessageDataResponseExchangeSchema,
 	PostMessageDataResponseHostingSchema,
-	PostMessageDataResponseSchema,
 	PostMessageDataResponseWalletCleanUpSchema,
 	PostMessageDataResponseWalletSchema,
 	PostMessageRequestSchema
 } from '$lib/schema/post-message.schema';
-import type * as z from 'zod';
-import type { ZodType } from 'zod';
+import type * as z from 'zod/v4';
 
 // Request
 
@@ -25,8 +22,6 @@ export type PostMessageDataRequest = z.infer<typeof PostMessageDataRequestDataSc
 export type PostMessageRequest = z.infer<typeof PostMessageRequestSchema>;
 
 // Response
-
-export type PostMessageDataResponse = z.infer<typeof PostMessageDataResponseSchema>;
 
 export type PostMessageDataResponseAuth = z.infer<typeof PostMessageDataResponseAuthSchema>;
 
@@ -46,8 +41,6 @@ export type PostMessageDataResponseCanistersMonitoring = z.infer<
 	typeof PostMessageDataResponseCanistersMonitoringSchema
 >;
 
-export type PostMessageDataResponseCanister = z.infer<typeof PostMessageDataResponseCanisterSchema>;
-
 export type PostMessageDataResponseHosting = z.infer<typeof PostMessageDataResponseHostingSchema>;
 
 export type PostMessageDataResponseExchange = z.infer<typeof PostMessageDataResponseExchangeSchema>;
@@ -60,6 +53,21 @@ export type PostMessageDataResponseWalletCleanUp = z.infer<
 
 export type PostMessageDataResponseError = z.infer<typeof PostMessageDataResponseErrorSchema>;
 
-export type PostMessage<T extends PostMessageDataRequest | PostMessageDataResponse> = z.infer<
-	ReturnType<typeof inferPostMessageSchema<ZodType<T>>>
+type PostMessageWallet = z.infer<
+	ReturnType<typeof inferPostMessageSchema<typeof PostMessageDataResponseWalletSchema>>
 >;
+type PostMessageWalletCleanUp = z.infer<
+	ReturnType<typeof inferPostMessageSchema<typeof PostMessageDataResponseWalletCleanUpSchema>>
+>;
+type PostMessageError = z.infer<
+	ReturnType<typeof inferPostMessageSchema<typeof PostMessageDataResponseErrorSchema>>
+>;
+type PostMessageExchange = z.infer<
+	ReturnType<typeof inferPostMessageSchema<typeof PostMessageDataResponseExchangeSchema>>
+>;
+
+export type PostMessages =
+	| PostMessageWallet
+	| PostMessageWalletCleanUp
+	| PostMessageError
+	| PostMessageExchange;

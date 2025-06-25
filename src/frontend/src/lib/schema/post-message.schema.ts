@@ -8,7 +8,7 @@ import type {
 } from '$lib/types/canister';
 import type { CustomDomainRegistrationState } from '$lib/types/custom-domain';
 import type { CertifiedData } from '$lib/types/store';
-import * as z from 'zod';
+import * as z from 'zod/v4';
 
 export const PostMessageDataRequestDataSchema = z.object({
 	segments: z.array(z.custom<CanisterSegment>()).optional(),
@@ -56,11 +56,6 @@ export const PostMessageDataResponseCanistersMonitoringSchema = z.object({
 	canisters: z.array(z.custom<CanisterSyncMonitoring>()).optional()
 });
 
-export const PostMessageDataResponseCanisterSchema = z.union([
-	PostMessageDataResponseCanistersSyncDataSchema,
-	PostMessageDataResponseCanistersMonitoringSchema
-]);
-
 export const PostMessageDataResponseHostingSchema = z.object({
 	registrationState: z.custom<CustomDomainRegistrationState>().nullable().optional()
 });
@@ -106,8 +101,6 @@ export const PostMessageRequestSchema = z.object({
 	msg: PostMessageRequestMsgSchema,
 	data: PostMessageDataRequestDataSchema
 });
-
-export const PostMessageDataResponseSchema = z.object({}).strict();
 
 export const inferPostMessageSchema = <T extends z.ZodTypeAny>(dataSchema: T) =>
 	z.object({

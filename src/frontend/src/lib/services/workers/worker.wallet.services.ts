@@ -9,7 +9,8 @@ import type {
 	PostMessageDataResponseError,
 	PostMessageDataResponseExchange,
 	PostMessageDataResponseWallet,
-	PostMessageDataResponseWalletCleanUp, PostMessages
+	PostMessageDataResponseWalletCleanUp,
+	PostMessages
 } from '$lib/types/post-message';
 
 export interface WalletWorker {

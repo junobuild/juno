@@ -48,7 +48,7 @@ fn decode(args: Args<'_>) -> Result<Value<'_>> {
         .as_array_buffer()
         .ok_or_else(|| anyhow!("buffer must be an ArrayBuffer"))?
         .as_bytes()
-        .ok_or_else(|| anyhow!("Couldn't retrive &[u8] from buffer"))?;
+        .ok_or_else(|| anyhow!("Couldn't retrieve &[u8] from buffer"))?;
 
     let byte_offset = args[1]
         .as_number()

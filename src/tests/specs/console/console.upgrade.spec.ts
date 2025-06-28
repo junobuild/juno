@@ -259,7 +259,7 @@ describe('Console > Upgrade', () => {
 
 		describe('Clear stable memory of proposals', () => {
 			it(
-				'should still list mission controls even if we alterate other memory IDs',
+				'should still list mission controls even if we alternate other memory IDs',
 				{
 					timeout: 120000
 				},

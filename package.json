@@ -62,7 +62,7 @@
 		"@dfinity/eslint-config-oisy-wallet": "^0.1.13",
 		"@dfinity/pic": "^0.13.1",
 		"@dfinity/response-verification": "^3.0.3",
-		"@junobuild/cli-tools": "^0.2.3-next-2025-07-03.1",
+		"@junobuild/cli-tools": "^0.2.3-next-2025-07-03.6",
 		"@junobuild/config": "^0.3.1-next-2025-07-03",
 		"@junobuild/config-loader": "^0.2.1-next-2025-07-03",
 		"@junobuild/errors": "^0.1.0-next-2025-07-03",

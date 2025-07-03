@@ -4,10 +4,9 @@ import {
 } from '$lib/services/canisters.loader.services';
 import type { CanisterSegment } from '$lib/types/canister';
 import type {
-	PostMessage,
-	PostMessageDataResponseCanister,
 	PostMessageDataResponseCanistersSyncData,
-	PostMessageDataResponseCanisterSyncData
+	PostMessageDataResponseCanisterSyncData,
+	PostMessages
 } from '$lib/types/post-message';
 
 export interface CyclesWorker {
@@ -20,9 +19,7 @@ export const initCyclesWorker = async (): Promise<CyclesWorker> => {
 	const CyclesWorker = await import('$lib/workers/workers?worker');
 	const cyclesWorker: Worker = new CyclesWorker.default();
 
-	cyclesWorker.onmessage = ({
-		data
-	}: MessageEvent<PostMessage<PostMessageDataResponseCanister>>) => {
+	cyclesWorker.onmessage = ({ data }: MessageEvent<PostMessages>) => {
 		const { msg } = data;
 
 		switch (msg) {

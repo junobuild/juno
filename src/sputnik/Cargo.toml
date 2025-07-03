@@ -33,7 +33,7 @@ junobuild-collections = { path = "../libs/collections" }
 junobuild-shared = { path = "../libs/shared" }
 junobuild-macros = { path = "../libs/macros" }
 junobuild-storage = { path = "../libs/storage" }
-ic-wasi-polyfill = "0.8.1"
+ic-wasi-polyfill = "0.8.2"
 rquickjs = { git = "https://github.com/peterpeterparker/rquickjs", branch = "patch-v0.9.0", features = [
 	"macro",
 	"futures"

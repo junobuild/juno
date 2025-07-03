@@ -53,7 +53,7 @@ install_tool() {
 
 install_tool ic-wasm 0.8.5
 install_tool wasi2ic 0.2.15
-install_tool candid-extractor 0.1.4
+install_tool candid-extractor 0.1.6
 install_tool junobuild-didc 0.1.0
 
 # make sure the packages are actually installed (rustup waits for the first invoke to lazyload)

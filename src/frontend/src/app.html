@@ -65,7 +65,7 @@
 			try {
 				const lang = localStorage.lang;
 
-                // Technically we could assert that lang is a known lang but, for simplicity reasons we skip this assertion for the moment.
+				// Technically we could assert that lang is a known lang but, for simplicity reasons we skip this assertion for the moment.
 				document.documentElement.setAttribute(
 					'lang',
 					lang !== undefined && lang !== 'undefined' ? lang : 'en'

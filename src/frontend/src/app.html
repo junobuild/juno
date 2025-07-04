@@ -56,7 +56,22 @@
 					localStorage.theme ?? (darkMode ? 'dark' : 'light')
 				);
 			} catch (err) {
-				// We ignore the error until we can extra proxy/signin to auth.papy.rs
+				// We ignore the error. Does not really maters that much, we just use the default.
+			}
+		</script>
+
+		<!-- Init lang attribute as fast as possible -->
+		<script lang-loader>
+			try {
+				const lang = localStorage.lang;
+
+				// Technically we could assert that lang is a known lang but, for simplicity reasons we skip this assertion for the moment.
+				document.documentElement.setAttribute(
+					'lang',
+					lang !== undefined && lang !== 'undefined' ? lang : 'en'
+				);
+			} catch (err) {
+				// We ignore the error. The console will default to English.
 			}
 		</script>
 

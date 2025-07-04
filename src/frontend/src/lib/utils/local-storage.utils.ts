@@ -26,7 +26,8 @@ export const setLocalStorageItem = ({ key, value }: { key: string; value: string
 export const getLocalStorageLang = (): Languages => {
 	try {
 		const { lang }: Storage = browser ? localStorage : ({ lang: 'en' } as unknown as Storage);
-		return lang;
+		// Backwards compatibility as we incorrectly set undefined string as value for lang in the storage.
+		return nonNullish(lang) && lang !== 'undefined' ? lang : 'en';
 	} catch (err: unknown) {
 		// We use the local storage for the operational part of the app but, not crucial
 		console.error(err);

@@ -1,4 +1,6 @@
 import { i18n } from '$lib/stores/i18n.store';
+import type { Languages } from '$lib/types/languages';
+import { setLocalStorageItem } from '$lib/utils/local-storage.utils';
 import { keyOf } from '$lib/utils/utils';
 import { get } from 'svelte/store';
 
@@ -28,3 +30,11 @@ export const i18nCapitalize = (text: string): string => {
 
 export const groupLabel = (labelKey: string): string | undefined =>
 	i18nText({ i18n: get(i18n), labelKey });
+
+export const switchLanguage = (lang: Languages) => {
+	const { documentElement } = document;
+
+	documentElement.setAttribute('lang', lang);
+
+	setLocalStorageItem({ key: 'lang', value: lang });
+};

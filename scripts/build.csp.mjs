@@ -15,7 +15,7 @@ const buildCsp = (htmlFile) => {
 	// 4. remove the content-security-policy tag injected by SvelteKit
 	const indexHTMLNoCSP = removeDefaultCspTag(indexHTMLWithPreloaders);
 	// 5. We calculate the sha256 values for these scripts and update the CSP
-	const indexHTMLWithCSP = updateCSP({ htmlFile, indexHtml: indexHTMLNoCSP });
+	const indexHTMLWithCSP = updateCSP(indexHTMLNoCSP);
 
 	writeFileSync(htmlFile, indexHTMLWithCSP);
 };
@@ -140,7 +140,7 @@ const extractStartScript = (htmlFile) => {
  * 1. svelte uses inline style for animation (scale, fly, fade, etc.)
  *    source: https://github.com/sveltejs/svelte/issues/6662
  */
-const updateCSP = ({ htmlFile, indexHtml }) => {
+const updateCSP = (indexHtml) => {
 	const sw = /<script[\s\S]*?>([\s\S]*?)<\/script>/gm;
 
 	const indexHashes = [];
@@ -152,20 +152,19 @@ const updateCSP = ({ htmlFile, indexHtml }) => {
 		indexHashes.push(`'sha256-${createHash('sha256').update(content).digest('base64')}'`);
 	}
 
-	const SATELLITE_CDN_ROUTES = ['/functions/index.html', '/upgrade-dock/index.html'];
-	const CDN = `https://cdn.juno.build${SATELLITE_CDN_ROUTES.some((route) => htmlFile.includes(route)) ? ' https://*.icp0.io' : ''}`;
+	const JUNO_CDN = 'https://cdn.juno.build';
 
 	const csp = `<meta
         http-equiv="Content-Security-Policy"
         content="default-src 'none';
-        connect-src 'self' https://ic0.app https://icp0.io https://icp-api.io ${CDN};
+        connect-src 'self' https://ic0.app https://icp0.io https://icp-api.io https://*.icp0.io ${JUNO_CDN};
         img-src 'self' data:;
         child-src 'self';
         manifest-src 'self';
-        script-src 'unsafe-eval' 'unsafe-inline' 'strict-dynamic' ${indexHashes.join(' ')} ${CDN};
+        script-src 'unsafe-eval' 'unsafe-inline' 'strict-dynamic' ${indexHashes.join(' ')} ${JUNO_CDN};
         base-uri 'self';
         form-action 'none';
-        style-src 'self' 'unsafe-inline' ${CDN};
+        style-src 'self' 'unsafe-inline' ${JUNO_CDN};
         font-src 'self';
         upgrade-insecure-requests;"
     />`;

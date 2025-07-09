@@ -27,7 +27,7 @@
 	let step: 'init' | 'in_progress' | 'ready' | 'error' = $state('init');
 
 	let controllerId = $state('');
-	let scope: SetControllerScope = $state('submit');
+	let scope = $state<SetControllerScope>('write');
 	let identity: string | undefined = $state();
 
 	const initController = (): string | undefined => {

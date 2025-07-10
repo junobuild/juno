@@ -1194,7 +1194,7 @@ describe('Satellite > Storage', () => {
 		describe.each([
 			{
 				memory: { Heap: null },
-				expectMemory: 3_997_696n,
+				expectMemory: 4_063_232n,
 				allowedMemory: maxHeapMemorySize,
 				preUploadCount: 13
 			},

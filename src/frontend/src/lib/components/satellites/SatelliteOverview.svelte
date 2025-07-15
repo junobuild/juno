@@ -10,9 +10,9 @@
 	import Value from '$lib/components/ui/Value.svelte';
 	import { i18n } from '$lib/stores/i18n.store';
 	import type { SatelliteIdText } from '$lib/types/satellite';
-	import CanisterSyncData from "$lib/components/canister/CanisterSyncData.svelte";
-	import type {CanisterSyncData as CanisterSyncDataType} from "$lib/types/canister";
-	import SatelliteMonitoringActions from "$lib/components/satellites/SatelliteMonitoringActions.svelte";
+	import CanisterSyncData from '$lib/components/canister/CanisterSyncData.svelte';
+	import type { CanisterSyncData as CanisterSyncDataType } from '$lib/types/canister';
+	import SatelliteMonitoringActions from '$lib/components/satellites/SatelliteMonitoringActions.svelte';
 
 	interface Props {
 		satellite: Satellite;

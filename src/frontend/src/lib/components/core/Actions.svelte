@@ -14,10 +14,8 @@
 	let button: HTMLButtonElement | undefined = $state();
 </script>
 
-<button
-	bind:this={button}
-	onclick={() => (visible = true)}
-	aria-label={$i18n.core.more}><IconMore size="18px" /></button
+<button bind:this={button} onclick={() => (visible = true)} aria-label={$i18n.core.more}
+	><IconMore size="18px" /></button
 >
 
 <Popover bind:visible anchor={button}>

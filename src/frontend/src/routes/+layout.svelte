@@ -49,7 +49,7 @@
 
 	run(() => {
 		// @ts-expect-error TODO: to be migrated to Svelte v5
-		worker, $authStore, (() => worker?.syncAuthIdle($authStore))();
+		(worker, $authStore, (() => worker?.syncAuthIdle($authStore))());
 	});
 
 	const debounceSetNavTitle = debounce(() => (document.title = $layoutNavigationTitle));

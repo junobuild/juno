@@ -8,9 +8,9 @@
 	import Value from '$lib/components/ui/Value.svelte';
 	import { i18n } from '$lib/stores/i18n.store';
 	import { versionStore } from '$lib/stores/version.store';
-	import CanisterSyncData from "$lib/components/canister/CanisterSyncData.svelte";
-	import type {CanisterSyncData as CanisterSyncDataType} from "$lib/types/canister";
-	import OrbiterMonitoringActions from "$lib/components/orbiter/OrbiterMonitoringActions.svelte";
+	import CanisterSyncData from '$lib/components/canister/CanisterSyncData.svelte';
+	import type { CanisterSyncData as CanisterSyncDataType } from '$lib/types/canister';
+	import OrbiterMonitoringActions from '$lib/components/orbiter/OrbiterMonitoringActions.svelte';
 
 	interface Props {
 		orbiter: Orbiter;

@@ -3,8 +3,6 @@
 	import { onMount } from 'svelte';
 	import { fade } from 'svelte/transition';
 	import type { Satellite } from '$declarations/mission_control/mission_control.did';
-	import ExternalLink from '$lib/components/ui/ExternalLink.svelte';
-	import Value from '$lib/components/ui/Value.svelte';
 	import {
 		satelliteCustomDomain,
 		satelliteCustomDomainsLoaded

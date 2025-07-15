@@ -34,7 +34,7 @@
 
 	run(() => {
 		// @ts-expect-error TODO: to be migrated to Svelte v5
-		$versionStore, (async () => await load())();
+		($versionStore, (async () => await load())());
 	});
 
 	let enabledSatellites = $derived(

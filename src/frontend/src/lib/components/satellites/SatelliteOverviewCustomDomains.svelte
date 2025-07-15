@@ -1,13 +1,12 @@
 <script lang="ts">
-	import { nonNullish } from '@dfinity/utils';
 	import { onMount } from 'svelte';
 	import { fade } from 'svelte/transition';
 	import type { Satellite } from '$declarations/mission_control/mission_control.did';
 	import ExternalLink from '$lib/components/ui/ExternalLink.svelte';
 	import Value from '$lib/components/ui/Value.svelte';
 	import {
-		satelliteCustomDomain,
-		satelliteCustomDomainsLoaded
+		satelliteCustomDomainsLoaded,
+		sortedSatelliteCustomDomains
 	} from '$lib/derived/satellite-custom-domains.derived';
 	import { listCustomDomains } from '$lib/services/custom-domain.services';
 	import { i18n } from '$lib/stores/i18n.store';
@@ -28,11 +27,15 @@
 
 	let defaultUrl = $derived(satelliteUrl(satellite.satellite_id.toText()));
 
-	let href = $derived(
-		nonNullish($satelliteCustomDomain) ? `https://${$satelliteCustomDomain}` : defaultUrl
-	);
-
-	let host = $derived($satelliteCustomDomain ?? $i18n.hosting.default_url);
+	let urls = $derived<{ href: string; host: string }[]>([
+		...$sortedSatelliteCustomDomains.map(([customDomain, _]) => ({
+			href: `https://${customDomain}`,
+			host: customDomain
+		})),
+		...($sortedSatelliteCustomDomains.length === 0
+			? [{ href: defaultUrl, host: URL.parse(defaultUrl)?.host ?? $i18n.hosting.default_url }]
+			: [])
+	]);
 </script>
 
 <div>
@@ -40,12 +43,12 @@
 		{#snippet label()}
 			{$i18n.hosting.title}
 		{/snippet}
-		{#if $satelliteCustomDomainsLoaded && nonNullish(host)}
-			<span in:fade
-				><ExternalLink {href} ariaLabel={$i18n.hosting.custom_domain}
-					><span class="host">{host}</span></ExternalLink
-				></span
-			>
+		{#if $satelliteCustomDomainsLoaded}
+			<div in:fade>
+				{#each urls as { href, host }, index (index)}
+					<ExternalLink {href}><span class="host">{host}</span></ExternalLink>
+				{/each}
+			</div>
 		{:else}
 			<span>&ZeroWidthSpace;</span>
 		{/if}

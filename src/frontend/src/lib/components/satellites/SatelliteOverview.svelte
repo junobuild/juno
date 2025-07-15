@@ -6,7 +6,7 @@
 	import SatelliteMonitoringActions from '$lib/components/satellites/SatelliteMonitoringActions.svelte';
 	import SatelliteName from '$lib/components/satellites/SatelliteName.svelte';
 	import SatelliteOverviewActions from '$lib/components/satellites/SatelliteOverviewActions.svelte';
-	import SatelliteOverviewCustomDomain from '$lib/components/satellites/SatelliteOverviewCustomDomain.svelte';
+	import SatelliteOverviewCustomDomains from '$lib/components/satellites/SatelliteOverviewCustomDomains.svelte';
 	import SatelliteOverviewVersion from '$lib/components/satellites/SatelliteOverviewVersion.svelte';
 	import Identifier from '$lib/components/ui/Identifier.svelte';
 	import Value from '$lib/components/ui/Value.svelte';
@@ -34,7 +34,7 @@
 		<div>
 			<SatelliteName {satellite} />
 
-			<SatelliteOverviewCustomDomain {satellite} />
+			<SatelliteOverviewCustomDomains {satellite} />
 		</div>
 
 		<div>

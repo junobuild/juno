@@ -13,15 +13,15 @@ RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone &
     apt -yqq install --no-install-recommends curl ca-certificates \
         build-essential pkg-config libssl-dev llvm-dev liblmdb-dev clang cmake jq
 
-ENV NODE_VERSION=22.11.0
-
 # Install node
-RUN curl --fail -sSf https://raw.githubusercontent.com/creationix/nvm/v0.39.7/install.sh | bash
+COPY .node-version .node-version
+RUN curl --fail -sSf https://raw.githubusercontent.com/creationix/nvm/v0.40.3/install.sh | bash
 ENV NVM_DIR=/root/.nvm
-RUN . "$NVM_DIR/nvm.sh" && nvm install ${NODE_VERSION}
-RUN . "$NVM_DIR/nvm.sh" && nvm use v${NODE_VERSION}
-RUN . "$NVM_DIR/nvm.sh" && nvm alias default v${NODE_VERSION}
-ENV PATH="/root/.nvm/versions/node/v${NODE_VERSION}/bin/:${PATH}"
+RUN . "$NVM_DIR/nvm.sh" && nvm install "$(cat .node-version)"
+RUN . "$NVM_DIR/nvm.sh" && nvm use "v$(cat .node-version)"
+RUN . "$NVM_DIR/nvm.sh" && nvm alias default "v$(cat .node-version)"
+RUN ln -s "$NVM_DIR/versions/node/v$(cat .node-version)" "$NVM_DIR/versions/node/default"
+ENV PATH="$NVM_DIR/versions/node/default/bin/:${PATH}"
 RUN node --version
 RUN npm --version
 

@@ -4,6 +4,7 @@
 	import CanisterDelete from '$lib/components/canister/CanisterDelete.svelte';
 	import CanisterStopStart from '$lib/components/canister/CanisterStopStart.svelte';
 	import SegmentDetach from '$lib/components/canister/SegmentDetach.svelte';
+	import SatelliteEditName from '$lib/components/satellites/SatelliteEditName.svelte';
 	import SatelliteVisit from '$lib/components/satellites/SatelliteVisit.svelte';
 	import SegmentActions from '$lib/components/segments/SegmentActions.svelte';
 	import { listCustomDomains } from '$lib/services/custom-domain.services';
@@ -12,7 +13,6 @@
 	import { toasts } from '$lib/stores/toasts.store';
 	import type { CanisterSyncData as CanisterSyncDataType } from '$lib/types/canister';
 	import { emit } from '$lib/utils/events.utils';
-	import SatelliteEditName from '$lib/components/satellites/SatelliteEditName.svelte';
 
 	interface Props {
 		satellite: Satellite;

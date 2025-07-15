@@ -15,13 +15,12 @@
 </script>
 
 <button
-	class="square"
 	bind:this={button}
 	onclick={() => (visible = true)}
-	aria-label={$i18n.core.more}><IconMore /></button
+	aria-label={$i18n.core.more}><IconMore size="18px" /></button
 >
 
-<Popover bind:visible anchor={button} direction="rtl">
+<Popover bind:visible anchor={button}>
 	<div class="container">
 		{@render children()}
 	</div>
@@ -31,10 +30,4 @@
 	@use '../../styles/mixins/overlay';
 
 	@include overlay.popover-container;
-
-	button {
-		position: absolute;
-		top: var(--padding-2x);
-		right: var(--padding-2x);
-	}
 </style>

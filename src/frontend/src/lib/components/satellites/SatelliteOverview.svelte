@@ -2,7 +2,7 @@
 	import type { Satellite } from '$declarations/mission_control/mission_control.did';
 	import CanisterOverview from '$lib/components/canister/CanisterOverview.svelte';
 	import CanisterSubnet from '$lib/components/canister/CanisterSubnet.svelte';
-	import SatelliteActions from '$lib/components/satellites/SatelliteActions.svelte';
+	import SatelliteOverviewActions from '$lib/components/satellites/SatelliteOverviewActions.svelte';
 	import SatelliteName from '$lib/components/satellites/SatelliteName.svelte';
 	import SatelliteOverviewCustomDomain from '$lib/components/satellites/SatelliteOverviewCustomDomain.svelte';
 	import SatelliteOverviewVersion from '$lib/components/satellites/SatelliteOverviewVersion.svelte';
@@ -10,6 +10,9 @@
 	import Value from '$lib/components/ui/Value.svelte';
 	import { i18n } from '$lib/stores/i18n.store';
 	import type { SatelliteIdText } from '$lib/types/satellite';
+	import CanisterSyncData from "$lib/components/canister/CanisterSyncData.svelte";
+	import type {CanisterSyncData as CanisterSyncDataType} from "$lib/types/canister";
+	import SatelliteMonitoringActions from "$lib/components/satellites/SatelliteMonitoringActions.svelte";
 
 	interface Props {
 		satellite: Satellite;
@@ -18,7 +21,11 @@
 	let { satellite }: Props = $props();
 
 	let satelliteId: SatelliteIdText = $derived(satellite.satellite_id.toText());
+
+	let canister = $state<CanisterSyncDataType | undefined>(undefined);
 </script>
+
+<CanisterSyncData canisterId={satellite.satellite_id} bind:canister />
 
 <div class="card-container with-title">
 	<span class="title">{$i18n.satellites.overview}</span>
@@ -45,9 +52,9 @@
 			<SatelliteOverviewVersion {satelliteId} />
 		</div>
 	</div>
-
-	<SatelliteActions {satellite} />
 </div>
+
+<SatelliteOverviewActions {satellite} {canister} />
 
 <div class="card-container with-title">
 	<span class="title">{$i18n.monitoring.title}</span>
@@ -60,6 +67,8 @@
 		/>
 	</div>
 </div>
+
+<SatelliteMonitoringActions {satellite} {canister} />
 
 <style lang="scss">
 	.card-container:last-of-type {

@@ -41,4 +41,4 @@
 	};
 </script>
 
-<button onclick={topUp} class="menu"><IconPublish /> {$i18n.canisters.top_up}</button>
+<button onclick={topUp}><IconPublish size="18px" /> {$i18n.canisters.top_up}</button>

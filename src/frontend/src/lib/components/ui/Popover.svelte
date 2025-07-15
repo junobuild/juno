@@ -40,6 +40,12 @@
 			? anchor.getBoundingClientRect()
 			: { bottom: 0, left: 0, right: 0 });
 
+	let position = $derived<'top' | 'bottom'>(
+		bottom > window.innerHeight - 100 && !center ? 'bottom' : 'top'
+	);
+
+	$inspect(position, bottom);
+
 	$effect(() => {
 		if (visible === false) {
 			attached = false;
@@ -79,7 +85,7 @@
 		></div>
 		<div
 			transition:scale={{ delay: 25, duration: 150, easing: quintOut }}
-			class="wrapper"
+			class={`wrapper ${position}`}
 			class:center
 			class:rtl={direction === 'rtl'}
 		>

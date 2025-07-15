@@ -71,6 +71,14 @@
 			left: 50%;
 			transform: translate(-50%, -50%);
 		}
+
+		&.bottom {
+			top: auto;
+			bottom: max(calc(var(--full-vh, 100vh) - var(--popover-top) + 3.45rem), 0);
+
+			height: fit-content;
+			max-height: min(var(--full-vh, 100vh), 170px);
+		}
 	}
 
 	.close {

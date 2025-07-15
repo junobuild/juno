@@ -13,6 +13,8 @@
 	import { i18n } from '$lib/stores/i18n.store';
 	import type { CanisterSyncData as CanisterSyncDataType } from '$lib/types/canister';
 	import type { SatelliteIdText } from '$lib/types/satellite';
+	import { onMount } from 'svelte';
+	import { listCustomDomains } from '$lib/services/custom-domain.services';
 
 	interface Props {
 		satellite: Satellite;
@@ -23,6 +25,13 @@
 	let satelliteId: SatelliteIdText = $derived(satellite.satellite_id.toText());
 
 	let canister = $state<CanisterSyncDataType | undefined>(undefined);
+
+	onMount(async () => {
+		await listCustomDomains({
+			satelliteId: satellite.satellite_id,
+			reload: false
+		});
+	});
 </script>
 
 <CanisterSyncData canisterId={satellite.satellite_id} bind:canister />

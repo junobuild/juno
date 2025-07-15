@@ -3,8 +3,6 @@
 	import CanisterSyncData from '$lib/components/canister/CanisterSyncData.svelte';
 	import CanisterTransferCycles from '$lib/components/canister/CanisterTransferCycles.svelte';
 	import TopUp from '$lib/components/canister/TopUp.svelte';
-	import MissionControlAttachOrbiter from '$lib/components/mission-control/MissionControlAttachOrbiter.svelte';
-	import MissionControlAttachSatellite from '$lib/components/mission-control/MissionControlAttachSatellite.svelte';
 	import SegmentActions from '$lib/components/segments/SegmentActions.svelte';
 	import type { CanisterSyncData as CanisterSyncDataType } from '$lib/types/canister';
 	import type { MissionControlId } from '$lib/types/mission-control';
@@ -16,10 +14,10 @@
 
 	let { missionControlId }: Props = $props();
 
-	let canister = $state<CanisterSyncDataType | undefined>(undefined);
-
 	let visible: boolean = $state(false);
 	const close = () => (visible = false);
+
+	let canister = $state<CanisterSyncDataType | undefined>(undefined);
 
 	// eslint-disable-next-line require-await
 	const onTransferCycles = async () => {
@@ -39,18 +37,14 @@
 
 <CanisterSyncData canisterId={missionControlId} bind:canister />
 
-<SegmentActions bind:visible segment="mission_control">
-	{#snippet cycleActions()}
+<SegmentActions bind:visible>
+	{#snippet mainActions()}
 		<TopUp type="topup_mission_control" onclose={close} />
+	{/snippet}
 
+	{#snippet moreActions()}
 		<CanisterTransferCycles {canister} onclick={onTransferCycles} />
 
 		<CanisterBuyCycleExpress canisterId={missionControlId} />
-	{/snippet}
-
-	{#snippet canisterActions()}
-		<MissionControlAttachSatellite on:junoAttach={close} />
-
-		<MissionControlAttachOrbiter on:junoAttach={close} />
 	{/snippet}
 </SegmentActions>

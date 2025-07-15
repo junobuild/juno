@@ -6,7 +6,7 @@
 
 	interface Props {
 		visible?: boolean | undefined;
-		mainActions: Snippet;
+		mainActions?: Snippet;
 		moreActions: Snippet;
 	}
 
@@ -14,7 +14,7 @@
 </script>
 
 <div class="toolbar" role="toolbar">
-	{@render mainActions()}
+	{@render mainActions?.()}
 
 	<Actions bind:visible>
 		{@render moreActions()}

@@ -44,8 +44,6 @@
 		bottom > window.innerHeight - 100 && !center ? 'bottom' : 'top'
 	);
 
-	$inspect(position, bottom);
-
 	$effect(() => {
 		if (visible === false) {
 			attached = false;

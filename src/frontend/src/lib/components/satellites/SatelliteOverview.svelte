@@ -2,17 +2,17 @@
 	import type { Satellite } from '$declarations/mission_control/mission_control.did';
 	import CanisterOverview from '$lib/components/canister/CanisterOverview.svelte';
 	import CanisterSubnet from '$lib/components/canister/CanisterSubnet.svelte';
-	import SatelliteOverviewActions from '$lib/components/satellites/SatelliteOverviewActions.svelte';
+	import CanisterSyncData from '$lib/components/canister/CanisterSyncData.svelte';
+	import SatelliteMonitoringActions from '$lib/components/satellites/SatelliteMonitoringActions.svelte';
 	import SatelliteName from '$lib/components/satellites/SatelliteName.svelte';
+	import SatelliteOverviewActions from '$lib/components/satellites/SatelliteOverviewActions.svelte';
 	import SatelliteOverviewCustomDomain from '$lib/components/satellites/SatelliteOverviewCustomDomain.svelte';
 	import SatelliteOverviewVersion from '$lib/components/satellites/SatelliteOverviewVersion.svelte';
 	import Identifier from '$lib/components/ui/Identifier.svelte';
 	import Value from '$lib/components/ui/Value.svelte';
 	import { i18n } from '$lib/stores/i18n.store';
-	import type { SatelliteIdText } from '$lib/types/satellite';
-	import CanisterSyncData from '$lib/components/canister/CanisterSyncData.svelte';
 	import type { CanisterSyncData as CanisterSyncDataType } from '$lib/types/canister';
-	import SatelliteMonitoringActions from '$lib/components/satellites/SatelliteMonitoringActions.svelte';
+	import type { SatelliteIdText } from '$lib/types/satellite';
 
 	interface Props {
 		satellite: Satellite;

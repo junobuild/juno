@@ -1,6 +1,5 @@
 import { readFileSync } from 'fs';
 import { fileURLToPath } from 'url';
-import type { UserConfig } from 'vite';
 
 export const defineViteReplacements = (): {
 	VITE_APP_VERSION: string;

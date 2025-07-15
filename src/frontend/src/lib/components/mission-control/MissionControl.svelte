@@ -2,6 +2,7 @@
 	import { fade } from 'svelte/transition';
 	import CanisterOverview from '$lib/components/canister/CanisterOverview.svelte';
 	import CanisterSubnet from '$lib/components/canister/CanisterSubnet.svelte';
+	import MissionControlMonitoringActions from '$lib/components/mission-control/MissionControlMonitoringActions.svelte';
 	import MissionControlOverviewActions from '$lib/components/mission-control/MissionControlOverviewActions.svelte';
 	import SegmentVersion from '$lib/components/segments/SegmentVersion.svelte';
 	import Identifier from '$lib/components/ui/Identifier.svelte';
@@ -10,7 +11,6 @@
 	import { missionControlVersion } from '$lib/derived/version.derived';
 	import { i18n } from '$lib/stores/i18n.store';
 	import type { MissionControlId } from '$lib/types/mission-control';
-	import MissionControlMonitoringActions from '$lib/components/mission-control/MissionControlMonitoringActions.svelte';
 
 	interface Props {
 		missionControlId: MissionControlId;

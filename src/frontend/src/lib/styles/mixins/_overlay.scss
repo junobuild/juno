@@ -74,10 +74,10 @@
 
 		&.bottom {
 			top: auto;
-			bottom: max(calc(var(--full-vh, 100vh) - var(--popover-top) + 3.45rem), 0);
+			bottom: calc(var(--full-vh, 100vh) - var(--popover-top) + 3.45rem);
 
 			height: fit-content;
-			max-height: min(var(--full-vh, 100vh), 170px);
+			max-height: min(calc(var(--full-vh, 100vh) - 70px), 170px);
 		}
 	}
 

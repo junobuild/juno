@@ -16,25 +16,24 @@
 
 	interface Props {
 		orbiter: Orbiter;
+		canister: CanisterSyncDataType | undefined;
 	}
 
-	let { orbiter }: Props = $props();
+	let { orbiter, canister }: Props = $props();
 
 	let monitoring = $derived(fromNullishNullable(fromNullishNullable(orbiter.settings)?.monitoring));
 
 	let monitoringEnabled = $derived(fromNullishNullable(monitoring?.cycles)?.enabled === true);
 
-	let canister = $state<CanisterSyncDataType | undefined>(undefined);
-
 	let visible: boolean = $state(false);
 	const close = () => (visible = false);
 
 	// eslint-disable-next-line require-await
-	const onCanisterAction = async (type: 'delete_orbiter' | 'transfer_cycles_orbiter') => {
+	const onDeleteOrbiter = async () => {
 		close();
 
 		// TODO: can be removed once the mission control is patched to disable monitoring on delete
-		if (type === 'delete_orbiter' && monitoringEnabled) {
+		if (monitoringEnabled) {
 			toasts.warn($i18n.monitoring.warn_monitoring_enabled);
 			return;
 		}
@@ -42,7 +41,7 @@
 		emit({
 			message: 'junoModal',
 			detail: {
-				type,
+				type: 'delete_orbiter',
 				detail: {
 					cycles: canister?.data?.canister?.cycles ?? 0n
 				}
@@ -51,21 +50,8 @@
 	};
 </script>
 
-<CanisterSyncData canisterId={orbiter.orbiter_id} bind:canister />
-
-<SegmentActions bind:visible segment="orbiter">
-	{#snippet cycleActions()}
-		<TopUp type="topup_orbiter" onclose={close} />
-
-		<CanisterTransferCycles
-			{canister}
-			onclick={async () => await onCanisterAction('transfer_cycles_orbiter')}
-		/>
-
-		<CanisterBuyCycleExpress canisterId={orbiter.orbiter_id} />
-	{/snippet}
-
-	{#snippet canisterActions()}
+<SegmentActions bind:visible>
+	{#snippet moreActions()}
 		<CanisterStopStart
 			{canister}
 			{monitoringEnabled}
@@ -81,6 +67,6 @@
 			ondetach={close}
 		/>
 
-		<CanisterDelete {canister} onclick={async () => await onCanisterAction('delete_orbiter')} />
+		<CanisterDelete {canister} onclick={onDeleteOrbiter} />
 	{/snippet}
 </SegmentActions>

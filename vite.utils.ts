@@ -13,13 +13,3 @@ export const defineViteReplacements = (): {
 		VITE_APP_VERSION: JSON.stringify(version)
 	};
 };
-
-export const CSS_CONFIG_OPTIONS: Pick<UserConfig, 'css'> = {
-	css: {
-		preprocessorOptions: {
-			scss: {
-				api: 'modern-compiler'
-			}
-		}
-	}
-};

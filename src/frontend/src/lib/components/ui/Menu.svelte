@@ -1,8 +1,12 @@
 <script lang="ts">
 	import type { Snippet } from 'svelte';
 	import Logo from '$lib/components/core/Logo.svelte';
-	import { layoutMenuOpen } from '$lib/stores/layout-menu.store';
+	import { layoutMenuState, layoutMenuOpen } from '$lib/stores/layout-menu.store';
 	import { handleKeyPress } from '$lib/utils/keyboard.utils';
+	import { menuCollapsed, menuExpanded } from '$lib/derived/layout-menu.derived';
+	import { fade } from 'svelte/transition';
+	import { i18n } from '$lib/stores/i18n.store';
+	import IconBack from '$lib/components/icons/IconBack.svelte';
 
 	interface Props {
 		children: Snippet;
@@ -24,11 +28,18 @@
 		tabindex="-1"
 	>
 		<div class="logo">
-			<Logo color="white" />
+			{#if $menuExpanded}
+				<div in:fade><Logo color="white" /></div>
+			{/if}
 		</div>
 
 		{@render children()}
 	</div>
+
+	<button class="menu-collapse square" class:collapsed={$menuExpanded}
+		title={$menuCollapsed ? $i18n.core.expand : $i18n.core.collapse}
+		onclick={layoutMenuState.toggle}><IconBack /></button
+	>
 </div>
 
 <style lang="scss">
@@ -90,5 +101,17 @@
 
 	.logo {
 		padding: calc(var(--padding-4x) - 2px) 0 14vh;
+	}
+
+	.menu-collapse {
+		position: absolute;
+		right: calc(-1 * var(--padding));
+		bottom: var(--padding-8x);
+
+		transform: rotate(180deg);
+
+		&.collapsed {
+			transform: rotate(0deg);
+		}
 	}
 </style>

@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { notEmptyString } from '@dfinity/utils';
 	import { circOut, quintOut } from 'svelte/easing';
-	import { slide } from 'svelte/transition';
+	import { slide, fade } from 'svelte/transition';
 	import { page } from '$app/state';
 	import NavmenuFooter from '$lib/components/core/NavmenuFooter.svelte';
 	import IconAnalytics from '$lib/components/icons/IconAnalytics.svelte';
@@ -20,6 +20,7 @@
 	import { isSatelliteRoute } from '$lib/derived/route.derived.svelte';
 	import { i18n } from '$lib/stores/i18n.store';
 	import { isRouteSelected } from '$lib/utils/nav.utils';
+	import { menuCollapsed, menuExpanded } from '$lib/derived/layout-menu.derived';
 
 	let routeId: string | null = $derived(page.route.id);
 
@@ -32,11 +33,12 @@
 	<nav>
 		<a
 			class="link"
+			class:collapsed={$menuCollapsed}
 			href={`/satellite${queryParam}`}
 			class:selected={isRouteSelected({ routeId, path: 'satellite' })}
 		>
 			<IconSatellite size="24px" />
-			<span>{$i18n.satellites.satellite}</span>
+			<span class:visually-hidden={$menuCollapsed}>{$i18n.satellites.satellite}</span>
 		</a>
 
 		{#if $isSatelliteRoute}
@@ -47,47 +49,52 @@
 			>
 				<a
 					class="link"
+					class:collapsed={$menuCollapsed}
 					href={`/authentication${queryParam}`}
 					class:selected={isRouteSelected({ routeId, path: 'authentication' })}
 				>
 					<IconAuthentication size="24px" />
-					<span>{$i18n.authentication.title}</span>
+					<span class:visually-hidden={$menuCollapsed}>{$i18n.authentication.title}</span>
 				</a>
 
 				<a
 					class="link"
+					class:collapsed={$menuCollapsed}
 					href={`/datastore${queryParam}`}
 					class:selected={isRouteSelected({ routeId, path: 'datastore' })}
 				>
 					<IconDatastore size="24px" />
-					<span>{$i18n.datastore.title}</span>
+					<span class:visually-hidden={$menuCollapsed}>{$i18n.datastore.title}</span>
 				</a>
 
 				<a
 					class="link"
+					class:collapsed={$menuCollapsed}
 					href={`/storage${queryParam}`}
 					class:selected={isRouteSelected({ routeId, path: 'storage' })}
 				>
 					<IconStorage size="24px" />
-					<span>{$i18n.storage.title}</span>
+					<span class:visually-hidden={$menuCollapsed}>{$i18n.storage.title}</span>
 				</a>
 
 				<a
 					class="link"
+					class:collapsed={$menuCollapsed}
 					href={`/functions${queryParam}`}
 					class:selected={isRouteSelected({ routeId, path: 'functions' })}
 				>
 					<IconFunctions size="24px" />
-					<span>{$i18n.functions.title}</span>
+					<span class:visually-hidden={$menuCollapsed}>{$i18n.functions.title}</span>
 				</a>
 
 				<a
 					class="link"
+					class:collapsed={$menuCollapsed}
 					href={`/hosting${queryParam}`}
 					class:selected={isRouteSelected({ routeId, path: 'hosting' })}
 				>
 					<IconHosting size="24px" />
-					<span>{$i18n.hosting.title}</span>
+					<span class:visually-hidden={$menuCollapsed}>{$i18n.hosting.title}</span>
 				</a>
 			</div>
 		{/if}
@@ -97,55 +104,65 @@
 				href={`/analytics${queryParam}`}
 				class:selected={isRouteSelected({ routeId, path: 'analytics' })}
 				class="link not-themed"
+				class:collapsed={$menuCollapsed}
 			>
 				<IconAnalytics size="20px" />
-				<span>{$i18n.analytics.title}</span>
+				<span class:visually-hidden={$menuCollapsed}>{$i18n.analytics.title}</span>
 			</a>
 
 			<a
 				href={`/monitoring${queryParam}`}
 				class:selected={isRouteSelected({ routeId, path: 'monitoring' })}
 				class="link not-themed"
+				class:collapsed={$menuCollapsed}
 			>
 				<IconTelescope size="20px" />
-				<span>{$i18n.monitoring.title}</span>
+				<span class:visually-hidden={$menuCollapsed}>{$i18n.monitoring.title}</span>
 			</a>
 
 			<a
 				href={`/mission-control${queryParam}`}
 				class:selected={isRouteSelected({ routeId, path: 'mission-control' })}
 				class="link not-themed"
+				class:collapsed={$menuCollapsed}
 			>
 				<IconMissionControl size="22px" />
-				<span>{$i18n.mission_control.title}</span>
+				<span class:visually-hidden={$menuCollapsed}>{$i18n.mission_control.title}</span>
 			</a>
 
 			<a
 				href={`/wallet${queryParam}`}
 				class:selected={isRouteSelected({ routeId, path: 'wallet' })}
 				class="link not-themed"
+				class:collapsed={$menuCollapsed}
 			>
 				<IconWallet />
-				<span>{$i18n.wallet.title}</span>
+				<span class:visually-hidden={$menuCollapsed}>{$i18n.wallet.title}</span>
 			</a>
 
 			<a
 				href={`/upgrade-dock${queryParam}`}
 				class:selected={isRouteSelected({ routeId, path: 'upgrade-dock' })}
 				class="link not-themed"
+				class:collapsed={$menuCollapsed}
 			>
 				<IconUpgradeDock size="20px" />
-				<span>{$i18n.upgrade.title}</span>
+				<span class:visually-hidden={$menuCollapsed}>{$i18n.upgrade.title}</span>
 			</a>
 		</div>
 	</nav>
 
-	<NavmenuFooter />
+	{#if $menuExpanded}
+		<div in:fade>
+			<NavmenuFooter />
+		</div>
+	{/if}
 </Menu>
 
 <style lang="scss">
 	@use '../../styles/mixins/fonts';
 	@use '../../styles/mixins/media';
+	@use '../../styles/mixins/a11y';
 
 	.selected {
 		background: var(--color-background);
@@ -180,6 +197,10 @@
 		span {
 			font-size: var(--font-size-ultra-small);
 		}
+
+		&.collapsed {
+			padding: var(--padding-1_5x) var(--padding-2x);
+		}
 	}
 
 	@include media.dark-theme {
@@ -197,5 +218,9 @@
 
 	.satellite-features {
 		margin: 0 0 var(--padding-4x);
+	}
+
+	.visually-hidden {
+		@include a11y.visually-hidden;
 	}
 </style>

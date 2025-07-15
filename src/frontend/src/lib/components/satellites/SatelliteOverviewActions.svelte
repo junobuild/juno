@@ -4,6 +4,7 @@
 	import CanisterDelete from '$lib/components/canister/CanisterDelete.svelte';
 	import CanisterStopStart from '$lib/components/canister/CanisterStopStart.svelte';
 	import SegmentDetach from '$lib/components/canister/SegmentDetach.svelte';
+	import SatelliteEditName from '$lib/components/satellites/SatelliteEditName.svelte';
 	import SatelliteVisit from '$lib/components/satellites/SatelliteVisit.svelte';
 	import SegmentActions from '$lib/components/segments/SegmentActions.svelte';
 	import { listCustomDomains } from '$lib/services/custom-domain.services';
@@ -70,6 +71,8 @@
 	{/snippet}
 
 	{#snippet moreActions()}
+		<SatelliteEditName {satellite} />
+
 		<CanisterStopStart
 			{canister}
 			{monitoringEnabled}

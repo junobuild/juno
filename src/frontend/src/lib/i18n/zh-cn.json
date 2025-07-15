@@ -841,19 +841,6 @@
 		"dev_id": "开发者 ID",
 		"session_expires_in": "会话将过期在"
 	},
-	"examples": {
-		"tutorials": "指南",
-		"tutorial_framework_description": "用 Juno 和 {0}.",
-		"tutorial_serverless_functions": "在 {0} 里面写无服务函数.",
-		"tutorial_github_description": "Deploy and set up continuous integration with GitHub Actions.",
-		"tutorial_docker_description": "Get started with local development using a Docker sandbox."
-	},
-	"resources": {
-		"resources": "资源",
-		"resources_description": "查看利用Juno开发的代码，应用，为服务等例子",
-		"changelog": "发布",
-		"changelog_description": "看最近的更新和优化."
-	},
 	"emulator": {
 		"get_icp": "Get ICP",
 		"emulator": "Emulator",

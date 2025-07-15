@@ -868,21 +868,6 @@ interface I18nPreferences {
 	session_expires_in: string;
 }
 
-interface I18nExamples {
-	tutorials: string;
-	tutorial_framework_description: string;
-	tutorial_serverless_functions: string;
-	tutorial_github_description: string;
-	tutorial_docker_description: string;
-}
-
-interface I18nResources {
-	resources: string;
-	resources_description: string;
-	changelog: string;
-	changelog_description: string;
-}
-
 interface I18nEmulator {
 	get_icp: string;
 	emulator: string;
@@ -967,8 +952,6 @@ interface I18n {
 	users: I18nUsers;
 	monitoring: I18nMonitoring;
 	preferences: I18nPreferences;
-	examples: I18nExamples;
-	resources: I18nResources;
 	emulator: I18nEmulator;
 	upgrade: I18nUpgrade;
 	changes: I18nChanges;

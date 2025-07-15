@@ -266,7 +266,7 @@
 		"name": "Name",
 		"satellite_name": "Satellite name",
 		"enter_name": "Enter a name for your satellite",
-		"edit_name": "Edit the name of your satellite",
+		"edit_name": "Edit name",
 		"create_satellite_price": "Starting a new satellite requires {0}. Your current wallet balance is {1}.",
 		"loading_satellites": "Loading your satellites",
 		"overview": "Overview",
@@ -840,19 +840,6 @@
 		"title": "Preferences",
 		"dev_id": "Developer ID",
 		"session_expires_in": "Your session expires in"
-	},
-	"examples": {
-		"tutorials": "Guides",
-		"tutorial_framework_description": "Use Juno with {0}.",
-		"tutorial_serverless_functions": "Write serverless functions in {0}.",
-		"tutorial_github_description": "Deploy and set up continuous integration with GitHub Actions.",
-		"tutorial_docker_description": "Get started with local development using a Docker sandbox."
-	},
-	"resources": {
-		"resources": "Resources",
-		"resources_description": "View a collection of sample code, applications, and microservices build with Juno",
-		"changelog": "Releases",
-		"changelog_description": "See the last updates and improvements."
 	},
 	"emulator": {
 		"get_icp": "Get ICP",

@@ -2,7 +2,6 @@
 	import { nonNullish } from '@dfinity/utils';
 	import { setContext } from 'svelte';
 	import { writable } from 'svelte/store';
-	import Guides from '$lib/components/examples/Guides.svelte';
 	import IdentityGuard from '$lib/components/guards/IdentityGuard.svelte';
 	import MissionControlGuard from '$lib/components/guards/MissionControlGuard.svelte';
 	import SatelliteGuard from '$lib/components/guards/SatelliteGuard.svelte';
@@ -65,8 +64,6 @@
 						>
 							{#if $store.tabId === $store.tabs[0].id}
 								<SatelliteOverview satellite={$satelliteStore} />
-
-								<Guides />
 							{:else if $store.tabId === $store.tabs[1].id}
 								<SatelliteSettings satellite={$satelliteStore} />
 							{/if}

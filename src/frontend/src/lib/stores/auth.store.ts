@@ -88,7 +88,7 @@ const initAuthStore = (): AuthStore => {
 
 			await client.logout();
 
-			// Reset local object otherwise next sign in (sign in - sign out - sign in) might not work out - i.e. agent-js might not recreate the delegation or identity if not resetted
+			// Reset local object otherwise next sign in (sign in - sign out - sign in) might not work out - i.e. agent-js might not recreate the delegation or identity if not reset
 			// Technically we do not need this since we recreate the agent below. We just keep it to make the reset explicit.
 			authClient = null;
 

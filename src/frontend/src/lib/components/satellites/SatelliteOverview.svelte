@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { onMount } from 'svelte';
 	import type { Satellite } from '$declarations/mission_control/mission_control.did';
 	import CanisterOverview from '$lib/components/canister/CanisterOverview.svelte';
 	import CanisterSubnet from '$lib/components/canister/CanisterSubnet.svelte';
@@ -10,11 +11,10 @@
 	import SatelliteOverviewVersion from '$lib/components/satellites/SatelliteOverviewVersion.svelte';
 	import Identifier from '$lib/components/ui/Identifier.svelte';
 	import Value from '$lib/components/ui/Value.svelte';
+	import { listCustomDomains } from '$lib/services/custom-domain.services';
 	import { i18n } from '$lib/stores/i18n.store';
 	import type { CanisterSyncData as CanisterSyncDataType } from '$lib/types/canister';
 	import type { SatelliteIdText } from '$lib/types/satellite';
-	import { onMount } from 'svelte';
-	import { listCustomDomains } from '$lib/services/custom-domain.services';
 
 	interface Props {
 		satellite: Satellite;

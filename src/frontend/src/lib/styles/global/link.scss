@@ -8,6 +8,17 @@ a.menu {
 	}
 }
 
+a.button {
+	@include button.primary;
+
+	padding: var(--padding-0_75x) var(--padding);
+
+	&:hover:not(:disabled),
+	&:focus:not(:disabled) {
+		text-decoration: none;
+	}
+}
+
 a.icon {
 	@include button.primary;
 

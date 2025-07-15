@@ -11,6 +11,7 @@
 	import { toasts } from '$lib/stores/toasts.store';
 	import type { CanisterSyncData as CanisterSyncDataType } from '$lib/types/canister';
 	import { emit } from '$lib/utils/events.utils';
+	import SatelliteVisit from '$lib/components/satellites/SatelliteVisit.svelte';
 
 	interface Props {
 		satellite: Satellite;
@@ -64,7 +65,9 @@
 </script>
 
 <SegmentActions bind:visible>
-	{#snippet mainActions()}{/snippet}
+	{#snippet mainActions()}
+		<SatelliteVisit {satellite} />
+	{/snippet}
 
 	{#snippet moreActions()}
 		<CanisterStopStart

@@ -1,18 +1,9 @@
 <script lang="ts">
-	import { fromNullishNullable } from '@dfinity/utils';
 	import type { Satellite } from '$declarations/mission_control/mission_control.did';
 	import CanisterBuyCycleExpress from '$lib/components/canister/CanisterBuyCycleExpress.svelte';
-	import CanisterDelete from '$lib/components/canister/CanisterDelete.svelte';
-	import CanisterStopStart from '$lib/components/canister/CanisterStopStart.svelte';
-	import CanisterSyncData from '$lib/components/canister/CanisterSyncData.svelte';
 	import CanisterTransferCycles from '$lib/components/canister/CanisterTransferCycles.svelte';
-	import SegmentDetach from '$lib/components/canister/SegmentDetach.svelte';
 	import TopUp from '$lib/components/canister/TopUp.svelte';
 	import SegmentActions from '$lib/components/segments/SegmentActions.svelte';
-	import { listCustomDomains } from '$lib/services/custom-domain.services';
-	import { busy } from '$lib/stores/busy.store';
-	import { i18n } from '$lib/stores/i18n.store';
-	import { toasts } from '$lib/stores/toasts.store';
 	import type { CanisterSyncData as CanisterSyncDataType } from '$lib/types/canister';
 	import { emit } from '$lib/utils/events.utils';
 

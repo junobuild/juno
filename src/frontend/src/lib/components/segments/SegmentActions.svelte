@@ -25,7 +25,7 @@
 	.toolbar {
 		display: flex;
 		align-items: center;
-		gap: var(--padding-2x);
+		gap: var(--padding-1_5x);
 
 		margin: calc(-1 * var(--padding)) 0 var(--padding-8x);
 	}

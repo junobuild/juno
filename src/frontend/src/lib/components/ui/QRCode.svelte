@@ -109,7 +109,7 @@
 	};
 
 	let canvas: HTMLCanvasElement | undefined;
-	$: QrCreator, value, canvas, dark, (() => renderCanvas())();
+	$: (QrCreator, value, canvas, dark, (() => renderCanvas())());
 
 	let showLogo: boolean;
 	$: showLogo = nonNullish($$slots.logo);

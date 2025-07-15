@@ -12,6 +12,7 @@
 	import { toasts } from '$lib/stores/toasts.store';
 	import type { CanisterSyncData as CanisterSyncDataType } from '$lib/types/canister';
 	import { emit } from '$lib/utils/events.utils';
+	import SatelliteEditName from '$lib/components/satellites/SatelliteEditName.svelte';
 
 	interface Props {
 		satellite: Satellite;
@@ -70,6 +71,8 @@
 	{/snippet}
 
 	{#snippet moreActions()}
+		<SatelliteEditName {satellite} />
+
 		<CanisterStopStart
 			{canister}
 			{monitoringEnabled}

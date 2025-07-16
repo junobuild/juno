@@ -7,7 +7,6 @@ import {
 	cyclesIdbStore,
 	exchangeIdbStore,
 	monitoringIdbStore,
-	statusesIdbStore,
 	walletIdbStore
 } from '$lib/stores/idb.store';
 import { toasts } from '$lib/stores/toasts.store';
@@ -76,7 +75,6 @@ const logout = async ({
 	if (clearStorages) {
 		await Promise.all([
 			clear(cyclesIdbStore),
-			clear(statusesIdbStore),
 			clear(monitoringIdbStore),
 			clear(exchangeIdbStore),
 			clear(walletIdbStore),

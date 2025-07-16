@@ -10,7 +10,7 @@ export abstract class AppWorker {
 		return new Workers.default();
 	}
 
-	terminate = ()	=> {
+	terminate = () => {
 		this._worker.terminate();
-	}
+	};
 }

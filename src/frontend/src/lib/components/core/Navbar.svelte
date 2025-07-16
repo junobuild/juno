@@ -12,6 +12,7 @@
 	import { isSatelliteRoute } from '$lib/derived/route.derived.svelte';
 	import { isSkylab } from '$lib/env/app.env';
 	import { layoutTitleIntersecting } from '$lib/stores/layout-intersecting.store';
+	import Notifications from '$lib/components/notifications/Notifications.svelte';
 
 	interface Props {
 		start?: 'logo' | 'back' | 'menu';
@@ -62,7 +63,11 @@
 			</div>
 		{/if}
 
-		<User {signIn} />
+		<div>
+			<Notifications />
+
+			<User {signIn} />
+		</div>
 	</div>
 </Header>
 
@@ -78,6 +83,6 @@
 	}
 
 	.end {
-		gap: var(--padding-6x);
+		gap: var(--padding-4x);
 	}
 </style>

@@ -20,12 +20,23 @@
 	}: Props = $props();
 </script>
 
-<button type="button" {onclick} bind:this={button} class="icon" {disabled} class:hidden>
+<button type="button" {onclick} bind:this={button} class="icon rounded" {disabled} class:hidden>
 	{@render icon?.()}
 	<span class="visually-hidden">{@render children()}</span>
 </button>
 
 <style lang="scss">
+	.rounded {
+		border-radius: var(--border-radius);
+
+		border: 1px solid var(--text-color);
+
+		width: var(--padding-4x);
+		height: var(--padding-4x);
+
+		padding: 0;
+	}
+
 	.hidden {
 		display: none;
 	}

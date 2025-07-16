@@ -10,7 +10,7 @@ import type {
 	PostMessages
 } from '$lib/types/post-message';
 
-class CyclesWorker extends AppWorker {
+export class CyclesWorker extends AppWorker {
 	constructor(worker: Worker) {
 		super(worker);
 
@@ -53,5 +53,3 @@ class CyclesWorker extends AppWorker {
 		});
 	};
 }
-
-export const initCyclesWorker = (): Promise<CyclesWorker> => CyclesWorker.init();

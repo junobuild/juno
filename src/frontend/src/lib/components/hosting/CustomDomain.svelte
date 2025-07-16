@@ -14,7 +14,7 @@
 	import ExternalLink from '$lib/components/ui/ExternalLink.svelte';
 	import {
 		type HostingCallback,
-		initHostingWorker
+		HostingWorker
 	} from '$lib/services/workers/worker.hosting.services';
 	import { i18n } from '$lib/stores/i18n.store';
 	import type { CustomDomainRegistrationState } from '$lib/types/custom-domain';
@@ -54,15 +54,7 @@
 
 	let registrationState: Option<CustomDomainRegistrationState> = $state(undefined);
 
-	let worker:
-		| {
-				startCustomDomainRegistrationTimer: (params: {
-					customDomain: CustomDomainType;
-					callback: HostingCallback;
-				}) => void;
-				stopCustomDomainRegistrationTimer: () => void;
-		  }
-		| undefined = $state();
+	let worker = $state<HostingWorker | undefined>();
 
 	const syncState = ({ registrationState: state }: PostMessageDataResponseHosting) => {
 		registrationState = state;
@@ -93,7 +85,7 @@
 		});
 	};
 
-	onMount(async () => (worker = await initHostingWorker()));
+	onMount(async () => (worker = await HostingWorker.init()));
 	onDestroy(() => worker?.stopCustomDomainRegistrationTimer());
 
 	run(() => {

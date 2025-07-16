@@ -18,9 +18,15 @@
 <style lang="scss">
 	div {
 		display: inline-flex;
+		justify-content: center;
+
 		gap: var(--padding-0_5x);
 		font-size: var(--font-size-ultra-small);
 		padding: var(--padding-2x) 0 calc(var(--padding-4x) - 2px);
+
+		min-width: var(--menu-width);
+		width: var(--menu-width);;
+		margin: 0 auto;
 	}
 
 	a {

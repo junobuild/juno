@@ -16,11 +16,11 @@
 	import IconUpgradeDock from '$lib/components/icons/IconUpgradeDock.svelte';
 	import IconWallet from '$lib/components/icons/IconWallet.svelte';
 	import Menu from '$lib/components/ui/Menu.svelte';
+	import { menuCollapsed, menuExpanded } from '$lib/derived/layout-menu.derived';
 	import { pageSatelliteId } from '$lib/derived/page.derived.svelte';
 	import { isSatelliteRoute } from '$lib/derived/route.derived.svelte';
 	import { i18n } from '$lib/stores/i18n.store';
 	import { isRouteSelected } from '$lib/utils/nav.utils';
-	import { menuCollapsed, menuExpanded } from '$lib/derived/layout-menu.derived';
 
 	let routeId: string | null = $derived(page.route.id);
 

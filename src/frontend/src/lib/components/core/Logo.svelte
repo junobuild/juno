@@ -1,8 +1,8 @@
 <script lang="ts">
-	import IconJuno from '$lib/components/icons/IconJuno.svelte';
-	import { i18n } from '$lib/stores/i18n.store';
 	import { blur } from 'svelte/transition';
+	import IconJuno from '$lib/components/icons/IconJuno.svelte';
 	import IconJunoLogo from '$lib/components/icons/IconJunoLogo.svelte';
+	import { i18n } from '$lib/stores/i18n.store';
 
 	interface Props {
 		color?: 'lavender' | 'white';

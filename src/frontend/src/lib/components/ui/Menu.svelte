@@ -1,11 +1,11 @@
 <script lang="ts">
 	import type { Snippet } from 'svelte';
 	import Logo from '$lib/components/core/Logo.svelte';
-	import { layoutMenuState, layoutMenuOpen } from '$lib/stores/layout-menu.store';
-	import { handleKeyPress } from '$lib/utils/keyboard.utils';
+	import IconBack from '$lib/components/icons/IconBack.svelte';
 	import { menuCollapsed, menuExpanded } from '$lib/derived/layout-menu.derived';
 	import { i18n } from '$lib/stores/i18n.store';
-	import IconBack from '$lib/components/icons/IconBack.svelte';
+	import { layoutMenuState, layoutMenuOpen } from '$lib/stores/layout-menu.store';
+	import { handleKeyPress } from '$lib/utils/keyboard.utils';
 
 	interface Props {
 		children: Snippet;

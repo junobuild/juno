@@ -100,7 +100,8 @@
 	}
 
 	.logo {
-		padding: calc(var(--padding-4x) - 2px) 0 14vh;
+		padding: calc(var(--padding-4x) - 2px) 0 13vh;
+		min-height: 20vh;
 	}
 
 	.menu-collapse {

@@ -32,13 +32,14 @@
 <Menu>
 	<nav>
 		<a
+			role="menuitem"
 			class="link"
 			class:collapsed={$menuCollapsed}
 			href={`/satellite${queryParam}`}
 			class:selected={isRouteSelected({ routeId, path: 'satellite' })}
 		>
 			<IconSatellite size="24px" />
-			<span class:visually-hidden={$menuCollapsed}>{$i18n.satellites.satellite}</span>
+			<span>{$i18n.satellites.satellite}</span>
 		</a>
 
 		{#if $isSatelliteRoute}
@@ -48,106 +49,116 @@
 				out:slide={{ delay: 0, duration: 100, easing: circOut, axis: 'y' }}
 			>
 				<a
+					role="menuitem"
 					class="link"
 					class:collapsed={$menuCollapsed}
 					href={`/authentication${queryParam}`}
 					class:selected={isRouteSelected({ routeId, path: 'authentication' })}
 				>
 					<IconAuthentication size="24px" />
-					<span class:visually-hidden={$menuCollapsed}>{$i18n.authentication.title}</span>
+					<span>{$i18n.authentication.title}</span>
 				</a>
 
 				<a
+					role="menuitem"
 					class="link"
 					class:collapsed={$menuCollapsed}
 					href={`/datastore${queryParam}`}
 					class:selected={isRouteSelected({ routeId, path: 'datastore' })}
 				>
 					<IconDatastore size="24px" />
-					<span class:visually-hidden={$menuCollapsed}>{$i18n.datastore.title}</span>
+					<span>{$i18n.datastore.title}</span>
 				</a>
 
 				<a
+					role="menuitem"
 					class="link"
 					class:collapsed={$menuCollapsed}
 					href={`/storage${queryParam}`}
 					class:selected={isRouteSelected({ routeId, path: 'storage' })}
 				>
 					<IconStorage size="24px" />
-					<span class:visually-hidden={$menuCollapsed}>{$i18n.storage.title}</span>
+					<span>{$i18n.storage.title}</span>
 				</a>
 
 				<a
+					role="menuitem"
 					class="link"
 					class:collapsed={$menuCollapsed}
 					href={`/functions${queryParam}`}
 					class:selected={isRouteSelected({ routeId, path: 'functions' })}
 				>
 					<IconFunctions size="24px" />
-					<span class:visually-hidden={$menuCollapsed}>{$i18n.functions.title}</span>
+					<span>{$i18n.functions.title}</span>
 				</a>
 
 				<a
+					role="menuitem"
 					class="link"
 					class:collapsed={$menuCollapsed}
 					href={`/hosting${queryParam}`}
 					class:selected={isRouteSelected({ routeId, path: 'hosting' })}
 				>
 					<IconHosting size="24px" />
-					<span class:visually-hidden={$menuCollapsed}>{$i18n.hosting.title}</span>
+					<span>{$i18n.hosting.title}</span>
 				</a>
 			</div>
 		{/if}
 
 		<div>
 			<a
+				role="menuitem"
 				href={`/analytics${queryParam}`}
 				class:selected={isRouteSelected({ routeId, path: 'analytics' })}
 				class="link not-themed"
 				class:collapsed={$menuCollapsed}
 			>
 				<IconAnalytics size="20px" />
-				<span class:visually-hidden={$menuCollapsed}>{$i18n.analytics.title}</span>
+				<span>{$i18n.analytics.title}</span>
 			</a>
 
 			<a
+				role="menuitem"
 				href={`/monitoring${queryParam}`}
 				class:selected={isRouteSelected({ routeId, path: 'monitoring' })}
 				class="link not-themed"
 				class:collapsed={$menuCollapsed}
 			>
 				<IconTelescope size="20px" />
-				<span class:visually-hidden={$menuCollapsed}>{$i18n.monitoring.title}</span>
+				<span>{$i18n.monitoring.title}</span>
 			</a>
 
 			<a
+				role="menuitem"
 				href={`/mission-control${queryParam}`}
 				class:selected={isRouteSelected({ routeId, path: 'mission-control' })}
 				class="link not-themed"
 				class:collapsed={$menuCollapsed}
 			>
 				<IconMissionControl size="22px" />
-				<span class:visually-hidden={$menuCollapsed}>{$i18n.mission_control.title}</span>
+				<span>{$i18n.mission_control.title}</span>
 			</a>
 
 			<a
+				role="menuitem"
 				href={`/wallet${queryParam}`}
 				class:selected={isRouteSelected({ routeId, path: 'wallet' })}
 				class="link not-themed"
 				class:collapsed={$menuCollapsed}
 			>
 				<IconWallet />
-				<span class:visually-hidden={$menuCollapsed}>{$i18n.wallet.title}</span>
+				<span>{$i18n.wallet.title}</span>
 			</a>
 
 			<a
+				role="menuitem"
 				href={`/upgrade-dock${queryParam}`}
 				class:selected={isRouteSelected({ routeId, path: 'upgrade-dock' })}
 				class="link not-themed"
 				class:collapsed={$menuCollapsed}
 			>
 				<IconUpgradeDock size="20px" />
-				<span class:visually-hidden={$menuCollapsed}>{$i18n.upgrade.title}</span>
+				<span>{$i18n.upgrade.title}</span>
 			</a>
 		</div>
 	</nav>
@@ -163,6 +174,7 @@
 	@use '../../styles/mixins/fonts';
 	@use '../../styles/mixins/media';
 	@use '../../styles/mixins/a11y';
+	@use '../../styles/mixins/text';
 
 	.selected {
 		background: var(--color-background);
@@ -175,18 +187,20 @@
 	}
 
 	a.link {
-		display: inline-flex;
+		display: flex;
+		position: relative;
+		justify-content: flex-start;
 		align-items: center;
 
 		gap: var(--padding);
 
-		padding: var(--padding-1_5x) var(--padding-4x);
-
-		width: var(--menu-width);
+		padding: var(--padding-1_5x) var(--padding-3x);
 
 		transition: background var(--animation-time) ease-out;
 
 		text-decoration: none;
+
+		@include text.truncate;
 
 		&:hover:not(:disabled),
 		&:active:not(:disabled) {
@@ -196,10 +210,21 @@
 
 		span {
 			font-size: var(--font-size-ultra-small);
+
+			opacity: 1;
+			transition: opacity var(--animation-time);
+		}
+
+		:global(svg) {
+			width: 24px;
+			min-width: 24px;
+			height: 24px;
 		}
 
 		&.collapsed {
-			padding: var(--padding-1_5x) var(--padding-2x);
+			span {
+				opacity: 0;
+			}
 		}
 	}
 
@@ -214,13 +239,12 @@
 
 	nav {
 		flex: 1;
+
+		width: 100%;
+		height: 100%;
 	}
 
 	.satellite-features {
 		margin: 0 0 var(--padding-4x);
-	}
-
-	.visually-hidden {
-		@include a11y.visually-hidden;
 	}
 </style>

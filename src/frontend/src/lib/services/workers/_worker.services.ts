@@ -9,4 +9,8 @@ export abstract class AppWorker {
 		const Workers = await import('$lib/workers/workers?worker');
 		return new Workers.default();
 	}
+
+	terminate = ()	=> {
+		this._worker.terminate();
+	}
 }

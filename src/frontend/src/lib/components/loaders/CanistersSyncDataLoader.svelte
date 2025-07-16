@@ -19,8 +19,7 @@
 	let worker = $state<CyclesWorker | undefined>(undefined);
 
 	onMount(async () => (worker = await CyclesWorker.init()));
-
-	onDestroy(() => worker?.destroy());
+	onDestroy(() => worker?.terminate());
 
 	const debounceStart = debounce(() =>
 		worker?.startCyclesTimer({

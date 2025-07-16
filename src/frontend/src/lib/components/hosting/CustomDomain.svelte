@@ -83,7 +83,7 @@
 	};
 
 	onMount(async () => (worker = await HostingWorker.init()));
-	onDestroy(() => worker?.stopCustomDomainRegistrationTimer());
+	onDestroy(() => worker?.terminate());
 
 	run(() => {
 		// @ts-expect-error TODO: to be migrated to Svelte v5

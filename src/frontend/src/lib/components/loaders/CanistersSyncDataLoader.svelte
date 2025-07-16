@@ -23,6 +23,8 @@
 
 	onMount(async () => (worker = await initCyclesWorker()));
 
+	onDestroy(() => worker?.destroy());
+
 	const debounceStart = debounce(() =>
 		worker?.startCyclesTimer({
 			segments

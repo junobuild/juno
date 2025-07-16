@@ -29,6 +29,9 @@ export const initAuthWorker = async () => {
 			authWorker.postMessage({
 				msg: 'startIdleTimer'
 			});
+		},
+		destroy: () => {
+			authWorker.terminate();
 		}
 	};
 };

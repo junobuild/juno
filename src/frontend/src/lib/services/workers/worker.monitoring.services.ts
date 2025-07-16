@@ -21,6 +21,7 @@ export interface MonitoringWorker {
 		segments: CanisterSegment[];
 		missionControlId: MissionControlId;
 	}) => void;
+	destroy: () => void;
 }
 
 export const initMonitoringWorker = async (): Promise<MonitoringWorker> => {
@@ -57,6 +58,9 @@ export const initMonitoringWorker = async (): Promise<MonitoringWorker> => {
 				msg: 'restartMonitoringTimer',
 				data: { segments, missionControlId: missionControlId.toText() }
 			});
+		},
+		destroy: () => {
+			monitoringWorker.terminate();
 		}
 	};
 };

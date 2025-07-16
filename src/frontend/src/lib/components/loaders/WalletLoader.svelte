@@ -19,6 +19,8 @@
 		worker = await initWalletWorker();
 	};
 
+	onDestroy(() => worker?.destroy());
+
 	$effect(() => {
 		if (isNullish($missionControlIdDerived)) {
 			worker?.stop();

@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { debounce } from '@dfinity/utils';
-	import { onMount, type Snippet } from 'svelte';
+	import { onDestroy, onMount, type Snippet } from 'svelte';
 	import { run } from 'svelte/legacy';
 	import { browser } from '$app/environment';
 	import { onNavigate } from '$app/navigation';
@@ -43,9 +43,11 @@
 		(async () => await initMissionControl($authStore))();
 	});
 
-	let worker: { syncAuthIdle: (auth: AuthStoreData) => void } | undefined = $state();
+	let worker: { syncAuthIdle: (auth: AuthStoreData) => void; destroy: () => void } | undefined =
+		$state();
 
 	onMount(async () => (worker = await initAuthWorker()));
+	onDestroy(() => worker?.destroy());
 
 	run(() => {
 		// @ts-expect-error TODO: to be migrated to Svelte v5

@@ -61,6 +61,7 @@
 					callback: HostingCallback;
 				}) => void;
 				stopCustomDomainRegistrationTimer: () => void;
+				destroy: () => void;
 		  }
 		| undefined = $state();
 
@@ -94,7 +95,10 @@
 	};
 
 	onMount(async () => (worker = await initHostingWorker()));
-	onDestroy(() => worker?.stopCustomDomainRegistrationTimer());
+	onDestroy(() => {
+		worker?.stopCustomDomainRegistrationTimer();
+		worker?.destroy();
+	});
 
 	run(() => {
 		// @ts-expect-error TODO: to be migrated to Svelte v5

@@ -38,6 +38,9 @@ export const initHostingWorker = async () => {
 			hostingWorker.postMessage({
 				msg: 'stopCustomDomainRegistrationTimer'
 			});
+		},
+		destroy: () => {
+			hostingWorker.terminate();
 		}
 	};
 };

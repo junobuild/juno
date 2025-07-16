@@ -13,11 +13,12 @@ export interface CyclesWorker {
 	startCyclesTimer: (params: { segments: CanisterSegment[] }) => void;
 	stopCyclesTimer: () => void;
 	restartCyclesTimer: (segments: CanisterSegment[]) => void;
+	destroy: () => void;
 }
 
 export const initCyclesWorker = async (): Promise<CyclesWorker> => {
 	const CyclesWorker = await import('$lib/workers/workers?worker');
-	const cyclesWorker: Worker = new CyclesWorker.default();
+	let cyclesWorker: Worker | null = new CyclesWorker.default();
 
 	cyclesWorker.onmessage = ({ data }: MessageEvent<PostMessages>) => {
 		const { msg } = data;
@@ -34,21 +35,24 @@ export const initCyclesWorker = async (): Promise<CyclesWorker> => {
 
 	return {
 		startCyclesTimer: ({ segments }: { segments: CanisterSegment[] }) => {
-			cyclesWorker.postMessage({
+			cyclesWorker?.postMessage({
 				msg: 'startCyclesTimer',
 				data: { segments }
 			});
 		},
 		stopCyclesTimer: () => {
-			cyclesWorker.postMessage({
+			cyclesWorker?.postMessage({
 				msg: 'stopCyclesTimer'
 			});
 		},
 		restartCyclesTimer: (segments) => {
-			cyclesWorker.postMessage({
+			cyclesWorker?.postMessage({
 				msg: 'restartCyclesTimer',
 				data: { segments }
 			});
+		},
+		destroy: () => {
+			cyclesWorker.terminate();
 		}
 	};
 };

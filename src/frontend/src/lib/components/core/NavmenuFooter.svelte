@@ -25,7 +25,7 @@
 		padding: var(--padding-2x) 0 calc(var(--padding-4x) - 2px);
 
 		min-width: var(--menu-width);
-		width: var(--menu-width);;
+		width: var(--menu-width);
 		margin: 0 auto;
 	}
 

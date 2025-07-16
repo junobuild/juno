@@ -8,7 +8,12 @@
 	let { size = '24px', color = 'lavender' }: Props = $props();
 </script>
 
-<svg id="Layer_2" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 274.35 220.39" height={size} class:white={color === 'white'}
+<svg
+	id="Layer_2"
+	xmlns="http://www.w3.org/2000/svg"
+	viewBox="0 0 274.35 220.39"
+	height={size}
+	class:white={color === 'white'}
 	><g id="Layer_1-2"
 		><g
 			><rect x="0" y="0" width="220.39" height="220.39" rx="110.19" ry="110.19" /><circle

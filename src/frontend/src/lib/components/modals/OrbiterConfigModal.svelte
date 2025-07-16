@@ -2,7 +2,6 @@
 	import type { Principal } from '@dfinity/principal';
 	import { isNullish, nonNullish } from '@dfinity/utils';
 	import { compare } from 'semver';
-	import type { SvelteComponent } from 'svelte';
 	import type { OrbiterSatelliteFeatures } from '$declarations/orbiter/orbiter.did';
 	import Checkbox from '$lib/components/ui/Checkbox.svelte';
 	import CheckboxGroup from '$lib/components/ui/CheckboxGroup.svelte';
@@ -42,8 +41,7 @@
 
 	let step: 'init' | 'in_progress' | 'ready' | 'error' = $state('init');
 
-	let collapsibleRef: (SvelteComponent & { open: () => void; close: () => void }) | undefined =
-		$state(undefined);
+	let collapsibleRef: Collapsible | undefined = $state(undefined);
 
 	const openOptions = (features: OrbiterSatelliteFeatures | undefined) => {
 		if (
@@ -196,7 +194,9 @@
 			{#if featuresSupported}
 				<div class="options">
 					<Collapsible bind:this={collapsibleRef}>
-						<svelte:fragment slot="header">{$i18n.core.advanced_options}</svelte:fragment>
+						{#snippet header()}
+							{$i18n.core.advanced_options}
+						{/snippet}
 
 						<div class="card-container with-title">
 							<span class="title">{$i18n.analytics.tracked_metrics}</span>

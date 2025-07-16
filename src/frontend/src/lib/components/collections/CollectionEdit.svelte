@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { fromNullable, isNullish, nonNullish, fromNullishNullable } from '@dfinity/utils';
-	import { type SvelteComponent, getContext } from 'svelte';
+	import { getContext } from 'svelte';
 	import type { RateConfig, Rule, CollectionType } from '$declarations/satellite/satellite.did';
 	import CollectionDelete from '$lib/components/collections/CollectionDelete.svelte';
 	import Checkbox from '$lib/components/ui/Checkbox.svelte';
@@ -162,8 +162,7 @@
 
 	let disabled = $derived(isNullish(collection) || collection === '');
 
-	let collapsibleRef: (SvelteComponent & { open: () => void; close: () => void }) | undefined =
-		$state(undefined);
+	let collapsibleRef: Collapsible | undefined = $state(undefined);
 
 	const toggle = (toggleOptions: boolean) => {
 		if (!toggleOptions) {
@@ -247,7 +246,9 @@
 		</div>
 
 		<Collapsible bind:this={collapsibleRef}>
-			<svelte:fragment slot="header">{$i18n.collections.options}</svelte:fragment>
+			{#snippet header()}
+				{$i18n.collections.options}
+			{/snippet}
 
 			<div class="options">
 				<div>

@@ -181,7 +181,9 @@
 	{#if loadingSegments === 'ready'}
 		<div class="options">
 			<Collapsible>
-				<svelte:fragment slot="header">{$i18n.core.advanced_options}</svelte:fragment>
+				{#snippet header()}
+					{$i18n.core.advanced_options}
+				{/snippet}
 
 				<div>
 					<p class="profile-info">{$i18n.cli.profile_info}</p>

@@ -4,7 +4,6 @@
 	import { layoutMenuState, layoutMenuOpen } from '$lib/stores/layout-menu.store';
 	import { handleKeyPress } from '$lib/utils/keyboard.utils';
 	import { menuCollapsed, menuExpanded } from '$lib/derived/layout-menu.derived';
-	import { fade } from 'svelte/transition';
 	import { i18n } from '$lib/stores/i18n.store';
 	import IconBack from '$lib/components/icons/IconBack.svelte';
 
@@ -28,9 +27,7 @@
 		tabindex="-1"
 	>
 		<div class="logo">
-			{#if $menuExpanded}
-				<div in:fade><Logo color="white" /></div>
-			{/if}
+			<Logo color="white" variant={$menuExpanded ? 'text' : 'icon'} />
 		</div>
 
 		{@render children()}

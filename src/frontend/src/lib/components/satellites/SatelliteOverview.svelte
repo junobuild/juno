@@ -1,18 +1,19 @@
 <script lang="ts">
-	import { fromNullable } from '@dfinity/utils';
+	import { onMount } from 'svelte';
 	import type { Satellite } from '$declarations/mission_control/mission_control.did';
-	import CanisterMonitoring from '$lib/components/canister/CanisterMonitoring.svelte';
 	import CanisterOverview from '$lib/components/canister/CanisterOverview.svelte';
 	import CanisterSubnet from '$lib/components/canister/CanisterSubnet.svelte';
-	import MonitoringDisabled from '$lib/components/monitoring/MonitoringDisabled.svelte';
-	import SatelliteActions from '$lib/components/satellites/SatelliteActions.svelte';
+	import CanisterSyncData from '$lib/components/canister/CanisterSyncData.svelte';
+	import SatelliteMonitoringActions from '$lib/components/satellites/SatelliteMonitoringActions.svelte';
 	import SatelliteName from '$lib/components/satellites/SatelliteName.svelte';
-	import SatelliteOverviewCustomDomain from '$lib/components/satellites/SatelliteOverviewCustomDomain.svelte';
+	import SatelliteOverviewActions from '$lib/components/satellites/SatelliteOverviewActions.svelte';
+	import SatelliteOverviewCustomDomains from '$lib/components/satellites/SatelliteOverviewCustomDomains.svelte';
 	import SatelliteOverviewVersion from '$lib/components/satellites/SatelliteOverviewVersion.svelte';
 	import Identifier from '$lib/components/ui/Identifier.svelte';
 	import Value from '$lib/components/ui/Value.svelte';
-	import { satellitesNotLoaded } from '$lib/derived/satellite.derived';
+	import { listCustomDomains } from '$lib/services/custom-domain.services';
 	import { i18n } from '$lib/stores/i18n.store';
+	import type { CanisterSyncData as CanisterSyncDataType } from '$lib/types/canister';
 	import type { SatelliteIdText } from '$lib/types/satellite';
 
 	interface Props {
@@ -23,16 +24,29 @@
 
 	let satelliteId: SatelliteIdText = $derived(satellite.satellite_id.toText());
 
-	let monitoring = $derived(fromNullable(fromNullable(satellite.settings ?? [])?.monitoring ?? []));
+	let canister = $state<CanisterSyncDataType | undefined>(undefined);
+
+	onMount(async () => {
+		await listCustomDomains({
+			satelliteId: satellite.satellite_id,
+			reload: false
+		});
+	});
 </script>
+
+<CanisterSyncData canisterId={satellite.satellite_id} bind:canister />
 
 <div class="card-container with-title">
 	<span class="title">{$i18n.satellites.overview}</span>
 
-	<div class="columns-3 fit-column-1">
+	<div class="columns-3">
 		<div>
 			<SatelliteName {satellite} />
 
+			<SatelliteOverviewCustomDomains {satellite} />
+		</div>
+
+		<div>
 			<Value>
 				{#snippet label()}
 					{$i18n.satellites.id}
@@ -41,17 +55,15 @@
 			</Value>
 
 			<CanisterSubnet canisterId={satellite.satellite_id} />
-
-			<SatelliteOverviewCustomDomain {satellite} />
 		</div>
 
 		<div>
 			<SatelliteOverviewVersion {satelliteId} />
 		</div>
 	</div>
-
-	<SatelliteActions {satellite} />
 </div>
+
+<SatelliteOverviewActions {satellite} {canister} />
 
 <div class="card-container with-title">
 	<span class="title">{$i18n.monitoring.title}</span>
@@ -62,12 +74,10 @@
 			segment="satellite"
 			heapWarningLabel={$i18n.canisters.warning_satellite_heap_memory}
 		/>
-
-		<CanisterMonitoring segment="satellite" canisterId={satellite.satellite_id}>
-			<MonitoringDisabled {monitoring} loading={$satellitesNotLoaded} />
-		</CanisterMonitoring>
 	</div>
 </div>
+
+<SatelliteMonitoringActions {satellite} {canister} />
 
 <style lang="scss">
 	.card-container:last-of-type {

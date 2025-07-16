@@ -1,6 +1,6 @@
 [package]
 name = "junobuild-macros"
-version = "0.0.3"
+version = "0.1.0"
 authors.workspace = true
 edition.workspace = true
 repository.workspace = true
@@ -14,11 +14,8 @@ license-file = "LICENSE.md"
 proc-macro = true
 
 [dependencies]
-quote = "1.0.35"
-syn = { version = "2.0.48", features = ["full"] }
-proc-macro2 = "1.0.76"
+quote = "1.0.38"
+syn = { version = "2.0.98", features = ["full"] }
+proc-macro2 = "1.0.93"
 serde.workspace = true
-serde_tokenstream = "0.2.0"
-
-[dev-dependencies]
-trybuild = "1.0.89"
+serde_tokenstream = "0.2.2"

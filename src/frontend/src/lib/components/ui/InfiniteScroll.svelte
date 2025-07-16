@@ -1,31 +1,30 @@
-<!-- @migration-task Error while migrating Svelte code: Can't migrate code with afterUpdate and beforeUpdate. Please migrate by hand. -->
 <script lang="ts">
 	import { isNullish } from '@dfinity/utils';
-	import { afterUpdate, beforeUpdate, createEventDispatcher, onDestroy } from 'svelte';
+	import { onDestroy, type Snippet } from 'svelte';
 
-	// TODO: migrate to Svelte v5
-	// e.g. afterUpdate cannot be used in runes mode
+	interface Props {
+		onintersect: () => void;
+		disabled?: boolean;
+		// IntersectionObserverInit is not recognized by the linter
 
-	/**
-	 * Source: @dfinity/gix-components
-	 */
+		options?: IntersectionObserverInit;
+		children: Snippet;
+	}
 
-	export let disabled = false;
+	let {
+		onintersect,
+		disabled = false,
+		options = {
+			rootMargin: '300px',
+			threshold: 0
+		},
+		children
+	}: Props = $props();
 
-	// IntersectionObserverInit is not recognized by the linter
-	// eslint-disable-next-line no-undef
-	export let options: IntersectionObserverInit = {
-		rootMargin: '300px',
-		threshold: 0
-	};
+	let target: HTMLDivElement | undefined;
 
-	let container: HTMLDivElement | undefined;
-
-	const dispatch = createEventDispatcher();
-
-	// eslint-disable-next-line local-rules/prefer-object-params
-	const onIntersection = (entries: IntersectionObserverEntry[], observer: IntersectionObserver) => {
-		const intersecting: IntersectionObserverEntry | undefined = entries.find(
+	const onIntersection = (entries: IntersectionObserverEntry[]) => {
+		const intersecting = entries.find(
 			({ isIntersecting }: IntersectionObserverEntry) => isIntersecting
 		);
 
@@ -33,10 +32,7 @@
 			return;
 		}
 
-		// We can disconnect the observer. We have detected an intersection and consumer is going to fetch new elements.
-		observer.disconnect();
-
-		dispatch('junoIntersect');
+		onintersect();
 	};
 
 	const observer: IntersectionObserver = new IntersectionObserver(onIntersection, options);
@@ -45,19 +41,19 @@
 	let skipContainerNextUpdate = false;
 
 	// We disconnect previous observer before any update. We do want to trigger an intersection in case of layout shifting.
-	beforeUpdate(() => {
+	$effect.pre(() => {
 		if (!skipContainerNextUpdate) {
 			observer.disconnect();
 		}
 
-		skipContainerNextUpdate = isNullish(container);
+		skipContainerNextUpdate = isNullish(target);
 	});
 
-	afterUpdate(() => {
+	$effect(() => {
 		// The DOM has been updated. We reset the observer to the current last HTML element of the infinite list.
 
-		// If not children, no element to observe
-		if (isNullish(container) || isNullish(container.lastElementChild)) {
+		// If no element to observe
+		if (isNullish(target)) {
 			return;
 		}
 
@@ -66,18 +62,21 @@
 			return;
 		}
 
-		observer.observe(container.lastElementChild);
+		observer.observe(target);
 	});
 
 	onDestroy(() => observer.disconnect());
 </script>
 
-<div bind:this={container}>
-	<slot />
-</div>
+{@render children()}
+
+<div bind:this={target} class="intersection-observer-target"></div>
 
 <style lang="scss">
-	div {
-		display: contents;
+	.intersection-observer-target {
+		width: 0;
+		height: 0;
+		opacity: 0;
+		visibility: hidden;
 	}
 </style>

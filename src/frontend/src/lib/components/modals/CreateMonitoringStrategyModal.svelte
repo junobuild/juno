@@ -1,6 +1,6 @@
 <script lang="ts">
 	import type { Principal } from '@dfinity/principal';
-	import { fromNullable, nonNullish, notEmptyString } from '@dfinity/utils';
+	import { nonNullish, notEmptyString, fromNullishNullable } from '@dfinity/utils';
 	import type {
 		CyclesMonitoringStrategy,
 		Orbiter,
@@ -23,7 +23,7 @@
 	import { wizardBusy } from '$lib/stores/busy.store';
 	import { i18n } from '$lib/stores/i18n.store';
 	import type { JunoModalDetail, JunoModalCreateMonitoringStrategyDetail } from '$lib/types/modal';
-	import type { MonitoringStrategyProgress } from '$lib/types/strategy';
+	import type { MonitoringStrategyProgress } from '$lib/types/progress-strategy';
 	import type { Option } from '$lib/types/utils';
 	import { metadataEmail } from '$lib/utils/metadata.utils';
 
@@ -83,13 +83,13 @@
 	let missionControlFundCycles: bigint | undefined = $state(undefined);
 
 	let missionControlCycles = $derived(
-		fromNullable(fromNullable(settings?.monitoring ?? [])?.cycles ?? [])
+		fromNullishNullable(fromNullishNullable(settings?.monitoring)?.cycles)
 	);
 
 	let missionControl: { monitored: boolean; strategy: CyclesMonitoringStrategy | undefined } =
 		$derived({
 			monitored: missionControlCycles?.enabled === true,
-			strategy: fromNullable(missionControlCycles?.strategy ?? [])
+			strategy: fromNullishNullable(missionControlCycles?.strategy)
 		});
 
 	// Monitoring email
@@ -116,10 +116,12 @@
 
 	// Monitoring config
 
-	let monitoringConfig = $derived(fromNullable(fromNullable(user?.config ?? [])?.monitoring ?? []));
+	let monitoringConfig = $derived(
+		fromNullishNullable(fromNullishNullable(user?.config)?.monitoring)
+	);
 
 	let defaultStrategy = $derived(
-		fromNullable(fromNullable(monitoringConfig?.cycles ?? [])?.default_strategy ?? [])
+		fromNullishNullable(fromNullishNullable(monitoringConfig?.cycles)?.default_strategy)
 	);
 
 	let saveAsDefaultStrategy = $state(false);
@@ -175,7 +177,7 @@
 	};
 </script>
 
-<Modal on:junoClose={onclose} onback={step === 'mission_control' ? back : undefined}>
+<Modal {onclose} onback={step === 'mission_control' ? back : undefined}>
 	{#if step === 'ready'}
 		<div class="msg">
 			<p>

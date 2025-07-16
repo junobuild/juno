@@ -1,10 +1,10 @@
-use crate::memory::STATE;
+use crate::state::memory::manager::STATE;
+use crate::state::types::state::{SatelliteConfig, SatelliteConfigs};
 use crate::types::interface::{DelSatelliteConfig, SetSatelliteConfig};
-use crate::types::state::{SatelliteConfig, SatelliteConfigs};
 use ic_cdk::api::time;
 use junobuild_shared::assert::assert_version;
-use junobuild_shared::constants::INITIAL_VERSION;
-use junobuild_shared::types::state::{SatelliteId, Timestamp, Version};
+use junobuild_shared::types::state::{SatelliteId, Timestamp};
+use junobuild_shared::version::next_version;
 
 pub fn set_satellite_config(
     satellite_id: &SatelliteId,
@@ -21,6 +21,15 @@ pub fn del_satellite_config(
 ) -> Result<(), String> {
     STATE.with(|state| {
         del_satellite_config_impl(satellite_id, config, &mut state.borrow_mut().heap.config)
+    })
+}
+
+pub fn get_satellite_config(satellite_id: &SatelliteId) -> Option<SatelliteConfig> {
+    STATE.with(|state| {
+        let binding = state.borrow();
+        let config = binding.heap.config.get(satellite_id);
+
+        config.cloned()
     })
 }
 
@@ -53,15 +62,13 @@ fn set_satellite_config_impl(
         Some(current_config) => current_config.created_at,
     };
 
-    let version: Version = match current_config {
-        None => INITIAL_VERSION,
-        Some(current_config) => current_config.version.unwrap_or_default() + 1,
-    };
+    let version = next_version(&current_config);
 
     let updated_at: u64 = now;
 
     let new_config = SatelliteConfig {
         features: config.features.clone(),
+        restricted_origin: config.restricted_origin.clone(),
         created_at,
         updated_at,
         version: Some(version),

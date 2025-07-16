@@ -140,7 +140,6 @@ const extractStartScript = (htmlFile) => {
  * 1. svelte uses inline style for animation (scale, fly, fade, etc.)
  *    source: https://github.com/sveltejs/svelte/issues/6662
  */
-
 const updateCSP = (indexHtml) => {
 	const sw = /<script[\s\S]*?>([\s\S]*?)<\/script>/gm;
 
@@ -148,7 +147,7 @@ const updateCSP = (indexHtml) => {
 
 	let m;
 	while ((m = sw.exec(indexHtml))) {
-		const content = m[1];
+		const [_, content] = m;
 
 		indexHashes.push(`'sha256-${createHash('sha256').update(content).digest('base64')}'`);
 	}
@@ -158,13 +157,11 @@ const updateCSP = (indexHtml) => {
 	const csp = `<meta
         http-equiv="Content-Security-Policy"
         content="default-src 'none';
-        connect-src 'self' https://ic0.app https://icp0.io https://icp-api.io ${JUNO_CDN};
+        connect-src 'self' https://ic0.app https://icp0.io https://icp-api.io https://*.icp0.io ${JUNO_CDN};
         img-src 'self' data:;
         child-src 'self';
         manifest-src 'self';
-        script-src 'unsafe-eval' 'unsafe-inline' 'strict-dynamic' ${indexHashes.join(
-					' '
-				)} ${JUNO_CDN};
+        script-src 'unsafe-eval' 'unsafe-inline' 'strict-dynamic' ${indexHashes.join(' ')} ${JUNO_CDN};
         base-uri 'self';
         form-action 'none';
         style-src 'self' 'unsafe-inline' ${JUNO_CDN};

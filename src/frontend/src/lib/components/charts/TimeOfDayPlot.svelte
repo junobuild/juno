@@ -26,8 +26,8 @@
 
 <LayerCake
 	padding={padding ?? { top: 16, right: 16, bottom: 16, left: 70 }}
-	x={'x'}
-	y={'y'}
+	x="x"
+	y="y"
 	xDomain={[0, 24 * 60 * 60]}
 	yDomain={allDays}
 	xScale={scaleTime()}

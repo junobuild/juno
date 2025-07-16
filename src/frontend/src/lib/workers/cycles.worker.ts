@@ -1,25 +1,25 @@
-import type { MemorySize } from '$declarations/satellite/satellite.did';
 import { icpXdrConversionRate } from '$lib/api/cmc.api';
 import { canisterStatus } from '$lib/api/ic.api';
-import { memorySize as memorySizeOrbiter } from '$lib/api/orbiter.worker.api';
-import { memorySize as memorySizeSatellite } from '$lib/api/satellites.worker.api';
 import {
 	CYCLES_WARNING,
 	MEMORY_HEAP_WARNING,
 	SYNC_CYCLES_TIMER_INTERVAL
-} from '$lib/constants/constants';
+} from '$lib/constants/app.constants';
 import { cyclesIdbStore } from '$lib/stores/idb.store';
 import type { CanisterInfo, CanisterSegment, CanisterSyncData } from '$lib/types/canister';
-import type { PostMessage, PostMessageDataRequest } from '$lib/types/post-message';
+import type { PostMessageDataRequest, PostMessageRequest } from '$lib/types/post-message';
 import { cyclesToICP } from '$lib/utils/cycles.utils';
-import { emitCanister, emitSavedCanisters, loadIdentity } from '$lib/utils/worker.utils';
+import {
+	emitCanister,
+	emitCanisters,
+	emitSavedCanisters,
+	loadIdentity
+} from '$lib/utils/worker.utils';
 import type { Identity } from '@dfinity/agent';
-import { isNullish, nonNullish } from '@dfinity/utils';
+import { isNullish } from '@dfinity/utils';
 import { set } from 'idb-keyval';
 
-export const onCyclesMessage = async ({
-	data: dataMsg
-}: MessageEvent<PostMessage<PostMessageDataRequest>>) => {
+export const onCyclesMessage = async ({ data: dataMsg }: MessageEvent<PostMessageRequest>) => {
 	const { msg, data } = dataMsg;
 
 	switch (msg) {
@@ -82,6 +82,8 @@ const syncCanisters = async ({
 		return;
 	}
 
+	syncing = true;
+
 	await emitSavedCanisters({
 		canisterIds: segments.map(({ canisterId }) => canisterId),
 		customStore: cyclesIdbStore
@@ -105,80 +107,64 @@ const syncIcStatusCanisters = async ({
 	segments: CanisterSegment[];
 	trillionRatio: bigint;
 }) => {
-	await Promise.allSettled(
-		segments.map(async ({ canisterId, segment }) => {
-			try {
-				const [canisterResult, memorySizeResult] = await Promise.allSettled([
-					canisterStatus({ canisterId, identity }),
-					...(segment === 'satellite'
-						? [memorySizeSatellite({ satelliteId: canisterId, identity })]
-						: segment === 'orbiter'
-							? [memorySizeOrbiter({ orbiterId: canisterId, identity })]
-							: [])
-				]);
+	const syncStatusAndMemoryPerCanister = async ({
+		canisterId
+	}: CanisterSegment): Promise<CanisterSyncData> => {
+		try {
+			const canisterInfo = await canisterStatus({ canisterId, identity });
 
-				if (canisterResult.status === 'rejected') {
-					throw canisterResult.reason;
-				}
+			const canister = mapCanisterSyncData({
+				canisterInfo,
+				trillionRatio,
+				canisterId: canisterInfo.canisterId
+			});
 
-				const { value: canisterInfo } = canisterResult;
+			// We emit the canister data this way the UI can render asynchronously render the information without waiting for all canisters status to be fetched.
+			emitCanister(canister);
 
-				// We silence those error because we managed the canister status.
-				// Satellites and orbiters which were not migrated for example will throw an error because the end point won't be exposed.
-				if (memorySizeResult?.status === 'rejected') {
-					console.error(`Error fetching memory size information: `, memorySizeResult.reason);
-				}
+			return canister;
+		} catch (err: unknown) {
+			console.error(err);
 
-				await syncCanister({
-					canisterInfo,
-					trillionRatio,
-					canisterId: canisterInfo.canisterId,
-					memory: memorySizeResult?.status === 'fulfilled' ? memorySizeResult.value : undefined
-				});
-			} catch (err: unknown) {
-				console.error(err);
+			return {
+				id: canisterId,
+				sync: 'error'
+			};
+		}
+	};
 
-				emitCanister({
-					id: canisterId,
-					sync: 'error'
-				});
+	const canisters = await Promise.all(segments.map(syncStatusAndMemoryPerCanister));
 
-				throw err;
-			}
-		})
-	);
+	// Save information in indexed-db as well to load previous values on navigation and refresh
+	for (const { id, ...rest } of canisters.filter(({ sync }) => sync !== 'error')) {
+		await set(id, { id, ...rest }, cyclesIdbStore);
+	}
+
+	// We also emits all canisters status for syncing the potential errors but also to hold the value in the UI in a stores that gets updated in bulk and lead to less re-render
+	emitCanisters(canisters);
 };
 
-const syncCanister = async ({
+const mapCanisterSyncData = ({
 	canisterId,
 	trillionRatio,
-	canisterInfo: { canisterId: _, cycles, ...rest },
-	memory
+	canisterInfo: { canisterId: _, memoryMetrics, cycles, ...rest }
 }: {
 	canisterId: string;
 	trillionRatio: bigint;
 	canisterInfo: CanisterInfo;
-	memory: MemorySize | undefined;
-}) => {
-	const canister: CanisterSyncData = {
-		id: canisterId,
-		sync: 'synced',
-		data: {
-			icp: cyclesToICP({ cycles, trillionRatio }),
-			warning: {
-				cycles: cycles < CYCLES_WARNING,
-				heap: (memory?.heap ?? 0n) >= MEMORY_HEAP_WARNING
-			},
-			canister: {
-				cycles,
-				...rest
-			},
-			...(nonNullish(memory) && { memory })
+}): CanisterSyncData => ({
+	id: canisterId,
+	sync: 'synced',
+	data: {
+		icp: cyclesToICP({ cycles, trillionRatio }),
+		warning: {
+			cycles: cycles < CYCLES_WARNING,
+			heap: (memoryMetrics.wasmMemorySize ?? 0n) >= MEMORY_HEAP_WARNING
+		},
+		canister: {
+			cycles,
+			memoryMetrics,
+			...rest
 		}
-	};
-
-	// Save information in indexed-db as well to load previous values on navigation and refresh
-	await set(canisterId, canister, cyclesIdbStore);
-
-	emitCanister(canister);
-};
+	}
+});

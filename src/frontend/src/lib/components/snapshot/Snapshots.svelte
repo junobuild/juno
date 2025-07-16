@@ -9,12 +9,12 @@
 	import SnapshotsLoader from '$lib/components/snapshot/SnapshotsLoader.svelte';
 	import SnapshotsRefresh from '$lib/components/snapshot/SnapshotsRefresh.svelte';
 	import Identifier from '$lib/components/ui/Identifier.svelte';
-	import SkeletonText from '$lib/components/ui/SkeletonText.svelte';
+	import SkeletonTableRow from '$lib/components/ui/SkeletonTableRow.svelte';
 	import { i18n } from '$lib/stores/i18n.store';
 	import { snapshotStore } from '$lib/stores/snapshot.store';
 	import { toasts } from '$lib/stores/toasts.store';
 	import type { CanisterSegmentWithLabel, Segment } from '$lib/types/canister';
-	import type { Snapshots } from '$lib/types/snapshot';
+	import type { Snapshots } from '$lib/types/progress-snapshot';
 	import type { Option } from '$lib/types/utils';
 	import { formatToDate } from '$lib/utils/date.utils';
 	import { emit } from '$lib/utils/events.utils';
@@ -87,9 +87,9 @@
 			<thead>
 				<tr>
 					<th class="tools"></th>
-					<th class="backup">
+					<th class="snapshot">
 						<div class="actions">
-							<span>{$i18n.canisters.backup}</span>
+							<span>{$i18n.canisters.snapshot}</span>
 
 							<SnapshotsRefresh {canisterId} />
 						</div>
@@ -101,7 +101,7 @@
 
 			<tbody>
 				{#if snapshots !== undefined}
-					{#each snapshots ?? [] as snapshot}
+					{#each snapshots ?? [] as snapshot, index (index)}
 						<tr>
 							<td
 								><SnapshotActions
@@ -120,7 +120,7 @@
 					{#if snapshots === null || snapshots?.length === 0}
 						<tr in:fade
 							><td colspan="4"
-								>{i18nFormat($i18n.canisters.no_backup, [
+								>{i18nFormat($i18n.canisters.no_snapshot, [
 									{
 										placeholder: '{0}',
 										value: segmentLabel
@@ -130,13 +130,7 @@
 						>
 					{/if}
 				{:else}
-					<tr
-						><td colspan="4">
-							<div class="skeleton">
-								&ZeroWidthSpace;<SkeletonText />
-							</div>
-						</td></tr
-					>
+					<SkeletonTableRow colspan={4} />
 				{/if}
 			</tbody>
 		</table>
@@ -161,7 +155,7 @@
 		width: 88px;
 	}
 
-	.backup {
+	.snapshot {
 		@include media.min-width(medium) {
 			width: 25%;
 		}
@@ -175,12 +169,6 @@
 
 	.table-container {
 		margin: var(--padding-8x) 0 var(--padding-2x);
-	}
-
-	.skeleton {
-		display: flex;
-		max-width: 200px;
-		--skeleton-text-padding: var(--padding-0_25x) 0;
 	}
 
 	.actions {

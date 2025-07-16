@@ -5,19 +5,21 @@
 	interface Props {
 		identifier: string;
 		shorten?: boolean;
+		shortenLength?: number;
 		small?: boolean;
+		what?: string;
 	}
 
-	let { identifier, shorten = true, small = true }: Props = $props();
+	let { identifier, shorten = true, shortenLength, small = true, what }: Props = $props();
 
 	let shortIdentifier: string = $derived(
-		shorten ? shortenWithMiddleEllipsis(identifier) : identifier
+		shorten ? shortenWithMiddleEllipsis({ text: identifier, length: shortenLength }) : identifier
 	);
 </script>
 
 <p class:small>
 	<span class:small>{shortIdentifier}</span>
-	<Copy value={identifier} />
+	<Copy value={identifier} {what} />
 </p>
 
 <style lang="scss">

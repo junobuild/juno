@@ -1,4 +1,6 @@
+import { LOCAL_REPLICA_HOST } from '$lib/constants/app.constants';
+import { isDev } from '$lib/env/app.env';
 import type { ActorParameters } from '@junobuild/admin';
 
 export const container = (): Partial<Pick<ActorParameters, 'container'>> =>
-	import.meta.env.DEV ? { container: 'http://localhost:5987' } : {};
+	isDev() ? { container: LOCAL_REPLICA_HOST } : {};

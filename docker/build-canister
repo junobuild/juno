@@ -1,0 +1,158 @@
+#!/usr/bin/env bash
+
+# Builds a single canister
+function build_canister() {
+    local canister=$1
+    local src_root_dir=$2
+    local package_json_dir=$3
+    local output_dir=$4
+    local only_deps=$5
+    local with_certification=$6
+    local target=$7
+    shift 7
+    local extra_build_args=("$@")
+
+    if [ -z "$canister" ]; then
+        echo "ERROR: No canister specified."
+        exit 1
+    fi
+
+    if [ -z "$src_root_dir" ]; then
+        echo "ERROR: No root directory for the source specified."
+        exit 1
+    fi
+
+    if [ -z "$output_dir" ]; then
+        echo "ERROR: No output directory specified."
+        exit 1
+    fi
+
+    if [ ! -d "$output_dir" ]; then
+        echo "ERROR: The output directory '$output_dir' does not exist."
+        exit 1
+    fi
+
+    TARGET="wasm32-unknown-unknown"
+
+    case "$target" in
+        wasm32-wasip1)
+            TARGET="wasm32-wasip1"
+            USE_WASI=1
+            ;;
+        wasm32-unknown-unknown | "")
+            USE_WASI=0
+            ;;
+        *)
+            echo "ERROR: Invalid target specified. Use 'wasm32' (default) or 'wasi'."
+            exit 1
+            ;;
+    esac
+
+    # Checking for installed additional tools
+    if [ "$only_deps" != "1" ]; then
+      check_tools "$TARGET"
+    fi
+
+    echo "Building $canister"
+    echo
+
+    SRC_DIR="$src_root_dir/$canister"
+
+    DID_FILE="$SRC_DIR/$canister.did"
+    PACKAGE_JSON_FILE="$package_json_dir/juno.package.json";
+
+    # Check metadata information are provided when we are not just building the dependencies
+    if [ "$only_deps" != "1" ]; then
+      if [[ ! -f "$DID_FILE" ]]; then
+          echo "ERROR: .did file not found at $DID_FILE"
+          exit 1
+      fi
+
+      if [[ ! -f "$PACKAGE_JSON_FILE" ]]; then
+        echo "ERROR: juno.package.json file not found at $package_json_dir"
+        exit 1
+      fi
+    fi
+
+    # Standardize source references
+    CARGO_HOME="${CARGO_HOME:-"$HOME/.cargo"}"
+
+    # Flags required by third party dependencies such as getrandom
+    FEATURES="--cfg getrandom_backend=\"custom\""
+
+    RUSTFLAGS="-A deprecated --remap-path-prefix $CARGO_HOME=/cargo -C link-args=-zstack-size=3000000 $FEATURES"
+
+    cargo_build_args=(
+        --manifest-path "$SRC_DIR/Cargo.toml"
+        --target "$TARGET"
+        --release
+        --locked
+        -j1
+        )
+    # XXX: for bash > 4.4, empty arrays are considered unset, so do some substitution
+    cargo_build_args+=(${extra_build_args[@]+"${extra_build_args[@]}"})
+
+    echo Running cargo build "${cargo_build_args[@]}"
+    echo RUSTFLAGS: "$RUSTFLAGS"
+    echo
+
+    RUSTFLAGS="$RUSTFLAGS" cargo build "${cargo_build_args[@]}"
+
+    if [ "$only_deps" != "1" ]
+    then
+      CARGO_TARGET_DIR="${CARGO_TARGET_DIR:-$PWD/target}"
+
+      if [ "$USE_WASI" -eq 1 ]; then
+          echo
+          echo "Converting WASI to IC..."
+          wasi2ic "$CARGO_TARGET_DIR/$TARGET/release/$canister.wasm" "$CARGO_TARGET_DIR/$TARGET/release/$canister.wasm" --quiet
+      fi
+
+      # Optimize WASM and set metadata
+      ic-wasm \
+          "$CARGO_TARGET_DIR/$TARGET/release/$canister.wasm" \
+          -o "$output_dir/$canister.wasm" \
+          shrink \
+          --keep-name-section
+
+      # adds the content of $canister.did to the `icp:public candid:service` custom section of the public metadata in the wasm
+      ic-wasm "$output_dir/$canister.wasm" -o "$output_dir/$canister.wasm" metadata candid:service -f "$DID_FILE" -v public --keep-name-section
+
+      # Adds the content of juno.package.json to the `icp:public juno:package` custom section of the WASM metadata.
+      # This file contains metadata about the build such as name, version, and dependencies.
+      # The presence of dependencies indicates that the module is not stock, but extended—
+      # either from the satellite (e.g., serverless functions in Rust) or from Sputnik (e.g., serverless functions in JavaScript).
+      ic-wasm "$output_dir/$canister.wasm" -o "$output_dir/$canister.wasm" metadata juno:package -f "$PACKAGE_JSON_FILE" -v public --keep-name-section
+
+      if [ "$with_certification" -eq 1 ]
+      then
+        # indicate support for certificate version 1 and 2 in the canister metadata
+        ic-wasm "$output_dir/$canister.wasm" -o "$output_dir/$canister.wasm" metadata supported_certificate_versions -d "1,2" -v public --keep-name-section
+      fi
+
+      # --no-name to avoid reproducibility issues
+      # --keep-unused in CI Docker build, but useful for local tooling and particularly for the job that generates the DID files
+      gzip --no-name --force --keep "$output_dir/$canister.wasm"
+    fi
+}
+
+function check_tools() {
+  local target=$1
+
+  if [[ ! "$(command -v ic-wasm)" || "$(ic-wasm --version)" != "ic-wasm 0.8.5" ]]
+  then
+      echo "could not find ic-wasm 0.8.5"
+      echo "ic-wasm version 0.8.5 is needed, please run the following command:"
+      echo "  cargo install ic-wasm --version 0.8.5"
+      exit 1
+  fi
+
+  if [ "$target" = "wasm32-wasip1" ]; then
+      if [[ ! "$(command -v wasi2ic)" || "$(wasi2ic --version)" != "wasi2ic 0.2.15" ]]; then
+          echo "could not find wasi2ic 0.2.15"
+          echo "wasi2ic version 0.2.15 is needed, please run the following command:"
+          echo "  cargo install wasi2ic --version 0.2.15"
+          exit 1
+      fi
+  fi
+}

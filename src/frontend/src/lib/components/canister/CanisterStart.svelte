@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { Principal } from '@dfinity/principal';
+	import { assertNonNullish } from '@dfinity/utils';
 	import { canisterStart } from '$lib/api/ic.api';
 	import Confirmation from '$lib/components/core/Confirmation.svelte';
 	import IconStart from '$lib/components/icons/IconStart.svelte';
@@ -38,15 +39,17 @@
 		try {
 			const canisterId = Principal.fromText(canister.id);
 
-			await canisterStart({ canisterId, identity: $authStore.identity! });
+			assertNonNullish($authStore.identity);
+
+			await canisterStart({ canisterId, identity: $authStore.identity });
 
 			emit({ message: 'junoRestartCycles', detail: { canisterId } });
 			emit({ message: 'junoReloadVersions' });
 
 			close();
 
-			toasts.success(
-				i18nCapitalize(
+			toasts.success({
+				text: i18nCapitalize(
 					i18nFormat($i18n.canisters.start_success, [
 						{
 							placeholder: '{0}',
@@ -54,7 +57,7 @@
 						}
 					])
 				)
-			);
+			});
 		} catch (err: unknown) {
 			toasts.error({
 				text: $i18n.errors.canister_start,

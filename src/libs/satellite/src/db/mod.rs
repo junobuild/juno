@@ -1,6 +1,6 @@
 mod assert;
 pub mod impls;
-mod msg;
+pub mod internal;
 mod runtime;
 mod state;
 pub mod store;

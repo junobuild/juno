@@ -1,6 +1,6 @@
 <script lang="ts">
 	import type { Principal } from '@dfinity/principal';
-	import { notEmptyString } from '@dfinity/utils';
+	import { isEmptyString } from '@dfinity/utils';
 	import type { Orbiter, Satellite } from '$declarations/mission_control/mission_control.did';
 	import Segment from '$lib/components/segments/Segment.svelte';
 	import Value from '$lib/components/ui/Value.svelte';
@@ -22,7 +22,7 @@
 	{/snippet}
 
 	<ul>
-		{#each selectedSatellites as [satelliteId, satellite]}
+		{#each selectedSatellites as [satelliteId, satellite] (satelliteId.toText())}
 			<li>
 				<Segment id={satelliteId}>
 					{satelliteName(satellite)}
@@ -30,12 +30,12 @@
 			</li>
 		{/each}
 
-		{#each selectedOrbiters as [orbiterId, orbiter]}
+		{#each selectedOrbiters as [orbiterId, orbiter] (orbiterId.toText())}
 			{@const orbName = orbiterName(orbiter)}
 
 			<li>
 				<Segment id={orbiterId}>
-					{!notEmptyString(orbName) ? $i18n.analytics.title : orbName}
+					{isEmptyString(orbName) ? $i18n.analytics.title : orbName}
 				</Segment>
 			</li>
 		{/each}

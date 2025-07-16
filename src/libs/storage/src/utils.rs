@@ -2,21 +2,19 @@ use crate::constants::{
     ASSET_ENCODING_NO_COMPRESSION, WELL_KNOWN_CUSTOM_DOMAINS, WELL_KNOWN_II_ALTERNATIVE_ORIGINS,
 };
 use crate::http::types::HeaderField;
+use crate::strategies::StorageAssertionsStrategy;
 use crate::types::interface::AssetNoContent;
 use crate::types::state::FullPath;
 use crate::types::store::{Asset, AssetEncoding, AssetKey};
 use candid::Principal;
-use ic_cdk::api::time;
-use junobuild_collections::assert_stores::assert_permission;
+use junobuild_collections::constants::assets::COLLECTION_ASSET_KEY;
 use junobuild_collections::types::core::CollectionKey;
 use junobuild_collections::types::rules::Permission;
-use junobuild_shared::constants::INITIAL_VERSION;
 use junobuild_shared::list::{filter_timestamps, matcher_regex};
 use junobuild_shared::types::core::Blob;
 use junobuild_shared::types::list::ListParams;
-use junobuild_shared::types::state::{Controllers, Timestamp, UserId, Version};
+use junobuild_shared::types::state::{Controllers, UserId};
 use regex::Regex;
-use std::collections::HashMap;
 
 pub fn map_asset_no_content(asset: &Asset) -> (FullPath, AssetNoContent) {
     (asset.key.full_path.clone(), AssetNoContent::from(asset))
@@ -25,7 +23,7 @@ pub fn map_asset_no_content(asset: &Asset) -> (FullPath, AssetNoContent) {
 pub fn filter_values<'a>(
     caller: Principal,
     controllers: &'a Controllers,
-    rule: &'a Permission,
+    permission: &'a Permission,
     collection: CollectionKey,
     ListParams {
         matcher,
@@ -34,10 +32,11 @@ pub fn filter_values<'a>(
         owner,
     }: &'a ListParams,
     assets: &'a [(&'a FullPath, &'a Asset)],
-) -> Vec<(&'a FullPath, &'a Asset)> {
-    let (regex_key, regex_description) = matcher_regex(matcher);
+    assertions: &impl StorageAssertionsStrategy,
+) -> Result<Vec<(&'a FullPath, &'a Asset)>, String> {
+    let (regex_key, regex_description) = matcher_regex(matcher)?;
 
-    assets
+    let result = assets
         .iter()
         .filter_map(|(key, asset)| {
             if filter_collection(collection.clone(), asset)
@@ -45,14 +44,22 @@ pub fn filter_values<'a>(
                 && filter_description(&regex_description, asset)
                 && filter_owner(*owner, asset)
                 && filter_timestamps(matcher, *asset)
-                && assert_permission(rule, asset.key.owner, caller, controllers)
+                && assertions.assert_list_permission(
+                    permission,
+                    asset.key.owner,
+                    caller,
+                    &collection,
+                    controllers,
+                )
             {
                 Some((*key, *asset))
             } else {
                 None
             }
         })
-        .collect()
+        .collect();
+
+    Ok(result)
 }
 
 fn filter_full_path(regex: &Option<Regex>, asset: &Asset) -> bool {
@@ -122,7 +129,7 @@ pub fn should_include_asset_for_deletion(collection: &CollectionKey, asset_path:
         WELL_KNOWN_II_ALTERNATIVE_ORIGINS.to_string(),
     ];
 
-    collection != "#dapp" || !excluded_paths.contains(asset_path)
+    collection != COLLECTION_ASSET_KEY || !excluded_paths.contains(asset_path)
 }
 
 pub fn map_content_type_headers(content_type: &str) -> Vec<HeaderField> {
@@ -148,7 +155,7 @@ pub fn create_asset_with_content(
     existing_asset: Option<Asset>,
     key: AssetKey,
 ) -> Asset {
-    let mut asset: Asset = create_empty_asset(headers, existing_asset, key);
+    let mut asset: Asset = Asset::prepare(key, headers.to_vec(), &existing_asset);
 
     let encoding = map_content_encoding(&content.as_bytes().to_vec());
 
@@ -159,29 +166,6 @@ pub fn create_asset_with_content(
     asset
 }
 
-pub fn create_empty_asset(
-    headers: &[HeaderField],
-    existing_asset: Option<Asset>,
-    key: AssetKey,
-) -> Asset {
-    let now = time();
-
-    let created_at: Timestamp = match existing_asset.clone() {
-        None => now,
-        Some(existing_asset) => existing_asset.created_at,
-    };
-
-    let version: Version = match existing_asset {
-        None => INITIAL_VERSION,
-        Some(existing_asset) => existing_asset.version.unwrap_or_default() + 1,
-    };
-
-    Asset {
-        key,
-        headers: headers.to_owned(),
-        encodings: HashMap::new(),
-        created_at,
-        updated_at: now,
-        version: Some(version),
-    }
+pub fn clone_asset_encoding_content_chunks(encoding: &AssetEncoding, chunk_index: usize) -> Blob {
+    encoding.content_chunks[chunk_index].clone()
 }

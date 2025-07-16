@@ -1,6 +1,7 @@
 <script lang="ts">
 	import type { Principal } from '@dfinity/principal';
 	import { nonNullish, notEmptyString } from '@dfinity/utils';
+	import type { PrincipalText } from '@dfinity/zod-schemas';
 	import { onMount } from 'svelte';
 	import { fade } from 'svelte/transition';
 	import Identifier from '$lib/components/ui/Identifier.svelte';
@@ -9,7 +10,6 @@
 	import { loadSubnetId } from '$lib/services/subnets.services';
 	import { i18n } from '$lib/stores/i18n.store';
 	import { subnetStore } from '$lib/stores/subnet.store';
-	import type { PrincipalText } from '$lib/types/principal';
 	import type { Subnet } from '$lib/types/subnet';
 	import type { Option } from '$lib/types/utils';
 
@@ -43,7 +43,7 @@
 	</Value>
 </div>
 
-{#if notEmptyString(subnet?.type)}
+{#if notEmptyString(subnet?.specialization)}
 	<div in:fade>
 		<Value>
 			{#snippet label()}

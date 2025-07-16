@@ -1,11 +1,11 @@
 <script lang="ts">
 	import { isNullish } from '@dfinity/utils';
-	import { onDestroy, onMount } from 'svelte';
+	import { onDestroy, untrack } from 'svelte';
 	import { fade, fly } from 'svelte/transition';
 	import IconClose from '$lib/components/icons/IconClose.svelte';
 	import { i18n } from '$lib/stores/i18n.store';
 	import { toasts } from '$lib/stores/toasts.store';
-	import type { ToastLevel, ToastMsg } from '$lib/types/toast';
+	import type { ToastColor, ToastLevel, ToastMsg } from '$lib/types/toast';
 
 	interface Props {
 		msg: ToastMsg;
@@ -18,19 +18,22 @@
 	let text: string = $derived(msg.text);
 	let level: ToastLevel = $derived(msg.level);
 	let detail: string | undefined = $derived(msg.detail);
+	let color: ToastColor | undefined = $derived(msg.color);
 
-	let timer: number | undefined;
+	let timer = $state<number | undefined>(undefined);
 
-	onMount(() => {
+	$effect(() => {
 		const { duration } = msg;
 
-		if (!duration || duration <= 0) {
-			return;
-		}
+		untrack(() => {
+			if (isNullish(duration) || duration <= 0) {
+				return;
+			}
 
-		// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-		// @ts-ignore NodeJS.timeout vs number
-		timer = setTimeout(close, duration);
+			// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+			// @ts-ignore NodeJS.timeout vs number
+			timer = setTimeout(close, duration);
+		});
 	});
 
 	onDestroy(() => clearTimeout(timer));
@@ -43,7 +46,7 @@
 		}
 
 		// Present the message we throw in the backend first
-		const trapKeywords = 'trapped explicitly:' as const;
+		const trapKeywords = 'trapped explicitly:';
 
 		if (!detail.includes(trapKeywords)) {
 			reorgDetail = detail;
@@ -60,7 +63,7 @@
 
 <div
 	role="dialog"
-	class="toast"
+	class={`toast ${color ?? ''}`}
 	class:error={level === 'error'}
 	class:warn={level === 'warn'}
 	in:fly={{ y: 100, duration: 200 }}
@@ -103,6 +106,26 @@
 
 		@media (min-width: 768px) {
 			max-width: 576px;
+		}
+
+		&.secondary {
+			background: var(--color-secondary);
+			color: var(--color-secondary-contrast);
+		}
+
+		&.tertiary {
+			background: var(--color-tertiary);
+			color: var(--color-tertiary-contrast);
+		}
+
+		&.success {
+			background: var(--color-success);
+			color: var(--color-success-contrast);
+		}
+
+		&.warn {
+			background: var(--color-warning);
+			color: var(--color-warning-contrast);
 		}
 
 		&.error {

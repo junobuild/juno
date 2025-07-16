@@ -16,7 +16,7 @@ export interface Controller {
 	scope: ControllerScope;
 	expires_at: [] | [bigint];
 }
-export type ControllerScope = { Write: null } | { Admin: null };
+export type ControllerScope = { Write: null } | { Admin: null } | { Submit: null };
 export interface CreateCanisterConfig {
 	subnet_id: [] | [Principal];
 	name: [] | [string];
@@ -60,6 +60,16 @@ export interface DepositedCyclesEmailNotification {
 	to: [] | [string];
 	enabled: boolean;
 }
+export type FundingErrorCode =
+	| { BalanceCheckFailed: null }
+	| { ObtainCyclesFailed: null }
+	| { DepositFailed: null }
+	| { InsufficientCycles: null }
+	| { Other: string };
+export interface FundingFailure {
+	timestamp: bigint;
+	error_code: FundingErrorCode;
+}
 export interface GetMonitoringHistory {
 	to: [] | [bigint];
 	from: [] | [bigint];
@@ -82,6 +92,7 @@ export interface MonitoringHistory {
 export interface MonitoringHistoryCycles {
 	deposited_cycles: [] | [CyclesBalance];
 	cycles: CyclesBalance;
+	funding_failure: [] | [FundingFailure];
 }
 export interface MonitoringHistoryKey {
 	segment_id: Principal;
@@ -225,7 +236,6 @@ export interface _SERVICE {
 	unset_satellite: ActorMethod<[Principal], undefined>;
 	update_and_start_monitoring: ActorMethod<[MonitoringStartConfig], undefined>;
 	update_and_stop_monitoring: ActorMethod<[MonitoringStopConfig], undefined>;
-	version: ActorMethod<[], string>;
 }
 export declare const idlFactory: IDL.InterfaceFactory;
 export declare const init: (args: { IDL: typeof IDL }) => IDL.Type[];

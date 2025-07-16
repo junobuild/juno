@@ -1,0 +1,2 @@
+type Result = variant { Ok : int32; Err : text };
+service : { get_random : () -> (Result) }

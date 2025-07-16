@@ -1,14 +1,19 @@
 import type { ListParams as ListParamsApi } from '$declarations/deprecated/satellite-0-0-8.did';
 import type {
 	AssetNoContent,
+	CollectionType,
 	Doc,
 	ListResults as ListAssets,
 	ListResults_1 as ListDocs,
-	Rule,
-	RulesType
+	Rule
 } from '$declarations/satellite/satellite.did';
-import { getSatelliteActor008, getSatelliteActor009 } from '$lib/api/actors/actor.deprecated.api';
-import { PAGINATION } from '$lib/constants/constants';
+import {
+	getSatelliteActor0021,
+	getSatelliteActor0022,
+	getSatelliteActor008,
+	getSatelliteActor009
+} from '$lib/api/actors/actor.deprecated.api';
+import { PAGINATION } from '$lib/constants/app.constants';
 import type { OptionIdentity } from '$lib/types/itentity';
 import type { ListParams } from '$lib/types/list';
 import { toListParams } from '$lib/utils/satellite.utils';
@@ -130,7 +135,7 @@ export const listRulesDeprecated = async ({
 	identity
 }: {
 	satelliteId: Principal;
-	type: RulesType;
+	type: CollectionType;
 	identity: OptionIdentity;
 }): Promise<[string, Rule][]> => {
 	const actor = await getSatelliteActor008({ satelliteId, identity });
@@ -143,4 +148,50 @@ export const listRulesDeprecated = async ({
 			memory: [{ Heap: null }]
 		} as Rule
 	]);
+};
+
+/**
+ * @deprecated - Replaced in Satellite > v0.0.22 with public custom section juno:package
+ */
+export const satelliteVersion = async ({
+	satelliteId,
+	identity
+}: {
+	satelliteId: Principal;
+	identity: OptionIdentity;
+}): Promise<string> => {
+	// For simplicity reason we just use an old actor (21 instead of 22) as the API did not change until it was fully deprecated.
+	const { version } = await getSatelliteActor0021({ satelliteId, identity });
+	return version();
+};
+
+/**
+ * @deprecated - Replaced in Satellite > v0.0.22 with public custom section juno:package
+ */
+export const satelliteBuildVersion = async ({
+	satelliteId,
+	identity
+}: {
+	satelliteId: Principal;
+	identity: OptionIdentity;
+}): Promise<string> => {
+	// For simplicity reason we just use an old actor (21 instead of 22) as the API did not change until it was fully deprecated.
+	const { build_version } = await getSatelliteActor0021({ satelliteId, identity });
+	return build_version();
+};
+
+/**
+ * @deprecated TODO: to be remove - backwards compatibility
+ */
+export const listRules0022 = async ({
+	satelliteId,
+	type,
+	identity
+}: {
+	satelliteId: Principal;
+	type: CollectionType;
+	identity: OptionIdentity;
+}): Promise<[string, Rule][]> => {
+	const actor = await getSatelliteActor0022({ satelliteId, identity });
+	return actor.list_rules(type);
 };

@@ -2,16 +2,19 @@
 	import { nonNullish } from '@dfinity/utils';
 	import { setContext } from 'svelte';
 	import { writable } from 'svelte/store';
+	import Cdn from '$lib/components/cdn/list/Cdn.svelte';
 	import IdentityGuard from '$lib/components/guards/IdentityGuard.svelte';
 	import SatelliteGuard from '$lib/components/guards/SatelliteGuard.svelte';
-	import SatellitesLoader from '$lib/components/loaders/SatellitesLoader.svelte';
+	import Loaders from '$lib/components/loaders/Loaders.svelte';
+	import SatelliteVersionLoader from '$lib/components/loaders/SatelliteVersionLoader.svelte';
 	import Logs from '$lib/components/logs/Logs.svelte';
 	import Tabs from '$lib/components/ui/Tabs.svelte';
+	import { missionControlIdDerived } from '$lib/derived/mission-control.derived';
 	import { satelliteStore } from '$lib/derived/satellite.derived';
 	import {
 		type Tab,
 		type TabsContext,
-		type TabsStore,
+		type TabsData,
 		TABS_CONTEXT_KEY
 	} from '$lib/types/tabs.context';
 	import { initTabId } from '$lib/utils/tabs.utils';
@@ -20,10 +23,14 @@
 		{
 			id: Symbol('1'),
 			labelKey: 'functions.logs'
+		},
+		{
+			id: Symbol('2'),
+			labelKey: 'cdn.title'
 		}
 	];
 
-	const store = writable<TabsStore>({
+	const store = writable<TabsData>({
 		tabId: initTabId(tabs),
 		tabs
 	});
@@ -35,12 +42,21 @@
 
 <IdentityGuard>
 	<Tabs help="https://juno.build/docs/build/functions">
-		<SatellitesLoader>
+		<Loaders>
 			<SatelliteGuard>
-				{#if nonNullish($satelliteStore)}
-					<Logs satelliteId={$satelliteStore.satellite_id} />
+				{#if nonNullish($satelliteStore) && nonNullish($missionControlIdDerived)}
+					<SatelliteVersionLoader
+						satellite={$satelliteStore}
+						missionControlId={$missionControlIdDerived}
+					>
+						{#if $store.tabId === $store.tabs[0].id}
+							<Logs satelliteId={$satelliteStore.satellite_id} />
+						{:else if $store.tabId === $store.tabs[1].id}
+							<Cdn satellite={$satelliteStore} />
+						{/if}
+					</SatelliteVersionLoader>
 				{/if}
 			</SatelliteGuard>
-		</SatellitesLoader>
+		</Loaders>
 	</Tabs>
 </IdentityGuard>

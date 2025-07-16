@@ -1,6 +1,7 @@
 <script lang="ts">
-	import { nonNullish } from '@dfinity/utils';
+	import { debounce } from '@dfinity/utils';
 	import { fade } from 'svelte/transition';
+	import BannerSkylab from '$lib/components/core/BannerSkylab.svelte';
 	import Logo from '$lib/components/core/Logo.svelte';
 	import NavbarCockpit from '$lib/components/core/NavbarCockpit.svelte';
 	import User from '$lib/components/core/User.svelte';
@@ -8,25 +9,36 @@
 	import ButtonBack from '$lib/components/ui/ButtonBack.svelte';
 	import ButtonMenu from '$lib/components/ui/ButtonMenu.svelte';
 	import Header from '$lib/components/ui/Header.svelte';
+	import { isSatelliteRoute } from '$lib/derived/route.derived.svelte';
+	import { isSkylab } from '$lib/env/app.env';
 	import { layoutTitleIntersecting } from '$lib/stores/layout-intersecting.store';
-	import { layoutNavigation } from '$lib/stores/layout-navigation.store';
 
 	interface Props {
 		start?: 'logo' | 'back' | 'menu';
 		signIn?: boolean;
 		launchpad?: boolean;
-		headerOpaqueOnScroll?: boolean;
 	}
 
-	let {
-		start = 'logo',
-		signIn = true,
-		launchpad = false,
-		headerOpaqueOnScroll = true
-	}: Props = $props();
+	let { start = 'logo', signIn = true, launchpad = false }: Props = $props();
+
+	let hide = $state(false);
+
+	// We debounce hiding the header to avoid the effect on navigation
+	const hideHeader = () => (hide = !$layoutTitleIntersecting);
+	const debounceHideHeader = debounce(hideHeader);
+
+	$effect(() => {
+		$layoutTitleIntersecting;
+
+		debounceHideHeader();
+	});
 </script>
 
-<Header opaque={!$layoutTitleIntersecting && headerOpaqueOnScroll}>
+{#snippet banner()}
+	<BannerSkylab />
+{/snippet}
+
+<Header {hide} banner={isSkylab() ? banner : undefined}>
 	<div class="start">
 		{#if start === 'menu'}
 			<ButtonMenu />
@@ -36,7 +48,7 @@
 			<Logo />
 		{/if}
 
-		{#if nonNullish($layoutNavigation?.data.satellite)}
+		{#if $isSatelliteRoute}
 			<div in:fade>
 				<SatellitesSwitcher />
 			</div>

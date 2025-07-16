@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { isNullish, nonNullish } from '@dfinity/utils';
+	import type { PrincipalText } from '@dfinity/zod-schemas';
 	import type { CyclesMonitoringStrategy } from '$declarations/mission_control/mission_control.did';
 	import CanisterAdvancedOptions from '$lib/components/canister/CanisterAdvancedOptions.svelte';
 	import ProgressCreate from '$lib/components/canister/ProgressCreate.svelte';
@@ -13,8 +14,7 @@
 	import { wizardBusy } from '$lib/stores/busy.store';
 	import { i18n } from '$lib/stores/i18n.store';
 	import type { JunoModalDetail } from '$lib/types/modal';
-	import type { PrincipalText } from '$lib/types/principal';
-	import type { WizardCreateProgress } from '$lib/types/wizard';
+	import type { WizardCreateProgress } from '$lib/types/progress-wizard';
 
 	interface Props {
 		detail: JunoModalDetail;
@@ -23,6 +23,7 @@
 
 	let { detail, onclose }: Props = $props();
 
+	let withCredits = $state(false);
 	let insufficientFunds = $state(true);
 
 	let step: 'init' | 'in_progress' | 'ready' | 'error' = $state('init');
@@ -46,6 +47,7 @@
 			missionControlId: $missionControlIdDerived,
 			subnetId,
 			monitoringStrategy,
+			withCredits,
 			onProgress
 		});
 
@@ -59,19 +61,17 @@
 		setTimeout(() => (step = 'ready'), 500);
 	};
 
-	const close = () => onclose();
-
 	let subnetId: PrincipalText | undefined = $state();
 	let monitoringStrategy: CyclesMonitoringStrategy | undefined = $state();
 </script>
 
-<Modal on:junoClose={close}>
+<Modal {onclose}>
 	{#if step === 'ready'}
 		<Confetti />
 
 		<div class="msg">
 			<p>{$i18n.analytics.ready}</p>
-			<button onclick={close}>{$i18n.core.close}</button>
+			<button onclick={onclose}>{$i18n.core.close}</button>
 		</div>
 	{:else if step === 'in_progress'}
 		<ProgressCreate segment="orbiter" {progress} withMonitoring={nonNullish(monitoringStrategy)} />
@@ -85,6 +85,7 @@
 		<CreditsGuard
 			{onclose}
 			bind:insufficientFunds
+			bind:withCredits
 			{detail}
 			priceLabel={$i18n.analytics.create_orbiter_price}
 		>

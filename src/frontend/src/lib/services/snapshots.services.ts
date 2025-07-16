@@ -20,7 +20,7 @@ import { snapshotsIdbStore } from '$lib/stores/idb.store';
 import { snapshotStore } from '$lib/stores/snapshot.store';
 import { toasts } from '$lib/stores/toasts.store';
 import type { OptionIdentity } from '$lib/types/itentity';
-import { type SnapshotProgress, SnapshotProgressStep } from '$lib/types/snapshot';
+import { type SnapshotProgress, SnapshotProgressStep } from '$lib/types/progress-snapshot';
 import type { Identity } from '@dfinity/agent';
 import type { Principal } from '@dfinity/principal';
 import { assertNonNullish, nonNullish } from '@dfinity/utils';
@@ -171,7 +171,7 @@ export const executeSnapshot = async ({
 	await execute({ fn: stop, onProgress, step: SnapshotProgressStep.StoppingCanister });
 
 	try {
-		// 2. We create or restore the backup
+		// 2. We create or restore the snapshot
 		await execute({ fn: action, onProgress, step: SnapshotProgressStep.CreateOrRestoreSnapshot });
 	} finally {
 		// 3. We restart the canister to finalize the process. No matter what.

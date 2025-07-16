@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { fromNullable, isNullish, nonNullish } from '@dfinity/utils';
+	import { isNullish, nonNullish, fromNullishNullable } from '@dfinity/utils';
 	import { createEventDispatcher, onDestroy, onMount } from 'svelte';
 	import { run } from 'svelte/legacy';
 	import type { Satellite } from '$declarations/mission_control/mission_control.did';
@@ -12,10 +12,13 @@
 	import IconSync from '$lib/components/icons/IconSync.svelte';
 	import ButtonTableAction from '$lib/components/ui/ButtonTableAction.svelte';
 	import ExternalLink from '$lib/components/ui/ExternalLink.svelte';
-	import { type HostingCallback, initHostingWorker } from '$lib/services/worker.hosting.services';
+	import {
+		type HostingCallback,
+		initHostingWorker
+	} from '$lib/services/workers/worker.hosting.services';
 	import { i18n } from '$lib/stores/i18n.store';
 	import type { CustomDomainRegistrationState } from '$lib/types/custom-domain';
-	import type { PostMessageDataResponse } from '$lib/types/post-message';
+	import type { PostMessageDataResponseHosting } from '$lib/types/post-message';
 	import type { Option } from '$lib/types/utils';
 	import { emit } from '$lib/utils/events.utils';
 	import { keyOf } from '$lib/utils/utils';
@@ -44,7 +47,7 @@
 	});
 
 	let authDomain: string | undefined = $derived(
-		fromNullable(fromNullable(config?.internet_identity ?? [])?.derivation_origin ?? [])
+		fromNullishNullable(fromNullishNullable(config?.internet_identity)?.derivation_origin)
 	);
 
 	let mainDomain: boolean = $derived(host === authDomain && nonNullish(authDomain));
@@ -61,7 +64,7 @@
 		  }
 		| undefined = $state();
 
-	const syncState = ({ registrationState: state }: PostMessageDataResponse) => {
+	const syncState = ({ registrationState: state }: PostMessageDataResponseHosting) => {
 		registrationState = state;
 
 		// If the state is available we can optimistically stop polling
@@ -95,7 +98,7 @@
 
 	run(() => {
 		// @ts-expect-error TODO: to be migrated to Svelte v5
-		worker, customDomain, loadRegistrationState();
+		(worker, customDomain, loadRegistrationState());
 	});
 
 	let displayState: Option<string> = $derived(

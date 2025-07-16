@@ -22,5 +22,6 @@ pub mod config {
     #[derive(Default, CandidType, Serialize, Deserialize, Clone)]
     pub struct AuthenticationConfigInternetIdentity {
         pub derivation_origin: Option<DomainName>,
+        pub external_alternative_origins: Option<Vec<DomainName>>,
     }
 }

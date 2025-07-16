@@ -5,7 +5,8 @@ export const idlFactory = ({ IDL }) => {
 	});
 	const ControllerScope = IDL.Variant({
 		Write: IDL.Null,
-		Admin: IDL.Null
+		Admin: IDL.Null,
+		Submit: IDL.Null
 	});
 	const Controller = IDL.Record({
 		updated_at: IDL.Nat64,
@@ -28,16 +29,32 @@ export const idlFactory = ({ IDL }) => {
 		key: IDL.Text,
 		collected_at: IDL.Nat64
 	});
+	const PageViewClient = IDL.Record({
+		os: IDL.Text,
+		device: IDL.Opt(IDL.Text),
+		browser: IDL.Text
+	});
+	const PageViewCampaign = IDL.Record({
+		utm_content: IDL.Opt(IDL.Text),
+		utm_medium: IDL.Opt(IDL.Text),
+		utm_source: IDL.Text,
+		utm_term: IDL.Opt(IDL.Text),
+		utm_campaign: IDL.Opt(IDL.Text)
+	});
 	const PageViewDevice = IDL.Record({
 		inner_height: IDL.Nat16,
+		screen_height: IDL.Opt(IDL.Nat16),
+		screen_width: IDL.Opt(IDL.Nat16),
 		inner_width: IDL.Nat16
 	});
 	const PageView = IDL.Record({
+		client: IDL.Opt(PageViewClient),
 		title: IDL.Text,
 		updated_at: IDL.Nat64,
 		referrer: IDL.Opt(IDL.Text),
 		time_zone: IDL.Text,
 		session_id: IDL.Text,
+		campaign: IDL.Opt(PageViewCampaign),
 		href: IDL.Text,
 		created_at: IDL.Nat64,
 		satellite_id: IDL.Principal,
@@ -52,13 +69,24 @@ export const idlFactory = ({ IDL }) => {
 		firefox: IDL.Float64,
 		chrome: IDL.Float64
 	});
+	const AnalyticsOperatingSystemsPageViews = IDL.Record({
+		ios: IDL.Float64,
+		macos: IDL.Float64,
+		others: IDL.Float64,
+		linux: IDL.Float64,
+		android: IDL.Float64,
+		windows: IDL.Float64
+	});
 	const AnalyticsDevicesPageViews = IDL.Record({
 		desktop: IDL.Float64,
+		laptop: IDL.Opt(IDL.Float64),
 		others: IDL.Float64,
+		tablet: IDL.Opt(IDL.Float64),
 		mobile: IDL.Float64
 	});
 	const AnalyticsClientsPageViews = IDL.Record({
 		browsers: AnalyticsBrowsersPageViews,
+		operating_systems: IDL.Opt(AnalyticsOperatingSystemsPageViews),
 		devices: AnalyticsDevicesPageViews
 	});
 	const CalendarDate = IDL.Record({
@@ -76,7 +104,10 @@ export const idlFactory = ({ IDL }) => {
 	});
 	const AnalyticsTop10PageViews = IDL.Record({
 		referrers: IDL.Vec(IDL.Tuple(IDL.Text, IDL.Nat32)),
-		pages: IDL.Vec(IDL.Tuple(IDL.Text, IDL.Nat32))
+		pages: IDL.Vec(IDL.Tuple(IDL.Text, IDL.Nat32)),
+		utm_campaigns: IDL.Opt(IDL.Vec(IDL.Tuple(IDL.Text, IDL.Nat32))),
+		utm_sources: IDL.Opt(IDL.Vec(IDL.Tuple(IDL.Text, IDL.Nat32))),
+		time_zones: IDL.Opt(IDL.Vec(IDL.Tuple(IDL.Text, IDL.Nat32)))
 	});
 	const NavigationType = IDL.Variant({
 		Navigate: IDL.Null,
@@ -133,6 +164,19 @@ export const idlFactory = ({ IDL }) => {
 	const AnalyticsTrackEvents = IDL.Record({
 		total: IDL.Vec(IDL.Tuple(IDL.Text, IDL.Nat32))
 	});
+	const HttpRequest = IDL.Record({
+		url: IDL.Text,
+		method: IDL.Text,
+		body: IDL.Vec(IDL.Nat8),
+		headers: IDL.Vec(IDL.Tuple(IDL.Text, IDL.Text)),
+		certificate_version: IDL.Opt(IDL.Nat16)
+	});
+	const HttpResponse = IDL.Record({
+		body: IDL.Vec(IDL.Nat8),
+		headers: IDL.Vec(IDL.Tuple(IDL.Text, IDL.Text)),
+		upgrade: IDL.Opt(IDL.Bool),
+		status_code: IDL.Nat16
+	});
 	const OrbiterSatelliteFeatures = IDL.Record({
 		performance_metrics: IDL.Bool,
 		track_events: IDL.Bool,
@@ -141,6 +185,7 @@ export const idlFactory = ({ IDL }) => {
 	const OrbiterSatelliteConfig = IDL.Record({
 		updated_at: IDL.Nat64,
 		features: IDL.Opt(OrbiterSatelliteFeatures),
+		restricted_origin: IDL.Opt(IDL.Text),
 		created_at: IDL.Nat64,
 		version: IDL.Opt(IDL.Nat64)
 	});
@@ -155,11 +200,13 @@ export const idlFactory = ({ IDL }) => {
 		controllers: IDL.Vec(IDL.Principal)
 	});
 	const SetPageView = IDL.Record({
+		client: IDL.Opt(PageViewClient),
 		title: IDL.Text,
 		updated_at: IDL.Opt(IDL.Nat64),
 		referrer: IDL.Opt(IDL.Text),
 		time_zone: IDL.Text,
 		session_id: IDL.Text,
+		campaign: IDL.Opt(PageViewCampaign),
 		href: IDL.Text,
 		satellite_id: IDL.Principal,
 		device: PageViewDevice,
@@ -183,6 +230,7 @@ export const idlFactory = ({ IDL }) => {
 	const Result_2 = IDL.Variant({ Ok: PerformanceMetric, Err: IDL.Text });
 	const SetSatelliteConfig = IDL.Record({
 		features: IDL.Opt(OrbiterSatelliteFeatures),
+		restricted_origin: IDL.Opt(IDL.Text),
 		version: IDL.Opt(IDL.Nat64)
 	});
 	const SetTrackEvent = IDL.Record({
@@ -235,6 +283,8 @@ export const idlFactory = ({ IDL }) => {
 			['query']
 		),
 		get_track_events_analytics: IDL.Func([GetAnalytics], [AnalyticsTrackEvents], ['query']),
+		http_request: IDL.Func([HttpRequest], [HttpResponse], ['query']),
+		http_request_update: IDL.Func([HttpRequest], [HttpResponse], []),
 		list_controllers: IDL.Func([], [IDL.Vec(IDL.Tuple(IDL.Principal, Controller))], ['query']),
 		list_satellite_configs: IDL.Func(
 			[],
@@ -261,8 +311,7 @@ export const idlFactory = ({ IDL }) => {
 			[]
 		),
 		set_track_event: IDL.Func([AnalyticKey, SetTrackEvent], [Result_3], []),
-		set_track_events: IDL.Func([IDL.Vec(IDL.Tuple(AnalyticKey, SetTrackEvent))], [Result_1], []),
-		version: IDL.Func([], [IDL.Text], ['query'])
+		set_track_events: IDL.Func([IDL.Vec(IDL.Tuple(AnalyticKey, SetTrackEvent))], [Result_1], [])
 	});
 };
 // @ts-ignore

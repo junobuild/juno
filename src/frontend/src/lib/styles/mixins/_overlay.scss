@@ -2,11 +2,15 @@
 @use './shadow';
 @use './display';
 
-@mixin backdrop($color) {
+@mixin backdrop($color, $blur: true) {
 	@if $color == 'dark' {
-		background: rgba(0, 0, 0, 0.85);
+		background: rgba(0, 0, 0, 0.75);
 	} @else {
 		background: rgba(0, 0, 0, 0.15);
+	}
+
+	@if $blur {
+		backdrop-filter: blur(3px);
 	}
 }
 
@@ -66,6 +70,14 @@
 			top: 50%;
 			left: 50%;
 			transform: translate(-50%, -50%);
+		}
+
+		&.bottom {
+			top: auto;
+			bottom: calc(var(--full-vh, 100vh) - var(--popover-top) + 3.45rem);
+
+			height: fit-content;
+			max-height: min(calc(var(--full-vh, 100vh) - 70px), 170px);
 		}
 	}
 

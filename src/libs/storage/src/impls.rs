@@ -9,13 +9,14 @@ use crate::types::store::{Asset, AssetEncoding, AssetKey, Batch, BatchExpiry};
 use ic_cdk::api::time;
 use ic_stable_structures::storable::Bound;
 use ic_stable_structures::Storable;
-use junobuild_collections::constants::DEFAULT_ASSETS_COLLECTIONS;
+use junobuild_collections::constants::assets::DEFAULT_ASSETS_COLLECTIONS;
 use junobuild_collections::types::interface::SetRule;
 use junobuild_collections::types::rules::{Memory, Rule, Rules};
 use junobuild_shared::serializers::{deserialize_from_bytes, serialize_to_bytes};
 use junobuild_shared::types::core::{Blob, Hash, Hashable};
-use junobuild_shared::types::state::Timestamp;
 use junobuild_shared::types::state::Timestamped;
+use junobuild_shared::types::state::{Timestamp, Version, Versioned};
+use junobuild_shared::version::next_version;
 use sha2::{Digest, Sha256};
 use std::borrow::Cow;
 use std::cmp::Ordering;
@@ -45,6 +46,7 @@ impl StorageHeapState {
                             mutable_permissions: Some(rule.mutable_permissions.unwrap_or(false)),
                             max_size: rule.max_size,
                             max_capacity: rule.max_capacity,
+                            max_changes_per_user: rule.max_changes_per_user,
                             created_at: now,
                             updated_at: now,
                             version: rule.version,
@@ -177,6 +179,51 @@ impl Timestamped for Asset {
 
     fn cmp_created_at(&self, other: &Self) -> Ordering {
         self.created_at.cmp(&other.created_at)
+    }
+}
+
+impl Asset {
+    pub fn prepare(
+        key: AssetKey,
+        headers: Vec<HeaderField>,
+        existing_asset: &Option<Asset>,
+    ) -> Self {
+        let now = time();
+
+        let created_at: Timestamp = match existing_asset {
+            None => now,
+            Some(current_doc) => current_doc.created_at,
+        };
+
+        let version = next_version(existing_asset);
+
+        let encodings = match existing_asset {
+            None => HashMap::new(),
+            Some(existing_asset) => existing_asset.encodings.clone(),
+        };
+
+        let updated_at: Timestamp = now;
+
+        Asset {
+            key,
+            headers,
+            encodings,
+            created_at,
+            updated_at,
+            version: Some(version),
+        }
+    }
+}
+
+impl Versioned for Asset {
+    fn version(&self) -> Option<Version> {
+        self.version
+    }
+}
+
+impl Versioned for &Asset {
+    fn version(&self) -> Option<Version> {
+        self.version
     }
 }
 

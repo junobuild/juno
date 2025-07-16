@@ -1,26 +1,32 @@
 import type { _SERVICE as ConsoleActor } from '$declarations/console/console.did';
+import type { _SERVICE as ConsoleActor_0_0_14 } from '$declarations/deprecated/console-0-0-14.did';
 import type { _SERVICE as ConsoleActor_0_0_8 } from '$declarations/deprecated/console-0-0-8-patch1.did';
 import type { _SERVICE as MissionControlActor } from '$declarations/mission_control/mission_control.did';
 import { idlFactory as idlFactorMissionControl } from '$declarations/mission_control/mission_control.factory.did';
 import type { Identity } from '@dfinity/agent';
 import { Ed25519KeyIdentity } from '@dfinity/identity';
-import { arrayBufferToUint8Array, fromNullable, toNullable } from '@dfinity/utils';
-import { PocketIc, type Actor } from '@hadronous/pic';
-import { assertNonNullish } from '@junobuild/utils';
+import type { Actor, PocketIc } from '@dfinity/pic';
+import {
+	arrayBufferToUint8Array,
+	assertNonNullish,
+	fromNullable,
+	toNullable
+} from '@dfinity/utils';
 import { readFile } from 'node:fs/promises';
 import { expect } from 'vitest';
+import { mockScript } from '../mocks/storage.mocks';
 import { tick } from './pic-tests.utils';
 import {
+	downloadMissionControl,
+	downloadOrbiter,
+	downloadSatellite,
 	MISSION_CONTROL_WASM_PATH,
 	ORBITER_WASM_PATH,
 	SATELLITE_WASM_PATH,
-	WASM_VERSIONS,
-	downloadMissionControl,
-	downloadOrbiter,
-	downloadSatellite
+	WASM_VERSIONS
 } from './setup-tests.utils';
 
-const installRelease = async ({
+const installReleaseWithDeprecatedFlow = async ({
 	download,
 	segment,
 	version,
@@ -64,10 +70,23 @@ const uploadSegment = async ({
 }: {
 	segment: 'satellite' | 'mission_control' | 'orbiter';
 	version: string;
-	actor: Actor<ConsoleActor>;
+	actor: Actor<ConsoleActor | ConsoleActor_0_0_14>;
 	proposalId: bigint;
 }) => {
-	const { init_asset_upload, upload_asset_chunk, commit_asset_upload } = actor;
+	const init_proposal_asset_upload =
+		'init_asset_upload' in actor
+			? (actor as ConsoleActor_0_0_14).init_asset_upload
+			: (actor as ConsoleActor).init_proposal_asset_upload;
+
+	const upload_proposal_asset_chunk =
+		'upload_asset_chunk' in actor
+			? (actor as ConsoleActor_0_0_14).upload_asset_chunk
+			: (actor as ConsoleActor).upload_proposal_asset_chunk;
+
+	const commit_proposal_asset_upload =
+		'commit_asset_upload' in actor
+			? (actor as ConsoleActor_0_0_14).commit_asset_upload
+			: (actor as ConsoleActor).commit_proposal_asset_upload;
 
 	const name = `${segment}-v${version}.wasm.gz`;
 	const fullPath = `/releases/${name}`;
@@ -86,10 +105,10 @@ const uploadSegment = async ({
 
 	const data = new Blob([await readFile(wasmPath)]);
 
-	const { batch_id: batchId } = await init_asset_upload(
+	const { batch_id: batchId } = await init_proposal_asset_upload(
 		{
 			collection: '#releases',
-			description: toNullable(),
+			description: toNullable(`change=${proposalId};version=v${version}`),
 			encoding_type: ['identity'],
 			full_path: fullPath,
 			name,
@@ -115,6 +134,7 @@ const uploadSegment = async ({
 		orderId++;
 	}
 
+	// eslint-disable-next-line func-style
 	async function* batchUploadChunks({
 		uploadChunks,
 		limit = 12
@@ -136,7 +156,7 @@ const uploadSegment = async ({
 	}
 
 	const uploadChunk = async ({ batchId, chunk, orderId }: UploadChunk) =>
-		upload_asset_chunk({
+		upload_proposal_asset_chunk({
 			batch_id: batchId,
 			content: new Uint8Array(await chunk.arrayBuffer()),
 			order_id: toNullable(orderId)
@@ -156,14 +176,14 @@ const uploadSegment = async ({
 			? [['Content-Type', data.type]]
 			: undefined;
 
-	await commit_asset_upload({
+	await commit_proposal_asset_upload({
 		batch_id: batchId,
 		chunk_ids: chunkIds.map(({ chunk_id }) => chunk_id),
-		headers: [...headers, ...(contentType ? contentType : [])]
+		headers: [...headers, ...(contentType ?? [])]
 	});
 };
 
-export const deploySegments = async (actor: Actor<ConsoleActor>) => {
+export const deploySegments = async (actor: Actor<ConsoleActor | ConsoleActor_0_0_14>) => {
 	const { init_proposal, submit_proposal, commit_proposal } = actor;
 
 	const [proposalId, _] = await init_proposal({
@@ -207,22 +227,22 @@ export const deploySegments = async (actor: Actor<ConsoleActor>) => {
 	});
 };
 
-export const installReleases = async (actor: Actor<ConsoleActor_0_0_8>) => {
-	await installRelease({
+export const installReleasesWithDeprecatedFlow = async (actor: Actor<ConsoleActor_0_0_8>) => {
+	await installReleaseWithDeprecatedFlow({
 		download: downloadSatellite,
 		version: versionSatellite,
 		segment: { Satellite: null },
 		actor
 	});
 
-	await installRelease({
+	await installReleaseWithDeprecatedFlow({
 		download: downloadOrbiter,
 		version: versionOrbiter,
 		segment: { Orbiter: null },
 		actor
 	});
 
-	await installRelease({
+	await installReleaseWithDeprecatedFlow({
 		download: downloadMissionControl,
 		version: versionMissionControl,
 		segment: { MissionControl: null },
@@ -247,7 +267,7 @@ export const initMissionControls = async ({
 	pic,
 	length
 }: {
-	actor: Actor<ConsoleActor | ConsoleActor_0_0_8>;
+	actor: Actor<ConsoleActor | ConsoleActor_0_0_8 | ConsoleActor_0_0_14>;
 	pic: PocketIc;
 	length: number;
 }): Promise<Identity[]> => {
@@ -271,7 +291,7 @@ export const testSatelliteExists = async ({
 	pic
 }: {
 	users: Identity[];
-	actor: Actor<ConsoleActor | ConsoleActor_0_0_8>;
+	actor: Actor<ConsoleActor | ConsoleActor_0_0_8 | ConsoleActor_0_0_14>;
 	pic: PocketIc;
 }) => {
 	const { list_user_mission_control_centers } = actor;
@@ -285,57 +305,158 @@ export const testSatelliteExists = async ({
 
 		expect(missionControl).not.toBeUndefined();
 
-		const [_, { mission_control_id }] = missionControl!;
+		assertNonNullish(missionControl);
+
+		const [_, { mission_control_id }] = missionControl;
 
 		const missionControlId = fromNullable(mission_control_id);
 
-		expect(missionControlId).not.toBeUndefined();
+		assertNonNullish(missionControlId);
 
-		const { version } = pic.createActor<MissionControlActor>(
+		const { get_user } = pic.createActor<MissionControlActor>(
 			idlFactorMissionControl,
-			missionControlId!
+			missionControlId
 		);
 
-		await expect(version()).resolves.not.toThrowError();
+		try {
+			await get_user();
+
+			expect(true).toBeFalsy();
+		} catch (err: unknown) {
+			// The Mission Control has no public functions. If it rejects a call with a particular error message it means it exists.
+			expect(
+				(err as Error).message.includes(
+					'Caller is not the owner or a controller of the mission control.'
+				) ||
+					(err as Error).message.includes(
+						'Caller is not an admin controller of the mission control.'
+					)
+			).toBeTruthy();
+		}
 	}
 };
 
-export const uploadFile = async ({
+export const uploadFileWithProposal = async ({
 	actor,
-	proposalId
+	pic,
+	fullPath = '/index.js'
 }: {
-	actor: Actor<ConsoleActor>;
-	proposalId: bigint;
+	actor: Actor<ConsoleActor | ConsoleActor_0_0_14>;
+	pic: PocketIc;
+	fullPath?: string;
+}): Promise<{ proposalId: bigint; fullPath: string }> => {
+	const init_proposal_asset_upload =
+		'init_asset_upload' in actor
+			? (actor as ConsoleActor_0_0_14).init_asset_upload
+			: (actor as ConsoleActor).init_proposal_asset_upload;
+
+	const upload_proposal_asset_chunk =
+		'upload_asset_chunk' in actor
+			? (actor as ConsoleActor_0_0_14).upload_asset_chunk
+			: (actor as ConsoleActor).upload_proposal_asset_chunk;
+
+	const commit_proposal_asset_upload =
+		'commit_asset_upload' in actor
+			? (actor as ConsoleActor_0_0_14).commit_asset_upload
+			: (actor as ConsoleActor).commit_proposal_asset_upload;
+
+	const { init_proposal, http_request, commit_proposal, submit_proposal } = actor;
+
+	const [proposalId, __] = await init_proposal({
+		AssetsUpgrade: {
+			clear_existing_assets: toNullable()
+		}
+	});
+
+	const upload = async (gzip: boolean) => {
+		const file = await init_proposal_asset_upload(
+			{
+				collection: '#dapp',
+				description: toNullable(),
+				encoding_type: gzip ? ['gzip'] : [],
+				full_path: fullPath,
+				name: 'index.gz',
+				token: toNullable()
+			},
+			proposalId
+		);
+
+		const blob = new Blob([mockScript], {
+			type: 'text/javascript; charset=utf-8'
+		});
+
+		const chunk = await upload_proposal_asset_chunk({
+			batch_id: file.batch_id,
+			content: arrayBufferToUint8Array(await blob.arrayBuffer()),
+			order_id: [0n]
+		});
+
+		await commit_proposal_asset_upload({
+			batch_id: file.batch_id,
+			chunk_ids: [chunk.chunk_id],
+			headers: []
+		});
+	};
+
+	await upload(true);
+	await upload(false);
+
+	// Advance time for updated_at
+	await pic.advanceTime(100);
+
+	const [_, proposal] = await submit_proposal(proposalId);
+
+	const sha = fromNullable(proposal.sha256);
+	assertNonNullish(sha);
+
+	await commit_proposal({
+		sha256: sha,
+		proposal_id: proposalId
+	});
+
+	await assertAssetServed({
+		actor,
+		fullPath,
+		body: mockScript
+	});
+
+	const { headers } = await http_request({
+		body: [],
+		certificate_version: toNullable(),
+		headers: [['accept-encoding', 'gzip, deflate, br']],
+		method: 'GET',
+		url: fullPath
+	});
+
+	expect(
+		headers.find(([key, value]) => key.toLowerCase() === 'content-encoding' && value === 'gzip')
+	).not.toBeUndefined();
+
+	return { proposalId, fullPath };
+};
+
+export const assertAssetServed = async ({
+	actor,
+	fullPath,
+	body: content
+}: {
+	actor: Actor<ConsoleActor | ConsoleActor_0_0_14>;
+	fullPath: string;
+	body: string;
 }) => {
-	const { init_asset_upload, commit_asset_upload, upload_asset_chunk } = actor;
+	const { http_request } = actor;
 
-	const file = await init_asset_upload(
-		{
-			collection: '#dapp',
-			description: toNullable(),
-			encoding_type: [],
-			full_path: '/hello3.html',
-			name: 'hello3.html',
-			token: toNullable()
-		},
-		proposalId
-	);
-
-	const HTML = '<html><body>Hello</body></html>';
-
-	const blob = new Blob([HTML], {
-		type: 'text/plain; charset=utf-8'
+	const { status_code, body } = await http_request({
+		body: [],
+		certificate_version: toNullable(),
+		headers: [['accept-encoding', 'gzip, deflate, br']],
+		method: 'GET',
+		url: fullPath
 	});
 
-	const chunk = await upload_asset_chunk({
-		batch_id: file.batch_id,
-		content: arrayBufferToUint8Array(await blob.arrayBuffer()),
-		order_id: [0n]
-	});
+	expect(status_code).toEqual(200);
 
-	await commit_asset_upload({
-		batch_id: file.batch_id,
-		chunk_ids: [chunk.chunk_id],
-		headers: []
-	});
+	const decoder = new TextDecoder();
+
+	expect(decoder.decode(body as Uint8Array<ArrayBufferLike>)).toEqual(content);
 };

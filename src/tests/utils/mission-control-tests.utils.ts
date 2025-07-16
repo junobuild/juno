@@ -4,8 +4,8 @@ import type { _SERVICE as SatelliteActor } from '$declarations/satellite/satelli
 import { idlFactory as idlFactorSatellite } from '$declarations/satellite/satellite.factory.did';
 import type { Identity } from '@dfinity/agent';
 import { IDL } from '@dfinity/candid';
-import { Principal } from '@dfinity/principal';
-import type { PocketIc } from '@hadronous/pic';
+import type { PocketIc } from '@dfinity/pic';
+import type { Principal } from '@dfinity/principal';
 import { controllersInitArgs, ORBITER_WASM_PATH, SATELLITE_WASM_PATH } from './setup-tests.utils';
 
 export const missionControlUserInitArgs = (owner: Principal): ArrayBuffer =>

@@ -1,20 +1,19 @@
 <script lang="ts">
-	import { debounce, isNullish } from '@dfinity/utils';
+	import { debounce } from '@dfinity/utils';
 	import { onMount, type Snippet } from 'svelte';
 	import { run } from 'svelte/legacy';
 	import { browser } from '$app/environment';
+	import { onNavigate } from '$app/navigation';
 	import Overlays from '$lib/components/core/Overlays.svelte';
 	import Spinner from '$lib/components/ui/Spinner.svelte';
 	import { layoutNavigationTitle } from '$lib/derived/layout-navigation.derived';
-	import { displayAndCleanLogoutMsg, signOut } from '$lib/services/auth.services';
+	import { displayAndCleanLogoutMsg } from '$lib/services/auth/auth.services';
 	import { initMissionControl } from '$lib/services/console.services';
 	import { syncSnapshots } from '$lib/services/snapshots.services';
 	import { syncSubnets } from '$lib/services/subnets.services';
-	import { initAuthWorker } from '$lib/services/worker.auth.services';
+	import { initAuthWorker } from '$lib/services/workers/worker.auth.services';
 	import { type AuthStoreData, authStore } from '$lib/stores/auth.store';
 	import { i18n } from '$lib/stores/i18n.store';
-	import { missionControlIdDataStore } from '$lib/stores/mission-control.store';
-	import { toasts } from '$lib/stores/toasts.store';
 	import '$lib/styles/global.scss';
 
 	interface Props {
@@ -40,31 +39,8 @@
 		displayAndCleanLogoutMsg();
 	};
 
-	const initUser = async ({ identity }: AuthStoreData) => {
-		if (isNullish(identity)) {
-			return;
-		}
-
-		try {
-			// Poll to init mission control center
-			await initMissionControl({
-				identity,
-				onInitMissionControlSuccess: (missionControlId) =>
-					missionControlIdDataStore.set(missionControlId)
-			});
-		} catch (err: unknown) {
-			toasts.error({
-				text: $i18n.errors.initializing_mission_control,
-				detail: err
-			});
-
-			// There was an error so, we sign the user out otherwise skeleton and other spinners will be displayed forever
-			await signOut();
-		}
-	};
-
 	run(() => {
-		(async () => await initUser($authStore))();
+		(async () => await initMissionControl($authStore))();
 	});
 
 	let worker: { syncAuthIdle: (auth: AuthStoreData) => void } | undefined = $state();
@@ -73,7 +49,7 @@
 
 	run(() => {
 		// @ts-expect-error TODO: to be migrated to Svelte v5
-		worker, $authStore, (() => worker?.syncAuthIdle($authStore))();
+		(worker, $authStore, (() => worker?.syncAuthIdle($authStore))());
 	});
 
 	const debounceSetNavTitle = debounce(() => (document.title = $layoutNavigationTitle));
@@ -81,6 +57,20 @@
 	$effect(() => {
 		$layoutNavigationTitle;
 		debounceSetNavTitle();
+	});
+
+	// Source: https://svelte.dev/blog/view-transitions
+	onNavigate((navigation) => {
+		if (!document.startViewTransition) {
+			return;
+		}
+
+		return new Promise((resolve) => {
+			document.startViewTransition(async () => {
+				resolve();
+				await navigation.complete;
+			});
+		});
 	});
 </script>
 

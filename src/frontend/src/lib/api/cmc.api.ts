@@ -1,5 +1,5 @@
-import { getAgent } from '$lib/api/agent/agent.api';
-import { CMC_CANISTER_ID } from '$lib/constants/constants';
+import { getAgent } from '$lib/api/_agent/_agent.api';
+import { CMC_CANISTER_ID } from '$lib/constants/app.constants';
 import { AnonymousIdentity } from '@dfinity/agent';
 import { CMCCanister } from '@dfinity/cmc';
 import { Principal } from '@dfinity/principal';

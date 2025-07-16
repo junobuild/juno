@@ -2,9 +2,10 @@
 	import { isNullish, nonNullish } from '@dfinity/utils';
 	import { untrack } from 'svelte';
 	import WizardProgressSteps from '$lib/components/ui/WizardProgressSteps.svelte';
+	import { isSkylab } from '$lib/env/app.env';
 	import { i18n } from '$lib/stores/i18n.store';
 	import type { ProgressStep } from '$lib/types/progress-step';
-	import { type WizardCreateProgress, WizardCreateProgressStep } from '$lib/types/wizard';
+	import { type WizardCreateProgress, WizardCreateProgressStep } from '$lib/types/progress-wizard';
 	import { mapProgressState } from '$lib/utils/progress.utils';
 
 	interface Props {
@@ -19,6 +20,7 @@
 		preparing: ProgressStep;
 		create: ProgressStep;
 		monitoring?: ProgressStep;
+		finalizing?: ProgressStep;
 		reload: ProgressStep;
 	}
 
@@ -26,7 +28,7 @@
 		preparing: {
 			state: 'in_progress',
 			step: 'preparing',
-			text: $i18n.monitoring.strategy_preparing
+			text: $i18n.core.preparing
 		},
 		create: {
 			state: 'next',
@@ -40,10 +42,17 @@
 				text: $i18n.monitoring.starting_auto_refill
 			}
 		}),
+		...(isSkylab() && {
+			finalizing: {
+				state: 'next',
+				step: 'finalizing',
+				text: $i18n.emulator.setting_emulator_controller
+			}
+		}),
 		reload: {
 			state: 'next',
 			step: 'reload',
-			text: $i18n.canisters.loading_ui_data
+			text: $i18n.core.refreshing_interface
 		}
 	});
 
@@ -53,7 +62,7 @@
 		progress;
 
 		untrack(() => {
-			const { preparing, create, monitoring, reload } = steps;
+			const { preparing, create, monitoring, finalizing, reload } = steps;
 
 			steps = {
 				preparing: {
@@ -74,6 +83,15 @@
 							progress?.step === WizardCreateProgressStep.Monitoring
 								? mapProgressState(progress?.state)
 								: monitoring.state
+					}
+				}),
+				...(nonNullish(finalizing) && {
+					finalizing: {
+						...finalizing,
+						state:
+							progress?.step === WizardCreateProgressStep.Finalizing
+								? mapProgressState(progress?.state)
+								: finalizing.state
 					}
 				}),
 				reload: {

@@ -2,11 +2,14 @@ import type {
 	MissionControlSettings,
 	User
 } from '$declarations/mission_control/mission_control.did';
-import { initDataStore } from '$lib/stores/data.store';
-import type { Principal } from '@dfinity/principal';
+import { initCertifiedStore } from '$lib/stores/_certified.store';
+import { initUncertifiedStore } from '$lib/stores/_uncertified.store';
+import type { MissionControlId } from '$lib/types/mission-control';
 
-export const missionControlIdDataStore = initDataStore<Principal>();
+export const missionControlIdCertifiedStore = initCertifiedStore<MissionControlId>();
 
-export const missionControlUserDataStore = initDataStore<User>();
+export const missionControlUserUncertifiedStore = initUncertifiedStore<User>();
 
-export const missionControlSettingsDataStore = initDataStore<MissionControlSettings | undefined>();
+export const missionControlSettingsUncertifiedStore = initUncertifiedStore<
+	MissionControlSettings | undefined
+>();

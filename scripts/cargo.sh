@@ -1,69 +1,137 @@
 #!/usr/bin/env bash
 
+set -euo pipefail
+
+USAGE="Usage: $0 <canister_name>"
+
 if [ -z "$1" ]; then
-  echo "Usage: $0 <module_name>"
+  echo "$USAGE"
   exit 1
 fi
 
 CARGO_HOME=${CARGO_HOME:-$HOME/.cargo}
 
-MODULE=$1
-WASM_MODULE="${MODULE}.wasm"
+CANISTER=
+OUTPUT=
+WITH_CERTIFICATION=0
 
-TARGET="wasm32-unknown-unknown"
-RUSTFLAGS="--remap-path-prefix $CARGO_HOME=/cargo -C link-args=-zstack-size=3000000"
+# Source directory where to find $CANISTER/Cargo.toml
+SRC_ROOT_DIR="$PWD/src"
+# Source directory where to find $CANISTER/juno.package.json
+PKG_JSON_DIR=
 
-# Build module WASM
-RUSTFLAGS="$RUSTFLAGS" cargo build --target "$TARGET" -p "$MODULE" --release --locked
+# Default target is wasm32-unknown-unknown
+TARGET=wasm32-unknown-unknown
+
+# Parse optional arguments
+while [[ $# -gt 0 ]]; do
+  case "$1" in
+    --mission_control)
+      CANISTER="mission_control"
+      break
+      ;;
+    --satellite)
+      WITH_CERTIFICATION=1
+      CANISTER=satellite
+      break
+      ;;
+    --console)
+      CANISTER="console"
+      WITH_CERTIFICATION=1
+      break
+      ;;
+    --observatory)
+      CANISTER="observatory"
+      break
+      ;;
+    --orbiter)
+      CANISTER="orbiter"
+      break
+      ;;
+    --test_sputnik)
+      CANISTER="sputnik"
+      OUTPUT="test_sputnik"
+      WITH_CERTIFICATION=1
+      TARGET="wasm32-wasip1"
+      PKG_JSON_DIR="$PWD/src/tests/fixtures/$OUTPUT"
+      break
+      ;;
+    --sputnik)
+      CANISTER="sputnik"
+      WITH_CERTIFICATION=1
+      TARGET="wasm32-wasip1"
+      break
+      ;;
+    --test_satellite)
+      CANISTER="test_satellite"
+      WITH_CERTIFICATION=1
+      SRC_ROOT_DIR="$PWD/src/tests/fixtures"
+      PKG_JSON_DIR="$PWD/src/tests/fixtures/$CANISTER"
+      break
+      ;;
+    *)
+      echo "ERROR: unknown argument $1"
+      echo "$USAGE"
+      exit 1
+      ;;
+  esac
+done
+
+WASM_CANISTER="${CANISTER}.wasm"
+OUTPUT_CANISTER="${OUTPUT:-$CANISTER}.wasm"
+
+# if not set the default package.json path to search for is the source of the canister
+if [ ${#PKG_JSON_DIR} -eq 0 ]; then
+    PKG_JSON_DIR="$SRC_ROOT_DIR/$CANISTER"
+fi
+
+############
+# Metadata #
+############
 
 # Generate metadata for Docker image
-VERSION=$(cargo metadata --format-version=1 --no-deps | jq -r '.packages[] | select(.name == "'"$MODULE"'") | .version')
-node ./scripts/cargo.metadata.mjs "$MODULE" "$VERSION"
+VERSION=$(cargo metadata --format-version=1 --no-deps | jq -r '.packages[] | select(.name == "'"$CANISTER"'") | .version')
+node ./scripts/cargo.metadata.mjs "$CANISTER" "$VERSION"
 
-RELEASE_DIR="./target/${TARGET}/release"
+#########
+# Build #
+#########
+
+# We do not want to build only the dependencies in this script
+ONLY_DEPS=
 
 # Clean and create temporary and output folder
-WASM_DIR="./target/wasm"
-DID_DIR="./target/did"
+BUILD_DIR="./target/wasm"
 DEPLOY_DIR="./target/deploy"
 
-rm -rf "${WASM_DIR}"
-mkdir -p "${WASM_DIR}"
-
-rm -rf "${DID_DIR}"
-mkdir -p "${DID_DIR}"
+rm -rf "${BUILD_DIR}"
+mkdir -p "${BUILD_DIR}"
 
 mkdir -p "${DEPLOY_DIR}"
 
-# Generate did
-candid-extractor "${RELEASE_DIR}/${WASM_MODULE}" > "${DID_DIR}/${WASM_MODULE}.did"
+# Source the script to prepare the package.json metadata for the canister
+source "$PWD/docker/prepare-package"
 
-# Optimize WASM and set metadata
-ic-wasm \
-    "${RELEASE_DIR}/${WASM_MODULE}" \
-    -o "${WASM_DIR}/${WASM_MODULE}" \
-    shrink \
-    --keep-name-section
+create_canister_package_json "$CANISTER" "$SRC_ROOT_DIR" "$PWD/src" "$PKG_JSON_DIR" "$OUTPUT"
 
-# adds the content of did to the `icp:public candid:service` custom section of the public metadata in the wasm
-ic-wasm "${WASM_DIR}/${WASM_MODULE}" -o "${WASM_DIR}/${WASM_MODULE}" metadata candid:service -f "${DID_DIR}/${WASM_MODULE}.did" -v public --keep-name-section
+# Ensure we rebuild the canister. This is useful locally for rebuilding canisters that have no code changes but have resource changes.
+touch "$SRC_ROOT_DIR"/"$CANISTER"/src/lib.rs
 
-if [ "${WASM_MODULE}" == "satellite" ]
-then
-  # add the type of build "stock" to the satellite. This way, we can identify whether it's the standard canister ("stock") or a custom build ("extended") of the developer.
-  ic-wasm "${WASM_DIR}/${WASM_MODULE}" -o "${WASM_DIR}/${WASM_MODULE}" metadata juno:build -d "stock" -v public --keep-name-section
-fi
+# Source the script to perform tasks before building the canister
+source "$PWD/docker/pre-build-canister"
 
-if [ "${MODULE}" == "satellite" ] || [ "${MODULE}" == "console" ];
-then
-  # indicate support for certificate version 1 and 2 in the canister metadata
-  ic-wasm "${WASM_DIR}/${WASM_MODULE}" -o "${WASM_DIR}/${WASM_MODULE}" metadata supported_certificate_versions -d "1,2" -v public --keep-name-section
-fi
+# Run pre-build steps
+pre_build_canister "$@"
 
-gzip -c --no-name --force "${WASM_DIR}/${WASM_MODULE}" > "${DEPLOY_DIR}/${WASM_MODULE}.tmp.gz"
+# Source the script to effectively build the canister
+source "$PWD/docker/build-canister"
 
-mv "${DEPLOY_DIR}/${WASM_MODULE}.tmp.gz" "${DEPLOY_DIR}/${WASM_MODULE}.gz"
+# Build the canister
+build_canister "$CANISTER" "$SRC_ROOT_DIR" "$PKG_JSON_DIR" "$BUILD_DIR" "$ONLY_DEPS" "$WITH_CERTIFICATION" "$TARGET"
+
+# Move the result to the deploy directory to upgrade the canister in the local replica
+mv "$BUILD_DIR/${WASM_CANISTER}.gz" "${DEPLOY_DIR}/${OUTPUT_CANISTER}.gz"
 
 echo ""
-echo "👉 ${DEPLOY_DIR}/${WASM_MODULE}.gz"
+echo "👉 ${DEPLOY_DIR}/${OUTPUT_CANISTER}.gz"
 echo ""

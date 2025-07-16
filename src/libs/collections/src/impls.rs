@@ -1,10 +1,11 @@
-use crate::constants::SYS_COLLECTION_PREFIX;
+use crate::assert::collection::is_system_collection;
+use crate::errors::JUNO_COLLECTIONS_ERROR_RESERVED_COLLECTION;
 use crate::types::core::CollectionKey;
 use crate::types::interface::SetRule;
 use crate::types::rules::{Memory, Rule};
 use ic_cdk::api::time;
-use junobuild_shared::constants::INITIAL_VERSION;
-use junobuild_shared::types::state::{Timestamp, Version};
+use junobuild_shared::types::state::{Timestamp, Version, Versioned};
+use junobuild_shared::version::next_version;
 
 impl Rule {
     pub fn mem(&self) -> Memory {
@@ -16,7 +17,7 @@ impl Rule {
         current_rule: &Option<&Rule>,
         user_rule: &SetRule,
     ) -> Result<Self, String> {
-        if collection.starts_with(SYS_COLLECTION_PREFIX) {
+        if is_system_collection(collection) {
             return Self::prepare_sys_rule(collection, current_rule, user_rule);
         }
 
@@ -31,10 +32,7 @@ impl Rule {
             Some(current_rule) => current_rule.created_at,
         };
 
-        let version: Version = match current_rule {
-            None => INITIAL_VERSION,
-            Some(current_rule) => current_rule.version.unwrap_or_default() + 1,
-        };
+        let version = next_version(current_rule);
 
         let updated_at: Timestamp = now;
 
@@ -51,6 +49,7 @@ impl Rule {
             mutable_permissions: Some(user_rule.mutable_permissions.unwrap_or(true)),
             max_size: user_rule.max_size,
             max_capacity: user_rule.max_capacity,
+            max_changes_per_user: user_rule.max_changes_per_user,
             created_at,
             updated_at,
             version: Some(version),
@@ -64,7 +63,10 @@ impl Rule {
         user_rule: &SetRule,
     ) -> Result<Rule, String> {
         match current_rule {
-            None => Err(format!("Collection {} is reserved.", collection)),
+            None => Err(format!(
+                "{} ({})",
+                JUNO_COLLECTIONS_ERROR_RESERVED_COLLECTION, collection
+            )),
             Some(current_rule) => {
                 let (created_at, version, updated_at) =
                     Self::initialize_common_fields(&Some(current_rule));
@@ -76,6 +78,7 @@ impl Rule {
                     mutable_permissions: current_rule.mutable_permissions,
                     max_size: current_rule.max_size,
                     max_capacity: current_rule.max_capacity,
+                    max_changes_per_user: current_rule.max_changes_per_user,
                     created_at,
                     updated_at,
                     version: Some(version),
@@ -85,5 +88,11 @@ impl Rule {
                 Ok(rule)
             }
         }
+    }
+}
+
+impl Versioned for &Rule {
+    fn version(&self) -> Option<Version> {
+        self.version
     }
 }

@@ -7,8 +7,7 @@
 	import AnalyticsSettings from '$lib/components/analytics/AnalyticsSettings.svelte';
 	import IdentityGuard from '$lib/components/guards/IdentityGuard.svelte';
 	import MissionControlGuard from '$lib/components/guards/MissionControlGuard.svelte';
-	import OrbitersLoader from '$lib/components/loaders/OrbitersLoader.svelte';
-	import SatellitesLoader from '$lib/components/loaders/SatellitesLoader.svelte';
+	import Loaders from '$lib/components/loaders/Loaders.svelte';
 	import Orbiter from '$lib/components/orbiter/Orbiter.svelte';
 	import OrbiterConfig from '$lib/components/orbiter/OrbiterConfig.svelte';
 	import Tabs from '$lib/components/ui/Tabs.svelte';
@@ -18,7 +17,7 @@
 	import {
 		type Tab,
 		type TabsContext,
-		type TabsStore,
+		type TabsData,
 		TABS_CONTEXT_KEY
 	} from '$lib/types/tabs.context';
 	import { initTabId } from '$lib/utils/tabs.utils';
@@ -44,7 +43,7 @@
 			: [])
 	]);
 
-	const store = writable<TabsStore>({
+	const store = writable<TabsData>({
 		tabId: untrack(() => initTabId(tabs)),
 		tabs: untrack(() => tabs)
 	});
@@ -73,20 +72,18 @@
 			{/if}
 		{/snippet}
 
-		<SatellitesLoader>
-			<OrbitersLoader withVersion>
-				<MissionControlGuard>
-					{#if $store.tabId === $store.tabs[0].id}
-						<Analytics />
-					{:else if $store.tabId === $store.tabs[1].id && nonNullish($orbiterStore)}
-						<Orbiter orbiter={$orbiterStore} />
-					{:else if $store.tabId === $store.tabs[2].id && nonNullish($orbiterStore)}
-						<OrbiterConfig orbiterId={$orbiterStore.orbiter_id} />
+		<Loaders withOrbiterVersion>
+			<MissionControlGuard>
+				{#if $store.tabId === $store.tabs[0].id}
+					<Analytics />
+				{:else if $store.tabId === $store.tabs[1].id && nonNullish($orbiterStore)}
+					<Orbiter orbiter={$orbiterStore} />
+				{:else if $store.tabId === $store.tabs[2].id && nonNullish($orbiterStore)}
+					<OrbiterConfig orbiterId={$orbiterStore.orbiter_id} />
 
-						<AnalyticsSettings orbiterId={$orbiterStore.orbiter_id} />
-					{/if}
-				</MissionControlGuard>
-			</OrbitersLoader>
-		</SatellitesLoader>
+					<AnalyticsSettings orbiterId={$orbiterStore.orbiter_id} />
+				{/if}
+			</MissionControlGuard>
+		</Loaders>
 	</Tabs>
 </IdentityGuard>

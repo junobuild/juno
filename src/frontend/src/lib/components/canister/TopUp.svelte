@@ -1,35 +1,31 @@
 <script lang="ts">
 	import { isNullish, nonNullish } from '@dfinity/utils';
-	import { createEventDispatcher } from 'svelte';
-	import IconPublish from '$lib/components/icons/IconPublish.svelte';
+	import { getAccountIdentifier } from '$lib/api/icp-index.api';
 	import { missionControlIdDerived } from '$lib/derived/mission-control.derived';
-	import { getMissionControlBalance } from '$lib/services/balance.services';
-	import { busy } from '$lib/stores/busy.store';
 	import { i18n } from '$lib/stores/i18n.store';
-	import type { JunoModalDetail } from '$lib/types/modal';
+	import { toasts } from '$lib/stores/toasts.store';
+	import type { JunoModalWithSatellite } from '$lib/types/modal';
 	import { emit } from '$lib/utils/events.utils';
 
 	interface Props {
 		type: 'topup_satellite' | 'topup_mission_control' | 'topup_orbiter';
-		detail?: JunoModalDetail | undefined;
+		detail?: JunoModalWithSatellite | undefined;
+		onclose: () => void;
 	}
 
-	let { type, detail = undefined }: Props = $props();
+	let { type, onclose, detail = undefined }: Props = $props();
 
-	const dispatch = createEventDispatcher();
+	const topUp = () => {
+		onclose();
 
-	const topUp = async () => {
-		dispatch('junoTopUp');
-
-		busy.start();
-
-		const { result, error } = await getMissionControlBalance($missionControlIdDerived);
-
-		busy.stop();
-
-		if (nonNullish(error) || isNullish(result)) {
+		if (isNullish($missionControlIdDerived)) {
+			toasts.error({
+				text: $i18n.errors.no_mission_control
+			});
 			return;
 		}
+
+		const accountIdentifier = getAccountIdentifier($missionControlIdDerived);
 
 		emit({
 			message: 'junoModal',
@@ -37,13 +33,11 @@
 				type,
 				detail: {
 					...(nonNullish(detail) && detail),
-					missionControlBalance: {
-						...result
-					}
+					accountIdentifier
 				}
 			}
 		});
 	};
 </script>
 
-<button onclick={topUp} class="menu"><IconPublish /> {$i18n.canisters.top_up}</button>
+<button onclick={topUp}>{$i18n.canisters.top_up}</button>

@@ -46,7 +46,14 @@ export interface ConfigMaxMemorySize {
 	stable: [] | [bigint];
 	heap: [] | [bigint];
 }
-export type ControllerScope = { Write: null } | { Admin: null };
+export interface Controller {
+	updated_at: bigint;
+	metadata: Array<[string, string]>;
+	created_at: bigint;
+	scope: ControllerScope;
+	expires_at: [] | [bigint];
+}
+export type ControllerScope = { Write: null } | { Admin: null } | { Submit: null };
 export interface CreateCanisterArgs {
 	block_index: [] | [bigint];
 	subnet_id: [] | [Principal];
@@ -112,6 +119,22 @@ export interface ListParams {
 	matcher: [] | [ListMatcher];
 	paginate: [] | [ListPaginate];
 }
+export interface ListProposalResults {
+	matches_length: bigint;
+	items: Array<[ProposalKey, Proposal]>;
+	items_length: bigint;
+}
+export interface ListProposalsOrder {
+	desc: boolean;
+}
+export interface ListProposalsPaginate {
+	start_after: [] | [bigint];
+	limit: [] | [bigint];
+}
+export interface ListProposalsParams {
+	order: [] | [ListProposalsOrder];
+	paginate: [] | [ListProposalsPaginate];
+}
 export interface ListResults {
 	matches_pages: [] | [bigint];
 	matches_length: bigint;
@@ -145,6 +168,9 @@ export interface Proposal {
 	created_at: bigint;
 	version: [] | [bigint];
 	proposal_type: ProposalType;
+}
+export interface ProposalKey {
+	proposal_id: bigint;
 }
 export type ProposalStatus =
 	| { Initialized: null }
@@ -230,6 +256,8 @@ export interface _SERVICE {
 	assert_mission_control_center: ActorMethod<[AssertMissionControlCenterArgs], undefined>;
 	commit_asset_upload: ActorMethod<[CommitBatch], undefined>;
 	commit_proposal: ActorMethod<[CommitProposal], null>;
+	commit_proposal_asset_upload: ActorMethod<[CommitBatch], undefined>;
+	count_proposals: ActorMethod<[], bigint>;
 	create_orbiter: ActorMethod<[CreateCanisterArgs], Principal>;
 	create_satellite: ActorMethod<[CreateCanisterArgs], Principal>;
 	del_controllers: ActorMethod<[DeleteControllersArgs], undefined>;
@@ -249,11 +277,15 @@ export interface _SERVICE {
 	>;
 	init_asset_upload: ActorMethod<[InitAssetKey, bigint], InitUploadResult>;
 	init_proposal: ActorMethod<[ProposalType], [bigint, Proposal]>;
+	init_proposal_asset_upload: ActorMethod<[InitAssetKey, bigint], InitUploadResult>;
 	init_user_mission_control_center: ActorMethod<[], MissionControl>;
 	list_assets: ActorMethod<[string, ListParams], ListResults>;
+	list_controllers: ActorMethod<[], Array<[Principal, Controller]>>;
 	list_custom_domains: ActorMethod<[], Array<[string, CustomDomain]>>;
 	list_payments: ActorMethod<[], Array<[bigint, Payment]>>;
+	list_proposals: ActorMethod<[ListProposalsParams], ListProposalResults>;
 	list_user_mission_control_centers: ActorMethod<[], Array<[Principal, MissionControl]>>;
+	reject_proposal: ActorMethod<[CommitProposal], null>;
 	set_controllers: ActorMethod<[SetControllersArgs], undefined>;
 	set_custom_domain: ActorMethod<[string, [] | [string]], undefined>;
 	set_fee: ActorMethod<[SegmentKind, Tokens], undefined>;
@@ -261,7 +293,7 @@ export interface _SERVICE {
 	submit_proposal: ActorMethod<[bigint], [bigint, Proposal]>;
 	update_rate_config: ActorMethod<[SegmentKind, RateConfig], undefined>;
 	upload_asset_chunk: ActorMethod<[UploadChunk], UploadChunkResult>;
-	version: ActorMethod<[], string>;
+	upload_proposal_asset_chunk: ActorMethod<[UploadChunk], UploadChunkResult>;
 }
 export declare const idlFactory: IDL.InterfaceFactory;
 export declare const init: (args: { IDL: typeof IDL }) => IDL.Type[];

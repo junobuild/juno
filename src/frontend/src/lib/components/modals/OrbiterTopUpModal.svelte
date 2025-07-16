@@ -1,9 +1,9 @@
 <script lang="ts">
 	import type { AccountIdentifier } from '@dfinity/ledger-icp';
 	import { nonNullish } from '@dfinity/utils';
-	import { run } from 'svelte/legacy';
 	import CanisterTopUpModal from '$lib/components/modals/CanisterTopUpModal.svelte';
 	import Html from '$lib/components/ui/Html.svelte';
+	import { balanceOrZero } from '$lib/derived/balance.derived';
 	import { orbiterStore } from '$lib/derived/orbiter.derived';
 	import { i18n } from '$lib/stores/i18n.store';
 	import type { JunoModalDetail, JunoModalTopUpOrbiterDetail } from '$lib/types/modal';
@@ -11,27 +11,26 @@
 
 	interface Props {
 		detail: JunoModalDetail;
+		onclose: () => void;
 	}
 
-	let { detail }: Props = $props();
+	let { detail, onclose }: Props = $props();
 
-	let balance = $state(0n);
 	let accountIdentifier: AccountIdentifier | undefined = $derived(
-		(detail as JunoModalTopUpOrbiterDetail).missionControlBalance?.accountIdentifier
+		(detail as JunoModalTopUpOrbiterDetail).accountIdentifier
 	);
-
-	run(() => {
-		balance = (detail as JunoModalTopUpOrbiterDetail).missionControlBalance?.balance ?? 0n;
-	});
 </script>
 
 {#if nonNullish($orbiterStore)}
 	<CanisterTopUpModal
-		segment="orbiter"
-		canisterId={$orbiterStore.orbiter_id}
-		{balance}
+		segment={{
+			segment: 'orbiter',
+			canisterId: $orbiterStore.orbiter_id.toText(),
+			label: $i18n.analytics.orbiter
+		}}
+		balance={$balanceOrZero}
 		{accountIdentifier}
-		on:junoClose
+		{onclose}
 	>
 		{#snippet intro()}
 			<h2>

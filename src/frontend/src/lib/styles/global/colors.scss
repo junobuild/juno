@@ -3,8 +3,8 @@
 
 	--color-error: #ea385f;
 	--color-error-rgb: 234, 56, 95;
-	--color-error-contrast: #000000;
-	--color-error-contrast-rgb: 0, 0, 0;
+	--color-error-contrast: #ffffff;
+	--color-error-contrast-rgb: 255, 255, 255;
 	--color-error-shade: #ce3154;
 	--color-error-tint: #ec4c6f;
 
@@ -334,6 +334,29 @@
 		--color-tertiary-contrast-rgb: 0, 0, 0;
 		--color-tertiary-shade: #c2c267;
 		--color-tertiary-tint: #e0e083;
+	}
+
+	&[color='rose-bonbon'] {
+		--color-primary: #ff499e;
+		--color-primary-rgb: 255, 73, 158;
+		--color-primary-contrast: #000000;
+		--color-primary-contrast-rgb: 0, 0, 0;
+		--color-primary-shade: #e0408b;
+		--color-primary-tint: #ff5ba8;
+
+		--color-secondary: #9eff49;
+		--color-secondary-rgb: 158, 255, 73;
+		--color-secondary-contrast: #000000;
+		--color-secondary-contrast-rgb: 0, 0, 0;
+		--color-secondary-shade: #8be040;
+		--color-secondary-tint: #a8ff5b;
+
+		--color-tertiary: #499eff;
+		--color-tertiary-rgb: 73, 158, 255;
+		--color-tertiary-contrast: #000000;
+		--color-tertiary-contrast-rgb: 0, 0, 0;
+		--color-tertiary-shade: #408be0;
+		--color-tertiary-tint: #5ba8ff;
 	}
 
 	&[theme='dark'] {

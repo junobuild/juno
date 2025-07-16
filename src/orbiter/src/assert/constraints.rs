@@ -1,11 +1,9 @@
 use crate::constants::{
     KEY_MAX_LENGTH, LONG_STRING_MAX_LENGTH, METADATA_MAX_ELEMENTS, SHORT_STRING_MAX_LENGTH,
-    STRING_MAX_LENGTH,
+    STRING_MAX_LENGTH, UTM_MAX_LENGTH,
 };
-use crate::msg::ERROR_BOT_CALL;
+use crate::state::types::state::AnalyticKey;
 use crate::types::interface::{SetPageView, SetTrackEvent};
-use crate::types::state::AnalyticKey;
-use isbot::Bots;
 use junobuild_shared::types::state::SatelliteId;
 use junobuild_shared::utils::principal_not_equal;
 
@@ -112,27 +110,61 @@ pub fn assert_page_view_length(page_view: &SetPageView) -> Result<(), String> {
     Ok(())
 }
 
+pub fn assert_page_view_campaign_length(page_view: &SetPageView) -> Result<(), String> {
+    if let Some(campaign) = &page_view.campaign {
+        if campaign.utm_source.len() > UTM_MAX_LENGTH {
+            return Err(format!(
+                "utm_source {} is longer than {}.",
+                campaign.utm_source, UTM_MAX_LENGTH
+            ));
+        }
+
+        if let Some(medium) = &campaign.utm_medium {
+            if medium.len() > UTM_MAX_LENGTH {
+                return Err(format!(
+                    "utm_medium {} is longer than {}.",
+                    medium, UTM_MAX_LENGTH
+                ));
+            }
+        }
+
+        if let Some(campaign_name) = &campaign.utm_campaign {
+            if campaign_name.len() > UTM_MAX_LENGTH {
+                return Err(format!(
+                    "utm_campaign {} is longer than {}.",
+                    campaign_name, UTM_MAX_LENGTH
+                ));
+            }
+        }
+
+        if let Some(term) = &campaign.utm_term {
+            if term.len() > UTM_MAX_LENGTH {
+                return Err(format!(
+                    "utm_term {} is longer than {}.",
+                    term, UTM_MAX_LENGTH
+                ));
+            }
+        }
+
+        if let Some(content) = &campaign.utm_content {
+            if content.len() > UTM_MAX_LENGTH {
+                return Err(format!(
+                    "utm_content {} is longer than {}.",
+                    content, UTM_MAX_LENGTH
+                ));
+            }
+        }
+    }
+
+    Ok(())
+}
+
 fn assert_session_id_length(session_id: &str) -> Result<(), String> {
     if session_id.len() > KEY_MAX_LENGTH {
         return Err(format!(
             "An analytic session ID must not be longer than {}.",
             KEY_MAX_LENGTH
         ));
-    }
-
-    Ok(())
-}
-
-pub fn assert_bot(user_agent: &Option<String>) -> Result<(), String> {
-    match user_agent.clone() {
-        None => {}
-        Some(user_agent) => {
-            let bots = Bots::default();
-
-            if bots.is_bot(&user_agent) {
-                return Err(ERROR_BOT_CALL.to_string());
-            }
-        }
     }
 
     Ok(())

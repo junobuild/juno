@@ -1,21 +1,23 @@
 <script lang="ts">
-	import type { Principal } from '@dfinity/principal';
 	import { isNullish, nonNullish } from '@dfinity/utils';
-	import { createEventDispatcher } from 'svelte';
-	import { run, preventDefault } from 'svelte/legacy';
+	import { untrack } from 'svelte';
 	import { goto } from '$app/navigation';
 	import IconWarning from '$lib/components/icons/IconWarning.svelte';
 	import Html from '$lib/components/ui/Html.svelte';
 	import Input from '$lib/components/ui/Input.svelte';
 	import SpinnerModal from '$lib/components/ui/SpinnerModal.svelte';
 	import Value from '$lib/components/ui/Value.svelte';
-	import { ONE_TRILLION, DEFAULT_TCYCLES_TO_RETAIN_ON_DELETION } from '$lib/constants/constants';
+	import {
+		ONE_TRILLION,
+		DEFAULT_TCYCLES_TO_RETAIN_ON_DELETION
+	} from '$lib/constants/app.constants';
 	import { authSignedOut } from '$lib/derived/auth.derived';
 	import { missionControlIdDerived } from '$lib/derived/mission-control.derived';
 	import { loadSatellites } from '$lib/services/satellites.services';
 	import { isBusy, wizardBusy } from '$lib/stores/busy.store';
 	import { i18n } from '$lib/stores/i18n.store';
 	import { toasts } from '$lib/stores/toasts.store';
+	import type { MissionControlId } from '$lib/types/mission-control';
 	import { formatTCycles } from '$lib/utils/cycles.utils';
 	import { i18nCapitalize, i18nFormat } from '$lib/utils/i18n.utils';
 
@@ -23,27 +25,27 @@
 		segmentName?: string;
 		segment: 'satellite' | 'analytics';
 		currentCycles: bigint;
-		deleteFn: (params: { missionControlId: Principal; cyclesToDeposit: bigint }) => Promise<void>;
+		deleteFn: (params: {
+			missionControlId: MissionControlId;
+			cyclesToDeposit: bigint;
+		}) => Promise<void>;
+		onclose: () => void;
 	}
 
-	let { segment, segmentName, currentCycles, deleteFn }: Props = $props();
+	let { segment, segmentName, currentCycles, deleteFn, onclose }: Props = $props();
 
 	let step: 'init' | 'in_progress' | 'error' = $state('init');
-
-	const dispatch = createEventDispatcher();
-	const close = () => dispatch('junoClose');
 
 	let tCycles = $state(DEFAULT_TCYCLES_TO_RETAIN_ON_DELETION);
 
 	let cycles: bigint | undefined = $state(undefined);
-	run(() => {
-		(() => {
-			if (isNaN(tCycles)) {
-				return;
-			}
+	$effect(() => {
+		if (isNaN(tCycles)) {
+			untrack(() => (cycles = undefined));
+			return;
+		}
 
-			cycles = BigInt(tCycles * ONE_TRILLION);
-		})();
+		untrack(() => (cycles = BigInt(tCycles * ONE_TRILLION)));
 	});
 
 	let cyclesToDeposit: bigint = $derived(
@@ -52,7 +54,9 @@
 
 	let validConfirm = $derived(nonNullish(cycles) && cycles > 0 && cycles <= currentCycles);
 
-	const onSubmit = async () => {
+	const onSubmit = async ($event: SubmitEvent) => {
+		$event.preventDefault();
+
 		if ($authSignedOut) {
 			toasts.error({
 				text: $i18n.errors.no_identity
@@ -91,10 +95,10 @@
 
 			await goto('/', { replaceState: true });
 
-			close();
+			onclose();
 
-			toasts.success(
-				i18nCapitalize(
+			toasts.success({
+				text: i18nCapitalize(
 					i18nFormat($i18n.canisters.delete_success, [
 						{
 							placeholder: '{0}',
@@ -102,7 +106,7 @@
 						}
 					])
 				)
-			);
+			});
 		} catch (err: unknown) {
 			step = 'error';
 
@@ -121,7 +125,7 @@
 		<p>{$i18n.canisters.delete_in_progress}</p>
 	</SpinnerModal>
 {:else}
-	<form onsubmit={preventDefault(onSubmit)}>
+	<form onsubmit={onSubmit}>
 		<h2>
 			<Html
 				text={i18nFormat($i18n.canisters.delete_title, [

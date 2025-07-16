@@ -3,6 +3,7 @@
 	import IconSatellite from '$lib/components/icons/IconSatellite.svelte';
 	import CanisterTopUpModal from '$lib/components/modals/CanisterTopUpModal.svelte';
 	import Html from '$lib/components/ui/Html.svelte';
+	import { balanceOrZero } from '$lib/derived/balance.derived';
 	import { i18n } from '$lib/stores/i18n.store';
 	import type { JunoModalTopUpSatelliteDetail, JunoModalDetail } from '$lib/types/modal';
 	import { i18nFormat } from '$lib/utils/i18n.utils';
@@ -10,25 +11,27 @@
 
 	interface Props {
 		detail: JunoModalDetail;
+		onclose: () => void;
 	}
 
-	let { detail }: Props = $props();
+	let { detail, onclose }: Props = $props();
 
 	let { satellite } = $derived(detail as JunoModalTopUpSatelliteDetail);
-	let balance = $derived(
-		(detail as JunoModalTopUpSatelliteDetail).missionControlBalance?.balance ?? 0n
-	);
+
 	let accountIdentifier: AccountIdentifier | undefined = $derived(
-		(detail as JunoModalTopUpSatelliteDetail).missionControlBalance?.accountIdentifier
+		(detail as JunoModalTopUpSatelliteDetail).accountIdentifier
 	);
 </script>
 
 <CanisterTopUpModal
-	segment="satellite"
-	canisterId={satellite.satellite_id}
-	{balance}
+	segment={{
+		segment: 'satellite',
+		canisterId: satellite.satellite_id.toText(),
+		label: satelliteName(satellite)
+	}}
+	balance={$balanceOrZero}
 	{accountIdentifier}
-	on:junoClose
+	{onclose}
 >
 	{#snippet intro()}
 		<h2>

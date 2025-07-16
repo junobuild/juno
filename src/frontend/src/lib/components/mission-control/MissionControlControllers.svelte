@@ -11,9 +11,10 @@
 	import { authStore } from '$lib/stores/auth.store';
 	import { i18n } from '$lib/stores/i18n.store';
 	import type { SetControllerParams } from '$lib/types/controllers';
+	import type { MissionControlId } from '$lib/types/mission-control';
 
 	interface Props {
-		missionControlId: Principal;
+		missionControlId: MissionControlId;
 	}
 
 	let { missionControlId }: Props = $props();
@@ -21,21 +22,23 @@
 	const list = (): Promise<[Principal, Controller][]> =>
 		listMissionControlControllers({ missionControlId, identity: $authStore.identity });
 
-	const remove = (params: { missionControlId: Principal; controller: Principal }): Promise<void> =>
-		deleteMissionControlController({ ...params, identity: $authStore.identity });
+	const remove = (params: {
+		missionControlId: MissionControlId;
+		controller: Principal;
+	}): Promise<void> => deleteMissionControlController({ ...params, identity: $authStore.identity });
 
 	const add = (
 		params: {
-			missionControlId: Principal;
+			missionControlId: MissionControlId;
 		} & SetControllerParams
 	): Promise<void> => setMissionControlController({ ...params, identity: $authStore.identity });
 
-	let extraControllers: [Principal, Controller | undefined][] = [
+	let extraControllers: [Principal, Controller | undefined][] = $derived([
 		[missionControlId, undefined],
 		...(nonNullish($authStore.identity)
 			? [[$authStore.identity.getPrincipal(), undefined] as [Principal, Controller | undefined]]
 			: [])
-	];
+	]);
 </script>
 
 <Controllers

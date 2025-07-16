@@ -4,17 +4,19 @@
 	import { getContext, setContext } from 'svelte';
 	import { writable } from 'svelte/store';
 	import type { AssetNoContent } from '$declarations/satellite/satellite.did';
-	import { listAssets, satelliteVersion } from '$lib/api/satellites.api';
+	import { listAssets } from '$lib/api/satellites.api';
 	import { listAssets008, listAssets009 } from '$lib/api/satellites.deprecated.api';
 	import Asset from '$lib/components/assets/Asset.svelte';
 	import Assets from '$lib/components/assets/Assets.svelte';
 	import Data from '$lib/components/data/Data.svelte';
+	import DataCollectionsHeaderWithFilter from '$lib/components/data/DataCollectionsHeaderWithFilter.svelte';
 	import DataCount from '$lib/components/data/DataCount.svelte';
 	import { SATELLITE_v0_0_10, SATELLITE_v0_0_9 } from '$lib/constants/version.constants';
 	import { authStore } from '$lib/stores/auth.store';
 	import { listParamsStore } from '$lib/stores/list-params.store';
-	import { initPaginationContext } from '$lib/stores/pagination.store';
+	import { initPaginationContext } from '$lib/stores/pagination.context.store';
 	import { toasts } from '$lib/stores/toasts.store';
+	import { versionStore } from '$lib/stores/version.store';
 	import { DATA_CONTEXT_KEY, type DataContext, type DataStoreData } from '$lib/types/data.context';
 	import type { ListParams } from '$lib/types/list';
 	import { PAGINATION_CONTEXT_KEY, type PaginationContext } from '$lib/types/pagination.context';
@@ -36,12 +38,13 @@
 		}
 
 		try {
-			const version = await satelliteVersion({
-				satelliteId: $store.satelliteId,
-				identity: $authStore.identity
-			});
+			const version = $versionStore?.satellites[$store.satelliteId.toText()]?.current;
 
-			// TODO: remove at the same time as satellite version query
+			if (isNullish(version)) {
+				setItems({ items: undefined, matches_length: undefined, items_length: undefined });
+				return;
+			}
+
 			if (isNullish(collection)) {
 				setItems({ items: undefined, matches_length: undefined, items_length: undefined });
 				return;
@@ -84,14 +87,20 @@
 	const { store }: RulesContext = getContext<RulesContext>(RULES_CONTEXT_KEY);
 
 	let collection: string | undefined = $derived($store.rule?.[0]);
+
+	let includeSysCollections = $state(false);
 </script>
 
-<Data on:junoCloseData={resetData}>
-	<Assets />
+<Data onclose={resetData} displayEmpty={!includeSysCollections}>
+	<Assets {includeSysCollections} />
 
 	<Asset />
 
 	{#snippet count()}
 		<DataCount />
+	{/snippet}
+
+	{#snippet header()}
+		<DataCollectionsHeaderWithFilter bind:includeSysCollections onclose={resetData} />
 	{/snippet}
 </Data>

@@ -5,13 +5,15 @@
 	import CanisterTransferCyclesModal from '$lib/components/modals/CanisterTransferCyclesModal.svelte';
 	import { orbiterStore } from '$lib/derived/orbiter.derived';
 	import { authStore } from '$lib/stores/auth.store';
+	import { i18n } from '$lib/stores/i18n.store';
 	import type { JunoModalCycles, JunoModalDetail } from '$lib/types/modal';
 
 	interface Props {
 		detail: JunoModalDetail;
+		onclose: () => void;
 	}
 
-	let { detail }: Props = $props();
+	let { detail, onclose }: Props = $props();
 
 	let { cycles: currentCycles } = $derived(detail as JunoModalCycles);
 
@@ -20,6 +22,9 @@
 			async (params: { cycles: bigint; destinationId: Principal }) =>
 				await depositCycles({
 					...params,
+					// TODO: resolve no-non-null-assertion
+					// We know for sure that the orbiter is defined at this point.
+					// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
 					orbiterId: $orbiterStore!.orbiter_id,
 					identity: $authStore.identity
 				})
@@ -30,8 +35,11 @@
 	<CanisterTransferCyclesModal
 		{transferFn}
 		{currentCycles}
-		canisterId={$orbiterStore.orbiter_id}
-		on:junoClose
-		segment="analytics"
+		segment={{
+			segment: 'orbiter',
+			canisterId: $orbiterStore.orbiter_id.toText(),
+			label: $i18n.analytics.orbiter
+		}}
+		{onclose}
 	/>
 {/if}

@@ -4,7 +4,7 @@ import {
 	listOrbiterStatuses,
 	listSatelliteStatuses
 } from '$lib/api/mission-control.deprecated.api';
-import { SYNC_MONITORING_TIMER_INTERVAL } from '$lib/constants/constants';
+import { SYNC_MONITORING_TIMER_INTERVAL } from '$lib/constants/app.constants';
 import { monitoringIdbStore } from '$lib/stores/idb.store';
 import type { CanisterSegment, CanisterSyncMonitoring } from '$lib/types/canister';
 import type { ChartsData, TimeOfDayChartData } from '$lib/types/chart';
@@ -13,19 +13,22 @@ import type {
 	MonitoringHistoryEntry,
 	MonitoringMetadata
 } from '$lib/types/monitoring';
-import type { PostMessage, PostMessageDataRequest } from '$lib/types/post-message';
+import type { PostMessageDataRequest, PostMessageRequest } from '$lib/types/post-message';
 import { formatTCycles } from '$lib/utils/cycles.utils';
 import { fromBigIntNanoSeconds, toBigIntNanoSeconds } from '$lib/utils/date.utils';
-import { emitCanister, emitSavedCanisters, loadIdentity } from '$lib/utils/worker.utils';
+import {
+	emitCanister,
+	emitCanisters,
+	emitSavedCanisters,
+	loadIdentity
+} from '$lib/utils/worker.utils';
 import type { Identity } from '@dfinity/agent';
 import { Principal } from '@dfinity/principal';
-import { fromNullable, isNullish, nonNullish } from '@dfinity/utils';
+import { fromNullable, fromNullishNullable, isNullish, nonNullish } from '@dfinity/utils';
 import { addDays, endOfDay, format, startOfDay } from 'date-fns';
 import { get, set } from 'idb-keyval';
 
-export const onMonitoringMessage = async ({
-	data: dataMsg
-}: MessageEvent<PostMessage<PostMessageDataRequest>>) => {
+export const onMonitoringMessage = async ({ data: dataMsg }: MessageEvent<PostMessageRequest>) => {
 	const { msg, data } = dataMsg;
 
 	switch (msg) {
@@ -105,6 +108,8 @@ const syncMonitoring = async ({
 	if (syncing) {
 		return;
 	}
+
+	syncing = true;
 
 	await emitSavedCanisters({
 		canisterIds: segments.map(({ canisterId }) => canisterId),
@@ -186,9 +191,17 @@ const buildCycles = (history: MonitoringHistory): ChartsData[] =>
 				};
 			}
 
+			const {
+				cycles: { amount },
+				deposited_cycles
+			} = cycles;
+
+			// The cycles amount is collected before the round of monitoring. By adding the potential deposited cycles, we got the resulting value.
+			const cyclesAmount = amount + (fromNullable(deposited_cycles)?.amount ?? 0n);
+
 			return {
 				x: `${fromBigIntNanoSeconds(created_at).getTime()}`,
-				y: parseFloat(formatTCycles(cycles.cycles.amount))
+				y: parseFloat(formatTCycles(cyclesAmount))
 			};
 		})
 		.sort(sortChartsData);
@@ -199,7 +212,7 @@ const buildWeekDepositedCycles = (history: MonitoringHistory): TimeOfDayChartDat
 
 	return history
 		.filter(([_, result]) => {
-			const depositedCycles = fromNullable(fromNullable(result.cycles)?.deposited_cycles ?? []);
+			const depositedCycles = fromNullishNullable(fromNullable(result.cycles)?.deposited_cycles);
 
 			return (
 				nonNullish(depositedCycles) &&
@@ -289,7 +302,7 @@ const buildChartTotalPerDay = ({
 };
 
 const buildMonitoringMetadata = (history: MonitoringHistory): MonitoringMetadata | undefined => {
-	const cycles = fromNullable(history[0]?.[1].cycles ?? []);
+	const cycles = fromNullishNullable(history[0]?.[1].cycles);
 
 	const latestCycles = cycles?.cycles;
 
@@ -298,11 +311,11 @@ const buildMonitoringMetadata = (history: MonitoringHistory): MonitoringMetadata
 	}
 
 	const latestDepositedCyclesEntry = history.find(([_, entry]) =>
-		nonNullish(fromNullable(fromNullable(entry.cycles ?? [])?.deposited_cycles ?? []))
+		nonNullish(fromNullishNullable(fromNullishNullable(entry.cycles)?.deposited_cycles))
 	);
 
-	const latestDepositedCycles = fromNullable(
-		fromNullable(latestDepositedCyclesEntry?.[1].cycles ?? [])?.deposited_cycles ?? []
+	const latestDepositedCycles = fromNullishNullable(
+		fromNullishNullable(latestDepositedCyclesEntry?.[1].cycles)?.deposited_cycles
 	);
 
 	return {
@@ -323,62 +336,72 @@ const syncMonitoringForSegments = async ({
 } & Required<
 	Pick<PostMessageDataRequest, 'missionControlId' | 'segments' | 'withMonitoringHistory'>
 >) => {
-	await Promise.allSettled(
-		segments.map(async ({ canisterId, ...rest }) => {
-			try {
-				const loadParams = {
-					identity,
-					missionControlId,
-					segment: { canisterId, ...rest }
-				};
+	const syncMonitoringPerCanister = async ({
+		canisterId,
+		...rest
+	}: CanisterSegment): Promise<CanisterSyncMonitoring> => {
+		try {
+			const loadParams = {
+				identity,
+				missionControlId,
+				segment: { canisterId, ...rest }
+			};
 
-				const [resultStatuses, resultHistory] = await Promise.allSettled([
-					loadDeprecatedStatuses(loadParams),
-					withMonitoringHistory
-						? loadMonitoringHistory(loadParams)
-						: Promise.resolve({ history: [], chartsData: [], depositedCyclesChartData: [] })
-				]);
+			const [resultStatuses, resultHistory] = await Promise.allSettled([
+				loadDeprecatedStatuses(loadParams),
+				withMonitoringHistory
+					? loadMonitoringHistory(loadParams)
+					: Promise.resolve({ history: [], chartsData: [], depositedCyclesChartData: [] })
+			]);
 
-				if (resultHistory.status === 'rejected') {
-					throw new Error(resultHistory.reason);
-				}
-
-				const {
-					history,
-					chartsData: chartsHistory,
-					depositedCyclesChartData
-				} = resultHistory.value;
-				const chartsStatuses = resultStatuses.status === 'fulfilled' ? resultStatuses.value : [];
-
-				const chartsData = buildChartTotalPerDay({
-					chartsStatuses,
-					chartsHistory
-				});
-
-				const metadata = buildMonitoringMetadata(history);
-
-				await syncMonitoringHistory({
-					canisterId,
-					history,
-					chartsData,
-					depositedCyclesChartData,
-					metadata
-				});
-			} catch (err: unknown) {
-				console.error(err);
-
-				emitCanister({
-					id: canisterId,
-					sync: 'error'
-				});
-
-				throw err;
+			if (resultHistory.status === 'rejected') {
+				throw new Error(resultHistory.reason);
 			}
-		})
-	);
+
+			const { history, chartsData: chartsHistory, depositedCyclesChartData } = resultHistory.value;
+			const chartsStatuses = resultStatuses.status === 'fulfilled' ? resultStatuses.value : [];
+
+			const chartsData = buildChartTotalPerDay({
+				chartsStatuses,
+				chartsHistory
+			});
+
+			const metadata = buildMonitoringMetadata(history);
+
+			const canister = mapMonitoringHistory({
+				canisterId,
+				history,
+				chartsData,
+				depositedCyclesChartData,
+				metadata
+			});
+
+			// We emit the canister data this way the UI can render asynchronously render the information without waiting for all canisters status to be fetched.
+			emitCanister(canister);
+
+			return canister;
+		} catch (err: unknown) {
+			console.error(err);
+
+			return {
+				id: canisterId,
+				sync: 'error'
+			};
+		}
+	};
+
+	const canisters = await Promise.all(segments.map(syncMonitoringPerCanister));
+
+	// Save information in indexed-db as well to load previous values on navigation and refresh
+	for (const { id, ...rest } of canisters.filter(({ sync }) => sync !== 'error')) {
+		await set(id, { id, ...rest }, monitoringIdbStore);
+	}
+
+	// We also emits all canisters status for syncing the potential errors but also to hold the value in the UI in a stores that gets updated in bulk and lead to less re-render
+	emitCanisters(canisters);
 };
 
-const syncMonitoringHistory = async ({
+const mapMonitoringHistory = ({
 	canisterId,
 	history,
 	chartsData,
@@ -390,22 +413,15 @@ const syncMonitoringHistory = async ({
 	chartsData: ChartsData[];
 	depositedCyclesChartData: TimeOfDayChartData[];
 	metadata: MonitoringMetadata | undefined;
-}) => {
-	const canister: CanisterSyncMonitoring = {
-		id: canisterId,
-		sync: 'synced',
-		data: {
-			history,
-			chartsData,
-			charts: {
-				depositedCycles: depositedCyclesChartData
-			},
-			...(nonNullish(metadata) && { metadata })
-		}
-	};
-
-	// Save information in indexed-db as well to load previous values on navigation and refresh
-	await set(canisterId, canister, monitoringIdbStore);
-
-	emitCanister(canister);
-};
+}): CanisterSyncMonitoring => ({
+	id: canisterId,
+	sync: 'synced',
+	data: {
+		history,
+		chartsData,
+		charts: {
+			depositedCycles: depositedCyclesChartData
+		},
+		...(nonNullish(metadata) && { metadata })
+	}
+});

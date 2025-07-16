@@ -1,3 +1,4 @@
+use crate::regex::build_regex;
 use crate::types::core::Key;
 use crate::types::list::{
     ListMatcher, ListOrder, ListOrderField, ListPaginate, ListParams, ListResults, TimestampMatcher,
@@ -172,7 +173,7 @@ fn paginate_values<T: Clone + Timestamped>(
                 return Vec::new();
             }
 
-            if (start + length) > max - 1 {
+            if start.saturating_add(length) > max - 1 {
                 return matches[start..=(max - 1)]
                     .iter()
                     .map(|(key, value)| ((*key).clone(), (*value).clone()))
@@ -187,13 +188,16 @@ fn paginate_values<T: Clone + Timestamped>(
     }
 }
 
-pub fn matcher_regex(matcher: &Option<ListMatcher>) -> (Option<Regex>, Option<Regex>) {
+pub fn matcher_regex(
+    matcher: &Option<ListMatcher>,
+) -> Result<(Option<Regex>, Option<Regex>), String> {
     let regex_key: Option<Regex> = match matcher {
         None => None,
         Some(matcher) => matcher
             .key
             .as_ref()
-            .map(|filter| Regex::new(filter).unwrap()),
+            .map(|filter| build_regex(filter))
+            .transpose()?,
     };
 
     let regex_description: Option<Regex> = match matcher {
@@ -201,10 +205,11 @@ pub fn matcher_regex(matcher: &Option<ListMatcher>) -> (Option<Regex>, Option<Re
         Some(matcher) => matcher
             .description
             .as_ref()
-            .map(|filter| Regex::new(filter).unwrap()),
+            .map(|filter| build_regex(filter))
+            .transpose()?,
     };
 
-    (regex_key, regex_description)
+    Ok((regex_key, regex_description))
 }
 
 pub fn filter_timestamps<T: Timestamped>(matcher: &Option<ListMatcher>, item: &T) -> bool {

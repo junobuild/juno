@@ -4,8 +4,18 @@
 @mixin columns-3 {
 	@include media.min-width(medium) {
 		display: grid;
-		grid-template-columns: repeat(2, auto) 1fr;
-		grid-column-gap: var(--padding-12x);
+		grid-template-columns: repeat(3, calc(var(--columns-3-width) * 0.3));
+		grid-column-gap: var(--columns-3-gap);
+
+		--columns-3-gap: var(--padding-6x);
+		--columns-3-width: calc(100% - (2 * var(--columns-3-gap)));
+	}
+
+	@include media.min-width(large) {
+		grid-template-columns: repeat(2, calc(var(--columns-3-width) * 0.26)) calc(
+				var(--columns-3-width) * 0.48
+			);
+		--columns-3-gap: var(--padding-12x);
 	}
 
 	&.fit-column-1 {
@@ -36,6 +46,33 @@
 	&.with-title {
 		padding: 0;
 		display: block;
+
+		&.primary {
+			--card-border-color: var(--color-primary);
+
+			.title {
+				background: var(--color-primary);
+				color: var(--color-primary-contrast);
+			}
+		}
+
+		&.secondary {
+			--card-border-color: var(--color-secondary);
+
+			.title {
+				background: var(--color-secondary);
+				color: var(--color-secondary-contrast);
+			}
+		}
+
+		&.tertiary {
+			--card-border-color: var(--color-tertiary);
+
+			.title {
+				background: var(--color-tertiary);
+				color: var(--color-tertiary-contrast);
+			}
+		}
 
 		.title {
 			padding: var(--padding-0_5x) var(--padding-2x);

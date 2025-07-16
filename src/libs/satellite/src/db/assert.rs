@@ -1,19 +1,53 @@
-use crate::db::msg::ERROR_CANNOT_WRITE;
 use crate::db::runtime::increment_and_assert_rate;
 use crate::db::types::config::DbConfig;
 use crate::db::types::state::{DocAssertDelete, DocAssertSet, DocContext};
-use crate::hooks::{invoke_assert_delete_doc, invoke_assert_set_doc};
-use crate::rules::assert_stores::assert_user_collection_caller_key;
+use crate::errors::db::{JUNO_DATASTORE_ERROR_CANNOT_READ, JUNO_DATASTORE_ERROR_CANNOT_WRITE};
+use crate::hooks::db::{invoke_assert_delete_doc, invoke_assert_set_doc};
 use crate::types::store::StoreContext;
+use crate::user::core::assert::{
+    assert_user_collection_caller_key, assert_user_collection_data, assert_user_is_not_banned,
+    assert_user_write_permission,
+};
+use crate::user::usage::assert::{
+    assert_user_usage_collection_data, increment_and_assert_db_usage,
+};
 use crate::{DelDoc, Doc, SetDoc};
 use candid::Principal;
-use junobuild_collections::assert_stores::{
+use junobuild_collections::assert::stores::{
     assert_create_permission, assert_permission, public_permission,
 };
 use junobuild_collections::types::rules::{Permission, Rule};
 use junobuild_shared::assert::{assert_description_length, assert_max_memory_size, assert_version};
 use junobuild_shared::types::core::Key;
 use junobuild_shared::types::state::{Controllers, Version};
+
+pub fn assert_get_doc(
+    &StoreContext {
+        caller,
+        controllers,
+        collection: _,
+    }: &StoreContext,
+    rule: &Rule,
+    current_doc: &Doc,
+) -> Result<(), String> {
+    assert_user_is_not_banned(caller, controllers)?;
+
+    assert_read_permission(caller, controllers, current_doc, &rule.read)?;
+
+    Ok(())
+}
+
+pub fn assert_get_docs(
+    &StoreContext {
+        caller,
+        controllers,
+        collection: _,
+    }: &StoreContext,
+) -> Result<(), String> {
+    assert_user_is_not_banned(caller, controllers)?;
+
+    Ok(())
+}
 
 pub fn assert_set_doc(
     &StoreContext {
@@ -27,6 +61,12 @@ pub fn assert_set_doc(
     rule: &Rule,
     current_doc: &Option<Doc>,
 ) -> Result<(), String> {
+    assert_user_is_not_banned(caller, controllers)?;
+
+    assert_user_collection_caller_key(caller, collection, key, current_doc)?;
+    assert_user_collection_data(collection, value)?;
+    assert_user_write_permission(caller, controllers, collection, current_doc)?;
+
     assert_write_permission(caller, controllers, current_doc, &rule.write)?;
 
     assert_memory_size(config)?;
@@ -35,7 +75,7 @@ pub fn assert_set_doc(
 
     assert_description_length(&value.description)?;
 
-    assert_user_collection_caller_key(caller, collection, key)?;
+    assert_user_usage_collection_data(collection, value)?;
 
     invoke_assert_set_doc(
         &caller,
@@ -48,6 +88,8 @@ pub fn assert_set_doc(
             },
         },
     )?;
+
+    increment_and_assert_db_usage(caller, controllers, collection, rule.max_changes_per_user)?;
 
     increment_and_assert_rate(collection, &rule.rate_config)?;
 
@@ -65,6 +107,8 @@ pub fn assert_delete_doc(
     rule: &Rule,
     current_doc: &Option<Doc>,
 ) -> Result<(), String> {
+    assert_user_is_not_banned(caller, controllers)?;
+
     assert_write_permission(caller, controllers, current_doc, &rule.write)?;
 
     assert_write_version(current_doc, value.version)?;
@@ -81,6 +125,8 @@ pub fn assert_delete_doc(
         },
     )?;
 
+    increment_and_assert_db_usage(caller, controllers, collection, rule.max_changes_per_user)?;
+
     increment_and_assert_rate(collection, &rule.rate_config)?;
 
     Ok(())
@@ -91,6 +137,19 @@ fn assert_memory_size(config: &Option<DbConfig>) -> Result<(), String> {
         None => Ok(()),
         Some(config) => assert_max_memory_size(&config.max_memory_size),
     }
+}
+
+fn assert_read_permission(
+    caller: Principal,
+    controllers: &Controllers,
+    current_doc: &Doc,
+    rule: &Permission,
+) -> Result<(), String> {
+    if !assert_permission(rule, current_doc.owner, caller, controllers) {
+        return Err(JUNO_DATASTORE_ERROR_CANNOT_READ.to_string());
+    }
+
+    Ok(())
 }
 
 fn assert_write_permission(
@@ -104,12 +163,12 @@ fn assert_write_permission(
         match current_doc {
             None => {
                 if !assert_create_permission(rule, caller, controllers) {
-                    return Err(ERROR_CANNOT_WRITE.to_string());
+                    return Err(JUNO_DATASTORE_ERROR_CANNOT_WRITE.to_string());
                 }
             }
             Some(current_doc) => {
                 if !assert_permission(rule, current_doc.owner, caller, controllers) {
-                    return Err(ERROR_CANNOT_WRITE.to_string());
+                    return Err(JUNO_DATASTORE_ERROR_CANNOT_WRITE.to_string());
                 }
             }
         }

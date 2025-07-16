@@ -1,6 +1,6 @@
 [package]
 name = "console"
-version = "0.0.14"
+version = "0.1.0"
 edition = "2021"
 publish = false
 
@@ -18,10 +18,9 @@ serde.workspace = true
 serde_cbor.workspace = true
 serde_json.workspace = true
 ciborium.workspace = true
-sha2.workspace = true
-hex.workspace = true
 regex.workspace = true
-semver = "1.0"
+semver = "1.0.25"
 junobuild-shared = { path = "../libs/shared" }
 junobuild-storage = { path = "../libs/storage" }
 junobuild-collections = { path = "../libs/collections" }
+junobuild-cdn = { path = "../libs/cdn" }

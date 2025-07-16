@@ -2,22 +2,22 @@
 	import { nonNullish } from '@dfinity/utils';
 	import { setContext } from 'svelte';
 	import { writable } from 'svelte/store';
-	import Guides from '$lib/components/examples/Guides.svelte';
 	import IdentityGuard from '$lib/components/guards/IdentityGuard.svelte';
 	import MissionControlGuard from '$lib/components/guards/MissionControlGuard.svelte';
 	import SatelliteGuard from '$lib/components/guards/SatelliteGuard.svelte';
-	import OrbitersLoader from '$lib/components/loaders/OrbitersLoader.svelte';
-	import SatellitesLoader from '$lib/components/loaders/SatellitesLoader.svelte';
+	import Loaders from '$lib/components/loaders/Loaders.svelte';
+	import SatelliteVersionLoader from '$lib/components/loaders/SatelliteVersionLoader.svelte';
 	import SatelliteOverview from '$lib/components/satellites/SatelliteOverview.svelte';
 	import SatelliteSettings from '$lib/components/satellites/SatelliteSettings.svelte';
 	import Tabs from '$lib/components/ui/Tabs.svelte';
 	import Warnings from '$lib/components/warning/Warnings.svelte';
+	import { missionControlIdDerived } from '$lib/derived/mission-control.derived';
 	import { satelliteStore } from '$lib/derived/satellite.derived';
 	import {
 		type Tab,
 		TABS_CONTEXT_KEY,
 		type TabsContext,
-		type TabsStore
+		type TabsData
 	} from '$lib/types/tabs.context';
 	import { initTabId } from '$lib/utils/tabs.utils';
 
@@ -32,7 +32,7 @@
 		}
 	];
 
-	const store = writable<TabsStore>({
+	const store = writable<TabsData>({
 		tabId: initTabId(tabs),
 		tabs
 	});
@@ -54,22 +54,23 @@
 			{/if}
 		{/snippet}
 
-		<SatellitesLoader>
-			<OrbitersLoader>
-				<SatelliteGuard>
-					<MissionControlGuard>
-						{#if nonNullish($satelliteStore)}
+		<Loaders monitoring>
+			<SatelliteGuard>
+				<MissionControlGuard>
+					{#if nonNullish($satelliteStore) && nonNullish($missionControlIdDerived)}
+						<SatelliteVersionLoader
+							satellite={$satelliteStore}
+							missionControlId={$missionControlIdDerived}
+						>
 							{#if $store.tabId === $store.tabs[0].id}
 								<SatelliteOverview satellite={$satelliteStore} />
-
-								<Guides />
 							{:else if $store.tabId === $store.tabs[1].id}
 								<SatelliteSettings satellite={$satelliteStore} />
 							{/if}
-						{/if}
-					</MissionControlGuard>
-				</SatelliteGuard>
-			</OrbitersLoader>
-		</SatellitesLoader>
+						</SatelliteVersionLoader>
+					{/if}
+				</MissionControlGuard>
+			</SatelliteGuard>
+		</Loaders>
 	</Tabs>
 </IdentityGuard>

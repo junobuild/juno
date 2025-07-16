@@ -6,10 +6,10 @@ import type {
 	snapshot,
 	snapshot_id
 } from '$declarations/ic/ic.did';
+import { getAgent } from '$lib/api/_agent/_agent.api';
 import { getICActor } from '$lib/api/actors/actor.ic.api';
-import { getAgent } from '$lib/api/agent/agent.api';
 import type { CanisterInfo, CanisterLogVisibility, CanisterStatus } from '$lib/types/canister';
-import type { Snapshots } from '$lib/types/snapshot';
+import type { Snapshots } from '$lib/types/progress-snapshot';
 import {
 	CanisterStatus as AgentCanisterStatus,
 	AnonymousIdentity,
@@ -50,6 +50,16 @@ export const canisterStatus = async ({
 			request_payload_bytes_total: requestPayloadBytesTotal,
 			response_payload_bytes_total: responsePayloadBytesTotal
 		},
+		memory_metrics: {
+			wasm_binary_size: wasmBinarySize,
+			wasm_chunk_store_size: wasmChunkStoreSize,
+			canister_history_size: canisterHistorySize,
+			stable_memory_size: stableMemorySize,
+			snapshots_size: snapshotsSize,
+			wasm_memory_size: wasmMemorySize,
+			global_memory_size: globalMemorySize,
+			custom_sections_size: customSectionsSize
+		},
 		settings: {
 			freezing_threshold: freezingThreshold,
 			controllers,
@@ -74,6 +84,16 @@ export const canisterStatus = async ({
 			numCallsTotal,
 			requestPayloadBytesTotal,
 			responsePayloadBytesTotal
+		},
+		memoryMetrics: {
+			wasmBinarySize,
+			wasmChunkStoreSize,
+			canisterHistorySize,
+			stableMemorySize,
+			snapshotsSize,
+			wasmMemorySize,
+			globalMemorySize,
+			customSectionsSize
 		},
 		settings: {
 			freezingThreshold,
@@ -225,7 +245,7 @@ export const getSubnetId = async ({
 }): Promise<string | undefined> => {
 	const agent = await getAgent({ identity: new AnonymousIdentity() });
 
-	const path = 'subnet' as const;
+	const path = 'subnet';
 
 	const result = await AgentCanisterStatus.request({
 		canisterId: Principal.from(canisterId),

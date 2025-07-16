@@ -9,7 +9,7 @@ export interface Controller {
 	scope: ControllerScope;
 	expires_at: [] | [bigint];
 }
-export type ControllerScope = { Write: null } | { Admin: null };
+export type ControllerScope = { Write: null } | { Admin: null } | { Submit: null };
 export interface CyclesBalance {
 	timestamp: bigint;
 	amount: bigint;
@@ -24,14 +24,30 @@ export interface DepositedCyclesEmailNotification {
 export interface Env {
 	email_api_key: [] | [string];
 }
+export interface FailedCyclesDepositEmailNotification {
+	to: string;
+	funding_failure: FundingFailure;
+}
+export type FundingErrorCode =
+	| { BalanceCheckFailed: null }
+	| { ObtainCyclesFailed: null }
+	| { DepositFailed: null }
+	| { InsufficientCycles: null }
+	| { Other: string };
+export interface FundingFailure {
+	timestamp: bigint;
+	error_code: FundingErrorCode;
+}
 export interface GetNotifications {
 	to: [] | [bigint];
 	from: [] | [bigint];
 	segment_id: [] | [Principal];
 }
-export type NotificationKind = {
-	DepositedCyclesEmail: DepositedCyclesEmailNotification;
-};
+export type NotificationKind =
+	| {
+			DepositedCyclesEmail: DepositedCyclesEmailNotification;
+	  }
+	| { FailedCyclesDepositEmail: FailedCyclesDepositEmailNotification };
 export interface NotifyArgs {
 	kind: NotificationKind;
 	user: Principal;
@@ -65,7 +81,6 @@ export interface _SERVICE {
 	ping: ActorMethod<[NotifyArgs], undefined>;
 	set_controllers: ActorMethod<[SetControllersArgs], undefined>;
 	set_env: ActorMethod<[Env], undefined>;
-	version: ActorMethod<[], string>;
 }
 export declare const idlFactory: IDL.InterfaceFactory;
 export declare const init: (args: { IDL: typeof IDL }) => IDL.Type[];

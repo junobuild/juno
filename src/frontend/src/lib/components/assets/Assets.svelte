@@ -1,8 +1,7 @@
 <script lang="ts">
 	import type { Principal } from '@dfinity/principal';
 	import { isNullish, nonNullish } from '@dfinity/utils';
-	import { getContext } from 'svelte';
-	import { run } from 'svelte/legacy';
+	import { getContext, untrack } from 'svelte';
 	import { fade } from 'svelte/transition';
 	import type { AssetNoContent } from '$declarations/satellite/satellite.did';
 	import { deleteAssets } from '$lib/api/satellites.api';
@@ -16,18 +15,22 @@
 	import { authStore } from '$lib/stores/auth.store';
 	import { i18n } from '$lib/stores/i18n.store';
 	import { listParamsStore } from '$lib/stores/list-params.store';
+	import { versionStore } from '$lib/stores/version.store';
 	import { type DataContext, DATA_CONTEXT_KEY } from '$lib/types/data.context';
 	import { type PaginationContext, PAGINATION_CONTEXT_KEY } from '$lib/types/pagination.context';
 	import { type RulesContext, RULES_CONTEXT_KEY } from '$lib/types/rules.context';
 	import { emit } from '$lib/utils/events.utils';
 	import { i18nFormat } from '$lib/utils/i18n.utils';
 
-	const { store }: RulesContext = getContext<RulesContext>(RULES_CONTEXT_KEY);
+	interface Props {
+		includeSysCollections: boolean;
+	}
 
-	let collection: string | undefined = $state();
-	run(() => {
-		collection = $store.rule?.[0];
-	});
+	let { includeSysCollections }: Props = $props();
+
+	const { store, hasAnyRules }: RulesContext = getContext<RulesContext>(RULES_CONTEXT_KEY);
+
+	let collection = $derived($store.rule?.[0]);
 
 	const {
 		store: paginationStore,
@@ -37,15 +40,10 @@
 		PAGINATION_CONTEXT_KEY
 	);
 
-	let empty = $state(false);
-	run(() => {
-		empty = $paginationStore.items?.length === 0 && nonNullish(collection);
-	});
+	let empty = $derived($paginationStore.items?.length === 0 && nonNullish(collection));
 
 	const { store: assetsStore, resetData }: DataContext<AssetNoContent> =
 		getContext<DataContext<AssetNoContent>>(DATA_CONTEXT_KEY);
-
-	let emptyCollection = $derived($store.rules?.length === 0);
 
 	const load = async () => {
 		resetPage();
@@ -53,9 +51,20 @@
 		await list();
 	};
 
-	run(() => {
-		// @ts-expect-error TODO: to be migrated to Svelte v5
-		collection, $listParamsStore, (async () => await load())();
+	$effect(() => {
+		collection;
+		$listParamsStore;
+		$versionStore;
+
+		untrack(() => {
+			load();
+		});
+	});
+
+	$effect(() => {
+		includeSysCollections;
+
+		resetPage();
 	});
 
 	/**
@@ -80,7 +89,7 @@
 		{$i18n.storage.assets}
 
 		{#snippet actions()}
-			<AssetUpload on:junoUploaded={reload}>
+			<AssetUpload onfileuploaded={reload}>
 				{#snippet action()}
 					{$i18n.asset.upload_file}
 				{/snippet}
@@ -123,7 +132,7 @@
 	</DataCollectionHeader>
 </div>
 
-{#if !emptyCollection}
+{#if $hasAnyRules || includeSysCollections}
 	<div
 		class="data"
 		class:data-selected={nonNullish($assetsStore?.data)}
@@ -132,8 +141,8 @@
 		{#if nonNullish($paginationStore.items)}
 			<div in:fade>
 				{#if $paginationStore.items.length > 0}
-					{#each $paginationStore.items as item}
-						{@const asset = item[1]}
+					{#each $paginationStore.items as item (item[0])}
+						{@const [_, asset] = item}
 						{@const key = asset.key.full_path}
 
 						<button class="text action" onclick={() => assetsStore.set({ key, data: asset })}

@@ -1,5 +1,5 @@
 <script lang="ts">
-	import SendTokensMax from '$lib/components/tokens/SendTokensMax.svelte';
+	import InputIcp from '$lib/components/core/InputIcp.svelte';
 	import Html from '$lib/components/ui/Html.svelte';
 	import Input from '$lib/components/ui/Input.svelte';
 	import Value from '$lib/components/ui/Value.svelte';
@@ -7,7 +7,7 @@
 	import { toasts } from '$lib/stores/toasts.store';
 	import { i18nFormat } from '$lib/utils/i18n.utils';
 	import { invalidIcpAddress } from '$lib/utils/icp-account.utils';
-	import { formatE8sICP } from '$lib/utils/icp.utils';
+	import { formatICP } from '$lib/utils/icp.utils';
 	import { invalidIcrcAddress } from '$lib/utils/icrc-account.utils';
 	import { assertAndConvertAmountToICPToken } from '$lib/utils/token.utils';
 
@@ -50,7 +50,7 @@
 		text={i18nFormat($i18n.wallet.send_information, [
 			{
 				placeholder: '{0}',
-				value: formatE8sICP(balance ?? 0n)
+				value: formatICP(balance ?? 0n)
 			}
 		])}
 	/>
@@ -62,6 +62,7 @@
 			{#snippet label()}
 				{$i18n.wallet.destination}
 			{/snippet}
+
 			<Input
 				inputType="text"
 				name="destination"
@@ -71,25 +72,7 @@
 		</Value>
 	</div>
 
-	<div class="amount">
-		<Value>
-			{#snippet label()}
-				{$i18n.wallet.icp_amount}
-			{/snippet}
-			<Input
-				name="amount"
-				inputType="currency"
-				required
-				bind:value={amount}
-				spellcheck={false}
-				placeholder={$i18n.wallet.amount_placeholder}
-			>
-				{#snippet end()}
-					<SendTokensMax {balance} onmax={(value) => (amount = value)} />
-				{/snippet}
-			</Input>
-		</Value>
-	</div>
+	<InputIcp bind:amount {balance} />
 
 	<button type="submit" class="action">
 		{$i18n.core.review}
@@ -107,7 +90,8 @@
 			@include grid.two-columns;
 		}
 	}
-	div {
-		margin-bottom: var(--padding);
+
+	button {
+		margin-top: var(--padding);
 	}
 </style>

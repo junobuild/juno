@@ -1,8 +1,7 @@
 <script lang="ts">
 	import type { Principal } from '@dfinity/principal';
 	import { isNullish, nonNullish } from '@dfinity/utils';
-	import { getContext } from 'svelte';
-	import { run } from 'svelte/legacy';
+	import { getContext, untrack } from 'svelte';
 	import { fade } from 'svelte/transition';
 	import type { Doc as DocType } from '$declarations/satellite/satellite.did';
 	import { deleteDocs } from '$lib/api/satellites.api';
@@ -16,18 +15,16 @@
 	import { authStore } from '$lib/stores/auth.store';
 	import { i18n } from '$lib/stores/i18n.store';
 	import { listParamsStore } from '$lib/stores/list-params.store';
+	import { versionStore } from '$lib/stores/version.store';
 	import { DATA_CONTEXT_KEY, type DataContext } from '$lib/types/data.context';
 	import { PAGINATION_CONTEXT_KEY, type PaginationContext } from '$lib/types/pagination.context';
 	import { RULES_CONTEXT_KEY, type RulesContext } from '$lib/types/rules.context';
 	import { emit } from '$lib/utils/events.utils';
 	import { i18nFormat } from '$lib/utils/i18n.utils';
 
-	const { store }: RulesContext = getContext<RulesContext>(RULES_CONTEXT_KEY);
+	const { store, hasAnyRules }: RulesContext = getContext<RulesContext>(RULES_CONTEXT_KEY);
 
-	let collection: string | undefined = $state();
-	run(() => {
-		collection = $store.rule?.[0];
-	});
+	let collection = $derived($store.rule?.[0]);
 
 	const {
 		store: paginationStore,
@@ -35,15 +32,10 @@
 		list
 	}: PaginationContext<DocType> = getContext<PaginationContext<DocType>>(PAGINATION_CONTEXT_KEY);
 
-	let empty = $state(false);
-	run(() => {
-		empty = $paginationStore.items?.length === 0 && nonNullish(collection);
-	});
+	let empty = $derived($paginationStore.items?.length === 0 && nonNullish(collection));
 
 	const { store: docsStore, resetData }: DataContext<DocType> =
 		getContext<DataContext<DocType>>(DATA_CONTEXT_KEY);
-
-	let emptyCollection = $derived($store.rules?.length === 0);
 
 	const load = async () => {
 		resetPage();
@@ -51,9 +43,14 @@
 		await list();
 	};
 
-	run(() => {
-		// @ts-expect-error TODO: to be migrated to Svelte v5
-		collection, $listParamsStore, (async () => await load())();
+	$effect(() => {
+		collection;
+		$listParamsStore;
+		$versionStore;
+
+		untrack(() => {
+			load();
+		});
 	});
 
 	/**
@@ -78,7 +75,7 @@
 		{$i18n.datastore.documents}
 
 		{#snippet actions()}
-			<DocUpload on:junoUploaded={reload}>
+			<DocUpload onfileuploaded={reload}>
 				{#snippet action()}
 					{$i18n.document.create_document}
 				{/snippet}
@@ -121,7 +118,7 @@
 	</DataCollectionHeader>
 </div>
 
-{#if !emptyCollection}
+{#if $hasAnyRules}
 	<div
 		class="data"
 		class:data-selected={nonNullish($docsStore?.data)}
@@ -138,7 +135,7 @@
 				{/if}
 
 				{#if $paginationStore.items.length > 0}
-					{#each $paginationStore.items as [key, doc]}
+					{#each $paginationStore.items as [key, doc] (key)}
 						<button class="text action" onclick={() => docsStore.set({ key, data: doc })}
 							><span>{key}</span></button
 						>

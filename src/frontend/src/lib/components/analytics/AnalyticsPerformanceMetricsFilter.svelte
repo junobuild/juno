@@ -3,7 +3,7 @@
 		AnalyticsWebVitalsPageMetrics,
 		AnalyticsWebVitalsPerformanceMetrics
 	} from '$declarations/orbiter/orbiter.did';
-	import AnalyticsToolbar from '$lib/components/analytics/AnalyticsToolbar.svelte';
+	import Toolbar from '$lib/components/ui/Toolbar.svelte';
 	import Value from '$lib/components/ui/Value.svelte';
 	import { i18n } from '$lib/stores/i18n.store';
 
@@ -17,7 +17,7 @@
 	let { pages } = $derived(performanceMetrics);
 </script>
 
-<AnalyticsToolbar>
+<Toolbar>
 	{#snippet start()}
 		<Value>
 			{#snippet label()}
@@ -27,10 +27,10 @@
 			<select id="page" name="page" bind:value={page}>
 				<option value={undefined}>{$i18n.analytics.overall}</option>
 
-				{#each pages as pageMetric}
+				{#each pages as pageMetric (pageMetric[0])}
 					<option value={pageMetric[1]}>{pageMetric[0]}</option>
 				{/each}
 			</select>
 		</Value>
 	{/snippet}
-</AnalyticsToolbar>
+</Toolbar>

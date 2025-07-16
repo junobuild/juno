@@ -1,34 +1,62 @@
 <script lang="ts">
 	import { nonNullish } from '@dfinity/utils';
+	import { onMount } from 'svelte';
 	import { fade } from 'svelte/transition';
 	import AppLangSelect from '$lib/components/core/AppLangSelect.svelte';
 	import IdentityGuard from '$lib/components/guards/IdentityGuard.svelte';
 	import Identifier from '$lib/components/ui/Identifier.svelte';
 	import Theme from '$lib/components/ui/Theme.svelte';
 	import Value from '$lib/components/ui/Value.svelte';
+	import { authSignedOut } from '$lib/derived/auth.derived';
+	import { credits } from '$lib/derived/credits.derived';
+	import { loadCredits as loadCreditsServices } from '$lib/services/credits.services';
 	import { authRemainingTimeStore, authStore } from '$lib/stores/auth.store';
 	import { i18n } from '$lib/stores/i18n.store';
 	import type { Languages } from '$lib/types/languages';
 	import { secondsToDuration } from '$lib/utils/date.utils';
+	import { formatCredits } from '$lib/utils/icp.utils';
 
 	let lang: Languages = $state('en');
 
 	let remainingTimeMilliseconds: number | undefined = $derived($authRemainingTimeStore);
+
+	const loadCredits = async () => {
+		if ($authSignedOut) {
+			return;
+		}
+
+		await loadCreditsServices({
+			identity: $authStore.identity
+		});
+	};
+
+	onMount(loadCredits);
 </script>
 
 <IdentityGuard>
 	<div class="card-container with-title">
 		<span class="title">{$i18n.preferences.title}</span>
 
-		<div class="content">
-			<Value>
-				{#snippet label()}
-					{$i18n.preferences.dev_id}
-				{/snippet}
-				<Identifier identifier={$authStore.identity?.getPrincipal().toText() ?? ''} />
-			</Value>
+		<div class="columns-3 fit-column-1">
+			<div>
+				<div class="dev-id">
+					<Value>
+						{#snippet label()}
+							{$i18n.preferences.dev_id}
+						{/snippet}
+						<Identifier identifier={$authStore.identity?.getPrincipal().toText() ?? ''} />
+					</Value>
+				</div>
 
-			<div class="session">
+				<Value>
+					{#snippet label()}
+						{$i18n.wallet.credits}
+					{/snippet}
+					<p>
+						{#if nonNullish($credits)}<span in:fade>{formatCredits($credits)}</span>{/if}
+					</p>
+				</Value>
+
 				<Value>
 					{#snippet label()}
 						{$i18n.preferences.session_expires_in}
@@ -45,26 +73,28 @@
 				</Value>
 			</div>
 
-			<AppLangSelect bind:selected={lang} />
+			<div>
+				<AppLangSelect bind:selected={lang} />
 
-			<div class="theme">
-				<Value>
-					{#snippet label()}
-						{$i18n.core.theme}
-					{/snippet}
+				<div class="theme">
+					<Value>
+						{#snippet label()}
+							{$i18n.core.theme}
+						{/snippet}
 
-					<div>
-						<Theme inline />
-					</div>
-				</Value>
+						<div>
+							<Theme inline />
+						</div>
+					</Value>
+				</div>
 			</div>
 		</div>
 	</div>
 </IdentityGuard>
 
 <style lang="scss">
-	.session {
-		padding: var(--padding) 0 0;
+	.dev-id {
+		margin: 0 0 var(--padding);
 	}
 
 	p {

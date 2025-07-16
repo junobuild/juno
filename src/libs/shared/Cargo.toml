@@ -1,6 +1,6 @@
 [package]
 name = "junobuild-shared"
-version = "0.0.23"
+version = "0.2.0"
 authors.workspace = true
 edition.workspace = true
 repository.workspace = true
@@ -12,6 +12,8 @@ license-file = "LICENSE.md"
 
 [package.metadata.docs.rs]
 targets = ["wasm32-unknown-unknown"]
+rustc-args = ['--cfg', "getrandom_backend=\"custom\""]
+rustdoc-args = ['--cfg', "getrandom_backend=\"custom\""]
 
 [dependencies]
 candid.workspace = true
@@ -22,7 +24,7 @@ ic-stable-structures.workspace = true
 serde.workspace = true
 getrandom.workspace = true
 rand.workspace = true
-futures = "0.3.28"
+futures = "0.3.31"
 ciborium.workspace = true
 time = "0.3.31"
 regex.workspace = true

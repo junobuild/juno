@@ -1,8 +1,11 @@
 <script lang="ts">
 	import type { Principal } from '@dfinity/principal';
 	import type { Snippet } from 'svelte';
+	import CanisterSyncData from '$lib/components/canister/CanisterSyncData.svelte';
 	import Warning from '$lib/components/ui/Warning.svelte';
-	import type { CanisterSyncData } from '$lib/types/canister';
+	import { onIntersection } from '$lib/directives/intersection.directives';
+	import { onLayoutTitleIntersection } from '$lib/stores/layout-intersecting.store';
+	import type { CanisterSyncData as CanisterSyncDataType } from '$lib/types/canister';
 
 	interface Props {
 		canisterId: Principal;
@@ -12,31 +15,29 @@
 
 	let { canisterId, cycles, heap }: Props = $props();
 
-	let cyclesWarning = $state(false);
-	let heapWarning = false;
+	let canister = $state<CanisterSyncDataType | undefined>(undefined);
 
-	const syncCanister = ({ id, data }: CanisterSyncData) => {
-		if (id !== canisterId.toText()) {
-			return;
-		}
+	let cyclesWarning = $derived(canister?.data?.warning?.cycles === true);
 
-		cyclesWarning = data?.warning?.cycles === true;
-
-		// Disabled for now, a bit too much in your face given that wasm memory cannot be shrink. We can always activate this warning if necessary, therefore I don't remove the code.
-		// heapWarning = data?.warning?.heap === true ?? false;
-	};
+	// Disabled for now, a bit too much in your face given that wasm memory cannot be shrink. We can always activate this warning if necessary, therefore I don't remove the code.
+	// heapWarning = data?.warning?.heap === true ?? false;
+	const heapWarning = false;
 </script>
 
-<svelte:window onjunoSyncCanister={({ detail: { canister } }) => syncCanister(canister)} />
+<CanisterSyncData {canisterId} bind:canister />
 
 {#if cyclesWarning}
-	<Warning>
-		{@render cycles?.()}
-	</Warning>
+	<div use:onIntersection onjunoIntersecting={onLayoutTitleIntersection}>
+		<Warning>
+			{@render cycles?.()}
+		</Warning>
+	</div>
 {/if}
 
 {#if heapWarning}
-	<Warning>
-		{@render heap?.()}
-	</Warning>
+	<div use:onIntersection onjunoIntersecting={onLayoutTitleIntersection}>
+		<Warning>
+			{@render heap?.()}
+		</Warning>
+	</div>
 {/if}

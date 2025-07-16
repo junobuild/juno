@@ -34,5 +34,7 @@ satellite-v*.wasm.gz
 orbiter-v*.wasm.gz
 mission_control-v*.wasm.gz
 console-v*.wasm.gz
+observatory-v*.wasm.gz
 out/
 tmp/
+juno.package.json

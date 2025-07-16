@@ -1,4 +1,4 @@
-<!-- https://fonts.google.com/icons?selected=Material%20Icons%20Round%3Aedit%3A -->
+<!-- https://fonts.google.com/icons?selected=Material+Symbols+Outlined:stylus:FILL@0;wght@300;GRAD@0;opsz@24&icon.size=24&icon.color=%23000000&icon.query=penci&icon.set=Material+Symbols -->
 <script lang="ts">
 	interface Props {
 		size?: string;
@@ -10,10 +10,10 @@
 <svg
 	xmlns="http://www.w3.org/2000/svg"
 	height={size}
-	viewBox="0 0 24 24"
 	width={size}
 	fill="currentColor"
-	><path d="M0 0h24v24H0V0z" fill="none" /><path
-		d="M3 17.46v3.04c0 .28.22.5.5.5h3.04c.13 0 .26-.05.35-.15L17.81 9.94l-3.75-3.75L3.15 17.1c-.1.1-.15.22-.15.36zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"
+	viewBox="0 -960 960 960"
+	><path
+		d="M183.92-141.54q-19.07 4.23-32.84-9.54-13.77-13.77-9.54-32.84L175-344.54 344.54-175l-160.62 33.46ZM344.54-175 175-344.54l448.77-448.77Q644.46-814 675-814q30.54 0 51.23 20.69l67.08 67.08Q814-705.54 814-675q0 30.54-20.69 51.23L344.54-175Zm322-576.15-409 408.61 85 85 408.61-409q3.46-3.46 3.46-8.65 0-5.2-3.46-8.66l-67.3-67.3q-3.46-3.46-8.66-3.46-5.19 0-8.65 3.46Z"
 	/></svg
 >

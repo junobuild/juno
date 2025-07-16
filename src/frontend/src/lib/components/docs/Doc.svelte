@@ -1,6 +1,6 @@
 <script lang="ts">
 	import type { Principal } from '@dfinity/principal';
-	import { fromNullable, nonNullish } from '@dfinity/utils';
+	import { fromNullable, nonNullish, fromNullishNullable } from '@dfinity/utils';
 	import { fromArray } from '@junobuild/utils';
 	import { getContext } from 'svelte';
 	import { run } from 'svelte/legacy';
@@ -27,7 +27,7 @@
 		nonNullish(doc) ? fromNullable(doc.description) : undefined
 	);
 
-	let version: bigint | undefined = $derived(fromNullable(doc?.version ?? []));
+	let version: bigint | undefined = $derived(fromNullishNullable(doc?.version));
 
 	let obj: unknown | undefined = $state(undefined);
 	run(() => {
@@ -63,7 +63,7 @@
 		<div class="date">
 			<Value>
 				{#snippet label()}
-					{$i18n.document.created}
+					{$i18n.core.created}
 				{/snippet}
 				{formatToDate(doc.created_at)}
 			</Value>
@@ -72,7 +72,7 @@
 		<div class="date">
 			<Value>
 				{#snippet label()}
-					{$i18n.document.updated}
+					{$i18n.core.updated}
 				{/snippet}
 				{formatToDate(doc.updated_at)}
 			</Value>

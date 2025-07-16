@@ -1,35 +1,31 @@
-use crate::constants::{
-    ASSET_ENCODING_NO_COMPRESSION, ENCODING_CERTIFICATION_ORDER, WELL_KNOWN_CUSTOM_DOMAINS,
-    WELL_KNOWN_II_ALTERNATIVE_ORIGINS,
+use crate::assert::{
+    assert_commit_batch, assert_commit_chunks, assert_commit_chunks_new_asset,
+    assert_commit_chunks_update, assert_create_batch, assert_create_chunk,
 };
-use crate::msg::{ERROR_CANNOT_COMMIT_BATCH, UPLOAD_NOT_ALLOWED};
+use crate::constants::{ASSET_ENCODING_NO_COMPRESSION, ENCODING_CERTIFICATION_ORDER};
+use crate::errors::{
+    JUNO_STORAGE_ERROR_ASSET_MAX_ALLOWED_SIZE, JUNO_STORAGE_ERROR_BATCH_NOT_FOUND,
+    JUNO_STORAGE_ERROR_CANNOT_COMMIT_BATCH, JUNO_STORAGE_ERROR_CHUNK_NOT_FOUND,
+    JUNO_STORAGE_ERROR_CHUNK_NOT_INCLUDED_IN_BATCH, JUNO_STORAGE_ERROR_CHUNK_TO_COMMIT_NOT_FOUND,
+};
 use crate::runtime::{
     clear_batch as clear_runtime_batch, clear_expired_batches as clear_expired_runtime_batches,
     clear_expired_chunks as clear_expired_runtime_chunks, get_batch as get_runtime_batch,
-    get_chunk as get_runtime_chunk, increment_and_assert_rate,
-    insert_batch as insert_runtime_batch, insert_chunk as insert_runtime_chunk,
+    get_chunk as get_runtime_chunk, insert_batch as insert_runtime_batch,
+    insert_chunk as insert_runtime_chunk,
 };
 use crate::strategies::{StorageAssertionsStrategy, StorageStateStrategy, StorageUploadStrategy};
 use crate::types::config::StorageConfig;
 use crate::types::interface::{CommitBatch, InitAssetKey, UploadChunk};
 use crate::types::runtime_state::{BatchId, ChunkId};
-use crate::types::state::FullPath;
 use crate::types::store::{
-    Asset, AssetAssertUpload, AssetEncoding, AssetKey, Batch, Chunk, EncodingType, ReferenceId,
+    Asset, AssetEncoding, AssetKey, Batch, Chunk, EncodingType, ReferenceId,
 };
 use candid::Principal;
 use ic_cdk::api::time;
-use junobuild_collections::assert_stores::{assert_create_permission, assert_permission};
-use junobuild_collections::constants::{DEFAULT_ASSETS_COLLECTIONS, SYS_COLLECTION_PREFIX};
-use junobuild_collections::types::core::CollectionKey;
 use junobuild_collections::types::rules::Rule;
-use junobuild_shared::assert::{assert_description_length, assert_max_memory_size};
-use junobuild_shared::constants::INITIAL_VERSION;
-use junobuild_shared::controllers::is_controller;
 use junobuild_shared::types::core::Blob;
 use junobuild_shared::types::state::Controllers;
-use junobuild_shared::utils::principal_not_equal;
-use std::collections::HashMap;
 use std::ptr::addr_of;
 
 // ---------------------------------------------------------
@@ -47,17 +43,17 @@ pub fn create_batch(
     config: &StorageConfig,
     init: InitAssetKey,
     reference_id: Option<ReferenceId>,
+    assertions: &impl StorageAssertionsStrategy,
     storage_state: &impl StorageStateStrategy,
 ) -> Result<BatchId, String> {
-    assert_memory_size(config)?;
-
-    assert_key(caller, &init.full_path, &init.collection, controllers)?;
-
-    assert_description_length(&init.description)?;
-
-    let rule = storage_state.get_rule(&init.collection)?;
-
-    increment_and_assert_rate(&init.collection, &rule.rate_config)?;
+    assert_create_batch(
+        caller,
+        controllers,
+        config,
+        &init,
+        assertions,
+        storage_state,
+    )?;
 
     // Assert supported encoding type
     get_encoding_type(&init.encoding_type)?;
@@ -119,13 +115,9 @@ pub fn create_chunk(
     let batch = get_runtime_batch(&batch_id);
 
     match batch {
-        None => Err("Batch not found.".to_string()),
+        None => Err(JUNO_STORAGE_ERROR_BATCH_NOT_FOUND.to_string()),
         Some(b) => {
-            if principal_not_equal(caller, b.key.owner) {
-                return Err("Bach initializer does not match chunk uploader.".to_string());
-            }
-
-            assert_memory_size(config)?;
+            assert_create_chunk(caller, config, &b)?;
 
             let now = time();
 
@@ -168,7 +160,7 @@ pub fn commit_batch(
     let batch = get_runtime_batch(&commit_batch.batch_id);
 
     match batch {
-        None => Err(ERROR_CANNOT_COMMIT_BATCH.to_string()),
+        None => Err(JUNO_STORAGE_ERROR_CANNOT_COMMIT_BATCH.to_string()),
         Some(b) => {
             let asset = secure_commit_chunks(
                 caller,
@@ -185,56 +177,6 @@ pub fn commit_batch(
     }
 }
 
-fn assert_memory_size(config: &StorageConfig) -> Result<(), String> {
-    assert_max_memory_size(&config.max_memory_size)
-}
-
-fn assert_key(
-    caller: Principal,
-    full_path: &FullPath,
-    collection: &CollectionKey,
-    controllers: &Controllers,
-) -> Result<(), &'static str> {
-    // /.well-known/ic-domains is automatically generated for custom domains
-    assert_well_known_key(full_path, WELL_KNOWN_CUSTOM_DOMAINS)?;
-
-    // /.well-known/ii-alternative-origins is automatically generated for alternative origins
-    assert_well_known_key(full_path, WELL_KNOWN_II_ALTERNATIVE_ORIGINS)?;
-
-    let dapp_collection = DEFAULT_ASSETS_COLLECTIONS[0].0;
-
-    // Only controllers can write in collection #dapp
-    if collection.clone() == *dapp_collection && !is_controller(caller, controllers) {
-        return Err(UPLOAD_NOT_ALLOWED);
-    }
-
-    // Only controllers can write in reserved collections starting with #
-    if collection.starts_with(SYS_COLLECTION_PREFIX) && !is_controller(caller, controllers) {
-        return Err(UPLOAD_NOT_ALLOWED);
-    }
-
-    // Asset uploaded by users should be prefixed with the collection. That way developers can organize assets to particular folders.
-    let collection_path = collection
-        .strip_prefix(SYS_COLLECTION_PREFIX)
-        .unwrap_or(collection);
-
-    if collection.clone() != *dapp_collection
-        && !full_path.starts_with(&["/", collection_path, "/"].join(""))
-    {
-        return Err("Asset path must be prefixed with collection key.");
-    }
-
-    Ok(())
-}
-
-fn assert_well_known_key(full_path: &str, reserved_path: &str) -> Result<(), &'static str> {
-    if full_path == reserved_path {
-        let error = format!("{} is a reserved asset.", reserved_path);
-        return Err(Box::leak(error.into_boxed_str()));
-    }
-    Ok(())
-}
-
 #[allow(clippy::too_many_arguments)]
 fn secure_commit_chunks(
     caller: Principal,
@@ -246,21 +188,7 @@ fn secure_commit_chunks(
     storage_state: &impl StorageStateStrategy,
     storage_upload: &impl StorageUploadStrategy,
 ) -> Result<Asset, String> {
-    // The one that started the batch should be the one that commits it
-    if principal_not_equal(caller, batch.key.owner) {
-        return Err(ERROR_CANNOT_COMMIT_BATCH.to_string());
-    }
-
-    assert_key(
-        caller,
-        &batch.key.full_path,
-        &batch.key.collection,
-        controllers,
-    )?;
-
-    let rule = storage_state.get_rule(&batch.key.collection)?;
-
-    increment_and_assert_rate(&batch.key.collection, &rule.rate_config)?;
+    let rule = assert_commit_batch(caller, controllers, batch, assertions, storage_state)?;
 
     let current = storage_upload.get_asset(
         &batch.reference_id,
@@ -271,14 +199,18 @@ fn secure_commit_chunks(
 
     match current {
         None => {
-            if !assert_create_permission(&rule.write, caller, controllers) {
-                return Err(ERROR_CANNOT_COMMIT_BATCH.to_string());
-            }
-
-            assert_memory_size(config)?;
+            assert_commit_chunks_new_asset(
+                caller,
+                &batch.key.collection,
+                controllers,
+                config,
+                &rule,
+                assertions,
+            )?;
 
             commit_chunks(
                 caller,
+                controllers,
                 commit_batch,
                 batch,
                 &rule,
@@ -313,19 +245,19 @@ fn secure_commit_chunks_update(
     assertions: &impl StorageAssertionsStrategy,
     storage_upload: &impl StorageUploadStrategy,
 ) -> Result<Asset, String> {
-    // The collection of the existing asset should be the same as the one we commit
-    if batch.key.collection != current.key.collection {
-        return Err("Provided collection does not match existing collection.".to_string());
-    }
-
-    if !assert_permission(&rule.write, current.key.owner, caller, controllers) {
-        return Err(ERROR_CANNOT_COMMIT_BATCH.to_string());
-    }
-
-    assert_memory_size(config)?;
+    assert_commit_chunks_update(
+        caller,
+        controllers,
+        config,
+        batch,
+        &rule,
+        &current,
+        assertions,
+    )?;
 
     commit_chunks(
         caller,
+        controllers,
         commit_batch,
         batch,
         &rule,
@@ -335,8 +267,10 @@ fn secure_commit_chunks_update(
     )
 }
 
+#[allow(clippy::too_many_arguments)]
 fn commit_chunks(
     caller: Principal,
+    controllers: &Controllers,
     commit_batch: CommitBatch,
     batch: &Batch,
     rule: &Rule,
@@ -351,13 +285,14 @@ fn commit_chunks(
         return Err("Batch did not complete in time. Chunks cannot be committed.".to_string());
     }
 
-    assertions.invoke_assert_upload_asset(
-        &caller,
-        &AssetAssertUpload {
-            current: current.clone(),
-            batch: batch.clone(),
-            commit_batch: commit_batch.clone(),
-        },
+    assert_commit_chunks(
+        caller,
+        controllers,
+        &commit_batch,
+        batch,
+        current,
+        rule,
+        assertions,
     )?;
 
     let CommitBatch {
@@ -374,11 +309,11 @@ fn commit_chunks(
 
         match chunk {
             None => {
-                return Err("Chunk does not exist.".to_string());
+                return Err(JUNO_STORAGE_ERROR_CHUNK_NOT_FOUND.to_string());
             }
             Some(c) => {
                 if batch_id != c.batch_id {
-                    return Err("Chunk not included in the provided batch.".to_string());
+                    return Err(JUNO_STORAGE_ERROR_CHUNK_NOT_INCLUDED_IN_BATCH.to_string());
                 }
 
                 chunks.push(c);
@@ -397,7 +332,7 @@ fn commit_chunks(
     }
 
     if content_chunks.is_empty() {
-        return Err("No chunk to commit.".to_string());
+        return Err(JUNO_STORAGE_ERROR_CHUNK_TO_COMMIT_NOT_FOUND.to_string());
     }
 
     // We clone the key with the new information provided by the upload (name, full_path, token, etc.) to set the new key.
@@ -409,22 +344,7 @@ fn commit_chunks(
         ..batch.clone().key
     };
 
-    let now = time();
-
-    let mut asset: Asset = Asset {
-        key,
-        headers,
-        encodings: HashMap::new(),
-        created_at: now,
-        updated_at: now,
-        version: Some(INITIAL_VERSION),
-    };
-
-    if let Some(existing_asset) = current {
-        asset.encodings = existing_asset.encodings.clone();
-        asset.created_at = existing_asset.created_at;
-        asset.version = Some(existing_asset.version.unwrap_or_default() + 1);
-    }
+    let mut asset: Asset = Asset::prepare(key, headers, current);
 
     let encoding_type = get_encoding_type(&batch.encoding_type)?;
 
@@ -435,18 +355,19 @@ fn commit_chunks(
         Some(max_size) => {
             if encoding.total_length > max_size {
                 clear_runtime_batch(&batch_id, &chunk_ids);
-                return Err("Asset exceed max allowed size.".to_string());
+                return Err(JUNO_STORAGE_ERROR_ASSET_MAX_ALLOWED_SIZE.to_string());
             }
         }
     }
 
     storage_upload.insert_asset_encoding(
-        &batch.clone().key.full_path,
+        &batch.reference_id,
+        &batch.key.full_path,
         &encoding_type,
         &encoding,
         &mut asset,
         rule,
-    );
+    )?;
 
     storage_upload.insert_asset(batch, &asset, rule)?;
 

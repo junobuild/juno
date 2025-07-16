@@ -1,6 +1,5 @@
 <script lang="ts">
 	import { stopPropagation } from 'svelte/legacy';
-
 	import Popover from '$lib/components/ui/Popover.svelte';
 	import { i18n } from '$lib/stores/i18n.store';
 

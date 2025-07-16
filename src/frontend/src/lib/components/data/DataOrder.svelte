@@ -27,7 +27,9 @@
 
 		// Avoid glitch
 		setTimeout(() => {
+			// eslint-disable-next-line prefer-destructuring
 			desc = $listParamsStore.order.desc;
+			// eslint-disable-next-line prefer-destructuring
 			field = $listParamsStore.order.field;
 		}, 250);
 	});

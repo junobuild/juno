@@ -1,7 +1,7 @@
 import type { _SERVICE as ICActor } from '$declarations/ic/ic.did';
-import { idlFactory as idlFactorIC } from '$declarations/ic/ic.factory.did';
+import { idlFactory as idlFactoryIC } from '$declarations/ic/ic.factory.did';
+import type { GetAgentParams } from '$lib/api/_agent/_agent.api';
 import { ActorApi } from '$lib/api/actors/actor.api';
-import type { GetAgentParams } from '$lib/api/agent/agent.api';
 import type { ActorConfig, CallConfig } from '@dfinity/agent';
 import { Principal } from '@dfinity/principal';
 import { nonNullish } from '@dfinity/utils';
@@ -22,7 +22,7 @@ const transform: CallTransform | QueryTransform = (
 	})[],
 	_callConfig: CallConfig
 ): { effectiveCanisterId: Principal } => {
-	const first = args[0];
+	const [first] = args;
 
 	if (nonNullish(first) && typeof first === 'object') {
 		if (methodName === 'install_chunked_code' && nonNullish(first.target_canister)) {
@@ -46,6 +46,6 @@ export const getICActor = async (params: GetAgentParams): Promise<ICActor> =>
 			callTransform: transform,
 			queryTransform: transform
 		},
-		idlFactory: idlFactorIC,
+		idlFactory: idlFactoryIC,
 		...params
 	});

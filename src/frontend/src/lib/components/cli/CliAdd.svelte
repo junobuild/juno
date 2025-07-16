@@ -1,20 +1,24 @@
 <script lang="ts">
 	import type { Principal } from '@dfinity/principal';
 	import { isNullish, nonNullish } from '@dfinity/utils';
+	import { fade } from 'svelte/transition';
 	import type { Satellite, Orbiter } from '$declarations/mission_control/mission_control.did';
 	import { setOrbitersController } from '$lib/api/mission-control.api';
 	import SegmentsTable from '$lib/components/segments/SegmentsTable.svelte';
 	import Collapsible from '$lib/components/ui/Collapsible.svelte';
-	import { REVOKED_CONTROLLERS } from '$lib/constants/constants';
+	import Html from '$lib/components/ui/Html.svelte';
+	import Warning from '$lib/components/ui/Warning.svelte';
+	import { REVOKED_CONTROLLERS } from '$lib/constants/app.constants';
 	import { missionControlIdDerived } from '$lib/derived/mission-control.derived';
 	import {
 		setMissionControlControllerForVersion,
-		setSatellitesForVersion
+		setSatellitesControllerForVersion
 	} from '$lib/services/mission-control.services';
 	import { authStore } from '$lib/stores/auth.store';
 	import { busy } from '$lib/stores/busy.store';
 	import { i18n } from '$lib/stores/i18n.store';
 	import { toasts } from '$lib/stores/toasts.store';
+	import type { MissionControlId } from '$lib/types/mission-control';
 	import { bigintStringify } from '$lib/utils/number.utils';
 	import { orbiterName } from '$lib/utils/orbiter.utils';
 	import { satelliteName } from '$lib/utils/satellite.utils';
@@ -22,7 +26,7 @@
 	interface Props {
 		principal: string;
 		redirect_uri: string;
-		missionControlId: Principal;
+		missionControlId: MissionControlId;
 	}
 
 	let { principal, redirect_uri, missionControlId }: Props = $props();
@@ -64,6 +68,13 @@
 			return;
 		}
 
+		if (isNullish($authStore.identity)) {
+			toasts.error({
+				text: $i18n.authentication.not_signed_in
+			});
+			return;
+		}
+
 		busy.start();
 
 		try {
@@ -74,18 +85,20 @@
 								missionControlId: $missionControlIdDerived,
 								controllerId: principal,
 								profile,
-								scope: 'admin'
+								scope: 'admin',
+								identity: $authStore.identity
 							})
 						]
 					: []),
 				...(selectedSatellites.length > 0
 					? [
-							setSatellitesForVersion({
+							setSatellitesControllerForVersion({
 								missionControlId: $missionControlIdDerived,
 								controllerId: principal,
 								satelliteIds: selectedSatellites.map((s) => s[0]),
 								profile,
-								scope: 'admin'
+								scope: 'admin',
+								identity: $authStore.identity
 							})
 						]
 					: []),
@@ -145,6 +158,8 @@
 	};
 
 	let disabled = $state(true);
+
+	let loadingSegments = $state<'loading' | 'ready' | 'error'>('loading');
 </script>
 
 <form onsubmit={onSubmit}>
@@ -158,34 +173,49 @@
 		bind:selectedSatellites
 		bind:selectedOrbiters
 		bind:selectedDisabled={disabled}
+		bind:loadingSegments
 	>
 		<div class="terminal">{$i18n.cli.terminal}:&nbsp;{principal}</div>
 	</SegmentsTable>
 
-	<div class="options">
-		<Collapsible>
-			<svelte:fragment slot="header">{$i18n.core.advanced_options}</svelte:fragment>
+	{#if loadingSegments === 'ready'}
+		<div class="options">
+			<Collapsible>
+				{#snippet header()}
+					{$i18n.core.advanced_options}
+				{/snippet}
 
-			<div>
-				<p class="profile-info">{$i18n.cli.profile_info}</p>
+				<div>
+					<p class="profile-info">{$i18n.cli.profile_info}</p>
 
-				<input
-					id="profile"
-					type="text"
-					placeholder={$i18n.cli.profile_placeholder}
-					name="profile"
-					bind:value={profile}
-					autocomplete="off"
-					data-1p-ignore
-				/>
-			</div>
-		</Collapsible>
-	</div>
+					<input
+						id="profile"
+						type="text"
+						placeholder={$i18n.cli.profile_placeholder}
+						name="profile"
+						bind:value={profile}
+						autocomplete="off"
+						data-1p-ignore
+					/>
+				</div>
+			</Collapsible>
+		</div>
 
-	<button {disabled}>{$i18n.cli.authorize}</button>
+		<div in:fade>
+			<Warning>
+				<Html text={$i18n.cli.confirm} />
+			</Warning>
+
+			<button {disabled}>{$i18n.cli.authorize}</button>
+		</div>
+	{/if}
 </form>
 
 <style lang="scss">
+	form {
+		padding: 0 0 var(--padding-8x);
+	}
+
 	button {
 		margin: var(--padding-2_5x) 0 0;
 		display: block;

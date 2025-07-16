@@ -1,13 +1,20 @@
-import { resolve } from 'node:path';
 import { defineConfig } from 'vitest/config';
+import { defineVitestAlias } from './vitest.utils';
 
 export default defineConfig({
 	test: {
-		globalSetup: './vitest.setup.ts',
+		globalSetup: './vitest.global.ts',
 		globals: true,
 		watch: false,
 		silent: false,
-		reporters: ['basic'],
+		reporters: [
+			[
+				'default',
+				{
+					summary: false
+				}
+			]
+		],
 		environment: 'node',
 		poolOptions: {
 			threads: {
@@ -18,11 +25,6 @@ export default defineConfig({
 		hookTimeout: 60000
 	},
 	resolve: {
-		alias: [
-			{
-				find: '$declarations',
-				replacement: resolve(__dirname, 'src/declarations')
-			}
-		]
+		alias: defineVitestAlias()
 	}
 });

@@ -1,7 +1,7 @@
 use crate::controllers::store::{delete_controllers, get_admin_controllers, set_controllers};
 use crate::user::store::get_user;
 use ic_cdk::id;
-use junobuild_shared::constants::MAX_NUMBER_OF_MISSION_CONTROL_CONTROLLERS;
+use junobuild_shared::constants_shared::MAX_NUMBER_OF_MISSION_CONTROL_CONTROLLERS;
 use junobuild_shared::controllers::{
     assert_controllers, assert_max_number_of_controllers, into_controller_ids,
 };
@@ -13,8 +13,8 @@ pub async fn set_mission_control_controllers(
     controllers: &[ControllerId],
     controller: &SetController,
 ) -> Result<(), String> {
+    #[allow(clippy::single_match)]
     match controller.scope {
-        ControllerScope::Write => {}
         ControllerScope::Admin => {
             assert_max_number_of_controllers(
                 &get_admin_controllers(),
@@ -22,6 +22,7 @@ pub async fn set_mission_control_controllers(
                 MAX_NUMBER_OF_MISSION_CONTROL_CONTROLLERS,
             )?;
         }
+        _ => (),
     }
 
     assert_controllers(controllers)?;

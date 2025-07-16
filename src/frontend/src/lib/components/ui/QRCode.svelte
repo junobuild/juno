@@ -16,7 +16,6 @@
 	export let value: string;
 
 	let dark: boolean;
-	// eslint-disable-next-line svelte/valid-compile
 	$: dark = $theme === Theme.DARK;
 
 	// Valid CSS colors
@@ -110,7 +109,7 @@
 	};
 
 	let canvas: HTMLCanvasElement | undefined;
-	$: QrCreator, value, canvas, dark, (() => renderCanvas())();
+	$: (QrCreator, value, canvas, dark, (() => renderCanvas())());
 
 	let showLogo: boolean;
 	$: showLogo = nonNullish($$slots.logo);

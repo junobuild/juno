@@ -14,9 +14,9 @@ import type {
 } from '$declarations/orbiter/orbiter.did';
 import { getOrbiterActor } from '$lib/api/actors/actor.juno.api';
 import type { OptionIdentity } from '$lib/types/itentity';
-import type { PageViewsParams, PageViewsPeriod } from '$lib/types/ortbiter';
+import type { PageViewsParams, PageViewsPeriod } from '$lib/types/orbiter';
 import { toBigIntNanoSeconds } from '$lib/utils/date.utils';
-import { Principal } from '@dfinity/principal';
+import type { Principal } from '@dfinity/principal';
 import { nonNullish, toNullable } from '@dfinity/utils';
 
 export const getPageViews = async ({
@@ -27,6 +27,7 @@ export const getPageViews = async ({
 	identity
 }: PageViewsParams): Promise<[AnalyticKey, PageView][]> => {
 	const { get_page_views } = await getOrbiterActor({ orbiterId, identity });
+
 	return getAnalytics({
 		satelliteId,
 		from,
@@ -182,17 +183,6 @@ export const setOrbiterSatelliteConfigs = async ({
 }): Promise<[Principal, SatelliteConfig][]> => {
 	const actor = await getOrbiterActor({ orbiterId, identity });
 	return actor.set_satellite_configs(config);
-};
-
-export const orbiterVersion = async ({
-	orbiterId,
-	identity
-}: {
-	orbiterId: Principal;
-	identity: OptionIdentity;
-}): Promise<string> => {
-	const actor = await getOrbiterActor({ orbiterId, identity });
-	return actor.version();
 };
 
 export const depositCycles = async ({

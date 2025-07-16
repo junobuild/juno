@@ -1,9 +1,11 @@
+use crate::assets::storage::store::assert_assets_collection_empty_store;
 use crate::db::store::{delete_collection_store, init_collection_store};
-use crate::memory::STATE;
-use crate::storage::store::assert_assets_collection_empty_store;
-use junobuild_collections::store::{del_rule, filter_rules, set_rule};
+use crate::memory::internal::STATE;
+use junobuild_collections::store::{del_rule, filter_rules, list_rules, set_rule};
 use junobuild_collections::types::core::CollectionKey;
-use junobuild_collections::types::interface::{DelRule, SetRule};
+use junobuild_collections::types::interface::{
+    DelRule, ListRulesParams, ListRulesResults, SetRule,
+};
 use junobuild_collections::types::rules::{Memory, Rule};
 
 // ---------------------------------------------------------
@@ -18,12 +20,20 @@ pub fn get_rule_storage(collection: &CollectionKey) -> Option<Rule> {
     STATE.with(|state| state.borrow().heap.storage.rules.get(collection).cloned())
 }
 
-pub fn get_rules_db() -> Vec<(CollectionKey, Rule)> {
+pub fn get_non_system_rules_db() -> Vec<(CollectionKey, Rule)> {
     STATE.with(|state| filter_rules(&state.borrow().heap.db.rules))
 }
 
-pub fn get_rules_storage() -> Vec<(CollectionKey, Rule)> {
+pub fn get_non_system_rules_storage() -> Vec<(CollectionKey, Rule)> {
     STATE.with(|state| filter_rules(&state.borrow().heap.storage.rules))
+}
+
+pub fn list_rules_db(filter: &ListRulesParams) -> ListRulesResults {
+    STATE.with(|state| list_rules(filter, &state.borrow().heap.db.rules))
+}
+
+pub fn list_rules_storage(filter: &ListRulesParams) -> ListRulesResults {
+    STATE.with(|state| list_rules(filter, &state.borrow().heap.storage.rules))
 }
 
 pub fn set_rule_db(collection: CollectionKey, rule: SetRule) -> Result<Rule, String> {

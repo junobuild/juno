@@ -1,6 +1,6 @@
 use crate::db::types::state::Doc;
 use candid::Principal;
-use junobuild_collections::assert_stores::assert_permission;
+use junobuild_collections::assert::stores::assert_permission;
 use junobuild_collections::types::rules::Permission;
 use junobuild_shared::list::{filter_timestamps, matcher_regex};
 use junobuild_shared::types::core::Key;
@@ -19,10 +19,11 @@ pub fn filter_values<'a>(
         paginate: _,
         owner,
     }: &'a ListParams,
-) -> Vec<(&'a Key, &'a Doc)> {
-    let (regex_key, regex_description) = matcher_regex(matcher);
+) -> Result<Vec<(&'a Key, &'a Doc)>, String> {
+    let (regex_key, regex_description) = matcher_regex(matcher)?;
 
-    col.iter()
+    let result = col
+        .iter()
         .filter_map(|(key, doc)| {
             if filter_key_matcher(&regex_key, key)
                 && filter_description_matcher(&regex_description, &doc.description)
@@ -35,7 +36,9 @@ pub fn filter_values<'a>(
                 None
             }
         })
-        .collect()
+        .collect();
+
+    Ok(result)
 }
 
 fn filter_key_matcher(regex: &Option<Regex>, key: &Key) -> bool {

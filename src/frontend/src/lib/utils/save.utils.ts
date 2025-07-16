@@ -12,6 +12,13 @@ export const JSON_PICKER_OPTIONS: FilePickerAcceptType = {
 	}
 };
 
+export const ZIP_PICKER_OPTIONS: FilePickerAcceptType = {
+	description: 'Zip file',
+	accept: {
+		'application/zip': ['.zip']
+	}
+};
+
 export const filenameTimestamp = (): string => new Date().toJSON().split('.')[0].replace(/:/g, '-');
 
 export const saveToFileSystem = ({
@@ -89,7 +96,7 @@ const writeFile = async ({
 	await writer.close();
 };
 
-const download = ({ filename, blob }: { filename: string; blob: Blob }) => {
+export const download = ({ filename, blob }: { filename: string; blob: Blob }) => {
 	const a: HTMLAnchorElement = document.createElement('a');
 	a.style.display = 'none';
 	document.body.appendChild(a);

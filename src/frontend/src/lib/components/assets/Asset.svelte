@@ -1,6 +1,6 @@
 <script lang="ts">
 	import type { Principal } from '@dfinity/principal';
-	import { fromNullable, isNullish, nonNullish } from '@dfinity/utils';
+	import { fromNullable, isNullish, nonNullish, fromNullishNullable } from '@dfinity/utils';
 	import { getContext } from 'svelte';
 	import type { AssetNoContent } from '$declarations/satellite/satellite.did';
 	import { deleteAsset } from '$lib/api/satellites.api';
@@ -53,7 +53,7 @@
 		nonNullish(asset) ? fromNullable(asset.key.description) : undefined
 	);
 
-	let version: bigint | undefined = $derived(fromNullable(asset?.version ?? []));
+	let version: bigint | undefined = $derived(fromNullishNullable(asset?.version));
 
 	let deleteData: (params: { collection: string; satelliteId: Principal }) => Promise<void> =
 		$derived(async (params: { collection: string; satelliteId: Principal }) => {
@@ -85,7 +85,7 @@
 		{key ?? ''}
 
 		{#snippet actions()}
-			<AssetUpload on:junoUploaded={reload} {asset}>
+			<AssetUpload onfileuploaded={reload} {asset}>
 				{#snippet action()}
 					{$i18n.asset.replace_file}
 				{/snippet}
@@ -153,7 +153,7 @@
 					{$i18n.asset.headers}
 				{/snippet}
 				<div class="headers">
-					{#each headers as header}
+					{#each headers as header, index (index)}
 						<span>{header[0]}: {header[1]}</span>
 					{/each}
 				</div>
@@ -163,7 +163,7 @@
 		<div class="date">
 			<Value>
 				{#snippet label()}
-					{$i18n.asset.created}
+					{$i18n.core.created}
 				{/snippet}
 				{formatToDate(asset.created_at)}
 			</Value>
@@ -172,7 +172,7 @@
 		<div class="date">
 			<Value>
 				{#snippet label()}
-					{$i18n.asset.updated}
+					{$i18n.core.updated}
 				{/snippet}
 				{formatToDate(asset.updated_at)}
 			</Value>

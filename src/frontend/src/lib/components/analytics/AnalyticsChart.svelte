@@ -4,7 +4,7 @@
 	import { fade } from 'svelte/transition';
 	import Chart from '$lib/components/charts/Chart.svelte';
 	import type { ChartsData } from '$lib/types/chart';
-	import type { AnalyticsPageViews } from '$lib/types/ortbiter';
+	import type { AnalyticsPageViews } from '$lib/types/orbiter';
 	import { last } from '$lib/utils/utils';
 
 	interface Props {
@@ -33,7 +33,7 @@
 			return chartsPageViews;
 		}
 
-		const firstPageView = chartsPageViews[0];
+		const [firstPageView] = chartsPageViews;
 		const startDate = new Date(parseInt(firstPageView.x));
 
 		const datePlusOneDay = () => {
@@ -83,15 +83,22 @@
 
 <style lang="scss">
 	@use '../../styles/mixins/shadow';
+	@use '../../styles/mixins/media';
 
 	.chart-container {
 		width: 100%;
 		height: 300px;
 		fill: var(--value-color);
 
-		margin: 0 0 var(--padding-4x);
-		padding: var(--padding-2x) var(--padding-6x);
+		margin: 0 0 var(--padding-6x);
+		padding: 0 var(--padding-2x);
 
-		@include shadow.strong-card;
+		@include media.min-width(medium) {
+			padding: 0 var(--padding-8x);
+		}
+
+		@include media.min-width(large) {
+			margin: 0 0 var(--padding-4x);
+		}
 	}
 </style>

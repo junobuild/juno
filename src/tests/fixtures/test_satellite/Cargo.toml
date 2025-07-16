@@ -1,0 +1,20 @@
+[package]
+name = "test_satellite"
+version = "0.0.1-test"
+edition = "2021"
+publish = false
+
+[lib]
+crate-type = ["cdylib"]
+
+[dependencies]
+candid.workspace = true
+ic-cdk.workspace = true
+junobuild-satellite = { path = "../../../libs/satellite", default-features = false, features = [
+	"on_set_doc",
+	"on_delete_doc",
+	"on_init_sync",
+	"on_post_upgrade_sync",
+	"on_init_random_seed"
+] }
+junobuild-macros = { path = "../../../libs/macros" }

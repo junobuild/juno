@@ -78,6 +78,8 @@
 			type: JSON_PICKER_OPTIONS
 		});
 	};
+
+	const reloadRules = async () => await reload({ identity: $authStore.identity });
 </script>
 
 <div class="title doc">
@@ -85,7 +87,7 @@
 		{key ?? ''}
 
 		{#snippet actions()}
-			<DocUpload on:junoUploaded={reload} {doc} docKey={key}>
+			<DocUpload onfileuploaded={reloadRules} {doc} docKey={key}>
 				{#snippet action()}
 					{$i18n.document.replace_document}
 				{/snippet}

@@ -1,5 +1,6 @@
 #!/usr/bin/env bash
-# install build dependencies (rustup + ic-wasm)
+
+# install build dependencies (rustup, ic-wasm and wasi2ic)
 
 set -euo pipefail
 
@@ -19,18 +20,41 @@ function run() {
 rust_version=$(cat ./rust-toolchain.toml | sed -n 's/^channel[[:space:]]*=[[:space:]]"\(.*\)"/\1/p')
 echo "using rust version '$rust_version'"
 
-# here we set the toolchain to 'none' and rustup will pick up on ./rust-toolchain.toml
+targets=$(sed -n 's/^targets[[:space:]]*=[[:space:]]\[\(.*\)\]/\1/p' ./rust-toolchain.toml | tr -d '[]" ' | tr ',' ' ')
+echo "using rust targets: $targets"
+
+# Install rustup with a toolchain set to 'none'.
+# Note: rustup does NOT automatically pick up ./rust-toolchain.toml. We will install and set the correct version afterwards.
+# https://blog.rust-lang.org/2025/03/02/Rustup-1.28.0.html
 run curl --fail https://sh.rustup.rs -sSf | run sh -s -- -y --default-toolchain "none" --no-modify-path
 
-echo "looking for ic-wasm 0.8.5"
-if [[ ! "$(command -v ic-wasm)" || "$(ic-wasm --version)" != "ic-wasm 0.8.5" ]]
-then
-    echo "installing ic-wasm 0.8.5"
-    run cargo install ic-wasm --version 0.8.5 --locked
-fi
+# Install the effective Rust version
+run rustup toolchain install "$rust_version"
+run rustup default "$rust_version"
 
-echo "installing candid-extractor"
-cargo install candid-extractor --locked
+echo "Rust toolchain version $(rustc --version) installed."
+
+# Install Rust targets
+for target in $targets; do
+    run rustup target add "$target"
+done
+
+install_tool() {
+  local name=$1
+  local expected_version=$2
+  local cargo_name=${3:-$name}
+
+  echo "looking for $name $expected_version"
+  if [[ ! "$(command -v "$name")" || "$($name --version)" != "$name $expected_version" ]]; then
+    echo "installing $cargo_name $expected_version"
+    run cargo install "$cargo_name" --version "$expected_version" --locked
+  fi
+}
+
+install_tool ic-wasm 0.8.5
+install_tool wasi2ic 0.2.15
+install_tool candid-extractor 0.1.6
+install_tool junobuild-didc 0.1.0
 
 # make sure the packages are actually installed (rustup waits for the first invoke to lazyload)
 cargo --version

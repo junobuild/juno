@@ -28,6 +28,7 @@
 		onsubmit: ($event: MouseEvent | TouchEvent) => Promise<void>;
 	}
 
+	// eslint-disable-next-line svelte/no-unused-props
 	let {
 		selectedSatellites,
 		selectedOrbiters,

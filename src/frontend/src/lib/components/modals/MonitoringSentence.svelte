@@ -15,9 +15,5 @@
 	{
 		placeholder: '{0}',
 		value: formatTCycles(monitoringStrategy.BelowThreshold.fund_cycles)
-	},
-	{
-		placeholder: '{1}',
-		value: formatTCycles(monitoringStrategy.BelowThreshold.min_cycles)
 	}
 ])}

@@ -1,6 +1,6 @@
 [package]
 name = "satellite"
-version = "0.0.21"
+version = "0.1.0"
 edition = "2021"
 publish = false
 
@@ -13,4 +13,3 @@ ic-cdk.workspace = true
 junobuild-satellite = { path = "../libs/satellite", default-features = false, features = ["on_init"] }
 junobuild-storage = { path = "../libs/storage" }
 junobuild-macros = { path = "../libs/macros" }
-

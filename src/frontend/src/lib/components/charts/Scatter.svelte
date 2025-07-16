@@ -21,11 +21,10 @@
 	}
 
 	let { r = 5, fill = '#0cf', stroke = '#000', strokeWidth = 0 }: Props = $props();
-
-	$inspect($data);
 </script>
 
 <g class="scatter-group">
+	<!-- eslint-disable-next-line svelte/require-each-key -->
 	{#each $data as d}
 		<circle
 			cx={$xGet(d) + ($xScale.bandwidth ? $xScale.bandwidth() / 2 : 0)}

@@ -35,26 +35,32 @@
 
 	<CheckboxGroup>
 		<Checkbox>
-			<input type="checkbox" bind:group={levels} value={'Info'} id="info" /><label for="info"
+			<input type="checkbox" bind:group={levels} value="Info" id="info" /><label for="info"
 				><span>{$i18n.functions.info}</span></label
 			>
 		</Checkbox>
 
 		<Checkbox>
-			<input type="checkbox" bind:group={levels} value={'Debug'} id="debug" /><label for="debug"
+			<input type="checkbox" bind:group={levels} value="Debug" id="debug" /><label for="debug"
 				><span>{$i18n.functions.debug}</span></label
 			>
 		</Checkbox>
 
 		<Checkbox>
-			<input type="checkbox" bind:group={levels} value={'Warning'} id="warning" /><label
-				for="warning"><span>{$i18n.functions.warning}</span></label
+			<input type="checkbox" bind:group={levels} value="Warning" id="warning" /><label for="warning"
+				><span>{$i18n.functions.warning}</span></label
 			>
 		</Checkbox>
 
 		<Checkbox>
-			<input type="checkbox" bind:group={levels} value={'Error'} id="error" /><label for="error"
+			<input type="checkbox" bind:group={levels} value="Error" id="error" /><label for="error"
 				><span>{$i18n.functions.error}</span></label
+			>
+		</Checkbox>
+
+		<Checkbox>
+			<input type="checkbox" bind:group={levels} value="Unknown" id="unknown" /><label for="unknown"
+				><span>{$i18n.functions.unknown}</span></label
 			>
 		</Checkbox>
 	</CheckboxGroup>

@@ -1,47 +1,73 @@
-import type { CustomDomain } from '$declarations/satellite/satellite.did';
-import type { CustomDomainRegistrationState } from '$lib/types/custom-domain';
-import type { Wallet } from '$lib/types/transaction';
-import type { CanisterSegment, CanisterSyncData, CanisterSyncMonitoring } from './canister';
+import type {
+	inferPostMessageSchema,
+	PostMessageDataRequestDataSchema,
+	PostMessageDataResponseAuthSchema,
+	PostMessageDataResponseCanisterMonitoringSchema,
+	PostMessageDataResponseCanistersMonitoringSchema,
+	PostMessageDataResponseCanistersSyncDataSchema,
+	PostMessageDataResponseCanisterSyncDataSchema,
+	PostMessageDataResponseErrorSchema,
+	PostMessageDataResponseExchangeSchema,
+	PostMessageDataResponseHostingSchema,
+	PostMessageDataResponseWalletCleanUpSchema,
+	PostMessageDataResponseWalletSchema,
+	PostMessageRequestSchema
+} from '$lib/schema/post-message.schema';
+import type * as z from 'zod/v4';
 
-export interface PostMessageDataRequest {
-	segments?: CanisterSegment[];
-	customDomain?: CustomDomain;
-	missionControlId?: string;
-	withMonitoringHistory?: boolean;
-}
+// Request
 
-export interface PostMessageDataResponse {
-	canister?: CanisterSyncData | CanisterSyncMonitoring;
-	registrationState?: CustomDomainRegistrationState | null;
-	wallet?: Wallet;
-}
+export type PostMessageDataRequest = z.infer<typeof PostMessageDataRequestDataSchema>;
 
-export type PostMessageRequest =
-	| 'startCyclesTimer'
-	| 'stopCyclesTimer'
-	| 'restartCyclesTimer'
-	| 'startIdleTimer'
-	| 'stopIdleTimer'
-	| 'startCustomDomainRegistrationTimer'
-	| 'stopCustomDomainRegistrationTimer'
-	| 'stopWalletTimer'
-	| 'startWalletTimer'
-	| 'startMonitoringTimer'
-	| 'stopMonitoringTimer'
-	| 'restartMonitoringTimer';
+export type PostMessageRequest = z.infer<typeof PostMessageRequestSchema>;
 
-export type PostMessageResponse =
-	| 'syncCanister'
-	| 'signOutIdleTimer'
-	| 'delegationRemainingTime'
-	| 'customDomainRegistrationState'
-	| 'syncWallet';
+// Response
 
-export interface PostMessageDataResponseAuth extends PostMessageDataResponse {
-	authRemainingTime: number;
-}
+export type PostMessageDataResponseAuth = z.infer<typeof PostMessageDataResponseAuthSchema>;
 
-export interface PostMessage<T extends PostMessageDataRequest | PostMessageDataResponse> {
-	msg: PostMessageRequest | PostMessageResponse;
-	data: T;
-}
+export type PostMessageDataResponseCanisterSyncData = z.infer<
+	typeof PostMessageDataResponseCanisterSyncDataSchema
+>;
+
+export type PostMessageDataResponseCanisterMonitoring = z.infer<
+	typeof PostMessageDataResponseCanisterMonitoringSchema
+>;
+
+export type PostMessageDataResponseCanistersSyncData = z.infer<
+	typeof PostMessageDataResponseCanistersSyncDataSchema
+>;
+
+export type PostMessageDataResponseCanistersMonitoring = z.infer<
+	typeof PostMessageDataResponseCanistersMonitoringSchema
+>;
+
+export type PostMessageDataResponseHosting = z.infer<typeof PostMessageDataResponseHostingSchema>;
+
+export type PostMessageDataResponseExchange = z.infer<typeof PostMessageDataResponseExchangeSchema>;
+
+export type PostMessageDataResponseWallet = z.infer<typeof PostMessageDataResponseWalletSchema>;
+
+export type PostMessageDataResponseWalletCleanUp = z.infer<
+	typeof PostMessageDataResponseWalletCleanUpSchema
+>;
+
+export type PostMessageDataResponseError = z.infer<typeof PostMessageDataResponseErrorSchema>;
+
+type PostMessageWallet = z.infer<
+	ReturnType<typeof inferPostMessageSchema<typeof PostMessageDataResponseWalletSchema>>
+>;
+type PostMessageWalletCleanUp = z.infer<
+	ReturnType<typeof inferPostMessageSchema<typeof PostMessageDataResponseWalletCleanUpSchema>>
+>;
+type PostMessageError = z.infer<
+	ReturnType<typeof inferPostMessageSchema<typeof PostMessageDataResponseErrorSchema>>
+>;
+type PostMessageExchange = z.infer<
+	ReturnType<typeof inferPostMessageSchema<typeof PostMessageDataResponseExchangeSchema>>
+>;
+
+export type PostMessages =
+	| PostMessageWallet
+	| PostMessageWalletCleanUp
+	| PostMessageError
+	| PostMessageExchange;

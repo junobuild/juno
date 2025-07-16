@@ -4,9 +4,10 @@
 	import { getContext, setContext } from 'svelte';
 	import { writable } from 'svelte/store';
 	import type { Doc as DocType, Doc as DocDid } from '$declarations/satellite/satellite.did';
-	import { listDocs, satelliteVersion } from '$lib/api/satellites.api';
+	import { listDocs } from '$lib/api/satellites.api';
 	import { listDocs008 } from '$lib/api/satellites.deprecated.api';
 	import Data from '$lib/components/data/Data.svelte';
+	import DataCollectionsHeaderWithoutFilter from '$lib/components/data/DataCollectionsHeaderWithoutFilter.svelte';
 	import DataCount from '$lib/components/data/DataCount.svelte';
 	import Doc from '$lib/components/docs/Doc.svelte';
 	import DocForm from '$lib/components/docs/DocHeader.svelte';
@@ -15,8 +16,9 @@
 	import { authStore } from '$lib/stores/auth.store';
 	import { i18n } from '$lib/stores/i18n.store';
 	import { listParamsStore } from '$lib/stores/list-params.store';
-	import { initPaginationContext } from '$lib/stores/pagination.store';
+	import { initPaginationContext } from '$lib/stores/pagination.context.store';
 	import { toasts } from '$lib/stores/toasts.store';
+	import { versionStore } from '$lib/stores/version.store';
 	import { DATA_CONTEXT_KEY, type DataContext, type DataStoreData } from '$lib/types/data.context';
 	import type { ListParams } from '$lib/types/list';
 	import { PAGINATION_CONTEXT_KEY, type PaginationContext } from '$lib/types/pagination.context';
@@ -33,13 +35,14 @@
 
 	const list = async () => {
 		try {
-			const version = await satelliteVersion({
-				satelliteId: $store.satelliteId,
-				identity: $authStore.identity
-			});
-
-			// TODO: remove at the same time as satellite version query
 			if (isNullish(collection)) {
+				setItems({ items: undefined, matches_length: undefined, items_length: undefined });
+				return;
+			}
+
+			const version = $versionStore?.satellites[$store.satelliteId.toText()]?.current;
+
+			if (isNullish(version)) {
 				setItems({ items: undefined, matches_length: undefined, items_length: undefined });
 				return;
 			}
@@ -78,12 +81,16 @@
 	let collection: string | undefined = $derived($store.rule?.[0]);
 </script>
 
-<Data on:junoCloseData={resetData}>
+<Data onclose={resetData}>
 	<Docs />
 	<Doc />
 	<DocForm />
 
 	{#snippet count()}
 		<DataCount />
+	{/snippet}
+
+	{#snippet header()}
+		<DataCollectionsHeaderWithoutFilter onclose={resetData} />
 	{/snippet}
 </Data>

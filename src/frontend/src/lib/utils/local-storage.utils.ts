@@ -1,10 +1,14 @@
 import { browser } from '$app/environment';
-import { DEFAULT_LIST_PARAMS } from '$lib/constants/data.constants';
+import { DEFAULT_ANALYTICS_PERIODICITY } from '$lib/constants/analytics.constants';
+import { DEFAULT_LIST_PARAMS, DEFAULT_LIST_RULES_PARAMS } from '$lib/constants/data.constants';
 import type { ListParamsStoreData } from '$lib/stores/list-params.store';
 import type { Languages } from '$lib/types/languages';
 import { SatellitesLayout } from '$lib/types/layout';
+import type { LayoutMenuState } from '$lib/types/layout-menu';
+import type { ListRulesParams } from '$lib/types/list';
+import type { AnalyticsPeriodicity } from '$lib/types/orbiter';
 import { Theme } from '$lib/types/theme';
-import { nonNullish } from '@dfinity/utils';
+import { nonNullish, notEmptyString } from '@dfinity/utils';
 
 export const setLocalStorageItem = ({ key, value }: { key: string; value: string }) => {
 	// Pre-rendering guard
@@ -23,7 +27,8 @@ export const setLocalStorageItem = ({ key, value }: { key: string; value: string
 export const getLocalStorageLang = (): Languages => {
 	try {
 		const { lang }: Storage = browser ? localStorage : ({ lang: 'en' } as unknown as Storage);
-		return lang;
+		// Backwards compatibility as we incorrectly set undefined string as value for lang in the storage.
+		return nonNullish(lang) && lang !== 'undefined' ? lang : 'en';
 	} catch (err: unknown) {
 		// We use the local storage for the operational part of the app but, not crucial
 		console.error(err);
@@ -45,6 +50,22 @@ export const getLocalListParams = (): ListParamsStoreData => {
 	}
 };
 
+export const getLocalListRulesParams = (): ListRulesParams => {
+	try {
+		const { list_rules_params }: Storage = browser
+			? localStorage
+			: ({ list_rules_params: JSON.stringify(DEFAULT_LIST_RULES_PARAMS) } as unknown as Storage);
+
+		return nonNullish(list_rules_params)
+			? JSON.parse(list_rules_params)
+			: DEFAULT_LIST_RULES_PARAMS;
+	} catch (err: unknown) {
+		// We use the local storage for the operational part of the app but, not crucial
+		console.error(err);
+		return DEFAULT_LIST_RULES_PARAMS;
+	}
+};
+
 export const getLocalStorageTheme = (): Theme => {
 	try {
 		const { theme: storageTheme }: Storage = browser
@@ -54,7 +75,7 @@ export const getLocalStorageTheme = (): Theme => {
 		const darkMode = window.matchMedia('(prefers-color-scheme: dark)').matches;
 
 		return storageTheme ?? (darkMode ? Theme.DARK : Theme.LIGHT);
-	} catch (err: unknown) {
+	} catch (_err: unknown) {
 		// We ignore the error until we can extra proxy/signin to auth.papy.rs
 		return Theme.LIGHT;
 	}
@@ -83,5 +104,38 @@ export const getLocalStorageSatellitesLayout = (): SatellitesLayout => {
 		// We use the local storage for the operational part of the app but, not crucial
 		console.error(err);
 		return SatellitesLayout.CARDS;
+	}
+};
+
+export const getLocalStorageAnalyticsPeriodicity = (): { periodicity: AnalyticsPeriodicity } => {
+	try {
+		const { analytics_periodicity }: Storage = browser
+			? localStorage
+			: ({
+					analytics_periodicity: JSON.stringify(DEFAULT_ANALYTICS_PERIODICITY)
+				} as unknown as Storage);
+
+		return nonNullish(analytics_periodicity)
+			? JSON.parse(analytics_periodicity)
+			: DEFAULT_ANALYTICS_PERIODICITY;
+	} catch (err: unknown) {
+		// We use the local storage for the operational part of the app but, not crucial
+		console.error(err);
+		return DEFAULT_ANALYTICS_PERIODICITY;
+	}
+};
+
+export const getLocalStorageMenuState = (): LayoutMenuState => {
+	try {
+		const { menu_state }: Storage = browser
+			? localStorage
+			: ({ menu_state: 'expanded' } as unknown as Storage);
+		return notEmptyString(menu_state) && ['expanded', 'collapsed'].includes(menu_state)
+			? (menu_state as LayoutMenuState)
+			: 'expanded';
+	} catch (err: unknown) {
+		// We use the local storage for the operational part of the app but, not crucial
+		console.error(err);
+		return 'expanded';
 	}
 };

@@ -8,7 +8,6 @@ import {
 	addSatellitesController,
 	getSettings,
 	getUserData,
-	missionControlVersion,
 	setMetadata,
 	setMissionControlController,
 	setOrbiter,
@@ -19,49 +18,59 @@ import {
 	unsetSatellite
 } from '$lib/api/mission-control.api';
 import { setMissionControlController004 } from '$lib/api/mission-control.deprecated.api';
-import { satelliteVersion } from '$lib/api/satellites.api';
 import { METADATA_KEY_EMAIL, METADATA_KEY_NAME } from '$lib/constants/metadata.constants';
 import {
 	MISSION_CONTROL_v0_0_14,
 	MISSION_CONTROL_v0_0_3,
 	MISSION_CONTROL_v0_0_5,
-	MISSION_CONTROL_v0_0_7
+	SATELLITE_v0_0_7
 } from '$lib/constants/version.constants';
-import { satellitesStore } from '$lib/derived/satellite.derived';
-import { missionControlVersion as missionControlVersionStore } from '$lib/derived/version.derived';
+import { satellitesStore } from '$lib/derived/satellites.derived';
 import { loadDataStore } from '$lib/services/loader.services';
 import { loadSatellites } from '$lib/services/satellites.services';
 import { authStore } from '$lib/stores/auth.store';
 import { i18n } from '$lib/stores/i18n.store';
 import {
-	missionControlSettingsDataStore,
-	missionControlUserDataStore
+	missionControlSettingsUncertifiedStore,
+	missionControlUserUncertifiedStore
 } from '$lib/stores/mission-control.store';
-import { orbitersDataStore } from '$lib/stores/orbiter.store';
-import { satellitesDataStore } from '$lib/stores/satellite.store';
+import { orbitersUncertifiedStore } from '$lib/stores/orbiter.store';
+import { satellitesUncertifiedStore } from '$lib/stores/satellite.store';
 import { toasts } from '$lib/stores/toasts.store';
+import { versionStore } from '$lib/stores/version.store';
 import type { SetControllerParams } from '$lib/types/controllers';
 import type { OptionIdentity } from '$lib/types/itentity';
 import type { Metadata } from '$lib/types/metadata';
+import type { MissionControlId } from '$lib/types/mission-control';
 import type { Option } from '$lib/types/utils';
 import { isNotValidEmail } from '$lib/utils/email.utils';
+import { container } from '$lib/utils/juno.utils';
 import type { Identity } from '@dfinity/agent';
 import type { Principal } from '@dfinity/principal';
-import { fromNullable, isNullish, notEmptyString } from '@dfinity/utils';
+import { fromNullable, isEmptyString, isNullish } from '@dfinity/utils';
+import { missionControlVersion, satelliteVersion } from '@junobuild/admin';
 import { compare } from 'semver';
 import { get } from 'svelte/store';
 
-// TODO: to be removed in next version as only supported if < v0.0.3
 export const setMissionControlControllerForVersion = async ({
 	missionControlId,
 	controllerId,
-	profile
+	profile,
+	identity
 }: {
-	missionControlId: Principal;
+	missionControlId: MissionControlId;
+	identity: Identity;
 } & SetControllerParams) => {
-	const identity = get(authStore).identity;
-
-	const version = await missionControlVersion({ missionControlId, identity });
+	let version: string;
+	try {
+		version = await missionControlVersion({
+			missionControl: { missionControlId: missionControlId.toText(), identity, ...container() }
+		});
+	} catch (_err: unknown) {
+		// For simplicity, since this method is meant to support very old and likely inactive Mission Control instances,
+		// we set the version to trigger the use of the latest API.
+		version = MISSION_CONTROL_v0_0_5;
+	}
 
 	const missionControlController =
 		compare(version, MISSION_CONTROL_v0_0_3) >= 0
@@ -79,22 +88,33 @@ export const setMissionControlControllerForVersion = async ({
 	});
 };
 
-// TODO: to be removed in next version as only supported if < v0.0.7
-export const setSatellitesForVersion = async ({
+export const setSatellitesControllerForVersion = async ({
 	missionControlId,
 	satelliteIds,
 	controllerId,
-	profile
+	profile,
+	identity
 }: {
-	missionControlId: Principal;
+	missionControlId: MissionControlId;
 	satelliteIds: Principal[];
+	identity: Identity;
 } & SetControllerParams) => {
-	const identity = get(authStore).identity;
-
 	const mapVersions = async (
 		satelliteId: Principal
 	): Promise<{ satelliteId: Principal; version: string }> => {
-		const version = await satelliteVersion({ satelliteId, identity });
+		let version: string;
+		try {
+			version = await satelliteVersion({
+				satellite: { satelliteId: satelliteId.toText(), identity, ...container() }
+			});
+		} catch (_err: unknown) {
+			// For simplicity, this method assumes compatibility with very old Satellite instances, like instance that would have
+			// never been upgraded since the Beta phrase in 2023.
+			// We set the version to trigger the use of the latest API, since Satellite versions >= v0.0.24
+			// no longer implement the /version endpoint.
+			version = SATELLITE_v0_0_7;
+		}
+
 		return {
 			version,
 			satelliteId
@@ -111,7 +131,7 @@ export const setSatellitesForVersion = async ({
 			}: { setSatelliteIds: Principal[]; addSatellitesIds: Principal[] },
 			{ satelliteId, version }
 		) => {
-			if (compare(version, MISSION_CONTROL_v0_0_7) >= 0) {
+			if (compare(version, SATELLITE_v0_0_7) >= 0) {
 				return {
 					setSatelliteIds: [...setSatelliteIds, satelliteId],
 					addSatellitesIds
@@ -159,14 +179,14 @@ export const setSatelliteName = async ({
 	satellite: { satellite_id: satelliteId, metadata },
 	satelliteName
 }: {
-	missionControlId: Principal;
+	missionControlId: MissionControlId;
 	satellite: Satellite;
 	satelliteName: string;
 }) => {
 	const updateData = new Map(metadata);
 	updateData.set(METADATA_KEY_NAME, satelliteName);
 
-	const identity = get(authStore).identity;
+	const { identity } = get(authStore);
 
 	const updatedSatellite = await setSatelliteMetadata({
 		missionControlId,
@@ -176,7 +196,7 @@ export const setSatelliteName = async ({
 	});
 
 	const satellites = get(satellitesStore);
-	satellitesDataStore.set([
+	satellitesUncertifiedStore.set([
 		...(satellites ?? []).filter(
 			({ satellite_id }) => updatedSatellite.satellite_id.toText() !== satellite_id.toText()
 		),
@@ -188,10 +208,10 @@ export const attachSatellite = async ({
 	missionControlId,
 	satelliteId
 }: {
-	missionControlId: Principal;
+	missionControlId: MissionControlId;
 	satelliteId: Principal;
 }) => {
-	const identity = get(authStore).identity;
+	const { identity } = get(authStore);
 
 	await setSatellite({ missionControlId, satelliteId, identity });
 
@@ -206,10 +226,10 @@ export const detachSatellite = async ({
 	canisterId,
 	missionControlId
 }: {
-	missionControlId: Principal;
+	missionControlId: MissionControlId;
 	canisterId: Principal;
 }) => {
-	const identity = get(authStore).identity;
+	const { identity } = get(authStore);
 
 	await unsetSatellite({ missionControlId, satelliteId: canisterId, identity });
 
@@ -220,28 +240,28 @@ export const detachSatellite = async ({
 };
 
 export const attachOrbiter = async (params: {
-	missionControlId: Principal;
+	missionControlId: MissionControlId;
 	orbiterId: Principal;
 }) => {
-	const identity = get(authStore).identity;
+	const { identity } = get(authStore);
 
 	const orbiter = await setOrbiter({ ...params, identity });
 
-	orbitersDataStore.set([orbiter]);
+	orbitersUncertifiedStore.set([orbiter]);
 };
 
 export const detachOrbiter = async ({
 	canisterId,
 	...rest
 }: {
-	missionControlId: Principal;
+	missionControlId: MissionControlId;
 	canisterId: Principal;
 }) => {
-	const identity = get(authStore).identity;
+	const { identity } = get(authStore);
 
 	await unsetOrbiter({ ...rest, orbiterId: canisterId, identity });
 
-	orbitersDataStore.reset();
+	orbitersUncertifiedStore.reset();
 };
 
 export const loadSettings = async ({
@@ -249,14 +269,14 @@ export const loadSettings = async ({
 	identity,
 	reload = false
 }: {
-	missionControlId: Principal;
+	missionControlId: MissionControlId;
 	identity: OptionIdentity;
 	reload?: boolean;
 }): Promise<{ success: boolean }> => {
-	const versionStore = get(missionControlVersionStore);
+	const store = get(versionStore);
 
-	if (compare(versionStore?.current ?? '0.0.0', MISSION_CONTROL_v0_0_14) < 0) {
-		missionControlSettingsDataStore.reset();
+	if (compare(store.missionControl?.current ?? '0.0.0', MISSION_CONTROL_v0_0_14) < 0) {
+		missionControlSettingsUncertifiedStore.reset();
 		return { success: true };
 	}
 
@@ -274,7 +294,7 @@ export const loadSettings = async ({
 		reload,
 		load,
 		errorLabel: 'load_settings',
-		store: missionControlSettingsDataStore
+		store: missionControlSettingsUncertifiedStore
 	});
 
 	return { success: result !== 'error' };
@@ -285,14 +305,14 @@ export const loadUserData = async ({
 	identity,
 	reload = false
 }: {
-	missionControlId: Principal;
+	missionControlId: MissionControlId;
 	identity: OptionIdentity;
 	reload?: boolean;
 }): Promise<{ success: boolean }> => {
-	const versionStore = get(missionControlVersionStore);
+	const store = get(versionStore);
 
-	if (compare(versionStore?.current ?? '0.0.0', MISSION_CONTROL_v0_0_14) < 0) {
-		missionControlUserDataStore.reset();
+	if (compare(store.missionControl?.current ?? '0.0.0', MISSION_CONTROL_v0_0_14) < 0) {
+		missionControlUserUncertifiedStore.reset();
 		return { success: true };
 	}
 
@@ -307,7 +327,7 @@ export const loadUserData = async ({
 		reload,
 		load,
 		errorLabel: 'load_user_data',
-		store: missionControlUserDataStore
+		store: missionControlUserUncertifiedStore
 	});
 
 	return { success: result !== 'error' };
@@ -324,7 +344,7 @@ export const setMetadataEmail = async ({
 	email: string;
 	metadata: Metadata;
 }): Promise<{ success: boolean }> => {
-	if (!notEmptyString(email) || isNotValidEmail(email)) {
+	if (isEmptyString(email) || isNotValidEmail(email)) {
 		toasts.error({
 			text: get(i18n).errors.invalid_email
 		});

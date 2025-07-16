@@ -1,7 +1,6 @@
 <script lang="ts">
-	import { fromNullable, isNullish, nonNullish } from '@dfinity/utils';
+	import { isNullish, nonNullish, fromNullishNullable } from '@dfinity/utils';
 	import { run, stopPropagation } from 'svelte/legacy';
-
 	import type { Satellite } from '$declarations/mission_control/mission_control.did';
 	import type {
 		AuthenticationConfig,
@@ -13,7 +12,7 @@
 	import Checkbox from '$lib/components/ui/Checkbox.svelte';
 	import Html from '$lib/components/ui/Html.svelte';
 	import Popover from '$lib/components/ui/Popover.svelte';
-	import { deleteCustomDomain as deleteCustomDomainService } from '$lib/services/hosting.services';
+	import { deleteCustomDomain as deleteCustomDomainService } from '$lib/services/custom-domain.services';
 	import { authStore } from '$lib/stores/auth.store';
 	import { busy, isBusy } from '$lib/stores/busy.store';
 	import { i18n } from '$lib/stores/i18n.store';
@@ -51,7 +50,7 @@
 		deleteMainDomain =
 			nonNullish(customDomain?.[0]) &&
 			customDomain?.[0] ===
-				fromNullable(fromNullable(config?.internet_identity ?? [])?.derivation_origin ?? []);
+				fromNullishNullable(fromNullishNullable(config?.internet_identity)?.derivation_origin);
 	});
 
 	let advancedOptions = $state(false);

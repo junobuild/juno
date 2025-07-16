@@ -4,12 +4,12 @@ use candid::Principal;
 use ic_cdk::api::time;
 use ic_stable_structures::storable::Bound;
 use ic_stable_structures::Storable;
-use junobuild_collections::constants::DEFAULT_DB_COLLECTIONS;
+use junobuild_collections::constants::db::DEFAULT_DB_COLLECTIONS;
 use junobuild_collections::types::rules::{Memory, Rule};
-use junobuild_shared::constants::INITIAL_VERSION;
 use junobuild_shared::serializers::{deserialize_from_bytes, serialize_to_bytes};
-use junobuild_shared::types::state::Timestamped;
 use junobuild_shared::types::state::{Timestamp, UserId, Version};
+use junobuild_shared::types::state::{Timestamped, Versioned};
+use junobuild_shared::version::next_version;
 use std::borrow::Cow;
 use std::cmp::Ordering;
 use std::collections::{BTreeMap, HashMap};
@@ -33,6 +33,7 @@ impl Default for DbHeapState {
                         mutable_permissions: Some(rule.mutable_permissions.unwrap_or(false)),
                         max_size: rule.max_size,
                         max_capacity: rule.max_capacity,
+                        max_changes_per_user: rule.max_changes_per_user,
                         created_at: now,
                         updated_at: now,
                         version: rule.version,
@@ -96,10 +97,7 @@ impl Doc {
             Some(current_doc) => current_doc.created_at,
         };
 
-        let version: Version = match current_doc {
-            None => INITIAL_VERSION,
-            Some(current_doc) => current_doc.version.unwrap_or_default() + 1,
-        };
+        let version = next_version(current_doc);
 
         let owner: UserId = match current_doc {
             None => caller,
@@ -116,5 +114,11 @@ impl Doc {
             updated_at,
             version: Some(version),
         }
+    }
+}
+
+impl Versioned for Doc {
+    fn version(&self) -> Option<Version> {
+        self.version
     }
 }

@@ -3,14 +3,18 @@
 	import { nonNullish } from '@dfinity/utils';
 	import { fade } from 'svelte/transition';
 	import CanisterMonitoringChart from '$lib/components/canister/CanisterMonitoringChart.svelte';
+	import CanisterMonitoringData from '$lib/components/canister/CanisterMonitoringData.svelte';
 	import CanisterOverview from '$lib/components/canister/CanisterOverview.svelte';
-	import CanisterMonitoringLoader from '$lib/components/loaders/CanisterMonitoringLoader.svelte';
 	import MonitoringDepositCyclesChart from '$lib/components/monitoring/MonitoringDepositCyclesChart.svelte';
 	import MonitoringStrategyStatus from '$lib/components/monitoring/MonitoringStrategyStatus.svelte';
 	import Modal from '$lib/components/ui/Modal.svelte';
 	import Value from '$lib/components/ui/Value.svelte';
 	import { i18n } from '$lib/stores/i18n.store';
-	import type { CanisterMonitoringData } from '$lib/types/canister';
+	import type {
+		CanisterData,
+		CanisterMonitoringData as CanisterMonitoringDataType,
+		CanisterSyncStatus
+	} from '$lib/types/canister';
 	import type { JunoModalDetail, JunoModalShowMonitoringDetail } from '$lib/types/modal';
 	import { formatTCycles } from '$lib/utils/cycles.utils';
 	import { formatToRelativeTime } from '$lib/utils/date.utils';
@@ -26,7 +30,7 @@
 
 	let canisterId = $derived(Principal.fromText(segment?.canisterId));
 
-	let monitoringData = $state<CanisterMonitoringData | undefined>(undefined);
+	let monitoringData = $state<CanisterMonitoringDataType | undefined>(undefined);
 
 	let lastExecutionTime = $derived(monitoringData?.metadata?.lastExecutionTime);
 	let lastDepositCyclesTime = $derived(monitoringData?.metadata?.latestDepositedCycles?.timestamp);
@@ -35,17 +39,27 @@
 	let chartsData = $derived(monitoringData?.chartsData ?? []);
 
 	let depositedCyclesChartData = $derived(monitoringData?.charts.depositedCycles ?? []);
+
+	let canisterData = $state<CanisterData | undefined>(undefined);
+	let canisterSyncStatus = $state<CanisterSyncStatus | undefined>(undefined);
 </script>
 
-<Modal on:junoClose={onclose}>
+<Modal {onclose}>
 	<h2>{$i18n.monitoring.title}</h2>
 
 	<div class="card-container columns-3 no-border">
-		<CanisterOverview {canisterId} segment={segment.segment} />
+		<CanisterOverview
+			bind:data={canisterData}
+			bind:sync={canisterSyncStatus}
+			{canisterId}
+			segment={segment.segment}
+		/>
 
-		<CanisterMonitoringLoader segment={segment.segment} {canisterId} bind:data={monitoringData}>
-			<div>
-				<MonitoringStrategyStatus {monitoring} />
+		<hr />
+
+		<CanisterMonitoringData {canisterId} bind:monitoringData>
+			<div class="status">
+				<MonitoringStrategyStatus {monitoring} {canisterData} {canisterSyncStatus} />
 
 				{#if nonNullish(lastExecutionTime)}
 					<div in:fade>
@@ -83,7 +97,7 @@
 			</div>
 
 			<MonitoringDepositCyclesChart depositedCycles={depositedCyclesChartData} />
-		</CanisterMonitoringLoader>
+		</CanisterMonitoringData>
 	</div>
 </Modal>
 
@@ -103,6 +117,24 @@
 	.chart {
 		@include media.min-width(medium) {
 			grid-column: 1 / 3;
+		}
+	}
+
+	.status {
+		margin: var(--padding-6x) 0 var(--padding-8x);
+
+		@include media.min-width(medium) {
+			margin: var(--padding-6x) 0 var(--padding-4x);
+			grid-column: 1 / 4;
+		}
+	}
+
+	hr {
+		margin: var(--padding-4x) 0 var(--padding-2x);
+
+		@include media.min-width(medium) {
+			margin: var(--padding-6x) 0 var(--padding-2x);
+			grid-column: 1 / 4;
 		}
 	}
 </style>

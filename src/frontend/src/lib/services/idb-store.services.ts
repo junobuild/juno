@@ -1,4 +1,4 @@
-import type { CanisterStore } from '$lib/stores/canister.store';
+import type { CanisterStore } from '$lib/stores/_canister.store';
 import type { CanisterIdText } from '$lib/types/canister';
 import { clear, del, entries as idbEntries, set, type UseStore } from 'idb-keyval';
 

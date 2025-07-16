@@ -15,11 +15,12 @@
 
 	interface Props {
 		segment: 'satellite' | 'orbiter';
+		monitoringEnabled: boolean;
 		segmentId: Principal;
 		ondetach: () => void;
 	}
 
-	let { segment, segmentId, ondetach }: Props = $props();
+	let { segment, monitoringEnabled, segmentId, ondetach }: Props = $props();
 
 	let visible = $state(false);
 
@@ -40,6 +41,12 @@
 			return;
 		}
 
+		// TODO: can be removed once the mission control is patched to disable monitoring on detach
+		if (monitoringEnabled) {
+			toasts.warn($i18n.monitoring.warn_monitoring_enabled);
+			return;
+		}
+
 		busy.start();
 
 		try {
@@ -54,8 +61,8 @@
 
 			close();
 
-			toasts.success(
-				i18nCapitalize(
+			toasts.success({
+				text: i18nCapitalize(
 					i18nFormat($i18n.canisters.detach_success, [
 						{
 							placeholder: '{0}',
@@ -63,7 +70,7 @@
 						}
 					])
 				)
-			);
+			});
 		} catch (err: unknown) {
 			toasts.error({
 				text: $i18n.errors.segment_detach,

@@ -1,8 +1,7 @@
 import type { Identity } from '@dfinity/agent';
 import { IDL } from '@dfinity/candid';
 import type { Principal } from '@dfinity/principal';
-import { nonNullish } from '@dfinity/utils';
-import { assertNonNullish } from '@junobuild/utils';
+import { assertNonNullish, nonNullish } from '@dfinity/utils';
 import { parse } from '@ltd/j-toml';
 import { existsSync, readFileSync, writeFileSync } from 'node:fs';
 import { get, type RequestOptions } from 'node:https';
@@ -40,6 +39,24 @@ export const OBSERVATORY_WASM_PATH = existsSync(OBSERVATORY_WASM_PATH_CI)
 	? OBSERVATORY_WASM_PATH_CI
 	: OBSERVATORY_WASM_PATH_LOCAL;
 
+const TEST_SATELLITE_WASM_PATH_LOCAL = join(WASM_PATH_LOCAL, 'test_satellite.wasm.gz');
+const TEST_SATELLITE_WASM_PATH_CI = join(process.cwd(), 'test_satellite.wasm.gz');
+export const TEST_SATELLITE_WASM_PATH = existsSync(SATELLITE_WASM_PATH_CI)
+	? TEST_SATELLITE_WASM_PATH_CI
+	: TEST_SATELLITE_WASM_PATH_LOCAL;
+
+const SPUTNIK_WASM_PATH_LOCAL = join(WASM_PATH_LOCAL, 'sputnik.wasm.gz');
+const SPUTNIK_WASM_PATH_CI = join(process.cwd(), 'sputnik.wasm.gz');
+export const SPUTNIK_WASM_PATH = existsSync(SPUTNIK_WASM_PATH_CI)
+	? SPUTNIK_WASM_PATH_CI
+	: SPUTNIK_WASM_PATH_LOCAL;
+
+const TEST_SPUTNIK_WASM_PATH_LOCAL = join(WASM_PATH_LOCAL, 'test_sputnik.wasm.gz');
+const TEST_SPUTNIK_WASM_PATH_CI = join(process.cwd(), 'test_sputnik.wasm.gz');
+export const TEST_SPUTNIK_WASM_PATH = existsSync(SPUTNIK_WASM_PATH_CI)
+	? TEST_SPUTNIK_WASM_PATH_CI
+	: TEST_SPUTNIK_WASM_PATH_LOCAL;
+
 export const controllersInitArgs = (controllers: Identity | Principal[]): ArrayBuffer =>
 	IDL.encode(
 		[
@@ -54,6 +71,7 @@ const downloadFromURL = async (url: string | RequestOptions): Promise<Buffer> =>
 	await new Promise((resolve, reject) => {
 		get(url, async (res) => {
 			if (nonNullish(res.statusCode) && [301, 302].includes(res.statusCode)) {
+				// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
 				await downloadFromURL(res.headers.location!).then(resolve, reject);
 			}
 
@@ -84,6 +102,15 @@ export const downloadConsole = async ({
 	junoVersion: string;
 	version: string;
 }): Promise<string> => await downloadGitHub({ junoVersion, wasm: `console-v${version}.wasm.gz` });
+
+export const downloadObservatory = async ({
+	junoVersion,
+	version
+}: {
+	junoVersion: string;
+	version: string;
+}): Promise<string> =>
+	await downloadGitHub({ junoVersion, wasm: `observatory-v${version}.wasm.gz` });
 
 const downloadCdn = async (wasm: string): Promise<string> =>
 	await download({ wasm, url: `https://cdn.juno.build/releases/${wasm}` });

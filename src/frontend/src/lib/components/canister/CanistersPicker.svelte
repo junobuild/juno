@@ -5,8 +5,8 @@
 	import type { Satellite } from '$declarations/mission_control/mission_control.did';
 	import { missionControlIdDerived } from '$lib/derived/mission-control.derived';
 	import { orbiterStore } from '$lib/derived/orbiter.derived';
-	import { satellitesStore } from '$lib/derived/satellite.derived';
-	import { loadOrbiters } from '$lib/services/orbiters.services';
+	import { sortedSatellites } from '$lib/derived/satellites.derived';
+	import { loadOrbiters } from '$lib/services/orbiter/orbiters.services';
 	import { loadSatellites } from '$lib/services/satellites.services';
 	import { i18n } from '$lib/stores/i18n.store';
 	import { satelliteName } from '$lib/utils/satellite.utils';
@@ -21,9 +21,7 @@
 	let excludeSegmentIdText: string = $derived(excludeSegmentId.toText());
 
 	let satellites: Satellite[] = $derived(
-		($satellitesStore ?? []).filter(
-			({ satellite_id }) => satellite_id.toText() !== excludeSegmentIdText
-		)
+		$sortedSatellites.filter(({ satellite_id }) => satellite_id.toText() !== excludeSegmentIdText)
 	);
 
 	onMount(
@@ -48,15 +46,9 @@
 		<option value={$orbiterStore.orbiter_id.toText()}>{$i18n.analytics.title}</option>
 	{/if}
 
-	{#each satellites as satellite}
+	{#each satellites as satellite (satellite.satellite_id.toText())}
 		{@const satName = satelliteName(satellite)}
 
 		<option value={satellite.satellite_id.toText()}>{satName}</option>
 	{/each}
 </select>
-
-<style lang="scss">
-	select {
-		margin: 0 0 var(--padding-4x);
-	}
-</style>

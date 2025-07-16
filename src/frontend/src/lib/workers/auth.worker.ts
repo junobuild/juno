@@ -1,5 +1,5 @@
-import { AUTH_TIMER_INTERVAL } from '$lib/constants/constants';
-import type { PostMessage, PostMessageDataRequest } from '$lib/types/post-message';
+import { AUTH_TIMER_INTERVAL } from '$lib/constants/app.constants';
+import type { PostMessageRequest } from '$lib/types/post-message';
 import { createAuthClient } from '$lib/utils/auth.utils';
 import { IdbStorage, KEY_STORAGE_DELEGATION, type AuthClient } from '@dfinity/auth-client';
 import { DelegationChain, isDelegationValid } from '@dfinity/identity';
@@ -7,7 +7,7 @@ import { DelegationChain, isDelegationValid } from '@dfinity/identity';
 export const onAuthMessage = async ({
 	data
 	// eslint-disable-next-line require-await
-}: MessageEvent<PostMessage<PostMessageDataRequest>>) => {
+}: MessageEvent<PostMessageRequest>) => {
 	const { msg } = data;
 
 	switch (msg) {

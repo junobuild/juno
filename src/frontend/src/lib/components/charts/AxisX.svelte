@@ -46,7 +46,7 @@
 					: $xScale.ticks(ticks)
 	);
 
-	function textAnchor(i: number) {
+	const textAnchor = (i: number): 'start' | 'end' | 'middle' => {
 		if (snapTicks === true) {
 			if (i === 0) {
 				return 'start';
@@ -56,7 +56,7 @@
 			}
 		}
 		return 'middle';
-	}
+	};
 </script>
 
 <g class="axis x-axis" class:snapTicks>
@@ -90,7 +90,7 @@
 	{/if}
 </g>
 
-<style>
+<style lang="scss">
 	.tick {
 		font-size: var(--font-size-ultra-small);
 	}

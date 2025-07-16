@@ -1,4 +1,4 @@
-<!-- source: https://fonts.google.com/icons?selected=Material%20Icons%20Outlined%3Ainfo%3A -->
+<!-- source: https://fonts.google.com/icons?selected=Material+Symbols+Outlined:info:FILL@0;wght@300;GRAD@0;opsz@24&icon.size=24&icon.color=%23000000&icon.query=info&icon.set=Material+SymbolsA -->
 <script lang="ts">
 	interface Props {
 		size?: string;
@@ -10,10 +10,10 @@
 <svg
 	xmlns="http://www.w3.org/2000/svg"
 	height={size}
-	viewBox="0 0 24 24"
 	width={size}
+	viewBox="0 -960 960 960"
 	fill="currentColor"
-	><path d="M0 0h24v24H0V0z" fill="none" /><path
-		d="M11 7h2v2h-2zm0 4h2v6h-2zm1-9C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8z"
+	><path
+		d="M440-280h80v-240h-80v240Zm40-320q17 0 28.5-11.5T520-640q0-17-11.5-28.5T480-680q-17 0-28.5 11.5T440-640q0 17 11.5 28.5T480-600Zm0 520q-83 0-156-31.5T197-197q-54-54-85.5-127T80-480q0-83 31.5-156T197-763q54-54 127-85.5T480-880q83 0 156 31.5T763-763q54 54 85.5 127T880-480q0 83-31.5 156T763-197q-54 54-127 85.5T480-80Zm0-80q134 0 227-93t93-227q0-134-93-227t-227-93q-134 0-227 93t-93 227q0 134 93 227t227 93Zm0-320Z"
 	/></svg
 >

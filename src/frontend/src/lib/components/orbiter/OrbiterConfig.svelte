@@ -8,8 +8,8 @@
 		orbiterFeatures,
 		orbiterSatellitesConfig
 	} from '$lib/derived/orbiter-satellites.derived';
-	import { satellitesStore } from '$lib/derived/satellite.derived';
-	import { loadOrbiterConfigs } from '$lib/services/orbiters.services';
+	import { sortedSatellites } from '$lib/derived/satellites.derived';
+	import { loadOrbiterConfigs } from '$lib/services/orbiter/orbiters.services';
 	import { i18n } from '$lib/stores/i18n.store';
 	import { versionStore } from '$lib/stores/version.store';
 	import { emit } from '$lib/utils/events.utils';
@@ -34,7 +34,7 @@
 
 	run(() => {
 		// @ts-expect-error TODO: to be migrated to Svelte v5
-		$versionStore, (async () => await load())();
+		($versionStore, (async () => await load())());
 	});
 
 	let enabledSatellites = $derived(
@@ -117,7 +117,7 @@
 	</div>
 </div>
 
-{#if ($satellitesStore ?? []).length > 0}
+{#if $sortedSatellites.length > 0}
 	<button onclick={openModal} in:fade>
 		{$i18n.core.edit_config}
 	</button>

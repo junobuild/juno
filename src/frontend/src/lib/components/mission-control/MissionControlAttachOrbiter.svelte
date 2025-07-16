@@ -1,11 +1,12 @@
 <script lang="ts">
-	import { Principal } from '@dfinity/principal';
+	import type { Principal } from '@dfinity/principal';
 	import { createEventDispatcher } from 'svelte';
 	import CanisterAttach from '$lib/components/canister/CanisterAttach.svelte';
 	import IconLink from '$lib/components/icons/IconLink.svelte';
 	import { attachOrbiter } from '$lib/services/mission-control.services';
 	import { i18n } from '$lib/stores/i18n.store';
 	import { toasts } from '$lib/stores/toasts.store';
+	import type { MissionControlId } from '$lib/types/mission-control';
 	import { i18nCapitalize, i18nFormat } from '$lib/utils/i18n.utils';
 
 	let visible: boolean = $state(false);
@@ -14,7 +15,7 @@
 		missionControlId,
 		canisterId
 	}: {
-		missionControlId: Principal;
+		missionControlId: MissionControlId;
 		canisterId: Principal;
 	}) => {
 		await attachOrbiter({
@@ -25,8 +26,8 @@
 	const dispatch = createEventDispatcher();
 
 	const onSuccess = () => {
-		toasts.success(
-			i18nCapitalize(
+		toasts.success({
+			text: i18nCapitalize(
 				i18nFormat($i18n.canisters.attach_success, [
 					{
 						placeholder: '{0}',
@@ -34,7 +35,7 @@
 					}
 				])
 			)
-		);
+		});
 
 		dispatch('junoAttach');
 	};

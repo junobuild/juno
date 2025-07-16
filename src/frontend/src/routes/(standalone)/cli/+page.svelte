@@ -3,10 +3,14 @@
 	import { fade } from 'svelte/transition';
 	import CliAdd from '$lib/components/cli/CliAdd.svelte';
 	import MissionControlGuard from '$lib/components/guards/MissionControlGuard.svelte';
+	import CanistersLoader from '$lib/components/loaders/CanistersLoader.svelte';
 	import { authSignedIn } from '$lib/derived/auth.derived';
 	import { missionControlIdDerived } from '$lib/derived/mission-control.derived';
-	import { signIn } from '$lib/services/auth.services';
+	import { sortedSatellites } from '$lib/derived/satellites.derived';
+	import { onIntersection } from '$lib/directives/intersection.directives';
+	import { signIn } from '$lib/services/auth/auth.services';
 	import { i18n } from '$lib/stores/i18n.store';
+	import { onLayoutTitleIntersection } from '$lib/stores/layout-intersecting.store';
 	import type { Option } from '$lib/types/utils';
 
 	interface Props {
@@ -22,22 +26,26 @@
 	let principal: Option<string> = $derived(data?.principal);
 </script>
 
-{#if nonNullish(redirect_uri) && nonNullish(principal) && notEmptyString(redirect_uri) && notEmptyString(principal)}
-	{#if $authSignedIn}
-		<MissionControlGuard>
-			{#if nonNullish($missionControlIdDerived)}
-				<div in:fade>
-					<CliAdd {principal} {redirect_uri} missionControlId={$missionControlIdDerived} />
-				</div>
-			{/if}
-		</MissionControlGuard>
-	{:else}
-		<p>
-			{$i18n.cli.sign_in}
-		</p>
+<div use:onIntersection onjunoIntersecting={onLayoutTitleIntersection}>
+	{#if nonNullish(redirect_uri) && nonNullish(principal) && notEmptyString(redirect_uri) && notEmptyString(principal)}
+		{#if $authSignedIn}
+			<MissionControlGuard>
+				<CanistersLoader satellites={$sortedSatellites}>
+					{#if nonNullish($missionControlIdDerived)}
+						<div in:fade>
+							<CliAdd {principal} {redirect_uri} missionControlId={$missionControlIdDerived} />
+						</div>
+					{/if}
+				</CanistersLoader>
+			</MissionControlGuard>
+		{:else}
+			<p>
+				{$i18n.cli.sign_in}
+			</p>
 
-		<button onclick={async () => await signIn({})}>{$i18n.core.sign_in}</button>
+			<button onclick={async () => await signIn({})}>{$i18n.core.sign_in}</button>
+		{/if}
+	{:else}
+		<p>{$i18n.errors.cli_missing_params}</p>
 	{/if}
-{:else}
-	<p>{$i18n.errors.cli_missing_params}</p>
-{/if}
+</div>

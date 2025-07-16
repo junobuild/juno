@@ -13,6 +13,6 @@
 	let { canisterId, cycles, heap }: Props = $props();
 </script>
 
-<Canister {canisterId} segment="mission_control" display={false} />
+<Canister {canisterId} display={false} />
 
 <CanisterWarnings {canisterId} {cycles} {heap} />

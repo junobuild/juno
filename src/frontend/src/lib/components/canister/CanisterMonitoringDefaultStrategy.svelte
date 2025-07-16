@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { fromNullable, nonNullish } from '@dfinity/utils';
+	import { nonNullish, fromNullishNullable } from '@dfinity/utils';
 	import { onMount, untrack } from 'svelte';
 	import type { CyclesMonitoringStrategy } from '$declarations/mission_control/mission_control.did';
 	import MonitoringSentence from '$lib/components/modals/MonitoringSentence.svelte';
@@ -16,16 +16,17 @@
 
 	let { monitoringStrategy = $bindable(), detail }: Props = $props();
 
-	let { monitoringConfig, monitoringEnabled } = detail as JunoModalCreateSegmentDetail;
+	let { monitoringConfig, monitoringEnabled } = $derived(detail as JunoModalCreateSegmentDetail);
 
 	let useDefaultStrategy = $state(false);
 	let useMonitoringStrategy: CyclesMonitoringStrategy | undefined = $state(undefined);
 
 	onMount(() => {
 		// If user as a default strategy, we use this strategy else, if monitored is already enabled, we use the basic suggested strategy
-		useMonitoringStrategy =
-			fromNullable(fromNullable(monitoringConfig?.cycles ?? [])?.default_strategy ?? []) ??
-			(monitoringEnabled ? BASIC_STRATEGY : undefined);
+		useMonitoringStrategy = monitoringEnabled
+			? (fromNullishNullable(fromNullishNullable(monitoringConfig?.cycles)?.default_strategy) ??
+				BASIC_STRATEGY)
+			: undefined;
 
 		monitoringStrategy = useMonitoringStrategy;
 		useDefaultStrategy = nonNullish(monitoringStrategy);

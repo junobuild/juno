@@ -1,11 +1,11 @@
-use crate::assert_rules::{
+use crate::assert::rules::{
     assert_memory, assert_mutable_permissions, assert_storage_reserved_collection,
     assert_system_collection_delete_permission, assert_system_collection_set_permission,
     assert_write_version,
 };
-use crate::constants::SYS_COLLECTION_PREFIX;
+use crate::constants::core::SYS_COLLECTION_PREFIX;
 use crate::types::core::CollectionKey;
-use crate::types::interface::{DelRule, SetRule};
+use crate::types::interface::{DelRule, ListRulesParams, ListRulesResults, SetRule};
 use crate::types::rules::{Rule, Rules};
 
 // ---------------------------------------------------------
@@ -60,4 +60,35 @@ pub fn del_rule(
     rules.remove(&collection);
 
     Ok(())
+}
+
+pub fn list_rules(params: &ListRulesParams, rules: &Rules) -> ListRulesResults {
+    let include_system = params
+        .matcher
+        .as_ref()
+        .map(|m| m.include_system)
+        .unwrap_or(false);
+
+    if include_system {
+        let items_length = rules.len();
+
+        return ListRulesResults {
+            items: rules
+                .iter()
+                .map(|(key, rule)| (key.clone(), rule.clone()))
+                .collect(),
+            items_length,
+            matches_length: items_length,
+        };
+    }
+
+    let items = filter_rules(rules);
+
+    let items_length = items.len();
+
+    ListRulesResults {
+        items,
+        items_length,
+        matches_length: items_length,
+    }
 }

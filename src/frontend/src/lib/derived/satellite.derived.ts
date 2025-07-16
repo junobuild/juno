@@ -1,55 +1,27 @@
-import { page } from '$app/stores';
 import type { Satellite } from '$declarations/mission_control/mission_control.did';
-import { satellitesDataStore } from '$lib/stores/satellite.store';
+import { pageSatelliteId } from '$lib/derived/page.derived.svelte';
+import { satellitesStore } from '$lib/derived/satellites.derived';
+import type { Option } from '$lib/types/utils';
 import { isNullish } from '@dfinity/utils';
 import { derived, type Readable } from 'svelte/store';
 
-// TODO: rename without suffix store but find another naming that satellite and satelliteId because we probably already use those for local variable.
-
-export const satellitesStore = derived(
-	[satellitesDataStore],
-	([$satellitesDataStore]) => $satellitesDataStore?.data
-);
-
-export const satelliteStore: Readable<Satellite | undefined | null> = derived(
-	[satellitesStore, page],
-	([satellites, page]) => {
-		const { data } = page;
-
-		if (isNullish(data.satellite)) {
-			return undefined;
+export const satelliteStore: Readable<Option<Satellite>> = derived(
+	[satellitesStore, pageSatelliteId],
+	([$satellites, $pageSatelliteId]) => {
+		if (isNullish($pageSatelliteId)) {
+			return null;
 		}
 
 		// Satellites not loaded yet
-		if (satellites === undefined) {
+		if ($satellites === undefined) {
 			return undefined;
 		}
 
-		const satellite = (satellites ?? []).find(
-			({ satellite_id }) => satellite_id.toText() === data.satellite
+		const satellite = ($satellites ?? []).find(
+			({ satellite_id }) => satellite_id.toText() === $pageSatelliteId
 		);
 
 		// eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
 		return satellite === undefined ? null : satellite;
 	}
 );
-
-export const satellitesLoaded = derived(
-	[satellitesDataStore],
-	([$satellitesDataStore]) => $satellitesDataStore !== undefined
-);
-
-export const satellitesNotLoaded = derived(
-	[satellitesLoaded],
-	([$satellitesLoaded]) => !$satellitesLoaded
-);
-
-export const satelliteIdStore: Readable<string | undefined> = derived([page], ([page]) => {
-	const { data } = page;
-
-	if (isNullish(data.satellite)) {
-		return undefined;
-	}
-
-	return data.satellite;
-});

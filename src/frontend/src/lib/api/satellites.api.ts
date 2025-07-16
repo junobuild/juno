@@ -1,12 +1,15 @@
 import type { Controller } from '$declarations/mission_control/mission_control.did';
 import type {
 	AuthenticationConfig,
+	CollectionType,
 	DelDoc as DelRule,
 	Doc,
 	ListResults as ListAssets,
 	ListResults_1 as ListDocs,
+	ListRulesParams,
+	ListRulesResults,
 	Rule,
-	RulesType,
+	SetDoc,
 	SetRule
 } from '$declarations/satellite/satellite.did';
 import { getSatelliteActor } from '$lib/api/actors/actor.juno.api';
@@ -14,7 +17,7 @@ import type { CustomDomains } from '$lib/types/custom-domain';
 import type { OptionIdentity } from '$lib/types/itentity';
 import type { ListParams } from '$lib/types/list';
 import { toListParams } from '$lib/utils/satellite.utils';
-import { Principal } from '@dfinity/principal';
+import type { Principal } from '@dfinity/principal';
 import { isNullish, toNullable } from '@dfinity/utils';
 
 export const listDocs = async ({
@@ -30,6 +33,38 @@ export const listDocs = async ({
 }): Promise<ListDocs> => {
 	const { list_docs } = await getSatelliteActor({ satelliteId, identity });
 	return list_docs(collection, toListParams(params));
+};
+
+export const getDoc = async ({
+	satelliteId,
+	collection,
+	key,
+	identity
+}: {
+	satelliteId: Principal;
+	collection: string;
+	key: string;
+	identity: OptionIdentity;
+}): Promise<[] | [Doc]> => {
+	const { get_doc } = await getSatelliteActor({ satelliteId, identity });
+	return get_doc(collection, key);
+};
+
+export const setDoc = async ({
+	satelliteId,
+	collection,
+	key,
+	doc,
+	identity
+}: {
+	satelliteId: Principal;
+	collection: string;
+	key: string;
+	doc: SetDoc;
+	identity: OptionIdentity;
+}): Promise<Doc> => {
+	const { set_doc } = await getSatelliteActor({ satelliteId, identity });
+	return set_doc(collection, key, doc);
 };
 
 export const listAssets = async ({
@@ -50,14 +85,16 @@ export const listAssets = async ({
 export const listRules = async ({
 	satelliteId,
 	type,
+	filter,
 	identity
 }: {
 	satelliteId: Principal;
-	type: RulesType;
+	type: CollectionType;
+	filter: ListRulesParams;
 	identity: OptionIdentity;
-}): Promise<[string, Rule][]> => {
-	const actor = await getSatelliteActor({ satelliteId, identity });
-	return actor.list_rules(type);
+}): Promise<ListRulesResults> => {
+	const { list_rules } = await getSatelliteActor({ satelliteId, identity });
+	return list_rules(type, filter);
 };
 
 export const getRule = async ({
@@ -67,7 +104,7 @@ export const getRule = async ({
 	collection
 }: {
 	satelliteId: Principal;
-	type: RulesType;
+	type: CollectionType;
 	identity: OptionIdentity;
 	collection: string;
 }): Promise<[] | [Rule]> => {
@@ -84,7 +121,7 @@ export const setRule = async ({
 }: {
 	satelliteId: Principal;
 	collection: string;
-	type: RulesType;
+	type: CollectionType;
 	identity: OptionIdentity;
 	rule: SetRule;
 }): Promise<Rule> => {
@@ -101,7 +138,7 @@ export const deleteRule = async ({
 }: {
 	satelliteId: Principal;
 	collection: string;
-	type: RulesType;
+	type: CollectionType;
 	rule: Rule;
 	identity: OptionIdentity;
 }) => {
@@ -122,28 +159,6 @@ export const listControllers = async ({
 }): Promise<[Principal, Controller][]> => {
 	const actor = await getSatelliteActor({ satelliteId, identity });
 	return actor.list_controllers();
-};
-
-export const satelliteVersion = async ({
-	satelliteId,
-	identity
-}: {
-	satelliteId: Principal;
-	identity: OptionIdentity;
-}): Promise<string> => {
-	const { version } = await getSatelliteActor({ satelliteId, identity });
-	return version();
-};
-
-export const satelliteBuildVersion = async ({
-	satelliteId,
-	identity
-}: {
-	satelliteId: Principal;
-	identity: OptionIdentity;
-}): Promise<string> => {
-	const { build_version } = await getSatelliteActor({ satelliteId, identity });
-	return build_version();
 };
 
 export const setCustomDomain = async ({

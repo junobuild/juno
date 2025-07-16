@@ -1,5 +1,6 @@
 pub mod state {
-    use crate::types::monitoring::CyclesBalance;
+    use crate::types::core::DomainName;
+    use crate::types::monitoring::{CyclesBalance, FundingFailure};
     use candid::Principal;
     use candid::{CandidType, Nat};
     use ic_cdk::api::management_canister::main::CanisterStatusType;
@@ -20,7 +21,6 @@ pub mod state {
 
     pub type Controllers = HashMap<ControllerId, Controller>;
 
-    pub type ArchiveTime = u64;
     pub type Timestamp = u64;
 
     pub type Version = u64;
@@ -30,6 +30,10 @@ pub mod state {
         fn updated_at(&self) -> Timestamp;
         fn cmp_updated_at(&self, other: &Self) -> Ordering;
         fn cmp_created_at(&self, other: &Self) -> Ordering;
+    }
+
+    pub trait Versioned {
+        fn version(&self) -> Option<Version>;
     }
 
     #[derive(CandidType, Serialize, Deserialize, Clone)]
@@ -45,6 +49,7 @@ pub mod state {
     pub enum ControllerScope {
         Write,
         Admin,
+        Submit,
     }
 
     #[derive(CandidType, Serialize, Deserialize, Clone)]
@@ -67,26 +72,6 @@ pub mod state {
         pub freezing_threshold: Nat,
     }
 
-    #[deprecated]
-    #[derive(CandidType, Serialize, Deserialize, Clone)]
-    pub struct SegmentStatus {
-        pub id: Principal,
-        pub metadata: Option<Metadata>,
-        pub status: SegmentCanisterStatus,
-        pub status_at: Timestamp,
-    }
-
-    #[deprecated]
-    pub type SegmentStatusResult = Result<SegmentStatus, String>;
-
-    #[deprecated]
-    #[derive(CandidType, Deserialize, Clone)]
-    pub struct SegmentsStatuses {
-        pub mission_control: SegmentStatusResult,
-        pub satellites: Option<Vec<SegmentStatusResult>>,
-        pub orbiters: Option<Vec<SegmentStatusResult>>,
-    }
-
     #[derive(CandidType, Serialize, Deserialize, Clone)]
     pub enum SegmentKind {
         Satellite,
@@ -104,6 +89,7 @@ pub mod state {
     #[derive(CandidType, Serialize, Deserialize, Clone)]
     pub struct OrbiterSatelliteConfig {
         pub features: Option<OrbiterSatelliteFeatures>,
+        pub restricted_origin: Option<DomainName>,
         pub created_at: Timestamp,
         pub updated_at: Timestamp,
         pub version: Option<Version>,
@@ -119,6 +105,7 @@ pub mod state {
     #[derive(CandidType, Serialize, Deserialize, Clone)]
     pub enum NotificationKind {
         DepositedCyclesEmail(DepositedCyclesEmailNotification),
+        FailedCyclesDepositEmail(FailedCyclesDepositEmailNotification),
     }
 
     #[derive(CandidType, Serialize, Deserialize, Clone)]
@@ -126,11 +113,16 @@ pub mod state {
         pub to: String,
         pub deposited_cycles: CyclesBalance,
     }
+
+    #[derive(CandidType, Serialize, Deserialize, Clone)]
+    pub struct FailedCyclesDepositEmailNotification {
+        pub to: String,
+        pub funding_failure: FundingFailure,
+    }
 }
 
 pub mod interface {
     use crate::mgmt::types::cmc::SubnetId;
-    use crate::types::core::Bytes;
     use crate::types::state::{
         ControllerId, ControllerScope, Metadata, MissionControlId, NotificationKind, Segment,
         Timestamp, UserId,
@@ -193,8 +185,8 @@ pub mod interface {
 
     #[derive(CandidType, Deserialize, Clone)]
     pub struct MemorySize {
-        pub heap: Bytes,
-        pub stable: Bytes,
+        pub heap: u64,
+        pub stable: u64,
     }
 
     #[derive(CandidType, Serialize, Deserialize, Clone)]
@@ -261,9 +253,6 @@ pub mod core {
     pub trait Hashable {
         fn hash(&self) -> Hash;
     }
-
-    /// A shorthand for example to represents the type of the memory size in bytes.
-    pub type Bytes = usize;
 }
 
 pub mod list {
@@ -345,14 +334,13 @@ pub mod domain {
 }
 
 pub mod config {
-    use crate::types::core::Bytes;
     use candid::{CandidType, Deserialize};
     use serde::Serialize;
 
     #[derive(CandidType, Serialize, Deserialize, Clone)]
     pub struct ConfigMaxMemorySize {
-        pub heap: Option<Bytes>,
-        pub stable: Option<Bytes>,
+        pub heap: Option<usize>,
+        pub stable: Option<usize>,
     }
 }
 
@@ -364,6 +352,21 @@ pub mod monitoring {
     #[derive(CandidType, Serialize, Deserialize, Clone)]
     pub struct CyclesBalance {
         pub amount: u128,
+        pub timestamp: Timestamp,
+    }
+
+    #[derive(CandidType, Serialize, Deserialize, Clone)]
+    pub enum FundingErrorCode {
+        InsufficientCycles, // Funding canister has insufficient cycles
+        DepositFailed,      // The deposit of cycles failed
+        ObtainCyclesFailed, // Obtaining cycles failed
+        BalanceCheckFailed, // Fetching cycles balance failed
+        Other(String),      // Other errors with a custom message
+    }
+
+    #[derive(CandidType, Serialize, Deserialize, Clone)]
+    pub struct FundingFailure {
+        pub error_code: FundingErrorCode,
         pub timestamp: Timestamp,
     }
 }

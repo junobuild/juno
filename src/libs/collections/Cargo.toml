@@ -1,6 +1,6 @@
 [package]
 name = "junobuild-collections"
-version = "0.0.10"
+version = "0.2.0"
 authors.workspace = true
 edition.workspace = true
 repository.workspace = true
@@ -12,9 +12,11 @@ license-file = "LICENSE.md"
 
 [package.metadata.docs.rs]
 targets = ["wasm32-unknown-unknown"]
+rustc-args = ['--cfg', "getrandom_backend=\"custom\""]
+rustdoc-args = ['--cfg', "getrandom_backend=\"custom\""]
 
 [dependencies]
 candid.workspace = true
 ic-cdk.workspace = true
 serde.workspace = true
-junobuild-shared = "0.0.23"
+junobuild-shared = "0.2.0"

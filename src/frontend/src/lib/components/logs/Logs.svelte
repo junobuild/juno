@@ -2,7 +2,6 @@
 	import type { Principal } from '@dfinity/principal';
 	import { isNullish, nonNullish } from '@dfinity/utils';
 	import { getContext, onMount, setContext } from 'svelte';
-	import { run } from 'svelte/legacy';
 	import { fade } from 'svelte/transition';
 	import DataCount from '$lib/components/data/DataCount.svelte';
 	import Log from '$lib/components/logs/Log.svelte';
@@ -13,7 +12,7 @@
 	import { listLogs } from '$lib/services/logs.services';
 	import { authStore } from '$lib/stores/auth.store';
 	import { i18n } from '$lib/stores/i18n.store';
-	import { initPaginationContext } from '$lib/stores/pagination.store';
+	import { initPaginationContext } from '$lib/stores/pagination.context.store';
 	import type { Log as LogType, LogLevel as LogLevelType } from '$lib/types/log';
 	import { PAGINATION_CONTEXT_KEY, type PaginationContext } from '$lib/types/pagination.context';
 
@@ -24,7 +23,7 @@
 	let { satelliteId }: Props = $props();
 
 	let desc = $state(true);
-	let levels: LogLevelType[] = $state(['Info', 'Debug', 'Warning', 'Error']);
+	let levels: LogLevelType[] = $state(['Info', 'Debug', 'Warning', 'Error', 'Unknown']);
 
 	const list = async () => {
 		const { results, error } = await listLogs({
@@ -39,7 +38,7 @@
 			return;
 		}
 
-		let length = nonNullish(results) ? BigInt(results.length) : undefined;
+		const length = nonNullish(results) ? BigInt(results.length) : undefined;
 
 		setItems({ items: results, matches_length: length, items_length: length });
 	};
@@ -53,10 +52,7 @@
 
 	onMount(async () => await list());
 
-	let empty = $state(false);
-	run(() => {
-		empty = $store.items?.length === 0;
-	});
+	let empty = $derived($store.items?.length === 0);
 
 	let innerWidth = $state(0);
 </script>
@@ -100,7 +96,7 @@
 					></tr
 				>
 			{:else}
-				{#each $store.items as [_, log]}
+				{#each $store.items as [key, log] (key)}
 					<Log {log} />
 				{/each}
 			{/if}

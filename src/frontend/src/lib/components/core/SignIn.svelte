@@ -1,7 +1,7 @@
 <script lang="ts">
-	import DeprecatedSignIn from '$lib/components/core/DeprecatedSignIn.svelte';
-	import IconICMonochrome from '$lib/components/icons/IconICMonochrome.svelte';
-	import { signIn } from '$lib/services/auth.services';
+	import SignInHelp from '$lib/components/core/SignInHelp.svelte';
+	import IconIc from '$lib/components/icons/IconIC.svelte';
+	import { signIn } from '$lib/services/auth/auth.services';
 	import { isBusy } from '$lib/stores/busy.store';
 	import { i18n } from '$lib/stores/i18n.store';
 
@@ -24,18 +24,18 @@
 <div class="container">
 	<div class="overview">
 		<h1>{title}</h1>
-
-		<p>{$i18n.sign_in.future}</p>
 	</div>
 
 	<div class="sign-in">
 		<button onclick={async () => await signIn({})} disabled={$isBusy}
-			><IconICMonochrome size="20px" />
+			><IconIc size="20px" />
 			<span>{$i18n.sign_in.internet_identity}</span></button
 		>
-
-		<DeprecatedSignIn />
 	</div>
+</div>
+
+<div class="pre-footer">
+	<SignInHelp />
 </div>
 
 <style lang="scss">
@@ -49,21 +49,20 @@
 
 		text-align: center;
 
-		min-height: calc(100vh - var(--header-height) - var(--footer-height) - var(--padding-8x));
+		min-height: calc(100vh - var(--header-height) - var(--padding-8x));
+		padding: 0 0 var(--padding-12x);
 	}
 
 	h1 {
-		color: var(--color-primary);
-		padding: var(--padding-2x) 0 var(--padding);
+		padding: 0;
 
-		--bigger-title: 1;
+		--bigger-title: 1.2;
 		font-size: calc(var(--font-size-h1) * var(--bigger-title));
 
 		max-width: 420px;
 
 		@include media.min-width(large) {
 			--bigger-title: 1.4;
-			margin-top: var(--padding-8x);
 		}
 	}
 
@@ -72,6 +71,11 @@
 	}
 
 	button {
-		font-size: var(--font-size-small);
+		padding: var(--padding) var(--padding-2x);
+	}
+
+	.pre-footer {
+		display: flex;
+		justify-content: center;
 	}
 </style>

@@ -1,32 +1,61 @@
 <script lang="ts">
-	import { fromNullable, nonNullish } from '@dfinity/utils';
+	import { nonNullish, fromNullishNullable } from '@dfinity/utils';
 	import type { Monitoring } from '$declarations/mission_control/mission_control.did';
-	import MonitoringSentence from '$lib/components/modals/MonitoringSentence.svelte';
+	import CanisterValue from '$lib/components/canister/CanisterValue.svelte';
 	import MonitoringDisabled from '$lib/components/monitoring/MonitoringDisabled.svelte';
-	import Value from '$lib/components/ui/Value.svelte';
+	import Html from '$lib/components/ui/Html.svelte';
 	import { i18n } from '$lib/stores/i18n.store';
+	import type { CanisterData, CanisterSyncStatus } from '$lib/types/canister';
+	import { freezingThresholdCycles } from '$lib/utils/canister.utils';
+	import { formatTCycles } from '$lib/utils/cycles.utils';
+	import { i18nFormat } from '$lib/utils/i18n.utils';
 
 	interface Props {
 		monitoring: Monitoring | undefined;
+		canisterData: CanisterData | undefined;
+		canisterSyncStatus: CanisterSyncStatus | undefined;
 	}
 
-	let { monitoring }: Props = $props();
+	let { monitoring, canisterSyncStatus, canisterData }: Props = $props();
 
 	let monitoringStrategy = $derived(
-		fromNullable(fromNullable(monitoring?.cycles ?? [])?.strategy ?? [])
+		fromNullishNullable(fromNullishNullable(monitoring?.cycles)?.strategy)
+	);
+
+	let cyclesNeeded = $derived(freezingThresholdCycles(canisterData?.canister));
+
+	let cyclesTrigger = $derived(
+		cyclesNeeded + (monitoringStrategy?.BelowThreshold.min_cycles ?? 0n)
 	);
 </script>
 
 <div>
 	{#if nonNullish(monitoringStrategy)}
-		<Value>
+		<CanisterValue sync={canisterSyncStatus} rows={1}>
 			{#snippet label()}
 				{$i18n.monitoring.auto_refill}
 			{/snippet}
 
-			<p><MonitoringSentence {monitoringStrategy} /></p>
-		</Value>
+			<Html
+				text={i18nFormat($i18n.monitoring.auto_refill_strategy_with_cycles_needed, [
+					{
+						placeholder: '{0}',
+						value: formatTCycles(monitoringStrategy.BelowThreshold.fund_cycles)
+					},
+					{
+						placeholder: '{1}',
+						value: formatTCycles(cyclesTrigger)
+					}
+				])}
+			/>
+		</CanisterValue>
 	{:else}
 		<MonitoringDisabled {monitoring} loading={false} />
 	{/if}
 </div>
+
+<style lang="scss">
+	div {
+		margin: 0 0 var(--padding-2_5x);
+	}
+</style>

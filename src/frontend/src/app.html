@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="en">
+<html lang="en" menu="expanded">
 	<head>
 		<!-- CONTENT_SECURITY_POLICY -->
 
@@ -9,18 +9,18 @@
 		<title>Juno Console</title>
 		<link href="https://console.juno.build" rel="canonical" />
 		<meta
-			content="Build Web3 at Lightning Speed. No backend code required. 100% on-chain with minimal carbon impact."
+			content="Juno is an open-source, next-gen serverless platform that helps developers build and ship secure projects at scale."
 			name="description"
 		/>
 		<meta content="Juno" property="og:title" />
-		<meta content="Build Web3 at Lightning Speed." property="og:description" />
+		<meta content="Run ideas in your container" property="og:description" />
 		<meta content="website" property="og:type" />
 		<meta content="https://console.juno.build" property="og:url" />
-		<meta content="https://console.juno.build/images/social_image_v6.jpg" property="og:image" />
+		<meta content="https://console.juno.build/images/social_image_v9.jpg" property="og:image" />
 		<meta content="summary_large_image" name="twitter:card" />
 		<meta content="Juno" name="twitter:title" />
-		<meta content="Build Web3 at Lightning Speed." name="twitter:description" />
-		<meta content="https://console.juno.build/images/social_image_v6.jpg" name="twitter:image" />
+		<meta content="Run ideas in your container" name="twitter:description" />
+		<meta content="https://console.juno.build/images/social_image_v9.jpg" name="twitter:image" />
 		<meta content="@JunoBuild" name="twitter:creator" />
 
 		<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
@@ -56,7 +56,37 @@
 					localStorage.theme ?? (darkMode ? 'dark' : 'light')
 				);
 			} catch (err) {
-				// We ignore the error until we can extra proxy/signin to auth.papy.rs
+				// We ignore the error. Does not really maters that much, we just use the default.
+			}
+		</script>
+
+		<!-- Init lang attribute as fast as possible -->
+		<script lang-loader>
+			try {
+				const lang = localStorage.lang;
+
+				// Technically we could assert that lang is a known lang but, for simplicity reasons we skip this assertion for the moment.
+				document.documentElement.setAttribute(
+					'lang',
+					lang !== undefined && lang !== 'undefined' ? lang : 'en'
+				);
+			} catch (err) {
+				// We ignore the error. The console will default to English.
+			}
+		</script>
+
+		<!-- Init menu state - expanded or collapsed - as fast as possible as well -->
+		<script menu-state-loader>
+			try {
+				const menuState = localStorage['menu_state'];
+
+				// Technically we could assert that menu state is a known value but, for simplicity reasons we skip this assertion for the moment.
+				document.documentElement.setAttribute(
+					'menu',
+					menuState !== undefined && menuState !== 'undefined' ? menuState : 'expanded'
+				);
+			} catch (err) {
+				// We ignore the error
 			}
 		</script>
 

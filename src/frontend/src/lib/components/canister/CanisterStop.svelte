@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { Principal } from '@dfinity/principal';
+	import { assertNonNullish } from '@dfinity/utils';
 	import { canisterStop } from '$lib/api/ic.api';
 	import Confirmation from '$lib/components/core/Confirmation.svelte';
 	import IconStop from '$lib/components/icons/IconStop.svelte';
@@ -15,11 +16,12 @@
 
 	interface Props {
 		canister: CanisterSyncData;
+		monitoringEnabled: boolean;
 		segment: 'satellite' | 'orbiter';
 		onstop: () => void;
 	}
 
-	let { canister, segment, onstop }: Props = $props();
+	let { canister, monitoringEnabled, segment, onstop }: Props = $props();
 
 	let visible = $state(false);
 
@@ -33,19 +35,26 @@
 			return;
 		}
 
+		if (monitoringEnabled) {
+			toasts.warn($i18n.monitoring.warn_monitoring_enabled);
+			return;
+		}
+
 		busy.start();
 
 		try {
 			const canisterId = Principal.fromText(canister.id);
 
-			await canisterStop({ canisterId, identity: $authStore.identity! });
+			assertNonNullish($authStore.identity);
+
+			await canisterStop({ canisterId, identity: $authStore.identity });
 
 			emit({ message: 'junoRestartCycles', detail: { canisterId } });
 
 			close();
 
-			toasts.success(
-				i18nCapitalize(
+			toasts.success({
+				text: i18nCapitalize(
 					i18nFormat($i18n.canisters.stop_success, [
 						{
 							placeholder: '{0}',
@@ -53,7 +62,7 @@
 						}
 					])
 				)
-			);
+			});
 		} catch (err: unknown) {
 			toasts.error({
 				text: $i18n.errors.canister_stop,

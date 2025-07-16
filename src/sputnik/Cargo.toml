@@ -1,0 +1,41 @@
+[package]
+name = "sputnik"
+version = "0.1.1"
+edition = "2021"
+publish = false
+
+[lib]
+crate-type = ["cdylib"]
+
+[dependencies]
+candid.workspace = true
+ic-cdk.workspace = true
+junobuild-satellite = { path = "../libs/satellite", default-features = false, features = [
+	"on_init_sync",
+	"on_post_upgrade_sync",
+	"on_post_upgrade",
+	"on_init_random_seed",
+	"assert_set_doc",
+	"assert_delete_doc",
+	"assert_upload_asset",
+	"assert_delete_asset",
+	"on_set_doc",
+	"on_set_many_docs",
+	"on_delete_doc",
+	"on_delete_many_docs",
+	"on_delete_filtered_docs",
+	"on_upload_asset",
+	"on_delete_asset",
+	"on_delete_many_assets",
+	"on_delete_filtered_assets"
+] }
+junobuild-collections = { path = "../libs/collections" }
+junobuild-shared = { path = "../libs/shared" }
+junobuild-macros = { path = "../libs/macros" }
+junobuild-storage = { path = "../libs/storage" }
+ic-wasi-polyfill = "0.8.2"
+rquickjs = { git = "https://github.com/peterpeterparker/rquickjs", branch = "patch-v0.9.0", features = [
+	"macro",
+	"futures"
+] }
+anyhow = "1.0.79"

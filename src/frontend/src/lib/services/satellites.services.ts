@@ -2,7 +2,7 @@ import type { Satellite } from '$declarations/mission_control/mission_control.di
 import { getMissionControlActor } from '$lib/api/actors/actor.juno.api';
 import { loadDataStore } from '$lib/services/loader.services';
 import { authStore } from '$lib/stores/auth.store';
-import { satellitesDataStore } from '$lib/stores/satellite.store';
+import { satellitesUncertifiedStore } from '$lib/stores/satellite.store';
 import type { Option } from '$lib/types/utils';
 import type { Identity } from '@dfinity/agent';
 import type { Principal } from '@dfinity/principal';
@@ -77,11 +77,11 @@ export const loadSatellites = async ({
 		return satellites.map(([_, satellite]) => satellite);
 	};
 
-	const identity = get(authStore).identity;
+	const { identity } = get(authStore);
 
 	return await loadDataStore<Satellite[]>({
 		identity,
-		store: satellitesDataStore,
+		store: satellitesUncertifiedStore,
 		errorLabel: 'satellites_loading',
 		load,
 		reload

@@ -1,9 +1,11 @@
 <script lang="ts">
+	import { nonNullish } from '@dfinity/utils';
 	import { compare } from 'semver';
-	import { onMount } from 'svelte';
+	import { untrack } from 'svelte';
 	import { fade } from 'svelte/transition';
 	import type { Satellite } from '$declarations/mission_control/mission_control.did';
-	import { countCollectionAssets, satelliteVersion } from '$lib/api/satellites.api';
+	import { countCollectionAssets } from '$lib/api/satellites.api';
+	import { COLLECTION_DAPP } from '$lib/constants/storage.constants';
 	import { SATELLITE_v0_0_20 } from '$lib/constants/version.constants';
 	import { authStore } from '$lib/stores/auth.store';
 	import { i18n } from '$lib/stores/i18n.store';
@@ -18,17 +20,11 @@
 
 	let assets = $state(0n);
 
-	onMount(async () => {
+	const load = async () => {
 		try {
-			// TODO: load versions globally and use store value instead of fetching version again
-			const version =
-				$versionStore.satellites[satellite.satellite_id.toText()]?.current ??
-				(await satelliteVersion({
-					satelliteId: satellite.satellite_id,
-					identity: $authStore.identity
-				}));
+			const version = $versionStore?.satellites[satellite.satellite_id.toText()]?.current;
 
-			if (compare(version, SATELLITE_v0_0_20) < 0) {
+			if (nonNullish(version) && compare(version, SATELLITE_v0_0_20) < 0) {
 				// For simplicity reasons we do not display the information for not up-to-date Satellite.
 				// In Satellite v0.0.20, the endpoint to list the number of assets in a collection was renamed from `count_assets` to `count_collection_assets`.
 				return;
@@ -36,7 +32,7 @@
 
 			assets = await countCollectionAssets({
 				satelliteId: satellite.satellite_id,
-				collection: '#dapp',
+				collection: COLLECTION_DAPP,
 				identity: $authStore.identity
 			});
 		} catch (err: unknown) {
@@ -45,6 +41,14 @@
 				detail: err
 			});
 		}
+	};
+
+	$effect(() => {
+		$versionStore;
+
+		untrack(() => {
+			load();
+		});
 	});
 </script>
 

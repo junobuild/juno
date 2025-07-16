@@ -1,27 +1,38 @@
-<!-- @migration-task Error while migrating Svelte code: Can't migrate code with afterUpdate. Please migrate by hand. -->
 <script lang="ts">
 	import { isNullish, nonNullish } from '@dfinity/utils';
-	import { afterUpdate } from 'svelte';
-	import IconChevron from '$lib/components/icons/IconChevron.svelte';
+	import type { Snippet } from 'svelte';
+	import { fade } from 'svelte/transition';
+	import IconUnfoldLess from '$lib/components/icons/IconUnfoldLess.svelte';
+	import IconUnfoldMore from '$lib/components/icons/IconUnfoldMore.svelte';
 	import { i18n } from '$lib/stores/i18n.store';
 	import { handleKeyPress } from '$lib/utils/keyboard.utils';
 
-	// TODO: migrate to Svelte v5
-	// e.g. afterUpdate cannot be used in runes mode
+	interface Props {
+		id?: string;
+		initiallyExpanded?: boolean;
+		maxContentHeight?: number;
+		wrapHeight?: boolean;
+		expanded?: boolean;
+		header: Snippet;
+		children: Snippet;
+	}
 
-	export let id: string | undefined = undefined;
-	export let initiallyExpanded = false;
-	export let maxContentHeight: number | undefined = undefined;
-
-	export let wrapHeight = false;
+	let {
+		id,
+		initiallyExpanded = false,
+		expanded = $bindable(initiallyExpanded),
+		maxContentHeight,
+		wrapHeight = false,
+		header,
+		children
+	}: Props = $props();
 
 	// Minimum height when some part of the text-content is visible (empirical value)
 	const CONTENT_MIN_HEIGHT = 40;
 
-	export let expanded = initiallyExpanded;
-	let container: HTMLDivElement | undefined;
-	let userUpdated = false;
-	let maxHeight: number | undefined;
+	let container = $state<HTMLDivElement | undefined>();
+	let userUpdated = $state(false);
+	let maxHeight = $state<number | undefined>();
 
 	export const close = () => {
 		if (!expanded) {
@@ -39,7 +50,7 @@
 		toggleContent();
 	};
 
-	export const toggleContent = () => {
+	const toggleContent = () => {
 		userUpdated = true;
 		expanded = !expanded;
 	};
@@ -71,7 +82,7 @@
 				: 'overflow-y: auto;';
 
 	// recalculate max-height after DOM update
-	afterUpdate(updateMaxHeight);
+	$effect(updateMaxHeight);
 
 	const toggle = () => toggleContent();
 </script>
@@ -81,8 +92,8 @@
 		id={nonNullish(id) ? `heading${id}` : undefined}
 		role="button"
 		class="header"
-		on:click={toggle}
-		on:keypress={($event) => handleKeyPress({ $event, callback: toggle })}
+		onclick={toggle}
+		onkeypress={($event) => handleKeyPress({ $event, callback: toggle })}
 		tabindex="-1"
 	>
 		<button
@@ -94,9 +105,13 @@
 			title={expanded ? $i18n.core.collapse : $i18n.core.expand}
 			tabindex="-1"
 		>
-			<IconChevron size="16px" />
+			{#if expanded}
+				<span in:fade class="icon"><IconUnfoldLess size="16px" /></span>
+			{:else}
+				<span in:fade class="icon"><IconUnfoldMore size="16px" /></span>
+			{/if}
 		</button>
-		<slot name="header" />
+		{@render header()}
 	</div>
 	<div
 		role="definition"
@@ -111,7 +126,7 @@
 			class:wrapHeight
 			bind:this={container}
 		>
-			<slot />
+			{@render children()}
 		</div>
 	</div>
 </div>
@@ -128,13 +143,15 @@
 		position: relative;
 
 		display: flex;
-
+		justify-content: center;
+		align-items: center;
+		flex-direction: row-reverse;
 		gap: var(--padding);
 
 		outline: none;
 
 		color: var(--placeholder-color);
-		font-size: var(--font-size-small);
+		font-size: var(--font-size-very-small);
 
 		@include interaction.tappable;
 		user-select: none;
@@ -145,20 +162,8 @@
 	}
 
 	button {
-		transform: rotate(90deg);
-
 		border-color: transparent;
 		background-color: transparent;
-
-		:global(svg) {
-			transition: transform var(--animation-time);
-		}
-
-		&.expanded {
-			:global(svg) {
-				transform: rotate(180deg);
-			}
-		}
 	}
 
 	.wrapper {
@@ -186,5 +191,11 @@
 			// to not stick the content to the bottom
 			padding-bottom: var(--padding);
 		}
+	}
+
+	.icon {
+		display: flex;
+		justify-content: center;
+		align-items: center;
 	}
 </style>

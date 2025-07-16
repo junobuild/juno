@@ -1,6 +1,7 @@
 name: Tests
 
 on:
+  workflow_dispatch:
   pull_request:
     paths:
       - 'src/satellite/**'
@@ -8,11 +9,14 @@ on:
       - 'src/console/**'
       - 'src/observatory/**'
       - 'src/mission_control/**'
+      - 'src/sputnik/**'
       - 'src/libs/**'
       - 'src/tests/**'
       - 'rust-toolchain.toml'
       - 'Cargo.toml'
       - 'docker/**'
+      - 'Dockerfile'
+      - 'package-lock.json'
 
 jobs:
   docker-build-base:
@@ -51,6 +55,18 @@ jobs:
             wasm: mission_control.wasm.gz
             target: scratch_mission_control
 
+          - name: sputnik
+            wasm: sputnik.wasm.gz
+            target: scratch_sputnik
+
+          - name: test_satellite
+            wasm: test_satellite.wasm.gz
+            target: scratch_test_satellite
+
+          - name: test_sputnik
+            wasm: test_sputnik.wasm.gz
+            target: scratch_test_sputnik
+
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -81,6 +97,10 @@ jobs:
   tests:
     runs-on: ubuntu-latest
     needs: docker-build
+    strategy:
+      matrix:
+        shardIndex: [1, 2, 3, 4, 5, 6]
+        shardTotal: [6]
 
     steps:
       - name: Checkout
@@ -101,6 +121,12 @@ jobs:
           name: orbiter.wasm.gz
           path: .
 
+      - name: Download sputnik.wasm.gz
+        uses: actions/download-artifact@v4
+        with:
+          name: sputnik.wasm.gz
+          path: .
+
       - name: Download console.wasm.gz
         uses: actions/download-artifact@v4
         with:
@@ -119,8 +145,20 @@ jobs:
           name: mission_control.wasm.gz
           path: .
 
+      - name: Download test_satellite.wasm.gz
+        uses: actions/download-artifact@v4
+        with:
+          name: test_satellite.wasm.gz
+          path: .
+
+      - name: Download test_sputnik.wasm.gz
+        uses: actions/download-artifact@v4
+        with:
+          name: test_sputnik.wasm.gz
+          path: .
+
       - name: Tests
-        run: npm run test
+        run: npm run test -- --shard=${{ matrix.shardIndex }}/${{ matrix.shardTotal }}
 
   may-merge:
     needs: ['tests']

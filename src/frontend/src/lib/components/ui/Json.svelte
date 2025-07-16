@@ -1,7 +1,6 @@
 <script lang="ts">
 	import { run, stopPropagation } from 'svelte/legacy';
 	import Json from './Json.svelte';
-
 	import { i18n } from '$lib/stores/i18n.store';
 	import { isHash, stringifyJson, isPrincipal } from '$lib/utils/json.utils';
 	import { handleKeyPress } from '$lib/utils/keyboard.utils';
@@ -122,7 +121,7 @@
 		>
 		<!-- children -->
 		<ul>
-			{#each children as [key, value]}
+			{#each children as [key, value], index (index)}
 				<li>
 					<Json json={value} _key={key} {defaultExpandedLevel} _level={_level + 1} />
 				</li>
@@ -205,7 +204,7 @@
 			left: 0;
 			top: 0;
 			// Move left to compensate for the padding of the ul
-			// Move down to componsate for the gap between li
+			// Move down to compensate for the gap between li
 			transform: translate(calc(-1 * var(--padding-1_5x)), calc(0.8 * var(--padding)));
 			font-size: var(--padding);
 		}

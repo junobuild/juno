@@ -1,40 +1,87 @@
-import type { Orbiter } from '$declarations/mission_control/mission_control.did';
-import { initMissionControl as initMissionControlApi } from '$lib/api/console.api';
-import { missionControlVersion } from '$lib/api/mission-control.api';
-import { orbiterVersion } from '$lib/api/orbiter.api';
-import { satelliteBuildVersion, satelliteVersion } from '$lib/api/satellites.api';
-import { getNewestReleasesMetadata } from '$lib/rest/cdn.rest';
-import { authStore } from '$lib/stores/auth.store';
+import type { MissionControl } from '$declarations/console/console.did';
+import {
+	getMissionControl as getMissionControlApi,
+	initMissionControl as initMissionControlApi
+} from '$lib/api/console.api';
+import { missionControlErrorSignOut } from '$lib/services/auth/auth.services';
+import { i18n } from '$lib/stores/i18n.store';
+import { missionControlIdCertifiedStore } from '$lib/stores/mission-control.store';
 import { toasts } from '$lib/stores/toasts.store';
-import { versionStore, type ReleaseVersionSatellite } from '$lib/stores/version.store';
-import type { Option } from '$lib/types/utils';
-import { container } from '$lib/utils/juno.utils';
+import type { OptionIdentity } from '$lib/types/itentity';
+import type { MissionControlId } from '$lib/types/mission-control';
 import type { Identity } from '@dfinity/agent';
-import type { Principal } from '@dfinity/principal';
-import { assertNonNullish, fromNullable, isNullish, nonNullish } from '@dfinity/utils';
-import { satelliteBuildType } from '@junobuild/admin';
+import { fromNullable, isNullish } from '@dfinity/utils';
 import { get } from 'svelte/store';
 
+interface Certified {
+	certified: boolean;
+}
+
+type PollAndInitResult = {
+	missionControlId: MissionControlId;
+} & Certified;
+
 export const initMissionControl = async ({
-	identity,
-	onInitMissionControlSuccess
+	identity
+}: {
+	identity: OptionIdentity;
+}): Promise<{ result: 'skip' | 'success' | 'error' }> => {
+	// If not signed in, we are not going to init and load a mission control.
+	if (isNullish(identity)) {
+		return { result: 'skip' };
+	}
+
+	try {
+		// Poll to init mission control center
+		const { missionControlId, certified } = await pollAndInitMissionControl({
+			identity
+		});
+
+		missionControlIdCertifiedStore.set({
+			data: missionControlId,
+			certified
+		});
+
+		if (certified) {
+			return { result: 'success' };
+		}
+
+		// We deliberately do not await the promise to avoid blocking the main UX. However, if necessary, we take the required measures if Mission Control cannot be certified.
+		assertMissionControl({ identity });
+
+		return { result: 'success' };
+	} catch (err: unknown) {
+		toasts.error({
+			text: get(i18n).errors.initializing_mission_control,
+			detail: err
+		});
+
+		// There was an error so, we sign the user out otherwise skeleton and other spinners will be displayed forever
+		await missionControlErrorSignOut();
+
+		return { result: 'error' };
+	}
+};
+
+const pollAndInitMissionControl = async ({
+	identity
 }: {
 	identity: Identity;
-	onInitMissionControlSuccess: (missionControlId: Principal) => void;
-	// eslint-disable-next-line no-async-promise-executor, require-await
-}) =>
-	// eslint-disable-next-line no-async-promise-executor, require-await
-	new Promise<void>(async (resolve, reject) => {
+	// eslint-disable-next-line require-await
+}): Promise<PollAndInitResult> =>
+	// eslint-disable-next-line no-async-promise-executor
+	new Promise<PollAndInitResult>(async (resolve, reject) => {
 		try {
-			const { missionControlId } = await getMissionControl({
+			const { missionControlId, certified } = await getOrInitMissionControlId({
 				identity
 			});
 
+			// TODO: we can/should probably add a max time to not retry forever even though the user will probably close their browsers.
 			if (isNullish(missionControlId)) {
 				setTimeout(async () => {
 					try {
-						await initMissionControl({ identity, onInitMissionControlSuccess });
-						resolve();
+						const result = await pollAndInitMissionControl({ identity });
+						resolve(result);
 					} catch (err: unknown) {
 						reject(err);
 					}
@@ -42,159 +89,55 @@ export const initMissionControl = async ({
 				return;
 			}
 
-			onInitMissionControlSuccess(missionControlId);
-
-			resolve();
+			resolve({ missionControlId, certified });
 		} catch (err: unknown) {
 			reject(err);
 		}
 	});
 
-const getMissionControl = async ({
-	identity
-}: {
-	identity: Identity | undefined;
-}): Promise<{
-	missionControlId: Principal | undefined;
-}> => {
-	if (isNullish(identity)) {
-		throw new Error('Invalid identity.');
-	}
+const getOrInitMissionControlId = async (params: {
+	identity: Identity;
+}): Promise<
+	{
+		missionControlId: MissionControlId | undefined;
+	} & Certified
+> => {
+	const { missionControl, certified } = await getOrInitMissionControl(params);
 
-	const mission_control = await initMissionControlApi(identity);
-
-	const missionControlId: Principal | undefined = fromNullable<Principal>(
-		mission_control.mission_control_id
-	);
+	const missionControlId = fromNullable(missionControl.mission_control_id);
 
 	return {
-		missionControlId
+		missionControlId,
+		certified
 	};
 };
 
-export const loadVersion = async ({
-	satelliteId,
-	missionControlId,
-	skipReload
+export const getOrInitMissionControl = async ({
+	identity
 }: {
-	satelliteId: Principal | undefined;
-	missionControlId: Option<Principal>;
-	skipReload: boolean;
-}) => {
-	if (isNullish(missionControlId)) {
-		return;
-	}
+	identity: Identity;
+}): Promise<{ missionControl: MissionControl } & Certified> => {
+	const existingMissionControl = await getMissionControlApi({ identity, certified: false });
 
-	// We load the satellite version once per session
-	// We might load the mission control version twice per session if user go to that view first and then to overview
-	const store = get(versionStore);
-	if (nonNullish(satelliteId) && nonNullish(store.satellites[satelliteId.toText()]) && skipReload) {
-		return;
-	}
+	if (isNullish(existingMissionControl)) {
+		const newMissionControl = await initMissionControlApi(identity);
 
-	try {
-		const empty = (): Promise<undefined> => Promise.resolve(undefined);
-
-		const identity = get(authStore).identity;
-
-		assertNonNullish(identity);
-
-		const satelliteInfo = async (
-			satelliteId: Principal
-		): Promise<Omit<ReleaseVersionSatellite, 'release'> | undefined> => {
-			// Backwards compatibility for Satellite <= 0.0.14 which did not expose the end point "version_build"
-			const queryBuildVersion = async (): Promise<string | undefined> => {
-				try {
-					return await satelliteBuildVersion({ satelliteId, identity });
-				} catch (_: unknown) {
-					return undefined;
-				}
-			};
-
-			const [version, buildVersion, buildType] = await Promise.allSettled([
-				satelliteVersion({ satelliteId, identity }),
-				queryBuildVersion(),
-				satelliteBuildType({
-					satellite: {
-						satelliteId: satelliteId.toText(),
-						identity,
-						...container()
-					}
-				})
-			]);
-
-			if (version.status === 'rejected') {
-				return undefined;
-			}
-
-			const { value: current } = version;
-
-			return {
-				current,
-				...(buildVersion.status === 'fulfilled' &&
-					nonNullish(buildVersion.value) && { currentBuild: buildVersion.value }),
-				build: buildType.status === 'fulfilled' ? (buildType.value ?? 'stock') : 'stock'
-			};
+		return {
+			missionControl: newMissionControl,
+			certified: true
 		};
-
-		const [satVersion, ctrlVersion, releases] = await Promise.all([
-			nonNullish(satelliteId) ? satelliteInfo(satelliteId) : empty(),
-			missionControlVersion({ missionControlId, identity }),
-			getNewestReleasesMetadata()
-		]);
-
-		versionStore.setMissionControl({
-			release: releases.mission_control,
-			current: ctrlVersion
-		});
-
-		if (isNullish(satelliteId)) {
-			return;
-		}
-
-		versionStore.setSatellite({
-			satelliteId: satelliteId.toText(),
-			version: nonNullish(satVersion)
-				? {
-						release: releases.satellite,
-						...satVersion
-					}
-				: undefined
-		});
-	} catch (err: unknown) {
-		toasts.error({
-			text: `Cannot fetch the versions information.`,
-			detail: err
-		});
 	}
+
+	return {
+		missionControl: existingMissionControl,
+		certified: false
+	};
 };
 
-export const loadOrbiterVersion = async ({
-	orbiter,
-	reload
-}: {
-	orbiter: Option<Orbiter>;
-	reload: boolean;
-}) => {
-	if (isNullish(orbiter)) {
-		return;
+const assertMissionControl = async ({ identity }: { identity: Identity }) => {
+	try {
+		await getMissionControlApi({ identity, certified: true });
+	} catch (_err: unknown) {
+		await missionControlErrorSignOut();
 	}
-
-	// We load the orbiter version once per session
-	const store = get(versionStore);
-	if (nonNullish(store.orbiter) && !reload) {
-		return;
-	}
-
-	const identity = get(authStore).identity;
-
-	const [orbVersion, releases] = await Promise.all([
-		orbiterVersion({ orbiterId: orbiter.orbiter_id, identity }),
-		getNewestReleasesMetadata()
-	]);
-
-	versionStore.setOrbiter({
-		release: releases.orbiter,
-		current: orbVersion
-	});
 };

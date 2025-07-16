@@ -1,4 +1,4 @@
-use crate::memory::RUNTIME_STATE;
+use crate::memory::manager::RUNTIME_STATE;
 use crate::monitoring::cycles::funding::init_funding_manager;
 use crate::monitoring::store::heap::disable_mission_control_monitoring;
 use crate::types::runtime::RuntimeState;

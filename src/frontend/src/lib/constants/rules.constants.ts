@@ -1,16 +1,30 @@
-import type { Memory, Permission, RulesType } from '$declarations/satellite/satellite.did';
+import type {
+	CollectionType,
+	ListRulesParams,
+	Memory,
+	Permission
+} from '$declarations/satellite/satellite.did';
+import { toNullable } from '@dfinity/utils';
 
-export const DbRulesType: RulesType = { Db: null };
-export const StorageRulesType: RulesType = { Storage: null };
+export const DbCollectionType: CollectionType = { Db: null };
+export const StorageCollectionType: CollectionType = { Storage: null };
 
 export const PermissionPublic: Permission = { Public: null };
 export const PermissionPrivate: Permission = { Private: null };
 export const PermissionManaged: Permission = { Managed: null };
-export const PermissionControllers: Permission = { Controllers: null };
 
-export type PermissionText = 'Public' | 'Private' | 'Managed' | 'Controllers';
+// Originally named "Controllers" but later renamed visually — and only visually — to "Trusted Keys",
+// since it includes both "Admin" (controllers) and "Write" keys (which are not controllers).
+const PermissionControllers: Permission = { Controllers: null };
+export const PermissionRestricted = PermissionControllers;
+
+export type PermissionText = 'Public' | 'Private' | 'Managed' | 'Restricted';
 
 export const MemoryHeap: Memory = { Heap: null };
 export const MemoryStable: Memory = { Stable: null };
 
 export type MemoryText = 'Heap' | 'Stable';
+
+export const filterSystemRules: ListRulesParams = {
+	matcher: toNullable()
+};

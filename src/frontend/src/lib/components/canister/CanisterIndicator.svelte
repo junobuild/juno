@@ -27,9 +27,13 @@
 
 <style lang="scss">
 	div {
-		width: var(--padding-2x);
-		min-width: var(--padding-2x);
-		height: var(--padding-2x);
+		--indicator-size: var(--padding-2x);
+
+		width: var(--indicator-size);
+		min-width: var(--indicator-size);
+		height: var(--indicator-size);
+
+		margin: 0 0.12rem;
 
 		border-radius: 50%;
 	}

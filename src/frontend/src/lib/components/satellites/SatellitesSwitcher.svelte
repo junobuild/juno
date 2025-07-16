@@ -2,7 +2,8 @@
 	import { nonNullish } from '@dfinity/utils';
 	import IconArrowDropDown from '$lib/components/icons/IconArrowDropDown.svelte';
 	import Popover from '$lib/components/ui/Popover.svelte';
-	import { satellitesStore, satelliteStore } from '$lib/derived/satellite.derived';
+	import { satelliteStore } from '$lib/derived/satellite.derived';
+	import { sortedSatellites } from '$lib/derived/satellites.derived';
 	import { i18n } from '$lib/stores/i18n.store';
 	import { overviewLink } from '$lib/utils/nav.utils';
 	import { satelliteName } from '$lib/utils/satellite.utils';
@@ -14,6 +15,10 @@
 {#if nonNullish($satelliteStore)}
 	<button class="text" onclick={() => (visible = true)} bind:this={button}
 		><span>{satelliteName($satelliteStore)}</span> <IconArrowDropDown /></button
+	>
+{:else}
+	<button class="text" onclick={() => (visible = true)} bind:this={button}
+		><span>{$i18n.satellites.see_all_satellites}</span> <IconArrowDropDown /></button
 	>
 {/if}
 
@@ -33,22 +38,20 @@
 		<hr />
 
 		<div class="satellites">
-			{#if nonNullish($satellitesStore)}
-				{#each $satellitesStore as satellite}
-					{@const satName = satelliteName(satellite)}
+			{#each $sortedSatellites as satellite (satellite.satellite_id.toText())}
+				{@const satName = satelliteName(satellite)}
 
-					<a
-						aria-label={`To satellite ${satName}`}
-						href={overviewLink(satellite.satellite_id)}
-						class="menu"
-						role="menuitem"
-						aria-haspopup="menu"
-						rel="external noopener norefferer"
-					>
-						<span>{satName}</span>
-					</a>
-				{/each}
-			{/if}
+				<a
+					aria-label={`To satellite ${satName}`}
+					href={overviewLink(satellite.satellite_id)}
+					class="menu"
+					role="menuitem"
+					aria-haspopup="menu"
+					rel="external noopener norefferer"
+				>
+					<span>{satName}</span>
+				</a>
+			{/each}
 		</div>
 	</div>
 </Popover>
@@ -63,6 +66,8 @@
 		overflow-y: auto;
 		width: 100%;
 		padding: var(--padding-1_5x);
+
+		font-size: var(--font-size-small);
 	}
 
 	button.text {

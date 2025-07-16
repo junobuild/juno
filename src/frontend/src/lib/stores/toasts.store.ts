@@ -28,9 +28,9 @@ const initToastsStore = () => {
 			});
 		},
 
-		success(text: string) {
+		success(toast: { text: string; color?: 'primary' | 'secondary' | 'tertiary' }) {
 			this.show({
-				text,
+				...toast,
 				level: 'info',
 				duration: 2000
 			});

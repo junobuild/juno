@@ -1,16 +1,16 @@
 <script lang="ts">
-	import { fromNullable } from '@dfinity/utils';
 	import type { Orbiter } from '$declarations/mission_control/mission_control.did';
-	import CanisterMonitoring from '$lib/components/canister/CanisterMonitoring.svelte';
 	import CanisterOverview from '$lib/components/canister/CanisterOverview.svelte';
 	import CanisterSubnet from '$lib/components/canister/CanisterSubnet.svelte';
-	import MonitoringDisabled from '$lib/components/monitoring/MonitoringDisabled.svelte';
-	import OrbiterActions from '$lib/components/orbiter/OrbiterActions.svelte';
+	import CanisterSyncData from '$lib/components/canister/CanisterSyncData.svelte';
+	import OrbiterMonitoringActions from '$lib/components/orbiter/OrbiterMonitoringActions.svelte';
+	import OrbiterOverviewActions from '$lib/components/orbiter/OrbiterOverviewActions.svelte';
+	import SegmentVersion from '$lib/components/segments/SegmentVersion.svelte';
 	import Identifier from '$lib/components/ui/Identifier.svelte';
 	import Value from '$lib/components/ui/Value.svelte';
-	import { orbiterNotLoaded } from '$lib/derived/orbiter.derived';
 	import { i18n } from '$lib/stores/i18n.store';
 	import { versionStore } from '$lib/stores/version.store';
+	import type { CanisterSyncData as CanisterSyncDataType } from '$lib/types/canister';
 
 	interface Props {
 		orbiter: Orbiter;
@@ -18,8 +18,10 @@
 
 	let { orbiter }: Props = $props();
 
-	let monitoring = $derived(fromNullable(fromNullable(orbiter.settings ?? [])?.monitoring ?? []));
+	let canister = $state<CanisterSyncDataType | undefined>(undefined);
 </script>
+
+<CanisterSyncData canisterId={orbiter.orbiter_id} bind:canister />
 
 <div class="card-container with-title">
 	<span class="title">{$i18n.satellites.overview}</span>
@@ -39,19 +41,12 @@
 		</div>
 
 		<div>
-			<div>
-				<Value>
-					{#snippet label()}
-						{$i18n.core.version}
-					{/snippet}
-					<p>v{$versionStore?.orbiter?.current ?? '...'}</p>
-				</Value>
-			</div>
+			<SegmentVersion version={$versionStore?.orbiter?.current} />
 		</div>
 	</div>
-
-	<OrbiterActions {orbiter} />
 </div>
+
+<OrbiterOverviewActions {orbiter} {canister} />
 
 <div class="card-container with-title">
 	<span class="title">{$i18n.monitoring.title}</span>
@@ -62,12 +57,10 @@
 			segment="orbiter"
 			heapWarningLabel={$i18n.canisters.warning_orbiter_heap_memory}
 		/>
-
-		<CanisterMonitoring segment="orbiter" canisterId={orbiter.orbiter_id}>
-			<MonitoringDisabled {monitoring} loading={$orbiterNotLoaded} />
-		</CanisterMonitoring>
 	</div>
 </div>
+
+<OrbiterMonitoringActions {orbiter} {canister} />
 
 <style lang="scss">
 	.id {

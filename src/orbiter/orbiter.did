@@ -8,11 +8,14 @@ type AnalyticsBrowsersPageViews = record {
 };
 type AnalyticsClientsPageViews = record {
   browsers : AnalyticsBrowsersPageViews;
+  operating_systems : opt AnalyticsOperatingSystemsPageViews;
   devices : AnalyticsDevicesPageViews;
 };
 type AnalyticsDevicesPageViews = record {
   desktop : float64;
+  laptop : opt float64;
   others : float64;
+  tablet : opt float64;
   mobile : float64;
 };
 type AnalyticsMetricsPageViews = record {
@@ -23,9 +26,20 @@ type AnalyticsMetricsPageViews = record {
   unique_page_views : nat64;
   unique_sessions : nat64;
 };
+type AnalyticsOperatingSystemsPageViews = record {
+  ios : float64;
+  macos : float64;
+  others : float64;
+  linux : float64;
+  android : float64;
+  windows : float64;
+};
 type AnalyticsTop10PageViews = record {
   referrers : vec record { text; nat32 };
   pages : vec record { text; nat32 };
+  utm_campaigns : opt vec record { text; nat32 };
+  utm_sources : opt vec record { text; nat32 };
+  time_zones : opt vec record { text; nat32 };
 };
 type AnalyticsTrackEvents = record { total : vec record { text; nat32 } };
 type AnalyticsWebVitalsPageMetrics = record {
@@ -47,7 +61,7 @@ type Controller = record {
   scope : ControllerScope;
   expires_at : opt nat64;
 };
-type ControllerScope = variant { Write; Admin };
+type ControllerScope = variant { Write; Admin; Submit };
 type DelSatelliteConfig = record { version : opt nat64 };
 type DeleteControllersArgs = record { controllers : vec principal };
 type DepositCyclesArgs = record { cycles : nat; destination_id : principal };
@@ -55,6 +69,19 @@ type GetAnalytics = record {
   to : opt nat64;
   from : opt nat64;
   satellite_id : opt principal;
+};
+type HttpRequest = record {
+  url : text;
+  method : text;
+  body : blob;
+  headers : vec record { text; text };
+  certificate_version : opt nat16;
+};
+type HttpResponse = record {
+  body : blob;
+  headers : vec record { text; text };
+  upgrade : opt bool;
+  status_code : nat16;
 };
 type MemorySize = record { stable : nat64; heap : nat64 };
 type NavigationType = variant {
@@ -68,6 +95,7 @@ type NavigationType = variant {
 type OrbiterSatelliteConfig = record {
   updated_at : nat64;
   features : opt OrbiterSatelliteFeatures;
+  restricted_origin : opt text;
   created_at : nat64;
   version : opt nat64;
 };
@@ -77,11 +105,13 @@ type OrbiterSatelliteFeatures = record {
   page_views : bool;
 };
 type PageView = record {
+  client : opt PageViewClient;
   title : text;
   updated_at : nat64;
   referrer : opt text;
   time_zone : text;
   session_id : text;
+  campaign : opt PageViewCampaign;
   href : text;
   created_at : nat64;
   satellite_id : principal;
@@ -89,7 +119,20 @@ type PageView = record {
   version : opt nat64;
   user_agent : opt text;
 };
-type PageViewDevice = record { inner_height : nat16; inner_width : nat16 };
+type PageViewCampaign = record {
+  utm_content : opt text;
+  utm_medium : opt text;
+  utm_source : text;
+  utm_term : opt text;
+  utm_campaign : opt text;
+};
+type PageViewClient = record { os : text; device : opt text; browser : text };
+type PageViewDevice = record {
+  inner_height : nat16;
+  screen_height : opt nat16;
+  screen_width : opt nat16;
+  inner_width : nat16;
+};
 type PerformanceData = variant { WebVitalsMetric : WebVitalsMetric };
 type PerformanceMetric = record {
   updated_at : nat64;
@@ -116,11 +159,13 @@ type SetControllersArgs = record {
   controllers : vec principal;
 };
 type SetPageView = record {
+  client : opt PageViewClient;
   title : text;
   updated_at : opt nat64;
   referrer : opt text;
   time_zone : text;
   session_id : text;
+  campaign : opt PageViewCampaign;
   href : text;
   satellite_id : principal;
   device : PageViewDevice;
@@ -138,6 +183,7 @@ type SetPerformanceMetric = record {
 };
 type SetSatelliteConfig = record {
   features : opt OrbiterSatelliteFeatures;
+  restricted_origin : opt text;
   version : opt nat64;
 };
 type SetTrackEvent = record {
@@ -192,6 +238,8 @@ service : () -> {
       vec record { AnalyticKey; TrackEvent },
     ) query;
   get_track_events_analytics : (GetAnalytics) -> (AnalyticsTrackEvents) query;
+  http_request : (HttpRequest) -> (HttpResponse) query;
+  http_request_update : (HttpRequest) -> (HttpResponse);
   list_controllers : () -> (vec record { principal; Controller }) query;
   list_satellite_configs : () -> (
       vec record { principal; OrbiterSatelliteConfig },
@@ -211,5 +259,4 @@ service : () -> {
     );
   set_track_event : (AnalyticKey, SetTrackEvent) -> (Result_3);
   set_track_events : (vec record { AnalyticKey; SetTrackEvent }) -> (Result_1);
-  version : () -> (text) query;
 }

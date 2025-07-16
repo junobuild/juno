@@ -1,152 +1,60 @@
-import type { AuthenticationConfig, CustomDomain } from '$declarations/satellite/satellite.did';
-import {
-	deleteCustomDomain as deleteCustomDomainApi,
-	getAuthConfig as getAuthConfigApi,
-	listCustomDomains as listCustomDomainsApi,
-	satelliteVersion,
-	setCustomDomain as setCustomDomainApi
-} from '$lib/api/satellites.api';
-import { SATELLITE_v0_0_17 } from '$lib/constants/version.constants';
-import { deleteDomain, registerDomain } from '$lib/rest/bn.rest';
-import { authStore } from '$lib/stores/auth.store';
-import { customDomainsStore } from '$lib/stores/custom-domains.store';
+import type { AuthenticationConfig } from '$declarations/satellite/satellite.did';
+import { setAuthConfig } from '$lib/api/satellites.api';
+import { setCustomDomain } from '$lib/services/custom-domain.services';
+import { execute } from '$lib/services/progress.services';
 import { i18n } from '$lib/stores/i18n.store';
 import { toasts } from '$lib/stores/toasts.store';
 import type { OptionIdentity } from '$lib/types/itentity';
+import { type HostingProgress, HostingProgressStep } from '$lib/types/progress-hosting';
+import type { Option } from '$lib/types/utils';
 import type { Principal } from '@dfinity/principal';
-import { fromNullable, nonNullish } from '@dfinity/utils';
-import { compare } from 'semver';
+import { assertNonNullish, nonNullish } from '@dfinity/utils';
 import { get } from 'svelte/store';
 
-/**
- * https://internetcomputer.org/docs/current/developer-docs/production/custom-domain/
- */
-export const setCustomDomain = async ({
+export const configHosting = async ({
 	satelliteId,
-	domainName
-}: {
-	satelliteId: Principal;
-	domainName: string;
-}) => {
-	const identity = get(authStore).identity;
-
-	// Add domain name to list of custom domain in `./well-known/ic-domains`
-	await setCustomDomainApi({
-		satelliteId,
-		domainName,
-		boundaryNodesId: undefined,
-		identity
-	});
-
-	// Register domain name with BN
-	const boundaryNodesId = await registerDomain({ domainName });
-
-	// Save above request ID provided in previous step
-	await setCustomDomainApi({
-		satelliteId,
-		domainName,
-		boundaryNodesId,
-		identity
-	});
-};
-
-export const deleteCustomDomain = async ({
-	satelliteId,
-	customDomain,
+	editConfig,
 	domainName,
-	deleteCustomDomain
+	identity,
+	onProgress
 }: {
-	satelliteId: Principal;
-	customDomain: CustomDomain;
 	domainName: string;
-	deleteCustomDomain: boolean;
-}) => {
-	const identity = get(authStore).identity;
-
-	if (deleteCustomDomain && nonNullish(fromNullable(customDomain.bn_id))) {
-		// Delete domain name in BN
-		await deleteDomain(customDomain);
-	}
-
-	// Remove custom domain from satellite
-	await deleteCustomDomainApi({
-		satelliteId,
-		domainName,
-		identity
-	});
-};
-
-export const listCustomDomains = async ({
-	satelliteId,
-	reload
-}: {
-	satelliteId: Principal;
-	reload: boolean;
-}): Promise<{ success: boolean }> => {
-	try {
-		const identity = get(authStore).identity;
-
-		const store = get(customDomainsStore);
-		if (nonNullish(store[satelliteId.toText()]) && !reload) {
-			return { success: true };
-		}
-
-		const customDomains = await listCustomDomainsApi({
-			satelliteId,
-			identity
-		});
-
-		customDomainsStore.setCustomDomains({ satelliteId: satelliteId.toText(), customDomains });
-
-		return { success: true };
-	} catch (err: unknown) {
-		const labels = get(i18n);
-
-		toasts.error({
-			text: labels.errors.hosting_loading_errors,
-			detail: err
-		});
-
-		return { success: false };
-	}
-};
-
-export const getAuthConfig = async ({
-	satelliteId,
-	identity
-}: {
+	editConfig: Option<AuthenticationConfig>;
 	satelliteId: Principal;
 	identity: OptionIdentity;
-}): Promise<{
-	result: 'success' | 'error' | 'skip';
-	config?: AuthenticationConfig | undefined;
-}> => {
+	onProgress: (progress: HostingProgress | undefined) => void;
+}): Promise<{ success: 'ok' | 'error'; err?: unknown }> => {
 	try {
-		// TODO: load versions globally and use store value instead of fetching version again
-		const version = await satelliteVersion({ satelliteId, identity });
+		assertNonNullish(identity, get(i18n).core.not_logged_in);
 
-		// TODO: keep a list of those version checks and remove them incrementally
-		// Also would be cleaner than to have 0.0.17 hardcoded there and there...
-		const authConfigSupported = compare(version, SATELLITE_v0_0_17) >= 0;
+		const configCustomDomain = async () =>
+			await setCustomDomain({
+				satelliteId,
+				domainName
+			});
 
-		if (!authConfigSupported) {
-			return { result: 'skip' };
+		await execute({ fn: configCustomDomain, onProgress, step: HostingProgressStep.CustomDomain });
+
+		if (nonNullish(editConfig)) {
+			const configAuth = async () =>
+				await setAuthConfig({
+					satelliteId,
+					config: editConfig,
+					identity
+				});
+
+			await execute({ fn: configAuth, onProgress, step: HostingProgressStep.AuthConfig });
 		}
-
-		const config = await getAuthConfigApi({
-			satelliteId,
-			identity
-		});
-
-		return { result: 'success', config: fromNullable(config) };
 	} catch (err: unknown) {
 		const labels = get(i18n);
 
 		toasts.error({
-			text: labels.errors.authentication_config_loading,
+			text: labels.errors.hosting_configuration_issues,
 			detail: err
 		});
 
-		return { result: 'error' };
+		return { success: 'error', err };
 	}
+
+	return { success: 'ok' };
 };

@@ -4,8 +4,8 @@
 	import { writable } from 'svelte/store';
 	import IdentityGuard from '$lib/components/guards/IdentityGuard.svelte';
 	import MissionControlGuard from '$lib/components/guards/MissionControlGuard.svelte';
-	import OrbitersLoader from '$lib/components/loaders/OrbitersLoader.svelte';
-	import SatellitesLoader from '$lib/components/loaders/SatellitesLoader.svelte';
+	import Loaders from '$lib/components/loaders/Loaders.svelte';
+	import MissionControlVersionLoader from '$lib/components/loaders/MissionControlVersionLoader.svelte';
 	import MissionControlDataLoader from '$lib/components/mission-control/MissionControlDataLoader.svelte';
 	import MonitoringDashboard from '$lib/components/monitoring/MonitoringDashboard.svelte';
 	import MonitoringSettings from '$lib/components/monitoring/MonitoringSettings.svelte';
@@ -18,7 +18,7 @@
 		type Tab,
 		TABS_CONTEXT_KEY,
 		type TabsContext,
-		type TabsStore
+		type TabsData
 	} from '$lib/types/tabs.context';
 	import { initTabId } from '$lib/utils/tabs.utils';
 
@@ -39,7 +39,7 @@
 			: [])
 	]);
 
-	const store = writable<TabsStore>({
+	const store = writable<TabsData>({
 		tabId: untrack(() => initTabId(tabs)),
 		tabs: untrack(() => tabs)
 	});
@@ -64,8 +64,8 @@
 			{/if}
 		{/snippet}
 
-		<SatellitesLoader>
-			<OrbitersLoader>
+		<Loaders monitoring>
+			<MissionControlVersionLoader>
 				<MissionControlGuard>
 					{#if nonNullish($missionControlIdDerived)}
 						<MissionControlDataLoader missionControlId={$missionControlIdDerived} reload>
@@ -77,7 +77,7 @@
 						</MissionControlDataLoader>
 					{/if}
 				</MissionControlGuard>
-			</OrbitersLoader>
-		</SatellitesLoader>
+			</MissionControlVersionLoader>
+		</Loaders>
 	</Tabs>
 </IdentityGuard>

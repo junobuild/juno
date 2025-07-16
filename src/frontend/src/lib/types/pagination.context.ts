@@ -1,6 +1,6 @@
 import type { Readable, Writable } from 'svelte/store';
 
-export interface PaginationStore<T> {
+export interface PaginationData<T> {
 	items?: Array<[string, T]>;
 	selectedPage: number;
 	pages?: number;
@@ -10,7 +10,7 @@ export interface PaginationStore<T> {
 }
 
 export interface PaginationContext<T> {
-	store: Writable<PaginationStore<T>>;
+	store: Writable<PaginationData<T>>;
 	resetPage: () => void;
 	previousPage: () => void;
 	nextPage: () => void;
@@ -19,6 +19,7 @@ export interface PaginationContext<T> {
 		matches_length: bigint | undefined;
 		items_length: bigint | undefined;
 	}) => void;
+	setItem: (item: [string, T]) => void;
 	list: () => Promise<void>;
 	startAfter: Readable<string | undefined>;
 }

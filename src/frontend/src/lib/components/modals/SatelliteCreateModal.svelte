@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { isNullish, nonNullish } from '@dfinity/utils';
+	import type { PrincipalText } from '@dfinity/zod-schemas';
 	import type {
 		CyclesMonitoringStrategy,
 		Satellite
@@ -17,8 +18,7 @@
 	import { wizardBusy } from '$lib/stores/busy.store';
 	import { i18n } from '$lib/stores/i18n.store';
 	import type { JunoModalDetail } from '$lib/types/modal';
-	import type { PrincipalText } from '$lib/types/principal';
-	import type { WizardCreateProgress } from '$lib/types/wizard';
+	import type { WizardCreateProgress } from '$lib/types/progress-wizard';
 	import { navigateToSatellite } from '$lib/utils/nav.utils';
 
 	interface Props {
@@ -28,6 +28,7 @@
 
 	let { detail, onclose }: Props = $props();
 
+	let withCredits = $state(false);
 	let insufficientFunds = $state(true);
 
 	let step: 'init' | 'in_progress' | 'ready' | 'error' = $state('init');
@@ -53,6 +54,7 @@
 			subnetId,
 			monitoringStrategy,
 			satelliteName,
+			withCredits,
 			onProgress
 		});
 
@@ -78,7 +80,7 @@
 	let monitoringStrategy: CyclesMonitoringStrategy | undefined = $state();
 </script>
 
-<Modal on:junoClose={onclose}>
+<Modal {onclose}>
 	{#if step === 'ready'}
 		<Confetti />
 
@@ -101,6 +103,7 @@
 
 		<CreditsGuard
 			{onclose}
+			bind:withCredits
 			bind:insufficientFunds
 			{detail}
 			priceLabel={$i18n.satellites.create_satellite_price}

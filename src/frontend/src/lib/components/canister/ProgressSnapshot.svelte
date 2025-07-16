@@ -3,8 +3,8 @@
 	import { untrack } from 'svelte';
 	import WizardProgressSteps from '$lib/components/ui/WizardProgressSteps.svelte';
 	import { i18n } from '$lib/stores/i18n.store';
+	import { type SnapshotProgress, SnapshotProgressStep } from '$lib/types/progress-snapshot';
 	import type { ProgressStep } from '$lib/types/progress-step';
-	import { type SnapshotProgress, SnapshotProgressStep } from '$lib/types/snapshot';
 	import { i18nFormat } from '$lib/utils/i18n.utils';
 	import { mapProgressState } from '$lib/utils/progress.utils';
 
@@ -27,12 +27,12 @@
 		preparing: {
 			state: 'in_progress',
 			step: 'preparing',
-			text: $i18n.canisters.backup_preparing
+			text: $i18n.canisters.snapshot_preparing
 		},
 		stopping: {
 			state: 'next',
 			step: 'stopping',
-			text: i18nFormat($i18n.canisters.backup_stopping, [
+			text: i18nFormat($i18n.canisters.snapshot_stopping, [
 				{
 					placeholder: '{0}',
 					value: segment.replace('_', ' ')
@@ -44,8 +44,8 @@
 			step: 'create_or_restore',
 			text:
 				snapshotAction === 'restore'
-					? $i18n.canisters.restoring_backup
-					: $i18n.canisters.creating_backup
+					? $i18n.canisters.restoring_snapshot
+					: $i18n.core.creating_snapshot
 		},
 		restarting: {
 			state: 'next',

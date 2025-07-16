@@ -1,3 +1,5 @@
+#![deny(clippy::disallowed_methods)]
+
 mod assets;
 
 use crate::assets::init_asset;

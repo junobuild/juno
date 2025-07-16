@@ -1,9 +1,8 @@
 #!/usr/bin/env node
 
-import { toNullable } from '@dfinity/utils';
+import { assertNonNullish, toNullable } from '@dfinity/utils';
+import { uploadAssetWithProposal } from '@junobuild/cdn';
 import { fileExists } from '@junobuild/cli-tools';
-import { uploadAsset } from '@junobuild/console';
-import { assertNonNullish } from '@junobuild/utils';
 import { parse } from '@ltd/j-toml';
 import { readFileSync } from 'node:fs';
 import { readFile } from 'node:fs/promises';
@@ -11,6 +10,12 @@ import { join } from 'node:path';
 import { deployWithProposal } from './console.deploy.services.mjs';
 import { deployConsole, readJunoConfig } from './console.deploy.utils.mjs';
 import { targetMainnet } from './utils.mjs';
+
+const config = await readJunoConfig();
+
+const consoleUrl = targetMainnet()
+	? `https://console.juno.build`
+	: `http://${config.id}.localhost:5987`;
 
 const readVersion = (segment) => {
 	const tomlFile = readFileSync(join(process.cwd(), 'src', segment, 'Cargo.toml'));
@@ -63,14 +68,17 @@ const deploy = async (proposalId) => {
 			encoding: 'identity',
 			filename: destinationFilename,
 			fullPath,
-			headers: [],
-			data: new Blob([await readFile(source)])
+			headers: [['Access-Control-Allow-Origin', consoleUrl]],
+			data: new Blob([await readFile(source)]),
+			description: `change=${proposalId};version=${version}`
 		};
 
-		await uploadAsset({
+		await uploadAssetWithProposal({
 			asset,
 			proposalId,
-			console: await deployConsole()
+			cdn: {
+				console: await deployConsole()
+			}
 		});
 
 		console.log(`✅  ${source} uploaded to ${fullPath}`);
@@ -80,8 +88,15 @@ const deploy = async (proposalId) => {
 
 	const results = await Promise.all(Object.entries(segments).map(upload));
 
+	const files = results.filter(({ uploaded }) => uploaded).map(({ sourceFile }) => sourceFile);
+
+	if (files.length === 0) {
+		return { result: 'skipped' };
+	}
+
 	return {
-		sourceFiles: results.filter(({ uploaded }) => uploaded).map(({ sourceFile }) => sourceFile)
+		result: 'deployed',
+		files
 	};
 };
 
@@ -89,11 +104,5 @@ await deployWithProposal({
 	proposal_type,
 	deploy
 });
-
-const config = await readJunoConfig();
-
-const consoleUrl = targetMainnet()
-	? `https://console.juno.build`
-	: `http://${config.id}.localhost:5987`;
 
 console.log(`\n✅ Segments uploaded. Metadata: ${consoleUrl}/releases/metadata.json`);

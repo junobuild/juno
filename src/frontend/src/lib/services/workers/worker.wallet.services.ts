@@ -14,12 +14,6 @@ import type {
 	PostMessages
 } from '$lib/types/post-message';
 
-export interface WalletWorker {
-	start: (params: { missionControlId: MissionControlId }) => void;
-	restart: (params: { missionControlId: MissionControlId }) => void;
-	stop: () => void;
-}
-
 export class WalletWorker extends AppWorker {
 	constructor(worker: Worker) {
 		super(worker);

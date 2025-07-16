@@ -15,7 +15,6 @@
 	const initWorker = async () => {
 		worker = await WalletWorker.init();
 	};
-	onDestroy(() => worker?.terminate());
 
 	$effect(() => {
 		if (isNullish($missionControlIdDerived)) {
@@ -37,7 +36,7 @@
 	};
 
 	onMount(async () => await initWorker());
-	onDestroy(() => worker?.stop());
+	onDestroy(() => worker?.terminate());
 </script>
 
 <svelte:window onjunoRestartWallet={onRestartWallet} />

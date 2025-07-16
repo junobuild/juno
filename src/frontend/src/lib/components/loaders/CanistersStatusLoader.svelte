@@ -45,8 +45,6 @@
 		debounceStart();
 	});
 
-	onDestroy(() => worker?.stopCyclesTimer());
-
 	const restartCycles = ({ detail: { canisterId: _ } }: CustomEvent<{ canisterId: Principal }>) => {
 		if (segments.length === 0) {
 			return;

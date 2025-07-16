@@ -1,0 +1,12 @@
+export abstract class AppWorker {
+	protected _worker: Worker;
+
+	protected constructor(worker: Worker) {
+		this._worker = worker;
+	}
+
+	static async getInstance(): Promise<Worker> {
+		const Workers = await import('$lib/workers/workers?worker');
+		return new Workers.default();
+	}
+}

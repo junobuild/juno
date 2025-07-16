@@ -1,46 +1,49 @@
 import type { CustomDomain } from '$declarations/satellite/satellite.did';
+import { AppWorker } from '$lib/services/workers/_worker.services';
 import type { PostMessageDataResponseHosting, PostMessages } from '$lib/types/post-message';
 
 export type HostingCallback = (data: PostMessageDataResponseHosting) => void;
 
-export const initHostingWorker = async () => {
-	const HostingWorker = await import('$lib/workers/workers?worker');
-	const hostingWorker: Worker = new HostingWorker.default();
+export class HostingWorker extends AppWorker {
+	#hostingCallback: HostingCallback | undefined;
 
-	let hostingCallback: HostingCallback | undefined;
+	constructor(worker: Worker) {
+		super(worker);
 
-	hostingWorker.onmessage = ({ data }: MessageEvent<PostMessages>) => {
-		const { msg } = data;
+		worker.onmessage = ({ data }: MessageEvent<PostMessages>) => {
+			const { msg } = data;
 
-		switch (msg) {
-			case 'customDomainRegistrationState':
-				hostingCallback?.(data.data as PostMessageDataResponseHosting);
-				return;
-		}
+			switch (msg) {
+				case 'customDomainRegistrationState':
+					this.#hostingCallback?.(data.data as PostMessageDataResponseHosting);
+					return;
+			}
+		};
+	}
+
+	static async init(): Promise<HostingWorker> {
+		const worker = await AppWorker.getInstance();
+		return new HostingWorker(worker);
+	}
+
+	startCustomDomainRegistrationTimer = ({
+		callback,
+		customDomain
+	}: {
+		customDomain: CustomDomain;
+		callback: HostingCallback;
+	}) => {
+		this.#hostingCallback = callback;
+
+		this._worker.postMessage({
+			msg: 'startCustomDomainRegistrationTimer',
+			data: { customDomain }
+		});
 	};
 
-	return {
-		startCustomDomainRegistrationTimer: ({
-			callback,
-			customDomain
-		}: {
-			customDomain: CustomDomain;
-			callback: HostingCallback;
-		}) => {
-			hostingCallback = callback;
-
-			hostingWorker.postMessage({
-				msg: 'startCustomDomainRegistrationTimer',
-				data: { customDomain }
-			});
-		},
-		stopCustomDomainRegistrationTimer: () => {
-			hostingWorker.postMessage({
-				msg: 'stopCustomDomainRegistrationTimer'
-			});
-		},
-		destroy: () => {
-			hostingWorker.terminate();
-		}
+	stopCustomDomainRegistrationTimer = () => {
+		this._worker.postMessage({
+			msg: 'stopCustomDomainRegistrationTimer'
+		});
 	};
-};
+}

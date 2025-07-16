@@ -4,6 +4,7 @@ import {
 	onWalletCleanUp,
 	onWalletError
 } from '$lib/services/wallet/wallet.loader.services';
+import { AppWorker } from '$lib/services/workers/_worker.services';
 import type { MissionControlId } from '$lib/types/mission-control';
 import type {
 	PostMessageDataResponseError,
@@ -13,60 +14,56 @@ import type {
 	PostMessages
 } from '$lib/types/post-message';
 
-export interface WalletWorker {
-	start: (params: { missionControlId: MissionControlId }) => void;
-	restart: (params: { missionControlId: MissionControlId }) => void;
-	stop: () => void;
-	destroy: () => void;
+export class WalletWorker extends AppWorker {
+	constructor(worker: Worker) {
+		super(worker);
+
+		worker.onmessage = ({ data }: MessageEvent<PostMessages>) => {
+			const { msg } = data;
+
+			switch (msg) {
+				case 'syncWallet':
+					onSyncWallet(data.data as PostMessageDataResponseWallet);
+					return;
+				case 'syncWalletError':
+					onWalletError({
+						error: (data.data as PostMessageDataResponseError).error
+					});
+					return;
+				case 'syncWalletCleanUp':
+					onWalletCleanUp({
+						transactionIds: (data.data as PostMessageDataResponseWalletCleanUp).transactionIds
+					});
+					return;
+				case 'syncExchange':
+					onSyncExchange(data.data as PostMessageDataResponseExchange);
+					return;
+			}
+		};
+	}
+
+	static async init(): Promise<WalletWorker> {
+		const worker = await AppWorker.getInstance();
+		return new WalletWorker(worker);
+	}
+
+	start = ({ missionControlId }: { missionControlId: MissionControlId }) => {
+		this._worker.postMessage({
+			msg: 'startWalletTimer',
+			data: { missionControlId: missionControlId.toText() }
+		});
+	};
+
+	restart = ({ missionControlId }: { missionControlId: MissionControlId }) => {
+		this._worker.postMessage({
+			msg: 'restartWalletTimer',
+			data: { missionControlId: missionControlId.toText() }
+		});
+	};
+
+	stop = () => {
+		this._worker.postMessage({
+			msg: 'stopWalletTimer'
+		});
+	};
 }
-
-export const initWalletWorker = async (): Promise<WalletWorker> => {
-	const WalletWorker = await import('$lib/workers/workers?worker');
-	const worker: Worker = new WalletWorker.default();
-
-	worker.onmessage = ({ data }: MessageEvent<PostMessages>) => {
-		const { msg } = data;
-
-		switch (msg) {
-			case 'syncWallet':
-				onSyncWallet(data.data as PostMessageDataResponseWallet);
-				return;
-			case 'syncWalletError':
-				onWalletError({
-					error: (data.data as PostMessageDataResponseError).error
-				});
-				return;
-			case 'syncWalletCleanUp':
-				onWalletCleanUp({
-					transactionIds: (data.data as PostMessageDataResponseWalletCleanUp).transactionIds
-				});
-				return;
-			case 'syncExchange':
-				onSyncExchange(data.data as PostMessageDataResponseExchange);
-				return;
-		}
-	};
-
-	return {
-		start: ({ missionControlId }: { missionControlId: MissionControlId }) => {
-			worker.postMessage({
-				msg: 'startWalletTimer',
-				data: { missionControlId: missionControlId.toText() }
-			});
-		},
-		restart: ({ missionControlId }: { missionControlId: MissionControlId }) => {
-			worker.postMessage({
-				msg: 'restartWalletTimer',
-				data: { missionControlId: missionControlId.toText() }
-			});
-		},
-		stop: () => {
-			worker.postMessage({
-				msg: 'stopWalletTimer'
-			});
-		},
-		destroy: () => {
-			worker.terminate();
-		}
-	};
-};

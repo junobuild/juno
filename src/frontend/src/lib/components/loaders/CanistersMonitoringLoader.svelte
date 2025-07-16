@@ -8,10 +8,7 @@
 	import { orbiterNotLoaded } from '$lib/derived/orbiter.derived';
 	import { satellitesNotLoaded } from '$lib/derived/satellites.derived';
 	import { missionControlVersion } from '$lib/derived/version.derived';
-	import {
-		initMonitoringWorker,
-		type MonitoringWorker
-	} from '$lib/services/workers/worker.monitoring.services';
+	import { MonitoringWorker } from '$lib/services/workers/worker.monitoring.services';
 	import { i18n } from '$lib/stores/i18n.store';
 	import { toasts } from '$lib/stores/toasts.store';
 	import type { CanisterSegment } from '$lib/types/canister';
@@ -23,10 +20,9 @@
 
 	let { children, segments }: Props = $props();
 
-	let worker: MonitoringWorker | undefined = $state();
+	let worker = $state<MonitoringWorker | undefined>();
 
-	onMount(async () => (worker = await initMonitoringWorker()));
-	onDestroy(() => worker?.destroy());
+	onMount(async () => (worker = await MonitoringWorker.init()));
 
 	const debounceStart = debounce(() => {
 		if (isNullish($missionControlIdDerived)) {

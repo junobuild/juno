@@ -5,10 +5,7 @@
 	import type { Satellite } from '$declarations/mission_control/mission_control.did';
 	import { orbiterNotLoaded } from '$lib/derived/orbiter.derived';
 	import { satellitesNotLoaded } from '$lib/derived/satellites.derived';
-	import {
-		type CyclesWorker,
-		initCyclesWorker
-	} from '$lib/services/workers/worker.cycles.services';
+	import { CyclesWorker } from '$lib/services/workers/worker.cycles.services';
 	import type { CanisterSegment } from '$lib/types/canister';
 
 	interface Props {
@@ -19,9 +16,9 @@
 
 	let { children, segments, satellites: _ }: Props = $props();
 
-	let worker: CyclesWorker | undefined = $state(undefined);
+	let worker = $state<CyclesWorker | undefined>(undefined);
 
-	onMount(async () => (worker = await initCyclesWorker()));
+	onMount(async () => (worker = await CyclesWorker.init()));
 
 	onDestroy(() => worker?.destroy());
 

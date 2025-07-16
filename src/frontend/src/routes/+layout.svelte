@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { debounce } from '@dfinity/utils';
-	import { onDestroy, onMount, type Snippet } from 'svelte';
+	import { onMount, type Snippet } from 'svelte';
 	import { run } from 'svelte/legacy';
 	import { browser } from '$app/environment';
 	import { onNavigate } from '$app/navigation';
@@ -11,8 +11,8 @@
 	import { initMissionControl } from '$lib/services/console.services';
 	import { syncSnapshots } from '$lib/services/snapshots.services';
 	import { syncSubnets } from '$lib/services/subnets.services';
-	import { initAuthWorker } from '$lib/services/workers/worker.auth.services';
-	import { type AuthStoreData, authStore } from '$lib/stores/auth.store';
+	import { AuthWorker } from '$lib/services/workers/worker.auth.services';
+	import { authStore } from '$lib/stores/auth.store';
 	import { i18n } from '$lib/stores/i18n.store';
 	import '$lib/styles/global.scss';
 
@@ -43,11 +43,9 @@
 		(async () => await initMissionControl($authStore))();
 	});
 
-	let worker: { syncAuthIdle: (auth: AuthStoreData) => void; destroy: () => void } | undefined =
-		$state();
+	let worker = $state<AuthWorker | undefined>();
 
-	onMount(async () => (worker = await initAuthWorker()));
-	onDestroy(() => worker?.destroy());
+	onMount(async () => (worker = await AuthWorker.init()));
 
 	run(() => {
 		// @ts-expect-error TODO: to be migrated to Svelte v5

@@ -36,7 +36,9 @@
 		{@render children()}
 	</div>
 
-	<button class="menu-collapse square" class:collapsed={$menuExpanded}
+	<button
+		class="menu-collapse square"
+		class:collapsed={$menuExpanded}
 		title={$menuCollapsed ? $i18n.core.expand : $i18n.core.collapse}
 		onclick={layoutMenuState.toggle}><IconBack /></button
 	>
@@ -110,6 +112,12 @@
 		bottom: var(--padding-8x);
 
 		transform: rotate(180deg);
+
+		display: none;
+
+		@include media.min-width(xlarge) {
+			display: flex;
+		}
 
 		&.collapsed {
 			transform: rotate(0deg);

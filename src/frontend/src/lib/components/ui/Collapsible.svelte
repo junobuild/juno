@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { isNullish, nonNullish } from '@dfinity/utils';
+	import type { Snippet } from 'svelte';
 	import { fade } from 'svelte/transition';
 	import IconUnfoldLess from '$lib/components/icons/IconUnfoldLess.svelte';
 	import IconUnfoldMore from '$lib/components/icons/IconUnfoldMore.svelte';
@@ -11,7 +12,9 @@
 		initiallyExpanded?: boolean;
 		maxContentHeight?: number;
 		wrapHeight?: boolean;
-		expanded: boolean;
+		expanded?: boolean;
+		header: Snippet;
+		children: Snippet;
 	}
 
 	let {
@@ -19,7 +22,9 @@
 		initiallyExpanded = false,
 		expanded = $bindable(initiallyExpanded),
 		maxContentHeight,
-		wrapHeight = false
+		wrapHeight = false,
+		header,
+		children
 	}: Props = $props();
 
 	// Minimum height when some part of the text-content is visible (empirical value)
@@ -45,7 +50,7 @@
 		toggleContent();
 	};
 
-	export const toggleContent = () => {
+	const toggleContent = () => {
 		userUpdated = true;
 		expanded = !expanded;
 	};
@@ -87,8 +92,8 @@
 		id={nonNullish(id) ? `heading${id}` : undefined}
 		role="button"
 		class="header"
-		on:click={toggle}
-		on:keypress={($event) => handleKeyPress({ $event, callback: toggle })}
+		onclick={toggle}
+		onkeypress={($event) => handleKeyPress({ $event, callback: toggle })}
 		tabindex="-1"
 	>
 		<button
@@ -106,7 +111,7 @@
 				<span in:fade class="icon"><IconUnfoldMore size="16px" /></span>
 			{/if}
 		</button>
-		<slot name="header" />
+		{@render header()}
 	</div>
 	<div
 		role="definition"
@@ -121,7 +126,7 @@
 			class:wrapHeight
 			bind:this={container}
 		>
-			<slot />
+			{@render children()}
 		</div>
 	</div>
 </div>

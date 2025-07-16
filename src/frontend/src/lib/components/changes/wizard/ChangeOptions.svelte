@@ -19,7 +19,9 @@
 
 <div class="container">
 	<Collapsible>
-		<svelte:fragment slot="header">{$i18n.core.advanced_options}</svelte:fragment>
+		{#snippet header()}
+			{$i18n.core.advanced_options}
+		{/snippet}
 
 		<CheckboxInline bind:checked={clearProposalAssets}>
 			{$i18n.changes.clear_after_apply}

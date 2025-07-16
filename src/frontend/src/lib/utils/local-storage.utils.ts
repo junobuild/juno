@@ -4,10 +4,11 @@ import { DEFAULT_LIST_PARAMS, DEFAULT_LIST_RULES_PARAMS } from '$lib/constants/d
 import type { ListParamsStoreData } from '$lib/stores/list-params.store';
 import type { Languages } from '$lib/types/languages';
 import { SatellitesLayout } from '$lib/types/layout';
+import type { LayoutMenuState } from '$lib/types/layout-menu';
 import type { ListRulesParams } from '$lib/types/list';
 import type { AnalyticsPeriodicity } from '$lib/types/orbiter';
 import { Theme } from '$lib/types/theme';
-import { nonNullish } from '@dfinity/utils';
+import { nonNullish, notEmptyString } from '@dfinity/utils';
 
 export const setLocalStorageItem = ({ key, value }: { key: string; value: string }) => {
 	// Pre-rendering guard
@@ -121,5 +122,20 @@ export const getLocalStorageAnalyticsPeriodicity = (): { periodicity: AnalyticsP
 		// We use the local storage for the operational part of the app but, not crucial
 		console.error(err);
 		return DEFAULT_ANALYTICS_PERIODICITY;
+	}
+};
+
+export const getLocalStorageMenuState = (): LayoutMenuState => {
+	try {
+		const { menu_state }: Storage = browser
+			? localStorage
+			: ({ menu_state: 'expanded' } as unknown as Storage);
+		return notEmptyString(menu_state) && ['expanded', 'collapsed'].includes(menu_state)
+			? (menu_state as LayoutMenuState)
+			: 'expanded';
+	} catch (err: unknown) {
+		// We use the local storage for the operational part of the app but, not crucial
+		console.error(err);
+		return 'expanded';
 	}
 };

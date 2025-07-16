@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="en">
+<html lang="en" menu="expanded">
 	<head>
 		<!-- CONTENT_SECURITY_POLICY -->
 
@@ -72,6 +72,21 @@
 				);
 			} catch (err) {
 				// We ignore the error. The console will default to English.
+			}
+		</script>
+
+		<!-- Init menu state - expanded or collapsed - as fast as possible as well -->
+		<script menu-state-loader>
+			try {
+				const menuState = localStorage['menu_state'];
+
+				// Technically we could assert that menu state is a known value but, for simplicity reasons we skip this assertion for the moment.
+				document.documentElement.setAttribute(
+					'menu',
+					menuState !== undefined && menuState !== 'undefined' ? menuState : 'expanded'
+				);
+			} catch (err) {
+				// We ignore the error
 			}
 		</script>
 

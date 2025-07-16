@@ -1,0 +1,7 @@
+:root {
+	--menu-width: calc(30 * var(--padding));
+
+	&[menu='collapsed'] {
+		--menu-width: calc(10 * var(--padding));
+	}
+}

@@ -82,7 +82,8 @@ export const PostMessageRequestMsgSchema = z.enum([
 	'restartWalletTimer',
 	'startMonitoringTimer',
 	'stopMonitoringTimer',
-	'restartMonitoringTimer'
+	'restartMonitoringTimer',
+	"loadRegistry"
 ]);
 
 export const PostMessageResponseMsgSchema = z.enum([

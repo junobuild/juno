@@ -2,12 +2,13 @@
 	import { nonNullish } from '@dfinity/utils';
 	import type { Snippet } from 'svelte';
 	import type { Satellite } from '$declarations/mission_control/mission_control.did';
-	import CanistersMonitoringLoader from '$lib/components/loaders/CanistersMonitoringLoader.svelte';
-	import CanistersNoMonitoringLoader from '$lib/components/loaders/CanistersNoMonitoringLoader.svelte';
-	import CanistersSyncDataLoader from '$lib/components/loaders/CanistersSyncDataLoader.svelte';
+	import MonitoringLoader from '$lib/components/loaders/MonitoringLoader.svelte';
+	import NoMonitoringLoader from '$lib/components/loaders/NoMonitoringLoader.svelte';
+	import CanistersStatusLoader from '$lib/components/loaders/CanistersStatusLoader.svelte';
 	import { missionControlIdDerived } from '$lib/derived/mission-control.derived';
 	import { orbiterStore } from '$lib/derived/orbiter.derived';
 	import type { CanisterSegment } from '$lib/types/canister';
+	import RegistryLoader from '$lib/components/loaders/RegistryLoader.svelte';
 
 	interface Props {
 		children: Snippet;
@@ -41,12 +42,14 @@
 	]);
 
 	let CanistersMonitoringLoaderComponent = $derived(
-		monitoring ? CanistersMonitoringLoader : CanistersNoMonitoringLoader
+		monitoring ? MonitoringLoader : NoMonitoringLoader
 	);
 </script>
 
-<CanistersSyncDataLoader {segments}>
-	<CanistersMonitoringLoaderComponent {segments}>
-		{@render children()}
-	</CanistersMonitoringLoaderComponent>
-</CanistersSyncDataLoader>
+<CanistersStatusLoader {segments}>
+	<RegistryLoader {segments}>
+		<CanistersMonitoringLoaderComponent {segments}>
+			{@render children()}
+		</CanistersMonitoringLoaderComponent>
+	</RegistryLoader>
+</CanistersStatusLoader>

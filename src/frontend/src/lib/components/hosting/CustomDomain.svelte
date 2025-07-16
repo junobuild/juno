@@ -12,10 +12,7 @@
 	import IconSync from '$lib/components/icons/IconSync.svelte';
 	import ButtonTableAction from '$lib/components/ui/ButtonTableAction.svelte';
 	import ExternalLink from '$lib/components/ui/ExternalLink.svelte';
-	import {
-		type HostingCallback,
-		initHostingWorker
-	} from '$lib/services/workers/worker.hosting.services';
+	import { HostingWorker } from '$lib/services/workers/worker.hosting.services';
 	import { i18n } from '$lib/stores/i18n.store';
 	import type { CustomDomainRegistrationState } from '$lib/types/custom-domain';
 	import type { PostMessageDataResponseHosting } from '$lib/types/post-message';
@@ -54,15 +51,7 @@
 
 	let registrationState: Option<CustomDomainRegistrationState> = $state(undefined);
 
-	let worker:
-		| {
-				startCustomDomainRegistrationTimer: (params: {
-					customDomain: CustomDomainType;
-					callback: HostingCallback;
-				}) => void;
-				stopCustomDomainRegistrationTimer: () => void;
-		  }
-		| undefined = $state();
+	let worker = $state<HostingWorker | undefined>();
 
 	const syncState = ({ registrationState: state }: PostMessageDataResponseHosting) => {
 		registrationState = state;
@@ -93,8 +82,8 @@
 		});
 	};
 
-	onMount(async () => (worker = await initHostingWorker()));
-	onDestroy(() => worker?.stopCustomDomainRegistrationTimer());
+	onMount(async () => (worker = await HostingWorker.init()));
+	onDestroy(() => worker?.terminate());
 
 	run(() => {
 		// @ts-expect-error TODO: to be migrated to Svelte v5

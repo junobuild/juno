@@ -1,5 +1,4 @@
 <script lang="ts">
-    import type { Principal } from '@dfinity/principal';
     import { debounce } from '@dfinity/utils';
     import { onDestroy, onMount, type Snippet } from 'svelte';
     import { orbiterNotLoaded } from '$lib/derived/orbiter.derived';
@@ -12,15 +11,15 @@
         segments: CanisterSegment[];
     }
 
-    let { children, segments, satellites: _ }: Props = $props();
+    let { children, segments }: Props = $props();
 
     let worker = $state<RegistryWorker | undefined>(undefined);
 
     onMount(async () => (worker = await RegistryWorker.init()));
     onDestroy(() => worker?.terminate());
 
-    const debounceStart = debounce(() =>
-        worker?.startCyclesTimer({
+    const debounceLoad = debounce(() =>
+        worker?.loadRegistry({
             segments
         })
     );
@@ -38,7 +37,7 @@
             return;
         }
 
-        debounceStart();
+        debounceLoad();
     });
 </script>
 

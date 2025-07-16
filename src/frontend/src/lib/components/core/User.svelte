@@ -54,14 +54,14 @@
 {#if $authSignedIn}
 	<ButtonIcon {onclick} bind:button>
 		{#snippet icon()}
-			<IconUser size="16px" />
+			<IconUser size="14px" />
 		{/snippet}
 		{$i18n.core.user_menu}
 	</ButtonIcon>
 {:else if signIn}
 	<ButtonIcon onclick={onLogin}>
 		{#snippet icon()}
-			<IconSignIn size="16px" />
+			<IconSignIn size="14px" />
 		{/snippet}
 		{$i18n.core.sign_in}
 	</ButtonIcon>

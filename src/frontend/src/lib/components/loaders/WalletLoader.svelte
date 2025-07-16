@@ -15,6 +15,7 @@
 	const initWorker = async () => {
 		worker = await WalletWorker.init();
 	};
+	onDestroy(() => worker?.terminate());
 
 	$effect(() => {
 		if (isNullish($missionControlIdDerived)) {

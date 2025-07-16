@@ -23,6 +23,7 @@
 	let worker = $state<MonitoringWorker | undefined>();
 
 	onMount(async () => (worker = await MonitoringWorker.init()));
+	onDestroy(() => worker?.terminate());
 
 	const debounceStart = debounce(() => {
 		if (isNullish($missionControlIdDerived)) {

@@ -27,7 +27,7 @@ export const getReleasesMetadata = async (): Promise<ReleasesMetadata> => {
 };
 
 export const getNewestReleasesMetadata = async (): Promise<
-	Pick<ReleaseMetadata, 'satellite' | 'mission_control' | 'orbiter'>
+	Required<Pick<ReleaseMetadata, 'satellite' | 'mission_control' | 'orbiter'>>
 > => {
 	const metadata = await getReleasesMetadata();
 

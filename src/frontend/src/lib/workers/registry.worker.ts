@@ -9,7 +9,7 @@ import { getMissionControlVersionMetadata } from '$lib/services/version/version.
 import { getOrbiterVersionMetadata } from '$lib/services/version/version.metadata.orbiter.services';
 import { getSatelliteVersionMetadata } from '$lib/services/version/version.metadata.satellite.services';
 import { releasesIdbStore, versionIdbStore } from '$lib/stores/idb.store';
-import type { CanisterSegment } from '$lib/types/canister';
+import type { CanisterIdText, CanisterSegment } from '$lib/types/canister';
 import type { PostMessageDataRequest, PostMessageRequest } from '$lib/types/post-message';
 import type { CachedMetadataVersions, CachedReleases } from '$lib/types/releases';
 import type {
@@ -23,7 +23,7 @@ import type { Identity } from '@dfinity/agent';
 import { Principal } from '@dfinity/principal';
 import { isNullish, nonNullish } from '@dfinity/utils';
 import type { MetadataVersions, ReleaseMetadata } from '@junobuild/admin';
-import { getMany, setMany } from 'idb-keyval';
+import { entries, getMany, setMany } from 'idb-keyval';
 import { compare } from 'semver';
 
 export const onRegistryMessage = async ({ data: dataMsg }: MessageEvent<PostMessageRequest>) => {
@@ -164,28 +164,10 @@ const loadVersions = async ({
 			{ satellites: [], missionControls: [], orbiters: [] }
 		);
 
-		const loadKnownVersionsMetadata = async (
-			segments: CanisterSegment[]
-		): Promise<
-			(Pick<CanisterSegment, 'canisterId'> & {
-				value: CachedVersionMetadata | CachedSatelliteVersionMetadata | undefined;
-			})[]
-		> => {
-			const results = await getMany<CachedVersionMetadata | CachedSatelliteVersionMetadata>(
-				segments.map(({ canisterId }) => canisterId),
-				versionIdbStore
-			);
-
-			return segments.map(({ canisterId }, i) => ({ canisterId, value: results[i] }));
-		};
-
-		const [knownSatellites, knownMissionControls, knownOrbiters] = await Promise.all([
-			loadKnownVersionsMetadata(satellites),
-			loadKnownVersionsMetadata(missionControls),
-			loadKnownVersionsMetadata(orbiters)
-		]);
-
-		const knownMetadata = [...knownSatellites, ...knownMissionControls, ...knownOrbiters];
+		const knownMetadata = await entries<
+			CanisterIdText,
+			CachedVersionMetadata | CachedSatelliteVersionMetadata
+		>(versionIdbStore);
 
 		// TODO check if something to do
 
@@ -236,8 +218,8 @@ const loadVersions = async ({
 						// @ts-expect-error map does not infer the filter
 						value: value.metadata,
 						knownMetadata: knownMetadata.find(
-							({ canisterId: knownCanisterId }) => knownCanisterId === canisterId
-						)?.value
+							([knownCanisterId]) => knownCanisterId === canisterId
+						)?.[1]
 					})
 				]),
 			versionIdbStore

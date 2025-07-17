@@ -1,13 +1,11 @@
-import { missionControlVersion } from '$lib/api/mission-control.deprecated.api';
 import { getNewestReleasesMetadata } from '$lib/rest/cdn.rest';
+import { getMissionControlVersionMetadata } from '$lib/services/version/version.metadata.mission-control.services';
 import { i18n } from '$lib/stores/i18n.store';
 import { toasts } from '$lib/stores/toasts.store';
 import { versionStore } from '$lib/stores/version.store';
 import type { MissionControlId } from '$lib/types/mission-control';
-import type { LoadVersionBaseParams, LoadVersionResult, VersionMetadata } from '$lib/types/version';
-import { container } from '$lib/utils/juno.utils';
+import type { LoadVersionBaseParams, LoadVersionResult } from '$lib/types/version';
 import { assertNonNullish, nonNullish } from '@dfinity/utils';
-import { getJunoPackage } from '@junobuild/admin';
 import { get } from 'svelte/store';
 
 export const reloadMissionControlVersion = async ({
@@ -50,37 +48,12 @@ const loadMissionControlVersion = async ({
 		// Optional for convenience reasons. A guard prevent the usage of the service while not being sign-in.
 		assertNonNullish(identity);
 
-		const missionControlInfo = async (): Promise<Omit<VersionMetadata, 'release'>> => {
-			const [junoPkg] = await Promise.allSettled([
-				getJunoPackage({
-					moduleId: missionControlId,
-					identity,
-					...container()
-				})
-			]);
-
-			if (junoPkg.status === 'fulfilled' && nonNullish(junoPkg.value)) {
-				const pkg = junoPkg.value;
-				const { version } = pkg;
-
-				return {
-					current: version,
-					pkg
-				};
-			}
-
-			// Legacy way of fetch build and version information
-			const version = await missionControlVersion({ missionControlId, identity });
-
-			return {
-				current: version
-			};
-		};
-
-		const [ctrlVersion, releases] = await Promise.all([
-			missionControlInfo(),
+		const [metadata, releases] = await Promise.all([
+			getMissionControlVersionMetadata({ missionControlId, identity }),
 			getNewestReleasesMetadata()
 		]);
+
+		const { metadata: ctrlVersion } = metadata;
 
 		versionStore.setMissionControl({
 			release: releases.mission_control,

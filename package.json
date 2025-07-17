@@ -111,7 +111,7 @@
 		"@dfinity/principal": "^2.3.0",
 		"@dfinity/utils": "^2.13.2",
 		"@dfinity/zod-schemas": "^1.0.0",
-		"@junobuild/admin": "^0.6.5",
+		"@junobuild/admin": "^0.6.6",
 		"@junobuild/cdn": "^0.2.0",
 		"@junobuild/core": "^1.0.0",
 		"@junobuild/storage": "^0.2.1",

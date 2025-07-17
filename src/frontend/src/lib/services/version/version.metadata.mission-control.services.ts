@@ -2,7 +2,7 @@ import { missionControlVersion } from '$lib/api/mission-control.deprecated.api';
 import type { VersionMetadata } from '$lib/types/version';
 import { container } from '$lib/utils/juno.utils';
 import type { Identity } from '@dfinity/agent';
-import { Principal } from '@dfinity/principal';
+import type { Principal } from '@dfinity/principal';
 import { nonNullish } from '@dfinity/utils';
 import { getJunoPackage } from '@junobuild/admin';
 

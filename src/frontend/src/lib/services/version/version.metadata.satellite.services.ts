@@ -3,7 +3,7 @@ import type { SatelliteVersionMetadata } from '$lib/types/version';
 import { container } from '$lib/utils/juno.utils';
 import { mapJunoPackageMetadata } from '$lib/utils/version.utils';
 import type { Identity } from '@dfinity/agent';
-import { Principal } from '@dfinity/principal';
+import type { Principal } from '@dfinity/principal';
 import { isNullish, nonNullish } from '@dfinity/utils';
 import { getJunoPackage, satelliteBuildType } from '@junobuild/admin';
 

@@ -2,7 +2,7 @@ import { missionControlVersion } from '$lib/api/mission-control.deprecated.api';
 import type { VersionMetadata } from '$lib/types/version';
 import { container } from '$lib/utils/juno.utils';
 import type { Identity } from '@dfinity/agent';
-import { Principal } from '@dfinity/principal';
+import type { Principal } from '@dfinity/principal';
 import { nonNullish } from '@dfinity/utils';
 import { getJunoPackage } from '@junobuild/admin';
 
@@ -12,7 +12,7 @@ export const getMissionControlVersionMetadata = async ({
 }: {
 	missionControlId: Principal;
 	identity: Identity;
-}): Promise<{ metadata: Omit<VersionMetadata, "release"> }> => {
+}): Promise<{ metadata: Omit<VersionMetadata, 'release'> }> => {
 	const [junoPkg] = await Promise.allSettled([
 		getJunoPackage({
 			moduleId: missionControlId,

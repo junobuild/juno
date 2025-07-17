@@ -2,13 +2,13 @@
 	import { nonNullish } from '@dfinity/utils';
 	import type { Snippet } from 'svelte';
 	import type { Satellite } from '$declarations/mission_control/mission_control.did';
+	import CanistersStatusLoader from '$lib/components/loaders/CanistersStatusLoader.svelte';
 	import MonitoringLoader from '$lib/components/loaders/MonitoringLoader.svelte';
 	import NoMonitoringLoader from '$lib/components/loaders/NoMonitoringLoader.svelte';
-	import CanistersStatusLoader from '$lib/components/loaders/CanistersStatusLoader.svelte';
+	import RegistryLoader from '$lib/components/loaders/RegistryLoader.svelte';
 	import { missionControlIdDerived } from '$lib/derived/mission-control.derived';
 	import { orbiterStore } from '$lib/derived/orbiter.derived';
 	import type { CanisterSegment } from '$lib/types/canister';
-	import RegistryLoader from '$lib/components/loaders/RegistryLoader.svelte';
 
 	interface Props {
 		children: Snippet;

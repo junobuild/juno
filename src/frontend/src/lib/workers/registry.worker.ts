@@ -132,7 +132,7 @@ const loadReleases = async (): Promise<
 
 		return { result: 'loaded' };
 	} catch (err: unknown) {
-		return { result: 'error', err: err };
+		return { result: 'error', err };
 	}
 };
 
@@ -201,6 +201,6 @@ const loadVersions = async ({
 
 		return { result: 'loaded' };
 	} catch (err: unknown) {
-		return { result: 'error', err: err };
+		return { result: 'error', err };
 	}
 };

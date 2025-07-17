@@ -83,7 +83,7 @@ export const PostMessageRequestMsgSchema = z.enum([
 	'startMonitoringTimer',
 	'stopMonitoringTimer',
 	'restartMonitoringTimer',
-	"loadRegistry"
+	'loadRegistry'
 ]);
 
 export const PostMessageResponseMsgSchema = z.enum([

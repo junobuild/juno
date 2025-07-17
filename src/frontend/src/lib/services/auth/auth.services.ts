@@ -6,7 +6,8 @@ import { i18n } from '$lib/stores/i18n.store';
 import {
 	cyclesIdbStore,
 	exchangeIdbStore,
-	monitoringIdbStore, versionIdbStore,
+	monitoringIdbStore,
+	versionIdbStore,
 	walletIdbStore
 } from '$lib/stores/idb.store';
 import { toasts } from '$lib/stores/toasts.store';

@@ -1,16 +1,6 @@
 import { AppWorker } from '$lib/services/workers/_worker.services';
 import type { CanisterSegment } from '$lib/types/canister';
-import type {
-	PostMessageDataResponseError, PostMessageDataResponseExchange, PostMessageDataResponseRegistry,
-	PostMessageDataResponseWallet, PostMessageDataResponseWalletCleanUp,
-	PostMessages
-} from '$lib/types/post-message';
-import {
-	onSyncExchange,
-	onSyncWallet,
-	onWalletCleanUp,
-	onWalletError
-} from '$lib/services/wallet/wallet.loader.services';
+import type { PostMessages } from '$lib/types/post-message';
 
 export class RegistryWorker extends AppWorker {
 	constructor(worker: Worker) {

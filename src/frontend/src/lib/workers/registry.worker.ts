@@ -69,7 +69,7 @@ const loadRegistry = async ({ data: { segments } }: { data: PostMessageDataReque
 
 	if (outdatedVersions.length === 0) {
 		// TODO: do something if segments is nullish?
-		await syncRegistry({segments: segments ?? []});
+		await syncRegistry({ segments: segments ?? [] });
 		return;
 	}
 
@@ -83,7 +83,7 @@ const loadRegistry = async ({ data: { segments } }: { data: PostMessageDataReque
 	await loadOutdatedVersions({ identity, outdatedSegments });
 
 	// TODO: do something if segments is nullish?
-	await syncRegistry({segments: segments ?? []});
+	await syncRegistry({ segments: segments ?? [] });
 };
 
 const loadReleases = async (): Promise<
@@ -359,7 +359,7 @@ const syncRegistry = async ({ segments }: { segments: CanisterSegment[] }) => {
 				[canisterId]: {
 					...cachedValue.value,
 					// For TypeScript simplicity reasons
-					build: "build" in cachedValue.value ? cachedValue.value.build : "stock",
+					build: 'build' in cachedValue.value ? cachedValue.value.build : 'stock',
 					release: newestSatelliteRelease
 				}
 			}),

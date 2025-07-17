@@ -1,4 +1,6 @@
 import type {
+	CachedSatelliteVersionMetadataSchema,
+	CachedVersionMetadataSchema,
 	SatelliteVersionMetadataSchema,
 	VersionMetadataSchema
 } from '$lib/schemas/version.schema';
@@ -6,8 +8,10 @@ import type { OptionIdentity } from '$lib/types/itentity';
 import type * as z from 'zod/v4';
 
 export type VersionMetadata = z.infer<typeof VersionMetadataSchema>;
-
 export type SatelliteVersionMetadata = z.infer<typeof SatelliteVersionMetadataSchema>;
+
+export type CachedVersionMetadata = z.infer<typeof CachedVersionMetadataSchema>;
+export type CachedSatelliteVersionMetadata = z.infer<typeof CachedSatelliteVersionMetadataSchema>;
 
 export interface LoadVersionBaseParams {
 	skipReload: boolean;

@@ -1,18 +1,11 @@
-import { satelliteBuildVersion, satelliteVersion } from '$lib/api/satellites.deprecated.api';
 import { getNewestReleasesMetadata } from '$lib/rest/cdn.rest';
+import { getSatelliteVersionMetadata } from '$lib/services/version/version.satellite.metadata.services';
 import { i18n } from '$lib/stores/i18n.store';
 import { toasts } from '$lib/stores/toasts.store';
 import { versionStore } from '$lib/stores/version.store';
-import type {
-	LoadVersionBaseParams,
-	LoadVersionResult,
-	SatelliteVersionMetadata
-} from '$lib/types/version';
-import { container } from '$lib/utils/juno.utils';
-import { mapJunoPackageMetadata } from '$lib/utils/version.utils';
+import type { LoadVersionBaseParams, LoadVersionResult } from '$lib/types/version';
 import type { Principal } from '@dfinity/principal';
-import { assertNonNullish, isNullish, nonNullish } from '@dfinity/utils';
-import { getJunoPackage, satelliteBuildType } from '@junobuild/admin';
+import { assertNonNullish, nonNullish } from '@dfinity/utils';
 import { get } from 'svelte/store';
 
 export const reloadSatelliteVersion = async ({
@@ -54,75 +47,19 @@ const loadSatelliteVersion = async ({
 		// Optional for convenience reasons. A guard prevent the usage of the service while not being sign-in.
 		assertNonNullish(identity);
 
-		const satelliteInfo = async (): Promise<
-			Omit<SatelliteVersionMetadata, 'release'> | undefined
-		> => {
-			// Backwards compatibility for Satellite <= 0.0.14 which did not expose the end point "version_build"
-			/**
-			 * @deprecated - Replaced in Satellite > v0.0.22 with public custom section juno:package
-			 */
-			const queryBuildVersion = async (): Promise<string | undefined> => {
-				try {
-					return await satelliteBuildVersion({ satelliteId, identity });
-				} catch (_: unknown) {
-					return undefined;
-				}
-			};
-
-			const [junoPkg] = await Promise.allSettled([
-				getJunoPackage({
-					moduleId: satelliteId,
-					identity,
-					...container()
-				})
-			]);
-
-			if (junoPkg.status === 'fulfilled' && nonNullish(junoPkg.value)) {
-				const pkg = junoPkg.value;
-				const metadata = mapJunoPackageMetadata({ pkg });
-
-				if (isNullish(metadata)) {
-					toasts.error({
-						text: get(i18n).errors.satellite_version_not_found
-					});
-
-					return undefined;
-				}
-
-				return metadata;
-			}
-
-			// Legacy way of fetch build and version information
-			const [version, buildVersion, buildType] = await Promise.allSettled([
-				satelliteVersion({ satelliteId, identity }),
-				queryBuildVersion(),
-				satelliteBuildType({
-					satellite: {
-						satelliteId: satelliteId.toText(),
-						identity,
-						...container()
-					}
-				})
-			]);
-
-			if (version.status === 'rejected') {
-				return undefined;
-			}
-
-			const { value: current } = version;
-
-			return {
-				current,
-				...(buildVersion.status === 'fulfilled' &&
-					nonNullish(buildVersion.value) && { currentBuild: buildVersion.value }),
-				build: buildType.status === 'fulfilled' ? (buildType.value ?? 'stock') : 'stock'
-			};
-		};
-
-		const [satVersion, releases] = await Promise.all([
-			satelliteInfo(),
+		const [metadata, releases] = await Promise.all([
+			getSatelliteVersionMetadata({ identity, satelliteId }),
 			getNewestReleasesMetadata()
 		]);
+
+		// We display an error if the metadata when unexpectedly not found but set the version as null - i.e. do not return
+		if ('notFound' in metadata) {
+			toasts.error({
+				text: get(i18n).errors.satellite_version_not_found
+			});
+		}
+
+		const satVersion = 'metadata' in metadata ? metadata.metadata : null;
 
 		versionStore.setSatellite({
 			satelliteId: satelliteId.toText(),

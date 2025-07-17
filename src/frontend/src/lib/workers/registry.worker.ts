@@ -5,11 +5,16 @@ import {
 	CACHED_RELEASES_SATELLITES_KEY
 } from '$lib/constants/releases.constants';
 import { getReleasesMetadata } from '$lib/rest/cdn.rest';
-import { releasesIdbStore } from '$lib/stores/idb.store';
+import { getSatelliteVersionMetadata } from '$lib/services/version/version.satellite.metadata.services';
+import { releasesIdbStore, versionIdbStore } from '$lib/stores/idb.store';
+import type { CanisterSegment } from '$lib/types/canister';
 import type { PostMessageDataRequest, PostMessageRequest } from '$lib/types/post-message';
-import type { CachedReleases, CachedMetadataVersions } from '$lib/types/registry';
+import type { CachedMetadataVersions, CachedReleases } from '$lib/types/releases';
 import { last } from '$lib/utils/utils';
-import { nonNullish } from '@dfinity/utils';
+import { loadIdentity } from '$lib/utils/worker.utils';
+import type { Identity } from '@dfinity/agent';
+import { Principal } from '@dfinity/principal';
+import { isNullish, nonNullish } from '@dfinity/utils';
 import type { MetadataVersions, ReleaseMetadata } from '@junobuild/admin';
 import { getMany, setMany } from 'idb-keyval';
 import { compare } from 'semver';
@@ -25,6 +30,13 @@ export const onRegistryMessage = async ({ data: dataMsg }: MessageEvent<PostMess
 };
 
 const loadRegistry = async ({ data: { segments } }: { data: PostMessageDataRequest }) => {
+	const identity = await loadIdentity();
+
+	if (isNullish(identity)) {
+		// We do nothing if no identity
+		return;
+	}
+
 	const result = await loadReleases();
 
 	if (result.result === 'error') {
@@ -38,7 +50,8 @@ const loadRegistry = async ({ data: { segments } }: { data: PostMessageDataReque
 		return;
 	}
 
-	await loadVersions();
+	// TODO: do something if segments is nullish?
+	await loadVersions({ identity, segments: segments ?? [] });
 };
 
 const loadReleases = async (): Promise<
@@ -120,11 +133,45 @@ const loadReleases = async (): Promise<
 	}
 };
 
-const loadVersions = async (): Promise<
-	{ result: 'loaded' } | { result: 'error'; err: unknown }
-> => {
+const loadVersions = async ({
+	identity,
+	segments
+}: {
+	identity: Identity;
+	segments: CanisterSegment[];
+}): Promise<{ result: 'loaded' } | { result: 'error'; err: unknown }> => {
 	try {
+		const { satellites, others } = segments.reduce<{
+			satellites: CanisterSegment[];
+			others: CanisterSegment[];
+		}>(
+			({ satellites, others }, { segment, ...rest }) => ({
+				satellites: [...satellites, ...(segment === 'satellite' ? [{ segment, ...rest }] : [])],
+				others: [...others, ...(segment !== 'satellite' ? [{ segment, ...rest }] : [])]
+			}),
+			{ satellites: [], others: [] }
+		);
 
+		const [knownSatellites, knownOthers] = await Promise.all([
+			getMany(
+				satellites.map(({ canisterId }) => canisterId),
+				versionIdbStore
+			),
+			getMany(
+				others.map(({ canisterId }) => canisterId),
+				versionIdbStore
+			)
+		]);
+
+		// TODO check if something to do
+
+		const satellitesMetadata = await Promise.all([
+			...satellites.map(({ canisterId }) =>
+				getSatelliteVersionMetadata({ identity, satelliteId: Principal.fromText(canisterId) })
+			)
+		]);
+
+		console.log(satellitesMetadata)
 
 		return { result: 'loaded' };
 	} catch (err: unknown) {

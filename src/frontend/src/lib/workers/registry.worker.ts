@@ -12,7 +12,11 @@ import { releasesIdbStore, versionIdbStore } from '$lib/stores/idb.store';
 import type { CanisterSegment } from '$lib/types/canister';
 import type { PostMessageDataRequest, PostMessageRequest } from '$lib/types/post-message';
 import type { CachedMetadataVersions, CachedReleases } from '$lib/types/releases';
-import type { VersionMetadata } from '$lib/types/version';
+import type {
+	CachedSatelliteVersionMetadata,
+	CachedVersionMetadata,
+	VersionMetadata
+} from '$lib/types/version';
 import { last } from '$lib/utils/utils';
 import { loadIdentity } from '$lib/utils/worker.utils';
 import type { Identity } from '@dfinity/agent';
@@ -160,13 +164,20 @@ const loadVersions = async ({
 			{ satellites: [], missionControls: [], orbiters: [] }
 		);
 
-		const loadKnownVersionsMetadata = async <T extends Omit<VersionMetadata, 'release'>>(
+		const loadKnownVersionsMetadata = async (
 			segments: CanisterSegment[]
-		): Promise<T[]> =>
-			getMany(
+		): Promise<
+			(Pick<CanisterSegment, 'canisterId'> & {
+				value: CachedVersionMetadata | CachedSatelliteVersionMetadata | undefined;
+			})[]
+		> => {
+			const results = await getMany<CachedVersionMetadata | CachedSatelliteVersionMetadata>(
 				segments.map(({ canisterId }) => canisterId),
 				versionIdbStore
 			);
+
+			return segments.map(({ canisterId }, i) => ({ canisterId, value: results[i] }));
+		};
 
 		const [knownSatellites, knownMissionControls, knownOrbiters] = await Promise.all([
 			loadKnownVersionsMetadata(satellites),
@@ -174,30 +185,63 @@ const loadVersions = async ({
 			loadKnownVersionsMetadata(orbiters)
 		]);
 
+		const knownMetadata = [...knownSatellites, ...knownMissionControls, ...knownOrbiters];
+
 		// TODO check if something to do
 
-		const satellitesMetadata = await Promise.all([
-			...satellites.map(({ canisterId }) =>
-				getSatelliteVersionMetadata({ identity, satelliteId: Principal.fromText(canisterId) })
-			)
-		]);
-
-		const missionControlsMetadata = await Promise.all([
-			...missionControls.map(({ canisterId }) =>
-				getMissionControlVersionMetadata({
+		const metadata = await Promise.all([
+			...satellites.map(async ({ canisterId }) => ({
+				canisterId,
+				value: await getSatelliteVersionMetadata({
+					identity,
+					satelliteId: Principal.fromText(canisterId)
+				})
+			})),
+			...missionControls.map(async ({ canisterId }) => ({
+				canisterId,
+				value: await getMissionControlVersionMetadata({
 					identity,
 					missionControlId: Principal.fromText(canisterId)
 				})
-			)
+			})),
+			...orbiters.map(async ({ canisterId }) => ({
+				canisterId,
+				value: await getOrbiterVersionMetadata({
+					identity,
+					orbiterId: Principal.fromText(canisterId)
+				})
+			}))
 		]);
 
-		const orbitersMetadata = await Promise.all([
-			...orbiters.map(({ canisterId }) =>
-				getOrbiterVersionMetadata({ identity, orbiterId: Principal.fromText(canisterId) })
-			)
-		]);
+		const now = new Date().getTime();
 
-		console.log(satellitesMetadata, missionControlsMetadata, orbitersMetadata);
+		const toCachedMetadata = ({
+			knownMetadata,
+			value
+		}: {
+			knownMetadata: CachedVersionMetadata | CachedSatelliteVersionMetadata | undefined;
+			value: Omit<VersionMetadata, 'release'>;
+		}): CachedVersionMetadata | CachedSatelliteVersionMetadata => ({
+			value,
+			createdAt: knownMetadata?.createdAt ?? now,
+			updatedAt: now
+		});
+
+		await setMany(
+			metadata
+				.filter(({ value }) => 'metadata' in value && nonNullish(value.metadata))
+				.map(({ canisterId, value }) => [
+					canisterId,
+					toCachedMetadata({
+						// @ts-expect-error map does not infer the filter
+						value: value.metadata,
+						knownMetadata: knownMetadata.find(
+							({ canisterId: knownCanisterId }) => knownCanisterId === canisterId
+						)?.value
+					})
+				]),
+			versionIdbStore
+		);
 
 		return { result: 'loaded' };
 	} catch (err: unknown) {

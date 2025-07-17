@@ -12,7 +12,7 @@ import type {
 	PostMessageDataResponseWalletCleanUpSchema,
 	PostMessageDataResponseWalletSchema,
 	PostMessageRequestSchema
-} from '$lib/schema/post-message.schema';
+} from '$lib/schemas/post-message.schema';
 import type * as z from 'zod/v4';
 
 // Request

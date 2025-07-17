@@ -1,5 +1,4 @@
 <script lang="ts">
-	import { nonNullish } from '@dfinity/utils';
 	import { setContext } from 'svelte';
 	import { writable } from 'svelte/store';
 	import ChangesDock from '$lib/components/changes/list/ChangesDock.svelte';
@@ -8,7 +7,6 @@
 	import Loaders from '$lib/components/loaders/Loaders.svelte';
 	import Tabs from '$lib/components/ui/Tabs.svelte';
 	import UpgradeDock from '$lib/components/upgrade/list/UpgradeDock.svelte';
-	import { missionControlIdDerived } from '$lib/derived/mission-control.derived';
 	import {
 		type Tab,
 		TABS_CONTEXT_KEY,
@@ -42,12 +40,10 @@
 	<Tabs help="https://juno.build/docs/build/authentication">
 		<Loaders>
 			<MissionControlGuard>
-				{#if nonNullish($missionControlIdDerived)}
-					{#if $store.tabId === $store.tabs[0].id}
-						<UpgradeDock missionControlId={$missionControlIdDerived} />
-					{:else if $store.tabId === $store.tabs[1].id}
-						<ChangesDock />
-					{/if}
+				{#if $store.tabId === $store.tabs[0].id}
+					<UpgradeDock />
+				{:else if $store.tabId === $store.tabs[1].id}
+					<ChangesDock />
 				{/if}
 			</MissionControlGuard>
 		</Loaders>

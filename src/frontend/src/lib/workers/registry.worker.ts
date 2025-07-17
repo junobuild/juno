@@ -434,14 +434,18 @@ const prepareSyncData = async ({
 		const data: PostMessageDataResponseRegistry = {
 			registry: {
 				satellites: registrySatellites,
-				missionControl: {
-					...registryMissionControl,
-					release: newestMissionControlRelease
-				},
-				orbiter: {
-					...registryOrbiter,
-					release: newestOrbiterRelease
-				}
+				missionControl: nonNullish(registryMissionControl)
+					? {
+							...registryMissionControl,
+							release: newestMissionControlRelease
+						}
+					: null,
+				orbiter: nonNullish(registryOrbiter)
+					? {
+							...registryOrbiter,
+							release: newestOrbiterRelease
+						}
+					: null
 			}
 		};
 

@@ -6,13 +6,6 @@
 	import { satellitesStore } from '$lib/derived/satellites.derived';
 	import { hasPendingUpgrades } from '$lib/derived/upgrade.derived';
 	import { i18n } from '$lib/stores/i18n.store';
-	import type { MissionControlId } from '$lib/types/mission-control';
-
-	interface Props {
-		missionControlId: MissionControlId;
-	}
-
-	let { missionControlId }: Props = $props();
 
 	let innerWidth = $state(0);
 
@@ -21,7 +14,7 @@
 
 <svelte:window bind:innerWidth />
 
-<UpgradeDockLoader {missionControlId}>
+<UpgradeDockLoader>
 	<div class="table-container">
 		<table>
 			<thead>

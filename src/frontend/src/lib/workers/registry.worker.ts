@@ -214,7 +214,7 @@ const findOutdatedVersions = async ({
 			([_, cachedVersion]) => cachedVersion.updatedAt < releasesLastUpdatedAt
 		);
 
-		return { result: 'ok', outdatedVersions };
+		return { result: 'ok', outdatedVersions: [...outdatedVersions, ...newVersions] };
 	} catch (err: unknown) {
 		return { result: 'error', err };
 	}
@@ -329,94 +329,126 @@ const reduceOutdatedSegments = ({
 };
 
 const syncRegistry = async ({ segments }: { segments: CanisterSegment[] }) => {
-	const cachedVersions = await entries<
-		CanisterIdText,
-		CachedVersionMetadata | CachedSatelliteVersionMetadata
-	>(versionIdbStore);
+	const resultPrepare = await prepareSyncData({ segments });
 
-	// TODO: assert non nullish cachedVersions
+	if (resultPrepare.result === 'error') {
+		postMessageError(resultPrepare.err);
+		return;
+	}
 
-	const [cachedMissionControlReleases, cachedOrbiterReleases, cachedSatelliteReleases] =
-		await getMany<CachedMetadataVersions | undefined>(
-			[
-				CACHED_RELEASES_MISSIONS_CONTROL_KEY,
-				CACHED_RELEASES_ORBITERS_KEY,
-				CACHED_RELEASES_SATELLITES_KEY
-			],
-			releasesIdbStore
-		);
-
-	// TODO: assert non nullish cachedReleases
-
-	// TODO: can throw error
-	const {
-		satellite: newestSatelliteRelease,
-		mission_control: newestMissionControlRelease,
-		orbiter: newestOrbiterRelease
-	} = findNewestReleasesMetadata({
-		metadata: {
-			orbiters: cachedOrbiterReleases!.value,
-			mission_controls: cachedMissionControlReleases!.value,
-			satellites: cachedSatelliteReleases!.value
-		}
-	});
-
-	const { satellites, missionControls, orbiters } = groupSegments(segments);
-
-	const registrySatellites = cachedVersions
-		.filter(
-			([cachedCanisterId]) =>
-				satellites.find(({ canisterId }) => canisterId === cachedCanisterId) !== undefined
-		)
-		.reduce<Record<SatelliteIdText, SatelliteVersionMetadata>>(
-			(acc, [canisterId, cachedValue]) => ({
-				...acc,
-				[canisterId]: {
-					...cachedValue.value,
-					// For TypeScript simplicity reasons
-					build: 'build' in cachedValue.value ? cachedValue.value.build : 'stock',
-					release: newestSatelliteRelease
-				}
-			}),
-			{}
-		);
-
-	const [registryMissionControl, ...restMissionControls] = cachedVersions
-		.filter(
-			([cachedCanisterId]) =>
-				missionControls.find(({ canisterId }) => canisterId === cachedCanisterId) !== undefined
-		)
-		.map(([_, { value }]) => value);
-
-	// TODO: if restMissionControls.length > 0 => error
-
-	const [registryOrbiter, ...restOrbiters] = cachedVersions
-		.filter(
-			([cachedCanisterId]) =>
-				orbiters.find(({ canisterId }) => canisterId === cachedCanisterId) !== undefined
-		)
-		.map(([_, { value }]) => value);
-
-	// TODO: if restOrbiters.length > 0 => error
-
-	const data: PostMessageDataResponseRegistry = {
-		registry: {
-			satellites: registrySatellites,
-			missionControl: {
-				...registryMissionControl,
-				release: newestMissionControlRelease
-			},
-			orbiter: {
-				...registryOrbiter,
-				release: newestOrbiterRelease
-			}
-		}
-	};
+	const { data } = resultPrepare;
 
 	postMessage({
 		msg: 'syncRegistry',
 		data
 	});
+};
+
+const prepareSyncData = async ({
+	segments
+}: {
+	segments: CanisterSegment[];
+}): Promise<
+	{ result: 'ok'; data: PostMessageDataResponseRegistry } | { result: 'error'; err: unknown }
+> => {
+	try {
+		const cachedVersions = await entries<
+			CanisterIdText,
+			CachedVersionMetadata | CachedSatelliteVersionMetadata
+		>(versionIdbStore);
+
+		const [cachedMissionControlReleases, cachedOrbiterReleases, cachedSatelliteReleases] =
+			await getMany<CachedMetadataVersions | undefined>(
+				[
+					CACHED_RELEASES_MISSIONS_CONTROL_KEY,
+					CACHED_RELEASES_ORBITERS_KEY,
+					CACHED_RELEASES_SATELLITES_KEY
+				],
+				releasesIdbStore
+			);
+
+		// It throws an error if satellite, mission_control or orbiter is not resolved - i.e. we expect at least a module
+		// per type to be released by Juno, which, is the case.
+		const {
+			satellite: newestSatelliteRelease,
+			mission_control: newestMissionControlRelease,
+			orbiter: newestOrbiterRelease
+		} = findNewestReleasesMetadata({
+			metadata: {
+				orbiters: cachedOrbiterReleases?.value ?? [],
+				mission_controls: cachedMissionControlReleases?.value ?? [],
+				satellites: cachedSatelliteReleases?.value ?? []
+			}
+		});
+
+		const { satellites, missionControls, orbiters } = groupSegments(segments);
+
+		const registrySatellites = cachedVersions
+			.filter(
+				([cachedCanisterId]) =>
+					satellites.find(({ canisterId }) => canisterId === cachedCanisterId) !== undefined
+			)
+			.reduce<Record<SatelliteIdText, SatelliteVersionMetadata>>(
+				(acc, [canisterId, cachedValue]) => ({
+					...acc,
+					[canisterId]: {
+						...cachedValue.value,
+						// For TypeScript simplicity reasons
+						build: 'build' in cachedValue.value ? cachedValue.value.build : 'stock',
+						release: newestSatelliteRelease
+					}
+				}),
+				{}
+			);
+
+		const [registryMissionControl, ...restMissionControls] = cachedVersions
+			.filter(
+				([cachedCanisterId]) =>
+					missionControls.find(({ canisterId }) => canisterId === cachedCanisterId) !== undefined
+			)
+			.map(([_, { value }]) => value);
+
+		if (restMissionControls.length > 0) {
+			return {
+				result: 'error',
+				err: new Error(
+					'More than one Mission Control provided to load the version. This is unexpected!'
+				)
+			};
+		}
+
+		const [registryOrbiter, ...restOrbiters] = cachedVersions
+			.filter(
+				([cachedCanisterId]) =>
+					orbiters.find(({ canisterId }) => canisterId === cachedCanisterId) !== undefined
+			)
+			.map(([_, { value }]) => value);
+
+		if (restOrbiters.length > 0) {
+			return {
+				result: 'error',
+				err: new Error('More than one Orbiter provided to load the version. This is unexpected!')
+			};
+		}
+
+		const data: PostMessageDataResponseRegistry = {
+			registry: {
+				satellites: registrySatellites,
+				missionControl: {
+					...registryMissionControl,
+					release: newestMissionControlRelease
+				},
+				orbiter: {
+					...registryOrbiter,
+					release: newestOrbiterRelease
+				}
+			}
+		};
+
+		return { result: 'ok', data };
+	} catch (error: unknown) {
+		return { result: 'error', err: error };
+	}
 };
 
 const groupSegments = (

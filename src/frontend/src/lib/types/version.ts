@@ -1,4 +1,7 @@
-import type { SatelliteVersionMetadataSchema, VersionMetadataSchema } from '$lib/schemas/version.schema';
+import type {
+	SatelliteVersionMetadataSchema,
+	VersionMetadataSchema
+} from '$lib/schemas/version.schema';
 import type { OptionIdentity } from '$lib/types/itentity';
 import type * as z from 'zod/v4';
 

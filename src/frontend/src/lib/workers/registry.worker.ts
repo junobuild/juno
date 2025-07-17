@@ -51,18 +51,33 @@ const loadRegistry = async ({ data: { segments } }: { data: PostMessageDataReque
 		return;
 	}
 
+	const { cachedReleases } = result;
+
 	// TODO: do something if segments is nullish?
-	await loadVersions({ identity, segments: segments ?? [] });
+	const outdatedVersions = await findOutdatedVersions({
+		segments: segments ?? [],
+		cachedReleases
+	});
 
 	// TODO: postMessage releases for UI stores ?
 
-	if (result.result === 'skip') {
+	if (outdatedVersions.length === 0) {
 		return;
 	}
+
+	// TODO: do something if segments is nullish?
+	const outdatedSegments = reduceOutdatedSegments({
+		segments: segments ?? [],
+		outdatedVersions
+	});
+
+	// TODO: do something if segments is nullish?
+	await loadVersions({ identity, outdatedSegments });
 };
 
 const loadReleases = async (): Promise<
-	{ result: 'loaded' | 'skip' } | { result: 'error'; err: unknown }
+	| { result: 'loaded' | 'skipped'; cachedReleases: CachedReleases }
+	| { result: 'error'; err: unknown }
 > => {
 	try {
 		const { mission_controls, orbiters, satellites, releases } = await getReleasesMetadata();
@@ -86,7 +101,7 @@ const loadReleases = async (): Promise<
 		if (nonNullish(newestKnownRelease) && newestKnownRelease.tag === newestFetchedRelease?.tag) {
 			// If there is no new releases, we do not need to update the saved metadata.
 			// This way we can have some logic based on the timestamp at which we collected the data.
-			return { result: 'skip' };
+			return { result: 'skipped', cachedReleases: knownReleases };
 		}
 
 		const now = new Date().getTime();
@@ -134,59 +149,77 @@ const loadReleases = async (): Promise<
 			releasesIdbStore
 		);
 
-		return { result: 'loaded' };
+		return { result: 'loaded', cachedReleases: updateCachedReleases };
 	} catch (err: unknown) {
 		return { result: 'error', err };
 	}
 };
 
+type OptionCachedVersionMetadata =
+	| CachedVersionMetadata
+	| CachedSatelliteVersionMetadata
+	| undefined;
+
+type OutdatedCachedVersions = [CanisterIdText, OptionCachedVersionMetadata][];
+
+const findOutdatedVersions = async ({
+	segments,
+	cachedReleases
+}: {
+	segments: CanisterSegment[];
+	cachedReleases: CachedReleases;
+}): Promise<OutdatedCachedVersions> => {
+	const cachedVersions = await entries<
+		CanisterIdText,
+		CachedVersionMetadata | CachedSatelliteVersionMetadata
+	>(versionIdbStore);
+
+	// The versions that have not yet been cached
+	const newVersions = segments
+		.filter(
+			({ canisterId }) =>
+				cachedVersions.find(([cachedCanisterId]) => cachedCanisterId === canisterId) === undefined
+		)
+		.map<[CanisterIdText, undefined]>(({ canisterId }) => [canisterId, undefined]);
+
+	// The cached versions that have been fetched before the newest release
+	const { updatedAt: releasesLastUpdatedAt } = cachedReleases;
+
+	const outdatedVersions = cachedVersions.filter(
+		([_, cachedVersion]) => cachedVersion.updatedAt < releasesLastUpdatedAt
+	);
+
+	return [...outdatedVersions, ...newVersions];
+};
+
 const loadVersions = async ({
 	identity,
-	segments
+	outdatedSegments
 }: {
 	identity: Identity;
-	segments: CanisterSegment[];
+	outdatedSegments: OutdatedSegments;
 }): Promise<{ result: 'loaded' } | { result: 'error'; err: unknown }> => {
 	try {
-		const { satellites, missionControls, orbiters } = segments.reduce<{
-			satellites: CanisterSegment[];
-			missionControls: CanisterSegment[];
-			orbiters: CanisterSegment[];
-		}>(
-			({ satellites, missionControls, orbiters }, { segment, ...rest }) => ({
-				satellites: [...satellites, ...(segment === 'satellite' ? [{ segment, ...rest }] : [])],
-				missionControls: [
-					...missionControls,
-					...(segment === 'mission_control' ? [{ segment, ...rest }] : [])
-				],
-				orbiters: [...orbiters, ...(segment === 'orbiter' ? [{ segment, ...rest }] : [])]
-			}),
-			{ satellites: [], missionControls: [], orbiters: [] }
-		);
-
-		const knownMetadata = await entries<
-			CanisterIdText,
-			CachedVersionMetadata | CachedSatelliteVersionMetadata
-		>(versionIdbStore);
+		const { satellites, missionControls, orbiters } = outdatedSegments;
 
 		// TODO check if something to do
 
 		const metadata = await Promise.all([
-			...satellites.map(async ({ canisterId }) => ({
+			...satellites.map(async ([{ canisterId }]) => ({
 				canisterId,
 				value: await getSatelliteVersionMetadata({
 					identity,
 					satelliteId: Principal.fromText(canisterId)
 				})
 			})),
-			...missionControls.map(async ({ canisterId }) => ({
+			...missionControls.map(async ([{ canisterId }]) => ({
 				canisterId,
 				value: await getMissionControlVersionMetadata({
 					identity,
 					missionControlId: Principal.fromText(canisterId)
 				})
 			})),
-			...orbiters.map(async ({ canisterId }) => ({
+			...orbiters.map(async ([{ canisterId }]) => ({
 				canisterId,
 				value: await getOrbiterVersionMetadata({
 					identity,
@@ -195,13 +228,19 @@ const loadVersions = async ({
 			}))
 		]);
 
+		const knownMetadata = [
+			...satellites.map((satellite) => satellite),
+			...missionControls.map((missionControl) => missionControl),
+			...orbiters.map((orbiter) => orbiter)
+		];
+
 		const now = new Date().getTime();
 
 		const toCachedMetadata = ({
 			knownMetadata,
 			value
 		}: {
-			knownMetadata: CachedVersionMetadata | CachedSatelliteVersionMetadata | undefined;
+			knownMetadata: OptionCachedVersionMetadata;
 			value: Omit<VersionMetadata, 'release'>;
 		}): CachedVersionMetadata | CachedSatelliteVersionMetadata => ({
 			value,
@@ -218,7 +257,7 @@ const loadVersions = async ({
 						// @ts-expect-error map does not infer the filter
 						value: value.metadata,
 						knownMetadata: knownMetadata.find(
-							([knownCanisterId]) => knownCanisterId === canisterId
+							([knownSegment]) => knownSegment.canisterId === canisterId
 						)?.[1]
 					})
 				]),
@@ -229,4 +268,50 @@ const loadVersions = async ({
 	} catch (err: unknown) {
 		return { result: 'error', err };
 	}
+};
+
+type OutdatedSegment = [CanisterSegment, OptionCachedVersionMetadata];
+
+interface OutdatedSegments {
+	satellites: OutdatedSegment[];
+	missionControls: OutdatedSegment[];
+	orbiters: OutdatedSegment[];
+}
+
+const reduceOutdatedSegments = ({
+	outdatedVersions,
+	segments
+}: {
+	outdatedVersions: OutdatedCachedVersions;
+	segments: CanisterSegment[];
+}): OutdatedSegments => {
+	const { satellites, missionControls, orbiters } = segments.reduce<{
+		satellites: CanisterSegment[];
+		missionControls: CanisterSegment[];
+		orbiters: CanisterSegment[];
+	}>(
+		({ satellites, missionControls, orbiters }, { segment, ...rest }) => ({
+			satellites: [...satellites, ...(segment === 'satellite' ? [{ segment, ...rest }] : [])],
+			missionControls: [
+				...missionControls,
+				...(segment === 'mission_control' ? [{ segment, ...rest }] : [])
+			],
+			orbiters: [...orbiters, ...(segment === 'orbiter' ? [{ segment, ...rest }] : [])]
+		}),
+		{ satellites: [], missionControls: [], orbiters: [] }
+	);
+
+	const mapOutdatedSegments = (segments: CanisterSegment[]): OutdatedSegment[] =>
+		segments.map((segment) => [
+			segment,
+			outdatedVersions.find(
+				([outdatedCanisterId]) => outdatedCanisterId === segment.canisterId
+			)?.[1]
+		]);
+
+	return {
+		satellites: mapOutdatedSegments(satellites),
+		missionControls: mapOutdatedSegments(missionControls),
+		orbiters: mapOutdatedSegments(orbiters)
+	};
 };

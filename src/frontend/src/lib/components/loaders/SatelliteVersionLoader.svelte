@@ -34,6 +34,4 @@
 	});
 </script>
 
-<svelte:window onjunoReloadVersions={async () => await load(false)} />
-
 {@render children()}

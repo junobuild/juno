@@ -31,7 +31,11 @@
 			return;
 		}
 
-		await reloadOrbiterVersion({ orbiter, skipReload, identity: $authStore.identity });
+		await reloadOrbiterVersion({
+			orbiterId: orbiter?.orbiter_id,
+			skipReload,
+			identity: $authStore.identity
+		});
 	};
 
 	$effect(() => {
@@ -42,10 +46,5 @@
 		loadVersion({ orbiter: $orbiterStore, skipReload: true });
 	});
 </script>
-
-<svelte:window
-	onjunoReloadVersions={async () =>
-		await loadVersion({ orbiter: $orbiterStore, skipReload: false })}
-/>
 
 {@render children()}

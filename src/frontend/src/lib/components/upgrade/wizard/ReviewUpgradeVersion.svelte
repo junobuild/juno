@@ -14,8 +14,17 @@
 		onclose: () => void;
 	} & Omit<UpgradeParams, 'identity'>;
 
-	let { upgrade, segment, wasm, takeSnapshot, canisterId, nextSteps, onProgress, onclose }: Props =
-		$props();
+	let {
+		upgrade,
+		segment,
+		wasm,
+		takeSnapshot,
+		canisterId,
+		nextSteps,
+		onProgress,
+		onclose,
+		reloadVersion
+	}: Props = $props();
 
 	const onSubmit = async ($event: SubmitEvent) => {
 		$event.preventDefault();
@@ -24,6 +33,7 @@
 			onProgress,
 			wasm,
 			upgrade,
+			reloadVersion,
 			nextSteps,
 			takeSnapshot,
 			canisterId,

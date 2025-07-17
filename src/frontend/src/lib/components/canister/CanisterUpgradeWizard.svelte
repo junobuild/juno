@@ -12,6 +12,7 @@
 		upgrade: ({
 			wasmModule
 		}: Pick<UpgradeCodeParams, 'wasmModule' | 'takeSnapshot'>) => Promise<void>;
+		reloadVersion: () => Promise<void>;
 		intro: Snippet;
 		onclose: () => void;
 		canisterId: Principal;
@@ -43,6 +44,7 @@
 		showUpgradeExtendedWarning = false,
 		segment,
 		upgrade,
+		reloadVersion,
 		intro,
 		onclose,
 		canisterId,
@@ -89,6 +91,7 @@
 		{wasm}
 		{segment}
 		{upgrade}
+		{reloadVersion}
 		nextSteps={(next) => (step = next)}
 		{onProgress}
 		{onclose}

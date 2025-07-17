@@ -16,6 +16,7 @@ export interface VersionStore extends Readable<VersionStoreData> {
 		version: Option<SatelliteVersionMetadata>;
 	}) => void;
 	setOrbiter: (version: VersionMetadata | null) => void;
+	setAll: (state: VersionStoreData) => void;
 	reset: () => void;
 }
 
@@ -53,6 +54,10 @@ const initVersionStore = (): VersionStore => {
 				...state,
 				orbiter: version
 			}));
+		},
+
+		setAll(state) {
+			set(state);
 		},
 
 		reset: () => set(INITIAL)

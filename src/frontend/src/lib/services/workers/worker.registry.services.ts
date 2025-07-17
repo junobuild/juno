@@ -1,6 +1,11 @@
+import { onRegistryError, onSyncRegistry } from '$lib/services/version/version.loader.services';
 import { AppWorker } from '$lib/services/workers/_worker.services';
 import type { CanisterSegment } from '$lib/types/canister';
-import type { PostMessages } from '$lib/types/post-message';
+import type {
+	PostMessageDataResponseError,
+	PostMessageDataResponseRegistry,
+	PostMessages
+} from '$lib/types/post-message';
 
 export class RegistryWorker extends AppWorker {
 	constructor(worker: Worker) {
@@ -11,10 +16,12 @@ export class RegistryWorker extends AppWorker {
 
 			switch (msg) {
 				case 'syncRegistry':
-					// TODO update version.store with data.data as PostMessageDataResponseRegistry
+					onSyncRegistry(data.data as PostMessageDataResponseRegistry);
 					return;
 				case 'syncRegistryError':
-					// TODO: error
+					onRegistryError({
+						error: (data.data as PostMessageDataResponseError).error
+					});
 					return;
 			}
 		};

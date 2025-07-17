@@ -25,3 +25,4 @@ export class RegistryWorker extends AppWorker {
 		});
 	};
 }
+

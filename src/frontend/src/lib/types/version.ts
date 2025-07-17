@@ -1,29 +1,13 @@
+import type {
+	SatelliteVersionMetadataSchema,
+	VersionMetadataSchema
+} from '$lib/schemas/version.schema';
 import type { OptionIdentity } from '$lib/types/itentity';
-import type { BuildType } from '@junobuild/admin';
-import type { JunoPackage } from '@junobuild/config';
+import type * as z from 'zod/v4';
 
-export interface VersionMetadata {
-	release: string;
-	/**
-	 * The version of the module as published by Juno and required in the eco-system.
-	 *
-	 * For the Satellite, if stock (no dependencies), then pkg.version
-	 * If serverless functions, then pkg.dependencies[junobuild/satellite].version
-	 */
-	current: string;
-	pkg?: JunoPackage;
-}
+export type VersionMetadata = z.infer<typeof VersionMetadataSchema>;
 
-export interface SatelliteVersionMetadata extends VersionMetadata {
-	/**
-	 * @deprecated use JunoPackage instead
-	 */
-	currentBuild?: string;
-	/**
-	 * @deprecated use JunoPackage instead
-	 */
-	build: BuildType;
-}
+export type SatelliteVersionMetadata = z.infer<typeof SatelliteVersionMetadataSchema>;
 
 export interface LoadVersionBaseParams {
 	skipReload: boolean;

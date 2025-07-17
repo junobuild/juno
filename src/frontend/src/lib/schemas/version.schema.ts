@@ -1,3 +1,4 @@
+import { CachedValueSchema } from '$lib/schemas/_cache.schema';
 import { BuildTypeSchema, MetadataVersionSchema } from '@junobuild/admin';
 import { JunoPackageSchema } from '@junobuild/config';
 import * as z from 'zod/v4';
@@ -38,3 +39,11 @@ export const SatelliteVersionMetadataSchema = z.strictObject({
 	 */
 	build: BuildTypeSchema
 });
+
+export const CachedVersionMetadataSchema = CachedValueSchema(
+	VersionMetadataSchema.omit({ release: true })
+);
+
+export const CachedSatelliteVersionMetadataSchema = CachedValueSchema(
+	SatelliteVersionMetadataSchema.omit({ release: true })
+);

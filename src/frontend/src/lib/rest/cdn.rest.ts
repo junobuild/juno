@@ -30,7 +30,14 @@ export const getNewestReleasesMetadata = async (): Promise<
 	Required<Pick<ReleaseMetadata, 'satellite' | 'mission_control' | 'orbiter'>>
 > => {
 	const metadata = await getReleasesMetadata();
+	return findNewestReleasesMetadata({ metadata });
+};
 
+export const findNewestReleasesMetadata = ({
+	metadata
+}: {
+	metadata: Omit<ReleasesMetadata, 'releases'>;
+}): Required<Pick<ReleaseMetadata, 'satellite' | 'mission_control' | 'orbiter'>> => {
 	const newest = (
 		segmentKeys: 'satellites' | 'mission_controls' | 'orbiters'
 	): string | undefined => last((metadata[segmentKeys] ?? []).sort((a, b) => compare(a, b)));

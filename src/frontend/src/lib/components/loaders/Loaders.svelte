@@ -1,6 +1,6 @@
 <script lang="ts">
 	import type { Snippet } from 'svelte';
-	import CanistersLoader from '$lib/components/loaders/CanistersLoader.svelte';
+	import MetadataLoader from '$lib/components/loaders/MetadataLoader.svelte';
 	import OrbitersLoader from '$lib/components/loaders/OrbitersLoader.svelte';
 	import SatellitesLoader from '$lib/components/loaders/SatellitesLoader.svelte';
 	import WalletLoader from '$lib/components/loaders/WalletLoader.svelte';
@@ -18,9 +18,9 @@
 <WalletLoader>
 	<SatellitesLoader>
 		<OrbitersLoader withVersion={withOrbiterVersion}>
-			<CanistersLoader {monitoring} satellites={$sortedSatellites}>
+			<MetadataLoader {monitoring} satellites={$sortedSatellites}>
 				{@render children()}
-			</CanistersLoader>
+			</MetadataLoader>
 		</OrbitersLoader>
 	</SatellitesLoader>
 </WalletLoader>

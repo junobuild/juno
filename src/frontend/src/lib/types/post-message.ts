@@ -9,6 +9,7 @@ import type {
 	PostMessageDataResponseErrorSchema,
 	PostMessageDataResponseExchangeSchema,
 	PostMessageDataResponseHostingSchema,
+	PostMessageDataResponseRegistrySchema,
 	PostMessageDataResponseWalletCleanUpSchema,
 	PostMessageDataResponseWalletSchema,
 	PostMessageRequestSchema
@@ -42,6 +43,8 @@ export type PostMessageDataResponseCanistersMonitoring = z.infer<
 >;
 
 export type PostMessageDataResponseHosting = z.infer<typeof PostMessageDataResponseHostingSchema>;
+
+export type PostMessageDataResponseRegistry = z.infer<typeof PostMessageDataResponseRegistrySchema>;
 
 export type PostMessageDataResponseExchange = z.infer<typeof PostMessageDataResponseExchangeSchema>;
 

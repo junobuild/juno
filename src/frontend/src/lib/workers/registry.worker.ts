@@ -1,20 +1,26 @@
 import {
 	CACHED_RELEASES_KEY,
-	CACHED_RELEASES_MISSION_CONTROLS_KEY,
+	CACHED_RELEASES_MISSIONS_CONTROL_KEY,
 	CACHED_RELEASES_ORBITERS_KEY,
 	CACHED_RELEASES_SATELLITES_KEY
 } from '$lib/constants/releases.constants';
-import { getReleasesMetadata } from '$lib/rest/cdn.rest';
+import { findNewestReleasesMetadata, getReleasesMetadata } from '$lib/rest/cdn.rest';
 import { getMissionControlVersionMetadata } from '$lib/services/version/version.metadata.mission-control.services';
 import { getOrbiterVersionMetadata } from '$lib/services/version/version.metadata.orbiter.services';
 import { getSatelliteVersionMetadata } from '$lib/services/version/version.metadata.satellite.services';
 import { releasesIdbStore, versionIdbStore } from '$lib/stores/idb.store';
 import type { CanisterIdText, CanisterSegment } from '$lib/types/canister';
-import type { PostMessageDataRequest, PostMessageRequest } from '$lib/types/post-message';
+import type {
+	PostMessageDataRequest,
+	PostMessageDataResponseRegistry,
+	PostMessageRequest
+} from '$lib/types/post-message';
 import type { CachedMetadataVersions, CachedReleases } from '$lib/types/releases';
+import type { SatelliteIdText } from '$lib/types/satellite';
 import type {
 	CachedSatelliteVersionMetadata,
 	CachedVersionMetadata,
+	SatelliteVersionMetadata,
 	VersionMetadata
 } from '$lib/types/version';
 import { last } from '$lib/utils/utils';
@@ -62,6 +68,8 @@ const loadRegistry = async ({ data: { segments } }: { data: PostMessageDataReque
 	// TODO: postMessage releases for UI stores ?
 
 	if (outdatedVersions.length === 0) {
+		// TODO: do something if segments is nullish?
+		await syncRegistry({segments: segments ?? []});
 		return;
 	}
 
@@ -72,7 +80,10 @@ const loadRegistry = async ({ data: { segments } }: { data: PostMessageDataReque
 	});
 
 	// TODO: do something if segments is nullish?
-	await loadVersions({ identity, outdatedSegments });
+	await loadOutdatedVersions({ identity, outdatedSegments });
+
+	// TODO: do something if segments is nullish?
+	await syncRegistry({segments: segments ?? []});
 };
 
 const loadReleases = async (): Promise<
@@ -84,7 +95,7 @@ const loadReleases = async (): Promise<
 
 		const [knownMissionControls, knownOrbiters, knownSatellites, knownReleases] = await getMany(
 			[
-				CACHED_RELEASES_MISSION_CONTROLS_KEY,
+				CACHED_RELEASES_MISSIONS_CONTROL_KEY,
 				CACHED_RELEASES_ORBITERS_KEY,
 				CACHED_RELEASES_SATELLITES_KEY,
 				CACHED_RELEASES_KEY
@@ -141,7 +152,7 @@ const loadReleases = async (): Promise<
 
 		await setMany(
 			[
-				[CACHED_RELEASES_MISSION_CONTROLS_KEY, updateCachedMissionControls],
+				[CACHED_RELEASES_MISSIONS_CONTROL_KEY, updateCachedMissionControls],
 				[CACHED_RELEASES_ORBITERS_KEY, updateCachedOrbiters],
 				[CACHED_RELEASES_SATELLITES_KEY, updateCachedSatellites],
 				[CACHED_RELEASES_KEY, updateCachedReleases]
@@ -192,7 +203,7 @@ const findOutdatedVersions = async ({
 	return [...outdatedVersions, ...newVersions];
 };
 
-const loadVersions = async ({
+const loadOutdatedVersions = async ({
 	identity,
 	outdatedSegments
 }: {
@@ -285,21 +296,7 @@ const reduceOutdatedSegments = ({
 	outdatedVersions: OutdatedCachedVersions;
 	segments: CanisterSegment[];
 }): OutdatedSegments => {
-	const { satellites, missionControls, orbiters } = segments.reduce<{
-		satellites: CanisterSegment[];
-		missionControls: CanisterSegment[];
-		orbiters: CanisterSegment[];
-	}>(
-		({ satellites, missionControls, orbiters }, { segment, ...rest }) => ({
-			satellites: [...satellites, ...(segment === 'satellite' ? [{ segment, ...rest }] : [])],
-			missionControls: [
-				...missionControls,
-				...(segment === 'mission_control' ? [{ segment, ...rest }] : [])
-			],
-			orbiters: [...orbiters, ...(segment === 'orbiter' ? [{ segment, ...rest }] : [])]
-		}),
-		{ satellites: [], missionControls: [], orbiters: [] }
-	);
+	const { satellites, missionControls, orbiters } = groupSegments(segments);
 
 	const mapOutdatedSegments = (segments: CanisterSegment[]): OutdatedSegment[] =>
 		segments.map((segment) => [
@@ -315,3 +312,117 @@ const reduceOutdatedSegments = ({
 		orbiters: mapOutdatedSegments(orbiters)
 	};
 };
+
+const syncRegistry = async ({ segments }: { segments: CanisterSegment[] }) => {
+	const cachedVersions = await entries<
+		CanisterIdText,
+		CachedVersionMetadata | CachedSatelliteVersionMetadata
+	>(versionIdbStore);
+
+	// TODO: assert non nullish cachedVersions
+
+	const [cachedMissionControlReleases, cachedOrbiterReleases, cachedSatelliteReleases] =
+		await getMany<CachedMetadataVersions | undefined>(
+			[
+				CACHED_RELEASES_MISSIONS_CONTROL_KEY,
+				CACHED_RELEASES_ORBITERS_KEY,
+				CACHED_RELEASES_SATELLITES_KEY
+			],
+			releasesIdbStore
+		);
+
+	// TODO: assert non nullish cachedReleases
+
+	// TODO: can throw error
+	const {
+		satellite: newestSatelliteRelease,
+		mission_control: newestMissionControlRelease,
+		orbiter: newestOrbiterRelease
+	} = findNewestReleasesMetadata({
+		metadata: {
+			orbiters: cachedOrbiterReleases!.value,
+			mission_controls: cachedMissionControlReleases!.value,
+			satellites: cachedSatelliteReleases!.value
+		}
+	});
+
+	const { satellites, missionControls, orbiters } = groupSegments(segments);
+
+	const registrySatellites = cachedVersions
+		.filter(
+			([cachedCanisterId]) =>
+				satellites.find(({ canisterId }) => canisterId === cachedCanisterId) !== undefined
+		)
+		.reduce<Record<SatelliteIdText, SatelliteVersionMetadata>>(
+			(acc, [canisterId, cachedValue]) => ({
+				...acc,
+				[canisterId]: {
+					...cachedValue.value,
+					// For TypeScript simplicity reasons
+					build: "build" in cachedValue.value ? cachedValue.value.build : "stock",
+					release: newestSatelliteRelease
+				}
+			}),
+			{}
+		);
+
+	const [registryMissionControl, ...restMissionControls] = cachedVersions
+		.filter(
+			([cachedCanisterId]) =>
+				missionControls.find(({ canisterId }) => canisterId === cachedCanisterId) !== undefined
+		)
+		.map(([_, { value }]) => value);
+
+	// TODO: if restMissionControls.length > 0 => error
+
+	const [registryOrbiter, ...restOrbiters] = cachedVersions
+		.filter(
+			([cachedCanisterId]) =>
+				orbiters.find(({ canisterId }) => canisterId === cachedCanisterId) !== undefined
+		)
+		.map(([_, { value }]) => value);
+
+	// TODO: if restOrbiters.length > 0 => error
+
+	const data: PostMessageDataResponseRegistry = {
+		registry: {
+			satellites: registrySatellites,
+			missionControl: {
+				...registryMissionControl,
+				release: newestMissionControlRelease
+			},
+			orbiter: {
+				...registryOrbiter,
+				release: newestOrbiterRelease
+			}
+		}
+	};
+
+	postMessage({
+		msg: 'syncRegistry',
+		data
+	});
+};
+
+const groupSegments = (
+	segments: CanisterSegment[]
+): {
+	satellites: CanisterSegment[];
+	missionControls: CanisterSegment[];
+	orbiters: CanisterSegment[];
+} =>
+	segments.reduce<{
+		satellites: CanisterSegment[];
+		missionControls: CanisterSegment[];
+		orbiters: CanisterSegment[];
+	}>(
+		({ satellites, missionControls, orbiters }, { segment, ...rest }) => ({
+			satellites: [...satellites, ...(segment === 'satellite' ? [{ segment, ...rest }] : [])],
+			missionControls: [
+				...missionControls,
+				...(segment === 'mission_control' ? [{ segment, ...rest }] : [])
+			],
+			orbiters: [...orbiters, ...(segment === 'orbiter' ? [{ segment, ...rest }] : [])]
+		}),
+		{ satellites: [], missionControls: [], orbiters: [] }
+	);

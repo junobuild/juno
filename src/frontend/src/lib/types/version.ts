@@ -6,6 +6,8 @@ import type {
 } from '$lib/schemas/version.schema';
 import type { OptionIdentity } from '$lib/types/itentity';
 import type * as z from 'zod/v4';
+import type { SatelliteIdText } from '$lib/types/satellite';
+import type { Option } from '$lib/types/utils';
 
 export type VersionMetadata = z.infer<typeof VersionMetadataSchema>;
 export type SatelliteVersionMetadata = z.infer<typeof SatelliteVersionMetadataSchema>;
@@ -26,3 +28,9 @@ export type LoadVersionResult =
 
 export type VersionMetadataUi = VersionMetadata & { warning: boolean };
 export type SatelliteVersionMetadataUi = SatelliteVersionMetadata & { warning: boolean };
+
+export interface VersionRegistry {
+	satellites: Record<SatelliteIdText, SatelliteVersionMetadata | undefined | null>;
+	missionControl: Option<VersionMetadata>;
+	orbiter: Option<VersionMetadata>;
+}

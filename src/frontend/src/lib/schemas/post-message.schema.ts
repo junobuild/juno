@@ -8,6 +8,7 @@ import type {
 } from '$lib/types/canister';
 import type { CustomDomainRegistrationState } from '$lib/types/custom-domain';
 import type { CertifiedData } from '$lib/types/store';
+import type { VersionRegistry } from '$lib/types/version';
 import * as z from 'zod/v4';
 
 export const PostMessageDataRequestDataSchema = z.object({
@@ -60,6 +61,10 @@ export const PostMessageDataResponseHostingSchema = z.object({
 	registrationState: z.custom<CustomDomainRegistrationState>().nullable().optional()
 });
 
+export const PostMessageDataResponseRegistrySchema = z.object({
+	registry: z.custom<VersionRegistry>()
+});
+
 const PostMessageDataResponseExchangeDataSchema = z.record(
 	CanisterIdTextSchema,
 	ExchangePriceSchema.nullable()
@@ -95,7 +100,8 @@ export const PostMessageResponseMsgSchema = z.enum([
 	'syncWallet',
 	'syncWalletCleanUp',
 	'syncWalletError',
-	'syncExchange'
+	'syncExchange',
+	'syncRegistry'
 ]);
 
 export const PostMessageRequestSchema = z.object({

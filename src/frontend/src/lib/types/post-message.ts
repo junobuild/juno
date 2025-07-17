@@ -1,17 +1,17 @@
-import type {
-	inferPostMessageSchema,
-	PostMessageDataRequestDataSchema,
-	PostMessageDataResponseAuthSchema,
-	PostMessageDataResponseCanisterMonitoringSchema,
-	PostMessageDataResponseCanistersMonitoringSchema,
-	PostMessageDataResponseCanistersSyncDataSchema,
-	PostMessageDataResponseCanisterSyncDataSchema,
-	PostMessageDataResponseErrorSchema,
-	PostMessageDataResponseExchangeSchema,
-	PostMessageDataResponseHostingSchema,
-	PostMessageDataResponseWalletCleanUpSchema,
-	PostMessageDataResponseWalletSchema,
-	PostMessageRequestSchema
+import {
+	type inferPostMessageSchema,
+	type PostMessageDataRequestDataSchema,
+	type PostMessageDataResponseAuthSchema,
+	type PostMessageDataResponseCanisterMonitoringSchema,
+	type PostMessageDataResponseCanistersMonitoringSchema,
+	type PostMessageDataResponseCanistersSyncDataSchema,
+	type PostMessageDataResponseCanisterSyncDataSchema,
+	type PostMessageDataResponseErrorSchema,
+	type PostMessageDataResponseExchangeSchema,
+	type PostMessageDataResponseHostingSchema, PostMessageDataResponseRegistrySchema,
+	type PostMessageDataResponseWalletCleanUpSchema,
+	type PostMessageDataResponseWalletSchema,
+	type PostMessageRequestSchema
 } from '$lib/schemas/post-message.schema';
 import type * as z from 'zod/v4';
 
@@ -42,6 +42,8 @@ export type PostMessageDataResponseCanistersMonitoring = z.infer<
 >;
 
 export type PostMessageDataResponseHosting = z.infer<typeof PostMessageDataResponseHostingSchema>;
+
+export type PostMessageDataResponseRegistry = z.infer<typeof PostMessageDataResponseRegistrySchema>;
 
 export type PostMessageDataResponseExchange = z.infer<typeof PostMessageDataResponseExchangeSchema>;
 

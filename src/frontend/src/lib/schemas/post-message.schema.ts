@@ -1,6 +1,6 @@
 import type { CustomDomain } from '$declarations/satellite/satellite.did';
-import { CanisterIdTextSchema } from '$lib/schema/canister.schema';
-import { ExchangePriceSchema } from '$lib/schema/exchange.schema';
+import { CanisterIdTextSchema } from '$lib/schemas/canister.schema';
+import { ExchangePriceSchema } from '$lib/schemas/exchange.schema';
 import type {
 	CanisterSegment,
 	CanisterSyncData,

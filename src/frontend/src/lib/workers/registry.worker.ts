@@ -12,6 +12,7 @@ import { releasesIdbStore, versionIdbStore } from '$lib/stores/idb.store';
 import type { CanisterIdText, CanisterSegment } from '$lib/types/canister';
 import type {
 	PostMessageDataRequest,
+	PostMessageDataResponseError,
 	PostMessageDataResponseRegistry,
 	PostMessageRequest
 } from '$lib/types/post-message';
@@ -43,6 +44,11 @@ export const onRegistryMessage = async ({ data: dataMsg }: MessageEvent<PostMess
 };
 
 const loadRegistry = async ({ data: { segments } }: { data: PostMessageDataRequest }) => {
+	if (isNullish(segments) || segments.length === 0) {
+		// We do nothing if there is no segments
+		return;
+	}
+
 	const identity = await loadIdentity();
 
 	if (isNullish(identity)) {
@@ -50,40 +56,45 @@ const loadRegistry = async ({ data: { segments } }: { data: PostMessageDataReque
 		return;
 	}
 
-	const result = await loadReleases();
+	const resultLoadReleases = await loadReleases();
 
-	if (result.result === 'error') {
-		// TODO: postMessage error
+	if (resultLoadReleases.result === 'error') {
+		postMessageError(resultLoadReleases.err);
 		return;
 	}
 
-	const { cachedReleases } = result;
+	const { cachedReleases } = resultLoadReleases;
 
-	// TODO: do something if segments is nullish?
-	const outdatedVersions = await findOutdatedVersions({
-		segments: segments ?? [],
+	const resultOutdatedVersions = await findOutdatedVersions({
+		segments,
 		cachedReleases
 	});
 
-	// TODO: postMessage releases for UI stores ?
-
-	if (outdatedVersions.length === 0) {
-		// TODO: do something if segments is nullish?
-		await syncRegistry({ segments: segments ?? [] });
+	if (resultOutdatedVersions.result === 'error') {
+		postMessageError(resultOutdatedVersions.err);
 		return;
 	}
 
-	// TODO: do something if segments is nullish?
+	const { outdatedVersions } = resultOutdatedVersions;
+
+	if (outdatedVersions.length === 0) {
+		await syncRegistry({ segments });
+		return;
+	}
+
 	const outdatedSegments = reduceOutdatedSegments({
-		segments: segments ?? [],
+		segments,
 		outdatedVersions
 	});
 
-	// TODO: do something if segments is nullish?
-	await loadOutdatedVersions({ identity, outdatedSegments });
+	const resultLoadVersions = await loadOutdatedVersions({ identity, outdatedSegments });
 
-	// TODO: do something if segments is nullish?
-	await syncRegistry({ segments: segments ?? [] });
+	if (resultLoadVersions.result === 'error') {
+		postMessageError(resultLoadVersions.err);
+		return;
+	}
+
+	await syncRegistry({ segments });
 };
 
 const loadReleases = async (): Promise<
@@ -179,28 +190,34 @@ const findOutdatedVersions = async ({
 }: {
 	segments: CanisterSegment[];
 	cachedReleases: CachedReleases;
-}): Promise<OutdatedCachedVersions> => {
-	const cachedVersions = await entries<
-		CanisterIdText,
-		CachedVersionMetadata | CachedSatelliteVersionMetadata
-	>(versionIdbStore);
+}): Promise<
+	{ result: 'ok'; outdatedVersions: OutdatedCachedVersions } | { result: 'error'; err: unknown }
+> => {
+	try {
+		const cachedVersions = await entries<
+			CanisterIdText,
+			CachedVersionMetadata | CachedSatelliteVersionMetadata
+		>(versionIdbStore);
 
-	// The versions that have not yet been cached
-	const newVersions = segments
-		.filter(
-			({ canisterId }) =>
-				cachedVersions.find(([cachedCanisterId]) => cachedCanisterId === canisterId) === undefined
-		)
-		.map<[CanisterIdText, undefined]>(({ canisterId }) => [canisterId, undefined]);
+		// The versions that have not yet been cached
+		const newVersions = segments
+			.filter(
+				({ canisterId }) =>
+					cachedVersions.find(([cachedCanisterId]) => cachedCanisterId === canisterId) === undefined
+			)
+			.map<[CanisterIdText, undefined]>(({ canisterId }) => [canisterId, undefined]);
 
-	// The cached versions that have been fetched before the newest release
-	const { updatedAt: releasesLastUpdatedAt } = cachedReleases;
+		// The cached versions that have been fetched before the newest release
+		const { updatedAt: releasesLastUpdatedAt } = cachedReleases;
 
-	const outdatedVersions = cachedVersions.filter(
-		([_, cachedVersion]) => cachedVersion.updatedAt < releasesLastUpdatedAt
-	);
+		const outdatedVersions = cachedVersions.filter(
+			([_, cachedVersion]) => cachedVersion.updatedAt < releasesLastUpdatedAt
+		);
 
-	return [...outdatedVersions, ...newVersions];
+		return { result: 'ok', outdatedVersions };
+	} catch (err: unknown) {
+		return { result: 'error', err };
+	}
 };
 
 const loadOutdatedVersions = async ({
@@ -209,11 +226,9 @@ const loadOutdatedVersions = async ({
 }: {
 	identity: Identity;
 	outdatedSegments: OutdatedSegments;
-}): Promise<{ result: 'loaded' } | { result: 'error'; err: unknown }> => {
+}): Promise<{ result: 'ok' } | { result: 'error'; err: unknown }> => {
 	try {
 		const { satellites, missionControls, orbiters } = outdatedSegments;
-
-		// TODO check if something to do
 
 		const metadata = await Promise.all([
 			...satellites.map(async ([{ canisterId }]) => ({
@@ -275,7 +290,7 @@ const loadOutdatedVersions = async ({
 			versionIdbStore
 		);
 
-		return { result: 'loaded' };
+		return { result: 'ok' };
 	} catch (err: unknown) {
 		return { result: 'error', err };
 	}
@@ -426,3 +441,14 @@ const groupSegments = (
 		}),
 		{ satellites: [], missionControls: [], orbiters: [] }
 	);
+
+const postMessageError = (error: unknown) => {
+	const data: PostMessageDataResponseError = {
+		error
+	};
+
+	postMessage({
+		msg: 'syncRegistryError',
+		data
+	});
+};

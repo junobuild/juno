@@ -102,7 +102,7 @@ export const PostMessageResponseMsgSchema = z.enum([
 	'syncWalletError',
 	'syncExchange',
 	'syncRegistry',
-	'syncRegistryError',
+	'syncRegistryError'
 ]);
 
 export const PostMessageRequestSchema = z.object({

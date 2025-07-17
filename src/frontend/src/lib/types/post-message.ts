@@ -1,5 +1,4 @@
 import type {
-	PostMessageDataResponseRegistrySchema,
 	inferPostMessageSchema,
 	PostMessageDataRequestDataSchema,
 	PostMessageDataResponseAuthSchema,
@@ -10,6 +9,7 @@ import type {
 	PostMessageDataResponseErrorSchema,
 	PostMessageDataResponseExchangeSchema,
 	PostMessageDataResponseHostingSchema,
+	PostMessageDataResponseRegistrySchema,
 	PostMessageDataResponseWalletCleanUpSchema,
 	PostMessageDataResponseWalletSchema,
 	PostMessageRequestSchema

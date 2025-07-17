@@ -5,6 +5,7 @@
 	import CanisterUpgradeModal from '$lib/components/modals/CanisterUpgradeModal.svelte';
 	import Html from '$lib/components/ui/Html.svelte';
 	import { missionControlIdDerived } from '$lib/derived/mission-control.derived';
+	import { reloadMissionControlVersion } from '$lib/services/version/version.mission-control.services';
 	import { authStore } from '$lib/stores/auth.store';
 	import { i18n } from '$lib/stores/i18n.store';
 	import type { JunoModalDetail, JunoModalUpgradeDetail } from '$lib/types/modal';
@@ -34,6 +35,17 @@
 			},
 			...params
 		});
+
+	const reloadVersion = async () => {
+		await reloadMissionControlVersion({
+			// TODO: resolve no-non-null-assertion
+			// We know for sure that the mission control is defined at this point.
+			// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+			missionControlId: $missionControlIdDerived!,
+			identity: $authStore.identity ?? new AnonymousIdentity(),
+			skipReload: false
+		});
+	};
 </script>
 
 {#if nonNullish($missionControlIdDerived)}
@@ -42,6 +54,7 @@
 		{newerReleases}
 		{currentVersion}
 		upgrade={upgradeMissionControlWasm}
+		{reloadVersion}
 		segment="mission_control"
 		canisterId={$missionControlIdDerived}
 	>

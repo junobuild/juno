@@ -56,8 +56,6 @@
 	});
 </script>
 
-<svelte:window onjunoReloadVersions={async () => await loadModulesVersions(false)} />
-
 {#if ['in_progress', 'init'].includes(loading)}
 	<div class="loading">
 		<SpinnerParagraph>{$i18n.core.loading}</SpinnerParagraph>

@@ -37,7 +37,7 @@ export const loadVersions = async ({
 		...(nonNullish(orbiter)
 			? [
 					reloadOrbiterVersion({
-						orbiter,
+						orbiterId: orbiter?.orbiter_id,
 						...commonParams
 					})
 				]

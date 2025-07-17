@@ -3,11 +3,11 @@ import {
 	CACHED_RELEASES_MISSION_CONTROLS_KEY,
 	CACHED_RELEASES_ORBITERS_KEY,
 	CACHED_RELEASES_SATELLITES_KEY
-} from '$lib/constants/registry.constants';
+} from '$lib/constants/releases.constants';
 import { getReleasesMetadata } from '$lib/rest/cdn.rest';
 import { releasesIdbStore } from '$lib/stores/idb.store';
 import type { PostMessageDataRequest, PostMessageRequest } from '$lib/types/post-message';
-import type { CachedReleases, CachedVersions } from '$lib/types/registry';
+import type { CachedReleases, CachedMetadataVersions } from '$lib/types/registry';
 import { last } from '$lib/utils/utils';
 import { nonNullish } from '@dfinity/utils';
 import type { MetadataVersions, ReleaseMetadata } from '@junobuild/admin';
@@ -25,7 +25,20 @@ export const onRegistryMessage = async ({ data: dataMsg }: MessageEvent<PostMess
 };
 
 const loadRegistry = async ({ data: { segments } }: { data: PostMessageDataRequest }) => {
-	await loadReleases();
+	const result = await loadReleases();
+
+	if (result.result === 'error') {
+		// TODO: postMessage error
+		return;
+	}
+
+	// TODO: postMessage releases for UI stores ?
+
+	if (result.result === 'skip') {
+		return;
+	}
+
+	await loadVersions();
 };
 
 const loadReleases = async (): Promise<
@@ -68,9 +81,9 @@ const loadReleases = async (): Promise<
 			knownVersions,
 			value
 		}: {
-			knownVersions: CachedVersions | undefined;
+			knownVersions: CachedMetadataVersions | undefined;
 			value: MetadataVersions;
-		}): CachedVersions => ({
+		}): CachedMetadataVersions => ({
 			value,
 			createdAt: knownVersions?.createdAt ?? now,
 			updatedAt: now
@@ -100,6 +113,18 @@ const loadReleases = async (): Promise<
 			],
 			releasesIdbStore
 		);
+
+		return { result: 'loaded' };
+	} catch (err: unknown) {
+		return { result: 'error', err: err };
+	}
+};
+
+const loadVersions = async (): Promise<
+	{ result: 'loaded' } | { result: 'error'; err: unknown }
+> => {
+	try {
+
 
 		return { result: 'loaded' };
 	} catch (err: unknown) {

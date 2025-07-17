@@ -3,4 +3,4 @@ import { MetadataVersionsSchema, ReleasesSchema } from '@junobuild/admin';
 
 export const CachedReleasesSchema = CachedValueSchema(ReleasesSchema);
 
-export const CachedVersionsSchema = CachedValueSchema(MetadataVersionsSchema);
+export const CachedMetadataVersionsSchema = CachedValueSchema(MetadataVersionsSchema);

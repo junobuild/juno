@@ -13,6 +13,9 @@ export class RegistryWorker extends AppWorker {
 				case 'syncRegistry':
 					// TODO update version.store with data.data as PostMessageDataResponseRegistry
 					return;
+				case 'syncRegistryError':
+					// TODO: error
+					return;
 			}
 		};
 	}

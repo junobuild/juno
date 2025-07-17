@@ -5,11 +5,14 @@ import {
 	CACHED_RELEASES_SATELLITES_KEY
 } from '$lib/constants/releases.constants';
 import { getReleasesMetadata } from '$lib/rest/cdn.rest';
-import { getSatelliteVersionMetadata } from '$lib/services/version/version.satellite.metadata.services';
+import { getMissionControlVersionMetadata } from '$lib/services/version/version.metadata.mission-control.services';
+import { getOrbiterVersionMetadata } from '$lib/services/version/version.metadata.orbiter.services';
+import { getSatelliteVersionMetadata } from '$lib/services/version/version.metadata.satellite.services';
 import { releasesIdbStore, versionIdbStore } from '$lib/stores/idb.store';
 import type { CanisterSegment } from '$lib/types/canister';
 import type { PostMessageDataRequest, PostMessageRequest } from '$lib/types/post-message';
 import type { CachedMetadataVersions, CachedReleases } from '$lib/types/releases';
+import type { VersionMetadata } from '$lib/types/version';
 import { last } from '$lib/utils/utils';
 import { loadIdentity } from '$lib/utils/worker.utils';
 import type { Identity } from '@dfinity/agent';
@@ -44,14 +47,14 @@ const loadRegistry = async ({ data: { segments } }: { data: PostMessageDataReque
 		return;
 	}
 
+	// TODO: do something if segments is nullish?
+	await loadVersions({ identity, segments: segments ?? [] });
+
 	// TODO: postMessage releases for UI stores ?
 
 	if (result.result === 'skip') {
 		return;
 	}
-
-	// TODO: do something if segments is nullish?
-	await loadVersions({ identity, segments: segments ?? [] });
 };
 
 const loadReleases = async (): Promise<
@@ -141,26 +144,34 @@ const loadVersions = async ({
 	segments: CanisterSegment[];
 }): Promise<{ result: 'loaded' } | { result: 'error'; err: unknown }> => {
 	try {
-		const { satellites, others } = segments.reduce<{
+		const { satellites, missionControls, orbiters } = segments.reduce<{
 			satellites: CanisterSegment[];
-			others: CanisterSegment[];
+			missionControls: CanisterSegment[];
+			orbiters: CanisterSegment[];
 		}>(
-			({ satellites, others }, { segment, ...rest }) => ({
+			({ satellites, missionControls, orbiters }, { segment, ...rest }) => ({
 				satellites: [...satellites, ...(segment === 'satellite' ? [{ segment, ...rest }] : [])],
-				others: [...others, ...(segment !== 'satellite' ? [{ segment, ...rest }] : [])]
+				missionControls: [
+					...missionControls,
+					...(segment === 'mission_control' ? [{ segment, ...rest }] : [])
+				],
+				orbiters: [...orbiters, ...(segment === 'orbiter' ? [{ segment, ...rest }] : [])]
 			}),
-			{ satellites: [], others: [] }
+			{ satellites: [], missionControls: [], orbiters: [] }
 		);
 
-		const [knownSatellites, knownOthers] = await Promise.all([
+		const loadKnownVersionsMetadata = async <T extends Omit<VersionMetadata, 'release'>>(
+			segments: CanisterSegment[]
+		): Promise<T[]> =>
 			getMany(
-				satellites.map(({ canisterId }) => canisterId),
+				segments.map(({ canisterId }) => canisterId),
 				versionIdbStore
-			),
-			getMany(
-				others.map(({ canisterId }) => canisterId),
-				versionIdbStore
-			)
+			);
+
+		const [knownSatellites, knownMissionControls, knownOrbiters] = await Promise.all([
+			loadKnownVersionsMetadata(satellites),
+			loadKnownVersionsMetadata(missionControls),
+			loadKnownVersionsMetadata(orbiters)
 		]);
 
 		// TODO check if something to do
@@ -171,7 +182,22 @@ const loadVersions = async ({
 			)
 		]);
 
-		console.log(satellitesMetadata)
+		const missionControlsMetadata = await Promise.all([
+			...missionControls.map(({ canisterId }) =>
+				getMissionControlVersionMetadata({
+					identity,
+					missionControlId: Principal.fromText(canisterId)
+				})
+			)
+		]);
+
+		const orbitersMetadata = await Promise.all([
+			...orbiters.map(({ canisterId }) =>
+				getOrbiterVersionMetadata({ identity, orbiterId: Principal.fromText(canisterId) })
+			)
+		]);
+
+		console.log(satellitesMetadata, missionControlsMetadata, orbitersMetadata);
 
 		return { result: 'loaded' };
 	} catch (err: unknown) {

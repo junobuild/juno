@@ -1,5 +1,5 @@
 import { getNewestReleasesMetadata } from '$lib/rest/cdn.rest';
-import { getSatelliteVersionMetadata } from '$lib/services/version/version.satellite.metadata.services';
+import { getSatelliteVersionMetadata } from '$lib/services/version/version.metadata.satellite.services';
 import { i18n } from '$lib/stores/i18n.store';
 import { toasts } from '$lib/stores/toasts.store';
 import { versionStore } from '$lib/stores/version.store';

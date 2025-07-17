@@ -11,6 +11,8 @@ import type { Principal } from '@dfinity/principal';
 import { assertNonNullish, isNullish, nonNullish } from '@dfinity/utils';
 import { getJunoPackage } from '@junobuild/admin';
 import { get } from 'svelte/store';
+import { getMissionControlVersionMetadata } from '$lib/services/version/version.metadata.mission-control.services';
+import { getOrbiterVersionMetadata } from '$lib/services/version/version.metadata.orbiter.services';
 
 export const reloadOrbiterVersion = async ({
 	orbiter,
@@ -56,39 +58,14 @@ const loadOrbiterVersion = async ({
 		// Optional for convenience reasons. A guard prevent the usage of the service while not being sign-in.
 		assertNonNullish(identity);
 
-		const orbiterInfo = async (orbiterId: Principal): Promise<Omit<VersionMetadata, 'release'>> => {
-			const [junoPkg] = await Promise.allSettled([
-				getJunoPackage({
-					moduleId: orbiterId,
-					identity,
-					...container()
-				})
-			]);
-
-			if (junoPkg.status === 'fulfilled' && nonNullish(junoPkg.value)) {
-				const pkg = junoPkg.value;
-				const { version } = pkg;
-
-				return {
-					current: version,
-					pkg
-				};
-			}
-
-			// Legacy way of fetch build and version information
-			const version = await orbiterVersion({ orbiterId, identity });
-
-			return {
-				current: version
-			};
-		};
-
-		const [orbVersion, releases] = await Promise.all([
-			orbiterInfo(orbiter.orbiter_id),
+		const [metadata, releases] = await Promise.all([
+			getOrbiterVersionMetadata({ orbiterId: orbiter.orbiter_id, identity }),
 			// TODO: we can probably improve - reduce the number of queries on the CDN - by caching in store the releases metadata
 			// instead of re-querying those every time separately.
 			getNewestReleasesMetadata()
 		]);
+
+		const { metadata: orbVersion } = metadata;
 
 		versionStore.setOrbiter({
 			release: releases.orbiter,

@@ -1,9 +1,9 @@
 <script lang="ts">
+	import type { Principal } from '@dfinity/principal';
 	import { nonNullish } from '@dfinity/utils';
 	import Canister from '$lib/components/canister/Canister.svelte';
 	import { missionControlIdDerived } from '$lib/derived/mission-control.derived';
 	import type { CanisterData } from '$lib/types/canister';
-	import type { Principal } from '@dfinity/principal';
 
 	interface Props {
 		cyclesWarning: boolean;

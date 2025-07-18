@@ -1,11 +1,15 @@
 <script lang="ts">
+	import IconAnalytics from '$lib/components/icons/IconAnalytics.svelte';
+	import IconMissionControl from '$lib/components/icons/IconMissionControl.svelte';
 	import IconNotifications from '$lib/components/icons/IconNotifications.svelte';
-	import ButtonIcon from '$lib/components/ui/ButtonIcon.svelte';
-	import { authSignedIn } from '$lib/derived/auth.derived';
-	import Popover from '$lib/components/ui/Popover.svelte';
+	import NotificationsCanister from '$lib/components/notifications/NotificationsCanister.svelte';
 	import NotificationsCanisterLoader from '$lib/components/notifications/NotificationsCanisterLoader.svelte';
-	import NotificationsMissionControl from '$lib/components/notifications/NotificationsMissionControl.svelte';
+	import ButtonIcon from '$lib/components/ui/ButtonIcon.svelte';
+	import Popover from '$lib/components/ui/Popover.svelte';
+	import { authSignedIn } from '$lib/derived/auth.derived';
 	import { missionControlIdDerived } from '$lib/derived/mission-control.derived';
+	import { orbiterStore } from '$lib/derived/orbiter.derived';
+	import { i18n } from '$lib/stores/i18n.store';
 	import type { CanisterData } from '$lib/types/canister';
 
 	let button: HTMLButtonElement | undefined = $state();
@@ -19,9 +23,20 @@
 	let missionControlCyclesWarning = $state(false);
 	let missionControlHeapWarning = $state(false);
 
+	let missionControlWarnings = $derived(missionControlCyclesWarning || missionControlHeapWarning);
+
+	let orbiterCanisterData = $state<CanisterData | undefined>(undefined);
+	let orbiterCyclesWarning = $state(false);
+	let orbiterHeapWarning = $state(false);
+
+	let orbiterWarnings = $derived(orbiterCyclesWarning || orbiterHeapWarning);
+
 	let level = $derived<'warning' | 'info' | 'error' | undefined>(
-		missionControlCyclesWarning || missionControlHeapWarning ? 'warning' : undefined
+		missionControlWarnings || orbiterWarnings ? 'warning' : undefined
 	);
+
+	let hasNotifications = $derived(missionControlWarnings || orbiterWarnings);
+	let noNotifications = $derived(!hasNotifications);
 </script>
 
 {#if $authSignedIn}
@@ -29,7 +44,8 @@
 		{#snippet icon()}
 			<IconNotifications size="16px" />
 		{/snippet}
-		Notifications
+
+		{$i18n.notifications.title}
 	</ButtonIcon>
 {/if}
 
@@ -40,16 +56,40 @@
 	bind:data={missionControlCanisterData}
 />
 
+<NotificationsCanisterLoader
+	canisterId={$orbiterStore?.orbiter_id}
+	bind:cyclesWarning={orbiterCyclesWarning}
+	bind:heapWarning={orbiterHeapWarning}
+	bind:data={orbiterCanisterData}
+/>
+
 <Popover bind:visible anchor={button} direction="rtl" --popover-min-size="340px">
 	<div class="container">
-		No notifications at the moment.
+		<span class="title">{$i18n.notifications.title}:</span>
 
-		<NotificationsMissionControl
-			{close}
-			data={missionControlCanisterData}
-			heapWarning={missionControlHeapWarning}
-			cyclesWarning={missionControlCyclesWarning}
-		/>
+		{#if noNotifications}
+			{$i18n.notifications.none}
+		{:else}
+			<NotificationsCanister
+				href="/mission-control"
+				segment="mission_control"
+				{close}
+				data={missionControlCanisterData}
+				heapWarning={missionControlHeapWarning}
+				cyclesWarning={missionControlCyclesWarning}
+				cyclesIcon={IconMissionControl}
+			/>
+
+			<NotificationsCanister
+				href="/orbiter"
+				segment="orbiter"
+				{close}
+				data={orbiterCanisterData}
+				heapWarning={orbiterHeapWarning}
+				cyclesWarning={orbiterCyclesWarning}
+				cyclesIcon={IconAnalytics}
+			/>
+		{/if}
 	</div>
 </Popover>
 
@@ -57,6 +97,10 @@
 	@use '../../styles/mixins/overlay';
 
 	@include overlay.popover-container;
+
+	.title {
+		font-weight: var(--font-weight-bold);
+	}
 
 	.container {
 		font-size: var(--font-size-small);

@@ -7,6 +7,7 @@
 	import { i18n } from '$lib/stores/i18n.store';
 	import { overviewLink } from '$lib/utils/nav.utils';
 	import { satelliteName } from '$lib/utils/satellite.utils';
+	import { authSignedIn } from '$lib/derived/auth.derived';
 
 	let button: HTMLButtonElement | undefined = $state();
 	let visible: boolean = $state(false);
@@ -16,7 +17,7 @@
 	<button class="text" onclick={() => (visible = true)} bind:this={button}
 		><span>{satelliteName($satelliteStore)}</span> <IconArrowDropDown /></button
 	>
-{:else}
+{:else if $authSignedIn}
 	<button class="text" onclick={() => (visible = true)} bind:this={button}
 		><span>{$i18n.satellites.see_all_satellites}</span> <IconArrowDropDown /></button
 	>

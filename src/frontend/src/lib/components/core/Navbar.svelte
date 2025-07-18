@@ -13,6 +13,7 @@
 	import { isSatelliteRoute } from '$lib/derived/route.derived.svelte';
 	import { isSkylab } from '$lib/env/app.env';
 	import { layoutTitleIntersecting } from '$lib/stores/layout-intersecting.store';
+	import { authSignedIn } from '$lib/derived/auth.derived';
 
 	interface Props {
 		start?: 'logo' | 'back' | 'menu';
@@ -56,9 +57,11 @@
 	</div>
 
 	<div>
-		<Notifications />
+		{#if $authSignedIn}
+			<Notifications />
 
-		<NavbarWallet />
+			<NavbarWallet />
+		{/if}
 
 		<User {signIn} />
 	</div>

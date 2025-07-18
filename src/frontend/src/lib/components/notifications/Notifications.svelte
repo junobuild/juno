@@ -7,13 +7,12 @@
 	import NotificationsCanisterLoader from '$lib/components/notifications/NotificationsCanisterLoader.svelte';
 	import ButtonIcon from '$lib/components/ui/ButtonIcon.svelte';
 	import Popover from '$lib/components/ui/Popover.svelte';
-	import { authSignedIn } from '$lib/derived/auth.derived';
 	import { missionControlIdDerived } from '$lib/derived/mission-control.derived';
 	import { orbiterStore } from '$lib/derived/orbiter.derived';
 	import { satelliteStore } from '$lib/derived/satellite.derived';
 	import { i18n } from '$lib/stores/i18n.store';
 	import type { CanisterData } from '$lib/types/canister';
-	import { analyticsLink, overviewLink } from '$lib/utils/nav.utils';
+	import { overviewLink } from '$lib/utils/nav.utils';
 
 	let button: HTMLButtonElement | undefined = $state();
 	let visible: boolean = $state(false);
@@ -48,15 +47,13 @@
 	let noNotifications = $derived(!hasNotifications);
 </script>
 
-{#if $authSignedIn}
-	<ButtonIcon {onclick} {level} bind:button>
-		{#snippet icon()}
-			<IconNotifications size="16px" />
-		{/snippet}
+<ButtonIcon {onclick} {level} bind:button>
+	{#snippet icon()}
+		<IconNotifications size="16px" />
+	{/snippet}
 
-		{$i18n.notifications.title}
-	</ButtonIcon>
-{/if}
+	{$i18n.notifications.title}
+</ButtonIcon>
 
 <NotificationsCanisterLoader
 	canisterId={$missionControlIdDerived}

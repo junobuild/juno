@@ -79,7 +79,7 @@
 		justify-content: center;
 		align-items: center;
 
-		gap: var(--padding);
+		gap: var(--padding-1_5x);
 	}
 
 	.end {

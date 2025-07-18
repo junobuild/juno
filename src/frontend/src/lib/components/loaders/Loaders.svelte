@@ -8,16 +8,15 @@
 
 	interface Props {
 		children: Snippet;
-		withOrbiterVersion?: boolean;
 		monitoring?: boolean;
 	}
 
-	let { children, withOrbiterVersion, monitoring }: Props = $props();
+	let { children, monitoring }: Props = $props();
 </script>
 
 <WalletLoader>
 	<SatellitesLoader>
-		<OrbitersLoader withVersion={withOrbiterVersion}>
+		<OrbitersLoader>
 			<MetadataLoader {monitoring} satellites={$sortedSatellites}>
 				{@render children()}
 			</MetadataLoader>

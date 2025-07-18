@@ -7,11 +7,11 @@ import { isNullish, nonNullish } from '@dfinity/utils';
 import { compare } from 'semver';
 import { derived, type Readable } from 'svelte/store';
 
-export const missionControlVersion: Readable<VersionMetadataUi | undefined> = derived(
+export const missionControlVersion: Readable<Option<VersionMetadataUi>> = derived(
 	[versionStore],
 	([$versionStore]) => {
-		if (isNullish($versionStore?.missionControl)) {
-			return undefined;
+		if (isNullish($versionStore.missionControl)) {
+			return $versionStore.missionControl;
 		}
 
 		const { current } = $versionStore.missionControl;
@@ -24,11 +24,11 @@ export const missionControlVersion: Readable<VersionMetadataUi | undefined> = de
 	}
 );
 
-export const orbiterVersion: Readable<VersionMetadataUi | undefined> = derived(
+export const orbiterVersion: Readable<Option<VersionMetadataUi>> = derived(
 	[versionStore],
 	([$versionStore]) => {
-		if (isNullish($versionStore?.orbiter)) {
-			return undefined;
+		if (isNullish($versionStore.orbiter)) {
+			return $versionStore.orbiter;
 		}
 
 		const { current } = $versionStore.orbiter;
@@ -56,6 +56,26 @@ export const satellitesVersion = derived([versionStore], ([$versionStore]) =>
 		}),
 		{}
 	)
+);
+
+export const missionControlVersionLoaded = derived(
+	[missionControlVersion],
+	([$missionControlVersion]) => $missionControlVersion !== undefined
+);
+
+export const missionControlVersionNotLoaded = derived(
+	[missionControlVersionLoaded],
+	([$missionControlVersionLoaded]) => !$missionControlVersionLoaded
+);
+
+export const orbiterVersionLoaded = derived(
+	[orbiterVersion],
+	([$orbiterVersion]) => $orbiterVersion !== undefined
+);
+
+export const orbiterVersionNotLoaded = derived(
+	[orbiterVersionLoaded],
+	([$orbiterVersionLoaded]) => !$orbiterVersionLoaded
 );
 
 export const satellitesVersionLoaded = derived(

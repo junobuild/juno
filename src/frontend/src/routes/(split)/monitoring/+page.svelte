@@ -5,7 +5,6 @@
 	import IdentityGuard from '$lib/components/guards/IdentityGuard.svelte';
 	import MissionControlGuard from '$lib/components/guards/MissionControlGuard.svelte';
 	import Loaders from '$lib/components/loaders/Loaders.svelte';
-	import MissionControlVersionLoader from '$lib/components/loaders/MissionControlVersionLoader.svelte';
 	import MissionControlDataLoader from '$lib/components/mission-control/MissionControlDataLoader.svelte';
 	import MonitoringDashboard from '$lib/components/monitoring/MonitoringDashboard.svelte';
 	import MonitoringSettings from '$lib/components/monitoring/MonitoringSettings.svelte';
@@ -65,19 +64,17 @@
 		{/snippet}
 
 		<Loaders monitoring>
-			<MissionControlVersionLoader>
-				<MissionControlGuard>
-					{#if nonNullish($missionControlIdDerived)}
-						<MissionControlDataLoader missionControlId={$missionControlIdDerived} reload>
-							{#if $store.tabId === $store.tabs[0].id}
-								<MonitoringDashboard missionControlId={$missionControlIdDerived} />
-							{:else if $store.tabId === $store.tabs[1].id && $hasMissionControlSettings}
-								<MonitoringSettings missionControlId={$missionControlIdDerived} />
-							{/if}
-						</MissionControlDataLoader>
-					{/if}
-				</MissionControlGuard>
-			</MissionControlVersionLoader>
+			<MissionControlGuard>
+				{#if nonNullish($missionControlIdDerived)}
+					<MissionControlDataLoader missionControlId={$missionControlIdDerived} reload>
+						{#if $store.tabId === $store.tabs[0].id}
+							<MonitoringDashboard missionControlId={$missionControlIdDerived} />
+						{:else if $store.tabId === $store.tabs[1].id && $hasMissionControlSettings}
+							<MonitoringSettings missionControlId={$missionControlIdDerived} />
+						{/if}
+					</MissionControlDataLoader>
+				{/if}
+			</MissionControlGuard>
 		</Loaders>
 	</Tabs>
 </IdentityGuard>

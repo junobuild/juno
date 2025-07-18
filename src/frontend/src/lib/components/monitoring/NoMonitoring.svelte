@@ -16,6 +16,7 @@
 	let { missionControlId }: Props = $props();
 
 	const openModal = async () => {
+		// Load mission control without reload to ensure it is loaded before asserting the version.
 		await reloadMissionControlVersion({
 			missionControlId,
 			skipReload: true,

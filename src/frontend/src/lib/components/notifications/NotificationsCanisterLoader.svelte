@@ -2,7 +2,6 @@
 	import type { Principal } from '@dfinity/principal';
 	import { nonNullish } from '@dfinity/utils';
 	import Canister from '$lib/components/canister/Canister.svelte';
-	import { missionControlIdDerived } from '$lib/derived/mission-control.derived';
 	import type { CanisterData } from '$lib/types/canister';
 
 	interface Props {
@@ -15,7 +14,8 @@
 	let {
 		cyclesWarning = $bindable(false),
 		heapWarning = $bindable(false),
-		data = $bindable(undefined)
+		data = $bindable(undefined),
+		canisterId
 	}: Props = $props();
 
 	let canisterData = $state<CanisterData | undefined>(undefined);
@@ -33,6 +33,6 @@
 	});
 </script>
 
-{#if nonNullish($missionControlIdDerived)}
-	<Canister canisterId={$missionControlIdDerived} display={false} bind:data={canisterData} />
+{#if nonNullish(canisterId)}
+	<Canister {canisterId} display={false} bind:data={canisterData} />
 {/if}

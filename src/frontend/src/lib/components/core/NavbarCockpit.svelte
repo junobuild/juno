@@ -1,36 +1,14 @@
 <script lang="ts">
 	import { nonNullish } from '@dfinity/utils';
 	import { slide } from 'svelte/transition';
-	import Canister from '$lib/components/canister/Canister.svelte';
-	import CanisterIndicator from '$lib/components/canister/CanisterIndicator.svelte';
-	import CanisterTCycles from '$lib/components/canister/CanisterTCycles.svelte';
 	import NavbarCopy from '$lib/components/core/NavbarCopy.svelte';
 	import NavbarLink from '$lib/components/core/NavbarLink.svelte';
-	import IconAnalytics from '$lib/components/icons/IconAnalytics.svelte';
 	import IconWallet from '$lib/components/icons/IconWallet.svelte';
 	import WalletInlineBalance from '$lib/components/wallet/WalletInlineBalance.svelte';
 	import { balance, balanceLoaded } from '$lib/derived/balance.derived';
 	import { missionControlIdDerived } from '$lib/derived/mission-control.derived';
-	import { orbiterStore } from '$lib/derived/orbiter.derived';
 	import { i18n } from '$lib/stores/i18n.store';
-	import type { CanisterData } from '$lib/types/canister';
-
-	let orbiterData: CanisterData | undefined = $state(undefined);
 </script>
-
-{#if nonNullish($orbiterStore)}
-	<Canister canisterId={$orbiterStore.orbiter_id} display={false} bind:data={orbiterData} />
-{/if}
-
-{#if nonNullish($orbiterStore) && nonNullish(orbiterData)}
-	<div in:slide={{ axis: 'x' }} class="container">
-		<NavbarLink href="/analytics" ariaLabel={`${$i18n.core.open}: ${$i18n.analytics.title}`}>
-			<IconAnalytics />
-			<CanisterIndicator data={orbiterData} />
-			<div class="cycles"><CanisterTCycles data={orbiterData} /></div>
-		</NavbarLink>
-	</div>
-{/if}
 
 {#if nonNullish($missionControlIdDerived)}
 	{#if $balanceLoaded}

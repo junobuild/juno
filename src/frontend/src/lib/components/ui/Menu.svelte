@@ -6,6 +6,7 @@
 	import { i18n } from '$lib/stores/i18n.store';
 	import { layoutMenuState, layoutMenuOpen } from '$lib/stores/layout-menu.store';
 	import { handleKeyPress } from '$lib/utils/keyboard.utils';
+	import ButtonIcon from '$lib/components/ui/ButtonIcon.svelte';
 
 	interface Props {
 		children: Snippet;
@@ -33,12 +34,14 @@
 		{@render children()}
 	</div>
 
-	<button
-		class="menu-collapse square"
-		class:collapsed={$menuExpanded}
-		title={$menuCollapsed ? $i18n.core.expand : $i18n.core.collapse}
-		onclick={layoutMenuState.toggle}><IconBack /></button
-	>
+	<div class="menu-collapse" class:collapsed={$menuExpanded}>
+		<ButtonIcon onclick={layoutMenuState.toggle}>
+			{#snippet icon()}
+				<IconBack size="16px" />
+			{/snippet}
+			{$menuCollapsed ? $i18n.core.expand : $i18n.core.collapse}</ButtonIcon
+		>
+	</div>
 </div>
 
 <style lang="scss">
@@ -109,6 +112,7 @@
 		bottom: var(--padding-8x);
 
 		transform: rotate(180deg);
+		transition: transform 0.5s ease-in-out;
 
 		display: none;
 

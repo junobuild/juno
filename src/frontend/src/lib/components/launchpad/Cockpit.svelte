@@ -1,6 +1,5 @@
 <script lang="ts">
 	import { isNullish, nonNullish } from '@dfinity/utils';
-	import { run } from 'svelte/legacy';
 	import { fade } from 'svelte/transition';
 	import Canister from '$lib/components/canister/Canister.svelte';
 	import CanisterIndicator from '$lib/components/canister/CanisterIndicator.svelte';
@@ -21,15 +20,8 @@
 	import { missionControlIdDerived } from '$lib/derived/mission-control.derived';
 	import { orbiterStore } from '$lib/derived/orbiter.derived';
 	import { missionControlVersion } from '$lib/derived/version.derived';
-	import { loadOrbiters } from '$lib/services/orbiter/orbiters.services';
 	import { i18n } from '$lib/stores/i18n.store';
 	import type { CanisterData } from '$lib/types/canister';
-
-	run(() => {
-		// @ts-expect-error TODO: to be migrated to Svelte v5
-		($missionControlIdDerived,
-			(async () => await loadOrbiters({ missionControlId: $missionControlIdDerived }))());
-	});
 
 	let missionControlData: CanisterData | undefined = $state(undefined);
 	let orbiterData: CanisterData | undefined = $state(undefined);

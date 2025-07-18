@@ -25,7 +25,7 @@
 	);
 
 	$effect(() => {
-		if ($satellitesNotLoaded) {
+        if ($satellitesNotLoaded) {
 			return;
 		}
 

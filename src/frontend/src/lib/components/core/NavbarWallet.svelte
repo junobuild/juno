@@ -1,5 +1,4 @@
 <script lang="ts">
-	import { nonNullish } from '@dfinity/utils';
 	import IconWallet from '$lib/components/icons/IconWallet.svelte';
 	import ButtonIcon from '$lib/components/ui/ButtonIcon.svelte';
 	import Popover from '$lib/components/ui/Popover.svelte';
@@ -7,8 +6,14 @@
 	import WalletIds from '$lib/components/wallet/WalletIds.svelte';
 	import WalletInlineBalance from '$lib/components/wallet/WalletInlineBalance.svelte';
 	import { balance } from '$lib/derived/balance.derived';
-	import { missionControlIdDerived } from '$lib/derived/mission-control.derived';
 	import { i18n } from '$lib/stores/i18n.store';
+	import type { MissionControlId } from '$lib/types/mission-control';
+
+	interface Props {
+		missionControlId: MissionControlId;
+	}
+
+	let { missionControlId }: Props = $props();
 
 	let button: HTMLButtonElement | undefined = $state();
 	let visible: boolean = $state(false);
@@ -36,9 +41,7 @@
 			</Value>
 		</div>
 
-		{#if nonNullish($missionControlIdDerived)}
-			<WalletIds missionControlId={$missionControlIdDerived} />
-		{/if}
+		<WalletIds {missionControlId} />
 	</div>
 </Popover>
 

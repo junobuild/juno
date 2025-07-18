@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { debounce } from '@dfinity/utils';
+	import { debounce, nonNullish } from '@dfinity/utils';
 	import { fade } from 'svelte/transition';
 	import BannerSkylab from '$lib/components/core/BannerSkylab.svelte';
 	import Logo from '$lib/components/core/Logo.svelte';
@@ -14,6 +14,7 @@
 	import { isSatelliteRoute } from '$lib/derived/route.derived.svelte';
 	import { isSkylab } from '$lib/env/app.env';
 	import { layoutTitleIntersecting } from '$lib/stores/layout-intersecting.store';
+	import { missionControlIdDerived } from '$lib/derived/mission-control.derived';
 
 	interface Props {
 		start?: 'logo' | 'back' | 'menu';
@@ -57,10 +58,12 @@
 	</div>
 
 	<div>
-		{#if $authSignedIn}
-			<Notifications />
+		{#if $authSignedIn && nonNullish($missionControlIdDerived)}
+			<div in:fade>
+				<Notifications />
 
-			<NavbarWallet />
+				<NavbarWallet missionControlId={$missionControlIdDerived} />
+			</div>
 		{/if}
 
 		<User {signIn} />

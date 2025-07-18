@@ -21,7 +21,7 @@
 	{/snippet}
 
 	{#snippet navbar()}
-		<Navbar start="menu" launchpad />
+		<Navbar start="menu" />
 	{/snippet}
 
 	{@render children()}

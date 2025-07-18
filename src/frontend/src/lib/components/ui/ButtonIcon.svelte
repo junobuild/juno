@@ -8,6 +8,7 @@
 		icon?: Snippet;
 		children: Snippet;
 		onclick: (() => Promise<void>) | (() => void);
+		level?: 'info' | 'warning' | 'error';
 	}
 
 	let {
@@ -16,11 +17,19 @@
 		hidden = false,
 		icon,
 		children,
-		onclick
+		onclick,
+		level
 	}: Props = $props();
 </script>
 
-<button type="button" {onclick} bind:this={button} class="icon rounded" {disabled} class:hidden>
+<button
+	type="button"
+	{onclick}
+	bind:this={button}
+	class={`icon rounded ${level ?? ''}`}
+	{disabled}
+	class:hidden
+>
 	{@render icon?.()}
 	<span class="visually-hidden">{@render children()}</span>
 </button>

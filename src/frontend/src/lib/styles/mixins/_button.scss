@@ -52,15 +52,7 @@
 		color: var(--color-primary-opaque-contrast);
 	}
 
-	&.error {
-		background: var(--color-error);
-		color: var(--color-error-contrast);
-
-		&:hover:not(:disabled),
-		&:focus:not(:disabled) {
-			background: var(--color-error-shade);
-		}
-	}
+	@include button-state;
 }
 
 @mixin menu {
@@ -101,6 +93,8 @@
 	border: none;
 	background: inherit;
 	margin: 0;
+
+	@include button-state;
 
 	@include visually-hidden;
 }
@@ -173,5 +167,37 @@
 	&:active {
 		box-shadow: none;
 		transform: translateX(1px) translateY(1px);
+	}
+}
+
+@mixin button-state {
+	&.success {
+		background: var(--color-success);
+		color: var(--color-success-contrast);
+
+		&:hover:not(:disabled),
+		&:focus:not(:disabled) {
+			background: var(--color-success-shade);
+		}
+	}
+
+	&.error {
+		background: var(--color-error);
+		color: var(--color-error-contrast);
+
+		&:hover:not(:disabled),
+		&:focus:not(:disabled) {
+			background: var(--color-error-shade);
+		}
+	}
+
+	&.warning {
+		background: var(--color-warning);
+		color: var(--color-warning-contrast);
+
+		&:hover:not(:disabled),
+		&:focus:not(:disabled) {
+			background: var(--color-warning-shade);
+		}
 	}
 }

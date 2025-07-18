@@ -35,6 +35,11 @@
 </button>
 
 <style lang="scss">
+	.icon {
+		background: var(--color-background);
+		color: var(--color-background-contrast);
+	}
+
 	.rounded {
 		border-radius: 50%;
 

@@ -9,6 +9,7 @@
 	} from '$lib/derived/satellite-custom-domains.derived';
 	import { i18n } from '$lib/stores/i18n.store';
 	import { satelliteUrl } from '$lib/utils/satellite.utils';
+	import SkeletonText from '$lib/components/ui/SkeletonText.svelte';
 
 	interface Props {
 		satellite: Satellite;
@@ -41,7 +42,7 @@
 				{/each}
 			</div>
 		{:else}
-			<span>&ZeroWidthSpace;</span>
+			<SkeletonText />
 		{/if}
 	</Value>
 </div>

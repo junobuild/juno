@@ -2,8 +2,8 @@
 	import type { Principal } from '@dfinity/principal';
 	import type { Snippet } from 'svelte';
 	import { missionControlIdDerived } from '$lib/derived/mission-control.derived';
+	import { loadOrbiters } from '$lib/services/orbiter/orbiters.services';
 	import type { Option } from '$lib/types/utils';
-    import {loadOrbiters} from "$lib/services/orbiter/orbiters.services";
 
 	interface Props {
 		children: Snippet;

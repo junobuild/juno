@@ -114,6 +114,8 @@
 		transform: rotate(180deg);
 		transition: transform 0.5s ease-in-out;
 
+		z-index: var(--z-index);
+
 		display: none;
 
 		@include media.min-width(xlarge) {

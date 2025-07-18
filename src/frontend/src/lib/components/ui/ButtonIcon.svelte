@@ -27,7 +27,7 @@
 
 <style lang="scss">
 	.rounded {
-		border-radius: var(--border-radius);
+		border-radius: 50%;
 
 		border: 1px solid var(--text-color);
 

@@ -11,10 +11,10 @@
 	import ButtonMenu from '$lib/components/ui/ButtonMenu.svelte';
 	import Header from '$lib/components/ui/Header.svelte';
 	import { authSignedIn } from '$lib/derived/auth.derived';
+	import { missionControlIdDerived } from '$lib/derived/mission-control.derived';
 	import { isSatelliteRoute } from '$lib/derived/route.derived.svelte';
 	import { isSkylab } from '$lib/env/app.env';
 	import { layoutTitleIntersecting } from '$lib/stores/layout-intersecting.store';
-	import { missionControlIdDerived } from '$lib/derived/mission-control.derived';
 
 	interface Props {
 		start?: 'logo' | 'back' | 'menu';

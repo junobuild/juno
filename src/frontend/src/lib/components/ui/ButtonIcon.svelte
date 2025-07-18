@@ -48,7 +48,7 @@
 
 		border: 1px solid var(--text-color);
 
-		--button-icon-size: calc(var(--padding-4x) + var(--padding));
+		--button-icon-size: calc(var(--padding-4x) + var(--padding-0_5x));
 
 		width: var(--button-icon-size);
 		height: var(--button-icon-size);
@@ -56,7 +56,7 @@
 		padding: 0;
 
 		&.small {
-			--button-icon-size: var(--padding-4x);
+			--button-icon-size: calc(var(--padding-4x) - var(--padding-0_5x));
 		}
 	}
 

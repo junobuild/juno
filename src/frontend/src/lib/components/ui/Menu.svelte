@@ -108,7 +108,7 @@
 
 	.menu-collapse {
 		position: absolute;
-		right: calc(-1.1 * var(--padding-1_5x));
+		right: calc(-1.35 * var(--padding));
 		bottom: var(--padding-8x);
 
 		transform: rotate(180deg);

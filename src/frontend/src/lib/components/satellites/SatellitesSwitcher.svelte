@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { nonNullish } from '@dfinity/utils';
 	import IconArrowDropDown from '$lib/components/icons/IconArrowDropDown.svelte';
+	import ButtonIcon from '$lib/components/ui/ButtonIcon.svelte';
 	import Popover from '$lib/components/ui/Popover.svelte';
 	import { authSignedIn } from '$lib/derived/auth.derived';
 	import { satelliteStore } from '$lib/derived/satellite.derived';
@@ -11,16 +12,22 @@
 
 	let button: HTMLButtonElement | undefined = $state();
 	let visible: boolean = $state(false);
+
+	let label = $derived(
+		nonNullish($satelliteStore)
+			? satelliteName($satelliteStore)
+			: $i18n.satellites.see_all_satellites
+	);
 </script>
 
-{#if nonNullish($satelliteStore)}
-	<button class="text" onclick={() => (visible = true)} bind:this={button}
-		><span>{satelliteName($satelliteStore)}</span> <IconArrowDropDown /></button
-	>
-{:else if $authSignedIn}
-	<button class="text" onclick={() => (visible = true)} bind:this={button}
-		><span>{$i18n.satellites.see_all_satellites}</span> <IconArrowDropDown /></button
-	>
+{#if $authSignedIn}
+	<ButtonIcon onclick={() => (visible = true)} bind:button>
+		{#snippet icon()}
+			<IconArrowDropDown />
+		{/snippet}
+
+		{label}
+	</ButtonIcon> <span>{label}</span>
 {/if}
 
 <Popover bind:visible anchor={button}>
@@ -62,13 +69,18 @@
 	@use '../../styles/mixins/media';
 
 	.container {
-		max-height: calc(24 * var(--padding));
-		min-height: calc(24 * var(--padding));
+		max-height: calc(30 * var(--padding));
+		min-height: calc(30 * var(--padding));
+
 		overflow-y: auto;
 		width: 100%;
 		padding: var(--padding-1_5x);
 
 		font-size: var(--font-size-small);
+
+		@include media.min-width(large) {
+			min-width: calc(40 * var(--padding));
+		}
 	}
 
 	button.text {
@@ -88,7 +100,7 @@
 	}
 
 	span {
-		max-width: 200px;
+		font-size: var(--font-size-small);
 		@include text.truncate;
 	}
 

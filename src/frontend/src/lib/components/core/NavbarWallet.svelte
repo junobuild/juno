@@ -1,24 +1,17 @@
 <script lang="ts">
 	import { nonNullish } from '@dfinity/utils';
-	import { slide } from 'svelte/transition';
-	import NavbarCopy from '$lib/components/core/NavbarCopy.svelte';
-	import NavbarLink from '$lib/components/core/NavbarLink.svelte';
-	import IconNotifications from '$lib/components/icons/IconNotifications.svelte';
 	import IconWallet from '$lib/components/icons/IconWallet.svelte';
 	import ButtonIcon from '$lib/components/ui/ButtonIcon.svelte';
-	import Identifier from '$lib/components/ui/Identifier.svelte';
 	import Popover from '$lib/components/ui/Popover.svelte';
 	import Value from '$lib/components/ui/Value.svelte';
 	import WalletIds from '$lib/components/wallet/WalletIds.svelte';
 	import WalletInlineBalance from '$lib/components/wallet/WalletInlineBalance.svelte';
-	import { balance, balanceLoaded } from '$lib/derived/balance.derived';
+	import { balance } from '$lib/derived/balance.derived';
 	import { missionControlIdDerived } from '$lib/derived/mission-control.derived';
 	import { i18n } from '$lib/stores/i18n.store';
 
 	let button: HTMLButtonElement | undefined = $state();
 	let visible: boolean = $state(false);
-
-	const close = () => (visible = false);
 
 	const onclick = () => (visible = true);
 </script>

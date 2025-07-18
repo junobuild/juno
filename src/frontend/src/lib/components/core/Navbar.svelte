@@ -10,10 +10,10 @@
 	import ButtonBack from '$lib/components/ui/ButtonBack.svelte';
 	import ButtonMenu from '$lib/components/ui/ButtonMenu.svelte';
 	import Header from '$lib/components/ui/Header.svelte';
+	import { authSignedIn } from '$lib/derived/auth.derived';
 	import { isSatelliteRoute } from '$lib/derived/route.derived.svelte';
 	import { isSkylab } from '$lib/env/app.env';
 	import { layoutTitleIntersecting } from '$lib/stores/layout-intersecting.store';
-	import { authSignedIn } from '$lib/derived/auth.derived';
 
 	interface Props {
 		start?: 'logo' | 'back' | 'menu';

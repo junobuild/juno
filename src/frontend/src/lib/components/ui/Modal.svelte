@@ -57,7 +57,7 @@
 					<div class="start">
 						<ButtonIcon onclick={onback} disabled={$isBusy}>
 							{#snippet icon()}
-								<IconBack size="20px" />
+								<IconBack size="16px" />
 							{/snippet}
 							{$i18n.core.back}
 						</ButtonIcon>

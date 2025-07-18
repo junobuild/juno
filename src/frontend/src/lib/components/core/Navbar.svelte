@@ -5,6 +5,7 @@
 	import Logo from '$lib/components/core/Logo.svelte';
 	import NavbarCockpit from '$lib/components/core/NavbarCockpit.svelte';
 	import User from '$lib/components/core/User.svelte';
+	import Notifications from '$lib/components/notifications/Notifications.svelte';
 	import SatellitesSwitcher from '$lib/components/satellites/SatellitesSwitcher.svelte';
 	import ButtonBack from '$lib/components/ui/ButtonBack.svelte';
 	import ButtonMenu from '$lib/components/ui/ButtonMenu.svelte';
@@ -62,7 +63,11 @@
 			</div>
 		{/if}
 
-		<User {signIn} />
+		<div>
+			<Notifications />
+
+			<User {signIn} />
+		</div>
 	</div>
 </Header>
 
@@ -74,10 +79,10 @@
 		justify-content: center;
 		align-items: center;
 
-		gap: var(--padding);
+		gap: var(--padding-1_5x);
 	}
 
 	.end {
-		gap: var(--padding-6x);
+		gap: var(--padding-4x);
 	}
 </style>

@@ -7,7 +7,6 @@
 	import NavbarCopy from '$lib/components/core/NavbarCopy.svelte';
 	import NavbarLink from '$lib/components/core/NavbarLink.svelte';
 	import IconAnalytics from '$lib/components/icons/IconAnalytics.svelte';
-	import IconMissionControl from '$lib/components/icons/IconMissionControl.svelte';
 	import IconWallet from '$lib/components/icons/IconWallet.svelte';
 	import WalletInlineBalance from '$lib/components/wallet/WalletInlineBalance.svelte';
 	import { balance, balanceLoaded } from '$lib/derived/balance.derived';
@@ -16,26 +15,8 @@
 	import { i18n } from '$lib/stores/i18n.store';
 	import type { CanisterData } from '$lib/types/canister';
 
-	let missionControlData: CanisterData | undefined = $state(undefined);
 	let orbiterData: CanisterData | undefined = $state(undefined);
 </script>
-
-{#if nonNullish($missionControlIdDerived)}
-	<Canister canisterId={$missionControlIdDerived} display={false} bind:data={missionControlData} />
-{/if}
-
-{#if nonNullish($missionControlIdDerived) && nonNullish(missionControlData)}
-	<div in:slide={{ axis: 'x' }} class="container">
-		<NavbarLink
-			href="/mission-control"
-			ariaLabel={`${$i18n.core.open}: ${$i18n.mission_control.title}`}
-		>
-			<IconMissionControl />
-			<CanisterIndicator data={missionControlData} />
-			<div class="cycles"><CanisterTCycles data={missionControlData} /></div>
-		</NavbarLink>
-	</div>
-{/if}
 
 {#if nonNullish($orbiterStore)}
 	<Canister canisterId={$orbiterStore.orbiter_id} display={false} bind:data={orbiterData} />

@@ -926,6 +926,13 @@ interface I18nCdn {
 	empty: string;
 }
 
+interface I18nNotifications {
+	title: string;
+	none: string;
+	low_cycles: string;
+	heap: string;
+}
+
 interface I18n {
 	lang: Languages;
 	core: I18nCore;
@@ -956,4 +963,5 @@ interface I18n {
 	upgrade: I18nUpgrade;
 	changes: I18nChanges;
 	cdn: I18nCdn;
+	notifications: I18nNotifications;
 }

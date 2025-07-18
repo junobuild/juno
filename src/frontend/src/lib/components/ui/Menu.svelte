@@ -2,6 +2,7 @@
 	import type { Snippet } from 'svelte';
 	import Logo from '$lib/components/core/Logo.svelte';
 	import IconBack from '$lib/components/icons/IconBack.svelte';
+	import ButtonIcon from '$lib/components/ui/ButtonIcon.svelte';
 	import { menuCollapsed, menuExpanded } from '$lib/derived/layout-menu.derived';
 	import { i18n } from '$lib/stores/i18n.store';
 	import { layoutMenuState, layoutMenuOpen } from '$lib/stores/layout-menu.store';
@@ -33,12 +34,14 @@
 		{@render children()}
 	</div>
 
-	<button
-		class="menu-collapse square"
-		class:collapsed={$menuExpanded}
-		title={$menuCollapsed ? $i18n.core.expand : $i18n.core.collapse}
-		onclick={layoutMenuState.toggle}><IconBack /></button
-	>
+	<div class="menu-collapse" class:collapsed={$menuExpanded}>
+		<ButtonIcon onclick={layoutMenuState.toggle}>
+			{#snippet icon()}
+				<IconBack size="16px" />
+			{/snippet}
+			{$menuCollapsed ? $i18n.core.expand : $i18n.core.collapse}</ButtonIcon
+		>
+	</div>
 </div>
 
 <style lang="scss">
@@ -105,10 +108,13 @@
 
 	.menu-collapse {
 		position: absolute;
-		right: calc(-1 * var(--padding));
+		right: calc(-1.2 * var(--padding-1_5x));
 		bottom: var(--padding-8x);
 
 		transform: rotate(180deg);
+		transition: transform 0.5s ease-in-out;
+
+		z-index: var(--z-index);
 
 		display: none;
 

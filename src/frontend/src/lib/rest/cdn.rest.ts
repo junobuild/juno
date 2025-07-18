@@ -1,6 +1,10 @@
 import { last } from '$lib/utils/utils';
 import { assertNonNullish } from '@dfinity/utils';
-import type { ReleaseMetadata, ReleasesMetadata } from '@junobuild/admin';
+import {
+	type ReleaseMetadata,
+	type ReleasesMetadata,
+	ReleasesMetadataSchema
+} from '@junobuild/admin';
 import { compare } from 'semver';
 
 export const getReleasesMetadata = async (): Promise<ReleasesMetadata> => {
@@ -17,16 +21,23 @@ export const getReleasesMetadata = async (): Promise<ReleasesMetadata> => {
 		throw new Error(`Fetching releases metadata failed.`);
 	}
 
-	const result: ReleasesMetadata = await response.json();
+	const result = await response.json();
 
-	return result;
+	return ReleasesMetadataSchema.parse(result);
 };
 
 export const getNewestReleasesMetadata = async (): Promise<
-	Pick<ReleaseMetadata, 'satellite' | 'mission_control' | 'orbiter'>
+	Required<Pick<ReleaseMetadata, 'satellite' | 'mission_control' | 'orbiter'>>
 > => {
 	const metadata = await getReleasesMetadata();
+	return findNewestReleasesMetadata({ metadata });
+};
 
+export const findNewestReleasesMetadata = ({
+	metadata
+}: {
+	metadata: Omit<ReleasesMetadata, 'releases'>;
+}): Required<Pick<ReleaseMetadata, 'satellite' | 'mission_control' | 'orbiter'>> => {
 	const newest = (
 		segmentKeys: 'satellites' | 'mission_controls' | 'orbiters'
 	): string | undefined => last((metadata[segmentKeys] ?? []).sort((a, b) => compare(a, b)));

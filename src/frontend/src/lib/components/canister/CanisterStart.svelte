@@ -6,6 +6,8 @@
 	import IconStart from '$lib/components/icons/IconStart.svelte';
 	import Text from '$lib/components/ui/Text.svelte';
 	import { authSignedOut } from '$lib/derived/auth.derived';
+	import { reloadOrbiterVersion } from '$lib/services/version/version.orbiter.services';
+	import { reloadSatelliteVersion } from '$lib/services/version/version.satellite.services';
 	import { authStore } from '$lib/stores/auth.store';
 	import { busy } from '$lib/stores/busy.store';
 	import { i18n } from '$lib/stores/i18n.store';
@@ -44,7 +46,28 @@
 			await canisterStart({ canisterId, identity: $authStore.identity });
 
 			emit({ message: 'junoRestartCycles', detail: { canisterId } });
-			emit({ message: 'junoReloadVersions' });
+
+			// Reload version
+			switch (segment) {
+				case 'orbiter': {
+					await reloadOrbiterVersion({
+						orbiterId: canisterId,
+						identity: $authStore.identity,
+						skipReload: false
+					});
+
+					break;
+				}
+				case 'satellite': {
+					await reloadSatelliteVersion({
+						satelliteId: canisterId,
+						identity: $authStore.identity,
+						skipReload: false
+					});
+
+					break;
+				}
+			}
 
 			close();
 

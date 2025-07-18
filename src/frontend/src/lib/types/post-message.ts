@@ -9,10 +9,11 @@ import type {
 	PostMessageDataResponseErrorSchema,
 	PostMessageDataResponseExchangeSchema,
 	PostMessageDataResponseHostingSchema,
+	PostMessageDataResponseRegistrySchema,
 	PostMessageDataResponseWalletCleanUpSchema,
 	PostMessageDataResponseWalletSchema,
 	PostMessageRequestSchema
-} from '$lib/schema/post-message.schema';
+} from '$lib/schemas/post-message.schema';
 import type * as z from 'zod/v4';
 
 // Request
@@ -42,6 +43,8 @@ export type PostMessageDataResponseCanistersMonitoring = z.infer<
 >;
 
 export type PostMessageDataResponseHosting = z.infer<typeof PostMessageDataResponseHostingSchema>;
+
+export type PostMessageDataResponseRegistry = z.infer<typeof PostMessageDataResponseRegistrySchema>;
 
 export type PostMessageDataResponseExchange = z.infer<typeof PostMessageDataResponseExchangeSchema>;
 

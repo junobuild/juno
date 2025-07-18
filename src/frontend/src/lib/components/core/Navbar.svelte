@@ -3,7 +3,7 @@
 	import { fade } from 'svelte/transition';
 	import BannerSkylab from '$lib/components/core/BannerSkylab.svelte';
 	import Logo from '$lib/components/core/Logo.svelte';
-	import NavbarCockpit from '$lib/components/core/NavbarCockpit.svelte';
+	import NavbarWallet from '$lib/components/core/NavbarWallet.svelte';
 	import User from '$lib/components/core/User.svelte';
 	import Notifications from '$lib/components/notifications/Notifications.svelte';
 	import SatellitesSwitcher from '$lib/components/satellites/SatellitesSwitcher.svelte';
@@ -17,10 +17,9 @@
 	interface Props {
 		start?: 'logo' | 'back' | 'menu';
 		signIn?: boolean;
-		launchpad?: boolean;
 	}
 
-	let { start = 'logo', signIn = true, launchpad = false }: Props = $props();
+	let { start = 'logo', signIn = true }: Props = $props();
 
 	let hide = $state(false);
 
@@ -56,18 +55,12 @@
 		{/if}
 	</div>
 
-	<div class="end">
-		{#if launchpad}
-			<div>
-				<NavbarCockpit />
-			</div>
-		{/if}
+	<div>
+		<Notifications />
 
-		<div>
-			<Notifications />
+		<NavbarWallet />
 
-			<User {signIn} />
-		</div>
+		<User {signIn} />
 	</div>
 </Header>
 
@@ -80,9 +73,5 @@
 		align-items: center;
 
 		gap: var(--padding-1_5x);
-	}
-
-	.end {
-		gap: var(--padding-4x);
 	}
 </style>

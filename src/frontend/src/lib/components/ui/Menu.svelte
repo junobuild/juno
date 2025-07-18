@@ -35,7 +35,7 @@
 	</div>
 
 	<div class="menu-collapse" class:collapsed={$menuExpanded}>
-		<ButtonIcon onclick={layoutMenuState.toggle}>
+		<ButtonIcon onclick={layoutMenuState.toggle} small>
 			{#snippet icon()}
 				<IconBack size="16px" />
 			{/snippet}
@@ -108,7 +108,7 @@
 
 	.menu-collapse {
 		position: absolute;
-		right: calc(-1.2 * var(--padding-1_5x));
+		right: calc(-1.1 * var(--padding-1_5x));
 		bottom: var(--padding-8x);
 
 		transform: rotate(180deg);

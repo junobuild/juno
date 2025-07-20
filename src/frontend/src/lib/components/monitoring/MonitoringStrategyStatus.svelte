@@ -6,7 +6,7 @@
 	import Html from '$lib/components/ui/Html.svelte';
 	import { i18n } from '$lib/stores/i18n.store';
 	import type { CanisterData, CanisterSyncStatus } from '$lib/types/canister';
-	import { freezingThresholdCycles } from '$lib/utils/canister.utils';
+	import { cyclesNeededForFreezingThreshold } from '$lib/utils/canister.utils';
 	import { formatTCycles } from '$lib/utils/cycles.utils';
 	import { i18nFormat } from '$lib/utils/i18n.utils';
 
@@ -22,7 +22,7 @@
 		fromNullishNullable(fromNullishNullable(monitoring?.cycles)?.strategy)
 	);
 
-	let cyclesNeeded = $derived(freezingThresholdCycles(canisterData?.canister));
+	let cyclesNeeded = $derived(cyclesNeededForFreezingThreshold(canisterData?.canister));
 
 	let cyclesTrigger = $derived(
 		cyclesNeeded + (monitoringStrategy?.BelowThreshold.min_cycles ?? 0n)

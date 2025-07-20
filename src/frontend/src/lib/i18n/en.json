@@ -200,6 +200,7 @@
 		"in_percent": "in percent",
 		"in_t_cycles": "in T Cycles",
 		"no_update_required": "No settings have been modified, so the settings do not need to be updated.",
+		"not_enough_cycles_to_update_freezing_threshold": "The cycle balance is too low to cover the new freezing threshold. Please top up your module before trying again.",
 		"controllers": "Controllers",
 		"public": "Public",
 		"subnet": "Subnet",

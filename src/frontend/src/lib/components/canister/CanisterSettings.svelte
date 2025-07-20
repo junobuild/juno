@@ -15,6 +15,7 @@
 	import { toasts } from '$lib/stores/toasts.store';
 	import type {
 		CanisterData,
+		CanisterInfo,
 		CanisterLogVisibility,
 		CanisterSyncStatus,
 		Segment
@@ -55,11 +56,22 @@
 			return;
 		}
 
+		if (isNullish(data)) {
+			toasts.error({ text: $i18n.errors.canister_status });
+			return;
+		}
+
+		const canister: CanisterInfo = {
+			...data.canister,
+			canisterId: canisterId.toText()
+		};
+
 		emit({
 			message: 'junoModal',
 			detail: {
 				type: 'edit_canister_settings',
 				detail: {
+					canister,
 					segment: {
 						canisterId: canisterId.toText(),
 						segment,

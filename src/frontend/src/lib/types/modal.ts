@@ -12,7 +12,7 @@ import type {
 	AuthenticationConfig,
 	Rule
 } from '$declarations/satellite/satellite.did';
-import type { CanisterSegmentWithLabel, CanisterSettings } from '$lib/types/canister';
+import type { CanisterInfo, CanisterSegmentWithLabel, CanisterSettings } from '$lib/types/canister';
 import type { SetControllerParams } from '$lib/types/controllers';
 import type { CustomDomains } from '$lib/types/custom-domain';
 import type { MissionControlId } from '$lib/types/mission-control';
@@ -89,6 +89,7 @@ export interface JunoModalCreateControllerDetail extends JunoModalSegmentDetail 
 
 export interface JunoModalEditCanisterSettingsDetail extends JunoModalSegmentDetail {
 	settings: CanisterSettings;
+	canister: CanisterInfo;
 }
 
 export interface JunoModalRestoreSnapshotDetail extends JunoModalSegmentDetail {

@@ -1,3 +1,5 @@
+export const ONE_DAY = 86_400n;
+
 // Used for making freezing threshold human readable
 export const ONE_MONTH = 2_592_000; // 30 days
 export const THREE_MONTHS = ONE_MONTH * 3; // 7_776_000 seconds

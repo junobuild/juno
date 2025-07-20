@@ -200,6 +200,7 @@
 		"in_percent": "百分比",
 		"in_t_cycles": "以 T Cycles 为单位",
 		"no_update_required": "没有设置修改, 所以没有需要更新的.",
+		"not_enough_cycles_to_update_freezing_threshold": "The cycle balance is too low to cover the new freezing threshold. Please top up your module before trying again.",
 		"controllers": "控制者",
 		"public": "公开",
 		"subnet": "子网",

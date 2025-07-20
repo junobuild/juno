@@ -32,7 +32,11 @@
 
 	let { detail, onclose }: Props = $props();
 
-	let { segment, settings } = $derived(detail as JunoModalEditCanisterSettingsDetail);
+	let {
+		segment,
+		settings,
+		canister: canisterInfo
+	} = $derived(detail as JunoModalEditCanisterSettingsDetail);
 
 	let freezingThreshold = $state(
 		Number((detail as JunoModalEditCanisterSettingsDetail).settings.freezingThreshold)
@@ -97,6 +101,7 @@
 		const { success } = await updateSettingsServices({
 			canisterId,
 			currentSettings: settings,
+			canisterInfo,
 			newSettings: {
 				freezingThreshold: BigInt(freezingThreshold),
 				reservedCyclesLimit,

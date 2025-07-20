@@ -204,6 +204,7 @@ interface I18nCanisters {
 	in_percent: string;
 	in_t_cycles: string;
 	no_update_required: string;
+	not_enough_cycles_to_update_freezing_threshold: string;
 	controllers: string;
 	public: string;
 	subnet: string;

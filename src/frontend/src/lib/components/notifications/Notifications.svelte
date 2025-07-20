@@ -5,6 +5,7 @@
 	import IconSatellite from '$lib/components/icons/IconSatellite.svelte';
 	import NotificationsCanister from '$lib/components/notifications/NotificationsCanister.svelte';
 	import NotificationsCanisterLoader from '$lib/components/notifications/NotificationsCanisterLoader.svelte';
+	import NotificationsUpgrade from '$lib/components/notifications/NotificationsUpgrade.svelte';
 	import ButtonIcon from '$lib/components/ui/ButtonIcon.svelte';
 	import Popover from '$lib/components/ui/Popover.svelte';
 	import { missionControlIdDerived } from '$lib/derived/mission-control.derived';
@@ -112,6 +113,8 @@
 				cyclesWarning={satelliteCyclesWarning}
 				cyclesIcon={IconSatellite}
 			/>
+
+			<NotificationsUpgrade />
 		{/if}
 	</div>
 </Popover>

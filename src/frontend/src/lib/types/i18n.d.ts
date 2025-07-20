@@ -938,6 +938,7 @@ interface I18nNotifications {
 	none: string;
 	low_cycles: string;
 	heap: string;
+	upgrade_available: string;
 }
 
 interface I18n {

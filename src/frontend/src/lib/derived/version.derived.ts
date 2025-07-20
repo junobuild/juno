@@ -91,3 +91,14 @@ export const satellitesVersionNotLoaded = derived(
 	[satellitesVersionLoaded],
 	([$satellitesVersionLoaded]) => !$satellitesVersionLoaded
 );
+
+export const versionsNotLoaded = derived(
+	[missionControlVersionNotLoaded, orbiterVersionNotLoaded, satellitesVersionNotLoaded],
+	([$missionControlVersionNotLoaded, $orbiterVersionNotLoaded, $satellitesVersionNotLoaded]) =>
+		$missionControlVersionNotLoaded || $orbiterVersionNotLoaded || $satellitesVersionNotLoaded
+);
+
+export const versionsLoaded = derived(
+	[versionsNotLoaded],
+	([$versionsNotLoaded]) => !$versionsNotLoaded
+);

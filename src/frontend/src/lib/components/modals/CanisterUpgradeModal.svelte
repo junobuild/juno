@@ -21,6 +21,7 @@
 		newerReleases,
 		segment,
 		build,
+		intro: introUpgrade,
 		...propsRest
 	}: Props &
 		Omit<
@@ -69,8 +70,8 @@
 				{onclose}
 				onback={() => (step = 'confirm')}
 			>
-				{#snippet intro()}
-					{@render intro?.()}
+				{#snippet title()}
+					{@render introUpgrade?.()}
 				{/snippet}
 			</SelectUpgradeVersion>
 		{/snippet}

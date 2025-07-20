@@ -223,10 +223,4 @@
 		margin: calc(var(--padding-2x) + var(--padding-0_25x)) 0 var(--padding-6x);
 		--spinner-paragraph-margin: 0;
 	}
-
-	.loaded {
-		display: inline-block;
-		font-size: var(--font-size-small);
-		padding: 0 0 var(--padding-2x);
-	}
 </style>

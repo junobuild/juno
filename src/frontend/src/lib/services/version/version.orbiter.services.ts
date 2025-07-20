@@ -1,5 +1,6 @@
 import { getNewestReleasesMetadata } from '$lib/rest/cdn.rest';
 import { getOrbiterVersionMetadata } from '$lib/services/version/version.metadata.orbiter.services';
+import { updateCachedVersion } from '$lib/services/version/version.registry.services';
 import { i18n } from '$lib/stores/i18n.store';
 import { toasts } from '$lib/stores/toasts.store';
 import { versionStore } from '$lib/stores/version.store';
@@ -61,6 +62,11 @@ const loadOrbiterVersion = async ({
 		]);
 
 		const { metadata: orbVersion } = metadata;
+
+		await updateCachedVersion({
+			value: orbVersion,
+			canisterId: orbiterId
+		});
 
 		versionStore.setOrbiter({
 			release: releases.orbiter,

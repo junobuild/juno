@@ -1,5 +1,6 @@
 import { getNewestReleasesMetadata } from '$lib/rest/cdn.rest';
 import { getMissionControlVersionMetadata } from '$lib/services/version/version.metadata.mission-control.services';
+import { updateCachedVersion } from '$lib/services/version/version.registry.services';
 import { i18n } from '$lib/stores/i18n.store';
 import { toasts } from '$lib/stores/toasts.store';
 import { versionStore } from '$lib/stores/version.store';
@@ -54,6 +55,11 @@ const loadMissionControlVersion = async ({
 		]);
 
 		const { metadata: ctrlVersion } = metadata;
+
+		await updateCachedVersion({
+			value: ctrlVersion,
+			canisterId: missionControlId
+		});
 
 		versionStore.setMissionControl({
 			release: releases.mission_control,

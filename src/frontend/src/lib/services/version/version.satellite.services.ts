@@ -1,11 +1,14 @@
 import { getNewestReleasesMetadata } from '$lib/rest/cdn.rest';
 import { getSatelliteVersionMetadata } from '$lib/services/version/version.metadata.satellite.services';
+import { updateCachedVersion } from '$lib/services/version/version.registry.services';
 import { i18n } from '$lib/stores/i18n.store';
+import { versionIdbStore } from '$lib/stores/idb.store';
 import { toasts } from '$lib/stores/toasts.store';
 import { versionStore } from '$lib/stores/version.store';
 import type { LoadVersionBaseParams, LoadVersionResult } from '$lib/types/version';
 import type { Principal } from '@dfinity/principal';
-import { assertNonNullish, nonNullish } from '@dfinity/utils';
+import { assertNonNullish, isNullish, nonNullish } from '@dfinity/utils';
+import { del } from 'idb-keyval';
 import { get } from 'svelte/store';
 
 export const reloadSatelliteVersion = async ({
@@ -61,14 +64,29 @@ const loadSatelliteVersion = async ({
 
 		const satVersion = 'metadata' in metadata ? metadata.metadata : null;
 
+		// There was an error loading the metadata so we reset cache and store about the version of that particular Satellite
+		if (isNullish(satVersion)) {
+			await del(satelliteId.toText(), versionIdbStore);
+
+			versionStore.setSatellite({
+				satelliteId: satelliteId.toText(),
+				version: null
+			});
+
+			return { result: 'loaded' };
+		}
+
+		await updateCachedVersion({
+			value: satVersion,
+			canisterId: satelliteId
+		});
+
 		versionStore.setSatellite({
 			satelliteId: satelliteId.toText(),
-			version: nonNullish(satVersion)
-				? {
-						release: releases.satellite,
-						...satVersion
-					}
-				: null
+			version: {
+				release: releases.satellite,
+				...satVersion
+			}
 		});
 
 		return { result: 'loaded' };

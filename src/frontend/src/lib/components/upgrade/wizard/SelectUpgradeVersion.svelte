@@ -18,7 +18,7 @@
 		newerReleases: string[];
 		segment: 'satellite' | 'mission_control' | 'orbiter';
 		back?: boolean;
-		intro?: Snippet;
+		title?: Snippet;
 		takeSnapshot: boolean;
 		onclose: () => void;
 		onback: () => void;
@@ -31,7 +31,7 @@
 		segment,
 		back = false,
 		takeSnapshot = $bindable(true),
-		intro,
+		title,
 		onnext,
 		onclose,
 		onback
@@ -104,7 +104,7 @@
 	};
 </script>
 
-{@render intro?.()}
+{@render title?.()}
 
 <form onsubmit={onSubmit}>
 	{#if newerReleases.length > 1}

@@ -11,6 +11,7 @@
 	import { missionControlIdDerived } from '$lib/derived/mission-control.derived';
 	import { orbiterStore } from '$lib/derived/orbiter.derived';
 	import { satelliteStore } from '$lib/derived/satellite.derived';
+	import { versionsLoaded, versionsUpgradeWarning } from '$lib/derived/version.derived';
 	import { i18n } from '$lib/stores/i18n.store';
 	import type { CanisterData } from '$lib/types/canister';
 	import { overviewLink } from '$lib/utils/nav.utils';
@@ -40,11 +41,19 @@
 
 	let satelliteWarnings = $derived(satelliteCyclesWarning || satelliteHeapWarning);
 
-	let level = $derived<'warning' | 'info' | 'error' | undefined>(
-		missionControlWarnings || orbiterWarnings || satelliteWarnings ? 'warning' : undefined
+	let hasCanisterNotifications = $derived(
+		missionControlWarnings || orbiterWarnings || satelliteWarnings
 	);
 
-	let hasNotifications = $derived(missionControlWarnings || orbiterWarnings || satelliteWarnings);
+	let hasUpgradeWarning = $derived($versionsLoaded && $versionsUpgradeWarning);
+
+	let level = $derived<'warning' | 'info' | 'error' | undefined>(
+		hasCanisterNotifications || hasUpgradeWarning ? 'warning' : undefined
+	);
+
+	let hasNotifications = $derived(
+		missionControlWarnings || orbiterWarnings || satelliteWarnings || hasUpgradeWarning
+	);
 	let noNotifications = $derived(!hasNotifications);
 </script>
 
@@ -84,37 +93,41 @@
 		{#if noNotifications}
 			{$i18n.notifications.none}
 		{:else}
-			<NotificationsCanister
-				href="/mission-control"
-				segment="mission_control"
-				{close}
-				data={missionControlCanisterData}
-				heapWarning={missionControlHeapWarning}
-				cyclesWarning={missionControlCyclesWarning}
-				cyclesIcon={IconMissionControl}
-			/>
+			{#if hasCanisterNotifications}
+				<NotificationsCanister
+					href="/mission-control"
+					segment="mission_control"
+					{close}
+					data={missionControlCanisterData}
+					heapWarning={missionControlHeapWarning}
+					cyclesWarning={missionControlCyclesWarning}
+					cyclesIcon={IconMissionControl}
+				/>
 
-			<NotificationsCanister
-				href="/analytics/?tab=overview"
-				segment="orbiter"
-				{close}
-				data={orbiterCanisterData}
-				heapWarning={orbiterHeapWarning}
-				cyclesWarning={orbiterCyclesWarning}
-				cyclesIcon={IconAnalytics}
-			/>
+				<NotificationsCanister
+					href="/analytics/?tab=overview"
+					segment="orbiter"
+					{close}
+					data={orbiterCanisterData}
+					heapWarning={orbiterHeapWarning}
+					cyclesWarning={orbiterCyclesWarning}
+					cyclesIcon={IconAnalytics}
+				/>
 
-			<NotificationsCanister
-				href={overviewLink($satelliteStore?.satellite_id)}
-				segment="satellite"
-				{close}
-				data={satelliteCanisterData}
-				heapWarning={satelliteHeapWarning}
-				cyclesWarning={satelliteCyclesWarning}
-				cyclesIcon={IconSatellite}
-			/>
+				<NotificationsCanister
+					href={overviewLink($satelliteStore?.satellite_id)}
+					segment="satellite"
+					{close}
+					data={satelliteCanisterData}
+					heapWarning={satelliteHeapWarning}
+					cyclesWarning={satelliteCyclesWarning}
+					cyclesIcon={IconSatellite}
+				/>
+			{/if}
 
-			<NotificationsUpgrade />
+			{#if hasUpgradeWarning}
+				<NotificationsUpgrade {close} />
+			{/if}
 		{/if}
 	</div>
 </Popover>

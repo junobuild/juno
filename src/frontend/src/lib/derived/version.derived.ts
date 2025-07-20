@@ -102,3 +102,11 @@ export const versionsLoaded = derived(
 	[versionsNotLoaded],
 	([$versionsNotLoaded]) => !$versionsNotLoaded
 );
+
+export const versionsUpgradeWarning = derived(
+	[missionControlVersion, orbiterVersion, satellitesVersion],
+	([$missionControlVersion, $orbiterVersion, $satellitesVersion]) =>
+		$missionControlVersion?.warning === true ||
+		$orbiterVersion?.warning === true ||
+		Object.values($satellitesVersion).find((version) => version?.warning === true) !== undefined
+);

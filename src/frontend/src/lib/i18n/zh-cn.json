@@ -906,6 +906,7 @@
 		"title": "Notifications",
 		"none": "No notifications at the moment.",
 		"low_cycles": "Your {0} requires action: Low cycles detected.",
-		"heap": "Your {0} requires action: Heap memory is approaching 1 GB."
+		"heap": "Your {0} requires action: Heap memory is approaching 1 GB.",
+		"upgrade_available": "New upgrades available. Visit the Upgrade Dock to check them out."
 	}
 }

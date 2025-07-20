@@ -91,3 +91,22 @@ export const satellitesVersionNotLoaded = derived(
 	[satellitesVersionLoaded],
 	([$satellitesVersionLoaded]) => !$satellitesVersionLoaded
 );
+
+export const versionsNotLoaded = derived(
+	[missionControlVersionNotLoaded, orbiterVersionNotLoaded, satellitesVersionNotLoaded],
+	([$missionControlVersionNotLoaded, $orbiterVersionNotLoaded, $satellitesVersionNotLoaded]) =>
+		$missionControlVersionNotLoaded || $orbiterVersionNotLoaded || $satellitesVersionNotLoaded
+);
+
+export const versionsLoaded = derived(
+	[versionsNotLoaded],
+	([$versionsNotLoaded]) => !$versionsNotLoaded
+);
+
+export const versionsUpgradeWarning = derived(
+	[missionControlVersion, orbiterVersion, satellitesVersion],
+	([$missionControlVersion, $orbiterVersion, $satellitesVersion]) =>
+		$missionControlVersion?.warning === true ||
+		$orbiterVersion?.warning === true ||
+		Object.values($satellitesVersion).find((version) => version?.warning === true) !== undefined
+);

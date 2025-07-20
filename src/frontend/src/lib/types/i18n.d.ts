@@ -238,6 +238,11 @@ interface I18nCanisters {
 	risk: string;
 	of_cycles_needed: string;
 	only: string;
+	a_month: string;
+	six_months: string;
+	a_year: string;
+	two_years: string;
+	five_years: string;
 }
 
 interface I18nSign_in {

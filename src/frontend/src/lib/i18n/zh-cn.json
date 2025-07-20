@@ -233,7 +233,12 @@
 		"low": "Low",
 		"risk": "At risk",
 		"of_cycles_needed": "of cycles needed",
-		"only": "Only"
+		"only": "Only",
+		"a_month": "A month",
+		"six_months": "Six months",
+		"a_year": "A year",
+		"two_years": "Two years",
+		"five_years": "Five years"
 	},
 	"sign_in": {
 		"quote_1": "Stars can't shine without darkness.",

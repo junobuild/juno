@@ -239,6 +239,7 @@ interface I18nCanisters {
 	of_cycles_needed: string;
 	only: string;
 	a_month: string;
+	three_months: string;
 	six_months: string;
 	a_year: string;
 	two_years: string;

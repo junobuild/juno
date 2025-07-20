@@ -7,6 +7,7 @@
 		FIVE_YEARS,
 		ONE_MONTH,
 		ONE_YEAR,
+		THREE_MONTHS,
 		SIX_MONTHS,
 		TWO_YEARS
 	} from '$lib/constants/canister.constants';
@@ -15,7 +16,6 @@
 	import type {
 		CanisterData,
 		CanisterLogVisibility,
-		CanisterSettings,
 		CanisterSyncStatus,
 		Segment
 	} from '$lib/types/canister';
@@ -84,6 +84,8 @@
 				<p>
 					{#if freezingThreshold === BigInt(ONE_MONTH)}
 						{$i18n.canisters.a_month}
+					{:else if freezingThreshold === BigInt(THREE_MONTHS)}
+						{$i18n.canisters.three_months}
 					{:else if freezingThreshold === BigInt(SIX_MONTHS)}
 						{$i18n.canisters.six_months}
 					{:else if freezingThreshold === BigInt(ONE_YEAR)}

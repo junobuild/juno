@@ -12,6 +12,7 @@
 		ONE_MONTH,
 		ONE_YEAR,
 		SIX_MONTHS,
+		THREE_MONTHS,
 		TWO_YEARS
 	} from '$lib/constants/canister.constants';
 	import { updateSettings as updateSettingsServices } from '$lib/services/settings.services';
@@ -43,6 +44,7 @@
 		// if the dev enters one of the values.
 		customFreezingThreshold =
 			freezingThreshold !== ONE_MONTH &&
+			freezingThreshold !== THREE_MONTHS &&
 			freezingThreshold !== SIX_MONTHS &&
 			freezingThreshold !== ONE_YEAR &&
 			freezingThreshold !== TWO_YEARS &&
@@ -166,6 +168,7 @@
 						{:else}
 							<select bind:value={freezingThreshold} name="freezingThreshold">
 								<option value={ONE_MONTH}> {$i18n.canisters.a_month} </option>
+								<option value={THREE_MONTHS}> {$i18n.canisters.three_months} </option>
 								<option value={SIX_MONTHS}> {$i18n.canisters.six_months} </option>
 								<option value={ONE_YEAR}> {$i18n.canisters.a_year} </option>
 								<option value={TWO_YEARS}> {$i18n.canisters.two_years} </option>

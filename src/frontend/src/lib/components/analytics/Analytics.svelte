@@ -219,10 +219,6 @@
 {/if}
 
 <style lang="scss">
-	.loading {
-		margin: var(--padding-3x) 0 0;
-	}
-
 	.loading-data {
 		margin: calc(var(--padding-2x) + var(--padding-0_25x)) 0 var(--padding-6x);
 		--spinner-paragraph-margin: 0;

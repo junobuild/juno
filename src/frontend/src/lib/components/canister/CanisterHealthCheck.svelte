@@ -5,7 +5,7 @@
 	import InlineWarning from '$lib/components/ui/InlineWarning.svelte';
 	import { i18n } from '$lib/stores/i18n.store';
 	import type { CanisterDataInfo, CanisterSyncStatus } from '$lib/types/canister';
-	import { freezingThresholdCycles } from '$lib/utils/canister.utils';
+	import { cyclesNeededForFreezingThreshold } from '$lib/utils/canister.utils';
 	import { formatTCycles } from '$lib/utils/cycles.utils.js';
 	import { secondsToDuration } from '$lib/utils/date.utils';
 	import { i18nFormat } from '$lib/utils/i18n.utils';
@@ -20,7 +20,7 @@
 
 	let freezingThreshold = $derived(canister?.settings.freezingThreshold ?? 0n);
 
-	let cyclesNeeded = $derived(freezingThresholdCycles(canister));
+	let cyclesNeeded = $derived(cyclesNeededForFreezingThreshold(canister));
 
 	let cyclesBalance = $derived(canister?.cycles ?? 0n);
 

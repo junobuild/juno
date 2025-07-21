@@ -1,4 +1,3 @@
-#![rustfmt::skip]
 #![allow(dead_code)]
 
 // Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved.

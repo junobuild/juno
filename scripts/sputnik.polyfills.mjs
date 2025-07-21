@@ -66,7 +66,7 @@ const transformLlrtBlob = (content) => content
 
 const transformLlrtUtils = (content) => {
 	const parsedContent = content.replace(/^use crate::\s*\n?/m, 'use super::');
-	return `#![rustfmt::skip]\n#![allow(dead_code)]\n\n${parsedContent}`;
+	return `#![allow(dead_code)]\n\n${parsedContent}`;
 };
 
 const savePolyfill = async ({ dest, content, transform }) => {

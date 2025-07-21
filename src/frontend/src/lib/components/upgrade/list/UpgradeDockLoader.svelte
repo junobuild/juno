@@ -1,11 +1,7 @@
 <script lang="ts">
 	import type { Snippet } from 'svelte';
 	import SpinnerParagraph from '$lib/components/ui/SpinnerParagraph.svelte';
-	import {
-		missionControlVersionNotLoaded,
-		orbiterVersionNotLoaded,
-		satellitesVersionNotLoaded
-	} from '$lib/derived/version.derived';
+	import { versionsNotLoaded } from '$lib/derived/version.derived';
 	import { i18n } from '$lib/stores/i18n.store';
 
 	interface Props {
@@ -14,9 +10,7 @@
 
 	let { children }: Props = $props();
 
-	let loading = $derived(
-		$missionControlVersionNotLoaded || $orbiterVersionNotLoaded || $satellitesVersionNotLoaded
-	);
+	let loading = $derived($versionsNotLoaded);
 </script>
 
 {#if loading}

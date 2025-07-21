@@ -41,4 +41,6 @@
 	});
 </script>
 
+<svelte:window onjunoReloadVersions={debounceLoad} />
+
 {@render children()}

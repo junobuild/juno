@@ -25,7 +25,8 @@
 </a>
 
 <style lang="scss">
-	a {
+	a,
+	span {
 		display: inline-flex;
 	}
 </style>

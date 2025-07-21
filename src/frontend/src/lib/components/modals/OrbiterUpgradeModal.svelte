@@ -36,9 +36,7 @@
 
 	const reloadVersion = async () => {
 		await reloadOrbiterVersion({
-			orbiterId: $orbiterStore?.orbiter_id,
-			identity: $authStore.identity ?? new AnonymousIdentity(),
-			skipReload: false
+			orbiterId: $orbiterStore?.orbiter_id
 		});
 	};
 </script>

@@ -3,8 +3,7 @@
 	import { MISSION_CONTROL_v0_0_14 } from '$lib/constants/version.constants';
 	import { missionControlVersion } from '$lib/derived/version.derived';
 	import { openMonitoringModal } from '$lib/services/monitoring.services';
-	import { reloadMissionControlVersion } from '$lib/services/version/version.mission-control.services';
-	import { authStore } from '$lib/stores/auth.store';
+	import { waitMissionControlVersionLoaded } from '$lib/services/version/version.mission-control.services';
 	import { i18n } from '$lib/stores/i18n.store';
 	import { toasts } from '$lib/stores/toasts.store';
 	import type { MissionControlId } from '$lib/types/mission-control';
@@ -16,12 +15,11 @@
 	let { missionControlId }: Props = $props();
 
 	const openModal = async () => {
-		// Load mission control without reload to ensure it is loaded before asserting the version.
-		await reloadMissionControlVersion({
-			missionControlId,
-			skipReload: true,
-			identity: $authStore.identity
-		});
+		const { result } = await waitMissionControlVersionLoaded();
+
+		if (result === 'error') {
+			return;
+		}
 
 		if (compare($missionControlVersion?.current ?? '0.0.0', MISSION_CONTROL_v0_0_14) < 0) {
 			toasts.warn($i18n.errors.monitoring_upgrade);

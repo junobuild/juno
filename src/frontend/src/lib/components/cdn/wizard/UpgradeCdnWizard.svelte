@@ -64,9 +64,7 @@
 
 	const reloadVersion = async () => {
 		await reloadSatelliteVersion({
-			satelliteId: satellite.satellite_id,
-			identity: $authStore.identity ?? new AnonymousIdentity(),
-			skipReload: false
+			satelliteId: satellite.satellite_id
 		});
 	};
 

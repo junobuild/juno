@@ -51,18 +51,14 @@
 			switch (segment) {
 				case 'orbiter': {
 					await reloadOrbiterVersion({
-						orbiterId: canisterId,
-						identity: $authStore.identity,
-						skipReload: false
+						orbiterId: canisterId
 					});
 
 					break;
 				}
 				case 'satellite': {
 					await reloadSatelliteVersion({
-						satelliteId: canisterId,
-						identity: $authStore.identity,
-						skipReload: false
+						satelliteId: canisterId
 					});
 
 					break;

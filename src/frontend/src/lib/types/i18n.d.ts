@@ -169,6 +169,7 @@ interface I18nCanisters {
 	detach_success: string;
 	delete_success: string;
 	cycles: string;
+	lifecycle: string;
 	available_cycles: string;
 	cycles_needed: string;
 	transfer_cycles: string;
@@ -633,6 +634,7 @@ interface I18nErrors {
 	user_unban: string;
 	satellite_version_not_found: string;
 	load_version: string;
+	load_version_timeout: string;
 	load_proposals: string;
 	apply_proposal_error: string;
 	reject_proposal_error: string;
@@ -867,6 +869,7 @@ interface I18nMonitoring {
 	default: string;
 	default_description: string;
 	warn_monitoring_enabled: string;
+	runtime: string;
 }
 
 interface I18nPreferences {
@@ -938,6 +941,7 @@ interface I18nNotifications {
 	none: string;
 	low_cycles: string;
 	heap: string;
+	upgrade_available: string;
 }
 
 interface I18n {

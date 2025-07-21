@@ -113,7 +113,7 @@
 				class="link not-themed"
 				class:collapsed={$menuCollapsed}
 			>
-				<IconAnalytics size="20px" />
+				<IconAnalytics size="24px" />
 				<span>{$i18n.analytics.title}</span>
 			</a>
 
@@ -124,7 +124,7 @@
 				class="link not-themed"
 				class:collapsed={$menuCollapsed}
 			>
-				<IconTelescope size={20} />
+				<IconTelescope />
 				<span>{$i18n.monitoring.title}</span>
 			</a>
 
@@ -135,7 +135,7 @@
 				class="link not-themed"
 				class:collapsed={$menuCollapsed}
 			>
-				<IconMissionControl size="22px" />
+				<IconMissionControl />
 				<span>{$i18n.mission_control.title}</span>
 			</a>
 
@@ -157,7 +157,7 @@
 				class="link not-themed"
 				class:collapsed={$menuCollapsed}
 			>
-				<IconUpgradeDock size="20px" />
+				<IconUpgradeDock size="22px" />
 				<span>{$i18n.upgrade.title}</span>
 			</a>
 		</div>
@@ -213,12 +213,6 @@
 
 			opacity: 1;
 			transition: opacity var(--animation-time);
-		}
-
-		:global(svg) {
-			width: 24px;
-			min-width: 24px;
-			height: 24px;
 		}
 
 		&.collapsed {

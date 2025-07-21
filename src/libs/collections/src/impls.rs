@@ -64,8 +64,7 @@ impl Rule {
     ) -> Result<Rule, String> {
         match current_rule {
             None => Err(format!(
-                "{} ({})",
-                JUNO_COLLECTIONS_ERROR_RESERVED_COLLECTION, collection
+                "{JUNO_COLLECTIONS_ERROR_RESERVED_COLLECTION} ({collection})"
             )),
             Some(current_rule) => {
                 let (created_at, version, updated_at) =

@@ -71,7 +71,7 @@ pub fn insert_asset_encoding(
 ) -> Result<(), String> {
     let mut asset = match get_asset(cdn_heap, full_path) {
         Some(asset) => asset,
-        None => return Err(format!("No asset found for {}", full_path)),
+        None => return Err(format!("No asset found for {full_path}")),
     };
 
     asset

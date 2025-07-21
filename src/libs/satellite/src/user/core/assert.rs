@@ -52,7 +52,7 @@ pub fn assert_user_collection_data(collection: &CollectionKey, doc: &SetDoc) -> 
     }
 
     decode_doc_data::<UserData>(&doc.data)
-        .map_err(|err| format!("{}: {}", JUNO_DATASTORE_ERROR_USER_INVALID_DATA, err))?;
+        .map_err(|err| format!("{JUNO_DATASTORE_ERROR_USER_INVALID_DATA}: {err}"))?;
 
     Ok(())
 }

@@ -154,7 +154,7 @@
 				role="menuitem"
 				href={`/upgrade-dock${queryParam}`}
 				class:selected={isRouteSelected({ routeId, path: 'upgrade-dock' })}
-				class="link not-themed"
+				class="link not-themed smaller-icon"
 				class:collapsed={$menuCollapsed}
 			>
 				<IconUpgradeDock size="22px" />
@@ -213,6 +213,20 @@
 
 			opacity: 1;
 			transition: opacity var(--animation-time);
+		}
+
+		:global(svg) {
+			width: 24px;
+			min-width: 24px;
+			height: 24px;
+		}
+
+		&.smaller-icon {
+			:global(svg) {
+				width: 22px;
+				min-width: 22px;
+				height: 22px;
+			}
 		}
 
 		&.collapsed {

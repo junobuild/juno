@@ -4,7 +4,6 @@ import type {
 	SatelliteVersionMetadataSchema,
 	VersionMetadataSchema
 } from '$lib/schemas/version.schema';
-import type { OptionIdentity } from '$lib/types/itentity';
 import type { SatelliteIdText } from '$lib/types/satellite';
 import type { Option } from '$lib/types/utils';
 import type * as z from 'zod/v4';
@@ -15,22 +14,11 @@ export type SatelliteVersionMetadata = z.infer<typeof SatelliteVersionMetadataSc
 export type CachedVersionMetadata = z.infer<typeof CachedVersionMetadataSchema>;
 export type CachedSatelliteVersionMetadata = z.infer<typeof CachedSatelliteVersionMetadataSchema>;
 
-export interface LoadVersionBaseParams {
-	skipReload: boolean;
-	identity: OptionIdentity;
-	toastError?: boolean;
-}
-
-export type LoadVersionResult =
-	| { result: 'loaded' }
-	| { result: 'skipped' }
-	| { result: 'error'; err: unknown };
-
 export type VersionMetadataUi = VersionMetadata & { warning: boolean };
 export type SatelliteVersionMetadataUi = SatelliteVersionMetadata & { warning: boolean };
 
 export interface VersionRegistry {
-	satellites: Record<SatelliteIdText, SatelliteVersionMetadata | undefined | null>;
+	satellites: Record<SatelliteIdText, Option<SatelliteVersionMetadata>>;
 	missionControl: Option<VersionMetadata>;
 	orbiter: Option<VersionMetadata>;
 }

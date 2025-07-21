@@ -113,7 +113,7 @@
 				class="link not-themed"
 				class:collapsed={$menuCollapsed}
 			>
-				<IconAnalytics size="20px" />
+				<IconAnalytics size="24px" />
 				<span>{$i18n.analytics.title}</span>
 			</a>
 
@@ -124,7 +124,7 @@
 				class="link not-themed"
 				class:collapsed={$menuCollapsed}
 			>
-				<IconTelescope size="20px" />
+				<IconTelescope />
 				<span>{$i18n.monitoring.title}</span>
 			</a>
 
@@ -135,7 +135,7 @@
 				class="link not-themed"
 				class:collapsed={$menuCollapsed}
 			>
-				<IconMissionControl size="22px" />
+				<IconMissionControl />
 				<span>{$i18n.mission_control.title}</span>
 			</a>
 
@@ -154,10 +154,10 @@
 				role="menuitem"
 				href={`/upgrade-dock${queryParam}`}
 				class:selected={isRouteSelected({ routeId, path: 'upgrade-dock' })}
-				class="link not-themed"
+				class="link not-themed smaller-icon"
 				class:collapsed={$menuCollapsed}
 			>
-				<IconUpgradeDock size="20px" />
+				<IconUpgradeDock size="22px" />
 				<span>{$i18n.upgrade.title}</span>
 			</a>
 		</div>
@@ -219,6 +219,14 @@
 			width: 24px;
 			min-width: 24px;
 			height: 24px;
+		}
+
+		&.smaller-icon {
+			:global(svg) {
+				width: 22px;
+				min-width: 22px;
+				height: 22px;
+			}
 		}
 
 		&.collapsed {

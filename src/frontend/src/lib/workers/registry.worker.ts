@@ -267,7 +267,7 @@ const loadOutdatedVersions = async ({
 			value
 		}: {
 			knownMetadata: OptionCachedVersionMetadata;
-			value: Omit<VersionMetadata, 'release'>;
+			value: Omit<VersionMetadata, 'release'> | null;
 		}): CachedVersionMetadata | CachedSatelliteVersionMetadata => ({
 			value,
 			createdAt: knownMetadata?.createdAt ?? now,
@@ -275,18 +275,15 @@ const loadOutdatedVersions = async ({
 		});
 
 		await setMany(
-			metadata
-				.filter(({ value }) => 'metadata' in value && nonNullish(value.metadata))
-				.map(({ canisterId, value }) => [
-					canisterId,
-					toCachedMetadata({
-						// @ts-expect-error map does not infer the filter
-						value: value.metadata,
-						knownMetadata: knownMetadata.find(
-							([knownSegment]) => knownSegment.canisterId === canisterId
-						)?.[1]
-					})
-				]),
+			metadata.map(({ canisterId, value }) => [
+				canisterId,
+				toCachedMetadata({
+					value: 'metadata' in value && nonNullish(value.metadata) ? value.metadata : null,
+					knownMetadata: knownMetadata.find(
+						([knownSegment]) => knownSegment.canisterId === canisterId
+					)?.[1]
+				})
+			]),
 			versionIdbStore
 		);
 
@@ -314,12 +311,17 @@ const reduceOutdatedSegments = ({
 	const { satellites, missionControls, orbiters } = groupSegments(segments);
 
 	const mapOutdatedSegments = (segments: CanisterSegment[]): OutdatedSegment[] =>
-		segments.map((segment) => [
-			segment,
-			outdatedVersions.find(
-				([outdatedCanisterId]) => outdatedCanisterId === segment.canisterId
-			)?.[1]
-		]);
+		segments
+			.filter(
+				(segment) =>
+					outdatedVersions.find(([canisterId]) => canisterId === segment.canisterId) !== undefined
+			)
+			.map((segment) => [
+				segment,
+				outdatedVersions.find(
+					([outdatedCanisterId]) => outdatedCanisterId === segment.canisterId
+				)?.[1]
+			]);
 
 	return {
 		satellites: mapOutdatedSegments(satellites),
@@ -388,15 +390,17 @@ const prepareSyncData = async ({
 				([cachedCanisterId]) =>
 					satellites.find(({ canisterId }) => canisterId === cachedCanisterId) !== undefined
 			)
-			.reduce<Record<SatelliteIdText, SatelliteVersionMetadata>>(
+			.reduce<Record<SatelliteIdText, SatelliteVersionMetadata | null>>(
 				(acc, [canisterId, cachedValue]) => ({
 					...acc,
-					[canisterId]: {
-						...cachedValue.value,
-						// For TypeScript simplicity reasons
-						build: 'build' in cachedValue.value ? cachedValue.value.build : 'stock',
-						release: newestSatelliteRelease
-					}
+					[canisterId]: nonNullish(cachedValue.value)
+						? {
+								...cachedValue.value,
+								// For TypeScript simplicity reasons
+								build: 'build' in cachedValue.value ? cachedValue.value.build : 'stock',
+								release: newestSatelliteRelease
+							}
+						: null
 				}),
 				{}
 			);

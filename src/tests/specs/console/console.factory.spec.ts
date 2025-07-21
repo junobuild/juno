@@ -2,6 +2,7 @@ import type { _SERVICE as ConsoleActor } from '$declarations/console/console.did
 import { idlFactory as idlFactorConsole } from '$declarations/console/console.factory.did';
 import type { _SERVICE as MissionControlActor } from '$declarations/mission_control/mission_control.did';
 import { idlFactory as idlFactorMissionControl } from '$declarations/mission_control/mission_control.factory.did';
+import { ONE_YEAR, THREE_MONTHS } from '$lib/constants/canister.constants';
 import type { Identity } from '@dfinity/agent';
 import { Ed25519KeyIdentity } from '@dfinity/identity';
 import { PocketIc, type Actor } from '@dfinity/pic';
@@ -42,11 +43,13 @@ describe('Console', () => {
 	const assertSettings = async ({
 		user,
 		canisterId,
-		missionControlId
+		missionControlId,
+		freezingThreshold
 	}: {
 		user: Identity;
 		canisterId: Principal;
 		missionControlId: Principal;
+		freezingThreshold: bigint;
 	}) => {
 		const result = await canisterStatus({
 			sender: user,
@@ -69,7 +72,7 @@ describe('Console', () => {
 			)
 		).not.toBeUndefined();
 
-		expect(settings?.freezing_threshold).toEqual(2_592_000n);
+		expect(settings?.freezing_threshold).toEqual(freezingThreshold);
 		expect(settings?.wasm_memory_threshold).toEqual(0n);
 		expect(settings?.reserved_cycles_limit).toEqual(5_000_000_000_000n);
 		expect(settings?.log_visibility).toEqual({ controllers: null });
@@ -98,7 +101,8 @@ describe('Console', () => {
 			await assertSettings({
 				user,
 				missionControlId,
-				canisterId: missionControlId
+				canisterId: missionControlId,
+				freezingThreshold: BigInt(ONE_YEAR)
 			});
 		});
 
@@ -117,7 +121,8 @@ describe('Console', () => {
 			await assertSettings({
 				user,
 				missionControlId,
-				canisterId: satelliteId
+				canisterId: satelliteId,
+				freezingThreshold: BigInt(ONE_YEAR)
 			});
 		});
 
@@ -143,7 +148,8 @@ describe('Console', () => {
 			await assertSettings({
 				user,
 				missionControlId,
-				canisterId: orbiterId
+				canisterId: orbiterId,
+				freezingThreshold: BigInt(THREE_MONTHS)
 			});
 		});
 	});

@@ -95,7 +95,7 @@ interface install_chunked_code_args {
 
 // canister_status did
 
-const canister_status_args = IDL.Record({ canister_id: canister_id });
+const canister_status_args = IDL.Record({ canister_id });
 
 const log_visibility = IDL.Variant({
 	controllers: IDL.Null,
@@ -108,7 +108,7 @@ const definite_canister_settings = IDL.Record({
 	wasm_memory_threshold: IDL.Nat,
 	controllers: IDL.Vec(IDL.Principal),
 	reserved_cycles_limit: IDL.Nat,
-	log_visibility: log_visibility,
+	log_visibility,
 	wasm_memory_limit: IDL.Nat,
 	memory_allocation: IDL.Nat,
 	compute_allocation: IDL.Nat

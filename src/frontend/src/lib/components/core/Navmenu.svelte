@@ -124,7 +124,7 @@
 				class="link not-themed"
 				class:collapsed={$menuCollapsed}
 			>
-				<IconTelescope size="20px" />
+				<IconTelescope size={20} />
 				<span>{$i18n.monitoring.title}</span>
 			</a>
 

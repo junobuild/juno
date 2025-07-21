@@ -1,3 +1,4 @@
+use crate::constants::FREEZING_THRESHOLD_ONE_YEAR;
 use crate::controllers::update_mission_control_controllers;
 use crate::store::heap::increment_mission_controls_rate;
 use crate::store::stable::{
@@ -5,9 +6,10 @@ use crate::store::stable::{
 };
 use crate::types::state::MissionControl;
 use crate::wasm::mission_control_wasm_arg;
-use candid::Principal;
+use candid::{Nat, Principal};
 use junobuild_shared::constants_shared::CREATE_MISSION_CONTROL_CYCLES;
 use junobuild_shared::mgmt::ic::create_canister_install_code;
+use junobuild_shared::mgmt::types::ic::CreateCanisterInitSettingsArg;
 use junobuild_shared::types::state::UserId;
 
 pub async fn init_user_mission_control(
@@ -37,8 +39,13 @@ async fn create_mission_control(
 
     let wasm_arg = mission_control_wasm_arg(user)?;
 
+    let create_settings_arg = CreateCanisterInitSettingsArg {
+        controllers: Vec::from([*console, *user]),
+        freezing_threshold: Nat::from(FREEZING_THRESHOLD_ONE_YEAR),
+    };
+
     let create = create_canister_install_code(
-        Vec::from([*console, *user]),
+        &create_settings_arg,
         &wasm_arg,
         CREATE_MISSION_CONTROL_CYCLES,
     )

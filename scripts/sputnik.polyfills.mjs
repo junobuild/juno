@@ -60,7 +60,8 @@ ${filteredContent.trim()}
 `;
 };
 
-const transformLlrtBlob = (content) => content
+const transformLlrtBlob = (content) =>
+	content
 		.replace(/^use llrt_utils::\s*\n?/m, 'use crate::js::apis::node::blob::llrt::utils::')
 		.replace(/^use super::blob::Blob;\s*\n?/m, 'use super::polyfill::Blob;\n\n');
 

@@ -60,9 +60,13 @@ ${filteredContent.trim()}
 `;
 };
 
-const transformBlobPolyfill = (content) => {
-	const contentNoFileImport = content.replace(/^use super::file::File;\s*\n?/m, '');
-	return contentNoFileImport.replace(/\s*\|\|\s*obj\.instance_of::<File>\(\)\s*/g, '');
+const transformLlrtBlob = (content) => content
+		.replace(/^use llrt_utils::\s*\n?/m, 'use crate::js::apis::node::blob::llrt::utils::')
+		.replace(/^use super::blob::Blob;\s*\n?/m, 'use super::polyfill::Blob;\n\n');
+
+const transformLlrtUtils = (content) => {
+	const parsedContent = content.replace(/^use crate::\s*\n?/m, 'use super::');
+	return `#![allow(dead_code)]\n\n${parsedContent}`;
 };
 
 const savePolyfill = async ({ dest, content, transform }) => {
@@ -84,15 +88,57 @@ const resources = [
 	{
 		src: '/awslabs/llrt/refs/heads/main/modules/llrt_buffer/src/blob.rs',
 		dest: join(process.cwd(), 'src/sputnik/src/js/apis/node/blob/llrt/polyfill.rs'),
-		transform: transformBlobPolyfill
+		transform: transformLlrtBlob
+	},
+	{
+		src: '/awslabs/llrt/refs/heads/main/modules/llrt_buffer/src/file.rs',
+		dest: join(process.cwd(), 'src/sputnik/src/js/apis/node/blob/llrt/file.rs'),
+		transform: transformLlrtBlob
+	},
+	{
+		src: '/awslabs/llrt/refs/heads/main/libs/llrt_utils/src/time.rs',
+		dest: join(process.cwd(), 'src/sputnik/src/js/apis/node/blob/llrt/utils/time.rs'),
+		transform: transformLlrtUtils
+	},
+	{
+		src: '/awslabs/llrt/refs/heads/main/libs/llrt_utils/src/result.rs',
+		dest: join(process.cwd(), 'src/sputnik/src/js/apis/node/blob/llrt/utils/result.rs'),
+		transform: transformLlrtUtils
+	},
+	{
+		src: '/awslabs/llrt/refs/heads/main/libs/llrt_utils/src/primordials.rs',
+		dest: join(process.cwd(), 'src/sputnik/src/js/apis/node/blob/llrt/utils/primordials.rs'),
+		transform: transformLlrtUtils
+	},
+	{
+		src: '/awslabs/llrt/refs/heads/main/libs/llrt_utils/src/class.rs',
+		dest: join(process.cwd(), 'src/sputnik/src/js/apis/node/blob/llrt/utils/class.rs'),
+		transform: transformLlrtUtils
+	},
+	{
+		src: '/awslabs/llrt/refs/heads/main/libs/llrt_utils/src/object.rs',
+		dest: join(process.cwd(), 'src/sputnik/src/js/apis/node/blob/llrt/utils/object.rs'),
+		transform: transformLlrtUtils
+	},
+	{
+		src: '/awslabs/llrt/refs/heads/main/libs/llrt_utils/src/error_messages.rs',
+		dest: join(process.cwd(), 'src/sputnik/src/js/apis/node/blob/llrt/utils/error_messages.rs'),
+		transform: transformLlrtUtils
+	},
+	{
+		src: '/awslabs/llrt/refs/heads/main/libs/llrt_utils/src/bytes.rs',
+		dest: join(process.cwd(), 'src/sputnik/src/js/apis/node/blob/llrt/utils/bytes.rs'),
+		transform: transformLlrtUtils
 	}
 ];
 
-const [textEncodingJS, textEncodingRS, blobRS] = await downloadTextEncodingPolyfills();
+const [textEncodingJS, textEncodingRS, ...llrt] = await downloadTextEncodingPolyfills();
 
 // text_encoding
 await saveJS(textEncodingJS);
 await savePolyfill(textEncodingRS);
 
 // blob
-await savePolyfill(blobRS);
+for (const file of llrt) {
+	await savePolyfill(file);
+}

@@ -169,6 +169,7 @@ interface I18nCanisters {
 	detach_success: string;
 	delete_success: string;
 	cycles: string;
+	lifecycle: string;
 	available_cycles: string;
 	cycles_needed: string;
 	transfer_cycles: string;
@@ -868,6 +869,7 @@ interface I18nMonitoring {
 	default: string;
 	default_description: string;
 	warn_monitoring_enabled: string;
+	runtime: string;
 }
 
 interface I18nPreferences {

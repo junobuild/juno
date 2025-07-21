@@ -3,7 +3,7 @@
 	import CanisterOverview from '$lib/components/canister/CanisterOverview.svelte';
 	import CanisterSubnet from '$lib/components/canister/CanisterSubnet.svelte';
 	import CanisterSyncData from '$lib/components/canister/CanisterSyncData.svelte';
-	import OrbiterMonitoringActions from '$lib/components/orbiter/OrbiterMonitoringActions.svelte';
+	import OrbiterRuntimeActions from '$lib/components/orbiter/OrbiterRuntimeActions.svelte';
 	import OrbiterOverviewActions from '$lib/components/orbiter/OrbiterOverviewActions.svelte';
 	import SegmentVersion from '$lib/components/segments/SegmentVersion.svelte';
 	import Identifier from '$lib/components/ui/Identifier.svelte';
@@ -11,12 +11,17 @@
 	import { i18n } from '$lib/stores/i18n.store';
 	import { versionStore } from '$lib/stores/version.store';
 	import type { CanisterSyncData as CanisterSyncDataType } from '$lib/types/canister';
+	import { fromNullishNullable } from '@dfinity/utils';
 
 	interface Props {
 		orbiter: Orbiter;
 	}
 
 	let { orbiter }: Props = $props();
+
+	let monitoring = $derived(fromNullishNullable(fromNullishNullable(orbiter.settings)?.monitoring));
+
+	let monitoringEnabled = $derived(fromNullishNullable(monitoring?.cycles)?.enabled === true);
 
 	let canister = $state<CanisterSyncDataType | undefined>(undefined);
 </script>
@@ -46,10 +51,10 @@
 	</div>
 </div>
 
-<OrbiterOverviewActions {orbiter} {canister} />
+<OrbiterOverviewActions {orbiter} {monitoringEnabled} />
 
 <div class="card-container with-title">
-	<span class="title">{$i18n.monitoring.title}</span>
+	<span class="title">{$i18n.monitoring.runtime}</span>
 
 	<div class="columns-3">
 		<CanisterOverview
@@ -60,7 +65,7 @@
 	</div>
 </div>
 
-<OrbiterMonitoringActions {orbiter} {canister} />
+<OrbiterRuntimeActions {orbiter} {canister} {monitoringEnabled} />
 
 <style lang="scss">
 	.id {

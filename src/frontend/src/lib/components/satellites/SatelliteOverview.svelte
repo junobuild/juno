@@ -4,7 +4,7 @@
 	import CanisterOverview from '$lib/components/canister/CanisterOverview.svelte';
 	import CanisterSubnet from '$lib/components/canister/CanisterSubnet.svelte';
 	import CanisterSyncData from '$lib/components/canister/CanisterSyncData.svelte';
-	import SatelliteMonitoringActions from '$lib/components/satellites/SatelliteMonitoringActions.svelte';
+	import SatelliteRuntimeActions from '$lib/components/satellites/SatelliteRuntimeActions.svelte';
 	import SatelliteName from '$lib/components/satellites/SatelliteName.svelte';
 	import SatelliteOverviewActions from '$lib/components/satellites/SatelliteOverviewActions.svelte';
 	import SatelliteOverviewCustomDomains from '$lib/components/satellites/SatelliteOverviewCustomDomains.svelte';
@@ -15,12 +15,19 @@
 	import { i18n } from '$lib/stores/i18n.store';
 	import type { CanisterSyncData as CanisterSyncDataType } from '$lib/types/canister';
 	import type { SatelliteIdText } from '$lib/types/satellite';
+	import { fromNullishNullable } from '@dfinity/utils';
 
 	interface Props {
 		satellite: Satellite;
 	}
 
 	let { satellite }: Props = $props();
+
+	let monitoring = $derived(
+		fromNullishNullable(fromNullishNullable(satellite.settings)?.monitoring)
+	);
+
+	let monitoringEnabled = $derived(fromNullishNullable(monitoring?.cycles)?.enabled === true);
 
 	let satelliteId: SatelliteIdText = $derived(satellite.satellite_id.toText());
 
@@ -63,10 +70,10 @@
 	</div>
 </div>
 
-<SatelliteOverviewActions {satellite} {canister} />
+<SatelliteOverviewActions {satellite} {canister} {monitoringEnabled} />
 
 <div class="card-container with-title">
-	<span class="title">{$i18n.monitoring.title}</span>
+	<span class="title">{$i18n.monitoring.runtime}</span>
 
 	<div class="columns-3">
 		<CanisterOverview
@@ -77,7 +84,7 @@
 	</div>
 </div>
 
-<SatelliteMonitoringActions {satellite} {canister} />
+<SatelliteRuntimeActions {satellite} {canister} {monitoringEnabled} />
 
 <style lang="scss">
 	.card-container:last-of-type {

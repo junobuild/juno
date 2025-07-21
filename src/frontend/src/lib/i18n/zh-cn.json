@@ -165,6 +165,7 @@
 		"detach_success": "{0} 已解绑的.",
 		"delete_success": "{0} 已删除.",
 		"cycles": "Cycles",
+		"lifecycle": "Lifecycle",
 		"available_cycles": "Available Cycles",
 		"cycles_needed": "Cycles needed",
 		"transfer_cycles": "转移 Cycles",
@@ -842,7 +843,8 @@
 		"custom_description": "Customize your top-up trigger and amount.",
 		"default": "你的策略",
 		"default_description": "用你之前保存的默认策略.",
-		"warn_monitoring_enabled": "继续处理之前请禁用监控."
+		"warn_monitoring_enabled": "继续处理之前请禁用监控.",
+		"runtime": "Runtime"
 	},
 	"preferences": {
 		"title": "偏好设置",

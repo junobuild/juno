@@ -6,13 +6,18 @@
 	import SegmentActions from '$lib/components/segments/SegmentActions.svelte';
 	import type { CanisterSyncData as CanisterSyncDataType } from '$lib/types/canister';
 	import { emit } from '$lib/utils/events.utils';
+	import CanisterStopStart from '$lib/components/canister/CanisterStopStart.svelte';
+	import CanisterDelete from '$lib/components/canister/CanisterDelete.svelte';
+	import { toasts } from '$lib/stores/toasts.store';
+	import { i18n } from '$lib/stores/i18n.store';
 
 	interface Props {
 		orbiter: Orbiter;
 		canister: CanisterSyncDataType | undefined;
+		monitoringEnabled: boolean;
 	}
 
-	let { orbiter, canister }: Props = $props();
+	let { orbiter, canister, monitoringEnabled }: Props = $props();
 
 	let visible: boolean = $state(false);
 	const close = () => (visible = false);
@@ -31,6 +36,27 @@
 			}
 		});
 	};
+
+	// eslint-disable-next-line require-await
+	const onDeleteOrbiter = async () => {
+		close();
+
+		// TODO: can be removed once the mission control is patched to disable monitoring on delete
+		if (monitoringEnabled) {
+			toasts.warn($i18n.monitoring.warn_monitoring_enabled);
+			return;
+		}
+
+		emit({
+			message: 'junoModal',
+			detail: {
+				type: 'delete_orbiter',
+				detail: {
+					cycles: canister?.data?.canister?.cycles ?? 0n
+				}
+			}
+		});
+	};
 </script>
 
 <SegmentActions bind:visible>
@@ -38,9 +64,21 @@
 		<TopUp type="topup_orbiter" onclose={close} />
 	{/snippet}
 
-	{#snippet moreActions()}
+	{#snippet cyclesActions()}
 		<CanisterTransferCycles {canister} onclick={onTransferCycles} />
 
 		<CanisterBuyCycleExpress canisterId={orbiter.orbiter_id} />
+	{/snippet}
+
+	{#snippet lifecycleActions()}
+		<CanisterStopStart
+			{canister}
+			{monitoringEnabled}
+			segment="orbiter"
+			onstop={close}
+			onstart={close}
+		/>
+
+		<CanisterDelete {canister} onclick={onDeleteOrbiter} />
 	{/snippet}
 </SegmentActions>

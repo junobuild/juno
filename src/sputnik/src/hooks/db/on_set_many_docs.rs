@@ -14,7 +14,7 @@ pub extern "Rust" fn juno_on_set_many_docs(context: OnSetManyDocsContext) {
         let execute_context = AsyncJsFnContext { context };
 
         if let Err(e) = execute_async_js(execute_context).await {
-            trap(&e.to_string());
+            trap(&e);
         }
     });
 }

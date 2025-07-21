@@ -18,8 +18,7 @@ pub fn init_asset_upload(
 
     if proposal.is_none() {
         return Err(format!(
-            "{} ({})",
-            JUNO_CDN_STORAGE_ERROR_NO_PROPOSAL_FOUND, proposal_id
+            "{JUNO_CDN_STORAGE_ERROR_NO_PROPOSAL_FOUND} ({proposal_id})"
         ));
     }
 

@@ -13,13 +13,13 @@ use junobuild_storage::types::state::FullPath;
 fn get_chunks(full_path: &FullPath) -> Result<Blob, String> {
     let asset = match get_asset(full_path) {
         Some(asset) => asset,
-        None => return Err(format!("No asset found for {}", full_path)),
+        None => return Err(format!("No asset found for {full_path}")),
     };
 
     let encoding = asset.encodings.get(ASSET_ENCODING_NO_COMPRESSION);
 
     match encoding {
-        None => Err(format!("No identity encoding found for {}", full_path)),
+        None => Err(format!("No identity encoding found for {full_path}")),
         Some(encoding) => {
             let content_chunks: Blob = encoding
                 .content_chunks
@@ -35,7 +35,7 @@ fn get_chunks(full_path: &FullPath) -> Result<Blob, String> {
 pub fn mission_control_wasm_arg(user: &UserId) -> Result<WasmArg, String> {
     let latest_version =
         get_latest_mission_control_version().ok_or("No mission control versions available.")?;
-    let full_path = format!("/releases/mission_control-v{}.wasm.gz", latest_version);
+    let full_path = format!("/releases/mission_control-v{latest_version}.wasm.gz");
     let wasm: Blob = get_chunks(&full_path)?;
     let install_arg: Vec<u8> = Encode!(&MissionControlArgs { user: *user }).unwrap();
 
@@ -48,7 +48,7 @@ pub fn satellite_wasm_arg(
 ) -> Result<WasmArg, String> {
     let latest_version =
         get_latest_satellite_version().ok_or("No satellite versions available.")?;
-    let full_path = format!("/releases/satellite-v{}.wasm.gz", latest_version);
+    let full_path = format!("/releases/satellite-v{latest_version}.wasm.gz");
     let wasm: Blob = get_chunks(&full_path)?;
     let install_arg: Vec<u8> = Encode!(&SegmentArgs {
         controllers: user_mission_control_controllers(user, mission_control_id)
@@ -62,7 +62,7 @@ pub fn orbiter_wasm_arg(
     mission_control_id: &MissionControlId,
 ) -> Result<WasmArg, String> {
     let latest_version = get_latest_orbiter_version().ok_or("No orbiter versions available.")?;
-    let full_path = format!("/releases/orbiter-v{}.wasm.gz", latest_version);
+    let full_path = format!("/releases/orbiter-v{latest_version}.wasm.gz");
     let wasm: Blob = get_chunks(&full_path)?;
     let install_arg: Vec<u8> = Encode!(&SegmentArgs {
         controllers: user_mission_control_controllers(user, mission_control_id)

@@ -20,8 +20,8 @@ pub async fn post_email(
     match http_request_outcall(request, SEND_EMAIL_CYCLES).await {
         Ok((_response,)) => Ok(()),
         Err((r, m)) => {
-            let message = format!("HTTP request error. RejectionCode: {:?}, Error: {}", r, m);
-            Err(format!("‼️ --> {}.", message))
+            let message = format!("HTTP request error. RejectionCode: {r:?}, Error: {m}");
+            Err(format!("‼️ --> {message}."))
         }
     }
 }
@@ -45,7 +45,7 @@ fn get_email_request(
         },
         HttpHeader {
             name: "authorization".to_string(),
-            value: format!("Bearer {}", api_key),
+            value: format!("Bearer {api_key}"),
         },
     ];
 

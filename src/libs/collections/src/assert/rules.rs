@@ -117,8 +117,7 @@ pub fn assert_system_collection_set_permission(
         || current_rule.max_capacity != user_rule.max_capacity
     {
         return Err(format!(
-            "{} ({})",
-            JUNO_COLLECTIONS_ERROR_MODIFY_RESERVED_COLLECTION, collection
+            "{JUNO_COLLECTIONS_ERROR_MODIFY_RESERVED_COLLECTION} ({collection})"
         ));
     }
 
@@ -134,8 +133,7 @@ pub fn assert_system_collection_delete_permission(
 ) -> Result<(), String> {
     if is_system_collection(collection) {
         return Err(format!(
-            "{} ({})",
-            JUNO_COLLECTIONS_ERROR_DELETE_PREFIX_RESERVED, SYS_COLLECTION_PREFIX
+            "{JUNO_COLLECTIONS_ERROR_DELETE_PREFIX_RESERVED} ({SYS_COLLECTION_PREFIX})"
         ));
     }
 
@@ -154,7 +152,7 @@ pub fn assert_storage_reserved_collection(
         return Ok(());
     }
 
-    let reserved_collection = format!("{}{}", SYS_COLLECTION_PREFIX, collection);
+    let reserved_collection = format!("{SYS_COLLECTION_PREFIX}{collection}");
 
     if rules.contains_key(&reserved_collection) {
         return Err(JUNO_COLLECTIONS_ERROR_RESERVED_NAME.to_string());

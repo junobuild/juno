@@ -95,8 +95,7 @@ fn copy_committed_assets(
 
     if assets.is_empty() {
         return Err(format!(
-            "{} ({})",
-            JUNO_CDN_PROPOSALS_ERROR_EMPTY_ASSETS, proposal_id
+            "{JUNO_CDN_PROPOSALS_ERROR_EMPTY_ASSETS} ({proposal_id})"
         ));
     }
 
@@ -109,8 +108,7 @@ fn copy_committed_assets(
             for (i, _) in encoding.content_chunks.iter().enumerate() {
                 let chunks = get_content_chunks(cdn_stable, &encoding, i).ok_or_else(|| {
                     format!(
-                        "{} ({} - {}).",
-                        JUNO_CDN_PROPOSALS_ERROR_NOT_CONTENT_CHUNKS_AT_INDEX, encoding_type, i
+                        "{JUNO_CDN_PROPOSALS_ERROR_NOT_CONTENT_CHUNKS_AT_INDEX} ({encoding_type} - {i})."
                     )
                 })?;
 
@@ -119,8 +117,7 @@ fn copy_committed_assets(
 
             if content_chunks.is_empty() {
                 return Err(format!(
-                    "{} ({})",
-                    JUNO_CDN_PROPOSALS_ERROR_EMPTY_CONTENT_CHUNKS, encoding_type
+                    "{JUNO_CDN_PROPOSALS_ERROR_EMPTY_CONTENT_CHUNKS} ({encoding_type})"
                 ));
             }
 

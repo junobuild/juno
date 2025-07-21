@@ -129,8 +129,7 @@ pub async fn deposit_cycles(
 
     if balance < cycles {
         return Err(format!(
-            "{} (balance {}, {} to deposit)",
-            JUNO_ERROR_CYCLES_DEPOSIT_BALANCE_LOW, balance, cycles
+            "{JUNO_ERROR_CYCLES_DEPOSIT_BALANCE_LOW} (balance {balance}, {cycles} to deposit)"
         ));
     }
 

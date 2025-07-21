@@ -19,7 +19,7 @@ const TimestampSchema = z.number().refine(
  */
 export const CachedValueSchema = <T extends z.ZodTypeAny>(valueSchema: T) =>
 	z.strictObject({
-		value: valueSchema,
+		value: valueSchema.nullable(),
 		createdAt: TimestampSchema,
 		updatedAt: TimestampSchema
 	});

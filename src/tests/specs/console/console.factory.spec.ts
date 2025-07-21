@@ -2,10 +2,10 @@ import type { _SERVICE as ConsoleActor } from '$declarations/console/console.did
 import { idlFactory as idlFactorConsole } from '$declarations/console/console.factory.did';
 import type { _SERVICE as MissionControlActor } from '$declarations/mission_control/mission_control.did';
 import { idlFactory as idlFactorMissionControl } from '$declarations/mission_control/mission_control.factory.did';
-import { type Identity } from '@dfinity/agent';
+import type { Identity } from '@dfinity/agent';
 import { Ed25519KeyIdentity } from '@dfinity/identity';
 import { PocketIc, type Actor } from '@dfinity/pic';
-import { Principal } from '@dfinity/principal';
+import type { Principal } from '@dfinity/principal';
 import { assertNonNullish, fromNullable, nonNullish } from '@dfinity/utils';
 import { describe, inject } from 'vitest';
 import { CONSOLE_ID } from '../../constants/console-tests.constants';

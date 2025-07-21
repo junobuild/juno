@@ -8,11 +8,10 @@
 
 	interface Props {
 		satellite: Satellite;
-		canister: CanisterSyncDataType | undefined;
 		monitoringEnabled: boolean;
 	}
 
-	let { satellite, canister, monitoringEnabled }: Props = $props();
+	let { satellite, monitoringEnabled }: Props = $props();
 
 	let visible: boolean = $state(false);
 	const close = () => (visible = false);

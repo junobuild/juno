@@ -1,8 +1,8 @@
 <script lang="ts">
+	import { nonNullish } from '@dfinity/utils';
 	import type { Snippet } from 'svelte';
 	import Actions from '$lib/components/core/Actions.svelte';
 	import { i18n } from '$lib/stores/i18n.store';
-	import { nonNullish } from '@dfinity/utils';
 
 	interface Props {
 		visible?: boolean | undefined;

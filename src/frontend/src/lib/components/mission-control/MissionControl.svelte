@@ -2,8 +2,8 @@
 	import { fade } from 'svelte/transition';
 	import CanisterOverview from '$lib/components/canister/CanisterOverview.svelte';
 	import CanisterSubnet from '$lib/components/canister/CanisterSubnet.svelte';
-	import MissionControlRuntimeActions from '$lib/components/mission-control/MissionControlRuntimeActions.svelte';
 	import MissionControlOverviewActions from '$lib/components/mission-control/MissionControlOverviewActions.svelte';
+	import MissionControlRuntimeActions from '$lib/components/mission-control/MissionControlRuntimeActions.svelte';
 	import SegmentVersion from '$lib/components/segments/SegmentVersion.svelte';
 	import Identifier from '$lib/components/ui/Identifier.svelte';
 	import Value from '$lib/components/ui/Value.svelte';

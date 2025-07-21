@@ -314,12 +314,17 @@ const reduceOutdatedSegments = ({
 	const { satellites, missionControls, orbiters } = groupSegments(segments);
 
 	const mapOutdatedSegments = (segments: CanisterSegment[]): OutdatedSegment[] =>
-		segments.map((segment) => [
-			segment,
-			outdatedVersions.find(
-				([outdatedCanisterId]) => outdatedCanisterId === segment.canisterId
-			)?.[1]
-		]);
+		segments
+			.filter(
+				(segment) =>
+					outdatedVersions.find(([canisterId]) => canisterId === segment.canisterId) !== undefined
+			)
+			.map((segment) => [
+				segment,
+				outdatedVersions.find(
+					([outdatedCanisterId]) => outdatedCanisterId === segment.canisterId
+				)?.[1]
+			]);
 
 	return {
 		satellites: mapOutdatedSegments(satellites),

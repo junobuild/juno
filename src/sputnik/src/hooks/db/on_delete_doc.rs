@@ -14,7 +14,7 @@ pub extern "Rust" fn juno_on_delete_doc(context: OnDeleteDocContext) {
         let execute_context = AsyncJsFnContext { context };
 
         if let Err(e) = execute_async_js(execute_context).await {
-            trap(&e.to_string());
+            trap(&e);
         }
     });
 }

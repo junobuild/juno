@@ -23,8 +23,7 @@ pub fn assert_cdn_asset_keys(
         _ => {
             if full_path.starts_with(RELEASES_COLLECTION_PATH) {
                 return Err(format!(
-                    "{} ({} - {})",
-                    JUNO_CDN_STORAGE_ERROR_INVALID_COLLECTION, full_path, collection
+                    "{JUNO_CDN_STORAGE_ERROR_INVALID_COLLECTION} ({full_path} - {collection})"
                 ));
             }
 
@@ -36,8 +35,7 @@ pub fn assert_cdn_asset_keys(
 fn assert_releases_keys(full_path: &FullPath) -> Result<(), String> {
     if full_path == "/releases/metadata.json" {
         return Err(format!(
-            "{} ({})",
-            JUNO_STORAGE_ERROR_RESERVED_ASSET, full_path
+            "{JUNO_STORAGE_ERROR_RESERVED_ASSET} ({full_path})"
         ));
     }
 
@@ -53,8 +51,7 @@ fn assert_releases_keys(full_path: &FullPath) -> Result<(), String> {
             Ok(())
         } else {
             Err(format!(
-                "{} ({})",
-                JUNO_CDN_STORAGE_ERROR_INVALID_RELEASES_PATH, full_path
+                "{JUNO_CDN_STORAGE_ERROR_INVALID_RELEASES_PATH} ({full_path})"
             ))
         };
     }

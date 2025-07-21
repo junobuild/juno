@@ -44,8 +44,8 @@ where
                         IC_TRANSACTION_FEE_ICP,
                     )
                     .await
-                    .map_err(|e| format!("failed to call ledger: {:?}", e))?
-                    .map_err(|e| format!("ledger transfer error {:?}", e))?;
+                    .map_err(|e| format!("failed to call ledger: {e:?}"))?
+                    .map_err(|e| format!("ledger transfer error {e:?}"))?;
 
                     create_and_save(user, config.clone(), Some(block_index)).await
                 }

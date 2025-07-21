@@ -633,6 +633,7 @@ interface I18nErrors {
 	user_unban: string;
 	satellite_version_not_found: string;
 	load_version: string;
+	load_version_timeout: string;
 	load_proposals: string;
 	apply_proposal_error: string;
 	reject_proposal_error: string;

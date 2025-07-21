@@ -617,6 +617,7 @@
 		"user_unban": "Unexpected error(s) while trying to unban the user.",
 		"satellite_version_not_found": "Unexpected error. Your Satellite implements serverless functions, but no dependency version can be resolved.",
 		"load_version": "Unexpected error(s) while loading the version of your module(s).",
+		"load_version_timeout": "The version couldn't be loaded in time. Please try again, and if the problem persists, reach out for support.",
 		"load_proposals": "Unexpected error(s) while loading the changes of your module(s). Maybe some of your Satellites are stopped?",
 		"apply_proposal_error": "Error while applying the change. Reach out Juno if the problem persists!",
 		"reject_proposal_error": "Error while rejecting the change. Reach out Juno if the problem persists!",

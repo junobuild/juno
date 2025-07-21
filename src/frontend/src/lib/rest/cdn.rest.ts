@@ -26,6 +26,9 @@ export const getReleasesMetadata = async (): Promise<ReleasesMetadata> => {
 	return ReleasesMetadataSchema.parse(result);
 };
 
+/**
+ * @deprecated use store or idb
+ */
 export const getNewestReleasesMetadata = async (): Promise<
 	Required<Pick<ReleaseMetadata, 'satellite' | 'mission_control' | 'orbiter'>>
 > => {

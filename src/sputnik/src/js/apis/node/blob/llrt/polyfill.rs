@@ -2,7 +2,7 @@
 // SPDX-License-Identifier: Apache-2.0
 use std::ops::RangeInclusive;
 
-use llrt_utils::{
+use crate::js::apis::node::blob::llrt::utils::{
     bytes::ObjectBytes,
     primordials::{BasePrimordials, Primordial},
     result::ResultExt,
@@ -11,6 +11,8 @@ use rquickjs::{
     atom::PredefinedAtom, class::Trace, function::Opt, Array, ArrayBuffer, Class, Coerced, Ctx,
     Exception, FromJs, Result, Symbol, TypedArray, Value,
 };
+
+use super::file::File;
 
 static CONSTRUCT_ERROR: &str =
     "Failed to construct 'Blob': The provided value cannot be converted to a sequence.";

@@ -39,3 +39,5 @@ rquickjs = { git = "https://github.com/peterpeterparker/rquickjs", branch = "pat
 	"futures"
 ] }
 anyhow = "1.0.79"
+itoa = { version = "1", default-features = false }
+ryu = { version = "1", default-features = false }

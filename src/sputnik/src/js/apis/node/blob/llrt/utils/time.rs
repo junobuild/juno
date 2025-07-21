@@ -1,3 +1,4 @@
+// rustfmt::skip
 #![allow(dead_code)]
 
 use std::{

@@ -6,16 +6,13 @@ use rquickjs::{Ctx, Error as JsError};
 
 pub fn make_loader_code(assertion: &str, loader: &str) -> String {
     format!(
-        r#"const {{ {assertion} }} = await import("{}");
+        r#"const {{ {assertion} }} = await import("{DEV_MODULE_NAME}");
 
             if (typeof {assertion} !== 'undefined') {{
                 const config = typeof {assertion} === 'function' ? {assertion}({{}}) : {assertion};
                 {loader}(config.collections);
             }}
-            "#,
-        DEV_MODULE_NAME,
-        assertion = assertion,
-        loader = loader
+            "#
     )
 }
 
@@ -29,15 +26,13 @@ pub fn execute_assertion<'js>(
     ctx.globals().set("jsContext", js_obj)?;
 
     let code = format!(
-        r#"const {{ {assertion} }} = await import("{}");
+        r#"const {{ {assertion} }} = await import("{DEV_MODULE_NAME}");
 
             if (typeof {assertion} !== 'undefined') {{
                 const config = typeof {assertion} === 'function' ? {assertion}({{}}) : {assertion};
                 config.assert(jsContext);
             }}
             "#,
-        DEV_MODULE_NAME,
-        assertion = assertion,
     );
 
     evaluate_module(ctx, HOOKS_MODULE_NAME, &code)
@@ -53,15 +48,13 @@ pub async fn execute_hook<'js>(
     ctx.globals().set("jsContext", js_obj)?;
 
     let code = format!(
-        r#"const {{ {hook} }} = await import("{}");
+        r#"const {{ {hook} }} = await import("{DEV_MODULE_NAME}");
 
         if (typeof {hook} !== 'undefined') {{
             const config = typeof {hook} === 'function' ? {hook}({{}}) : {hook};
             await config.run(jsContext);
         }}
         "#,
-        DEV_MODULE_NAME,
-        hook = hook,
     );
 
     evaluate_async_module(ctx, HOOKS_MODULE_NAME, &code).await

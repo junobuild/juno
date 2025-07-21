@@ -35,8 +35,8 @@ pub async fn top_up_canister(canister_id: &CanisterId, amount: &Tokens) -> Resul
         IC_TRANSACTION_FEE_ICP,
     )
     .await
-    .map_err(|e| format!("{} ({:?})", JUNO_ERROR_CMC_CALL_LEDGER_FAILED, e))?
-    .map_err(|e| format!("{} ({:?})", JUNO_ERROR_CMC_LEDGER_TRANSFER_FAILED, e))?;
+    .map_err(|e| format!("{JUNO_ERROR_CMC_CALL_LEDGER_FAILED} ({e:?})"))?
+    .map_err(|e| format!("{JUNO_ERROR_CMC_LEDGER_TRANSFER_FAILED} ({e:?})"))?;
 
     let args = TopUpCanisterArgs {
         block_index,
@@ -103,8 +103,7 @@ pub async fn cmc_create_canister_install_code(
         )),
         Ok((result,)) => match result {
             Err(err) => Err(format!(
-                "{} ({})",
-                JUNO_ERROR_CMC_CREATE_CANISTER_FAILED, err
+                "{JUNO_ERROR_CMC_CREATE_CANISTER_FAILED} ({err})"
             )),
             Ok(canister_id) => {
                 let install =

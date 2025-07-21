@@ -12,8 +12,7 @@ pub fn assert_releases_description(description: &Option<String>) -> Result<(), S
     let desc_re = build_regex(r"^change=\d+;version=[^;]+$")?;
     if !desc_re.is_match(desc) {
         return Err(format!(
-            "{} ({})",
-            JUNO_CDN_STORAGE_ERROR_INVALID_RELEASES_DESCRIPTION, desc
+            "{JUNO_CDN_STORAGE_ERROR_INVALID_RELEASES_DESCRIPTION} ({desc})"
         ));
     }
 

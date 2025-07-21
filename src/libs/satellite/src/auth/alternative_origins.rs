@@ -73,10 +73,10 @@ fn set_alternative_origins_with_custom_domains(
 ) -> Result<(), String> {
     // Assert URLs are valid
     fn parse_url(domain: &DomainName) -> Result<String, String> {
-        let parsed_url = Url::parse(&format!("https://{}", domain));
+        let parsed_url = Url::parse(&format!("https://{domain}"));
 
         match parsed_url {
-            Err(_) => Err(format!("{} ({})", JUNO_AUTH_ERROR_INVALID_ORIGIN, domain)),
+            Err(_) => Err(format!("{JUNO_AUTH_ERROR_INVALID_ORIGIN} ({domain})")),
             Ok(url) => {
                 let mut url_str = url.to_string();
 

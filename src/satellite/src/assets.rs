@@ -10,7 +10,7 @@ pub fn init_asset() -> Result<(), String> {
 
     let name = "index.html".to_string();
 
-    let full_path = format!("/{}", name).to_string();
+    let full_path = format!("/{name}").to_string();
 
     let key: AssetKey = AssetKey {
         name: name.clone(),

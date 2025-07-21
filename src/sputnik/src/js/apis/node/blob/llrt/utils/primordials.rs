@@ -1,4 +1,4 @@
-// rustfmt::skip
+#![rustfmt::skip]
 #![allow(dead_code)]
 
 use rquickjs::{

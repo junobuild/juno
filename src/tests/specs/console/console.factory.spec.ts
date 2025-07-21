@@ -120,5 +120,31 @@ describe('Console', () => {
 				canisterId: satelliteId
 			});
 		});
+
+		it('should create an orbiter with expected default settings', async () => {
+			// First we need credits or ICP to spin another module. Let's use the former method.
+			actor.setIdentity(controller);
+
+			const { add_credits } = actor;
+			await add_credits(user.getPrincipal(), { e8s: 100_000_000n });
+
+			// Then we can create the additional module
+			assertNonNullish(missionControlId);
+
+			const micActor = pic.createActor<MissionControlActor>(
+				idlFactorMissionControl,
+				missionControlId
+			);
+			micActor.setIdentity(user);
+
+			const { create_orbiter } = micActor;
+			const { orbiter_id: orbiterId } = await create_orbiter([]);
+
+			await assertSettings({
+				user,
+				missionControlId,
+				canisterId: orbiterId
+			});
+		});
 	});
 });

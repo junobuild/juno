@@ -18,7 +18,7 @@ export type VersionMetadataUi = VersionMetadata & { warning: boolean };
 export type SatelliteVersionMetadataUi = SatelliteVersionMetadata & { warning: boolean };
 
 export interface VersionRegistry {
-	satellites: Record<SatelliteIdText, SatelliteVersionMetadata | undefined | null>;
+	satellites: Record<SatelliteIdText, Option<SatelliteVersionMetadata>>;
 	missionControl: Option<VersionMetadata>;
 	orbiter: Option<VersionMetadata>;
 }

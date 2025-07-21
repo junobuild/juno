@@ -1,9 +1,11 @@
 import { type Identity, MANAGEMENT_CANISTER_ID } from '@dfinity/agent';
 import { IDL } from '@dfinity/candid';
+import type { canister_status_result } from '@dfinity/ic-management';
 import type { ActorInterface, CanisterFixture, PocketIc } from '@dfinity/pic';
 import { Principal } from '@dfinity/principal';
 import {
 	arrayBufferToUint8Array,
+	fromNullable,
 	hexStringToUint8Array,
 	nonNullish,
 	toNullable
@@ -13,9 +15,12 @@ import { readFile } from 'node:fs/promises';
 
 const INSTALL_MAX_CHUNK_SIZE = 1_000_000;
 
-// Clear chunk store did
+// Did utils
 
 const canister_id = IDL.Principal;
+
+// Clear chunk store did
+
 const clear_chunk_store_args = IDL.Record({ canister_id });
 
 export type canister_id = Principal;
@@ -87,6 +92,57 @@ interface install_chunked_code_args {
 	store_canister: [] | [canister_id];
 	sender_canister_version: [] | [bigint];
 }
+
+// canister_status did
+
+const canister_status_args = IDL.Record({ canister_id: canister_id });
+
+const log_visibility = IDL.Variant({
+	controllers: IDL.Null,
+	public: IDL.Null,
+	allowed_viewers: IDL.Vec(IDL.Principal)
+});
+
+const definite_canister_settings = IDL.Record({
+	freezing_threshold: IDL.Nat,
+	wasm_memory_threshold: IDL.Nat,
+	controllers: IDL.Vec(IDL.Principal),
+	reserved_cycles_limit: IDL.Nat,
+	log_visibility: log_visibility,
+	wasm_memory_limit: IDL.Nat,
+	memory_allocation: IDL.Nat,
+	compute_allocation: IDL.Nat
+});
+
+const canister_status_result = IDL.Record({
+	memory_metrics: IDL.Record({
+		wasm_binary_size: IDL.Nat,
+		wasm_chunk_store_size: IDL.Nat,
+		canister_history_size: IDL.Nat,
+		stable_memory_size: IDL.Nat,
+		snapshots_size: IDL.Nat,
+		wasm_memory_size: IDL.Nat,
+		global_memory_size: IDL.Nat,
+		custom_sections_size: IDL.Nat
+	}),
+	status: IDL.Variant({
+		stopped: IDL.Null,
+		stopping: IDL.Null,
+		running: IDL.Null
+	}),
+	memory_size: IDL.Nat,
+	cycles: IDL.Nat,
+	settings: definite_canister_settings,
+	query_stats: IDL.Record({
+		response_payload_bytes_total: IDL.Nat,
+		num_instructions_total: IDL.Nat,
+		num_calls_total: IDL.Nat,
+		request_payload_bytes_total: IDL.Nat
+	}),
+	idle_cycles_burned_per_day: IDL.Nat,
+	module_hash: IDL.Opt(IDL.Vec(IDL.Nat8)),
+	reserved_cycles: IDL.Nat
+});
 
 // Program
 
@@ -332,4 +388,26 @@ const installChunkedCodeApi = async ({
 		sender: sender.getPrincipal(),
 		targetSubnetId: subnetId ?? undefined
 	});
+};
+
+export const canisterStatus = async ({
+	canisterId,
+	pic,
+	sender
+}: PicParams & { canisterId: Principal }): Promise<canister_status_result | undefined> => {
+	const arg = IDL.encode([canister_status_args], [{ canister_id: canisterId }]);
+
+	const response = await pic.updateCall({
+		canisterId: Principal.fromText(MANAGEMENT_CANISTER_ID),
+		sender: sender.getPrincipal(),
+		method: 'canister_status',
+		arg
+	});
+
+	const result = IDL.decode(
+		toNullable(canister_status_result),
+		response as ArrayBuffer
+	) as unknown as [canister_status_result];
+
+	return fromNullable(result);
 };

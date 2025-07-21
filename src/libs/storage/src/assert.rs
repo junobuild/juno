@@ -246,8 +246,7 @@ fn assert_key(
 fn assert_well_known_key(full_path: &str, reserved_path: &str) -> Result<(), String> {
     if full_path == reserved_path {
         return Err(format!(
-            "{} ({})",
-            JUNO_STORAGE_ERROR_RESERVED_ASSET, reserved_path
+            "{JUNO_STORAGE_ERROR_RESERVED_ASSET} ({reserved_path})"
         ));
     }
     Ok(())

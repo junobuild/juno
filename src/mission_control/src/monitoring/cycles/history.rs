@@ -38,8 +38,7 @@ fn insert_monitoring_history(canister_id: &CanisterId, record: &CanisterRecord) 
             // Error would mean the random generator is not initialized.
             #[allow(clippy::disallowed_methods)]
             print(format!(
-                "Failed to insert cycles monitoring history: {:?}",
-                e
+                "Failed to insert cycles monitoring history: {e:?}"
             ))
         });
     }

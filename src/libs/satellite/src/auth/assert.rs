@@ -21,10 +21,10 @@ pub fn assert_config_origin_urls(config: &AuthenticationConfig) -> Result<(), St
 }
 
 fn assert_url(domain: &DomainName) -> Result<(), String> {
-    let parsed_url = Url::parse(&format!("https://{}", domain));
+    let parsed_url = Url::parse(&format!("https://{domain}"));
 
     match parsed_url {
-        Err(_) => Err(format!("{} ({})", JUNO_AUTH_ERROR_INVALID_ORIGIN, domain)),
+        Err(_) => Err(format!("{JUNO_AUTH_ERROR_INVALID_ORIGIN} ({domain})")),
         Ok(_url) => Ok(()),
     }
 }

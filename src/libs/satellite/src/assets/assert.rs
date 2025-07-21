@@ -22,8 +22,7 @@ pub fn assert_cdn_asset_keys(
         _ => {
             if full_path.starts_with(CDN_JUNO_PATH) {
                 return Err(format!(
-                    "{} ({} - {})",
-                    JUNO_CDN_STORAGE_ERROR_INVALID_COLLECTION, full_path, collection
+                    "{JUNO_CDN_STORAGE_ERROR_INVALID_COLLECTION} ({full_path} - {collection})"
                 ));
             }
 
@@ -37,8 +36,7 @@ fn assert_releases_keys(full_path: &FullPath) -> Result<(), String> {
 
     if !full_path_re.is_match(full_path) {
         return Err(format!(
-            "{} ({})",
-            JUNO_CDN_STORAGE_ERROR_INVALID_RELEASES_PATH, full_path
+            "{JUNO_CDN_STORAGE_ERROR_INVALID_RELEASES_PATH} ({full_path})"
         ));
     }
 

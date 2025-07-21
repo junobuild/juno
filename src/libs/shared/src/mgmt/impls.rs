@@ -8,8 +8,7 @@ impl std::fmt::Display for CreateCanisterError {
                 create_error,
             } => write!(
                 f,
-                "The payment for the canister creation was refunded {}: {}",
-                refund_amount, create_error
+                "The payment for the canister creation was refunded {refund_amount}: {create_error}"
             ),
         }
     }

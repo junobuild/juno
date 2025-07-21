@@ -171,8 +171,7 @@ pub fn assert_max_number_of_controllers(
 
     if current_controller_ids.len() + new_controller_ids.count() > max_controllers {
         return Err(format!(
-            "{} ({})",
-            JUNO_ERROR_CONTROLLERS_MAX_NUMBER, max_controllers
+            "{JUNO_ERROR_CONTROLLERS_MAX_NUMBER} ({max_controllers})"
         ));
     }
 

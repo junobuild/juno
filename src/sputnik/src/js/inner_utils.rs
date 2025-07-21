@@ -9,5 +9,5 @@ pub fn throw_js_exception<'js, T: std::fmt::Display>(
 }
 
 pub fn format_js_error<T: std::fmt::Display>(error_code: &str, error: T) -> String {
-    format!("{}\n  → {}", error_code, error)
+    format!("{error_code}\n  → {error}")
 }

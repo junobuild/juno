@@ -89,7 +89,7 @@ pub fn assert_user_usage_collection_data(
     }
 
     decode_doc_data::<UserUsageData>(&doc.data)
-        .map_err(|err| format!("{}: {}", JUNO_DATASTORE_ERROR_USER_USAGE_INVALID_DATA, err))?;
+        .map_err(|err| format!("{JUNO_DATASTORE_ERROR_USER_USAGE_INVALID_DATA}: {err}"))?;
 
     Ok(())
 }

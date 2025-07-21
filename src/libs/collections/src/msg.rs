@@ -13,8 +13,7 @@ pub fn msg_storage_collection_not_empty(collection: &CollectionKey) -> String {
 
 fn msg_collection_not_empty(collection: &CollectionKey, name: &String) -> String {
     format!(
-        r#"{} ({} - {})"#,
-        JUNO_COLLECTIONS_ERROR_COLLECTION_NOT_EMPTY, name, collection,
+        r#"{JUNO_COLLECTIONS_ERROR_COLLECTION_NOT_EMPTY} ({name} - {collection})"#,
     )
 }
 
@@ -28,7 +27,6 @@ pub fn msg_storage_collection_not_found(collection: &CollectionKey) -> String {
 
 fn msg_collection_not_found(collection: &CollectionKey, name: &String) -> String {
     format!(
-        r#"{} ({} - {})"#,
-        JUNO_COLLECTIONS_ERROR_COLLECTION_NOT_FOUND, name, collection
+        r#"{JUNO_COLLECTIONS_ERROR_COLLECTION_NOT_FOUND} ({name} - {collection})"#
     )
 }

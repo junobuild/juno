@@ -7,5 +7,5 @@ fn main() {
     let default_path = "../../resources/index.mjs";
     let script_path = env::var("DEV_SCRIPT_PATH").unwrap_or_else(|_| default_path.to_string());
 
-    println!("cargo:rustc-env=DEV_SCRIPT_PATH={}", script_path);
+    println!("cargo:rustc-env=DEV_SCRIPT_PATH={script_path}");
 }

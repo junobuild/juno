@@ -1,14 +1,17 @@
 import { browser } from '$app/environment';
 import { DEFAULT_ANALYTICS_PERIODICITY } from '$lib/constants/analytics.constants';
 import { DEFAULT_LIST_PARAMS, DEFAULT_LIST_RULES_PARAMS } from '$lib/constants/data.constants';
+import { DEFAULT_NOTIFICATION_PREFERENCES } from '$lib/constants/notification.constants';
+import { NotificationPreferencesSchema } from '$lib/schemas/notification.schema';
 import type { ListParamsStoreData } from '$lib/stores/list-params.store';
 import type { Languages } from '$lib/types/languages';
 import { SatellitesLayout } from '$lib/types/layout';
 import type { LayoutMenuState } from '$lib/types/layout-menu';
 import type { ListRulesParams } from '$lib/types/list';
+import type { NotificationPreferences } from '$lib/types/notification';
 import type { AnalyticsPeriodicity } from '$lib/types/orbiter';
 import { Theme } from '$lib/types/theme';
-import { nonNullish, notEmptyString } from '@dfinity/utils';
+import { isNullish, nonNullish, notEmptyString } from '@dfinity/utils';
 
 export const setLocalStorageItem = ({ key, value }: { key: string; value: string }) => {
 	// Pre-rendering guard
@@ -137,5 +140,29 @@ export const getLocalStorageMenuState = (): LayoutMenuState => {
 		// We use the local storage for the operational part of the app but, not crucial
 		console.error(err);
 		return 'expanded';
+	}
+};
+
+export const getLocalStorageNotificationPreferences = (): NotificationPreferences => {
+	try {
+		const { notification_preferences }: Storage = browser
+			? localStorage
+			: ({
+					notification_preferences: JSON.stringify(DEFAULT_NOTIFICATION_PREFERENCES)
+				} as unknown as Storage);
+
+		if (isNullish(notification_preferences)) {
+			return DEFAULT_NOTIFICATION_PREFERENCES;
+		}
+
+		const notificationsPreferences = JSON.parse(notification_preferences);
+
+		NotificationPreferencesSchema.parse(notificationsPreferences);
+
+		return notificationsPreferences;
+	} catch (err: unknown) {
+		// We use the local storage for the operational part of the app but, not crucial
+		console.error(err);
+		return DEFAULT_NOTIFICATION_PREFERENCES;
 	}
 };

@@ -1,8 +1,8 @@
 <script lang="ts">
+	import { circOut } from 'svelte/easing';
+	import { slide } from 'svelte/transition';
 	import NotificationsCanisterInfo from '$lib/components/notifications/NotificationsCanisterInfo.svelte';
 	import { i18n } from '$lib/stores/i18n.store';
-	import { slide } from 'svelte/transition';
-	import { circOut } from 'svelte/easing';
 
 	interface Props {
 		canisterNotifications: boolean;

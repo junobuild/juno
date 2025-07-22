@@ -2,26 +2,28 @@
 	import type { Component } from 'svelte';
 	import CanisterIndicator from '$lib/components/canister/CanisterIndicator.svelte';
 	import IconWarning from '$lib/components/icons/IconWarning.svelte';
-	import Notification from '$lib/components/notifications/Notification.svelte';
+	import NotificationLink from '$lib/components/notifications/NotificationLink.svelte';
 	import { i18n } from '$lib/stores/i18n.store';
-	import type { CanisterData } from '$lib/types/canister';
+	import type { CanisterData, CanisterWarning } from '$lib/types/canister';
 	import { i18nFormat } from '$lib/utils/i18n.utils';
 
 	interface Props {
-		cyclesWarning: boolean;
+		warnings: CanisterWarning | undefined;
 		cyclesIcon: Component;
-		heapWarning: boolean;
 		data: CanisterData | undefined;
 		close: () => void;
 		href: string;
 		segment: 'satellite' | 'mission_control' | 'orbiter';
 	}
 
-	let { cyclesWarning, heapWarning, close, data, href, cyclesIcon, segment }: Props = $props();
+	let { warnings, close, data, href, cyclesIcon, segment }: Props = $props();
+
+	let cyclesWarning = $derived(warnings?.cycles === true);
+	let heapWarning = $derived(warnings?.heap === true);
 </script>
 
-{#if !cyclesWarning}
-	<Notification {href} {close}>
+{#if cyclesWarning}
+	<NotificationLink {href} {close}>
 		{#snippet icon()}
 			{@const SvelteComponent = cyclesIcon}
 			<SvelteComponent size="32px" />
@@ -37,11 +39,11 @@
 				value: segment.replace('_', ' ')
 			}
 		])}
-	</Notification>
+	</NotificationLink>
 {/if}
 
-{#if !heapWarning}
-	<Notification {href} {close}>
+{#if heapWarning}
+	<NotificationLink {href} {close}>
 		{#snippet icon()}
 			<IconWarning size="32px" />
 		{/snippet}
@@ -52,5 +54,5 @@
 				value: segment.replace('_', ' ')
 			}
 		])}
-	</Notification>
+	</NotificationLink>
 {/if}

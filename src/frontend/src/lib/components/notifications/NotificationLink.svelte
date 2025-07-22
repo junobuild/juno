@@ -1,5 +1,4 @@
 <script lang="ts">
-	import { nonNullish } from '@dfinity/utils';
 	import type { Snippet } from 'svelte';
 	import Notification from '$lib/components/notifications/Notification.svelte';
 

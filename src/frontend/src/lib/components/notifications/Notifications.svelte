@@ -4,15 +4,11 @@
 	import IconNotifications from '$lib/components/icons/IconNotifications.svelte';
 	import NotificationsAlerts from '$lib/components/notifications/NotificationsAlerts.svelte';
 	import NotificationsAlertsLoader from '$lib/components/notifications/NotificationsAlertsLoader.svelte';
-	import NotificationsCanisterLoader from '$lib/components/notifications/NotificationsCanisterLoader.svelte';
 	import NotificationsInbox from '$lib/components/notifications/NotificationsInbox.svelte';
 	import NotificationsInboxLoader from '$lib/components/notifications/NotificationsInboxLoader.svelte';
 	import ButtonIcon from '$lib/components/ui/ButtonIcon.svelte';
 	import Popover from '$lib/components/ui/Popover.svelte';
 	import TabsSegment from '$lib/components/ui/TabsSegment.svelte';
-	import { missionControlIdDerived } from '$lib/derived/mission-control.derived';
-	import { orbiterStore } from '$lib/derived/orbiter.derived';
-	import { satelliteStore } from '$lib/derived/satellite.derived';
 	import { i18n } from '$lib/stores/i18n.store';
 	import type { CanisterData, CanisterWarning } from '$lib/types/canister';
 	import {
@@ -21,7 +17,6 @@
 		type TabsContext,
 		type TabsData
 	} from '$lib/types/tabs.context';
-	import { initTabId } from '$lib/utils/tabs.utils';
 
 	let button: HTMLButtonElement | undefined = $state();
 	let visible: boolean = $state(false);

@@ -7,6 +7,7 @@
 		close: () => void;
 	}
 
+	// eslint-disable-next-line @typescript-eslint/no-unused-vars
 	let { close }: Props = $props();
 </script>
 

@@ -7,6 +7,7 @@ import {
 	cyclesIdbStore,
 	exchangeIdbStore,
 	monitoringIdbStore,
+	releasesIdbStore,
 	versionIdbStore,
 	walletIdbStore
 } from '$lib/stores/idb.store';
@@ -80,6 +81,7 @@ const logout = async ({
 			clear(exchangeIdbStore),
 			clear(walletIdbStore),
 			clear(versionIdbStore),
+			clear(releasesIdbStore),
 			resetSnapshots(),
 			resetSubnets()
 		]);

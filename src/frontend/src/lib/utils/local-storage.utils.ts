@@ -13,6 +13,11 @@ import type { AnalyticsPeriodicity } from '$lib/types/orbiter';
 import { Theme } from '$lib/types/theme';
 import { isNullish, nonNullish, notEmptyString } from '@dfinity/utils';
 
+// eslint-disable-next-line require-await
+export const resetLocalStorage = async () => {
+	localStorage.clear();
+};
+
 export const setLocalStorageItem = ({ key, value }: { key: string; value: string }) => {
 	// Pre-rendering guard
 	if (!browser) {

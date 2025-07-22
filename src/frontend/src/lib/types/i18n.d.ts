@@ -938,7 +938,10 @@ interface I18nCdn {
 
 interface I18nNotifications {
 	title: string;
-	none: string;
+	alerts: string;
+	inbox: string;
+	no_alerts: string;
+	no_notifications: string;
 	low_cycles: string;
 	heap: string;
 	upgrade_available: string;

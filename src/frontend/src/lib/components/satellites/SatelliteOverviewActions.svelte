@@ -4,7 +4,6 @@
 	import SatelliteEditName from '$lib/components/satellites/SatelliteEditName.svelte';
 	import SatelliteVisit from '$lib/components/satellites/SatelliteVisit.svelte';
 	import SegmentActions from '$lib/components/segments/SegmentActions.svelte';
-	import type { CanisterSyncData as CanisterSyncDataType } from '$lib/types/canister';
 
 	interface Props {
 		satellite: Satellite;

@@ -907,7 +907,10 @@
 	},
 	"notifications": {
 		"title": "Notifications",
-		"none": "No notifications at the moment.",
+		"alerts": "Alerts",
+		"inbox": "Inbox",
+		"no_alerts": "All clear. No action required at this time.",
+		"no_notifications": "No notifications at the moment.",
 		"low_cycles": "Your {0} requires action: Low cycles detected.",
 		"heap": "Your {0} requires action: Heap memory is approaching 1 GB.",
 		"upgrade_available": "New upgrades available. Visit the Upgrade Dock to check them out."

@@ -69,59 +69,13 @@
 {@render children()}
 
 <style lang="scss">
-	@mixin button {
-		position: relative;
-
-		text-decoration: none;
-
-		margin: 0 var(--padding-2x) 0 0;
-		padding: 1px var(--padding);
-
-		color: var(--label-color);
-
-		border-radius: var(--border-radius);
-
-		transition: all var(--animation-time) ease-out;
-	}
-
-	@mixin hover {
-		background: var(--color-primary);
-		color: var(--color-primary-contrast);
-	}
+	@use '../../styles/mixins/tabs';
 
 	.tabs {
-		display: flex;
-		align-items: center;
-		flex-wrap: wrap;
-		gap: var(--padding);
-
-		margin: var(--padding) 0 var(--padding-1_5x);
-
-		:global(a:not(.tab)) {
-			@include button;
-			border-radius: var(--border-radius);
-			margin: 0;
-
-			&:hover,
-			&:focus {
-				@include hover;
-			}
-		}
+		@include tabs.tabs;
 	}
 
 	.tab {
-		@include button;
-
-		&:hover,
-		&:focus {
-			@include hover;
-		}
-
-		&:not(:focus):not(:hover) {
-			&.selected {
-				background: var(--color-secondary);
-				color: var(--color-secondary-contrast);
-			}
-		}
+		@include tabs.tab;
 	}
 </style>

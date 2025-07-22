@@ -3,30 +3,27 @@
 	import type { Snippet } from 'svelte';
 
 	interface Props {
-		href: string;
-		close: () => void;
 		icon: Snippet;
 		badge?: Snippet;
 		children: Snippet;
 	}
 
-	let { href, close, icon, badge, children }: Props = $props();
+	let { icon, badge, children }: Props = $props();
 </script>
 
-<a {href} class="menu" role="menuitem" aria-haspopup="menu" onclick={close}>
+<span class="notification">
 	<span class="icon">
 		{@render icon()}
 		{#if nonNullish(badge)}
 			<span class="indicator">{@render badge()}</span>
 		{/if}
 	</span>
-	<span class="text">{@render children()}</span>
-</a>
+	{@render children()}
+</span>
 
 <style lang="scss">
-	@use '../../styles/mixins/text';
-
-	a {
+	.notification {
+		display: flex;
 		gap: var(--padding-2x);
 	}
 
@@ -50,9 +47,5 @@
 		position: absolute;
 		right: calc(-1 * var(--padding-0_5x));
 		top: var(--padding-0_25x);
-	}
-
-	.text {
-		@include text.clamp(3);
 	}
 </style>

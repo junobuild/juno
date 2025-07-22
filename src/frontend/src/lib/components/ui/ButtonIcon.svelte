@@ -8,7 +8,7 @@
 		icon?: Snippet;
 		children: Snippet;
 		onclick: (() => Promise<void>) | (() => void);
-		level?: 'info' | 'warning' | 'error';
+		level?: 'success' | 'warning' | 'error';
 		small?: boolean;
 	}
 

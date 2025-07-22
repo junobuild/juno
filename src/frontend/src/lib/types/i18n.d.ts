@@ -5,6 +5,7 @@
 interface I18nCore {
 	close: string;
 	back: string;
+	dismiss: string;
 	menu: string;
 	copy: string;
 	copied: string;
@@ -945,6 +946,8 @@ interface I18nNotifications {
 	low_cycles: string;
 	heap: string;
 	upgrade_available: string;
+	short_freezing_threshold: string;
+	learn_more: string;
 }
 
 interface I18n {

@@ -61,6 +61,7 @@ export interface CanisterInfo {
 export interface CanisterWarning {
 	cycles: boolean;
 	heap: boolean;
+	freezingThreshold: boolean;
 }
 
 export type CanisterDataInfo = Omit<CanisterInfo, 'canisterId'>;

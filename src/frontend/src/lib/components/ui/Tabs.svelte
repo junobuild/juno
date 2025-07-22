@@ -12,7 +12,7 @@
 	import { keyOf } from '$lib/utils/utils';
 
 	interface Props {
-		help: string;
+		help?: string;
 		info?: Snippet;
 		children: Snippet;
 	}
@@ -61,24 +61,32 @@
 		>
 	{/each}
 
-	<ExternalLink href={help}>{$i18n.core.help}</ExternalLink>
+	{#if notEmptyString(help)}
+		<ExternalLink href={help}>{$i18n.core.help}</ExternalLink>
+	{/if}
 </div>
 
 {@render children()}
 
 <style lang="scss">
 	@mixin button {
-		text-decoration: none;
 		position: relative;
+
+		text-decoration: none;
+
 		margin: 0 var(--padding-2x) 0 0;
+		padding: 1px var(--padding);
+
 		color: var(--label-color);
+
+		border-radius: var(--border-radius);
+
+		transition: all var(--animation-time) ease-out;
 	}
 
 	@mixin hover {
 		background: var(--color-primary);
 		color: var(--color-primary-contrast);
-		border-radius: var(--border-radius);
-		outline: 2px solid var(--color-primary);
 	}
 
 	.tabs {
@@ -111,7 +119,8 @@
 
 		&:not(:focus):not(:hover) {
 			&.selected {
-				color: var(--text-color);
+				background: var(--color-secondary);
+				color: var(--color-secondary-contrast);
 			}
 		}
 	}

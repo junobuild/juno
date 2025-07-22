@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { nonNullish } from '@dfinity/utils';
+	import { notificationFreezingThresholdEnabled } from '$lib/derived/notification-preferences.derived';
 	import { orbiterWithSyncData } from '$lib/derived/orbiter-merged.derived';
 	import { satellitesWithSyncData } from '$lib/derived/satellites-merged.derived';
 	import type { CanisterData } from '$lib/types/canister';
@@ -34,6 +35,6 @@
 	let hasNotifications = $derived(hasCanisterNotifications);
 
 	$effect(() => {
-		canisterNotifications = hasNotifications;
+		canisterNotifications = hasNotifications && $notificationFreezingThresholdEnabled;
 	});
 </script>

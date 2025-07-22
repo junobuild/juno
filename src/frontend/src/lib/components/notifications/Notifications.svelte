@@ -121,7 +121,7 @@
 					{close}
 				/>
 			{:else if $store.tabId === $store.tabs[1].id}
-				<NotificationsInbox {close} {canisterNotifications} />
+				<NotificationsInbox {canisterNotifications} />
 			{/if}
 		</TabsSegment>
 	</div>

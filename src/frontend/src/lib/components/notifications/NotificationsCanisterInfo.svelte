@@ -2,13 +2,17 @@
 	import IconShield from '$lib/components/icons/IconShield.svelte';
 	import Notification from '$lib/components/notifications/Notification.svelte';
 	import { i18n } from '$lib/stores/i18n.store';
+	import { notificationPreferencesStore } from '$lib/stores/notification-preferences.store';
+	import { setLocalStorageItem } from '$lib/utils/local-storage.utils';
 
-	interface Props {
-		close: () => void;
-	}
+	const dismiss = () => {
+		notificationPreferencesStore.dismissFreezingThreshold();
 
-	// eslint-disable-next-line @typescript-eslint/no-unused-vars
-	let { close }: Props = $props();
+		setLocalStorageItem({
+			key: 'notification_preferences',
+			value: JSON.stringify($notificationPreferencesStore)
+		});
+	};
 </script>
 
 <Notification>
@@ -29,8 +33,7 @@
 				target="_blank">{$i18n.notifications.learn_more}</a
 			>
 
-			<!-- TODO -->
-			<!-- button>{$i18n.core.dismiss}</button -->
+			<button onclick={dismiss}>{$i18n.core.dismiss}</button>
 		</div>
 	</div>
 </Notification>

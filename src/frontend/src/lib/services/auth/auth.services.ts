@@ -14,6 +14,7 @@ import {
 import { toasts } from '$lib/stores/toasts.store';
 import { SignInUserInterruptError } from '$lib/types/errors';
 import type { ToastLevel, ToastMsg } from '$lib/types/toast';
+import { resetLocalStorage } from '$lib/utils/local-storage.utils';
 import { replaceHistory } from '$lib/utils/route.utils';
 import { isNullish } from '@dfinity/utils';
 import { clear } from 'idb-keyval';
@@ -83,7 +84,8 @@ const logout = async ({
 			clear(versionIdbStore),
 			clear(releasesIdbStore),
 			resetSnapshots(),
-			resetSubnets()
+			resetSubnets(),
+			resetLocalStorage()
 		]);
 	}
 

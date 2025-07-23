@@ -12,5 +12,5 @@ use regex::Regex;
 /// * `Ok(Regex)` if the pattern is valid.
 /// * `Err(String)` with a detailed error message including the `JUNO_ERROR_INVALID_REGEX` constant if compilation fails.
 pub fn build_regex(pattern: &str) -> Result<Regex, String> {
-    Regex::new(pattern).map_err(|e| format!("{} (`{}`: {})", JUNO_ERROR_INVALID_REGEX, pattern, e))
+    Regex::new(pattern).map_err(|e| format!("{JUNO_ERROR_INVALID_REGEX} (`{pattern}`: {e})"))
 }

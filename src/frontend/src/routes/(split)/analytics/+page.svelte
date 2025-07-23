@@ -72,7 +72,7 @@
 			{/if}
 		{/snippet}
 
-		<Loaders withOrbiterVersion>
+		<Loaders>
 			<MissionControlGuard>
 				{#if $store.tabId === $store.tabs[0].id}
 					<Analytics />

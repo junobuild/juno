@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { fromNullable, fromNullishNullable, isEmptyString } from '@dfinity/utils';
-	import { onMount, type SvelteComponent } from 'svelte';
+	import { onMount } from 'svelte';
 	import type { AuthenticationConfig } from '$declarations/satellite/satellite.did';
 	import Collapsible from '$lib/components/ui/Collapsible.svelte';
 	import Input from '$lib/components/ui/Input.svelte';
@@ -26,8 +26,7 @@
 		externalAlternativeOrigins = externalAlternativeOriginsInput;
 	});
 
-	let collapsibleRef: (SvelteComponent & { open: () => void; close: () => void }) | undefined =
-		$state(undefined);
+	let collapsibleRef: Collapsible | undefined = $state(undefined);
 
 	onMount(() => {
 		if (isEmptyString(externalAlternativeOriginsInput)) {
@@ -39,7 +38,9 @@
 </script>
 
 <Collapsible bind:this={collapsibleRef}>
-	<svelte:fragment slot="header">{$i18n.core.advanced_options}</svelte:fragment>
+	{#snippet header()}
+		{$i18n.core.advanced_options}
+	{/snippet}
 
 	<div>
 		<Value>

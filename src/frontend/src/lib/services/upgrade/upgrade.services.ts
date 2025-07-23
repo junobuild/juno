@@ -4,7 +4,6 @@ import { i18n } from '$lib/stores/i18n.store';
 import { toasts } from '$lib/stores/toasts.store';
 import type { OptionIdentity } from '$lib/types/itentity';
 import type { Wasm } from '$lib/types/upgrade';
-import { emit } from '$lib/utils/events.utils';
 import type { Principal } from '@dfinity/principal';
 import { isNullish } from '@dfinity/utils';
 import type { UpgradeCodeParams, UpgradeCodeProgress } from '@junobuild/admin';
@@ -16,6 +15,7 @@ export interface UpgradeParams {
 	upgrade: ({
 		wasmModule
 	}: Pick<UpgradeCodeParams, 'wasmModule' | 'onProgress' | 'takeSnapshot'>) => Promise<void>;
+	reloadVersion: () => Promise<void>;
 	nextSteps: (
 		steps: 'init' | 'confirm' | 'download' | 'review' | 'in_progress' | 'ready' | 'error'
 	) => void;
@@ -31,7 +31,8 @@ export const upgrade = async ({
 	nextSteps,
 	takeSnapshot,
 	canisterId,
-	identity
+	identity,
+	reloadVersion
 }: UpgradeParams) => {
 	onProgress(undefined);
 
@@ -64,9 +65,9 @@ export const upgrade = async ({
 			});
 		}
 
-		emit({ message: 'junoReloadVersions' });
+		await reloadVersion();
 
-		// Small delay to ensure junoReloadVersions is emitted
+		// Small delay for UI cosmetic reasons
 		setTimeout(() => {
 			nextSteps('ready');
 

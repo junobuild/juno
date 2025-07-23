@@ -103,7 +103,7 @@ fn decode_path(parsed_url: &Url) -> Result<String, &'static str> {
 
     match decoded_path {
         Err(_) => {
-            let error = format!("Path {} cannot be decoded.", path).into_boxed_str();
+            let error = format!("Path {path} cannot be decoded.").into_boxed_str();
             Err(Box::leak(error))
         }
         Ok(decoded_path) => Ok(decoded_path.to_string()),

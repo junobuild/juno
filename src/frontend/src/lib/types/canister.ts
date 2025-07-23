@@ -1,8 +1,8 @@
-import type { CanisterIdTextSchema } from '$lib/schema/canister.schema';
+import type { CanisterIdTextSchema } from '$lib/schemas/canister.schema';
 import type { ChartsData, TimeOfDayChartData } from '$lib/types/chart';
 import type { MonitoringHistory, MonitoringMetadata } from '$lib/types/monitoring';
 import type { Principal } from '@dfinity/principal';
-import type * as z from 'zod';
+import type * as z from 'zod/v4';
 
 export type CanisterStatus = 'stopped' | 'stopping' | 'running';
 export type CanisterSyncStatus = 'loading' | 'syncing' | 'synced' | 'error';
@@ -61,6 +61,7 @@ export interface CanisterInfo {
 export interface CanisterWarning {
 	cycles: boolean;
 	heap: boolean;
+	freezingThreshold: boolean;
 }
 
 export type CanisterDataInfo = Omit<CanisterInfo, 'canisterId'>;

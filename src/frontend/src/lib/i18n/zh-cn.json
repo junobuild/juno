@@ -2,6 +2,7 @@
 	"core": {
 		"close": "关闭",
 		"back": "回退",
+		"dismiss": "Dismiss",
 		"menu": "打开菜单去访问导航栏选项",
 		"copy": "拷贝到剪切板",
 		"copied": "已拷贝到剪切板",
@@ -165,6 +166,7 @@
 		"detach_success": "{0} 已解绑的.",
 		"delete_success": "{0} 已删除.",
 		"cycles": "Cycles",
+		"lifecycle": "Lifecycle",
 		"available_cycles": "Available Cycles",
 		"cycles_needed": "Cycles needed",
 		"transfer_cycles": "转移 Cycles",
@@ -200,6 +202,7 @@
 		"in_percent": "百分比",
 		"in_t_cycles": "以 T Cycles 为单位",
 		"no_update_required": "没有设置修改, 所以没有需要更新的.",
+		"not_enough_cycles_to_update_freezing_threshold": "The cycle balance is too low to cover the new freezing threshold. Please top up your module before trying again.",
 		"controllers": "控制者",
 		"public": "公开",
 		"subnet": "子网",
@@ -233,7 +236,13 @@
 		"low": "Low",
 		"risk": "At risk",
 		"of_cycles_needed": "of cycles needed",
-		"only": "Only"
+		"only": "Only",
+		"a_month": "A month",
+		"three_months": "Three months",
+		"six_months": "Six months",
+		"a_year": "A year",
+		"two_years": "Two years",
+		"five_years": "Five years"
 	},
 	"sign_in": {
 		"quote_1": "Stars can't shine without darkness.",
@@ -266,7 +275,7 @@
 		"name": "名字",
 		"satellite_name": "Satellite 名字",
 		"enter_name": "输入你的 satellite 名字",
-		"edit_name": "编辑你的 satellite 名字",
+		"edit_name": "Edit name",
 		"create_satellite_price": "创建一个新的 satellite 需要 {0}. 你的当前 wallet 余额是 {1}.",
 		"loading_satellites": "加载你的satellites",
 		"overview": "概要",
@@ -501,7 +510,7 @@
 		"cli_unexpected_error": "在增加你的控制者时出现不可预见的错误.",
 		"satellite_name_missing": "必须提供一个名字给 satellite.",
 		"satellite_unexpected_error": "创建 satellite时出现未知错误.",
-		"satellite_no_found": "Nothing here. Return to your <a href=\"/\">launchpad</a> to find your satellites.",
+		"satellite_no_found": "Nothing here. Return to your launchpad to find your satellites.",
 		"satellite_name_update": "试图修改你的 satellite 名字出现异常.",
 		"satellite_missing_name": "必须提供一个名字.",
 		"satellites_not_loaded": "The satellites 数据不能加载.",
@@ -610,7 +619,8 @@
 		"user_unban": "试图解禁用户时出现异常错误.",
 		"satellite_version_not_found": "Unexpected error. Your Satellite implements serverless functions, but no dependency version can be resolved.",
 		"load_version": "Unexpected error(s) while loading the version of your module(s).",
-		"load_proposals": "Unexpected error(s) while loading the changes of your module(s).",
+		"load_version_timeout": "The version couldn't be loaded in time. Please try again, and if the problem persists, reach out for support.",
+		"load_proposals": "Unexpected error(s) while loading the changes of your module(s). Maybe some of your Satellites are stopped?",
 		"apply_proposal_error": "Error while applying the change. Reach out Juno if the problem persists!",
 		"reject_proposal_error": "Error while rejecting the change. Reach out Juno if the problem persists!",
 		"find_wasm_asset_for_proposal_error": "Unexpected error while resolving the asset linked to the change.",
@@ -671,7 +681,7 @@
 	"controllers": {
 		"title": "Access Keys",
 		"profile": "简介",
-		"scope": "Permission",
+		"scope": "Role",
 		"delete": "Delete an access key",
 		"info": "信息",
 		"delete_question": "Delete access key?",
@@ -679,9 +689,9 @@
 		"controller_id_placeholder": "Access Key ID",
 		"no_delete": "Juno cannot operate without your current signed-in identity and your mission control set as administrators. These settings cannot be edited through the console.",
 		"more_delete": "However, you can edit or delete additional access keys that you may have added for non-interactive environments.",
-		"admin": "Admin",
-		"write": "Write",
-		"submit": "Submit",
+		"admin": "Administrator",
+		"write": "Editor",
+		"submit": "Submitter",
 		"add_a_controller": "Add an access key",
 		"add_intro": "Create a new access key with custom permissions.",
 		"generate": "Generate a key",
@@ -714,7 +724,7 @@
 		"public": "公开",
 		"private": "私有",
 		"managed": "可管理的",
-		"trusted_keys": "Trusted Keys",
+		"restricted": "Restricted",
 		"empty": "你的文档集 <strong>{0}</strong> 为空.",
 		"empty_private": "你的文档集 <strong>{0}</strong> 读权限设置为私有.",
 		"added": "文档集 {0} 已曾加.",
@@ -834,25 +844,13 @@
 		"custom_description": "Customize your top-up trigger and amount.",
 		"default": "你的策略",
 		"default_description": "用你之前保存的默认策略.",
-		"warn_monitoring_enabled": "继续处理之前请禁用监控."
+		"warn_monitoring_enabled": "继续处理之前请禁用监控.",
+		"runtime": "Runtime"
 	},
 	"preferences": {
 		"title": "偏好设置",
 		"dev_id": "开发者 ID",
 		"session_expires_in": "会话将过期在"
-	},
-	"examples": {
-		"tutorials": "指南",
-		"tutorial_framework_description": "用 Juno 和 {0}.",
-		"tutorial_serverless_functions": "在 {0} 里面写无服务函数.",
-		"tutorial_github_description": "Deploy and set up continuous integration with GitHub Actions.",
-		"tutorial_docker_description": "Get started with local development using a Docker sandbox."
-	},
-	"resources": {
-		"resources": "资源",
-		"resources_description": "查看利用Juno开发的代码，应用，为服务等例子",
-		"changelog": "发布",
-		"changelog_description": "看最近的更新和优化."
 	},
 	"emulator": {
 		"get_icp": "Get ICP",
@@ -907,5 +905,17 @@
 	"cdn": {
 		"title": "CDN",
 		"empty": "No WASM found for your serverless functions."
+	},
+	"notifications": {
+		"title": "Notifications",
+		"alerts": "Alerts",
+		"inbox": "Inbox",
+		"no_alerts": "All clear. No action required at this time.",
+		"no_notifications": "No notifications at the moment.",
+		"low_cycles": "Your {0} requires action: Low cycles detected.",
+		"heap": "Your {0} requires action: Heap memory is approaching 1 GB.",
+		"upgrade_available": "New upgrades available. Visit the Upgrade Dock to check them out.",
+		"short_freezing_threshold": "Short freezing threshold detected. We recommend a longer grace period to give you more time if cycles run out.",
+		"learn_more": "Learn more"
 	}
 }

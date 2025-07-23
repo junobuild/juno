@@ -5,8 +5,9 @@ import {
 	MEMORY_HEAP_WARNING,
 	SYNC_CYCLES_TIMER_INTERVAL
 } from '$lib/constants/app.constants';
+import { ONE_YEAR, THREE_MONTHS } from '$lib/constants/canister.constants';
 import { cyclesIdbStore } from '$lib/stores/idb.store';
-import type { CanisterInfo, CanisterSegment, CanisterSyncData } from '$lib/types/canister';
+import type { CanisterInfo, CanisterSegment, CanisterSyncData, Segment } from '$lib/types/canister';
 import type { PostMessageDataRequest, PostMessageRequest } from '$lib/types/post-message';
 import { cyclesToICP } from '$lib/utils/cycles.utils';
 import {
@@ -108,7 +109,8 @@ const syncIcStatusCanisters = async ({
 	trillionRatio: bigint;
 }) => {
 	const syncStatusAndMemoryPerCanister = async ({
-		canisterId
+		canisterId,
+		segment
 	}: CanisterSegment): Promise<CanisterSyncData> => {
 		try {
 			const canisterInfo = await canisterStatus({ canisterId, identity });
@@ -116,7 +118,8 @@ const syncIcStatusCanisters = async ({
 			const canister = mapCanisterSyncData({
 				canisterInfo,
 				trillionRatio,
-				canisterId: canisterInfo.canisterId
+				canisterId: canisterInfo.canisterId,
+				segment
 			});
 
 			// We emit the canister data this way the UI can render asynchronously render the information without waiting for all canisters status to be fetched.
@@ -147,11 +150,13 @@ const syncIcStatusCanisters = async ({
 const mapCanisterSyncData = ({
 	canisterId,
 	trillionRatio,
-	canisterInfo: { canisterId: _, memoryMetrics, cycles, ...rest }
+	segment,
+	canisterInfo: { canisterId: _, memoryMetrics, cycles, settings, ...rest }
 }: {
 	canisterId: string;
 	trillionRatio: bigint;
 	canisterInfo: CanisterInfo;
+	segment: Segment;
 }): CanisterSyncData => ({
 	id: canisterId,
 	sync: 'synced',
@@ -159,11 +164,14 @@ const mapCanisterSyncData = ({
 		icp: cyclesToICP({ cycles, trillionRatio }),
 		warning: {
 			cycles: cycles < CYCLES_WARNING,
-			heap: (memoryMetrics.wasmMemorySize ?? 0n) >= MEMORY_HEAP_WARNING
+			heap: (memoryMetrics.wasmMemorySize ?? 0n) >= MEMORY_HEAP_WARNING,
+			freezingThreshold:
+				settings.freezingThreshold < BigInt(segment === 'orbiter' ? THREE_MONTHS : ONE_YEAR)
 		},
 		canister: {
 			cycles,
 			memoryMetrics,
+			settings,
 			...rest
 		}
 	}

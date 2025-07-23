@@ -16,7 +16,7 @@
 
 <ButtonIcon onclick={async () => await back({ pop: nonNullish(fromRoute) })}>
 	{#snippet icon()}
-		<IconBack size="28px" />
+		<IconBack size="16px" />
 	{/snippet}
 	{$i18n.core.back}
 </ButtonIcon>

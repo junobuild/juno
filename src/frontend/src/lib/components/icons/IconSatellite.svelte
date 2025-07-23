@@ -7,12 +7,7 @@
 	let { size = '40px' }: Props = $props();
 </script>
 
-<svg
-	height={size}
-	width={size}
-	style={`min-width: ${size}`}
-	xmlns="http://www.w3.org/2000/svg"
-	viewBox="0 0 29 29"
+<svg height={size} width={size} xmlns="http://www.w3.org/2000/svg" viewBox="0 0 29 29"
 	><g
 		><g
 			><rect width="29" height="29" class="icon-satellite-1" /><circle

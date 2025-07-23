@@ -1,6 +1,6 @@
 [package]
 name = "sputnik"
-version = "0.1.0"
+version = "0.1.1"
 edition = "2021"
 publish = false
 
@@ -33,6 +33,11 @@ junobuild-collections = { path = "../libs/collections" }
 junobuild-shared = { path = "../libs/shared" }
 junobuild-macros = { path = "../libs/macros" }
 junobuild-storage = { path = "../libs/storage" }
-ic-wasi-polyfill = "0.8.1"
-rquickjs = { version = "0.9.0", features = ["macro", "futures"] }
+ic-wasi-polyfill = "0.8.2"
+rquickjs = { git = "https://github.com/peterpeterparker/rquickjs", branch = "patch-v0.9.0", features = [
+	"macro",
+	"futures"
+] }
 anyhow = "1.0.79"
+itoa = { version = "1", default-features = false }
+ryu = { version = "1", default-features = false }

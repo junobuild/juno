@@ -5,6 +5,7 @@
 interface I18nCore {
 	close: string;
 	back: string;
+	dismiss: string;
 	menu: string;
 	copy: string;
 	copied: string;
@@ -169,6 +170,7 @@ interface I18nCanisters {
 	detach_success: string;
 	delete_success: string;
 	cycles: string;
+	lifecycle: string;
 	available_cycles: string;
 	cycles_needed: string;
 	transfer_cycles: string;
@@ -204,6 +206,7 @@ interface I18nCanisters {
 	in_percent: string;
 	in_t_cycles: string;
 	no_update_required: string;
+	not_enough_cycles_to_update_freezing_threshold: string;
 	controllers: string;
 	public: string;
 	subnet: string;
@@ -238,6 +241,12 @@ interface I18nCanisters {
 	risk: string;
 	of_cycles_needed: string;
 	only: string;
+	a_month: string;
+	three_months: string;
+	six_months: string;
+	a_year: string;
+	two_years: string;
+	five_years: string;
 }
 
 interface I18nSign_in {
@@ -626,6 +635,7 @@ interface I18nErrors {
 	user_unban: string;
 	satellite_version_not_found: string;
 	load_version: string;
+	load_version_timeout: string;
 	load_proposals: string;
 	apply_proposal_error: string;
 	reject_proposal_error: string;
@@ -735,7 +745,7 @@ interface I18nCollections {
 	public: string;
 	private: string;
 	managed: string;
-	trusted_keys: string;
+	restricted: string;
 	empty: string;
 	empty_private: string;
 	added: string;
@@ -860,27 +870,13 @@ interface I18nMonitoring {
 	default: string;
 	default_description: string;
 	warn_monitoring_enabled: string;
+	runtime: string;
 }
 
 interface I18nPreferences {
 	title: string;
 	dev_id: string;
 	session_expires_in: string;
-}
-
-interface I18nExamples {
-	tutorials: string;
-	tutorial_framework_description: string;
-	tutorial_serverless_functions: string;
-	tutorial_github_description: string;
-	tutorial_docker_description: string;
-}
-
-interface I18nResources {
-	resources: string;
-	resources_description: string;
-	changelog: string;
-	changelog_description: string;
 }
 
 interface I18nEmulator {
@@ -941,6 +937,19 @@ interface I18nCdn {
 	empty: string;
 }
 
+interface I18nNotifications {
+	title: string;
+	alerts: string;
+	inbox: string;
+	no_alerts: string;
+	no_notifications: string;
+	low_cycles: string;
+	heap: string;
+	upgrade_available: string;
+	short_freezing_threshold: string;
+	learn_more: string;
+}
+
 interface I18n {
 	lang: Languages;
 	core: I18nCore;
@@ -967,10 +976,9 @@ interface I18n {
 	users: I18nUsers;
 	monitoring: I18nMonitoring;
 	preferences: I18nPreferences;
-	examples: I18nExamples;
-	resources: I18nResources;
 	emulator: I18nEmulator;
 	upgrade: I18nUpgrade;
 	changes: I18nChanges;
 	cdn: I18nCdn;
+	notifications: I18nNotifications;
 }

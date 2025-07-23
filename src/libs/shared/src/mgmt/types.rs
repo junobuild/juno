@@ -63,9 +63,15 @@ pub mod cmc {
 
 pub mod ic {
     use crate::types::core::Blob;
+    use candid::{Nat, Principal};
 
     pub struct WasmArg {
         pub wasm: Blob,
         pub install_arg: Vec<u8>,
+    }
+
+    pub struct CreateCanisterInitSettingsArg {
+        pub controllers: Vec<Principal>,
+        pub freezing_threshold: Nat,
     }
 }

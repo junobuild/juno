@@ -16,9 +16,9 @@ export const PermissionManaged: Permission = { Managed: null };
 // Originally named "Controllers" but later renamed visually — and only visually — to "Trusted Keys",
 // since it includes both "Admin" (controllers) and "Write" keys (which are not controllers).
 const PermissionControllers: Permission = { Controllers: null };
-export const PermissionTrustedKeys = PermissionControllers;
+export const PermissionRestricted = PermissionControllers;
 
-export type PermissionText = 'Public' | 'Private' | 'Managed' | 'TrustedKeys';
+export type PermissionText = 'Public' | 'Private' | 'Managed' | 'Restricted';
 
 export const MemoryHeap: Memory = { Heap: null };
 export const MemoryStable: Memory = { Stable: null };

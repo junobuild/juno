@@ -7,7 +7,6 @@
 	import SatelliteGuard from '$lib/components/guards/SatelliteGuard.svelte';
 	import Hosting from '$lib/components/hosting/Hosting.svelte';
 	import Loaders from '$lib/components/loaders/Loaders.svelte';
-	import SatelliteVersionLoader from '$lib/components/loaders/SatelliteVersionLoader.svelte';
 	import Tabs from '$lib/components/ui/Tabs.svelte';
 	import { missionControlIdDerived } from '$lib/derived/mission-control.derived';
 	import { satelliteStore } from '$lib/derived/satellite.derived';
@@ -42,14 +41,9 @@
 			<SatelliteGuard>
 				<MissionControlGuard>
 					{#if nonNullish($satelliteStore) && nonNullish($missionControlIdDerived)}
-						<SatelliteVersionLoader
-							satellite={$satelliteStore}
-							missionControlId={$missionControlIdDerived}
-						>
-							{#if $store.tabId === $store.tabs[0].id}
-								<Hosting satellite={$satelliteStore} />
-							{/if}
-						</SatelliteVersionLoader>
+						{#if $store.tabId === $store.tabs[0].id}
+							<Hosting satellite={$satelliteStore} />
+						{/if}
 					{/if}
 				</MissionControlGuard>
 			</SatelliteGuard>

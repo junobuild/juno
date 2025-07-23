@@ -5,6 +5,7 @@
 	import CanisterUpgradeModal from '$lib/components/modals/CanisterUpgradeModal.svelte';
 	import Html from '$lib/components/ui/Html.svelte';
 	import { orbiterStore } from '$lib/derived/orbiter.derived';
+	import { reloadOrbiterVersion } from '$lib/services/version/version.orbiter.services';
 	import { authStore } from '$lib/stores/auth.store';
 	import { i18n } from '$lib/stores/i18n.store';
 	import type { JunoModalDetail, JunoModalUpgradeDetail } from '$lib/types/modal';
@@ -32,6 +33,12 @@
 			},
 			...params
 		});
+
+	const reloadVersion = async () => {
+		await reloadOrbiterVersion({
+			orbiterId: $orbiterStore?.orbiter_id
+		});
+	};
 </script>
 
 {#if nonNullish($orbiterStore)}
@@ -40,6 +47,7 @@
 		{newerReleases}
 		{currentVersion}
 		upgrade={upgradeOrbiterWasm}
+		{reloadVersion}
 		segment="orbiter"
 		canisterId={$orbiterStore.orbiter_id}
 	>

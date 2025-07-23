@@ -3,12 +3,20 @@
 	import { isNullish, nonNullish } from '@dfinity/utils';
 	import Canister from '$lib/components/canister/Canister.svelte';
 	import CanisterValue from '$lib/components/canister/CanisterValue.svelte';
+	import {
+		FIVE_YEARS,
+		ONE_MONTH,
+		ONE_YEAR,
+		THREE_MONTHS,
+		SIX_MONTHS,
+		TWO_YEARS
+	} from '$lib/constants/canister.constants';
 	import { i18n } from '$lib/stores/i18n.store';
 	import { toasts } from '$lib/stores/toasts.store';
 	import type {
 		CanisterData,
+		CanisterInfo,
 		CanisterLogVisibility,
-		CanisterSettings,
 		CanisterSyncStatus,
 		Segment
 	} from '$lib/types/canister';
@@ -25,22 +33,22 @@
 
 	let { canisterId, segment, segmentLabel }: Props = $props();
 
-	let data: CanisterData | undefined = $state();
-	let sync: CanisterSyncStatus | undefined = $state();
+	let data = $state<CanisterData | undefined>(undefined);
+	let sync = $state<CanisterSyncStatus | undefined>(undefined);
 
-	let settings: CanisterSettings | undefined = $derived(data?.canister?.settings);
+	let settings = $derived(data?.canister?.settings);
 
-	let freezingThreshold: bigint | undefined = $derived(settings?.freezingThreshold);
+	let freezingThreshold = $derived(settings?.freezingThreshold ?? 0n);
 
-	let reservedCyclesLimit: bigint | undefined = $derived(settings?.reservedCyclesLimit);
+	let reservedCyclesLimit = $derived(settings?.reservedCyclesLimit);
 
 	let logVisibility: CanisterLogVisibility | undefined = $derived(settings?.logVisibility);
 
-	let wasmMemoryLimit: bigint | undefined = $derived(settings?.wasmMemoryLimit);
+	let wasmMemoryLimit = $derived(settings?.wasmMemoryLimit);
 
-	let memoryAllocation: bigint | undefined = $derived(settings?.memoryAllocation);
+	let memoryAllocation = $derived(settings?.memoryAllocation);
 
-	let computeAllocation: bigint | undefined = $derived(settings?.computeAllocation);
+	let computeAllocation = $derived(settings?.computeAllocation);
 
 	const openModal = () => {
 		if (isNullish(settings)) {
@@ -48,11 +56,22 @@
 			return;
 		}
 
+		if (isNullish(data)) {
+			toasts.error({ text: $i18n.errors.canister_status });
+			return;
+		}
+
+		const canister: CanisterInfo = {
+			...data.canister,
+			canisterId: canisterId.toText()
+		};
+
 		emit({
 			message: 'junoModal',
 			detail: {
 				type: 'edit_canister_settings',
 				detail: {
+					canister,
 					segment: {
 						canisterId: canisterId.toText(),
 						segment,
@@ -74,7 +93,23 @@
 				{#snippet label()}
 					{$i18n.canisters.freezing_threshold}
 				{/snippet}
-				<p>{secondsToDuration(freezingThreshold ?? 0n)}</p>
+				<p>
+					{#if freezingThreshold === BigInt(ONE_MONTH)}
+						{$i18n.canisters.a_month}
+					{:else if freezingThreshold === BigInt(THREE_MONTHS)}
+						{$i18n.canisters.three_months}
+					{:else if freezingThreshold === BigInt(SIX_MONTHS)}
+						{$i18n.canisters.six_months}
+					{:else if freezingThreshold === BigInt(ONE_YEAR)}
+						{$i18n.canisters.a_year}
+					{:else if freezingThreshold === BigInt(TWO_YEARS)}
+						{$i18n.canisters.two_years}
+					{:else if freezingThreshold === BigInt(FIVE_YEARS)}
+						{$i18n.canisters.five_years}
+					{:else}
+						{secondsToDuration(freezingThreshold ?? 0n)}
+					{/if}
+				</p>
 			</CanisterValue>
 
 			<CanisterValue {sync}>

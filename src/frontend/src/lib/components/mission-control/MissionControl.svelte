@@ -2,7 +2,8 @@
 	import { fade } from 'svelte/transition';
 	import CanisterOverview from '$lib/components/canister/CanisterOverview.svelte';
 	import CanisterSubnet from '$lib/components/canister/CanisterSubnet.svelte';
-	import MissionControlActions from '$lib/components/mission-control/MissionControlActions.svelte';
+	import MissionControlOverviewActions from '$lib/components/mission-control/MissionControlOverviewActions.svelte';
+	import MissionControlRuntimeActions from '$lib/components/mission-control/MissionControlRuntimeActions.svelte';
 	import SegmentVersion from '$lib/components/segments/SegmentVersion.svelte';
 	import Identifier from '$lib/components/ui/Identifier.svelte';
 	import Value from '$lib/components/ui/Value.svelte';
@@ -40,17 +41,19 @@
 				<SegmentVersion version={$missionControlVersion?.current} />
 			</div>
 		</div>
-
-		<MissionControlActions {missionControlId} />
 	</div>
 
+	<MissionControlOverviewActions />
+
 	<div class="card-container with-title" in:fade>
-		<span class="title">{$i18n.monitoring.title}</span>
+		<span class="title">{$i18n.monitoring.runtime}</span>
 
 		<div class="columns-3">
 			<CanisterOverview canisterId={missionControlId} segment="mission_control" />
 		</div>
 	</div>
+
+	<MissionControlRuntimeActions {missionControlId} />
 {/if}
 
 <style lang="scss">

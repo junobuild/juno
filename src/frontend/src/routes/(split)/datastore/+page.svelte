@@ -6,7 +6,6 @@
 	import IdentityGuard from '$lib/components/guards/IdentityGuard.svelte';
 	import SatelliteGuard from '$lib/components/guards/SatelliteGuard.svelte';
 	import Loaders from '$lib/components/loaders/Loaders.svelte';
-	import SatelliteVersionLoader from '$lib/components/loaders/SatelliteVersionLoader.svelte';
 	import Tabs from '$lib/components/ui/Tabs.svelte';
 	import { missionControlIdDerived } from '$lib/derived/mission-control.derived';
 	import { satelliteStore } from '$lib/derived/satellite.derived';
@@ -44,12 +43,7 @@
 		<Loaders>
 			<SatelliteGuard>
 				{#if nonNullish($satelliteStore) && nonNullish($missionControlIdDerived)}
-					<SatelliteVersionLoader
-						satellite={$satelliteStore}
-						missionControlId={$missionControlIdDerived}
-					>
-						<Db satelliteId={$satelliteStore.satellite_id} />
-					</SatelliteVersionLoader>
+					<Db satelliteId={$satelliteStore.satellite_id} />
 				{/if}
 			</SatelliteGuard>
 		</Loaders>

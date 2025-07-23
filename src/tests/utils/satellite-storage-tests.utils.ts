@@ -10,7 +10,8 @@ export const uploadAsset = async ({
 	collection,
 	actor,
 	headers = [],
-	token
+	token,
+	encoding_type = []
 }: {
 	full_path: string;
 	description?: string;
@@ -19,13 +20,14 @@ export const uploadAsset = async ({
 	actor: Actor<SatelliteActor>;
 	headers?: [string, string][];
 	token?: string;
+	encoding_type?: [] | [string];
 }) => {
 	const { commit_asset_upload, upload_asset_chunk, init_asset_upload } = actor;
 
 	const file = await init_asset_upload({
 		collection,
 		description: toNullable(description),
-		encoding_type: [],
+		encoding_type,
 		full_path,
 		name,
 		token: toNullable(token)

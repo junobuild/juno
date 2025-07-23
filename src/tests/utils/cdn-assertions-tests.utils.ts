@@ -848,8 +848,7 @@ export const testReleasesProposal = ({
 			});
 		});
 
-		// TODO: include for release
-		describe.skip.each(validModuleFullPaths)('Asset requires description', (fullPath) => {
+		describe.each(validModuleFullPaths)('Asset requires description', (fullPath) => {
 			it('should throw error if description is missing', async () => {
 				const { init_proposal_asset_upload, init_proposal } = actor();
 
@@ -1044,12 +1043,9 @@ export const testCdnGetProposal = ({
 	});
 };
 
-// TODO: Redo 25n for release
-const EXPECTED_PROPOSALS_BASE_COUNT = 19n;
-
 export const testCdnCountProposals = ({
 	actor,
-	proposalsLength = EXPECTED_PROPOSALS_BASE_COUNT
+	proposalsLength = 25n
 }: {
 	actor: () => Actor<SatelliteActor | ConsoleActor>;
 	proposalsLength?: bigint;
@@ -1063,7 +1059,7 @@ export const testCdnCountProposals = ({
 
 export const testCdnListProposals = ({
 	actor,
-	proposalsLength = EXPECTED_PROPOSALS_BASE_COUNT
+	proposalsLength = 25n
 }: {
 	actor: () => Actor<SatelliteActor | ConsoleActor>;
 	proposalsLength?: bigint;

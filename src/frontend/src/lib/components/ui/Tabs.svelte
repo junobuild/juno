@@ -12,7 +12,7 @@
 	import { keyOf } from '$lib/utils/utils';
 
 	interface Props {
-		help: string;
+		help?: string;
 		info?: Snippet;
 		children: Snippet;
 	}
@@ -61,58 +61,21 @@
 		>
 	{/each}
 
-	<ExternalLink href={help}>{$i18n.core.help}</ExternalLink>
+	{#if notEmptyString(help)}
+		<ExternalLink href={help}>{$i18n.core.help}</ExternalLink>
+	{/if}
 </div>
 
 {@render children()}
 
 <style lang="scss">
-	@mixin button {
-		text-decoration: none;
-		position: relative;
-		margin: 0 var(--padding-2x) 0 0;
-		color: var(--label-color);
-	}
-
-	@mixin hover {
-		background: var(--color-primary);
-		color: var(--color-primary-contrast);
-		border-radius: var(--border-radius);
-		outline: 2px solid var(--color-primary);
-	}
+	@use '../../styles/mixins/tabs';
 
 	.tabs {
-		display: flex;
-		align-items: center;
-		flex-wrap: wrap;
-		gap: var(--padding);
-
-		margin: var(--padding) 0 var(--padding-1_5x);
-
-		:global(a:not(.tab)) {
-			@include button;
-			border-radius: var(--border-radius);
-			margin: 0;
-
-			&:hover,
-			&:focus {
-				@include hover;
-			}
-		}
+		@include tabs.tabs;
 	}
 
 	.tab {
-		@include button;
-
-		&:hover,
-		&:focus {
-			@include hover;
-		}
-
-		&:not(:focus):not(:hover) {
-			&.selected {
-				color: var(--text-color);
-			}
-		}
+		@include tabs.tab;
 	}
 </style>

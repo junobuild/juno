@@ -2,10 +2,7 @@
 	import { isNullish } from '@dfinity/utils';
 	import { onDestroy, onMount, type Snippet } from 'svelte';
 	import { missionControlIdDerived } from '$lib/derived/mission-control.derived';
-	import {
-		type WalletWorker,
-		initWalletWorker
-	} from '$lib/services/workers/worker.wallet.services';
+	import { WalletWorker } from '$lib/services/workers/worker.wallet.services';
 
 	interface Props {
 		children?: Snippet;
@@ -13,10 +10,10 @@
 
 	let { children }: Props = $props();
 
-	let worker: WalletWorker | undefined = $state();
+	let worker = $state<WalletWorker | undefined>();
 
 	const initWorker = async () => {
-		worker = await initWalletWorker();
+		worker = await WalletWorker.init();
 	};
 
 	$effect(() => {
@@ -39,7 +36,7 @@
 	};
 
 	onMount(async () => await initWorker());
-	onDestroy(() => worker?.stop());
+	onDestroy(() => worker?.terminate());
 </script>
 
 <svelte:window onjunoRestartWallet={onRestartWallet} />

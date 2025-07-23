@@ -1,8 +1,8 @@
 import { i18n } from '$lib/stores/i18n.store';
 import { proposalsStore } from '$lib/stores/proposals.store';
 import { toasts } from '$lib/stores/toasts.store';
+import type { OptionIdentity } from '$lib/types/itentity';
 import type { LoadProposalsBaseParams, LoadProposalsResult } from '$lib/types/proposals';
-import type { LoadVersionBaseParams, LoadVersionResult } from '$lib/types/version';
 import { container } from '$lib/utils/juno.utils';
 import type { Principal } from '@dfinity/principal';
 import { assertNonNullish, nonNullish } from '@dfinity/utils';
@@ -37,7 +37,9 @@ const loadSatelliteProposals = async ({
 	skipReload
 }: {
 	satelliteId: Principal;
-} & Omit<LoadVersionBaseParams, 'toastError'>): Promise<LoadVersionResult> => {
+	skipReload: boolean;
+	identity: OptionIdentity;
+}): Promise<{ result: 'loaded' } | { result: 'skipped' } | { result: 'error'; err: unknown }> => {
 	// We load the satellite proposals when needed
 	const store = get(proposalsStore);
 	if (nonNullish(store.satellites[satelliteId.toText()]) && skipReload) {

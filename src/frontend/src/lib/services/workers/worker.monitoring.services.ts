@@ -2,64 +2,69 @@ import {
 	syncCanisterMonitoring,
 	syncCanistersMonitoring
 } from '$lib/services/canisters.loader.services';
+import { AppWorker } from '$lib/services/workers/_worker.services';
 import type { CanisterSegment } from '$lib/types/canister';
 import type { MissionControlId } from '$lib/types/mission-control';
 import type {
-	PostMessage,
-	PostMessageDataResponseCanister,
 	PostMessageDataResponseCanisterMonitoring,
-	PostMessageDataResponseCanistersMonitoring
+	PostMessageDataResponseCanistersMonitoring,
+	PostMessages
 } from '$lib/types/post-message';
 
-export interface MonitoringWorker {
-	startMonitoringTimer: (params: {
+export class MonitoringWorker extends AppWorker {
+	constructor(worker: Worker) {
+		super(worker);
+
+		worker.onmessage = ({ data }: MessageEvent<PostMessages>) => {
+			const { msg } = data;
+
+			switch (msg) {
+				case 'syncCanister':
+					syncCanisterMonitoring(data.data as PostMessageDataResponseCanisterMonitoring);
+					return;
+				case 'syncCanisters':
+					syncCanistersMonitoring(data.data as PostMessageDataResponseCanistersMonitoring);
+					return;
+			}
+		};
+	}
+
+	static async init(): Promise<MonitoringWorker> {
+		const worker = await AppWorker.getInstance();
+		return new MonitoringWorker(worker);
+	}
+
+	startMonitoringTimer = ({
+		segments,
+		missionControlId,
+		withMonitoringHistory
+	}: {
 		segments: CanisterSegment[];
 		missionControlId: MissionControlId;
 		withMonitoringHistory: boolean;
-	}) => void;
-	stopMonitoringTimer: () => void;
-	restartMonitoringTimer: (params: {
+	}) => {
+		this._worker.postMessage({
+			msg: 'startMonitoringTimer',
+			data: { segments, missionControlId: missionControlId.toText(), withMonitoringHistory }
+		});
+	};
+
+	stopMonitoringTimer = () => {
+		this._worker.postMessage({
+			msg: 'stopMonitoringTimer'
+		});
+	};
+
+	restartMonitoringTimer = ({
+		segments,
+		missionControlId
+	}: {
 		segments: CanisterSegment[];
 		missionControlId: MissionControlId;
-	}) => void;
+	}) => {
+		this._worker.postMessage({
+			msg: 'restartMonitoringTimer',
+			data: { segments, missionControlId: missionControlId.toText() }
+		});
+	};
 }
-
-export const initMonitoringWorker = async (): Promise<MonitoringWorker> => {
-	const MonitoringWorker = await import('$lib/workers/workers?worker');
-	const monitoringWorker: Worker = new MonitoringWorker.default();
-
-	monitoringWorker.onmessage = ({
-		data
-	}: MessageEvent<PostMessage<PostMessageDataResponseCanister>>) => {
-		const { msg } = data;
-
-		switch (msg) {
-			case 'syncCanister':
-				syncCanisterMonitoring(data.data as PostMessageDataResponseCanisterMonitoring);
-				return;
-			case 'syncCanisters':
-				syncCanistersMonitoring(data.data as PostMessageDataResponseCanistersMonitoring);
-				return;
-		}
-	};
-
-	return {
-		startMonitoringTimer: ({ segments, missionControlId, withMonitoringHistory }) => {
-			monitoringWorker.postMessage({
-				msg: 'startMonitoringTimer',
-				data: { segments, missionControlId: missionControlId.toText(), withMonitoringHistory }
-			});
-		},
-		stopMonitoringTimer: () => {
-			monitoringWorker.postMessage({
-				msg: 'stopMonitoringTimer'
-			});
-		},
-		restartMonitoringTimer: ({ segments, missionControlId }) => {
-			monitoringWorker.postMessage({
-				msg: 'restartMonitoringTimer',
-				data: { segments, missionControlId: missionControlId.toText() }
-			});
-		}
-	};
-};

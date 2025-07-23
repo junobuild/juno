@@ -2,7 +2,6 @@
 	import { Principal } from '@dfinity/principal';
 	import { debounce, isNullish, nonNullish } from '@dfinity/utils';
 	import type { Snippet } from 'svelte';
-	import { run, preventDefault } from 'svelte/legacy';
 	import Popover from '$lib/components/ui/Popover.svelte';
 	import { missionControlIdDerived } from '$lib/derived/mission-control.derived';
 	import { busy, isBusy } from '$lib/stores/busy.store';
@@ -33,12 +32,15 @@
 		}
 	});
 
-	run(() => {
-		// @ts-expect-error TODO: to be migrated to Svelte v5
-		canisterId, (() => assertForm())();
+	$effect(() => {
+		canisterId;
+
+		assertForm();
 	});
 
-	const handleSubmit = async () => {
+	const handleSubmit = async ($event: SubmitEvent) => {
+		$event.preventDefault();
+
 		if (!validConfirm) {
 			// Submit is disabled if not valid
 			toasts.error({
@@ -77,7 +79,7 @@
 </script>
 
 <Popover bind:visible center backdrop="dark">
-	<form class="container" onsubmit={preventDefault(handleSubmit)}>
+	<form class="container" onsubmit={handleSubmit}>
 		<h3>{@render title?.()}</h3>
 
 		<label for="canisterId">{@render input?.()}:</label>

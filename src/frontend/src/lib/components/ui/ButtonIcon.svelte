@@ -8,6 +8,8 @@
 		icon?: Snippet;
 		children: Snippet;
 		onclick: (() => Promise<void>) | (() => void);
+		level?: 'success' | 'warning' | 'error';
+		small?: boolean;
 	}
 
 	let {
@@ -16,16 +18,48 @@
 		hidden = false,
 		icon,
 		children,
-		onclick
+		onclick,
+		level,
+		small = false
 	}: Props = $props();
 </script>
 
-<button type="button" {onclick} bind:this={button} class="icon" {disabled} class:hidden>
+<button
+	type="button"
+	{onclick}
+	bind:this={button}
+	class={`icon rounded ${level ?? ''}`}
+	{disabled}
+	class:hidden
+	class:small
+>
 	{@render icon?.()}
 	<span class="visually-hidden">{@render children()}</span>
 </button>
 
 <style lang="scss">
+	.icon {
+		background: var(--color-background);
+		color: var(--color-background-contrast);
+	}
+
+	.rounded {
+		border-radius: 50%;
+
+		border: 1px solid var(--text-color);
+
+		--button-icon-size: calc(var(--padding-4x) + var(--padding-0_5x));
+
+		width: var(--button-icon-size);
+		height: var(--button-icon-size);
+
+		padding: 0;
+
+		&.small {
+			--button-icon-size: calc(var(--padding-4x) - var(--padding-0_5x));
+		}
+	}
+
 	.hidden {
 		display: none;
 	}

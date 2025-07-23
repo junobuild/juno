@@ -46,7 +46,7 @@ impl HttpRequestHandler for Dispatcher {
             // Likely unexpected given is_known_route and is_allowed_method both were proven before reaching this handler.
             _ => Err((
                 StatusCode::NOT_IMPLEMENTED,
-                format!("Unsupported path: {}", request_path),
+                format!("Unsupported path: {request_path}"),
             )),
         };
 

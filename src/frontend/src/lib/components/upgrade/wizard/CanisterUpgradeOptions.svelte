@@ -12,7 +12,9 @@
 
 <div class="container">
 	<Collapsible>
-		<svelte:fragment slot="header">{$i18n.core.advanced_options}</svelte:fragment>
+		{#snippet header()}
+			{$i18n.core.advanced_options}
+		{/snippet}
 
 		<CanisterSnapshotOption bind:takeSnapshot>
 			{$i18n.canisters.snapshot_before_upgrade}

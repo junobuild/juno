@@ -134,9 +134,9 @@ where
     match block {
         None => Err([
             "No valid payment found to create satellite.",
-            &format!(" Mission control: {}", mission_control_account_identifier),
-            &format!(" Console: {}", console_account_identifier),
-            &format!(" Amount: {}", SATELLITE_CREATION_FEE_ICP),
+            &format!(" Mission control: {mission_control_account_identifier}"),
+            &format!(" Console: {console_account_identifier}"),
+            &format!(" Amount: {SATELLITE_CREATION_FEE_ICP}"),
             &format!(" Block index: {}", block_index.unwrap()),
         ]
         .join("")),
@@ -192,10 +192,10 @@ async fn refund_satellite_creation(
         IC_TRANSACTION_FEE_ICP,
     )
     .await
-    .map_err(|e| format!("failed to call ledger: {:?}", e))?
-    .map_err(|e| format!("ledger transfer error {:?}", e))?;
+    .map_err(|e| format!("failed to call ledger: {e:?}"))?
+    .map_err(|e| format!("ledger transfer error {e:?}"))?;
 
     // We record the refund in the payment list
     update_payment_refunded(mission_control_payment_block_index, &refund_block_index)
-        .map_err(|e| format!("Insert refund transaction error {:?}", e))
+        .map_err(|e| format!("Insert refund transaction error {e:?}"))
 }

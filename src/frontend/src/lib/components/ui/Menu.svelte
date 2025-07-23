@@ -1,7 +1,11 @@
 <script lang="ts">
 	import type { Snippet } from 'svelte';
 	import Logo from '$lib/components/core/Logo.svelte';
-	import { layoutMenuOpen } from '$lib/stores/layout-menu.store';
+	import IconBack from '$lib/components/icons/IconBack.svelte';
+	import ButtonIcon from '$lib/components/ui/ButtonIcon.svelte';
+	import { menuCollapsed, menuExpanded } from '$lib/derived/layout-menu.derived';
+	import { i18n } from '$lib/stores/i18n.store';
+	import { layoutMenuState, layoutMenuOpen } from '$lib/stores/layout-menu.store';
 	import { handleKeyPress } from '$lib/utils/keyboard.utils';
 
 	interface Props {
@@ -24,10 +28,19 @@
 		tabindex="-1"
 	>
 		<div class="logo">
-			<Logo color="white" />
+			<Logo color="white" variant={$menuExpanded ? 'text' : 'icon'} />
 		</div>
 
 		{@render children()}
+	</div>
+
+	<div class="menu-collapse" class:collapsed={$menuExpanded}>
+		<ButtonIcon onclick={layoutMenuState.toggle} small>
+			{#snippet icon()}
+				<IconBack size="16px" />
+			{/snippet}
+			{$menuCollapsed ? $i18n.core.expand : $i18n.core.collapse}</ButtonIcon
+		>
 	</div>
 </div>
 
@@ -89,6 +102,28 @@
 	}
 
 	.logo {
-		padding: calc(var(--padding-4x) - 2px) 0 14vh;
+		padding: calc(var(--padding-4x) - 2px) 0 13vh;
+		min-height: 20vh;
+	}
+
+	.menu-collapse {
+		position: absolute;
+		right: calc(-1.35 * var(--padding));
+		bottom: var(--padding-8x);
+
+		transform: rotate(180deg);
+		transition: transform 0.5s ease-in-out;
+
+		z-index: var(--z-index);
+
+		display: none;
+
+		@include media.min-width(xlarge) {
+			display: flex;
+		}
+
+		&.collapsed {
+			transform: rotate(0deg);
+		}
 	}
 </style>

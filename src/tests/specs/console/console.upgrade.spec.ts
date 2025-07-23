@@ -20,11 +20,7 @@ import {
 	uploadFileWithProposal
 } from '../../utils/console-tests.utils';
 import { tick } from '../../utils/pic-tests.utils';
-import {
-	CONSOLE_WASM_PATH,
-	controllersInitArgs,
-	downloadConsole
-} from '../../utils/setup-tests.utils';
+import { controllersInitArgs, downloadConsole } from '../../utils/setup-tests.utils';
 
 describe('Console > Upgrade', () => {
 	let pic: PocketIc;
@@ -49,15 +45,8 @@ describe('Console > Upgrade', () => {
 		});
 	};
 
-	const upgrade = async () => {
-		await tick(pic);
-
-		await pic.upgradeCanister({
-			canisterId,
-			wasm: CONSOLE_WASM_PATH,
-			sender: controller.getPrincipal()
-		});
-	};
+	const upgradeTo0_1_0 = (): Promise<void> =>
+		upgradeVersion({ junoVersion: '0.0.51', version: '0.1.0' });
 
 	const testUsers = async ({
 		actor,
@@ -260,7 +249,7 @@ describe('Console > Upgrade', () => {
 				expect(maybeAdmin[1].metadata).toEqual([['super', 'top']]);
 			};
 
-			await upgrade();
+			await upgradeTo0_1_0();
 
 			const newActor = pic.createActor<ConsoleActor>(idlFactorConsole, canisterId);
 			newActor.setIdentity(controller);
@@ -270,7 +259,7 @@ describe('Console > Upgrade', () => {
 
 		describe('Clear stable memory of proposals', () => {
 			it(
-				'should still list mission controls even if we alterate other memory IDs',
+				'should still list mission controls even if we alternate other memory IDs',
 				{
 					timeout: 120000
 				},
@@ -290,7 +279,7 @@ describe('Console > Upgrade', () => {
 						pic
 					});
 
-					await upgrade();
+					await upgradeTo0_1_0();
 
 					const newActor = pic.createActor<ConsoleActor>(idlFactorConsole, canisterId);
 					newActor.setIdentity(controller);
@@ -310,7 +299,7 @@ describe('Console > Upgrade', () => {
 
 				await testProposal({ actor, proposalId });
 
-				await upgrade();
+				await upgradeTo0_1_0();
 
 				const { get_proposal } = actor;
 
@@ -324,7 +313,7 @@ describe('Console > Upgrade', () => {
 
 				await testProposal({ actor, proposalId });
 
-				await upgrade();
+				await upgradeTo0_1_0();
 
 				await assertAssetServed({
 					actor,
@@ -336,7 +325,7 @@ describe('Console > Upgrade', () => {
 			it('should be able to upload asset through proposal after upgrade', async () => {
 				const fullPath = '/index-123456.js';
 
-				await upgrade();
+				await upgradeTo0_1_0();
 
 				const { proposalId: proposalIdAfterUpgrade } = await uploadFileWithProposal({
 					actor,
@@ -371,7 +360,7 @@ describe('Console > Upgrade', () => {
 
 				expect(proposalTwo).toEqual(3n);
 
-				await upgrade();
+				await upgradeTo0_1_0();
 
 				const { proposalId } = await uploadFileWithProposal({ actor, pic, fullPath: '/index2.js' });
 

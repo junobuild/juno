@@ -3,17 +3,18 @@ use crate::hooks::js::runtime::types::OnJsHook;
 use crate::hooks::js::sdk::init_sdk;
 use crate::js::runtime::{execute_async_js, RunAsyncJsFn};
 use crate::state::store::get_on_delete_filtered_assets_collections;
-use ic_cdk::{spawn, trap};
+use ic_cdk::futures::spawn_017_compat;
+use ic_cdk::trap;
 use junobuild_satellite::OnDeleteFilteredAssetsContext;
 use rquickjs::{Ctx, Error as JsError};
 
 #[no_mangle]
 pub extern "Rust" fn juno_on_delete_filtered_assets(context: OnDeleteFilteredAssetsContext) {
-    spawn(async move {
+    spawn_017_compat(async move {
         let execute_context = AsyncJsFnContext { context };
 
         if let Err(e) = execute_async_js(execute_context).await {
-            trap(&e.to_string());
+            trap(&e);
         }
     });
 }

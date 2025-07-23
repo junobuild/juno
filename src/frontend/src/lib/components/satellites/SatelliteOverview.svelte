@@ -1,14 +1,20 @@
 <script lang="ts">
+	import { fromNullishNullable } from '@dfinity/utils';
+	import { onMount } from 'svelte';
 	import type { Satellite } from '$declarations/mission_control/mission_control.did';
 	import CanisterOverview from '$lib/components/canister/CanisterOverview.svelte';
 	import CanisterSubnet from '$lib/components/canister/CanisterSubnet.svelte';
-	import SatelliteActions from '$lib/components/satellites/SatelliteActions.svelte';
+	import CanisterSyncData from '$lib/components/canister/CanisterSyncData.svelte';
 	import SatelliteName from '$lib/components/satellites/SatelliteName.svelte';
-	import SatelliteOverviewCustomDomain from '$lib/components/satellites/SatelliteOverviewCustomDomain.svelte';
+	import SatelliteOverviewActions from '$lib/components/satellites/SatelliteOverviewActions.svelte';
+	import SatelliteOverviewCustomDomains from '$lib/components/satellites/SatelliteOverviewCustomDomains.svelte';
 	import SatelliteOverviewVersion from '$lib/components/satellites/SatelliteOverviewVersion.svelte';
+	import SatelliteRuntimeActions from '$lib/components/satellites/SatelliteRuntimeActions.svelte';
 	import Identifier from '$lib/components/ui/Identifier.svelte';
 	import Value from '$lib/components/ui/Value.svelte';
+	import { listCustomDomains } from '$lib/services/custom-domain.services';
 	import { i18n } from '$lib/stores/i18n.store';
+	import type { CanisterSyncData as CanisterSyncDataType } from '$lib/types/canister';
 	import type { SatelliteIdText } from '$lib/types/satellite';
 
 	interface Props {
@@ -17,8 +23,25 @@
 
 	let { satellite }: Props = $props();
 
+	let monitoring = $derived(
+		fromNullishNullable(fromNullishNullable(satellite.settings)?.monitoring)
+	);
+
+	let monitoringEnabled = $derived(fromNullishNullable(monitoring?.cycles)?.enabled === true);
+
 	let satelliteId: SatelliteIdText = $derived(satellite.satellite_id.toText());
+
+	let canister = $state<CanisterSyncDataType | undefined>(undefined);
+
+	onMount(async () => {
+		await listCustomDomains({
+			satelliteId: satellite.satellite_id,
+			reload: false
+		});
+	});
 </script>
+
+<CanisterSyncData canisterId={satellite.satellite_id} bind:canister />
 
 <div class="card-container with-title">
 	<span class="title">{$i18n.satellites.overview}</span>
@@ -27,7 +50,7 @@
 		<div>
 			<SatelliteName {satellite} />
 
-			<SatelliteOverviewCustomDomain {satellite} />
+			<SatelliteOverviewCustomDomains {satellite} />
 		</div>
 
 		<div>
@@ -45,12 +68,12 @@
 			<SatelliteOverviewVersion {satelliteId} />
 		</div>
 	</div>
-
-	<SatelliteActions {satellite} />
 </div>
 
+<SatelliteOverviewActions {satellite} {monitoringEnabled} />
+
 <div class="card-container with-title">
-	<span class="title">{$i18n.monitoring.title}</span>
+	<span class="title">{$i18n.monitoring.runtime}</span>
 
 	<div class="columns-3">
 		<CanisterOverview
@@ -60,6 +83,8 @@
 		/>
 	</div>
 </div>
+
+<SatelliteRuntimeActions {satellite} {canister} {monitoringEnabled} />
 
 <style lang="scss">
 	.card-container:last-of-type {

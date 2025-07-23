@@ -1,40 +1,24 @@
-import type { OptionIdentity } from '$lib/types/itentity';
-import type { BuildType } from '@junobuild/admin';
-import type { JunoPackage } from '@junobuild/config';
+import type {
+	CachedSatelliteVersionMetadataSchema,
+	CachedVersionMetadataSchema,
+	SatelliteVersionMetadataSchema,
+	VersionMetadataSchema
+} from '$lib/schemas/version.schema';
+import type { SatelliteIdText } from '$lib/types/satellite';
+import type { Option } from '$lib/types/utils';
+import type * as z from 'zod/v4';
 
-export interface VersionMetadata {
-	release: string;
-	/**
-	 * The version of the module as published by Juno and required in the eco-system.
-	 *
-	 * For the Satellite, if stock (no dependencies), then pkg.version
-	 * If serverless functions, then pkg.dependencies[junobuild/satellite].version
-	 */
-	current: string;
-	pkg?: JunoPackage;
-}
+export type VersionMetadata = z.infer<typeof VersionMetadataSchema>;
+export type SatelliteVersionMetadata = z.infer<typeof SatelliteVersionMetadataSchema>;
 
-export interface SatelliteVersionMetadata extends VersionMetadata {
-	/**
-	 * @deprecated use JunoPackage instead
-	 */
-	currentBuild?: string;
-	/**
-	 * @deprecated use JunoPackage instead
-	 */
-	build: BuildType;
-}
-
-export interface LoadVersionBaseParams {
-	skipReload: boolean;
-	identity: OptionIdentity;
-	toastError?: boolean;
-}
-
-export type LoadVersionResult =
-	| { result: 'loaded' }
-	| { result: 'skipped' }
-	| { result: 'error'; err: unknown };
+export type CachedVersionMetadata = z.infer<typeof CachedVersionMetadataSchema>;
+export type CachedSatelliteVersionMetadata = z.infer<typeof CachedSatelliteVersionMetadataSchema>;
 
 export type VersionMetadataUi = VersionMetadata & { warning: boolean };
 export type SatelliteVersionMetadataUi = SatelliteVersionMetadata & { warning: boolean };
+
+export interface VersionRegistry {
+	satellites: Record<SatelliteIdText, Option<SatelliteVersionMetadata>>;
+	missionControl: Option<VersionMetadata>;
+	orbiter: Option<VersionMetadata>;
+}

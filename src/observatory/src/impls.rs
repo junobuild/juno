@@ -88,7 +88,7 @@ impl Notification {
         let t_cycles = amount as f64 / 1_000_000_000_000.0;
 
         // Format with 8 decimals
-        let formatted = format!("{:.8}", t_cycles);
+        let formatted = format!("{t_cycles:.8}");
 
         // Trim leading zeros
         let formatted_cycles = formatted
@@ -105,11 +105,11 @@ impl Notification {
 
         let format =
             time::format_description::parse("[year]-[month]-[day]T[hour]:[minute]:[second]+00:00")
-                .map_err(|err| format!("Failed to parse format description: {}", err))?;
+                .map_err(|err| format!("Failed to parse format description: {err}"))?;
 
         dt_offset
             .format(&format)
-            .map_err(|err| format!("Failed to format timestamp: {}", err))
+            .map_err(|err| format!("Failed to format timestamp: {err}"))
     }
 
     fn segment_url(&self) -> String {

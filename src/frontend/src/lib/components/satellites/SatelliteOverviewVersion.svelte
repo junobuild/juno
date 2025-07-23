@@ -26,7 +26,7 @@
 		nonNullish(deps) && nonNullish(pkg) ? pkg.version : satelliteVersion
 	);
 
-	// Deprecated version handling for Satellite < v0.0.23
+	// Deprecated version handling for Satellite < v0.1.0
 
 	let currentBuild: string | undefined = $derived(
 		$versionStore?.satellites[satelliteId]?.currentBuild

@@ -9,7 +9,7 @@ import { type Actor, type ActorInterface, PocketIc } from '@dfinity/pic';
 import type { Principal } from '@dfinity/principal';
 import { nonNullish } from '@dfinity/utils';
 import { inject } from 'vitest';
-import { setupChunkedCanister, upgradeChunkedCanister } from './pic-setup-tests.utils';
+import { setupChunkedCanister, upgradeChunkedCanister } from './ic-management-tests.utils';
 import { tick } from './pic-tests.utils';
 import {
 	controllersInitArgs,

@@ -2,7 +2,7 @@ import { sveltekit } from '@sveltejs/kit/vite';
 import { dirname, resolve } from 'path';
 import { defineConfig, type UserConfig } from 'vite';
 import { nodePolyfills } from 'vite-plugin-node-polyfills';
-import { CSS_CONFIG_OPTIONS, defineViteReplacements } from './vite.utils';
+import { defineViteReplacements } from './vite.utils';
 
 const config: UserConfig = {
 	plugins: [sveltekit(), nodePolyfills()],
@@ -11,7 +11,6 @@ const config: UserConfig = {
 			$declarations: resolve('./src/declarations')
 		}
 	},
-	...CSS_CONFIG_OPTIONS,
 	build: {
 		target: 'es2020',
 		rollupOptions: {

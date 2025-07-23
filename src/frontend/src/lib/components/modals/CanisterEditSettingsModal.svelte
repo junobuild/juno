@@ -1,11 +1,20 @@
 <script lang="ts">
 	import { Principal } from '@dfinity/principal';
+	import { onMount } from 'svelte';
 	import Html from '$lib/components/ui/Html.svelte';
 	import Input from '$lib/components/ui/Input.svelte';
 	import Modal from '$lib/components/ui/Modal.svelte';
 	import SpinnerModal from '$lib/components/ui/SpinnerModal.svelte';
 	import Value from '$lib/components/ui/Value.svelte';
 	import { ONE_TRILLION } from '$lib/constants/app.constants';
+	import {
+		FIVE_YEARS,
+		ONE_MONTH,
+		ONE_YEAR,
+		SIX_MONTHS,
+		THREE_MONTHS,
+		TWO_YEARS
+	} from '$lib/constants/canister.constants';
 	import { updateSettings as updateSettingsServices } from '$lib/services/settings.services';
 	import { authStore } from '$lib/stores/auth.store';
 	import { isBusy, wizardBusy } from '$lib/stores/busy.store';
@@ -23,13 +32,30 @@
 
 	let { detail, onclose }: Props = $props();
 
-	let { segment, settings } = $derived(detail as JunoModalEditCanisterSettingsDetail);
+	let {
+		segment,
+		settings,
+		canister: canisterInfo
+	} = $derived(detail as JunoModalEditCanisterSettingsDetail);
 
-	let freezingThreshold: number = $state(
+	let freezingThreshold = $state(
 		Number((detail as JunoModalEditCanisterSettingsDetail).settings.freezingThreshold)
 	);
 
-	let reservedTCyclesLimit: number = $state(
+	let customFreezingThreshold = $state(false);
+	onMount(() => {
+		// Only evaluated onMount as we do not want to toggle between input or select
+		// if the dev enters one of the values.
+		customFreezingThreshold =
+			freezingThreshold !== ONE_MONTH &&
+			freezingThreshold !== THREE_MONTHS &&
+			freezingThreshold !== SIX_MONTHS &&
+			freezingThreshold !== ONE_YEAR &&
+			freezingThreshold !== TWO_YEARS &&
+			freezingThreshold !== FIVE_YEARS;
+	});
+
+	let reservedTCyclesLimit = $state(
 		Number(
 			formatTCycles((detail as JunoModalEditCanisterSettingsDetail).settings.reservedCyclesLimit)
 		)
@@ -39,19 +65,19 @@
 		(detail as JunoModalEditCanisterSettingsDetail).settings.logVisibility
 	);
 
-	let wasmMemoryLimit: number = $state(
+	let wasmMemoryLimit = $state(
 		Number((detail as JunoModalEditCanisterSettingsDetail).settings.wasmMemoryLimit)
 	);
 
-	let memoryAllocation: number = $state(
+	let memoryAllocation = $state(
 		Number((detail as JunoModalEditCanisterSettingsDetail).settings.memoryAllocation)
 	);
 
-	let computeAllocation: number = $state(
+	let computeAllocation = $state(
 		Number((detail as JunoModalEditCanisterSettingsDetail).settings.computeAllocation)
 	);
 
-	let reservedCyclesLimit: bigint = $derived(BigInt(reservedTCyclesLimit * ONE_TRILLION));
+	let reservedCyclesLimit = $derived(BigInt(reservedTCyclesLimit * ONE_TRILLION));
 
 	let disabled = $derived(
 		(BigInt(freezingThreshold ?? 0n) === settings.freezingThreshold || freezingThreshold === 0) &&
@@ -75,6 +101,7 @@
 		const { success } = await updateSettingsServices({
 			canisterId,
 			currentSettings: settings,
+			canisterInfo,
 			newSettings: {
 				freezingThreshold: BigInt(freezingThreshold),
 				reservedCyclesLimit,
@@ -132,14 +159,27 @@
 				<div>
 					<Value>
 						{#snippet label()}
-							{$i18n.canisters.freezing_threshold} ({$i18n.canisters.in_seconds})
+							{$i18n.canisters.freezing_threshold}{#if customFreezingThreshold}
+								({$i18n.canisters.in_seconds}){/if}
 						{/snippet}
-						<Input
-							inputType="number"
-							name="freezingThreshold"
-							placeholder=""
-							bind:value={freezingThreshold}
-						/>
+
+						{#if customFreezingThreshold}
+							<Input
+								inputType="number"
+								name="freezingThreshold"
+								placeholder=""
+								bind:value={freezingThreshold}
+							/>
+						{:else}
+							<select bind:value={freezingThreshold} name="freezingThreshold">
+								<option value={ONE_MONTH}> {$i18n.canisters.a_month} </option>
+								<option value={THREE_MONTHS}> {$i18n.canisters.three_months} </option>
+								<option value={SIX_MONTHS}> {$i18n.canisters.six_months} </option>
+								<option value={ONE_YEAR}> {$i18n.canisters.a_year} </option>
+								<option value={TWO_YEARS}> {$i18n.canisters.two_years} </option>
+								<option value={FIVE_YEARS}> {$i18n.canisters.five_years} </option>
+							</select>
+						{/if}
 					</Value>
 				</div>
 

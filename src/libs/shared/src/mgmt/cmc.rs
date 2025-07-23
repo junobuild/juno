@@ -12,7 +12,7 @@ use crate::mgmt::types::cmc::{
     CreateCanister, CreateCanisterResult, Cycles, NotifyError, SubnetId, SubnetSelection,
     TopUpCanisterArgs,
 };
-use crate::mgmt::types::ic::WasmArg;
+use crate::mgmt::types::ic::{CreateCanisterInitSettingsArg, WasmArg};
 use candid::Principal;
 use ic_cdk::api::call::{call_with_payment128, CallResult};
 use ic_cdk::api::management_canister::main::{CanisterId, CanisterInstallMode};
@@ -35,8 +35,8 @@ pub async fn top_up_canister(canister_id: &CanisterId, amount: &Tokens) -> Resul
         IC_TRANSACTION_FEE_ICP,
     )
     .await
-    .map_err(|e| format!("{} ({:?})", JUNO_ERROR_CMC_CALL_LEDGER_FAILED, e))?
-    .map_err(|e| format!("{} ({:?})", JUNO_ERROR_CMC_LEDGER_TRANSFER_FAILED, e))?;
+    .map_err(|e| format!("{JUNO_ERROR_CMC_CALL_LEDGER_FAILED} ({e:?})"))?
+    .map_err(|e| format!("{JUNO_ERROR_CMC_LEDGER_TRANSFER_FAILED} ({e:?})"))?;
 
     let args = TopUpCanisterArgs {
         block_index,
@@ -66,7 +66,7 @@ fn convert_principal_to_sub_account(principal_id: &[u8]) -> Subaccount {
 /// Asynchronously creates a new canister and installs the provided Wasm code with additional cycles.
 ///
 /// # Arguments
-/// - `controllers`: A list of `Principal` IDs to set as controllers of the new canister.
+/// - `create_settings_arg`: The custom settings to apply to spinup the canister.
 /// - `wasm_arg`: Wasm binary and arguments to install in the new canister (`WasmArg` struct).
 /// - `cycles`: Additional cycles to deposit during canister creation on top of `CREATE_CANISTER_CYCLES`.
 /// - `subnet_id`: The `SubnetId` where the canister should be created.
@@ -75,7 +75,7 @@ fn convert_principal_to_sub_account(principal_id: &[u8]) -> Subaccount {
 /// - `Ok(Principal)`: On success, returns the `Principal` ID of the newly created canister.
 /// - `Err(String)`: On failure, returns an error message.
 pub async fn cmc_create_canister_install_code(
-    controllers: Vec<Principal>,
+    create_settings_arg: &CreateCanisterInitSettingsArg,
     wasm_arg: &WasmArg,
     cycles: u128,
     subnet_id: &SubnetId,
@@ -85,7 +85,7 @@ pub async fn cmc_create_canister_install_code(
     let create_canister_arg = CreateCanister {
         subnet_type: None,
         subnet_selection: Some(SubnetSelection::Subnet { subnet: *subnet_id }),
-        settings: create_canister_settings(controllers),
+        settings: create_canister_settings(create_settings_arg),
     };
 
     let result: CallResult<(CreateCanisterResult,)> = call_with_payment128(
@@ -102,10 +102,7 @@ pub async fn cmc_create_canister_install_code(
             JUNO_ERROR_CMC_CALL_CREATE_CANISTER_FAILED, &message
         )),
         Ok((result,)) => match result {
-            Err(err) => Err(format!(
-                "{} ({})",
-                JUNO_ERROR_CMC_CREATE_CANISTER_FAILED, err
-            )),
+            Err(err) => Err(format!("{JUNO_ERROR_CMC_CREATE_CANISTER_FAILED} ({err})")),
             Ok(canister_id) => {
                 let install =
                     install_code(canister_id, wasm_arg, CanisterInstallMode::Install).await;

@@ -1,6 +1,5 @@
 <script lang="ts">
 	import { isNullish, nonNullish } from '@dfinity/utils';
-	import { run } from 'svelte/legacy';
 	import { fade } from 'svelte/transition';
 	import Canister from '$lib/components/canister/Canister.svelte';
 	import CanisterIndicator from '$lib/components/canister/CanisterIndicator.svelte';
@@ -10,7 +9,6 @@
 	import IconTelescope from '$lib/components/icons/IconTelescope.svelte';
 	import IconWallet from '$lib/components/icons/IconWallet.svelte';
 	import LaunchpadLink from '$lib/components/launchpad/LaunchpadLink.svelte';
-	import MissionControlVersionLoader from '$lib/components/loaders/MissionControlVersionLoader.svelte';
 	import MissionControlDataLoader from '$lib/components/mission-control/MissionControlDataLoader.svelte';
 	import SkeletonText from '$lib/components/ui/SkeletonText.svelte';
 	import WalletInlineBalance from '$lib/components/wallet/WalletInlineBalance.svelte';
@@ -22,15 +20,8 @@
 	import { missionControlIdDerived } from '$lib/derived/mission-control.derived';
 	import { orbiterStore } from '$lib/derived/orbiter.derived';
 	import { missionControlVersion } from '$lib/derived/version.derived';
-	import { loadOrbiters } from '$lib/services/orbiter/orbiters.services';
 	import { i18n } from '$lib/stores/i18n.store';
 	import type { CanisterData } from '$lib/types/canister';
-
-	run(() => {
-		// @ts-expect-error TODO: to be migrated to Svelte v5
-		$missionControlIdDerived,
-			(async () => await loadOrbiters({ missionControlId: $missionControlIdDerived }))();
-	});
 
 	let missionControlData: CanisterData | undefined = $state(undefined);
 	let orbiterData: CanisterData | undefined = $state(undefined);
@@ -71,8 +62,6 @@
 		</p>
 	</LaunchpadLink>
 </div>
-
-<MissionControlVersionLoader />
 
 {#if nonNullish($missionControlIdDerived) && nonNullish($missionControlVersion)}
 	<MissionControlDataLoader missionControlId={$missionControlIdDerived} />

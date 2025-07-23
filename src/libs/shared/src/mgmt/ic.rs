@@ -4,7 +4,7 @@ use crate::errors::{
     JUNO_ERROR_SEGMENT_DELETE_FAILED, JUNO_ERROR_SEGMENT_STOP_FAILED,
 };
 use crate::mgmt::settings::{create_canister_cycles, create_canister_settings};
-use crate::mgmt::types::ic::WasmArg;
+use crate::mgmt::types::ic::{CreateCanisterInitSettingsArg, WasmArg};
 use crate::types::interface::DepositCyclesArgs;
 use candid::Principal;
 use ic_cdk::api::call::CallResult;
@@ -19,7 +19,7 @@ use ic_cdk::api::management_canister::main::{
 /// Asynchronously creates a new canister and installs provided Wasm code with additional cycles.
 ///
 /// # Arguments
-/// - `controllers`: A list of `Principal` IDs to set as controllers of the new canister.
+/// - `create_settings_arg`: The custom settings to apply to spinup the canister.
 /// - `wasm_arg`: Wasm binary and arguments to install in the new canister (`WasmArg` struct).
 /// - `cycles`: Additional cycles to deposit during canister creation on top of `CREATE_CANISTER_CYCLES`.
 ///
@@ -27,13 +27,13 @@ use ic_cdk::api::management_canister::main::{
 /// - `Ok(Principal)`: On success, returns the `Principal` ID of the newly created canister.
 /// - `Err(String)`: On failure, returns an error message.
 pub async fn create_canister_install_code(
-    controllers: Vec<Principal>,
+    create_settings_arg: &CreateCanisterInitSettingsArg,
     wasm_arg: &WasmArg,
     cycles: u128,
 ) -> Result<Principal, String> {
     let record = create_canister(
         CreateCanisterArgument {
-            settings: create_canister_settings(controllers),
+            settings: create_canister_settings(create_settings_arg),
         },
         create_canister_cycles(cycles),
     )
@@ -129,8 +129,7 @@ pub async fn deposit_cycles(
 
     if balance < cycles {
         return Err(format!(
-            "{} (balance {}, {} to deposit)",
-            JUNO_ERROR_CYCLES_DEPOSIT_BALANCE_LOW, balance, cycles
+            "{JUNO_ERROR_CYCLES_DEPOSIT_BALANCE_LOW} (balance {balance}, {cycles} to deposit)"
         ));
     }
 

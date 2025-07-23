@@ -43,7 +43,7 @@
 
 		cursor: initial;
 
-		--size: min(var(--popover-min-size, 240px), calc(100vw - 0.45rem));
+		--size: min(var(--popover-min-size, 240px), calc(100vw - 0.45rem - var(--popover-right, 0)));
 
 		min-width: var(--size);
 		max-width: var(--size);
@@ -70,6 +70,14 @@
 			top: 50%;
 			left: 50%;
 			transform: translate(-50%, -50%);
+		}
+
+		&.bottom {
+			top: auto;
+			bottom: calc(var(--full-vh, 100vh) - var(--popover-top) + 3.45rem);
+
+			height: fit-content;
+			max-height: min(calc(var(--full-vh, 100vh) - 70px), 170px);
 		}
 	}
 

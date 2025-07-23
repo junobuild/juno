@@ -19,13 +19,19 @@
 	<SpinnerParagraph>{$i18n.satellites.loading_satellites}</SpinnerParagraph>
 {:else if $satelliteStore === null}
 	<p class="label" in:fade><Info><Html text={$i18n.errors.satellite_no_found} /></Info></p>
+
+	<a href="/" class="button" in:fade>{$i18n.satellites.go_launchpad}</a>
 {:else}
 	{@render children()}
 {/if}
 
 <style lang="scss">
 	p {
-		margin-top: var(--padding-3x);
+		margin: var(--padding-3x) 0 0;
 		color: var(--value-color);
+	}
+
+	.button {
+		margin: 0;
 	}
 </style>

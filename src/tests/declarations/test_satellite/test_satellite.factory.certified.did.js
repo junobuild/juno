@@ -87,8 +87,12 @@ export const idlFactory = ({ IDL }) => {
 		derivation_origin: IDL.Opt(IDL.Text),
 		external_alternative_origins: IDL.Opt(IDL.Vec(IDL.Text))
 	});
+	const AuthenticationRules = IDL.Record({
+		allowed_callers: IDL.Vec(IDL.Principal)
+	});
 	const AuthenticationConfig = IDL.Record({
-		internet_identity: IDL.Opt(AuthenticationConfigInternetIdentity)
+		internet_identity: IDL.Opt(AuthenticationConfigInternetIdentity),
+		rules: IDL.Opt(AuthenticationRules)
 	});
 	const ConfigMaxMemorySize = IDL.Record({
 		stable: IDL.Opt(IDL.Nat64),

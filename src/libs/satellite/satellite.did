@@ -22,11 +22,13 @@ type AssetNoContent = record {
 type AssetsUpgradeOptions = record { clear_existing_assets : opt bool };
 type AuthenticationConfig = record {
   internet_identity : opt AuthenticationConfigInternetIdentity;
+  rules : opt AuthenticationRules;
 };
 type AuthenticationConfigInternetIdentity = record {
   derivation_origin : opt text;
   external_alternative_origins : opt vec text;
 };
+type AuthenticationRules = record { allowed_callers : vec principal };
 type CollectionType = variant { Db; Storage };
 type CommitBatch = record {
   batch_id : nat;

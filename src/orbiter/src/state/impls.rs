@@ -1,7 +1,9 @@
 use crate::serializers::bounded::{
     deserialize_bounded_analytic_key, deserialize_bounded_analytic_satellite_key,
-    deserialize_bounded_page_view, deserialize_bounded_track_event, serialize_bounded_analytic_key,
-    serialize_bounded_analytic_satellite_key, serialize_bounded_page_view_into_bytes,
+    deserialize_bounded_page_view, deserialize_bounded_track_event,
+    serialize_bounded_analytic_key_into_bytes, serialize_bounded_analytic_key_to_bytes,
+    serialize_bounded_analytic_satellite_key_into_bytes,
+    serialize_bounded_analytic_satellite_key_to_bytes, serialize_bounded_page_view_into_bytes,
     serialize_bounded_page_view_to_bytes, serialize_bounded_track_event_into_bytes,
     serialize_bounded_track_event_to_bytes,
 };
@@ -163,11 +165,11 @@ impl Versioned for PerformanceMetric {
 
 impl Storable for AnalyticKey {
     fn to_bytes(&self) -> Cow<[u8]> {
-        serialize_bounded_analytic_key(self)
+        serialize_bounded_analytic_key_to_bytes(self)
     }
 
     fn into_bytes(self) -> Vec<u8> {
-        serialize_into_bytes(&self)
+        serialize_bounded_analytic_key_into_bytes(&self)
     }
 
     fn from_bytes(bytes: Cow<[u8]>) -> Self {
@@ -182,11 +184,11 @@ impl Storable for AnalyticKey {
 
 impl Storable for AnalyticSatelliteKey {
     fn to_bytes(&self) -> Cow<[u8]> {
-        serialize_bounded_analytic_satellite_key(self)
+        serialize_bounded_analytic_satellite_key_to_bytes(self)
     }
 
     fn into_bytes(self) -> Vec<u8> {
-        serialize_into_bytes(&self)
+        serialize_bounded_analytic_satellite_key_into_bytes(&self)
     }
 
     fn from_bytes(bytes: Cow<[u8]>) -> Self {

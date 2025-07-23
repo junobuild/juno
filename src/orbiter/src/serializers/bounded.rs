@@ -259,12 +259,17 @@ pub fn deserialize_bounded_track_event(bytes: Cow<[u8]>) -> TrackEvent {
     }
 }
 
-pub fn serialize_bounded_analytic_key(key: &AnalyticKey) -> Cow<[u8]> {
+pub fn serialize_bounded_analytic_key_into_bytes(key: &AnalyticKey) -> Vec<u8> {
     let mut buf = Vec::with_capacity(ANALYTIC_KEY_MAX_SIZE);
 
     buf.extend(key.collected_at.to_be_bytes());
     buf.extend(key_to_bytes(&key.key));
 
+    buf
+}
+
+pub fn serialize_bounded_analytic_key_to_bytes(key: &AnalyticKey) -> Cow<[u8]> {
+    let buf = serialize_bounded_analytic_key_into_bytes(key);
     Cow::Owned(buf)
 }
 
@@ -285,13 +290,18 @@ pub fn deserialize_bounded_analytic_key(bytes: Cow<[u8]>) -> AnalyticKey {
     AnalyticKey { collected_at, key }
 }
 
-pub fn serialize_bounded_analytic_satellite_key(key: &AnalyticSatelliteKey) -> Cow<[u8]> {
+pub fn serialize_bounded_analytic_satellite_key_into_bytes(key: &AnalyticSatelliteKey) -> Vec<u8> {
     let mut buf = Vec::with_capacity(ANALYTIC_SATELLITE_KEY_MAX_SIZE);
 
     buf.extend(principal_to_bytes(&key.satellite_id));
     buf.extend(key.collected_at.to_be_bytes());
     buf.extend(key_to_bytes(&key.key));
 
+    buf
+}
+
+pub fn serialize_bounded_analytic_satellite_key_to_bytes(key: &AnalyticSatelliteKey) -> Cow<[u8]> {
+    let buf = serialize_bounded_analytic_satellite_key_into_bytes(key);
     Cow::Owned(buf)
 }
 

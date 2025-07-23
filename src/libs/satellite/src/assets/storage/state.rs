@@ -17,6 +17,7 @@ use junobuild_storage::types::store::{Asset, AssetEncoding};
 use junobuild_storage::utils::clone_asset_encoding_content_chunks;
 use std::borrow::Cow;
 use std::ops::RangeBounds;
+use junobuild_shared::structures::collect_stable_vec;
 // ---------------------------------------------------------
 // Assets
 // ---------------------------------------------------------
@@ -224,7 +225,7 @@ pub fn get_assets_stable(
     collection: &CollectionKey,
     assets: &AssetsStable,
 ) -> Vec<(StableKey, Asset)> {
-    assets.range(filter_assets_range(collection)).collect()
+    collect_stable_vec(assets.range(filter_assets_range(collection)))
 }
 
 pub fn count_assets_stable(collection: &CollectionKey, assets: &AssetsStable) -> usize {

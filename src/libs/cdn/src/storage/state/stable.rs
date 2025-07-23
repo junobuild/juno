@@ -4,6 +4,7 @@ use crate::storage::{ProposalContentChunkKey, ProposalContentChunksStable};
 use crate::strategies::CdnStableStrategy;
 use junobuild_collections::types::core::CollectionKey;
 use junobuild_shared::serializers::deserialize_from_bytes;
+use junobuild_shared::structures::collect_stable_vec;
 use junobuild_shared::types::core::Blob;
 use junobuild_storage::stable_utils::insert_asset_encoding_stable;
 use junobuild_storage::types::state::FullPath;
@@ -60,9 +61,7 @@ fn get_assets_impl(
     proposal_id: &ProposalId,
     proposal_assets: &ProposalAssetsStable,
 ) -> Vec<(ProposalAssetKey, Asset)> {
-    proposal_assets
-        .range(filter_assets_range(proposal_id))
-        .collect()
+    collect_stable_vec(proposal_assets.range(filter_assets_range(proposal_id)))
 }
 
 fn filter_assets_range(proposal_id: &ProposalId) -> impl RangeBounds<ProposalAssetKey> {

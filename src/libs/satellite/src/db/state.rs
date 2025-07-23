@@ -8,7 +8,7 @@ use junobuild_collections::utils::range_collection_end;
 use junobuild_shared::types::core::Key;
 use std::collections::BTreeMap;
 use std::ops::RangeBounds;
-
+use junobuild_shared::structures::collect_stable_vec;
 // ---------------------------------------------------------
 // Collections
 // ---------------------------------------------------------
@@ -185,7 +185,7 @@ pub fn get_docs_stable(
     collection: &CollectionKey,
     db: &DbStable,
 ) -> Result<Vec<(StableKey, Doc)>, String> {
-    let items = db.range(filter_docs_range(collection)).collect();
+    let items = collect_stable_vec(db.range(filter_docs_range(collection)));
 
     Ok(items)
 }
@@ -261,10 +261,11 @@ fn limit_docs_stable_capacity(
         if col_length >= max_capacity as usize {
             let last_item = db.range(filter_docs_range(collection)).next();
 
-            if let Some((last_key, _)) = last_item {
-                let evicted_doc = delete_doc_stable(collection, &last_key.key, db)?;
+            if let Some(entry) = last_item {
+                let key = entry.key().key.clone();
+                let evicted_doc = delete_doc_stable(collection, &key, db)?;
 
-                return Ok(evicted_doc.map(|doc| (last_key.key.clone(), doc)));
+                return Ok(evicted_doc.map(|doc| (key, doc)));
             }
         }
     }

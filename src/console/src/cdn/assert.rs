@@ -34,9 +34,7 @@ pub fn assert_cdn_asset_keys(
 
 fn assert_releases_keys(full_path: &FullPath) -> Result<(), String> {
     if full_path == "/releases/metadata.json" {
-        return Err(format!(
-            "{JUNO_STORAGE_ERROR_RESERVED_ASSET} ({full_path})"
-        ));
+        return Err(format!("{JUNO_STORAGE_ERROR_RESERVED_ASSET} ({full_path})"));
     }
 
     if full_path.starts_with("/releases/satellite")

@@ -102,9 +102,7 @@ pub async fn cmc_create_canister_install_code(
             JUNO_ERROR_CMC_CALL_CREATE_CANISTER_FAILED, &message
         )),
         Ok((result,)) => match result {
-            Err(err) => Err(format!(
-                "{JUNO_ERROR_CMC_CREATE_CANISTER_FAILED} ({err})"
-            )),
+            Err(err) => Err(format!("{JUNO_ERROR_CMC_CREATE_CANISTER_FAILED} ({err})")),
             Ok(canister_id) => {
                 let install =
                     install_code(canister_id, wasm_arg, CanisterInstallMode::Install).await;

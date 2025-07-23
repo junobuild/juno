@@ -1,6 +1,7 @@
 use crate::proposals::state::filter::filter_proposals_range;
 use crate::proposals::{ListProposalResults, Proposal, ProposalId, ProposalKey, ProposalsStable};
 use crate::strategies::CdnStableStrategy;
+use junobuild_shared::structures::collect_stable_vec;
 
 pub fn get_proposal(
     cdn_stable: &impl CdnStableStrategy,
@@ -24,9 +25,8 @@ fn list_proposals_impl(
     filters_key: &(u128, u128),
     proposals: &ProposalsStable,
 ) -> ListProposalResults {
-    let items: Vec<(ProposalKey, Proposal)> = proposals
-        .range(filter_proposals_range(filters_key))
-        .collect();
+    let items: Vec<(ProposalKey, Proposal)> =
+        collect_stable_vec(proposals.range(filter_proposals_range(filters_key)));
 
     let items_length = items.len();
 

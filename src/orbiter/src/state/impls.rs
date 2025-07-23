@@ -1,8 +1,9 @@
 use crate::serializers::bounded::{
     deserialize_bounded_analytic_key, deserialize_bounded_analytic_satellite_key,
     deserialize_bounded_page_view, deserialize_bounded_track_event, serialize_bounded_analytic_key,
-    serialize_bounded_analytic_satellite_key, serialize_bounded_page_view,
-    serialize_bounded_track_event,
+    serialize_bounded_analytic_satellite_key, serialize_bounded_page_view_into_bytes,
+    serialize_bounded_page_view_to_bytes, serialize_bounded_track_event_into_bytes,
+    serialize_bounded_track_event_to_bytes,
 };
 use crate::serializers::constants::{ANALYTIC_KEY_MAX_SIZE, ANALYTIC_SATELLITE_KEY_MAX_SIZE};
 use crate::state::memory::manager::init_stable_state;
@@ -14,7 +15,9 @@ use crate::state::types::state::{
 use ciborium::from_reader;
 use ic_stable_structures::storable::Bound;
 use ic_stable_structures::Storable;
-use junobuild_shared::serializers::{deserialize_from_bytes, serialize_to_bytes};
+use junobuild_shared::serializers::{
+    deserialize_from_bytes, serialize_into_bytes, serialize_to_bytes,
+};
 use junobuild_shared::types::state::{Controllers, SatelliteId, Version, Versioned};
 use std::borrow::Cow;
 
@@ -34,7 +37,16 @@ impl Storable for StoredPageView {
     fn to_bytes(&self) -> Cow<[u8]> {
         match self {
             StoredPageView::Unbounded(page_view) => serialize_to_bytes(page_view),
-            StoredPageView::Bounded(page_view) => serialize_bounded_page_view(page_view),
+            StoredPageView::Bounded(page_view) => serialize_bounded_page_view_to_bytes(page_view),
+        }
+    }
+
+    fn into_bytes(self) -> Vec<u8> {
+        match self {
+            StoredPageView::Unbounded(page_view) => serialize_into_bytes(&page_view),
+            StoredPageView::Bounded(page_view) => {
+                serialize_bounded_page_view_into_bytes(&page_view)
+            }
         }
     }
 
@@ -75,7 +87,18 @@ impl Storable for StoredTrackEvent {
     fn to_bytes(&self) -> Cow<[u8]> {
         match self {
             StoredTrackEvent::Unbounded(track_event) => serialize_to_bytes(track_event),
-            StoredTrackEvent::Bounded(track_event) => serialize_bounded_track_event(track_event),
+            StoredTrackEvent::Bounded(track_event) => {
+                serialize_bounded_track_event_to_bytes(track_event)
+            }
+        }
+    }
+
+    fn into_bytes(self) -> Vec<u8> {
+        match self {
+            StoredTrackEvent::Unbounded(track_event) => serialize_into_bytes(&track_event),
+            StoredTrackEvent::Bounded(track_event) => {
+                serialize_bounded_track_event_into_bytes(&track_event)
+            }
         }
     }
 
@@ -121,6 +144,10 @@ impl Storable for PerformanceMetric {
         serialize_to_bytes(self)
     }
 
+    fn into_bytes(self) -> Vec<u8> {
+        serialize_into_bytes(&self)
+    }
+
     fn from_bytes(bytes: Cow<[u8]>) -> Self {
         deserialize_from_bytes(bytes)
     }
@@ -139,6 +166,10 @@ impl Storable for AnalyticKey {
         serialize_bounded_analytic_key(self)
     }
 
+    fn into_bytes(self) -> Vec<u8> {
+        serialize_into_bytes(&self)
+    }
+
     fn from_bytes(bytes: Cow<[u8]>) -> Self {
         deserialize_bounded_analytic_key(bytes)
     }
@@ -152,6 +183,10 @@ impl Storable for AnalyticKey {
 impl Storable for AnalyticSatelliteKey {
     fn to_bytes(&self) -> Cow<[u8]> {
         serialize_bounded_analytic_satellite_key(self)
+    }
+
+    fn into_bytes(self) -> Vec<u8> {
+        serialize_into_bytes(&self)
     }
 
     fn from_bytes(bytes: Cow<[u8]>) -> Self {

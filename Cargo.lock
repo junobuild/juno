@@ -238,7 +238,7 @@ dependencies = [
  "ic-cdk-macros",
  "ic-cdk-timers",
  "ic-ledger-types",
- "ic-stable-structures",
+ "ic-stable-structures 0.7.0",
  "junobuild-cdn",
  "junobuild-collections",
  "junobuild-shared",
@@ -746,6 +746,15 @@ dependencies = [
 ]
 
 [[package]]
+name = "ic-stable-structures"
+version = "0.7.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "e54aeb082293c69def5ab34c70593ba85ff000386f7d0eacdf73514daaeca031"
+dependencies = [
+ "ic_principal",
+]
+
+[[package]]
 name = "ic-wasi-polyfill"
 version = "0.8.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -753,7 +762,7 @@ checksum = "221bd5aaf6ce273289c5d262529444bd84f0fefb948db219c4a8d342278eb9d0"
 dependencies = [
  "function_name",
  "ic-cdk",
- "ic-stable-structures",
+ "ic-stable-structures 0.6.9",
  "rand",
  "stable-fs",
 ]
@@ -799,7 +808,7 @@ dependencies = [
  "candid",
  "crc32fast",
  "hex",
- "ic-stable-structures",
+ "ic-stable-structures 0.6.9",
  "icrc-cbor",
  "itertools",
  "minicbor",
@@ -999,7 +1008,7 @@ dependencies = [
  "candid",
  "hex",
  "ic-cdk",
- "ic-stable-structures",
+ "ic-stable-structures 0.7.0",
  "junobuild-collections",
  "junobuild-shared",
  "junobuild-storage",
@@ -1038,7 +1047,7 @@ dependencies = [
  "ic-cdk",
  "ic-cdk-macros",
  "ic-cdk-timers",
- "ic-stable-structures",
+ "ic-stable-structures 0.7.0",
  "junobuild-cdn",
  "junobuild-collections",
  "junobuild-shared",
@@ -1061,7 +1070,7 @@ dependencies = [
  "getrandom",
  "ic-cdk",
  "ic-ledger-types",
- "ic-stable-structures",
+ "ic-stable-structures 0.7.0",
  "icrc-ledger-types",
  "rand",
  "regex",
@@ -1080,7 +1089,7 @@ dependencies = [
  "ic-cdk",
  "ic-certification",
  "ic-representation-independent-hash",
- "ic-stable-structures",
+ "ic-stable-structures 0.7.0",
  "junobuild-collections",
  "junobuild-shared",
  "regex",
@@ -1175,7 +1184,7 @@ dependencies = [
  "ic-cdk-macros",
  "ic-cdk-timers",
  "ic-ledger-types",
- "ic-stable-structures",
+ "ic-stable-structures 0.7.0",
  "icrc-ledger-types",
  "junobuild-shared",
  "rand",
@@ -1228,7 +1237,7 @@ dependencies = [
  "ic-cdk",
  "ic-cdk-macros",
  "ic-cdk-timers",
- "ic-stable-structures",
+ "ic-stable-structures 0.7.0",
  "junobuild-shared",
  "rand",
  "serde",
@@ -1246,7 +1255,7 @@ dependencies = [
  "ic-cdk-macros",
  "ic-cdk-timers",
  "ic-http-certification",
- "ic-stable-structures",
+ "ic-stable-structures 0.7.0",
  "isbot",
  "junobuild-shared",
  "junobuild-utils",
@@ -1614,7 +1623,7 @@ dependencies = [
  "bitflags",
  "ciborium",
  "ic-cdk",
- "ic-stable-structures",
+ "ic-stable-structures 0.6.9",
  "serde",
  "serde_bytes",
 ]

@@ -3,7 +3,7 @@ use crate::db::types::config::DbConfig;
 use crate::db::types::state::{DocAssertDelete, DocAssertSet, DocContext};
 use crate::errors::db::{JUNO_DATASTORE_ERROR_CANNOT_READ, JUNO_DATASTORE_ERROR_CANNOT_WRITE};
 use crate::hooks::db::{invoke_assert_delete_doc, invoke_assert_set_doc};
-use crate::types::store::StoreContext;
+use crate::types::store::{AssertContext, StoreContext};
 use crate::user::core::assert::{
     assert_user_collection_caller_key, assert_user_collection_data, assert_user_is_not_banned,
     assert_user_write_permission,
@@ -16,7 +16,7 @@ use candid::Principal;
 use junobuild_collections::assert::stores::{
     assert_create_permission, assert_permission, public_permission,
 };
-use junobuild_collections::types::rules::{Permission, Rule};
+use junobuild_collections::types::rules::Permission;
 use junobuild_shared::assert::{assert_description_length, assert_max_memory_size, assert_version};
 use junobuild_shared::types::core::Key;
 use junobuild_shared::types::state::{Controllers, Version};
@@ -28,7 +28,7 @@ pub fn assert_get_doc(
         controllers,
         collection: _,
     }: &StoreContext,
-    rule: &Rule,
+    &AssertContext { rule }: &AssertContext,
     current_doc: &Doc,
 ) -> Result<(), String> {
     assert_caller_is_allowed(caller, controllers)?;
@@ -58,10 +58,10 @@ pub fn assert_set_doc(
         controllers,
         collection,
     }: &StoreContext,
+    &AssertContext { rule }: &AssertContext,
     config: &Option<DbConfig>,
     key: &Key,
     value: &SetDoc,
-    rule: &Rule,
     current_doc: &Option<Doc>,
 ) -> Result<(), String> {
     assert_caller_is_allowed(caller, controllers)?;
@@ -106,9 +106,9 @@ pub fn assert_delete_doc(
         controllers,
         collection,
     }: &StoreContext,
+    &AssertContext { rule }: &AssertContext,
     key: &Key,
     value: &DelDoc,
-    rule: &Rule,
     current_doc: &Option<Doc>,
 ) -> Result<(), String> {
     assert_caller_is_allowed(caller, controllers)?;

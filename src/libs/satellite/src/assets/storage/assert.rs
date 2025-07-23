@@ -1,5 +1,5 @@
 use crate::hooks::storage::invoke_assert_delete_asset;
-use crate::types::store::StoreContext;
+use crate::types::store::{AssertContext, StoreContext};
 use crate::user::core::assert::{assert_user_is_not_banned, is_known_user};
 use crate::user::usage::assert::increment_and_assert_storage_usage;
 use candid::Principal;
@@ -8,7 +8,7 @@ use junobuild_collections::assert::stores::{
 };
 use junobuild_collections::constants::assets::COLLECTION_ASSET_KEY;
 use junobuild_collections::types::core::CollectionKey;
-use junobuild_collections::types::rules::{Permission, Rule};
+use junobuild_collections::types::rules::Permission;
 use junobuild_shared::controllers::{controller_can_write, is_controller};
 use junobuild_shared::types::state::Controllers;
 use junobuild_storage::errors::{
@@ -25,7 +25,7 @@ pub fn assert_get_asset(
         controllers,
         collection: _,
     }: &StoreContext,
-    rule: &Rule,
+    &AssertContext { rule }: &AssertContext,
     current_asset: &Asset,
 ) -> Result<(), String> {
     assert_caller_is_allowed(caller, controllers)?;
@@ -69,7 +69,7 @@ pub fn assert_storage_list_permission(
 pub fn assert_create_batch(
     caller: Principal,
     controllers: &Controllers,
-    rule: &Rule,
+    &AssertContext { rule }: &AssertContext,
 ) -> Result<(), String> {
     assert_caller_is_allowed(caller, controllers)?;
     assert_user_is_not_banned(caller, controllers)?;
@@ -86,7 +86,7 @@ pub fn assert_create_batch(
 
 pub fn assert_delete_asset(
     context: &StoreContext,
-    rule: &Rule,
+    &AssertContext { rule }: &AssertContext,
     asset: &Asset,
 ) -> Result<(), String> {
     assert_caller_is_allowed(caller, controllers)?;

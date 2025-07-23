@@ -12,7 +12,7 @@ use crate::db::types::interface::{DelDoc, SetDoc};
 use crate::db::types::state::{Doc, DocContext, DocUpsert};
 use crate::db::utils::filter_values;
 use crate::memory::internal::STATE;
-use crate::types::store::StoreContext;
+use crate::types::store::{AssertContext, StoreContext};
 use candid::Principal;
 use junobuild_collections::msg::msg_db_collection_not_empty;
 use junobuild_collections::types::core::CollectionKey;
@@ -94,16 +94,23 @@ pub fn get_doc_store(
 
 fn secure_get_doc(context: &StoreContext, key: Key) -> Result<Option<Doc>, String> {
     let rule = get_state_rule(context.collection)?;
-    get_doc_impl(context, key, &rule)
+
+    let assert_context = AssertContext { rule: &rule };
+
+    get_doc_impl(context, &assert_context, key)
 }
 
-fn get_doc_impl(context: &StoreContext, key: Key, rule: &Rule) -> Result<Option<Doc>, String> {
-    let value = get_state_doc(context.collection, &key, rule)?;
+fn get_doc_impl(
+    context: &StoreContext,
+    assert_context: &AssertContext,
+    key: Key,
+) -> Result<Option<Doc>, String> {
+    let value = get_state_doc(context.collection, &key, assert_context.rule)?;
 
     match value {
         None => Ok(None),
         Some(value) => {
-            if assert_get_doc(context, rule, &value).is_err() {
+            if assert_get_doc(context, assert_context, &value).is_err() {
                 return Ok(None);
             }
 
@@ -165,23 +172,27 @@ fn secure_set_doc(
     value: SetDoc,
 ) -> Result<DocUpsert, String> {
     let rule = get_state_rule(context.collection)?;
-    set_doc_impl(context, config, key, value, &rule)
+
+    let assert_context = AssertContext { rule: &rule };
+
+    set_doc_impl(context, &assert_context, config, key, value)
 }
 
 fn set_doc_impl(
     context: &StoreContext,
+    assert_context: &AssertContext,
     config: &Option<DbConfig>,
     key: Key,
     value: SetDoc,
-    rule: &Rule,
 ) -> Result<DocUpsert, String> {
-    let current_doc = get_state_doc(context.collection, &key, rule)?;
+    let current_doc = get_state_doc(context.collection, &key, assert_context.rule)?;
 
-    assert_set_doc(context, config, &key, &value, rule, &current_doc)?;
+    assert_set_doc(context, assert_context, config, &key, &value, &current_doc)?;
 
     let doc: Doc = Doc::prepare(context.caller, &current_doc, value);
 
-    let (_evicted_doc, after) = insert_state_doc(context.collection, &key, &doc, rule)?;
+    let (_evicted_doc, after) =
+        insert_state_doc(context.collection, &key, &doc, assert_context.rule)?;
 
     Ok(DocUpsert {
         before: current_doc,
@@ -345,20 +356,23 @@ fn secure_delete_doc(
     value: DelDoc,
 ) -> Result<Option<Doc>, String> {
     let rule = get_state_rule(context.collection)?;
-    delete_doc_impl(context, key, value, &rule)
+
+    let assert_context = AssertContext { rule: &rule };
+
+    delete_doc_impl(context, &assert_context, key, value)
 }
 
 fn delete_doc_impl(
     context: &StoreContext,
+    assert_context: &AssertContext,
     key: Key,
     value: DelDoc,
-    rule: &Rule,
 ) -> Result<Option<Doc>, String> {
-    let current_doc = get_state_doc(context.collection, &key, rule)?;
+    let current_doc = get_state_doc(context.collection, &key, assert_context.rule)?;
 
-    assert_delete_doc(context, &key, &value, rule, &current_doc)?;
+    assert_delete_doc(context, assert_context, &key, &value, &current_doc)?;
 
-    delete_state_doc(context.collection, &key, rule)
+    delete_state_doc(context.collection, &key, assert_context.rule)
 }
 
 /// Delete multiple documents from a collection's store.
@@ -479,6 +493,8 @@ fn delete_filtered_docs_store_impl(
 ) -> Result<Vec<DocContext<Option<Doc>>>, String> {
     let rule = get_state_rule(context.collection)?;
 
+    let assert_context = AssertContext { rule: &rule };
+
     let mut results: Vec<DocContext<Option<Doc>>> = Vec::new();
 
     for (key, doc) in &docs.items {
@@ -486,7 +502,7 @@ fn delete_filtered_docs_store_impl(
             version: doc.version,
         };
 
-        let deleted_doc = delete_doc_impl(context, key.clone(), value, &rule)?;
+        let deleted_doc = delete_doc_impl(context, &assert_context, key.clone(), value)?;
 
         let doc_context = DocContext {
             key: key.clone(),

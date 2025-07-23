@@ -13,7 +13,7 @@ use crate::assets::storage::state::{
 use crate::assets::storage::strategy_impls::{StorageAssertions, StorageState, StorageUpload};
 use crate::controllers::store::get_controllers;
 use crate::memory::internal::STATE;
-use crate::types::store::StoreContext;
+use crate::types::store::{AssertContext, StoreContext};
 use candid::Principal;
 use junobuild_collections::msg::msg_storage_collection_not_empty;
 use junobuild_collections::types::core::CollectionKey;
@@ -247,20 +247,22 @@ fn secure_get_asset_impl(
 ) -> Result<Option<Asset>, String> {
     let rule = get_state_rule(context.collection)?;
 
-    get_asset_impl(context, full_path, &rule)
+    let assert_context = AssertContext { rule: &rule };
+
+    get_asset_impl(context, &assert_context, full_path)
 }
 
 fn get_asset_impl(
     context: &StoreContext,
+    assert_context: &AssertContext,
     full_path: FullPath,
-    rule: &Rule,
 ) -> Result<Option<Asset>, String> {
-    let asset = get_state_asset(context.collection, &full_path, rule);
+    let asset = get_state_asset(context.collection, &full_path, assert_context.rule);
 
     match asset {
         None => Ok(None),
         Some(asset) => {
-            if assert_get_asset(context, rule, &asset).is_err() {
+            if assert_get_asset(context, assert_context, &asset).is_err() {
                 return Ok(None);
             }
 
@@ -390,30 +392,34 @@ fn secure_delete_asset_impl(
 ) -> Result<Option<Asset>, String> {
     let rule = get_state_rule(context.collection)?;
 
-    delete_asset_impl(context, full_path, &rule, config)
+    let assert_context = AssertContext { rule: &rule };
+
+    delete_asset_impl(context, &assert_context, full_path, config)
 }
 
 fn delete_asset_impl(
     context: &StoreContext,
+    assert_context: &AssertContext,
     full_path: FullPath,
-    rule: &Rule,
     config: &StorageConfig,
 ) -> Result<Option<Asset>, String> {
-    let asset = get_state_asset(context.collection, &full_path, rule);
+    let asset = get_state_asset(context.collection, &full_path, assert_context.rule);
 
     match asset {
         None => Err(JUNO_STORAGE_ERROR_ASSET_NOT_FOUND.to_string()),
         Some(asset) => {
-            assert_delete_asset(context, rule, &asset)?;
+            assert_delete_asset(context, assert_context, &asset)?;
 
-            let deleted = delete_state_asset(context.collection, &full_path, rule);
+            let deleted = delete_state_asset(context.collection, &full_path, assert_context.rule);
             delete_runtime_certified_asset(&asset);
 
             // We just removed the rewrite for /404.html in the certification tree therefore if /index.html exists, we want to reintroduce it as rewrite
             if *full_path == *ROOT_404_HTML {
-                if let Some(index_asset) =
-                    get_state_asset(context.collection, &ROOT_INDEX_HTML.to_string(), rule)
-                {
+                if let Some(index_asset) = get_state_asset(
+                    context.collection,
+                    &ROOT_INDEX_HTML.to_string(),
+                    assert_context.rule,
+                ) {
                     update_runtime_certified_asset(&index_asset, config);
                 }
             }
@@ -516,13 +522,20 @@ fn delete_filtered_assets_store_impl(
     assets: &ListResults<AssetNoContent>,
 ) -> Result<Vec<Option<Asset>>, String> {
     let rule = get_state_rule(context.collection)?;
+
+    let assert_context = AssertContext { rule: &rule };
+
     let config = get_config_store();
 
     let mut results: Vec<Option<Asset>> = Vec::new();
 
     for (_, asset) in &assets.items {
-        let deleted_asset =
-            delete_asset_impl(context, asset.key.full_path.clone(), &rule, &config)?;
+        let deleted_asset = delete_asset_impl(
+            context,
+            &assert_context,
+            asset.key.full_path.clone(),
+            &config,
+        )?;
 
         results.push(deleted_asset);
     }
@@ -576,7 +589,9 @@ fn secure_create_batch_impl(
 ) -> Result<BatchId, String> {
     let rule = get_state_rule(&init.collection)?;
 
-    assert_create_batch(caller, controllers, &rule)?;
+    let assert_context = AssertContext { rule: &rule };
+
+    assert_create_batch(caller, controllers, &assert_context)?;
 
     create_batch(
         caller,

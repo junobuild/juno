@@ -1,7 +1,7 @@
 use crate::types::state::{StableState, State};
 use ic_stable_structures::memory_manager::{MemoryId, MemoryManager};
-use ic_stable_structures::StableBTreeMap;
 use ic_stable_structures::DefaultMemoryImpl;
+use ic_stable_structures::StableBTreeMap;
 use junobuild_shared::types::memory::Memory;
 use std::cell::RefCell;
 

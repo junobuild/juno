@@ -1,4 +1,3 @@
-use candid::Nat;
 use ic_ledger_types::Tokens;
 
 // 0.5 ICP

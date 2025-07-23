@@ -1,4 +1,4 @@
-use crate::constants::{FREEZING_THRESHOLD_ONE_YEAR, FREEZING_THRESHOLD_THREE_MONTHS};
+use crate::constants::FREEZING_THRESHOLD_THREE_MONTHS;
 use crate::controllers::remove_console_controller;
 use crate::factory::canister::create_canister;
 use crate::store::heap::{get_orbiter_fee, increment_orbiters_rate};

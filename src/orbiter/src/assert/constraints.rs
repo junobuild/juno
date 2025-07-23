@@ -131,9 +131,7 @@ pub fn assert_page_view_campaign_length(page_view: &SetPageView) -> Result<(), S
 
         if let Some(term) = &campaign.utm_term {
             if term.len() > UTM_MAX_LENGTH {
-                return Err(format!(
-                    "utm_term {term} is longer than {UTM_MAX_LENGTH}."
-                ));
+                return Err(format!("utm_term {term} is longer than {UTM_MAX_LENGTH}."));
             }
         }
 

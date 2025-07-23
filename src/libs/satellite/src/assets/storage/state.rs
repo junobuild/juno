@@ -8,6 +8,7 @@ use junobuild_collections::types::core::CollectionKey;
 use junobuild_collections::types::rules::{Memory, Rule};
 use junobuild_collections::utils::range_collection_end;
 use junobuild_shared::serializers::deserialize_from_bytes;
+use junobuild_shared::structures::collect_stable_vec;
 use junobuild_shared::types::core::{Blob, DomainName};
 use junobuild_shared::types::domain::{CustomDomain, CustomDomains};
 use junobuild_storage::stable_utils::insert_asset_encoding_stable;
@@ -17,7 +18,6 @@ use junobuild_storage::types::store::{Asset, AssetEncoding};
 use junobuild_storage::utils::clone_asset_encoding_content_chunks;
 use std::borrow::Cow;
 use std::ops::RangeBounds;
-use junobuild_shared::structures::collect_stable_vec;
 // ---------------------------------------------------------
 // Assets
 // ---------------------------------------------------------

@@ -5,10 +5,10 @@ use junobuild_collections::msg::msg_db_collection_not_found;
 use junobuild_collections::types::core::CollectionKey;
 use junobuild_collections::types::rules::{Memory, Rule};
 use junobuild_collections::utils::range_collection_end;
+use junobuild_shared::structures::collect_stable_vec;
 use junobuild_shared::types::core::Key;
 use std::collections::BTreeMap;
 use std::ops::RangeBounds;
-use junobuild_shared::structures::collect_stable_vec;
 // ---------------------------------------------------------
 // Collections
 // ---------------------------------------------------------

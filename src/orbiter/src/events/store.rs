@@ -335,10 +335,11 @@ fn get_page_views_impl(filter: &GetAnalytics, state: &StableState) -> Vec<(Analy
             .map(|entry| (entry.key().clone(), entry.value().into_inner().clone()))
             .collect(),
         Some(satellite_id) => {
-            let satellites_keys: Vec<(AnalyticSatelliteKey, AnalyticKey)> = collect_stable_vec(state
-                .satellites_page_views
-                .range(filter_satellites_analytics(filter, satellite_id))
-                );
+            let satellites_keys: Vec<(AnalyticSatelliteKey, AnalyticKey)> = collect_stable_vec(
+                state
+                    .satellites_page_views
+                    .range(filter_satellites_analytics(filter, satellite_id)),
+            );
             satellites_keys
                 .iter()
                 .filter_map(|(_, key)| {
@@ -365,10 +366,11 @@ fn get_track_events_impl(
             .map(|entry| (entry.key().clone(), entry.value().into_inner().clone()))
             .collect(),
         Some(satellite_id) => {
-            let satellites_keys: Vec<(AnalyticSatelliteKey, AnalyticKey)> = collect_stable_vec(state
-                .satellites_track_events
-                .range(filter_satellites_analytics(filter, satellite_id))
-                );
+            let satellites_keys: Vec<(AnalyticSatelliteKey, AnalyticKey)> = collect_stable_vec(
+                state
+                    .satellites_track_events
+                    .range(filter_satellites_analytics(filter, satellite_id)),
+            );
             satellites_keys
                 .iter()
                 .filter_map(|(_, key)| {
@@ -389,15 +391,13 @@ fn get_performance_metrics_impl(
     state: &StableState,
 ) -> Vec<(AnalyticKey, PerformanceMetric)> {
     match filter.satellite_id {
-        None => collect_stable_vec(state
-            .performance_metrics
-            .range(filter_analytics(filter))
-            ),
+        None => collect_stable_vec(state.performance_metrics.range(filter_analytics(filter))),
         Some(satellite_id) => {
-            let satellites_keys: Vec<(AnalyticSatelliteKey, AnalyticKey)> = collect_stable_vec(state
-                .satellites_performance_metrics
-                .range(filter_satellites_analytics(filter, satellite_id))
-                );
+            let satellites_keys: Vec<(AnalyticSatelliteKey, AnalyticKey)> = collect_stable_vec(
+                state
+                    .satellites_performance_metrics
+                    .range(filter_satellites_analytics(filter, satellite_id)),
+            );
             satellites_keys
                 .iter()
                 .filter_map(|(_, key)| {

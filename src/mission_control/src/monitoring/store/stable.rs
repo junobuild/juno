@@ -9,9 +9,9 @@ use crate::types::state::{
     MonitoringHistory, MonitoringHistoryCycles, MonitoringHistoryKey, MonitoringHistoryStable,
 };
 use ic_cdk::api::time;
+use junobuild_shared::structures::collect_stable_vec;
 use junobuild_shared::types::state::SegmentId;
 use std::ops::RangeBounds;
-use junobuild_shared::structures::collect_stable_vec;
 
 pub fn insert_cycles_monitoring_history(
     segment_id: &SegmentId,
@@ -78,9 +78,7 @@ fn get_monitoring_history_impl(
     filter: &GetMonitoringHistory,
     history: &MonitoringHistoryStable,
 ) -> Vec<(MonitoringHistoryKey, MonitoringHistory)> {
-    collect_stable_vec(history
-        .range(filter_monitoring_history_range(filter))
-    )
+    collect_stable_vec(history.range(filter_monitoring_history_range(filter)))
 }
 
 fn get_monitoring_history_keys_impl(

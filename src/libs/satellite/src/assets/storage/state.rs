@@ -8,6 +8,7 @@ use junobuild_collections::types::core::CollectionKey;
 use junobuild_collections::types::rules::{Memory, Rule};
 use junobuild_collections::utils::range_collection_end;
 use junobuild_shared::serializers::deserialize_from_bytes;
+use junobuild_shared::structures::collect_stable_vec;
 use junobuild_shared::types::core::{Blob, DomainName};
 use junobuild_shared::types::domain::{CustomDomain, CustomDomains};
 use junobuild_storage::stable_utils::insert_asset_encoding_stable;
@@ -224,7 +225,7 @@ pub fn get_assets_stable(
     collection: &CollectionKey,
     assets: &AssetsStable,
 ) -> Vec<(StableKey, Asset)> {
-    assets.range(filter_assets_range(collection)).collect()
+    collect_stable_vec(assets.range(filter_assets_range(collection)))
 }
 
 pub fn count_assets_stable(collection: &CollectionKey, assets: &AssetsStable) -> usize {

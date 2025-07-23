@@ -38,7 +38,7 @@ const PAGE_VIEW_MAX_SIZE: usize = (SERIALIZED_STRING_LENGTH * 2)
     + TIMESTAMPS_LENGTH
     + (size_of::<u16>() * 2);
 
-pub fn serialize_bounded_page_view(page_view: &PageView) -> Cow<[u8]> {
+pub fn serialize_bounded_page_view_into_bytes(page_view: &PageView) -> Vec<u8> {
     let mut buf = Vec::with_capacity(PAGE_VIEW_MAX_SIZE);
 
     buf.extend(string_to_bytes(&page_view.title));
@@ -57,6 +57,11 @@ pub fn serialize_bounded_page_view(page_view: &PageView) -> Cow<[u8]> {
     buf.extend(page_view.created_at.to_be_bytes());
     buf.extend(page_view.updated_at.to_be_bytes());
 
+    buf
+}
+
+pub fn serialize_bounded_page_view_to_bytes(page_view: &PageView) -> Cow<[u8]> {
+    let buf = serialize_bounded_page_view_into_bytes(page_view);
     Cow::Owned(buf)
 }
 
@@ -182,7 +187,7 @@ const TRACK_EVENT_MAX_SIZE: usize = SERIALIZED_SHORT_STRING_LENGTH
     + TIMESTAMPS_LENGTH
     + (SERIALIZED_SHORT_STRING_LENGTH * 2 * METADATA_MAX_ELEMENTS);
 
-pub fn serialize_bounded_track_event(track_event: &TrackEvent) -> Cow<[u8]> {
+pub fn serialize_bounded_track_event_into_bytes(track_event: &TrackEvent) -> Vec<u8> {
     let mut buf = Vec::with_capacity(TRACK_EVENT_MAX_SIZE);
 
     buf.extend(short_string_to_bytes(&track_event.name));
@@ -192,6 +197,11 @@ pub fn serialize_bounded_track_event(track_event: &TrackEvent) -> Cow<[u8]> {
     buf.extend(track_event.created_at.to_be_bytes());
     buf.extend(track_event.updated_at.to_be_bytes());
 
+    buf
+}
+
+pub fn serialize_bounded_track_event_to_bytes(track_event: &TrackEvent) -> Cow<[u8]> {
+    let buf = serialize_bounded_track_event_into_bytes(track_event);
     Cow::Owned(buf)
 }
 
@@ -249,12 +259,17 @@ pub fn deserialize_bounded_track_event(bytes: Cow<[u8]>) -> TrackEvent {
     }
 }
 
-pub fn serialize_bounded_analytic_key(key: &AnalyticKey) -> Cow<[u8]> {
+pub fn serialize_bounded_analytic_key_into_bytes(key: &AnalyticKey) -> Vec<u8> {
     let mut buf = Vec::with_capacity(ANALYTIC_KEY_MAX_SIZE);
 
     buf.extend(key.collected_at.to_be_bytes());
     buf.extend(key_to_bytes(&key.key));
 
+    buf
+}
+
+pub fn serialize_bounded_analytic_key_to_bytes(key: &AnalyticKey) -> Cow<[u8]> {
+    let buf = serialize_bounded_analytic_key_into_bytes(key);
     Cow::Owned(buf)
 }
 
@@ -275,13 +290,18 @@ pub fn deserialize_bounded_analytic_key(bytes: Cow<[u8]>) -> AnalyticKey {
     AnalyticKey { collected_at, key }
 }
 
-pub fn serialize_bounded_analytic_satellite_key(key: &AnalyticSatelliteKey) -> Cow<[u8]> {
+pub fn serialize_bounded_analytic_satellite_key_into_bytes(key: &AnalyticSatelliteKey) -> Vec<u8> {
     let mut buf = Vec::with_capacity(ANALYTIC_SATELLITE_KEY_MAX_SIZE);
 
     buf.extend(principal_to_bytes(&key.satellite_id));
     buf.extend(key.collected_at.to_be_bytes());
     buf.extend(key_to_bytes(&key.key));
 
+    buf
+}
+
+pub fn serialize_bounded_analytic_satellite_key_to_bytes(key: &AnalyticSatelliteKey) -> Cow<[u8]> {
+    let buf = serialize_bounded_analytic_satellite_key_into_bytes(key);
     Cow::Owned(buf)
 }
 

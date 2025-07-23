@@ -20,6 +20,7 @@ pub mod random;
 pub mod rate;
 pub mod regex;
 pub mod serializers;
+pub mod structures;
 #[doc(hidden)]
 pub mod types;
 #[doc(hidden)]

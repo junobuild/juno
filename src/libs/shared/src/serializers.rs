@@ -2,7 +2,7 @@ use ciborium::{from_reader, into_writer};
 use serde::{Deserialize, Serialize};
 use std::borrow::Cow;
 
-/// Serializes a given value into a byte array.
+/// Serializes a given value into a borrowed byte slice.
 ///
 /// # Arguments
 /// * `value` - A reference to the value to serialize.
@@ -16,6 +16,22 @@ pub fn serialize_to_bytes<T: Serialize>(value: &T) -> Cow<[u8]> {
     let mut bytes = vec![];
     into_writer(value, &mut bytes).expect("Failed to serialize to bytes");
     Cow::Owned(bytes)
+}
+
+/// Serializes a given value into an owned byte vector.
+///
+/// # Arguments
+/// * `value` - A reference to the value to serialize.
+///
+/// # Returns
+/// A `Vec<u8>` representing the serialized data.
+///
+/// # Panics
+/// Panics if serialization fails.
+pub fn serialize_into_bytes<T: Serialize>(value: &T) -> Vec<u8> {
+    let mut bytes = vec![];
+    into_writer(value, &mut bytes).expect("Failed to serialize to bytes");
+    bytes
 }
 
 /// Deserializes a value from a byte array.

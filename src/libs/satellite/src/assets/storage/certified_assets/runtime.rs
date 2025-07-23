@@ -17,8 +17,8 @@ fn init_certified_assets_impl(state: &State) {
         asset_hashes.insert(asset, config);
     }
 
-    for (_key, asset) in state.stable.assets.iter() {
-        asset_hashes.insert(&asset, config);
+    for entry in state.stable.assets.iter() {
+        asset_hashes.insert(&entry.value(), config);
     }
 
     extend_and_init_certified_assets(&mut asset_hashes, config, &StorageState)

@@ -17,6 +17,7 @@ use junobuild_storage::errors::{
 };
 use junobuild_storage::runtime::increment_and_assert_rate as increment_and_assert_rate_runtime;
 use junobuild_storage::types::store::Asset;
+use crate::auth::assert_caller::assert_caller_is_allowed;
 
 pub fn assert_get_asset(
     &StoreContext {
@@ -27,6 +28,7 @@ pub fn assert_get_asset(
     rule: &Rule,
     current_asset: &Asset,
 ) -> Result<(), String> {
+    assert_caller_is_allowed(caller, controllers)?;
     assert_user_is_not_banned(caller, controllers)?;
 
     assert_read_permission(caller, controllers, current_asset, &rule.read)?;
@@ -41,6 +43,7 @@ pub fn assert_list_assets(
         collection: _,
     }: &StoreContext,
 ) -> Result<(), String> {
+    assert_caller_is_allowed(caller, controllers)?;
     assert_user_is_not_banned(caller, controllers)?;
 
     Ok(())
@@ -68,6 +71,7 @@ pub fn assert_create_batch(
     controllers: &Controllers,
     rule: &Rule,
 ) -> Result<(), String> {
+    assert_caller_is_allowed(caller, controllers)?;
     assert_user_is_not_banned(caller, controllers)?;
 
     if !(public_permission(&rule.write)
@@ -85,6 +89,7 @@ pub fn assert_delete_asset(
     rule: &Rule,
     asset: &Asset,
 ) -> Result<(), String> {
+    assert_caller_is_allowed(caller, controllers)?;
     assert_user_is_not_banned(context.caller, context.controllers)?;
 
     if !assert_permission(

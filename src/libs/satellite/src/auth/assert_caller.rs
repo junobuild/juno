@@ -1,9 +1,9 @@
+use crate::auth::types::config::AuthenticationConfig;
+use crate::errors::auth::JUNO_AUTH_ERROR_CALLER_NOT_ALLOWED;
 use candid::Principal;
 use junobuild_shared::controllers::controller_can_write;
 use junobuild_shared::types::state::Controllers;
 use junobuild_shared::utils::principal_equal;
-use crate::auth::types::config::AuthenticationConfig;
-use crate::errors::auth::JUNO_AUTH_ERROR_CALLER_NOT_ALLOWED;
 
 pub fn assert_caller_is_allowed(
     caller: Principal,
@@ -32,7 +32,11 @@ pub fn assert_caller_is_allowed(
         return Ok(());
     }
 
-    if !auth_rules.allowed_callers.iter().any(|user| principal_equal(caller, *user)) {
+    if !auth_rules
+        .allowed_callers
+        .iter()
+        .any(|user| principal_equal(caller, *user))
+    {
         return Err(JUNO_AUTH_ERROR_CALLER_NOT_ALLOWED.to_string());
     }
 

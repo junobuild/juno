@@ -11,6 +11,7 @@ use crate::assets::storage::state::{
     insert_domain as insert_state_domain,
 };
 use crate::assets::storage::strategy_impls::{StorageAssertions, StorageState, StorageUpload};
+use crate::auth::store::get_config as get_auth_config;
 use crate::controllers::store::get_controllers;
 use crate::memory::internal::STATE;
 use crate::types::store::{AssertContext, StoreContext};
@@ -246,8 +247,12 @@ fn secure_get_asset_impl(
     full_path: FullPath,
 ) -> Result<Option<Asset>, String> {
     let rule = get_state_rule(context.collection)?;
+    let auth_config = get_auth_config();
 
-    let assert_context = AssertContext { rule: &rule };
+    let assert_context = AssertContext {
+        rule: &rule,
+        auth_config: &auth_config,
+    };
 
     get_asset_impl(context, &assert_context, full_path)
 }
@@ -326,9 +331,15 @@ fn secure_list_assets_impl(
     context: &StoreContext,
     filters: &ListParams,
 ) -> Result<ListResults<AssetNoContent>, String> {
-    assert_list_assets(context)?;
-
     let rule = get_state_rule(context.collection)?;
+    let auth_config = get_auth_config();
+
+    let assert_context = AssertContext {
+        rule: &rule,
+        auth_config: &auth_config,
+    };
+
+    assert_list_assets(context, &assert_context)?;
 
     match rule.mem() {
         Memory::Heap => STATE.with(|state| {
@@ -391,8 +402,12 @@ fn secure_delete_asset_impl(
     config: &StorageConfig,
 ) -> Result<Option<Asset>, String> {
     let rule = get_state_rule(context.collection)?;
+    let auth_config = get_auth_config();
 
-    let assert_context = AssertContext { rule: &rule };
+    let assert_context = AssertContext {
+        rule: &rule,
+        auth_config: &auth_config,
+    };
 
     delete_asset_impl(context, &assert_context, full_path, config)
 }
@@ -522,8 +537,12 @@ fn delete_filtered_assets_store_impl(
     assets: &ListResults<AssetNoContent>,
 ) -> Result<Vec<Option<Asset>>, String> {
     let rule = get_state_rule(context.collection)?;
+    let auth_config = get_auth_config();
 
-    let assert_context = AssertContext { rule: &rule };
+    let assert_context = AssertContext {
+        rule: &rule,
+        auth_config: &auth_config,
+    };
 
     let config = get_config_store();
 
@@ -588,8 +607,12 @@ fn secure_create_batch_impl(
     init: InitAssetKey,
 ) -> Result<BatchId, String> {
     let rule = get_state_rule(&init.collection)?;
+    let auth_config = get_auth_config();
 
-    let assert_context = AssertContext { rule: &rule };
+    let assert_context = AssertContext {
+        rule: &rule,
+        auth_config: &auth_config,
+    };
 
     assert_create_batch(caller, controllers, &assert_context)?;
 

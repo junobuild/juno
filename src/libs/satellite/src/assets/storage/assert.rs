@@ -1,3 +1,4 @@
+use crate::auth::assert_caller::assert_caller_is_allowed;
 use crate::hooks::storage::invoke_assert_delete_asset;
 use crate::types::store::{AssertContext, StoreContext};
 use crate::user::core::assert::{assert_user_is_not_banned, is_known_user};
@@ -17,7 +18,6 @@ use junobuild_storage::errors::{
 };
 use junobuild_storage::runtime::increment_and_assert_rate as increment_and_assert_rate_runtime;
 use junobuild_storage::types::store::Asset;
-use crate::auth::assert_caller::assert_caller_is_allowed;
 
 pub fn assert_get_asset(
     &StoreContext {
@@ -25,10 +25,10 @@ pub fn assert_get_asset(
         controllers,
         collection: _,
     }: &StoreContext,
-    &AssertContext { rule }: &AssertContext,
+    &AssertContext { rule, auth_config }: &AssertContext,
     current_asset: &Asset,
 ) -> Result<(), String> {
-    assert_caller_is_allowed(caller, controllers)?;
+    assert_caller_is_allowed(caller, controllers, auth_config)?;
     assert_user_is_not_banned(caller, controllers)?;
 
     assert_read_permission(caller, controllers, current_asset, &rule.read)?;
@@ -42,8 +42,12 @@ pub fn assert_list_assets(
         controllers,
         collection: _,
     }: &StoreContext,
+    &AssertContext {
+        auth_config,
+        rule: _,
+    }: &AssertContext,
 ) -> Result<(), String> {
-    assert_caller_is_allowed(caller, controllers)?;
+    assert_caller_is_allowed(caller, controllers, auth_config)?;
     assert_user_is_not_banned(caller, controllers)?;
 
     Ok(())
@@ -69,9 +73,9 @@ pub fn assert_storage_list_permission(
 pub fn assert_create_batch(
     caller: Principal,
     controllers: &Controllers,
-    &AssertContext { rule }: &AssertContext,
+    &AssertContext { rule, auth_config }: &AssertContext,
 ) -> Result<(), String> {
-    assert_caller_is_allowed(caller, controllers)?;
+    assert_caller_is_allowed(caller, controllers, auth_config)?;
     assert_user_is_not_banned(caller, controllers)?;
 
     if !(public_permission(&rule.write)
@@ -86,10 +90,10 @@ pub fn assert_create_batch(
 
 pub fn assert_delete_asset(
     context: &StoreContext,
-    &AssertContext { rule }: &AssertContext,
+    &AssertContext { rule, auth_config }: &AssertContext,
     asset: &Asset,
 ) -> Result<(), String> {
-    assert_caller_is_allowed(caller, controllers)?;
+    assert_caller_is_allowed(context.caller, context.controllers, auth_config)?;
     assert_user_is_not_banned(context.caller, context.controllers)?;
 
     if !assert_permission(

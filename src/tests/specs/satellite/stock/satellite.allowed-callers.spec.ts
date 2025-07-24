@@ -11,7 +11,9 @@ import { Ed25519KeyIdentity } from '@dfinity/identity';
 import { type Actor, PocketIc } from '@dfinity/pic';
 import type { Principal } from '@dfinity/principal';
 import { fromNullable, toNullable } from '@dfinity/utils';
-import { JUNO_AUTH_ERROR_CALLER_NOT_ALLOWED } from '@junobuild/errors';
+import {
+	JUNO_AUTH_ERROR_CALLER_NOT_ALLOWED
+} from '@junobuild/errors';
 import { toArray } from '@junobuild/utils';
 import { nanoid } from 'nanoid';
 import { beforeAll, describe, expect, inject } from 'vitest';
@@ -540,6 +542,96 @@ describe('Satellite > Allowed Callers', () => {
 				};
 
 				it('should count assets if no config', async () => {
+					await assertAllowed();
+				});
+			});
+
+			describe('get many assets', () => {
+				beforeEach(async () => {
+					await createUser(user);
+
+					await uploadAsset({
+						full_path: fullPath,
+						name: filename,
+						collection,
+						actor
+					});
+				});
+
+				const assertAllowed = async ({ actorIdentity }: { actorIdentity?: Identity } = {}) => {
+					actor.setIdentity(actorIdentity ?? user);
+					const { get_many_assets } = actor;
+
+					const result = await get_many_assets([[collection, fullPath]]);
+
+					const doc = fromNullable(result[0][1]);
+
+					expect(doc).not.toBeUndefined();
+				};
+
+				it('should get assets if no config', async () => {
+					await assertAllowed();
+				});
+			});
+
+			describe('delete an asset', () => {
+				const deleteAsset = async ({
+					actorIdentity
+				}: { actorIdentity?: Identity } = {}): Promise<void> => {
+					actor.setIdentity(actorIdentity ?? user);
+
+					const { del_asset } = actor;
+
+					await del_asset(collection, fullPath);
+				};
+
+				beforeEach(async () => {
+					await createUser(user);
+
+					await uploadAsset({
+						full_path: fullPath,
+						name: filename,
+						collection,
+						actor
+					});
+				});
+
+				const assertAllowed = async (params: { actorIdentity?: Identity } = {}) => {
+					await expect(deleteAsset(params)).resolves.not.toThrow();
+				};
+
+				it('should delete asset if no config', async () => {
+					await assertAllowed();
+				});
+			});
+
+			describe('delete many assets', () => {
+				const deleteAssets = async ({
+					actorIdentity
+				}: { actorIdentity?: Identity } = {}): Promise<void> => {
+					actor.setIdentity(actorIdentity ?? user);
+
+					const { del_many_assets } = actor;
+
+					await del_many_assets([[collection, fullPath]]);
+				};
+
+				beforeEach(async () => {
+					await createUser(user);
+
+					await uploadAsset({
+						full_path: fullPath,
+						name: filename,
+						collection,
+						actor
+					});
+				});
+
+				const assertAllowed = async (params: { actorIdentity?: Identity } = {}) => {
+					await expect(deleteAssets(params)).resolves.not.toThrow();
+				};
+
+				it('should delete assets if no config', async () => {
 					await assertAllowed();
 				});
 			});
@@ -1342,6 +1434,163 @@ describe('Satellite > Allowed Callers', () => {
 				it('should count assets if controller', async () => {
 					await expect(countAssets({ actorIdentity: controller })).resolves.not.toThrow();
 
+					await setSomeAllowedCaller();
+
+					await assertAllowed({ actorIdentity: controller });
+				});
+			});
+
+			describe('get many assets', () => {
+				beforeEach(async () => {
+					await resetAuthConfig();
+
+					await createUser(user);
+
+					await uploadAsset({
+						full_path: fullPath,
+						name: filename,
+						collection,
+						actor
+					});
+				});
+
+				it('should not get assets if not allowed', async () => {
+					await setSomeAllowedCaller();
+
+					actor.setIdentity(user);
+					const { get_many_assets } = actor;
+
+					const result = await get_many_assets([[collection, fullPath]]);
+
+					const asset = fromNullable(result[0][1]);
+
+					expect(asset).toBeUndefined();
+				});
+
+				const assertAllowed = async ({ actorIdentity }: { actorIdentity?: Identity } = {}) => {
+					actor.setIdentity(actorIdentity ?? user);
+					const { get_many_assets } = actor;
+
+					const result = await get_many_assets([[collection, fullPath]]);
+
+					const doc = fromNullable(result[0][1]);
+
+					expect(doc).not.toBeUndefined();
+				};
+
+				it('should get assets if no rules', async () => {
+					await assertAllowed();
+				});
+
+				it('should get assets if empty allowed callers', async () => {
+					await setEmptyAllowedCallers();
+
+					await assertAllowed();
+				});
+
+				it('should get assets if controller', async () => {
+					await setSomeAllowedCaller();
+
+					await assertAllowed({ actorIdentity: controller });
+				});
+			});
+
+			describe('delete an asset', () => {
+				const deleteAsset = async ({
+					actorIdentity
+				}: { actorIdentity?: Identity } = {}): Promise<void> => {
+					actor.setIdentity(actorIdentity ?? user);
+
+					const { del_asset } = actor;
+
+					await del_asset(collection, fullPath);
+				};
+
+				beforeEach(async () => {
+					await resetAuthConfig();
+
+					await createUser(user);
+
+					await uploadAsset({
+						full_path: fullPath,
+						name: filename,
+						collection,
+						actor
+					});
+				});
+
+				it('should not delete an asset if not allowed', async () => {
+					await setSomeAllowedCaller();
+
+					await expect(deleteAsset()).rejects.toThrow(JUNO_AUTH_ERROR_CALLER_NOT_ALLOWED);
+				});
+
+				const assertAllowed = async (params: { actorIdentity?: Identity } = {}) => {
+					await expect(deleteAsset(params)).resolves.not.toThrow();
+				};
+
+				it('should delete asset if no rules', async () => {
+					await assertAllowed();
+				});
+
+				it('should delete asset if empty allowed callers', async () => {
+					await setEmptyAllowedCallers();
+
+					await assertAllowed();
+				});
+
+				it('should delete asset if controller', async () => {
+					await setSomeAllowedCaller();
+
+					await assertAllowed({ actorIdentity: controller });
+				});
+			});
+
+			describe('delete many assets', () => {
+				const deleteAssets = async ({
+					actorIdentity
+				}: { actorIdentity?: Identity } = {}): Promise<void> => {
+					actor.setIdentity(actorIdentity ?? user);
+
+					const { del_many_assets } = actor;
+
+					await del_many_assets([[collection, fullPath]]);
+				};
+
+				beforeEach(async () => {
+					await resetAuthConfig();
+
+					await createUser(user);
+
+					await uploadAsset({
+						full_path: fullPath,
+						name: filename,
+						collection,
+						actor
+					});
+				});
+
+				it('should not delete assets if not allowed', async () => {
+					await setSomeAllowedCaller();
+
+					await expect(deleteAssets()).rejects.toThrow(JUNO_AUTH_ERROR_CALLER_NOT_ALLOWED);
+				});
+
+				const assertAllowed = async (params: { actorIdentity?: Identity } = {}) => {
+					await expect(deleteAssets(params)).resolves.not.toThrow();
+				};
+
+				it('should delete assets if no rules', async () => {
+					await assertAllowed();
+				});
+
+				it('should delete assets if empty allowed callers', async () => {
+					await setEmptyAllowedCallers();
+
+					await assertAllowed();
+				});
+
+				it('should delete assets if controller', async () => {
 					await setSomeAllowedCaller();
 
 					await assertAllowed({ actorIdentity: controller });

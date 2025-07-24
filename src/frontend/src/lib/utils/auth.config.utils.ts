@@ -22,7 +22,8 @@ export const buildSetAuthenticationConfig = ({
 						derivation_origin: [domainName],
 						external_alternative_origins
 					}
-				]
+				],
+				rules: toNullable()
 			}
 		: {
 				...config,

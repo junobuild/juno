@@ -10,17 +10,13 @@ pub fn assert_caller_is_allowed(
     controllers: &Controllers,
     config: &Option<AuthenticationConfig>,
 ) -> Result<(), String> {
-    if config.is_none() {
+    let Some(auth_config) = config else {
         return Ok(());
-    }
+    };
 
-    let auth_config = config.as_ref().unwrap();
-
-    if auth_config.rules.is_none() {
+    let Some(auth_rules) = &auth_config.rules else {
         return Ok(());
-    }
-
-    let auth_rules = auth_config.rules.as_ref().unwrap();
+    };
 
     if auth_rules.allowed_callers.is_empty() {
         return Ok(());
@@ -32,13 +28,13 @@ pub fn assert_caller_is_allowed(
         return Ok(());
     }
 
-    if !auth_rules
+    if auth_rules
         .allowed_callers
         .iter()
         .any(|allowed_caller| principal_equal(caller, *allowed_caller))
     {
-        return Err(JUNO_AUTH_ERROR_CALLER_NOT_ALLOWED.to_string());
+        return Ok(());
     }
 
-    Ok(())
+    Err(JUNO_AUTH_ERROR_CALLER_NOT_ALLOWED.to_string())
 }

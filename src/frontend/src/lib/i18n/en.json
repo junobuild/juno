@@ -349,7 +349,12 @@
 		"edit_configuration": "Update the configuration of your authentication using the form below.",
 		"main_domain_warn": "You are about to change your primary domain. Please ensure this is the desired action, as all existing users will no longer be recognized by your app.",
 		"external_alternative_origins": "External alternative origins",
-		"external_alternative_origins_placeholder": "A comma-separated list of external domains to allow for derivation"
+		"external_alternative_origins_placeholder": "A comma-separated list of external domains to allow for derivation",
+		"authorized_users": "Authorized Users",
+		"authorized_users_placeholder": "A comma-separated list of identities (user key format). Leave empty for no restrictions.",
+		"no_restrictions": "No restrictions",
+		"one_identity": "1 identity",
+		"identities": "{0} identities"
 	},
 	"datastore": {
 		"title": "Datastore",

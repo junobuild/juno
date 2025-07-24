@@ -1,3 +1,4 @@
+use crate::auth::store::get_config as get_auth_config;
 use crate::controllers::store::get_controllers;
 use crate::db::assert::{assert_delete_doc, assert_get_doc, assert_get_docs, assert_set_doc};
 use crate::db::state::{
@@ -94,8 +95,12 @@ pub fn get_doc_store(
 
 fn secure_get_doc(context: &StoreContext, key: Key) -> Result<Option<Doc>, String> {
     let rule = get_state_rule(context.collection)?;
+    let auth_config = get_auth_config();
 
-    let assert_context = AssertContext { rule: &rule };
+    let assert_context = AssertContext {
+        rule: &rule,
+        auth_config: &auth_config,
+    };
 
     get_doc_impl(context, &assert_context, key)
 }
@@ -172,8 +177,12 @@ fn secure_set_doc(
     value: SetDoc,
 ) -> Result<DocUpsert, String> {
     let rule = get_state_rule(context.collection)?;
+    let auth_config = get_auth_config();
 
-    let assert_context = AssertContext { rule: &rule };
+    let assert_context = AssertContext {
+        rule: &rule,
+        auth_config: &auth_config,
+    };
 
     set_doc_impl(context, &assert_context, config, key, value)
 }
@@ -270,9 +279,15 @@ fn secure_get_docs(
         controllers,
     };
 
-    assert_get_docs(&context)?;
-
     let rule = get_state_rule(&collection)?;
+    let auth_config = get_auth_config();
+
+    let assert_context = AssertContext {
+        rule: &rule,
+        auth_config: &auth_config,
+    };
+
+    assert_get_docs(&context, &assert_context)?;
 
     match rule.mem() {
         Memory::Heap => STATE.with(|state| {
@@ -356,8 +371,12 @@ fn secure_delete_doc(
     value: DelDoc,
 ) -> Result<Option<Doc>, String> {
     let rule = get_state_rule(context.collection)?;
+    let auth_config = get_auth_config();
 
-    let assert_context = AssertContext { rule: &rule };
+    let assert_context = AssertContext {
+        rule: &rule,
+        auth_config: &auth_config,
+    };
 
     delete_doc_impl(context, &assert_context, key, value)
 }
@@ -492,8 +511,12 @@ fn delete_filtered_docs_store_impl(
     docs: &ListResults<Doc>,
 ) -> Result<Vec<DocContext<Option<Doc>>>, String> {
     let rule = get_state_rule(context.collection)?;
+    let auth_config = get_auth_config();
 
-    let assert_context = AssertContext { rule: &rule };
+    let assert_context = AssertContext {
+        rule: &rule,
+        auth_config: &auth_config,
+    };
 
     let mut results: Vec<DocContext<Option<Doc>>> = Vec::new();
 

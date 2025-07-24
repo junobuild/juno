@@ -1,3 +1,4 @@
+use crate::auth::assert_caller::assert_caller_is_allowed;
 use crate::db::runtime::increment_and_assert_rate;
 use crate::db::types::config::DbConfig;
 use crate::db::types::state::{DocAssertDelete, DocAssertSet, DocContext};
@@ -27,9 +28,10 @@ pub fn assert_get_doc(
         controllers,
         collection: _,
     }: &StoreContext,
-    &AssertContext { rule }: &AssertContext,
+    &AssertContext { rule, auth_config }: &AssertContext,
     current_doc: &Doc,
 ) -> Result<(), String> {
+    assert_caller_is_allowed(caller, controllers, auth_config)?;
     assert_user_is_not_banned(caller, controllers)?;
 
     assert_read_permission(caller, controllers, current_doc, &rule.read)?;
@@ -43,7 +45,12 @@ pub fn assert_get_docs(
         controllers,
         collection: _,
     }: &StoreContext,
+    &AssertContext {
+        auth_config,
+        rule: _,
+    }: &AssertContext,
 ) -> Result<(), String> {
+    assert_caller_is_allowed(caller, controllers, auth_config)?;
     assert_user_is_not_banned(caller, controllers)?;
 
     Ok(())
@@ -55,12 +62,13 @@ pub fn assert_set_doc(
         controllers,
         collection,
     }: &StoreContext,
-    &AssertContext { rule }: &AssertContext,
+    &AssertContext { rule, auth_config }: &AssertContext,
     config: &Option<DbConfig>,
     key: &Key,
     value: &SetDoc,
     current_doc: &Option<Doc>,
 ) -> Result<(), String> {
+    assert_caller_is_allowed(caller, controllers, auth_config)?;
     assert_user_is_not_banned(caller, controllers)?;
 
     assert_user_collection_caller_key(caller, collection, key, current_doc)?;
@@ -102,11 +110,12 @@ pub fn assert_delete_doc(
         controllers,
         collection,
     }: &StoreContext,
-    &AssertContext { rule }: &AssertContext,
+    &AssertContext { rule, auth_config }: &AssertContext,
     key: &Key,
     value: &DelDoc,
     current_doc: &Option<Doc>,
 ) -> Result<(), String> {
+    assert_caller_is_allowed(caller, controllers, auth_config)?;
     assert_user_is_not_banned(caller, controllers)?;
 
     assert_write_permission(caller, controllers, current_doc, &rule.write)?;

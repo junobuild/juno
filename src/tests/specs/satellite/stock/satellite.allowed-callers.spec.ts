@@ -283,7 +283,7 @@ describe('Satellite > Allowed Callers', () => {
 					await createUser(user);
 				});
 
-				const assertAllowed = async (params: { actorIdentity?: Identity } = {}) => {
+				const assertAllowed = async () => {
 					await expect(deleteDoc()).resolves.not.toThrow();
 				};
 
@@ -409,7 +409,7 @@ describe('Satellite > Allowed Callers', () => {
 				await set_rule({ Storage: null }, collection, mockSetRule);
 			});
 
-			beforeEach(async () => {
+			beforeEach(() => {
 				user = Ed25519KeyIdentity.generate();
 				fullPath = `/${collection}/${user.getPrincipal().toText()}/hello.html`;
 			});

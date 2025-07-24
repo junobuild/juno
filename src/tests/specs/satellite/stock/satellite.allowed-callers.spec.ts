@@ -1,5 +1,6 @@
 import type {
 	AuthenticationConfig,
+	DelDoc,
 	Doc,
 	_SERVICE as SatelliteActor,
 	SetDoc
@@ -262,6 +263,63 @@ describe('Satellite > Allowed Callers', () => {
 					await assertAllowed();
 				});
 			});
+
+			describe('delete a document', () => {
+				const deleteDoc = async ({
+					actorIdentity
+				}: { actorIdentity?: Identity } = {}): Promise<void> => {
+					actor.setIdentity(actorIdentity ?? user);
+
+					const { del_doc } = actor;
+
+					await del_doc(collection, nanoid(), {
+						version: toNullable()
+					});
+				};
+
+				beforeEach(async () => {
+					await createUser(user);
+				});
+
+				const assertAllowed = async (params: { actorIdentity?: Identity } = {}) => {
+					await expect(deleteDoc()).resolves.not.toThrow();
+				};
+
+				it('should delete document if no config', async () => {
+					await assertAllowed();
+				});
+			});
+
+			describe('delete many documents', () => {
+				const deleteDocs = async ({
+					actorIdentity
+				}: { actorIdentity?: Identity } = {}): Promise<void> => {
+					actor.setIdentity(actorIdentity ?? user);
+
+					const { del_many_docs } = actor;
+
+					const data: DelDoc = {
+						version: toNullable()
+					};
+
+					await del_many_docs([
+						[collection, nanoid(), data],
+						[collection, nanoid(), data]
+					]);
+				};
+
+				beforeEach(async () => {
+					await createUser(user);
+				});
+
+				const assertAllowed = async (params: { actorIdentity?: Identity } = {}) => {
+					await expect(deleteDocs(params)).resolves.not.toThrow();
+				};
+
+				it('should delete documents if no config', async () => {
+					await assertAllowed();
+				});
+			});
 		});
 	});
 
@@ -520,6 +578,115 @@ describe('Satellite > Allowed Callers', () => {
 
 				it('should set many documents if controller', async () => {
 					await expect(createDocs({ actorIdentity: controller })).resolves.not.toThrow();
+
+					await setSomeAllowedCaller();
+
+					await assertAllowed({ actorIdentity: controller });
+				});
+			});
+
+			describe('delete a document', () => {
+				const deleteDoc = async ({
+					actorIdentity
+				}: { actorIdentity?: Identity } = {}): Promise<void> => {
+					actor.setIdentity(actorIdentity ?? user);
+
+					const { del_doc } = actor;
+
+					await del_doc(collection, nanoid(), {
+						version: toNullable()
+					});
+				};
+
+				beforeEach(async () => {
+					await resetAuthConfig();
+
+					await createUser(user);
+				});
+
+				it('should not delete document if not allowed', async () => {
+					await expect(deleteDoc()).resolves.not.toThrow();
+
+					await setSomeAllowedCaller();
+
+					await expect(deleteDoc()).rejects.toThrow(JUNO_AUTH_ERROR_CALLER_NOT_ALLOWED);
+				});
+
+				const assertAllowed = async (params: { actorIdentity?: Identity } = {}) => {
+					await expect(deleteDoc(params)).resolves.not.toThrow();
+				};
+
+				it('should delete document if no rules', async () => {
+					await assertAllowed();
+				});
+
+				it('should delete document if empty allowed callers', async () => {
+					await expect(deleteDoc()).resolves.not.toThrow();
+
+					await setEmptyAllowedCallers();
+
+					await assertAllowed();
+				});
+
+				it('should delete document if controller', async () => {
+					await expect(deleteDoc({ actorIdentity: controller })).resolves.not.toThrow();
+
+					await setSomeAllowedCaller();
+
+					await assertAllowed({ actorIdentity: controller });
+				});
+			});
+
+			describe('delete many documents', () => {
+				const deleteDocs = async ({
+					actorIdentity
+				}: { actorIdentity?: Identity } = {}): Promise<void> => {
+					actor.setIdentity(actorIdentity ?? user);
+
+					const { del_many_docs } = actor;
+
+					const data: DelDoc = {
+						version: toNullable()
+					};
+
+					await del_many_docs([
+						[collection, nanoid(), data],
+						[collection, nanoid(), data]
+					]);
+				};
+
+				beforeEach(async () => {
+					await resetAuthConfig();
+
+					await createUser(user);
+				});
+
+				it('should not delete documents if not allowed', async () => {
+					await expect(deleteDocs()).resolves.not.toThrow();
+
+					await setSomeAllowedCaller();
+
+					await expect(deleteDocs()).rejects.toThrow(JUNO_AUTH_ERROR_CALLER_NOT_ALLOWED);
+				});
+
+				const assertAllowed = async (params: { actorIdentity?: Identity } = {}) => {
+					await expect(deleteDocs(params)).resolves.not.toThrow();
+				};
+
+				it('should delete documents if no rules', async () => {
+					await assertAllowed();
+				});
+
+				it('should delete documents if empty allowed callers', async () => {
+					await expect(deleteDocs()).resolves.not.toThrow();
+
+					await setEmptyAllowedCallers();
+
+					await assertAllowed();
+				});
+
+				it('should delete document if controller', async () => {
+					await expect(deleteDocs({ actorIdentity: controller })).resolves.not.toThrow();
 
 					await setSomeAllowedCaller();
 

@@ -394,6 +394,56 @@ describe('Satellite > Allowed Callers', () => {
 				});
 			});
 		});
+
+		describe('Storage', () => {
+			let user: Identity;
+			let fullPath: string;
+			const filename = 'hello.html';
+
+			beforeAll(async () => {
+				actor.setIdentity(controller);
+
+				const { set_rule } = actor;
+
+				await set_rule({ Storage: null }, collection, mockSetRule);
+			});
+
+			beforeEach(async () => {
+				user = Ed25519KeyIdentity.generate();
+				fullPath = `/${collection}/${user.getPrincipal().toText()}/hello.html`;
+			});
+
+			describe('init asset upload', () => {
+				const initAsset = async ({
+					actorIdentity
+				}: { actorIdentity?: Identity } = {}): Promise<void> => {
+					actor.setIdentity(actorIdentity ?? user);
+
+					const { init_asset_upload } = actor;
+
+					await init_asset_upload({
+						collection,
+						description: toNullable(),
+						encoding_type: [],
+						full_path: fullPath,
+						name: filename,
+						token: toNullable()
+					});
+				};
+
+				beforeEach(async () => {
+					await createUser(user);
+				});
+
+				const assertAllowed = async (params: { actorIdentity?: Identity } = {}) => {
+					await expect(initAsset(params)).resolves.not.toThrow();
+				};
+
+				it('should init asset upload if no config', async () => {
+					await assertAllowed();
+				});
+			});
+		});
 	});
 
 	describe('With auth config', () => {
@@ -900,7 +950,7 @@ describe('Satellite > Allowed Callers', () => {
 					await assertAllowed();
 				});
 
-				it('should set document if empty allowed callers', async () => {
+				it('should count document if empty allowed callers', async () => {
 					await expect(countDocs()).resolves.not.toThrow();
 
 					await setEmptyAllowedCallers();
@@ -908,8 +958,86 @@ describe('Satellite > Allowed Callers', () => {
 					await assertAllowed();
 				});
 
-				it('should set document if controller', async () => {
+				it('should count document if controller', async () => {
 					await expect(countDocs({ actorIdentity: controller })).resolves.not.toThrow();
+
+					await setSomeAllowedCaller();
+
+					await assertAllowed({ actorIdentity: controller });
+				});
+			});
+		});
+
+		describe('Storage', () => {
+			let user: Identity;
+			let fullPath: string;
+			const filename = 'hello.html';
+
+			beforeAll(async () => {
+				actor.setIdentity(controller);
+
+				const { set_rule } = actor;
+
+				await set_rule({ Storage: null }, collection, mockSetRule);
+			});
+
+			beforeEach(async () => {
+				await resetAuthConfig();
+
+				user = Ed25519KeyIdentity.generate();
+				fullPath = `/${collection}/${user.getPrincipal().toText()}/hello.html`;
+			});
+
+			describe('init asset upload', () => {
+				const initAsset = async ({
+					actorIdentity
+				}: { actorIdentity?: Identity } = {}): Promise<void> => {
+					actor.setIdentity(actorIdentity ?? user);
+
+					const { init_asset_upload } = actor;
+
+					await init_asset_upload({
+						collection,
+						description: toNullable(),
+						encoding_type: [],
+						full_path: fullPath,
+						name: filename,
+						token: toNullable()
+					});
+				};
+
+				beforeEach(async () => {
+					await resetAuthConfig();
+
+					await createUser(user);
+				});
+
+				it('should not init asset upload if not allowed', async () => {
+					await expect(initAsset()).resolves.not.toThrow();
+
+					await setSomeAllowedCaller();
+
+					await expect(initAsset()).rejects.toThrow(JUNO_AUTH_ERROR_CALLER_NOT_ALLOWED);
+				});
+
+				const assertAllowed = async (params: { actorIdentity?: Identity } = {}) => {
+					await expect(initAsset(params)).resolves.not.toThrow();
+				};
+
+				it('should init asset upload if no rules', async () => {
+					await assertAllowed();
+				});
+
+				it('should init asset upload if empty allowed callers', async () => {
+					await expect(initAsset()).resolves.not.toThrow();
+
+					await setEmptyAllowedCallers();
+
+					await assertAllowed();
+				});
+
+				it('should init asset upload if controller', async () => {
+					await expect(initAsset({ actorIdentity: controller })).resolves.not.toThrow();
 
 					await setSomeAllowedCaller();
 

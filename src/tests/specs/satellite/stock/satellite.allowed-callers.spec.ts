@@ -11,9 +11,7 @@ import { Ed25519KeyIdentity } from '@dfinity/identity';
 import { type Actor, PocketIc } from '@dfinity/pic';
 import type { Principal } from '@dfinity/principal';
 import { fromNullable, toNullable } from '@dfinity/utils';
-import {
-	JUNO_AUTH_ERROR_CALLER_NOT_ALLOWED
-} from '@junobuild/errors';
+import { JUNO_AUTH_ERROR_CALLER_NOT_ALLOWED } from '@junobuild/errors';
 import { toArray } from '@junobuild/utils';
 import { nanoid } from 'nanoid';
 import { beforeAll, describe, expect, inject } from 'vitest';

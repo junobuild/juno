@@ -12,7 +12,9 @@ use ic_stable_structures::Storable;
 use junobuild_collections::constants::assets::DEFAULT_ASSETS_COLLECTIONS;
 use junobuild_collections::types::interface::SetRule;
 use junobuild_collections::types::rules::{Memory, Rule, Rules};
-use junobuild_shared::serializers::{deserialize_from_bytes, serialize_to_bytes};
+use junobuild_shared::serializers::{
+    deserialize_from_bytes, serialize_into_bytes, serialize_to_bytes,
+};
 use junobuild_shared::types::core::{Blob, Hash, Hashable};
 use junobuild_shared::types::state::Timestamped;
 use junobuild_shared::types::state::{Timestamp, Version, Versioned};
@@ -155,6 +157,10 @@ impl From<&Asset> for AssetNoContent {
 impl Storable for Asset {
     fn to_bytes(&self) -> Cow<[u8]> {
         serialize_to_bytes(self)
+    }
+
+    fn into_bytes(self) -> Vec<u8> {
+        serialize_into_bytes(&self)
     }
 
     fn from_bytes(bytes: Cow<[u8]>) -> Self {

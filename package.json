@@ -65,7 +65,7 @@
 		"@junobuild/cli-tools": "^0.3.0",
 		"@junobuild/config": "^0.4.2",
 		"@junobuild/config-loader": "^0.3.0",
-		"@junobuild/errors": "^0.1.0",
+		"@junobuild/errors": "^0.1.1",
 		"@junobuild/functions": "^0.2.3",
 		"@ltd/j-toml": "^1.38.0",
 		"@sveltejs/adapter-static": "^3.0.8",

@@ -4,6 +4,7 @@ use crate::store::filter::filter_notifications_range;
 use crate::types::interface::GetNotifications;
 use crate::types::state::{Notification, NotificationKey, NotificationsStable};
 use ic_cdk::api::time;
+use junobuild_shared::structures::collect_stable_vec;
 use junobuild_shared::types::state::SegmentId;
 
 pub fn insert_notification(
@@ -80,5 +81,5 @@ fn get_notifications_impl(
     filter: &GetNotifications,
     history: &NotificationsStable,
 ) -> Vec<(NotificationKey, Notification)> {
-    history.range(filter_notifications_range(filter)).collect()
+    collect_stable_vec(history.range(filter_notifications_range(filter)))
 }

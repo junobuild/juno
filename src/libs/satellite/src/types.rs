@@ -77,13 +77,20 @@ pub mod interface {
 }
 
 pub mod store {
+    use crate::auth::types::config::AuthenticationConfig;
     use junobuild_collections::types::core::CollectionKey;
+    use junobuild_collections::types::rules::Rule;
     use junobuild_shared::types::state::{Controllers, UserId};
 
     pub struct StoreContext<'a> {
         pub caller: UserId,
         pub controllers: &'a Controllers,
         pub collection: &'a CollectionKey,
+    }
+
+    pub struct AssertContext<'a> {
+        pub rule: &'a Rule,
+        pub auth_config: &'a Option<AuthenticationConfig>,
     }
 }
 

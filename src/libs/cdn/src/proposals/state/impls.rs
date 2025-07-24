@@ -3,7 +3,9 @@ use candid::Principal;
 use ic_cdk::api::time;
 use ic_stable_structures::storable::Bound;
 use ic_stable_structures::Storable;
-use junobuild_shared::serializers::{deserialize_from_bytes, serialize_to_bytes};
+use junobuild_shared::serializers::{
+    deserialize_from_bytes, serialize_into_bytes, serialize_to_bytes,
+};
 use junobuild_shared::types::core::Hash;
 use junobuild_shared::types::state::{Version, Versioned};
 use junobuild_shared::version::next_version;
@@ -12,6 +14,10 @@ use std::borrow::Cow;
 impl Storable for ProposalKey {
     fn to_bytes(&self) -> Cow<[u8]> {
         serialize_to_bytes(self)
+    }
+
+    fn into_bytes(self) -> Vec<u8> {
+        serialize_into_bytes(&self)
     }
 
     fn from_bytes(bytes: Cow<[u8]>) -> Self {
@@ -24,6 +30,10 @@ impl Storable for ProposalKey {
 impl Storable for Proposal {
     fn to_bytes(&self) -> Cow<[u8]> {
         serialize_to_bytes(self)
+    }
+
+    fn into_bytes(self) -> Vec<u8> {
+        serialize_into_bytes(&self)
     }
 
     fn from_bytes(bytes: Cow<[u8]>) -> Self {

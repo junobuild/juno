@@ -69,7 +69,8 @@ describe('Satellite > Authentication', () => {
 						derivation_origin: [invalidDomain],
 						external_alternative_origins: toNullable()
 					}
-				]
+				],
+				rules: []
 			};
 
 			await expect(set_auth_config(config)).rejects.toThrow(
@@ -86,7 +87,8 @@ describe('Satellite > Authentication', () => {
 						derivation_origin: toNullable(),
 						external_alternative_origins: [[invalidDomain]]
 					}
-				]
+				],
+				rules: []
 			};
 
 			await expect(set_auth_config(config)).rejects.toThrow(
@@ -103,7 +105,8 @@ describe('Satellite > Authentication', () => {
 						derivation_origin: ['domain.com'],
 						external_alternative_origins: toNullable()
 					}
-				]
+				],
+				rules: []
 			};
 
 			await set_auth_config(config);
@@ -145,7 +148,8 @@ describe('Satellite > Authentication', () => {
 						derivation_origin: ['domain.com'],
 						external_alternative_origins: [externalAlternativeOrigins]
 					}
-				]
+				],
+				rules: []
 			};
 
 			await set_auth_config(config);
@@ -187,7 +191,8 @@ describe('Satellite > Authentication', () => {
 						derivation_origin: [],
 						external_alternative_origins: toNullable()
 					}
-				]
+				],
+				rules: []
 			};
 
 			await set_auth_config(config);
@@ -215,7 +220,8 @@ describe('Satellite > Authentication', () => {
 			const { set_auth_config, get_auth_config } = actor;
 
 			const config: AuthenticationConfig = {
-				internet_identity: []
+				internet_identity: [],
+				rules: []
 			};
 
 			await set_auth_config(config);
@@ -255,7 +261,8 @@ describe('Satellite > Authentication', () => {
 							derivation_origin: ['domain.com'],
 							external_alternative_origins: toNullable()
 						}
-					]
+					],
+					rules: []
 				};
 
 				await set_auth_config(config);
@@ -290,7 +297,8 @@ describe('Satellite > Authentication', () => {
 							derivation_origin: [`${canisterId.toText()}.icp0.io`],
 							external_alternative_origins: toNullable()
 						}
-					]
+					],
+					rules: []
 				};
 
 				await set_auth_config(config);
@@ -328,7 +336,8 @@ describe('Satellite > Authentication', () => {
 							derivation_origin: [`${canisterId.toText()}.icp0.io`],
 							external_alternative_origins: toNullable()
 						}
-					]
+					],
+					rules: []
 				};
 
 				await set_auth_config(config);
@@ -358,7 +367,8 @@ describe('Satellite > Authentication', () => {
 							derivation_origin: ['domain.com'],
 							external_alternative_origins: [externalAlternativeOrigins]
 						}
-					]
+					],
+					rules: []
 				};
 
 				await set_auth_config(config);
@@ -397,7 +407,8 @@ describe('Satellite > Authentication', () => {
 							derivation_origin: [`${canisterId.toText()}.icp0.io`],
 							external_alternative_origins: [[urls[0], externalAlternativeOrigins[0]]]
 						}
-					]
+					],
+					rules: []
 				};
 
 				await set_auth_config(config);
@@ -432,7 +443,8 @@ describe('Satellite > Authentication', () => {
 							derivation_origin: [`${canisterId.toText()}.icp0.io`],
 							external_alternative_origins: [externalAlternativeOrigins]
 						}
-					]
+					],
+					rules: []
 				};
 
 				await set_auth_config(config);
@@ -470,7 +482,8 @@ describe('Satellite > Authentication', () => {
 							derivation_origin: [`${canisterId.toText()}.icp0.io`],
 							external_alternative_origins: toNullable()
 						}
-					]
+					],
+					rules: []
 				};
 
 				await set_auth_config(config);
@@ -500,7 +513,8 @@ describe('Satellite > Authentication', () => {
 				set_auth_config({
 					internet_identity: [
 						{ derivation_origin: ['demo.com'], external_alternative_origins: toNullable() }
-					]
+					],
+					rules: []
 				})
 			).rejects.toThrow(JUNO_AUTH_ERROR_NOT_ADMIN_CONTROLLER);
 		});

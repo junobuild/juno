@@ -11,13 +11,13 @@ import { Ed25519KeyIdentity } from '@dfinity/identity';
 import { type Actor, PocketIc } from '@dfinity/pic';
 import type { Principal } from '@dfinity/principal';
 import { fromNullable, toNullable } from '@dfinity/utils';
-import { JUNO_AUTH_ERROR_CALLER_NOT_ALLOWED, JUNO_DATASTORE_ERROR_USER_NOT_ALLOWED } from '@junobuild/errors';
+import { JUNO_AUTH_ERROR_CALLER_NOT_ALLOWED } from '@junobuild/errors';
 import { toArray } from '@junobuild/utils';
 import { nanoid } from 'nanoid';
 import { beforeAll, describe, expect, inject } from 'vitest';
 import { mockSetRule } from '../../../mocks/collection.mocks';
-import { controllersInitArgs, SATELLITE_WASM_PATH } from '../../../utils/setup-tests.utils';
 import { mockListParams } from '../../../mocks/list.mocks';
+import { controllersInitArgs, SATELLITE_WASM_PATH } from '../../../utils/setup-tests.utils';
 
 describe('Satellite > Allowed Callers', () => {
 	let pic: PocketIc;
@@ -323,7 +323,9 @@ describe('Satellite > Allowed Callers', () => {
 			});
 
 			describe('delete filtered documents', () => {
-				const deleteFilteredDocs = async ({actorIdentity}: { actorIdentity?: Identity } = {}): Promise<void> => {
+				const deleteFilteredDocs = async ({
+					actorIdentity
+				}: { actorIdentity?: Identity } = {}): Promise<void> => {
 					actor.setIdentity(actorIdentity ?? user);
 
 					const { del_filtered_docs } = actor;
@@ -345,7 +347,9 @@ describe('Satellite > Allowed Callers', () => {
 			});
 
 			describe('list documents', () => {
-				const listDocs = async ({actorIdentity}: { actorIdentity?: Identity } = {}): Promise<void> => {
+				const listDocs = async ({
+					actorIdentity
+				}: { actorIdentity?: Identity } = {}): Promise<void> => {
 					actor.setIdentity(actorIdentity ?? user);
 
 					const { list_docs } = actor;
@@ -362,6 +366,30 @@ describe('Satellite > Allowed Callers', () => {
 				};
 
 				it('should list documents if no config', async () => {
+					await assertAllowed();
+				});
+			});
+
+			describe('count documents', () => {
+				const countDocs = async ({
+					actorIdentity
+				}: { actorIdentity?: Identity } = {}): Promise<void> => {
+					actor.setIdentity(actorIdentity ?? user);
+
+					const { count_docs } = actor;
+
+					await count_docs(collection, mockListParams);
+				};
+
+				beforeEach(async () => {
+					await createUser(user);
+				});
+
+				const assertAllowed = async (params: { actorIdentity?: Identity } = {}) => {
+					await expect(countDocs(params)).resolves.not.toThrow();
+				};
+
+				it('should count document if no config', async () => {
 					await assertAllowed();
 				});
 			});
@@ -740,7 +768,9 @@ describe('Satellite > Allowed Callers', () => {
 			});
 
 			describe('delete filtered documents', () => {
-				const deleteFilteredDocs = async ({actorIdentity}: { actorIdentity?: Identity } = {}): Promise<void> => {
+				const deleteFilteredDocs = async ({
+					actorIdentity
+				}: { actorIdentity?: Identity } = {}): Promise<void> => {
 					actor.setIdentity(actorIdentity ?? user);
 
 					const { del_filtered_docs } = actor;
@@ -788,7 +818,9 @@ describe('Satellite > Allowed Callers', () => {
 			});
 
 			describe('list documents', () => {
-				const listDocs = async ({actorIdentity}: { actorIdentity?: Identity } = {}): Promise<void> => {
+				const listDocs = async ({
+					actorIdentity
+				}: { actorIdentity?: Identity } = {}): Promise<void> => {
 					actor.setIdentity(actorIdentity ?? user);
 
 					const { list_docs } = actor;
@@ -828,6 +860,56 @@ describe('Satellite > Allowed Callers', () => {
 
 				it('should list documents if controller', async () => {
 					await expect(listDocs({ actorIdentity: controller })).resolves.not.toThrow();
+
+					await setSomeAllowedCaller();
+
+					await assertAllowed({ actorIdentity: controller });
+				});
+			});
+
+			describe('count documents', () => {
+				const countDocs = async ({
+					actorIdentity
+				}: { actorIdentity?: Identity } = {}): Promise<void> => {
+					actor.setIdentity(actorIdentity ?? user);
+
+					const { count_docs } = actor;
+
+					await count_docs(collection, mockListParams);
+				};
+
+				beforeEach(async () => {
+					await resetAuthConfig();
+
+					await createUser(user);
+				});
+
+				it('should not count documents if not allowed', async () => {
+					await expect(countDocs()).resolves.not.toThrow();
+
+					await setSomeAllowedCaller();
+
+					await expect(countDocs()).rejects.toThrow(JUNO_AUTH_ERROR_CALLER_NOT_ALLOWED);
+				});
+
+				const assertAllowed = async (params: { actorIdentity?: Identity } = {}) => {
+					await expect(countDocs(params)).resolves.not.toThrow();
+				};
+
+				it('should count document if no rules', async () => {
+					await assertAllowed();
+				});
+
+				it('should set document if empty allowed callers', async () => {
+					await expect(countDocs()).resolves.not.toThrow();
+
+					await setEmptyAllowedCallers();
+
+					await assertAllowed();
+				});
+
+				it('should set document if controller', async () => {
+					await expect(countDocs({ actorIdentity: controller })).resolves.not.toThrow();
 
 					await setSomeAllowedCaller();
 

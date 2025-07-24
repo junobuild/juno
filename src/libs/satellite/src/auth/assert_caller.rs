@@ -35,7 +35,7 @@ pub fn assert_caller_is_allowed(
     if !auth_rules
         .allowed_callers
         .iter()
-        .any(|user| principal_equal(caller, *user))
+        .any(|allowed_caller| principal_equal(caller, *allowed_caller))
     {
         return Err(JUNO_AUTH_ERROR_CALLER_NOT_ALLOWED.to_string());
     }

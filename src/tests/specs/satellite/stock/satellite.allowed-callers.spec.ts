@@ -1,7 +1,8 @@
 import type {
 	AuthenticationConfig,
 	Doc,
-	_SERVICE as SatelliteActor
+	_SERVICE as SatelliteActor,
+	SetDoc
 } from '$declarations/satellite/satellite.did';
 import { idlFactory as idlFactorSatellite } from '$declarations/satellite/satellite.factory.did';
 import type { Identity } from '@dfinity/agent';
@@ -9,7 +10,7 @@ import { Ed25519KeyIdentity } from '@dfinity/identity';
 import { type Actor, PocketIc } from '@dfinity/pic';
 import type { Principal } from '@dfinity/principal';
 import { fromNullable, toNullable } from '@dfinity/utils';
-import { JUNO_AUTH_ERROR_CALLER_NOT_ALLOWED, JUNO_DATASTORE_ERROR_USER_NOT_ALLOWED } from '@junobuild/errors';
+import { JUNO_AUTH_ERROR_CALLER_NOT_ALLOWED } from '@junobuild/errors';
 import { toArray } from '@junobuild/utils';
 import { nanoid } from 'nanoid';
 import { beforeAll, describe, expect, inject } from 'vitest';
@@ -191,6 +192,73 @@ describe('Satellite > Allowed Callers', () => {
 				};
 
 				it('should get documents if no config', async () => {
+					await assertAllowed();
+				});
+			});
+
+			describe('set document', () => {
+				const createDoc = async ({
+					actorIdentity
+				}: { actorIdentity?: Identity } = {}): Promise<Doc> => {
+					actor.setIdentity(actorIdentity ?? user);
+
+					const { set_doc } = actor;
+
+					return await set_doc(collection, nanoid(), {
+						data: await toArray({
+							hello: 'world'
+						}),
+						description: toNullable(),
+						version: toNullable()
+					});
+				};
+
+				beforeEach(async () => {
+					await createUser(user);
+				});
+
+				const assertAllowed = async (params: { actorIdentity?: Identity } = {}) => {
+					const doc = await createDoc(params);
+
+					expect(doc).not.toBeUndefined();
+				};
+
+				it('should set document if no config', async () => {
+					await assertAllowed();
+				});
+			});
+
+			describe('set many documents', () => {
+				const createDocs = async ({
+					actorIdentity
+				}: { actorIdentity?: Identity } = {}): Promise<void> => {
+					actor.setIdentity(actorIdentity ?? user);
+
+					const { set_many_docs } = actor;
+
+					const data: SetDoc = {
+						data: await toArray({
+							hello: 'world'
+						}),
+						description: toNullable(),
+						version: toNullable()
+					};
+
+					await set_many_docs([
+						[collection, nanoid(), data],
+						[collection, nanoid(), data]
+					]);
+				};
+
+				beforeEach(async () => {
+					await createUser(user);
+				});
+
+				const assertAllowed = async (params: { actorIdentity?: Identity } = {}) => {
+					await expect(createDocs(params)).resolves.not.toThrow();
+				};
+
+				it('should set many documents if no config', async () => {
 					await assertAllowed();
 				});
 			});
@@ -377,11 +445,11 @@ describe('Satellite > Allowed Callers', () => {
 					expect(doc).not.toBeUndefined();
 				};
 
-				it('should get documents if no rules', async () => {
+				it('should set document if no rules', async () => {
 					await assertAllowed();
 				});
 
-				it('should get documents if empty allowed callers', async () => {
+				it('should set document if empty allowed callers', async () => {
 					await createDoc();
 
 					await setEmptyAllowedCallers();
@@ -389,8 +457,69 @@ describe('Satellite > Allowed Callers', () => {
 					await assertAllowed();
 				});
 
-				it('should get documents if controller', async () => {
-					await createDoc();
+				it('should set document if controller', async () => {
+					await createDoc({ actorIdentity: controller });
+
+					await setSomeAllowedCaller();
+
+					await assertAllowed({ actorIdentity: controller });
+				});
+			});
+
+			describe('set many documents', () => {
+				const createDocs = async ({
+					actorIdentity
+				}: { actorIdentity?: Identity } = {}): Promise<void> => {
+					actor.setIdentity(actorIdentity ?? user);
+
+					const { set_many_docs } = actor;
+
+					const data: SetDoc = {
+						data: await toArray({
+							hello: 'world'
+						}),
+						description: toNullable(),
+						version: toNullable()
+					};
+
+					await set_many_docs([
+						[collection, nanoid(), data],
+						[collection, nanoid(), data]
+					]);
+				};
+
+				beforeEach(async () => {
+					await resetAuthConfig();
+
+					await createUser(user);
+				});
+
+				it('should not set many documents if not allowed', async () => {
+					await expect(createDocs()).resolves.not.toThrow();
+
+					await setSomeAllowedCaller();
+
+					await expect(createDocs()).rejects.toThrow(JUNO_AUTH_ERROR_CALLER_NOT_ALLOWED);
+				});
+
+				const assertAllowed = async (params: { actorIdentity?: Identity } = {}) => {
+					await expect(createDocs(params)).resolves.not.toThrow();
+				};
+
+				it('should set many documents if no rules', async () => {
+					await assertAllowed();
+				});
+
+				it('should set many documents if empty allowed callers', async () => {
+					await expect(createDocs()).resolves.not.toThrow();
+
+					await setEmptyAllowedCallers();
+
+					await assertAllowed();
+				});
+
+				it('should set many documents if controller', async () => {
+					await expect(createDocs({ actorIdentity: controller })).resolves.not.toThrow();
 
 					await setSomeAllowedCaller();
 

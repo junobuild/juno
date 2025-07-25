@@ -10,6 +10,7 @@
 	import { i18n } from '$lib/stores/i18n.store';
 	import type { JunoModalDetail, JunoModalEditAuthConfigDetail } from '$lib/types/modal';
 	import { emit } from '$lib/utils/events.utils';
+	import {Principal} from "@dfinity/principal";
 
 	interface Props {
 		detail: JunoModalDetail;
@@ -32,6 +33,8 @@
 
 	let externalAlternativeOrigins = $state('');
 
+	let allowedCallers = $state<Principal[]>([]);
+
 	let step: 'init' | 'in_progress' | 'ready' | 'error' = $state('init');
 
 	const handleSubmit = async ($event: SubmitEvent) => {
@@ -47,6 +50,7 @@
 			rule,
 			derivationOrigin: selectedDerivationOrigin,
 			externalAlternativeOrigins,
+			allowedCallers,
 			config
 		});
 
@@ -82,6 +86,7 @@
 			bind:maxTokens
 			bind:selectedDerivationOrigin
 			bind:externalAlternativeOrigins
+			bind:allowedCallers
 		/>
 	{/if}
 </Modal>

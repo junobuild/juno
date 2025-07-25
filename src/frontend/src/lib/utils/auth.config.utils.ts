@@ -9,7 +9,7 @@ export const buildSetAuthenticationConfig = ({
 	config: AuthenticationConfig | undefined;
 	domainName: string;
 	externalOrigins?: string[];
-}): AuthenticationConfig => {
+}): Omit<AuthenticationConfig, 'rules'> => {
 	const external_alternative_origins: [] | [string[]] =
 		isNullish(externalOrigins) || externalOrigins.length === 0
 			? toNullable()
@@ -22,8 +22,7 @@ export const buildSetAuthenticationConfig = ({
 						derivation_origin: [domainName],
 						external_alternative_origins
 					}
-				],
-				rules: toNullable()
+				]
 			}
 		: {
 				...config,
@@ -41,7 +40,7 @@ export const buildSetAuthenticationConfig = ({
 
 export const buildDeleteAuthenticationConfig = (
 	config: AuthenticationConfig
-): AuthenticationConfig => ({
+): Omit<AuthenticationConfig, "rules"> => ({
 	...config,
 	...(nonNullish(fromNullable(config.internet_identity)) && {
 		internet_identity: [

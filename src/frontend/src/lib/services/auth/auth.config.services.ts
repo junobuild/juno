@@ -1,5 +1,9 @@
 import type { Satellite } from '$declarations/mission_control/mission_control.did';
-import type { AuthenticationConfig, Rule } from '$declarations/satellite/satellite.did';
+import type {
+	AuthenticationConfig,
+	AuthenticationRules,
+	Rule
+} from '$declarations/satellite/satellite.did';
 import { getAuthConfig as getAuthConfigApi, setAuthConfig, setRule } from '$lib/api/satellites.api';
 import { DEFAULT_RATE_CONFIG_TIME_PER_TOKEN_NS } from '$lib/constants/data.constants';
 import { DbCollectionType } from '$lib/constants/rules.constants';
@@ -31,6 +35,7 @@ interface UpdateAuthConfigParams {
 	config: AuthenticationConfig | undefined;
 	maxTokens: number | undefined;
 	externalAlternativeOrigins: string;
+	allowedCallers: Principal[];
 	derivationOrigin: Option<URL>;
 	identity: OptionIdentity;
 }
@@ -42,6 +47,7 @@ export const updateAuthConfig = async ({
 	maxTokens,
 	derivationOrigin,
 	externalAlternativeOrigins,
+	allowedCallers,
 	identity
 }: UpdateAuthConfigParams): Promise<{ success: 'ok' | 'cancelled' | 'error'; err?: unknown }> => {
 	const labels = get(i18n);
@@ -76,6 +82,7 @@ export const updateAuthConfig = async ({
 		satellite,
 		derivationOrigin,
 		externalOrigins,
+		allowedCallers,
 		config,
 		identity
 	});
@@ -92,8 +99,9 @@ const updateConfig = async ({
 	config,
 	derivationOrigin,
 	externalOrigins,
+	allowedCallers,
 	identity
-}: Pick<UpdateAuthConfigParams, 'config' | 'derivationOrigin' | 'satellite'> &
+}: Pick<UpdateAuthConfigParams, 'config' | 'derivationOrigin' | 'allowedCallers' | 'satellite'> &
 	Required<Pick<UpdateAuthConfigParams, 'identity'>> & { externalOrigins: string[] }): Promise<{
 	result: 'skip' | 'success' | 'error';
 	err?: unknown;
@@ -109,22 +117,38 @@ const updateConfig = async ({
 		return { result: 'skip' };
 	}
 
-	const editConfig = nonNullish(derivationOrigin)
+	const editConfigWithoutRules = nonNullish(derivationOrigin)
 		? // We use the host in the backend satellite which parse the url with https to generate the /.well-known/ii-alternative-origins
 			buildSetAuthenticationConfig({ config, domainName: derivationOrigin.host, externalOrigins })
 		: nonNullish(config)
 			? buildDeleteAuthenticationConfig(config)
 			: undefined;
 
-	// Do nothing if there is no current config and no derivation origin was selected
-	if (isNullish(editConfig)) {
+	const currentAllowedCallers = fromNullishNullable(config?.rules)?.allowed_callers ?? [];
+	const unmodifiedRules =
+		currentAllowedCallers.length === allowedCallers.length &&
+		currentAllowedCallers.every(
+			(caller, i) =>
+				allowedCallers.find((allowedCaller) => allowedCaller.toText() === caller.toText()) !==
+				undefined
+		);
+
+	// Do nothing if there is no current config and no derivation origin was selected and the allowed callers are untouched as well
+	if (isNullish(editConfigWithoutRules) && unmodifiedRules) {
 		return { result: 'skip' };
 	}
+
+	const editConfigRules = toNullable(
+		allowedCallers.length > 0 ? { allowed_callers: allowedCallers } : undefined
+	);
 
 	try {
 		await setAuthConfig({
 			satelliteId,
-			config: editConfig,
+			config: {
+				internet_identity: editConfigWithoutRules?.internet_identity ?? config?.internet_identity ?? [],
+				rules: unmodifiedRules ? (config?.rules ?? []) : editConfigRules
+			},
 			identity
 		});
 	} catch (err: unknown) {

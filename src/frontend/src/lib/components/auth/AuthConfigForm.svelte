@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { Principal } from '@dfinity/principal';
 	import {
 		fromNullable,
 		fromNullishNullable,
@@ -6,6 +7,7 @@
 		nonNullish,
 		notEmptyString
 	} from '@dfinity/utils';
+	import { PrincipalTextSchema } from '@dfinity/zod-schemas';
 	import { fade } from 'svelte/transition';
 	import type { Satellite } from '$declarations/mission_control/mission_control.did';
 	import type { AuthenticationConfig, Rule } from '$declarations/satellite/satellite.did';
@@ -17,8 +19,6 @@
 	import { isBusy } from '$lib/stores/busy.store';
 	import { i18n } from '$lib/stores/i18n.store';
 	import { satelliteUrl as satelliteUrlUtils } from '$lib/utils/satellite.utils';
-	import { Principal } from '@dfinity/principal';
-	import { PrincipalTextSchema } from '@dfinity/zod-schemas';
 
 	interface Props {
 		config: AuthenticationConfig | undefined;

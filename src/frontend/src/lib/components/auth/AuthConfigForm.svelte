@@ -157,18 +157,6 @@
 					bind:value={allowedCallersInput}
 					placeholder={$i18n.authentication.authorized_users_placeholder}
 				></textarea>
-
-				<select id="logVisibility" name="logVisibility" bind:value={derivationOrigin}>
-					<option value={undefined}>{$i18n.authentication.not_configured}</option>
-
-					{#if nonNullish(satelliteUrl)}
-						<option value={satelliteUrl.host}>{satelliteUrl.host}</option>
-					{/if}
-
-					{#each customDomains as customDomain (customDomain.host)}
-						<option value={customDomain.host}>{customDomain.host}</option>
-					{/each}
-				</select>
 			</Value>
 		</div>
 

@@ -1,9 +1,5 @@
 import type { Satellite } from '$declarations/mission_control/mission_control.did';
-import type {
-	AuthenticationConfig,
-	AuthenticationRules,
-	Rule
-} from '$declarations/satellite/satellite.did';
+import type { AuthenticationConfig, Rule } from '$declarations/satellite/satellite.did';
 import { getAuthConfig as getAuthConfigApi, setAuthConfig, setRule } from '$lib/api/satellites.api';
 import { DEFAULT_RATE_CONFIG_TIME_PER_TOKEN_NS } from '$lib/constants/data.constants';
 import { DbCollectionType } from '$lib/constants/rules.constants';
@@ -106,18 +102,7 @@ const updateConfig = async ({
 	result: 'skip' | 'success' | 'error';
 	err?: unknown;
 }> => {
-	// TODO: Allowing the same host to be set again is currently useful
-	// because it triggers the regeneration of the /.well-known/ii-alternative-origins file.
-	// This is helpful when users add more domains, as they can be included in the updated file.
-	if (
-		isNullish(derivationOrigin?.host) &&
-		derivationOrigin?.host ===
-			fromNullishNullable(fromNullishNullable(config?.internet_identity)?.derivation_origin)
-	) {
-		return { result: 'skip' };
-	}
-
-	const editConfigWithoutRules = nonNullish(derivationOrigin)
+	const editConfig = nonNullish(derivationOrigin)
 		? // We use the host in the backend satellite which parse the url with https to generate the /.well-known/ii-alternative-origins
 			buildSetAuthenticationConfig({ config, domainName: derivationOrigin.host, externalOrigins })
 		: nonNullish(config)
@@ -134,7 +119,7 @@ const updateConfig = async ({
 		);
 
 	// Do nothing if there is no current config and no derivation origin was selected and the allowed callers are untouched as well
-	if (isNullish(editConfigWithoutRules) && unmodifiedRules) {
+	if (isNullish(editConfig) && unmodifiedRules) {
 		return { result: 'skip' };
 	}
 
@@ -146,7 +131,7 @@ const updateConfig = async ({
 		await setAuthConfig({
 			satelliteId,
 			config: {
-				internet_identity: editConfigWithoutRules?.internet_identity ?? config?.internet_identity ?? [],
+				internet_identity: editConfig?.internet_identity ?? config?.internet_identity ?? [],
 				rules: unmodifiedRules ? (config?.rules ?? []) : editConfigRules
 			},
 			identity

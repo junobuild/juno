@@ -99,6 +99,9 @@ export const idlFactory = ({ IDL }) => {
 		heap: IDL.Opt(IDL.Nat64)
 	});
 	const DbConfig = IDL.Record({
+		updated_at: IDL.Opt(IDL.Nat64),
+		created_at: IDL.Opt(IDL.Nat64),
+		version: IDL.Opt(IDL.Nat64),
 		max_memory_size: IDL.Opt(ConfigMaxMemorySize)
 	});
 	const StorageConfigIFrame = IDL.Variant({
@@ -283,6 +286,10 @@ export const idlFactory = ({ IDL }) => {
 		controller: SetController,
 		controllers: IDL.Vec(IDL.Principal)
 	});
+	const SetDbConfig = IDL.Record({
+		version: IDL.Opt(IDL.Nat64),
+		max_memory_size: IDL.Opt(ConfigMaxMemorySize)
+	});
 	const SetDoc = IDL.Record({
 		data: IDL.Vec(IDL.Nat8),
 		description: IDL.Opt(IDL.Text),
@@ -374,7 +381,7 @@ export const idlFactory = ({ IDL }) => {
 			[]
 		),
 		set_custom_domain: IDL.Func([IDL.Text, IDL.Opt(IDL.Text)], [], []),
-		set_db_config: IDL.Func([DbConfig], [], []),
+		set_db_config: IDL.Func([SetDbConfig], [DbConfig], []),
 		set_doc: IDL.Func([IDL.Text, IDL.Text, SetDoc], [Doc], []),
 		set_many_docs: IDL.Func(
 			[IDL.Vec(IDL.Tuple(IDL.Text, IDL.Text, SetDoc))],

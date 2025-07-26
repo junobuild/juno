@@ -1,7 +1,7 @@
 import type {
-	DbConfig,
 	ListParams,
 	_SERVICE as SatelliteActor,
+	SetDbConfig,
 	SetRule
 } from '$declarations/satellite/satellite.did';
 import { idlFactory as idlFactorSatellite } from '$declarations/satellite/satellite.factory.did';
@@ -17,7 +17,7 @@ import {
 	JUNO_ERROR_VERSION_OUTDATED_OR_FUTURE
 } from '@junobuild/errors';
 import { nanoid } from 'nanoid';
-import { inject } from 'vitest';
+import { expect, inject } from 'vitest';
 import { mockData } from '../../../mocks/doc.mocks';
 import { createDoc as createDocUtils } from '../../../utils/satellite-doc-tests.utils';
 import { controllersInitArgs, SATELLITE_WASM_PATH } from '../../../utils/setup-tests.utils';
@@ -208,25 +208,61 @@ describe.each([{ memory: { Heap: null } }, { memory: { Stable: null } }])(
 			it('should set db config', async () => {
 				const { set_db_config, get_db_config } = actor;
 
-				const config: DbConfig = {
+				const config: SetDbConfig = {
 					max_memory_size: [
 						{
 							heap: [1234n],
 							stable: [789n]
 						}
-					]
+					],
+					version: []
 				};
 
 				await set_db_config(config);
 
-				const result = await get_db_config();
+				const result = fromNullable(await get_db_config());
 
-				expect(result).toEqual([config]);
+				assertNonNullish(result);
+
+				expect(fromNullable(result.updated_at)).not.toBeUndefined();
+				expect(fromNullable(result.updated_at)).toBeGreaterThan(0n);
+				expect(fromNullable(result.created_at)).not.toBeUndefined();
+				expect(fromNullable(result.created_at)).toBeGreaterThan(0n);
+
+				expect(result.version).toEqual(toNullable(1n));
+
+				expect(result.max_memory_size).toEqual(config.max_memory_size);
 
 				// Redo for next test
 				await set_db_config({
-					max_memory_size: []
+					max_memory_size: [],
+					version: [1n]
 				});
+			});
+
+			it('should not set db config if incorrect version', async () => {
+				const { set_db_config } = actor;
+
+				await expect(
+					set_db_config({
+						max_memory_size: [],
+						version: [1n]
+					})
+				).rejects.toThrow(JUNO_ERROR_VERSION_OUTDATED_OR_FUTURE);
+
+				await expect(
+					set_db_config({
+						max_memory_size: [],
+						version: [99n]
+					})
+				).rejects.toThrow(JUNO_ERROR_VERSION_OUTDATED_OR_FUTURE);
+
+				await expect(
+					set_db_config({
+						max_memory_size: [],
+						version: []
+					})
+				).rejects.toThrow(JUNO_ERROR_NO_VERSION_PROVIDED);
 			});
 		});
 
@@ -817,7 +853,8 @@ describe.each([{ memory: { Heap: null } }, { memory: { Stable: null } }])(
 						max_memory_size: toNullable({
 							heap: 'Heap' in memory ? [20_000n] : [],
 							stable: 'Stable' in memory ? [20_000n] : []
-						})
+						}),
+						version: ['Heap' in memory ? 2n : 3n]
 					});
 				});
 

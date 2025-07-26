@@ -1,8 +1,10 @@
 <script lang="ts">
 	import IconWallet from '$lib/components/icons/IconWallet.svelte';
+	import ReceiveTokens from '$lib/components/tokens/ReceiveTokens.svelte';
 	import ButtonIcon from '$lib/components/ui/ButtonIcon.svelte';
 	import Popover from '$lib/components/ui/Popover.svelte';
 	import Value from '$lib/components/ui/Value.svelte';
+	import WalletActions from '$lib/components/wallet/WalletActions.svelte';
 	import WalletIds from '$lib/components/wallet/WalletIds.svelte';
 	import WalletInlineBalance from '$lib/components/wallet/WalletInlineBalance.svelte';
 	import { balance } from '$lib/derived/balance.derived';
@@ -19,6 +21,13 @@
 	let visible: boolean = $state(false);
 
 	const onclick = () => (visible = true);
+
+	let receiveVisible = $state(false);
+
+	const openReceive = () => {
+		visible = false;
+		receiveVisible = true;
+	};
 </script>
 
 <ButtonIcon {onclick} bind:button>
@@ -42,8 +51,14 @@
 		</div>
 
 		<WalletIds {missionControlId} />
+
+		<div class="actions">
+			<WalletActions {missionControlId} onsend={() => (visible = false)} onreceive={openReceive} />
+		</div>
 	</div>
 </Popover>
+
+<ReceiveTokens bind:visible={receiveVisible} {missionControlId} />
 
 <style lang="scss">
 	@use '../../styles/mixins/overlay';
@@ -59,5 +74,9 @@
 		:global(p) {
 			margin: 0;
 		}
+	}
+
+	.actions {
+		margin: var(--padding) 0 0;
 	}
 </style>

@@ -54,7 +54,7 @@
 				compare(version, SATELLITE_v0_0_10) >= 0
 					? listAssets
 					: compare(version, SATELLITE_v0_0_9) >= 0
-						? listAssets009
+						? listAssets0
 						: listAssets008;
 
 			const { items, matches_length, items_length } = await list({

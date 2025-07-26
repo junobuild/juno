@@ -45,8 +45,8 @@
 				satelliteId,
 				collection
 			});
-
-			listParamsStore.reset();
+           
+			
 		} catch (err: unknown) {
 			toasts.error({
 				text: $i18n.errors.data_delete,

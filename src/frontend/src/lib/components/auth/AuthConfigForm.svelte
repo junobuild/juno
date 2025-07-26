@@ -92,6 +92,7 @@
 	$effect(() => {
 		allowedCallers = allowedCallersInput
 			.split(/[\n,]+/)
+			.map((input) => input.toLowerCase().trim())
 			.filter(notEmptyString)
 			.filter((input) => PrincipalTextSchema.safeParse(input).success)
 			.map((input) => Principal.fromText(input));

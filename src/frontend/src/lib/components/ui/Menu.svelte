@@ -120,7 +120,7 @@
 	}
 
 	.logo {
-		padding: calc(var(--padding-4x) - 2px) 0 13vh;
+		padding: calc(var(--padding-4x) - 1px) 0 13vh;
 		min-height: 20vh;
 	}
 

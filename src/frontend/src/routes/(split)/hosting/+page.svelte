@@ -7,7 +7,7 @@
 	import SatelliteGuard from '$lib/components/guards/SatelliteGuard.svelte';
 	import Hosting from '$lib/components/hosting/Hosting.svelte';
 	import Loaders from '$lib/components/loaders/Loaders.svelte';
-	import Tabs from '$lib/components/ui/Tabs.svelte';
+	import NoTabs from '$lib/components/ui/NoTabs.svelte';
 	import { missionControlIdDerived } from '$lib/derived/mission-control.derived';
 	import { satelliteStore } from '$lib/derived/satellite.derived';
 	import {
@@ -36,7 +36,7 @@
 </script>
 
 <IdentityGuard>
-	<Tabs>
+	<NoTabs>
 		<Loaders>
 			<SatelliteGuard>
 				<MissionControlGuard>
@@ -48,5 +48,5 @@
 				</MissionControlGuard>
 			</SatelliteGuard>
 		</Loaders>
-	</Tabs>
+	</NoTabs>
 </IdentityGuard>

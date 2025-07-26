@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { nonNullish } from '@dfinity/utils';
+	import { isNullish, nonNullish } from '@dfinity/utils';
 	import { setContext, untrack } from 'svelte';
 	import { run } from 'svelte/legacy';
 	import { writable } from 'svelte/store';
@@ -10,6 +10,7 @@
 	import Loaders from '$lib/components/loaders/Loaders.svelte';
 	import Orbiter from '$lib/components/orbiter/Orbiter.svelte';
 	import OrbiterConfig from '$lib/components/orbiter/OrbiterConfig.svelte';
+	import NoTabs from '$lib/components/ui/NoTabs.svelte';
 	import Tabs from '$lib/components/ui/Tabs.svelte';
 	import Warnings from '$lib/components/warning/Warnings.svelte';
 	import { authSignedIn } from '$lib/derived/auth.derived';
@@ -58,10 +59,12 @@
 			tabs
 		});
 	});
+
+	let TabsCmp = $derived(isNullish($orbiterStore) ? NoTabs : Tabs);
 </script>
 
 <IdentityGuard>
-	<Tabs>
+	<TabsCmp>
 		{#snippet info()}
 			{#if $authSignedIn}
 				<Warnings />
@@ -81,5 +84,5 @@
 				{/if}
 			</MissionControlGuard>
 		</Loaders>
-	</Tabs>
+	</TabsCmp>
 </IdentityGuard>

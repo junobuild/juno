@@ -28,10 +28,14 @@ export interface AssetsUpgradeOptions {
 }
 export interface AuthenticationConfig {
 	internet_identity: [] | [AuthenticationConfigInternetIdentity];
+	rules: [] | [AuthenticationRules];
 }
 export interface AuthenticationConfigInternetIdentity {
 	derivation_origin: [] | [string];
 	external_alternative_origins: [] | [Array<string>];
+}
+export interface AuthenticationRules {
+	allowed_callers: Array<Principal>;
 }
 export type CollectionType = { Db: null } | { Storage: null };
 export interface CommitBatch {

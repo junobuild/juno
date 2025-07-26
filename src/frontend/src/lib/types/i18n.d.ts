@@ -359,6 +359,11 @@ interface I18nAuthentication {
 	main_domain_warn: string;
 	external_alternative_origins: string;
 	external_alternative_origins_placeholder: string;
+	authorized_users: string;
+	authorized_users_placeholder: string;
+	no_restrictions: string;
+	one_identity: string;
+	identities: string;
 }
 
 interface I18nDatastore {

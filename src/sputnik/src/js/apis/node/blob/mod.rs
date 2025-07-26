@@ -5,7 +5,7 @@ use rquickjs::{atom::PredefinedAtom, prelude::Func, Class, Ctx, Error as JsError
 // ===========================================================================================
 // ⚠️ SOURCE NOTICE ⚠️
 // This module is copied from the LLRT project:
-// https://github.com/awslabs/llrt/blob/main/modules/llrt_http/src/blob.rs
+// https://github.com/awslabs/llrt/blob/main/modules/llrt_buffer/src/blob.rs
 //
 // If you modify this file, ensure compatibility with upstream changes where applicable.
 // ===========================================================================================

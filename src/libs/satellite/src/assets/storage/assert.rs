@@ -1,5 +1,6 @@
+use crate::auth::caller::assert_caller_is_allowed;
 use crate::hooks::storage::invoke_assert_delete_asset;
-use crate::types::store::StoreContext;
+use crate::types::store::{AssertContext, StoreContext};
 use crate::user::core::assert::{assert_user_is_not_banned, is_known_user};
 use crate::user::usage::assert::increment_and_assert_storage_usage;
 use candid::Principal;
@@ -8,7 +9,7 @@ use junobuild_collections::assert::stores::{
 };
 use junobuild_collections::constants::assets::COLLECTION_ASSET_KEY;
 use junobuild_collections::types::core::CollectionKey;
-use junobuild_collections::types::rules::{Permission, Rule};
+use junobuild_collections::types::rules::Permission;
 use junobuild_shared::controllers::{controller_can_write, is_controller};
 use junobuild_shared::types::state::Controllers;
 use junobuild_storage::errors::{
@@ -24,9 +25,10 @@ pub fn assert_get_asset(
         controllers,
         collection: _,
     }: &StoreContext,
-    rule: &Rule,
+    &AssertContext { rule, auth_config }: &AssertContext,
     current_asset: &Asset,
 ) -> Result<(), String> {
+    assert_caller_is_allowed(caller, controllers, auth_config)?;
     assert_user_is_not_banned(caller, controllers)?;
 
     assert_read_permission(caller, controllers, current_asset, &rule.read)?;
@@ -40,7 +42,12 @@ pub fn assert_list_assets(
         controllers,
         collection: _,
     }: &StoreContext,
+    &AssertContext {
+        auth_config,
+        rule: _,
+    }: &AssertContext,
 ) -> Result<(), String> {
+    assert_caller_is_allowed(caller, controllers, auth_config)?;
     assert_user_is_not_banned(caller, controllers)?;
 
     Ok(())
@@ -66,8 +73,9 @@ pub fn assert_storage_list_permission(
 pub fn assert_create_batch(
     caller: Principal,
     controllers: &Controllers,
-    rule: &Rule,
+    &AssertContext { rule, auth_config }: &AssertContext,
 ) -> Result<(), String> {
+    assert_caller_is_allowed(caller, controllers, auth_config)?;
     assert_user_is_not_banned(caller, controllers)?;
 
     if !(public_permission(&rule.write)
@@ -82,9 +90,10 @@ pub fn assert_create_batch(
 
 pub fn assert_delete_asset(
     context: &StoreContext,
-    rule: &Rule,
+    &AssertContext { rule, auth_config }: &AssertContext,
     asset: &Asset,
 ) -> Result<(), String> {
+    assert_caller_is_allowed(context.caller, context.controllers, auth_config)?;
     assert_user_is_not_banned(context.caller, context.controllers)?;
 
     if !assert_permission(

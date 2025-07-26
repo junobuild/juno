@@ -10,7 +10,9 @@ use canfund::manager::options::{CyclesThreshold, FundStrategy};
 use ic_cdk::api::time;
 use ic_stable_structures::storable::Bound;
 use ic_stable_structures::Storable;
-use junobuild_shared::serializers::{deserialize_from_bytes, serialize_to_bytes};
+use junobuild_shared::serializers::{
+    deserialize_from_bytes, serialize_into_bytes, serialize_to_bytes,
+};
 use junobuild_shared::types::state::{Metadata, OrbiterId, SatelliteId, UserId};
 use std::borrow::Cow;
 use std::collections::HashMap;
@@ -303,6 +305,10 @@ impl Storable for MonitoringHistory {
         serialize_to_bytes(self)
     }
 
+    fn into_bytes(self) -> Vec<u8> {
+        serialize_into_bytes(&self)
+    }
+
     fn from_bytes(bytes: Cow<[u8]>) -> Self {
         deserialize_from_bytes(bytes)
     }
@@ -313,6 +319,10 @@ impl Storable for MonitoringHistory {
 impl Storable for MonitoringHistoryKey {
     fn to_bytes(&self) -> Cow<[u8]> {
         serialize_to_bytes(self)
+    }
+
+    fn into_bytes(self) -> Vec<u8> {
+        serialize_into_bytes(&self)
     }
 
     fn from_bytes(bytes: Cow<[u8]>) -> Self {

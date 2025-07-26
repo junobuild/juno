@@ -7,6 +7,7 @@ use crate::types::state::{
 use ic_cdk::api::time;
 use ic_ledger_types::BlockIndex;
 use ic_ledger_types::Tokens;
+use junobuild_shared::structures::collect_stable_map_from;
 use junobuild_shared::types::state::MissionControlId;
 use junobuild_shared::types::state::UserId;
 use junobuild_shared::utils::principal_equal;
@@ -130,7 +131,7 @@ pub fn list_mission_controls() -> MissionControls {
 }
 
 fn list_mission_controls_impl(mission_controls: &MissionControlsStable) -> MissionControls {
-    mission_controls.iter().collect()
+    collect_stable_map_from(mission_controls)
 }
 
 // ---------------------------------------------------------
@@ -344,5 +345,5 @@ pub fn list_payments() -> Payments {
 }
 
 fn list_payments_impl(payments: &PaymentsStable) -> Payments {
-    payments.iter().collect()
+    collect_stable_map_from(payments)
 }

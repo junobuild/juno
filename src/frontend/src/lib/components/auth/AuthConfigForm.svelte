@@ -1,5 +1,13 @@
 <script lang="ts">
-	import { fromNullable, fromNullishNullable, isNullish, nonNullish } from '@dfinity/utils';
+	import { Principal } from '@dfinity/principal';
+	import {
+		fromNullable,
+		fromNullishNullable,
+		isNullish,
+		nonNullish,
+		notEmptyString
+	} from '@dfinity/utils';
+	import { PrincipalTextSchema } from '@dfinity/zod-schemas';
 	import { fade } from 'svelte/transition';
 	import type { Satellite } from '$declarations/mission_control/mission_control.did';
 	import type { AuthenticationConfig, Rule } from '$declarations/satellite/satellite.did';
@@ -19,6 +27,7 @@
 		rule: Rule | undefined;
 		maxTokens: number | undefined;
 		externalAlternativeOrigins: string;
+		allowedCallers: Principal[];
 		onsubmit: ($event: SubmitEvent) => Promise<void>;
 	}
 
@@ -29,7 +38,8 @@
 		satellite,
 		rule,
 		maxTokens = $bindable(undefined),
-		externalAlternativeOrigins = $bindable('')
+		externalAlternativeOrigins = $bindable(''),
+		allowedCallers = $bindable([])
 	}: Props = $props();
 
 	let satelliteUrl: URL | null = $derived(
@@ -42,11 +52,11 @@
 			.filter(nonNullish)
 	);
 
-	let currentDerivationOrigin: string | undefined = $state(
+	let currentDerivationOrigin = $state<string | undefined>(
 		fromNullable(fromNullishNullable(config?.internet_identity)?.derivation_origin ?? [])
 	);
 
-	let derivationOrigin: string | undefined = $state(
+	let derivationOrigin = $state<string | undefined>(
 		fromNullable(fromNullishNullable(config?.internet_identity)?.derivation_origin ?? [])
 	);
 
@@ -63,7 +73,7 @@
 			(isNullish(currentDerivationOrigin) && nonNullish(derivationOrigin) && nonNullish(config))
 	);
 
-	let maxTokensInput: number | undefined = $state(
+	let maxTokensInput = $state<number | undefined>(
 		nonNullish(fromNullishNullable(rule?.rate_config)?.max_tokens)
 			? Number(fromNullishNullable(rule?.rate_config)?.max_tokens ?? 0)
 			: undefined
@@ -71,6 +81,21 @@
 
 	$effect(() => {
 		maxTokens = maxTokensInput;
+	});
+
+	let allowedCallersInput = $state<string>(
+		(fromNullishNullable(config?.rules)?.allowed_callers ?? [])
+			.map((caller) => caller.toText())
+			.join('\n')
+	);
+
+	$effect(() => {
+		allowedCallers = allowedCallersInput
+			.split(/[\n,]+/)
+			.map((input) => input.toLowerCase().trim())
+			.filter(notEmptyString)
+			.filter((input) => PrincipalTextSchema.safeParse(input).success)
+			.map((input) => Principal.fromText(input));
 	});
 </script>
 
@@ -81,25 +106,23 @@
 <form class="content" {onsubmit}>
 	<div class="container">
 		<div>
-			<div>
-				<Value>
-					{#snippet label()}
-						{$i18n.authentication.main_domain}
-					{/snippet}
+			<Value>
+				{#snippet label()}
+					{$i18n.authentication.main_domain}
+				{/snippet}
 
-					<select id="logVisibility" name="logVisibility" bind:value={derivationOrigin}>
-						<option value={undefined}>{$i18n.authentication.not_configured}</option>
+				<select id="logVisibility" name="logVisibility" bind:value={derivationOrigin}>
+					<option value={undefined}>{$i18n.authentication.not_configured}</option>
 
-						{#if nonNullish(satelliteUrl)}
-							<option value={satelliteUrl.host}>{satelliteUrl.host}</option>
-						{/if}
+					{#if nonNullish(satelliteUrl)}
+						<option value={satelliteUrl.host}>{satelliteUrl.host}</option>
+					{/if}
 
-						{#each customDomains as customDomain (customDomain.host)}
-							<option value={customDomain.host}>{customDomain.host}</option>
-						{/each}
-					</select>
-				</Value>
-			</div>
+					{#each customDomains as customDomain (customDomain.host)}
+						<option value={customDomain.host}>{customDomain.host}</option>
+					{/each}
+				</select>
+			</Value>
 		</div>
 
 		{#if nonNullish(rule)}
@@ -123,6 +146,20 @@
 				</Value>
 			</div>
 		{/if}
+
+		<div>
+			<Value>
+				{#snippet label()}
+					{$i18n.authentication.authorized_users}
+				{/snippet}
+
+				<textarea
+					rows="5"
+					bind:value={allowedCallersInput}
+					placeholder={$i18n.authentication.authorized_users_placeholder}
+				></textarea>
+			</Value>
+		</div>
 
 		<AuthConfigAdvancedOptions {config} bind:externalAlternativeOrigins />
 

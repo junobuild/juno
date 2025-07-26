@@ -8,7 +8,9 @@ use ic_stable_structures::storable::Bound;
 use ic_stable_structures::Storable;
 use junobuild_collections::constants::db::DEFAULT_DB_COLLECTIONS;
 use junobuild_collections::types::rules::{Memory, Rule};
-use junobuild_shared::serializers::{deserialize_from_bytes, serialize_to_bytes};
+use junobuild_shared::serializers::{
+    deserialize_from_bytes, serialize_into_bytes, serialize_to_bytes,
+};
 use junobuild_shared::types::state::{Timestamp, UserId, Version};
 use junobuild_shared::types::state::{Timestamped, Versioned};
 use junobuild_shared::version::next_version;
@@ -71,6 +73,10 @@ impl Storable for Doc {
         serialize_to_bytes(self)
     }
 
+    fn into_bytes(self) -> Vec<u8> {
+        serialize_into_bytes(&self)
+    }
+
     fn from_bytes(bytes: Cow<[u8]>) -> Self {
         deserialize_from_bytes(bytes)
     }
@@ -81,6 +87,10 @@ impl Storable for Doc {
 impl Storable for StableKey {
     fn to_bytes(&self) -> Cow<[u8]> {
         serialize_to_bytes(self)
+    }
+
+    fn into_bytes(self) -> Vec<u8> {
+        serialize_into_bytes(&self)
     }
 
     fn from_bytes(bytes: Cow<[u8]>) -> Self {

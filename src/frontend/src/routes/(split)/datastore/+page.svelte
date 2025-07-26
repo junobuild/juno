@@ -39,7 +39,7 @@
 </script>
 
 <IdentityGuard>
-	<Tabs help="https://juno.build/docs/build/datastore">
+	<Tabs>
 		<Loaders>
 			<SatelliteGuard>
 				{#if nonNullish($satelliteStore) && nonNullish($missionControlIdDerived)}

@@ -36,7 +36,7 @@
 </script>
 
 <IdentityGuard>
-	<Tabs help="https://juno.build/docs/build/hosting">
+	<Tabs>
 		<Loaders>
 			<SatelliteGuard>
 				<MissionControlGuard>

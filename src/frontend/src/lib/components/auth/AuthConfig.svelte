@@ -12,6 +12,7 @@
 	import { busy } from '$lib/stores/busy.store';
 	import { i18n } from '$lib/stores/i18n.store';
 	import { emit } from '$lib/utils/events.utils';
+	import { i18nFormat } from '$lib/utils/i18n.utils';
 
 	interface Props {
 		satellite: Satellite;
@@ -33,7 +34,8 @@
 	};
 
 	let supportConfig = $state(false);
-	let config: AuthenticationConfig | undefined = $state();
+	let config = $state<AuthenticationConfig | undefined>(undefined);
+
 	let derivationOrigin = $derived(
 		fromNullishNullable(fromNullishNullable(config?.internet_identity)?.derivation_origin)
 	);
@@ -42,6 +44,8 @@
 			fromNullishNullable(config?.internet_identity)?.external_alternative_origins
 		)
 	);
+
+	let allowedCallers = $derived(fromNullishNullable(config?.rules)?.allowed_callers);
 
 	const loadConfig = async () => {
 		const result = await getAuthConfig({
@@ -97,7 +101,7 @@
 <div class="card-container with-title">
 	<span class="title">{$i18n.core.config}</span>
 
-	<div class="content">
+	<div class="columns-3 fit-column-1">
 		<div>
 			{#if supportConfig}
 				<div in:fade>
@@ -140,6 +144,33 @@
 							<p>{$i18n.collections.no_rate_limit}</p>
 						{:else}
 							<p>{maxTokens}</p>
+						{/if}
+					</Value>
+				</div>
+			{/if}
+		</div>
+
+		<div>
+			{#if supportConfig}
+				<div in:fade>
+					<Value>
+						{#snippet label()}
+							{$i18n.authentication.authorized_users}
+						{/snippet}
+
+						{#if isNullish(allowedCallers) || allowedCallers.length === 0}
+							<p>{$i18n.authentication.no_restrictions}</p>
+						{:else if allowedCallers.length === 1}
+							<p>{$i18n.authentication.one_identity}</p>
+						{:else}
+							<p>
+								{i18nFormat($i18n.authentication.identities, [
+									{
+										placeholder: '{0}',
+										value: `${allowedCallers.length}`
+									}
+								])}
+							</p>
 						{/if}
 					</Value>
 				</div>

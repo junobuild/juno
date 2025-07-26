@@ -23,7 +23,7 @@ export const buildSetAuthenticationConfig = ({
 						external_alternative_origins
 					}
 				],
-				rules: toNullable()
+				rules: []
 			}
 		: {
 				...config,

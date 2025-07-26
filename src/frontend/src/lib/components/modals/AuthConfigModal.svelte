@@ -1,4 +1,5 @@
 <script lang="ts">
+	import type { Principal } from '@dfinity/principal';
 	import type { Satellite } from '$declarations/mission_control/mission_control.did';
 	import type { AuthenticationConfig, Rule } from '$declarations/satellite/satellite.did';
 	import AuthConfigForm from '$lib/components/auth/AuthConfigForm.svelte';
@@ -32,6 +33,8 @@
 
 	let externalAlternativeOrigins = $state('');
 
+	let allowedCallers = $state<Principal[]>([]);
+
 	let step: 'init' | 'in_progress' | 'ready' | 'error' = $state('init');
 
 	const handleSubmit = async ($event: SubmitEvent) => {
@@ -47,6 +50,7 @@
 			rule,
 			derivationOrigin: selectedDerivationOrigin,
 			externalAlternativeOrigins,
+			allowedCallers,
 			config
 		});
 
@@ -82,6 +86,7 @@
 			bind:maxTokens
 			bind:selectedDerivationOrigin
 			bind:externalAlternativeOrigins
+			bind:allowedCallers
 		/>
 	{/if}
 </Modal>

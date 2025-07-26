@@ -31,6 +31,7 @@ interface UpdateAuthConfigParams {
 	config: AuthenticationConfig | undefined;
 	maxTokens: number | undefined;
 	externalAlternativeOrigins: string;
+	allowedCallers: Principal[];
 	derivationOrigin: Option<URL>;
 	identity: OptionIdentity;
 }
@@ -42,6 +43,7 @@ export const updateAuthConfig = async ({
 	maxTokens,
 	derivationOrigin,
 	externalAlternativeOrigins,
+	allowedCallers,
 	identity
 }: UpdateAuthConfigParams): Promise<{ success: 'ok' | 'cancelled' | 'error'; err?: unknown }> => {
 	const labels = get(i18n);
@@ -76,6 +78,7 @@ export const updateAuthConfig = async ({
 		satellite,
 		derivationOrigin,
 		externalOrigins,
+		allowedCallers,
 		config,
 		identity
 	});
@@ -92,23 +95,13 @@ const updateConfig = async ({
 	config,
 	derivationOrigin,
 	externalOrigins,
+	allowedCallers,
 	identity
-}: Pick<UpdateAuthConfigParams, 'config' | 'derivationOrigin' | 'satellite'> &
+}: Pick<UpdateAuthConfigParams, 'config' | 'derivationOrigin' | 'allowedCallers' | 'satellite'> &
 	Required<Pick<UpdateAuthConfigParams, 'identity'>> & { externalOrigins: string[] }): Promise<{
 	result: 'skip' | 'success' | 'error';
 	err?: unknown;
 }> => {
-	// TODO: Allowing the same host to be set again is currently useful
-	// because it triggers the regeneration of the /.well-known/ii-alternative-origins file.
-	// This is helpful when users add more domains, as they can be included in the updated file.
-	if (
-		isNullish(derivationOrigin?.host) &&
-		derivationOrigin?.host ===
-			fromNullishNullable(fromNullishNullable(config?.internet_identity)?.derivation_origin)
-	) {
-		return { result: 'skip' };
-	}
-
 	const editConfig = nonNullish(derivationOrigin)
 		? // We use the host in the backend satellite which parse the url with https to generate the /.well-known/ii-alternative-origins
 			buildSetAuthenticationConfig({ config, domainName: derivationOrigin.host, externalOrigins })
@@ -116,15 +109,31 @@ const updateConfig = async ({
 			? buildDeleteAuthenticationConfig(config)
 			: undefined;
 
-	// Do nothing if there is no current config and no derivation origin was selected
-	if (isNullish(editConfig)) {
+	const currentAllowedCallers = fromNullishNullable(config?.rules)?.allowed_callers ?? [];
+	const unmodifiedRules =
+		currentAllowedCallers.length === allowedCallers.length &&
+		currentAllowedCallers.every(
+			(caller) =>
+				allowedCallers.find((allowedCaller) => allowedCaller.toText() === caller.toText()) !==
+				undefined
+		);
+
+	// Do nothing if there is no current config and no derivation origin was selected and the allowed callers are untouched as well
+	if (isNullish(editConfig) && unmodifiedRules) {
 		return { result: 'skip' };
 	}
+
+	const editConfigRules = toNullable(
+		allowedCallers.length > 0 ? { allowed_callers: allowedCallers } : undefined
+	);
 
 	try {
 		await setAuthConfig({
 			satelliteId,
-			config: editConfig,
+			config: {
+				internet_identity: editConfig?.internet_identity ?? config?.internet_identity ?? [],
+				rules: unmodifiedRules ? (config?.rules ?? []) : editConfigRules
+			},
 			identity
 		});
 	} catch (err: unknown) {

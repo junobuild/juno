@@ -37,7 +37,7 @@
 </script>
 
 <IdentityGuard>
-	<Tabs help="https://juno.build/docs/build/authentication">
+	<Tabs>
 		<Loaders>
 			<MissionControlGuard>
 				{#if $store.tabId === $store.tabs[0].id}

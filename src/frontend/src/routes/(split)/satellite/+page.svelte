@@ -42,11 +42,7 @@
 </script>
 
 <IdentityGuard>
-	<Tabs
-		help={$store.tabId === $store.tabs[0].id
-			? 'https://juno.build/docs/add-juno-to-an-app/install-the-sdk-and-initialize-juno'
-			: 'https://juno.build/docs/miscellaneous/settings'}
-	>
+	<Tabs>
 		{#snippet info()}
 			{#if nonNullish($satelliteStore)}
 				<Warnings satellite={$satelliteStore} />

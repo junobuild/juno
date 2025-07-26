@@ -41,11 +41,7 @@
 </script>
 
 <IdentityGuard>
-	<Tabs
-		help={$store.tabId === $store.tabs[0].id
-			? 'https://juno.build/docs/terminology#mission-control'
-			: 'https://juno.build/docs/miscellaneous/settings'}
-	>
+	<Tabs>
 		{#snippet info()}
 			{#if $authSignedIn}
 				<Warnings />

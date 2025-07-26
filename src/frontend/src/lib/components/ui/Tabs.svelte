@@ -3,7 +3,6 @@
 	import { getContext, type Snippet } from 'svelte';
 	import { afterNavigate } from '$app/navigation';
 	import { page } from '$app/state';
-	import ExternalLink from '$lib/components/ui/ExternalLink.svelte';
 	import { onIntersection } from '$lib/directives/intersection.directives';
 	import { i18n } from '$lib/stores/i18n.store';
 	import { onLayoutTitleIntersection } from '$lib/stores/layout-intersecting.store';
@@ -12,12 +11,11 @@
 	import { keyOf } from '$lib/utils/utils';
 
 	interface Props {
-		help?: string;
 		info?: Snippet;
 		children: Snippet;
 	}
 
-	let { help, info, children }: Props = $props();
+	let { info, children }: Props = $props();
 
 	const { store }: TabsContext = getContext<TabsContext>(TABS_CONTEXT_KEY);
 
@@ -60,10 +58,6 @@
 			>{text}</a
 		>
 	{/each}
-
-	{#if notEmptyString(help)}
-		<ExternalLink href={help}>{$i18n.core.help}</ExternalLink>
-	{/if}
 </div>
 
 {@render children()}

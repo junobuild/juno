@@ -40,6 +40,8 @@
 		--tab-selected-background: var(--color-tertiary);
 		--tab-selected-color: var(--color-tertiary-contrast);
 
+		margin: 0;
+
 		@include tabs.tab;
 	}
 </style>

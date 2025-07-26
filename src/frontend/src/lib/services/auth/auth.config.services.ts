@@ -113,7 +113,7 @@ const updateConfig = async ({
 	const unmodifiedRules =
 		currentAllowedCallers.length === allowedCallers.length &&
 		currentAllowedCallers.every(
-			(caller, i) =>
+			(caller) =>
 				allowedCallers.find((allowedCaller) => allowedCaller.toText() === caller.toText()) !==
 				undefined
 		);

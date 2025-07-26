@@ -1,4 +1,5 @@
 <script lang="ts">
+	import type { Principal } from '@dfinity/principal';
 	import type { Satellite } from '$declarations/mission_control/mission_control.did';
 	import type { AuthenticationConfig, Rule } from '$declarations/satellite/satellite.did';
 	import AuthConfigForm from '$lib/components/auth/AuthConfigForm.svelte';
@@ -10,7 +11,6 @@
 	import { i18n } from '$lib/stores/i18n.store';
 	import type { JunoModalDetail, JunoModalEditAuthConfigDetail } from '$lib/types/modal';
 	import { emit } from '$lib/utils/events.utils';
-	import {Principal} from "@dfinity/principal";
 
 	interface Props {
 		detail: JunoModalDetail;

@@ -41,7 +41,7 @@ export const buildSetAuthenticationConfig = ({
 
 export const buildDeleteAuthenticationConfig = (
 	config: AuthenticationConfig
-): Omit<AuthenticationConfig, 'rules'> => ({
+): AuthenticationConfig => ({
 	...config,
 	...(nonNullish(fromNullable(config.internet_identity)) && {
 		internet_identity: [

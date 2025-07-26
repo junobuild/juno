@@ -29,7 +29,6 @@
 		margin: 0 auto;
 
 		@media (min-height: 768px) {
-
 		}
 	}
 

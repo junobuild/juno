@@ -66,6 +66,8 @@
 	@use '../../styles/mixins/tabs';
 
 	.tabs {
+		margin: var(--padding) 0 var(--padding-4x);
+
 		@include tabs.tabs;
 	}
 

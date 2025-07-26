@@ -351,7 +351,7 @@
 		"external_alternative_origins": "外部 alternative origins",
 		"external_alternative_origins_placeholder": "以逗号分隔的用于派生的外部域名列表",
 		"authorized_users": "Authorized Users",
-		"authorized_users_placeholder": "A comma-separated list of identities (user key format). Leave empty for no restrictions.",
+		"authorized_users_placeholder": "Identities (user key format), comma-separated or one per line. Leave empty for no restrictions.",
 		"no_restrictions": "No restrictions",
 		"one_identity": "1 identity",
 		"identities": "{0} identities"

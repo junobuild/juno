@@ -8,6 +8,7 @@
 	import MissionControlDataLoader from '$lib/components/mission-control/MissionControlDataLoader.svelte';
 	import MonitoringDashboard from '$lib/components/monitoring/MonitoringDashboard.svelte';
 	import MonitoringSettings from '$lib/components/monitoring/MonitoringSettings.svelte';
+	import NoTabs from '$lib/components/ui/NoTabs.svelte';
 	import Tabs from '$lib/components/ui/Tabs.svelte';
 	import Warnings from '$lib/components/warning/Warnings.svelte';
 	import { authSignedIn } from '$lib/derived/auth.derived';
@@ -53,10 +54,12 @@
 			tabs
 		});
 	});
+
+	let TabsCmp = $derived($hasMissionControlSettings ? Tabs : NoTabs);
 </script>
 
 <IdentityGuard>
-	<Tabs help="https://juno.build/docs/management/monitoring">
+	<TabsCmp>
 		{#snippet info()}
 			{#if $authSignedIn}
 				<Warnings />
@@ -76,5 +79,5 @@
 				{/if}
 			</MissionControlGuard>
 		</Loaders>
-	</Tabs>
+	</TabsCmp>
 </IdentityGuard>

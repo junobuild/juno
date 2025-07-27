@@ -6,20 +6,22 @@ import { i18n } from '$lib/stores/i18n.store';
 import { toasts } from '$lib/stores/toasts.store';
 import type { OptionIdentity } from '$lib/types/itentity';
 import { type HostingProgress, HostingProgressStep } from '$lib/types/progress-hosting';
-import type { Option } from '$lib/types/utils';
+import { buildSetAuthenticationConfig } from '$lib/utils/auth.config.utils';
 import type { Principal } from '@dfinity/principal';
-import { assertNonNullish, nonNullish } from '@dfinity/utils';
+import { assertNonNullish, fromNullishNullable, notEmptyString } from '@dfinity/utils';
 import { get } from 'svelte/store';
 
 export const configHosting = async ({
 	satelliteId,
-	editConfig,
+	useDomainForDerivationOrigin,
+	config,
 	domainName,
 	identity,
 	onProgress
 }: {
 	domainName: string;
-	editConfig: Option<AuthenticationConfig>;
+	useDomainForDerivationOrigin: boolean;
+	config: AuthenticationConfig | undefined;
 	satelliteId: Principal;
 	identity: OptionIdentity;
 	onProgress: (progress: HostingProgress | undefined) => void;
@@ -35,7 +37,19 @@ export const configHosting = async ({
 
 		await execute({ fn: configCustomDomain, onProgress, step: HostingProgressStep.CustomDomain });
 
-		if (nonNullish(editConfig)) {
+		const existingDerivationOrigin = fromNullishNullable(
+			fromNullishNullable(config?.internet_identity)?.derivation_origin
+		);
+
+		const editDomainName = useDomainForDerivationOrigin ? domainName : existingDerivationOrigin;
+
+		// We set or update the derivation origin. Update is useful to append the new domain name into the .well-known/ii-alternative-origins
+		if (notEmptyString(editDomainName)) {
+			const editConfig = buildSetAuthenticationConfig({
+				config,
+				domainName: editDomainName
+			});
+
 			const configAuth = async () =>
 				await setAuthConfig({
 					satelliteId,

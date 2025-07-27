@@ -33,12 +33,13 @@
 	@use '../../styles/mixins/tabs';
 
 	.tabs {
+		margin: var(--padding) 0 var(--padding-1_5x);
+
 		@include tabs.tabs;
 	}
 
 	.tab {
-		--tab-selected-background: var(--color-tertiary);
-		--tab-selected-color: var(--color-tertiary-contrast);
+		margin: 0;
 
 		@include tabs.tab;
 	}

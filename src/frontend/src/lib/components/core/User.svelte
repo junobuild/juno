@@ -1,6 +1,8 @@
 <script lang="ts">
 	import { page } from '$app/state';
 	import IconAnalytics from '$lib/components/icons/IconAnalytics.svelte';
+	import IconBook from '$lib/components/icons/IconBook.svelte';
+	import IconCodeBranch from '$lib/components/icons/IconCodeBranch.svelte';
 	import IconMissionControl from '$lib/components/icons/IconMissionControl.svelte';
 	import IconRaygun from '$lib/components/icons/IconRaygun.svelte';
 	import IconRocket from '$lib/components/icons/IconRocket.svelte';
@@ -11,6 +13,7 @@
 	import IconWallet from '$lib/components/icons/IconWallet.svelte';
 	import ButtonIcon from '$lib/components/ui/ButtonIcon.svelte';
 	import Popover from '$lib/components/ui/Popover.svelte';
+	import { APP_VERSION } from '$lib/constants/app.constants';
 	import { authSignedIn } from '$lib/derived/auth.derived';
 	import { satelliteStore } from '$lib/derived/satellite.derived';
 	import { satellitesNotLoaded, satellitesStore } from '$lib/derived/satellites.derived';
@@ -113,6 +116,10 @@
 				<IconAnalytics />
 				<span>{$i18n.upgrade.title}</span>
 			</a>
+
+			{#if preferences}
+				<hr />
+			{/if}
 		{/if}
 
 		{#if !preferences}
@@ -120,7 +127,31 @@
 				<IconRaygun />
 				<span>{$i18n.preferences.title}</span>
 			</a>
+
+			<hr />
 		{/if}
+
+		<a
+			href="https://juno.build/docs/intro"
+			rel="external noopener noreferrer"
+			target="_blank"
+			class="menu"
+			role="menuitem"
+			aria-haspopup="menu"
+			onclick={close}><IconBook /> <span>Docs</span></a
+		>
+
+		<a
+			href={`https://juno.build/changelog/release-v${APP_VERSION}`}
+			rel="external noopener noreferrer"
+			target="_blank"
+			class="menu"
+			role="menuitem"
+			aria-haspopup="menu"
+			onclick={close}><IconCodeBranch /> <span>Changelog</span></a
+		>
+
+		<hr />
 
 		<button type="button" role="menuitem" aria-haspopup="menu" onclick={signOutClose} class="menu">
 			<IconSignOut />
@@ -131,10 +162,31 @@
 
 <style lang="scss">
 	@use '../../styles/mixins/overlay';
+	@use '../../styles/mixins/media';
 
 	@include overlay.popover-container;
 
 	.container {
 		font-size: var(--font-size-small);
+	}
+
+	hr {
+		width: calc(100% - var(--padding-2x));
+		height: auto;
+
+		margin: var(--padding-0_5x) auto;
+		padding: 0;
+
+		border-bottom: 1px solid var(--color-background-shade);
+
+		&::before {
+			content: none;
+		}
+	}
+
+	@include media.dark-theme {
+		hr {
+			border-color: var(--color-menu-tint);
+		}
 	}
 </style>

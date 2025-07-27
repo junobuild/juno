@@ -5,7 +5,7 @@
 	import IdentityGuard from '$lib/components/guards/IdentityGuard.svelte';
 	import MissionControlGuard from '$lib/components/guards/MissionControlGuard.svelte';
 	import Loaders from '$lib/components/loaders/Loaders.svelte';
-	import Tabs from '$lib/components/ui/Tabs.svelte';
+	import NoTabs from '$lib/components/ui/NoTabs.svelte';
 	import Wallet from '$lib/components/wallet/Wallet.svelte';
 	import Warnings from '$lib/components/warning/Warnings.svelte';
 	import { authSignedIn } from '$lib/derived/auth.derived';
@@ -36,7 +36,7 @@
 </script>
 
 <IdentityGuard>
-	<Tabs help="https://juno.build/docs/miscellaneous/wallet">
+	<NoTabs>
 		{#snippet info()}
 			{#if $authSignedIn}
 				<Warnings />
@@ -52,5 +52,5 @@
 				{/if}
 			</MissionControlGuard>
 		</Loaders>
-	</Tabs>
+	</NoTabs>
 </IdentityGuard>

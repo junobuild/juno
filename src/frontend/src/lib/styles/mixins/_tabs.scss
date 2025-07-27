@@ -1,12 +1,14 @@
 @mixin _tab-button {
+	display: flex;
+	align-items: center;
+	gap: var(--padding);
+
 	position: relative;
 
 	text-decoration: none;
 
-	margin: 0 var(--padding-2x) 0 0;
-	padding: 1px var(--padding);
-
-	color: var(--label-color);
+	padding: 2px var(--padding);
+	border: 1px solid var(--card-border-color, var(--color-card-contrast));
 
 	border-radius: var(--border-radius);
 
@@ -24,7 +26,14 @@
 	flex-wrap: wrap;
 	gap: var(--padding);
 
-	margin: var(--padding) 0 var(--padding-1_5x);
+	background: var(--color-card-contrast);
+	color: var(--color-card);
+	border: 1px solid var(--card-border-color, var(--color-card-contrast));
+	border-radius: var(--border-radius);
+
+	width: fit-content;
+
+	font-size: var(--font-size-small);
 
 	:global(a:not(.tab)) {
 		@include _tab-button;
@@ -48,8 +57,8 @@
 
 	&:not(:focus):not(:hover) {
 		&.selected {
-			background: var(--tab-selected-background, var(--color-secondary));
-			color: var(--tab-selected-color, var(--color-secondary-contrast));
+			color: var(--color-card-contrast);
+			background: var(--color-card);
 		}
 	}
 }

@@ -15,7 +15,6 @@
 		"light_on": "Light on",
 		"submit": "Submit",
 		"home": "Home",
-		"help": "Help",
 		"controllers": "Access Keys",
 		"settings": "Settings",
 		"setup": "Setup",
@@ -466,9 +465,7 @@
 		"failed": "Failed",
 		"skip_delete_domain": "Skip custom domain deletion in Boundary Nodes",
 		"files_deployed": "files deployed",
-		"set_auth_domain_title": "Set domain for authentication",
-		"set_auth_domain_question": "Would you like to use <strong>{0}</strong> as the primary domain for all user sign-ins?",
-		"need_more_info": "Need more info? See the",
+		"set_auth_domain_question": "Use this domain as the default for user authentication",
 		"domain_name": "Domain name",
 		"default_url": "Default URL"
 	},

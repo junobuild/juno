@@ -71,6 +71,9 @@ export interface CustomDomain {
 	bn_id: [] | [string];
 }
 export interface DbConfig {
+	updated_at: [] | [bigint];
+	created_at: [] | [bigint];
+	version: [] | [bigint];
 	max_memory_size: [] | [ConfigMaxMemorySize];
 }
 export interface DelDoc {
@@ -247,6 +250,10 @@ export interface SetControllersArgs {
 	controller: SetController;
 	controllers: Array<Principal>;
 }
+export interface SetDbConfig {
+	version: [] | [bigint];
+	max_memory_size: [] | [ConfigMaxMemorySize];
+}
 export interface SetDoc {
 	data: Uint8Array | number[];
 	description: [] | [string];
@@ -360,7 +367,7 @@ export interface _SERVICE {
 	set_auth_config: ActorMethod<[AuthenticationConfig], undefined>;
 	set_controllers: ActorMethod<[SetControllersArgs], Array<[Principal, Controller]>>;
 	set_custom_domain: ActorMethod<[string, [] | [string]], undefined>;
-	set_db_config: ActorMethod<[DbConfig], undefined>;
+	set_db_config: ActorMethod<[SetDbConfig], DbConfig>;
 	set_doc: ActorMethod<[string, string, SetDoc], Doc>;
 	set_many_docs: ActorMethod<[Array<[string, string, SetDoc]>], Array<[string, Doc]>>;
 	set_rule: ActorMethod<[CollectionType, string, SetRule], Rule>;

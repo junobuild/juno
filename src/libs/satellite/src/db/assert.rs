@@ -1,6 +1,7 @@
 use crate::auth::caller::assert_caller_is_allowed;
 use crate::db::runtime::increment_and_assert_rate;
 use crate::db::types::config::DbConfig;
+use crate::db::types::interface::SetDbConfig;
 use crate::db::types::state::{DocAssertDelete, DocAssertSet, DocContext};
 use crate::errors::db::{JUNO_DATASTORE_ERROR_CANNOT_READ, JUNO_DATASTORE_ERROR_CANNOT_WRITE};
 use crate::hooks::db::{invoke_assert_delete_doc, invoke_assert_set_doc};
@@ -199,6 +200,26 @@ fn assert_write_version(
                 return Err(e);
             }
         },
+    }
+
+    Ok(())
+}
+
+pub fn assert_set_config(
+    proposed_config: &SetDbConfig,
+    current_config: &Option<DbConfig>,
+) -> Result<(), String> {
+    assert_config_version(current_config, proposed_config.version)?;
+
+    Ok(())
+}
+
+fn assert_config_version(
+    current_config: &Option<DbConfig>,
+    proposed_version: Option<Version>,
+) -> Result<(), String> {
+    if let Some(cfg) = current_config {
+        assert_version(proposed_version, cfg.version)?
     }
 
     Ok(())

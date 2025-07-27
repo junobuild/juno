@@ -465,9 +465,7 @@
 		"failed": "失败",
 		"skip_delete_domain": "跳过在Boundary节点删除定制域名",
 		"files_deployed": "文件已经部署",
-		"set_auth_domain_title": "设置用于认证的域名",
-		"set_auth_domain_question": "Would you like to use <strong>{0}</strong> as the primary domain for all user sign-ins?",
-		"need_more_info": "Need more info? See the",
+		"set_auth_domain_question": "Use this domain as the default for user authentication",
 		"domain_name": "域名",
 		"default_url": "Default URL"
 	},

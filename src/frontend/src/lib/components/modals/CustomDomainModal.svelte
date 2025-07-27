@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { isEmptyString, isNullish, nonNullish } from '@dfinity/utils';
+	import { isEmptyString, isNullish } from '@dfinity/utils';
 	import { onMount } from 'svelte';
 	import ProgressHosting from '$lib/components/canister/ProgressHosting.svelte';
 	import AddCustomDomainDns from '$lib/components/hosting/AddCustomDomainDns.svelte';

@@ -50,7 +50,8 @@ use junobuild_storage::http::types::{
 };
 use junobuild_storage::types::config::StorageConfig;
 use junobuild_storage::types::interface::{
-    AssetNoContent, CommitBatch, InitAssetKey, InitUploadResult, UploadChunk, UploadChunkResult,
+    AssetNoContent, CommitBatch, InitAssetKey, InitUploadResult, SetStorageConfig, UploadChunk,
+    UploadChunkResult,
 };
 use junobuild_storage::types::state::FullPath;
 use memory::lifecycle;
@@ -335,8 +336,8 @@ pub fn get_db_config() -> Option<DbConfig> {
 
 #[doc(hidden)]
 #[update(guard = "caller_is_admin_controller")]
-pub fn set_storage_config(config: StorageConfig) {
-    api::config::set_storage_config(config);
+pub fn set_storage_config(config: SetStorageConfig) -> StorageConfig {
+    api::config::set_storage_config(config).unwrap_or_else(|e| trap(&e))
 }
 
 #[doc(hidden)]

@@ -1,9 +1,7 @@
 <script lang="ts">
-	import { isEmptyString, isNullish, nonNullish, fromNullishNullable } from '@dfinity/utils';
+	import { isEmptyString, isNullish, nonNullish } from '@dfinity/utils';
 	import { onMount } from 'svelte';
-	import type { AuthenticationConfig } from '$declarations/satellite/satellite.did';
 	import ProgressHosting from '$lib/components/canister/ProgressHosting.svelte';
-	import AddCustomDomainAuth from '$lib/components/hosting/AddCustomDomainAuth.svelte';
 	import AddCustomDomainDns from '$lib/components/hosting/AddCustomDomainDns.svelte';
 	import AddCustomDomainForm from '$lib/components/hosting/AddCustomDomainForm.svelte';
 	import IconVerified from '$lib/components/icons/IconVerified.svelte';
@@ -16,7 +14,6 @@
 	import type { CustomDomainDns } from '$lib/types/custom-domain';
 	import type { JunoModalCustomDomainDetail, JunoModalDetail } from '$lib/types/modal';
 	import type { HostingProgress } from '$lib/types/progress-hosting';
-	import type { Option } from '$lib/types/utils';
 	import { toCustomDomainDns } from '$lib/utils/custom-domain.utils';
 	import { emit } from '$lib/utils/events.utils';
 
@@ -29,9 +26,11 @@
 
 	let { satellite, config } = $derived(detail as JunoModalCustomDomainDetail);
 
-	let step: 'init' | 'auth' | 'dns' | 'in_progress' | 'ready' = $state('init');
+	let step: 'init' | 'dns' | 'in_progress' | 'ready' = $state('init');
+
 	let domainNameInput = $state('');
-	let dns: CustomDomainDns | undefined = $state(undefined);
+	let dns = $state<CustomDomainDns | undefined>(undefined);
+	let useDomainForDerivationOrigin = $state(false);
 
 	let edit = $state(false);
 
@@ -43,16 +42,9 @@
 		}
 
 		dns = toCustomDomainDns({ domainName: domainNameInput, canisterId: satellite.satellite_id });
-		onFormNext();
+		onNextDns();
 		edit = true;
 	});
-
-	let editConfig = $state<Option<AuthenticationConfig>>();
-	const onAuth = (detail: AuthenticationConfig | null) => {
-		editConfig = detail;
-
-		step = 'dns';
-	};
 
 	let progress: HostingProgress | undefined = $state(undefined);
 	const onProgress = (hostingProgress: HostingProgress | undefined) => (progress = hostingProgress);
@@ -73,7 +65,8 @@
 		const { success } = await configHosting({
 			satelliteId: satellite.satellite_id,
 			domainName: dns.hostname,
-			editConfig,
+			config,
+			useDomainForDerivationOrigin,
 			identity: $authStore.identity,
 			onProgress
 		});
@@ -93,15 +86,7 @@
 		onclose();
 	};
 
-	const onFormNext = () => {
-		const authDomain: string | undefined = fromNullishNullable(
-			fromNullishNullable(config?.internet_identity)?.derivation_origin
-		);
-
-		const existingDerivationOrigin = nonNullish(authDomain);
-
-		step = existingDerivationOrigin ? 'dns' : 'auth';
-	};
+	const onNextDns = () => (step = 'dns');
 </script>
 
 <Modal onclose={close}>
@@ -121,11 +106,16 @@
 			onclose={close}
 		/>
 	{:else if step === 'in_progress'}
-		<ProgressHosting {progress} withConfig={nonNullish(editConfig)} />
-	{:else if step === 'auth'}
-		<AddCustomDomainAuth {domainNameInput} {config} next={onAuth} />
+		<ProgressHosting {progress} withConfig={useDomainForDerivationOrigin} />
 	{:else}
-		<AddCustomDomainForm bind:domainNameInput bind:dns {satellite} on:junoNext={onFormNext} />
+		<AddCustomDomainForm
+			bind:domainNameInput
+			bind:dns
+			bind:useDomainForDerivationOrigin
+			{config}
+			{satellite}
+			onnext={onNextDns}
+		/>
 	{/if}
 </Modal>
 

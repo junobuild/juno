@@ -6,20 +6,22 @@ import { i18n } from '$lib/stores/i18n.store';
 import { toasts } from '$lib/stores/toasts.store';
 import type { OptionIdentity } from '$lib/types/itentity';
 import { type HostingProgress, HostingProgressStep } from '$lib/types/progress-hosting';
-import type { Option } from '$lib/types/utils';
+import { buildSetAuthenticationConfig } from '$lib/utils/auth.config.utils';
 import type { Principal } from '@dfinity/principal';
-import { assertNonNullish, nonNullish } from '@dfinity/utils';
+import { assertNonNullish } from '@dfinity/utils';
 import { get } from 'svelte/store';
 
 export const configHosting = async ({
 	satelliteId,
-	editConfig,
+	useDomainForDerivationOrigin,
+	config,
 	domainName,
 	identity,
 	onProgress
 }: {
 	domainName: string;
-	editConfig: Option<AuthenticationConfig>;
+	useDomainForDerivationOrigin: boolean;
+	config: AuthenticationConfig | undefined;
 	satelliteId: Principal;
 	identity: OptionIdentity;
 	onProgress: (progress: HostingProgress | undefined) => void;
@@ -35,7 +37,9 @@ export const configHosting = async ({
 
 		await execute({ fn: configCustomDomain, onProgress, step: HostingProgressStep.CustomDomain });
 
-		if (nonNullish(editConfig)) {
+		if (useDomainForDerivationOrigin) {
+			const editConfig = buildSetAuthenticationConfig({ config, domainName });
+
 			const configAuth = async () =>
 				await setAuthConfig({
 					satelliteId,

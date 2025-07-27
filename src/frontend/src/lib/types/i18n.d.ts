@@ -478,9 +478,7 @@ interface I18nHosting {
 	failed: string;
 	skip_delete_domain: string;
 	files_deployed: string;
-	set_auth_domain_title: string;
 	set_auth_domain_question: string;
-	need_more_info: string;
 	domain_name: string;
 	default_url: string;
 }

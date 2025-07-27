@@ -41,10 +41,13 @@ export const configHosting = async ({
 			fromNullishNullable(config?.internet_identity)?.derivation_origin
 		);
 
-		if (useDomainForDerivationOrigin || notEmptyString(existingDerivationOrigin)) {
+		const editDomainName = useDomainForDerivationOrigin ? domainName : existingDerivationOrigin;
+
+		// We set or update the derivation origin. Update is useful to append the new domain name into the .well-known/ii-alternative-origins
+		if (notEmptyString(editDomainName)) {
 			const editConfig = buildSetAuthenticationConfig({
 				config,
-				domainName: useDomainForDerivationOrigin ? domainName : existingDerivationOrigin
+				domainName: editDomainName
 			});
 
 			const configAuth = async () =>

@@ -49,6 +49,7 @@ use junobuild_storage::types::interface::AssetNoContent;
 use junobuild_storage::types::interface::CommitBatch;
 use junobuild_storage::types::interface::InitAssetKey;
 use junobuild_storage::types::interface::InitUploadResult;
+use junobuild_storage::types::interface::SetStorageConfig;
 use junobuild_storage::types::interface::UploadChunk;
 use junobuild_storage::types::interface::UploadChunkResult;
 

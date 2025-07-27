@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { isEmptyString, isNullish } from '@dfinity/utils';
+	import { fromNullishNullable, isEmptyString, isNullish } from '@dfinity/utils';
 	import { onMount } from 'svelte';
 	import ProgressHosting from '$lib/components/canister/ProgressHosting.svelte';
 	import AddCustomDomainDns from '$lib/components/hosting/AddCustomDomainDns.svelte';
@@ -34,7 +34,17 @@
 
 	let edit = $state(false);
 
+	// The derivation origin is initialized by default with the first custom domain
+	const initUseDomainForDerivationOrigin = () => {
+		const authDomain = fromNullishNullable(
+			fromNullishNullable(config?.internet_identity)?.derivation_origin
+		);
+		useDomainForDerivationOrigin = isEmptyString(authDomain);
+	};
+
 	onMount(() => {
+		initUseDomainForDerivationOrigin();
+
 		domainNameInput = (detail as JunoModalCustomDomainDetail).editDomainName ?? '';
 
 		if (isEmptyString(domainNameInput)) {

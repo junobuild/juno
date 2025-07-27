@@ -16,15 +16,11 @@
 	let { config, useDomainForDerivationOrigin = $bindable(false) }: AddCustomDomainAuthProps =
 		$props();
 
-	let authDomain = $derived(
+	let existingDerivationOrigin = $derived(
 		fromNullishNullable(fromNullishNullable(config?.internet_identity)?.derivation_origin)
 	);
 
-	let noExistingDerivationOrigin = $derived(isEmptyString(authDomain));
-
-	$effect(() => {
-		useDomainForDerivationOrigin = noExistingDerivationOrigin;
-	});
+	let noExistingDerivationOrigin = $derived(isEmptyString(existingDerivationOrigin));
 </script>
 
 {#if noExistingDerivationOrigin}

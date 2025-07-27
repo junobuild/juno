@@ -8,7 +8,7 @@ import type { OptionIdentity } from '$lib/types/itentity';
 import { type HostingProgress, HostingProgressStep } from '$lib/types/progress-hosting';
 import { buildSetAuthenticationConfig } from '$lib/utils/auth.config.utils';
 import type { Principal } from '@dfinity/principal';
-import { assertNonNullish } from '@dfinity/utils';
+import { assertNonNullish, fromNullishNullable, notEmptyString } from '@dfinity/utils';
 import { get } from 'svelte/store';
 
 export const configHosting = async ({
@@ -37,8 +37,15 @@ export const configHosting = async ({
 
 		await execute({ fn: configCustomDomain, onProgress, step: HostingProgressStep.CustomDomain });
 
-		if (useDomainForDerivationOrigin) {
-			const editConfig = buildSetAuthenticationConfig({ config, domainName });
+		const existingDerivationOrigin = fromNullishNullable(
+			fromNullishNullable(config?.internet_identity)?.derivation_origin
+		);
+
+		if (useDomainForDerivationOrigin || notEmptyString(existingDerivationOrigin)) {
+			const editConfig = buildSetAuthenticationConfig({
+				config,
+				domainName: useDomainForDerivationOrigin ? domainName : existingDerivationOrigin
+			});
 
 			const configAuth = async () =>
 				await setAuthConfig({

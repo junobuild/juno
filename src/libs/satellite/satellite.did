@@ -218,10 +218,22 @@ type SetRule = record {
   write : Permission;
   max_changes_per_user : opt nat32;
 };
-type StorageConfig = record {
+type SetStorageConfig = record {
   iframe : opt StorageConfigIFrame;
   rewrites : vec record { text; text };
   headers : vec record { text; vec record { text; text } };
+  version : opt nat64;
+  max_memory_size : opt ConfigMaxMemorySize;
+  raw_access : opt StorageConfigRawAccess;
+  redirects : opt vec record { text; StorageConfigRedirect };
+};
+type StorageConfig = record {
+  iframe : opt StorageConfigIFrame;
+  updated_at : opt nat64;
+  rewrites : vec record { text; text };
+  headers : vec record { text; vec record { text; text } };
+  created_at : opt nat64;
+  version : opt nat64;
   max_memory_size : opt ConfigMaxMemorySize;
   raw_access : opt StorageConfigRawAccess;
   redirects : opt vec record { text; StorageConfigRedirect };
@@ -324,7 +336,7 @@ service : () -> {
       vec record { text; Doc },
     );
   set_rule : (CollectionType, text, SetRule) -> (Rule);
-  set_storage_config : (StorageConfig) -> ();
+  set_storage_config : (SetStorageConfig) -> (StorageConfig);
   submit_proposal : (nat) -> (nat, Proposal);
   upload_asset_chunk : (UploadChunk) -> (UploadChunkResult);
   upload_proposal_asset_chunk : (UploadChunk) -> (UploadChunkResult);

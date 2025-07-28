@@ -3,7 +3,7 @@ use crate::types::config::{
     StorageConfig, StorageConfigHeaders, StorageConfigIFrame, StorageConfigRawAccess,
     StorageConfigRedirects, StorageConfigRewrites,
 };
-use crate::types::interface::{AssetEncodingNoContent, AssetNoContent};
+use crate::types::interface::{AssetEncodingNoContent, AssetNoContent, SetStorageConfig};
 use crate::types::state::StorageHeapState;
 use crate::types::store::{Asset, AssetEncoding, AssetKey, Batch, BatchExpiry};
 use ic_cdk::api::time;
@@ -18,7 +18,7 @@ use junobuild_shared::serializers::{
 use junobuild_shared::types::core::{Blob, Hash, Hashable};
 use junobuild_shared::types::state::Timestamped;
 use junobuild_shared::types::state::{Timestamp, Version, Versioned};
-use junobuild_shared::version::next_version;
+use junobuild_shared::version::{next_version, next_version_from};
 use sha2::{Digest, Sha256};
 use std::borrow::Cow;
 use std::cmp::Ordering;
@@ -63,6 +63,9 @@ impl StorageHeapState {
                 redirects: Some(StorageConfigRedirects::default()),
                 iframe: None,
                 raw_access: None,
+                created_at: Some(now),
+                updated_at: Some(now),
+                version: Some(next_version::<StorageConfig>(&None)),
                 max_memory_size: None,
             },
             custom_domains: HashMap::new(),
@@ -280,5 +283,35 @@ impl Hashable for AssetEncoding {
         hasher.update(self.total_length.to_le_bytes());
         hasher.update(self.sha256);
         hasher.finalize().into()
+    }
+}
+
+impl StorageConfig {
+    pub fn prepare(current_config: &StorageConfig, user_config: &SetStorageConfig) -> Self {
+        let now = time();
+
+        let created_at: Timestamp = current_config.created_at.unwrap_or(now);
+
+        let version = next_version_from(current_config);
+
+        let updated_at: Timestamp = now;
+
+        StorageConfig {
+            headers: user_config.headers.clone(),
+            rewrites: user_config.rewrites.clone(),
+            redirects: user_config.redirects.clone(),
+            iframe: user_config.iframe.clone(),
+            raw_access: user_config.raw_access.clone(),
+            max_memory_size: user_config.max_memory_size.clone(),
+            created_at: Some(created_at),
+            updated_at: Some(updated_at),
+            version: Some(version),
+        }
+    }
+}
+
+impl Versioned for StorageConfig {
+    fn version(&self) -> Option<Version> {
+        self.version
     }
 }

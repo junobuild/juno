@@ -1,5 +1,6 @@
 use crate::assets::storage::assert::{
     assert_create_batch, assert_delete_asset, assert_get_asset, assert_list_assets,
+    assert_set_config,
 };
 use crate::assets::storage::certified_assets::runtime::init_certified_assets as init_runtime_certified_assets;
 use crate::assets::storage::state::{
@@ -36,7 +37,9 @@ use junobuild_storage::runtime::{
 use junobuild_storage::store::{commit_batch as commit_batch_storage, create_batch, create_chunk};
 use junobuild_storage::strategies::StorageAssertionsStrategy;
 use junobuild_storage::types::config::StorageConfig;
-use junobuild_storage::types::interface::{AssetNoContent, CommitBatch, InitAssetKey, UploadChunk};
+use junobuild_storage::types::interface::{
+    AssetNoContent, CommitBatch, InitAssetKey, SetStorageConfig, UploadChunk,
+};
 use junobuild_storage::types::runtime_state::{BatchId, ChunkId};
 use junobuild_storage::types::state::FullPath;
 use junobuild_storage::types::store::{Asset, AssetEncoding};
@@ -631,10 +634,18 @@ fn secure_create_batch_impl(
 // Config
 // ---------------------------------------------------------
 
-pub fn set_config_store(config: &StorageConfig) {
-    insert_state_config(config);
+pub fn set_config_store(proposed_config: &SetStorageConfig) -> Result<StorageConfig, String> {
+    let current_config = get_config();
+
+    assert_set_config(proposed_config, &current_config)?;
+
+    let config = StorageConfig::prepare(&current_config, proposed_config);
+
+    insert_state_config(&config);
 
     init_runtime_certified_assets();
+
+    Ok(config)
 }
 
 pub fn get_config_store() -> StorageConfig {

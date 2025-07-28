@@ -201,10 +201,22 @@ export interface SetControllersArgs {
 	controller: SetController;
 	controllers: Array<Principal>;
 }
-export interface StorageConfig {
+export interface SetStorageConfig {
 	iframe: [] | [StorageConfigIFrame];
 	rewrites: Array<[string, string]>;
 	headers: Array<[string, Array<[string, string]>]>;
+	version: [] | [bigint];
+	max_memory_size: [] | [ConfigMaxMemorySize];
+	raw_access: [] | [StorageConfigRawAccess];
+	redirects: [] | [Array<[string, StorageConfigRedirect]>];
+}
+export interface StorageConfig {
+	iframe: [] | [StorageConfigIFrame];
+	updated_at: [] | [bigint];
+	rewrites: Array<[string, string]>;
+	headers: Array<[string, Array<[string, string]>]>;
+	created_at: [] | [bigint];
+	version: [] | [bigint];
 	max_memory_size: [] | [ConfigMaxMemorySize];
 	raw_access: [] | [StorageConfigRawAccess];
 	redirects: [] | [Array<[string, StorageConfigRedirect]>];
@@ -289,7 +301,7 @@ export interface _SERVICE {
 	set_controllers: ActorMethod<[SetControllersArgs], undefined>;
 	set_custom_domain: ActorMethod<[string, [] | [string]], undefined>;
 	set_fee: ActorMethod<[SegmentKind, Tokens], undefined>;
-	set_storage_config: ActorMethod<[StorageConfig], undefined>;
+	set_storage_config: ActorMethod<[SetStorageConfig], StorageConfig>;
 	submit_proposal: ActorMethod<[bigint], [bigint, Proposal]>;
 	update_rate_config: ActorMethod<[SegmentKind, RateConfig], undefined>;
 	upload_asset_chunk: ActorMethod<[UploadChunk], UploadChunkResult>;

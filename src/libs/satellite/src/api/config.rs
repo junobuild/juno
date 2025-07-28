@@ -13,7 +13,7 @@ use crate::db::types::interface::SetDbConfig;
 use crate::types::interface::Config;
 use ic_cdk::trap;
 use junobuild_storage::types::config::StorageConfig;
-
+use junobuild_storage::types::interface::SetStorageConfig;
 // ---------------------------------------------------------
 // Config
 // ---------------------------------------------------------
@@ -58,8 +58,8 @@ pub fn get_db_config() -> Option<DbConfig> {
 // Storage config
 // ---------------------------------------------------------
 
-pub fn set_storage_config(config: StorageConfig) {
-    set_storage_config_store(&config);
+pub fn set_storage_config(config: SetStorageConfig) -> Result<StorageConfig, String> {
+    set_storage_config_store(&config)
 }
 
 pub fn get_storage_config() -> StorageConfig {

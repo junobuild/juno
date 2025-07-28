@@ -10,6 +10,7 @@ use junobuild_collections::assert::stores::{
 use junobuild_collections::constants::assets::COLLECTION_ASSET_KEY;
 use junobuild_collections::types::core::CollectionKey;
 use junobuild_collections::types::rules::Permission;
+use junobuild_shared::assert::assert_version;
 use junobuild_shared::controllers::{controller_can_write, is_controller};
 use junobuild_shared::types::state::Controllers;
 use junobuild_storage::errors::{
@@ -17,6 +18,8 @@ use junobuild_storage::errors::{
     JUNO_STORAGE_ERROR_UPLOAD_NOT_ALLOWED,
 };
 use junobuild_storage::runtime::increment_and_assert_rate as increment_and_assert_rate_runtime;
+use junobuild_storage::types::config::StorageConfig;
+use junobuild_storage::types::interface::SetStorageConfig;
 use junobuild_storage::types::store::Asset;
 
 pub fn assert_get_asset(
@@ -128,6 +131,15 @@ fn assert_read_permission(
     if !assert_permission(rule, current_asset.key.owner, caller, controllers) {
         return Err(JUNO_STORAGE_ERROR_CANNOT_READ_ASSET.to_string());
     }
+
+    Ok(())
+}
+
+pub fn assert_set_config(
+    proposed_config: &SetStorageConfig,
+    current_config: &StorageConfig,
+) -> Result<(), String> {
+    assert_version(proposed_config.version, current_config.version)?;
 
     Ok(())
 }

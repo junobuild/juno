@@ -44,8 +44,11 @@ export const idlFactory = ({ IDL }) => {
 	});
 	const StorageConfig = IDL.Record({
 		iframe: IDL.Opt(StorageConfigIFrame),
+		updated_at: IDL.Opt(IDL.Nat64),
 		rewrites: IDL.Vec(IDL.Tuple(IDL.Text, IDL.Text)),
 		headers: IDL.Vec(IDL.Tuple(IDL.Text, IDL.Vec(IDL.Tuple(IDL.Text, IDL.Text)))),
+		created_at: IDL.Opt(IDL.Nat64),
+		version: IDL.Opt(IDL.Nat64),
 		max_memory_size: IDL.Opt(ConfigMaxMemorySize),
 		raw_access: IDL.Opt(StorageConfigRawAccess),
 		redirects: IDL.Opt(IDL.Vec(IDL.Tuple(IDL.Text, StorageConfigRedirect)))
@@ -247,6 +250,15 @@ export const idlFactory = ({ IDL }) => {
 		MissionControl: IDL.Null,
 		Satellite: IDL.Null
 	});
+	const SetStorageConfig = IDL.Record({
+		iframe: IDL.Opt(StorageConfigIFrame),
+		rewrites: IDL.Vec(IDL.Tuple(IDL.Text, IDL.Text)),
+		headers: IDL.Vec(IDL.Tuple(IDL.Text, IDL.Vec(IDL.Tuple(IDL.Text, IDL.Text)))),
+		version: IDL.Opt(IDL.Nat64),
+		max_memory_size: IDL.Opt(ConfigMaxMemorySize),
+		raw_access: IDL.Opt(StorageConfigRawAccess),
+		redirects: IDL.Opt(IDL.Vec(IDL.Tuple(IDL.Text, StorageConfigRedirect)))
+	});
 	const RateConfig = IDL.Record({
 		max_tokens: IDL.Nat64,
 		time_per_token_ns: IDL.Nat64
@@ -301,7 +313,7 @@ export const idlFactory = ({ IDL }) => {
 		set_controllers: IDL.Func([SetControllersArgs], [], []),
 		set_custom_domain: IDL.Func([IDL.Text, IDL.Opt(IDL.Text)], [], []),
 		set_fee: IDL.Func([SegmentKind, Tokens], [], []),
-		set_storage_config: IDL.Func([StorageConfig], [], []),
+		set_storage_config: IDL.Func([SetStorageConfig], [StorageConfig], []),
 		submit_proposal: IDL.Func([IDL.Nat], [IDL.Nat, Proposal], []),
 		update_rate_config: IDL.Func([SegmentKind, RateConfig], [], []),
 		upload_asset_chunk: IDL.Func([UploadChunk], [UploadChunkResult], []),

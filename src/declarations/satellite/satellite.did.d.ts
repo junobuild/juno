@@ -270,10 +270,22 @@ export interface SetRule {
 	write: Permission;
 	max_changes_per_user: [] | [number];
 }
-export interface StorageConfig {
+export interface SetStorageConfig {
 	iframe: [] | [StorageConfigIFrame];
 	rewrites: Array<[string, string]>;
 	headers: Array<[string, Array<[string, string]>]>;
+	version: [] | [bigint];
+	max_memory_size: [] | [ConfigMaxMemorySize];
+	raw_access: [] | [StorageConfigRawAccess];
+	redirects: [] | [Array<[string, StorageConfigRedirect]>];
+}
+export interface StorageConfig {
+	iframe: [] | [StorageConfigIFrame];
+	updated_at: [] | [bigint];
+	rewrites: Array<[string, string]>;
+	headers: Array<[string, Array<[string, string]>]>;
+	created_at: [] | [bigint];
+	version: [] | [bigint];
 	max_memory_size: [] | [ConfigMaxMemorySize];
 	raw_access: [] | [StorageConfigRawAccess];
 	redirects: [] | [Array<[string, StorageConfigRedirect]>];
@@ -371,7 +383,7 @@ export interface _SERVICE {
 	set_doc: ActorMethod<[string, string, SetDoc], Doc>;
 	set_many_docs: ActorMethod<[Array<[string, string, SetDoc]>], Array<[string, Doc]>>;
 	set_rule: ActorMethod<[CollectionType, string, SetRule], Rule>;
-	set_storage_config: ActorMethod<[StorageConfig], undefined>;
+	set_storage_config: ActorMethod<[SetStorageConfig], StorageConfig>;
 	submit_proposal: ActorMethod<[bigint], [bigint, Proposal]>;
 	upload_asset_chunk: ActorMethod<[UploadChunk], UploadChunkResult>;
 	upload_proposal_asset_chunk: ActorMethod<[UploadChunk], UploadChunkResult>;

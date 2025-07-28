@@ -8,7 +8,7 @@ import type {
 } from '$declarations/console/console.did';
 import type {
 	_SERVICE as SatelliteActor,
-	StorageConfig
+	SetStorageConfig
 } from '$declarations/satellite/satellite.did';
 import type { Identity } from '@dfinity/agent';
 import type { Actor, PocketIc } from '@dfinity/pic';
@@ -113,7 +113,8 @@ export const testNotAllowedCdnMethods = ({
 				redirects: toNullable(),
 				rewrites: [],
 				raw_access: toNullable(),
-				max_memory_size: toNullable()
+				max_memory_size: toNullable(),
+				version: toNullable()
 			})
 		).rejects.toThrow(errorMsgAdminController);
 	});
@@ -197,13 +198,14 @@ export const testCdnConfig = ({ actor }: { actor: () => Actor<SatelliteActor | C
 	it('should set and get config', async () => {
 		const { set_storage_config, get_storage_config } = actor();
 
-		const config: StorageConfig = {
+		const config: SetStorageConfig = {
 			headers: [['*', [['cache-control', 'no-cache']]]],
 			iframe: toNullable({ Deny: null }),
 			redirects: [],
 			rewrites: [],
 			raw_access: toNullable(),
-			max_memory_size: toNullable()
+			max_memory_size: toNullable(),
+			version: toNullable()
 		};
 
 		await set_storage_config(config);

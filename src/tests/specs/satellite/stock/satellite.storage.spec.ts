@@ -3,7 +3,7 @@ import type {
 	ListParams,
 	_SERVICE as SatelliteActor,
 	SetRule,
-	StorageConfig
+	SetStorageConfig
 } from '$declarations/satellite/satellite.did';
 import { idlFactory as idlFactorSatellite } from '$declarations/satellite/satellite.factory.did';
 import { AnonymousIdentity } from '@dfinity/agent';
@@ -24,6 +24,8 @@ import {
 	JUNO_COLLECTIONS_ERROR_COLLECTION_NOT_FOUND,
 	JUNO_ERROR_MEMORY_HEAP_EXCEEDED,
 	JUNO_ERROR_MEMORY_STABLE_EXCEEDED,
+	JUNO_ERROR_NO_VERSION_PROVIDED,
+	JUNO_ERROR_VERSION_OUTDATED_OR_FUTURE,
 	JUNO_STORAGE_ERROR_CANNOT_COMMIT_BATCH,
 	JUNO_STORAGE_ERROR_RESERVED_ASSET,
 	JUNO_STORAGE_ERROR_UPLOAD_PATH_COLLECTION_PREFIX
@@ -92,7 +94,8 @@ describe('Satellite > Storage', () => {
 					redirects: toNullable(),
 					rewrites: [],
 					raw_access: toNullable(),
-					max_memory_size: toNullable()
+					max_memory_size: toNullable(),
+					version: toNullable()
 				})
 			).rejects.toThrow(JUNO_AUTH_ERROR_NOT_ADMIN_CONTROLLER);
 		});
@@ -184,13 +187,14 @@ describe('Satellite > Storage', () => {
 		it('should set and get config', async () => {
 			const { set_storage_config, get_config } = actor;
 
-			const storage: StorageConfig = {
+			const storage: SetStorageConfig = {
 				headers: [['*', [['cache-control', 'no-cache']]]],
 				iframe: toNullable({ Deny: null }),
 				redirects: [],
 				rewrites: [],
 				raw_access: toNullable(),
-				max_memory_size: toNullable()
+				max_memory_size: toNullable(),
+				version: toNullable(1n)
 			};
 
 			await set_storage_config(storage);
@@ -198,10 +202,53 @@ describe('Satellite > Storage', () => {
 			const configs = await get_config();
 
 			expect(configs).toEqual({
-				storage,
+				storage: expect.objectContaining({
+					...storage,
+					created_at: [expect.any(BigInt)],
+					updated_at: [expect.any(BigInt)],
+					version: [2n]
+				}),
 				authentication: toNullable(),
 				db: toNullable()
 			});
+
+			expect((fromNullable(configs.storage.created_at) ?? 0n) > 0n).toBe(true);
+			expect((fromNullable(configs.storage.updated_at) ?? 0n) > 0n).toBe(true);
+		});
+
+		it('should not set db config if incorrect version', async () => {
+			const { set_storage_config } = actor;
+
+			const storage: SetStorageConfig = {
+				headers: [['*', [['cache-control', 'no-cache']]]],
+				iframe: toNullable({ Deny: null }),
+				redirects: [],
+				rewrites: [],
+				raw_access: toNullable(),
+				max_memory_size: toNullable(),
+				version: toNullable(1n)
+			};
+
+			await expect(
+				set_storage_config({
+					...storage,
+					version: [1n]
+				})
+			).rejects.toThrow(JUNO_ERROR_VERSION_OUTDATED_OR_FUTURE);
+
+			await expect(
+				set_storage_config({
+					...storage,
+					version: [99n]
+				})
+			).rejects.toThrow(JUNO_ERROR_VERSION_OUTDATED_OR_FUTURE);
+
+			await expect(
+				set_storage_config({
+					...storage,
+					version: []
+				})
+			).rejects.toThrow(JUNO_ERROR_NO_VERSION_PROVIDED);
 		});
 
 		it('should deploy asset to dapp', async () => {
@@ -494,7 +541,7 @@ describe('Satellite > Storage', () => {
 			it('should set a config for a rewrite and redirect', async () => {
 				const { set_storage_config, get_config } = actor;
 
-				const storage: StorageConfig = {
+				const storage: SetStorageConfig = {
 					headers: [['*', [['cache-control', 'no-cache']]]],
 					iframe: toNullable({ Deny: null }),
 					redirects: [
@@ -510,7 +557,8 @@ describe('Satellite > Storage', () => {
 					],
 					rewrites: [['/hello.html', '/hello.html']],
 					raw_access: toNullable(),
-					max_memory_size: toNullable()
+					max_memory_size: toNullable(),
+					version: toNullable(2n)
 				};
 
 				await set_storage_config(storage);
@@ -518,10 +566,18 @@ describe('Satellite > Storage', () => {
 				const configs = await get_config();
 
 				expect(configs).toEqual({
-					storage,
+					storage: expect.objectContaining({
+						...storage,
+						created_at: [expect.any(BigInt)],
+						updated_at: [expect.any(BigInt)],
+						version: [3n]
+					}),
 					authentication: toNullable(),
 					db: toNullable()
 				});
+
+				expect((fromNullable(configs.storage.created_at) ?? 0n) > 0n).toBe(true);
+				expect((fromNullable(configs.storage.updated_at) ?? 0n) > 0n).toBe(true);
 			});
 		});
 	});
@@ -581,13 +637,14 @@ describe('Satellite > Storage', () => {
 			it('should be able to access on raw if allowed', async () => {
 				const { http_request, set_storage_config } = actor;
 
-				const storage: StorageConfig = {
+				const storage: SetStorageConfig = {
 					headers: [],
 					iframe: toNullable(),
 					redirects: [],
 					rewrites: [],
 					raw_access: toNullable({ Allow: null }),
-					max_memory_size: toNullable()
+					max_memory_size: toNullable(),
+					version: toNullable(3n)
 				};
 
 				await set_storage_config(storage);
@@ -610,13 +667,14 @@ describe('Satellite > Storage', () => {
 			it('should not be able to access on raw if explicitly disabled', async () => {
 				const { http_request, set_storage_config } = actor;
 
-				const storage: StorageConfig = {
+				const storage: SetStorageConfig = {
 					headers: [],
 					iframe: toNullable(),
 					redirects: [],
 					rewrites: [],
 					raw_access: toNullable({ Deny: null }),
-					max_memory_size: toNullable()
+					max_memory_size: toNullable(),
+					version: toNullable(4n)
 				};
 
 				await set_storage_config(storage);
@@ -635,13 +693,14 @@ describe('Satellite > Storage', () => {
 			it('should be able to access content if not raw', async () => {
 				const { http_request, set_storage_config } = actor;
 
-				const storage: StorageConfig = {
+				const storage: SetStorageConfig = {
 					headers: [],
 					iframe: toNullable(),
 					redirects: [],
 					rewrites: [],
 					raw_access: toNullable({ Allow: null }),
-					max_memory_size: toNullable()
+					max_memory_size: toNullable(),
+					version: toNullable(5n)
 				};
 
 				await set_storage_config(storage);
@@ -1196,167 +1255,188 @@ describe('Satellite > Storage', () => {
 				memory: { Heap: null },
 				expectMemory: 4_063_232n,
 				allowedMemory: maxHeapMemorySize,
-				preUploadCount: 13
+				preUploadCount: 13,
+				baseVersion: 6n
 			},
 			{
 				memory: { Stable: null },
 				expectMemory: 50_397_184n,
 				allowedMemory: maxStableMemorySize,
-				preUploadCount: 0
+				preUploadCount: 0,
+				baseVersion: 11n
 			}
-		])('With collection', ({ memory, expectMemory, allowedMemory, preUploadCount }) => {
-			const collection = `test_${'Heap' in memory ? 'heap' : 'stable'}`;
+		])(
+			'With collection',
+			({ memory, expectMemory, allowedMemory, preUploadCount, baseVersion }) => {
+				const collection = `test_${'Heap' in memory ? 'heap' : 'stable'}`;
 
-			const errorMsg = `${'Heap' in memory ? JUNO_ERROR_MEMORY_HEAP_EXCEEDED : JUNO_ERROR_MEMORY_STABLE_EXCEEDED} (${expectMemory} bytes used, ${allowedMemory} bytes allowed)`;
+				const errorMsg = `${'Heap' in memory ? JUNO_ERROR_MEMORY_HEAP_EXCEEDED : JUNO_ERROR_MEMORY_STABLE_EXCEEDED} (${expectMemory} bytes used, ${allowedMemory} bytes allowed)`;
 
-			const HTML = readFileSync(join(process.cwd(), 'src/frontend/src/app.html'));
+				const HTML = readFileSync(join(process.cwd(), 'src/frontend/src/app.html'));
 
-			const blob = new Blob([HTML], {
-				type: 'text/plain; charset=utf-8'
-			});
-
-			const upload = async ({ full_path, name }: { full_path: string; name: string }) => {
-				const { commit_asset_upload, upload_asset_chunk, init_asset_upload } = actor;
-
-				const file = await init_asset_upload({
-					collection,
-					description: toNullable(),
-					encoding_type: [],
-					full_path,
-					name,
-					token: toNullable()
+				const blob = new Blob([HTML], {
+					type: 'text/plain; charset=utf-8'
 				});
 
-				const chunk = await upload_asset_chunk({
-					batch_id: file.batch_id,
-					content: arrayBufferToUint8Array(await blob.arrayBuffer()),
-					order_id: [0n]
-				});
+				const upload = async ({ full_path, name }: { full_path: string; name: string }) => {
+					const { commit_asset_upload, upload_asset_chunk, init_asset_upload } = actor;
 
-				await commit_asset_upload({
-					batch_id: file.batch_id,
-					chunk_ids: [chunk.chunk_id],
-					headers: []
-				});
-			};
+					const file = await init_asset_upload({
+						collection,
+						description: toNullable(),
+						encoding_type: [],
+						full_path,
+						name,
+						token: toNullable()
+					});
 
-			const preUpload = async () => {
-				if (preUploadCount === 0) {
-					return;
-				}
+					const chunk = await upload_asset_chunk({
+						batch_id: file.batch_id,
+						content: arrayBufferToUint8Array(await blob.arrayBuffer()),
+						order_id: [0n]
+					});
 
-				for (const i of Array.from({ length: preUploadCount }).map((_, i) => i)) {
-					await upload({ full_path: `/${collection}/hello${i}.html`, name: `hello${i}.html` });
-				}
-			};
-
-			beforeAll(async () => {
-				await preUpload();
-			});
-
-			const configMaxMemory = async (max: 'heap' | 'stable' | 'none') => {
-				const { set_storage_config } = actor;
-
-				const storage: StorageConfig = {
-					headers: [['*', [['cache-control', 'no-cache']]]],
-					iframe: toNullable({ Deny: null }),
-					redirects: [],
-					rewrites: [],
-					raw_access: toNullable(),
-					max_memory_size: toNullable({
-						heap: max === 'heap' ? [maxHeapMemorySize] : [],
-						stable: max === 'stable' ? [maxStableMemorySize] : []
-					})
+					await commit_asset_upload({
+						batch_id: file.batch_id,
+						chunk_ids: [chunk.chunk_id],
+						headers: []
+					});
 				};
 
-				await set_storage_config(storage);
-			};
+				const preUpload = async () => {
+					if (preUploadCount === 0) {
+						return;
+					}
 
-			describe('should limit max memory size', () => {
-				const name = 'more_data.html';
-				const full_path = `/${collection}/${name}`;
+					for (const i of Array.from({ length: preUploadCount }).map((_, i) => i)) {
+						await upload({ full_path: `/${collection}/hello${i}.html`, name: `hello${i}.html` });
+					}
+				};
 
-				it('should not allow to create a batch', async () => {
-					await configMaxMemory('Heap' in memory ? 'heap' : 'stable');
+				beforeAll(async () => {
+					await preUpload();
+				});
 
-					const { init_asset_upload } = actor;
+				const configMaxMemory = async ({
+					max,
+					version
+				}: {
+					max: 'heap' | 'stable' | 'none';
+					version: bigint;
+				}) => {
+					const { set_storage_config } = actor;
 
-					await expect(
-						init_asset_upload({
+					const storage: SetStorageConfig = {
+						headers: [['*', [['cache-control', 'no-cache']]]],
+						iframe: toNullable({ Deny: null }),
+						redirects: [],
+						rewrites: [],
+						raw_access: toNullable(),
+						max_memory_size: toNullable({
+							heap: max === 'heap' ? [maxHeapMemorySize] : [],
+							stable: max === 'stable' ? [maxStableMemorySize] : []
+						}),
+						version: toNullable(version)
+					};
+
+					await set_storage_config(storage);
+				};
+
+				describe('should limit max memory size', () => {
+					const name = 'more_data.html';
+					const full_path = `/${collection}/${name}`;
+
+					it('should not allow to create a batch', async () => {
+						await configMaxMemory({
+							max: 'Heap' in memory ? 'heap' : 'stable',
+							version: baseVersion
+						});
+
+						const { init_asset_upload } = actor;
+
+						await expect(
+							init_asset_upload({
+								collection,
+								description: toNullable(),
+								encoding_type: [],
+								full_path,
+								name,
+								token: toNullable()
+							})
+						).rejects.toThrow(errorMsg);
+					});
+
+					it('should not allow to upload a chunk', async () => {
+						const { upload_asset_chunk, init_asset_upload } = actor;
+
+						await configMaxMemory({ max: 'none', version: baseVersion + 1n });
+
+						const { batch_id } = await init_asset_upload({
 							collection,
 							description: toNullable(),
 							encoding_type: [],
 							full_path,
 							name,
 							token: toNullable()
-						})
-					).rejects.toThrow(errorMsg);
-				});
+						});
 
-				it('should not allow to upload a chunk', async () => {
-					const { upload_asset_chunk, init_asset_upload } = actor;
+						await configMaxMemory({
+							max: 'Heap' in memory ? 'heap' : 'stable',
+							version: baseVersion + 2n
+						});
 
-					await configMaxMemory('none');
-
-					const { batch_id } = await init_asset_upload({
-						collection,
-						description: toNullable(),
-						encoding_type: [],
-						full_path,
-						name,
-						token: toNullable()
+						await expect(
+							upload_asset_chunk({
+								batch_id,
+								content: arrayBufferToUint8Array(await blob.arrayBuffer()),
+								order_id: [0n]
+							})
+						).rejects.toThrow(errorMsg);
 					});
 
-					await configMaxMemory('Heap' in memory ? 'heap' : 'stable');
+					it('should not allow to commit a batch', async () => {
+						const { commit_asset_upload, init_asset_upload, upload_asset_chunk } = actor;
 
-					await expect(
-						upload_asset_chunk({
+						await configMaxMemory({ max: 'none', version: baseVersion + 3n });
+
+						const { batch_id } = await init_asset_upload({
+							collection,
+							description: toNullable(),
+							encoding_type: [],
+							full_path,
+							name,
+							token: toNullable()
+						});
+
+						const { chunk_id } = await upload_asset_chunk({
 							batch_id,
 							content: arrayBufferToUint8Array(await blob.arrayBuffer()),
 							order_id: [0n]
-						})
-					).rejects.toThrow(errorMsg);
-				});
+						});
 
-				it('should not allow to commit a batch', async () => {
-					const { commit_asset_upload, init_asset_upload, upload_asset_chunk } = actor;
+						await configMaxMemory({
+							max: 'Heap' in memory ? 'heap' : 'stable',
+							version: baseVersion + 4n
+						});
 
-					await configMaxMemory('none');
-
-					const { batch_id } = await init_asset_upload({
-						collection,
-						description: toNullable(),
-						encoding_type: [],
-						full_path,
-						name,
-						token: toNullable()
+						await expect(
+							commit_asset_upload({
+								batch_id,
+								chunk_ids: [chunk_id],
+								headers: []
+							})
+						).rejects.toThrow(errorMsg);
 					});
-
-					const { chunk_id } = await upload_asset_chunk({
-						batch_id,
-						content: arrayBufferToUint8Array(await blob.arrayBuffer()),
-						order_id: [0n]
-					});
-
-					await configMaxMemory('Heap' in memory ? 'heap' : 'stable');
-
-					await expect(
-						commit_asset_upload({
-							batch_id,
-							chunk_ids: [chunk_id],
-							headers: []
-						})
-					).rejects.toThrow(errorMsg);
 				});
-			});
-		});
+			}
+		);
 	});
 
 	describe('Headers assertions', () => {
 		const unsetConfigMaxMemory = async () => {
 			const { set_storage_config } = actor;
 
-			const storage: StorageConfig = {
+			const storage: SetStorageConfig = {
 				headers: [['*', [['cache-control', 'no-cache']]]],
 				iframe: toNullable({ Deny: null }),
 				redirects: [],
@@ -1365,7 +1445,8 @@ describe('Satellite > Storage', () => {
 				max_memory_size: toNullable({
 					heap: [],
 					stable: []
-				})
+				}),
+				version: toNullable(16n)
 			};
 
 			await set_storage_config(storage);

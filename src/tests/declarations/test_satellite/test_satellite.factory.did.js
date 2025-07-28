@@ -91,6 +91,9 @@ export const idlFactory = ({ IDL }) => {
 		allowed_callers: IDL.Vec(IDL.Principal)
 	});
 	const AuthenticationConfig = IDL.Record({
+		updated_at: IDL.Opt(IDL.Nat64),
+		created_at: IDL.Opt(IDL.Nat64),
+		version: IDL.Opt(IDL.Nat64),
 		internet_identity: IDL.Opt(AuthenticationConfigInternetIdentity),
 		rules: IDL.Opt(AuthenticationRules)
 	});
@@ -280,6 +283,11 @@ export const idlFactory = ({ IDL }) => {
 		items_length: IDL.Nat64
 	});
 	const MemorySize = IDL.Record({ stable: IDL.Nat64, heap: IDL.Nat64 });
+	const SetAuthenticationConfig = IDL.Record({
+		version: IDL.Opt(IDL.Nat64),
+		internet_identity: IDL.Opt(AuthenticationConfigInternetIdentity),
+		rules: IDL.Opt(AuthenticationRules)
+	});
 	const SetController = IDL.Record({
 		metadata: IDL.Vec(IDL.Tuple(IDL.Text, IDL.Text)),
 		scope: ControllerScope,
@@ -386,7 +394,7 @@ export const idlFactory = ({ IDL }) => {
 		list_rules: IDL.Func([CollectionType, ListRulesParams], [ListRulesResults], ['query']),
 		memory_size: IDL.Func([], [MemorySize], ['query']),
 		reject_proposal: IDL.Func([CommitProposal], [IDL.Null], []),
-		set_auth_config: IDL.Func([AuthenticationConfig], [], []),
+		set_auth_config: IDL.Func([SetAuthenticationConfig], [], []),
 		set_controllers: IDL.Func(
 			[SetControllersArgs],
 			[IDL.Vec(IDL.Tuple(IDL.Principal, Controller))],

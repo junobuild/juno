@@ -634,8 +634,6 @@ fn secure_create_batch_impl(
 // Config
 // ---------------------------------------------------------
 
-// TODO: to be reviewed. Maybe a duplicate of CDN similar features for configuration
-
 pub fn set_config_store(proposed_config: &SetStorageConfig) -> Result<StorageConfig, String> {
     let current_config = get_config();
 

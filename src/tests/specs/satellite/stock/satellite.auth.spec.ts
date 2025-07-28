@@ -7,12 +7,12 @@ import { AnonymousIdentity } from '@dfinity/agent';
 import { Ed25519KeyIdentity } from '@dfinity/identity';
 import { type Actor, PocketIc } from '@dfinity/pic';
 import type { Principal } from '@dfinity/principal';
-import { toNullable } from '@dfinity/utils';
+import { fromNullable, toNullable } from '@dfinity/utils';
 import {
 	JUNO_AUTH_ERROR_INVALID_ORIGIN,
 	JUNO_AUTH_ERROR_NOT_ADMIN_CONTROLLER
 } from '@junobuild/errors';
-import { inject } from 'vitest';
+import { expect, inject } from 'vitest';
 import { deleteDefaultIndexHTML } from '../../../utils/satellite-tests.utils';
 import { controllersInitArgs, SATELLITE_WASM_PATH } from '../../../utils/setup-tests.utils';
 
@@ -49,6 +49,30 @@ describe('Satellite > Authentication', () => {
 		beforeAll(() => {
 			actor.setIdentity(controller);
 		});
+
+		const assertConfig = async ({
+			config,
+			version
+		}: {
+			config: SetAuthenticationConfig;
+			version: bigint;
+		}) => {
+			const { get_auth_config } = actor;
+
+			const result = fromNullable(await get_auth_config());
+
+			expect(result).toEqual(
+				expect.objectContaining({
+					...config,
+					created_at: [expect.any(BigInt)],
+					updated_at: [expect.any(BigInt)],
+					version: [version]
+				})
+			);
+
+			expect(fromNullable(result?.created_at ?? []) ?? 0n).toBeGreaterThan(0n);
+			expect(fromNullable(result?.updated_at ?? []) ?? 0n).toBeGreaterThan(0n);
+		};
 
 		it('should have empty config per default', async () => {
 			const { get_auth_config } = actor;
@@ -114,9 +138,7 @@ describe('Satellite > Authentication', () => {
 
 			await set_auth_config(config);
 
-			const result = await get_auth_config();
-
-			expect(result).toEqual([config]);
+			await assertConfig({ config, version: 1n });
 		});
 
 		it('should expose /.well-known/ii-alternative-origins', async () => {
@@ -158,9 +180,7 @@ describe('Satellite > Authentication', () => {
 
 			await set_auth_config(config);
 
-			const result = await get_auth_config();
-
-			expect(result).toEqual([config]);
+			await assertConfig({ config, version: 2n });
 		});
 
 		it('should expose /.well-known/ii-alternative-origins with external origins', async () => {
@@ -202,9 +222,9 @@ describe('Satellite > Authentication', () => {
 
 			await set_auth_config(config);
 
-			const result = await get_auth_config();
+			const result = fromNullable(await get_auth_config());
 
-			expect(result).toEqual([config]);
+			await assertConfig({ config, version: 3n });
 		});
 
 		it('should not expose /.well-known/ii-alternative-origins', async () => {
@@ -232,9 +252,7 @@ describe('Satellite > Authentication', () => {
 
 			await set_auth_config(config);
 
-			const result = await get_auth_config();
-
-			expect(result).toEqual([config]);
+			await assertConfig({ config, version: 4n });
 		});
 
 		it('should not expose /.well-known/ii-alternative-origins if the all config as been deleted as well', async () => {

@@ -9,6 +9,7 @@ import type {
 	ListRulesParams,
 	ListRulesResults,
 	Rule,
+	SetAuthenticationConfig,
 	SetDoc,
 	SetRule
 } from '$declarations/satellite/satellite.did';
@@ -208,7 +209,7 @@ export const setAuthConfig = async ({
 	...rest
 }: {
 	satelliteId: Principal;
-	config: AuthenticationConfig;
+	config: SetAuthenticationConfig;
 	identity: OptionIdentity;
 }): Promise<void> => {
 	const { set_auth_config } = await getSatelliteActor(rest);

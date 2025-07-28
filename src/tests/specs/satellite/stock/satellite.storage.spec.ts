@@ -212,8 +212,8 @@ describe('Satellite > Storage', () => {
 				db: toNullable()
 			});
 
-			expect((fromNullable(configs.storage.created_at) ?? 0n) > 0n).toBe(true);
-			expect((fromNullable(configs.storage.updated_at) ?? 0n) > 0n).toBe(true);
+			expect(fromNullable(configs.storage.created_at) ?? 0n).toBeGreaterThan(0n);
+			expect(fromNullable(configs.storage.updated_at) ?? 0n).toBeGreaterThan(0n);
 		});
 
 		it('should not set db config if incorrect version', async () => {
@@ -576,8 +576,8 @@ describe('Satellite > Storage', () => {
 					db: toNullable()
 				});
 
-				expect((fromNullable(configs.storage.created_at) ?? 0n) > 0n).toBe(true);
-				expect((fromNullable(configs.storage.updated_at) ?? 0n) > 0n).toBe(true);
+				expect(fromNullable(configs.storage.created_at) ?? 0n).toBeGreaterThan(0n);
+				expect(fromNullable(configs.storage.updated_at) ?? 0n).toBeGreaterThan(0n);
 			});
 		});
 	});

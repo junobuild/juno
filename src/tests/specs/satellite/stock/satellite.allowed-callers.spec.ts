@@ -1,8 +1,8 @@
 import type {
-	AuthenticationConfig,
 	DelDoc,
 	Doc,
 	_SERVICE as SatelliteActor,
+	SetAuthenticationConfig,
 	SetDoc
 } from '$declarations/satellite/satellite.did';
 import { idlFactory as idlFactorSatellite } from '$declarations/satellite/satellite.factory.did';
@@ -59,53 +59,62 @@ describe('Satellite > Allowed Callers', () => {
 		await pic?.tearDown();
 	});
 
-	const setSomeAllowedCaller = async () => {
+	const setSomeAllowedCaller = async ({ version }: { version: bigint | undefined }) => {
 		const someCaller = Ed25519KeyIdentity.generate();
-		await setAllowedCallers({ allowedCallers: [someCaller.getPrincipal()] });
+		await setAllowedCallers({ allowedCallers: [someCaller.getPrincipal()], version });
 	};
 
-	const setAllowedCallers = async ({ allowedCallers }: { allowedCallers: Principal[] }) => {
+	const setAllowedCallers = async ({
+		allowedCallers,
+		version
+	}: {
+		allowedCallers: Principal[];
+		version: bigint | undefined;
+	}) => {
 		actor.setIdentity(controller);
 
 		const { set_auth_config } = actor;
 
-		const config: AuthenticationConfig = {
+		const config: SetAuthenticationConfig = {
 			internet_identity: [],
 			rules: [
 				{
 					allowed_callers: allowedCallers
 				}
-			]
+			],
+			version: toNullable(version)
 		};
 
 		await set_auth_config(config);
 	};
 
-	const setEmptyAllowedCallers = async () => {
+	const setEmptyAllowedCallers = async ({ version }: { version: bigint | undefined }) => {
 		actor.setIdentity(controller);
 
 		const { set_auth_config } = actor;
 
-		const config: AuthenticationConfig = {
+		const config: SetAuthenticationConfig = {
 			internet_identity: [],
 			rules: [
 				{
 					allowed_callers: []
 				}
-			]
+			],
+			version: toNullable(version)
 		};
 
 		await set_auth_config(config);
 	};
 
-	const resetAuthConfig = async () => {
+	const resetAuthConfig = async ({ version }: { version: bigint | undefined }) => {
 		actor.setIdentity(controller);
 
 		const { set_auth_config } = actor;
 
-		const config: AuthenticationConfig = {
+		const config: SetAuthenticationConfig = {
 			internet_identity: [],
-			rules: []
+			rules: [],
+			version: toNullable(version)
 		};
 
 		await set_auth_config(config);
@@ -658,7 +667,7 @@ describe('Satellite > Allowed Callers', () => {
 				let docKey: string;
 
 				beforeEach(async () => {
-					await resetAuthConfig();
+					await resetAuthConfig({ version: undefined });
 
 					await createUser(user);
 
@@ -676,7 +685,7 @@ describe('Satellite > Allowed Callers', () => {
 				});
 
 				it('should not get document if not allowed', async () => {
-					await setSomeAllowedCaller();
+					await setSomeAllowedCaller({ version: 1n });
 
 					actor.setIdentity(user);
 					const { get_doc } = actor;
@@ -702,13 +711,13 @@ describe('Satellite > Allowed Callers', () => {
 				});
 
 				it('should get document if empty allowed callers', async () => {
-					await setEmptyAllowedCallers();
+					await setEmptyAllowedCallers({ version: 2n });
 
 					await assertAllowed();
 				});
 
 				it('should get document if controller', async () => {
-					await setSomeAllowedCaller();
+					await setSomeAllowedCaller({ version: 3n });
 
 					await assertAllowed({ actorIdentity: controller });
 				});
@@ -718,7 +727,7 @@ describe('Satellite > Allowed Callers', () => {
 				let docKey: string;
 
 				beforeEach(async () => {
-					await resetAuthConfig();
+					await resetAuthConfig({ version: 4n });
 
 					await createUser(user);
 
@@ -736,7 +745,7 @@ describe('Satellite > Allowed Callers', () => {
 				});
 
 				it('should not get documents if not allowed', async () => {
-					await setSomeAllowedCaller();
+					await setSomeAllowedCaller({ version: 5n });
 
 					actor.setIdentity(user);
 					const { get_many_docs } = actor;
@@ -765,13 +774,13 @@ describe('Satellite > Allowed Callers', () => {
 				});
 
 				it('should get documents if empty allowed callers', async () => {
-					await setEmptyAllowedCallers();
+					await setEmptyAllowedCallers({ version: 6n });
 
 					await assertAllowed();
 				});
 
 				it('should get documents if controller', async () => {
-					await setSomeAllowedCaller();
+					await setSomeAllowedCaller({ version: 7n });
 
 					await assertAllowed({ actorIdentity: controller });
 				});
@@ -795,7 +804,7 @@ describe('Satellite > Allowed Callers', () => {
 				};
 
 				beforeEach(async () => {
-					await resetAuthConfig();
+					await resetAuthConfig({ version: 8n });
 
 					await createUser(user);
 				});
@@ -805,7 +814,7 @@ describe('Satellite > Allowed Callers', () => {
 
 					expect(doc).not.toBeUndefined();
 
-					await setSomeAllowedCaller();
+					await setSomeAllowedCaller({ version: 9n });
 
 					await expect(createDoc()).rejects.toThrow(JUNO_AUTH_ERROR_CALLER_NOT_ALLOWED);
 				});
@@ -823,7 +832,7 @@ describe('Satellite > Allowed Callers', () => {
 				it('should set document if empty allowed callers', async () => {
 					await createDoc();
 
-					await setEmptyAllowedCallers();
+					await setEmptyAllowedCallers({ version: 10n });
 
 					await assertAllowed();
 				});
@@ -831,7 +840,7 @@ describe('Satellite > Allowed Callers', () => {
 				it('should set document if controller', async () => {
 					await createDoc({ actorIdentity: controller });
 
-					await setSomeAllowedCaller();
+					await setSomeAllowedCaller({ version: 11n });
 
 					await assertAllowed({ actorIdentity: controller });
 				});
@@ -860,7 +869,7 @@ describe('Satellite > Allowed Callers', () => {
 				};
 
 				beforeEach(async () => {
-					await resetAuthConfig();
+					await resetAuthConfig({ version: 12n });
 
 					await createUser(user);
 				});
@@ -868,7 +877,7 @@ describe('Satellite > Allowed Callers', () => {
 				it('should not set many documents if not allowed', async () => {
 					await expect(createDocs()).resolves.not.toThrow();
 
-					await setSomeAllowedCaller();
+					await setSomeAllowedCaller({ version: 13n });
 
 					await expect(createDocs()).rejects.toThrow(JUNO_AUTH_ERROR_CALLER_NOT_ALLOWED);
 				});
@@ -884,7 +893,7 @@ describe('Satellite > Allowed Callers', () => {
 				it('should set many documents if empty allowed callers', async () => {
 					await expect(createDocs()).resolves.not.toThrow();
 
-					await setEmptyAllowedCallers();
+					await setEmptyAllowedCallers({ version: 14n });
 
 					await assertAllowed();
 				});
@@ -892,7 +901,7 @@ describe('Satellite > Allowed Callers', () => {
 				it('should set many documents if controller', async () => {
 					await expect(createDocs({ actorIdentity: controller })).resolves.not.toThrow();
 
-					await setSomeAllowedCaller();
+					await setSomeAllowedCaller({ version: 15n });
 
 					await assertAllowed({ actorIdentity: controller });
 				});
@@ -912,7 +921,7 @@ describe('Satellite > Allowed Callers', () => {
 				};
 
 				beforeEach(async () => {
-					await resetAuthConfig();
+					await resetAuthConfig({ version: 16n });
 
 					await createUser(user);
 				});
@@ -920,7 +929,7 @@ describe('Satellite > Allowed Callers', () => {
 				it('should not delete document if not allowed', async () => {
 					await expect(deleteDoc()).resolves.not.toThrow();
 
-					await setSomeAllowedCaller();
+					await setSomeAllowedCaller({ version: 17n });
 
 					await expect(deleteDoc()).rejects.toThrow(JUNO_AUTH_ERROR_CALLER_NOT_ALLOWED);
 				});
@@ -936,7 +945,7 @@ describe('Satellite > Allowed Callers', () => {
 				it('should delete document if empty allowed callers', async () => {
 					await expect(deleteDoc()).resolves.not.toThrow();
 
-					await setEmptyAllowedCallers();
+					await setEmptyAllowedCallers({ version: 18n });
 
 					await assertAllowed();
 				});
@@ -944,7 +953,7 @@ describe('Satellite > Allowed Callers', () => {
 				it('should delete document if controller', async () => {
 					await expect(deleteDoc({ actorIdentity: controller })).resolves.not.toThrow();
 
-					await setSomeAllowedCaller();
+					await setSomeAllowedCaller({ version: 19n });
 
 					await assertAllowed({ actorIdentity: controller });
 				});
@@ -969,7 +978,7 @@ describe('Satellite > Allowed Callers', () => {
 				};
 
 				beforeEach(async () => {
-					await resetAuthConfig();
+					await resetAuthConfig({ version: 20n });
 
 					await createUser(user);
 				});
@@ -977,7 +986,7 @@ describe('Satellite > Allowed Callers', () => {
 				it('should not delete documents if not allowed', async () => {
 					await expect(deleteDocs()).resolves.not.toThrow();
 
-					await setSomeAllowedCaller();
+					await setSomeAllowedCaller({ version: 21n });
 
 					await expect(deleteDocs()).rejects.toThrow(JUNO_AUTH_ERROR_CALLER_NOT_ALLOWED);
 				});
@@ -993,7 +1002,7 @@ describe('Satellite > Allowed Callers', () => {
 				it('should delete documents if empty allowed callers', async () => {
 					await expect(deleteDocs()).resolves.not.toThrow();
 
-					await setEmptyAllowedCallers();
+					await setEmptyAllowedCallers({ version: 22n });
 
 					await assertAllowed();
 				});
@@ -1001,7 +1010,7 @@ describe('Satellite > Allowed Callers', () => {
 				it('should delete document if controller', async () => {
 					await expect(deleteDocs({ actorIdentity: controller })).resolves.not.toThrow();
 
-					await setSomeAllowedCaller();
+					await setSomeAllowedCaller({ version: 23n });
 
 					await assertAllowed({ actorIdentity: controller });
 				});
@@ -1019,7 +1028,7 @@ describe('Satellite > Allowed Callers', () => {
 				};
 
 				beforeEach(async () => {
-					await resetAuthConfig();
+					await resetAuthConfig({ version: 24n });
 
 					await createUser(user);
 				});
@@ -1027,7 +1036,7 @@ describe('Satellite > Allowed Callers', () => {
 				it('should not delete documents if not allowed', async () => {
 					await expect(deleteFilteredDocs()).resolves.not.toThrow();
 
-					await setSomeAllowedCaller();
+					await setSomeAllowedCaller({ version: 25n });
 
 					await expect(deleteFilteredDocs()).rejects.toThrow(JUNO_AUTH_ERROR_CALLER_NOT_ALLOWED);
 				});
@@ -1043,7 +1052,7 @@ describe('Satellite > Allowed Callers', () => {
 				it('should delete filtered document if empty allowed callers', async () => {
 					await expect(deleteFilteredDocs()).resolves.not.toThrow();
 
-					await setEmptyAllowedCallers();
+					await setEmptyAllowedCallers({ version: 26n });
 
 					await assertAllowed();
 				});
@@ -1051,7 +1060,7 @@ describe('Satellite > Allowed Callers', () => {
 				it('should delete filtered document if controller', async () => {
 					await expect(deleteFilteredDocs({ actorIdentity: controller })).resolves.not.toThrow();
 
-					await setSomeAllowedCaller();
+					await setSomeAllowedCaller({ version: 27n });
 
 					await assertAllowed({ actorIdentity: controller });
 				});
@@ -1069,7 +1078,7 @@ describe('Satellite > Allowed Callers', () => {
 				};
 
 				beforeEach(async () => {
-					await resetAuthConfig();
+					await resetAuthConfig({ version: 28n });
 
 					await createUser(user);
 				});
@@ -1077,7 +1086,7 @@ describe('Satellite > Allowed Callers', () => {
 				it('should not list documents if not allowed', async () => {
 					await expect(listDocs()).resolves.not.toThrow();
 
-					await setSomeAllowedCaller();
+					await setSomeAllowedCaller({ version: 29n });
 
 					await expect(listDocs()).rejects.toThrow(JUNO_AUTH_ERROR_CALLER_NOT_ALLOWED);
 				});
@@ -1093,7 +1102,7 @@ describe('Satellite > Allowed Callers', () => {
 				it('should list documents if empty allowed callers', async () => {
 					await expect(listDocs()).resolves.not.toThrow();
 
-					await setEmptyAllowedCallers();
+					await setEmptyAllowedCallers({ version: 30n });
 
 					await assertAllowed();
 				});
@@ -1101,7 +1110,7 @@ describe('Satellite > Allowed Callers', () => {
 				it('should list documents if controller', async () => {
 					await expect(listDocs({ actorIdentity: controller })).resolves.not.toThrow();
 
-					await setSomeAllowedCaller();
+					await setSomeAllowedCaller({ version: 31n });
 
 					await assertAllowed({ actorIdentity: controller });
 				});
@@ -1119,7 +1128,7 @@ describe('Satellite > Allowed Callers', () => {
 				};
 
 				beforeEach(async () => {
-					await resetAuthConfig();
+					await resetAuthConfig({ version: 32n });
 
 					await createUser(user);
 				});
@@ -1127,7 +1136,7 @@ describe('Satellite > Allowed Callers', () => {
 				it('should not count documents if not allowed', async () => {
 					await expect(countDocs()).resolves.not.toThrow();
 
-					await setSomeAllowedCaller();
+					await setSomeAllowedCaller({ version: 33n });
 
 					await expect(countDocs()).rejects.toThrow(JUNO_AUTH_ERROR_CALLER_NOT_ALLOWED);
 				});
@@ -1143,7 +1152,7 @@ describe('Satellite > Allowed Callers', () => {
 				it('should count document if empty allowed callers', async () => {
 					await expect(countDocs()).resolves.not.toThrow();
 
-					await setEmptyAllowedCallers();
+					await setEmptyAllowedCallers({ version: 34n });
 
 					await assertAllowed();
 				});
@@ -1151,7 +1160,7 @@ describe('Satellite > Allowed Callers', () => {
 				it('should count document if controller', async () => {
 					await expect(countDocs({ actorIdentity: controller })).resolves.not.toThrow();
 
-					await setSomeAllowedCaller();
+					await setSomeAllowedCaller({ version: 35n });
 
 					await assertAllowed({ actorIdentity: controller });
 				});
@@ -1172,7 +1181,7 @@ describe('Satellite > Allowed Callers', () => {
 			});
 
 			beforeEach(async () => {
-				await resetAuthConfig();
+				await resetAuthConfig({ version: 36n });
 
 				user = Ed25519KeyIdentity.generate();
 				fullPath = `/${collection}/${user.getPrincipal().toText()}/hello.html`;
@@ -1197,7 +1206,7 @@ describe('Satellite > Allowed Callers', () => {
 				};
 
 				beforeEach(async () => {
-					await resetAuthConfig();
+					await resetAuthConfig({ version: 37n });
 
 					await createUser(user);
 				});
@@ -1205,7 +1214,7 @@ describe('Satellite > Allowed Callers', () => {
 				it('should not init asset upload if not allowed', async () => {
 					await expect(initAsset()).resolves.not.toThrow();
 
-					await setSomeAllowedCaller();
+					await setSomeAllowedCaller({ version: 38n });
 
 					await expect(initAsset()).rejects.toThrow(JUNO_AUTH_ERROR_CALLER_NOT_ALLOWED);
 				});
@@ -1221,7 +1230,7 @@ describe('Satellite > Allowed Callers', () => {
 				it('should init asset upload if empty allowed callers', async () => {
 					await expect(initAsset()).resolves.not.toThrow();
 
-					await setEmptyAllowedCallers();
+					await setEmptyAllowedCallers({ version: 39n });
 
 					await assertAllowed();
 				});
@@ -1229,7 +1238,7 @@ describe('Satellite > Allowed Callers', () => {
 				it('should init asset upload if controller', async () => {
 					await expect(initAsset({ actorIdentity: controller })).resolves.not.toThrow();
 
-					await setSomeAllowedCaller();
+					await setSomeAllowedCaller({ version: 40n });
 
 					await assertAllowed({ actorIdentity: controller });
 				});
@@ -1237,7 +1246,7 @@ describe('Satellite > Allowed Callers', () => {
 
 			describe('get asset', () => {
 				beforeEach(async () => {
-					await resetAuthConfig();
+					await resetAuthConfig({ version: 41n });
 
 					await createUser(user);
 
@@ -1250,7 +1259,7 @@ describe('Satellite > Allowed Callers', () => {
 				});
 
 				it('should not get asset if not allowed', async () => {
-					await setSomeAllowedCaller();
+					await setSomeAllowedCaller({ version: 42n });
 
 					actor.setIdentity(user);
 					const { get_asset } = actor;
@@ -1276,13 +1285,13 @@ describe('Satellite > Allowed Callers', () => {
 				});
 
 				it('should get asset if empty allowed callers', async () => {
-					await setEmptyAllowedCallers();
+					await setEmptyAllowedCallers({ version: 43n });
 
 					await assertAllowed();
 				});
 
 				it('should get asset if controller', async () => {
-					await setSomeAllowedCaller();
+					await setSomeAllowedCaller({ version: 44n });
 
 					await assertAllowed({ actorIdentity: controller });
 				});
@@ -1300,7 +1309,7 @@ describe('Satellite > Allowed Callers', () => {
 				};
 
 				beforeEach(async () => {
-					await resetAuthConfig();
+					await resetAuthConfig({ version: 45n });
 
 					await createUser(user);
 				});
@@ -1308,7 +1317,7 @@ describe('Satellite > Allowed Callers', () => {
 				it('should not delete assets if banned', async () => {
 					await expect(deleteFilteredAssets()).resolves.not.toThrow();
 
-					await setSomeAllowedCaller();
+					await setSomeAllowedCaller({ version: 46n });
 
 					await expect(deleteFilteredAssets()).rejects.toThrow(JUNO_AUTH_ERROR_CALLER_NOT_ALLOWED);
 				});
@@ -1324,7 +1333,7 @@ describe('Satellite > Allowed Callers', () => {
 				it('should delete assets if empty allowed callers', async () => {
 					await expect(deleteFilteredAssets()).resolves.not.toThrow();
 
-					await setEmptyAllowedCallers();
+					await setEmptyAllowedCallers({ version: 47n });
 
 					await assertAllowed();
 				});
@@ -1332,7 +1341,7 @@ describe('Satellite > Allowed Callers', () => {
 				it('should delete assets if controller', async () => {
 					await expect(deleteFilteredAssets({ actorIdentity: controller })).resolves.not.toThrow();
 
-					await setSomeAllowedCaller();
+					await setSomeAllowedCaller({ version: 48n });
 
 					await assertAllowed({ actorIdentity: controller });
 				});
@@ -1350,7 +1359,7 @@ describe('Satellite > Allowed Callers', () => {
 				};
 
 				beforeEach(async () => {
-					await resetAuthConfig();
+					await resetAuthConfig({ version: 49n });
 
 					await createUser(user);
 				});
@@ -1358,7 +1367,7 @@ describe('Satellite > Allowed Callers', () => {
 				it('should not list assets if not allowed', async () => {
 					await expect(listAssets()).resolves.not.toThrow();
 
-					await setSomeAllowedCaller();
+					await setSomeAllowedCaller({ version: 50n });
 
 					await expect(listAssets()).rejects.toThrow(JUNO_AUTH_ERROR_CALLER_NOT_ALLOWED);
 				});
@@ -1374,7 +1383,7 @@ describe('Satellite > Allowed Callers', () => {
 				it('should list assets if empty allowed callers', async () => {
 					await expect(listAssets()).resolves.not.toThrow();
 
-					await setEmptyAllowedCallers();
+					await setEmptyAllowedCallers({ version: 51n });
 
 					await assertAllowed();
 				});
@@ -1382,7 +1391,7 @@ describe('Satellite > Allowed Callers', () => {
 				it('should list assets if controller', async () => {
 					await expect(listAssets({ actorIdentity: controller })).resolves.not.toThrow();
 
-					await setSomeAllowedCaller();
+					await setSomeAllowedCaller({ version: 52n });
 
 					await assertAllowed({ actorIdentity: controller });
 				});
@@ -1400,7 +1409,7 @@ describe('Satellite > Allowed Callers', () => {
 				};
 
 				beforeEach(async () => {
-					await resetAuthConfig();
+					await resetAuthConfig({ version: 53n });
 
 					await createUser(user);
 				});
@@ -1408,7 +1417,7 @@ describe('Satellite > Allowed Callers', () => {
 				it('should not count assets if not allowed', async () => {
 					await expect(countAssets()).resolves.not.toThrow();
 
-					await setSomeAllowedCaller();
+					await setSomeAllowedCaller({ version: 54n });
 
 					await expect(countAssets()).rejects.toThrow(JUNO_AUTH_ERROR_CALLER_NOT_ALLOWED);
 				});
@@ -1424,7 +1433,7 @@ describe('Satellite > Allowed Callers', () => {
 				it('should count assets if empty allowed callers', async () => {
 					await expect(countAssets()).resolves.not.toThrow();
 
-					await setEmptyAllowedCallers();
+					await setEmptyAllowedCallers({ version: 55n });
 
 					await assertAllowed();
 				});
@@ -1432,7 +1441,7 @@ describe('Satellite > Allowed Callers', () => {
 				it('should count assets if controller', async () => {
 					await expect(countAssets({ actorIdentity: controller })).resolves.not.toThrow();
 
-					await setSomeAllowedCaller();
+					await setSomeAllowedCaller({ version: 56n });
 
 					await assertAllowed({ actorIdentity: controller });
 				});
@@ -1440,7 +1449,7 @@ describe('Satellite > Allowed Callers', () => {
 
 			describe('get many assets', () => {
 				beforeEach(async () => {
-					await resetAuthConfig();
+					await resetAuthConfig({ version: 57n });
 
 					await createUser(user);
 
@@ -1453,7 +1462,7 @@ describe('Satellite > Allowed Callers', () => {
 				});
 
 				it('should not get assets if not allowed', async () => {
-					await setSomeAllowedCaller();
+					await setSomeAllowedCaller({ version: 58n });
 
 					actor.setIdentity(user);
 					const { get_many_assets } = actor;
@@ -1481,13 +1490,13 @@ describe('Satellite > Allowed Callers', () => {
 				});
 
 				it('should get assets if empty allowed callers', async () => {
-					await setEmptyAllowedCallers();
+					await setEmptyAllowedCallers({ version: 59n });
 
 					await assertAllowed();
 				});
 
 				it('should get assets if controller', async () => {
-					await setSomeAllowedCaller();
+					await setSomeAllowedCaller({ version: 60n });
 
 					await assertAllowed({ actorIdentity: controller });
 				});
@@ -1505,7 +1514,7 @@ describe('Satellite > Allowed Callers', () => {
 				};
 
 				beforeEach(async () => {
-					await resetAuthConfig();
+					await resetAuthConfig({ version: 61n });
 
 					await createUser(user);
 
@@ -1518,7 +1527,7 @@ describe('Satellite > Allowed Callers', () => {
 				});
 
 				it('should not delete an asset if not allowed', async () => {
-					await setSomeAllowedCaller();
+					await setSomeAllowedCaller({ version: 62n });
 
 					await expect(deleteAsset()).rejects.toThrow(JUNO_AUTH_ERROR_CALLER_NOT_ALLOWED);
 				});
@@ -1532,13 +1541,13 @@ describe('Satellite > Allowed Callers', () => {
 				});
 
 				it('should delete asset if empty allowed callers', async () => {
-					await setEmptyAllowedCallers();
+					await setEmptyAllowedCallers({ version: 63n });
 
 					await assertAllowed();
 				});
 
 				it('should delete asset if controller', async () => {
-					await setSomeAllowedCaller();
+					await setSomeAllowedCaller({ version: 64n });
 
 					await assertAllowed({ actorIdentity: controller });
 				});
@@ -1556,7 +1565,7 @@ describe('Satellite > Allowed Callers', () => {
 				};
 
 				beforeEach(async () => {
-					await resetAuthConfig();
+					await resetAuthConfig({ version: 65n });
 
 					await createUser(user);
 
@@ -1569,7 +1578,7 @@ describe('Satellite > Allowed Callers', () => {
 				});
 
 				it('should not delete assets if not allowed', async () => {
-					await setSomeAllowedCaller();
+					await setSomeAllowedCaller({ version: 66n });
 
 					await expect(deleteAssets()).rejects.toThrow(JUNO_AUTH_ERROR_CALLER_NOT_ALLOWED);
 				});
@@ -1583,13 +1592,13 @@ describe('Satellite > Allowed Callers', () => {
 				});
 
 				it('should delete assets if empty allowed callers', async () => {
-					await setEmptyAllowedCallers();
+					await setEmptyAllowedCallers({ version: 67n });
 
 					await assertAllowed();
 				});
 
 				it('should delete assets if controller', async () => {
-					await setSomeAllowedCaller();
+					await setSomeAllowedCaller({ version: 68n });
 
 					await assertAllowed({ actorIdentity: controller });
 				});

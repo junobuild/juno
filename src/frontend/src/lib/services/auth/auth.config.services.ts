@@ -132,7 +132,8 @@ const updateConfig = async ({
 			satelliteId,
 			config: {
 				internet_identity: editConfig?.internet_identity ?? config?.internet_identity ?? [],
-				rules: unmodifiedRules ? (config?.rules ?? []) : editConfigRules
+				rules: unmodifiedRules ? (config?.rules ?? []) : editConfigRules,
+				version: config?.version ?? []
 			},
 			identity
 		});

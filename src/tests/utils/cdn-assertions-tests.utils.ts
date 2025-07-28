@@ -34,7 +34,9 @@ import {
 	JUNO_CDN_STORAGE_ERROR_INVALID_RELEASES_DESCRIPTION,
 	JUNO_CDN_STORAGE_ERROR_INVALID_RELEASES_PATH,
 	JUNO_CDN_STORAGE_ERROR_MISSING_RELEASES_DESCRIPTION,
-	JUNO_CDN_STORAGE_ERROR_NO_PROPOSAL_FOUND
+	JUNO_CDN_STORAGE_ERROR_NO_PROPOSAL_FOUND,
+	JUNO_ERROR_NO_VERSION_PROVIDED,
+	JUNO_ERROR_VERSION_OUTDATED_OR_FUTURE
 } from '@junobuild/errors';
 import { describe, expect } from 'vitest';
 import { mockListProposalsParams } from '../mocks/list.mocks';
@@ -205,14 +207,59 @@ export const testCdnConfig = ({ actor }: { actor: () => Actor<SatelliteActor | C
 			rewrites: [],
 			raw_access: toNullable(),
 			max_memory_size: toNullable(),
-			version: toNullable()
+			version: toNullable(1n)
 		};
 
 		await set_storage_config(config);
 
 		const savedConfig = await get_storage_config();
 
-		expect(savedConfig).toEqual(config);
+		expect(savedConfig).toEqual(
+			expect.objectContaining({
+				...config,
+				created_at: [expect.any(BigInt)],
+				updated_at: [expect.any(BigInt)],
+				version: [2n]
+			})
+		);
+
+		expect((fromNullable(savedConfig.created_at) ?? 0n) > 0n).toBe(true);
+		expect((fromNullable(savedConfig.updated_at) ?? 0n) > 0n).toBe(true);
+	});
+
+	it('should not set db config if incorrect version', async () => {
+		const { set_storage_config } = actor();
+
+		const config: SetStorageConfig = {
+			headers: [['*', [['cache-control', 'no-cache']]]],
+			iframe: toNullable({ Deny: null }),
+			redirects: [],
+			rewrites: [],
+			raw_access: toNullable(),
+			max_memory_size: toNullable(),
+			version: toNullable(1n)
+		};
+
+		await expect(
+			set_storage_config({
+				...config,
+				version: [1n]
+			})
+		).rejects.toThrow(JUNO_ERROR_VERSION_OUTDATED_OR_FUTURE);
+
+		await expect(
+			set_storage_config({
+				...config,
+				version: [99n]
+			})
+		).rejects.toThrow(JUNO_ERROR_VERSION_OUTDATED_OR_FUTURE);
+
+		await expect(
+			set_storage_config({
+				...config,
+				version: []
+			})
+		).rejects.toThrow(JUNO_ERROR_NO_VERSION_PROVIDED);
 	});
 };
 

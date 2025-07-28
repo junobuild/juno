@@ -65,7 +65,10 @@
 
 		await setAuthConfig({
 			satelliteId: satellite.satellite_id,
-			config: updateConfig,
+			config: {
+				...updateConfig,
+				version: config.version
+			},
 			identity: $authStore.identity
 		});
 	};

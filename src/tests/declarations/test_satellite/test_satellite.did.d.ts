@@ -27,6 +27,9 @@ export interface AssetsUpgradeOptions {
 	clear_existing_assets: [] | [boolean];
 }
 export interface AuthenticationConfig {
+	updated_at: [] | [bigint];
+	created_at: [] | [bigint];
+	version: [] | [bigint];
 	internet_identity: [] | [AuthenticationConfigInternetIdentity];
 	rules: [] | [AuthenticationRules];
 }
@@ -242,6 +245,11 @@ export interface SegmentsDeploymentOptions {
 	mission_control_version: [] | [string];
 	satellite_version: [] | [string];
 }
+export interface SetAuthenticationConfig {
+	version: [] | [bigint];
+	internet_identity: [] | [AuthenticationConfigInternetIdentity];
+	rules: [] | [AuthenticationRules];
+}
 export interface SetController {
 	metadata: Array<[string, string]>;
 	scope: ControllerScope;
@@ -378,7 +386,7 @@ export interface _SERVICE {
 	list_rules: ActorMethod<[CollectionType, ListRulesParams], ListRulesResults>;
 	memory_size: ActorMethod<[], MemorySize>;
 	reject_proposal: ActorMethod<[CommitProposal], null>;
-	set_auth_config: ActorMethod<[AuthenticationConfig], undefined>;
+	set_auth_config: ActorMethod<[SetAuthenticationConfig], undefined>;
 	set_controllers: ActorMethod<[SetControllersArgs], Array<[Principal, Controller]>>;
 	set_custom_domain: ActorMethod<[string, [] | [string]], undefined>;
 	set_db_config: ActorMethod<[SetDbConfig], DbConfig>;

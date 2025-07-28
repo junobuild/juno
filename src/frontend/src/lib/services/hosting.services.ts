@@ -53,7 +53,10 @@ export const configHosting = async ({
 			const configAuth = async () =>
 				await setAuthConfig({
 					satelliteId,
-					config: editConfig,
+					config: {
+						...editConfig,
+						version: config?.version ?? []
+					},
 					identity
 				});
 

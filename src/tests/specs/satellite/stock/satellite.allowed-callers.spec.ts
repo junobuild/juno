@@ -1,8 +1,8 @@
 import type {
-	AuthenticationConfig,
 	DelDoc,
 	Doc,
 	_SERVICE as SatelliteActor,
+	SetAuthenticationConfig,
 	SetDoc
 } from '$declarations/satellite/satellite.did';
 import { idlFactory as idlFactorSatellite } from '$declarations/satellite/satellite.factory.did';
@@ -10,7 +10,7 @@ import type { Identity } from '@dfinity/agent';
 import { Ed25519KeyIdentity } from '@dfinity/identity';
 import { type Actor, PocketIc } from '@dfinity/pic';
 import type { Principal } from '@dfinity/principal';
-import { fromNullable, toNullable } from '@dfinity/utils';
+import { fromNullable, isNullish, toNullable } from '@dfinity/utils';
 import { JUNO_AUTH_ERROR_CALLER_NOT_ALLOWED } from '@junobuild/errors';
 import { toArray } from '@junobuild/utils';
 import { nanoid } from 'nanoid';
@@ -59,6 +59,13 @@ describe('Satellite > Allowed Callers', () => {
 		await pic?.tearDown();
 	});
 
+	let configVersion: bigint | undefined = undefined;
+	const nextConfigVersion = (): [] | [bigint] => {
+		const result = toNullable(configVersion);
+		configVersion = isNullish(configVersion) ? 1n : configVersion + 1n;
+		return result;
+	};
+
 	const setSomeAllowedCaller = async () => {
 		const someCaller = Ed25519KeyIdentity.generate();
 		await setAllowedCallers({ allowedCallers: [someCaller.getPrincipal()] });
@@ -69,13 +76,14 @@ describe('Satellite > Allowed Callers', () => {
 
 		const { set_auth_config } = actor;
 
-		const config: AuthenticationConfig = {
+		const config: SetAuthenticationConfig = {
 			internet_identity: [],
 			rules: [
 				{
 					allowed_callers: allowedCallers
 				}
-			]
+			],
+			version: nextConfigVersion()
 		};
 
 		await set_auth_config(config);
@@ -86,13 +94,14 @@ describe('Satellite > Allowed Callers', () => {
 
 		const { set_auth_config } = actor;
 
-		const config: AuthenticationConfig = {
+		const config: SetAuthenticationConfig = {
 			internet_identity: [],
 			rules: [
 				{
 					allowed_callers: []
 				}
-			]
+			],
+			version: nextConfigVersion()
 		};
 
 		await set_auth_config(config);
@@ -103,9 +112,10 @@ describe('Satellite > Allowed Callers', () => {
 
 		const { set_auth_config } = actor;
 
-		const config: AuthenticationConfig = {
+		const config: SetAuthenticationConfig = {
 			internet_identity: [],
-			rules: []
+			rules: [],
+			version: nextConfigVersion()
 		};
 
 		await set_auth_config(config);

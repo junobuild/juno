@@ -21,6 +21,9 @@ type AssetNoContent = record {
 };
 type AssetsUpgradeOptions = record { clear_existing_assets : opt bool };
 type AuthenticationConfig = record {
+  updated_at : opt nat64;
+  created_at : opt nat64;
+  version : opt nat64;
   internet_identity : opt AuthenticationConfigInternetIdentity;
   rules : opt AuthenticationRules;
 };
@@ -189,6 +192,11 @@ type SegmentsDeploymentOptions = record {
   mission_control_version : opt text;
   satellite_version : opt text;
 };
+type SetAuthenticationConfig = record {
+  version : opt nat64;
+  internet_identity : opt AuthenticationConfigInternetIdentity;
+  rules : opt AuthenticationRules;
+};
 type SetController = record {
   metadata : vec record { text; text };
   scope : ControllerScope;
@@ -325,7 +333,7 @@ service : () -> {
   list_rules : (CollectionType, ListRulesParams) -> (ListRulesResults) query;
   memory_size : () -> (MemorySize) query;
   reject_proposal : (CommitProposal) -> (null);
-  set_auth_config : (AuthenticationConfig) -> ();
+  set_auth_config : (SetAuthenticationConfig) -> ();
   set_controllers : (SetControllersArgs) -> (
       vec record { principal; Controller },
     );

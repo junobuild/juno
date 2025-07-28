@@ -229,8 +229,8 @@ export const testCdnConfig = ({
 			})
 		);
 
-		expect((fromNullable(savedConfig.created_at) ?? 0n) > 0n).toBe(true);
-		expect((fromNullable(savedConfig.updated_at) ?? 0n) > 0n).toBe(true);
+		expect(fromNullable(savedConfig.created_at) ?? 0n).toBeGreaterThan(0n);
+		expect(fromNullable(savedConfig.updated_at) ?? 0n).toBeGreaterThan(0n);
 	});
 
 	it('should not set db config if incorrect version', async () => {

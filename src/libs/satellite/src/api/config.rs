@@ -5,6 +5,7 @@ use crate::auth::store::{
     get_config as get_auth_config_store, set_config as set_auth_config_store,
 };
 use crate::auth::types::config::AuthenticationConfig;
+use crate::auth::types::interface::SetAuthenticationConfig;
 use crate::db::store::{
     get_config_store as get_db_config_store, set_config_store as set_db_config_store,
 };
@@ -34,8 +35,8 @@ pub fn get_config() -> Config {
 // Authentication config
 // ---------------------------------------------------------
 
-pub fn set_auth_config(config: AuthenticationConfig) {
-    set_auth_config_store(&config).unwrap_or_else(|e| trap(&e));
+pub fn set_auth_config(config: SetAuthenticationConfig) -> AuthenticationConfig {
+    set_auth_config_store(&config).unwrap_or_else(|e| trap(&e))
 }
 
 pub fn get_auth_config() -> Option<AuthenticationConfig> {

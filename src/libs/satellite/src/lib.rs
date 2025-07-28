@@ -58,6 +58,7 @@ use memory::lifecycle;
 // ============================================================================================
 // These types are made available for use in Serverless Functions.
 // ============================================================================================
+use crate::auth::types::interface::SetAuthenticationConfig;
 use crate::db::types::interface::SetDbConfig;
 pub use sdk::core::*;
 pub use sdk::internal;
@@ -304,7 +305,7 @@ pub fn get_config() -> Config {
 
 #[doc(hidden)]
 #[update(guard = "caller_is_admin_controller")]
-pub fn set_auth_config(config: AuthenticationConfig) {
+pub fn set_auth_config(config: SetAuthenticationConfig) {
     api::config::set_auth_config(config);
 }
 

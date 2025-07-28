@@ -196,7 +196,13 @@ export const testGuardedAssetsCdnMethods = ({
 	});
 };
 
-export const testCdnConfig = ({ actor }: { actor: () => Actor<SatelliteActor | ConsoleActor> }) => {
+export const testCdnConfig = ({
+	actor,
+	configBaseVersion = 1n
+}: {
+	actor: () => Actor<SatelliteActor | ConsoleActor>;
+	configBaseVersion?: bigint;
+}) => {
 	it('should set and get config', async () => {
 		const { set_storage_config, get_storage_config } = actor();
 
@@ -207,7 +213,7 @@ export const testCdnConfig = ({ actor }: { actor: () => Actor<SatelliteActor | C
 			rewrites: [],
 			raw_access: toNullable(),
 			max_memory_size: toNullable(),
-			version: toNullable(1n)
+			version: toNullable(configBaseVersion)
 		};
 
 		await set_storage_config(config);
@@ -219,7 +225,7 @@ export const testCdnConfig = ({ actor }: { actor: () => Actor<SatelliteActor | C
 				...config,
 				created_at: [expect.any(BigInt)],
 				updated_at: [expect.any(BigInt)],
-				version: [2n]
+				version: [configBaseVersion + 1n]
 			})
 		);
 

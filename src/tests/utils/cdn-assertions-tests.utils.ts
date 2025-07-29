@@ -198,7 +198,7 @@ export const testGuardedAssetsCdnMethods = ({
 
 export const testCdnConfig = ({
 	actor,
-	configBaseVersion = 1n
+	configBaseVersion = undefined
 }: {
 	actor: () => Actor<SatelliteActor | ConsoleActor>;
 	configBaseVersion?: bigint;
@@ -225,7 +225,7 @@ export const testCdnConfig = ({
 				...config,
 				created_at: [expect.any(BigInt)],
 				updated_at: [expect.any(BigInt)],
-				version: [configBaseVersion + 1n]
+				version: [(configBaseVersion ?? 0n) + 1n]
 			})
 		);
 
@@ -236,20 +236,19 @@ export const testCdnConfig = ({
 	it('should not set db config if incorrect version', async () => {
 		const { set_storage_config } = actor();
 
-		const config: SetStorageConfig = {
+		const config: Omit<SetStorageConfig, 'version'> = {
 			headers: [['*', [['cache-control', 'no-cache']]]],
 			iframe: toNullable({ Deny: null }),
 			redirects: [],
 			rewrites: [],
 			raw_access: toNullable(),
-			max_memory_size: toNullable(),
-			version: toNullable(1n)
+			max_memory_size: toNullable()
 		};
 
 		await expect(
 			set_storage_config({
 				...config,
-				version: [1n]
+				version: toNullable(configBaseVersion ?? 0n)
 			})
 		).rejects.toThrow(JUNO_ERROR_VERSION_OUTDATED_OR_FUTURE);
 

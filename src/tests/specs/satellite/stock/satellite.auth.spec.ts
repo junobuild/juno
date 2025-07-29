@@ -123,7 +123,7 @@ describe('Satellite > Authentication', () => {
 		});
 
 		it('should set config auth domain', async () => {
-			const { set_auth_config, get_auth_config } = actor;
+			const { set_auth_config } = actor;
 
 			const config: SetAuthenticationConfig = {
 				internet_identity: [
@@ -165,7 +165,7 @@ describe('Satellite > Authentication', () => {
 		);
 
 		it('should set external alternative origins', async () => {
-			const { set_auth_config, get_auth_config } = actor;
+			const { set_auth_config } = actor;
 
 			const config: SetAuthenticationConfig = {
 				internet_identity: [
@@ -207,7 +207,7 @@ describe('Satellite > Authentication', () => {
 		});
 
 		it('should set config auth domain to none', async () => {
-			const { set_auth_config, get_auth_config } = actor;
+			const { set_auth_config } = actor;
 
 			const config: SetAuthenticationConfig = {
 				internet_identity: [
@@ -221,8 +221,6 @@ describe('Satellite > Authentication', () => {
 			};
 
 			await set_auth_config(config);
-
-			const result = fromNullable(await get_auth_config());
 
 			await assertConfig({ config, version: 3n });
 		});
@@ -242,7 +240,7 @@ describe('Satellite > Authentication', () => {
 		});
 
 		it('should set config for ii to none', async () => {
-			const { set_auth_config, get_auth_config } = actor;
+			const { set_auth_config } = actor;
 
 			const config: SetAuthenticationConfig = {
 				internet_identity: [],

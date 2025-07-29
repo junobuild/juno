@@ -306,7 +306,7 @@ pub fn get_config() -> Config {
 #[doc(hidden)]
 #[update(guard = "caller_is_admin_controller")]
 pub fn set_auth_config(config: SetAuthenticationConfig) -> AuthenticationConfig {
-    api::config::set_auth_config(config).unwrap_or_else(|e| trap(&e))
+    api::config::set_auth_config(config)
 }
 
 #[doc(hidden)]

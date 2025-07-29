@@ -884,6 +884,35 @@ describe.each([{ memory: { Heap: null } }, { memory: { Stable: null } }])(
 					).rejects.toThrow(errorMsg);
 				});
 			});
+
+			it('should return config after set', async () => {
+				const { set_db_config } = actor;
+
+				const config: SetDbConfig = {
+					max_memory_size: [
+						{
+							heap: [1234n],
+							stable: [789n]
+						}
+					],
+					version: [4n]
+				};
+
+				const result = await set_db_config(config);
+
+				expect(result).toEqual(
+					expect.objectContaining({
+						...config,
+						created_at: [expect.any(BigInt)],
+						updated_at: [expect.any(BigInt)],
+						version: [5n]
+					})
+				);
+
+				expect(fromNullable(result?.updated_at ?? []) ?? 0n).toBeGreaterThan(
+					fromNullable(result?.created_at ?? []) ?? 0n
+				);
+			});
 		});
 	}
 );

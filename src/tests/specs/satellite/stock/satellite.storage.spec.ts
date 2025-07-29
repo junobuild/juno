@@ -1530,4 +1530,39 @@ describe('Satellite > Storage', () => {
 			}
 		);
 	});
+
+	describe('More configuration assertions', () => {
+		beforeAll(() => {
+			actor.setIdentity(controller);
+		});
+
+		it('should return config after set', async () => {
+			const { set_storage_config } = actor;
+
+			const config: SetStorageConfig = {
+				headers: [['*', [['cache-control', 'no-cache']]]],
+				iframe: toNullable({ Deny: null }),
+				redirects: [],
+				rewrites: [],
+				raw_access: toNullable(),
+				max_memory_size: toNullable(),
+				version: toNullable(17n)
+			};
+
+			const result = await set_storage_config(config);
+
+			expect(result).toEqual(
+				expect.objectContaining({
+					...config,
+					created_at: [expect.any(BigInt)],
+					updated_at: [expect.any(BigInt)],
+					version: [18n]
+				})
+			);
+
+			expect(fromNullable(result?.updated_at ?? []) ?? 0n).toBeGreaterThan(
+				fromNullable(result?.created_at ?? []) ?? 0n
+			);
+		});
+	});
 });

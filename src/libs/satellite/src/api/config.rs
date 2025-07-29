@@ -47,8 +47,8 @@ pub fn get_auth_config() -> Option<AuthenticationConfig> {
 // Db config
 // ---------------------------------------------------------
 
-pub fn set_db_config(config: SetDbConfig) -> Result<DbConfig, String> {
-    set_db_config_store(&config)
+pub fn set_db_config(config: SetDbConfig) -> DbConfig {
+    set_db_config_store(&config).unwrap_or_else(|e| trap(&e))
 }
 
 pub fn get_db_config() -> Option<DbConfig> {
@@ -59,8 +59,8 @@ pub fn get_db_config() -> Option<DbConfig> {
 // Storage config
 // ---------------------------------------------------------
 
-pub fn set_storage_config(config: SetStorageConfig) -> Result<StorageConfig, String> {
-    set_storage_config_store(&config)
+pub fn set_storage_config(config: SetStorageConfig) -> StorageConfig {
+    set_storage_config_store(&config).unwrap_or_else(|e| trap(&e))
 }
 
 pub fn get_storage_config() -> StorageConfig {

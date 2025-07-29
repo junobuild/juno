@@ -322,7 +322,7 @@ pub fn get_auth_config() -> Option<AuthenticationConfig> {
 #[doc(hidden)]
 #[update(guard = "caller_is_admin_controller")]
 pub fn set_db_config(config: SetDbConfig) -> DbConfig {
-    api::config::set_db_config(config).unwrap_or_else(|e| trap(&e))
+    api::config::set_db_config(config)
 }
 
 #[doc(hidden)]
@@ -338,7 +338,7 @@ pub fn get_db_config() -> Option<DbConfig> {
 #[doc(hidden)]
 #[update(guard = "caller_is_admin_controller")]
 pub fn set_storage_config(config: SetStorageConfig) -> StorageConfig {
-    api::config::set_storage_config(config).unwrap_or_else(|e| trap(&e))
+    api::config::set_storage_config(config)
 }
 
 #[doc(hidden)]

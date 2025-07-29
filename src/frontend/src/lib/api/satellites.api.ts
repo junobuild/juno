@@ -211,7 +211,7 @@ export const setAuthConfig = async ({
 	satelliteId: Principal;
 	config: SetAuthenticationConfig;
 	identity: OptionIdentity;
-}): Promise<void> => {
+}): Promise<AuthenticationConfig> => {
 	const { set_auth_config } = await getSatelliteActor(rest);
 	return set_auth_config(config);
 };

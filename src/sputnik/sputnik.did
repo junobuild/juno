@@ -335,7 +335,7 @@ service : () -> {
   list_rules : (CollectionType, ListRulesParams) -> (ListRulesResults) query;
   memory_size : () -> (MemorySize) query;
   reject_proposal : (CommitProposal) -> (null);
-  set_auth_config : (SetAuthenticationConfig) -> ();
+  set_auth_config : (SetAuthenticationConfig) -> (AuthenticationConfig);
   set_controllers : (SetControllersArgs) -> (
       vec record { principal; Controller },
     );

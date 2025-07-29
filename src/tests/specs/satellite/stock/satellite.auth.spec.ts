@@ -554,8 +554,8 @@ describe('Satellite > Authentication', () => {
 				})
 			);
 
-			expect(fromNullable(updatedConfig?.created_at ?? []) ?? 0n).toBeGreaterThan(
-				fromNullable(updatedConfig?.updated_at ?? []) ?? 0n
+			expect(fromNullable(updatedConfig?.updated_at ?? []) ?? 0n).toBeGreaterThan(
+				fromNullable(updatedConfig?.created_at ?? []) ?? 0n
 			);
 		});
 	});

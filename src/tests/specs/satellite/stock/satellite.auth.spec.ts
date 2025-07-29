@@ -528,6 +528,36 @@ describe('Satellite > Authentication', () => {
 				expect(status_code).toBe(404);
 			});
 		});
+
+		it('should return config on set', async () => {
+			const { set_auth_config } = actor;
+
+			const config: SetAuthenticationConfig = {
+				internet_identity: [
+					{
+						derivation_origin: ['domain.com'],
+						external_alternative_origins: toNullable()
+					}
+				],
+				rules: [],
+				version: [11n]
+			};
+
+			const updatedConfig = await set_auth_config(config);
+
+			expect(updatedConfig).toEqual(
+				expect.objectContaining({
+					...config,
+					created_at: [expect.any(BigInt)],
+					updated_at: [expect.any(BigInt)],
+					version: [12n]
+				})
+			);
+
+			expect(fromNullable(updatedConfig?.created_at ?? []) ?? 0n).toBeGreaterThan(
+				fromNullable(updatedConfig?.updated_at ?? []) ?? 0n
+			);
+		});
 	});
 
 	describe('anonymous', () => {

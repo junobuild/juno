@@ -236,7 +236,7 @@ describe('Satellite > Cdn', () => {
 
 		testCdnConfig({
 			actor: () => actor,
-			configBaseVersion: 2n
+			configBaseVersion: 1n
 		});
 
 		testReleasesProposal({

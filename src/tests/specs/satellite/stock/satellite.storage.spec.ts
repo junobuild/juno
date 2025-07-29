@@ -194,7 +194,7 @@ describe('Satellite > Storage', () => {
 				rewrites: [],
 				raw_access: toNullable(),
 				max_memory_size: toNullable(),
-				version: toNullable(1n)
+				version: toNullable()
 			};
 
 			await set_storage_config(storage);
@@ -206,7 +206,7 @@ describe('Satellite > Storage', () => {
 					...storage,
 					created_at: [expect.any(BigInt)],
 					updated_at: [expect.any(BigInt)],
-					version: [2n]
+					version: [1n]
 				}),
 				authentication: toNullable(),
 				db: toNullable()
@@ -232,7 +232,7 @@ describe('Satellite > Storage', () => {
 			await expect(
 				set_storage_config({
 					...storage,
-					version: [1n]
+					version: [0n]
 				})
 			).rejects.toThrow(JUNO_ERROR_VERSION_OUTDATED_OR_FUTURE);
 
@@ -558,7 +558,7 @@ describe('Satellite > Storage', () => {
 					rewrites: [['/hello.html', '/hello.html']],
 					raw_access: toNullable(),
 					max_memory_size: toNullable(),
-					version: toNullable(2n)
+					version: toNullable(1n)
 				};
 
 				await set_storage_config(storage);
@@ -570,7 +570,7 @@ describe('Satellite > Storage', () => {
 						...storage,
 						created_at: [expect.any(BigInt)],
 						updated_at: [expect.any(BigInt)],
-						version: [3n]
+						version: [2n]
 					}),
 					authentication: toNullable(),
 					db: toNullable()
@@ -644,7 +644,7 @@ describe('Satellite > Storage', () => {
 					rewrites: [],
 					raw_access: toNullable({ Allow: null }),
 					max_memory_size: toNullable(),
-					version: toNullable(3n)
+					version: toNullable(2n)
 				};
 
 				await set_storage_config(storage);
@@ -674,7 +674,7 @@ describe('Satellite > Storage', () => {
 					rewrites: [],
 					raw_access: toNullable({ Deny: null }),
 					max_memory_size: toNullable(),
-					version: toNullable(4n)
+					version: toNullable(3n)
 				};
 
 				await set_storage_config(storage);
@@ -700,7 +700,7 @@ describe('Satellite > Storage', () => {
 					rewrites: [],
 					raw_access: toNullable({ Allow: null }),
 					max_memory_size: toNullable(),
-					version: toNullable(5n)
+					version: toNullable(4n)
 				};
 
 				await set_storage_config(storage);
@@ -1256,14 +1256,14 @@ describe('Satellite > Storage', () => {
 				expectMemory: 4_063_232n,
 				allowedMemory: maxHeapMemorySize,
 				preUploadCount: 13,
-				baseVersion: 6n
+				baseVersion: 5n
 			},
 			{
 				memory: { Stable: null },
 				expectMemory: 50_397_184n,
 				allowedMemory: maxStableMemorySize,
 				preUploadCount: 0,
-				baseVersion: 11n
+				baseVersion: 10n
 			}
 		])(
 			'With collection',
@@ -1446,7 +1446,7 @@ describe('Satellite > Storage', () => {
 					heap: [],
 					stable: []
 				}),
-				version: toNullable(16n)
+				version: toNullable(15n)
 			};
 
 			await set_storage_config(storage);
@@ -1546,7 +1546,7 @@ describe('Satellite > Storage', () => {
 				rewrites: [],
 				raw_access: toNullable(),
 				max_memory_size: toNullable(),
-				version: toNullable(17n)
+				version: toNullable(16n)
 			};
 
 			const result = await set_storage_config(config);
@@ -1556,7 +1556,7 @@ describe('Satellite > Storage', () => {
 					...config,
 					created_at: [expect.any(BigInt)],
 					updated_at: [expect.any(BigInt)],
-					version: [18n]
+					version: [17n]
 				})
 			);
 

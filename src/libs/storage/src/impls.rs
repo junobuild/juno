@@ -65,7 +65,8 @@ impl StorageHeapState {
                 raw_access: None,
                 created_at: Some(now),
                 updated_at: Some(now),
-                version: Some(next_version::<StorageConfig>(&None)),
+                // For backwards compatibility start with None
+                version: None,
                 max_memory_size: None,
             },
             custom_domains: HashMap::new(),

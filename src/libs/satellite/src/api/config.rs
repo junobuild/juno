@@ -12,7 +12,6 @@ use crate::db::store::{
 use crate::db::types::config::DbConfig;
 use crate::db::types::interface::SetDbConfig;
 use crate::types::interface::Config;
-use ic_cdk::trap;
 use junobuild_storage::types::config::StorageConfig;
 use junobuild_storage::types::interface::SetStorageConfig;
 // ---------------------------------------------------------
@@ -35,8 +34,8 @@ pub fn get_config() -> Config {
 // Authentication config
 // ---------------------------------------------------------
 
-pub fn set_auth_config(config: SetAuthenticationConfig) -> AuthenticationConfig {
-    set_auth_config_store(&config).unwrap_or_else(|e| trap(&e))
+pub fn set_auth_config(config: SetAuthenticationConfig) -> Result<AuthenticationConfig, String> {
+    set_auth_config_store(&config)
 }
 
 pub fn get_auth_config() -> Option<AuthenticationConfig> {

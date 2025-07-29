@@ -392,7 +392,7 @@ export const idlFactory = ({ IDL }) => {
 		list_rules: IDL.Func([CollectionType, ListRulesParams], [ListRulesResults], ['query']),
 		memory_size: IDL.Func([], [MemorySize], ['query']),
 		reject_proposal: IDL.Func([CommitProposal], [IDL.Null], []),
-		set_auth_config: IDL.Func([SetAuthenticationConfig], [], []),
+		set_auth_config: IDL.Func([SetAuthenticationConfig], [AuthenticationConfig], []),
 		set_controllers: IDL.Func(
 			[SetControllersArgs],
 			[IDL.Vec(IDL.Tuple(IDL.Principal, Controller))],

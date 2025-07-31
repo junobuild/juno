@@ -33,6 +33,7 @@
 		const origin = currentUrl?.origin ?? url;
 		const pathname = currentUrl?.pathname ?? '/';
 
+		// eslint-disable-next-line svelte/prefer-svelte-reactivity
 		const searchParams = new URLSearchParams(currentUrl?.search);
 		searchParams.delete('tab');
 

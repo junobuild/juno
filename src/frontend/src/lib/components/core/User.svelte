@@ -70,48 +70,48 @@
 	</ButtonIcon>
 {/if}
 
-<Popover bind:visible anchor={button} direction="rtl">
+<Popover anchor={button} direction="rtl" bind:visible>
 	<div class="container">
 		{#if !home && !preferences}
-			<a href="/" class="menu" role="menuitem" aria-haspopup="menu" onclick={close}>
+			<a class="menu" aria-haspopup="menu" href="/" onclick={close} role="menuitem">
 				<IconRocket />
 				<span>{$i18n.satellites.launchpad}</span>
 			</a>
 		{/if}
 
 		{#if showNavigation}
-			<a href="/mission-control" class="menu" role="menuitem" aria-haspopup="menu" onclick={close}>
+			<a class="menu" aria-haspopup="menu" href="/mission-control" onclick={close} role="menuitem">
 				<IconMissionControl />
 				<span>{$i18n.mission_control.title}</span>
 			</a>
 
-			<a href="/wallet" class="menu" role="menuitem" aria-haspopup="menu" onclick={close}>
+			<a class="menu" aria-haspopup="menu" href="/wallet" onclick={close} role="menuitem">
 				<IconWallet />
 				<span>{$i18n.wallet.title}</span>
 			</a>
 
 			<a
-				href={analyticsLink($satelliteStore?.satellite_id)}
 				class="menu"
-				role="menuitem"
 				aria-haspopup="menu"
+				href={analyticsLink($satelliteStore?.satellite_id)}
 				onclick={close}
+				role="menuitem"
 			>
 				<IconAnalytics />
 				<span>{$i18n.analytics.title}</span>
 			</a>
 
-			<a href="/monitoring" class="menu" role="menuitem" aria-haspopup="menu" onclick={close}>
+			<a class="menu" aria-haspopup="menu" href="/monitoring" onclick={close} role="menuitem">
 				<IconTelescope />
 				<span>{$i18n.monitoring.title}</span>
 			</a>
 
 			<a
-				href={upgradeDockLink($satelliteStore?.satellite_id)}
 				class="menu"
-				role="menuitem"
 				aria-haspopup="menu"
+				href={upgradeDockLink($satelliteStore?.satellite_id)}
 				onclick={close}
+				role="menuitem"
 			>
 				<IconAnalytics />
 				<span>{$i18n.upgrade.title}</span>
@@ -123,7 +123,7 @@
 		{/if}
 
 		{#if !preferences}
-			<a href="/preferences" class="menu" role="menuitem" aria-haspopup="menu" onclick={close}>
+			<a class="menu" aria-haspopup="menu" href="/preferences" onclick={close} role="menuitem">
 				<IconRaygun />
 				<span>{$i18n.preferences.title}</span>
 			</a>
@@ -132,28 +132,28 @@
 		{/if}
 
 		<a
-			href="https://juno.build/docs/intro"
-			rel="external noopener noreferrer"
-			target="_blank"
 			class="menu"
-			role="menuitem"
 			aria-haspopup="menu"
-			onclick={close}><IconBook /> <span>Docs</span></a
+			href="https://juno.build/docs/intro"
+			onclick={close}
+			rel="external noopener noreferrer"
+			role="menuitem"
+			target="_blank"><IconBook /> <span>Docs</span></a
 		>
 
 		<a
-			href={`https://juno.build/changelog/release-v${APP_VERSION}`}
-			rel="external noopener noreferrer"
-			target="_blank"
 			class="menu"
-			role="menuitem"
 			aria-haspopup="menu"
-			onclick={close}><IconCodeBranch /> <span>Changelog</span></a
+			href={`https://juno.build/changelog/release-v${APP_VERSION}`}
+			onclick={close}
+			rel="external noopener noreferrer"
+			role="menuitem"
+			target="_blank"><IconCodeBranch /> <span>Changelog</span></a
 		>
 
 		<hr />
 
-		<button type="button" role="menuitem" aria-haspopup="menu" onclick={signOutClose} class="menu">
+		<button class="menu" aria-haspopup="menu" onclick={signOutClose} role="menuitem" type="button">
 			<IconSignOut />
 			<span>{$i18n.core.sign_out}</span>
 		</button>

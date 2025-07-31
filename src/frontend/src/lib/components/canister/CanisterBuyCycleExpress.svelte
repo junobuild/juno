@@ -49,6 +49,6 @@
 </script>
 
 {#if nonNullish(CYCLE_EXPRESS_URL)}
-	<button onclick={buyCycles} class="menu"><IconShoppingCart /> {$i18n.canisters.buy_cycles}</button
+	<button class="menu" onclick={buyCycles}><IconShoppingCart /> {$i18n.canisters.buy_cycles}</button
 	>
 {/if}

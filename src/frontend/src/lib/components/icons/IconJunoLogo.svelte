@@ -10,13 +10,13 @@
 
 <svg
 	id="Layer_2"
-	xmlns="http://www.w3.org/2000/svg"
-	viewBox="0 0 274.35 220.39"
-	height={size}
 	class:white={color === 'white'}
+	height={size}
+	viewBox="0 0 274.35 220.39"
+	xmlns="http://www.w3.org/2000/svg"
 	><g id="Layer_1-2"
 		><g
-			><rect x="0" y="0" width="220.39" height="220.39" rx="110.19" ry="110.19" /><circle
+			><rect height="220.39" rx="110.19" ry="110.19" width="220.39" x="0" y="0" /><circle
 				class="icon-juno-logo"
 				cx="206.21"
 				cy="68.14"

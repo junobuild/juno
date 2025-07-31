@@ -84,7 +84,7 @@
 	const close = () => (visible = false);
 </script>
 
-<button onclick={() => (visible = true)} class="menu"><IconLinkOff /> {$i18n.core.detach}</button>
+<button class="menu" onclick={() => (visible = true)}><IconLinkOff /> {$i18n.core.detach}</button>
 
 <Confirmation bind:visible on:junoYes={detach} on:junoNo={close}>
 	{#snippet title()}

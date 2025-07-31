@@ -74,7 +74,7 @@
 			<button onclick={onclose}>{$i18n.core.close}</button>
 		</div>
 	{:else if step === 'in_progress'}
-		<ProgressCreate segment="orbiter" {progress} withMonitoring={nonNullish(monitoringStrategy)} />
+		<ProgressCreate {progress} segment="orbiter" withMonitoring={nonNullish(monitoringStrategy)} />
 	{:else}
 		<h2>{$i18n.core.getting_started}</h2>
 
@@ -83,19 +83,18 @@
 		</p>
 
 		<CreditsGuard
+			{detail}
 			{onclose}
+			priceLabel={$i18n.analytics.create_orbiter_price}
 			bind:insufficientFunds
 			bind:withCredits
-			{detail}
-			priceLabel={$i18n.analytics.create_orbiter_price}
 		>
 			<form onsubmit={onSubmit}>
-				<CanisterAdvancedOptions bind:subnetId bind:monitoringStrategy {detail} />
+				<CanisterAdvancedOptions {detail} bind:subnetId bind:monitoringStrategy />
 
 				<button
-					type="submit"
 					disabled={$authSignedOut || isNullish($missionControlIdDerived) || insufficientFunds}
-					>{$i18n.analytics.create}</button
+					type="submit">{$i18n.analytics.create}</button
 				>
 			</form>
 		</CreditsGuard>

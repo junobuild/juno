@@ -18,7 +18,7 @@
 {#if isNullish(status)}
 	<div in:fade></div>
 {:else if warning || status === 'stopping'}
-	<div class="warning" in:fade aria-label={$i18n.canisters.warning_indicator}></div>
+	<div class="warning" aria-label={$i18n.canisters.warning_indicator} in:fade></div>
 {:else if status === 'stopped'}
 	<div class="stopped" in:fade></div>
 {:else}

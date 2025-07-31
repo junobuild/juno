@@ -37,4 +37,4 @@
 	);
 </script>
 
-<SatellitesPicker {disabled} {satellites} {onChange} />
+<SatellitesPicker {disabled} {onChange} {satellites} />

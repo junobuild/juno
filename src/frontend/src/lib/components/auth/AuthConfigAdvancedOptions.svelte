@@ -49,10 +49,10 @@
 			{/snippet}
 
 			<Input
-				inputType="text"
 				name="destination"
-				required={false}
+				inputType="text"
 				placeholder={$i18n.authentication.external_alternative_origins_placeholder}
+				required={false}
 				bind:value={externalAlternativeOriginsInput}
 			/>
 		</Value>

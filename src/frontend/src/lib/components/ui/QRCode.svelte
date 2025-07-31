@@ -118,18 +118,18 @@
 <svelte:window on:resize={initSize} />
 
 <div
-	class="container"
 	bind:this={container}
-	data-tid="qr-code"
 	style={`height: ${nonNullish(size) && size.width > 0 ? `${size.width}px` : '100%'}`}
+	class="container"
+	data-tid="qr-code"
 >
 	{#if nonNullish(size)}
 		<canvas
 			bind:this={canvas}
-			aria-label={label}
 			style={`width: ${size.width > 0 ? `${size.width}px` : '100%'}; height: ${
 				size.width > 0 ? `${size.width}px` : '100%'
 			}`}
+			aria-label={label}
 		></canvas>
 	{/if}
 

@@ -46,7 +46,7 @@
 </script>
 
 <div class="freezing">
-	<CanisterValue {sync} rows={3}>
+	<CanisterValue rows={3} {sync}>
 		{#snippet label()}
 			{$i18n.canisters.health_check}
 		{/snippet}
@@ -63,9 +63,9 @@
 
 			<label class="progress-bar-label" for="cycles-needed">{$i18n.canisters.cycles_needed}:</label>
 			<div class="progress-bar-container">
-				<div class="progress-bar" style={`width: ${progressionReserve}%`}></div>
+				<div style={`width: ${progressionReserve}%`} class="progress-bar"></div>
 			</div>
-			<span class="progress-bar-value" id="cycles-needed"
+			<span id="cycles-needed" class="progress-bar-value"
 				>{formatTCycles(cyclesNeeded ?? 0n)}T <small>cycles</small></span
 			>
 
@@ -74,12 +74,12 @@
 			>
 			<div class="progress-bar-container">
 				<div
+					style={`width: ${progressionBalance}%`}
 					class="progress-bar"
 					class:progress-bar-warning={warning}
-					style={`width: ${progressionBalance}%`}
 				></div>
 			</div>
-			<span class="progress-bar-value" id="current-balance"
+			<span id="current-balance" class="progress-bar-value"
 				>{formatTCycles(cyclesBalance ?? 0n)}T <small>cycles</small></span
 			>
 
@@ -94,7 +94,7 @@
 							{$i18n.canisters.of_cycles_needed}</small
 						>
 					{:else if ratio >= 0.9}
-						<InlineWarning title="Low" iconSize="16" /> <strong>{$i18n.canisters.low}</strong>
+						<InlineWarning iconSize="16" title="Low" /> <strong>{$i18n.canisters.low}</strong>
 						<small
 							>— {formatNumber(ratio * 100, { minFraction: 0, maxFraction: 0 })}<small>%</small>
 							{$i18n.canisters.of_cycles_needed}</small

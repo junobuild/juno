@@ -120,18 +120,18 @@
 </script>
 
 <div class="tools">
-	<ButtonTableAction onaction={openDelete} ariaLabel={$i18n.hosting.delete} icon="delete" />
+	<ButtonTableAction ariaLabel={$i18n.hosting.delete} icon="delete" onaction={openDelete} />
 
 	{#if displayState !== undefined && displayState?.toLowerCase() !== 'available'}
 		<ButtonTableAction
-			onaction={() => openAddCustomDomain({ editDomainName: customDomain?.[0] })}
 			ariaLabel={$i18n.hosting.edit}
 			icon="edit"
+			onaction={() => openAddCustomDomain({ editDomainName: customDomain?.[0] })}
 		/>
 	{/if}
 </div>
 
-<Popover bind:visible center={true}>
+<Popover center={true} bind:visible>
 	<div class="content">
 		<h3>
 			<Html
@@ -153,11 +153,11 @@
 		<p>{$i18n.hosting.delete_are_you_sure}</p>
 
 		<div class="toolbar">
-			<button type="button" onclick={stopPropagation(() => (visible = false))} disabled={$isBusy}>
+			<button disabled={$isBusy} onclick={stopPropagation(() => (visible = false))} type="button">
 				{$i18n.core.no}
 			</button>
 
-			<button type="button" onclick={stopPropagation(deleteCustomDomain)} disabled={$isBusy}>
+			<button disabled={$isBusy} onclick={stopPropagation(deleteCustomDomain)} type="button">
 				{$i18n.core.yes}
 			</button>
 		</div>
@@ -165,7 +165,7 @@
 		{#if advancedOptions}
 			<hr />
 			<Checkbox>
-				<input type="checkbox" onchange={() => (skipDeleteDomain = !skipDeleteDomain)} />
+				<input onchange={() => (skipDeleteDomain = !skipDeleteDomain)} type="checkbox" />
 				<span class="skip-delete">{$i18n.hosting.skip_delete_domain}</span>
 			</Checkbox>
 		{/if}

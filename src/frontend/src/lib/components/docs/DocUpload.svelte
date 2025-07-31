@@ -126,11 +126,11 @@
 </script>
 
 <DataUpload
-	uploadFile={upload}
-	disabled={isEmptyString(key)}
 	{action}
-	{title}
 	description={descriptionSnippet}
+	disabled={isEmptyString(key)}
+	{title}
+	uploadFile={upload}
 >
 	{#if mode === 'create'}
 		<div>
@@ -141,17 +141,17 @@
 				<div class="form-doc-key">
 					<input
 						id="doc-key"
-						type="text"
-						placeholder={$i18n.document.key_placeholder}
-						bind:value={key}
 						autocomplete="off"
 						data-1p-ignore
+						placeholder={$i18n.document.key_placeholder}
+						type="text"
+						bind:value={key}
 					/>
 					<button
 						class="text"
-						type="button"
-						onclick={generateKey}
 						aria-label={$i18n.document.key_generate}
+						onclick={generateKey}
+						type="button"
 					>
 						<IconAutoRenew size="20px" />
 					</button>
@@ -166,11 +166,11 @@
 				{/snippet}
 				<input
 					id="doc-description"
-					type="text"
-					placeholder={$i18n.document.description_placeholder}
-					bind:value={description}
 					autocomplete="off"
 					data-1p-ignore
+					placeholder={$i18n.document.description_placeholder}
+					type="text"
+					bind:value={description}
 				/>
 			</Value>
 		</div>

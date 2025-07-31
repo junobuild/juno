@@ -42,7 +42,7 @@
 </script>
 
 <div class="memory">
-	<CanisterValue {sync} rows={3}>
+	<CanisterValue rows={3} {sync}>
 		{#snippet label()}
 			{$i18n.canisters.memory}
 		{/snippet}
@@ -56,7 +56,7 @@
 			{nonNullish(wasmMemorySize) ? formatBytes(Number(wasmMemorySize)) : '???'}
 			<small
 				>{$i18n.canisters.on_heap}
-				{#if warning}<InlineWarning title={heapWarningLabel} iconSize="16" />{/if}</small
+				{#if warning}<InlineWarning iconSize="16" title={heapWarningLabel} />{/if}</small
 			>
 		</p>
 

@@ -81,10 +81,10 @@
 			<Input
 				name="amount"
 				inputType="currency"
-				required
-				bind:value={amount}
-				spellcheck={false}
 				placeholder={$i18n.wallet.amount_placeholder}
+				required
+				spellcheck={false}
+				bind:value={amount}
 			/>
 		</Value>
 	</div>

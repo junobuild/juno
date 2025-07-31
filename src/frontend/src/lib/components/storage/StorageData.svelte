@@ -91,7 +91,7 @@
 	let includeSysCollections = $state(false);
 </script>
 
-<Data onclose={resetData} displayEmpty={!includeSysCollections}>
+<Data displayEmpty={!includeSysCollections} onclose={resetData}>
 	<Assets {includeSysCollections} />
 
 	<Asset />
@@ -101,6 +101,6 @@
 	{/snippet}
 
 	{#snippet header()}
-		<DataCollectionsHeaderWithFilter bind:includeSysCollections onclose={resetData} />
+		<DataCollectionsHeaderWithFilter onclose={resetData} bind:includeSysCollections />
 	{/snippet}
 </Data>

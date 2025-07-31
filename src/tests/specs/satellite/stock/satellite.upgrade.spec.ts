@@ -25,7 +25,7 @@ import {
 } from '@dfinity/utils';
 import { toArray } from '@junobuild/utils';
 import { nanoid } from 'nanoid';
-import { afterEach, beforeEach, describe, expect, inject } from 'vitest';
+import { inject } from 'vitest';
 import { mockData } from '../../../mocks/doc.mocks';
 import { mockBlob } from '../../../mocks/storage.mocks';
 import { tick } from '../../../utils/pic-tests.utils';

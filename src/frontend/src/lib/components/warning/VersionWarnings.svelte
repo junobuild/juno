@@ -91,13 +91,13 @@
 </script>
 
 {#if ctrlReady && ctrlWarning}
-	<VersionWarning text={$i18n.admin.mission_control_new_version} onclick={upgradeMissionControl} />
+	<VersionWarning onclick={upgradeMissionControl} text={$i18n.admin.mission_control_new_version} />
 {/if}
 
 {#if orbReady && orbWarning}
-	<VersionWarning text={$i18n.admin.orbiter_new_version} onclick={upgradeOrbiter} />
+	<VersionWarning onclick={upgradeOrbiter} text={$i18n.admin.orbiter_new_version} />
 {/if}
 
 {#if satReady && satWarning}
-	<VersionWarning text={$i18n.admin.satellite_new_version} onclick={upgradeSatellite} />
+	<VersionWarning onclick={upgradeSatellite} text={$i18n.admin.satellite_new_version} />
 {/if}

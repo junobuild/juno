@@ -15,7 +15,7 @@
 	let fullWidth = $derived(routeId?.includes('functions'));
 </script>
 
-<Layout topMargin="wide" {fullWidth}>
+<Layout {fullWidth} topMargin="wide">
 	{#snippet menu()}
 		<Navmenu />
 	{/snippet}

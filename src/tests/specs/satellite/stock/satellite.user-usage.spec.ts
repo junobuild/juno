@@ -19,7 +19,7 @@ import {
 } from '@junobuild/errors';
 import { fromArray, toArray } from '@junobuild/utils';
 import { nanoid } from 'nanoid';
-import { beforeAll, describe, expect, inject } from 'vitest';
+import { inject } from 'vitest';
 import { mockData } from '../../../mocks/doc.mocks';
 import { tick } from '../../../utils/pic-tests.utils';
 import { createDoc as createDocUtils } from '../../../utils/satellite-doc-tests.utils';

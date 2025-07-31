@@ -33,13 +33,13 @@
 
 {#if nonNullish($orbiterStore)}
 	<CanisterTransferCyclesModal
-		{transferFn}
 		{currentCycles}
+		{onclose}
 		segment={{
 			segment: 'orbiter',
 			canisterId: $orbiterStore.orbiter_id.toText(),
 			label: $i18n.analytics.orbiter
 		}}
-		{onclose}
+		{transferFn}
 	/>
 {/if}

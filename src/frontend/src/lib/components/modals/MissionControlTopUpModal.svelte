@@ -23,14 +23,14 @@
 
 {#if nonNullish($missionControlIdDerived)}
 	<CanisterTopUpModal
+		{accountIdentifier}
+		balance={$balanceOrZero}
+		{onclose}
 		segment={{
 			segment: 'mission_control',
 			canisterId: $missionControlIdDerived.toText(),
 			label: $i18n.mission_control.title
 		}}
-		balance={$balanceOrZero}
-		{accountIdentifier}
-		{onclose}
 	>
 		{#snippet intro()}
 			<h2>

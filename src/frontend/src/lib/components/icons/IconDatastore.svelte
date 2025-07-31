@@ -7,7 +7,7 @@
 	let { size = '48px' }: Props = $props();
 </script>
 
-<svg height={size} width={size} viewBox="0 0 29 29"
+<svg height={size} viewBox="0 0 29 29" width={size}
 	><g
 		><path
 			class="icon-datastore-2"

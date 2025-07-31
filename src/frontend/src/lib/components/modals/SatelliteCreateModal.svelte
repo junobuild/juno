@@ -90,8 +90,8 @@
 		</div>
 	{:else if step === 'in_progress'}
 		<ProgressCreate
-			segment="satellite"
 			{progress}
+			segment="satellite"
 			withMonitoring={nonNullish(monitoringStrategy)}
 		/>
 	{:else}
@@ -102,11 +102,11 @@
 		</p>
 
 		<CreditsGuard
+			{detail}
 			{onclose}
+			priceLabel={$i18n.satellites.create_satellite_price}
 			bind:withCredits
 			bind:insufficientFunds
-			{detail}
-			priceLabel={$i18n.satellites.create_satellite_price}
 		>
 			<form onsubmit={onSubmit}>
 				<Value>
@@ -114,22 +114,21 @@
 						{$i18n.satellites.satellite_name}
 					{/snippet}
 					<input
-						bind:value={satelliteName}
-						type="text"
 						name="satellite_name"
-						placeholder={$i18n.satellites.enter_name}
-						required
 						autocomplete="off"
 						data-1p-ignore
+						placeholder={$i18n.satellites.enter_name}
+						required
+						type="text"
+						bind:value={satelliteName}
 					/>
 				</Value>
 
-				<CanisterAdvancedOptions bind:subnetId bind:monitoringStrategy {detail} />
+				<CanisterAdvancedOptions {detail} bind:subnetId bind:monitoringStrategy />
 
 				<button
-					type="submit"
 					disabled={$authSignedOut || isNullish($missionControlIdDerived) || insufficientFunds}
-					>{$i18n.satellites.create}</button
+					type="submit">{$i18n.satellites.create}</button
 				>
 			</form>
 		</CreditsGuard>

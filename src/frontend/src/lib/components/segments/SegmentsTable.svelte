@@ -180,8 +180,8 @@
 							><Checkbox
 								><input
 									type="checkbox"
-									bind:group={selectedSatellites}
 									value={satellite}
+									bind:group={selectedSatellites}
 								/></Checkbox
 							></td
 						>
@@ -199,7 +199,7 @@
 					<tr>
 						<td class="actions"
 							><Checkbox
-								><input type="checkbox" bind:group={selectedOrbiters} value={orbiter} /></Checkbox
+								><input type="checkbox" value={orbiter} bind:group={selectedOrbiters} /></Checkbox
 							></td
 						>
 						<td>
@@ -211,7 +211,7 @@
 				{/each}
 			{:else}
 				<tr
-					><td colspan="2" class="loading"
+					><td class="loading" colspan="2"
 						><SpinnerParagraph>{$i18n.canisters.loading_segments}</SpinnerParagraph></td
 					>
 				</tr>
@@ -224,7 +224,7 @@
 	<div class="objects" in:fade>
 		<div class="all">
 			<Checkbox>
-				<input type="checkbox" onchange={toggleAll} checked={allSelected} />
+				<input checked={allSelected} onchange={toggleAll} type="checkbox" />
 				<span>{allSelected ? $i18n.core.unselect_all : $i18n.core.select_all}</span>
 			</Checkbox>
 		</div>

@@ -175,9 +175,9 @@
 			<Input
 				name="cycles"
 				inputType="icp"
+				placeholder={$i18n.canisters.amount}
 				required
 				bind:value={tCycles}
-				placeholder={$i18n.canisters.amount}
 			/>
 		</Value>
 
@@ -206,7 +206,7 @@
 			/>
 		</p>
 
-		<button type="submit" class="submit" disabled={$isBusy || !validConfirm}>
+		<button class="submit" disabled={$isBusy || !validConfirm} type="submit">
 			{$i18n.core.delete}
 		</button>
 	</form>

@@ -1,4 +1,4 @@
-<script module lang="ts">
+<script lang="ts" module>
 	import type { AuthenticationConfig } from '$declarations/satellite/satellite.did';
 
 	export interface AddCustomDomainAuthProps {

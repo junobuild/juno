@@ -57,12 +57,12 @@
 
 <form onsubmit={onSubmitDomainName}>
 	<input
-		bind:value={domainNameInput}
-		type="text"
 		name="domain_name"
-		placeholder={$i18n.hosting.domain_name}
 		autocomplete="off"
 		data-1p-ignore
+		placeholder={$i18n.hosting.domain_name}
+		type="text"
+		bind:value={domainNameInput}
 	/>
 
 	<AddCustomDomainAuth {config} bind:useDomainForDerivationOrigin />

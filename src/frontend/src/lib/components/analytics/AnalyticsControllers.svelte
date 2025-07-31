@@ -41,8 +41,8 @@
 </script>
 
 <Controllers
+	{add}
 	{list}
 	{remove}
-	{add}
 	segment={{ label: $i18n.analytics.orbiter, canisterId: orbiterId.toText(), segment: 'orbiter' }}
 />

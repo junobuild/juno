@@ -25,13 +25,13 @@
 </script>
 
 <button
-	type="button"
-	{onclick}
 	bind:this={button}
 	class={`icon rounded ${level ?? ''}`}
-	{disabled}
 	class:hidden
 	class:small
+	{disabled}
+	{onclick}
+	type="button"
 >
 	{@render icon?.()}
 	<span class="visually-hidden">{@render children()}</span>

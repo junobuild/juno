@@ -7,7 +7,7 @@
 	let { size = '24px' }: Props = $props();
 </script>
 
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 34 38" height={size} width={size}
+<svg height={size} viewBox="0 0 34 38" width={size} xmlns="http://www.w3.org/2000/svg"
 	><g
 		><g
 			><path

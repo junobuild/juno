@@ -35,6 +35,6 @@
 
 {#if nonNullish($orbiterStore)}
 	<Modal {onclose}>
-		<CanisterDeleteWizard {deleteFn} {currentCycles} {onclose} segment="analytics" />
+		<CanisterDeleteWizard {currentCycles} {deleteFn} {onclose} segment="analytics" />
 	</Modal>
 {/if}

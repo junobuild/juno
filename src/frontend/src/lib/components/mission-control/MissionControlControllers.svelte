@@ -42,10 +42,10 @@
 </script>
 
 <Controllers
-	{list}
-	{remove}
 	{add}
 	{extraControllers}
+	{list}
+	{remove}
 	segment={{
 		label: $i18n.mission_control.title,
 		canisterId: missionControlId.toText(),

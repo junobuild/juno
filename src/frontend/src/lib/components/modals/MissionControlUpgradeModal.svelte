@@ -48,13 +48,13 @@
 
 {#if nonNullish($missionControlIdDerived)}
 	<CanisterUpgradeModal
-		{onclose}
-		{newerReleases}
+		canisterId={$missionControlIdDerived}
 		{currentVersion}
-		upgrade={upgradeMissionControlWasm}
+		{newerReleases}
+		{onclose}
 		{reloadVersion}
 		segment="mission_control"
-		canisterId={$missionControlIdDerived}
+		upgrade={upgradeMissionControlWasm}
 	>
 		{#snippet intro()}
 			<h2>

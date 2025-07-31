@@ -58,14 +58,14 @@
 	{/snippet}
 
 	{#if $missionControlUserDataLoaded}
-		<p in:fade class="email">
+		<p class="email" in:fade>
 			<span>{$missionControlEmail ?? $i18n.core.none}</span>
 
 			<button
-				onclick={open}
-				aria-label={$i18n.mission_control.edit_email}
-				title={$i18n.mission_control.edit_email}
 				class="square"
+				aria-label={$i18n.mission_control.edit_email}
+				onclick={open}
+				title={$i18n.mission_control.edit_email}
 			>
 				<IconEdit />
 			</button>
@@ -75,21 +75,21 @@
 	{/if}
 </Value>
 
-<Popover bind:visible center backdrop="dark">
+<Popover backdrop="dark" center bind:visible>
 	<form class="container" onsubmit={handleSubmit}>
 		<label for="email">{$i18n.core.email_address}:</label>
 
 		<input
 			id="email"
-			bind:value={email}
-			type="text"
-			placeholder={EMAIL_PLACEHOLDER}
-			disabled={$isBusy}
 			autocomplete="off"
 			data-1p-ignore
+			disabled={$isBusy}
+			placeholder={EMAIL_PLACEHOLDER}
+			type="text"
+			bind:value={email}
 		/>
 
-		<button type="submit" class="submit" disabled={$isBusy || !validConfirm}>
+		<button class="submit" disabled={$isBusy || !validConfirm} type="submit">
 			{$i18n.core.apply}
 		</button>
 	</form>

@@ -94,7 +94,7 @@
 				{/snippet}
 			</DocUpload>
 
-			<button class="menu" type="button" onclick={load}
+			<button class="menu" onclick={load} type="button"
 				><IconRefresh size="20px" /> {$i18n.core.reload}</button
 			>
 
@@ -121,8 +121,8 @@
 {#if $hasAnyRules}
 	<div
 		class="data"
-		class:data-selected={nonNullish($docsStore?.data)}
 		class:data-nullish={isNullish($paginationStore.items)}
+		class:data-selected={nonNullish($docsStore?.data)}
 	>
 		{#if nonNullish($paginationStore.items)}
 			<div in:fade>

@@ -43,30 +43,30 @@
 {:else}
 	{#if canisterWarnings}
 		<NotificationsCanisterAlert
+			{close}
+			cyclesIcon={IconMissionControl}
+			data={missionControlCanisterData}
 			href="/mission-control"
 			segment="mission_control"
-			{close}
-			data={missionControlCanisterData}
 			warnings={missionControlWarnings}
-			cyclesIcon={IconMissionControl}
 		/>
 
 		<NotificationsCanisterAlert
+			{close}
+			cyclesIcon={IconAnalytics}
+			data={orbiterCanisterData}
 			href="/analytics/?tab=overview"
 			segment="orbiter"
-			{close}
-			data={orbiterCanisterData}
 			warnings={orbiterWarnings}
-			cyclesIcon={IconAnalytics}
 		/>
 
 		<NotificationsCanisterAlert
+			{close}
+			cyclesIcon={IconSatellite}
+			data={satelliteCanisterData}
 			href={overviewLink($satelliteStore?.satellite_id)}
 			segment="satellite"
-			{close}
-			data={satelliteCanisterData}
 			warnings={satelliteWarnings}
-			cyclesIcon={IconSatellite}
 		/>
 	{/if}
 

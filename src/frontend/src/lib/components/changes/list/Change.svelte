@@ -58,9 +58,9 @@
 			><IconClose size="20px" /></button
 		>
 	</td>
-	<td><Identifier small={false} identifier={`${proposal_id}`} /></td>
+	<td><Identifier identifier={`${proposal_id}`} small={false} /></td>
 	<td class="hash"
-		>{#if nonNullish(hash)}<Identifier small={false} identifier={hash} />{/if}</td
+		>{#if nonNullish(hash)}<Identifier identifier={hash} small={false} />{/if}</td
 	>
 	<td>{proposalType}</td>
 	<td class="created_at">

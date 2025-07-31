@@ -10,7 +10,7 @@ import { Ed25519KeyIdentity } from '@dfinity/identity';
 import { type Actor, PocketIc } from '@dfinity/pic';
 import type { Principal } from '@dfinity/principal';
 import { assertNonNullish, fromNullable, toNullable } from '@dfinity/utils';
-import { afterEach, beforeEach, describe, expect, inject } from 'vitest';
+import { inject } from 'vitest';
 import {
 	missionControlUserInitArgs,
 	setupMissionControlModules

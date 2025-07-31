@@ -50,14 +50,14 @@
 </script>
 
 <CanisterUpgradeModal
-	{onclose}
-	{newerReleases}
-	{currentVersion}
 	{build}
-	upgrade={upgradeSatelliteWasm}
+	canisterId={satellite.satellite_id}
+	{currentVersion}
+	{newerReleases}
+	{onclose}
 	{reloadVersion}
 	segment="satellite"
-	canisterId={satellite.satellite_id}
+	upgrade={upgradeSatelliteWasm}
 >
 	{#snippet intro()}
 		<h2>

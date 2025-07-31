@@ -55,7 +55,7 @@
 		(registrationState = state)}
 />
 
-<Popover bind:visible center={true} backdrop="dark">
+<Popover backdrop="dark" center={true} bind:visible>
 	<div class="content">
 		{#if nonNullish(customDomain)}
 			<div class="space">
@@ -103,7 +103,7 @@
 			</div>
 		{/if}
 
-		<button type="button" onclick={stopPropagation(close)}>
+		<button onclick={stopPropagation(close)} type="button">
 			{$i18n.core.ok}
 		</button>
 	</div>

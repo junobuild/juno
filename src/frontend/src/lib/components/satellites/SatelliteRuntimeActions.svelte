@@ -79,7 +79,7 @@
 
 <SegmentActions bind:visible>
 	{#snippet mainActions()}
-		<TopUp type="topup_satellite" {detail} onclose={close} />
+		<TopUp {detail} onclose={close} type="topup_satellite" />
 	{/snippet}
 
 	{#snippet cyclesActions()}
@@ -92,9 +92,9 @@
 		<CanisterStopStart
 			{canister}
 			{monitoringEnabled}
-			segment="satellite"
-			onstop={close}
 			onstart={close}
+			onstop={close}
+			segment="satellite"
 		/>
 
 		<CanisterDelete {canister} onclick={onDeleteSatellite} />

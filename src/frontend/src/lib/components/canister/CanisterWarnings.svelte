@@ -27,7 +27,7 @@
 <CanisterSyncData {canisterId} bind:canister />
 
 {#if cyclesWarning}
-	<div use:onIntersection onjunoIntersecting={onLayoutTitleIntersection}>
+	<div onjunoIntersecting={onLayoutTitleIntersection} use:onIntersection>
 		<Warning>
 			{@render cycles?.()}
 		</Warning>
@@ -35,7 +35,7 @@
 {/if}
 
 {#if heapWarning}
-	<div use:onIntersection onjunoIntersecting={onLayoutTitleIntersection}>
+	<div onjunoIntersecting={onLayoutTitleIntersection} use:onIntersection>
 		<Warning>
 			{@render heap?.()}
 		</Warning>

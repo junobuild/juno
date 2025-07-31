@@ -24,14 +24,14 @@
 </script>
 
 <CanisterTopUpModal
+	{accountIdentifier}
+	balance={$balanceOrZero}
+	{onclose}
 	segment={{
 		segment: 'satellite',
 		canisterId: satellite.satellite_id.toText(),
 		label: satelliteName(satellite)
 	}}
-	balance={$balanceOrZero}
-	{accountIdentifier}
-	{onclose}
 >
 	{#snippet intro()}
 		<h2>

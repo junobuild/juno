@@ -35,13 +35,13 @@
 
 <SegmentsTable
 	{missionControlId}
+	{onlySyncedSegments}
+	reloadSegments={false}
+	withMissionControl={false}
 	bind:selectedSatellites
 	bind:selectedOrbiters
 	bind:selectedDisabled
-	withMissionControl={false}
-	reloadSegments={false}
 	bind:loadingSegments
-	{onlySyncedSegments}
 ></SegmentsTable>
 
 {#if loadingSegments === 'ready'}

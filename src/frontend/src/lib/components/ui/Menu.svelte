@@ -20,10 +20,10 @@
 <div role="menu">
 	<div
 		class="inner"
-		data-tid="menu-inner"
 		class:open={$layoutMenuOpen}
-		onkeypress={($event) => handleKeyPress({ $event, callback: close })}
+		data-tid="menu-inner"
 		onclick={close}
+		onkeypress={($event) => handleKeyPress({ $event, callback: close })}
 		role="button"
 		tabindex="-1"
 	>

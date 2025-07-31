@@ -31,18 +31,18 @@
 </script>
 
 <button
+	bind:this={button}
 	class="icon"
 	aria-label={ariaLabel}
-	type="button"
 	onclick={() => (visible = true)}
-	bind:this={button}>{@render icon?.()}</button
+	type="button">{@render icon?.()}</button
 >
 
-<Popover bind:visible anchor={button} {direction}>
+<Popover anchor={button} {direction} bind:visible>
 	<div class="container">
 		{@render children()}
 
-		<button class="apply" type="button" onclick={apply}>
+		<button class="apply" onclick={apply} type="button">
 			{$i18n.core.apply}
 		</button>
 	</div>

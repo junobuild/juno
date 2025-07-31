@@ -39,7 +39,7 @@
 
 <SegmentActions bind:visible>
 	{#snippet mainActions()}
-		<TopUp type="topup_mission_control" onclose={close} />
+		<TopUp onclose={close} type="topup_mission_control" />
 	{/snippet}
 
 	{#snippet cyclesActions()}

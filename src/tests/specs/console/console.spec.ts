@@ -2,7 +2,7 @@ import type { _SERVICE as ConsoleActor } from '$declarations/console/console.did
 import { idlFactory as idlFactorConsole } from '$declarations/console/console.factory.did';
 import { Ed25519KeyIdentity } from '@dfinity/identity';
 import { PocketIc, type Actor } from '@dfinity/pic';
-import { afterEach, beforeEach, describe, expect, inject } from 'vitest';
+import { inject } from 'vitest';
 import { deploySegments, initMissionControls } from '../../utils/console-tests.utils';
 import { CONSOLE_WASM_PATH } from '../../utils/setup-tests.utils';
 

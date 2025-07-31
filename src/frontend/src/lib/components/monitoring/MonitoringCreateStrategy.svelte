@@ -46,7 +46,7 @@
 	const disabled = $derived((minCycles ?? 0n) <= 0n || (fundCycles ?? 0n) <= 0n);
 </script>
 
-<MonitoringStepBackContinue {onback} {oncontinue} {disabled}>
+<MonitoringStepBackContinue {disabled} {onback} {oncontinue}>
 	{#snippet header()}
 		<h2>{$i18n.monitoring.configure_strategy}</h2>
 
@@ -66,9 +66,9 @@
 			<Input
 				name="cycles"
 				inputType="icp"
+				placeholder={$i18n.canisters.amount_cycles}
 				required
 				bind:value={minTCycles}
-				placeholder={$i18n.canisters.amount_cycles}
 			/>
 		</Value>
 	</div>
@@ -82,9 +82,9 @@
 			<Input
 				name="cycles"
 				inputType="icp"
+				placeholder={$i18n.canisters.amount_cycles}
 				required
 				bind:value={fundTCycles}
-				placeholder={$i18n.canisters.amount_cycles}
 			/>
 		</Value>
 	</div>

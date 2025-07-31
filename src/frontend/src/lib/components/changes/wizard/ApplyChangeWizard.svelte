@@ -57,23 +57,23 @@
 </script>
 
 {#if step === 'ready'}
-	<ApplyChangeDone {proposalType} {onclose} {startUpgrade} />
+	<ApplyChangeDone {onclose} {proposalType} {startUpgrade} />
 {:else if step === 'in_progress'}
 	<ProgressApplyChange
+		{clearProposalAssets}
 		{progress}
 		{proposalClearExistingAssets}
 		{takeSnapshot}
-		{clearProposalAssets}
 	/>
 {:else}
 	<ConfirmApplyChange
-		{proposalId}
-		{proposalType}
-		{proposalHash}
-		{proposalClearExistingAssets}
-		bind:clearProposalAssets
-		bind:takeSnapshot
 		{onclose}
 		{onsubmit}
+		{proposalClearExistingAssets}
+		{proposalHash}
+		{proposalId}
+		{proposalType}
+		bind:clearProposalAssets
+		bind:takeSnapshot
 	/>
 {/if}

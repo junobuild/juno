@@ -24,7 +24,7 @@
 	let row = $derived($layoutSatellites === SatellitesLayout.LIST);
 </script>
 
-<LaunchpadLink {href} ariaLabel={`${$i18n.core.open}: ${name}`} {row}>
+<LaunchpadLink ariaLabel={`${$i18n.core.open}: ${name}`} {href} {row}>
 	{#snippet summary()}
 		<p>{name}</p>
 		<IconSatellite size={row ? '28px' : '48px'} />

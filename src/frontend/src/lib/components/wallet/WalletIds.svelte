@@ -20,9 +20,9 @@
 			{$i18n.wallet.wallet_id}
 		{/snippet}
 		<Identifier
+			identifier={missionControlId.toText()}
 			shorten={false}
 			small={false}
-			identifier={missionControlId.toText()}
 			what={$i18n.wallet.wallet_id}
 		/>
 	</Value>

@@ -27,7 +27,6 @@
 </script>
 
 <CanisterTransferCyclesModal
-	{transferFn}
 	{currentCycles}
 	{onclose}
 	segment={{
@@ -35,4 +34,5 @@
 		canisterId: satellite.satellite_id.toText(),
 		label: satelliteName(satellite)
 	}}
+	{transferFn}
 />

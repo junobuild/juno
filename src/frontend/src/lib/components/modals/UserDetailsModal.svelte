@@ -31,7 +31,7 @@
 				{#snippet label()}
 					{$i18n.users.identifier}
 				{/snippet}
-				<Identifier small={false} identifier={owner.toText()} />
+				<Identifier identifier={owner.toText()} small={false} />
 			</Value>
 		</div>
 

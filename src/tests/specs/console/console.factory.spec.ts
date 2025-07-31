@@ -8,7 +8,7 @@ import { Ed25519KeyIdentity } from '@dfinity/identity';
 import { PocketIc, type Actor } from '@dfinity/pic';
 import type { Principal } from '@dfinity/principal';
 import { assertNonNullish, fromNullable, nonNullish } from '@dfinity/utils';
-import { describe, inject } from 'vitest';
+import { inject } from 'vitest';
 import { CONSOLE_ID } from '../../constants/console-tests.constants';
 import { deploySegments } from '../../utils/console-tests.utils';
 import { canisterStatus } from '../../utils/ic-management-tests.utils';

@@ -46,15 +46,15 @@
 
 		<Input
 			name="amount"
-			inputType="currency"
-			required
-			bind:value={amount}
-			spellcheck={false}
-			placeholder={$i18n.wallet.amount_placeholder}
 			footer={withUsd ? footer : undefined}
+			inputType="currency"
+			placeholder={$i18n.wallet.amount_placeholder}
+			required
+			spellcheck={false}
+			bind:value={amount}
 		>
 			{#snippet end()}
-				<SendTokensMax {balance} onmax={(value) => (amount = value)} {fee} />
+				<SendTokensMax {balance} {fee} onmax={(value) => (amount = value)} />
 			{/snippet}
 		</Input>
 	</Value>

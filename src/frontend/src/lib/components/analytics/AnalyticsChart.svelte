@@ -37,6 +37,7 @@
 		const startDate = new Date(parseInt(firstPageView.x));
 
 		const datePlusOneDay = () => {
+			// eslint-disable-next-line svelte/prefer-svelte-reactivity
 			const nextDate = new Date(startDate);
 			nextDate.setDate(nextDate.getDate() + 1);
 

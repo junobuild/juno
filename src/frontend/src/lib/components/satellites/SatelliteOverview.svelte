@@ -70,7 +70,7 @@
 	</div>
 </div>
 
-<SatelliteOverviewActions {satellite} {monitoringEnabled} />
+<SatelliteOverviewActions {monitoringEnabled} {satellite} />
 
 <div class="card-container with-title">
 	<span class="title">{$i18n.monitoring.runtime}</span>
@@ -78,13 +78,13 @@
 	<div class="columns-3">
 		<CanisterOverview
 			canisterId={satellite.satellite_id}
-			segment="satellite"
 			heapWarningLabel={$i18n.canisters.warning_satellite_heap_memory}
+			segment="satellite"
 		/>
 	</div>
 </div>
 
-<SatelliteRuntimeActions {satellite} {canister} {monitoringEnabled} />
+<SatelliteRuntimeActions {canister} {monitoringEnabled} {satellite} />
 
 <style lang="scss">
 	.card-container:last-of-type {

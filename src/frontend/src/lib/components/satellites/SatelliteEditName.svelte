@@ -69,22 +69,22 @@
 
 <button class="menu" onclick={open}><IconEdit /> {$i18n.satellites.edit_name}</button>
 
-<Popover bind:visible center backdrop="dark">
+<Popover backdrop="dark" center bind:visible>
 	<form class="container" onsubmit={handleSubmit}>
 		<label for="canisterName">{$i18n.satellites.satellite_name}:</label>
 
 		<input
 			id="canisterName"
-			bind:value={satName}
-			type="text"
-			placeholder={$i18n.satellites.edit_name}
-			maxlength={64}
-			disabled={$isBusy}
 			autocomplete="off"
 			data-1p-ignore
+			disabled={$isBusy}
+			maxlength={64}
+			placeholder={$i18n.satellites.edit_name}
+			type="text"
+			bind:value={satName}
 		/>
 
-		<button type="submit" class="submit" disabled={$isBusy || !validConfirm}>
+		<button class="submit" disabled={$isBusy || !validConfirm} type="submit">
 			{$i18n.core.apply}
 		</button>
 	</form>

@@ -17,14 +17,14 @@
 <svelte:window onjunoCloseActions={() => (visible = false)} />
 
 <button
+	bind:this={button}
 	class="icon"
 	aria-label={$i18n.core.more}
-	type="button"
 	onclick={() => (visible = true)}
-	bind:this={button}><IconMore size="18px" /></button
+	type="button"><IconMore size="18px" /></button
 >
 
-<Popover bind:visible anchor={button} direction="rtl">
+<Popover anchor={button} direction="rtl" bind:visible>
 	<div class="container">
 		{@render children()}
 	</div>

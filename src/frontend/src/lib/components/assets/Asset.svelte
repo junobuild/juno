@@ -85,7 +85,7 @@
 		{key ?? ''}
 
 		{#snippet actions()}
-			<AssetUpload onfileuploaded={reload} {asset}>
+			<AssetUpload {asset} onfileuploaded={reload}>
 				{#snippet action()}
 					{$i18n.asset.replace_file}
 				{/snippet}

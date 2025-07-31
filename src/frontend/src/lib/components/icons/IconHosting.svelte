@@ -7,10 +7,10 @@
 	let { size = '48px' }: Props = $props();
 </script>
 
-<svg height={size} width={size} xmlns="http://www.w3.org/2000/svg" viewBox="0 0 29 29"
+<svg height={size} viewBox="0 0 29 29" width={size} xmlns="http://www.w3.org/2000/svg"
 	><g
 		><g
-			><rect class="icon-hosting-1" width="29" height="29" /><circle
+			><rect class="icon-hosting-1" height="29" width="29" /><circle
 				class="icon-hosting-2"
 				cx="14.5"
 				cy="14.5"

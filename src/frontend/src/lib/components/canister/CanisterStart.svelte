@@ -90,7 +90,7 @@
 	const close = () => (visible = false);
 </script>
 
-<button onclick={() => (visible = true)} class="menu"><IconStart /> {$i18n.core.start}</button>
+<button class="menu" onclick={() => (visible = true)}><IconStart /> {$i18n.core.start}</button>
 
 <Confirmation bind:visible on:junoYes={start} on:junoNo={close}>
 	{#snippet title()}

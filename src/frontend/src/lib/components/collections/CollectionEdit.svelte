@@ -206,13 +206,13 @@
 				{/snippet}
 				<input
 					id="collection"
-					type="text"
-					placeholder={$i18n.collections.key_placeholder}
 					name="collection"
-					bind:value={collection}
-					disabled={mode === 'edit'}
 					autocomplete="off"
 					data-1p-ignore
+					disabled={mode === 'edit'}
+					placeholder={$i18n.collections.key_placeholder}
+					type="text"
+					bind:value={collection}
 				/>
 			</Value>
 		</div>
@@ -222,7 +222,7 @@
 				{#snippet label()}
 					{$i18n.collections.read_permission}
 				{/snippet}
-				<select id="read" name="read" bind:value={read} disabled={currentImmutable}>
+				<select id="read" name="read" disabled={currentImmutable} bind:value={read}>
 					<option value="Public">{$i18n.collections.public}</option>
 					<option value="Private">{$i18n.collections.private}</option>
 					<option value="Managed">{$i18n.collections.managed}</option>
@@ -236,7 +236,7 @@
 				{#snippet label()}
 					{$i18n.collections.write_permission}
 				{/snippet}
-				<select id="write" name="write" bind:value={write} disabled={currentImmutable}>
+				<select id="write" name="write" disabled={currentImmutable} bind:value={write}>
 					<option value="Public">{$i18n.collections.public}</option>
 					<option value="Private">{$i18n.collections.private}</option>
 					<option value="Managed">{$i18n.collections.managed}</option>
@@ -256,7 +256,7 @@
 						{#snippet label()}
 							{$i18n.collections.memory}
 						{/snippet}
-						<select id="memory" name="write" bind:value={memory} disabled={mode === 'edit'}>
+						<select id="memory" name="write" disabled={mode === 'edit'} bind:value={memory}>
 							<option value="Stable">{$i18n.collections.stable}</option>
 							<option value="Heap">{$i18n.collections.heap}</option>
 						</select>
@@ -269,13 +269,13 @@
 							{$i18n.collections.max_changes}
 						{/snippet}
 						<Input
-							inputType="number"
-							placeholder={$i18n.collections.max_changes_placeholder}
 							name="maxChanges"
-							required={false}
-							bind:value={maxChanges}
+							inputType="number"
 							onblur={() =>
 								(maxChanges = nonNullish(maxChanges) ? Math.trunc(maxChanges) : undefined)}
+							placeholder={$i18n.collections.max_changes_placeholder}
+							required={false}
+							bind:value={maxChanges}
 						/>
 					</Value>
 				</div>
@@ -287,13 +287,13 @@
 								{$i18n.collections.max_capacity}
 							{/snippet}
 							<Input
-								inputType="number"
-								placeholder={$i18n.collections.max_capacity_placeholder}
 								name="maxCapacity"
-								required={false}
-								bind:value={maxCapacity}
+								inputType="number"
 								onblur={() =>
 									(maxCapacity = nonNullish(maxCapacity) ? Math.trunc(maxCapacity) : undefined)}
+								placeholder={$i18n.collections.max_capacity_placeholder}
+								required={false}
+								bind:value={maxCapacity}
 							/>
 						</Value>
 					</div>
@@ -306,12 +306,12 @@
 								{$i18n.collections.max_size}
 							{/snippet}
 							<Input
-								inputType="number"
-								placeholder={$i18n.collections.max_size_placeholder}
 								name="maxSize"
+								inputType="number"
+								onblur={() => (maxSize = nonNullish(maxSize) ? Math.trunc(maxSize) : undefined)}
+								placeholder={$i18n.collections.max_size_placeholder}
 								required={false}
 								bind:value={maxSize}
-								onblur={() => (maxSize = nonNullish(maxSize) ? Math.trunc(maxSize) : undefined)}
 							/>
 						</Value>
 					</div>
@@ -323,12 +323,12 @@
 							{$i18n.collections.rate_limit}
 						{/snippet}
 						<Input
-							inputType="number"
-							placeholder={$i18n.collections.rate_limit_placeholder}
 							name="maxTokens"
+							inputType="number"
+							onblur={() => (maxTokens = nonNullish(maxTokens) ? Math.trunc(maxTokens) : undefined)}
+							placeholder={$i18n.collections.rate_limit_placeholder}
 							required={false}
 							bind:value={maxTokens}
-							onblur={() => (maxTokens = nonNullish(maxTokens) ? Math.trunc(maxTokens) : undefined)}
 						/>
 					</Value>
 				</div>
@@ -337,10 +337,10 @@
 					<Checkbox>
 						<label class="immutable">
 							<input
-								type="checkbox"
 								checked={immutable}
 								disabled={currentImmutable}
 								onchange={() => (immutable = !immutable)}
+								type="checkbox"
 							/>
 							<span>{$i18n.collections.immutable}</span>
 						</label>
@@ -350,13 +350,13 @@
 		</Collapsible>
 
 		<div class="toolbar">
-			<button type="button" onclick={oncancel}>{$i18n.core.cancel}</button>
+			<button onclick={oncancel} type="button">{$i18n.core.cancel}</button>
 
 			{#if mode === 'edit'}
 				<CollectionDelete {collection} {rule} {type} on:junoCollectionSuccess />
 			{/if}
 
-			<button type="submit" class="primary" {disabled}>{$i18n.core.submit}</button>
+			<button class="primary" {disabled} type="submit">{$i18n.core.submit}</button>
 		</div>
 	</form>
 </article>

@@ -61,7 +61,7 @@
 <Canister {canisterId} display={false} bind:data={canisterData} />
 
 <CanisterMonitoringData {canisterId} bind:monitoringData>
-	<button onclick={openModal} class="article monitoring">
+	<button class="article monitoring" onclick={openModal}>
 		<span class="segment">
 			{@render children()}
 		</span>
@@ -71,20 +71,20 @@
 		{#if enabled}
 			<span class="chart-container" in:fade>
 				<Chart
-					{chartsData}
 					axisWithText={false}
+					{chartsData}
 					padding={{ top: 0, right: 0, bottom: 0, left: 0 }}
 				/>
 			</span>
 
 			<span class="info">
 				{#if nonNullish(lastExecutionTime)}
-					<span in:fade title={$i18n.monitoring.last_status_check}
+					<span title={$i18n.monitoring.last_status_check} in:fade
 						><IconClockUpdate /> <span>{formatToRelativeTime(lastExecutionTime)}</span></span
 					>
 				{/if}
 				{#if nonNullish(lastDepositCyclesTime) && nonNullish(lastDepositCyclesAmount)}
-					<span in:fade title={$i18n.monitoring.last_top_up}
+					<span title={$i18n.monitoring.last_top_up} in:fade
 						><IconRefresh size="18px" />
 						<span
 							>{formatToRelativeTime(lastDepositCyclesTime)} with {formatTCycles(

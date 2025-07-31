@@ -10,7 +10,7 @@
 	let { href, ariaLabel, children }: Props = $props();
 </script>
 
-<a class="menu" {href} aria-label={ariaLabel}>
+<a class="menu" aria-label={ariaLabel} {href}>
 	{@render children()}
 </a>
 

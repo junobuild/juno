@@ -30,5 +30,5 @@
 </script>
 
 {#if nonNullish(version) && version.warning}
-	<UpgradeSegment segmentLabel={satelliteName(satellite)} {version} source="juno" {startUpgrade} />
+	<UpgradeSegment segmentLabel={satelliteName(satellite)} source="juno" {startUpgrade} {version} />
 {/if}

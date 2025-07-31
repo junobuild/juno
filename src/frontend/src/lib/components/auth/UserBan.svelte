@@ -52,13 +52,13 @@
 </script>
 
 <ButtonTableAction
-	icon={isBanned ? 'block' : 'check'}
-	errorStyle={isBanned}
 	ariaLabel={isBanned ? $i18n.users.unban_user : $i18n.users.ban_user}
+	errorStyle={isBanned}
+	icon={isBanned ? 'block' : 'check'}
 	onaction={open}
 />
 
-<Popover bind:visible center backdrop="dark">
+<Popover backdrop="dark" center bind:visible>
 	<form class="container" onsubmit={handleSubmit}>
 		<p class="title">
 			{i18nFormat(isBanned ? $i18n.users.user_banned : $i18n.users.user_active, [
@@ -74,7 +74,7 @@
 		<p>{isBanned ? $i18n.users.are_you_sure_unban : $i18n.users.are_you_sure_ban}</p>
 
 		<div class="toolbar">
-			<button type="button" onclick={close}>{$i18n.core.cancel}</button>
+			<button onclick={close} type="button">{$i18n.core.cancel}</button>
 			<button type="submit">{$i18n.core.confirm}</button>
 		</div>
 	</form>

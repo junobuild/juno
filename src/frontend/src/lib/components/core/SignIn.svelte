@@ -27,7 +27,7 @@
 	</div>
 
 	<div class="sign-in">
-		<button onclick={async () => await signIn({})} disabled={$isBusy}
+		<button disabled={$isBusy} onclick={async () => await signIn({})}
 			><IconIc size="20px" />
 			<span>{$i18n.sign_in.internet_identity}</span></button
 		>

@@ -24,7 +24,7 @@
 	};
 </script>
 
-<button class="icon" type="button" onclick={reload} aria-label={$i18n.core.refresh}
+<button class="icon" aria-label={$i18n.core.refresh} onclick={reload} type="button"
 	><IconAutoRenew size="16px" />
 </button>
 

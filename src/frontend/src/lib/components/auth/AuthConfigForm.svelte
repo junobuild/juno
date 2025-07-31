@@ -133,15 +133,15 @@
 					{/snippet}
 
 					<Input
-						inputType="number"
-						placeholder={$i18n.collections.rate_limit_placeholder}
 						name="maxTokens"
-						required={false}
-						bind:value={maxTokensInput}
+						inputType="number"
 						onblur={() =>
 							(maxTokensInput = nonNullish(maxTokensInput)
 								? Math.trunc(maxTokensInput)
 								: undefined)}
+						placeholder={$i18n.collections.rate_limit_placeholder}
+						required={false}
+						bind:value={maxTokensInput}
 					/>
 				</Value>
 			</div>
@@ -154,9 +154,9 @@
 				{/snippet}
 
 				<textarea
+					placeholder={$i18n.authentication.authorized_users_placeholder}
 					rows="5"
 					bind:value={allowedCallersInput}
-					placeholder={$i18n.authentication.authorized_users_placeholder}
 				></textarea>
 			</Value>
 		</div>
@@ -170,7 +170,7 @@
 		{/if}
 	</div>
 
-	<button type="submit" disabled={$isBusy}>
+	<button disabled={$isBusy} type="submit">
 		{$i18n.core.submit}
 	</button>
 </form>

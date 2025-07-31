@@ -25,5 +25,5 @@
 </script>
 
 {#if $satelliteCustomDomainsLoaded && nonNullish(host)}
-	<a class="button" {href} target="_blank" rel="noreferrer noopener" in:fade>Visit</a>
+	<a class="button" {href} rel="noreferrer noopener" target="_blank" in:fade>Visit</a>
 {/if}

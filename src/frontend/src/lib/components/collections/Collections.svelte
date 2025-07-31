@@ -38,13 +38,13 @@
 <section>
 	<CollectionsNav onclose={closeEdit} onedit={editCollectionRule} />
 
-	<CollectionSelection start onedit={editCollectionRule} onstart={startCollectionRule} />
+	<CollectionSelection onedit={editCollectionRule} onstart={startCollectionRule} start />
 
 	<p class="title rules-title">{$i18n.collections.details}</p>
 
 	<div class="rules">
 		{#if editCollection}
-			<CollectionEdit {type} oncancel={closeEdit} onsuccess={closeEdit} />
+			<CollectionEdit oncancel={closeEdit} onsuccess={closeEdit} {type} />
 		{:else}
 			<button class="text action start" onclick={startCollectionRule}
 				><IconNew size="16px" /> <span>{$i18n.collections.start_collection}</span></button

@@ -17,7 +17,7 @@ import {
 	JUNO_ERROR_VERSION_OUTDATED_OR_FUTURE
 } from '@junobuild/errors';
 import { nanoid } from 'nanoid';
-import { expect, inject } from 'vitest';
+import { inject } from 'vitest';
 import { mockData } from '../../../mocks/doc.mocks';
 import { createDoc as createDocUtils } from '../../../utils/satellite-doc-tests.utils';
 import { controllersInitArgs, SATELLITE_WASM_PATH } from '../../../utils/setup-tests.utils';

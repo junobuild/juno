@@ -53,22 +53,22 @@
 	<CanisterUpgradeWizard
 		{onclose}
 		{segment}
+		showUpgradeExtendedWarning={buildExtended}
 		{takeSnapshot}
 		{wasm}
-		showUpgradeExtendedWarning={buildExtended}
 		{...propsRest}
 		bind:step
 	>
 		{#snippet intro()}
 			<SelectUpgradeVersion
-				{newerReleases}
-				{segment}
-				{currentVersion}
 				back={buildExtended}
-				bind:takeSnapshot
-				{onnext}
-				{onclose}
+				{currentVersion}
+				{newerReleases}
 				onback={() => (step = 'confirm')}
+				{onclose}
+				{onnext}
+				{segment}
+				bind:takeSnapshot
 			>
 				{#snippet title()}
 					{@render introUpgrade?.()}

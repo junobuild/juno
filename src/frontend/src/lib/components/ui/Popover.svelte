@@ -62,17 +62,17 @@
 
 {#if visible && attached}
 	<div
-		role="menu"
-		aria-orientation="vertical"
-		out:fade
-		class={`popover ${backdrop}`}
-		class:center
-		tabindex="-1"
 		style={`--popover-top: ${bottom}px; ${
 			direction === 'rtl'
 				? `--popover-right: ${innerWidth - (right ?? 0)}px;`
 				: `--popover-left: ${left}px;`
 		}`}
+		class={`popover ${backdrop}`}
+		class:center
+		aria-orientation="vertical"
+		role="menu"
+		tabindex="-1"
+		out:fade
 	>
 		<div
 			class="backdrop"
@@ -82,13 +82,13 @@
 			tabindex="-1"
 		></div>
 		<div
-			transition:scale={{ delay: 25, duration: 150, easing: quintOut }}
 			class={`wrapper ${position}`}
 			class:center
 			class:rtl={direction === 'rtl'}
+			transition:scale={{ delay: 25, duration: 150, easing: quintOut }}
 		>
 			{#if closeButton}
-				<button onclick={stopPropagation(close)} aria-label={$i18n.core.close} class="close icon"
+				<button class="close icon" aria-label={$i18n.core.close} onclick={stopPropagation(close)}
 					><IconClose /></button
 				>
 			{/if}

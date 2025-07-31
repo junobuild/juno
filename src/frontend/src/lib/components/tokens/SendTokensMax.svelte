@@ -29,7 +29,7 @@
 </script>
 
 {#if nonNullish(balance) && balance > 0n}
-	<button in:fade class="article" onclick={calculateMax} tabindex="-1">
+	<button class="article" onclick={calculateMax} tabindex="-1" in:fade>
 		{$i18n.core.max}
 	</button>
 {/if}

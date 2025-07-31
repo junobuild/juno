@@ -77,7 +77,7 @@
 	};
 </script>
 
-<button type="button" onclick={() => (visible = true)}>{$i18n.core.delete}</button>
+<button onclick={() => (visible = true)} type="button">{$i18n.core.delete}</button>
 
 <Confirmation bind:visible on:junoYes={deleteCollection} on:junoNo={close}>
 	{#snippet title()}

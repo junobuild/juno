@@ -49,17 +49,17 @@
 
 	<div class="card-container columns-3 no-border">
 		<CanisterOverview
-			bind:data={canisterData}
-			bind:sync={canisterSyncStatus}
 			{canisterId}
 			segment={segment.segment}
+			bind:data={canisterData}
+			bind:sync={canisterSyncStatus}
 		/>
 
 		<hr />
 
 		<CanisterMonitoringData {canisterId} bind:monitoringData>
 			<div class="status">
-				<MonitoringStrategyStatus {monitoring} {canisterData} {canisterSyncStatus} />
+				<MonitoringStrategyStatus {canisterData} {canisterSyncStatus} {monitoring} />
 
 				{#if nonNullish(lastExecutionTime)}
 					<div in:fade>

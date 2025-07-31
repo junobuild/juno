@@ -23,7 +23,7 @@
 </script>
 
 {#if cyclesWarning}
-	<NotificationLink {href} {close}>
+	<NotificationLink {close} {href}>
 		{#snippet icon()}
 			{@const SvelteComponent = cyclesIcon}
 			<SvelteComponent size="32px" />
@@ -43,7 +43,7 @@
 {/if}
 
 {#if heapWarning}
-	<NotificationLink {href} {close}>
+	<NotificationLink {close} {href}>
 		{#snippet icon()}
 			<IconWarning size="32px" />
 		{/snippet}

@@ -13,7 +13,7 @@ import {
 	toNullable
 } from '@dfinity/utils';
 import { readFile } from 'node:fs/promises';
-import { expect } from 'vitest';
+
 import { mockScript } from '../mocks/storage.mocks';
 import { tick } from './pic-tests.utils';
 import {

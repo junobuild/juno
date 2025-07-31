@@ -10,7 +10,7 @@
 </script>
 
 <div class="options">
-	<input type="checkbox" {checked} onchange={() => (checked = !checked)} />
+	<input {checked} onchange={() => (checked = !checked)} type="checkbox" />
 	<span>
 		{@render children()}
 	</span>

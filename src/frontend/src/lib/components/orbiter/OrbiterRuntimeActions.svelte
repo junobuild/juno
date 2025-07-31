@@ -61,7 +61,7 @@
 
 <SegmentActions bind:visible>
 	{#snippet mainActions()}
-		<TopUp type="topup_orbiter" onclose={close} />
+		<TopUp onclose={close} type="topup_orbiter" />
 	{/snippet}
 
 	{#snippet cyclesActions()}
@@ -74,9 +74,9 @@
 		<CanisterStopStart
 			{canister}
 			{monitoringEnabled}
-			segment="orbiter"
-			onstop={close}
 			onstart={close}
+			onstop={close}
+			segment="orbiter"
 		/>
 
 		<CanisterDelete {canister} onclick={onDeleteOrbiter} />

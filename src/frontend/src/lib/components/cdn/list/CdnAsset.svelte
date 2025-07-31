@@ -35,7 +35,7 @@
 			><IconArrowCircleUp size="20px" /></button
 		>
 	</td>
-	<td><Identifier small={false} shortenLength={15} identifier={full_path} /></td>
+	<td><Identifier identifier={full_path} shortenLength={15} small={false} /></td>
 	<td class="description">
 		{description ?? ''}
 	</td>

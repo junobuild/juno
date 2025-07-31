@@ -7,7 +7,7 @@ import { Ed25519KeyIdentity } from '@dfinity/identity';
 import { type Actor, PocketIc } from '@dfinity/pic';
 import type { Principal } from '@dfinity/principal';
 import { toNullable } from '@dfinity/utils';
-import { afterAll, beforeAll, describe, inject } from 'vitest';
+import { inject } from 'vitest';
 import { assertCertification } from '../../../utils/certification-tests.utils';
 import { uploadAsset } from '../../../utils/satellite-storage-tests.utils';
 import { deleteDefaultIndexHTML } from '../../../utils/satellite-tests.utils';

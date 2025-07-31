@@ -56,7 +56,7 @@
 
 {#if $missionControlSettingsLoaded && $satellitesLoaded && $orbiterLoaded}
 	<div class="toolbar">
-		<button in:fade onclick={openCreateModal}>
+		<button onclick={openCreateModal} in:fade>
 			{#if monitored}
 				{$i18n.monitoring.update_auto_refill}
 			{:else}
@@ -65,7 +65,7 @@
 		</button>
 
 		{#if monitored}
-			<button in:fade onclick={openStopModal}>
+			<button onclick={openStopModal} in:fade>
 				{$i18n.monitoring.stop_auto_refill}
 			</button>
 		{/if}

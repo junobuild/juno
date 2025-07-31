@@ -82,7 +82,7 @@
 	});
 </script>
 
-<ButtonIcon {onclick} {level} bind:button>
+<ButtonIcon {level} {onclick} bind:button>
 	{#snippet icon()}
 		<IconNotifications size="16px" />
 	{/snippet}
@@ -104,21 +104,21 @@
 
 <NotificationsInboxLoader {missionControlCanisterData} bind:canisterNotifications />
 
-<Popover bind:visible anchor={button} direction="rtl" --popover-min-size="340px">
+<Popover --popover-min-size="340px" anchor={button} direction="rtl" bind:visible>
 	<div class="container">
 		<TabsSegment>
 			{#if $store.tabId === $store.tabs[0].id}
 				<NotificationsAlerts
+					alerts={hasAlerts}
+					{canisterWarnings}
+					{close}
 					{missionControlCanisterData}
 					{missionControlWarnings}
 					{orbiterCanisterData}
 					{orbiterWarnings}
 					{satelliteCanisterData}
 					{satelliteWarnings}
-					alerts={hasAlerts}
 					{upgradeWarning}
-					{canisterWarnings}
-					{close}
 				/>
 			{:else if $store.tabId === $store.tabs[1].id}
 				<NotificationsInbox {canisterNotifications} />

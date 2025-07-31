@@ -6,7 +6,7 @@ import { Ed25519KeyIdentity } from '@dfinity/identity';
 import { PocketIc, type Actor } from '@dfinity/pic';
 import type { Principal } from '@dfinity/principal';
 import { fromNullable } from '@dfinity/utils';
-import { afterEach, beforeEach, describe, expect, inject } from 'vitest';
+import { inject } from 'vitest';
 import { satelliteIdMock } from '../../mocks/orbiter.mocks';
 import { tick } from '../../utils/pic-tests.utils';
 import {

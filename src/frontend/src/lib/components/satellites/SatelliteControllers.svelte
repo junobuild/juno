@@ -44,9 +44,9 @@
 </script>
 
 <Controllers
+	{add}
 	{list}
 	{remove}
-	{add}
 	segment={{
 		label: $i18n.satellites.satellite,
 		canisterId: satellite.satellite_id.toText(),

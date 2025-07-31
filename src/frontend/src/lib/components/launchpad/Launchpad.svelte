@@ -38,7 +38,7 @@
 			<p class="loading">{$i18n.satellites.loading_launchpad}</p>
 		</div>
 	{:else}
-		<section use:customOnIntersection onjunoIntersecting={onLayoutTitleIntersection}>
+		<section onjunoIntersecting={onLayoutTitleIntersection} use:customOnIntersection>
 			<SatelliteNew />
 		</section>
 	{/if}
@@ -46,8 +46,8 @@
 	<div in:fade>
 		<section
 			class="cockpit"
-			use:customOnIntersection
 			onjunoIntersecting={onLayoutTitleIntersection}
+			use:customOnIntersection
 		>
 			<Cockpit />
 		</section>

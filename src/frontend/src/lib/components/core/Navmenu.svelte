@@ -32,11 +32,11 @@
 <Menu>
 	<nav>
 		<a
-			role="menuitem"
 			class="link"
 			class:collapsed={$menuCollapsed}
-			href={`/satellite${queryParam}`}
 			class:selected={isRouteSelected({ routeId, path: 'satellite' })}
+			href={`/satellite${queryParam}`}
+			role="menuitem"
 		>
 			<IconSatellite size="24px" />
 			<span>{$i18n.satellites.satellite}</span>
@@ -49,55 +49,55 @@
 				out:slide={{ delay: 0, duration: 100, easing: circOut, axis: 'y' }}
 			>
 				<a
-					role="menuitem"
 					class="link"
 					class:collapsed={$menuCollapsed}
-					href={`/authentication${queryParam}`}
 					class:selected={isRouteSelected({ routeId, path: 'authentication' })}
+					href={`/authentication${queryParam}`}
+					role="menuitem"
 				>
 					<IconAuthentication size="24px" />
 					<span>{$i18n.authentication.title}</span>
 				</a>
 
 				<a
-					role="menuitem"
 					class="link"
 					class:collapsed={$menuCollapsed}
-					href={`/datastore${queryParam}`}
 					class:selected={isRouteSelected({ routeId, path: 'datastore' })}
+					href={`/datastore${queryParam}`}
+					role="menuitem"
 				>
 					<IconDatastore size="24px" />
 					<span>{$i18n.datastore.title}</span>
 				</a>
 
 				<a
-					role="menuitem"
 					class="link"
 					class:collapsed={$menuCollapsed}
-					href={`/storage${queryParam}`}
 					class:selected={isRouteSelected({ routeId, path: 'storage' })}
+					href={`/storage${queryParam}`}
+					role="menuitem"
 				>
 					<IconStorage size="24px" />
 					<span>{$i18n.storage.title}</span>
 				</a>
 
 				<a
-					role="menuitem"
 					class="link"
 					class:collapsed={$menuCollapsed}
-					href={`/functions${queryParam}`}
 					class:selected={isRouteSelected({ routeId, path: 'functions' })}
+					href={`/functions${queryParam}`}
+					role="menuitem"
 				>
 					<IconFunctions size="24px" />
 					<span>{$i18n.functions.title}</span>
 				</a>
 
 				<a
-					role="menuitem"
 					class="link"
 					class:collapsed={$menuCollapsed}
-					href={`/hosting${queryParam}`}
 					class:selected={isRouteSelected({ routeId, path: 'hosting' })}
+					href={`/hosting${queryParam}`}
+					role="menuitem"
 				>
 					<IconHosting size="24px" />
 					<span>{$i18n.hosting.title}</span>
@@ -107,55 +107,55 @@
 
 		<div>
 			<a
-				role="menuitem"
-				href={`/analytics${queryParam}`}
-				class:selected={isRouteSelected({ routeId, path: 'analytics' })}
 				class="link not-themed"
 				class:collapsed={$menuCollapsed}
+				class:selected={isRouteSelected({ routeId, path: 'analytics' })}
+				href={`/analytics${queryParam}`}
+				role="menuitem"
 			>
 				<IconAnalytics size="24px" />
 				<span>{$i18n.analytics.title}</span>
 			</a>
 
 			<a
-				role="menuitem"
-				href={`/monitoring${queryParam}`}
-				class:selected={isRouteSelected({ routeId, path: 'monitoring' })}
 				class="link not-themed"
 				class:collapsed={$menuCollapsed}
+				class:selected={isRouteSelected({ routeId, path: 'monitoring' })}
+				href={`/monitoring${queryParam}`}
+				role="menuitem"
 			>
 				<IconTelescope />
 				<span>{$i18n.monitoring.title}</span>
 			</a>
 
 			<a
-				role="menuitem"
-				href={`/mission-control${queryParam}`}
-				class:selected={isRouteSelected({ routeId, path: 'mission-control' })}
 				class="link not-themed"
 				class:collapsed={$menuCollapsed}
+				class:selected={isRouteSelected({ routeId, path: 'mission-control' })}
+				href={`/mission-control${queryParam}`}
+				role="menuitem"
 			>
 				<IconMissionControl />
 				<span>{$i18n.mission_control.title}</span>
 			</a>
 
 			<a
-				role="menuitem"
-				href={`/wallet${queryParam}`}
-				class:selected={isRouteSelected({ routeId, path: 'wallet' })}
 				class="link not-themed"
 				class:collapsed={$menuCollapsed}
+				class:selected={isRouteSelected({ routeId, path: 'wallet' })}
+				href={`/wallet${queryParam}`}
+				role="menuitem"
 			>
 				<IconWallet />
 				<span>{$i18n.wallet.title}</span>
 			</a>
 
 			<a
-				role="menuitem"
-				href={`/upgrade-dock${queryParam}`}
-				class:selected={isRouteSelected({ routeId, path: 'upgrade-dock' })}
 				class="link not-themed smaller-icon"
 				class:collapsed={$menuCollapsed}
+				class:selected={isRouteSelected({ routeId, path: 'upgrade-dock' })}
+				href={`/upgrade-dock${queryParam}`}
+				role="menuitem"
 			>
 				<IconUpgradeDock size="22px" />
 				<span>{$i18n.upgrade.title}</span>

@@ -47,7 +47,7 @@
 </nav>
 
 <div class="picker">
-	<select bind:value={selected} onchange={() => (isNullish(selected) ? close() : edit(selected))}>
+	<select onchange={() => (isNullish(selected) ? close() : edit(selected))} bind:value={selected}>
 		<option value={undefined}>Select a collection</option>
 		{#if nonNullish($store.rules)}
 			{#each $sortedRules as rule (rule[0])}

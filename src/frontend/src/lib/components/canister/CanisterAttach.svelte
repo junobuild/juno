@@ -78,7 +78,7 @@
 	};
 </script>
 
-<Popover bind:visible center backdrop="dark">
+<Popover backdrop="dark" center bind:visible>
 	<form class="container" onsubmit={handleSubmit}>
 		<h3>{@render title?.()}</h3>
 
@@ -86,16 +86,16 @@
 
 		<input
 			id="canisterId"
-			bind:value={canisterId}
-			type="text"
-			placeholder="_____-_____-_____-_____-cai"
-			maxlength={64}
-			disabled={$isBusy}
 			autocomplete="off"
 			data-1p-ignore
+			disabled={$isBusy}
+			maxlength={64}
+			placeholder="_____-_____-_____-_____-cai"
+			type="text"
+			bind:value={canisterId}
 		/>
 
-		<button type="submit" class="submit" disabled={$isBusy || !validConfirm}>
+		<button class="submit" disabled={$isBusy || !validConfirm} type="submit">
 			{$i18n.core.submit}
 		</button>
 	</form>

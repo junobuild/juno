@@ -15,8 +15,8 @@
 
 <Toggle
 	enabled={!dark}
-	onclick={() => theme.select(dark ? Theme.LIGHT : Theme.DARK)}
 	nomargin={!inline}
+	onclick={() => theme.select(dark ? Theme.LIGHT : Theme.DARK)}
 >
 	<span class:inline>
 		{#if dark}

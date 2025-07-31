@@ -89,41 +89,40 @@
 {#if isExpandable && hasChildren}
 	{#if collapsed}
 		<span
-			data-tid={testId}
 			class="key"
-			class:expanded={!collapsed}
-			class:collapsed
-			class:root
 			class:arrow={isExpandable && hasChildren}
-			role="button"
+			class:collapsed
+			class:expanded={!collapsed}
+			class:root
 			aria-label={$i18n.core.toggle}
-			tabindex="0"
-			onkeypress={($event) => handleKeyPress({ $event, callback: toggle })}
+			data-tid={testId}
 			onclick={stopPropagation(toggle)}
+			onkeypress={($event) => handleKeyPress({ $event, callback: toggle })}
+			role="button"
+			tabindex="0"
 			>{keyLabel}
 			<span class="bracket">{openBracket} ... {closeBracket}</span>
 		</span>
 	{:else}
 		<!-- key -->
 		<span
-			data-tid={testId}
 			class="key"
-			class:expanded={!collapsed}
-			class:collapsed
-			class:root
 			class:arrow={isExpandable && hasChildren}
-			role="button"
+			class:collapsed
+			class:expanded={!collapsed}
+			class:root
 			aria-label={$i18n.core.toggle}
-			tabindex="0"
-			onkeypress={($event) => handleKeyPress({ $event, callback: toggle })}
+			data-tid={testId}
 			onclick={stopPropagation(toggle)}
-			>{keyLabel}<span class="bracket open">{openBracket}</span></span
+			onkeypress={($event) => handleKeyPress({ $event, callback: toggle })}
+			role="button"
+			tabindex="0">{keyLabel}<span class="bracket open">{openBracket}</span></span
 		>
 		<!-- children -->
 		<ul>
 			{#each children as [key, value], index (index)}
 				<li>
-					<Json json={value} _key={key} {defaultExpandedLevel} _level={_level + 1} />
+					<Json _key={key} _level={_level + 1} {defaultExpandedLevel} json={value} />
 				</li>
 			{/each}
 		</ul>
@@ -131,12 +130,12 @@
 	{/if}
 {:else if isExpandable}
 	<!-- no childre -->
-	<span data-tid={testId} class="key" class:root
+	<span class="key" class:root data-tid={testId}
 		>{keyLabel}<span class="bracket">{openBracket} {closeBracket}</span></span
 	>
 {:else}
 	<!-- key:value -->
-	<span data-tid={testId} class="key-value">
+	<span class="key-value" data-tid={testId}>
 		<span class="key" class:root>{keyLabel}</span><span class="value {valueType}" {title}
 			>{value}</span
 		></span

@@ -22,7 +22,7 @@
 			{/snippet}
 
 			<div class="chart-container">
-				<TimeOfDayPlot chartsData={depositedCycles} {allDays} />
+				<TimeOfDayPlot {allDays} chartsData={depositedCycles} />
 			</div>
 		</Value>
 	</div>

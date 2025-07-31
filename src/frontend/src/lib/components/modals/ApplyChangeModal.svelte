@@ -23,8 +23,8 @@
 
 <Modal {onclose}>
 	{#if step === 'upgrade'}
-		<UpgradeChangeWizard {onclose} {satellite} {proposal} />
+		<UpgradeChangeWizard {onclose} {proposal} {satellite} />
 	{:else}
-		<ApplyChangeWizard {proposal} {satelliteId} {onclose} {startUpgrade} />
+		<ApplyChangeWizard {onclose} {proposal} {satelliteId} {startUpgrade} />
 	{/if}
 </Modal>

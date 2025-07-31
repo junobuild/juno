@@ -35,12 +35,12 @@
 	};
 </script>
 
-<button class="square" onclick={open} {disabled}>
+<button class="square" {disabled} onclick={open}>
 	<IconScience />
 	<span class="visually-hidden">{$i18n.analytics.adjust_periodicity}</span>
 </button>
 
-<Popover bind:visible center backdrop="dark">
+<Popover backdrop="dark" center bind:visible>
 	<form class="container" onsubmit={handleSubmit}>
 		<Value>
 			{#snippet label()}

@@ -79,10 +79,10 @@
 		</SpinnerModal>
 	{:else}
 		<AuthConfigForm
-			{satellite}
 			{config}
-			{rule}
 			onsubmit={handleSubmit}
+			{rule}
+			{satellite}
 			bind:maxTokens
 			bind:selectedDerivationOrigin
 			bind:externalAlternativeOrigins

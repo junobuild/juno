@@ -40,4 +40,4 @@
 	};
 </script>
 
-<button type="button" onclick={exportEvents}>{$i18n.core.export}</button>
+<button onclick={exportEvents} type="button">{$i18n.core.export}</button>

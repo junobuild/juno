@@ -15,11 +15,11 @@
 {@render children()}
 
 <div class="toolbar">
-	<button type="button" onclick={onno} disabled={$isBusy}>
+	<button disabled={$isBusy} onclick={onno} type="button">
 		{$i18n.core.no}
 	</button>
 
-	<button type="button" onclick={onyes} disabled={$isBusy}>
+	<button disabled={$isBusy} onclick={onyes} type="button">
 		{$i18n.core.yes}
 	</button>
 </div>

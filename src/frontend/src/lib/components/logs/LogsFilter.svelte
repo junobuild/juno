@@ -26,7 +26,7 @@
 	};
 </script>
 
-<PopoverApply ariaLabel={$i18n.sort.title} onapply={apply} bind:visible direction="ltr">
+<PopoverApply ariaLabel={$i18n.sort.title} direction="ltr" onapply={apply} bind:visible>
 	{#snippet icon()}
 		<IconFilter size="20px" />
 	{/snippet}
@@ -35,31 +35,31 @@
 
 	<CheckboxGroup>
 		<Checkbox>
-			<input type="checkbox" bind:group={levels} value="Info" id="info" /><label for="info"
+			<input id="info" type="checkbox" value="Info" bind:group={levels} /><label for="info"
 				><span>{$i18n.functions.info}</span></label
 			>
 		</Checkbox>
 
 		<Checkbox>
-			<input type="checkbox" bind:group={levels} value="Debug" id="debug" /><label for="debug"
+			<input id="debug" type="checkbox" value="Debug" bind:group={levels} /><label for="debug"
 				><span>{$i18n.functions.debug}</span></label
 			>
 		</Checkbox>
 
 		<Checkbox>
-			<input type="checkbox" bind:group={levels} value="Warning" id="warning" /><label for="warning"
+			<input id="warning" type="checkbox" value="Warning" bind:group={levels} /><label for="warning"
 				><span>{$i18n.functions.warning}</span></label
 			>
 		</Checkbox>
 
 		<Checkbox>
-			<input type="checkbox" bind:group={levels} value="Error" id="error" /><label for="error"
+			<input id="error" type="checkbox" value="Error" bind:group={levels} /><label for="error"
 				><span>{$i18n.functions.error}</span></label
 			>
 		</Checkbox>
 
 		<Checkbox>
-			<input type="checkbox" bind:group={levels} value="Unknown" id="unknown" /><label for="unknown"
+			<input id="unknown" type="checkbox" value="Unknown" bind:group={levels} /><label for="unknown"
 				><span>{$i18n.functions.unknown}</span></label
 			>
 		</Checkbox>

@@ -75,21 +75,21 @@
 		<div in:fade>
 			<CanisterTopUpReview
 				{balance}
-				{icp}
 				{cycles}
-				{segment}
-				{onsubmit}
+				{icp}
 				onback={() => (step = 'init')}
+				{onsubmit}
+				{segment}
 			/>
 		</div>
 	{:else}
 		<CanisterTopUpForm
-			{intro}
-			{segment}
-			{balance}
 			{accountIdentifier}
+			{balance}
+			{intro}
 			{onclose}
 			onreview={() => (step = 'review')}
+			{segment}
 			bind:icp
 			bind:cycles
 		/>

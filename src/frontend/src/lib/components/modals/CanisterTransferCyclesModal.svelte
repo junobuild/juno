@@ -100,9 +100,9 @@
 		/>
 	{:else}
 		<CanisterTransferCyclesForm
-			{segment}
 			{currentCycles}
 			{onreview}
+			{segment}
 			bind:cycles
 			bind:destinationId
 		/>

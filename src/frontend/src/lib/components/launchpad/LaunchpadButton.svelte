@@ -14,7 +14,7 @@
 	let { children, summary, disabled, primary = false, row = false, onclick }: Props = $props();
 </script>
 
-<button class="article" {onclick} {disabled} class:primary class:row>
+<button class="article" class:primary class:row {disabled} {onclick}>
 	{#if nonNullish(summary)}
 		<div class="summary">
 			{@render summary()}

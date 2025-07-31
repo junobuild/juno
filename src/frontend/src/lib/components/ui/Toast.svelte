@@ -62,10 +62,10 @@
 </script>
 
 <div
-	role="dialog"
 	class={`toast ${color ?? ''}`}
 	class:error={level === 'error'}
 	class:warn={level === 'warn'}
+	role="dialog"
 	in:fly={{ y: 100, duration: 200 }}
 	out:fade={{ delay: 100 }}
 >
@@ -75,7 +75,7 @@
 		</p>
 	</div>
 
-	<button class="text" onclick={close} aria-label={$i18n.core.close}><IconClose /></button>
+	<button class="text" aria-label={$i18n.core.close} onclick={close}><IconClose /></button>
 </div>
 
 <style lang="scss">

@@ -38,7 +38,7 @@
 				{#if title}
 					{#if nonNullish($layoutNavigation)}
 						{@const SvelteComponent = $layoutNavigation.data.icon}
-						<h1 in:fade class:space={topMargin === 'wide'}>
+						<h1 class:space={topMargin === 'wide'} in:fade>
 							<span>
 								<span class="icon"><SvelteComponent size="32px" /></span>
 								<span>{$layoutTitle ?? ''}</span>

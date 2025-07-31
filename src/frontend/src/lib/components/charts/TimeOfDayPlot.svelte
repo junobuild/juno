@@ -25,21 +25,21 @@
 </script>
 
 <LayerCake
+	data={chartsData}
 	padding={padding ?? { top: 16, right: 16, bottom: 16, left: 70 }}
 	x="x"
-	y="y"
 	xDomain={[0, 24 * 60 * 60]}
-	yDomain={allDays}
 	xScale={scaleTime()}
+	y="y"
+	yDomain={allDays}
 	yScale={scaleBand().paddingInner(0.05).round(true)}
-	data={chartsData}
 >
 	<Svg>
 		<AxisX
-			ticks={[0, 4, 8, 12, 16, 20, 24].map((d) => d * 60 * 60)}
 			formatTick={(d) => `${Math.floor(Number(d) / 60 / 60)}:00`}
+			ticks={[0, 4, 8, 12, 16, 20, 24].map((d) => d * 60 * 60)}
 		/>
 		<AxisY />
-		<Scatter {r} fill="var(--color-primary)" />
+		<Scatter fill="var(--color-primary)" {r} />
 	</Svg>
 </LayerCake>

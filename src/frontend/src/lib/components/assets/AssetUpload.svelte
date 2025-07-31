@@ -84,7 +84,7 @@
 	};
 </script>
 
-<DataUpload uploadFile={upload} {action} {title} {description}>
+<DataUpload {action} {description} {title} uploadFile={upload}>
 	{#snippet confirm()}
 		{$i18n.asset.upload}
 	{/snippet}

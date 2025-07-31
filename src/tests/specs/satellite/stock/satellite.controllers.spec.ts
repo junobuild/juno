@@ -2,7 +2,7 @@ import type { _SERVICE as SatelliteActor } from '$declarations/satellite/satelli
 import { idlFactory as idlFactorSatellite } from '$declarations/satellite/satellite.factory.did';
 import { Ed25519KeyIdentity } from '@dfinity/identity';
 import { type Actor, PocketIc } from '@dfinity/pic';
-import { beforeAll, describe, inject } from 'vitest';
+import { inject } from 'vitest';
 import { mockListParams } from '../../../mocks/list.mocks';
 import { uploadAsset } from '../../../utils/satellite-storage-tests.utils';
 import { controllersInitArgs, SATELLITE_WASM_PATH } from '../../../utils/setup-tests.utils';

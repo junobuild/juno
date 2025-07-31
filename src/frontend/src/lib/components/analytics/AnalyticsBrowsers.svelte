@@ -34,7 +34,7 @@
 </script>
 
 {#if nonNullish(browsers)}
-	<AnalyticsTable {events} display="percent">
+	<AnalyticsTable display="percent" {events}>
 		{$i18n.analytics.browsers}
 	</AnalyticsTable>
 {/if}

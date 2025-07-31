@@ -49,9 +49,9 @@
 			<div class="group">
 				<Checkbox>
 					<input
-						type="checkbox"
 						checked={useDefaultStrategy}
 						onchange={() => (useDefaultStrategy = !useDefaultStrategy)}
+						type="checkbox"
 					/>
 					<span><MonitoringSentence monitoringStrategy={useMonitoringStrategy} /></span>
 				</Checkbox>

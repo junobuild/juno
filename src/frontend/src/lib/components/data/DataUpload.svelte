@@ -44,11 +44,11 @@
 	};
 </script>
 
-<button class="menu" type="button" onclick={() => (visible = true)}
+<button class="menu" onclick={() => (visible = true)} type="button"
 	><IconUpload size="20px" /> {@render action?.()}</button
 >
 
-<Popover bind:visible center={true} backdrop="dark">
+<Popover backdrop="dark" center={true} bind:visible>
 	<div class="content">
 		<h3>{@render title?.()}</h3>
 
@@ -58,17 +58,17 @@
 			{#snippet label()}
 				{$i18n.core.file}
 			{/snippet}
-			<input id="file" type="file" onchange={onChangeFile} disabled={$isBusy} />
+			<input id="file" disabled={$isBusy} onchange={onChangeFile} type="file" />
 		</Value>
 
 		{@render children?.()}
 
 		<div>
-			<button type="button" onclick={close} disabled={$isBusy}>
+			<button disabled={$isBusy} onclick={close} type="button">
 				{$i18n.core.cancel}
 			</button>
 
-			<button type="button" onclick={upload} disabled={disableUpload}>
+			<button disabled={disableUpload} onclick={upload} type="button">
 				{@render confirm?.()}
 			</button>
 		</div>

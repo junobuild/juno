@@ -33,7 +33,7 @@
 			{#snippet label()}
 				{$i18n.core.status}
 			{/snippet}
-			<Canister {canisterId} bind:data bind:sync displayMemoryTotal={false} displayCycles={false} />
+			<Canister {canisterId} displayCycles={false} displayMemoryTotal={false} bind:data bind:sync />
 		</Value>
 	</div>
 
@@ -48,9 +48,9 @@
 	<CanisterMemory
 		canister={data?.canister}
 		canisterData={data}
-		{sync}
 		{heapWarningLabel}
 		{segment}
+		{sync}
 	/>
 </div>
 

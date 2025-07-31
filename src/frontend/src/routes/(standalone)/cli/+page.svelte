@@ -26,14 +26,14 @@
 	let principal: Option<string> = $derived(data?.principal);
 </script>
 
-<div use:onIntersection onjunoIntersecting={onLayoutTitleIntersection}>
+<div onjunoIntersecting={onLayoutTitleIntersection} use:onIntersection>
 	{#if nonNullish(redirect_uri) && nonNullish(principal) && notEmptyString(redirect_uri) && notEmptyString(principal)}
 		{#if $authSignedIn}
 			<MissionControlGuard>
 				<MetadataLoader satellites={$sortedSatellites}>
 					{#if nonNullish($missionControlIdDerived)}
 						<div in:fade>
-							<CliAdd {principal} {redirect_uri} missionControlId={$missionControlIdDerived} />
+							<CliAdd missionControlId={$missionControlIdDerived} {principal} {redirect_uri} />
 						</div>
 					{/if}
 				</MetadataLoader>

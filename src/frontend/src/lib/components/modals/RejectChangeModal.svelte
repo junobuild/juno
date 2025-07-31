@@ -64,15 +64,15 @@
 			<button onclick={onclose}>{$i18n.core.close}</button>
 		</div>
 	{:else if step === 'in_progress'}
-		<ProgressRejectChange {progress} {clearProposalAssets} />
+		<ProgressRejectChange {clearProposalAssets} {progress} />
 	{:else}
 		<ConfirmRejectChange
-			{proposalId}
-			{proposalType}
-			{proposalHash}
-			bind:clearProposalAssets
 			{onclose}
 			{onsubmit}
+			{proposalHash}
+			{proposalId}
+			{proposalType}
+			bind:clearProposalAssets
 		/>
 	{/if}
 </Modal>

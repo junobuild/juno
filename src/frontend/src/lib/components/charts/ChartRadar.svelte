@@ -19,11 +19,11 @@
 </script>
 
 <LayerCake
+	{data}
 	padding={{ top: 30, right: 0, bottom: 7, left: 0 }}
 	x={xKey}
 	xDomain={[0, maxXDomain]}
 	{xRange}
-	{data}
 >
 	<Svg>
 		<AxisRadial />

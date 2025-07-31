@@ -43,13 +43,13 @@
 
 {#if nonNullish($orbiterStore)}
 	<CanisterUpgradeModal
-		{onclose}
-		{newerReleases}
+		canisterId={$orbiterStore.orbiter_id}
 		{currentVersion}
-		upgrade={upgradeOrbiterWasm}
+		{newerReleases}
+		{onclose}
 		{reloadVersion}
 		segment="orbiter"
-		canisterId={$orbiterStore.orbiter_id}
+		upgrade={upgradeOrbiterWasm}
 	>
 		{#snippet intro()}
 			<h2>

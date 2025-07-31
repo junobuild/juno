@@ -20,8 +20,8 @@
 {#if nonNullish($orbiterVersion) && $orbiterVersion.warning && nonNullish($versionStore.orbiter)}
 	<UpgradeSegment
 		segmentLabel={$i18n.analytics.orbiter}
-		version={$versionStore.orbiter}
 		source="juno"
 		{startUpgrade}
+		version={$versionStore.orbiter}
 	/>
 {/if}

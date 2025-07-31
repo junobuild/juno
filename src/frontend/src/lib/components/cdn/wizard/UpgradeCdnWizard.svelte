@@ -128,10 +128,10 @@
 {:else}
 	<CanisterUpgradeWizard
 		{...upgradeBaseParams}
-		{takeSnapshot}
-		{wasm}
-		upgrade={upgradeSatelliteWasm}
 		{reloadVersion}
+		{takeSnapshot}
+		upgrade={upgradeSatelliteWasm}
+		{wasm}
 		bind:step={upgradeStep}
 	>
 		{#snippet intro()}
@@ -165,7 +165,7 @@
 				<CanisterUpgradeOptions bind:takeSnapshot />
 
 				<div class="toolbar">
-					<button type="button" onclick={onclose}>{$i18n.core.cancel}</button>
+					<button onclick={onclose} type="button">{$i18n.core.cancel}</button>
 					<button type="submit">{$i18n.core.continue}</button>
 				</div>
 			</form>

@@ -14,12 +14,12 @@
 </script>
 
 <a
+	class:underline
+	aria-label={ariaLabel}
 	{href}
 	rel="external noopener noreferrer"
 	target="_blank"
-	aria-label={ariaLabel}
 	title={ariaLabel}
-	class:underline
 >
 	{@render children()}
 

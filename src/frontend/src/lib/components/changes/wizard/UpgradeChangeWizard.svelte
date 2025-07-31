@@ -38,4 +38,4 @@
 	onMount(loadAsset);
 </script>
 
-<UpgradeCdnWizard {satellite} {asset} {onclose} />
+<UpgradeCdnWizard {asset} {onclose} {satellite} />

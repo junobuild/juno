@@ -31,12 +31,12 @@
 <tr>
 	<td class="actions">
 		<div class="actions-tools">
-			<ButtonTableAction icon="info" ariaLabel={$i18n.users.view_details} onaction={openModal} />
+			<ButtonTableAction ariaLabel={$i18n.users.view_details} icon="info" onaction={openModal} />
 
-			<UserBan {user} {satelliteId} />
+			<UserBan {satelliteId} {user} />
 		</div>
 	</td>
-	<td><Identifier small={false} identifier={owner.toText()} /></td>
+	<td><Identifier identifier={owner.toText()} small={false} /></td>
 	<td class="providers">
 		<UserProvider {user} />
 	</td>

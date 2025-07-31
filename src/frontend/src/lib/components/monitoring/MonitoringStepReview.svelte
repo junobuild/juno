@@ -15,8 +15,8 @@
 {@render children()}
 
 <div class="toolbar">
-	<button type="button" disabled={$isBusy} onclick={onback}>{$i18n.core.back}</button>
-	<button type="button" disabled={$isBusy} onclick={onsubmit}>
+	<button disabled={$isBusy} onclick={onback} type="button">{$i18n.core.back}</button>
+	<button disabled={$isBusy} onclick={onsubmit} type="button">
 		{$i18n.core.apply}
 	</button>
 </div>

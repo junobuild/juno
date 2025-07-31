@@ -108,23 +108,23 @@
 		</div>
 	{:else if step === 'dns'}
 		<AddCustomDomainDns
-			{domainNameInput}
 			{dns}
+			{domainNameInput}
 			{edit}
-			onsubmit={setupCustomDomain}
 			onback={() => (step = 'init')}
 			onclose={close}
+			onsubmit={setupCustomDomain}
 		/>
 	{:else if step === 'in_progress'}
 		<ProgressHosting {progress} withConfig={useDomainForDerivationOrigin} />
 	{:else}
 		<AddCustomDomainForm
+			{config}
+			onnext={onNextDns}
+			{satellite}
 			bind:domainNameInput
 			bind:dns
 			bind:useDomainForDerivationOrigin
-			{config}
-			{satellite}
-			onnext={onNextDns}
 		/>
 	{/if}
 </Modal>

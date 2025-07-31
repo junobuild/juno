@@ -35,17 +35,17 @@
 </script>
 
 <button
-	class="square"
 	bind:this={button}
-	onclick={() => (visible = true)}
-	aria-label={$i18n.canisters.edit_snapshot}><IconEdit size="20px" /></button
+	class="square"
+	aria-label={$i18n.canisters.edit_snapshot}
+	onclick={() => (visible = true)}><IconEdit size="20px" /></button
 >
 
-<Popover bind:visible anchor={button} direction="ltr">
+<Popover anchor={button} direction="ltr" bind:visible>
 	<div class="container">
-		<button onclick={restore} class="menu"><IconHistory /> {$i18n.core.restore}</button>
-		<button onclick={replace} class="menu"><IconRefresh /> {$i18n.core.replace}</button>
-		<button onclick={deleteSnapshot} class="menu"><IconDelete /> {$i18n.core.delete}</button>
+		<button class="menu" onclick={restore}><IconHistory /> {$i18n.core.restore}</button>
+		<button class="menu" onclick={replace}><IconRefresh /> {$i18n.core.replace}</button>
+		<button class="menu" onclick={deleteSnapshot}><IconDelete /> {$i18n.core.delete}</button>
 	</div>
 </Popover>
 

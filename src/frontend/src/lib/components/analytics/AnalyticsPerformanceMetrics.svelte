@@ -17,6 +17,6 @@
 	let metrics: AnalyticsWebVitalsPageMetrics = $derived(page ?? performanceMetrics.overall);
 </script>
 
-<AnalyticsPerformanceMetricsFilter bind:page {performanceMetrics} />
+<AnalyticsPerformanceMetricsFilter {performanceMetrics} bind:page />
 
 <AnalyticsPerformanceMetricsPage {metrics} />

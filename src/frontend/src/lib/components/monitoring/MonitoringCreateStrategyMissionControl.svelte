@@ -16,7 +16,7 @@
 	let { missionControl, onyes, onno }: Props = $props();
 </script>
 
-<MonitoringStepYesNo {onyes} {onno}>
+<MonitoringStepYesNo {onno} {onyes}>
 	<h2>{$i18n.monitoring.mission_control_strategy}</h2>
 
 	{#if missionControl.monitored && nonNullish(missionControl.strategy)}

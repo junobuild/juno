@@ -25,10 +25,10 @@
 		<SatelliteEditName {satellite} />
 
 		<SegmentDetach
-			segment="satellite"
-			segmentId={satellite.satellite_id}
 			{monitoringEnabled}
 			ondetach={close}
+			segment="satellite"
+			segmentId={satellite.satellite_id}
 		/>
 	{/snippet}
 </SegmentActions>

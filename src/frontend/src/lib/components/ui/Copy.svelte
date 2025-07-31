@@ -29,11 +29,11 @@
 </script>
 
 <button
-	onclick={copyToClipboard}
-	aria-label={actionLabel}
-	title={actionLabel}
 	class:square={variant === 'square'}
 	class:text={variant === 'text'}
+	aria-label={actionLabel}
+	onclick={copyToClipboard}
+	title={actionLabel}
 >
 	<IconCopy />
 </button>

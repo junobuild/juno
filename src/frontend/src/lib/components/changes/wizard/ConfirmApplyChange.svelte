@@ -59,7 +59,7 @@
 	<ChangeOptions bind:takeSnapshot bind:clearProposalAssets />
 
 	<div class="toolbar">
-		<button type="button" onclick={onclose}>{$i18n.core.cancel}</button>
+		<button onclick={onclose} type="button">{$i18n.core.cancel}</button>
 		<button type="submit">{$i18n.core.apply}</button>
 	</div>
 </form>

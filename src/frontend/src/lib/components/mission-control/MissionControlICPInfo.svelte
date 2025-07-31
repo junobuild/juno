@@ -23,7 +23,7 @@
 
 <p>
 	{$i18n.wallet.transfer_icp_info}
-	<ExternalLink underline href="https://juno.build/docs/miscellaneous/wallet"
+	<ExternalLink href="https://juno.build/docs/miscellaneous/wallet" underline
 		>documentation</ExternalLink
 	>.
 </p>

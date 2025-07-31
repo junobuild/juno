@@ -42,10 +42,10 @@
 	};
 </script>
 
-<button onclick={() => (visible = true)} class="menu"><IconLink /> {$i18n.satellites.attach}</button
+<button class="menu" onclick={() => (visible = true)}><IconLink /> {$i18n.satellites.attach}</button
 >
 
-<CanisterAttach attach={onSuccess} bind:visible setFn={setSatellite}>
+<CanisterAttach attach={onSuccess} setFn={setSatellite} bind:visible>
 	{#snippet title()}
 		{$i18n.satellites.attach}
 	{/snippet}

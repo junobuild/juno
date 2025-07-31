@@ -47,7 +47,7 @@
 	};
 </script>
 
-<Popover bind:visible center={true} backdrop="dark">
+<Popover backdrop="dark" center={true} bind:visible>
 	<form class="content" onsubmit={onSubmit}>
 		<h2>{$i18n.canisters.delete_snapshot}</h2>
 
@@ -63,11 +63,11 @@
 			])}
 		</p>
 
-		<button type="button" onclick={() => (visible = false)} disabled={$isBusy}>
+		<button disabled={$isBusy} onclick={() => (visible = false)} type="button">
 			{$i18n.core.no}
 		</button>
 
-		<button type="submit" disabled={$isBusy}>
+		<button disabled={$isBusy} type="submit">
 			{$i18n.core.yes}
 		</button>
 	</form>

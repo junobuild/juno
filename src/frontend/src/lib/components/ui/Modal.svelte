@@ -39,10 +39,10 @@
 {#if visible}
 	<div
 		class="modal"
-		out:fade
-		role="dialog"
-		aria-labelledby="modalTitle"
 		aria-describedby="modalContent"
+		aria-labelledby="modalTitle"
+		role="dialog"
+		out:fade
 	>
 		<div
 			class="backdrop"
@@ -51,11 +51,11 @@
 			role="button"
 			tabindex="-1"
 		></div>
-		<div transition:scale={{ delay: 25, duration: 150, easing: quintOut }} class="wrapper flex">
+		<div class="wrapper flex" transition:scale={{ delay: 25, duration: 150, easing: quintOut }}>
 			<div class="toolbar">
 				{#if nonNullish(onback)}
 					<div class="start">
-						<ButtonIcon onclick={onback} disabled={$isBusy}>
+						<ButtonIcon disabled={$isBusy} onclick={onback}>
 							{#snippet icon()}
 								<IconBack size="16px" />
 							{/snippet}
@@ -64,12 +64,12 @@
 					</div>
 				{/if}
 
-				<button onclick={onClose} aria-label={$i18n.core.close} disabled={$isBusy}
+				<button aria-label={$i18n.core.close} disabled={$isBusy} onclick={onClose}
 					><IconClose /></button
 				>
 			</div>
 
-			<div class="content" id="modalContent">
+			<div id="modalContent" class="content">
 				{@render children()}
 			</div>
 		</div>

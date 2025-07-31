@@ -34,6 +34,6 @@
 	]);
 </script>
 
-<AnalyticsTable {events} display="percent">
+<AnalyticsTable display="percent" {events}>
 	{$i18n.analytics.devices}
 </AnalyticsTable>

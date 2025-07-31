@@ -50,8 +50,8 @@
 </p>
 
 <div class="toolbar">
-	<button type="button" onclick={onclose}>{$i18n.core.cancel}</button>
-	<button type="button" onclick={oncontinue}>{$i18n.core.continue}</button>
+	<button onclick={onclose} type="button">{$i18n.core.cancel}</button>
+	<button onclick={oncontinue} type="button">{$i18n.core.continue}</button>
 </div>
 
 <style lang="scss">

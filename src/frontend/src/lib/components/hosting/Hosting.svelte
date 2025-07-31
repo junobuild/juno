@@ -72,18 +72,18 @@
 		</thead>
 		<tbody>
 			<tr>
-				<CustomDomain url={satelliteUrl(satelliteId)} ariaLabel={$i18n.hosting.default_domain} />
+				<CustomDomain ariaLabel={$i18n.hosting.default_domain} url={satelliteUrl(satelliteId)} />
 			</tr>
 
 			{#each $sortedSatelliteCustomDomains as [customDomainUrl, customDomain] (customDomainUrl)}
 				<tr>
 					<CustomDomain
+						ariaLabel={$i18n.hosting.custom_domain}
+						{config}
+						customDomain={[customDomainUrl, customDomain]}
+						{satellite}
 						type="custom"
 						url={`https://${customDomainUrl}`}
-						customDomain={[customDomainUrl, customDomain]}
-						{config}
-						ariaLabel={$i18n.hosting.custom_domain}
-						{satellite}
 						on:junoDisplayInfo={onDisplayInfo}
 					/>
 				</tr>
@@ -93,7 +93,7 @@
 </div>
 
 <div class="footer">
-	<AddCustomDomain {satellite} {config} />
+	<AddCustomDomain {config} {satellite} />
 
 	<HostingCount {satellite} />
 </div>

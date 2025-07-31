@@ -29,7 +29,7 @@
 	};
 </script>
 
-<MonitoringStepBackContinue {onback} oncontinue={onSelect} grid={false}>
+<MonitoringStepBackContinue grid={false} {onback} oncontinue={onSelect}>
 	{#snippet header()}
 		<h2>{$i18n.monitoring.select_auto_refill_strategy}</h2>
 
@@ -40,7 +40,7 @@
 
 	<div class="options">
 		<label class="radio-group">
-			<input type="radio" bind:group={strategy} name="strategy" value="basic" />
+			<input name="strategy" type="radio" value="basic" bind:group={strategy} />
 			<span class="text">
 				<span>{$i18n.monitoring.basic}</span>
 				<span class="description">{$i18n.monitoring.basic_description}</span>
@@ -49,7 +49,7 @@
 
 		{#if nonNullish(defaultStrategy)}
 			<label class="radio-group">
-				<input type="radio" bind:group={strategy} name="strategy" value="default" />
+				<input name="strategy" type="radio" value="default" bind:group={strategy} />
 				<span class="text">
 					<span>{$i18n.monitoring.default}</span>
 					<span class="description">{$i18n.monitoring.default_description}</span>
@@ -58,7 +58,7 @@
 		{/if}
 
 		<label class="radio-group">
-			<input type="radio" bind:group={strategy} name="strategy" value="custom" />
+			<input name="strategy" type="radio" value="custom" bind:group={strategy} />
 			<span class="text">
 				<span>{$i18n.monitoring.custom}</span>
 				<span class="description">{$i18n.monitoring.custom_description}</span>

@@ -32,7 +32,7 @@ import {
 } from '@junobuild/errors';
 import { readFileSync } from 'node:fs';
 import { join } from 'node:path';
-import { afterAll, beforeAll, beforeEach, describe, expect, inject } from 'vitest';
+import { inject } from 'vitest';
 import { mockListRules } from '../../../mocks/list.mocks';
 import { mockBlob, mockHtml } from '../../../mocks/storage.mocks';
 import { assertCertification } from '../../../utils/certification-tests.utils';

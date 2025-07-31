@@ -106,11 +106,11 @@
 							<td
 								><SnapshotActions
 									ondelete={openDeletePopover}
-									onrestore={openRestoreModal}
 									onreplace={openCreateModal}
+									onrestore={openRestoreModal}
 								/></td
 							>
-							<td><Identifier small={false} identifier={`0x${encodeSnapshotId(snapshot.id)}`} /></td
+							<td><Identifier identifier={`0x${encodeSnapshotId(snapshot.id)}`} small={false} /></td
 							>
 							<td>{formatBytes(Number(snapshot.total_size))}</td>
 							<td>{formatToDate(snapshot.taken_at_timestamp)}</td>
@@ -137,7 +137,7 @@
 	</div>
 
 	{#if !hasExistingSnapshots && $snapshotStore !== undefined}
-		<button in:fade onclick={openCreateModal}>{$i18n.core.create}</button>
+		<button onclick={openCreateModal} in:fade>{$i18n.core.create}</button>
 	{/if}
 
 	<SnapshotDelete

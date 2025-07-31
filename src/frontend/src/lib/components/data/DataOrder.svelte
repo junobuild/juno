@@ -43,29 +43,29 @@
 	<p class="category">{$i18n.sort.sort_by_field}</p>
 
 	<label>
-		<input type="radio" bind:group={field} name="field" value="keys" />
+		<input name="field" type="radio" value="keys" bind:group={field} />
 		<span>{$i18n.sort.keys}</span>
 	</label>
 
 	<label>
-		<input type="radio" bind:group={field} name="field" value="created_at" />
+		<input name="field" type="radio" value="created_at" bind:group={field} />
 		<span>{$i18n.sort.created_at}</span>
 	</label>
 
 	<label>
-		<input type="radio" bind:group={field} name="field" value="updated_at" />
+		<input name="field" type="radio" value="updated_at" bind:group={field} />
 		<span>{$i18n.sort.updated_at}</span>
 	</label>
 
 	<p class="category sort">{$i18n.sort.sort_results}</p>
 
 	<label>
-		<input type="radio" bind:group={desc} name="desc" value={false} />
+		<input name="desc" type="radio" value={false} bind:group={desc} />
 		<span>{$i18n.sort.ascending}</span>
 	</label>
 
 	<label>
-		<input type="radio" bind:group={desc} name="desc" value={true} />
+		<input name="desc" type="radio" value={true} bind:group={desc} />
 		<span>{$i18n.sort.descending}</span>
 	</label>
 </PopoverApply>

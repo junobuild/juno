@@ -1,4 +1,4 @@
-<script module lang="ts">
+<script lang="ts" module>
 	import type { Principal } from '@dfinity/principal';
 	import type { UpgradeCodeParams } from '@junobuild/admin';
 	import type { Snippet } from 'svelte';
@@ -85,21 +85,21 @@
 		<p>{$i18n.canisters.download_in_progress}</p>
 	</SpinnerModal>
 {:else if step === 'in_progress'}
-	<ProgressUpgradeVersion {segment} {progress} {takeSnapshot} />
+	<ProgressUpgradeVersion {progress} {segment} {takeSnapshot} />
 {:else if step === 'review'}
 	<ReviewUpgradeVersion
-		{wasm}
-		{segment}
-		{upgrade}
-		{reloadVersion}
+		{canisterId}
 		nextSteps={(next) => (step = next)}
 		{onProgress}
 		{onclose}
+		{reloadVersion}
+		{segment}
 		{takeSnapshot}
-		{canisterId}
+		{upgrade}
+		{wasm}
 	/>
 {:else if step === 'confirm'}
-	<ConfirmUpgradeVersion {segment} {onclose} oncontinue={() => (step = 'init')} />
+	<ConfirmUpgradeVersion {onclose} oncontinue={() => (step = 'init')} {segment} />
 {:else}
 	{@render intro()}
 {/if}

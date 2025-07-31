@@ -44,7 +44,7 @@
 
 <CollectionSelection {includeSysCollections} onedit={selectionCollection}>
 	{#snippet includeSysCollectionsAction()}
-		<button class="menu" type="button" onclick={toggleIncludeSysCollections}>
+		<button class="menu" onclick={toggleIncludeSysCollections} type="button">
 			{#if includeSysCollections}
 				<IconVisibilityOff size="20px" /> {$i18n.collections.hide_system_collections}
 			{:else}

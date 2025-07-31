@@ -5,7 +5,7 @@ import { Ed25519KeyIdentity } from '@dfinity/identity';
 import { PocketIc, type Actor } from '@dfinity/pic';
 import { assertNonNullish, fromNullable, toNullable } from '@dfinity/utils';
 import { JUNO_STORAGE_ERROR_RESERVED_ASSET } from '@junobuild/errors';
-import { beforeAll, describe, expect, inject } from 'vitest';
+import { inject } from 'vitest';
 import { uploadFile } from '../../utils/cdn-tests.utils';
 import { deploySegments } from '../../utils/console-tests.utils';
 import { CONSOLE_WASM_PATH, WASM_VERSIONS } from '../../utils/setup-tests.utils';

@@ -48,13 +48,13 @@
 
 {@render info?.()}
 
-<div class="tabs" use:onIntersection onjunoIntersecting={onLayoutTitleIntersection}>
+<div class="tabs" onjunoIntersecting={onLayoutTitleIntersection} use:onIntersection>
 	{#each $store.tabs as { labelKey, id }, i (id)}
 		{@const [group, key] = labelKey.split('.')}
 		{@const obj = keyOf({ obj: $i18n, key: group })}
 		{@const text = keyOf({ obj, key })}
 
-		<a href={tabHref(i !== 0 ? text : undefined)} class="tab" class:selected={$store.tabId === id}
+		<a class="tab" class:selected={$store.tabId === id} href={tabHref(i !== 0 ? text : undefined)}
 			>{text}</a
 		>
 	{/each}

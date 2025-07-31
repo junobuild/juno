@@ -17,7 +17,7 @@
 		<tbody>
 			<tr>
 				<td
-					><ExternalLink href="https://internetcomputer.org/internet-identity" arrow={false}
+					><ExternalLink arrow={false} href="https://internetcomputer.org/internet-identity"
 						><span class="icon"><IconIc /></span> Internet Identity</ExternalLink
 					></td
 				>
@@ -26,7 +26,7 @@
 
 			<tr>
 				<td
-					><ExternalLink href="https://nfid.one/" arrow={false}
+					><ExternalLink arrow={false} href="https://nfid.one/"
 						><span class="icon"><IconNFID /></span> NFID</ExternalLink
 					></td
 				>

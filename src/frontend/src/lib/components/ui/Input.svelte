@@ -184,24 +184,24 @@
 <div class="input-field" class:with-footer={nonNullish(footer)}>
 	<input
 		bind:this={inputElement}
-		data-tid={testId}
-		type={currency ? 'text' : inputType}
-		{required}
-		{spellcheck}
-		{name}
 		id={name}
-		step={innerStep}
-		{disabled}
-		value={currency ? currencyValue : value}
-		minlength={minLength}
-		{placeholder}
-		{max}
+		{name}
 		autocomplete={innerAutocomplete}
+		data-1p-ignore={ignore1Password}
+		data-tid={testId}
+		{disabled}
+		{max}
+		minlength={minLength}
 		onblur={() => onblur?.()}
 		onfocus={() => onfocus?.()}
 		oninput={handleInput}
 		onkeydown={handleKeyDown}
-		data-1p-ignore={ignore1Password}
+		{placeholder}
+		{required}
+		{spellcheck}
+		step={innerStep}
+		type={currency ? 'text' : inputType}
+		value={currency ? currencyValue : value}
 	/>
 
 	{#if nonNullish(end)}

@@ -23,7 +23,7 @@
 	</div>
 
 	<div class="toolbar">
-		<button type="button" onclick={onback} disabled={$isBusy}>
+		<button disabled={$isBusy} onclick={onback} type="button">
 			{$i18n.core.back}
 		</button>
 

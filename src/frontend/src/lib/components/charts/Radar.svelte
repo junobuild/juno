@@ -66,10 +66,10 @@
 		<path
 			class="path-line"
 			d={path(xVals)}
-			{stroke}
-			stroke-width={strokeWidth}
 			{fill}
 			fill-opacity={fillOpacity}
+			{stroke}
+			stroke-width={strokeWidth}
 		></path>
 
 		<!-- Plot each dots -->
@@ -78,8 +78,8 @@
 			<circle
 				cx={circleR * Math.cos(thisAngleSlice)}
 				cy={circleR * Math.sin(thisAngleSlice)}
-				{r}
 				fill={circleFill}
+				{r}
 				stroke={circleStroke}
 				stroke-width={circleStrokeWidth}
 			></circle>

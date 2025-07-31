@@ -12,7 +12,7 @@
 	let { close }: Props = $props();
 </script>
 
-<NotificationLink href={upgradeDockLink($satelliteStore?.satellite_id)} {close}>
+<NotificationLink {close} href={upgradeDockLink($satelliteStore?.satellite_id)}>
 	{#snippet icon()}
 		<IconUpgradeDock size="32px" />
 	{/snippet}

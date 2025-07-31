@@ -11,7 +11,7 @@ import {
 	JUNO_AUTH_ERROR_NOT_WRITE_CONTROLLER,
 	JUNO_STORAGE_ERROR_UPLOAD_PATH_COLLECTION_PREFIX
 } from '@junobuild/errors';
-import { beforeAll, describe, expect, inject } from 'vitest';
+import { inject } from 'vitest';
 import { mockListProposalsParams } from '../../../mocks/list.mocks';
 import {
 	testCdnConfig,

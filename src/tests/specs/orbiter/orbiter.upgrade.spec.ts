@@ -24,7 +24,7 @@ import { PocketIc, type Actor } from '@dfinity/pic';
 import type { Principal } from '@dfinity/principal';
 import { assertNonNullish, fromNullable, toNullable } from '@dfinity/utils';
 import { nanoid } from 'nanoid';
-import { afterEach, beforeEach, describe, expect, inject } from 'vitest';
+import { inject } from 'vitest';
 import { pageViewMock, satelliteIdMock, trackEventMock } from '../../mocks/orbiter.mocks';
 import { tick } from '../../utils/pic-tests.utils';
 import {

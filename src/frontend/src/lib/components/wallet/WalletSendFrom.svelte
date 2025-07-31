@@ -30,7 +30,7 @@
 				{$i18n.wallet.wallet_id}
 			{/snippet}
 			<p class="identifier">
-				<Identifier shorten={false} identifier={missionControlId.toText()} />
+				<Identifier identifier={missionControlId.toText()} shorten={false} />
 			</p>
 		</Value>
 

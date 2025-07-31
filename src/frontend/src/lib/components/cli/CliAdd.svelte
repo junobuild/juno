@@ -190,12 +190,12 @@
 
 					<input
 						id="profile"
-						type="text"
-						placeholder={$i18n.cli.profile_placeholder}
 						name="profile"
-						bind:value={profile}
 						autocomplete="off"
 						data-1p-ignore
+						placeholder={$i18n.cli.profile_placeholder}
+						type="text"
+						bind:value={profile}
 					/>
 				</div>
 			</Collapsible>

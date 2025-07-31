@@ -12,13 +12,13 @@
 	const close = () => (visible = false);
 </script>
 
-<Popover bind:visible center={true} backdrop="dark">
+<Popover backdrop="dark" center={true} bind:visible>
 	<div class="content">
 		<p>{$i18n.controllers.no_delete}</p>
 
 		<p>{$i18n.controllers.more_delete}</p>
 
-		<button type="button" onclick={stopPropagation(close)}>
+		<button onclick={stopPropagation(close)} type="button">
 			{$i18n.core.ok}
 		</button>
 	</div>

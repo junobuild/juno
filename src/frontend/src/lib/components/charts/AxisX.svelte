@@ -63,30 +63,30 @@
 	{#each tickVals as tick, i (tick)}
 		<g class="tick tick-{i}" transform="translate({$xScale(tick)},{Math.max(...$yRange)})">
 			{#if gridlines !== false}
-				<line class="gridline" y1={$height * -1} y2="0" x1="0" x2="0" />
+				<line class="gridline" x1="0" x2="0" y1={$height * -1} y2="0" />
 			{/if}
 			{#if tickMarks === true}
 				<line
 					class="tick-mark"
-					y1={0}
-					y2={6}
 					x1={isBandwidth ? $xScale.bandwidth() / 2 : 0}
 					x2={isBandwidth ? $xScale.bandwidth() / 2 : 0}
+					y1={0}
+					y2={6}
 				/>
 			{/if}
 			{#if axisWithText}
 				<text
-					x={isBandwidth ? $xScale.bandwidth() / 2 + xTick : xTick}
-					y={yTick}
 					dx=""
 					dy=""
-					text-anchor={textAnchor(i)}>{formatTick(tick)}</text
+					text-anchor={textAnchor(i)}
+					x={isBandwidth ? $xScale.bandwidth() / 2 + xTick : xTick}
+					y={yTick}>{formatTick(tick)}</text
 				>
 			{/if}
 		</g>
 	{/each}
 	{#if baseline === true}
-		<line class="baseline" y1={$height + 0.5} y2={$height + 0.5} x1="0" x2={$width} />
+		<line class="baseline" x1="0" x2={$width} y1={$height + 0.5} y2={$height + 0.5} />
 	{/if}
 </g>
 

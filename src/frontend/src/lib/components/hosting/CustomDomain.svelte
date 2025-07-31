@@ -110,16 +110,16 @@
 <td>
 	{#if type === 'custom' && nonNullish(satellite)}
 		<div class="actions">
-			<ButtonTableAction icon="info" ariaLabel={$i18n.hosting.info} onaction={displayInfo} />
+			<ButtonTableAction ariaLabel={$i18n.hosting.info} icon="info" onaction={displayInfo} />
 
-			<CustomDomainActions {satellite} {customDomain} {config} {displayState} />
+			<CustomDomainActions {config} {customDomain} {displayState} {satellite} />
 		</div>
 	{/if}
 </td>
 
 <td colspan={type === 'default' ? 2 : undefined}>
 	<div class="domain">
-		<ExternalLink href={url} {ariaLabel}>{host}</ExternalLink>
+		<ExternalLink {ariaLabel} href={url}>{host}</ExternalLink>
 		<span class="type">{type}</span>
 	</div>
 </td>

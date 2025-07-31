@@ -19,8 +19,8 @@
 {#if nonNullish($missionControlVersion) && $missionControlVersion.warning}
 	<UpgradeSegment
 		segmentLabel={$i18n.mission_control.title}
-		version={$missionControlVersion}
 		source="juno"
 		{startUpgrade}
+		version={$missionControlVersion}
 	/>
 {/if}

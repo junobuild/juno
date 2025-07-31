@@ -28,7 +28,7 @@
 </script>
 
 <div class="queries">
-	<CanisterValue {sync} rows={4}>
+	<CanisterValue rows={4} {sync}>
 		{#snippet label()}
 			{$i18n.canisters.queries}
 		{/snippet}

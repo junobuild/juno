@@ -16,7 +16,7 @@
 	in:slide={{ delay: 0, duration: 150, easing: quintOut, axis: 'y' }}
 	out:slide={{ delay: 0, duration: 100, easing: circOut, axis: 'y' }}
 >
-	<QRCode {value} {ariaLabel} />
+	<QRCode {ariaLabel} {value} />
 </div>
 
 <style lang="scss">

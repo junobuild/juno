@@ -40,7 +40,7 @@
 	<BannerSkylab />
 {/snippet}
 
-<Header {hide} banner={isSkylab() ? banner : undefined}>
+<Header banner={isSkylab() ? banner : undefined} {hide}>
 	<div class="start">
 		{#if start === 'menu'}
 			<ButtonMenu />

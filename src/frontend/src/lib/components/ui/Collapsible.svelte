@@ -90,41 +90,41 @@
 <div class="collapsible">
 	<div
 		id={nonNullish(id) ? `heading${id}` : undefined}
-		role="button"
 		class="header"
 		onclick={toggle}
 		onkeypress={($event) => handleKeyPress({ $event, callback: toggle })}
+		role="button"
 		tabindex="-1"
 	>
 		<button
-			type="button"
 			class="square"
 			class:expanded
-			aria-expanded={expanded}
 			aria-controls={id}
-			title={expanded ? $i18n.core.collapse : $i18n.core.expand}
+			aria-expanded={expanded}
 			tabindex="-1"
+			title={expanded ? $i18n.core.collapse : $i18n.core.expand}
+			type="button"
 		>
 			{#if expanded}
-				<span in:fade class="icon"><IconUnfoldLess size="16px" /></span>
+				<span class="icon" in:fade><IconUnfoldLess size="16px" /></span>
 			{:else}
-				<span in:fade class="icon"><IconUnfoldMore size="16px" /></span>
+				<span class="icon" in:fade><IconUnfoldMore size="16px" /></span>
 			{/if}
 		</button>
 		{@render header()}
 	</div>
 	<div
-		role="definition"
+		style={`${maxHeightStyle(maxHeight)}${overflyYStyle(maxHeight)}`}
 		class="wrapper"
 		class:expanded
-		style={`${maxHeightStyle(maxHeight)}${overflyYStyle(maxHeight)}`}
+		role="definition"
 	>
 		<div
+			bind:this={container}
 			{id}
-			aria-labelledby={nonNullish(id) ? `heading${id}` : undefined}
 			class="content"
 			class:wrapHeight
-			bind:this={container}
+			aria-labelledby={nonNullish(id) ? `heading${id}` : undefined}
 		>
 			{@render children()}
 		</div>

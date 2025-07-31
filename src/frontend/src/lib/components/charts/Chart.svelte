@@ -34,16 +34,16 @@
 </script>
 
 <LayerCake
+	data={chartsData}
 	padding={padding ?? { top: 32, right: 0, bottom: 32, left: 0 }}
 	x="x"
 	y="y"
-	yNice={4}
 	yDomain={[0, null]}
-	data={chartsData}
+	yNice={4}
 >
 	<Svg>
-		<AxisX {formatTick} {ticks} {axisWithText} />
-		<AxisY ticks={4} {axisWithText} />
+		<AxisX {axisWithText} {formatTick} {ticks} />
+		<AxisY {axisWithText} ticks={4} />
 		<Line />
 		<Area />
 	</Svg>

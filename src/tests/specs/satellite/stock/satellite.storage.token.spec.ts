@@ -8,7 +8,7 @@ import { Ed25519KeyIdentity } from '@dfinity/identity';
 import { type Actor, PocketIc } from '@dfinity/pic';
 import { toNullable } from '@dfinity/utils';
 import { nanoid } from 'nanoid';
-import { afterAll, beforeAll, describe, expect, inject } from 'vitest';
+import { inject } from 'vitest';
 import { uploadAsset } from '../../../utils/satellite-storage-tests.utils';
 import { deleteDefaultIndexHTML } from '../../../utils/satellite-tests.utils';
 import { controllersInitArgs, SATELLITE_WASM_PATH } from '../../../utils/setup-tests.utils';

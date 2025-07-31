@@ -96,7 +96,7 @@
 {:else}
 	<form onsubmit={onSubmit}>
 		<div class="columns">
-			<InputIcp bind:amount={icp} {balance} fee={TOP_UP_NETWORK_FEES} />
+			<InputIcp {balance} fee={TOP_UP_NETWORK_FEES} bind:amount={icp} />
 
 			<GridArrow small />
 
@@ -113,7 +113,7 @@
 			</div>
 		</div>
 
-		<button type="submit" disabled={isNullish($missionControlIdDerived) || isNullish(cycles)}
+		<button disabled={isNullish($missionControlIdDerived) || isNullish(cycles)} type="submit"
 			>{$i18n.core.review}</button
 		>
 	</form>

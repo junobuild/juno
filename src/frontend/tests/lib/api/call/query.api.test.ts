@@ -138,7 +138,7 @@ describe('query.api', () => {
 
 		expect(onLoad).not.toHaveBeenCalled();
 		expect(onError).toHaveBeenCalledTimes(2);
-		expect(onCertifiedError).toHaveBeenCalledTimes(1);
+		expect(onCertifiedError).toHaveBeenCalledOnce();
 		expect(onError).toHaveBeenCalledWith({
 			certified: false,
 			error: 'test',
@@ -180,7 +180,7 @@ describe('query.api', () => {
 
 		expect(queryDone).toBeTruthy();
 		expect(request).toHaveBeenCalledTimes(2);
-		expect(onLoad).toHaveBeenCalledTimes(1);
+		expect(onLoad).toHaveBeenCalledOnce();
 		expect(onError).not.toHaveBeenCalled();
 	});
 

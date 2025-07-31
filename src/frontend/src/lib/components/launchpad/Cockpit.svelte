@@ -37,10 +37,10 @@
 
 <div class="analytics">
 	<LaunchpadLink
-		size="small"
-		href="/analytics"
 		ariaLabel={`${$i18n.core.open}: ${$i18n.analytics.title}`}
 		highlight={isNullish($orbiterStore)}
+		href="/analytics"
+		size="small"
 	>
 		<p>
 			<span class="link-icon"><IconAnalytics size="24px" /></span>
@@ -69,10 +69,10 @@
 
 <div class="monitoring">
 	<LaunchpadLink
-		size="small"
-		href="/monitoring"
 		ariaLabel={`${$i18n.core.open}: ${$i18n.monitoring.title}`}
 		highlight={$missionControlSettingsLoaded && $missionControlNotMonitored}
+		href="/monitoring"
+		size="small"
 	>
 		<p>
 			<span class="link-icon"><IconTelescope /></span>
@@ -86,9 +86,9 @@
 
 <div class="mission-control">
 	<LaunchpadLink
-		size="small"
-		href="/mission-control"
 		ariaLabel={`${$i18n.core.open}: ${$i18n.mission_control.title}`}
+		href="/mission-control"
+		size="small"
 	>
 		<p>
 			<span class="link-icon"><IconMissionControl /></span>
@@ -111,9 +111,9 @@
 
 <div class="wallet">
 	<LaunchpadLink
-		size="small"
-		href="/wallet"
 		ariaLabel={`${$i18n.core.open}: ${$i18n.wallet.title}`}
+		href="/wallet"
+		size="small"
 	>
 		<p>
 			<span class="link-icon"><IconWallet /></span>

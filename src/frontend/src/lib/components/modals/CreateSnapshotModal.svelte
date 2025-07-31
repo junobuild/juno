@@ -85,12 +85,12 @@
 			<button onclick={onclose}>{$i18n.core.close}</button>
 		</div>
 	{:else if step === 'in_progress'}
-		<ProgressSnapshot segment={segment.segment} {progress} snapshotAction="create" />
+		<ProgressSnapshot {progress} segment={segment.segment} snapshotAction="create" />
 	{:else}
 		<h2>{$i18n.canisters.snapshot}</h2>
 
 		{#if warnExistingSnapshot}
-			<div in:fade class="warning">
+			<div class="warning" in:fade>
 				<Warning>{$i18n.canisters.create_snapshot_warning}</Warning>
 			</div>
 		{/if}
@@ -102,7 +102,7 @@
 		</p>
 
 		<form class="content" onsubmit={handleSubmit}>
-			<button type="submit" disabled={$isBusy}>
+			<button disabled={$isBusy} type="submit">
 				{$i18n.canisters.create_a_snapshot}
 			</button>
 		</form>

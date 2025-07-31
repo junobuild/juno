@@ -12,7 +12,7 @@ import {
 	JUNO_AUTH_ERROR_INVALID_ORIGIN,
 	JUNO_AUTH_ERROR_NOT_ADMIN_CONTROLLER
 } from '@junobuild/errors';
-import { expect, inject } from 'vitest';
+import { inject } from 'vitest';
 import { deleteDefaultIndexHTML } from '../../../utils/satellite-tests.utils';
 import { controllersInitArgs, SATELLITE_WASM_PATH } from '../../../utils/setup-tests.utils';
 

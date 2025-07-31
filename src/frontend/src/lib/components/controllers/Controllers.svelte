@@ -78,8 +78,8 @@
 					<td class="actions">
 						{#if canEdit(controllerId)}
 							<ButtonTableAction
-								icon="delete"
 								ariaLabel={$i18n.controllers.delete}
+								icon="delete"
 								onaction={() => {
 									selectedController = [controllerId, controller];
 									visibleDelete = true;
@@ -87,8 +87,8 @@
 							/>
 						{:else}
 							<ButtonTableAction
-								icon="info"
 								ariaLabel={$i18n.controllers.info}
+								icon="info"
 								onaction={() => (visibleInfo = true)}
 							/>
 						{/if}
@@ -121,7 +121,7 @@
 
 <ControllerAdd {add} {load} {segment} />
 
-<ControllerDelete bind:selectedController bind:visible={visibleDelete} {load} {remove} />
+<ControllerDelete {load} {remove} bind:selectedController bind:visible={visibleDelete} />
 
 <ControllerInfo bind:visible={visibleInfo} />
 

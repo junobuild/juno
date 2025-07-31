@@ -30,15 +30,15 @@
 	</ButtonIcon> <span>{label}</span>
 {/if}
 
-<Popover bind:visible anchor={button}>
+<Popover anchor={button} bind:visible>
 	<div class="container">
 		<a
+			class="menu"
+			aria-haspopup="menu"
 			aria-label={$i18n.satellites.go_launchpad}
 			href="/"
-			class="menu"
-			role="menuitem"
-			aria-haspopup="menu"
 			rel="external noopener norefferer"
+			role="menuitem"
 		>
 			<span>{$i18n.satellites.see_all_satellites}</span>
 		</a>
@@ -50,12 +50,12 @@
 				{@const satName = satelliteName(satellite)}
 
 				<a
+					class="menu"
+					aria-haspopup="menu"
 					aria-label={`To satellite ${satName}`}
 					href={overviewLink(satellite.satellite_id)}
-					class="menu"
-					role="menuitem"
-					aria-haspopup="menu"
 					rel="external noopener norefferer"
+					role="menuitem"
 				>
 					<span>{satName}</span>
 				</a>

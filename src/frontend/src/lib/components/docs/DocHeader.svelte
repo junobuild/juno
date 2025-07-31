@@ -87,7 +87,7 @@
 		{key ?? ''}
 
 		{#snippet actions()}
-			<DocUpload onfileuploaded={reloadRules} {doc} docKey={key}>
+			<DocUpload {doc} docKey={key} onfileuploaded={reloadRules}>
 				{#snippet action()}
 					{$i18n.document.replace_document}
 				{/snippet}
@@ -106,7 +106,7 @@
 				{/snippet}
 			</DocUpload>
 
-			<button class="menu" type="button" onclick={download}
+			<button class="menu" onclick={download} type="button"
 				><IconDownload size="20px" /> {$i18n.document.download_document}</button
 			>
 

@@ -91,9 +91,9 @@
 				<Input
 					name="cycles"
 					inputType="icp"
+					placeholder={$i18n.canisters.amount_cycles}
 					required
 					bind:value={tCycles}
-					placeholder={$i18n.canisters.amount_cycles}
 				>
 					{#snippet footer()}
 						<span class="remaining-cycles">
@@ -133,7 +133,7 @@
 		</div>
 	</div>
 
-	<button type="submit" class="submit" disabled={$isBusy || !validConfirm}>
+	<button class="submit" disabled={$isBusy || !validConfirm} type="submit">
 		{$i18n.core.submit}
 	</button>
 </form>

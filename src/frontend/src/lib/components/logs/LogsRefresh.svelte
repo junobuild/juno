@@ -69,20 +69,20 @@
 </script>
 
 <button
+	bind:this={button}
 	class="icon"
 	aria-label={$i18n.core.more}
-	type="button"
 	onclick={() => (visible = true)}
-	bind:this={button}><IconMore size="20px" /></button
+	type="button"><IconMore size="20px" /></button
 >
 
-<Popover bind:visible anchor={button} direction="ltr">
+<Popover anchor={button} direction="ltr" bind:visible>
 	<div class="container">
-		<button class="menu" type="button" onclick={reload}
+		<button class="menu" onclick={reload} type="button"
 			><IconAutoRenew /> {$i18n.core.refresh}</button
 		>
 
-		<button class="menu" type="button" onclick={onToggle}
+		<button class="menu" onclick={onToggle} type="button"
 			>{#if observe}<IconTimer /> {$i18n.functions.auto_refresh_enabled}{:else}<IconTimerOff
 					size="20px"
 				/>

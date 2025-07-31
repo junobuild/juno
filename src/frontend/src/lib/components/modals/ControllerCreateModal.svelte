@@ -167,26 +167,26 @@
 		<form class="content" onsubmit={addController}>
 			<div>
 				<label>
-					<input type="radio" bind:group={action} name="action" value="generate" />
+					<input name="action" type="radio" value="generate" bind:group={action} />
 					<span>{$i18n.controllers.generate}</span>
 				</label>
 			</div>
 
 			<label>
-				<input type="radio" bind:group={action} name="action" value="add" />
+				<input name="action" type="radio" value="add" bind:group={action} />
 				<span>{$i18n.controllers.manually}</span>
 			</label>
 
 			<input
-				bind:value={controllerId}
-				aria-label={$i18n.controllers.controller_id_placeholder}
 				name="controller-id"
-				placeholder={$i18n.controllers.controller_id_placeholder}
-				type="text"
-				required={action === 'add'}
-				disabled={action === 'generate'}
+				aria-label={$i18n.controllers.controller_id_placeholder}
 				autocomplete="off"
 				data-1p-ignore
+				disabled={action === 'generate'}
+				placeholder={$i18n.controllers.controller_id_placeholder}
+				required={action === 'add'}
+				type="text"
+				bind:value={controllerId}
 			/>
 
 			<div class="scope">
@@ -203,8 +203,8 @@
 			</div>
 
 			<button
-				type="submit"
 				disabled={action === 'add' && (isNullish(controllerId) || controllerId === '')}
+				type="submit"
 			>
 				{$i18n.core.submit}
 			</button>

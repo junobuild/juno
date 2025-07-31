@@ -41,7 +41,7 @@
 	});
 </script>
 
-<PopoverApply ariaLabel={$i18n.filter.title} onapply={apply} bind:visible {direction}>
+<PopoverApply ariaLabel={$i18n.filter.title} {direction} onapply={apply} bind:visible>
 	{#snippet icon()}
 		<IconFilter size="18px" />
 	{/snippet}
@@ -50,27 +50,27 @@
 		<label for="filter-keys">{key?.label ?? $i18n.filter.filter_keys}</label>
 
 		<input
-			bind:value={matcher}
 			id="filter-keys"
 			name="filter-keys"
-			type="text"
-			placeholder={key?.placeholder ?? $i18n.filter.placeholder_keys}
 			autocomplete="off"
 			data-1p-ignore
+			placeholder={key?.placeholder ?? $i18n.filter.placeholder_keys}
+			type="text"
+			bind:value={matcher}
 		/>
 	{/if}
 
 	{#if ownerFilter}
-		<label for="filter-owner" class="owner">{$i18n.filter.filter_owner}</label>
+		<label class="owner" for="filter-owner">{$i18n.filter.filter_owner}</label>
 
 		<input
-			bind:value={owner}
 			id="filter-owner"
 			name="filter-owner"
-			type="text"
-			placeholder={$i18n.filter.placeholder_owners}
 			autocomplete="off"
 			data-1p-ignore
+			placeholder={$i18n.filter.placeholder_owners}
+			type="text"
+			bind:value={owner}
 		/>
 	{/if}
 </PopoverApply>

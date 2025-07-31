@@ -15,5 +15,5 @@
 </script>
 
 <Modal {onclose}>
-	<UpgradeCdnWizard {satellite} {asset} {onclose} />
+	<UpgradeCdnWizard {asset} {onclose} {satellite} />
 </Modal>

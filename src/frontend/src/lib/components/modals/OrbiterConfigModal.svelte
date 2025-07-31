@@ -205,27 +205,27 @@
 								<CheckboxGroup>
 									<Checkbox>
 										<input
-											type="checkbox"
 											checked={isNullish(features) || features?.page_views === true}
 											onchange={onPageViewsToggle}
+											type="checkbox"
 										/>
 										<span>{$i18n.analytics.page_views}</span>
 									</Checkbox>
 
 									<Checkbox>
 										<input
-											type="checkbox"
 											checked={isNullish(features) || features?.track_events === true}
 											onchange={onTrackEventsToggle}
+											type="checkbox"
 										/>
 										<span>{$i18n.analytics.tracked_events}</span>
 									</Checkbox>
 
 									<Checkbox>
 										<input
-											type="checkbox"
 											checked={features?.performance_metrics === true}
 											onchange={onPerformanceToggle}
+											type="checkbox"
 										/>
 										<span>{$i18n.analytics.web_vitals}</span>
 									</Checkbox>
@@ -236,7 +236,7 @@
 				</div>
 			{/if}
 
-			<button type="submit" disabled={!validConfirm || $isBusy}>
+			<button disabled={!validConfirm || $isBusy} type="submit">
 				{$i18n.core.submit}
 			</button>
 		</form>

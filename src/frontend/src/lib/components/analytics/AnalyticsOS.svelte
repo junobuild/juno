@@ -36,7 +36,7 @@
 </script>
 
 {#if nonNullish(operating_systems)}
-	<AnalyticsTable {events} display="percent">
+	<AnalyticsTable display="percent" {events}>
 		{$i18n.analytics.operating_systems}
 	</AnalyticsTable>
 {/if}

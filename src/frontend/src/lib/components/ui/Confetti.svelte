@@ -10,14 +10,14 @@
 
 <div class={display}>
 	<Confetti
+		amount={200}
+		colorArray={['var(--color-primary)', 'var(--color-secondary)', 'var(--color-tertiary)']}
+		duration={5000}
+		fallDistance="300px"
+		infinite
 		rounded
 		x={[-5, 5]}
 		y={[0, 0.1]}
-		infinite
-		duration={5000}
-		amount={200}
-		fallDistance="300px"
-		colorArray={['var(--color-primary)', 'var(--color-secondary)', 'var(--color-tertiary)']}
 	/>
 </div>
 

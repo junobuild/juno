@@ -14,7 +14,7 @@ import { fromNullable, isNullish, toNullable } from '@dfinity/utils';
 import { JUNO_AUTH_ERROR_CALLER_NOT_ALLOWED } from '@junobuild/errors';
 import { toArray } from '@junobuild/utils';
 import { nanoid } from 'nanoid';
-import { beforeAll, describe, expect, inject } from 'vitest';
+import { inject } from 'vitest';
 import { mockSetRule } from '../../../mocks/collection.mocks';
 import { mockListParams } from '../../../mocks/list.mocks';
 import { uploadAsset } from '../../../utils/satellite-storage-tests.utils';

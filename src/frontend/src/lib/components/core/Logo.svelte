@@ -12,7 +12,7 @@
 	let { color = 'lavender', variant = 'text' }: Props = $props();
 </script>
 
-<a href="/" aria-label={$i18n.core.home}>
+<a aria-label={$i18n.core.home} href="/">
 	{#if variant === 'text'}
 		<span in:blur>
 			<IconJuno {color} />

@@ -41,9 +41,9 @@
 	};
 </script>
 
-<button onclick={() => (visible = true)} class="menu"><IconLink /> {$i18n.analytics.attach}</button>
+<button class="menu" onclick={() => (visible = true)}><IconLink /> {$i18n.analytics.attach}</button>
 
-<CanisterAttach attach={onSuccess} bind:visible setFn={setOrbiter}>
+<CanisterAttach attach={onSuccess} setFn={setOrbiter} bind:visible>
 	{#snippet title()}
 		{$i18n.analytics.attach}
 	{/snippet}

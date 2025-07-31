@@ -59,7 +59,7 @@
 		"emulator": "./scripts/emulator.sh"
 	},
 	"devDependencies": {
-		"@dfinity/eslint-config-oisy-wallet": "^0.1.14",
+		"@dfinity/eslint-config-oisy-wallet": "^0.2.2",
 		"@dfinity/pic": "^0.13.1",
 		"@dfinity/response-verification": "^3.0.3",
 		"@junobuild/cli-tools": "^0.3.0",
@@ -80,7 +80,7 @@
 		"@types/wicg-file-system-access": "^2023.10.6",
 		"autoprefixer": "^10.4.21",
 		"conf": "^14.0.0",
-		"globals": "^15.15.0",
+		"globals": "^16.3.0",
 		"jsdom": "^26.1.0",
 		"pem-file": "^1.0.1",
 		"prettier": "^3.6.2",

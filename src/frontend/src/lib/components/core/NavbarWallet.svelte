@@ -38,7 +38,7 @@
 	{$i18n.wallet.title}
 </ButtonIcon>
 
-<Popover bind:visible anchor={button} direction="rtl">
+<Popover anchor={button} direction="rtl" bind:visible>
 	<div class="container">
 		<div>
 			<Value>
@@ -53,12 +53,12 @@
 		<WalletIds {missionControlId} />
 
 		<div class="actions">
-			<WalletActions {missionControlId} onsend={() => (visible = false)} onreceive={openReceive} />
+			<WalletActions {missionControlId} onreceive={openReceive} onsend={() => (visible = false)} />
 		</div>
 	</div>
 </Popover>
 
-<ReceiveTokens bind:visible={receiveVisible} {missionControlId} />
+<ReceiveTokens {missionControlId} bind:visible={receiveVisible} />
 
 <style lang="scss">
 	@use '../../styles/mixins/overlay';

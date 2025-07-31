@@ -9,7 +9,7 @@ import { Ed25519KeyIdentity } from '@dfinity/identity';
 import { PocketIc, type Actor } from '@dfinity/pic';
 import type { Principal } from '@dfinity/principal';
 import { assertNonNullish, fromNullable } from '@dfinity/utils';
-import { afterEach, beforeEach, describe, expect, inject } from 'vitest';
+import { inject } from 'vitest';
 import { mockScript } from '../../mocks/storage.mocks';
 import {
 	assertAssetServed,

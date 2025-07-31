@@ -1,4 +1,4 @@
-<script module lang="ts">
+<script lang="ts" module>
 	export interface SatellitePickerProps {
 		disabled?: boolean;
 		onChange: (satelliteId: Principal | undefined) => void;
@@ -34,9 +34,9 @@
 	id="satellite"
 	name="satellite"
 	class="big"
-	bind:value={satelliteIdText}
-	onchange={onSelect}
 	{disabled}
+	onchange={onSelect}
+	bind:value={satelliteIdText}
 >
 	<option value={undefined}>{$i18n.analytics.all_satellites}</option>
 

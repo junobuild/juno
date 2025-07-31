@@ -13,8 +13,8 @@
 	let { href, close, icon, badge, children }: Props = $props();
 </script>
 
-<a {href} class="menu" onclick={close}>
-	<Notification {icon} {badge}>
+<a class="menu" {href} onclick={close}>
+	<Notification {badge} {icon}>
 		<span class="text">{@render children()}</span>
 	</Notification>
 </a>

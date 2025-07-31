@@ -74,13 +74,13 @@
 	<WalletActions {missionControlId} onreceive={() => (receiveVisible = true)} />
 
 	<Transactions
-		transactions={$transactions}
 		{disableInfiniteScroll}
 		{missionControlId}
 		{onintersect}
+		transactions={$transactions}
 	/>
 
-	<TransactionsExport transactions={$transactions} {missionControlId} />
+	<TransactionsExport {missionControlId} transactions={$transactions} />
 {/if}
 
-<ReceiveTokens bind:visible={receiveVisible} {missionControlId} />
+<ReceiveTokens {missionControlId} bind:visible={receiveVisible} />

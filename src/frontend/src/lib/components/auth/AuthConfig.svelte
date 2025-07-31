@@ -180,7 +180,7 @@
 </div>
 
 {#if supportConfig || supportSettings}
-	<button in:fade onclick={openModal}>{$i18n.core.edit_config}</button>
+	<button onclick={openModal} in:fade>{$i18n.core.edit_config}</button>
 {/if}
 
 <style lang="scss">

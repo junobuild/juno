@@ -62,8 +62,8 @@
 	};
 </script>
 
-<button class="menu" type="button" onclick={() => (visible = true)}
+<button class="menu" onclick={() => (visible = true)} type="button"
 	><IconDelete size="20px" /> {@render button?.()}</button
 >
 
-<Confirmation bind:visible on:junoYes={deleteSelectedData} on:junoNo={close} {title} {children} />
+<Confirmation {children} {title} bind:visible on:junoYes={deleteSelectedData} on:junoNo={close} />

@@ -94,7 +94,7 @@
 			<button onclick={onclose}>{$i18n.core.close}</button>
 		</div>
 	{:else if step === 'in_progress'}
-		<ProgressMonitoring {progress} action="stop" />
+		<ProgressMonitoring action="stop" {progress} />
 	{:else if step === 'mission_control'}
 		<MonitoringStopMissionControl
 			onno={() => {
@@ -108,19 +108,19 @@
 		/>
 	{:else if step === 'review'}
 		<MonitoringStopReview
-			{selectedSatellites}
-			{selectedOrbiters}
-			{stopMissionControl}
 			onback={() => (step = 'mission_control')}
 			{onsubmit}
+			{selectedOrbiters}
+			{selectedSatellites}
+			{stopMissionControl}
 		/>
 	{:else}
 		<MonitoringSelectSegments
 			{missionControlId}
+			oncontinue={onContinueSegments}
+			onlySyncedSegments={false}
 			bind:selectedSatellites
 			bind:selectedOrbiters
-			onlySyncedSegments={false}
-			oncontinue={onContinueSegments}
 		>
 			<h2>{$i18n.monitoring.stop_auto_refill}</h2>
 

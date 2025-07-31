@@ -165,13 +165,13 @@
 
 						{#if customFreezingThreshold}
 							<Input
-								inputType="number"
 								name="freezingThreshold"
+								inputType="number"
 								placeholder=""
 								bind:value={freezingThreshold}
 							/>
 						{:else}
-							<select bind:value={freezingThreshold} name="freezingThreshold">
+							<select name="freezingThreshold" bind:value={freezingThreshold}>
 								<option value={ONE_MONTH}> {$i18n.canisters.a_month} </option>
 								<option value={THREE_MONTHS}> {$i18n.canisters.three_months} </option>
 								<option value={SIX_MONTHS}> {$i18n.canisters.six_months} </option>
@@ -189,8 +189,8 @@
 							{$i18n.canisters.reserved_cycles_limit} ({$i18n.canisters.in_t_cycles})
 						{/snippet}
 						<Input
-							inputType="number"
 							name="reservedCyclesLimit"
+							inputType="number"
 							placeholder=""
 							bind:value={reservedTCyclesLimit}
 						/>
@@ -215,8 +215,8 @@
 							{$i18n.canisters.heap_memory_limit} ({$i18n.canisters.in_bytes})
 						{/snippet}
 						<Input
-							inputType="number"
 							name="wasmMemoryLimit"
+							inputType="number"
 							placeholder=""
 							bind:value={wasmMemoryLimit}
 						/>
@@ -229,8 +229,8 @@
 							{$i18n.canisters.memory_allocation} ({$i18n.canisters.in_bytes})
 						{/snippet}
 						<Input
-							inputType="number"
 							name="memoryAllocation"
+							inputType="number"
 							placeholder=""
 							bind:value={memoryAllocation}
 						/>
@@ -243,17 +243,17 @@
 							{$i18n.canisters.compute_allocation} ({$i18n.canisters.in_percent})
 						{/snippet}
 						<Input
-							inputType="number"
 							name="computeAllocation"
-							placeholder=""
+							inputType="number"
 							max={100}
+							placeholder=""
 							bind:value={computeAllocation}
 						/>
 					</Value>
 				</div>
 			</div>
 
-			<button type="submit" disabled={disabled || $isBusy}>
+			<button disabled={disabled || $isBusy} type="submit">
 				{$i18n.core.submit}
 			</button>
 		</form>

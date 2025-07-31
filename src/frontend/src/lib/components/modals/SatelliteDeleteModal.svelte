@@ -53,8 +53,8 @@
 		<button onclick={onclose}>{$i18n.core.close}</button>
 	{:else}
 		<CanisterDeleteWizard
-			{deleteFn}
 			{currentCycles}
+			{deleteFn}
 			{onclose}
 			segment="satellite"
 			segmentName={satelliteName(satellite)}

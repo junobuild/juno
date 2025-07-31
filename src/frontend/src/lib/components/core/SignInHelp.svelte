@@ -17,39 +17,39 @@
 </script>
 
 <p class="help">
-	Need help <button class="text action" onclick={() => (visible = true)} disabled={$isBusy}
+	Need help <button class="text action" disabled={$isBusy} onclick={() => (visible = true)}
 		>signing in?</button
 	>
 </p>
 
-<Popover bind:visible center={true}>
+<Popover center={true} bind:visible>
 	<div class="content">
 		<p class="sign-in-now">
 			{$i18n.sign_in.juno_defaults_to}
 			<button
 				class="text action"
-				onclick={async () => await doSignIn('internetcomputer.org')}
-				disabled={$isBusy}>internetcomputer.org</button
+				disabled={$isBusy}
+				onclick={async () => await doSignIn('internetcomputer.org')}>internetcomputer.org</button
 			>
 			{$i18n.sign_in.for_authentication}
 		</p>
 
 		<p>
 			{$i18n.sign_in.alternatively}
-			<button class="text action" onclick={async () => await doSignIn('ic0.app')} disabled={$isBusy}
+			<button class="text action" disabled={$isBusy} onclick={async () => await doSignIn('ic0.app')}
 				>ic0.app</button
 			>.
 		</p>
 
 		<p>
 			{$i18n.sign_in.if_neither_works}
-			<ExternalLink underline href="https://discord.gg/wHZ57Z2RAG" arrow={false}
+			<ExternalLink arrow={false} href="https://discord.gg/wHZ57Z2RAG" underline
 				>Discord</ExternalLink
 			>.
 		</p>
 
 		<div class="toolbar">
-			<button type="button" onclick={() => (visible = false)}>{$i18n.core.close}</button>
+			<button onclick={() => (visible = false)} type="button">{$i18n.core.close}</button>
 		</div>
 	</div>
 </Popover>

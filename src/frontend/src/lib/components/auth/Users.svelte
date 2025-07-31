@@ -105,7 +105,7 @@
 		<tbody>
 			{#if nonNullish($paginationStore.items)}
 				{#each $paginationStore.items as [key, user] (key)}
-					<User {user} {satelliteId} />
+					<User {satelliteId} {user} />
 				{/each}
 
 				{#if !empty && ($paginationStore.pages ?? 0) > 1}

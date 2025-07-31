@@ -5,7 +5,7 @@ import type {
 import type { Identity } from '@dfinity/agent';
 import type { Actor, PocketIc } from '@dfinity/pic';
 import type { Principal } from '@dfinity/principal';
-import { afterAll, beforeAll, describe } from 'vitest';
+
 import { mockSetRule } from '../../../mocks/collection.mocks';
 import { setupTestSatellite, upgradeTestSatellite } from '../../../utils/fixtures-tests.utils';
 import { tick } from '../../../utils/pic-tests.utils';

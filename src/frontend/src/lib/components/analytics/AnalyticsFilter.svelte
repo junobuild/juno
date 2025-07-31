@@ -65,12 +65,12 @@
 			{/snippet}
 
 			<input
-				bind:value={from}
 				id="from"
 				name="from"
-				type="date"
-				onchange={onChange}
 				disabled={loading}
+				onchange={onChange}
+				type="date"
+				bind:value={from}
 			/>
 		</Value>
 	{/snippet}
@@ -84,24 +84,24 @@
 					{/snippet}
 
 					<input
-						bind:value={to}
 						id="to"
 						name="to"
-						type="date"
-						onchange={onChange}
 						disabled={loading}
+						onchange={onChange}
+						type="date"
+						bind:value={to}
 					/>
 				</Value>
 			</div>
 
-			<AnalyticsPeriodicity selectPeriodicity={onPeriodicityChange} disabled={loading} />
+			<AnalyticsPeriodicity disabled={loading} selectPeriodicity={onPeriodicityChange} />
 		</div>
 	{/snippet}
 </Toolbar>
 
 <div class="toolbar" class:loading>
 	{#if !loading}
-		<button type="button" onclick={applyFilters}>{$i18n.core.apply}</button>
+		<button onclick={applyFilters} type="button">{$i18n.core.apply}</button>
 	{/if}
 </div>
 

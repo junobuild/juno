@@ -14,14 +14,14 @@
 </script>
 
 <div class="container">
-	<QRCodeContainer {value} {ariaLabel} />
+	<QRCodeContainer {ariaLabel} {value} />
 
 	<div class="info">
 		<Value>
 			{#snippet label()}
 				{ariaLabel}
 			{/snippet}
-			<Identifier shorten={true} small={false} identifier={value} />
+			<Identifier identifier={value} shorten={true} small={false} />
 		</Value>
 	</div>
 

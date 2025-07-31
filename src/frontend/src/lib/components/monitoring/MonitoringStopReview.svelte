@@ -35,7 +35,7 @@
 		<span class="title">{$i18n.monitoring.modules}</span>
 
 		<div class="content">
-			<MonitoringSelectedModules {selectedSatellites} {selectedOrbiters} />
+			<MonitoringSelectedModules {selectedOrbiters} {selectedSatellites} />
 		</div>
 	</div>
 </MonitoringStepReview>

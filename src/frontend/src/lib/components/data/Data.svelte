@@ -41,7 +41,7 @@
 </script>
 
 <section>
-	<DataNav onedit={selectionCollection} onclose={close} />
+	<DataNav onclose={close} onedit={selectionCollection} />
 
 	{@render header()}
 

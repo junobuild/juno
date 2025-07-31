@@ -19,12 +19,12 @@
 <div class="ids">
 	<Copy value={missionControlId.toText()} variant="text" what={$i18n.wallet.wallet_id} />
 
-	<button class="text more" onclick={() => (visible = true)} bind:this={button}
+	<button bind:this={button} class="text more" onclick={() => (visible = true)}
 		><IconArrowDropDown size="16px" /></button
 	>
 </div>
 
-<Popover bind:visible anchor={button} direction="rtl">
+<Popover anchor={button} direction="rtl" bind:visible>
 	<div class="container">
 		<WalletIds {missionControlId} />
 	</div>

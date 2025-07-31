@@ -33,7 +33,6 @@
 
 {#if nonNullish($missionControlIdDerived)}
 	<CanisterTransferCyclesModal
-		{transferFn}
 		{currentCycles}
 		{onclose}
 		segment={{
@@ -41,5 +40,6 @@
 			canisterId: $missionControlIdDerived.toText(),
 			label: $i18n.mission_control.title
 		}}
+		{transferFn}
 	/>
 {/if}

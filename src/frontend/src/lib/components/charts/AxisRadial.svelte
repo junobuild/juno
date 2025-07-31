@@ -41,25 +41,25 @@
 </script>
 
 <g transform="translate({$width / 2}, {$height / 2})">
-	<circle cx="0" cy="0" r={max} class="line bg" stroke-width="1" fill-opacity="0.1"></circle>
-	<circle cx="0" cy="0" r={max / 2} stroke-width="1" fill="none" class="line"></circle>
+	<circle class="line bg" cx="0" cy="0" fill-opacity="0.1" r={max} stroke-width="1"></circle>
+	<circle class="line" cx="0" cy="0" fill="none" r={max / 2} stroke-width="1"></circle>
 
 	{#each $config.x as label, i (i)}
 		{@const thisAngleSlice = angleSlice * i - Math.PI / 2}
 		<line
 			class="line"
-			x1="0"
-			y1="0"
-			x2={lineLength * Math.cos(thisAngleSlice)}
-			y2={lineLength * Math.sin(thisAngleSlice)}
-			stroke-width="1"
 			fill="none"
+			stroke-width="1"
+			x1="0"
+			x2={lineLength * Math.cos(thisAngleSlice)}
+			y1="0"
+			y2={lineLength * Math.sin(thisAngleSlice)}
 		>
 		</line>
 		<text
-			text-anchor={anchor($config.x.length, i)}
 			dy="0.35em"
 			font-size="var(--font-size-ultra-small)"
+			text-anchor={anchor($config.x.length, i)}
 			transform="translate({labelPlacement * Math.cos(thisAngleSlice)}, {labelPlacement *
 				Math.sin(thisAngleSlice)})">{label}</text
 		>

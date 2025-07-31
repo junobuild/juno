@@ -31,13 +31,13 @@
 	});
 </script>
 
-<MonitoringCreateStrategy bind:minCycles bind:fundCycles {strategy} {oncontinue} {onback}>
+<MonitoringCreateStrategy {onback} {oncontinue} {strategy} bind:minCycles bind:fundCycles>
 	<Checkbox>
 		<label class="default-strategy">
 			<input
-				type="checkbox"
 				checked={saveAsDefaultStrategy}
 				onchange={() => (saveAsDefaultStrategy = !saveAsDefaultStrategy)}
+				type="checkbox"
 			/>
 			<span>{$i18n.monitoring.set_as_default_strategy}</span>
 		</label>

@@ -37,7 +37,7 @@
 </script>
 
 {#if transactions.length > 0}
-	<button type="button" onclick={() => (visible = true)}>{$i18n.core.export}</button>
+	<button onclick={() => (visible = true)} type="button">{$i18n.core.export}</button>
 {/if}
 
 <Confirmation bind:visible on:junoYes={exportTransactions} on:junoNo={close}>

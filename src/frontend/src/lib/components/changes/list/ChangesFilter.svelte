@@ -40,7 +40,7 @@
 	);
 </script>
 
-<PopoverApply ariaLabel={$i18n.filter.title} onapply={apply} bind:visible direction="ltr">
+<PopoverApply ariaLabel={$i18n.filter.title} direction="ltr" onapply={apply} bind:visible>
 	{#snippet icon()}
 		<IconFilter size="18px" />
 	{/snippet}
@@ -48,7 +48,7 @@
 	<label for="modules">{$i18n.satellites.title}</label>
 
 	<div id="modules">
-		<SatellitesPicker {satellites} onChange={(id) => (satelliteId = id)} />
+		<SatellitesPicker onChange={(id) => (satelliteId = id)} {satellites} />
 	</div>
 </PopoverApply>
 

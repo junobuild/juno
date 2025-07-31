@@ -26,9 +26,9 @@
 		<Input
 			name="filter"
 			inputType="text"
-			bind:value={filterInput}
 			placeholder={$i18n.satellites.search}
 			spellcheck={false}
+			bind:value={filterInput}
 		/>
 	</div>
 

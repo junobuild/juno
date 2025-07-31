@@ -23,5 +23,5 @@
 
 	<CanisterSubnets bind:subnetId />
 
-	<CanisterMonitoringDefaultStrategy bind:monitoringStrategy {detail} />
+	<CanisterMonitoringDefaultStrategy {detail} bind:monitoringStrategy />
 </Collapsible>

@@ -2,7 +2,7 @@ import { setSatellitesController } from '$lib/api/mission-control.api';
 import { getEmulatorMainIdentity } from '$lib/rest/emulator.rest';
 import { unsafeSetEmulatorControllerForSatellite } from '$lib/services/emulator.services';
 import { Principal } from '@dfinity/principal';
-import { beforeEach, describe, expect, it, vi } from 'vitest';
+
 import i18Mock from '../../mocks/i18n.mock';
 import { mockIdentity } from '../../mocks/identity.mock';
 import { mockMissionControlId } from '../../mocks/modules.mock';

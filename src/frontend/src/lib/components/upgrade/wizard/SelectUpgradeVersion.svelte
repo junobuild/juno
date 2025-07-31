@@ -149,10 +149,10 @@
 
 	<div class="toolbar">
 		{#if back}
-			<button type="button" onclick={onback}>{$i18n.core.back}</button>
+			<button onclick={onback} type="button">{$i18n.core.back}</button>
 		{:else}
-			<button type="button" onclick={onclose}>{$i18n.core.cancel}</button>
+			<button onclick={onclose} type="button">{$i18n.core.cancel}</button>
 		{/if}
-		<button type="submit" disabled={isNullish(selectedVersion)}>{$i18n.core.continue}</button>
+		<button disabled={isNullish(selectedVersion)} type="submit">{$i18n.core.continue}</button>
 	</div>
 </form>

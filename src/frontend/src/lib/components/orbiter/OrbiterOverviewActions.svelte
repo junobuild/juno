@@ -17,10 +17,10 @@
 <SegmentActions bind:visible>
 	{#snippet moreActions()}
 		<SegmentDetach
-			segment="orbiter"
-			segmentId={orbiter.orbiter_id}
 			{monitoringEnabled}
 			ondetach={close}
+			segment="orbiter"
+			segmentId={orbiter.orbiter_id}
 		/>
 	{/snippet}
 </SegmentActions>

@@ -31,7 +31,7 @@
 
 <div>
 	{#if nonNullish(monitoringStrategy)}
-		<CanisterValue sync={canisterSyncStatus} rows={1}>
+		<CanisterValue rows={1} sync={canisterSyncStatus}>
 			{#snippet label()}
 				{$i18n.monitoring.auto_refill}
 			{/snippet}
@@ -50,7 +50,7 @@
 			/>
 		</CanisterValue>
 	{:else}
-		<MonitoringDisabled {monitoring} loading={false} />
+		<MonitoringDisabled loading={false} {monitoring} />
 	{/if}
 </div>
 

@@ -51,7 +51,7 @@
 	</div>
 </div>
 
-<OrbiterOverviewActions {orbiter} {monitoringEnabled} />
+<OrbiterOverviewActions {monitoringEnabled} {orbiter} />
 
 <div class="card-container with-title">
 	<span class="title">{$i18n.monitoring.runtime}</span>
@@ -59,13 +59,13 @@
 	<div class="columns-3">
 		<CanisterOverview
 			canisterId={orbiter.orbiter_id}
-			segment="orbiter"
 			heapWarningLabel={$i18n.canisters.warning_orbiter_heap_memory}
+			segment="orbiter"
 		/>
 	</div>
 </div>
 
-<OrbiterRuntimeActions {orbiter} {canister} {monitoringEnabled} />
+<OrbiterRuntimeActions {canister} {monitoringEnabled} {orbiter} />
 
 <style lang="scss">
 	.id {

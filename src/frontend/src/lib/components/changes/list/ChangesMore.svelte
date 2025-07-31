@@ -34,16 +34,16 @@
 </script>
 
 <button
+	bind:this={button}
 	class="icon"
 	aria-label={$i18n.core.more}
-	type="button"
 	onclick={() => (visible = true)}
-	bind:this={button}><IconMore size="20px" /></button
+	type="button"><IconMore size="20px" /></button
 >
 
-<Popover bind:visible anchor={button} direction="ltr">
+<Popover anchor={button} direction="ltr" bind:visible>
 	<div class="container">
-		<button class="menu" type="button" onclick={reload}><IconRefresh /> {$i18n.core.reload}</button>
+		<button class="menu" onclick={reload} type="button"><IconRefresh /> {$i18n.core.reload}</button>
 	</div>
 </Popover>
 

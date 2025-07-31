@@ -495,9 +495,7 @@
 		"selected": "Selected",
 		"module": "Module",
 		"terminal": "Terminal",
-		"profile_info": "Providing a profile name, if desired, can help you easily identify the access key in future sessions.",
 		"segments": "Modules:",
-		"profile_placeholder": "A optional profile name",
 		"confirm": "Authorizing will grant control to the specified modules.<br />Proceed only if you are certain that this request originates from your terminal and is legitimate.",
 		"authorize": "Authorize"
 	},

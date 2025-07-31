@@ -5,11 +5,12 @@ import type { PageLoad } from './$types';
 
 export const load: PageLoad = (
 	$event: LoadEvent
-): { redirect_uri: Option<string>; principal: Option<string> } => {
+): { redirect_uri: Option<string>; principal: Option<string>; profile: Option<string> } => {
 	if (!browser) {
 		return {
 			redirect_uri: undefined,
-			principal: undefined
+			principal: undefined,
+			profile: undefined
 		};
 	}
 
@@ -19,6 +20,7 @@ export const load: PageLoad = (
 
 	return {
 		redirect_uri: decodeURIComponent(searchParams?.get('redirect_uri') ?? ''),
-		principal: decodeURIComponent(searchParams?.get('principal') ?? '')
+		principal: searchParams?.get('principal') ?? '',
+		profile: decodeURIComponent(searchParams?.get('profile') ?? '')
 	};
 };

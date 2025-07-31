@@ -1,6 +1,6 @@
 <script lang="ts">
 	import type { Principal } from '@dfinity/principal';
-	import { isNullish, nonNullish } from '@dfinity/utils';
+	import { isNullish, nonNullish, notEmptyString } from '@dfinity/utils';
 	import { fade } from 'svelte/transition';
 	import type { Satellite, Orbiter } from '$declarations/mission_control/mission_control.did';
 	import { setOrbitersController } from '$lib/api/mission-control.api';
@@ -22,16 +22,16 @@
 	import { bigintStringify } from '$lib/utils/number.utils';
 	import { orbiterName } from '$lib/utils/orbiter.utils';
 	import { satelliteName } from '$lib/utils/satellite.utils';
+	import type { Option } from '$lib/types/utils';
 
 	interface Props {
 		principal: string;
 		redirect_uri: string;
+		profile: Option<string>;
 		missionControlId: MissionControlId;
 	}
 
-	let { principal, redirect_uri, missionControlId }: Props = $props();
-
-	let profile = $state('');
+	let { principal, redirect_uri, missionControlId, profile }: Props = $props();
 
 	let selectedMissionControl = $state(false);
 	let selectedSatellites: [Principal, Satellite][] = $state([]);
@@ -175,32 +175,12 @@
 		bind:selectedDisabled={disabled}
 		bind:loadingSegments
 	>
-		<div class="terminal">{$i18n.cli.terminal}:&nbsp;{principal}</div>
+		<div class="terminal">
+			{$i18n.cli.terminal}:&nbsp;{principal}{#if notEmptyString(profile)}&nbsp;[{profile}]{/if}
+		</div>
 	</SegmentsTable>
 
 	{#if loadingSegments === 'ready'}
-		<div class="options">
-			<Collapsible>
-				{#snippet header()}
-					{$i18n.core.advanced_options}
-				{/snippet}
-
-				<div>
-					<p class="profile-info">{$i18n.cli.profile_info}</p>
-
-					<input
-						id="profile"
-						name="profile"
-						autocomplete="off"
-						data-1p-ignore
-						placeholder={$i18n.cli.profile_placeholder}
-						type="text"
-						bind:value={profile}
-					/>
-				</div>
-			</Collapsible>
-		</div>
-
 		<div in:fade>
 			<Warning>
 				<Html text={$i18n.cli.confirm} />
@@ -232,13 +212,5 @@
 		background: var(--color-card-contrast);
 		color: var(--color-card);
 		padding: var(--padding-0_5x) var(--padding-2x);
-	}
-
-	.options {
-		margin: var(--padding-4x) 0 var(--padding-6x);
-	}
-
-	.profile-info {
-		margin: 0;
 	}
 </style>

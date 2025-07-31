@@ -510,9 +510,7 @@ interface I18nCli {
 	selected: string;
 	module: string;
 	terminal: string;
-	profile_info: string;
 	segments: string;
-	profile_placeholder: string;
 	confirm: string;
 	authorize: string;
 }

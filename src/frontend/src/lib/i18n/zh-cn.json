@@ -495,9 +495,7 @@
 		"selected": "已选择",
 		"module": "模块",
 		"terminal": "终端",
-		"profile_info": "如果需要，提供一个简介名字有助于在未来更容易识别.",
 		"segments": "模块:",
-		"profile_placeholder": "可选的简介名字",
 		"confirm": "授权会给与控制特定的模块.<br />请确认这是你的原始请求.",
 		"authorize": "授权"
 	},

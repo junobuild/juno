@@ -17,13 +17,15 @@
 		data: {
 			redirect_uri: Option<string>;
 			principal: Option<string>;
+			profile: Option<string>;
 		};
 	}
 
 	let { data }: Props = $props();
 
-	let redirect_uri: Option<string> = $derived(data?.redirect_uri);
-	let principal: Option<string> = $derived(data?.principal);
+	let redirect_uri = $derived(data?.redirect_uri);
+	let principal = $derived(data?.principal);
+	let profile = $derived(data?.profile);
 </script>
 
 <div onjunoIntersecting={onLayoutTitleIntersection} use:onIntersection>
@@ -33,7 +35,12 @@
 				<MetadataLoader satellites={$sortedSatellites}>
 					{#if nonNullish($missionControlIdDerived)}
 						<div in:fade>
-							<CliAdd missionControlId={$missionControlIdDerived} {principal} {redirect_uri} />
+							<CliAdd
+								missionControlId={$missionControlIdDerived}
+								{principal}
+								{profile}
+								{redirect_uri}
+							/>
 						</div>
 					{/if}
 				</MetadataLoader>

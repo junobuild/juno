@@ -595,6 +595,8 @@ interface I18nErrors {
 	no_file_selected_for_upload: string;
 	upload_error: string;
 	no_collection_for_upload: string;
+	full_path_start_slash: string;
+	full_path_end_slash: string;
 	invalid_email: string;
 	invalid_destination: string;
 	empty_amount: string;
@@ -684,6 +686,7 @@ interface I18nAsset {
 	delete_all: string;
 	description: string;
 	full_path: string;
+	full_path_description: string;
 	edit: string;
 	upload_file: string;
 	replace_file: string;

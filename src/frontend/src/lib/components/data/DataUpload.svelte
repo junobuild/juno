@@ -15,6 +15,7 @@
 		children?: Snippet;
 		confirm?: Snippet;
 		uploadFile: (file: File | undefined) => Promise<void>;
+		onfilechange?: (file: File | undefined) => void;
 	}
 
 	let {
@@ -24,7 +25,8 @@
 		description,
 		children,
 		confirm,
-		uploadFile
+		uploadFile,
+		onfilechange
 	}: Props = $props();
 
 	let visible: boolean = $state(false);
@@ -32,8 +34,10 @@
 
 	let file: File | undefined = $state(undefined);
 
-	const onChangeFile = ($event: Event) =>
-		(file = ($event as unknown as { target: EventTarget & HTMLInputElement }).target?.files?.[0]);
+	const onChangeFile = ($event: Event) => {
+		file = ($event as unknown as { target: EventTarget & HTMLInputElement }).target?.files?.[0];
+		onfilechange?.(file);
+	};
 
 	let disableUpload = $derived(isNullish(file) || $isBusy || disabled);
 

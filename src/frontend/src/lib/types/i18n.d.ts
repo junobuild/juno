@@ -953,6 +953,15 @@ interface I18nNotifications {
 	learn_more: string;
 }
 
+interface I18nNot_found {
+	title: string;
+	text: string;
+	go_launchpad_text: string;
+	go_home_text: string;
+	go_launchpad: string;
+	go_welcome: string;
+}
+
 interface I18n {
 	lang: Languages;
 	core: I18nCore;
@@ -984,4 +993,5 @@ interface I18n {
 	changes: I18nChanges;
 	cdn: I18nCdn;
 	notifications: I18nNotifications;
+	not_found: I18nNot_found;
 }

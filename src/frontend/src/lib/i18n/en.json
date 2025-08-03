@@ -349,8 +349,8 @@
 		"main_domain_warn": "You are about to change your primary domain. Please ensure this is the desired action, as all existing users will no longer be recognized by your app.",
 		"external_alternative_origins": "External alternative origins",
 		"external_alternative_origins_placeholder": "A comma-separated list of external domains to allow for derivation",
-		"authorized_users": "Authorized Users",
-		"authorized_users_placeholder": "Identities (user key format), comma-separated or one per line. Leave empty for no restrictions.",
+		"allowed_callers": "Allowed Callers",
+		"allowed_callers_placeholder": "Identities (user key format), comma-separated or one per line. Leave empty for no restrictions.",
 		"no_restrictions": "No restrictions",
 		"one_identity": "1 identity",
 		"identities": "{0} identities"

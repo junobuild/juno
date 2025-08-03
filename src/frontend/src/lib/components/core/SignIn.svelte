@@ -1,6 +1,7 @@
 <script lang="ts">
 	import SignInHelp from '$lib/components/core/SignInHelp.svelte';
 	import IconIc from '$lib/components/icons/IconIC.svelte';
+	import ContainerCentered from '$lib/components/ui/ContainerCentered.svelte';
 	import { signIn } from '$lib/services/auth/auth.services';
 	import { isBusy } from '$lib/stores/busy.store';
 	import { i18n } from '$lib/stores/i18n.store';
@@ -21,18 +22,16 @@
 	let title: string = $derived(quotes[Math.floor(Math.random() * quotes.length)]);
 </script>
 
-<div class="container">
-	<div class="overview">
-		<h1>{title}</h1>
-	</div>
+<ContainerCentered>
+	<h1>{title}</h1>
 
-	<div class="sign-in">
+	{#snippet action()}
 		<button disabled={$isBusy} onclick={async () => await signIn({})}
 			><IconIc size="20px" />
 			<span>{$i18n.sign_in.internet_identity}</span></button
 		>
-	</div>
-</div>
+	{/snippet}
+</ContainerCentered>
 
 <div class="pre-footer">
 	<SignInHelp />
@@ -40,18 +39,6 @@
 
 <style lang="scss">
 	@use '../../../lib/styles/mixins/media';
-
-	.container {
-		display: flex;
-		flex-direction: column;
-		justify-content: center;
-		align-items: center;
-
-		text-align: center;
-
-		min-height: calc(100vh - var(--header-height) - var(--padding-8x));
-		padding: 0 0 var(--padding-12x);
-	}
 
 	h1 {
 		padding: 0;
@@ -64,10 +51,6 @@
 		@include media.min-width(large) {
 			--bigger-title: 1.4;
 		}
-	}
-
-	.sign-in {
-		padding: var(--padding) 0 0;
 	}
 
 	button {

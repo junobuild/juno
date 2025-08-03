@@ -349,8 +349,8 @@
 		"main_domain_warn": "You are about to change your primary domain. Please ensure this is the desired action, as all existing users will no longer be recognized by your app.",
 		"external_alternative_origins": "外部 alternative origins",
 		"external_alternative_origins_placeholder": "以逗号分隔的用于派生的外部域名列表",
-		"authorized_users": "Authorized Users",
-		"authorized_users_placeholder": "Identities (user key format), comma-separated or one per line. Leave empty for no restrictions.",
+		"allowed_callers": "Allowed Callers",
+		"allowed_callers_placeholder": "Identities (user key format), comma-separated or one per line. Leave empty for no restrictions.",
 		"no_restrictions": "No restrictions",
 		"one_identity": "1 identity",
 		"identities": "{0} identities"
@@ -495,9 +495,7 @@
 		"selected": "已选择",
 		"module": "模块",
 		"terminal": "终端",
-		"profile_info": "如果需要，提供一个简介名字有助于在未来更容易识别.",
 		"segments": "模块:",
-		"profile_placeholder": "可选的简介名字",
 		"confirm": "授权会给与控制特定的模块.<br />请确认这是你的原始请求.",
 		"authorize": "授权"
 	},
@@ -581,6 +579,8 @@
 		"no_file_selected_for_upload": "没有选择要上传的文件.",
 		"upload_error": "上传文件时出现异常错误.",
 		"no_collection_for_upload": "异常错误，没有选择用于上传的集合.",
+		"full_path_start_slash": "The full path must start with a /",
+		"full_path_end_slash": "The full path must not end with a /",
 		"invalid_email": "请提供一个有效的邮箱地址.",
 		"invalid_destination": "请输入有效的 ICP 或 ICRC 地址.",
 		"empty_amount": "请输入转账数量.",
@@ -668,6 +668,7 @@
 		"delete_all": "你将删除这个文件集<strong>{0}</strong>中<strong>所有资料</strong> .",
 		"description": "描述",
 		"full_path": "完整路徑",
+		"full_path_description": "The path to access the file on the web",
 		"edit": "编辑资料?",
 		"upload_file": "上传一个文件",
 		"replace_file": "替换文件",
@@ -919,5 +920,13 @@
 		"upgrade_available": "New upgrades available. Visit the Upgrade Dock to check them out.",
 		"short_freezing_threshold": "Short freezing threshold detected. We recommend a longer grace period to give you more time if cycles run out.",
 		"learn_more": "Learn more"
+	},
+	"not_found": {
+		"title": "Oops! You got lost in space.",
+		"text": "We could not find what you were looking for.",
+		"go_launchpad_text": "Go back to the launchpad to explore your modules.",
+		"go_home_text": "Go back to the welcome page to start your journey.",
+		"go_launchpad": "Go to launchpad",
+		"go_welcome": "Go to welcome"
 	}
 }

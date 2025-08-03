@@ -150,11 +150,11 @@
 		<div>
 			<Value>
 				{#snippet label()}
-					{$i18n.authentication.authorized_users}
+					{$i18n.authentication.allowed_callers}
 				{/snippet}
 
 				<textarea
-					placeholder={$i18n.authentication.authorized_users_placeholder}
+					placeholder={$i18n.authentication.allowed_callers_placeholder}
 					rows="5"
 					bind:value={allowedCallersInput}
 				></textarea>

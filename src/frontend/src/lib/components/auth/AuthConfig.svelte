@@ -155,7 +155,7 @@
 				<div in:fade>
 					<Value>
 						{#snippet label()}
-							{$i18n.authentication.authorized_users}
+							{$i18n.authentication.allowed_callers}
 						{/snippet}
 
 						{#if isNullish(allowedCallers) || allowedCallers.length === 0}

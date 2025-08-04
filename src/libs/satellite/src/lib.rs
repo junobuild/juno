@@ -208,41 +208,49 @@ pub fn list_controllers() -> Controllers {
 // Proposal
 // ---------------------------------------------------------
 
+#[doc(hidden)]
 #[query(guard = "caller_is_controller")]
 pub fn get_proposal(proposal_id: ProposalId) -> Option<Proposal> {
     api::cdn::get_proposal(&proposal_id)
 }
 
+#[doc(hidden)]
 #[query(guard = "caller_is_controller")]
 pub fn list_proposals(filter: ListProposalsParams) -> ListProposalResults {
     api::cdn::list_proposals(&filter)
 }
 
+#[doc(hidden)]
 #[query(guard = "caller_is_controller")]
 pub fn count_proposals() -> usize {
     api::cdn::count_proposals()
 }
 
+#[doc(hidden)]
 #[update(guard = "caller_is_controller")]
 pub fn init_proposal(proposal_type: ProposalType) -> (ProposalId, Proposal) {
     api::cdn::init_proposal(&proposal_type)
 }
 
+#[doc(hidden)]
 #[update(guard = "caller_is_controller")]
 pub fn submit_proposal(proposal_id: ProposalId) -> (ProposalId, Proposal) {
     api::cdn::submit_proposal(&proposal_id)
 }
 
+#[doc(hidden)]
 #[update(guard = "caller_is_controller_with_write", manual_reply = true)]
 pub fn reject_proposal(proposal: RejectProposal) -> ManualReply<()> {
     api::cdn::reject_proposal(&proposal)
 }
 
+#[doc(hidden)]
 #[update(guard = "caller_is_controller_with_write", manual_reply = true)]
 pub fn commit_proposal(proposal: CommitProposal) -> ManualReply<()> {
     api::cdn::commit_proposal(&proposal)
 }
 
+#[doc(hidden)]
 #[update(guard = "caller_is_controller_with_write")]
 pub fn delete_proposal_assets(params: DeleteProposalAssets) {
     api::cdn::delete_proposal_assets(&params)
@@ -252,16 +260,19 @@ pub fn delete_proposal_assets(params: DeleteProposalAssets) {
 // Internal storage
 // ---------------------------------------------------------
 
+#[doc(hidden)]
 #[update(guard = "caller_is_controller")]
 pub fn init_proposal_asset_upload(init: InitAssetKey, proposal_id: ProposalId) -> InitUploadResult {
     api::cdn::init_proposal_asset_upload(init, proposal_id)
 }
 
+#[doc(hidden)]
 #[update(guard = "caller_is_controller")]
 pub fn upload_proposal_asset_chunk(chunk: UploadChunk) -> UploadChunkResult {
     api::cdn::upload_proposal_asset_chunk(chunk)
 }
 
+#[doc(hidden)]
 #[update(guard = "caller_is_controller")]
 pub fn commit_proposal_asset_upload(commit: CommitBatch) {
     api::cdn::commit_proposal_asset_upload(commit)

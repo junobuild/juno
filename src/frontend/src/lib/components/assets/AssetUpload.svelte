@@ -32,8 +32,6 @@
 
 	let newFileFullPath = $state<string | undefined>(undefined);
 
-	$inspect(collection, asset);
-
 	let satelliteId: Principal = $derived($store.satelliteId);
 
 	const upload = async (file: File | undefined) => {

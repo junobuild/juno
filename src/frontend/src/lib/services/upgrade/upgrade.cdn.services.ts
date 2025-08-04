@@ -60,7 +60,7 @@ export const prepareWasmUpgrade = async ({
 
 		const { current: selectedVersion } = metadata;
 
-		const isDowngrade = compare(currentVersion, selectedVersion) < 0;
+		const isDowngrade = compare(selectedVersion, currentVersion) < 0;
 		if (isDowngrade) {
 			toasts.error({
 				text: get(i18n).errors.invalid_version_cannot_downgrade

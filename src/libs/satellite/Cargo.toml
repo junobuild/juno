@@ -1,6 +1,6 @@
 [package]
 name = "junobuild-satellite"
-version = "0.2.0"
+version = "0.2.1"
 authors.workspace = true
 edition.workspace = true
 repository.workspace = true
@@ -11,7 +11,7 @@ readme = "README.md"
 license-file = "LICENSE.md"
 
 [package.metadata.juno.satellite]
-version = "0.1.0"
+version = "0.1.1"
 
 [package.metadata.docs.rs]
 targets = ["wasm32-unknown-unknown"]
@@ -65,8 +65,8 @@ regex.workspace = true
 getrandom.workspace = true
 rand.workspace = true
 url.workspace = true
-junobuild-shared = "0.2.0"
-junobuild-utils = "0.1.0"
-junobuild-collections = "0.2.0"
-junobuild-storage = "0.2.0"
-junobuild-cdn = "0.2.0"
+junobuild-shared = "0.2.1"
+junobuild-utils = "0.1.1"
+junobuild-collections = "0.2.1"
+junobuild-storage = "0.2.1"
+junobuild-cdn = "0.2.1"

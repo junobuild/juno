@@ -2,22 +2,65 @@
 
 import { createHash } from 'node:crypto';
 import { readFileSync, writeFileSync } from 'node:fs';
-import { dirname, join } from 'node:path';
+import { dirname, join, parse } from 'node:path';
 import { findHtmlFiles } from './build.utils.mjs';
 
 const buildCsp = (htmlFile) => {
-	// 1. We extract the start script parsed by SvelteKit into the html file
-	const indexHTMLWithoutStartScript = extractStartScript(htmlFile);
-	// 2. We add our custom script loader - we inject it at build time because it would throw an error when developing locally if missing
-	const indexHTMLWithScriptLoader = injectScriptLoader(indexHTMLWithoutStartScript);
-	// 3. Replace preloaders
+	// 1. Read content
+	const indexHtml = readFileSync(htmlFile, 'utf-8');
+
+	// 2. Generate main.js script with hash to avoid collision
+	const mainJs = generateMainScriptName({ fileContent: indexHtml, htmlFile });
+
+	// 3. We extract the start script parsed by SvelteKit into the html file
+	const indexHTMLWithoutStartScript = extractStartScript({ indexHtml, mainJs, htmlFile });
+
+	// 4. We add our custom script loader - we inject it at build time because it would throw an error when developing locally if missing
+	const indexHTMLWithScriptLoader = injectScriptLoader({
+		indexHtml: indexHTMLWithoutStartScript,
+		mainJs
+	});
+
+	// 5. Replace preloaders
 	const indexHTMLWithPreloaders = injectLinkPreloader(indexHTMLWithScriptLoader);
-	// 4. remove the content-security-policy tag injected by SvelteKit
+
+	// 6. remove the content-security-policy tag injected by SvelteKit
 	const indexHTMLNoCSP = removeDefaultCspTag(indexHTMLWithPreloaders);
-	// 5. We calculate the sha256 values for these scripts and update the CSP
+
+	// 7. We calculate the sha256 values for these scripts and update the CSP
 	const indexHTMLWithCSP = updateCSP(indexHTMLNoCSP);
 
 	writeFileSync(htmlFile, indexHTMLWithCSP);
+};
+
+/**
+ * The loader used to be called main.js, but we now include a hash and the file name
+ * to avoid collisions — especially when multiple HTML files (like index and 404) exist in the same folder.
+ *
+ * That said, the 404 and index loaders are currently identical due to sharing the same layout, etc.
+ */
+const generateMainScriptName = ({ fileContent, htmlFile }) => {
+	const hash = getHash({ text: fileContent });
+	const { name } = parse(htmlFile);
+	return `${name}.${hash}.js`;
+};
+
+/**
+ * Generates a short, URL-safe hash from input text or buffer.
+ * Based on Vite's internal hashing strategy (uses SHA-256 + base64url).
+ * @link https://github.com/vitejs/vite/blob/main/packages/vite/src/node/utils.ts#L1095
+ */
+export const getHash = ({ text, length = 8 }) => {
+	// TODO: Node v24
+	// const h = crypto.hash('sha256', text, 'hex').substring(0, length);
+
+	const hash = createHash('sha256').update(text).digest('base64url').slice(0, length);
+
+	if (length <= 64) {
+		return hash;
+	}
+
+	throw new Error(`File hash length (${length}) exceeds maximum safe length (64).`);
 };
 
 const removeDefaultCspTag = (indexHtml) =>
@@ -26,13 +69,13 @@ const removeDefaultCspTag = (indexHtml) =>
 /**
  * We need a script loader to implement a proper Content Security Policy. See `updateCSP` doc for more information.
  */
-const injectScriptLoader = (indexHtml) =>
+const injectScriptLoader = ({ indexHtml, mainJs }) =>
 	indexHtml.replace(
 		'<!-- SCRIPT_LOADER -->',
 		`<script sveltekit-loader>
       const loader = document.createElement("script");
       loader.type = "module";
-      loader.src = "main.js";
+      loader.src = "${mainJs}";
       document.head.appendChild(loader);
     </script>`
 	);
@@ -88,9 +131,7 @@ const injectLinkPreloader = (indexHtml) => {
  * 2. we remove the script content from index.html but, let the script tag as anchor
  * 3. we use our custom script loader to load the main.js script
  */
-const extractStartScript = (htmlFile) => {
-	const indexHtml = readFileSync(htmlFile, 'utf-8');
-
+const extractStartScript = ({ indexHtml, mainJs, htmlFile }) => {
 	const svelteKitStartScript = /(<script>)([\s\S]*?)(<\/script>)/gm;
 
 	// 1. extract SvelteKit start script to a separate main.js file
@@ -109,7 +150,7 @@ const extractStartScript = (htmlFile) => {
 		.replaceAll('document.currentScript.parentElement', "document.querySelector('body')")
 		.replaceAll(/__sveltekit_(.*)\s=/g, 'window.$&');
 
-	writeFileSync(join(folderPath, 'main.js'), moduleScript, 'utf-8');
+	writeFileSync(join(folderPath, mainJs), moduleScript, 'utf-8');
 
 	// 3. Replace original SvelteKit script tag content with empty
 	return indexHtml.replace(svelteKitStartScript, '$1$3');

@@ -42,7 +42,9 @@
 		loadBalance(owner);
 	});
 
-	const onsubmit = async () => {
+	const onsubmit = async ($event: SubmitEvent) => {
+		$event.preventDefault();
+
 		await receive({
 			balance,
 			amount

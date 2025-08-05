@@ -34,8 +34,10 @@ const buildCsp = (htmlFile) => {
 };
 
 /**
- * The loader used to be called main.js but, we are now using hash and file name to avoid collision
- * in case, as on root with index and 404, there are multiple HTML files in the folder.
+ * The loader used to be called main.js, but we now include a hash and the file name
+ * to avoid collisions — especially when multiple HTML files (like index and 404) exist in the same folder.
+ *
+ * That said, the 404 and index loaders are currently identical due to sharing the same layout, etc.
  */
 const generateMainScriptName = ({ fileContent, htmlFile }) => {
 	const hash = getHash({ text: fileContent });

@@ -959,7 +959,7 @@ interface I18nNot_found {
 	go_launchpad_text: string;
 	go_home_text: string;
 	go_launchpad: string;
-	go_welcome: string;
+	go_home: string;
 }
 
 interface I18n {

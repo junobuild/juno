@@ -925,8 +925,8 @@
 		"title": "Oops! You got lost in space.",
 		"text": "We could not find what you were looking for.",
 		"go_launchpad_text": "Go back to the launchpad to explore your modules.",
-		"go_home_text": "Go back to the welcome page to start your journey.",
+		"go_home_text": "Go back to the home page to start your journey.",
 		"go_launchpad": "Go to launchpad",
-		"go_welcome": "Go to welcome"
+		"go_home": "Go to home"
 	}
 }

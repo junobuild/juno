@@ -2,9 +2,9 @@
 	import type { Satellite } from '$declarations/mission_control/mission_control.did';
 	import SegmentDetach from '$lib/components/canister/SegmentDetach.svelte';
 	import SatelliteEditName from '$lib/components/satellites/SatelliteEditName.svelte';
+	import SatelliteReloadVersion from '$lib/components/satellites/SatelliteReloadVersion.svelte';
 	import SatelliteVisit from '$lib/components/satellites/SatelliteVisit.svelte';
 	import SegmentActions from '$lib/components/segments/SegmentActions.svelte';
-	import SatelliteReloadVersion from '$lib/components/satellites/SatelliteReloadVersion.svelte';
 
 	interface Props {
 		satellite: Satellite;
@@ -32,6 +32,6 @@
 			segmentId={satellite.satellite_id}
 		/>
 
-		<SatelliteReloadVersion {satellite} onreload={close} />
+		<SatelliteReloadVersion onreload={close} {satellite} />
 	{/snippet}
 </SegmentActions>

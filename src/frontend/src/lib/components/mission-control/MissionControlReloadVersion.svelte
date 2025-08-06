@@ -1,7 +1,7 @@
 <script lang="ts">
 	import SegmentReload from '$lib/components/segments/SegmentReload.svelte';
-	import type { MissionControlId } from '$lib/types/mission-control';
 	import { reloadMissionControlVersion } from '$lib/services/version/version.mission-control.services';
+	import type { MissionControlId } from '$lib/types/mission-control';
 
 	interface Props {
 		missionControlId: MissionControlId;

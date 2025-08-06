@@ -1,8 +1,8 @@
 <script lang="ts">
 	import MissionControlAttachOrbiter from '$lib/components/mission-control/MissionControlAttachOrbiter.svelte';
 	import MissionControlAttachSatellite from '$lib/components/mission-control/MissionControlAttachSatellite.svelte';
-	import SegmentActions from '$lib/components/segments/SegmentActions.svelte';
 	import MissionControlReloadVersion from '$lib/components/mission-control/MissionControlReloadVersion.svelte';
+	import SegmentActions from '$lib/components/segments/SegmentActions.svelte';
 	import type { MissionControlId } from '$lib/types/mission-control';
 
 	interface Props {

@@ -113,12 +113,17 @@ const deployWithCli = async (proposalId) => {
 		});
 
 		const {
-			memory_metrics: { wasm_memory_size }
+			memory_metrics: { wasm_memory_size: heap }
 		} = await canisterStatus(CONSOLE_ID);
 
-		if (wasm_memory_size < MEMORY_HEAP_WARNING) {
-			throw new Error("⚠️  Your Console's heap memory exceeds the assertion limit!");
+		if (heap < MEMORY_HEAP_WARNING) {
+			return;
 		}
+
+		console.log(
+			`⚠️  Your Console's heap memory (${heap}) exceeds the assertion limit (${MEMORY_HEAP_WARNING})!`
+		);
+		process.exit(1);
 	};
 
 	return await cliDeploy({

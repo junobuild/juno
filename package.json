@@ -16,8 +16,7 @@
 	"scripts": {
 		"build:subnets": "node scripts/cmc.subnets.mjs && npm run format",
 		"build:csp": "node scripts/build.csp.mjs",
-		"build:fix-paths": "node scripts/build.fix-paths.mjs",
-		"build:post-process": "npm run build:fix-paths && npm run build:csp",
+		"build:post-process": "npm run build:csp",
 		"dev": "npm run i18n && vite dev",
 		"dev:skylab": "npm run i18n && vite dev --mode skylab",
 		"build": "npm run build:frontend",

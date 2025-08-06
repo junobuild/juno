@@ -1,12 +1,16 @@
 #!/usr/bin/env node
 
+import { ICManagementCanister } from '@dfinity/ic-management';
 import { toNullable } from '@dfinity/utils';
 import { uploadAssetWithProposal } from '@junobuild/cdn';
 import { deploy as cliDeploy, hasArgs } from '@junobuild/cli-tools';
-import { consoleActor } from './actor.mjs';
+import { consoleActor, icAgent, localAgent } from './actor.mjs';
 import { deployWithProposal } from './console.deploy.services.mjs';
 import { deployConsole, readJunoConfig } from './console.deploy.utils.mjs';
+import { CONSOLE_ID } from './constants.mjs';
 import { targetMainnet } from './utils.mjs';
+
+const MEMORY_HEAP_WARNING = 900_000_000n;
 
 const args = process.argv.slice(2);
 
@@ -100,10 +104,33 @@ const deployWithCli = async (proposalId) => {
 		});
 	};
 
+	const assertMemory = async () => {
+		const fnAgent = targetMainnet() ? icAgent : localAgent;
+		const agent = await fnAgent();
+
+		const { canisterStatus } = ICManagementCanister.create({
+			agent
+		});
+
+		const {
+			memory_metrics: { wasm_memory_size: heap }
+		} = await canisterStatus(CONSOLE_ID);
+
+		if (heap < MEMORY_HEAP_WARNING) {
+			return;
+		}
+
+		console.log(
+			`⚠️  Your Console's heap memory (${heap}) exceeds the assertion limit (${MEMORY_HEAP_WARNING})!`
+		);
+		process.exit(1);
+	};
+
 	return await cliDeploy({
 		config,
 		listAssets: listExistingAssets,
-		uploadFile: upload
+		uploadFile: upload,
+		assertMemory
 	});
 };
 

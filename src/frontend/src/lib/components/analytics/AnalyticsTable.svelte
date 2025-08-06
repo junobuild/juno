@@ -1,7 +1,7 @@
 <script lang="ts">
 	import type { Snippet } from 'svelte';
 	import { i18n } from '$lib/stores/i18n.store';
-	import { formatCompactNumber } from '$lib/utils/number.utils.js';
+	import { formatCompactNumber } from '$lib/utils/number.utils';
 
 	interface Props {
 		children: Snippet;

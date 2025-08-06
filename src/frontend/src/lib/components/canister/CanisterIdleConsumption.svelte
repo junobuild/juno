@@ -2,7 +2,7 @@
 	import CanisterValue from '$lib/components/canister/CanisterValue.svelte';
 	import { i18n } from '$lib/stores/i18n.store';
 	import type { CanisterDataInfo, CanisterSyncStatus } from '$lib/types/canister';
-	import { formatTCycles } from '$lib/utils/cycles.utils.js';
+	import { formatTCycles } from '$lib/utils/cycles.utils';
 
 	interface Props {
 		canister: CanisterDataInfo | undefined;

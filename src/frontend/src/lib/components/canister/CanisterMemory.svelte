@@ -10,7 +10,7 @@
 		CanisterSyncStatus,
 		Segment
 	} from '$lib/types/canister';
-	import { formatBytes } from '$lib/utils/number.utils.js';
+	import { formatBytes } from '$lib/utils/number.utils';
 
 	interface Props {
 		canister: CanisterDataInfo | undefined;

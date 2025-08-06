@@ -21,6 +21,7 @@ const config = {
 	}),
 	kit: {
 		adapter: adapter({
+			fallback: '404.html',
 			precompress: false
 		}),
 		files: {
@@ -28,8 +29,7 @@ const config = {
 			lib: filesPath('src/lib'),
 			params: filesPath('src/params'),
 			routes: filesPath('src/routes'),
-			appTemplate: filesPath('src/app.html'),
-			errorTemplate: filesPath('src/error.html')
+			appTemplate: filesPath('src/app.html')
 		},
 		alias: {
 			$declarations: './src/declarations'

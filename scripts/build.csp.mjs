@@ -2,7 +2,7 @@
 
 import { createHash } from 'node:crypto';
 import { readFileSync, writeFileSync } from 'node:fs';
-import { dirname, join, parse } from 'node:path';
+import { dirname, join, parse, relative } from 'node:path';
 import { findHtmlFiles } from './build.utils.mjs';
 
 const buildCsp = (htmlFile) => {
@@ -18,7 +18,8 @@ const buildCsp = (htmlFile) => {
 	// 4. We add our custom script loader - we inject it at build time because it would throw an error when developing locally if missing
 	const indexHTMLWithScriptLoader = injectScriptLoader({
 		indexHtml: indexHTMLWithoutStartScript,
-		mainJs
+		mainJs,
+		htmlFile
 	});
 
 	// 5. Replace preloaders
@@ -69,16 +70,20 @@ const removeDefaultCspTag = (indexHtml) =>
 /**
  * We need a script loader to implement a proper Content Security Policy. See `updateCSP` doc for more information.
  */
-const injectScriptLoader = ({ indexHtml, mainJs }) =>
-	indexHtml.replace(
-		'<!-- SCRIPT_LOADER -->',
-		`<script sveltekit-loader>
+const injectScriptLoader = ({ indexHtml, htmlFile, mainJs }) => {
+	// We need to provide the relative path to the script otherwise it will look for it at the root when loading it at runtime
+	const parentFolders = relative(join(process.cwd(), 'build'), dirname(htmlFile));
+	const loaderSrc = `${parentFolders !== '' ? `/${parentFolders}/` : ''}${mainJs}`;
+
+	const scriptLoader = `<script sveltekit-loader>
       const loader = document.createElement("script");
       loader.type = "module";
-      loader.src = "${mainJs}";
+      loader.src = "${loaderSrc}";
       document.head.appendChild(loader);
-    </script>`
-	);
+    </script>`;
+
+	return indexHtml.replace('<!-- SCRIPT_LOADER -->', scriptLoader);
+};
 
 /**
  * Calculating the sh256 value for the preloaded link and whitelisting these seem not to be supported by the Content-Security-Policy.

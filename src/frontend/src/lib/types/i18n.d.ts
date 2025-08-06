@@ -246,6 +246,7 @@ interface I18nCanisters {
 	a_year: string;
 	two_years: string;
 	five_years: string;
+	reload_initiated: string;
 }
 
 interface I18nSign_in {

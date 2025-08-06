@@ -2,6 +2,7 @@
 	import type { Orbiter } from '$declarations/mission_control/mission_control.did';
 	import SegmentDetach from '$lib/components/canister/SegmentDetach.svelte';
 	import SegmentActions from '$lib/components/segments/SegmentActions.svelte';
+	import OrbiterReloadVersion from '$lib/components/orbiter/OrbiterReloadVersion.svelte';
 
 	interface Props {
 		orbiter: Orbiter;
@@ -22,5 +23,7 @@
 			segment="orbiter"
 			segmentId={orbiter.orbiter_id}
 		/>
+
+		<OrbiterReloadVersion {orbiter} onreload={close} />
 	{/snippet}
 </SegmentActions>

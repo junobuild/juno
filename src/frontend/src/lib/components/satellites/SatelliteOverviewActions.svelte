@@ -4,6 +4,7 @@
 	import SatelliteEditName from '$lib/components/satellites/SatelliteEditName.svelte';
 	import SatelliteVisit from '$lib/components/satellites/SatelliteVisit.svelte';
 	import SegmentActions from '$lib/components/segments/SegmentActions.svelte';
+	import SatelliteReloadVersion from '$lib/components/satellites/SatelliteReloadVersion.svelte';
 
 	interface Props {
 		satellite: Satellite;
@@ -30,5 +31,7 @@
 			segment="satellite"
 			segmentId={satellite.satellite_id}
 		/>
+
+		<SatelliteReloadVersion {satellite} onreload={close} />
 	{/snippet}
 </SegmentActions>

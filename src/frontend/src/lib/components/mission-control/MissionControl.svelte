@@ -43,7 +43,7 @@
 		</div>
 	</div>
 
-	<MissionControlOverviewActions />
+	<MissionControlOverviewActions {missionControlId} />
 
 	<div class="card-container with-title" in:fade>
 		<span class="title">{$i18n.monitoring.runtime}</span>

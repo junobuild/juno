@@ -241,7 +241,8 @@
 		"six_months": "Six months",
 		"a_year": "A year",
 		"two_years": "Two years",
-		"five_years": "Five years"
+		"five_years": "Five years",
+		"reload_initiated": "Reload initiated..."
 	},
 	"sign_in": {
 		"quote_1": "Stars can't shine without darkness.",

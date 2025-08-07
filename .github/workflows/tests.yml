@@ -117,6 +117,12 @@ jobs:
       - name: Download WASM Artifacts
         uses: ./.github/actions/download-wasms
 
+      - name: Run emulator
+        run: |
+          set -e
+          npm run emulator &
+          npm run emulator:wait
+
       - name: E2E tests
         run: npm run e2e:ci
 

@@ -124,6 +124,7 @@ jobs:
           set -e
           npm run emulator &
           npm run emulator:wait
+          node ./scripts/console.upgrade.mjs
 
       - name: E2E tests
         run: npm run e2e:ci

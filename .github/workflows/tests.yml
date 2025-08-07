@@ -166,8 +166,8 @@ jobs:
     needs: docker-build
     strategy:
       matrix:
-        shardIndex: [ 1, 2 ]
-        shardTotal: [ 2 ]
+        shardIndex: [1, 2]
+        shardTotal: [2]
 
     steps:
       - name: Checkout
@@ -175,6 +175,9 @@ jobs:
 
       - name: Prepare
         uses: ./.github/actions/prepare
+
+      - name: Prepare Playwright
+        run: npm run e2e:playwright:install
 
       - name: Download satellite.wasm.gz
         uses: actions/download-artifact@v4

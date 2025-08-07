@@ -5,6 +5,8 @@
 	import { initSatelliteWizard } from '$lib/services/wizard.services';
 	import { authStore } from '$lib/stores/auth.store';
 	import { i18n } from '$lib/stores/i18n.store';
+	import { testIds } from '$lib/constants/test-ids.constants';
+	import Test from '$lib/components/ui/Test.svelte';
 
 	interface Props {
 		row?: boolean;
@@ -22,9 +24,11 @@
 
 <LaunchpadButton onclick={createSatellite} primary {row}>
 	<div class="new" class:row>
-		<IconNew size={row ? '20px' : '48px'} />
+		<Test testId={testIds.createSatellite.launch}>
+			<IconNew size={row ? '20px' : '48px'} />
 
-		<p>{$i18n.satellites.launch}</p>
+			<p>{$i18n.satellites.launch}</p>
+		</Test>
 	</div>
 </LaunchpadButton>
 

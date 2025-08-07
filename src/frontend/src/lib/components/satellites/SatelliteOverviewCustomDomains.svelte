@@ -10,6 +10,8 @@
 	} from '$lib/derived/satellite-custom-domains.derived';
 	import { i18n } from '$lib/stores/i18n.store';
 	import { satelliteUrl } from '$lib/utils/satellite.utils';
+	import Test from "$lib/components/ui/Test.svelte";
+	import {testIds} from "$lib/constants/test-ids.constants";
 
 	interface Props {
 		satellite: Satellite;
@@ -38,7 +40,11 @@
 		{#if $satelliteCustomDomainsLoaded}
 			<div in:fade>
 				{#each urls as { href, host }, index (index)}
-					<ExternalLink {href}><span class="host">{host}</span></ExternalLink>
+					<ExternalLink {href}>
+						<Test testId={testIds.createSatellite.visit}>
+							<span class="host">{host}</span>
+						</Test>
+					</ExternalLink>
 				{/each}
 			</div>
 		{:else}

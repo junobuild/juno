@@ -5,6 +5,8 @@
 	import { signIn } from '$lib/services/auth/auth.services';
 	import { isBusy } from '$lib/stores/busy.store';
 	import { i18n } from '$lib/stores/i18n.store';
+	import Test from '$lib/components/ui/Test.svelte';
+	import {testIds} from "$lib/constants/test-ids.constants";
 
 	let quotes: string[] = $derived([
 		$i18n.sign_in.quote_1,
@@ -26,10 +28,12 @@
 	<h1>{title}</h1>
 
 	{#snippet action()}
-		<button disabled={$isBusy} onclick={async () => await signIn({})}
-			><IconIc size="20px" />
-			<span>{$i18n.sign_in.internet_identity}</span></button
-		>
+		<Test testId={testIds.auth.signIn}>
+			<button disabled={$isBusy} onclick={async () => await signIn({})}
+				><IconIc size="20px" />
+				<span>{$i18n.sign_in.internet_identity}</span></button
+			>
+		</Test>
 	{/snippet}
 </ContainerCentered>
 

@@ -20,6 +20,8 @@
 	import type { JunoModalDetail } from '$lib/types/modal';
 	import type { WizardCreateProgress } from '$lib/types/progress-wizard';
 	import { navigateToSatellite } from '$lib/utils/nav.utils';
+	import Test from "$lib/components/ui/Test.svelte";
+	import {testIds} from "$lib/constants/test-ids.constants";
 
 	interface Props {
 		detail: JunoModalDetail;
@@ -86,7 +88,11 @@
 
 		<div class="msg">
 			<p>{$i18n.satellites.ready}</p>
-			<button onclick={navigate}>{$i18n.core.continue}</button>
+			<button onclick={navigate}>
+				<Test testId={testIds.createSatellite.continue}>
+					{$i18n.core.continue}
+				</Test>
+			</button>
 		</div>
 	{:else if step === 'in_progress'}
 		<ProgressCreate
@@ -128,7 +134,11 @@
 
 				<button
 					disabled={$authSignedOut || isNullish($missionControlIdDerived) || insufficientFunds}
-					type="submit">{$i18n.satellites.create}</button
+					type="submit">
+					<Test testId={testIds.createSatellite.create}>
+						{$i18n.satellites.create}
+					</Test>
+				</button
 				>
 			</form>
 		</CreditsGuard>

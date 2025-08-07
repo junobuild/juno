@@ -116,6 +116,8 @@ jobs:
 
       - name: Download WASM Artifacts
         uses: ./.github/actions/download-wasms
+        with:
+          path: ./target/deploy
 
       - name: Run emulator
         run: |

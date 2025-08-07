@@ -4,8 +4,84 @@ on:
   workflow_dispatch:
 
 jobs:
+  docker-build-base:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Build Base Docker Image
+        uses: ./.github/actions/docker-build-base
+
+  docker-build:
+    runs-on: ubuntu-latest
+    needs: docker-build-base
+
+    strategy:
+      matrix:
+        include:
+          - name: satellite
+            wasm: satellite.wasm.gz
+            target: scratch_satellite
+
+          - name: orbiter
+            wasm: orbiter.wasm.gz
+            target: scratch_orbiter
+
+          - name: console
+            wasm: console.wasm.gz
+            target: scratch_console
+
+          - name: observatory
+            wasm: observatory.wasm.gz
+            target: scratch_observatory
+
+          - name: mission_control
+            wasm: mission_control.wasm.gz
+            target: scratch_mission_control
+
+          - name: sputnik
+            wasm: sputnik.wasm.gz
+            target: scratch_sputnik
+
+          - name: test_satellite
+            wasm: test_satellite.wasm.gz
+            target: scratch_test_satellite
+
+          - name: test_sputnik
+            wasm: test_sputnik.wasm.gz
+            target: scratch_test_sputnik
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up docker buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Build ${{ matrix.name }}
+        uses: docker/build-push-action@v5
+        with:
+          file: Dockerfile
+          cache-from: type=gha,scope=cached-stage
+          # Exports the artefacts from the final stage
+          outputs: ./out
+          target: ${{ matrix.target }}
+
+      - run: mv out/${{ matrix.wasm }} ${{ matrix.wasm }}
+
+      - name: Upload ${{ matrix.name }}
+        uses: actions/upload-artifact@v4
+        with:
+          # name is the name used to display and retrieve the artifact
+          name: ${{ matrix.wasm }}
+          # path is the name used as the file to upload and the name of the
+          # downloaded file
+          path: ./${{ matrix.wasm }}
+
   update_screenshots:
     runs-on: ubuntu-latest
+    needs: docker-build
     steps:
       - name: Fail if branch is main
         if: ${{ github.ref == 'refs/heads/main' }}
@@ -18,6 +94,57 @@ jobs:
 
       - name: Prepare
         uses: ./.github/actions/prepare
+
+      - name: Prepare Playwright
+        run: npm run e2e:playwright:install
+
+      - name: Download satellite.wasm.gz
+        uses: actions/download-artifact@v4
+        with:
+          name: satellite.wasm.gz
+          path: .
+
+      - name: Download orbiter.wasm.gz
+        uses: actions/download-artifact@v4
+        with:
+          name: orbiter.wasm.gz
+          path: .
+
+      - name: Download sputnik.wasm.gz
+        uses: actions/download-artifact@v4
+        with:
+          name: sputnik.wasm.gz
+          path: .
+
+      - name: Download console.wasm.gz
+        uses: actions/download-artifact@v4
+        with:
+          name: console.wasm.gz
+          path: .
+
+      - name: Download observatory.wasm.gz
+        uses: actions/download-artifact@v4
+        with:
+          name: observatory.wasm.gz
+          path: .
+
+      - name: Download mission_control.wasm.gz
+        uses: actions/download-artifact@v4
+        with:
+          name: mission_control.wasm.gz
+          path: .
+
+      - name: Download test_satellite.wasm.gz
+        uses: actions/download-artifact@v4
+        with:
+          name: test_satellite.wasm.gz
+          path: .
+
+      - name: Download test_sputnik.wasm.gz
+        uses: actions/download-artifact@v4
+        with:
+          name: test_sputnik.wasm.gz
+          path: .
 
       - name: Run Playwright tests
         run: npm run e2e:snapshots

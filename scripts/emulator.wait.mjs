@@ -14,7 +14,6 @@ const waitEmulatorReady = async ({ count }) => {
 		return 'timeout';
 	}
 
-	// eslint-disable-next-line promise/avoid-new
 	await new Promise((resolve) => setTimeout(resolve, RETRY_IN_MILLISECONDS));
 
 	return await waitEmulatorReady({ count: nextCount });

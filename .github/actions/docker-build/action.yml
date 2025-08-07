@@ -1,0 +1,43 @@
+name: Build Docker Images
+
+description: The image shared by all builds, containing pre-built rust deps
+
+inputs:
+  name:
+    description: "The name of the module"
+    required: true
+  wasm:
+    description: "The WASM output filename"
+    required: true
+  target:
+    description: "The Docker target to build"
+    required: true
+
+outputs: {}
+
+runs:
+  using: "composite"
+  steps:
+    - name: Set up docker buildx
+      uses: docker/setup-buildx-action@v3
+
+    - name: Build ${{ input.name }}
+      uses: docker/build-push-action@v5
+      with:
+        file: Dockerfile
+        cache-from: type=gha,scope=cached-stage
+        # Exports the artefacts from the final stage
+        outputs: ./out
+        target: ${{ input.target }}
+
+    - run: mv out/${{ input.wasm }} ${{ input.wasm }}
+      shell: bash
+
+    - name: Upload ${{ input.name }}
+      uses: actions/upload-artifact@v4
+      with:
+        # name is the name used to display and retrieve the artifact
+        name: ${{ input.wasm }}
+        # path is the name used as the file to upload and the name of the
+        # downloaded file
+        path: ./${{ input.wasm }}

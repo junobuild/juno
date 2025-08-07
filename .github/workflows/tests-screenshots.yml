@@ -92,6 +92,6 @@ jobs:
         uses: EndBug/add-and-commit@v9
         if: ${{ github.ref != 'refs/heads/main' }}
         with:
-          add: e2e
+          add: ./src/e2e
           default_author: github_actions
           message: "🤖 update E2E screenshots"

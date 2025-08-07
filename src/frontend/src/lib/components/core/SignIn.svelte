@@ -6,7 +6,7 @@
 	import { isBusy } from '$lib/stores/busy.store';
 	import { i18n } from '$lib/stores/i18n.store';
 	import Test from '$lib/components/ui/Test.svelte';
-	import {testIds} from "$lib/constants/test-ids.constants";
+	import { testIds } from '$lib/constants/test-ids.constants';
 
 	let quotes: string[] = $derived([
 		$i18n.sign_in.quote_1,

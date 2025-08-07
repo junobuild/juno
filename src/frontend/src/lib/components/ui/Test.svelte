@@ -1,7 +1,7 @@
 <script lang="ts">
-    import type {TestId} from "$lib/types/test-id";
-    import type { Snippet } from 'svelte';
-	import {testId} from "$lib/utils/test.utils";
+	import type { TestId } from '$lib/types/test-id';
+	import type { Snippet } from 'svelte';
+	import { testId } from '$lib/utils/test.utils';
 
 	interface Props {
 		testId: TestId;

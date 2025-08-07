@@ -20,9 +20,9 @@
 	import type { JunoModalDetail } from '$lib/types/modal';
 	import type { WizardCreateProgress } from '$lib/types/progress-wizard';
 	import { navigateToSatellite } from '$lib/utils/nav.utils';
-	import Test from "$lib/components/ui/Test.svelte";
-	import {testIds} from "$lib/constants/test-ids.constants";
-	import {testId} from "$lib/utils/test.utils";
+	import Test from '$lib/components/ui/Test.svelte';
+	import { testIds } from '$lib/constants/test-ids.constants';
+	import { testId } from '$lib/utils/test.utils';
 
 	interface Props {
 		detail: JunoModalDetail;
@@ -136,12 +136,12 @@
 
 				<button
 					disabled={$authSignedOut || isNullish($missionControlIdDerived) || insufficientFunds}
-					type="submit">
+					type="submit"
+				>
 					<Test testId={testIds.createSatellite.create}>
 						{$i18n.satellites.create}
 					</Test>
-				</button
-				>
+				</button>
 			</form>
 		</CreditsGuard>
 	{/if}

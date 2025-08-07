@@ -7,12 +7,11 @@ const DEV = (process.env.NODE_ENV ?? 'production') === 'development';
  */
 export default defineConfig({
 	testDir: './src/e2e',
-	snapshotDir: './src/e2e/snapshots',
+	snapshotDir: `./${DEV ? 'tmp' : 'src'}/e2e/snapshots`,
 	testMatch: ['**/*.e2e.ts', '**/*.spec.ts'],
 	fullyParallel: true,
 	forbidOnly: !!process.env.CI,
 	workers: process.env.CI ? 1 : undefined,
-	reporter: 'html',
 	expect: {
 		toHaveScreenshot: {
 			animations: 'disabled',
@@ -22,7 +21,7 @@ export default defineConfig({
 	use: {
 		testIdAttribute: 'data-tid',
 		baseURL: 'http://localhost:5173',
-		trace: 'on-first-retry',
+		trace: 'on',
 		...(DEV && { headless: false })
 	},
 	projects: [

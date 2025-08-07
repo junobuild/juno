@@ -1,12 +1,12 @@
 <script lang="ts">
 	import IconNew from '$lib/components/icons/IconNew.svelte';
 	import LaunchpadButton from '$lib/components/launchpad/LaunchpadButton.svelte';
+	import Test from '$lib/components/ui/Test.svelte';
+	import { testIds } from '$lib/constants/test-ids.constants';
 	import { missionControlIdDerived } from '$lib/derived/mission-control.derived';
 	import { initSatelliteWizard } from '$lib/services/wizard.services';
 	import { authStore } from '$lib/stores/auth.store';
 	import { i18n } from '$lib/stores/i18n.store';
-	import { testIds } from '$lib/constants/test-ids.constants';
-	import Test from '$lib/components/ui/Test.svelte';
 
 	interface Props {
 		row?: boolean;

@@ -1,6 +1,6 @@
 <script lang="ts">
-	import type { TestId } from '$lib/types/test-id';
 	import type { Snippet } from 'svelte';
+	import type { TestId } from '$lib/types/test-id';
 	import { testId } from '$lib/utils/test.utils';
 
 	interface Props {

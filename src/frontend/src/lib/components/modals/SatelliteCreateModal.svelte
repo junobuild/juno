@@ -10,7 +10,9 @@
 	import CreditsGuard from '$lib/components/guards/CreditsGuard.svelte';
 	import Confetti from '$lib/components/ui/Confetti.svelte';
 	import Modal from '$lib/components/ui/Modal.svelte';
+	import Test from '$lib/components/ui/Test.svelte';
 	import Value from '$lib/components/ui/Value.svelte';
+	import { testIds } from '$lib/constants/test-ids.constants';
 	import { authSignedOut } from '$lib/derived/auth.derived';
 	import { missionControlIdDerived } from '$lib/derived/mission-control.derived';
 	import { createSatelliteWizard } from '$lib/services/wizard.services';
@@ -20,8 +22,6 @@
 	import type { JunoModalDetail } from '$lib/types/modal';
 	import type { WizardCreateProgress } from '$lib/types/progress-wizard';
 	import { navigateToSatellite } from '$lib/utils/nav.utils';
-	import Test from '$lib/components/ui/Test.svelte';
-	import { testIds } from '$lib/constants/test-ids.constants';
 	import { testId } from '$lib/utils/test.utils';
 
 	interface Props {
@@ -124,10 +124,10 @@
 						name="satellite_name"
 						autocomplete="off"
 						data-1p-ignore
+						data-tid={testId(testIds.createSatellite.input)}
 						placeholder={$i18n.satellites.enter_name}
 						required
 						type="text"
-						data-tid={testId(testIds.createSatellite.input)}
 						bind:value={satelliteName}
 					/>
 				</Value>

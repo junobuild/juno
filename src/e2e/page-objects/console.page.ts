@@ -36,13 +36,16 @@ export class ConsolePage extends IdentityPage {
 
 	async createSatellite(): Promise<void> {
 		await expect(this.page.getByTestId(testIds.createSatellite.launch)).toBeVisible();
+
 		await this.page.getByTestId(testIds.createSatellite.launch).click();
 
 		await expect(this.page.getByTestId(testIds.createSatellite.create)).toBeVisible();
+
 		await this.page.getByTestId(testIds.createSatellite.input).fill('Test');
 		await this.page.getByTestId(testIds.createSatellite.create).click();
 
 		await expect(this.page.getByTestId(testIds.createSatellite.continue)).toBeVisible();
+
 		await this.page.getByTestId(testIds.createSatellite.continue).click();
 	}
 
@@ -54,6 +57,7 @@ export class ConsolePage extends IdentityPage {
 		await this.page.getByTestId(testIds.satelliteOverview.visit).click();
 
 		const satellitePage = await satellitePagePromise;
+
 		await expect(satellitePage).toHaveTitle('Juno / Satellite');
 
 		return satellitePage;

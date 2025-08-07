@@ -3,15 +3,15 @@
 	import type { Satellite } from '$declarations/mission_control/mission_control.did';
 	import ExternalLink from '$lib/components/ui/ExternalLink.svelte';
 	import SkeletonText from '$lib/components/ui/SkeletonText.svelte';
+	import Test from '$lib/components/ui/Test.svelte';
 	import Value from '$lib/components/ui/Value.svelte';
+	import { testIds } from '$lib/constants/test-ids.constants';
 	import {
 		satelliteCustomDomainsLoaded,
 		sortedSatelliteCustomDomains
 	} from '$lib/derived/satellite-custom-domains.derived';
 	import { i18n } from '$lib/stores/i18n.store';
 	import { satelliteUrl } from '$lib/utils/satellite.utils';
-	import Test from '$lib/components/ui/Test.svelte';
-	import { testIds } from '$lib/constants/test-ids.constants';
 
 	interface Props {
 		satellite: Satellite;

@@ -38,3 +38,9 @@ observatory-v*.wasm.gz
 out/
 tmp/
 juno.package.json
+
+# Playwright
+/test-results/
+/playwright-report/
+/blob-report/
+/playwright/.cache/

@@ -21,23 +21,23 @@ runs:
     - name: Set up docker buildx
       uses: docker/setup-buildx-action@v3
 
-    - name: Build ${{ input.name }}
+    - name: Build ${{ inputs.name }}
       uses: docker/build-push-action@v5
       with:
         file: Dockerfile
         cache-from: type=gha,scope=cached-stage
         # Exports the artefacts from the final stage
         outputs: ./out
-        target: ${{ input.target }}
+        target: ${{ inputs.target }}
 
-    - run: mv out/${{ input.wasm }} ${{ input.wasm }}
+    - run: mv out/${{ inputs.wasm }} ${{ inputs.wasm }}
       shell: bash
 
-    - name: Upload ${{ input.name }}
+    - name: Upload ${{ inputs.name }}
       uses: actions/upload-artifact@v4
       with:
         # name is the name used to display and retrieve the artifact
-        name: ${{ input.wasm }}
+        name: ${{ inputs.wasm }}
         # path is the name used as the file to upload and the name of the
         # downloaded file
-        path: ./${{ input.wasm }}
+        path: ./${{ inputs.wasm }}

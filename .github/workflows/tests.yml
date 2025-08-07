@@ -72,28 +72,12 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Set up docker buildx
-        uses: docker/setup-buildx-action@v3
-
-      - name: Build ${{ matrix.name }}
-        uses: docker/build-push-action@v5
+      - name: Build and upload ${{ matrix.name }}
+        uses: ./.github/actions/docker-build
         with:
-          file: Dockerfile
-          cache-from: type=gha,scope=cached-stage
-          # Exports the artefacts from the final stage
-          outputs: ./out
+          name: ${{ matrix.name }}
+          wasm: ${{ matrix.wasm }}
           target: ${{ matrix.target }}
-
-      - run: mv out/${{ matrix.wasm }} ${{ matrix.wasm }}
-
-      - name: Upload ${{ matrix.name }}
-        uses: actions/upload-artifact@v4
-        with:
-          # name is the name used to display and retrieve the artifact
-          name: ${{ matrix.wasm }}
-          # path is the name used as the file to upload and the name of the
-          # downloaded file
-          path: ./${{ matrix.wasm }}
 
   tests:
     runs-on: ubuntu-latest
@@ -110,53 +94,8 @@ jobs:
       - name: Prepare
         uses: ./.github/actions/prepare
 
-      - name: Download satellite.wasm.gz
-        uses: actions/download-artifact@v4
-        with:
-          name: satellite.wasm.gz
-          path: .
-
-      - name: Download orbiter.wasm.gz
-        uses: actions/download-artifact@v4
-        with:
-          name: orbiter.wasm.gz
-          path: .
-
-      - name: Download sputnik.wasm.gz
-        uses: actions/download-artifact@v4
-        with:
-          name: sputnik.wasm.gz
-          path: .
-
-      - name: Download console.wasm.gz
-        uses: actions/download-artifact@v4
-        with:
-          name: console.wasm.gz
-          path: .
-
-      - name: Download observatory.wasm.gz
-        uses: actions/download-artifact@v4
-        with:
-          name: observatory.wasm.gz
-          path: .
-
-      - name: Download mission_control.wasm.gz
-        uses: actions/download-artifact@v4
-        with:
-          name: mission_control.wasm.gz
-          path: .
-
-      - name: Download test_satellite.wasm.gz
-        uses: actions/download-artifact@v4
-        with:
-          name: test_satellite.wasm.gz
-          path: .
-
-      - name: Download test_sputnik.wasm.gz
-        uses: actions/download-artifact@v4
-        with:
-          name: test_sputnik.wasm.gz
-          path: .
+      - name: Download WASM Artifacts
+        uses: ./.github/actions/download-wasms
 
       - name: Tests
         run: npm run test -- --shard=${{ matrix.shardIndex }}/${{ matrix.shardTotal }}
@@ -175,53 +114,8 @@ jobs:
       - name: Prepare Playwright
         run: npm run e2e:playwright:install
 
-      - name: Download satellite.wasm.gz
-        uses: actions/download-artifact@v4
-        with:
-          name: satellite.wasm.gz
-          path: .
-
-      - name: Download orbiter.wasm.gz
-        uses: actions/download-artifact@v4
-        with:
-          name: orbiter.wasm.gz
-          path: .
-
-      - name: Download sputnik.wasm.gz
-        uses: actions/download-artifact@v4
-        with:
-          name: sputnik.wasm.gz
-          path: .
-
-      - name: Download console.wasm.gz
-        uses: actions/download-artifact@v4
-        with:
-          name: console.wasm.gz
-          path: .
-
-      - name: Download observatory.wasm.gz
-        uses: actions/download-artifact@v4
-        with:
-          name: observatory.wasm.gz
-          path: .
-
-      - name: Download mission_control.wasm.gz
-        uses: actions/download-artifact@v4
-        with:
-          name: mission_control.wasm.gz
-          path: .
-
-      - name: Download test_satellite.wasm.gz
-        uses: actions/download-artifact@v4
-        with:
-          name: test_satellite.wasm.gz
-          path: .
-
-      - name: Download test_sputnik.wasm.gz
-        uses: actions/download-artifact@v4
-        with:
-          name: test_sputnik.wasm.gz
-          path: .
+      - name: Download WASM Artifacts
+        uses: ./.github/actions/download-wasms
 
       - name: E2E tests
         run: npm run e2e:ci

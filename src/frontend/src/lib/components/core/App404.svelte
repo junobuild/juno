@@ -7,9 +7,8 @@
 
 <ContainerCentered>
 	<p class="intro-404" role="presentation">
-		<span>4</span><IconJunoLogo size="7.6rem" /><span>4</span><span class="visually-hidden"
-			>404</span
-		>
+		<span aria-hidden="true">4</span><IconJunoLogo size="7.6rem" /><span aria-hidden="true">4</span
+		><span class="visually-hidden">404</span>
 	</p>
 
 	<h1>{$i18n.not_found.title}</h1>

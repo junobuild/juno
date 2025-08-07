@@ -94,53 +94,8 @@ jobs:
       - name: Prepare
         uses: ./.github/actions/prepare
 
-      - name: Download satellite.wasm.gz
-        uses: actions/download-artifact@v4
-        with:
-          name: satellite.wasm.gz
-          path: .
-
-      - name: Download orbiter.wasm.gz
-        uses: actions/download-artifact@v4
-        with:
-          name: orbiter.wasm.gz
-          path: .
-
-      - name: Download sputnik.wasm.gz
-        uses: actions/download-artifact@v4
-        with:
-          name: sputnik.wasm.gz
-          path: .
-
-      - name: Download console.wasm.gz
-        uses: actions/download-artifact@v4
-        with:
-          name: console.wasm.gz
-          path: .
-
-      - name: Download observatory.wasm.gz
-        uses: actions/download-artifact@v4
-        with:
-          name: observatory.wasm.gz
-          path: .
-
-      - name: Download mission_control.wasm.gz
-        uses: actions/download-artifact@v4
-        with:
-          name: mission_control.wasm.gz
-          path: .
-
-      - name: Download test_satellite.wasm.gz
-        uses: actions/download-artifact@v4
-        with:
-          name: test_satellite.wasm.gz
-          path: .
-
-      - name: Download test_sputnik.wasm.gz
-        uses: actions/download-artifact@v4
-        with:
-          name: test_sputnik.wasm.gz
-          path: .
+      - name: Download WASM Artifacts
+        uses: ./.github/actions/download-wasms
 
       - name: Tests
         run: npm run test -- --shard=${{ matrix.shardIndex }}/${{ matrix.shardTotal }}
@@ -159,53 +114,8 @@ jobs:
       - name: Prepare Playwright
         run: npm run e2e:playwright:install
 
-      - name: Download satellite.wasm.gz
-        uses: actions/download-artifact@v4
-        with:
-          name: satellite.wasm.gz
-          path: .
-
-      - name: Download orbiter.wasm.gz
-        uses: actions/download-artifact@v4
-        with:
-          name: orbiter.wasm.gz
-          path: .
-
-      - name: Download sputnik.wasm.gz
-        uses: actions/download-artifact@v4
-        with:
-          name: sputnik.wasm.gz
-          path: .
-
-      - name: Download console.wasm.gz
-        uses: actions/download-artifact@v4
-        with:
-          name: console.wasm.gz
-          path: .
-
-      - name: Download observatory.wasm.gz
-        uses: actions/download-artifact@v4
-        with:
-          name: observatory.wasm.gz
-          path: .
-
-      - name: Download mission_control.wasm.gz
-        uses: actions/download-artifact@v4
-        with:
-          name: mission_control.wasm.gz
-          path: .
-
-      - name: Download test_satellite.wasm.gz
-        uses: actions/download-artifact@v4
-        with:
-          name: test_satellite.wasm.gz
-          path: .
-
-      - name: Download test_sputnik.wasm.gz
-        uses: actions/download-artifact@v4
-        with:
-          name: test_sputnik.wasm.gz
-          path: .
+      - name: Download WASM Artifacts
+        uses: ./.github/actions/download-wasms
 
       - name: E2E tests
         run: npm run e2e:ci

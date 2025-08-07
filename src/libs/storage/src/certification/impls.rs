@@ -64,7 +64,7 @@ impl CertifiedAssetHashes {
         let combined_proof = fallback_paths
             .into_iter()
             .fold(absence_proof, |accumulator, path| {
-                let new_proof = self.tree_v2.witness(&[path]);
+                let new_proof = self.tree_v2.witness(&path);
                 merge_hash_trees(accumulator, new_proof)
             });
 

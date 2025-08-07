@@ -56,28 +56,12 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Set up docker buildx
-        uses: docker/setup-buildx-action@v3
-
-      - name: Build ${{ matrix.name }}
-        uses: docker/build-push-action@v5
+      - name: Build and upload ${{ matrix.name }}
+        uses: ./.github/actions/docker-build
         with:
-          file: Dockerfile
-          cache-from: type=gha,scope=cached-stage
-          # Exports the artefacts from the final stage
-          outputs: ./out
+          name: ${{ matrix.name }}
+          wasm: ${{ matrix.wasm }}
           target: ${{ matrix.target }}
-
-      - run: mv out/${{ matrix.wasm }} ${{ matrix.wasm }}
-
-      - name: Upload ${{ matrix.name }}
-        uses: actions/upload-artifact@v4
-        with:
-          # name is the name used to display and retrieve the artifact
-          name: ${{ matrix.wasm }}
-          # path is the name used as the file to upload and the name of the
-          # downloaded file
-          path: ./${{ matrix.wasm }}
 
   update_screenshots:
     runs-on: ubuntu-latest

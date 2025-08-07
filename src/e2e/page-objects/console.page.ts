@@ -1,7 +1,8 @@
-import { IdentityPage, type IdentityPageParams } from './identity.page';
-import { InternetIdentityPage } from '@dfinity/internet-identity-playwright';
 import { testIds } from '$lib/constants/test-ids.constants';
+import { InternetIdentityPage } from '@dfinity/internet-identity-playwright';
 import { expect } from '@playwright/test';
+import type { Page } from 'playwright-core';
+import { IdentityPage, type IdentityPageParams } from './identity.page';
 
 export class ConsolePage extends IdentityPage {
 	#consoleIIPage: InternetIdentityPage;
@@ -30,7 +31,7 @@ export class ConsolePage extends IdentityPage {
 		const CONTAINER_URL = 'http://127.0.0.1:5987';
 		const INTERNET_IDENTITY_ID = 'rdmx6-jaaaa-aaaaa-aaadq-cai';
 
-		await this.#consoleIIPage.waitReady({url: CONTAINER_URL, canisterId: INTERNET_IDENTITY_ID});
+		await this.#consoleIIPage.waitReady({ url: CONTAINER_URL, canisterId: INTERNET_IDENTITY_ID });
 	}
 
 	async createSatellite(): Promise<void> {
@@ -38,15 +39,23 @@ export class ConsolePage extends IdentityPage {
 		await this.page.getByTestId(testIds.createSatellite.launch).click();
 
 		await expect(this.page.getByTestId(testIds.createSatellite.create)).toBeVisible();
-		await this.page.getByTestId(testIds.createSatellite.input).fill("Test");
+		await this.page.getByTestId(testIds.createSatellite.input).fill('Test');
 		await this.page.getByTestId(testIds.createSatellite.create).click();
 
 		await expect(this.page.getByTestId(testIds.createSatellite.continue)).toBeVisible();
 		await this.page.getByTestId(testIds.createSatellite.continue).click();
 	}
 
-	async visitSatellite(): Promise<void> {
+	async visitSatellite(): Promise<Page> {
 		await expect(this.page.getByTestId(testIds.satelliteOverview.visit)).toBeVisible();
+
+		const satellitePagePromise = this.context.waitForEvent('page');
+
 		await this.page.getByTestId(testIds.satelliteOverview.visit).click();
+
+		const satellitePage = await satellitePagePromise;
+		await expect(satellitePage).toHaveTitle('Juno / Satellite');
+
+		return satellitePage;
 	}
 }

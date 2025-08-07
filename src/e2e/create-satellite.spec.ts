@@ -1,5 +1,6 @@
 import { initTestSuite } from './utils/init.utils';
 import { testWithII } from '@dfinity/internet-identity-playwright';
+import { expect } from '@playwright/test';
 
 const getConsolePage = initTestSuite();
 
@@ -12,5 +13,7 @@ testWithII('should create a satellite', async () => {
 testWithII('should visite newly create satellite', async () => {
 	const consolePage = getConsolePage();
 
-	await consolePage.visitSatellite();
+	const satellitePage = await consolePage.visitSatellite();
+
+	await expect(satellitePage).toHaveScreenshot();
 });

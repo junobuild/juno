@@ -22,6 +22,7 @@
 	import { navigateToSatellite } from '$lib/utils/nav.utils';
 	import Test from "$lib/components/ui/Test.svelte";
 	import {testIds} from "$lib/constants/test-ids.constants";
+	import {testId} from "$lib/utils/test.utils";
 
 	interface Props {
 		detail: JunoModalDetail;
@@ -126,6 +127,7 @@
 						placeholder={$i18n.satellites.enter_name}
 						required
 						type="text"
+						data-tid={testId(testIds.createSatellite.input)}
 						bind:value={satelliteName}
 					/>
 				</Value>

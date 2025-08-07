@@ -1,0 +1,52 @@
+import { IdentityPage, type IdentityPageParams } from './identity.page';
+import { InternetIdentityPage } from '@dfinity/internet-identity-playwright';
+import { testIds } from '$lib/constants/test-ids.constants';
+import { expect } from '@playwright/test';
+
+export class ConsolePage extends IdentityPage {
+	#consoleIIPage: InternetIdentityPage;
+
+	constructor(params: IdentityPageParams) {
+		super(params);
+
+		this.#consoleIIPage = new InternetIdentityPage({
+			page: this.page,
+			context: this.context,
+			browser: this.browser
+		});
+	}
+
+	async goto(): Promise<void> {
+		await this.page.goto('http://localhost:5173');
+	}
+
+	async signIn(): Promise<void> {
+		this.identity = await this.#consoleIIPage.signInWithNewIdentity({
+			selector: `[data-tid=${testIds.auth.signIn}]`
+		});
+	}
+
+	async waitReady(): Promise<void> {
+		const CONTAINER_URL = 'http://127.0.0.1:5987';
+		const INTERNET_IDENTITY_ID = 'rdmx6-jaaaa-aaaaa-aaadq-cai';
+
+		await this.#consoleIIPage.waitReady({url: CONTAINER_URL, canisterId: INTERNET_IDENTITY_ID});
+	}
+
+	async createSatellite(): Promise<void> {
+		await expect(this.page.getByTestId(testIds.createSatellite.launch)).toBeVisible();
+		await this.page.getByTestId(testIds.createSatellite.launch).click();
+
+		await expect(this.page.getByTestId(testIds.createSatellite.create)).toBeVisible();
+		await this.page.getByTestId(testIds.createSatellite.input).fill("Test");
+		await this.page.getByTestId(testIds.createSatellite.create).click();
+
+		await expect(this.page.getByTestId(testIds.createSatellite.continue)).toBeVisible();
+		await this.page.getByTestId(testIds.createSatellite.continue).click();
+	}
+
+	async visitSatellite(): Promise<void> {
+		await expect(this.page.getByTestId(testIds.satelliteOverview.visit)).toBeVisible();
+		await this.page.getByTestId(testIds.satelliteOverview.visit).click();
+	}
+}

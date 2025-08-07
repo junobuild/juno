@@ -1,4 +1,4 @@
-type TestCTAType = 'btn' | 'link';
+type TestCTAType = 'btn' | 'link' | 'input';
 
 type TestAction = string;
 

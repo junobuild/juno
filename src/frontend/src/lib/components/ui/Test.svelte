@@ -1,18 +1,16 @@
 <script lang="ts">
     import type {TestId} from "$lib/types/test-id";
     import type { Snippet } from 'svelte';
-    import { isDev, isNotSkylab } from '$lib/env/app.env';
+	import {testId} from "$lib/utils/test.utils";
 
 	interface Props {
 		testId: TestId;
 		children: Snippet;
 	}
 
-	let { testId, children }: Props = $props();
+	let { testId: testIdProp, children }: Props = $props();
 
-	let dev = isDev() && isNotSkylab();
-
-	let dataTid = $derived(dev ? testId : undefined);
+	let dataTid = $derived(testId(testIdProp));
 </script>
 
 <span data-tid={dataTid}>

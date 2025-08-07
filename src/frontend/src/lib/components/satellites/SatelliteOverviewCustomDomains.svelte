@@ -41,7 +41,7 @@
 			<div in:fade>
 				{#each urls as { href, host }, index (index)}
 					<ExternalLink {href}>
-						<Test testId={testIds.createSatellite.visit}>
+						<Test testId={testIds.satelliteOverview.visit}>
 							<span class="host">{host}</span>
 						</Test>
 					</ExternalLink>

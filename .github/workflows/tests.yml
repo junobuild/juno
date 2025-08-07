@@ -160,8 +160,74 @@ jobs:
       - name: Tests
         run: npm run test -- --shard=${{ matrix.shardIndex }}/${{ matrix.shardTotal }}
 
+  e2e:
+    runs-on: ubuntu-latest
+    needs: docker-build
+    strategy:
+      matrix:
+        shardIndex: [ 1, 2 ]
+        shardTotal: [ 2 ]
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Prepare
+        uses: ./.github/actions/prepare
+
+      - name: Download satellite.wasm.gz
+        uses: actions/download-artifact@v4
+        with:
+          name: satellite.wasm.gz
+          path: .
+
+      - name: Download orbiter.wasm.gz
+        uses: actions/download-artifact@v4
+        with:
+          name: orbiter.wasm.gz
+          path: .
+
+      - name: Download sputnik.wasm.gz
+        uses: actions/download-artifact@v4
+        with:
+          name: sputnik.wasm.gz
+          path: .
+
+      - name: Download console.wasm.gz
+        uses: actions/download-artifact@v4
+        with:
+          name: console.wasm.gz
+          path: .
+
+      - name: Download observatory.wasm.gz
+        uses: actions/download-artifact@v4
+        with:
+          name: observatory.wasm.gz
+          path: .
+
+      - name: Download mission_control.wasm.gz
+        uses: actions/download-artifact@v4
+        with:
+          name: mission_control.wasm.gz
+          path: .
+
+      - name: Download test_satellite.wasm.gz
+        uses: actions/download-artifact@v4
+        with:
+          name: test_satellite.wasm.gz
+          path: .
+
+      - name: Download test_sputnik.wasm.gz
+        uses: actions/download-artifact@v4
+        with:
+          name: test_sputnik.wasm.gz
+          path: .
+
+      - name: E2E tests
+        run: npm run e2e:ci -- --shard=${{ matrix.shardIndex }}/${{ matrix.shardTotal }}
+
   may-merge:
-    needs: ['tests']
+    needs: ['tests', 'e2e']
     runs-on: ubuntu-latest
     steps:
       - name: Cleared for merging

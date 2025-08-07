@@ -12,6 +12,7 @@ on:
       - 'src/sputnik/**'
       - 'src/libs/**'
       - 'src/tests/**'
+      - 'src/e2e/**'
       - 'rust-toolchain.toml'
       - 'Cargo.toml'
       - 'docker/**'

@@ -16,7 +16,7 @@ runs:
       shell: bash
       run: |
         set -e
-        node ./scripts/console.controller.mjs
+        node ./scripts/console.controller.mjs --headless
 
     # We have copied the WASMs into target/deploy
     # Therefore, the latest Satellite, Mission Control and Orbiter

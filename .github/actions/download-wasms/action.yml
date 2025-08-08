@@ -2,6 +2,12 @@ name: Download WASM Artifacts
 
 description: Downloads the WASM build artifacts
 
+inputs:
+  path:
+    description: Target directory for downloaded artifacts
+    required: false
+    default: "."
+
 runs:
   using: "composite"
   steps:
@@ -9,46 +15,46 @@ runs:
       uses: actions/download-artifact@v4
       with:
         name: satellite.wasm.gz
-        path: .
+        path: ${{ inputs.path }}
 
     - name: Download orbiter.wasm.gz
       uses: actions/download-artifact@v4
       with:
         name: orbiter.wasm.gz
-        path: .
+        path: ${{ inputs.path }}
 
     - name: Download sputnik.wasm.gz
       uses: actions/download-artifact@v4
       with:
         name: sputnik.wasm.gz
-        path: .
+        path: ${{ inputs.path }}
 
     - name: Download console.wasm.gz
       uses: actions/download-artifact@v4
       with:
         name: console.wasm.gz
-        path: .
+        path: ${{ inputs.path }}
 
     - name: Download observatory.wasm.gz
       uses: actions/download-artifact@v4
       with:
         name: observatory.wasm.gz
-        path: .
+        path: ${{ inputs.path }}
 
     - name: Download mission_control.wasm.gz
       uses: actions/download-artifact@v4
       with:
         name: mission_control.wasm.gz
-        path: .
+        path: ${{ inputs.path }}
 
     - name: Download test_satellite.wasm.gz
       uses: actions/download-artifact@v4
       with:
         name: test_satellite.wasm.gz
-        path: .
+        path: ${{ inputs.path }}
 
     - name: Download test_sputnik.wasm.gz
       uses: actions/download-artifact@v4
       with:
         name: test_sputnik.wasm.gz
-        path: .
+        path: ${{ inputs.path }}

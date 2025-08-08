@@ -14,7 +14,7 @@ try {
 	// and no changes have been yet developed to the Console.
 	if (err instanceof UpgradeCodeUnchangedError) {
 		console.warn(err.message);
-		return;
+		process.exit(0);
 	}
 
 	throw err;

@@ -1,19 +1,30 @@
 import { testWithII } from '@dfinity/internet-identity-playwright';
 import { expect } from '@playwright/test';
+import type { BrowserContextOptions } from 'playwright-core';
 import { initTestSuite } from './utils/init.utils';
 
 const getConsolePage = initTestSuite();
 
-testWithII('should create a satellite', async () => {
-	const consolePage = getConsolePage();
+const themes: BrowserContextOptions['colorScheme'][] = ['light', 'dark'];
 
-	await consolePage.createSatellite();
-});
+themes.forEach((colorScheme) => {
+	testWithII.describe(`${colorScheme} mode`, () => {
+		testWithII.use({
+			colorScheme
+		});
 
-testWithII('should visite newly create satellite', async () => {
-	const consolePage = getConsolePage();
+		testWithII('should create a satellite', async () => {
+			const consolePage = getConsolePage();
 
-	const satellitePage = await consolePage.visitSatellite();
+			await consolePage.createSatellite();
+		});
 
-	await expect(satellitePage).toHaveScreenshot({ fullPage: true });
+		testWithII('should visite newly create satellite', async () => {
+			const consolePage = getConsolePage();
+
+			const satellitePage = await consolePage.visitSatellite();
+
+			await expect(satellitePage).toHaveScreenshot({ fullPage: true });
+		});
+	});
 });

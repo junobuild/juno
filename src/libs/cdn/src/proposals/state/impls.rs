@@ -12,7 +12,7 @@ use junobuild_shared::version::next_version;
 use std::borrow::Cow;
 
 impl Storable for ProposalKey {
-    fn to_bytes(&self) -> Cow<[u8]> {
+    fn to_bytes(&self) -> Cow<'_, [u8]> {
         serialize_to_bytes(self)
     }
 
@@ -28,7 +28,7 @@ impl Storable for ProposalKey {
 }
 
 impl Storable for Proposal {
-    fn to_bytes(&self) -> Cow<[u8]> {
+    fn to_bytes(&self) -> Cow<'_, [u8]> {
         serialize_to_bytes(self)
     }
 

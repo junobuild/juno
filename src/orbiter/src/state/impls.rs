@@ -36,7 +36,7 @@ impl Default for State {
 }
 
 impl Storable for StoredPageView {
-    fn to_bytes(&self) -> Cow<[u8]> {
+    fn to_bytes(&self) -> Cow<'_, [u8]> {
         match self {
             StoredPageView::Unbounded(page_view) => serialize_to_bytes(page_view),
             StoredPageView::Bounded(page_view) => serialize_bounded_page_view_to_bytes(page_view),
@@ -86,7 +86,7 @@ impl Versioned for StoredPageView {
 }
 
 impl Storable for StoredTrackEvent {
-    fn to_bytes(&self) -> Cow<[u8]> {
+    fn to_bytes(&self) -> Cow<'_, [u8]> {
         match self {
             StoredTrackEvent::Unbounded(track_event) => serialize_to_bytes(track_event),
             StoredTrackEvent::Bounded(track_event) => {
@@ -142,7 +142,7 @@ impl Versioned for StoredTrackEvent {
 }
 
 impl Storable for PerformanceMetric {
-    fn to_bytes(&self) -> Cow<[u8]> {
+    fn to_bytes(&self) -> Cow<'_, [u8]> {
         serialize_to_bytes(self)
     }
 
@@ -164,7 +164,7 @@ impl Versioned for PerformanceMetric {
 }
 
 impl Storable for AnalyticKey {
-    fn to_bytes(&self) -> Cow<[u8]> {
+    fn to_bytes(&self) -> Cow<'_, [u8]> {
         serialize_bounded_analytic_key_to_bytes(self)
     }
 
@@ -183,7 +183,7 @@ impl Storable for AnalyticKey {
 }
 
 impl Storable for AnalyticSatelliteKey {
-    fn to_bytes(&self) -> Cow<[u8]> {
+    fn to_bytes(&self) -> Cow<'_, [u8]> {
         serialize_bounded_analytic_satellite_key_to_bytes(self)
     }
 

@@ -301,7 +301,7 @@ impl SettingsMonitoring for MissionControlSettings {
 }
 
 impl Storable for MonitoringHistory {
-    fn to_bytes(&self) -> Cow<[u8]> {
+    fn to_bytes(&self) -> Cow<'_, [u8]> {
         serialize_to_bytes(self)
     }
 
@@ -317,7 +317,7 @@ impl Storable for MonitoringHistory {
 }
 
 impl Storable for MonitoringHistoryKey {
-    fn to_bytes(&self) -> Cow<[u8]> {
+    fn to_bytes(&self) -> Cow<'_, [u8]> {
         serialize_to_bytes(self)
     }
 

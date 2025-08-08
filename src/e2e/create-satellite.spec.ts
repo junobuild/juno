@@ -15,5 +15,5 @@ testWithII('should visite newly create satellite', async () => {
 
 	const satellitePage = await consolePage.visitSatellite();
 
-	await expect(satellitePage).toHaveScreenshot();
+	await expect(satellitePage).toHaveScreenshot({ fullPage: true });
 });

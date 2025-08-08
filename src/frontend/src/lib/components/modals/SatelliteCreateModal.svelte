@@ -88,7 +88,7 @@
 
 		<div class="msg">
 			<p>{$i18n.satellites.ready}</p>
-			<button data-tid={testId(testIds.createSatellite.continue)} onclick={navigate}>
+			<button {...testId(testIds.createSatellite.continue)} onclick={navigate}>
 				{$i18n.core.continue}
 			</button>
 		</div>
@@ -121,7 +121,7 @@
 						name="satellite_name"
 						autocomplete="off"
 						data-1p-ignore
-						data-tid={testId(testIds.createSatellite.input)}
+						{...testId(testIds.createSatellite.input)}
 						placeholder={$i18n.satellites.enter_name}
 						required
 						type="text"
@@ -132,7 +132,7 @@
 				<CanisterAdvancedOptions {detail} bind:subnetId bind:monitoringStrategy />
 
 				<button
-					data-tid={testId(testIds.createSatellite.create)}
+					{...testId(testIds.createSatellite.create)}
 					disabled={$authSignedOut || isNullish($missionControlIdDerived) || insufficientFunds}
 					type="submit"
 				>

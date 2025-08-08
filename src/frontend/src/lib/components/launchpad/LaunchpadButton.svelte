@@ -25,7 +25,7 @@
 	}: Props = $props();
 </script>
 
-<button class="article" class:primary class:row data-tid={testId(testIdProp)} {disabled} {onclick}>
+<button class="article" class:primary class:row {...testId(testIdProp)} {disabled} {onclick}>
 	{#if nonNullish(summary)}
 		<div class="summary">
 			{@render summary()}

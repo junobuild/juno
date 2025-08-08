@@ -29,7 +29,7 @@
 
 	{#snippet action()}
 		<button
-			data-tid={testId(testIds.auth.signIn)}
+			{...testId(testIds.auth.signIn)}
 			disabled={$isBusy}
 			onclick={async () => await signIn({})}
 			><IconIc size="20px" />

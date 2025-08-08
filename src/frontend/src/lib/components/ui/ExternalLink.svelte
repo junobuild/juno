@@ -26,7 +26,7 @@
 <a
 	class:underline
 	aria-label={ariaLabel}
-	data-tid={testId(testIdProp)}
+	{...testId(testIdProp)}
 	{href}
 	rel="external noopener noreferrer"
 	target="_blank"

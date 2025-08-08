@@ -1,7 +1,11 @@
 #!/usr/bin/env node
 
 import { IDL } from '@dfinity/candid';
-import { UpgradeCodeProgressStep, upgradeModule } from '@junobuild/admin';
+import {
+	UpgradeCodeProgressStep,
+	UpgradeCodeUnchangedError,
+	upgradeModule
+} from '@junobuild/admin';
 import { fileExists } from '@junobuild/cli-tools';
 import { createHash } from 'crypto';
 import { readFile } from 'fs/promises';
@@ -85,6 +89,14 @@ export const upgrade = async ({ sourceFilename, canisterId }) => {
 		console.log(`Module upgraded to hash ${hash}.`);
 	} catch (err) {
 		console.log('');
+
+		// In the CI, it can happen that we are using the newest Docker image
+		// and no changes have been yet developed to the Console.
+		if (err instanceof UpgradeCodeUnchangedError) {
+			console.warn(err.message);
+			process.exit(0);
+		}
+
 		console.error('message' in err ? err.message : err);
 		process.exit(1);
 	}

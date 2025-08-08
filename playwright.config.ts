@@ -18,6 +18,12 @@ export default defineConfig({
 			caret: 'hide'
 		}
 	},
+	webServer: {
+		command: 'npm run prepare && npm run dev',
+		url: 'http://localhost:5173',
+		reuseExistingServer: !!process.env.CI,
+		timeout: 120 * 1000
+	},
 	use: {
 		testIdAttribute: 'data-tid',
 		baseURL: 'http://localhost:5173',

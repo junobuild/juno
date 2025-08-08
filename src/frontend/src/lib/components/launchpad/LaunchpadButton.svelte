@@ -1,6 +1,8 @@
 <script lang="ts">
 	import { isNullish, nonNullish } from '@dfinity/utils';
 	import type { Snippet } from 'svelte';
+	import type { TestId } from '$lib/types/test-id';
+	import { testId } from '$lib/utils/test.utils';
 
 	interface Props {
 		summary?: Snippet;
@@ -8,13 +10,22 @@
 		disabled?: boolean;
 		primary?: boolean;
 		row?: boolean;
+		testId?: TestId;
 		onclick: () => Promise<void>;
 	}
 
-	let { children, summary, disabled, primary = false, row = false, onclick }: Props = $props();
+	let {
+		children,
+		summary,
+		disabled,
+		testId: testIdProp,
+		primary = false,
+		row = false,
+		onclick
+	}: Props = $props();
 </script>
 
-<button class="article" class:primary class:row {disabled} {onclick}>
+<button class="article" class:primary class:row {...testId(testIdProp)} {disabled} {onclick}>
 	{#if nonNullish(summary)}
 		<div class="summary">
 			{@render summary()}

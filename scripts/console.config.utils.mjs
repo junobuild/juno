@@ -3,6 +3,7 @@ import { nonNullish } from '@dfinity/utils';
 import { assertAnswerCtrlC } from '@junobuild/cli-tools';
 import Conf from 'conf';
 import prompts from 'prompts';
+import { isHeadless } from './utils.mjs';
 
 const askForPassword = async () => {
 	const { encryptionKey } = await prompts([
@@ -25,7 +26,7 @@ const initConfig = async (mainnet) => {
 		return;
 	}
 
-	const encryptionKey = await askForPassword();
+	const encryptionKey = isHeadless() ? false : await askForPassword();
 
 	const projectName = `juno-${mainnet ? '' : 'dev-'}console`;
 

@@ -8,11 +8,11 @@ use std::borrow::Cow;
 /// * `value` - A reference to the value to serialize.
 ///
 /// # Returns
-/// A `Cow<[u8]>` representing the serialized data.
+/// A `Cow<'_, [u8]>` representing the serialized data.
 ///
 /// # Panics
 /// Panics if serialization fails.
-pub fn serialize_to_bytes<T: Serialize>(value: &T) -> Cow<[u8]> {
+pub fn serialize_to_bytes<T: Serialize>(value: &T) -> Cow<'_, [u8]> {
     let mut bytes = vec![];
     into_writer(value, &mut bytes).expect("Failed to serialize to bytes");
     Cow::Owned(bytes)

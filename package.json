@@ -50,7 +50,7 @@
 		"e2e:ci": "playwright test --reporter=html",
 		"e2e:snapshots": "playwright test --update-snapshots --reporter=list",
 		"e2e:report": "playwright show-report",
-		"e2e:playwright:install": "playwright install --with-deps",
+		"e2e:playwright:install": "playwright install chromium --with-deps",
 		"build:console": "scripts/cargo.sh --console",
 		"build:observatory": "scripts/cargo.sh --observatory",
 		"build:satellite": "scripts/cargo.sh --satellite",
@@ -61,10 +61,12 @@
 		"build:test-satellite": "scripts/cargo.sh --test_satellite",
 		"build:test-sputnik": "scripts/cargo.sh --test_sputnik",
 		"build:modules": "npm run build:console && npm run build:observatory && npm run build:satellite && npm run build:mission-control && npm run build:orbiter",
-		"emulator": "./scripts/emulator.sh"
+		"emulator": "./scripts/emulator.sh",
+		"emulator:wait": "node scripts/emulator.wait.mjs"
 	},
 	"devDependencies": {
 		"@dfinity/eslint-config-oisy-wallet": "^0.2.2",
+		"@dfinity/internet-identity-playwright": "^2.0.0",
 		"@dfinity/pic": "^0.13.1",
 		"@dfinity/response-verification": "^3.0.3",
 		"@junobuild/cli-tools": "^0.4.1",

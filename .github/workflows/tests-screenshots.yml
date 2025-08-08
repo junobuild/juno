@@ -84,6 +84,11 @@ jobs:
 
       - name: Download WASM Artifacts
         uses: ./.github/actions/download-wasms
+        with:
+          path: ./target/deploy
+
+      - name: Run emulator
+        uses: ./.github/actions/emulator
 
       - name: Run Playwright tests
         run: npm run e2e:snapshots

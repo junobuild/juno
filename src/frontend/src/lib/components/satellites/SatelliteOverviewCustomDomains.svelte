@@ -4,6 +4,7 @@
 	import ExternalLink from '$lib/components/ui/ExternalLink.svelte';
 	import SkeletonText from '$lib/components/ui/SkeletonText.svelte';
 	import Value from '$lib/components/ui/Value.svelte';
+	import { testIds } from '$lib/constants/test-ids.constants';
 	import {
 		satelliteCustomDomainsLoaded,
 		sortedSatelliteCustomDomains
@@ -38,7 +39,9 @@
 		{#if $satelliteCustomDomainsLoaded}
 			<div in:fade>
 				{#each urls as { href, host }, index (index)}
-					<ExternalLink {href}><span class="host">{host}</span></ExternalLink>
+					<ExternalLink {href} testId={testIds.satelliteOverview.visit}>
+						<span class="host">{host}</span>
+					</ExternalLink>
 				{/each}
 			</div>
 		{:else}

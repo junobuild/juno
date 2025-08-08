@@ -11,6 +11,7 @@
 	import Confetti from '$lib/components/ui/Confetti.svelte';
 	import Modal from '$lib/components/ui/Modal.svelte';
 	import Value from '$lib/components/ui/Value.svelte';
+	import { testIds } from '$lib/constants/test-ids.constants';
 	import { authSignedOut } from '$lib/derived/auth.derived';
 	import { missionControlIdDerived } from '$lib/derived/mission-control.derived';
 	import { createSatelliteWizard } from '$lib/services/wizard.services';
@@ -20,6 +21,7 @@
 	import type { JunoModalDetail } from '$lib/types/modal';
 	import type { WizardCreateProgress } from '$lib/types/progress-wizard';
 	import { navigateToSatellite } from '$lib/utils/nav.utils';
+	import { testId } from '$lib/utils/test.utils';
 
 	interface Props {
 		detail: JunoModalDetail;
@@ -86,7 +88,9 @@
 
 		<div class="msg">
 			<p>{$i18n.satellites.ready}</p>
-			<button onclick={navigate}>{$i18n.core.continue}</button>
+			<button {...testId(testIds.createSatellite.continue)} onclick={navigate}>
+				{$i18n.core.continue}
+			</button>
 		</div>
 	{:else if step === 'in_progress'}
 		<ProgressCreate
@@ -117,6 +121,7 @@
 						name="satellite_name"
 						autocomplete="off"
 						data-1p-ignore
+						{...testId(testIds.createSatellite.input)}
 						placeholder={$i18n.satellites.enter_name}
 						required
 						type="text"
@@ -127,9 +132,12 @@
 				<CanisterAdvancedOptions {detail} bind:subnetId bind:monitoringStrategy />
 
 				<button
+					{...testId(testIds.createSatellite.create)}
 					disabled={$authSignedOut || isNullish($missionControlIdDerived) || insufficientFunds}
-					type="submit">{$i18n.satellites.create}</button
+					type="submit"
 				>
+					{$i18n.satellites.create}
+				</button>
 			</form>
 		</CreditsGuard>
 	{/if}

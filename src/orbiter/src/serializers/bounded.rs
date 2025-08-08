@@ -60,7 +60,7 @@ pub fn serialize_bounded_page_view_into_bytes(page_view: &PageView) -> Vec<u8> {
     buf
 }
 
-pub fn serialize_bounded_page_view_to_bytes(page_view: &PageView) -> Cow<[u8]> {
+pub fn serialize_bounded_page_view_to_bytes(page_view: &PageView) -> Cow<'_, [u8]> {
     let buf = serialize_bounded_page_view_into_bytes(page_view);
     Cow::Owned(buf)
 }
@@ -200,7 +200,7 @@ pub fn serialize_bounded_track_event_into_bytes(track_event: &TrackEvent) -> Vec
     buf
 }
 
-pub fn serialize_bounded_track_event_to_bytes(track_event: &TrackEvent) -> Cow<[u8]> {
+pub fn serialize_bounded_track_event_to_bytes(track_event: &TrackEvent) -> Cow<'_, [u8]> {
     let buf = serialize_bounded_track_event_into_bytes(track_event);
     Cow::Owned(buf)
 }
@@ -268,7 +268,7 @@ pub fn serialize_bounded_analytic_key_into_bytes(key: &AnalyticKey) -> Vec<u8> {
     buf
 }
 
-pub fn serialize_bounded_analytic_key_to_bytes(key: &AnalyticKey) -> Cow<[u8]> {
+pub fn serialize_bounded_analytic_key_to_bytes(key: &AnalyticKey) -> Cow<'_, [u8]> {
     let buf = serialize_bounded_analytic_key_into_bytes(key);
     Cow::Owned(buf)
 }
@@ -300,7 +300,9 @@ pub fn serialize_bounded_analytic_satellite_key_into_bytes(key: &AnalyticSatelli
     buf
 }
 
-pub fn serialize_bounded_analytic_satellite_key_to_bytes(key: &AnalyticSatelliteKey) -> Cow<[u8]> {
+pub fn serialize_bounded_analytic_satellite_key_to_bytes(
+    key: &AnalyticSatelliteKey,
+) -> Cow<'_, [u8]> {
     let buf = serialize_bounded_analytic_satellite_key_into_bytes(key);
     Cow::Owned(buf)
 }

@@ -18,7 +18,7 @@ export class ConsolePage extends IdentityPage {
 	}
 
 	async goto(): Promise<void> {
-		await this.page.goto('http://localhost:5173');
+		await this.page.goto('/');
 	}
 
 	async signIn(): Promise<void> {

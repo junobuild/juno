@@ -1,11 +1,14 @@
 #!/usr/bin/env node
 
-import { readFile, writeFile } from 'node:fs/promises';
+import { mkdir, readFile, writeFile } from 'node:fs/promises';
 import { join } from 'node:path';
 
 const [moduleName, moduleVersion] = process.argv.slice(2);
 
-const metadataFilePath = join(process.cwd(), 'target', 'deploy', 'metadata.json');
+const targetPath = join(process.cwd(), 'target', 'deploy');
+const metadataFilePath = join(targetPath, 'metadata.json');
+
+await mkdir(targetPath, { recursive: true });
 
 const readMetadataFile = async () => {
 	try {

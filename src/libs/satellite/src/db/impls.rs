@@ -69,7 +69,7 @@ impl Timestamped for Doc {
 }
 
 impl Storable for Doc {
-    fn to_bytes(&self) -> Cow<[u8]> {
+    fn to_bytes(&self) -> Cow<'_, [u8]> {
         serialize_to_bytes(self)
     }
 
@@ -85,7 +85,7 @@ impl Storable for Doc {
 }
 
 impl Storable for StableKey {
-    fn to_bytes(&self) -> Cow<[u8]> {
+    fn to_bytes(&self) -> Cow<'_, [u8]> {
         serialize_to_bytes(self)
     }
 

@@ -65,7 +65,7 @@ impl Default for Fees {
 }
 
 impl Storable for MissionControl {
-    fn to_bytes(&self) -> Cow<[u8]> {
+    fn to_bytes(&self) -> Cow<'_, [u8]> {
         serialize_to_bytes(self)
     }
 
@@ -81,7 +81,7 @@ impl Storable for MissionControl {
 }
 
 impl Storable for Payment {
-    fn to_bytes(&self) -> Cow<[u8]> {
+    fn to_bytes(&self) -> Cow<'_, [u8]> {
         serialize_to_bytes(self)
     }
 

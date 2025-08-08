@@ -119,6 +119,9 @@ jobs:
         with:
           path: ./target/deploy
 
+      - name: Run emulator
+        uses: ./.github/actions/emulator
+
       - name: E2E tests
         run: npm run e2e:ci
 

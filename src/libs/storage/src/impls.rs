@@ -159,7 +159,7 @@ impl From<&Asset> for AssetNoContent {
 }
 
 impl Storable for Asset {
-    fn to_bytes(&self) -> Cow<[u8]> {
+    fn to_bytes(&self) -> Cow<'_, [u8]> {
         serialize_to_bytes(self)
     }
 

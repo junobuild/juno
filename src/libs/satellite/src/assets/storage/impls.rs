@@ -7,7 +7,7 @@ use junobuild_shared::serializers::{
 use std::borrow::Cow;
 
 impl Storable for StableKey {
-    fn to_bytes(&self) -> Cow<[u8]> {
+    fn to_bytes(&self) -> Cow<'_, [u8]> {
         serialize_to_bytes(self)
     }
 
@@ -23,7 +23,7 @@ impl Storable for StableKey {
 }
 
 impl Storable for StableEncodingChunkKey {
-    fn to_bytes(&self) -> Cow<[u8]> {
+    fn to_bytes(&self) -> Cow<'_, [u8]> {
         serialize_to_bytes(self)
     }
 

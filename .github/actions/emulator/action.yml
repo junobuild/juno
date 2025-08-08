@@ -11,4 +11,15 @@ runs:
         set -e
         ./scripts/emulator.sh --headless &
         npm run emulator:wait
+
+    - name: Identity Console controller locally
+      shell: bash
+      run: |
+        set -e
+        node ./scripts/console.controller.mjs
+
+    - name: Upgrade the Console
+      shell: bash
+      run: |
+        set -e
         node ./scripts/console.upgrade.mjs --headless

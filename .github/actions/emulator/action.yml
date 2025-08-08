@@ -18,6 +18,9 @@ runs:
         set -e
         node ./scripts/console.controller.mjs
 
+    # We have copied the WASMs into target/deploy
+    # Therefore, the latest Satellite, Mission Control and Orbiter
+    # were already uploaded to the Console at boot time
     - name: Upgrade the Console
       shell: bash
       run: |

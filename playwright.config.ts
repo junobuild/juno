@@ -18,6 +18,10 @@ export default defineConfig({
 			caret: 'hide'
 		}
 	},
+	webServer: {
+		command: 'npm run dev',
+		reuseExistingServer: true
+	},
 	use: {
 		testIdAttribute: 'data-tid',
 		baseURL: 'http://localhost:5173',

@@ -50,7 +50,7 @@
 		"e2e:ci": "playwright test --reporter=html",
 		"e2e:snapshots": "playwright test --update-snapshots --reporter=list",
 		"e2e:report": "playwright show-report",
-		"e2e:playwright:install": "playwright install --with-deps",
+		"e2e:playwright:install": "playwright install chromium --with-deps",
 		"build:console": "scripts/cargo.sh --console",
 		"build:observatory": "scripts/cargo.sh --observatory",
 		"build:satellite": "scripts/cargo.sh --satellite",

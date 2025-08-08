@@ -1,7 +1,6 @@
 <script lang="ts">
 	import IconNew from '$lib/components/icons/IconNew.svelte';
 	import LaunchpadButton from '$lib/components/launchpad/LaunchpadButton.svelte';
-	import Test from '$lib/components/ui/Test.svelte';
 	import { testIds } from '$lib/constants/test-ids.constants';
 	import { missionControlIdDerived } from '$lib/derived/mission-control.derived';
 	import { initSatelliteWizard } from '$lib/services/wizard.services';
@@ -22,13 +21,11 @@
 	};
 </script>
 
-<LaunchpadButton onclick={createSatellite} primary {row}>
+<LaunchpadButton onclick={createSatellite} primary {row} testId={testIds.createSatellite.launch}>
 	<div class="new" class:row>
-		<Test testId={testIds.createSatellite.launch}>
-			<IconNew size={row ? '20px' : '48px'} />
+		<IconNew size={row ? '20px' : '48px'} />
 
-			<p>{$i18n.satellites.launch}</p>
-		</Test>
+		<p>{$i18n.satellites.launch}</p>
 	</div>
 </LaunchpadButton>
 

@@ -10,7 +10,6 @@
 	import CreditsGuard from '$lib/components/guards/CreditsGuard.svelte';
 	import Confetti from '$lib/components/ui/Confetti.svelte';
 	import Modal from '$lib/components/ui/Modal.svelte';
-	import Test from '$lib/components/ui/Test.svelte';
 	import Value from '$lib/components/ui/Value.svelte';
 	import { testIds } from '$lib/constants/test-ids.constants';
 	import { authSignedOut } from '$lib/derived/auth.derived';
@@ -89,10 +88,8 @@
 
 		<div class="msg">
 			<p>{$i18n.satellites.ready}</p>
-			<button onclick={navigate}>
-				<Test testId={testIds.createSatellite.continue}>
-					{$i18n.core.continue}
-				</Test>
+			<button data-tid={testId(testIds.createSatellite.continue)} onclick={navigate}>
+				{$i18n.core.continue}
 			</button>
 		</div>
 	{:else if step === 'in_progress'}
@@ -135,12 +132,11 @@
 				<CanisterAdvancedOptions {detail} bind:subnetId bind:monitoringStrategy />
 
 				<button
+					data-tid={testId(testIds.createSatellite.create)}
 					disabled={$authSignedOut || isNullish($missionControlIdDerived) || insufficientFunds}
 					type="submit"
 				>
-					<Test testId={testIds.createSatellite.create}>
-						{$i18n.satellites.create}
-					</Test>
+					{$i18n.satellites.create}
 				</button>
 			</form>
 		</CreditsGuard>

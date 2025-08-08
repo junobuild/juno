@@ -1,5 +1,5 @@
 import { isDev, isNotSkylab } from '$lib/env/app.env';
 import type { TestId } from '$lib/types/test-id';
 
-export const testId = (testId: TestId): TestId | undefined =>
+export const testId = (testId: TestId | undefined): TestId | undefined =>
 	isDev() && isNotSkylab() ? testId : undefined;

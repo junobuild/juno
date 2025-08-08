@@ -2,11 +2,11 @@
 	import SignInHelp from '$lib/components/core/SignInHelp.svelte';
 	import IconIc from '$lib/components/icons/IconIC.svelte';
 	import ContainerCentered from '$lib/components/ui/ContainerCentered.svelte';
-	import Test from '$lib/components/ui/Test.svelte';
 	import { testIds } from '$lib/constants/test-ids.constants';
 	import { signIn } from '$lib/services/auth/auth.services';
 	import { isBusy } from '$lib/stores/busy.store';
 	import { i18n } from '$lib/stores/i18n.store';
+	import { testId } from '$lib/utils/test.utils';
 
 	let quotes: string[] = $derived([
 		$i18n.sign_in.quote_1,
@@ -28,12 +28,13 @@
 	<h1>{title}</h1>
 
 	{#snippet action()}
-		<Test testId={testIds.auth.signIn}>
-			<button disabled={$isBusy} onclick={async () => await signIn({})}
-				><IconIc size="20px" />
-				<span>{$i18n.sign_in.internet_identity}</span></button
-			>
-		</Test>
+		<button
+			data-tid={testId(testIds.auth.signIn)}
+			disabled={$isBusy}
+			onclick={async () => await signIn({})}
+			><IconIc size="20px" />
+			<span>{$i18n.sign_in.internet_identity}</span></button
+		>
 	{/snippet}
 </ContainerCentered>
 

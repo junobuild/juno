@@ -3,7 +3,6 @@
 	import type { Satellite } from '$declarations/mission_control/mission_control.did';
 	import ExternalLink from '$lib/components/ui/ExternalLink.svelte';
 	import SkeletonText from '$lib/components/ui/SkeletonText.svelte';
-	import Test from '$lib/components/ui/Test.svelte';
 	import Value from '$lib/components/ui/Value.svelte';
 	import { testIds } from '$lib/constants/test-ids.constants';
 	import {
@@ -40,10 +39,8 @@
 		{#if $satelliteCustomDomainsLoaded}
 			<div in:fade>
 				{#each urls as { href, host }, index (index)}
-					<ExternalLink {href}>
-						<Test testId={testIds.satelliteOverview.visit}>
-							<span class="host">{host}</span>
-						</Test>
+					<ExternalLink {href} testId={testIds.satelliteOverview.visit}>
+						<span class="host">{host}</span>
 					</ExternalLink>
 				{/each}
 			</div>

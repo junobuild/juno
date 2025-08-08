@@ -1,0 +1,14 @@
+name: Run emulator
+
+description: Start and config the emulator
+
+runs:
+  using: composite
+  steps:
+    - name: Run emulator
+      shell: bash
+      run: |
+        set -e
+        ./scripts/emulator.sh --headless &
+        npm run emulator:wait
+        node ./scripts/console.upgrade.mjs --headless

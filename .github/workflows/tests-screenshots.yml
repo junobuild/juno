@@ -88,11 +88,7 @@ jobs:
           path: ./target/deploy
 
       - name: Run emulator
-        run: |
-          set -e
-          ./scripts/emulator.sh --headless &
-          npm run emulator:wait
-          node ./scripts/console.upgrade.mjs --headless
+        uses: ./.github/actions/emulator
 
       - name: Run Playwright tests
         run: npm run e2e:snapshots

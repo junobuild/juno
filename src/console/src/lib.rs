@@ -52,5 +52,6 @@ use junobuild_storage::types::interface::InitUploadResult;
 use junobuild_storage::types::interface::SetStorageConfig;
 use junobuild_storage::types::interface::UploadChunk;
 use junobuild_storage::types::interface::UploadChunkResult;
+use junobuild_storage::types::state::FullPath;
 
 export_candid!();

@@ -286,6 +286,7 @@ service : () -> {
   commit_asset_upload : (CommitBatch) -> ();
   commit_proposal : (CommitProposal) -> (null);
   commit_proposal_asset_upload : (CommitBatch) -> ();
+  commit_proposal_many_assets_upload : (vec CommitBatch) -> ();
   count_assets : (text, ListParams) -> (nat64) query;
   count_collection_assets : (text) -> (nat64) query;
   count_collection_docs : (text) -> (nat64) query;
@@ -327,6 +328,9 @@ service : () -> {
   init_asset_upload : (InitAssetKey) -> (InitUploadResult);
   init_proposal : (ProposalType) -> (nat, Proposal);
   init_proposal_asset_upload : (InitAssetKey, nat) -> (InitUploadResult);
+  init_proposal_many_assets_upload : (vec InitAssetKey, nat) -> (
+      vec record { text; InitUploadResult },
+    );
   list_assets : (text, ListParams) -> (ListResults) query;
   list_controllers : () -> (vec record { principal; Controller }) query;
   list_custom_domains : () -> (vec record { text; CustomDomain }) query;

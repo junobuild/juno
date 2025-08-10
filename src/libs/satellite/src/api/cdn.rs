@@ -6,8 +6,7 @@ use crate::assets::cdn::strategies_impls::storage::{
 };
 use crate::assets::storage::certified_assets::upgrade::defer_init_certified_assets;
 use crate::assets::storage::store::{
-    create_batch_store, delete_domain_store, get_config_store, get_custom_domains_store,
-    set_domain_store,
+    delete_domain_store, get_config_store, get_custom_domains_store, set_domain_store,
 };
 use crate::get_controllers;
 use crate::types::interface::DeleteProposalAssets;
@@ -25,6 +24,7 @@ use junobuild_storage::types::interface::{
     CommitBatch, InitAssetKey, InitUploadResult, UploadChunk, UploadChunkResult,
 };
 use junobuild_storage::types::state::FullPath;
+
 // ---------------------------------------------------------
 // Proposal
 // ---------------------------------------------------------

@@ -20,14 +20,6 @@ use junobuild_storage::types::state::FullPath;
 // Storage
 // ---------------------------------------------------------
 
-#[deprecated(
-    note = "Kept for backward compatibility until the tooling - particularly Juno Docker - is released."
-)]
-#[update(guard = "caller_is_admin_controller")]
-fn init_asset_upload(init: InitAssetKey, proposal_id: ProposalId) -> InitUploadResult {
-    init_proposal_asset_upload(init, proposal_id)
-}
-
 #[update(guard = "caller_is_admin_controller")]
 fn init_proposal_asset_upload(init: InitAssetKey, proposal_id: ProposalId) -> InitUploadResult {
     let caller = caller();
@@ -61,14 +53,6 @@ fn init_proposal_many_assets_upload(
     results
 }
 
-#[deprecated(
-    note = "Kept for backward compatibility until the tooling - particularly Juno Docker - is released."
-)]
-#[update(guard = "caller_is_admin_controller")]
-fn upload_asset_chunk(chunk: UploadChunk) -> UploadChunkResult {
-    upload_proposal_asset_chunk(chunk)
-}
-
 #[update(guard = "caller_is_admin_controller")]
 fn upload_proposal_asset_chunk(chunk: UploadChunk) -> UploadChunkResult {
     let caller = caller();
@@ -80,14 +64,6 @@ fn upload_proposal_asset_chunk(chunk: UploadChunk) -> UploadChunkResult {
         Ok(chunk_id) => UploadChunkResult { chunk_id },
         Err(error) => trap(&error),
     }
-}
-
-#[deprecated(
-    note = "Kept for backward compatibility until the tooling - particularly Juno Docker - is released."
-)]
-#[update(guard = "caller_is_admin_controller")]
-fn commit_asset_upload(commit: CommitBatch) {
-    commit_proposal_asset_upload(commit);
 }
 
 #[update(guard = "caller_is_admin_controller")]

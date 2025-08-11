@@ -94,7 +94,9 @@ const listExistingAssets = async ({ startAfter }) => {
 const config = await readJunoConfig();
 
 const deployWithCli = async (proposalId) => {
-	const upload = async ({files: assets}) => {
+	const uploadFiles = async ({ files: assets }) => {
+		console.log('HERE', assets);
+
 		await uploadAssetsWithProposal({
 			assets,
 			proposalId,
@@ -127,17 +129,25 @@ const deployWithCli = async (proposalId) => {
 	};
 
 	return await cliDeploy({
-		config,
-		listAssets: listExistingAssets,
-		upload,
-		assertMemory
+		upload: { uploadFiles },
+		params: {
+			config,
+			listAssets: listExistingAssets,
+			assertMemory
+		}
 	});
 };
+
+const start = performance.now();
 
 await deployWithProposal({
 	proposal_type,
 	deploy: deployWithCli
 });
+
+const end = performance.now();
+
+console.log(` ----------> Deploy took ${(end - start) / 1000}s`);
 
 const consoleUrl = targetMainnet()
 	? `https://console.juno.build`

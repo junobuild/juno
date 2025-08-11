@@ -2,7 +2,7 @@
 
 import { ICManagementCanister } from '@dfinity/ic-management';
 import { toNullable } from '@dfinity/utils';
-import { uploadAssetWithProposal } from '@junobuild/cdn';
+import { uploadAssetsWithProposal } from '@junobuild/cdn';
 import { deploy as cliDeploy, hasArgs } from '@junobuild/cli-tools';
 import { consoleActor, icAgent, localAgent } from './actor.mjs';
 import { deployWithProposal } from './console.deploy.services.mjs';
@@ -94,9 +94,9 @@ const listExistingAssets = async ({ startAfter }) => {
 const config = await readJunoConfig();
 
 const deployWithCli = async (proposalId) => {
-	const upload = async (asset) => {
-		await uploadAssetWithProposal({
-			asset,
+	const upload = async ({files: assets}) => {
+		await uploadAssetsWithProposal({
+			assets,
 			proposalId,
 			cdn: {
 				console: await deployConsole()
@@ -129,7 +129,7 @@ const deployWithCli = async (proposalId) => {
 	return await cliDeploy({
 		config,
 		listAssets: listExistingAssets,
-		uploadFile: upload,
+		upload,
 		assertMemory
 	});
 };

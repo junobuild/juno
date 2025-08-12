@@ -340,6 +340,7 @@ export interface _SERVICE {
 	commit_asset_upload: ActorMethod<[CommitBatch], undefined>;
 	commit_proposal: ActorMethod<[CommitProposal], null>;
 	commit_proposal_asset_upload: ActorMethod<[CommitBatch], undefined>;
+	commit_proposal_many_assets_upload: ActorMethod<[Array<CommitBatch>], undefined>;
 	count_assets: ActorMethod<[string, ListParams], bigint>;
 	count_collection_assets: ActorMethod<[string], bigint>;
 	count_collection_docs: ActorMethod<[string], bigint>;
@@ -376,6 +377,10 @@ export interface _SERVICE {
 	init_asset_upload: ActorMethod<[InitAssetKey], InitUploadResult>;
 	init_proposal: ActorMethod<[ProposalType], [bigint, Proposal]>;
 	init_proposal_asset_upload: ActorMethod<[InitAssetKey, bigint], InitUploadResult>;
+	init_proposal_many_assets_upload: ActorMethod<
+		[Array<InitAssetKey>, bigint],
+		Array<[string, InitUploadResult]>
+	>;
 	list_assets: ActorMethod<[string, ListParams], ListResults>;
 	list_controllers: ActorMethod<[], Array<[Principal, Controller]>>;
 	list_custom_domains: ActorMethod<[], Array<[string, CustomDomain]>>;

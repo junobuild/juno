@@ -14,6 +14,7 @@ use junobuild_storage::store::{commit_batch as commit_batch_storage, create_chun
 use junobuild_storage::types::interface::{
     AssetNoContent, CommitBatch, InitAssetKey, InitUploadResult, UploadChunk, UploadChunkResult,
 };
+use junobuild_storage::types::state::FullPath;
 
 // ---------------------------------------------------------
 // Storage
@@ -29,6 +30,27 @@ fn init_proposal_asset_upload(init: InitAssetKey, proposal_id: ProposalId) -> In
         Ok(batch_id) => InitUploadResult { batch_id },
         Err(error) => trap(&error),
     }
+}
+
+#[update(guard = "caller_is_admin_controller")]
+fn init_proposal_many_assets_upload(
+    init_asset_keys: Vec<InitAssetKey>,
+    proposal_id: ProposalId,
+) -> Vec<(FullPath, InitUploadResult)> {
+    let caller = caller();
+
+    let mut results: Vec<(FullPath, InitUploadResult)> = Vec::new();
+
+    for init_asset_key in init_asset_keys {
+        let full_path = init_asset_key.full_path.clone();
+
+        let batch_id = init_asset_upload_store(caller, init_asset_key, proposal_id)
+            .unwrap_or_else(|e| trap(&e));
+
+        results.push((full_path, InitUploadResult { batch_id }));
+    }
+
+    results
 }
 
 #[update(guard = "caller_is_admin_controller")]
@@ -61,6 +83,27 @@ fn commit_proposal_asset_upload(commit: CommitBatch) {
         &StorageUpload,
     )
     .unwrap_or_else(|e| trap(&e));
+}
+
+#[update(guard = "caller_is_admin_controller")]
+fn commit_proposal_many_assets_upload(commits: Vec<CommitBatch>) {
+    let caller = caller();
+
+    let controllers: Controllers = get_controllers();
+    let config = junobuild_cdn::storage::heap::get_config(&CdnHeap);
+
+    for commit in commits {
+        commit_batch_storage(
+            caller,
+            &controllers,
+            &config,
+            commit,
+            &StorageAssertions,
+            &StorageState,
+            &StorageUpload,
+        )
+        .unwrap_or_else(|e| trap(&e));
+    }
 }
 
 #[query(guard = "caller_is_admin_controller")]

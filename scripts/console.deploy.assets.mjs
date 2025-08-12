@@ -95,8 +95,6 @@ const config = await readJunoConfig();
 
 const deployWithCli = async (proposalId) => {
 	const uploadFiles = async ({ files: assets }) => {
-		console.log('HERE', assets);
-
 		await uploadAssetsWithProposal({
 			assets,
 			proposalId,
@@ -138,16 +136,10 @@ const deployWithCli = async (proposalId) => {
 	});
 };
 
-const start = performance.now();
-
 await deployWithProposal({
 	proposal_type,
 	deploy: deployWithCli
 });
-
-const end = performance.now();
-
-console.log(` ----------> Deploy took ${(end - start) / 1000}s`);
 
 const consoleUrl = targetMainnet()
 	? `https://console.juno.build`

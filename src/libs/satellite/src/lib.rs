@@ -261,6 +261,7 @@ pub fn delete_proposal_assets(params: DeleteProposalAssets) {
 // ---------------------------------------------------------
 
 #[doc(hidden)]
+#[deprecated(note = "Use init_proposal_many_assets_upload instead")]
 #[update(guard = "caller_is_controller")]
 pub fn init_proposal_asset_upload(init: InitAssetKey, proposal_id: ProposalId) -> InitUploadResult {
     api::cdn::init_proposal_asset_upload(init, proposal_id)
@@ -282,6 +283,7 @@ pub fn upload_proposal_asset_chunk(chunk: UploadChunk) -> UploadChunkResult {
 }
 
 #[doc(hidden)]
+#[deprecated(note = "Use commit_proposal_many_assets_upload instead")]
 #[update(guard = "caller_is_controller")]
 pub fn commit_proposal_asset_upload(commit: CommitBatch) {
     api::cdn::commit_proposal_asset_upload(commit)

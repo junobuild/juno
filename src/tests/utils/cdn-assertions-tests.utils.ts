@@ -39,6 +39,7 @@ import {
 	JUNO_ERROR_VERSION_OUTDATED_OR_FUTURE
 } from '@junobuild/errors';
 
+import { nanoid } from 'nanoid';
 import { mockListProposalsParams } from '../mocks/list.mocks';
 import { mockBlob, mockHtml } from '../mocks/storage.mocks';
 import { uploadFile } from './cdn-tests.utils';
@@ -60,19 +61,33 @@ export const testNotAllowedCdnMethods = ({
 	errorMsgController?: string;
 	errorMsgWriteController?: string;
 }) => {
+	const key: InitAssetKey = {
+		token: toNullable(),
+		collection: '#dapp',
+		name: 'hello',
+		description: toNullable(),
+		encoding_type: toNullable(),
+		full_path: '/hello.html'
+	};
+
+	const batch = {
+		batch_id: 123n,
+		headers: [],
+		chunk_ids: [123n]
+	};
+
 	it('should throw errors on init asset upload', async () => {
 		const { init_proposal_asset_upload } = actor();
 
-		const key: InitAssetKey = {
-			token: toNullable(),
-			collection: '#dapp',
-			name: 'hello',
-			description: toNullable(),
-			encoding_type: toNullable(),
-			full_path: '/hello.html'
-		};
-
 		await expect(init_proposal_asset_upload(key, 123n)).rejects.toThrow(
+			errorMsgController ?? errorMsgWriteController ?? errorMsgAdminController
+		);
+	});
+
+	it('should throw errors on init many assets upload', async () => {
+		const { init_proposal_many_assets_upload } = actor();
+
+		await expect(init_proposal_many_assets_upload([key], 123n)).rejects.toThrow(
 			errorMsgController ?? errorMsgWriteController ?? errorMsgAdminController
 		);
 	});
@@ -94,13 +109,15 @@ export const testNotAllowedCdnMethods = ({
 	it('should throw errors on commit asset upload', async () => {
 		const { commit_proposal_asset_upload } = actor();
 
-		const batch = {
-			batch_id: 123n,
-			headers: [],
-			chunk_ids: [123n]
-		};
-
 		await expect(commit_proposal_asset_upload(batch)).rejects.toThrow(
+			errorMsgController ?? errorMsgWriteController ?? errorMsgAdminController
+		);
+	});
+
+	it('should throw errors on commit many assets upload', async () => {
+		const { commit_proposal_many_assets_upload } = actor();
+
+		await expect(commit_proposal_many_assets_upload([batch])).rejects.toThrow(
 			errorMsgController ?? errorMsgWriteController ?? errorMsgAdminController
 		);
 	});
@@ -350,24 +367,33 @@ export const testControlledCdnMethods = ({
 				expect(fromNullable(proposal.version) ?? 0n).toBeGreaterThan(0n);
 			});
 
+			const key: InitAssetKey = {
+				collection,
+				description: toNullable(),
+				encoding_type: [],
+				full_path,
+				name: 'hello.html',
+				token: toNullable()
+			};
+
 			it('should fail at uploading asset for unknown proposal', async () => {
 				const { init_proposal_asset_upload } = actor();
 
 				const unknownProposalId = proposalId + 1n;
 
-				await expect(
-					init_proposal_asset_upload(
-						{
-							collection,
-							description: toNullable(),
-							encoding_type: [],
-							full_path,
-							name: 'hello.html',
-							token: toNullable()
-						},
-						unknownProposalId
-					)
-				).rejects.toThrow(`${JUNO_CDN_STORAGE_ERROR_NO_PROPOSAL_FOUND} (${unknownProposalId})`);
+				await expect(init_proposal_asset_upload(key, unknownProposalId)).rejects.toThrow(
+					`${JUNO_CDN_STORAGE_ERROR_NO_PROPOSAL_FOUND} (${unknownProposalId})`
+				);
+			});
+
+			it('should fail at uploading many assets for unknown proposal', async () => {
+				const { init_proposal_many_assets_upload } = actor();
+
+				const unknownProposalId = proposalId + 1n;
+
+				await expect(init_proposal_many_assets_upload([key], unknownProposalId)).rejects.toThrow(
+					`${JUNO_CDN_STORAGE_ERROR_NO_PROPOSAL_FOUND} (${unknownProposalId})`
+				);
 			});
 
 			const uploadProposalAsset = async (proposalId: bigint) => {
@@ -1313,6 +1339,207 @@ export const testCdnListProposals = ({
 			expect(items_length).toEqual(length);
 			expect(matches_length).toEqual(length);
 		});
+	});
+};
+
+export const testUploadProposalManyAssets = ({
+	actor,
+	caller,
+	pic,
+	canisterId,
+	currentDate,
+	expectedProposalId
+}: {
+	actor: (params?: { requireController: boolean }) => Actor<SatelliteActor | ConsoleActor>;
+	pic: () => PocketIc;
+	caller: () => Identity;
+	canisterId: () => Principal;
+	currentDate: Date;
+	expectedProposalId: bigint;
+}) => {
+	const collection = '#dapp';
+
+	const keys: InitAssetKey[] = Array.from({ length: 2 }).map(() => {
+		const name = `hello-batch-${nanoid()}.html`;
+
+		return {
+			collection,
+			description: toNullable(),
+			encoding_type: [],
+			full_path: `/hello/${name}`,
+			name,
+			token: toNullable()
+		};
+	});
+
+	const fullPaths = keys.map(({ full_path }) => full_path);
+
+	const uploadProposalAssets = async (proposalId: bigint) => {
+		const {
+			upload_proposal_asset_chunk,
+			init_proposal_many_assets_upload,
+			commit_proposal_many_assets_upload
+		} = actor();
+
+		const files = await init_proposal_many_assets_upload(keys, proposalId);
+
+		const results: { batch_id: bigint; chunk_id: bigint }[] = [];
+
+		for (const [_, { batch_id }] of files) {
+			const { chunk_id } = await upload_proposal_asset_chunk({
+				batch_id,
+				content: arrayBufferToUint8Array(await mockBlob.arrayBuffer()),
+				order_id: [0n]
+			});
+
+			results.push({ batch_id, chunk_id });
+		}
+
+		await commit_proposal_many_assets_upload(
+			results.map(({ batch_id, chunk_id }) => ({
+				batch_id,
+				chunk_ids: [chunk_id],
+				// Expected by assertHeads in serve test
+				headers: [['cache-control', 'no-cache']]
+			}))
+		);
+	};
+
+	let sha256: [] | [Uint8Array | number[]];
+	let proposalId: bigint;
+
+	const proposal_type: ProposalType = {
+		AssetsUpgrade: {
+			clear_existing_assets: toNullable()
+		}
+	};
+
+	it('should init a proposal', async () => {
+		const { init_proposal } = actor();
+
+		const [id, proposal] = await init_proposal(proposal_type);
+
+		proposalId = id;
+
+		expect(proposalId).toEqual(expectedProposalId);
+
+		expect(proposal.status).toEqual({ Initialized: null });
+		expect(fromNullable(proposal.sha256)).toBeUndefined();
+		expect(fromNullable(proposal.executed_at)).toBeUndefined();
+		expect(proposal.owner.toText()).toEqual(caller().getPrincipal().toText());
+		expect(proposal.proposal_type).toEqual(proposal_type);
+		expect(proposal.created_at).not.toBeUndefined();
+		expect(proposal.created_at).toBeGreaterThan(0n);
+		expect(proposal.updated_at).not.toBeUndefined();
+		expect(proposal.updated_at).toBeGreaterThan(0n);
+		expect(fromNullable(proposal.version) ?? 0n).toBeGreaterThan(0n);
+	});
+
+	it('should upload assets', async () => {
+		await uploadProposalAssets(proposalId);
+	});
+
+	it.each(fullPaths)('should not yet serve asset %s', async (full_path) => {
+		const { http_request } = actor();
+
+		const { status_code } = await http_request({
+			body: [],
+			certificate_version: toNullable(),
+			headers: [],
+			method: 'GET',
+			url: full_path
+		});
+
+		expect(status_code).toBe(404);
+	});
+
+	it('should submit proposal', async () => {
+		const { submit_proposal } = actor();
+
+		// Advance time for updated_at
+		await pic().advanceTime(100);
+
+		const [_, proposal] = await submit_proposal(proposalId);
+
+		expect(proposal.status).toEqual({ Open: null });
+		expect(sha256ToBase64String(fromNullable(proposal.sha256) ?? [])).not.toBeUndefined();
+		expect(fromNullable(proposal.executed_at)).toBeUndefined();
+		expect(proposal.owner.toText()).toEqual(caller().getPrincipal().toText());
+		expect(proposal.proposal_type).toEqual(proposal_type);
+		expect(proposal.created_at).not.toBeUndefined();
+		expect(proposal.created_at).toBeGreaterThan(0n);
+		expect(proposal.updated_at).not.toBeUndefined();
+		expect(proposal.updated_at).toBeGreaterThan(0n);
+		expect(proposal.updated_at).toBeGreaterThan(proposal.created_at);
+		expect(fromNullable(proposal.version) ?? 0n).toEqual(2n);
+
+		// eslint-disable-next-line prefer-destructuring
+		sha256 = proposal.sha256;
+	});
+
+	it.each(fullPaths)('should still not serve asset %s', async (full_path) => {
+		const { http_request } = actor();
+
+		const { status_code } = await http_request({
+			body: [],
+			certificate_version: toNullable(),
+			headers: [],
+			method: 'GET',
+			url: full_path
+		});
+
+		expect(status_code).toBe(404);
+	});
+
+	it('should commit proposal', async () => {
+		const { commit_proposal } = actor({ requireController: true });
+
+		const sha = fromNullable(sha256);
+
+		assertNonNullish(sha);
+
+		await expect(
+			commit_proposal({
+				sha256: sha,
+				proposal_id: proposalId
+			})
+		).resolves.not.toThrow();
+	});
+
+	it.each(fullPaths)('should serve asset %s', async (full_path) => {
+		const { http_request } = actor();
+
+		await tick(pic());
+
+		const request: HttpRequest = {
+			body: [],
+			certificate_version: toNullable(2),
+			headers: [],
+			method: 'GET',
+			url: full_path
+		};
+
+		const response = await http_request(request);
+
+		const { status_code, headers, body } = response;
+
+		expect(status_code).toBe(200);
+
+		assertHeaders({
+			headers
+		});
+
+		await assertCertification({
+			canisterId: canisterId(),
+			pic: pic(),
+			request,
+			response,
+			currentDate
+		});
+
+		const decoder = new TextDecoder();
+
+		expect(decoder.decode(body as Uint8Array<ArrayBufferLike>)).toEqual(mockHtml);
 	});
 };
 

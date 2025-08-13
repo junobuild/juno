@@ -163,31 +163,9 @@ const extractStartScript = ({ indexHtml, mainJs, htmlFile }) => {
 
 /**
  * Inject "Content Security Policy" (CSP) into index.html for production build
- *
- * Note about the rules:
- *
- * - script-src 'unsafe-eval' is required because:
- * 1. agent-js uses a WebAssembly module for the validation of bls signatures.
- *    source: II https://github.com/dfinity/internet-identity/blob/c5709518ce3daaf7fdd9c7994120b66bd613f01b/src/internet_identity/src/main.rs#L824
- * 2. nns-js auto-generated proto js code (base_types_pb.js and ledger_pb.js) require 'unsafe-eval' as well
- *
- * - script-src and usage of 'integrity':
- * Ideally we would like to secure the scripts that are loaded with the 'integrity=sha256-...' hashes attributes - e.g. https://stackoverflow.com/a/68492689/5404186.
- * However, this is currently only supported by Chrome. Firefox issue: https://bugzilla.mozilla.org/show_bug.cgi?id=1409200
- * To overcome this, we include within the index.html a first script which, when executed at app boot time, add a script that actually loads the main.js.
- * We generate the hash for that particular first script and set 'strict-dynamic' to trust those scripts that will be loaded per extension - the chunks used by the app.
- *
- * - script-src and 'strict-dynamic':
- * Chrome 40+ / Firefox 31+ / Safari 15.4+ / Edge 15+ supports 'strict-dynamic'.
- * Safari 15.4 has been released recently - March 15, 2022 - that's why we add 'unsafe-inline' to the rules for backwards compatibility.
- * Browsers that supports the 'strict-dynamic' rule will ignore these backwards directives (CSP 3).
- *
- * - style-src 'unsafe-inline' is required because:
- * 1. svelte uses inline style for animation (scale, fly, fade, etc.)
- *    source: https://github.com/sveltejs/svelte/issues/6662
  */
 const updateCSP = (indexHtml) => {
-	const sw = /<script[\s\S]*?>([\s\S]*?)<\/script>/gm;
+	const sw = /<script[\s\S]*?>([\s\S]*?)<\/script[^\S\r\n]*[^>]*?>/gim;
 
 	const indexHashes = [];
 
@@ -207,7 +185,7 @@ const updateCSP = (indexHtml) => {
         img-src 'self' data:;
         child-src 'self';
         manifest-src 'self';
-        script-src 'unsafe-eval' 'unsafe-inline' 'strict-dynamic' ${indexHashes.join(' ')} ${JUNO_CDN};
+        script-src 'strict-dynamic' ${indexHashes.join(' ')} ${JUNO_CDN};
         base-uri 'self';
         form-action 'none';
         style-src 'self' 'unsafe-inline' ${JUNO_CDN};

@@ -11,7 +11,7 @@ static TIME_ORIGIN: AtomicU64 = AtomicU64::new(0);
 ///
 /// # Safety
 /// - Good until the year 2554
-/// - Always use a checked substraction since this can return 0
+/// - Always use a checked subtraction since this can return 0
 pub fn now_nanos() -> u64 {
     SystemTime::now()
         .duration_since(std::time::UNIX_EPOCH)
@@ -23,7 +23,7 @@ pub fn now_nanos() -> u64 {
 ///
 /// # Safety
 /// - Good until the year 2554
-/// - Always use a checked substraction since this can return 0
+/// - Always use a checked subtraction since this can return 0
 pub fn now_millis() -> i64 {
     SystemTime::now()
         .duration_since(std::time::UNIX_EPOCH)
@@ -35,7 +35,7 @@ pub fn now_millis() -> i64 {
 ///
 /// # Safety
 /// - Good until the year 2554
-/// - Always use a checked substraction since this can return 0
+/// - Always use a checked subtraction since this can return 0
 pub fn origin_nanos() -> u64 {
     TIME_ORIGIN.load(Ordering::Relaxed)
 }

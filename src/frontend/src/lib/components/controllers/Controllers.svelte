@@ -35,11 +35,15 @@
 
 	let { list, remove, add, segment, extraControllers = [] }: Props = $props();
 
-	let controllers: [Principal, Controller | undefined][] = $state([]);
+	let controllers = $state<[Principal, Controller | undefined][]>([]);
 
 	const load = async () => {
 		try {
-			controllers = [...(await list()), ...extraControllers];
+			controllers = [...(await list()), ...extraControllers].sort((controllerA, controllerB) =>
+				Object.keys(controllerA[1]?.scope ?? {})[0].localeCompare(
+					Object.keys(controllerB[1]?.scope ?? {})[0]
+				)
+			);
 		} catch (err: unknown) {
 			toasts.error({
 				text: $i18n.errors.controllers_listing,
@@ -54,12 +58,12 @@
 	let visibleInfo = $state(false);
 	let selectedController: [Principal, Controller | undefined] | undefined = $state();
 
-	const canEdit = (controllerId: Principal): boolean =>
-		nonNullish($authStore.identity) &&
+	const isMissionControl = (controllerId: Principal): boolean =>
 		nonNullish($missionControlIdDerived) &&
-		![$missionControlIdDerived.toText(), $authStore.identity.getPrincipal().toText()].includes(
-			controllerId.toText()
-		);
+		$missionControlIdDerived.toText() === controllerId.toText();
+	const isDev = (controllerId: Principal): boolean =>
+		nonNullish($authStore.identity) &&
+		$authStore.identity.getPrincipal().toText() === controllerId.toText();
 </script>
 
 <div class="table-container">
@@ -74,9 +78,12 @@
 		</thead>
 		<tbody>
 			{#each controllers as [controllerId, controller] (controllerId.toText())}
+				{@const dev = isDev(controllerId)}
+				{@const mic = isMissionControl(controllerId)}
+
 				<tr>
 					<td class="actions">
-						{#if canEdit(controllerId)}
+						{#if !dev && !mic}
 							<ButtonTableAction
 								ariaLabel={$i18n.controllers.delete}
 								icon="delete"
@@ -99,8 +106,14 @@
 					</td>
 
 					<td class="profile"
-						>{metadataProfile(nonNullish(controller) ? controller.metadata : [])}</td
-					>
+						>{#if mic}
+							{$i18n.mission_control.title}
+						{:else if dev}
+							{$i18n.preferences.dev_id}
+						{:else}
+							{metadataProfile(nonNullish(controller) ? controller.metadata : [])}
+						{/if}
+					</td>
 
 					<td class="scope">
 						{#if nonNullish(controller)}

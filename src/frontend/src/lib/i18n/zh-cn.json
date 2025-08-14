@@ -684,7 +684,7 @@
 	},
 	"controllers": {
 		"title": "Access Keys",
-		"profile": "简介",
+		"profile": "简介 / Type",
 		"scope": "Role",
 		"delete": "Delete an access key",
 		"info": "信息",

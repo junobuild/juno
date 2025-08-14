@@ -11,7 +11,7 @@ export interface AnalyticsFiltersStore extends Readable<PageViewsFilters> {
 export const initAnalyticsFiltersStore = (): AnalyticsFiltersStore => {
 	const { subscribe, update } = writable<PageViewsFilters>({
 		...getLocalStorageAnalyticsPeriodicity(),
-		from: addWeeks(new Date(), -1)
+		from: addWeeks(new Date(), -2)
 	});
 
 	return {

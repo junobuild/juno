@@ -1,6 +1,6 @@
 import type { AnalyticsPeriodicity, PageViewsFilters } from '$lib/types/orbiter';
 import { getLocalStorageAnalyticsPeriodicity } from '$lib/utils/local-storage.utils';
-import { addMonths } from 'date-fns';
+import { addWeeks } from 'date-fns';
 import { type Readable, writable } from 'svelte/store';
 
 export interface AnalyticsFiltersStore extends Readable<PageViewsFilters> {
@@ -11,7 +11,7 @@ export interface AnalyticsFiltersStore extends Readable<PageViewsFilters> {
 export const initAnalyticsFiltersStore = (): AnalyticsFiltersStore => {
 	const { subscribe, update } = writable<PageViewsFilters>({
 		...getLocalStorageAnalyticsPeriodicity(),
-		from: addMonths(new Date(), -1)
+		from: addWeeks(new Date(), -1)
 	});
 
 	return {

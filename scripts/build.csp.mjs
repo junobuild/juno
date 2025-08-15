@@ -185,7 +185,7 @@ const updateCSP = (indexHtml) => {
         img-src 'self' data:;
         child-src 'self';
         manifest-src 'self';
-        script-src 'strict-dynamic' ${indexHashes.join(' ')} ${JUNO_CDN};
+        script-src 'wasm-unsafe-eval' 'strict-dynamic' ${indexHashes.join(' ')} ${JUNO_CDN};
         base-uri 'self';
         form-action 'none';
         style-src 'self' 'unsafe-inline' ${JUNO_CDN};

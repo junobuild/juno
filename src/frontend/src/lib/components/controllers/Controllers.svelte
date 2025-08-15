@@ -30,12 +30,12 @@
 		) => Promise<void>;
 		segment: CanisterSegmentWithLabel;
 		// The canister and user are controllers of the mission control but not added in its state per default
-		extraControllers?: [Principal, Controller | undefined][];
+		extraControllers?: [Principal, Controller][];
 	}
 
 	let { list, remove, add, segment, extraControllers = [] }: Props = $props();
 
-	let controllers = $state<[Principal, Controller | undefined][]>([]);
+	let controllers = $state<[Principal, Controller][]>([]);
 
 	const load = async () => {
 		try {

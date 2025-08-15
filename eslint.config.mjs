@@ -42,7 +42,8 @@ export default [
 			'src/declarations/**/*',
 			'src/tests/declarations/**/*',
 			'target/**/*',
-			'tmp/**/*'
+			'tmp/**/*',
+			'src/frontend/src/custom-events.d.ts'
 		]
 	},
 	{

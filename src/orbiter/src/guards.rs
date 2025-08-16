@@ -1,6 +1,6 @@
 use crate::state::memory::manager::STATE;
-use ic_cdk::caller;
 use junobuild_shared::controllers::{controller_can_write, is_admin_controller};
+use junobuild_shared::ic::caller;
 use junobuild_shared::types::state::Controllers;
 
 pub fn caller_is_admin_controller() -> Result<(), String> {

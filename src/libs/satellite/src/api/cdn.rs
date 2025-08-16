@@ -8,10 +8,10 @@ use crate::assets::storage::certified_assets::upgrade::defer_init_certified_asse
 use crate::assets::storage::store::{
     delete_domain_store, get_config_store, get_custom_domains_store, set_domain_store,
 };
-use crate::get_controllers;
 use crate::types::interface::DeleteProposalAssets;
+use crate::{caller, get_controllers};
 use ic_cdk::api::call::ManualReply;
-use ic_cdk::{caller, trap};
+use ic_cdk::trap;
 use junobuild_cdn::proposals::{
     CommitProposal, ListProposalResults, ListProposalsParams, Proposal, ProposalId, ProposalType,
     RejectProposal,

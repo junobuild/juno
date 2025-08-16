@@ -11,13 +11,13 @@ use crate::cdn::strategies_impls::storage::StorageState;
 use crate::guards::caller_is_admin_controller;
 use crate::types::interface::DeleteProposalAssets;
 use ic_cdk::api::call::ManualReply;
-use ic_cdk::api::caller;
 use ic_cdk::trap;
 use ic_cdk_macros::{query, update};
 use junobuild_cdn::proposals::{
     CommitProposal, ListProposalResults, ListProposalsParams, Proposal, ProposalId, ProposalType,
     RejectProposal,
 };
+use junobuild_shared::ic::caller;
 use junobuild_shared::types::core::DomainName;
 use junobuild_shared::types::domain::CustomDomains;
 

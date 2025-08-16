@@ -11,6 +11,7 @@ pub mod day;
 pub mod env;
 #[doc(hidden)]
 pub mod errors;
+pub mod ic;
 #[doc(hidden)]
 pub mod impls;
 pub mod ledger;

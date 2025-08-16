@@ -156,7 +156,7 @@ pub fn delete_assets_store(collection: &CollectionKey) -> Result<(), String> {
 /// or an error message as `Err(String)` if the operation encounters issues.
 ///
 /// # Parameters
-/// - `caller`: The `Principal` representing the caller initiating the operation. If used in serverless functions, you can use `ic_cdk::id()` to pass an administrator controller.
+/// - `caller`: The `Principal` representing the caller initiating the operation. If used in serverless functions, you can use `junobuild_satellite::id()` to pass an administrator controller.
 /// - `collection`: A reference to the `CollectionKey` representing the collection from which to list the assets.
 /// - `filters`: A reference to `ListParams` containing the filter criteria for listing the assets.
 ///
@@ -190,7 +190,7 @@ pub fn list_assets_store(
 /// or an error message as `Err(String)` if the operation encounters issues.
 ///
 /// # Parameters
-/// - `caller`: The `Principal` representing the caller initiating the operation. If used in serverless functions, you can use `ic_cdk::id()` to pass an administrator controller.
+/// - `caller`: The `Principal` representing the caller initiating the operation. If used in serverless functions, you can use `junobuild_satellite::id()` to pass an administrator controller.
 /// - `collection`: A reference to the `CollectionKey` representing the collection from which to count the assets.
 /// - `filters`: A reference to `ListParams` containing the filter criteria for counting the assets.
 ///

@@ -1,4 +1,4 @@
-use ic_cdk::id;
+use junobuild_satellite::id;
 use junobuild_satellite::set_asset_handler;
 use junobuild_storage::http::types::HeaderField;
 use junobuild_storage::types::store::AssetKey;

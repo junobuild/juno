@@ -6,8 +6,9 @@ use crate::monitoring::store::stable::{
 use crate::types::interface::GetMonitoringHistory;
 use crate::types::state::MonitoringHistoryCycles;
 use canfund::manager::record::CanisterRecord;
-use ic_cdk::api::{debug_print, time};
+use ic_cdk::api::time;
 use ic_cdk::management_canister::CanisterId;
+use junobuild_shared::ic::print;
 use junobuild_shared::types::monitoring::CyclesBalance;
 use std::collections::HashMap;
 
@@ -36,7 +37,7 @@ fn insert_monitoring_history(canister_id: &CanisterId, record: &CanisterRecord) 
         insert_cycles_monitoring_history(canister_id, &history_entry).unwrap_or_else(|e| {
             // Error would mean the random generator is not initialized.
             #[allow(clippy::disallowed_methods)]
-            debug_print(format!("Failed to insert cycles monitoring history: {e:?}"))
+            print(format!("Failed to insert cycles monitoring history: {e:?}"))
         });
     }
 }

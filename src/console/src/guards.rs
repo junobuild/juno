@@ -1,8 +1,8 @@
 use crate::store::heap::get_controllers;
 use candid::Principal;
-use ic_cdk::caller;
 use junobuild_shared::controllers::is_admin_controller;
 use junobuild_shared::env::OBSERVATORY;
+use junobuild_shared::ic::caller;
 use junobuild_shared::utils::principal_equal;
 
 pub fn caller_is_admin_controller() -> Result<(), String> {

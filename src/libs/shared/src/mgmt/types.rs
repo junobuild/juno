@@ -1,6 +1,6 @@
 pub mod cmc {
     use candid::{CandidType, Principal};
-    use ic_cdk::api::management_canister::main::{CanisterId, CanisterSettings};
+    use ic_cdk::management_canister::{CanisterId, CanisterSettings};
     use ic_ledger_types::BlockIndex;
     use serde::Deserialize;
 

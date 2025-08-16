@@ -9,7 +9,7 @@ use canfund::manager::record::CanisterRecord;
 use canfund::manager::RegisterOpts;
 use canfund::operations::obtain::MintCycles;
 use canfund::FundManager;
-use ic_cdk::api::management_canister::main::CanisterId;
+use ic_cdk::management_canister::CanisterId;
 use ic_ledger_types::{
     DEFAULT_SUBACCOUNT, MAINNET_CYCLES_MINTING_CANISTER_ID, MAINNET_LEDGER_CANISTER_ID,
 };

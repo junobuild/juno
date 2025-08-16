@@ -115,7 +115,7 @@
 		"@dfinity/identity": "^2.3.0",
 		"@dfinity/ledger-icp": "^4.0.0",
 		"@dfinity/ledger-icrc": "^2.9.1",
-		"@dfinity/oisy-wallet-signer": "^0.2.3",
+		"@dfinity/oisy-wallet-signer": "^0.3.0-next-2025-08-16",
 		"@dfinity/principal": "^2.3.0",
 		"@dfinity/utils": "^2.13.2",
 		"@dfinity/zod-schemas": "^1.1.0",

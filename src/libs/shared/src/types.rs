@@ -3,7 +3,7 @@ pub mod state {
     use crate::types::monitoring::{CyclesBalance, FundingFailure};
     use candid::Principal;
     use candid::{CandidType, Nat};
-    use ic_cdk::api::management_canister::main::CanisterStatusType;
+    use ic_cdk::management_canister::CanisterStatusType;
     use serde::{Deserialize, Serialize};
     use std::cmp::Ordering;
     use std::collections::HashMap;

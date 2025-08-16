@@ -15,8 +15,8 @@ use crate::mgmt::types::cmc::{
 use crate::mgmt::types::ic::{CreateCanisterInitSettingsArg, WasmArg};
 use candid::Principal;
 use ic_cdk::api::call::{call_with_payment128, CallResult};
-use ic_cdk::api::management_canister::main::{CanisterId, CanisterInstallMode};
 use ic_cdk::call;
+use ic_cdk::management_canister::{CanisterId, CanisterInstallMode};
 use ic_ledger_types::{Subaccount, Tokens};
 
 pub async fn top_up_canister(canister_id: &CanisterId, amount: &Tokens) -> Result<(), String> {

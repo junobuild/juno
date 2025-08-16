@@ -2,7 +2,7 @@ use crate::constants_internal::WASM_MEMORY_LIMIT;
 use crate::constants_shared::CREATE_CANISTER_CYCLES;
 use crate::mgmt::types::ic::CreateCanisterInitSettingsArg;
 use candid::Nat;
-use ic_cdk::api::management_canister::main::CanisterSettings;
+use ic_cdk::management_canister::CanisterSettings;
 
 pub fn create_canister_settings(
     CreateCanisterInitSettingsArg {
@@ -18,6 +18,7 @@ pub fn create_canister_settings(
         reserved_cycles_limit: None,
         log_visibility: None,
         wasm_memory_limit: Some(Nat::from(WASM_MEMORY_LIMIT)),
+        wasm_memory_threshold: None,
     })
 }
 

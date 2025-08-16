@@ -222,7 +222,7 @@ fn set_doc_impl(
 /// or an error message as `Err(String)` if the operation encounters issues.
 ///
 /// # Parameters
-/// - `caller`: The `Principal` representing the caller initiating the operation. If used in serverless functions, you can use `ic_cdk::id()` to pass an administrator controller.
+/// - `caller`: The `Principal` representing the caller initiating the operation. If used in serverless functions, you can use `junobuild_satellite::id()` to pass an administrator controller.
 /// - `collection`: A `CollectionKey` representing the collection from which to list the documents.
 /// - `filter`: A reference to `ListParams` containing the filter criteria for listing the documents.
 ///
@@ -248,7 +248,7 @@ pub fn list_docs_store(
 /// or an error message as `Err(String)` if the operation encounters issues.
 ///
 /// # Parameters
-/// - `caller`: The `Principal` representing the caller initiating the operation. If used in serverless functions, you can use `ic_cdk::id()` to pass an administrator controller.
+/// - `caller`: The `Principal` representing the caller initiating the operation. If used in serverless functions, you can use `junobuild_satellite::id()` to pass an administrator controller.
 /// - `collection`: A `CollectionKey` representing the collection from which to count the documents.
 /// - `filter`: A reference to `ListParams` containing the filter criteria for counting the documents.
 ///

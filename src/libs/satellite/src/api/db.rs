@@ -4,11 +4,11 @@ use crate::hooks::db::{
 };
 use crate::user::internal_hooks::{invoke_on_delete_many_users, invoke_on_delete_user};
 use crate::{
-    count_collection_docs_store, count_docs_store, delete_doc_store, delete_docs_store,
+    caller, count_collection_docs_store, count_docs_store, delete_doc_store, delete_docs_store,
     delete_filtered_docs_store, get_doc_store, list_docs_store, set_doc_store, DelDoc, Doc,
     DocContext, DocUpsert, SetDoc,
 };
-use ic_cdk::{caller, trap};
+use ic_cdk::trap;
 use junobuild_collections::types::core::CollectionKey;
 use junobuild_shared::types::core::Key;
 use junobuild_shared::types::list::{ListParams, ListResults};

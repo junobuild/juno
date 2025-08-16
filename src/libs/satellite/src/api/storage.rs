@@ -4,10 +4,10 @@ use crate::hooks::storage::{
     invoke_upload_asset,
 };
 use crate::{
-    count_assets_store, count_collection_assets_store, delete_asset_store, delete_assets_store,
-    delete_filtered_assets_store, get_asset_store, list_assets_store,
+    caller, count_assets_store, count_collection_assets_store, delete_asset_store,
+    delete_assets_store, delete_filtered_assets_store, get_asset_store, list_assets_store,
 };
-use ic_cdk::{caller, trap};
+use ic_cdk::trap;
 use junobuild_collections::types::core::CollectionKey;
 use junobuild_shared::types::list::{ListParams, ListResults};
 use junobuild_storage::types::interface::{

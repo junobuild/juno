@@ -12,8 +12,8 @@ use crate::types::http_request::{
 use crate::types::state::FullPath;
 use crate::types::store::Asset;
 use crate::url::{map_alternative_paths, map_url};
-use ic_cdk::id;
 use junobuild_collections::types::rules::Memory;
+use junobuild_shared::ic::id;
 
 pub fn get_routing(
     url: String,

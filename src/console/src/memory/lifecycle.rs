@@ -3,9 +3,9 @@ use crate::cdn::lifecycle::init_cdn_storage_heap_state;
 use crate::memory::manager::{get_memory_upgrades, init_stable_state, STATE};
 use crate::types::state::{Fees, HeapState, Rates, ReleasesMetadata, State};
 use ciborium::{from_reader, into_writer};
-use ic_cdk::caller;
 use ic_cdk_macros::{init, post_upgrade, pre_upgrade};
 use junobuild_shared::controllers::init_admin_controllers;
+use junobuild_shared::ic::caller;
 use junobuild_shared::upgrade::{read_post_upgrade, write_pre_upgrade};
 use std::collections::HashMap;
 

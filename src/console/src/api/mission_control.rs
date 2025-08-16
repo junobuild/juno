@@ -4,8 +4,9 @@ use crate::store::stable::{
     get_existing_mission_control, get_mission_control, list_mission_controls,
 };
 use crate::types::state::{MissionControl, MissionControls};
-use ic_cdk::{caller, id, trap};
+use ic_cdk::trap;
 use ic_cdk_macros::{query, update};
+use junobuild_shared::ic::{caller, id};
 use junobuild_shared::types::interface::AssertMissionControlCenterArgs;
 
 #[query]

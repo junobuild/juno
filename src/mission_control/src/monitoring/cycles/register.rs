@@ -5,7 +5,7 @@ use crate::monitoring::store::heap::set_mission_control_strategy;
 use crate::types::interface::SegmentsMonitoringStrategy;
 use crate::types::runtime::RuntimeState;
 use crate::types::state::CyclesMonitoringStrategy;
-use ic_cdk::id;
+use junobuild_shared::ic::id;
 use junobuild_shared::types::state::SegmentId;
 
 type SaveSegmentStrategy = fn(&SegmentId, &CyclesMonitoringStrategy) -> Result<(), String>;

@@ -8,8 +8,8 @@ use crate::user::store::{get_config, get_metadata, get_user};
 use canfund::manager::record::CanisterRecord;
 use ic_cdk::futures::spawn_017_compat;
 use ic_cdk::management_canister::CanisterId;
-use ic_cdk::{id, print};
 use ic_cdk_timers::set_timer;
+use junobuild_shared::ic::{id, print};
 use junobuild_shared::types::interface::NotifyArgs;
 use junobuild_shared::types::monitoring::{CyclesBalance, FundingFailure};
 use junobuild_shared::types::state::{

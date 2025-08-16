@@ -2,9 +2,9 @@ use crate::memory::manager::{get_memory_upgrades, init_runtime_state, init_stabl
 use crate::random::defer_init_random_seed;
 use crate::types::state::{HeapState, State};
 use ciborium::{from_reader, into_writer};
-use ic_cdk::caller;
 use ic_cdk_macros::{init, post_upgrade, pre_upgrade};
 use junobuild_shared::controllers::init_admin_controllers;
+use junobuild_shared::ic::caller;
 use junobuild_shared::upgrade::{read_post_upgrade, write_pre_upgrade};
 
 #[init]

@@ -4,12 +4,12 @@ use crate::errors::{
     JUNO_ERROR_CONTROLLERS_ANONYMOUS_NOT_ALLOWED, JUNO_ERROR_CONTROLLERS_MAX_NUMBER,
     JUNO_ERROR_CONTROLLERS_REVOKED_NOT_ALLOWED,
 };
+use crate::ic::id;
 use crate::types::interface::SetController;
 use crate::types::state::{Controller, ControllerId, ControllerScope, Controllers, UserId};
 use crate::utils::{principal_anonymous, principal_equal, principal_not_anonymous};
 use candid::Principal;
 use ic_cdk::api::{is_controller as is_canister_controller, time};
-use ic_cdk::id;
 use std::collections::HashMap;
 
 /// Initializes a set of controllers with default administrative scope.

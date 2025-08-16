@@ -5,7 +5,7 @@ use crate::store::stable::get_notifications;
 use crate::types::interface::{GetNotifications, NotifyStatus};
 use ic_cdk::trap;
 use ic_cdk_macros::{query, update};
-use junobuild_shared::ic::caller;
+use junobuild_shared::ic::api::caller;
 use junobuild_shared::types::interface::NotifyArgs;
 
 #[update(guard = "caller_is_not_anonymous")]

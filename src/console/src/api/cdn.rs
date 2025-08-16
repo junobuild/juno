@@ -17,7 +17,7 @@ use junobuild_cdn::proposals::{
     CommitProposal, ListProposalResults, ListProposalsParams, Proposal, ProposalId, ProposalType,
     RejectProposal,
 };
-use junobuild_shared::ic::caller;
+use junobuild_shared::ic::api::caller;
 use junobuild_shared::types::core::DomainName;
 use junobuild_shared::types::domain::CustomDomains;
 

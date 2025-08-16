@@ -6,7 +6,7 @@ use ic_cdk::call;
 use ic_ledger_types::{BlockIndex, Tokens};
 use junobuild_shared::constants_shared::{IC_TRANSACTION_FEE_ICP, MEMO_CANISTER_CREATE};
 use junobuild_shared::env::CONSOLE;
-use junobuild_shared::ic::id;
+use junobuild_shared::ic::api::id;
 use junobuild_shared::ledger::icp::{transfer_payment, SUB_ACCOUNT};
 use junobuild_shared::mgmt::ic::{delete_segment, stop_segment};
 use junobuild_shared::types::interface::{DepositCyclesArgs, GetCreateCanisterFeeArgs};

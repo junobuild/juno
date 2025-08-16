@@ -9,7 +9,7 @@ use candid::Principal;
 use junobuild_collections::constants::db::COLLECTION_USER_KEY;
 use junobuild_collections::types::core::CollectionKey;
 use junobuild_shared::controllers::controller_can_write;
-use junobuild_shared::ic::id;
+use junobuild_shared::ic::api::id;
 use junobuild_shared::types::core::Key;
 use junobuild_shared::types::state::Controllers;
 use junobuild_shared::utils::principal_not_equal;

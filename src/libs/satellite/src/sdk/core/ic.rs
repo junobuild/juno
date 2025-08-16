@@ -1,5 +1,5 @@
 use candid::Principal;
-use junobuild_shared::ic::{caller as shared_caller, id as shared_id};
+use junobuild_shared::ic::api::{caller as shared_caller, id as shared_id};
 
 /// Returns the **principal** of the current satellite.
 ///

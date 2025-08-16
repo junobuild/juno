@@ -7,7 +7,7 @@ use ic_cdk::api::management_canister::http_request::{
 use ic_cdk::api::management_canister::http_request::{
     CanisterHttpRequestArgument, HttpHeader, HttpMethod,
 };
-use junobuild_shared::ic::id;
+use junobuild_shared::ic::api::id;
 use serde_json::json;
 
 pub async fn post_email(

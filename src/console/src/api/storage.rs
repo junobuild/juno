@@ -7,7 +7,7 @@ use ic_cdk::trap;
 use ic_cdk_macros::{query, update};
 use junobuild_cdn::proposals::ProposalId;
 use junobuild_collections::types::core::CollectionKey;
-use junobuild_shared::ic::caller;
+use junobuild_shared::ic::api::caller;
 use junobuild_shared::types::list::{ListParams, ListResults};
 use junobuild_shared::types::state::Controllers;
 use junobuild_storage::store::{commit_batch as commit_batch_storage, create_chunk};

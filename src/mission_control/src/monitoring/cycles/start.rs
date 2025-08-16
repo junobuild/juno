@@ -12,7 +12,7 @@ use crate::types::core::SettingsMonitoring;
 use crate::types::runtime::RuntimeState;
 use crate::types::state::CyclesMonitoringStrategy;
 use crate::user::store::get_settings;
-use junobuild_shared::ic::id;
+use junobuild_shared::ic::api::id;
 use junobuild_shared::types::state::SegmentId;
 
 type SegmentCyclesMonitoryStrategyPair = (SegmentId, CyclesMonitoringStrategy);

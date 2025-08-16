@@ -1,6 +1,6 @@
 use crate::memory::manager::STATE;
 use junobuild_shared::controllers::is_admin_controller as is_admin_controller_impl;
-use junobuild_shared::ic::caller;
+use junobuild_shared::ic::api::caller;
 use junobuild_shared::types::state::Controllers;
 use junobuild_shared::utils::principal_not_anonymous;
 

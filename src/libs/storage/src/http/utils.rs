@@ -7,7 +7,7 @@ use crate::types::config::{StorageConfig, StorageConfigIFrame};
 use crate::types::runtime_state::StorageRuntimeState;
 use crate::types::store::{Asset, AssetEncoding, AssetKey, EncodingType};
 use junobuild_collections::types::rules::Memory;
-use junobuild_shared::ic::id;
+use junobuild_shared::ic::api::id;
 use serde_bytes::ByteBuf;
 
 pub fn streaming_strategy(

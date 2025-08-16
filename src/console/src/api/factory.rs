@@ -3,7 +3,7 @@ use crate::factory::satellite::create_satellite as create_satellite_console;
 use candid::Principal;
 use ic_cdk::trap;
 use ic_cdk_macros::update;
-use junobuild_shared::ic::{caller, id};
+use junobuild_shared::ic::api::{caller, id};
 use junobuild_shared::types::interface::CreateCanisterArgs;
 
 #[update]

@@ -4,7 +4,7 @@ use crate::assets::storage::state::{
 use crate::controllers::store::get_controllers;
 use junobuild_collections::assert::stores::assert_permission;
 use junobuild_collections::types::rules::Rule;
-use junobuild_shared::ic::id;
+use junobuild_shared::ic::api::id;
 use junobuild_shared::types::core::Blob;
 use junobuild_shared::types::state::Controllers;
 use junobuild_storage::constants::ASSET_ENCODING_NO_COMPRESSION;

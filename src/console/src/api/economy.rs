@@ -10,7 +10,7 @@ use crate::types::state::Payments;
 use ic_cdk::trap;
 use ic_cdk_macros::{query, update};
 use ic_ledger_types::Tokens;
-use junobuild_shared::ic::caller;
+use junobuild_shared::ic::api::caller;
 use junobuild_shared::types::interface::GetCreateCanisterFeeArgs;
 use junobuild_shared::types::state::{SegmentKind, UserId};
 

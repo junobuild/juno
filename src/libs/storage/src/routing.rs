@@ -13,7 +13,7 @@ use crate::types::state::FullPath;
 use crate::types::store::Asset;
 use crate::url::{map_alternative_paths, map_url};
 use junobuild_collections::types::rules::Memory;
-use junobuild_shared::ic::id;
+use junobuild_shared::ic::api::id;
 
 pub fn get_routing(
     url: String,

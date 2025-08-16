@@ -3,7 +3,7 @@ use crate::cdn::helpers::heap::{get_asset, insert_asset};
 use crate::constants::RELEASES_METADATA_JSON;
 use crate::store::heap::{get_releases_metadata, set_releases_metadata};
 use junobuild_cdn::proposals::SegmentsDeploymentOptions;
-use junobuild_shared::ic::id;
+use junobuild_shared::ic::api::id;
 use junobuild_storage::types::store::{Asset, AssetKey};
 use junobuild_storage::utils::{create_asset_with_content, map_content_type_headers};
 use serde_json::to_string;

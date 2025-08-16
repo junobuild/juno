@@ -1,6 +1,6 @@
 use crate::js::types::candid::JsRawPrincipal;
 use anyhow::Result;
-use junobuild_shared::ic::id;
+use junobuild_shared::ic::api::id;
 use rquickjs::{Ctx, Error as JsError, Result as JsResult};
 
 pub fn init_ic_cdk_id(ctx: &Ctx) -> Result<(), JsError> {

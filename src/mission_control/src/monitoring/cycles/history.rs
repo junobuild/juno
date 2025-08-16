@@ -8,7 +8,7 @@ use crate::types::state::MonitoringHistoryCycles;
 use canfund::manager::record::CanisterRecord;
 use ic_cdk::api::time;
 use ic_cdk::management_canister::CanisterId;
-use junobuild_shared::ic::print;
+use junobuild_shared::ic::api::print;
 use junobuild_shared::types::monitoring::CyclesBalance;
 use std::collections::HashMap;
 

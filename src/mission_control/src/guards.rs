@@ -2,7 +2,7 @@ use crate::controllers::store::get_controllers;
 use crate::user::store::get_user;
 use ic_cdk::api::is_controller as ic_canister_controller;
 use junobuild_shared::controllers::is_admin_controller;
-use junobuild_shared::ic::caller;
+use junobuild_shared::ic::api::caller;
 use junobuild_shared::utils::principal_equal;
 
 pub fn caller_is_user_or_admin_controller() -> Result<(), String> {

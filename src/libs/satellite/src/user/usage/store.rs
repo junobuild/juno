@@ -7,7 +7,7 @@ use junobuild_collections::constants::db::COLLECTION_USER_USAGE_KEY;
 use junobuild_collections::msg::msg_db_collection_not_found;
 use junobuild_collections::types::core::CollectionKey;
 use junobuild_collections::types::rules::Rule;
-use junobuild_shared::ic::id;
+use junobuild_shared::ic::api::id;
 use junobuild_shared::types::state::UserId;
 use junobuild_utils::{decode_doc_data, encode_doc_data};
 

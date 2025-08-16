@@ -2,7 +2,7 @@ use crate::memory::manager::RUNTIME_STATE;
 use crate::monitoring::cycles::funding::init_funding_manager;
 use crate::monitoring::store::heap::disable_mission_control_monitoring;
 use crate::types::runtime::RuntimeState;
-use junobuild_shared::ic::id;
+use junobuild_shared::ic::api::id;
 use junobuild_shared::types::state::SegmentId;
 
 type DisableMonitoring = fn(&SegmentId) -> Result<(), String>;

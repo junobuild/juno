@@ -75,6 +75,9 @@ export interface GetMonitoringHistory {
 	from: [] | [bigint];
 	segment_id: Principal;
 }
+export interface MissionControlArgs {
+	user: Principal;
+}
 export interface MissionControlSettings {
 	updated_at: bigint;
 	created_at: bigint;

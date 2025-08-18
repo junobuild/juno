@@ -34,6 +34,7 @@ use ic_ledger_types::TransferResult;
 use icrc_ledger_types::icrc1::transfer::TransferArg;
 use junobuild_shared::ledger::types::icrc::IcrcTransferResult;
 use junobuild_shared::types::interface::DepositCyclesArgs;
+use junobuild_shared::types::interface::MissionControlArgs;
 use junobuild_shared::types::interface::SetController;
 use junobuild_shared::types::state::Metadata;
 use junobuild_shared::types::state::SatelliteId;

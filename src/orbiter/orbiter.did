@@ -149,6 +149,7 @@ type Result = variant { Ok : PageView; Err : text };
 type Result_1 = variant { Ok; Err : vec record { AnalyticKey; text } };
 type Result_2 = variant { Ok : PerformanceMetric; Err : text };
 type Result_3 = variant { Ok : TrackEvent; Err : text };
+type SegmentArgs = record { controllers : vec principal };
 type SetController = record {
   metadata : vec record { text; text };
   scope : ControllerScope;
@@ -210,7 +211,7 @@ type WebVitalsMetric = record {
   navigation_type : opt NavigationType;
   delta : float64;
 };
-service : () -> {
+service : (SegmentArgs) -> {
   del_controllers : (DeleteControllersArgs) -> (
       vec record { principal; Controller },
     );

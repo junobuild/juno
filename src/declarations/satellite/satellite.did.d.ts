@@ -239,6 +239,9 @@ export interface Rule {
 	write: Permission;
 	max_changes_per_user: [] | [number];
 }
+export interface SegmentArgs {
+	controllers: Array<Principal>;
+}
 export interface SegmentsDeploymentOptions {
 	orbiter: [] | [string];
 	mission_control_version: [] | [string];

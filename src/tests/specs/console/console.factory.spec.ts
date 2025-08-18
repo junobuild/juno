@@ -157,6 +157,7 @@ describe('Console', () => {
 				expect(controllers).toHaveLength(0);
 
 				const micUser = await get_user();
+
 				expect(micUser.toText()).toEqual(user.getPrincipal().toText());
 			});
 		});
@@ -249,6 +250,7 @@ describe('Console', () => {
 					freezingThreshold: BigInt(THREE_MONTHS)
 				});
 			});
+
 			it('should create an orbiter with expected access keys', async () => {
 				assertNonNullish(orbiterId);
 				assertNonNullish(missionControlId);

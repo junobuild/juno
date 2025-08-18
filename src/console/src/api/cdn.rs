@@ -10,7 +10,6 @@ use crate::cdn::strategies_impls::cdn::CdnHeap;
 use crate::cdn::strategies_impls::storage::StorageState;
 use crate::guards::caller_is_admin_controller;
 use crate::types::interface::DeleteProposalAssets;
-use ic_cdk::api::call::ManualReply;
 use ic_cdk::trap;
 use ic_cdk_macros::{query, update};
 use junobuild_cdn::proposals::{
@@ -18,6 +17,7 @@ use junobuild_cdn::proposals::{
     RejectProposal,
 };
 use junobuild_shared::ic::api::caller;
+use junobuild_shared::ic::call::ManualReply;
 use junobuild_shared::types::core::DomainName;
 use junobuild_shared::types::domain::CustomDomains;
 

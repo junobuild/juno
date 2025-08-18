@@ -24,7 +24,6 @@ use crate::guards::{
 };
 use crate::types::interface::{Config, DeleteProposalAssets};
 use crate::types::state::CollectionType;
-use ic_cdk::api::call::ManualReply;
 use ic_cdk::api::trap;
 use ic_cdk_macros::{init, post_upgrade, pre_upgrade, query, update};
 use junobuild_cdn::proposals::{
@@ -36,6 +35,7 @@ use junobuild_collections::types::interface::{
     DelRule, ListRulesParams, ListRulesResults, SetRule,
 };
 use junobuild_collections::types::rules::Rule;
+use junobuild_shared::ic::call::ManualReply;
 use junobuild_shared::types::core::DomainName;
 use junobuild_shared::types::core::Key;
 use junobuild_shared::types::domain::CustomDomains;

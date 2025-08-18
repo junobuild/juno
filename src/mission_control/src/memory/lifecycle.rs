@@ -3,15 +3,13 @@ use crate::monitoring::monitor::defer_restart_monitoring;
 use crate::random::defer_init_random_seed;
 use crate::types::state::{HeapState, State};
 use ciborium::{from_reader, into_writer};
-use ic_cdk::api::call::{arg_data, ArgDecoderConfig};
 use ic_cdk_macros::{init, post_upgrade, pre_upgrade};
 use junobuild_shared::types::interface::MissionControlArgs;
 use junobuild_shared::upgrade::{read_post_upgrade, write_pre_upgrade};
 
 #[init]
-fn init() {
-    let call_arg = arg_data::<(Option<MissionControlArgs>,)>(ArgDecoderConfig::default()).0;
-    let user = call_arg.unwrap().user;
+fn init(args: MissionControlArgs) {
+    let user = args.user;
 
     STATE.with(|state| {
         *state.borrow_mut() = State {

@@ -189,6 +189,7 @@ type Rule = record {
   write : Permission;
   max_changes_per_user : opt nat32;
 };
+type SegmentArgs = record { controllers : vec principal };
 type SegmentsDeploymentOptions = record {
   orbiter : opt text;
   mission_control_version : opt text;
@@ -282,7 +283,7 @@ type UploadChunk = record {
   order_id : opt nat;
 };
 type UploadChunkResult = record { chunk_id : nat };
-service : () -> {
+service : (SegmentArgs) -> {
   commit_asset_upload : (CommitBatch) -> ();
   commit_proposal : (CommitProposal) -> (null);
   commit_proposal_asset_upload : (CommitBatch) -> ();

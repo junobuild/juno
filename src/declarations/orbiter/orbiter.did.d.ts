@@ -180,6 +180,9 @@ export type Result = { Ok: PageView } | { Err: string };
 export type Result_1 = { Ok: null } | { Err: Array<[AnalyticKey, string]> };
 export type Result_2 = { Ok: PerformanceMetric } | { Err: string };
 export type Result_3 = { Ok: TrackEvent } | { Err: string };
+export interface SegmentArgs {
+	controllers: Array<Principal>;
+}
 export interface SetController {
 	metadata: Array<[string, string]>;
 	scope: ControllerScope;

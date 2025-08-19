@@ -27,6 +27,9 @@ use crate::types::interface::{Config, DeleteProposalAssets};
 use crate::types::state::CollectionType;
 use ic_cdk::api::trap;
 use ic_cdk_macros::{init, post_upgrade, pre_upgrade, query, update};
+use junobuild_auth::{
+    GetDelegationArgs, GetDelegationResponse, PrepareDelegationArgs, PrepareDelegationResponse,
+};
 use junobuild_cdn::proposals::{
     CommitProposal, ListProposalResults, ListProposalsParams, Proposal, ProposalId, ProposalType,
     RejectProposal,
@@ -56,6 +59,7 @@ use junobuild_storage::types::interface::{
 };
 use junobuild_storage::types::state::FullPath;
 use memory::lifecycle;
+
 // ============================================================================================
 // These types are made available for use in Serverless Functions.
 // ============================================================================================
@@ -63,6 +67,7 @@ use crate::auth::types::interface::SetAuthenticationConfig;
 use crate::db::types::interface::SetDbConfig;
 pub use sdk::core::*;
 pub use sdk::internal;
+
 // ---------------------------------------------------------
 // Init and Upgrade
 // ---------------------------------------------------------
@@ -470,6 +475,22 @@ pub fn get_many_assets(
     assets: Vec<(CollectionKey, FullPath)>,
 ) -> Vec<(FullPath, Option<AssetNoContent>)> {
     api::storage::get_many_assets(assets)
+}
+
+// ---------------------------------------------------------
+// Authentication
+// ---------------------------------------------------------
+
+#[doc(hidden)]
+#[update]
+fn prepare_delegation(args: PrepareDelegationArgs) -> PrepareDelegationResponse {
+    api::auth::prepare_delegation(&args)
+}
+
+#[doc(hidden)]
+#[query]
+fn get_delegation(args: GetDelegationArgs) -> GetDelegationResponse {
+    api::auth::get_delegation(&args)
 }
 
 // ---------------------------------------------------------

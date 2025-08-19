@@ -54,6 +54,8 @@ pub mod interface {
         NoSuchDelegation,
     }
 
+    pub type PrepareDelegationResponse = (UserKey, Timestamp);
+
     #[derive(Clone, Debug, CandidType, Deserialize)]
     pub struct SignedDelegation {
         pub delegation: Delegation,

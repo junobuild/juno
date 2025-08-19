@@ -4,7 +4,6 @@ use crate::assets::storage::state::{
     delete_asset, get_asset, get_config, get_domains, get_rule, insert_asset, insert_asset_encoding,
 };
 use crate::assets::storage::store::{get_content_chunks_store, get_public_asset_store};
-use crate::certification::cert::update_certified_data;
 use crate::hooks::storage::invoke_assert_upload_asset;
 use crate::user::usage::assert::increment_and_assert_storage_usage;
 use candid::Principal;
@@ -16,8 +15,7 @@ use junobuild_shared::types::core::Blob;
 use junobuild_shared::types::domain::CustomDomains;
 use junobuild_shared::types::state::Controllers;
 use junobuild_storage::strategies::{
-    StorageAssertionsStrategy, StorageCertificateStrategy, StorageStateStrategy,
-    StorageUploadStrategy,
+    StorageAssertionsStrategy, StorageStateStrategy, StorageUploadStrategy,
 };
 use junobuild_storage::types::config::StorageConfig;
 use junobuild_storage::types::state::FullPath;
@@ -196,13 +194,5 @@ impl StorageUploadStrategy for StorageUpload {
     ) -> Result<Option<Asset>, String> {
         let asset = get_asset(collection, full_path, rule);
         Ok(asset)
-    }
-}
-
-pub struct StorageCertificate;
-
-impl StorageCertificateStrategy for StorageCertificate {
-    fn update_certified_data(&self) {
-        update_certified_data()
     }
 }

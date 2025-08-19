@@ -1,7 +1,7 @@
 use crate::assets::storage::state::{
     get_asset, get_config, get_rule, insert_asset, insert_asset_encoding,
 };
-use crate::assets::storage::strategy_impls::StorageCertificate;
+use crate::certification::strategy_impls::StorageCertificate;
 use crate::controllers::store::get_controllers;
 use junobuild_collections::assert::stores::assert_permission;
 use junobuild_collections::types::rules::Rule;

@@ -11,10 +11,9 @@ use crate::assets::storage::state::{
     get_rule as get_state_rule, insert_config as insert_state_config,
     insert_domain as insert_state_domain,
 };
-use crate::assets::storage::strategy_impls::{
-    StorageAssertions, StorageCertificate, StorageState, StorageUpload,
-};
+use crate::assets::storage::strategy_impls::{StorageAssertions, StorageState, StorageUpload};
 use crate::auth::store::get_config as get_auth_config;
+use crate::certification::strategy_impls::StorageCertificate;
 use crate::controllers::store::get_controllers;
 use crate::memory::internal::STATE;
 use crate::types::store::{AssertContext, StoreContext};
@@ -51,7 +50,6 @@ use junobuild_storage::utils::{
 };
 use junobuild_storage::well_known::update::update_custom_domains_asset;
 use junobuild_storage::well_known::utils::build_custom_domain;
-
 // ---------------------------------------------------------
 // Getter, list and delete
 // ---------------------------------------------------------

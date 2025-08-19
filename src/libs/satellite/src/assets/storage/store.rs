@@ -37,7 +37,7 @@ use junobuild_storage::runtime::{
     update_certified_asset as update_runtime_certified_asset,
 };
 use junobuild_storage::store::{commit_batch as commit_batch_storage, create_batch, create_chunk};
-use junobuild_storage::strategies::{StorageAssertionsStrategy, StorageUploadStrategy};
+use junobuild_storage::strategies::StorageAssertionsStrategy;
 use junobuild_storage::types::config::StorageConfig;
 use junobuild_storage::types::interface::{
     AssetNoContent, CommitBatch, InitAssetKey, SetStorageConfig, UploadChunk,

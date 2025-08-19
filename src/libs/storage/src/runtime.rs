@@ -1,4 +1,3 @@
-use crate::certification::cert::update_certified_data;
 use crate::certification::types::certified::CertifiedAssetHashes;
 use crate::memory::STATE;
 use crate::strategies::StorageCertificateStrategy;
@@ -45,7 +44,7 @@ pub fn update_certified_asset(
 
 pub fn delete_certified_asset(asset: &Asset, certificate: &impl StorageCertificateStrategy) {
     // 1. Remove the asset in tree
-    STATE.with(|state| delete_certified_asset_impl(asset, certificate));
+    STATE.with(|state| delete_certified_asset_impl(asset, &mut state.borrow_mut().runtime));
 
     // 2. Update the root hash and the canister certified data
     certificate.update_certified_data();

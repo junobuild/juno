@@ -67,11 +67,6 @@ type DbConfig = record {
 };
 type DelDoc = record { version : opt nat64 };
 type DelRule = record { version : opt nat64 };
-type Delegation = record {
-  pubkey : blob;
-  targets : opt vec principal;
-  expiration : nat64;
-};
 type DeleteControllersArgs = record { controllers : vec principal };
 type DeleteProposalAssets = record { proposal_ids : vec nat };
 type DepositCyclesArgs = record { cycles : nat; destination_id : principal };
@@ -82,16 +77,6 @@ type Doc = record {
   description : opt text;
   created_at : nat64;
   version : opt nat64;
-};
-type GetDelegationArgs = record {
-  session_key : blob;
-  frontend : text;
-  anchor_id : text;
-  expiration : nat64;
-};
-type GetDelegationResponse = variant {
-  no_such_delegation;
-  signed_delegation : SignedDelegation;
 };
 type HttpRequest = record {
   url : text;
@@ -165,11 +150,6 @@ type ListRulesResults = record {
 type Memory = variant { Heap; Stable };
 type MemorySize = record { stable : nat64; heap : nat64 };
 type Permission = variant { Controllers; Private; Public; Managed };
-type PrepareDelegationArgs = record {
-  session_key : blob;
-  frontend : text;
-  anchor_id : text;
-};
 type Proposal = record {
   status : ProposalStatus;
   updated_at : nat64;
@@ -256,7 +236,6 @@ type SetStorageConfig = record {
   raw_access : opt StorageConfigRawAccess;
   redirects : opt vec record { text; StorageConfigRedirect };
 };
-type SignedDelegation = record { signature : blob; delegation : Delegation };
 type StorageConfig = record {
   iframe : opt StorageConfigIFrame;
   updated_at : opt nat64;
@@ -331,7 +310,6 @@ service : (SegmentArgs) -> {
   get_auth_config : () -> (opt AuthenticationConfig) query;
   get_config : () -> (Config);
   get_db_config : () -> (opt DbConfig) query;
-  get_delegation : (GetDelegationArgs) -> (GetDelegationResponse) query;
   get_doc : (text, text) -> (opt Doc) query;
   get_many_assets : (vec record { text; text }) -> (
       vec record { text; opt AssetNoContent },
@@ -359,7 +337,6 @@ service : (SegmentArgs) -> {
   list_proposals : (ListProposalsParams) -> (ListProposalResults) query;
   list_rules : (CollectionType, ListRulesParams) -> (ListRulesResults) query;
   memory_size : () -> (MemorySize) query;
-  prepare_delegation : (PrepareDelegationArgs) -> (record { blob; nat64 });
   reject_proposal : (CommitProposal) -> (null);
   set_auth_config : (SetAuthenticationConfig) -> (AuthenticationConfig);
   set_controllers : (SetControllersArgs) -> (

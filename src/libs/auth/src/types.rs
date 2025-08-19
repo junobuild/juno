@@ -19,7 +19,7 @@ pub mod runtime_state {
     }
 }
 
-pub mod delegation {
+pub mod interface {
     use candid::{CandidType, Deserialize, Principal};
     use serde_bytes::ByteBuf;
 

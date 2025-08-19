@@ -1,6 +1,6 @@
 use crate::seed::calculate_seed;
 use crate::services::read_state;
-use crate::types::delegation::{
+use crate::types::interface::{
     Delegation, GetDelegationArgs, GetDelegationResponse, SignedDelegation,
 };
 use ic_canister_sig_creation::signature_map::CanisterSigInputs;

@@ -1,7 +1,7 @@
 use crate::constants::DEFAULT_EXPIRATION_PERIOD_NS;
 use crate::seed::calculate_seed;
 use crate::services::mutate_state;
-use crate::types::delegation::{PrepareDelegationArgs, PublicKey, Timestamp, UserKey};
+use crate::types::interface::{PrepareDelegationArgs, PublicKey, Timestamp, UserKey};
 use crate::types::runtime_state::State;
 use ic_canister_sig_creation::signature_map::CanisterSigInputs;
 use ic_canister_sig_creation::{

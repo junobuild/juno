@@ -135,5 +135,5 @@ pub trait StorageUploadStrategy {
 }
 
 pub trait StorageCertificateStrategy {
-    fn update_root_hash(&self);
+    fn update_certified_data(&self);
 }

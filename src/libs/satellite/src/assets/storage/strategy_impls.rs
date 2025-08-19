@@ -202,7 +202,7 @@ impl StorageUploadStrategy for StorageUpload {
 pub struct StorageCertificate;
 
 impl StorageCertificateStrategy for StorageCertificate {
-    fn update_root_hash(&self) {
+    fn update_certified_data(&self) {
         update_certified_data()
     }
 }

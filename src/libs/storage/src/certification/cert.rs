@@ -10,7 +10,7 @@ use serde::Serialize;
 use serde_cbor::ser::Serializer;
 
 pub fn update_certified_data(certificate: &impl StorageCertificateStrategy) {
-    certificate.update_root_hash();
+    certificate.update_certified_data();
 }
 
 pub fn build_asset_certificate_header(

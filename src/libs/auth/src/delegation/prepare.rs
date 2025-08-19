@@ -9,9 +9,9 @@ use ic_canister_sig_creation::{
 };
 use ic_cdk::api::{canister_self, time};
 use serde_bytes::ByteBuf;
-use crate::strategies::CertificateStrategy;
+use crate::strategies::AuthCertificateStrategy;
 
-pub fn prepare_delegation(args: &PrepareDelegationArgs, certificate: &impl CertificateStrategy) -> Result<(UserKey, Timestamp), String> {
+pub fn prepare_delegation(args: &PrepareDelegationArgs, certificate: &impl AuthCertificateStrategy) -> Result<(UserKey, Timestamp), String> {
     let expiration = time().saturating_add(DEFAULT_EXPIRATION_PERIOD_NS);
     let seed = calculate_seed(&args.anchor_id, &args.frontend)?;
 

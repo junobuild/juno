@@ -1,5 +1,5 @@
-use crate::hooks::random::invoke_on_init_random_seed;
 use crate::memory::internal::STATE;
+use crate::random::post_init::post_init_random_seed;
 use getrandom::Error;
 use ic_cdk::futures::spawn_017_compat;
 use ic_cdk_timers::set_timer;
@@ -18,7 +18,7 @@ async fn init_random_seed() {
         state.borrow_mut().runtime.rng = seed;
     });
 
-    invoke_on_init_random_seed();
+    post_init_random_seed();
 }
 
 /// Source: https://github.com/rust-random/getrandom?tab=readme-ov-file#custom-backend

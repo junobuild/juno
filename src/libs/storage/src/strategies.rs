@@ -133,3 +133,7 @@ pub trait StorageUploadStrategy {
         rule: &Rule,
     ) -> Result<Option<Asset>, String>;
 }
+
+pub trait StorageCertificateStrategy {
+    fn update_certified_data(&self);
+}

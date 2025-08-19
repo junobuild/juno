@@ -2,7 +2,7 @@ use crate::certification::types::certified::CertifiedAssetHashes;
 use crate::rewrites::rewrite_source_to_path;
 use crate::routing::get_routing;
 use crate::runtime::init_certified_assets;
-use crate::strategies::StorageStateStrategy;
+use crate::strategies::{StorageCertificateStrategy, StorageStateStrategy};
 use crate::types::config::StorageConfig;
 use crate::types::http_request::{Routing, RoutingDefault};
 
@@ -10,6 +10,7 @@ pub fn extend_and_init_certified_assets(
     asset_hashes: &mut CertifiedAssetHashes,
     config: &StorageConfig,
     storage_state: &impl StorageStateStrategy,
+    certificate: &impl StorageCertificateStrategy,
 ) {
     for (source, destination) in config.rewrites.clone() {
         if let Ok(Routing::Default(RoutingDefault { url: _, asset })) =
@@ -32,5 +33,5 @@ pub fn extend_and_init_certified_assets(
         );
     }
 
-    init_certified_assets(asset_hashes);
+    init_certified_assets(asset_hashes, certificate);
 }

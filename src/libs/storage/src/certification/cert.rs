@@ -2,16 +2,11 @@ use crate::certification::constants::{IC_CERTIFICATE_EXPRESSION_HEADER, IC_CERTI
 use crate::certification::tree_utils::response_headers_expression;
 use crate::certification::types::certified::CertifiedAssetHashes;
 use crate::http::types::HeaderField;
-use crate::strategies::StorageCertificateStrategy;
 use base64::{engine::general_purpose::STANDARD as BASE64, Engine};
 use ic_cdk::api::data_certificate;
 use junobuild_shared::types::core::Blob;
 use serde::Serialize;
 use serde_cbor::ser::Serializer;
-
-pub fn update_certified_data(certificate: &impl StorageCertificateStrategy) {
-    certificate.update_certified_data();
-}
 
 pub fn build_asset_certificate_header(
     asset_hashes: &CertifiedAssetHashes,

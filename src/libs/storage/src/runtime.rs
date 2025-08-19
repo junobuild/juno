@@ -22,13 +22,13 @@ pub fn init_certified_assets(
     asset_hashes: &CertifiedAssetHashes,
     certificate: &impl StorageCertificateStrategy,
 ) {
+    // 1. Init all asset in tree
     STATE.with(|state| {
-        init_certified_assets_impl(
-            asset_hashes,
-            certificate,
-            &mut state.borrow_mut().runtime.storage,
-        )
+        init_certified_assets_impl(asset_hashes, &mut state.borrow_mut().runtime.storage)
     });
+
+    // 2. Update the root hash and the canister certified data
+    certificate.update_certified_data();
 }
 
 pub fn update_certified_asset(
@@ -36,15 +36,19 @@ pub fn update_certified_asset(
     config: &StorageConfig,
     certificate: &impl StorageCertificateStrategy,
 ) {
-    STATE.with(|state| {
-        update_certified_asset_impl(asset, config, certificate, &mut state.borrow_mut().runtime)
-    });
+    // 1. Replace or insert the new asset in tree
+    STATE.with(|state| update_certified_asset_impl(asset, config, &mut state.borrow_mut().runtime));
+
+    // 2. Update the root hash and the canister certified data
+    certificate.update_certified_data();
 }
 
 pub fn delete_certified_asset(asset: &Asset, certificate: &impl StorageCertificateStrategy) {
-    STATE.with(|state| {
-        delete_certified_asset_impl(asset, certificate, &mut state.borrow_mut().runtime)
-    });
+    // 1. Remove the asset in tree
+    STATE.with(|state| delete_certified_asset_impl(asset, certificate));
+
+    // 2. Update the root hash and the canister certified data
+    certificate.update_certified_data();
 }
 
 pub fn certified_assets_root_hash() -> Hash {
@@ -53,39 +57,17 @@ pub fn certified_assets_root_hash() -> Hash {
 
 fn init_certified_assets_impl(
     asset_hashes: &CertifiedAssetHashes,
-    certificate: &impl StorageCertificateStrategy,
     storage: &mut StorageRuntimeState,
 ) {
-    // 1. Init all asset in tree
     storage.asset_hashes = asset_hashes.clone();
-
-    // 2. Update the root hash and the canister certified data
-    update_certified_data(certificate);
 }
 
-fn update_certified_asset_impl(
-    asset: &Asset,
-    config: &StorageConfig,
-    certificate: &impl StorageCertificateStrategy,
-    runtime: &mut RuntimeState,
-) {
-    // 1. Replace or insert the new asset in tree
+fn update_certified_asset_impl(asset: &Asset, config: &StorageConfig, runtime: &mut RuntimeState) {
     runtime.storage.asset_hashes.insert(asset, config);
-
-    // 2. Update the root hash and the canister certified data
-    update_certified_data(certificate);
 }
 
-fn delete_certified_asset_impl(
-    asset: &Asset,
-    certificate: &impl StorageCertificateStrategy,
-    runtime: &mut RuntimeState,
-) {
-    // 1. Remove the asset in tree
+fn delete_certified_asset_impl(asset: &Asset, runtime: &mut RuntimeState) {
     runtime.storage.asset_hashes.delete(asset);
-
-    // 2. Update the root hash and the canister certified data
-    update_certified_data(certificate);
 }
 
 fn certified_assets_root_hash_impl(storage: &StorageRuntimeState) -> Hash {

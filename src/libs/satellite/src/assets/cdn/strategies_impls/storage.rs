@@ -14,12 +14,10 @@ use junobuild_cdn::storage::errors::{
 use junobuild_collections::assert::stores::assert_permission;
 use junobuild_collections::types::core::CollectionKey;
 use junobuild_collections::types::rules::{Memory, Permission, Rule};
-use junobuild_shared::types::core::Blob;
+use junobuild_shared::types::core::{Blob, Hash};
 use junobuild_shared::types::domain::CustomDomains;
 use junobuild_shared::types::state::Controllers;
-use junobuild_storage::strategies::{
-    StorageAssertionsStrategy, StorageStateStrategy, StorageUploadStrategy,
-};
+use junobuild_storage::strategies::{StorageAssertionsStrategy, StorageCertificateStrategy, StorageStateStrategy, StorageUploadStrategy};
 use junobuild_storage::types::config::StorageConfig;
 use junobuild_storage::types::state::FullPath;
 use junobuild_storage::types::store::{

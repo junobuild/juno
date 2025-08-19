@@ -13,6 +13,7 @@ use junobuild_storage::http::types::HeaderField;
 use junobuild_storage::runtime::update_certified_asset as update_runtime_certified_asset;
 use junobuild_storage::types::store::{Asset, AssetKey};
 use junobuild_storage::utils::map_content_encoding;
+use crate::assets::storage::strategy_impls::StorageCertificate;
 
 /// Handles the setting of an asset within the store. This function performs
 /// various checks and operations to ensure the asset can be set and updated
@@ -84,7 +85,7 @@ fn set_asset_handler_impl(
 
     let config = get_config();
 
-    update_runtime_certified_asset(&asset, &config);
+    update_runtime_certified_asset(&asset, &config, &StorageCertificate);
 
     Ok(())
 }

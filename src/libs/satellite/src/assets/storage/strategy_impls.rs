@@ -11,12 +11,10 @@ use junobuild_collections::assert::stores::{assert_create_permission, assert_per
 use junobuild_collections::types::core::CollectionKey;
 use junobuild_collections::types::rules::{Memory, Permission, Rule};
 use junobuild_shared::controllers::controller_can_write;
-use junobuild_shared::types::core::Blob;
+use junobuild_shared::types::core::{Blob, Hash};
 use junobuild_shared::types::domain::CustomDomains;
 use junobuild_shared::types::state::Controllers;
-use junobuild_storage::strategies::{
-    StorageAssertionsStrategy, StorageStateStrategy, StorageUploadStrategy,
-};
+use junobuild_storage::strategies::{StorageAssertionsStrategy, StorageCertificateStrategy, StorageStateStrategy, StorageUploadStrategy};
 use junobuild_storage::types::config::StorageConfig;
 use junobuild_storage::types::state::FullPath;
 use junobuild_storage::types::store::{
@@ -194,5 +192,13 @@ impl StorageUploadStrategy for StorageUpload {
     ) -> Result<Option<Asset>, String> {
         let asset = get_asset(collection, full_path, rule);
         Ok(asset)
+    }
+}
+
+pub struct StorageCertificate;
+
+impl StorageCertificateStrategy for StorageCertificate {
+    fn set_certified_data(&self, assets_root_hash: &Hash) {
+        todo!()
     }
 }

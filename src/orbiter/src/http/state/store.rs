@@ -1,7 +1,7 @@
 use crate::http::state::services::{mutate_state, read_state};
 use crate::http::state::types::{CertifiedHttpResponse, StorageRuntimeState};
 use crate::http::types::request::{HttpRequestMethod, HttpRequestPath};
-use ic_cdk::api::certified_data_set;
+use ic_cdk::api::certified_data_set as set_certified_data;
 use ic_http_certification::{HttpCertification, HttpCertificationPath, HttpCertificationTreeEntry};
 
 pub fn insert_certified_response(
@@ -52,5 +52,5 @@ fn certify_response(
 
     storage.tree.insert(&entry);
 
-    certified_data_set(&storage.tree.root_hash());
+    set_certified_data(&storage.tree.root_hash());
 }

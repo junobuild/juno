@@ -21,5 +21,10 @@ fn init_certified_assets_impl(state: &State) {
         asset_hashes.insert(&entry.value(), config);
     }
 
-    extend_and_init_certified_assets(&mut asset_hashes, config, &StorageState, &StorageCertificate)
+    extend_and_init_certified_assets(
+        &mut asset_hashes,
+        config,
+        &StorageState,
+        &StorageCertificate,
+    )
 }

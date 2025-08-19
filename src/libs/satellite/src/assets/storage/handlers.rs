@@ -1,6 +1,7 @@
 use crate::assets::storage::state::{
     get_asset, get_config, get_rule, insert_asset, insert_asset_encoding,
 };
+use crate::assets::storage::strategy_impls::StorageCertificate;
 use crate::controllers::store::get_controllers;
 use junobuild_collections::assert::stores::assert_permission;
 use junobuild_collections::types::rules::Rule;
@@ -13,7 +14,6 @@ use junobuild_storage::http::types::HeaderField;
 use junobuild_storage::runtime::update_certified_asset as update_runtime_certified_asset;
 use junobuild_storage::types::store::{Asset, AssetKey};
 use junobuild_storage::utils::map_content_encoding;
-use crate::assets::storage::strategy_impls::StorageCertificate;
 
 /// Handles the setting of an asset within the store. This function performs
 /// various checks and operations to ensure the asset can be set and updated

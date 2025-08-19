@@ -6,6 +6,7 @@ use crate::cdn::helpers::stable::{
     get_asset_stable, insert_asset_encoding_stable, insert_asset_stable,
 };
 use crate::cdn::strategies_impls::cdn::CdnHeap;
+use crate::certification::cert::update_certified_data;
 use candid::Principal;
 use junobuild_cdn::storage::errors::{
     JUNO_CDN_STORAGE_ERROR_CANNOT_GET_ASSET_UNKNOWN_REFERENCE_ID,
@@ -16,10 +17,13 @@ use junobuild_collections::assert::stores::{assert_create_permission, assert_per
 use junobuild_collections::types::core::CollectionKey;
 use junobuild_collections::types::rules::{Memory, Permission, Rule};
 use junobuild_shared::controllers::controller_can_write;
-use junobuild_shared::types::core::{Blob, Hash};
+use junobuild_shared::types::core::Blob;
 use junobuild_shared::types::domain::CustomDomains;
 use junobuild_shared::types::state::Controllers;
-use junobuild_storage::strategies::{StorageAssertionsStrategy, StorageCertificateStrategy, StorageStateStrategy, StorageUploadStrategy};
+use junobuild_storage::strategies::{
+    StorageAssertionsStrategy, StorageCertificateStrategy, StorageStateStrategy,
+    StorageUploadStrategy,
+};
 use junobuild_storage::types::config::StorageConfig;
 use junobuild_storage::types::state::FullPath;
 use junobuild_storage::types::store::{
@@ -238,7 +242,7 @@ impl StorageUploadStrategy for StorageUpload {
 pub struct StorageCertificate;
 
 impl StorageCertificateStrategy for StorageCertificate {
-    fn set_certified_data(&self, assets_root_hash: &Hash) {
-        todo!()
+    fn update_root_hash(&self) {
+        update_certified_data();
     }
 }

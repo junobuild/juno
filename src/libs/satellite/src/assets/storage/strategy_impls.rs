@@ -4,6 +4,7 @@ use crate::assets::storage::state::{
     delete_asset, get_asset, get_config, get_domains, get_rule, insert_asset, insert_asset_encoding,
 };
 use crate::assets::storage::store::{get_content_chunks_store, get_public_asset_store};
+use crate::certification::cert::update_certified_data;
 use crate::hooks::storage::invoke_assert_upload_asset;
 use crate::user::usage::assert::increment_and_assert_storage_usage;
 use candid::Principal;
@@ -11,10 +12,13 @@ use junobuild_collections::assert::stores::{assert_create_permission, assert_per
 use junobuild_collections::types::core::CollectionKey;
 use junobuild_collections::types::rules::{Memory, Permission, Rule};
 use junobuild_shared::controllers::controller_can_write;
-use junobuild_shared::types::core::{Blob, Hash};
+use junobuild_shared::types::core::Blob;
 use junobuild_shared::types::domain::CustomDomains;
 use junobuild_shared::types::state::Controllers;
-use junobuild_storage::strategies::{StorageAssertionsStrategy, StorageCertificateStrategy, StorageStateStrategy, StorageUploadStrategy};
+use junobuild_storage::strategies::{
+    StorageAssertionsStrategy, StorageCertificateStrategy, StorageStateStrategy,
+    StorageUploadStrategy,
+};
 use junobuild_storage::types::config::StorageConfig;
 use junobuild_storage::types::state::FullPath;
 use junobuild_storage::types::store::{
@@ -198,7 +202,7 @@ impl StorageUploadStrategy for StorageUpload {
 pub struct StorageCertificate;
 
 impl StorageCertificateStrategy for StorageCertificate {
-    fn set_certified_data(&self, assets_root_hash: &Hash) {
-        todo!()
+    fn update_root_hash(&self) {
+        update_certified_data()
     }
 }

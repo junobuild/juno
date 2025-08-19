@@ -11,7 +11,9 @@ use crate::assets::storage::state::{
     get_rule as get_state_rule, insert_config as insert_state_config,
     insert_domain as insert_state_domain,
 };
-use crate::assets::storage::strategy_impls::{StorageAssertions, StorageCertificate, StorageState, StorageUpload};
+use crate::assets::storage::strategy_impls::{
+    StorageAssertions, StorageCertificate, StorageState, StorageUpload,
+};
 use crate::auth::store::get_config as get_auth_config;
 use crate::controllers::store::get_controllers;
 use crate::memory::internal::STATE;
@@ -35,7 +37,7 @@ use junobuild_storage::runtime::{
     update_certified_asset as update_runtime_certified_asset,
 };
 use junobuild_storage::store::{commit_batch as commit_batch_storage, create_batch, create_chunk};
-use junobuild_storage::strategies::{StorageAssertionsStrategy, StorageCertificateStrategy, StorageUploadStrategy};
+use junobuild_storage::strategies::{StorageAssertionsStrategy, StorageUploadStrategy};
 use junobuild_storage::types::config::StorageConfig;
 use junobuild_storage::types::interface::{
     AssetNoContent, CommitBatch, InitAssetKey, SetStorageConfig, UploadChunk,

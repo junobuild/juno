@@ -1,33 +1,54 @@
 use crate::certification::cert::update_certified_data;
 use crate::certification::types::certified::CertifiedAssetHashes;
 use crate::memory::STATE;
+use crate::strategies::StorageCertificateStrategy;
 use crate::types::config::StorageConfig;
 use crate::types::runtime_state::{
     BatchId, Batches, ChunkId, Chunks, RuntimeState, StorageRuntimeState,
 };
 use crate::types::store::{Asset, Batch, BatchExpiry, Chunk};
 use ic_cdk::api::time;
+use ic_certification::Hash;
 use junobuild_collections::types::core::CollectionKey;
 use junobuild_shared::rate::types::RateConfig;
 use junobuild_shared::rate::utils::increment_and_assert_rate_store;
 use std::collections::HashMap;
-use crate::strategies::StorageCertificateStrategy;
+
 // ---------------------------------------------------------
 // Certified assets
 // ---------------------------------------------------------
 
-pub fn init_certified_assets(asset_hashes: &CertifiedAssetHashes, certificate: &impl StorageCertificateStrategy) {
+pub fn init_certified_assets(
+    asset_hashes: &CertifiedAssetHashes,
+    certificate: &impl StorageCertificateStrategy,
+) {
     STATE.with(|state| {
-        init_certified_assets_impl(asset_hashes, certificate, &mut state.borrow_mut().runtime.storage)
+        init_certified_assets_impl(
+            asset_hashes,
+            certificate,
+            &mut state.borrow_mut().runtime.storage,
+        )
     });
 }
 
-pub fn update_certified_asset(asset: &Asset, config: &StorageConfig, certificate: &impl StorageCertificateStrategy) {
-    STATE.with(|state| update_certified_asset_impl(asset, config, certificate, &mut state.borrow_mut().runtime));
+pub fn update_certified_asset(
+    asset: &Asset,
+    config: &StorageConfig,
+    certificate: &impl StorageCertificateStrategy,
+) {
+    STATE.with(|state| {
+        update_certified_asset_impl(asset, config, certificate, &mut state.borrow_mut().runtime)
+    });
 }
 
 pub fn delete_certified_asset(asset: &Asset, certificate: &impl StorageCertificateStrategy) {
-    STATE.with(|state| delete_certified_asset_impl(asset, certificate, &mut state.borrow_mut().runtime));
+    STATE.with(|state| {
+        delete_certified_asset_impl(asset, certificate, &mut state.borrow_mut().runtime)
+    });
+}
+
+pub fn certified_assets_root_hash() -> Hash {
+    STATE.with(|state| certified_assets_root_hash_impl(&state.borrow().runtime.storage))
 }
 
 fn init_certified_assets_impl(
@@ -39,23 +60,36 @@ fn init_certified_assets_impl(
     storage.asset_hashes = asset_hashes.clone();
 
     // 2. Update the root hash and the canister certified data
-    update_certified_data(&storage.asset_hashes, certificate);
+    update_certified_data(certificate);
 }
 
-fn update_certified_asset_impl(asset: &Asset, config: &StorageConfig, certificate: &impl StorageCertificateStrategy, runtime: &mut RuntimeState) {
+fn update_certified_asset_impl(
+    asset: &Asset,
+    config: &StorageConfig,
+    certificate: &impl StorageCertificateStrategy,
+    runtime: &mut RuntimeState,
+) {
     // 1. Replace or insert the new asset in tree
     runtime.storage.asset_hashes.insert(asset, config);
 
     // 2. Update the root hash and the canister certified data
-    update_certified_data(&runtime.storage.asset_hashes, certificate);
+    update_certified_data(certificate);
 }
 
-fn delete_certified_asset_impl(asset: &Asset, certificate: &impl StorageCertificateStrategy, runtime: &mut RuntimeState) {
+fn delete_certified_asset_impl(
+    asset: &Asset,
+    certificate: &impl StorageCertificateStrategy,
+    runtime: &mut RuntimeState,
+) {
     // 1. Remove the asset in tree
     runtime.storage.asset_hashes.delete(asset);
 
     // 2. Update the root hash and the canister certified data
-    update_certified_data(&runtime.storage.asset_hashes, certificate);
+    update_certified_data(certificate);
+}
+
+fn certified_assets_root_hash_impl(storage: &StorageRuntimeState) -> Hash {
+    storage.asset_hashes.root_hash()
 }
 
 // ---------------------------------------------------------

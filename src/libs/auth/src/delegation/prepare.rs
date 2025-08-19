@@ -24,7 +24,7 @@ pub fn prepare_delegation(args: &PrepareDelegationArgs, certificate: &impl AuthC
         add_delegation_signature(state, &args.session_key, seed.as_ref(), expiration);
     });
 
-    certificate.update_root_hash();
+    certificate.update_certified_data();
 
     let delegation = (
         ByteBuf::from(der_encode_canister_sig_key(seed.to_vec())),

@@ -1,7 +1,7 @@
 use ic_certification::Hash;
 
 pub trait AuthCertificateStrategy {
-    fn update_root_hash(
+    fn update_certified_data(
         &self,
     );
     

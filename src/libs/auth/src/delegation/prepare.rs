@@ -9,8 +9,9 @@ use ic_canister_sig_creation::{
 };
 use ic_cdk::api::{canister_self, time};
 use serde_bytes::ByteBuf;
+use crate::strategies::CertificateStrategy;
 
-pub fn prepare_delegation(args: &PrepareDelegationArgs) -> Result<(UserKey, Timestamp), String> {
+pub fn prepare_delegation(args: &PrepareDelegationArgs, certificate: &impl CertificateStrategy) -> Result<(UserKey, Timestamp), String> {
     let expiration = time().saturating_add(DEFAULT_EXPIRATION_PERIOD_NS);
     let seed = calculate_seed(&args.anchor_id, &args.frontend)?;
 
@@ -23,7 +24,7 @@ pub fn prepare_delegation(args: &PrepareDelegationArgs) -> Result<(UserKey, Time
         add_delegation_signature(state, &args.session_key, seed.as_ref(), expiration);
     });
 
-    update_root_hash();
+    certificate.update_root_hash();
 
     let delegation = (
         ByteBuf::from(der_encode_canister_sig_key(seed.to_vec())),

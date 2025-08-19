@@ -6,8 +6,9 @@ use crate::types::delegation::{
 use ic_canister_sig_creation::signature_map::CanisterSigInputs;
 use ic_canister_sig_creation::{delegation_signature_msg, DELEGATION_SIG_DOMAIN};
 use serde_bytes::ByteBuf;
+use crate::strategies::CertificateStrategy;
 
-pub fn get_delegation(args: &GetDelegationArgs) -> Result<GetDelegationResponse, String> {
+pub fn get_delegation(args: &GetDelegationArgs, certificate: &impl CertificateStrategy) -> Result<GetDelegationResponse, String> {
     let seed = calculate_seed(&args.anchor_id, &args.frontend)?;
 
     let response = read_state(|state| {
@@ -22,8 +23,9 @@ pub fn get_delegation(args: &GetDelegationArgs) -> Result<GetDelegationResponse,
             args.anchor_id, args.frontend, args.session_key, args.expiration
         ));
 
-        // TODO: maybe_certified_assets_root_hash
-        match state.runtime.sigs.get_signature_as_cbor(&inputs, None) {
+        let certified_assets_root_hash = certificate.get_asset_hashes_root_hash();
+        
+        match state.runtime.sigs.get_signature_as_cbor(&inputs, Some(certified_assets_root_hash)) {
             Ok(signature) => GetDelegationResponse::SignedDelegation(SignedDelegation {
                 delegation: Delegation {
                     pubkey: args.session_key.clone(),

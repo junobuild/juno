@@ -483,13 +483,13 @@ pub fn get_many_assets(
 
 #[doc(hidden)]
 #[update]
-fn prepare_delegation(args: PrepareDelegationArgs) -> PrepareDelegationResponse {
+pub fn prepare_delegation(args: PrepareDelegationArgs) -> PrepareDelegationResponse {
     api::auth::prepare_delegation(&args)
 }
 
 #[doc(hidden)]
 #[query]
-fn get_delegation(args: GetDelegationArgs) -> GetDelegationResponse {
+pub fn get_delegation(args: GetDelegationArgs) -> GetDelegationResponse {
     api::auth::get_delegation(&args)
 }
 
@@ -543,6 +543,7 @@ macro_rules! include_satellite {
             post_upgrade, pre_upgrade, reject_proposal, set_auth_config, set_controllers,
             set_custom_domain, set_db_config, set_doc, set_many_docs, set_rule, set_storage_config,
             submit_proposal, upload_asset_chunk, upload_proposal_asset_chunk,
+            prepare_delegation, get_delegation
         };
 
         ic_cdk::export_candid!();

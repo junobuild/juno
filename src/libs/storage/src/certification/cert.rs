@@ -4,6 +4,7 @@ use crate::certification::types::certified::CertifiedAssetHashes;
 use crate::http::types::HeaderField;
 use base64::{engine::general_purpose::STANDARD as BASE64, Engine};
 use ic_cdk::api::data_certificate;
+use ic_certification::{fork, HashTree};
 use junobuild_shared::types::core::Blob;
 use serde::Serialize;
 use serde_cbor::ser::Serializer;
@@ -13,6 +14,7 @@ pub fn build_asset_certificate_header(
     url: String,
     certificate_version: &Option<u16>,
     rewrite_source: &Option<String>,
+    sigs_tree: HashTree,
 ) -> Result<HeaderField, &'static str> {
     let certificate = data_certificate();
 
@@ -20,13 +22,14 @@ pub fn build_asset_certificate_header(
         None => Err("No certificate found."),
         Some(certificate) => match certificate_version {
             None | Some(1) => {
-                build_asset_certificate_header_v1_impl(&certificate, asset_hashes, &url)
+                build_asset_certificate_header_v1_impl(&certificate, asset_hashes, &url, sigs_tree)
             }
             Some(2) => build_asset_certificate_header_v2_impl(
                 &certificate,
                 asset_hashes,
                 &url,
                 rewrite_source,
+                sigs_tree,
             ),
             _ => Err("Unsupported certificate version to certify headers."),
         },
@@ -51,8 +54,11 @@ fn build_asset_certificate_header_v1_impl(
     certificate: &Blob,
     asset_hashes: &CertifiedAssetHashes,
     url: &str,
+    sigs_tree: HashTree,
 ) -> Result<HeaderField, &'static str> {
-    let tree = asset_hashes.witness_v1(url);
+    let witness_asset_tree = asset_hashes.witness_v1(url);
+
+    let tree = fork(witness_asset_tree, sigs_tree);
 
     let mut serializer = Serializer::new(vec![]);
     serializer.self_describe().unwrap();
@@ -76,13 +82,16 @@ fn build_asset_certificate_header_v2_impl(
     asset_hashes: &CertifiedAssetHashes,
     url: &str,
     rewrite_source: &Option<String>,
+    sigs_tree: HashTree,
 ) -> Result<HeaderField, &'static str> {
     assert!(url.starts_with('/'));
 
-    let tree = match rewrite_source {
+    let witness_asset_tree = match rewrite_source {
         None => asset_hashes.witness_v2(url),
         Some(_) => asset_hashes.witness_rewrite_v2(url),
     };
+
+    let tree = fork(witness_asset_tree, sigs_tree);
 
     let mut serializer = Serializer::new(vec![]);
     serializer.self_describe().unwrap();

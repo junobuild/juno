@@ -8,6 +8,8 @@ use crate::cdn::helpers::stable::{
 use crate::cdn::strategies_impls::cdn::CdnHeap;
 use crate::certification::cert::update_certified_data;
 use candid::Principal;
+use ic_certification::{Hash, HashTree};
+use junobuild_auth::runtime::pruned_labeled_sigs_root_hash_tree;
 use junobuild_cdn::storage::errors::{
     JUNO_CDN_STORAGE_ERROR_CANNOT_GET_ASSET_UNKNOWN_REFERENCE_ID,
     JUNO_CDN_STORAGE_ERROR_CANNOT_INSERT_ASSET_ENCODING_UNKNOWN_REFERENCE_ID,
@@ -244,5 +246,9 @@ pub struct StorageCertificate;
 impl StorageCertificateStrategy for StorageCertificate {
     fn update_certified_data(&self) {
         update_certified_data();
+    }
+
+    fn get_pruned_labeled_sigs_root_hash_tree(&self) -> HashTree {
+        pruned_labeled_sigs_root_hash_tree()
     }
 }

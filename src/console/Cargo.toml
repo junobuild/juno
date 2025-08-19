@@ -14,6 +14,7 @@ ic-cdk-macros.workspace = true
 ic-cdk-timers.workspace = true
 ic-ledger-types.workspace = true
 ic-stable-structures.workspace = true
+ic-certification = "3.0.3"
 serde.workspace = true
 serde_cbor.workspace = true
 serde_json.workspace = true
@@ -24,3 +25,4 @@ junobuild-shared = { path = "../libs/shared" }
 junobuild-storage = { path = "../libs/storage" }
 junobuild-collections = { path = "../libs/collections" }
 junobuild-cdn = { path = "../libs/cdn" }
+junobuild-auth = { path = "../libs/auth" }

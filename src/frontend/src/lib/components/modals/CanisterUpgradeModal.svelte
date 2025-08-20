@@ -6,13 +6,16 @@
 		type CanisterUpgradeWizardStep
 	} from '$lib/components/canister/CanisterUpgradeWizard.svelte';
 	import Modal from '$lib/components/ui/Modal.svelte';
-	import SelectUpgradeVersion from '$lib/components/upgrade/wizard/SelectUpgradeVersion.svelte';
+	import SelectUpgradeVersion, {
+		type IgnoreCanUpgradeErrorFn
+	} from '$lib/components/upgrade/wizard/SelectUpgradeVersion.svelte';
 	import type { Wasm } from '$lib/types/upgrade';
 
 	interface Props {
 		currentVersion: string;
 		newerReleases: string[];
 		build?: BuildType | undefined;
+		ignoreCanUpgradeError?: IgnoreCanUpgradeErrorFn;
 	}
 
 	let {
@@ -22,6 +25,7 @@
 		segment,
 		build,
 		intro: introUpgrade,
+		ignoreCanUpgradeError,
 		...propsRest
 	}: Props &
 		Omit<
@@ -63,6 +67,7 @@
 			<SelectUpgradeVersion
 				back={buildExtended}
 				{currentVersion}
+				{ignoreCanUpgradeError}
 				{newerReleases}
 				onback={() => (step = 'confirm')}
 				{onclose}

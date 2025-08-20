@@ -43,10 +43,10 @@
 		});
 	};
 
-    // For some reason, we skipped releasing Orbiter v0.1.0 and went straight from v0.0.8 to v0.2.1.
-    // As a result, checkUpgradeVersion will prevent the upgrade because there is more than one minor version
-    // in between. That is why we are manually allowing this upgrade.
-    const ignoreCanUpgradeError: IgnoreCanUpgradeErrorFn = ({ currentVersion, selectedVersion }) =>
+	// For some reason, we skipped releasing Orbiter v0.1.0 and went straight from v0.0.8 to v0.2.1.
+	// As a result, checkUpgradeVersion will prevent the upgrade because there is more than one minor version
+	// in between. That is why we are manually allowing this upgrade.
+	const ignoreCanUpgradeError: IgnoreCanUpgradeErrorFn = ({ currentVersion, selectedVersion }) =>
 		compare(currentVersion, ORBITER_v0_0_8) === 0 && compare(selectedVersion, ORBITER_v0_2_1) === 0;
 </script>
 

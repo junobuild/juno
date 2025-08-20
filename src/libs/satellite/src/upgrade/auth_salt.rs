@@ -10,7 +10,7 @@ pub fn init_auth_salt() {
     }
 
     // TODO: what do we do in case of error?
-    if let Some(salt) = salt().ok() {
+    if let Ok(salt) = salt() {
         set_salt(&salt);
     }
 }

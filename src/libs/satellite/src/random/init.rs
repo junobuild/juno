@@ -1,5 +1,6 @@
+use crate::hooks::random::invoke_on_init_random_seed;
 use crate::memory::internal::STATE;
-use crate::random::post_init::post_init_random_seed;
+use crate::upgrade::auth_salt::init_auth_salt;
 use getrandom::Error;
 use ic_cdk::futures::spawn_017_compat;
 use ic_cdk_timers::set_timer;
@@ -18,7 +19,10 @@ async fn init_random_seed() {
         state.borrow_mut().runtime.rng = seed;
     });
 
-    post_init_random_seed();
+    // TODO: to be removed. One time migration
+    init_auth_salt();
+
+    invoke_on_init_random_seed();
 }
 
 /// Source: https://github.com/rust-random/getrandom?tab=readme-ov-file#custom-backend

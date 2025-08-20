@@ -1,6 +1,7 @@
 use crate::auth::types::config::AuthenticationConfig;
 use crate::auth::types::state::AuthenticationHeapState;
 use crate::memory::internal::STATE;
+use junobuild_auth::types::core::Salt;
 
 // ---------------------------------------------------------
 // Config
@@ -26,8 +27,40 @@ fn insert_config_impl(config: &AuthenticationConfig, state: &mut Option<Authenti
         None => {
             *state = Some(AuthenticationHeapState {
                 config: config.clone(),
+                salt: None,
             })
         }
         Some(state) => state.config = config.clone(),
+    }
+}
+
+// ---------------------------------------------------------
+// Salt
+// ---------------------------------------------------------
+
+pub fn get_salt() -> Option<Salt> {
+    STATE.with(|state| {
+        state
+            .borrow()
+            .heap
+            .authentication
+            .as_ref()
+            .and_then(|auth| auth.salt.clone())
+    })
+}
+
+pub fn insert_salt(salt: &Salt) {
+    STATE.with(|state| insert_salt_impl(salt, &mut state.borrow_mut().heap.authentication))
+}
+
+fn insert_salt_impl(salt: &Salt, state: &mut Option<AuthenticationHeapState>) {
+    match state {
+        None => {
+            *state = Some(AuthenticationHeapState {
+                config: AuthenticationConfig::default(),
+                salt: Some(salt.clone()),
+            })
+        }
+        Some(state) => state.salt = Some(salt.clone()),
     }
 }

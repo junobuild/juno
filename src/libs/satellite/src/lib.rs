@@ -16,6 +16,7 @@ mod random;
 mod rules;
 mod sdk;
 mod types;
+mod upgrade;
 mod user;
 
 use crate::auth::types::config::AuthenticationConfig;

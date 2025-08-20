@@ -1,17 +1,14 @@
-use crate::services::{mutate_state, read_state};
-use crate::types::runtime_state::Salt;
+use crate::types::core::Salt;
 use ic_certification::Hash;
 use sha2::{Digest, Sha256};
 
-pub fn init_salt(salt: Option<Salt>) {
-    mutate_state(|state| {
-        state.runtime.salt = salt;
-    });
-}
-
-pub fn calculate_seed(anchor_id: &String, frontend: &String) -> Result<Hash, String> {
-    let salt = read_state(|state| state.runtime.salt.clone())
-        .ok_or("The salt has not been initialized. A seed cannot be calculated.".to_string())?;
+pub fn calculate_seed(
+    anchor_id: &String,
+    frontend: &String,
+    salt: &Option<Salt>,
+) -> Result<Hash, String> {
+    let salt =
+        salt.ok_or("The salt has not been initialized. A seed cannot be calculated.".to_string())?;
 
     let mut blob: Vec<u8> = vec![];
     blob.push(salt.len() as u8);

@@ -12,7 +12,7 @@ pub fn get_delegation(
     args: &GetDelegationArgs,
     certificate: &impl AuthCertificateStrategy,
 ) -> Result<GetDelegationResponse, String> {
-    let seed = calculate_seed(&args.anchor_id, &args.frontend)?;
+    let seed = calculate_seed(&args.anchor_id, &args.frontend, &certificate.salt())?;
 
     let response = read_state(|state| {
         let inputs = CanisterSigInputs {

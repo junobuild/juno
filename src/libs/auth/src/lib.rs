@@ -5,6 +5,4 @@ pub mod runtime;
 pub mod seed;
 mod services;
 pub mod strategies;
-mod types;
-
-pub use types::interface::*;
+pub mod types;

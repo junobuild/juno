@@ -1,7 +1,9 @@
+use crate::auth::store::get_salt;
 use crate::certification::cert::update_certified_data;
 use ic_certification::{Hash, HashTree};
 use junobuild_auth::runtime::pruned_labeled_sigs_root_hash_tree;
 use junobuild_auth::strategies::AuthCertificateStrategy;
+use junobuild_auth::types::core::Salt;
 use junobuild_storage::runtime::certified_assets_root_hash;
 use junobuild_storage::strategies::StorageCertificateStrategy;
 
@@ -14,6 +16,10 @@ impl AuthCertificateStrategy for AuthCertificate {
 
     fn get_asset_hashes_root_hash(&self) -> Hash {
         certified_assets_root_hash()
+    }
+
+    fn salt(&self) -> Option<Salt> {
+        get_salt()
     }
 }
 

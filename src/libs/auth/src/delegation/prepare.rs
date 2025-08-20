@@ -2,9 +2,10 @@ use crate::constants::DEFAULT_EXPIRATION_PERIOD_NS;
 use crate::seed::calculate_seed;
 use crate::services::mutate_state;
 use crate::strategies::AuthCertificateStrategy;
-use crate::types::interface::{PrepareDelegationArgs, PublicKey, Timestamp};
+use crate::types::interface::{
+    PrepareDelegationArgs, PrepareDelegationResponse, PublicKey, Timestamp,
+};
 use crate::types::runtime_state::State;
-use crate::PrepareDelegationResponse;
 use ic_canister_sig_creation::signature_map::CanisterSigInputs;
 use ic_canister_sig_creation::{
     delegation_signature_msg, CanisterSigPublicKey, DELEGATION_SIG_DOMAIN,
@@ -17,10 +18,10 @@ pub fn prepare_delegation(
     certificate: &impl AuthCertificateStrategy,
 ) -> Result<PrepareDelegationResponse, String> {
     let expiration = time().saturating_add(DEFAULT_EXPIRATION_PERIOD_NS);
-    let seed = calculate_seed(&args.anchor_id, &args.frontend)?;
+    let seed = calculate_seed(&args.anchor_id, &args.frontend, &certificate.salt())?;
 
     ic_cdk::print(format!(
-        "__> {} {} {:?}",
+        "____> {} {} {:?}",
         args.anchor_id, args.frontend, args.session_key
     ));
 

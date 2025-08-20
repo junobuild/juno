@@ -1,8 +1,8 @@
 use crate::certification::strategy_impls::AuthCertificate;
 use ic_cdk::trap;
-use junobuild_auth::{
-    delegation, GetDelegationArgs, GetDelegationResponse, PrepareDelegationArgs,
-    PrepareDelegationResponse,
+use junobuild_auth::delegation;
+use junobuild_auth::types::interface::{
+    GetDelegationArgs, GetDelegationResponse, PrepareDelegationArgs, PrepareDelegationResponse,
 };
 
 pub fn prepare_delegation(args: &PrepareDelegationArgs) -> PrepareDelegationResponse {

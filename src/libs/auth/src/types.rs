@@ -1,9 +1,11 @@
-pub mod runtime_state {
+pub mod core {
+    pub type Salt = [u8; 32];
+}
+
+pub(crate) mod runtime_state {
     use candid::Deserialize;
     use ic_canister_sig_creation::signature_map::SignatureMap;
     use serde::Serialize;
-
-    pub type Salt = [u8; 32];
 
     #[derive(Default, Serialize, Deserialize)]
     pub struct State {
@@ -15,7 +17,6 @@ pub mod runtime_state {
     #[derive(Default)]
     pub struct RuntimeState {
         pub sigs: SignatureMap,
-        pub salt: Option<Salt>,
     }
 }
 

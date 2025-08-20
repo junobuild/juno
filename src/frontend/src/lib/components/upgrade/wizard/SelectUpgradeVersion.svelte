@@ -1,3 +1,10 @@
+<script lang="ts" module>
+	export type IgnoreCanUpgradeErrorFn = (params: {
+		currentVersion: string;
+		selectedVersion: string;
+	}) => boolean;
+</script>
+
 <script lang="ts">
 	import { isNullish } from '@dfinity/utils';
 	import { checkUpgradeVersion } from '@junobuild/admin';
@@ -16,6 +23,7 @@
 	interface Props {
 		currentVersion: string;
 		newerReleases: string[];
+		ignoreCanUpgradeError?: IgnoreCanUpgradeErrorFn;
 		segment: 'satellite' | 'mission_control' | 'orbiter';
 		back?: boolean;
 		title?: Snippet;
@@ -34,7 +42,8 @@
 		title,
 		onnext,
 		onclose,
-		onback
+		onback,
+		ignoreCanUpgradeError
 	}: Props = $props();
 
 	let selectedVersion: string | undefined = $state(undefined);
@@ -60,7 +69,9 @@
 				? { canUpgrade: true }
 				: checkUpgradeVersion({ currentVersion, selectedVersion });
 
-		if (!canUpgrade) {
+		const ignoreCanUpgrade = ignoreCanUpgradeError?.({ currentVersion, selectedVersion }) ?? false;
+
+		if (!canUpgrade && !ignoreCanUpgrade) {
 			toasts.error({
 				text: i18nFormat($i18n.errors.upgrade_requires_iterative_version, [
 					{

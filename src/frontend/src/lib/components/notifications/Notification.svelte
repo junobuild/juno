@@ -34,12 +34,10 @@
 
 		align-self: flex-start;
 
-		&:global {
-			svg {
-				width: auto;
-				height: auto;
-				margin: 0;
-			}
+		:global(svg) {
+			width: auto;
+			height: auto;
+			margin: 0;
 		}
 	}
 

@@ -52,5 +52,5 @@ fn certify_response(
 
     storage.tree.insert(&entry);
 
-    set_certified_data(&storage.tree.root_hash());
+    set_certified_data(storage.tree.root_hash());
 }

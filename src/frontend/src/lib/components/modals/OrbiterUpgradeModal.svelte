@@ -6,7 +6,7 @@
 	import CanisterUpgradeModal from '$lib/components/modals/CanisterUpgradeModal.svelte';
 	import Html from '$lib/components/ui/Html.svelte';
 	import type { IgnoreCanUpgradeErrorFn } from '$lib/components/upgrade/wizard/SelectUpgradeVersion.svelte';
-	import { ORBITER_v0_0_8, ORBITER_v0_2_1 } from '$lib/constants/version.constants';
+	import { ORBITER_v0_0_8, ORBITER_v0_2_0 } from '$lib/constants/version.constants';
 	import { orbiterStore } from '$lib/derived/orbiter.derived';
 	import { reloadOrbiterVersion } from '$lib/services/version/version.orbiter.services';
 	import { authStore } from '$lib/stores/auth.store';
@@ -47,7 +47,7 @@
 	// As a result, checkUpgradeVersion will prevent the upgrade because there is more than one minor version
 	// in between. That is why we are manually allowing this upgrade.
 	const ignoreCanUpgradeError: IgnoreCanUpgradeErrorFn = ({ currentVersion, selectedVersion }) =>
-		compare(currentVersion, ORBITER_v0_0_8) === 0 && compare(selectedVersion, ORBITER_v0_2_1) === 0;
+		compare(currentVersion, ORBITER_v0_0_8) === 0 && compare(selectedVersion, ORBITER_v0_2_0) === 0;
 </script>
 
 {#if nonNullish($orbiterStore)}

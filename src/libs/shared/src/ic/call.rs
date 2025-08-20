@@ -51,7 +51,7 @@ impl<T: ?Sized> ManualReply<T> {
         U: CandidType,
     {
         let bytes =
-            encode_one(value).unwrap_or_else(|e| trap(&format!("Candid encode failed: {e}")));
+            encode_one(value).unwrap_or_else(|e| trap(format!("Candid encode failed: {e}")));
         msg_reply(bytes);
         Self::done()
     }

@@ -72,7 +72,7 @@ pub fn invoke_on_delete_asset(caller: &UserId, asset: &Option<Asset>) {
         unsafe {
             let collections = juno_on_delete_asset_collections();
 
-            let filtered_assets = filter_assets(&collections, &[asset.clone()]);
+            let filtered_assets = filter_assets(&collections, std::slice::from_ref(asset));
 
             if !filtered_assets.is_empty() {
                 let context: OnDeleteAssetContext = OnDeleteAssetContext {

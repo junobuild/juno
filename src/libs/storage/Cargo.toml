@@ -19,13 +19,13 @@ rustdoc-args = ['--cfg', "getrandom_backend=\"custom\""]
 candid.workspace = true
 ic-cdk.workspace = true
 ic-stable-structures.workspace = true
-ic-certification = "3.0.3"
-ic-representation-independent-hash = "3.0.3"
+ic-certification.workspace = true
+ic-representation-independent-hash.workspace = true
 serde.workspace = true
 serde_cbor.workspace = true
+serde_bytes.workspace = true
 sha2.workspace = true
 hex.workspace = true
-serde_bytes = "0.11.12"
 regex.workspace = true
 base64 = "0.22.1"
 url.workspace = true

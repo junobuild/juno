@@ -55,6 +55,13 @@ pub mod config {
     pub struct AuthenticationRules {
         pub allowed_callers: Vec<Principal>,
     }
+
+    #[derive(Serialize, Deserialize)]
+    #[serde(rename_all = "snake_case")]
+    pub enum AuthProvider {
+        InternetIdentity,
+        Nfid,
+    }
 }
 
 pub mod interface {

@@ -1,11 +1,11 @@
 pub mod state {
     use serde::{Deserialize, Serialize};
-    use junobuild_auth::types::config::AuthProvider;
+    use junobuild_auth::types::config::AuthenticationProvider;
 
     #[derive(Serialize, Deserialize)]
     #[serde(deny_unknown_fields)]
     pub struct UserData {
-        pub provider: Option<AuthProvider>,
+        pub provider: Option<AuthenticationProvider>,
         pub banned: Option<BannedReason>,
     }
 

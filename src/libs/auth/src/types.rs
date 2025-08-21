@@ -58,7 +58,7 @@ pub mod config {
 
     #[derive(Serialize, Deserialize)]
     #[serde(rename_all = "snake_case")]
-    pub enum AuthProvider {
+    pub enum AuthenticationProvider {
         InternetIdentity,
         Nfid,
     }

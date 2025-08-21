@@ -28,6 +28,22 @@ pub fn random() -> Result<i32, String> {
     })
 }
 
+/// Generates a random 32-byte salt.
+///
+/// # Returns
+///
+/// - `Ok([u8; 32])` if the random number generator is available.
+/// - `Err(String)` if the generator has not been initialized.
+///
+/// # Example
+///
+/// ```rust
+/// let result = salt();
+/// match result {
+///     Ok(bytes) => println!("Generated salt of length: {}", bytes.len()),
+///     Err(err) => eprintln!("Error: {}", err),
+/// }
+/// ```
 pub fn salt() -> Result<[u8; 32], String> {
     STATE.with(|state| {
         let rng = &mut state.borrow_mut().runtime.rng;

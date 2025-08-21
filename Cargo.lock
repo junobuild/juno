@@ -1015,6 +1015,7 @@ dependencies = [
  "ic-canister-sig-creation",
  "ic-cdk",
  "ic-certification",
+ "junobuild-shared",
  "serde",
  "serde_bytes",
  "sha2",

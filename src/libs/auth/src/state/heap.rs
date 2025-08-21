@@ -1,25 +1,19 @@
-use crate::auth::types::config::AuthenticationConfig;
-use crate::auth::types::state::AuthenticationHeapState;
-use crate::memory::internal::STATE;
-use junobuild_auth::types::core::Salt;
+use crate::strategies::AuthHeapStrategy;
+use crate::types::config::AuthenticationConfig;
+use crate::types::state::AuthenticationHeapState;
+use crate::types::state::Salt;
 
 // ---------------------------------------------------------
 // Config
 // ---------------------------------------------------------
 
-pub fn get_config() -> Option<AuthenticationConfig> {
-    STATE.with(|state| {
-        state
-            .borrow()
-            .heap
-            .authentication
-            .as_ref()
-            .map(|auth| auth.config.clone())
-    })
+pub fn get_config(auth_heap: &impl AuthHeapStrategy) -> Option<AuthenticationConfig> {
+    auth_heap
+        .with_auth_state(|authentication| authentication.as_ref().map(|auth| auth.config.clone()))
 }
 
-pub fn insert_config(config: &AuthenticationConfig) {
-    STATE.with(|state| insert_config_impl(config, &mut state.borrow_mut().heap.authentication))
+pub fn insert_config(auth_heap: &impl AuthHeapStrategy, config: &AuthenticationConfig) {
+    auth_heap.with_auth_state_mut(|authentication| insert_config_impl(config, authentication))
 }
 
 fn insert_config_impl(config: &AuthenticationConfig, state: &mut Option<AuthenticationHeapState>) {
@@ -38,19 +32,12 @@ fn insert_config_impl(config: &AuthenticationConfig, state: &mut Option<Authenti
 // Salt
 // ---------------------------------------------------------
 
-pub fn get_salt() -> Option<Salt> {
-    STATE.with(|state| {
-        state
-            .borrow()
-            .heap
-            .authentication
-            .as_ref()
-            .and_then(|auth| auth.salt)
-    })
+pub fn get_salt(auth_heap: &impl AuthHeapStrategy) -> Option<Salt> {
+    auth_heap.with_auth_state(|authentication| authentication.as_ref().and_then(|auth| auth.salt))
 }
 
-pub fn insert_salt(salt: &Salt) {
-    STATE.with(|state| insert_salt_impl(salt, &mut state.borrow_mut().heap.authentication))
+pub fn insert_salt(auth_heap: &impl AuthHeapStrategy, salt: &Salt) {
+    auth_heap.with_auth_state_mut(|authentication| insert_salt_impl(salt, authentication))
 }
 
 fn insert_salt_impl(salt: &Salt, state: &mut Option<AuthenticationHeapState>) {

@@ -1,6 +1,6 @@
 use ic_cdk::api::certified_data_set as set_certified_data;
 use ic_certification::fork_hash;
-use junobuild_auth::labeled_sigs_root_hash;
+use junobuild_auth::runtime::labeled_sigs_root_hash;
 use junobuild_storage::runtime::certified_assets_root_hash;
 
 pub fn update_certified_data() {

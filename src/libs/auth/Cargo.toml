@@ -19,7 +19,7 @@ rustdoc-args = ['--cfg', "getrandom_backend=\"custom\""]
 ic-cdk.workspace = true
 candid.workspace = true
 serde.workspace = true
-serde_bytes = "0.11.12"
-ic-certification = "3.0.3"
+serde_bytes.workspace = true
+ic-certification.workspace = true
 ic-canister-sig-creation = "1.3.0"
 sha2.workspace = true

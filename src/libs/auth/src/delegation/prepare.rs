@@ -20,11 +20,6 @@ pub fn prepare_delegation(
     let expiration = time().saturating_add(DEFAULT_EXPIRATION_PERIOD_NS);
     let seed = calculate_seed(&args.anchor_id, &args.frontend, &certificate.salt())?;
 
-    ic_cdk::print(format!(
-        "____> {} {} {:?}",
-        args.anchor_id, args.frontend, args.session_key
-    ));
-
     mutate_state(|state| {
         add_delegation_signature(state, &args.session_key, seed.as_ref(), expiration);
     });

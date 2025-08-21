@@ -45,7 +45,7 @@ pub fn get_salt() -> Option<Salt> {
             .heap
             .authentication
             .as_ref()
-            .and_then(|auth| auth.salt.clone())
+            .and_then(|auth| auth.salt)
     })
 }
 
@@ -58,9 +58,9 @@ fn insert_salt_impl(salt: &Salt, state: &mut Option<AuthenticationHeapState>) {
         None => {
             *state = Some(AuthenticationHeapState {
                 config: AuthenticationConfig::default(),
-                salt: Some(salt.clone()),
+                salt: Some(*salt),
             })
         }
-        Some(state) => state.salt = Some(salt.clone()),
+        Some(state) => state.salt = Some(*salt),
     }
 }

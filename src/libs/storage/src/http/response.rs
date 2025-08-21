@@ -12,6 +12,7 @@ use crate::types::config::{StorageConfigIFrame, StorageConfigRedirect};
 use crate::types::store::Asset;
 use junobuild_collections::types::rules::Memory;
 
+#[allow(clippy::too_many_arguments)]
 pub fn build_asset_response(
     requested_url: String,
     requested_headers: Vec<HeaderField>,

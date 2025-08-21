@@ -3,8 +3,8 @@ use ic_certification::Hash;
 use sha2::{Digest, Sha256};
 
 pub fn calculate_seed(
-    anchor_id: &String,
-    frontend: &String,
+    anchor_id: &str,
+    frontend: &str,
     salt: &Option<Salt>,
 ) -> Result<Hash, String> {
     let salt =

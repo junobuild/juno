@@ -18,13 +18,8 @@ pub fn get_delegation(
         let inputs = CanisterSigInputs {
             domain: DELEGATION_SIG_DOMAIN,
             seed: &seed,
-            message: &delegation_signature_msg(&args.session_key, args.expiration.clone(), None),
+            message: &delegation_signature_msg(&args.session_key, args.expiration, None),
         };
-
-        ic_cdk::print(format!(
-            "--> {} {} {:?} {}",
-            args.anchor_id, args.frontend, args.session_key, args.expiration
-        ));
 
         let certified_assets_root_hash = certificate.get_asset_hashes_root_hash();
 
@@ -36,7 +31,7 @@ pub fn get_delegation(
             Ok(signature) => GetDelegationResponse::SignedDelegation(SignedDelegation {
                 delegation: Delegation {
                     pubkey: args.session_key.clone(),
-                    expiration: args.expiration.clone(),
+                    expiration: args.expiration,
                     targets: None,
                 },
                 signature: ByteBuf::from(signature),

@@ -50,6 +50,7 @@ pub fn create_token(
     })
 }
 
+#[allow(clippy::too_many_arguments)]
 pub fn build_response_headers(
     url: &str,
     asset: &Asset,

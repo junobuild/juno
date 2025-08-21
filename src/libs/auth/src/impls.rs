@@ -23,6 +23,7 @@ impl AuthenticationConfig {
         AuthenticationConfig {
             internet_identity: user_config.internet_identity.clone(),
             rules: user_config.rules.clone(),
+            enabled_providers: user_config.enabled_providers.clone(),
             created_at: Some(created_at),
             updated_at: Some(updated_at),
             version: Some(version),

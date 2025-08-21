@@ -1,4 +1,4 @@
-use crate::services::read_state;
+use crate::state::services::read_state;
 use ic_canister_sig_creation::signature_map::LABEL_SIG;
 use ic_certification::hash_tree::HashTree;
 use ic_certification::{labeled_hash, pruned, Hash};

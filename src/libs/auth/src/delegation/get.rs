@@ -1,5 +1,5 @@
-use crate::seed::calculate_seed;
-use crate::services::read_state;
+use crate::delegation::seed::calculate_seed;
+use crate::state::services::read_state;
 use crate::strategies::AuthCertificateStrategy;
 use crate::types::interface::{
     Delegation, GetDelegationArgs, GetDelegationResponse, SignedDelegation,

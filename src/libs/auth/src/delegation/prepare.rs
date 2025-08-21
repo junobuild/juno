@@ -1,6 +1,6 @@
 use crate::constants::DEFAULT_EXPIRATION_PERIOD_NS;
-use crate::seed::calculate_seed;
-use crate::services::mutate_state;
+use crate::delegation::seed::calculate_seed;
+use crate::state::services::mutate_state;
 use crate::strategies::AuthCertificateStrategy;
 use crate::types::interface::{
     PrepareDelegationArgs, PrepareDelegationResponse, PublicKey, Timestamp,

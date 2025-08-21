@@ -1,4 +1,4 @@
-use crate::types::core::Salt;
+use crate::types::state::Salt;
 use ic_certification::Hash;
 use sha2::{Digest, Sha256};
 

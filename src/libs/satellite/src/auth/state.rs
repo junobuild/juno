@@ -1,7 +1,7 @@
-use crate::auth::types::config::AuthenticationConfig;
-use crate::auth::types::state::AuthenticationHeapState;
 use crate::memory::internal::STATE;
-use junobuild_auth::types::core::Salt;
+use junobuild_auth::types::config::AuthenticationConfig;
+use junobuild_auth::types::state::AuthenticationHeapState;
+use junobuild_auth::types::state::Salt;
 
 // ---------------------------------------------------------
 // Config

@@ -4,9 +4,9 @@ use crate::auth::state::{
     get_config as get_state_config, get_salt as get_state_salt,
     insert_config as insert_state_config, insert_salt,
 };
-use crate::auth::types::config::AuthenticationConfig;
-use crate::auth::types::interface::SetAuthenticationConfig;
-use junobuild_auth::types::core::Salt;
+use junobuild_auth::types::config::AuthenticationConfig;
+use junobuild_auth::types::interface::SetAuthenticationConfig;
+use junobuild_auth::types::state::Salt;
 
 pub fn set_config(
     proposed_config: &SetAuthenticationConfig,

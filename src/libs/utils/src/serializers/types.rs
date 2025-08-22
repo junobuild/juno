@@ -21,3 +21,15 @@ pub struct DocDataPrincipal {
 pub struct DocDataBigInt {
     pub value: u64,
 }
+
+/// Represents a byte array value for document data, mirroring JavaScript's `Uint8Array`.
+///
+/// This struct is useful for transporting raw binary data across the JSON boundary,
+/// where it is serialized as `{ "__uint8array__": number[] }` (see custom serde impl).
+///
+/// # Fields
+/// - `value`: The underlying bytes.
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
+pub struct DocDataUint8Array {
+    pub value: Vec<u8>,
+}

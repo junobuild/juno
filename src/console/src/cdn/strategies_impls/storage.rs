@@ -6,6 +6,7 @@ use crate::cdn::helpers::stable::{
     get_asset_stable, insert_asset_encoding_stable, insert_asset_stable,
 };
 use crate::cdn::strategies_impls::cdn::CdnHeap;
+use crate::certification::cert::update_certified_data;
 use candid::Principal;
 use junobuild_cdn::storage::errors::{
     JUNO_CDN_STORAGE_ERROR_CANNOT_GET_ASSET_UNKNOWN_REFERENCE_ID,
@@ -20,7 +21,8 @@ use junobuild_shared::types::core::Blob;
 use junobuild_shared::types::domain::CustomDomains;
 use junobuild_shared::types::state::Controllers;
 use junobuild_storage::strategies::{
-    StorageAssertionsStrategy, StorageStateStrategy, StorageUploadStrategy,
+    StorageAssertionsStrategy, StorageCertificateStrategy, StorageStateStrategy,
+    StorageUploadStrategy,
 };
 use junobuild_storage::types::config::StorageConfig;
 use junobuild_storage::types::state::FullPath;
@@ -234,5 +236,13 @@ impl StorageUploadStrategy for StorageUpload {
             }
             None => Err(JUNO_CDN_STORAGE_ERROR_CANNOT_GET_ASSET_UNKNOWN_REFERENCE_ID.to_string()),
         }
+    }
+}
+
+pub struct StorageCertificate;
+
+impl StorageCertificateStrategy for StorageCertificate {
+    fn update_certified_data(&self) {
+        update_certified_data();
     }
 }

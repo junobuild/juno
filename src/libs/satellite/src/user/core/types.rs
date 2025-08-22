@@ -1,5 +1,6 @@
 pub mod state {
     use serde::{Deserialize, Serialize};
+    use junobuild_utils::DocDataUint8Array;
 
     #[derive(Serialize, Deserialize)]
     #[serde(deny_unknown_fields)]
@@ -11,7 +12,7 @@ pub mod state {
     #[derive(Serialize, Deserialize)]
     #[serde(rename_all = "camelCase", deny_unknown_fields)]
     pub struct UserWebAuthnData {
-        pub public_key: Vec<u8>,
+        pub public_key: DocDataUint8Array,
     }
 
     #[derive(Serialize, Deserialize)]
@@ -19,7 +20,7 @@ pub mod state {
     pub enum AuthProvider {
         InternetIdentity,
         Nfid,
-        WebAuthn
+        WebAuthn,
     }
 
     #[derive(Serialize, Deserialize)]

@@ -5,13 +5,13 @@ use crate::hooks::lifecycle::{
 use crate::memory::internal::{get_memory_for_upgrade, init_stable_state, STATE};
 use crate::memory::utils::init_storage_heap_state;
 use crate::random::init::defer_init_random_seed;
+use crate::rules::upgrade::init_user_passkey_collection;
 use crate::types::state::{HeapState, RuntimeState, State};
 use ciborium::{from_reader, into_writer};
 use junobuild_shared::controllers::init_admin_controllers;
 use junobuild_shared::types::interface::SegmentArgs;
 use junobuild_shared::types::memory::Memory;
 use junobuild_shared::upgrade::{read_post_upgrade, write_pre_upgrade};
-use crate::rules::upgrade::init_user_passkey_collection;
 
 pub fn init(args: SegmentArgs) {
     let SegmentArgs { controllers } = args;

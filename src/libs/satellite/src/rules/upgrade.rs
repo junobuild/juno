@@ -1,7 +1,9 @@
-use ic_cdk::api::time;
-use junobuild_collections::constants::db::{COLLECTION_USER_WEBAUTHN_DEFAULT_RULE, COLLECTION_USER_WEBAUTHN_KEY};
-use junobuild_collections::types::rules::{Rule};
 use crate::memory::internal::STATE;
+use ic_cdk::api::time;
+use junobuild_collections::constants::db::{
+    COLLECTION_USER_WEBAUTHN_DEFAULT_RULE, COLLECTION_USER_WEBAUTHN_KEY,
+};
+use junobuild_collections::types::rules::Rule;
 
 // ---------------------------------------------------------
 // One time upgrade

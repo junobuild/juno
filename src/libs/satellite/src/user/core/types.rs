@@ -1,6 +1,6 @@
 pub mod state {
-    use serde::{Deserialize, Serialize};
     use junobuild_utils::DocDataUint8Array;
+    use serde::{Deserialize, Serialize};
 
     #[derive(Serialize, Deserialize)]
     #[serde(deny_unknown_fields)]

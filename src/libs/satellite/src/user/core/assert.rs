@@ -1,11 +1,11 @@
 use crate::errors::user::{
-    JUNO_DATASTORE_ERROR_USER_CALLER_KEY, JUNO_DATASTORE_ERROR_USER_CANNOT_UPDATE,
-    JUNO_DATASTORE_ERROR_USER_INVALID_DATA, JUNO_DATASTORE_ERROR_USER_INVALID_WEBAUTHN_DATA,
-    JUNO_DATASTORE_ERROR_USER_KEY_NO_PRINCIPAL, JUNO_DATASTORE_ERROR_USER_NOT_ALLOWED,
-    JUNO_DATASTORE_ERROR_USER_WEBAUTHN_CANNOT_UPDATE,
+    JUNO_DATASTORE_ERROR_USER_CALLER_KEY, JUNO_DATASTORE_ERROR_USER_CALLER_WEBAUTHN_KEY,
+    JUNO_DATASTORE_ERROR_USER_CANNOT_UPDATE, JUNO_DATASTORE_ERROR_USER_INVALID_DATA,
+    JUNO_DATASTORE_ERROR_USER_INVALID_WEBAUTHN_DATA, JUNO_DATASTORE_ERROR_USER_KEY_NO_PRINCIPAL,
+    JUNO_DATASTORE_ERROR_USER_NOT_ALLOWED, JUNO_DATASTORE_ERROR_USER_WEBAUTHN_CANNOT_UPDATE,
 };
 use crate::user::core::types::state::{BannedReason, UserData, UserWebAuthnData};
-use crate::{caller, get_doc_store, Doc, SetDoc};
+use crate::{get_doc_store, Doc, SetDoc};
 use candid::Principal;
 use junobuild_collections::constants::db::{COLLECTION_USER_KEY, COLLECTION_USER_WEBAUTHN_KEY};
 use junobuild_collections::types::core::CollectionKey;
@@ -58,7 +58,8 @@ pub fn assert_user_collection_data(collection: &CollectionKey, doc: &SetDoc) -> 
     Ok(())
 }
 
-pub fn assert_user_webauthn_collection_data(
+pub fn assert_user_webauthn_data(
+    caller: Principal,
     collection: &CollectionKey,
     doc: &SetDoc,
 ) -> Result<(), String> {
@@ -71,10 +72,11 @@ pub fn assert_user_webauthn_collection_data(
     let data = decode_doc_data::<UserWebAuthnData>(&doc.data)
         .map_err(|err| format!("{JUNO_DATASTORE_ERROR_USER_INVALID_WEBAUTHN_DATA}: {err}"))?;
 
-    let device_principal = Principal::self_authenticating(&data.public_key.value);
+    let public_key = Principal::self_authenticating(&data.public_key.value);
 
-    ic_cdk::print(format!("Caller ------> {}", caller().to_text()));
-    ic_cdk::print(format!("Public key ------> {}", device_principal.to_text()));
+    if principal_not_equal(caller, public_key) {
+        return Err(JUNO_DATASTORE_ERROR_USER_CALLER_WEBAUTHN_KEY.to_string());
+    }
 
     Ok(())
 }

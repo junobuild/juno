@@ -11,6 +11,7 @@ use junobuild_shared::controllers::init_admin_controllers;
 use junobuild_shared::types::interface::SegmentArgs;
 use junobuild_shared::types::memory::Memory;
 use junobuild_shared::upgrade::{read_post_upgrade, write_pre_upgrade};
+use crate::rules::upgrade::init_user_passkey_collection;
 
 pub fn init(args: SegmentArgs) {
     let SegmentArgs { controllers } = args;
@@ -57,4 +58,7 @@ pub fn post_upgrade() {
     invoke_on_post_upgrade_sync();
 
     invoke_on_post_upgrade();
+
+    // TODO: to be removed - one time upgrade!
+    init_user_passkey_collection();
 }

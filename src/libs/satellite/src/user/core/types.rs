@@ -9,10 +9,17 @@ pub mod state {
     }
 
     #[derive(Serialize, Deserialize)]
+    #[serde(rename_all = "camelCase", deny_unknown_fields)]
+    pub struct UserWebAuthnData {
+        pub public_key: Vec<u8>,
+    }
+
+    #[derive(Serialize, Deserialize)]
     #[serde(rename_all = "snake_case")]
     pub enum AuthProvider {
         InternetIdentity,
         Nfid,
+        WebAuthn
     }
 
     #[derive(Serialize, Deserialize)]

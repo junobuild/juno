@@ -1,11 +1,12 @@
 use crate::types::interface::SetRule;
 use crate::types::rules::Memory;
-use crate::types::rules::Permission::{Controllers, Managed};
+use crate::types::rules::Permission::{Controllers, Managed, Public};
 use junobuild_shared::rate::constants::DEFAULT_RATE_CONFIG;
 
 pub const COLLECTION_USER_KEY: &str = "#user";
 pub const COLLECTION_LOG_KEY: &str = "#log";
 pub const COLLECTION_USER_USAGE_KEY: &str = "#user-usage";
+pub const COLLECTION_USER_WEBAUTHN_KEY: &str = "#user-webauthn";
 
 const COLLECTION_USER_DEFAULT_RULE: SetRule = SetRule {
     read: Managed,
@@ -44,11 +45,28 @@ pub const COLLECTION_USER_USAGE_DEFAULT_RULE: SetRule = SetRule {
     rate_config: None,
 };
 
-pub const DEFAULT_DB_COLLECTIONS: [(&str, SetRule); 3] = [
+pub const COLLECTION_USER_WEBAUTHN_DEFAULT_RULE: SetRule = SetRule {
+    read: Public,
+    // ❗Managed, BUT an assertion prevents it to be edited.
+    write: Managed,
+    memory: Some(Memory::Stable),
+    mutable_permissions: Some(false),
+    max_size: None,
+    max_capacity: None,
+    max_changes_per_user: None,
+    version: None,
+    rate_config: None,
+};
+
+pub const DEFAULT_DB_COLLECTIONS: [(&str, SetRule); 4] = [
     (COLLECTION_USER_KEY, COLLECTION_USER_DEFAULT_RULE),
     (COLLECTION_LOG_KEY, COLLECTION_LOG_DEFAULT_RULE),
     (
         COLLECTION_USER_USAGE_KEY,
         COLLECTION_USER_USAGE_DEFAULT_RULE,
+    ),
+    (
+        COLLECTION_USER_WEBAUTHN_KEY,
+        COLLECTION_USER_WEBAUTHN_DEFAULT_RULE,
     ),
 ];

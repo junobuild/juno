@@ -94,9 +94,9 @@ describe('Satellite > Upgrade', () => {
 	};
 
 	const testUsers = async ({
-														 users,
-														 actor
-													 }: {
+		users,
+		actor
+	}: {
 		users: Identity[];
 		actor: Actor<SatelliteActor_0_0_16 | SatelliteActor_0_0_17 | SatelliteActor_0_0_21>;
 	}) => {
@@ -501,9 +501,9 @@ describe('Satellite > Upgrade', () => {
 				const collection = '#dapp';
 
 				const upload = async ({
-																full_path,
-																actor
-															}: {
+					full_path,
+					actor
+				}: {
 					actor: Actor<SatelliteActor_0_0_17 | SatelliteActor_0_0_16>;
 					full_path: string;
 				}) => {

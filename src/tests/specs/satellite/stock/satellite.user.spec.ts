@@ -22,6 +22,17 @@ describe('Satellite > User', () => {
 
 	const controller = Ed25519KeyIdentity.generate();
 
+	interface WebAuthnMetadata {
+		credentialId: string;
+	}
+	interface AuthMetadata { webAuthn: WebAuthnMetadata }
+
+	const mockWebAuthnMetadata: AuthMetadata = {
+		webAuthn: {
+			credentialId: '@#Ç1245cfg'
+		}
+	};
+
 	beforeAll(async () => {
 		pic = await PocketIc.create(inject('PIC_URL'));
 
@@ -48,12 +59,19 @@ describe('Satellite > User', () => {
 				actor.setIdentity(user);
 			});
 
-			const assertCreateUser = async ({ provider }: { provider: string }) => {
+			const assertCreateUser = async ({
+				provider,
+				authMetadata
+			}: {
+				provider: string;
+				authMetadata: AuthMetadata | undefined;
+			}) => {
 				const { set_doc, list_docs } = actor;
 
 				await set_doc('#user', user.getPrincipal().toText(), {
 					data: await toArray({
-						provider
+						provider,
+						authMetadata
 					}),
 					description: toNullable(),
 					version: toNullable()
@@ -80,10 +98,14 @@ describe('Satellite > User', () => {
 				expect((data as { banned: boolean }).banned).toBeFalsy();
 			};
 
-			it.each(['internet_identity', 'nfid', 'web_authn'])(
-				'should create a user with provider %s',
-				async (provider) => {
-					await assertCreateUser({ provider });
+			it.each([
+				['internet_identity', undefined],
+				['nfid', undefined],
+				['web_authn', mockWebAuthnMetadata]
+			])(
+				'should create a user with provider and auth metadata %s',
+				async (provider, authMetadata) => {
+					await assertCreateUser({ provider, authMetadata });
 				}
 			);
 
@@ -539,10 +561,53 @@ describe('Satellite > User', () => {
 				})
 			).rejects.toThrow(
 				new RegExp(
-					`${JUNO_DATASTORE_ERROR_USER_INVALID_DATA}: unknown field \`unknown\`, expected \`provider\` or \`banned\` at line 1 column 41.`,
+					`${JUNO_DATASTORE_ERROR_USER_INVALID_DATA}: unknown field \`unknown\`, expected one of \`provider\`, \`authMetadata\`, \`banned\` at line 1 column 41.`,
 					'i'
 				)
 			);
 		});
+
+		it.each([
+			['internet_identity', mockWebAuthnMetadata],
+			['nfid', mockWebAuthnMetadata]
+		])(
+			'should not create a user with unexpected auth metadata %s',
+			async (provider, authMetadata) => {
+				const { set_doc } = actor;
+
+				const data = await toArray({
+					provider,
+					authMetadata
+				});
+
+				await expect(
+					set_doc('#user', user.getPrincipal().toText(), {
+						data,
+						description: toNullable(),
+						version: toNullable()
+					})
+				).rejects.toThrow(JUNO_DATASTORE_ERROR_USER_CANNOT_UPDATE);
+			}
+		);
+
+		it.each([['web_authn', undefined]])(
+			'should not create a user with missing auth metadata %s',
+			async (provider, authMetadata) => {
+				const { set_doc } = actor;
+
+				const data = await toArray({
+					provider,
+					authMetadata
+				});
+
+				await expect(
+					set_doc('#user', user.getPrincipal().toText(), {
+						data,
+						description: toNullable(),
+						version: toNullable()
+					})
+				).rejects.toThrow(JUNO_DATASTORE_ERROR_USER_CANNOT_UPDATE);
+			}
+		);
 	});
 });

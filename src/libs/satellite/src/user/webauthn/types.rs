@@ -2,7 +2,8 @@ pub mod state {
     use junobuild_utils::DocDataUint8Array;
     use serde::{Deserialize, Serialize};
 
-    // Key is the passkey credential ID (raw ID)
+    // The key for the collection is the textual representation of passkey credential ID (raw ID).
+    pub type UserWebAuthnCredentialId = String;
 
     #[derive(Serialize, Deserialize)]
     #[serde(rename_all = "camelCase", deny_unknown_fields)]

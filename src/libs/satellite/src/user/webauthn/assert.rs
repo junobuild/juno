@@ -1,4 +1,8 @@
-use crate::errors::user::{JUNO_DATASTORE_ERROR_USER_CALLER_WEBAUTHN_KEY, JUNO_DATASTORE_ERROR_USER_INVALID_WEBAUTHN_DATA, JUNO_DATASTORE_ERROR_USER_WEBAUTHN_CANNOT_UPDATE};
+use crate::errors::user::{
+    JUNO_DATASTORE_ERROR_USER_WEBAUTHN_CALLER_KEY,
+    JUNO_DATASTORE_ERROR_USER_WEBAUTHN_CANNOT_UPDATE,
+    JUNO_DATASTORE_ERROR_USER_WEBAUTHN_INVALID_DATA,
+};
 use crate::user::webauthn::types::state::UserWebAuthnData;
 use crate::{Doc, SetDoc};
 use candid::Principal;
@@ -19,12 +23,12 @@ pub fn assert_user_webauthn_data(
     }
 
     let data = decode_doc_data::<UserWebAuthnData>(&doc.data)
-        .map_err(|err| format!("{JUNO_DATASTORE_ERROR_USER_INVALID_WEBAUTHN_DATA}: {err}"))?;
+        .map_err(|err| format!("{JUNO_DATASTORE_ERROR_USER_WEBAUTHN_INVALID_DATA}: {err}"))?;
 
     let public_key = Principal::self_authenticating(&data.public_key.value);
 
     if principal_not_equal(caller, public_key) {
-        return Err(JUNO_DATASTORE_ERROR_USER_CALLER_WEBAUTHN_KEY.to_string());
+        return Err(JUNO_DATASTORE_ERROR_USER_WEBAUTHN_CALLER_KEY.to_string());
     }
 
     Ok(())

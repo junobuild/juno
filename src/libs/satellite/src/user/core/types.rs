@@ -1,5 +1,5 @@
 pub mod state {
-    use junobuild_utils::DocDataUint8Array;
+    use crate::user::webauthn::types::state::UserWebAuthnCredentialId;
     use serde::{Deserialize, Serialize};
 
     #[derive(Serialize, Deserialize)]
@@ -25,15 +25,15 @@ pub mod state {
     }
 
     #[derive(Serialize, Deserialize)]
-    #[serde(rename_all = "snake_case")]
+    #[serde(rename_all = "camelCase")]
     pub enum AuthMetadata {
         WebAuthn(WebAuthnMetadata),
     }
 
     #[derive(Serialize, Deserialize)]
-    #[serde(rename_all = "snake_case", deny_unknown_fields)]
+    #[serde(rename_all = "camelCase", deny_unknown_fields)]
     pub struct WebAuthnMetadata {
         // Particularly useful ID to retrieve the public key in the collection #user-webauthn
-        pub credential_id: DocDataUint8Array,
+        pub credential_id: UserWebAuthnCredentialId,
     }
 }

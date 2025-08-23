@@ -18,3 +18,5 @@ junobuild-satellite = { path = "../../../libs/satellite", default-features = fal
 	"on_init_random_seed"
 ] }
 junobuild-macros = { path = "../../../libs/macros" }
+junobuild-utils = { path = "../../../libs/utils" }
+serde = { version = "1.0.219", features = ["derive"] }

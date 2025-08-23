@@ -14,10 +14,6 @@ describe('Satellite > Upgrade > v0.0.21', () => {
 
 	const controller = Ed25519KeyIdentity.generate();
 
-	afterEach(async () => {
-		await pic?.tearDown();
-	});
-
 	let actor: Actor<SatelliteActor_0_0_16>;
 
 	beforeEach(async () => {
@@ -35,6 +31,10 @@ describe('Satellite > Upgrade > v0.0.21', () => {
 		actor = c;
 		canisterId = cId;
 		actor.setIdentity(controller);
+	});
+
+	afterEach(async () => {
+		await pic?.tearDown();
 	});
 
 	it('should not populate an index HTML file', async () => {

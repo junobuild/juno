@@ -16,10 +16,6 @@ describe('Satellite > Upgrade > v0.0.22', () => {
 
 	const controller = Ed25519KeyIdentity.generate();
 
-	afterEach(async () => {
-		await pic?.tearDown();
-	});
-
 	let actor: Actor<SatelliteActor_0_0_21>;
 
 	beforeEach(async () => {
@@ -37,6 +33,10 @@ describe('Satellite > Upgrade > v0.0.22', () => {
 		actor = c;
 		canisterId = cId;
 		actor.setIdentity(controller);
+	});
+
+	afterEach(async () => {
+		await pic?.tearDown();
 	});
 
 	it('should still migrate rules with none max_changes_per_users', async () => {

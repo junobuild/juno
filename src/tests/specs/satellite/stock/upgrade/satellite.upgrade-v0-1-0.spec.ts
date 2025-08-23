@@ -16,10 +16,6 @@ describe('Satellite > Upgrade > v0.1.0', () => {
 
 	const controller = Ed25519KeyIdentity.generate();
 
-	afterEach(async () => {
-		await pic?.tearDown();
-	});
-
 	// For simplicity reason we also use actor v0.0.21 as the API was similar for version.
 	let actor: Actor<SatelliteActor_0_0_21>;
 
@@ -40,6 +36,10 @@ describe('Satellite > Upgrade > v0.1.0', () => {
 		actor = c;
 		canisterId = cId;
 		actor.setIdentity(controller);
+	});
+
+	afterEach(async () => {
+		await pic?.tearDown();
 	});
 
 	it('should deprecated build version', async () => {

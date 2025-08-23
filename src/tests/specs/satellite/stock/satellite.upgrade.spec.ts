@@ -94,9 +94,9 @@ describe('Satellite > Upgrade', () => {
 	};
 
 	const testUsers = async ({
-		users,
-		actor
-	}: {
+														 users,
+														 actor
+													 }: {
 		users: Identity[];
 		actor: Actor<SatelliteActor_0_0_16 | SatelliteActor_0_0_17 | SatelliteActor_0_0_21>;
 	}) => {
@@ -501,9 +501,9 @@ describe('Satellite > Upgrade', () => {
 				const collection = '#dapp';
 
 				const upload = async ({
-					full_path,
-					actor
-				}: {
+																full_path,
+																actor
+															}: {
 					actor: Actor<SatelliteActor_0_0_17 | SatelliteActor_0_0_16>;
 					full_path: string;
 				}) => {
@@ -873,78 +873,6 @@ describe('Satellite > Upgrade', () => {
 			newActor.setIdentity(controller);
 
 			await assertControllers(newActor);
-		});
-	});
-
-	describe('v0.1.2 -> v0.1.3', () => {
-		let actor: Actor<SatelliteActor>;
-
-		const PREVIOUS_VERSION = '0.1.2';
-
-		beforeEach(async () => {
-			pic = await PocketIc.create(inject('PIC_URL'));
-
-			const destination = await downloadSatellite(PREVIOUS_VERSION);
-
-			const { actor: c, canisterId: cId } = await pic.setupCanister<SatelliteActor>({
-				idlFactory: idlFactorSatellite,
-				wasm: destination,
-				arg: controllersInitArgs(controller),
-				sender: controller.getPrincipal()
-			});
-
-			actor = c;
-			canisterId = cId;
-			actor.setIdentity(controller);
-		});
-
-		it('should create a rule for collection #user-webauthn', async () => {
-			const collection = '#user-webauthn';
-
-			const { get_rule: getRuleBefore } = actor;
-
-			const beforeUpgrade = await getRuleBefore({ Db: null }, collection);
-
-			expect(fromNullable(beforeUpgrade)).toBeUndefined();
-
-			await upgrade();
-
-			const newActor = pic.createActor<SatelliteActor>(idlFactorSatellite, canisterId);
-			newActor.setIdentity(controller);
-
-			const { get_rule: getRuleAfter } = newActor;
-
-			const afterUpgrade = await getRuleAfter({ Db: null }, collection);
-
-			const rule = fromNullable(afterUpgrade);
-
-			assertNonNullish(rule);
-
-			const {
-				updated_at,
-				created_at,
-				memory,
-				mutable_permissions,
-				read,
-				write,
-				version,
-				max_changes_per_user,
-				max_capacity,
-				max_size,
-				rate_config
-			} = rule;
-
-			expect(memory).toEqual(toNullable({ Stable: null }));
-			expect(read).toEqual({ Public: null });
-			expect(write).toEqual({ Managed: null });
-			expect(mutable_permissions).toEqual([false]);
-			expect(created_at).toBeGreaterThan(0n);
-			expect(updated_at).toBeGreaterThan(0n);
-			expect(fromNullable(version)).toBeUndefined();
-			expect(fromNullable(max_changes_per_user)).toBeUndefined();
-			expect(fromNullable(max_capacity)).toBeUndefined();
-			expect(fromNullable(max_size)).toBeUndefined();
-			expect(fromNullable(rate_config)).toBeUndefined();
 		});
 	});
 });

@@ -2,14 +2,20 @@ import type { _SERVICE as TestSatelliteActor } from '$test-declarations/test_sat
 import type { Identity } from '@dfinity/agent';
 import type { Actor, PocketIc } from '@dfinity/pic';
 import { Principal } from '@dfinity/principal';
-import { assertNonNullish, fromNullable, toNullable } from '@dfinity/utils';
+import {
+	arrayOfNumberToUint8Array,
+	assertNonNullish,
+	fromNullable,
+	toNullable,
+	uint8ArraysEqual
+} from '@dfinity/utils';
 import { fromArray, toArray } from '@junobuild/utils';
 import { nanoid } from 'nanoid';
+import { mockPrincipal } from '../../../../frontend/tests/mocks/identity.mock';
 import { mockSetRule } from '../../../mocks/collection.mocks';
 import { setupTestSatellite } from '../../../utils/fixtures-tests.utils';
 import { fetchLogs } from '../../../utils/mgmt-tests.utils';
 import { waitServerlessFunction } from '../../../utils/satellite-extended-tests.utils';
-import { mockPrincipal } from '../../../../frontend/tests/mocks/identity.mock';
 
 describe('Satellite > Utils', () => {
 	let pic: PocketIc;
@@ -37,7 +43,8 @@ describe('Satellite > Utils', () => {
 
 	const mockData = {
 		hello: 12367894n,
-		whoami: mockPrincipal
+		whoami: mockPrincipal,
+		arr: arrayOfNumberToUint8Array([1, 2, 3, 4, 5])
 	};
 
 	const createDoc = async (): Promise<string> => {
@@ -108,7 +115,9 @@ describe('Satellite > Utils', () => {
 				canisterId
 			});
 
-			const log = logs.find(([_, { message }]) => message === `Principal decoded: ${mockData.whoami.toText()}`);
+			const log = logs.find(
+				([_, { message }]) => message === `Principal decoded: ${mockData.whoami.toText()}`
+			);
 
 			expect(log).not.toBeUndefined();
 		});
@@ -122,6 +131,42 @@ describe('Satellite > Utils', () => {
 
 			expect(data.whoami.toText()).not.toEqual(mockData.whoami.toText());
 			expect(Principal.anonymous().toText()).not.toEqual(mockData.whoami.toText());
+		});
+	});
+
+	describe('Uint8Array', () => {
+		it('should deserialize', async () => {
+			await createDoc();
+
+			await waitServerlessFunction(pic);
+
+			const logs = await fetchLogs({
+				pic,
+				controller,
+				canisterId
+			});
+
+			const log = logs.find(
+				([_, { message }]) =>
+					message === `Uint8Array decoded: [${Array.from(mockData.arr).join(', ')}]`
+			);
+
+			expect(log).not.toBeUndefined();
+		});
+
+		it('should serialize', async () => {
+			const key = await createDoc();
+
+			await waitServerlessFunction(pic);
+
+			const data = await getDocData(key);
+
+			expect(
+				uint8ArraysEqual({
+					a: arrayOfNumberToUint8Array([9, 8, 7, 6]),
+					b: data.arr
+				})
+			).toBeTruthy();
 		});
 	});
 });

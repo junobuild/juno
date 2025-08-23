@@ -9,13 +9,16 @@ use junobuild_satellite::{
     error, id, include_satellite, info, random, set_doc_store, warn_with_data, OnDeleteDocContext,
     OnSetDocContext, SetDoc,
 };
-use junobuild_utils::{decode_doc_data, encode_doc_data, DocDataBigInt, DocDataPrincipal};
+use junobuild_utils::{
+    decode_doc_data, encode_doc_data, DocDataBigInt, DocDataPrincipal, DocDataUint8Array,
+};
 use serde::{Deserialize, Serialize};
 
 #[derive(Serialize, Deserialize)]
 struct MockData {
     hello: DocDataBigInt,
     whoami: DocDataPrincipal,
+    arr: DocDataUint8Array,
 }
 
 #[on_set_doc]
@@ -27,7 +30,11 @@ fn on_set_doc(context: OnSetDocContext) -> Result<(), String> {
             let data = decode_doc_data::<MockData>(&context.data.data.after.data)?;
 
             ic_cdk::print(format!("BigInt decoded: {}", data.hello.value));
-            ic_cdk::print(format!("Principal decoded: {}", data.whoami.value.to_text()));
+            ic_cdk::print(format!(
+                "Principal decoded: {}",
+                data.whoami.value.to_text()
+            ));
+            ic_cdk::print(format!("Uint8Array decoded: {:?}", data.arr.value));
 
             let hello_update = data.hello.value.saturating_add(1);
 
@@ -37,6 +44,9 @@ fn on_set_doc(context: OnSetDocContext) -> Result<(), String> {
                 },
                 whoami: DocDataPrincipal {
                     value: Principal::anonymous(),
+                },
+                arr: DocDataUint8Array {
+                    value: vec![9, 8, 7, 6],
                 },
             };
 

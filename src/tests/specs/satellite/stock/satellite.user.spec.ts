@@ -8,8 +8,10 @@ import {
 	JUNO_DATASTORE_ERROR_CANNOT_WRITE,
 	JUNO_DATASTORE_ERROR_USER_CALLER_KEY,
 	JUNO_DATASTORE_ERROR_USER_CANNOT_UPDATE,
+	JUNO_DATASTORE_ERROR_USER_INVALID_AUTH_METADATA,
 	JUNO_DATASTORE_ERROR_USER_INVALID_DATA,
 	JUNO_DATASTORE_ERROR_USER_KEY_NO_PRINCIPAL,
+	JUNO_DATASTORE_ERROR_USER_MISSING_AUTH_METADATA,
 	JUNO_DATASTORE_ERROR_USER_NOT_ALLOWED
 } from '@junobuild/errors';
 import { fromArray, toArray } from '@junobuild/utils';
@@ -25,7 +27,9 @@ describe('Satellite > User', () => {
 	interface WebAuthnMetadata {
 		credentialId: string;
 	}
-	interface AuthMetadata { webAuthn: WebAuthnMetadata }
+	interface AuthMetadata {
+		webAuthn: WebAuthnMetadata;
+	}
 
 	const mockWebAuthnMetadata: AuthMetadata = {
 		webAuthn: {
@@ -586,7 +590,7 @@ describe('Satellite > User', () => {
 						description: toNullable(),
 						version: toNullable()
 					})
-				).rejects.toThrow(JUNO_DATASTORE_ERROR_USER_CANNOT_UPDATE);
+				).rejects.toThrow(JUNO_DATASTORE_ERROR_USER_INVALID_AUTH_METADATA);
 			}
 		);
 
@@ -606,7 +610,7 @@ describe('Satellite > User', () => {
 						description: toNullable(),
 						version: toNullable()
 					})
-				).rejects.toThrow(JUNO_DATASTORE_ERROR_USER_CANNOT_UPDATE);
+				).rejects.toThrow(JUNO_DATASTORE_ERROR_USER_MISSING_AUTH_METADATA);
 			}
 		);
 	});

@@ -46,6 +46,9 @@ pub const COLLECTION_USER_USAGE_DEFAULT_RULE: SetRule = SetRule {
 };
 
 pub const COLLECTION_USER_WEBAUTHN_DEFAULT_RULE: SetRule = SetRule {
+    // ℹ️ Public because this is required to retrieve the public key for the passkey
+    // when users sign in again through navigator.credentials.get. Public keys are by definition
+    // public, and the rawId is the unique identifier provided by WebAuthn, which is not secret by definition either.
     read: Public,
     // ❗Managed, BUT an assertion prevents it to be edited.
     write: Managed,

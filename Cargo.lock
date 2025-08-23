@@ -1701,6 +1701,8 @@ dependencies = [
  "ic-cdk",
  "junobuild-macros",
  "junobuild-satellite",
+ "junobuild-utils",
+ "serde",
 ]
 
 [[package]]

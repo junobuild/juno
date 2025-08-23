@@ -1,16 +1,21 @@
 #![allow(clippy::disallowed_methods)]
 
+use candid::Principal;
 use ic_cdk::update;
 use junobuild_macros::{
     on_delete_doc, on_init_random_seed, on_init_sync, on_post_upgrade_sync, on_set_doc,
 };
-use junobuild_satellite::{error, id, include_satellite, info, random, set_doc_store, warn_with_data, OnDeleteDocContext, OnSetDocContext, SetDoc};
+use junobuild_satellite::{
+    error, id, include_satellite, info, random, set_doc_store, warn_with_data, OnDeleteDocContext,
+    OnSetDocContext, SetDoc,
+};
 use junobuild_utils::{decode_doc_data, encode_doc_data, DocDataBigInt, DocDataPrincipal};
 use serde::{Deserialize, Serialize};
 
 #[derive(Serialize, Deserialize)]
 struct MockData {
     hello: DocDataBigInt,
+    whoami: DocDataPrincipal,
 }
 
 #[on_set_doc]
@@ -22,10 +27,17 @@ fn on_set_doc(context: OnSetDocContext) -> Result<(), String> {
             let data = decode_doc_data::<MockData>(&context.data.data.after.data)?;
 
             ic_cdk::print(format!("BigInt decoded: {}", data.hello.value));
+            ic_cdk::print(format!("Principal decoded: {}", data.whoami.value.to_text()));
+
             let hello_update = data.hello.value.saturating_add(1);
 
             let update_data = MockData {
-                hello: DocDataBigInt {value: hello_update},
+                hello: DocDataBigInt {
+                    value: hello_update,
+                },
+                whoami: DocDataPrincipal {
+                    value: Principal::anonymous(),
+                },
             };
 
             let doc: SetDoc = SetDoc {
@@ -35,8 +47,8 @@ fn on_set_doc(context: OnSetDocContext) -> Result<(), String> {
             };
 
             let _ = set_doc_store(id(), "test_utils".to_string(), context.data.key, doc)?;
-        },
-        _ => ()
+        }
+        _ => (),
     }
 
     Ok(())

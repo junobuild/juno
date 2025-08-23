@@ -115,7 +115,7 @@
 		"@dfinity/ledger-icrc": "^2.9.1",
 		"@dfinity/oisy-wallet-signer": "^0.2.3",
 		"@dfinity/principal": "^2.3.0",
-		"@dfinity/utils": "^2.13.2",
+		"@dfinity/utils": "^2.14.0",
 		"@dfinity/zod-schemas": "^1.1.0",
 		"@junobuild/admin": "^2.0.0",
 		"@junobuild/cdn": "^1.1.0",

@@ -14,10 +14,6 @@ describe('Satellite > Upgrade > v0.1.3', () => {
 
 	const controller = Ed25519KeyIdentity.generate();
 
-	afterEach(async () => {
-		await pic?.tearDown();
-	});
-
 	let actor: Actor<SatelliteActor>;
 
 	const PREVIOUS_VERSION = '0.1.2';
@@ -37,6 +33,10 @@ describe('Satellite > Upgrade > v0.1.3', () => {
 		actor = c;
 		canisterId = cId;
 		actor.setIdentity(controller);
+	});
+
+	afterEach(async () => {
+		await pic?.tearDown();
 	});
 
 	it('should create a rule for collection #user-webauthn', async () => {

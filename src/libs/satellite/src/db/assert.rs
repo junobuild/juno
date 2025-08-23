@@ -8,10 +8,13 @@ use crate::hooks::db::{invoke_assert_delete_doc, invoke_assert_set_doc};
 use crate::types::store::{AssertContext, StoreContext};
 use crate::user::core::assert::{
     assert_user_collection_caller_key, assert_user_collection_data, assert_user_is_not_banned,
-    assert_user_webauthn_data, assert_user_webauthn_write_permission, assert_user_write_permission,
+    assert_user_write_permission,
 };
 use crate::user::usage::assert::{
     assert_user_usage_collection_data, increment_and_assert_db_usage,
+};
+use crate::user::webauthn::assert::{
+    assert_user_webauthn_data, assert_user_webauthn_write_permission,
 };
 use crate::{DelDoc, Doc, SetDoc};
 use candid::Principal;

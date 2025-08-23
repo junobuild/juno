@@ -21,11 +21,11 @@ fn invoke_deletion(doc: &DocContext<Option<Doc>>) {
     }
 
     if let Some(user) = &doc.data {
-        invoke_clean_up_user(&user.owner);
+        invoke_cleanup_user(&user.owner);
     }
 }
 
-fn invoke_clean_up_user(user_id: &UserId) {
+fn invoke_cleanup_user(user_id: &UserId) {
     let user_id = *user_id;
 
     set_timer(Duration::ZERO, move || {

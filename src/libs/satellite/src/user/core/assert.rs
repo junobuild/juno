@@ -1,10 +1,9 @@
 use crate::errors::user::{
     JUNO_DATASTORE_ERROR_USER_CALLER_KEY, JUNO_DATASTORE_ERROR_USER_CANNOT_UPDATE,
-    JUNO_DATASTORE_ERROR_USER_INVALID_AUTH_METADATA, JUNO_DATASTORE_ERROR_USER_INVALID_DATA,
-    JUNO_DATASTORE_ERROR_USER_KEY_NO_PRINCIPAL, JUNO_DATASTORE_ERROR_USER_MISSING_AUTH_METADATA,
+    JUNO_DATASTORE_ERROR_USER_INVALID_DATA, JUNO_DATASTORE_ERROR_USER_KEY_NO_PRINCIPAL,
     JUNO_DATASTORE_ERROR_USER_NOT_ALLOWED,
 };
-use crate::user::core::types::state::{AuthProvider, BannedReason, UserData};
+use crate::user::core::types::state::{BannedReason, UserData};
 use crate::{get_doc_store, Doc, SetDoc};
 use candid::Principal;
 use junobuild_collections::constants::db::COLLECTION_USER_KEY;
@@ -52,21 +51,8 @@ pub fn assert_user_data(collection: &CollectionKey, doc: &SetDoc) -> Result<(), 
         return Ok(());
     }
 
-    let data = decode_doc_data::<UserData>(&doc.data)
+    decode_doc_data::<UserData>(&doc.data)
         .map_err(|err| format!("{JUNO_DATASTORE_ERROR_USER_INVALID_DATA}: {err}"))?;
-
-    match data.provider {
-        Some(AuthProvider::WebAuthn) => {
-            if data.auth_metadata.is_none() {
-                return Err(JUNO_DATASTORE_ERROR_USER_MISSING_AUTH_METADATA.to_string());
-            }
-        }
-        _ => {
-            if data.auth_metadata.is_some() {
-                return Err(JUNO_DATASTORE_ERROR_USER_INVALID_AUTH_METADATA.to_string());
-            }
-        }
-    }
 
     Ok(())
 }

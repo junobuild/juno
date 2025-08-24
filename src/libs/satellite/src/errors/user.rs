@@ -7,12 +7,6 @@ pub const JUNO_DATASTORE_ERROR_USER_KEY_NO_PRINCIPAL: &str =
     "juno.datastore.error.user.key_no_principal";
 // Banned
 pub const JUNO_DATASTORE_ERROR_USER_NOT_ALLOWED: &str = "juno.datastore.error.user.not_allowed";
-// For Internet Identity and NFID, no auth metadata
-pub const JUNO_DATASTORE_ERROR_USER_INVALID_AUTH_METADATA: &str =
-    "juno.datastore.error.user.invalid_auth_metadata";
-// For WebAuthn, auth metadata is required
-pub const JUNO_DATASTORE_ERROR_USER_MISSING_AUTH_METADATA: &str =
-    "juno.datastore.error.user.missing_auth_metadata";
 
 // Change limit reached.
 pub const JUNO_DATASTORE_ERROR_USER_USAGE_CHANGE_LIMIT_REACHED: &str =

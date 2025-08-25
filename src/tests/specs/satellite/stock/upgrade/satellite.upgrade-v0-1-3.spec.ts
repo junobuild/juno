@@ -1,4 +1,4 @@
-import type { _SERVICE as SatelliteActor } from '$declarations/satellite/satellite.did';
+import type { Rule, _SERVICE as SatelliteActor } from '$declarations/satellite/satellite.did';
 import { idlFactory as idlFactorSatellite } from '$declarations/satellite/satellite.factory.did';
 import { Ed25519KeyIdentity } from '@dfinity/identity';
 import { PocketIc, type Actor } from '@dfinity/pic';
@@ -39,9 +39,11 @@ describe('Satellite > Upgrade > v0.1.3', () => {
 		await pic?.tearDown();
 	});
 
-	it('should create a rule for collection #user-webauthn', async () => {
-		const collection = '#user-webauthn';
-
+	const assertCreateCollection = async ({
+		collection,
+		read: expectedRead,
+		write: expectedWrite
+	}: { collection: string } & Pick<Rule, 'read' | 'write'>) => {
 		const { get_rule: getRuleBefore } = actor;
 
 		const beforeUpgrade = await getRuleBefore({ Db: null }, collection);
@@ -76,8 +78,8 @@ describe('Satellite > Upgrade > v0.1.3', () => {
 		} = rule;
 
 		expect(memory).toEqual(toNullable({ Stable: null }));
-		expect(read).toEqual({ Public: null });
-		expect(write).toEqual({ Managed: null });
+		expect(read).toEqual(expectedRead);
+		expect(write).toEqual(expectedWrite);
 		expect(mutable_permissions).toEqual([false]);
 		expect(created_at).toBeGreaterThan(0n);
 		expect(updated_at).toBeGreaterThan(0n);
@@ -86,54 +88,21 @@ describe('Satellite > Upgrade > v0.1.3', () => {
 		expect(fromNullable(max_capacity)).toBeUndefined();
 		expect(fromNullable(max_size)).toBeUndefined();
 		expect(fromNullable(rate_config)).toBeUndefined();
+	};
+
+	it('should create a rule for collection #user-webauthn', async () => {
+		await assertCreateCollection({
+			collection: '#user-webauthn',
+			read: { Public: null },
+			write: { Managed: null }
+		});
 	});
 
 	it('should create a rule for collection #user-webauthn-index', async () => {
-		const collection = '#user-webauthn';
-
-		const { get_rule: getRuleBefore } = actor;
-
-		const beforeUpgrade = await getRuleBefore({ Db: null }, collection);
-
-		expect(fromNullable(beforeUpgrade)).toBeUndefined();
-
-		await upgradeSatellite({ pic, canisterId, controller });
-
-		const newActor = pic.createActor<SatelliteActor>(idlFactorSatellite, canisterId);
-		newActor.setIdentity(controller);
-
-		const { get_rule: getRuleAfter } = newActor;
-
-		const afterUpgrade = await getRuleAfter({ Db: null }, collection);
-
-		const rule = fromNullable(afterUpgrade);
-
-		assertNonNullish(rule);
-
-		const {
-			updated_at,
-			created_at,
-			memory,
-			mutable_permissions,
-			read,
-			write,
-			version,
-			max_changes_per_user,
-			max_capacity,
-			max_size,
-			rate_config
-		} = rule;
-
-		expect(memory).toEqual(toNullable({ Stable: null }));
-		expect(read).toEqual({ Controllers: null });
-		expect(write).toEqual({ Controllers: null });
-		expect(mutable_permissions).toEqual([false]);
-		expect(created_at).toBeGreaterThan(0n);
-		expect(updated_at).toBeGreaterThan(0n);
-		expect(fromNullable(version)).toBeUndefined();
-		expect(fromNullable(max_changes_per_user)).toBeUndefined();
-		expect(fromNullable(max_capacity)).toBeUndefined();
-		expect(fromNullable(max_size)).toBeUndefined();
-		expect(fromNullable(rate_config)).toBeUndefined();
+		await assertCreateCollection({
+			collection: '#user-webauthn-index',
+			read: { Controllers: null },
+			write: { Controllers: null }
+		});
 	});
 });

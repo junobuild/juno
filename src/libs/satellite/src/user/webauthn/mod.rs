@@ -1,5 +1,4 @@
 pub mod assert;
-mod store;
+mod impls;
+pub mod store;
 pub mod types;
-
-pub use store::delete_user_webauthn_and_index;

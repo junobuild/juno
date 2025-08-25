@@ -2,7 +2,9 @@ use crate::hooks::db::{
     invoke_on_delete_doc, invoke_on_delete_filtered_docs, invoke_on_delete_many_docs,
     invoke_on_set_doc, invoke_on_set_many_docs,
 };
-use crate::user::internal_hooks::{on_delete_many_users, on_delete_user};
+use crate::user::internal_hooks::{
+    on_delete_many_users, on_delete_user, on_set_many_users, on_set_user,
+};
 use crate::{
     caller, count_collection_docs_store, count_docs_store, delete_doc_store, delete_docs_store,
     delete_filtered_docs_store, get_doc_store, list_docs_store, set_doc_store, DelDoc, Doc,
@@ -20,6 +22,8 @@ pub fn set_doc(collection: CollectionKey, key: Key, doc: SetDoc) -> Doc {
 
     match result {
         Ok(doc) => {
+            on_set_user(&doc).unwrap_or_else(|e| trap(&e));
+
             invoke_on_set_doc(&caller, &doc);
 
             doc.data.after
@@ -94,6 +98,8 @@ pub fn set_many_docs(docs: Vec<(CollectionKey, Key, SetDoc)>) -> Vec<(Key, Doc)>
 
         hook_payload.push(result);
     }
+
+    on_set_many_users(&hook_payload).unwrap_or_else(|e| trap(&e));
 
     invoke_on_set_many_docs(&caller, &hook_payload);
 

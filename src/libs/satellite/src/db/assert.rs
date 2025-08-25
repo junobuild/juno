@@ -80,7 +80,7 @@ pub fn assert_set_doc(
     assert_user_write_permission(caller, controllers, collection, current_doc)?;
 
     assert_user_webauthn_data(caller, collection, value)?;
-    assert_user_webauthn_write_permission(key, current_doc)?;
+    assert_user_webauthn_write_permission(collection, current_doc)?;
 
     assert_write_permission(caller, controllers, current_doc, &rule.write)?;
 

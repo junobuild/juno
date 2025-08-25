@@ -44,7 +44,7 @@ pub fn assert_user_collection_caller_key(
     Ok(())
 }
 
-pub fn assert_user_data(collection: &CollectionKey, doc: &SetDoc) -> Result<(), String> {
+pub fn assert_user_collection_data(collection: &CollectionKey, doc: &SetDoc) -> Result<(), String> {
     let user_collection = COLLECTION_USER_KEY;
 
     if collection != user_collection {

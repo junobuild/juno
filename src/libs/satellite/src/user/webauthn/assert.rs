@@ -11,7 +11,7 @@ use junobuild_collections::types::core::CollectionKey;
 use junobuild_shared::utils::principal_not_equal;
 use junobuild_utils::decode_doc_data;
 
-pub fn assert_user_webauthn_data(
+pub fn assert_user_webauthn_collection_data(
     caller: Principal,
     collection: &CollectionKey,
     doc: &SetDoc,
@@ -34,7 +34,7 @@ pub fn assert_user_webauthn_data(
     Ok(())
 }
 
-pub fn assert_user_webauthn_write_permission(
+pub fn assert_user_webauthn_collection_write_permission(
     collection: &CollectionKey,
     current_doc: &Option<Doc>,
 ) -> Result<(), String> {

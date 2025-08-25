@@ -1,9 +1,9 @@
 pub mod state {
     use crate::assets::storage::types::state::{AssetsStable, ContentChunksStable};
-    use crate::auth::types::state::AuthenticationHeapState;
     use crate::db::types::state::{DbHeapState, DbRuntimeState, DbStable};
     use crate::memory::internal::init_stable_state;
     use candid::CandidType;
+    use junobuild_auth::types::state::AuthenticationHeapState;
     use junobuild_cdn::proposals::ProposalsStable;
     use junobuild_cdn::storage::{ProposalAssetsStable, ProposalContentChunksStable};
     use junobuild_shared::types::state::Controllers;
@@ -56,9 +56,9 @@ pub mod state {
 }
 
 pub mod interface {
-    use crate::auth::types::config::AuthenticationConfig;
     use crate::db::types::config::DbConfig;
     use candid::CandidType;
+    use junobuild_auth::types::config::AuthenticationConfig;
     use junobuild_cdn::proposals::ProposalId;
     use junobuild_storage::types::config::StorageConfig;
     use serde::{Deserialize, Serialize};
@@ -77,7 +77,7 @@ pub mod interface {
 }
 
 pub mod store {
-    use crate::auth::types::config::AuthenticationConfig;
+    use junobuild_auth::types::config::AuthenticationConfig;
     use junobuild_collections::types::core::CollectionKey;
     use junobuild_collections::types::rules::Rule;
     use junobuild_shared::types::state::{Controllers, UserId};

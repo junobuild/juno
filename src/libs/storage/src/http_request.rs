@@ -7,7 +7,7 @@ use crate::http::types::{
 };
 use crate::http::utils::create_token;
 use crate::routing::get_routing;
-use crate::strategies::StorageStateStrategy;
+use crate::strategies::{StorageCertificateStrategy, StorageStateStrategy};
 use crate::types::http_request::{
     Routing, RoutingDefault, RoutingRedirect, RoutingRedirectRaw, RoutingRewrite,
 };
@@ -26,6 +26,7 @@ pub fn http_request(
         certificate_version,
     }: HttpRequest,
     storage_state: &impl StorageStateStrategy,
+    certificate: &impl StorageCertificateStrategy,
 ) -> HttpResponse {
     if method != "GET" {
         return error_response(RESPONSE_STATUS_CODE_405, "Method Not Allowed.".to_string());
@@ -43,6 +44,7 @@ pub fn http_request(
                 None,
                 RESPONSE_STATUS_CODE_200,
                 storage_state,
+                certificate,
             ),
             Routing::Rewrite(RoutingRewrite {
                 url,
@@ -57,12 +59,15 @@ pub fn http_request(
                 Some(source),
                 status_code,
                 storage_state,
+                certificate,
             ),
             Routing::Redirect(RoutingRedirect {
                 url,
                 redirect,
                 iframe,
-            }) => build_redirect_response(url, certificate_version, &redirect, &iframe),
+            }) => {
+                build_redirect_response(url, certificate_version, &redirect, &iframe, certificate)
+            }
             Routing::RedirectRaw(RoutingRedirectRaw {
                 redirect_url,
                 iframe,

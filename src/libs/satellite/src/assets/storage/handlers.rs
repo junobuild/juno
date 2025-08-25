@@ -1,6 +1,7 @@
 use crate::assets::storage::state::{
     get_asset, get_config, get_rule, insert_asset, insert_asset_encoding,
 };
+use crate::certification::strategy_impls::StorageCertificate;
 use crate::controllers::store::get_controllers;
 use junobuild_collections::assert::stores::assert_permission;
 use junobuild_collections::types::rules::Rule;
@@ -84,7 +85,7 @@ fn set_asset_handler_impl(
 
     let config = get_config();
 
-    update_runtime_certified_asset(&asset, &config);
+    update_runtime_certified_asset(&asset, &config, &StorageCertificate);
 
     Ok(())
 }

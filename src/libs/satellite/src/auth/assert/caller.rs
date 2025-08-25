@@ -1,6 +1,6 @@
-use crate::auth::types::config::AuthenticationConfig;
 use crate::errors::auth::JUNO_AUTH_ERROR_CALLER_NOT_ALLOWED;
 use candid::Principal;
+use junobuild_auth::types::config::AuthenticationConfig;
 use junobuild_shared::controllers::controller_can_write;
 use junobuild_shared::types::state::Controllers;
 use junobuild_shared::utils::principal_equal;

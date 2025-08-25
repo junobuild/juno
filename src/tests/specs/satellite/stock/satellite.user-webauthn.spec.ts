@@ -1,6 +1,6 @@
 import type { _SERVICE as SatelliteActor } from '$declarations/satellite/satellite.did';
 import { idlFactory as idlFactorSatellite } from '$declarations/satellite/satellite.factory.did';
-import { type Identity, SignIdentity } from '@dfinity/agent';
+import type { Identity, SignIdentity } from '@dfinity/agent';
 import { Ed25519KeyIdentity } from '@dfinity/identity';
 import { type Actor, PocketIc } from '@dfinity/pic';
 import {
@@ -218,7 +218,7 @@ describe('Satellite > User Webauthn', () => {
 		});
 	});
 
-	describe('Set', () => {
+	describe('Delete', () => {
 		let user: SignIdentity;
 		let userPublicKey: Uint8Array;
 		let credentialId: string;

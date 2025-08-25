@@ -13,6 +13,7 @@ pub mod state {
     pub enum AuthProvider {
         InternetIdentity,
         Nfid,
+        WebAuthn,
     }
 
     #[derive(Serialize, Deserialize)]

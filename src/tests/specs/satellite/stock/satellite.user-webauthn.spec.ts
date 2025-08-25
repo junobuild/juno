@@ -1,6 +1,6 @@
 import type { _SERVICE as SatelliteActor } from '$declarations/satellite/satellite.did';
 import { idlFactory as idlFactorSatellite } from '$declarations/satellite/satellite.factory.did';
-import { SignIdentity } from '@dfinity/agent';
+import { type Identity, SignIdentity } from '@dfinity/agent';
 import { Ed25519KeyIdentity } from '@dfinity/identity';
 import { type Actor, PocketIc } from '@dfinity/pic';
 import {
@@ -215,6 +215,68 @@ describe('Satellite > User Webauthn', () => {
 
 				expect(doc).toBeUndefined();
 			});
+		});
+	});
+
+	describe('Set', () => {
+		let user: SignIdentity;
+		let userPublicKey: Uint8Array;
+		let credentialId: string;
+
+		const createUser = async (user: Identity) => {
+			actor.setIdentity(user);
+
+			const { set_doc } = actor;
+
+			return await set_doc('#user', user.getPrincipal().toText(), {
+				data: await toArray({
+					provider: 'internet_identity'
+				}),
+				description: toNullable(),
+				version: toNullable()
+			});
+		};
+
+		beforeEach(async () => {
+			user = Ed25519KeyIdentity.generate();
+			actor.setIdentity(user);
+
+			userPublicKey = arrayBufferToUint8Array(user.getPublicKey().toDer());
+
+			credentialId = nanoid();
+
+			await createUser(user);
+			await createUserWebAuthn({ publicKey: userPublicKey, credentialId });
+		});
+
+		it('should delete user-webauthn on delete user', async () => {
+			const { del_doc } = actor;
+
+			await del_doc('#user', user.getPrincipal().toText(), {
+				version: [1n]
+			});
+
+			const { get_doc } = actor;
+
+			const doc = fromNullable(await get_doc('#user-webauthn', credentialId));
+
+			expect(doc).toBeUndefined();
+		});
+
+		it('should delete user-webauthn-index on delete user', async () => {
+			const { del_doc } = actor;
+
+			await del_doc('#user', user.getPrincipal().toText(), {
+				version: [1n]
+			});
+
+			actor.setIdentity(controller);
+
+			const { get_doc } = actor;
+
+			const doc = fromNullable(await get_doc('#user-webauthn-index', credentialId));
+
+			expect(doc).toBeUndefined();
 		});
 	});
 });

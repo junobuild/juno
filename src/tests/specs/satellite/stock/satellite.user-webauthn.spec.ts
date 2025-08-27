@@ -11,6 +11,7 @@ import {
 	toNullable
 } from '@dfinity/utils';
 import {
+	JUNO_DATASTORE_ERROR_USER_WEBAUTHN_AAGUID_INVALID_LENGTH,
 	JUNO_DATASTORE_ERROR_USER_WEBAUTHN_CALLER_KEY,
 	JUNO_DATASTORE_ERROR_USER_WEBAUTHN_CANNOT_UPDATE,
 	JUNO_DATASTORE_ERROR_USER_WEBAUTHN_INVALID_DATA
@@ -207,7 +208,7 @@ describe('Satellite > User Webauthn', () => {
 							version: toNullable()
 						})
 					).rejects.toThrow(
-						new RegExp(`juno.datastore.error.user.webauthn.aaguid_invalid_length`, 'i')
+						new RegExp(JUNO_DATASTORE_ERROR_USER_WEBAUTHN_AAGUID_INVALID_LENGTH, 'i')
 					);
 				});
 
@@ -226,7 +227,7 @@ describe('Satellite > User Webauthn', () => {
 							version: toNullable()
 						})
 					).rejects.toThrow(
-						new RegExp(`juno.datastore.error.user.webauthn.aaguid_invalid_length`, 'i')
+						new RegExp(JUNO_DATASTORE_ERROR_USER_WEBAUTHN_AAGUID_INVALID_LENGTH, 'i')
 					);
 				});
 			});

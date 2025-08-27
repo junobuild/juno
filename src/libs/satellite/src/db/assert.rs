@@ -7,8 +7,8 @@ use crate::errors::db::{JUNO_DATASTORE_ERROR_CANNOT_READ, JUNO_DATASTORE_ERROR_C
 use crate::hooks::db::{invoke_assert_delete_doc, invoke_assert_set_doc};
 use crate::types::store::{AssertContext, StoreContext};
 use crate::user::core::assert::{
-    assert_user_collection_caller_key, assert_user_collection_data, assert_user_is_not_banned,
-    assert_user_collection_write_permission,
+    assert_user_collection_caller_key, assert_user_collection_data,
+    assert_user_collection_write_permission, assert_user_is_not_banned,
 };
 use crate::user::usage::assert::{
     assert_user_usage_collection_data, increment_and_assert_db_usage,

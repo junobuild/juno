@@ -9,6 +9,7 @@ pub mod state {
     #[serde(rename_all = "camelCase", deny_unknown_fields)]
     pub struct UserWebAuthnData {
         pub public_key: DocDataUint8Array,
+        pub aaguid: Option<Vec<u8>>,
     }
 
     #[derive(Serialize, Deserialize)]

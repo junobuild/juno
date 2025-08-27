@@ -1,4 +1,5 @@
 use crate::errors::user::{
+    JUNO_DATASTORE_ERROR_USER_WEBAUTHN_AAGUID_INVALID_LENGTH,
     JUNO_DATASTORE_ERROR_USER_WEBAUTHN_CALLER_KEY,
     JUNO_DATASTORE_ERROR_USER_WEBAUTHN_CANNOT_UPDATE,
     JUNO_DATASTORE_ERROR_USER_WEBAUTHN_INVALID_DATA,
@@ -24,6 +25,14 @@ pub fn assert_user_webauthn_collection_data(
 
     let data = decode_doc_data::<UserWebAuthnData>(&doc.data)
         .map_err(|err| format!("{JUNO_DATASTORE_ERROR_USER_WEBAUTHN_INVALID_DATA}: {err}"))?;
+
+    if let Some(aaguid) = data.aaguid.as_ref() {
+        // The AAGUID (Authenticator Attestation GUID) must be exactly 16 bytes.
+        // For simplicity, no further validation is performed here; additional checks are deferred to the frontends for display only.
+        if aaguid.len() != 16 {
+            return Err(JUNO_DATASTORE_ERROR_USER_WEBAUTHN_AAGUID_INVALID_LENGTH.to_string());
+        }
+    }
 
     let public_key = Principal::self_authenticating(&data.public_key.value);
 

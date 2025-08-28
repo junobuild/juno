@@ -80,7 +80,7 @@ describe('Satellite > User', () => {
 				expect((data as { banned: boolean }).banned).toBeFalsy();
 			};
 
-			it.each([['internet_identity'], ['nfid'], ['web_authn']])(
+			it.each([['internet_identity'], ['nfid'], ['webauthn']])(
 				'should create a user for provider %s',
 				async (provider) => {
 					await assertCreateUser({ provider });
@@ -517,7 +517,7 @@ describe('Satellite > User', () => {
 				})
 			).rejects.toThrow(
 				new RegExp(
-					`${JUNO_DATASTORE_ERROR_USER_INVALID_DATA}: unknown variant \`unknown\`, expected one of \`internet_identity\`, \`nfid\`, \`web_authn\` at line 1 column 21.`,
+					`${JUNO_DATASTORE_ERROR_USER_INVALID_DATA}: unknown variant \`unknown\`, expected one of \`internet_identity\`, \`nfid\`, \`webauthn\` at line 1 column 21.`,
 					'i'
 				)
 			);

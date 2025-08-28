@@ -3,6 +3,7 @@
 mod api;
 mod assets;
 mod auth;
+mod certification;
 mod controllers;
 mod db;
 mod errors;
@@ -15,9 +16,9 @@ mod random;
 mod rules;
 mod sdk;
 mod types;
+mod upgrade;
 mod user;
 
-use crate::auth::types::config::AuthenticationConfig;
 use crate::db::types::config::DbConfig;
 use crate::guards::{
     caller_is_admin_controller, caller_is_controller, caller_is_controller_with_write,
@@ -26,6 +27,7 @@ use crate::types::interface::{Config, DeleteProposalAssets};
 use crate::types::state::CollectionType;
 use ic_cdk::api::trap;
 use ic_cdk_macros::{init, post_upgrade, pre_upgrade, query, update};
+use junobuild_auth::types::config::AuthenticationConfig;
 use junobuild_cdn::proposals::{
     CommitProposal, ListProposalResults, ListProposalsParams, Proposal, ProposalId, ProposalType,
     RejectProposal,
@@ -55,13 +57,17 @@ use junobuild_storage::types::interface::{
 };
 use junobuild_storage::types::state::FullPath;
 use memory::lifecycle;
+
 // ============================================================================================
 // These types are made available for use in Serverless Functions.
 // ============================================================================================
-use crate::auth::types::interface::SetAuthenticationConfig;
 use crate::db::types::interface::SetDbConfig;
+use junobuild_auth::types::interface::SetAuthenticationConfig;
 pub use sdk::core::*;
 pub use sdk::internal;
+// TODO: remove just for test
+pub use crate::api::auth::*;
+
 // ---------------------------------------------------------
 // Init and Upgrade
 // ---------------------------------------------------------

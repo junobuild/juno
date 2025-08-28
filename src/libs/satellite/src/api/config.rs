@@ -4,8 +4,6 @@ use crate::assets::storage::store::{
 use crate::auth::store::{
     get_config as get_auth_config_store, set_config as set_auth_config_store,
 };
-use crate::auth::types::config::AuthenticationConfig;
-use crate::auth::types::interface::SetAuthenticationConfig;
 use crate::db::store::{
     get_config_store as get_db_config_store, set_config_store as set_db_config_store,
 };
@@ -13,6 +11,8 @@ use crate::db::types::config::DbConfig;
 use crate::db::types::interface::SetDbConfig;
 use crate::types::interface::Config;
 use ic_cdk::trap;
+use junobuild_auth::types::config::AuthenticationConfig;
+use junobuild_auth::types::interface::SetAuthenticationConfig;
 use junobuild_storage::types::config::StorageConfig;
 use junobuild_storage::types::interface::SetStorageConfig;
 // ---------------------------------------------------------

@@ -2,7 +2,7 @@ use crate::constants::{WELL_KNOWN_CUSTOM_DOMAINS, WELL_KNOWN_II_ALTERNATIVE_ORIG
 use crate::runtime::{
     delete_certified_asset, update_certified_asset as update_runtime_certified_asset,
 };
-use crate::strategies::StorageStateStrategy;
+use crate::strategies::{StorageCertificateStrategy, StorageStateStrategy};
 use crate::types::store::Asset;
 use crate::well_known::utils::{map_alternative_origins_asset, map_custom_domains_asset};
 use junobuild_collections::constants::assets::DEFAULT_ASSETS_COLLECTIONS;
@@ -11,6 +11,7 @@ use junobuild_shared::types::core::DomainName;
 pub fn update_alternative_origins_asset(
     alternative_origins: &str,
     storage_state: &impl StorageStateStrategy,
+    certificate: &impl StorageCertificateStrategy,
 ) -> Result<(), String> {
     let full_path = WELL_KNOWN_II_ALTERNATIVE_ORIGINS.to_string();
 
@@ -18,19 +19,21 @@ pub fn update_alternative_origins_asset(
         &full_path,
         alternative_origins,
         storage_state,
+        certificate,
         &map_alternative_origins_asset,
     )
 }
 
 pub fn update_custom_domains_asset(
     storage_state: &impl StorageStateStrategy,
+    certificate: &impl StorageCertificateStrategy,
 ) -> Result<(), String> {
     let full_path = WELL_KNOWN_CUSTOM_DOMAINS.to_string();
 
     let custom_domains = storage_state.get_domains();
 
     if custom_domains.is_empty() {
-        return delete_asset(&full_path, storage_state);
+        return delete_asset(&full_path, storage_state, certificate);
     }
 
     let concat_custom_domains = custom_domains
@@ -42,22 +45,25 @@ pub fn update_custom_domains_asset(
         &full_path,
         &concat_custom_domains,
         storage_state,
+        certificate,
         &map_custom_domains_asset,
     )
 }
 
 pub fn delete_alternative_origins_asset(
     storage_state: &impl StorageStateStrategy,
+    certificate: &impl StorageCertificateStrategy,
 ) -> Result<(), String> {
     let full_path = WELL_KNOWN_II_ALTERNATIVE_ORIGINS.to_string();
 
-    delete_asset(&full_path, storage_state)
+    delete_asset(&full_path, storage_state, certificate)
 }
 
 fn update_asset(
     full_path: &String,
     content: &str,
     storage_state: &impl StorageStateStrategy,
+    certificate: &impl StorageCertificateStrategy,
     f: &dyn Fn(&str, Option<Asset>) -> Asset,
 ) -> Result<(), String> {
     let collection = DEFAULT_ASSETS_COLLECTIONS[0].0.to_string();
@@ -73,7 +79,7 @@ fn update_asset(
 
     let config = storage_state.get_config();
 
-    update_runtime_certified_asset(&asset, &config);
+    update_runtime_certified_asset(&asset, &config, certificate);
 
     Ok(())
 }
@@ -81,6 +87,7 @@ fn update_asset(
 fn delete_asset(
     full_path: &String,
     storage_state: &impl StorageStateStrategy,
+    certificate: &impl StorageCertificateStrategy,
 ) -> Result<(), String> {
     let collection = DEFAULT_ASSETS_COLLECTIONS[0].0.to_string();
 
@@ -90,7 +97,7 @@ fn delete_asset(
     let asset = storage_state.delete_asset(&collection, full_path, &rule);
 
     if let Some(asset) = asset {
-        delete_certified_asset(&asset);
+        delete_certified_asset(&asset, certificate);
     }
 
     Ok(())

@@ -1088,7 +1088,7 @@ dependencies = [
 
 [[package]]
 name = "junobuild-utils"
-version = "0.1.2"
+version = "0.1.3"
 dependencies = [
  "candid",
  "serde",
@@ -1701,6 +1701,8 @@ dependencies = [
  "ic-cdk",
  "junobuild-macros",
  "junobuild-satellite",
+ "junobuild-utils",
+ "serde",
 ]
 
 [[package]]

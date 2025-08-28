@@ -57,7 +57,7 @@ pub fn assert_user_collection_data(collection: &CollectionKey, doc: &SetDoc) -> 
     Ok(())
 }
 
-pub fn assert_user_write_permission(
+pub fn assert_user_collection_write_permission(
     caller: Principal,
     controllers: &Controllers,
     collection: &CollectionKey,

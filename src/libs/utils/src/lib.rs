@@ -5,7 +5,7 @@ mod serializers;
 use serde::{Deserialize, Serialize};
 use serde_json::{from_slice, to_string, to_vec};
 
-pub use crate::serializers::types::{DocDataBigInt, DocDataPrincipal};
+pub use crate::serializers::types::{DocDataBigInt, DocDataPrincipal, DocDataUint8Array};
 
 /// Decodes serialized document data into a Rust struct, tailored for use with Juno hooks.
 ///

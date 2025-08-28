@@ -40,6 +40,7 @@ pub mod config {
     pub struct AuthenticationConfig {
         pub internet_identity: Option<AuthenticationConfigInternetIdentity>,
         pub rules: Option<AuthenticationRules>,
+        pub enabled_providers: Option<Vec<AuthenticationProvider>>,
         pub version: Option<Version>,
         pub created_at: Option<Timestamp>,
         pub updated_at: Option<Timestamp>,
@@ -56,7 +57,7 @@ pub mod config {
         pub allowed_callers: Vec<Principal>,
     }
 
-    #[derive(Serialize, Deserialize)]
+    #[derive(CandidType, Serialize, Deserialize, Clone, PartialEq)]
     #[serde(rename_all = "snake_case")]
     pub enum AuthenticationProvider {
         InternetIdentity,
@@ -66,7 +67,9 @@ pub mod config {
 }
 
 pub mod interface {
-    use crate::types::config::{AuthenticationConfigInternetIdentity, AuthenticationRules};
+    use crate::types::config::{
+        AuthenticationConfigInternetIdentity, AuthenticationProvider, AuthenticationRules,
+    };
     use candid::{CandidType, Deserialize, Principal};
     use junobuild_shared::types::state::Version;
     use serde::Serialize;
@@ -76,6 +79,7 @@ pub mod interface {
     pub struct SetAuthenticationConfig {
         pub internet_identity: Option<AuthenticationConfigInternetIdentity>,
         pub rules: Option<AuthenticationRules>,
+        pub enabled_providers: Option<Vec<AuthenticationProvider>>,
         pub version: Option<Version>,
     }
 

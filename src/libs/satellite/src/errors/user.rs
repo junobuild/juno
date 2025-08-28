@@ -22,3 +22,6 @@ pub const JUNO_DATASTORE_ERROR_USER_WEBAUTHN_INVALID_DATA: &str =
 // Caller and public key must match. Only the user can create their webauthn entry.
 pub const JUNO_DATASTORE_ERROR_USER_WEBAUTHN_CALLER_KEY: &str =
     "juno.datastore.error.user.webauthn.caller_key";
+// The AAGUID (Authenticator Attestation GUID) must be exactly 16 bytes.
+pub const JUNO_DATASTORE_ERROR_USER_WEBAUTHN_AAGUID_INVALID_LENGTH: &str =
+    "juno.datastore.error.user.webauthn.aaguid_invalid_length";

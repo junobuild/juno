@@ -1,14 +1,14 @@
 use crate::errors::auth::{
     JUNO_AUTH_ERROR_PROVIDER_INTERNET_IDENTITY_NOT_ENABLED,
-    JUNO_AUTH_ERROR_PROVIDER_NFID_NOT_ENABLED, JUNO_AUTH_ERROR_PROVIDER_PASSKEY_NOT_ENABLED,
+    JUNO_AUTH_ERROR_PROVIDER_NFID_NOT_ENABLED, JUNO_AUTH_ERROR_PROVIDER_WEBAUTHN_NOT_ENABLED,
 };
 use junobuild_auth::types::config::{AuthenticationConfig, AuthenticationProvider};
 
 pub fn assert_passkey_enabled(config: &Option<AuthenticationConfig>) -> Result<(), String> {
     assert_built_in_provider_enabled(
         config,
-        &AuthenticationProvider::Passkey,
-        JUNO_AUTH_ERROR_PROVIDER_PASSKEY_NOT_ENABLED,
+        &AuthenticationProvider::WebAuthn,
+        JUNO_AUTH_ERROR_PROVIDER_WEBAUTHN_NOT_ENABLED,
     )
 }
 

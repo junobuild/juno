@@ -1,0 +1,172 @@
+import type { _SERVICE as TestSatelliteActor } from '$test-declarations/test_satellite/test_satellite.did';
+import type { Identity } from '@dfinity/agent';
+import type { Actor, PocketIc } from '@dfinity/pic';
+import { Principal } from '@dfinity/principal';
+import {
+	arrayOfNumberToUint8Array,
+	assertNonNullish,
+	fromNullable,
+	toNullable,
+	uint8ArraysEqual
+} from '@dfinity/utils';
+import { fromArray, toArray } from '@junobuild/utils';
+import { nanoid } from 'nanoid';
+import { mockPrincipal } from '../../../../frontend/tests/mocks/identity.mock';
+import { mockSetRule } from '../../../mocks/collection.mocks';
+import { setupTestSatellite } from '../../../utils/fixtures-tests.utils';
+import { fetchLogs } from '../../../utils/mgmt-tests.utils';
+import { waitServerlessFunction } from '../../../utils/satellite-extended-tests.utils';
+
+describe('Satellite > Utils', () => {
+	let pic: PocketIc;
+	let actor: Actor<TestSatelliteActor>;
+	let canisterId: Principal;
+	let controller: Identity;
+
+	const TEST_COLLECTION = 'test_utils';
+
+	beforeAll(async () => {
+		const { pic: p, actor: a, canisterId: cId, controller: c } = await setupTestSatellite();
+
+		pic = p;
+		actor = a;
+		canisterId = cId;
+		controller = c;
+
+		const { set_rule } = actor;
+		await set_rule({ Db: null }, TEST_COLLECTION, mockSetRule);
+	});
+
+	afterAll(async () => {
+		await pic?.tearDown();
+	});
+
+	const mockData = {
+		hello: 12367894n,
+		whoami: mockPrincipal,
+		arr: arrayOfNumberToUint8Array([1, 2, 3, 4, 5])
+	};
+
+	const createDoc = async (): Promise<string> => {
+		const key = nanoid();
+
+		const { set_doc } = actor;
+
+		const data = await toArray(mockData);
+
+		await set_doc(TEST_COLLECTION, key, {
+			data,
+			description: toNullable(),
+			version: toNullable()
+		});
+
+		return key;
+	};
+
+	const getDocData = async (key: string): Promise<typeof mockData> => {
+		const { get_doc } = actor;
+
+		const result = await get_doc(TEST_COLLECTION, key);
+
+		const doc = fromNullable(result);
+
+		assertNonNullish(doc);
+
+		return await fromArray(doc.data);
+	};
+
+	describe('BigInt', () => {
+		it('should deserialize', async () => {
+			await createDoc();
+
+			await waitServerlessFunction(pic);
+
+			const logs = await fetchLogs({
+				pic,
+				controller,
+				canisterId
+			});
+
+			const log = logs.find(([_, { message }]) => message === `BigInt decoded: ${mockData.hello}`);
+
+			expect(log).not.toBeUndefined();
+		});
+
+		it('should serialize', async () => {
+			const key = await createDoc();
+
+			await waitServerlessFunction(pic);
+
+			const data = await getDocData(key);
+
+			expect(data.hello).toEqual(mockData.hello + 1n);
+		});
+	});
+
+	describe('Principal', () => {
+		it('should deserialize', async () => {
+			await createDoc();
+
+			await waitServerlessFunction(pic);
+
+			const logs = await fetchLogs({
+				pic,
+				controller,
+				canisterId
+			});
+
+			const log = logs.find(
+				([_, { message }]) => message === `Principal decoded: ${mockData.whoami.toText()}`
+			);
+
+			expect(log).not.toBeUndefined();
+		});
+
+		it('should serialize', async () => {
+			const key = await createDoc();
+
+			await waitServerlessFunction(pic);
+
+			const data = await getDocData(key);
+
+			expect(data.whoami.toText()).not.toEqual(mockData.whoami.toText());
+			expect(Principal.anonymous().toText()).not.toEqual(mockData.whoami.toText());
+		});
+	});
+
+	describe('Uint8Array', () => {
+		it('should deserialize', async () => {
+			await createDoc();
+
+			await waitServerlessFunction(pic);
+
+			const logs = await fetchLogs({
+				pic,
+				controller,
+				canisterId
+			});
+
+			const log = logs.find(
+				([_, { message }]) =>
+					message === `Uint8Array decoded: [${Array.from(mockData.arr).join(', ')}]`
+			);
+
+			expect(log).not.toBeUndefined();
+		});
+
+		it('should serialize', async () => {
+			const key = await createDoc();
+
+			await waitServerlessFunction(pic);
+
+			const data = await getDocData(key);
+
+			expect(
+				uint8ArraysEqual({
+					a: arrayOfNumberToUint8Array([9, 8, 7, 6]),
+					b: data.arr
+				})
+			).toBeTruthy();
+		});
+	});
+});

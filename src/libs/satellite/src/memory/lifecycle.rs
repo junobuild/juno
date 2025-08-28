@@ -5,6 +5,7 @@ use crate::hooks::lifecycle::{
 use crate::memory::internal::{get_memory_for_upgrade, init_stable_state, STATE};
 use crate::memory::utils::init_storage_heap_state;
 use crate::random::init::defer_init_random_seed;
+use crate::rules::upgrade::init_user_webauthn_collections;
 use crate::types::state::{HeapState, RuntimeState, State};
 use ciborium::{from_reader, into_writer};
 use junobuild_shared::controllers::init_admin_controllers;
@@ -57,4 +58,7 @@ pub fn post_upgrade() {
     invoke_on_post_upgrade_sync();
 
     invoke_on_post_upgrade();
+
+    // TODO: to be removed - one time upgrade!
+    init_user_webauthn_collections();
 }

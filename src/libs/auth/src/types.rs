@@ -61,6 +61,7 @@ pub mod config {
     pub enum AuthenticationProvider {
         InternetIdentity,
         Nfid,
+        WebAuthn,
     }
 }
 

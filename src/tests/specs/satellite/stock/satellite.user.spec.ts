@@ -3,7 +3,7 @@ import { idlFactory as idlFactorSatellite } from '$declarations/satellite/satell
 import { AnonymousIdentity, type Identity } from '@dfinity/agent';
 import { Ed25519KeyIdentity } from '@dfinity/identity';
 import { type Actor, PocketIc } from '@dfinity/pic';
-import { fromNullable, toNullable } from '@dfinity/utils';
+import { assertNonNullish, fromNullable, toNullable } from '@dfinity/utils';
 import {
 	JUNO_DATASTORE_ERROR_CANNOT_WRITE,
 	JUNO_DATASTORE_ERROR_USER_CALLER_KEY,
@@ -12,7 +12,7 @@ import {
 	JUNO_DATASTORE_ERROR_USER_KEY_NO_PRINCIPAL,
 	JUNO_DATASTORE_ERROR_USER_NOT_ALLOWED
 } from '@junobuild/errors';
-import { toArray } from '@junobuild/utils';
+import { fromArray, toArray } from '@junobuild/utils';
 import { inject } from 'vitest';
 import { controllersInitArgs, SATELLITE_WASM_PATH } from '../../../utils/setup-tests.utils';
 
@@ -48,12 +48,12 @@ describe('Satellite > User', () => {
 				actor.setIdentity(user);
 			});
 
-			it('should create a user', async () => {
+			const assertCreateUser = async ({ provider }: { provider: string }) => {
 				const { set_doc, list_docs } = actor;
 
 				await set_doc('#user', user.getPrincipal().toText(), {
 					data: await toArray({
-						provider: 'internet_identity'
+						provider
 					}),
 					description: toNullable(),
 					version: toNullable()
@@ -67,8 +67,25 @@ describe('Satellite > User', () => {
 				});
 
 				expect(users).toHaveLength(1);
-				expect(users.find(([key]) => key === user.getPrincipal().toText())).not.toBeUndefined();
-			});
+
+				const updatedUser = users.find(([key]) => key === user.getPrincipal().toText());
+				assertNonNullish(updatedUser);
+
+				const [key, doc] = updatedUser;
+
+				const data = await fromArray(doc.data);
+
+				expect(key).toEqual(user.getPrincipal().toText());
+				expect((data as { provider: string }).provider).toEqual(provider);
+				expect((data as { banned: boolean }).banned).toBeFalsy();
+			};
+
+			it.each([['internet_identity'], ['nfid'], ['web_authn']])(
+				'should create a user for provider %s',
+				async (provider) => {
+					await assertCreateUser({ provider });
+				}
+			);
 
 			it('should create a user without provider because this is optional', async () => {
 				const { set_doc } = actor;
@@ -500,7 +517,7 @@ describe('Satellite > User', () => {
 				})
 			).rejects.toThrow(
 				new RegExp(
-					`${JUNO_DATASTORE_ERROR_USER_INVALID_DATA}: unknown variant \`unknown\`, expected \`internet_identity\` or \`nfid\` at line 1 column 21.`,
+					`${JUNO_DATASTORE_ERROR_USER_INVALID_DATA}: unknown variant \`unknown\`, expected one of \`internet_identity\`, \`nfid\`, \`web_authn\` at line 1 column 21.`,
 					'i'
 				)
 			);

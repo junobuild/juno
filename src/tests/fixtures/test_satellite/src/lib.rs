@@ -1,16 +1,65 @@
 #![allow(clippy::disallowed_methods)]
 
+use candid::Principal;
 use ic_cdk::update;
 use junobuild_macros::{
     on_delete_doc, on_init_random_seed, on_init_sync, on_post_upgrade_sync, on_set_doc,
 };
 use junobuild_satellite::{
-    error, include_satellite, info, random, warn_with_data, OnDeleteDocContext, OnSetDocContext,
+    error, id, include_satellite, info, random, set_doc_store, warn_with_data, OnDeleteDocContext,
+    OnSetDocContext, SetDoc,
 };
+use junobuild_utils::{
+    decode_doc_data, encode_doc_data, DocDataBigInt, DocDataPrincipal, DocDataUint8Array,
+};
+use serde::{Deserialize, Serialize};
+
+#[derive(Serialize, Deserialize)]
+struct MockData {
+    hello: DocDataBigInt,
+    whoami: DocDataPrincipal,
+    arr: DocDataUint8Array,
+}
 
 #[on_set_doc]
-fn on_set_doc(_context: OnSetDocContext) -> Result<(), String> {
+fn on_set_doc(context: OnSetDocContext) -> Result<(), String> {
     info("Hello world".to_string())?;
+
+    match context.data.collection.as_str() {
+        "test_utils" => {
+            let data = decode_doc_data::<MockData>(&context.data.data.after.data)?;
+
+            ic_cdk::print(format!("BigInt decoded: {}", data.hello.value));
+            ic_cdk::print(format!(
+                "Principal decoded: {}",
+                data.whoami.value.to_text()
+            ));
+            ic_cdk::print(format!("Uint8Array decoded: {:?}", data.arr.value));
+
+            let hello_update = data.hello.value.saturating_add(1);
+
+            let update_data = MockData {
+                hello: DocDataBigInt {
+                    value: hello_update,
+                },
+                whoami: DocDataPrincipal {
+                    value: Principal::anonymous(),
+                },
+                arr: DocDataUint8Array {
+                    value: vec![9, 8, 7, 6],
+                },
+            };
+
+            let doc: SetDoc = SetDoc {
+                data: encode_doc_data(&update_data)?,
+                description: None,
+                version: context.data.data.after.version.clone(),
+            };
+
+            let _ = set_doc_store(id(), "test_utils".to_string(), context.data.key, doc)?;
+        }
+        _ => (),
+    }
 
     Ok(())
 }

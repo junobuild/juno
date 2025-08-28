@@ -17,21 +17,33 @@ pub fn prepare_delegation(
     args: &PrepareDelegationArgs,
     certificate: &impl AuthCertificateStrategy,
 ) -> Result<PrepareDelegationResponse, String> {
-    let expiration = time().saturating_add(DEFAULT_EXPIRATION_PERIOD_NS);
-    let seed = calculate_seed(&args.anchor_id, &args.frontend, &certificate.salt())?;
+    match args {
+        PrepareDelegationArgs::OpenId(openid_args) => openid_prepare_delegation(openid_args, certificate),
+        _ => Err(format!("{} is not supported to prepare a delegation", args)),
+    }
+}
 
-    mutate_state(|state| {
-        add_delegation_signature(state, &args.session_key, seed.as_ref(), expiration);
-    });
+fn openid_prepare_delegation(
+    args: &OpenIdPrepareDelegationArgs,
+    certificate: &impl AuthCertificateStrategy,
+) -> Result<PrepareDelegationResponse, String> {
+    // let expiration = time().saturating_add(DEFAULT_EXPIRATION_PERIOD_NS);
+    // let seed = calculate_seed(&args.anchor_id, &args.frontend, &certificate.salt())?;
+    //
+    // mutate_state(|state| {
+    //     add_delegation_signature(state, &args.session_key, seed.as_ref(), expiration);
+    // });
+    //
+    // certificate.update_certified_data();
+    //
+    // let delegation = (
+    //     ByteBuf::from(der_encode_canister_sig_key(seed.to_vec())),
+    //     expiration,
+    // );
+    //
+    // Ok(delegation)
 
-    certificate.update_certified_data();
-
-    let delegation = (
-        ByteBuf::from(der_encode_canister_sig_key(seed.to_vec())),
-        expiration,
-    );
-
-    Ok(delegation)
+    Err("TODO".to_string())
 }
 
 fn add_delegation_signature(

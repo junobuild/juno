@@ -80,19 +80,39 @@ pub mod interface {
     }
 
     #[derive(CandidType, Deserialize)]
-    pub struct PrepareDelegationArgs {
-        pub anchor_id: String, // instead of anchor_number
-        pub session_key: SessionKey,
-        pub frontend: FrontendHostname,
-        // TODO: max_time_to_live opt<u64>
+    #[serde(rename_all = "snake_case")]
+    pub enum GetDelegationArgs {
+        OpenId(OpenIdGetDelegationArgs),
     }
 
     #[derive(CandidType, Deserialize)]
-    pub struct GetDelegationArgs {
-        pub anchor_id: String, // instead of anchor_number
+    #[serde(rename_all = "snake_case")]
+    pub enum PrepareDelegationArgs {
+        OpenId(OpenIdPrepareDelegationArgs),
+    }
+
+    #[derive(CandidType, Deserialize)]
+    pub struct OpenIdGetDelegationArgs {
+        pub provider: OpenIdProvider,
+        pub jwt: String,
+        pub salt: [u8; 32],
         pub session_key: SessionKey,
-        pub frontend: FrontendHostname,
         pub expiration: Timestamp,
+    }
+
+    #[derive(CandidType, Deserialize)]
+    pub struct OpenIdPrepareDelegationArgs {
+        pub provider: OpenIdProvider,
+        pub jwt: String,
+        pub salt: [u8; 32],
+        pub session_key: SessionKey,
+        pub max_time_to_live: Option<u64>,
+    }
+
+    #[derive(Serialize, Deserialize)]
+    #[serde(rename_all = "snake_case")]
+    pub enum OpenIdProvider {
+        Google,
     }
 
     pub type UserKey = PublicKey;

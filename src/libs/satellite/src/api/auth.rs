@@ -9,6 +9,6 @@ pub fn prepare_delegation(args: &PrepareDelegationArgs) -> PrepareDelegationResp
     delegation::prepare_delegation(args, &AuthCertificate).unwrap_or_else(|e| trap(&e))
 }
 
-pub fn get_delegation(args: &GetDelegationArgs) -> GetDelegationResponse {
+pub fn openid_get_delegation(args: &GetDelegationArgs) -> GetDelegationResponse {
     delegation::get_delegation(args, &AuthCertificate).unwrap_or_else(|e| trap(&e))
 }

@@ -22,5 +22,6 @@ serde.workspace = true
 serde_bytes.workspace = true
 ic-certification.workspace = true
 ic-canister-sig-creation = "1.3.0"
+identity_jose = { git = "https://github.com/dfinity/identity.rs.git", rev = "aa510ef7f441848d6c78058fe51ad4ad1d9bd5d8", default-features = false }
 sha2.workspace = true
 junobuild-shared = "0.2.2"

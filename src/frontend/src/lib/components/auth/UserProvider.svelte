@@ -1,8 +1,8 @@
 <script lang="ts">
 	import IconIc from '$lib/components/icons/IconIC.svelte';
 	import IconNFID from '$lib/components/icons/IconNFID.svelte';
-	import type { User } from '$lib/types/user';
 	import IconPasskey from '$lib/components/icons/IconPasskey.svelte';
+	import type { User } from '$lib/types/user';
 
 	interface Props {
 		user: User;
@@ -19,12 +19,12 @@
 </script>
 
 {#if provider === 'internet_identity'}
-	<IconIc title="Internet Identity" {size} />{#if withText}
+	<IconIc {size} title="Internet Identity" />{#if withText}
 		<span>Internet Identity</span>{/if}
 {:else if provider === 'nfid'}
-	<IconNFID withTitle {size} />{#if withText}
+	<IconNFID {size} withTitle />{#if withText}
 		<span>NFID</span>{/if}
 {:else if provider === 'webauthn'}
-	<IconPasskey withTitle {size} />{#if withText}
+	<IconPasskey {size} withTitle />{#if withText}
 		<span>Passkey</span>{/if}
 {/if}

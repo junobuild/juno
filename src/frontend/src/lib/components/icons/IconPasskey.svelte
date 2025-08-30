@@ -9,11 +9,11 @@
 </script>
 
 <svg
-	xmlns="http://www.w3.org/2000/svg"
+	fill="currentColor"
 	height={size}
 	viewBox="0 -960 960 960"
 	width={size}
-	fill="currentColor"
+	xmlns="http://www.w3.org/2000/svg"
 >
 	{#if withTitle}
 		<title>Passkey</title>

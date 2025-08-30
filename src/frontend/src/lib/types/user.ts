@@ -1,6 +1,6 @@
 import type { Doc } from '$declarations/satellite/satellite.did';
 
-export type Provider = 'internet_identity' | 'nfid';
+export type Provider = 'internet_identity' | 'nfid' | 'webauthn';
 
 export interface UserData {
 	provider?: Provider;

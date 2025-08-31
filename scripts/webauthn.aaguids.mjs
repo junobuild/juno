@@ -13,13 +13,13 @@ const data = await downloadFromURL({
 		'Accept-Encoding': 'identity'
 	}
 });
-const json = data.toString('utf-8');
+const json = JSON.parse(data.toString('utf-8'));
 
 const STATIC_DEST_FOLDER = join(process.cwd(), 'src/frontend/static/aaguids');
 const ENV_DEST_FOLDER = join(process.cwd(), 'src/frontend/src/lib/env');
 
-const saveIcon = async ({ aaguid, theme, base64 }) => {
-	const svg = atob(base64.replace(/data:image\/svg\+xml;base64,/, ''));
+const saveIcon = async ({ aaguid, theme, base64Svg }) => {
+	const svg = atob((base64Svg ?? "").replace(/data:image\/svg\+xml;base64,/, ''));
 
 	const dest = join(STATIC_DEST_FOLDER, `${aaguid}-${theme}.svg`);
 
@@ -30,8 +30,8 @@ const saveIcons = async ({ aaguid, value }) => {
 	const { icon_dark, icon_light } = value;
 
 	await Promise.all([
-		saveIcon({ aaguid, theme: 'dark', base64: icon_dark }),
-		saveIcon({ aaguid, theme: 'light', base64: icon_light })
+		saveIcon({ aaguid, theme: 'dark', base64Svg: icon_dark }),
+		saveIcon({ aaguid, theme: 'light', base64Svg: icon_light })
 	]);
 };
 
@@ -41,8 +41,7 @@ await Promise.all(entries.map(([key, value]) => saveIcons({ aaguid: key, value }
 
 const destJson = join(ENV_DEST_FOLDER, 'aaguids.json');
 const cleanJson = entries.reduce(
-	(acc,
-	([key, value]) => {
+	((acc, [key, value]) => {
 		const { name } = value;
 
 		return {

@@ -19,7 +19,7 @@
 			"running": 57232
 		},
 		"nodes": {
-			"up": 12,
+			"up": 13,
 			"total": 13
 		}
 	},
@@ -329,7 +329,7 @@
 		"type": "application",
 		"canisters": {
 			"stopped": 620,
-			"running": 25008
+			"running": 25009
 		},
 		"nodes": {
 			"up": 13,

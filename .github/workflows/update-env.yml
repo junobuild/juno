@@ -44,7 +44,7 @@ jobs:
 
       - name: Check for Changes
         run: |
-          if ! git diff --quiet; then
+          if [ -n "$(git status --porcelain)" ]; then
             echo "CHANGES_DETECTED=true" >> $GITHUB_ENV
           fi
 
@@ -53,7 +53,7 @@ jobs:
         if: env.CHANGES_DETECTED == 'true'
         uses: ./.github/actions/create-pr
         with:
-          branch: bot-cmc-subnets-update
+          branch: bot-passkey-aaguids-update
           title: 'feat(frontend): Update Passkey AAGUIDs'
           body: |
             Modifications have been made to the list known passkey provider AAGUIDs.

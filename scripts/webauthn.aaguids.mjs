@@ -1,0 +1,55 @@
+#!/usr/bin/env node
+
+import { downloadFromURL } from '@junobuild/cli-tools';
+import { writeFile } from 'node:fs/promises';
+import { join } from 'node:path';
+
+const AAGUIDS_JSON_FILE = '/passkeydeveloper/passkey-authenticator-aaguids/refs/heads/main/aaguid.json';
+
+const data = await downloadFromURL({
+	hostname: 'raw.githubusercontent.com',
+	path: AAGUIDS_JSON_FILE,
+	headers: {
+		'Accept-Encoding': 'identity'
+	}
+});
+const json = data.toString('utf-8');
+
+const STATIC_DEST_FOLDER = join(process.cwd(), 'src/frontend/static/aaguids');
+const ENV_DEST_FOLDER = join(process.cwd(), 'src/frontend/src/lib/env');
+
+const saveIcon = async ({ aaguid, theme, base64 }) => {
+	const svg = atob(base64.replace(/data:image\/svg\+xml;base64,/, ''));
+
+	const dest = join(STATIC_DEST_FOLDER, `${aaguid}-${theme}.svg`);
+
+	await writeFile(dest, svg, 'utf-8');
+};
+
+const saveIcons = async ({ aaguid, value }) => {
+	const { icon_dark, icon_light } = value;
+
+	await Promise.all([
+		saveIcon({ aaguid, theme: 'dark', base64: icon_dark }),
+		saveIcon({ aaguid, theme: 'light', base64: icon_light })
+	]);
+};
+
+const entries = Object.entries(json);
+
+await Promise.all(entries.map(([key, value]) => saveIcons({ aaguid: key, value })));
+
+const destJson = join(ENV_DEST_FOLDER, 'aaguids.json');
+const cleanJson = entries.reduce(
+	(acc,
+	([key, value]) => {
+		const { name } = value;
+
+		return {
+			...acc,
+			[key]: name
+		};
+	}),
+	{}
+);
+await writeFile(destJson, JSON.stringify(cleanJson, null, 2), 'utf-8');

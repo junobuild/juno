@@ -13,6 +13,8 @@
 	import { i18n } from '$lib/stores/i18n.store';
 	import { emit } from '$lib/utils/events.utils';
 	import { i18nFormat } from '$lib/utils/i18n.utils';
+	import { versionStore } from '$lib/stores/version.store';
+	import { untrack } from 'svelte';
 
 	interface Props {
 		satellite: Satellite;
@@ -63,7 +65,11 @@
 	};
 
 	$effect(() => {
-		load();
+		$versionStore;
+
+		untrack(() => {
+			load();
+		});
 	});
 
 	$effect(() => {

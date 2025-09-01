@@ -27,12 +27,13 @@ pub mod state {
     #[derive(Serialize, Deserialize)]
     #[serde(rename_all = "snake_case")]
     pub enum ProviderData {
+        #[serde(rename = "webauthn")]
         WebAuthn(WebAuthnData),
     }
 
     #[derive(Serialize, Deserialize)]
     #[serde(rename_all = "camelCase", deny_unknown_fields)]
     pub struct WebAuthnData {
-        pub aaguid: Option<[u8; 16]>,
+        pub aaguid: Option<Vec<u8>>,
     }
 }

@@ -7,6 +7,13 @@ pub const JUNO_DATASTORE_ERROR_USER_KEY_NO_PRINCIPAL: &str =
     "juno.datastore.error.user.key_no_principal";
 // Banned
 pub const JUNO_DATASTORE_ERROR_USER_NOT_ALLOWED: &str = "juno.datastore.error.user.not_allowed";
+// The AAGUID (Authenticator Attestation GUID) must be exactly 16 bytes.
+pub const JUNO_DATASTORE_ERROR_USER_AAGUID_INVALID_LENGTH: &str =
+    "juno.datastore.error.user.webauthn.aaguid_invalid_length";
+pub const JUNO_DATASTORE_ERROR_USER_PROVIDER_INVALID_DATA: &str =
+    "juno.datastore.error.user.webauthn.provider_invalid_data";
+pub const JUNO_DATASTORE_ERROR_USER_PROVIDER_WEBAUTHN_INVALID_DATA: &str =
+    "juno.datastore.error.user.webauthn.provider_webauthn_invalid_data";
 
 // Change limit reached.
 pub const JUNO_DATASTORE_ERROR_USER_USAGE_CHANGE_LIMIT_REACHED: &str =
@@ -22,6 +29,3 @@ pub const JUNO_DATASTORE_ERROR_USER_WEBAUTHN_INVALID_DATA: &str =
 // Caller and public key must match. Only the user can create their webauthn entry.
 pub const JUNO_DATASTORE_ERROR_USER_WEBAUTHN_CALLER_KEY: &str =
     "juno.datastore.error.user.webauthn.caller_key";
-// The AAGUID (Authenticator Attestation GUID) must be exactly 16 bytes.
-pub const JUNO_DATASTORE_ERROR_USER_WEBAUTHN_AAGUID_INVALID_LENGTH: &str =
-    "juno.datastore.error.user.webauthn.aaguid_invalid_length";

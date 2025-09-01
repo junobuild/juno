@@ -3,6 +3,7 @@
 	import IconNFID from '$lib/components/icons/IconNFID.svelte';
 	import ExternalLink from '$lib/components/ui/ExternalLink.svelte';
 	import { i18n } from '$lib/stores/i18n.store';
+	import IconPasskey from '$lib/components/icons/IconPasskey.svelte';
 </script>
 
 <div class="table-container">
@@ -16,20 +17,17 @@
 
 		<tbody>
 			<tr>
-				<td
-					><ExternalLink arrow={false} href="https://internetcomputer.org/internet-identity"
-						><span class="icon"><IconIc /></span> Internet Identity</ExternalLink
-					></td
-				>
+				<td><span class="provider"><IconIc /> Internet Identity</span></td>
 				<td class="status">{$i18n.core.enabled}</td>
 			</tr>
 
 			<tr>
-				<td
-					><ExternalLink arrow={false} href="https://nfid.one/"
-						><span class="icon"><IconNFID /></span> NFID</ExternalLink
-					></td
-				>
+				<td><span class="provider"><IconNFID /> NFID</span></td>
+				<td class="status">{$i18n.core.enabled}</td>
+			</tr>
+
+			<tr>
+				<td><span class="provider"><IconPasskey /> Passkey</span></td>
 				<td class="status">{$i18n.core.enabled}</td>
 			</tr>
 		</tbody>
@@ -56,8 +54,10 @@
 		padding-bottom: var(--padding-1_5x);
 	}
 
-	.icon {
-		margin: 0 var(--padding) 0 0;
+	.provider {
+		display: flex;
+		align-items: center;
+		gap: var(--padding-1_5x);
 	}
 
 	.table-container {

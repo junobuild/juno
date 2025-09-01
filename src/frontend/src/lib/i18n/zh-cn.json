@@ -766,6 +766,8 @@
 		"user_details": "用户详细信息",
 		"identifier": "身份",
 		"provider": "提供者",
+		"authenticator": "Authenticator",
+		"authenticator_logo": "Logo of the authenticator, if available",
 		"empty": "目前还有注册的用户.",
 		"view_details": "查看用户详细信息",
 		"persistence": "永久存储",

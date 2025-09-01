@@ -790,6 +790,8 @@ interface I18nUsers {
 	user_details: string;
 	identifier: string;
 	provider: string;
+	authenticator: string;
+	authenticator_logo: string;
 	empty: string;
 	view_details: string;
 	persistence: string;

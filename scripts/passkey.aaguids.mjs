@@ -4,6 +4,7 @@ import { notEmptyString } from '@dfinity/utils';
 import { downloadFromURL } from '@junobuild/cli-tools';
 import { writeFile } from 'node:fs/promises';
 import { join } from 'node:path';
+import { PasskeyAaguidsSourceSchema } from './passkey.aaguids.schema.mjs';
 
 const AAGUIDS_JSON_FILE =
 	'/passkeydeveloper/passkey-authenticator-aaguids/refs/heads/main/aaguid.json';
@@ -15,7 +16,10 @@ const data = await downloadFromURL({
 		'Accept-Encoding': 'identity'
 	}
 });
+
 const json = JSON.parse(data.toString('utf-8'));
+
+await PasskeyAaguidsSourceSchema.parse(json);
 
 const STATIC_DEST_FOLDER = join(process.cwd(), 'src/frontend/static/aaguids');
 const ENV_DEST_FOLDER = join(process.cwd(), 'src/frontend/src/lib/env');

@@ -766,6 +766,8 @@
 		"user_details": "User's details",
 		"identifier": "Identifier",
 		"provider": "Provider",
+		"authenticator": "Authenticator",
+		"authenticator_logo": "Logo of the authenticator, if available",
 		"empty": "No registered users at the moment.",
 		"view_details": "View user details",
 		"persistence": "Persistence",

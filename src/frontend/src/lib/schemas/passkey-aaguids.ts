@@ -2,12 +2,15 @@ import * as z from 'zod/v4';
 
 const AaguidSchema = z
 	.string()
-	.regex(/^(.{8})(.{4})(.{4})(.{4})(.{12})$/, 'Invalid AAGUID format');
+	.regex(
+		/^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$/,
+		'Invalid AAGUID format'
+	);
 
-const PasskeyAaguidSchema = z.strictObject({
-	name: z.string(),
-	icon_dark: z.base64().optional(),
-	icon_light: z.base64().optional()
-});
+export type Aaguid = z.infer<typeof AaguidSchema>;
 
-export const PasskeyAaguidsSchema = z.record(AaguidSchema, PasskeyAaguidSchema);
+const AaguidNameSchema = z.string();
+
+export type AaguidName = z.infer<typeof AaguidNameSchema>;
+
+export const PasskeyAaguidsSchema = z.record(AaguidSchema, AaguidNameSchema);

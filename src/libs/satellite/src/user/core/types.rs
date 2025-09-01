@@ -2,7 +2,7 @@ pub mod state {
     use serde::{Deserialize, Serialize};
 
     #[derive(Serialize, Deserialize)]
-    #[serde(deny_unknown_fields)]
+    #[serde(deny_unknown_fields, rename_all = "camelCase")]
     pub struct UserData {
         pub provider: Option<AuthProvider>,
         pub banned: Option<BannedReason>,
@@ -31,7 +31,7 @@ pub mod state {
     }
 
     #[derive(Serialize, Deserialize)]
-    #[serde(rename_all = "snake_case", deny_unknown_fields)]
+    #[serde(rename_all = "camelCase", deny_unknown_fields)]
     pub struct WebAuthnData {
         pub aaguid: Option<[u8; 16]>,
     }

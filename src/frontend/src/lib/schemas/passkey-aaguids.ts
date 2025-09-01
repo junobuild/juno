@@ -1,6 +1,6 @@
 import * as z from 'zod/v4';
 
-export const AaguidSchema = z
+const AaguidSchema = z
 	.string()
 	.regex(/^(.{8})(.{4})(.{4})(.{4})(.{12})$/, 'Invalid AAGUID format');
 
@@ -10,4 +10,4 @@ const PasskeyAaguidSchema = z.strictObject({
 	icon_light: z.base64().optional()
 });
 
-const PasskeyAaguidsSchema = z.record(AaguidSchema, PasskeyAaguidSchema);
+export const PasskeyAaguidsSchema = z.record(AaguidSchema, PasskeyAaguidSchema);

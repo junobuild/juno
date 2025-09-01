@@ -33,6 +33,13 @@
 				{/snippet}
 				<Identifier identifier={owner.toText()} small={false} />
 			</Value>
+
+			<Value>
+				{#snippet label()}
+					{$i18n.users.status}
+				{/snippet}
+				<p><UserStatus {user} /></p>
+			</Value>
 		</div>
 
 		<div class="details">
@@ -43,13 +50,6 @@
 							{$i18n.users.provider}
 						{/snippet}
 						<p class="provider"><UserProvider {user} withText /></p>
-					</Value>
-
-					<Value>
-						{#snippet label()}
-							{$i18n.users.status}
-						{/snippet}
-						<p><UserStatus {user} /></p>
 					</Value>
 				</div>
 

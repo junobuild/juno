@@ -63,8 +63,8 @@
 		"subnetId": "io67a-2jmkw-zup3h-snbwi-g6a5n-rm5dn-b6png-lvdpl-nqnto-yih6l-gqe",
 		"type": "application",
 		"canisters": {
-			"stopped": 1879,
-			"running": 1406
+			"stopped": 1887,
+			"running": 1404
 		},
 		"nodes": {
 			"up": 12,
@@ -76,7 +76,7 @@
 		"type": "application",
 		"canisters": {
 			"stopped": 9,
-			"running": 11584
+			"running": 11587
 		},
 		"nodes": {
 			"up": 12,
@@ -112,7 +112,7 @@
 		"type": "application",
 		"canisters": {
 			"stopped": 4,
-			"running": 57096
+			"running": 57102
 		},
 		"nodes": {
 			"up": 12,
@@ -124,7 +124,7 @@
 		"type": "application",
 		"canisters": {
 			"stopped": 50,
-			"running": 12892
+			"running": 12893
 		},
 		"nodes": {
 			"up": 12,
@@ -159,8 +159,8 @@
 		"subnetId": "snjp4-xlbw4-mnbog-ddwy6-6ckfd-2w5a2-eipqo-7l436-pxqkh-l6fuv-vae",
 		"type": "application",
 		"canisters": {
-			"stopped": 884,
-			"running": 2405
+			"stopped": 899,
+			"running": 2393
 		},
 		"nodes": {
 			"up": 11,
@@ -171,8 +171,8 @@
 		"subnetId": "shefu-t3kr5-t5q3w-mqmdq-jabyv-vyvtf-cyyey-3kmo4-toyln-emubw-4qe",
 		"type": "application",
 		"canisters": {
-			"stopped": 2041,
-			"running": 1246
+			"stopped": 2073,
+			"running": 1220
 		},
 		"nodes": {
 			"up": 13,
@@ -183,8 +183,8 @@
 		"subnetId": "csyj4-zmann-ys6ge-3kzi6-onexi-obayx-2fvak-zersm-euci4-6pslt-lae",
 		"type": "application",
 		"canisters": {
-			"stopped": 1222,
-			"running": 2064
+			"stopped": 1221,
+			"running": 2071
 		},
 		"nodes": {
 			"up": 12,
@@ -207,8 +207,8 @@
 		"subnetId": "w4asl-4nmyj-qnr7c-6cqq4-tkwmt-o26di-iupkq-vx4kt-asbrx-jzuxh-4ae",
 		"type": "application",
 		"canisters": {
-			"stopped": 1789,
-			"running": 1499
+			"stopped": 1829,
+			"running": 1464
 		},
 		"nodes": {
 			"up": 12,
@@ -279,8 +279,8 @@
 		"subnetId": "qxesv-zoxpm-vc64m-zxguk-5sj74-35vrb-tbgwg-pcird-5gr26-62oxl-cae",
 		"type": "application",
 		"canisters": {
-			"stopped": 2447,
-			"running": 841
+			"stopped": 2485,
+			"running": 809
 		},
 		"nodes": {
 			"up": 13,
@@ -291,8 +291,8 @@
 		"subnetId": "4utr6-xo2fz-v7fsb-t3wsg-k7sfl-cj2ba-ghdnd-kcrfo-xavdb-ebean-mqe",
 		"type": "application",
 		"canisters": {
-			"stopped": 2317,
-			"running": 972
+			"stopped": 2344,
+			"running": 951
 		},
 		"nodes": {
 			"up": 13,
@@ -345,7 +345,7 @@
 			"running": 3327
 		},
 		"nodes": {
-			"up": 33,
+			"up": 32,
 			"total": 34
 		}
 	}

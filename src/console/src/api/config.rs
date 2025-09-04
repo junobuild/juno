@@ -1,5 +1,5 @@
 use crate::cdn::strategies_impls::cdn::CdnHeap;
-use crate::cdn::strategies_impls::storage::StorageState;
+use crate::cdn::strategies_impls::storage::{StorageCertificate, StorageState};
 use crate::guards::caller_is_admin_controller;
 use crate::types::interface::Config;
 use ic_cdk::trap;
@@ -23,7 +23,7 @@ pub fn get_config() -> Config {
 
 #[update(guard = "caller_is_admin_controller")]
 pub fn set_storage_config(config: SetStorageConfig) -> StorageConfig {
-    junobuild_cdn::storage::set_config_store(&CdnHeap, &StorageState, &config)
+    junobuild_cdn::storage::set_config_store(&CdnHeap, &StorageState, &StorageCertificate, &config)
         .unwrap_or_else(|e| trap(&e))
 }
 

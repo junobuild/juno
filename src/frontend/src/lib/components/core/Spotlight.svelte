@@ -1,21 +1,19 @@
 <script lang="ts">
-	import Modal from '$lib/components/ui/Modal.svelte';
-	import { fade } from 'svelte/transition';
-	import Popover from '$lib/components/ui/Popover.svelte';
-	import Input from '$lib/components/ui/Input.svelte';
-	import { i18n } from '$lib/stores/i18n.store';
-	import Value from '$lib/components/ui/Value.svelte';
-	import IconRocket from '$lib/components/icons/IconRocket.svelte';
-	import { spotlightItems } from '$lib/derived/spotlight.derived';
-	import type { SpotlightItems } from '$lib/types/spotlight';
-	import Collapsible from '$lib/components/ui/Collapsible.svelte';
 	import { isNullish, nonNullish } from '@dfinity/utils';
-	import { NodeType } from '@dfinity/agent';
+	import Input from '$lib/components/ui/Input.svelte';
+	import Popover from '$lib/components/ui/Popover.svelte';
+	import Value from '$lib/components/ui/Value.svelte';
+	import { spotlightItems } from '$lib/derived/spotlight.derived';
+	import { i18n } from '$lib/stores/i18n.store';
+	import {authSignedIn} from "$lib/derived/auth.derived";
 
 	let visible = $state(false);
 	let searchFilter = $state('');
 
-	const onclose = () => (visible = false);
+	const onclose = () => {
+		visible = false;
+		searchFilter = "";
+	};
 
 	const selectItem = (dir: 'up' | 'down') => {
 		if (isNullish(itemsRef)) {
@@ -23,7 +21,7 @@
 		}
 
 		// a
-		const activeElement = document.activeElement;
+		const {activeElement} = document;
 		const li = activeElement?.parentElement;
 
 		if (nonNullish(li?.parentElement) && li.parentElement.isSameNode(itemsRef)) {
@@ -70,7 +68,10 @@
 		}
 	};
 
-	let filteredItems = $derived($spotlightItems);
+	let filteredItems = $derived(searchFilter === "" ? [] : $spotlightItems.filter(({filter}) => filter({
+		signedIn: $authSignedIn,
+		query: searchFilter.toLowerCase()
+	})));
 
 	let itemsRef: HTMLUListElement | undefined = $state(undefined);
 	let inputElement = $state<HTMLInputElement | undefined>(undefined);
@@ -87,11 +88,11 @@
 
 			<Input
 				name="destination"
+				autofocus
 				inputType="text"
 				placeholder={$i18n.spotlight.search_placeholder}
 				required={false}
 				bind:value={searchFilter}
-				autofocus
 				bind:inputElement
 			/>
 		</Value>

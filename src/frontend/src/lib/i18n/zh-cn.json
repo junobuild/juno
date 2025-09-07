@@ -277,7 +277,7 @@
 		"name": "名字",
 		"satellite_name": "Satellite 名字",
 		"enter_name": "输入你的 satellite 名字",
-		"edit_name": "Edit name",
+		"edit_details": "Edit details",
 		"create_satellite_price": "创建一个新的 satellite 需要 {0}. 你的当前 wallet 余额是 {1}.",
 		"loading_satellites": "加载你的satellites",
 		"overview": "概要",

@@ -283,7 +283,7 @@ interface I18nSatellites {
 	name: string;
 	satellite_name: string;
 	enter_name: string;
-	edit_name: string;
+	edit_details: string;
 	create_satellite_price: string;
 	loading_satellites: string;
 	overview: string;

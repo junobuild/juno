@@ -277,7 +277,7 @@
 		"name": "Name",
 		"satellite_name": "Satellite name",
 		"enter_name": "Enter a name for your satellite",
-		"edit_name": "Edit name",
+		"edit_details": "Edit details",
 		"create_satellite_price": "Starting a new satellite requires {0}. Your current wallet balance is {1}.",
 		"loading_satellites": "Loading your satellites",
 		"overview": "Overview",

@@ -1,7 +1,7 @@
 <script lang="ts">
 	import type { Satellite } from '$declarations/mission_control/mission_control.did';
 	import SegmentDetach from '$lib/components/canister/SegmentDetach.svelte';
-	import SatelliteEditName from '$lib/components/satellites/SatelliteEditName.svelte';
+	import SatelliteEditDetails from '$lib/components/satellites/SatelliteEditDetails.svelte';
 	import SatelliteReloadVersion from '$lib/components/satellites/SatelliteReloadVersion.svelte';
 	import SatelliteVisit from '$lib/components/satellites/SatelliteVisit.svelte';
 	import SegmentActions from '$lib/components/segments/SegmentActions.svelte';
@@ -23,7 +23,7 @@
 	{/snippet}
 
 	{#snippet moreActions()}
-		<SatelliteEditName {satellite} />
+		<SatelliteEditDetails {satellite} />
 
 		<SegmentDetach
 			{monitoringEnabled}

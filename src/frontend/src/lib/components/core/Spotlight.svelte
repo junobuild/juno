@@ -1,13 +1,13 @@
 <script lang="ts">
 	import { debounce, isNullish, nonNullish } from '@dfinity/utils';
+	import { untrack } from 'svelte';
+	import { fade } from 'svelte/transition';
 	import Input from '$lib/components/ui/Input.svelte';
 	import Popover from '$lib/components/ui/Popover.svelte';
 	import Value from '$lib/components/ui/Value.svelte';
+	import { authSignedIn } from '$lib/derived/auth.derived';
 	import { spotlightItems } from '$lib/derived/spotlight.derived';
 	import { i18n } from '$lib/stores/i18n.store';
-	import { authSignedIn } from '$lib/derived/auth.derived';
-	import { untrack } from 'svelte';
-	import { fade } from 'svelte/transition';
 
 	let visible = $state(false);
 
@@ -121,7 +121,7 @@
 		</Value>
 
 		{#if filteredItems.length > 0}
-			<ul transition:fade={{ duration: 150 }} bind:this={itemsRef}>
+			<ul bind:this={itemsRef} transition:fade={{ duration: 150 }}>
 				{#each filteredItems as item, index (index)}
 					<li>
 						{#if item.type === 'nav'}

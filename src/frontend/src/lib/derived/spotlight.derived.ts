@@ -1,3 +1,4 @@
+import IconAnalytics from '$lib/components/icons/IconAnalytics.svelte';
 import IconBook from '$lib/components/icons/IconBook.svelte';
 import IconCodeBranch from '$lib/components/icons/IconCodeBranch.svelte';
 import IconMissionControl from '$lib/components/icons/IconMissionControl.svelte';
@@ -13,8 +14,8 @@ import type {
 	SpotlightItems,
 	SpotlightNavItem
 } from '$lib/types/spotlight';
-import { upgradeDockLink } from '$lib/utils/nav.utils';
-import { isNullish } from '@dfinity/utils';
+import { analyticsLink, upgradeDockLink } from '$lib/utils/nav.utils';
+import { isNullish, nonNullish } from '@dfinity/utils';
 import { derived, type Readable } from 'svelte/store';
 
 const withMissionControlSpotlightItems: Readable<SpotlightItems> = derived(
@@ -72,6 +73,21 @@ const homeItem: Readable<SpotlightNavItem> = derived(
 	})
 );
 
+const analyticsItem: Readable<SpotlightNavItem | undefined> = derived(
+	[i18n, authNotSignedIn],
+	([$i18n, $authNotSignedIn]) =>
+		$authNotSignedIn
+			? undefined
+			: {
+					type: 'nav' as const,
+					icon: IconAnalytics,
+					text: $i18n.analytics.title,
+					href: analyticsLink(),
+					filter: ({ query }: SpotlightItemFilterParams) =>
+						$i18n.analytics.title.toLowerCase().includes(query)
+				}
+);
+
 const externalItems: Readable<SpotlightItems> = derived([i18n], ([$i18n]) => [
 	{
 		type: 'nav' as const,
@@ -93,10 +109,11 @@ const externalItems: Readable<SpotlightItems> = derived([i18n], ([$i18n]) => [
 ]);
 
 export const spotlightItems: Readable<SpotlightItems> = derived(
-	[homeItem, externalItems, withMissionControlSpotlightItems],
-	([$homeItem, $externalItems, $missionControlSpotlightItems]) => [
+	[homeItem, externalItems, withMissionControlSpotlightItems, analyticsItem],
+	([$homeItem, $externalItems, $missionControlSpotlightItems, $analyticsItem]) => [
 		$homeItem,
 		...$externalItems,
-		...$missionControlSpotlightItems
+		...$missionControlSpotlightItems,
+		...(nonNullish($analyticsItem) ? [$analyticsItem] : [])
 	]
 );

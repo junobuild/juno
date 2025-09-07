@@ -2,6 +2,8 @@ import IconBook from '$lib/components/icons/IconBook.svelte';
 import IconCodeBranch from '$lib/components/icons/IconCodeBranch.svelte';
 import IconMissionControl from '$lib/components/icons/IconMissionControl.svelte';
 import IconRocket from '$lib/components/icons/IconRocket.svelte';
+import IconTelescope from '$lib/components/icons/IconTelescope.svelte';
+import IconUpgradeDock from '$lib/components/icons/IconUpgradeDock.svelte';
 import IconWallet from '$lib/components/icons/IconWallet.svelte';
 import { authNotSignedIn } from '$lib/derived/auth.derived';
 import { missionControlIdDerived } from '$lib/derived/mission-control.derived';
@@ -11,10 +13,11 @@ import type {
 	SpotlightItems,
 	SpotlightNavItem
 } from '$lib/types/spotlight';
+import { upgradeDockLink } from '$lib/utils/nav.utils';
 import { isNullish } from '@dfinity/utils';
 import { derived, type Readable } from 'svelte/store';
 
-const missionControlSpotlightItems: Readable<SpotlightItems> = derived(
+const withMissionControlSpotlightItems: Readable<SpotlightItems> = derived(
 	[i18n, missionControlIdDerived],
 	([$i18n, $missionControlIdDerived]) =>
 		isNullish($missionControlIdDerived)
@@ -35,6 +38,22 @@ const missionControlSpotlightItems: Readable<SpotlightItems> = derived(
 						href: '/wallet',
 						filter: ({ signedIn, query }: SpotlightItemFilterParams) =>
 							signedIn && $i18n.wallet.title.toLowerCase().includes(query)
+					},
+					{
+						type: 'nav' as const,
+						icon: IconTelescope,
+						text: $i18n.monitoring.title,
+						href: '/monitoring',
+						filter: ({ signedIn, query }: SpotlightItemFilterParams) =>
+							signedIn && $i18n.monitoring.title.toLowerCase().includes(query)
+					},
+					{
+						type: 'nav' as const,
+						icon: IconUpgradeDock,
+						text: $i18n.upgrade.title,
+						href: upgradeDockLink(),
+						filter: ({ signedIn, query }: SpotlightItemFilterParams) =>
+							signedIn && $i18n.upgrade.title.toLowerCase().includes(query)
 					}
 				]
 );
@@ -74,7 +93,7 @@ const externalItems: Readable<SpotlightItems> = derived([i18n], ([$i18n]) => [
 ]);
 
 export const spotlightItems: Readable<SpotlightItems> = derived(
-	[homeItem, externalItems, missionControlSpotlightItems],
+	[homeItem, externalItems, withMissionControlSpotlightItems],
 	([$homeItem, $externalItems, $missionControlSpotlightItems]) => [
 		$homeItem,
 		...$externalItems,

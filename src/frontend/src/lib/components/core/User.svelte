@@ -20,6 +20,7 @@
 	import { signIn as doSignIn, signOut } from '$lib/services/auth/auth.services';
 	import { i18n } from '$lib/stores/i18n.store';
 	import { analyticsLink, upgradeDockLink } from '$lib/utils/nav.utils';
+	import IconUpgradeDock from '$lib/components/icons/IconUpgradeDock.svelte';
 
 	interface Props {
 		signIn?: boolean;
@@ -113,7 +114,7 @@
 				onclick={close}
 				role="menuitem"
 			>
-				<IconAnalytics />
+				<IconUpgradeDock />
 				<span>{$i18n.upgrade.title}</span>
 			</a>
 

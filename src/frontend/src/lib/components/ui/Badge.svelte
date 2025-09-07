@@ -15,7 +15,7 @@
 
 <style lang="scss">
 	div {
-		border-radius: var(--border-radius);
+		border-radius: var(--padding-2x);
 
 		margin: var(--padding-0_25x) 0;
 		padding: var(--padding-0_25x) var(--padding);

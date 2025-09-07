@@ -15,6 +15,8 @@
 		"light_on": "日间模式",
 		"submit": "提交",
 		"home": "主页",
+		"docs": "Docs",
+		"changelog": "Changelog",
 		"controllers": "Access Keys",
 		"settings": "设置",
 		"setup": "Setup",
@@ -931,5 +933,9 @@
 		"go_home_text": "Go back to the home page to start your journey.",
 		"go_launchpad": "Go to launchpad",
 		"go_home": "Go to home"
+	},
+	"spotlight": {
+		"search_title": "Quick access",
+		"search_placeholder": "Navigate or run an action..."
 	}
 }

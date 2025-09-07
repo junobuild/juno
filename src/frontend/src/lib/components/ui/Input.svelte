@@ -24,6 +24,7 @@
 		onfocus?: () => void;
 		end?: Snippet;
 		footer?: Snippet;
+		inputElement?: HTMLInputElement | undefined;
 	}
 
 	let {
@@ -46,10 +47,9 @@
 		onblur,
 		onfocus,
 		end,
-		footer
+		footer,
+		inputElement = $bindable(undefined)
 	}: Props = $props();
-
-	let inputElement: HTMLInputElement | undefined = $state();
 
 	// This component was developed for ICP and 8 decimals in mind. The "currency" input type was added afterwards therefore, for backwards compatibility reason, if the input type is set to icp, the number of decimals remains 8.
 	let wrapDecimals = $derived(inputType === 'icp' ? 8 : decimals);

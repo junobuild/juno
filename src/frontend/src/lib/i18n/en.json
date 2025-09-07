@@ -15,6 +15,8 @@
 		"light_on": "Light on",
 		"submit": "Submit",
 		"home": "Home",
+		"docs": "Docs",
+		"changelog": "Changelog",
 		"controllers": "Access Keys",
 		"settings": "Settings",
 		"setup": "Setup",
@@ -931,5 +933,9 @@
 		"go_home_text": "Go back to the home page to start your journey.",
 		"go_launchpad": "Go to launchpad",
 		"go_home": "Go to home"
+	},
+	"spotlight": {
+		"search_title": "Quick access",
+		"search_placeholder": "Navigate or run an action..."
 	}
 }

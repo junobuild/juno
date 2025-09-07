@@ -8,10 +8,10 @@ import type { LoadEvent } from '@sveltejs/kit';
 export const overviewLink = (satelliteId: Option<Principal>): string =>
 	`/satellite/?s=${satelliteId?.toText() ?? ''}`;
 
-export const analyticsLink = (satelliteId: Option<Principal>): string =>
+export const analyticsLink = (satelliteId?: Option<Principal>): string =>
 	`/analytics/${nonNullish(satelliteId) ? `?s=${satelliteId?.toText() ?? ''}` : ''}`;
 
-export const upgradeDockLink = (satelliteId: Option<Principal>): string =>
+export const upgradeDockLink = (satelliteId?: Option<Principal>): string =>
 	`/upgrade-dock/${nonNullish(satelliteId) ? `?s=${satelliteId?.toText() ?? ''}` : ''}`;
 
 export const upgradeChangesLink = (satelliteId: Option<Principal>): string =>

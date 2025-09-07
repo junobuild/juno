@@ -21,6 +21,7 @@ export interface SpotlightNavItem extends SpotlightItem {
 
 export interface SpotlightActionItem extends SpotlightItem {
 	type: 'action';
+	action: () => void;
 }
 
 export type SpotlightItems = (SpotlightNavItem | SpotlightActionItem)[];

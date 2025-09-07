@@ -6,6 +6,8 @@ import IconCodeBranch from '$lib/components/icons/IconCodeBranch.svelte';
 import IconDatastore from '$lib/components/icons/IconDatastore.svelte';
 import IconFunctions from '$lib/components/icons/IconFunctions.svelte';
 import IconHosting from '$lib/components/icons/IconHosting.svelte';
+import IconLightOff from '$lib/components/icons/IconLightOff.svelte';
+import IconLightOn from '$lib/components/icons/IconLightOn.svelte';
 import IconMissionControl from '$lib/components/icons/IconMissionControl.svelte';
 import IconRaygun from '$lib/components/icons/IconRaygun.svelte';
 import IconRocket from '$lib/components/icons/IconRocket.svelte';
@@ -19,12 +21,15 @@ import { missionControlIdDerived } from '$lib/derived/mission-control.derived';
 import { satelliteStore } from '$lib/derived/satellite.derived';
 import { satellitesStore } from '$lib/derived/satellites.derived';
 import { i18n } from '$lib/stores/i18n.store';
+import { theme } from '$lib/stores/theme.store';
 import type {
+	SpotlightActionItem,
 	SpotlightItemFilterFn,
 	SpotlightItemFilterParams,
 	SpotlightItems,
 	SpotlightNavItem
 } from '$lib/types/spotlight';
+import { Theme } from '$lib/types/theme';
 import { shortenWithMiddleEllipsis } from '$lib/utils/format.utils';
 import { analyticsLink, upgradeDockLink } from '$lib/utils/nav.utils';
 import { satelliteName } from '$lib/utils/satellite.utils';
@@ -93,6 +98,21 @@ const homeItem: Readable<SpotlightNavItem> = derived(
 			) !== undefined
 	})
 );
+
+const themeItem: Readable<SpotlightActionItem> = derived([i18n, theme], ([$i18n, $theme]) => {
+	const dark = $theme === Theme.DARK;
+
+	return {
+		type: 'action' as const,
+		icon: dark ? IconLightOff : IconLightOn,
+		text: dark ? $i18n.core.light_off : $i18n.core.light_on,
+		action: () => theme.select(dark ? Theme.LIGHT : Theme.DARK),
+		filter: ({ query }: SpotlightItemFilterParams) =>
+			[$i18n.core.theme, $i18n.core.light_off, $i18n.core.light_on].find((text) =>
+				text.toLowerCase().includes(query)
+			) !== undefined
+	};
+});
 
 const analyticsItem: Readable<SpotlightNavItem | undefined> = derived(
 	[i18n, authNotSignedIn],
@@ -201,15 +221,24 @@ const satellitesItems: Readable<SpotlightItems> = derived(
 );
 
 export const spotlightItems: Readable<SpotlightItems> = derived(
-	[homeItem, externalItems, withMissionControlSpotlightItems, analyticsItem, satellitesItems],
+	[
+		homeItem,
+		themeItem,
+		externalItems,
+		withMissionControlSpotlightItems,
+		analyticsItem,
+		satellitesItems
+	],
 	([
 		$homeItem,
+		$themeItem,
 		$externalItems,
 		$missionControlSpotlightItems,
 		$analyticsItem,
 		$satellitesItems
 	]) => [
 		$homeItem,
+		$themeItem,
 		...$externalItems,
 		...$missionControlSpotlightItems,
 		...(nonNullish($analyticsItem) ? [$analyticsItem] : []),

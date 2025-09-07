@@ -51,13 +51,16 @@
 
 			// Assert it's not null and note a #text
 			if (nonNullish(next) && next.nodeType === Node.ELEMENT_NODE) {
-				next?.querySelector('a')?.focus();
+				const action = next?.querySelector('a') ?? next?.querySelector('button');
+				action?.focus();
 			}
 			return;
 		}
 
 		if (nonNullish(itemsRef.firstElementChild) && dir === 'down') {
-			(itemsRef.firstElementChild as HTMLElement).querySelector('a')?.focus();
+			const firstChild = itemsRef.firstElementChild as HTMLElement;
+			const action = firstChild.querySelector('a') ?? firstChild.querySelector('button');
+			action?.focus();
 		}
 
 		return;
@@ -123,9 +126,10 @@
 		{#if filteredItems.length > 0}
 			<ul bind:this={itemsRef} transition:fade={{ duration: 150 }}>
 				{#each filteredItems as item, index (index)}
+					{@const Icon = item.icon}
+
 					<li>
 						{#if item.type === 'nav'}
-							{@const Icon = item.icon}
 							<a
 								class="article"
 								aria-haspopup="menu"
@@ -137,6 +141,11 @@
 								<Icon size="24px" />
 								<span>{item.text}</span>
 							</a>
+						{:else if item.type === 'action'}
+							<button class="article" onclick={item.action}>
+								<Icon size="24px" />
+								<span>{item.text}</span>
+							</button>
 						{/if}
 					</li>
 				{/each}
@@ -156,8 +165,10 @@
 		max-width: calc(100vw - var(--padding-4x));
 	}
 
-	a.article {
+	a.article,
+	button.article {
 		flex-direction: row;
+		align-items: center;
 		gap: var(--padding-2x);
 		padding: var(--padding-2x);
 	}

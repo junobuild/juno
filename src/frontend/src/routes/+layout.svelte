@@ -12,7 +12,7 @@
 	import { syncSnapshots } from '$lib/services/snapshots.services';
 	import { syncSubnets } from '$lib/services/subnets.services';
 	import { AuthWorker } from '$lib/services/workers/worker.auth.services';
-	import { authStore } from '$lib/stores/auth.store';
+	import { authStore, type AuthStoreData } from '$lib/stores/auth.store';
 	import { i18n } from '$lib/stores/i18n.store';
 	import '$lib/styles/global.scss';
 
@@ -72,6 +72,22 @@
 				await navigation.complete;
 			});
 		});
+	});
+
+	// To improve the UX while the app is loading on mainnet we display a spinner which is attached statically in the index.html files.
+	// Once the authentication has been initialized we know most JavaScript resources has been loaded and therefore we can hide the spinner, the loading information.
+	const removeLoadingSpinner = ({ authData }: { authData: AuthStoreData }) => {
+		// We want to display a spinner until the authentication is loaded. This to avoid a glitch when either the landing page or effective content (sign-in / sign-out) is presented.
+		if (authData?.identity === undefined) {
+			return;
+		}
+
+		const spinner = document.querySelector('body > #app-spinner');
+		spinner?.remove();
+	};
+
+	$effect(() => {
+		removeLoadingSpinner({ authData: $authStore });
 	});
 </script>
 

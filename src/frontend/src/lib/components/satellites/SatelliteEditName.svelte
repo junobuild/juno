@@ -92,7 +92,6 @@
 
 <style lang="scss">
 	@use '../../styles/mixins/dialog';
-	@use '../../styles/mixins/text';
 
 	@include dialog.edit;
 </style>

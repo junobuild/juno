@@ -5,7 +5,7 @@ import { PocketIc, type Actor } from '@dfinity/pic';
 import type { Principal } from '@dfinity/principal';
 import { assertNonNullish, fromNullable, toNullable } from '@dfinity/utils';
 import { inject } from 'vitest';
-import { upgradeSatellite } from '../../../../utils/satellite-upgrade-tests.utils';
+import { upgradeSatelliteVersion } from '../../../../utils/satellite-upgrade-tests.utils';
 import { controllersInitArgs, downloadSatellite } from '../../../../utils/setup-tests.utils';
 
 describe('Satellite > Upgrade > v0.1.3', () => {
@@ -50,7 +50,7 @@ describe('Satellite > Upgrade > v0.1.3', () => {
 
 		expect(fromNullable(beforeUpgrade)).toBeUndefined();
 
-		await upgradeSatellite({ pic, canisterId, controller });
+		await upgradeSatelliteVersion({ pic, canisterId, controller, version: '0.1.3' });
 
 		const newActor = pic.createActor<SatelliteActor>(idlFactorSatellite, canisterId);
 		newActor.setIdentity(controller);

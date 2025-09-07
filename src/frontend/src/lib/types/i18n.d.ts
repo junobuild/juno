@@ -965,6 +965,11 @@ interface I18nNot_found {
 	go_home: string;
 }
 
+interface I18nSpotlight {
+	search_title: string;
+	search_placeholder: string;
+}
+
 interface I18n {
 	lang: Languages;
 	core: I18nCore;
@@ -997,4 +1002,5 @@ interface I18n {
 	cdn: I18nCdn;
 	notifications: I18nNotifications;
 	not_found: I18nNot_found;
+	spotlight: I18nSpotlight;
 }

@@ -1,10 +1,16 @@
 import type { Satellite } from '$declarations/mission_control/mission_control.did';
 import IconAnalytics from '$lib/components/icons/IconAnalytics.svelte';
+import IconAuthentication from '$lib/components/icons/IconAuthentication.svelte';
 import IconBook from '$lib/components/icons/IconBook.svelte';
 import IconCodeBranch from '$lib/components/icons/IconCodeBranch.svelte';
+import IconDatastore from '$lib/components/icons/IconDatastore.svelte';
+import IconFunctions from '$lib/components/icons/IconFunctions.svelte';
+import IconHosting from '$lib/components/icons/IconHosting.svelte';
 import IconMissionControl from '$lib/components/icons/IconMissionControl.svelte';
+import IconRaygun from '$lib/components/icons/IconRaygun.svelte';
 import IconRocket from '$lib/components/icons/IconRocket.svelte';
 import IconSatellite from '$lib/components/icons/IconSatellite.svelte';
+import IconStorage from '$lib/components/icons/IconStorage.svelte';
 import IconTelescope from '$lib/components/icons/IconTelescope.svelte';
 import IconUpgradeDock from '$lib/components/icons/IconUpgradeDock.svelte';
 import IconWallet from '$lib/components/icons/IconWallet.svelte';
@@ -24,11 +30,6 @@ import { analyticsLink, upgradeDockLink } from '$lib/utils/nav.utils';
 import { satelliteName } from '$lib/utils/satellite.utils';
 import { isNullish, nonNullish, notEmptyString } from '@dfinity/utils';
 import { derived, type Readable } from 'svelte/store';
-import IconAuthentication from '$lib/components/icons/IconAuthentication.svelte';
-import IconDatastore from '$lib/components/icons/IconDatastore.svelte';
-import IconStorage from '$lib/components/icons/IconStorage.svelte';
-import IconFunctions from '$lib/components/icons/IconFunctions.svelte';
-import IconHosting from '$lib/components/icons/IconHosting.svelte';
 
 const withMissionControlSpotlightItems: Readable<SpotlightItems> = derived(
 	[i18n, missionControlIdDerived],
@@ -67,6 +68,14 @@ const withMissionControlSpotlightItems: Readable<SpotlightItems> = derived(
 						href: upgradeDockLink(),
 						filter: ({ signedIn, query }: SpotlightItemFilterParams) =>
 							signedIn && $i18n.upgrade.title.toLowerCase().includes(query)
+					},
+					{
+						type: 'nav' as const,
+						icon: IconRaygun,
+						text: $i18n.preferences.title,
+						href: '/preferences',
+						filter: ({ signedIn, query }: SpotlightItemFilterParams) =>
+							signedIn && $i18n.preferences.title.toLowerCase().includes(query)
 					}
 				]
 );

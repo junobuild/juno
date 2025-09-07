@@ -9,6 +9,7 @@
 	import IconSignIn from '$lib/components/icons/IconSignIn.svelte';
 	import IconSignOut from '$lib/components/icons/IconSignOut.svelte';
 	import IconTelescope from '$lib/components/icons/IconTelescope.svelte';
+	import IconUpgradeDock from '$lib/components/icons/IconUpgradeDock.svelte';
 	import IconUser from '$lib/components/icons/IconUser.svelte';
 	import IconWallet from '$lib/components/icons/IconWallet.svelte';
 	import ButtonIcon from '$lib/components/ui/ButtonIcon.svelte';
@@ -20,7 +21,6 @@
 	import { signIn as doSignIn, signOut } from '$lib/services/auth/auth.services';
 	import { i18n } from '$lib/stores/i18n.store';
 	import { analyticsLink, upgradeDockLink } from '$lib/utils/nav.utils';
-	import IconUpgradeDock from '$lib/components/icons/IconUpgradeDock.svelte';
 
 	interface Props {
 		signIn?: boolean;

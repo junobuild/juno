@@ -1,19 +1,36 @@
 <script lang="ts">
-	import { isNullish, nonNullish } from '@dfinity/utils';
+	import { debounce, isNullish, nonNullish } from '@dfinity/utils';
 	import Input from '$lib/components/ui/Input.svelte';
 	import Popover from '$lib/components/ui/Popover.svelte';
 	import Value from '$lib/components/ui/Value.svelte';
 	import { spotlightItems } from '$lib/derived/spotlight.derived';
 	import { i18n } from '$lib/stores/i18n.store';
-	import {authSignedIn} from "$lib/derived/auth.derived";
+	import { authSignedIn } from '$lib/derived/auth.derived';
+	import { untrack } from 'svelte';
+	import { fade } from 'svelte/transition';
 
 	let visible = $state(false);
-	let searchFilter = $state('');
 
-	const onclose = () => {
-		visible = false;
-		searchFilter = "";
-	};
+	let searchFilter = $state('');
+	let debouncedSearchFilter = $state('');
+
+	const updateFilter = () => (debouncedSearchFilter = searchFilter);
+	const debounceUpdateFilter = debounce(updateFilter);
+
+	$effect(() => {
+		searchFilter;
+		untrack(debounceUpdateFilter);
+	});
+
+	$effect(() => {
+		if (visible) {
+			return;
+		}
+
+		searchFilter = '';
+	});
+
+	const onclose = () => (visible = false);
 
 	const selectItem = (dir: 'up' | 'down') => {
 		if (isNullish(itemsRef)) {
@@ -21,7 +38,7 @@
 		}
 
 		// a
-		const {activeElement} = document;
+		const { activeElement } = document;
 		const li = activeElement?.parentElement;
 
 		if (nonNullish(li?.parentElement) && li.parentElement.isSameNode(itemsRef)) {
@@ -68,10 +85,16 @@
 		}
 	};
 
-	let filteredItems = $derived(searchFilter === "" ? [] : $spotlightItems.filter(({filter}) => filter({
-		signedIn: $authSignedIn,
-		query: searchFilter.toLowerCase()
-	})));
+	let filteredItems = $derived(
+		debouncedSearchFilter === ''
+			? []
+			: $spotlightItems.filter(({ filter }) =>
+					filter({
+						signedIn: $authSignedIn,
+						query: debouncedSearchFilter.toLowerCase()
+					})
+				)
+	);
 
 	let itemsRef: HTMLUListElement | undefined = $state(undefined);
 	let inputElement = $state<HTMLInputElement | undefined>(undefined);
@@ -98,7 +121,7 @@
 		</Value>
 
 		{#if filteredItems.length > 0}
-			<ul bind:this={itemsRef}>
+			<ul transition:fade={{ duration: 150 }} bind:this={itemsRef}>
 				{#each filteredItems as item, index (index)}
 					<li>
 						{#if item.type === 'nav'}
@@ -109,6 +132,7 @@
 								href={item.href}
 								onclick={onclose}
 								role="menuitem"
+								target={item.external === true ? '_blank' : ''}
 							>
 								<Icon />
 								<span>{item.text}</span>

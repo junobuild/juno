@@ -18,6 +18,8 @@ interface I18nCore {
 	light_on: string;
 	submit: string;
 	home: string;
+	docs: string;
+	changelog: string;
 	controllers: string;
 	settings: string;
 	setup: string;

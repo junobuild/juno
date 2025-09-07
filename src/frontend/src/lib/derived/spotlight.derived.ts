@@ -1,3 +1,5 @@
+import IconBook from '$lib/components/icons/IconBook.svelte';
+import IconCodeBranch from '$lib/components/icons/IconCodeBranch.svelte';
 import IconMissionControl from '$lib/components/icons/IconMissionControl.svelte';
 import IconRocket from '$lib/components/icons/IconRocket.svelte';
 import IconWallet from '$lib/components/icons/IconWallet.svelte';
@@ -51,7 +53,31 @@ const homeItem: Readable<SpotlightNavItem> = derived(
 	})
 );
 
+const externalItems: Readable<SpotlightItems> = derived([i18n], ([$i18n]) => [
+	{
+		type: 'nav' as const,
+		icon: IconBook,
+		text: $i18n.core.docs,
+		href: 'https://juno.build/docs/intro',
+		external: true,
+		filter: ({ query }: SpotlightItemFilterParams) => $i18n.core.docs.toLowerCase().includes(query)
+	},
+	{
+		type: 'nav' as const,
+		icon: IconCodeBranch,
+		text: $i18n.core.changelog,
+		href: 'https://juno.build/changelog',
+		external: true,
+		filter: ({ query }: SpotlightItemFilterParams) =>
+			$i18n.core.changelog.toLowerCase().includes(query)
+	}
+]);
+
 export const spotlightItems: Readable<SpotlightItems> = derived(
-	[homeItem, missionControlSpotlightItems],
-	([$homeItem, $missionControlSpotlightItems]) => [$homeItem, ...$missionControlSpotlightItems]
+	[homeItem, externalItems, missionControlSpotlightItems],
+	([$homeItem, $externalItems, $missionControlSpotlightItems]) => [
+		$homeItem,
+		...$externalItems,
+		...$missionControlSpotlightItems
+	]
 );

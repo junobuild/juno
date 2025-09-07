@@ -11,6 +11,7 @@ export interface SpotlightItem {
 export interface SpotlightNavItem extends SpotlightItem {
 	type: 'nav';
 	href: string;
+	external?: boolean;
 }
 
 export interface SpotlightActionItem extends SpotlightItem {

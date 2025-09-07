@@ -134,7 +134,7 @@
 								role="menuitem"
 								target={item.external === true ? '_blank' : ''}
 							>
-								<Icon />
+								<Icon size="24px" />
 								<span>{item.text}</span>
 							</a>
 						{/if}
@@ -153,6 +153,7 @@
 
 	.container {
 		width: 420px;
+		max-width: calc(100vw - var(--padding-4x));
 	}
 
 	a.article {

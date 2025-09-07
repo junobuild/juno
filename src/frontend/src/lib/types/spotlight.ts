@@ -5,10 +5,12 @@ export interface SpotlightItemFilterParams {
 	query: string;
 }
 
+export type SpotlightItemFilterFn = (params: SpotlightItemFilterParams) => boolean;
+
 export interface SpotlightItem {
 	text: string;
 	icon: Component;
-	filter: (params: SpotlightItemFilterParams) => boolean;
+	filter: SpotlightItemFilterFn;
 }
 
 export interface SpotlightNavItem extends SpotlightItem {

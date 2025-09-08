@@ -32,7 +32,7 @@ const noUnusedFiles = () => {
 	process.exit(0);
 };
 
-const main = async () => {
+const main = () => {
 	console.log(`${NC}Scanning ${DATA_DIR} folder to find all .svelte files\n`);
 
 	const allSvelteFiles = findSvelteFiles(DATA_DIR_PATH);
@@ -69,7 +69,4 @@ const main = async () => {
 	}
 };
 
-main().catch((err) => {
-	console.error(err);
-	process.exit(1);
-});
+main();

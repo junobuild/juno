@@ -3,13 +3,13 @@
 	import type { Satellite } from '$declarations/mission_control/mission_control.did';
 	import IconEdit from '$lib/components/icons/IconEdit.svelte';
 	import Popover from '$lib/components/ui/Popover.svelte';
+	import Value from '$lib/components/ui/Value.svelte';
 	import { missionControlIdDerived } from '$lib/derived/mission-control.derived';
 	import { setSatelliteMetadata } from '$lib/services/mission-control.services';
 	import { busy, isBusy } from '$lib/stores/busy.store';
 	import { i18n } from '$lib/stores/i18n.store';
 	import { toasts } from '$lib/stores/toasts.store';
 	import { satelliteEnvironment, satelliteName } from '$lib/utils/satellite.utils';
-	import Value from '$lib/components/ui/Value.svelte';
 
 	interface Props {
 		satellite: Satellite;

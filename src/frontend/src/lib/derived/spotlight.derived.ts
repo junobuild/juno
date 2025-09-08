@@ -36,7 +36,7 @@ import { satelliteName } from '$lib/utils/satellite.utils';
 import { isNullish, nonNullish, notEmptyString } from '@dfinity/utils';
 import { derived, type Readable } from 'svelte/store';
 
-const withMissionControlSpotlightItems: Readable<SpotlightItems> = derived(
+const withMissionControlItems: Readable<SpotlightItems> = derived(
 	[i18n, missionControlIdDerived],
 	([$i18n, $missionControlIdDerived]) =>
 		isNullish($missionControlIdDerived)
@@ -73,17 +73,18 @@ const withMissionControlSpotlightItems: Readable<SpotlightItems> = derived(
 						href: upgradeDockLink(),
 						filter: ({ signedIn, query }: SpotlightItemFilterParams) =>
 							signedIn && $i18n.upgrade.title.toLowerCase().includes(query)
-					},
-					{
-						type: 'nav' as const,
-						icon: IconRaygun,
-						text: $i18n.preferences.title,
-						href: '/preferences',
-						filter: ({ signedIn, query }: SpotlightItemFilterParams) =>
-							signedIn && $i18n.preferences.title.toLowerCase().includes(query)
 					}
 				]
 );
+
+const preferenceItem: Readable<SpotlightNavItem> = derived([i18n], ([$i18n]) => ({
+	type: 'nav' as const,
+	icon: IconRaygun,
+	text: $i18n.preferences.title,
+	href: '/preferences',
+	filter: ({ signedIn, query }: SpotlightItemFilterParams) =>
+		signedIn && $i18n.preferences.title.toLowerCase().includes(query)
+}));
 
 const homeItem: Readable<SpotlightNavItem> = derived(
 	[i18n, authNotSignedIn],
@@ -225,23 +226,26 @@ export const spotlightItems: Readable<SpotlightItems> = derived(
 		homeItem,
 		themeItem,
 		externalItems,
-		withMissionControlSpotlightItems,
+		withMissionControlItems,
 		analyticsItem,
-		satellitesItems
+		satellitesItems,
+		preferenceItem
 	],
 	([
 		$homeItem,
 		$themeItem,
 		$externalItems,
-		$missionControlSpotlightItems,
+		$missionControlItems,
 		$analyticsItem,
-		$satellitesItems
+		$satellitesItems,
+		$preferenceItem
 	]) => [
 		$homeItem,
-		$themeItem,
-		...$externalItems,
-		...$missionControlSpotlightItems,
+		...$missionControlItems,
+		...$satellitesItems,
 		...(nonNullish($analyticsItem) ? [$analyticsItem] : []),
-		...$satellitesItems
+		$preferenceItem,
+		$themeItem,
+		...$externalItems
 	]
 );

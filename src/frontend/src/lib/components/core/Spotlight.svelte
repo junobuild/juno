@@ -80,23 +80,25 @@
 				visible = false;
 				return;
 			case 'ArrowDown':
+				$event.preventDefault();
 				selectItem('down');
 				return;
 			case 'ArrowUp':
+				$event.preventDefault();
 				selectItem('up');
 				return;
 		}
 	};
 
 	let filteredItems = $derived(
-		debouncedSearchFilter === ''
-			? []
-			: $spotlightItems.filter(({ filter }) =>
-					filter({
-						signedIn: $authSignedIn,
-						query: debouncedSearchFilter.toLowerCase()
-					})
-				)
+		$spotlightItems.filter(
+			({ filter }) =>
+				debouncedSearchFilter === '' ||
+				filter({
+					signedIn: $authSignedIn,
+					query: debouncedSearchFilter.toLowerCase()
+				})
+		)
 	);
 
 	let itemsRef: HTMLUListElement | undefined = $state(undefined);
@@ -107,50 +109,56 @@
 
 <Popover backdrop="dark" center bind:visible>
 	<div class="container">
-		<Value>
-			{#snippet label()}
-				{$i18n.spotlight.search_title}
-			{/snippet}
+		<div class="search" role="search">
+			<Value>
+				{#snippet label()}
+					{$i18n.spotlight.search_title}
+				{/snippet}
 
-			<Input
-				name="destination"
-				autofocus
-				inputType="text"
-				placeholder={$i18n.spotlight.search_placeholder}
-				required={false}
-				bind:value={searchFilter}
-				bind:inputElement
-			/>
-		</Value>
+				<Input
+					name="destination"
+					autofocus
+					inputType="text"
+					placeholder={$i18n.spotlight.search_placeholder}
+					required={false}
+					bind:value={searchFilter}
+					bind:inputElement
+				/>
+			</Value>
+		</div>
 
-		{#if filteredItems.length > 0}
-			<ul bind:this={itemsRef} transition:fade={{ duration: 150 }}>
-				{#each filteredItems as item, index (index)}
-					{@const Icon = item.icon}
+		<div class="items">
+			{#if filteredItems.length > 0}
+				<ul bind:this={itemsRef} transition:fade={{ duration: 150 }}>
+					{#each filteredItems as item, index (index)}
+						{@const Icon = item.icon}
 
-					<li>
-						{#if item.type === 'nav'}
-							<a
-								class="article"
-								aria-haspopup="menu"
-								href={item.href}
-								onclick={onclose}
-								role="menuitem"
-								target={item.external === true ? '_blank' : ''}
-							>
-								<Icon size="24px" />
-								<span>{item.text}</span>
-							</a>
-						{:else if item.type === 'action'}
-							<button class="article" onclick={item.action}>
-								<Icon size="24px" />
-								<span>{item.text}</span>
-							</button>
-						{/if}
-					</li>
-				{/each}
-			</ul>
-		{/if}
+						<li>
+							{#if item.type === 'nav'}
+								<a
+									class="article"
+									aria-haspopup="menu"
+									href={item.href}
+									onclick={onclose}
+									role="menuitem"
+									target={item.external === true ? '_blank' : ''}
+								>
+									<Icon size="24px" />
+									<span>{item.text}</span>
+								</a>
+							{:else if item.type === 'action'}
+								<button class="article" onclick={item.action}>
+									<Icon size="24px" />
+									<span>{item.text}</span>
+								</button>
+							{/if}
+						</li>
+					{/each}
+				</ul>
+			{:else}
+				<p class="none" in:fade>No matching routes or actions.</p>
+			{/if}
+		</div>
 	</div>
 </Popover>
 
@@ -163,6 +171,8 @@
 	.container {
 		width: 420px;
 		max-width: calc(100vw - var(--padding-4x));
+
+		padding: 0;
 	}
 
 	a.article,
@@ -177,9 +187,33 @@
 		list-style: none;
 		margin: 0;
 		padding: 0;
+
+		max-height: calc(40 * var(--padding));
+		min-height: calc(40 * var(--padding));
+
+		overflow-y: auto;
 	}
 
 	li {
 		margin: 0 0 var(--padding);
+	}
+
+	.search {
+		padding: var(--padding-2x) var(--padding-3x) 0 var(--padding-2x);
+
+		background: var(--color-menu);
+	}
+
+	li,
+	.none {
+		padding: 0 var(--padding-2x) 0 var(--padding-2x);
+	}
+
+	.none {
+		font-style: italic;
+	}
+
+	.items {
+		padding: 0 0 var(--padding);
 	}
 </style>

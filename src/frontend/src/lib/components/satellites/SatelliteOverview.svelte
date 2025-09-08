@@ -16,6 +16,7 @@
 	import { i18n } from '$lib/stores/i18n.store';
 	import type { CanisterSyncData as CanisterSyncDataType } from '$lib/types/canister';
 	import type { SatelliteIdText } from '$lib/types/satellite';
+	import SatelliteEnvText from '$lib/components/satellites/SatelliteEnvironmentText.svelte';
 
 	interface Props {
 		satellite: Satellite;
@@ -49,6 +50,8 @@
 	<div class="columns-3">
 		<div>
 			<SatelliteName {satellite} />
+
+			<SatelliteEnvText {satellite} />
 
 			<SatelliteOverviewCustomDomains {satellite} />
 		</div>

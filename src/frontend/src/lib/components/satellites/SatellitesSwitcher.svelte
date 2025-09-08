@@ -8,8 +8,8 @@
 	import { sortedSatellites } from '$lib/derived/satellites.derived';
 	import { i18n } from '$lib/stores/i18n.store';
 	import { overviewLink } from '$lib/utils/nav.utils';
-	import { satelliteEnvironment, satelliteName } from '$lib/utils/satellite.utils';
-	import Badge from "$lib/components/ui/Badge.svelte";
+	import { satelliteName } from '$lib/utils/satellite.utils';
+	import SatelliteEnvironment from '$lib/components/satellites/SatelliteEnvironment.svelte';
 
 	let button: HTMLButtonElement | undefined = $state();
 	let visible: boolean = $state(false);
@@ -19,17 +19,13 @@
 			? satelliteName($satelliteStore)
 			: $i18n.satellites.see_all_satellites
 	);
-
-	let env = $derived(
-		nonNullish($satelliteStore) ? satelliteEnvironment($satelliteStore) : undefined
-	);
 </script>
 
 {#snippet currentEnvironment()}
-	{#if nonNullish(env)}
-		<Badge color="primary"><span>{env}</span></Badge>
-		{/if}
-	{/snippet}
+	{#if nonNullish($satelliteStore)}
+		<SatelliteEnvironment satellite={$satelliteStore} />
+	{/if}
+{/snippet}
 
 {#if $authSignedIn}
 	<ButtonIcon onclick={() => (visible = true)} bind:button>
@@ -38,7 +34,7 @@
 		{/snippet}
 
 		{label}{@render currentEnvironment()}
-	</ButtonIcon> <span class="current">{label}{@render currentEnvironment()}</span>
+	</ButtonIcon> <span class="satellite">{label}{@render currentEnvironment()}</span>
 {/if}
 
 <Popover anchor={button} bind:visible>
@@ -68,7 +64,7 @@
 					rel="external noopener norefferer"
 					role="menuitem"
 				>
-					<span>{satName}</span>
+					<span class="satellite">{satName}<SatelliteEnvironment {satellite} /></span>
 				</a>
 			{/each}
 		</div>
@@ -124,7 +120,7 @@
 		margin-bottom: var(--padding-0_5x);
 	}
 
-	.current {
+	.satellite {
 		display: inline-flex;
 		align-items: center;
 		gap: var(--padding);

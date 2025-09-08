@@ -3,6 +3,7 @@
 	import Canister from '$lib/components/canister/Canister.svelte';
 	import IconSatellite from '$lib/components/icons/IconSatellite.svelte';
 	import LaunchpadLink from '$lib/components/launchpad/LaunchpadLink.svelte';
+	import SatelliteEnvironment from '$lib/components/satellites/SatelliteEnvironment.svelte';
 	import { i18n } from '$lib/stores/i18n.store';
 	import { layoutSatellites } from '$lib/stores/layout-launchpad.store';
 	import { SatellitesLayout } from '$lib/types/layout';
@@ -26,7 +27,10 @@
 
 <LaunchpadLink ariaLabel={`${$i18n.core.open}: ${name}`} {href} {row}>
 	{#snippet summary()}
-		<p>{name}</p>
+		<div class="description">
+			<p>{name}</p>
+			<SatelliteEnvironment {satellite} />
+		</div>
 		<IconSatellite size={row ? '28px' : '48px'} />
 	{/snippet}
 
@@ -42,5 +46,13 @@
 
 		@include text.truncate;
 		margin: 0;
+	}
+
+	.description {
+		display: flex;
+		flex-direction: column;
+		gap: var(--padding-0_25x);
+
+		max-width: calc(100% - 48px);
 	}
 </style>

@@ -87,7 +87,11 @@
 		"usage": "Usage",
 		"creating_snapshot": "Creating a snapshot...",
 		"created": "Created",
-		"updated": "Updated"
+		"updated": "Updated",
+		"production": "Production",
+		"staging": "Staging",
+		"test": "Test",
+		"unspecified": "Unspecified"
 	},
 	"canisters": {
 		"top_up": "Top-up",
@@ -276,8 +280,9 @@
 		"description": "A satellite is a container for your project. It provides features like a simple key pair store, file storage, hosting, and authentication.",
 		"name": "Name",
 		"satellite_name": "Satellite name",
+		"environment": "Environment",
 		"enter_name": "Enter a name for your satellite",
-		"edit_name": "Edit name",
+		"edit_details": "Edit details",
 		"create_satellite_price": "Starting a new satellite requires {0}. Your current wallet balance is {1}.",
 		"loading_satellites": "Loading your satellites",
 		"overview": "Overview",

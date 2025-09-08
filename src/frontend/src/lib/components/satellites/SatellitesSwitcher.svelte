@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { nonNullish } from '@dfinity/utils';
 	import IconArrowDropDown from '$lib/components/icons/IconArrowDropDown.svelte';
+	import SatelliteEnvironment from '$lib/components/satellites/SatelliteEnvironment.svelte';
 	import ButtonIcon from '$lib/components/ui/ButtonIcon.svelte';
 	import Popover from '$lib/components/ui/Popover.svelte';
 	import { authSignedIn } from '$lib/derived/auth.derived';
@@ -20,14 +21,21 @@
 	);
 </script>
 
+{#snippet currentEnvironment()}
+	{#if nonNullish($satelliteStore)}
+		<SatelliteEnvironment satellite={$satelliteStore} />
+	{/if}
+{/snippet}
+
 {#if $authSignedIn}
 	<ButtonIcon onclick={() => (visible = true)} bind:button>
 		{#snippet icon()}
 			<IconArrowDropDown />
 		{/snippet}
 
-		{label}
-	</ButtonIcon> <span>{label}</span>
+		{label}{@render currentEnvironment()}
+	</ButtonIcon>
+	<span class="satellite current"><span>{label}</span>{@render currentEnvironment()}</span>
 {/if}
 
 <Popover anchor={button} bind:visible>
@@ -57,7 +65,7 @@
 					rel="external noopener norefferer"
 					role="menuitem"
 				>
-					<span>{satName}</span>
+					<span class="satellite"><span>{satName}</span><SatelliteEnvironment {satellite} /></span>
 				</a>
 			{/each}
 		</div>
@@ -110,6 +118,31 @@
 	}
 
 	a.menu {
+		display: block;
 		margin-bottom: var(--padding-0_5x);
+	}
+
+	.satellite {
+		display: inline-flex;
+		align-items: center;
+		gap: var(--padding);
+
+		span:first-of-type {
+			max-width: 260px;
+
+			@include text.truncate;
+
+			@include media.min-width(medium) {
+				max-width: 420px;
+			}
+		}
+	}
+
+	.current {
+		display: none;
+
+		@include media.min-width(small) {
+			display: inline-flex;
+		}
 	}
 </style>

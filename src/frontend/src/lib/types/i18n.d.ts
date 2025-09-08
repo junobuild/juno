@@ -91,6 +91,10 @@ interface I18nCore {
 	creating_snapshot: string;
 	created: string;
 	updated: string;
+	production: string;
+	staging: string;
+	test: string;
+	unspecified: string;
 }
 
 interface I18nCanisters {
@@ -282,8 +286,9 @@ interface I18nSatellites {
 	description: string;
 	name: string;
 	satellite_name: string;
+	environment: string;
 	enter_name: string;
-	edit_name: string;
+	edit_details: string;
 	create_satellite_price: string;
 	loading_satellites: string;
 	overview: string;

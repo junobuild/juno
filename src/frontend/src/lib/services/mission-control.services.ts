@@ -12,13 +12,17 @@ import {
 	setMissionControlController,
 	setOrbiter,
 	setSatellite,
-	setSatelliteMetadata,
+	setSatelliteMetadata as setSatelliteMetadataApi,
 	setSatellitesController,
 	unsetOrbiter,
 	unsetSatellite
 } from '$lib/api/mission-control.api';
 import { setMissionControlController004 } from '$lib/api/mission-control.deprecated.api';
-import { METADATA_KEY_EMAIL, METADATA_KEY_NAME } from '$lib/constants/metadata.constants';
+import {
+	METADATA_KEY_EMAIL,
+	METADATA_KEY_ENVIRONMENT,
+	METADATA_KEY_NAME
+} from '$lib/constants/metadata.constants';
 import {
 	MISSION_CONTROL_v0_0_14,
 	MISSION_CONTROL_v0_0_3,
@@ -47,7 +51,7 @@ import { isNotValidEmail } from '$lib/utils/email.utils';
 import { container } from '$lib/utils/juno.utils';
 import type { Identity } from '@dfinity/agent';
 import type { Principal } from '@dfinity/principal';
-import { fromNullable, isEmptyString, isNullish } from '@dfinity/utils';
+import { fromNullable, isEmptyString, isNullish, notEmptyString } from '@dfinity/utils';
 import { missionControlVersion, satelliteVersion } from '@junobuild/admin';
 import { compare } from 'semver';
 import { get } from 'svelte/store';
@@ -174,21 +178,29 @@ export const setSatellitesControllerForVersion = async ({
 	]);
 };
 
-export const setSatelliteName = async ({
+export const setSatelliteMetadata = async ({
 	missionControlId,
 	satellite: { satellite_id: satelliteId, metadata },
-	satelliteName
+	satelliteName,
+	satelliteEnv
 }: {
 	missionControlId: MissionControlId;
 	satellite: Satellite;
 	satelliteName: string;
+	satelliteEnv: string | undefined;
 }) => {
 	const updateData = new Map(metadata);
 	updateData.set(METADATA_KEY_NAME, satelliteName);
 
+	if (notEmptyString(satelliteEnv)) {
+		updateData.set(METADATA_KEY_ENVIRONMENT, satelliteEnv);
+	} else {
+		updateData.delete(METADATA_KEY_ENVIRONMENT);
+	}
+
 	const { identity } = get(authStore);
 
-	const updatedSatellite = await setSatelliteMetadata({
+	const updatedSatellite = await setSatelliteMetadataApi({
 		missionControlId,
 		satelliteId,
 		metadata: Array.from(updateData),

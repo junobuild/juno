@@ -3,7 +3,7 @@ import type { ListParams as ListParamsApi } from '$declarations/satellite/satell
 import { PAGINATION } from '$lib/constants/app.constants';
 import { isDev } from '$lib/env/app.env';
 import type { ListParams } from '$lib/types/list';
-import { metadataName } from '$lib/utils/metadata.utils';
+import { metadataEnvironment, metadataName } from '$lib/utils/metadata.utils';
 import { Principal } from '@dfinity/principal';
 import { isEmptyString, isNullish, notEmptyString, toNullable } from '@dfinity/utils';
 
@@ -16,6 +16,9 @@ export const satelliteUrl = (satelliteId: string): string => {
 };
 
 export const satelliteName = ({ metadata }: Satellite): string => metadataName(metadata);
+
+export const satelliteEnvironment = ({ metadata }: Satellite): string | undefined =>
+	metadataEnvironment(metadata);
 
 export const toListParams = ({
 	startAfter,

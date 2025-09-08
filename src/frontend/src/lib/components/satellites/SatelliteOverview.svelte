@@ -5,6 +5,7 @@
 	import CanisterOverview from '$lib/components/canister/CanisterOverview.svelte';
 	import CanisterSubnet from '$lib/components/canister/CanisterSubnet.svelte';
 	import CanisterSyncData from '$lib/components/canister/CanisterSyncData.svelte';
+	import SatelliteEnvText from '$lib/components/satellites/SatelliteEnvironmentText.svelte';
 	import SatelliteName from '$lib/components/satellites/SatelliteName.svelte';
 	import SatelliteOverviewActions from '$lib/components/satellites/SatelliteOverviewActions.svelte';
 	import SatelliteOverviewCustomDomains from '$lib/components/satellites/SatelliteOverviewCustomDomains.svelte';
@@ -49,6 +50,8 @@
 	<div class="columns-3">
 		<div>
 			<SatelliteName {satellite} />
+
+			<SatelliteEnvText {satellite} />
 
 			<SatelliteOverviewCustomDomains {satellite} />
 		</div>

@@ -3,12 +3,13 @@
 	import type { Satellite } from '$declarations/mission_control/mission_control.did';
 	import IconEdit from '$lib/components/icons/IconEdit.svelte';
 	import Popover from '$lib/components/ui/Popover.svelte';
+	import Value from '$lib/components/ui/Value.svelte';
 	import { missionControlIdDerived } from '$lib/derived/mission-control.derived';
-	import { setSatelliteName } from '$lib/services/mission-control.services';
+	import { setSatelliteMetadata } from '$lib/services/mission-control.services';
 	import { busy, isBusy } from '$lib/stores/busy.store';
 	import { i18n } from '$lib/stores/i18n.store';
 	import { toasts } from '$lib/stores/toasts.store';
-	import { satelliteName } from '$lib/utils/satellite.utils';
+	import { satelliteEnvironment, satelliteName } from '$lib/utils/satellite.utils';
 
 	interface Props {
 		satellite: Satellite;
@@ -17,6 +18,7 @@
 	let { satellite }: Props = $props();
 
 	let satName = $state(satelliteName(satellite));
+	let satEnv = $state<string | undefined>(satelliteEnvironment(satellite));
 
 	let visible: boolean = $state(false);
 
@@ -43,10 +45,11 @@
 		busy.start();
 
 		try {
-			await setSatelliteName({
+			await setSatelliteMetadata({
 				missionControlId: $missionControlIdDerived,
 				satellite,
-				satelliteName: satName
+				satelliteName: satName,
+				satelliteEnv: satEnv
 			});
 
 			visible = false;
@@ -67,22 +70,39 @@
 	};
 </script>
 
-<button class="menu" onclick={open}><IconEdit /> {$i18n.satellites.edit_name}</button>
+<button class="menu" onclick={open}><IconEdit /> {$i18n.satellites.edit_details}</button>
 
 <Popover backdrop="dark" center bind:visible>
 	<form class="container" onsubmit={handleSubmit}>
-		<label for="canisterName">{$i18n.satellites.satellite_name}:</label>
+		<Value ref="satelliteName">
+			{#snippet label()}
+				{$i18n.satellites.satellite_name}
+			{/snippet}
 
-		<input
-			id="canisterName"
-			autocomplete="off"
-			data-1p-ignore
-			disabled={$isBusy}
-			maxlength={64}
-			placeholder={$i18n.satellites.edit_name}
-			type="text"
-			bind:value={satName}
-		/>
+			<input
+				id="satelliteName"
+				autocomplete="off"
+				data-1p-ignore
+				disabled={$isBusy}
+				maxlength={64}
+				placeholder={$i18n.satellites.edit_details}
+				type="text"
+				bind:value={satName}
+			/>
+		</Value>
+
+		<Value ref="satelliteEnv">
+			{#snippet label()}
+				{$i18n.satellites.environment}
+			{/snippet}
+
+			<select id="satelliteEnv" bind:value={satEnv}>
+				<option value={undefined}>{$i18n.core.unspecified}</option>
+				<option value="production"> {$i18n.core.production} </option>
+				<option value="staging"> {$i18n.core.staging} </option>
+				<option value="test"> {$i18n.core.test} </option>
+			</select>
+		</Value>
 
 		<button class="submit" disabled={$isBusy || !validConfirm} type="submit">
 			{$i18n.core.apply}

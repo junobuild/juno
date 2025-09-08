@@ -34,7 +34,8 @@
 		{/snippet}
 
 		{label}{@render currentEnvironment()}
-	</ButtonIcon> <span class="satellite">{label}{@render currentEnvironment()}</span>
+	</ButtonIcon>
+	<span class="satellite current"><span>{label}</span>{@render currentEnvironment()}</span>
 {/if}
 
 <Popover anchor={button} bind:visible>
@@ -64,7 +65,7 @@
 					rel="external noopener norefferer"
 					role="menuitem"
 				>
-					<span class="satellite">{satName}<SatelliteEnvironment {satellite} /></span>
+					<span class="satellite"><span>{satName}</span><SatelliteEnvironment {satellite} /></span>
 				</a>
 			{/each}
 		</div>
@@ -117,6 +118,7 @@
 	}
 
 	a.menu {
+		display: block;
 		margin-bottom: var(--padding-0_5x);
 	}
 
@@ -124,5 +126,23 @@
 		display: inline-flex;
 		align-items: center;
 		gap: var(--padding);
+
+		span:first-of-type {
+			max-width: 260px;
+
+			@include text.truncate;
+
+			@include media.min-width(medium) {
+				max-width: 420px;
+			}
+		}
+	}
+
+	.current {
+		display: none;
+
+		@include media.min-width(small) {
+			display: inline-flex;
+		}
 	}
 </style>

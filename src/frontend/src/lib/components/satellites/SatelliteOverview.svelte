@@ -5,6 +5,7 @@
 	import CanisterOverview from '$lib/components/canister/CanisterOverview.svelte';
 	import CanisterSubnet from '$lib/components/canister/CanisterSubnet.svelte';
 	import CanisterSyncData from '$lib/components/canister/CanisterSyncData.svelte';
+	import SatelliteEnvText from '$lib/components/satellites/SatelliteEnvironmentText.svelte';
 	import SatelliteName from '$lib/components/satellites/SatelliteName.svelte';
 	import SatelliteOverviewActions from '$lib/components/satellites/SatelliteOverviewActions.svelte';
 	import SatelliteOverviewCustomDomains from '$lib/components/satellites/SatelliteOverviewCustomDomains.svelte';
@@ -16,7 +17,6 @@
 	import { i18n } from '$lib/stores/i18n.store';
 	import type { CanisterSyncData as CanisterSyncDataType } from '$lib/types/canister';
 	import type { SatelliteIdText } from '$lib/types/satellite';
-	import SatelliteEnvText from '$lib/components/satellites/SatelliteEnvironmentText.svelte';
 
 	interface Props {
 		satellite: Satellite;

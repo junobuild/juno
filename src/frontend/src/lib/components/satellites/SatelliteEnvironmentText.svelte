@@ -1,9 +1,9 @@
 <script lang="ts">
+	import { nonNullish } from '@dfinity/utils';
 	import type { Satellite } from '$declarations/mission_control/mission_control.did';
 	import Value from '$lib/components/ui/Value.svelte';
 	import { i18n } from '$lib/stores/i18n.store';
 	import { satelliteEnvironment } from '$lib/utils/satellite.utils';
-	import { nonNullish } from '@dfinity/utils';
 
 	interface Props {
 		satellite: Satellite;

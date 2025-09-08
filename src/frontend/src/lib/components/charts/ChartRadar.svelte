@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { LayerCake, Svg } from 'layercake';
-	import AxisRadial from './AxisRadial.svelte';
-	import Radar from './Radar.svelte';
+	import AxisRadial from '$lib/components/charts/AxisRadial.svelte';
+	import Radar from '$lib/components/charts/Radar.svelte';
 	import { last } from '$lib/utils/utils';
 
 	interface Props {

@@ -87,7 +87,10 @@
 		"usage": "用途",
 		"creating_snapshot": "创建快照...",
 		"created": "创建于",
-		"updated": "更新于"
+		"updated": "更新于",
+		"production": "Production",
+		"staging": "Staging",
+		"test": "Test"
 	},
 	"canisters": {
 		"top_up": "充值",
@@ -276,6 +279,7 @@
 		"description": "Satellite 是一个为你的项目提供WEB3服务的容器.它提供的特性像键值存储，文件存储, 主机服务,以及认证.",
 		"name": "名字",
 		"satellite_name": "Satellite 名字",
+		"environment": "Environment",
 		"enter_name": "输入你的 satellite 名字",
 		"edit_details": "Edit details",
 		"create_satellite_price": "创建一个新的 satellite 需要 {0}. 你的当前 wallet 余额是 {1}.",

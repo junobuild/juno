@@ -93,14 +93,14 @@
 
 		<Value ref="satelliteEnv">
 			{#snippet label()}
-				{$i18n.satellites.satellite_name}
+				{$i18n.satellites.environment}
 			{/snippet}
 
 			<select id="satelliteEnv" bind:value={satEnv}>
 				<option value={undefined}></option>
-				<option value="production"> production </option>
-				<option value="staging"> staging </option>
-				<option value="test"> test </option>
+				<option value="production"> {$i18n.core.production} </option>
+				<option value="staging"> {$i18n.core.staging} </option>
+				<option value="test"> {$i18n.core.test} </option>
 			</select>
 		</Value>
 

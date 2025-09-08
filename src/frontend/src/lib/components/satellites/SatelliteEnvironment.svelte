@@ -2,8 +2,8 @@
 	import { nonNullish } from '@dfinity/utils';
 	import type { Satellite } from '$declarations/mission_control/mission_control.did';
 	import Badge from '$lib/components/ui/Badge.svelte';
-	import { satelliteEnvironment } from '$lib/utils/satellite.utils';
 	import { i18n } from '$lib/stores/i18n.store';
+	import { satelliteEnvironment } from '$lib/utils/satellite.utils';
 
 	interface Props {
 		satellite: Satellite;

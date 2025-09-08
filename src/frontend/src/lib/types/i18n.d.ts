@@ -94,6 +94,7 @@ interface I18nCore {
 	production: string;
 	staging: string;
 	test: string;
+	unspecified: string;
 }
 
 interface I18nCanisters {

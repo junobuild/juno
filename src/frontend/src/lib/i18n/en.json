@@ -90,7 +90,8 @@
 		"updated": "Updated",
 		"production": "Production",
 		"staging": "Staging",
-		"test": "Test"
+		"test": "Test",
+		"unspecified": "Unspecified"
 	},
 	"canisters": {
 		"top_up": "Top-up",

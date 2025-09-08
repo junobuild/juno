@@ -8,7 +8,7 @@
 	import { busy, isBusy } from '$lib/stores/busy.store';
 	import { i18n } from '$lib/stores/i18n.store';
 	import { toasts } from '$lib/stores/toasts.store';
-	import {satelliteEnvironment, satelliteName} from '$lib/utils/satellite.utils';
+	import { satelliteEnvironment, satelliteName } from '$lib/utils/satellite.utils';
 	import Value from '$lib/components/ui/Value.svelte';
 
 	interface Props {
@@ -97,7 +97,7 @@
 			{/snippet}
 
 			<select id="satelliteEnv" bind:value={satEnv}>
-				<option value={undefined}></option>
+				<option value={undefined}>{$i18n.core.unspecified}</option>
 				<option value="production"> {$i18n.core.production} </option>
 				<option value="staging"> {$i18n.core.staging} </option>
 				<option value="test"> {$i18n.core.test} </option>

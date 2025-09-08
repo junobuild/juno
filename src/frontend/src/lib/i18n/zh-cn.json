@@ -90,7 +90,8 @@
 		"updated": "更新于",
 		"production": "Production",
 		"staging": "Staging",
-		"test": "Test"
+		"test": "Test",
+		"unspecified": "Unspecified"
 	},
 	"canisters": {
 		"top_up": "充值",

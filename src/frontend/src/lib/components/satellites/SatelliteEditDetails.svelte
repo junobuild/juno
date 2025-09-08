@@ -96,7 +96,7 @@
 				{$i18n.satellites.environment}
 			{/snippet}
 
-			<select id="satelliteEnv" bind:value={satEnv}>
+			<select id="satelliteEnv" bind:value={satEnv} disabled={$isBusy}>
 				<option value={undefined}>{$i18n.core.unspecified}</option>
 				<option value="production"> {$i18n.core.production} </option>
 				<option value="staging"> {$i18n.core.staging} </option>

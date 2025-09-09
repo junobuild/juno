@@ -9,7 +9,7 @@ import { isDev } from '$lib/env/app.env';
 import { SignInError, SignInInitError, SignInUserInterruptError } from '$lib/types/errors';
 import type { OptionIdentity } from '$lib/types/itentity';
 import type { Option } from '$lib/types/utils';
-import { createAuthClient } from '$lib/utils/auth.utils';
+import { createAuthClient, resetAuthClient } from '$lib/utils/auth.utils';
 import { popupCenter } from '$lib/utils/window.utils';
 import { type AuthClient, ERROR_USER_INTERRUPT } from '@dfinity/auth-client';
 import { isNullish } from '@dfinity/utils';
@@ -41,7 +41,13 @@ const initAuthStore = (): AuthStore => {
 
 		sync: async () => {
 			authClient = authClient ?? (await createAuthClient());
-			const isAuthenticated: boolean = await authClient.isAuthenticated();
+			const isAuthenticated = await authClient.isAuthenticated();
+
+			if (!isAuthenticated) {
+				authClient = await resetAuthClient();
+				set({ identity: null });
+				return;
+			}
 
 			set({
 				identity: isAuthenticated ? authClient.getIdentity() : null

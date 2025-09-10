@@ -9,8 +9,8 @@
 	import { busy, isBusy } from '$lib/stores/busy.store';
 	import { i18n } from '$lib/stores/i18n.store';
 	import { toasts } from '$lib/stores/toasts.store';
-	import { satelliteEnvironment, satelliteName, satelliteTags } from '$lib/utils/satellite.utils';
 	import type { SatelliteUiTags } from '$lib/types/satellite';
+	import { satelliteEnvironment, satelliteName, satelliteTags } from '$lib/utils/satellite.utils';
 
 	interface Props {
 		satellite: Satellite;

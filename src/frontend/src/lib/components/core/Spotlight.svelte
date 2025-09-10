@@ -111,21 +111,19 @@
 <Popover backdrop="dark" center bind:visible>
 	<div class="container">
 		<div class="search" role="search">
-			<Value>
-				{#snippet label()}
-					{$i18n.spotlight.search_title} (<SpotlightShortcut />)
-				{/snippet}
+			<span class="search-title"
+				><span>{$i18n.spotlight.search_title}:</span><SpotlightShortcut /></span
+			>
 
-				<Input
-					name="destination"
-					autofocus
-					inputType="text"
-					placeholder={$i18n.spotlight.search_placeholder}
-					required={false}
-					bind:value={searchFilter}
-					bind:inputElement
-				/>
-			</Value>
+			<Input
+				name="destination"
+				autofocus
+				inputType="text"
+				placeholder={$i18n.spotlight.search_placeholder}
+				required={false}
+				bind:value={searchFilter}
+				bind:inputElement
+			/>
 		</div>
 
 		<div class="items">
@@ -216,5 +214,12 @@
 
 	.items {
 		padding: 0 0 var(--padding);
+	}
+
+	.search-title {
+		display: flex;
+		justify-content: space-between;
+
+		font-weight: var(--font-weight-bold);
 	}
 </style>

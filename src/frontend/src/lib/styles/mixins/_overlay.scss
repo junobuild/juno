@@ -43,7 +43,10 @@
 
 		cursor: initial;
 
-		--size: min(var(--popover-min-size, 240px), calc(100vw - 0.45rem - var(--popover-right, 0)));
+		--size: min(
+			var(--popover-min-size, 240px),
+			calc(100vw - 0.45rem - var(--popover-right, var(--padding-4x)))
+		);
 
 		min-width: var(--size);
 		max-width: var(--size);

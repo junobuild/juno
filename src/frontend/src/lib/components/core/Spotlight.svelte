@@ -2,12 +2,13 @@
 	import { debounce, isNullish, nonNullish } from '@dfinity/utils';
 	import { untrack } from 'svelte';
 	import { fade } from 'svelte/transition';
+	import SpotlightShortcut from '$lib/components/core/SpotlightShortcut.svelte';
 	import Input from '$lib/components/ui/Input.svelte';
 	import Popover from '$lib/components/ui/Popover.svelte';
-	import Value from '$lib/components/ui/Value.svelte';
 	import { authSignedIn } from '$lib/derived/auth.derived';
 	import { spotlightItems } from '$lib/derived/spotlight.derived';
 	import { i18n } from '$lib/stores/i18n.store';
+	import { isDesktop } from '$lib/utils/device.utils';
 
 	let visible = $state(false);
 
@@ -103,28 +104,28 @@
 
 	let itemsRef: HTMLUListElement | undefined = $state(undefined);
 	let inputElement = $state<HTMLInputElement | undefined>(undefined);
+
+	const autofocus = isDesktop();
 </script>
 
-<svelte:window {onkeydown} />
+<svelte:window onjunoSpotlight={() => (visible = true)} {onkeydown} />
 
 <Popover backdrop="dark" center bind:visible>
 	<div class="container">
 		<div class="search" role="search">
-			<Value>
-				{#snippet label()}
-					{$i18n.spotlight.search_title}
-				{/snippet}
+			<span class="search-title"
+				><span>{$i18n.spotlight.search_title}:</span><SpotlightShortcut /></span
+			>
 
-				<Input
-					name="destination"
-					autofocus
-					inputType="text"
-					placeholder={$i18n.spotlight.search_placeholder}
-					required={false}
-					bind:value={searchFilter}
-					bind:inputElement
-				/>
-			</Value>
+			<Input
+				name="destination"
+				{autofocus}
+				inputType="text"
+				placeholder={$i18n.spotlight.search_placeholder}
+				required={false}
+				bind:value={searchFilter}
+				bind:inputElement
+			/>
 		</div>
 
 		<div class="items">
@@ -169,9 +170,6 @@
 	@include dialog.edit;
 
 	.container {
-		width: 420px;
-		max-width: calc(100vw - var(--padding-4x));
-
 		padding: 0;
 	}
 
@@ -199,14 +197,14 @@
 	}
 
 	.search {
-		padding: var(--padding-2x) var(--padding-3x) 0 var(--padding-2x);
+		padding: var(--padding-2x) var(--padding-2x) 0 var(--padding-2x);
 
 		background: var(--color-menu);
 	}
 
 	li,
 	.none {
-		padding: 0 var(--padding-2x) 0 var(--padding-2x);
+		padding: 0 var(--padding) 0 var(--padding-2x);
 	}
 
 	.none {
@@ -215,5 +213,12 @@
 
 	.items {
 		padding: 0 0 var(--padding);
+	}
+
+	.search-title {
+		display: flex;
+		justify-content: space-between;
+
+		font-weight: var(--font-weight-bold);
 	}
 </style>

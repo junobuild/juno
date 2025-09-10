@@ -2,8 +2,10 @@ import type { Satellite } from '$declarations/mission_control/mission_control.di
 import type { ListParams as ListParamsApi } from '$declarations/satellite/satellite.did';
 import { PAGINATION } from '$lib/constants/app.constants';
 import { isDev } from '$lib/env/app.env';
+import { SatelliteUiMetadataParser } from '$lib/schemas/satellite.schema';
 import type { ListParams } from '$lib/types/list';
-import { metadataEnvironment, metadataName } from '$lib/utils/metadata.utils';
+import type { SatelliteUi, SatelliteUiMetadata, SatelliteUiTags } from '$lib/types/satellite';
+import { metadataEnvironment, metadataName, metadataTags } from '$lib/utils/metadata.utils';
 import { Principal } from '@dfinity/principal';
 import { isEmptyString, isNullish, notEmptyString, toNullable } from '@dfinity/utils';
 
@@ -15,10 +17,37 @@ export const satelliteUrl = (satelliteId: string): string => {
 	return `https://${satelliteId}.icp0.io`;
 };
 
+export const satelliteMetadata = (satellite: Satellite): SatelliteUiMetadata => ({
+	name: satelliteName(satellite),
+	environment: satelliteEnvironment(satellite),
+	tags: satelliteTags(satellite)
+});
+
 export const satelliteName = ({ metadata }: Satellite): string => metadataName(metadata);
 
 export const satelliteEnvironment = ({ metadata }: Satellite): string | undefined =>
 	metadataEnvironment(metadata);
+
+export const satelliteTags = ({ metadata }: Satellite): SatelliteUiTags | undefined => {
+	const tags = metadataTags(metadata);
+	const { data, success } = SatelliteUiMetadataParser.safeParse(tags);
+	return success ? data : undefined;
+};
+
+export const satelliteMatchesFilter = ({
+	filter,
+	satellite: {
+		satellite_id,
+		metadata: { name, environment, tags }
+	}
+}: {
+	satellite: SatelliteUi;
+	filter: string;
+}): boolean =>
+	name.toLowerCase().includes(filter) ||
+	satellite_id.toText().includes(filter) ||
+	(notEmptyString(environment) && environment.includes(filter)) ||
+	(tags ?? []).find((tag) => tag.includes(filter)) !== undefined;
 
 export const toListParams = ({
 	startAfter,

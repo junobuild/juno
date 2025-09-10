@@ -287,6 +287,8 @@ interface I18nSatellites {
 	name: string;
 	satellite_name: string;
 	environment: string;
+	tags: string;
+	tags_placeholder: string;
 	enter_name: string;
 	edit_details: string;
 	create_satellite_price: string;
@@ -535,7 +537,7 @@ interface I18nErrors {
 	satellite_name_missing: string;
 	satellite_unexpected_error: string;
 	satellite_no_found: string;
-	satellite_name_update: string;
+	satellite_metadata_update: string;
 	satellite_missing_name: string;
 	satellites_not_loaded: string;
 	canister_stop: string;
@@ -607,6 +609,7 @@ interface I18nErrors {
 	full_path_end_slash: string;
 	invalid_email: string;
 	invalid_destination: string;
+	invalid_metadata: string;
 	empty_amount: string;
 	invalid_amount: string;
 	empty_balance: string;

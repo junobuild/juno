@@ -1,5 +1,4 @@
 <script lang="ts">
-	import { notEmptyString } from '@dfinity/utils';
 	import SatelliteArticle from '$lib/components/satellites/SatelliteArticle.svelte';
 	import SatelliteNew from '$lib/components/satellites/SatelliteNew.svelte';
 	import SatellitesToolbar from '$lib/components/satellites/SatellitesToolbar.svelte';

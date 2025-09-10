@@ -1,5 +1,5 @@
 use crate::constants::E8S_PER_ICP;
-use crate::memory::manager::STATE;
+use crate::store::services::{mutate_stable_state, read_stable_state};
 use crate::types::ledger::{Payment, PaymentStatus};
 use crate::types::state::{
     MissionControl, MissionControls, MissionControlsStable, Payments, PaymentsStable, StableState,
@@ -17,7 +17,7 @@ use junobuild_shared::utils::principal_equal;
 // ---------------------------------------------------------
 
 pub fn get_mission_control(user: &UserId) -> Result<Option<MissionControl>, &'static str> {
-    STATE.with(|state| get_mission_control_impl(user, &state.borrow().stable))
+    read_stable_state(|stable| get_mission_control_impl(user, stable))
 }
 
 fn get_mission_control_impl(
@@ -42,9 +42,7 @@ pub fn get_existing_mission_control(
     user: &UserId,
     mission_control_id: &MissionControlId,
 ) -> Result<MissionControl, &'static str> {
-    STATE.with(|state| {
-        get_existing_mission_control_impl(user, mission_control_id, &state.borrow().stable)
-    })
+    read_stable_state(|stable| get_existing_mission_control_impl(user, mission_control_id, stable))
 }
 
 fn get_existing_mission_control_impl(
@@ -70,7 +68,7 @@ fn get_existing_mission_control_impl(
 }
 
 pub fn init_empty_mission_control(user: &UserId) {
-    STATE.with(|state| init_empty_mission_control_impl(user, &mut state.borrow_mut().stable))
+    mutate_stable_state(|stable| init_empty_mission_control_impl(user, stable))
 }
 
 fn init_empty_mission_control_impl(user: &UserId, state: &mut StableState) {
@@ -88,9 +86,7 @@ fn init_empty_mission_control_impl(user: &UserId, state: &mut StableState) {
 }
 
 pub fn add_mission_control(user: &UserId, mission_control_id: &MissionControlId) -> MissionControl {
-    STATE.with(|state| {
-        add_mission_control_impl(user, mission_control_id, &mut state.borrow_mut().stable)
-    })
+    mutate_stable_state(|stable| add_mission_control_impl(user, mission_control_id, stable))
 }
 
 fn add_mission_control_impl(
@@ -119,7 +115,7 @@ fn add_mission_control_impl(
 }
 
 pub fn delete_mission_control(user: &UserId) -> Option<MissionControl> {
-    STATE.with(|state| delete_mission_control_impl(user, &mut state.borrow_mut().stable))
+    mutate_stable_state(|stable| delete_mission_control_impl(user, stable))
 }
 
 fn delete_mission_control_impl(user: &UserId, state: &mut StableState) -> Option<MissionControl> {
@@ -127,7 +123,7 @@ fn delete_mission_control_impl(user: &UserId, state: &mut StableState) -> Option
 }
 
 pub fn list_mission_controls() -> MissionControls {
-    STATE.with(|state| list_mission_controls_impl(&state.borrow_mut().stable.mission_controls))
+    mutate_stable_state(|stable| list_mission_controls_impl(&mut stable.mission_controls))
 }
 
 fn list_mission_controls_impl(mission_controls: &MissionControlsStable) -> MissionControls {
@@ -139,7 +135,7 @@ fn list_mission_controls_impl(mission_controls: &MissionControlsStable) -> Missi
 // ---------------------------------------------------------
 
 pub fn get_credits(user: &UserId) -> Result<Tokens, &'static str> {
-    STATE.with(|state| get_credits_impl(user, &state.borrow().stable))
+    read_stable_state(|stable| get_credits_impl(user, stable))
 }
 
 fn get_credits_impl(user: &UserId, state: &StableState) -> Result<Tokens, &'static str> {
@@ -176,13 +172,11 @@ pub fn has_credits(user: &UserId, mission_control: &MissionControlId, fee: &Toke
 }
 
 pub fn use_credits(user: &UserId) -> Result<Tokens, &'static str> {
-    STATE.with(|state| {
-        update_credits_impl(user, false, &E8S_PER_ICP, &mut state.borrow_mut().stable)
-    })
+    mutate_stable_state(|stable| update_credits_impl(user, false, &E8S_PER_ICP, stable))
 }
 
 pub fn add_credits(user: &UserId, credits: &Tokens) -> Result<Tokens, &'static str> {
-    STATE.with(|state| update_credits_impl(user, true, credits, &mut state.borrow_mut().stable))
+    mutate_stable_state(|stable| update_credits_impl(user, true, credits, stable))
 }
 
 fn update_credits_impl(
@@ -228,14 +222,14 @@ fn update_credits_impl(
 // ---------------------------------------------------------
 
 pub fn is_known_payment(block_index: &BlockIndex) -> bool {
-    STATE.with(|state| state.borrow_mut().stable.payments.contains_key(block_index))
+    read_stable_state(|stable| stable.payments.contains_key(block_index))
 }
 
 pub fn insert_new_payment(
     user: &UserId,
     block_index: &BlockIndex,
 ) -> Result<Payment, &'static str> {
-    STATE.with(|state| insert_new_payment_impl(user, block_index, &mut state.borrow_mut().stable))
+    mutate_stable_state(|stable| insert_new_payment_impl(user, block_index, stable))
 }
 
 fn insert_new_payment_impl(
@@ -267,7 +261,7 @@ fn insert_new_payment_impl(
 }
 
 pub fn update_payment_completed(block_index: &BlockIndex) -> Result<Payment, &'static str> {
-    STATE.with(|state| update_payment_completed_impl(block_index, &mut state.borrow_mut().stable))
+    mutate_stable_state(|stable| update_payment_completed_impl(block_index, stable))
 }
 
 fn update_payment_completed_impl(
@@ -301,12 +295,8 @@ pub fn update_payment_refunded(
     block_index_payment: &BlockIndex,
     block_index_refunded: &BlockIndex,
 ) -> Result<Payment, &'static str> {
-    STATE.with(|state| {
-        update_payment_refunded_impl(
-            block_index_payment,
-            block_index_refunded,
-            &mut state.borrow_mut().stable,
-        )
+    mutate_stable_state(|stable| {
+        update_payment_refunded_impl(block_index_payment, block_index_refunded, stable)
     })
 }
 
@@ -341,7 +331,7 @@ fn update_payment_refunded_impl(
 }
 
 pub fn list_payments() -> Payments {
-    STATE.with(|state| list_payments_impl(&state.borrow_mut().stable.payments))
+    read_stable_state(|stable| list_payments_impl(&stable.payments))
 }
 
 fn list_payments_impl(payments: &PaymentsStable) -> Payments {

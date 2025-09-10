@@ -1,11 +1,11 @@
 <script lang="ts">
+	import { notEmptyString } from '@dfinity/utils';
 	import SatelliteArticle from '$lib/components/satellites/SatelliteArticle.svelte';
 	import SatelliteNew from '$lib/components/satellites/SatelliteNew.svelte';
 	import SatellitesToolbar from '$lib/components/satellites/SatellitesToolbar.svelte';
 	import { sortedSatelliteUis } from '$lib/derived/satellites.derived';
 	import { layoutSatellites } from '$lib/stores/layout-launchpad.store';
 	import { SatellitesLayout } from '$lib/types/layout';
-	import { notEmptyString } from '@dfinity/utils';
 
 	let filter = $state('');
 

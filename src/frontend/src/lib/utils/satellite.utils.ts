@@ -4,7 +4,7 @@ import { PAGINATION } from '$lib/constants/app.constants';
 import { isDev } from '$lib/env/app.env';
 import { SatelliteUiMetadataParser } from '$lib/schemas/satellite.schema';
 import type { ListParams } from '$lib/types/list';
-import type { SatelliteUiTags } from '$lib/types/satellite';
+import type { SatelliteUiMetadata, SatelliteUiTags } from '$lib/types/satellite';
 import { metadataEnvironment, metadataName, metadataTags } from '$lib/utils/metadata.utils';
 import { Principal } from '@dfinity/principal';
 import { isEmptyString, isNullish, notEmptyString, toNullable } from '@dfinity/utils';
@@ -16,6 +16,12 @@ export const satelliteUrl = (satelliteId: string): string => {
 
 	return `https://${satelliteId}.icp0.io`;
 };
+
+export const satelliteMetadata = (satellite: Satellite): SatelliteUiMetadata => ({
+	name: satelliteName(satellite),
+	environment: satelliteEnvironment(satellite),
+	tags: satelliteTags(satellite)
+});
 
 export const satelliteName = ({ metadata }: Satellite): string => metadataName(metadata);
 

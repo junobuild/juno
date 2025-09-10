@@ -83,7 +83,11 @@
 
 		.content,
 		.summary {
-			width: auto;
+			width: 100%;
+
+			@include media.min-width(medium) {
+				width: auto;
+			}
 		}
 
 		.summary {

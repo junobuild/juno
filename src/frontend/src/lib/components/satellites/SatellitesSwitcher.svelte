@@ -5,8 +5,8 @@
 	import ButtonIcon from '$lib/components/ui/ButtonIcon.svelte';
 	import Popover from '$lib/components/ui/Popover.svelte';
 	import { authSignedIn } from '$lib/derived/auth.derived';
-	import { satelliteStore } from '$lib/derived/satellite.derived';
-	import { sortedSatellites } from '$lib/derived/satellites.derived';
+	import { satelliteStore, satelliteUi } from '$lib/derived/satellite.derived';
+	import { sortedSatelliteUis } from '$lib/derived/satellites.derived';
 	import { i18n } from '$lib/stores/i18n.store';
 	import { overviewLink } from '$lib/utils/nav.utils';
 	import { satelliteName } from '$lib/utils/satellite.utils';
@@ -22,8 +22,8 @@
 </script>
 
 {#snippet currentEnvironment()}
-	{#if nonNullish($satelliteStore)}
-		<SatelliteEnvironment satellite={$satelliteStore} />
+	{#if nonNullish($satelliteUi)}
+		<SatelliteEnvironment satellite={$satelliteUi} />
 	{/if}
 {/snippet}
 
@@ -54,8 +54,8 @@
 		<hr />
 
 		<div class="satellites">
-			{#each $sortedSatellites as satellite (satellite.satellite_id.toText())}
-				{@const satName = satelliteName(satellite)}
+			{#each $sortedSatelliteUis as satellite (satellite.satellite_id.toText())}
+				{@const satName = satellite.metadata.name}
 
 				<a
 					class="menu"

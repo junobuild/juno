@@ -1,6 +1,6 @@
 import type { Orbiter, Satellite } from '$declarations/mission_control/mission_control.did';
-import {
-	type SatelliteUiMetadataSchema,
+import type {
+	SatelliteUiMetadataSchema,
 	SatelliteUiTagsSchema
 } from '$lib/schemas/satellite.schema';
 import type { CanisterSyncData } from '$lib/types/canister';
@@ -15,3 +15,5 @@ export interface SegmentWithSyncData<T extends Satellite | Orbiter> {
 
 export type SatelliteUiTags = z.infer<typeof SatelliteUiTagsSchema>;
 export type SatelliteUiMetadata = z.infer<typeof SatelliteUiMetadataSchema>;
+
+export type SatelliteUi = Omit<Satellite, 'metadata'> & { metadata: SatelliteUiMetadata };

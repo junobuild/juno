@@ -46,6 +46,6 @@
 	.primary-opaque {
 		color: var(--color-primary-opaque-contrast);
 		background: rgba(var(--color-primary-opaque-rgb), 0.6);
-		border: 1px solid var(--color-primary-opaque);
+		border: 1px solid rgba(var(--color-primary-rgb), 0.2);
 	}
 </style>

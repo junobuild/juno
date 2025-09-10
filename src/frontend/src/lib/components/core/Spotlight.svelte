@@ -2,6 +2,7 @@
 	import { debounce, isNullish, nonNullish } from '@dfinity/utils';
 	import { untrack } from 'svelte';
 	import { fade } from 'svelte/transition';
+	import SpotlightShortcut from '$lib/components/core/SpotlightShortcut.svelte';
 	import Input from '$lib/components/ui/Input.svelte';
 	import Popover from '$lib/components/ui/Popover.svelte';
 	import Value from '$lib/components/ui/Value.svelte';
@@ -105,14 +106,14 @@
 	let inputElement = $state<HTMLInputElement | undefined>(undefined);
 </script>
 
-<svelte:window {onkeydown} />
+<svelte:window onjunoSpotlight={() => (visible = true)} {onkeydown} />
 
 <Popover backdrop="dark" center bind:visible>
 	<div class="container">
 		<div class="search" role="search">
 			<Value>
 				{#snippet label()}
-					{$i18n.spotlight.search_title}
+					{$i18n.spotlight.search_title} (<SpotlightShortcut />)
 				{/snippet}
 
 				<Input

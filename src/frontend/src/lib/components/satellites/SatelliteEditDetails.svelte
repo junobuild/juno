@@ -22,14 +22,12 @@
 	let satEnv = $state<string | undefined>(satelliteEnvironment(satellite));
 
 	let satTagsInput = $state(satelliteTags(satellite)?.join(',') ?? '');
-	let satTags = $state<SatelliteTags>([]);
-
-	$effect(() => {
-		satTags = satTagsInput
+	let satTags = $derived<SatelliteTags>(
+		satTagsInput
 			.split(/[\n,]+/)
 			.map((input) => input.toLowerCase().trim())
-			.filter(notEmptyString);
-	});
+			.filter(notEmptyString)
+	);
 
 	let visible: boolean = $state(false);
 

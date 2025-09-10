@@ -4,7 +4,7 @@
 	import Badge from '$lib/components/ui/Badge.svelte';
 	import Value from '$lib/components/ui/Value.svelte';
 	import { i18n } from '$lib/stores/i18n.store';
-	import { satelliteEnvironment, satelliteTags } from '$lib/utils/satellite.utils';
+	import { satelliteTags } from '$lib/utils/satellite.utils';
 
 	interface Props {
 		satellite: Satellite;
@@ -13,8 +13,6 @@
 	let { satellite }: Props = $props();
 
 	let tags = $derived(satelliteTags(satellite));
-
-	$inspect(satellite);
 </script>
 
 {#if nonNullish(tags)}

@@ -22,7 +22,7 @@
 		{/snippet}
 
 		<p>
-			{#each tags as tag}
+			{#each tags as tag (tag)}
 				<Badge color="primary-opaque">{tag}</Badge>
 			{/each}
 		</p>

@@ -3,6 +3,7 @@
 	import { fade } from 'svelte/transition';
 	import BannerSkylab from '$lib/components/core/BannerSkylab.svelte';
 	import Logo from '$lib/components/core/Logo.svelte';
+	import NavbarSpotlight from '$lib/components/core/NavbarSpotlight.svelte';
 	import NavbarWallet from '$lib/components/core/NavbarWallet.svelte';
 	import User from '$lib/components/core/User.svelte';
 	import Notifications from '$lib/components/notifications/Notifications.svelte';
@@ -61,6 +62,8 @@
 		{#if $authSignedIn && nonNullish($missionControlIdDerived)}
 			<div in:fade>
 				<Notifications />
+
+				<NavbarSpotlight />
 
 				<NavbarWallet missionControlId={$missionControlIdDerived} />
 			</div>

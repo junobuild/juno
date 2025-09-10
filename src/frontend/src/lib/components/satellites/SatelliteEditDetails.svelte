@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { isNullish, nonNullish } from '@dfinity/utils';
+	import { isNullish, nonNullish, notEmptyString } from '@dfinity/utils';
 	import type { Satellite } from '$declarations/mission_control/mission_control.did';
 	import IconEdit from '$lib/components/icons/IconEdit.svelte';
 	import Popover from '$lib/components/ui/Popover.svelte';
@@ -9,7 +9,8 @@
 	import { busy, isBusy } from '$lib/stores/busy.store';
 	import { i18n } from '$lib/stores/i18n.store';
 	import { toasts } from '$lib/stores/toasts.store';
-	import { satelliteEnvironment, satelliteName } from '$lib/utils/satellite.utils';
+	import type { SatelliteUiTags } from '$lib/types/satellite';
+	import { satelliteEnvironment, satelliteName, satelliteTags } from '$lib/utils/satellite.utils';
 
 	interface Props {
 		satellite: Satellite;
@@ -19,6 +20,14 @@
 
 	let satName = $state(satelliteName(satellite));
 	let satEnv = $state<string | undefined>(satelliteEnvironment(satellite));
+
+	let satTagsInput = $state(satelliteTags(satellite)?.join(',') ?? '');
+	let satTags = $derived<SatelliteUiTags>(
+		satTagsInput
+			.split(/[\n,]+/)
+			.map((input) => input.toLowerCase().trim())
+			.filter(notEmptyString)
+	);
 
 	let visible: boolean = $state(false);
 
@@ -44,20 +53,18 @@
 
 		busy.start();
 
-		try {
-			await setSatelliteMetadata({
-				missionControlId: $missionControlIdDerived,
-				satellite,
-				satelliteName: satName,
-				satelliteEnv: satEnv
-			});
+		const { success } = await setSatelliteMetadata({
+			missionControlId: $missionControlIdDerived,
+			satellite,
+			metadata: {
+				name: satName,
+				environment: satEnv,
+				tags: satTags
+			}
+		});
 
+		if (success) {
 			visible = false;
-		} catch (err: unknown) {
-			toasts.error({
-				text: $i18n.errors.satellite_name_update,
-				detail: err
-			});
 		}
 
 		busy.stop();
@@ -102,6 +109,15 @@
 				<option value="staging"> {$i18n.core.staging} </option>
 				<option value="test"> {$i18n.core.test} </option>
 			</select>
+		</Value>
+
+		<Value ref="satelliteTags">
+			{#snippet label()}
+				{$i18n.satellites.tags}
+			{/snippet}
+
+			<textarea placeholder={$i18n.satellites.tags_placeholder} rows="5" bind:value={satTagsInput}
+			></textarea>
 		</Value>
 
 		<button class="submit" disabled={$isBusy || !validConfirm} type="submit">

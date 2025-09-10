@@ -11,6 +11,7 @@
 	import SatelliteOverviewCustomDomains from '$lib/components/satellites/SatelliteOverviewCustomDomains.svelte';
 	import SatelliteOverviewVersion from '$lib/components/satellites/SatelliteOverviewVersion.svelte';
 	import SatelliteRuntimeActions from '$lib/components/satellites/SatelliteRuntimeActions.svelte';
+	import SatelliteTags from '$lib/components/satellites/SatelliteTags.svelte';
 	import Identifier from '$lib/components/ui/Identifier.svelte';
 	import Value from '$lib/components/ui/Value.svelte';
 	import { listCustomDomains } from '$lib/services/custom-domain.services';
@@ -52,6 +53,8 @@
 			<SatelliteName {satellite} />
 
 			<SatelliteEnvText {satellite} />
+
+			<SatelliteTags {satellite} />
 
 			<SatelliteOverviewCustomDomains {satellite} />
 		</div>

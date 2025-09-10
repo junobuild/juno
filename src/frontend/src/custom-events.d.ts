@@ -9,6 +9,7 @@ declare module 'svelte/elements' {
 		onjunoRegistrationState?: (event: CustomEvent<any>) => void;
 		onjunoReloadAuthConfig?: (event: CustomEvent<any>) => void;
 		onjunoRestartWallet?: (event: CustomEvent<any>) => void;
+		onjunoSpotlight?: (event: CustomEvent<any>) => void;
 	}
 }
 

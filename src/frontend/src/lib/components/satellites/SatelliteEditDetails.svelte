@@ -9,8 +9,8 @@
 	import { busy, isBusy } from '$lib/stores/busy.store';
 	import { i18n } from '$lib/stores/i18n.store';
 	import { toasts } from '$lib/stores/toasts.store';
-	import type { SatelliteTags } from '$lib/types/mission-control';
 	import { satelliteEnvironment, satelliteName, satelliteTags } from '$lib/utils/satellite.utils';
+	import type { SatelliteUiTags } from '$lib/types/satellite';
 
 	interface Props {
 		satellite: Satellite;
@@ -22,7 +22,7 @@
 	let satEnv = $state<string | undefined>(satelliteEnvironment(satellite));
 
 	let satTagsInput = $state(satelliteTags(satellite)?.join(',') ?? '');
-	let satTags = $derived<SatelliteTags>(
+	let satTags = $derived<SatelliteUiTags>(
 		satTagsInput
 			.split(/[\n,]+/)
 			.map((input) => input.toLowerCase().trim())

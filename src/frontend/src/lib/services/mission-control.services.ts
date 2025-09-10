@@ -31,7 +31,10 @@ import {
 	SATELLITE_v0_0_7
 } from '$lib/constants/version.constants';
 import { satellitesStore } from '$lib/derived/satellites.derived';
-import { SatelliteMetadataSchema, SatelliteMetadataSerializer } from '$lib/schemas/mission-control';
+import {
+	SatelliteUiMetadataSchema,
+	SatelliteUiMetadataSerializer
+} from '$lib/schemas/satellite.schema';
 import { loadDataStore } from '$lib/services/loader.services';
 import { loadSatellites } from '$lib/services/satellites.services';
 import { authStore } from '$lib/stores/auth.store';
@@ -47,7 +50,8 @@ import { versionStore } from '$lib/stores/version.store';
 import type { SetControllerParams } from '$lib/types/controllers';
 import type { OptionIdentity } from '$lib/types/itentity';
 import type { Metadata } from '$lib/types/metadata';
-import type { MissionControlId, SatelliteMetadata } from '$lib/types/mission-control';
+import type { MissionControlId } from '$lib/types/mission-control';
+import type { SatelliteUiMetadata } from '$lib/types/satellite';
 import type { Option } from '$lib/types/utils';
 import { isNotValidEmail } from '$lib/utils/email.utils';
 import { container } from '$lib/utils/juno.utils';
@@ -188,9 +192,9 @@ export const setSatelliteMetadata = async ({
 }: {
 	missionControlId: MissionControlId;
 	satellite: Satellite;
-	metadata: SatelliteMetadata;
+	metadata: SatelliteUiMetadata;
 }): Promise<{ success: boolean }> => {
-	const { error, success, data } = SatelliteMetadataSchema.safeParse(metadata);
+	const { error, success, data } = SatelliteUiMetadataSchema.safeParse(metadata);
 
 	if (!success) {
 		toasts.error({
@@ -212,7 +216,7 @@ export const setSatelliteMetadata = async ({
 			updateData.delete(METADATA_KEY_ENVIRONMENT);
 		}
 
-		const tags = SatelliteMetadataSerializer.parse(satelliteTags);
+		const tags = SatelliteUiMetadataSerializer.parse(satelliteTags);
 
 		if (notEmptyString(tags)) {
 			updateData.set(METADATA_KEY_TAGS, tags);

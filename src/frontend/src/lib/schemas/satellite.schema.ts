@@ -3,10 +3,10 @@ import * as z from 'zod/v4';
 
 export const SatelliteTagSchema = z.string().min(1).max(20);
 
-const SatelliteTagsSchema = z.array(SatelliteTagSchema).max(10);
+export const SatelliteUiTagsSchema = z.array(SatelliteTagSchema).max(10);
 
 // DID data -> Frontend
-export const SatelliteMetadataParser = z.preprocess((val) => {
+export const SatelliteUiMetadataParser = z.preprocess((val) => {
 	if (typeof val === 'string') {
 		return val
 			.split(',')
@@ -14,16 +14,16 @@ export const SatelliteMetadataParser = z.preprocess((val) => {
 			.filter(notEmptyString);
 	}
 	return val;
-}, SatelliteTagsSchema);
+}, SatelliteUiTagsSchema);
 
 // Frontend -> DID Data
-export const SatelliteMetadataSerializer = SatelliteTagsSchema.optional().transform((tags) =>
+export const SatelliteUiMetadataSerializer = SatelliteUiTagsSchema.optional().transform((tags) =>
 	tags?.join(',')
 );
 
 // Metadata as loaded on the frontend side. See mission-control.did for Metadata Array<[string, string]>
-export const SatelliteMetadataSchema = z.strictObject({
+export const SatelliteUiMetadataSchema = z.strictObject({
 	name: z.string(),
 	environment: z.string().optional(),
-	tags: SatelliteTagsSchema.optional()
+	tags: SatelliteUiTagsSchema.optional()
 });

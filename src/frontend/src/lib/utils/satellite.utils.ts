@@ -2,9 +2,9 @@ import type { Satellite } from '$declarations/mission_control/mission_control.di
 import type { ListParams as ListParamsApi } from '$declarations/satellite/satellite.did';
 import { PAGINATION } from '$lib/constants/app.constants';
 import { isDev } from '$lib/env/app.env';
-import { SatelliteMetadataParser } from '$lib/schemas/mission-control';
+import { SatelliteUiMetadataParser } from '$lib/schemas/satellite.schema';
 import type { ListParams } from '$lib/types/list';
-import type { SatelliteTags } from '$lib/types/mission-control';
+import type { SatelliteUiTags } from '$lib/types/satellite';
 import { metadataEnvironment, metadataName, metadataTags } from '$lib/utils/metadata.utils';
 import { Principal } from '@dfinity/principal';
 import { isEmptyString, isNullish, notEmptyString, toNullable } from '@dfinity/utils';
@@ -22,9 +22,9 @@ export const satelliteName = ({ metadata }: Satellite): string => metadataName(m
 export const satelliteEnvironment = ({ metadata }: Satellite): string | undefined =>
 	metadataEnvironment(metadata);
 
-export const satelliteTags = ({ metadata }: Satellite): SatelliteTags | undefined => {
+export const satelliteTags = ({ metadata }: Satellite): SatelliteUiTags | undefined => {
 	const tags = metadataTags(metadata);
-	const { data, success } = SatelliteMetadataParser.safeParse(tags);
+	const { data, success } = SatelliteUiMetadataParser.safeParse(tags);
 	return success ? data : undefined;
 };
 

@@ -1,26 +1,17 @@
 <script lang="ts">
 	import { page } from '$app/state';
-	import IconAnalytics from '$lib/components/icons/IconAnalytics.svelte';
 	import IconBook from '$lib/components/icons/IconBook.svelte';
 	import IconCodeBranch from '$lib/components/icons/IconCodeBranch.svelte';
-	import IconMissionControl from '$lib/components/icons/IconMissionControl.svelte';
 	import IconRaygun from '$lib/components/icons/IconRaygun.svelte';
-	import IconRocket from '$lib/components/icons/IconRocket.svelte';
 	import IconSignIn from '$lib/components/icons/IconSignIn.svelte';
 	import IconSignOut from '$lib/components/icons/IconSignOut.svelte';
-	import IconTelescope from '$lib/components/icons/IconTelescope.svelte';
-	import IconUpgradeDock from '$lib/components/icons/IconUpgradeDock.svelte';
 	import IconUser from '$lib/components/icons/IconUser.svelte';
-	import IconWallet from '$lib/components/icons/IconWallet.svelte';
 	import ButtonIcon from '$lib/components/ui/ButtonIcon.svelte';
 	import Popover from '$lib/components/ui/Popover.svelte';
 	import { APP_VERSION } from '$lib/constants/app.constants';
 	import { authSignedIn } from '$lib/derived/auth.derived';
-	import { satelliteStore } from '$lib/derived/satellite.derived';
-	import { satellitesNotLoaded, satellitesStore } from '$lib/derived/satellites.derived';
 	import { signIn as doSignIn, signOut } from '$lib/services/auth/auth.services';
 	import { i18n } from '$lib/stores/i18n.store';
-	import { analyticsLink, upgradeDockLink } from '$lib/utils/nav.utils';
 
 	interface Props {
 		signIn?: boolean;
@@ -47,12 +38,7 @@
 		visible = true;
 	};
 
-	let home = $derived(page.route.id === '/(home)');
 	let preferences = $derived(page.route.id === '/(single)/preferences');
-
-	// If there is no satellites, we consider the user has a new developer and want to show all links in the user popover that way the user can navigate anyway on the home screen.
-	let newDeveloper = $derived($satellitesNotLoaded || ($satellitesStore?.length ?? 0) === 0);
-	let showNavigation = $derived(newDeveloper && home);
 </script>
 
 {#if $authSignedIn}
@@ -73,56 +59,6 @@
 
 <Popover anchor={button} direction="rtl" bind:visible>
 	<div class="container">
-		{#if !home && !preferences}
-			<a class="menu" aria-haspopup="menu" href="/" onclick={close} role="menuitem">
-				<IconRocket />
-				<span>{$i18n.satellites.launchpad}</span>
-			</a>
-		{/if}
-
-		{#if showNavigation}
-			<a class="menu" aria-haspopup="menu" href="/mission-control" onclick={close} role="menuitem">
-				<IconMissionControl />
-				<span>{$i18n.mission_control.title}</span>
-			</a>
-
-			<a class="menu" aria-haspopup="menu" href="/wallet" onclick={close} role="menuitem">
-				<IconWallet />
-				<span>{$i18n.wallet.title}</span>
-			</a>
-
-			<a
-				class="menu"
-				aria-haspopup="menu"
-				href={analyticsLink($satelliteStore?.satellite_id)}
-				onclick={close}
-				role="menuitem"
-			>
-				<IconAnalytics />
-				<span>{$i18n.analytics.title}</span>
-			</a>
-
-			<a class="menu" aria-haspopup="menu" href="/monitoring" onclick={close} role="menuitem">
-				<IconTelescope />
-				<span>{$i18n.monitoring.title}</span>
-			</a>
-
-			<a
-				class="menu"
-				aria-haspopup="menu"
-				href={upgradeDockLink($satelliteStore?.satellite_id)}
-				onclick={close}
-				role="menuitem"
-			>
-				<IconUpgradeDock />
-				<span>{$i18n.upgrade.title}</span>
-			</a>
-
-			{#if preferences}
-				<hr />
-			{/if}
-		{/if}
-
 		{#if !preferences}
 			<a class="menu" aria-haspopup="menu" href="/preferences" onclick={close} role="menuitem">
 				<IconRaygun />

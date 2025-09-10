@@ -170,9 +170,6 @@
 	@include dialog.edit;
 
 	.container {
-		width: 420px;
-		max-width: calc(100vw - var(--padding-4x));
-
 		padding: 0;
 	}
 
@@ -200,14 +197,14 @@
 	}
 
 	.search {
-		padding: var(--padding-2x) var(--padding-3x) 0 var(--padding-2x);
+		padding: var(--padding-2x) var(--padding-2x) 0 var(--padding-2x);
 
 		background: var(--color-menu);
 	}
 
 	li,
 	.none {
-		padding: 0 var(--padding-2x) 0 var(--padding-2x);
+		padding: 0 var(--padding) 0 var(--padding-2x);
 	}
 
 	.none {

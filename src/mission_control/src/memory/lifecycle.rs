@@ -2,7 +2,7 @@ use crate::memory::manager::{get_memory_upgrades, init_runtime_state, init_stabl
 use crate::monitoring::monitor::defer_restart_monitoring;
 use crate::random::defer_init_random_seed;
 use crate::types::state::{HeapState, State};
-use ciborium::{from_reader, into_writer};
+use ciborium::into_writer;
 use ic_cdk_macros::{init, post_upgrade, pre_upgrade};
 use junobuild_shared::types::interface::MissionControlArgs;
 use junobuild_shared::upgrade::{read_post_upgrade, write_pre_upgrade};
@@ -36,9 +36,7 @@ fn pre_upgrade() {
 #[post_upgrade]
 fn post_upgrade() {
     let memory = get_memory_upgrades();
-    let state_bytes = read_post_upgrade(&memory);
-
-    let state: State = from_reader(&*state_bytes)
+    let state = read_post_upgrade(&memory)
         .expect("Failed to decode the state of the mission control in post_upgrade hook.");
 
     STATE.with(|s| *s.borrow_mut() = state);

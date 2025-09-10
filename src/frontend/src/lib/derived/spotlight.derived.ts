@@ -1,4 +1,3 @@
-import type { Satellite } from '$declarations/mission_control/mission_control.did';
 import IconAnalytics from '$lib/components/icons/IconAnalytics.svelte';
 import IconAuthentication from '$lib/components/icons/IconAuthentication.svelte';
 import IconBook from '$lib/components/icons/IconBook.svelte';
@@ -19,9 +18,10 @@ import IconWallet from '$lib/components/icons/IconWallet.svelte';
 import { authNotSignedIn } from '$lib/derived/auth.derived';
 import { missionControlIdDerived } from '$lib/derived/mission-control.derived';
 import { satelliteStore } from '$lib/derived/satellite.derived';
-import { satellitesStore } from '$lib/derived/satellites.derived';
+import { sortedSatelliteUis } from '$lib/derived/satellites.derived';
 import { i18n } from '$lib/stores/i18n.store';
 import { theme } from '$lib/stores/theme.store';
+import type { SatelliteUi } from '$lib/types/satellite';
 import type {
 	SpotlightActionItem,
 	SpotlightItemFilterFn,
@@ -32,7 +32,7 @@ import type {
 import { Theme } from '$lib/types/theme';
 import { shortenWithMiddleEllipsis } from '$lib/utils/format.utils';
 import { analyticsLink, upgradeDockLink } from '$lib/utils/nav.utils';
-import { satelliteName } from '$lib/utils/satellite.utils';
+import { satelliteMatchesFilter } from '$lib/utils/satellite.utils';
 import { isNullish, nonNullish, notEmptyString } from '@dfinity/utils';
 import { derived, type Readable } from 'svelte/store';
 
@@ -151,25 +151,29 @@ const externalItems: Readable<SpotlightItems> = derived([i18n], ([$i18n]) => [
 ]);
 
 const satellitesItems: Readable<SpotlightItems> = derived(
-	[i18n, satellitesStore, satelliteStore],
-	([$i18n, $satellitesStore, $satelliteStore]) => {
-		const mapSatelliteNav = (satellite: Satellite): SpotlightNavItem[] => {
-			const name = satelliteName(satellite);
+	[i18n, sortedSatelliteUis, satelliteStore],
+	([$i18n, $sortedSatelliteUis, $satelliteStore]) => {
+		const mapSatelliteNav = (satellite: SatelliteUi): SpotlightNavItem[] => {
+			const {
+				satellite_id,
+				metadata: { name }
+			} = satellite;
+			const satelliteId = satellite_id.toText();
+
 			const nameAndId = `${notEmptyString(name) ? `${name} (` : ''}${shortenWithMiddleEllipsis({
-				text: satellite.satellite_id.toText(),
+				text: satelliteId,
 				length: 4
 			})}${notEmptyString(name) ? ')' : ''}`;
 
-			const queryParam = `/?s=${satellite.satellite_id.toText()}`;
+			const queryParam = `/?s=${satelliteId}`;
 
-			const isSelected = $satelliteStore?.satellite_id.toText() === satellite.satellite_id.toText();
+			const isSelected = $satelliteStore?.satellite_id.toText() === satelliteId;
 
 			const filter =
 				(section: string): SpotlightItemFilterFn =>
 				({ query }: SpotlightItemFilterParams) =>
-					[nameAndId, ...(isSelected ? [section] : [])].find((text) =>
-						text.toLowerCase().includes(query)
-					) !== undefined;
+					(isSelected && section.includes(query.toLowerCase())) ||
+					satelliteMatchesFilter({ satellite, filter: query.toLowerCase() });
 
 			return [
 				{
@@ -217,7 +221,7 @@ const satellitesItems: Readable<SpotlightItems> = derived(
 			];
 		};
 
-		return ($satellitesStore ?? []).flatMap(mapSatelliteNav);
+		return ($sortedSatelliteUis ?? []).flatMap(mapSatelliteNav);
 	}
 );
 

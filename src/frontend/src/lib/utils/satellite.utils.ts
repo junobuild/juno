@@ -4,7 +4,7 @@ import { PAGINATION } from '$lib/constants/app.constants';
 import { isDev } from '$lib/env/app.env';
 import { SatelliteUiMetadataParser } from '$lib/schemas/satellite.schema';
 import type { ListParams } from '$lib/types/list';
-import type { SatelliteUiMetadata, SatelliteUiTags } from '$lib/types/satellite';
+import type { SatelliteUi, SatelliteUiMetadata, SatelliteUiTags } from '$lib/types/satellite';
 import { metadataEnvironment, metadataName, metadataTags } from '$lib/utils/metadata.utils';
 import { Principal } from '@dfinity/principal';
 import { isEmptyString, isNullish, notEmptyString, toNullable } from '@dfinity/utils';
@@ -33,6 +33,21 @@ export const satelliteTags = ({ metadata }: Satellite): SatelliteUiTags | undefi
 	const { data, success } = SatelliteUiMetadataParser.safeParse(tags);
 	return success ? data : undefined;
 };
+
+export const satelliteMatchesFilter = ({
+	filter,
+	satellite: {
+		satellite_id,
+		metadata: { name, environment, tags }
+	}
+}: {
+	satellite: SatelliteUi;
+	filter: string;
+}): boolean =>
+	name.toLowerCase().includes(filter) ||
+	satellite_id.toText().includes(filter) ||
+	(notEmptyString(environment) && environment.includes(filter)) ||
+	(tags ?? []).find((tag) => tag.includes(filter)) !== undefined;
 
 export const toListParams = ({
 	startAfter,

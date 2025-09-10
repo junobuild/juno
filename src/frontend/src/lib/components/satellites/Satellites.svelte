@@ -6,16 +6,13 @@
 	import { sortedSatelliteUis } from '$lib/derived/satellites.derived';
 	import { layoutSatellites } from '$lib/stores/layout-launchpad.store';
 	import { SatellitesLayout } from '$lib/types/layout';
+	import { satelliteMatchesFilter } from '$lib/utils/satellite.utils';
 
 	let filter = $state('');
 
 	let satellites = $derived(
-		$sortedSatelliteUis.filter(
-			({ satellite_id, metadata: { name, environment, tags } }) =>
-				name.toLowerCase().includes(filter.toLowerCase()) ||
-				satellite_id.toText().includes(filter.toLowerCase()) ||
-				(notEmptyString(environment) && environment.includes(filter.toLowerCase())) ||
-				(tags ?? []).find((tag) => tag.includes(filter.toLowerCase()))
+		$sortedSatelliteUis.filter((satellite) =>
+			satelliteMatchesFilter({ satellite, filter: filter.toLowerCase() })
 		)
 	);
 </script>

@@ -5,10 +5,10 @@
 	import SpotlightShortcut from '$lib/components/core/SpotlightShortcut.svelte';
 	import Input from '$lib/components/ui/Input.svelte';
 	import Popover from '$lib/components/ui/Popover.svelte';
-	import Value from '$lib/components/ui/Value.svelte';
 	import { authSignedIn } from '$lib/derived/auth.derived';
 	import { spotlightItems } from '$lib/derived/spotlight.derived';
 	import { i18n } from '$lib/stores/i18n.store';
+	import { isDesktop } from '$lib/utils/device.utils';
 
 	let visible = $state(false);
 
@@ -104,6 +104,8 @@
 
 	let itemsRef: HTMLUListElement | undefined = $state(undefined);
 	let inputElement = $state<HTMLInputElement | undefined>(undefined);
+
+	const autofocus = isDesktop();
 </script>
 
 <svelte:window onjunoSpotlight={() => (visible = true)} {onkeydown} />
@@ -117,7 +119,7 @@
 
 			<Input
 				name="destination"
-				autofocus
+				{autofocus}
 				inputType="text"
 				placeholder={$i18n.spotlight.search_placeholder}
 				required={false}

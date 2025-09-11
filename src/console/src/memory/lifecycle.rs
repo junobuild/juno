@@ -2,7 +2,6 @@ use crate::cdn::certified_assets::upgrade::defer_init_certified_assets;
 use crate::cdn::lifecycle::init_cdn_storage_heap_state;
 use crate::memory::manager::{get_memory_upgrades, init_stable_state, STATE};
 use crate::types::state::{Fees, HeapState, Rates, ReleasesMetadata, State};
-use ciborium::into_writer;
 use ic_cdk_macros::{init, post_upgrade, pre_upgrade};
 use junobuild_shared::controllers::init_admin_controllers;
 use junobuild_shared::ic::api::caller;
@@ -34,12 +33,10 @@ fn init() {
 
 #[pre_upgrade]
 fn pre_upgrade() {
-    let mut state_bytes = vec![];
-    STATE
-        .with(|s| into_writer(&*s.borrow(), &mut state_bytes))
-        .expect("Failed to encode the state of the console in pre_upgrade hook.");
-
-    write_pre_upgrade(&state_bytes, &mut get_memory_upgrades());
+    STATE.with(|s| {
+        write_pre_upgrade(&*s.borrow(), &mut get_memory_upgrades())
+            .expect("Failed to encode the state of the console in pre_upgrade hook.");
+    });
 }
 
 #[post_upgrade]

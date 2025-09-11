@@ -9,8 +9,14 @@ use std::mem::size_of;
 // https://github.com/dfinity/stable-structures/issues/104
 const OFFSET: usize = size_of::<u32>();
 
+fn offset() -> Result<u64, Error> {
+    OFFSET
+        .try_into()
+        .map_err(|_| Error::new(ErrorKind::InvalidData, "Invalid stable memory offset"))
+}
+
 // A custom writer that writes to memory while also counting the number of bytes written.
-// The total is needed to be later stored in the 4-byte length prefix on the memory.
+// The total is later stored in the 4-byte length prefix in stable memory.
 struct PreUpgradeWriter<W> {
     inner: W,
     bytes_length: usize,
@@ -29,31 +35,28 @@ impl<W: Write> Write for PreUpgradeWriter<W> {
 }
 
 pub fn write_pre_upgrade<T: serde::Serialize>(state: &T, memory: &mut Memory) -> Result<(), Error> {
-    // Reserve 4 bytes for the length of the serialized bytes that will be saved
+    // Reserve 4 bytes for the length prefix of the serialized bytes that will be saved
     let mut header = Writer::new(memory, 0);
     header.write_all(&[0u8; OFFSET])?;
 
-    let offset: u64 = OFFSET
-        .try_into()
-        .map_err(|_| Error::new(ErrorKind::InvalidData, "Invalid stable memory offset"))?;
-
-    // Write (stream) the state bytes to memory starting at offset 4 while counting the bytes actually saved
-    let payload = Writer::new(memory, offset);
+    // Write (stream) the state bytes to memory starting at OFFSET
+    // while counting the number of bytes written
+    let payload = Writer::new(memory, offset()?);
     let mut writer = PreUpgradeWriter {
         inner: payload,
         bytes_length: 0,
     };
     into_writer(state, &mut writer).map_err(|e| Error::new(ErrorKind::Other, e.to_string()))?;
 
-    // Save the effective length of the bytes that were saved
-    let len_u32: u32 = writer.bytes_length.try_into().map_err(|_| {
+    // Backfill (save) the length prefix with the number of bytes effectively written
+    let len: u32 = writer.bytes_length.try_into().map_err(|_| {
         Error::new(
             ErrorKind::InvalidData,
             "Serialized state exceeds u32 length prefix",
         )
     })?;
     let mut header = Writer::new(memory, 0);
-    header.write_all(&len_u32.to_le_bytes())?;
+    header.write_all(&len.to_le_bytes())?;
 
     Ok(())
 }
@@ -61,14 +64,10 @@ pub fn write_pre_upgrade<T: serde::Serialize>(state: &T, memory: &mut Memory) ->
 pub fn read_post_upgrade<T: serde::de::DeserializeOwned>(
     memory: &Memory,
 ) -> Result<T, CborError<Error>> {
-    // Read the length of the state bytes.
+    // Read the length of the state bytes
     let mut state_len_bytes = [0; OFFSET];
     memory.read(0, &mut state_len_bytes);
     let state_len = u32::from_le_bytes(state_len_bytes) as usize;
-
-    let offset: u64 = OFFSET
-        .try_into()
-        .map_err(|_| Error::new(ErrorKind::InvalidData, "Invalid stable memory offset"))?;
 
     let len: u64 = state_len.try_into().map_err(|_| {
         Error::new(
@@ -77,8 +76,8 @@ pub fn read_post_upgrade<T: serde::de::DeserializeOwned>(
         )
     })?;
 
-    // Read (stream) the bytes.
-    let reader = Reader::new(memory, offset);
+    // Read (stream) the bytes
+    let reader = Reader::new(memory, offset()?);
     let bounded_reader = reader.take(len);
 
     from_reader(bounded_reader)

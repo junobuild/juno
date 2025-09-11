@@ -25,6 +25,7 @@ struct MockData {
 fn on_set_doc(context: OnSetDocContext) -> Result<(), String> {
     info("Hello world".to_string())?;
 
+    #[allow(clippy::single_match)]
     match context.data.collection.as_str() {
         "test_utils" => {
             let data = decode_doc_data::<MockData>(&context.data.data.after.data)?;
@@ -53,7 +54,7 @@ fn on_set_doc(context: OnSetDocContext) -> Result<(), String> {
             let doc: SetDoc = SetDoc {
                 data: encode_doc_data(&update_data)?,
                 description: None,
-                version: context.data.data.after.version.clone(),
+                version: context.data.data.after.version,
             };
 
             let _ = set_doc_store(id(), "test_utils".to_string(), context.data.key, doc)?;

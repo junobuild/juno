@@ -1,4 +1,4 @@
-use crate::memory::manager::STATE;
+use crate::store::services::{mutate_heap_state, read_heap_state};
 use crate::types::state::{
     Fee, Fees, HeapState, InvitationCode, InvitationCodeRedeem, InvitationCodes, MissionControls,
     Payments, Rate, ReleaseVersion, ReleasesMetadata,
@@ -22,7 +22,7 @@ use std::collections::HashSet;
 
 #[deprecated(note = "Use stable memory instead")]
 pub fn list_mission_controls_heap() -> MissionControls {
-    STATE.with(|state| list_mission_controls_heap_impl(&state.borrow().heap))
+    read_heap_state(|heap| list_mission_controls_heap_impl(heap))
 }
 
 fn list_mission_controls_heap_impl(state: &HeapState) -> MissionControls {
@@ -35,7 +35,7 @@ fn list_mission_controls_heap_impl(state: &HeapState) -> MissionControls {
 
 #[deprecated(note = "Use stable memory instead")]
 pub fn list_payments_heap() -> Payments {
-    STATE.with(|state| list_payments_heap_impl(&state.borrow().heap))
+    read_heap_state(|heap| list_payments_heap_impl(heap))
 }
 
 fn list_payments_heap_impl(state: &HeapState) -> Payments {
@@ -47,14 +47,11 @@ fn list_payments_heap_impl(state: &HeapState) -> Payments {
 // ---------------------------------------------------------
 
 pub fn add_invitation_code(code: &InvitationCode) {
-    STATE
-        .with(|state| add_invitation_code_impl(code, &mut state.borrow_mut().heap.invitation_codes))
+    mutate_heap_state(|heap| add_invitation_code_impl(code, &mut heap.invitation_codes))
 }
 
 pub fn redeem_invitation_code(user_id: &UserId, code: &InvitationCode) -> Result<(), &'static str> {
-    STATE.with(|state| {
-        redeem_invitation_code_impl(user_id, code, &mut state.borrow_mut().heap.invitation_codes)
-    })
+    mutate_heap_state(|heap| redeem_invitation_code_impl(user_id, code, &mut heap.invitation_codes))
 }
 
 fn redeem_invitation_code_impl(
@@ -105,23 +102,17 @@ fn add_invitation_code_impl(code: &InvitationCode, invitation_codes: &mut Invita
 // ---------------------------------------------------------
 
 pub fn get_controllers() -> Controllers {
-    STATE.with(|state| state.borrow().heap.controllers.clone())
+    read_heap_state(|heap| heap.controllers.clone())
 }
 
 pub fn set_controllers(new_controllers: &[ControllerId], controller: &SetController) {
-    STATE.with(|state| {
-        set_controllers_impl(
-            new_controllers,
-            controller,
-            &mut state.borrow_mut().heap.controllers,
-        )
+    mutate_heap_state(|heap| {
+        set_controllers_impl(new_controllers, controller, &mut heap.controllers)
     })
 }
 
 pub fn delete_controllers(remove_controllers: &[ControllerId]) {
-    STATE.with(|state| {
-        delete_controllers_impl(remove_controllers, &mut state.borrow_mut().heap.controllers)
-    })
+    mutate_heap_state(|heap| delete_controllers_impl(remove_controllers, &mut heap.controllers))
 }
 
 // ---------------------------------------------------------
@@ -129,15 +120,15 @@ pub fn delete_controllers(remove_controllers: &[ControllerId]) {
 // ---------------------------------------------------------
 
 pub fn increment_satellites_rate() -> Result<(), String> {
-    STATE.with(|state| increment_rate_impl(&mut state.borrow_mut().heap.rates.satellites))
+    mutate_heap_state(|heap| increment_rate_impl(&mut heap.rates.satellites))
 }
 
 pub fn increment_mission_controls_rate() -> Result<(), String> {
-    STATE.with(|state| increment_rate_impl(&mut state.borrow_mut().heap.rates.mission_controls))
+    mutate_heap_state(|heap| increment_rate_impl(&mut heap.rates.mission_controls))
 }
 
 pub fn increment_orbiters_rate() -> Result<(), String> {
-    STATE.with(|state| increment_rate_impl(&mut state.borrow_mut().heap.rates.orbiters))
+    mutate_heap_state(|heap| increment_rate_impl(&mut heap.rates.orbiters))
 }
 
 fn increment_rate_impl(rate: &mut Rate) -> Result<(), String> {
@@ -145,19 +136,15 @@ fn increment_rate_impl(rate: &mut Rate) -> Result<(), String> {
 }
 
 pub fn update_satellites_rate_config(config: &RateConfig) {
-    STATE.with(|state| {
-        update_rate_config_impl(config, &mut state.borrow_mut().heap.rates.satellites)
-    })
+    mutate_heap_state(|heap| update_rate_config_impl(config, &mut heap.rates.satellites))
 }
 
 pub fn update_mission_controls_rate_config(config: &RateConfig) {
-    STATE.with(|state| {
-        update_rate_config_impl(config, &mut state.borrow_mut().heap.rates.mission_controls)
-    })
+    mutate_heap_state(|heap| update_rate_config_impl(config, &mut heap.rates.mission_controls))
 }
 
 pub fn update_orbiters_rate_config(config: &RateConfig) {
-    STATE.with(|state| update_rate_config_impl(config, &mut state.borrow_mut().heap.rates.orbiters))
+    mutate_heap_state(|heap| update_rate_config_impl(config, &mut heap.rates.orbiters))
 }
 
 fn update_rate_config_impl(config: &RateConfig, rate: &mut Rate) {
@@ -169,19 +156,19 @@ fn update_rate_config_impl(config: &RateConfig, rate: &mut Rate) {
 // ---------------------------------------------------------
 
 pub fn get_satellite_fee() -> Tokens {
-    STATE.with(|state| state.borrow().heap.fees.satellite.fee)
+    read_heap_state(|heap| heap.fees.satellite.fee)
 }
 
 pub fn get_orbiter_fee() -> Tokens {
-    STATE.with(|state| state.borrow().heap.fees.orbiter.fee)
+    read_heap_state(|heap| heap.fees.orbiter.fee)
 }
 
 pub fn set_create_satellite_fee(fee: &Tokens) {
-    STATE.with(|state| set_satellite_fee(fee, &mut state.borrow_mut().heap.fees))
+    mutate_heap_state(|heap| set_satellite_fee(fee, &mut heap.fees))
 }
 
 pub fn set_create_orbiter_fee(fee: &Tokens) {
-    STATE.with(|state| set_orbiter_fee(fee, &mut state.borrow_mut().heap.fees))
+    mutate_heap_state(|heap| set_orbiter_fee(fee, &mut heap.fees))
 }
 
 fn set_satellite_fee(fee: &Tokens, state: &mut Fees) {
@@ -203,11 +190,11 @@ fn set_orbiter_fee(fee: &Tokens, state: &mut Fees) {
 // ---------------------------------------------------------
 
 pub fn get_releases_metadata() -> ReleasesMetadata {
-    STATE.with(|state| state.borrow().heap.releases_metadata.clone())
+    read_heap_state(|heap| heap.releases_metadata.clone())
 }
 
 pub fn set_releases_metadata(metadata: &ReleasesMetadata) {
-    STATE.with(|state| set_releases_metadata_impl(metadata, &mut state.borrow_mut().heap))
+    mutate_heap_state(|heap| set_releases_metadata_impl(metadata, heap))
 }
 
 fn set_releases_metadata_impl(metadata: &ReleasesMetadata, heap_state: &mut HeapState) {
@@ -215,15 +202,15 @@ fn set_releases_metadata_impl(metadata: &ReleasesMetadata, heap_state: &mut Heap
 }
 
 pub fn get_latest_mission_control_version() -> Option<ReleaseVersion> {
-    STATE.with(|state| get_latest_version(&state.borrow().heap.releases_metadata.mission_controls))
+    read_heap_state(|heap| get_latest_version(&heap.releases_metadata.mission_controls))
 }
 
 pub fn get_latest_orbiter_version() -> Option<ReleaseVersion> {
-    STATE.with(|state| get_latest_version(&state.borrow().heap.releases_metadata.orbiters))
+    read_heap_state(|heap| get_latest_version(&heap.releases_metadata.orbiters))
 }
 
 pub fn get_latest_satellite_version() -> Option<ReleaseVersion> {
-    STATE.with(|state| get_latest_version(&state.borrow().heap.releases_metadata.satellites))
+    read_heap_state(|heap| get_latest_version(&heap.releases_metadata.satellites))
 }
 
 fn get_latest_version(versions: &HashSet<ReleaseVersion>) -> Option<ReleaseVersion> {

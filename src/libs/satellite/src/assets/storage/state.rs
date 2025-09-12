@@ -18,6 +18,7 @@ use junobuild_storage::types::store::{Asset, AssetEncoding};
 use junobuild_storage::utils::clone_asset_encoding_content_chunks;
 use std::borrow::Cow;
 use std::ops::RangeBounds;
+use junobuild_collections::constants::assets::COLLECTION_ASSET_KEY;
 // ---------------------------------------------------------
 // Assets
 // ---------------------------------------------------------
@@ -30,7 +31,11 @@ pub fn get_public_asset(full_path: &FullPath) -> (Option<Asset>, Memory) {
     match heap_asset {
         Some(heap_asset) => (Some(heap_asset), Memory::Heap),
         None => {
-            STATE.with(|state| get_public_asset_stable(full_path, &state.borrow().stable.assets))
+            let result = STATE.with(|state| get_public_asset_stable(full_path, &state.borrow().stable.assets));
+
+            ic_cdk::print(format!("[stable ] {}: {}", full_path, result.0.is_some()));
+
+            result
         }
     }
 }
@@ -47,8 +52,18 @@ pub fn get_public_asset_stable(
     // The satellite does not use stable memory for the #app collection, so we can assume that a requested stable asset is one uploaded by a user or developer.
     // Therefore, it should be prefixed with the collection (/collection/something)
 
-    if parts.len() <= 2 {
-        return (None, Memory::Stable);
+    // TODO
+    // if parts.len() <= 2 {
+    //    return (None, Memory::Stable);
+    // }
+
+    let app_asset = get_asset_stable(&COLLECTION_ASSET_KEY.to_string(), full_path, assets);
+
+    if let Some(app_asset) = app_asset {
+        return (
+            Some(app_asset),
+            Memory::Stable,
+        )
     }
 
     // full_path always starts with / (we ensure this when we map the url). Split will result in a first element equals to "".
@@ -77,6 +92,9 @@ pub fn get_content_chunks(
     chunk_index: usize,
     memory: &Memory,
 ) -> Option<Blob> {
+
+    ic_cdk::print(format!("[get_content_chunks] {}", memory));
+
     match memory {
         Memory::Heap => {
             let content_chunks = clone_asset_encoding_content_chunks(encoding, chunk_index);
@@ -95,6 +113,8 @@ pub fn insert_asset_encoding(
     asset: &mut Asset,
     rule: &Rule,
 ) {
+    ic_cdk::print(format!("[insert_asset_encoding] {}: {} {}", full_path, rule.clone().memory.unwrap_or_default(), encoding_type));
+
     match rule.mem() {
         Memory::Heap => {
             asset
@@ -115,6 +135,9 @@ pub fn insert_asset_encoding(
 }
 
 pub fn insert_asset(collection: &CollectionKey, full_path: &FullPath, asset: &Asset, rule: &Rule) {
+
+    ic_cdk::print(format!("[insert] {}: {}", full_path, rule.clone().memory.unwrap_or_default()));
+
     match rule.mem() {
         Memory::Heap => STATE.with(|state| {
             insert_asset_heap(

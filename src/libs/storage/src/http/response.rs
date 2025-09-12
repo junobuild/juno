@@ -26,6 +26,9 @@ pub fn build_asset_response(
             let encodings = build_encodings(requested_headers);
 
             for encoding_type in encodings.iter() {
+
+                ic_cdk::print(format!("------------encoding------------------> {} {}", encoding_type, asset.encodings.get(encoding_type).is_some()));
+
                 if let Some(encoding) = asset.encodings.get(encoding_type) {
                     let headers = build_response_headers(
                         &requested_url,

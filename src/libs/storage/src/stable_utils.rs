@@ -35,4 +35,6 @@ pub fn insert_asset_encoding_stable<K>(
             ..encoding.clone()
         },
     );
+
+    ic_cdk::print(format!("------------encoding INSERT------------------> {} {} {}", full_path, encoding_type, asset.encodings.get(encoding_type).is_some()));
 }

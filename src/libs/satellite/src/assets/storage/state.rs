@@ -28,8 +28,6 @@ pub fn get_public_asset(full_path: &FullPath) -> (Option<Asset>, Memory) {
     let heap_asset =
         STATE.with(|state| get_asset_heap(full_path, &state.borrow().heap.storage.assets));
 
-    ic_cdk::print(format!("[heap] {}: {}", full_path, heap_asset.is_some()));
-
     match heap_asset {
         Some(heap_asset) => (Some(heap_asset), Memory::Heap),
         None => {
@@ -115,7 +113,7 @@ pub fn insert_asset_encoding(
     asset: &mut Asset,
     rule: &Rule,
 ) {
-    ic_cdk::print(format!("[insert_asset_encoding] {}: {}", full_path, rule.clone().memory.unwrap_or_default()));
+    ic_cdk::print(format!("[insert_asset_encoding] {}: {} {}", full_path, rule.clone().memory.unwrap_or_default(), encoding_type));
 
     match rule.mem() {
         Memory::Heap => {

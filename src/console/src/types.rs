@@ -20,6 +20,7 @@ pub mod state {
 
     pub type MissionControlsStable = StableBTreeMap<UserId, MissionControl, Memory>;
     pub type PaymentsStable = StableBTreeMap<BlockIndex, Payment, Memory>;
+    pub type UsersStable = StableBTreeMap<UserId, User, Memory>;
 
     #[derive(Serialize, Deserialize)]
     pub struct State {
@@ -36,6 +37,7 @@ pub mod state {
         pub proposals_assets: ProposalAssetsStable,
         pub proposals_content_chunks: ProposalContentChunksStable,
         pub proposals: ProposalsStable,
+        pub users: UsersStable,
     }
 
     #[derive(Default, CandidType, Serialize, Deserialize, Clone)]
@@ -103,6 +105,37 @@ pub mod state {
     pub struct Fees {
         pub satellite: Fee,
         pub orbiter: Fee,
+    }
+
+    #[derive(CandidType, Serialize, Deserialize, Clone)]
+    pub struct User {
+        pub role: UserRole,
+        pub provider: Option<AuthProvider>,
+        pub created_at: Timestamp,
+        pub updated_at: Timestamp,
+    }
+
+    #[derive(CandidType, Serialize, Deserialize, Clone)]
+    pub enum AuthProvider {
+        InternetIdentity,
+        WebAuthn(WebAuthnData),
+    }
+
+    #[derive(CandidType, Serialize, Deserialize, Clone)]
+    pub struct WebAuthnData {
+        pub aaguid: Option<Vec<u8>>,
+        pub public_key: Vec<u8>,
+    }
+
+    #[derive(CandidType, Serialize, Deserialize, Clone)]
+    pub enum UserRole {
+        Primary,
+        Alternative(UserAlternative),
+    }
+
+    #[derive(CandidType, Serialize, Deserialize, Clone)]
+    pub struct UserAlternative {
+        pub user_id: UserId,
     }
 }
 

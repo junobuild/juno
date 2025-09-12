@@ -14,10 +14,12 @@ fn init_certified_assets_impl(state: &State) {
     let config = &state.heap.storage.config;
 
     for (_key, asset) in state.heap.storage.assets.iter() {
+        ic_cdk::print(format!("[heap] Certify {}", asset.key.full_path));
         asset_hashes.insert(asset, config);
     }
 
     for entry in state.stable.assets.iter() {
+        ic_cdk::print(format!("[stable] Certify {}", entry.value().key.full_path));
         asset_hashes.insert(&entry.value(), config);
     }
 

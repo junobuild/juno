@@ -7,7 +7,7 @@ pub const COLLECTION_ASSET_KEY: &str = "#dapp";
 const COLLECTION_ASSET_DEFAULT_RULE: SetRule = SetRule {
     read: Controllers,
     write: Controllers,
-    memory: Some(Memory::Heap),
+    memory: Some(Memory::Stable),
     mutable_permissions: Some(false),
     max_size: None,
     max_capacity: None,

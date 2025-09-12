@@ -1,3 +1,4 @@
+use std::fmt::{Display, Formatter, Result as FmtResult};
 use crate::assert::collection::is_system_collection;
 use crate::errors::JUNO_COLLECTIONS_ERROR_RESERVED_COLLECTION;
 use crate::types::core::CollectionKey;
@@ -93,5 +94,16 @@ impl Rule {
 impl Versioned for &Rule {
     fn version(&self) -> Option<Version> {
         self.version
+    }
+}
+
+
+impl Display for Memory {
+    fn fmt(&self, f: &mut Formatter<'_>) -> FmtResult {
+        let s = match self {
+            Memory::Heap => "heap",
+            Memory::Stable => "stable",
+        };
+        f.write_str(s)
     }
 }

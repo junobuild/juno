@@ -1,7 +1,7 @@
 use crate::store::services::{mutate_heap_state, read_heap_state};
 use crate::types::state::{
-    Fee, Fees, HeapState, InvitationCode, InvitationCodeRedeem, InvitationCodes, MissionControls,
-    Payments, Rate, ReleaseVersion, ReleasesMetadata,
+    Fee, Fees, HeapState, InvitationCode, InvitationCodeRedeem, InvitationCodes, Rate,
+    ReleaseVersion, ReleasesMetadata,
 };
 use ic_cdk::api::time;
 use ic_ledger_types::Tokens;
@@ -15,32 +15,6 @@ use junobuild_shared::types::state::UserId;
 use junobuild_shared::types::state::{ControllerId, Controllers};
 use semver::Version;
 use std::collections::HashSet;
-
-// ---------------------------------------------------------
-// Mission control centers
-// ---------------------------------------------------------
-
-#[deprecated(note = "Use stable memory instead")]
-pub fn list_mission_controls_heap() -> MissionControls {
-    read_heap_state(|heap| list_mission_controls_heap_impl(heap))
-}
-
-fn list_mission_controls_heap_impl(state: &HeapState) -> MissionControls {
-    state.mission_controls.clone()
-}
-
-// ---------------------------------------------------------
-// Transactions
-// ---------------------------------------------------------
-
-#[deprecated(note = "Use stable memory instead")]
-pub fn list_payments_heap() -> Payments {
-    read_heap_state(|heap| list_payments_heap_impl(heap))
-}
-
-fn list_payments_heap_impl(state: &HeapState) -> Payments {
-    state.payments.clone()
-}
 
 // ---------------------------------------------------------
 // Invitation codes

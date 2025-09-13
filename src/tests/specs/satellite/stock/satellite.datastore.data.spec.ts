@@ -2,7 +2,6 @@ import type { _SERVICE as SatelliteActor, SetRule } from '$declarations/satellit
 import { idlFactory as idlFactorSatellite } from '$declarations/satellite/satellite.factory.did';
 import { Ed25519KeyIdentity } from '@dfinity/identity';
 import { type Actor, PocketIc } from '@dfinity/pic';
-import { Principal } from '@dfinity/principal';
 import {
 	arrayOfNumberToUint8Array,
 	assertNonNullish,
@@ -150,7 +149,7 @@ describe.each([{ memory: { Heap: null } }, { memory: { Stable: null } }])(
 				expect(typeof savedData.myBigInt).toEqual('bigint');
 				expect(savedData.myBigInt).toEqual(data.myBigInt);
 
-				expect(savedData.principal).toBeInstanceOf(Principal);
+				expect(savedData.principal._isPrincipal).toBeTruthy();
 				expect(savedData.principal.toText()).toEqual(data.principal.toText());
 
 				expect(savedData.array).toBeInstanceOf(Uint8Array);

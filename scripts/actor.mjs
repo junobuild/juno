@@ -1,4 +1,4 @@
-import pkgAgent, { AnonymousIdentity } from '@dfinity/agent';
+import { Actor, AnonymousIdentity, HttpAgent } from '@dfinity/agent';
 /* eslint-disable */
 import { idlFactory } from '../src/declarations/console/console.factory.did.mjs';
 import { idlFactory as observatoryIdlFactory } from '../src/declarations/observatory/observatory.factory.did.mjs';
@@ -7,8 +7,6 @@ import { idlFactory as orbiterIdlFactory } from '../src/declarations/orbiter/orb
 import { getIdentity } from './console.config.utils.mjs';
 import { CONSOLE_ID, OBSERVATORY_ID } from './constants.mjs';
 import { targetMainnet } from './utils.mjs';
-
-const { HttpAgent, Actor } = pkgAgent;
 
 export const icAgent = async () => {
 	const identity = await getIdentity(true);

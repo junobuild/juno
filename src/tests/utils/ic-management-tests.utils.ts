@@ -244,7 +244,7 @@ const clearChunkStoreApi = async ({
 
 	await pic.updateCall({
 		method: 'clear_chunk_store',
-		arg,
+		arg: arg.buffer,
 		canisterId: Principal.fromText(MANAGEMENT_CANISTER_ID),
 		sender: sender.getPrincipal()
 	});
@@ -341,12 +341,15 @@ const uploadChunkApi = async ({
 
 	const response = await pic.updateCall({
 		method: 'upload_chunk',
-		arg,
+		arg: arg.buffer,
 		canisterId: Principal.fromText(MANAGEMENT_CANISTER_ID),
 		sender: sender.getPrincipal()
 	});
 
-	const result = IDL.decode(toNullable(upload_chunk_result), response as ArrayBuffer);
+	const result = IDL.decode(
+		toNullable(upload_chunk_result),
+		arrayBufferToUint8Array(response as ArrayBuffer)
+	);
 
 	const [hash] = result as unknown as [upload_chunk_result];
 
@@ -383,7 +386,7 @@ const installChunkedCodeApi = async ({
 
 	await pic.updateCall({
 		method: 'install_chunked_code',
-		arg,
+		arg: arg.buffer,
 		canisterId: Principal.fromText(MANAGEMENT_CANISTER_ID),
 		sender: sender.getPrincipal(),
 		targetSubnetId: subnetId ?? undefined
@@ -401,12 +404,12 @@ export const canisterStatus = async ({
 		canisterId: Principal.fromText(MANAGEMENT_CANISTER_ID),
 		sender: sender.getPrincipal(),
 		method: 'canister_status',
-		arg
+		arg: arg.buffer
 	});
 
 	const result = IDL.decode(
 		toNullable(canister_status_result),
-		response as ArrayBuffer
+		arrayBufferToUint8Array(response as ArrayBuffer)
 	) as unknown as [canister_status_result];
 
 	return fromNullable(result);

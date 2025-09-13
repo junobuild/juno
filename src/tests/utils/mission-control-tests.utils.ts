@@ -16,7 +16,7 @@ export const missionControlUserInitArgs = (owner: Principal): ArrayBuffer =>
 			})
 		],
 		[{ user: owner }]
-	);
+	).buffer as ArrayBuffer;
 
 export const setupMissionControlModules = async ({
 	pic,

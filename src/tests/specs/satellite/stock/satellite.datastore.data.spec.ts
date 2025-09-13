@@ -2,6 +2,7 @@ import type { _SERVICE as SatelliteActor, SetRule } from '$declarations/satellit
 import { idlFactory as idlFactorSatellite } from '$declarations/satellite/satellite.factory.did';
 import { Ed25519KeyIdentity } from '@dfinity/identity';
 import { type Actor, PocketIc } from '@dfinity/pic';
+import { Principal } from '@dfinity/principal';
 import {
 	arrayOfNumberToUint8Array,
 	assertNonNullish,
@@ -13,7 +14,6 @@ import { fromArray, toArray } from '@junobuild/utils';
 import { nanoid } from 'nanoid';
 import { inject } from 'vitest';
 import { controllersInitArgs, SATELLITE_WASM_PATH } from '../../../utils/setup-tests.utils';
-import { Principal } from '@dfinity/principal';
 
 describe.each([{ memory: { Heap: null } }, { memory: { Stable: null } }])(
 	'Satellite > Datastore > Data',

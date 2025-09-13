@@ -13,6 +13,7 @@ import { fromArray, toArray } from '@junobuild/utils';
 import { nanoid } from 'nanoid';
 import { inject } from 'vitest';
 import { controllersInitArgs, SATELLITE_WASM_PATH } from '../../../utils/setup-tests.utils';
+import { Principal } from '@dfinity/principal';
 
 describe.each([{ memory: { Heap: null } }, { memory: { Stable: null } }])(
 	'Satellite > Datastore > Data',
@@ -149,7 +150,7 @@ describe.each([{ memory: { Heap: null } }, { memory: { Stable: null } }])(
 				expect(typeof savedData.myBigInt).toEqual('bigint');
 				expect(savedData.myBigInt).toEqual(data.myBigInt);
 
-				expect(savedData.principal._isPrincipal).toBeTruthy();
+				expect(Principal.isPrincipal(savedData.principal)).toBeTruthy();
 				expect(savedData.principal.toText()).toEqual(data.principal.toText());
 
 				expect(savedData.array).toBeInstanceOf(Uint8Array);

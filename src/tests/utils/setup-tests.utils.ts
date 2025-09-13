@@ -65,7 +65,7 @@ export const controllersInitArgs = (controllers: Identity | Principal[]): ArrayB
 			})
 		],
 		[{ controllers: Array.isArray(controllers) ? controllers : [controllers.getPrincipal()] }]
-	);
+	).buffer as ArrayBuffer;
 
 const downloadFromURL = async (url: string | RequestOptions): Promise<Buffer> =>
 	await new Promise((resolve, reject) => {

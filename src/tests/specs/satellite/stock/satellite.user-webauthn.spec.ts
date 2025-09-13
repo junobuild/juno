@@ -4,7 +4,6 @@ import type { Identity, SignIdentity } from '@dfinity/agent';
 import { Ed25519KeyIdentity } from '@dfinity/identity';
 import { type Actor, PocketIc } from '@dfinity/pic';
 import {
-	arrayBufferToUint8Array,
 	arrayOfNumberToUint8Array,
 	assertNonNullish,
 	fromNullable,
@@ -75,7 +74,7 @@ describe('Satellite > User Webauthn', () => {
 			user = Ed25519KeyIdentity.generate();
 			actor.setIdentity(user);
 
-			userPublicKey = arrayBufferToUint8Array(user.getPublicKey().toDer());
+			userPublicKey = user.getPublicKey().toDer();
 
 			credentialId = nanoid();
 		});
@@ -244,7 +243,7 @@ describe('Satellite > User Webauthn', () => {
 			user = Ed25519KeyIdentity.generate();
 			actor.setIdentity(user);
 
-			userPublicKey = arrayBufferToUint8Array(user.getPublicKey().toDer());
+			userPublicKey = user.getPublicKey().toDer();
 
 			credentialId = nanoid();
 

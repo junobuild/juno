@@ -43,14 +43,14 @@ describe('Mission Control > Notifications', () => {
 	beforeAll(async () => {
 		pic = await PocketIc.create(inject('PIC_URL'));
 
-		await pic.setTime(new Date('2025-05-12T07:53:19+00:00').getTime());
-
 		const { actor: c } = await pic.setupCanister<ConsoleActor>({
 			idlFactory: idlFactorConsole,
 			wasm: CONSOLE_WASM_PATH,
 			sender: controller.getPrincipal(),
 			targetCanisterId: CONSOLE_ID
 		});
+
+		await pic.setTime(new Date('2025-05-12T07:53:19+00:00').getTime());
 
 		consoleActor = c;
 		consoleActor.setIdentity(controller);

@@ -346,7 +346,10 @@ const uploadChunkApi = async ({
 		sender: sender.getPrincipal()
 	});
 
-	const result = IDL.decode(toNullable(upload_chunk_result), arrayBufferToUint8Array(response as ArrayBuffer));
+	const result = IDL.decode(
+		toNullable(upload_chunk_result),
+		arrayBufferToUint8Array(response as ArrayBuffer)
+	);
 
 	const [hash] = result as unknown as [upload_chunk_result];
 
@@ -401,7 +404,7 @@ export const canisterStatus = async ({
 		canisterId: Principal.fromText(MANAGEMENT_CANISTER_ID),
 		sender: sender.getPrincipal(),
 		method: 'canister_status',
-		arg: arg.buffer,
+		arg: arg.buffer
 	});
 
 	const result = IDL.decode(

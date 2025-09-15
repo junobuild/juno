@@ -150,7 +150,7 @@ describe.each([{ memory: { Heap: null } }, { memory: { Stable: null } }])(
 				expect(typeof savedData.myBigInt).toEqual('bigint');
 				expect(savedData.myBigInt).toEqual(data.myBigInt);
 
-				expect(savedData.principal).toBeInstanceOf(Principal);
+				expect(Principal.isPrincipal(savedData.principal)).toBeTruthy();
 				expect(savedData.principal.toText()).toEqual(data.principal.toText());
 
 				expect(savedData.array).toBeInstanceOf(Uint8Array);

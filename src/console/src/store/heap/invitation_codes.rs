@@ -3,10 +3,12 @@ use crate::types::state::{InvitationCode, InvitationCodeRedeem, InvitationCodes}
 use ic_cdk::api::time;
 use junobuild_shared::types::state::UserId;
 
+#[allow(dead_code)]
 pub fn add_invitation_code(code: &InvitationCode) {
     mutate_heap_state(|heap| add_invitation_code_impl(code, &mut heap.invitation_codes))
 }
 
+#[allow(dead_code)]
 pub fn redeem_invitation_code(user_id: &UserId, code: &InvitationCode) -> Result<(), &'static str> {
     mutate_heap_state(|heap| redeem_invitation_code_impl(user_id, code, &mut heap.invitation_codes))
 }

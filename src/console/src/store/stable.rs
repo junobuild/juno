@@ -123,7 +123,7 @@ fn delete_mission_control_impl(user: &UserId, state: &mut StableState) -> Option
 }
 
 pub fn list_mission_controls() -> MissionControls {
-    mutate_stable_state(|stable| list_mission_controls_impl(&mut stable.mission_controls))
+    read_stable_state(|stable| list_mission_controls_impl(&stable.mission_controls))
 }
 
 fn list_mission_controls_impl(mission_controls: &MissionControlsStable) -> MissionControls {

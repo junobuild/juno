@@ -2,7 +2,7 @@ use crate::guards::caller_is_admin_controller;
 use crate::store::heap::{
     get_orbiter_fee, get_satellite_fee, set_create_orbiter_fee, set_create_satellite_fee,
 };
-use crate::store::stable::{
+use crate::store::{
     add_credits as add_credits_store, get_credits as get_credits_store, has_credits,
     list_payments as list_payments_state,
 };

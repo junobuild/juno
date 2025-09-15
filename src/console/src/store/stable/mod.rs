@@ -1,7 +1,7 @@
 mod credits;
-mod mission_control;
+mod mission_controls;
 mod payments;
 
 pub use credits::*;
-pub use mission_control::*;
+pub use mission_controls::*;
 pub use payments::*;

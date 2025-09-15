@@ -1,6 +1,8 @@
 use crate::factory::mission_control::init_user_mission_control;
 use crate::guards::{caller_is_admin_controller, caller_is_observatory};
-use crate::store::{get_existing_mission_control, get_mission_control, list_mission_controls};
+use crate::store::stable::{
+    get_existing_mission_control, get_mission_control, list_mission_controls,
+};
 use crate::types::state::{MissionControl, MissionControls};
 use ic_cdk::trap;
 use ic_cdk_macros::{query, update};

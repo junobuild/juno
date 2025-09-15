@@ -1,5 +1,5 @@
 use crate::constants::SATELLITE_CREATION_FEE_ICP;
-use crate::store::{
+use crate::store::stable::{
     get_existing_mission_control, has_credits, insert_new_payment, is_known_payment,
     update_payment_completed, update_payment_refunded, use_credits,
 };

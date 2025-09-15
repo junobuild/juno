@@ -1,6 +1,6 @@
 use crate::constants::E8S_PER_ICP;
-use crate::store::get_existing_mission_control;
 use crate::store::services::{mutate_stable_state, read_stable_state};
+use crate::store::stable::get_existing_mission_control;
 use crate::types::state::{MissionControl, StableState};
 use ic_cdk::api::time;
 use ic_ledger_types::Tokens;

@@ -129,17 +129,19 @@ pub mod state {
 
     #[derive(CandidType, Serialize, Deserialize, Clone)]
     pub enum UserRole {
-        Main(UserMain),
-        Alias(UserAlias),
+        Main(Main),
+        Alias(Alias),
+    }
+
+    pub type AliasId = UserId;
+
+    #[derive(CandidType, Serialize, Deserialize, Clone)]
+    pub struct Main {
+        pub alias_ids: Vec<AliasId>,
     }
 
     #[derive(CandidType, Serialize, Deserialize, Clone)]
-    pub struct UserMain {
-        pub alias_ids: Vec<UserId>,
-    }
-
-    #[derive(CandidType, Serialize, Deserialize, Clone)]
-    pub struct UserAlias {
+    pub struct Alias {
         pub main_id: UserId,
     }
 }

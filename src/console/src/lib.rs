@@ -15,6 +15,7 @@ mod wasm;
 
 use crate::types::interface::Config;
 use crate::types::interface::DeleteProposalAssets;
+use crate::types::interface::InitMissionControlArgs;
 use crate::types::state::InvitationCode;
 use crate::types::state::MissionControl;
 use crate::types::state::MissionControls;

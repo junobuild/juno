@@ -10,45 +10,35 @@ use crate::{
     delete_filtered_docs_store, get_doc_store, list_docs_store, set_doc_store, DelDoc, Doc,
     DocContext, DocUpsert, SetDoc,
 };
-use ic_cdk::trap;
 use junobuild_collections::types::core::CollectionKey;
+use junobuild_shared::ic::UnwrapOrTrap;
 use junobuild_shared::types::core::Key;
 use junobuild_shared::types::list::{ListParams, ListResults};
 
 pub fn set_doc(collection: CollectionKey, key: Key, doc: SetDoc) -> Doc {
     let caller = caller();
 
-    let result = set_doc_store(caller, collection, key, doc);
+    let doc = set_doc_store(caller, collection, key, doc).unwrap_or_trap();
 
-    match result {
-        Ok(doc) => {
-            on_set_user(&doc).unwrap_or_else(|e| trap(&e));
+    on_set_user(&doc).unwrap_or_trap();
 
-            invoke_on_set_doc(&caller, &doc);
+    invoke_on_set_doc(&caller, &doc);
 
-            doc.data.after
-        }
-        Err(error) => trap(&error),
-    }
+    doc.data.after
 }
 
 pub fn get_doc(collection: CollectionKey, key: Key) -> Option<Doc> {
     let caller = caller();
 
-    let result = get_doc_store(caller, collection, key);
-
-    match result {
-        Ok(value) => value,
-        Err(error) => trap(&error),
-    }
+    get_doc_store(caller, collection, key).unwrap_or_trap()
 }
 
 pub fn del_doc(collection: CollectionKey, key: Key, doc: DelDoc) {
     let caller = caller();
 
-    let deleted_doc = delete_doc_store(caller, collection, key, doc).unwrap_or_else(|e| trap(&e));
+    let deleted_doc = delete_doc_store(caller, collection, key, doc).unwrap_or_trap();
 
-    on_delete_user(&deleted_doc).unwrap_or_else(|e| trap(&e));
+    on_delete_user(&deleted_doc).unwrap_or_trap();
 
     invoke_on_delete_doc(&caller, &deleted_doc);
 }
@@ -56,23 +46,13 @@ pub fn del_doc(collection: CollectionKey, key: Key, doc: DelDoc) {
 pub fn list_docs(collection: CollectionKey, filter: ListParams) -> ListResults<Doc> {
     let caller = caller();
 
-    let result = list_docs_store(caller, collection, &filter);
-
-    match result {
-        Ok(value) => value,
-        Err(error) => trap(&error),
-    }
+    list_docs_store(caller, collection, &filter).unwrap_or_trap()
 }
 
 pub fn count_docs(collection: CollectionKey, filter: ListParams) -> usize {
     let caller = caller();
 
-    let result = count_docs_store(caller, collection, &filter);
-
-    match result {
-        Ok(value) => value,
-        Err(error) => trap(&error),
-    }
+    count_docs_store(caller, collection, &filter).unwrap_or_trap()
 }
 
 pub fn get_many_docs(docs: Vec<(CollectionKey, Key)>) -> Vec<(Key, Option<Doc>)> {
@@ -91,15 +71,14 @@ pub fn set_many_docs(docs: Vec<(CollectionKey, Key, SetDoc)>) -> Vec<(Key, Doc)>
     let mut results: Vec<(Key, Doc)> = Vec::new();
 
     for (collection, key, doc) in docs {
-        let result =
-            set_doc_store(caller, collection, key.clone(), doc).unwrap_or_else(|e| trap(&e));
+        let result = set_doc_store(caller, collection, key.clone(), doc).unwrap_or_trap();
 
         results.push((result.key.clone(), result.data.after.clone()));
 
         hook_payload.push(result);
     }
 
-    on_set_many_users(&hook_payload).unwrap_or_else(|e| trap(&e));
+    on_set_many_users(&hook_payload).unwrap_or_trap();
 
     invoke_on_set_many_docs(&caller, &hook_payload);
 
@@ -112,12 +91,11 @@ pub fn del_many_docs(docs: Vec<(CollectionKey, Key, DelDoc)>) {
     let mut results: Vec<DocContext<Option<Doc>>> = Vec::new();
 
     for (collection, key, doc) in docs {
-        let deleted_doc =
-            delete_doc_store(caller, collection, key.clone(), doc).unwrap_or_else(|e| trap(&e));
+        let deleted_doc = delete_doc_store(caller, collection, key.clone(), doc).unwrap_or_trap();
         results.push(deleted_doc);
     }
 
-    on_delete_many_users(&results).unwrap_or_else(|e| trap(&e));
+    on_delete_many_users(&results).unwrap_or_trap();
 
     invoke_on_delete_many_docs(&caller, &results);
 }
@@ -125,21 +103,15 @@ pub fn del_many_docs(docs: Vec<(CollectionKey, Key, DelDoc)>) {
 pub fn del_filtered_docs(collection: CollectionKey, filter: ListParams) {
     let caller = caller();
 
-    let results =
-        delete_filtered_docs_store(caller, collection, &filter).unwrap_or_else(|e| trap(&e));
+    let results = delete_filtered_docs_store(caller, collection, &filter).unwrap_or_trap();
 
     invoke_on_delete_filtered_docs(&caller, &results);
 }
 
 pub fn del_docs(collection: CollectionKey) {
-    delete_docs_store(&collection).unwrap_or_else(|e| trap(&e));
+    delete_docs_store(&collection).unwrap_or_trap();
 }
 
 pub fn count_collection_docs(collection: CollectionKey) -> usize {
-    let result = count_collection_docs_store(&collection);
-
-    match result {
-        Ok(value) => value,
-        Err(error) => trap(&error),
-    }
+    count_collection_docs_store(&collection).unwrap_or_trap()
 }

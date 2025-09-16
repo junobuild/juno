@@ -3,6 +3,7 @@ use crate::{get_admin_controllers, get_controllers};
 use ic_cdk::trap;
 use junobuild_shared::constants_shared::MAX_NUMBER_OF_SATELLITE_CONTROLLERS;
 use junobuild_shared::controllers::{assert_controllers, assert_max_number_of_controllers};
+use junobuild_shared::ic::UnwrapOrTrap;
 use junobuild_shared::types::interface::{DeleteControllersArgs, SetControllersArgs};
 use junobuild_shared::types::state::{ControllerScope, Controllers};
 
@@ -28,7 +29,7 @@ pub fn set_controllers(
         _ => (),
     }
 
-    assert_controllers(&controllers).unwrap_or_else(|e| trap(&e));
+    assert_controllers(&controllers).unwrap_or_trap();
 
     set_controllers_store(&controllers, &controller);
 

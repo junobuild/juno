@@ -3,12 +3,12 @@ use crate::rules::store::{
     list_rules_storage, set_rule_db, set_rule_storage,
 };
 use crate::types::state::CollectionType;
-use ic_cdk::trap;
 use junobuild_collections::types::core::CollectionKey;
 use junobuild_collections::types::interface::{
     DelRule, ListRulesParams, ListRulesResults, SetRule,
 };
 use junobuild_collections::types::rules::Rule;
+use junobuild_shared::ic::UnwrapOrTrap;
 
 pub fn get_rule(collection_type: &CollectionType, collection: &CollectionKey) -> Option<Rule> {
     match collection_type {
@@ -26,14 +26,14 @@ pub fn list_rules(collection_type: &CollectionType, filter: &ListRulesParams) ->
 
 pub fn set_rule(collection_type: CollectionType, collection: CollectionKey, rule: SetRule) -> Rule {
     match collection_type {
-        CollectionType::Db => set_rule_db(collection, rule).unwrap_or_else(|e| trap(&e)),
-        CollectionType::Storage => set_rule_storage(collection, rule).unwrap_or_else(|e| trap(&e)),
+        CollectionType::Db => set_rule_db(collection, rule).unwrap_or_trap(),
+        CollectionType::Storage => set_rule_storage(collection, rule).unwrap_or_trap(),
     }
 }
 
 pub fn del_rule(collection_type: CollectionType, collection: CollectionKey, rule: DelRule) {
     match collection_type {
-        CollectionType::Db => del_rule_db(collection, rule).unwrap_or_else(|e| trap(&e)),
-        CollectionType::Storage => del_rule_storage(collection, rule).unwrap_or_else(|e| trap(&e)),
+        CollectionType::Db => del_rule_db(collection, rule).unwrap_or_trap(),
+        CollectionType::Storage => del_rule_storage(collection, rule).unwrap_or_trap(),
     }
 }

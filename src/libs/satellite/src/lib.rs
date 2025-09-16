@@ -24,7 +24,6 @@ use crate::guards::{
 };
 use crate::types::interface::{Config, DeleteProposalAssets};
 use crate::types::state::CollectionType;
-use ic_cdk::api::trap;
 use ic_cdk_macros::{init, post_upgrade, pre_upgrade, query, update};
 use junobuild_cdn::proposals::{
     CommitProposal, ListProposalResults, ListProposalsParams, Proposal, ProposalId, ProposalType,
@@ -36,6 +35,7 @@ use junobuild_collections::types::interface::{
 };
 use junobuild_collections::types::rules::Rule;
 use junobuild_shared::ic::call::ManualReply;
+use junobuild_shared::ic::UnwrapOrTrap;
 use junobuild_shared::types::core::DomainName;
 use junobuild_shared::types::core::Key;
 use junobuild_shared::types::domain::CustomDomains;
@@ -55,6 +55,7 @@ use junobuild_storage::types::interface::{
 };
 use junobuild_storage::types::state::FullPath;
 use memory::lifecycle;
+
 // ============================================================================================
 // These types are made available for use in Serverless Functions.
 // ============================================================================================
@@ -62,6 +63,7 @@ use crate::auth::types::interface::SetAuthenticationConfig;
 use crate::db::types::interface::SetDbConfig;
 pub use sdk::core::*;
 pub use sdk::internal;
+
 // ---------------------------------------------------------
 // Init and Upgrade
 // ---------------------------------------------------------
@@ -480,7 +482,7 @@ pub fn get_many_assets(
 pub async fn deposit_cycles(args: DepositCyclesArgs) {
     junobuild_shared::mgmt::ic::deposit_cycles(args)
         .await
-        .unwrap_or_else(|e| trap(&e))
+        .unwrap_or_trap()
 }
 
 #[doc(hidden)]

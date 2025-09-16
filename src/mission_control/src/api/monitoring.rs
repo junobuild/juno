@@ -10,27 +10,27 @@ use crate::types::interface::{
     GetMonitoringHistory, MonitoringStartConfig, MonitoringStatus, MonitoringStopConfig,
 };
 use crate::types::state::{MonitoringHistory, MonitoringHistoryKey};
-use ic_cdk::trap;
 use ic_cdk_macros::{query, update};
+use junobuild_shared::ic::UnwrapOrTrap;
 
 #[update(guard = "caller_is_user_or_admin_controller")]
 fn start_monitoring() {
-    start_monitoring_with_current_config().unwrap_or_else(|e| trap(&e));
+    start_monitoring_with_current_config().unwrap_or_trap();
 }
 
 #[update(guard = "caller_is_user_or_admin_controller")]
 fn stop_monitoring() {
-    stop_any_monitoring().unwrap_or_else(|e| trap(&e));
+    stop_any_monitoring().unwrap_or_trap();
 }
 
 #[update(guard = "caller_is_user_or_admin_controller")]
 fn update_and_start_monitoring(config: MonitoringStartConfig) {
-    update_and_start_monitoring_with_config(&config).unwrap_or_else(|e| trap(&e));
+    update_and_start_monitoring_with_config(&config).unwrap_or_trap();
 }
 
 #[update(guard = "caller_is_user_or_admin_controller")]
 fn update_and_stop_monitoring(config: MonitoringStopConfig) {
-    update_and_stop_monitoring_with_config(&config).unwrap_or_else(|e| trap(&e));
+    update_and_stop_monitoring_with_config(&config).unwrap_or_trap();
 }
 
 #[query(guard = "caller_is_user_or_admin_controller")]

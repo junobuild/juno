@@ -5,8 +5,8 @@ use crate::config::store::{
 use crate::guards::caller_is_admin_controller;
 use crate::state::types::state::SatelliteConfigs;
 use crate::types::interface::{DelSatelliteConfig, SetSatelliteConfig};
-use ic_cdk::trap;
 use ic_cdk_macros::{query, update};
+use junobuild_shared::ic::UnwrapOrTrap;
 use junobuild_shared::types::state::SatelliteId;
 
 #[update(guard = "caller_is_admin_controller")]
@@ -14,8 +14,7 @@ fn set_satellite_configs(configs: Vec<(SatelliteId, SetSatelliteConfig)>) -> Sat
     let mut results: SatelliteConfigs = SatelliteConfigs::new();
 
     for (satellite_id, config) in configs {
-        let result =
-            set_satellite_config_store(&satellite_id, &config).unwrap_or_else(|e| trap(&e));
+        let result = set_satellite_config_store(&satellite_id, &config).unwrap_or_trap();
         results.insert(satellite_id, result);
     }
 
@@ -24,7 +23,7 @@ fn set_satellite_configs(configs: Vec<(SatelliteId, SetSatelliteConfig)>) -> Sat
 
 #[update(guard = "caller_is_admin_controller")]
 fn del_satellite_config(satellite_id: SatelliteId, config: DelSatelliteConfig) {
-    del_satellite_config_store(&satellite_id, &config).unwrap_or_else(|e| trap(&e))
+    del_satellite_config_store(&satellite_id, &config).unwrap_or_trap()
 }
 
 #[query(guard = "caller_is_admin_controller")]

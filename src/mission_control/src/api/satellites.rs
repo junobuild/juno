@@ -13,8 +13,8 @@ use crate::segments::store::{
 };
 use crate::types::interface::CreateCanisterConfig;
 use crate::types::state::{Satellite, Satellites};
-use ic_cdk::trap;
 use ic_cdk_macros::{query, update};
+use junobuild_shared::ic::UnwrapOrTrap;
 use junobuild_shared::types::interface::SetController;
 use junobuild_shared::types::state::{ControllerId, SatelliteId};
 use junobuild_shared::types::state::{Metadata, UserId};
@@ -26,21 +26,19 @@ fn list_satellites() -> Satellites {
 
 #[update(guard = "caller_is_user_or_admin_controller")]
 async fn create_satellite(name: String) -> Satellite {
-    create_satellite_console(&name)
-        .await
-        .unwrap_or_else(|e| trap(&e))
+    create_satellite_console(&name).await.unwrap_or_trap()
 }
 
 #[update(guard = "caller_is_user_or_admin_controller")]
 async fn create_satellite_with_config(config: CreateCanisterConfig) -> Satellite {
     create_satellite_with_config_console(&config)
         .await
-        .unwrap_or_else(|e| trap(&e))
+        .unwrap_or_trap()
 }
 
 #[update(guard = "caller_is_user_or_admin_controller")]
 fn set_satellite_metadata(satellite_id: SatelliteId, metadata: Metadata) -> Satellite {
-    set_satellite_metadata_store(&satellite_id, &metadata).unwrap_or_else(|e| trap(&e))
+    set_satellite_metadata_store(&satellite_id, &metadata).unwrap_or_trap()
 }
 
 #[deprecated(
@@ -55,7 +53,7 @@ async fn add_satellites_controllers(
     for satellite_id in satellite_ids {
         add_satellite_controllers_impl(&satellite_id, &controllers)
             .await
-            .unwrap_or_else(|e| trap(&e));
+            .unwrap_or_trap();
     }
 }
 
@@ -71,7 +69,7 @@ async fn remove_satellites_controllers(
     for satellite_id in satellite_ids {
         remove_satellite_controllers_impl(&satellite_id, &controllers)
             .await
-            .unwrap_or_else(|e| trap(&e));
+            .unwrap_or_trap();
     }
 }
 
@@ -84,7 +82,7 @@ async fn set_satellites_controllers(
     for satellite_id in satellite_ids {
         set_satellite_controllers(&satellite_id, &controller_ids, &controller)
             .await
-            .unwrap_or_else(|e| trap(&e));
+            .unwrap_or_trap();
     }
 }
 
@@ -93,7 +91,7 @@ async fn del_satellites_controllers(satellite_ids: Vec<SatelliteId>, controllers
     for satellite_id in satellite_ids {
         delete_satellite_controllers(&satellite_id, &controllers)
             .await
-            .unwrap_or_else(|e| trap(&e));
+            .unwrap_or_trap();
     }
 }
 
@@ -101,19 +99,17 @@ async fn del_satellites_controllers(satellite_ids: Vec<SatelliteId>, controllers
 async fn del_satellite(satellite_id: SatelliteId, cycles_to_deposit: u128) {
     delete_satellite(&satellite_id, cycles_to_deposit)
         .await
-        .unwrap_or_else(|e| trap(&e));
+        .unwrap_or_trap();
 }
 
 #[update(guard = "caller_is_user_or_admin_controller")]
 async fn set_satellite(satellite_id: SatelliteId, name: Option<String>) -> Satellite {
     attach_satellite(&satellite_id, &name)
         .await
-        .unwrap_or_else(|e| trap(&e))
+        .unwrap_or_trap()
 }
 
 #[update(guard = "caller_is_user_or_admin_controller")]
 async fn unset_satellite(satellite_id: SatelliteId) {
-    detach_satellite(&satellite_id)
-        .await
-        .unwrap_or_else(|e| trap(&e))
+    detach_satellite(&satellite_id).await.unwrap_or_trap()
 }

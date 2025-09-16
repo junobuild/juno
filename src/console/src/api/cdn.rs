@@ -10,7 +10,6 @@ use crate::cdn::strategies_impls::cdn::CdnHeap;
 use crate::cdn::strategies_impls::storage::StorageState;
 use crate::guards::caller_is_admin_controller;
 use crate::types::interface::DeleteProposalAssets;
-use ic_cdk::trap;
 use ic_cdk_macros::{query, update};
 use junobuild_cdn::proposals::{
     CommitProposal, ListProposalResults, ListProposalsParams, Proposal, ProposalId, ProposalType,
@@ -18,6 +17,7 @@ use junobuild_cdn::proposals::{
 };
 use junobuild_shared::ic::api::caller;
 use junobuild_shared::ic::call::ManualReply;
+use junobuild_shared::ic::UnwrapOrTrap;
 use junobuild_shared::types::core::DomainName;
 use junobuild_shared::types::domain::CustomDomains;
 
@@ -44,14 +44,14 @@ fn count_proposals() -> usize {
 fn init_proposal(proposal_type: ProposalType) -> (ProposalId, Proposal) {
     let caller = caller();
 
-    make_init_proposal(caller, &proposal_type).unwrap_or_else(|e| trap(&e))
+    make_init_proposal(caller, &proposal_type).unwrap_or_trap()
 }
 
 #[update(guard = "caller_is_admin_controller")]
 fn submit_proposal(proposal_id: ProposalId) -> (ProposalId, Proposal) {
     let caller = caller();
 
-    make_submit_proposal(caller, &proposal_id).unwrap_or_else(|e| trap(&e))
+    make_submit_proposal(caller, &proposal_id).unwrap_or_trap()
 }
 
 #[update(guard = "caller_is_admin_controller", manual_reply = true)]
@@ -75,7 +75,7 @@ fn commit_proposal(proposal: CommitProposal) -> ManualReply<()> {
 
 #[update(guard = "caller_is_admin_controller")]
 fn delete_proposal_assets(DeleteProposalAssets { proposal_ids }: DeleteProposalAssets) {
-    delete_proposal_assets_proposal(&proposal_ids).unwrap_or_else(|e| trap(&e));
+    delete_proposal_assets_proposal(&proposal_ids).unwrap_or_trap();
 }
 
 // ---------------------------------------------------------
@@ -90,11 +90,11 @@ pub fn list_custom_domains() -> CustomDomains {
 #[update(guard = "caller_is_admin_controller")]
 pub fn set_custom_domain(domain_name: DomainName, bn_id: Option<String>) {
     junobuild_cdn::storage::set_domain_store(&CdnHeap, &StorageState, &domain_name, &bn_id)
-        .unwrap_or_else(|e| trap(&e));
+        .unwrap_or_trap();
 }
 
 #[update(guard = "caller_is_admin_controller")]
 pub fn del_custom_domain(domain_name: DomainName) {
     junobuild_cdn::storage::delete_domain_store(&CdnHeap, &StorageState, &domain_name)
-        .unwrap_or_else(|e| trap(&e));
+        .unwrap_or_trap();
 }

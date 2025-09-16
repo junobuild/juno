@@ -12,9 +12,7 @@ use junobuild_shared::types::interface::AssertMissionControlCenterArgs;
 #[query]
 fn get_user_mission_control_center() -> Option<MissionControl> {
     let caller = caller();
-    let result = get_mission_control(&caller);
-
-    result.unwrap_or_trap()
+    get_mission_control(&caller).unwrap_or_trap()
 }
 
 #[query(guard = "caller_is_observatory")]

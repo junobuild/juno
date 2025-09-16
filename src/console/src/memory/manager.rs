@@ -55,6 +55,6 @@ pub fn init_stable_state() -> StableState {
         proposals_assets: StableBTreeMap::init(get_memory_assets()),
         proposals_content_chunks: StableBTreeMap::init(get_memory_content_chunks()),
         proposals: StableBTreeMap::init(get_memory_proposals()),
-        users: StableBTreeMap::init(get_users()),
+        accounts: StableBTreeMap::init(get_users()),
     }
 }

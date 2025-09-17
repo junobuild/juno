@@ -15,9 +15,9 @@ import {
 } from '@junobuild/errors';
 import { inject } from 'vitest';
 import { assertCertification } from '../../../utils/certification-tests.utils';
+import { tick } from '../../../utils/pic-tests.utils';
 import { uploadAsset } from '../../../utils/satellite-storage-tests.utils';
 import { controllersInitArgs, SATELLITE_WASM_PATH } from '../../../utils/setup-tests.utils';
-import { tick } from '../../../utils/pic-tests.utils';
 
 describe('Satellite > Switch #dapp memory', () => {
 	let pic: PocketIc;
@@ -100,7 +100,7 @@ describe('Satellite > Switch #dapp memory', () => {
 
 			const request: HttpRequest = {
 				body: [],
-				certificate_version: toNullable(),
+				certificate_version: toNullable(2),
 				headers: [],
 				method: 'GET',
 				url: '/.well-known/ic-domains'

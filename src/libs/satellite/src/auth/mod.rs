@@ -1,4 +1,4 @@
-mod alternative_origins;
+pub mod alternative_origins;
 mod assert;
 mod impls;
 mod state;

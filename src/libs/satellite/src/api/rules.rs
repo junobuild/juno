@@ -2,6 +2,7 @@ use crate::rules::store::{
     del_rule_db, del_rule_storage, get_rule_db, get_rule_storage, list_rules_db,
     list_rules_storage, set_rule_db, set_rule_storage,
 };
+use crate::rules::switch_memory::switch_storage_dapp_memory;
 use crate::types::state::CollectionType;
 use junobuild_collections::types::core::CollectionKey;
 use junobuild_collections::types::interface::{
@@ -9,7 +10,6 @@ use junobuild_collections::types::interface::{
 };
 use junobuild_collections::types::rules::Rule;
 use junobuild_shared::ic::UnwrapOrTrap;
-use crate::rules::switch_memory::switch_storage_dapp_memory;
 
 pub fn get_rule(collection_type: &CollectionType, collection: &CollectionKey) -> Option<Rule> {
     match collection_type {

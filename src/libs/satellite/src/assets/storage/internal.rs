@@ -1,8 +1,8 @@
+use crate::assets::storage::state::delete_asset;
 use junobuild_collections::types::core::CollectionKey;
 use junobuild_collections::types::rules::Rule;
 use junobuild_storage::types::state::FullPath;
 use junobuild_storage::types::store::Asset;
-use crate::assets::storage::state::{delete_asset};
 
 /// Deletes an asset directly from the state.
 ///

@@ -1,4 +1,4 @@
-use crate::assert::collection::{is_not_system_collection, is_system_collection};
+use crate::assert::collection::is_system_collection;
 use crate::errors::JUNO_COLLECTIONS_ERROR_RESERVED_COLLECTION;
 use crate::types::core::CollectionKey;
 use crate::types::interface::SetRule;
@@ -89,13 +89,10 @@ impl Rule {
         }
     }
 
-    pub fn switch_rule_memory(
-        current_rule: &Rule,
-    ) -> Rule {
-        let (created_at, version, updated_at) =
-            Self::initialize_common_fields(&Some(current_rule));
+    pub fn switch_rule_memory(current_rule: &Rule) -> Rule {
+        let (created_at, version, updated_at) = Self::initialize_common_fields(&Some(current_rule));
 
-        let rule = Rule {
+        Rule {
             memory: Some(match current_rule.mem() {
                 Memory::Heap => Memory::Stable,
                 Memory::Stable => Memory::Heap,
@@ -104,9 +101,7 @@ impl Rule {
             updated_at,
             version: Some(version),
             ..current_rule.clone()
-        };
-
-        rule
+        }
     }
 }
 

@@ -228,65 +228,99 @@ describe('Satellite > Switch #dapp memory', () => {
 			});
 		});
 
-		describe('Success', () => {
-			describe.each([
-				{ title: 'Heap -> Stable', from: { Heap: null }, to: { Stable: null } },
-				{ title: 'Stable -> Heap', from: { Stable: null }, to: { Heap: null } }
-			])('$title', ({ from, to }) => {
+		describe.each([
+			{ title: 'Heap -> Stable', from: { Heap: null }, to: { Stable: null } },
+			{ title: 'Stable -> Heap', from: { Stable: null }, to: { Heap: null } }
+		])('$title', ({ from, to }) => {
+			beforeAll(async () => {
+				const { del_assets } = actor;
+
+				await del_assets(DAPP_COLLECTION);
+			});
+
+			it('should switch memory from heap to stable', async () => {
+				await assertMemory({ memory: from });
+
+				await switchMemory({ memory: to });
+			});
+
+			it('should migrate .well-known/ic-domains', async () => {
+				await switchMemory({ memory: from });
+
+				const { set_custom_domain } = actor;
+
+				await set_custom_domain(DOMAINS[0], ['123456']);
+				await set_custom_domain(DOMAINS[1], []);
+
+				await tick(pic);
+
+				await assertIcDomains();
+
+				await switchMemory({ memory: to });
+
+				await assertIcDomains();
+			});
+
+			it('should migrate .well-known/ii-alternative-origins', async () => {
+				await switchMemory({ memory: from });
+
+				const { set_auth_config, get_auth_config } = actor;
+
+				const currentConfig = fromNullable(await get_auth_config());
+
+				const config: SetAuthenticationConfig = {
+					internet_identity: [
+						{
+							derivation_origin: ['domain.com'],
+							external_alternative_origins: toNullable()
+						}
+					],
+					rules: [],
+					version: currentConfig?.version ?? []
+				};
+
+				await set_auth_config(config);
+
+				await tick(pic);
+
+				await assertIIAlternativeOrigins();
+
+				await switchMemory({ memory: to });
+
+				await assertIIAlternativeOrigins();
+			});
+
+			describe('Rollback', () => {
 				beforeAll(async () => {
+					const name = `hello-world.html`;
+					const full_path = `/hello/${name}`;
+
+					await uploadAsset({
+						full_path,
+						name,
+						collection: DAPP_COLLECTION,
+						actor
+					});
+				});
+
+				afterAll(async () => {
 					const { del_assets } = actor;
 
 					await del_assets(DAPP_COLLECTION);
 				});
 
-				it('should switch memory from heap to stable', async () => {
-					await assertMemory({ memory: from });
-
-					await switchMemory({ memory: to });
-				});
-
-				it('should migrate .well-known/ic-domains', async () => {
-					await switchMemory({ memory: from });
-
-					const { set_custom_domain } = actor;
-
-					await set_custom_domain(DOMAINS[0], ['123456']);
-					await set_custom_domain(DOMAINS[1], []);
-
-					await tick(pic);
-
-					await assertIcDomains();
-
-					await switchMemory({ memory: to });
+				it('should rollback and still expose .well-known/ic-domains', async () => {
+					await expect(switchMemory({ memory: from })).rejects.toThrow(
+						`${JUNO_COLLECTIONS_ERROR_COLLECTION_NOT_EMPTY} (Storage - ${DAPP_COLLECTION})`
+					);
 
 					await assertIcDomains();
 				});
 
-				it('should migrate .well-known/ii-alternative-origins', async () => {
-					await switchMemory({ memory: from });
-
-					const { set_auth_config, get_auth_config } = actor;
-
-					const currentConfig = fromNullable(await get_auth_config());
-
-					const config: SetAuthenticationConfig = {
-						internet_identity: [
-							{
-								derivation_origin: ['domain.com'],
-								external_alternative_origins: toNullable()
-							}
-						],
-						rules: [],
-						version: currentConfig?.version ?? []
-					};
-
-					await set_auth_config(config);
-
-					await tick(pic);
-
-					await assertIIAlternativeOrigins();
-
-					await switchMemory({ memory: to });
+				it('should rollback and still expose .well-known/ii-alternative-origins', async () => {
+					await expect(switchMemory({ memory: from })).rejects.toThrow(
+						`${JUNO_COLLECTIONS_ERROR_COLLECTION_NOT_EMPTY} (Storage - ${DAPP_COLLECTION})`
+					);
 
 					await assertIIAlternativeOrigins();
 				});

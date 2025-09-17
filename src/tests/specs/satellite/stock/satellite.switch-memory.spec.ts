@@ -229,60 +229,67 @@ describe('Satellite > Switch #dapp memory', () => {
 		});
 
 		describe('Success', () => {
-			beforeAll(async () => {
-				const { del_assets } = actor;
+			describe.each([
+				{ title: 'Heap -> Stable', from: { Heap: null }, to: { Stable: null } },
+				{ title: 'Stable -> Heap', from: { Stable: null }, to: { Heap: null } }
+			])('$title', ({ from, to }) => {
+				beforeAll(async () => {
+					const { del_assets } = actor;
 
-				await del_assets(DAPP_COLLECTION);
-			});
+					await del_assets(DAPP_COLLECTION);
+				});
 
-			it('should switch memory from heap to stable', async () => {
-				await assertMemory({ memory: HEAP_MEMORY });
+				it('should switch memory from heap to stable', async () => {
+					await assertMemory({ memory: from });
 
-				await switchMemory({ memory: STABLE_MEMORY });
-			});
+					await switchMemory({ memory: to });
+				});
 
-			it('should migrate .well-known/ic-domains', async () => {
-				await switchMemory({ memory: HEAP_MEMORY });
+				it('should migrate .well-known/ic-domains', async () => {
+					await switchMemory({ memory: from });
 
-				const { set_custom_domain } = actor;
+					const { set_custom_domain } = actor;
 
-				await set_custom_domain(DOMAINS[0], ['123456']);
-				await set_custom_domain(DOMAINS[1], []);
+					await set_custom_domain(DOMAINS[0], ['123456']);
+					await set_custom_domain(DOMAINS[1], []);
 
-				await tick(pic);
+					await tick(pic);
 
-				await assertIcDomains();
+					await assertIcDomains();
 
-				await switchMemory({ memory: STABLE_MEMORY });
+					await switchMemory({ memory: to });
 
-				await assertIcDomains();
-			});
+					await assertIcDomains();
+				});
 
-			it('should migrate .well-known/ii-alternative-origins', async () => {
-				await switchMemory({ memory: HEAP_MEMORY });
+				it('should migrate .well-known/ii-alternative-origins', async () => {
+					await switchMemory({ memory: from });
 
-				const { set_auth_config } = actor;
+					const { set_auth_config, get_auth_config } = actor;
 
-				const config: SetAuthenticationConfig = {
-					internet_identity: [
-						{
-							derivation_origin: ['domain.com'],
-							external_alternative_origins: toNullable()
-						}
-					],
-					rules: [],
-					version: []
-				};
+					const currentConfig = fromNullable(await get_auth_config());
 
-				await set_auth_config(config);
+					const config: SetAuthenticationConfig = {
+						internet_identity: [
+							{
+								derivation_origin: ['domain.com'],
+								external_alternative_origins: toNullable()
+							}
+						],
+						rules: [],
+						version: currentConfig?.version ?? []
+					};
 
-				await tick(pic);
+					await set_auth_config(config);
 
-				await assertIIAlternativeOrigins();
+					await tick(pic);
 
-				await switchMemory({ memory: STABLE_MEMORY });
+					await assertIIAlternativeOrigins();
 
-				await assertIIAlternativeOrigins();
+					await switchMemory({ memory: to });
+
+					await assertIIAlternativeOrigins();
+				});
 			});
 		});
 	});

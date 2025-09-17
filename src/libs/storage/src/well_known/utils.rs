@@ -1,5 +1,5 @@
 use crate::constants::{WELL_KNOWN_CUSTOM_DOMAINS, WELL_KNOWN_II_ALTERNATIVE_ORIGINS};
-use crate::types::store::{Asset, AssetKey};
+use crate::types::store::{Asset, AssetEncoding, AssetKey};
 use crate::utils::{create_asset_with_content, map_content_type_headers};
 use ic_cdk::api::time;
 use junobuild_collections::constants::assets::COLLECTION_ASSET_KEY;
@@ -8,7 +8,10 @@ use junobuild_shared::types::domain::CustomDomain;
 use junobuild_shared::types::state::Timestamp;
 use junobuild_shared::version::next_version;
 
-pub fn map_custom_domains_asset(custom_domains: &str, existing_asset: Option<Asset>) -> Asset {
+pub fn map_custom_domains_asset(
+    custom_domains: &str,
+    existing_asset: Option<Asset>,
+) -> (Asset, AssetEncoding) {
     let key = AssetKey {
         name: "custom-domains".to_string(),
         full_path: WELL_KNOWN_CUSTOM_DOMAINS.to_string(),
@@ -26,7 +29,7 @@ pub fn map_custom_domains_asset(custom_domains: &str, existing_asset: Option<Ass
 pub fn map_alternative_origins_asset(
     alternative_origins: &str,
     existing_asset: Option<Asset>,
-) -> Asset {
+) -> (Asset, AssetEncoding) {
     let key = AssetKey {
         name: "ii-alternative-origins".to_string(),
         full_path: WELL_KNOWN_II_ALTERNATIVE_ORIGINS.to_string(),

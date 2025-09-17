@@ -401,6 +401,7 @@ export interface _SERVICE {
 	set_rule: ActorMethod<[CollectionType, string, SetRule], Rule>;
 	set_storage_config: ActorMethod<[SetStorageConfig], StorageConfig>;
 	submit_proposal: ActorMethod<[bigint], [bigint, Proposal]>;
+	switch_dapp_memory: ActorMethod<[], undefined>;
 	upload_asset_chunk: ActorMethod<[UploadChunk], UploadChunkResult>;
 	upload_proposal_asset_chunk: ActorMethod<[UploadChunk], UploadChunkResult>;
 }

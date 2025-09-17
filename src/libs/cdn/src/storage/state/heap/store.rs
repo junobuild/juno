@@ -8,7 +8,9 @@ use junobuild_storage::heap_utils::collect_assets_heap;
 use junobuild_storage::types::interface::AssetNoContent;
 use junobuild_storage::types::state::FullPath;
 use junobuild_storage::types::store::{Asset, AssetEncoding, EncodingType};
-use junobuild_storage::utils::{get_token_protected_asset, map_asset_no_content};
+use junobuild_storage::utils::{
+    get_token_protected_asset, insert_encoding_into_asset, map_asset_no_content,
+};
 
 // ---------------------------------------------------------
 // Assets
@@ -74,9 +76,7 @@ pub fn insert_asset_encoding(
         None => return Err(format!("No asset found for {full_path}")),
     };
 
-    asset
-        .encodings
-        .insert(encoding_type.to_owned(), encoding.clone());
+    insert_encoding_into_asset(encoding_type, encoding, &mut asset);
 
     insert_asset(cdn_heap, full_path, &asset);
 

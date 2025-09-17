@@ -16,7 +16,7 @@ use junobuild_storage::stable_utils::insert_asset_encoding_stable;
 use junobuild_storage::types::config::StorageConfig;
 use junobuild_storage::types::state::{AssetsHeap, FullPath, StorageHeapState};
 use junobuild_storage::types::store::{Asset, AssetEncoding};
-use junobuild_storage::utils::clone_asset_encoding_content_chunks;
+use junobuild_storage::utils::{clone_asset_encoding_content_chunks, insert_encoding_into_asset};
 use std::borrow::Cow;
 use std::ops::RangeBounds;
 // ---------------------------------------------------------
@@ -111,11 +111,7 @@ pub fn insert_asset_encoding(
     rule: &Rule,
 ) {
     match rule.mem() {
-        Memory::Heap => {
-            asset
-                .encodings
-                .insert(encoding_type.to_owned(), encoding.clone());
-        }
+        Memory::Heap => insert_encoding_into_asset(encoding_type, encoding, asset),
         Memory::Stable => STATE.with(|state| {
             insert_asset_encoding_stable(
                 full_path,

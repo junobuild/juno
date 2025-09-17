@@ -1,9 +1,11 @@
-use crate::constants::{WELL_KNOWN_CUSTOM_DOMAINS, WELL_KNOWN_II_ALTERNATIVE_ORIGINS};
+use crate::constants::{
+    ASSET_ENCODING_NO_COMPRESSION, WELL_KNOWN_CUSTOM_DOMAINS, WELL_KNOWN_II_ALTERNATIVE_ORIGINS,
+};
 use crate::runtime::{
     delete_certified_asset, update_certified_asset as update_runtime_certified_asset,
 };
 use crate::strategies::StorageStateStrategy;
-use crate::types::store::Asset;
+use crate::types::store::{Asset, AssetEncoding};
 use crate::well_known::utils::{map_alternative_origins_asset, map_custom_domains_asset};
 use junobuild_collections::constants::assets::COLLECTION_ASSET_KEY;
 use junobuild_shared::types::core::DomainName;
@@ -58,7 +60,7 @@ fn update_asset(
     full_path: &String,
     content: &str,
     storage_state: &impl StorageStateStrategy,
-    f: &dyn Fn(&str, Option<Asset>) -> Asset,
+    f: &dyn Fn(&str, Option<Asset>) -> (Asset, AssetEncoding),
 ) -> Result<(), String> {
     let collection = COLLECTION_ASSET_KEY.to_string();
 
@@ -67,7 +69,15 @@ fn update_asset(
 
     let existing_asset = storage_state.get_asset(&collection, full_path, &rule);
 
-    let asset = f(content, existing_asset);
+    let (mut asset, encoding) = f(content, existing_asset);
+
+    storage_state.insert_asset_encoding(
+        full_path,
+        ASSET_ENCODING_NO_COMPRESSION,
+        &encoding,
+        &mut asset,
+        &rule,
+    );
 
     storage_state.insert_asset(&collection, full_path, &asset, &rule);
 

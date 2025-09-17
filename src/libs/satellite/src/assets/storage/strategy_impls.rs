@@ -154,6 +154,17 @@ impl StorageStateStrategy for StorageState {
         insert_asset(collection, full_path, asset, rule)
     }
 
+    fn insert_asset_encoding(
+        &self,
+        full_path: &FullPath,
+        encoding_type: &str,
+        encoding: &AssetEncoding,
+        asset: &mut Asset,
+        rule: &Rule,
+    ) {
+        insert_asset_encoding(full_path, encoding_type, encoding, asset, rule)
+    }
+
     fn delete_asset(
         &self,
         collection: &CollectionKey,

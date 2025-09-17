@@ -1,6 +1,4 @@
-use crate::constants::{
-    ASSET_ENCODING_NO_COMPRESSION, WELL_KNOWN_CUSTOM_DOMAINS, WELL_KNOWN_II_ALTERNATIVE_ORIGINS,
-};
+use crate::constants::{WELL_KNOWN_CUSTOM_DOMAINS, WELL_KNOWN_II_ALTERNATIVE_ORIGINS};
 use crate::http::types::HeaderField;
 use crate::strategies::StorageAssertionsStrategy;
 use crate::types::interface::AssetNoContent;
@@ -154,18 +152,26 @@ pub fn create_asset_with_content(
     headers: &[HeaderField],
     existing_asset: Option<Asset>,
     key: AssetKey,
-) -> Asset {
-    let mut asset: Asset = Asset::prepare(key, headers.to_vec(), &existing_asset);
+) -> (Asset, AssetEncoding) {
+    let asset: Asset = Asset::prepare(key, headers.to_vec(), &existing_asset);
 
     let encoding = map_content_encoding(&content.as_bytes().to_vec());
 
-    asset
-        .encodings
-        .insert(ASSET_ENCODING_NO_COMPRESSION.to_string(), encoding);
-
-    asset
+    (asset, encoding)
 }
 
 pub fn clone_asset_encoding_content_chunks(encoding: &AssetEncoding, chunk_index: usize) -> Blob {
     encoding.content_chunks[chunk_index].clone()
+}
+
+/// With heap memory the encodings are part of the asset struct.
+/// Using stable, the encoding become a key pointing to another stable tree.
+pub fn insert_encoding_into_asset(
+    encoding_type: &str,
+    encoding: &AssetEncoding,
+    asset: &mut Asset,
+) {
+    asset
+        .encodings
+        .insert(encoding_type.to_owned(), encoding.clone());
 }

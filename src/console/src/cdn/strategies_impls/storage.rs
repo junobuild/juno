@@ -27,7 +27,7 @@ use junobuild_storage::types::state::FullPath;
 use junobuild_storage::types::store::{
     Asset, AssetAssertUpload, AssetEncoding, Batch, EncodingType, ReferenceId,
 };
-use junobuild_storage::utils::clone_asset_encoding_content_chunks;
+use junobuild_storage::utils::{clone_asset_encoding_content_chunks, insert_encoding_into_asset};
 
 pub struct StorageAssertions;
 
@@ -161,6 +161,17 @@ impl StorageStateStrategy for StorageState {
         _rule: &Rule,
     ) {
         insert_asset(full_path, asset)
+    }
+
+    fn insert_asset_encoding(
+        &self,
+        _full_path: &FullPath,
+        encoding_type: &str,
+        encoding: &AssetEncoding,
+        asset: &mut Asset,
+        _rule: &Rule,
+    ) {
+        insert_encoding_into_asset(encoding_type, encoding, asset)
     }
 
     fn delete_asset(

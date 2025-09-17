@@ -1,3 +1,3 @@
 pub mod store;
-pub mod dapp;
+pub mod switch_memory;
 mod internal;

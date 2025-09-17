@@ -9,7 +9,7 @@ use junobuild_collections::types::interface::{
 };
 use junobuild_collections::types::rules::Rule;
 use junobuild_shared::ic::UnwrapOrTrap;
-use crate::rules::dapp::switch_storage_dapp_memory;
+use crate::rules::switch_memory::switch_storage_dapp_memory;
 
 pub fn get_rule(collection_type: &CollectionType, collection: &CollectionKey) -> Option<Rule> {
     match collection_type {

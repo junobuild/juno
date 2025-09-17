@@ -5,7 +5,7 @@ use crate::runtime::{
 use crate::strategies::StorageStateStrategy;
 use crate::types::store::Asset;
 use crate::well_known::utils::{map_alternative_origins_asset, map_custom_domains_asset};
-use junobuild_collections::constants::assets::DEFAULT_ASSETS_COLLECTIONS;
+use junobuild_collections::constants::assets::COLLECTION_ASSET_KEY;
 use junobuild_shared::types::core::DomainName;
 
 pub fn update_alternative_origins_asset(
@@ -60,7 +60,7 @@ fn update_asset(
     storage_state: &impl StorageStateStrategy,
     f: &dyn Fn(&str, Option<Asset>) -> Asset,
 ) -> Result<(), String> {
-    let collection = DEFAULT_ASSETS_COLLECTIONS[0].0.to_string();
+    let collection = COLLECTION_ASSET_KEY.to_string();
 
     // #app collection rule
     let rule = storage_state.get_rule(&collection)?;
@@ -82,7 +82,7 @@ fn delete_asset(
     full_path: &String,
     storage_state: &impl StorageStateStrategy,
 ) -> Result<(), String> {
-    let collection = DEFAULT_ASSETS_COLLECTIONS[0].0.to_string();
+    let collection = COLLECTION_ASSET_KEY.to_string();
 
     // #app collection rule
     let rule = storage_state.get_rule(&collection)?;

@@ -4,6 +4,7 @@ use crate::strategies::StorageAssertionsStrategy;
 use crate::types::interface::AssetNoContent;
 use crate::types::state::FullPath;
 use crate::types::store::{Asset, AssetEncoding, AssetKey};
+use crate::well_known::types::WellKnownAsset;
 use candid::Principal;
 use junobuild_collections::constants::assets::COLLECTION_ASSET_KEY;
 use junobuild_collections::types::core::CollectionKey;
@@ -152,7 +153,7 @@ pub fn create_asset_with_content(
     headers: &[HeaderField],
     existing_asset: Option<Asset>,
     key: AssetKey,
-) -> (Asset, AssetEncoding) {
+) -> WellKnownAsset {
     let asset: Asset = Asset::prepare(key, headers.to_vec(), &existing_asset);
 
     let encoding = map_content_encoding(&content.as_bytes().to_vec());

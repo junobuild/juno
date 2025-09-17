@@ -1,7 +1,8 @@
 import type {
 	HttpRequest,
 	Memory,
-	_SERVICE as SatelliteActor
+	_SERVICE as SatelliteActor,
+	SetAuthenticationConfig
 } from '$declarations/satellite/satellite.did';
 import { idlFactory as idlFactorSatellite } from '$declarations/satellite/satellite.factory.did';
 import { AnonymousIdentity } from '@dfinity/agent';
@@ -22,11 +23,13 @@ import { controllersInitArgs, SATELLITE_WASM_PATH } from '../../../utils/setup-t
 describe('Satellite > Switch #dapp memory', () => {
 	let pic: PocketIc;
 	let canisterId: Principal;
+	let canisterIdUrl: string;
 	let actor: Actor<SatelliteActor>;
 
 	const DAPP_COLLECTION = '#dapp';
 	const STABLE_MEMORY: Memory = { Stable: null };
 	const HEAP_MEMORY: Memory = { Heap: null };
+	const DOMAINS = ['hello.com', 'test2.com'];
 
 	const controller = Ed25519KeyIdentity.generate();
 
@@ -46,6 +49,8 @@ describe('Satellite > Switch #dapp memory', () => {
 
 		actor = c;
 		canisterId = cId;
+
+		canisterIdUrl = `https://${canisterId.toText()}.icp0.io`;
 	});
 
 	afterAll(async () => {
@@ -83,8 +88,6 @@ describe('Satellite > Switch #dapp memory', () => {
 			actor.setIdentity(controller);
 		});
 
-		const DOMAINS = ['hello.com', 'test2.com'];
-
 		const assertMemory = async ({ memory }: { memory: Memory }) => {
 			const { get_rule } = actor;
 
@@ -93,6 +96,14 @@ describe('Satellite > Switch #dapp memory', () => {
 			const ruleMemory = fromNullishNullable(result?.memory);
 
 			expect(ruleMemory).toEqual(memory);
+		};
+
+		const switchMemory = async (args: { memory: Memory }) => {
+			const { switch_dapp_memory } = actor;
+
+			await switch_dapp_memory();
+
+			await assertMemory(args);
 		};
 
 		const assertIcDomains = async () => {
@@ -114,6 +125,41 @@ describe('Satellite > Switch #dapp memory', () => {
 
 			expect(decoder.decode(body as Uint8Array<ArrayBufferLike>)).toContain(DOMAINS[0]);
 			expect(decoder.decode(body as Uint8Array<ArrayBufferLike>)).toContain(DOMAINS[1]);
+
+			await assertCertification({
+				canisterId,
+				pic,
+				request,
+				response,
+				currentDate
+			});
+		};
+
+		const assertIIAlternativeOrigins = async () => {
+			const { http_request } = actor;
+
+			const request: HttpRequest = {
+				body: [],
+				certificate_version: toNullable(2),
+				headers: [],
+				method: 'GET',
+				url: '/.well-known/ii-alternative-origins'
+			};
+
+			const response = await http_request(request);
+
+			const { body } = response;
+
+			const decoder = new TextDecoder();
+			const responseBody = decoder.decode(body as Uint8Array<ArrayBufferLike>);
+
+			const alternativeOrigins = [
+				...DOMAINS.map((domain) => `https://${domain}`).reverse(),
+				canisterIdUrl
+			];
+
+			expect(responseBody).toEqual(JSON.stringify({ alternativeOrigins }));
+			expect(JSON.parse(responseBody).alternativeOrigins).toEqual(alternativeOrigins);
 
 			await assertCertification({
 				canisterId,
@@ -190,19 +236,15 @@ describe('Satellite > Switch #dapp memory', () => {
 			});
 
 			it('should switch memory from heap to stable', async () => {
-				const { switch_dapp_memory } = actor;
-
 				await assertMemory({ memory: HEAP_MEMORY });
 
-				await switch_dapp_memory();
-
-				await assertMemory({ memory: STABLE_MEMORY });
+				await switchMemory({ memory: STABLE_MEMORY });
 			});
 
 			it('should migrate .well-known/ic-domains', async () => {
-				const { switch_dapp_memory, set_custom_domain } = actor;
+				await switchMemory({ memory: HEAP_MEMORY });
 
-				await switch_dapp_memory();
+				const { set_custom_domain } = actor;
 
 				await set_custom_domain(DOMAINS[0], ['123456']);
 				await set_custom_domain(DOMAINS[1], []);
@@ -211,9 +253,36 @@ describe('Satellite > Switch #dapp memory', () => {
 
 				await assertIcDomains();
 
-				await switch_dapp_memory();
+				await switchMemory({ memory: STABLE_MEMORY });
 
 				await assertIcDomains();
+			});
+
+			it('should migrate .well-known/ii-alternative-origins', async () => {
+				await switchMemory({ memory: HEAP_MEMORY });
+
+				const { set_auth_config } = actor;
+
+				const config: SetAuthenticationConfig = {
+					internet_identity: [
+						{
+							derivation_origin: ['domain.com'],
+							external_alternative_origins: toNullable()
+						}
+					],
+					rules: [],
+					version: []
+				};
+
+				await set_auth_config(config);
+
+				await tick(pic);
+
+				await assertIIAlternativeOrigins();
+
+				await switchMemory({ memory: STABLE_MEMORY });
+
+				await assertIIAlternativeOrigins();
 			});
 		});
 	});

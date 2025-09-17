@@ -16,6 +16,7 @@ pub fn update_alternative_origins_asset(
 ) -> Result<(), String> {
     let full_path = WELL_KNOWN_II_ALTERNATIVE_ORIGINS.to_string();
 
+
     update_asset(
         &full_path,
         alternative_origins,

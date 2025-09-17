@@ -184,6 +184,12 @@ pub fn del_rule(collection_type: CollectionType, collection: CollectionKey, rule
     api::rules::del_rule(collection_type, collection, rule)
 }
 
+#[doc(hidden)]
+#[update(guard = "caller_is_admin_controller")]
+pub fn switch_dapp_memory() {
+    api::rules::switch_dapp_memory()
+}
+
 // ---------------------------------------------------------
 // Controllers
 // ---------------------------------------------------------
@@ -514,7 +520,7 @@ macro_rules! include_satellite {
             commit_proposal_many_assets_upload, count_assets, count_collection_assets,
             count_collection_docs, count_docs, count_proposals, del_asset, del_assets,
             del_controllers, del_custom_domain, del_doc, del_docs, del_filtered_assets,
-            del_filtered_docs, del_many_assets, del_many_docs, del_rule, delete_proposal_assets,
+            del_filtered_docs, del_many_assets, del_many_docs, del_rule, switch_dapp_memory, delete_proposal_assets,
             deposit_cycles, get_asset, get_auth_config, get_config, get_db_config, get_doc,
             get_many_assets, get_many_docs, get_proposal, get_storage_config, http_request,
             http_request_streaming_callback, init, init_asset_upload, init_proposal,

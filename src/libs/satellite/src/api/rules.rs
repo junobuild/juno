@@ -9,6 +9,7 @@ use junobuild_collections::types::interface::{
 };
 use junobuild_collections::types::rules::Rule;
 use junobuild_shared::ic::UnwrapOrTrap;
+use crate::rules::dapp::switch_storage_dapp_memory;
 
 pub fn get_rule(collection_type: &CollectionType, collection: &CollectionKey) -> Option<Rule> {
     match collection_type {
@@ -36,4 +37,8 @@ pub fn del_rule(collection_type: CollectionType, collection: CollectionKey, rule
         CollectionType::Db => del_rule_db(collection, rule).unwrap_or_trap(),
         CollectionType::Storage => del_rule_storage(collection, rule).unwrap_or_trap(),
     }
+}
+
+pub fn switch_dapp_memory() {
+    switch_storage_dapp_memory().unwrap_or_trap()
 }

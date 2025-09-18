@@ -6,21 +6,29 @@ import { mockBlob } from '../mocks/storage.mocks';
 
 export const uploadFile = async ({
 	actor,
-	proposalId
+	proposalId,
+	collection = '#dapp',
+	full_path = '/hello3.html',
+	name = 'hello3.html',
+	description
 }: {
 	actor: Actor<SatelliteActor | ConsoleActor>;
 	proposalId: bigint;
+	name?: string;
+	full_path?: string;
+	collection?: string;
+	description?: string;
 }) => {
 	const { init_proposal_asset_upload, commit_proposal_asset_upload, upload_proposal_asset_chunk } =
 		actor;
 
 	const file = await init_proposal_asset_upload(
 		{
-			collection: '#dapp',
-			description: toNullable(),
+			collection,
+			description: toNullable(description),
 			encoding_type: [],
-			full_path: '/hello3.html',
-			name: 'hello3.html',
+			full_path,
+			name,
 			token: toNullable()
 		},
 		proposalId

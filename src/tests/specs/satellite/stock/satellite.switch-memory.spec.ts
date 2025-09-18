@@ -8,11 +8,12 @@ import { AnonymousIdentity } from '@dfinity/agent';
 import { Ed25519KeyIdentity } from '@dfinity/identity';
 import type { Actor, PocketIc } from '@dfinity/pic';
 import type { Principal } from '@dfinity/principal';
-import { fromNullable, fromNullishNullable, toNullable } from '@dfinity/utils';
+import { assertNonNullish, fromNullable, fromNullishNullable, toNullable } from '@dfinity/utils';
 import {
 	JUNO_AUTH_ERROR_NOT_ADMIN_CONTROLLER,
 	JUNO_COLLECTIONS_ERROR_COLLECTION_NOT_EMPTY
 } from '@junobuild/errors';
+import { uploadFile } from '../../../utils/cdn-tests.utils';
 import { assertCertification } from '../../../utils/certification-tests.utils';
 import { tick } from '../../../utils/pic-tests.utils';
 import { uploadAsset } from '../../../utils/satellite-storage-tests.utils';
@@ -27,6 +28,7 @@ describe('Satellite > Switch storage system memory', () => {
 	let canisterIdUrl: string;
 
 	const DAPP_COLLECTION = '#dapp';
+	const RELEASES_COLLECTION = '#_juno/releases';
 	const DOMAINS = ['hello.com', 'test2.com'];
 
 	beforeAll(async () => {
@@ -56,7 +58,7 @@ describe('Satellite > Switch storage system memory', () => {
 			actor.setIdentity(new AnonymousIdentity());
 		});
 
-		it('should throw errors on switch dapp memory', async () => {
+		it('should throw errors on switch memory', async () => {
 			const { switch_storage_system_memory } = actor;
 
 			await expect(switch_storage_system_memory()).rejects.toThrow(
@@ -72,7 +74,7 @@ describe('Satellite > Switch storage system memory', () => {
 			actor.setIdentity(hacker);
 		});
 
-		it('should throw errors on switch dapp memory', async () => {
+		it('should throw errors on switch memory', async () => {
 			const { switch_storage_system_memory } = actor;
 
 			await expect(switch_storage_system_memory()).rejects.toThrow(
@@ -224,6 +226,52 @@ describe('Satellite > Switch storage system memory', () => {
 					`${JUNO_COLLECTIONS_ERROR_COLLECTION_NOT_EMPTY} (Storage - ${DAPP_COLLECTION})`
 				);
 			});
+
+			it('should throw errors when satellite contains releases', async () => {
+				const {
+					switch_storage_system_memory,
+					del_assets,
+					init_proposal,
+					submit_proposal,
+					commit_proposal
+				} = actor;
+
+				await del_assets(DAPP_COLLECTION);
+
+				const name = `satellite-v0.0.18.wasm.gz`;
+				const full_path = `/_juno/releases/${name}`;
+
+				const [proposalId, _] = await init_proposal({
+					SegmentsDeployment: {
+						mission_control_version: [],
+						orbiter: [],
+						satellite_version: ['0.0.18']
+					}
+				});
+
+				await uploadFile({
+					proposalId,
+					actor,
+					collection: RELEASES_COLLECTION,
+					name,
+					full_path,
+					description: `change=${proposalId};version=v0.0.18`
+				});
+
+				const [__, proposal] = await submit_proposal(proposalId);
+
+				const sha = fromNullable(proposal.sha256);
+				assertNonNullish(sha);
+
+				await commit_proposal({
+					sha256: sha,
+					proposal_id: proposalId
+				});
+
+				await expect(switch_storage_system_memory()).rejects.toThrow(
+					`${JUNO_COLLECTIONS_ERROR_COLLECTION_NOT_EMPTY} (Storage - ${RELEASES_COLLECTION})`
+				);
+			});
 		});
 
 		describe.each([
@@ -233,7 +281,7 @@ describe('Satellite > Switch storage system memory', () => {
 			beforeAll(async () => {
 				const { del_assets } = actor;
 
-				await del_assets(DAPP_COLLECTION);
+				await del_assets(RELEASES_COLLECTION);
 			});
 
 			it('should switch memory from heap to stable', async () => {

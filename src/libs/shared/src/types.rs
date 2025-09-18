@@ -144,12 +144,17 @@ pub mod interface {
     }
 
     #[derive(CandidType, Deserialize)]
-    pub struct MissionControlArgs {
+    pub struct InitMissionControlArgs {
         pub user: UserId,
     }
 
     #[derive(CandidType, Deserialize)]
-    pub struct SegmentArgs {
+    pub struct InitOrbiterArgs {
+        pub controllers: Vec<ControllerId>,
+    }
+
+    #[derive(CandidType, Deserialize)]
+    pub struct InitSatelliteArgs {
         pub controllers: Vec<ControllerId>,
     }
 

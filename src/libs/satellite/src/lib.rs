@@ -40,7 +40,7 @@ use junobuild_shared::types::core::DomainName;
 use junobuild_shared::types::core::Key;
 use junobuild_shared::types::domain::CustomDomains;
 use junobuild_shared::types::interface::{
-    DeleteControllersArgs, DepositCyclesArgs, MemorySize, SegmentArgs, SetControllersArgs,
+    DeleteControllersArgs, DepositCyclesArgs, InitSatelliteArgs, MemorySize, SetControllersArgs,
 };
 use junobuild_shared::types::list::ListParams;
 use junobuild_shared::types::list::ListResults;
@@ -70,7 +70,7 @@ pub use sdk::internal;
 
 #[doc(hidden)]
 #[init]
-pub fn init(args: SegmentArgs) {
+pub fn init(args: InitSatelliteArgs) {
     lifecycle::init(args);
 }
 

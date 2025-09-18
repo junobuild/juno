@@ -5,7 +5,9 @@ use crate::store::heap::{
 use candid::{Encode, Principal};
 use junobuild_shared::mgmt::types::ic::WasmArg;
 use junobuild_shared::types::core::Blob;
-use junobuild_shared::types::interface::{MissionControlArgs, SegmentArgs};
+use junobuild_shared::types::interface::{
+    InitMissionControlArgs, InitOrbiterArgs, InitSatelliteArgs,
+};
 use junobuild_shared::types::state::{MissionControlId, UserId};
 use junobuild_storage::constants::ASSET_ENCODING_NO_COMPRESSION;
 use junobuild_storage::types::state::FullPath;
@@ -37,7 +39,7 @@ pub fn mission_control_wasm_arg(user: &UserId) -> Result<WasmArg, String> {
         get_latest_mission_control_version().ok_or("No mission control versions available.")?;
     let full_path = format!("/releases/mission_control-v{latest_version}.wasm.gz");
     let wasm: Blob = get_chunks(&full_path)?;
-    let install_arg: Vec<u8> = Encode!(&MissionControlArgs { user: *user }).unwrap();
+    let install_arg: Vec<u8> = Encode!(&InitMissionControlArgs { user: *user }).unwrap();
 
     Ok(WasmArg { wasm, install_arg })
 }
@@ -50,7 +52,7 @@ pub fn satellite_wasm_arg(
         get_latest_satellite_version().ok_or("No satellite versions available.")?;
     let full_path = format!("/releases/satellite-v{latest_version}.wasm.gz");
     let wasm: Blob = get_chunks(&full_path)?;
-    let install_arg: Vec<u8> = Encode!(&SegmentArgs {
+    let install_arg: Vec<u8> = Encode!(&InitSatelliteArgs {
         controllers: user_mission_control_controllers(user, mission_control_id)
     })
     .unwrap();
@@ -64,7 +66,7 @@ pub fn orbiter_wasm_arg(
     let latest_version = get_latest_orbiter_version().ok_or("No orbiter versions available.")?;
     let full_path = format!("/releases/orbiter-v{latest_version}.wasm.gz");
     let wasm: Blob = get_chunks(&full_path)?;
-    let install_arg: Vec<u8> = Encode!(&SegmentArgs {
+    let install_arg: Vec<u8> = Encode!(&InitOrbiterArgs {
         controllers: user_mission_control_controllers(user, mission_control_id)
     })
     .unwrap();

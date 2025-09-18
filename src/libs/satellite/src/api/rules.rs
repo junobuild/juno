@@ -2,6 +2,7 @@ use crate::rules::store::{
     del_rule_db, del_rule_storage, get_rule_db, get_rule_storage, list_rules_db,
     list_rules_storage, set_rule_db, set_rule_storage,
 };
+use crate::rules::switch_memory::switch_storage_dapp_memory;
 use crate::types::state::CollectionType;
 use junobuild_collections::types::core::CollectionKey;
 use junobuild_collections::types::interface::{
@@ -36,4 +37,8 @@ pub fn del_rule(collection_type: CollectionType, collection: CollectionKey, rule
         CollectionType::Db => del_rule_db(collection, rule).unwrap_or_trap(),
         CollectionType::Storage => del_rule_storage(collection, rule).unwrap_or_trap(),
     }
+}
+
+pub fn switch_dapp_memory() {
+    switch_storage_dapp_memory().unwrap_or_trap()
 }

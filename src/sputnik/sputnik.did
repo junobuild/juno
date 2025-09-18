@@ -353,6 +353,7 @@ service : (SegmentArgs) -> {
   set_rule : (CollectionType, text, SetRule) -> (Rule);
   set_storage_config : (SetStorageConfig) -> (StorageConfig);
   submit_proposal : (nat) -> (nat, Proposal);
+  switch_dapp_memory : () -> ();
   upload_asset_chunk : (UploadChunk) -> (UploadChunkResult);
   upload_proposal_asset_chunk : (UploadChunk) -> (UploadChunkResult);
 }

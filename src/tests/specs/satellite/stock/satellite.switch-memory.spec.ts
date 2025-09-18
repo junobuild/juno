@@ -18,7 +18,7 @@ import { tick } from '../../../utils/pic-tests.utils';
 import { uploadAsset } from '../../../utils/satellite-storage-tests.utils';
 import { setupSatelliteStock } from '../../../utils/satellite-tests.utils';
 
-describe('Satellite > Switch #dapp memory', () => {
+describe('Satellite > Switch storage system memory', () => {
 	let pic: PocketIc;
 	let canisterId: Principal;
 	let actor: Actor<SatelliteActor>;
@@ -57,9 +57,11 @@ describe('Satellite > Switch #dapp memory', () => {
 		});
 
 		it('should throw errors on switch dapp memory', async () => {
-			const { switch_dapp_memory } = actor;
+			const { switch_storage_system_memory } = actor;
 
-			await expect(switch_dapp_memory()).rejects.toThrow(JUNO_AUTH_ERROR_NOT_ADMIN_CONTROLLER);
+			await expect(switch_storage_system_memory()).rejects.toThrow(
+				JUNO_AUTH_ERROR_NOT_ADMIN_CONTROLLER
+			);
 		});
 	});
 
@@ -71,9 +73,11 @@ describe('Satellite > Switch #dapp memory', () => {
 		});
 
 		it('should throw errors on switch dapp memory', async () => {
-			const { switch_dapp_memory } = actor;
+			const { switch_storage_system_memory } = actor;
 
-			await expect(switch_dapp_memory()).rejects.toThrow(JUNO_AUTH_ERROR_NOT_ADMIN_CONTROLLER);
+			await expect(switch_storage_system_memory()).rejects.toThrow(
+				JUNO_AUTH_ERROR_NOT_ADMIN_CONTROLLER
+			);
 		});
 	});
 
@@ -93,9 +97,9 @@ describe('Satellite > Switch #dapp memory', () => {
 		};
 
 		const switchMemory = async (args: { memory: Memory }) => {
-			const { switch_dapp_memory } = actor;
+			const { switch_storage_system_memory } = actor;
 
-			await switch_dapp_memory();
+			await switch_storage_system_memory();
 
 			await assertMemory(args);
 		};
@@ -166,9 +170,9 @@ describe('Satellite > Switch #dapp memory', () => {
 
 		describe('Errors', () => {
 			it('should throw errors because stock satellite has an index.html', async () => {
-				const { switch_dapp_memory } = actor;
+				const { switch_storage_system_memory } = actor;
 
-				await expect(switch_dapp_memory()).rejects.toThrow(
+				await expect(switch_storage_system_memory()).rejects.toThrow(
 					`${JUNO_COLLECTIONS_ERROR_COLLECTION_NOT_EMPTY} (Storage - ${DAPP_COLLECTION})`
 				);
 			});
@@ -177,7 +181,7 @@ describe('Satellite > Switch #dapp memory', () => {
 			const full_path = `/hello/${name}`;
 
 			it('should throw errors when satellites has multiple assets', async () => {
-				const { switch_dapp_memory } = actor;
+				const { switch_storage_system_memory } = actor;
 
 				await uploadAsset({
 					full_path,
@@ -196,27 +200,27 @@ describe('Satellite > Switch #dapp memory', () => {
 					actor
 				});
 
-				await expect(switch_dapp_memory()).rejects.toThrow(
+				await expect(switch_storage_system_memory()).rejects.toThrow(
 					`${JUNO_COLLECTIONS_ERROR_COLLECTION_NOT_EMPTY} (Storage - ${DAPP_COLLECTION})`
 				);
 			});
 
 			it('should throw errors when satellite has other assets than index.html', async () => {
-				const { switch_dapp_memory, del_asset } = actor;
+				const { switch_storage_system_memory, del_asset } = actor;
 
 				await del_asset(DAPP_COLLECTION, '/index.html');
 
-				await expect(switch_dapp_memory()).rejects.toThrow(
+				await expect(switch_storage_system_memory()).rejects.toThrow(
 					`${JUNO_COLLECTIONS_ERROR_COLLECTION_NOT_EMPTY} (Storage - ${DAPP_COLLECTION})`
 				);
 			});
 
 			it('should throw errors when satellite has one more asset that is not index.html', async () => {
-				const { switch_dapp_memory, del_asset } = actor;
+				const { switch_storage_system_memory, del_asset } = actor;
 
 				await del_asset(DAPP_COLLECTION, full_path);
 
-				await expect(switch_dapp_memory()).rejects.toThrow(
+				await expect(switch_storage_system_memory()).rejects.toThrow(
 					`${JUNO_COLLECTIONS_ERROR_COLLECTION_NOT_EMPTY} (Storage - ${DAPP_COLLECTION})`
 				);
 			});

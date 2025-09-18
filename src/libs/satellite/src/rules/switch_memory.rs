@@ -1,3 +1,4 @@
+use crate::assets::constants::CDN_JUNO_RELEASES_COLLECTION_KEY;
 use crate::assets::storage::internal::unsafe_delete_asset;
 use crate::assets::storage::store::assert_assets_collection_empty_store;
 use crate::assets::storage::strategy_impls::StorageState;
@@ -10,7 +11,6 @@ use junobuild_collections::msg::msg_storage_collection_not_found;
 use junobuild_collections::types::rules::Rule;
 use junobuild_storage::constants::{WELL_KNOWN_CUSTOM_DOMAINS, WELL_KNOWN_II_ALTERNATIVE_ORIGINS};
 use junobuild_storage::well_known::update::update_custom_domains_asset;
-use crate::assets::constants::CDN_JUNO_RELEASES_COLLECTION_KEY;
 
 pub fn switch_storage_memory() -> Result<(), String> {
     let dapp_collection = COLLECTION_ASSET_KEY.to_string();

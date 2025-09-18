@@ -54,7 +54,9 @@ pub fn satellite_wasm_arg(
     let full_path = format!("/releases/satellite-v{latest_version}.wasm.gz");
     let wasm: Blob = get_chunks(&full_path)?;
     let install_arg: Vec<u8> = Encode!(&InitSatelliteArgs {
-        controllers: user_mission_control_controllers(user, mission_control_id)
+        controllers: user_mission_control_controllers(user, mission_control_id),
+        // TODO: arguments to be implemented
+        storage: None
     })
     .map_err(|e| e.to_string())?;
     Ok(WasmArg { wasm, install_arg })

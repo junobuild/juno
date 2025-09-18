@@ -75,7 +75,7 @@ export interface GetMonitoringHistory {
 	from: [] | [bigint];
 	segment_id: Principal;
 }
-export interface MissionControlArgs {
+export interface InitMissionControlArgs {
 	user: Principal;
 }
 export interface MissionControlSettings {

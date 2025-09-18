@@ -58,7 +58,7 @@ type GetMonitoringHistory = record {
   from : opt nat64;
   segment_id : principal;
 };
-type MissionControlArgs = record { user : principal };
+type InitMissionControlArgs = record { user : principal };
 type MissionControlSettings = record {
   updated_at : nat64;
   created_at : nat64;
@@ -152,7 +152,7 @@ type User = record {
   created_at : nat64;
   config : opt Config;
 };
-service : (MissionControlArgs) -> {
+service : (InitMissionControlArgs) -> {
   add_mission_control_controllers : (vec principal) -> ();
   add_satellites_controllers : (vec principal, vec principal) -> ();
   create_orbiter : (opt text) -> (Orbiter);

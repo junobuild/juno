@@ -126,6 +126,10 @@ export interface InitAssetKey {
 }
 export interface InitSatelliteArgs {
 	controllers: Array<Principal>;
+	storage: [] | [InitStorageArgs];
+}
+export interface InitStorageArgs {
+	system_memory: [] | [Memory];
 }
 export interface InitUploadResult {
 	batch_id: bigint;

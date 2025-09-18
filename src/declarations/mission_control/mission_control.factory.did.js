@@ -1,6 +1,6 @@
 // @ts-ignore
 export const idlFactory = ({ IDL }) => {
-	const MissionControlArgs = IDL.Record({ user: IDL.Principal });
+	const InitMissionControlArgs = IDL.Record({ user: IDL.Principal });
 	const CyclesThreshold = IDL.Record({
 		fund_cycles: IDL.Nat,
 		min_cycles: IDL.Nat
@@ -256,6 +256,6 @@ export const idlFactory = ({ IDL }) => {
 };
 // @ts-ignore
 export const init = ({ IDL }) => {
-	const MissionControlArgs = IDL.Record({ user: IDL.Principal });
-	return [MissionControlArgs];
+	const InitMissionControlArgs = IDL.Record({ user: IDL.Principal });
+	return [InitMissionControlArgs];
 };

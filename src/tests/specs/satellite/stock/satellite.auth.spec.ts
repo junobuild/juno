@@ -4,7 +4,7 @@ import type {
 } from '$declarations/satellite/satellite.did';
 import { AnonymousIdentity } from '@dfinity/agent';
 import type { Ed25519KeyIdentity } from '@dfinity/identity';
-import type { PocketIc , Actor } from '@dfinity/pic';
+import type { Actor, PocketIc } from '@dfinity/pic';
 import type { Principal } from '@dfinity/principal';
 import { fromNullable, toNullable } from '@dfinity/utils';
 import {

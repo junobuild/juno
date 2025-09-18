@@ -1,6 +1,8 @@
 // @ts-ignore
 export const idlFactory = ({ IDL }) => {
-	const SegmentArgs = IDL.Record({ controllers: IDL.Vec(IDL.Principal) });
+	const InitOrbiterArgs = IDL.Record({
+		controllers: IDL.Vec(IDL.Principal)
+	});
 	const DeleteControllersArgs = IDL.Record({
 		controllers: IDL.Vec(IDL.Principal)
 	});
@@ -301,6 +303,8 @@ export const idlFactory = ({ IDL }) => {
 };
 // @ts-ignore
 export const init = ({ IDL }) => {
-	const SegmentArgs = IDL.Record({ controllers: IDL.Vec(IDL.Principal) });
-	return [SegmentArgs];
+	const InitOrbiterArgs = IDL.Record({
+		controllers: IDL.Vec(IDL.Principal)
+	});
+	return [InitOrbiterArgs];
 };

@@ -124,6 +124,9 @@ export interface InitAssetKey {
 	encoding_type: [] | [string];
 	full_path: string;
 }
+export interface InitSatelliteArgs {
+	controllers: Array<Principal>;
+}
 export interface InitUploadResult {
 	batch_id: bigint;
 }
@@ -239,9 +242,6 @@ export interface Rule {
 	rate_config: [] | [RateConfig];
 	write: Permission;
 	max_changes_per_user: [] | [number];
-}
-export interface SegmentArgs {
-	controllers: Array<Principal>;
 }
 export interface SegmentsDeploymentOptions {
 	orbiter: [] | [string];

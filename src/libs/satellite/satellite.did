@@ -99,6 +99,7 @@ type InitAssetKey = record {
   encoding_type : opt text;
   full_path : text;
 };
+type InitSatelliteArgs = record { controllers : vec principal };
 type InitUploadResult = record { batch_id : nat };
 type ListMatcher = record {
   key : opt text;
@@ -187,7 +188,6 @@ type Rule = record {
   write : Permission;
   max_changes_per_user : opt nat32;
 };
-type SegmentArgs = record { controllers : vec principal };
 type SegmentsDeploymentOptions = record {
   orbiter : opt text;
   mission_control_version : opt text;
@@ -281,7 +281,7 @@ type UploadChunk = record {
   order_id : opt nat;
 };
 type UploadChunkResult = record { chunk_id : nat };
-service : (SegmentArgs) -> {
+service : (InitSatelliteArgs) -> {
   commit_asset_upload : (CommitBatch) -> ();
   commit_proposal : (CommitProposal) -> (null);
   commit_proposal_asset_upload : (CommitBatch) -> ();

@@ -20,7 +20,9 @@ export const deleteDefaultIndexHTML = async ({
 	await del_assets('#dapp');
 };
 
-export const setupSatelliteStock = async (): Promise<{
+export const setupSatelliteStock = async (
+	{ withIndexHtml }: { withIndexHtml: boolean } = { withIndexHtml: false }
+): Promise<{
 	pic: PocketIc;
 	canisterId: Principal;
 	actor: Actor<SatelliteActor>;
@@ -42,7 +44,9 @@ export const setupSatelliteStock = async (): Promise<{
 		sender: controller.getPrincipal()
 	});
 
-	await deleteDefaultIndexHTML({ actor, controller });
+	if (!withIndexHtml) {
+		await deleteDefaultIndexHTML({ actor, controller });
+	}
 
 	return {
 		pic,

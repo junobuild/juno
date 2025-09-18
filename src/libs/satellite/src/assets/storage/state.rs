@@ -1,3 +1,4 @@
+use crate::assets::constants::{CDN_JUNO_PATH, CDN_JUNO_RELEASES_COLLECTION_KEY};
 use crate::assets::storage::types::state::{
     AssetsStable, ContentChunksStable, StableEncodingChunkKey, StableKey,
 };
@@ -44,6 +45,17 @@ fn get_public_asset_impl(full_path: &FullPath, state: &State) -> (Option<Asset>,
 
     if let Some(stable_asset) = stable_dapp_asset {
         return (Some(stable_asset), Memory::Stable);
+    }
+
+    // If the full_path starts with /_juno/, it's reserved for release assets.
+    if full_path.starts_with(CDN_JUNO_PATH) {
+        let release_asset = get_asset_stable(
+            &CDN_JUNO_RELEASES_COLLECTION_KEY.to_string(),
+            full_path,
+            &state.stable.assets,
+        );
+
+        return (release_asset, Memory::Stable);
     }
 
     // Ultimately, we try to resolve the asset in the custom collections of the dev.
@@ -126,6 +138,11 @@ pub fn insert_asset_encoding(
 }
 
 pub fn insert_asset(collection: &CollectionKey, full_path: &FullPath, asset: &Asset, rule: &Rule) {
+    ic_cdk::print(format!(
+        "------------------------------------> {} {}",
+        collection, full_path
+    ));
+
     match rule.mem() {
         Memory::Heap => STATE.with(|state| {
             insert_asset_heap(

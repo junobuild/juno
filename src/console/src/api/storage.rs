@@ -104,5 +104,5 @@ fn commit_proposal_many_assets_upload(commits: Vec<CommitBatch>) {
 
 #[query(guard = "caller_is_admin_controller")]
 pub fn list_assets(collection: CollectionKey, filter: ListParams) -> ListResults<AssetNoContent> {
-    junobuild_cdn::storage::heap::list_assets(&CdnHeap, &collection, &filter)
+    crate::cdn::storage::heap::list_assets(&collection, &filter)
 }

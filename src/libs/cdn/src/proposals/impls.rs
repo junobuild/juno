@@ -10,6 +10,7 @@ impl fmt::Display for CommitProposalError {
             CommitProposalError::InvalidSha256(err) => write!(f, "{err}"),
             CommitProposalError::InvalidType(err) => write!(f, "{err}"),
             CommitProposalError::CommitAssetsIssue(err) => write!(f, "{err}"),
+            CommitProposalError::PreCommitAssetsIssue(err) => write!(f, "{err}"),
             CommitProposalError::PostCommitAssetsIssue(err) => write!(f, "{err}"),
         }
     }

@@ -88,22 +88,23 @@ describe('Satellite > Switch storage system memory', () => {
 			actor.setIdentity(controller);
 		});
 
-		const assertMemory = async ({ memory }: { memory: Memory }) => {
+		const assertMemory = async ({ memory, collection }: { memory: Memory; collection: string }) => {
 			const { get_rule } = actor;
 
-			const result = fromNullable(await get_rule({ Storage: null }, DAPP_COLLECTION));
+			const result = fromNullable(await get_rule({ Storage: null }, collection));
 
 			const ruleMemory = fromNullishNullable(result?.memory);
 
 			expect(ruleMemory).toEqual(memory);
 		};
 
-		const switchMemory = async (args: { memory: Memory }) => {
+		const switchMemory = async ({ memory }: { memory: Memory }) => {
 			const { switch_storage_system_memory } = actor;
 
 			await switch_storage_system_memory();
 
-			await assertMemory(args);
+			await assertMemory({ memory, collection: DAPP_COLLECTION });
+			await assertMemory({ memory, collection: RELEASES_COLLECTION });
 		};
 
 		const assertIcDomains = async () => {
@@ -284,8 +285,9 @@ describe('Satellite > Switch storage system memory', () => {
 				await del_assets(RELEASES_COLLECTION);
 			});
 
-			it('should switch memory from heap to stable', async () => {
-				await assertMemory({ memory: from });
+			it('should switch memory', async () => {
+				await assertMemory({ memory: from, collection: DAPP_COLLECTION });
+				await assertMemory({ memory: from, collection: RELEASES_COLLECTION });
 
 				await switchMemory({ memory: to });
 			});

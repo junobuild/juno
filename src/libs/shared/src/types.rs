@@ -156,6 +156,18 @@ pub mod interface {
     #[derive(CandidType, Deserialize)]
     pub struct InitSatelliteArgs {
         pub controllers: Vec<ControllerId>,
+        pub storage: Option<InitStorageArgs>,
+    }
+
+    #[derive(CandidType, Deserialize)]
+    pub struct InitStorageArgs {
+        pub system_memory: Option<InitStorageMemory>,
+    }
+
+    #[derive(CandidType, Deserialize)]
+    pub enum InitStorageMemory {
+        Heap,
+        Stable,
     }
 
     #[derive(CandidType, Deserialize, Clone)]

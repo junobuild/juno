@@ -9,4 +9,3 @@ pub fn init_storage_heap_state() -> StorageHeapState {
 
     StorageHeapState::new_with_storage_collections(collections)
 }
-

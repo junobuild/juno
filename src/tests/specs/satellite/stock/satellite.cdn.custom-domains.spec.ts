@@ -23,10 +23,8 @@ describe.each(MEMORIES)('Satellite > Custom domains > $title', ({ memory }) => {
 	beforeAll(async () => {
 		const {
 			actor: a,
-			canisterId: c,
 			pic: p,
 			controller: cO,
-			canisterIdUrl: url
 		} = await setupSatelliteStock({
 			withIndexHtml: true,
 			memory

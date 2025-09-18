@@ -39,7 +39,8 @@ pub fn mission_control_wasm_arg(user: &UserId) -> Result<WasmArg, String> {
         get_latest_mission_control_version().ok_or("No mission control versions available.")?;
     let full_path = format!("/releases/mission_control-v{latest_version}.wasm.gz");
     let wasm: Blob = get_chunks(&full_path)?;
-    let install_arg: Vec<u8> = Encode!(&InitMissionControlArgs { user: *user }).unwrap();
+    let install_arg: Vec<u8> =
+        Encode!(&InitMissionControlArgs { user: *user }).map_err(|e| e.to_string())?;
 
     Ok(WasmArg { wasm, install_arg })
 }
@@ -55,7 +56,7 @@ pub fn satellite_wasm_arg(
     let install_arg: Vec<u8> = Encode!(&InitSatelliteArgs {
         controllers: user_mission_control_controllers(user, mission_control_id)
     })
-    .unwrap();
+    .map_err(|e| e.to_string())?;
     Ok(WasmArg { wasm, install_arg })
 }
 
@@ -69,7 +70,7 @@ pub fn orbiter_wasm_arg(
     let install_arg: Vec<u8> = Encode!(&InitOrbiterArgs {
         controllers: user_mission_control_controllers(user, mission_control_id)
     })
-    .unwrap();
+    .map_err(|e| e.to_string())?;
     Ok(WasmArg { wasm, install_arg })
 }
 

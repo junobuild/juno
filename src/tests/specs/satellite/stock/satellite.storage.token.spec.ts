@@ -3,23 +3,15 @@ import type {
 	_SERVICE as SatelliteActor,
 	SetRule
 } from '$declarations/satellite/satellite.did';
-import { idlFactory as idlFactorSatellite } from '$declarations/satellite/satellite.factory.did';
-import { Ed25519KeyIdentity } from '@dfinity/identity';
 import { type Actor, PocketIc } from '@dfinity/pic';
 import { toNullable } from '@dfinity/utils';
 import { nanoid } from 'nanoid';
-import { inject } from 'vitest';
 import { uploadAsset } from '../../../utils/satellite-storage-tests.utils';
-import { deleteDefaultIndexHTML } from '../../../utils/satellite-tests.utils';
-import { controllersInitArgs, SATELLITE_WASM_PATH } from '../../../utils/setup-tests.utils';
+import { setupSatelliteStock } from '../../../utils/satellite-tests.utils';
 
 describe('Satellite > Storage > Token', () => {
 	let pic: PocketIc;
 	let actor: Actor<SatelliteActor>;
-
-	const controller = Ed25519KeyIdentity.generate();
-
-	const currentDate = new Date(2021, 6, 10, 0, 0, 0, 0);
 
 	const upload = async (params: {
 		full_path: string;
@@ -59,20 +51,10 @@ describe('Satellite > Storage > Token', () => {
 	};
 
 	beforeAll(async () => {
-		pic = await PocketIc.create(inject('PIC_URL'));
+		const { actor: a, pic: p } = await setupSatelliteStock();
 
-		await pic.setTime(currentDate.getTime());
-
-		const { actor: a } = await pic.setupCanister<SatelliteActor>({
-			idlFactory: idlFactorSatellite,
-			wasm: SATELLITE_WASM_PATH,
-			arg: controllersInitArgs(controller),
-			sender: controller.getPrincipal()
-		});
-
+		pic = p;
 		actor = a;
-
-		await deleteDefaultIndexHTML({ actor, controller });
 	});
 
 	afterAll(async () => {

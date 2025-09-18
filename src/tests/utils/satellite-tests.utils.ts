@@ -1,6 +1,11 @@
 import type { _SERVICE as SatelliteActor } from '$declarations/satellite/satellite.did';
+import { idlFactory as idlFactorSatellite } from '$declarations/satellite/satellite.factory.did';
 import type { Identity } from '@dfinity/agent';
-import type { Actor } from '@dfinity/pic';
+import { Ed25519KeyIdentity } from '@dfinity/identity';
+import { type Actor, PocketIc } from '@dfinity/pic';
+import type { Principal } from '@dfinity/principal';
+import { inject } from 'vitest';
+import { controllersInitArgs, SATELLITE_WASM_PATH } from './setup-tests.utils';
 
 export const deleteDefaultIndexHTML = async ({
 	actor,
@@ -13,4 +18,38 @@ export const deleteDefaultIndexHTML = async ({
 
 	const { del_assets } = actor;
 	await del_assets('#dapp');
+};
+
+export const setupSatelliteStock = async (): Promise<{
+	pic: PocketIc;
+	canisterId: Principal;
+	actor: Actor<SatelliteActor>;
+	currentDate: Date;
+	controller: Ed25519KeyIdentity;
+	canisterIdUrl: string;
+}> => {
+	const pic = await PocketIc.create(inject('PIC_URL'));
+
+	const currentDate = new Date(2021, 6, 10, 0, 0, 0, 0);
+	await pic.setTime(currentDate.getTime());
+
+	const controller = Ed25519KeyIdentity.generate();
+
+	const { actor, canisterId } = await pic.setupCanister<SatelliteActor>({
+		idlFactory: idlFactorSatellite,
+		wasm: SATELLITE_WASM_PATH,
+		arg: controllersInitArgs(controller),
+		sender: controller.getPrincipal()
+	});
+
+	await deleteDefaultIndexHTML({ actor, controller });
+
+	return {
+		pic,
+		canisterId,
+		actor,
+		currentDate,
+		controller,
+		canisterIdUrl: `https://${canisterId.toText()}.icp0.io`
+	};
 };

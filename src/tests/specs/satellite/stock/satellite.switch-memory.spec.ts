@@ -4,7 +4,6 @@ import type {
 	_SERVICE as SatelliteActor,
 	SetAuthenticationConfig
 } from '$declarations/satellite/satellite.did';
-import { idlFactory as idlFactorSatellite } from '$declarations/satellite/satellite.factory.did';
 import { AnonymousIdentity } from '@dfinity/agent';
 import { Ed25519KeyIdentity } from '@dfinity/identity';
 import { type Actor, PocketIc } from '@dfinity/pic';
@@ -14,43 +13,38 @@ import {
 	JUNO_AUTH_ERROR_NOT_ADMIN_CONTROLLER,
 	JUNO_COLLECTIONS_ERROR_COLLECTION_NOT_EMPTY
 } from '@junobuild/errors';
-import { inject } from 'vitest';
 import { assertCertification } from '../../../utils/certification-tests.utils';
 import { tick } from '../../../utils/pic-tests.utils';
 import { uploadAsset } from '../../../utils/satellite-storage-tests.utils';
-import { controllersInitArgs, SATELLITE_WASM_PATH } from '../../../utils/setup-tests.utils';
+import { setupSatelliteStock } from '../../../utils/satellite-tests.utils';
 
 describe('Satellite > Switch #dapp memory', () => {
 	let pic: PocketIc;
 	let canisterId: Principal;
-	let canisterIdUrl: string;
 	let actor: Actor<SatelliteActor>;
+	let currentDate: Date;
+	let controller: Ed25519KeyIdentity;
+	let canisterIdUrl: string;
 
 	const DAPP_COLLECTION = '#dapp';
-	const STABLE_MEMORY: Memory = { Stable: null };
-	const HEAP_MEMORY: Memory = { Heap: null };
 	const DOMAINS = ['hello.com', 'test2.com'];
 
-	const controller = Ed25519KeyIdentity.generate();
-
-	const currentDate = new Date(2021, 6, 10, 0, 0, 0, 0);
-
 	beforeAll(async () => {
-		pic = await PocketIc.create(inject('PIC_URL'));
+		const {
+			actor: a,
+			canisterId: c,
+			currentDate: cD,
+			pic: p,
+			controller: cO,
+			canisterIdUrl: url
+		} = await setupSatelliteStock();
 
-		await pic.setTime(currentDate.getTime());
-
-		const { actor: c, canisterId: cId } = await pic.setupCanister<SatelliteActor>({
-			idlFactory: idlFactorSatellite,
-			wasm: SATELLITE_WASM_PATH,
-			arg: controllersInitArgs(controller),
-			sender: controller.getPrincipal()
-		});
-
-		actor = c;
-		canisterId = cId;
-
-		canisterIdUrl = `https://${canisterId.toText()}.icp0.io`;
+		pic = p;
+		canisterId = c;
+		actor = a;
+		currentDate = cD;
+		controller = cO;
+		canisterIdUrl = url;
 	});
 
 	afterAll(async () => {

@@ -39,7 +39,7 @@ describe('Satellite > Switch storage system memory', () => {
 			pic: p,
 			controller: cO,
 			canisterIdUrl: url
-		} = await setupSatelliteStock({ withIndexHtml: true });
+		} = await setupSatelliteStock({ withIndexHtml: true, memory: { Heap: null } });
 
 		pic = p;
 		canisterId = c;

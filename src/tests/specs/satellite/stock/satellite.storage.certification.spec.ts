@@ -2,7 +2,7 @@ import type {
 	HttpRequest,
 	_SERVICE as SatelliteActor
 } from '$declarations/satellite/satellite.did';
-import { type Actor, PocketIc } from '@dfinity/pic';
+import type { PocketIc , Actor } from '@dfinity/pic';
 import type { Principal } from '@dfinity/principal';
 import { toNullable } from '@dfinity/utils';
 import { assertCertification } from '../../../utils/certification-tests.utils';

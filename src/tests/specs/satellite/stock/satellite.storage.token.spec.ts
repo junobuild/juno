@@ -3,7 +3,7 @@ import type {
 	_SERVICE as SatelliteActor,
 	SetRule
 } from '$declarations/satellite/satellite.did';
-import { type Actor, PocketIc } from '@dfinity/pic';
+import type { PocketIc , Actor } from '@dfinity/pic';
 import { toNullable } from '@dfinity/utils';
 import { nanoid } from 'nanoid';
 import { uploadAsset } from '../../../utils/satellite-storage-tests.utils';

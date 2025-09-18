@@ -10,12 +10,18 @@ use junobuild_collections::msg::msg_storage_collection_not_found;
 use junobuild_collections::types::rules::Rule;
 use junobuild_storage::constants::{WELL_KNOWN_CUSTOM_DOMAINS, WELL_KNOWN_II_ALTERNATIVE_ORIGINS};
 use junobuild_storage::well_known::update::update_custom_domains_asset;
+use crate::assets::constants::CDN_JUNO_RELEASES_COLLECTION_KEY;
 
-pub fn switch_storage_dapp_memory() -> Result<(), String> {
+pub fn switch_storage_memory() -> Result<(), String> {
     let dapp_collection = COLLECTION_ASSET_KEY.to_string();
+    let releases_collection = CDN_JUNO_RELEASES_COLLECTION_KEY.to_string();
 
-    let Some(rule) = get_rule_storage(&dapp_collection) else {
+    let Some(dapp_rule) = get_rule_storage(&dapp_collection) else {
         return Err(msg_storage_collection_not_found(&dapp_collection).to_string());
+    };
+
+    let Some(releases_rule) = get_rule_storage(&releases_collection) else {
+        return Err(msg_storage_collection_not_found(&releases_collection).to_string());
     };
 
     let well_known_paths = [
@@ -24,18 +30,22 @@ pub fn switch_storage_dapp_memory() -> Result<(), String> {
     ];
 
     // For simplicity and performance reasons, we delete without previous assertion.
-    // Any potential changes is rollbacked if an error occurs later on in the function.
-    for well_known_path in well_known_paths.iter() {
-        unsafe_delete_asset(&dapp_collection, well_known_path, &rule);
+    // Any potential changes is rolled back if an error occurs later on in the function.
+    for well_known_path in &well_known_paths {
+        unsafe_delete_asset(&dapp_collection, well_known_path, &dapp_rule);
     }
 
     // We assert the collection is empty otherwise switching memory might lead
-    // to issue and assets being not resolved.
+    // to issues and assets being not resolved.
     assert_assets_collection_empty_store(&dapp_collection)?;
+    assert_assets_collection_empty_store(&releases_collection)?;
 
     // Toggle the memory heap <> stable
-    let update_rule = Rule::switch_rule_memory(&rule);
-    unsafe_set_rule(&dapp_collection, &update_rule);
+    let update_dapp_rule = Rule::switch_rule_memory(&dapp_rule);
+    unsafe_set_rule(&dapp_collection, &update_dapp_rule);
+
+    let update_releases_rule = Rule::switch_rule_memory(&releases_rule);
+    unsafe_set_rule(&releases_collection, &update_releases_rule);
 
     // Redo .well-known/ic-domains but, on the new memory
     update_custom_domains_asset(&StorageState)?;

@@ -8,17 +8,18 @@ import { AnonymousIdentity } from '@dfinity/agent';
 import { Ed25519KeyIdentity } from '@dfinity/identity';
 import type { Actor, PocketIc } from '@dfinity/pic';
 import type { Principal } from '@dfinity/principal';
-import { fromNullable, fromNullishNullable, toNullable } from '@dfinity/utils';
+import { assertNonNullish, fromNullable, fromNullishNullable, toNullable } from '@dfinity/utils';
 import {
 	JUNO_AUTH_ERROR_NOT_ADMIN_CONTROLLER,
 	JUNO_COLLECTIONS_ERROR_COLLECTION_NOT_EMPTY
 } from '@junobuild/errors';
+import { uploadFile } from '../../../utils/cdn-tests.utils';
 import { assertCertification } from '../../../utils/certification-tests.utils';
 import { tick } from '../../../utils/pic-tests.utils';
 import { uploadAsset } from '../../../utils/satellite-storage-tests.utils';
 import { setupSatelliteStock } from '../../../utils/satellite-tests.utils';
 
-describe('Satellite > Switch #dapp memory', () => {
+describe('Satellite > Switch storage system memory', () => {
 	let pic: PocketIc;
 	let canisterId: Principal;
 	let actor: Actor<SatelliteActor>;
@@ -27,6 +28,7 @@ describe('Satellite > Switch #dapp memory', () => {
 	let canisterIdUrl: string;
 
 	const DAPP_COLLECTION = '#dapp';
+	const RELEASES_COLLECTION = '#_juno/releases';
 	const DOMAINS = ['hello.com', 'test2.com'];
 
 	beforeAll(async () => {
@@ -56,10 +58,12 @@ describe('Satellite > Switch #dapp memory', () => {
 			actor.setIdentity(new AnonymousIdentity());
 		});
 
-		it('should throw errors on switch dapp memory', async () => {
-			const { switch_dapp_memory } = actor;
+		it('should throw errors on switch memory', async () => {
+			const { switch_storage_system_memory } = actor;
 
-			await expect(switch_dapp_memory()).rejects.toThrow(JUNO_AUTH_ERROR_NOT_ADMIN_CONTROLLER);
+			await expect(switch_storage_system_memory()).rejects.toThrow(
+				JUNO_AUTH_ERROR_NOT_ADMIN_CONTROLLER
+			);
 		});
 	});
 
@@ -70,10 +74,12 @@ describe('Satellite > Switch #dapp memory', () => {
 			actor.setIdentity(hacker);
 		});
 
-		it('should throw errors on switch dapp memory', async () => {
-			const { switch_dapp_memory } = actor;
+		it('should throw errors on switch memory', async () => {
+			const { switch_storage_system_memory } = actor;
 
-			await expect(switch_dapp_memory()).rejects.toThrow(JUNO_AUTH_ERROR_NOT_ADMIN_CONTROLLER);
+			await expect(switch_storage_system_memory()).rejects.toThrow(
+				JUNO_AUTH_ERROR_NOT_ADMIN_CONTROLLER
+			);
 		});
 	});
 
@@ -82,22 +88,23 @@ describe('Satellite > Switch #dapp memory', () => {
 			actor.setIdentity(controller);
 		});
 
-		const assertMemory = async ({ memory }: { memory: Memory }) => {
+		const assertMemory = async ({ memory, collection }: { memory: Memory; collection: string }) => {
 			const { get_rule } = actor;
 
-			const result = fromNullable(await get_rule({ Storage: null }, DAPP_COLLECTION));
+			const result = fromNullable(await get_rule({ Storage: null }, collection));
 
 			const ruleMemory = fromNullishNullable(result?.memory);
 
 			expect(ruleMemory).toEqual(memory);
 		};
 
-		const switchMemory = async (args: { memory: Memory }) => {
-			const { switch_dapp_memory } = actor;
+		const switchMemory = async ({ memory }: { memory: Memory }) => {
+			const { switch_storage_system_memory } = actor;
 
-			await switch_dapp_memory();
+			await switch_storage_system_memory();
 
-			await assertMemory(args);
+			await assertMemory({ memory, collection: DAPP_COLLECTION });
+			await assertMemory({ memory, collection: RELEASES_COLLECTION });
 		};
 
 		const assertIcDomains = async () => {
@@ -166,9 +173,9 @@ describe('Satellite > Switch #dapp memory', () => {
 
 		describe('Errors', () => {
 			it('should throw errors because stock satellite has an index.html', async () => {
-				const { switch_dapp_memory } = actor;
+				const { switch_storage_system_memory } = actor;
 
-				await expect(switch_dapp_memory()).rejects.toThrow(
+				await expect(switch_storage_system_memory()).rejects.toThrow(
 					`${JUNO_COLLECTIONS_ERROR_COLLECTION_NOT_EMPTY} (Storage - ${DAPP_COLLECTION})`
 				);
 			});
@@ -177,7 +184,7 @@ describe('Satellite > Switch #dapp memory', () => {
 			const full_path = `/hello/${name}`;
 
 			it('should throw errors when satellites has multiple assets', async () => {
-				const { switch_dapp_memory } = actor;
+				const { switch_storage_system_memory } = actor;
 
 				await uploadAsset({
 					full_path,
@@ -196,28 +203,74 @@ describe('Satellite > Switch #dapp memory', () => {
 					actor
 				});
 
-				await expect(switch_dapp_memory()).rejects.toThrow(
+				await expect(switch_storage_system_memory()).rejects.toThrow(
 					`${JUNO_COLLECTIONS_ERROR_COLLECTION_NOT_EMPTY} (Storage - ${DAPP_COLLECTION})`
 				);
 			});
 
 			it('should throw errors when satellite has other assets than index.html', async () => {
-				const { switch_dapp_memory, del_asset } = actor;
+				const { switch_storage_system_memory, del_asset } = actor;
 
 				await del_asset(DAPP_COLLECTION, '/index.html');
 
-				await expect(switch_dapp_memory()).rejects.toThrow(
+				await expect(switch_storage_system_memory()).rejects.toThrow(
 					`${JUNO_COLLECTIONS_ERROR_COLLECTION_NOT_EMPTY} (Storage - ${DAPP_COLLECTION})`
 				);
 			});
 
 			it('should throw errors when satellite has one more asset that is not index.html', async () => {
-				const { switch_dapp_memory, del_asset } = actor;
+				const { switch_storage_system_memory, del_asset } = actor;
 
 				await del_asset(DAPP_COLLECTION, full_path);
 
-				await expect(switch_dapp_memory()).rejects.toThrow(
+				await expect(switch_storage_system_memory()).rejects.toThrow(
 					`${JUNO_COLLECTIONS_ERROR_COLLECTION_NOT_EMPTY} (Storage - ${DAPP_COLLECTION})`
+				);
+			});
+
+			it('should throw errors when satellite contains releases', async () => {
+				const {
+					switch_storage_system_memory,
+					del_assets,
+					init_proposal,
+					submit_proposal,
+					commit_proposal
+				} = actor;
+
+				await del_assets(DAPP_COLLECTION);
+
+				const name = `satellite-v0.0.18.wasm.gz`;
+				const full_path = `/_juno/releases/${name}`;
+
+				const [proposalId, _] = await init_proposal({
+					SegmentsDeployment: {
+						mission_control_version: [],
+						orbiter: [],
+						satellite_version: ['0.0.18']
+					}
+				});
+
+				await uploadFile({
+					proposalId,
+					actor,
+					collection: RELEASES_COLLECTION,
+					name,
+					full_path,
+					description: `change=${proposalId};version=v0.0.18`
+				});
+
+				const [__, proposal] = await submit_proposal(proposalId);
+
+				const sha = fromNullable(proposal.sha256);
+				assertNonNullish(sha);
+
+				await commit_proposal({
+					sha256: sha,
+					proposal_id: proposalId
+				});
+
+				await expect(switch_storage_system_memory()).rejects.toThrow(
+					`${JUNO_COLLECTIONS_ERROR_COLLECTION_NOT_EMPTY} (Storage - ${RELEASES_COLLECTION})`
 				);
 			});
 		});
@@ -229,11 +282,12 @@ describe('Satellite > Switch #dapp memory', () => {
 			beforeAll(async () => {
 				const { del_assets } = actor;
 
-				await del_assets(DAPP_COLLECTION);
+				await del_assets(RELEASES_COLLECTION);
 			});
 
-			it('should switch memory from heap to stable', async () => {
-				await assertMemory({ memory: from });
+			it('should switch memory', async () => {
+				await assertMemory({ memory: from, collection: DAPP_COLLECTION });
+				await assertMemory({ memory: from, collection: RELEASES_COLLECTION });
 
 				await switchMemory({ memory: to });
 			});

@@ -2,43 +2,38 @@ import type {
 	_SERVICE as SatelliteActor,
 	SetAuthenticationConfig
 } from '$declarations/satellite/satellite.did';
-import { idlFactory as idlFactorSatellite } from '$declarations/satellite/satellite.factory.did';
 import { AnonymousIdentity } from '@dfinity/agent';
-import { Ed25519KeyIdentity } from '@dfinity/identity';
-import { type Actor, PocketIc } from '@dfinity/pic';
+import type { Ed25519KeyIdentity } from '@dfinity/identity';
+import type { PocketIc , Actor } from '@dfinity/pic';
 import type { Principal } from '@dfinity/principal';
 import { fromNullable, toNullable } from '@dfinity/utils';
 import {
 	JUNO_AUTH_ERROR_INVALID_ORIGIN,
 	JUNO_AUTH_ERROR_NOT_ADMIN_CONTROLLER
 } from '@junobuild/errors';
-import { inject } from 'vitest';
-import { deleteDefaultIndexHTML } from '../../../utils/satellite-tests.utils';
-import { controllersInitArgs, SATELLITE_WASM_PATH } from '../../../utils/setup-tests.utils';
+import { setupSatelliteStock } from '../../../utils/satellite-tests.utils';
 
 describe('Satellite > Authentication', () => {
 	let pic: PocketIc;
-	let actor: Actor<SatelliteActor>;
 	let canisterId: Principal;
+	let actor: Actor<SatelliteActor>;
+	let controller: Ed25519KeyIdentity;
 	let canisterIdUrl: string;
 
-	const controller = Ed25519KeyIdentity.generate();
-
 	beforeAll(async () => {
-		pic = await PocketIc.create(inject('PIC_URL'));
+		const {
+			actor: a,
+			canisterId: c,
+			pic: p,
+			controller: cO,
+			canisterIdUrl: url
+		} = await setupSatelliteStock();
 
-		const { actor: c, canisterId: cId } = await pic.setupCanister<SatelliteActor>({
-			idlFactory: idlFactorSatellite,
-			wasm: SATELLITE_WASM_PATH,
-			arg: controllersInitArgs(controller),
-			sender: controller.getPrincipal()
-		});
-
-		actor = c;
-		canisterId = cId;
-		canisterIdUrl = `https://${canisterId.toText()}.icp0.io`;
-
-		await deleteDefaultIndexHTML({ actor, controller });
+		pic = p;
+		canisterId = c;
+		actor = a;
+		controller = cO;
+		canisterIdUrl = url;
 	});
 
 	afterAll(async () => {

@@ -11,15 +11,15 @@ use junobuild_storage::types::store::Asset;
 // ---------------------------------------------------------
 
 pub fn get_asset(full_path: &FullPath) -> Option<Asset> {
-    junobuild_cdn::storage::heap::get_asset(&CdnHeap, full_path)
+    crate::cdn::storage::heap::get_asset(full_path)
 }
 
 pub fn insert_asset(full_path: &FullPath, asset: &Asset) {
-    junobuild_cdn::storage::heap::insert_asset(&CdnHeap, full_path, asset)
+    crate::cdn::storage::heap::insert_asset(full_path, asset)
 }
 
 pub fn delete_asset(full_path: &FullPath) -> Option<Asset> {
-    junobuild_cdn::storage::heap::delete_asset(&CdnHeap, full_path)
+    crate::cdn::storage::heap::delete_asset(full_path)
 }
 
 // ---------------------------------------------------------

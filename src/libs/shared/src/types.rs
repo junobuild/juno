@@ -139,6 +139,14 @@ pub mod interface {
     }
 
     #[derive(CandidType, Deserialize)]
+    pub struct CreateSatelliteArgs {
+        pub user: UserId,
+        pub block_index: Option<BlockIndex>,
+        pub subnet_id: Option<SubnetId>,
+        pub storage: Option<InitStorageArgs>,
+    }
+
+    #[derive(CandidType, Deserialize)]
     pub struct GetCreateCanisterFeeArgs {
         pub user: UserId,
     }
@@ -159,12 +167,12 @@ pub mod interface {
         pub storage: Option<InitStorageArgs>,
     }
 
-    #[derive(CandidType, Deserialize)]
+    #[derive(CandidType, Serialize, Deserialize, Clone)]
     pub struct InitStorageArgs {
         pub system_memory: Option<InitStorageMemory>,
     }
 
-    #[derive(CandidType, Deserialize)]
+    #[derive(CandidType, Serialize, Deserialize, Clone)]
     pub enum InitStorageMemory {
         Heap,
         Stable,

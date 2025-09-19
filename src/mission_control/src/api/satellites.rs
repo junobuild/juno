@@ -11,7 +11,7 @@ use crate::segments::satellite::{
 use crate::segments::store::{
     get_satellites, set_satellite_metadata as set_satellite_metadata_store,
 };
-use crate::types::interface::CreateCanisterConfig;
+use crate::types::interface::CreateSatelliteConfig;
 use crate::types::state::{Satellite, Satellites};
 use ic_cdk_macros::{query, update};
 use junobuild_shared::ic::UnwrapOrTrap;
@@ -30,7 +30,7 @@ async fn create_satellite(name: String) -> Satellite {
 }
 
 #[update(guard = "caller_is_user_or_admin_controller")]
-async fn create_satellite_with_config(config: CreateCanisterConfig) -> Satellite {
+async fn create_satellite_with_config(config: CreateSatelliteConfig) -> Satellite {
     create_satellite_with_config_console(&config)
         .await
         .unwrap_or_trap()

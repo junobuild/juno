@@ -13,6 +13,7 @@ mod types;
 mod user;
 
 use crate::types::interface::CreateCanisterConfig;
+use crate::types::interface::CreateSatelliteConfig;
 use crate::types::interface::GetMonitoringHistory;
 use crate::types::interface::MonitoringStartConfig;
 use crate::types::interface::MonitoringStatus;

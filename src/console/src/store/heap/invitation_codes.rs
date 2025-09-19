@@ -1,4 +1,4 @@
-use crate::store::services::mutate_heap_state;
+use crate::store::mutate_heap_state;
 use crate::types::state::{InvitationCode, InvitationCodeRedeem, InvitationCodes};
 use ic_cdk::api::time;
 use junobuild_shared::types::state::UserId;

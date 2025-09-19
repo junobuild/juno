@@ -1,4 +1,4 @@
-use crate::store::services::{mutate_heap_state, read_heap_state};
+use crate::store::{mutate_heap_state, read_heap_state};
 use crate::types::state::{Fee, Fees};
 use ic_cdk::api::time;
 use ic_ledger_types::Tokens;

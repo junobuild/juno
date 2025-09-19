@@ -23,7 +23,7 @@
 	<span>{@render children()}</span>
 
 	{#if collectionSelected}
-		<div transition:fade>
+		<div>
 			<ListParamsFilter />
 			<DataOrder />
 			<DataActions>

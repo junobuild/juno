@@ -1,15 +1,17 @@
+use crate::assets::storage::internal::{unsafe_insert_asset, unsafe_insert_asset_encoding};
+use crate::delete_assets_store;
 use crate::memory::internal::STATE;
 use junobuild_cdn::proposals::{Proposal, ProposalsStable};
 use junobuild_cdn::storage::{ProposalAssetsStable, ProposalContentChunksStable};
-use junobuild_cdn::strategies::{CdnCommitAssetsStrategy, CdnHeapStrategy, CdnStableStrategy, CdnWorkflowStrategy};
+use junobuild_cdn::strategies::{
+    CdnCommitAssetsStrategy, CdnHeapStrategy, CdnStableStrategy, CdnWorkflowStrategy,
+};
 use junobuild_collections::types::core::CollectionKey;
 use junobuild_collections::types::rules::{Rule, Rules};
 use junobuild_shared::types::domain::CustomDomains;
 use junobuild_storage::types::config::StorageConfig;
 use junobuild_storage::types::state::{AssetsHeap, FullPath};
 use junobuild_storage::types::store::{Asset, AssetEncoding};
-use crate::assets::storage::internal::{unsafe_insert_asset, unsafe_insert_asset_encoding};
-use crate::delete_assets_store;
 
 pub struct CdnHeap;
 

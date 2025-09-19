@@ -4,7 +4,9 @@ use crate::cdn::storage::heap::store::delete_assets;
 use crate::memory::manager::STATE;
 use junobuild_cdn::proposals::{Proposal, ProposalsStable};
 use junobuild_cdn::storage::{ProposalAssetsStable, ProposalContentChunksStable};
-use junobuild_cdn::strategies::{CdnCommitAssetsStrategy, CdnHeapStrategy, CdnStableStrategy, CdnWorkflowStrategy};
+use junobuild_cdn::strategies::{
+    CdnCommitAssetsStrategy, CdnHeapStrategy, CdnStableStrategy, CdnWorkflowStrategy,
+};
 use junobuild_collections::types::core::CollectionKey;
 use junobuild_collections::types::rules::{Rule, Rules};
 use junobuild_shared::types::domain::CustomDomains;

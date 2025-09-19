@@ -1,5 +1,5 @@
 use crate::cdn::storage::heap::{collect_delete_assets, delete_asset, get_asset};
-use crate::memory::services::with_assets;
+use crate::store::with_assets;
 use junobuild_collections::types::core::CollectionKey;
 use junobuild_collections::types::rules::Memory;
 use junobuild_shared::list::list_values;

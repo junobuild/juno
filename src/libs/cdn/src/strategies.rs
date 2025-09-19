@@ -33,6 +33,6 @@ pub trait CdnStableStrategy {
 }
 
 pub trait CdnWorkflowStrategy {
-    fn pre_commit_assets(&self, proposal: &Proposal);
+    fn pre_commit_assets(&self, proposal: &Proposal) -> Result<(), String>;
     fn post_commit_assets(&self, proposal: &Proposal) -> Result<(), String>;
 }

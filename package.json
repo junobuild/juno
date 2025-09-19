@@ -69,7 +69,7 @@
 	"devDependencies": {
 		"@dfinity/eslint-config-oisy-wallet": "^0.2.2",
 		"@dfinity/internet-identity-playwright": "^2.0.0",
-		"@dfinity/pic": "^0.14.1",
+		"@dfinity/pic": "^0.16.0",
 		"@dfinity/response-verification": "^3.0.3",
 		"@junobuild/cli-tools": "^0.7.2",
 		"@junobuild/config": "^2.1.1",

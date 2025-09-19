@@ -6,7 +6,7 @@
 	import type { Rule } from '$declarations/satellite/satellite.did';
 	import SkeletonText from '$lib/components/ui/SkeletonText.svelte';
 	import Value from '$lib/components/ui/Value.svelte';
-	import { getRuleUser } from '$lib/services/collection.services';
+	import { getRuleDapp } from '$lib/services/collection.services';
 	import { authStore } from '$lib/stores/auth.store';
 	import { i18n } from '$lib/stores/i18n.store';
 
@@ -25,7 +25,7 @@
 	let memory = $derived(fromNullable(rule?.memory ?? []));
 
 	const loadRule = async () => {
-		const result = await getRuleUser({ satelliteId, identity: $authStore.identity });
+		const result = await getRuleDapp({ satelliteId, identity: $authStore.identity });
 		rule = result?.rule;
 		supportSettings = result?.result === 'success';
 

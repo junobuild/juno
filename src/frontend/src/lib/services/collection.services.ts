@@ -74,7 +74,7 @@ export const setRule = async ({
 	});
 };
 
-export const getRuleUser = async (params: {
+export const getRuleUser = (params: {
 	satelliteId: Principal;
 	identity: OptionIdentity;
 }): Promise<{ result: 'success' | 'error' | 'skip'; rule?: Rule | undefined }> =>
@@ -85,7 +85,7 @@ export const getRuleUser = async (params: {
 		type: DbCollectionType
 	});
 
-export const getRuleDapp = async (params: {
+export const getRuleDapp = (params: {
 	satelliteId: Principal;
 	identity: OptionIdentity;
 }): Promise<{ result: 'success' | 'error' | 'skip'; rule?: Rule | undefined }> =>

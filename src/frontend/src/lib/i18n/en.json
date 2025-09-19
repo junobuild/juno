@@ -467,6 +467,8 @@
 		"custom_domain": "Custom domain",
 		"default_domain": "Default satellite domain",
 		"domain": "Domain",
+		"domains": "Domains",
+		"hosting_memory": "Hosting memory",
 		"status": "Status",
 		"bn_id": "BN id",
 		"info": "Info",

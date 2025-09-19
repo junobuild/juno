@@ -6,8 +6,9 @@
 	import MissionControlGuard from '$lib/components/guards/MissionControlGuard.svelte';
 	import SatelliteGuard from '$lib/components/guards/SatelliteGuard.svelte';
 	import Hosting from '$lib/components/hosting/Hosting.svelte';
+	import HostingSettings from '$lib/components/hosting/HostingSettings.svelte';
 	import Loaders from '$lib/components/loaders/Loaders.svelte';
-	import NoTabs from '$lib/components/ui/NoTabs.svelte';
+	import Tabs from '$lib/components/ui/Tabs.svelte';
 	import { missionControlIdDerived } from '$lib/derived/mission-control.derived';
 	import { satelliteStore } from '$lib/derived/satellite.derived';
 	import {
@@ -21,7 +22,11 @@
 	const tabs: Tab[] = [
 		{
 			id: Symbol('1'),
-			labelKey: 'hosting.title'
+			labelKey: 'hosting.domains'
+		},
+		{
+			id: Symbol('2'),
+			labelKey: 'core.settings'
 		}
 	];
 
@@ -36,17 +41,19 @@
 </script>
 
 <IdentityGuard>
-	<NoTabs>
+	<Tabs>
 		<Loaders>
 			<SatelliteGuard>
 				<MissionControlGuard>
 					{#if nonNullish($satelliteStore) && nonNullish($missionControlIdDerived)}
 						{#if $store.tabId === $store.tabs[0].id}
 							<Hosting satellite={$satelliteStore} />
+						{:else if $store.tabId === $store.tabs[1].id}
+							<HostingSettings satellite={$satelliteStore} />
 						{/if}
 					{/if}
 				</MissionControlGuard>
 			</SatelliteGuard>
 		</Loaders>
-	</NoTabs>
+	</Tabs>
 </IdentityGuard>

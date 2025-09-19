@@ -1,4 +1,4 @@
-use crate::memory::services::{with_assets, with_assets_mut};
+use crate::store::{with_assets, with_assets_mut};
 use junobuild_collections::types::core::CollectionKey;
 use junobuild_storage::heap_utils::collect_delete_assets_heap;
 use junobuild_storage::types::state::{AssetsHeap, FullPath};

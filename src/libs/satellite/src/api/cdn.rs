@@ -1,6 +1,6 @@
 use crate::assets::cdn::helpers::stable::get_proposal as cdn_get_proposal;
 use crate::assets::cdn::helpers::store::init_asset_upload as init_asset_upload_store;
-use crate::assets::cdn::strategies_impls::cdn::{CdnHeap, CdnStable, CdnWorkflow};
+use crate::assets::cdn::strategies_impls::cdn::{CdnCommitAssets, CdnHeap, CdnStable, CdnWorkflow};
 use crate::assets::cdn::strategies_impls::storage::{
     CdnStorageAssertions, CdnStorageState, CdnStorageUpload,
 };
@@ -61,7 +61,13 @@ pub fn reject_proposal(proposal: &RejectProposal) -> ManualReply<()> {
 }
 
 pub fn commit_proposal(proposal: &CommitProposal) -> ManualReply<()> {
-    match junobuild_cdn::proposals::commit_proposal(&CdnHeap, &CdnStable, &CdnWorkflow, proposal) {
+    match junobuild_cdn::proposals::commit_proposal(
+        &CdnHeap,
+        &CdnCommitAssets,
+        &CdnStable,
+        &CdnWorkflow,
+        proposal,
+    ) {
         Ok(_) => {
             defer_init_certified_assets();
             ManualReply::one(())

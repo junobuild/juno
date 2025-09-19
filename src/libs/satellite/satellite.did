@@ -99,7 +99,11 @@ type InitAssetKey = record {
   encoding_type : opt text;
   full_path : text;
 };
-type InitSatelliteArgs = record { controllers : vec principal };
+type InitSatelliteArgs = record {
+  controllers : vec principal;
+  storage : opt InitStorageArgs;
+};
+type InitStorageArgs = record { system_memory : opt Memory };
 type InitUploadResult = record { batch_id : nat };
 type ListMatcher = record {
   key : opt text;

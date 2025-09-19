@@ -5,23 +5,35 @@ import type {
 import type { Actor, PocketIc } from '@dfinity/pic';
 import type { Principal } from '@dfinity/principal';
 import { toNullable } from '@dfinity/utils';
+import { MEMORIES } from '../../../constants/satellite-tests.constants';
 import { assertCertification } from '../../../utils/certification-tests.utils';
 import { uploadAsset } from '../../../utils/satellite-storage-tests.utils';
 import { setupSatelliteStock } from '../../../utils/satellite-tests.utils';
 
-describe('Satellite > Storage > Certificate', () => {
+describe.each(MEMORIES)('Satellite > Storage > Certificate > $title', ({ memory }) => {
 	let pic: PocketIc;
 	let canisterId: Principal;
 	let actor: Actor<SatelliteActor>;
 	let currentDate: Date;
 
 	beforeAll(async () => {
-		const { actor: a, canisterId: c, currentDate: cD, pic: p } = await setupSatelliteStock();
+		const {
+			actor: a,
+			canisterId: c,
+			currentDate: cD,
+			pic: p,
+			controller
+		} = await setupSatelliteStock({
+			withIndexHtml: true,
+			memory
+		});
 
 		pic = p;
 		canisterId = c;
 		actor = a;
 		currentDate = cD;
+
+		actor.setIdentity(controller);
 	});
 
 	afterAll(async () => {

@@ -13,11 +13,14 @@ use junobuild_shared::types::memory::Memory;
 use junobuild_shared::upgrade::{read_post_upgrade, write_pre_upgrade};
 
 pub fn init(args: InitSatelliteArgs) {
-    let InitSatelliteArgs { controllers } = args;
+    let InitSatelliteArgs {
+        controllers,
+        storage,
+    } = args;
 
     let heap = HeapState {
         controllers: init_admin_controllers(&controllers),
-        storage: init_storage_heap_state(),
+        storage: init_storage_heap_state(&storage),
         ..HeapState::default()
     };
 

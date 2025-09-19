@@ -1,7 +1,7 @@
 import type { Identity } from '@dfinity/agent';
 import { IDL } from '@dfinity/candid';
 import type { Principal } from '@dfinity/principal';
-import { assertNonNullish, nonNullish } from '@dfinity/utils';
+import { assertNonNullish, nonNullish, toNullable } from '@dfinity/utils';
 import { parse } from '@ltd/j-toml';
 import { existsSync, readFileSync, writeFileSync } from 'node:fs';
 import { get, type RequestOptions } from 'node:https';
@@ -65,6 +65,43 @@ export const controllersInitArgs = (controllers: Identity | Principal[]): ArrayB
 			})
 		],
 		[{ controllers: Array.isArray(controllers) ? controllers : [controllers.getPrincipal()] }]
+	).buffer as ArrayBuffer;
+
+export const satelliteInitArgs = ({
+	controllers,
+	memory
+}: {
+	controllers: Identity | Principal[];
+	memory: { Heap: null } | { Stable: null } | null;
+}): ArrayBuffer =>
+	IDL.encode(
+		[
+			IDL.Record({
+				controllers: IDL.Vec(IDL.Principal),
+				storage: IDL.Opt(
+					IDL.Record({
+						system_memory: IDL.Opt(
+							IDL.Variant({
+								Heap: IDL.Null,
+								Stable: IDL.Null
+							})
+						)
+					})
+				)
+			})
+		],
+		[
+			{
+				controllers: Array.isArray(controllers) ? controllers : [controllers.getPrincipal()],
+				storage: toNullable(
+					nonNullish(memory)
+						? {
+								system_memory: toNullable(memory)
+							}
+						: undefined
+				)
+			}
+		]
 	).buffer as ArrayBuffer;
 
 const downloadFromURL = async (url: string | RequestOptions): Promise<Buffer> =>

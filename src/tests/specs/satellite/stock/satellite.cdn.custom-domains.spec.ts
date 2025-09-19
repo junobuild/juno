@@ -1,38 +1,38 @@
 import type { _SERVICE as SatelliteActor } from '$declarations/satellite/satellite.did';
-import { idlFactory as idlFactorSatellite } from '$declarations/satellite/satellite.factory.did';
 import { AnonymousIdentity } from '@dfinity/agent';
-import { Ed25519KeyIdentity } from '@dfinity/identity';
-import { type Actor, PocketIc } from '@dfinity/pic';
+import type { Ed25519KeyIdentity } from '@dfinity/identity';
+import type { Actor, PocketIc } from '@dfinity/pic';
 import { toNullable } from '@dfinity/utils';
 import {
 	JUNO_AUTH_ERROR_NOT_ADMIN_CONTROLLER,
 	JUNO_STORAGE_ERROR_RESERVED_ASSET
 } from '@junobuild/errors';
-import { inject } from 'vitest';
+import { MEMORIES } from '../../../constants/satellite-tests.constants';
 import {
 	adminCustomDomainsTests,
 	adminCustomDomainsWithProposalTests,
 	anonymousCustomDomainsTests
 } from '../../../utils/custom-domains-tests.utils';
-import { controllersInitArgs, SATELLITE_WASM_PATH } from '../../../utils/setup-tests.utils';
+import { setupSatelliteStock } from '../../../utils/satellite-tests.utils';
 
-describe('Satellite > Custom domains', () => {
+describe.each(MEMORIES)('Satellite > Custom domains > $title', ({ memory }) => {
 	let pic: PocketIc;
 	let actor: Actor<SatelliteActor>;
-
-	const controller = Ed25519KeyIdentity.generate();
+	let controller: Ed25519KeyIdentity;
 
 	beforeAll(async () => {
-		pic = await PocketIc.create(inject('PIC_URL'));
-
-		const { actor: c } = await pic.setupCanister<SatelliteActor>({
-			idlFactory: idlFactorSatellite,
-			wasm: SATELLITE_WASM_PATH,
-			arg: controllersInitArgs(controller),
-			sender: controller.getPrincipal()
+		const {
+			actor: a,
+			pic: p,
+			controller: cO
+		} = await setupSatelliteStock({
+			withIndexHtml: true,
+			memory
 		});
 
-		actor = c;
+		pic = p;
+		actor = a;
+		controller = cO;
 	});
 
 	afterAll(async () => {

@@ -33,6 +33,7 @@ pub fn commit_proposal(
             Ok(())
         }
         Err(e @ CommitProposalError::CommitAssetsIssue(_))
+        | Err(e @ CommitProposalError::PreCommitAssetsIssue(_))
         | Err(e @ CommitProposalError::PostCommitAssetsIssue(_)) => {
             let failed_proposal = Proposal::fail(&proposal);
             insert_proposal(cdn_stable, &proposition.proposal_id, &failed_proposal);
@@ -73,7 +74,9 @@ fn secure_commit_proposal(
     let accepted_proposal = Proposal::accept(proposal);
     insert_proposal(cdn_stable, &commit_proposal.proposal_id, &accepted_proposal);
 
-    cdn_workflow.pre_commit_assets(proposal);
+    cdn_workflow
+        .pre_commit_assets(proposal)
+        .map_err(CommitProposalError::PreCommitAssetsIssue)?;
 
     copy_committed_assets(cdn_heap, cdn_stable, &commit_proposal.proposal_id)
         .map_err(CommitProposalError::CommitAssetsIssue)?;

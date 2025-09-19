@@ -19,7 +19,11 @@ describe.each([{ title: 'Heap (default)', memory: null }, ...MEMORIES])(
 		const controllers = [controller1, controller2, controller3].map((c) => c.getPrincipal());
 
 		beforeAll(async () => {
-			const { actor: a, pic: p, controller: cId } = await setupSatelliteStock({
+			const {
+				actor: a,
+				pic: p,
+				controller: cId
+			} = await setupSatelliteStock({
 				withIndexHtml: true,
 				memory,
 				controllers

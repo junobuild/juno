@@ -17,6 +17,7 @@ import {
 	initMissionControls,
 	installReleasesWithDeprecatedFlow,
 	testSatelliteExists,
+	updateRateConfig,
 	uploadFileWithProposal
 } from '../../utils/console-tests.utils';
 import { tick } from '../../utils/pic-tests.utils';
@@ -66,23 +67,6 @@ describe('Console > Upgrade', () => {
 				missionControls.find(([key]) => key.toText() === user.getPrincipal().toText())
 			).not.toBeUndefined();
 		}
-	};
-
-	const updateRateConfig = async ({
-		actor
-	}: {
-		actor: Actor<ConsoleActor_0_0_8 | ConsoleActor_0_0_14 | ConsoleActor>;
-	}) => {
-		const { update_rate_config } = actor;
-
-		const config = {
-			max_tokens: 100n,
-			time_per_token_ns: 60n
-		};
-
-		await update_rate_config({ Satellite: null }, config);
-		await update_rate_config({ Orbiter: null }, config);
-		await update_rate_config({ MissionControl: null }, config);
 	};
 
 	const testProposal = async ({

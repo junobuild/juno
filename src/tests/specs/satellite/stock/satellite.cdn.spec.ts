@@ -29,6 +29,7 @@ describe.each(MEMORIES)('Satellite > Cdn > $title', ({ memory }) => {
 	let canisterId: Principal;
 	let actor: Actor<SatelliteActor>;
 	let controller: Ed25519KeyIdentity;
+
 	const currentDate = new Date(2021, 6, 10, 0, 0, 0, 0);
 
 	const controllerReadWrite = Ed25519KeyIdentity.generate();
@@ -39,8 +40,7 @@ describe.each(MEMORIES)('Satellite > Cdn > $title', ({ memory }) => {
 			actor: a,
 			canisterId: c,
 			pic: p,
-			controller: cO,
-			currentDate: cD
+			controller: cO
 		} = await setupSatelliteStock({
 			withIndexHtml: false,
 			memory

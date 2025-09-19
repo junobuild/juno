@@ -1,4 +1,4 @@
-use crate::store::services::{mutate_heap_state, read_heap_state};
+use crate::store::{mutate_heap_state, read_heap_state};
 use crate::types::state::{HeapState, ReleaseVersion, ReleasesMetadata};
 use semver::Version;
 use std::collections::HashSet;

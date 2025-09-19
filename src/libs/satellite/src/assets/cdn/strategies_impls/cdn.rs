@@ -10,26 +10,12 @@ use junobuild_collections::types::core::CollectionKey;
 use junobuild_collections::types::rules::{Rule, Rules};
 use junobuild_shared::types::domain::CustomDomains;
 use junobuild_storage::types::config::StorageConfig;
-use junobuild_storage::types::state::{AssetsHeap, FullPath};
+use junobuild_storage::types::state::FullPath;
 use junobuild_storage::types::store::{Asset, AssetEncoding};
 
 pub struct CdnHeap;
 
 impl CdnHeapStrategy for CdnHeap {
-    fn with_assets<R>(&self, f: impl FnOnce(&AssetsHeap) -> R) -> R {
-        STATE.with(|state| {
-            let storage = &state.borrow().heap.storage;
-            f(&storage.assets)
-        })
-    }
-
-    fn with_assets_mut<R>(&self, f: impl FnOnce(&mut AssetsHeap) -> R) -> R {
-        STATE.with(|state| {
-            let mut borrow = state.borrow_mut();
-            f(&mut borrow.heap.storage.assets)
-        })
-    }
-
     fn with_config<R>(&self, f: impl FnOnce(&StorageConfig) -> R) -> R {
         STATE.with(|state| {
             let storage = &state.borrow().heap.storage;

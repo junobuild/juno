@@ -26,6 +26,7 @@ use junobuild_storage::types::store::{
     Asset, AssetAssertUpload, AssetEncoding, Batch, EncodingType, ReferenceId,
 };
 use junobuild_storage::utils::{clone_asset_encoding_content_chunks, insert_encoding_into_asset};
+use crate::assets::storage::certified_assets::runtime::init_certified_assets;
 
 pub struct CdnStorageAssertions;
 
@@ -179,6 +180,10 @@ impl StorageStateStrategy for CdnStorageState {
         _rule: &Rule,
     ) -> Option<Asset> {
         junobuild_cdn::storage::heap::delete_asset(&CdnHeap, full_path)
+    }
+
+    fn init_certified_assets(&self) {
+        init_certified_assets();
     }
 }
 

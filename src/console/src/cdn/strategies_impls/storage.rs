@@ -5,6 +5,7 @@ use crate::cdn::helpers::heap::{
 use crate::cdn::helpers::stable::{
     get_asset_stable, insert_asset_encoding_stable, insert_asset_stable,
 };
+use crate::cdn::storage::init_certified_assets;
 use crate::cdn::strategies_impls::cdn::CdnHeap;
 use candid::Principal;
 use junobuild_cdn::storage::errors::{
@@ -181,6 +182,10 @@ impl StorageStateStrategy for StorageState {
         _rule: &Rule,
     ) -> Option<Asset> {
         delete_asset(full_path)
+    }
+
+    fn init_certified_assets(&self) {
+        init_certified_assets();
     }
 }
 

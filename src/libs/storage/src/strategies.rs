@@ -119,6 +119,8 @@ pub trait StorageStateStrategy {
         full_path: &FullPath,
         rule: &Rule,
     ) -> Option<Asset>;
+
+    fn init_certified_assets(&self);
 }
 
 pub trait StorageUploadStrategy {

@@ -1,8 +1,9 @@
 use crate::cdn::helpers::heap::get_asset;
+use crate::factory::utils::controllers::user_mission_control_controllers;
 use crate::store::heap::{
     get_latest_mission_control_version, get_latest_orbiter_version, get_latest_satellite_version,
 };
-use candid::{Encode, Principal};
+use candid::Encode;
 use junobuild_shared::mgmt::types::ic::WasmArg;
 use junobuild_shared::types::core::Blob;
 use junobuild_shared::types::interface::{
@@ -74,11 +75,4 @@ pub fn orbiter_wasm_arg(
     })
     .map_err(|e| e.to_string())?;
     Ok(WasmArg { wasm, install_arg })
-}
-
-pub fn user_mission_control_controllers(
-    user: &UserId,
-    mission_control_id: &MissionControlId,
-) -> Vec<Principal> {
-    Vec::from([*user, *mission_control_id])
 }

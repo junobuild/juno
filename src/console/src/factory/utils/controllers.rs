@@ -1,4 +1,3 @@
-use crate::factory::utils::wasm::user_mission_control_controllers;
 use candid::Principal;
 use junobuild_shared::mgmt::ic::update_canister_controllers;
 use junobuild_shared::types::state::MissionControlId;
@@ -34,4 +33,11 @@ pub async fn remove_console_controller(
         Err(_) => Err("Failed to remove console from the controllers of the segment.".to_string()),
         Ok(_) => Ok(()),
     }
+}
+
+pub fn user_mission_control_controllers(
+    user: &UserId,
+    mission_control_id: &MissionControlId,
+) -> Vec<Principal> {
+    Vec::from([*user, *mission_control_id])
 }

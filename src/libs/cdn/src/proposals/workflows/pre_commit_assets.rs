@@ -3,7 +3,10 @@ use crate::storage::heap::store::delete_assets;
 use crate::strategies::CdnHeapStrategy;
 use junobuild_collections::constants::assets::COLLECTION_ASSET_KEY;
 
-pub fn pre_commit_assets(cdn_heap: &impl CdnHeapStrategy, proposal: &Proposal) {
+pub fn pre_commit_assets(
+    cdn_heap: &impl CdnHeapStrategy,
+    proposal: &Proposal,
+) -> Result<(), String> {
     match &proposal.proposal_type {
         ProposalType::AssetsUpgrade(ref options) => {
             // Clear existing assets if required.
@@ -13,4 +16,6 @@ pub fn pre_commit_assets(cdn_heap: &impl CdnHeapStrategy, proposal: &Proposal) {
         }
         ProposalType::SegmentsDeployment(_) => (),
     }
+
+    Ok(())
 }

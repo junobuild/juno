@@ -56,6 +56,7 @@
 			subnetId,
 			monitoringStrategy,
 			satelliteName,
+			satelliteKind,
 			withCredits,
 			onProgress
 		});
@@ -78,6 +79,7 @@
 	};
 
 	let satelliteName: string | undefined = $state(undefined);
+	let satelliteKind: 'website' | 'application' | undefined = $state(undefined);
 	let subnetId: PrincipalText | undefined = $state();
 	let monitoringStrategy: CyclesMonitoringStrategy | undefined = $state();
 </script>
@@ -129,6 +131,26 @@
 					/>
 				</Value>
 
+				<div class="building">
+					<Value suffix="?">
+						{#snippet label()}
+							{$i18n.satellites.what_are_you_building}
+						{/snippet}
+
+						<div class="options">
+							<label>
+								<input name="kind" type="radio" value="website" bind:group={satelliteKind} />
+								{$i18n.satellites.website}
+							</label>
+
+							<label>
+								<input name="kind" type="radio" value="application" bind:group={satelliteKind} />
+								{$i18n.satellites.application}
+							</label>
+						</div>
+					</Value>
+				</div>
+
 				<CanisterAdvancedOptions {detail} bind:subnetId bind:monitoringStrategy />
 
 				<button
@@ -162,10 +184,19 @@
 		display: flex;
 		flex-direction: column;
 
-		padding: var(--padding-2x) 0 0;
+		padding: var(--padding) 0 0;
 	}
 
 	button {
 		margin-top: var(--padding-2x);
+	}
+
+	.building {
+		margin: var(--padding-2x) 0 0;
+	}
+
+	.options {
+		display: flex;
+		flex-direction: column;
 	}
 </style>

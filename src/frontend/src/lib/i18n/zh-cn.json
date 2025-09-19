@@ -467,6 +467,8 @@
 		"custom_domain": "定制域名",
 		"default_domain": "默认satellite 域名",
 		"domain": "域名",
+		"domains": "Domains",
+		"hosting_memory": "Hosting memory",
 		"status": "状态",
 		"bn_id": "BN 标识",
 		"info": "信息",

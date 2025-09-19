@@ -480,6 +480,8 @@ interface I18nHosting {
 	custom_domain: string;
 	default_domain: string;
 	domain: string;
+	domains: string;
+	hosting_memory: string;
 	status: string;
 	bn_id: string;
 	info: string;

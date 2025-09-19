@@ -34,7 +34,7 @@ export class ConsolePage extends IdentityPage {
 		await this.#consoleIIPage.waitReady({ url: CONTAINER_URL, canisterId: INTERNET_IDENTITY_ID });
 	}
 
-	async createSatellite(): Promise<void> {
+	async createSatellite({ kind }: { kind: 'website' | 'application' }): Promise<void> {
 		await expect(this.page.getByTestId(testIds.createSatellite.launch)).toBeVisible();
 
 		await this.page.getByTestId(testIds.createSatellite.launch).click();
@@ -42,6 +42,8 @@ export class ConsolePage extends IdentityPage {
 		await expect(this.page.getByTestId(testIds.createSatellite.create)).toBeVisible();
 
 		await this.page.getByTestId(testIds.createSatellite.input).fill('Test');
+		await this.page.getByTestId(testIds.createSatellite[kind]).click();
+
 		await this.page.getByTestId(testIds.createSatellite.create).click();
 
 		await expect(this.page.getByTestId(testIds.createSatellite.continue)).toBeVisible();

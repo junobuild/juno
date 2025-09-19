@@ -3,7 +3,6 @@
 mod api;
 mod cdn;
 mod constants;
-mod controllers;
 mod factory;
 mod guards;
 mod impls;
@@ -11,7 +10,6 @@ mod memory;
 mod metadata;
 mod store;
 mod types;
-mod wasm;
 
 use crate::types::interface::Config;
 use crate::types::interface::DeleteProposalAssets;

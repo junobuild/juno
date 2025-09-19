@@ -12,31 +12,13 @@ import { get } from 'svelte/store';
 interface CreateSatelliteConfig {
 	name: string;
 	subnetId?: Principal;
+	kind: 'website' | 'application';
 }
-
-export const createSatellite = async ({
-	identity,
-	missionControlId,
-	config: { name }
-}: {
-	identity: Option<Identity>;
-	missionControlId: Option<Principal>;
-	config: CreateSatelliteConfig;
-}): Promise<Satellite> => {
-	assertNonNullish(missionControlId);
-
-	const { create_satellite } = await getMissionControlActor({
-		missionControlId,
-		identity
-	});
-
-	return create_satellite(name);
-};
 
 export const createSatelliteWithConfig = async ({
 	identity,
 	missionControlId,
-	config: { name, subnetId }
+	config: { name, subnetId, kind }
 }: {
 	identity: Option<Identity>;
 	missionControlId: Option<Principal>;
@@ -52,8 +34,15 @@ export const createSatelliteWithConfig = async ({
 	return create_satellite_with_config({
 		name: toNullable(name),
 		subnet_id: toNullable(subnetId),
-		// TODO
-		storage: []
+		storage: toNullable(
+			kind === 'application'
+				? {
+						system_memory: toNullable({
+							Stable: null
+						})
+					}
+				: undefined
+		)
 	});
 };
 

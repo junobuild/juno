@@ -286,6 +286,9 @@ interface I18nSatellites {
 	description: string;
 	name: string;
 	satellite_name: string;
+	what_are_you_building: string;
+	website: string;
+	application: string;
 	environment: string;
 	tags: string;
 	tags_placeholder: string;
@@ -535,6 +538,7 @@ interface I18nErrors {
 	cli_missing_selection: string;
 	cli_unexpected_error: string;
 	satellite_name_missing: string;
+	satellite_kind: string;
 	satellite_unexpected_error: string;
 	satellite_no_found: string;
 	satellite_metadata_update: string;

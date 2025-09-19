@@ -18,11 +18,7 @@ import {
 	loadOrbiters
 } from '$lib/services/orbiter/orbiters.services';
 import { execute } from '$lib/services/progress.services';
-import {
-	createSatellite,
-	createSatelliteWithConfig,
-	loadSatellites
-} from '$lib/services/satellites.services';
+import { createSatelliteWithConfig, loadSatellites } from '$lib/services/satellites.services';
 import { waitMissionControlVersionLoaded } from '$lib/services/version/version.mission-control.services';
 import { busy } from '$lib/stores/busy.store';
 import { i18n } from '$lib/stores/i18n.store';
@@ -204,10 +200,12 @@ export const createSatelliteWizard = async ({
 	onProgress,
 	subnetId,
 	satelliteName,
+	satelliteKind,
 	monitoringStrategy,
 	...rest
 }: CreateWizardParams & {
 	satelliteName: string | undefined;
+	satelliteKind: 'website' | 'application' | undefined;
 }): Promise<
 	| {
 			success: 'ok';
@@ -222,18 +220,23 @@ export const createSatelliteWizard = async ({
 		return { success: 'error' };
 	}
 
-	const createFn = async ({ identity }: { identity: Identity }): Promise<Satellite> => {
-		const fn = nonNullish(subnetId) ? createSatelliteWithConfig : createSatellite;
+	if (isNullish(satelliteKind)) {
+		toasts.error({
+			text: get(i18n).errors.satellite_kind
+		});
+		return { success: 'error' };
+	}
 
-		return await fn({
+	const createFn = async ({ identity }: { identity: Identity }): Promise<Satellite> =>
+		await createSatelliteWithConfig({
 			identity,
 			missionControlId,
 			config: {
 				name: satelliteName,
-				...(nonNullish(subnetId) && { subnetId: Principal.fromText(subnetId) })
+				...(nonNullish(subnetId) && { subnetId: Principal.fromText(subnetId) }),
+				kind: satelliteKind
 			}
 		});
-	};
 
 	const buildMonitoringFn = (): MonitoringFn<Satellite> | undefined => {
 		if (isNullish(monitoringStrategy)) {

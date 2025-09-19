@@ -85,10 +85,6 @@
 		padding: var(--padding-1_5x);
 
 		font-size: var(--font-size-small);
-
-		@include media.min-width(large) {
-			min-width: calc(40 * var(--padding));
-		}
 	}
 
 	button.text {
@@ -109,6 +105,7 @@
 
 	span {
 		font-size: var(--font-size-small);
+		max-width: 100%;
 		@include text.truncate;
 	}
 
@@ -126,16 +123,6 @@
 		display: inline-flex;
 		align-items: center;
 		gap: var(--padding);
-
-		span:first-of-type {
-			max-width: 260px;
-
-			@include text.truncate;
-
-			@include media.min-width(medium) {
-				max-width: 420px;
-			}
-		}
 	}
 
 	.current {

@@ -1,12 +1,17 @@
 use crate::cdn::proposals::post_commit_assets;
+use crate::cdn::storage::heap::insert_asset;
+use crate::cdn::storage::heap::store::delete_assets;
 use crate::memory::manager::STATE;
 use junobuild_cdn::proposals::{Proposal, ProposalsStable};
 use junobuild_cdn::storage::{ProposalAssetsStable, ProposalContentChunksStable};
-use junobuild_cdn::strategies::{CdnHeapStrategy, CdnStableStrategy, CdnWorkflowStrategy};
-use junobuild_collections::types::rules::Rules;
+use junobuild_cdn::strategies::{CdnCommitAssetsStrategy, CdnHeapStrategy, CdnStableStrategy, CdnWorkflowStrategy};
+use junobuild_collections::types::core::CollectionKey;
+use junobuild_collections::types::rules::{Rule, Rules};
 use junobuild_shared::types::domain::CustomDomains;
 use junobuild_storage::types::config::StorageConfig;
-use junobuild_storage::types::state::AssetsHeap;
+use junobuild_storage::types::state::{AssetsHeap, FullPath};
+use junobuild_storage::types::store::{Asset, AssetEncoding};
+use junobuild_storage::utils::insert_encoding_into_asset;
 
 pub struct CdnHeap;
 
@@ -119,5 +124,36 @@ impl CdnWorkflowStrategy for CdnWorkflow {
 
     fn post_commit_assets(&self, proposal: &Proposal) -> Result<(), String> {
         post_commit_assets(proposal)
+    }
+}
+
+pub struct CdnCommitAssets;
+
+impl CdnCommitAssetsStrategy for CdnCommitAssets {
+    fn insert_asset(
+        &self,
+        _collection: &CollectionKey,
+        full_path: &FullPath,
+        asset: &Asset,
+        _rule: &Rule,
+    ) {
+        insert_asset(full_path, asset);
+    }
+
+    fn insert_asset_encoding(
+        &self,
+        _full_path: &FullPath,
+        encoding_type: &str,
+        encoding: &AssetEncoding,
+        asset: &mut Asset,
+        _rule: &Rule,
+    ) {
+        insert_encoding_into_asset(encoding_type, encoding, asset)
+    }
+
+    fn delete_assets(&self, collection: &CollectionKey) -> Result<(), String> {
+        delete_assets(collection);
+
+        Ok(())
     }
 }

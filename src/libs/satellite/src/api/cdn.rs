@@ -1,13 +1,12 @@
 use crate::assets::cdn::helpers::stable::get_proposal as cdn_get_proposal;
 use crate::assets::cdn::helpers::store::init_asset_upload as init_asset_upload_store;
 use crate::assets::cdn::strategies_impls::cdn::{CdnCommitAssets, CdnHeap, CdnStable, CdnWorkflow};
-use crate::assets::cdn::strategies_impls::storage::{
-    CdnStorageAssertions, CdnStorageState, CdnStorageUpload,
-};
+use crate::assets::cdn::strategies_impls::storage::{CdnStorageAssertions, CdnStorageUpload};
 use crate::assets::storage::certified_assets::upgrade::defer_init_certified_assets;
 use crate::assets::storage::store::{
     delete_domain_store, get_config_store, get_custom_domains_store, set_domain_store,
 };
+use crate::assets::storage::strategy_impls::StorageState;
 use crate::types::interface::DeleteProposalAssets;
 use crate::{caller, get_controllers};
 use junobuild_cdn::proposals::{
@@ -133,7 +132,7 @@ pub fn commit_proposal_asset_upload(commit: CommitBatch) {
         &config,
         commit,
         &CdnStorageAssertions,
-        &CdnStorageState,
+        &StorageState,
         &CdnStorageUpload,
     )
     .unwrap_or_trap();
@@ -152,7 +151,7 @@ pub fn commit_proposal_many_assets_upload(commits: Vec<CommitBatch>) {
             &config,
             commit,
             &CdnStorageAssertions,
-            &CdnStorageState,
+            &StorageState,
             &CdnStorageUpload,
         )
         .unwrap_or_trap();

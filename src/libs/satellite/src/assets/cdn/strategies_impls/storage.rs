@@ -3,9 +3,7 @@ use crate::assets::cdn::assert::{
     assert_cdn_create_permission, assert_cdn_update_permission,
     assert_cdn_write_on_dapp_collection, assert_cdn_write_on_system_collection,
 };
-use crate::assets::cdn::strategies_impls::cdn::{CdnHeap, CdnStable};
-use crate::assets::storage::certified_assets::runtime::init_certified_assets;
-use crate::assets::storage::store::get_config_store;
+use crate::assets::cdn::strategies_impls::cdn::CdnStable;
 use candid::Principal;
 use junobuild_cdn::storage::errors::{
     JUNO_CDN_STORAGE_ERROR_CANNOT_GET_ASSET_UNKNOWN_REFERENCE_ID,
@@ -14,19 +12,13 @@ use junobuild_cdn::storage::errors::{
 };
 use junobuild_collections::assert::stores::assert_permission;
 use junobuild_collections::types::core::CollectionKey;
-use junobuild_collections::types::rules::{Memory, Permission, Rule};
-use junobuild_shared::types::core::Blob;
-use junobuild_shared::types::domain::CustomDomains;
+use junobuild_collections::types::rules::{Permission, Rule};
 use junobuild_shared::types::state::Controllers;
-use junobuild_storage::strategies::{
-    StorageAssertionsStrategy, StorageStateStrategy, StorageUploadStrategy,
-};
-use junobuild_storage::types::config::StorageConfig;
+use junobuild_storage::strategies::{StorageAssertionsStrategy, StorageUploadStrategy};
 use junobuild_storage::types::state::FullPath;
 use junobuild_storage::types::store::{
     Asset, AssetAssertUpload, AssetEncoding, Batch, EncodingType, ReferenceId,
 };
-use junobuild_storage::utils::{clone_asset_encoding_content_chunks, insert_encoding_into_asset};
 
 pub struct CdnStorageAssertions;
 
@@ -107,83 +99,6 @@ impl StorageAssertionsStrategy for CdnStorageAssertions {
     ) -> Result<(), String> {
         // No pre-assertions when using CDN as access are granted to controllers only.
         Ok(())
-    }
-}
-
-pub struct CdnStorageState;
-
-impl StorageStateStrategy for CdnStorageState {
-    fn get_content_chunks(
-        &self,
-        encoding: &AssetEncoding,
-        chunk_index: usize,
-        _memory: &Memory,
-    ) -> Option<Blob> {
-        let content_chunks = clone_asset_encoding_content_chunks(encoding, chunk_index);
-        Some(content_chunks)
-    }
-
-    fn get_public_asset(
-        &self,
-        full_path: FullPath,
-        token: Option<String>,
-    ) -> Option<(Asset, Memory)> {
-        junobuild_cdn::storage::heap::get_public_asset(&CdnHeap, full_path, token)
-    }
-
-    fn get_rule(&self, collection: &CollectionKey) -> Result<Rule, String> {
-        junobuild_cdn::storage::heap::get_rule(&CdnHeap, collection)
-    }
-
-    fn get_config(&self) -> StorageConfig {
-        get_config_store()
-    }
-
-    fn get_domains(&self) -> CustomDomains {
-        junobuild_cdn::storage::heap::get_domains(&CdnHeap)
-    }
-
-    fn get_asset(
-        &self,
-        _collection: &CollectionKey,
-        full_path: &FullPath,
-        _rule: &Rule,
-    ) -> Option<Asset> {
-        junobuild_cdn::storage::heap::get_asset(&CdnHeap, full_path)
-    }
-
-    fn insert_asset(
-        &self,
-        _collection: &CollectionKey,
-        full_path: &FullPath,
-        asset: &Asset,
-        _rule: &Rule,
-    ) {
-        junobuild_cdn::storage::heap::insert_asset(&CdnHeap, full_path, asset)
-    }
-
-    fn insert_asset_encoding(
-        &self,
-        _full_path: &FullPath,
-        encoding_type: &str,
-        encoding: &AssetEncoding,
-        asset: &mut Asset,
-        _rule: &Rule,
-    ) {
-        insert_encoding_into_asset(encoding_type, encoding, asset)
-    }
-
-    fn delete_asset(
-        &self,
-        _collection: &CollectionKey,
-        full_path: &FullPath,
-        _rule: &Rule,
-    ) -> Option<Asset> {
-        junobuild_cdn::storage::heap::delete_asset(&CdnHeap, full_path)
-    }
-
-    fn init_certified_assets(&self) {
-        init_certified_assets();
     }
 }
 

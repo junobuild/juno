@@ -13,6 +13,7 @@ mod store;
 mod types;
 mod wasm;
 
+
 use crate::types::interface::Config;
 use crate::types::interface::DeleteProposalAssets;
 use crate::types::state::InvitationCode;

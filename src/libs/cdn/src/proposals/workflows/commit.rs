@@ -169,5 +169,6 @@ fn copy_committed_assets(
         }
     }
 
+
     Ok(())
 }

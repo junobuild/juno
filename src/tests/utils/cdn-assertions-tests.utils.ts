@@ -624,17 +624,6 @@ export const testControlledCdnMethods = ({
 
 				await tick(pic());
 
-				const { list_assets } = actor({ requireController: true });
-
-				const assets = await list_assets(collection, {
-					matcher: [],
-					order: [],
-					owner: [],
-					paginate: []
-				});
-
-				console.log('---->', assets, full_path);
-
 				const request: HttpRequest = {
 					body: [],
 					certificate_version: toNullable(2),
@@ -646,8 +635,6 @@ export const testControlledCdnMethods = ({
 				const response = await http_request(request);
 
 				const { status_code, headers, body } = response;
-
-				console.log('Checked:', status_code);
 
 				expect(status_code).toBe(200);
 

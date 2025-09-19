@@ -24,7 +24,7 @@ describe.each(MEMORIES)('Satellite > Custom domains > $title', ({ memory }) => {
 		const {
 			actor: a,
 			pic: p,
-			controller: cO
+			controller: cO,
 		} = await setupSatelliteStock({
 			withIndexHtml: true,
 			memory

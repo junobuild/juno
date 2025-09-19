@@ -39,7 +39,8 @@ describe.each(MEMORIES)('Satellite > Cdn > $title', ({ memory }) => {
 			actor: a,
 			canisterId: c,
 			pic: p,
-			controller: cO
+			controller: cO,
+			currentDate: cD
 		} = await setupSatelliteStock({
 			withIndexHtml: false,
 			memory

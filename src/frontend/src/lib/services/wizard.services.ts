@@ -227,8 +227,7 @@ export const createSatelliteWizard = async ({
 		return { success: 'error' };
 	}
 
-	const createFn = async ({ identity }: { identity: Identity }): Promise<Satellite> => {
-		return await createSatelliteWithConfig({
+	const createFn = async ({ identity }: { identity: Identity }): Promise<Satellite> => await createSatelliteWithConfig({
 			identity,
 			missionControlId,
 			config: {
@@ -237,7 +236,6 @@ export const createSatelliteWizard = async ({
 				kind: satelliteKind
 			}
 		});
-	};
 
 	const buildMonitoringFn = (): MonitoringFn<Satellite> | undefined => {
 		if (isNullish(monitoringStrategy)) {

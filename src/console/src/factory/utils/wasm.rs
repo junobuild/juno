@@ -7,7 +7,7 @@ use candid::Encode;
 use junobuild_shared::mgmt::types::ic::WasmArg;
 use junobuild_shared::types::core::Blob;
 use junobuild_shared::types::interface::{
-    InitMissionControlArgs, InitOrbiterArgs, InitSatelliteArgs,
+    InitMissionControlArgs, InitOrbiterArgs, InitSatelliteArgs, InitStorageArgs,
 };
 use junobuild_shared::types::state::{MissionControlId, UserId};
 use junobuild_storage::constants::ASSET_ENCODING_NO_COMPRESSION;
@@ -49,6 +49,7 @@ pub fn mission_control_wasm_arg(user: &UserId) -> Result<WasmArg, String> {
 pub fn satellite_wasm_arg(
     user: &UserId,
     mission_control_id: &MissionControlId,
+    storage: Option<InitStorageArgs>,
 ) -> Result<WasmArg, String> {
     let latest_version =
         get_latest_satellite_version().ok_or("No satellite versions available.")?;
@@ -56,8 +57,7 @@ pub fn satellite_wasm_arg(
     let wasm: Blob = get_chunks(&full_path)?;
     let install_arg: Vec<u8> = Encode!(&InitSatelliteArgs {
         controllers: user_mission_control_controllers(user, mission_control_id),
-        // TODO: arguments to be implemented
-        storage: None
+        storage
     })
     .map_err(|e| e.to_string())?;
     Ok(WasmArg { wasm, install_arg })

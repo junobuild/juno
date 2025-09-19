@@ -32,6 +32,18 @@ export const idlFactory = ({ IDL }) => {
 		satellite_id: IDL.Principal,
 		settings: IDL.Opt(Settings)
 	});
+	const InitStorageMemory = IDL.Variant({
+		Heap: IDL.Null,
+		Stable: IDL.Null
+	});
+	const InitStorageArgs = IDL.Record({
+		system_memory: IDL.Opt(InitStorageMemory)
+	});
+	const CreateSatelliteConfig = IDL.Record({
+		subnet_id: IDL.Opt(IDL.Principal),
+		storage: IDL.Opt(InitStorageArgs),
+		name: IDL.Opt(IDL.Text)
+	});
 	const DepositCyclesArgs = IDL.Record({
 		cycles: IDL.Nat,
 		destination_id: IDL.Principal
@@ -187,7 +199,7 @@ export const idlFactory = ({ IDL }) => {
 		create_orbiter: IDL.Func([IDL.Opt(IDL.Text)], [Orbiter], []),
 		create_orbiter_with_config: IDL.Func([CreateCanisterConfig], [Orbiter], []),
 		create_satellite: IDL.Func([IDL.Text], [Satellite], []),
-		create_satellite_with_config: IDL.Func([CreateCanisterConfig], [Satellite], []),
+		create_satellite_with_config: IDL.Func([CreateSatelliteConfig], [Satellite], []),
 		del_mission_control_controllers: IDL.Func([IDL.Vec(IDL.Principal)], [], []),
 		del_orbiter: IDL.Func([IDL.Principal, IDL.Nat], [], []),
 		del_orbiters_controllers: IDL.Func([IDL.Vec(IDL.Principal), IDL.Vec(IDL.Principal)], [], []),

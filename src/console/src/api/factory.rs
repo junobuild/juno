@@ -4,10 +4,10 @@ use candid::Principal;
 use ic_cdk_macros::update;
 use junobuild_shared::ic::api::{caller, id};
 use junobuild_shared::ic::UnwrapOrTrap;
-use junobuild_shared::types::interface::CreateCanisterArgs;
+use junobuild_shared::types::interface::{CreateCanisterArgs, CreateSatelliteArgs};
 
 #[update]
-async fn create_satellite(args: CreateCanisterArgs) -> Principal {
+async fn create_satellite(args: CreateSatelliteArgs) -> Principal {
     let console = id();
     let caller = caller();
 

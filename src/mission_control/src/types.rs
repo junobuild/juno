@@ -170,6 +170,7 @@ pub mod interface {
     use crate::types::state::CyclesMonitoringStrategy;
     use candid::CandidType;
     use junobuild_shared::mgmt::types::cmc::SubnetId;
+    use junobuild_shared::types::interface::InitStorageArgs;
     use junobuild_shared::types::state::{OrbiterId, SatelliteId, SegmentId, Timestamp};
     use serde::{Deserialize, Serialize};
 
@@ -177,6 +178,13 @@ pub mod interface {
     pub struct CreateCanisterConfig {
         pub name: Option<String>,
         pub subnet_id: Option<SubnetId>,
+    }
+
+    #[derive(CandidType, Serialize, Deserialize, Clone)]
+    pub struct CreateSatelliteConfig {
+        pub name: Option<String>,
+        pub subnet_id: Option<SubnetId>,
+        pub storage: Option<InitStorageArgs>,
     }
 
     #[derive(CandidType, Serialize, Deserialize, Clone)]

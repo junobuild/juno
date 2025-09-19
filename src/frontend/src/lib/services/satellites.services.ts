@@ -51,7 +51,9 @@ export const createSatelliteWithConfig = async ({
 
 	return create_satellite_with_config({
 		name: toNullable(name),
-		subnet_id: toNullable(subnetId)
+		subnet_id: toNullable(subnetId),
+		// TODO
+		storage: []
 	});
 };
 

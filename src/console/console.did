@@ -45,6 +45,12 @@ type CreateCanisterArgs = record {
   subnet_id : opt principal;
   user : principal;
 };
+type CreateSatelliteArgs = record {
+  block_index : opt nat64;
+  subnet_id : opt principal;
+  storage : opt InitStorageArgs;
+  user : principal;
+};
 type CustomDomain = record {
   updated_at : nat64;
   created_at : nat64;
@@ -75,6 +81,8 @@ type InitAssetKey = record {
   encoding_type : opt text;
   full_path : text;
 };
+type InitStorageArgs = record { system_memory : opt InitStorageMemory };
+type InitStorageMemory = variant { Heap; Stable };
 type InitUploadResult = record { batch_id : nat };
 type ListMatcher = record {
   key : opt text;
@@ -229,7 +237,7 @@ service : () -> {
   commit_proposal_many_assets_upload : (vec CommitBatch) -> ();
   count_proposals : () -> (nat64) query;
   create_orbiter : (CreateCanisterArgs) -> (principal);
-  create_satellite : (CreateCanisterArgs) -> (principal);
+  create_satellite : (CreateSatelliteArgs) -> (principal);
   del_controllers : (DeleteControllersArgs) -> ();
   del_custom_domain : (text) -> ();
   delete_proposal_assets : (DeleteProposalAssets) -> ();

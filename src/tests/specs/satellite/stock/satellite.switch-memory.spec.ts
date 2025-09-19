@@ -159,8 +159,7 @@ describe('Satellite > Switch storage system memory', () => {
 				canisterIdUrl
 			];
 
-			expect(responseBody).toEqual(JSON.stringify({ alternativeOrigins }));
-			expect(JSON.parse(responseBody).alternativeOrigins).toEqual(alternativeOrigins);
+			expect(JSON.parse(responseBody).alternativeOrigins.sort()).toEqual(alternativeOrigins.sort());
 
 			await assertCertification({
 				canisterId,

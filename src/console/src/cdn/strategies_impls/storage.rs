@@ -6,7 +6,6 @@ use crate::cdn::helpers::stable::{
     get_asset_stable, insert_asset_encoding_stable, insert_asset_stable,
 };
 use crate::cdn::storage::init_certified_assets;
-use crate::cdn::strategies_impls::cdn::CdnHeap;
 use candid::Principal;
 use junobuild_cdn::storage::errors::{
     JUNO_CDN_STORAGE_ERROR_CANNOT_GET_ASSET_UNKNOWN_REFERENCE_ID,
@@ -130,7 +129,7 @@ impl StorageStateStrategy for StorageState {
         full_path: FullPath,
         token: Option<String>,
     ) -> Option<(Asset, Memory)> {
-        junobuild_cdn::storage::heap::get_public_asset(&CdnHeap, full_path, token)
+        crate::cdn::storage::heap::get_public_asset(full_path, token)
     }
 
     fn get_rule(&self, collection: &CollectionKey) -> Result<Rule, String> {

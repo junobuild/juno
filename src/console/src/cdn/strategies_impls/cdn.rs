@@ -121,7 +121,7 @@ pub struct CdnWorkflow;
 
 impl CdnWorkflowStrategy for CdnWorkflow {
     fn pre_commit_assets(&self, proposal: &Proposal) -> Result<(), String> {
-        junobuild_cdn::proposals::pre_commit_assets(&CdnHeap, proposal)
+        junobuild_cdn::proposals::pre_commit_assets(&CdnCommitAssets, proposal)
     }
 
     fn post_commit_assets(&self, proposal: &Proposal) -> Result<(), String> {

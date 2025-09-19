@@ -16,7 +16,7 @@
 	<span>{@render children()}</span>
 
 	{#if nonNullish(actions)}
-		<div transition:fade>
+		<div>
 			<DataActions>
 				{@render actions?.()}
 			</DataActions>

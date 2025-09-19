@@ -16,7 +16,7 @@
 </script>
 
 {#if nonNullish($store?.data)}
-	<div class="actions" transition:fade>
+	<div class="actions">
 		<span>{@render children()}</span>
 
 		<DataActions>

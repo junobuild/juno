@@ -139,12 +139,24 @@
 
 						<div class="options">
 							<label>
-								<input name="kind" type="radio" value="website" bind:group={satelliteKind} />
+								<input
+									name="kind"
+									type="radio"
+									{...testId(testIds.createSatellite.website)}
+									value="website"
+									bind:group={satelliteKind}
+								/>
 								{$i18n.satellites.website}
 							</label>
 
 							<label>
-								<input name="kind" type="radio" value="application" bind:group={satelliteKind} />
+								<input
+									name="kind"
+									type="radio"
+									{...testId(testIds.createSatellite.application)}
+									value="application"
+									bind:group={satelliteKind}
+								/>
 								{$i18n.satellites.application}
 							</label>
 						</div>

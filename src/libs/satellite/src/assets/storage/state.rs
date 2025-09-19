@@ -138,11 +138,6 @@ pub fn insert_asset_encoding(
 }
 
 pub fn insert_asset(collection: &CollectionKey, full_path: &FullPath, asset: &Asset, rule: &Rule) {
-    ic_cdk::print(format!(
-        "------------------------------------> {} {}",
-        collection, full_path
-    ));
-
     match rule.mem() {
         Memory::Heap => STATE.with(|state| {
             insert_asset_heap(

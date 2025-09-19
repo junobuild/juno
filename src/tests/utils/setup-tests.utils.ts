@@ -72,7 +72,7 @@ export const satelliteInitArgs = ({
 	memory
 }: {
 	controllers: Identity | Principal[];
-	memory: { Heap: null } | { Stable: null };
+	memory: { Heap: null } | { Stable: null } | null;
 }): ArrayBuffer =>
 	IDL.encode(
 		[
@@ -93,9 +93,13 @@ export const satelliteInitArgs = ({
 		[
 			{
 				controllers: Array.isArray(controllers) ? controllers : [controllers.getPrincipal()],
-				storage: toNullable({
-					system_memory: toNullable(memory)
-				})
+				storage: toNullable(
+					nonNullish(memory)
+						? {
+								system_memory: toNullable(memory)
+							}
+						: undefined
+				)
 			}
 		]
 	).buffer as ArrayBuffer;

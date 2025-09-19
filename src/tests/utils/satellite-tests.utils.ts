@@ -24,7 +24,7 @@ export const setupSatelliteStock = async (
 	{
 		withIndexHtml,
 		memory
-	}: { withIndexHtml: boolean; memory: { Heap: null } | { Stable: null } } = {
+	}: { withIndexHtml: boolean; memory: { Heap: null } | { Stable: null } | null } = {
 		withIndexHtml: false,
 		memory: { Heap: null }
 	}

@@ -1,14 +1,14 @@
 <script lang="ts">
+	import { fromNullable, nonNullish } from '@dfinity/utils';
+	import { onMount } from 'svelte';
 	import { fade } from 'svelte/transition';
-	import { i18n } from '$lib/stores/i18n.store';
 	import type { Satellite } from '$declarations/mission_control/mission_control.did';
-	import Value from '$lib/components/ui/Value.svelte';
-	import SkeletonText from '$lib/components/ui/SkeletonText.svelte';
 	import type { Rule } from '$declarations/satellite/satellite.did';
+	import SkeletonText from '$lib/components/ui/SkeletonText.svelte';
+	import Value from '$lib/components/ui/Value.svelte';
 	import { getRuleUser } from '$lib/services/collection.services';
 	import { authStore } from '$lib/stores/auth.store';
-	import { onMount } from 'svelte';
-	import { fromNullable, nonNullish } from '@dfinity/utils';
+	import { i18n } from '$lib/stores/i18n.store';
 
 	interface Props {
 		satellite: Satellite;

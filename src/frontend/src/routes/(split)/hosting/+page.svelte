@@ -6,7 +6,9 @@
 	import MissionControlGuard from '$lib/components/guards/MissionControlGuard.svelte';
 	import SatelliteGuard from '$lib/components/guards/SatelliteGuard.svelte';
 	import Hosting from '$lib/components/hosting/Hosting.svelte';
+	import HostingSettings from '$lib/components/hosting/HostingSettings.svelte';
 	import Loaders from '$lib/components/loaders/Loaders.svelte';
+	import Tabs from '$lib/components/ui/Tabs.svelte';
 	import { missionControlIdDerived } from '$lib/derived/mission-control.derived';
 	import { satelliteStore } from '$lib/derived/satellite.derived';
 	import {
@@ -16,8 +18,6 @@
 		type TabsData
 	} from '$lib/types/tabs.context';
 	import { initTabId } from '$lib/utils/tabs.utils';
-	import HostingSettings from '$lib/components/hosting/HostingSettings.svelte';
-	import Tabs from '$lib/components/ui/Tabs.svelte';
 
 	const tabs: Tab[] = [
 		{

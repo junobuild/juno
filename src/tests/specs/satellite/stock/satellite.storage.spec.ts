@@ -31,6 +31,7 @@ import {
 } from '@junobuild/errors';
 import { readFileSync } from 'node:fs';
 import { join } from 'node:path';
+import { MEMORIES } from '../../../constants/satellite-tests.constants';
 import { mockListRules } from '../../../mocks/list.mocks';
 import { mockBlob, mockHtml } from '../../../mocks/storage.mocks';
 import { assertCertification } from '../../../utils/certification-tests.utils';
@@ -39,7 +40,7 @@ import { uploadAsset } from '../../../utils/satellite-storage-tests.utils';
 import { setupSatelliteStock } from '../../../utils/satellite-tests.utils';
 import { assertHeaders } from '../../../utils/storage-tests.utils';
 
-describe('Satellite > Storage', () => {
+describe.each(MEMORIES)('Satellite > Storage > $title', ({ memory }) => {
 	let pic: PocketIc;
 	let canisterId: Principal;
 	let actor: Actor<SatelliteActor>;
@@ -53,7 +54,9 @@ describe('Satellite > Storage', () => {
 			currentDate: cD,
 			pic: p,
 			controller: cO
-		} = await setupSatelliteStock();
+		} = await setupSatelliteStock({
+			withIndexHtml: true, memory
+		});
 
 		pic = p;
 		canisterId = c;

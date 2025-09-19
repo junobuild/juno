@@ -16,4 +16,3 @@ export const testIds: TestIds = {
 		visit: 'link-visit-satellite'
 	}
 };
-

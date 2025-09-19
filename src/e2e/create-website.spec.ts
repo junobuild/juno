@@ -4,13 +4,13 @@ import { initTestSuite } from './utils/init.utils';
 
 const getConsolePage = initTestSuite();
 
-testWithII('should create a satellite', async () => {
+testWithII('should create a satellite for a website', async () => {
 	const consolePage = getConsolePage();
 
-	await consolePage.createSatellite();
+	await consolePage.createSatellite({ kind: 'website' });
 });
 
-testWithII('should visite newly create satellite', async () => {
+testWithII('should visit newly create satellite', async () => {
 	const consolePage = getConsolePage();
 
 	const satellitePage = await consolePage.visitSatellite();

@@ -21,10 +21,10 @@ import {
 import { inject } from 'vitest';
 import { CONSOLE_ID } from '../../constants/console-tests.constants';
 import { MEMORIES } from '../../constants/satellite-tests.constants';
-import { deploySegments } from '../../utils/console-tests.utils';
+import { deploySegments, updateRateConfig } from '../../utils/console-tests.utils';
 import { canisterStatus } from '../../utils/ic-management-tests.utils';
-import { CONSOLE_WASM_PATH } from '../../utils/setup-tests.utils';
 import { tick } from '../../utils/pic-tests.utils';
+import { CONSOLE_WASM_PATH } from '../../utils/setup-tests.utils';
 
 describe('Console', () => {
 	let pic: PocketIc;
@@ -180,6 +180,12 @@ describe('Console', () => {
 		describe('satellite', () => {
 			let satelliteId: Principal;
 
+			beforeAll(async () => {
+				actor.setIdentity(controller);
+
+				await updateRateConfig({ actor });
+			});
+
 			describe('Settings', () => {
 				beforeAll(async () => {
 					assertNonNullish(missionControlId);
@@ -243,6 +249,8 @@ describe('Console', () => {
 						);
 						micActor.setIdentity(user);
 
+						await tick(pic);
+
 						const { create_satellite_with_config } = micActor;
 						const { satellite_id } = await create_satellite_with_config({
 							name: toNullable(title),
@@ -273,7 +281,7 @@ describe('Console', () => {
 
 							const ruleMemory = fromNullishNullable(result?.memory);
 
-							expect(ruleMemory).toEqual(memory);
+							expect(ruleMemory).toEqual(memory ?? { Heap: null });
 						}
 					});
 

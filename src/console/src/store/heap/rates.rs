@@ -1,4 +1,4 @@
-use crate::store::services::mutate_heap_state;
+use crate::store::mutate_heap_state;
 use crate::types::state::Rate;
 use junobuild_shared::rate::types::RateConfig;
 use junobuild_shared::rate::utils::increment_and_assert_rate;

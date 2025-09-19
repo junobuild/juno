@@ -4,6 +4,7 @@ use crate::assets::cdn::assert::{
     assert_cdn_write_on_dapp_collection, assert_cdn_write_on_system_collection,
 };
 use crate::assets::cdn::strategies_impls::cdn::{CdnHeap, CdnStable};
+use crate::assets::storage::certified_assets::runtime::init_certified_assets;
 use crate::assets::storage::store::get_config_store;
 use candid::Principal;
 use junobuild_cdn::storage::errors::{
@@ -26,7 +27,6 @@ use junobuild_storage::types::store::{
     Asset, AssetAssertUpload, AssetEncoding, Batch, EncodingType, ReferenceId,
 };
 use junobuild_storage::utils::{clone_asset_encoding_content_chunks, insert_encoding_into_asset};
-use crate::assets::storage::certified_assets::runtime::init_certified_assets;
 
 pub struct CdnStorageAssertions;
 

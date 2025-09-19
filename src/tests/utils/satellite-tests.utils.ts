@@ -4,6 +4,7 @@ import type { Identity } from '@dfinity/agent';
 import { Ed25519KeyIdentity } from '@dfinity/identity';
 import { type Actor, PocketIc } from '@dfinity/pic';
 import type { Principal } from '@dfinity/principal';
+import { nonNullish } from '@dfinity/utils';
 import { inject } from 'vitest';
 import { SATELLITE_WASM_PATH, satelliteInitArgs } from './setup-tests.utils';
 
@@ -23,8 +24,13 @@ export const deleteDefaultIndexHTML = async ({
 export const setupSatelliteStock = async (
 	{
 		withIndexHtml,
-		memory
-	}: { withIndexHtml: boolean; memory: { Heap: null } | { Stable: null } | null } = {
+		memory,
+		controllers
+	}: {
+		withIndexHtml: boolean;
+		memory: { Heap: null } | { Stable: null } | null;
+		controllers?: Principal[];
+	} = {
 		withIndexHtml: false,
 		memory: { Heap: null }
 	}
@@ -46,7 +52,12 @@ export const setupSatelliteStock = async (
 	const { actor, canisterId } = await pic.setupCanister<SatelliteActor>({
 		idlFactory: idlFactorSatellite,
 		wasm: SATELLITE_WASM_PATH,
-		arg: satelliteInitArgs({ controllers: controller, memory }),
+		arg: satelliteInitArgs({
+			controllers: nonNullish(controllers)
+				? [...controllers, controller.getPrincipal()]
+				: controller,
+			memory
+		}),
 		sender: controller.getPrincipal()
 	});
 

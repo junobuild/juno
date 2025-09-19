@@ -1,7 +1,7 @@
 import type { _SERVICE as SatelliteActor } from '$declarations/satellite/satellite.did';
 import { AnonymousIdentity } from '@dfinity/agent';
-import { Ed25519KeyIdentity } from '@dfinity/identity';
-import { type Actor, PocketIc } from '@dfinity/pic';
+import type { Ed25519KeyIdentity } from '@dfinity/identity';
+import type { Actor, PocketIc } from '@dfinity/pic';
 import { toNullable } from '@dfinity/utils';
 import {
 	JUNO_AUTH_ERROR_NOT_ADMIN_CONTROLLER,

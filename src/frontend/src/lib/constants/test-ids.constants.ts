@@ -8,6 +8,8 @@ export const testIds: TestIds = {
 		launch: 'btn-launch-satellite',
 		create: 'btn-create-satellite',
 		input: 'input-satellite-name',
+		website: 'input-radio-satellite-website',
+		application: 'input-radio-satellite-application',
 		continue: 'btn-continue-overview'
 	},
 	satelliteOverview: {

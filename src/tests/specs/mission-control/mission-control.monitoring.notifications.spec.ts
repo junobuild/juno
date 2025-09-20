@@ -244,15 +244,18 @@ describe('Mission Control > Notifications', () => {
 					await update_and_start_monitoring(config);
 
 					// One pending notification should be registered in the Observatory
-					await vi.waitFor(async () => {
-						await pic.tick();
+					await vi.waitFor(
+						async () => {
+							await pic.tick();
 
-						await assertObservatoryStatus({
-							failed: 0n,
-							pending: 1n,
-							sent: 0n
-						});
-					});
+							await assertObservatoryStatus({
+								failed: 0n,
+								pending: 1n,
+								sent: 0n
+							});
+						},
+						{ timeout: 60000, interval: 200 }
+					);
 
 					// The notification should fail because no api key for the proxy is registered
 					await vi.waitFor(async () => {

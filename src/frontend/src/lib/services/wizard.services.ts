@@ -18,7 +18,11 @@ import {
 	loadOrbiters
 } from '$lib/services/orbiter/orbiters.services';
 import { execute } from '$lib/services/progress.services';
-import { createSatelliteWithConfig, loadSatellites } from '$lib/services/satellites.services';
+import {
+	createSatellite,
+	createSatelliteWithConfig,
+	loadSatellites
+} from '$lib/services/satellites.services';
 import { waitMissionControlVersionLoaded } from '$lib/services/version/version.mission-control.services';
 import { busy } from '$lib/stores/busy.store';
 import { i18n } from '$lib/stores/i18n.store';
@@ -227,8 +231,13 @@ export const createSatelliteWizard = async ({
 		return { success: 'error' };
 	}
 
-	const createFn = async ({ identity }: { identity: Identity }): Promise<Satellite> =>
-		await createSatelliteWithConfig({
+	const createFn = async ({ identity }: { identity: Identity }): Promise<Satellite> => {
+		const fn =
+			nonNullish(subnetId) || satelliteKind !== 'website'
+				? createSatelliteWithConfig
+				: createSatellite;
+
+		return await fn({
 			identity,
 			missionControlId,
 			config: {
@@ -237,6 +246,7 @@ export const createSatelliteWizard = async ({
 				kind: satelliteKind
 			}
 		});
+	};
 
 	const buildMonitoringFn = (): MonitoringFn<Satellite> | undefined => {
 		if (isNullish(monitoringStrategy)) {

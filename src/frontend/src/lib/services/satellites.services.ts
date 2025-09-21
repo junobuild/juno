@@ -15,6 +15,28 @@ interface CreateSatelliteConfig {
 	kind: 'website' | 'application';
 }
 
+/**
+ * @deprecated use createSatelliteWithConfig
+ */
+export const createSatellite = async ({
+	identity,
+	missionControlId,
+	config: { name }
+}: {
+	identity: Option<Identity>;
+	missionControlId: Option<Principal>;
+	config: CreateSatelliteConfig;
+}): Promise<Satellite> => {
+	assertNonNullish(missionControlId);
+
+	const { create_satellite } = await getMissionControlActor({
+		missionControlId,
+		identity
+	});
+
+	return create_satellite(name);
+};
+
 export const createSatelliteWithConfig = async ({
 	identity,
 	missionControlId,

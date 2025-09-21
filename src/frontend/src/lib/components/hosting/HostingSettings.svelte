@@ -4,6 +4,7 @@
 	import { fade } from 'svelte/transition';
 	import type { Satellite } from '$declarations/mission_control/mission_control.did';
 	import type { Rule } from '$declarations/satellite/satellite.did';
+	import HostingSwitchMemory from '$lib/components/hosting/HostingSwitchMemory.svelte';
 	import SkeletonText from '$lib/components/ui/SkeletonText.svelte';
 	import Value from '$lib/components/ui/Value.svelte';
 	import { getRuleDapp } from '$lib/services/collection.services';
@@ -59,8 +60,6 @@
 	</div>
 </div>
 
-<style lang="scss">
-	button {
-		margin: 0 0 var(--padding-8x);
-	}
-</style>
+{#if supportSettings}
+	<HostingSwitchMemory {memory} reload={loadRule} {satellite} />
+{/if}

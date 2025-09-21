@@ -482,7 +482,10 @@
 		"files_deployed": "files deployed",
 		"set_auth_domain_question": "Use this domain as the default for user authentication",
 		"domain_name": "Domain name",
-		"default_url": "Default URL"
+		"default_url": "Default URL",
+		"switch_memory": "Switch memory",
+		"switch_memory_confirm": "Are you sure you want to switch the hosting storage to {0}?",
+		"warn_clear": "Hosting must be empty to switch collections. Run 'juno clear' and/or remove any releases from the CDN."
 	},
 	"functions": {
 		"title": "Functions",
@@ -550,6 +553,7 @@
 		"hosting_count_assets": "Error while retrieving the count of deployed files for your dapp.",
 		"hosting_no_custom_domain": "No custom domain selected",
 		"hosting_delete_custom_domain": "Error while deleting the custom domain.",
+		"hosting_switch_memory": "Error while switching hosting storage memory.",
 		"controllers_listing": "Error while listing the access keys.",
 		"controllers_no_selection": "No access key to delete selected.",
 		"controllers_delete": "Unexpected error(s) while deleting the access key.",

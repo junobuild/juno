@@ -482,7 +482,10 @@
 		"files_deployed": "文件已经部署",
 		"set_auth_domain_question": "Use this domain as the default for user authentication",
 		"domain_name": "域名",
-		"default_url": "Default URL"
+		"default_url": "Default URL",
+		"switch_memory": "Switch memory",
+		"switch_memory_confirm": "Are you sure you want to switch the hosting storage to {0}?",
+		"warn_clear": "Hosting must be empty to switch collections. Run 'juno clear' and/or remove any releases from the CDN."
 	},
 	"functions": {
 		"title": "功能",
@@ -550,6 +553,7 @@
 		"hosting_count_assets": "获取你的dapp部署文件数量出错.",
 		"hosting_no_custom_domain": "没选择域名",
 		"hosting_delete_custom_domain": "删除域名出错",
+		"hosting_switch_memory": "Error while switching hosting storage memory.",
 		"controllers_listing": "Error while listing the access keys.",
 		"controllers_no_selection": "No access key to delete selected.",
 		"controllers_delete": "Unexpected error(s) while deleting the access key.",

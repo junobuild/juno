@@ -24,7 +24,7 @@ const initToastsStore = () => {
 			this.show({
 				text,
 				level: 'warn',
-				duration: 2000
+				duration: 3000
 			});
 		},
 

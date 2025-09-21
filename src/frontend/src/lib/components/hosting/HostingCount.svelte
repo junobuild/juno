@@ -7,6 +7,7 @@
 	import { countCollectionAssets } from '$lib/api/satellites.api';
 	import { COLLECTION_DAPP } from '$lib/constants/storage.constants';
 	import { SATELLITE_v0_0_20 } from '$lib/constants/version.constants';
+	import { countHostingAssets } from '$lib/services/hosting.storage.services';
 	import { authStore } from '$lib/stores/auth.store';
 	import { i18n } from '$lib/stores/i18n.store';
 	import { toasts } from '$lib/stores/toasts.store';
@@ -21,26 +22,12 @@
 	let assets = $state(0n);
 
 	const load = async () => {
-		try {
-			const version = $versionStore?.satellites[satellite.satellite_id.toText()]?.current;
+		const result = await countHostingAssets({
+			satellite,
+			identity: $authStore.identity
+		});
 
-			if (nonNullish(version) && compare(version, SATELLITE_v0_0_20) < 0) {
-				// For simplicity reasons we do not display the information for not up-to-date Satellite.
-				// In Satellite v0.0.20, the endpoint to list the number of assets in a collection was renamed from `count_assets` to `count_collection_assets`.
-				return;
-			}
-
-			assets = await countCollectionAssets({
-				satelliteId: satellite.satellite_id,
-				collection: COLLECTION_DAPP,
-				identity: $authStore.identity
-			});
-		} catch (err: unknown) {
-			toasts.error({
-				text: $i18n.errors.hosting_count_assets,
-				detail: err
-			});
-		}
+		assets = result.result === 'success' ? result.count : 0n;
 	};
 
 	$effect(() => {

@@ -496,6 +496,9 @@ interface I18nHosting {
 	set_auth_domain_question: string;
 	domain_name: string;
 	default_url: string;
+	switch_memory: string;
+	switch_memory_confirm: string;
+	warn_clear: string;
 }
 
 interface I18nFunctions {
@@ -566,6 +569,7 @@ interface I18nErrors {
 	hosting_count_assets: string;
 	hosting_no_custom_domain: string;
 	hosting_delete_custom_domain: string;
+	hosting_switch_memory: string;
 	controllers_listing: string;
 	controllers_no_selection: string;
 	controllers_delete: string;

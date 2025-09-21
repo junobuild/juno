@@ -306,3 +306,14 @@ export const countCollectionAssets = async ({
 	const { count_collection_assets } = await getSatelliteActor({ satelliteId, identity });
 	return count_collection_assets(collection);
 };
+
+export const switchStorageSystemMemory = async ({
+	satelliteId,
+	identity
+}: {
+	satelliteId: Principal;
+	identity: OptionIdentity;
+}): Promise<void> => {
+	const { switch_storage_system_memory } = await getSatelliteActor({ satelliteId, identity });
+	await switch_storage_system_memory();
+};

@@ -107,32 +107,50 @@
 			#app-spinner {
 				display: block;
 
-				--spinner-size: 24px;
+				--spinner-size: 32px;
 
 				position: absolute;
-				top: calc((50% - (var(--spinner-size) / 2)) - 23px);
+				top: calc((50% - (var(--spinner-size) / 2)));
 				left: calc(50% - (var(--spinner-size) / 2));
 
-				background: transparent;
-				border: 2px solid currentColor;
-
-				width: var(--spinner-size);
-				height: var(--spinner-size);
-
-				border-radius: 50%;
-
-				animation: app-spinner-spinner-rotate 1.2s infinite linear;
+				opacity: 0.6;
 			}
 
-			@keyframes app-spinner-spinner-rotate {
-				0% {
-					transform: perspective(120px) rotateX(0deg) rotateY(0deg);
+			#app-spinner {
+				width: var(--spinner-size);
+				aspect-ratio: 2;
+				--_g: no-repeat radial-gradient(circle closest-side, currentColor 90%, #0000);
+				background:
+					var(--_g) 0% 50%,
+					var(--_g) 50% 50%,
+					var(--_g) 100% 50%;
+				background-size: calc(100% / 3) 50%;
+				animation: l3 1s infinite linear;
+			}
+			@keyframes l3 {
+				20% {
+					background-position:
+						0% 0%,
+						50% 50%,
+						100% 50%;
 				}
-				50% {
-					transform: perspective(120px) rotateX(-180.1deg) rotateY(0deg);
+				40% {
+					background-position:
+						0% 100%,
+						50% 0%,
+						100% 50%;
 				}
-				100% {
-					transform: perspective(120px) rotateX(-180deg) rotateY(-179.9deg);
+				60% {
+					background-position:
+						0% 50%,
+						50% 100%,
+						100% 0%;
+				}
+				80% {
+					background-position:
+						0% 50%,
+						50% 50%,
+						100% 100%;
 				}
 			}
 		</style>

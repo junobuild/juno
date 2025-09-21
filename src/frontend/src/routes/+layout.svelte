@@ -1,11 +1,9 @@
 <script lang="ts">
 	import { debounce } from '@dfinity/utils';
 	import { onDestroy, onMount, type Snippet } from 'svelte';
-	import { run } from 'svelte/legacy';
 	import { browser } from '$app/environment';
 	import { onNavigate } from '$app/navigation';
 	import Overlays from '$lib/components/core/Overlays.svelte';
-	import Spinner from '$lib/components/ui/Spinner.svelte';
 	import { layoutNavigationTitle } from '$lib/derived/layout-navigation.derived';
 	import { displayAndCleanLogoutMsg } from '$lib/services/auth/auth.services';
 	import { initMissionControl } from '$lib/services/console.services';
@@ -22,8 +20,17 @@
 
 	let { children }: Props = $props();
 
-	const init = async () =>
-		await Promise.all([i18n.init(), syncAuthStore(), syncSubnets(), syncSnapshots()]);
+	/**
+	 * App init
+	 */
+
+	const init = async () => await Promise.all([i18n.init(), syncSubnets(), syncSnapshots()]);
+
+	onMount(init);
+
+	/**
+	 * App sync
+	 */
 
 	const syncAuthStore = async () => {
 		if (!browser) {
@@ -39,19 +46,33 @@
 		displayAndCleanLogoutMsg();
 	};
 
-	run(() => {
-		(async () => await initMissionControl($authStore))();
+	const sync = async () => {
+		await syncAuthStore();
+	};
+
+	$effect(() => {
+		initMissionControl($authStore);
 	});
+
+	/**
+	 * Auth worker
+	 */
 
 	let worker = $state<AuthWorker | undefined>();
 
 	onMount(async () => (worker = await AuthWorker.init()));
 	onDestroy(() => worker?.terminate());
 
-	run(() => {
-		// @ts-expect-error TODO: to be migrated to Svelte v5
-		(worker, $authStore, (() => worker?.syncAuthIdle($authStore))());
+	$effect(() => {
+		worker;
+		$authStore;
+
+		worker?.syncAuthIdle($authStore);
 	});
+
+	/**
+	 * Navigation title
+	 */
 
 	const debounceSetNavTitle = debounce(() => (document.title = $layoutNavigationTitle));
 
@@ -74,6 +95,10 @@
 		});
 	});
 
+	/**
+	 * Boot animation
+	 */
+
 	// To improve the UX while the app is loading on mainnet we display a spinner which is attached statically in the index.html files.
 	// Once the authentication has been initialized we know most JavaScript resources has been loaded and therefore we can hide the spinner, the loading information.
 	const removeLoadingSpinner = ({ authData }: { authData: AuthStoreData }) => {
@@ -93,8 +118,8 @@
 
 <svelte:window onstorage={syncAuthStore} />
 
-{#await init()}
-	<Spinner />
+{#await sync()}
+	<!-- No animation as initializing the auth should be fast -->
 {:then _}
 	{@render children()}
 

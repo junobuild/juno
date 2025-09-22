@@ -18,7 +18,7 @@
 
 	let visible = $state(false);
 
-	const open = async () => (visible = true);
+	const open = () => (visible = true);
 
 	const switchMemory = async () => {
 		const { result } = await switchHostingMemory({

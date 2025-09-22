@@ -57,12 +57,11 @@
 	 * Delete data
 	 */
 
-	let deleteData: (params: { collection: string; satelliteId: Principal }) => Promise<void> =
-		$derived(async (params: { collection: string; satelliteId: Principal }) => {
-			await deleteDocs({ ...params, identity: $authStore.identity });
+	const deleteData = async (params: { collection: string; satelliteId: Principal }) => {
+		await deleteDocs({ ...params, identity: $authStore.identity });
 
-			resetData();
-		});
+		resetData();
+	};
 
 	const reload = async () => {
 		emit({ message: 'junoCloseActions' });

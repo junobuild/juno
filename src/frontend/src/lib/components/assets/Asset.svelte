@@ -55,23 +55,22 @@
 
 	let version: bigint | undefined = $derived(fromNullishNullable(asset?.version));
 
-	let deleteData: (params: { collection: string; satelliteId: Principal }) => Promise<void> =
-		$derived(async (params: { collection: string; satelliteId: Principal }) => {
-			if (isNullish(full_path) || full_path === '') {
-				toasts.error({
-					text: $i18n.errors.full_path_invalid
-				});
-				return;
-			}
-
-			await deleteAsset({
-				...params,
-				full_path,
-				identity: $authStore.identity
+	const deleteData = async (params: { collection: string; satelliteId: Principal }) => {
+		if (isNullish(full_path) || full_path === '') {
+			toasts.error({
+				text: $i18n.errors.full_path_invalid
 			});
+			return;
+		}
 
-			resetData();
+		await deleteAsset({
+			...params,
+			full_path,
+			identity: $authStore.identity
 		});
+
+		resetData();
+	};
 
 	const reload = async () => {
 		resetPage();

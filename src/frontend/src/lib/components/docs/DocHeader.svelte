@@ -32,24 +32,23 @@
 
 	let doc: Doc | undefined = $derived($docsStore?.data);
 
-	let deleteData: (params: { collection: string; satelliteId: Principal }) => Promise<void> =
-		$derived(async (params: { collection: string; satelliteId: Principal }) => {
-			if (isNullish(key) || key === '') {
-				toasts.error({
-					text: $i18n.errors.key_invalid
-				});
-				return;
-			}
-
-			await deleteDoc({
-				...params,
-				key,
-				doc,
-				identity: $authStore.identity
+	const deleteData = async (params: { collection: string; satelliteId: Principal }) => {
+		if (isNullish(key) || key === '') {
+			toasts.error({
+				text: $i18n.errors.key_invalid
 			});
+			return;
+		}
 
-			resetData();
+		await deleteDoc({
+			...params,
+			key,
+			doc,
+			identity: $authStore.identity
 		});
+
+		resetData();
+	};
 
 	const download = async () => {
 		if (isNullish(doc)) {

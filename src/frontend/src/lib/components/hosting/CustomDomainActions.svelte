@@ -165,8 +165,14 @@
 		{#if advancedOptions}
 			<hr />
 			<Checkbox>
-				<input onchange={() => (skipDeleteDomain = !skipDeleteDomain)} type="checkbox" />
-				<span class="skip-delete">{$i18n.hosting.skip_delete_domain}</span>
+				<input
+					id="skip-delete"
+					onchange={() => (skipDeleteDomain = !skipDeleteDomain)}
+					type="checkbox"
+				/>
+				<label for="skip-delete"
+					><span class="skip-delete">{$i18n.hosting.skip_delete_domain}</span></label
+				>
 			</Checkbox>
 		{/if}
 	</div>

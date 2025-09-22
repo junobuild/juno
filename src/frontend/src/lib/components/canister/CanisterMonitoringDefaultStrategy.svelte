@@ -52,8 +52,11 @@
 						checked={useDefaultStrategy}
 						onchange={() => (useDefaultStrategy = !useDefaultStrategy)}
 						type="checkbox"
+						id="use-default-strategy"
 					/>
-					<span><MonitoringSentence monitoringStrategy={useMonitoringStrategy} /></span>
+					<label for="use-default-strategy"
+						><span><MonitoringSentence monitoringStrategy={useMonitoringStrategy} /></span></label
+					>
 				</Checkbox>
 			</div>
 		</Value>

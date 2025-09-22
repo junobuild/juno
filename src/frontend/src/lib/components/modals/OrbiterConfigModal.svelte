@@ -174,12 +174,12 @@
 							<tr>
 								<td class="actions">
 									<Checkbox>
-										<input type="checkbox" bind:checked={conf[1].enabled} />
+										<input id={satelliteId} type="checkbox" bind:checked={conf[1].enabled} />
 									</Checkbox>
 								</td>
 
 								<td>
-									{entry.name}
+									<label for={satelliteId}>{entry.name}</label>
 								</td>
 
 								<td>
@@ -204,30 +204,36 @@
 							<div class="content">
 								<CheckboxGroup>
 									<Checkbox>
-										<input
-											checked={isNullish(features) || features?.page_views === true}
-											onchange={onPageViewsToggle}
-											type="checkbox"
-										/>
-										<span>{$i18n.analytics.page_views}</span>
+										<label>
+											<input
+												checked={isNullish(features) || features?.page_views === true}
+												onchange={onPageViewsToggle}
+												type="checkbox"
+											/>
+											<span>{$i18n.analytics.page_views}</span>
+										</label>
 									</Checkbox>
 
 									<Checkbox>
-										<input
-											checked={isNullish(features) || features?.track_events === true}
-											onchange={onTrackEventsToggle}
-											type="checkbox"
-										/>
-										<span>{$i18n.analytics.tracked_events}</span>
+										<label>
+											<input
+												checked={isNullish(features) || features?.track_events === true}
+												onchange={onTrackEventsToggle}
+												type="checkbox"
+											/>
+											<span>{$i18n.analytics.tracked_events}</span>
+										</label>
 									</Checkbox>
 
 									<Checkbox>
-										<input
-											checked={features?.performance_metrics === true}
-											onchange={onPerformanceToggle}
-											type="checkbox"
-										/>
-										<span>{$i18n.analytics.web_vitals}</span>
+										<label
+											><input
+												checked={features?.performance_metrics === true}
+												onchange={onPerformanceToggle}
+												type="checkbox"
+											/>
+											<span>{$i18n.analytics.web_vitals}</span></label
+										>
 									</Checkbox>
 								</CheckboxGroup>
 							</div>

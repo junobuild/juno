@@ -38,6 +38,7 @@
 			height: 100%;
 			min-height: calc(100% + 50px);
 			width: 100%;
+			pointer-events: none;
 		}
 	}
 </style>

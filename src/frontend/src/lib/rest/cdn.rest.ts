@@ -7,10 +7,12 @@ import {
 } from '@junobuild/admin';
 import { compare } from 'semver';
 
-export const getReleasesMetadata = async (): Promise<ReleasesMetadata> => {
-	const JUNO_CDN_URL = import.meta.env.VITE_JUNO_CDN_URL;
-
-	const response = await fetch(`${JUNO_CDN_URL}/releases/metadata.json`, {
+export const fetchReleasesMetadata = async ({
+	cdnUrl
+}: {
+	cdnUrl: string;
+}): Promise<ReleasesMetadata> => {
+	const response = await fetch(`${cdnUrl}/releases/metadata.json`, {
 		method: 'GET',
 		headers: {
 			'Content-Type': 'application/json'

@@ -36,9 +36,7 @@
 			return;
 		}
 
-		// TODO:
-		// also do not show button if not supported
-		if (result.count < 0n) {
+		if (result.count > 0n) {
 			toasts.warn($i18n.hosting.warn_clear);
 			return;
 		}

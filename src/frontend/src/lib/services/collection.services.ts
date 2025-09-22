@@ -9,7 +9,7 @@ import {
 	StorageCollectionType
 } from '$lib/constants/rules.constants';
 import { COLLECTION_DAPP } from '$lib/constants/storage.constants';
-import { SATELLITE_v0_0_21, SATELLITE_v0_1_3 } from '$lib/constants/version.constants';
+import { SATELLITE_v0_0_21, SATELLITE_v0_1_4 } from '$lib/constants/version.constants';
 import { isSatelliteFeatureSupported } from '$lib/services/feature.services';
 import { i18n } from '$lib/stores/i18n.store';
 import { toasts } from '$lib/stores/toasts.store';
@@ -91,8 +91,7 @@ export const getRuleDapp = (params: {
 }): Promise<{ result: 'success' | 'error' | 'skip'; rule?: Rule | undefined }> =>
 	getRuleForCollection({
 		...params,
-		// TODO: v0.1.4
-		requiredMinVersion: SATELLITE_v0_1_3,
+		requiredMinVersion: SATELLITE_v0_1_4,
 		collection: COLLECTION_DAPP,
 		type: StorageCollectionType
 	});

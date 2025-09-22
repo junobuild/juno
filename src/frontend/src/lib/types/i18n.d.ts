@@ -498,7 +498,6 @@ interface I18nHosting {
 	default_url: string;
 	switch_memory: string;
 	switch_memory_confirm: string;
-	warn_clear: string;
 }
 
 interface I18nFunctions {

@@ -1,6 +1,6 @@
 [package]
 name = "junobuild-cdn"
-version = "0.2.3"
+version = "0.3.0"
 authors.workspace = true
 edition.workspace = true
 repository.workspace = true
@@ -22,6 +22,6 @@ ic-stable-structures.workspace = true
 serde.workspace = true
 sha2.workspace = true
 hex.workspace = true
-junobuild-shared = "0.2.3"
-junobuild-collections = "0.2.3"
-junobuild-storage = "0.2.3"
+junobuild-shared = "0.3.0"
+junobuild-collections = "0.2.4"
+junobuild-storage = "0.3.0"

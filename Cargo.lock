@@ -239,7 +239,7 @@ dependencies = [
  "ic-cdk-timers",
  "ic-ledger-types",
  "ic-stable-structures 0.7.0",
- "junobuild-cdn",
+ "junobuild-cdn 0.3.0",
  "junobuild-collections",
  "junobuild-shared 0.3.0",
  "junobuild-storage 0.3.0",
@@ -989,6 +989,8 @@ checksum = "b1a46d1a171d865aa5f83f92695765caa047a9b4cbae2cbf37dbd613a793fd4c"
 [[package]]
 name = "junobuild-cdn"
 version = "0.2.3"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "b8a8660a1344f1164645e44a30fd2220fdaad56088d322eb0398a3b7faeaa74c"
 dependencies = [
  "candid",
  "hex",
@@ -997,6 +999,21 @@ dependencies = [
  "junobuild-collections",
  "junobuild-shared 0.2.3",
  "junobuild-storage 0.2.3",
+ "serde",
+ "sha2",
+]
+
+[[package]]
+name = "junobuild-cdn"
+version = "0.3.0"
+dependencies = [
+ "candid",
+ "hex",
+ "ic-cdk",
+ "ic-stable-structures 0.7.0",
+ "junobuild-collections",
+ "junobuild-shared 0.3.0",
+ "junobuild-storage 0.3.0",
  "serde",
  "sha2",
 ]
@@ -1033,7 +1050,7 @@ dependencies = [
  "ic-cdk-macros",
  "ic-cdk-timers",
  "ic-stable-structures 0.7.0",
- "junobuild-cdn",
+ "junobuild-cdn 0.2.3",
  "junobuild-collections",
  "junobuild-shared 0.2.3",
  "junobuild-storage 0.2.3",

@@ -1003,11 +1003,11 @@ dependencies = [
 
 [[package]]
 name = "junobuild-collections"
-version = "0.2.3"
+version = "0.2.4"
 dependencies = [
  "candid",
  "ic-cdk",
- "junobuild-shared 0.2.3",
+ "junobuild-shared 0.3.0",
  "serde",
 ]
 

@@ -110,7 +110,7 @@
 
 <svelte:window onjunoSpotlight={() => (visible = true)} {onkeydown} />
 
-<Popover backdrop="dark" center bind:visible>
+<Popover backdrop="dark" center="wide" bind:visible>
 	<div class="container">
 		<div class="search" role="search">
 			<span class="search-title"

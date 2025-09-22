@@ -241,7 +241,7 @@ dependencies = [
  "ic-stable-structures 0.7.0",
  "junobuild-cdn",
  "junobuild-collections",
- "junobuild-shared",
+ "junobuild-shared 0.3.0",
  "junobuild-storage",
  "regex",
  "semver",
@@ -995,7 +995,7 @@ dependencies = [
  "ic-cdk",
  "ic-stable-structures 0.7.0",
  "junobuild-collections",
- "junobuild-shared",
+ "junobuild-shared 0.2.3",
  "junobuild-storage",
  "serde",
  "sha2",
@@ -1007,7 +1007,7 @@ version = "0.2.3"
 dependencies = [
  "candid",
  "ic-cdk",
- "junobuild-shared",
+ "junobuild-shared 0.2.3",
  "serde",
 ]
 
@@ -1035,7 +1035,7 @@ dependencies = [
  "ic-stable-structures 0.7.0",
  "junobuild-cdn",
  "junobuild-collections",
- "junobuild-shared",
+ "junobuild-shared 0.2.3",
  "junobuild-storage",
  "junobuild-utils",
  "rand",
@@ -1048,6 +1048,26 @@ dependencies = [
 [[package]]
 name = "junobuild-shared"
 version = "0.2.3"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "df9711353c1a8ad0f7df43281ff77430a9999e96b1350fac093bee1c2a66fe26"
+dependencies = [
+ "candid",
+ "ciborium",
+ "futures",
+ "getrandom",
+ "ic-cdk",
+ "ic-ledger-types",
+ "ic-stable-structures 0.7.0",
+ "icrc-ledger-types",
+ "rand",
+ "regex",
+ "serde",
+ "time",
+]
+
+[[package]]
+name = "junobuild-shared"
+version = "0.3.0"
 dependencies = [
  "candid",
  "ciborium",
@@ -1076,7 +1096,7 @@ dependencies = [
  "ic-representation-independent-hash",
  "ic-stable-structures 0.7.0",
  "junobuild-collections",
- "junobuild-shared",
+ "junobuild-shared 0.2.3",
  "regex",
  "serde",
  "serde_bytes",
@@ -1171,7 +1191,7 @@ dependencies = [
  "ic-ledger-types",
  "ic-stable-structures 0.7.0",
  "icrc-ledger-types",
- "junobuild-shared",
+ "junobuild-shared 0.3.0",
  "rand",
  "serde",
 ]
@@ -1223,7 +1243,7 @@ dependencies = [
  "ic-cdk-macros",
  "ic-cdk-timers",
  "ic-stable-structures 0.7.0",
- "junobuild-shared",
+ "junobuild-shared 0.3.0",
  "rand",
  "serde",
  "serde_json",
@@ -1242,7 +1262,7 @@ dependencies = [
  "ic-http-certification",
  "ic-stable-structures 0.7.0",
  "isbot",
- "junobuild-shared",
+ "junobuild-shared 0.3.0",
  "junobuild-utils",
  "lazy_static",
  "regex",
@@ -1605,7 +1625,7 @@ dependencies = [
  "junobuild-collections",
  "junobuild-macros",
  "junobuild-satellite",
- "junobuild-shared",
+ "junobuild-shared 0.3.0",
  "junobuild-storage",
  "rquickjs",
  "ryu",

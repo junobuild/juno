@@ -484,8 +484,7 @@
 		"domain_name": "Domain name",
 		"default_url": "Default URL",
 		"switch_memory": "Switch memory",
-		"switch_memory_confirm": "Are you sure you want to switch the hosting storage to {0}?",
-		"warn_clear": "Hosting must be empty to switch collections. Run 'juno clear' and/or remove any releases from the CDN."
+		"switch_memory_confirm": "Are you sure you want to switch the hosting storage to {0}?"
 	},
 	"functions": {
 		"title": "Functions",

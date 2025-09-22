@@ -3,11 +3,9 @@
 	import type { Satellite } from '$declarations/mission_control/mission_control.did';
 	import type { Memory } from '$declarations/satellite/satellite.did';
 	import Confirmation from '$lib/components/core/Confirmation.svelte';
-	import { countHostingAssets, switchHostingMemory } from '$lib/services/hosting.storage.services';
+	import { switchHostingMemory } from '$lib/services/hosting.storage.services';
 	import { authStore } from '$lib/stores/auth.store';
-	import { busy } from '$lib/stores/busy.store';
 	import { i18n } from '$lib/stores/i18n.store';
-	import { toasts } from '$lib/stores/toasts.store';
 	import { i18nFormat } from '$lib/utils/i18n.utils';
 
 	interface Props {
@@ -20,29 +18,7 @@
 
 	let visible = $state(false);
 
-	const open = async ($event: MouseEvent | TouchEvent) => {
-		$event.stopPropagation();
-
-		busy.start();
-
-		const result = await countHostingAssets({
-			satellite,
-			identity: $authStore.identity
-		});
-
-		busy.stop();
-
-		if (result.result !== 'success') {
-			return;
-		}
-
-		if (result.count > 0n) {
-			toasts.warn($i18n.hosting.warn_clear);
-			return;
-		}
-
-		visible = true;
-	};
+	const open = () => (visible = true);
 
 	const switchMemory = async () => {
 		const { result } = await switchHostingMemory({
@@ -76,8 +52,8 @@
 				placeholder: '{0}',
 				value:
 					nonNullish(memory) && 'Stable' in memory
-						? $i18n.collections.stable
-						: $i18n.collections.heap
+						? $i18n.collections.heap
+						: $i18n.collections.stable
 			}
 		])}
 	</p>

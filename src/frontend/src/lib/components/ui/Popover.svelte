@@ -113,7 +113,7 @@
 		}
 
 		&.center {
-			--popover-min-size: 540px;
+			--popover-min-size: 280px;
 		}
 	}
 </style>

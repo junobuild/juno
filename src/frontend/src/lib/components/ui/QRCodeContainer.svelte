@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { quintOut, circOut } from 'svelte/easing';
+	import { quintOut } from 'svelte/easing';
 	import { slide } from 'svelte/transition';
 	import QRCode from '$lib/components/ui/QRCode.svelte';
 

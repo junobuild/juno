@@ -74,7 +74,7 @@
 	const deleteData = async (params: { collection: string; satelliteId: Principal }) => {
 		await deleteAssets({ ...params, identity: $authStore.identity });
 		resetData();
-	}
+	};
 
 	const reload = async () => {
 		emit({ message: 'junoCloseActions' });

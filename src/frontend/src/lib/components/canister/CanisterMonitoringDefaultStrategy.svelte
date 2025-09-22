@@ -49,11 +49,14 @@
 			<div class="group">
 				<Checkbox>
 					<input
+						id="use-default-strategy"
 						checked={useDefaultStrategy}
 						onchange={() => (useDefaultStrategy = !useDefaultStrategy)}
 						type="checkbox"
 					/>
-					<span><MonitoringSentence monitoringStrategy={useMonitoringStrategy} /></span>
+					<label for="use-default-strategy"
+						><span><MonitoringSentence monitoringStrategy={useMonitoringStrategy} /></span></label
+					>
 				</Checkbox>
 			</div>
 		</Value>

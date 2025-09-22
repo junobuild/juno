@@ -175,10 +175,12 @@
 				{/if}
 
 				{#each satellites as satellite (satellite[0].toText())}
+					{@const satelliteId = satellite[0].toText()}
 					<tr>
 						<td class="actions"
 							><Checkbox
 								><input
+									id={satelliteId}
 									type="checkbox"
 									value={satellite}
 									bind:group={selectedSatellites}
@@ -186,9 +188,11 @@
 							></td
 						>
 						<td>
-							<Segment id={satellite[0]}>
-								{satelliteName(satellite[1])}
-							</Segment></td
+							<label for={satelliteId}>
+								<Segment id={satellite[0]}>
+									{satelliteName(satellite[1])}
+								</Segment>
+							</label></td
 						>
 					</tr>
 				{/each}

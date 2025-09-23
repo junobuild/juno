@@ -128,7 +128,7 @@
 		"date-fns": "^4.1.0",
 		"dompurify": "^3.2.6",
 		"idb-keyval": "^6.2.2",
-		"layercake": "^8.4.3",
+		"layercake": "^10.0.2",
 		"nanoid": "^5.1.5",
 		"qrcode-generator": "^2.0.4",
 		"semver": "^7.7.2",

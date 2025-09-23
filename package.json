@@ -110,7 +110,7 @@
 		"@dfinity/auth-client": "^3.2.6",
 		"@dfinity/candid": "^3.2.6",
 		"@dfinity/cmc": "^6.0.1",
-		"@dfinity/ic-management": "^7.0.2",
+		"@dfinity/ic-management": "^7.0.1",
 		"@dfinity/identity": "^3.2.6",
 		"@dfinity/ledger-icp": "^6.0.0",
 		"@dfinity/ledger-icrc": "^4.0.1",

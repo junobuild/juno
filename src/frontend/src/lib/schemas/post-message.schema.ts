@@ -9,7 +9,7 @@ import type {
 import type { CustomDomainRegistrationState } from '$lib/types/custom-domain';
 import type { CertifiedData } from '$lib/types/store';
 import type { VersionRegistry } from '$lib/types/version';
-import * as z from 'zod/v4';
+import * as z from 'zod';
 
 export const PostMessageDataRequestDataSchema = z.object({
 	segments: z.array(z.custom<CanisterSegment>()).optional(),

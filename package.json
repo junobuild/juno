@@ -140,7 +140,6 @@
 		"node": "^22"
 	},
 	"overrides": {
-		"cookie": "^0.7.0",
-		"@dfinity/zod-schemas": "2.1.0"
+		"cookie": "^0.7.0"
 	}
 }

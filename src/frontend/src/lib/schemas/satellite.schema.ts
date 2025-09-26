@@ -1,5 +1,5 @@
 import { notEmptyString } from '@dfinity/utils';
-import * as z from 'zod/v4';
+import * as z from 'zod';
 
 export const SatelliteTagSchema = z.string().min(1).max(20);
 

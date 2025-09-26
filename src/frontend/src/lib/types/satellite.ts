@@ -4,7 +4,7 @@ import type {
 	SatelliteUiTagsSchema
 } from '$lib/schemas/satellite.schema';
 import type { CanisterSyncData } from '$lib/types/canister';
-import type * as z from 'zod/v4';
+import type * as z from 'zod';
 
 export type SatelliteIdText = string;
 

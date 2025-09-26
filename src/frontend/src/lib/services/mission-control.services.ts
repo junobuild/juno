@@ -61,7 +61,7 @@ import { fromNullable, isEmptyString, isNullish, notEmptyString } from '@dfinity
 import { missionControlVersion, satelliteVersion } from '@junobuild/admin';
 import { compare } from 'semver';
 import { get } from 'svelte/store';
-import * as z from 'zod/v4';
+import * as z from 'zod';
 
 export const setMissionControlControllerForVersion = async ({
 	missionControlId,

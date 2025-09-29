@@ -59,12 +59,6 @@ git push -u origin fix/login-bug
 
 ---
 
-## 📜 Code of Conduct
-
-Be respectful! Review our [Code of Conduct](#).
-
----
-
 ## ❓ Need Help?
 
 - **Discord**: [Join chat](https://discord.com/invite/wHZ57Z2RAG)

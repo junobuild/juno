@@ -30,6 +30,7 @@
 		"check": "svelte-kit sync && svelte-check --no-tsconfig",
 		"check:watch": "svelte-kit sync && svelte-check --no-tsconfig --watch",
 		"check:unused:svelte": "node ./scripts/check.unused.svelte.mjs",
+		"check:all": "npm run format && npm run lint -- --fix && npm run check",
 		"lint": "prettier --check './**/*.{ts,js,mjs,json,scss,css,svelte,html,md}' && eslint .",
 		"format-imports": "eslint --fix --rule 'import/no-duplicates: [error, { prefer-inline: true }]' ./src/frontend/src/**/*.svelte",
 		"format": "prettier --write './**/*.{ts,js,mjs,json,scss,css,svelte,html,md,toml}' && npm run format-imports",

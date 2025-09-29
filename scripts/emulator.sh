@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
-CONTAINER_NAME="juno-console"
-VOLUME="juno_console"
+CONTAINER_NAME="juno-console-3"
+VOLUME="juno_console-3"
 
 RUN_FLAGS="-it"
 START_FLAGS="-i"
@@ -28,6 +28,7 @@ else
     -p 5987:5987 \
     -p 5999:5999 \
     -v "$VOLUME":/juno/.juno \
+    -v "$(pwd)/juno.config.mjs:/juno/juno.config.mjs" \
     -v "$(pwd)/target/deploy:/juno/target/deploy" \
     junobuild/console:latest
 fi

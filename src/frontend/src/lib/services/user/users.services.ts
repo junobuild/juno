@@ -12,8 +12,9 @@ export const listUsers = async ({
 	startAfter,
 	satelliteId,
 	filter,
+	order,
 	identity
-}: Pick<ListParams, 'startAfter' | 'filter'> & {
+}: Pick<ListParams, 'startAfter' | 'filter' | 'order'> & {
 	satelliteId: Principal;
 	identity: OptionIdentity;
 }): Promise<{
@@ -33,7 +34,7 @@ export const listUsers = async ({
 		satelliteId,
 		params: {
 			startAfter,
-			order: {
+			order: order ?? {
 				desc: true,
 				field: 'created_at'
 			},

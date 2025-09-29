@@ -5,6 +5,7 @@
 	import User from '$lib/components/auth/User.svelte';
 	import UserFilter from '$lib/components/auth/UserFilter.svelte';
 	import DataCount from '$lib/components/data/DataCount.svelte';
+	import DataOrder from '$lib/components/data/DataOrder.svelte';
 	import DataPaginator from '$lib/components/data/DataPaginator.svelte';
 	import { listUsers } from '$lib/services/user/users.services';
 	import { authStore } from '$lib/stores/auth.store';
@@ -40,6 +41,7 @@
 				satelliteId,
 				startAfter: $startAfter,
 				filter: $listParamsStore.filter,
+				order: $listParamsStore.order,
 				identity: $authStore.identity
 			});
 
@@ -90,6 +92,7 @@
 				<th {colspan}>
 					<div class="actions">
 						<UserFilter />
+						<DataOrder />
 					</div>
 				</th>
 			</tr>

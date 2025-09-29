@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
-CONTAINER_NAME="juno-console-3"
-VOLUME="juno_console-3"
+CONTAINER_NAME="juno-console"
+VOLUME="juno_console"
 
 RUN_FLAGS="-it"
 START_FLAGS="-i"

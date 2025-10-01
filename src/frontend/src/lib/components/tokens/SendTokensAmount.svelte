@@ -1,10 +1,11 @@
 <script lang="ts">
 	import { nonNullish, type TokenAmountV2 } from '@dfinity/utils';
 	import Value from '$lib/components/ui/Value.svelte';
+	import { icpToUsd } from '$lib/derived/exchange.derived';
 	import { i18n } from '$lib/stores/i18n.store';
 	import { formatICP, formatICPToUsd } from '$lib/utils/icp.utils';
-	import { icpToUsd } from '$lib/derived/exchange.derived';
-	interface Props {
+
+  interface Props {
 		token: TokenAmountV2 | undefined;
 	}
 
@@ -29,7 +30,7 @@
 	</p>
 </Value>
 
-<style>
+<style lang="scss">
 	.usd {
 		display: block;
 		font-size: var(--font-size-small);

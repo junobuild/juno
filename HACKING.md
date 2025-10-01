@@ -8,6 +8,7 @@ This document explains how to run [Juno](https://juno.build) locally.
 - [Building the Modules](#building-the-modules)
 - [Required Tools](#required-tools)
 - [Useful Administration Commands](#useful-administration-commands)
+- [Using a sample App for testing](#using-a-sample-app-for-testing)
 
 ## Local Development
 
@@ -103,3 +104,36 @@ Here are a few commands that can be useful when developing and contributing to J
 | Command                   | Description                                    |
 | ------------------------- | ---------------------------------------------- |
 | `npm run ledger:transfer` | Transfer 55 ICP to a Mission Control (Wallet). |
+
+## Using a sample App for testing
+
+When developing features for Juno — especially for the Console — you may need to generate data, such as creating users or adding entries in a Satellite's datastore or storage.
+
+You can achieve this by running a sample app locally, connecting it to a Satellite, and signing in as a user would normally do.
+
+To do so, follow these steps:
+
+1. **Create or use a sample app**:
+
+```bash
+npm create juno@latest
+```
+
+Or clone the examples [repo](https://github.com/junobuild/examples) and use `frontend/vanilla/vite-typescript`.
+
+2. **Configure the app to use a dev Satellite**:
+
+Open the `juno.config` file at the project root.
+
+Replace `<DEV_SATELLITE_ID>` with the Satellite ID created in the Console.
+
+3. **Run the app locally**:
+
+```bash
+npm run dev
+```
+
+4. **Interact as a normal user**:
+
+Users, datastore, and storage will be automatically created.
+Inspect/manage through the Console.

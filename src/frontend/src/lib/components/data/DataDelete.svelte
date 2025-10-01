@@ -46,7 +46,8 @@
 				collection
 			});
 
-			listParamsStore.reset();
+			listParamsStore.setFilter($listParamsStore.filter);
+			listParamsStore.setOrder($listParamsStore.order);
 		} catch (err: unknown) {
 			toasts.error({
 				text: $i18n.errors.data_delete,

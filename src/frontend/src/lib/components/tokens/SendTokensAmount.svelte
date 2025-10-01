@@ -18,10 +18,10 @@
 
 	<p>
 		{#if nonNullish(token)}<span>{formatICP(token.toE8s())} <small>ICP</small></span>{/if}
-				{#if nonNullish($icpToUsd)}
+				{#if nonNullish($icpToUsd) && nonNullish(token)}
 			<span class="usd">
 				{formatICPToUsd({
-					icp: token?.toUlps() ?? BigInt(0),
+					icp: token?.toE8s() ?? BigInt(0),
 					icpToUsd: $icpToUsd
 				})}</span
 			>

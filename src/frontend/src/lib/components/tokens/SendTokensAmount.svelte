@@ -5,7 +5,7 @@
 	import { i18n } from '$lib/stores/i18n.store';
 	import { formatICP, formatICPToUsd } from '$lib/utils/icp.utils';
 
-	interface Props {
+  interface Props {
 		token: TokenAmountV2 | undefined;
 	}
 
@@ -19,9 +19,13 @@
 
 	<p>
 		{#if nonNullish(token)}<span>{formatICP(token.toE8s())} <small>ICP</small></span>{/if}
-
-		{#if nonNullish($icpToUsd) && nonNullish(token)}
-			<span class="usd">{formatICPToUsd({ icp: token.toE8s(), icpToUsd: $icpToUsd })}</span>
+				{#if nonNullish($icpToUsd) && nonNullish(token)}
+			<span class="usd">
+				{formatICPToUsd({
+					icp: token?.toE8s() ?? BigInt(0),
+					icpToUsd: $icpToUsd
+				})}</span
+			>
 		{/if}
 	</p>
 </Value>

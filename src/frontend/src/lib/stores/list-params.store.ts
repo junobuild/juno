@@ -11,6 +11,7 @@ export type ListParamsStoreData = Pick<ListParams, 'order' | 'filter'>;
 export interface ListParamsStore extends Readable<ListParamsStoreData> {
 	setOrder: (order: ListOrder) => void;
 	setFilter: (filter: ListFilter) => void;
+	setAll: (params: ListParamsStoreData) => void;
 	reset: () => void;
 }
 
@@ -44,6 +45,18 @@ const initListParamsStore = (): ListParamsStore => {
 
 				return updated_state;
 			});
+		},
+
+		setAll: (params: ListParamsStoreData) => {
+			// Ensure we create a fresh object so subscribers are notified
+			const next_state: ListParamsStoreData = {
+				order: { ...params.order },
+				filter: { ...params.filter }
+			};
+
+			set(next_state);
+
+			saveListParams(next_state);
 		},
 
 		reset: () => {

@@ -46,13 +46,17 @@
 				collection
 			});
 
-			listParamsStore.reset();
+			listParamsStore.setAll({
+				order: { ...$listParamsStore.order },
+				filter: { ...$listParamsStore.filter }
+			});
 		} catch (err: unknown) {
 			toasts.error({
 				text: $i18n.errors.data_delete,
 				detail: err
 			});
 		}
+		
 
 		close();
 

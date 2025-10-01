@@ -8,6 +8,7 @@ This document explains how to run [Juno](https://juno.build) locally.
 - [Building the Modules](#building-the-modules)
 - [Required Tools](#required-tools)
 - [Useful Administration Commands](#useful-administration-commands)
+- [Connecting a Dev App to the Console](#connecting-a-dev-app-to-the-console)
 
 ## Local Development
 
@@ -103,3 +104,28 @@ Here are a few commands that can be useful when developing and contributing to J
 | Command                   | Description                                    |
 | ------------------------- | ---------------------------------------------- |
 | `npm run ledger:transfer` | Transfer 55 ICP to a Mission Control (Wallet). |
+
+## Connecting a Dev App to the Console
+
+To connect a local development app to the Console:
+
+1. **Create or use a sample app**:
+
+```bash
+npm create juno@latest
+```
+Or clone the examples [repo](https://github.com/junobuild/examples) and use `frontend/vanilla/vite-typescript`.
+
+
+2. **Configure the app to use a dev Satellite**:
+> Open juno.config at the project root.
+> Replace <DEV_SATELLITE_ID> with the Satellite ID created in the Console.
+
+3. **Run the app locally**:
+```bash
+npm run dev
+```
+
+4. **Interact as a normal user**:
+> Users, datastore, and storage will be automatically created.
+> Inspect/manage through the Console.

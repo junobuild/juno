@@ -1,4 +1,3 @@
-import { DEFAULT_LIST_PARAMS } from '$lib/constants/data.constants';
 import type { ListFilter, ListOrder, ListParams } from '$lib/types/list';
 import { getLocalListParams, setLocalStorageItem } from '$lib/utils/local-storage.utils';
 import { type Readable, writable } from 'svelte/store';
@@ -11,8 +10,7 @@ export type ListParamsStoreData = Pick<ListParams, 'order' | 'filter'>;
 export interface ListParamsStore extends Readable<ListParamsStoreData> {
 	setOrder: (order: ListOrder) => void;
 	setFilter: (filter: ListFilter) => void;
-	setAll: (params: ListParamsStoreData) => void;
-	reset: () => void;
+	reload: () => void;
 }
 
 const initListParamsStore = (): ListParamsStore => {
@@ -47,21 +45,10 @@ const initListParamsStore = (): ListParamsStore => {
 			});
 		},
 
-		setAll: (params: ListParamsStoreData) => {
-			// Ensure we create a fresh object so subscribers are notified
-			const next_state: ListParamsStoreData = {
-				order: { ...params.order },
-				filter: { ...params.filter }
-			};
-
-			set(next_state);
-
-			saveListParams(next_state);
-		},
-
-		reset: () => {
-			set(DEFAULT_LIST_PARAMS);
-			saveListParams(DEFAULT_LIST_PARAMS);
+		reload: () => {
+			update((state) => ({
+				...state
+			}));
 		}
 	};
 };

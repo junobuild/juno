@@ -46,7 +46,6 @@
 				collection
 			});
 
-			// Single store update to avoid multiple reloads
 			listParamsStore.setAll({
 				order: { ...$listParamsStore.order },
 				filter: { ...$listParamsStore.filter }

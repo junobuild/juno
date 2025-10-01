@@ -43,7 +43,6 @@
 		"console:fees": "node scripts/console.fees.mjs",
 		"ledger:account-id": "node ./scripts/ledger.account-id.mjs",
 		"ledger:balance": "node scripts/ledger.balance.mjs",
-		"ledger:transfer": "scripts/ledger.transfer.sh",
 		"i18n": "node scripts/i18n.mjs && prettier --write ./src/frontend/src/lib/types/i18n.d.ts --log-level silent",
 		"observatory:statuses": "node scripts/observatory.statuses.mjs",
 		"clippy": "./scripts/clippy.sh",

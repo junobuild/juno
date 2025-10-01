@@ -7,7 +7,6 @@ This document explains how to run [Juno](https://juno.build) locally.
 - [Local Development](#local-development)
 - [Building the Modules](#building-the-modules)
 - [Required Tools](#required-tools)
-- [Useful Administration Commands](#useful-administration-commands)
 - [Using a sample App for testing](#using-a-sample-app-for-testing)
 
 ## Local Development
@@ -96,14 +95,6 @@ cargo install candid-extractor
 ```bash
 cargo install wasi2ic
 ```
-
-## Useful Administration Commands
-
-Here are a few commands that can be useful when developing and contributing to Juno:
-
-| Command                   | Description                                    |
-| ------------------------- | ---------------------------------------------- |
-| `npm run ledger:transfer` | Transfer 55 ICP to a Mission Control (Wallet). |
 
 ## Using a sample App for testing
 

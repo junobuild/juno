@@ -14,12 +14,12 @@
 	import SatelliteTags from '$lib/components/satellites/SatelliteTags.svelte';
 	import Identifier from '$lib/components/ui/Identifier.svelte';
 	import Value from '$lib/components/ui/Value.svelte';
+	import { testIds } from '$lib/constants/test-ids.constants';
 	import { listCustomDomains } from '$lib/services/custom-domain.services';
 	import { i18n } from '$lib/stores/i18n.store';
 	import type { CanisterSyncData as CanisterSyncDataType } from '$lib/types/canister';
 	import type { SatelliteIdText } from '$lib/types/satellite';
 	import { testId } from '$lib/utils/test.utils';
-    import { testIds } from '$lib/constants/test-ids.constants';
 
 	interface Props {
 		satellite: Satellite;
@@ -66,10 +66,10 @@
 				{#snippet label()}
 					{$i18n.satellites.id}
 				{/snippet}
-				<Identifier 
-					identifier={satelliteId} 
-					shorten={false} 
-					small={false} 
+				<Identifier
+					identifier={satelliteId}
+					shorten={false}
+					small={false}
 					{...testId(testIds.satelliteOverview.copySatelliteId)}
 				/>
 			</Value>

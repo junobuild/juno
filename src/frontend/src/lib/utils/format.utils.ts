@@ -5,14 +5,19 @@
  *
  * @param {Object} params - Parameters object.
  * @param {string} params.text - The original text to shorten.
- * @param {number} [params.length=7] - The number of characters to keep from the start and end of the string.
+ * @param {number} [params.length=9] - The number of characters to keep from the start and end of the string.
  * @returns {string} The shortened string with a middle ellipsis if applicable.
  */
 export const shortenWithMiddleEllipsis = ({
 	text,
-	length = 7
+	length = 9
 }: {
 	text: string;
 	length?: number;
-}): string =>
-	text.length > length + 2 ? `${text.slice(0, length)}...${text.slice(-1 * length)}` : text;
+}): string => {
+	const startLength = length + 2;
+	const endLength = length;
+	return text.length > startLength + endLength + 2
+		? `${text.slice(0, startLength)}...${text.slice(-endLength)}`
+		: text;
+};

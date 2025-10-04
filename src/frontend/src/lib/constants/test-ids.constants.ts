@@ -14,6 +14,6 @@ export const testIds: TestIds = {
 	},
 	satelliteOverview: {
 		visit: 'link-visit-satellite',
-		copySatelliteID: 'btn-copy-satellite-id'
+		copySatelliteId: 'btn-copy-satellite-id'
 	}
 };

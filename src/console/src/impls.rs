@@ -1,7 +1,10 @@
 use crate::constants::{ORBITER_CREATION_FEE_ICP, SATELLITE_CREATION_FEE_ICP};
 use crate::memory::manager::init_stable_state;
 use crate::types::ledger::Payment;
-use crate::types::state::{Fee, Fees, HeapState, MissionControl, Rate, Rates, State};
+use crate::types::state::{
+    Account, AccountRole, AuthProvider, Fee, Fees, HeapState, MissionControl, Owner, Rate, Rates,
+    State, WebAuthnData,
+};
 use ic_cdk::api::time;
 use ic_stable_structures::storable::Bound;
 use ic_stable_structures::Storable;
@@ -11,6 +14,9 @@ use junobuild_shared::serializers::{
     deserialize_from_bytes, serialize_into_bytes, serialize_to_bytes,
 };
 use std::borrow::Cow;
+
+use junobuild_shared::types::state::{Version, Versioned};
+use junobuild_shared::version::next_version;
 
 impl Default for State {
     fn default() -> Self {
@@ -94,4 +100,42 @@ impl Storable for Payment {
     }
 
     const BOUND: Bound = Bound::Unbounded;
+}
+
+impl Storable for Account {
+    fn to_bytes(&self) -> Cow<'_, [u8]> {
+        serialize_to_bytes(self)
+    }
+
+    fn into_bytes(self) -> Vec<u8> {
+        serialize_into_bytes(&self)
+    }
+
+    fn from_bytes(bytes: Cow<[u8]>) -> Self {
+        deserialize_from_bytes(bytes)
+    }
+
+    const BOUND: Bound = Bound::Unbounded;
+}
+
+impl Account {
+    pub fn new_owner_from_webauthn(data: &WebAuthnData) -> Self {
+        let now = time();
+
+        let version = next_version::<Self>(&None);
+
+        Account {
+            role: AccountRole::Owner(Owner::default()),
+            provider: AuthProvider::WebAuthn(data.clone()),
+            version: Some(version),
+            created_at: now,
+            updated_at: now,
+        }
+    }
+}
+
+impl Versioned for Account {
+    fn version(&self) -> Option<Version> {
+        self.version
+    }
 }

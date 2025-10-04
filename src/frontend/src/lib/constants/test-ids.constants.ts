@@ -1,4 +1,4 @@
-import type { TestIds } from '$lib/types/test-id';
+import type { TestIds } from '../types/test-id';
 
 export const testIds: TestIds = {
 	auth: {
@@ -15,5 +15,9 @@ export const testIds: TestIds = {
 	satelliteOverview: {
 		visit: 'link-visit-satellite',
 		copySatelliteId: 'btn-copy-satellite-id'
+	},
+	wallet: {
+		button: 'btn-wallet',
+		getIcp: 'btn-get-icp'
 	}
 };

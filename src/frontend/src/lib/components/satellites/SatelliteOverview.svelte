@@ -18,6 +18,8 @@
 	import { i18n } from '$lib/stores/i18n.store';
 	import type { CanisterSyncData as CanisterSyncDataType } from '$lib/types/canister';
 	import type { SatelliteIdText } from '$lib/types/satellite';
+	import { testId } from '$lib/utils/test.utils';
+    import { testIds } from '$lib/constants/test-ids.constants';
 
 	interface Props {
 		satellite: Satellite;
@@ -64,7 +66,12 @@
 				{#snippet label()}
 					{$i18n.satellites.id}
 				{/snippet}
-				<Identifier identifier={satelliteId} shorten={false} small={false} />
+				<Identifier 
+					identifier={satelliteId} 
+					shorten={false} 
+					small={false} 
+					{...testId(testIds.satelliteOverview.copySatelliteId)}
+				/>
 			</Value>
 
 			<CanisterSubnet canisterId={satellite.satellite_id} />

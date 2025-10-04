@@ -13,7 +13,8 @@ export const testIds: TestIds = {
 		continue: 'btn-continue-overview'
 	},
 	satelliteOverview: {
-		visit: 'link-visit-satellite'
+		visit: 'link-visit-satellite',
+		copySatelliteId: 'btn-copy-satellite-id'
 	},
 	wallet: {
 		button: 'btn-wallet',

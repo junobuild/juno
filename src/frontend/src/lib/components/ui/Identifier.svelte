@@ -13,7 +13,7 @@
 	let { identifier, shorten = true, shortenLength, small = true, what }: Props = $props();
 
 	let shortIdentifier: string = $derived(
-		shorten ? shortenWithMiddleEllipsis({ text: identifier, length: shortenLength }) : identifier
+		shorten ? shortenWithMiddleEllipsis({ text: identifier, startLength: shortenLength, endLength: shortenLength }) : identifier
 	);
 </script>
 

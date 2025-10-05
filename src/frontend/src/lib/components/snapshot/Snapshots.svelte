@@ -110,7 +110,12 @@
 									onrestore={openRestoreModal}
 								/></td
 							>
-							<td><Identifier identifier={`0x${encodeSnapshotId(snapshot.id)}`} small={false} /></td
+							<td
+								><Identifier
+									identifier={`0x${encodeSnapshotId(snapshot.id)}`}
+									shortenLength={11}
+									small={false}
+								/></td
 							>
 							<td>{formatBytes(Number(snapshot.total_size))}</td>
 							<td>{formatToDate(snapshot.taken_at_timestamp)}</td>

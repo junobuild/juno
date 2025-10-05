@@ -11,7 +11,6 @@
 	import { balance } from '$lib/derived/balance.derived';
 	import { i18n } from '$lib/stores/i18n.store';
 	import type { MissionControlId } from '$lib/types/mission-control';
-	import { testId } from '$lib/utils/test.utils';
 
 	interface Props {
 		missionControlId: MissionControlId;
@@ -32,7 +31,7 @@
 	};
 </script>
 
-<ButtonIcon {onclick} bind:button {...testId(testIds.navbar.openWallet)}>
+<ButtonIcon {onclick} testId={testIds.navbar.openWallet} bind:button>
 	{#snippet icon()}
 		<IconWallet size="16px" />
 	{/snippet}

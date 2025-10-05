@@ -19,7 +19,6 @@
 	import { i18n } from '$lib/stores/i18n.store';
 	import type { CanisterSyncData as CanisterSyncDataType } from '$lib/types/canister';
 	import type { SatelliteIdText } from '$lib/types/satellite';
-	import { testId } from '$lib/utils/test.utils';
 
 	interface Props {
 		satellite: Satellite;
@@ -70,7 +69,7 @@
 					identifier={satelliteId}
 					shorten={false}
 					small={false}
-					{...testId(testIds.satelliteOverview.copySatelliteId)}
+					testId={testIds.satelliteOverview.copySatelliteId}
 				/>
 			</Value>
 

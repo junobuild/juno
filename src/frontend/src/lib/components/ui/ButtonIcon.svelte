@@ -1,5 +1,7 @@
 <script lang="ts">
 	import type { Snippet } from 'svelte';
+	import type { TestId } from '$lib/types/test-id';
+	import { testId } from '$lib/utils/test.utils';
 
 	interface Props {
 		button?: HTMLButtonElement | undefined;
@@ -10,6 +12,7 @@
 		onclick: (() => Promise<void>) | (() => void);
 		level?: 'success' | 'warning' | 'error';
 		small?: boolean;
+		testId?: TestId;
 	}
 
 	let {
@@ -20,7 +23,8 @@
 		children,
 		onclick,
 		level,
-		small = false
+		small = false,
+		testId: testIdProp
 	}: Props = $props();
 </script>
 
@@ -32,6 +36,7 @@
 	{disabled}
 	{onclick}
 	type="button"
+	{...testId(testIdProp)}
 >
 	{@render icon?.()}
 	<span class="visually-hidden">{@render children()}</span>

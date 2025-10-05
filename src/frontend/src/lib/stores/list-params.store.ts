@@ -14,7 +14,7 @@ export interface ListParamsStore extends Readable<ListParamsStoreData> {
 }
 
 const initListParamsStore = (): ListParamsStore => {
-	const { subscribe, update, set } = writable<ListParamsStoreData>(getLocalListParams());
+	const { subscribe, update } = writable<ListParamsStoreData>(getLocalListParams());
 
 	return {
 		subscribe,

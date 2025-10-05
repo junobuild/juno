@@ -113,7 +113,7 @@
 							<td
 								><Identifier
 									identifier={`0x${encodeSnapshotId(snapshot.id)}`}
-									shortenLength={11}
+									shortenLength={9}
 									small={false}
 								/></td
 							>

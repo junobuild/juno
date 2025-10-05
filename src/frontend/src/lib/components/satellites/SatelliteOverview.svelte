@@ -70,7 +70,7 @@
 					identifier={satelliteId}
 					shorten={false}
 					small={false}
-					{...testId(testIds.satelliteOverview.copySatelliteId)}
+					testId={testIds.satelliteOverview.copySatelliteId}
 				/>
 			</Value>
 

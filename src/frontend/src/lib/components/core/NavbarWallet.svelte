@@ -32,7 +32,7 @@
 	};
 </script>
 
-<ButtonIcon {onclick} bind:button {...testId(testIds.navbar.openWallet)}>
+<ButtonIcon {onclick} bind:button testId={testIds.navbar.openWallet}>
 	{#snippet icon()}
 		<IconWallet size="16px" />
 	{/snippet}

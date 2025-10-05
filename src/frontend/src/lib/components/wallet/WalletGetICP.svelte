@@ -32,5 +32,5 @@
 		<ConfettiSpread />
 	{/if}
 
-	<button onclick={onClick} {...testId(testIds.wallet.getIcp)}>{$i18n.emulator.get_icp}</button>
+	<button onclick={onClick} {...testId(testIds.navbar.getIcp)}>{$i18n.emulator.get_icp}</button>
 {/if}

@@ -16,8 +16,8 @@ export const testIds: TestIds = {
 		visit: 'link-visit-satellite',
 		copySatelliteId: 'btn-copy-satellite-id'
 	},
-	wallet: {
-		button: 'btn-wallet',
+	navbar: {
+		openWallet: 'btn-open-wallet',
 		getIcp: 'btn-get-icp'
 	}
 };

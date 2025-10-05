@@ -1,4 +1,4 @@
-import type { TestIds } from '../types/test-id';
+import type { TestIds } from '$lib/types/test-id';
 
 export const testIds: TestIds = {
 	auth: {

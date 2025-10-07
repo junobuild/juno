@@ -19,5 +19,11 @@ export const testIds = {
 	navbar: {
 		openWallet: 'btn-open-wallet',
 		getIcp: 'btn-get-icp'
+	},
+	createAnalytics: {
+		navLink: 'nav-analytics',
+		launch: 'btn-launch-analytics',
+		create: 'btn-create-analytics',
+		close: 'btn-close-analytics-wizard'
 	}
 } as const satisfies TestIds;

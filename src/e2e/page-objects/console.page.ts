@@ -64,4 +64,18 @@ export class ConsolePage extends IdentityPage {
 
 		return satellitePage;
 	}
+
+	async createAnalytics(): Promise<void> {
+		await this.page.getByTestId(testIds.createAnalytics.navLink).click();
+
+		await expect(this.page.getByTestId(testIds.createAnalytics.launch)).toBeVisible();
+		await this.page.getByTestId(testIds.createAnalytics.launch).click();
+
+		await expect(this.page.getByTestId(testIds.createAnalytics.create)).toBeVisible();
+		await this.page.getByTestId(testIds.createAnalytics.create).click();
+
+		//  closes the wizard after the completion
+		await expect(this.page.getByTestId(testIds.createAnalytics.close)).toBeVisible();
+		await this.page.getByTestId(testIds.createAnalytics.close).click();
+	}
 }

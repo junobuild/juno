@@ -112,6 +112,7 @@
 				class:selected={isRouteSelected({ routeId, path: 'analytics' })}
 				href={`/analytics${queryParam}`}
 				role="menuitem"
+				data-testid="nav-analytics"
 			>
 				<IconAnalytics size="24px" />
 				<span>{$i18n.analytics.title}</span>

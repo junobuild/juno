@@ -71,7 +71,7 @@
 
 		<div class="msg">
 			<p>{$i18n.analytics.ready}</p>
-			<button onclick={onclose}>{$i18n.core.close}</button>
+			<button onclick={onclose} data-testid="btn-close-analytics-wizard">{$i18n.core.close}</button>
 		</div>
 	{:else if step === 'in_progress'}
 		<ProgressCreate {progress} segment="orbiter" withMonitoring={nonNullish(monitoringStrategy)} />
@@ -94,7 +94,8 @@
 
 				<button
 					disabled={$authSignedOut || isNullish($missionControlIdDerived) || insufficientFunds}
-					type="submit">{$i18n.analytics.create}</button
+					type="submit"
+					data-testid="btn-create-analytics">{$i18n.analytics.create}</button
 				>
 			</form>
 		</CreditsGuard>

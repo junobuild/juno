@@ -1,7 +1,4 @@
-import type {
-	OrbiterSatelliteConfig as SatelliteConfig,
-	SetSatelliteConfig
-} from '$declarations/deprecated/orbiter-0-0-7.did';
+import type { OrbiterDid007 } from '$lib/types/declarations';
 import type { AnalyticsClientsPageViews } from '$declarations/deprecated/orbiter-0-0-8.did';
 import { getOrbiterActor007, getOrbiterActor008 } from '$lib/api/actors/actor.deprecated.api';
 import type { OptionIdentity } from '$lib/types/itentity';
@@ -19,7 +16,7 @@ export const listOrbiterSatelliteConfigs007 = async ({
 }: {
 	orbiterId: Principal;
 	identity: OptionIdentity;
-}): Promise<[Principal, SatelliteConfig][]> => {
+}): Promise<[Principal, OrbiterDid007.OrbiterSatelliteConfig][]> => {
 	const { list_satellite_configs } = await getOrbiterActor007({ orbiterId, identity });
 	return list_satellite_configs();
 };
@@ -33,9 +30,9 @@ export const setOrbiterSatelliteConfigs007 = async ({
 	identity
 }: {
 	orbiterId: Principal;
-	config: [Principal, SetSatelliteConfig][];
+	config: [Principal, OrbiterDid007.SetSatelliteConfig][];
 	identity: OptionIdentity;
-}): Promise<[Principal, SatelliteConfig][]> => {
+}): Promise<[Principal, OrbiterDid007.OrbiterSatelliteConfig][]> => {
 	const actor = await getOrbiterActor007({ orbiterId, identity });
 	return actor.set_satellite_configs(config);
 };

@@ -1,4 +1,4 @@
-import type { ListParams as ListParamsApi } from '$declarations/deprecated/satellite-0-0-8.did';
+import type { Satellite008 } from '$lib/types/declarations';
 import type {
 	AssetNoContent,
 	CollectionType,
@@ -24,7 +24,7 @@ const toListParams008 = ({
 	startAfter,
 	order,
 	filter: { matcher, owner }
-}: ListParams): ListParamsApi => ({
+}: ListParams): Satellite008.ListParams => ({
 	matcher: toNullable(matcher === '' ? null : matcher),
 	paginate: [
 		{

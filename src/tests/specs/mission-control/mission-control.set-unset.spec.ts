@@ -1,4 +1,4 @@
-import { type MissionControlActor , idlFactoryMissionControl } from '$lib/api/actors/actor.factory';
+import { idlFactoryMissionControl, type MissionControlActor } from '$lib/api/actors/actor.factory';
 import { AnonymousIdentity } from '@dfinity/agent';
 import { Ed25519KeyIdentity } from '@dfinity/identity';
 import { PocketIc, type Actor } from '@dfinity/pic';

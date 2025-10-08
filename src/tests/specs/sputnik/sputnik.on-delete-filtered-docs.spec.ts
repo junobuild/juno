@@ -1,4 +1,4 @@
-import type { _SERVICE as SputnikActor } from '$declarations/sputnik/sputnik.did';
+import { type SputnikActor } from '$lib/api/actors/actor.factory';
 import type { Identity } from '@dfinity/agent';
 import type { Actor, PocketIc } from '@dfinity/pic';
 import type { Principal } from '@dfinity/principal';
@@ -10,7 +10,7 @@ import { mockSetRule } from '../../mocks/collection.mocks';
 import { mockData } from '../../mocks/doc.mocks';
 import { mockListParams } from '../../mocks/list.mocks';
 import { setupTestSputnik } from '../../utils/fixtures-tests.utils';
-import { fetchLogs, type IcMgmtLog } from '../../utils/mgmt-tests.utils';
+import { type IcMgmtLog, fetchLogs } from '../../utils/mgmt-tests.utils';
 import { waitServerlessFunction } from '../../utils/satellite-extended-tests.utils';
 import { initVersionMock } from '../../utils/sputnik-tests.utils';
 

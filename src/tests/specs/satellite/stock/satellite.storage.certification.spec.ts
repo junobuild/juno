@@ -1,7 +1,5 @@
-import type {
-	HttpRequest,
-	_SERVICE as SatelliteActor
-} from '$declarations/satellite/satellite.did';
+import { type SatelliteActor } from '$lib/api/actors/actor.factory';
+import type { SatelliteDid } from '$lib/types/declarations';
 import type { Actor, PocketIc } from '@dfinity/pic';
 import type { Principal } from '@dfinity/principal';
 import { toNullable } from '@dfinity/utils';
@@ -62,7 +60,7 @@ describe.each(MEMORIES)('Satellite > Storage > Certificate > $title', ({ memory 
 	}) => {
 		const { http_request } = actor;
 
-		const request: HttpRequest = {
+		const request: SatelliteDid.HttpRequest = {
 			body: [],
 			certificate_version: toNullable(2),
 			headers,

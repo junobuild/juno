@@ -1,7 +1,9 @@
-import type { _SERVICE as OrbiterActor0_0_7 } from '$declarations/deprecated/orbiter-0-0-7.did';
-import { idlFactory as idlFactorOrbiter0_0_7 } from '$declarations/deprecated/orbiter-0-0-7.factory.did';
-import type { _SERVICE as OrbiterActor } from '$declarations/orbiter/orbiter.did';
-import { idlFactory as idlFactorOrbiter } from '$declarations/orbiter/orbiter.factory.did';
+import {
+	idlFactoryOrbiter,
+	idlFactoryOrbiter007,
+	type OrbiterActor,
+	type OrbiterActor007
+} from '$lib/api/actors/actor.factory';
 import { Ed25519KeyIdentity } from '@dfinity/identity';
 import { PocketIc, type Actor } from '@dfinity/pic';
 import type { Principal } from '@dfinity/principal';
@@ -17,7 +19,7 @@ import {
 
 describe('Orbiter > Upgrade > Configuration', () => {
 	let pic: PocketIc;
-	let actor: Actor<OrbiterActor0_0_7>;
+	let actor: Actor<OrbiterActor007>;
 	let canisterId: Principal;
 
 	const controller = Ed25519KeyIdentity.generate();
@@ -27,8 +29,8 @@ describe('Orbiter > Upgrade > Configuration', () => {
 
 		const destination = await downloadOrbiter('0.0.7');
 
-		const { actor: c, canisterId: cId } = await pic.setupCanister<OrbiterActor0_0_7>({
-			idlFactory: idlFactorOrbiter0_0_7,
+		const { actor: c, canisterId: cId } = await pic.setupCanister<OrbiterActor007>({
+			idlFactory: idlFactoryOrbiter007,
 			wasm: destination,
 			arg: controllersInitArgs(controller),
 			sender: controller.getPrincipal()
@@ -69,7 +71,7 @@ describe('Orbiter > Upgrade > Configuration', () => {
 		it('should migrate no entry if the configuration was not set', async () => {
 			await upgradeVersion();
 
-			const newActor = pic.createActor<OrbiterActor>(idlFactorOrbiter, canisterId);
+			const newActor = pic.createActor<OrbiterActor>(idlFactoryOrbiter, canisterId);
 			newActor.setIdentity(controller);
 
 			const { list_satellite_configs } = newActor;
@@ -96,7 +98,7 @@ describe('Orbiter > Upgrade > Configuration', () => {
 
 			await upgradeVersion();
 
-			const newActor = pic.createActor<OrbiterActor>(idlFactorOrbiter, canisterId);
+			const newActor = pic.createActor<OrbiterActor>(idlFactoryOrbiter, canisterId);
 			newActor.setIdentity(controller);
 
 			const { list_satellite_configs } = newActor;
@@ -127,7 +129,7 @@ describe('Orbiter > Upgrade > Configuration', () => {
 
 			await upgradeVersion();
 
-			const newActor = pic.createActor<OrbiterActor>(idlFactorOrbiter, canisterId);
+			const newActor = pic.createActor<OrbiterActor>(idlFactoryOrbiter, canisterId);
 			newActor.setIdentity(controller);
 
 			const { list_satellite_configs } = newActor;
@@ -166,7 +168,7 @@ describe('Orbiter > Upgrade > Configuration', () => {
 
 			await upgradeCurrent();
 
-			const newActor = pic.createActor<OrbiterActor>(idlFactorOrbiter, canisterId);
+			const newActor = pic.createActor<OrbiterActor>(idlFactoryOrbiter, canisterId);
 			newActor.setIdentity(controller);
 
 			const { list_satellite_configs } = newActor;

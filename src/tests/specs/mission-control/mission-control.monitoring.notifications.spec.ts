@@ -1,13 +1,12 @@
-import type { _SERVICE as ConsoleActor } from '$declarations/console/console.did';
-import { idlFactory as idlFactorConsole } from '$declarations/console/console.factory.did';
-import { idlFactory as idlFactorMissionControl } from '$declarations/mission_control/mission_control.factory.did';
-import type {
-	NotifyStatus,
-	_SERVICE as ObservatoryActor
-} from '$declarations/observatory/observatory.did';
-import { idlFactory as idlFactorObservatory } from '$declarations/observatory/observatory.factory.did';
-import type { MissionControlActor } from '$lib/api/actors/actor.factory';
-import type { MissionControlDid } from '$lib/types/declarations';
+import {
+	type ConsoleActor,
+	type MissionControlActor,
+	type ObservatoryActor,
+	idlFactoryConsole,
+	idlFactoryMissionControl,
+	idlFactoryObservatory
+} from '$lib/api/actors/actor.factory';
+import type { MissionControlDid, ObservatoryDid } from '$lib/types/declarations';
 import { Ed25519KeyIdentity } from '@dfinity/identity';
 import { type Actor, PocketIc } from '@dfinity/pic';
 import type { Principal } from '@dfinity/principal';
@@ -41,7 +40,7 @@ describe('Mission Control > Notifications', () => {
 		pic = await PocketIc.create(inject('PIC_URL'));
 
 		const { actor: c } = await pic.setupCanister<ConsoleActor>({
-			idlFactory: idlFactorConsole,
+			idlFactory: idlFactoryConsole,
 			wasm: CONSOLE_WASM_PATH,
 			sender: controller.getPrincipal(),
 			targetCanisterId: CONSOLE_ID
@@ -65,7 +64,7 @@ describe('Mission Control > Notifications', () => {
 		await deploySegments(consoleActor);
 
 		const { actor: oActor } = await pic.setupCanister<ObservatoryActor>({
-			idlFactory: idlFactorObservatory,
+			idlFactory: idlFactoryObservatory,
 			wasm: OBSERVATORY_WASM_PATH,
 			sender: controller.getPrincipal(),
 			targetCanisterId: OBSERVATORY_ID
@@ -105,7 +104,7 @@ describe('Mission Control > Notifications', () => {
 
 		// Spin some modules to monitor
 		const missionControlActor = pic.createActor<MissionControlActor>(
-			idlFactorMissionControl,
+			idlFactoryMissionControl,
 			missionControlId
 		);
 
@@ -143,7 +142,7 @@ describe('Mission Control > Notifications', () => {
 		return { missionControlId, satelliteId, missionControlActor };
 	};
 
-	const assertObservatoryStatus = async (notifyStatus: NotifyStatus) => {
+	const assertObservatoryStatus = async (notifyStatus: ObservatoryDid.NotifyStatus) => {
 		const { get_notify_status } = observatoryActor;
 
 		const status = await get_notify_status({
@@ -432,7 +431,7 @@ describe('Mission Control > Notifications', () => {
 				notifyStatus: { failed, sent },
 				expectedTimestamp
 			}: {
-				notifyStatus: Omit<NotifyStatus, 'pending'>;
+				notifyStatus: Omit<ObservatoryDid.NotifyStatus, 'pending'>;
 				expectedTimestamp?: string;
 			}) => {
 				// Start monitoring

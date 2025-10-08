@@ -1,10 +1,10 @@
-import type { _SERVICE as SputnikActor } from '$declarations/sputnik/sputnik.did';
+import { type SputnikActor } from '$lib/api/actors/actor.factory';
 import type { Actor, PocketIc } from '@dfinity/pic';
 import { assertNonNullish, fromNullable, toNullable } from '@dfinity/utils';
 import { fromArray, toArray } from '@junobuild/utils';
 import { nanoid } from 'nanoid';
 import { mockSetRule } from '../../mocks/collection.mocks';
-import { mockSputnikObj, type SputnikMock } from '../../mocks/sputnik.mocks';
+import { type SputnikMock, mockSputnikObj } from '../../mocks/sputnik.mocks';
 import { setupTestSputnik } from '../../utils/fixtures-tests.utils';
 import { waitServerlessFunction } from '../../utils/satellite-extended-tests.utils';
 

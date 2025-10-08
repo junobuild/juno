@@ -1,5 +1,5 @@
-import type { Doc } from '$declarations/satellite/satellite.did';
-import type { _SERVICE as SputnikActor } from '$declarations/sputnik/sputnik.did';
+import { type SputnikActor } from '$lib/api/actors/actor.factory';
+import type { SputnikDid } from '$lib/types/declarations';
 import type { Identity } from '@dfinity/agent';
 import type { Actor, PocketIc } from '@dfinity/pic';
 import type { Principal } from '@dfinity/principal';
@@ -63,7 +63,7 @@ describe('Sputnik > sdk > listAssetsStore', () => {
 		await pic?.tearDown();
 	});
 
-	const setAndGetDoc = async (): Promise<Doc> => {
+	const setAndGetDoc = async (): Promise<SputnikDid.Doc> => {
 		const { set_doc, get_doc } = actor;
 
 		const key = nanoid();

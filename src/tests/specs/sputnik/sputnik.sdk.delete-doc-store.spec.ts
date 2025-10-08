@@ -1,4 +1,4 @@
-import type { _SERVICE as SputnikActor } from '$declarations/sputnik/sputnik.did';
+import { type SputnikActor } from '$lib/api/actors/actor.factory';
 import type { Actor, PocketIc } from '@dfinity/pic';
 import { fromNullable, toNullable } from '@dfinity/utils';
 import { toArray } from '@junobuild/utils';

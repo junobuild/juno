@@ -1,7 +1,9 @@
-import type { _SERVICE as SatelliteActor_0_0_21 } from '$declarations/deprecated/satellite-0-0-21.did';
-import { idlFactory as idlFactorSatellite_0_0_21 } from '$declarations/deprecated/satellite-0-0-21.factory.did';
-import type { _SERVICE as SatelliteActor } from '$declarations/satellite/satellite.did';
-import { idlFactory as idlFactorSatellite } from '$declarations/satellite/satellite.factory.did';
+import {
+	idlFactorySatellite,
+	idlFactorySatellite0021,
+	type SatelliteActor,
+	type SatelliteActor0021
+} from '$lib/api/actors/actor.factory';
 import { Ed25519KeyIdentity } from '@dfinity/identity';
 import { PocketIc, type Actor } from '@dfinity/pic';
 import type { Principal } from '@dfinity/principal';
@@ -16,15 +18,15 @@ describe('Satellite > Upgrade > v0.0.22', () => {
 
 	const controller = Ed25519KeyIdentity.generate();
 
-	let actor: Actor<SatelliteActor_0_0_21>;
+	let actor: Actor<SatelliteActor0021>;
 
 	beforeEach(async () => {
 		pic = await PocketIc.create(inject('PIC_URL'));
 
 		const destination = await downloadSatellite('0.0.21');
 
-		const { actor: c, canisterId: cId } = await pic.setupCanister<SatelliteActor_0_0_21>({
-			idlFactory: idlFactorSatellite_0_0_21,
+		const { actor: c, canisterId: cId } = await pic.setupCanister<SatelliteActor0021>({
+			idlFactory: idlFactorySatellite0021,
 			wasm: destination,
 			arg: controllersInitArgs(controller),
 			sender: controller.getPrincipal()
@@ -57,7 +59,7 @@ describe('Satellite > Upgrade > v0.0.22', () => {
 
 		await upgradeSatelliteVersion({ version: '0.0.22', controller, pic, canisterId });
 
-		const newActor = pic.createActor<SatelliteActor>(idlFactorSatellite, canisterId);
+		const newActor = pic.createActor<SatelliteActor>(idlFactorySatellite, canisterId);
 		newActor.setIdentity(controller);
 
 		const { get_rule } = newActor;
@@ -101,7 +103,7 @@ describe('Satellite > Upgrade > v0.0.22', () => {
 
 		await upgradeSatelliteVersion({ version: '0.0.22', controller, pic, canisterId });
 
-		const newActor = pic.createActor<SatelliteActor>(idlFactorSatellite, canisterId);
+		const newActor = pic.createActor<SatelliteActor>(idlFactorySatellite, canisterId);
 		newActor.setIdentity(controller);
 
 		const { get_rule: getRuleAfter } = newActor;

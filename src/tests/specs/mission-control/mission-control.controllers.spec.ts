@@ -1,11 +1,13 @@
-import type { _SERVICE as MissionControlActor } from '$declarations/mission_control/mission_control.did';
-import { idlFactory as idlFactorMissionControl } from '$declarations/mission_control/mission_control.factory.did';
-import type { _SERVICE as OrbiterActor } from '$declarations/orbiter/orbiter.did';
-import { idlFactory as idlFactorOrbiter } from '$declarations/orbiter/orbiter.factory.did';
-import type { _SERVICE as SatelliteActor } from '$declarations/satellite/satellite.did';
-import { idlFactory as idlFactorSatellite } from '$declarations/satellite/satellite.factory.did';
+import {
+	idlFactoryMissionControl,
+	idlFactoryOrbiter,
+	idlFactorySatellite,
+	type MissionControlActor,
+	type OrbiterActor,
+	type SatelliteActor
+} from '$lib/api/actors/actor.factory';
 import { Ed25519KeyIdentity } from '@dfinity/identity';
-import { type Actor, PocketIc } from '@dfinity/pic';
+import { PocketIc, type Actor } from '@dfinity/pic';
 import type { Principal } from '@dfinity/principal';
 import { JUNO_AUTH_ERROR_NOT_ADMIN_CONTROLLER } from '@junobuild/errors';
 import { inject } from 'vitest';
@@ -34,7 +36,7 @@ describe('Mission Control > Controllers', () => {
 
 		const { actor: c, canisterId: missionControlId } = await pic.setupCanister<MissionControlActor>(
 			{
-				idlFactory: idlFactorMissionControl,
+				idlFactory: idlFactoryMissionControl,
 				wasm: MISSION_CONTROL_WASM_PATH,
 				arg: userInitArgs(),
 				sender: controller.getPrincipal()
@@ -44,7 +46,7 @@ describe('Mission Control > Controllers', () => {
 		actor = c;
 
 		const { canisterId } = await pic.setupCanister<OrbiterActor>({
-			idlFactory: idlFactorOrbiter,
+			idlFactory: idlFactoryOrbiter,
 			wasm: ORBITER_WASM_PATH,
 			arg: controllersInitArgs([controller.getPrincipal(), missionControlId]),
 			sender: controller.getPrincipal()
@@ -53,7 +55,7 @@ describe('Mission Control > Controllers', () => {
 		orbiterId = canisterId;
 
 		const { canisterId: cId } = await pic.setupCanister<SatelliteActor>({
-			idlFactory: idlFactorSatellite,
+			idlFactory: idlFactorySatellite,
 			wasm: SATELLITE_WASM_PATH,
 			arg: controllersInitArgs([controller.getPrincipal(), missionControlId]),
 			sender: controller.getPrincipal()

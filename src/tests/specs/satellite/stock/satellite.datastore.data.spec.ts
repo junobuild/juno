@@ -1,5 +1,5 @@
-import type { _SERVICE as SatelliteActor, SetRule } from '$declarations/satellite/satellite.did';
-import { idlFactory as idlFactorSatellite } from '$declarations/satellite/satellite.factory.did';
+import { type SatelliteActor, idlFactorySatellite } from '$lib/api/actors/actor.factory';
+import type { SatelliteDid } from '$lib/types/declarations';
 import { Ed25519KeyIdentity } from '@dfinity/identity';
 import { type Actor, PocketIc } from '@dfinity/pic';
 import { Principal } from '@dfinity/principal';
@@ -27,7 +27,7 @@ describe.each([{ memory: { Heap: null } }, { memory: { Stable: null } }])(
 			pic = await PocketIc.create(inject('PIC_URL'));
 
 			const { actor: c } = await pic.setupCanister<SatelliteActor>({
-				idlFactory: idlFactorSatellite,
+				idlFactory: idlFactorySatellite,
 				wasm: SATELLITE_WASM_PATH,
 				arg: controllersInitArgs(controller),
 				sender: controller.getPrincipal()
@@ -45,7 +45,7 @@ describe.each([{ memory: { Heap: null } }, { memory: { Stable: null } }])(
 		describe('Serializer/deserializer', () => {
 			const user = Ed25519KeyIdentity.generate();
 
-			const setRule: SetRule = {
+			const setRule: SatelliteDid.SetRule = {
 				memory: toNullable(memory),
 				max_size: toNullable(),
 				read: { Managed: null },

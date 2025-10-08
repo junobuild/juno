@@ -1,22 +1,18 @@
-import type {
-	ListParams,
-	ListProposalsParams,
-	ListRulesParams
-} from '$declarations/satellite/satellite.did';
+import type { SatelliteDid } from '$lib/types/declarations';
 import { toNullable } from '@dfinity/utils';
 
-export const mockListParams: ListParams = {
+export const mockListParams: SatelliteDid.ListParams = {
 	matcher: toNullable(),
 	order: toNullable(),
 	owner: toNullable(),
 	paginate: toNullable()
 };
 
-export const mockListProposalsParams: ListProposalsParams = {
+export const mockListProposalsParams: SatelliteDid.ListProposalsParams = {
 	paginate: toNullable(),
 	order: toNullable()
 };
 
-export const mockListRules: ListRulesParams = {
+export const mockListRules: SatelliteDid.ListRulesParams = {
 	matcher: toNullable()
 };

@@ -1,5 +1,4 @@
-import type { HttpResponse as OrbiterHttpResponse } from '$declarations/orbiter/orbiter.did';
-import type { HttpResponse as SatelliteHttpResponse } from '$declarations/satellite/satellite.did';
+import type { OrbiterDid, SatelliteDid } from '$lib/types/declarations';
 import type { PocketIc } from '@dfinity/pic';
 import type { Principal } from '@dfinity/principal';
 import { verifyRequestResponsePair, type Request } from '@dfinity/response-verification';
@@ -31,7 +30,7 @@ export const assertCertification = async ({
 	currentDate: Date;
 	canisterId: Principal;
 	request: Request;
-	response: SatelliteHttpResponse | OrbiterHttpResponse;
+	response: SatelliteDid.HttpResponse | OrbiterDid.HttpResponse;
 	statusCode?: number;
 }) => {
 	const rootKey = await getRootKey(pic);

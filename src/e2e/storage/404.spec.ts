@@ -40,9 +40,11 @@ test.describe('redirect to 404', () => {
 
 				expect(response?.status()).toBe(404);
 
+				await page.waitForFunction(() => document.fonts.ready);
+
 				await wait?.({ page });
 
-				await expect(page).toHaveScreenshot({ maxDiffPixelRatio: 0.01 });
+				await expect(page).toHaveScreenshot();
 			});
 		});
 	});

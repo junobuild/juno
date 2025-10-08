@@ -1,16 +1,16 @@
 <script lang="ts">
 	import { isNullish } from '@dfinity/utils';
 	import { onMount } from 'svelte';
-	import type { CyclesMonitoringStrategy } from '$declarations/mission_control/mission_control.did';
 	import MonitoringCreateStrategy from '$lib/components/monitoring/MonitoringCreateStrategy.svelte';
 	import Checkbox from '$lib/components/ui/Checkbox.svelte';
 	import { i18n } from '$lib/stores/i18n.store';
+	import type { MissionControlDid } from '$lib/types/declarations';
 
 	interface Props {
 		minCycles: bigint | undefined;
 		fundCycles: bigint | undefined;
 		saveAsDefaultStrategy: boolean;
-		defaultStrategy: CyclesMonitoringStrategy | undefined;
+		defaultStrategy: MissionControlDid.CyclesMonitoringStrategy | undefined;
 		strategy: 'modules' | 'mission-control';
 		onback: () => void;
 		oncontinue: () => void;

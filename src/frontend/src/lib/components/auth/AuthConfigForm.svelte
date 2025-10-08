@@ -9,7 +9,6 @@
 	} from '@dfinity/utils';
 	import { PrincipalTextSchema } from '@dfinity/zod-schemas';
 	import { fade } from 'svelte/transition';
-	import type { Satellite } from '$declarations/mission_control/mission_control.did';
 	import type { AuthenticationConfig, Rule } from '$declarations/satellite/satellite.did';
 	import AuthConfigAdvancedOptions from '$lib/components/auth/AuthConfigAdvancedOptions.svelte';
 	import Input from '$lib/components/ui/Input.svelte';
@@ -18,12 +17,13 @@
 	import { sortedSatelliteCustomDomains } from '$lib/derived/satellite-custom-domains.derived';
 	import { isBusy } from '$lib/stores/busy.store';
 	import { i18n } from '$lib/stores/i18n.store';
+	import type { MissionControlDid } from '$lib/types/declarations';
 	import { satelliteUrl as satelliteUrlUtils } from '$lib/utils/satellite.utils';
 
 	interface Props {
 		config: AuthenticationConfig | undefined;
 		selectedDerivationOrigin: URL | undefined;
-		satellite: Satellite;
+		satellite: MissionControlDid.Satellite;
 		rule: Rule | undefined;
 		maxTokens: number | undefined;
 		externalAlternativeOrigins: string;

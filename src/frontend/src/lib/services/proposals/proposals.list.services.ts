@@ -1,10 +1,10 @@
-import type { Satellite } from '$declarations/mission_control/mission_control.did';
 import { SATELLITE_v0_1_0 } from '$lib/constants/version.constants';
 import { isSatelliteFeatureSupported } from '$lib/services/feature.services';
 import { reloadSatelliteProposals } from '$lib/services/proposals/proposals.list.satellite.services';
 import { i18n } from '$lib/stores/i18n.store';
 import { proposalsStore } from '$lib/stores/proposals.store';
 import { toasts } from '$lib/stores/toasts.store';
+import type { MissionControlDid } from '$lib/types/declarations';
 import type { OptionIdentity } from '$lib/types/itentity';
 import { get } from 'svelte/store';
 
@@ -12,11 +12,13 @@ export const loadProposals = async ({
 	identity,
 	satellites
 }: {
-	satellites: Satellite[];
+	satellites: MissionControlDid.Satellite[];
 	identity: OptionIdentity;
 }): Promise<{ result: 'loaded' | 'error' }> => {
 	// Split those Satellites that do not support proposals.
-	const [newSatellites, oldSatellites] = satellites.reduce<[Satellite[], Satellite[]]>(
+	const [newSatellites, oldSatellites] = satellites.reduce<
+		[MissionControlDid.Satellite[], MissionControlDid.Satellite[]]
+	>(
 		([newSat, oldSat], satellite) => {
 			// The component assert that all versions are loaded. That's why we can get the version imperatively here.
 			const newestAPI = isSatelliteFeatureSupported({

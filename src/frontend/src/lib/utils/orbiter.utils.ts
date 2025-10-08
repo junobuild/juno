@@ -1,4 +1,4 @@
-import type { Orbiter } from '$declarations/mission_control/mission_control.did';
+import type { MissionControlDid } from '$lib/types/declarations';
 import type { PageViewsParams, PageViewsPeriods } from '$lib/types/orbiter';
 import { metadataName } from '$lib/utils/metadata.utils';
 import { nonNullish } from '@dfinity/utils';
@@ -11,7 +11,8 @@ import {
 	startOfDay
 } from 'date-fns';
 
-export const orbiterName = ({ metadata }: Orbiter): string => metadataName(metadata);
+export const orbiterName = ({ metadata }: MissionControlDid.Orbiter): string =>
+	metadataName(metadata);
 
 export const buildAnalyticsPeriods = ({
 	params

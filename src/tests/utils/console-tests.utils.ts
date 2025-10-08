@@ -1,8 +1,7 @@
 import type { _SERVICE as ConsoleActor } from '$declarations/console/console.did';
 import type { _SERVICE as ConsoleActor_0_0_14 } from '$declarations/deprecated/console-0-0-14.did';
 import type { _SERVICE as ConsoleActor_0_0_8 } from '$declarations/deprecated/console-0-0-8-patch1.did';
-import type { _SERVICE as MissionControlActor } from '$declarations/mission_control/mission_control.did';
-import { idlFactory as idlFactorMissionControl } from '$declarations/mission_control/mission_control.factory.did';
+import { type MissionControlActor, idlFactoryMissionControl } from '$lib/api/actors/actor.factory';
 import type { Identity } from '@dfinity/agent';
 import { Ed25519KeyIdentity } from '@dfinity/identity';
 import type { Actor, PocketIc } from '@dfinity/pic';
@@ -13,7 +12,6 @@ import {
 	toNullable
 } from '@dfinity/utils';
 import { readFile } from 'node:fs/promises';
-
 import { mockScript } from '../mocks/storage.mocks';
 import { tick } from './pic-tests.utils';
 import {
@@ -314,7 +312,7 @@ export const testSatelliteExists = async ({
 		assertNonNullish(missionControlId);
 
 		const { get_user } = pic.createActor<MissionControlActor>(
-			idlFactorMissionControl,
+			idlFactoryMissionControl,
 			missionControlId
 		);
 

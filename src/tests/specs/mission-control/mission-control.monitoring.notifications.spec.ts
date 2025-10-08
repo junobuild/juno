@@ -1,16 +1,13 @@
 import type { _SERVICE as ConsoleActor } from '$declarations/console/console.did';
 import { idlFactory as idlFactorConsole } from '$declarations/console/console.factory.did';
-import type {
-	CyclesMonitoringStrategy,
-	_SERVICE as MissionControlActor,
-	MonitoringStartConfig
-} from '$declarations/mission_control/mission_control.did';
 import { idlFactory as idlFactorMissionControl } from '$declarations/mission_control/mission_control.factory.did';
 import type {
 	NotifyStatus,
 	_SERVICE as ObservatoryActor
 } from '$declarations/observatory/observatory.did';
 import { idlFactory as idlFactorObservatory } from '$declarations/observatory/observatory.factory.did';
+import type { MissionControlActor } from '$lib/api/actors/actor.factory';
+import type { MissionControlDid } from '$lib/types/declarations';
 import { Ed25519KeyIdentity } from '@dfinity/identity';
 import { type Actor, PocketIc } from '@dfinity/pic';
 import type { Principal } from '@dfinity/principal';
@@ -163,7 +160,7 @@ describe('Mission Control > Notifications', () => {
 
 		let satelliteId: Principal;
 
-		let config: MonitoringStartConfig;
+		let config: MissionControlDid.MonitoringStartConfig;
 
 		beforeEach(async () => {
 			const { missionControlId, satelliteId: satId, missionControlActor: mActor } = await setup();
@@ -175,7 +172,7 @@ describe('Mission Control > Notifications', () => {
 			const missionControlCurrentCycles = await pic.getCyclesBalance(missionControlId);
 			const satelliteCurrentCycles = await pic.getCyclesBalance(satelliteId);
 
-			const satelliteStrategy: CyclesMonitoringStrategy = {
+			const satelliteStrategy: MissionControlDid.CyclesMonitoringStrategy = {
 				BelowThreshold: {
 					// This way the satellite already requires cycles
 					min_cycles: BigInt(satelliteCurrentCycles) + 100_000_000_000n,
@@ -183,7 +180,7 @@ describe('Mission Control > Notifications', () => {
 				}
 			};
 
-			const missionControlStrategy: CyclesMonitoringStrategy = {
+			const missionControlStrategy: MissionControlDid.CyclesMonitoringStrategy = {
 				BelowThreshold: {
 					// This way the mission control can consume some of its cycles already requires cycles
 					min_cycles: BigInt(Math.min(missionControlCurrentCycles - 100_000_000_000, 100_000)),
@@ -323,7 +320,7 @@ describe('Mission Control > Notifications', () => {
 
 		let missionControlId: Principal;
 
-		let config: MonitoringStartConfig;
+		let config: MissionControlDid.MonitoringStartConfig;
 
 		beforeEach(async () => {
 			const { missionControlId: mcId, missionControlActor: mActor } = await setup();
@@ -334,7 +331,7 @@ describe('Mission Control > Notifications', () => {
 
 			const missionControlCurrentCycles = await pic.getCyclesBalance(missionControlId);
 
-			const missionControlStrategy: CyclesMonitoringStrategy = {
+			const missionControlStrategy: MissionControlDid.CyclesMonitoringStrategy = {
 				BelowThreshold: {
 					// This way the mission control would need to convert ICP to cycles
 					// but given it does not hold ICP, will fail at trying to auto-refill.

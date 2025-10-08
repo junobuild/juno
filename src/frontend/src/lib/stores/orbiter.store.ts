@@ -1,4 +1,4 @@
-import type { Orbiter } from '$declarations/mission_control/mission_control.did';
 import { initUncertifiedStore } from '$lib/stores/_uncertified.store';
+import type { MissionControlDid } from '$lib/types/declarations';
 
-export const orbitersUncertifiedStore = initUncertifiedStore<Orbiter[]>();
+export const orbitersUncertifiedStore = initUncertifiedStore<MissionControlDid.Orbiter[]>();

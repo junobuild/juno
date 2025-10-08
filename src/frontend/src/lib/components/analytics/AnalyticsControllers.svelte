@@ -1,12 +1,12 @@
 <script lang="ts">
 	import type { Principal } from '@dfinity/principal';
-	import type { Controller } from '$declarations/mission_control/mission_control.did';
 	import { deleteOrbitersController, setOrbitersController } from '$lib/api/mission-control.api';
 	import { listOrbiterControllers } from '$lib/api/orbiter.api';
 	import Controllers from '$lib/components/controllers/Controllers.svelte';
 	import { authStore } from '$lib/stores/auth.store';
 	import { i18n } from '$lib/stores/i18n.store';
 	import type { SetControllerParams } from '$lib/types/controllers';
+	import type { MissionControlDid } from '$lib/types/declarations';
 	import type { MissionControlId } from '$lib/types/mission-control';
 
 	interface Props {
@@ -15,7 +15,7 @@
 
 	let { orbiterId }: Props = $props();
 
-	const list = (): Promise<[Principal, Controller][]> =>
+	const list = (): Promise<[Principal, MissionControlDid.Controller][]> =>
 		listOrbiterControllers({ orbiterId, identity: $authStore.identity });
 
 	const remove = (params: {

@@ -1,4 +1,3 @@
-import type { Orbiter } from '$declarations/mission_control/mission_control.did';
 import type {
 	OrbiterSatelliteConfig,
 	OrbiterSatelliteFeatures,
@@ -22,6 +21,7 @@ import { i18n } from '$lib/stores/i18n.store';
 import { orbitersConfigsStore } from '$lib/stores/orbiter-configs.store';
 import { orbitersUncertifiedStore } from '$lib/stores/orbiter.store';
 import { toasts } from '$lib/stores/toasts.store';
+import type { MissionControlDid } from '$lib/types/declarations';
 import type { OptionIdentity } from '$lib/types/itentity';
 import type { OrbiterSatelliteConfigEntry } from '$lib/types/orbiter';
 import type { SatelliteIdText } from '$lib/types/satellite';
@@ -45,7 +45,7 @@ export const createOrbiter = async ({
 	identity: Option<Identity>;
 	missionControlId: Option<Principal>;
 	config: CreateOrbiterConfig;
-}): Promise<Orbiter> => {
+}): Promise<MissionControlDid.Orbiter> => {
 	assertNonNullish(missionControlId);
 
 	const { create_orbiter } = await getMissionControlActor({
@@ -64,7 +64,7 @@ export const createOrbiterWithConfig = async ({
 	identity: Option<Identity>;
 	missionControlId: Option<Principal>;
 	config: CreateOrbiterConfig;
-}): Promise<Orbiter> => {
+}): Promise<MissionControlDid.Orbiter> => {
 	assertNonNullish(missionControlId);
 
 	const { create_orbiter_with_config } = await getMissionControlActor({
@@ -89,7 +89,7 @@ export const loadOrbiters = async ({
 		return { result: 'skip' };
 	}
 
-	const load = async (identity: Identity): Promise<Orbiter[]> => {
+	const load = async (identity: Identity): Promise<MissionControlDid.Orbiter[]> => {
 		const { list_orbiters } = await getMissionControlActor({
 			missionControlId,
 			identity
@@ -102,7 +102,7 @@ export const loadOrbiters = async ({
 
 	const { identity } = get(authStore);
 
-	return await loadDataStore<Orbiter[]>({
+	return await loadDataStore<MissionControlDid.Orbiter[]>({
 		identity,
 		store: orbitersUncertifiedStore,
 		errorLabel: 'orbiters_loading',

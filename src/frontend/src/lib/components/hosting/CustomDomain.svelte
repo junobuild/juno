@@ -2,7 +2,6 @@
 	import { isNullish, nonNullish, fromNullishNullable } from '@dfinity/utils';
 	import { createEventDispatcher, onDestroy, onMount } from 'svelte';
 	import { run } from 'svelte/legacy';
-	import type { Satellite } from '$declarations/mission_control/mission_control.did';
 	import type {
 		AuthenticationConfig,
 		CustomDomain as CustomDomainType
@@ -15,6 +14,7 @@
 	import { HostingWorker } from '$lib/services/workers/worker.hosting.services';
 	import { i18n } from '$lib/stores/i18n.store';
 	import type { CustomDomainRegistrationState } from '$lib/types/custom-domain';
+	import type { MissionControlDid } from '$lib/types/declarations';
 	import type { PostMessageDataResponseHosting } from '$lib/types/post-message';
 	import type { Option } from '$lib/types/utils';
 	import { emit } from '$lib/utils/events.utils';
@@ -25,7 +25,7 @@
 		ariaLabel?: string;
 		type?: 'default' | 'custom';
 		customDomain?: [string, CustomDomainType] | undefined;
-		satellite?: Satellite | undefined;
+		satellite?: MissionControlDid.Satellite | undefined;
 		config?: AuthenticationConfig | undefined;
 	}
 

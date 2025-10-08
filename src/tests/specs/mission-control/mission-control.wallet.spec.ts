@@ -1,9 +1,6 @@
-import type {
-	_SERVICE as MissionControlActor,
-	TransferArg,
-	TransferArgs
-} from '$declarations/mission_control/mission_control.did';
-import { idlFactory as idlFactorMissionControl } from '$declarations/mission_control/mission_control.factory.did';
+import type { MissionControlActor } from '$lib/api/actors/actor.factory';
+import { idlFactoryMissionControl } from '$lib/api/actors/actor.factory';
+import type { MissionControlDid } from '$lib/types/declarations';
 import { AnonymousIdentity } from '@dfinity/agent';
 import { Ed25519KeyIdentity } from '@dfinity/identity';
 import { AccountIdentifier } from '@dfinity/ledger-icp';
@@ -24,7 +21,7 @@ describe('Mission Control > Wallet', () => {
 
 	const to = Ed25519KeyIdentity.generate();
 
-	const args: TransferArgs = {
+	const args: MissionControlDid.TransferArgs = {
 		to: AccountIdentifier.fromPrincipal({ principal: to.getPrincipal() }).toUint8Array(),
 		amount: { e8s: 100_000n },
 		fee: { e8s: 10_000n },
@@ -33,7 +30,7 @@ describe('Mission Control > Wallet', () => {
 		from_subaccount: []
 	};
 
-	const arg: TransferArg = {
+	const arg: MissionControlDid.TransferArg = {
 		to: {
 			owner: to.getPrincipal(),
 			subaccount: []
@@ -64,7 +61,7 @@ describe('Mission Control > Wallet', () => {
 
 	const initMissionControl = async (owner: Principal) => {
 		const { actor: c, canisterId } = await pic.setupCanister<MissionControlActor>({
-			idlFactory: idlFactorMissionControl,
+			idlFactory: idlFactoryMissionControl,
 			wasm: MISSION_CONTROL_WASM_PATH,
 			arg: missionControlUserInitArgs(owner),
 			sender: controller.getPrincipal()

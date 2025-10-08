@@ -1,11 +1,6 @@
 <script lang="ts">
 	import type { Principal } from '@dfinity/principal';
 	import { fromNullishNullable } from '@dfinity/utils';
-	import type {
-		CyclesMonitoringStrategy,
-		Orbiter,
-		Satellite
-	} from '$declarations/mission_control/mission_control.did';
 	import MonitoringSelectSegments from '$lib/components/monitoring/MonitoringSelectSegments.svelte';
 	import MonitoringStopMissionControl from '$lib/components/monitoring/MonitoringStopMissionControl.svelte';
 	import MonitoringStopReview from '$lib/components/monitoring/MonitoringStopReview.svelte';
@@ -15,6 +10,7 @@
 	import { authStore } from '$lib/stores/auth.store';
 	import { wizardBusy } from '$lib/stores/busy.store';
 	import { i18n } from '$lib/stores/i18n.store';
+	import type { MissionControlDid } from '$lib/types/declarations';
 	import type { JunoModalDetail, JunoModalCreateMonitoringStrategyDetail } from '$lib/types/modal';
 	import type { MonitoringStrategyProgress } from '$lib/types/progress-strategy';
 
@@ -27,18 +23,20 @@
 
 	let { settings, missionControlId } = $derived(detail as JunoModalCreateMonitoringStrategyDetail);
 
-	let selectedSatellites: [Principal, Satellite][] = $state([]);
-	let selectedOrbiters: [Principal, Orbiter][] = $state([]);
+	let selectedSatellites = $state<[Principal, MissionControlDid.Satellite][]>([]);
+	let selectedOrbiters = $state<[Principal, MissionControlDid.Orbiter][]>([]);
 
 	let missionControlCycles = $derived(
 		fromNullishNullable(fromNullishNullable(settings?.monitoring)?.cycles)
 	);
 
-	let missionControl: { monitored: boolean; strategy: CyclesMonitoringStrategy | undefined } =
-		$derived({
-			monitored: missionControlCycles?.enabled === true,
-			strategy: fromNullishNullable(missionControlCycles?.strategy)
-		});
+	let missionControl: {
+		monitored: boolean;
+		strategy: MissionControlDid.CyclesMonitoringStrategy | undefined;
+	} = $derived({
+		monitored: missionControlCycles?.enabled === true,
+		strategy: fromNullishNullable(missionControlCycles?.strategy)
+	});
 
 	let stopMissionControl: boolean | undefined = $state(undefined);
 

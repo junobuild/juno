@@ -2,7 +2,6 @@
 	import type { Principal } from '@dfinity/principal';
 	import { nonNullish } from '@dfinity/utils';
 	import { onMount } from 'svelte';
-	import type { Controller } from '$declarations/mission_control/mission_control.did';
 	import ControllerAdd from '$lib/components/controllers/ControllerAdd.svelte';
 	import ControllerDelete from '$lib/components/controllers/ControllerDelete.svelte';
 	import ControllerInfo from '$lib/components/controllers/ControllerInfo.svelte';
@@ -14,11 +13,12 @@
 	import { toasts } from '$lib/stores/toasts.store';
 	import type { CanisterSegmentWithLabel } from '$lib/types/canister';
 	import type { SetControllerParams } from '$lib/types/controllers';
+	import type { MissionControlDid } from '$lib/types/declarations';
 	import type { MissionControlId } from '$lib/types/mission-control';
 	import { metadataProfile } from '$lib/utils/metadata.utils';
 
 	interface Props {
-		list: () => Promise<[Principal, Controller][]>;
+		list: () => Promise<[Principal, MissionControlDid.Controller][]>;
 		remove: (params: {
 			missionControlId: MissionControlId;
 			controller: Principal;
@@ -30,12 +30,12 @@
 		) => Promise<void>;
 		segment: CanisterSegmentWithLabel;
 		// The canister and user are controllers of the mission control but not added in its state per default
-		extraControllers?: [Principal, Controller][];
+		extraControllers?: [Principal, MissionControlDid.Controller][];
 	}
 
 	let { list, remove, add, segment, extraControllers = [] }: Props = $props();
 
-	let controllers = $state<[Principal, Controller][]>([]);
+	let controllers = $state<[Principal, MissionControlDid.Controller][]>([]);
 
 	const load = async () => {
 		try {
@@ -56,7 +56,9 @@
 
 	let visibleDelete = $state(false);
 	let visibleInfo = $state(false);
-	let selectedController: [Principal, Controller | undefined] | undefined = $state();
+	let selectedController = $state<
+		[Principal, MissionControlDid.Controller | undefined] | undefined
+	>(undefined);
 
 	const isMissionControl = (controllerId: Principal): boolean =>
 		nonNullish($missionControlIdDerived) &&

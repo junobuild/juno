@@ -1,11 +1,10 @@
-import type {
-	CyclesBalance,
-	MonitoringHistory as MonitoringHistoryDid,
-	MonitoringHistoryKey
-} from '$declarations/mission_control/mission_control.did';
+import type { MissionControlDid } from '$lib/types/declarations';
 import type { Principal } from '@dfinity/principal';
 
-export type MonitoringHistoryEntry = [MonitoringHistoryKey, MonitoringHistoryDid];
+export type MonitoringHistoryEntry = [
+	MissionControlDid.MonitoringHistoryKey,
+	MissionControlDid.MonitoringHistory
+];
 
 export type MonitoringHistory = MonitoringHistoryEntry[];
 
@@ -17,5 +16,5 @@ export interface GetMonitoringParams {
 
 export interface MonitoringMetadata {
 	lastExecutionTime: bigint;
-	latestDepositedCycles?: CyclesBalance;
+	latestDepositedCycles?: MissionControlDid.CyclesBalance;
 }

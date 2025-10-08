@@ -1,15 +1,10 @@
-import type {
-	AnalyticKey,
-	SetPageView,
-	SetPerformanceMetric,
-	SetTrackEvent
-} from '$declarations/orbiter/orbiter.did';
+import type { OrbiterDid } from '$lib/types/declarations';
 import type { SatelliteIdText } from '$lib/types/satellite';
 import { Principal } from '@dfinity/principal';
 import { nanoid } from 'nanoid';
 
 export interface SetPageViewsRequestEntry {
-	key: AnalyticKey;
+	key: OrbiterDid.AnalyticKey;
 	page_view: SetPageViewPayload;
 }
 
@@ -56,7 +51,7 @@ export interface PageViewClientPayload {
 }
 
 export interface SetTrackEventRequestEntry {
-	key: AnalyticKey;
+	key: OrbiterDid.AnalyticKey;
 	track_event: SetTrackEventPayload;
 }
 
@@ -98,7 +93,7 @@ export type NavigationType =
 	| 'Restore';
 
 export interface SetPerformanceRequestEntry {
-	key: AnalyticKey;
+	key: OrbiterDid.AnalyticKey;
 	performance_metric: SetPerformanceMetricPayload;
 }
 
@@ -145,7 +140,7 @@ const { timeZone } = Intl.DateTimeFormat().resolvedOptions();
 
 const sessionId = nanoid();
 
-export const pageViewMock: SetPageView = {
+export const pageViewMock: OrbiterDid.SetPageView = {
 	href: 'https://test.com',
 	device: {
 		inner_height: 300,
@@ -205,7 +200,7 @@ export const pageViewPayloadMock: SetPageViewPayload = {
 	}
 };
 
-export const trackEventMock: SetTrackEvent = {
+export const trackEventMock: OrbiterDid.SetTrackEvent = {
 	name: 'my_event',
 	metadata: [
 		[
@@ -230,7 +225,7 @@ export const trackEventPayloadMock: SetTrackEventPayload = {
 	user_agent: userAgentMock
 };
 
-export const performanceMetricMock: SetPerformanceMetric = {
+export const performanceMetricMock: OrbiterDid.SetPerformanceMetric = {
 	session_id: sessionId,
 	data: {
 		WebVitalsMetric: {

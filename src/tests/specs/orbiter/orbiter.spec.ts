@@ -1,12 +1,5 @@
-import type {
-	AnalyticKey,
-	_SERVICE as OrbiterActor,
-	OrbiterSatelliteFeatures,
-	SetPageView,
-	SetPerformanceMetric,
-	SetTrackEvent
-} from '$declarations/orbiter/orbiter.did';
-import { idlFactory as idlFactorOrbiter } from '$declarations/orbiter/orbiter.factory.did';
+import { type OrbiterActor, idlFactoryOrbiter } from '$lib/api/actors/actor.factory';
+import type { OrbiterDid } from '$lib/types/declarations';
 import { Ed25519KeyIdentity } from '@dfinity/identity';
 import { type Actor, PocketIc } from '@dfinity/pic';
 import { fromNullable } from '@dfinity/utils';
@@ -34,7 +27,7 @@ describe('Orbiter', () => {
 		pic = await PocketIc.create(inject('PIC_URL'));
 
 		const { actor: c } = await pic.setupCanister<OrbiterActor>({
-			idlFactory: idlFactorOrbiter,
+			idlFactory: idlFactoryOrbiter,
 			wasm: ORBITER_WASM_PATH,
 			arg: controllersInitArgs(controller),
 			sender: controller.getPrincipal()
@@ -49,7 +42,7 @@ describe('Orbiter', () => {
 
 	describe('configured', () => {
 		describe('controller', () => {
-			const allFeatures: OrbiterSatelliteFeatures = {
+			const allFeatures: OrbiterDid.OrbiterSatelliteFeatures = {
 				page_views: true,
 				performance_metrics: true,
 				track_events: true
@@ -131,7 +124,7 @@ describe('Orbiter', () => {
 			it('should throw on set page views', async () => {
 				const { set_page_views } = actor;
 
-				const pagesViews: [AnalyticKey, SetPageView][] = [
+				const pagesViews: [OrbiterDid.AnalyticKey, OrbiterDid.SetPageView][] = [
 					[{ key, collected_at: 123n }, pageViewMock],
 					[{ key: nanoid(), collected_at: 123n }, pageViewMock]
 				];
@@ -152,7 +145,7 @@ describe('Orbiter', () => {
 			it('should throw on set track events', async () => {
 				const { set_track_events } = actor;
 
-				const trackEvents: [AnalyticKey, SetTrackEvent][] = [
+				const trackEvents: [OrbiterDid.AnalyticKey, OrbiterDid.SetTrackEvent][] = [
 					[{ key, collected_at: 123n }, trackEventMock],
 					[{ key: nanoid(), collected_at: 123n }, trackEventMock]
 				];
@@ -173,7 +166,7 @@ describe('Orbiter', () => {
 			it('should throw on set performance metrics', async () => {
 				const { set_performance_metrics } = actor;
 
-				const performanceMetrics: [AnalyticKey, SetPerformanceMetric][] = [
+				const performanceMetrics: [OrbiterDid.AnalyticKey, OrbiterDid.SetPerformanceMetric][] = [
 					[{ key, collected_at: 123n }, performanceMetricMock],
 					[{ key: nanoid(), collected_at: 123n }, performanceMetricMock]
 				];
@@ -245,7 +238,7 @@ describe('Orbiter', () => {
 				it('should set page views', async () => {
 					const { set_page_views } = actor;
 
-					const pagesViews: [AnalyticKey, SetPageView][] = [
+					const pagesViews: [OrbiterDid.AnalyticKey, OrbiterDid.SetPageView][] = [
 						[{ key, collected_at: 123n }, pageViewMock],
 						[{ key: nanoid(), collected_at: 123n }, pageViewMock]
 					];
@@ -256,7 +249,7 @@ describe('Orbiter', () => {
 				it('should not set page views if no version', async () => {
 					const { set_page_views } = actor;
 
-					const pagesViews: [AnalyticKey, SetPageView][] = [
+					const pagesViews: [OrbiterDid.AnalyticKey, OrbiterDid.SetPageView][] = [
 						[{ key, collected_at: 123n }, pageViewMock]
 					];
 
@@ -264,7 +257,7 @@ describe('Orbiter', () => {
 
 					expect('Err' in results).toBeTruthy();
 
-					(results as { Err: Array<[AnalyticKey, string]> }).Err.forEach(([_, msg]) =>
+					(results as { Err: Array<[OrbiterDid.AnalyticKey, string]> }).Err.forEach(([_, msg]) =>
 						expect(msg).toEqual(JUNO_ERROR_NO_VERSION_PROVIDED)
 					);
 				});
@@ -272,7 +265,7 @@ describe('Orbiter', () => {
 				it('should not set page views if invalid version', async () => {
 					const { set_page_views } = actor;
 
-					const pagesViews: [AnalyticKey, SetPageView][] = [
+					const pagesViews: [OrbiterDid.AnalyticKey, OrbiterDid.SetPageView][] = [
 						[
 							{ key, collected_at: 123n },
 							{
@@ -286,7 +279,7 @@ describe('Orbiter', () => {
 
 					expect('Err' in results).toBeTruthy();
 
-					(results as { Err: Array<[AnalyticKey, string]> }).Err.forEach(([_, msg]) =>
+					(results as { Err: Array<[OrbiterDid.AnalyticKey, string]> }).Err.forEach(([_, msg]) =>
 						expect(msg).toContain(JUNO_ERROR_VERSION_OUTDATED_OR_FUTURE)
 					);
 				});
@@ -302,7 +295,7 @@ describe('Orbiter', () => {
 				it('should set track events', async () => {
 					const { set_track_events } = actor;
 
-					const trackEvents: [AnalyticKey, SetTrackEvent][] = [
+					const trackEvents: [OrbiterDid.AnalyticKey, OrbiterDid.SetTrackEvent][] = [
 						[{ key, collected_at: 123n }, trackEventMock],
 						[{ key: nanoid(), collected_at: 123n }, trackEventMock]
 					];
@@ -313,7 +306,7 @@ describe('Orbiter', () => {
 				it('should not set track events if no version', async () => {
 					const { set_track_events } = actor;
 
-					const trackEvents: [AnalyticKey, SetTrackEvent][] = [
+					const trackEvents: [OrbiterDid.AnalyticKey, OrbiterDid.SetTrackEvent][] = [
 						[{ key, collected_at: 123n }, trackEventMock]
 					];
 
@@ -321,7 +314,7 @@ describe('Orbiter', () => {
 
 					expect('Err' in results).toBeTruthy();
 
-					(results as { Err: Array<[AnalyticKey, string]> }).Err.forEach(([_, msg]) =>
+					(results as { Err: Array<[OrbiterDid.AnalyticKey, string]> }).Err.forEach(([_, msg]) =>
 						expect(msg).toEqual(JUNO_ERROR_NO_VERSION_PROVIDED)
 					);
 				});
@@ -329,7 +322,7 @@ describe('Orbiter', () => {
 				it('should not set track events if invalid version', async () => {
 					const { set_track_events } = actor;
 
-					const trackEvents: [AnalyticKey, SetTrackEvent][] = [
+					const trackEvents: [OrbiterDid.AnalyticKey, OrbiterDid.SetTrackEvent][] = [
 						[
 							{ key, collected_at: 123n },
 							{
@@ -343,7 +336,7 @@ describe('Orbiter', () => {
 
 					expect('Err' in results).toBeTruthy();
 
-					(results as { Err: Array<[AnalyticKey, string]> }).Err.forEach(([_, msg]) =>
+					(results as { Err: Array<[OrbiterDid.AnalyticKey, string]> }).Err.forEach(([_, msg]) =>
 						expect(msg).toContain(JUNO_ERROR_VERSION_OUTDATED_OR_FUTURE)
 					);
 				});
@@ -359,7 +352,7 @@ describe('Orbiter', () => {
 				it('should set performance metrics', async () => {
 					const { set_performance_metrics } = actor;
 
-					const performanceMetrics: [AnalyticKey, SetPerformanceMetric][] = [
+					const performanceMetrics: [OrbiterDid.AnalyticKey, OrbiterDid.SetPerformanceMetric][] = [
 						[{ key, collected_at: 123n }, performanceMetricMock],
 						[{ key: nanoid(), collected_at: 123n }, performanceMetricMock]
 					];
@@ -370,7 +363,7 @@ describe('Orbiter', () => {
 				it('should not set performance metrics if no version', async () => {
 					const { set_performance_metrics } = actor;
 
-					const performanceMetrics: [AnalyticKey, SetPerformanceMetric][] = [
+					const performanceMetrics: [OrbiterDid.AnalyticKey, OrbiterDid.SetPerformanceMetric][] = [
 						[{ key, collected_at: 123n }, performanceMetricMock]
 					];
 
@@ -378,7 +371,7 @@ describe('Orbiter', () => {
 
 					expect('Err' in results).toBeTruthy();
 
-					(results as { Err: Array<[AnalyticKey, string]> }).Err.forEach(([_, msg]) =>
+					(results as { Err: Array<[OrbiterDid.AnalyticKey, string]> }).Err.forEach(([_, msg]) =>
 						expect(msg).toEqual(JUNO_ERROR_NO_VERSION_PROVIDED)
 					);
 				});
@@ -386,7 +379,7 @@ describe('Orbiter', () => {
 				it('should not set performance metrics if invalid version', async () => {
 					const { set_performance_metrics } = actor;
 
-					const performanceMetrics: [AnalyticKey, SetPerformanceMetric][] = [
+					const performanceMetrics: [OrbiterDid.AnalyticKey, OrbiterDid.SetPerformanceMetric][] = [
 						[
 							{ key, collected_at: 123n },
 							{
@@ -400,7 +393,7 @@ describe('Orbiter', () => {
 
 					expect('Err' in results).toBeTruthy();
 
-					(results as { Err: Array<[AnalyticKey, string]> }).Err.forEach(([_, msg]) =>
+					(results as { Err: Array<[OrbiterDid.AnalyticKey, string]> }).Err.forEach(([_, msg]) =>
 						expect(msg).toContain(JUNO_ERROR_VERSION_OUTDATED_OR_FUTURE)
 					);
 				});
@@ -411,7 +404,7 @@ describe('Orbiter', () => {
 					it('should retrieve page views', async () => {
 						const { set_page_views, get_page_views } = actor;
 
-						const pagesViews: [AnalyticKey, SetPageView][] = [
+						const pagesViews: [OrbiterDid.AnalyticKey, OrbiterDid.SetPageView][] = [
 							[{ key: nanoid(), collected_at: 1230n }, pageViewMock],
 							[{ key: nanoid(), collected_at: 4560n }, pageViewMock]
 						];
@@ -438,7 +431,7 @@ describe('Orbiter', () => {
 					it('should retrieve track events', async () => {
 						const { set_track_events, get_track_events } = actor;
 
-						const trackEvents: [AnalyticKey, SetTrackEvent][] = [
+						const trackEvents: [OrbiterDid.AnalyticKey, OrbiterDid.SetTrackEvent][] = [
 							[{ key: nanoid(), collected_at: 1230n }, trackEventMock],
 							[{ key: nanoid(), collected_at: 4560n }, trackEventMock]
 						];
@@ -465,10 +458,11 @@ describe('Orbiter', () => {
 					it('should retrieve performance metrics', async () => {
 						const { set_performance_metrics, get_performance_metrics } = actor;
 
-						const performanceMetrics: [AnalyticKey, SetPerformanceMetric][] = [
-							[{ key: nanoid(), collected_at: 1230n }, performanceMetricMock],
-							[{ key: nanoid(), collected_at: 4560n }, performanceMetricMock]
-						];
+						const performanceMetrics: [OrbiterDid.AnalyticKey, OrbiterDid.SetPerformanceMetric][] =
+							[
+								[{ key: nanoid(), collected_at: 1230n }, performanceMetricMock],
+								[{ key: nanoid(), collected_at: 4560n }, performanceMetricMock]
+							];
 
 						await set_performance_metrics(performanceMetrics);
 

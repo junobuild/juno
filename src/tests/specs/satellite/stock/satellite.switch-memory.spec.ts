@@ -1,9 +1,5 @@
-import type {
-	HttpRequest,
-	Memory,
-	_SERVICE as SatelliteActor,
-	SetAuthenticationConfig
-} from '$declarations/satellite/satellite.did';
+import type { SatelliteActor } from '$lib/api/actors/actor.factory';
+import type { SatelliteDid } from '$lib/types/declarations';
 import { AnonymousIdentity } from '@dfinity/agent';
 import { Ed25519KeyIdentity } from '@dfinity/identity';
 import type { Actor, PocketIc } from '@dfinity/pic';
@@ -88,7 +84,13 @@ describe('Satellite > Switch storage system memory', () => {
 			actor.setIdentity(controller);
 		});
 
-		const assertMemory = async ({ memory, collection }: { memory: Memory; collection: string }) => {
+		const assertMemory = async ({
+			memory,
+			collection
+		}: {
+			memory: SatelliteDid.Memory;
+			collection: string;
+		}) => {
 			const { get_rule } = actor;
 
 			const result = fromNullable(await get_rule({ Storage: null }, collection));
@@ -98,7 +100,7 @@ describe('Satellite > Switch storage system memory', () => {
 			expect(ruleMemory).toEqual(memory);
 		};
 
-		const switchMemory = async ({ memory }: { memory: Memory }) => {
+		const switchMemory = async ({ memory }: { memory: SatelliteDid.Memory }) => {
 			const { switch_storage_system_memory } = actor;
 
 			await switch_storage_system_memory();
@@ -110,7 +112,7 @@ describe('Satellite > Switch storage system memory', () => {
 		const assertIcDomains = async () => {
 			const { http_request } = actor;
 
-			const request: HttpRequest = {
+			const request: SatelliteDid.HttpRequest = {
 				body: [],
 				certificate_version: toNullable(2),
 				headers: [],
@@ -139,7 +141,7 @@ describe('Satellite > Switch storage system memory', () => {
 		const assertIIAlternativeOrigins = async () => {
 			const { http_request } = actor;
 
-			const request: HttpRequest = {
+			const request: SatelliteDid.HttpRequest = {
 				body: [],
 				certificate_version: toNullable(2),
 				headers: [],
@@ -315,7 +317,7 @@ describe('Satellite > Switch storage system memory', () => {
 
 				const currentConfig = fromNullable(await get_auth_config());
 
-				const config: SetAuthenticationConfig = {
+				const config: SatelliteDid.SetAuthenticationConfig = {
 					internet_identity: [
 						{
 							derivation_origin: ['domain.com'],

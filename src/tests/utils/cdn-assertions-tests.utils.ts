@@ -1,15 +1,5 @@
-import type {
-	CommitProposal,
-	_SERVICE as ConsoleActor,
-	HttpRequest,
-	InitAssetKey,
-	ProposalType,
-	UploadChunk
-} from '$declarations/console/console.did';
-import type {
-	_SERVICE as SatelliteActor,
-	SetStorageConfig
-} from '$declarations/satellite/satellite.did';
+import type { ConsoleActor, SatelliteActor } from '$lib/api/actors/actor.factory';
+import type { ConsoleDid, SatelliteDid } from '$lib/types/declarations';
 import type { Identity } from '@dfinity/agent';
 import type { Actor, PocketIc } from '@dfinity/pic';
 import type { Principal } from '@dfinity/principal';
@@ -61,7 +51,7 @@ export const testNotAllowedCdnMethods = ({
 	errorMsgController?: string;
 	errorMsgWriteController?: string;
 }) => {
-	const key: InitAssetKey = {
+	const key: ConsoleDid.InitAssetKey = {
 		token: toNullable(),
 		collection: '#dapp',
 		name: 'hello',
@@ -95,7 +85,7 @@ export const testNotAllowedCdnMethods = ({
 	it('should throw errors on propose assets upgrade', async () => {
 		const { upload_proposal_asset_chunk } = actor();
 
-		const chunk: UploadChunk = {
+		const chunk: ConsoleDid.UploadChunk = {
 			content: [1, 2, 3],
 			batch_id: 123n,
 			order_id: []
@@ -171,7 +161,7 @@ export const testNotAllowedCdnMethods = ({
 	it('should throw errors on reject proposal', async () => {
 		const { reject_proposal } = actor();
 
-		const commit: CommitProposal = {
+		const commit: ConsoleDid.CommitProposal = {
 			sha256: [1, 2, 3],
 			proposal_id: 123n
 		};
@@ -184,7 +174,7 @@ export const testNotAllowedCdnMethods = ({
 	it('should throw errors on commit proposal', async () => {
 		const { commit_proposal } = actor();
 
-		const commit: CommitProposal = {
+		const commit: ConsoleDid.CommitProposal = {
 			sha256: [1, 2, 3],
 			proposal_id: 123n
 		};
@@ -223,7 +213,7 @@ export const testCdnConfig = ({
 	it('should set and get config', async () => {
 		const { set_storage_config, get_storage_config } = actor();
 
-		const config: SetStorageConfig = {
+		const config: SatelliteDid.SetStorageConfig = {
 			headers: [['*', [['cache-control', 'no-cache']]]],
 			iframe: toNullable({ Deny: null }),
 			redirects: [],
@@ -253,7 +243,7 @@ export const testCdnConfig = ({
 	it('should not set db config if incorrect version', async () => {
 		const { set_storage_config } = actor();
 
-		const config: Omit<SetStorageConfig, 'version'> = {
+		const config: Omit<ConsoleDid.SetStorageConfig, 'version'> = {
 			headers: [['*', [['cache-control', 'no-cache']]]],
 			iframe: toNullable({ Deny: null }),
 			redirects: [],
@@ -320,7 +310,7 @@ export const testControlledCdnMethods = ({
 				AssetsUpgrade: {
 					clear_existing_assets: toNullable()
 				}
-			} as ProposalType,
+			} as ConsoleDid.ProposalType,
 			collection: fullPaths.assetsCollection,
 			full_path: fullPaths.assetsUpgrade,
 			version: fullPaths.segmentsVersion,
@@ -333,7 +323,7 @@ export const testControlledCdnMethods = ({
 					orbiter: [],
 					satellite_version: ['0.0.18']
 				}
-			} as ProposalType,
+			} as ConsoleDid.ProposalType,
 			collection: fullPaths.segmentsCollection,
 			full_path: fullPaths.segmentsDeployment,
 			description: (proposalId: bigint) =>
@@ -367,7 +357,7 @@ export const testControlledCdnMethods = ({
 				expect(fromNullable(proposal.version) ?? 0n).toBeGreaterThan(0n);
 			});
 
-			const key: InitAssetKey = {
+			const key: ConsoleDid.InitAssetKey = {
 				collection,
 				description: toNullable(),
 				encoding_type: [],
@@ -624,7 +614,7 @@ export const testControlledCdnMethods = ({
 
 				await tick(pic());
 
-				const request: HttpRequest = {
+				const request: ConsoleDid.HttpRequest = {
 					body: [],
 					certificate_version: toNullable(2),
 					headers: [],
@@ -1359,7 +1349,7 @@ export const testUploadProposalManyAssets = ({
 }) => {
 	const collection = '#dapp';
 
-	const keys: InitAssetKey[] = Array.from({ length: 2 }).map(() => {
+	const keys: ConsoleDid.InitAssetKey[] = Array.from({ length: 2 }).map(() => {
 		const name = `hello-batch-${nanoid()}.html`;
 
 		return {
@@ -1408,7 +1398,7 @@ export const testUploadProposalManyAssets = ({
 	let sha256: [] | [Uint8Array | number[]];
 	let proposalId: bigint;
 
-	const proposal_type: ProposalType = {
+	const proposal_type: ConsoleDid.ProposalType = {
 		AssetsUpgrade: {
 			clear_existing_assets: toNullable()
 		}
@@ -1511,7 +1501,7 @@ export const testUploadProposalManyAssets = ({
 
 		await tick(pic());
 
-		const request: HttpRequest = {
+		const request: ConsoleDid.HttpRequest = {
 			body: [],
 			certificate_version: toNullable(2),
 			headers: [],

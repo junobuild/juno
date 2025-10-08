@@ -1,8 +1,5 @@
-import type {
-	HttpRequest,
-	_SERVICE as SatelliteActor
-} from '$declarations/satellite/satellite.did';
-import { idlFactory as idlFactorSatellite } from '$declarations/satellite/satellite.factory.did';
+import { idlFactorySatellite, type SatelliteActor } from '$lib/api/actors/actor.factory';
+import type { SatelliteDid } from '$lib/types/declarations';
 import { Ed25519KeyIdentity } from '@dfinity/identity';
 import { PocketIc, type Actor } from '@dfinity/pic';
 import type { Principal } from '@dfinity/principal';
@@ -29,7 +26,7 @@ describe('Satellite > Index HTML', () => {
 		await pic.setTime(currentDate.getTime());
 
 		const { actor: c, canisterId: cId } = await pic.setupCanister<SatelliteActor>({
-			idlFactory: idlFactorSatellite,
+			idlFactory: idlFactorySatellite,
 			wasm: SATELLITE_WASM_PATH,
 			arg: controllersInitArgs(controller),
 			sender: controller.getPrincipal()
@@ -68,7 +65,7 @@ describe('Satellite > Index HTML', () => {
 	it('should provide index.html with a valid certification', async () => {
 		const { http_request } = actor;
 
-		const request: HttpRequest = {
+		const request: SatelliteDid.HttpRequest = {
 			body: [],
 			certificate_version: toNullable(2),
 			headers: [],

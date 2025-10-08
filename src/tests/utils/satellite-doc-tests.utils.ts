@@ -1,4 +1,5 @@
-import type { Doc, _SERVICE as SatelliteActor } from '$declarations/satellite/satellite.did';
+import type { SatelliteActor } from '$lib/api/actors/actor.factory';
+import type { SatelliteDid } from '$lib/types/declarations';
 import type { Identity } from '@dfinity/agent';
 import { Ed25519KeyIdentity } from '@dfinity/identity';
 import type { Actor } from '@dfinity/pic';
@@ -36,7 +37,7 @@ export const createUser = async <T extends ActorInterface<T>>({
 	user?: Identity;
 }): Promise<{
 	user: Identity;
-	doc: Doc;
+	doc: SatelliteDid.Doc;
 }> => {
 	const identity = user ?? Ed25519KeyIdentity.generate();
 

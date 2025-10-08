@@ -1,5 +1,5 @@
-import type { Doc } from '$declarations/satellite/satellite.did';
-import type { _SERVICE as SputnikActor } from '$declarations/sputnik/sputnik.did';
+import type { SputnikActor } from '$lib/api/actors/actor.factory';
+import type { SputnikDid } from '$lib/types/declarations';
 import type { Actor, PocketIc } from '@dfinity/pic';
 import { assertNonNullish, fromNullable, toNullable } from '@dfinity/utils';
 import { fromArray, toArray } from '@junobuild/utils';
@@ -53,7 +53,7 @@ describe('Sputnik > ic-cdk > call', () => {
 		});
 	};
 
-	const setAndGetDoc = async (keySuffix?: string): Promise<Doc> => {
+	const setAndGetDoc = async (keySuffix?: string): Promise<SputnikDid.Doc> => {
 		const { set_doc, get_doc } = actor;
 
 		const key = nanoid();

@@ -1,7 +1,9 @@
-import type { _SERVICE as ObservatoryActor_0_0_9 } from '$declarations/deprecated/observatory-0-0-9.did';
-import { idlFactory as idlFactorObservatory_0_0_8 } from '$declarations/deprecated/observatory-0-0-9.factory.did';
-import type { _SERVICE as ObservatoryActor } from '$declarations/observatory/observatory.did';
-import { idlFactory as idlFactorObservatory } from '$declarations/observatory/observatory.factory.did';
+import {
+	idlFactoryObservatory,
+	idlFactoryObservatory009,
+	type ObservatoryActor,
+	type ObservatoryActor009
+} from '$lib/api/actors/actor.factory';
 import { Ed25519KeyIdentity } from '@dfinity/identity';
 import { type Actor, PocketIc } from '@dfinity/pic';
 import type { Principal } from '@dfinity/principal';
@@ -18,7 +20,7 @@ import { downloadObservatory, OBSERVATORY_WASM_PATH } from '../../utils/setup-te
 
 describe('Observatory > Upgrade', () => {
 	let pic: PocketIc;
-	let actor: Actor<ObservatoryActor_0_0_9>;
+	let actor: Actor<ObservatoryActor009>;
 	let observatoryId: Principal;
 
 	const controller = Ed25519KeyIdentity.generate();
@@ -43,8 +45,8 @@ describe('Observatory > Upgrade', () => {
 
 			const destination = await downloadObservatory({ junoVersion: '0.0.41', version: '0.0.9' });
 
-			const { actor: c, canisterId: mId } = await pic.setupCanister<ObservatoryActor_0_0_9>({
-				idlFactory: idlFactorObservatory_0_0_8,
+			const { actor: c, canisterId: mId } = await pic.setupCanister<ObservatoryActor009>({
+				idlFactory: idlFactoryObservatory009,
 				wasm: destination,
 				arg: missionControlUserInitArgs(controller.getPrincipal()),
 				sender: controller.getPrincipal()
@@ -138,7 +140,7 @@ describe('Observatory > Upgrade', () => {
 				controllers: [admin1.getPrincipal()]
 			});
 
-			const assertControllers = async (actor: ObservatoryActor | ObservatoryActor_0_0_9) => {
+			const assertControllers = async (actor: ObservatoryActor | ObservatoryActor009) => {
 				const { list_controllers } = actor;
 
 				const controllers = await list_controllers();
@@ -171,7 +173,7 @@ describe('Observatory > Upgrade', () => {
 
 			await upgradeCurrent();
 
-			const newActor = pic.createActor<ObservatoryActor>(idlFactorObservatory, observatoryId);
+			const newActor = pic.createActor<ObservatoryActor>(idlFactoryObservatory, observatoryId);
 			newActor.setIdentity(controller);
 
 			await assertControllers(newActor);

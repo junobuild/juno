@@ -1,4 +1,5 @@
-import type { Memory, _SERVICE as SatelliteActor } from '$declarations/satellite/satellite.did';
+import type { SatelliteActor } from '$lib/api/actors/actor.factory';
+import type { SatelliteDid } from '$lib/types/declarations';
 import { Ed25519KeyIdentity } from '@dfinity/identity';
 import type { Actor, PocketIc } from '@dfinity/pic';
 import { fromNullable, fromNullishNullable } from '@dfinity/utils';
@@ -40,7 +41,13 @@ describe.each([{ title: 'Heap (default)', memory: null }, ...MEMORIES])(
 			await pic?.tearDown();
 		});
 
-		const assertMemory = async ({ memory, collection }: { memory: Memory; collection: string }) => {
+		const assertMemory = async ({
+			memory,
+			collection
+		}: {
+			memory: SatelliteDid.Memory;
+			collection: string;
+		}) => {
 			const { get_rule } = actor;
 
 			const result = fromNullable(await get_rule({ Storage: null }, collection));

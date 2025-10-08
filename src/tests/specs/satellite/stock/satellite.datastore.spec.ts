@@ -1,10 +1,5 @@
-import type {
-	ListParams,
-	_SERVICE as SatelliteActor,
-	SetDbConfig,
-	SetRule
-} from '$declarations/satellite/satellite.did';
-import { idlFactory as idlFactorSatellite } from '$declarations/satellite/satellite.factory.did';
+import { type SatelliteActor, idlFactorySatellite } from '$lib/api/actors/actor.factory';
+import type { SatelliteDid } from '$lib/types/declarations';
 import { Ed25519KeyIdentity } from '@dfinity/identity';
 import { type Actor, PocketIc } from '@dfinity/pic';
 import { assertNonNullish, fromNullable, toNullable } from '@dfinity/utils';
@@ -36,7 +31,7 @@ describe.each([{ memory: { Heap: null } }, { memory: { Stable: null } }])(
 			pic = await PocketIc.create(inject('PIC_URL'));
 
 			const { actor: c } = await pic.setupCanister<SatelliteActor>({
-				idlFactory: idlFactorSatellite,
+				idlFactory: idlFactorySatellite,
 				wasm: SATELLITE_WASM_PATH,
 				arg: controllersInitArgs(controller),
 				sender: controller.getPrincipal()
@@ -46,7 +41,7 @@ describe.each([{ memory: { Heap: null } }, { memory: { Stable: null } }])(
 
 			actor.setIdentity(controller);
 
-			const setRule: SetRule = {
+			const setRule: SatelliteDid.SetRule = {
 				memory: toNullable(memory),
 				max_size: toNullable(),
 				max_capacity: toNullable(),
@@ -208,7 +203,7 @@ describe.each([{ memory: { Heap: null } }, { memory: { Stable: null } }])(
 			it('should set db config', async () => {
 				const { set_db_config, get_db_config } = actor;
 
-				const config: SetDbConfig = {
+				const config: SatelliteDid.SetDbConfig = {
 					max_memory_size: [
 						{
 							heap: [1234n],
@@ -281,7 +276,7 @@ describe.each([{ memory: { Heap: null } }, { memory: { Stable: null } }])(
 			it('should list documents according created_at timestamps', async () => {
 				const { list_docs, count_docs } = actor;
 
-				const paramsCreatedAt: ListParams = {
+				const paramsCreatedAt: SatelliteDid.ListParams = {
 					matcher: toNullable(),
 					order: toNullable({
 						desc: false,
@@ -299,7 +294,7 @@ describe.each([{ memory: { Heap: null } }, { memory: { Stable: null } }])(
 
 				expect(countCreatedAt).toBe(10n);
 
-				const paramsGreaterThan: ListParams = {
+				const paramsGreaterThan: SatelliteDid.ListParams = {
 					matcher: toNullable({
 						key: toNullable(),
 						description: toNullable(),
@@ -324,7 +319,7 @@ describe.each([{ memory: { Heap: null } }, { memory: { Stable: null } }])(
 
 				expect(countGreaterThan).toBe(5n);
 
-				const paramsLessThen: ListParams = {
+				const paramsLessThen: SatelliteDid.ListParams = {
 					matcher: toNullable({
 						key: toNullable(),
 						description: toNullable(),
@@ -346,7 +341,7 @@ describe.each([{ memory: { Heap: null } }, { memory: { Stable: null } }])(
 
 				expect(countLessThan).toBe(4n);
 
-				const paramsBetween: ListParams = {
+				const paramsBetween: SatelliteDid.ListParams = {
 					matcher: toNullable({
 						key: toNullable(),
 						description: toNullable(),
@@ -375,7 +370,7 @@ describe.each([{ memory: { Heap: null } }, { memory: { Stable: null } }])(
 			it('should list documents according updated_at timestamps', async () => {
 				const { list_docs, count_docs } = actor;
 
-				const paramsUpdatedAt: ListParams = {
+				const paramsUpdatedAt: SatelliteDid.ListParams = {
 					matcher: toNullable(),
 					order: toNullable({
 						desc: false,
@@ -393,7 +388,7 @@ describe.each([{ memory: { Heap: null } }, { memory: { Stable: null } }])(
 
 				expect(countUpdatedAt).toBe(10n);
 
-				const paramsGreaterThan: ListParams = {
+				const paramsGreaterThan: SatelliteDid.ListParams = {
 					matcher: toNullable({
 						key: toNullable(),
 						description: toNullable(),
@@ -418,7 +413,7 @@ describe.each([{ memory: { Heap: null } }, { memory: { Stable: null } }])(
 
 				expect(countGreaterThan).toBe(5n);
 
-				const paramsLessThan: ListParams = {
+				const paramsLessThan: SatelliteDid.ListParams = {
 					matcher: toNullable({
 						key: toNullable(),
 						description: toNullable(),
@@ -440,7 +435,7 @@ describe.each([{ memory: { Heap: null } }, { memory: { Stable: null } }])(
 
 				expect(countLessThan).toBe(4n);
 
-				const paramsBetween: ListParams = {
+				const paramsBetween: SatelliteDid.ListParams = {
 					matcher: toNullable({
 						key: toNullable(),
 						description: toNullable(),
@@ -490,7 +485,7 @@ describe.each([{ memory: { Heap: null } }, { memory: { Stable: null } }])(
 				}
 
 				// Define filter criteria for deletion
-				const filterParams: ListParams = {
+				const filterParams: SatelliteDid.ListParams = {
 					matcher: toNullable({
 						key: toNullable(),
 						description: toNullable(),
@@ -532,7 +527,7 @@ describe.each([{ memory: { Heap: null } }, { memory: { Stable: null } }])(
 					await pic.advanceTime(50);
 				}
 
-				const filterParamsSpecific: ListParams = {
+				const filterParamsSpecific: SatelliteDid.ListParams = {
 					matcher: toNullable({
 						key: toNullable(),
 						description: toNullable(),
@@ -574,7 +569,7 @@ describe.each([{ memory: { Heap: null } }, { memory: { Stable: null } }])(
 
 				const { list_docs, del_filtered_docs, count_collection_docs, count_docs } = actor;
 
-				const filterParams: ListParams = {
+				const filterParams: SatelliteDid.ListParams = {
 					matcher: toNullable(),
 					order: toNullable(),
 					owner: toNullable(),
@@ -611,7 +606,7 @@ describe.each([{ memory: { Heap: null } }, { memory: { Stable: null } }])(
 
 				actor.setIdentity(user2);
 
-				const filterList: ListParams = {
+				const filterList: SatelliteDid.ListParams = {
 					matcher: toNullable(),
 					order: toNullable({
 						desc: true,
@@ -628,7 +623,7 @@ describe.each([{ memory: { Heap: null } }, { memory: { Stable: null } }])(
 				// eslint-disable-next-line prefer-destructuring
 				const firstKey = docs.items[0][0];
 
-				const filterDelete: ListParams = {
+				const filterDelete: SatelliteDid.ListParams = {
 					matcher: toNullable(),
 					order: toNullable({
 						desc: true,
@@ -650,7 +645,7 @@ describe.each([{ memory: { Heap: null } }, { memory: { Stable: null } }])(
 		});
 
 		describe('rules', () => {
-			const setRule: Omit<SetRule, 'max_capacity'> = {
+			const setRule: Omit<SatelliteDid.SetRule, 'max_capacity'> = {
 				memory: toNullable(memory),
 				max_size: toNullable(),
 				read: { Managed: null },
@@ -812,7 +807,7 @@ describe.each([{ memory: { Heap: null } }, { memory: { Stable: null } }])(
 		});
 
 		describe('config', () => {
-			const setRule: SetRule = {
+			const setRule: SatelliteDid.SetRule = {
 				memory: toNullable(memory),
 				max_size: toNullable(),
 				read: { Managed: null },
@@ -888,7 +883,7 @@ describe.each([{ memory: { Heap: null } }, { memory: { Stable: null } }])(
 			it('should return config after set', async () => {
 				const { set_db_config } = actor;
 
-				const config: SetDbConfig = {
+				const config: SatelliteDid.SetDbConfig = {
 					max_memory_size: [
 						{
 							heap: [1234n],

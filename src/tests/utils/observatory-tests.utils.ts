@@ -1,8 +1,5 @@
-import type { _SERVICE as ObservatoryActor_0_0_9 } from '$declarations/deprecated/observatory-0-0-9.did';
-import type {
-	_SERVICE as ObservatoryActor,
-	SegmentKind
-} from '$declarations/observatory/observatory.did';
+import type { ObservatoryActor, ObservatoryActor009 } from '$lib/api/actors/actor.factory';
+import type { ObservatoryDid } from '$lib/types/declarations';
 import { Ed25519KeyIdentity } from '@dfinity/identity';
 import type { PocketIc } from '@dfinity/pic';
 import type { Principal } from '@dfinity/principal';
@@ -42,11 +39,11 @@ export const testDepositedCyclesNotification = async ({
 	actor,
 	...rest
 }: {
-	kind: SegmentKind;
+	kind: ObservatoryDid.SegmentKind;
 	url: string;
 	moduleName: 'Mission Control' | 'Satellite' | 'Orbiter';
 	metadataName?: string;
-	actor: ObservatoryActor | ObservatoryActor_0_0_9;
+	actor: ObservatoryActor | ObservatoryActor009;
 	pic: PocketIc;
 }) => {
 	const { ping } = actor;
@@ -88,7 +85,7 @@ export const testFailedDepositCyclesNotification = async ({
 	actor,
 	...rest
 }: {
-	kind: SegmentKind;
+	kind: ObservatoryDid.SegmentKind;
 	url: string;
 	moduleName: 'Mission Control' | 'Satellite' | 'Orbiter';
 	metadataName?: string;

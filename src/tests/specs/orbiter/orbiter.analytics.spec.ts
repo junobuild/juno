@@ -1,9 +1,5 @@
-import type {
-	AnalyticKey,
-	_SERVICE as OrbiterActor,
-	PageView
-} from '$declarations/orbiter/orbiter.did';
-import { idlFactory as idlFactorOrbiter } from '$declarations/orbiter/orbiter.factory.did';
+import { idlFactoryOrbiter, type OrbiterActor } from '$lib/api/actors/actor.factory';
+import type { OrbiterDid } from '$lib/types/declarations';
 import { Ed25519KeyIdentity } from '@dfinity/identity';
 import { type Actor, PocketIc } from '@dfinity/pic';
 import { fromNullable, jsonReviver, toNullable } from '@dfinity/utils';
@@ -20,7 +16,7 @@ describe('Orbiter > Analytics', () => {
 
 	const controller = Ed25519KeyIdentity.generate();
 
-	let pageViewsMock: [AnalyticKey, PageView][];
+	let pageViewsMock: [OrbiterDid.AnalyticKey, OrbiterDid.PageView][];
 
 	const ONE_DAY = 86_400_000_000_000n;
 
@@ -36,7 +32,7 @@ describe('Orbiter > Analytics', () => {
 		pic = await PocketIc.create(inject('PIC_URL'));
 
 		const { actor: c } = await pic.setupCanister<OrbiterActor>({
-			idlFactory: idlFactorOrbiter,
+			idlFactory: idlFactoryOrbiter,
 			wasm: ORBITER_WASM_PATH,
 			arg: controllersInitArgs(controller),
 			sender: controller.getPrincipal()

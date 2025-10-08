@@ -1,5 +1,4 @@
-import type { _SERVICE as SatelliteActor } from '$declarations/satellite/satellite.did';
-import { idlFactory as idlFactorSatellite } from '$declarations/satellite/satellite.factory.did';
+import { type SatelliteActor, idlFactorySatellite } from '$lib/api/actors/actor.factory';
 import type { Identity } from '@dfinity/agent';
 import { Ed25519KeyIdentity } from '@dfinity/identity';
 import { type Actor, PocketIc } from '@dfinity/pic';
@@ -50,7 +49,7 @@ export const setupSatelliteStock = async (
 	const controller = Ed25519KeyIdentity.generate();
 
 	const { actor, canisterId } = await pic.setupCanister<SatelliteActor>({
-		idlFactory: idlFactorSatellite,
+		idlFactory: idlFactorySatellite,
 		wasm: SATELLITE_WASM_PATH,
 		arg: satelliteInitArgs({
 			controllers: nonNullish(controllers)

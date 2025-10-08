@@ -1,6 +1,8 @@
-import type { _SERVICE as SatelliteActor_0_0_16 } from '$declarations/deprecated/satellite-0-0-16.did';
-import type { _SERVICE as SatelliteActor_0_0_17 } from '$declarations/deprecated/satellite-0-0-17.did';
-import type { _SERVICE as SatelliteActor_0_0_21 } from '$declarations/deprecated/satellite-0-0-21.did';
+import type {
+	SatelliteActor0016,
+	SatelliteActor0017,
+	SatelliteActor0021
+} from '$lib/api/actors/actor.factory';
 import type { Identity } from '@dfinity/agent';
 import { Ed25519KeyIdentity } from '@dfinity/identity';
 import type { Actor, PocketIc } from '@dfinity/pic';
@@ -50,7 +52,7 @@ export const upgradeSatellite = async ({
 	});
 };
 
-export const initUsers = async (actor: Actor<SatelliteActor_0_0_16>): Promise<Identity[]> => {
+export const initUsers = async (actor: Actor<SatelliteActor0016>): Promise<Identity[]> => {
 	const { set_doc } = actor;
 
 	const user1 = Ed25519KeyIdentity.generate();
@@ -81,7 +83,7 @@ export const testUsers = async ({
 	actor
 }: {
 	users: Identity[];
-	actor: Actor<SatelliteActor_0_0_16 | SatelliteActor_0_0_17 | SatelliteActor_0_0_21>;
+	actor: Actor<SatelliteActor0016 | SatelliteActor0017 | SatelliteActor0021>;
 }) => {
 	const { list_docs } = actor;
 

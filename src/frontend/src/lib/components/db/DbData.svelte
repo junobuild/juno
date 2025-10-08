@@ -19,7 +19,7 @@
 	import { toasts } from '$lib/stores/toasts.store';
 	import { versionStore } from '$lib/stores/version.store';
 	import { DATA_CONTEXT_KEY, type DataContext, type DataStoreData } from '$lib/types/data.context';
-	import type { SatelliteDid } from '$lib/types/declarations';
+	import type { SatelliteDid } from '$declarations';
 	import type { ListParams } from '$lib/types/list';
 	import { PAGINATION_CONTEXT_KEY, type PaginationContext } from '$lib/types/pagination.context';
 	import { RULES_CONTEXT_KEY, type RulesContext } from '$lib/types/rules.context';

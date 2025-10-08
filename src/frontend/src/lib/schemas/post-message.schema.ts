@@ -1,3 +1,4 @@
+import type { SatelliteDid } from '$declarations';
 import { CanisterIdTextSchema } from '$lib/schemas/canister.schema';
 import { ExchangePriceSchema } from '$lib/schemas/exchange.schema';
 import type {
@@ -6,7 +7,6 @@ import type {
 	CanisterSyncMonitoring
 } from '$lib/types/canister';
 import type { CustomDomainRegistrationState } from '$lib/types/custom-domain';
-import type { SatelliteDid } from '$lib/types/declarations';
 import type { CertifiedData } from '$lib/types/store';
 import type { VersionRegistry } from '$lib/types/version';
 import * as z from 'zod';

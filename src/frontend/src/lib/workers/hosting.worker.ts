@@ -1,7 +1,7 @@
+import type { SatelliteDid } from '$declarations';
 import { SYNC_CUSTOM_DOMAIN_TIMER_INTERVAL } from '$lib/constants/app.constants';
 import { getCustomDomainRegistration } from '$lib/rest/bn.rest';
 import type { CustomDomainRegistrationState } from '$lib/types/custom-domain';
-import type { SatelliteDid } from '$lib/types/declarations';
 import type { PostMessageDataRequest, PostMessageRequest } from '$lib/types/post-message';
 import { fromNullable, nonNullish } from '@dfinity/utils';
 

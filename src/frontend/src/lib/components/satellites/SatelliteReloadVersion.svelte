@@ -1,7 +1,7 @@
 <script lang="ts">
+	import type { MissionControlDid } from '$declarations';
 	import SegmentReload from '$lib/components/segments/SegmentReload.svelte';
 	import { reloadSatelliteVersion } from '$lib/services/version/version.satellite.services';
-	import type { MissionControlDid } from '$lib/types/declarations';
 
 	interface Props {
 		satellite: MissionControlDid.Satellite;

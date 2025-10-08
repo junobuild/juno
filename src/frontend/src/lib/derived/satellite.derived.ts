@@ -1,6 +1,6 @@
+import type { MissionControlDid } from '$declarations';
 import { pageSatelliteId } from '$lib/derived/page.derived.svelte';
 import { satellitesStore } from '$lib/derived/satellites.derived';
-import type { MissionControlDid } from '$lib/types/declarations';
 import type { SatelliteUi } from '$lib/types/satellite';
 import type { Option } from '$lib/types/utils';
 import { satelliteMetadata } from '$lib/utils/satellite.utils';

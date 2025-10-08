@@ -1,5 +1,4 @@
-import { idlFactoryOrbiter, type OrbiterActor } from '$lib/api/actors/actor.factory';
-import type { OrbiterDid } from '$lib/types/declarations';
+import { type OrbiterDid , idlFactoryOrbiter, type OrbiterActor } from '$declarations';
 import { Ed25519KeyIdentity } from '@dfinity/identity';
 import { PocketIc, type Actor } from '@dfinity/pic';
 import { nanoid } from 'nanoid';

@@ -1,4 +1,4 @@
+import type { MissionControlDid } from '$declarations';
 import { initUncertifiedStore } from '$lib/stores/_uncertified.store';
-import type { MissionControlDid } from '$lib/types/declarations';
 
 export const satellitesUncertifiedStore = initUncertifiedStore<MissionControlDid.Satellite[]>();

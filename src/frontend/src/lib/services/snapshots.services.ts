@@ -1,3 +1,4 @@
+import type { ICDid } from '$declarations';
 import {
 	canisterSnapshots,
 	canisterStart,
@@ -18,7 +19,6 @@ import { i18n } from '$lib/stores/i18n.store';
 import { snapshotsIdbStore } from '$lib/stores/idb.store';
 import { snapshotStore } from '$lib/stores/snapshot.store';
 import { toasts } from '$lib/stores/toasts.store';
-import type { ICDid } from '$lib/types/declarations';
 import type { OptionIdentity } from '$lib/types/itentity';
 import { type SnapshotProgress, SnapshotProgressStep } from '$lib/types/progress-snapshot';
 import type { Identity } from '@dfinity/agent';

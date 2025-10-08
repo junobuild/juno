@@ -3,6 +3,7 @@
 	import { isEmptyString, isNullish, nonNullish } from '@dfinity/utils';
 	import { onMount, type Snippet, untrack } from 'svelte';
 	import { fade } from 'svelte/transition';
+	import type { MissionControlDid } from '$declarations';
 	import Segment from '$lib/components/segments/Segment.svelte';
 	import Checkbox from '$lib/components/ui/Checkbox.svelte';
 	import SpinnerParagraph from '$lib/components/ui/SpinnerParagraph.svelte';
@@ -18,7 +19,6 @@
 	import { loadSatellites } from '$lib/services/satellites.services';
 	import { i18n } from '$lib/stores/i18n.store';
 	import { toasts } from '$lib/stores/toasts.store';
-	import type { MissionControlDid } from '$lib/types/declarations';
 	import type { MissionControlId } from '$lib/types/mission-control';
 	import { orbiterName } from '$lib/utils/orbiter.utils';
 	import { satelliteName } from '$lib/utils/satellite.utils';

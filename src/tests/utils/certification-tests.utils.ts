@@ -1,4 +1,4 @@
-import type { OrbiterDid, SatelliteDid } from '$lib/types/declarations';
+import type { OrbiterDid, SatelliteDid } from '$declarations';
 import type { PocketIc } from '@dfinity/pic';
 import type { Principal } from '@dfinity/principal';
 import { verifyRequestResponsePair, type Request } from '@dfinity/response-verification';

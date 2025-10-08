@@ -1,10 +1,10 @@
+import type { MissionControlDid } from '$declarations';
 import { SATELLITE_v0_1_0 } from '$lib/constants/version.constants';
 import { isSatelliteFeatureSupported } from '$lib/services/feature.services';
 import { reloadSatelliteProposals } from '$lib/services/proposals/proposals.list.satellite.services';
 import { i18n } from '$lib/stores/i18n.store';
 import { proposalsStore } from '$lib/stores/proposals.store';
 import { toasts } from '$lib/stores/toasts.store';
-import type { MissionControlDid } from '$lib/types/declarations';
 import type { OptionIdentity } from '$lib/types/itentity';
 import { get } from 'svelte/store';
 

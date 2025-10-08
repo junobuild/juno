@@ -1,6 +1,6 @@
+import type { OrbiterDid } from '$declarations';
 import { getPageViews, getTrackEvents } from '$lib/api/orbiter.api';
 import { getAnalyticsClientsPageViews008 } from '$lib/api/orbiter.deprecated.api';
-import type { OrbiterDid } from '$lib/types/declarations';
 import type {
 	AnalyticsMetrics,
 	AnalyticsPageViews,

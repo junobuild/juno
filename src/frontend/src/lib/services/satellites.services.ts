@@ -1,8 +1,8 @@
+import type { MissionControlDid } from '$declarations';
 import { getMissionControlActor } from '$lib/api/actors/actor.juno.api';
 import { loadDataStore } from '$lib/services/loader.services';
 import { authStore } from '$lib/stores/auth.store';
 import { satellitesUncertifiedStore } from '$lib/stores/satellite.store';
-import type { MissionControlDid } from '$lib/types/declarations';
 import type { Option } from '$lib/types/utils';
 import type { Identity } from '@dfinity/agent';
 import type { Principal } from '@dfinity/principal';

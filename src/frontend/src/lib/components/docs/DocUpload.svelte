@@ -10,6 +10,7 @@
 	import { setDoc } from '@junobuild/core';
 	import { nanoid } from 'nanoid';
 	import { getContext, type Snippet } from 'svelte';
+	import type { SatelliteDid } from '$declarations';
 	import DataUpload from '$lib/components/data/DataUpload.svelte';
 	import IconAutoRenew from '$lib/components/icons/IconAutoRenew.svelte';
 	import Value from '$lib/components/ui/Value.svelte';
@@ -17,7 +18,6 @@
 	import { busy } from '$lib/stores/busy.store';
 	import { i18n } from '$lib/stores/i18n.store';
 	import { toasts } from '$lib/stores/toasts.store';
-	import type { SatelliteDid } from '$lib/types/declarations';
 	import { RULES_CONTEXT_KEY, type RulesContext } from '$lib/types/rules.context';
 	import { fileToDocData } from '$lib/utils/doc.utils';
 	import { container } from '$lib/utils/juno.utils';

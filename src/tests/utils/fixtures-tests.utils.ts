@@ -1,4 +1,4 @@
-import { type SputnikActor, idlFactorySputnik } from '$lib/api/actors/actor.factory';
+import { type SputnikActor, idlFactorySputnik } from '$declarations';
 import type { _SERVICE as TestSatelliteActor } from '$test-declarations/test_satellite/test_satellite.did';
 import { idlFactory as idlTestFactorySatellite } from '$test-declarations/test_satellite/test_satellite.factory.did';
 import type { Identity } from '@dfinity/agent';

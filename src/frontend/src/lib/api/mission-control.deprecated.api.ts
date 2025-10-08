@@ -1,9 +1,9 @@
+import type { MissionControlDid0013, MissionControlDid004 } from '$declarations';
 import {
 	getMissionControlActor0013,
 	getMissionControlActor004
 } from '$lib/api/actors/actor.deprecated.api';
 import type { SetControllerParams } from '$lib/types/controllers';
-import type { MissionControlDid0013, MissionControlDid004 } from '$lib/types/declarations';
 import type { OptionIdentity } from '$lib/types/itentity';
 import type { MissionControlId } from '$lib/types/mission-control';
 import { Principal } from '@dfinity/principal';

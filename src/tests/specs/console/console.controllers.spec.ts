@@ -1,4 +1,4 @@
-import { type ConsoleActor, idlFactoryConsole } from '$lib/api/actors/actor.factory';
+import { type ConsoleActor, idlFactoryConsole } from '$declarations';
 import { AnonymousIdentity } from '@dfinity/agent';
 import { Ed25519KeyIdentity } from '@dfinity/identity';
 import { type Actor, PocketIc } from '@dfinity/pic';

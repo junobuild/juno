@@ -1,4 +1,4 @@
-import type { SatelliteDid } from '$lib/types/declarations';
+import type { SatelliteDid } from '$declarations';
 import type { User } from '$lib/types/user';
 import { fromArray } from '@junobuild/utils';
 

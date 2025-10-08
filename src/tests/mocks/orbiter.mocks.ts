@@ -1,4 +1,4 @@
-import type { OrbiterDid } from '$lib/types/declarations';
+import type { OrbiterDid } from '$declarations';
 import type { SatelliteIdText } from '$lib/types/satellite';
 import { Principal } from '@dfinity/principal';
 import { nanoid } from 'nanoid';

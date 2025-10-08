@@ -16,7 +16,7 @@
 	import { listParamsStore } from '$lib/stores/list-params.store';
 	import { versionStore } from '$lib/stores/version.store';
 	import { type DataContext, DATA_CONTEXT_KEY } from '$lib/types/data.context';
-	import type { SatelliteDid } from '$lib/types/declarations';
+	import type { SatelliteDid } from '$declarations';
 	import { type PaginationContext, PAGINATION_CONTEXT_KEY } from '$lib/types/pagination.context';
 	import { type RulesContext, RULES_CONTEXT_KEY } from '$lib/types/rules.context';
 	import { emit } from '$lib/utils/events.utils';

@@ -1,6 +1,6 @@
+import type { ConsoleDid } from '$declarations';
 import type { GetActorParams } from '$lib/api/actors/actor.api';
 import { getConsoleActor } from '$lib/api/actors/actor.juno.api';
-import type { ConsoleDid } from '$lib/types/declarations';
 import type { OptionIdentity } from '$lib/types/itentity';
 import type { Principal } from '@dfinity/principal';
 import { fromNullable, isNullish } from '@dfinity/utils';

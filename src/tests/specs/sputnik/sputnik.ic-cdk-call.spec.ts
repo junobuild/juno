@@ -1,5 +1,4 @@
-import type { SputnikActor } from '$lib/api/actors/actor.factory';
-import type { SputnikDid } from '$lib/types/declarations';
+import type { SputnikActor, SputnikDid } from '$declarations';
 import type { Actor, PocketIc } from '@dfinity/pic';
 import { assertNonNullish, fromNullable, toNullable } from '@dfinity/utils';
 import { fromArray, toArray } from '@junobuild/utils';

@@ -1,3 +1,4 @@
+import type { SatelliteDid, SatelliteDid008 } from '$declarations';
 import {
 	getSatelliteActor0021,
 	getSatelliteActor0022,
@@ -5,7 +6,6 @@ import {
 	getSatelliteActor009
 } from '$lib/api/actors/actor.deprecated.api';
 import { PAGINATION } from '$lib/constants/app.constants';
-import type { SatelliteDid, SatelliteDid008 } from '$lib/types/declarations';
 import type { OptionIdentity } from '$lib/types/itentity';
 import type { ListParams } from '$lib/types/list';
 import { toListParams } from '$lib/utils/satellite.utils';

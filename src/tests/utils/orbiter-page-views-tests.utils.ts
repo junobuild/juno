@@ -1,5 +1,4 @@
-import type { OrbiterActor } from '$lib/api/actors/actor.factory';
-import type { OrbiterDid } from '$lib/types/declarations';
+import type { OrbiterActor, OrbiterDid } from '$declarations';
 import type { Actor, PocketIc } from '@dfinity/pic';
 import { fromNullable, isNullish, toNullable } from '@dfinity/utils';
 import UAParser from 'ua-parser-js';

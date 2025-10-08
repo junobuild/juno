@@ -7,7 +7,7 @@
 	import { busy } from '$lib/stores/busy.store';
 	import { i18n } from '$lib/stores/i18n.store';
 	import { toasts } from '$lib/stores/toasts.store';
-	import type { MissionControlDid } from '$lib/types/declarations';
+	import type { MissionControlDid } from '$declarations';
 	import type { PageViewsParams } from '$lib/types/orbiter';
 
 	interface Props {

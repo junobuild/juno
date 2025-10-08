@@ -3,7 +3,7 @@
 	import IconArrowCircleUp from '$lib/components/icons/IconArrowCircleUp.svelte';
 	import Identifier from '$lib/components/ui/Identifier.svelte';
 	import { i18n } from '$lib/stores/i18n.store';
-	import type { SatelliteDid, MissionControlDid } from '$lib/types/declarations';
+	import type { SatelliteDid, MissionControlDid } from '$declarations';
 	import { formatToDate } from '$lib/utils/date.utils';
 	import { emit } from '$lib/utils/events.utils';
 

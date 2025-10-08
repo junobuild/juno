@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { fromNullishNullable } from '@dfinity/utils';
 	import { onMount } from 'svelte';
+	import type { MissionControlDid } from '$declarations';
 	import CanisterOverview from '$lib/components/canister/CanisterOverview.svelte';
 	import CanisterSubnet from '$lib/components/canister/CanisterSubnet.svelte';
 	import CanisterSyncData from '$lib/components/canister/CanisterSyncData.svelte';
@@ -17,7 +18,6 @@
 	import { listCustomDomains } from '$lib/services/custom-domain.services';
 	import { i18n } from '$lib/stores/i18n.store';
 	import type { CanisterSyncData as CanisterSyncDataType } from '$lib/types/canister';
-	import type { MissionControlDid } from '$lib/types/declarations';
 	import type { SatelliteIdText } from '$lib/types/satellite';
 
 	interface Props {

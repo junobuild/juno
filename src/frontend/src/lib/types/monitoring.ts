@@ -1,4 +1,4 @@
-import type { MissionControlDid } from '$lib/types/declarations';
+import type { MissionControlDid } from '$declarations';
 import type { Principal } from '@dfinity/principal';
 
 export type MonitoringHistoryEntry = [

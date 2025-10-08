@@ -1,3 +1,4 @@
+import type { ConsoleDid } from '$declarations';
 import {
 	getMissionControl as getMissionControlApi,
 	initMissionControl as initMissionControlApi
@@ -6,7 +7,6 @@ import { missionControlErrorSignOut } from '$lib/services/auth/auth.services';
 import { i18n } from '$lib/stores/i18n.store';
 import { missionControlIdCertifiedStore } from '$lib/stores/mission-control.store';
 import { toasts } from '$lib/stores/toasts.store';
-import type { ConsoleDid } from '$lib/types/declarations';
 import type { OptionIdentity } from '$lib/types/itentity';
 import type { MissionControlId } from '$lib/types/mission-control';
 import type { Identity } from '@dfinity/agent';

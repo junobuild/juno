@@ -1,4 +1,4 @@
-import type { SatelliteDid } from '$lib/types/declarations';
+import type { SatelliteDid } from '$declarations';
 
 export interface UserUsage {
 	changes_count: number;

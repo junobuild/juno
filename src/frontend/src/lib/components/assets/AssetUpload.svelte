@@ -12,7 +12,7 @@
 	import { busy } from '$lib/stores/busy.store';
 	import { i18n } from '$lib/stores/i18n.store';
 	import { toasts } from '$lib/stores/toasts.store';
-	import type { SatelliteDid } from '$lib/types/declarations';
+	import type { SatelliteDid } from '$declarations';
 	import { RULES_CONTEXT_KEY, type RulesContext } from '$lib/types/rules.context';
 	import { container } from '$lib/utils/juno.utils';
 

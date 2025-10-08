@@ -1,9 +1,9 @@
 <script lang="ts">
 	import { nonNullish } from '@dfinity/utils';
+	import type { MissionControlDid } from '$declarations';
 	import MonitoringStepBackContinue from '$lib/components/monitoring/MonitoringStepBackContinue.svelte';
 	import { BASIC_STRATEGY } from '$lib/constants/monitoring.constants';
 	import { i18n } from '$lib/stores/i18n.store';
-	import type { MissionControlDid } from '$lib/types/declarations';
 
 	interface Props {
 		defaultStrategy: MissionControlDid.CyclesMonitoringStrategy | undefined;

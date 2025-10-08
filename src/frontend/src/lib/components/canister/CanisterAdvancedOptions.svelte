@@ -4,7 +4,7 @@
 	import CanisterSubnets from '$lib/components/canister/CanisterSubnets.svelte';
 	import Collapsible from '$lib/components/ui/Collapsible.svelte';
 	import { i18n } from '$lib/stores/i18n.store';
-	import type { MissionControlDid } from '$lib/types/declarations';
+	import type { MissionControlDid } from '$declarations';
 	import type { JunoModalDetail } from '$lib/types/modal';
 
 	interface Props {

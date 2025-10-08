@@ -1,4 +1,4 @@
-import {
+import { type ConsoleDid ,
 	idlFactoryConsole,
 	idlFactoryMissionControl,
 	idlFactoryOrbiter,
@@ -7,9 +7,8 @@ import {
 	type MissionControlActor,
 	type OrbiterActor,
 	type SatelliteActor
-} from '$lib/api/actors/actor.factory';
+} from '$declarations';
 import { ONE_YEAR, THREE_MONTHS } from '$lib/constants/canister.constants';
-import type { ConsoleDid } from '$lib/types/declarations';
 import type { Identity } from '@dfinity/agent';
 import { Ed25519KeyIdentity } from '@dfinity/identity';
 import { PocketIc, type Actor } from '@dfinity/pic';

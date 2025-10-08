@@ -3,6 +3,7 @@
 	import { isNullish, jsonReplacer } from '@dfinity/utils';
 	import { fromArray } from '@junobuild/utils';
 	import { getContext } from 'svelte';
+	import type { SatelliteDid } from '$declarations';
 	import { deleteDoc } from '$lib/api/satellites.api';
 	import DataHeader from '$lib/components/data/DataHeader.svelte';
 	import DataKeyDelete from '$lib/components/data/DataKeyDelete.svelte';
@@ -13,7 +14,6 @@
 	import { i18n } from '$lib/stores/i18n.store';
 	import { toasts } from '$lib/stores/toasts.store';
 	import { DATA_CONTEXT_KEY, type DataContext } from '$lib/types/data.context';
-	import type { SatelliteDid } from '$lib/types/declarations';
 	import { RULES_CONTEXT_KEY, type RulesContext } from '$lib/types/rules.context';
 	import { i18nFormat } from '$lib/utils/i18n.utils';
 	import { filenameTimestamp, JSON_PICKER_OPTIONS, saveToFileSystem } from '$lib/utils/save.utils';

@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { isNullish, nonNullish, fromNullishNullable } from '@dfinity/utils';
 	import { run, stopPropagation } from 'svelte/legacy';
+	import type { SatelliteDid, MissionControlDid } from '$declarations';
 	import { setAuthConfig } from '$lib/api/satellites.api';
 	import IconWarning from '$lib/components/icons/IconWarning.svelte';
 	import ButtonTableAction from '$lib/components/ui/ButtonTableAction.svelte';
@@ -12,7 +13,6 @@
 	import { busy, isBusy } from '$lib/stores/busy.store';
 	import { i18n } from '$lib/stores/i18n.store';
 	import { toasts } from '$lib/stores/toasts.store';
-	import type { SatelliteDid, MissionControlDid } from '$lib/types/declarations';
 	import type { JunoModalCustomDomainDetail } from '$lib/types/modal';
 	import type { Option } from '$lib/types/utils';
 	import { buildDeleteAuthenticationConfig } from '$lib/utils/auth.config.utils';

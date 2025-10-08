@@ -2,7 +2,7 @@
 	import { fromNullable, isNullish, nonNullish } from '@dfinity/utils';
 	import Html from '$lib/components/ui/Html.svelte';
 	import { i18n } from '$lib/stores/i18n.store';
-	import type { OrbiterDid } from '$lib/types/declarations';
+	import type { OrbiterDid } from '$declarations';
 	import { formatNumber } from '$lib/utils/number.utils';
 
 	interface Props {

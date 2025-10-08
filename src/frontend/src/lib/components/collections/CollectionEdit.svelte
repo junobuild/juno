@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { fromNullable, isNullish, nonNullish, fromNullishNullable } from '@dfinity/utils';
 	import { getContext } from 'svelte';
+	import type { SatelliteDid } from '$declarations';
 	import CollectionDelete from '$lib/components/collections/CollectionDelete.svelte';
 	import Checkbox from '$lib/components/ui/Checkbox.svelte';
 	import Collapsible from '$lib/components/ui/Collapsible.svelte';
@@ -18,7 +19,6 @@
 	import { busy } from '$lib/stores/busy.store';
 	import { i18n } from '$lib/stores/i18n.store';
 	import { toasts } from '$lib/stores/toasts.store';
-	import type { SatelliteDid } from '$lib/types/declarations';
 	import { RULES_CONTEXT_KEY, type RulesContext } from '$lib/types/rules.context';
 	import { i18nFormat } from '$lib/utils/i18n.utils';
 	import { memoryToText, permissionToText } from '$lib/utils/rules.utils';

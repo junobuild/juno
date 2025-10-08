@@ -4,7 +4,7 @@ import {
 	type ConsoleActor008,
 	type MissionControlActor,
 	idlFactoryMissionControl
-} from '$lib/api/actors/actor.factory';
+} from '$declarations';
 import type { Identity } from '@dfinity/agent';
 import { Ed25519KeyIdentity } from '@dfinity/identity';
 import type { Actor, PocketIc } from '@dfinity/pic';

@@ -5,7 +5,7 @@ import {
 	type ConsoleActor,
 	type ConsoleActor0014,
 	type ConsoleActor008
-} from '$lib/api/actors/actor.factory';
+} from '$declarations';
 import type { Identity } from '@dfinity/agent';
 import { Ed25519KeyIdentity } from '@dfinity/identity';
 import { PocketIc, type Actor } from '@dfinity/pic';

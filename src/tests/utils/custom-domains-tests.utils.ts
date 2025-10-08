@@ -1,4 +1,4 @@
-import type { ConsoleActor, SatelliteActor } from '$lib/api/actors/actor.factory';
+import type { ConsoleActor, SatelliteActor } from '$declarations';
 import type { Actor } from '@dfinity/pic';
 import { assertNonNullish, fromNullable, toNullable } from '@dfinity/utils';
 import { JUNO_STORAGE_ERROR_RESERVED_ASSET } from '@junobuild/errors';

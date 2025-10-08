@@ -1,8 +1,8 @@
+import type { ICDid } from '$declarations';
 import { canisterUpdateSettings } from '$lib/api/ic.api';
 import { i18n } from '$lib/stores/i18n.store';
 import { toasts } from '$lib/stores/toasts.store';
 import type { CanisterInfo, CanisterSettings } from '$lib/types/canister';
-import type { ICDid } from '$lib/types/declarations';
 import type { OptionIdentity } from '$lib/types/itentity';
 import { lacksCyclesForFreezingThreshold } from '$lib/utils/canister.utils';
 import type { Principal } from '@dfinity/principal';

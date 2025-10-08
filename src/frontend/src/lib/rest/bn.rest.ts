@@ -1,5 +1,5 @@
+import type { SatelliteDid } from '$declarations';
 import type { CustomDomainRegistration } from '$lib/types/custom-domain';
-import type { SatelliteDid } from '$lib/types/declarations';
 import { assertNonNullish, fromNullable, isNullish } from '@dfinity/utils';
 
 const BN_REGISTRATIONS_URL = import.meta.env.VITE_BN_REGISTRATIONS_URL;

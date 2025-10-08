@@ -1,4 +1,4 @@
-import type { OrbiterDid } from '$lib/types/declarations';
+import type { OrbiterDid } from '$declarations';
 import type { OptionIdentity } from '$lib/types/itentity';
 import type { Principal } from '@dfinity/principal';
 import type { PrincipalText } from '@dfinity/zod-schemas';

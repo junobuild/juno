@@ -1,4 +1,4 @@
-import {
+import { type OrbiterDid, type OrbiterDid006, type OrbiterDid008 ,
 	idlFactoryOrbiter,
 	idlFactoryOrbiter006,
 	idlFactoryOrbiter008,
@@ -7,8 +7,7 @@ import {
 	type OrbiterActor006,
 	type OrbiterActor008,
 	type OrbiterActor020
-} from '$lib/api/actors/actor.factory';
-import type { OrbiterDid, OrbiterDid006, OrbiterDid008 } from '$lib/types/declarations';
+} from '$declarations';
 import { Ed25519KeyIdentity } from '@dfinity/identity';
 import { PocketIc, type Actor } from '@dfinity/pic';
 import type { Principal } from '@dfinity/principal';

@@ -1,5 +1,4 @@
-import type { SatelliteActor } from '$lib/api/actors/actor.factory';
-import type { SatelliteDid } from '$lib/types/declarations';
+import type { SatelliteActor, SatelliteDid } from '$declarations';
 import type { Actor, PocketIc } from '@dfinity/pic';
 import type { Principal } from '@dfinity/principal';
 import { toNullable } from '@dfinity/utils';

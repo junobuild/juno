@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { isNullish } from '@dfinity/utils';
+	import type { MissionControlDid } from '$declarations';
 	import { satelliteStore } from '$lib/derived/satellite.derived';
 	import { exportTrackEvents } from '$lib/services/orbiter/orbiter.export.services';
 	import { analyticsFiltersStore } from '$lib/stores/analytics-filters.store';
@@ -7,7 +8,6 @@
 	import { busy } from '$lib/stores/busy.store';
 	import { i18n } from '$lib/stores/i18n.store';
 	import { toasts } from '$lib/stores/toasts.store';
-	import type { MissionControlDid } from '$lib/types/declarations';
 	import type { PageViewsParams } from '$lib/types/orbiter';
 
 	interface Props {

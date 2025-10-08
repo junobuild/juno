@@ -3,7 +3,7 @@ import {
 	type SatelliteActor,
 	idlFactoryOrbiter,
 	idlFactorySatellite
-} from '$lib/api/actors/actor.factory';
+} from '$declarations';
 import type { Identity } from '@dfinity/agent';
 import { IDL } from '@dfinity/candid';
 import type { PocketIc } from '@dfinity/pic';

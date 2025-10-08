@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { fade } from 'svelte/transition';
+	import type { MissionControlDid } from '$declarations';
 	import ExternalLink from '$lib/components/ui/ExternalLink.svelte';
 	import SkeletonText from '$lib/components/ui/SkeletonText.svelte';
 	import Value from '$lib/components/ui/Value.svelte';
@@ -9,7 +10,6 @@
 		sortedSatelliteCustomDomains
 	} from '$lib/derived/satellite-custom-domains.derived';
 	import { i18n } from '$lib/stores/i18n.store';
-	import type { MissionControlDid } from '$lib/types/declarations';
 	import { satelliteUrl } from '$lib/utils/satellite.utils';
 
 	interface Props {

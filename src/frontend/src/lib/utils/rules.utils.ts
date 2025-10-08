@@ -1,3 +1,4 @@
+import type { SatelliteDid } from '$declarations';
 import {
 	MemoryHeap,
 	MemoryStable,
@@ -8,7 +9,6 @@ import {
 	PermissionRestricted,
 	type PermissionText
 } from '$lib/constants/rules.constants';
-import type { SatelliteDid } from '$lib/types/declarations';
 
 export const permissionFromText = (text: PermissionText): SatelliteDid.Permission => {
 	switch (text) {

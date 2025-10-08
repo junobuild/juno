@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { nonNullish } from '@dfinity/utils';
 	import { onMount } from 'svelte';
+	import type { SatelliteDid, MissionControlDid } from '$declarations';
 	import AddCustomDomain from '$lib/components/hosting/AddCustomDomain.svelte';
 	import CustomDomain from '$lib/components/hosting/CustomDomain.svelte';
 	import CustomDomainInfo from '$lib/components/hosting/CustomDomainInfo.svelte';
@@ -11,7 +12,6 @@
 	import { authStore } from '$lib/stores/auth.store';
 	import { i18n } from '$lib/stores/i18n.store';
 	import type { CustomDomainRegistrationState } from '$lib/types/custom-domain';
-	import type { SatelliteDid, MissionControlDid } from '$lib/types/declarations';
 	import type { Option } from '$lib/types/utils';
 	import { satelliteUrl } from '$lib/utils/satellite.utils';
 

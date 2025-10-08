@@ -1,7 +1,7 @@
 <script lang="ts">
-	import type { OrbiterDid } from '$lib/types/declarations';
 	import AnalyticsTable from '$lib/components/analytics/AnalyticsTable.svelte';
 	import { i18n } from '$lib/stores/i18n.store';
+	import type { OrbiterDid } from '$lib/types/declarations';
 
 	interface Props {
 		trackEvents: OrbiterDid.AnalyticsTrackEvents;

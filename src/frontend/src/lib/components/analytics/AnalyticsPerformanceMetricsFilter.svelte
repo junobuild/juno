@@ -1,8 +1,8 @@
 <script lang="ts">
-	import type { OrbiterDid } from '$lib/types/declarations';
 	import Toolbar from '$lib/components/ui/Toolbar.svelte';
 	import Value from '$lib/components/ui/Value.svelte';
 	import { i18n } from '$lib/stores/i18n.store';
+	import type { OrbiterDid } from '$lib/types/declarations';
 
 	interface Props {
 		performanceMetrics: OrbiterDid.AnalyticsWebVitalsPerformanceMetrics;

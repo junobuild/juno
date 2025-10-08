@@ -1,5 +1,6 @@
 import { testWithII } from '@dfinity/internet-identity-playwright';
 import { expect } from '@playwright/test';
+import { testIds } from '$lib/constants/test-ids.constants';
 import { initTestSuite } from './utils/init.utils';
 
 const getConsolePage = initTestSuite();
@@ -14,8 +15,8 @@ testWithII('should verify Analytics creation success', async () => {
 	const consolePage = getConsolePage();
 
 	// Navigate back to Analytics page to verify creation
-	await consolePage.page.getByTestId('nav-analytics').click();
+	await consolePage.page.getByTestId(testIds.createAnalytics.navLink).click();
 
-	// Take screenshot to verify the Analytics page after the creation
+	// Take screenshot to verify the Analytics page after creation
 	await expect(consolePage.page).toHaveScreenshot({ fullPage: true });
 });

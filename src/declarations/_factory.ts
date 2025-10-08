@@ -49,6 +49,7 @@ import type { _SERVICE as SatelliteActor } from '$declarations/satellite/satelli
 import type { _SERVICE as SputnikActor } from '$declarations/sputnik/sputnik.did';
 import type { _SERVICE as ICActor } from '@dfinity/ic-management/dist/candid/ic-management';
 
+
 export {
 	idlFactoryCertifiedConsole,
 	idlFactoryConsole,

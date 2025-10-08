@@ -1,6 +1,5 @@
-import type { AnalyticsClientsPageViews } from '$declarations/deprecated/orbiter-0-0-8.did';
 import { getOrbiterActor007, getOrbiterActor008 } from '$lib/api/actors/actor.deprecated.api';
-import type { OrbiterDid007 } from '$lib/types/declarations';
+import type { OrbiterDid007, OrbiterDid008 } from '$lib/types/declarations';
 import type { OptionIdentity } from '$lib/types/itentity';
 import type { PageViewsParams } from '$lib/types/orbiter';
 import { toBigIntNanoSeconds } from '$lib/utils/date.utils';
@@ -60,7 +59,7 @@ export const getAnalyticsClientsPageViews008 = async ({
 	from,
 	to,
 	identity
-}: PageViewsParams): Promise<AnalyticsClientsPageViews> => {
+}: PageViewsParams): Promise<OrbiterDid008.AnalyticsClientsPageViews> => {
 	const { get_page_views_analytics_clients } = await getOrbiterActor008({ orbiterId, identity });
 	return await get_page_views_analytics_clients({
 		satellite_id: toNullable(satelliteId),

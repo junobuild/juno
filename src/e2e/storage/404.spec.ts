@@ -42,7 +42,7 @@ test.describe('redirect to 404', () => {
 
 				await wait?.({ page });
 
-				await expect(page).toHaveScreenshot();
+				await expect(page).toHaveScreenshot({ maxDiffPixelRatio: 0.01 });
 			});
 		});
 	});

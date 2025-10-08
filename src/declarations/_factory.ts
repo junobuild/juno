@@ -5,10 +5,7 @@ import { idlFactory as idlFactoryConsole008 } from '$declarations/deprecated/con
 import { idlFactory as idlFactoryMissionControl0013 } from '$declarations/deprecated/mission_control-0-0-13.factory.did';
 import { idlFactory as idlFactoryMissionControl0014 } from '$declarations/deprecated/mission_control-0-0-14.factory.did';
 import { idlFactory as idlFactoryMissionControl004 } from '$declarations/deprecated/mission_control-0-0-4.factory.did';
-import {
-	idlFactory as idlFactoryObservatory009,
-	type _SERVICE as ObservatoryActor009
-} from '$declarations/deprecated/observatory-0-0-9.did';
+import { idlFactory as idlFactoryObservatory009 } from '$declarations/deprecated/observatory-0-0-9.did';
 import { idlFactory as idlFactoryOrbiter006 } from '$declarations/deprecated/orbiter-0-0-6.factory.did';
 import { idlFactory as idlFactoryOrbiter007 } from '$declarations/deprecated/orbiter-0-0-7.factory.did';
 import { idlFactory as idlFactoryOrbiter008 } from '$declarations/deprecated/orbiter-0-0-8.factory.did';
@@ -32,6 +29,7 @@ import type { _SERVICE as ConsoleActor008 } from '$declarations/deprecated/conso
 import type { _SERVICE as MissionControlActor0013 } from '$declarations/deprecated/mission_control-0-0-13.did';
 import type { _SERVICE as MissionControlActor0014 } from '$declarations/deprecated/mission_control-0-0-14.did';
 import type { _SERVICE as MissionControlActor004 } from '$declarations/deprecated/mission_control-0-0-4.did';
+import type { _SERVICE as ObservatoryActor009 } from '$declarations/deprecated/observatory-0-0-9.did';
 import type { _SERVICE as OrbiterActor006 } from '$declarations/deprecated/orbiter-0-0-6.did';
 import type { _SERVICE as OrbiterActor007 } from '$declarations/deprecated/orbiter-0-0-7.did';
 import type { _SERVICE as OrbiterActor008 } from '$declarations/deprecated/orbiter-0-0-8.did';

@@ -66,7 +66,7 @@ export class ConsolePage extends IdentityPage {
 	}
 
 	async createAnalytics(): Promise<void> {
-		await this.page.getByTestId(testIds.createAnalytics.navLink).click();
+		await this.page.goto('/analytics');
 
 		await expect(this.page.getByTestId(testIds.createAnalytics.launch)).toBeVisible();
 		await this.page.getByTestId(testIds.createAnalytics.launch).click();

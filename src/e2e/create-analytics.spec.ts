@@ -15,7 +15,7 @@ testWithII('should verify Analytics creation success', async () => {
 	const consolePage = getConsolePage();
 
 	// Navigate back to Analytics page to verify creation
-	await consolePage.page.getByTestId(testIds.createAnalytics.navLink).click();
+	await consolePage.page.goto('/analytics');
 
 	// Take screenshot to verify the Analytics page after creation
 	await expect(consolePage.page).toHaveScreenshot({ fullPage: true });

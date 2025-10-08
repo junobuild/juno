@@ -1,7 +1,6 @@
 import type { _SERVICE as SatelliteActor } from '$declarations/satellite/satellite.did';
 import { idlFactory as idlFactorSatellite } from '$declarations/satellite/satellite.factory.did';
-import type { MissionControlActor } from '$lib/api/actors/actor.factory';
-import { idlFactoryMissionControl } from '$lib/api/actors/actor.factory';
+import { type MissionControlActor , idlFactoryMissionControl } from '$lib/api/actors/actor.factory';
 import { Ed25519KeyIdentity } from '@dfinity/identity';
 import { PocketIc, type Actor } from '@dfinity/pic';
 import type { Principal } from '@dfinity/principal';

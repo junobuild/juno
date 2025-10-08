@@ -8,7 +8,6 @@
 	import { loadOrbiters } from '$lib/services/orbiter/orbiters.services';
 	import { loadSatellites } from '$lib/services/satellites.services';
 	import { i18n } from '$lib/stores/i18n.store';
-	import type { MissionControlDid } from '$lib/types/declarations';
 	import { satelliteName } from '$lib/utils/satellite.utils';
 
 	interface Props {

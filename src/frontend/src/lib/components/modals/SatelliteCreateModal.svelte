@@ -78,7 +78,7 @@
 	let satelliteName: string | undefined = $state(undefined);
 	let satelliteKind: 'website' | 'application' | undefined = $state(undefined);
 	let subnetId: PrincipalText | undefined = $state();
-	let monitoringStrategy: CyclesMonitoringStrategy | undefined = $state();
+	let monitoringStrategy = $state<MissionControlDid.CyclesMonitoringStrategy | undefined>(undefined);
 </script>
 
 <Modal {onclose}>

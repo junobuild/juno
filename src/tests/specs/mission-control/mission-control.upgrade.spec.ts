@@ -1,7 +1,6 @@
 import type { _SERVICE as MissionControlActor_0_0_14 } from '$declarations/deprecated/mission_control-0-0-14.did';
 import { idlFactory as idlFactorMissionControl_0_0_14 } from '$declarations/deprecated/mission_control-0-0-14.factory.did';
-import type { MissionControlActor } from '$lib/api/actors/actor.factory';
-import { idlFactoryMissionControl } from '$lib/api/actors/actor.factory';
+import { type MissionControlActor , idlFactoryMissionControl } from '$lib/api/actors/actor.factory';
 import type { MissionControlDid } from '$lib/types/declarations';
 import { Ed25519KeyIdentity } from '@dfinity/identity';
 import { type Actor, PocketIc } from '@dfinity/pic';

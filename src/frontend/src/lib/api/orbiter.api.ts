@@ -1,17 +1,4 @@
-import type {
-	AnalyticKey,
-	AnalyticsClientsPageViews,
-	AnalyticsMetricsPageViews,
-	AnalyticsTop10PageViews,
-	AnalyticsTrackEvents,
-	AnalyticsWebVitalsPerformanceMetrics,
-	Controller,
-	GetAnalytics,
-	PageView,
-	OrbiterSatelliteConfig as SatelliteConfig,
-	SetSatelliteConfig,
-	TrackEvent
-} from '$declarations/orbiter/orbiter.did';
+import type { OrbiterDid } from '$declarations';
 import { getOrbiterActor } from '$lib/api/actors/actor.juno.api';
 import type { OptionIdentity } from '$lib/types/itentity';
 import type { PageViewsParams, PageViewsPeriod } from '$lib/types/orbiter';
@@ -25,7 +12,7 @@ export const getPageViews = async ({
 	from,
 	to,
 	identity
-}: PageViewsParams): Promise<[AnalyticKey, PageView][]> => {
+}: PageViewsParams): Promise<[OrbiterDid.AnalyticKey, OrbiterDid.PageView][]> => {
 	const { get_page_views } = await getOrbiterActor({ orbiterId, identity });
 
 	return getAnalytics({
@@ -42,7 +29,7 @@ export const getAnalyticsMetricsPageViews = async ({
 	from,
 	to,
 	identity
-}: PageViewsParams): Promise<AnalyticsMetricsPageViews> => {
+}: PageViewsParams): Promise<OrbiterDid.AnalyticsMetricsPageViews> => {
 	const { get_page_views_analytics_metrics } = await getOrbiterActor({ orbiterId, identity });
 	return getAnalytics({
 		satelliteId,
@@ -58,7 +45,7 @@ export const getAnalyticsTop10PageViews = async ({
 	from,
 	to,
 	identity
-}: PageViewsParams): Promise<AnalyticsTop10PageViews> => {
+}: PageViewsParams): Promise<OrbiterDid.AnalyticsTop10PageViews> => {
 	const { get_page_views_analytics_top_10 } = await getOrbiterActor({ orbiterId, identity });
 	return getAnalytics({
 		satelliteId,
@@ -74,7 +61,7 @@ export const getAnalyticsClientsPageViews = async ({
 	from,
 	to,
 	identity
-}: PageViewsParams): Promise<AnalyticsClientsPageViews> => {
+}: PageViewsParams): Promise<OrbiterDid.AnalyticsClientsPageViews> => {
 	const { get_page_views_analytics_clients } = await getOrbiterActor({ orbiterId, identity });
 	return getAnalytics({
 		satelliteId,
@@ -91,7 +78,7 @@ const getAnalytics = async <T>({
 	fn
 }: {
 	satelliteId?: Principal;
-	fn: (params: GetAnalytics) => Promise<T>;
+	fn: (params: OrbiterDid.GetAnalytics) => Promise<T>;
 } & PageViewsPeriod): Promise<T> =>
 	await fn({
 		satellite_id: toNullable(satelliteId),
@@ -105,7 +92,7 @@ export const getTrackEvents = async ({
 	from,
 	to,
 	identity
-}: PageViewsParams): Promise<[AnalyticKey, TrackEvent][]> => {
+}: PageViewsParams): Promise<[OrbiterDid.AnalyticKey, OrbiterDid.TrackEvent][]> => {
 	const { get_track_events } = await getOrbiterActor({ orbiterId, identity });
 	return getAnalytics({
 		satelliteId,
@@ -121,7 +108,7 @@ export const getTrackEventsAnalytics = async ({
 	from,
 	to,
 	identity
-}: PageViewsParams): Promise<AnalyticsTrackEvents> => {
+}: PageViewsParams): Promise<OrbiterDid.AnalyticsTrackEvents> => {
 	const { get_track_events_analytics } = await getOrbiterActor({ orbiterId, identity });
 	return getAnalytics({
 		satelliteId,
@@ -137,7 +124,7 @@ export const getPerformanceMetricsAnalyticsWebVitals = async ({
 	from,
 	to,
 	identity
-}: PageViewsParams): Promise<AnalyticsWebVitalsPerformanceMetrics> => {
+}: PageViewsParams): Promise<OrbiterDid.AnalyticsWebVitalsPerformanceMetrics> => {
 	const { get_performance_metrics_analytics_web_vitals } = await getOrbiterActor({
 		orbiterId,
 		identity
@@ -156,7 +143,7 @@ export const listOrbiterControllers = async ({
 }: {
 	orbiterId: Principal;
 	identity: OptionIdentity;
-}): Promise<[Principal, Controller][]> => {
+}): Promise<[Principal, OrbiterDid.Controller][]> => {
 	const actor = await getOrbiterActor({ orbiterId, identity });
 	return actor.list_controllers();
 };
@@ -167,7 +154,7 @@ export const listOrbiterSatelliteConfigs = async ({
 }: {
 	orbiterId: Principal;
 	identity: OptionIdentity;
-}): Promise<[Principal, SatelliteConfig][]> => {
+}): Promise<[Principal, OrbiterDid.OrbiterSatelliteConfig][]> => {
 	const { list_satellite_configs } = await getOrbiterActor({ orbiterId, identity });
 	return list_satellite_configs();
 };
@@ -178,9 +165,9 @@ export const setOrbiterSatelliteConfigs = async ({
 	identity
 }: {
 	orbiterId: Principal;
-	config: [Principal, SetSatelliteConfig][];
+	config: [Principal, OrbiterDid.SetSatelliteConfig][];
 	identity: OptionIdentity;
-}): Promise<[Principal, SatelliteConfig][]> => {
+}): Promise<[Principal, OrbiterDid.OrbiterSatelliteConfig][]> => {
 	const actor = await getOrbiterActor({ orbiterId, identity });
 	return actor.set_satellite_configs(config);
 };

@@ -1,7 +1,4 @@
-import type {
-	OrbiterSatelliteConfig,
-	OrbiterSatelliteFeatures
-} from '$declarations/orbiter/orbiter.did';
+import type { OrbiterDid } from '$declarations';
 import { orbiterConfigs } from '$lib/derived/orbiter.derived';
 import { satellitesStore } from '$lib/derived/satellites.derived';
 import type { OrbiterSatelliteConfigEntry } from '$lib/types/orbiter';
@@ -16,7 +13,7 @@ export const orbiterSatellitesConfig: Readable<
 	Record<SatelliteIdText, OrbiterSatelliteConfigEntry>
 > = derived([orbiterConfigs, satellitesStore], ([orbiterConfigsStore, satellitesStore]) =>
 	(satellitesStore ?? []).reduce((acc, satellite) => {
-		const config: [Principal, OrbiterSatelliteConfig] | undefined = (
+		const config: [Principal, OrbiterDid.OrbiterSatelliteConfig] | undefined = (
 			orbiterConfigsStore ?? []
 		).find(([satelliteId, _]) => satelliteId.toText() === satellite.satellite_id.toText());
 
@@ -35,7 +32,7 @@ export const orbiterSatellitesConfig: Readable<
 );
 
 // Currently we duplicate the configuration for each Satellites that way the UI remains simple - a single configuration for the features
-export const orbiterFeatures: Readable<OrbiterSatelliteFeatures | undefined> = derived(
+export const orbiterFeatures: Readable<OrbiterDid.OrbiterSatelliteFeatures | undefined> = derived(
 	[orbiterSatellitesConfig],
 	([orbiterSatellitesConfig]) =>
 		fromNullable(

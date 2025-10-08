@@ -1,5 +1,4 @@
-import type { Satellite } from '$declarations/mission_control/mission_control.did';
-import type { ListParams as ListParamsApi } from '$declarations/satellite/satellite.did';
+import type { MissionControlDid, SatelliteDid } from '$declarations';
 import { PAGINATION } from '$lib/constants/app.constants';
 import { isDev } from '$lib/env/app.env';
 import { SatelliteUiMetadataParser } from '$lib/schemas/satellite.schema';
@@ -17,18 +16,22 @@ export const satelliteUrl = (satelliteId: string): string => {
 	return `https://${satelliteId}.icp0.io`;
 };
 
-export const satelliteMetadata = (satellite: Satellite): SatelliteUiMetadata => ({
+export const satelliteMetadata = (satellite: MissionControlDid.Satellite): SatelliteUiMetadata => ({
 	name: satelliteName(satellite),
 	environment: satelliteEnvironment(satellite),
 	tags: satelliteTags(satellite)
 });
 
-export const satelliteName = ({ metadata }: Satellite): string => metadataName(metadata);
+export const satelliteName = ({ metadata }: MissionControlDid.Satellite): string =>
+	metadataName(metadata);
 
-export const satelliteEnvironment = ({ metadata }: Satellite): string | undefined =>
-	metadataEnvironment(metadata);
+export const satelliteEnvironment = ({
+	metadata
+}: MissionControlDid.Satellite): string | undefined => metadataEnvironment(metadata);
 
-export const satelliteTags = ({ metadata }: Satellite): SatelliteUiTags | undefined => {
+export const satelliteTags = ({
+	metadata
+}: MissionControlDid.Satellite): SatelliteUiTags | undefined => {
 	const tags = metadataTags(metadata);
 	const { data, success } = SatelliteUiMetadataParser.safeParse(tags);
 	return success ? data : undefined;
@@ -54,7 +57,7 @@ export const toListParams = ({
 	limit = PAGINATION,
 	order,
 	filter: { matcher, description, owner }
-}: ListParams): ListParamsApi => ({
+}: ListParams): SatelliteDid.ListParams => ({
 	matcher:
 		isEmptyString(matcher) && isEmptyString(description)
 			? []

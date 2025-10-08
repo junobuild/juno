@@ -1,4 +1,4 @@
-import type { Satellite } from '$declarations/mission_control/mission_control.did';
+import type { MissionControlDid } from '$declarations';
 import { getMissionControlActor } from '$lib/api/actors/actor.juno.api';
 import { loadDataStore } from '$lib/services/loader.services';
 import { authStore } from '$lib/stores/auth.store';
@@ -26,7 +26,7 @@ export const createSatellite = async ({
 	identity: Option<Identity>;
 	missionControlId: Option<Principal>;
 	config: CreateSatelliteConfig;
-}): Promise<Satellite> => {
+}): Promise<MissionControlDid.Satellite> => {
 	assertNonNullish(missionControlId);
 
 	const { create_satellite } = await getMissionControlActor({
@@ -45,7 +45,7 @@ export const createSatelliteWithConfig = async ({
 	identity: Option<Identity>;
 	missionControlId: Option<Principal>;
 	config: CreateSatelliteConfig;
-}): Promise<Satellite> => {
+}): Promise<MissionControlDid.Satellite> => {
 	assertNonNullish(missionControlId);
 
 	const { create_satellite_with_config } = await getMissionControlActor({
@@ -79,7 +79,7 @@ export const loadSatellites = async ({
 		return { result: 'skip' };
 	}
 
-	const load = async (identity: Identity): Promise<Satellite[]> => {
+	const load = async (identity: Identity): Promise<MissionControlDid.Satellite[]> => {
 		const { list_satellites } = await getMissionControlActor({
 			missionControlId,
 			identity
@@ -92,7 +92,7 @@ export const loadSatellites = async ({
 
 	const { identity } = get(authStore);
 
-	return await loadDataStore<Satellite[]>({
+	return await loadDataStore<MissionControlDid.Satellite[]>({
 		identity,
 		store: satellitesUncertifiedStore,
 		errorLabel: 'satellites_loading',

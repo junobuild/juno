@@ -1,4 +1,4 @@
-import type { Doc } from '$declarations/satellite/satellite.did';
+import type { SatelliteDid } from '$declarations';
 import { IDL } from '@dfinity/candid';
 import { arrayOfNumberToUint8Array, assertNonNullish, fromNullable } from '@dfinity/utils';
 import type { Collection, Key, RawUserId } from '@junobuild/functions';
@@ -27,7 +27,7 @@ export const callAndSaveVersion = async ({
 	collection: Collection;
 	key: Key;
 }) => {
-	const result = await call<[] | [Doc]>({
+	const result = await call<[] | [SatelliteDid.Doc]>({
 		canisterId: id(),
 		method: 'get_doc',
 		args: [

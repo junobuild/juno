@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { nonNullish } from '@dfinity/utils';
-	import type { Satellite } from '$declarations/mission_control/mission_control.did';
+	import type { MissionControlDid } from '$declarations';
 	import CanisterWarnings from '$lib/components/canister/CanisterWarnings.svelte';
 	import LoaderWarnings from '$lib/components/warning/LoaderWarnings.svelte';
 	import VersionWarnings from '$lib/components/warning/VersionWarnings.svelte';
@@ -9,7 +9,7 @@
 	import { i18n } from '$lib/stores/i18n.store';
 
 	interface Props {
-		satellite?: Satellite | undefined;
+		satellite?: MissionControlDid.Satellite | undefined;
 	}
 
 	let { satellite = undefined }: Props = $props();

@@ -1,11 +1,4 @@
-import type {
-	DelDoc,
-	Doc,
-	_SERVICE as SatelliteActor,
-	SetAuthenticationConfig,
-	SetDoc
-} from '$declarations/satellite/satellite.did';
-import { idlFactory as idlFactorSatellite } from '$declarations/satellite/satellite.factory.did';
+import { type SatelliteActor, type SatelliteDid, idlFactorySatellite } from '$declarations';
 import type { Identity } from '@dfinity/agent';
 import { Ed25519KeyIdentity } from '@dfinity/identity';
 import { type Actor, PocketIc } from '@dfinity/pic';
@@ -44,7 +37,7 @@ describe('Satellite > Allowed Callers', () => {
 		pic = await PocketIc.create(inject('PIC_URL'));
 
 		const { actor: c } = await pic.setupCanister<SatelliteActor>({
-			idlFactory: idlFactorSatellite,
+			idlFactory: idlFactorySatellite,
 			wasm: SATELLITE_WASM_PATH,
 			arg: controllersInitArgs(controller),
 			sender: controller.getPrincipal()
@@ -76,7 +69,7 @@ describe('Satellite > Allowed Callers', () => {
 
 		const { set_auth_config } = actor;
 
-		const config: SetAuthenticationConfig = {
+		const config: SatelliteDid.SetAuthenticationConfig = {
 			internet_identity: [],
 			rules: [
 				{
@@ -94,7 +87,7 @@ describe('Satellite > Allowed Callers', () => {
 
 		const { set_auth_config } = actor;
 
-		const config: SetAuthenticationConfig = {
+		const config: SatelliteDid.SetAuthenticationConfig = {
 			internet_identity: [],
 			rules: [
 				{
@@ -112,7 +105,7 @@ describe('Satellite > Allowed Callers', () => {
 
 		const { set_auth_config } = actor;
 
-		const config: SetAuthenticationConfig = {
+		const config: SatelliteDid.SetAuthenticationConfig = {
 			internet_identity: [],
 			rules: [],
 			version: nextConfigVersion()
@@ -212,7 +205,7 @@ describe('Satellite > Allowed Callers', () => {
 			describe('set document', () => {
 				const createDoc = async ({
 					actorIdentity
-				}: { actorIdentity?: Identity } = {}): Promise<Doc> => {
+				}: { actorIdentity?: Identity } = {}): Promise<SatelliteDid.Doc> => {
 					actor.setIdentity(actorIdentity ?? user);
 
 					const { set_doc } = actor;
@@ -249,7 +242,7 @@ describe('Satellite > Allowed Callers', () => {
 
 					const { set_many_docs } = actor;
 
-					const data: SetDoc = {
+					const data: SatelliteDid.SetDoc = {
 						data: await toArray({
 							hello: 'world'
 						}),
@@ -310,7 +303,7 @@ describe('Satellite > Allowed Callers', () => {
 
 					const { del_many_docs } = actor;
 
-					const data: DelDoc = {
+					const data: SatelliteDid.DelDoc = {
 						version: toNullable()
 					};
 
@@ -790,7 +783,7 @@ describe('Satellite > Allowed Callers', () => {
 			describe('set document', () => {
 				const createDoc = async ({
 					actorIdentity
-				}: { actorIdentity?: Identity } = {}): Promise<Doc> => {
+				}: { actorIdentity?: Identity } = {}): Promise<SatelliteDid.Doc> => {
 					actor.setIdentity(actorIdentity ?? user);
 
 					const { set_doc } = actor;
@@ -855,7 +848,7 @@ describe('Satellite > Allowed Callers', () => {
 
 					const { set_many_docs } = actor;
 
-					const data: SetDoc = {
+					const data: SatelliteDid.SetDoc = {
 						data: await toArray({
 							hello: 'world'
 						}),
@@ -968,7 +961,7 @@ describe('Satellite > Allowed Callers', () => {
 
 					const { del_many_docs } = actor;
 
-					const data: DelDoc = {
+					const data: SatelliteDid.DelDoc = {
 						version: toNullable()
 					};
 

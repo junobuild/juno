@@ -1,9 +1,9 @@
-import type { OrbiterSatelliteConfig } from '$declarations/orbiter/orbiter.did';
+import type { OrbiterDid } from '$declarations';
 import type { OrbiterIdText } from '$lib/types/orbiter';
 import type { Principal } from '@dfinity/principal';
 import { type Readable, writable } from 'svelte/store';
 
-export type OrbiterConfigs = [Principal, OrbiterSatelliteConfig][];
+export type OrbiterConfigs = [Principal, OrbiterDid.OrbiterSatelliteConfig][];
 
 export type OrbitersConfigsData = Record<OrbiterIdText, OrbiterConfigs>;
 

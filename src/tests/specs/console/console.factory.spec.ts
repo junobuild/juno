@@ -1,11 +1,14 @@
-import type { _SERVICE as ConsoleActor } from '$declarations/console/console.did';
-import { idlFactory as idlFactoryConsole } from '$declarations/console/console.factory.did';
-import type { _SERVICE as MissionControlActor } from '$declarations/mission_control/mission_control.did';
-import { idlFactory as idlFactoryMissionControl } from '$declarations/mission_control/mission_control.factory.did';
-import type { _SERVICE as OrbiterActor } from '$declarations/orbiter/orbiter.did';
-import { idlFactory as idlFactoryOrbiter } from '$declarations/orbiter/orbiter.factory.did';
-import type { Controller, _SERVICE as SatelliteActor } from '$declarations/satellite/satellite.did';
-import { idlFactory as idlFactorySatellite } from '$declarations/satellite/satellite.factory.did';
+import {
+	idlFactoryConsole,
+	idlFactoryMissionControl,
+	idlFactoryOrbiter,
+	idlFactorySatellite,
+	type ConsoleActor,
+	type ConsoleDid,
+	type MissionControlActor,
+	type OrbiterActor,
+	type SatelliteActor
+} from '$declarations';
 import { ONE_YEAR, THREE_MONTHS } from '$lib/constants/canister.constants';
 import type { Identity } from '@dfinity/agent';
 import { Ed25519KeyIdentity } from '@dfinity/identity';
@@ -100,7 +103,7 @@ describe('Console', () => {
 	}: {
 		user: Identity;
 		missionControlId: Principal;
-		controllers: [Principal, Controller][];
+		controllers: [Principal, ConsoleDid.Controller][];
 	}) => {
 		const maybeUser = controllers.find(
 			([controller]) => controller.toText() === user.getPrincipal().toText()

@@ -1,4 +1,4 @@
-import type { CollectionType, Rule, SetRule } from '$declarations/satellite/satellite.did';
+import type { SatelliteDid } from '$declarations';
 import { getRule, setRule as setRuleApi } from '$lib/api/satellites.api';
 import { DEFAULT_RATE_CONFIG_TIME_PER_TOKEN_NS } from '$lib/constants/data.constants';
 import {
@@ -33,19 +33,19 @@ export const setRule = async ({
 }: {
 	satelliteId: Principal;
 	collection: string;
-	type: CollectionType;
+	type: SatelliteDid.CollectionType;
 	identity: OptionIdentity;
 	read: PermissionText;
 	write: PermissionText;
 	memory: MemoryText;
-	rule: Rule | undefined;
+	rule: SatelliteDid.Rule | undefined;
 	maxSize: number | undefined;
 	maxCapacity: number | undefined;
 	maxChanges: number | undefined;
 	maxTokens: number | undefined;
 	mutablePermissions: boolean;
 }) => {
-	const updateRule: SetRule = {
+	const updateRule: SatelliteDid.SetRule = {
 		read: permissionFromText(read),
 		write: permissionFromText(write),
 		version: isNullish(rule) ? [] : rule.version,
@@ -77,7 +77,7 @@ export const setRule = async ({
 export const getRuleUser = (params: {
 	satelliteId: Principal;
 	identity: OptionIdentity;
-}): Promise<{ result: 'success' | 'error' | 'skip'; rule?: Rule | undefined }> =>
+}): Promise<{ result: 'success' | 'error' | 'skip'; rule?: SatelliteDid.Rule | undefined }> =>
 	getRuleForCollection({
 		...params,
 		requiredMinVersion: SATELLITE_v0_0_21,
@@ -88,7 +88,7 @@ export const getRuleUser = (params: {
 export const getRuleDapp = (params: {
 	satelliteId: Principal;
 	identity: OptionIdentity;
-}): Promise<{ result: 'success' | 'error' | 'skip'; rule?: Rule | undefined }> =>
+}): Promise<{ result: 'success' | 'error' | 'skip'; rule?: SatelliteDid.Rule | undefined }> =>
 	getRuleForCollection({
 		...params,
 		requiredMinVersion: SATELLITE_v0_1_4,
@@ -107,8 +107,8 @@ const getRuleForCollection = async ({
 	identity: OptionIdentity;
 	requiredMinVersion: string;
 	collection: string;
-	type: CollectionType;
-}): Promise<{ result: 'success' | 'error' | 'skip'; rule?: Rule | undefined }> => {
+	type: SatelliteDid.CollectionType;
+}): Promise<{ result: 'success' | 'error' | 'skip'; rule?: SatelliteDid.Rule | undefined }> => {
 	const featureSupported = isSatelliteFeatureSupported({
 		satelliteId,
 		requiredMinVersion

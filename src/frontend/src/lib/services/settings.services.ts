@@ -1,4 +1,4 @@
-import type { canister_settings } from '$declarations/ic/ic.did';
+import type { ICDid } from '$declarations';
 import { canisterUpdateSettings } from '$lib/api/ic.api';
 import { i18n } from '$lib/stores/i18n.store';
 import { toasts } from '$lib/stores/toasts.store';
@@ -41,7 +41,7 @@ export const updateSettings = async ({
 	const keepCurrentFreezingThreshold = freezingThreshold === currentSettings.freezingThreshold;
 	const updateFreezingThreshold = !keepCurrentFreezingThreshold;
 
-	const updateSettings: canister_settings = {
+	const updateSettings: ICDid.canister_settings = {
 		freezing_threshold: toNullable(keepCurrentFreezingThreshold ? undefined : freezingThreshold),
 		controllers: toNullable(),
 		log_visibility: toNullable(

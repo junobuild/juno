@@ -1,8 +1,7 @@
 <script lang="ts">
 	import { isNullish, nonNullish } from '@dfinity/utils';
 	import { getContext, setContext, untrack } from 'svelte';
-	import type { Satellite } from '$declarations/mission_control/mission_control.did';
-	import type { AssetNoContent } from '$declarations/satellite/satellite.did';
+	import type { SatelliteDid, MissionControlDid } from '$declarations';
 	import CdnAsset from '$lib/components/cdn/list/CdnAsset.svelte';
 	import DataCount from '$lib/components/data/DataCount.svelte';
 	import DataPaginator from '$lib/components/data/DataPaginator.svelte';
@@ -16,7 +15,7 @@
 	import { PAGINATION_CONTEXT_KEY, type PaginationContext } from '$lib/types/pagination.context';
 
 	interface Props {
-		satellite: Satellite;
+		satellite: MissionControlDid.Satellite;
 	}
 
 	let { satellite }: Props = $props();
@@ -59,7 +58,7 @@
 		}
 	};
 
-	setContext<PaginationContext<AssetNoContent>>(PAGINATION_CONTEXT_KEY, {
+	setContext<PaginationContext<SatelliteDid.AssetNoContent>>(PAGINATION_CONTEXT_KEY, {
 		...initPaginationContext(),
 		list
 	});
@@ -68,9 +67,9 @@
 		store: paginationStore,
 		setItems,
 		startAfter
-	}: PaginationContext<AssetNoContent> = getContext<PaginationContext<AssetNoContent>>(
-		PAGINATION_CONTEXT_KEY
-	);
+	}: PaginationContext<SatelliteDid.AssetNoContent> = getContext<
+		PaginationContext<SatelliteDid.AssetNoContent>
+	>(PAGINATION_CONTEXT_KEY);
 
 	$effect(() => {
 		$versionStore;

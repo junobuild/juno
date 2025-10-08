@@ -2,7 +2,7 @@
 	import type { Principal } from '@dfinity/principal';
 	import type { Snippet } from 'svelte';
 	import { fade } from 'svelte/transition';
-	import type { Orbiter, Satellite } from '$declarations/mission_control/mission_control.did';
+	import type { MissionControlDid } from '$declarations';
 	import SegmentsTable from '$lib/components/segments/SegmentsTable.svelte';
 	import { isBusy } from '$lib/stores/busy.store';
 	import { i18n } from '$lib/stores/i18n.store';
@@ -10,8 +10,8 @@
 
 	interface Props {
 		missionControlId: MissionControlId;
-		selectedSatellites: [Principal, Satellite][];
-		selectedOrbiters: [Principal, Orbiter][];
+		selectedSatellites: [Principal, MissionControlDid.Satellite][];
+		selectedOrbiters: [Principal, MissionControlDid.Orbiter][];
 		onlySyncedSegments?: boolean;
 		oncontinue: () => void;
 		children: Snippet;

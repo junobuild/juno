@@ -1,4 +1,4 @@
-import type { MissionControl } from '$declarations/console/console.did';
+import type { ConsoleDid } from '$declarations';
 import {
 	getMissionControl as getMissionControlApi,
 	initMissionControl as initMissionControlApi
@@ -116,7 +116,7 @@ export const getOrInitMissionControl = async ({
 	identity
 }: {
 	identity: Identity;
-}): Promise<{ missionControl: MissionControl } & Certified> => {
+}): Promise<{ missionControl: ConsoleDid.MissionControl } & Certified> => {
 	const existingMissionControl = await getMissionControlApi({ identity, certified: false });
 
 	if (isNullish(existingMissionControl)) {

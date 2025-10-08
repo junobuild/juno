@@ -1,5 +1,4 @@
-import type { canister_log_record } from '$declarations/ic/ic.did';
-import type { Doc } from '$declarations/satellite/satellite.did';
+import type { ICDid, SatelliteDid } from '$declarations';
 import { canisterLogs as canisterLogsApi } from '$lib/api/ic.api';
 import { listDocs } from '$lib/api/satellites.api';
 import { SATELLITE_v0_0_16 } from '$lib/constants/version.constants';
@@ -85,9 +84,10 @@ const functionLogs = async ({
 		...rest
 	});
 
-	const mapLog = async ([key, { data, created_at: timestamp }]: [string, Doc]): Promise<
-		[string, Log]
-	> => {
+	const mapLog = async ([key, { data, created_at: timestamp }]: [
+		string,
+		SatelliteDid.Doc
+	]): Promise<[string, Log]> => {
 		const { message, data: msgData, level }: LogDataDid = await fromArray(data);
 
 		return [
@@ -114,7 +114,7 @@ const canisterLogs = async (params: {
 		idx,
 		timestamp_nanos: timestamp,
 		content
-	}: canister_log_record): Promise<[string, Log]> => {
+	}: ICDid.canister_log_record): Promise<[string, Log]> => {
 		const blob: Blob = new Blob([
 			content instanceof Uint8Array ? content : new Uint8Array(content)
 		]);

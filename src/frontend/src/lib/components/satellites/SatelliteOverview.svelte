@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { fromNullishNullable } from '@dfinity/utils';
 	import { onMount } from 'svelte';
-	import type { Satellite } from '$declarations/mission_control/mission_control.did';
+	import type { MissionControlDid } from '$declarations';
 	import CanisterOverview from '$lib/components/canister/CanisterOverview.svelte';
 	import CanisterSubnet from '$lib/components/canister/CanisterSubnet.svelte';
 	import CanisterSyncData from '$lib/components/canister/CanisterSyncData.svelte';
@@ -21,7 +21,7 @@
 	import type { SatelliteIdText } from '$lib/types/satellite';
 
 	interface Props {
-		satellite: Satellite;
+		satellite: MissionControlDid.Satellite;
 	}
 
 	let { satellite }: Props = $props();

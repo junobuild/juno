@@ -2,7 +2,7 @@
 	import type { Principal } from '@dfinity/principal';
 	import { fromNullable, isNullish, nonNullish, fromNullishNullable } from '@dfinity/utils';
 	import { getContext } from 'svelte';
-	import type { AssetNoContent } from '$declarations/satellite/satellite.did';
+	import type { SatelliteDid } from '$declarations';
 	import { deleteAsset } from '$lib/api/satellites.api';
 	import AssetUpload from '$lib/components/assets/AssetUpload.svelte';
 	import DataHeader from '$lib/components/data/DataHeader.svelte';
@@ -19,17 +19,17 @@
 	import { formatToDate } from '$lib/utils/date.utils';
 	import { satelliteUrl } from '$lib/utils/satellite.utils';
 
-	const { store, resetData }: DataContext<AssetNoContent> =
-		getContext<DataContext<AssetNoContent>>(DATA_CONTEXT_KEY);
+	const { store, resetData }: DataContext<SatelliteDid.AssetNoContent> =
+		getContext<DataContext<SatelliteDid.AssetNoContent>>(DATA_CONTEXT_KEY);
 
 	const { store: rulesStore }: RulesContext = getContext<RulesContext>(RULES_CONTEXT_KEY);
 
-	const { resetPage, list }: PaginationContext<AssetNoContent> =
-		getContext<PaginationContext<AssetNoContent>>(PAGINATION_CONTEXT_KEY);
+	const { resetPage, list }: PaginationContext<SatelliteDid.AssetNoContent> =
+		getContext<PaginationContext<SatelliteDid.AssetNoContent>>(PAGINATION_CONTEXT_KEY);
 
 	let key: string | undefined = $derived($store?.key);
 
-	let asset: AssetNoContent | undefined = $derived($store?.data);
+	let asset = $derived($store?.data);
 
 	let owner: Principal | undefined = $derived(asset?.key.owner);
 

@@ -1,4 +1,4 @@
-import type { Satellite } from '$declarations/mission_control/mission_control.did';
+import type { MissionControlDid } from '$declarations';
 import { pageSatelliteId } from '$lib/derived/page.derived.svelte';
 import { satellitesStore } from '$lib/derived/satellites.derived';
 import type { SatelliteUi } from '$lib/types/satellite';
@@ -7,7 +7,7 @@ import { satelliteMetadata } from '$lib/utils/satellite.utils';
 import { isNullish } from '@dfinity/utils';
 import { derived, type Readable } from 'svelte/store';
 
-export const satelliteStore: Readable<Option<Satellite>> = derived(
+export const satelliteStore: Readable<Option<MissionControlDid.Satellite>> = derived(
 	[satellitesStore, pageSatelliteId],
 	([$satellites, $pageSatelliteId]) => {
 		if (isNullish($pageSatelliteId)) {

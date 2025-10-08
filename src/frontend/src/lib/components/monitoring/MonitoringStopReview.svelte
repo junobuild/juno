@@ -1,6 +1,6 @@
 <script lang="ts">
 	import type { Principal } from '@dfinity/principal';
-	import type { Orbiter, Satellite } from '$declarations/mission_control/mission_control.did';
+	import type { MissionControlDid } from '$declarations';
 	import MonitoringSelectedModules from '$lib/components/monitoring/MonitoringSelectedModules.svelte';
 	import MonitoringStepReview from '$lib/components/monitoring/MonitoringStepReview.svelte';
 	import Warning from '$lib/components/ui/Warning.svelte';
@@ -8,8 +8,8 @@
 
 	interface Props {
 		stopMissionControl: boolean | undefined;
-		selectedSatellites: [Principal, Satellite][];
-		selectedOrbiters: [Principal, Orbiter][];
+		selectedSatellites: [Principal, MissionControlDid.Satellite][];
+		selectedOrbiters: [Principal, MissionControlDid.Orbiter][];
 		onback: () => void;
 		onsubmit: ($event: MouseEvent | TouchEvent) => Promise<void>;
 	}

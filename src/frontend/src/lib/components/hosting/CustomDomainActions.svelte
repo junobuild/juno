@@ -1,11 +1,7 @@
 <script lang="ts">
 	import { isNullish, nonNullish, fromNullishNullable } from '@dfinity/utils';
 	import { run, stopPropagation } from 'svelte/legacy';
-	import type { Satellite } from '$declarations/mission_control/mission_control.did';
-	import type {
-		AuthenticationConfig,
-		CustomDomain as CustomDomainType
-	} from '$declarations/satellite/satellite.did';
+	import type { SatelliteDid, MissionControlDid } from '$declarations';
 	import { setAuthConfig } from '$lib/api/satellites.api';
 	import IconWarning from '$lib/components/icons/IconWarning.svelte';
 	import ButtonTableAction from '$lib/components/ui/ButtonTableAction.svelte';
@@ -24,10 +20,10 @@
 	import { i18nFormat } from '$lib/utils/i18n.utils';
 
 	interface Props {
-		satellite: Satellite;
-		customDomain: [string, CustomDomainType] | undefined;
+		satellite: MissionControlDid.Satellite;
+		customDomain: [string, SatelliteDid.CustomDomain] | undefined;
 		displayState: Option<string>;
-		config: AuthenticationConfig | undefined;
+		config: SatelliteDid.AuthenticationConfig | undefined;
 	}
 
 	let { satellite, customDomain, displayState, config }: Props = $props();

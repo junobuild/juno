@@ -1,4 +1,4 @@
-import type { _SERVICE as SputnikActor } from '$declarations/sputnik/sputnik.did';
+import type { SputnikActor } from '$declarations';
 import { Ed25519KeyIdentity } from '@dfinity/identity';
 import type { Actor } from '@dfinity/pic';
 import { toNullable } from '@dfinity/utils';
@@ -12,7 +12,7 @@ import {
 	mockSputnikVersionKey
 } from '../mocks/sputnik.mocks';
 import type { SetupFixtureCanister } from './fixtures-tests.utils';
-import { fetchLogs, type IcMgmtLog } from './mgmt-tests.utils';
+import { type IcMgmtLog, fetchLogs } from './mgmt-tests.utils';
 import { tick } from './pic-tests.utils';
 import { createDoc as createDocUtils } from './satellite-doc-tests.utils';
 import { waitServerlessFunction } from './satellite-extended-tests.utils';

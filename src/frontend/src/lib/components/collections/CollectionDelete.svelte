@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { isNullish } from '@dfinity/utils';
 	import { createEventDispatcher, getContext } from 'svelte';
-	import type { Rule, CollectionType } from '$declarations/satellite/satellite.did';
+	import type { SatelliteDid } from '$declarations';
 	import { deleteRule } from '$lib/api/satellites.api';
 	import Confirmation from '$lib/components/core/Confirmation.svelte';
 	import Value from '$lib/components/ui/Value.svelte';
@@ -14,8 +14,8 @@
 
 	interface Props {
 		collection: string;
-		rule: Rule | undefined;
-		type: CollectionType;
+		rule: SatelliteDid.Rule | undefined;
+		type: SatelliteDid.CollectionType;
 	}
 
 	let { collection, rule, type }: Props = $props();

@@ -1,14 +1,14 @@
 <script lang="ts">
 	import { untrack } from 'svelte';
 	import { fade } from 'svelte/transition';
-	import type { Satellite } from '$declarations/mission_control/mission_control.did';
+	import type { MissionControlDid } from '$declarations';
 	import { countHostingAssets } from '$lib/services/hosting.storage.services';
 	import { authStore } from '$lib/stores/auth.store';
 	import { i18n } from '$lib/stores/i18n.store';
 	import { versionStore } from '$lib/stores/version.store';
 
 	interface Props {
-		satellite: Satellite;
+		satellite: MissionControlDid.Satellite;
 	}
 
 	let { satellite }: Props = $props();

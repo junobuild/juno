@@ -1,5 +1,4 @@
-import type { Rule, _SERVICE as SatelliteActor } from '$declarations/satellite/satellite.did';
-import { idlFactory as idlFactorSatellite } from '$declarations/satellite/satellite.factory.did';
+import { idlFactorySatellite, type SatelliteActor, type SatelliteDid } from '$declarations';
 import { Ed25519KeyIdentity } from '@dfinity/identity';
 import { PocketIc, type Actor } from '@dfinity/pic';
 import type { Principal } from '@dfinity/principal';
@@ -24,7 +23,7 @@ describe('Satellite > Upgrade > v0.1.3', () => {
 		const destination = await downloadSatellite(PREVIOUS_VERSION);
 
 		const { actor: c, canisterId: cId } = await pic.setupCanister<SatelliteActor>({
-			idlFactory: idlFactorSatellite,
+			idlFactory: idlFactorySatellite,
 			wasm: destination,
 			arg: controllersInitArgs(controller),
 			sender: controller.getPrincipal()
@@ -43,7 +42,7 @@ describe('Satellite > Upgrade > v0.1.3', () => {
 		collection,
 		read: expectedRead,
 		write: expectedWrite
-	}: { collection: string } & Pick<Rule, 'read' | 'write'>) => {
+	}: { collection: string } & Pick<SatelliteDid.Rule, 'read' | 'write'>) => {
 		const { get_rule: getRuleBefore } = actor;
 
 		const beforeUpgrade = await getRuleBefore({ Db: null }, collection);
@@ -52,7 +51,7 @@ describe('Satellite > Upgrade > v0.1.3', () => {
 
 		await upgradeSatelliteVersion({ pic, canisterId, controller, version: '0.1.3' });
 
-		const newActor = pic.createActor<SatelliteActor>(idlFactorSatellite, canisterId);
+		const newActor = pic.createActor<SatelliteActor>(idlFactorySatellite, canisterId);
 		newActor.setIdentity(controller);
 
 		const { get_rule: getRuleAfter } = newActor;

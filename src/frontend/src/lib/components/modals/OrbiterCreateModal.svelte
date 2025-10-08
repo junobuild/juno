@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { isNullish, nonNullish } from '@dfinity/utils';
 	import type { PrincipalText } from '@dfinity/zod-schemas';
-	import type { CyclesMonitoringStrategy } from '$declarations/mission_control/mission_control.did';
+	import type { MissionControlDid } from '$declarations';
 	import CanisterAdvancedOptions from '$lib/components/canister/CanisterAdvancedOptions.svelte';
 	import ProgressCreate from '$lib/components/canister/ProgressCreate.svelte';
 	import CreditsGuard from '$lib/components/guards/CreditsGuard.svelte';
@@ -63,8 +63,10 @@
 		setTimeout(() => (step = 'ready'), 500);
 	};
 
-	let subnetId: PrincipalText | undefined = $state();
-	let monitoringStrategy: CyclesMonitoringStrategy | undefined = $state();
+	let subnetId = $state<PrincipalText | undefined>(undefined);
+	let monitoringStrategy = $state<MissionControlDid.CyclesMonitoringStrategy | undefined>(
+		undefined
+	);
 </script>
 
 <Modal {onclose}>

@@ -1,4 +1,4 @@
-import type { AssetNoContent } from '$declarations/satellite/satellite.did';
+import type { SatelliteDid } from '$declarations';
 import { instantSatelliteVersion } from '$lib/services/feature.services';
 import { downloadWasmFromDevCdn } from '$lib/services/upgrade/upgrade.download.services';
 import { i18n } from '$lib/stores/i18n.store';
@@ -19,7 +19,7 @@ export const prepareWasmUpgrade = async ({
 	satelliteId,
 	identity
 }: {
-	asset: AssetNoContent;
+	asset: SatelliteDid.AssetNoContent;
 	satelliteId: Principal;
 	identity: OptionIdentity;
 }): Promise<{ result: 'success'; wasm: Wasm } | { result: 'error'; err?: unknown }> => {

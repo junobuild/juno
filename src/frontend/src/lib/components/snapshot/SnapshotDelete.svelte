@@ -2,7 +2,7 @@
 	import { encodeSnapshotId } from '@dfinity/ic-management';
 	import type { Principal } from '@dfinity/principal';
 	import { isNullish, nonNullish } from '@dfinity/utils';
-	import type { snapshot } from '$declarations/ic/ic.did';
+	import type { ICDid } from '$declarations';
 	import Popover from '$lib/components/ui/Popover.svelte';
 	import { deleteSnapshot } from '$lib/services/snapshots.services';
 	import { authStore } from '$lib/stores/auth.store';
@@ -15,7 +15,7 @@
 	interface Props {
 		visible?: boolean;
 		segmentLabel: string;
-		existingSnapshot: snapshot | undefined;
+		existingSnapshot: ICDid.snapshot | undefined;
 		canisterId: Principal;
 	}
 

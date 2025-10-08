@@ -1,14 +1,16 @@
-import type { _SERVICE as ConsoleActor } from '$declarations/console/console.did';
-import { idlFactory as idlFactoryCertifiedConsole } from '$declarations/console/console.factory.certified.did';
-import { idlFactory as idlFactoryConsole } from '$declarations/console/console.factory.did';
-import type { _SERVICE as MissionControlActor } from '$declarations/mission_control/mission_control.did';
-import { idlFactory as idlFactoryMissionControl } from '$declarations/mission_control/mission_control.factory.did';
-import type { _SERVICE as ObservatoryActor } from '$declarations/observatory/observatory.did';
-import { idlFactory as idlFactoryObservatory } from '$declarations/observatory/observatory.factory.did';
-import type { _SERVICE as OrbiterActor } from '$declarations/orbiter/orbiter.did';
-import { idlFactory as idlFactoryOrbiter } from '$declarations/orbiter/orbiter.factory.did';
-import type { _SERVICE as SatelliteActor } from '$declarations/satellite/satellite.did';
-import { idlFactory as idlFactorySatellite } from '$declarations/satellite/satellite.factory.did';
+import {
+	type ConsoleActor,
+	type MissionControlActor,
+	type ObservatoryActor,
+	type OrbiterActor,
+	type SatelliteActor,
+	idlFactoryCertifiedConsole,
+	idlFactoryConsole,
+	idlFactoryMissionControl,
+	idlFactoryObservatory,
+	idlFactoryOrbiter,
+	idlFactorySatellite
+} from '$declarations';
 import { ActorApi, type GetActorParams } from '$lib/api/actors/actor.api';
 import { CONSOLE_CANISTER_ID, OBSERVATORY_CANISTER_ID } from '$lib/constants/app.constants';
 import type { OptionIdentity } from '$lib/types/itentity';

@@ -2,8 +2,7 @@
 	import { fromNullable, nonNullish } from '@dfinity/utils';
 	import { onMount } from 'svelte';
 	import { fade } from 'svelte/transition';
-	import type { Satellite } from '$declarations/mission_control/mission_control.did';
-	import type { Rule } from '$declarations/satellite/satellite.did';
+	import type { SatelliteDid, MissionControlDid } from '$declarations';
 	import HostingSwitchMemory from '$lib/components/hosting/HostingSwitchMemory.svelte';
 	import SkeletonText from '$lib/components/ui/SkeletonText.svelte';
 	import Value from '$lib/components/ui/Value.svelte';
@@ -12,14 +11,14 @@
 	import { i18n } from '$lib/stores/i18n.store';
 
 	interface Props {
-		satellite: Satellite;
+		satellite: MissionControlDid.Satellite;
 	}
 
 	let { satellite }: Props = $props();
 
 	let satelliteId = $derived(satellite.satellite_id);
 
-	let rule = $state<Rule | undefined>(undefined);
+	let rule = $state<SatelliteDid.Rule | undefined>(undefined);
 	let supportSettings = $state(false);
 	let loading = $state(true);
 

@@ -1,7 +1,7 @@
 <script lang="ts">
 	import type { Principal } from '@dfinity/principal';
 	import { nonNullish } from '@dfinity/utils';
-	import type { Controller } from '$declarations/mission_control/mission_control.did';
+	import type { MissionControlDid } from '$declarations';
 	import {
 		deleteMissionControlController,
 		listMissionControlControllers,
@@ -19,7 +19,7 @@
 
 	let { missionControlId }: Props = $props();
 
-	const list = (): Promise<[Principal, Controller][]> =>
+	const list = (): Promise<[Principal, MissionControlDid.Controller][]> =>
 		listMissionControlControllers({ missionControlId, identity: $authStore.identity });
 
 	const remove = (params: {
@@ -33,7 +33,7 @@
 		} & SetControllerParams
 	): Promise<void> => setMissionControlController({ ...params, identity: $authStore.identity });
 
-	const pseudoAdminController: Controller = {
+	const pseudoAdminController: MissionControlDid.Controller = {
 		created_at: 0n,
 		updated_at: 0n,
 		expires_at: [],
@@ -41,10 +41,15 @@
 		scope: { Admin: null }
 	};
 
-	let extraControllers = $derived<[Principal, Controller][]>([
+	let extraControllers = $derived<[Principal, MissionControlDid.Controller][]>([
 		[missionControlId, pseudoAdminController],
 		...(nonNullish($authStore.identity)
-			? [[$authStore.identity.getPrincipal(), pseudoAdminController] as [Principal, Controller]]
+			? [
+					[$authStore.identity.getPrincipal(), pseudoAdminController] as [
+						Principal,
+						MissionControlDid.Controller
+					]
+				]
 			: [])
 	]);
 </script>

@@ -1,6 +1,6 @@
 <script lang="ts">
 	import type { Principal } from '@dfinity/principal';
-	import type { Controller } from '$declarations/mission_control/mission_control.did';
+	import type { MissionControlDid } from '$declarations';
 	import { deleteOrbitersController, setOrbitersController } from '$lib/api/mission-control.api';
 	import { listOrbiterControllers } from '$lib/api/orbiter.api';
 	import Controllers from '$lib/components/controllers/Controllers.svelte';
@@ -15,7 +15,7 @@
 
 	let { orbiterId }: Props = $props();
 
-	const list = (): Promise<[Principal, Controller][]> =>
+	const list = (): Promise<[Principal, MissionControlDid.Controller][]> =>
 		listOrbiterControllers({ orbiterId, identity: $authStore.identity });
 
 	const remove = (params: {

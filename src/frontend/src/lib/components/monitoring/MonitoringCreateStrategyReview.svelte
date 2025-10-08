@@ -1,11 +1,7 @@
 <script lang="ts">
 	import type { Principal } from '@dfinity/principal';
 	import { nonNullish, notEmptyString } from '@dfinity/utils';
-	import type {
-		CyclesMonitoringStrategy,
-		Orbiter,
-		Satellite
-	} from '$declarations/mission_control/mission_control.did';
+	import type { MissionControlDid } from '$declarations';
 	import MonitoringSelectedModules from '$lib/components/monitoring/MonitoringSelectedModules.svelte';
 	import MonitoringStepReview from '$lib/components/monitoring/MonitoringStepReview.svelte';
 	import Value from '$lib/components/ui/Value.svelte';
@@ -14,16 +10,19 @@
 	import { formatTCycles } from '$lib/utils/cycles.utils';
 
 	interface Props {
-		selectedSatellites: [Principal, Satellite][];
-		selectedOrbiters: [Principal, Orbiter][];
+		selectedSatellites: [Principal, MissionControlDid.Satellite][];
+		selectedOrbiters: [Principal, MissionControlDid.Orbiter][];
 		minCycles: bigint | undefined;
 		fundCycles: bigint | undefined;
 		saveAsDefaultStrategy: boolean;
 		missionControlMinCycles: bigint | undefined;
 		missionControlFundCycles: bigint | undefined;
-		missionControl: { monitored: boolean; strategy: CyclesMonitoringStrategy | undefined };
+		missionControl: {
+			monitored: boolean;
+			strategy: MissionControlDid.CyclesMonitoringStrategy | undefined;
+		};
 		userEmail: Option<string>;
-		reuseStrategy: CyclesMonitoringStrategy | undefined;
+		reuseStrategy: MissionControlDid.CyclesMonitoringStrategy | undefined;
 		onback: () => void;
 		onsubmit: ($event: MouseEvent | TouchEvent) => Promise<void>;
 	}

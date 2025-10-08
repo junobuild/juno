@@ -1,11 +1,11 @@
 <script lang="ts">
-	import type { Orbiter } from '$declarations/mission_control/mission_control.did';
+	import type { MissionControlDid } from '$declarations';
 	import SegmentDetach from '$lib/components/canister/SegmentDetach.svelte';
 	import OrbiterReloadVersion from '$lib/components/orbiter/OrbiterReloadVersion.svelte';
 	import SegmentActions from '$lib/components/segments/SegmentActions.svelte';
 
 	interface Props {
-		orbiter: Orbiter;
+		orbiter: MissionControlDid.Orbiter;
 		monitoringEnabled: boolean;
 	}
 

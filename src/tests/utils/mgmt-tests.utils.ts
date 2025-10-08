@@ -1,5 +1,4 @@
-import type { _SERVICE as IcActor, canister_log_record } from '$declarations/ic/ic.did';
-import { idlFactory as idlFactorIc } from '$declarations/ic/ic.factory.did';
+import { type ICActor, type ICDid, idlFactoryIC } from '$declarations';
 import type { Identity } from '@dfinity/agent';
 import type { PocketIc } from '@dfinity/pic';
 import { Principal } from '@dfinity/principal';
@@ -18,7 +17,7 @@ export const fetchLogs = async ({
 	controller: Identity;
 	canisterId: Principal;
 }): Promise<[string, IcMgmtLog][]> => {
-	const mgmtActor = pic.createActor<IcActor>(idlFactorIc, Principal.fromText('aaaaa-aa'));
+	const mgmtActor = pic.createActor<ICActor>(idlFactoryIC, Principal.fromText('aaaaa-aa'));
 	mgmtActor.setIdentity(controller);
 
 	const { fetch_canister_logs } = mgmtActor;
@@ -29,7 +28,7 @@ export const fetchLogs = async ({
 		idx,
 		timestamp_nanos: timestamp,
 		content
-	}: canister_log_record): Promise<[string, IcMgmtLog]> => {
+	}: ICDid.canister_log_record): Promise<[string, IcMgmtLog]> => {
 		const blob: Blob = new Blob([
 			content instanceof Uint8Array ? content : new Uint8Array(content)
 		]);

@@ -1,6 +1,4 @@
-import type { _SERVICE as OrbiterActor } from '$declarations/orbiter/orbiter.did';
-import { idlFactory as idlFactorOrbiter } from '$declarations/orbiter/orbiter.factory.did';
-import type { HttpRequest } from '$declarations/satellite/satellite.did';
+import { type OrbiterActor, type OrbiterDid, idlFactoryOrbiter } from '$declarations';
 import { Ed25519KeyIdentity } from '@dfinity/identity';
 import { type Actor, PocketIc } from '@dfinity/pic';
 import type { Principal } from '@dfinity/principal';
@@ -31,7 +29,7 @@ describe('Orbiter > HTTP > Routes', () => {
 		await pic.setTime(currentDate.getTime());
 
 		const { actor: c, canisterId: cId } = await pic.setupCanister<OrbiterActor>({
-			idlFactory: idlFactorOrbiter,
+			idlFactory: idlFactoryOrbiter,
 			wasm: ORBITER_WASM_PATH,
 			arg: controllersInitArgs(controller),
 			sender: controller.getPrincipal()
@@ -59,7 +57,7 @@ describe('Orbiter > HTTP > Routes', () => {
 				async (method) => {
 					const { http_request } = actor;
 
-					const request: HttpRequest = {
+					const request: OrbiterDid.HttpRequest = {
 						body,
 						certificate_version: toNullable(2),
 						headers: [],
@@ -103,7 +101,7 @@ describe('Orbiter > HTTP > Routes', () => {
 				async (method) => {
 					const { http_request } = actor;
 
-					const request: HttpRequest = {
+					const request: OrbiterDid.HttpRequest = {
 						body,
 						certificate_version: toNullable(2),
 						headers: [],
@@ -142,7 +140,7 @@ describe('Orbiter > HTTP > Routes', () => {
 					async (method) => {
 						const { http_request } = actor;
 
-						const request: HttpRequest = {
+						const request: OrbiterDid.HttpRequest = {
 							body,
 							certificate_version: toNullable(2),
 							headers: [],

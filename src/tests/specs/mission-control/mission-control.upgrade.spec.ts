@@ -1,11 +1,10 @@
-import type { _SERVICE as MissionControlActor_0_0_14 } from '$declarations/deprecated/mission_control-0-0-14.did';
-import { idlFactory as idlFactorMissionControl_0_0_14 } from '$declarations/deprecated/mission_control-0-0-14.factory.did';
-import type {
-	CyclesMonitoringStrategy,
-	_SERVICE as MissionControlActor,
-	MonitoringStartConfig
-} from '$declarations/mission_control/mission_control.did';
-import { idlFactory as idlFactorMissionControl } from '$declarations/mission_control/mission_control.factory.did';
+import {
+	type MissionControlActor,
+	type MissionControlActor0014,
+	type MissionControlDid,
+	idlFactoryMissionControl,
+	idlFactoryMissionControl0014
+} from '$declarations';
 import { Ed25519KeyIdentity } from '@dfinity/identity';
 import { type Actor, PocketIc } from '@dfinity/pic';
 import type { Principal } from '@dfinity/principal';
@@ -26,7 +25,7 @@ import { downloadMissionControl, MISSION_CONTROL_WASM_PATH } from '../../utils/s
 
 describe('Mission control > Upgrade', () => {
 	let pic: PocketIc;
-	let actor: Actor<MissionControlActor_0_0_14>;
+	let actor: Actor<MissionControlActor0014>;
 
 	let missionControlId: Principal;
 	let orbiterId: Principal;
@@ -41,8 +40,8 @@ describe('Mission control > Upgrade', () => {
 	const init = async (version: string) => {
 		const destination = await downloadMissionControl(version);
 
-		const { actor: c, canisterId: mId } = await pic.setupCanister<MissionControlActor_0_0_14>({
-			idlFactory: idlFactorMissionControl_0_0_14,
+		const { actor: c, canisterId: mId } = await pic.setupCanister<MissionControlActor0014>({
+			idlFactory: idlFactoryMissionControl0014,
 			wasm: destination,
 			arg: missionControlUserInitArgs(controller.getPrincipal()),
 			sender: controller.getPrincipal()
@@ -146,8 +145,8 @@ describe('Mission control > Upgrade', () => {
 
 				await upgrade0_0_14();
 
-				actor = pic.createActor<MissionControlActor_0_0_14>(
-					idlFactorMissionControl,
+				actor = pic.createActor<MissionControlActor0014>(
+					idlFactoryMissionControl,
 					missionControlId
 				);
 				actor.setIdentity(controller);
@@ -160,10 +159,7 @@ describe('Mission control > Upgrade', () => {
 		it('should migrate with no settings', async () => {
 			await upgrade0_0_14();
 
-			actor = pic.createActor<MissionControlActor_0_0_14>(
-				idlFactorMissionControl,
-				missionControlId
-			);
+			actor = pic.createActor<MissionControlActor0014>(idlFactoryMissionControl, missionControlId);
 			actor.setIdentity(controller);
 
 			const { get_settings } = actor;
@@ -174,7 +170,7 @@ describe('Mission control > Upgrade', () => {
 	});
 
 	describe('v0.14.0 -> v0.1.0', () => {
-		const strategy: CyclesMonitoringStrategy = {
+		const strategy: MissionControlDid.CyclesMonitoringStrategy = {
 			BelowThreshold: {
 				min_cycles: 500_000n,
 				fund_cycles: 100_000n
@@ -184,7 +180,7 @@ describe('Mission control > Upgrade', () => {
 		const initMonitoring = async () => {
 			const { update_and_start_monitoring } = actor;
 
-			const config: MonitoringStartConfig = {
+			const config: MissionControlDid.MonitoringStartConfig = {
 				cycles_config: [
 					{
 						satellites_strategy: toNullable({
@@ -298,10 +294,7 @@ describe('Mission control > Upgrade', () => {
 
 			await upgradeLatest();
 
-			actor = pic.createActor<MissionControlActor_0_0_14>(
-				idlFactorMissionControl,
-				missionControlId
-			);
+			actor = pic.createActor<MissionControlActor0014>(idlFactoryMissionControl, missionControlId);
 			actor.setIdentity(controller);
 
 			await testModules();
@@ -331,7 +324,7 @@ describe('Mission control > Upgrade', () => {
 				expires_at: []
 			});
 
-			const assertControllers = async (actor: MissionControlActor | MissionControlActor_0_0_14) => {
+			const assertControllers = async (actor: MissionControlActor | MissionControlActor0014) => {
 				const { list_mission_control_controllers, get_user } = actor;
 
 				const controllers = await list_mission_control_controllers();
@@ -365,7 +358,7 @@ describe('Mission control > Upgrade', () => {
 			await upgradeLatest();
 
 			const newActor = pic.createActor<MissionControlActor>(
-				idlFactorMissionControl,
+				idlFactoryMissionControl,
 				missionControlId
 			);
 			newActor.setIdentity(controller);

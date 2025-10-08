@@ -1,8 +1,4 @@
-import type {
-	HttpRequest,
-	_SERVICE as SatelliteActor,
-	SetRule
-} from '$declarations/satellite/satellite.did';
+import type { SatelliteActor, SatelliteDid } from '$declarations';
 import type { Actor, PocketIc } from '@dfinity/pic';
 import { toNullable } from '@dfinity/utils';
 import { nanoid } from 'nanoid';
@@ -35,7 +31,7 @@ describe('Satellite > Storage > Token', () => {
 	}) => {
 		const { set_rule } = actor;
 
-		const setRule: SetRule = {
+		const setRule: SatelliteDid.SetRule = {
 			memory: toNullable(memory),
 			max_size: toNullable(),
 			max_capacity: toNullable(),
@@ -94,7 +90,7 @@ describe('Satellite > Storage > Token', () => {
 
 				const { fullPath } = await uploadAssetWithToken({ collection });
 
-				const request: HttpRequest = {
+				const request: SatelliteDid.HttpRequest = {
 					body: [],
 					certificate_version: toNullable(2),
 					headers: [],
@@ -114,7 +110,7 @@ describe('Satellite > Storage > Token', () => {
 
 				const { fullPathWithToken } = await uploadAssetWithToken({ collection });
 
-				const request: HttpRequest = {
+				const request: SatelliteDid.HttpRequest = {
 					body: [],
 					certificate_version: toNullable(2),
 					headers: [],
@@ -134,7 +130,7 @@ describe('Satellite > Storage > Token', () => {
 
 				const { fullPathWithToken } = await uploadAssetWithToken({ collection });
 
-				const request: HttpRequest = {
+				const request: SatelliteDid.HttpRequest = {
 					body: [],
 					certificate_version: toNullable(2),
 					headers: [],
@@ -167,7 +163,7 @@ describe('Satellite > Storage > Token', () => {
 					headers: customHeaders
 				});
 
-				const request: HttpRequest = {
+				const request: SatelliteDid.HttpRequest = {
 					body: [],
 					certificate_version: toNullable(2),
 					headers: [],

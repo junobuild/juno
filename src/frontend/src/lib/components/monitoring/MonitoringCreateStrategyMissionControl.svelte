@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { nonNullish } from '@dfinity/utils';
-	import type { CyclesMonitoringStrategy } from '$declarations/mission_control/mission_control.did';
+	import type { MissionControlDid } from '$declarations';
 	import MonitoringStepYesNo from '$lib/components/monitoring/MonitoringStepYesNo.svelte';
 	import Html from '$lib/components/ui/Html.svelte';
 	import { i18n } from '$lib/stores/i18n.store';
@@ -8,7 +8,10 @@
 	import { i18nFormat } from '$lib/utils/i18n.utils';
 
 	interface Props {
-		missionControl: { monitored: boolean; strategy: CyclesMonitoringStrategy | undefined };
+		missionControl: {
+			monitored: boolean;
+			strategy: MissionControlDid.CyclesMonitoringStrategy | undefined;
+		};
 		onyes: () => void;
 		onno: () => void;
 	}

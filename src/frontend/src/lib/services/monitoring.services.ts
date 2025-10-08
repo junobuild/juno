@@ -1,10 +1,4 @@
-import type {
-	Config,
-	CyclesMonitoringStrategy,
-	CyclesThreshold,
-	DepositedCyclesEmailNotification,
-	MonitoringConfig
-} from '$declarations/mission_control/mission_control.did';
+import type { MissionControlDid } from '$declarations';
 import {
 	setConfig,
 	setMetadata,
@@ -59,7 +53,7 @@ interface MonitoringCyclesStrategyParams {
 }
 
 export interface ApplyMonitoringCyclesStrategyOptions {
-	monitoringConfig: MonitoringConfig | undefined;
+	monitoringConfig: MissionControlDid.MonitoringConfig | undefined;
 	saveAsDefaultStrategy: boolean;
 	metadata: Metadata;
 	userEmail: Option<string>;
@@ -71,7 +65,7 @@ interface ApplyMonitoringCyclesStrategyParams extends MonitoringCyclesStrategyPa
 	missionControlMonitored: boolean;
 	missionControlMinCycles: bigint | undefined;
 	missionControlFundCycles: bigint | undefined;
-	reuseStrategy: CyclesMonitoringStrategy | undefined;
+	reuseStrategy: MissionControlDid.CyclesMonitoringStrategy | undefined;
 	options: ApplyMonitoringCyclesStrategyOptions | undefined;
 }
 
@@ -256,7 +250,7 @@ const setMonitoringCyclesStrategy = async ({
 		fundCycles: moduleFundCycles
 	});
 
-	const moduleStrategy: CyclesMonitoringStrategy = {
+	const moduleStrategy: MissionControlDid.CyclesMonitoringStrategy = {
 		BelowThreshold: {
 			min_cycles: moduleMinCycles,
 			fund_cycles: moduleFundCycles
@@ -348,7 +342,9 @@ const setMonitoringCyclesConfig = async ({
 	const currentCyclesConfig = fromNullishNullable(monitoringConfig?.cycles);
 
 	// If a new email is provided, we activate the notification else we keep the current config
-	const notification: [] | [DepositedCyclesEmailNotification] = nonNullish(userEmail)
+	const notification: [] | [MissionControlDid.DepositedCyclesEmailNotification] = nonNullish(
+		userEmail
+	)
 		? toNullable({
 				enabled: true,
 				to: toNullable()
@@ -356,7 +352,7 @@ const setMonitoringCyclesConfig = async ({
 		: (currentCyclesConfig?.notification ?? []);
 
 	// If the strategy should be use as default, we update or insert the default strategy else we keep the current configuration regardless if set or not
-	const default_strategy: [] | [CyclesMonitoringStrategy] =
+	const default_strategy: [] | [MissionControlDid.CyclesMonitoringStrategy] =
 		saveAsDefaultStrategy && nonNullish(minCycles) && nonNullish(fundCycles)
 			? toNullable({
 					BelowThreshold: {
@@ -366,14 +362,14 @@ const setMonitoringCyclesConfig = async ({
 				})
 			: (currentCyclesConfig?.default_strategy ?? []);
 
-	const updateMonitoringConfig: MonitoringConfig = {
+	const updateMonitoringConfig: MissionControlDid.MonitoringConfig = {
 		cycles: toNullable({
 			notification,
 			default_strategy
 		})
 	};
 
-	const config: Config = {
+	const config: MissionControlDid.Config = {
 		monitoring: toNullable(updateMonitoringConfig)
 	};
 
@@ -441,7 +437,7 @@ const buildMissionControlStrategy = ({
 > &
 	Required<
 		Pick<ApplyMonitoringCyclesStrategyParams, 'minCycles' | 'fundCycles'>
-	>): CyclesMonitoringStrategy | null => {
+	>): MissionControlDid.CyclesMonitoringStrategy | null => {
 	// We keep the same strategy if the user did not input new values
 	if (monitored && isNullish(missionControlFundCycles) && isNullish(missionControlMinCycles)) {
 		return null;
@@ -451,7 +447,7 @@ const buildMissionControlStrategy = ({
 	assertNonNullish(minCycles);
 	assertNonNullish(fundCycles);
 
-	const BelowThreshold: CyclesThreshold = {
+	const BelowThreshold: MissionControlDid.CyclesThreshold = {
 		min_cycles: missionControlMinCycles ?? minCycles,
 		fund_cycles: missionControlFundCycles ?? fundCycles
 	};
@@ -523,7 +519,7 @@ export const setMonitoringNotification = async ({
 }: {
 	identity: OptionIdentity;
 	missionControlId: Option<Principal>;
-	monitoringConfig: MonitoringConfig | undefined;
+	monitoringConfig: MissionControlDid.MonitoringConfig | undefined;
 	enabled: boolean;
 }): Promise<{ success: boolean }> => {
 	try {
@@ -534,7 +530,7 @@ export const setMonitoringNotification = async ({
 		const cycles = fromNullishNullable(monitoringConfig?.cycles);
 		const notification = fromNullishNullable(cycles?.notification);
 
-		const updateMonitoringConfig: MonitoringConfig = {
+		const updateMonitoringConfig: MissionControlDid.MonitoringConfig = {
 			...(nonNullish(monitoringConfig) && monitoringConfig),
 			cycles: toNullable({
 				notification: toNullable({
@@ -545,7 +541,7 @@ export const setMonitoringNotification = async ({
 			})
 		};
 
-		const config: Config = {
+		const config: MissionControlDid.Config = {
 			monitoring: toNullable(updateMonitoringConfig)
 		};
 

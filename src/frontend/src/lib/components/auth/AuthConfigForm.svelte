@@ -9,8 +9,7 @@
 	} from '@dfinity/utils';
 	import { PrincipalTextSchema } from '@dfinity/zod-schemas';
 	import { fade } from 'svelte/transition';
-	import type { Satellite } from '$declarations/mission_control/mission_control.did';
-	import type { AuthenticationConfig, Rule } from '$declarations/satellite/satellite.did';
+	import type { SatelliteDid, MissionControlDid } from '$declarations';
 	import AuthConfigAdvancedOptions from '$lib/components/auth/AuthConfigAdvancedOptions.svelte';
 	import Input from '$lib/components/ui/Input.svelte';
 	import Value from '$lib/components/ui/Value.svelte';
@@ -21,10 +20,10 @@
 	import { satelliteUrl as satelliteUrlUtils } from '$lib/utils/satellite.utils';
 
 	interface Props {
-		config: AuthenticationConfig | undefined;
+		config: SatelliteDid.AuthenticationConfig | undefined;
 		selectedDerivationOrigin: URL | undefined;
-		satellite: Satellite;
-		rule: Rule | undefined;
+		satellite: MissionControlDid.Satellite;
+		rule: SatelliteDid.Rule | undefined;
 		maxTokens: number | undefined;
 		externalAlternativeOrigins: string;
 		allowedCallers: Principal[];

@@ -35,4 +35,4 @@ const updateCanonical = (htmlFilePath) => {
 const filterSubPages = (htmlFile) => dirname(htmlFile) !== OUTPUT_DIR;
 
 const htmlFiles = findHtmlFiles().filter(filterSubPages);
-htmlFiles.forEach((htmlFile) => updateCanonical(htmlFile));
+htmlFiles.forEach(updateCanonical);

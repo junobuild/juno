@@ -1,4 +1,4 @@
-import type { AssetNoContent } from '$declarations/satellite/satellite.did';
+import type { SatelliteDid } from '$declarations';
 import { listAssets } from '$lib/api/satellites.api';
 import { COLLECTION_CDN_RELEASES } from '$lib/constants/storage.constants';
 import { i18n } from '$lib/stores/i18n.store';
@@ -27,7 +27,7 @@ export const findWasmAssetForProposal = async ({
 	proposal: ProposalRecord;
 	satelliteId: SatelliteIdText;
 	identity: OptionIdentity;
-}): Promise<AssetNoContent | undefined> => {
+}): Promise<SatelliteDid.AssetNoContent | undefined> => {
 	try {
 		assertNonNullish(identity);
 
@@ -140,7 +140,7 @@ export const listWasmAssets = async ({
 	satelliteId: Principal;
 	identity: Identity;
 }): Promise<{
-	items: [string, AssetNoContent][];
+	items: [string, SatelliteDid.AssetNoContent][];
 	matches_length: bigint;
 	items_length: bigint;
 }> => {

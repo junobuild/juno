@@ -4,7 +4,7 @@
 	import { fromArray } from '@junobuild/utils';
 	import { getContext } from 'svelte';
 	import { run } from 'svelte/legacy';
-	import type { Doc } from '$declarations/satellite/satellite.did';
+	import type { SatelliteDid } from '$declarations';
 	import Identifier from '$lib/components/ui/Identifier.svelte';
 	import JsonCode from '$lib/components/ui/JsonCode.svelte';
 	import Value from '$lib/components/ui/Value.svelte';
@@ -12,11 +12,12 @@
 	import { DATA_CONTEXT_KEY, type DataContext } from '$lib/types/data.context';
 	import { formatToDate } from '$lib/utils/date.utils';
 
-	const { store }: DataContext<Doc> = getContext<DataContext<Doc>>(DATA_CONTEXT_KEY);
+	const { store }: DataContext<SatelliteDid.Doc> =
+		getContext<DataContext<SatelliteDid.Doc>>(DATA_CONTEXT_KEY);
 
 	let key: string | undefined = $derived($store?.key);
 
-	let doc: Doc | undefined = $state();
+	let doc = $state<SatelliteDid.Doc | undefined>(undefined);
 	run(() => {
 		doc = $store?.data;
 	});

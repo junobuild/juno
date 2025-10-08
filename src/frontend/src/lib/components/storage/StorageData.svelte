@@ -3,7 +3,7 @@
 	import { compare } from 'semver';
 	import { getContext, setContext } from 'svelte';
 	import { writable } from 'svelte/store';
-	import type { AssetNoContent } from '$declarations/satellite/satellite.did';
+	import type { SatelliteDid } from '$declarations';
 	import { listAssets } from '$lib/api/satellites.api';
 	import { listAssets008, listAssets009 } from '$lib/api/satellites.deprecated.api';
 	import Asset from '$lib/components/assets/Asset.svelte';
@@ -22,11 +22,11 @@
 	import { PAGINATION_CONTEXT_KEY, type PaginationContext } from '$lib/types/pagination.context';
 	import { RULES_CONTEXT_KEY, type RulesContext } from '$lib/types/rules.context';
 
-	const assetsStore = writable<DataStoreData<AssetNoContent>>(undefined);
+	const assetsStore = writable<DataStoreData<SatelliteDid.AssetNoContent>>(undefined);
 
 	const resetData = () => assetsStore.set(null);
 
-	setContext<DataContext<AssetNoContent>>(DATA_CONTEXT_KEY, {
+	setContext<DataContext<SatelliteDid.AssetNoContent>>(DATA_CONTEXT_KEY, {
 		store: assetsStore,
 		resetData
 	});
@@ -76,13 +76,13 @@
 		}
 	};
 
-	setContext<PaginationContext<AssetNoContent>>(PAGINATION_CONTEXT_KEY, {
+	setContext<PaginationContext<SatelliteDid.AssetNoContent>>(PAGINATION_CONTEXT_KEY, {
 		...initPaginationContext(),
 		list
 	});
 
-	const { setItems, startAfter }: PaginationContext<AssetNoContent> =
-		getContext<PaginationContext<AssetNoContent>>(PAGINATION_CONTEXT_KEY);
+	const { setItems, startAfter }: PaginationContext<SatelliteDid.AssetNoContent> =
+		getContext<PaginationContext<SatelliteDid.AssetNoContent>>(PAGINATION_CONTEXT_KEY);
 
 	const { store }: RulesContext = getContext<RulesContext>(RULES_CONTEXT_KEY);
 

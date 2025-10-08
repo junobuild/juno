@@ -1,4 +1,4 @@
-import type { Satellite } from '$declarations/mission_control/mission_control.did';
+import type { MissionControlDid } from '$declarations';
 import { countCollectionAssets, switchStorageSystemMemory } from '$lib/api/satellites.api';
 import { COLLECTION_DAPP } from '$lib/constants/storage.constants';
 import { SATELLITE_v0_0_20 } from '$lib/constants/version.constants';
@@ -15,7 +15,7 @@ export const countHostingAssets = async ({
 	satellite,
 	identity
 }: {
-	satellite: Satellite;
+	satellite: MissionControlDid.Satellite;
 	identity: OptionIdentity;
 }): Promise<
 	| {
@@ -58,7 +58,7 @@ export const switchHostingMemory = async ({
 	satellite,
 	identity
 }: {
-	satellite: Satellite;
+	satellite: MissionControlDid.Satellite;
 	identity: OptionIdentity;
 }): Promise<
 	| {

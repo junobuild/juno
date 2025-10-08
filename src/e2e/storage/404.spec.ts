@@ -47,4 +47,3 @@ test.describe('redirect to 404', () => {
 		});
 	});
 });
-

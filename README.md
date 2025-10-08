@@ -69,3 +69,4 @@ Have questions, comments, or feedback? Join our [Discord](https://discord.gg/wHZ
 Find us on X/Twitter at [@junobuild](https://twitter.com/junobuild) or email us at [hello@junobuild.ch](mailto://hello@junobuild.ch).
 
 [juno]: https://juno.build
+

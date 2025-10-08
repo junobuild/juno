@@ -1,4 +1,3 @@
-import type { Satellite008 } from '$lib/types/declarations';
 import type {
 	AssetNoContent,
 	CollectionType,
@@ -14,6 +13,7 @@ import {
 	getSatelliteActor009
 } from '$lib/api/actors/actor.deprecated.api';
 import { PAGINATION } from '$lib/constants/app.constants';
+import type { SatelliteDid008 } from '$lib/types/declarations';
 import type { OptionIdentity } from '$lib/types/itentity';
 import type { ListParams } from '$lib/types/list';
 import { toListParams } from '$lib/utils/satellite.utils';
@@ -24,7 +24,7 @@ const toListParams008 = ({
 	startAfter,
 	order,
 	filter: { matcher, owner }
-}: ListParams): Satellite008.ListParams => ({
+}: ListParams): SatelliteDid008.ListParams => ({
 	matcher: toNullable(matcher === '' ? null : matcher),
 	paginate: [
 		{

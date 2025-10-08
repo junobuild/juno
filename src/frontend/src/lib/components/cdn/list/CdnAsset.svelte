@@ -1,15 +1,14 @@
 <script lang="ts">
 	import { nonNullish } from '@dfinity/utils';
-	import type { AssetNoContent } from '$declarations/satellite/satellite.did';
 	import IconArrowCircleUp from '$lib/components/icons/IconArrowCircleUp.svelte';
 	import Identifier from '$lib/components/ui/Identifier.svelte';
 	import { i18n } from '$lib/stores/i18n.store';
-	import type { MissionControlDid } from '$lib/types/declarations';
+	import type { SatelliteDid, MissionControlDid } from '$lib/types/declarations';
 	import { formatToDate } from '$lib/utils/date.utils';
 	import { emit } from '$lib/utils/events.utils';
 
 	interface Props {
-		asset: AssetNoContent;
+		asset: SatelliteDid.AssetNoContent;
 		satellite: MissionControlDid.Satellite;
 	}
 

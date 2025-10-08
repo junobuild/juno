@@ -3,7 +3,6 @@
 	import { isNullish, jsonReplacer } from '@dfinity/utils';
 	import { fromArray } from '@junobuild/utils';
 	import { getContext } from 'svelte';
-	import type { Doc } from '$declarations/satellite/satellite.did';
 	import { deleteDoc } from '$lib/api/satellites.api';
 	import DataHeader from '$lib/components/data/DataHeader.svelte';
 	import DataKeyDelete from '$lib/components/data/DataKeyDelete.svelte';
@@ -14,13 +13,14 @@
 	import { i18n } from '$lib/stores/i18n.store';
 	import { toasts } from '$lib/stores/toasts.store';
 	import { DATA_CONTEXT_KEY, type DataContext } from '$lib/types/data.context';
+	import type { SatelliteDid } from '$lib/types/declarations';
 	import { RULES_CONTEXT_KEY, type RulesContext } from '$lib/types/rules.context';
 	import { i18nFormat } from '$lib/utils/i18n.utils';
 	import { filenameTimestamp, JSON_PICKER_OPTIONS, saveToFileSystem } from '$lib/utils/save.utils';
 
 	const { store, reload }: RulesContext = getContext<RulesContext>(RULES_CONTEXT_KEY);
-	const { store: docsStore, resetData }: DataContext<Doc> =
-		getContext<DataContext<Doc>>(DATA_CONTEXT_KEY);
+	const { store: docsStore, resetData }: DataContext<SatelliteDid.Doc> =
+		getContext<DataContext<SatelliteDid.Doc>>(DATA_CONTEXT_KEY);
 
 	let collection: string | undefined = $derived($store.rule?.[0]);
 
@@ -30,7 +30,7 @@
 	 * Delete data
 	 */
 
-	let doc: Doc | undefined = $derived($docsStore?.data);
+	let doc = $derived($docsStore?.data);
 
 	const deleteData = async (params: { collection: string; satelliteId: Principal }) => {
 		if (isNullish(key) || key === '') {

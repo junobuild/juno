@@ -2,7 +2,6 @@
 	import { isNullish, nonNullish, fromNullishNullable } from '@dfinity/utils';
 	import { untrack } from 'svelte';
 	import { fade } from 'svelte/transition';
-	import type { AuthenticationConfig, Rule } from '$declarations/satellite/satellite.did';
 	import SkeletonText from '$lib/components/ui/SkeletonText.svelte';
 	import Value from '$lib/components/ui/Value.svelte';
 	import { getAuthConfig } from '$lib/services/auth/auth.config.services';
@@ -12,7 +11,7 @@
 	import { busy } from '$lib/stores/busy.store';
 	import { i18n } from '$lib/stores/i18n.store';
 	import { versionStore } from '$lib/stores/version.store';
-	import type { MissionControlDid } from '$lib/types/declarations';
+	import type { SatelliteDid, MissionControlDid } from '$lib/types/declarations';
 	import { emit } from '$lib/utils/events.utils';
 	import { i18nFormat } from '$lib/utils/i18n.utils';
 
@@ -24,7 +23,7 @@
 
 	let satelliteId = $derived(satellite.satellite_id);
 
-	let rule: Rule | undefined = $state<Rule | undefined>(undefined);
+	let rule = $state<SatelliteDid.Rule | undefined>(undefined);
 	let supportSettings = $state(false);
 
 	let maxTokens: number | undefined = $state(undefined);
@@ -36,7 +35,7 @@
 	};
 
 	let supportConfig = $state(false);
-	let config = $state<AuthenticationConfig | undefined>(undefined);
+	let config = $state<SatelliteDid.AuthenticationConfig | undefined>(undefined);
 
 	let derivationOrigin = $derived(
 		fromNullishNullable(fromNullishNullable(config?.internet_identity)?.derivation_origin)

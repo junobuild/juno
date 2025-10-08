@@ -1,18 +1,18 @@
 <script lang="ts">
 	import type { Principal } from '@dfinity/principal';
 	import { isNullish } from '@dfinity/utils';
-	import type { Controller } from '$declarations/satellite/satellite.did';
 	import Confirmation from '$lib/components/core/Confirmation.svelte';
 	import Value from '$lib/components/ui/Value.svelte';
 	import { missionControlIdDerived } from '$lib/derived/mission-control.derived';
 	import { busy } from '$lib/stores/busy.store';
 	import { i18n } from '$lib/stores/i18n.store';
 	import { toasts } from '$lib/stores/toasts.store';
+	import type { SatelliteDid } from '$lib/types/declarations';
 	import type { MissionControlId } from '$lib/types/mission-control';
 
 	interface Props {
 		visible?: boolean;
-		selectedController: [Principal, Controller | undefined] | undefined;
+		selectedController: [Principal, SatelliteDid.Controller | undefined] | undefined;
 		remove: (params: {
 			missionControlId: MissionControlId;
 			controller: Principal;

@@ -1,13 +1,8 @@
 import type { OrbiterSatelliteFeatures } from '$declarations/orbiter/orbiter.did';
-import type {
-	AssetNoContent,
-	AuthenticationConfig,
-	Rule
-} from '$declarations/satellite/satellite.did';
 import type { CanisterInfo, CanisterSegmentWithLabel, CanisterSettings } from '$lib/types/canister';
 import type { SetControllerParams } from '$lib/types/controllers';
 import type { CustomDomains } from '$lib/types/custom-domain';
-import type { ICDid, MissionControlDid } from '$lib/types/declarations';
+import type { ICDid, MissionControlDid, SatelliteDid } from '$lib/types/declarations';
 import type { MissionControlId } from '$lib/types/mission-control';
 import type { OrbiterSatelliteConfigEntry } from '$lib/types/orbiter';
 import type { ProposalRecord } from '$lib/types/proposals';
@@ -50,7 +45,7 @@ export interface JunoModalCreateSegmentDetail extends JunoModalWithAccountIdenti
 export interface JunoModalCustomDomainDetail {
 	editDomainName?: string;
 	satellite: MissionControlDid.Satellite;
-	config: AuthenticationConfig | undefined;
+	config: SatelliteDid.AuthenticationConfig | undefined;
 }
 
 export interface JunoModalCycles {
@@ -96,8 +91,8 @@ export interface JunoModalEditOrbiterConfigDetail {
 }
 
 export interface JunoModalEditAuthConfigDetail extends JunoModalWithSatellite {
-	rule: Rule | undefined;
-	config: AuthenticationConfig | undefined;
+	rule: SatelliteDid.Rule | undefined;
+	config: SatelliteDid.AuthenticationConfig | undefined;
 }
 
 export interface JunoModalCreateMonitoringStrategyDetail {
@@ -120,7 +115,7 @@ export interface JunoModalChangeDetail extends JunoModalWithSatellite {
 }
 
 export interface JunoModalCdnUpgradeDetail extends JunoModalWithSatellite {
-	asset: AssetNoContent;
+	asset: SatelliteDid.AssetNoContent;
 }
 
 export type JunoModalDetail =

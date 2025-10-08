@@ -1,30 +1,25 @@
-import type {
-	CollectionType,
-	ListRulesParams,
-	Memory,
-	Permission
-} from '$declarations/satellite/satellite.did';
+import type { SatelliteDid } from '$lib/types/declarations';
 import { toNullable } from '@dfinity/utils';
 
-export const DbCollectionType: CollectionType = { Db: null };
-export const StorageCollectionType: CollectionType = { Storage: null };
+export const DbCollectionType: SatelliteDid.CollectionType = { Db: null };
+export const StorageCollectionType: SatelliteDid.CollectionType = { Storage: null };
 
-export const PermissionPublic: Permission = { Public: null };
-export const PermissionPrivate: Permission = { Private: null };
-export const PermissionManaged: Permission = { Managed: null };
+export const PermissionPublic: SatelliteDid.Permission = { Public: null };
+export const PermissionPrivate: SatelliteDid.Permission = { Private: null };
+export const PermissionManaged: SatelliteDid.Permission = { Managed: null };
 
 // Originally named "Controllers" but later renamed visually — and only visually — to "Trusted Keys",
 // since it includes both "Admin" (controllers) and "Write" keys (which are not controllers).
-const PermissionControllers: Permission = { Controllers: null };
+const PermissionControllers: SatelliteDid.Permission = { Controllers: null };
 export const PermissionRestricted = PermissionControllers;
 
 export type PermissionText = 'Public' | 'Private' | 'Managed' | 'Restricted';
 
-export const MemoryHeap: Memory = { Heap: null };
-export const MemoryStable: Memory = { Stable: null };
+export const MemoryHeap: SatelliteDid.Memory = { Heap: null };
+export const MemoryStable: SatelliteDid.Memory = { Stable: null };
 
 export type MemoryText = 'Heap' | 'Stable';
 
-export const filterSystemRules: ListRulesParams = {
+export const filterSystemRules: SatelliteDid.ListRulesParams = {
 	matcher: toNullable()
 };

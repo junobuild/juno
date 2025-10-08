@@ -1,9 +1,9 @@
-import type { AuthenticationConfig } from '$declarations/satellite/satellite.did';
 import { setAuthConfig } from '$lib/api/satellites.api';
 import { setCustomDomain } from '$lib/services/custom-domain.services';
 import { execute } from '$lib/services/progress.services';
 import { i18n } from '$lib/stores/i18n.store';
 import { toasts } from '$lib/stores/toasts.store';
+import type { SatelliteDid } from '$lib/types/declarations';
 import type { OptionIdentity } from '$lib/types/itentity';
 import { type HostingProgress, HostingProgressStep } from '$lib/types/progress-hosting';
 import { buildSetAuthenticationConfig } from '$lib/utils/auth.config.utils';
@@ -21,7 +21,7 @@ export const configHosting = async ({
 }: {
 	domainName: string;
 	useDomainForDerivationOrigin: boolean;
-	config: AuthenticationConfig | undefined;
+	config: SatelliteDid.AuthenticationConfig | undefined;
 	satelliteId: Principal;
 	identity: OptionIdentity;
 	onProgress: (progress: HostingProgress | undefined) => void;

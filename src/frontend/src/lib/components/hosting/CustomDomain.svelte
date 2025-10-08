@@ -2,10 +2,6 @@
 	import { isNullish, nonNullish, fromNullishNullable } from '@dfinity/utils';
 	import { createEventDispatcher, onDestroy, onMount } from 'svelte';
 	import { run } from 'svelte/legacy';
-	import type {
-		AuthenticationConfig,
-		CustomDomain as CustomDomainType
-	} from '$declarations/satellite/satellite.did';
 	import CustomDomainActions from '$lib/components/hosting/CustomDomainActions.svelte';
 	import IconCheckCircle from '$lib/components/icons/IconCheckCircle.svelte';
 	import IconSync from '$lib/components/icons/IconSync.svelte';
@@ -14,7 +10,7 @@
 	import { HostingWorker } from '$lib/services/workers/worker.hosting.services';
 	import { i18n } from '$lib/stores/i18n.store';
 	import type { CustomDomainRegistrationState } from '$lib/types/custom-domain';
-	import type { MissionControlDid } from '$lib/types/declarations';
+	import type { SatelliteDid, MissionControlDid } from '$lib/types/declarations';
 	import type { PostMessageDataResponseHosting } from '$lib/types/post-message';
 	import type { Option } from '$lib/types/utils';
 	import { emit } from '$lib/utils/events.utils';
@@ -24,9 +20,9 @@
 		url: string;
 		ariaLabel?: string;
 		type?: 'default' | 'custom';
-		customDomain?: [string, CustomDomainType] | undefined;
+		customDomain?: [string, SatelliteDid.CustomDomain] | undefined;
 		satellite?: MissionControlDid.Satellite | undefined;
-		config?: AuthenticationConfig | undefined;
+		config?: SatelliteDid.AuthenticationConfig | undefined;
 	}
 
 	let {

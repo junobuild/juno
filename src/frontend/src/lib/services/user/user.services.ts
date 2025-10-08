@@ -1,4 +1,3 @@
-import type { CollectionType, Rule } from '$declarations/satellite/satellite.did';
 import { getDoc, listRules, setDoc } from '$lib/api/satellites.api';
 import { listRules0022 } from '$lib/api/satellites.deprecated.api';
 import {
@@ -11,6 +10,7 @@ import { isSatelliteFeatureSupported } from '$lib/services/feature.services';
 import { busy } from '$lib/stores/busy.store';
 import { i18n } from '$lib/stores/i18n.store';
 import { toasts } from '$lib/stores/toasts.store';
+import type { SatelliteDid } from '$lib/types/declarations';
 import type { OptionIdentity } from '$lib/types/itentity';
 import type { PaginationContext } from '$lib/types/pagination.context';
 import type { User } from '$lib/types/user';
@@ -89,7 +89,9 @@ const loadUserUsages = async ({
 		requiredMinVersion: SATELLITE_v0_1_0
 	});
 
-	const modernListRules = async (collectionType: CollectionType): Promise<[string, Rule][]> => {
+	const modernListRules = async (
+		collectionType: SatelliteDid.CollectionType
+	): Promise<[string, SatelliteDid.Rule][]> => {
 		const { items } = await listRules({
 			satelliteId,
 			type: collectionType,
@@ -114,7 +116,7 @@ const loadUserUsages = async ({
 		maxChangesPerUser
 	}: {
 		collection: string;
-		collectionType: CollectionType;
+		collectionType: SatelliteDid.CollectionType;
 		maxChangesPerUser: number | undefined;
 	}): Promise<UserUsageCollection> => {
 		const key = `${user.owner.toText()}#${'Storage' in collectionType ? 'storage' : 'db'}#${collection}`;

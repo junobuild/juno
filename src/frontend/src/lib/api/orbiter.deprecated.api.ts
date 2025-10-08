@@ -1,6 +1,6 @@
-import type { OrbiterDid007 } from '$lib/types/declarations';
 import type { AnalyticsClientsPageViews } from '$declarations/deprecated/orbiter-0-0-8.did';
 import { getOrbiterActor007, getOrbiterActor008 } from '$lib/api/actors/actor.deprecated.api';
+import type { OrbiterDid007 } from '$lib/types/declarations';
 import type { OptionIdentity } from '$lib/types/itentity';
 import type { PageViewsParams } from '$lib/types/orbiter';
 import { toBigIntNanoSeconds } from '$lib/utils/date.utils';

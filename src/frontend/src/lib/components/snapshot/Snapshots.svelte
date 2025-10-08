@@ -3,7 +3,6 @@
 	import type { Principal } from '@dfinity/principal';
 	import { isNullish } from '@dfinity/utils';
 	import { fade } from 'svelte/transition';
-	import type { snapshot } from '$declarations/ic/ic.did';
 	import SnapshotActions from '$lib/components/snapshot/SnapshotActions.svelte';
 	import SnapshotDelete from '$lib/components/snapshot/SnapshotDelete.svelte';
 	import SnapshotsLoader from '$lib/components/snapshot/SnapshotsLoader.svelte';
@@ -55,7 +54,7 @@
 	};
 
 	// Currently the IC supports only one snapshot per canister.
-	let existingSnapshot: snapshot | undefined = $derived(snapshots?.[0]);
+	let existingSnapshot = $derived(snapshots?.[0]);
 
 	const openRestoreModal = () => {
 		if (isNullish(existingSnapshot)) {

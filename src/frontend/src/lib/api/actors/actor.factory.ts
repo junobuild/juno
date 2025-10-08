@@ -1,4 +1,4 @@
-import { idlFactory as idlFactoryMissionControl } from '$declarations/console/console.factory.did';
+import { idlFactory as idlFactoryMissionControl } from '$declarations/mission_control/mission_control.factory.did';
 import { idlFactory as idlFactoryIC } from '@dfinity/ic-management/dist/candid/ic-management.idl';
 
 import type { _SERVICE as MissionControlActor } from '$declarations/mission_control/mission_control.did';

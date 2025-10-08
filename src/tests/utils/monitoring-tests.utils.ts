@@ -1,7 +1,4 @@
-import type {
-	MissionControlActor,
-	MissionControlActor0014
-} from '$lib/api/actors/actor.factory';
+import type { MissionControlActor, MissionControlActor0014 } from '$lib/api/actors/actor.factory';
 import type { MissionControlDid } from '$lib/types/declarations';
 import type { Actor } from '@dfinity/pic';
 import type { Principal } from '@dfinity/principal';

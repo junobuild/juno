@@ -1,4 +1,4 @@
-import { type ConsoleActor, type SatelliteActor } from '$lib/api/actors/actor.factory';
+import type { ConsoleActor, SatelliteActor } from '$lib/api/actors/actor.factory';
 import type { ConsoleDid, SatelliteDid } from '$lib/types/declarations';
 import type { Identity } from '@dfinity/agent';
 import type { Actor, PocketIc } from '@dfinity/pic';

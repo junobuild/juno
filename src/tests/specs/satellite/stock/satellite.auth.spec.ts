@@ -1,4 +1,4 @@
-import { type SatelliteActor } from '$lib/api/actors/actor.factory';
+import type { SatelliteActor } from '$lib/api/actors/actor.factory';
 import type { SatelliteDid } from '$lib/types/declarations';
 import { AnonymousIdentity } from '@dfinity/agent';
 import type { Ed25519KeyIdentity } from '@dfinity/identity';

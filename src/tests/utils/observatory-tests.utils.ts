@@ -1,4 +1,4 @@
-import { type ObservatoryActor, type ObservatoryActor009 } from '$lib/api/actors/actor.factory';
+import type { ObservatoryActor, ObservatoryActor009 } from '$lib/api/actors/actor.factory';
 import type { ObservatoryDid } from '$lib/types/declarations';
 import { Ed25519KeyIdentity } from '@dfinity/identity';
 import type { PocketIc } from '@dfinity/pic';

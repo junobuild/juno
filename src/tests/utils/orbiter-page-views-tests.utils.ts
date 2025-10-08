@@ -1,4 +1,4 @@
-import { type OrbiterActor } from '$lib/api/actors/actor.factory';
+import type { OrbiterActor } from '$lib/api/actors/actor.factory';
 import type { OrbiterDid } from '$lib/types/declarations';
 import type { Actor, PocketIc } from '@dfinity/pic';
 import { fromNullable, isNullish, toNullable } from '@dfinity/utils';

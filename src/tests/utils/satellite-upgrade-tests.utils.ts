@@ -1,7 +1,7 @@
-import {
-	type SatelliteActor0016,
-	type SatelliteActor0017,
-	type SatelliteActor0021
+import type {
+	SatelliteActor0016,
+	SatelliteActor0017,
+	SatelliteActor0021
 } from '$lib/api/actors/actor.factory';
 import type { Identity } from '@dfinity/agent';
 import { Ed25519KeyIdentity } from '@dfinity/identity';

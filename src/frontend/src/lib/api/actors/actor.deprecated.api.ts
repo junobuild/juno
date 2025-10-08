@@ -1,4 +1,3 @@
-import { ActorApi } from '$lib/api/actors/actor.api';
 import {
 	type MissionControlActor0013,
 	type MissionControlActor004,
@@ -16,7 +15,8 @@ import {
 	idlFactorySatellite0022,
 	idlFactorySatellite008,
 	idlFactorySatellite009
-} from '$lib/api/actors/actor.factory';
+} from '$declarations';
+import { ActorApi } from '$lib/api/actors/actor.api';
 import type { OptionIdentity } from '$lib/types/itentity';
 import type { MissionControlId } from '$lib/types/mission-control';
 import type { Principal } from '@dfinity/principal';

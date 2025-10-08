@@ -1,7 +1,7 @@
 <script lang="ts">
+	import type { OrbiterDid } from '$declarations';
 	import AnalyticsPerformanceMetricsFilter from '$lib/components/analytics/AnalyticsPerformanceMetricsFilter.svelte';
 	import AnalyticsPerformanceMetricsPage from '$lib/components/analytics/AnalyticsPerformanceMetricsPage.svelte';
-	import type { OrbiterDid } from '$lib/types/declarations';
 
 	interface Props {
 		performanceMetrics: OrbiterDid.AnalyticsWebVitalsPerformanceMetrics;

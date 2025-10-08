@@ -1,8 +1,8 @@
+import type { SatelliteDid } from '$declarations';
 import { listAssets } from '$lib/api/satellites.api';
 import { COLLECTION_CDN_RELEASES } from '$lib/constants/storage.constants';
 import { i18n } from '$lib/stores/i18n.store';
 import { toasts } from '$lib/stores/toasts.store';
-import type { SatelliteDid } from '$lib/types/declarations';
 import type { OptionIdentity } from '$lib/types/itentity';
 import type { ListOrder, ListParams } from '$lib/types/list';
 import type { ProposalRecord } from '$lib/types/proposals';

@@ -1,4 +1,4 @@
-import { idlFactoryObservatory, type ObservatoryActor } from '$lib/api/actors/actor.factory';
+import { idlFactoryObservatory, type ObservatoryActor } from '$declarations';
 import { Ed25519KeyIdentity } from '@dfinity/identity';
 import { type Actor, PocketIc } from '@dfinity/pic';
 import { inject } from 'vitest';

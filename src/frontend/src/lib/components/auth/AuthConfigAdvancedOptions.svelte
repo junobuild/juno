@@ -1,11 +1,11 @@
 <script lang="ts">
 	import { fromNullable, fromNullishNullable, isEmptyString } from '@dfinity/utils';
 	import { onMount } from 'svelte';
+	import type { SatelliteDid } from '$declarations';
 	import Collapsible from '$lib/components/ui/Collapsible.svelte';
 	import Input from '$lib/components/ui/Input.svelte';
 	import Value from '$lib/components/ui/Value.svelte';
 	import { i18n } from '$lib/stores/i18n.store';
-	import type { SatelliteDid } from '$lib/types/declarations';
 
 	interface Props {
 		config: SatelliteDid.AuthenticationConfig | undefined;

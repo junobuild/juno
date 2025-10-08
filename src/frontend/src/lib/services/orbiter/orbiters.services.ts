@@ -1,3 +1,4 @@
+import type { MissionControlDid, OrbiterDid } from '$declarations';
 import { getMissionControlActor } from '$lib/api/actors/actor.juno.api';
 import {
 	listOrbiterSatelliteConfigs as listOrbiterSatelliteConfigsApi,
@@ -16,7 +17,6 @@ import { i18n } from '$lib/stores/i18n.store';
 import { orbitersConfigsStore } from '$lib/stores/orbiter-configs.store';
 import { orbitersUncertifiedStore } from '$lib/stores/orbiter.store';
 import { toasts } from '$lib/stores/toasts.store';
-import type { MissionControlDid, OrbiterDid } from '$lib/types/declarations';
 import type { OptionIdentity } from '$lib/types/itentity';
 import type { OrbiterSatelliteConfigEntry } from '$lib/types/orbiter';
 import type { SatelliteIdText } from '$lib/types/satellite';

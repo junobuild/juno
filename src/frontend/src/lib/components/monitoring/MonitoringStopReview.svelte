@@ -1,10 +1,10 @@
 <script lang="ts">
 	import type { Principal } from '@dfinity/principal';
+	import type { MissionControlDid } from '$declarations';
 	import MonitoringSelectedModules from '$lib/components/monitoring/MonitoringSelectedModules.svelte';
 	import MonitoringStepReview from '$lib/components/monitoring/MonitoringStepReview.svelte';
 	import Warning from '$lib/components/ui/Warning.svelte';
 	import { i18n } from '$lib/stores/i18n.store';
-	import type { MissionControlDid } from '$lib/types/declarations';
 
 	interface Props {
 		stopMissionControl: boolean | undefined;

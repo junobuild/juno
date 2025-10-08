@@ -1,4 +1,4 @@
-import type { SatelliteDid } from '$lib/types/declarations';
+import type { SatelliteDid } from '$declarations';
 import type { UserData as UserDataCore } from '@junobuild/core';
 
 export type UserData = UserDataCore & {

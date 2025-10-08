@@ -1,4 +1,3 @@
-import { ActorApi, type GetActorParams } from '$lib/api/actors/actor.api';
 import {
 	type ConsoleActor,
 	type MissionControlActor,
@@ -11,7 +10,8 @@ import {
 	idlFactoryObservatory,
 	idlFactoryOrbiter,
 	idlFactorySatellite
-} from '$lib/api/actors/actor.factory';
+} from '$declarations';
+import { ActorApi, type GetActorParams } from '$lib/api/actors/actor.api';
 import { CONSOLE_CANISTER_ID, OBSERVATORY_CANISTER_ID } from '$lib/constants/app.constants';
 import type { OptionIdentity } from '$lib/types/itentity';
 import type { MissionControlId } from '$lib/types/mission-control';

@@ -1,3 +1,4 @@
+import type { SatelliteDid } from '$declarations';
 import { getRule, setRule as setRuleApi } from '$lib/api/satellites.api';
 import { DEFAULT_RATE_CONFIG_TIME_PER_TOKEN_NS } from '$lib/constants/data.constants';
 import {
@@ -12,7 +13,6 @@ import { SATELLITE_v0_0_21, SATELLITE_v0_1_4 } from '$lib/constants/version.cons
 import { isSatelliteFeatureSupported } from '$lib/services/feature.services';
 import { i18n } from '$lib/stores/i18n.store';
 import { toasts } from '$lib/stores/toasts.store';
-import type { SatelliteDid } from '$lib/types/declarations';
 import type { OptionIdentity } from '$lib/types/itentity';
 import { memoryFromText, permissionFromText } from '$lib/utils/rules.utils';
 import type { Principal } from '@dfinity/principal';

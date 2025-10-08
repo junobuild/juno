@@ -1,5 +1,4 @@
-import type { SputnikActor } from '$lib/api/actors/actor.factory';
-import type { SputnikDid } from '$lib/types/declarations';
+import type { SputnikActor, SputnikDid } from '$declarations';
 import type { Identity } from '@dfinity/agent';
 import type { Actor, PocketIc } from '@dfinity/pic';
 import { Principal } from '@dfinity/principal';

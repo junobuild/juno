@@ -1,4 +1,4 @@
-import { idlFactorySatellite, type SatelliteActor } from '$lib/api/actors/actor.factory';
+import { idlFactorySatellite, type SatelliteActor } from '$declarations';
 import { Ed25519KeyIdentity } from '@dfinity/identity';
 import { PocketIc, type Actor } from '@dfinity/pic';
 import { toNullable } from '@dfinity/utils';

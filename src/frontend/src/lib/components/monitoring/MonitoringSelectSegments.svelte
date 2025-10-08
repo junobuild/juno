@@ -2,10 +2,10 @@
 	import type { Principal } from '@dfinity/principal';
 	import type { Snippet } from 'svelte';
 	import { fade } from 'svelte/transition';
+	import type { MissionControlDid } from '$declarations';
 	import SegmentsTable from '$lib/components/segments/SegmentsTable.svelte';
 	import { isBusy } from '$lib/stores/busy.store';
 	import { i18n } from '$lib/stores/i18n.store';
-	import type { MissionControlDid } from '$lib/types/declarations';
 	import type { MissionControlId } from '$lib/types/mission-control';
 
 	interface Props {

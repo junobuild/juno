@@ -1,4 +1,4 @@
-import type { ICDid } from '$lib/types/declarations';
+import type { ICDid } from '$declarations';
 import type { UpgradeCodeProgressState } from '@junobuild/admin';
 
 export type Snapshots = ICDid.snapshot[];

@@ -1,9 +1,9 @@
+import type { MissionControlDid } from '$declarations';
 import type {
 	SatelliteUiMetadataSchema,
 	SatelliteUiTagsSchema
 } from '$lib/schemas/satellite.schema';
 import type { CanisterSyncData } from '$lib/types/canister';
-import type { MissionControlDid } from '$lib/types/declarations';
 import type * as z from 'zod';
 
 export type SatelliteIdText = string;

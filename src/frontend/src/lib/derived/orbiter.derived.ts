@@ -1,6 +1,6 @@
+import type { MissionControlDid } from '$declarations';
 import { type OrbiterConfigs, orbitersConfigsStore } from '$lib/stores/orbiter-configs.store';
 import { orbitersUncertifiedStore } from '$lib/stores/orbiter.store';
-import type { MissionControlDid } from '$lib/types/declarations';
 import { nonNullish } from '@dfinity/utils';
 import { derived, type Readable } from 'svelte/store';
 

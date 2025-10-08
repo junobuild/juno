@@ -1,5 +1,5 @@
+import type { OrbiterDid } from '$declarations';
 import { getOrbiterActor } from '$lib/api/actors/actor.juno.api';
-import type { OrbiterDid } from '$lib/types/declarations';
 import type { OptionIdentity } from '$lib/types/itentity';
 import type { PageViewsParams, PageViewsPeriod } from '$lib/types/orbiter';
 import { toBigIntNanoSeconds } from '$lib/utils/date.utils';

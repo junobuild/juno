@@ -1,6 +1,6 @@
+import type { MissionControlDid } from '$declarations';
 import { orbiterStore } from '$lib/derived/orbiter.derived';
 import { canistersSyncDataUncertifiedStore } from '$lib/stores/canister-sync-data.store';
-import type { MissionControlDid } from '$lib/types/declarations';
 import type { SegmentWithSyncData } from '$lib/types/satellite';
 import { isNullish } from '@dfinity/utils';
 import { derived } from 'svelte/store';

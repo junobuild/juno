@@ -1,5 +1,5 @@
+import type { SatelliteDid } from '$declarations';
 import { reloadContextRules } from '$lib/services/rules.loader.services';
-import type { SatelliteDid } from '$lib/types/declarations';
 import type { OptionIdentity } from '$lib/types/itentity';
 import type { RulesContext, RulesData } from '$lib/types/rules.context';
 import type { Principal } from '@dfinity/principal';

@@ -1,4 +1,4 @@
-import type { ConsoleActor, SatelliteActor } from '$lib/api/actors/actor.factory';
+import type { ConsoleActor, SatelliteActor } from '$declarations';
 import type { Actor } from '@dfinity/pic';
 import { arrayBufferToUint8Array, toNullable } from '@dfinity/utils';
 import { mockBlob } from '../mocks/storage.mocks';

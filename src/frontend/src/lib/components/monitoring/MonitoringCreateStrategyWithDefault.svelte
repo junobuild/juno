@@ -1,10 +1,10 @@
 <script lang="ts">
 	import { isNullish } from '@dfinity/utils';
 	import { onMount } from 'svelte';
+	import type { MissionControlDid } from '$declarations';
 	import MonitoringCreateStrategy from '$lib/components/monitoring/MonitoringCreateStrategy.svelte';
 	import Checkbox from '$lib/components/ui/Checkbox.svelte';
 	import { i18n } from '$lib/stores/i18n.store';
-	import type { MissionControlDid } from '$lib/types/declarations';
 
 	interface Props {
 		minCycles: bigint | undefined;

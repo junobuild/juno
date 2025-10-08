@@ -1,4 +1,4 @@
-import type { SatelliteDid } from '$lib/types/declarations';
+import type { SatelliteDid } from '$declarations';
 import { toNullable } from '@dfinity/utils';
 
 export const mockSetRule: SatelliteDid.SetRule = {

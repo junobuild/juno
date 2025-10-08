@@ -1,5 +1,5 @@
 <script lang="ts" module>
-	import type { SatelliteDid } from '$lib/types/declarations';
+	import type { SatelliteDid } from '$declarations';
 
 	export interface AddCustomDomainAuthProps {
 		config: SatelliteDid.AuthenticationConfig | undefined;

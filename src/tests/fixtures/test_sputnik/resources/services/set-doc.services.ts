@@ -1,4 +1,4 @@
-import type { SatelliteDid } from '$lib/types/declarations';
+import type { SatelliteDid } from '$declarations';
 import { IDL } from '@dfinity/candid';
 import { arrayOfNumberToUint8Array, assertNonNullish, fromNullable } from '@dfinity/utils';
 import type { Collection, Key, RawUserId } from '@junobuild/functions';

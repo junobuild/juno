@@ -1,5 +1,5 @@
+import type { MissionControlDid } from '$declarations';
 import { CYCLES_WARNING } from '$lib/constants/app.constants';
-import type { MissionControlDid } from '$lib/types/declarations';
 
 export const EMAIL_PLACEHOLDER = 'name@example.com';
 

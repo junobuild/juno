@@ -1,4 +1,4 @@
-import type { SputnikActor } from '$lib/api/actors/actor.factory';
+import type { SputnikActor } from '$declarations';
 import { Ed25519KeyIdentity } from '@dfinity/identity';
 import type { Actor } from '@dfinity/pic';
 import { toNullable } from '@dfinity/utils';

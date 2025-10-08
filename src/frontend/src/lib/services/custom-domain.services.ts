@@ -1,3 +1,4 @@
+import type { SatelliteDid } from '$declarations';
 import {
 	deleteCustomDomain as deleteCustomDomainApi,
 	listCustomDomains as listCustomDomainsApi,
@@ -8,7 +9,6 @@ import { authStore } from '$lib/stores/auth.store';
 import { customDomainsStore } from '$lib/stores/custom-domains.store';
 import { i18n } from '$lib/stores/i18n.store';
 import { toasts } from '$lib/stores/toasts.store';
-import type { SatelliteDid } from '$lib/types/declarations';
 import type { Principal } from '@dfinity/principal';
 import { fromNullable, nonNullish } from '@dfinity/utils';
 import { get } from 'svelte/store';

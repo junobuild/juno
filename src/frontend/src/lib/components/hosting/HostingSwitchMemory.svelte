@@ -1,16 +1,15 @@
 <script lang="ts">
 	import { nonNullish } from '@dfinity/utils';
-	import type { Satellite } from '$declarations/mission_control/mission_control.did';
-	import type { Memory } from '$declarations/satellite/satellite.did';
 	import Confirmation from '$lib/components/core/Confirmation.svelte';
 	import { switchHostingMemory } from '$lib/services/hosting.storage.services';
 	import { authStore } from '$lib/stores/auth.store';
 	import { i18n } from '$lib/stores/i18n.store';
+	import type { SatelliteDid, MissionControlDid } from '$lib/types/declarations';
 	import { i18nFormat } from '$lib/utils/i18n.utils';
 
 	interface Props {
-		satellite: Satellite;
-		memory: Memory | undefined;
+		satellite: MissionControlDid.Satellite;
+		memory: SatelliteDid.Memory | undefined;
 		reload: () => Promise<void>;
 	}
 

@@ -1,9 +1,5 @@
-import type {
-	Config,
-	CyclesMonitoringStrategy,
-	_SERVICE as MissionControlActor
-} from '$declarations/mission_control/mission_control.did';
-import { idlFactory as idlFactorMissionControl } from '$declarations/mission_control/mission_control.factory.did';
+import { idlFactoryMissionControl, type MissionControlActor } from '$lib/api/actors/actor.factory';
+import type { MissionControlDid } from '$lib/types/declarations';
 import { AnonymousIdentity } from '@dfinity/agent';
 import { Ed25519KeyIdentity } from '@dfinity/identity';
 import { PocketIc, type Actor } from '@dfinity/pic';
@@ -27,7 +23,7 @@ describe('Mission Control', () => {
 		const userInitArgs = (): ArrayBuffer => missionControlUserInitArgs(controller.getPrincipal());
 
 		const { actor: c } = await pic.setupCanister<MissionControlActor>({
-			idlFactory: idlFactorMissionControl,
+			idlFactory: idlFactoryMissionControl,
 			wasm: MISSION_CONTROL_WASM_PATH,
 			arg: userInitArgs(),
 			sender: controller.getPrincipal()
@@ -95,14 +91,14 @@ describe('Mission Control', () => {
 	});
 
 	describe('controller', () => {
-		const strategy: CyclesMonitoringStrategy = {
+		const strategy: MissionControlDid.CyclesMonitoringStrategy = {
 			BelowThreshold: {
 				min_cycles: 500_000n,
 				fund_cycles: 100_000n
 			}
 		};
 
-		const config: Config = {
+		const config: MissionControlDid.Config = {
 			monitoring: [
 				{
 					cycles: [

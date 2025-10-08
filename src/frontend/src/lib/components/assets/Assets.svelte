@@ -3,7 +3,6 @@
 	import { isNullish, nonNullish } from '@dfinity/utils';
 	import { getContext, untrack } from 'svelte';
 	import { fade } from 'svelte/transition';
-	import type { AssetNoContent } from '$declarations/satellite/satellite.did';
 	import { deleteAssets } from '$lib/api/satellites.api';
 	import AssetUpload from '$lib/components/assets/AssetUpload.svelte';
 	import CollectionEmpty from '$lib/components/collections/CollectionEmpty.svelte';
@@ -17,6 +16,7 @@
 	import { listParamsStore } from '$lib/stores/list-params.store';
 	import { versionStore } from '$lib/stores/version.store';
 	import { type DataContext, DATA_CONTEXT_KEY } from '$lib/types/data.context';
+	import type { SatelliteDid } from '$lib/types/declarations';
 	import { type PaginationContext, PAGINATION_CONTEXT_KEY } from '$lib/types/pagination.context';
 	import { type RulesContext, RULES_CONTEXT_KEY } from '$lib/types/rules.context';
 	import { emit } from '$lib/utils/events.utils';
@@ -36,14 +36,14 @@
 		store: paginationStore,
 		resetPage,
 		list
-	}: PaginationContext<AssetNoContent> = getContext<PaginationContext<AssetNoContent>>(
-		PAGINATION_CONTEXT_KEY
-	);
+	}: PaginationContext<SatelliteDid.AssetNoContent> = getContext<
+		PaginationContext<SatelliteDid.AssetNoContent>
+	>(PAGINATION_CONTEXT_KEY);
 
 	let empty = $derived($paginationStore.items?.length === 0 && nonNullish(collection));
 
-	const { store: assetsStore, resetData }: DataContext<AssetNoContent> =
-		getContext<DataContext<AssetNoContent>>(DATA_CONTEXT_KEY);
+	const { store: assetsStore, resetData }: DataContext<SatelliteDid.AssetNoContent> =
+		getContext<DataContext<SatelliteDid.AssetNoContent>>(DATA_CONTEXT_KEY);
 
 	const load = async () => {
 		resetPage();

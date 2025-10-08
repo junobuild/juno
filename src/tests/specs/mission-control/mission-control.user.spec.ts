@@ -1,7 +1,6 @@
-import type { _SERVICE as MissionControlActor } from '$declarations/mission_control/mission_control.did';
-import { idlFactory as idlFactorMissionControl } from '$declarations/mission_control/mission_control.factory.did';
 import type { _SERVICE as SatelliteActor } from '$declarations/satellite/satellite.did';
 import { idlFactory as idlFactorSatellite } from '$declarations/satellite/satellite.factory.did';
+import { idlFactoryMissionControl, type MissionControlActor } from '$lib/api/actors/actor.factory';
 import { Ed25519KeyIdentity } from '@dfinity/identity';
 import { PocketIc, type Actor } from '@dfinity/pic';
 import type { Principal } from '@dfinity/principal';
@@ -31,7 +30,7 @@ describe('Mission Control', () => {
 
 		const { actor: c, canisterId: missionControlId } = await pic.setupCanister<MissionControlActor>(
 			{
-				idlFactory: idlFactorMissionControl,
+				idlFactory: idlFactoryMissionControl,
 				wasm: MISSION_CONTROL_WASM_PATH,
 				arg: userInitArgs(),
 				sender: controller.getPrincipal()

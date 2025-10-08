@@ -1,17 +1,17 @@
 <script lang="ts">
 	import { nonNullish, fromNullishNullable } from '@dfinity/utils';
 	import { onMount, untrack } from 'svelte';
-	import type { CyclesMonitoringStrategy } from '$declarations/mission_control/mission_control.did';
 	import MonitoringSentence from '$lib/components/modals/MonitoringSentence.svelte';
 	import Checkbox from '$lib/components/ui/Checkbox.svelte';
 	import Value from '$lib/components/ui/Value.svelte';
 	import { BASIC_STRATEGY } from '$lib/constants/monitoring.constants';
 	import { i18n } from '$lib/stores/i18n.store';
+	import type { MissionControlDid } from '$lib/types/declarations';
 	import type { JunoModalCreateSegmentDetail, JunoModalDetail } from '$lib/types/modal';
 
 	interface Props {
 		detail: JunoModalDetail;
-		monitoringStrategy: CyclesMonitoringStrategy | undefined;
+		monitoringStrategy: MissionControlDid.CyclesMonitoringStrategy | undefined;
 	}
 
 	let { monitoringStrategy = $bindable(), detail }: Props = $props();
@@ -19,7 +19,9 @@
 	let { monitoringConfig, monitoringEnabled } = $derived(detail as JunoModalCreateSegmentDetail);
 
 	let useDefaultStrategy = $state(false);
-	let useMonitoringStrategy: CyclesMonitoringStrategy | undefined = $state(undefined);
+	let useMonitoringStrategy = $state<MissionControlDid.CyclesMonitoringStrategy | undefined>(
+		undefined
+	);
 
 	onMount(() => {
 		// If user as a default strategy, we use this strategy else, if monitored is already enabled, we use the basic suggested strategy

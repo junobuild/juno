@@ -3,19 +3,19 @@
 	import { createEventDispatcher } from 'svelte';
 	import { run, stopPropagation } from 'svelte/legacy';
 	import { fade } from 'svelte/transition';
-	import type { CustomDomain as CustomDomainType } from '$declarations/satellite/satellite.did';
 	import IconCheckCircle from '$lib/components/icons/IconCheckCircle.svelte';
 	import Identifier from '$lib/components/ui/Identifier.svelte';
 	import Popover from '$lib/components/ui/Popover.svelte';
 	import Value from '$lib/components/ui/Value.svelte';
 	import { i18n } from '$lib/stores/i18n.store';
 	import type { CustomDomainRegistrationState } from '$lib/types/custom-domain';
+	import type { SatelliteDid } from '$lib/types/declarations';
 	import type { Option } from '$lib/types/utils';
 	import { keyOf } from '$lib/utils/utils';
 
 	interface Props {
 		info: {
-			customDomain: [string, CustomDomainType] | undefined;
+			customDomain: [string, SatelliteDid.CustomDomain] | undefined;
 			registrationState: Option<CustomDomainRegistrationState>;
 			mainDomain: boolean;
 		};

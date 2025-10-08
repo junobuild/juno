@@ -1,6 +1,5 @@
 <script lang="ts">
 	import { fromNullishNullable } from '@dfinity/utils';
-	import type { Orbiter } from '$declarations/mission_control/mission_control.did';
 	import CanisterOverview from '$lib/components/canister/CanisterOverview.svelte';
 	import CanisterSubnet from '$lib/components/canister/CanisterSubnet.svelte';
 	import CanisterSyncData from '$lib/components/canister/CanisterSyncData.svelte';
@@ -12,9 +11,10 @@
 	import { i18n } from '$lib/stores/i18n.store';
 	import { versionStore } from '$lib/stores/version.store';
 	import type { CanisterSyncData as CanisterSyncDataType } from '$lib/types/canister';
+	import type { MissionControlDid } from '$lib/types/declarations';
 
 	interface Props {
-		orbiter: Orbiter;
+		orbiter: MissionControlDid.Orbiter;
 	}
 
 	let { orbiter }: Props = $props();

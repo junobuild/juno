@@ -1,7 +1,5 @@
 <script lang="ts">
 	import type { Principal } from '@dfinity/principal';
-	import type { Satellite } from '$declarations/mission_control/mission_control.did';
-	import type { AuthenticationConfig, Rule } from '$declarations/satellite/satellite.did';
 	import AuthConfigForm from '$lib/components/auth/AuthConfigForm.svelte';
 	import Modal from '$lib/components/ui/Modal.svelte';
 	import SpinnerModal from '$lib/components/ui/SpinnerModal.svelte';
@@ -19,13 +17,11 @@
 
 	let { detail, onclose }: Props = $props();
 
-	let satellite: Satellite = $state((detail as JunoModalEditAuthConfigDetail).satellite);
+	let satellite = $state((detail as JunoModalEditAuthConfigDetail).satellite);
 
-	let rule: Rule | undefined = $state((detail as JunoModalEditAuthConfigDetail).rule);
+	let rule = $state((detail as JunoModalEditAuthConfigDetail).rule);
 
-	let config: AuthenticationConfig | undefined = $state(
-		(detail as JunoModalEditAuthConfigDetail).config
-	);
+	let config = $state((detail as JunoModalEditAuthConfigDetail).config);
 
 	let maxTokens = $state<number | undefined>(undefined);
 

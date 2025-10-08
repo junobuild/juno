@@ -1,17 +1,17 @@
 <script lang="ts">
 	import { fromNullable, nonNullish, uint8ArrayToHexString } from '@dfinity/utils';
-	import type { Satellite } from '$declarations/mission_control/mission_control.did';
 	import IconCheck from '$lib/components/icons/IconCheck.svelte';
 	import IconClose from '$lib/components/icons/IconClose.svelte';
 	import Identifier from '$lib/components/ui/Identifier.svelte';
 	import { i18n } from '$lib/stores/i18n.store';
+	import type { MissionControlDid } from '$lib/types/declarations';
 	import type { ProposalRecord } from '$lib/types/proposals';
 	import { formatToDate } from '$lib/utils/date.utils';
 	import { emit } from '$lib/utils/events.utils';
 
 	interface Props {
 		proposal: ProposalRecord;
-		satellite: Satellite;
+		satellite: MissionControlDid.Satellite;
 	}
 
 	let { proposal: proposalRecord, satellite }: Props = $props();

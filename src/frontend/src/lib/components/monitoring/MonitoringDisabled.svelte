@@ -1,12 +1,12 @@
 <script lang="ts">
 	import { fromNullishNullable } from '@dfinity/utils';
 	import { fade } from 'svelte/transition';
-	import type { Monitoring } from '$declarations/mission_control/mission_control.did';
 	import Value from '$lib/components/ui/Value.svelte';
 	import { i18n } from '$lib/stores/i18n.store';
+	import type { MissionControlDid } from '$lib/types/declarations';
 
 	interface Props {
-		monitoring: Monitoring | undefined;
+		monitoring: MissionControlDid.Monitoring | undefined;
 		loading: boolean;
 	}
 

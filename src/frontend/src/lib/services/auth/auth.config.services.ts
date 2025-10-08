@@ -1,5 +1,3 @@
-import type { Satellite } from '$declarations/mission_control/mission_control.did';
-import type { AuthenticationConfig, Rule } from '$declarations/satellite/satellite.did';
 import { getAuthConfig as getAuthConfigApi, setAuthConfig, setRule } from '$lib/api/satellites.api';
 import { DEFAULT_RATE_CONFIG_TIME_PER_TOKEN_NS } from '$lib/constants/data.constants';
 import { DbCollectionType } from '$lib/constants/rules.constants';
@@ -7,6 +5,7 @@ import { SATELLITE_v0_0_17 } from '$lib/constants/version.constants';
 import { isSatelliteFeatureSupported } from '$lib/services/feature.services';
 import { i18n } from '$lib/stores/i18n.store';
 import { toasts } from '$lib/stores/toasts.store';
+import type { MissionControlDid, SatelliteDid } from '$lib/types/declarations';
 import type { OptionIdentity } from '$lib/types/itentity';
 import type { Option } from '$lib/types/utils';
 import {
@@ -26,9 +25,9 @@ import {
 import { get } from 'svelte/store';
 
 interface UpdateAuthConfigParams {
-	satellite: Satellite;
-	rule: Rule | undefined;
-	config: AuthenticationConfig | undefined;
+	satellite: MissionControlDid.Satellite;
+	rule: SatelliteDid.Rule | undefined;
+	config: SatelliteDid.AuthenticationConfig | undefined;
 	maxTokens: number | undefined;
 	externalAlternativeOrigins: string;
 	allowedCallers: Principal[];
@@ -206,7 +205,7 @@ export const getAuthConfig = async ({
 	identity: OptionIdentity;
 }): Promise<{
 	result: 'success' | 'error' | 'skip';
-	config?: AuthenticationConfig | undefined;
+	config?: SatelliteDid.AuthenticationConfig | undefined;
 }> => {
 	try {
 		const authConfigSupported = isSatelliteFeatureSupported({

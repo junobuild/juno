@@ -1,6 +1,6 @@
-import type { Orbiter } from '$declarations/mission_control/mission_control.did';
 import { orbiterStore } from '$lib/derived/orbiter.derived';
 import { canistersSyncDataUncertifiedStore } from '$lib/stores/canister-sync-data.store';
+import type { MissionControlDid } from '$lib/types/declarations';
 import type { SegmentWithSyncData } from '$lib/types/satellite';
 import { isNullish } from '@dfinity/utils';
 import { derived } from 'svelte/store';
@@ -20,7 +20,7 @@ export const orbiterWithSyncData = derived(
 			return undefined;
 		}
 
-		return <SegmentWithSyncData<Orbiter>>{
+		return <SegmentWithSyncData<MissionControlDid.Orbiter>>{
 			segment: { orbiter_id, ...rest },
 			canister
 		};

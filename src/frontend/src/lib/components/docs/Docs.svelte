@@ -3,7 +3,6 @@
 	import { isNullish, nonNullish } from '@dfinity/utils';
 	import { getContext, untrack } from 'svelte';
 	import { fade } from 'svelte/transition';
-	import type { Doc as DocType } from '$declarations/satellite/satellite.did';
 	import { deleteDocs } from '$lib/api/satellites.api';
 	import CollectionEmpty from '$lib/components/collections/CollectionEmpty.svelte';
 	import DataCollectionDelete from '$lib/components/data/DataCollectionDelete.svelte';
@@ -17,6 +16,7 @@
 	import { listParamsStore } from '$lib/stores/list-params.store';
 	import { versionStore } from '$lib/stores/version.store';
 	import { DATA_CONTEXT_KEY, type DataContext } from '$lib/types/data.context';
+	import type { SatelliteDid } from '$lib/types/declarations';
 	import { PAGINATION_CONTEXT_KEY, type PaginationContext } from '$lib/types/pagination.context';
 	import { RULES_CONTEXT_KEY, type RulesContext } from '$lib/types/rules.context';
 	import { emit } from '$lib/utils/events.utils';
@@ -30,12 +30,14 @@
 		store: paginationStore,
 		resetPage,
 		list
-	}: PaginationContext<DocType> = getContext<PaginationContext<DocType>>(PAGINATION_CONTEXT_KEY);
+	}: PaginationContext<SatelliteDid.Doc> = getContext<PaginationContext<SatelliteDid.Doc>>(
+		PAGINATION_CONTEXT_KEY
+	);
 
 	let empty = $derived($paginationStore.items?.length === 0 && nonNullish(collection));
 
-	const { store: docsStore, resetData }: DataContext<DocType> =
-		getContext<DataContext<DocType>>(DATA_CONTEXT_KEY);
+	const { store: docsStore, resetData }: DataContext<SatelliteDid.Doc> =
+		getContext<DataContext<SatelliteDid.Doc>>(DATA_CONTEXT_KEY);
 
 	const load = async () => {
 		resetPage();

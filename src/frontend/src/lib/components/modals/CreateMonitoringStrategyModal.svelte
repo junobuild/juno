@@ -1,11 +1,6 @@
 <script lang="ts">
 	import type { Principal } from '@dfinity/principal';
 	import { nonNullish, notEmptyString, fromNullishNullable } from '@dfinity/utils';
-	import type {
-		CyclesMonitoringStrategy,
-		Orbiter,
-		Satellite
-	} from '$declarations/mission_control/mission_control.did';
 	import MonitoringCreateSelectStrategy from '$lib/components/monitoring/MonitoringCreateSelectStrategy.svelte';
 	import MonitoringCreateStrategy from '$lib/components/monitoring/MonitoringCreateStrategy.svelte';
 	import MonitoringCreateStrategyMissionControl from '$lib/components/monitoring/MonitoringCreateStrategyMissionControl.svelte';
@@ -22,6 +17,7 @@
 	import { authStore } from '$lib/stores/auth.store';
 	import { wizardBusy } from '$lib/stores/busy.store';
 	import { i18n } from '$lib/stores/i18n.store';
+	import type { MissionControlDid } from '$lib/types/declarations';
 	import type { JunoModalDetail, JunoModalCreateMonitoringStrategyDetail } from '$lib/types/modal';
 	import type { MonitoringStrategyProgress } from '$lib/types/progress-strategy';
 	import type { Option } from '$lib/types/utils';
@@ -73,8 +69,8 @@
 
 	// Monitoring strategy
 
-	let selectedSatellites: [Principal, Satellite][] = $state([]);
-	let selectedOrbiters: [Principal, Orbiter][] = $state([]);
+	let selectedSatellites = $state<[Principal, MissionControlDid.Satellite][]>([]);
+	let selectedOrbiters = $state<[Principal, MissionControlDid.Orbiter][]>([]);
 
 	let minCycles: bigint | undefined = $state(undefined);
 	let fundCycles: bigint | undefined = $state(undefined);
@@ -86,11 +82,13 @@
 		fromNullishNullable(fromNullishNullable(settings?.monitoring)?.cycles)
 	);
 
-	let missionControl: { monitored: boolean; strategy: CyclesMonitoringStrategy | undefined } =
-		$derived({
-			monitored: missionControlCycles?.enabled === true,
-			strategy: fromNullishNullable(missionControlCycles?.strategy)
-		});
+	let missionControl: {
+		monitored: boolean;
+		strategy: MissionControlDid.CyclesMonitoringStrategy | undefined;
+	} = $derived({
+		monitored: missionControlCycles?.enabled === true,
+		strategy: fromNullishNullable(missionControlCycles?.strategy)
+	});
 
 	// Monitoring email
 
@@ -101,9 +99,9 @@
 
 	// Strategy choice
 
-	let reuseStrategy: CyclesMonitoringStrategy | undefined = $state(undefined);
+	let reuseStrategy = $state<MissionControlDid.CyclesMonitoringStrategy | undefined>(undefined);
 
-	const onSelectStrategy = (strategy?: CyclesMonitoringStrategy) => {
+	const onSelectStrategy = (strategy?: MissionControlDid.CyclesMonitoringStrategy) => {
 		reuseStrategy = strategy;
 
 		if (nonNullish(strategy)) {

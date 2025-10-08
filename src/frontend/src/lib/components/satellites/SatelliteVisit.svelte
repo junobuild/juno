@@ -1,16 +1,16 @@
 <script lang="ts">
 	import { nonNullish } from '@dfinity/utils';
 	import { fade } from 'svelte/transition';
-	import type { Satellite } from '$declarations/mission_control/mission_control.did';
 	import {
 		satelliteCustomDomain,
 		satelliteCustomDomainsLoaded
 	} from '$lib/derived/satellite-custom-domains.derived';
 	import { i18n } from '$lib/stores/i18n.store';
+	import type { MissionControlDid } from '$lib/types/declarations';
 	import { satelliteUrl } from '$lib/utils/satellite.utils';
 
 	interface Props {
-		satellite: Satellite;
+		satellite: MissionControlDid.Satellite;
 	}
 
 	let { satellite }: Props = $props();

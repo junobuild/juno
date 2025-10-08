@@ -1,3 +1,3 @@
-import type { Rule } from '$declarations/satellite/satellite.did';
+import type { SatelliteDid } from '$lib/types/declarations';
 
-export type CollectionRule = [string, Rule];
+export type CollectionRule = [string, SatelliteDid.Rule];

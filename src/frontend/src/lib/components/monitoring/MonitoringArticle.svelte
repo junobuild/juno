@@ -3,7 +3,6 @@
 	import { nonNullish, fromNullishNullable } from '@dfinity/utils';
 	import type { Snippet } from 'svelte';
 	import { fade } from 'svelte/transition';
-	import type { Monitoring } from '$declarations/mission_control/mission_control.did';
 	import Canister from '$lib/components/canister/Canister.svelte';
 	import CanisterMonitoringData from '$lib/components/canister/CanisterMonitoringData.svelte';
 	import Chart from '$lib/components/charts/Chart.svelte';
@@ -15,13 +14,14 @@
 		CanisterMonitoringData as CanisterMonitoringDataType,
 		Segment
 	} from '$lib/types/canister';
+	import type { MissionControlDid } from '$lib/types/declarations';
 	import { formatTCycles } from '$lib/utils/cycles.utils';
 	import { formatToRelativeTime } from '$lib/utils/date.utils';
 	import { emit } from '$lib/utils/events.utils';
 
 	interface Props {
 		children: Snippet;
-		monitoring: Monitoring | undefined;
+		monitoring: MissionControlDid.Monitoring | undefined;
 		canisterId: Principal;
 		segment: Segment;
 		segmentLabel: string;

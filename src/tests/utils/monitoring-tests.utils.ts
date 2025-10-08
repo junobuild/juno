@@ -1,12 +1,6 @@
 import type { _SERVICE as MissionControlActor_0_0_14 } from '$declarations/deprecated/mission_control-0-0-14.did';
-import type {
-	CyclesMonitoringStrategy,
-	GetMonitoringHistory,
-	_SERVICE as MissionControlActor,
-	Monitoring,
-	MonitoringHistory,
-	MonitoringHistoryKey
-} from '$declarations/mission_control/mission_control.did';
+import type { MissionControlActor } from '$lib/api/actors/actor.factory';
+import type { MissionControlDid } from '$lib/types/declarations';
 import type { Actor } from '@dfinity/pic';
 import type { Principal } from '@dfinity/principal';
 import { assertNonNullish, fromNullable, toNullable } from '@dfinity/utils';
@@ -16,9 +10,9 @@ const testMonitoring = ({
 	expectedEnabled,
 	expectedStrategy
 }: {
-	monitoring: Monitoring | undefined;
+	monitoring: MissionControlDid.Monitoring | undefined;
 	expectedEnabled: boolean;
-	expectedStrategy: CyclesMonitoringStrategy;
+	expectedStrategy: MissionControlDid.CyclesMonitoringStrategy;
 }) => {
 	const cycles = fromNullable(monitoring?.cycles ?? []);
 	const cyclesStrategy = fromNullable(cycles?.strategy ?? []);
@@ -38,7 +32,7 @@ export const testMissionControlMonitoring = async ({
 	actor
 }: {
 	expectedEnabled: boolean;
-	expectedStrategy: CyclesMonitoringStrategy;
+	expectedStrategy: MissionControlDid.CyclesMonitoringStrategy;
 	actor: Actor<MissionControlActor | MissionControlActor_0_0_14>;
 }) => {
 	const { get_settings } = actor;
@@ -55,7 +49,7 @@ export const testSatellitesMonitoring = async ({
 	actor
 }: {
 	expectedEnabled: boolean;
-	expectedStrategy: CyclesMonitoringStrategy;
+	expectedStrategy: MissionControlDid.CyclesMonitoringStrategy;
 	actor: Actor<MissionControlActor | MissionControlActor_0_0_14>;
 }) => {
 	const { list_satellites } = actor;
@@ -74,7 +68,7 @@ export const testOrbiterMonitoring = async ({
 	actor
 }: {
 	expectedEnabled: boolean;
-	expectedStrategy: CyclesMonitoringStrategy;
+	expectedStrategy: MissionControlDid.CyclesMonitoringStrategy;
 	actor: Actor<MissionControlActor | MissionControlActor_0_0_14>;
 }) => {
 	const { list_orbiters } = actor;
@@ -95,10 +89,10 @@ export const testMonitoringHistory = async ({
 	segmentId: Principal;
 	expectedLength: number;
 	actor: Actor<MissionControlActor | MissionControlActor_0_0_14>;
-}): Promise<[MonitoringHistoryKey, MonitoringHistory][]> => {
+}): Promise<[MissionControlDid.MonitoringHistoryKey, MissionControlDid.MonitoringHistory][]> => {
 	const { get_monitoring_history } = actor;
 
-	const filter: GetMonitoringHistory = {
+	const filter: MissionControlDid.GetMonitoringHistory = {
 		segment_id: segmentId,
 		from: toNullable(),
 		to: toNullable()

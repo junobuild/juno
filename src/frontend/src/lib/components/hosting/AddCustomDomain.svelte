@@ -1,11 +1,11 @@
 <script lang="ts">
-	import type { Satellite } from '$declarations/mission_control/mission_control.did';
 	import type { AuthenticationConfig } from '$declarations/satellite/satellite.did';
 	import { i18n } from '$lib/stores/i18n.store';
+	import type { MissionControlDid } from '$lib/types/declarations';
 	import { emit } from '$lib/utils/events.utils';
 
 	interface Props {
-		satellite: Satellite;
+		satellite: MissionControlDid.Satellite;
 		config?: AuthenticationConfig | undefined;
 	}
 

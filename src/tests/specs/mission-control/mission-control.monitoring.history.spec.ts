@@ -1,12 +1,5 @@
-import type {
-	CyclesMonitoringStrategy,
-	GetMonitoringHistory,
-	_SERVICE as MissionControlActor,
-	MonitoringHistory,
-	MonitoringHistoryKey,
-	MonitoringStartConfig
-} from '$declarations/mission_control/mission_control.did';
-import { idlFactory as idlFactorMissionControl } from '$declarations/mission_control/mission_control.factory.did';
+import { type MissionControlActor, idlFactoryMissionControl } from '$lib/api/actors/actor.factory';
+import type { MissionControlDid } from '$lib/types/declarations';
 import { Ed25519KeyIdentity } from '@dfinity/identity';
 import { type Actor, PocketIc } from '@dfinity/pic';
 import type { Principal } from '@dfinity/principal';
@@ -38,7 +31,7 @@ describe('Mission Control > History', () => {
 		const userInitArgs = (): ArrayBuffer => missionControlUserInitArgs(controller.getPrincipal());
 
 		const { actor: c, canisterId: mId } = await pic.setupCanister<MissionControlActor>({
-			idlFactory: idlFactorMissionControl,
+			idlFactory: idlFactoryMissionControl,
 			wasm: MISSION_CONTROL_WASM_PATH,
 			arg: userInitArgs(),
 			sender: controller.getPrincipal()
@@ -74,7 +67,7 @@ describe('Mission Control > History', () => {
 	const testEmptyHistory = async (segmentId: Principal) => {
 		const { get_monitoring_history } = actor;
 
-		const filter: GetMonitoringHistory = {
+		const filter: MissionControlDid.GetMonitoringHistory = {
 			segment_id: segmentId,
 			from: toNullable(),
 			to: toNullable()
@@ -100,7 +93,7 @@ describe('Mission Control > History', () => {
 	});
 
 	describe('with history', () => {
-		const strategy: CyclesMonitoringStrategy = {
+		const strategy: MissionControlDid.CyclesMonitoringStrategy = {
 			BelowThreshold: {
 				min_cycles: 500_000n,
 				fund_cycles: 100_000n
@@ -110,7 +103,7 @@ describe('Mission Control > History', () => {
 		const startMonitoring = async () => {
 			const { update_and_start_monitoring } = actor;
 
-			const config: MonitoringStartConfig = {
+			const config: MissionControlDid.MonitoringStartConfig = {
 				cycles_config: [
 					{
 						satellites_strategy: toNullable({
@@ -196,16 +189,25 @@ describe('Mission Control > History', () => {
 		});
 
 		describe('clean entries older than 30 days', () => {
-			let missionControlHistory: [MonitoringHistoryKey, MonitoringHistory][];
-			let satelliteHistory: [MonitoringHistoryKey, MonitoringHistory][];
-			let orbiterHistory: [MonitoringHistoryKey, MonitoringHistory][];
+			let missionControlHistory: [
+				MissionControlDid.MonitoringHistoryKey,
+				MissionControlDid.MonitoringHistory
+			][];
+			let satelliteHistory: [
+				MissionControlDid.MonitoringHistoryKey,
+				MissionControlDid.MonitoringHistory
+			][];
+			let orbiterHistory: [
+				MissionControlDid.MonitoringHistoryKey,
+				MissionControlDid.MonitoringHistory
+			][];
 
 			const testCleanedHistory = ({
 				before,
 				after
 			}: {
-				before: [MonitoringHistoryKey, MonitoringHistory][];
-				after: [MonitoringHistoryKey, MonitoringHistory][];
+				before: [MissionControlDid.MonitoringHistoryKey, MissionControlDid.MonitoringHistory][];
+				after: [MissionControlDid.MonitoringHistoryKey, MissionControlDid.MonitoringHistory][];
 			}) => {
 				expect(
 					after.find(([key, _]) => key.created_at === before[0][0].created_at)

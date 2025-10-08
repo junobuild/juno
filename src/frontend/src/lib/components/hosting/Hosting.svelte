@@ -1,7 +1,6 @@
 <script lang="ts">
 	import { nonNullish } from '@dfinity/utils';
 	import { onMount } from 'svelte';
-	import type { Satellite } from '$declarations/mission_control/mission_control.did';
 	import type {
 		AuthenticationConfig,
 		CustomDomain as CustomDomainType
@@ -16,12 +15,13 @@
 	import { authStore } from '$lib/stores/auth.store';
 	import { i18n } from '$lib/stores/i18n.store';
 	import type { CustomDomainRegistrationState } from '$lib/types/custom-domain';
+	import type { MissionControlDid } from '$lib/types/declarations';
 	import type { SatelliteIdText } from '$lib/types/satellite';
 	import type { Option } from '$lib/types/utils';
 	import { satelliteUrl } from '$lib/utils/satellite.utils';
 
 	interface Props {
-		satellite: Satellite;
+		satellite: MissionControlDid.Satellite;
 	}
 
 	let { satellite }: Props = $props();

@@ -3,7 +3,6 @@
 	import { isEmptyString, isNullish, nonNullish } from '@dfinity/utils';
 	import { onMount, type Snippet, untrack } from 'svelte';
 	import { fade } from 'svelte/transition';
-	import type { Orbiter, Satellite } from '$declarations/mission_control/mission_control.did';
 	import Segment from '$lib/components/segments/Segment.svelte';
 	import Checkbox from '$lib/components/ui/Checkbox.svelte';
 	import SpinnerParagraph from '$lib/components/ui/SpinnerParagraph.svelte';
@@ -19,6 +18,7 @@
 	import { loadSatellites } from '$lib/services/satellites.services';
 	import { i18n } from '$lib/stores/i18n.store';
 	import { toasts } from '$lib/stores/toasts.store';
+	import type { MissionControlDid } from '$lib/types/declarations';
 	import type { MissionControlId } from '$lib/types/mission-control';
 	import { orbiterName } from '$lib/utils/orbiter.utils';
 	import { satelliteName } from '$lib/utils/satellite.utils';
@@ -28,8 +28,8 @@
 		missionControlId: MissionControlId;
 		children?: Snippet;
 		selectedMissionControl?: boolean;
-		selectedSatellites: [Principal, Satellite][];
-		selectedOrbiters: [Principal, Orbiter][];
+		selectedSatellites: [Principal, MissionControlDid.Satellite][];
+		selectedOrbiters: [Principal, MissionControlDid.Orbiter][];
 		selectedDisabled: boolean;
 		withMissionControl?: boolean;
 		reloadSegments?: boolean;
@@ -56,8 +56,8 @@
 		loadingSegments = loadingState;
 	});
 
-	let satellites: [Principal, Satellite][] = $state([]);
-	let orbiters: [Principal, Orbiter][] = $state([]);
+	let satellites = $state<[Principal, MissionControlDid.Satellite][]>([]);
+	let orbiters = $state<[Principal, MissionControlDid.Orbiter][]>([]);
 
 	const loadSegments = async () => {
 		const [{ result: resultSatellites }, { result: resultOrbiters }] = await Promise.all([

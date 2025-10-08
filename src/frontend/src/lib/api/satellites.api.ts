@@ -1,4 +1,3 @@
-import type { Controller } from '$declarations/mission_control/mission_control.did';
 import type {
 	AuthenticationConfig,
 	CollectionType,
@@ -15,6 +14,7 @@ import type {
 } from '$declarations/satellite/satellite.did';
 import { getSatelliteActor } from '$lib/api/actors/actor.juno.api';
 import type { CustomDomains } from '$lib/types/custom-domain';
+import type { MissionControlDid } from '$lib/types/declarations';
 import type { OptionIdentity } from '$lib/types/itentity';
 import type { ListParams } from '$lib/types/list';
 import { toListParams } from '$lib/utils/satellite.utils';
@@ -157,7 +157,7 @@ export const listControllers = async ({
 }: {
 	satelliteId: Principal;
 	identity: OptionIdentity;
-}): Promise<[Principal, Controller][]> => {
+}): Promise<[Principal, MissionControlDid.Controller][]> => {
 	const actor = await getSatelliteActor({ satelliteId, identity });
 	return actor.list_controllers();
 };

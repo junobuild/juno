@@ -1,8 +1,3 @@
-import type {
-	MissionControlSettings,
-	Satellite,
-	User
-} from '$declarations/mission_control/mission_control.did';
 import {
 	addMissionControlController,
 	addSatellitesController,
@@ -48,6 +43,7 @@ import { satellitesUncertifiedStore } from '$lib/stores/satellite.store';
 import { toasts } from '$lib/stores/toasts.store';
 import { versionStore } from '$lib/stores/version.store';
 import type { SetControllerParams } from '$lib/types/controllers';
+import type { MissionControlDid } from '$lib/types/declarations';
 import type { OptionIdentity } from '$lib/types/itentity';
 import type { Metadata } from '$lib/types/metadata';
 import type { MissionControlId } from '$lib/types/mission-control';
@@ -191,7 +187,7 @@ export const setSatelliteMetadata = async ({
 	metadata
 }: {
 	missionControlId: MissionControlId;
-	satellite: Satellite;
+	satellite: MissionControlDid.Satellite;
 	metadata: SatelliteUiMetadata;
 }): Promise<{ success: boolean }> => {
 	const { error, success, data } = SatelliteUiMetadataSchema.safeParse(metadata);
@@ -328,7 +324,9 @@ export const loadSettings = async ({
 		return { success: true };
 	}
 
-	const load = async (identity: Identity): Promise<MissionControlSettings | undefined> => {
+	const load = async (
+		identity: Identity
+	): Promise<MissionControlDid.MissionControlSettings | undefined> => {
 		const settings = await getSettings({
 			missionControlId,
 			identity
@@ -337,7 +335,7 @@ export const loadSettings = async ({
 		return fromNullable(settings);
 	};
 
-	const { result } = await loadDataStore<MissionControlSettings | undefined>({
+	const { result } = await loadDataStore<MissionControlDid.MissionControlSettings | undefined>({
 		identity,
 		reload,
 		load,
@@ -364,13 +362,13 @@ export const loadUserData = async ({
 		return { success: true };
 	}
 
-	const load = async (identity: Identity): Promise<User> =>
+	const load = async (identity: Identity): Promise<MissionControlDid.User> =>
 		await getUserData({
 			missionControlId,
 			identity
 		});
 
-	const { result } = await loadDataStore<User>({
+	const { result } = await loadDataStore<MissionControlDid.User>({
 		identity,
 		reload,
 		load,

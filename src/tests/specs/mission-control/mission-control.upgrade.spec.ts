@@ -1,11 +1,7 @@
 import type { _SERVICE as MissionControlActor_0_0_14 } from '$declarations/deprecated/mission_control-0-0-14.did';
 import { idlFactory as idlFactorMissionControl_0_0_14 } from '$declarations/deprecated/mission_control-0-0-14.factory.did';
-import type {
-	CyclesMonitoringStrategy,
-	_SERVICE as MissionControlActor,
-	MonitoringStartConfig
-} from '$declarations/mission_control/mission_control.did';
-import { idlFactory as idlFactorMissionControl } from '$declarations/mission_control/mission_control.factory.did';
+import { type MissionControlActor, idlFactoryMissionControl } from '$lib/api/actors/actor.factory';
+import type { MissionControlDid } from '$lib/types/declarations';
 import { Ed25519KeyIdentity } from '@dfinity/identity';
 import { type Actor, PocketIc } from '@dfinity/pic';
 import type { Principal } from '@dfinity/principal';
@@ -147,7 +143,7 @@ describe('Mission control > Upgrade', () => {
 				await upgrade0_0_14();
 
 				actor = pic.createActor<MissionControlActor_0_0_14>(
-					idlFactorMissionControl,
+					idlFactoryMissionControl,
 					missionControlId
 				);
 				actor.setIdentity(controller);
@@ -161,7 +157,7 @@ describe('Mission control > Upgrade', () => {
 			await upgrade0_0_14();
 
 			actor = pic.createActor<MissionControlActor_0_0_14>(
-				idlFactorMissionControl,
+				idlFactoryMissionControl,
 				missionControlId
 			);
 			actor.setIdentity(controller);
@@ -174,7 +170,7 @@ describe('Mission control > Upgrade', () => {
 	});
 
 	describe('v0.14.0 -> v0.1.0', () => {
-		const strategy: CyclesMonitoringStrategy = {
+		const strategy: MissionControlDid.CyclesMonitoringStrategy = {
 			BelowThreshold: {
 				min_cycles: 500_000n,
 				fund_cycles: 100_000n
@@ -184,7 +180,7 @@ describe('Mission control > Upgrade', () => {
 		const initMonitoring = async () => {
 			const { update_and_start_monitoring } = actor;
 
-			const config: MonitoringStartConfig = {
+			const config: MissionControlDid.MonitoringStartConfig = {
 				cycles_config: [
 					{
 						satellites_strategy: toNullable({
@@ -299,7 +295,7 @@ describe('Mission control > Upgrade', () => {
 			await upgradeLatest();
 
 			actor = pic.createActor<MissionControlActor_0_0_14>(
-				idlFactorMissionControl,
+				idlFactoryMissionControl,
 				missionControlId
 			);
 			actor.setIdentity(controller);
@@ -365,7 +361,7 @@ describe('Mission control > Upgrade', () => {
 			await upgradeLatest();
 
 			const newActor = pic.createActor<MissionControlActor>(
-				idlFactorMissionControl,
+				idlFactoryMissionControl,
 				missionControlId
 			);
 			newActor.setIdentity(controller);

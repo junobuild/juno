@@ -2,7 +2,6 @@
 	import type { Principal } from '@dfinity/principal';
 	import { isNullish, nonNullish } from '@dfinity/utils';
 	import { onMount } from 'svelte';
-	import type { Satellite } from '$declarations/mission_control/mission_control.did';
 	import { missionControlIdDerived } from '$lib/derived/mission-control.derived';
 	import { orbiterStore } from '$lib/derived/orbiter.derived';
 	import { sortedSatellites } from '$lib/derived/satellites.derived';
@@ -20,7 +19,7 @@
 
 	let excludeSegmentIdText: string = $derived(excludeSegmentId.toText());
 
-	let satellites: Satellite[] = $derived(
+	let satellites = $derived(
 		$sortedSatellites.filter(({ satellite_id }) => satellite_id.toText() !== excludeSegmentIdText)
 	);
 

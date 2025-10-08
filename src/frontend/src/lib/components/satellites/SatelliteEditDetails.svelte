@@ -1,6 +1,5 @@
 <script lang="ts">
 	import { isNullish, nonNullish, notEmptyString } from '@dfinity/utils';
-	import type { Satellite } from '$declarations/mission_control/mission_control.did';
 	import IconEdit from '$lib/components/icons/IconEdit.svelte';
 	import Popover from '$lib/components/ui/Popover.svelte';
 	import Value from '$lib/components/ui/Value.svelte';
@@ -9,11 +8,12 @@
 	import { busy, isBusy } from '$lib/stores/busy.store';
 	import { i18n } from '$lib/stores/i18n.store';
 	import { toasts } from '$lib/stores/toasts.store';
+	import type { MissionControlDid } from '$lib/types/declarations';
 	import type { SatelliteUiTags } from '$lib/types/satellite';
 	import { satelliteEnvironment, satelliteName, satelliteTags } from '$lib/utils/satellite.utils';
 
 	interface Props {
-		satellite: Satellite;
+		satellite: MissionControlDid.Satellite;
 	}
 
 	let { satellite }: Props = $props();

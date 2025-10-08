@@ -1,7 +1,6 @@
 <script lang="ts">
 	import { isNullish, nonNullish, fromNullishNullable } from '@dfinity/utils';
 	import { run, stopPropagation } from 'svelte/legacy';
-	import type { Satellite } from '$declarations/mission_control/mission_control.did';
 	import type {
 		AuthenticationConfig,
 		CustomDomain as CustomDomainType
@@ -17,6 +16,7 @@
 	import { busy, isBusy } from '$lib/stores/busy.store';
 	import { i18n } from '$lib/stores/i18n.store';
 	import { toasts } from '$lib/stores/toasts.store';
+	import type { MissionControlDid } from '$lib/types/declarations';
 	import type { JunoModalCustomDomainDetail } from '$lib/types/modal';
 	import type { Option } from '$lib/types/utils';
 	import { buildDeleteAuthenticationConfig } from '$lib/utils/auth.config.utils';
@@ -24,7 +24,7 @@
 	import { i18nFormat } from '$lib/utils/i18n.utils';
 
 	interface Props {
-		satellite: Satellite;
+		satellite: MissionControlDid.Satellite;
 		customDomain: [string, CustomDomainType] | undefined;
 		displayState: Option<string>;
 		config: AuthenticationConfig | undefined;

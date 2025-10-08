@@ -5,7 +5,6 @@
 	import { getContext, type Snippet } from 'svelte';
 	import { quintOut } from 'svelte/easing';
 	import { slide } from 'svelte/transition';
-	import type { AssetNoContent } from '$declarations/satellite/satellite.did';
 	import DataUpload from '$lib/components/data/DataUpload.svelte';
 	import Value from '$lib/components/ui/Value.svelte';
 	import { COLLECTION_DAPP } from '$lib/constants/storage.constants';
@@ -13,11 +12,12 @@
 	import { busy } from '$lib/stores/busy.store';
 	import { i18n } from '$lib/stores/i18n.store';
 	import { toasts } from '$lib/stores/toasts.store';
+	import type { SatelliteDid } from '$lib/types/declarations';
 	import { RULES_CONTEXT_KEY, type RulesContext } from '$lib/types/rules.context';
 	import { container } from '$lib/utils/juno.utils';
 
 	interface Props {
-		asset?: AssetNoContent | undefined;
+		asset?: SatelliteDid.AssetNoContent | undefined;
 		action?: Snippet;
 		title?: Snippet;
 		description?: Snippet;

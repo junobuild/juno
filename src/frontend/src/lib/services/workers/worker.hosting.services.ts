@@ -1,5 +1,5 @@
-import type { CustomDomain } from '$declarations/satellite/satellite.did';
 import { AppWorker } from '$lib/services/workers/_worker.services';
+import type { SatelliteDid } from '$lib/types/declarations';
 import type { PostMessageDataResponseHosting, PostMessages } from '$lib/types/post-message';
 
 export type HostingCallback = (data: PostMessageDataResponseHosting) => void;
@@ -30,7 +30,7 @@ export class HostingWorker extends AppWorker {
 		callback,
 		customDomain
 	}: {
-		customDomain: CustomDomain;
+		customDomain: SatelliteDid.CustomDomain;
 		callback: HostingCallback;
 	}) => {
 		this.#hostingCallback = callback;

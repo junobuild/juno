@@ -1,12 +1,11 @@
 <script lang="ts">
 	import { isNullish } from '@dfinity/utils';
 	import { onMount } from 'svelte';
-	import type { AssetNoContent } from '$declarations/satellite/satellite.did';
 	import UpgradeCdnWizard from '$lib/components/cdn/wizard/UpgradeCdnWizard.svelte';
 	import { findWasmAssetForProposal } from '$lib/services/proposals/proposals.cdn.services';
 	import { authStore } from '$lib/stores/auth.store';
-	import type { MissionControlDid } from '$lib/types/declarations';
-	import type { ProposalRecord } from '$lib/types/proposals';
+	import type { SatelliteDid ,MissionControlDid } from '$lib/types/declarations';
+		import type { ProposalRecord } from '$lib/types/proposals';
 
 	interface Props {
 		satellite: MissionControlDid.Satellite;
@@ -18,7 +17,7 @@
 
 	let satelliteId = $derived(satellite.satellite_id.toText());
 
-	let asset = $state<AssetNoContent | undefined>(undefined);
+	let asset = $state<SatelliteDid.AssetNoContent | undefined>(undefined);
 
 	const loadAsset = async () => {
 		const result = await findWasmAssetForProposal({

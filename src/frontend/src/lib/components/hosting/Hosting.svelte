@@ -1,10 +1,6 @@
 <script lang="ts">
 	import { nonNullish } from '@dfinity/utils';
 	import { onMount } from 'svelte';
-	import type {
-		AuthenticationConfig,
-		CustomDomain as CustomDomainType
-	} from '$declarations/satellite/satellite.did';
 	import AddCustomDomain from '$lib/components/hosting/AddCustomDomain.svelte';
 	import CustomDomain from '$lib/components/hosting/CustomDomain.svelte';
 	import CustomDomainInfo from '$lib/components/hosting/CustomDomainInfo.svelte';
@@ -15,8 +11,8 @@
 	import { authStore } from '$lib/stores/auth.store';
 	import { i18n } from '$lib/stores/i18n.store';
 	import type { CustomDomainRegistrationState } from '$lib/types/custom-domain';
-	import type { MissionControlDid } from '$lib/types/declarations';
-	import type { SatelliteIdText } from '$lib/types/satellite';
+	import type { SatelliteDid ,MissionControlDid } from '$lib/types/declarations';
+		import type { SatelliteIdText } from '$lib/types/satellite';
 	import type { Option } from '$lib/types/utils';
 	import { satelliteUrl } from '$lib/utils/satellite.utils';
 
@@ -26,9 +22,9 @@
 
 	let { satellite }: Props = $props();
 
-	let satelliteId: SatelliteIdText = $derived(satellite.satellite_id.toText());
+	let satelliteId = $derived(satellite.satellite_id.toText());
 
-	let config: AuthenticationConfig | undefined = $state();
+	let config = $state<SatelliteDid.AuthenticationConfig | undefined>();
 
 	const list = async () => {
 		const [_, { config: c }] = await Promise.all([
@@ -48,7 +44,7 @@
 	onMount(list);
 
 	interface SelectedCustomDomain {
-		customDomain: [string, CustomDomainType] | undefined;
+		customDomain: [string, SatelliteDid.CustomDomain] | undefined;
 		registrationState: Option<CustomDomainRegistrationState>;
 		mainDomain: boolean;
 	}

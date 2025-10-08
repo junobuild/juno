@@ -3,7 +3,6 @@
 	import { Principal } from '@dfinity/principal';
 	import { fromNullable, isNullish, nonNullish } from '@dfinity/utils';
 	import { type UpgradeCodeParams, upgradeSatellite } from '@junobuild/admin';
-	import type { AssetNoContent } from '$declarations/satellite/satellite.did';
 	import CanisterUpgradeWizard, {
 		type CanisterUpgradeWizardProps,
 		type CanisterUpgradeWizardStep
@@ -18,15 +17,15 @@
 	import { wizardBusy } from '$lib/stores/busy.store';
 	import { i18n } from '$lib/stores/i18n.store';
 	import { toasts } from '$lib/stores/toasts.store';
-	import type { MissionControlDid } from '$lib/types/declarations';
-	import type { Wasm } from '$lib/types/upgrade';
+	import type { SatelliteDid ,MissionControlDid } from '$lib/types/declarations';
+		import type { Wasm } from '$lib/types/upgrade';
 	import { i18nFormat } from '$lib/utils/i18n.utils';
 	import { container } from '$lib/utils/juno.utils';
 	import { satelliteName } from '$lib/utils/satellite.utils';
 
 	interface Props {
 		satellite: MissionControlDid.Satellite;
-		asset: AssetNoContent | undefined;
+		asset: SatelliteDid.AssetNoContent | undefined;
 		onclose: () => void;
 	}
 

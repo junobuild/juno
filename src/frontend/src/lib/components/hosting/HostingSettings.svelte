@@ -2,15 +2,14 @@
 	import { fromNullable, nonNullish } from '@dfinity/utils';
 	import { onMount } from 'svelte';
 	import { fade } from 'svelte/transition';
-	import type { Rule } from '$declarations/satellite/satellite.did';
 	import HostingSwitchMemory from '$lib/components/hosting/HostingSwitchMemory.svelte';
 	import SkeletonText from '$lib/components/ui/SkeletonText.svelte';
 	import Value from '$lib/components/ui/Value.svelte';
 	import { getRuleDapp } from '$lib/services/collection.services';
 	import { authStore } from '$lib/stores/auth.store';
 	import { i18n } from '$lib/stores/i18n.store';
-	import type { MissionControlDid } from '$lib/types/declarations';
-
+	import type { SatelliteDid ,MissionControlDid } from '$lib/types/declarations';
+	
 	interface Props {
 		satellite: MissionControlDid.Satellite;
 	}
@@ -19,7 +18,7 @@
 
 	let satelliteId = $derived(satellite.satellite_id);
 
-	let rule = $state<Rule | undefined>(undefined);
+	let rule = $state<SatelliteDid.Rule | undefined>(undefined);
 	let supportSettings = $state(false);
 	let loading = $state(true);
 

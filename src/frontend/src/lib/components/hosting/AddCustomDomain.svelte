@@ -1,12 +1,11 @@
 <script lang="ts">
-	import type { AuthenticationConfig } from '$declarations/satellite/satellite.did';
 	import { i18n } from '$lib/stores/i18n.store';
-	import type { MissionControlDid } from '$lib/types/declarations';
-	import { emit } from '$lib/utils/events.utils';
+	import type { SatelliteDid ,MissionControlDid } from '$lib/types/declarations';
+		import { emit } from '$lib/utils/events.utils';
 
 	interface Props {
 		satellite: MissionControlDid.Satellite;
-		config?: AuthenticationConfig | undefined;
+		config?: SatelliteDid.AuthenticationConfig | undefined;
 	}
 
 	let { satellite, config = undefined }: Props = $props();

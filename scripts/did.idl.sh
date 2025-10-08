@@ -16,11 +16,11 @@ function generate_did_idl() {
 
 # Assert junobuild-didc is installed
 
-if [[ ! "$(command -v junobuild-didc)" || "$(junobuild-didc --version)" != "junobuild-didc 0.1.0" ]]
+if [[ ! "$(command -v junobuild-didc)" || "$(junobuild-didc --version)" != "junobuild-didc 0.1.1" ]]
 then
-    echo "could not find junobuild-didc 0.1.0"
-    echo "junobuild-didc version 0.1.0 is needed, please run the following command:"
-    echo "  cargo install junobuild-didc --version 0.1.0"
+    echo "could not find junobuild-didc 0.1.1"
+    echo "junobuild-didc version 0.1.1 is needed, please run the following command:"
+    echo "  cargo install junobuild-didc --version 0.1.1"
     exit 1
 fi
 

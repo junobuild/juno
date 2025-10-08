@@ -8,7 +8,7 @@
 	import { busy, isBusy } from '$lib/stores/busy.store';
 	import { i18n } from '$lib/stores/i18n.store';
 	import { toasts } from '$lib/stores/toasts.store';
-	import type { ICDid } from '$lib/types/actor';
+	import type { ICDid } from '$lib/types/declarations';
 	import { shortenWithMiddleEllipsis } from '$lib/utils/format.utils';
 	import { i18nFormat } from '$lib/utils/i18n.utils';
 

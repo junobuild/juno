@@ -76,13 +76,13 @@
 		}
 	};
 
-	setContext<PaginationContext<AssetNoContent>>(PAGINATION_CONTEXT_KEY, {
+	setContext<PaginationContext<SatelliteDid.AssetNoContent>>(PAGINATION_CONTEXT_KEY, {
 		...initPaginationContext(),
 		list
 	});
 
-	const { setItems, startAfter }: PaginationContext<AssetNoContent> =
-		getContext<PaginationContext<AssetNoContent>>(PAGINATION_CONTEXT_KEY);
+	const { setItems, startAfter }: PaginationContext<SatelliteDid.AssetNoContent> =
+		getContext<PaginationContext<SatelliteDid.AssetNoContent>>(PAGINATION_CONTEXT_KEY);
 
 	const { store }: RulesContext = getContext<RulesContext>(RULES_CONTEXT_KEY);
 

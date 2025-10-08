@@ -1,7 +1,7 @@
-import type { AnalyticKey, PageView, TrackEvent } from '$declarations/orbiter/orbiter.did';
 import { getPageViews, getTrackEvents } from '$lib/api/orbiter.api';
 import { i18n } from '$lib/stores/i18n.store';
 import { toasts } from '$lib/stores/toasts.store';
+import type { OrbiterDid } from '$lib/types/declarations';
 import type { PageViewsParams, PageViewsPeriod } from '$lib/types/orbiter';
 import { formatDateToDateString } from '$lib/utils/date.utils';
 import {
@@ -19,14 +19,14 @@ export const exportTrackEvents = async (params: PageViewsParams): Promise<{ succ
 		period
 	}: {
 		period: Required<PageViewsPeriod>;
-	}): Promise<[AnalyticKey, TrackEvent][]> =>
+	}): Promise<[OrbiterDid.AnalyticKey, OrbiterDid.TrackEvent][]> =>
 		getTrackEvents({
 			...params,
 			...period
 		});
 
 	try {
-		await executeExport<TrackEvent>({
+		await executeExport<OrbiterDid.TrackEvent>({
 			params,
 			filename: `Juno_Analytics_Tracked_Events_${filenameTimestamp()}.zip`,
 			fn
@@ -48,14 +48,14 @@ export const exportPageViews = async (params: PageViewsParams): Promise<{ succes
 		period
 	}: {
 		period: Required<PageViewsPeriod>;
-	}): Promise<[AnalyticKey, PageView][]> =>
+	}): Promise<[OrbiterDid.AnalyticKey, OrbiterDid.PageView][]> =>
 		getPageViews({
 			...params,
 			...period
 		});
 
 	try {
-		await executeExport<PageView>({
+		await executeExport<OrbiterDid.PageView>({
 			params,
 			filename: `Juno_Analytics_Page_Views_${filenameTimestamp()}.zip`,
 			fn
@@ -78,7 +78,7 @@ const executeExport = async <T>({
 }: {
 	params: PageViewsParams;
 	filename: string;
-} & Pick<BatchPeriodsRequestsParams<[AnalyticKey, T][]>, 'fn'>): Promise<void> => {
+} & Pick<BatchPeriodsRequestsParams<[OrbiterDid.AnalyticKey, T][]>, 'fn'>): Promise<void> => {
 	const blob = await collectAndZip(params);
 
 	// We use download because of the following issue when using the file picker
@@ -93,14 +93,14 @@ const collectAndZip = async <T>({
 	params,
 	fn
 }: { params: PageViewsParams } & Pick<
-	BatchPeriodsRequestsParams<[AnalyticKey, T][]>,
+	BatchPeriodsRequestsParams<[OrbiterDid.AnalyticKey, T][]>,
 	'fn'
 >): Promise<Blob> => {
 	const periods = buildAnalyticsPeriods({ params });
 
 	interface Result {
 		period: PageViewsPeriod;
-		data: [AnalyticKey, T][];
+		data: [OrbiterDid.AnalyticKey, T][];
 	}
 
 	const executeFn = async ({ period }: { period: Required<PageViewsPeriod> }): Promise<Result> => ({

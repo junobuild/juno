@@ -1,8 +1,7 @@
-import type { OrbiterSatelliteFeatures } from '$declarations/orbiter/orbiter.did';
 import type { CanisterInfo, CanisterSegmentWithLabel, CanisterSettings } from '$lib/types/canister';
 import type { SetControllerParams } from '$lib/types/controllers';
 import type { CustomDomains } from '$lib/types/custom-domain';
-import type { ICDid, MissionControlDid, SatelliteDid } from '$lib/types/declarations';
+import type { ICDid, MissionControlDid, OrbiterDid, SatelliteDid } from '$lib/types/declarations';
 import type { MissionControlId } from '$lib/types/mission-control';
 import type { OrbiterSatelliteConfigEntry } from '$lib/types/orbiter';
 import type { ProposalRecord } from '$lib/types/proposals';
@@ -86,7 +85,7 @@ export interface JunoModalRestoreSnapshotDetail extends JunoModalSegmentDetail {
 
 export interface JunoModalEditOrbiterConfigDetail {
 	orbiterId: Principal;
-	features: OrbiterSatelliteFeatures | undefined;
+	features: OrbiterDid.OrbiterSatelliteFeatures | undefined;
 	config: Record<SatelliteIdText, OrbiterSatelliteConfigEntry>;
 }
 

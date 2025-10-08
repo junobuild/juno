@@ -1,14 +1,13 @@
-import type {
-	AnalyticsWebVitalsPageMetrics,
-	AnalyticsWebVitalsPerformanceMetrics
-} from '$declarations/orbiter/orbiter.did';
 import { getAnalyticsPerformanceMetrics } from '$lib/services/orbiter/_orbiter.services';
+import type { OrbiterDid } from '$lib/types/declarations';
 import type { PageViewsParams, PageViewsPeriod, PageViewsPeriods } from '$lib/types/orbiter';
 import { batchAnalyticsRequests } from '$lib/utils/orbiter.paginated.utils';
 import { buildAnalyticsPeriods } from '$lib/utils/orbiter.utils';
 import { fromNullable, nonNullish, toNullable } from '@dfinity/utils';
 
-type OptionAnalyticsWebVitalsPerformanceMetrics = AnalyticsWebVitalsPerformanceMetrics | undefined;
+type OptionAnalyticsWebVitalsPerformanceMetrics =
+	| OrbiterDid.AnalyticsWebVitalsPerformanceMetrics
+	| undefined;
 
 export const getAnalyticsPerformanceMetricsForPeriods = async ({
 	orbiterVersion,
@@ -163,18 +162,18 @@ const aggregateMetrics = ({
 		)
 	};
 
-	const pages = Object.entries(totalMetrics.pages).map<[string, AnalyticsWebVitalsPageMetrics]>(
-		([path, total]) => [
-			path,
-			{
-				cls: toNullable(total.cls.count > 0 ? total.cls.sum / total.cls.count : undefined),
-				fcp: toNullable(total.fcp.count > 0 ? total.fcp.sum / total.fcp.count : undefined),
-				inp: toNullable(total.inp.count > 0 ? total.inp.sum / total.inp.count : undefined),
-				lcp: toNullable(total.lcp.count > 0 ? total.lcp.sum / total.lcp.count : undefined),
-				ttfb: toNullable(total.ttfb.count > 0 ? total.ttfb.sum / total.ttfb.count : undefined)
-			}
-		]
-	);
+	const pages = Object.entries(totalMetrics.pages).map<
+		[string, OrbiterDid.AnalyticsWebVitalsPageMetrics]
+	>(([path, total]) => [
+		path,
+		{
+			cls: toNullable(total.cls.count > 0 ? total.cls.sum / total.cls.count : undefined),
+			fcp: toNullable(total.fcp.count > 0 ? total.fcp.sum / total.fcp.count : undefined),
+			inp: toNullable(total.inp.count > 0 ? total.inp.sum / total.inp.count : undefined),
+			lcp: toNullable(total.lcp.count > 0 ? total.lcp.sum / total.lcp.count : undefined),
+			ttfb: toNullable(total.ttfb.count > 0 ? total.ttfb.sum / total.ttfb.count : undefined)
+		}
+	]);
 
 	return { overall, pages };
 };

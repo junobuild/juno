@@ -1,10 +1,10 @@
 <script lang="ts">
-	import type { AnalyticsTrackEvents } from '$declarations/orbiter/orbiter.did';
+	import type { OrbiterDid } from '$lib/types/declarations';
 	import AnalyticsTable from '$lib/components/analytics/AnalyticsTable.svelte';
 	import { i18n } from '$lib/stores/i18n.store';
 
 	interface Props {
-		trackEvents: AnalyticsTrackEvents;
+		trackEvents: OrbiterDid.AnalyticsTrackEvents;
 	}
 
 	let { trackEvents }: Props = $props();

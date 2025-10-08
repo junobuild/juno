@@ -1,10 +1,7 @@
 <script lang="ts">
 	import { isNullish, nonNullish, debounce } from '@dfinity/utils';
 	import { fade } from 'svelte/transition';
-	import type {
-		AnalyticsTrackEvents,
-		AnalyticsWebVitalsPerformanceMetrics
-	} from '$declarations/orbiter/orbiter.did';
+	import type { OrbiterDid } from '$lib/types/declarations';
 	import AnalyticsChart from '$lib/components/analytics/AnalyticsChart.svelte';
 	import AnalyticsEvents from '$lib/components/analytics/AnalyticsEvents.svelte';
 	import AnalyticsEventsExport from '$lib/components/analytics/AnalyticsEventsExport.svelte';
@@ -38,8 +35,9 @@
 	let reloadingAnalytics: 'idle' | 'in_progress' | 'loaded' | 'error' = $state('idle');
 
 	let pageViews: AnalyticsPageViewsType | undefined = $state(undefined);
-	let trackEvents: AnalyticsTrackEvents | undefined = $state(undefined);
-	let performanceMetrics: AnalyticsWebVitalsPerformanceMetrics | undefined = $state(undefined);
+	let trackEvents: OrbiterDid.AnalyticsTrackEvents | undefined = $state(undefined);
+	let performanceMetrics: OrbiterDid.AnalyticsWebVitalsPerformanceMetrics | undefined =
+		$state(undefined);
 
 	const loadAnalytics = async (): Promise<{ result: 'ok' | 'error' | 'skip' }> => {
 		if (isNullish($orbiterStore)) {
@@ -90,8 +88,8 @@
 			const [views, events, metrics] = await Promise.all(promises);
 
 			pageViews = views as AnalyticsPageViewsType | undefined;
-			trackEvents = events as AnalyticsTrackEvents | undefined;
-			performanceMetrics = metrics as AnalyticsWebVitalsPerformanceMetrics | undefined;
+			trackEvents = events as OrbiterDid.AnalyticsTrackEvents | undefined;
+			performanceMetrics = metrics as OrbiterDid.AnalyticsWebVitalsPerformanceMetrics | undefined;
 
 			return { result: 'ok' };
 		} catch (err: unknown) {

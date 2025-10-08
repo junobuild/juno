@@ -1,11 +1,3 @@
-import type {
-	AssetNoContent,
-	CollectionType,
-	Doc,
-	ListResults as ListAssets,
-	ListResults_1 as ListDocs,
-	Rule
-} from '$declarations/satellite/satellite.did';
 import {
 	getSatelliteActor0021,
 	getSatelliteActor0022,
@@ -13,7 +5,7 @@ import {
 	getSatelliteActor009
 } from '$lib/api/actors/actor.deprecated.api';
 import { PAGINATION } from '$lib/constants/app.constants';
-import type { SatelliteDid008 } from '$lib/types/declarations';
+import type { SatelliteDid, SatelliteDid008 } from '$lib/types/declarations';
 import type { OptionIdentity } from '$lib/types/itentity';
 import type { ListParams } from '$lib/types/list';
 import { toListParams } from '$lib/utils/satellite.utils';
@@ -59,7 +51,7 @@ export const listDocs008 = async ({
 	collection: string;
 	params: ListParams;
 	identity: OptionIdentity;
-}): Promise<ListDocs> => {
+}): Promise<SatelliteDid.ListResults_1> => {
 	const actor = await getSatelliteActor008({ satelliteId, identity });
 	const {
 		items,
@@ -67,7 +59,7 @@ export const listDocs008 = async ({
 		matches_length
 	} = await actor.list_docs(collection, toListParams008(params));
 	return {
-		items: items as [string, Doc][],
+		items: items as [string, SatelliteDid.Doc][],
 		items_length,
 		items_page: [],
 		matches_length,
@@ -88,7 +80,7 @@ export const listAssets008 = async ({
 	collection: string;
 	params: ListParams;
 	identity: OptionIdentity;
-}): Promise<ListAssets> => {
+}): Promise<SatelliteDid.ListResults> => {
 	const actor = await getSatelliteActor008({ satelliteId, identity });
 	const {
 		items,
@@ -96,7 +88,7 @@ export const listAssets008 = async ({
 		matches_length
 	} = await actor.list_assets(toNullable(collection), toListParams008(params));
 	return {
-		items: items as [string, AssetNoContent][],
+		items: items as [string, SatelliteDid.AssetNoContent][],
 		items_length,
 		items_page: [],
 		matches_length,
@@ -117,7 +109,7 @@ export const listAssets009 = async ({
 	collection: string;
 	params: ListParams;
 	identity: OptionIdentity;
-}): Promise<ListAssets> => {
+}): Promise<SatelliteDid.ListResults> => {
 	const actor = await getSatelliteActor009({ satelliteId, identity });
 	const { items, ...rest } = await actor.list_assets(toNullable(collection), toListParams(params));
 	return {
@@ -135,9 +127,9 @@ export const listRulesDeprecated = async ({
 	identity
 }: {
 	satelliteId: Principal;
-	type: CollectionType;
+	type: SatelliteDid.CollectionType;
 	identity: OptionIdentity;
-}): Promise<[string, Rule][]> => {
+}): Promise<[string, SatelliteDid.Rule][]> => {
 	const actor = await getSatelliteActor008({ satelliteId, identity });
 	const rules = await actor.list_rules(type);
 	return rules.map(([key, rule]) => [
@@ -146,7 +138,7 @@ export const listRulesDeprecated = async ({
 			...rule,
 			version: [],
 			memory: [{ Heap: null }]
-		} as Rule
+		} as SatelliteDid.Rule
 	]);
 };
 
@@ -189,9 +181,9 @@ export const listRules0022 = async ({
 	identity
 }: {
 	satelliteId: Principal;
-	type: CollectionType;
+	type: SatelliteDid.CollectionType;
 	identity: OptionIdentity;
-}): Promise<[string, Rule][]> => {
+}): Promise<[string, SatelliteDid.Rule][]> => {
 	const actor = await getSatelliteActor0022({ satelliteId, identity });
 	return actor.list_rules(type);
 };

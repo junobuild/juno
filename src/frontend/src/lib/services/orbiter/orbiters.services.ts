@@ -1,8 +1,3 @@
-import type {
-	OrbiterSatelliteConfig,
-	OrbiterSatelliteFeatures,
-	OrbiterSatelliteConfig as SatelliteConfig
-} from '$declarations/orbiter/orbiter.did';
 import { getMissionControlActor } from '$lib/api/actors/actor.juno.api';
 import {
 	listOrbiterSatelliteConfigs as listOrbiterSatelliteConfigsApi,
@@ -21,7 +16,7 @@ import { i18n } from '$lib/stores/i18n.store';
 import { orbitersConfigsStore } from '$lib/stores/orbiter-configs.store';
 import { orbitersUncertifiedStore } from '$lib/stores/orbiter.store';
 import { toasts } from '$lib/stores/toasts.store';
-import type { MissionControlDid } from '$lib/types/declarations';
+import type { MissionControlDid, OrbiterDid } from '$lib/types/declarations';
 import type { OptionIdentity } from '$lib/types/itentity';
 import type { OrbiterSatelliteConfigEntry } from '$lib/types/orbiter';
 import type { SatelliteIdText } from '$lib/types/satellite';
@@ -167,7 +162,7 @@ const listOrbiterSatelliteConfigs = async ({
 	orbiterId: Principal;
 	identity: OptionIdentity;
 	orbiterVersion: string;
-}): Promise<[Principal, SatelliteConfig][]> => {
+}): Promise<[Principal, OrbiterDid.OrbiterSatelliteConfig][]> => {
 	if (compare(orbiterVersion, ORBITER_v0_0_8) >= 0) {
 		return await listOrbiterSatelliteConfigsApi(rest);
 	}
@@ -196,8 +191,8 @@ export const setOrbiterSatelliteConfigs = async ({
 	config: Record<SatelliteIdText, OrbiterSatelliteConfigEntry>;
 	identity: OptionIdentity;
 	orbiterVersion: string;
-	features: OrbiterSatelliteFeatures | undefined;
-}): Promise<[Principal, OrbiterSatelliteConfig][]> => {
+	features: OrbiterDid.OrbiterSatelliteFeatures | undefined;
+}): Promise<[Principal, OrbiterDid.OrbiterSatelliteConfig][]> => {
 	if (compare(orbiterVersion, ORBITER_v0_0_8) >= 0) {
 		return await setOrbiterSatelliteConfigsApi({
 			orbiterId,

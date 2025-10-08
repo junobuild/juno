@@ -1,7 +1,4 @@
-import type {
-	AuthenticationConfig,
-	SetAuthenticationConfig
-} from '$declarations/satellite/satellite.did';
+import type { SatelliteDid } from '$lib/types/declarations';
 import { fromNullable, isNullish, nonNullish, toNullable } from '@dfinity/utils';
 
 export const buildSetAuthenticationConfig = ({
@@ -9,10 +6,10 @@ export const buildSetAuthenticationConfig = ({
 	domainName,
 	externalOrigins
 }: {
-	config: AuthenticationConfig | undefined;
+	config: SatelliteDid.AuthenticationConfig | undefined;
 	domainName: string;
 	externalOrigins?: string[];
-}): Omit<SetAuthenticationConfig, 'version'> => {
+}): Omit<SatelliteDid.SetAuthenticationConfig, 'version'> => {
 	const external_alternative_origins: [] | [string[]] =
 		isNullish(externalOrigins) || externalOrigins.length === 0
 			? toNullable()
@@ -43,8 +40,8 @@ export const buildSetAuthenticationConfig = ({
 };
 
 export const buildDeleteAuthenticationConfig = (
-	config: AuthenticationConfig
-): Omit<SetAuthenticationConfig, 'version'> => ({
+	config: SatelliteDid.AuthenticationConfig
+): Omit<SatelliteDid.SetAuthenticationConfig, 'version'> => ({
 	...config,
 	...(nonNullish(fromNullable(config.internet_identity)) && {
 		internet_identity: [

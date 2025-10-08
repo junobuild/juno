@@ -1,8 +1,7 @@
-import type { ListParams as ListParamsApi } from '$declarations/satellite/satellite.did';
 import { PAGINATION } from '$lib/constants/app.constants';
 import { isDev } from '$lib/env/app.env';
 import { SatelliteUiMetadataParser } from '$lib/schemas/satellite.schema';
-import type { MissionControlDid } from '$lib/types/declarations';
+import type { MissionControlDid, SatelliteDid } from '$lib/types/declarations';
 import type { ListParams } from '$lib/types/list';
 import type { SatelliteUi, SatelliteUiMetadata, SatelliteUiTags } from '$lib/types/satellite';
 import { metadataEnvironment, metadataName, metadataTags } from '$lib/utils/metadata.utils';
@@ -58,7 +57,7 @@ export const toListParams = ({
 	limit = PAGINATION,
 	order,
 	filter: { matcher, description, owner }
-}: ListParams): ListParamsApi => ({
+}: ListParams): SatelliteDid.ListParams => ({
 	matcher:
 		isEmptyString(matcher) && isEmptyString(description)
 			? []

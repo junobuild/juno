@@ -1,15 +1,12 @@
 <script lang="ts">
-	import type {
-		AnalyticsWebVitalsPageMetrics,
-		AnalyticsWebVitalsPerformanceMetrics
-	} from '$declarations/orbiter/orbiter.did';
 	import Toolbar from '$lib/components/ui/Toolbar.svelte';
 	import Value from '$lib/components/ui/Value.svelte';
 	import { i18n } from '$lib/stores/i18n.store';
+	import type { OrbiterDid } from '$lib/types/declarations';
 
 	interface Props {
-		performanceMetrics: AnalyticsWebVitalsPerformanceMetrics;
-		page: AnalyticsWebVitalsPageMetrics | undefined;
+		performanceMetrics: OrbiterDid.AnalyticsWebVitalsPerformanceMetrics;
+		page: OrbiterDid.AnalyticsWebVitalsPageMetrics | undefined;
 	}
 
 	let { performanceMetrics, page = $bindable() }: Props = $props();

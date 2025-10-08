@@ -2,7 +2,6 @@
 	import type { Principal } from '@dfinity/principal';
 	import { isNullish, nonNullish } from '@dfinity/utils';
 	import { compare } from 'semver';
-	import type { OrbiterSatelliteFeatures } from '$declarations/orbiter/orbiter.did';
 	import Checkbox from '$lib/components/ui/Checkbox.svelte';
 	import CheckboxGroup from '$lib/components/ui/CheckboxGroup.svelte';
 	import Collapsible from '$lib/components/ui/Collapsible.svelte';
@@ -18,6 +17,7 @@
 	import { orbitersConfigsStore } from '$lib/stores/orbiter-configs.store';
 	import { toasts } from '$lib/stores/toasts.store';
 	import { versionStore } from '$lib/stores/version.store';
+	import type { OrbiterDid } from '$lib/types/declarations';
 	import type { JunoModalDetail, JunoModalEditOrbiterConfigDetail } from '$lib/types/modal';
 	import type { OrbiterSatelliteConfigEntry } from '$lib/types/orbiter';
 	import type { SatelliteIdText } from '$lib/types/satellite';
@@ -35,7 +35,7 @@
 		(detail as JunoModalEditOrbiterConfigDetail).config
 	);
 
-	let features: OrbiterSatelliteFeatures | undefined = $state(
+	let features: OrbiterDid.OrbiterSatelliteFeatures | undefined = $state(
 		(detail as JunoModalEditOrbiterConfigDetail).features
 	);
 
@@ -43,7 +43,7 @@
 
 	let collapsibleRef: Collapsible | undefined = $state(undefined);
 
-	const openOptions = (features: OrbiterSatelliteFeatures | undefined) => {
+	const openOptions = (features: OrbiterDid.OrbiterSatelliteFeatures | undefined) => {
 		if (
 			features?.page_views === false ||
 			features?.track_events === false ||

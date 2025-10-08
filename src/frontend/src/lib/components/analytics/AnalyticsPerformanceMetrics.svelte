@@ -1,20 +1,19 @@
 <script lang="ts">
-	import type {
-		AnalyticsWebVitalsPageMetrics,
-		AnalyticsWebVitalsPerformanceMetrics
-	} from '$declarations/orbiter/orbiter.did';
 	import AnalyticsPerformanceMetricsFilter from '$lib/components/analytics/AnalyticsPerformanceMetricsFilter.svelte';
 	import AnalyticsPerformanceMetricsPage from '$lib/components/analytics/AnalyticsPerformanceMetricsPage.svelte';
+	import type { OrbiterDid } from '$lib/types/declarations';
 
 	interface Props {
-		performanceMetrics: AnalyticsWebVitalsPerformanceMetrics;
+		performanceMetrics: OrbiterDid.AnalyticsWebVitalsPerformanceMetrics;
 	}
 
 	let { performanceMetrics }: Props = $props();
 
-	let page: AnalyticsWebVitalsPageMetrics | undefined = $state(undefined);
+	let page: OrbiterDid.AnalyticsWebVitalsPageMetrics | undefined = $state(undefined);
 
-	let metrics: AnalyticsWebVitalsPageMetrics = $derived(page ?? performanceMetrics.overall);
+	let metrics: OrbiterDid.AnalyticsWebVitalsPageMetrics = $derived(
+		page ?? performanceMetrics.overall
+	);
 </script>
 
 <AnalyticsPerformanceMetricsFilter {performanceMetrics} bind:page />

@@ -1,11 +1,4 @@
-import type {
-	AnalyticsBrowsersPageViews,
-	AnalyticsDevicesPageViews,
-	AnalyticsMetricsPageViews,
-	AnalyticsOperatingSystemsPageViews,
-	AnalyticsTop10PageViews,
-	OrbiterSatelliteConfig as SatelliteConfig
-} from '$declarations/orbiter/orbiter.did';
+import type { OrbiterDid } from '$lib/types/declarations';
 import type { OptionIdentity } from '$lib/types/itentity';
 import type { Principal } from '@dfinity/principal';
 import type { PrincipalText } from '@dfinity/zod-schemas';
@@ -33,26 +26,29 @@ export type PageViewsParams = {
 
 export type DateStartOfTheDay = string;
 
-export type AnalyticsMetrics = Omit<AnalyticsMetricsPageViews, 'daily_total_page_views'> & {
+export type AnalyticsMetrics = Omit<
+	OrbiterDid.AnalyticsMetricsPageViews,
+	'daily_total_page_views'
+> & {
 	daily_total_page_views: Record<DateStartOfTheDay, number>;
 };
 
 export interface AnalyticsClients {
-	devices: AnalyticsDevicesPageViews;
-	browsers?: AnalyticsBrowsersPageViews;
-	operating_systems?: AnalyticsOperatingSystemsPageViews;
+	devices: OrbiterDid.AnalyticsDevicesPageViews;
+	browsers?: OrbiterDid.AnalyticsBrowsersPageViews;
+	operating_systems?: OrbiterDid.AnalyticsOperatingSystemsPageViews;
 }
 
 export interface AnalyticsPageViews {
 	metrics: AnalyticsMetrics;
-	top10: AnalyticsTop10PageViews;
+	top10: OrbiterDid.AnalyticsTop10PageViews;
 	clients: AnalyticsClients;
 }
 
 export interface OrbiterSatelliteConfigEntry {
 	name: string;
 	enabled: boolean;
-	config?: SatelliteConfig;
+	config?: OrbiterDid.OrbiterSatelliteConfig;
 }
 
 export type OrbiterIdText = PrincipalText;

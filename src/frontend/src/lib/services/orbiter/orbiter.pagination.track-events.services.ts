@@ -1,5 +1,5 @@
-import type { AnalyticsTrackEvents } from '$declarations/orbiter/orbiter.did';
 import { getAnalyticsTrackEvents } from '$lib/services/orbiter/_orbiter.services';
+import type { OrbiterDid } from '$lib/types/declarations';
 import type { PageViewsParams, PageViewsPeriod, PageViewsPeriods } from '$lib/types/orbiter';
 import { batchAnalyticsRequests } from '$lib/utils/orbiter.paginated.utils';
 import { buildAnalyticsPeriods } from '$lib/utils/orbiter.utils';
@@ -10,7 +10,7 @@ export const getAnalyticsTrackEventsForPeriods = async ({
 }: {
 	params: PageViewsParams;
 	orbiterVersion: string;
-}): Promise<AnalyticsTrackEvents> => {
+}): Promise<OrbiterDid.AnalyticsTrackEvents> => {
 	const periods = buildAnalyticsPeriods({ params });
 
 	const periodsMetrics = await getTrackEvents({
@@ -25,8 +25,8 @@ export const getAnalyticsTrackEventsForPeriods = async ({
 const aggregateMetrics = ({
 	periodsMetrics
 }: {
-	periodsMetrics: AnalyticsTrackEvents[];
-}): AnalyticsTrackEvents => {
+	periodsMetrics: OrbiterDid.AnalyticsTrackEvents[];
+}): OrbiterDid.AnalyticsTrackEvents => {
 	const values = periodsMetrics.reduce<Record<string, number>>(
 		(acc, { total }) => ({
 			...acc,
@@ -52,8 +52,12 @@ const getTrackEvents = async ({
 	params: PageViewsParams;
 	orbiterVersion: string;
 	periods: PageViewsPeriods;
-}): Promise<AnalyticsTrackEvents[]> => {
-	const fn = ({ period }: { period: Required<PageViewsPeriod> }): Promise<AnalyticsTrackEvents> =>
+}): Promise<OrbiterDid.AnalyticsTrackEvents[]> => {
+	const fn = ({
+		period
+	}: {
+		period: Required<PageViewsPeriod>;
+	}): Promise<OrbiterDid.AnalyticsTrackEvents> =>
 		getAnalyticsTrackEvents({
 			orbiterVersion,
 			params: {
@@ -62,7 +66,7 @@ const getTrackEvents = async ({
 			}
 		});
 
-	return await batchAnalyticsRequests<AnalyticsTrackEvents>({
+	return await batchAnalyticsRequests<OrbiterDid.AnalyticsTrackEvents>({
 		periods,
 		fn
 	});

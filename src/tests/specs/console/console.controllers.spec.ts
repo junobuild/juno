@@ -1,5 +1,4 @@
-import type { _SERVICE as ConsoleActor } from '$declarations/console/console.did';
-import { idlFactory as idlFactorConsole } from '$declarations/console/console.factory.did';
+import { type ConsoleActor, idlFactoryConsole } from '$declarations';
 import { AnonymousIdentity } from '@dfinity/agent';
 import { Ed25519KeyIdentity } from '@dfinity/identity';
 import { type Actor, PocketIc } from '@dfinity/pic';
@@ -18,7 +17,7 @@ describe('Console > Controllers', () => {
 		pic = await PocketIc.create(inject('PIC_URL'));
 
 		const { actor: c } = await pic.setupCanister<ConsoleActor>({
-			idlFactory: idlFactorConsole,
+			idlFactory: idlFactoryConsole,
 			wasm: CONSOLE_WASM_PATH,
 			sender: controller.getPrincipal()
 		});

@@ -1,4 +1,4 @@
-import type { _SERVICE as SputnikActor } from '$declarations/sputnik/sputnik.did';
+import type { SputnikActor } from '$declarations';
 import type { Identity } from '@dfinity/agent';
 import type { Actor, PocketIc } from '@dfinity/pic';
 import { toNullable } from '@dfinity/utils';

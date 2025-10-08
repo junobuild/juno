@@ -2,6 +2,7 @@
 	import type { Principal } from '@dfinity/principal';
 	import { nonNullish } from '@dfinity/utils';
 	import { onMount } from 'svelte';
+	import type { MissionControlDid } from '$declarations';
 	import ControllerAdd from '$lib/components/controllers/ControllerAdd.svelte';
 	import ControllerDelete from '$lib/components/controllers/ControllerDelete.svelte';
 	import ControllerInfo from '$lib/components/controllers/ControllerInfo.svelte';
@@ -13,7 +14,6 @@
 	import { toasts } from '$lib/stores/toasts.store';
 	import type { CanisterSegmentWithLabel } from '$lib/types/canister';
 	import type { SetControllerParams } from '$lib/types/controllers';
-	import type { MissionControlDid } from '$lib/types/declarations';
 	import type { MissionControlId } from '$lib/types/mission-control';
 	import { metadataProfile } from '$lib/utils/metadata.utils';
 

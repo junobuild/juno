@@ -4,12 +4,12 @@
 	import { fromArray } from '@junobuild/utils';
 	import { getContext } from 'svelte';
 	import { run } from 'svelte/legacy';
+	import type { SatelliteDid } from '$declarations';
 	import Identifier from '$lib/components/ui/Identifier.svelte';
 	import JsonCode from '$lib/components/ui/JsonCode.svelte';
 	import Value from '$lib/components/ui/Value.svelte';
 	import { i18n } from '$lib/stores/i18n.store';
 	import { DATA_CONTEXT_KEY, type DataContext } from '$lib/types/data.context';
-	import type { SatelliteDid } from '$lib/types/declarations';
 	import { formatToDate } from '$lib/utils/date.utils';
 
 	const { store }: DataContext<SatelliteDid.Doc> =

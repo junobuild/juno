@@ -1,5 +1,4 @@
-import type { _SERVICE as SatelliteActor } from '$declarations/satellite/satellite.did';
-import { idlFactory as idlFactorSatellite } from '$declarations/satellite/satellite.factory.did';
+import { type SatelliteActor, idlFactorySatellite } from '$declarations';
 import type { DerEncodedPublicKey, Identity, SignIdentity } from '@dfinity/agent';
 import { Ed25519KeyIdentity } from '@dfinity/identity';
 import { type Actor, PocketIc } from '@dfinity/pic';
@@ -50,7 +49,7 @@ describe('Satellite > User Webauthn', () => {
 		pic = await PocketIc.create(inject('PIC_URL'));
 
 		const { actor: c } = await pic.setupCanister<SatelliteActor>({
-			idlFactory: idlFactorSatellite,
+			idlFactory: idlFactorySatellite,
 			wasm: SATELLITE_WASM_PATH,
 			arg: controllersInitArgs(controller),
 			sender: controller.getPrincipal()

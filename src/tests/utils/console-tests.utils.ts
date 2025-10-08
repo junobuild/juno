@@ -1,7 +1,10 @@
-import type { _SERVICE as ConsoleActor } from '$declarations/console/console.did';
-import type { _SERVICE as ConsoleActor_0_0_14 } from '$declarations/deprecated/console-0-0-14.did';
-import type { _SERVICE as ConsoleActor_0_0_8 } from '$declarations/deprecated/console-0-0-8-patch1.did';
-import { type MissionControlActor, idlFactoryMissionControl } from '$lib/api/actors/actor.factory';
+import {
+	type ConsoleActor,
+	type ConsoleActor0014,
+	type ConsoleActor008,
+	type MissionControlActor,
+	idlFactoryMissionControl
+} from '$declarations';
 import type { Identity } from '@dfinity/agent';
 import { Ed25519KeyIdentity } from '@dfinity/identity';
 import type { Actor, PocketIc } from '@dfinity/pic';
@@ -33,7 +36,7 @@ const installReleaseWithDeprecatedFlow = async ({
 	download: (version: string) => Promise<string>;
 	segment: { Satellite: null } | { Orbiter: null } | { MissionControl: null };
 	version: string;
-	actor: Actor<ConsoleActor_0_0_8>;
+	actor: Actor<ConsoleActor008>;
 }) => {
 	const { load_release, reset_release } = actor;
 
@@ -68,22 +71,22 @@ const uploadSegment = async ({
 }: {
 	segment: 'satellite' | 'mission_control' | 'orbiter';
 	version: string;
-	actor: Actor<ConsoleActor | ConsoleActor_0_0_14>;
+	actor: Actor<ConsoleActor | ConsoleActor0014>;
 	proposalId: bigint;
 }) => {
 	const init_proposal_asset_upload =
 		'init_asset_upload' in actor
-			? (actor as ConsoleActor_0_0_14).init_asset_upload
+			? (actor as ConsoleActor0014).init_asset_upload
 			: (actor as ConsoleActor).init_proposal_asset_upload;
 
 	const upload_proposal_asset_chunk =
 		'upload_asset_chunk' in actor
-			? (actor as ConsoleActor_0_0_14).upload_asset_chunk
+			? (actor as ConsoleActor0014).upload_asset_chunk
 			: (actor as ConsoleActor).upload_proposal_asset_chunk;
 
 	const commit_proposal_asset_upload =
 		'commit_asset_upload' in actor
-			? (actor as ConsoleActor_0_0_14).commit_asset_upload
+			? (actor as ConsoleActor0014).commit_asset_upload
 			: (actor as ConsoleActor).commit_proposal_asset_upload;
 
 	const name = `${segment}-v${version}.wasm.gz`;
@@ -181,7 +184,7 @@ const uploadSegment = async ({
 	});
 };
 
-export const deploySegments = async (actor: Actor<ConsoleActor | ConsoleActor_0_0_14>) => {
+export const deploySegments = async (actor: Actor<ConsoleActor | ConsoleActor0014>) => {
 	const { init_proposal, submit_proposal, commit_proposal } = actor;
 
 	const [proposalId, _] = await init_proposal({
@@ -225,7 +228,7 @@ export const deploySegments = async (actor: Actor<ConsoleActor | ConsoleActor_0_
 	});
 };
 
-export const installReleasesWithDeprecatedFlow = async (actor: Actor<ConsoleActor_0_0_8>) => {
+export const installReleasesWithDeprecatedFlow = async (actor: Actor<ConsoleActor008>) => {
 	await installReleaseWithDeprecatedFlow({
 		download: downloadSatellite,
 		version: versionSatellite,
@@ -250,7 +253,7 @@ export const installReleasesWithDeprecatedFlow = async (actor: Actor<ConsoleActo
 	await testReleases(actor);
 };
 
-export const testReleases = async (actor: Actor<ConsoleActor_0_0_8>) => {
+export const testReleases = async (actor: Actor<ConsoleActor008>) => {
 	const { get_releases_version } = actor;
 
 	const { satellite, mission_control, orbiter } = await get_releases_version();
@@ -265,7 +268,7 @@ export const initMissionControls = async ({
 	pic,
 	length
 }: {
-	actor: Actor<ConsoleActor | ConsoleActor_0_0_8 | ConsoleActor_0_0_14>;
+	actor: Actor<ConsoleActor | ConsoleActor008 | ConsoleActor0014>;
 	pic: PocketIc;
 	length: number;
 }): Promise<Identity[]> => {
@@ -289,7 +292,7 @@ export const testSatelliteExists = async ({
 	pic
 }: {
 	users: Identity[];
-	actor: Actor<ConsoleActor | ConsoleActor_0_0_8 | ConsoleActor_0_0_14>;
+	actor: Actor<ConsoleActor | ConsoleActor008 | ConsoleActor0014>;
 	pic: PocketIc;
 }) => {
 	const { list_user_mission_control_centers } = actor;
@@ -339,23 +342,23 @@ export const uploadFileWithProposal = async ({
 	pic,
 	fullPath = '/index.js'
 }: {
-	actor: Actor<ConsoleActor | ConsoleActor_0_0_14>;
+	actor: Actor<ConsoleActor | ConsoleActor0014>;
 	pic: PocketIc;
 	fullPath?: string;
 }): Promise<{ proposalId: bigint; fullPath: string }> => {
 	const init_proposal_asset_upload =
 		'init_asset_upload' in actor
-			? (actor as ConsoleActor_0_0_14).init_asset_upload
+			? (actor as ConsoleActor0014).init_asset_upload
 			: (actor as ConsoleActor).init_proposal_asset_upload;
 
 	const upload_proposal_asset_chunk =
 		'upload_asset_chunk' in actor
-			? (actor as ConsoleActor_0_0_14).upload_asset_chunk
+			? (actor as ConsoleActor0014).upload_asset_chunk
 			: (actor as ConsoleActor).upload_proposal_asset_chunk;
 
 	const commit_proposal_asset_upload =
 		'commit_asset_upload' in actor
-			? (actor as ConsoleActor_0_0_14).commit_asset_upload
+			? (actor as ConsoleActor0014).commit_asset_upload
 			: (actor as ConsoleActor).commit_proposal_asset_upload;
 
 	const { init_proposal, http_request, commit_proposal, submit_proposal } = actor;
@@ -438,7 +441,7 @@ export const assertAssetServed = async ({
 	fullPath,
 	body: content
 }: {
-	actor: Actor<ConsoleActor | ConsoleActor_0_0_14>;
+	actor: Actor<ConsoleActor | ConsoleActor0014>;
 	fullPath: string;
 	body: string;
 }) => {
@@ -462,7 +465,7 @@ export const assertAssetServed = async ({
 export const updateRateConfig = async ({
 	actor
 }: {
-	actor: Actor<ConsoleActor_0_0_8 | ConsoleActor_0_0_14 | ConsoleActor>;
+	actor: Actor<ConsoleActor008 | ConsoleActor0014 | ConsoleActor>;
 }) => {
 	const { update_rate_config } = actor;
 

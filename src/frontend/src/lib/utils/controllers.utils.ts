@@ -1,5 +1,5 @@
+import type { MissionControlDid } from '$declarations';
 import type { SetControllerParams } from '$lib/types/controllers';
-import type { MissionControlDid } from '$lib/types/declarations';
 import { nonNullish, toNullable } from '@dfinity/utils';
 
 export const toSetController = ({

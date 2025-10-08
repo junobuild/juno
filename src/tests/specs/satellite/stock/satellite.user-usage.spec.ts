@@ -1,13 +1,4 @@
-import type {
-	CollectionType,
-	DelDoc,
-	Doc,
-	ListParams,
-	_SERVICE as SatelliteActor,
-	SetDoc,
-	SetRule
-} from '$declarations/satellite/satellite.did';
-import { idlFactory as idlFactorSatellite } from '$declarations/satellite/satellite.factory.did';
+import { type SatelliteDid , type SatelliteActor, idlFactorySatellite } from '$declarations';
 import type { Identity } from '@dfinity/agent';
 import { Ed25519KeyIdentity } from '@dfinity/identity';
 import { type Actor, PocketIc } from '@dfinity/pic';
@@ -34,7 +25,7 @@ describe('Satellite > User Usage', () => {
 
 	const TEST_COLLECTION = 'test';
 
-	const setRule: SetRule = {
+	const setRule: SatelliteDid.SetRule = {
 		memory: toNullable({ Heap: null }),
 		max_size: toNullable(),
 		max_capacity: toNullable(),
@@ -46,7 +37,7 @@ describe('Satellite > User Usage', () => {
 		max_changes_per_user: toNullable()
 	};
 
-	const NO_FILTER_PARAMS: ListParams = {
+	const NO_FILTER_PARAMS: SatelliteDid.ListParams = {
 		matcher: toNullable(),
 		order: toNullable(),
 		owner: toNullable(),
@@ -64,10 +55,10 @@ describe('Satellite > User Usage', () => {
 		actorIdentity
 	}: {
 		collection: string;
-		collectionType: CollectionType;
+		collectionType: SatelliteDid.CollectionType;
 		userId: Principal;
 		actorIdentity?: Identity;
-	}): Promise<{ doc: Doc | undefined; usage: UserUsage | undefined }> => {
+	}): Promise<{ doc: SatelliteDid.Doc | undefined; usage: UserUsage | undefined }> => {
 		actor.setIdentity(actorIdentity ?? controller);
 
 		const { get_doc } = actor;
@@ -115,7 +106,7 @@ describe('Satellite > User Usage', () => {
 		pic = await PocketIc.create(inject('PIC_URL'));
 
 		const { actor: c } = await pic.setupCanister<SatelliteActor>({
-			idlFactory: idlFactorSatellite,
+			idlFactory: idlFactorySatellite,
 			wasm: SATELLITE_WASM_PATH,
 			arg: controllersInitArgs(controller),
 			sender: controller.getPrincipal()
@@ -182,17 +173,17 @@ describe('Satellite > User Usage', () => {
 			it('should get a usage count after set many documents', async () => {
 				const { set_many_docs } = actor;
 
-				const docs: [string, string, SetDoc][] = Array.from({ length: countSetManyDocs }).map(
-					() => [
-						TEST_COLLECTION,
-						nanoid(),
-						{
-							data: mockData,
-							description: toNullable(),
-							version: toNullable()
-						}
-					]
-				);
+				const docs: [string, string, SatelliteDid.SetDoc][] = Array.from({
+					length: countSetManyDocs
+				}).map(() => [
+					TEST_COLLECTION,
+					nanoid(),
+					{
+						data: mockData,
+						description: toNullable(),
+						version: toNullable()
+					}
+				]);
 
 				await set_many_docs(docs);
 
@@ -245,13 +236,15 @@ describe('Satellite > User Usage', () => {
 
 				const { items } = await list_docs(TEST_COLLECTION, NO_FILTER_PARAMS);
 
-				const docs: [string, string, DelDoc][] = [items[0], items[1]].map(([key, doc]) => [
-					TEST_COLLECTION,
-					key,
-					{
-						version: doc.version ?? []
-					}
-				]);
+				const docs: [string, string, SatelliteDid.DelDoc][] = [items[0], items[1]].map(
+					([key, doc]) => [
+						TEST_COLLECTION,
+						key,
+						{
+							version: doc.version ?? []
+						}
+					]
+				);
 
 				await del_many_docs(docs);
 
@@ -301,7 +294,7 @@ describe('Satellite > User Usage', () => {
 
 			const fetchUsage = async (
 				actorIdentity?: Identity
-			): Promise<{ doc: Doc | undefined; usage: UserUsage | undefined }> =>
+			): Promise<{ doc: SatelliteDid.Doc | undefined; usage: UserUsage | undefined }> =>
 				await get_user_usage({
 					collection: TEST_COLLECTION,
 					collectionType: COLLECTION_TYPE,
@@ -336,7 +329,7 @@ describe('Satellite > User Usage', () => {
 
 				const key = `${user.getPrincipal().toText()}#db#${TEST_COLLECTION}`;
 
-				const doc: SetDoc = {
+				const doc: SatelliteDid.SetDoc = {
 					data: await toArray({
 						changes_count: 345
 					}),
@@ -446,7 +439,7 @@ describe('Satellite > User Usage', () => {
 
 					const currentDoc = await get_doc('#user-usage', key);
 
-					const doc: SetDoc = {
+					const doc: SatelliteDid.SetDoc = {
 						data: await toArray({
 							changes_count: 345
 						}),
@@ -478,7 +471,7 @@ describe('Satellite > User Usage', () => {
 
 					const currentDoc = await get_doc('#user-usage', key);
 
-					const doc: SetDoc = {
+					const doc: SatelliteDid.SetDoc = {
 						data: await toArray({
 							changes_count: 'invalid'
 						}),
@@ -501,7 +494,7 @@ describe('Satellite > User Usage', () => {
 
 					const currentDoc = await get_doc('#user-usage', key);
 
-					const doc: SetDoc = {
+					const doc: SatelliteDid.SetDoc = {
 						data: await toArray({
 							changes_count: 432,
 							unknown: 'field'
@@ -660,7 +653,7 @@ describe('Satellite > User Usage', () => {
 
 			const fetchUsage = async (
 				actorIdentity?: Identity
-			): Promise<{ doc: Doc | undefined; usage: UserUsage | undefined }> =>
+			): Promise<{ doc: SatelliteDid.Doc | undefined; usage: UserUsage | undefined }> =>
 				await get_user_usage({
 					collection: TEST_COLLECTION,
 					collectionType: COLLECTION_TYPE,
@@ -695,7 +688,7 @@ describe('Satellite > User Usage', () => {
 
 				const key = `${user.getPrincipal().toText()}#storage#${TEST_COLLECTION}`;
 
-				const doc: SetDoc = {
+				const doc: SatelliteDid.SetDoc = {
 					data: await toArray({
 						changes_count: 345
 					}),
@@ -754,7 +747,7 @@ describe('Satellite > User Usage', () => {
 
 					const currentDoc = await get_doc('#user-usage', key);
 
-					const doc: SetDoc = {
+					const doc: SatelliteDid.SetDoc = {
 						data: await toArray({
 							changes_count: 456
 						}),
@@ -786,7 +779,7 @@ describe('Satellite > User Usage', () => {
 
 					const currentDoc = await get_doc('#user-usage', key);
 
-					const doc: SetDoc = {
+					const doc: SatelliteDid.SetDoc = {
 						data: await toArray({
 							changes_count: 'invalid'
 						}),
@@ -809,7 +802,7 @@ describe('Satellite > User Usage', () => {
 
 					const currentDoc = await get_doc('#user-usage', key);
 
-					const doc: SetDoc = {
+					const doc: SatelliteDid.SetDoc = {
 						data: await toArray({
 							changes_count: 432,
 							unknown: 'field'

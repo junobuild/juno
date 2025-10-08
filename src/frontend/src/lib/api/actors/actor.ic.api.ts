@@ -1,6 +1,6 @@
+import { type ICActor, idlFactoryIC } from '$declarations';
 import type { GetAgentParams } from '$lib/api/_agent/_agent.api';
 import { ActorApi } from '$lib/api/actors/actor.api';
-import { type ICActor, idlFactoryIC } from '$lib/api/actors/actor.factory';
 import type { ActorConfig, CallConfig } from '@dfinity/agent';
 import { Principal } from '@dfinity/principal';
 import { nonNullish } from '@dfinity/utils';

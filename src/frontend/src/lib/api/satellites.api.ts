@@ -1,6 +1,6 @@
+import type { MissionControlDid, SatelliteDid } from '$declarations';
 import { getSatelliteActor } from '$lib/api/actors/actor.juno.api';
 import type { CustomDomains } from '$lib/types/custom-domain';
-import type { MissionControlDid, SatelliteDid } from '$lib/types/declarations';
 import type { OptionIdentity } from '$lib/types/itentity';
 import type { ListParams } from '$lib/types/list';
 import { toListParams } from '$lib/utils/satellite.utils';

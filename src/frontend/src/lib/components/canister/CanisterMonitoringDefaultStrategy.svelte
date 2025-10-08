@@ -1,12 +1,12 @@
 <script lang="ts">
 	import { nonNullish, fromNullishNullable } from '@dfinity/utils';
 	import { onMount, untrack } from 'svelte';
+	import type { MissionControlDid } from '$declarations';
 	import MonitoringSentence from '$lib/components/modals/MonitoringSentence.svelte';
 	import Checkbox from '$lib/components/ui/Checkbox.svelte';
 	import Value from '$lib/components/ui/Value.svelte';
 	import { BASIC_STRATEGY } from '$lib/constants/monitoring.constants';
 	import { i18n } from '$lib/stores/i18n.store';
-	import type { MissionControlDid } from '$lib/types/declarations';
 	import type { JunoModalCreateSegmentDetail, JunoModalDetail } from '$lib/types/modal';
 
 	interface Props {

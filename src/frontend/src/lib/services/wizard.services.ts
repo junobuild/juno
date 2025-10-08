@@ -1,3 +1,4 @@
+import type { MissionControlDid } from '$declarations';
 import { getOrbiterFee, getSatelliteFee } from '$lib/api/console.api';
 import { getAccountIdentifier } from '$lib/api/icp-index.api';
 import { updateAndStartMonitoring } from '$lib/api/mission-control.api';
@@ -22,7 +23,6 @@ import { waitMissionControlVersionLoaded } from '$lib/services/version/version.m
 import { busy } from '$lib/stores/busy.store';
 import { i18n } from '$lib/stores/i18n.store';
 import { toasts } from '$lib/stores/toasts.store';
-import type { MissionControlDid } from '$lib/types/declarations';
 import type { OptionIdentity } from '$lib/types/itentity';
 import type { MissionControlId } from '$lib/types/mission-control';
 import type { JunoModal, JunoModalCreateSegmentDetail } from '$lib/types/modal';

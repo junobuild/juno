@@ -1,11 +1,4 @@
-import type {
-	AnalyticKey,
-	_SERVICE as OrbiterActor,
-	OrbiterSatelliteFeatures,
-	PageView,
-	PageViewClient,
-	SetPageView
-} from '$declarations/orbiter/orbiter.did';
+import type { OrbiterActor, OrbiterDid } from '$declarations';
 import type { Actor, PocketIc } from '@dfinity/pic';
 import { fromNullable, isNullish, toNullable } from '@dfinity/utils';
 import UAParser from 'ua-parser-js';
@@ -13,7 +6,7 @@ import { satelliteIdMock } from '../mocks/orbiter.mocks';
 import { tick } from './pic-tests.utils';
 
 export const initOrbiterConfig = async (actor: Actor<OrbiterActor>) => {
-	const allFeatures: OrbiterSatelliteFeatures = {
+	const allFeatures: OrbiterDid.OrbiterSatelliteFeatures = {
 		page_views: true,
 		performance_metrics: true,
 		track_events: true
@@ -44,13 +37,13 @@ export const uploadPageViews = async ({
 	collected_at: bigint;
 	withSizeMock?: boolean;
 	withUAParser?: boolean;
-	pageViewsMock: [AnalyticKey, PageView][];
+	pageViewsMock: [OrbiterDid.AnalyticKey, OrbiterDid.PageView][];
 	pic: PocketIc;
 	actor: Actor<OrbiterActor>;
 }) => {
 	const screen_width = [575, 991, 1439, 1920];
 
-	const setPageViewsData = pageViewsMock.map<[AnalyticKey, SetPageView]>(
+	const setPageViewsData = pageViewsMock.map<[OrbiterDid.AnalyticKey, OrbiterDid.SetPageView]>(
 		(
 			[
 				key,
@@ -67,7 +60,7 @@ export const uploadPageViews = async ({
 			],
 			i
 		) => {
-			const parseClient = (): PageViewClient | undefined => {
+			const parseClient = (): OrbiterDid.PageViewClient | undefined => {
 				if (!withUAParser) {
 					return undefined;
 				}
@@ -116,7 +109,10 @@ export const uploadPageViews = async ({
 	);
 
 	const it = setPageViewsData.values();
-	const chunks: [AnalyticKey, SetPageView][][] = Array.from(it, (val) => [val, ...it.take(50 - 1)]);
+	const chunks: [OrbiterDid.AnalyticKey, OrbiterDid.SetPageView][][] = Array.from(it, (val) => [
+		val,
+		...it.take(50 - 1)
+	]);
 
 	const { set_page_views } = actor;
 

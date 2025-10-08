@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { isNullish, nonNullish, debounce } from '@dfinity/utils';
 	import { fade } from 'svelte/transition';
+	import type { OrbiterDid } from '$declarations';
 	import AnalyticsChart from '$lib/components/analytics/AnalyticsChart.svelte';
 	import AnalyticsEvents from '$lib/components/analytics/AnalyticsEvents.svelte';
 	import AnalyticsEventsExport from '$lib/components/analytics/AnalyticsEventsExport.svelte';
@@ -25,7 +26,6 @@
 	import { i18n } from '$lib/stores/i18n.store';
 	import { toasts } from '$lib/stores/toasts.store';
 	import { versionStore } from '$lib/stores/version.store';
-	import type { OrbiterDid } from '$lib/types/declarations';
 	import type {
 		AnalyticsPageViews as AnalyticsPageViewsType,
 		PageViewsParams

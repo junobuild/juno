@@ -1,12 +1,4 @@
-import type {
-	AnalyticKey,
-	_SERVICE as OrbiterActor,
-	OrbiterSatelliteFeatures,
-	SetPageView,
-	SetPerformanceMetric,
-	SetTrackEvent
-} from '$declarations/orbiter/orbiter.did';
-import { idlFactory as idlFactorOrbiter } from '$declarations/orbiter/orbiter.factory.did';
+import { type OrbiterDid , idlFactoryOrbiter, type OrbiterActor } from '$declarations';
 import { Ed25519KeyIdentity } from '@dfinity/identity';
 import { PocketIc, type Actor } from '@dfinity/pic';
 import { nanoid } from 'nanoid';
@@ -29,7 +21,7 @@ describe('Orbiter > No configuration', () => {
 		pic = await PocketIc.create(inject('PIC_URL'));
 
 		const { actor: c } = await pic.setupCanister<OrbiterActor>({
-			idlFactory: idlFactorOrbiter,
+			idlFactory: idlFactoryOrbiter,
 			wasm: ORBITER_WASM_PATH,
 			arg: controllersInitArgs(controller),
 			sender: controller.getPrincipal()
@@ -69,7 +61,7 @@ describe('Orbiter > No configuration', () => {
 					{
 						version: config?.[1].version ?? [],
 						restricted_origin: [],
-						features: features as [] | [OrbiterSatelliteFeatures]
+						features: features as [] | [OrbiterDid.OrbiterSatelliteFeatures]
 					}
 				]
 			]);
@@ -78,7 +70,7 @@ describe('Orbiter > No configuration', () => {
 		it('should not set page views', async () => {
 			const { set_page_views } = actor;
 
-			const pagesViews: [AnalyticKey, SetPageView][] = [
+			const pagesViews: [OrbiterDid.AnalyticKey, OrbiterDid.SetPageView][] = [
 				[{ key: nanoid(), collected_at: 123n }, pageViewMock],
 				[{ key: nanoid(), collected_at: 123n }, pageViewMock]
 			];
@@ -87,7 +79,7 @@ describe('Orbiter > No configuration', () => {
 
 			expect('Err' in results).toBeTruthy();
 
-			(results as { Err: Array<[AnalyticKey, string]> }).Err.forEach(([_, msg]) =>
+			(results as { Err: Array<[OrbiterDid.AnalyticKey, string]> }).Err.forEach(([_, msg]) =>
 				expect(msg).toEqual('error_page_views_feature_disabled')
 			);
 		});
@@ -95,7 +87,7 @@ describe('Orbiter > No configuration', () => {
 		it('should not set track events', async () => {
 			const { set_track_events } = actor;
 
-			const trackEvents: [AnalyticKey, SetTrackEvent][] = [
+			const trackEvents: [OrbiterDid.AnalyticKey, OrbiterDid.SetTrackEvent][] = [
 				[{ key: nanoid(), collected_at: 123n }, trackEventMock],
 				[{ key: nanoid(), collected_at: 123n }, trackEventMock]
 			];
@@ -104,7 +96,7 @@ describe('Orbiter > No configuration', () => {
 
 			expect('Err' in results).toBeTruthy();
 
-			(results as { Err: Array<[AnalyticKey, string]> }).Err.forEach(([_, msg]) =>
+			(results as { Err: Array<[OrbiterDid.AnalyticKey, string]> }).Err.forEach(([_, msg]) =>
 				expect(msg).toEqual('error_track_events_feature_disabled')
 			);
 		});
@@ -112,7 +104,7 @@ describe('Orbiter > No configuration', () => {
 		it('should not set performance metrics', async () => {
 			const { set_performance_metrics } = actor;
 
-			const performanceMetrics: [AnalyticKey, SetPerformanceMetric][] = [
+			const performanceMetrics: [OrbiterDid.AnalyticKey, OrbiterDid.SetPerformanceMetric][] = [
 				[{ key: nanoid(), collected_at: 123n }, performanceMetricMock],
 				[{ key: nanoid(), collected_at: 123n }, performanceMetricMock]
 			];
@@ -121,7 +113,7 @@ describe('Orbiter > No configuration', () => {
 
 			expect('Err' in results).toBeTruthy();
 
-			(results as { Err: Array<[AnalyticKey, string]> }).Err.forEach(([_, msg]) =>
+			(results as { Err: Array<[OrbiterDid.AnalyticKey, string]> }).Err.forEach(([_, msg]) =>
 				expect(msg).toEqual('error_performance_metrics_feature_disabled')
 			);
 		});

@@ -1,5 +1,5 @@
+import type { SatelliteDid } from '$declarations';
 import { AppWorker } from '$lib/services/workers/_worker.services';
-import type { SatelliteDid } from '$lib/types/declarations';
 import type { PostMessageDataResponseHosting, PostMessages } from '$lib/types/post-message';
 
 export type HostingCallback = (data: PostMessageDataResponseHosting) => void;

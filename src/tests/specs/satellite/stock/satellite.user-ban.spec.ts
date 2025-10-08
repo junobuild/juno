@@ -1,10 +1,4 @@
-import type {
-	DelDoc,
-	Doc,
-	_SERVICE as SatelliteActor,
-	SetDoc
-} from '$declarations/satellite/satellite.did';
-import { idlFactory as idlFactorSatellite } from '$declarations/satellite/satellite.factory.did';
+import { type SatelliteDid , type SatelliteActor, idlFactorySatellite } from '$declarations';
 import type { Identity } from '@dfinity/agent';
 import { Ed25519KeyIdentity } from '@dfinity/identity';
 import { type Actor, PocketIc } from '@dfinity/pic';
@@ -75,7 +69,7 @@ describe('Satellite > User Ban', () => {
 		pic = await PocketIc.create(inject('PIC_URL'));
 
 		const { actor: c } = await pic.setupCanister<SatelliteActor>({
-			idlFactory: idlFactorSatellite,
+			idlFactory: idlFactorySatellite,
 			wasm: SATELLITE_WASM_PATH,
 			arg: controllersInitArgs(controller),
 			sender: controller.getPrincipal()
@@ -281,7 +275,7 @@ describe('Satellite > User Ban', () => {
 			});
 
 			describe('set document', () => {
-				const createDoc = async (): Promise<Doc> => {
+				const createDoc = async (): Promise<SatelliteDid.Doc> => {
 					actor.setIdentity(user);
 
 					const { set_doc } = actor;
@@ -327,7 +321,7 @@ describe('Satellite > User Ban', () => {
 
 					const { set_many_docs } = actor;
 
-					const data: SetDoc = {
+					const data: SatelliteDid.SetDoc = {
 						data: await toArray({
 							hello: 'world'
 						}),
@@ -402,7 +396,7 @@ describe('Satellite > User Ban', () => {
 
 					const { del_many_docs } = actor;
 
-					const data: DelDoc = {
+					const data: SatelliteDid.DelDoc = {
 						version: toNullable()
 					};
 

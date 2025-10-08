@@ -1,4 +1,4 @@
-import type { _SERVICE as SatelliteActor, SetRule } from '$declarations/satellite/satellite.did';
+import type { SatelliteActor, SatelliteDid } from '$declarations';
 import { AnonymousIdentity } from '@dfinity/agent';
 import { Ed25519KeyIdentity } from '@dfinity/identity';
 import type { Actor, PocketIc } from '@dfinity/pic';
@@ -214,7 +214,7 @@ describe.each(MEMORIES)('Satellite > Cdn > $title', ({ memory }) => {
 
 			const { set_rule } = actor;
 
-			const setRule: SetRule = {
+			const setRule: SatelliteDid.SetRule = {
 				memory: toNullable({ Heap: null }),
 				max_size: toNullable(),
 				max_capacity: toNullable(),

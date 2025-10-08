@@ -1,5 +1,4 @@
-import { type ICActor, idlFactoryIC } from '$lib/api/actors/actor.factory';
-import type { ICDid } from '$lib/types/declarations';
+import { type ICDid , type ICActor, idlFactoryIC } from '$declarations';
 import type { Identity } from '@dfinity/agent';
 import type { PocketIc } from '@dfinity/pic';
 import { Principal } from '@dfinity/principal';

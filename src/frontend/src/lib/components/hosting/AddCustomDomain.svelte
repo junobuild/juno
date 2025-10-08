@@ -1,6 +1,6 @@
 <script lang="ts">
+	import type { SatelliteDid, MissionControlDid } from '$declarations';
 	import { i18n } from '$lib/stores/i18n.store';
-	import type { SatelliteDid, MissionControlDid } from '$lib/types/declarations';
 	import { emit } from '$lib/utils/events.utils';
 
 	interface Props {

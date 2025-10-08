@@ -1,5 +1,5 @@
+import type { OrbiterDid } from '$declarations';
 import { getAnalyticsPageViews } from '$lib/services/orbiter/_orbiter.services';
-import type { OrbiterDid } from '$lib/types/declarations';
 import type {
 	AnalyticsMetrics,
 	AnalyticsPageViews,

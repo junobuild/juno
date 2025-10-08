@@ -1,4 +1,4 @@
-import type { OrbiterDid } from '$lib/types/declarations';
+import type { OrbiterDid } from '$declarations';
 import type { OrbiterIdText } from '$lib/types/orbiter';
 import type { Principal } from '@dfinity/principal';
 import { type Readable, writable } from 'svelte/store';

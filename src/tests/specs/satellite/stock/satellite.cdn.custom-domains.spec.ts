@@ -1,4 +1,4 @@
-import type { _SERVICE as SatelliteActor } from '$declarations/satellite/satellite.did';
+import type { SatelliteActor } from '$declarations';
 import { AnonymousIdentity } from '@dfinity/agent';
 import type { Ed25519KeyIdentity } from '@dfinity/identity';
 import type { Actor, PocketIc } from '@dfinity/pic';

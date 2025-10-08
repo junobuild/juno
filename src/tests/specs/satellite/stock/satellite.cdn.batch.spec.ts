@@ -1,5 +1,4 @@
-import type { _SERVICE as SatelliteActor } from '$declarations/satellite/satellite.did';
-import { idlFactory as idlFactorSatellite } from '$declarations/satellite/satellite.factory.did';
+import { type SatelliteActor, idlFactorySatellite } from '$declarations';
 import { Ed25519KeyIdentity } from '@dfinity/identity';
 import { type Actor, PocketIc } from '@dfinity/pic';
 import type { Principal } from '@dfinity/principal';
@@ -24,7 +23,7 @@ describe('Satellite > Cdn > Batch', () => {
 		await pic.setTime(currentDate.getTime());
 
 		const { actor: c, canisterId: cId } = await pic.setupCanister<SatelliteActor>({
-			idlFactory: idlFactorSatellite,
+			idlFactory: idlFactorySatellite,
 			wasm: SATELLITE_WASM_PATH,
 			arg: controllersInitArgs(controller),
 			sender: controller.getPrincipal()

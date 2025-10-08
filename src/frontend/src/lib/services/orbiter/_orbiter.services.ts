@@ -1,3 +1,4 @@
+import type { OrbiterDid } from '$declarations';
 import {
 	getAnalyticsClientsPageViews,
 	getAnalyticsMetricsPageViews,
@@ -11,7 +12,6 @@ import {
 	getDeprecatedAnalyticsPageViews,
 	getDeprecatedAnalyticsTrackEvents
 } from '$lib/services/orbiter/orbiters.deprecated.services';
-import type { OrbiterDid } from '$lib/types/declarations';
 import type { AnalyticsPageViews, PageViewsParams } from '$lib/types/orbiter';
 import { fromNullable } from '@dfinity/utils';
 import { compare } from 'semver';

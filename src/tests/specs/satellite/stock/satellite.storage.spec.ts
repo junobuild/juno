@@ -1,10 +1,4 @@
-import type {
-	HttpRequest,
-	ListParams,
-	_SERVICE as SatelliteActor,
-	SetRule,
-	SetStorageConfig
-} from '$declarations/satellite/satellite.did';
+import type { SatelliteActor, SatelliteDid } from '$declarations';
 import { AnonymousIdentity } from '@dfinity/agent';
 import { Ed25519KeyIdentity } from '@dfinity/identity';
 import type { Actor, PocketIc } from '@dfinity/pic';
@@ -186,7 +180,7 @@ describe.each([{ title: 'Heap (default)', memory: null }, ...MEMORIES])(
 			it('should set and get config', async () => {
 				const { set_storage_config, get_config } = actor;
 
-				const storage: SetStorageConfig = {
+				const storage: SatelliteDid.SetStorageConfig = {
 					headers: [['*', [['cache-control', 'no-cache']]]],
 					iframe: toNullable({ Deny: null }),
 					redirects: [],
@@ -218,7 +212,7 @@ describe.each([{ title: 'Heap (default)', memory: null }, ...MEMORIES])(
 			it('should not set db config if incorrect version', async () => {
 				const { set_storage_config } = actor;
 
-				const storage: SetStorageConfig = {
+				const storage: SatelliteDid.SetStorageConfig = {
 					headers: [['*', [['cache-control', 'no-cache']]]],
 					iframe: toNullable({ Deny: null }),
 					redirects: [],
@@ -274,7 +268,7 @@ describe.each([{ title: 'Heap (default)', memory: null }, ...MEMORIES])(
 					headers: []
 				});
 
-				const request: HttpRequest = {
+				const request: SatelliteDid.HttpRequest = {
 					body: [],
 					certificate_version: toNullable(2),
 					headers: [],
@@ -350,7 +344,7 @@ describe.each([{ title: 'Heap (default)', memory: null }, ...MEMORIES])(
 					it('should create a collection', async () => {
 						const { set_rule, list_rules } = actor;
 
-						const setRule: SetRule = {
+						const setRule: SatelliteDid.SetRule = {
 							memory: toNullable(memory),
 							max_size: toNullable(),
 							max_capacity: toNullable(),
@@ -411,7 +405,7 @@ describe.each([{ title: 'Heap (default)', memory: null }, ...MEMORIES])(
 
 						await upload({ full_path, name, collection });
 
-						const request: HttpRequest = {
+						const request: SatelliteDid.HttpRequest = {
 							body: [],
 							certificate_version: toNullable(2),
 							headers: [],
@@ -541,7 +535,7 @@ describe.each([{ title: 'Heap (default)', memory: null }, ...MEMORIES])(
 				it('should set a config for a rewrite and redirect', async () => {
 					const { set_storage_config, get_config } = actor;
 
-					const storage: SetStorageConfig = {
+					const storage: SatelliteDid.SetStorageConfig = {
 						headers: [['*', [['cache-control', 'no-cache']]]],
 						iframe: toNullable({ Deny: null }),
 						redirects: [
@@ -637,7 +631,7 @@ describe.each([{ title: 'Heap (default)', memory: null }, ...MEMORIES])(
 				it('should be able to access on raw if allowed', async () => {
 					const { http_request, set_storage_config } = actor;
 
-					const storage: SetStorageConfig = {
+					const storage: SatelliteDid.SetStorageConfig = {
 						headers: [],
 						iframe: toNullable(),
 						redirects: [],
@@ -667,7 +661,7 @@ describe.each([{ title: 'Heap (default)', memory: null }, ...MEMORIES])(
 				it('should not be able to access on raw if explicitly disabled', async () => {
 					const { http_request, set_storage_config } = actor;
 
-					const storage: SetStorageConfig = {
+					const storage: SatelliteDid.SetStorageConfig = {
 						headers: [],
 						iframe: toNullable(),
 						redirects: [],
@@ -693,7 +687,7 @@ describe.each([{ title: 'Heap (default)', memory: null }, ...MEMORIES])(
 				it('should be able to access content if not raw', async () => {
 					const { http_request, set_storage_config } = actor;
 
-					const storage: SetStorageConfig = {
+					const storage: SatelliteDid.SetStorageConfig = {
 						headers: [],
 						iframe: toNullable(),
 						redirects: [],
@@ -744,7 +738,7 @@ describe.each([{ title: 'Heap (default)', memory: null }, ...MEMORIES])(
 
 						const { set_rule } = actor;
 
-						const setRule: SetRule = {
+						const setRule: SatelliteDid.SetRule = {
 							memory: toNullable(memory),
 							max_size: toNullable(),
 							max_capacity: toNullable(),
@@ -852,7 +846,7 @@ describe.each([{ title: 'Heap (default)', memory: null }, ...MEMORIES])(
 						it('should list assets according created_at timestamps', async () => {
 							const { list_assets, count_assets } = actor;
 
-							const paramsCreatedAt: ListParams = {
+							const paramsCreatedAt: SatelliteDid.ListParams = {
 								matcher: toNullable(),
 								order: toNullable({
 									desc: false,
@@ -870,7 +864,7 @@ describe.each([{ title: 'Heap (default)', memory: null }, ...MEMORIES])(
 
 							expect(countCreatedAt).toBe(10n);
 
-							const paramsGreaterThan: ListParams = {
+							const paramsGreaterThan: SatelliteDid.ListParams = {
 								matcher: toNullable({
 									key: toNullable(),
 									description: toNullable(),
@@ -895,7 +889,7 @@ describe.each([{ title: 'Heap (default)', memory: null }, ...MEMORIES])(
 
 							expect(countGreaterThan).toBe(5n);
 
-							const paramsLessThan: ListParams = {
+							const paramsLessThan: SatelliteDid.ListParams = {
 								matcher: toNullable({
 									key: toNullable(),
 									description: toNullable(),
@@ -920,7 +914,7 @@ describe.each([{ title: 'Heap (default)', memory: null }, ...MEMORIES])(
 
 							expect(countLessThan).toBe(4n);
 
-							const paramsBetween: ListParams = {
+							const paramsBetween: SatelliteDid.ListParams = {
 								matcher: toNullable({
 									key: toNullable(),
 									description: toNullable(),
@@ -949,7 +943,7 @@ describe.each([{ title: 'Heap (default)', memory: null }, ...MEMORIES])(
 						it('should list assets according updated_at timestamps', async () => {
 							const { list_assets, count_assets } = actor;
 
-							const paramsUpdatedAt: ListParams = {
+							const paramsUpdatedAt: SatelliteDid.ListParams = {
 								matcher: toNullable(),
 								order: toNullable({
 									desc: false,
@@ -967,7 +961,7 @@ describe.each([{ title: 'Heap (default)', memory: null }, ...MEMORIES])(
 
 							expect(countUpdatedAt).toBe(10n);
 
-							const paramsGreaterThan: ListParams = {
+							const paramsGreaterThan: SatelliteDid.ListParams = {
 								matcher: toNullable({
 									key: toNullable(),
 									description: toNullable(),
@@ -992,7 +986,7 @@ describe.each([{ title: 'Heap (default)', memory: null }, ...MEMORIES])(
 
 							expect(countGreaterThan).toBe(5n);
 
-							const paramsLessThan: ListParams = {
+							const paramsLessThan: SatelliteDid.ListParams = {
 								matcher: toNullable({
 									key: toNullable(),
 									description: toNullable(),
@@ -1017,7 +1011,7 @@ describe.each([{ title: 'Heap (default)', memory: null }, ...MEMORIES])(
 
 							expect(countLessThan).toBe(4n);
 
-							const paramsBetween: ListParams = {
+							const paramsBetween: SatelliteDid.ListParams = {
 								matcher: toNullable({
 									key: toNullable(),
 									description: toNullable(),
@@ -1052,7 +1046,7 @@ describe.each([{ title: 'Heap (default)', memory: null }, ...MEMORIES])(
 							await uploadCustomAsset('asset2.svg');
 							await uploadCustomAsset('asset3.svg');
 
-							const filterParams: ListParams = {
+							const filterParams: SatelliteDid.ListParams = {
 								matcher: toNullable({
 									key: toNullable('/asset2\\.svg$'),
 									description: toNullable(),
@@ -1067,7 +1061,7 @@ describe.each([{ title: 'Heap (default)', memory: null }, ...MEMORIES])(
 								paginate: toNullable()
 							};
 
-							const listParams: ListParams = {
+							const listParams: SatelliteDid.ListParams = {
 								matcher: toNullable({
 									key: toNullable('/asset\\d+\\.svg$'),
 									description: toNullable(),
@@ -1101,7 +1095,7 @@ describe.each([{ title: 'Heap (default)', memory: null }, ...MEMORIES])(
 
 							actor.setIdentity(user);
 
-							const filterParams: ListParams = {
+							const filterParams: SatelliteDid.ListParams = {
 								matcher: toNullable({
 									key: toNullable('/asset1\\.svg$'),
 									description: toNullable(),
@@ -1118,7 +1112,7 @@ describe.each([{ title: 'Heap (default)', memory: null }, ...MEMORIES])(
 
 							await del_filtered_assets(collection, filterParams);
 
-							const listParams: ListParams = {
+							const listParams: SatelliteDid.ListParams = {
 								matcher: toNullable({
 									key: toNullable('/asset\\d+\\.svg$'),
 									description: toNullable(),
@@ -1139,7 +1133,7 @@ describe.each([{ title: 'Heap (default)', memory: null }, ...MEMORIES])(
 								`/${collection}/asset3.svg`
 							]);
 
-							const listParamsUser2: ListParams = {
+							const listParamsUser2: SatelliteDid.ListParams = {
 								matcher: toNullable({
 									key: toNullable('/user2_asset\\.svg$'),
 									description: toNullable(),
@@ -1170,7 +1164,7 @@ describe.each([{ title: 'Heap (default)', memory: null }, ...MEMORIES])(
 
 							actor.setIdentity(controller);
 
-							const filterParams: ListParams = {
+							const filterParams: SatelliteDid.ListParams = {
 								matcher: toNullable({
 									key: toNullable('/user2_asset\\.svg$'),
 									description: toNullable(),
@@ -1184,7 +1178,7 @@ describe.each([{ title: 'Heap (default)', memory: null }, ...MEMORIES])(
 
 							await del_filtered_assets(collection, filterParams);
 
-							const listParams: ListParams = {
+							const listParams: SatelliteDid.ListParams = {
 								matcher: toNullable(),
 								order: toNullable(),
 								owner: toNullable(),
@@ -1332,7 +1326,7 @@ describe.each([{ title: 'Heap (default)', memory: null }, ...MEMORIES])(
 					}) => {
 						const { set_storage_config } = actor;
 
-						const storage: SetStorageConfig = {
+						const storage: SatelliteDid.SetStorageConfig = {
 							headers: [['*', [['cache-control', 'no-cache']]]],
 							iframe: toNullable({ Deny: null }),
 							redirects: [],
@@ -1442,7 +1436,7 @@ describe.each([{ title: 'Heap (default)', memory: null }, ...MEMORIES])(
 			const unsetConfigMaxMemory = async () => {
 				const { set_storage_config } = actor;
 
-				const storage: SetStorageConfig = {
+				const storage: SatelliteDid.SetStorageConfig = {
 					headers: [['*', [['cache-control', 'no-cache']]]],
 					iframe: toNullable({ Deny: null }),
 					redirects: [],
@@ -1486,7 +1480,7 @@ describe.each([{ title: 'Heap (default)', memory: null }, ...MEMORIES])(
 
 						await upload({ full_path, name, collection, headers: customHeaders });
 
-						const request: HttpRequest = {
+						const request: SatelliteDid.HttpRequest = {
 							body: [],
 							certificate_version: toNullable(2),
 							headers: [],
@@ -1517,7 +1511,7 @@ describe.each([{ title: 'Heap (default)', memory: null }, ...MEMORIES])(
 
 						await upload({ full_path, name, collection, headers: customHeaders });
 
-						const request: HttpRequest = {
+						const request: SatelliteDid.HttpRequest = {
 							body: [],
 							certificate_version: toNullable(2),
 							headers: [],
@@ -1545,7 +1539,7 @@ describe.each([{ title: 'Heap (default)', memory: null }, ...MEMORIES])(
 			it('should return config after set', async () => {
 				const { set_storage_config } = actor;
 
-				const config: SetStorageConfig = {
+				const config: SatelliteDid.SetStorageConfig = {
 					headers: [['*', [['cache-control', 'no-cache']]]],
 					iframe: toNullable({ Deny: null }),
 					redirects: [],

@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { isNullish } from '@dfinity/utils';
 	import { createEventDispatcher, getContext } from 'svelte';
+	import type { SatelliteDid } from '$declarations';
 	import { deleteRule } from '$lib/api/satellites.api';
 	import Confirmation from '$lib/components/core/Confirmation.svelte';
 	import Value from '$lib/components/ui/Value.svelte';
@@ -8,7 +9,6 @@
 	import { busy } from '$lib/stores/busy.store';
 	import { i18n } from '$lib/stores/i18n.store';
 	import { toasts } from '$lib/stores/toasts.store';
-	import type { SatelliteDid } from '$lib/types/declarations';
 	import { RULES_CONTEXT_KEY, type RulesContext } from '$lib/types/rules.context';
 	import { i18nFormat } from '$lib/utils/i18n.utils';
 

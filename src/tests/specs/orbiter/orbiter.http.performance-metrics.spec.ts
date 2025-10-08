@@ -1,9 +1,4 @@
-import type {
-	_SERVICE as OrbiterActor,
-	OrbiterSatelliteFeatures
-} from '$declarations/orbiter/orbiter.did';
-import { idlFactory as idlFactorOrbiter } from '$declarations/orbiter/orbiter.factory.did';
-import type { HttpRequest } from '$declarations/satellite/satellite.did';
+import { type OrbiterDid , idlFactoryOrbiter, type OrbiterActor } from '$declarations';
 import { Ed25519KeyIdentity } from '@dfinity/identity';
 import { type Actor, PocketIc } from '@dfinity/pic';
 import { fromNullable, jsonReviver, toNullable } from '@dfinity/utils';
@@ -39,7 +34,7 @@ describe('Orbiter > HTTP > Performance metrics', () => {
 		await pic.setTime(currentDate.getTime());
 
 		const { actor: c } = await pic.setupCanister<OrbiterActor>({
-			idlFactory: idlFactorOrbiter,
+			idlFactory: idlFactoryOrbiter,
 			wasm: ORBITER_WASM_PATH,
 			arg: controllersInitArgs(controller),
 			sender: controller.getPrincipal()
@@ -79,7 +74,7 @@ describe('Orbiter > HTTP > Performance metrics', () => {
 		beforeAll(async () => {
 			actor.setIdentity(controller);
 
-			const allFeatures: OrbiterSatelliteFeatures = {
+			const allFeatures: OrbiterDid.OrbiterSatelliteFeatures = {
 				page_views: true,
 				performance_metrics: true,
 				track_events: true
@@ -112,7 +107,7 @@ describe('Orbiter > HTTP > Performance metrics', () => {
 				it('should upgrade http_request', async () => {
 					const { http_request } = actor;
 
-					const request: HttpRequest = {
+					const request: OrbiterDid.HttpRequest = {
 						body,
 						certificate_version: toNullable(2),
 						headers: userAgentHeadersMock,
@@ -128,7 +123,7 @@ describe('Orbiter > HTTP > Performance metrics', () => {
 				it.each(NON_POST_METHODS)('should not upgrade http_request for %s', async (method) => {
 					const { http_request } = actor;
 
-					const request: HttpRequest = {
+					const request: OrbiterDid.HttpRequest = {
 						body,
 						certificate_version: toNullable(2),
 						headers: userAgentHeadersMock,
@@ -157,7 +152,7 @@ describe('Orbiter > HTTP > Performance metrics', () => {
 				it.each(invalidPayloads)('should upgrade http_request for %s', async (_title, payload) => {
 					const { http_request } = actor;
 
-					const request: HttpRequest = {
+					const request: OrbiterDid.HttpRequest = {
 						body: toBodyJson(payload),
 						certificate_version: toNullable(2),
 						headers: userAgentHeadersMock,
@@ -173,7 +168,7 @@ describe('Orbiter > HTTP > Performance metrics', () => {
 				it('should return a bad request for invalid type', async () => {
 					const { http_request_update } = actor;
 
-					const request: HttpRequest = {
+					const request: OrbiterDid.HttpRequest = {
 						body: toBodyJson(invalidPayloads[0][1]),
 						certificate_version: toNullable(2),
 						headers: userAgentHeadersMock,
@@ -198,7 +193,7 @@ describe('Orbiter > HTTP > Performance metrics', () => {
 				it('should return a bad request for missing field', async () => {
 					const { http_request_update } = actor;
 
-					const request: HttpRequest = {
+					const request: OrbiterDid.HttpRequest = {
 						body: toBodyJson(invalidPayloads[1][1]),
 						certificate_version: toNullable(2),
 						headers: userAgentHeadersMock,
@@ -223,7 +218,7 @@ describe('Orbiter > HTTP > Performance metrics', () => {
 				it('should return forbidden for unknown satellite', async () => {
 					const { http_request_update } = actor;
 
-					const request: HttpRequest = {
+					const request: OrbiterDid.HttpRequest = {
 						body: toBodyJson(invalidPayloads[2][1]),
 						certificate_version: toNullable(2),
 						headers: userAgentHeadersMock,
@@ -248,7 +243,7 @@ describe('Orbiter > HTTP > Performance metrics', () => {
 				it('should not set a performance metric with invalid satellite id', async () => {
 					const { http_request_update } = actor;
 
-					const request: HttpRequest = {
+					const request: OrbiterDid.HttpRequest = {
 						body: toBodyJson({
 							...performanceMetric,
 							satellite_id: satelliteIdMock // Should be principal as text
@@ -276,7 +271,7 @@ describe('Orbiter > HTTP > Performance metrics', () => {
 				it('should set a performance metric', async () => {
 					const { http_request_update } = actor;
 
-					const request: HttpRequest = {
+					const request: OrbiterDid.HttpRequest = {
 						body,
 						certificate_version: toNullable(2),
 						headers: userAgentHeadersMock,
@@ -309,7 +304,7 @@ describe('Orbiter > HTTP > Performance metrics', () => {
 				it('should fail at updating performance metric without version', async () => {
 					const { http_request_update } = actor;
 
-					const request: HttpRequest = {
+					const request: OrbiterDid.HttpRequest = {
 						body,
 						certificate_version: toNullable(2),
 						headers: userAgentHeadersMock,
@@ -330,7 +325,7 @@ describe('Orbiter > HTTP > Performance metrics', () => {
 				it('should update a performance metric', async () => {
 					const { http_request_update } = actor;
 
-					const request: HttpRequest = {
+					const request: OrbiterDid.HttpRequest = {
 						body: toBodyJson({
 							...performanceMetric,
 							performance_metric: {
@@ -365,7 +360,7 @@ describe('Orbiter > HTTP > Performance metrics', () => {
 				it('should upgrade http_request', async () => {
 					const { http_request } = actor;
 
-					const request: HttpRequest = {
+					const request: OrbiterDid.HttpRequest = {
 						body,
 						certificate_version: toNullable(2),
 						headers: userAgentHeadersMock,
@@ -381,7 +376,7 @@ describe('Orbiter > HTTP > Performance metrics', () => {
 				it.each(NON_POST_METHODS)('should not upgrade http_request for %s', async (method) => {
 					const { http_request } = actor;
 
-					const request: HttpRequest = {
+					const request: OrbiterDid.HttpRequest = {
 						body,
 						certificate_version: toNullable(2),
 						headers: userAgentHeadersMock,
@@ -421,7 +416,7 @@ describe('Orbiter > HTTP > Performance metrics', () => {
 				it.each(invalidPayloads)('should upgrade http_request for %s', async (_title, payload) => {
 					const { http_request } = actor;
 
-					const request: HttpRequest = {
+					const request: OrbiterDid.HttpRequest = {
 						body: toBodyJson(payload),
 						certificate_version: toNullable(2),
 						headers: userAgentHeadersMock,
@@ -437,7 +432,7 @@ describe('Orbiter > HTTP > Performance metrics', () => {
 				it('should return a bad request for invalid type', async () => {
 					const { http_request_update } = actor;
 
-					const request: HttpRequest = {
+					const request: OrbiterDid.HttpRequest = {
 						body: toBodyJson(invalidPayloads[0][1]),
 						certificate_version: toNullable(2),
 						headers: userAgentHeadersMock,
@@ -462,7 +457,7 @@ describe('Orbiter > HTTP > Performance metrics', () => {
 				it('should return ok for empty payload', async () => {
 					const { http_request_update } = actor;
 
-					const request: HttpRequest = {
+					const request: OrbiterDid.HttpRequest = {
 						body: toBodyJson(invalidPayloads[1][1]),
 						certificate_version: toNullable(2),
 						headers: userAgentHeadersMock,
@@ -478,7 +473,7 @@ describe('Orbiter > HTTP > Performance metrics', () => {
 				it('should return forbidden for unknown satellite', async () => {
 					const { http_request_update } = actor;
 
-					const request: HttpRequest = {
+					const request: OrbiterDid.HttpRequest = {
 						body: toBodyJson(invalidPayloads[2][1]),
 						certificate_version: toNullable(2),
 						headers: userAgentHeadersMock,
@@ -503,7 +498,7 @@ describe('Orbiter > HTTP > Performance metrics', () => {
 				it('should not set performance metrics with invalid satellite id', async () => {
 					const { http_request_update } = actor;
 
-					const request: HttpRequest = {
+					const request: OrbiterDid.HttpRequest = {
 						body: toBodyJson({
 							performance_metrics: [
 								{
@@ -527,7 +522,7 @@ describe('Orbiter > HTTP > Performance metrics', () => {
 				it('should set performance metrics', async () => {
 					const { http_request_update } = actor;
 
-					const request: HttpRequest = {
+					const request: OrbiterDid.HttpRequest = {
 						body,
 						certificate_version: toNullable(2),
 						headers: userAgentHeadersMock,
@@ -550,7 +545,7 @@ describe('Orbiter > HTTP > Performance metrics', () => {
 				it('should fail at updating performance metrics without version', async () => {
 					const { http_request_update } = actor;
 
-					const request: HttpRequest = {
+					const request: OrbiterDid.HttpRequest = {
 						body,
 						certificate_version: toNullable(2),
 						headers: userAgentHeadersMock,
@@ -578,7 +573,7 @@ describe('Orbiter > HTTP > Performance metrics', () => {
 				it('should update performance metrics', async () => {
 					const { http_request_update } = actor;
 
-					const request: HttpRequest = {
+					const request: OrbiterDid.HttpRequest = {
 						body: toBodyJson({
 							...performanceMetrics,
 							performance_metrics: performanceMetrics.performance_metrics.map(

@@ -1,5 +1,5 @@
+import type { MissionControlDid } from '$declarations';
 import { initDataStore } from '$lib/stores/_data.store';
-import type { MissionControlDid } from '$lib/types/declarations';
 import type { Component } from 'svelte';
 
 export const layoutNavigation = initDataStore<{

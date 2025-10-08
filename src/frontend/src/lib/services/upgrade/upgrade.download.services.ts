@@ -1,6 +1,6 @@
+import type { SatelliteDid } from '$declarations';
 import { downloadWasm } from '$lib/rest/cdn.dev';
 import { downloadRelease } from '$lib/rest/cdn.rest';
-import type { SatelliteDid } from '$lib/types/declarations';
 import type { OptionIdentity } from '$lib/types/itentity';
 import type { Wasm } from '$lib/types/upgrade';
 import { sha256 } from '$lib/utils/crypto.utils';

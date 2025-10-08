@@ -1,5 +1,4 @@
-import type { _SERVICE as SatelliteActor, SetRule } from '$declarations/satellite/satellite.did';
-import { idlFactory as idlFactorSatellite } from '$declarations/satellite/satellite.factory.did';
+import { type SatelliteDid , type SatelliteActor, idlFactorySatellite } from '$declarations';
 import { Ed25519KeyIdentity } from '@dfinity/identity';
 import { type Actor, PocketIc } from '@dfinity/pic';
 import { assertNonNullish, fromNullable, toNullable } from '@dfinity/utils';
@@ -30,7 +29,7 @@ describe('Satellite', () => {
 		pic = await PocketIc.create(inject('PIC_URL'));
 
 		const { actor: c } = await pic.setupCanister<SatelliteActor>({
-			idlFactory: idlFactorSatellite,
+			idlFactory: idlFactorySatellite,
 			wasm: SATELLITE_WASM_PATH,
 			arg: controllersInitArgs(controller),
 			sender: controller.getPrincipal()
@@ -43,7 +42,7 @@ describe('Satellite', () => {
 		await pic?.tearDown();
 	});
 
-	const setRule: SetRule = {
+	const setRule: SatelliteDid.SetRule = {
 		memory: toNullable(),
 		max_size: toNullable(),
 		max_capacity: toNullable(),
@@ -55,7 +54,7 @@ describe('Satellite', () => {
 		rate_config: []
 	};
 
-	const setRuleWithValues: SetRule = {
+	const setRuleWithValues: SatelliteDid.SetRule = {
 		memory: toNullable(),
 		max_size: toNullable(123n),
 		max_capacity: toNullable(456),

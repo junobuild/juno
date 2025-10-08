@@ -1,8 +1,8 @@
+import type { SatelliteDid } from '$declarations';
 import { instantSatelliteVersion } from '$lib/services/feature.services';
 import { downloadWasmFromDevCdn } from '$lib/services/upgrade/upgrade.download.services';
 import { i18n } from '$lib/stores/i18n.store';
 import { toasts } from '$lib/stores/toasts.store';
-import type { SatelliteDid } from '$lib/types/declarations';
 import type { OptionIdentity } from '$lib/types/itentity';
 import type { Wasm } from '$lib/types/upgrade';
 import { i18nFormat } from '$lib/utils/i18n.utils';

@@ -2,6 +2,7 @@
 	import type { Principal } from '@dfinity/principal';
 	import { isNullish, nonNullish, notEmptyString } from '@dfinity/utils';
 	import { fade } from 'svelte/transition';
+	import type { MissionControlDid } from '$declarations';
 	import { setOrbitersController } from '$lib/api/mission-control.api';
 	import SegmentsTable from '$lib/components/segments/SegmentsTable.svelte';
 	import Html from '$lib/components/ui/Html.svelte';
@@ -16,7 +17,6 @@
 	import { busy } from '$lib/stores/busy.store';
 	import { i18n } from '$lib/stores/i18n.store';
 	import { toasts } from '$lib/stores/toasts.store';
-	import type { MissionControlDid } from '$lib/types/declarations';
 	import type { MissionControlId } from '$lib/types/mission-control';
 	import type { Option } from '$lib/types/utils';
 	import { bigintStringify } from '$lib/utils/number.utils';

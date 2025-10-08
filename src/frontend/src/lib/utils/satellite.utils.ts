@@ -1,7 +1,7 @@
+import type { MissionControlDid, SatelliteDid } from '$declarations';
 import { PAGINATION } from '$lib/constants/app.constants';
 import { isDev } from '$lib/env/app.env';
 import { SatelliteUiMetadataParser } from '$lib/schemas/satellite.schema';
-import type { MissionControlDid, SatelliteDid } from '$lib/types/declarations';
 import type { ListParams } from '$lib/types/list';
 import type { SatelliteUi, SatelliteUiMetadata, SatelliteUiTags } from '$lib/types/satellite';
 import { metadataEnvironment, metadataName, metadataTags } from '$lib/utils/metadata.utils';

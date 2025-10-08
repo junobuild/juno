@@ -1,4 +1,4 @@
-import type { SatelliteDid } from '$lib/types/declarations';
+import type { SatelliteDid } from '$declarations';
 
 export type CustomDomainName = string;
 

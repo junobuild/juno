@@ -1,9 +1,11 @@
-import type { _SERVICE as ConsoleActor } from '$declarations/console/console.did';
-import { idlFactory as idlFactorConsole } from '$declarations/console/console.factory.did';
-import type { _SERVICE as ConsoleActor_0_0_14 } from '$declarations/deprecated/console-0-0-14.did';
-import { idlFactory as idlFactoryConsole_0_0_14 } from '$declarations/deprecated/console-0-0-14.factory.did';
-import type { _SERVICE as ConsoleActor_0_0_8 } from '$declarations/deprecated/console-0-0-8-patch1.did';
-import { idlFactory as idlFactorConsole_0_0_8 } from '$declarations/deprecated/console-0-0-8-patch1.factory.did';
+import {
+	idlFactoryConsole,
+	idlFactoryConsole0014,
+	idlFactoryConsole008,
+	type ConsoleActor,
+	type ConsoleActor0014,
+	type ConsoleActor008
+} from '$declarations';
 import type { Identity } from '@dfinity/agent';
 import { Ed25519KeyIdentity } from '@dfinity/identity';
 import { PocketIc, type Actor } from '@dfinity/pic';
@@ -25,7 +27,7 @@ import { controllersInitArgs, downloadConsole } from '../../utils/setup-tests.ut
 
 describe('Console > Upgrade', () => {
 	let pic: PocketIc;
-	let actor: Actor<ConsoleActor_0_0_8>;
+	let actor: Actor<ConsoleActor008>;
 	let canisterId: Principal;
 
 	const controller = Ed25519KeyIdentity.generate();
@@ -54,7 +56,7 @@ describe('Console > Upgrade', () => {
 		users
 	}: {
 		users: Identity[];
-		actor: Actor<ConsoleActor_0_0_8 | ConsoleActor_0_0_14 | ConsoleActor>;
+		actor: Actor<ConsoleActor008 | ConsoleActor0014 | ConsoleActor>;
 	}) => {
 		const { list_user_mission_control_centers } = actor;
 
@@ -74,7 +76,7 @@ describe('Console > Upgrade', () => {
 		proposalId
 	}: {
 		proposalId: bigint;
-		actor: Actor<ConsoleActor_0_0_14 | ConsoleActor>;
+		actor: Actor<ConsoleActor0014 | ConsoleActor>;
 	}) => {
 		const { get_proposal } = actor;
 
@@ -101,8 +103,8 @@ describe('Console > Upgrade', () => {
 
 			const destination = await downloadConsole({ junoVersion: '0.0.30', version: '0.0.8' });
 
-			const { actor: c, canisterId: cId } = await pic.setupCanister<ConsoleActor_0_0_8>({
-				idlFactory: idlFactorConsole_0_0_8,
+			const { actor: c, canisterId: cId } = await pic.setupCanister<ConsoleActor008>({
+				idlFactory: idlFactoryConsole008,
 				wasm: destination,
 				sender: controller.getPrincipal()
 			});
@@ -156,15 +158,15 @@ describe('Console > Upgrade', () => {
 	});
 
 	describe('v0.0.14 -> v0.1.0', () => {
-		let actor: Actor<ConsoleActor_0_0_14>;
+		let actor: Actor<ConsoleActor0014>;
 
 		beforeEach(async () => {
 			pic = await PocketIc.create(inject('PIC_URL'));
 
 			const destination = await downloadConsole({ junoVersion: '0.0.37', version: '0.0.14' });
 
-			const { actor: c, canisterId: cId } = await pic.setupCanister<ConsoleActor_0_0_14>({
-				idlFactory: idlFactoryConsole_0_0_14,
+			const { actor: c, canisterId: cId } = await pic.setupCanister<ConsoleActor0014>({
+				idlFactory: idlFactoryConsole0014,
 				wasm: destination,
 				arg: controllersInitArgs(controller),
 				sender: controller.getPrincipal()
@@ -235,7 +237,7 @@ describe('Console > Upgrade', () => {
 
 			await upgradeTo0_1_0();
 
-			const newActor = pic.createActor<ConsoleActor>(idlFactorConsole, canisterId);
+			const newActor = pic.createActor<ConsoleActor>(idlFactoryConsole, canisterId);
 			newActor.setIdentity(controller);
 
 			await assertControllers(newActor);
@@ -265,7 +267,7 @@ describe('Console > Upgrade', () => {
 
 					await upgradeTo0_1_0();
 
-					const newActor = pic.createActor<ConsoleActor>(idlFactorConsole, canisterId);
+					const newActor = pic.createActor<ConsoleActor>(idlFactoryConsole, canisterId);
 					newActor.setIdentity(controller);
 
 					await testUsers({ users: originalUsers, actor: newActor });

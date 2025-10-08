@@ -1,7 +1,7 @@
-import type { SetRule } from '$declarations/satellite/satellite.did';
+import type { SatelliteDid } from '$declarations';
 import { toNullable } from '@dfinity/utils';
 
-export const mockSetRule: SetRule = {
+export const mockSetRule: SatelliteDid.SetRule = {
 	memory: toNullable({ Heap: null }),
 	max_size: toNullable(),
 	max_capacity: toNullable(),

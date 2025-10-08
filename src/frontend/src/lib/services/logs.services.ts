@@ -1,4 +1,3 @@
-import type { canister_log_record } from '$declarations/ic/ic.did';
 import type { Doc } from '$declarations/satellite/satellite.did';
 import { canisterLogs as canisterLogsApi } from '$lib/api/ic.api';
 import { listDocs } from '$lib/api/satellites.api';
@@ -6,6 +5,7 @@ import { SATELLITE_v0_0_16 } from '$lib/constants/version.constants';
 import { isSatelliteFeatureSupported } from '$lib/services/feature.services';
 import { i18n } from '$lib/stores/i18n.store';
 import { toasts } from '$lib/stores/toasts.store';
+import type { ICDid } from '$lib/types/declarations';
 import type { OptionIdentity } from '$lib/types/itentity';
 import type { Log, LogDataDid, LogLevel } from '$lib/types/log';
 import type { Identity } from '@dfinity/agent';
@@ -114,7 +114,7 @@ const canisterLogs = async (params: {
 		idx,
 		timestamp_nanos: timestamp,
 		content
-	}: canister_log_record): Promise<[string, Log]> => {
+	}: ICDid.canister_log_record): Promise<[string, Log]> => {
 		const blob: Blob = new Blob([
 			content instanceof Uint8Array ? content : new Uint8Array(content)
 		]);

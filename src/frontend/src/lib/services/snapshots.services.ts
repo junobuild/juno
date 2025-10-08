@@ -1,4 +1,3 @@
-import type { snapshot, snapshot_id } from '$declarations/ic/ic.did';
 import {
 	canisterSnapshots,
 	canisterStart,
@@ -19,6 +18,7 @@ import { i18n } from '$lib/stores/i18n.store';
 import { snapshotsIdbStore } from '$lib/stores/idb.store';
 import { snapshotStore } from '$lib/stores/snapshot.store';
 import { toasts } from '$lib/stores/toasts.store';
+import type { ICDid } from '$lib/types/declarations';
 import type { OptionIdentity } from '$lib/types/itentity';
 import { type SnapshotProgress, SnapshotProgressStep } from '$lib/types/progress-snapshot';
 import type { Identity } from '@dfinity/agent';
@@ -49,15 +49,15 @@ interface SnapshotParams {
 }
 
 interface CreateSnapshotParams extends SnapshotParams {
-	snapshotId?: snapshot_id;
+	snapshotId?: ICDid.snapshot_id;
 }
 
 interface RestoreSnapshotParams extends SnapshotParams {
-	snapshot: snapshot;
+	snapshot: ICDid.snapshot;
 }
 
 interface DeleteSnapshotParams extends Omit<SnapshotParams, 'onProgress'> {
-	snapshot: snapshot;
+	snapshot: ICDid.snapshot;
 }
 
 type ReloadSnapshotsParams = Omit<SnapshotParams, 'onProgress'>;
@@ -239,7 +239,7 @@ const applySnapshot = async ({
 const updateStore = async ({
 	canisterId,
 	snapshot
-}: Pick<SnapshotParams, 'canisterId'> & { snapshot: snapshot }) => {
+}: Pick<SnapshotParams, 'canisterId'> & { snapshot: ICDid.snapshot }) => {
 	// Currently the IC only supports once snapshot per canister.
 	await setIdbStore({
 		store: snapshotStore,

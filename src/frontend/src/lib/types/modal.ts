@@ -1,4 +1,3 @@
-import type { snapshot } from '$declarations/ic/ic.did';
 import type {
 	MissionControlSettings,
 	Monitoring,
@@ -15,6 +14,7 @@ import type {
 import type { CanisterInfo, CanisterSegmentWithLabel, CanisterSettings } from '$lib/types/canister';
 import type { SetControllerParams } from '$lib/types/controllers';
 import type { CustomDomains } from '$lib/types/custom-domain';
+import type { ICDid } from '$lib/types/declarations';
 import type { MissionControlId } from '$lib/types/mission-control';
 import type { OrbiterSatelliteConfigEntry } from '$lib/types/orbiter';
 import type { ProposalRecord } from '$lib/types/proposals';
@@ -93,7 +93,7 @@ export interface JunoModalEditCanisterSettingsDetail extends JunoModalSegmentDet
 }
 
 export interface JunoModalRestoreSnapshotDetail extends JunoModalSegmentDetail {
-	snapshot: snapshot;
+	snapshot: ICDid.snapshot;
 }
 
 export interface JunoModalEditOrbiterConfigDetail {

@@ -33,8 +33,6 @@ do
     generate_did_idl "$canister" "src/$canister" "src/declarations/$canister"
 done
 
-generate_did_idl "ic" "candid" "src/declarations/ic"
-
 # Fixtures
 
 FIXTURES=test_satellite

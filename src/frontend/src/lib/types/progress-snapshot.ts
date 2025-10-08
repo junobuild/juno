@@ -1,7 +1,7 @@
-import type { snapshot } from '$declarations/ic/ic.did';
+import type { ICDid } from '$lib/types/declarations';
 import type { UpgradeCodeProgressState } from '@junobuild/admin';
 
-export type Snapshots = snapshot[];
+export type Snapshots = ICDid.snapshot[];
 
 export enum SnapshotProgressStep {
 	StoppingCanister = 1,

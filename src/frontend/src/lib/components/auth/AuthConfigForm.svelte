@@ -9,6 +9,7 @@
 	} from '@dfinity/utils';
 	import { PrincipalTextSchema } from '@dfinity/zod-schemas';
 	import { fade } from 'svelte/transition';
+	import type { SatelliteDid, MissionControlDid } from '$declarations';
 	import AuthConfigAdvancedOptions from '$lib/components/auth/AuthConfigAdvancedOptions.svelte';
 	import Input from '$lib/components/ui/Input.svelte';
 	import Value from '$lib/components/ui/Value.svelte';
@@ -16,7 +17,6 @@
 	import { sortedSatelliteCustomDomains } from '$lib/derived/satellite-custom-domains.derived';
 	import { isBusy } from '$lib/stores/busy.store';
 	import { i18n } from '$lib/stores/i18n.store';
-	import type { SatelliteDid, MissionControlDid } from '$declarations';
 	import { satelliteUrl as satelliteUrlUtils } from '$lib/utils/satellite.utils';
 
 	interface Props {

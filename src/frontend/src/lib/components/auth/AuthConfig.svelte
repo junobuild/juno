@@ -2,6 +2,7 @@
 	import { isNullish, nonNullish, fromNullishNullable } from '@dfinity/utils';
 	import { untrack } from 'svelte';
 	import { fade } from 'svelte/transition';
+	import type { SatelliteDid, MissionControlDid } from '$declarations';
 	import SkeletonText from '$lib/components/ui/SkeletonText.svelte';
 	import Value from '$lib/components/ui/Value.svelte';
 	import { getAuthConfig } from '$lib/services/auth/auth.config.services';
@@ -11,7 +12,6 @@
 	import { busy } from '$lib/stores/busy.store';
 	import { i18n } from '$lib/stores/i18n.store';
 	import { versionStore } from '$lib/stores/version.store';
-	import type { SatelliteDid, MissionControlDid } from '$declarations';
 	import { emit } from '$lib/utils/events.utils';
 	import { i18nFormat } from '$lib/utils/i18n.utils';
 

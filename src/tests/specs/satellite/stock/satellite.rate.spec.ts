@@ -1,4 +1,4 @@
-import { type SatelliteDid , idlFactorySatellite, type SatelliteActor } from '$declarations';
+import { idlFactorySatellite, type SatelliteActor, type SatelliteDid } from '$declarations';
 import type { Identity } from '@dfinity/agent';
 import { Ed25519KeyIdentity } from '@dfinity/identity';
 import { PocketIc, type Actor } from '@dfinity/pic';

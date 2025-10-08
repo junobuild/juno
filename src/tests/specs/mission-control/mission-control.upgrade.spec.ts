@@ -1,6 +1,7 @@
-import { type MissionControlDid ,
+import {
 	type MissionControlActor,
 	type MissionControlActor0014,
+	type MissionControlDid,
 	idlFactoryMissionControl,
 	idlFactoryMissionControl0014
 } from '$declarations';

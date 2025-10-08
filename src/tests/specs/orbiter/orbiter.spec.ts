@@ -1,4 +1,4 @@
-import { type OrbiterDid , type OrbiterActor, idlFactoryOrbiter } from '$declarations';
+import { type OrbiterActor, type OrbiterDid, idlFactoryOrbiter } from '$declarations';
 import { Ed25519KeyIdentity } from '@dfinity/identity';
 import { type Actor, PocketIc } from '@dfinity/pic';
 import { fromNullable } from '@dfinity/utils';

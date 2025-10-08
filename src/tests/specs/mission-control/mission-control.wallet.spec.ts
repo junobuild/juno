@@ -1,4 +1,8 @@
-import { type MissionControlDid , idlFactoryMissionControl, type MissionControlActor } from '$declarations';
+import {
+	idlFactoryMissionControl,
+	type MissionControlActor,
+	type MissionControlDid
+} from '$declarations';
 import { AnonymousIdentity } from '@dfinity/agent';
 import { Ed25519KeyIdentity } from '@dfinity/identity';
 import { AccountIdentifier } from '@dfinity/ledger-icp';

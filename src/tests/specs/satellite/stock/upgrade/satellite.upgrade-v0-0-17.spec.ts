@@ -1,8 +1,11 @@
-import { type SatelliteDid, type SatelliteDid0016, type SatelliteDid0017 ,
+import {
 	idlFactorySatellite0016,
 	idlFactorySatellite0017,
 	type SatelliteActor0016,
-	type SatelliteActor0017
+	type SatelliteActor0017,
+	type SatelliteDid,
+	type SatelliteDid0016,
+	type SatelliteDid0017
 } from '$declarations';
 import { Ed25519KeyIdentity } from '@dfinity/identity';
 import { PocketIc, type Actor } from '@dfinity/pic';

@@ -1,4 +1,4 @@
-import { type ICDid , type ICActor, idlFactoryIC } from '$declarations';
+import { type ICActor, type ICDid, idlFactoryIC } from '$declarations';
 import type { Identity } from '@dfinity/agent';
 import type { PocketIc } from '@dfinity/pic';
 import { Principal } from '@dfinity/principal';

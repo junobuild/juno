@@ -1,7 +1,9 @@
-import { type MissionControlDid, type ObservatoryDid ,
+import {
 	type ConsoleActor,
 	type MissionControlActor,
+	type MissionControlDid,
 	type ObservatoryActor,
+	type ObservatoryDid,
 	idlFactoryConsole,
 	idlFactoryMissionControl,
 	idlFactoryObservatory

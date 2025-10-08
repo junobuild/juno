@@ -1,9 +1,10 @@
-import { type ConsoleDid ,
+import {
 	idlFactoryConsole,
 	idlFactoryMissionControl,
 	idlFactoryOrbiter,
 	idlFactorySatellite,
 	type ConsoleActor,
+	type ConsoleDid,
 	type MissionControlActor,
 	type OrbiterActor,
 	type SatelliteActor

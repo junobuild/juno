@@ -1,4 +1,4 @@
-import { type OrbiterDid , idlFactoryOrbiter, type OrbiterActor } from '$declarations';
+import { idlFactoryOrbiter, type OrbiterActor, type OrbiterDid } from '$declarations';
 import { Ed25519KeyIdentity } from '@dfinity/identity';
 import { PocketIc, type Actor } from '@dfinity/pic';
 import { nanoid } from 'nanoid';

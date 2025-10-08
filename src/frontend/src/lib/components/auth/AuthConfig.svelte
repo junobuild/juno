@@ -11,8 +11,8 @@
 	import { busy } from '$lib/stores/busy.store';
 	import { i18n } from '$lib/stores/i18n.store';
 	import { versionStore } from '$lib/stores/version.store';
-	import type { SatelliteDid ,MissionControlDid } from '$lib/types/declarations';
-		import { emit } from '$lib/utils/events.utils';
+	import type { SatelliteDid, MissionControlDid } from '$lib/types/declarations';
+	import { emit } from '$lib/utils/events.utils';
 	import { i18nFormat } from '$lib/utils/i18n.utils';
 
 	interface Props {

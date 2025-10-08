@@ -11,7 +11,7 @@
 	import { authStore } from '$lib/stores/auth.store';
 	import { i18n } from '$lib/stores/i18n.store';
 	import type { CustomDomainRegistrationState } from '$lib/types/custom-domain';
-	import type { SatelliteDid ,MissionControlDid } from '$lib/types/declarations';
+	import type { SatelliteDid, MissionControlDid } from '$lib/types/declarations';
 	import type { Option } from '$lib/types/utils';
 	import { satelliteUrl } from '$lib/utils/satellite.utils';
 

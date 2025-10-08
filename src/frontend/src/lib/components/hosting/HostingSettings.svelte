@@ -8,8 +8,8 @@
 	import { getRuleDapp } from '$lib/services/collection.services';
 	import { authStore } from '$lib/stores/auth.store';
 	import { i18n } from '$lib/stores/i18n.store';
-	import type { SatelliteDid ,MissionControlDid } from '$lib/types/declarations';
-	
+	import type { SatelliteDid, MissionControlDid } from '$lib/types/declarations';
+
 	interface Props {
 		satellite: MissionControlDid.Satellite;
 	}

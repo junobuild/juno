@@ -16,8 +16,8 @@
 	import { sortedSatelliteCustomDomains } from '$lib/derived/satellite-custom-domains.derived';
 	import { isBusy } from '$lib/stores/busy.store';
 	import { i18n } from '$lib/stores/i18n.store';
-	import type { SatelliteDid ,MissionControlDid } from '$lib/types/declarations';
-		import { satelliteUrl as satelliteUrlUtils } from '$lib/utils/satellite.utils';
+	import type { SatelliteDid, MissionControlDid } from '$lib/types/declarations';
+	import { satelliteUrl as satelliteUrlUtils } from '$lib/utils/satellite.utils';
 
 	interface Props {
 		config: SatelliteDid.AuthenticationConfig | undefined;

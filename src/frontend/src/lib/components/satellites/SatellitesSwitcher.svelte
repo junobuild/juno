@@ -55,6 +55,7 @@
 
 <style lang="scss">
 	@use '../../styles/mixins/media';
+	@use '../../styles/mixins/text';
 
 	.container {
 		max-height: calc(30 * var(--padding));

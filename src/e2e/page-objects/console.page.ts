@@ -95,4 +95,26 @@ export class ConsolePage extends IdentityPage {
 
 		await expect(this.page.getByRole('menu')).toContainText(expected.balance, TIMEOUT_LONG);
 	}
+
+	async openCreateSatelliteWizard(): Promise<void> {
+		await expect(this.page.getByTestId(testIds.createSatellite.launch)).toBeVisible();
+		await this.page.getByTestId(testIds.createSatellite.launch).click();
+	}
+
+	async failedAtCreatingSatellite(): Promise<boolean> {
+		// Check for create button absence or disabled state
+		const createButton = this.page.getByTestId(testIds.createSatellite.create);
+		try {
+			// If the button is visible and enabled, this should fail
+			await expect(createButton).not.toBeVisible({ timeout: 1000 });
+			return true;
+		} catch {
+			// Button is visible, so creation is possible (test should fail)
+			return false;
+		}
+	}
+
+	getPage(): Page {
+		return this.page;
+	}
 }

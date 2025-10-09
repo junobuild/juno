@@ -69,13 +69,16 @@ export class ConsolePage extends IdentityPage {
 		await this.page.goto('/analytics');
 
 		await expect(this.page.getByTestId(testIds.createAnalytics.launch)).toBeVisible();
+
 		await this.page.getByTestId(testIds.createAnalytics.launch).click();
 
 		await expect(this.page.getByTestId(testIds.createAnalytics.create)).toBeVisible();
+
 		await this.page.getByTestId(testIds.createAnalytics.create).click();
 
 		//  closes the wizard after the completion
 		await expect(this.page.getByTestId(testIds.createAnalytics.close)).toBeVisible();
+
 		await this.page.getByTestId(testIds.createAnalytics.close).click();
 	}
 

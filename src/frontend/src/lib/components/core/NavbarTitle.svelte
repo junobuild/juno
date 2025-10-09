@@ -29,5 +29,7 @@
 		align-items: center;
 
 		gap: var(--padding-1_5x);
+
+		font-size: var(--font-size-small);
 	}
 </style>

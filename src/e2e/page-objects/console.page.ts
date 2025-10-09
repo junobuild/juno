@@ -77,7 +77,7 @@ export class ConsolePage extends IdentityPage {
 		//  closes the wizard after the completion
 		await expect(this.page.getByTestId(testIds.createAnalytics.close)).toBeVisible();
 		await this.page.getByTestId(testIds.createAnalytics.close).click();
-  }  
+	}
 
 	async getICP(expected: { balance: string }): Promise<void> {
 		await this.page.getByTestId(testIds.navbar.openWallet).click();

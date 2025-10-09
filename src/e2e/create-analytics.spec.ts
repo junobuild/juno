@@ -1,6 +1,5 @@
 import { testWithII } from '@dfinity/internet-identity-playwright';
 import { expect } from '@playwright/test';
-import { testIds } from '$lib/constants/test-ids.constants';
 import { initTestSuite } from './utils/init.utils';
 
 const getConsolePage = initTestSuite();

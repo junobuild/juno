@@ -4,16 +4,15 @@
 	import BannerSkylab from '$lib/components/core/BannerSkylab.svelte';
 	import Logo from '$lib/components/core/Logo.svelte';
 	import NavbarSpotlight from '$lib/components/core/NavbarSpotlight.svelte';
+	import NavbarTitle from '$lib/components/core/NavbarTitle.svelte';
 	import NavbarWallet from '$lib/components/core/NavbarWallet.svelte';
 	import User from '$lib/components/core/User.svelte';
 	import Notifications from '$lib/components/notifications/Notifications.svelte';
-	import SatellitesSwitcher from '$lib/components/satellites/SatellitesSwitcher.svelte';
 	import ButtonBack from '$lib/components/ui/ButtonBack.svelte';
 	import ButtonMenu from '$lib/components/ui/ButtonMenu.svelte';
 	import Header from '$lib/components/ui/Header.svelte';
 	import { authSignedIn } from '$lib/derived/auth.derived';
 	import { missionControlIdDerived } from '$lib/derived/mission-control.derived';
-	import { isSatelliteRoute } from '$lib/derived/route.derived.svelte';
 	import { isSkylab } from '$lib/env/app.env';
 	import { layoutTitleIntersecting } from '$lib/stores/layout-intersecting.store';
 
@@ -51,11 +50,7 @@
 			<Logo />
 		{/if}
 
-		{#if $isSatelliteRoute}
-			<div in:fade>
-				<SatellitesSwitcher />
-			</div>
-		{/if}
+		<NavbarTitle />
 	</div>
 
 	<div>

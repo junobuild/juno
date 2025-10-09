@@ -1,42 +1,23 @@
 <script lang="ts">
-	import { nonNullish } from '@dfinity/utils';
-	import IconArrowDropDown from '$lib/components/icons/IconArrowDropDown.svelte';
+	import IconUnfoldMore from '$lib/components/icons/IconUnfoldMore.svelte';
 	import SatelliteEnvironment from '$lib/components/satellites/SatelliteEnvironment.svelte';
 	import ButtonIcon from '$lib/components/ui/ButtonIcon.svelte';
 	import Popover from '$lib/components/ui/Popover.svelte';
-	import { authSignedIn } from '$lib/derived/auth.derived';
-	import { satelliteStore, satelliteUi } from '$lib/derived/satellite.derived';
 	import { sortedSatelliteUis } from '$lib/derived/satellites.derived';
 	import { i18n } from '$lib/stores/i18n.store';
 	import { overviewLink } from '$lib/utils/nav.utils';
-	import { satelliteName } from '$lib/utils/satellite.utils';
 
 	let button: HTMLButtonElement | undefined = $state();
 	let visible: boolean = $state(false);
-
-	let label = $derived(
-		nonNullish($satelliteStore)
-			? satelliteName($satelliteStore)
-			: $i18n.satellites.see_all_satellites
-	);
 </script>
 
-{#snippet currentEnvironment()}
-	{#if nonNullish($satelliteUi)}
-		<SatelliteEnvironment satellite={$satelliteUi} />
-	{/if}
-{/snippet}
+<ButtonIcon onclick={() => (visible = true)} bind:button>
+	{#snippet icon()}
+		<IconUnfoldMore />
+	{/snippet}
 
-{#if $authSignedIn}
-	<ButtonIcon onclick={() => (visible = true)} bind:button>
-		{#snippet icon()}
-			<IconArrowDropDown />
-		{/snippet}
-
-		{label}{@render currentEnvironment()}
-	</ButtonIcon>
-	<span class="satellite current"><span>{label}</span>{@render currentEnvironment()}</span>
-{/if}
+	{$i18n.satellites.see_all_satellites}
+</ButtonIcon>
 
 <Popover anchor={button} bind:visible>
 	<div class="container">
@@ -73,8 +54,8 @@
 </Popover>
 
 <style lang="scss">
-	@use '../../styles/mixins/text';
 	@use '../../styles/mixins/media';
+	@use '../../styles/mixins/text';
 
 	.container {
 		max-height: calc(30 * var(--padding));
@@ -123,13 +104,5 @@
 		display: inline-flex;
 		align-items: center;
 		gap: var(--padding);
-	}
-
-	.current {
-		display: none;
-
-		@include media.min-width(small) {
-			display: inline-flex;
-		}
 	}
 </style>

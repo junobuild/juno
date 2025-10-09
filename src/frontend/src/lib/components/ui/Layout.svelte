@@ -20,7 +20,7 @@
 	let {
 		centered = false,
 		fullWidth = false,
-		title = true,
+		title = false,
 		topMargin = 'default',
 		menu,
 		navbar,
@@ -82,7 +82,7 @@
 		max-width: 1440px;
 		overflow-x: hidden;
 
-		padding: 0 var(--padding-2x) var(--padding-6x);
+		padding: var(--padding-2x) var(--padding-2x) var(--padding-6x);
 
 		transition: max-width var(--animation-time) var(--menu-animation-timing-function);
 
@@ -95,7 +95,7 @@
 		}
 
 		@include media.min-width(xlarge) {
-			padding: 0 var(--padding-10x) var(--padding-6x);
+			padding: var(--padding-2x) var(--padding-7x) var(--padding-6x);
 		}
 	}
 

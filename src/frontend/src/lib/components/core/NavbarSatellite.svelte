@@ -30,7 +30,7 @@
 		<span class="root">
 			<IconSatellite size="20px" />
 
-			<span class="satellite current"><span>{label}</span>{@render currentEnvironment()}</span>
+			<span class="text current"><span>{label}</span>{@render currentEnvironment()}</span>
 		</span>
 
 		<SatellitesSwitcher />
@@ -38,8 +38,10 @@
 		{#if subNavigation && nonNullish(Icon)}
 			<span class="sub-navigation">
 				<span>/</span>
-				<Icon size="20px" />
-				<span>{$layoutTitle}</span>
+				<span class="text"
+					><Icon size="20px" />
+					<span>{$layoutTitle}</span></span
+				>
 			</span>
 		{/if}
 	</div>
@@ -54,7 +56,7 @@
 		gap: var(--padding-1_5x);
 	}
 
-	.satellite {
+	.text {
 		display: inline-flex;
 		align-items: center;
 		gap: var(--padding);

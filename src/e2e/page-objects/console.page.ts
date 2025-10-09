@@ -76,10 +76,13 @@ export class ConsolePage extends IdentityPage {
 
 		await this.page.getByTestId(testIds.createAnalytics.create).click();
 
-		//  closes the wizard after the completion
 		await expect(this.page.getByTestId(testIds.createAnalytics.close)).toBeVisible();
 
 		await this.page.getByTestId(testIds.createAnalytics.close).click();
+
+		await expect(this.page.getByText('Unique page views')).toBeVisible();
+
+		await expect(this.page).toHaveScreenshot({ fullPage: true });
 	}
 
 	async getICP(expected: { balance: string }): Promise<void> {

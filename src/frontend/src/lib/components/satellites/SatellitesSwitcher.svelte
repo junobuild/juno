@@ -1,6 +1,5 @@
 <script lang="ts">
-	import { nonNullish } from '@dfinity/utils';
-	import IconArrowDropDown from '$lib/components/icons/IconArrowDropDown.svelte';
+	import { nonNullish, notEmptyString } from '@dfinity/utils';
 	import SatelliteEnvironment from '$lib/components/satellites/SatelliteEnvironment.svelte';
 	import ButtonIcon from '$lib/components/ui/ButtonIcon.svelte';
 	import Popover from '$lib/components/ui/Popover.svelte';
@@ -10,33 +9,30 @@
 	import { i18n } from '$lib/stores/i18n.store';
 	import { overviewLink } from '$lib/utils/nav.utils';
 	import { satelliteName } from '$lib/utils/satellite.utils';
+	import { layoutTitle } from '$lib/derived/layout-title.derived';
+	import IconUnfoldMore from '$lib/components/icons/IconUnfoldMore.svelte';
+	import { layoutNavigation } from '$lib/stores/layout-navigation.store';
+	import IconSatellite from '$lib/components/icons/IconSatellite.svelte';
 
 	let button: HTMLButtonElement | undefined = $state();
 	let visible: boolean = $state(false);
 
-	let label = $derived(
-		nonNullish($satelliteStore)
-			? satelliteName($satelliteStore)
-			: $i18n.satellites.see_all_satellites
+	let label = $derived(nonNullish($satelliteStore) ? satelliteName($satelliteStore) : undefined);
+
+	let subNavigation = $derived(
+		notEmptyString($layoutTitle) && $layoutTitle !== label ? $layoutTitle : undefined
 	);
+
+	let Icon = $derived($layoutNavigation?.data.icon);
 </script>
 
-{#snippet currentEnvironment()}
-	{#if nonNullish($satelliteUi)}
-		<SatelliteEnvironment satellite={$satelliteUi} />
-	{/if}
-{/snippet}
+<ButtonIcon onclick={() => (visible = true)} bind:button>
+	{#snippet icon()}
+		<IconUnfoldMore />
+	{/snippet}
 
-{#if $authSignedIn}
-	<ButtonIcon onclick={() => (visible = true)} bind:button>
-		{#snippet icon()}
-			<IconArrowDropDown />
-		{/snippet}
-
-		{label}{@render currentEnvironment()}
-	</ButtonIcon>
-	<span class="satellite current"><span>{label}</span>{@render currentEnvironment()}</span>
-{/if}
+	{$i18n.satellites.see_all_satellites}
+</ButtonIcon>
 
 <Popover anchor={button} bind:visible>
 	<div class="container">
@@ -123,13 +119,5 @@
 		display: inline-flex;
 		align-items: center;
 		gap: var(--padding);
-	}
-
-	.current {
-		display: none;
-
-		@include media.min-width(small) {
-			display: inline-flex;
-		}
 	}
 </style>

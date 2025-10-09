@@ -1,29 +1,14 @@
 <script lang="ts">
-	import { nonNullish, notEmptyString } from '@dfinity/utils';
-	import IconSatellite from '$lib/components/icons/IconSatellite.svelte';
 	import IconUnfoldMore from '$lib/components/icons/IconUnfoldMore.svelte';
 	import SatelliteEnvironment from '$lib/components/satellites/SatelliteEnvironment.svelte';
 	import ButtonIcon from '$lib/components/ui/ButtonIcon.svelte';
 	import Popover from '$lib/components/ui/Popover.svelte';
-	import { authSignedIn } from '$lib/derived/auth.derived';
-	import { layoutTitle } from '$lib/derived/layout-title.derived';
-	import { satelliteStore, satelliteUi } from '$lib/derived/satellite.derived';
 	import { sortedSatelliteUis } from '$lib/derived/satellites.derived';
 	import { i18n } from '$lib/stores/i18n.store';
-	import { layoutNavigation } from '$lib/stores/layout-navigation.store';
 	import { overviewLink } from '$lib/utils/nav.utils';
-	import { satelliteName } from '$lib/utils/satellite.utils';
 
 	let button: HTMLButtonElement | undefined = $state();
 	let visible: boolean = $state(false);
-
-	let label = $derived(nonNullish($satelliteStore) ? satelliteName($satelliteStore) : undefined);
-
-	let subNavigation = $derived(
-		notEmptyString($layoutTitle) && $layoutTitle !== label ? $layoutTitle : undefined
-	);
-
-	let Icon = $derived($layoutNavigation?.data.icon);
 </script>
 
 <ButtonIcon onclick={() => (visible = true)} bind:button>
@@ -69,7 +54,6 @@
 </Popover>
 
 <style lang="scss">
-	@use '../../styles/mixins/text';
 	@use '../../styles/mixins/media';
 
 	.container {

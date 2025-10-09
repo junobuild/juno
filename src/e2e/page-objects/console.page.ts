@@ -77,5 +77,13 @@ export class ConsolePage extends IdentityPage {
 		//  closes the wizard after the completion
 		await expect(this.page.getByTestId(testIds.createAnalytics.close)).toBeVisible();
 		await this.page.getByTestId(testIds.createAnalytics.close).click();
+  }  
+
+	async getICP(expected: { balance: string }): Promise<void> {
+		await this.page.getByTestId(testIds.navbar.openWallet).click();
+
+		await this.page.getByTestId(testIds.navbar.getIcp).click();
+
+		await expect(this.page.getByRole('menu')).toContainText(expected.balance, { timeout: 60000 });
 	}
 }

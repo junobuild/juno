@@ -22,7 +22,6 @@
 	import { isSatelliteRoute } from '$lib/derived/route.derived.svelte';
 	import { i18n } from '$lib/stores/i18n.store';
 	import { isRouteSelected } from '$lib/utils/nav.utils';
-	import { testId } from '$lib/utils/test.utils';
 
 	let routeId: string | null = $derived(page.route.id);
 
@@ -114,7 +113,6 @@
 				class:selected={isRouteSelected({ routeId, path: 'analytics' })}
 				href={`/analytics${queryParam}`}
 				role="menuitem"
-				{...testId(testIds.createAnalytics.navLink)}
 			>
 				<IconAnalytics size="24px" />
 				<span>{$i18n.analytics.title}</span>

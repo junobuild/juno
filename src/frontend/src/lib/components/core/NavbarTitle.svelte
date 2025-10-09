@@ -1,8 +1,7 @@
 <script lang="ts">
-	import { nonNullish, notEmptyString } from '@dfinity/utils';
+	import { nonNullish } from '@dfinity/utils';
 	import { fade } from 'svelte/transition';
 	import NavbarSatellite from '$lib/components/core/NavbarSatellite.svelte';
-	import SatellitesSwitcher from '$lib/components/satellites/SatellitesSwitcher.svelte';
 	import { layoutTitle } from '$lib/derived/layout-title.derived';
 	import { isSatelliteRoute } from '$lib/derived/route.derived.svelte';
 	import { layoutNavigation } from '$lib/stores/layout-navigation.store';

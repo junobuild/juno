@@ -8,15 +8,17 @@
 	import { authSignedIn } from '$lib/derived/auth.derived';
 	import { satelliteStore, satelliteUi } from '$lib/derived/satellite.derived';
 	import { layoutNavigation } from '$lib/stores/layout-navigation.store';
-    import { fade } from 'svelte/transition';
+	import { fade } from 'svelte/transition';
 
 	let label = $derived(nonNullish($satelliteStore) ? satelliteName($satelliteStore) : undefined);
 
 	let subNavigation = $derived(
-		notEmptyString($layoutTitle) && $layoutTitle !== label ? $layoutTitle : undefined
+		notEmptyString($layoutTitle) && $layoutNavigation?.data.satellite?.useInPageTitle === false
 	);
 
 	let Icon = $derived($layoutNavigation?.data.icon);
+
+	$inspect($layoutNavigation?.data.satellite?.useInPageTitle === false);
 </script>
 
 {#snippet currentEnvironment()}
@@ -27,32 +29,32 @@
 
 {#if $authSignedIn && nonNullish(label)}
 	<div class="container" in:fade>
-        <span class="root">
-		<IconSatellite size="20px" />
+		<span class="root">
+			<IconSatellite size="20px" />
 
-		<span class="satellite current"><span>{label}</span>{@render currentEnvironment()}</span>
-	</span>
-
-	<SatellitesSwitcher />
-
-        {#if nonNullish(subNavigation) && nonNullish(Icon)}
-		<span class="sub-navigation">
-			<span>/</span>
-			<Icon size="20px" />
-			<span>{$layoutTitle}</span>
+			<span class="satellite current"><span>{label}</span>{@render currentEnvironment()}</span>
 		</span>
-	{/if}
-    </div>
+
+		<SatellitesSwitcher />
+
+		{#if subNavigation && nonNullish(Icon)}
+			<span class="sub-navigation">
+				<span>/</span>
+				<Icon size="20px" />
+				<span>{$layoutTitle}</span>
+			</span>
+		{/if}
+	</div>
 {/if}
 
 <style lang="scss">
 	@use '../../styles/mixins/media';
 
-    .container {
-      display: flex;
-      align-items: center;
-      gap: var(--padding-1_5x);
-    }
+	.container {
+		display: flex;
+		align-items: center;
+		gap: var(--padding-1_5x);
+	}
 
 	.satellite {
 		display: inline-flex;

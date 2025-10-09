@@ -75,7 +75,9 @@
 
 		<div class="msg">
 			<p>{$i18n.analytics.ready}</p>
-			<button onclick={onclose} {...testId(testIds.createAnalytics.close)}>{$i18n.core.close}</button>
+			<button onclick={onclose} {...testId(testIds.createAnalytics.close)}
+				>{$i18n.core.close}</button
+			>
 		</div>
 	{:else if step === 'in_progress'}
 		<ProgressCreate {progress} segment="orbiter" withMonitoring={nonNullish(monitoringStrategy)} />

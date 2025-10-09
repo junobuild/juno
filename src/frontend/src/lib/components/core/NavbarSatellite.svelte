@@ -1,14 +1,14 @@
 <script lang="ts">
-	import SatellitesSwitcher from '$lib/components/satellites/SatellitesSwitcher.svelte';
-	import IconSatellite from '$lib/components/icons/IconSatellite.svelte';
 	import { nonNullish, notEmptyString } from '@dfinity/utils';
+	import { fade } from 'svelte/transition';
+	import IconSatellite from '$lib/components/icons/IconSatellite.svelte';
 	import SatelliteEnvironment from '$lib/components/satellites/SatelliteEnvironment.svelte';
-	import { satelliteName } from '$lib/utils/satellite.utils';
-	import { layoutTitle } from '$lib/derived/layout-title.derived';
+	import SatellitesSwitcher from '$lib/components/satellites/SatellitesSwitcher.svelte';
 	import { authSignedIn } from '$lib/derived/auth.derived';
+	import { layoutTitle } from '$lib/derived/layout-title.derived';
 	import { satelliteStore, satelliteUi } from '$lib/derived/satellite.derived';
 	import { layoutNavigation } from '$lib/stores/layout-navigation.store';
-	import { fade } from 'svelte/transition';
+	import { satelliteName } from '$lib/utils/satellite.utils';
 
 	let label = $derived(nonNullish($satelliteStore) ? satelliteName($satelliteStore) : undefined);
 

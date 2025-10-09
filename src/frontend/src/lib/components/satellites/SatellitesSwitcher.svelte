@@ -1,18 +1,18 @@
 <script lang="ts">
 	import { nonNullish, notEmptyString } from '@dfinity/utils';
+	import IconSatellite from '$lib/components/icons/IconSatellite.svelte';
+	import IconUnfoldMore from '$lib/components/icons/IconUnfoldMore.svelte';
 	import SatelliteEnvironment from '$lib/components/satellites/SatelliteEnvironment.svelte';
 	import ButtonIcon from '$lib/components/ui/ButtonIcon.svelte';
 	import Popover from '$lib/components/ui/Popover.svelte';
 	import { authSignedIn } from '$lib/derived/auth.derived';
+	import { layoutTitle } from '$lib/derived/layout-title.derived';
 	import { satelliteStore, satelliteUi } from '$lib/derived/satellite.derived';
 	import { sortedSatelliteUis } from '$lib/derived/satellites.derived';
 	import { i18n } from '$lib/stores/i18n.store';
+	import { layoutNavigation } from '$lib/stores/layout-navigation.store';
 	import { overviewLink } from '$lib/utils/nav.utils';
 	import { satelliteName } from '$lib/utils/satellite.utils';
-	import { layoutTitle } from '$lib/derived/layout-title.derived';
-	import IconUnfoldMore from '$lib/components/icons/IconUnfoldMore.svelte';
-	import { layoutNavigation } from '$lib/stores/layout-navigation.store';
-	import IconSatellite from '$lib/components/icons/IconSatellite.svelte';
 
 	let button: HTMLButtonElement | undefined = $state();
 	let visible: boolean = $state(false);

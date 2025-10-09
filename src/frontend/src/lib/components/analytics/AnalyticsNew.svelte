@@ -14,7 +14,9 @@
 	};
 </script>
 
-<button onclick={createOrbiter} {...testId(testIds.createAnalytics.launch)}>{$i18n.core.get_started}</button>
+<button onclick={createOrbiter} {...testId(testIds.createAnalytics.launch)}
+	>{$i18n.core.get_started}</button
+>
 
 <style lang="scss">
 	button {

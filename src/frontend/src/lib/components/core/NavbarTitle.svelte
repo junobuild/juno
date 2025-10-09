@@ -1,11 +1,11 @@
 <script lang="ts">
-	import { fade } from 'svelte/transition';
 	import { nonNullish, notEmptyString } from '@dfinity/utils';
-	import { layoutNavigation } from '$lib/stores/layout-navigation.store';
+	import { fade } from 'svelte/transition';
+	import NavbarSatellite from '$lib/components/core/NavbarSatellite.svelte';
+	import SatellitesSwitcher from '$lib/components/satellites/SatellitesSwitcher.svelte';
 	import { layoutTitle } from '$lib/derived/layout-title.derived';
 	import { isSatelliteRoute } from '$lib/derived/route.derived.svelte';
-	import SatellitesSwitcher from '$lib/components/satellites/SatellitesSwitcher.svelte';
-	import NavbarSatellite from '$lib/components/core/NavbarSatellite.svelte';
+	import { layoutNavigation } from '$lib/stores/layout-navigation.store';
 
 	let Icon = $derived($layoutNavigation?.data.icon);
 </script>

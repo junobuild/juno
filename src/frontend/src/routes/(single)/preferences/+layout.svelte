@@ -15,10 +15,7 @@
 	onMount(() => {
 		applyColor(Color.LAVENDER_BLUE);
 
-		layoutNavigation.set({
-			title: $i18n.preferences.title,
-			icon: IconRaygun
-		});
+		layoutNavigation.reset();
 	});
 </script>
 

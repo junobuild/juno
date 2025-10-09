@@ -18,10 +18,7 @@
 	onMount(() => {
 		applyColor(Color.LAVENDER_BLUE);
 
-		layoutNavigation.set({
-			title: $i18n.cli.title,
-			icon: IconUser
-		});
+		layoutNavigation.reset();
 	});
 </script>
 

@@ -1,7 +1,13 @@
 <!-- source: Font Awesome v5.15.4 - David Pro License -->
 <!-- tweaked for plain background -->
 <script lang="ts">
-	let width = $derived(`${(24 * 576) / 512}px`);
+	interface Props {
+		size?: string;
+	}
+
+	let { size = '40px' }: Props = $props();
+
+	let width = $derived(`${(parseInt(size) * 576) / 512}px`);
 </script>
 
 <svg height="24px" viewBox="0 0 576 512" {width} xmlns="http://www.w3.org/2000/svg"

@@ -17,8 +17,6 @@
 	);
 
 	let Icon = $derived($layoutNavigation?.data.icon);
-
-	$inspect($layoutNavigation?.data.satellite?.useInPageTitle === false);
 </script>
 
 {#snippet currentEnvironment()}

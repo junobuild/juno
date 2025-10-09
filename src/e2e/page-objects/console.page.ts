@@ -64,4 +64,12 @@ export class ConsolePage extends IdentityPage {
 
 		return satellitePage;
 	}
+
+	async getICP(expected: { balance: string }): Promise<void> {
+		await this.page.getByTestId(testIds.navbar.openWallet).click();
+
+		await this.page.getByTestId(testIds.navbar.getIcp).click();
+
+		await expect(this.page.getByRole('menu')).toContainText(expected.balance, { timeout: 60000 });
+	}
 }

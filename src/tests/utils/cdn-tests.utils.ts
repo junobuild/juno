@@ -18,18 +18,18 @@ export const uploadFile = async ({
 	collection?: string;
 	description?: string;
 }) => {
-	const { init_proposal_asset_upload, commit_proposal_asset_upload, upload_proposal_asset_chunk } =
+	const { init_proposal_many_assets_upload, commit_proposal_many_assets_upload, upload_proposal_asset_chunk } =
 		actor;
 
-	const file = await init_proposal_asset_upload(
-		{
+	const [[_, file]] = await init_proposal_many_assets_upload(
+		[{
 			collection,
 			description: toNullable(description),
 			encoding_type: [],
 			full_path,
 			name,
 			token: toNullable()
-		},
+		}],
 		proposalId
 	);
 
@@ -39,9 +39,9 @@ export const uploadFile = async ({
 		order_id: [0n]
 	});
 
-	await commit_proposal_asset_upload({
+	await commit_proposal_many_assets_upload([{
 		batch_id: file.batch_id,
 		chunk_ids: [chunk.chunk_id],
 		headers: []
-	});
+	}]);
 };

@@ -65,14 +65,6 @@ export const testNotAllowedCdnMethods = ({
 		chunk_ids: [123n]
 	};
 
-	it('should throw errors on init asset upload', async () => {
-		const { init_proposal_asset_upload } = actor();
-
-		await expect(init_proposal_asset_upload(key, 123n)).rejects.toThrow(
-			errorMsgController ?? errorMsgWriteController ?? errorMsgAdminController
-		);
-	});
-
 	it('should throw errors on init many assets upload', async () => {
 		const { init_proposal_many_assets_upload } = actor();
 
@@ -91,14 +83,6 @@ export const testNotAllowedCdnMethods = ({
 		};
 
 		await expect(upload_proposal_asset_chunk(chunk)).rejects.toThrow(
-			errorMsgController ?? errorMsgWriteController ?? errorMsgAdminController
-		);
-	});
-
-	it('should throw errors on commit asset upload', async () => {
-		const { commit_proposal_asset_upload } = actor();
-
-		await expect(commit_proposal_asset_upload(batch)).rejects.toThrow(
 			errorMsgController ?? errorMsgWriteController ?? errorMsgAdminController
 		);
 	});
@@ -365,16 +349,6 @@ export const testControlledCdnMethods = ({
 				token: toNullable()
 			};
 
-			it('should fail at uploading asset for unknown proposal', async () => {
-				const { init_proposal_asset_upload } = actor();
-
-				const unknownProposalId = proposalId + 1n;
-
-				await expect(init_proposal_asset_upload(key, unknownProposalId)).rejects.toThrow(
-					`${JUNO_CDN_STORAGE_ERROR_NO_PROPOSAL_FOUND} (${unknownProposalId})`
-				);
-			});
-
 			it('should fail at uploading many assets for unknown proposal', async () => {
 				const { init_proposal_many_assets_upload } = actor();
 
@@ -388,19 +362,21 @@ export const testControlledCdnMethods = ({
 			const uploadProposalAsset = async (proposalId: bigint) => {
 				const {
 					upload_proposal_asset_chunk,
-					init_proposal_asset_upload,
-					commit_proposal_asset_upload
+					init_proposal_many_assets_upload,
+					commit_proposal_many_assets_upload
 				} = actor();
 
-				const file = await init_proposal_asset_upload(
-					{
-						collection,
-						description: toNullable(description?.(proposalId)),
-						encoding_type: [],
-						full_path,
-						name: 'hello.html',
-						token: toNullable()
-					},
+				const [[_, file]] = await init_proposal_many_assets_upload(
+					[
+						{
+							collection,
+							description: toNullable(description?.(proposalId)),
+							encoding_type: [],
+							full_path,
+							name: 'hello.html',
+							token: toNullable()
+						}
+					],
 					proposalId
 				);
 
@@ -410,11 +386,13 @@ export const testControlledCdnMethods = ({
 					order_id: [0n]
 				});
 
-				await commit_proposal_asset_upload({
-					batch_id: file.batch_id,
-					chunk_ids: [chunk.chunk_id],
-					headers: []
-				});
+				await commit_proposal_many_assets_upload([
+					{
+						batch_id: file.batch_id,
+						chunk_ids: [chunk.chunk_id],
+						headers: []
+					}
+				]);
 			};
 
 			it('should upload asset', async () => {
@@ -891,7 +869,7 @@ export const testReleasesProposal = ({
 	describe('Releases assertions', () => {
 		describe.each(invalidModuleNames)(`Assert upload invalid path %s`, (filename) => {
 			it('should throw error if full path does not match pattern', async () => {
-				const { init_proposal_asset_upload, init_proposal } = actor();
+				const { init_proposal_many_assets_upload, init_proposal } = actor();
 
 				const [proposalId, _] = await init_proposal({
 					AssetsUpgrade: {
@@ -902,15 +880,17 @@ export const testReleasesProposal = ({
 				const fullPath = `${fullPathPrefix}/${filename}`;
 
 				await expect(
-					init_proposal_asset_upload(
-						{
-							collection: validCollection,
-							description: toNullable(),
-							encoding_type: [],
-							full_path: fullPath,
-							name: filename,
-							token: toNullable()
-						},
+					init_proposal_many_assets_upload(
+						[
+							{
+								collection: validCollection,
+								description: toNullable(),
+								encoding_type: [],
+								full_path: fullPath,
+								name: filename,
+								token: toNullable()
+							}
+						],
 						proposalId
 					)
 				).rejects.toThrow(`${JUNO_CDN_STORAGE_ERROR_INVALID_RELEASES_PATH} (${fullPath}`);
@@ -919,7 +899,7 @@ export const testReleasesProposal = ({
 
 		describe.each(validModuleFullPaths)('Asset requires description', (fullPath) => {
 			it('should throw error if description is missing', async () => {
-				const { init_proposal_asset_upload, init_proposal } = actor();
+				const { init_proposal_many_assets_upload, init_proposal } = actor();
 
 				const [proposalId, _] = await init_proposal({
 					AssetsUpgrade: {
@@ -928,22 +908,24 @@ export const testReleasesProposal = ({
 				});
 
 				await expect(
-					init_proposal_asset_upload(
-						{
-							collection: validCollection,
-							description: toNullable(),
-							encoding_type: [],
-							full_path: fullPath,
-							name: fullPath,
-							token: toNullable()
-						},
+					init_proposal_many_assets_upload(
+						[
+							{
+								collection: validCollection,
+								description: toNullable(),
+								encoding_type: [],
+								full_path: fullPath,
+								name: fullPath,
+								token: toNullable()
+							}
+						],
 						proposalId
 					)
 				).rejects.toThrow(JUNO_CDN_STORAGE_ERROR_MISSING_RELEASES_DESCRIPTION);
 			});
 
 			it('should throw error if description is using an invalid pattern', async () => {
-				const { init_proposal_asset_upload, init_proposal } = actor();
+				const { init_proposal_many_assets_upload, init_proposal } = actor();
 
 				const [proposalId, _] = await init_proposal({
 					AssetsUpgrade: {
@@ -952,15 +934,17 @@ export const testReleasesProposal = ({
 				});
 
 				await expect(
-					init_proposal_asset_upload(
-						{
-							collection: validCollection,
-							description: toNullable('test'),
-							encoding_type: [],
-							full_path: fullPath,
-							name: fullPath,
-							token: toNullable()
-						},
+					init_proposal_many_assets_upload(
+						[
+							{
+								collection: validCollection,
+								description: toNullable('test'),
+								encoding_type: [],
+								full_path: fullPath,
+								name: fullPath,
+								token: toNullable()
+							}
+						],
 						proposalId
 					)
 				).rejects.toThrow(`${JUNO_CDN_STORAGE_ERROR_INVALID_RELEASES_DESCRIPTION} (test)`);
@@ -969,7 +953,7 @@ export const testReleasesProposal = ({
 
 		describe.each(validModuleFullPaths)(`Assert upload value path %s`, (fullPath) => {
 			it('should throw error if collection is #dapp', async () => {
-				const { init_proposal_asset_upload, init_proposal } = actor();
+				const { init_proposal_many_assets_upload, init_proposal } = actor();
 
 				const [proposalId, _] = await init_proposal({
 					AssetsUpgrade: {
@@ -978,15 +962,17 @@ export const testReleasesProposal = ({
 				});
 
 				await expect(
-					init_proposal_asset_upload(
-						{
-							collection: '#dapp',
-							description: toNullable(),
-							encoding_type: [],
-							full_path: fullPath,
-							name: fullPath,
-							token: toNullable()
-						},
+					init_proposal_many_assets_upload(
+						[
+							{
+								collection: '#dapp',
+								description: toNullable(),
+								encoding_type: [],
+								full_path: fullPath,
+								name: fullPath,
+								token: toNullable()
+							}
+						],
 						proposalId
 					)
 				).rejects.toThrow(`${JUNO_CDN_STORAGE_ERROR_INVALID_COLLECTION} (${fullPath} - #dapp)`);
@@ -1008,9 +994,9 @@ export const testCdnStorageSettings = ({
 			http_request,
 			commit_proposal,
 			submit_proposal,
-			commit_proposal_asset_upload,
+			commit_proposal_many_assets_upload,
 			upload_proposal_asset_chunk,
-			init_proposal_asset_upload
+			init_proposal_many_assets_upload
 		} = actor();
 
 		const [proposalId, __] = await init_proposal({
@@ -1020,15 +1006,17 @@ export const testCdnStorageSettings = ({
 		});
 
 		const upload = async (gzip: boolean) => {
-			const file = await init_proposal_asset_upload(
-				{
-					collection: '#dapp',
-					description: toNullable(),
-					encoding_type: gzip ? ['gzip'] : [],
-					full_path: '/index.js',
-					name: 'index.gz',
-					token: toNullable()
-				},
+			const [[_, file]] = await init_proposal_many_assets_upload(
+				[
+					{
+						collection: '#dapp',
+						description: toNullable(),
+						encoding_type: gzip ? ['gzip'] : [],
+						full_path: '/index.js',
+						name: 'index.gz',
+						token: toNullable()
+					}
+				],
 				proposalId
 			);
 
@@ -1042,11 +1030,13 @@ export const testCdnStorageSettings = ({
 				order_id: [0n]
 			});
 
-			await commit_proposal_asset_upload({
-				batch_id: file.batch_id,
-				chunk_ids: [chunk.chunk_id],
-				headers: []
-			});
+			await commit_proposal_many_assets_upload([
+				{
+					batch_id: file.batch_id,
+					chunk_ids: [chunk.chunk_id],
+					headers: []
+				}
+			]);
 		};
 
 		await upload(true);

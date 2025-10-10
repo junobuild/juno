@@ -77,7 +77,7 @@ const uploadSegment = async ({
 	const init_proposal_asset_upload =
 		'init_asset_upload' in actor
 			? (actor as ConsoleActor0014).init_asset_upload
-			: (actor as ConsoleActor).init_proposal_asset_upload;
+			: (actor as ConsoleActor).init_proposal_many_assets_upload;
 
 	const upload_proposal_asset_chunk =
 		'upload_asset_chunk' in actor

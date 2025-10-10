@@ -255,7 +255,7 @@ describe.each(MEMORIES)('Satellite > Cdn > $title', ({ memory }) => {
 
 		describe.each(validModuleFullPaths)(`Assert upload value path start with %s`, (fullPath) => {
 			it('should throw error if full_path is not prefixed with collection', async () => {
-				const { init_proposal_asset_upload, init_proposal } = actor;
+				const { init_proposal_many_assets_upload, init_proposal } = actor;
 
 				const [proposalId, _] = await init_proposal({
 					AssetsUpgrade: {
@@ -264,15 +264,15 @@ describe.each(MEMORIES)('Satellite > Cdn > $title', ({ memory }) => {
 				});
 
 				await expect(
-					init_proposal_asset_upload(
-						{
+					init_proposal_many_assets_upload(
+						[{
 							collection: INVALID_COLLECTION,
 							description: toNullable(),
 							encoding_type: [],
 							full_path: fullPath,
 							name: fullPath,
 							token: toNullable()
-						},
+						}],
 						proposalId
 					)
 				).rejects.toThrow(`${JUNO_STORAGE_ERROR_UPLOAD_PATH_COLLECTION_PREFIX}`);

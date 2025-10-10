@@ -102,7 +102,7 @@ describe('Console > Metadata', () => {
 		});
 
 		it('should throw error if try to upload metadata.json', async () => {
-			const { init_proposal_asset_upload, init_proposal } = actor;
+			const { init_proposal_many_assets_upload, init_proposal } = actor;
 
 			const [proposalId, _] = await init_proposal({
 				AssetsUpgrade: {
@@ -111,15 +111,15 @@ describe('Console > Metadata', () => {
 			});
 
 			await expect(
-				init_proposal_asset_upload(
-					{
+				init_proposal_many_assets_upload(
+					[{
 						collection: '#releases',
 						description: toNullable(),
 						encoding_type: [],
 						full_path: '/releases/metadata.json',
 						name: 'metadata.json',
 						token: toNullable()
-					},
+					}],
 					proposalId
 				)
 			).rejects.toThrow(`${JUNO_STORAGE_ERROR_RESERVED_ASSET} (/releases/metadata.json)`);

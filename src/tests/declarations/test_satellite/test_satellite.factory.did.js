@@ -1,5 +1,11 @@
 // @ts-ignore
 export const idlFactory = ({ IDL }) => {
+	const Memory = IDL.Variant({ Heap: IDL.Null, Stable: IDL.Null });
+	const InitStorageArgs = IDL.Record({ system_memory: IDL.Opt(Memory) });
+	const InitSatelliteArgs = IDL.Record({
+		controllers: IDL.Vec(IDL.Principal),
+		storage: IDL.Opt(InitStorageArgs)
+	});
 	const CommitBatch = IDL.Record({
 		batch_id: IDL.Nat,
 		headers: IDL.Vec(IDL.Tuple(IDL.Text, IDL.Text)),
@@ -174,8 +180,6 @@ export const idlFactory = ({ IDL }) => {
 		version: IDL.Opt(IDL.Nat64),
 		proposal_type: ProposalType
 	});
-	const Result = IDL.Variant({ Ok: IDL.Int32, Err: IDL.Text });
-	const Memory = IDL.Variant({ Heap: IDL.Null, Stable: IDL.Null });
 	const Permission = IDL.Variant({
 		Controllers: IDL.Null,
 		Private: IDL.Null,
@@ -332,10 +336,10 @@ export const idlFactory = ({ IDL }) => {
 		order_id: IDL.Opt(IDL.Nat)
 	});
 	const UploadChunkResult = IDL.Record({ chunk_id: IDL.Nat });
+	const Result = IDL.Variant({ Ok: IDL.Int32, Err: IDL.Text });
 	return IDL.Service({
 		commit_asset_upload: IDL.Func([CommitBatch], [], []),
 		commit_proposal: IDL.Func([CommitProposal], [IDL.Null], []),
-		commit_proposal_asset_upload: IDL.Func([CommitBatch], [], []),
 		commit_proposal_many_assets_upload: IDL.Func([IDL.Vec(CommitBatch)], [], []),
 		count_assets: IDL.Func([IDL.Text, ListParams], [IDL.Nat64], ['query']),
 		count_collection_assets: IDL.Func([IDL.Text], [IDL.Nat64], ['query']),
@@ -375,7 +379,6 @@ export const idlFactory = ({ IDL }) => {
 			['query']
 		),
 		get_proposal: IDL.Func([IDL.Nat], [IDL.Opt(Proposal)], ['query']),
-		get_random: IDL.Func([], [Result], []),
 		get_rule: IDL.Func([CollectionType, IDL.Text], [IDL.Opt(Rule)], ['query']),
 		get_storage_config: IDL.Func([], [StorageConfig], ['query']),
 		http_request: IDL.Func([HttpRequest], [HttpResponse], ['query']),
@@ -386,7 +389,6 @@ export const idlFactory = ({ IDL }) => {
 		),
 		init_asset_upload: IDL.Func([InitAssetKey], [InitUploadResult], []),
 		init_proposal: IDL.Func([ProposalType], [IDL.Nat, Proposal], []),
-		init_proposal_asset_upload: IDL.Func([InitAssetKey, IDL.Nat], [InitUploadResult], []),
 		init_proposal_many_assets_upload: IDL.Func(
 			[IDL.Vec(InitAssetKey), IDL.Nat],
 			[IDL.Vec(IDL.Tuple(IDL.Text, InitUploadResult))],
@@ -419,10 +421,17 @@ export const idlFactory = ({ IDL }) => {
 		submit_proposal: IDL.Func([IDL.Nat], [IDL.Nat, Proposal], []),
 		switch_storage_system_memory: IDL.Func([], [], []),
 		upload_asset_chunk: IDL.Func([UploadChunk], [UploadChunkResult], []),
-		upload_proposal_asset_chunk: IDL.Func([UploadChunk], [UploadChunkResult], [])
+		upload_proposal_asset_chunk: IDL.Func([UploadChunk], [UploadChunkResult], []),
+		get_random: IDL.Func([], [Result], [])
 	});
 };
 // @ts-ignore
 export const init = ({ IDL }) => {
-	return [];
+	const Memory = IDL.Variant({ Heap: IDL.Null, Stable: IDL.Null });
+	const InitStorageArgs = IDL.Record({ system_memory: IDL.Opt(Memory) });
+	const InitSatelliteArgs = IDL.Record({
+		controllers: IDL.Vec(IDL.Principal),
+		storage: IDL.Opt(InitStorageArgs)
+	});
+	return [InitSatelliteArgs];
 };

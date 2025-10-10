@@ -98,23 +98,24 @@ export class ConsolePage extends IdentityPage {
 
 	async openCreateSatelliteWizard(): Promise<void> {
 		await expect(this.page.getByTestId(testIds.createSatellite.launch)).toBeVisible();
+
 		await this.page.getByTestId(testIds.createSatellite.launch).click();
 	}
 
-	async failedAtCreatingSatellite(): Promise<boolean> {
-		// Check for create button absence or disabled state
+	async failedAtCreatingSatellite(): Promise<void> {
 		const createButton = this.page.getByTestId(testIds.createSatellite.create);
-		try {
-			// If the button is visible and enabled, this should fail
-			await expect(createButton).not.toBeVisible({ timeout: 1000 });
-			return true;
-		} catch {
-			// Button is visible, so creation is possible (test should fail)
-			return false;
-		}
-	}
 
-	getPage(): Page {
-		return this.page;
+		const isVisible = await createButton.isVisible();
+		if (isVisible) {
+			await expect(createButton).toBeDisabled({ timeout: 1000 });
+		} else {
+			await expect(createButton).not.toBeVisible({ timeout: 1000 });
+		}
+
+		await expect(
+			this.page.getByText(
+				'Starting a new satellite requires 0.5000 ICP. Your current wallet balance is 0.0000 ICP.'
+			)
+		).toBeVisible();
 	}
 }

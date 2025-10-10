@@ -6,22 +6,13 @@
 	interface Props {
 		centered?: boolean;
 		fullWidth?: boolean;
-		topMargin?: 'default' | 'wide';
 		menu?: Snippet;
 		navbar?: Snippet;
 		children: Snippet;
 		footer?: Snippet;
 	}
 
-	let {
-		centered = false,
-		fullWidth = false,
-		topMargin = 'default',
-		menu,
-		navbar,
-		children,
-		footer
-	}: Props = $props();
+	let { centered = false, fullWidth = false, menu, navbar, children, footer }: Props = $props();
 </script>
 
 <SplitPane {menu}>

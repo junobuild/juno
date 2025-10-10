@@ -3,10 +3,10 @@
 	import { nonNullish } from '@dfinity/utils';
 	import ExternalLink from '$lib/components/ui/ExternalLink.svelte';
 	import Identifier from '$lib/components/ui/Identifier.svelte';
+	import { testIds } from '$lib/constants/test-ids.constants';
 	import { missionControlIdDerived } from '$lib/derived/mission-control.derived';
 	import { i18n } from '$lib/stores/i18n.store';
 	import { testId } from '$lib/utils/test.utils';
-	import { testIds } from '$lib/constants/test-ids.constants';
 
 	interface Props {
 		accountIdentifier: AccountIdentifier | undefined;

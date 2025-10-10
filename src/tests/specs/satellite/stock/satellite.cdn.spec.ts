@@ -265,14 +265,16 @@ describe.each(MEMORIES)('Satellite > Cdn > $title', ({ memory }) => {
 
 				await expect(
 					init_proposal_many_assets_upload(
-						[{
-							collection: INVALID_COLLECTION,
-							description: toNullable(),
-							encoding_type: [],
-							full_path: fullPath,
-							name: fullPath,
-							token: toNullable()
-						}],
+						[
+							{
+								collection: INVALID_COLLECTION,
+								description: toNullable(),
+								encoding_type: [],
+								full_path: fullPath,
+								name: fullPath,
+								token: toNullable()
+							}
+						],
 						proposalId
 					)
 				).rejects.toThrow(`${JUNO_STORAGE_ERROR_UPLOAD_PATH_COLLECTION_PREFIX}`);

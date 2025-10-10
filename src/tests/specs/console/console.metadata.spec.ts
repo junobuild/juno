@@ -112,14 +112,16 @@ describe('Console > Metadata', () => {
 
 			await expect(
 				init_proposal_many_assets_upload(
-					[{
-						collection: '#releases',
-						description: toNullable(),
-						encoding_type: [],
-						full_path: '/releases/metadata.json',
-						name: 'metadata.json',
-						token: toNullable()
-					}],
+					[
+						{
+							collection: '#releases',
+							description: toNullable(),
+							encoding_type: [],
+							full_path: '/releases/metadata.json',
+							name: 'metadata.json',
+							token: toNullable()
+						}
+					],
 					proposalId
 				)
 			).rejects.toThrow(`${JUNO_STORAGE_ERROR_RESERVED_ASSET} (/releases/metadata.json)`);

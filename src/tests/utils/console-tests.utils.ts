@@ -5,6 +5,7 @@ import {
 	type MissionControlActor,
 	idlFactoryMissionControl
 } from '$declarations';
+import type { InitAssetKey } from '$declarations/console/console.did';
 import type { Identity } from '@dfinity/agent';
 import { Ed25519KeyIdentity } from '@dfinity/identity';
 import type { Actor, PocketIc } from '@dfinity/pic';
@@ -74,20 +75,10 @@ const uploadSegment = async ({
 	actor: Actor<ConsoleActor | ConsoleActor0014>;
 	proposalId: bigint;
 }) => {
-	const init_proposal_asset_upload =
-		'init_asset_upload' in actor
-			? (actor as ConsoleActor0014).init_asset_upload
-			: (actor as ConsoleActor).init_proposal_many_assets_upload;
-
 	const upload_proposal_asset_chunk =
 		'upload_asset_chunk' in actor
 			? (actor as ConsoleActor0014).upload_asset_chunk
 			: (actor as ConsoleActor).upload_proposal_asset_chunk;
-
-	const commit_proposal_asset_upload =
-		'commit_asset_upload' in actor
-			? (actor as ConsoleActor0014).commit_asset_upload
-			: (actor as ConsoleActor).commit_proposal_asset_upload;
 
 	const name = `${segment}-v${version}.wasm.gz`;
 	const fullPath = `/releases/${name}`;
@@ -106,17 +97,33 @@ const uploadSegment = async ({
 
 	const data = new Blob([await readFile(wasmPath)]);
 
-	const { batch_id: batchId } = await init_proposal_asset_upload(
-		{
-			collection: '#releases',
-			description: toNullable(`change=${proposalId};version=v${version}`),
-			encoding_type: ['identity'],
-			full_path: fullPath,
-			name,
-			token: toNullable()
-		},
-		proposalId
-	);
+	const initPayload: InitAssetKey = {
+		collection: '#releases',
+		description: toNullable(`change=${proposalId};version=v${version}`),
+		encoding_type: ['identity'],
+		full_path: fullPath,
+		name,
+		token: toNullable()
+	};
+
+	const init = async (): Promise<bigint> => {
+		if ('init_asset_upload' in actor) {
+			const { batch_id: batchId } = await (actor as ConsoleActor0014).init_asset_upload(
+				initPayload,
+				proposalId
+			);
+
+			return batchId;
+		}
+
+		const [[_, { batch_id: batchId }]] = await (
+			actor as ConsoleActor
+		).init_proposal_many_assets_upload([initPayload], proposalId);
+
+		return batchId;
+	};
+
+	const batchId = await init();
 
 	const chunkSize = 1900000;
 
@@ -177,11 +184,23 @@ const uploadSegment = async ({
 			? [['Content-Type', data.type]]
 			: undefined;
 
-	await commit_proposal_asset_upload({
-		batch_id: batchId,
-		chunk_ids: chunkIds.map(({ chunk_id }) => chunk_id),
-		headers: [...headers, ...(contentType ?? [])]
-	});
+	const upload = async () => {
+		const payload = {
+			batch_id: batchId,
+			chunk_ids: chunkIds.map(({ chunk_id }) => chunk_id),
+			headers: [...headers, ...(contentType ?? [])]
+		};
+
+		if ('commit_asset_upload' in actor) {
+			await (actor as ConsoleActor0014).commit_asset_upload(payload);
+
+			return;
+		}
+
+		await (actor as ConsoleActor).commit_proposal_many_assets_upload([payload]);
+	};
+
+	await upload();
 };
 
 export const deploySegments = async (actor: Actor<ConsoleActor | ConsoleActor0014>) => {
@@ -346,20 +365,10 @@ export const uploadFileWithProposal = async ({
 	pic: PocketIc;
 	fullPath?: string;
 }): Promise<{ proposalId: bigint; fullPath: string }> => {
-	const init_proposal_asset_upload =
-		'init_asset_upload' in actor
-			? (actor as ConsoleActor0014).init_asset_upload
-			: (actor as ConsoleActor).init_proposal_asset_upload;
-
 	const upload_proposal_asset_chunk =
 		'upload_asset_chunk' in actor
 			? (actor as ConsoleActor0014).upload_asset_chunk
 			: (actor as ConsoleActor).upload_proposal_asset_chunk;
-
-	const commit_proposal_asset_upload =
-		'commit_asset_upload' in actor
-			? (actor as ConsoleActor0014).commit_asset_upload
-			: (actor as ConsoleActor).commit_proposal_asset_upload;
 
 	const { init_proposal, http_request, commit_proposal, submit_proposal } = actor;
 
@@ -370,17 +379,29 @@ export const uploadFileWithProposal = async ({
 	});
 
 	const upload = async (gzip: boolean) => {
-		const file = await init_proposal_asset_upload(
-			{
-				collection: '#dapp',
-				description: toNullable(),
-				encoding_type: gzip ? ['gzip'] : [],
-				full_path: fullPath,
-				name: 'index.gz',
-				token: toNullable()
-			},
-			proposalId
-		);
+		const initPayload: InitAssetKey = {
+			collection: '#dapp',
+			description: toNullable(),
+			encoding_type: gzip ? ['gzip'] : [],
+			full_path: fullPath,
+			name: 'index.gz',
+			token: toNullable()
+		};
+
+		const init = async () => {
+			if ('init_asset_upload' in actor) {
+				return await (actor as ConsoleActor0014).init_asset_upload(initPayload, proposalId);
+			}
+
+			const [[_, file]] = await (actor as ConsoleActor).init_proposal_many_assets_upload(
+				[initPayload],
+				proposalId
+			);
+
+			return file;
+		};
+
+		const file = await init();
 
 		const blob = new Blob([mockScript], {
 			type: 'text/javascript; charset=utf-8'
@@ -392,11 +413,22 @@ export const uploadFileWithProposal = async ({
 			order_id: [0n]
 		});
 
-		await commit_proposal_asset_upload({
-			batch_id: file.batch_id,
-			chunk_ids: [chunk.chunk_id],
-			headers: []
-		});
+		const upload = async () => {
+			const payload = {
+				batch_id: file.batch_id,
+				chunk_ids: [chunk.chunk_id],
+				headers: []
+			};
+
+			if ('commit_asset_upload' in actor) {
+				await (actor as ConsoleActor0014).commit_asset_upload(payload);
+				return;
+			}
+
+			await (actor as ConsoleActor).commit_proposal_many_assets_upload([payload]);
+		};
+
+		await upload();
 	};
 
 	await upload(true);

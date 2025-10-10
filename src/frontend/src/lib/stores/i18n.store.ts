@@ -1,4 +1,4 @@
-import en from '$lib/i18n/en.json' assert { type: 'json' };
+import en from '$lib/i18n/en.json';
 
 import type { Languages } from '$lib/types/languages';
 import { switchLanguage } from '$lib/utils/i18n.utils';
@@ -6,8 +6,8 @@ import { getLocalStorageLang } from '$lib/utils/local-storage.utils';
 import { writable, type Readable } from 'svelte/store';
 
 const zhCnI18n = async (): Promise<I18n> => ({
-    lang: 'zh-cn',
-    ...(await import('../i18n/zh-cn.json', { with: { type: 'json' } }))
+	lang: 'zh-cn',
+	...(await import(`../i18n/zh-cn.json`))
 });
 
 const enI18n = (): I18n =>

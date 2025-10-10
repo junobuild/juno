@@ -5,6 +5,8 @@
 	import Identifier from '$lib/components/ui/Identifier.svelte';
 	import { missionControlIdDerived } from '$lib/derived/mission-control.derived';
 	import { i18n } from '$lib/stores/i18n.store';
+	import { testId } from '$lib/utils/test.utils';
+	import { testIds } from '$lib/constants/test-ids.constants';
 
 	interface Props {
 		accountIdentifier: AccountIdentifier | undefined;
@@ -28,7 +30,9 @@
 	>.
 </p>
 
-<button onclick={onclose}>{$i18n.core.close}</button>
+<button onclick={onclose} {...testId(testIds.wizard.closeInsufficientFunds)}
+	>{$i18n.core.close}</button
+>
 
 <style lang="scss">
 	.account-identifier {

@@ -25,5 +25,8 @@ export const testIds = {
 		launch: 'btn-launch-analytics',
 		create: 'btn-create-analytics',
 		close: 'btn-close-analytics-wizard'
+	},
+	wizard: {
+		closeInsufficientFunds: 'btn-close-insufficient-funds'
 	}
 } as const satisfies TestIds;

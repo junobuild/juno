@@ -98,4 +98,27 @@ export class ConsolePage extends IdentityPage {
 
 		await expect(this.page.getByRole('menu')).toContainText(expected.balance, TIMEOUT_LONG);
 	}
+
+	async openCreateSatelliteWizard(): Promise<void> {
+		await expect(this.page.getByTestId(testIds.createSatellite.launch)).toBeVisible();
+
+		await this.page.getByTestId(testIds.createSatellite.launch).click();
+	}
+
+	async failedAtCreatingSatellite(): Promise<void> {
+		const createButton = this.page.getByTestId(testIds.createSatellite.create);
+
+		const isVisible = await createButton.isVisible();
+		if (isVisible) {
+			await expect(createButton).toBeDisabled({ timeout: 1000 });
+		} else {
+			await expect(createButton).not.toBeVisible({ timeout: 1000 });
+		}
+
+		await expect(
+			this.page.getByText(
+				'Starting a new satellite requires 0.5000 ICP. Your current wallet balance is 0.0000 ICP.'
+			)
+		).toBeVisible();
+	}
 }

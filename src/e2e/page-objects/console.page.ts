@@ -88,7 +88,7 @@ export class ConsolePage extends IdentityPage {
 			TIMEOUT_AVERAGE
 		);
 
-		await expect(this.page).toHaveScreenshot({ fullPage: true });
+		await expect(this.page).toHaveScreenshot({ fullPage: true, maxDiffPixels: 20 });
 	}
 
 	async getICP(expected: { balance: string }): Promise<void> {

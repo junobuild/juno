@@ -89,6 +89,7 @@ export class ConsolePage extends IdentityPage {
 		);
 
 		await expect(this.page).toHaveScreenshot({ fullPage: true });
+		//
 	}
 
 	async getICP(expected: { balance: string }): Promise<void> {

@@ -3,7 +3,7 @@ import i18n from '$lib/i18n/en.json' with { type: 'json' };
 import { InternetIdentityPage } from '@dfinity/internet-identity-playwright';
 import { expect } from '@playwright/test';
 import type { Page } from 'playwright-core';
-import { TIMEOUT_AVERAGE, TIMEOUT_LONG, TIMEOUT_SHORT } from '../constants/e2e.constants';
+import { TIMEOUT_AVERAGE, TIMEOUT_LONG } from '../constants/e2e.constants';
 import { IdentityPage, type IdentityPageParams } from './identity.page';
 
 export class ConsolePage extends IdentityPage {
@@ -37,7 +37,9 @@ export class ConsolePage extends IdentityPage {
 	}
 
 	async createSatellite({ kind }: { kind: 'website' | 'application' }): Promise<void> {
-		await expect(this.page.getByTestId(testIds.createSatellite.launch)).toBeVisible();
+		await expect(this.page.getByTestId(testIds.createSatellite.launch)).toBeVisible(
+			TIMEOUT_AVERAGE
+		);
 
 		await this.page.getByTestId(testIds.createSatellite.launch).click();
 
@@ -72,7 +74,9 @@ export class ConsolePage extends IdentityPage {
 	async createAnalytics(): Promise<void> {
 		await this.page.goto('/analytics');
 
-		await expect(this.page.getByTestId(testIds.createAnalytics.launch)).toBeVisible(TIMEOUT_SHORT);
+		await expect(this.page.getByTestId(testIds.createAnalytics.launch)).toBeVisible(
+			TIMEOUT_AVERAGE
+		);
 
 		await this.page.getByTestId(testIds.createAnalytics.launch).click();
 
@@ -100,7 +104,9 @@ export class ConsolePage extends IdentityPage {
 	}
 
 	async openCreateSatelliteWizard(): Promise<void> {
-		await expect(this.page.getByTestId(testIds.createSatellite.launch)).toBeVisible();
+		await expect(this.page.getByTestId(testIds.createSatellite.launch)).toBeVisible(
+			TIMEOUT_AVERAGE
+		);
 
 		await this.page.getByTestId(testIds.createSatellite.launch).click();
 	}

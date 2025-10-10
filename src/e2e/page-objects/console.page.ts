@@ -106,19 +106,13 @@ export class ConsolePage extends IdentityPage {
 	}
 
 	async failedAtCreatingSatellite(): Promise<void> {
-		const createButton = this.page.getByTestId(testIds.createSatellite.create);
+		await expect(this.page.getByTestId(testIds.wizard.closeInsufficientFunds)).toBeVisible();
+		await expect(this.page.getByTestId(testIds.createSatellite.create)).not.toBeVisible();
 
-		const isVisible = await createButton.isVisible();
-		if (isVisible) {
-			await expect(createButton).toBeDisabled({ timeout: 1000 });
-		} else {
-			await expect(createButton).not.toBeVisible({ timeout: 1000 });
-		}
+		const expectedText = i18n.satellites.create_satellite_price
+			.replace('{0}', '0.5000 ICP')
+			.replace('{1}', '0.0000 ICP');
 
-		await expect(
-			this.page.getByText(
-				'Starting a new satellite requires 0.5000 ICP. Your current wallet balance is 0.0000 ICP.'
-			)
-		).toBeVisible();
+		await expect(this.page.getByText(expectedText)).toBeVisible();
 	}
 }

@@ -1,5 +1,5 @@
 import { testIds } from '$lib/constants/test-ids.constants';
-import i18n from '$lib/i18n/en.json';
+import i18n from '$lib/i18n/en.json' with { type: 'json' };
 import { InternetIdentityPage } from '@dfinity/internet-identity-playwright';
 import { expect } from '@playwright/test';
 import type { Page } from 'playwright-core';

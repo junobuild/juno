@@ -287,7 +287,6 @@ export const idlFactory = ({ IDL }) => {
 		add_invitation_code: IDL.Func([IDL.Text], [], []),
 		assert_mission_control_center: IDL.Func([AssertMissionControlCenterArgs], [], []),
 		commit_proposal: IDL.Func([CommitProposal], [IDL.Null], []),
-		commit_proposal_asset_upload: IDL.Func([CommitBatch], [], []),
 		commit_proposal_many_assets_upload: IDL.Func([IDL.Vec(CommitBatch)], [], []),
 		count_proposals: IDL.Func([], [IDL.Nat64], []),
 		create_orbiter: IDL.Func([CreateCanisterArgs], [IDL.Principal], []),
@@ -309,7 +308,6 @@ export const idlFactory = ({ IDL }) => {
 			[]
 		),
 		init_proposal: IDL.Func([ProposalType], [IDL.Nat, Proposal], []),
-		init_proposal_asset_upload: IDL.Func([InitAssetKey, IDL.Nat], [InitUploadResult], []),
 		init_proposal_many_assets_upload: IDL.Func(
 			[IDL.Vec(InitAssetKey), IDL.Nat],
 			[IDL.Vec(IDL.Tuple(IDL.Text, InitUploadResult))],

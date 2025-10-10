@@ -269,13 +269,6 @@ pub fn delete_proposal_assets(params: DeleteProposalAssets) {
 // ---------------------------------------------------------
 
 #[doc(hidden)]
-#[deprecated(note = "Use init_proposal_many_assets_upload instead")]
-#[update(guard = "caller_is_controller")]
-pub fn init_proposal_asset_upload(init: InitAssetKey, proposal_id: ProposalId) -> InitUploadResult {
-    api::cdn::init_proposal_asset_upload(init, proposal_id)
-}
-
-#[doc(hidden)]
 #[update(guard = "caller_is_controller")]
 pub fn init_proposal_many_assets_upload(
     init_asset_keys: Vec<InitAssetKey>,
@@ -288,13 +281,6 @@ pub fn init_proposal_many_assets_upload(
 #[update(guard = "caller_is_controller")]
 pub fn upload_proposal_asset_chunk(chunk: UploadChunk) -> UploadChunkResult {
     api::cdn::upload_proposal_asset_chunk(chunk)
-}
-
-#[doc(hidden)]
-#[deprecated(note = "Use commit_proposal_many_assets_upload instead")]
-#[update(guard = "caller_is_controller")]
-pub fn commit_proposal_asset_upload(commit: CommitBatch) {
-    api::cdn::commit_proposal_asset_upload(commit)
 }
 
 #[doc(hidden)]
@@ -516,20 +502,18 @@ pub fn memory_size() -> MemorySize {
 macro_rules! include_satellite {
     () => {
         use junobuild_satellite::{
-            commit_asset_upload, commit_proposal, commit_proposal_asset_upload,
-            commit_proposal_many_assets_upload, count_assets, count_collection_assets,
-            count_collection_docs, count_docs, count_proposals, del_asset, del_assets,
-            del_controllers, del_custom_domain, del_doc, del_docs, del_filtered_assets,
+            commit_asset_upload, commit_proposal, commit_proposal_many_assets_upload, count_assets,
+            count_collection_assets, count_collection_docs, count_docs, count_proposals, del_asset,
+            del_assets, del_controllers, del_custom_domain, del_doc, del_docs, del_filtered_assets,
             del_filtered_docs, del_many_assets, del_many_docs, del_rule, delete_proposal_assets,
             deposit_cycles, get_asset, get_auth_config, get_config, get_db_config, get_doc,
             get_many_assets, get_many_docs, get_proposal, get_storage_config, http_request,
             http_request_streaming_callback, init, init_asset_upload, init_proposal,
-            init_proposal_asset_upload, init_proposal_many_assets_upload, list_assets,
-            list_controllers, list_custom_domains, list_docs, list_proposals, list_rules,
-            post_upgrade, pre_upgrade, reject_proposal, set_auth_config, set_controllers,
-            set_custom_domain, set_db_config, set_doc, set_many_docs, set_rule, set_storage_config,
-            submit_proposal, switch_storage_system_memory, upload_asset_chunk,
-            upload_proposal_asset_chunk,
+            init_proposal_many_assets_upload, list_assets, list_controllers, list_custom_domains,
+            list_docs, list_proposals, list_rules, post_upgrade, pre_upgrade, reject_proposal,
+            set_auth_config, set_controllers, set_custom_domain, set_db_config, set_doc,
+            set_many_docs, set_rule, set_storage_config, submit_proposal,
+            switch_storage_system_memory, upload_asset_chunk, upload_proposal_asset_chunk,
         };
 
         ic_cdk::export_candid!();

@@ -1,4 +1,5 @@
 import { testIds } from '$lib/constants/test-ids.constants';
+import i18n from '$lib/i18n/en.json';
 import { InternetIdentityPage } from '@dfinity/internet-identity-playwright';
 import { expect } from '@playwright/test';
 import type { Page } from 'playwright-core';
@@ -83,7 +84,9 @@ export class ConsolePage extends IdentityPage {
 
 		await this.page.getByTestId(testIds.createAnalytics.close).click();
 
-		await expect(this.page.getByText('Unique page views')).toBeVisible();
+		await expect(this.page.getByText(i18n.analytics.unique_page_views)).toBeVisible(
+			TIMEOUT_AVERAGE
+		);
 
 		await expect(this.page).toHaveScreenshot({ fullPage: true });
 	}

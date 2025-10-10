@@ -181,7 +181,8 @@
 		color: var(--color-background-contrast);
 
 		&:hover:not(:disabled),
-		&:active:not(:disabled) {
+		&:active:not(:disabled),
+		&:focus-visible:not(:disabled) {
 			background: var(--color-background);
 		}
 	}
@@ -203,7 +204,8 @@
 		@include text.truncate;
 
 		&:hover:not(:disabled),
-		&:active:not(:disabled) {
+		&:active:not(:disabled),
+		&:focus-visible:not(:disabled) {
 			color: var(--color-primary-contrast);
 			font-weight: var(--font-weight-bold);
 		}
@@ -239,7 +241,8 @@
 	@include media.dark-theme {
 		a.link {
 			&:hover:not(:disabled),
-			&:active:not(:disabled) {
+			&:active:not(:disabled),
+			&:focus-visible:not(:disabled) {
 				color: var(--color-card-contrast);
 			}
 		}

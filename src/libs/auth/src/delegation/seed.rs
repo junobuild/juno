@@ -1,10 +1,11 @@
+use crate::delegation::types::jwt::OpenIdCredentialKey;
 use crate::types::state::Salt;
 use ic_certification::Hash;
 use sha2::{Digest, Sha256};
 
 pub fn calculate_seed(
-    anchor_id: &str,
-    frontend: &str,
+    client_id: &str,
+    key: &OpenIdCredentialKey,
     salt: &Option<Salt>,
 ) -> Result<Hash, String> {
     let salt =
@@ -14,16 +15,18 @@ pub fn calculate_seed(
     blob.push(salt.len() as u8);
     blob.extend_from_slice(&salt);
 
-    let anchor_number_str = anchor_id;
-    let anchor_number_blob = anchor_number_str.bytes();
-    blob.push(anchor_number_blob.len() as u8);
-    blob.extend(anchor_number_blob);
+    blob.push(client_id.len() as u8);
+    blob.extend(client_id.bytes());
 
-    blob.push(frontend.len() as u8);
-    blob.extend(frontend.bytes());
+    blob.push(key.iss.len() as u8);
+    blob.extend(key.iss.bytes());
+
+    blob.push(key.sub.len() as u8);
+    blob.extend(key.sub.bytes());
+
+    // TODO: frontend?
 
     let seed = hash_bytes(blob);
-
     Ok(seed)
 }
 

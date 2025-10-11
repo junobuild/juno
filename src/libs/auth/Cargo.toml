@@ -20,7 +20,11 @@ ic-cdk.workspace = true
 candid.workspace = true
 serde.workspace = true
 serde_bytes.workspace = true
+serde_json.workspace = true
 ic-certification.workspace = true
 ic-canister-sig-creation = "1.3.0"
 sha2.workspace = true
-junobuild-shared = "0.2.2"
+base64 = "0.22.1"
+jsonwebtoken = { git = "https://github.com/peterpeterparker/jsonwebtoken", branch = "feat/icp", default-features = false, features = ["rust_crypto"] }
+getrandom02 = { package = "getrandom", version = "0.2.16", features = ["custom"] }
+junobuild-shared = "0.3.0"

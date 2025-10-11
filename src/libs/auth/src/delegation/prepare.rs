@@ -1,9 +1,13 @@
 use crate::constants::DEFAULT_EXPIRATION_PERIOD_NS;
+use crate::delegation::constants::{CLIENT_ID, GOOGLE_JWKS};
+use crate::delegation::jwt::verify_rs256_with_claims;
 use crate::delegation::seed::calculate_seed;
+use crate::delegation::types::jwt::{Jwks, OpenIdCredentialKey};
+use crate::delegation::utils::build_nonce;
 use crate::state::services::mutate_state;
 use crate::strategies::AuthCertificateStrategy;
 use crate::types::interface::{
-    PrepareDelegationArgs, PrepareDelegationResponse, PublicKey, Timestamp,
+    OpenIdPrepareDelegationArgs, PrepareDelegationResponse, PublicKey, SessionKey, Timestamp,
 };
 use crate::types::runtime_state::State;
 use ic_canister_sig_creation::signature_map::CanisterSigInputs;
@@ -13,15 +17,48 @@ use ic_canister_sig_creation::{
 use ic_cdk::api::{canister_self, time};
 use serde_bytes::ByteBuf;
 
-pub fn prepare_delegation(
-    args: &PrepareDelegationArgs,
+pub fn openid_prepare_delegation(
+    args: &OpenIdPrepareDelegationArgs,
+    certificate: &impl AuthCertificateStrategy,
+) -> Result<PrepareDelegationResponse, String> {
+    ic_cdk::print("::openid_prepare_delegation::");
+
+    let jwks: Jwks = serde_json::from_str(GOOGLE_JWKS).map_err(|e| format!("invalid JWKS: {e}"))?;
+
+    let nonce = build_nonce(&args.salt);
+
+    let token = verify_rs256_with_claims(
+        &args.jwt,
+        &["https://accounts.google.com", "accounts.google.com"],
+        CLIENT_ID,
+        &jwks.keys,
+        &nonce,
+    )
+    .map_err(|e| format!("{e:?}"))?;
+
+    ic_cdk::print(format!("Prepare claims --------> {:?}", token.claims));
+
+    let key = OpenIdCredentialKey {
+        iss: token.claims.iss,
+        sub: token.claims.sub,
+    };
+
+    let delegation = prepare_delegation(&CLIENT_ID, &key, &args.session_key, certificate)?;
+
+    Ok(delegation)
+}
+
+fn prepare_delegation(
+    client_id: &str,
+    key: &OpenIdCredentialKey,
+    session_key: &SessionKey,
     certificate: &impl AuthCertificateStrategy,
 ) -> Result<PrepareDelegationResponse, String> {
     let expiration = time().saturating_add(DEFAULT_EXPIRATION_PERIOD_NS);
-    let seed = calculate_seed(&args.anchor_id, &args.frontend, &certificate.salt())?;
+    let seed = calculate_seed(client_id, key, &certificate.salt())?;
 
     mutate_state(|state| {
-        add_delegation_signature(state, &args.session_key, seed.as_ref(), expiration);
+        add_delegation_signature(state, session_key, seed.as_ref(), expiration);
     });
 
     certificate.update_certified_data();

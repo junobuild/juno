@@ -80,18 +80,18 @@ pub mod interface {
     }
 
     #[derive(CandidType, Deserialize)]
-    pub struct PrepareDelegationArgs {
-        pub anchor_id: String, // instead of anchor_number
+    pub struct OpenIdPrepareDelegationArgs {
+        pub jwt: String,
+        pub salt: [u8; 32],
         pub session_key: SessionKey,
-        pub frontend: FrontendHostname,
         // TODO: max_time_to_live opt<u64>
     }
 
     #[derive(CandidType, Deserialize)]
-    pub struct GetDelegationArgs {
-        pub anchor_id: String, // instead of anchor_number
+    pub struct OpenIdGetDelegationArgs {
+        pub jwt: String,
+        pub salt: [u8; 32],
         pub session_key: SessionKey,
-        pub frontend: FrontendHostname,
         pub expiration: Timestamp,
     }
 
@@ -99,7 +99,6 @@ pub mod interface {
     pub type PublicKey = ByteBuf;
     pub type SessionKey = PublicKey;
     pub type Timestamp = u64;
-    pub type FrontendHostname = String;
     pub type Signature = ByteBuf;
 
     #[derive(Clone, Debug, CandidType, Deserialize)]

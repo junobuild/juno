@@ -4,3 +4,4 @@ pub mod store;
 mod strategy_impls;
 
 pub use assert::caller;
+pub use assert::providers;

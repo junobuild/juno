@@ -7,6 +7,7 @@ use junobuild_storage::http_request::{
     http_request as http_request_storage,
     http_request_streaming_callback as http_request_streaming_callback_storage,
 };
+
 // ---------------------------------------------------------
 // Http
 // ---------------------------------------------------------

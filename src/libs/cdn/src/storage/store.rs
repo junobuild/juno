@@ -2,7 +2,7 @@ use crate::storage::assert_set_config;
 use crate::storage::heap::{delete_domain, get_config, get_domain, insert_config, insert_domain};
 use crate::strategies::CdnHeapStrategy;
 use junobuild_shared::types::core::DomainName;
-use junobuild_storage::strategies::StorageStateStrategy;
+use junobuild_storage::strategies::{StorageCertificateStrategy, StorageStateStrategy};
 use junobuild_storage::types::config::StorageConfig;
 use junobuild_storage::types::interface::SetStorageConfig;
 use junobuild_storage::well_known::update::update_custom_domains_asset;
@@ -15,7 +15,6 @@ use junobuild_storage::well_known::utils::build_custom_domain;
 pub fn set_config_store(
     cdn_heap: &impl CdnHeapStrategy,
     storage_state: &impl StorageStateStrategy,
-    certificate: &impl StorageCertificateStrategy,
     proposed_config: &SetStorageConfig,
 ) -> Result<StorageConfig, String> {
     let current_config = get_config(cdn_heap);

@@ -16,6 +16,7 @@ mod random;
 mod rules;
 mod sdk;
 mod types;
+mod upgrade;
 mod user;
 
 use crate::db::types::config::DbConfig;

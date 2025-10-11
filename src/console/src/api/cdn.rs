@@ -107,5 +107,5 @@ pub fn del_custom_domain(domain_name: DomainName) {
         &StorageCertificate,
         &domain_name,
     )
-        .unwrap_or_trap();
+    .unwrap_or_trap();
 }

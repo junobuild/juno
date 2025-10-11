@@ -4,7 +4,7 @@ use crate::constants::{
 use crate::runtime::{
     delete_certified_asset, update_certified_asset as update_runtime_certified_asset,
 };
-use crate::strategies::StorageStateStrategy;
+use crate::strategies::{StorageCertificateStrategy, StorageStateStrategy};
 use crate::well_known::types::PrepareWellKnownAssetFn;
 use crate::well_known::utils::{map_alternative_origins_asset, map_custom_domains_asset};
 use junobuild_collections::constants::assets::COLLECTION_ASSET_KEY;
@@ -65,9 +65,8 @@ fn update_asset(
     full_path: &String,
     content: &str,
     storage_state: &impl StorageStateStrategy,
-    f: &PrepareWellKnownAssetFn,
     certificate: &impl StorageCertificateStrategy,
-    f: &dyn Fn(&str, Option<Asset>) -> Asset,
+    f: &PrepareWellKnownAssetFn,
 ) -> Result<(), String> {
     let collection = COLLECTION_ASSET_KEY.to_string();
 

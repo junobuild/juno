@@ -1,8 +1,7 @@
-use crate::cdn::strategies_impls::storage::StorageState;
+use crate::cdn::strategies_impls::storage::{StorageCertificate, StorageState};
 use crate::store::{with_assets, with_config};
 use junobuild_storage::certification::types::certified::CertifiedAssetHashes;
 use junobuild_storage::certified_assets::extend_and_init_certified_assets;
-use junobuild_storage::strategies::{StorageCertificateStrategy, StorageStateStrategy};
 
 pub fn init_certified_assets() {
     let mut asset_hashes = CertifiedAssetHashes::default();
@@ -13,7 +12,12 @@ pub fn init_certified_assets() {
                 asset_hashes.insert(asset, config);
             }
 
-            extend_and_init_certified_assets(&mut asset_hashes, config, &StorageState);
+            extend_and_init_certified_assets(
+                &mut asset_hashes,
+                config,
+                &StorageState,
+                &StorageCertificate,
+            );
         });
     });
 }

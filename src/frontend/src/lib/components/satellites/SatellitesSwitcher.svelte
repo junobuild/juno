@@ -1,34 +1,23 @@
 <script lang="ts">
-	import { nonNullish } from '@dfinity/utils';
-	import IconArrowDropDown from '$lib/components/icons/IconArrowDropDown.svelte';
+	import IconUnfoldMore from '$lib/components/icons/IconUnfoldMore.svelte';
+	import SatelliteEnvironment from '$lib/components/satellites/SatelliteEnvironment.svelte';
 	import ButtonIcon from '$lib/components/ui/ButtonIcon.svelte';
 	import Popover from '$lib/components/ui/Popover.svelte';
-	import { authSignedIn } from '$lib/derived/auth.derived';
-	import { satelliteStore } from '$lib/derived/satellite.derived';
-	import { sortedSatellites } from '$lib/derived/satellites.derived';
+	import { sortedSatelliteUis } from '$lib/derived/satellites.derived';
 	import { i18n } from '$lib/stores/i18n.store';
 	import { overviewLink } from '$lib/utils/nav.utils';
-	import { satelliteName } from '$lib/utils/satellite.utils';
 
 	let button: HTMLButtonElement | undefined = $state();
 	let visible: boolean = $state(false);
-
-	let label = $derived(
-		nonNullish($satelliteStore)
-			? satelliteName($satelliteStore)
-			: $i18n.satellites.see_all_satellites
-	);
 </script>
 
-{#if $authSignedIn}
-	<ButtonIcon onclick={() => (visible = true)} bind:button>
-		{#snippet icon()}
-			<IconArrowDropDown />
-		{/snippet}
+<ButtonIcon onclick={() => (visible = true)} bind:button>
+	{#snippet icon()}
+		<IconUnfoldMore />
+	{/snippet}
 
-		{label}
-	</ButtonIcon> <span>{label}</span>
-{/if}
+	{$i18n.satellites.see_all_satellites}
+</ButtonIcon>
 
 <Popover anchor={button} bind:visible>
 	<div class="container">
@@ -46,8 +35,8 @@
 		<hr />
 
 		<div class="satellites">
-			{#each $sortedSatellites as satellite (satellite.satellite_id.toText())}
-				{@const satName = satelliteName(satellite)}
+			{#each $sortedSatelliteUis as satellite (satellite.satellite_id.toText())}
+				{@const satName = satellite.metadata.name}
 
 				<a
 					class="menu"
@@ -57,7 +46,7 @@
 					rel="external noopener norefferer"
 					role="menuitem"
 				>
-					<span>{satName}</span>
+					<span class="satellite"><span>{satName}</span><SatelliteEnvironment {satellite} /></span>
 				</a>
 			{/each}
 		</div>
@@ -65,8 +54,8 @@
 </Popover>
 
 <style lang="scss">
-	@use '../../styles/mixins/text';
 	@use '../../styles/mixins/media';
+	@use '../../styles/mixins/text';
 
 	.container {
 		max-height: calc(30 * var(--padding));
@@ -77,10 +66,6 @@
 		padding: var(--padding-1_5x);
 
 		font-size: var(--font-size-small);
-
-		@include media.min-width(large) {
-			min-width: calc(40 * var(--padding));
-		}
 	}
 
 	button.text {
@@ -101,6 +86,7 @@
 
 	span {
 		font-size: var(--font-size-small);
+		max-width: 100%;
 		@include text.truncate;
 	}
 
@@ -110,6 +96,13 @@
 	}
 
 	a.menu {
+		display: block;
 		margin-bottom: var(--padding-0_5x);
+	}
+
+	.satellite {
+		display: inline-flex;
+		align-items: center;
+		gap: var(--padding);
 	}
 </style>

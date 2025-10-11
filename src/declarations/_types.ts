@@ -1,0 +1,15 @@
+export type * as ConsoleDid from '$declarations/console/console.did';
+export type * as MissionControlDid0013 from '$declarations/deprecated/mission_control-0-0-13.did';
+export type * as MissionControlDid004 from '$declarations/deprecated/mission_control-0-0-4.did';
+export type * as OrbiterDid006 from '$declarations/deprecated/orbiter-0-0-6.did';
+export type * as OrbiterDid007 from '$declarations/deprecated/orbiter-0-0-7.did';
+export type * as OrbiterDid008 from '$declarations/deprecated/orbiter-0-0-8.did';
+export type * as SatelliteDid0016 from '$declarations/deprecated/satellite-0-0-16.did';
+export type * as SatelliteDid0017 from '$declarations/deprecated/satellite-0-0-17.did';
+export type * as SatelliteDid008 from '$declarations/deprecated/satellite-0-0-8.did';
+export type * as MissionControlDid from '$declarations/mission_control/mission_control.did';
+export type * as ObservatoryDid from '$declarations/observatory/observatory.did';
+export type * as OrbiterDid from '$declarations/orbiter/orbiter.did';
+export type * as SatelliteDid from '$declarations/satellite/satellite.did';
+export type * as SputnikDid from '$declarations/sputnik/sputnik.did';
+export type * as ICDid from '@dfinity/ic-management/dist/candid/ic-management';

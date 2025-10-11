@@ -18,6 +18,8 @@ interface I18nCore {
 	light_on: string;
 	submit: string;
 	home: string;
+	docs: string;
+	changelog: string;
 	controllers: string;
 	settings: string;
 	setup: string;
@@ -89,6 +91,10 @@ interface I18nCore {
 	creating_snapshot: string;
 	created: string;
 	updated: string;
+	production: string;
+	staging: string;
+	test: string;
+	unspecified: string;
 }
 
 interface I18nCanisters {
@@ -280,8 +286,14 @@ interface I18nSatellites {
 	description: string;
 	name: string;
 	satellite_name: string;
+	what_are_you_building: string;
+	website: string;
+	application: string;
+	environment: string;
+	tags: string;
+	tags_placeholder: string;
 	enter_name: string;
-	edit_name: string;
+	edit_details: string;
 	create_satellite_price: string;
 	loading_satellites: string;
 	overview: string;
@@ -468,6 +480,8 @@ interface I18nHosting {
 	custom_domain: string;
 	default_domain: string;
 	domain: string;
+	domains: string;
+	hosting_memory: string;
 	status: string;
 	bn_id: string;
 	info: string;
@@ -482,6 +496,8 @@ interface I18nHosting {
 	set_auth_domain_question: string;
 	domain_name: string;
 	default_url: string;
+	switch_memory: string;
+	switch_memory_confirm: string;
 }
 
 interface I18nFunctions {
@@ -526,9 +542,10 @@ interface I18nErrors {
 	cli_missing_selection: string;
 	cli_unexpected_error: string;
 	satellite_name_missing: string;
+	satellite_kind: string;
 	satellite_unexpected_error: string;
 	satellite_no_found: string;
-	satellite_name_update: string;
+	satellite_metadata_update: string;
 	satellite_missing_name: string;
 	satellites_not_loaded: string;
 	canister_stop: string;
@@ -551,6 +568,7 @@ interface I18nErrors {
 	hosting_count_assets: string;
 	hosting_no_custom_domain: string;
 	hosting_delete_custom_domain: string;
+	hosting_switch_memory: string;
 	controllers_listing: string;
 	controllers_no_selection: string;
 	controllers_delete: string;
@@ -600,6 +618,7 @@ interface I18nErrors {
 	full_path_end_slash: string;
 	invalid_email: string;
 	invalid_destination: string;
+	invalid_metadata: string;
 	empty_amount: string;
 	invalid_amount: string;
 	empty_balance: string;
@@ -790,6 +809,8 @@ interface I18nUsers {
 	user_details: string;
 	identifier: string;
 	provider: string;
+	authenticator: string;
+	authenticator_logo: string;
 	empty: string;
 	view_details: string;
 	persistence: string;
@@ -963,6 +984,11 @@ interface I18nNot_found {
 	go_home: string;
 }
 
+interface I18nSpotlight {
+	search_title: string;
+	search_placeholder: string;
+}
+
 interface I18n {
 	lang: Languages;
 	core: I18nCore;
@@ -995,4 +1021,5 @@ interface I18n {
 	cdn: I18nCdn;
 	notifications: I18nNotifications;
 	not_found: I18nNot_found;
+	spotlight: I18nSpotlight;
 }

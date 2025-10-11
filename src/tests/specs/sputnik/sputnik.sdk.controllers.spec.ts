@@ -1,5 +1,4 @@
-import type { Controller } from '$declarations/satellite/satellite.did';
-import type { _SERVICE as SputnikActor } from '$declarations/sputnik/sputnik.did';
+import type { SputnikActor, SputnikDid } from '$declarations';
 import type { Identity } from '@dfinity/agent';
 import type { Actor, PocketIc } from '@dfinity/pic';
 import { Principal } from '@dfinity/principal';
@@ -21,7 +20,7 @@ describe('Sputnik > sdk > controllers', () => {
 		keyword
 	}: {
 		keyword: string;
-	}): Promise<[Uint8Array, Controller][]> => {
+	}): Promise<[Uint8Array, SputnikDid.Controller][]> => {
 		const { logs } = await setDocAndFetchLogs({
 			collection: TEST_COLLECTION,
 			actor,
@@ -36,7 +35,7 @@ describe('Sputnik > sdk > controllers', () => {
 
 		const [_, { message }] = log;
 
-		const data: [Uint8Array, Controller][] = JSON.parse(
+		const data: [Uint8Array, SputnikDid.Controller][] = JSON.parse(
 			message.replace(`${keyword}:`, '').trim(),
 			jsonReviver
 		);

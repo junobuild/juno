@@ -1,11 +1,11 @@
 use crate::constants::FREEZING_THRESHOLD_ONE_YEAR;
-use crate::controllers::update_mission_control_controllers;
+use crate::factory::utils::controllers::update_mission_control_controllers;
+use crate::factory::utils::wasm::mission_control_wasm_arg;
 use crate::store::heap::increment_mission_controls_rate;
 use crate::store::stable::{
     add_mission_control, delete_mission_control, get_mission_control, init_empty_mission_control,
 };
 use crate::types::state::MissionControl;
-use crate::wasm::mission_control_wasm_arg;
 use candid::{Nat, Principal};
 use junobuild_shared::constants_shared::CREATE_MISSION_CONTROL_CYCLES;
 use junobuild_shared::mgmt::ic::create_canister_install_code;

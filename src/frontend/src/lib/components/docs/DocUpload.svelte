@@ -10,7 +10,7 @@
 	import { setDoc } from '@junobuild/core';
 	import { nanoid } from 'nanoid';
 	import { getContext, type Snippet } from 'svelte';
-	import type { Doc } from '$declarations/satellite/satellite.did';
+	import type { SatelliteDid } from '$declarations';
 	import DataUpload from '$lib/components/data/DataUpload.svelte';
 	import IconAutoRenew from '$lib/components/icons/IconAutoRenew.svelte';
 	import Value from '$lib/components/ui/Value.svelte';
@@ -24,7 +24,7 @@
 
 	interface Props {
 		docKey?: string | undefined;
-		doc?: Doc | undefined;
+		doc?: SatelliteDid.Doc | undefined;
 		action?: Snippet;
 		title?: Snippet;
 		description?: Snippet;

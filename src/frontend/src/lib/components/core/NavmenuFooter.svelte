@@ -5,7 +5,7 @@
 
 <div>
 	<a href="https://juno.build/docs/intro" rel="external noopener noreferrer" target="_blank"
-		><IconBook /> Docs</a
+		><IconBook size="14px" /> Docs</a
 	>
 	/
 	<a

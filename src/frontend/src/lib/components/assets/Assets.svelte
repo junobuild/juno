@@ -3,7 +3,7 @@
 	import { isNullish, nonNullish } from '@dfinity/utils';
 	import { getContext, untrack } from 'svelte';
 	import { fade } from 'svelte/transition';
-	import type { AssetNoContent } from '$declarations/satellite/satellite.did';
+	import type { SatelliteDid } from '$declarations';
 	import { deleteAssets } from '$lib/api/satellites.api';
 	import AssetUpload from '$lib/components/assets/AssetUpload.svelte';
 	import CollectionEmpty from '$lib/components/collections/CollectionEmpty.svelte';
@@ -36,14 +36,14 @@
 		store: paginationStore,
 		resetPage,
 		list
-	}: PaginationContext<AssetNoContent> = getContext<PaginationContext<AssetNoContent>>(
-		PAGINATION_CONTEXT_KEY
-	);
+	}: PaginationContext<SatelliteDid.AssetNoContent> = getContext<
+		PaginationContext<SatelliteDid.AssetNoContent>
+	>(PAGINATION_CONTEXT_KEY);
 
 	let empty = $derived($paginationStore.items?.length === 0 && nonNullish(collection));
 
-	const { store: assetsStore, resetData }: DataContext<AssetNoContent> =
-		getContext<DataContext<AssetNoContent>>(DATA_CONTEXT_KEY);
+	const { store: assetsStore, resetData }: DataContext<SatelliteDid.AssetNoContent> =
+		getContext<DataContext<SatelliteDid.AssetNoContent>>(DATA_CONTEXT_KEY);
 
 	const load = async () => {
 		resetPage();
@@ -71,12 +71,10 @@
 	 * Delete data
 	 */
 
-	let deleteData: (params: { collection: string; satelliteId: Principal }) => Promise<void> =
-		$derived(async (params: { collection: string; satelliteId: Principal }) => {
-			await deleteAssets({ ...params, identity: $authStore.identity });
-
-			resetData();
-		});
+	const deleteData = async (params: { collection: string; satelliteId: Principal }) => {
+		await deleteAssets({ ...params, identity: $authStore.identity });
+		resetData();
+	};
 
 	const reload = async () => {
 		emit({ message: 'junoCloseActions' });

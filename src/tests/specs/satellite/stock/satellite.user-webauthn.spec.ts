@@ -1,17 +1,14 @@
-import type { _SERVICE as SatelliteActor } from '$declarations/satellite/satellite.did';
-import { idlFactory as idlFactorSatellite } from '$declarations/satellite/satellite.factory.did';
-import type { Identity, SignIdentity } from '@dfinity/agent';
+import { type SatelliteActor, idlFactorySatellite } from '$declarations';
+import type { DerEncodedPublicKey, Identity, SignIdentity } from '@dfinity/agent';
 import { Ed25519KeyIdentity } from '@dfinity/identity';
 import { type Actor, PocketIc } from '@dfinity/pic';
 import {
-	arrayBufferToUint8Array,
 	arrayOfNumberToUint8Array,
 	assertNonNullish,
 	fromNullable,
 	toNullable
 } from '@dfinity/utils';
 import {
-	JUNO_DATASTORE_ERROR_USER_WEBAUTHN_AAGUID_INVALID_LENGTH,
 	JUNO_DATASTORE_ERROR_USER_WEBAUTHN_CALLER_KEY,
 	JUNO_DATASTORE_ERROR_USER_WEBAUTHN_CANNOT_UPDATE,
 	JUNO_DATASTORE_ERROR_USER_WEBAUTHN_INVALID_DATA
@@ -52,7 +49,7 @@ describe('Satellite > User Webauthn', () => {
 		pic = await PocketIc.create(inject('PIC_URL'));
 
 		const { actor: c } = await pic.setupCanister<SatelliteActor>({
-			idlFactory: idlFactorSatellite,
+			idlFactory: idlFactorySatellite,
 			wasm: SATELLITE_WASM_PATH,
 			arg: controllersInitArgs(controller),
 			sender: controller.getPrincipal()
@@ -69,14 +66,14 @@ describe('Satellite > User Webauthn', () => {
 
 	describe('Set', () => {
 		let user: SignIdentity;
-		let userPublicKey: Uint8Array;
+		let userPublicKey: DerEncodedPublicKey;
 		let credentialId: string;
 
 		beforeEach(() => {
 			user = Ed25519KeyIdentity.generate();
 			actor.setIdentity(user);
 
-			userPublicKey = arrayBufferToUint8Array(user.getPublicKey().toDer());
+			userPublicKey = user.getPublicKey().toDer();
 
 			credentialId = nanoid();
 		});
@@ -93,7 +90,9 @@ describe('Satellite > User Webauthn', () => {
 
 				const data = await fromArray(doc?.data ?? []);
 
-				expect((data as { publicKey: Uint8Array }).publicKey).toEqual(userPublicKey);
+				expect((data as { publicKey: Uint8Array }).publicKey).toEqual(
+					new Uint8Array(userPublicKey)
+				);
 			});
 
 			it('should not create a user-webauthn with invalid additional data fields', async () => {
@@ -151,85 +150,6 @@ describe('Satellite > User Webauthn', () => {
 						version: toNullable(1n)
 					})
 				).rejects.toThrow(JUNO_DATASTORE_ERROR_USER_WEBAUTHN_CANNOT_UPDATE);
-			});
-
-			describe('AAGUID', () => {
-				const AAGUID_ZERO = new Array(16).fill(0);
-
-				// deadbeef-0001-0203-0405-060708090a0b
-				const AAGUID = [
-					0xde, 0xad, 0xbe, 0xef, 0x00, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08, 0x09, 0x0a,
-					0x0b
-				];
-
-				const INVALID_AAGUID_LEN_15 = new Array(15).fill(0);
-				const INVALID_AAGUID_LEN_17 = new Array(17).fill(0);
-
-				it('should create user-webauthn with valid aaguid', async () => {
-					await createUserWebAuthn({ publicKey: userPublicKey, credentialId, aaguid: AAGUID });
-
-					const { get_doc } = actor;
-
-					const doc = fromNullable(await get_doc('#user-webauthn', credentialId));
-
-					expect(doc).not.toBeUndefined();
-
-					const data = await fromArray(doc?.data ?? []);
-
-					expect((data as { aaguid: number[] }).aaguid).toEqual(AAGUID);
-				});
-
-				it('should create user-webauthn with aaguid zero (some providers intentionally set it to zero)', async () => {
-					await createUserWebAuthn({ publicKey: userPublicKey, credentialId, aaguid: AAGUID_ZERO });
-
-					const { get_doc } = actor;
-
-					const doc = fromNullable(await get_doc('#user-webauthn', credentialId));
-
-					expect(doc).not.toBeUndefined();
-
-					const data = await fromArray(doc?.data ?? []);
-
-					expect((data as { aaguid: number[] }).aaguid).toEqual(AAGUID_ZERO);
-				});
-
-				it('should not create a user-webauthn with aaguid too short', async () => {
-					const { set_doc } = actor;
-
-					const data = await toArray({
-						publicKey: userPublicKey,
-						aaguid: INVALID_AAGUID_LEN_15
-					});
-
-					await expect(
-						set_doc('#user-webauthn', credentialId, {
-							data,
-							description: toNullable(),
-							version: toNullable()
-						})
-					).rejects.toThrow(
-						new RegExp(JUNO_DATASTORE_ERROR_USER_WEBAUTHN_AAGUID_INVALID_LENGTH, 'i')
-					);
-				});
-
-				it('should not create a user-webauthn with aaguid too long', async () => {
-					const { set_doc } = actor;
-
-					const data = await toArray({
-						publicKey: userPublicKey,
-						aaguid: INVALID_AAGUID_LEN_17
-					});
-
-					await expect(
-						set_doc('#user-webauthn', credentialId, {
-							data,
-							description: toNullable(),
-							version: toNullable()
-						})
-					).rejects.toThrow(
-						new RegExp(JUNO_DATASTORE_ERROR_USER_WEBAUTHN_AAGUID_INVALID_LENGTH, 'i')
-					);
-				});
 			});
 		});
 
@@ -324,7 +244,7 @@ describe('Satellite > User Webauthn', () => {
 			user = Ed25519KeyIdentity.generate();
 			actor.setIdentity(user);
 
-			userPublicKey = arrayBufferToUint8Array(user.getPublicKey().toDer());
+			userPublicKey = user.getPublicKey().toDer();
 
 			credentialId = nanoid();
 

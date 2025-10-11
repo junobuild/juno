@@ -3,7 +3,7 @@
 	import { isNullish, nonNullish } from '@dfinity/utils';
 	import { getContext, untrack } from 'svelte';
 	import { fade } from 'svelte/transition';
-	import type { Doc as DocType } from '$declarations/satellite/satellite.did';
+	import type { SatelliteDid } from '$declarations';
 	import { deleteDocs } from '$lib/api/satellites.api';
 	import CollectionEmpty from '$lib/components/collections/CollectionEmpty.svelte';
 	import DataCollectionDelete from '$lib/components/data/DataCollectionDelete.svelte';
@@ -30,12 +30,14 @@
 		store: paginationStore,
 		resetPage,
 		list
-	}: PaginationContext<DocType> = getContext<PaginationContext<DocType>>(PAGINATION_CONTEXT_KEY);
+	}: PaginationContext<SatelliteDid.Doc> = getContext<PaginationContext<SatelliteDid.Doc>>(
+		PAGINATION_CONTEXT_KEY
+	);
 
 	let empty = $derived($paginationStore.items?.length === 0 && nonNullish(collection));
 
-	const { store: docsStore, resetData }: DataContext<DocType> =
-		getContext<DataContext<DocType>>(DATA_CONTEXT_KEY);
+	const { store: docsStore, resetData }: DataContext<SatelliteDid.Doc> =
+		getContext<DataContext<SatelliteDid.Doc>>(DATA_CONTEXT_KEY);
 
 	const load = async () => {
 		resetPage();
@@ -57,12 +59,11 @@
 	 * Delete data
 	 */
 
-	let deleteData: (params: { collection: string; satelliteId: Principal }) => Promise<void> =
-		$derived(async (params: { collection: string; satelliteId: Principal }) => {
-			await deleteDocs({ ...params, identity: $authStore.identity });
+	const deleteData = async (params: { collection: string; satelliteId: Principal }) => {
+		await deleteDocs({ ...params, identity: $authStore.identity });
 
-			resetData();
-		});
+		resetData();
+	};
 
 	const reload = async () => {
 		emit({ message: 'junoCloseActions' });

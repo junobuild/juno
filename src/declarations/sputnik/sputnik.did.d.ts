@@ -124,6 +124,13 @@ export interface InitAssetKey {
 	encoding_type: [] | [string];
 	full_path: string;
 }
+export interface InitSatelliteArgs {
+	controllers: Array<Principal>;
+	storage: [] | [InitStorageArgs];
+}
+export interface InitStorageArgs {
+	system_memory: [] | [Memory];
+}
 export interface InitUploadResult {
 	batch_id: bigint;
 }
@@ -238,9 +245,6 @@ export interface Rule {
 	rate_config: [] | [RateConfig];
 	write: Permission;
 	max_changes_per_user: [] | [number];
-}
-export interface SegmentArgs {
-	controllers: Array<Principal>;
 }
 export interface SegmentsDeploymentOptions {
 	orbiter: [] | [string];
@@ -401,6 +405,7 @@ export interface _SERVICE {
 	set_rule: ActorMethod<[CollectionType, string, SetRule], Rule>;
 	set_storage_config: ActorMethod<[SetStorageConfig], StorageConfig>;
 	submit_proposal: ActorMethod<[bigint], [bigint, Proposal]>;
+	switch_storage_system_memory: ActorMethod<[], undefined>;
 	upload_asset_chunk: ActorMethod<[UploadChunk], UploadChunkResult>;
 	upload_proposal_asset_chunk: ActorMethod<[UploadChunk], UploadChunkResult>;
 }

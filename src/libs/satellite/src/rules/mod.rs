@@ -1,2 +1,3 @@
+mod internal;
 pub mod store;
-pub mod upgrade;
+pub mod switch_memory;

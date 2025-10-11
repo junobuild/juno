@@ -1,11 +1,4 @@
-import type {
-	canister_log_record,
-	canister_settings,
-	list_canister_snapshots_result,
-	log_visibility,
-	snapshot,
-	snapshot_id
-} from '$declarations/ic/ic.did';
+import type { ICDid } from '$declarations';
 import { getAgent } from '$lib/api/_agent/_agent.api';
 import { getICActor } from '$lib/api/actors/actor.ic.api';
 import type { CanisterInfo, CanisterLogVisibility, CanisterStatus } from '$lib/types/canister';
@@ -27,7 +20,7 @@ const toStatus = (
 			? 'stopping'
 			: 'running';
 
-const toLogVisibility = (log_visibility: log_visibility): CanisterLogVisibility =>
+const toLogVisibility = (log_visibility: ICDid.log_visibility): CanisterLogVisibility =>
 	'controllers' in log_visibility ? 'controllers' : 'public';
 
 export const canisterStatus = async ({
@@ -135,7 +128,7 @@ export const canisterLogs = async ({
 }: {
 	canisterId: Principal;
 	identity: Identity;
-}): Promise<canister_log_record[]> => {
+}): Promise<ICDid.canister_log_record[]> => {
 	const { fetch_canister_logs } = await getICActor({ identity });
 
 	const { canister_log_records } = await fetch_canister_logs({
@@ -165,9 +158,9 @@ export const createSnapshot = async ({
 	identity
 }: {
 	canisterId: Principal;
-	snapshotId?: snapshot_id;
+	snapshotId?: ICDid.snapshot_id;
 	identity: Identity;
-}): Promise<snapshot> => {
+}): Promise<ICDid.snapshot> => {
 	const { take_canister_snapshot } = await getICActor({ identity });
 
 	return await take_canister_snapshot({
@@ -182,7 +175,7 @@ export const restoreSnapshot = async ({
 	identity
 }: {
 	canisterId: Principal;
-	snapshotId: snapshot_id;
+	snapshotId: ICDid.snapshot_id;
 	identity: Identity;
 }): Promise<void> => {
 	const { load_canister_snapshot } = await getICActor({ identity });
@@ -200,7 +193,7 @@ export const deleteSnapshot = async ({
 	identity
 }: {
 	canisterId: Principal;
-	snapshotId: snapshot_id;
+	snapshotId: ICDid.snapshot_id;
 	identity: Identity;
 }): Promise<void> => {
 	const { delete_canister_snapshot } = await getICActor({ identity });
@@ -217,7 +210,7 @@ export const listSnapshots = async ({
 }: {
 	canisterId: Principal;
 	identity: Identity;
-}): Promise<list_canister_snapshots_result> => {
+}): Promise<ICDid.list_canister_snapshots_result> => {
 	const { list_canister_snapshots } = await getICActor({ identity });
 
 	return await list_canister_snapshots({
@@ -232,7 +225,7 @@ export const canisterUpdateSettings = async ({
 }: {
 	canisterId: Principal;
 	identity: Identity;
-	settings: canister_settings;
+	settings: ICDid.canister_settings;
 }): Promise<void> => {
 	const { update_settings } = await getICActor({ identity });
 	return update_settings({ canister_id: canisterId, sender_canister_version: [], settings });

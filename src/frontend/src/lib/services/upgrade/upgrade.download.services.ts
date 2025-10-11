@@ -1,4 +1,4 @@
-import type { AssetNoContent } from '$declarations/satellite/satellite.did';
+import type { SatelliteDid } from '$declarations';
 import { downloadWasm } from '$lib/rest/cdn.dev';
 import { downloadRelease } from '$lib/rest/cdn.rest';
 import type { OptionIdentity } from '$lib/types/itentity';
@@ -30,7 +30,7 @@ export const downloadWasmFromDevCdn = async ({
 	satelliteId,
 	identity
 }: {
-	asset: AssetNoContent;
+	asset: SatelliteDid.AssetNoContent;
 	satelliteId: Principal;
 	identity: OptionIdentity;
 }): Promise<Omit<Wasm, 'version'>> => {

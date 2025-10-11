@@ -1,8 +1,4 @@
-import type {
-	CyclesMonitoringStrategy,
-	Orbiter,
-	Satellite
-} from '$declarations/mission_control/mission_control.did';
+import type { MissionControlDid } from '$declarations';
 import { getOrbiterFee, getSatelliteFee } from '$lib/api/console.api';
 import { getAccountIdentifier } from '$lib/api/icp-index.api';
 import { updateAndStartMonitoring } from '$lib/api/mission-control.api';
@@ -194,7 +190,7 @@ interface CreateWizardParams {
 	missionControlId: Option<Principal>;
 	identity: OptionIdentity;
 	subnetId: PrincipalText | undefined;
-	monitoringStrategy: CyclesMonitoringStrategy | undefined;
+	monitoringStrategy: MissionControlDid.CyclesMonitoringStrategy | undefined;
 	withCredits: boolean;
 	onProgress: (progress: WizardCreateProgress | undefined) => void;
 }
@@ -204,14 +200,16 @@ export const createSatelliteWizard = async ({
 	onProgress,
 	subnetId,
 	satelliteName,
+	satelliteKind,
 	monitoringStrategy,
 	...rest
 }: CreateWizardParams & {
 	satelliteName: string | undefined;
+	satelliteKind: 'website' | 'application' | undefined;
 }): Promise<
 	| {
 			success: 'ok';
-			segment: Satellite;
+			segment: MissionControlDid.Satellite;
 	  }
 	| { success: 'error'; err?: unknown }
 > => {
@@ -222,20 +220,35 @@ export const createSatelliteWizard = async ({
 		return { success: 'error' };
 	}
 
-	const createFn = async ({ identity }: { identity: Identity }): Promise<Satellite> => {
-		const fn = nonNullish(subnetId) ? createSatelliteWithConfig : createSatellite;
+	if (isNullish(satelliteKind)) {
+		toasts.error({
+			text: get(i18n).errors.satellite_kind
+		});
+		return { success: 'error' };
+	}
+
+	const createFn = async ({
+		identity
+	}: {
+		identity: Identity;
+	}): Promise<MissionControlDid.Satellite> => {
+		const fn =
+			nonNullish(subnetId) || satelliteKind !== 'website'
+				? createSatelliteWithConfig
+				: createSatellite;
 
 		return await fn({
 			identity,
 			missionControlId,
 			config: {
 				name: satelliteName,
-				...(nonNullish(subnetId) && { subnetId: Principal.fromText(subnetId) })
+				...(nonNullish(subnetId) && { subnetId: Principal.fromText(subnetId) }),
+				kind: satelliteKind
 			}
 		});
 	};
 
-	const buildMonitoringFn = (): MonitoringFn<Satellite> | undefined => {
+	const buildMonitoringFn = (): MonitoringFn<MissionControlDid.Satellite> | undefined => {
 		if (isNullish(monitoringStrategy)) {
 			return undefined;
 		}
@@ -245,7 +258,7 @@ export const createSatelliteWizard = async ({
 			segment
 		}: {
 			identity: Identity;
-			segment: Satellite;
+			segment: MissionControlDid.Satellite;
 		}): Promise<void> => {
 			assertNonNullish(missionControlId);
 
@@ -273,7 +286,7 @@ export const createSatelliteWizard = async ({
 		segment
 	}: {
 		identity: Identity;
-		segment: Satellite;
+		segment: MissionControlDid.Satellite;
 	}): Promise<void> => {
 		assertNonNullish(missionControlId);
 
@@ -305,11 +318,15 @@ export const createOrbiterWizard = async ({
 }: CreateWizardParams): Promise<
 	| {
 			success: 'ok';
-			segment: Orbiter;
+			segment: MissionControlDid.Orbiter;
 	  }
 	| { success: 'error'; err?: unknown }
 > => {
-	const createFn = async ({ identity }: { identity: Identity }): Promise<Orbiter> => {
+	const createFn = async ({
+		identity
+	}: {
+		identity: Identity;
+	}): Promise<MissionControlDid.Orbiter> => {
 		const fn = nonNullish(subnetId) ? createOrbiterWithConfig : createOrbiter;
 
 		return await fn({
@@ -321,7 +338,7 @@ export const createOrbiterWizard = async ({
 		});
 	};
 
-	const buildMonitoringFn = (): MonitoringFn<Orbiter> | undefined => {
+	const buildMonitoringFn = (): MonitoringFn<MissionControlDid.Orbiter> | undefined => {
 		if (isNullish(monitoringStrategy)) {
 			return undefined;
 		}
@@ -331,7 +348,7 @@ export const createOrbiterWizard = async ({
 			segment
 		}: {
 			identity: Identity;
-			segment: Orbiter;
+			segment: MissionControlDid.Orbiter;
 		}): Promise<void> => {
 			assertNonNullish(missionControlId);
 

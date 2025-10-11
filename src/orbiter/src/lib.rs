@@ -34,8 +34,8 @@ use crate::types::interface::SetTrackEvent;
 use ic_cdk_macros::export_candid;
 use ic_http_certification::HttpRequest;
 use ic_http_certification::HttpResponse;
+use junobuild_shared::types::interface::InitOrbiterArgs;
 use junobuild_shared::types::interface::MemorySize;
-use junobuild_shared::types::interface::SegmentArgs;
 use junobuild_shared::types::interface::{
     DeleteControllersArgs, DepositCyclesArgs, SetControllersArgs,
 };

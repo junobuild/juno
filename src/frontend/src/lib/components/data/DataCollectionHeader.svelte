@@ -1,7 +1,6 @@
 <script lang="ts">
 	import { nonNullish } from '@dfinity/utils';
 	import { getContext, type Snippet } from 'svelte';
-	import { fade } from 'svelte/transition';
 	import DataActions from '$lib/components/data/DataActions.svelte';
 	import DataOrder from '$lib/components/data/DataOrder.svelte';
 	import ListParamsFilter from '$lib/components/list/ListParamsFilter.svelte';
@@ -23,7 +22,7 @@
 	<span>{@render children()}</span>
 
 	{#if collectionSelected}
-		<div transition:fade>
+		<div>
 			<ListParamsFilter />
 			<DataOrder />
 			<DataActions>

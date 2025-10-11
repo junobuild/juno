@@ -15,6 +15,8 @@
 		"light_on": "日间模式",
 		"submit": "提交",
 		"home": "主页",
+		"docs": "Docs",
+		"changelog": "Changelog",
 		"controllers": "Access Keys",
 		"settings": "设置",
 		"setup": "Setup",
@@ -85,7 +87,11 @@
 		"usage": "用途",
 		"creating_snapshot": "创建快照...",
 		"created": "创建于",
-		"updated": "更新于"
+		"updated": "更新于",
+		"production": "Production",
+		"staging": "Staging",
+		"test": "Test",
+		"unspecified": "Unspecified"
 	},
 	"canisters": {
 		"top_up": "充值",
@@ -274,8 +280,14 @@
 		"description": "Satellite 是一个为你的项目提供WEB3服务的容器.它提供的特性像键值存储，文件存储, 主机服务,以及认证.",
 		"name": "名字",
 		"satellite_name": "Satellite 名字",
+		"what_are_you_building": "What are you building",
+		"website": "Website",
+		"application": "Application",
+		"environment": "Environment",
+		"tags": "Tags",
+		"tags_placeholder": "Comma-separated or one per line. Leave empty for no tags.",
 		"enter_name": "输入你的 satellite 名字",
-		"edit_name": "Edit name",
+		"edit_details": "Edit details",
 		"create_satellite_price": "创建一个新的 satellite 需要 {0}. 你的当前 wallet 余额是 {1}.",
 		"loading_satellites": "加载你的satellites",
 		"overview": "概要",
@@ -455,6 +467,8 @@
 		"custom_domain": "定制域名",
 		"default_domain": "默认satellite 域名",
 		"domain": "域名",
+		"domains": "Domains",
+		"hosting_memory": "Hosting memory",
 		"status": "状态",
 		"bn_id": "BN 标识",
 		"info": "信息",
@@ -468,7 +482,9 @@
 		"files_deployed": "文件已经部署",
 		"set_auth_domain_question": "Use this domain as the default for user authentication",
 		"domain_name": "域名",
-		"default_url": "Default URL"
+		"default_url": "Default URL",
+		"switch_memory": "Switch memory",
+		"switch_memory_confirm": "Are you sure you want to switch the hosting storage to {0}?"
 	},
 	"functions": {
 		"title": "功能",
@@ -510,9 +526,10 @@
 		"cli_missing_selection": "没选择 mission control 或 satellite(s) .",
 		"cli_unexpected_error": "在增加你的控制者时出现不可预见的错误.",
 		"satellite_name_missing": "必须提供一个名字给 satellite.",
+		"satellite_kind": "Please choose what you are building to continue.",
 		"satellite_unexpected_error": "创建 satellite时出现未知错误.",
 		"satellite_no_found": "Nothing here. Return to your launchpad to find your satellites.",
-		"satellite_name_update": "试图修改你的 satellite 名字出现异常.",
+		"satellite_metadata_update": "Unexpected error(s) while trying to set the metadata of your satellite.",
 		"satellite_missing_name": "必须提供一个名字.",
 		"satellites_not_loaded": "The satellites 数据不能加载.",
 		"canister_stop": "停止智能合约中遇到异常错误.",
@@ -535,6 +552,7 @@
 		"hosting_count_assets": "获取你的dapp部署文件数量出错.",
 		"hosting_no_custom_domain": "没选择域名",
 		"hosting_delete_custom_domain": "删除域名出错",
+		"hosting_switch_memory": "Error while switching hosting storage memory.",
 		"controllers_listing": "Error while listing the access keys.",
 		"controllers_no_selection": "No access key to delete selected.",
 		"controllers_delete": "Unexpected error(s) while deleting the access key.",
@@ -584,6 +602,7 @@
 		"full_path_end_slash": "The full path must not end with a /",
 		"invalid_email": "请提供一个有效的邮箱地址.",
 		"invalid_destination": "请输入有效的 ICP 或 ICRC 地址.",
+		"invalid_metadata": "The metadata provided is invalid.",
 		"empty_amount": "请输入转账数量.",
 		"invalid_amount": "数值应该大于零并小于你账户余额减去费用.",
 		"empty_balance": "你的钱包还没有有效的金额.",
@@ -766,6 +785,8 @@
 		"user_details": "用户详细信息",
 		"identifier": "身份",
 		"provider": "提供者",
+		"authenticator": "Authenticator",
+		"authenticator_logo": "Logo of the authenticator, if available",
 		"empty": "目前还有注册的用户.",
 		"view_details": "查看用户详细信息",
 		"persistence": "永久存储",
@@ -929,5 +950,9 @@
 		"go_home_text": "Go back to the home page to start your journey.",
 		"go_launchpad": "Go to launchpad",
 		"go_home": "Go to home"
+	},
+	"spotlight": {
+		"search_title": "Quick access",
+		"search_placeholder": "Navigate or run an action..."
 	}
 }

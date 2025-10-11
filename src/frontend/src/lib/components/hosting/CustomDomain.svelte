@@ -2,11 +2,7 @@
 	import { isNullish, nonNullish, fromNullishNullable } from '@dfinity/utils';
 	import { createEventDispatcher, onDestroy, onMount } from 'svelte';
 	import { run } from 'svelte/legacy';
-	import type { Satellite } from '$declarations/mission_control/mission_control.did';
-	import type {
-		AuthenticationConfig,
-		CustomDomain as CustomDomainType
-	} from '$declarations/satellite/satellite.did';
+	import type { SatelliteDid, MissionControlDid } from '$declarations';
 	import CustomDomainActions from '$lib/components/hosting/CustomDomainActions.svelte';
 	import IconCheckCircle from '$lib/components/icons/IconCheckCircle.svelte';
 	import IconSync from '$lib/components/icons/IconSync.svelte';
@@ -24,9 +20,9 @@
 		url: string;
 		ariaLabel?: string;
 		type?: 'default' | 'custom';
-		customDomain?: [string, CustomDomainType] | undefined;
-		satellite?: Satellite | undefined;
-		config?: AuthenticationConfig | undefined;
+		customDomain?: [string, SatelliteDid.CustomDomain] | undefined;
+		satellite?: MissionControlDid.Satellite | undefined;
+		config?: SatelliteDid.AuthenticationConfig | undefined;
 	}
 
 	let {

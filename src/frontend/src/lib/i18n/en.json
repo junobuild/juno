@@ -15,6 +15,8 @@
 		"light_on": "Light on",
 		"submit": "Submit",
 		"home": "Home",
+		"docs": "Docs",
+		"changelog": "Changelog",
 		"controllers": "Access Keys",
 		"settings": "Settings",
 		"setup": "Setup",
@@ -85,7 +87,11 @@
 		"usage": "Usage",
 		"creating_snapshot": "Creating a snapshot...",
 		"created": "Created",
-		"updated": "Updated"
+		"updated": "Updated",
+		"production": "Production",
+		"staging": "Staging",
+		"test": "Test",
+		"unspecified": "Unspecified"
 	},
 	"canisters": {
 		"top_up": "Top-up",
@@ -274,8 +280,14 @@
 		"description": "A satellite is a container for your project. It provides features like a simple key pair store, file storage, hosting, and authentication.",
 		"name": "Name",
 		"satellite_name": "Satellite name",
+		"what_are_you_building": "What are you building",
+		"website": "Website",
+		"application": "Application",
+		"environment": "Environment",
+		"tags": "Tags",
+		"tags_placeholder": "Comma-separated or one per line. Leave empty for no tags.",
 		"enter_name": "Enter a name for your satellite",
-		"edit_name": "Edit name",
+		"edit_details": "Edit details",
 		"create_satellite_price": "Starting a new satellite requires {0}. Your current wallet balance is {1}.",
 		"loading_satellites": "Loading your satellites",
 		"overview": "Overview",
@@ -455,6 +467,8 @@
 		"custom_domain": "Custom domain",
 		"default_domain": "Default satellite domain",
 		"domain": "Domain",
+		"domains": "Domains",
+		"hosting_memory": "Hosting memory",
 		"status": "Status",
 		"bn_id": "BN id",
 		"info": "Info",
@@ -468,7 +482,9 @@
 		"files_deployed": "files deployed",
 		"set_auth_domain_question": "Use this domain as the default for user authentication",
 		"domain_name": "Domain name",
-		"default_url": "Default URL"
+		"default_url": "Default URL",
+		"switch_memory": "Switch memory",
+		"switch_memory_confirm": "Are you sure you want to switch the hosting storage to {0}?"
 	},
 	"functions": {
 		"title": "Functions",
@@ -510,9 +526,10 @@
 		"cli_missing_selection": "No mission control or satellite(s) selected.",
 		"cli_unexpected_error": "Unexpected error(s) while adding your admin access key.",
 		"satellite_name_missing": "A name for the satellite must be provided.",
+		"satellite_kind": "Please choose what you are building to continue.",
 		"satellite_unexpected_error": "Unexpected error(s) while creating the satellite.",
 		"satellite_no_found": "Nothing here. Return to your launchpad to find your satellites.",
-		"satellite_name_update": "Unexpected error(s) while trying to rename your satellite.",
+		"satellite_metadata_update": "Unexpected error(s) while trying to set the metadata of your satellite.",
 		"satellite_missing_name": "A name must be provided.",
 		"satellites_not_loaded": "The satellites data are not yet loaded.",
 		"canister_stop": "Unexpected error(s) while trying to stop the module.",
@@ -535,6 +552,7 @@
 		"hosting_count_assets": "Error while retrieving the count of deployed files for your dapp.",
 		"hosting_no_custom_domain": "No custom domain selected",
 		"hosting_delete_custom_domain": "Error while deleting the custom domain.",
+		"hosting_switch_memory": "Error while switching hosting storage memory.",
 		"controllers_listing": "Error while listing the access keys.",
 		"controllers_no_selection": "No access key to delete selected.",
 		"controllers_delete": "Unexpected error(s) while deleting the access key.",
@@ -584,6 +602,7 @@
 		"full_path_end_slash": "The full path must not end with a /",
 		"invalid_email": "Please enter a valid email address.",
 		"invalid_destination": "Please enter a valid ICP or ICRC destination address.",
+		"invalid_metadata": "The metadata provided is invalid.",
 		"empty_amount": "Please enter an amount for the transfer.",
 		"invalid_amount": "The amount should be greater than zero and less than your balance minus the fee.",
 		"empty_balance": "Your wallet does not have any available funds.",
@@ -766,6 +785,8 @@
 		"user_details": "User's details",
 		"identifier": "Identifier",
 		"provider": "Provider",
+		"authenticator": "Authenticator",
+		"authenticator_logo": "Logo of the authenticator, if available",
 		"empty": "No registered users at the moment.",
 		"view_details": "View user details",
 		"persistence": "Persistence",
@@ -929,5 +950,9 @@
 		"go_home_text": "Go back to the home page to start your journey.",
 		"go_launchpad": "Go to launchpad",
 		"go_home": "Go to home"
+	},
+	"spotlight": {
+		"search_title": "Quick access",
+		"search_placeholder": "Navigate or run an action..."
 	}
 }

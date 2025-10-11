@@ -3,7 +3,7 @@
 	import { createEventDispatcher } from 'svelte';
 	import { run, stopPropagation } from 'svelte/legacy';
 	import { fade } from 'svelte/transition';
-	import type { CustomDomain as CustomDomainType } from '$declarations/satellite/satellite.did';
+	import type { SatelliteDid } from '$declarations';
 	import IconCheckCircle from '$lib/components/icons/IconCheckCircle.svelte';
 	import Identifier from '$lib/components/ui/Identifier.svelte';
 	import Popover from '$lib/components/ui/Popover.svelte';
@@ -15,7 +15,7 @@
 
 	interface Props {
 		info: {
-			customDomain: [string, CustomDomainType] | undefined;
+			customDomain: [string, SatelliteDid.CustomDomain] | undefined;
 			registrationState: Option<CustomDomainRegistrationState>;
 			mainDomain: boolean;
 		};

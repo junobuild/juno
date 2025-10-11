@@ -2,14 +2,14 @@
 	import { nonNullish } from '@dfinity/utils';
 	import type { Snippet } from 'svelte';
 	import { run } from 'svelte/legacy';
-	import type { Rule } from '$declarations/satellite/satellite.did';
+	import type { SatelliteDid } from '$declarations';
 	import Html from '$lib/components/ui/Html.svelte';
 	import { listParamsFiltered } from '$lib/derived/list-params.derived';
 	import { i18n } from '$lib/stores/i18n.store';
 	import { i18nFormat } from '$lib/utils/i18n.utils';
 
 	interface Props {
-		rule: Rule | undefined;
+		rule: SatelliteDid.Rule | undefined;
 		collection: string | undefined;
 		filter?: Snippet;
 	}

@@ -59,6 +59,12 @@ export interface CreateCanisterArgs {
 	subnet_id: [] | [Principal];
 	user: Principal;
 }
+export interface CreateSatelliteArgs {
+	block_index: [] | [bigint];
+	subnet_id: [] | [Principal];
+	storage: [] | [InitStorageArgs];
+	user: Principal;
+}
 export interface CustomDomain {
 	updated_at: bigint;
 	created_at: bigint;
@@ -95,6 +101,10 @@ export interface InitAssetKey {
 	encoding_type: [] | [string];
 	full_path: string;
 }
+export interface InitStorageArgs {
+	system_memory: [] | [InitStorageMemory];
+}
+export type InitStorageMemory = { Heap: null } | { Stable: null };
 export interface InitUploadResult {
 	batch_id: bigint;
 }
@@ -271,7 +281,7 @@ export interface _SERVICE {
 	commit_proposal_many_assets_upload: ActorMethod<[Array<CommitBatch>], undefined>;
 	count_proposals: ActorMethod<[], bigint>;
 	create_orbiter: ActorMethod<[CreateCanisterArgs], Principal>;
-	create_satellite: ActorMethod<[CreateCanisterArgs], Principal>;
+	create_satellite: ActorMethod<[CreateSatelliteArgs], Principal>;
 	del_controllers: ActorMethod<[DeleteControllersArgs], undefined>;
 	del_custom_domain: ActorMethod<[string], undefined>;
 	delete_proposal_assets: ActorMethod<[DeleteProposalAssets], undefined>;

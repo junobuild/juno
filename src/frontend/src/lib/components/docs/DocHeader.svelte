@@ -3,7 +3,7 @@
 	import { isNullish, jsonReplacer } from '@dfinity/utils';
 	import { fromArray } from '@junobuild/utils';
 	import { getContext } from 'svelte';
-	import type { Doc } from '$declarations/satellite/satellite.did';
+	import type { SatelliteDid } from '$declarations';
 	import { deleteDoc } from '$lib/api/satellites.api';
 	import DataHeader from '$lib/components/data/DataHeader.svelte';
 	import DataKeyDelete from '$lib/components/data/DataKeyDelete.svelte';
@@ -19,8 +19,8 @@
 	import { filenameTimestamp, JSON_PICKER_OPTIONS, saveToFileSystem } from '$lib/utils/save.utils';
 
 	const { store, reload }: RulesContext = getContext<RulesContext>(RULES_CONTEXT_KEY);
-	const { store: docsStore, resetData }: DataContext<Doc> =
-		getContext<DataContext<Doc>>(DATA_CONTEXT_KEY);
+	const { store: docsStore, resetData }: DataContext<SatelliteDid.Doc> =
+		getContext<DataContext<SatelliteDid.Doc>>(DATA_CONTEXT_KEY);
 
 	let collection: string | undefined = $derived($store.rule?.[0]);
 
@@ -30,26 +30,25 @@
 	 * Delete data
 	 */
 
-	let doc: Doc | undefined = $derived($docsStore?.data);
+	let doc = $derived($docsStore?.data);
 
-	let deleteData: (params: { collection: string; satelliteId: Principal }) => Promise<void> =
-		$derived(async (params: { collection: string; satelliteId: Principal }) => {
-			if (isNullish(key) || key === '') {
-				toasts.error({
-					text: $i18n.errors.key_invalid
-				});
-				return;
-			}
-
-			await deleteDoc({
-				...params,
-				key,
-				doc,
-				identity: $authStore.identity
+	const deleteData = async (params: { collection: string; satelliteId: Principal }) => {
+		if (isNullish(key) || key === '') {
+			toasts.error({
+				text: $i18n.errors.key_invalid
 			});
+			return;
+		}
 
-			resetData();
+		await deleteDoc({
+			...params,
+			key,
+			doc,
+			identity: $authStore.identity
 		});
+
+		resetData();
+	};
 
 	const download = async () => {
 		if (isNullish(doc)) {

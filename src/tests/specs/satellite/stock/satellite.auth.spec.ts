@@ -1,44 +1,36 @@
-import type {
-	_SERVICE as SatelliteActor,
-	SetAuthenticationConfig
-} from '$declarations/satellite/satellite.did';
-import { idlFactory as idlFactorSatellite } from '$declarations/satellite/satellite.factory.did';
+import type { SatelliteActor, SatelliteDid } from '$declarations';
 import { AnonymousIdentity } from '@dfinity/agent';
-import { Ed25519KeyIdentity } from '@dfinity/identity';
-import { type Actor, PocketIc } from '@dfinity/pic';
+import type { Ed25519KeyIdentity } from '@dfinity/identity';
+import type { Actor, PocketIc } from '@dfinity/pic';
 import type { Principal } from '@dfinity/principal';
 import { fromNullable, toNullable } from '@dfinity/utils';
 import {
 	JUNO_AUTH_ERROR_INVALID_ORIGIN,
 	JUNO_AUTH_ERROR_NOT_ADMIN_CONTROLLER
 } from '@junobuild/errors';
-import { inject } from 'vitest';
-import { deleteDefaultIndexHTML } from '../../../utils/satellite-tests.utils';
-import { controllersInitArgs, SATELLITE_WASM_PATH } from '../../../utils/setup-tests.utils';
+import { setupSatelliteStock } from '../../../utils/satellite-tests.utils';
 
 describe('Satellite > Authentication', () => {
 	let pic: PocketIc;
-	let actor: Actor<SatelliteActor>;
 	let canisterId: Principal;
+	let actor: Actor<SatelliteActor>;
+	let controller: Ed25519KeyIdentity;
 	let canisterIdUrl: string;
 
-	const controller = Ed25519KeyIdentity.generate();
-
 	beforeAll(async () => {
-		pic = await PocketIc.create(inject('PIC_URL'));
+		const {
+			actor: a,
+			canisterId: c,
+			pic: p,
+			controller: cO,
+			canisterIdUrl: url
+		} = await setupSatelliteStock();
 
-		const { actor: c, canisterId: cId } = await pic.setupCanister<SatelliteActor>({
-			idlFactory: idlFactorSatellite,
-			wasm: SATELLITE_WASM_PATH,
-			arg: controllersInitArgs(controller),
-			sender: controller.getPrincipal()
-		});
-
-		actor = c;
-		canisterId = cId;
-		canisterIdUrl = `https://${canisterId.toText()}.icp0.io`;
-
-		await deleteDefaultIndexHTML({ actor, controller });
+		pic = p;
+		canisterId = c;
+		actor = a;
+		controller = cO;
+		canisterIdUrl = url;
 	});
 
 	afterAll(async () => {
@@ -54,7 +46,7 @@ describe('Satellite > Authentication', () => {
 			config,
 			version
 		}: {
-			config: SetAuthenticationConfig;
+			config: SatelliteDid.SetAuthenticationConfig;
 			version: bigint;
 		}) => {
 			const { get_auth_config } = actor;
@@ -87,7 +79,7 @@ describe('Satellite > Authentication', () => {
 		it('should throw if derivation origin is malformed', async () => {
 			const { set_auth_config } = actor;
 
-			const config: SetAuthenticationConfig = {
+			const config: SatelliteDid.SetAuthenticationConfig = {
 				internet_identity: [
 					{
 						derivation_origin: [invalidDomain],
@@ -106,7 +98,7 @@ describe('Satellite > Authentication', () => {
 		it('should throw if external alternative origin is malformed', async () => {
 			const { set_auth_config } = actor;
 
-			const config: SetAuthenticationConfig = {
+			const config: SatelliteDid.SetAuthenticationConfig = {
 				internet_identity: [
 					{
 						derivation_origin: toNullable(),
@@ -125,7 +117,7 @@ describe('Satellite > Authentication', () => {
 		it('should set config auth domain', async () => {
 			const { set_auth_config } = actor;
 
-			const config: SetAuthenticationConfig = {
+			const config: SatelliteDid.SetAuthenticationConfig = {
 				internet_identity: [
 					{
 						derivation_origin: ['domain.com'],
@@ -167,7 +159,7 @@ describe('Satellite > Authentication', () => {
 		it('should set external alternative origins', async () => {
 			const { set_auth_config } = actor;
 
-			const config: SetAuthenticationConfig = {
+			const config: SatelliteDid.SetAuthenticationConfig = {
 				internet_identity: [
 					{
 						derivation_origin: ['domain.com'],
@@ -209,7 +201,7 @@ describe('Satellite > Authentication', () => {
 		it('should set config auth domain to none', async () => {
 			const { set_auth_config } = actor;
 
-			const config: SetAuthenticationConfig = {
+			const config: SatelliteDid.SetAuthenticationConfig = {
 				internet_identity: [
 					{
 						derivation_origin: [],
@@ -242,7 +234,7 @@ describe('Satellite > Authentication', () => {
 		it('should set config for ii to none', async () => {
 			const { set_auth_config } = actor;
 
-			const config: SetAuthenticationConfig = {
+			const config: SatelliteDid.SetAuthenticationConfig = {
 				internet_identity: [],
 				rules: [],
 				version: [3n]
@@ -277,7 +269,7 @@ describe('Satellite > Authentication', () => {
 				await set_custom_domain(urls[0], []);
 				await set_custom_domain(urls[1], []);
 
-				const config: SetAuthenticationConfig = {
+				const config: SatelliteDid.SetAuthenticationConfig = {
 					internet_identity: [
 						{
 							derivation_origin: ['domain.com'],
@@ -314,7 +306,7 @@ describe('Satellite > Authentication', () => {
 			it('should not expose canister id if canister id is the derivation origin', async () => {
 				const { set_auth_config, http_request } = actor;
 
-				const config: SetAuthenticationConfig = {
+				const config: SatelliteDid.SetAuthenticationConfig = {
 					internet_identity: [
 						{
 							derivation_origin: [`${canisterId.toText()}.icp0.io`],
@@ -354,7 +346,7 @@ describe('Satellite > Authentication', () => {
 				await del_custom_domain(urls[0]);
 				await del_custom_domain(urls[1]);
 
-				const config: SetAuthenticationConfig = {
+				const config: SatelliteDid.SetAuthenticationConfig = {
 					internet_identity: [
 						{
 							derivation_origin: [`${canisterId.toText()}.icp0.io`],
@@ -386,7 +378,7 @@ describe('Satellite > Authentication', () => {
 				await set_custom_domain(urls[0], []);
 				await set_custom_domain(urls[1], []);
 
-				const config: SetAuthenticationConfig = {
+				const config: SatelliteDid.SetAuthenticationConfig = {
 					internet_identity: [
 						{
 							derivation_origin: ['domain.com'],
@@ -427,7 +419,7 @@ describe('Satellite > Authentication', () => {
 			it('should filter external equals custom domains', async () => {
 				const { set_auth_config, http_request } = actor;
 
-				const config: SetAuthenticationConfig = {
+				const config: SatelliteDid.SetAuthenticationConfig = {
 					internet_identity: [
 						{
 							derivation_origin: [`${canisterId.toText()}.icp0.io`],
@@ -464,7 +456,7 @@ describe('Satellite > Authentication', () => {
 			it('should not expose canister id if canister id is the derivation origin', async () => {
 				const { set_auth_config, http_request } = actor;
 
-				const config: SetAuthenticationConfig = {
+				const config: SatelliteDid.SetAuthenticationConfig = {
 					internet_identity: [
 						{
 							derivation_origin: [`${canisterId.toText()}.icp0.io`],
@@ -504,7 +496,7 @@ describe('Satellite > Authentication', () => {
 				await del_custom_domain(urls[0]);
 				await del_custom_domain(urls[1]);
 
-				const config: SetAuthenticationConfig = {
+				const config: SatelliteDid.SetAuthenticationConfig = {
 					internet_identity: [
 						{
 							derivation_origin: [`${canisterId.toText()}.icp0.io`],
@@ -532,7 +524,7 @@ describe('Satellite > Authentication', () => {
 		it('should return config on set', async () => {
 			const { set_auth_config } = actor;
 
-			const config: SetAuthenticationConfig = {
+			const config: SatelliteDid.SetAuthenticationConfig = {
 				internet_identity: [
 					{
 						derivation_origin: ['domain.com'],

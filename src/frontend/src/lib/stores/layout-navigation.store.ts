@@ -1,9 +1,9 @@
-import type { Satellite } from '$declarations/mission_control/mission_control.did';
+import type { MissionControlDid } from '$declarations';
 import { initDataStore } from '$lib/stores/_data.store';
 import type { Component } from 'svelte';
 
 export const layoutNavigation = initDataStore<{
 	title: string;
-	satellite?: { satellite: Satellite; useInPageTitle: boolean };
+	satellite?: { satellite: MissionControlDid.Satellite; useInPageTitle: boolean };
 	icon: Component;
 }>();

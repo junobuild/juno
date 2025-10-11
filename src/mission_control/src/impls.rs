@@ -1,5 +1,6 @@
 use crate::memory::manager::init_stable_state;
 use crate::types::core::{Segment, SettingsMonitoring};
+use crate::types::interface::{CreateCanisterConfig, CreateSatelliteConfig};
 use crate::types::state::CyclesMonitoringStrategy::BelowThreshold;
 use crate::types::state::{
     Config, CyclesMonitoring, CyclesMonitoringStrategy, HeapState, MissionControlSettings,
@@ -330,4 +331,13 @@ impl Storable for MonitoringHistoryKey {
     }
 
     const BOUND: Bound = Bound::Unbounded;
+}
+
+impl From<&CreateSatelliteConfig> for CreateCanisterConfig {
+    fn from(args: &CreateSatelliteConfig) -> Self {
+        Self {
+            name: args.name.clone(),
+            subnet_id: args.subnet_id,
+        }
+    }
 }

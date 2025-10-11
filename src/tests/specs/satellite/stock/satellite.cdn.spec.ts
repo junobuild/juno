@@ -1,8 +1,7 @@
-import type { _SERVICE as SatelliteActor, SetRule } from '$declarations/satellite/satellite.did';
-import { idlFactory as idlFactorSatellite } from '$declarations/satellite/satellite.factory.did';
+import type { SatelliteActor, SatelliteDid } from '$declarations';
 import { AnonymousIdentity } from '@dfinity/agent';
 import { Ed25519KeyIdentity } from '@dfinity/identity';
-import { type Actor, PocketIc } from '@dfinity/pic';
+import type { Actor, PocketIc } from '@dfinity/pic';
 import type { Principal } from '@dfinity/principal';
 import { toNullable } from '@dfinity/utils';
 import {
@@ -11,7 +10,7 @@ import {
 	JUNO_AUTH_ERROR_NOT_WRITE_CONTROLLER,
 	JUNO_STORAGE_ERROR_UPLOAD_PATH_COLLECTION_PREFIX
 } from '@junobuild/errors';
-import { inject } from 'vitest';
+import { MEMORIES } from '../../../constants/satellite-tests.constants';
 import { mockListProposalsParams } from '../../../mocks/list.mocks';
 import {
 	testCdnConfig,
@@ -23,40 +22,36 @@ import {
 	testNotAllowedCdnMethods,
 	testReleasesProposal
 } from '../../../utils/cdn-assertions-tests.utils';
-import { controllersInitArgs, SATELLITE_WASM_PATH } from '../../../utils/setup-tests.utils';
+import { setupSatelliteStock } from '../../../utils/satellite-tests.utils';
 
-describe('Satellite > Cdn', () => {
+describe.each(MEMORIES)('Satellite > Cdn > $title', ({ memory }) => {
 	let pic: PocketIc;
-	let actor: Actor<SatelliteActor>;
-
 	let canisterId: Principal;
-
-	const controller = Ed25519KeyIdentity.generate();
-	const controllerReadWrite = Ed25519KeyIdentity.generate();
-	const controllerSubmit = Ed25519KeyIdentity.generate();
+	let actor: Actor<SatelliteActor>;
+	let controller: Ed25519KeyIdentity;
 
 	const currentDate = new Date(2021, 6, 10, 0, 0, 0, 0);
 
+	const controllerReadWrite = Ed25519KeyIdentity.generate();
+	const controllerSubmit = Ed25519KeyIdentity.generate();
+
 	beforeAll(async () => {
-		pic = await PocketIc.create(inject('PIC_URL'));
-
-		await pic.setTime(currentDate.getTime());
-
-		const { actor: c, canisterId: cId } = await pic.setupCanister<SatelliteActor>({
-			idlFactory: idlFactorSatellite,
-			wasm: SATELLITE_WASM_PATH,
-			arg: controllersInitArgs(controller),
-			sender: controller.getPrincipal()
+		const {
+			actor: a,
+			canisterId: c,
+			pic: p,
+			controller: cO
+		} = await setupSatelliteStock({
+			withIndexHtml: false,
+			memory
 		});
 
-		actor = c;
+		pic = p;
+		actor = a;
+		controller = cO;
+		canisterId = c;
+
 		actor.setIdentity(controller);
-
-		canisterId = cId;
-
-		// We do not want the index.html as redirect for the test suite.
-		const { del_assets } = actor;
-		await del_assets('#dapp');
 	});
 
 	afterAll(async () => {
@@ -219,7 +214,7 @@ describe('Satellite > Cdn', () => {
 
 			const { set_rule } = actor;
 
-			const setRule: SetRule = {
+			const setRule: SatelliteDid.SetRule = {
 				memory: toNullable({ Heap: null }),
 				max_size: toNullable(),
 				max_capacity: toNullable(),

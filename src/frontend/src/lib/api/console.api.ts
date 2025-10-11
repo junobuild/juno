@@ -1,11 +1,13 @@
-import type { MissionControl } from '$declarations/console/console.did';
+import type { ConsoleDid } from '$declarations';
 import type { GetActorParams } from '$lib/api/actors/actor.api';
 import { getConsoleActor } from '$lib/api/actors/actor.juno.api';
 import type { OptionIdentity } from '$lib/types/itentity';
 import type { Principal } from '@dfinity/principal';
 import { fromNullable, isNullish } from '@dfinity/utils';
 
-export const initMissionControl = async (identity: OptionIdentity): Promise<MissionControl> => {
+export const initMissionControl = async (
+	identity: OptionIdentity
+): Promise<ConsoleDid.MissionControl> => {
 	const { init_user_mission_control_center } = await getConsoleActor({ identity });
 
 	return await init_user_mission_control_center();
@@ -13,7 +15,7 @@ export const initMissionControl = async (identity: OptionIdentity): Promise<Miss
 
 export const getMissionControl = async (
 	actorParams: GetActorParams
-): Promise<MissionControl | undefined> => {
+): Promise<ConsoleDid.MissionControl | undefined> => {
 	const { get_user_mission_control_center } = await getConsoleActor(actorParams);
 
 	return fromNullable(await get_user_mission_control_center());

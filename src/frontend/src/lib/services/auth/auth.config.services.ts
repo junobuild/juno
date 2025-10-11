@@ -1,5 +1,4 @@
-import type { Satellite } from '$declarations/mission_control/mission_control.did';
-import type { AuthenticationConfig, Rule } from '$declarations/satellite/satellite.did';
+import type { MissionControlDid, SatelliteDid } from '$declarations';
 import { getAuthConfig as getAuthConfigApi, setAuthConfig, setRule } from '$lib/api/satellites.api';
 import { DEFAULT_RATE_CONFIG_TIME_PER_TOKEN_NS } from '$lib/constants/data.constants';
 import { DbCollectionType } from '$lib/constants/rules.constants';
@@ -26,9 +25,9 @@ import {
 import { get } from 'svelte/store';
 
 interface UpdateAuthConfigParams {
-	satellite: Satellite;
-	rule: Rule | undefined;
-	config: AuthenticationConfig | undefined;
+	satellite: MissionControlDid.Satellite;
+	rule: SatelliteDid.Rule | undefined;
+	config: SatelliteDid.AuthenticationConfig | undefined;
 	maxTokens: number | undefined;
 	externalAlternativeOrigins: string;
 	allowedCallers: Principal[];
@@ -206,7 +205,7 @@ export const getAuthConfig = async ({
 	identity: OptionIdentity;
 }): Promise<{
 	result: 'success' | 'error' | 'skip';
-	config?: AuthenticationConfig | undefined;
+	config?: SatelliteDid.AuthenticationConfig | undefined;
 }> => {
 	try {
 		const authConfigSupported = isSatelliteFeatureSupported({

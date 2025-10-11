@@ -14,7 +14,7 @@ import type {
 	PostMessageDataResponseWalletSchema,
 	PostMessageRequestSchema
 } from '$lib/schemas/post-message.schema';
-import type * as z from 'zod/v4';
+import type * as z from 'zod';
 
 // Request
 

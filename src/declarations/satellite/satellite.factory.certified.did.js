@@ -1,5 +1,11 @@
 // @ts-ignore
 export const idlFactory = ({ IDL }) => {
+	const Memory = IDL.Variant({ Heap: IDL.Null, Stable: IDL.Null });
+	const InitStorageArgs = IDL.Record({ system_memory: IDL.Opt(Memory) });
+	const InitSatelliteArgs = IDL.Record({
+		controllers: IDL.Vec(IDL.Principal),
+		storage: IDL.Opt(InitStorageArgs)
+	});
 	const CommitBatch = IDL.Record({
 		batch_id: IDL.Nat,
 		headers: IDL.Vec(IDL.Tuple(IDL.Text, IDL.Text)),
@@ -174,7 +180,6 @@ export const idlFactory = ({ IDL }) => {
 		version: IDL.Opt(IDL.Nat64),
 		proposal_type: ProposalType
 	});
-	const Memory = IDL.Variant({ Heap: IDL.Null, Stable: IDL.Null });
 	const Permission = IDL.Variant({
 		Controllers: IDL.Null,
 		Private: IDL.Null,
@@ -415,11 +420,18 @@ export const idlFactory = ({ IDL }) => {
 		set_rule: IDL.Func([CollectionType, IDL.Text, SetRule], [Rule], []),
 		set_storage_config: IDL.Func([SetStorageConfig], [StorageConfig], []),
 		submit_proposal: IDL.Func([IDL.Nat], [IDL.Nat, Proposal], []),
+		switch_storage_system_memory: IDL.Func([], [], []),
 		upload_asset_chunk: IDL.Func([UploadChunk], [UploadChunkResult], []),
 		upload_proposal_asset_chunk: IDL.Func([UploadChunk], [UploadChunkResult], [])
 	});
 };
 // @ts-ignore
 export const init = ({ IDL }) => {
-	return [];
+	const Memory = IDL.Variant({ Heap: IDL.Null, Stable: IDL.Null });
+	const InitStorageArgs = IDL.Record({ system_memory: IDL.Opt(Memory) });
+	const InitSatelliteArgs = IDL.Record({
+		controllers: IDL.Vec(IDL.Principal),
+		storage: IDL.Opt(InitStorageArgs)
+	});
+	return [InitSatelliteArgs];
 };

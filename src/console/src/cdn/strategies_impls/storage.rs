@@ -5,11 +5,8 @@ use crate::cdn::helpers::heap::{
 use crate::cdn::helpers::stable::{
     get_asset_stable, insert_asset_encoding_stable, insert_asset_stable,
 };
-use crate::cdn::strategies_impls::cdn::CdnHeap;
-use crate::certification::cert::update_certified_data;
+use crate::cdn::storage::init_certified_assets;
 use candid::Principal;
-use ic_certification::HashTree;
-use junobuild_auth::runtime::pruned_labeled_sigs_root_hash_tree;
 use junobuild_cdn::storage::errors::{
     JUNO_CDN_STORAGE_ERROR_CANNOT_GET_ASSET_UNKNOWN_REFERENCE_ID,
     JUNO_CDN_STORAGE_ERROR_CANNOT_INSERT_ASSET_ENCODING_UNKNOWN_REFERENCE_ID,
@@ -31,7 +28,7 @@ use junobuild_storage::types::state::FullPath;
 use junobuild_storage::types::store::{
     Asset, AssetAssertUpload, AssetEncoding, Batch, EncodingType, ReferenceId,
 };
-use junobuild_storage::utils::clone_asset_encoding_content_chunks;
+use junobuild_storage::utils::{clone_asset_encoding_content_chunks, insert_encoding_into_asset};
 
 pub struct StorageAssertions;
 
@@ -133,7 +130,7 @@ impl StorageStateStrategy for StorageState {
         full_path: FullPath,
         token: Option<String>,
     ) -> Option<(Asset, Memory)> {
-        junobuild_cdn::storage::heap::get_public_asset(&CdnHeap, full_path, token)
+        crate::cdn::storage::heap::get_public_asset(full_path, token)
     }
 
     fn get_rule(&self, collection: &CollectionKey) -> Result<Rule, String> {
@@ -167,6 +164,17 @@ impl StorageStateStrategy for StorageState {
         insert_asset(full_path, asset)
     }
 
+    fn insert_asset_encoding(
+        &self,
+        _full_path: &FullPath,
+        encoding_type: &str,
+        encoding: &AssetEncoding,
+        asset: &mut Asset,
+        _rule: &Rule,
+    ) {
+        insert_encoding_into_asset(encoding_type, encoding, asset)
+    }
+
     fn delete_asset(
         &self,
         _collection: &CollectionKey,
@@ -174,6 +182,10 @@ impl StorageStateStrategy for StorageState {
         _rule: &Rule,
     ) -> Option<Asset> {
         delete_asset(full_path)
+    }
+
+    fn init_certified_assets(&self) {
+        init_certified_assets();
     }
 }
 

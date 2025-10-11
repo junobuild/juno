@@ -4,7 +4,7 @@
 		size?: string;
 	}
 
-	let { size = '48px' }: Props = $props();
+	let { size = '24px' }: Props = $props();
 </script>
 
 <svg

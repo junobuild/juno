@@ -1,5 +1,4 @@
-import type { HttpRequest } from '$declarations/satellite/satellite.did';
-import type { _SERVICE as SputnikActor } from '$declarations/sputnik/sputnik.did';
+import type { SputnikActor, SputnikDid } from '$declarations';
 import type { Actor, PocketIc } from '@dfinity/pic';
 import type { Principal } from '@dfinity/principal';
 import { toNullable } from '@dfinity/utils';
@@ -62,7 +61,7 @@ describe('Sputnik > sdk > setAssetHandler', () => {
 
 		const { http_request } = actor;
 
-		const request: HttpRequest = {
+		const request: SputnikDid.HttpRequest = {
 			body: [],
 			certificate_version: toNullable(2),
 			headers: [],

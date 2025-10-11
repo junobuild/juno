@@ -4,7 +4,7 @@ use crate::types::rules::Permission::Controllers;
 
 pub const COLLECTION_ASSET_KEY: &str = "#dapp";
 
-const COLLECTION_ASSET_DEFAULT_RULE: SetRule = SetRule {
+pub const COLLECTION_ASSET_DEFAULT_RULE: SetRule = SetRule {
     read: Controllers,
     write: Controllers,
     memory: Some(Memory::Heap),

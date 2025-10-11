@@ -1,13 +1,15 @@
-import type { CollectionType, Rule, SetRule } from '$declarations/satellite/satellite.did';
+import type { SatelliteDid } from '$declarations';
 import { getRule, setRule as setRuleApi } from '$lib/api/satellites.api';
 import { DEFAULT_RATE_CONFIG_TIME_PER_TOKEN_NS } from '$lib/constants/data.constants';
 import {
 	DbCollectionType,
 	MemoryStable,
 	type MemoryText,
-	type PermissionText
+	type PermissionText,
+	StorageCollectionType
 } from '$lib/constants/rules.constants';
-import { SATELLITE_v0_0_21 } from '$lib/constants/version.constants';
+import { COLLECTION_DAPP } from '$lib/constants/storage.constants';
+import { SATELLITE_v0_0_21, SATELLITE_v0_1_4 } from '$lib/constants/version.constants';
 import { isSatelliteFeatureSupported } from '$lib/services/feature.services';
 import { i18n } from '$lib/stores/i18n.store';
 import { toasts } from '$lib/stores/toasts.store';
@@ -31,19 +33,19 @@ export const setRule = async ({
 }: {
 	satelliteId: Principal;
 	collection: string;
-	type: CollectionType;
+	type: SatelliteDid.CollectionType;
 	identity: OptionIdentity;
 	read: PermissionText;
 	write: PermissionText;
 	memory: MemoryText;
-	rule: Rule | undefined;
+	rule: SatelliteDid.Rule | undefined;
 	maxSize: number | undefined;
 	maxCapacity: number | undefined;
 	maxChanges: number | undefined;
 	maxTokens: number | undefined;
 	mutablePermissions: boolean;
 }) => {
-	const updateRule: SetRule = {
+	const updateRule: SatelliteDid.SetRule = {
 		read: permissionFromText(read),
 		write: permissionFromText(write),
 		version: isNullish(rule) ? [] : rule.version,
@@ -72,28 +74,56 @@ export const setRule = async ({
 	});
 };
 
-export const getRuleUser = async ({
+export const getRuleUser = (params: {
+	satelliteId: Principal;
+	identity: OptionIdentity;
+}): Promise<{ result: 'success' | 'error' | 'skip'; rule?: SatelliteDid.Rule | undefined }> =>
+	getRuleForCollection({
+		...params,
+		requiredMinVersion: SATELLITE_v0_0_21,
+		collection: '#user',
+		type: DbCollectionType
+	});
+
+export const getRuleDapp = (params: {
+	satelliteId: Principal;
+	identity: OptionIdentity;
+}): Promise<{ result: 'success' | 'error' | 'skip'; rule?: SatelliteDid.Rule | undefined }> =>
+	getRuleForCollection({
+		...params,
+		requiredMinVersion: SATELLITE_v0_1_4,
+		collection: COLLECTION_DAPP,
+		type: StorageCollectionType
+	});
+
+const getRuleForCollection = async ({
 	satelliteId,
-	identity
+	identity,
+	requiredMinVersion,
+	collection,
+	type
 }: {
 	satelliteId: Principal;
 	identity: OptionIdentity;
-}): Promise<{ result: 'success' | 'error' | 'skip'; rule?: Rule | undefined }> => {
-	const rateConfigSupported = isSatelliteFeatureSupported({
+	requiredMinVersion: string;
+	collection: string;
+	type: SatelliteDid.CollectionType;
+}): Promise<{ result: 'success' | 'error' | 'skip'; rule?: SatelliteDid.Rule | undefined }> => {
+	const featureSupported = isSatelliteFeatureSupported({
 		satelliteId,
-		requiredMinVersion: SATELLITE_v0_0_21
+		requiredMinVersion
 	});
 
-	if (!rateConfigSupported) {
+	if (!featureSupported) {
 		return { result: 'skip' };
 	}
 
 	try {
 		const result = await getRule({
 			satelliteId,
-			collection: '#user',
+			collection,
 			identity,
-			type: DbCollectionType
+			type
 		});
 
 		return { result: 'success', rule: fromNullable(result) };

@@ -1,6 +1,6 @@
 <script lang="ts">
 	import type { Principal } from '@dfinity/principal';
-	import type { Satellite, Controller } from '$declarations/mission_control/mission_control.did';
+	import type { MissionControlDid } from '$declarations';
 	import {
 		deleteSatellitesController,
 		setSatellitesController
@@ -13,12 +13,12 @@
 	import type { MissionControlId } from '$lib/types/mission-control';
 
 	interface Props {
-		satellite: Satellite;
+		satellite: MissionControlDid.Satellite;
 	}
 
 	let { satellite }: Props = $props();
 
-	const list = (): Promise<[Principal, Controller][]> =>
+	const list = (): Promise<[Principal, MissionControlDid.Controller][]> =>
 		listControllers({ satelliteId: satellite.satellite_id, identity: $authStore.identity });
 
 	const remove = (params: {

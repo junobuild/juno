@@ -3,7 +3,7 @@
 	import { compare } from 'semver';
 	import { getContext, setContext } from 'svelte';
 	import { writable } from 'svelte/store';
-	import type { Doc as DocType, Doc as DocDid } from '$declarations/satellite/satellite.did';
+	import type { SatelliteDid } from '$declarations';
 	import { listDocs } from '$lib/api/satellites.api';
 	import { listDocs008 } from '$lib/api/satellites.deprecated.api';
 	import Data from '$lib/components/data/Data.svelte';
@@ -24,11 +24,11 @@
 	import { PAGINATION_CONTEXT_KEY, type PaginationContext } from '$lib/types/pagination.context';
 	import { RULES_CONTEXT_KEY, type RulesContext } from '$lib/types/rules.context';
 
-	const docsStore = writable<DataStoreData<DocDid>>(undefined);
+	const docsStore = writable<DataStoreData<SatelliteDid.Doc>>(undefined);
 
 	const resetData = () => docsStore.set(null);
 
-	setContext<DataContext<DocDid>>(DATA_CONTEXT_KEY, {
+	setContext<DataContext<SatelliteDid.Doc>>(DATA_CONTEXT_KEY, {
 		store: docsStore,
 		resetData
 	});
@@ -68,15 +68,15 @@
 		}
 	};
 
-	setContext<PaginationContext<DocType>>(PAGINATION_CONTEXT_KEY, {
+	setContext<PaginationContext<SatelliteDid.Doc>>(PAGINATION_CONTEXT_KEY, {
 		...initPaginationContext(),
 		list
 	});
 
 	const { store }: RulesContext = getContext<RulesContext>(RULES_CONTEXT_KEY);
 
-	const { setItems, startAfter }: PaginationContext<DocType> =
-		getContext<PaginationContext<DocType>>(PAGINATION_CONTEXT_KEY);
+	const { setItems, startAfter }: PaginationContext<SatelliteDid.Doc> =
+		getContext<PaginationContext<SatelliteDid.Doc>>(PAGINATION_CONTEXT_KEY);
 
 	let collection: string | undefined = $derived($store.rule?.[0]);
 </script>

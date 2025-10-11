@@ -1,4 +1,4 @@
-import type { Memory, Permission } from '$declarations/satellite/satellite.did';
+import type { SatelliteDid } from '$declarations';
 import {
 	MemoryHeap,
 	MemoryStable,
@@ -10,7 +10,7 @@ import {
 	type PermissionText
 } from '$lib/constants/rules.constants';
 
-export const permissionFromText = (text: PermissionText): Permission => {
+export const permissionFromText = (text: PermissionText): SatelliteDid.Permission => {
 	switch (text) {
 		case 'Public':
 			return PermissionPublic;
@@ -23,7 +23,7 @@ export const permissionFromText = (text: PermissionText): Permission => {
 	}
 };
 
-export const permissionToText = (permission: Permission): PermissionText => {
+export const permissionToText = (permission: SatelliteDid.Permission): PermissionText => {
 	if ('Public' in permission) {
 		return 'Public';
 	}
@@ -39,7 +39,7 @@ export const permissionToText = (permission: Permission): PermissionText => {
 	return 'Restricted';
 };
 
-export const memoryFromText = (text: MemoryText): Memory => {
+export const memoryFromText = (text: MemoryText): SatelliteDid.Memory => {
 	switch (text) {
 		case 'Stable':
 			return MemoryStable;
@@ -48,7 +48,7 @@ export const memoryFromText = (text: MemoryText): Memory => {
 	}
 };
 
-export const memoryToText = (memory: Memory): MemoryText => {
+export const memoryToText = (memory: SatelliteDid.Memory): MemoryText => {
 	if ('Stable' in memory) {
 		return 'Stable';
 	}

@@ -4,7 +4,6 @@ mod api;
 mod cdn;
 mod certification;
 mod constants;
-mod controllers;
 mod factory;
 mod guards;
 mod impls;
@@ -12,7 +11,6 @@ mod memory;
 mod metadata;
 mod store;
 mod types;
-mod wasm;
 
 use crate::types::interface::Config;
 use crate::types::interface::DeleteProposalAssets;
@@ -35,6 +33,7 @@ use junobuild_shared::ic::call::ManualReply;
 use junobuild_shared::rate::types::RateConfig;
 use junobuild_shared::types::core::DomainName;
 use junobuild_shared::types::domain::CustomDomains;
+use junobuild_shared::types::interface::CreateSatelliteArgs;
 use junobuild_shared::types::interface::{
     AssertMissionControlCenterArgs, CreateCanisterArgs, DeleteControllersArgs,
     GetCreateCanisterFeeArgs, SetControllersArgs,

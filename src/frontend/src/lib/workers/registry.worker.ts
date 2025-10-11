@@ -4,7 +4,8 @@ import {
 	CACHED_RELEASES_ORBITERS_KEY,
 	CACHED_RELEASES_SATELLITES_KEY
 } from '$lib/constants/releases.constants';
-import { findNewestReleasesMetadata, getReleasesMetadata } from '$lib/rest/cdn.rest';
+import { findNewestReleasesMetadata } from '$lib/rest/cdn.rest';
+import { getReleasesMetadata } from '$lib/services/cdn.services';
 import { getMissionControlVersionMetadata } from '$lib/services/version/version.metadata.mission-control.services';
 import { getOrbiterVersionMetadata } from '$lib/services/version/version.metadata.orbiter.services';
 import { getSatelliteVersionMetadata } from '$lib/services/version/version.metadata.satellite.services';

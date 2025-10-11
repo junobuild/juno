@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { fromNullable, nonNullish, uint8ArrayToHexString } from '@dfinity/utils';
-	import type { Satellite } from '$declarations/mission_control/mission_control.did';
+	import type { MissionControlDid } from '$declarations';
 	import IconCheck from '$lib/components/icons/IconCheck.svelte';
 	import IconClose from '$lib/components/icons/IconClose.svelte';
 	import Identifier from '$lib/components/ui/Identifier.svelte';
@@ -11,7 +11,7 @@
 
 	interface Props {
 		proposal: ProposalRecord;
-		satellite: Satellite;
+		satellite: MissionControlDid.Satellite;
 	}
 
 	let { proposal: proposalRecord, satellite }: Props = $props();

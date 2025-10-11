@@ -16,7 +16,6 @@ mod random;
 mod rules;
 mod sdk;
 mod types;
-mod upgrade;
 mod user;
 
 use crate::db::types::config::DbConfig;
@@ -25,7 +24,6 @@ use crate::guards::{
 };
 use crate::types::interface::{Config, DeleteProposalAssets};
 use crate::types::state::CollectionType;
-use ic_cdk::api::trap;
 use ic_cdk_macros::{init, post_upgrade, pre_upgrade, query, update};
 use junobuild_auth::types::config::AuthenticationConfig;
 use junobuild_cdn::proposals::{
@@ -38,11 +36,12 @@ use junobuild_collections::types::interface::{
 };
 use junobuild_collections::types::rules::Rule;
 use junobuild_shared::ic::call::ManualReply;
+use junobuild_shared::ic::UnwrapOrTrap;
 use junobuild_shared::types::core::DomainName;
 use junobuild_shared::types::core::Key;
 use junobuild_shared::types::domain::CustomDomains;
 use junobuild_shared::types::interface::{
-    DeleteControllersArgs, DepositCyclesArgs, MemorySize, SegmentArgs, SetControllersArgs,
+    DeleteControllersArgs, DepositCyclesArgs, InitSatelliteArgs, MemorySize, SetControllersArgs,
 };
 use junobuild_shared::types::list::ListParams;
 use junobuild_shared::types::list::ListResults;
@@ -74,7 +73,7 @@ pub use crate::api::auth::*;
 
 #[doc(hidden)]
 #[init]
-pub fn init(args: SegmentArgs) {
+pub fn init(args: InitSatelliteArgs) {
     lifecycle::init(args);
 }
 
@@ -186,6 +185,12 @@ pub fn set_rule(collection_type: CollectionType, collection: CollectionKey, rule
 #[update(guard = "caller_is_admin_controller")]
 pub fn del_rule(collection_type: CollectionType, collection: CollectionKey, rule: DelRule) {
     api::rules::del_rule(collection_type, collection, rule)
+}
+
+#[doc(hidden)]
+#[update(guard = "caller_is_admin_controller")]
+pub fn switch_storage_system_memory() {
+    api::rules::switch_storage_system_memory()
 }
 
 // ---------------------------------------------------------
@@ -486,7 +491,7 @@ pub fn get_many_assets(
 pub async fn deposit_cycles(args: DepositCyclesArgs) {
     junobuild_shared::mgmt::ic::deposit_cycles(args)
         .await
-        .unwrap_or_else(|e| trap(&e))
+        .unwrap_or_trap()
 }
 
 #[doc(hidden)]
@@ -526,7 +531,8 @@ macro_rules! include_satellite {
             list_controllers, list_custom_domains, list_docs, list_proposals, list_rules,
             post_upgrade, pre_upgrade, reject_proposal, set_auth_config, set_controllers,
             set_custom_domain, set_db_config, set_doc, set_many_docs, set_rule, set_storage_config,
-            submit_proposal, upload_asset_chunk, upload_proposal_asset_chunk,
+            submit_proposal, switch_storage_system_memory, upload_asset_chunk,
+            upload_proposal_asset_chunk,
         };
 
         ic_cdk::export_candid!();

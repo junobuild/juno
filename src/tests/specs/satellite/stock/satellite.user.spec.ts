@@ -1,16 +1,18 @@
-import type { _SERVICE as SatelliteActor } from '$declarations/satellite/satellite.did';
-import { idlFactory as idlFactorSatellite } from '$declarations/satellite/satellite.factory.did';
+import { idlFactorySatellite, type SatelliteActor } from '$declarations';
 import { AnonymousIdentity, type Identity } from '@dfinity/agent';
 import { Ed25519KeyIdentity } from '@dfinity/identity';
 import { type Actor, PocketIc } from '@dfinity/pic';
 import { assertNonNullish, fromNullable, toNullable } from '@dfinity/utils';
 import {
 	JUNO_DATASTORE_ERROR_CANNOT_WRITE,
+	JUNO_DATASTORE_ERROR_USER_AAGUID_INVALID_LENGTH,
 	JUNO_DATASTORE_ERROR_USER_CALLER_KEY,
 	JUNO_DATASTORE_ERROR_USER_CANNOT_UPDATE,
 	JUNO_DATASTORE_ERROR_USER_INVALID_DATA,
 	JUNO_DATASTORE_ERROR_USER_KEY_NO_PRINCIPAL,
-	JUNO_DATASTORE_ERROR_USER_NOT_ALLOWED
+	JUNO_DATASTORE_ERROR_USER_NOT_ALLOWED,
+	JUNO_DATASTORE_ERROR_USER_PROVIDER_INVALID_DATA,
+	JUNO_DATASTORE_ERROR_USER_PROVIDER_WEBAUTHN_INVALID_DATA
 } from '@junobuild/errors';
 import { fromArray, toArray } from '@junobuild/utils';
 import { inject } from 'vitest';
@@ -26,7 +28,7 @@ describe('Satellite > User', () => {
 		pic = await PocketIc.create(inject('PIC_URL'));
 
 		const { actor: c } = await pic.setupCanister<SatelliteActor>({
-			idlFactory: idlFactorSatellite,
+			idlFactory: idlFactorySatellite,
 			wasm: SATELLITE_WASM_PATH,
 			arg: controllersInitArgs(controller),
 			sender: controller.getPrincipal()
@@ -40,52 +42,66 @@ describe('Satellite > User', () => {
 	});
 
 	describe('user', () => {
-		describe('success', () => {
-			let user: Identity;
+		let user: Identity;
+		interface ProviderData {
+			webauthn: { aaguid?: number[] };
+		}
 
-			beforeEach(() => {
-				user = Ed25519KeyIdentity.generate();
-				actor.setIdentity(user);
+		const assertCreateUser = async ({
+			provider,
+			providerData
+		}: {
+			provider: string;
+			providerData?: ProviderData;
+		}) => {
+			const { set_doc, list_docs } = actor;
+
+			await set_doc('#user', user.getPrincipal().toText(), {
+				data: await toArray({
+					provider,
+					providerData
+				}),
+				description: toNullable(),
+				version: toNullable()
 			});
 
-			const assertCreateUser = async ({ provider }: { provider: string }) => {
-				const { set_doc, list_docs } = actor;
+			const { items: users } = await list_docs('#user', {
+				matcher: toNullable(),
+				order: toNullable(),
+				owner: toNullable(),
+				paginate: toNullable()
+			});
 
-				await set_doc('#user', user.getPrincipal().toText(), {
-					data: await toArray({
-						provider
-					}),
-					description: toNullable(),
-					version: toNullable()
-				});
+			expect(users).toHaveLength(1);
 
-				const { items: users } = await list_docs('#user', {
-					matcher: toNullable(),
-					order: toNullable(),
-					owner: toNullable(),
-					paginate: toNullable()
-				});
+			const updatedUser = users.find(([key]) => key === user.getPrincipal().toText());
+			assertNonNullish(updatedUser);
 
-				expect(users).toHaveLength(1);
+			const [key, doc] = updatedUser;
 
-				const updatedUser = users.find(([key]) => key === user.getPrincipal().toText());
-				assertNonNullish(updatedUser);
+			const data = await fromArray(doc.data);
 
-				const [key, doc] = updatedUser;
+			expect(key).toEqual(user.getPrincipal().toText());
+			expect((data as { provider: string }).provider).toEqual(provider);
+			expect((data as { banned: boolean }).banned).toBeFalsy();
+		};
 
-				const data = await fromArray(doc.data);
+		beforeEach(() => {
+			user = Ed25519KeyIdentity.generate();
+			actor.setIdentity(user);
+		});
 
-				expect(key).toEqual(user.getPrincipal().toText());
-				expect((data as { provider: string }).provider).toEqual(provider);
-				expect((data as { banned: boolean }).banned).toBeFalsy();
-			};
-
-			it.each([['internet_identity'], ['nfid'], ['web_authn']])(
+		describe('success', () => {
+			it.each([['internet_identity'], ['nfid']])(
 				'should create a user for provider %s',
 				async (provider) => {
 					await assertCreateUser({ provider });
 				}
 			);
+
+			it('should create a user for provider webauthn', async () => {
+				await assertCreateUser({ provider: 'webauthn', providerData: { webauthn: {} } });
+			});
 
 			it('should create a user without provider because this is optional', async () => {
 				const { set_doc } = actor;
@@ -139,13 +155,6 @@ describe('Satellite > User', () => {
 		});
 
 		describe('error', () => {
-			let user: Identity;
-
-			beforeEach(() => {
-				user = Ed25519KeyIdentity.generate();
-				actor.setIdentity(user);
-			});
-
 			it('should not update a user because only controller can update', async () => {
 				const { set_doc, get_doc } = actor;
 
@@ -202,6 +211,169 @@ describe('Satellite > User', () => {
 						version: bannedUser.version ?? []
 					})
 				).rejects.toThrow(JUNO_DATASTORE_ERROR_USER_NOT_ALLOWED);
+			});
+		});
+
+		describe('Provider data', () => {
+			// deadbeef-0001-0203-0405-060708090a0b
+			const AAGUID = [
+				0xde, 0xad, 0xbe, 0xef, 0x00, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08, 0x09, 0x0a,
+				0x0b
+			];
+
+			describe('WebAuthn', () => {
+				const AAGUID_ZERO = new Array(16).fill(0);
+
+				const INVALID_AAGUID_LEN_15 = new Array(15).fill(0);
+				const INVALID_AAGUID_LEN_17 = new Array(17).fill(0);
+
+				it('should create user with valid aaguid', async () => {
+					await assertCreateUser({
+						provider: 'webauthn',
+						providerData: { webauthn: { aaguid: AAGUID } }
+					});
+
+					const { get_doc } = actor;
+
+					const doc = fromNullable(await get_doc('#user', user.getPrincipal().toText()));
+
+					expect(doc).not.toBeUndefined();
+
+					const data = await fromArray(doc?.data ?? []);
+
+					expect((data as { providerData: ProviderData }).providerData.webauthn.aaguid).toEqual(
+						AAGUID
+					);
+				});
+
+				it('should not create user without providerData', async () => {
+					const data = await toArray({
+						provider: 'webauthn'
+					});
+
+					const { set_doc } = actor;
+
+					await expect(
+						set_doc('#user', user.getPrincipal().toText(), {
+							data,
+							description: toNullable(),
+							version: toNullable()
+						})
+					).rejects.toThrow(
+						new RegExp(JUNO_DATASTORE_ERROR_USER_PROVIDER_WEBAUTHN_INVALID_DATA, 'i')
+					);
+				});
+
+				it('should not create webauthn user with unknown providerData', async () => {
+					const data = await toArray({
+						provider: 'webauthn',
+						providerData: { test: null } // does not exist
+					});
+
+					const { set_doc } = actor;
+
+					await expect(
+						set_doc('#user', user.getPrincipal().toText(), {
+							data,
+							description: toNullable(),
+							version: toNullable()
+						})
+					).rejects.toThrow(
+						new RegExp(
+							`${JUNO_DATASTORE_ERROR_USER_INVALID_DATA}: unknown variant \`test\`, expected \`webauthn\` at line 1 column 45.`,
+							'i'
+						)
+					);
+				});
+
+				it('should create user with aaguid zero (some providers intentionally set it to zero)', async () => {
+					await assertCreateUser({
+						provider: 'webauthn',
+						providerData: { webauthn: { aaguid: AAGUID_ZERO } }
+					});
+
+					const { get_doc } = actor;
+
+					const doc = fromNullable(await get_doc('#user', user.getPrincipal().toText()));
+
+					expect(doc).not.toBeUndefined();
+
+					const data = await fromArray(doc?.data ?? []);
+
+					expect((data as { providerData: ProviderData }).providerData.webauthn.aaguid).toEqual(
+						AAGUID_ZERO
+					);
+				});
+
+				it('should not create a user with aaguid too short', async () => {
+					const { set_doc } = actor;
+
+					const data = await toArray({
+						provider: 'webauthn',
+						providerData: { webauthn: { aaguid: INVALID_AAGUID_LEN_15 } }
+					});
+
+					await expect(
+						set_doc('#user', user.getPrincipal().toText(), {
+							data,
+							description: toNullable(),
+							version: toNullable()
+						})
+					).rejects.toThrow(new RegExp(JUNO_DATASTORE_ERROR_USER_AAGUID_INVALID_LENGTH, 'i'));
+				});
+
+				it('should not create a user-webauthn with aaguid too long', async () => {
+					const { set_doc } = actor;
+
+					const data = await toArray({
+						provider: 'webauthn',
+						providerData: { webauthn: { aaguid: INVALID_AAGUID_LEN_17 } }
+					});
+
+					await expect(
+						set_doc('#user', user.getPrincipal().toText(), {
+							data,
+							description: toNullable(),
+							version: toNullable()
+						})
+					).rejects.toThrow(new RegExp(JUNO_DATASTORE_ERROR_USER_AAGUID_INVALID_LENGTH, 'i'));
+				});
+			});
+
+			describe('Others', () => {
+				it('should not create user with unexpected providerData', async () => {
+					const data = await toArray({
+						provider: 'internet_identity',
+						providerData: { webauthn: {} }
+					});
+
+					const { set_doc } = actor;
+
+					await expect(
+						set_doc('#user', user.getPrincipal().toText(), {
+							data,
+							description: toNullable(),
+							version: toNullable()
+						})
+					).rejects.toThrow(JUNO_DATASTORE_ERROR_USER_PROVIDER_INVALID_DATA);
+				});
+
+				it('should not create user with unexpected providerData webauthn', async () => {
+					const data = await toArray({
+						provider: 'internet_identity',
+						providerData: { webauthn: { aaguid: AAGUID } }
+					});
+
+					const { set_doc } = actor;
+
+					await expect(
+						set_doc('#user', user.getPrincipal().toText(), {
+							data,
+							description: toNullable(),
+							version: toNullable()
+						})
+					).rejects.toThrow(JUNO_DATASTORE_ERROR_USER_PROVIDER_INVALID_DATA);
+				});
 			});
 		});
 	});
@@ -517,7 +689,29 @@ describe('Satellite > User', () => {
 				})
 			).rejects.toThrow(
 				new RegExp(
-					`${JUNO_DATASTORE_ERROR_USER_INVALID_DATA}: unknown variant \`unknown\`, expected one of \`internet_identity\`, \`nfid\`, \`web_authn\` at line 1 column 21.`,
+					`${JUNO_DATASTORE_ERROR_USER_INVALID_DATA}: unknown variant \`unknown\`, expected one of \`internet_identity\`, \`nfid\`, \`webauthn\` at line 1 column 21.`,
+					'i'
+				)
+			);
+		});
+
+		it('should not create user with unknown providerData', async () => {
+			const data = await toArray({
+				provider: 'internet_identity',
+				providerData: { test: null } // does not exist
+			});
+
+			const { set_doc } = actor;
+
+			await expect(
+				set_doc('#user', user.getPrincipal().toText(), {
+					data,
+					description: toNullable(),
+					version: toNullable()
+				})
+			).rejects.toThrow(
+				new RegExp(
+					`${JUNO_DATASTORE_ERROR_USER_INVALID_DATA}: unknown variant \`test\`, expected \`webauthn\` at line 1 column 54.`,
 					'i'
 				)
 			);
@@ -539,7 +733,7 @@ describe('Satellite > User', () => {
 				})
 			).rejects.toThrow(
 				new RegExp(
-					`${JUNO_DATASTORE_ERROR_USER_INVALID_DATA}: unknown field \`unknown\`, expected \`provider\` or \`banned\` at line 1 column 41.`,
+					`${JUNO_DATASTORE_ERROR_USER_INVALID_DATA}: unknown field \`unknown\`, expected one of \`provider\`, \`banned\`, \`providerData\` at line 1 column 41.`,
 					'i'
 				)
 			);

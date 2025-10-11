@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { nonNullish } from '@dfinity/utils';
+	import UserPasskeyAuthenticator from '$lib/components/auth/UserPasskeyAuthenticator.svelte';
 	import UserProvider from '$lib/components/auth/UserProvider.svelte';
 	import UserStatus from '$lib/components/auth/UserStatus.svelte';
 	import Identifier from '$lib/components/ui/Identifier.svelte';
@@ -33,6 +34,13 @@
 				{/snippet}
 				<Identifier identifier={owner.toText()} small={false} />
 			</Value>
+
+			<Value>
+				{#snippet label()}
+					{$i18n.users.status}
+				{/snippet}
+				<p><UserStatus {user} /></p>
+			</Value>
 		</div>
 
 		<div class="details">
@@ -45,12 +53,7 @@
 						<p class="provider"><UserProvider {user} withText /></p>
 					</Value>
 
-					<Value>
-						{#snippet label()}
-							{$i18n.users.status}
-						{/snippet}
-						<p><UserStatus {user} /></p>
-					</Value>
+					<UserPasskeyAuthenticator {user} />
 				</div>
 
 				<div>

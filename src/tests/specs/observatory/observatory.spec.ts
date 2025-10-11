@@ -1,5 +1,4 @@
-import type { _SERVICE as ObservatoryActor } from '$declarations/observatory/observatory.did';
-import { idlFactory as idlFactorObservatory } from '$declarations/observatory/observatory.factory.did';
+import { idlFactoryObservatory, type ObservatoryActor } from '$declarations';
 import { AnonymousIdentity } from '@dfinity/agent';
 import { Ed25519KeyIdentity } from '@dfinity/identity';
 import { PocketIc, type Actor } from '@dfinity/pic';
@@ -19,7 +18,7 @@ describe('Observatory', () => {
 		pic = await PocketIc.create(inject('PIC_URL'));
 
 		const { actor: c } = await pic.setupCanister<ObservatoryActor>({
-			idlFactory: idlFactorObservatory,
+			idlFactory: idlFactoryObservatory,
 			wasm: OBSERVATORY_WASM_PATH,
 			sender: controller.getPrincipal()
 		});

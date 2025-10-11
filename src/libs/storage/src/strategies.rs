@@ -105,12 +105,23 @@ pub trait StorageStateStrategy {
         rule: &Rule,
     );
 
+    fn insert_asset_encoding(
+        &self,
+        full_path: &FullPath,
+        encoding_type: &str,
+        encoding: &AssetEncoding,
+        asset: &mut Asset,
+        rule: &Rule,
+    );
+
     fn delete_asset(
         &self,
         collection: &CollectionKey,
         full_path: &FullPath,
         rule: &Rule,
     ) -> Option<Asset>;
+
+    fn init_certified_assets(&self);
 }
 
 pub trait StorageUploadStrategy {

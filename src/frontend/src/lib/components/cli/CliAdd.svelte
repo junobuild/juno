@@ -2,7 +2,7 @@
 	import type { Principal } from '@dfinity/principal';
 	import { isNullish, nonNullish, notEmptyString } from '@dfinity/utils';
 	import { fade } from 'svelte/transition';
-	import type { Satellite, Orbiter } from '$declarations/mission_control/mission_control.did';
+	import type { MissionControlDid } from '$declarations';
 	import { setOrbitersController } from '$lib/api/mission-control.api';
 	import SegmentsTable from '$lib/components/segments/SegmentsTable.svelte';
 	import Html from '$lib/components/ui/Html.svelte';
@@ -33,8 +33,8 @@
 	let { principal, redirect_uri, missionControlId, profile }: Props = $props();
 
 	let selectedMissionControl = $state(false);
-	let selectedSatellites: [Principal, Satellite][] = $state([]);
-	let selectedOrbiters: [Principal, Orbiter][] = $state([]);
+	let selectedSatellites = $state<[Principal, MissionControlDid.Satellite][]>([]);
+	let selectedOrbiters = $state<[Principal, MissionControlDid.Orbiter][]>([]);
 
 	const onSubmit = async ($event: SubmitEvent) => {
 		$event.preventDefault();

@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { isNullish } from '@dfinity/utils';
-	import type { Orbiter } from '$declarations/mission_control/mission_control.did';
+	import type { MissionControlDid } from '$declarations';
 	import { satelliteStore } from '$lib/derived/satellite.derived';
 	import { exportTrackEvents } from '$lib/services/orbiter/orbiter.export.services';
 	import { analyticsFiltersStore } from '$lib/stores/analytics-filters.store';
@@ -11,7 +11,7 @@
 	import type { PageViewsParams } from '$lib/types/orbiter';
 
 	interface Props {
-		orbiter: Orbiter;
+		orbiter: MissionControlDid.Orbiter;
 	}
 
 	let { orbiter }: Props = $props();

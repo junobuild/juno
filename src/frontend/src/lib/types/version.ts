@@ -6,7 +6,7 @@ import type {
 } from '$lib/schemas/version.schema';
 import type { SatelliteIdText } from '$lib/types/satellite';
 import type { Option } from '$lib/types/utils';
-import type * as z from 'zod/v4';
+import type * as z from 'zod';
 
 export type VersionMetadata = z.infer<typeof VersionMetadataSchema>;
 export type SatelliteVersionMetadata = z.infer<typeof SatelliteVersionMetadataSchema>;

@@ -1,11 +1,8 @@
-import type {
-	Config,
-	CyclesMonitoringStrategy,
-	_SERVICE as MissionControlActor,
-	MonitoringStartConfig,
-	MonitoringStopConfig
-} from '$declarations/mission_control/mission_control.did';
-import { idlFactory as idlFactorMissionControl } from '$declarations/mission_control/mission_control.factory.did';
+import {
+	idlFactoryMissionControl,
+	type MissionControlActor,
+	type MissionControlDid
+} from '$declarations';
 import { AnonymousIdentity } from '@dfinity/agent';
 import { Ed25519KeyIdentity } from '@dfinity/identity';
 import { PocketIc, type Actor } from '@dfinity/pic';
@@ -41,7 +38,7 @@ describe('Mission Control > Monitoring', () => {
 		const userInitArgs = (): ArrayBuffer => missionControlUserInitArgs(controller.getPrincipal());
 
 		const { actor: c, canisterId: mId } = await pic.setupCanister<MissionControlActor>({
-			idlFactory: idlFactorMissionControl,
+			idlFactory: idlFactoryMissionControl,
 			wasm: MISSION_CONTROL_WASM_PATH,
 			arg: userInitArgs(),
 			sender: controller.getPrincipal()
@@ -153,14 +150,14 @@ describe('Mission Control > Monitoring', () => {
 	});
 
 	describe('admin', () => {
-		const strategy: CyclesMonitoringStrategy = {
+		const strategy: MissionControlDid.CyclesMonitoringStrategy = {
 			BelowThreshold: {
 				min_cycles: 500_000n,
 				fund_cycles: 100_000n
 			}
 		};
 
-		const updateStrategy: CyclesMonitoringStrategy = {
+		const updateStrategy: MissionControlDid.CyclesMonitoringStrategy = {
 			BelowThreshold: {
 				min_cycles: 800_000n,
 				fund_cycles: 300_000n
@@ -210,7 +207,7 @@ describe('Mission Control > Monitoring', () => {
 		it('should fail at configuring monitoring if mission control is not already monitored', async () => {
 			const { update_and_start_monitoring } = actor;
 
-			const config: MonitoringStartConfig = {
+			const config: MissionControlDid.MonitoringStartConfig = {
 				cycles_config: [
 					{
 						satellites_strategy: toNullable({
@@ -231,7 +228,7 @@ describe('Mission Control > Monitoring', () => {
 		it('should config and start monitoring for mission control', async () => {
 			const { update_and_start_monitoring } = actor;
 
-			const config: MonitoringStartConfig = {
+			const config: MissionControlDid.MonitoringStartConfig = {
 				cycles_config: [
 					{
 						satellites_strategy: toNullable(),
@@ -261,7 +258,7 @@ describe('Mission Control > Monitoring', () => {
 		it('should config and start monitoring for satellite', async () => {
 			const { update_and_start_monitoring } = actor;
 
-			const config: MonitoringStartConfig = {
+			const config: MissionControlDid.MonitoringStartConfig = {
 				cycles_config: [
 					{
 						satellites_strategy: toNullable({
@@ -282,7 +279,7 @@ describe('Mission Control > Monitoring', () => {
 		it('should config and start monitoring for orbiter', async () => {
 			const { update_and_start_monitoring } = actor;
 
-			const config: MonitoringStartConfig = {
+			const config: MissionControlDid.MonitoringStartConfig = {
 				cycles_config: [
 					{
 						satellites_strategy: toNullable(),
@@ -303,7 +300,7 @@ describe('Mission Control > Monitoring', () => {
 		it('should fail at configuring monitoring for unknown satellite', async () => {
 			const { update_and_start_monitoring } = actor;
 
-			const config: MonitoringStartConfig = {
+			const config: MissionControlDid.MonitoringStartConfig = {
 				cycles_config: [
 					{
 						satellites_strategy: toNullable({
@@ -324,7 +321,7 @@ describe('Mission Control > Monitoring', () => {
 		it('should fail at configuring monitoring for unknown orbiter', async () => {
 			const { update_and_start_monitoring } = actor;
 
-			const config: MonitoringStartConfig = {
+			const config: MissionControlDid.MonitoringStartConfig = {
 				cycles_config: [
 					{
 						satellites_strategy: toNullable(),
@@ -345,7 +342,7 @@ describe('Mission Control > Monitoring', () => {
 		it('should fail at stopping monitoring for unknown satellite', async () => {
 			const { update_and_stop_monitoring } = actor;
 
-			const config: MonitoringStopConfig = {
+			const config: MissionControlDid.MonitoringStopConfig = {
 				cycles_config: [
 					{
 						satellite_ids: toNullable([satelliteIdMock]),
@@ -363,7 +360,7 @@ describe('Mission Control > Monitoring', () => {
 		it('should fail at stopping monitoring for unknown orbiter', async () => {
 			const { update_and_stop_monitoring } = actor;
 
-			const config: MonitoringStopConfig = {
+			const config: MissionControlDid.MonitoringStopConfig = {
 				cycles_config: [
 					{
 						satellite_ids: toNullable(),
@@ -381,7 +378,7 @@ describe('Mission Control > Monitoring', () => {
 		it('should fail at stopping monitoring for mission control if modules are still being monitored', async () => {
 			const { update_and_stop_monitoring } = actor;
 
-			const config: MonitoringStopConfig = {
+			const config: MissionControlDid.MonitoringStopConfig = {
 				cycles_config: [
 					{
 						satellite_ids: toNullable(),
@@ -399,7 +396,7 @@ describe('Mission Control > Monitoring', () => {
 		it('should stop monitoring for satellite', async () => {
 			const { update_and_stop_monitoring } = actor;
 
-			const config: MonitoringStopConfig = {
+			const config: MissionControlDid.MonitoringStopConfig = {
 				cycles_config: [
 					{
 						satellite_ids: toNullable([satelliteId]),
@@ -418,7 +415,7 @@ describe('Mission Control > Monitoring', () => {
 		it('should stop monitoring for orbiter', async () => {
 			const { update_and_stop_monitoring } = actor;
 
-			const config: MonitoringStopConfig = {
+			const config: MissionControlDid.MonitoringStopConfig = {
 				cycles_config: [
 					{
 						satellite_ids: toNullable(),
@@ -437,7 +434,7 @@ describe('Mission Control > Monitoring', () => {
 		it('should stop monitoring for mission control', async () => {
 			const { update_and_stop_monitoring } = actor;
 
-			const config: MonitoringStopConfig = {
+			const config: MissionControlDid.MonitoringStopConfig = {
 				cycles_config: [
 					{
 						satellite_ids: toNullable(),
@@ -514,7 +511,7 @@ describe('Mission Control > Monitoring', () => {
 		it('should update config for mission control', async () => {
 			const { update_and_start_monitoring } = actor;
 
-			const config: MonitoringStartConfig = {
+			const config: MissionControlDid.MonitoringStartConfig = {
 				cycles_config: [
 					{
 						satellites_strategy: toNullable(),
@@ -536,7 +533,7 @@ describe('Mission Control > Monitoring', () => {
 		it('should update config for satellite', async () => {
 			const { update_and_start_monitoring } = actor;
 
-			const config: MonitoringStartConfig = {
+			const config: MissionControlDid.MonitoringStartConfig = {
 				cycles_config: [
 					{
 						satellites_strategy: toNullable({
@@ -561,7 +558,7 @@ describe('Mission Control > Monitoring', () => {
 		it('should update config for orbiter', async () => {
 			const { update_and_start_monitoring } = actor;
 
-			const config: MonitoringStartConfig = {
+			const config: MissionControlDid.MonitoringStartConfig = {
 				cycles_config: [
 					{
 						satellites_strategy: toNullable(),
@@ -583,7 +580,7 @@ describe('Mission Control > Monitoring', () => {
 			});
 		});
 
-		const config: Config = {
+		const config: MissionControlDid.Config = {
 			monitoring: [
 				{
 					cycles: [

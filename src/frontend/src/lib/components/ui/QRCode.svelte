@@ -1,141 +1,93 @@
-<!-- @migration-task Error while migrating Svelte code: Can't migrate code with afterUpdate. Please migrate by hand. -->
 <script lang="ts">
-	/**
-	 * Source gix-components: https://gix.design
-	 */
-	import { isNullish, nonNullish, debounce } from '@dfinity/utils';
-	import { afterUpdate, createEventDispatcher, onMount } from 'svelte';
-	import { theme } from '$lib/stores/theme.store';
-	import type { QrCreateClass } from '$lib/types/qr-creator';
-	import { Theme } from '$lib/types/theme';
+	import { nonNullish, notEmptyString } from '@dfinity/utils';
+	import qrcode from 'qrcode-generator';
+	import type { Snippet } from 'svelte';
+	import Html from '$lib/components/ui/Html.svelte';
+	import { sanitize } from '$lib/utils/html.utils';
 
-	// TODO: migrate to Svelte v5
-	// e.g. afterUpdate cannot be used in runes mode
+	// TODO: Duplicate qrcode types. There are maybe ways to resolve qrcode.d.ts for the linter
+	type ErrorCorrectionLevel = 'L' | 'M' | 'Q' | 'H';
 
-	export let ariaLabel: string | undefined = undefined;
-	export let value: string;
+	type TypeNumber =
+		| 0 // Automatic type number
+		| 1
+		| 2
+		| 3
+		| 4
+		| 5
+		| 6
+		| 7
+		| 8
+		| 9
+		| 10
+		| 11
+		| 12
+		| 13
+		| 14
+		| 15
+		| 16
+		| 17
+		| 18
+		| 19
+		| 20
+		| 21
+		| 22
+		| 23
+		| 24
+		| 25
+		| 26
+		| 27
+		| 28
+		| 29
+		| 30
+		| 31
+		| 32
+		| 33
+		| 34
+		| 35
+		| 36
+		| 37
+		| 38
+		| 39
+		| 40;
 
-	let dark: boolean;
-	$: dark = $theme === Theme.DARK;
+	interface Props {
+		value: string;
+		ecLevel?: ErrorCorrectionLevel;
+		typeNumber?: TypeNumber;
+		logo?: Snippet;
+	}
 
-	// Valid CSS colors
-	let fillColor: string;
-	$: fillColor = dark ? 'white' : '#242526';
+	let { value, ecLevel = 'H', typeNumber = 0, logo }: Props = $props();
 
-	let backgroundColor: string;
-	$: backgroundColor = dark ? '#242526' : 'white';
-
-	// The edge radius of each module. Must be between 0 and 0.5.
-	export let radius = 0;
-	// https://www.qrcode.com/en/about/error_correction.html
-	export let ecLevel: 'L' | 'M' | 'Q' | 'H' = 'H';
-
-	let label: string;
-	$: label =
-		ariaLabel !== undefined && nonNullish(ariaLabel) && ariaLabel.length > 0 ? ariaLabel : value;
-
-	let container: HTMLDivElement | undefined;
-	let size: { width: number } | undefined = undefined;
-
-	// Add a small debounce in case the screen is resized
-	const initSize = debounce(() => {
-		if (isNullish(container)) {
-			size = undefined;
-			return;
-		}
-
-		const { width } = container.getBoundingClientRect();
-		size = {
-			width
-		};
-	}, 25);
-
-	const isBrowser = typeof window !== 'undefined';
-
-	let QrCreator: QrCreateClass | undefined;
-	onMount(async () => {
-		// The qr-creator library is not compatible with NodeJS environment
-		if (!isBrowser) {
-			return;
-		}
-
-		// TODO: is it still the case with vitest?
-		// The library leads to issues (es modules import error, segmentation fault, blocking tests etc.) in jest tests of NNS-dapp when use explicitly or imported implicitly.
-		// Therefore, the simplest way to avoid these problems is to skip it globally in jest tests.
-		// It remains tested in e2e tests.
-		// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-		// @ts-ignore
-		if (process.env.NODE_ENV === 'test') {
-			return;
-		}
-
-		const JUNO_CDN_URL = import.meta.env.VITE_JUNO_CDN_URL;
-		const qrCreatorLib = `${JUNO_CDN_URL}/libs/qr-creator/1.0.0/dist/qr-creator.es6.min.js`;
-
-		QrCreator = (await import(qrCreatorLib)).default;
-	});
-
-	let once = false;
-	afterUpdate(() => {
-		if (once) {
-			return;
-		}
-
-		initSize();
-		once = true;
-	});
-
-	const dispatch = createEventDispatcher();
+	let svg = $state<string | undefined>(undefined);
 
 	const renderCanvas = () => {
-		if (isNullish(canvas) || isNullish(size)) {
-			return;
-		}
+		const qrGenerator = qrcode(typeNumber, ecLevel);
 
-		QrCreator?.render(
-			{
-				text: value,
-				radius,
-				ecLevel,
-				fill: fillColor,
-				background: backgroundColor,
-				// We draw the canvas larger and scale its container down to avoid blurring on high-density displays
-				size: size.width * 2
-			},
-			canvas
-		);
+		qrGenerator.addData(sanitize(value), 'Byte');
+		qrGenerator.make();
 
-		dispatch('nnsQRCodeRendered');
+		svg = qrGenerator.createSvgTag(2, 4);
 	};
 
-	let canvas: HTMLCanvasElement | undefined;
-	$: (QrCreator, value, canvas, dark, (() => renderCanvas())());
+	$effect(() => {
+		value;
 
-	let showLogo: boolean;
-	$: showLogo = nonNullish($$slots.logo);
+		renderCanvas();
+	});
 </script>
 
-<svelte:window on:resize={initSize} />
-
-<div
-	bind:this={container}
-	style={`height: ${nonNullish(size) && size.width > 0 ? `${size.width}px` : '100%'}`}
-	class="container"
-	data-tid="qr-code"
->
-	{#if nonNullish(size)}
-		<canvas
-			bind:this={canvas}
-			style={`width: ${size.width > 0 ? `${size.width}px` : '100%'}; height: ${
-				size.width > 0 ? `${size.width}px` : '100%'
-			}`}
-			aria-label={label}
-		></canvas>
+<div class="container" data-tid="qr-code">
+	{#if notEmptyString(svg)}
+		<div class="qr-code-wrapper">
+			<Html text={svg} />
+		</div>
 	{/if}
 
-	{#if showLogo}
+	{#if nonNullish(logo)}
 		<div class="logo">
-			<slot name="logo" />
+			{@render logo()}
 		</div>
 	{/if}
 </div>
@@ -150,5 +102,12 @@
 		top: 50%;
 		left: 50%;
 		transform: translate(-50%, -50%);
+	}
+
+	.qr-code-wrapper {
+		:global(svg) {
+			width: 100%;
+			height: 100%;
+		}
 	}
 </style>

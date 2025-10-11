@@ -1,21 +1,32 @@
-import type { _SERVICE as ConsoleActor } from '$declarations/console/console.did';
-import { idlFactory as idlFactorConsole } from '$declarations/console/console.factory.did';
-import type { _SERVICE as MissionControlActor } from '$declarations/mission_control/mission_control.did';
-import { idlFactory as idlFactorMissionControl } from '$declarations/mission_control/mission_control.factory.did';
-import type { _SERVICE as OrbiterActor } from '$declarations/orbiter/orbiter.did';
-import { idlFactory as idlFactorOrbiter } from '$declarations/orbiter/orbiter.factory.did';
-import type { Controller, _SERVICE as SatelliteActor } from '$declarations/satellite/satellite.did';
-import { idlFactory as idlFactorSatellite } from '$declarations/satellite/satellite.factory.did';
+import {
+	idlFactoryConsole,
+	idlFactoryMissionControl,
+	idlFactoryOrbiter,
+	idlFactorySatellite,
+	type ConsoleActor,
+	type ConsoleDid,
+	type MissionControlActor,
+	type OrbiterActor,
+	type SatelliteActor
+} from '$declarations';
 import { ONE_YEAR, THREE_MONTHS } from '$lib/constants/canister.constants';
 import type { Identity } from '@dfinity/agent';
 import { Ed25519KeyIdentity } from '@dfinity/identity';
 import { PocketIc, type Actor } from '@dfinity/pic';
 import type { Principal } from '@dfinity/principal';
-import { assertNonNullish, fromNullable, nonNullish } from '@dfinity/utils';
+import {
+	assertNonNullish,
+	fromNullable,
+	fromNullishNullable,
+	nonNullish,
+	toNullable
+} from '@dfinity/utils';
 import { inject } from 'vitest';
 import { CONSOLE_ID } from '../../constants/console-tests.constants';
-import { deploySegments } from '../../utils/console-tests.utils';
+import { MEMORIES } from '../../constants/satellite-tests.constants';
+import { deploySegments, updateRateConfig } from '../../utils/console-tests.utils';
 import { canisterStatus } from '../../utils/ic-management-tests.utils';
+import { tick } from '../../utils/pic-tests.utils';
 import { CONSOLE_WASM_PATH } from '../../utils/setup-tests.utils';
 
 describe('Console', () => {
@@ -28,7 +39,7 @@ describe('Console', () => {
 		pic = await PocketIc.create(inject('PIC_URL'));
 
 		const { actor: c } = await pic.setupCanister<ConsoleActor>({
-			idlFactory: idlFactorConsole,
+			idlFactory: idlFactoryConsole,
 			wasm: CONSOLE_WASM_PATH,
 			sender: controller.getPrincipal(),
 			targetCanisterId: CONSOLE_ID
@@ -92,7 +103,7 @@ describe('Console', () => {
 	}: {
 		user: Identity;
 		missionControlId: Principal;
-		controllers: [Principal, Controller][];
+		controllers: [Principal, ConsoleDid.Controller][];
 	}) => {
 		const maybeUser = controllers.find(
 			([controller]) => controller.toText() === user.getPrincipal().toText()
@@ -115,6 +126,13 @@ describe('Console', () => {
 	describe('User', () => {
 		let user: Identity;
 		let missionControlId: Principal | undefined;
+
+		const addCredits = async () => {
+			actor.setIdentity(controller);
+
+			const { add_credits } = actor;
+			await add_credits(user.getPrincipal(), { e8s: 100_000_000n });
+		};
 
 		beforeAll(() => {
 			user = Ed25519KeyIdentity.generate();
@@ -145,7 +163,7 @@ describe('Console', () => {
 				assertNonNullish(missionControlId);
 
 				const micActor = pic.createActor<MissionControlActor>(
-					idlFactorMissionControl,
+					idlFactoryMissionControl,
 					missionControlId
 				);
 				micActor.setIdentity(user);
@@ -166,69 +184,147 @@ describe('Console', () => {
 			let satelliteId: Principal;
 
 			beforeAll(async () => {
-				assertNonNullish(missionControlId);
+				actor.setIdentity(controller);
 
-				const micActor = pic.createActor<MissionControlActor>(
-					idlFactorMissionControl,
-					missionControlId
-				);
-				micActor.setIdentity(user);
-
-				const { create_satellite } = micActor;
-				const { satellite_id } = await create_satellite('test');
-
-				satelliteId = satellite_id;
+				await updateRateConfig({ actor });
 			});
 
-			it('should create a satellite with expected default settings', async () => {
-				assertNonNullish(missionControlId);
+			describe('Settings', () => {
+				beforeAll(async () => {
+					assertNonNullish(missionControlId);
 
-				await assertSettings({
-					user,
-					missionControlId,
-					canisterId: satelliteId,
-					freezingThreshold: BigInt(ONE_YEAR)
+					const micActor = pic.createActor<MissionControlActor>(
+						idlFactoryMissionControl,
+						missionControlId
+					);
+					micActor.setIdentity(user);
+
+					const { create_satellite } = micActor;
+					const { satellite_id } = await create_satellite('test');
+
+					satelliteId = satellite_id;
+				});
+
+				it('should create a satellite with expected default settings', async () => {
+					assertNonNullish(missionControlId);
+
+					await assertSettings({
+						user,
+						missionControlId,
+						canisterId: satelliteId,
+						freezingThreshold: BigInt(ONE_YEAR)
+					});
+				});
+
+				it('should create a satellite with expected access keys', async () => {
+					assertNonNullish(satelliteId);
+					assertNonNullish(missionControlId);
+
+					const satActor = pic.createActor<SatelliteActor>(idlFactorySatellite, satelliteId);
+					satActor.setIdentity(user);
+
+					const { list_controllers } = satActor;
+
+					const controllers = await list_controllers();
+
+					expect(controllers).toHaveLength(2);
+
+					assertAdminControllers({
+						controllers,
+						missionControlId,
+						user
+					});
 				});
 			});
 
-			it('should create a satellite with expected access keys', async () => {
-				assertNonNullish(satelliteId);
-				assertNonNullish(missionControlId);
+			describe.each([{ title: 'Heap (default)', memory: null }, ...MEMORIES])(
+				'$title',
+				({ memory, title }) => {
+					beforeAll(async () => {
+						// We need credits or ICP to spin another satellite.
+						await addCredits();
 
-				const satActor = pic.createActor<SatelliteActor>(idlFactorSatellite, satelliteId);
-				satActor.setIdentity(user);
+						assertNonNullish(missionControlId);
 
-				const { list_controllers } = satActor;
+						const micActor = pic.createActor<MissionControlActor>(
+							idlFactoryMissionControl,
+							missionControlId
+						);
+						micActor.setIdentity(user);
 
-				const controllers = await list_controllers();
+						await tick(pic);
 
-				expect(controllers).toHaveLength(2);
+						const { create_satellite_with_config } = micActor;
+						const { satellite_id } = await create_satellite_with_config({
+							name: toNullable(title),
+							subnet_id: toNullable(),
+							storage: toNullable(
+								nonNullish(memory)
+									? {
+											system_memory: toNullable(memory)
+										}
+									: undefined
+							)
+						});
 
-				assertAdminControllers({
-					controllers,
-					missionControlId,
-					user
-				});
-			});
+						satelliteId = satellite_id;
+					});
+
+					it('should create satellite with expected memory', async () => {
+						const satActor = pic.createActor<SatelliteActor>(idlFactorySatellite, satelliteId);
+						satActor.setIdentity(user);
+
+						const { get_rule } = satActor;
+
+						const DAPP_COLLECTION = '#dapp';
+						const RELEASES_COLLECTION = '#_juno/releases';
+
+						for (const collection of [DAPP_COLLECTION, RELEASES_COLLECTION]) {
+							const result = fromNullable(await get_rule({ Storage: null }, collection));
+
+							const ruleMemory = fromNullishNullable(result?.memory);
+
+							expect(ruleMemory).toEqual(memory ?? { Heap: null });
+						}
+					});
+
+					it('should have given specified name to satellite in mission control', async () => {
+						assertNonNullish(missionControlId);
+
+						const micActor = pic.createActor<MissionControlActor>(
+							idlFactoryMissionControl,
+							missionControlId
+						);
+						micActor.setIdentity(user);
+
+						const { list_satellites } = micActor;
+
+						const satellites = await list_satellites();
+
+						const satellite = satellites.find(([id]) => id.toText() === satelliteId.toText());
+
+						assertNonNullish(satellite);
+
+						const [_, satName] = satellite[1].metadata.find(([key]) => key === 'name') ?? [];
+
+						expect(satName).toEqual(title);
+					});
+				}
+			);
 		});
 
 		describe('orbiter', () => {
 			let orbiterId: Principal | undefined;
 
 			beforeAll(async () => {
-				assertNonNullish(missionControlId);
-
 				// First we need credits or ICP to spin another module. Let's use the former method.
-				actor.setIdentity(controller);
-
-				const { add_credits } = actor;
-				await add_credits(user.getPrincipal(), { e8s: 100_000_000n });
+				await addCredits();
 
 				// Then we can create the additional module
 				assertNonNullish(missionControlId);
 
 				const micActor = pic.createActor<MissionControlActor>(
-					idlFactorMissionControl,
+					idlFactoryMissionControl,
 					missionControlId
 				);
 				micActor.setIdentity(user);
@@ -255,7 +351,7 @@ describe('Console', () => {
 				assertNonNullish(orbiterId);
 				assertNonNullish(missionControlId);
 
-				const orbActor = pic.createActor<OrbiterActor>(idlFactorOrbiter, orbiterId);
+				const orbActor = pic.createActor<OrbiterActor>(idlFactoryOrbiter, orbiterId);
 				orbActor.setIdentity(user);
 
 				const { list_controllers } = orbActor;

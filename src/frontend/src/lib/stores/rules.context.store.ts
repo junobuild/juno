@@ -1,4 +1,4 @@
-import type { CollectionType } from '$declarations/satellite/satellite.did';
+import type { SatelliteDid } from '$declarations';
 import { reloadContextRules } from '$lib/services/rules.loader.services';
 import type { OptionIdentity } from '$lib/types/itentity';
 import type { RulesContext, RulesData } from '$lib/types/rules.context';
@@ -10,7 +10,7 @@ export const initRulesContext = ({
 	type
 }: {
 	satelliteId: Principal;
-	type: CollectionType;
+	type: SatelliteDid.CollectionType;
 }): RulesContext => {
 	const store = writable<RulesData>({
 		satelliteId: initialSatelliteId,

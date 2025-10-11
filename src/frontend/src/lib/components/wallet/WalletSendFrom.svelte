@@ -4,7 +4,7 @@
 	import { getAccountIdentifier } from '$lib/api/icp-index.api';
 	import Identifier from '$lib/components/ui/Identifier.svelte';
 	import Value from '$lib/components/ui/Value.svelte';
-	import { icpToUsd } from '$lib/derived/exchange.derived';
+	import { icpToUsd, icpToUsdDefined } from '$lib/derived/exchange.derived';
 	import { i18n } from '$lib/stores/i18n.store';
 	import type { MissionControlId } from '$lib/types/mission-control';
 	import { formatICP, formatICPToUsd } from '$lib/utils/icp.utils';
@@ -51,7 +51,7 @@
 				{#if nonNullish(balance)}
 					<span>{formatICP(balance)} <small>ICP</small></span>
 
-					{#if nonNullish($icpToUsd)}
+					{#if nonNullish($icpToUsd) && $icpToUsdDefined}
 						<span class="usd">{formatICPToUsd({ icp: balance, icpToUsd: $icpToUsd })}</span>
 					{/if}
 				{/if}

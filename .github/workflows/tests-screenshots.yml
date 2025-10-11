@@ -91,7 +91,7 @@ jobs:
         uses: ./.github/actions/emulator
 
       - name: Run Playwright tests
-        run: npm run e2e:snapshots
+        run: npm run e2e:ci:snapshots
 
       - name: Commit Playwright updated screenshots
         uses: EndBug/add-and-commit@v9

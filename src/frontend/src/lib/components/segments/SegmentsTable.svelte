@@ -3,7 +3,7 @@
 	import { isEmptyString, isNullish, nonNullish } from '@dfinity/utils';
 	import { onMount, type Snippet, untrack } from 'svelte';
 	import { fade } from 'svelte/transition';
-	import type { Orbiter, Satellite } from '$declarations/mission_control/mission_control.did';
+	import type { MissionControlDid } from '$declarations';
 	import Segment from '$lib/components/segments/Segment.svelte';
 	import Checkbox from '$lib/components/ui/Checkbox.svelte';
 	import SpinnerParagraph from '$lib/components/ui/SpinnerParagraph.svelte';
@@ -28,8 +28,8 @@
 		missionControlId: MissionControlId;
 		children?: Snippet;
 		selectedMissionControl?: boolean;
-		selectedSatellites: [Principal, Satellite][];
-		selectedOrbiters: [Principal, Orbiter][];
+		selectedSatellites: [Principal, MissionControlDid.Satellite][];
+		selectedOrbiters: [Principal, MissionControlDid.Orbiter][];
 		selectedDisabled: boolean;
 		withMissionControl?: boolean;
 		reloadSegments?: boolean;
@@ -56,8 +56,8 @@
 		loadingSegments = loadingState;
 	});
 
-	let satellites: [Principal, Satellite][] = $state([]);
-	let orbiters: [Principal, Orbiter][] = $state([]);
+	let satellites = $state<[Principal, MissionControlDid.Satellite][]>([]);
+	let orbiters = $state<[Principal, MissionControlDid.Orbiter][]>([]);
 
 	const loadSegments = async () => {
 		const [{ result: resultSatellites }, { result: resultOrbiters }] = await Promise.all([
@@ -175,10 +175,12 @@
 				{/if}
 
 				{#each satellites as satellite (satellite[0].toText())}
+					{@const satelliteId = satellite[0].toText()}
 					<tr>
 						<td class="actions"
 							><Checkbox
 								><input
+									id={satelliteId}
 									type="checkbox"
 									value={satellite}
 									bind:group={selectedSatellites}
@@ -186,9 +188,11 @@
 							></td
 						>
 						<td>
-							<Segment id={satellite[0]}>
-								{satelliteName(satellite[1])}
-							</Segment></td
+							<label for={satelliteId}>
+								<Segment id={satellite[0]}>
+									{satelliteName(satellite[1])}
+								</Segment>
+							</label></td
 						>
 					</tr>
 				{/each}

@@ -1,8 +1,8 @@
+use crate::storage::assert_set_config;
 use crate::storage::heap::{delete_domain, get_config, get_domain, insert_config, insert_domain};
-use crate::storage::{assert_set_config, init_certified_assets};
 use crate::strategies::CdnHeapStrategy;
 use junobuild_shared::types::core::DomainName;
-use junobuild_storage::strategies::{StorageCertificateStrategy, StorageStateStrategy};
+use junobuild_storage::strategies::StorageStateStrategy;
 use junobuild_storage::types::config::StorageConfig;
 use junobuild_storage::types::interface::SetStorageConfig;
 use junobuild_storage::well_known::update::update_custom_domains_asset;
@@ -26,7 +26,7 @@ pub fn set_config_store(
 
     insert_config(cdn_heap, &config);
 
-    init_certified_assets(cdn_heap, storage_state, certificate);
+    storage_state.init_certified_assets();
 
     Ok(config)
 }

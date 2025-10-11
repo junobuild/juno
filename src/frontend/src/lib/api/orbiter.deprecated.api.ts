@@ -1,8 +1,4 @@
-import type {
-	OrbiterSatelliteConfig as SatelliteConfig,
-	SetSatelliteConfig
-} from '$declarations/deprecated/orbiter-0-0-7.did';
-import type { AnalyticsClientsPageViews } from '$declarations/deprecated/orbiter-0-0-8.did';
+import type { OrbiterDid007, OrbiterDid008 } from '$declarations';
 import { getOrbiterActor007, getOrbiterActor008 } from '$lib/api/actors/actor.deprecated.api';
 import type { OptionIdentity } from '$lib/types/itentity';
 import type { PageViewsParams } from '$lib/types/orbiter';
@@ -19,7 +15,7 @@ export const listOrbiterSatelliteConfigs007 = async ({
 }: {
 	orbiterId: Principal;
 	identity: OptionIdentity;
-}): Promise<[Principal, SatelliteConfig][]> => {
+}): Promise<[Principal, OrbiterDid007.OrbiterSatelliteConfig][]> => {
 	const { list_satellite_configs } = await getOrbiterActor007({ orbiterId, identity });
 	return list_satellite_configs();
 };
@@ -33,9 +29,9 @@ export const setOrbiterSatelliteConfigs007 = async ({
 	identity
 }: {
 	orbiterId: Principal;
-	config: [Principal, SetSatelliteConfig][];
+	config: [Principal, OrbiterDid007.SetSatelliteConfig][];
 	identity: OptionIdentity;
-}): Promise<[Principal, SatelliteConfig][]> => {
+}): Promise<[Principal, OrbiterDid007.OrbiterSatelliteConfig][]> => {
 	const actor = await getOrbiterActor007({ orbiterId, identity });
 	return actor.set_satellite_configs(config);
 };
@@ -63,7 +59,7 @@ export const getAnalyticsClientsPageViews008 = async ({
 	from,
 	to,
 	identity
-}: PageViewsParams): Promise<AnalyticsClientsPageViews> => {
+}: PageViewsParams): Promise<OrbiterDid008.AnalyticsClientsPageViews> => {
 	const { get_page_views_analytics_clients } = await getOrbiterActor008({ orbiterId, identity });
 	return await get_page_views_analytics_clients({
 		satellite_id: toNullable(satelliteId),

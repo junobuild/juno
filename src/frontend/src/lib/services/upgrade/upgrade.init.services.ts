@@ -1,5 +1,5 @@
-import type { Satellite } from '$declarations/mission_control/mission_control.did';
-import { getReleasesMetadata } from '$lib/rest/cdn.rest';
+import type { MissionControlDid } from '$declarations';
+import { getReleasesMetadata } from '$lib/services/cdn.services';
 import { busy } from '$lib/stores/busy.store';
 import { i18n } from '$lib/stores/i18n.store';
 import { toasts } from '$lib/stores/toasts.store';
@@ -17,7 +17,7 @@ export const openUpgradeModal = async ({
 }: {
 	currentVersion: string;
 	type: 'upgrade_satellite' | 'upgrade_mission_control' | 'upgrade_orbiter';
-	satellite?: Satellite;
+	satellite?: MissionControlDid.Satellite;
 	build?: BuildType;
 }) => {
 	busy.start();

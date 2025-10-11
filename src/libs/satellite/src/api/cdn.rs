@@ -1,21 +1,20 @@
 use crate::assets::cdn::helpers::stable::get_proposal as cdn_get_proposal;
 use crate::assets::cdn::helpers::store::init_asset_upload as init_asset_upload_store;
-use crate::assets::cdn::strategies_impls::cdn::{CdnHeap, CdnStable, CdnWorkflow};
-use crate::assets::cdn::strategies_impls::storage::{
-    CdnStorageAssertions, CdnStorageState, CdnStorageUpload,
-};
+use crate::assets::cdn::strategies_impls::cdn::{CdnCommitAssets, CdnHeap, CdnStable, CdnWorkflow};
+use crate::assets::cdn::strategies_impls::storage::{CdnStorageAssertions, CdnStorageUpload};
 use crate::assets::storage::certified_assets::upgrade::defer_init_certified_assets;
 use crate::assets::storage::store::{
     delete_domain_store, get_config_store, get_custom_domains_store, set_domain_store,
 };
+use crate::assets::storage::strategy_impls::StorageState;
 use crate::types::interface::DeleteProposalAssets;
 use crate::{caller, get_controllers};
-use ic_cdk::trap;
 use junobuild_cdn::proposals::{
     CommitProposal, ListProposalResults, ListProposalsParams, Proposal, ProposalId, ProposalType,
     RejectProposal,
 };
 use junobuild_shared::ic::call::ManualReply;
+use junobuild_shared::ic::UnwrapOrTrap;
 use junobuild_shared::types::core::DomainName;
 use junobuild_shared::types::domain::CustomDomains;
 use junobuild_shared::types::state::Controllers;
@@ -44,15 +43,13 @@ pub fn count_proposals() -> usize {
 pub fn init_proposal(proposal_type: &ProposalType) -> (ProposalId, Proposal) {
     let caller = caller();
 
-    junobuild_cdn::proposals::init_proposal(&CdnStable, caller, proposal_type)
-        .unwrap_or_else(|e| trap(&e))
+    junobuild_cdn::proposals::init_proposal(&CdnStable, caller, proposal_type).unwrap_or_trap()
 }
 
 pub fn submit_proposal(proposal_id: &ProposalId) -> (ProposalId, Proposal) {
     let caller = caller();
 
-    junobuild_cdn::proposals::submit_proposal(&CdnStable, caller, proposal_id)
-        .unwrap_or_else(|e| trap(&e))
+    junobuild_cdn::proposals::submit_proposal(&CdnStable, caller, proposal_id).unwrap_or_trap()
 }
 
 pub fn reject_proposal(proposal: &RejectProposal) -> ManualReply<()> {
@@ -63,7 +60,13 @@ pub fn reject_proposal(proposal: &RejectProposal) -> ManualReply<()> {
 }
 
 pub fn commit_proposal(proposal: &CommitProposal) -> ManualReply<()> {
-    match junobuild_cdn::proposals::commit_proposal(&CdnHeap, &CdnStable, &CdnWorkflow, proposal) {
+    match junobuild_cdn::proposals::commit_proposal(
+        &CdnHeap,
+        &CdnCommitAssets,
+        &CdnStable,
+        &CdnWorkflow,
+        proposal,
+    ) {
         Ok(_) => {
             defer_init_certified_assets();
             ManualReply::one(())
@@ -73,8 +76,7 @@ pub fn commit_proposal(proposal: &CommitProposal) -> ManualReply<()> {
 }
 
 pub fn delete_proposal_assets(DeleteProposalAssets { proposal_ids }: &DeleteProposalAssets) {
-    junobuild_cdn::proposals::delete_proposal_assets(&CdnStable, proposal_ids)
-        .unwrap_or_else(|e| trap(&e));
+    junobuild_cdn::proposals::delete_proposal_assets(&CdnStable, proposal_ids).unwrap_or_trap();
 }
 
 // ---------------------------------------------------------
@@ -84,12 +86,9 @@ pub fn delete_proposal_assets(DeleteProposalAssets { proposal_ids }: &DeleteProp
 pub fn init_proposal_asset_upload(init: InitAssetKey, proposal_id: ProposalId) -> InitUploadResult {
     let caller = caller();
 
-    let result = init_asset_upload_store(caller, init, proposal_id);
+    let batch_id = init_asset_upload_store(caller, init, proposal_id).unwrap_or_trap();
 
-    match result {
-        Ok(batch_id) => InitUploadResult { batch_id },
-        Err(error) => trap(&error),
-    }
+    InitUploadResult { batch_id }
 }
 
 pub fn init_proposal_many_assets_upload(
@@ -103,8 +102,8 @@ pub fn init_proposal_many_assets_upload(
     for init_asset_key in init_asset_keys {
         let full_path = init_asset_key.full_path.clone();
 
-        let batch_id = init_asset_upload_store(caller, init_asset_key, proposal_id)
-            .unwrap_or_else(|e| trap(&e));
+        let batch_id =
+            init_asset_upload_store(caller, init_asset_key, proposal_id).unwrap_or_trap();
 
         results.push((full_path, InitUploadResult { batch_id }));
     }
@@ -116,12 +115,9 @@ pub fn upload_proposal_asset_chunk(chunk: UploadChunk) -> UploadChunkResult {
     let caller = caller();
     let config = get_config_store();
 
-    let result = create_chunk(caller, &config, chunk);
+    let chunk_id = create_chunk(caller, &config, chunk).unwrap_or_trap();
 
-    match result {
-        Ok(chunk_id) => UploadChunkResult { chunk_id },
-        Err(error) => trap(&error),
-    }
+    UploadChunkResult { chunk_id }
 }
 
 pub fn commit_proposal_asset_upload(commit: CommitBatch) {
@@ -136,10 +132,10 @@ pub fn commit_proposal_asset_upload(commit: CommitBatch) {
         &config,
         commit,
         &CdnStorageAssertions,
-        &CdnStorageState,
+        &StorageState,
         &CdnStorageUpload,
     )
-    .unwrap_or_else(|e| trap(&e));
+    .unwrap_or_trap();
 }
 
 pub fn commit_proposal_many_assets_upload(commits: Vec<CommitBatch>) {
@@ -155,10 +151,10 @@ pub fn commit_proposal_many_assets_upload(commits: Vec<CommitBatch>) {
             &config,
             commit,
             &CdnStorageAssertions,
-            &CdnStorageState,
+            &StorageState,
             &CdnStorageUpload,
         )
-        .unwrap_or_else(|e| trap(&e));
+        .unwrap_or_trap();
     }
 }
 
@@ -171,9 +167,9 @@ pub fn list_custom_domains() -> CustomDomains {
 }
 
 pub fn set_custom_domain(domain_name: DomainName, bn_id: Option<String>) {
-    set_domain_store(&domain_name, &bn_id).unwrap_or_else(|e| trap(&e));
+    set_domain_store(&domain_name, &bn_id).unwrap_or_trap();
 }
 
 pub fn del_custom_domain(domain_name: DomainName) {
-    delete_domain_store(&domain_name).unwrap_or_else(|e| trap(&e));
+    delete_domain_store(&domain_name).unwrap_or_trap();
 }

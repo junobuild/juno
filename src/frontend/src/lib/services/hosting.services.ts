@@ -1,4 +1,4 @@
-import type { AuthenticationConfig } from '$declarations/satellite/satellite.did';
+import type { SatelliteDid } from '$declarations';
 import { setAuthConfig } from '$lib/api/satellites.api';
 import { setCustomDomain } from '$lib/services/custom-domain.services';
 import { execute } from '$lib/services/progress.services';
@@ -21,7 +21,7 @@ export const configHosting = async ({
 }: {
 	domainName: string;
 	useDomainForDerivationOrigin: boolean;
-	config: AuthenticationConfig | undefined;
+	config: SatelliteDid.AuthenticationConfig | undefined;
 	satelliteId: Principal;
 	identity: OptionIdentity;
 	onProgress: (progress: HostingProgress | undefined) => void;

@@ -5,7 +5,7 @@
 	import { getContext, type Snippet } from 'svelte';
 	import { quintOut } from 'svelte/easing';
 	import { slide } from 'svelte/transition';
-	import type { AssetNoContent } from '$declarations/satellite/satellite.did';
+	import type { SatelliteDid } from '$declarations';
 	import DataUpload from '$lib/components/data/DataUpload.svelte';
 	import Value from '$lib/components/ui/Value.svelte';
 	import { COLLECTION_DAPP } from '$lib/constants/storage.constants';
@@ -17,7 +17,7 @@
 	import { container } from '$lib/utils/juno.utils';
 
 	interface Props {
-		asset?: AssetNoContent | undefined;
+		asset?: SatelliteDid.AssetNoContent | undefined;
 		action?: Snippet;
 		title?: Snippet;
 		description?: Snippet;

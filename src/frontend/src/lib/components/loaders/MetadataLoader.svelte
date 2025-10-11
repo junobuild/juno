@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { nonNullish } from '@dfinity/utils';
 	import type { Snippet } from 'svelte';
-	import type { Satellite } from '$declarations/mission_control/mission_control.did';
+	import type { MissionControlDid } from '$declarations';
 	import CanistersStatusLoader from '$lib/components/loaders/CanistersStatusLoader.svelte';
 	import MonitoringLoader from '$lib/components/loaders/MonitoringLoader.svelte';
 	import NoMonitoringLoader from '$lib/components/loaders/NoMonitoringLoader.svelte';
@@ -12,7 +12,7 @@
 
 	interface Props {
 		children: Snippet;
-		satellites?: Satellite[];
+		satellites?: MissionControlDid.Satellite[];
 		monitoring?: boolean;
 	}
 

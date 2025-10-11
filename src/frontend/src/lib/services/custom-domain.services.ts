@@ -1,4 +1,4 @@
-import type { CustomDomain } from '$declarations/satellite/satellite.did';
+import type { SatelliteDid } from '$declarations';
 import {
 	deleteCustomDomain as deleteCustomDomainApi,
 	listCustomDomains as listCustomDomainsApi,
@@ -52,7 +52,7 @@ export const deleteCustomDomain = async ({
 	deleteCustomDomain
 }: {
 	satelliteId: Principal;
-	customDomain: CustomDomain;
+	customDomain: SatelliteDid.CustomDomain;
 	domainName: string;
 	deleteCustomDomain: boolean;
 }) => {

@@ -132,7 +132,8 @@ const deployWithCli = async (proposalId) => {
 		params: {
 			config,
 			listAssets: listExistingAssets,
-			assertMemory
+			assertMemory,
+			uploadBatchSize: 50
 		}
 	});
 };

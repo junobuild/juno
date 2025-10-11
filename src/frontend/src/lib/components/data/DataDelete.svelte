@@ -46,7 +46,7 @@
 				collection
 			});
 
-			listParamsStore.reset();
+			listParamsStore.reload();
 		} catch (err: unknown) {
 			toasts.error({
 				text: $i18n.errors.data_delete,

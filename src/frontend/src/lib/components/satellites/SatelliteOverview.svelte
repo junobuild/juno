@@ -1,24 +1,27 @@
 <script lang="ts">
 	import { fromNullishNullable } from '@dfinity/utils';
 	import { onMount } from 'svelte';
-	import type { Satellite } from '$declarations/mission_control/mission_control.did';
+	import type { MissionControlDid } from '$declarations';
 	import CanisterOverview from '$lib/components/canister/CanisterOverview.svelte';
 	import CanisterSubnet from '$lib/components/canister/CanisterSubnet.svelte';
 	import CanisterSyncData from '$lib/components/canister/CanisterSyncData.svelte';
+	import SatelliteEnvText from '$lib/components/satellites/SatelliteEnvironmentText.svelte';
 	import SatelliteName from '$lib/components/satellites/SatelliteName.svelte';
 	import SatelliteOverviewActions from '$lib/components/satellites/SatelliteOverviewActions.svelte';
 	import SatelliteOverviewCustomDomains from '$lib/components/satellites/SatelliteOverviewCustomDomains.svelte';
 	import SatelliteOverviewVersion from '$lib/components/satellites/SatelliteOverviewVersion.svelte';
 	import SatelliteRuntimeActions from '$lib/components/satellites/SatelliteRuntimeActions.svelte';
+	import SatelliteTags from '$lib/components/satellites/SatelliteTags.svelte';
 	import Identifier from '$lib/components/ui/Identifier.svelte';
 	import Value from '$lib/components/ui/Value.svelte';
+	import { testIds } from '$lib/constants/test-ids.constants';
 	import { listCustomDomains } from '$lib/services/custom-domain.services';
 	import { i18n } from '$lib/stores/i18n.store';
 	import type { CanisterSyncData as CanisterSyncDataType } from '$lib/types/canister';
 	import type { SatelliteIdText } from '$lib/types/satellite';
 
 	interface Props {
-		satellite: Satellite;
+		satellite: MissionControlDid.Satellite;
 	}
 
 	let { satellite }: Props = $props();
@@ -50,6 +53,10 @@
 		<div>
 			<SatelliteName {satellite} />
 
+			<SatelliteEnvText {satellite} />
+
+			<SatelliteTags {satellite} />
+
 			<SatelliteOverviewCustomDomains {satellite} />
 		</div>
 
@@ -58,7 +65,12 @@
 				{#snippet label()}
 					{$i18n.satellites.id}
 				{/snippet}
-				<Identifier identifier={satelliteId} shorten={false} small={false} />
+				<Identifier
+					identifier={satelliteId}
+					shorten={false}
+					small={false}
+					testId={testIds.satelliteOverview.copySatelliteId}
+				/>
 			</Value>
 
 			<CanisterSubnet canisterId={satellite.satellite_id} />

@@ -124,6 +124,13 @@ export interface InitAssetKey {
 	encoding_type: [] | [string];
 	full_path: string;
 }
+export interface InitSatelliteArgs {
+	controllers: Array<Principal>;
+	storage: [] | [InitStorageArgs];
+}
+export interface InitStorageArgs {
+	system_memory: [] | [Memory];
+}
 export interface InitUploadResult {
 	batch_id: bigint;
 }
@@ -239,9 +246,6 @@ export interface Rule {
 	rate_config: [] | [RateConfig];
 	write: Permission;
 	max_changes_per_user: [] | [number];
-}
-export interface SegmentArgs {
-	controllers: Array<Principal>;
 }
 export interface SegmentsDeploymentOptions {
 	orbiter: [] | [string];
@@ -371,7 +375,6 @@ export interface _SERVICE {
 	get_many_assets: ActorMethod<[Array<[string, string]>], Array<[string, [] | [AssetNoContent]]>>;
 	get_many_docs: ActorMethod<[Array<[string, string]>], Array<[string, [] | [Doc]]>>;
 	get_proposal: ActorMethod<[bigint], [] | [Proposal]>;
-	get_random: ActorMethod<[], Result>;
 	get_rule: ActorMethod<[CollectionType, string], [] | [Rule]>;
 	get_storage_config: ActorMethod<[], StorageConfig>;
 	http_request: ActorMethod<[HttpRequest], HttpResponse>;
@@ -403,8 +406,10 @@ export interface _SERVICE {
 	set_rule: ActorMethod<[CollectionType, string, SetRule], Rule>;
 	set_storage_config: ActorMethod<[SetStorageConfig], StorageConfig>;
 	submit_proposal: ActorMethod<[bigint], [bigint, Proposal]>;
+	switch_storage_system_memory: ActorMethod<[], undefined>;
 	upload_asset_chunk: ActorMethod<[UploadChunk], UploadChunkResult>;
 	upload_proposal_asset_chunk: ActorMethod<[UploadChunk], UploadChunkResult>;
+	get_random: ActorMethod<[], Result>;
 }
 export declare const idlFactory: IDL.InterfaceFactory;
 export declare const init: (args: { IDL: typeof IDL }) => IDL.Type[];

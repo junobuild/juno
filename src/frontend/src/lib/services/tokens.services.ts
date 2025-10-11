@@ -1,4 +1,4 @@
-import type { TransferArg, TransferArgs } from '$declarations/mission_control/mission_control.did';
+import type { MissionControlDid } from '$declarations';
 import { icpTransfer, icrcTransfer } from '$lib/api/mission-control.api';
 import { ICP_LEDGER_CANISTER_ID, IC_TRANSACTION_FEE_ICP } from '$lib/constants/app.constants';
 import { execute } from '$lib/services/progress.services';
@@ -97,7 +97,7 @@ export const sendIcrc = async ({
 }): Promise<void> => {
 	const { owner, subaccount } = decodeIcrcAccount(destination);
 
-	const args: TransferArg = {
+	const args: MissionControlDid.TransferArg = {
 		to: {
 			owner,
 			subaccount: toNullable(subaccount)
@@ -126,7 +126,7 @@ export const sendIcp = async ({
 	identity: OptionIdentity;
 	missionControlId: MissionControlId;
 }): Promise<void> => {
-	const args: TransferArgs = {
+	const args: MissionControlDid.TransferArgs = {
 		to: AccountIdentifier.fromHex(destination).toUint8Array(),
 		amount: { e8s: token.toE8s() },
 		fee: { e8s: IC_TRANSACTION_FEE_ICP },

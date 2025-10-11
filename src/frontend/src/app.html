@@ -103,10 +103,65 @@
 				--color-background: #1b1b1d;
 				--color-background-contrast: #ebedf0;
 			}
+
+			#app-spinner {
+				display: block;
+
+				--spinner-size: 32px;
+
+				position: absolute;
+				top: calc((50% - (var(--spinner-size) / 2)));
+				left: calc(50% - (var(--spinner-size) / 2));
+
+				opacity: 0.6;
+			}
+
+			#app-spinner {
+				width: var(--spinner-size);
+				aspect-ratio: 2;
+				--_g: no-repeat radial-gradient(circle closest-side, currentColor 90%, #0000);
+				background:
+					var(--_g) 0% 50%,
+					var(--_g) 50% 50%,
+					var(--_g) 100% 50%;
+				background-size: calc(100% / 3) 50%;
+				animation: l3 1s infinite linear;
+			}
+			@keyframes l3 {
+				20% {
+					background-position:
+						0% 0%,
+						50% 50%,
+						100% 50%;
+				}
+				40% {
+					background-position:
+						0% 100%,
+						50% 0%,
+						100% 50%;
+				}
+				60% {
+					background-position:
+						0% 50%,
+						50% 100%,
+						100% 0%;
+				}
+				80% {
+					background-position:
+						0% 50%,
+						50% 50%,
+						100% 100%;
+				}
+			}
 		</style>
 	</head>
 	<body>
 		<div>%sveltekit.body%</div>
+
+		<!-- All resources required to boot the dapp can take some times to be downloaded on the IC. -->
+		<!-- That's why we are displaying a spinner while the dapp is starting. -->
+		<!-- Spinner which is then removed as soon as the authentication is initialized (regardless if sign-in or sign-out) -->
+		<div id="app-spinner"></div>
 
 		<!-- SCRIPT_LOADER -->
 	</body>

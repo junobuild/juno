@@ -19,6 +19,19 @@ export const idlFactory = ({ IDL }) => {
 		subnet_id: IDL.Opt(IDL.Principal),
 		user: IDL.Principal
 	});
+	const InitStorageMemory = IDL.Variant({
+		Heap: IDL.Null,
+		Stable: IDL.Null
+	});
+	const InitStorageArgs = IDL.Record({
+		system_memory: IDL.Opt(InitStorageMemory)
+	});
+	const CreateSatelliteArgs = IDL.Record({
+		block_index: IDL.Opt(IDL.Nat64),
+		subnet_id: IDL.Opt(IDL.Principal),
+		storage: IDL.Opt(InitStorageArgs),
+		user: IDL.Principal
+	});
 	const DeleteControllersArgs = IDL.Record({
 		controllers: IDL.Vec(IDL.Principal)
 	});
@@ -278,7 +291,7 @@ export const idlFactory = ({ IDL }) => {
 		commit_proposal_many_assets_upload: IDL.Func([IDL.Vec(CommitBatch)], [], []),
 		count_proposals: IDL.Func([], [IDL.Nat64], []),
 		create_orbiter: IDL.Func([CreateCanisterArgs], [IDL.Principal], []),
-		create_satellite: IDL.Func([CreateCanisterArgs], [IDL.Principal], []),
+		create_satellite: IDL.Func([CreateSatelliteArgs], [IDL.Principal], []),
 		del_controllers: IDL.Func([DeleteControllersArgs], [], []),
 		del_custom_domain: IDL.Func([IDL.Text], [], []),
 		delete_proposal_assets: IDL.Func([DeleteProposalAssets], [], []),

@@ -2,7 +2,7 @@
 	import type { Principal } from '@dfinity/principal';
 	import { isNullish, nonNullish } from '@dfinity/utils';
 	import { compare } from 'semver';
-	import type { OrbiterSatelliteFeatures } from '$declarations/orbiter/orbiter.did';
+	import type { OrbiterDid } from '$declarations';
 	import Checkbox from '$lib/components/ui/Checkbox.svelte';
 	import CheckboxGroup from '$lib/components/ui/CheckboxGroup.svelte';
 	import Collapsible from '$lib/components/ui/Collapsible.svelte';
@@ -35,7 +35,7 @@
 		(detail as JunoModalEditOrbiterConfigDetail).config
 	);
 
-	let features: OrbiterSatelliteFeatures | undefined = $state(
+	let features: OrbiterDid.OrbiterSatelliteFeatures | undefined = $state(
 		(detail as JunoModalEditOrbiterConfigDetail).features
 	);
 
@@ -43,7 +43,7 @@
 
 	let collapsibleRef: Collapsible | undefined = $state(undefined);
 
-	const openOptions = (features: OrbiterSatelliteFeatures | undefined) => {
+	const openOptions = (features: OrbiterDid.OrbiterSatelliteFeatures | undefined) => {
 		if (
 			features?.page_views === false ||
 			features?.track_events === false ||
@@ -174,12 +174,12 @@
 							<tr>
 								<td class="actions">
 									<Checkbox>
-										<input type="checkbox" bind:checked={conf[1].enabled} />
+										<input id={satelliteId} type="checkbox" bind:checked={conf[1].enabled} />
 									</Checkbox>
 								</td>
 
 								<td>
-									{entry.name}
+									<label for={satelliteId}>{entry.name}</label>
 								</td>
 
 								<td>
@@ -204,30 +204,36 @@
 							<div class="content">
 								<CheckboxGroup>
 									<Checkbox>
-										<input
-											checked={isNullish(features) || features?.page_views === true}
-											onchange={onPageViewsToggle}
-											type="checkbox"
-										/>
-										<span>{$i18n.analytics.page_views}</span>
+										<label>
+											<input
+												checked={isNullish(features) || features?.page_views === true}
+												onchange={onPageViewsToggle}
+												type="checkbox"
+											/>
+											<span>{$i18n.analytics.page_views}</span>
+										</label>
 									</Checkbox>
 
 									<Checkbox>
-										<input
-											checked={isNullish(features) || features?.track_events === true}
-											onchange={onTrackEventsToggle}
-											type="checkbox"
-										/>
-										<span>{$i18n.analytics.tracked_events}</span>
+										<label>
+											<input
+												checked={isNullish(features) || features?.track_events === true}
+												onchange={onTrackEventsToggle}
+												type="checkbox"
+											/>
+											<span>{$i18n.analytics.tracked_events}</span>
+										</label>
 									</Checkbox>
 
 									<Checkbox>
-										<input
-											checked={features?.performance_metrics === true}
-											onchange={onPerformanceToggle}
-											type="checkbox"
-										/>
-										<span>{$i18n.analytics.web_vitals}</span>
+										<label
+											><input
+												checked={features?.performance_metrics === true}
+												onchange={onPerformanceToggle}
+												type="checkbox"
+											/>
+											<span>{$i18n.analytics.web_vitals}</span></label
+										>
 									</Checkbox>
 								</CheckboxGroup>
 							</div>

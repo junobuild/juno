@@ -1,8 +1,10 @@
+use crate::assets::constants::{CDN_JUNO_PATH, CDN_JUNO_RELEASES_COLLECTION_KEY};
 use crate::assets::storage::types::state::{
     AssetsStable, ContentChunksStable, StableEncodingChunkKey, StableKey,
 };
 use crate::memory::internal::STATE;
-use crate::types::state::StableState;
+use crate::types::state::{StableState, State};
+use junobuild_collections::constants::assets::COLLECTION_ASSET_KEY;
 use junobuild_collections::msg::msg_storage_collection_not_found;
 use junobuild_collections::types::core::CollectionKey;
 use junobuild_collections::types::rules::{Memory, Rule};
@@ -15,7 +17,7 @@ use junobuild_storage::stable_utils::insert_asset_encoding_stable;
 use junobuild_storage::types::config::StorageConfig;
 use junobuild_storage::types::state::{AssetsHeap, FullPath, StorageHeapState};
 use junobuild_storage::types::store::{Asset, AssetEncoding};
-use junobuild_storage::utils::clone_asset_encoding_content_chunks;
+use junobuild_storage::utils::{clone_asset_encoding_content_chunks, insert_encoding_into_asset};
 use std::borrow::Cow;
 use std::ops::RangeBounds;
 // ---------------------------------------------------------
@@ -23,19 +25,44 @@ use std::ops::RangeBounds;
 // ---------------------------------------------------------
 
 pub fn get_public_asset(full_path: &FullPath) -> (Option<Asset>, Memory) {
-    // We cannot know on the web which memory has been used. That's why we try first to get the asset from heap for performance reason.
-    let heap_asset =
-        STATE.with(|state| get_asset_heap(full_path, &state.borrow().heap.storage.assets));
-
-    match heap_asset {
-        Some(heap_asset) => (Some(heap_asset), Memory::Heap),
-        None => {
-            STATE.with(|state| get_public_asset_stable(full_path, &state.borrow().stable.assets))
-        }
-    }
+    STATE.with(|state| get_public_asset_impl(full_path, &state.borrow()))
 }
 
-pub fn get_public_asset_stable(
+fn get_public_asset_impl(full_path: &FullPath, state: &State) -> (Option<Asset>, Memory) {
+    // We cannot know on the web which memory has been used. That's why we try first to get the asset from heap for performance reason.
+    let heap_asset = get_asset_heap(full_path, &state.heap.storage.assets);
+
+    if let Some(heap_asset) = heap_asset {
+        return (Some(heap_asset), Memory::Heap);
+    }
+
+    // If it was not found on the heap we try to find the asset on stable in case the dev is using stable memory for the dapp collection.
+    let stable_dapp_asset = get_asset_stable(
+        &COLLECTION_ASSET_KEY.to_string(),
+        full_path,
+        &state.stable.assets,
+    );
+
+    if let Some(stable_asset) = stable_dapp_asset {
+        return (Some(stable_asset), Memory::Stable);
+    }
+
+    // If the full_path starts with /_juno/, it's reserved for release assets.
+    if full_path.starts_with(CDN_JUNO_PATH) {
+        let release_asset = get_asset_stable(
+            &CDN_JUNO_RELEASES_COLLECTION_KEY.to_string(),
+            full_path,
+            &state.stable.assets,
+        );
+
+        return (release_asset, Memory::Stable);
+    }
+
+    // Ultimately, we try to resolve the asset in the custom collections of the dev.
+    get_dev_public_asset_stable(full_path, &state.stable.assets)
+}
+
+pub fn get_dev_public_asset_stable(
     full_path: &FullPath,
     assets: &AssetsStable,
 ) -> (Option<Asset>, Memory) {
@@ -44,8 +71,8 @@ pub fn get_public_asset_stable(
     // /images/hello.png
     let parts: Vec<&str> = full_path.split('/').collect();
 
-    // The satellite does not use stable memory for the #app collection, so we can assume that a requested stable asset is one uploaded by a user or developer.
-    // Therefore, it should be prefixed with the collection (/collection/something)
+    // Developer custom storage collections should contain assets prefixed with the collection (/collection/something)
+    // If the path does not contain any relative subfolder, we already know it is not a custom collection.
 
     if parts.len() <= 2 {
         return (None, Memory::Stable);
@@ -96,11 +123,7 @@ pub fn insert_asset_encoding(
     rule: &Rule,
 ) {
     match rule.mem() {
-        Memory::Heap => {
-            asset
-                .encodings
-                .insert(encoding_type.to_owned(), encoding.clone());
-        }
+        Memory::Heap => insert_encoding_into_asset(encoding_type, encoding, asset),
         Memory::Stable => STATE.with(|state| {
             insert_asset_encoding_stable(
                 full_path,

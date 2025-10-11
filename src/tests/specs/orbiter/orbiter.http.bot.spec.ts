@@ -1,6 +1,4 @@
-import type { _SERVICE as OrbiterActor } from '$declarations/orbiter/orbiter.did';
-import { idlFactory as idlFactorOrbiter } from '$declarations/orbiter/orbiter.factory.did';
-import type { HttpRequest } from '$declarations/satellite/satellite.did';
+import { idlFactoryOrbiter, type OrbiterActor, type OrbiterDid } from '$declarations';
 import { Ed25519KeyIdentity } from '@dfinity/identity';
 import { type Actor, PocketIc } from '@dfinity/pic';
 import { toNullable } from '@dfinity/utils';
@@ -36,7 +34,7 @@ describe('Orbiter > HTTP > Bot', () => {
 		await pic.setTime(currentDate.getTime());
 
 		const { actor: c } = await pic.setupCanister<OrbiterActor>({
-			idlFactory: idlFactorOrbiter,
+			idlFactory: idlFactoryOrbiter,
 			wasm: ORBITER_WASM_PATH,
 			arg: controllersInitArgs(controller),
 			sender: controller.getPrincipal()
@@ -59,7 +57,7 @@ describe('Orbiter > HTTP > Bot', () => {
 		['Without User-Agent header', [], 400]
 		// eslint-disable-next-line local-rules/prefer-object-params
 	])('%s', (_, requestHeaders, expectedStatusCode) => {
-		const assertRequestNotFound = async (request: HttpRequest) => {
+		const assertRequestNotFound = async (request: OrbiterDid.HttpRequest) => {
 			const { http_request_update } = actor;
 
 			const response = await http_request_update(request);
@@ -87,7 +85,7 @@ describe('Orbiter > HTTP > Bot', () => {
 			};
 
 			it(`should return not found for POST to /view`, async () => {
-				const request: HttpRequest = {
+				const request: OrbiterDid.HttpRequest = {
 					body: toBodyJson(pageView),
 					certificate_version: toNullable(2),
 					headers: requestHeaders,
@@ -99,7 +97,7 @@ describe('Orbiter > HTTP > Bot', () => {
 			});
 
 			it(`should return not found for POST to /views`, async () => {
-				const request: HttpRequest = {
+				const request: OrbiterDid.HttpRequest = {
 					body: toBodyJson(pageViews),
 					certificate_version: toNullable(2),
 					headers: requestHeaders,
@@ -129,7 +127,7 @@ describe('Orbiter > HTTP > Bot', () => {
 			};
 
 			it(`should return not found for POST to /event`, async () => {
-				const request: HttpRequest = {
+				const request: OrbiterDid.HttpRequest = {
 					body: toBodyJson(trackEvent),
 					certificate_version: toNullable(2),
 					headers: requestHeaders,
@@ -141,7 +139,7 @@ describe('Orbiter > HTTP > Bot', () => {
 			});
 
 			it(`should return not found for POST to /events`, async () => {
-				const request: HttpRequest = {
+				const request: OrbiterDid.HttpRequest = {
 					body: toBodyJson(trackEvents),
 					certificate_version: toNullable(2),
 					headers: requestHeaders,
@@ -171,7 +169,7 @@ describe('Orbiter > HTTP > Bot', () => {
 			};
 
 			it(`should return not found for POST to /metric`, async () => {
-				const request: HttpRequest = {
+				const request: OrbiterDid.HttpRequest = {
 					body: toBodyJson(performanceMetricEvent),
 					certificate_version: toNullable(2),
 					headers: requestHeaders,
@@ -183,7 +181,7 @@ describe('Orbiter > HTTP > Bot', () => {
 			});
 
 			it(`should return not found for POST to /metrics`, async () => {
-				const request: HttpRequest = {
+				const request: OrbiterDid.HttpRequest = {
 					body: toBodyJson(performanceMetricEvents),
 					certificate_version: toNullable(2),
 					headers: requestHeaders,

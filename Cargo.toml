@@ -13,6 +13,7 @@ members = [
 	"src/libs/collections",
 	"src/libs/storage",
 	"src/libs/cdn",
+	"src/libs/auth",
 	"src/tests/fixtures/test_satellite"
 ]
 resolver = "2"
@@ -50,4 +51,5 @@ junobuild-shared = { path = "./src/libs/shared" }
 junobuild-collections = { path = "./src/libs/collections" }
 junobuild-storage = { path = "./src/libs/storage" }
 junobuild-cdn = { path = "./src/libs/cdn" }
+junobuild-auth = { path = "./src/libs/auth" }
 junobuild-utils = { path = "./src/libs/utils" }

@@ -1,0 +1,18 @@
+[package]
+name = "junobuild-auth"
+version = "0.0.1"
+authors.workspace = true
+edition.workspace = true
+repository.workspace = true
+description = "Authentication toolkit for Juno."
+homepage.workspace = true
+documentation = "https://docs.rs/junobuild-auth"
+readme = "README.md"
+license-file = "LICENSE.md"
+
+[package.metadata.docs.rs]
+targets = ["wasm32-unknown-unknown"]
+rustc-args = ['--cfg', "getrandom_backend=\"custom\""]
+rustdoc-args = ['--cfg', "getrandom_backend=\"custom\""]
+
+[dependencies]

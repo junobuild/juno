@@ -16,3 +16,7 @@ rustc-args = ['--cfg', "getrandom_backend=\"custom\""]
 rustdoc-args = ['--cfg', "getrandom_backend=\"custom\""]
 
 [dependencies]
+ic-cdk.workspace = true
+candid.workspace = true
+serde.workspace = true
+junobuild-shared = "0.3.0"

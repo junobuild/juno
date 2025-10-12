@@ -989,6 +989,12 @@ checksum = "b1a46d1a171d865aa5f83f92695765caa047a9b4cbae2cbf37dbd613a793fd4c"
 [[package]]
 name = "junobuild-auth"
 version = "0.0.1"
+dependencies = [
+ "candid",
+ "ic-cdk",
+ "junobuild-shared",
+ "serde",
+]
 
 [[package]]
 name = "junobuild-cdn"
@@ -1037,6 +1043,7 @@ dependencies = [
  "ic-cdk-macros",
  "ic-cdk-timers",
  "ic-stable-structures 0.7.0",
+ "junobuild-auth",
  "junobuild-cdn",
  "junobuild-collections",
  "junobuild-shared",

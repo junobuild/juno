@@ -95,7 +95,7 @@ pub fn verify_rs256_with_claims(
     // 7) Assert expiration
     let now_ns = ic_cdk::api::time();
     const MAX_VALIDITY_WINDOW_NS: u64 = 10 * 60 * 1_000_000_000; // 10 min
-    const IAT_FUTURE_SKEW_NS: u64   = 2 * 60 * 1_000_000_000; // 2 min
+    const IAT_FUTURE_SKEW_NS: u64 = 2 * 60 * 1_000_000_000; // 2 min
 
     let iat_s = c.iat.ok_or(VerifyErr::BadClaim("iat"))?;
     let iat_ns = iat_s.saturating_mul(1_000_000_000);

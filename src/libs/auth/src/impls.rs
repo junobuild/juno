@@ -1,5 +1,5 @@
-use crate::auth::types::config::AuthenticationConfig;
-use crate::auth::types::interface::SetAuthenticationConfig;
+use crate::types::config::AuthenticationConfig;
+use crate::types::interface::SetAuthenticationConfig;
 use ic_cdk::api::time;
 use junobuild_shared::types::state::{Timestamp, Version, Versioned};
 use junobuild_shared::version::next_version;

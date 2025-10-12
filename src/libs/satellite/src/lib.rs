@@ -17,7 +17,6 @@ mod sdk;
 mod types;
 mod user;
 
-use crate::auth::types::config::AuthenticationConfig;
 use crate::db::types::config::DbConfig;
 use crate::guards::{
     caller_is_admin_controller, caller_is_controller, caller_is_controller_with_write,
@@ -25,6 +24,7 @@ use crate::guards::{
 use crate::types::interface::{Config, DeleteProposalAssets};
 use crate::types::state::CollectionType;
 use ic_cdk_macros::{init, post_upgrade, pre_upgrade, query, update};
+use junobuild_auth::types::config::AuthenticationConfig;
 use junobuild_cdn::proposals::{
     CommitProposal, ListProposalResults, ListProposalsParams, Proposal, ProposalId, ProposalType,
     RejectProposal,
@@ -59,8 +59,8 @@ use memory::lifecycle;
 // ============================================================================================
 // These types are made available for use in Serverless Functions.
 // ============================================================================================
-use crate::auth::types::interface::SetAuthenticationConfig;
 use crate::db::types::interface::SetDbConfig;
+use junobuild_auth::types::interface::SetAuthenticationConfig;
 pub use sdk::core::*;
 pub use sdk::internal;
 

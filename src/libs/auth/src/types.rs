@@ -1,5 +1,5 @@
 pub mod state {
-    use crate::auth::types::config::AuthenticationConfig;
+    use crate::types::config::AuthenticationConfig;
     use candid::CandidType;
     use serde::{Deserialize, Serialize};
 
@@ -37,7 +37,7 @@ pub mod config {
 }
 
 pub mod interface {
-    use crate::auth::types::config::{AuthenticationConfigInternetIdentity, AuthenticationRules};
+    use crate::types::config::{AuthenticationConfigInternetIdentity, AuthenticationRules};
     use candid::{CandidType, Deserialize};
     use junobuild_shared::types::state::Version;
     use serde::Serialize;

@@ -9,6 +9,24 @@ pub mod state {
     }
 }
 
+pub(crate) mod runtime_state {
+    use candid::Deserialize;
+    use ic_canister_sig_creation::signature_map::SignatureMap;
+    use serde::Serialize;
+
+    #[derive(Default, Serialize, Deserialize)]
+    pub struct State {
+        // Unstable state: State that resides only on the heap, that’s lost after an upgrade.
+        #[serde(skip, default)]
+        pub runtime: RuntimeState,
+    }
+
+    #[derive(Default)]
+    pub struct RuntimeState {
+        pub sigs: SignatureMap,
+    }
+}
+
 pub mod config {
     use candid::{CandidType, Deserialize, Principal};
     use junobuild_shared::types::core::DomainName;

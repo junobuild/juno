@@ -4,6 +4,7 @@ pub mod state {
     use candid::CandidType;
     use ic_ledger_types::{BlockIndex, Tokens};
     use ic_stable_structures::StableBTreeMap;
+    use junobuild_auth::types::state::AuthenticationHeapState;
     use junobuild_cdn::proposals::{ProposalsStable, SegmentDeploymentVersion};
     use junobuild_cdn::storage::{ProposalAssetsStable, ProposalContentChunksStable};
     use junobuild_shared::rate::types::{RateConfig, RateTokens};
@@ -49,6 +50,7 @@ pub mod state {
         pub rates: Rates,
         pub fees: Fees,
         pub storage: StorageHeapState,
+        pub authentication: Option<AuthenticationHeapState>,
         pub releases_metadata: ReleasesMetadata,
     }
 

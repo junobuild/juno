@@ -46,7 +46,6 @@ describe('Sputnik > math', () => {
 			.filter(([_, { message }]) => message.includes('Random:'))
 			.map(([_, { message }]) => message.replace('Random:', '').trim());
 
-		// TODO(#2069): remove temporary - 1 due to one time upgrade
-		expect(new Set(values).size).toEqual(logs.length - 1);
+		expect(new Set(values).size).toEqual(logs.length);
 	});
 });

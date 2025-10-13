@@ -1,9 +1,9 @@
 use crate::auth::alternative_origins::update_alternative_origins;
 use crate::auth::strategy_impls::AuthHeap;
-use junobuild_auth::heap::{
+use junobuild_auth::state::set_config as set_store_config;
+use junobuild_auth::state::{
     get_config as get_state_config, get_salt as get_state_salt, insert_salt,
 };
-use junobuild_auth::store::set_config as set_store_config;
 use junobuild_auth::types::config::AuthenticationConfig;
 use junobuild_auth::types::interface::SetAuthenticationConfig;
 use junobuild_auth::types::state::Salt;

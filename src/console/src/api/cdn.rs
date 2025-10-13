@@ -7,8 +7,8 @@ use crate::cdn::proposals::{
     submit_proposal as make_submit_proposal,
 };
 use crate::cdn::strategies_impls::cdn::CdnHeap;
-use crate::cdn::strategies_impls::certification::StorageCertificate;
 use crate::cdn::strategies_impls::storage::StorageState;
+use crate::certification::strategy_impls::StorageCertificate;
 use crate::guards::caller_is_admin_controller;
 use crate::types::interface::DeleteProposalAssets;
 use ic_cdk_macros::{query, update};

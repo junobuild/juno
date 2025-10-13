@@ -1,5 +1,5 @@
-use crate::cdn::strategies_impls::certification::StorageCertificate;
 use crate::cdn::strategies_impls::storage::StorageState;
+use crate::certification::strategy_impls::StorageCertificate;
 use ic_cdk_macros::query;
 use junobuild_storage::http::types::{
     HttpRequest, HttpResponse, StreamingCallbackHttpResponse, StreamingCallbackToken,

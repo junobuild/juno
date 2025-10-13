@@ -8,3 +8,7 @@ pub trait AuthHeapStrategy {
         f: impl FnOnce(&mut Option<AuthenticationHeapState>) -> R,
     ) -> R;
 }
+
+pub trait AuthCertificateStrategy {
+    fn update_certified_data(&self);
+}

@@ -5,7 +5,6 @@ use crate::strategies::AuthHeapStrategy;
 use crate::types::config::AuthenticationConfig;
 use crate::types::interface::SetAuthenticationConfig;
 
-
 pub fn set_config(
     auth_heap: &impl AuthHeapStrategy,
     proposed_config: &SetAuthenticationConfig,

@@ -2,7 +2,11 @@ import { type ConsoleActor, idlFactoryConsole } from '$declarations';
 import { Ed25519KeyIdentity } from '@dfinity/identity';
 import { type Actor, PocketIc } from '@dfinity/pic';
 import { inject } from 'vitest';
-import { testAuthConfig, testReturnAuthConfig } from '../../utils/auth-assertions-tests.utils';
+import {
+	testAuthConfig,
+	testAuthGoogleConfig,
+	testReturnAuthConfig
+} from '../../utils/auth-assertions-tests.utils';
 import { CONSOLE_WASM_PATH } from '../../utils/setup-tests.utils';
 
 describe('Console > Storage', () => {
@@ -40,6 +44,11 @@ describe('Console > Storage', () => {
 		testReturnAuthConfig({
 			actor: () => actor,
 			version: 4n
+		});
+
+		testAuthGoogleConfig({
+			actor: () => actor,
+			version: 5n
 		});
 	});
 });

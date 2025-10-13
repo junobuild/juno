@@ -132,6 +132,8 @@ const updateConfig = async ({
 			config: {
 				internet_identity: editConfig?.internet_identity ?? config?.internet_identity ?? [],
 				rules: unmodifiedRules ? (config?.rules ?? []) : editConfigRules,
+				// TODO: support for Google configuration in the Console UI
+				google: [],
 				version: config?.version ?? []
 			},
 			identity

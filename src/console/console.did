@@ -26,11 +26,13 @@ type AssetNoContent = record {
 type AssetsUpgradeOptions = record { clear_existing_assets : opt bool };
 type AuthenticationConfig = record {
   updated_at : opt nat64;
+  google : opt AuthenticationConfigGoogle;
   created_at : opt nat64;
   version : opt nat64;
   internet_identity : opt AuthenticationConfigInternetIdentity;
   rules : opt AuthenticationRules;
 };
+type AuthenticationConfigGoogle = record { client_id : text };
 type AuthenticationConfigInternetIdentity = record {
   derivation_origin : opt text;
   external_alternative_origins : opt vec text;
@@ -180,6 +182,7 @@ type SegmentsDeploymentOptions = record {
   satellite_version : opt text;
 };
 type SetAuthenticationConfig = record {
+  google : opt AuthenticationConfigGoogle;
   version : opt nat64;
   internet_identity : opt AuthenticationConfigInternetIdentity;
   rules : opt AuthenticationRules;

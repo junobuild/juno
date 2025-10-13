@@ -63,6 +63,7 @@ export const testAuthConfig = ({
 				}
 			],
 			rules: [],
+			google: [],
 			version: []
 		};
 
@@ -82,6 +83,7 @@ export const testAuthConfig = ({
 				}
 			],
 			rules: [],
+			google: [],
 			version: []
 		};
 
@@ -101,6 +103,7 @@ export const testAuthConfig = ({
 				}
 			],
 			rules: [],
+			google: [],
 			version: []
 		};
 
@@ -140,6 +143,7 @@ export const testAuthConfig = ({
 				}
 			],
 			rules: [],
+			google: [],
 			version: [1n]
 		};
 
@@ -186,6 +190,7 @@ export const testAuthConfig = ({
 				}
 			],
 			rules: [],
+			google: [],
 			version: [2n]
 		};
 
@@ -216,6 +221,7 @@ export const testAuthConfig = ({
 		const config: SatelliteDid.SetAuthenticationConfig = {
 			internet_identity: [],
 			rules: [],
+			google: [],
 			version: [3n]
 		};
 
@@ -259,6 +265,7 @@ export const testReturnAuthConfig = ({
 				}
 			],
 			rules: [],
+			google: [],
 			version: [version]
 		};
 
@@ -276,5 +283,53 @@ export const testReturnAuthConfig = ({
 		expect(fromNullable(updatedConfig?.updated_at ?? []) ?? 0n).toBeGreaterThan(
 			fromNullable(updatedConfig?.created_at ?? []) ?? 0n
 		);
+	});
+};
+
+export const testAuthGoogleConfig = ({
+	actor,
+	version
+}: {
+	actor: () => Actor<SatelliteActor | ConsoleActor>;
+	version: bigint;
+}) => {
+	const CLIENT_ID = '974645666757-ebfaaau4cesdddqahu83e1qqmmmmdrod.apps.googleusercontent.com';
+
+	it('should set google client id', async () => {
+		const { set_auth_config, get_auth_config } = actor();
+
+		const config: SatelliteDid.SetAuthenticationConfig = {
+			internet_identity: [],
+			rules: [],
+			google: [
+				{
+					client_id: CLIENT_ID
+				}
+			],
+			version: [version]
+		};
+
+		await set_auth_config(config);
+
+		const updatedConfig = await get_auth_config();
+
+		expect(fromNullable(fromNullable(updatedConfig)?.google ?? [])?.client_id).toEqual(CLIENT_ID);
+	});
+
+	it('should disable google', async () => {
+		const { set_auth_config, get_auth_config } = actor();
+
+		const config: SatelliteDid.SetAuthenticationConfig = {
+			internet_identity: [],
+			rules: [],
+			google: [],
+			version: [version + 1n]
+		};
+
+		await set_auth_config(config);
+
+		const updatedConfig = await get_auth_config();
+
+		expect(fromNullable(fromNullable(updatedConfig)?.google ?? [])).toBeUndefined();
 	});
 };

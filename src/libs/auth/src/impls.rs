@@ -22,6 +22,7 @@ impl AuthenticationConfig {
 
         AuthenticationConfig {
             internet_identity: user_config.internet_identity.clone(),
+            google: user_config.google.clone(),
             rules: user_config.rules.clone(),
             created_at: Some(created_at),
             updated_at: Some(updated_at),

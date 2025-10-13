@@ -148,7 +148,7 @@ pub trait StorageUploadStrategy {
 
 pub trait StorageCertificateStrategy {
     fn update_certified_data(&self);
-    
+
     // We use this function to access the auth signatures root hash
     // in the storage crate when we build an HTTP response because the
     // tree is a fork of both assets and signatures.

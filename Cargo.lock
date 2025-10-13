@@ -237,6 +237,7 @@ dependencies = [
  "ic-cdk",
  "ic-cdk-macros",
  "ic-cdk-timers",
+ "ic-certification",
  "ic-ledger-types",
  "ic-stable-structures 0.7.0",
  "junobuild-cdn",

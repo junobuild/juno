@@ -3,6 +3,7 @@
 mod api;
 mod assets;
 mod auth;
+mod certification;
 mod controllers;
 mod db;
 mod errors;

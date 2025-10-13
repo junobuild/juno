@@ -13,6 +13,7 @@ use crate::assets::storage::state::{
 };
 use crate::assets::storage::strategy_impls::{StorageAssertions, StorageState, StorageUpload};
 use crate::auth::store::get_config as get_auth_config;
+use crate::certification::strategy_impls::StorageCertificate;
 use crate::controllers::store::get_controllers;
 use crate::memory::internal::STATE;
 use crate::types::store::{AssertContext, StoreContext};
@@ -428,8 +429,10 @@ fn delete_asset_impl(
         Some(asset) => {
             assert_delete_asset(context, assert_context, &asset)?;
 
+            let certificate = &StorageCertificate;
+
             let deleted = delete_state_asset(context.collection, &full_path, assert_context.rule);
-            delete_runtime_certified_asset(&asset);
+            delete_runtime_certified_asset(&asset, certificate);
 
             // We just removed the rewrite for /404.html in the certification tree therefore if /index.html exists, we want to reintroduce it as rewrite
             if *full_path == *ROOT_404_HTML {
@@ -438,7 +441,7 @@ fn delete_asset_impl(
                     &ROOT_INDEX_HTML.to_string(),
                     assert_context.rule,
                 ) {
-                    update_runtime_certified_asset(&index_asset, config);
+                    update_runtime_certified_asset(&index_asset, config, certificate);
                 }
             }
 
@@ -458,7 +461,7 @@ fn delete_assets_impl(
         match deleted_asset {
             None => {}
             Some(deleted_asset) => {
-                delete_runtime_certified_asset(&deleted_asset);
+                delete_runtime_certified_asset(&deleted_asset, &StorageCertificate);
             }
         }
     }
@@ -598,7 +601,7 @@ pub fn commit_batch_store(caller: Principal, commit_batch: CommitBatch) -> Resul
 
     let config = get_config();
 
-    update_runtime_certified_asset(&asset, &config);
+    update_runtime_certified_asset(&asset, &config, &StorageCertificate);
 
     Ok(asset)
 }
@@ -671,13 +674,13 @@ pub fn get_custom_domains_store() -> CustomDomains {
 fn delete_domain_impl(domain_name: &DomainName) -> Result<(), String> {
     delete_state_domain(domain_name);
 
-    update_custom_domains_asset(&StorageState)
+    update_custom_domains_asset(&StorageState, &StorageCertificate)
 }
 
 fn set_domain_impl(domain_name: &DomainName, bn_id: &Option<String>) -> Result<(), String> {
     set_state_domain_impl(domain_name, bn_id);
 
-    update_custom_domains_asset(&StorageState)
+    update_custom_domains_asset(&StorageState, &StorageCertificate)
 }
 
 fn set_state_domain_impl(domain_name: &DomainName, bn_id: &Option<String>) {

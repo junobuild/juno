@@ -110,6 +110,7 @@ pub mod state {
 
 pub mod interface {
     use candid::CandidType;
+    use junobuild_auth::types::config::AuthenticationConfig;
     use junobuild_cdn::proposals::ProposalId;
     use junobuild_storage::types::config::StorageConfig;
     use serde::{Deserialize, Serialize};
@@ -117,6 +118,7 @@ pub mod interface {
     #[derive(CandidType, Deserialize)]
     pub struct Config {
         pub storage: StorageConfig,
+        pub authentication: Option<AuthenticationConfig>,
     }
 
     #[derive(CandidType, Serialize, Deserialize, Clone)]

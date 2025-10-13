@@ -38,6 +38,20 @@ export const idlFactory = ({ IDL }) => {
 	const DeleteProposalAssets = IDL.Record({
 		proposal_ids: IDL.Vec(IDL.Nat)
 	});
+	const AuthenticationConfigInternetIdentity = IDL.Record({
+		derivation_origin: IDL.Opt(IDL.Text),
+		external_alternative_origins: IDL.Opt(IDL.Vec(IDL.Text))
+	});
+	const AuthenticationRules = IDL.Record({
+		allowed_callers: IDL.Vec(IDL.Principal)
+	});
+	const AuthenticationConfig = IDL.Record({
+		updated_at: IDL.Opt(IDL.Nat64),
+		created_at: IDL.Opt(IDL.Nat64),
+		version: IDL.Opt(IDL.Nat64),
+		internet_identity: IDL.Opt(AuthenticationConfigInternetIdentity),
+		rules: IDL.Opt(AuthenticationRules)
+	});
 	const StorageConfigIFrame = IDL.Variant({
 		Deny: IDL.Null,
 		AllowAny: IDL.Null,
@@ -66,7 +80,10 @@ export const idlFactory = ({ IDL }) => {
 		raw_access: IDL.Opt(StorageConfigRawAccess),
 		redirects: IDL.Opt(IDL.Vec(IDL.Tuple(IDL.Text, StorageConfigRedirect)))
 	});
-	const Config = IDL.Record({ storage: StorageConfig });
+	const Config = IDL.Record({
+		authentication: IDL.Opt(AuthenticationConfig),
+		storage: StorageConfig
+	});
 	const GetCreateCanisterFeeArgs = IDL.Record({ user: IDL.Principal });
 	const ProposalStatus = IDL.Variant({
 		Initialized: IDL.Null,
@@ -249,6 +266,11 @@ export const idlFactory = ({ IDL }) => {
 		items: IDL.Vec(IDL.Tuple(ProposalKey, Proposal)),
 		items_length: IDL.Nat64
 	});
+	const SetAuthenticationConfig = IDL.Record({
+		version: IDL.Opt(IDL.Nat64),
+		internet_identity: IDL.Opt(AuthenticationConfigInternetIdentity),
+		rules: IDL.Opt(AuthenticationRules)
+	});
 	const SetController = IDL.Record({
 		metadata: IDL.Vec(IDL.Tuple(IDL.Text, IDL.Text)),
 		scope: ControllerScope,
@@ -295,6 +317,7 @@ export const idlFactory = ({ IDL }) => {
 		del_controllers: IDL.Func([DeleteControllersArgs], [], []),
 		del_custom_domain: IDL.Func([IDL.Text], [], []),
 		delete_proposal_assets: IDL.Func([DeleteProposalAssets], [], []),
+		get_auth_config: IDL.Func([], [IDL.Opt(AuthenticationConfig)], ['query']),
 		get_config: IDL.Func([], [Config], ['query']),
 		get_create_orbiter_fee: IDL.Func([GetCreateCanisterFeeArgs], [IDL.Opt(Tokens)], ['query']),
 		get_create_satellite_fee: IDL.Func([GetCreateCanisterFeeArgs], [IDL.Opt(Tokens)], ['query']),
@@ -327,6 +350,7 @@ export const idlFactory = ({ IDL }) => {
 			['query']
 		),
 		reject_proposal: IDL.Func([CommitProposal], [IDL.Null], []),
+		set_auth_config: IDL.Func([SetAuthenticationConfig], [AuthenticationConfig], []),
 		set_controllers: IDL.Func([SetControllersArgs], [], []),
 		set_custom_domain: IDL.Func([IDL.Text, IDL.Opt(IDL.Text)], [], []),
 		set_fee: IDL.Func([SegmentKind, Tokens], [], []),

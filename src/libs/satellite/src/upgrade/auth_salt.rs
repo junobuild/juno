@@ -15,7 +15,7 @@ pub fn init_auth_salt() {
 
         // We use this one-time log because the salt is not exposed, and we want to verify that it was generated correctly.
         #[allow(clippy::disallowed_methods)]
-        print("Salt for the authentication generated.");
+        print("Authentication salt generated.");
     } else {
         // We only log an error since the salt should not block the upgrade or affect production.
         // All existing features will continue to work; only the new authentication method will not be available.

@@ -28,10 +28,14 @@ export interface AssetsUpgradeOptions {
 }
 export interface AuthenticationConfig {
 	updated_at: [] | [bigint];
+	google: [] | [AuthenticationConfigGoogle];
 	created_at: [] | [bigint];
 	version: [] | [bigint];
 	internet_identity: [] | [AuthenticationConfigInternetIdentity];
 	rules: [] | [AuthenticationRules];
+}
+export interface AuthenticationConfigGoogle {
+	client_id: string;
 }
 export interface AuthenticationConfigInternetIdentity {
 	derivation_origin: [] | [string];
@@ -253,6 +257,7 @@ export interface SegmentsDeploymentOptions {
 	satellite_version: [] | [string];
 }
 export interface SetAuthenticationConfig {
+	google: [] | [AuthenticationConfigGoogle];
 	version: [] | [bigint];
 	internet_identity: [] | [AuthenticationConfigInternetIdentity];
 	rules: [] | [AuthenticationRules];

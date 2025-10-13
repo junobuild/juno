@@ -39,6 +39,7 @@ pub mod config {
     #[derive(Default, CandidType, Serialize, Deserialize, Clone)]
     pub struct AuthenticationConfig {
         pub internet_identity: Option<AuthenticationConfigInternetIdentity>,
+        pub google: Option<AuthenticationConfigGoogle>,
         pub rules: Option<AuthenticationRules>,
         pub version: Option<Version>,
         pub created_at: Option<Timestamp>,
@@ -55,10 +56,17 @@ pub mod config {
     pub struct AuthenticationRules {
         pub allowed_callers: Vec<Principal>,
     }
+
+    #[derive(Default, CandidType, Serialize, Deserialize, Clone)]
+    pub struct AuthenticationConfigGoogle {
+        pub client_id: String,
+    }
 }
 
 pub mod interface {
-    use crate::types::config::{AuthenticationConfigInternetIdentity, AuthenticationRules};
+    use crate::types::config::{
+        AuthenticationConfigGoogle, AuthenticationConfigInternetIdentity, AuthenticationRules,
+    };
     use candid::{CandidType, Deserialize, Principal};
     use junobuild_shared::types::state::Version;
     use serde::Serialize;
@@ -67,6 +75,7 @@ pub mod interface {
     #[derive(Default, CandidType, Serialize, Deserialize, Clone)]
     pub struct SetAuthenticationConfig {
         pub internet_identity: Option<AuthenticationConfigInternetIdentity>,
+        pub google: Option<AuthenticationConfigGoogle>,
         pub rules: Option<AuthenticationRules>,
         pub version: Option<Version>,
     }

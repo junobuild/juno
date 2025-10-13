@@ -9,7 +9,11 @@ import {
 	EXTERNAL_ALTERNATIVE_ORIGINS,
 	EXTERNAL_ALTERNATIVE_ORIGINS_URLS
 } from '../../../constants/auth-tests.constants';
-import { testAuthConfig, testReturnAutConfig } from '../../../utils/auth-assertions-tests.utils';
+import {
+	testAuthConfig,
+	testAuthGoogleConfig,
+	testReturnAuthConfig
+} from '../../../utils/auth-assertions-tests.utils';
 import { setupSatelliteStock } from '../../../utils/satellite-tests.utils';
 
 describe('Satellite > Authentication', () => {
@@ -67,6 +71,7 @@ describe('Satellite > Authentication', () => {
 						}
 					],
 					rules: [],
+					google: [],
 					version: [4n]
 				};
 
@@ -104,6 +109,7 @@ describe('Satellite > Authentication', () => {
 						}
 					],
 					rules: [],
+					google: [],
 					version: [5n]
 				};
 
@@ -144,6 +150,7 @@ describe('Satellite > Authentication', () => {
 						}
 					],
 					rules: [],
+					google: [],
 					version: [6n]
 				};
 
@@ -176,6 +183,7 @@ describe('Satellite > Authentication', () => {
 						}
 					],
 					rules: [],
+					google: [],
 					version: [7n]
 				};
 
@@ -217,6 +225,7 @@ describe('Satellite > Authentication', () => {
 						}
 					],
 					rules: [],
+					google: [],
 					version: [8n]
 				};
 
@@ -254,6 +263,7 @@ describe('Satellite > Authentication', () => {
 						}
 					],
 					rules: [],
+					google: [],
 					version: [9n]
 				};
 
@@ -294,6 +304,7 @@ describe('Satellite > Authentication', () => {
 						}
 					],
 					rules: [],
+					google: [],
 					version: [10n]
 				};
 
@@ -311,9 +322,14 @@ describe('Satellite > Authentication', () => {
 			});
 		});
 
-		testReturnAutConfig({
+		testReturnAuthConfig({
 			actor: () => actor,
 			version: 11n
+		});
+
+		testAuthGoogleConfig({
+			actor: () => actor,
+			version: 12n
 		});
 	});
 
@@ -331,6 +347,7 @@ describe('Satellite > Authentication', () => {
 						{ derivation_origin: ['demo.com'], external_alternative_origins: toNullable() }
 					],
 					rules: [],
+					google: [],
 					version: [10n]
 				})
 			).rejects.toThrow(JUNO_AUTH_ERROR_NOT_ADMIN_CONTROLLER);

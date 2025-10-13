@@ -19,7 +19,7 @@ async fn init_random_seed() {
         state.borrow_mut().runtime.rng = seed;
     });
 
-    // TODO: to be removed. One time migration
+    // TODO(#2069): to be removed. One time migration.
     init_auth_salt();
 
     invoke_on_init_random_seed();

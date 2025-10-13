@@ -1,3 +1,4 @@
+use crate::auth::store::get_salt;
 use crate::certification::cert::update_certified_data;
 use ic_certification::HashTree;
 use junobuild_auth::runtime::pruned_labeled_sigs_root_hash_tree;

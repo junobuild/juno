@@ -1017,6 +1017,7 @@ dependencies = [
  "ic-certification",
  "junobuild-shared",
  "serde",
+ "url",
 ]
 
 [[package]]

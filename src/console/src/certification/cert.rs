@@ -12,4 +12,3 @@ pub fn update_certified_data() {
 
     set_certified_data(&prefixed_root_hash[..]);
 }
-

@@ -13,6 +13,7 @@ pub mod state {
     use junobuild_storage::types::state::StorageHeapState;
     use serde::{Deserialize, Serialize};
     use std::collections::{HashMap, HashSet};
+    use junobuild_auth::types::state::AuthenticationHeapState;
 
     pub type MissionControls = HashMap<UserId, MissionControl>;
     pub type Payments = HashMap<BlockIndex, Payment>;
@@ -49,6 +50,7 @@ pub mod state {
         pub rates: Rates,
         pub fees: Fees,
         pub storage: StorageHeapState,
+        pub authentication: Option<AuthenticationHeapState>,
         pub releases_metadata: ReleasesMetadata,
     }
 

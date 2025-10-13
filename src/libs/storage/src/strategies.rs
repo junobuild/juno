@@ -4,6 +4,7 @@ use crate::types::store::{
     Asset, AssetAssertUpload, AssetEncoding, Batch, EncodingType, ReferenceId,
 };
 use candid::Principal;
+use ic_certification::HashTree;
 use junobuild_collections::types::core::CollectionKey;
 use junobuild_collections::types::rules::{Memory, Permission, Rule};
 use junobuild_shared::types::core::Blob;
@@ -147,4 +148,6 @@ pub trait StorageUploadStrategy {
 
 pub trait StorageCertificateStrategy {
     fn update_certified_data(&self);
+
+    fn get_pruned_labeled_sigs_root_hash_tree(&self) -> HashTree;
 }

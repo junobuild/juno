@@ -1,4 +1,4 @@
-use crate::cdn::strategies_impls::storage::StorageState;
+use crate::cdn::strategies_impls::storage::{StorageCertificate, StorageState};
 use ic_cdk_macros::query;
 use junobuild_storage::http::types::{
     HttpRequest, HttpResponse, StreamingCallbackHttpResponse, StreamingCallbackToken,
@@ -10,7 +10,7 @@ use junobuild_storage::http_request::{
 
 #[query]
 pub fn http_request(request: HttpRequest) -> HttpResponse {
-    http_request_storage(request, &StorageState)
+    http_request_storage(request, &StorageState, &StorageCertificate)
 }
 
 #[query]

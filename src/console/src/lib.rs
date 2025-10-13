@@ -2,6 +2,7 @@
 
 mod api;
 mod cdn;
+mod certification;
 mod constants;
 mod factory;
 mod guards;

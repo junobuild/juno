@@ -1,5 +1,6 @@
 use crate::assets::storage::store::get_custom_domains_store;
 use crate::assets::storage::strategy_impls::StorageState;
+use crate::certification::strategy_impls::StorageCertificate;
 use crate::errors::auth::JUNO_AUTH_ERROR_INVALID_ORIGIN;
 use junobuild_auth::types::config::AuthenticationConfig;
 use junobuild_shared::ic::api::id;
@@ -27,7 +28,7 @@ pub fn update_alternative_origins(config: &AuthenticationConfig) -> Result<(), S
         }
     }
 
-    delete_alternative_origins_asset(&StorageState)
+    delete_alternative_origins_asset(&StorageState, &StorageCertificate)
 }
 
 fn set_alternative_origins(
@@ -62,7 +63,7 @@ fn set_alternative_origins(
     custom_domains.extend(external_domains);
 
     if custom_domains.is_empty() {
-        return delete_alternative_origins_asset(&StorageState);
+        return delete_alternative_origins_asset(&StorageState, &StorageCertificate);
     }
 
     set_alternative_origins_with_custom_domains(&mut custom_domains)
@@ -105,5 +106,5 @@ fn set_alternative_origins_with_custom_domains(
         "Cannot convert custom domains to II alternative origins JSON data.".to_string()
     })?;
 
-    update_alternative_origins_asset(&json, &StorageState)
+    update_alternative_origins_asset(&json, &StorageState, &StorageCertificate)
 }

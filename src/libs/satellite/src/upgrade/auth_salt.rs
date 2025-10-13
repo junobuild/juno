@@ -12,9 +12,14 @@ pub fn init_auth_salt() {
 
     if let Ok(salt) = salt() {
         set_salt(&salt);
-    } else {
-        // We only print an error because the salt can be added manually and this should not be a blocker for the upgrade.
+
+        // We use this one-time log because the salt is not exposed, and we want to verify that it was generated correctly.
         #[allow(clippy::disallowed_methods)]
-        print("A salt could not be generated. Please set one manually in the authentication configuration.");
+        print("Salt for the authentication generated.");
+    } else {
+        // We only log an error since the salt should not block the upgrade or affect production.
+        // All existing features will continue to work; only the new authentication method will not be available.
+        #[allow(clippy::disallowed_methods)]
+        print("A salt for the authentication could not be generated. Please reach out Juno!");
     }
 }

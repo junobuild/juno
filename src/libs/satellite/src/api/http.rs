@@ -1,4 +1,5 @@
 use crate::assets::storage::strategy_impls::StorageState;
+use crate::certification::strategy_impls::StorageCertificate;
 use junobuild_storage::http::types::{
     HttpRequest, HttpResponse, StreamingCallbackHttpResponse, StreamingCallbackToken,
 };
@@ -12,7 +13,7 @@ use junobuild_storage::http_request::{
 // ---------------------------------------------------------
 
 pub fn http_request(request: HttpRequest) -> HttpResponse {
-    http_request_storage(request, &StorageState)
+    http_request_storage(request, &StorageState, &StorageCertificate)
 }
 
 pub fn http_request_streaming_callback(

@@ -58,6 +58,7 @@ ic-cdk.workspace = true
 ic-cdk-macros.workspace = true
 ic-cdk-timers.workspace = true
 ic-stable-structures.workspace = true
+ic-certification.workspace = true
 serde.workspace = true
 serde_json.workspace = true
 ciborium.workspace = true

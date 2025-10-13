@@ -1,5 +1,6 @@
-use crate::heap::{get_config, insert_config as insert_state_config};
 use crate::state::assert::assert_set_config;
+use crate::state::heap::get_config;
+use crate::state::heap::insert_config;
 use crate::strategies::AuthHeapStrategy;
 use crate::types::config::AuthenticationConfig;
 use crate::types::interface::SetAuthenticationConfig;
@@ -14,7 +15,7 @@ pub fn set_config(
 
     let config = AuthenticationConfig::prepare(&current_config, proposed_config);
 
-    insert_state_config(auth_heap, &config);
+    insert_config(auth_heap, &config);
 
     Ok(config)
 }

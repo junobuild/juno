@@ -23,6 +23,7 @@ export const buildSetAuthenticationConfig = ({
 						external_alternative_origins
 					}
 				],
+				google: [],
 				rules: []
 			}
 		: {

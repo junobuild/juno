@@ -63,6 +63,7 @@ export const testAuthConfig = ({
 				}
 			],
 			rules: [],
+			google: [],
 			version: []
 		};
 
@@ -82,6 +83,7 @@ export const testAuthConfig = ({
 				}
 			],
 			rules: [],
+			google: [],
 			version: []
 		};
 
@@ -101,6 +103,7 @@ export const testAuthConfig = ({
 				}
 			],
 			rules: [],
+			google: [],
 			version: []
 		};
 
@@ -140,6 +143,7 @@ export const testAuthConfig = ({
 				}
 			],
 			rules: [],
+			google: [],
 			version: [1n]
 		};
 
@@ -186,6 +190,7 @@ export const testAuthConfig = ({
 				}
 			],
 			rules: [],
+			google: [],
 			version: [2n]
 		};
 
@@ -216,6 +221,7 @@ export const testAuthConfig = ({
 		const config: SatelliteDid.SetAuthenticationConfig = {
 			internet_identity: [],
 			rules: [],
+			google: [],
 			version: [3n]
 		};
 
@@ -259,6 +265,7 @@ export const testReturnAuthConfig = ({
 				}
 			],
 			rules: [],
+			google: [],
 			version: [version]
 		};
 

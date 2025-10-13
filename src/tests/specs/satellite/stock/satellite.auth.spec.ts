@@ -67,6 +67,7 @@ describe('Satellite > Authentication', () => {
 						}
 					],
 					rules: [],
+					google: [],
 					version: [4n]
 				};
 
@@ -104,6 +105,7 @@ describe('Satellite > Authentication', () => {
 						}
 					],
 					rules: [],
+					google: [],
 					version: [5n]
 				};
 
@@ -144,6 +146,7 @@ describe('Satellite > Authentication', () => {
 						}
 					],
 					rules: [],
+					google: [],
 					version: [6n]
 				};
 
@@ -176,6 +179,7 @@ describe('Satellite > Authentication', () => {
 						}
 					],
 					rules: [],
+					google: [],
 					version: [7n]
 				};
 
@@ -217,6 +221,7 @@ describe('Satellite > Authentication', () => {
 						}
 					],
 					rules: [],
+					google: [],
 					version: [8n]
 				};
 
@@ -254,6 +259,7 @@ describe('Satellite > Authentication', () => {
 						}
 					],
 					rules: [],
+					google: [],
 					version: [9n]
 				};
 
@@ -294,6 +300,7 @@ describe('Satellite > Authentication', () => {
 						}
 					],
 					rules: [],
+					google: [],
 					version: [10n]
 				};
 
@@ -331,6 +338,7 @@ describe('Satellite > Authentication', () => {
 						{ derivation_origin: ['demo.com'], external_alternative_origins: toNullable() }
 					],
 					rules: [],
+					google: [],
 					version: [10n]
 				})
 			).rejects.toThrow(JUNO_AUTH_ERROR_NOT_ADMIN_CONTROLLER);

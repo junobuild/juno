@@ -1,9 +1,8 @@
 use crate::auth::alternative_origins::update_alternative_origins;
-use crate::auth::assert::config::assert_set_config;
 use crate::auth::strategy_impls::AuthHeap;
-use junobuild_auth::heap::{
-    get_config as get_state_config, get_salt as get_state_salt,
-    insert_config as insert_state_config, insert_salt,
+use junobuild_auth::state::set_config as set_store_config;
+use junobuild_auth::state::{
+    get_config as get_state_config, get_salt as get_state_salt, insert_salt,
 };
 use junobuild_auth::types::config::AuthenticationConfig;
 use junobuild_auth::types::interface::SetAuthenticationConfig;
@@ -12,13 +11,7 @@ use junobuild_auth::types::state::Salt;
 pub fn set_config(
     proposed_config: &SetAuthenticationConfig,
 ) -> Result<AuthenticationConfig, String> {
-    let current_config = get_config();
-
-    assert_set_config(proposed_config, &current_config)?;
-
-    let config = AuthenticationConfig::prepare(&current_config, proposed_config);
-
-    insert_state_config(&AuthHeap, &config);
+    let config = set_store_config(&AuthHeap, &proposed_config)?;
 
     update_alternative_origins(&config)?;
 

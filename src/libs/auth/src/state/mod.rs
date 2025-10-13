@@ -1,4 +1,11 @@
-pub mod heap;
+mod assert;
+pub mod errors;
+mod heap;
 mod memory;
-pub mod runtime;
+mod runtime;
 pub(crate) mod services;
+mod store;
+
+pub use heap::{get_config, get_salt, insert_salt};
+pub use runtime::*;
+pub use store::*;

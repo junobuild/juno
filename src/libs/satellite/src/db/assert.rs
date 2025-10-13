@@ -1,4 +1,4 @@
-use crate::auth::caller::assert_caller_is_allowed;
+use crate::auth::assert::assert_caller_is_allowed;
 use crate::db::runtime::increment_and_assert_rate;
 use crate::db::types::config::DbConfig;
 use crate::db::types::interface::SetDbConfig;

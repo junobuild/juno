@@ -3,9 +3,12 @@ pub mod state {
     use candid::CandidType;
     use serde::{Deserialize, Serialize};
 
+    pub type Salt = [u8; 32];
+
     #[derive(Default, CandidType, Serialize, Deserialize, Clone)]
     pub struct AuthenticationHeapState {
         pub config: AuthenticationConfig,
+        pub salt: Option<Salt>,
     }
 }
 

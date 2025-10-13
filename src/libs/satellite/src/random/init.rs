@@ -1,5 +1,6 @@
 use crate::hooks::random::invoke_on_init_random_seed;
 use crate::memory::internal::STATE;
+use crate::upgrade::auth_salt::init_auth_salt;
 use getrandom::Error;
 use ic_cdk::futures::spawn_017_compat;
 use ic_cdk_timers::set_timer;
@@ -17,6 +18,9 @@ async fn init_random_seed() {
     STATE.with(|state| {
         state.borrow_mut().runtime.rng = seed;
     });
+
+    // TODO: to be removed. One time migration
+    init_auth_salt();
 
     invoke_on_init_random_seed();
 }

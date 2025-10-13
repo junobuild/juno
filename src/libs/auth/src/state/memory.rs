@@ -2,5 +2,5 @@ use crate::types::runtime_state::State;
 use std::cell::RefCell;
 
 thread_local! {
-    pub static STATE: RefCell<State> = RefCell::default();
+    pub(super) static STATE: RefCell<State> = RefCell::default();
 }

@@ -9,7 +9,7 @@ import {
 	EXTERNAL_ALTERNATIVE_ORIGINS,
 	EXTERNAL_ALTERNATIVE_ORIGINS_URLS
 } from '../../../constants/auth-tests.constants';
-import { testAuthConfig, testReturnAutConfig } from '../../../utils/auth-assertions-tests.utils';
+import { testAuthConfig, testReturnAuthConfig } from '../../../utils/auth-assertions-tests.utils';
 import { setupSatelliteStock } from '../../../utils/satellite-tests.utils';
 
 describe('Satellite > Authentication', () => {
@@ -311,7 +311,7 @@ describe('Satellite > Authentication', () => {
 			});
 		});
 
-		testReturnAutConfig({
+		testReturnAuthConfig({
 			actor: () => actor,
 			version: 11n
 		});

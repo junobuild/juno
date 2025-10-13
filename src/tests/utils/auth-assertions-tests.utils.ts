@@ -7,6 +7,8 @@ import {
 	EXTERNAL_ALTERNATIVE_ORIGINS_URLS
 } from '../constants/auth-tests.constants';
 
+/* eslint-disable vitest/require-top-level-describe */
+
 export const testAuthConfig = ({
 	actor,
 	withWellKnownIIAlternativeOrigins
@@ -239,7 +241,7 @@ export const testAuthConfig = ({
 	}
 };
 
-export const testReturnAutConfig = ({
+export const testReturnAuthConfig = ({
 	actor,
 	version
 }: {

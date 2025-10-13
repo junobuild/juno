@@ -32,7 +32,7 @@ describe('Console > Storage', () => {
 	describe.each([
 		{ title: 'Anonymous', user: new AnonymousIdentity() },
 		{ title: 'Some identity', user: Ed25519KeyIdentity.generate() }
-	])('$title', ({ title, user }) => {
+	])('$title', ({ user }) => {
 		const ERROR_NOT_ADMIN_CONTROLLER = 'Caller is not a controller of the console.';
 
 		beforeAll(() => {

@@ -1,6 +1,7 @@
 use crate::strategies::AuthHeapStrategy;
 use crate::types::config::AuthenticationConfig;
 use crate::types::state::AuthenticationHeapState;
+use crate::types::state::Salt;
 
 // ---------------------------------------------------------
 // Config
@@ -20,8 +21,33 @@ fn insert_config_impl(config: &AuthenticationConfig, state: &mut Option<Authenti
         None => {
             *state = Some(AuthenticationHeapState {
                 config: config.clone(),
+                salt: None,
             })
         }
         Some(state) => state.config = config.clone(),
+    }
+}
+
+// ---------------------------------------------------------
+// Salt
+// ---------------------------------------------------------
+
+pub fn get_salt(auth_heap: &impl AuthHeapStrategy) -> Option<Salt> {
+    auth_heap.with_auth_state(|authentication| authentication.as_ref().and_then(|auth| auth.salt))
+}
+
+pub fn insert_salt(auth_heap: &impl AuthHeapStrategy, salt: &Salt) {
+    auth_heap.with_auth_state_mut(|authentication| insert_salt_impl(salt, authentication))
+}
+
+fn insert_salt_impl(salt: &Salt, state: &mut Option<AuthenticationHeapState>) {
+    match state {
+        None => {
+            *state = Some(AuthenticationHeapState {
+                config: AuthenticationConfig::default(),
+                salt: Some(*salt),
+            })
+        }
+        Some(state) => state.salt = Some(*salt),
     }
 }

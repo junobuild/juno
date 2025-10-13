@@ -13,6 +13,7 @@ pub fn init_auth_salt() {
     if let Ok(salt) = salt() {
         set_salt(&salt);
     } else {
+        // We only print an error because the salt can be added manually and this should not be a blocker for the upgrade.
         #[allow(clippy::disallowed_methods)]
         print("A salt could not be generated. Please set one manually in the authentication configuration.");
     }

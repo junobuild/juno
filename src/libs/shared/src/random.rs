@@ -1,6 +1,3 @@
-use candid::Principal;
-use ic_cdk::api::call::CallResult;
-use ic_cdk::call;
 use ic_cdk::management_canister;
 use rand::{rngs::StdRng, SeedableRng};
 

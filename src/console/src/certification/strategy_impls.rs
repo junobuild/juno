@@ -5,9 +5,9 @@ use junobuild_auth::strategies::AuthCertificateStrategy;
 use junobuild_storage::runtime::certified_assets_root_hash;
 use junobuild_storage::strategies::StorageCertificateStrategy;
 
-/// The consumer of junobuild_auth and junobuild_storage is responsible for implementing
-/// the functions that update the certified data. This way, both libraries remain unaware
-/// of each other.
+// The consumer of junobuild_auth and junobuild_storage is responsible for implementing
+// the functions that update the certified data. This way, both libraries remain unaware
+// of each other.
 
 pub struct AuthCertificate;
 

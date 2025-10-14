@@ -1,4 +1,4 @@
-use crate::types::state::{AuthenticationHeapState, Salt};
+use crate::types::state::AuthenticationHeapState;
 
 pub trait AuthHeapStrategy {
     fn with_auth_state<R>(&self, f: impl FnOnce(&Option<AuthenticationHeapState>) -> R) -> R;

@@ -24,7 +24,7 @@ pub fn with_config<R>(f: impl FnOnce(&StorageConfig) -> R) -> R {
 pub fn with_auth<R>(f: impl FnOnce(&Option<AuthenticationHeapState>) -> R) -> R {
     read_heap_state(|state| {
         let authentication = &state.authentication;
-        f(&authentication)
+        f(authentication)
     })
 }
 

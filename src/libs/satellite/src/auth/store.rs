@@ -7,7 +7,7 @@ use junobuild_auth::types::interface::SetAuthenticationConfig;
 pub async fn set_config(
     proposed_config: &SetAuthenticationConfig,
 ) -> Result<AuthenticationConfig, String> {
-    let config = set_store_config(&AuthHeap, &proposed_config)?;
+    let config = set_store_config(&AuthHeap, proposed_config)?;
 
     update_alternative_origins(&config)?;
 

@@ -8,7 +8,7 @@ impl AuthHeapStrategy for AuthHeap {
     fn with_auth_state<R>(&self, f: impl FnOnce(&Option<AuthenticationHeapState>) -> R) -> R {
         STATE.with(|state| {
             let authentication = &state.borrow().heap.authentication;
-            f(&authentication)
+            f(authentication)
         })
     }
 

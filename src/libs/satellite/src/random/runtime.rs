@@ -1,4 +1,4 @@
-use crate::memory::internal::STATE;
+use crate::memory::services::with_runtime_rng_mut;
 use rand::{Rng, RngCore};
 
 /// Generates a random `i32` number.
@@ -18,13 +18,9 @@ use rand::{Rng, RngCore};
 /// }
 /// ```
 pub fn random() -> Result<i32, String> {
-    STATE.with(|state| {
-        let rng = &mut state.borrow_mut().runtime.rng;
-
-        match rng {
-            None => Err("The random number generator has not been initialized.".to_string()),
-            Some(rng) => Ok(rng.random()),
-        }
+    with_runtime_rng_mut(|rng| match rng {
+        None => Err("The random number generator has not been initialized.".to_string()),
+        Some(rng) => Ok(rng.random()),
     })
 }
 
@@ -45,19 +41,15 @@ pub fn random() -> Result<i32, String> {
 /// }
 /// ```
 pub fn salt() -> Result<[u8; 32], String> {
-    STATE.with(|state| {
-        let rng = &mut state.borrow_mut().runtime.rng;
-
-        match rng {
-            None => Err(
-                "The random number generator has not been initialized. A salt cannot be generated."
-                    .to_string(),
-            ),
-            Some(rng) => {
-                let mut salt = [0u8; 32];
-                rng.fill_bytes(&mut salt);
-                Ok(salt)
-            }
+    with_runtime_rng_mut(|rng| match rng {
+        None => Err(
+            "The random number generator has not been initialized. A salt cannot be generated."
+                .to_string(),
+        ),
+        Some(rng) => {
+            let mut salt = [0u8; 32];
+            rng.fill_bytes(&mut salt);
+            Ok(salt)
         }
     })
 }

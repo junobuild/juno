@@ -1,5 +1,6 @@
 use crate::hooks::random::invoke_on_init_random_seed;
 use crate::memory::internal::STATE;
+use crate::memory::services::with_runtime_rng_mut;
 use getrandom::Error;
 use ic_cdk::futures::spawn_017_compat;
 use ic_cdk_timers::set_timer;
@@ -14,9 +15,7 @@ pub fn defer_init_random_seed() {
 async fn init_random_seed() {
     let seed = get_random_seed().await;
 
-    STATE.with(|state| {
-        state.borrow_mut().runtime.rng = seed;
-    });
+    with_runtime_rng_mut(|rng| *rng = seed);
 
     invoke_on_init_random_seed();
 }

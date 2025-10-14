@@ -22,16 +22,18 @@ type AssetNoContent = record {
 type AssetsUpgradeOptions = record { clear_existing_assets : opt bool };
 type AuthenticationConfig = record {
   updated_at : opt nat64;
-  google : opt AuthenticationConfigGoogle;
+  openid : opt AuthenticationConfigOpenId;
   created_at : opt nat64;
   version : opt nat64;
   internet_identity : opt AuthenticationConfigInternetIdentity;
   rules : opt AuthenticationRules;
 };
-type AuthenticationConfigGoogle = record { client_id : text };
 type AuthenticationConfigInternetIdentity = record {
   derivation_origin : opt text;
   external_alternative_origins : opt vec text;
+};
+type AuthenticationConfigOpenId = record {
+  providers : vec record { OpenIdProvider; OpenIdProviderConfig };
 };
 type AuthenticationRules = record { allowed_callers : vec principal };
 type CollectionType = variant { Db; Storage };
@@ -156,6 +158,8 @@ type ListRulesResults = record {
 };
 type Memory = variant { Heap; Stable };
 type MemorySize = record { stable : nat64; heap : nat64 };
+type OpenIdProvider = variant { Google };
+type OpenIdProviderConfig = record { client_id : text };
 type Permission = variant { Controllers; Private; Public; Managed };
 type Proposal = record {
   status : ProposalStatus;
@@ -200,7 +204,7 @@ type SegmentsDeploymentOptions = record {
   satellite_version : opt text;
 };
 type SetAuthenticationConfig = record {
-  google : opt AuthenticationConfigGoogle;
+  openid : opt AuthenticationConfigOpenId;
   version : opt nat64;
   internet_identity : opt AuthenticationConfigInternetIdentity;
   rules : opt AuthenticationRules;

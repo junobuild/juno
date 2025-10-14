@@ -61,7 +61,7 @@ describe('Console > Storage', () => {
 			const config: ConsoleDid.SetAuthenticationConfig = {
 				internet_identity: [],
 				rules: [],
-				google: [],
+				openid: [],
 				version: []
 			};
 

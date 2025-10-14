@@ -68,7 +68,7 @@ export const testAuthConfig = ({
 				}
 			],
 			rules: [],
-			google: [],
+			openid: [],
 			version: []
 		};
 
@@ -88,7 +88,7 @@ export const testAuthConfig = ({
 				}
 			],
 			rules: [],
-			google: [],
+			openid: [],
 			version: []
 		};
 
@@ -108,7 +108,7 @@ export const testAuthConfig = ({
 				}
 			],
 			rules: [],
-			google: [],
+			openid: [],
 			version: []
 		};
 
@@ -148,7 +148,7 @@ export const testAuthConfig = ({
 				}
 			],
 			rules: [],
-			google: [],
+			openid: [],
 			version: [1n]
 		};
 
@@ -195,7 +195,7 @@ export const testAuthConfig = ({
 				}
 			],
 			rules: [],
-			google: [],
+			openid: [],
 			version: [2n]
 		};
 
@@ -226,7 +226,7 @@ export const testAuthConfig = ({
 		const config: SatelliteDid.SetAuthenticationConfig = {
 			internet_identity: [],
 			rules: [],
-			google: [],
+			openid: [],
 			version: [3n]
 		};
 
@@ -276,7 +276,7 @@ export const testReturnAuthConfig = ({
 				}
 			],
 			rules: [],
-			google: [],
+			openid: [],
 			version: [version]
 		};
 
@@ -343,9 +343,16 @@ export const testAuthGoogleConfig = ({
 		const config: SatelliteDid.SetAuthenticationConfig = {
 			internet_identity: [],
 			rules: [],
-			google: [
+			openid: [
 				{
-					client_id: CLIENT_ID
+					providers: [
+						[
+							{ Google: null },
+							{
+								client_id: CLIENT_ID
+							}
+						]
+					]
 				}
 			],
 			version: [version]
@@ -355,7 +362,10 @@ export const testAuthGoogleConfig = ({
 
 		const updatedConfig = await get_auth_config();
 
-		expect(fromNullable(fromNullable(updatedConfig)?.google ?? [])?.client_id).toEqual(CLIENT_ID);
+		const google = fromNullable(fromNullable(updatedConfig)?.openid ?? [])?.providers.find(
+			([key]) => 'Google' in key
+		)?.[1];
+		expect(google?.client_id).toEqual(CLIENT_ID);
 
 		await assertLog(LOG_SALT_INITIALIZED);
 	});
@@ -366,7 +376,7 @@ export const testAuthGoogleConfig = ({
 		const config: SatelliteDid.SetAuthenticationConfig = {
 			internet_identity: [],
 			rules: [],
-			google: [],
+			openid: [],
 			version: [version + 1n]
 		};
 
@@ -374,7 +384,10 @@ export const testAuthGoogleConfig = ({
 
 		const updatedConfig = await get_auth_config();
 
-		expect(fromNullable(fromNullable(updatedConfig)?.google ?? [])).toBeUndefined();
+		const google = fromNullable(fromNullable(updatedConfig)?.openid ?? [])?.providers.find(
+			([key]) => 'Google' in key
+		);
+		expect(google).toBeUndefined();
 	});
 
 	it('should not reinitialize salt', async () => {
@@ -383,9 +396,16 @@ export const testAuthGoogleConfig = ({
 		const config: SatelliteDid.SetAuthenticationConfig = {
 			internet_identity: [],
 			rules: [],
-			google: [
+			openid: [
 				{
-					client_id: CLIENT_ID
+					providers: [
+						[
+							{ Google: null },
+							{
+								client_id: CLIENT_ID
+							}
+						]
+					]
 				}
 			],
 			version: [version + 2n]

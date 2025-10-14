@@ -324,7 +324,7 @@ describe('Satellite > Switch storage system memory', () => {
 						}
 					],
 					rules: [],
-					google: [],
+					openid: [],
 					version: currentConfig?.version ?? []
 				};
 

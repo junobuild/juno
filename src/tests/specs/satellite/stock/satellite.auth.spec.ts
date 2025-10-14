@@ -329,6 +329,9 @@ describe('Satellite > Authentication', () => {
 
 		testAuthGoogleConfig({
 			actor: () => actor,
+			pic: () => pic,
+			canisterId: () => canisterId,
+			controller: () => controller,
 			version: 12n
 		});
 	});

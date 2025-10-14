@@ -1,19 +1,18 @@
-use crate::auth::strategy_impls::AuthHeap;
-use crate::certification::strategy_impls::AuthCertificate;
-use junobuild_auth::delegation;
-use junobuild_auth::types::interface::{
-    GetDelegationResponse, OpenIdGetDelegationArgs, OpenIdPrepareDelegationArgs,
-    PrepareDelegationResponse,
-};
+use crate::auth::delegation::{openid_get_delegation, openid_prepare_delegation};
+use crate::types::interface::{GetDelegationArgs, PrepareDelegationArgs};
+use junobuild_auth::types::interface::{GetDelegationResponse, PrepareDelegationResponse};
+use junobuild_shared::ic::UnwrapOrTrap;
 
-pub fn openid_prepare_delegation(
-    args: &OpenIdPrepareDelegationArgs,
+pub fn prepare_delegation(
+    args: &PrepareDelegationArgs,
 ) -> Result<PrepareDelegationResponse, String> {
-    delegation::openid_prepare_delegation(args, &AuthHeap, &AuthCertificate)
+    match args {
+        PrepareDelegationArgs::OpenId(args) => openid_prepare_delegation(args).unwrap_or_trap(),
+    }
 }
 
-pub fn openid_get_delegation(
-    args: &OpenIdGetDelegationArgs,
-) -> Result<GetDelegationResponse, String> {
-    delegation::openid_get_delegation(args, &AuthHeap, &AuthCertificate)
+pub fn get_delegation(args: &GetDelegationArgs) -> Result<GetDelegationResponse, String> {
+    match args {
+        GetDelegationArgs::OpenId(args) => openid_get_delegation(args).unwrap_or_trap(),
+    }
 }

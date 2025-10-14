@@ -38,7 +38,11 @@ export const idlFactory = ({ IDL }) => {
 	const DeleteProposalAssets = IDL.Record({
 		proposal_ids: IDL.Vec(IDL.Nat)
 	});
-	const AuthenticationConfigGoogle = IDL.Record({ client_id: IDL.Text });
+	const OpenIdProvider = IDL.Variant({ Google: IDL.Null });
+	const OpenIdProviderConfig = IDL.Record({ client_id: IDL.Text });
+	const AuthenticationConfigOpenId = IDL.Record({
+		providers: IDL.Vec(IDL.Tuple(OpenIdProvider, OpenIdProviderConfig))
+	});
 	const AuthenticationConfigInternetIdentity = IDL.Record({
 		derivation_origin: IDL.Opt(IDL.Text),
 		external_alternative_origins: IDL.Opt(IDL.Vec(IDL.Text))
@@ -48,7 +52,7 @@ export const idlFactory = ({ IDL }) => {
 	});
 	const AuthenticationConfig = IDL.Record({
 		updated_at: IDL.Opt(IDL.Nat64),
-		google: IDL.Opt(AuthenticationConfigGoogle),
+		openid: IDL.Opt(AuthenticationConfigOpenId),
 		created_at: IDL.Opt(IDL.Nat64),
 		version: IDL.Opt(IDL.Nat64),
 		internet_identity: IDL.Opt(AuthenticationConfigInternetIdentity),
@@ -269,7 +273,7 @@ export const idlFactory = ({ IDL }) => {
 		items_length: IDL.Nat64
 	});
 	const SetAuthenticationConfig = IDL.Record({
-		google: IDL.Opt(AuthenticationConfigGoogle),
+		openid: IDL.Opt(AuthenticationConfigOpenId),
 		version: IDL.Opt(IDL.Nat64),
 		internet_identity: IDL.Opt(AuthenticationConfigInternetIdentity),
 		rules: IDL.Opt(AuthenticationRules)

@@ -59,6 +59,7 @@ pub mod interface {
     use crate::db::types::config::DbConfig;
     use candid::CandidType;
     use junobuild_auth::types::config::AuthenticationConfig;
+    use junobuild_auth::types::interface::{OpenIdGetDelegationArgs, OpenIdPrepareDelegationArgs};
     use junobuild_cdn::proposals::ProposalId;
     use junobuild_storage::types::config::StorageConfig;
     use serde::{Deserialize, Serialize};
@@ -73,6 +74,16 @@ pub mod interface {
     #[derive(CandidType, Serialize, Deserialize, Clone)]
     pub struct DeleteProposalAssets {
         pub proposal_ids: Vec<ProposalId>,
+    }
+
+    #[derive(CandidType, Serialize, Deserialize)]
+    pub enum PrepareDelegationArgs {
+        OpenId(OpenIdPrepareDelegationArgs),
+    }
+
+    #[derive(CandidType, Serialize, Deserialize)]
+    pub enum GetDelegationArgs {
+        OpenId(OpenIdGetDelegationArgs),
     }
 }
 

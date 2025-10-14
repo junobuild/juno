@@ -1,4 +1,4 @@
-use crate::types::config::AuthenticationConfig;
+use crate::types::config::{AuthenticationConfig, OpenIdProvider};
 use crate::types::interface::SetAuthenticationConfig;
 use ic_cdk::api::time;
 use junobuild_shared::types::state::{Timestamp, Version, Versioned};
@@ -22,7 +22,7 @@ impl AuthenticationConfig {
 
         AuthenticationConfig {
             internet_identity: user_config.internet_identity.clone(),
-            google: user_config.google.clone(),
+            openid: user_config.openid.clone(),
             rules: user_config.rules.clone(),
             created_at: Some(created_at),
             updated_at: Some(updated_at),
@@ -34,5 +34,13 @@ impl AuthenticationConfig {
 impl Versioned for AuthenticationConfig {
     fn version(&self) -> Option<Version> {
         self.version
+    }
+}
+
+impl OpenIdProvider {
+    pub fn issuers(&self) -> &[&str] {
+        match self {
+            OpenIdProvider::Google => &["https://accounts.google.com", "accounts.google.com"],
+        }
     }
 }

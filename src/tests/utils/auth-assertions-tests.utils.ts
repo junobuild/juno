@@ -6,7 +6,9 @@ import { fromNullable, nonNullish, toNullable } from '@dfinity/utils';
 import { JUNO_AUTH_ERROR_INVALID_ORIGIN } from '@junobuild/errors';
 import {
 	EXTERNAL_ALTERNATIVE_ORIGINS,
-	EXTERNAL_ALTERNATIVE_ORIGINS_URLS, LOG_SALT_ALREADY_INITIALIZED, LOG_SALT_INITIALIZED
+	EXTERNAL_ALTERNATIVE_ORIGINS_URLS,
+	LOG_SALT_ALREADY_INITIALIZED,
+	LOG_SALT_INITIALIZED
 } from '../constants/auth-tests.constants';
 import { fetchLogs } from './mgmt-tests.utils';
 
@@ -66,7 +68,7 @@ export const testAuthConfig = ({
 				}
 			],
 			rules: [],
-			google: [],
+			openid: [],
 			version: []
 		};
 
@@ -86,7 +88,7 @@ export const testAuthConfig = ({
 				}
 			],
 			rules: [],
-			google: [],
+			openid: [],
 			version: []
 		};
 
@@ -106,7 +108,7 @@ export const testAuthConfig = ({
 				}
 			],
 			rules: [],
-			google: [],
+			openid: [],
 			version: []
 		};
 
@@ -146,7 +148,7 @@ export const testAuthConfig = ({
 				}
 			],
 			rules: [],
-			google: [],
+			openid: [],
 			version: [1n]
 		};
 
@@ -193,7 +195,7 @@ export const testAuthConfig = ({
 				}
 			],
 			rules: [],
-			google: [],
+			openid: [],
 			version: [2n]
 		};
 
@@ -224,7 +226,7 @@ export const testAuthConfig = ({
 		const config: SatelliteDid.SetAuthenticationConfig = {
 			internet_identity: [],
 			rules: [],
-			google: [],
+			openid: [],
 			version: [3n]
 		};
 
@@ -274,7 +276,7 @@ export const testReturnAuthConfig = ({
 				}
 			],
 			rules: [],
-			google: [],
+			openid: [],
 			version: [version]
 		};
 
@@ -294,7 +296,7 @@ export const testReturnAuthConfig = ({
 		);
 	});
 
-	it("should not have initialized salt", async () => {
+	it('should not have initialized salt', async () => {
 		const logs = await fetchLogs({
 			pic: pic(),
 			controller: controller(),
@@ -302,8 +304,10 @@ export const testReturnAuthConfig = ({
 		});
 
 		expect(logs.find(([_, { message }]) => message === LOG_SALT_INITIALIZED)).toBeUndefined();
-		expect(logs.find(([_, { message }]) => message === LOG_SALT_ALREADY_INITIALIZED)).toBeUndefined();
-	})
+		expect(
+			logs.find(([_, { message }]) => message === LOG_SALT_ALREADY_INITIALIZED)
+		).toBeUndefined();
+	});
 };
 
 export const testAuthGoogleConfig = ({
@@ -339,9 +343,16 @@ export const testAuthGoogleConfig = ({
 		const config: SatelliteDid.SetAuthenticationConfig = {
 			internet_identity: [],
 			rules: [],
-			google: [
+			openid: [
 				{
-					client_id: CLIENT_ID
+					providers: [
+						[
+							{ Google: null },
+							{
+								client_id: CLIENT_ID
+							}
+						]
+					]
 				}
 			],
 			version: [version]
@@ -351,7 +362,10 @@ export const testAuthGoogleConfig = ({
 
 		const updatedConfig = await get_auth_config();
 
-		expect(fromNullable(fromNullable(updatedConfig)?.google ?? [])?.client_id).toEqual(CLIENT_ID);
+		const google = fromNullable(fromNullable(updatedConfig)?.openid ?? [])?.providers.find(
+			([key]) => 'Google' in key
+		)?.[1];
+		expect(google?.client_id).toEqual(CLIENT_ID);
 
 		await assertLog(LOG_SALT_INITIALIZED);
 	});
@@ -362,7 +376,7 @@ export const testAuthGoogleConfig = ({
 		const config: SatelliteDid.SetAuthenticationConfig = {
 			internet_identity: [],
 			rules: [],
-			google: [],
+			openid: [],
 			version: [version + 1n]
 		};
 
@@ -370,7 +384,10 @@ export const testAuthGoogleConfig = ({
 
 		const updatedConfig = await get_auth_config();
 
-		expect(fromNullable(fromNullable(updatedConfig)?.google ?? [])).toBeUndefined();
+		const google = fromNullable(fromNullable(updatedConfig)?.openid ?? [])?.providers.find(
+			([key]) => 'Google' in key
+		);
+		expect(google).toBeUndefined();
 	});
 
 	it('should not reinitialize salt', async () => {
@@ -379,9 +396,16 @@ export const testAuthGoogleConfig = ({
 		const config: SatelliteDid.SetAuthenticationConfig = {
 			internet_identity: [],
 			rules: [],
-			google: [
+			openid: [
 				{
-					client_id: CLIENT_ID
+					providers: [
+						[
+							{ Google: null },
+							{
+								client_id: CLIENT_ID
+							}
+						]
+					]
 				}
 			],
 			version: [version + 2n]

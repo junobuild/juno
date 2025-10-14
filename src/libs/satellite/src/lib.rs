@@ -66,6 +66,8 @@ pub use sdk::core::*;
 pub use sdk::internal;
 // TODO: remove just for test
 pub use crate::api::auth::*;
+// TODO: remove just for test
+pub use crate::types::interface::{GetDelegationArgs, PrepareDelegationArgs};
 
 // ---------------------------------------------------------
 // Init and Upgrade

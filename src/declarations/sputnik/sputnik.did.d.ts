@@ -28,18 +28,18 @@ export interface AssetsUpgradeOptions {
 }
 export interface AuthenticationConfig {
 	updated_at: [] | [bigint];
-	google: [] | [AuthenticationConfigGoogle];
+	openid: [] | [AuthenticationConfigOpenId];
 	created_at: [] | [bigint];
 	version: [] | [bigint];
 	internet_identity: [] | [AuthenticationConfigInternetIdentity];
 	rules: [] | [AuthenticationRules];
 }
-export interface AuthenticationConfigGoogle {
-	client_id: string;
-}
 export interface AuthenticationConfigInternetIdentity {
 	derivation_origin: [] | [string];
 	external_alternative_origins: [] | [Array<string>];
+}
+export interface AuthenticationConfigOpenId {
+	providers: Array<[OpenIdProvider, OpenIdProviderConfig]>;
 }
 export interface AuthenticationRules {
 	allowed_callers: Array<Principal>;
@@ -205,6 +205,10 @@ export interface MemorySize {
 	stable: bigint;
 	heap: bigint;
 }
+export type OpenIdProvider = { Google: null };
+export interface OpenIdProviderConfig {
+	client_id: string;
+}
 export type Permission =
 	| { Controllers: null }
 	| { Private: null }
@@ -256,7 +260,7 @@ export interface SegmentsDeploymentOptions {
 	satellite_version: [] | [string];
 }
 export interface SetAuthenticationConfig {
-	google: [] | [AuthenticationConfigGoogle];
+	openid: [] | [AuthenticationConfigOpenId];
 	version: [] | [bigint];
 	internet_identity: [] | [AuthenticationConfigInternetIdentity];
 	rules: [] | [AuthenticationRules];

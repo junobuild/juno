@@ -6,13 +6,18 @@ use junobuild_auth::state::{
 use junobuild_auth::types::config::AuthenticationConfig;
 use junobuild_auth::types::interface::SetAuthenticationConfig;
 use junobuild_auth::types::state::Salt;
+use crate::auth::salt::init_salt;
 
-pub fn set_config(
+pub async fn set_config(
     proposed_config: &SetAuthenticationConfig,
 ) -> Result<AuthenticationConfig, String> {
     let config = set_store_config(&AuthHeap, &proposed_config)?;
 
     // If we ever need it, in the Satellite we update_alternative_origins here.
+
+    if config.google.is_some() {
+        init_salt().await?;
+    }
 
     Ok(config)
 }

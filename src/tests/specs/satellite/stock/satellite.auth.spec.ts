@@ -324,6 +324,9 @@ describe('Satellite > Authentication', () => {
 
 		testReturnAuthConfig({
 			actor: () => actor,
+			pic: () => pic,
+			canisterId: () => canisterId,
+			controller: () => controller,
 			version: 11n
 		});
 

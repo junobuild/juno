@@ -42,6 +42,9 @@ describe('Console > Storage', () => {
 
 		testReturnAuthConfig({
 			actor: () => actor,
+			pic: () => pic,
+			canisterId: () => canisterId,
+			controller: () => controller,
 			version: 4n
 		});
 

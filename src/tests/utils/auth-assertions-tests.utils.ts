@@ -6,7 +6,7 @@ import { fromNullable, nonNullish, toNullable } from '@dfinity/utils';
 import { JUNO_AUTH_ERROR_INVALID_ORIGIN } from '@junobuild/errors';
 import {
 	EXTERNAL_ALTERNATIVE_ORIGINS,
-	EXTERNAL_ALTERNATIVE_ORIGINS_URLS
+	EXTERNAL_ALTERNATIVE_ORIGINS_URLS, LOG_SALT_ALREADY_INITIALIZED, LOG_SALT_INITIALIZED
 } from '../constants/auth-tests.constants';
 import { fetchLogs } from './mgmt-tests.utils';
 
@@ -252,9 +252,15 @@ export const testAuthConfig = ({
 
 export const testReturnAuthConfig = ({
 	actor,
-	version
+	version,
+	pic,
+	canisterId,
+	controller
 }: {
 	actor: () => Actor<SatelliteActor | ConsoleActor>;
+	pic: () => PocketIc;
+	canisterId: () => Principal;
+	controller: () => Identity;
 	version: bigint;
 }) => {
 	it('should return config on set', async () => {
@@ -287,6 +293,17 @@ export const testReturnAuthConfig = ({
 			fromNullable(updatedConfig?.created_at ?? []) ?? 0n
 		);
 	});
+
+	it("should not have initialized salt", async () => {
+		const logs = await fetchLogs({
+			pic: pic(),
+			controller: controller(),
+			canisterId: canisterId()
+		});
+
+		expect(logs.find(([_, { message }]) => message === LOG_SALT_INITIALIZED)).toBeUndefined();
+		expect(logs.find(([_, { message }]) => message === LOG_SALT_ALREADY_INITIALIZED)).toBeUndefined();
+	})
 };
 
 export const testAuthGoogleConfig = ({
@@ -336,7 +353,7 @@ export const testAuthGoogleConfig = ({
 
 		expect(fromNullable(fromNullable(updatedConfig)?.google ?? [])?.client_id).toEqual(CLIENT_ID);
 
-		await assertLog('Authentication salt initialized.');
+		await assertLog(LOG_SALT_INITIALIZED);
 	});
 
 	it('should disable google', async () => {
@@ -372,6 +389,6 @@ export const testAuthGoogleConfig = ({
 
 		await set_auth_config(config);
 
-		await assertLog('Authentication salt exists. Skipping initialization.');
+		await assertLog(LOG_SALT_ALREADY_INITIALIZED);
 	});
 };

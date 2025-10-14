@@ -1196,7 +1196,7 @@ checksum = "b1a46d1a171d865aa5f83f92695765caa047a9b4cbae2cbf37dbd613a793fd4c"
 [[package]]
 name = "jsonwebtoken"
 version = "10.0.0"
-source = "git+https://github.com/peterpeterparker/jsonwebtoken?branch=feat%2Ficp#e5253edcca396a288b407646a48438629883759c"
+source = "git+https://github.com/peterpeterparker/jsonwebtoken?branch=patch-v10.0.0#007da04a005d8a63152ceb5b7fc30513b78c652a"
 dependencies = [
  "base64",
  "ed25519-dalek",

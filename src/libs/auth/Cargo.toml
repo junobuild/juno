@@ -26,6 +26,6 @@ ic-canister-sig-creation = "1.3.0"
 url.workspace = true
 sha2.workspace = true
 base64 = "0.22.1"
-jsonwebtoken = { git = "https://github.com/peterpeterparker/jsonwebtoken", branch = "feat/icp", default-features = false, features = ["rust_crypto"] }
+jsonwebtoken = { git = "https://github.com/peterpeterparker/jsonwebtoken", branch = "patch-v10.0.0", default-features = false, features = ["rust_crypto"] }
 getrandom02 = { package = "getrandom", version = "0.2.16", features = ["custom"] }
 junobuild-shared = "0.3.0"

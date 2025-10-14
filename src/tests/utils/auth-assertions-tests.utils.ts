@@ -365,6 +365,7 @@ export const testAuthGoogleConfig = ({
 		const google = fromNullable(fromNullable(updatedConfig)?.openid ?? [])?.providers.find(
 			([key]) => 'Google' in key
 		)?.[1];
+
 		expect(google?.client_id).toEqual(CLIENT_ID);
 
 		await assertLog(LOG_SALT_INITIALIZED);
@@ -387,6 +388,7 @@ export const testAuthGoogleConfig = ({
 		const google = fromNullable(fromNullable(updatedConfig)?.openid ?? [])?.providers.find(
 			([key]) => 'Google' in key
 		);
+
 		expect(google).toBeUndefined();
 	});
 

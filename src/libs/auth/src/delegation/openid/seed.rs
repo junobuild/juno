@@ -1,4 +1,4 @@
-use crate::delegation::openid::jwt::types::jwt::OpenIdCredentialKey;
+use crate::delegation::openid::types::OpenIdCredentialKey;
 use crate::types::state::Salt;
 use ic_certification::Hash;
 use sha2::{Digest, Sha256};

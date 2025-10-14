@@ -18,11 +18,6 @@ pub mod jwt {
         pub nonce: Option<String>,
     }
 
-    pub struct OpenIdCredentialKey {
-        pub iss: String,
-        pub sub: String,
-    }
-
     /// TODO: ???
     /// Minimal JWK entry fetched (e.g., from Google/Apple/Auth0) off-chain.
     #[derive(Deserialize)]

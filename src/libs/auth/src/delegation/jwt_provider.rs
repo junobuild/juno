@@ -1,5 +1,5 @@
 use crate::types::config::{OpenIdProvider, OpenIdProviderConfig, OpenIdProviders};
-use jsonwebtoken::{decode, decode_header, Algorithm, DecodingKey, Validation};
+use jsonwebtoken::{decode_header, Algorithm, dangerous};
 use serde::Deserialize;
 
 #[derive(Debug)]
@@ -38,10 +38,7 @@ pub fn unsafe_find_provider<'a>(
     }
 
     // 2) Decode the payload (⚠️ no signature validation)
-    let mut validation = Validation::new(Algorithm::HS256);
-    validation.insecure_disable_signature_validation();
-    let token_data = decode::<UnsafeClaims>(jwt, &DecodingKey::from_secret(&[]), &validation)
-        .map_err(|e| FindProviderErr::BadSig(e.to_string()))?;
+    let token_data = dangerous::insecure_decode::<UnsafeClaims>(jwt).map_err(|e| FindProviderErr::BadSig(e.to_string()))?;;
 
     // 3) Try to find by issuer
     if let Some(iss) = token_data.claims.iss.as_deref() {

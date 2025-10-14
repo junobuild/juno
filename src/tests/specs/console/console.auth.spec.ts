@@ -3,7 +3,11 @@ import { Ed25519KeyIdentity } from '@dfinity/identity';
 import { type Actor, PocketIc } from '@dfinity/pic';
 import type { Principal } from '@dfinity/principal';
 import { inject } from 'vitest';
-import { testAuthConfig, testReturnAuthConfig } from '../../utils/auth-assertions-tests.utils';
+import {
+	testAuthConfig,
+	testAuthGoogleConfig,
+	testReturnAuthConfig
+} from '../../utils/auth-assertions-tests.utils';
 import { CONSOLE_WASM_PATH } from '../../utils/setup-tests.utils';
 
 describe('Console > Storage', () => {
@@ -42,16 +46,18 @@ describe('Console > Storage', () => {
 
 		testReturnAuthConfig({
 			actor: () => actor,
+			pic: () => pic,
+			canisterId: () => canisterId,
+			controller: () => controller,
 			version: 4n
 		});
 
-		// TODO: commented until init salt is implemented
-		// testAuthGoogleConfig({
-		// 	actor: () => actor,
-		// 	pic: () => pic,
-		// 	canisterId: () => canisterId,
-		// 	controller: () => controller,
-		// 	version: 5n
-		// });
+		testAuthGoogleConfig({
+			actor: () => actor,
+			pic: () => pic,
+			canisterId: () => canisterId,
+			controller: () => controller,
+			version: 5n
+		});
 	});
 });

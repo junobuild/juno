@@ -46,8 +46,8 @@ pub fn get_storage_config() -> StorageConfig {
 // ---------------------------------------------------------
 
 #[update(guard = "caller_is_admin_controller")]
-pub fn set_auth_config(config: SetAuthenticationConfig) -> AuthenticationConfig {
-    set_auth_config_store(&config).unwrap_or_trap()
+pub async fn set_auth_config(config: SetAuthenticationConfig) -> AuthenticationConfig {
+    set_auth_config_store(&config).await.unwrap_or_trap()
 }
 
 #[query(guard = "caller_is_admin_controller")]

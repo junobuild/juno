@@ -11,7 +11,7 @@ pub async fn set_config(
 
     update_alternative_origins(&config)?;
 
-    if config.google.is_some() {
+    if config.openid.is_some() {
         junobuild_auth::state::init_salt(&AuthHeap).await?;
     }
 

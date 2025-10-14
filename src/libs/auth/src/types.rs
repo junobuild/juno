@@ -93,7 +93,7 @@ pub mod interface {
         pub version: Option<Version>,
     }
 
-    #[derive(CandidType, Deserialize)]
+    #[derive(CandidType, Serialize, Deserialize)]
     pub struct OpenIdPrepareDelegationArgs {
         pub jwt: String,
         pub salt: [u8; 32],
@@ -101,7 +101,7 @@ pub mod interface {
         // TODO: max_time_to_live opt<u64>
     }
 
-    #[derive(CandidType, Deserialize)]
+    #[derive(CandidType, Serialize, Deserialize)]
     pub struct OpenIdGetDelegationArgs {
         pub jwt: String,
         pub salt: [u8; 32],

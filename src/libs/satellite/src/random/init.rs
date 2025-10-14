@@ -1,12 +1,12 @@
 use crate::hooks::random::invoke_on_init_random_seed;
 use crate::memory::internal::STATE;
+use crate::memory::services::with_runtime_rng_mut;
 use getrandom::Error;
 use ic_cdk::futures::spawn_017_compat;
 use ic_cdk_timers::set_timer;
 use junobuild_shared::random::get_random_seed;
 use rand::RngCore;
 use std::time::Duration;
-use crate::memory::services::with_runtime_rng_mut;
 
 pub fn defer_init_random_seed() {
     set_timer(Duration::ZERO, || spawn_017_compat(init_random_seed()));
@@ -14,7 +14,7 @@ pub fn defer_init_random_seed() {
 
 pub async fn init_random_seed() {
     let seed = get_random_seed().await;
-    
+
     with_runtime_rng_mut(|rng| *rng = seed);
 
     invoke_on_init_random_seed();

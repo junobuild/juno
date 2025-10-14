@@ -64,7 +64,9 @@ pub mod config {
 }
 
 pub mod interface {
-    use crate::types::config::{AuthenticationConfigGoogle, AuthenticationConfigInternetIdentity, AuthenticationRules};
+    use crate::types::config::{
+        AuthenticationConfigGoogle, AuthenticationConfigInternetIdentity, AuthenticationRules,
+    };
     use candid::{CandidType, Deserialize};
     use junobuild_shared::types::state::Version;
     use serde::Serialize;

@@ -1,8 +1,8 @@
-use junobuild_shared::ic::api::print;
 use crate::auth::store::{get_salt, set_salt};
 use crate::memory::services::with_runtime_rng;
 use crate::random::init::init_random_seed;
 use crate::random::runtime::salt;
+use junobuild_shared::ic::api::print;
 
 pub async fn init_salt() -> Result<(), String> {
     let existing_salt = get_salt();

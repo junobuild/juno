@@ -3,8 +3,9 @@ use crate::delegation::jwt::verify_rs256_with_claims;
 use crate::delegation::seed::calculate_seed;
 use crate::delegation::types::jwt::{Jwks, OpenIdCredentialKey};
 use crate::delegation::utils::build_nonce;
+use crate::state::get_salt;
 use crate::state::services::read_state;
-use crate::strategies::AuthCertificateStrategy;
+use crate::strategies::{AuthCertificateStrategy, AuthHeapStrategy};
 use crate::types::interface::{
     Delegation, GetDelegationResponse, OpenIdGetDelegationArgs, SessionKey, SignedDelegation,
     Timestamp,
@@ -15,6 +16,7 @@ use serde_bytes::ByteBuf;
 
 pub fn openid_get_delegation(
     args: &OpenIdGetDelegationArgs,
+    auth_heap: &impl AuthHeapStrategy,
     certificate: &impl AuthCertificateStrategy,
 ) -> Result<GetDelegationResponse, String> {
     ic_cdk::print("::openid_get_delegation::");
@@ -44,6 +46,7 @@ pub fn openid_get_delegation(
         &key,
         &args.session_key,
         &args.expiration,
+        auth_heap,
         certificate,
     )
 }
@@ -53,9 +56,10 @@ pub fn get_delegation(
     key: &OpenIdCredentialKey,
     session_key: &SessionKey,
     expiration: &Timestamp,
+    auth_heap: &impl AuthHeapStrategy,
     certificate: &impl AuthCertificateStrategy,
 ) -> Result<GetDelegationResponse, String> {
-    let seed = calculate_seed(client_id, key, &certificate.salt())?;
+    let seed = calculate_seed(client_id, key, &get_salt(auth_heap))?;
 
     let response = read_state(|state| {
         let inputs = CanisterSigInputs {

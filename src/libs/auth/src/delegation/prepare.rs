@@ -4,8 +4,9 @@ use crate::delegation::jwt::verify_rs256_with_claims;
 use crate::delegation::seed::calculate_seed;
 use crate::delegation::types::jwt::{Jwks, OpenIdCredentialKey};
 use crate::delegation::utils::build_nonce;
+use crate::state::get_salt;
 use crate::state::services::mutate_state;
-use crate::strategies::AuthCertificateStrategy;
+use crate::strategies::{AuthCertificateStrategy, AuthHeapStrategy};
 use crate::types::interface::{
     OpenIdPrepareDelegationArgs, PrepareDelegationResponse, PublicKey, SessionKey, Timestamp,
 };
@@ -19,6 +20,7 @@ use serde_bytes::ByteBuf;
 
 pub fn openid_prepare_delegation(
     args: &OpenIdPrepareDelegationArgs,
+    auth_heap: &impl AuthHeapStrategy,
     certificate: &impl AuthCertificateStrategy,
 ) -> Result<PrepareDelegationResponse, String> {
     ic_cdk::print("::openid_prepare_delegation::");
@@ -43,7 +45,8 @@ pub fn openid_prepare_delegation(
         sub: token.claims.sub,
     };
 
-    let delegation = prepare_delegation(&CLIENT_ID, &key, &args.session_key, certificate)?;
+    let delegation =
+        prepare_delegation(&CLIENT_ID, &key, &args.session_key, auth_heap, certificate)?;
 
     Ok(delegation)
 }
@@ -52,10 +55,11 @@ fn prepare_delegation(
     client_id: &str,
     key: &OpenIdCredentialKey,
     session_key: &SessionKey,
+    auth_heap: &impl AuthHeapStrategy,
     certificate: &impl AuthCertificateStrategy,
 ) -> Result<PrepareDelegationResponse, String> {
     let expiration = time().saturating_add(DEFAULT_EXPIRATION_PERIOD_NS);
-    let seed = calculate_seed(client_id, key, &certificate.salt())?;
+    let seed = calculate_seed(client_id, key, &get_salt(auth_heap))?;
 
     mutate_state(|state| {
         add_delegation_signature(state, session_key, seed.as_ref(), expiration);

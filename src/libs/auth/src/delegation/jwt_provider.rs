@@ -26,6 +26,8 @@ struct UnsafeClaims {
     pub iss: Option<String>,
 }
 
+/// ⚠️ **Warning:** This function decodes the JWT payload *without verifying its signature*.
+/// Use only to inspect claims (e.g., `iss`) before performing a verified decode.
 pub fn unsafe_find_provider<'a>(
     providers: &'a OpenIdProviders,
     jwt: &str,

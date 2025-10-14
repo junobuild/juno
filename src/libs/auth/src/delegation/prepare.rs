@@ -1,9 +1,9 @@
 use crate::constants::DEFAULT_EXPIRATION_PERIOD_NS;
-use crate::delegation::constants::GOOGLE_JWKS;
-use crate::delegation::jwt::verify_rs256_with_claims;
-use crate::delegation::jwt_provider::unsafe_find_provider;
+use crate::delegation::openid::jwt::constants::GOOGLE_JWKS;
+use crate::delegation::openid::jwt::provider::unsafe_find_jwt_provider;
+use crate::delegation::openid::jwt::types::jwt::{Jwks, OpenIdCredentialKey};
+use crate::delegation::openid::jwt::verify::verify_openid_jwt;
 use crate::delegation::seed::calculate_seed;
-use crate::delegation::types::jwt::{Jwks, OpenIdCredentialKey};
 use crate::delegation::utils::build_nonce;
 use crate::state::get_salt;
 use crate::state::services::mutate_state;
@@ -29,14 +29,14 @@ pub fn openid_prepare_delegation(
     ic_cdk::print("::openid_prepare_delegation::");
 
     let (provider, config) =
-        unsafe_find_provider(providers, &args.jwt).map_err(|e| format!("{e:?}"))?;
+        unsafe_find_jwt_provider(providers, &args.jwt).map_err(|e| format!("{e:?}"))?;
 
     // TODO
     let jwks: Jwks = serde_json::from_str(GOOGLE_JWKS).map_err(|e| format!("invalid JWKS: {e}"))?;
 
     let nonce = build_nonce(&args.salt);
 
-    let token = verify_rs256_with_claims(
+    let token = verify_openid_jwt(
         &args.jwt,
         &provider.issuers(),
         &config.client_id,

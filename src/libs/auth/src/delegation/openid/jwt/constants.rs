@@ -3,6 +3,7 @@
 // https://www.googleapis.com/oauth2/v3/certs
 // (Updated occasionally; you can refresh manually later)
 // curl https://www.googleapis.com/oauth2/v3/certs -s | jq
+// TODO: fetch certificate
 pub const GOOGLE_JWKS: &str = r#"
 {
   "keys": [

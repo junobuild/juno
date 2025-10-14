@@ -1,4 +1,4 @@
-use crate::delegation::types::jwt::{Claims, Jwk};
+use crate::delegation::openid::jwt::types::jwt::{Claims, Jwk};
 use jsonwebtoken::{decode, decode_header, Algorithm, DecodingKey, TokenData, Validation};
 
 #[derive(Debug)]
@@ -20,17 +20,11 @@ impl core::fmt::Display for VerifyErr {
     }
 }
 
-fn now_secs() -> u64 {
-    // IC time is nanoseconds since epoch
-    (ic_cdk::api::time() / 1_000_000_000) as u64
-}
-
 fn pick_key<'a>(kid: &str, jwks: &'a [Jwk]) -> Option<&'a Jwk> {
     jwks.iter().find(|j| j.kid.as_deref() == Some(kid))
 }
 
-/// Verify RS256 JWT in an IC canister (no std)
-pub fn verify_rs256_with_claims(
+pub fn verify_openid_jwt(
     jwt: &str,
     issuers: &[&str],
     client_id: &str,

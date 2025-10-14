@@ -1,5 +1,5 @@
 use crate::types::config::{OpenIdProvider, OpenIdProviderConfig, OpenIdProviders};
-use jsonwebtoken::{decode_header, Algorithm, dangerous};
+use jsonwebtoken::{dangerous, decode_header, Algorithm};
 use serde::Deserialize;
 
 #[derive(Debug)]
@@ -28,7 +28,7 @@ struct UnsafeClaims {
 
 /// ⚠️ **Warning:** This function decodes the JWT payload *without verifying its signature*.
 /// Use only to inspect claims (e.g., `iss`) before performing a verified decode.
-pub fn unsafe_find_provider<'a>(
+pub fn unsafe_find_jwt_provider<'a>(
     providers: &'a OpenIdProviders,
     jwt: &str,
 ) -> Result<(OpenIdProvider, &'a OpenIdProviderConfig), FindProviderErr> {
@@ -40,7 +40,8 @@ pub fn unsafe_find_provider<'a>(
     }
 
     // 2) Decode the payload (⚠️ no signature validation)
-    let token_data = dangerous::insecure_decode::<UnsafeClaims>(jwt).map_err(|e| FindProviderErr::BadSig(e.to_string()))?;;
+    let token_data = dangerous::insecure_decode::<UnsafeClaims>(jwt)
+        .map_err(|e| FindProviderErr::BadSig(e.to_string()))?;
 
     // 3) Try to find by issuer
     if let Some(iss) = token_data.claims.iss.as_deref() {

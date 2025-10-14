@@ -1,12 +1,14 @@
 use crate::constants::DEFAULT_EXPIRATION_PERIOD_NS;
-use crate::delegation::constants::{CLIENT_ID, GOOGLE_JWKS};
+use crate::delegation::constants::GOOGLE_JWKS;
 use crate::delegation::jwt::verify_rs256_with_claims;
+use crate::delegation::jwt_provider::unsafe_find_provider;
 use crate::delegation::seed::calculate_seed;
 use crate::delegation::types::jwt::{Jwks, OpenIdCredentialKey};
 use crate::delegation::utils::build_nonce;
 use crate::state::get_salt;
 use crate::state::services::mutate_state;
 use crate::strategies::{AuthCertificateStrategy, AuthHeapStrategy};
+use crate::types::config::OpenIdProviders;
 use crate::types::interface::{
     OpenIdPrepareDelegationArgs, PrepareDelegationResponse, PublicKey, SessionKey, Timestamp,
 };
@@ -20,19 +22,24 @@ use serde_bytes::ByteBuf;
 
 pub fn openid_prepare_delegation(
     args: &OpenIdPrepareDelegationArgs,
+    providers: &OpenIdProviders,
     auth_heap: &impl AuthHeapStrategy,
     certificate: &impl AuthCertificateStrategy,
 ) -> Result<PrepareDelegationResponse, String> {
     ic_cdk::print("::openid_prepare_delegation::");
 
+    let (provider, config) =
+        unsafe_find_provider(providers, &args.jwt).map_err(|e| format!("{e:?}"))?;
+
+    // TODO
     let jwks: Jwks = serde_json::from_str(GOOGLE_JWKS).map_err(|e| format!("invalid JWKS: {e}"))?;
 
     let nonce = build_nonce(&args.salt);
 
     let token = verify_rs256_with_claims(
         &args.jwt,
-        &["https://accounts.google.com", "accounts.google.com"],
-        CLIENT_ID,
+        &provider.issuers(),
+        &config.client_id,
         &jwks.keys,
         &nonce,
     )
@@ -45,8 +52,13 @@ pub fn openid_prepare_delegation(
         sub: token.claims.sub,
     };
 
-    let delegation =
-        prepare_delegation(&CLIENT_ID, &key, &args.session_key, auth_heap, certificate)?;
+    let delegation = prepare_delegation(
+        &config.client_id,
+        &key,
+        &args.session_key,
+        auth_heap,
+        certificate,
+    )?;
 
     Ok(delegation)
 }

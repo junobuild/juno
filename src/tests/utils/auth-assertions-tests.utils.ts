@@ -6,7 +6,9 @@ import { fromNullable, nonNullish, toNullable } from '@dfinity/utils';
 import { JUNO_AUTH_ERROR_INVALID_ORIGIN } from '@junobuild/errors';
 import {
 	EXTERNAL_ALTERNATIVE_ORIGINS,
-	EXTERNAL_ALTERNATIVE_ORIGINS_URLS, LOG_SALT_ALREADY_INITIALIZED, LOG_SALT_INITIALIZED
+	EXTERNAL_ALTERNATIVE_ORIGINS_URLS,
+	LOG_SALT_ALREADY_INITIALIZED,
+	LOG_SALT_INITIALIZED
 } from '../constants/auth-tests.constants';
 import { fetchLogs } from './mgmt-tests.utils';
 
@@ -294,7 +296,7 @@ export const testReturnAuthConfig = ({
 		);
 	});
 
-	it("should not have initialized salt", async () => {
+	it('should not have initialized salt', async () => {
 		const logs = await fetchLogs({
 			pic: pic(),
 			controller: controller(),
@@ -302,8 +304,10 @@ export const testReturnAuthConfig = ({
 		});
 
 		expect(logs.find(([_, { message }]) => message === LOG_SALT_INITIALIZED)).toBeUndefined();
-		expect(logs.find(([_, { message }]) => message === LOG_SALT_ALREADY_INITIALIZED)).toBeUndefined();
-	})
+		expect(
+			logs.find(([_, { message }]) => message === LOG_SALT_ALREADY_INITIALIZED)
+		).toBeUndefined();
+	});
 };
 
 export const testAuthGoogleConfig = ({

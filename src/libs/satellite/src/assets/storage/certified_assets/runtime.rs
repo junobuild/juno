@@ -1,6 +1,6 @@
 use crate::assets::storage::strategy_impls::StorageState;
 use crate::certification::strategy_impls::StorageCertificate;
-use crate::memory::internal::STATE;
+use crate::memory::state::STATE;
 use crate::types::state::State;
 use junobuild_storage::certification::types::certified::CertifiedAssetHashes;
 use junobuild_storage::certified_assets::extend_and_init_certified_assets;

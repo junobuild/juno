@@ -1,8 +1,6 @@
 use crate::auth::store::{get_salt, set_salt};
-use crate::memory::state::services::with_runtime_rng;
-use crate::random::init::init_random_seed;
-use crate::random::runtime::salt;
 use junobuild_shared::ic::api::print;
+use junobuild_shared::random::raw_rand;
 
 pub async fn init_salt() -> Result<(), String> {
     let existing_salt = get_salt();
@@ -14,14 +12,11 @@ pub async fn init_salt() -> Result<(), String> {
         return Ok(());
     }
 
-    let rng = with_runtime_rng(|rng| rng.clone());
+    let salt = raw_rand()
+        .await
+        .map_err(|e| format!("Failed to obtain authentication seed: {:?}", e))?;
 
-    if rng.is_none() {
-        init_random_seed().await;
-    }
-
-    let s = salt()?;
-    set_salt(&s);
+    set_salt(&salt);
 
     #[allow(clippy::disallowed_methods)]
     print("Authentication salt initialized.");

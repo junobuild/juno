@@ -10,7 +10,7 @@ pub async fn set_config(
 
     // If we ever need it, in the Satellite we update_alternative_origins here.
 
-    if config.openid.is_some() {
+    if config.openid_enabled() {
         junobuild_auth::state::init_salt(&AuthHeap).await?;
     }
 

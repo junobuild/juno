@@ -37,6 +37,14 @@ impl Versioned for AuthenticationConfig {
     }
 }
 
+impl AuthenticationConfig {
+    pub fn openid_enabled(&self) -> bool {
+        self.openid
+            .as_ref()
+            .map_or(false, |openid| !openid.providers.is_empty())
+    }
+}
+
 impl OpenIdProvider {
     pub fn issuers(&self) -> &[&str] {
         match self {

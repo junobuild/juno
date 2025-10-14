@@ -12,7 +12,7 @@ pub fn defer_init_random_seed() {
     set_timer(Duration::ZERO, || spawn_017_compat(init_random_seed()));
 }
 
-async fn init_random_seed() {
+pub async fn init_random_seed() {
     let seed = get_random_seed().await;
 
     with_runtime_rng_mut(|rng| *rng = seed);

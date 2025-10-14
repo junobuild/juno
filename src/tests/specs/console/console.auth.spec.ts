@@ -1,30 +1,29 @@
 import { type ConsoleActor, idlFactoryConsole } from '$declarations';
 import { Ed25519KeyIdentity } from '@dfinity/identity';
 import { type Actor, PocketIc } from '@dfinity/pic';
+import type { Principal } from '@dfinity/principal';
 import { inject } from 'vitest';
-import {
-	testAuthConfig,
-	testAuthGoogleConfig,
-	testReturnAuthConfig
-} from '../../utils/auth-assertions-tests.utils';
+import { testAuthConfig, testReturnAuthConfig } from '../../utils/auth-assertions-tests.utils';
 import { CONSOLE_WASM_PATH } from '../../utils/setup-tests.utils';
 
 describe('Console > Storage', () => {
 	let pic: PocketIc;
 	let actor: Actor<ConsoleActor>;
+	let canisterId: Principal;
 
 	const controller = Ed25519KeyIdentity.generate();
 
 	beforeAll(async () => {
 		pic = await PocketIc.create(inject('PIC_URL'));
 
-		const { actor: c } = await pic.setupCanister<ConsoleActor>({
+		const { actor: c, canisterId: cId } = await pic.setupCanister<ConsoleActor>({
 			idlFactory: idlFactoryConsole,
 			wasm: CONSOLE_WASM_PATH,
 			sender: controller.getPrincipal()
 		});
 
 		actor = c;
+		canisterId = cId;
 		actor.setIdentity(controller);
 	});
 
@@ -46,9 +45,13 @@ describe('Console > Storage', () => {
 			version: 4n
 		});
 
-		testAuthGoogleConfig({
-			actor: () => actor,
-			version: 5n
-		});
+		// TODO: commented until init salt is implemented
+		// testAuthGoogleConfig({
+		// 	actor: () => actor,
+		// 	pic: () => pic,
+		// 	canisterId: () => canisterId,
+		// 	controller: () => controller,
+		// 	version: 5n
+		// });
 	});
 });

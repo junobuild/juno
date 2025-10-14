@@ -1,11 +1,14 @@
 import type { ConsoleActor, SatelliteActor, SatelliteDid } from '$declarations';
-import type { Actor } from '@dfinity/pic';
+import type { Identity } from '@dfinity/agent';
+import type { Actor, PocketIc } from '@dfinity/pic';
+import type { Principal } from '@dfinity/principal';
 import { fromNullable, nonNullish, toNullable } from '@dfinity/utils';
 import { JUNO_AUTH_ERROR_INVALID_ORIGIN } from '@junobuild/errors';
 import {
 	EXTERNAL_ALTERNATIVE_ORIGINS,
-	EXTERNAL_ALTERNATIVE_ORIGINS_URLS
+	EXTERNAL_ALTERNATIVE_ORIGINS_URLS, LOG_SALT_ALREADY_INITIALIZED, LOG_SALT_INITIALIZED
 } from '../constants/auth-tests.constants';
+import { fetchLogs } from './mgmt-tests.utils';
 
 /* eslint-disable vitest/require-top-level-describe */
 
@@ -249,9 +252,15 @@ export const testAuthConfig = ({
 
 export const testReturnAuthConfig = ({
 	actor,
-	version
+	version,
+	pic,
+	canisterId,
+	controller
 }: {
 	actor: () => Actor<SatelliteActor | ConsoleActor>;
+	pic: () => PocketIc;
+	canisterId: () => Principal;
+	controller: () => Identity;
 	version: bigint;
 }) => {
 	it('should return config on set', async () => {
@@ -284,16 +293,45 @@ export const testReturnAuthConfig = ({
 			fromNullable(updatedConfig?.created_at ?? []) ?? 0n
 		);
 	});
+
+	it("should not have initialized salt", async () => {
+		const logs = await fetchLogs({
+			pic: pic(),
+			controller: controller(),
+			canisterId: canisterId()
+		});
+
+		expect(logs.find(([_, { message }]) => message === LOG_SALT_INITIALIZED)).toBeUndefined();
+		expect(logs.find(([_, { message }]) => message === LOG_SALT_ALREADY_INITIALIZED)).toBeUndefined();
+	})
 };
 
 export const testAuthGoogleConfig = ({
 	actor,
-	version
+	version,
+	pic,
+	canisterId,
+	controller
 }: {
 	actor: () => Actor<SatelliteActor | ConsoleActor>;
+	pic: () => PocketIc;
+	canisterId: () => Principal;
+	controller: () => Identity;
 	version: bigint;
 }) => {
 	const CLIENT_ID = '974645666757-ebfaaau4cesdddqahu83e1qqmmmmdrod.apps.googleusercontent.com';
+
+	const assertLog = async (logMessage: string) => {
+		const logs = await fetchLogs({
+			pic: pic(),
+			controller: controller(),
+			canisterId: canisterId()
+		});
+
+		const log = logs.find(([_, { message }]) => message === logMessage);
+
+		expect(log).not.toBeUndefined();
+	};
 
 	it('should set google client id', async () => {
 		const { set_auth_config, get_auth_config } = actor();
@@ -314,6 +352,8 @@ export const testAuthGoogleConfig = ({
 		const updatedConfig = await get_auth_config();
 
 		expect(fromNullable(fromNullable(updatedConfig)?.google ?? [])?.client_id).toEqual(CLIENT_ID);
+
+		await assertLog(LOG_SALT_INITIALIZED);
 	});
 
 	it('should disable google', async () => {
@@ -331,5 +371,24 @@ export const testAuthGoogleConfig = ({
 		const updatedConfig = await get_auth_config();
 
 		expect(fromNullable(fromNullable(updatedConfig)?.google ?? [])).toBeUndefined();
+	});
+
+	it('should not reinitialize salt', async () => {
+		const { set_auth_config } = actor();
+
+		const config: SatelliteDid.SetAuthenticationConfig = {
+			internet_identity: [],
+			rules: [],
+			google: [
+				{
+					client_id: CLIENT_ID
+				}
+			],
+			version: [version + 2n]
+		};
+
+		await set_auth_config(config);
+
+		await assertLog(LOG_SALT_ALREADY_INITIALIZED);
 	});
 };

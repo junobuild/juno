@@ -36,8 +36,8 @@ pub fn get_config() -> Config {
 // Authentication config
 // ---------------------------------------------------------
 
-pub fn set_auth_config(config: SetAuthenticationConfig) -> AuthenticationConfig {
-    set_auth_config_store(&config).unwrap_or_trap()
+pub async fn set_auth_config(config: SetAuthenticationConfig) -> AuthenticationConfig {
+    set_auth_config_store(&config).await.unwrap_or_trap()
 }
 
 pub fn get_auth_config() -> Option<AuthenticationConfig> {

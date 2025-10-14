@@ -71,7 +71,7 @@ describe('Satellite > Allowed Callers', () => {
 
 		const config: SatelliteDid.SetAuthenticationConfig = {
 			internet_identity: [],
-			google: [],
+			openid: [],
 			rules: [
 				{
 					allowed_callers: allowedCallers
@@ -90,7 +90,7 @@ describe('Satellite > Allowed Callers', () => {
 
 		const config: SatelliteDid.SetAuthenticationConfig = {
 			internet_identity: [],
-			google: [],
+			openid: [],
 			rules: [
 				{
 					allowed_callers: []
@@ -109,7 +109,7 @@ describe('Satellite > Allowed Callers', () => {
 
 		const config: SatelliteDid.SetAuthenticationConfig = {
 			internet_identity: [],
-			google: [],
+			openid: [],
 			rules: [],
 			version: nextConfigVersion()
 		};

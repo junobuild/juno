@@ -35,15 +35,21 @@ pub mod config {
     use junobuild_shared::types::core::DomainName;
     use junobuild_shared::types::state::{Timestamp, Version};
     use serde::Serialize;
+    use std::collections::BTreeMap;
 
     #[derive(Default, CandidType, Serialize, Deserialize, Clone)]
     pub struct AuthenticationConfig {
         pub internet_identity: Option<AuthenticationConfigInternetIdentity>,
-        pub google: Option<AuthenticationConfigGoogle>,
+        pub openid: Option<AuthenticationConfigOpenId>,
         pub rules: Option<AuthenticationRules>,
         pub version: Option<Version>,
         pub created_at: Option<Timestamp>,
         pub updated_at: Option<Timestamp>,
+    }
+
+    #[derive(Default, CandidType, Serialize, Deserialize, Clone)]
+    pub struct AuthenticationConfigOpenId {
+        pub providers: OpenIdProviders,
     }
 
     #[derive(Default, CandidType, Serialize, Deserialize, Clone)]
@@ -57,15 +63,22 @@ pub mod config {
         pub allowed_callers: Vec<Principal>,
     }
 
+    pub type OpenIdProviders = BTreeMap<OpenIdProvider, OpenIdProviderConfig>;
+
+    #[derive(CandidType, Serialize, Deserialize, Clone, PartialEq, Eq, PartialOrd, Ord)]
+    pub enum OpenIdProvider {
+        Google,
+    }
+
     #[derive(Default, CandidType, Serialize, Deserialize, Clone)]
-    pub struct AuthenticationConfigGoogle {
+    pub struct OpenIdProviderConfig {
         pub client_id: String,
     }
 }
 
 pub mod interface {
     use crate::types::config::{
-        AuthenticationConfigGoogle, AuthenticationConfigInternetIdentity, AuthenticationRules,
+        AuthenticationConfigInternetIdentity, AuthenticationConfigOpenId, AuthenticationRules,
     };
     use candid::{CandidType, Deserialize};
     use junobuild_shared::types::state::Version;
@@ -74,7 +87,7 @@ pub mod interface {
     #[derive(Default, CandidType, Serialize, Deserialize, Clone)]
     pub struct SetAuthenticationConfig {
         pub internet_identity: Option<AuthenticationConfigInternetIdentity>,
-        pub google: Option<AuthenticationConfigGoogle>,
+        pub openid: Option<AuthenticationConfigOpenId>,
         pub rules: Option<AuthenticationRules>,
         pub version: Option<Version>,
     }

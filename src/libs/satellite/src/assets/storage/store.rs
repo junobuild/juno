@@ -15,7 +15,7 @@ use crate::assets::storage::strategy_impls::{StorageAssertions, StorageState, St
 use crate::auth::store::get_config as get_auth_config;
 use crate::certification::strategy_impls::StorageCertificate;
 use crate::controllers::store::get_controllers;
-use crate::memory::internal::STATE;
+use crate::memory::state::STATE;
 use crate::types::store::{AssertContext, StoreContext};
 use candid::Principal;
 use junobuild_collections::msg::msg_storage_collection_not_empty;

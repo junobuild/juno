@@ -1,4 +1,4 @@
-use crate::memory::internal::STATE;
+use crate::memory::state::STATE;
 use junobuild_collections::types::core::CollectionKey;
 use junobuild_collections::types::rules::{Rule, Rules};
 

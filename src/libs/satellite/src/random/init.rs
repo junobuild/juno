@@ -1,6 +1,6 @@
 use crate::hooks::random::invoke_on_init_random_seed;
-use crate::memory::internal::STATE;
-use crate::memory::services::with_runtime_rng_mut;
+use crate::memory::state::services::with_runtime_rng_mut;
+use crate::memory::state::STATE;
 use getrandom::Error;
 use ic_cdk::futures::spawn_017_compat;
 use ic_cdk_timers::set_timer;

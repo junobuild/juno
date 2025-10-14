@@ -1,4 +1,4 @@
-use crate::memory::internal::STATE;
+use crate::memory::state::STATE;
 use crate::types::state::{RuntimeState, State};
 
 fn read_state<R>(f: impl FnOnce(&State) -> R) -> R {

@@ -1,6 +1,6 @@
 use crate::db::types::config::DbConfig;
 use crate::db::types::state::{Collection, DbHeap, DbHeapState, DbStable, Doc, StableKey};
-use crate::memory::internal::STATE;
+use crate::memory::state::STATE;
 use junobuild_collections::msg::msg_db_collection_not_found;
 use junobuild_collections::types::core::CollectionKey;
 use junobuild_collections::types::rules::{Memory, Rule};

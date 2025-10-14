@@ -1,4 +1,4 @@
-use crate::memory::services::with_runtime_rng_mut;
+use crate::memory::state::services::with_runtime_rng_mut;
 use rand::{Rng, RngCore};
 
 /// Generates a random `i32` number.

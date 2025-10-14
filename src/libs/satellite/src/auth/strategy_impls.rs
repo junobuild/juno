@@ -1,4 +1,4 @@
-use crate::memory::internal::STATE;
+use crate::memory::state::STATE;
 use junobuild_auth::strategies::AuthHeapStrategy;
 use junobuild_auth::types::state::AuthenticationHeapState;
 

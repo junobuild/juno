@@ -11,6 +11,4 @@ pub trait AuthHeapStrategy {
 
 pub trait AuthCertificateStrategy {
     fn update_certified_data(&self);
-
-    fn salt(&self) -> Option<Salt>;
 }

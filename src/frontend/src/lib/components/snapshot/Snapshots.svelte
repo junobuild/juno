@@ -37,7 +37,7 @@
 	});
 
 	const openCreateModal = () => {
-		if (isNullish(snapshots)) {
+		if (snapshots === undefined) {
 			toasts.error({ text: $i18n.errors.snapshot_not_loaded });
 			return;
 		}

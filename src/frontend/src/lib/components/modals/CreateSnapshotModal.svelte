@@ -1,6 +1,5 @@
 <script lang="ts">
 	import { Principal } from '@dfinity/principal';
-	import { isNullish } from '@dfinity/utils';
 	import { fade } from 'svelte/transition';
 	import ProgressSnapshot from '$lib/components/canister/ProgressSnapshot.svelte';
 	import Confetti from '$lib/components/ui/Confetti.svelte';
@@ -34,7 +33,7 @@
 	const handleSubmit = async ($event: SubmitEvent) => {
 		$event.preventDefault();
 
-		if (isNullish($snapshotStore?.[segment.canisterId])) {
+		if ($snapshotStore?.[segment.canisterId] === undefined) {
 			toasts.error({ text: $i18n.errors.snapshot_not_loaded });
 			return;
 		}

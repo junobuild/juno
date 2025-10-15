@@ -1,4 +1,4 @@
-use crate::delegation::openid::jwt::types::jwt::{Claims, Jwk};
+use crate::delegation::openid::jwt::types::{Claims, Jwk};
 use jsonwebtoken::{decode, decode_header, Algorithm, DecodingKey, TokenData, Validation};
 
 #[derive(Debug)]

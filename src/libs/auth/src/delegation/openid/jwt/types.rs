@@ -1,34 +1,35 @@
-pub mod jwt {
-    use serde::Deserialize;
+use serde::Deserialize;
 
-    #[derive(Debug, Clone, Deserialize)]
-    pub struct Claims {
-        pub iss: String,
-        pub sub: String,
-        pub aud: String,
-        pub exp: Option<u64>,
-        pub nbf: Option<u64>,
-        pub iat: Option<u64>,
+#[derive(Debug, Clone, Deserialize)]
+pub struct Claims {
+    pub iss: String,
+    pub sub: String,
+    pub aud: String,
+    pub exp: Option<u64>,
+    pub nbf: Option<u64>,
+    pub iat: Option<u64>,
 
-        // extras
-        pub email: Option<String>,
-        pub name: Option<String>,
-        pub picture: Option<String>,
+    // extras
+    pub email: Option<String>,
+    pub name: Option<String>,
+    pub picture: Option<String>,
 
-        pub nonce: Option<String>,
-    }
+    pub nonce: Option<String>,
+}
 
-    /// TODO: ???
-    /// Minimal JWK entry fetched (e.g., from Google/Apple/Auth0) off-chain.
-    #[derive(Deserialize)]
-    pub struct Jwk {
-        pub kid: Option<String>,
-        pub n: String,
-        pub e: String,
-    }
+/// Minimal JSON Web Keys fetched (e.g. from Google/Apple/Auth0) off-chain.
+#[derive(Deserialize)]
+pub struct Jwk {
+    // Used to select which key in the JWKS to use.
+    pub kid: Option<String>,
+    // The modulus (part of the RSA public key).
+    pub n: String,
+    // The exponent (the other part of the RSA public key).
+    pub e: String,
+}
 
-    #[derive(Deserialize)]
-    pub struct Jwks {
-        pub keys: Vec<Jwk>,
-    }
+// JSON Web Key Set
+#[derive(Deserialize)]
+pub struct Jwks {
+    pub keys: Vec<Jwk>,
 }

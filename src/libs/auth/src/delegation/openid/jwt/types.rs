@@ -1,4 +1,5 @@
-use serde::Deserialize;
+use candid::CandidType;
+use serde::{Deserialize, Serialize};
 
 #[derive(Debug, Clone, Deserialize)]
 pub struct Claims {
@@ -9,7 +10,6 @@ pub struct Claims {
     pub nbf: Option<u64>,
     pub iat: Option<u64>,
 
-    // extras
     pub email: Option<String>,
     pub name: Option<String>,
     pub picture: Option<String>,
@@ -32,4 +32,19 @@ pub struct Jwk {
 #[derive(Deserialize)]
 pub struct Jwks {
     pub keys: Vec<Jwk>,
+}
+
+#[derive(CandidType, Serialize, Deserialize, Debug)]
+pub enum JwtFindProviderError {
+    BadSig(String),
+    BadClaim(String),
+    NoMatchingProvider,
+}
+
+#[derive(CandidType, Serialize, Deserialize, Debug)]
+pub enum JwtVerifyError {
+    MissingKid,
+    NoKeyForKid,
+    BadSig(String),
+    BadClaim(String),
 }

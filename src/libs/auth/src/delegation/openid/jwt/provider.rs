@@ -1,25 +1,7 @@
+use crate::delegation::openid::jwt::types::JwtFindProviderError;
 use crate::types::config::{OpenIdProvider, OpenIdProviderConfig, OpenIdProviders};
 use jsonwebtoken::{dangerous, decode_header, Algorithm};
 use serde::Deserialize;
-
-#[derive(Debug)]
-pub enum FindProviderErr {
-    BadSig(String),
-    BadClaim(&'static str),
-    NoMatchingProvider,
-}
-
-impl core::fmt::Display for FindProviderErr {
-    fn fmt(&self, f: &mut core::fmt::Formatter<'_>) -> core::fmt::Result {
-        match self {
-            FindProviderErr::BadSig(msg) => write!(f, "bad signature: {msg}"),
-            FindProviderErr::BadClaim(claim) => write!(f, "bad claim: {claim}"),
-            FindProviderErr::NoMatchingProvider => {
-                write!(f, "no matching OpenID provider for JWT (iss/aud mismatch)")
-            }
-        }
-    }
-}
 
 #[derive(Clone, Deserialize)]
 struct UnsafeClaims {
@@ -31,17 +13,17 @@ struct UnsafeClaims {
 pub fn unsafe_find_jwt_provider<'a>(
     providers: &'a OpenIdProviders,
     jwt: &str,
-) -> Result<(OpenIdProvider, &'a OpenIdProviderConfig), FindProviderErr> {
+) -> Result<(OpenIdProvider, &'a OpenIdProviderConfig), JwtFindProviderError> {
     // 1) read header to get `kid`
-    let header = decode_header(jwt).map_err(|e| FindProviderErr::BadSig(e.to_string()))?;
+    let header = decode_header(jwt).map_err(|e| JwtFindProviderError::BadSig(e.to_string()))?;
 
     if header.alg != Algorithm::RS256 {
-        return Err(FindProviderErr::BadClaim("alg"));
+        return Err(JwtFindProviderError::BadClaim("alg".to_string()));
     }
 
     // 2) Decode the payload (⚠️ no signature validation)
     let token_data = dangerous::insecure_decode::<UnsafeClaims>(jwt)
-        .map_err(|e| FindProviderErr::BadSig(e.to_string()))?;
+        .map_err(|e| JwtFindProviderError::BadSig(e.to_string()))?;
 
     // 3) Try to find by issuer
     if let Some(iss) = token_data.claims.iss.as_deref() {
@@ -53,5 +35,5 @@ pub fn unsafe_find_jwt_provider<'a>(
         }
     }
 
-    Err(FindProviderErr::NoMatchingProvider)
+    Err(JwtFindProviderError::NoMatchingProvider)
 }

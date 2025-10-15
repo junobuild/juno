@@ -80,10 +80,9 @@ pub mod interface {
     use crate::types::config::{
         AuthenticationConfigInternetIdentity, AuthenticationConfigOpenId, AuthenticationRules,
     };
-    use candid::{CandidType, Deserialize, Principal};
+    use candid::{CandidType, Deserialize};
     use junobuild_shared::types::state::Version;
     use serde::Serialize;
-    use serde_bytes::ByteBuf;
 
     #[derive(Default, CandidType, Serialize, Deserialize, Clone)]
     pub struct SetAuthenticationConfig {
@@ -91,50 +90,5 @@ pub mod interface {
         pub openid: Option<AuthenticationConfigOpenId>,
         pub rules: Option<AuthenticationRules>,
         pub version: Option<Version>,
-    }
-
-    #[derive(CandidType, Serialize, Deserialize)]
-    pub struct OpenIdPrepareDelegationArgs {
-        pub jwt: String,
-        pub salt: [u8; 32],
-        pub session_key: SessionKey,
-        // TODO: max_time_to_live opt<u64>
-    }
-
-    #[derive(CandidType, Serialize, Deserialize)]
-    pub struct OpenIdGetDelegationArgs {
-        pub jwt: String,
-        pub salt: [u8; 32],
-        pub session_key: SessionKey,
-        pub expiration: Timestamp,
-    }
-
-    pub type UserKey = PublicKey;
-    pub type PublicKey = ByteBuf;
-    pub type SessionKey = PublicKey;
-    pub type Timestamp = u64;
-    pub type Signature = ByteBuf;
-
-    #[derive(Clone, Debug, CandidType, Deserialize)]
-    pub enum GetDelegationResponse {
-        #[serde(rename = "signed_delegation")]
-        SignedDelegation(SignedDelegation),
-        #[serde(rename = "no_such_delegation")]
-        NoSuchDelegation,
-    }
-
-    pub type PrepareDelegationResponse = (UserKey, Timestamp);
-
-    #[derive(Clone, Debug, CandidType, Deserialize)]
-    pub struct SignedDelegation {
-        pub delegation: Delegation,
-        pub signature: Signature,
-    }
-
-    #[derive(Clone, Debug, CandidType, Deserialize)]
-    pub struct Delegation {
-        pub pubkey: PublicKey,
-        pub expiration: Timestamp,
-        pub targets: Option<Vec<Principal>>,
     }
 }

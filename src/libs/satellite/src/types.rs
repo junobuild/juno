@@ -58,8 +58,8 @@ pub mod state {
 pub mod interface {
     use crate::db::types::config::DbConfig;
     use candid::CandidType;
+    use junobuild_auth::delegation::types::{OpenIdGetDelegationArgs, OpenIdPrepareDelegationArgs};
     use junobuild_auth::types::config::AuthenticationConfig;
-    use junobuild_auth::types::interface::{OpenIdGetDelegationArgs, OpenIdPrepareDelegationArgs};
     use junobuild_cdn::proposals::ProposalId;
     use junobuild_storage::types::config::StorageConfig;
     use serde::{Deserialize, Serialize};

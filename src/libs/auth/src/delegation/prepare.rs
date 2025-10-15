@@ -1,16 +1,17 @@
 use crate::constants::DEFAULT_EXPIRATION_PERIOD_NS;
 use crate::delegation::openid::jwt::types::Jwks;
-use crate::delegation::openid::jwt::{verify_openid_jwt, unsafe_find_jwt_provider, GOOGLE_JWKS};
+use crate::delegation::openid::jwt::{unsafe_find_jwt_provider, verify_openid_jwt, GOOGLE_JWKS};
 use crate::delegation::openid::seed::calculate_seed;
 use crate::delegation::openid::types::OpenIdCredentialKey;
+use crate::delegation::types::{
+    OpenIdPrepareDelegationArgs, PrepareDelegationError, PrepareDelegationResult, PublicKey,
+    SessionKey, Timestamp,
+};
 use crate::delegation::utils::build_nonce;
 use crate::state::get_salt;
 use crate::state::services::mutate_state;
 use crate::strategies::{AuthCertificateStrategy, AuthHeapStrategy};
 use crate::types::config::OpenIdProviders;
-use crate::types::interface::{
-    OpenIdPrepareDelegationArgs, PrepareDelegationResponse, PublicKey, SessionKey, Timestamp,
-};
 use crate::types::runtime_state::State;
 use ic_canister_sig_creation::signature_map::CanisterSigInputs;
 use ic_canister_sig_creation::{
@@ -24,14 +25,13 @@ pub fn openid_prepare_delegation(
     providers: &OpenIdProviders,
     auth_heap: &impl AuthHeapStrategy,
     certificate: &impl AuthCertificateStrategy,
-) -> Result<PrepareDelegationResponse, String> {
-    ic_cdk::print("::openid_prepare_delegation::");
-
-    let (provider, config) =
-        unsafe_find_jwt_provider(providers, &args.jwt).map_err(|e| format!("{e:?}"))?;
+) -> PrepareDelegationResult {
+    let (provider, config) = unsafe_find_jwt_provider(providers, &args.jwt)
+        .map_err(|e| PrepareDelegationError::JwtFindProvider(e))?;
 
     // TODO
-    let jwks: Jwks = serde_json::from_str(GOOGLE_JWKS).map_err(|e| format!("invalid JWKS: {e}"))?;
+    let jwks: Jwks = serde_json::from_str(GOOGLE_JWKS)
+        .map_err(|e| PrepareDelegationError::ParseJwksFailed(e.to_string()))?;
 
     let nonce = build_nonce(&args.salt);
 
@@ -42,9 +42,7 @@ pub fn openid_prepare_delegation(
         &jwks.keys,
         &nonce,
     )
-    .map_err(|e| format!("{e:?}"))?;
-
-    ic_cdk::print(format!("Prepare claims --------> {:?}", token.claims));
+    .map_err(|e| PrepareDelegationError::JwtVerify(e))?;
 
     let key = OpenIdCredentialKey {
         iss: token.claims.iss,
@@ -68,9 +66,10 @@ fn prepare_delegation(
     session_key: &SessionKey,
     auth_heap: &impl AuthHeapStrategy,
     certificate: &impl AuthCertificateStrategy,
-) -> Result<PrepareDelegationResponse, String> {
+) -> PrepareDelegationResult {
     let expiration = time().saturating_add(DEFAULT_EXPIRATION_PERIOD_NS);
-    let seed = calculate_seed(client_id, key, &get_salt(auth_heap))?;
+    let seed = calculate_seed(client_id, key, &get_salt(auth_heap))
+        .map_err(|e| PrepareDelegationError::DeriveSeedFailed(e))?;
 
     mutate_state(|state| {
         add_delegation_signature(state, session_key, seed.as_ref(), expiration);

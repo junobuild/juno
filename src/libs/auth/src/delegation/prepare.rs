@@ -1,4 +1,4 @@
-use crate::constants::DEFAULT_EXPIRATION_PERIOD_NS;
+use crate::delegation::constants::DEFAULT_EXPIRATION_PERIOD_NS;
 use crate::delegation::openid::jwt::types::Jwks;
 use crate::delegation::openid::jwt::{unsafe_find_jwt_provider, verify_openid_jwt, GOOGLE_JWKS};
 use crate::delegation::openid::seed::calculate_seed;

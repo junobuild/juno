@@ -1,4 +1,4 @@
-use crate::types::state::AuthenticationHeapState;
+use crate::state::types::state::AuthenticationHeapState;
 use ic_certification::Hash;
 
 pub trait AuthHeapStrategy {

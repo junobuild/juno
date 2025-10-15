@@ -9,8 +9,8 @@ use crate::delegation::types::{
 use crate::delegation::utils::build_nonce;
 use crate::state::get_salt;
 use crate::state::services::read_state;
+use crate::state::types::config::OpenIdProviders;
 use crate::strategies::{AuthCertificateStrategy, AuthHeapStrategy};
-use crate::types::config::OpenIdProviders;
 use ic_canister_sig_creation::signature_map::CanisterSigInputs;
 use ic_canister_sig_creation::{delegation_signature_msg, DELEGATION_SIG_DOMAIN};
 use serde_bytes::ByteBuf;

@@ -1,5 +1,5 @@
-use crate::types::config::{AuthenticationConfig, OpenIdProvider};
-use crate::types::interface::SetAuthenticationConfig;
+use crate::state::types::config::{AuthenticationConfig, OpenIdProvider};
+use crate::state::types::interface::SetAuthenticationConfig;
 use ic_cdk::api::time;
 use junobuild_shared::types::state::{Timestamp, Version, Versioned};
 use junobuild_shared::version::next_version;

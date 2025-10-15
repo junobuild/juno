@@ -1,5 +1,5 @@
 use crate::delegation::openid::jwt::types::JwtFindProviderError;
-use crate::types::config::{OpenIdProvider, OpenIdProviderConfig, OpenIdProviders};
+use crate::state::types::config::{OpenIdProvider, OpenIdProviderConfig, OpenIdProviders};
 use jsonwebtoken::{dangerous, decode_header, Algorithm};
 use serde::Deserialize;
 

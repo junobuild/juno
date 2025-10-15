@@ -1,5 +1,5 @@
 pub mod state {
-    use crate::types::config::AuthenticationConfig;
+    use crate::state::types::config::AuthenticationConfig;
     use candid::CandidType;
     use serde::{Deserialize, Serialize};
 
@@ -77,7 +77,7 @@ pub mod config {
 }
 
 pub mod interface {
-    use crate::types::config::{
+    use crate::state::types::config::{
         AuthenticationConfigInternetIdentity, AuthenticationConfigOpenId, AuthenticationRules,
     };
     use candid::{CandidType, Deserialize};

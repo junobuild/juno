@@ -4,7 +4,7 @@ pub mod state {
     use candid::CandidType;
     use ic_ledger_types::{BlockIndex, Tokens};
     use ic_stable_structures::StableBTreeMap;
-    use junobuild_auth::types::state::AuthenticationHeapState;
+    use junobuild_auth::state::types::state::AuthenticationHeapState;
     use junobuild_cdn::proposals::{ProposalsStable, SegmentDeploymentVersion};
     use junobuild_cdn::storage::{ProposalAssetsStable, ProposalContentChunksStable};
     use junobuild_shared::rate::types::{RateConfig, RateTokens};
@@ -110,7 +110,7 @@ pub mod state {
 
 pub mod interface {
     use candid::CandidType;
-    use junobuild_auth::types::config::AuthenticationConfig;
+    use junobuild_auth::state::types::config::AuthenticationConfig;
     use junobuild_cdn::proposals::ProposalId;
     use junobuild_storage::types::config::StorageConfig;
     use serde::{Deserialize, Serialize};

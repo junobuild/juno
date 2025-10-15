@@ -48,3 +48,9 @@ pub enum JwtVerifyError {
     BadSig(String),
     BadClaim(String),
 }
+
+#[derive(CandidType, Serialize, Deserialize, Debug)]
+pub enum JwtHeaderError {
+    BadSig(String),
+    BadClaim(String),
+}

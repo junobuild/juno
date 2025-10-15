@@ -1,6 +1,7 @@
+use crate::delegation::openid::jwt::header::decode_jwt_header;
 use crate::delegation::openid::jwt::types::JwtFindProviderError;
 use crate::state::types::config::{OpenIdProvider, OpenIdProviderConfig, OpenIdProviders};
-use jsonwebtoken::{dangerous, decode_header, Algorithm};
+use jsonwebtoken::dangerous;
 use serde::Deserialize;
 
 #[derive(Clone, Deserialize)]
@@ -14,12 +15,8 @@ pub fn unsafe_find_jwt_provider<'a>(
     providers: &'a OpenIdProviders,
     jwt: &str,
 ) -> Result<(OpenIdProvider, &'a OpenIdProviderConfig), JwtFindProviderError> {
-    // 1) read header to get `kid`
-    let header = decode_header(jwt).map_err(|e| JwtFindProviderError::BadSig(e.to_string()))?;
-
-    if header.alg != Algorithm::RS256 {
-        return Err(JwtFindProviderError::BadClaim("alg".to_string()));
-    }
+    // 1) Header sanity check
+    decode_jwt_header(jwt).map_err(JwtFindProviderError::from)?;
 
     // 2) Decode the payload (⚠️ no signature validation)
     let token_data = dangerous::insecure_decode::<UnsafeClaims>(jwt)

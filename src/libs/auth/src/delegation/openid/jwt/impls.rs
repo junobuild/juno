@@ -1,4 +1,4 @@
-use crate::delegation::openid::jwt::types::{JwtFindProviderError, JwtVerifyError};
+use crate::delegation::openid::jwt::types::{JwtFindProviderError, JwtHeaderError, JwtVerifyError};
 use std::fmt;
 
 impl fmt::Display for JwtVerifyError {
@@ -20,6 +20,33 @@ impl fmt::Display for JwtFindProviderError {
             JwtFindProviderError::NoMatchingProvider => {
                 write!(f, "No matching OpenID provider for JWT (iss/aud mismatch)")
             }
+        }
+    }
+}
+
+impl From<JwtHeaderError> for JwtVerifyError {
+    fn from(e: JwtHeaderError) -> Self {
+        match e {
+            JwtHeaderError::BadSig(s) => JwtVerifyError::BadSig(s),
+            JwtHeaderError::BadClaim(c) => JwtVerifyError::BadClaim(c.to_string()),
+        }
+    }
+}
+
+impl From<JwtHeaderError> for JwtFindProviderError {
+    fn from(e: JwtHeaderError) -> Self {
+        match e {
+            JwtHeaderError::BadSig(s) => JwtFindProviderError::BadSig(s),
+            JwtHeaderError::BadClaim(c) => JwtFindProviderError::BadClaim(c.to_string()),
+        }
+    }
+}
+
+impl fmt::Display for JwtHeaderError {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        match self {
+            JwtHeaderError::BadSig(err) => write!(f, "Bad signature: {err}"),
+            JwtHeaderError::BadClaim(err) => write!(f, "Bad claim: {err}"),
         }
     }
 }

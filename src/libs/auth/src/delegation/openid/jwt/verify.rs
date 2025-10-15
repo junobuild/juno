@@ -1,5 +1,6 @@
+use crate::delegation::openid::jwt::header::decode_jwt_header;
 use crate::delegation::openid::jwt::types::{Claims, Jwk, JwtVerifyError};
-use jsonwebtoken::{decode, decode_header, Algorithm, DecodingKey, TokenData, Validation};
+use jsonwebtoken::{decode, Algorithm, DecodingKey, TokenData, Validation};
 
 fn pick_key<'a>(kid: &str, jwks: &'a [Jwk]) -> Option<&'a Jwk> {
     jwks.iter().find(|j| j.kid.as_deref() == Some(kid))
@@ -12,30 +13,19 @@ pub fn verify_openid_jwt(
     jwks: &[Jwk],
     expected_nonce: &str,
 ) -> Result<TokenData<Claims>, JwtVerifyError> {
-    // 1) read header to get `kid`
-    let header = decode_header(jwt).map_err(|e| JwtVerifyError::BadSig(e.to_string()))?;
-
-    if header.alg != Algorithm::RS256 {
-        return Err(JwtVerifyError::BadClaim("alg".to_string()));
-    }
-
-    // If typ is present it must be "JWT".
-    if let Some(typ) = header.typ.as_deref() {
-        if typ != "JWT" {
-            return Err(JwtVerifyError::BadClaim("typ".to_string()));
-        }
-    }
+    // 1) Read header to get `kid`
+    let header = decode_jwt_header(jwt).map_err(JwtVerifyError::from)?;
 
     let kid = header.kid.ok_or(JwtVerifyError::MissingKid)?;
 
-    // 2) find matching RSA key
+    // 2) Find matching RSA key
     let jwk = pick_key(&kid, jwks).ok_or(JwtVerifyError::NoKeyForKid)?;
 
-    // 3) build decoding key
+    // 3) Build decoding key
     let key = DecodingKey::from_rsa_components(&jwk.n, &jwk.e)
         .map_err(|e| JwtVerifyError::BadSig(e.to_string()))?;
 
-    // 4) build validation but disable automatic audience validation
+    // 4) Build validation but disable automatic audience validation
     let mut val = Validation::new(Algorithm::RS256);
 
     // The forked library uses IC time for time-based checks.
@@ -57,7 +47,7 @@ pub fn verify_openid_jwt(
     let token =
         decode::<Claims>(jwt, &key, &val).map_err(|e| JwtVerifyError::BadSig(e.to_string()))?;
 
-    // 5) manual checks audience
+    // 5) Manual checks audience
     let c = &token.claims;
     if c.aud != client_id {
         return Err(JwtVerifyError::BadClaim("aud".to_string()));
@@ -76,14 +66,14 @@ pub fn verify_openid_jwt(
     let iat_s = c.iat.ok_or(JwtVerifyError::BadClaim("iat".to_string()))?;
     let iat_ns = iat_s.saturating_mul(1_000_000_000);
 
-    // reject if token is from the future
+    // Reject if token is from the future
     // Note: in practice we noticed that using exactly iat for this comparison
     // lead to issue. That is why we add a bit of buffer to the comparison.
     if now_ns < iat_ns.saturating_sub(IAT_FUTURE_SKEW_NS) {
         return Err(JwtVerifyError::BadClaim("iat_future".to_string()));
     }
 
-    // reject if too old
+    // Reject if too old
     if now_ns > iat_ns.saturating_add(MAX_VALIDITY_WINDOW_NS) {
         return Err(JwtVerifyError::BadClaim("iat_expired".to_string()));
     }

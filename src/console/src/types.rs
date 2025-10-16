@@ -9,7 +9,7 @@ pub mod state {
     use junobuild_cdn::storage::{ProposalAssetsStable, ProposalContentChunksStable};
     use junobuild_shared::rate::types::{RateConfig, RateTokens};
     use junobuild_shared::types::memory::Memory;
-    use junobuild_shared::types::state::{Controllers, Timestamp};
+    use junobuild_shared::types::state::{Controllers, Timestamp, Version};
     use junobuild_shared::types::state::{MissionControlId, UserId};
     use junobuild_storage::types::state::StorageHeapState;
     use serde::{Deserialize, Serialize};
@@ -21,6 +21,7 @@ pub mod state {
 
     pub type MissionControlsStable = StableBTreeMap<UserId, MissionControl, Memory>;
     pub type PaymentsStable = StableBTreeMap<BlockIndex, Payment, Memory>;
+    pub type AccountsStable = StableBTreeMap<UserId, Account, Memory>;
 
     #[derive(Serialize, Deserialize)]
     pub struct State {
@@ -37,6 +38,7 @@ pub mod state {
         pub proposals_assets: ProposalAssetsStable,
         pub proposals_content_chunks: ProposalContentChunksStable,
         pub proposals: ProposalsStable,
+        pub accounts: AccountsStable,
     }
 
     #[derive(Default, CandidType, Serialize, Deserialize, Clone)]
@@ -54,10 +56,12 @@ pub mod state {
         pub releases_metadata: ReleasesMetadata,
     }
 
+    pub type OwnerId = UserId;
+
     #[derive(CandidType, Serialize, Deserialize, Clone)]
     pub struct MissionControl {
         pub mission_control_id: Option<MissionControlId>,
-        pub owner: UserId,
+        pub owner: OwnerId,
         pub credits: Tokens,
         pub created_at: Timestamp,
         pub updated_at: Timestamp,
@@ -106,9 +110,49 @@ pub mod state {
         pub satellite: Fee,
         pub orbiter: Fee,
     }
+
+    #[derive(CandidType, Serialize, Deserialize, Clone)]
+    pub struct Account {
+        pub role: AccountRole,
+        pub provider: AuthProvider,
+        pub created_at: Timestamp,
+        pub updated_at: Timestamp,
+        pub version: Option<Version>,
+    }
+
+    #[derive(CandidType, Serialize, Deserialize, Clone)]
+    pub enum AuthProvider {
+        InternetIdentity,
+        WebAuthn(WebAuthnData),
+    }
+
+    #[derive(CandidType, Serialize, Deserialize, Clone)]
+    pub struct WebAuthnData {
+        pub aaguid: Option<Vec<u8>>,
+        pub public_key: Vec<u8>,
+    }
+
+    #[derive(CandidType, Serialize, Deserialize, Clone)]
+    pub enum AccountRole {
+        Owner(Owner),
+        Alias(Alias),
+    }
+
+    pub type AliasId = OwnerId;
+
+    #[derive(Default, CandidType, Serialize, Deserialize, Clone)]
+    pub struct Owner {
+        pub alias_ids: Vec<AliasId>,
+    }
+
+    #[derive(CandidType, Serialize, Deserialize, Clone)]
+    pub struct Alias {
+        pub owner_id: OwnerId,
+    }
 }
 
 pub mod interface {
+    use crate::types::state::AuthProvider;
     use candid::CandidType;
     use junobuild_auth::state::types::config::AuthenticationConfig;
     use junobuild_cdn::proposals::ProposalId;
@@ -124,6 +168,11 @@ pub mod interface {
     #[derive(CandidType, Serialize, Deserialize, Clone)]
     pub struct DeleteProposalAssets {
         pub proposal_ids: Vec<ProposalId>,
+    }
+
+    #[derive(CandidType, Serialize, Deserialize, Clone)]
+    pub struct InitMissionControlArgs {
+        pub provider: AuthProvider,
     }
 }
 

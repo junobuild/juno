@@ -4,17 +4,21 @@
 	import { run } from 'svelte/legacy';
 	import type { SatelliteDid } from '$declarations';
 	import Html from '$lib/components/ui/Html.svelte';
-	import { listParamsFiltered } from '$lib/derived/list-params.derived';
+	import { getDerivedListParamsFiltered } from '$lib/derived/list-params.derived';
 	import { i18n } from '$lib/stores/i18n.store';
+	import type { ListParamsStore } from '$lib/stores/list-params.store';
 	import { i18nFormat } from '$lib/utils/i18n.utils';
 
 	interface Props {
 		rule: SatelliteDid.Rule | undefined;
 		collection: string | undefined;
 		filter?: Snippet;
+		listParamsStore: ListParamsStore;
 	}
 
-	let { rule, collection, filter }: Props = $props();
+	let { rule, collection, filter, listParamsStore }: Props = $props();
+
+	const listParamsFiltered = getDerivedListParamsFiltered(listParamsStore);
 
 	let privateReadRule = $state(false);
 	run(() => {

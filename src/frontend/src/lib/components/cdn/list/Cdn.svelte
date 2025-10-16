@@ -8,7 +8,7 @@
 	import { listWasmAssets } from '$lib/services/proposals/proposals.cdn.services';
 	import { authStore } from '$lib/stores/auth.store';
 	import { i18n } from '$lib/stores/i18n.store';
-	import { listParamsStore } from '$lib/stores/list-params.store';
+	import { getListParamsStore, StoreContainers } from '$lib/stores/list-params.store';
 	import { initPaginationContext } from '$lib/stores/pagination.context.store';
 	import { toasts } from '$lib/stores/toasts.store';
 	import { versionStore } from '$lib/stores/version.store';
@@ -19,6 +19,7 @@
 	}
 
 	let { satellite }: Props = $props();
+	const listParamsStore = getListParamsStore(StoreContainers.CDN);
 
 	const list = async () => {
 		if (isNullish(satellite)) {

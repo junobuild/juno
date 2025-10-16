@@ -4,14 +4,16 @@
 	import DataActions from '$lib/components/data/DataActions.svelte';
 	import DataOrder from '$lib/components/data/DataOrder.svelte';
 	import ListParamsFilter from '$lib/components/list/ListParamsFilter.svelte';
+	import type { ListParamsStore } from '$lib/stores/list-params.store';
 	import { RULES_CONTEXT_KEY, type RulesContext } from '$lib/types/rules.context';
 
 	interface Props {
 		children: Snippet;
 		actions?: Snippet;
+		listParamsStore: ListParamsStore;
 	}
 
-	let { children, actions }: Props = $props();
+	let { children, actions, listParamsStore }: Props = $props();
 
 	const { store }: RulesContext = getContext<RulesContext>(RULES_CONTEXT_KEY);
 
@@ -23,8 +25,8 @@
 
 	{#if collectionSelected}
 		<div>
-			<ListParamsFilter />
-			<DataOrder />
+			<ListParamsFilter {listParamsStore} />
+			<DataOrder {listParamsStore} />
 			<DataActions>
 				{@render actions?.()}
 			</DataActions>

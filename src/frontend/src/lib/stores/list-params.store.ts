@@ -2,8 +2,15 @@ import type { ListFilter, ListOrder, ListParams } from '$lib/types/list';
 import { getLocalListParams, setLocalStorageItem } from '$lib/utils/local-storage.utils';
 import { type Readable, writable } from 'svelte/store';
 
-const saveListParams = (state: ListParamsStoreData) =>
-	setLocalStorageItem({ key: 'list_params', value: JSON.stringify(state) });
+export enum StoreContainers {
+	STORAGE = 'STORAGE',
+	USERS = 'USERS',
+	CDN = 'CDN',
+	DOCS = 'DOCS'
+}
+
+const saveListParams = ({ key, state }: { key: StoreContainers; state: ListParamsStoreData }) =>
+	setLocalStorageItem({ key: `list_params_${key}`, value: JSON.stringify(state) });
 
 export type ListParamsStoreData = Pick<ListParams, 'order' | 'filter'>;
 
@@ -13,8 +20,10 @@ export interface ListParamsStore extends Readable<ListParamsStoreData> {
 	reload: () => void;
 }
 
-const initListParamsStore = (): ListParamsStore => {
-	const { subscribe, update } = writable<ListParamsStoreData>(getLocalListParams());
+const storesContainer = new Map<StoreContainers, ListParamsStore>();
+
+const initListParamsStore = (key: StoreContainers): ListParamsStore => {
+	const { subscribe, update } = writable<ListParamsStoreData>(getLocalListParams(key));
 
 	return {
 		subscribe,
@@ -26,7 +35,7 @@ const initListParamsStore = (): ListParamsStore => {
 					order
 				};
 
-				saveListParams(updated_state);
+				saveListParams({ key, state: updated_state });
 
 				return updated_state;
 			});
@@ -39,7 +48,7 @@ const initListParamsStore = (): ListParamsStore => {
 					filter
 				};
 
-				saveListParams(updated_state);
+				saveListParams({ key, state: updated_state });
 
 				return updated_state;
 			});
@@ -53,4 +62,14 @@ const initListParamsStore = (): ListParamsStore => {
 	};
 };
 
-export const listParamsStore = initListParamsStore();
+export const reloadListParamStores = () => storesContainer.forEach((store) => store.reload());
+
+export const getListParamsStore = (storeId: StoreContainers): ListParamsStore => {
+	if (storesContainer.has(storeId)) {
+		return storesContainer.get(storeId) as ListParamsStore;
+	}
+
+	const store = initListParamsStore(storeId);
+	storesContainer.set(storeId, store);
+	return store;
+};

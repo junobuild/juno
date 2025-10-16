@@ -49,6 +49,7 @@
 		"clippy": "./scripts/clippy.sh",
 		"test": "tsc --project tsconfig.spec.json --noEmit && vitest --dir src/tests",
 		"test:frontend": "tsc --project tsconfig.spec.json --noEmit && vitest --config ./vitest.frontend.config.ts --dir src/frontend",
+		"test:cargo": "./scripts/cargo.tests.sh",
 		"e2e": "NODE_ENV=development playwright test",
 		"e2e:snapshots": "NODE_ENV=development playwright test --update-snapshots --reporter=list",
 		"e2e:ci": "playwright test --reporter=html",

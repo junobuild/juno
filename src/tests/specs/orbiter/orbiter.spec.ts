@@ -223,6 +223,17 @@ describe('Orbiter', () => {
 				actor.setIdentity(controller);
 			});
 
+			it('should return size', async () => {
+				const { memory_size } = actor;
+
+				const size = await memory_size();
+
+				expect(size).toEqual({
+					heap: 3866624n,
+					stable: 50397184n
+				});
+			});
+
 			describe('write', () => {
 				const key = nanoid();
 

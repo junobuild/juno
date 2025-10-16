@@ -78,6 +78,17 @@ describe('Satellite', () => {
 			actor.setIdentity(controller);
 		});
 
+		it('should return size', async () => {
+			const { memory_size } = actor;
+
+			const size = await memory_size();
+
+			expect(size).toEqual({
+				heap: 3932160n,
+				stable: 50397184n
+			});
+		});
+
 		it('should create a db collection', async () => {
 			const { set_rule, list_rules } = actor;
 

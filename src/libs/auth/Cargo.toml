@@ -33,4 +33,7 @@ getrandom02 = { package = "getrandom", version = "0.2.16", features = ["custom"]
 junobuild-shared = "0.3.0"
 
 [dev-dependencies]
-jsonwebtoken = { git = "https://github.com/peterpeterparker/jsonwebtoken", branch = "feat/icp", default-features = false, features = ["rust_crypto", "use_pem"] }
+jsonwebtoken = { git = "https://github.com/peterpeterparker/jsonwebtoken", branch = "feat/icp", default-features = false, features = [
+	"rust_crypto",
+	"use_pem"
+] }

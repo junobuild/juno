@@ -24,8 +24,6 @@ pub fn calculate_seed(
     blob.push(key.sub.len() as u8);
     blob.extend(key.sub.bytes());
 
-    // TODO: frontend?
-
     let seed = hash_bytes(blob);
     Ok(seed)
 }

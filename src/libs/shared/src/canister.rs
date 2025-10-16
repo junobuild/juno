@@ -1,4 +1,5 @@
 use crate::types::interface::MemorySize;
+#[cfg(target_arch = "wasm32")]
 use core::arch::wasm32::memory_size as wasm_memory_size;
 use ic_cdk::api::stable::{stable_size, WASM_PAGE_SIZE_IN_BYTES};
 
@@ -21,9 +22,16 @@ use ic_cdk::api::stable::{stable_size, WASM_PAGE_SIZE_IN_BYTES};
 /// println!("Stable storage size: {} bytes", memory_usage.stable);
 /// ```
 ///
+#[cfg(target_arch = "wasm32")]
 pub fn memory_size() -> MemorySize {
     MemorySize {
         heap: wasm_memory_size(0) as u64 * WASM_PAGE_SIZE_IN_BYTES,
         stable: stable_size() * WASM_PAGE_SIZE_IN_BYTES,
     }
+}
+
+// For test only
+#[cfg(not(target_arch = "wasm32"))]
+pub fn memory_size() -> MemorySize {
+    MemorySize { heap: 0, stable: 0 }
 }

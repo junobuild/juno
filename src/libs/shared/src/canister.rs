@@ -30,7 +30,7 @@ pub fn memory_size() -> MemorySize {
     }
 }
 
-// For test only
+// For cargo test only
 #[cfg(not(target_arch = "wasm32"))]
 pub fn memory_size() -> MemorySize {
     MemorySize { heap: 0, stable: 0 }

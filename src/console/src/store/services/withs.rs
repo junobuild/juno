@@ -1,5 +1,5 @@
 use crate::store::services::raw::{mutate_heap_state, read_heap_state};
-use junobuild_auth::types::state::AuthenticationHeapState;
+use junobuild_auth::state::types::state::AuthenticationHeapState;
 use junobuild_storage::types::config::StorageConfig;
 use junobuild_storage::types::state::AssetsHeap;
 

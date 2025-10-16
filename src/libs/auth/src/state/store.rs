@@ -1,10 +1,10 @@
 use crate::state::assert::assert_set_config;
 use crate::state::heap::get_config;
 use crate::state::heap::insert_config;
+use crate::state::types::config::AuthenticationConfig;
+use crate::state::types::interface::SetAuthenticationConfig;
 use crate::state::{get_salt, insert_salt};
 use crate::strategies::AuthHeapStrategy;
-use crate::types::config::AuthenticationConfig;
-use crate::types::interface::SetAuthenticationConfig;
 use junobuild_shared::ic::api::print;
 use junobuild_shared::random::raw_rand;
 

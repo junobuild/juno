@@ -1,6 +1,6 @@
 use crate::state::errors::JUNO_AUTH_ERROR_INVALID_ORIGIN;
-use crate::types::config::AuthenticationConfig;
-use crate::types::interface::SetAuthenticationConfig;
+use crate::state::types::config::AuthenticationConfig;
+use crate::state::types::interface::SetAuthenticationConfig;
 use junobuild_shared::assert::assert_version;
 use junobuild_shared::types::core::DomainName;
 use junobuild_shared::types::state::Version;

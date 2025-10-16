@@ -10,8 +10,8 @@ use crate::db::store::{
 use crate::db::types::config::DbConfig;
 use crate::db::types::interface::SetDbConfig;
 use crate::types::interface::Config;
-use junobuild_auth::types::config::AuthenticationConfig;
-use junobuild_auth::types::interface::SetAuthenticationConfig;
+use junobuild_auth::state::types::config::AuthenticationConfig;
+use junobuild_auth::state::types::interface::SetAuthenticationConfig;
 use junobuild_shared::ic::UnwrapOrTrap;
 use junobuild_storage::types::config::StorageConfig;
 use junobuild_storage::types::interface::SetStorageConfig;

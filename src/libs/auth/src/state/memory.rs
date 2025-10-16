@@ -1,4 +1,4 @@
-use crate::types::runtime_state::State;
+use crate::state::types::runtime_state::State;
 use std::cell::RefCell;
 
 thread_local! {

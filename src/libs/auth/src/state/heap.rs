@@ -1,7 +1,7 @@
+use crate::state::types::config::AuthenticationConfig;
+use crate::state::types::state::AuthenticationHeapState;
+use crate::state::types::state::Salt;
 use crate::strategies::AuthHeapStrategy;
-use crate::types::config::AuthenticationConfig;
-use crate::types::state::AuthenticationHeapState;
-use crate::types::state::Salt;
 
 // ---------------------------------------------------------
 // Config

@@ -1,6 +1,6 @@
 use crate::memory::state::STATE;
+use junobuild_auth::state::types::state::AuthenticationHeapState;
 use junobuild_auth::strategies::AuthHeapStrategy;
-use junobuild_auth::types::state::AuthenticationHeapState;
 
 pub struct AuthHeap;
 

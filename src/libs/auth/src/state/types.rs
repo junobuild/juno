@@ -1,5 +1,5 @@
 pub mod state {
-    use crate::types::config::AuthenticationConfig;
+    use crate::state::types::config::AuthenticationConfig;
     use candid::CandidType;
     use serde::{Deserialize, Serialize};
 
@@ -65,19 +65,19 @@ pub mod config {
 
     pub type OpenIdProviders = BTreeMap<OpenIdProvider, OpenIdProviderConfig>;
 
-    #[derive(CandidType, Serialize, Deserialize, Clone, PartialEq, Eq, PartialOrd, Ord)]
+    #[derive(CandidType, Serialize, Deserialize, Clone, PartialEq, Eq, PartialOrd, Ord, Debug)]
     pub enum OpenIdProvider {
         Google,
     }
 
-    #[derive(Default, CandidType, Serialize, Deserialize, Clone)]
+    #[derive(Default, CandidType, Serialize, Deserialize, Clone, Debug)]
     pub struct OpenIdProviderConfig {
         pub client_id: String,
     }
 }
 
 pub mod interface {
-    use crate::types::config::{
+    use crate::state::types::config::{
         AuthenticationConfigInternetIdentity, AuthenticationConfigOpenId, AuthenticationRules,
     };
     use candid::{CandidType, Deserialize};

@@ -20,16 +20,6 @@ use junobuild_storage::types::state::FullPath;
 // Storage
 // ---------------------------------------------------------
 
-#[deprecated(note = "Use init_proposal_many_assets_upload instead")]
-#[update(guard = "caller_is_admin_controller")]
-fn init_proposal_asset_upload(init: InitAssetKey, proposal_id: ProposalId) -> InitUploadResult {
-    let caller = caller();
-
-    let batch_id = init_asset_upload_store(caller, init, proposal_id).unwrap_or_trap();
-
-    InitUploadResult { batch_id }
-}
-
 #[update(guard = "caller_is_admin_controller")]
 fn init_proposal_many_assets_upload(
     init_asset_keys: Vec<InitAssetKey>,
@@ -59,26 +49,6 @@ fn upload_proposal_asset_chunk(chunk: UploadChunk) -> UploadChunkResult {
     let chunk_id = create_chunk(caller, &config, chunk).unwrap_or_trap();
 
     UploadChunkResult { chunk_id }
-}
-
-#[deprecated(note = "Use commit_proposal_many_assets_upload instead")]
-#[update(guard = "caller_is_admin_controller")]
-fn commit_proposal_asset_upload(commit: CommitBatch) {
-    let caller = caller();
-
-    let controllers: Controllers = get_controllers();
-    let config = junobuild_cdn::storage::heap::get_config(&CdnHeap);
-
-    commit_batch_storage(
-        caller,
-        &controllers,
-        &config,
-        commit,
-        &StorageAssertions,
-        &StorageState,
-        &StorageUpload,
-    )
-    .unwrap_or_trap();
 }
 
 #[update(guard = "caller_is_admin_controller")]

@@ -260,7 +260,6 @@ service : () -> {
   add_invitation_code : (text) -> ();
   assert_mission_control_center : (AssertMissionControlCenterArgs) -> () query;
   commit_proposal : (CommitProposal) -> (null);
-  commit_proposal_asset_upload : (CommitBatch) -> ();
   commit_proposal_many_assets_upload : (vec CommitBatch) -> ();
   count_proposals : () -> (nat64) query;
   create_orbiter : (CreateCanisterArgs) -> (principal);
@@ -281,7 +280,6 @@ service : () -> {
       StreamingCallbackHttpResponse,
     ) query;
   init_proposal : (ProposalType) -> (nat, Proposal);
-  init_proposal_asset_upload : (InitAssetKey, nat) -> (InitUploadResult);
   init_proposal_many_assets_upload : (vec InitAssetKey, nat) -> (
       vec record { text; InitUploadResult },
     );

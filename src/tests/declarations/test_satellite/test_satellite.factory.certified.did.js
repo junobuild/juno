@@ -347,7 +347,6 @@ export const idlFactory = ({ IDL }) => {
 	return IDL.Service({
 		commit_asset_upload: IDL.Func([CommitBatch], [], []),
 		commit_proposal: IDL.Func([CommitProposal], [IDL.Null], []),
-		commit_proposal_asset_upload: IDL.Func([CommitBatch], [], []),
 		commit_proposal_many_assets_upload: IDL.Func([IDL.Vec(CommitBatch)], [], []),
 		count_assets: IDL.Func([IDL.Text, ListParams], [IDL.Nat64], []),
 		count_collection_assets: IDL.Func([IDL.Text], [IDL.Nat64], []),
@@ -397,7 +396,6 @@ export const idlFactory = ({ IDL }) => {
 		),
 		init_asset_upload: IDL.Func([InitAssetKey], [InitUploadResult], []),
 		init_proposal: IDL.Func([ProposalType], [IDL.Nat, Proposal], []),
-		init_proposal_asset_upload: IDL.Func([InitAssetKey, IDL.Nat], [InitUploadResult], []),
 		init_proposal_many_assets_upload: IDL.Func(
 			[IDL.Vec(InitAssetKey), IDL.Nat],
 			[IDL.Vec(IDL.Tuple(IDL.Text, InitUploadResult))],

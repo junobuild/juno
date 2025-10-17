@@ -24,11 +24,16 @@ pub fn openid_prepare_delegation(
     auth_heap: &impl AuthHeapStrategy,
     certificate: &impl AuthCertificateStrategy,
 ) -> PrepareDelegationResult {
-    let (client_id, key) = verify_openid_credentials(&args.jwt, &args.salt, providers)
+    let (client_id, credential) = verify_openid_credentials(&args.jwt, &args.salt, providers)
         .map_err(PrepareDelegationError::from)?;
 
-    let delegation =
-        prepare_delegation(&client_id, &key, &args.session_key, auth_heap, certificate)?;
+    let delegation = prepare_delegation(
+        &client_id,
+        &OpenIdCredentialKey::from(credential),
+        &args.session_key,
+        auth_heap,
+        certificate,
+    )?;
 
     Ok(delegation)
 }

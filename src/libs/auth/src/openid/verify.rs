@@ -1,6 +1,6 @@
 use crate::openid::jwt::types::Jwks;
 use crate::openid::jwt::{unsafe_find_jwt_provider, verify_openid_jwt, GOOGLE_JWKS};
-use crate::openid::types::{OpenIdCredentialKey, VerifyOpenidCredentialsError};
+use crate::openid::types::{OpenIdCredential, VerifyOpenidCredentialsError};
 use crate::openid::utils::build_nonce;
 use crate::state::types::config::{OpenIdProviderClientId, OpenIdProviders};
 
@@ -8,7 +8,7 @@ pub fn verify_openid_credentials(
     jwt: &str,
     salt: &[u8; 32],
     providers: &OpenIdProviders,
-) -> Result<(OpenIdProviderClientId, OpenIdCredentialKey), VerifyOpenidCredentialsError> {
+) -> Result<(OpenIdProviderClientId, OpenIdCredential), VerifyOpenidCredentialsError> {
     let (provider, config) = unsafe_find_jwt_provider(providers, jwt)
         .map_err(|e| VerifyOpenidCredentialsError::JwtFindProvider(e))?;
 
@@ -27,10 +27,5 @@ pub fn verify_openid_credentials(
     )
     .map_err(|e| VerifyOpenidCredentialsError::JwtVerify(e))?;
 
-    let key = OpenIdCredentialKey {
-        iss: token.claims.iss,
-        sub: token.claims.sub,
-    };
-
-    Ok((config.client_id.clone(), key))
+    Ok((config.client_id.clone(), OpenIdCredential::from(token)))
 }

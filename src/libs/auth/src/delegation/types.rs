@@ -1,4 +1,4 @@
-use crate::delegation::openid::jwt::types::{JwtFindProviderError, JwtVerifyError};
+use crate::openid::jwt::types::{JwtFindProviderError, JwtVerifyError};
 use candid::{CandidType, Deserialize, Principal};
 use serde::Serialize;
 use serde_bytes::ByteBuf;

@@ -1,5 +1,5 @@
-use crate::delegation::openid::jwt::header::decode_jwt_header;
-use crate::delegation::openid::jwt::types::{Claims, Jwk, JwtVerifyError};
+use crate::openid::jwt::header::decode_jwt_header;
+use crate::openid::jwt::types::{Claims, Jwk, JwtVerifyError};
 use jsonwebtoken::{decode, Algorithm, DecodingKey, TokenData, Validation};
 
 fn pick_key<'a>(kid: &str, jwks: &'a [Jwk]) -> Option<&'a Jwk> {
@@ -99,11 +99,11 @@ fn now_ns() -> u64 {
 #[cfg(test)]
 mod verify_tests {
     use super::verify_openid_jwt;
-    use crate::delegation::openid::jwt::types::{Claims, Jwk, JwtVerifyError};
+    use crate::openid::jwt::types::{Claims, Jwk, JwtVerifyError};
     use jsonwebtoken::{encode, Algorithm, EncodingKey, Header};
     use std::time::{SystemTime, UNIX_EPOCH};
 
-    const TEST_RSA_PEM: &str = include_str!("../../../../tests/keys/test_rsa.pem");
+    const TEST_RSA_PEM: &str = include_str!("../../../tests/keys/test_rsa.pem");
 
     const N_B64URL: &str = "qtQHkWpyd489-_bWjRtrvlQX9CwiQreOsi6kNeeySznI8u-8sxyuO3spW1r2pRmu-rc4jnD9vY6eTGZ3WFNIMxe1geXsF_3nQc5fcNJUUZj19BZE4Ud3dCmUQ4ezkslTvBj8RgD-iBJL7BT7YpxpPgvmqQy_9IgYUkDW4I9_e6kME5kVpySvpRznlk73PfAaDkHWmUTN0j2WcxkW09SGJ_f-tStaYXtc4uH5J-PWMRjwsfL66A_sxLxAwUODJ0VUbeDxVFHGJa0L-58_6GYDTqeel1vH4XjezDL8lf53YRyva3aFxGrC_JeLuIUaJOJX1hXWQb2DruB4hVcQX9afrQ";
     const E_B64URL: &str = "AQAB";

@@ -70,9 +70,11 @@ pub mod config {
         Google,
     }
 
+    pub type OpenIdProviderClientId = String;
+
     #[derive(Default, CandidType, Serialize, Deserialize, Clone, Debug)]
     pub struct OpenIdProviderConfig {
-        pub client_id: String,
+        pub client_id: OpenIdProviderClientId,
     }
 }
 

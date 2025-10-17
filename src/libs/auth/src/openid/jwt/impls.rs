@@ -1,4 +1,4 @@
-use crate::delegation::openid::jwt::types::{JwtFindProviderError, JwtHeaderError, JwtVerifyError};
+use crate::openid::jwt::types::{JwtFindProviderError, JwtHeaderError, JwtVerifyError};
 
 impl From<JwtHeaderError> for JwtVerifyError {
     fn from(e: JwtHeaderError) -> Self {

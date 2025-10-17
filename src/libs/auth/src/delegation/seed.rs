@@ -1,4 +1,4 @@
-use crate::delegation::openid::types::OpenIdCredentialKey;
+use crate::openid::types::OpenIdCredentialKey;
 use crate::state::types::state::Salt;
 use ic_certification::Hash;
 use sha2::{Digest, Sha256};
@@ -37,7 +37,7 @@ fn hash_bytes(value: impl AsRef<[u8]>) -> Hash {
 #[cfg(test)]
 mod tests {
     use super::calculate_seed;
-    use crate::delegation::openid::types::OpenIdCredentialKey;
+    use crate::openid::types::OpenIdCredentialKey;
     use crate::state::types::state::Salt;
     use ic_certification::Hash;
     use sha2::{Digest, Sha256};

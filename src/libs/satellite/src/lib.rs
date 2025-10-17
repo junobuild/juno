@@ -22,9 +22,12 @@ use crate::db::types::config::DbConfig;
 use crate::guards::{
     caller_is_admin_controller, caller_is_controller, caller_is_controller_with_write,
 };
-use crate::types::interface::{Config, DeleteProposalAssets};
+use crate::types::interface::{
+    AuthenticateUserArgs, AuthenticateUserResult, Config, DeleteProposalAssets, GetDelegationArgs,
+};
 use crate::types::state::CollectionType;
 use ic_cdk_macros::{init, post_upgrade, pre_upgrade, query, update};
+use junobuild_auth::delegation::types::GetDelegationResult;
 use junobuild_auth::state::types::config::AuthenticationConfig;
 use junobuild_cdn::proposals::{
     CommitProposal, ListProposalResults, ListProposalsParams, Proposal, ProposalId, ProposalType,
@@ -64,10 +67,6 @@ use crate::db::types::interface::SetDbConfig;
 use junobuild_auth::state::types::interface::SetAuthenticationConfig;
 pub use sdk::core::*;
 pub use sdk::internal;
-// TODO: remove just for test
-pub use crate::api::auth::*;
-// TODO: remove just for test
-pub use crate::types::interface::{GetDelegationArgs, PrepareDelegationArgs};
 
 // ---------------------------------------------------------
 // Init and Upgrade
@@ -159,6 +158,22 @@ pub fn del_docs(collection: CollectionKey) {
 #[query(guard = "caller_is_controller_with_write")]
 pub fn count_collection_docs(collection: CollectionKey) -> usize {
     api::db::count_collection_docs(collection)
+}
+
+// ---------------------------------------------------------
+// Authentication
+// ---------------------------------------------------------
+
+#[doc(hidden)]
+#[update]
+pub fn authenticate_user(args: AuthenticateUserArgs) -> AuthenticateUserResult {
+    api::auth::authenticate_user(&args)
+}
+
+#[doc(hidden)]
+#[query]
+pub fn get_delegation(args: GetDelegationArgs) -> GetDelegationResult {
+    api::auth::get_delegation(&args)
 }
 
 // ---------------------------------------------------------
@@ -521,14 +536,14 @@ pub fn memory_size() -> MemorySize {
 macro_rules! include_satellite {
     () => {
         use junobuild_satellite::{
-            commit_asset_upload, commit_proposal, commit_proposal_asset_upload,
+            authenticate_user, commit_asset_upload, commit_proposal, commit_proposal_asset_upload,
             commit_proposal_many_assets_upload, count_assets, count_collection_assets,
             count_collection_docs, count_docs, count_proposals, del_asset, del_assets,
             del_controllers, del_custom_domain, del_doc, del_docs, del_filtered_assets,
             del_filtered_docs, del_many_assets, del_many_docs, del_rule, delete_proposal_assets,
-            deposit_cycles, get_asset, get_auth_config, get_config, get_db_config, get_doc,
-            get_many_assets, get_many_docs, get_proposal, get_storage_config, http_request,
-            http_request_streaming_callback, init, init_asset_upload, init_proposal,
+            deposit_cycles, get_asset, get_auth_config, get_config, get_db_config, get_delegation,
+            get_doc, get_many_assets, get_many_docs, get_proposal, get_storage_config,
+            http_request, http_request_streaming_callback, init, init_asset_upload, init_proposal,
             init_proposal_asset_upload, init_proposal_many_assets_upload, list_assets,
             list_controllers, list_custom_domains, list_docs, list_proposals, list_rules,
             post_upgrade, pre_upgrade, reject_proposal, set_auth_config, set_controllers,

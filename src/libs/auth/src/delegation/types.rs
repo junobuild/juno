@@ -1,4 +1,5 @@
 use crate::openid::jwt::types::{JwtFindProviderError, JwtVerifyError};
+use crate::state::types::state::Salt;
 use candid::{CandidType, Deserialize, Principal};
 use serde::Serialize;
 use serde_bytes::ByteBuf;
@@ -6,7 +7,7 @@ use serde_bytes::ByteBuf;
 #[derive(CandidType, Serialize, Deserialize)]
 pub struct OpenIdPrepareDelegationArgs {
     pub jwt: String,
-    pub salt: [u8; 32],
+    pub salt: Salt,
     pub session_key: SessionKey,
     // TODO: max_time_to_live opt<u64>
 }
@@ -14,7 +15,7 @@ pub struct OpenIdPrepareDelegationArgs {
 #[derive(CandidType, Serialize, Deserialize)]
 pub struct OpenIdGetDelegationArgs {
     pub jwt: String,
-    pub salt: [u8; 32],
+    pub salt: Salt,
     pub session_key: SessionKey,
     pub expiration: Timestamp,
 }

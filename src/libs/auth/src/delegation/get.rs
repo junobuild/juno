@@ -19,12 +19,12 @@ pub fn openid_get_delegation(
     auth_heap: &impl AuthHeapStrategy,
     certificate: &impl AuthCertificateStrategy,
 ) -> GetDelegationResult {
-    let (client_id, key) = verify_openid_credentials(&args.jwt, &args.salt, providers)
+    let (client_id, credential) = verify_openid_credentials(&args.jwt, &args.salt, providers)
         .map_err(GetDelegationError::from)?;
 
     get_delegation(
         &client_id,
-        &key,
+        &OpenIdCredentialKey::from(credential),
         &args.session_key,
         &args.expiration,
         auth_heap,

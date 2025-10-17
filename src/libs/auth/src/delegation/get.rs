@@ -1,12 +1,10 @@
-use crate::delegation::openid::jwt::types::Jwks;
-use crate::delegation::openid::jwt::{unsafe_find_jwt_provider, verify_openid_jwt, GOOGLE_JWKS};
-use crate::delegation::openid::seed::calculate_seed;
-use crate::delegation::openid::types::OpenIdCredentialKey;
+use crate::delegation::seed::calculate_seed;
 use crate::delegation::types::{
     Delegation, GetDelegationError, GetDelegationResult, OpenIdGetDelegationArgs, SessionKey,
     SignedDelegation, Timestamp,
 };
-use crate::delegation::utils::build_nonce;
+use crate::openid::types::OpenIdCredentialKey;
+use crate::openid::verify_openid_credentials;
 use crate::state::get_salt;
 use crate::state::services::read_state;
 use crate::state::types::config::OpenIdProviders;
@@ -21,31 +19,11 @@ pub fn openid_get_delegation(
     auth_heap: &impl AuthHeapStrategy,
     certificate: &impl AuthCertificateStrategy,
 ) -> GetDelegationResult {
-    let (provider, config) = unsafe_find_jwt_provider(providers, &args.jwt)
-        .map_err(|e| GetDelegationError::JwtFindProvider(e))?;
-
-    // TODO:
-    let jwks: Jwks = serde_json::from_str(GOOGLE_JWKS)
-        .map_err(|e| GetDelegationError::ParseJwksFailed(e.to_string()))?;
-
-    let nonce = build_nonce(&args.salt);
-
-    let token = verify_openid_jwt(
-        &args.jwt,
-        &provider.issuers(),
-        &config.client_id,
-        &jwks.keys,
-        &nonce,
-    )
-    .map_err(|e| GetDelegationError::JwtVerify(e))?;
-
-    let key = OpenIdCredentialKey {
-        iss: token.claims.iss,
-        sub: token.claims.sub,
-    };
+    let (client_id, key) = verify_openid_credentials(&args.jwt, &args.salt, providers)
+        .map_err(GetDelegationError::from)?;
 
     get_delegation(
-        &config.client_id,
+        &client_id,
         &key,
         &args.session_key,
         &args.expiration,

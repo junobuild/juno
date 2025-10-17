@@ -1,13 +1,11 @@
 use crate::delegation::constants::DEFAULT_EXPIRATION_PERIOD_NS;
-use crate::delegation::openid::jwt::types::Jwks;
-use crate::delegation::openid::jwt::{unsafe_find_jwt_provider, verify_openid_jwt, GOOGLE_JWKS};
-use crate::delegation::openid::seed::calculate_seed;
-use crate::delegation::openid::types::OpenIdCredentialKey;
+use crate::delegation::seed::calculate_seed;
 use crate::delegation::types::{
     OpenIdPrepareDelegationArgs, PrepareDelegationError, PrepareDelegationResult, PublicKey,
     SessionKey, Timestamp,
 };
-use crate::delegation::utils::build_nonce;
+use crate::openid::types::OpenIdCredentialKey;
+use crate::openid::verify_openid_credentials;
 use crate::state::get_salt;
 use crate::state::services::mutate_state;
 use crate::state::types::config::OpenIdProviders;
@@ -26,36 +24,11 @@ pub fn openid_prepare_delegation(
     auth_heap: &impl AuthHeapStrategy,
     certificate: &impl AuthCertificateStrategy,
 ) -> PrepareDelegationResult {
-    let (provider, config) = unsafe_find_jwt_provider(providers, &args.jwt)
-        .map_err(|e| PrepareDelegationError::JwtFindProvider(e))?;
+    let (client_id, key) = verify_openid_credentials(&args.jwt, &args.salt, providers)
+        .map_err(PrepareDelegationError::from)?;
 
-    // TODO
-    let jwks: Jwks = serde_json::from_str(GOOGLE_JWKS)
-        .map_err(|e| PrepareDelegationError::ParseJwksFailed(e.to_string()))?;
-
-    let nonce = build_nonce(&args.salt);
-
-    let token = verify_openid_jwt(
-        &args.jwt,
-        &provider.issuers(),
-        &config.client_id,
-        &jwks.keys,
-        &nonce,
-    )
-    .map_err(|e| PrepareDelegationError::JwtVerify(e))?;
-
-    let key = OpenIdCredentialKey {
-        iss: token.claims.iss,
-        sub: token.claims.sub,
-    };
-
-    let delegation = prepare_delegation(
-        &config.client_id,
-        &key,
-        &args.session_key,
-        auth_heap,
-        certificate,
-    )?;
+    let delegation =
+        prepare_delegation(&client_id, &key, &args.session_key, auth_heap, certificate)?;
 
     Ok(delegation)
 }

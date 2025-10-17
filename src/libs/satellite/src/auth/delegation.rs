@@ -1,12 +1,13 @@
 use crate::auth::store::get_config;
 use crate::auth::strategy_impls::AuthHeap;
 use crate::certification::strategy_impls::AuthCertificate;
-use junobuild_auth::delegation;
 use junobuild_auth::delegation::types::{
-    GetDelegationResult, OpenIdGetDelegationArgs, OpenIdPrepareDelegationArgs,
-    PrepareDelegationResult,
+    GetDelegationError, GetDelegationResult, OpenIdGetDelegationArgs, OpenIdPrepareDelegationArgs,
+    PrepareDelegationError, PrepareDelegationResult,
 };
+use junobuild_auth::{delegation, openid};
 
+// TODO: rename
 pub fn openid_prepare_delegation(
     args: &OpenIdPrepareDelegationArgs,
 ) -> Result<PrepareDelegationResult, String> {
@@ -15,8 +16,21 @@ pub fn openid_prepare_delegation(
         .openid
         .ok_or_else(|| "Authentication with OpenId disabled.")?;
 
-    let result =
-        delegation::openid_prepare_delegation(args, &openid.providers, &AuthHeap, &AuthCertificate);
+    let (client_id, credential) =
+        match openid::verify_openid_credentials(&args.jwt, &args.salt, &openid.providers) {
+            Ok(value) => value,
+            Err(err) => return Ok(Err(PrepareDelegationError::from(err))),
+        };
+
+    // TODO: create and assert user
+
+    let result = delegation::openid_prepare_delegation(
+        args,
+        &client_id,
+        &credential,
+        &AuthHeap,
+        &AuthCertificate,
+    );
 
     Ok(result)
 }
@@ -29,8 +43,19 @@ pub fn openid_get_delegation(
         .openid
         .ok_or_else(|| "Authentication with OpenId disabled.")?;
 
-    let result =
-        delegation::openid_get_delegation(args, &openid.providers, &AuthHeap, &AuthCertificate);
+    let (client_id, credential) =
+        match openid::verify_openid_credentials(&args.jwt, &args.salt, &openid.providers) {
+            Ok(value) => value,
+            Err(err) => return Ok(Err(GetDelegationError::from(err))),
+        };
+
+    let result = delegation::openid_get_delegation(
+        args,
+        &client_id,
+        &credential,
+        &AuthHeap,
+        &AuthCertificate,
+    );
 
     Ok(result)
 }

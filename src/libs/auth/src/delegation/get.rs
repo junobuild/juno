@@ -3,11 +3,10 @@ use crate::delegation::types::{
     Delegation, GetDelegationError, GetDelegationResult, OpenIdGetDelegationArgs, SessionKey,
     SignedDelegation, Timestamp,
 };
-use crate::openid::types::OpenIdCredentialKey;
-use crate::openid::verify_openid_credentials;
+use crate::openid::types::{OpenIdCredential, OpenIdCredentialKey};
 use crate::state::get_salt;
 use crate::state::services::read_state;
-use crate::state::types::config::OpenIdProviders;
+use crate::state::types::config::OpenIdProviderClientId;
 use crate::strategies::{AuthCertificateStrategy, AuthHeapStrategy};
 use ic_canister_sig_creation::signature_map::CanisterSigInputs;
 use ic_canister_sig_creation::{delegation_signature_msg, DELEGATION_SIG_DOMAIN};
@@ -15,13 +14,11 @@ use serde_bytes::ByteBuf;
 
 pub fn openid_get_delegation(
     args: &OpenIdGetDelegationArgs,
-    providers: &OpenIdProviders,
+    client_id: &OpenIdProviderClientId,
+    credential: &OpenIdCredential,
     auth_heap: &impl AuthHeapStrategy,
     certificate: &impl AuthCertificateStrategy,
 ) -> GetDelegationResult {
-    let (client_id, credential) = verify_openid_credentials(&args.jwt, &args.salt, providers)
-        .map_err(GetDelegationError::from)?;
-
     get_delegation(
         &client_id,
         &OpenIdCredentialKey::from(credential),

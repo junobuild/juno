@@ -2,9 +2,9 @@ use crate::openid::jwt::types::{JwtFindProviderError, JwtVerifyError};
 use candid::{CandidType, Deserialize};
 use serde::Serialize;
 
-pub struct OpenIdCredentialKey {
-    pub iss: String,
-    pub sub: String,
+pub struct OpenIdCredentialKey<'a> {
+    pub iss: &'a String,
+    pub sub: &'a String,
 }
 
 pub struct OpenIdCredential {

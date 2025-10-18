@@ -4,11 +4,10 @@ use crate::delegation::types::{
     OpenIdPrepareDelegationArgs, PrepareDelegationError, PrepareDelegationResult, PublicKey,
     SessionKey, Timestamp,
 };
-use crate::openid::types::OpenIdCredentialKey;
-use crate::openid::verify_openid_credentials;
+use crate::openid::types::{OpenIdCredential, OpenIdCredentialKey};
 use crate::state::get_salt;
 use crate::state::services::mutate_state;
-use crate::state::types::config::OpenIdProviders;
+use crate::state::types::config::OpenIdProviderClientId;
 use crate::state::types::runtime_state::State;
 use crate::strategies::{AuthCertificateStrategy, AuthHeapStrategy};
 use ic_canister_sig_creation::signature_map::CanisterSigInputs;
@@ -20,13 +19,11 @@ use serde_bytes::ByteBuf;
 
 pub fn openid_prepare_delegation(
     args: &OpenIdPrepareDelegationArgs,
-    providers: &OpenIdProviders,
+    client_id: &OpenIdProviderClientId,
+    credential: &OpenIdCredential,
     auth_heap: &impl AuthHeapStrategy,
     certificate: &impl AuthCertificateStrategy,
 ) -> PrepareDelegationResult {
-    let (client_id, credential) = verify_openid_credentials(&args.jwt, &args.salt, providers)
-        .map_err(PrepareDelegationError::from)?;
-
     let delegation = prepare_delegation(
         &client_id,
         &OpenIdCredentialKey::from(credential),

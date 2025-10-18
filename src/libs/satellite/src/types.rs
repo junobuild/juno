@@ -58,7 +58,9 @@ pub mod state {
 pub mod interface {
     use crate::db::types::config::DbConfig;
     use candid::CandidType;
-    use junobuild_auth::delegation::types::{OpenIdGetDelegationArgs, OpenIdPrepareDelegationArgs};
+    use junobuild_auth::delegation::types::{
+        OpenIdGetDelegationArgs, OpenIdPrepareDelegationArgs, PrepareDelegationResult,
+    };
     use junobuild_auth::state::types::config::AuthenticationConfig;
     use junobuild_cdn::proposals::ProposalId;
     use junobuild_storage::types::config::StorageConfig;
@@ -77,8 +79,13 @@ pub mod interface {
     }
 
     #[derive(CandidType, Serialize, Deserialize)]
-    pub enum PrepareDelegationArgs {
+    pub enum AuthenticateUserArgs {
         OpenId(OpenIdPrepareDelegationArgs),
+    }
+
+    #[derive(CandidType, Serialize, Deserialize)]
+    pub struct AuthenticateUserResult {
+        pub delegation: PrepareDelegationResult,
     }
 
     #[derive(CandidType, Serialize, Deserialize)]

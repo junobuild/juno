@@ -47,7 +47,7 @@ fn prepare_delegation(
 ) -> PrepareDelegationResult {
     let expiration = time().saturating_add(DEFAULT_EXPIRATION_PERIOD_NS);
     let seed = calculate_seed(client_id, key, &get_salt(auth_heap))
-        .map_err(|e| PrepareDelegationError::DeriveSeedFailed(e))?;
+        .map_err(PrepareDelegationError::DeriveSeedFailed)?;
 
     mutate_state(|state| {
         add_delegation_signature(state, session_key, seed.as_ref(), expiration);

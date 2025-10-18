@@ -46,11 +46,8 @@ mod tests {
         [bytes; 32]
     }
 
-    fn key(iss: &str, sub: &str) -> OpenIdCredentialKey {
-        OpenIdCredentialKey {
-            iss: iss.to_string(),
-            sub: sub.to_string(),
-        }
+    fn key<'a>(iss: &'a String, sub: &'a String) -> OpenIdCredentialKey<'a> {
+        OpenIdCredentialKey { iss, sub }
     }
 
     fn build_blob(client_id: &str, key: &OpenIdCredentialKey, salt: &Salt) -> Vec<u8> {
@@ -80,7 +77,9 @@ mod tests {
     #[test]
     fn deterministic_for_same_inputs() {
         let salt = salt(0x11);
-        let key = key("https://accounts.google.com", "abc123");
+        let iss = "https://accounts.google.com".to_string();
+        let sub = "abc123".to_string();
+        let key = key(&iss, &sub);
         let client_id = "client-123";
 
         let a = calculate_seed(client_id, &key, &Some(salt)).expect("ok");
@@ -91,7 +90,9 @@ mod tests {
     #[test]
     fn matches_manual_blob_hash() {
         let salt = salt(0x42);
-        let key = key("https://accounts.google.com", "user-sub-001");
+        let iss = "https://accounts.google.com".to_string();
+        let sub = "user-sub-001".to_string();
+        let key = key(&iss, &sub);
         let client_id = "my-client";
 
         let expected = sha256(&build_blob(client_id, &key, &salt));
@@ -106,7 +107,9 @@ mod tests {
     #[test]
     fn changes_when_client_id_changes() {
         let salt = salt(0x7A);
-        let key = key("https://accounts.google.com", "abc123");
+        let iss = "https://accounts.google.com".to_string();
+        let sub = "abc123".to_string();
+        let key = key(&iss, &sub);
 
         let a = calculate_seed("client-a", &key, &Some(salt)).unwrap();
         let b = calculate_seed("client-b", &key, &Some(salt)).unwrap();
@@ -116,8 +119,12 @@ mod tests {
     #[test]
     fn changes_when_iss_changes() {
         let salt = salt(0x7A);
-        let a_key = key("https://accounts.google.com", "abc123");
-        let b_key = key("https://issuer.example", "abc123");
+        let iss_a = "https://accounts.google.com".to_string();
+        let iss_b = "https://issuer.example".to_string();
+        let sub = "abc123".to_string();
+
+        let a_key = key(&iss_a, &sub);
+        let b_key = key(&iss_b, &sub);
 
         let cid = "client";
         let a = calculate_seed(cid, &a_key, &Some(salt)).unwrap();
@@ -128,8 +135,12 @@ mod tests {
     #[test]
     fn changes_when_sub_changes() {
         let salt = salt(0x7A);
-        let a_key = key("https://accounts.google.com", "sub-a");
-        let b_key = key("https://accounts.google.com", "sub-b");
+        let iss = "https://accounts.google.com".to_string();
+        let sub_a = "sub-a".to_string();
+        let sub_b = "sub-b".to_string();
+
+        let a_key = key(&iss, &sub_a);
+        let b_key = key(&iss, &sub_b);
 
         let cid = "client";
         let a = calculate_seed(cid, &a_key, &Some(salt)).unwrap();
@@ -139,7 +150,9 @@ mod tests {
 
     #[test]
     fn changes_when_salt_changes() {
-        let key = key("https://accounts.google.com", "abc123");
+        let iss = "https://accounts.google.com".to_string();
+        let sub = "abc123".to_string();
+        let key = key(&iss, &sub);
         let cid = "client";
 
         let a = calculate_seed(cid, &key, &Some(salt(0x00))).unwrap();
@@ -149,7 +162,10 @@ mod tests {
 
     #[test]
     fn errors_when_no_salt() {
-        let key = key("https://accounts.google.com", "abc123");
+        let iss = "https://accounts.google.com".to_string();
+        let sub = "abc123".to_string();
+        let key = key(&iss, &sub);
+
         let err = calculate_seed("client", &key, &None).unwrap_err();
         assert!(
             err.contains("The salt has not been initialized"),

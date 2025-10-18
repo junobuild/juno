@@ -2,16 +2,23 @@
 	import IconFilter from '$lib/components/icons/IconFilter.svelte';
 	import PopoverApply from '$lib/components/ui/PopoverApply.svelte';
 	import { i18n } from '$lib/stores/i18n.store';
-	import { listParamsStore } from '$lib/stores/list-params.store';
+	import type { ListParamsStore } from '$lib/stores/list-params.store';
 
 	interface Props {
+		listParamsStore: ListParamsStore;
 		matcherFilter?: boolean;
 		ownerFilter?: boolean;
 		direction?: 'rtl' | 'ltr';
 		key?: { label: string; placeholder: string };
 	}
 
-	let { matcherFilter = true, ownerFilter = true, direction, key }: Props = $props();
+	let {
+		listParamsStore,
+		matcherFilter = true,
+		ownerFilter = true,
+		direction,
+		key
+	}: Props = $props();
 
 	let matcher = $state($listParamsStore.filter.matcher ?? '');
 	let owner = $state($listParamsStore.filter.owner ?? '');

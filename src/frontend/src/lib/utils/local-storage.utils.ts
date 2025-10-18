@@ -3,7 +3,7 @@ import { DEFAULT_ANALYTICS_PERIODICITY } from '$lib/constants/analytics.constant
 import { DEFAULT_LIST_PARAMS, DEFAULT_LIST_RULES_PARAMS } from '$lib/constants/data.constants';
 import { DEFAULT_NOTIFICATION_PREFERENCES } from '$lib/constants/notification.constants';
 import { NotificationPreferencesSchema } from '$lib/schemas/notification.schema';
-import type { ListParamsStoreData } from '$lib/stores/list-params.store';
+import type { ListParamsStoreData, StoreContainers } from '$lib/stores/list-params.store';
 import type { Languages } from '$lib/types/languages';
 import { SatellitesLayout } from '$lib/types/layout';
 import type { LayoutMenuState } from '$lib/types/layout-menu';
@@ -44,11 +44,11 @@ export const getLocalStorageLang = (): Languages => {
 	}
 };
 
-export const getLocalListParams = (): ListParamsStoreData => {
+export const getLocalListParams = (key: StoreContainers): ListParamsStoreData => {
 	try {
-		const { list_params }: Storage = browser
+		const { [`list_params_${key}`]: list_params }: Storage = browser
 			? localStorage
-			: ({ list_params: JSON.stringify(DEFAULT_LIST_PARAMS) } as unknown as Storage);
+			: ({ [`list_params_${key}`]: JSON.stringify(DEFAULT_LIST_PARAMS) } as unknown as Storage);
 
 		return nonNullish(list_params) ? JSON.parse(list_params) : DEFAULT_LIST_PARAMS;
 	} catch (err: unknown) {

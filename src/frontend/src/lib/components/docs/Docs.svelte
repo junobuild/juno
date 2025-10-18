@@ -14,7 +14,7 @@
 	import Html from '$lib/components/ui/Html.svelte';
 	import { authStore } from '$lib/stores/auth.store';
 	import { i18n } from '$lib/stores/i18n.store';
-	import { listParamsStore } from '$lib/stores/list-params.store';
+	import { getListParamsStore, StoreContainers } from '$lib/stores/list-params.store';
 	import { versionStore } from '$lib/stores/version.store';
 	import { DATA_CONTEXT_KEY, type DataContext } from '$lib/types/data.context';
 	import { PAGINATION_CONTEXT_KEY, type PaginationContext } from '$lib/types/pagination.context';
@@ -23,6 +23,7 @@
 	import { i18nFormat } from '$lib/utils/i18n.utils';
 
 	const { store, hasAnyRules }: RulesContext = getContext<RulesContext>(RULES_CONTEXT_KEY);
+	const listParamsStore = getListParamsStore(StoreContainers.DOCS);
 
 	let collection = $derived($store.rule?.[0]);
 
@@ -72,7 +73,7 @@
 </script>
 
 <div class="title">
-	<DataCollectionHeader>
+	<DataCollectionHeader {listParamsStore}>
 		{$i18n.datastore.documents}
 
 		{#snippet actions()}
@@ -128,7 +129,7 @@
 		{#if nonNullish($paginationStore.items)}
 			<div in:fade>
 				{#if empty}
-					<CollectionEmpty {collection} rule={$store.rule?.[1]}>
+					<CollectionEmpty {collection} {listParamsStore} rule={$store.rule?.[1]}>
 						{#snippet filter()}
 							{$i18n.document.no_match}
 						{/snippet}

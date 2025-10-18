@@ -14,7 +14,7 @@
 	import Html from '$lib/components/ui/Html.svelte';
 	import { authStore } from '$lib/stores/auth.store';
 	import { i18n } from '$lib/stores/i18n.store';
-	import { listParamsStore } from '$lib/stores/list-params.store';
+	import type { ListParamsStore } from '$lib/stores/list-params.store';
 	import { versionStore } from '$lib/stores/version.store';
 	import { type DataContext, DATA_CONTEXT_KEY } from '$lib/types/data.context';
 	import { type PaginationContext, PAGINATION_CONTEXT_KEY } from '$lib/types/pagination.context';
@@ -24,9 +24,10 @@
 
 	interface Props {
 		includeSysCollections: boolean;
+		listParamsStore: ListParamsStore;
 	}
 
-	let { includeSysCollections }: Props = $props();
+	let { includeSysCollections, listParamsStore }: Props = $props();
 
 	const { store, hasAnyRules }: RulesContext = getContext<RulesContext>(RULES_CONTEXT_KEY);
 
@@ -83,7 +84,7 @@
 </script>
 
 <div class="title">
-	<DataCollectionHeader>
+	<DataCollectionHeader {listParamsStore}>
 		{$i18n.storage.assets}
 
 		{#snippet actions()}
@@ -154,7 +155,7 @@
 				{/if}
 
 				{#if empty}
-					<CollectionEmpty {collection} rule={$store.rule?.[1]}>
+					<CollectionEmpty {collection} {listParamsStore} rule={$store.rule?.[1]}>
 						{#snippet filter()}
 							{$i18n.asset.no_match}
 						{/snippet}

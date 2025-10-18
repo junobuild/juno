@@ -13,7 +13,7 @@
 	import DataCount from '$lib/components/data/DataCount.svelte';
 	import { SATELLITE_v0_0_10, SATELLITE_v0_0_9 } from '$lib/constants/version.constants';
 	import { authStore } from '$lib/stores/auth.store';
-	import { listParamsStore } from '$lib/stores/list-params.store';
+	import { getListParamsStore, StoreContainers } from '$lib/stores/list-params.store';
 	import { initPaginationContext } from '$lib/stores/pagination.context.store';
 	import { toasts } from '$lib/stores/toasts.store';
 	import { versionStore } from '$lib/stores/version.store';
@@ -25,6 +25,7 @@
 	const assetsStore = writable<DataStoreData<SatelliteDid.AssetNoContent>>(undefined);
 
 	const resetData = () => assetsStore.set(null);
+	const listParamsStore = getListParamsStore(StoreContainers.STORAGE);
 
 	setContext<DataContext<SatelliteDid.AssetNoContent>>(DATA_CONTEXT_KEY, {
 		store: assetsStore,
@@ -92,7 +93,7 @@
 </script>
 
 <Data displayEmpty={!includeSysCollections} onclose={resetData}>
-	<Assets {includeSysCollections} />
+	<Assets {includeSysCollections} {listParamsStore} />
 
 	<Asset />
 

@@ -2,8 +2,14 @@
 	import IconSort from '$lib/components/icons/IconSort.svelte';
 	import PopoverApply from '$lib/components/ui/PopoverApply.svelte';
 	import { i18n } from '$lib/stores/i18n.store';
-	import { listParamsStore } from '$lib/stores/list-params.store';
+	import type { ListParamsStore } from '$lib/stores/list-params.store';
 	import type { ListOrderField } from '$lib/types/list';
+
+	interface Props {
+		listParamsStore: ListParamsStore;
+	}
+
+	let { listParamsStore }: Props = $props();
 
 	let desc = $state($listParamsStore.order.desc);
 	let field: ListOrderField = $state($listParamsStore.order.field);

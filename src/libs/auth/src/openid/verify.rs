@@ -11,7 +11,7 @@ pub fn verify_openid_credentials(
     providers: &OpenIdProviders,
 ) -> Result<(OpenIdProviderClientId, OpenIdCredential), VerifyOpenidCredentialsError> {
     let (provider, config) = unsafe_find_jwt_provider(providers, jwt)
-        .map_err(|e| VerifyOpenidCredentialsError::JwtFindProvider(e))?;
+        .map_err(VerifyOpenidCredentialsError::JwtFindProvider)?;
 
     // TODO:
     let jwks: Jwks = serde_json::from_str(GOOGLE_JWKS)
@@ -21,12 +21,12 @@ pub fn verify_openid_credentials(
 
     let token = verify_openid_jwt(
         jwt,
-        &provider.issuers(),
+        provider.issuers(),
         &config.client_id,
         &jwks.keys,
         &nonce,
     )
-    .map_err(|e| VerifyOpenidCredentialsError::JwtVerify(e))?;
+    .map_err(VerifyOpenidCredentialsError::JwtVerify)?;
 
     Ok((config.client_id.clone(), OpenIdCredential::from(token)))
 }

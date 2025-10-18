@@ -41,7 +41,7 @@ impl AuthenticationConfig {
     pub fn openid_enabled(&self) -> bool {
         self.openid
             .as_ref()
-            .map_or(false, |openid| !openid.providers.is_empty())
+            .is_some_and(|openid| !openid.providers.is_empty())
     }
 }
 

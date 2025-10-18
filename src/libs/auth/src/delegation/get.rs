@@ -38,13 +38,13 @@ pub fn get_delegation(
     certificate: &impl AuthCertificateStrategy,
 ) -> GetDelegationResult {
     let seed = calculate_seed(client_id, key, &get_salt(auth_heap))
-        .map_err(|e| GetDelegationError::DeriveSeedFailed(e))?;
+        .map_err(GetDelegationError::DeriveSeedFailed)?;
 
     read_state(|state| {
         let inputs = CanisterSigInputs {
             domain: DELEGATION_SIG_DOMAIN,
             seed: &seed,
-            message: &delegation_signature_msg(&session_key, expiration.clone(), None),
+            message: &delegation_signature_msg(session_key, *expiration, None),
         };
 
         let certified_assets_root_hash = certificate.get_asset_hashes_root_hash();
@@ -57,7 +57,7 @@ pub fn get_delegation(
             Ok(signature) => Ok(SignedDelegation {
                 delegation: Delegation {
                     pubkey: session_key.clone(),
-                    expiration: expiration.clone(),
+                    expiration: *expiration,
                     targets: None,
                 },
                 signature: ByteBuf::from(signature),

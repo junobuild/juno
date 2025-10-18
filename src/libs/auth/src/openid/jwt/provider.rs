@@ -26,7 +26,7 @@ pub fn unsafe_find_jwt_provider<'a>(
     if let Some(iss) = token_data.claims.iss.as_deref() {
         if let Some((prov, cfg)) = providers
             .iter()
-            .find(|(provider, _)| provider.issuers().iter().any(|&known_iss| known_iss == iss))
+            .find(|(provider, _)| provider.issuers().contains(&iss))
         {
             return Ok((prov.clone(), cfg));
         }

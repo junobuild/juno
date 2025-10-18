@@ -11,10 +11,10 @@ use junobuild_auth::{delegation, openid};
 pub fn openid_prepare_delegation(
     args: &OpenIdPrepareDelegationArgs,
 ) -> Result<PrepareDelegationResult, String> {
-    let config = get_config().ok_or_else(|| "No authentication configuration found.")?;
+    let config = get_config().ok_or("No authentication configuration found.")?;
     let openid = config
         .openid
-        .ok_or_else(|| "Authentication with OpenId disabled.")?;
+        .ok_or("Authentication with OpenId disabled.")?;
 
     let (client_id, credential) =
         match openid::verify_openid_credentials(&args.jwt, &args.salt, &openid.providers) {
@@ -38,10 +38,10 @@ pub fn openid_prepare_delegation(
 pub fn openid_get_delegation(
     args: &OpenIdGetDelegationArgs,
 ) -> Result<GetDelegationResult, String> {
-    let config = get_config().ok_or_else(|| "No authentication configuration found.")?;
+    let config = get_config().ok_or("No authentication configuration found.")?;
     let openid = config
         .openid
-        .ok_or_else(|| "Authentication with OpenId disabled.")?;
+        .ok_or("Authentication with OpenId disabled.")?;
 
     let (client_id, credential) =
         match openid::verify_openid_credentials(&args.jwt, &args.salt, &openid.providers) {

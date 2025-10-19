@@ -46,7 +46,7 @@ impl AuthenticationConfig {
 }
 
 impl OpenIdProvider {
-    pub fn issuers(&self) -> &[&str] {
+    pub fn issuers(&self) -> &[&'static str] {
         match self {
             OpenIdProvider::Google => &["https://accounts.google.com", "accounts.google.com"],
         }

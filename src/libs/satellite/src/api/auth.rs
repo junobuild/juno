@@ -7,7 +7,9 @@ pub fn authenticate_user(args: &AuthenticateUserArgs) -> AuthenticateUserResult 
     match args {
         AuthenticateUserArgs::OpenId(args) => {
             let delegation = openid_prepare_delegation(args).unwrap_or_trap();
-            AuthenticateUserResult { delegation }
+            AuthenticateUserResult {
+                delegation: delegation.into(),
+            }
         }
     }
 }

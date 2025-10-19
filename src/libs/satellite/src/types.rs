@@ -59,7 +59,8 @@ pub mod interface {
     use crate::db::types::config::DbConfig;
     use candid::CandidType;
     use junobuild_auth::delegation::types::{
-        OpenIdGetDelegationArgs, OpenIdPrepareDelegationArgs, PrepareDelegationResult,
+        GetDelegationError, OpenIdGetDelegationArgs, OpenIdPrepareDelegationArgs,
+        PrepareDelegationError, SignedDelegation, UserKeyTimestamp,
     };
     use junobuild_auth::state::types::config::AuthenticationConfig;
     use junobuild_cdn::proposals::ProposalId;
@@ -85,12 +86,27 @@ pub mod interface {
 
     #[derive(CandidType, Serialize, Deserialize)]
     pub struct AuthenticateUserResult {
-        pub delegation: PrepareDelegationResult,
+        pub delegation: PrepareDelegationResultData,
     }
 
     #[derive(CandidType, Serialize, Deserialize)]
     pub enum GetDelegationArgs {
         OpenId(OpenIdGetDelegationArgs),
+    }
+
+    // We need custom types for Result to avoid
+    // clashes with didc when developers
+    // include_satellite and use Result as well.
+    #[derive(CandidType, Serialize, Deserialize)]
+    pub enum PrepareDelegationResultData {
+        Ok(UserKeyTimestamp),
+        Err(PrepareDelegationError),
+    }
+
+    #[derive(CandidType, Serialize, Deserialize)]
+    pub enum GetDelegationResultResponse {
+        Ok(SignedDelegation),
+        Err(GetDelegationError),
     }
 }
 

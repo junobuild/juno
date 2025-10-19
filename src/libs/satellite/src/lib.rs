@@ -24,10 +24,10 @@ use crate::guards::{
 };
 use crate::types::interface::{
     AuthenticateUserArgs, AuthenticateUserResult, Config, DeleteProposalAssets, GetDelegationArgs,
+    GetDelegationResultResponse,
 };
 use crate::types::state::CollectionType;
 use ic_cdk_macros::{init, post_upgrade, pre_upgrade, query, update};
-use junobuild_auth::delegation::types::GetDelegationResult;
 use junobuild_auth::state::types::config::AuthenticationConfig;
 use junobuild_cdn::proposals::{
     CommitProposal, ListProposalResults, ListProposalsParams, Proposal, ProposalId, ProposalType,
@@ -172,8 +172,8 @@ pub fn authenticate_user(args: AuthenticateUserArgs) -> AuthenticateUserResult {
 
 #[doc(hidden)]
 #[query]
-pub fn get_delegation(args: GetDelegationArgs) -> GetDelegationResult {
-    api::auth::get_delegation(&args)
+pub fn get_delegation(args: GetDelegationArgs) -> GetDelegationResultResponse {
+    api::auth::get_delegation(&args).into()
 }
 
 // ---------------------------------------------------------

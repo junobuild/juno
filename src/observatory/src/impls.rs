@@ -4,7 +4,9 @@ use crate::templates::{
     FAILED_DEPOSIT_CYCLES_TXT,
 };
 use crate::types::interface::NotifyStatus;
-use crate::types::state::{HeapState, Notification, NotificationKey, NotificationStatus, OpenIdProvider, State};
+use crate::types::state::{
+    HeapState, Notification, NotificationKey, NotificationStatus, OpenIdProvider, State,
+};
 use ic_cdk::api::time;
 use ic_stable_structures::storable::Bound;
 use ic_stable_structures::Storable;

@@ -1,5 +1,4 @@
 pub mod state {
-    use std::collections::HashMap;
     use crate::memory::manager::init_stable_state;
     use candid::{CandidType, Deserialize};
     use ic_stable_structures::StableBTreeMap;
@@ -8,6 +7,7 @@ pub mod state {
         Controllers, NotificationKind, Segment, SegmentId, Timestamp,
     };
     use serde::Serialize;
+    use std::collections::HashMap;
 
     pub type NotificationsStable = StableBTreeMap<NotificationKey, Notification, Memory>;
 
@@ -28,7 +28,7 @@ pub mod state {
     pub struct HeapState {
         pub controllers: Controllers,
         pub env: Option<Env>,
-        pub certificates: Option<Certificates>
+        pub certificates: Option<Certificates>,
     }
 
     #[derive(CandidType, Serialize, Deserialize, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
@@ -64,7 +64,7 @@ pub mod state {
 
     #[derive(CandidType, Serialize, Deserialize)]
     pub struct Certificates {
-        pub openid: HashMap<OpenIdProvider, OpenIdCertificate>
+        pub openid: HashMap<OpenIdProvider, OpenIdCertificate>,
     }
 
     #[derive(CandidType, Serialize, Deserialize)]

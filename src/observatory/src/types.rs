@@ -1,4 +1,5 @@
 pub mod state {
+    use std::collections::HashMap;
     use crate::memory::manager::init_stable_state;
     use candid::{CandidType, Deserialize};
     use ic_stable_structures::StableBTreeMap;
@@ -23,10 +24,11 @@ pub mod state {
         pub notifications: NotificationsStable,
     }
 
-    #[derive(Default, CandidType, Serialize, Deserialize, Clone)]
+    #[derive(Default, CandidType, Serialize, Deserialize)]
     pub struct HeapState {
         pub controllers: Controllers,
         pub env: Option<Env>,
+        pub certificates: Option<Certificates>
     }
 
     #[derive(CandidType, Serialize, Deserialize, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
@@ -58,6 +60,30 @@ pub mod state {
     #[derive(CandidType, Serialize, Deserialize, Clone)]
     pub struct Env {
         pub email_api_key: Option<ApiKey>,
+    }
+
+    #[derive(CandidType, Serialize, Deserialize)]
+    pub struct Certificates {
+        pub openid: HashMap<OpenIdProvider, OpenIdCertificate>
+    }
+
+    #[derive(CandidType, Serialize, Deserialize)]
+    pub enum OpenIdProvider {
+        Google,
+    }
+
+    #[derive(CandidType, Serialize, Deserialize)]
+    pub struct OpenIdCertificate {
+        /// Raw JWKS JSON as fetched from the provider endpoint.
+        pub raw_json_value: String,
+
+        // This JWKS might no longer be valid after this timestamp.
+        // e.g. when fetching the Google certificate, the date is derived
+        // from the HTTP response header "expires".
+        pub expires_at: Timestamp,
+
+        pub created_at: Timestamp,
+        pub updated_at: Timestamp,
     }
 }
 

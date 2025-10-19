@@ -6,6 +6,38 @@ export const idlFactory = ({ IDL }) => {
 		controllers: IDL.Vec(IDL.Principal),
 		storage: IDL.Opt(InitStorageArgs)
 	});
+	const OpenIdPrepareDelegationArgs = IDL.Record({
+		jwt: IDL.Text,
+		session_key: IDL.Vec(IDL.Nat8),
+		salt: IDL.Vec(IDL.Nat8)
+	});
+	const AuthenticateUserArgs = IDL.Variant({
+		OpenId: OpenIdPrepareDelegationArgs
+	});
+	const JwtFindProviderError = IDL.Variant({
+		BadClaim: IDL.Text,
+		BadSig: IDL.Text,
+		NoMatchingProvider: IDL.Null
+	});
+	const JwtVerifyError = IDL.Variant({
+		MissingKid: IDL.Null,
+		BadClaim: IDL.Text,
+		BadSig: IDL.Text,
+		NoKeyForKid: IDL.Null
+	});
+	const PrepareDelegationError = IDL.Variant({
+		JwtFindProvider: JwtFindProviderError,
+		ParseJwksFailed: IDL.Text,
+		JwtVerify: JwtVerifyError,
+		DeriveSeedFailed: IDL.Text
+	});
+	const PrepareDelegationResultData = IDL.Variant({
+		Ok: IDL.Tuple(IDL.Vec(IDL.Nat8), IDL.Nat64),
+		Err: PrepareDelegationError
+	});
+	const AuthenticateUserResult = IDL.Record({
+		delegation: PrepareDelegationResultData
+	});
 	const CommitBatch = IDL.Record({
 		batch_id: IDL.Nat,
 		headers: IDL.Vec(IDL.Tuple(IDL.Text, IDL.Text)),
@@ -147,6 +179,33 @@ export const idlFactory = ({ IDL }) => {
 		db: IDL.Opt(DbConfig),
 		authentication: IDL.Opt(AuthenticationConfig),
 		storage: StorageConfig
+	});
+	const OpenIdGetDelegationArgs = IDL.Record({
+		jwt: IDL.Text,
+		session_key: IDL.Vec(IDL.Nat8),
+		salt: IDL.Vec(IDL.Nat8),
+		expiration: IDL.Nat64
+	});
+	const GetDelegationArgs = IDL.Variant({ OpenId: OpenIdGetDelegationArgs });
+	const Delegation = IDL.Record({
+		pubkey: IDL.Vec(IDL.Nat8),
+		targets: IDL.Opt(IDL.Vec(IDL.Principal)),
+		expiration: IDL.Nat64
+	});
+	const SignedDelegation = IDL.Record({
+		signature: IDL.Vec(IDL.Nat8),
+		delegation: Delegation
+	});
+	const GetDelegationError = IDL.Variant({
+		JwtFindProvider: JwtFindProviderError,
+		ParseJwksFailed: IDL.Text,
+		NoSuchDelegation: IDL.Null,
+		JwtVerify: JwtVerifyError,
+		DeriveSeedFailed: IDL.Text
+	});
+	const GetDelegationResultResponse = IDL.Variant({
+		Ok: SignedDelegation,
+		Err: GetDelegationError
 	});
 	const Doc = IDL.Record({
 		updated_at: IDL.Nat64,
@@ -344,6 +403,7 @@ export const idlFactory = ({ IDL }) => {
 	});
 	const UploadChunkResult = IDL.Record({ chunk_id: IDL.Nat });
 	return IDL.Service({
+		authenticate_user: IDL.Func([AuthenticateUserArgs], [AuthenticateUserResult], []),
 		commit_asset_upload: IDL.Func([CommitBatch], [], []),
 		commit_proposal: IDL.Func([CommitProposal], [IDL.Null], []),
 		commit_proposal_asset_upload: IDL.Func([CommitBatch], [], []),
@@ -374,6 +434,7 @@ export const idlFactory = ({ IDL }) => {
 		get_auth_config: IDL.Func([], [IDL.Opt(AuthenticationConfig)], ['query']),
 		get_config: IDL.Func([], [Config], []),
 		get_db_config: IDL.Func([], [IDL.Opt(DbConfig)], ['query']),
+		get_delegation: IDL.Func([GetDelegationArgs], [GetDelegationResultResponse], ['query']),
 		get_doc: IDL.Func([IDL.Text, IDL.Text], [IDL.Opt(Doc)], ['query']),
 		get_many_assets: IDL.Func(
 			[IDL.Vec(IDL.Tuple(IDL.Text, IDL.Text))],

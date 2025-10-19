@@ -1,7 +1,7 @@
-use ic_cdk::api::management_canister::http_request::{HttpResponse, TransformArgs};
+use ic_cdk::management_canister::{HttpRequestResult, TransformArgs};
 
-pub fn transform_response(raw: TransformArgs) -> HttpResponse {
-    HttpResponse {
+pub fn transform_response(raw: TransformArgs) -> HttpRequestResult {
+    HttpRequestResult {
         status: raw.response.status.clone(),
         body: raw.response.body.clone(),
         headers: vec![],

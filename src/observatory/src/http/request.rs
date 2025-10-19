@@ -1,12 +1,10 @@
 use crate::http::constants::SEND_EMAIL_CYCLES;
 use crate::http::types::EmailRequestBody;
 use crate::types::state::ApiKey;
-use ic_cdk::api::management_canister::http_request::{
+use ic_cdk::management_canister::{
     http_request as http_request_outcall, TransformContext, TransformFunc,
 };
-use ic_cdk::api::management_canister::http_request::{
-    CanisterHttpRequestArgument, HttpHeader, HttpMethod,
-};
+use ic_cdk::management_canister::{HttpHeader, HttpMethod, HttpRequestArgs};
 use junobuild_shared::ic::api::id;
 use serde_json::json;
 
@@ -53,7 +51,7 @@ fn get_email_request(
 
     let body_json = serde_json::to_string(&body).map_err(|e| e.to_string())?;
 
-    Ok(CanisterHttpRequestArgument {
+    Ok(HttpRequestArgs {
         url: email_notifications_url.to_string(),
         method: HttpMethod::POST,
         body: Some(body_json.as_bytes().to_vec()),

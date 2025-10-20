@@ -1,4 +1,4 @@
-use crate::openid::jwt::types::{JwtFindProviderError, JwtVerifyError};
+use crate::openid::jwt::types::errors::{JwtFindProviderError, JwtVerifyError};
 use candid::{CandidType, Deserialize};
 use serde::Serialize;
 

@@ -1,7 +1,7 @@
 mod impls;
 pub mod jwt;
-pub mod types;
+pub(crate) mod types;
 mod utils;
 mod verify;
 
-pub use verify::*;
+pub(crate) use verify::*;

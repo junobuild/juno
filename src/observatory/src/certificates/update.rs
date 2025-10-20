@@ -1,7 +1,7 @@
 use crate::certificates::constants::FETCH_CERTIFICATE_INTERVAL;
 use crate::certificates::http::request::get_certificate;
-use crate::memory::state::services::with_certificates_mut;
-use crate::types::state::{Certificates, OpenIdCertificate, OpenIdProvider};
+use crate::memory::state::services::with_openid_mut;
+use crate::types::state::{OpenId, OpenIdCertificate, OpenIdProvider};
 use ic_cdk::futures::spawn;
 use ic_cdk_timers::set_timer;
 use junobuild_auth::openid::jwt::types::cert::Jwks;
@@ -10,7 +10,7 @@ use std::cmp::min;
 use std::collections::HashMap;
 use std::time::Duration;
 
-fn schedule_certificate_update(provider: OpenIdProvider, delay: Option<u64>) {
+pub fn schedule_certificate_update(provider: OpenIdProvider, delay: Option<u64>) {
     set_timer(Duration::from_secs(delay.unwrap_or(0)), move || {
         spawn(async move {
             let result = fetch_and_save_certificate(&provider).await;
@@ -33,13 +33,13 @@ async fn fetch_and_save_certificate(provider: &OpenIdProvider) -> Result<(), Str
 
     let jwks = from_slice::<Jwks>(&raw_json_value).map_err(|e| e.to_string())?;
 
-    with_certificates_mut(|state_certificates| {
-        let certificates = state_certificates.get_or_insert_with(|| Certificates {
-            openid: HashMap::new(),
+    with_openid_mut(|state_certificates| {
+        let certificates = state_certificates.get_or_insert_with(|| OpenId {
+            certificates: HashMap::new(),
         });
 
         certificates
-            .openid
+            .certificates
             .entry(provider.clone())
             .and_modify(|c| *c = OpenIdCertificate::update(c, &jwks))
             .or_insert_with(|| OpenIdCertificate::init(&jwks));

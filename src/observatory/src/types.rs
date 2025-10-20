@@ -29,7 +29,7 @@ pub mod state {
     pub struct HeapState {
         pub controllers: Controllers,
         pub env: Option<Env>,
-        pub certificates: Option<Certificates>,
+        pub openid: Option<OpenId>,
     }
 
     #[derive(CandidType, Serialize, Deserialize, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
@@ -63,9 +63,15 @@ pub mod state {
         pub email_api_key: Option<ApiKey>,
     }
 
-    #[derive(CandidType, Serialize, Deserialize)]
-    pub struct Certificates {
-        pub openid: HashMap<OpenIdProvider, OpenIdCertificate>,
+    #[derive(Default, CandidType, Serialize, Deserialize)]
+    pub struct OpenId {
+        pub certificates: HashMap<OpenIdProvider, OpenIdCertificate>,
+        pub schedulers: HashMap<OpenIdProvider, OpenIdScheduler>,
+    }
+
+    #[derive(CandidType, Serialize, Deserialize, Clone, Default)]
+    pub struct OpenIdScheduler {
+        pub enabled: bool,
     }
 
     #[derive(CandidType, Serialize, Deserialize, Clone, Hash, Eq, PartialEq)]

@@ -2,6 +2,8 @@ pub mod state {
     use crate::memory::manager::init_stable_state;
     use candid::{CandidType, Deserialize};
     use ic_stable_structures::StableBTreeMap;
+    use junobuild_auth::cert::Jwks;
+    use junobuild_auth::openid::jwt::types::cert::Jwks;
     use junobuild_shared::types::memory::Memory;
     use junobuild_shared::types::state::{
         Controllers, NotificationKind, Segment, SegmentId, Timestamp,
@@ -74,8 +76,7 @@ pub mod state {
 
     #[derive(CandidType, Serialize, Deserialize)]
     pub struct OpenIdCertificate {
-        /// Raw JWKS JSON as fetched from the provider endpoint.
-        pub raw_json_value: String,
+        pub jwks: Jwks,
 
         // This JWKS might no longer be valid after this timestamp.
         // e.g. when fetching the Google certificate, the date is derived

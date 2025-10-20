@@ -1504,6 +1504,7 @@ dependencies = [
  "ic-cdk-macros",
  "ic-cdk-timers",
  "ic-stable-structures 0.7.0",
+ "junobuild-auth",
  "junobuild-shared",
  "rand 0.9.2",
  "serde",

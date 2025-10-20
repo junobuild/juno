@@ -50,7 +50,7 @@ fn param_transform() -> Option<TransformContext> {
     Some(TransformContext {
         function: TransformFunc(candid::Func {
             principal: id(),
-            method: "transform_openid_certificate".to_string(),
+            method: "transform_certificate_response".to_string(),
         }),
         context: vec![],
     })

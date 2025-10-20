@@ -1,2 +1,2 @@
 mod certificate;
-mod http;
+pub mod http;

@@ -11,6 +11,10 @@ pub fn with_controllers<R>(f: impl FnOnce(&Controllers) -> R) -> R {
     read_heap_state(|heap| f(&heap.controllers))
 }
 
+pub fn with_openid<R>(f: impl FnOnce(&Option<OpenId>) -> R) -> R {
+    read_heap_state(|heap| f(&heap.openid))
+}
+
 pub fn with_openid_mut<R>(f: impl FnOnce(&mut Option<OpenId>) -> R) -> R {
     mutate_heap_state(|heap| f(&mut heap.openid))
 }

@@ -1,4 +1,4 @@
-use crate::memory::state::services::with_openid_mut;
+use crate::memory::state::services::{with_openid, with_openid_mut};
 use crate::openid::constants::FETCH_CERTIFICATE_INTERVAL;
 use crate::openid::http::request::get_certificate;
 use crate::types::state::{OpenId, OpenIdCertificate, OpenIdProvider};
@@ -7,10 +7,13 @@ use ic_cdk_timers::set_timer;
 use junobuild_auth::openid::jwt::types::cert::Jwks;
 use serde_json::from_slice;
 use std::cmp::min;
-use std::collections::HashMap;
 use std::time::Duration;
 
 pub fn schedule_certificate_update(provider: OpenIdProvider, delay: Option<u64>) {
+    if !scheduler_enabled(&provider) {
+        return;
+    }
+
     set_timer(Duration::from_secs(delay.unwrap_or(0)), move || {
         spawn(async move {
             let result = fetch_and_save_certificate(&provider).await;
@@ -28,17 +31,25 @@ pub fn schedule_certificate_update(provider: OpenIdProvider, delay: Option<u64>)
     });
 }
 
+fn scheduler_enabled(provider: &OpenIdProvider) -> bool {
+    with_openid(|openid| {
+        openid
+            .as_ref()
+            .and_then(|openid| openid.schedulers.get(&provider))
+            .map(|scheduler| scheduler.enabled)
+            .unwrap_or(true)
+    })
+}
+
 async fn fetch_and_save_certificate(provider: &OpenIdProvider) -> Result<(), String> {
     let raw_json_value = get_certificate(provider).await?;
 
     let jwks = from_slice::<Jwks>(&raw_json_value).map_err(|e| e.to_string())?;
 
-    with_openid_mut(|state_certificates| {
-        let certificates = state_certificates.get_or_insert_with(|| OpenId {
-            certificates: HashMap::new(),
-        });
+    with_openid_mut(|openid| {
+        let openid = openid.get_or_insert_with(OpenId::default);
 
-        certificates
+        openid
             .certificates
             .entry(provider.clone())
             .and_modify(|c| *c = OpenIdCertificate::update(c, &jwks))

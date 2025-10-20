@@ -1,3 +1,3 @@
-mod update;
-pub mod http;
 mod constants;
+pub mod http;
+mod update;

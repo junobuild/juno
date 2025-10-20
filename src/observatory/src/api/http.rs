@@ -9,6 +9,6 @@ fn transform(raw: TransformArgs) -> HttpRequestResult {
 }
 
 #[query(hidden = true)]
-fn transform_certificate_response(raw: TransformArgs) -> HttpResponse {
+fn transform_certificate_response(raw: TransformArgs) -> HttpRequestResult {
     transform_certificate(raw)
 }

@@ -1,4 +1,4 @@
-use crate::store::services::{mutate_heap_state, read_heap_state};
+use crate::memory::state::services::{mutate_heap_state, read_heap_state};
 use crate::types::state::{ApiKey, Env, HeapState};
 use junobuild_shared::controllers::{
     delete_controllers as delete_controllers_impl, set_controllers as set_controllers_impl,

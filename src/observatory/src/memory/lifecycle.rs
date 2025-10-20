@@ -1,4 +1,5 @@
-use crate::memory::manager::{get_memory_upgrades, init_runtime_state, init_stable_state, STATE};
+use crate::memory::manager::{get_memory_upgrades, init_runtime_state, init_stable_state};
+use crate::memory::state::STATE;
 use crate::random::defer_init_random_seed;
 use crate::types::state::{HeapState, State};
 use ciborium::{from_reader, into_writer};

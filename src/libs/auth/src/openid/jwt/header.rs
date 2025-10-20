@@ -1,4 +1,4 @@
-use crate::openid::jwt::types::JwtHeaderError;
+use crate::openid::jwt::types::errors::JwtHeaderError;
 use jsonwebtoken::{decode_header, Algorithm, Header};
 
 pub fn decode_jwt_header(jwt: &str) -> Result<Header, JwtHeaderError> {
@@ -21,7 +21,7 @@ pub fn decode_jwt_header(jwt: &str) -> Result<Header, JwtHeaderError> {
 #[cfg(test)]
 mod tests {
     use super::decode_jwt_header;
-    use crate::openid::jwt::types::JwtHeaderError;
+    use crate::openid::jwt::types::errors::JwtHeaderError;
     use base64::engine::general_purpose::URL_SAFE_NO_PAD;
     use base64::Engine;
     use jsonwebtoken::Algorithm;

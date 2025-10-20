@@ -1,5 +1,5 @@
-use crate::certificates::update::schedule_certificate_update;
 use crate::memory::state::services::with_openid_mut;
+use crate::openid::certificate::schedule_certificate_update;
 use crate::types::state::{OpenId, OpenIdProvider, OpenIdScheduler};
 
 pub fn start_openid_scheduler() {

@@ -1,5 +1,5 @@
 pub mod delegation;
-mod openid;
+pub mod openid;
 mod random;
 pub mod state;
 pub mod strategies;

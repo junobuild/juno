@@ -1,4 +1,4 @@
-use crate::http::send::send_notification;
+use crate::notification::send::send_notification;
 use crate::store::stable::insert_notification;
 use crate::types::state::Notification;
 use ic_cdk::futures::spawn_017_compat;

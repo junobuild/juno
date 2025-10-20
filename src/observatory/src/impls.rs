@@ -1,4 +1,4 @@
-use crate::memory::manager::init_stable_state;
+use crate::memory::init_stable_state;
 use crate::templates::{
     DEPOSITED_CYCLES_HTML, DEPOSITED_CYCLES_TXT, FAILED_DEPOSIT_CYCLES_HTML,
     FAILED_DEPOSIT_CYCLES_TXT,

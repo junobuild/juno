@@ -1,7 +1,6 @@
-use crate::memory::manager::STATE;
+use crate::memory::state::services::with_controllers;
 use junobuild_shared::controllers::is_admin_controller as is_admin_controller_impl;
 use junobuild_shared::ic::api::caller;
-use junobuild_shared::types::state::Controllers;
 use junobuild_shared::utils::principal_not_anonymous;
 
 pub fn caller_is_admin_controller() -> Result<(), String> {
@@ -24,7 +23,6 @@ pub fn caller_is_not_anonymous() -> Result<(), String> {
 
 fn is_admin_controller() -> bool {
     let caller = caller();
-    let controllers: Controllers = STATE.with(|state| state.borrow().heap.controllers.clone());
 
-    is_admin_controller_impl(caller, &controllers)
+    with_controllers(|controllers| is_admin_controller_impl(caller, controllers))
 }

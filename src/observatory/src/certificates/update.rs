@@ -1,5 +1,5 @@
-use crate::certificate::constants::FETCH_CERTIFICATE_INTERVAL;
-use crate::certificate::http::request::get_certificate;
+use crate::certificates::constants::FETCH_CERTIFICATE_INTERVAL;
+use crate::certificates::http::request::get_certificate;
 use crate::memory::state::services::with_certificates_mut;
 use crate::types::state::{Certificates, OpenIdCertificate, OpenIdProvider};
 use ic_cdk::futures::spawn;

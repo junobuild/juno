@@ -1,4 +1,4 @@
-use crate::certificate::http::constants::FETCH_MAX_RESPONSE_BYTES;
+use crate::certificates::http::constants::FETCH_MAX_RESPONSE_BYTES;
 use crate::types::state::OpenIdProvider;
 use ic_cdk::management_canister::{
     http_request as http_request_outcall, HttpRequestArgs, TransformContext, TransformFunc,

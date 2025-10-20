@@ -1,4 +1,5 @@
-use crate::memory::manager::STATE;
+use crate::memory::state::{RUNTIME_STATE, STATE};
+use crate::types::runtime::RuntimeState;
 use crate::types::state::{HeapState, StableState, State};
 
 fn read_state<R>(f: impl FnOnce(&State) -> R) -> R {
@@ -7,6 +8,10 @@ fn read_state<R>(f: impl FnOnce(&State) -> R) -> R {
 
 fn mutate_state<R>(f: impl FnOnce(&mut State) -> R) -> R {
     STATE.with(|cell| f(&mut cell.borrow_mut()))
+}
+
+pub fn mutate_runtime_state<R>(f: impl FnOnce(&mut RuntimeState) -> R) -> R {
+    RUNTIME_STATE.with(|cell| f(&mut cell.borrow_mut()))
 }
 
 pub fn read_heap_state<R>(f: impl FnOnce(&HeapState) -> R) -> R {

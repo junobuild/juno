@@ -1,6 +1,6 @@
+use crate::memory::state::services::{mutate_stable_state, read_stable_state};
 use crate::random::random;
 use crate::store::filter::filter_notifications_range;
-use crate::store::services::{mutate_stable_state, read_stable_state};
 use crate::types::interface::GetNotifications;
 use crate::types::state::{Notification, NotificationKey, NotificationsStable};
 use ic_cdk::api::time;

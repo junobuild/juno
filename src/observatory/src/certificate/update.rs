@@ -10,10 +10,10 @@ use std::cmp::min;
 use std::collections::HashMap;
 use std::time::Duration;
 
-fn schedule_certificate_update(provider: &OpenIdProvider, delay: Option<u64>) {
-    set_timer(Duration::from_secs(delay.unwrap_or(0)), || {
-        spawn(async {
-            let result = fetch_and_save_certificate(provider).await;
+fn schedule_certificate_update(provider: OpenIdProvider, delay: Option<u64>) {
+    set_timer(Duration::from_secs(delay.unwrap_or(0)), move || {
+        spawn(async move {
+            let result = fetch_and_save_certificate(&provider).await;
 
             let next_delay = if result.is_ok() {
                 FETCH_CERTIFICATE_INTERVAL

@@ -1,8 +1,8 @@
 use crate::notification::http::response::transform_response;
-use ic_cdk::api::management_canister::http_request::{HttpResponse, TransformArgs};
+use ic_cdk::management_canister::{HttpRequestResult, TransformArgs};
 use ic_cdk_macros::query;
 
 #[query(hidden = true)]
-fn transform(raw: TransformArgs) -> HttpResponse {
+fn transform(raw: TransformArgs) -> HttpRequestResult {
     transform_response(raw)
 }

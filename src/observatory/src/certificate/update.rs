@@ -1,4 +1,4 @@
-use crate::certificates::http::request::get_certificate;
+use crate::certificate::http::request::get_certificate;
 use crate::memory::state::services::with_certificates_mut;
 use crate::types::state::{Certificates, OpenIdCertificate, OpenIdProvider};
 use junobuild_auth::openid::jwt::types::cert::Jwks;

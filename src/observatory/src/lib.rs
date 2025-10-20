@@ -1,7 +1,7 @@
 #![deny(clippy::disallowed_methods)]
 
 mod api;
-mod certificates;
+mod certificate;
 mod console;
 mod guards;
 mod impls;

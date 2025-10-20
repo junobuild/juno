@@ -1,4 +1,4 @@
-use crate::certificates::http::constants::FETCH_CERTIFICATE_CYCLES;
+use crate::certificate::http::constants::FETCH_CERTIFICATE_CYCLES;
 use crate::types::state::OpenIdProvider;
 use ic_cdk::api::management_canister::http_request::{
     http_request as http_request_outcall, TransformContext, TransformFunc,

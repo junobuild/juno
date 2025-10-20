@@ -3,10 +3,9 @@
 mod api;
 mod console;
 mod guards;
-mod http;
 mod impls;
 mod memory;
-mod notify;
+mod notification;
 mod random;
 mod store;
 mod templates;

@@ -1,6 +1,6 @@
 use crate::console::assert_mission_control_center;
 use crate::guards::{caller_is_admin_controller, caller_is_not_anonymous};
-use crate::notify::store_and_defer_notification;
+use crate::notification::notify::store_and_defer_notification;
 use crate::store::stable::get_notifications;
 use crate::types::interface::{GetNotifications, NotifyStatus};
 use ic_cdk_macros::{query, update};

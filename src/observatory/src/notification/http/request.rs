@@ -1,5 +1,5 @@
-use crate::http::constants::SEND_EMAIL_CYCLES;
-use crate::http::types::EmailRequestBody;
+use crate::notification::http::constants::SEND_EMAIL_CYCLES;
+use crate::notification::http::types::EmailRequestBody;
 use crate::types::state::ApiKey;
 use ic_cdk::api::management_canister::http_request::{
     http_request as http_request_outcall, TransformContext, TransformFunc,

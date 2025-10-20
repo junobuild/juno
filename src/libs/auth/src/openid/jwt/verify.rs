@@ -1,5 +1,5 @@
 use crate::openid::jwt::header::decode_jwt_header;
-use crate::openid::jwt::types::{Claims, Jwk, JwtVerifyError};
+use crate::openid::jwt::types::{cert::Jwk, errors::JwtVerifyError, token::Claims};
 use jsonwebtoken::{decode, Algorithm, DecodingKey, TokenData, Validation};
 
 fn pick_key<'a>(kid: &str, jwks: &'a [Jwk]) -> Option<&'a Jwk> {
@@ -99,7 +99,7 @@ fn now_ns() -> u64 {
 #[cfg(test)]
 mod verify_tests {
     use super::verify_openid_jwt;
-    use crate::openid::jwt::types::{Claims, Jwk, JwtVerifyError};
+    use crate::openid::jwt::types::{cert::Jwk, errors::JwtVerifyError, token::Claims};
     use jsonwebtoken::{encode, Algorithm, EncodingKey, Header};
     use std::time::{SystemTime, UNIX_EPOCH};
 

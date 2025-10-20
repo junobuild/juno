@@ -1,3 +1,4 @@
+use crate::certificate::http::constants::FETCH_MAX_RESPONSE_BYTES;
 use crate::types::state::OpenIdProvider;
 use ic_cdk::management_canister::{
     http_request as http_request_outcall, HttpRequestArgs, TransformContext, TransformFunc,
@@ -37,7 +38,7 @@ fn get_request(provider: &OpenIdProvider) -> HttpRequestArgs {
         url: url.to_string(),
         method: HttpMethod::GET,
         body: None,
-        max_response_bytes: None,
+        max_response_bytes: Some(FETCH_MAX_RESPONSE_BYTES),
         transform: param_transform(),
         headers: request_headers,
     }

@@ -6,3 +6,5 @@ use ic_cdk_macros::query;
 fn transform(raw: TransformArgs) -> HttpResponse {
     transform_response(raw)
 }
+
+// TODO: transform_openid_certificate

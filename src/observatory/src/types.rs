@@ -2,7 +2,6 @@ pub mod state {
     use crate::memory::init_stable_state;
     use candid::{CandidType, Deserialize};
     use ic_stable_structures::StableBTreeMap;
-    use junobuild_auth::cert::Jwks;
     use junobuild_auth::openid::jwt::types::cert::Jwks;
     use junobuild_shared::types::memory::Memory;
     use junobuild_shared::types::state::{
@@ -69,7 +68,7 @@ pub mod state {
         pub openid: HashMap<OpenIdProvider, OpenIdCertificate>,
     }
 
-    #[derive(CandidType, Serialize, Deserialize)]
+    #[derive(CandidType, Serialize, Deserialize, Hash, Eq, PartialEq)]
     pub enum OpenIdProvider {
         Google,
     }

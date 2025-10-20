@@ -8,13 +8,13 @@ use ic_cdk::api::management_canister::http_request::{
 use junobuild_shared::ic::api::id;
 use crate::certificates::http::constants::FETCH_CERTIFICATE_CYCLES;
 
-type RawJsonValue = [u8];
+type RawJsonValue = Vec<u8>;
 
-pub async fn get_certificate(provider: &OpenIdProvider) -> Result<&RawJsonValue, String> {
+pub async fn get_certificate(provider: &OpenIdProvider) -> Result<RawJsonValue, String> {
     let request = get_request(provider);
 
     match http_request_outcall(request, FETCH_CERTIFICATE_CYCLES).await {
-        Ok((response,)) => Ok(response.body.as_slice()),
+        Ok((response,)) => Ok(response.body),
         Err((r, m)) => {
             let message = format!("HTTP request error. RejectionCode: {r:?}, Error: {m}");
             Err(format!("‼️ --> {message}."))

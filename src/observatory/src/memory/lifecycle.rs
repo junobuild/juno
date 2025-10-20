@@ -17,6 +17,7 @@ fn init() {
             heap: HeapState {
                 controllers: init_admin_controllers(&[manager]),
                 env: None,
+                certificates: None
             },
             stable: init_stable_state(),
         };

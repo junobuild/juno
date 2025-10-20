@@ -5,7 +5,7 @@ pub mod state {
     use junobuild_auth::openid::jwt::types::cert::Jwks;
     use junobuild_shared::types::memory::Memory;
     use junobuild_shared::types::state::{
-        Controllers, NotificationKind, Segment, SegmentId, Timestamp,
+        Controllers, NotificationKind, Segment, SegmentId, Timestamp, Version,
     };
     use serde::Serialize;
     use std::collections::HashMap;
@@ -68,12 +68,12 @@ pub mod state {
         pub openid: HashMap<OpenIdProvider, OpenIdCertificate>,
     }
 
-    #[derive(CandidType, Serialize, Deserialize, Hash, Eq, PartialEq)]
+    #[derive(CandidType, Serialize, Deserialize, Clone, Hash, Eq, PartialEq)]
     pub enum OpenIdProvider {
         Google,
     }
 
-    #[derive(CandidType, Serialize, Deserialize)]
+    #[derive(CandidType, Serialize, Deserialize, Clone)]
     pub struct OpenIdCertificate {
         pub jwks: Jwks,
 
@@ -84,6 +84,8 @@ pub mod state {
 
         pub created_at: Timestamp,
         pub updated_at: Timestamp,
+
+        pub version: Option<Version>,
     }
 }
 

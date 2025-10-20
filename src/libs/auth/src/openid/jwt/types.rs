@@ -23,7 +23,7 @@ pub mod cert {
     use candid::{CandidType, Deserialize};
     use serde::Serialize;
 
-    #[derive(CandidType, Serialize, Deserialize)]
+    #[derive(CandidType, Serialize, Deserialize, Clone)]
     pub struct Jwk {
         // Key type, e.g. "RSA".
         // https://tools.ietf.org/html/rfc7517#section-4.1
@@ -45,7 +45,7 @@ pub mod cert {
 
     // Supported types for the JSON Web Key `kty` property.
     // https://www.iana.org/assignments/jose/jose.xhtml#web-key-types
-    #[derive(CandidType, Serialize, Deserialize)]
+    #[derive(CandidType, Serialize, Deserialize, Clone)]
     pub enum JwkType {
         // Elliptic Curve.
         #[serde(rename = "EC")]
@@ -63,7 +63,7 @@ pub mod cert {
 
     // Algorithm-specific parameters for JSON Web Keys.
     // https://tools.ietf.org/html/rfc7518#section-6
-    #[derive(CandidType, Serialize, Deserialize)]
+    #[derive(CandidType, Serialize, Deserialize, Clone)]
     #[serde(untagged)]
     pub enum JwkParams {
         // Elliptic Curve parameters.
@@ -81,7 +81,7 @@ pub mod cert {
 
     // Parameters for Elliptic Curve Keys.
     // https://tools.ietf.org/html/rfc7518#section-6.2
-    #[derive(CandidType, Serialize, Deserialize)]
+    #[derive(CandidType, Serialize, Deserialize, Clone)]
     pub struct JwkParamsEc {
         // Identifies the cryptographic curve used with the key.
         // https://tools.ietf.org/html/rfc7518#section-6.2.1.1
@@ -105,7 +105,7 @@ pub mod cert {
 
     // Parameters for RSA Keys.
     // https://tools.ietf.org/html/rfc7518#section-6.3
-    #[derive(CandidType, Serialize, Deserialize)]
+    #[derive(CandidType, Serialize, Deserialize, Clone)]
     pub struct JwkParamsRsa {
         // The modulus (part of the RSA public key).
         // https://datatracker.ietf.org/doc/html/rfc7518#section-6.3.1.1
@@ -121,7 +121,7 @@ pub mod cert {
 
     // Parameters for Symmetric Keys.
     // https://tools.ietf.org/html/rfc7518#section-6.4
-    #[derive(CandidType, Serialize, Deserialize)]
+    #[derive(CandidType, Serialize, Deserialize, Clone)]
     pub struct JwkParamsOct {
         // The symmetric key as a base64url-encoded value.
         // https://tools.ietf.org/html/rfc7518#section-6.4.1
@@ -130,7 +130,7 @@ pub mod cert {
 
     // Parameters for Octet Key Pairs.
     // https://tools.ietf.org/html/rfc8037#section-2
-    #[derive(CandidType, Serialize, Deserialize)]
+    #[derive(CandidType, Serialize, Deserialize, Clone)]
     pub struct JwkParamsOkp {
         // The subtype of the key pair.
         // https://tools.ietf.org/html/rfc8037#section-2
@@ -147,7 +147,7 @@ pub mod cert {
     }
 
     // JSON Web Key Set
-    #[derive(CandidType, Serialize, Deserialize)]
+    #[derive(CandidType, Serialize, Deserialize, Clone)]
     pub struct Jwks {
         pub keys: Vec<Jwk>,
     }

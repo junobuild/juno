@@ -1,4 +1,5 @@
-use crate::types::state::{OpenIdProvider};
+use crate::certificates::http::constants::FETCH_CERTIFICATE_CYCLES;
+use crate::types::state::OpenIdProvider;
 use ic_cdk::api::management_canister::http_request::{
     http_request as http_request_outcall, TransformContext, TransformFunc,
 };
@@ -6,7 +7,6 @@ use ic_cdk::api::management_canister::http_request::{
     CanisterHttpRequestArgument, HttpHeader, HttpMethod,
 };
 use junobuild_shared::ic::api::id;
-use crate::certificates::http::constants::FETCH_CERTIFICATE_CYCLES;
 
 type RawJsonValue = Vec<u8>;
 
@@ -22,8 +22,7 @@ pub async fn get_certificate(provider: &OpenIdProvider) -> Result<RawJsonValue, 
     }
 }
 
-fn get_request(provider: &OpenIdProvider
-) -> CanisterHttpRequestArgument {
+fn get_request(provider: &OpenIdProvider) -> CanisterHttpRequestArgument {
     let url = provider.jwks_url();
 
     let request_headers = vec![

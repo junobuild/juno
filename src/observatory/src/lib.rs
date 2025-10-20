@@ -5,7 +5,7 @@ mod console;
 mod guards;
 mod impls;
 mod memory;
-mod notification;
+mod notifications;
 mod random;
 mod store;
 mod templates;

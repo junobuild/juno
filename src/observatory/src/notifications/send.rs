@@ -1,5 +1,5 @@
-use crate::notification::http::request::post_email;
-use crate::notification::http::types::EmailRequestBody;
+use crate::notifications::http::request::post_email;
+use crate::notifications::http::types::EmailRequestBody;
 use crate::store::heap::get_email_api_key;
 use crate::store::stable::{get_notification, set_notification};
 use crate::types::state::{Notification, NotificationKey};

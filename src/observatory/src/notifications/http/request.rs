@@ -1,4 +1,4 @@
-use crate::notification::http::types::EmailRequestBody;
+use crate::notifications::http::types::EmailRequestBody;
 use crate::types::state::ApiKey;
 use ic_cdk::management_canister::{
     http_request as http_request_outcall, TransformContext, TransformFunc,

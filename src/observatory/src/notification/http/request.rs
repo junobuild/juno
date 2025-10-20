@@ -1,4 +1,3 @@
-use crate::notification::http::constants::SEND_EMAIL_CYCLES;
 use crate::notification::http::types::EmailRequestBody;
 use crate::types::state::ApiKey;
 use ic_cdk::management_canister::{
@@ -15,7 +14,7 @@ pub async fn post_email(
 ) -> Result<(), String> {
     let request = get_email_request(idempotency_key, api_key, email)?;
 
-    match http_request_outcall(&request, SEND_EMAIL_CYCLES).await {
+    match http_request_outcall(&request).await {
         Ok(_response) => Ok(()),
         Err(error) => {
             let message = format!("HTTP request error: {error:?}");

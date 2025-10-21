@@ -37,6 +37,9 @@ async fn fetch_and_save_certificate(provider: &OpenIdProvider) -> Result<(), Str
 
     let raw_json_value = http_result.body;
 
+    // Google JWKS responses include an `Expires` header.
+    // It indicates when the current key set should no longer be considered valid.
+    // We don't use this information at the moment, which is why we don't cap it yet.
     let expires_at = http_result
         .headers
         .iter()

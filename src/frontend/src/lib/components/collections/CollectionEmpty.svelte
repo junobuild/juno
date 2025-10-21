@@ -25,7 +25,7 @@
 	const filterListParams = ({ filter: { matcher, owner } }: ListParamsData) =>
 		(nonNullish(matcher) && matcher !== '') || (nonNullish(owner) && owner !== '');
 
-	const listParamsFiltered = $derived(filterListParams($listParams));
+	let listParamsFiltered = $derived(filterListParams($listParams));
 
 	let privateReadRule = $state(false);
 	run(() => {
@@ -43,7 +43,7 @@
 				}
 			])}
 		/>
-	{:else if $listParamsFiltered}
+	{:else if listParamsFiltered}
 		{@render filter?.()}
 	{:else}
 		<Html

@@ -1,8 +1,7 @@
-use crate::memory::state::services::with_openid_mut;
 use crate::openid::constants::FETCH_CERTIFICATE_INTERVAL;
 use crate::openid::http::request::get_certificate;
 use crate::store::heap::{assert_scheduler_running, set_openid_certificate};
-use crate::types::state::{OpenId, OpenIdCertificate, OpenIdProvider};
+use crate::types::state::OpenIdProvider;
 use ic_cdk::futures::spawn;
 use ic_cdk_timers::set_timer;
 use junobuild_auth::openid::jwt::types::cert::Jwks;

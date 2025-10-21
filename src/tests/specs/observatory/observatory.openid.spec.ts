@@ -214,7 +214,7 @@ describe('Observatory > OpenId', () => {
 
 			expect(pendingHttpsOutcalls).toHaveLength(1);
 
-			const { subnetId, requestId } = pendingHttpsOutcalls[0];
+			const [{ subnetId, requestId }] = pendingHttpsOutcalls;
 
 			await finalizeHttpsOutCall({ subnetId, requestId });
 		});
@@ -244,7 +244,7 @@ describe('Observatory > OpenId', () => {
 
 			await tick(pic);
 
-			await expect((pic.getPendingHttpsOutcalls())).resolves.toHaveLength(0);
+			await expect(pic.getPendingHttpsOutcalls()).resolves.toHaveLength(0);
 		});
 
 		it('should throw error if openid scheduler is already stopped', async () => {

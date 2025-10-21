@@ -64,7 +64,7 @@ fn param_transform() -> Option<TransformContext> {
     Some(TransformContext {
         function: TransformFunc(candid::Func {
             principal: id(),
-            method: "transform".to_string(),
+            method: "transform_post_email".to_string(),
         }),
         context: vec![],
     })

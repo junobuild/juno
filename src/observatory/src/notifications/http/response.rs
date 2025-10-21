@@ -3,7 +3,7 @@ use ic_cdk::trap;
 
 const HTTP_STATUS_OK: u8 = 200;
 
-pub fn transform_response(raw: TransformArgs) -> HttpRequestResult {
+pub fn transform_post_email(raw: TransformArgs) -> HttpRequestResult {
     let response = raw.response;
 
     if response.status != HTTP_STATUS_OK {

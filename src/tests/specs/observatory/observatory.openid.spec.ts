@@ -2,6 +2,7 @@ import { idlFactoryObservatory, type ObservatoryActor, type ObservatoryDid } fro
 import { Ed25519KeyIdentity } from '@dfinity/identity';
 import { type Actor, PocketIc } from '@dfinity/pic';
 import { CanisterHttpMethod } from '@dfinity/pic/dist/pocket-ic-types';
+import { Principal } from '@dfinity/principal';
 import { assertNonNullish, fromNullable } from '@dfinity/utils';
 import { inject } from 'vitest';
 import { toBodyJson } from '../../utils/orbiter-tests.utils';
@@ -14,8 +15,14 @@ describe('Observatory > OpenId', () => {
 
 	const controller = Ed25519KeyIdentity.generate();
 
+	const currentDate = new Date(2025, 9, 21, 9, 8, 0, 0);
+
+	const FETCH_CERTIFICATE_INTERVAL = 1000 * 60 * 15; // 15min
+
 	beforeAll(async () => {
 		pic = await PocketIc.create(inject('PIC_URL'));
+
+		await pic.setTime(currentDate.getTime());
 
 		const { actor: c } = await pic.setupCanister<ObservatoryActor>({
 			idlFactory: idlFactoryObservatory,
@@ -34,20 +41,20 @@ describe('Observatory > OpenId', () => {
 	const mockGoogleCertificate = {
 		keys: [
 			{
-				kid: 'fb9f9371d5755f3e383a40ab3a172cd8baca517f',
-				n: 'to2hcsFNHKquhCdUzXWdP8yxnGqxFWJlRT7sntBgp47HwxB9HFc-U_AB1JT8xe1hwDpWTheckoOfpLgo7_ROEsKpVJ_OXnotL_dgNwbprr-T_EFJV7qOEdHL0KmrnN-kFNLUUSqSChPYVh1aEjlPfXg92Yieaaz2AMMtiageZrKoYnrGC0z4yPNYFj21hO1x6mvGIjmpo6_fe91o-buZNzzkmYlGsFxdvUxYAvgk-5-7D10UTTLGh8bUv_BQT3aRFiVRS5d07dyCJ4wowzxYlPSM6lnfUlvHTWyPL4JysMGeu-tbPA-5QvwCdSGpfWFQbgMq9NznBtWb99r1UStpBQ',
-				alg: 'RS256',
-				kty: 'RSA',
 				e: 'AQAB',
-				use: 'sig'
-			},
-			{
-				kty: 'RSA',
-				n: '2ftoBIWdn7XWU1XPPP0B4s-jSKq7nhHZxlT8P52l-OkhpHH8uXUJf8BG6cZFc5lRSx4p0KOjOkfTHUDrbkUOsbL8Q3DCo5z-w35-xvt2iJCe14Em-YrKUbvaRCzBln40c1m6nFf9xJ7y2hTWXFmLYERidFeWEunUbOdF7BzK1r3PJnpCaf9frNZFKh808Q7IR9S--NNIRV8WMJxXhNa0C7ZwvC_Z-arjywdXFhtgiXMQKYhwLWDPtPRQ41CYHTo2wFIh20sBSrzKawHBfloZQSc47CJk85Oz7dA3jsGGj6P00EuvZEoENzk4Czf-bl9wtehJ3xadHDjRkdWDBfhhqQ',
 				use: 'sig',
 				alg: 'RS256',
+				n: 'to2hcsFNHKquhCdUzXWdP8yxnGqxFWJlRT7sntBgp47HwxB9HFc-U_AB1JT8xe1hwDpWTheckoOfpLgo7_ROEsKpVJ_OXnotL_dgNwbprr-T_EFJV7qOEdHL0KmrnN-kFNLUUSqSChPYVh1aEjlPfXg92Yieaaz2AMMtiageZrKoYnrGC0z4yPNYFj21hO1x6mvGIjmpo6_fe91o-buZNzzkmYlGsFxdvUxYAvgk-5-7D10UTTLGh8bUv_BQT3aRFiVRS5d07dyCJ4wowzxYlPSM6lnfUlvHTWyPL4JysMGeu-tbPA-5QvwCdSGpfWFQbgMq9NznBtWb99r1UStpBQ',
+				kty: 'RSA',
+				kid: 'fb9f9371d5755f3e383a40ab3a172cd8baca517f'
+			},
+			{
+				use: 'sig',
 				kid: '884892122e2939fd1f31375b2b363ec815723bbb',
-				e: 'AQAB'
+				kty: 'RSA',
+				e: 'AQAB',
+				n: '2ftoBIWdn7XWU1XPPP0B4s-jSKq7nhHZxlT8P52l-OkhpHH8uXUJf8BG6cZFc5lRSx4p0KOjOkfTHUDrbkUOsbL8Q3DCo5z-w35-xvt2iJCe14Em-YrKUbvaRCzBln40c1m6nFf9xJ7y2hTWXFmLYERidFeWEunUbOdF7BzK1r3PJnpCaf9frNZFKh808Q7IR9S--NNIRV8WMJxXhNa0C7ZwvC_Z-arjywdXFhtgiXMQKYhwLWDPtPRQ41CYHTo2wFIh20sBSrzKawHBfloZQSc47CJk85Oz7dA3jsGGj6P00EuvZEoENzk4Czf-bl9wtehJ3xadHDjRkdWDBfhhqQ',
+				alg: 'RS256'
 			}
 		]
 	};
@@ -125,10 +132,12 @@ describe('Observatory > OpenId', () => {
 
 		expect(body).toHaveLength(0);
 
-		// Finalize
+		await finalizeHttpsOutCall({ subnetId, requestId });
+	};
+
+	const finalizeHttpsOutCall = async (params: { subnetId: Principal; requestId: number }) => {
 		await pic.mockPendingHttpsOutcall({
-			requestId,
-			subnetId,
+			...params,
 			response: {
 				type: 'success',
 				body: toBodyJson(mockGoogleCertificate),
@@ -160,10 +169,9 @@ describe('Observatory > OpenId', () => {
 				version: [1n]
 			})
 		);
-	}
+	};
 
-	describe("Google certificate", () => {
-
+	describe('Google certificate', () => {
 		it('should start openid monitoring', async () => {
 			const { start_openid_monitoring } = actor;
 
@@ -184,12 +192,34 @@ describe('Observatory > OpenId', () => {
 			);
 		});
 
+		it('should run a timer to update the certificate', async () => {
+			await pic.advanceTime(FETCH_CERTIFICATE_INTERVAL + 1000); // 15min and 1sec
+
+			await tick(pic);
+
+			const pendingHttpsOutcalls = await pic.getPendingHttpsOutcalls();
+
+			expect(pendingHttpsOutcalls.length).toBe(1);
+
+			const { subnetId, requestId } = pendingHttpsOutcalls[0];
+
+			await finalizeHttpsOutCall({ subnetId, requestId });
+		});
+
 		it('should stop openid monitoring', async () => {
 			await expect(actor.stop_openid_monitoring()).resolves.toBeNull();
 		});
 
 		it('should still provide certificate', async () => {
 			await assertGetCertificate();
+		});
+
+		it('should not have rescheduled a timer', async () => {
+			await pic.advanceTime(FETCH_CERTIFICATE_INTERVAL + 1000); // 15min and 1sec
+
+			await tick(pic);
+
+			expect((await pic.getPendingHttpsOutcalls()).length).toBe(0);
 		});
 
 		it('should throw error if openid scheduler is already stopped', async () => {
@@ -203,5 +233,5 @@ describe('Observatory > OpenId', () => {
 
 			await assertHttpsOutcalls();
 		});
-	})
+	});
 });

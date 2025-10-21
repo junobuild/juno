@@ -11,7 +11,7 @@ use std::cmp::min;
 use std::time::Duration;
 
 pub fn schedule_certificate_update(provider: OpenIdProvider, delay: Option<u64>) {
-    if !assert_scheduler_running(&provider).is_ok() {
+    if assert_scheduler_running(&provider).is_err() {
         return;
     }
 

@@ -4,7 +4,7 @@ use ic_cdk::management_canister::{HttpRequestResult, TransformArgs};
 use ic_cdk_macros::query;
 
 #[query(hidden = true)]
-fn transform(raw: TransformArgs) -> HttpRequestResult {
+fn transform_post_email(raw: TransformArgs) -> HttpRequestResult {
     transform_response(raw)
 }
 

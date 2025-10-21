@@ -22,6 +22,7 @@ pub mod rate;
 pub mod regex;
 pub mod serializers;
 pub mod structures;
+pub mod time;
 #[doc(hidden)]
 pub mod types;
 #[doc(hidden)]

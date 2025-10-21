@@ -1,52 +1,37 @@
 use candid::Nat;
 use ic_cdk::management_canister::{HttpRequestResult, TransformArgs};
+use ic_cdk::trap;
 use junobuild_auth::openid::jwt::types::cert::Jwks;
+use junobuild_shared::ic::UnwrapOrTrap;
 
 const HTTP_STATUS_OK: u8 = 200;
-const HTTP_STATUS_BAD_GATEWAY: u16 = 502;
-const HTTP_STATUS_INTERNAL_SERVER_ERROR: u16 = 500;
 
-// Google certs occasionally seems to return responses with keys and their properties in random order,
-// so we deserialize, sort the keys and serialize to make the response the same across all nodes.
+// Google certs occasionally return responses where keys and their properties appear in random order.
+// To ensure consistency across all nodes, we deserialize, sort the keys, and then reserialize the response.
+//
+// We trap in case of an unexpected JSON response, as http_request does not return a result
+// in case of any error or unexpected status code.
 pub fn transform_certificate_response(raw: TransformArgs) -> HttpRequestResult {
     let response = raw.response;
 
-    if response.status != Nat::from(HTTP_STATUS_OK) {
-        return response;
+    if response.status != HTTP_STATUS_OK {
+        trap(format!("Invalid HTTP status code: {:?}", response.status));
     }
 
-    let jwks: Jwks = match serde_json::from_slice(&response.body) {
-        Ok(v) => v,
-        Err(_) => {
-            return HttpRequestResult {
-                status: Nat::from(HTTP_STATUS_BAD_GATEWAY),
-                body: br#"{"error":"invalid json"}"#.to_vec(),
-                headers: vec![],
-            }
-        }
-    };
+    let jwks: Jwks = serde_json::from_slice(&response.body)
+        .map_err(|_| "Invalid Jwks JSON")
+        .unwrap_or_trap();
 
     if jwks.keys.iter().any(|k| k.kid.is_none()) {
-        return HttpRequestResult {
-            status: Nat::from(HTTP_STATUS_BAD_GATEWAY),
-            body: br#"{"error":"missing kid"}"#.to_vec(),
-            headers: vec![],
-        };
+        trap("Missing kid in Jwks");
     }
 
     let mut keys = jwks.keys.clone();
     keys.sort_by(|a, b| a.kid.as_ref().unwrap().cmp(b.kid.as_ref().unwrap()));
 
-    let body = match serde_json::to_vec(&Jwks { keys }) {
-        Ok(jwks) => jwks,
-        Err(_) => {
-            return HttpRequestResult {
-                status: Nat::from(HTTP_STATUS_INTERNAL_SERVER_ERROR),
-                body: br#"{"error":"serialize error"}"#.to_vec(),
-                headers: vec![],
-            }
-        }
-    };
+    let body = serde_json::to_vec(&Jwks { keys })
+        .map_err(|_| "Jwks serialize error")
+        .unwrap_or_trap();
 
     HttpRequestResult {
         status: Nat::from(HTTP_STATUS_OK),

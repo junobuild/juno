@@ -20,5 +20,7 @@ fn stop_openid_monitoring() {
 fn get_openid_certificate(
     GetOpenIdCertificate { provider }: GetOpenIdCertificate,
 ) -> Option<OpenIdCertificate> {
+    // TODO: caller rate limiter
+
     get_certificate(&provider)
 }

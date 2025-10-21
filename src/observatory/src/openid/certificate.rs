@@ -1,7 +1,7 @@
 use crate::memory::state::services::with_openid_mut;
 use crate::openid::constants::FETCH_CERTIFICATE_INTERVAL;
 use crate::openid::http::request::get_certificate;
-use crate::store::heap::assert_scheduler_running;
+use crate::store::heap::{assert_scheduler_running, set_openid_certificate};
 use crate::types::state::{OpenId, OpenIdCertificate, OpenIdProvider};
 use ic_cdk::futures::spawn;
 use ic_cdk_timers::set_timer;
@@ -37,15 +37,7 @@ async fn fetch_and_save_certificate(provider: &OpenIdProvider) -> Result<(), Str
 
     let jwks = from_slice::<Jwks>(&raw_json_value).map_err(|e| e.to_string())?;
 
-    with_openid_mut(|openid| {
-        let openid = openid.get_or_insert_with(OpenId::default);
-
-        openid
-            .certificates
-            .entry(provider.clone())
-            .and_modify(|c| *c = OpenIdCertificate::update(c, &jwks))
-            .or_insert_with(|| OpenIdCertificate::init(&jwks));
-    });
+    set_openid_certificate(provider, &jwks);
 
     Ok(())
 }

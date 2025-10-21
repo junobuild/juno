@@ -19,6 +19,7 @@ use junobuild_shared::types::interface::NotifyArgs;
 use junobuild_shared::types::state::{NotificationKind, SegmentKind, Version, Versioned};
 use junobuild_shared::version::next_version;
 use std::borrow::Cow;
+use std::fmt::{Display, Formatter, Result as FmtResult};
 use time::OffsetDateTime;
 
 impl Default for State {
@@ -289,6 +290,14 @@ impl OpenIdCertificate {
             updated_at: now,
             version: Some(version),
             ..current_certificate.clone()
+        }
+    }
+}
+
+impl Display for OpenIdProvider {
+    fn fmt(&self, f: &mut Formatter<'_>) -> FmtResult {
+        match self {
+            OpenIdProvider::Google => write!(f, "Google"),
         }
     }
 }

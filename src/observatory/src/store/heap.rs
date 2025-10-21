@@ -86,7 +86,7 @@ fn assert_scheduler_running_impl(
     openid: &Option<OpenId>,
 ) -> Result<(), String> {
     if !scheduler_enabled(openid, provider) {
-        return Err("OpenID scheduler is not running".to_string());
+        return Err(format!("OpenID scheduler for {provider} is not running"));
     }
 
     Ok(())
@@ -121,8 +121,8 @@ fn disable_scheduler_impl(
             return Ok(());
         }
 
-        return Err("Unknown OpenID scheduler".to_string());
+        return Err(format!("Unknown OpenID scheduler for {provider}"));
     }
 
-    Err("OpenID scheduler not initialized".to_string())
+    Err(format!("OpenID scheduler for {provider} not initialized"))
 }

@@ -1,4 +1,6 @@
-use crate::memory::state::services::{mutate_heap_state, read_heap_state, with_openid, with_openid_mut};
+use crate::memory::state::services::{
+    mutate_heap_state, read_heap_state, with_openid, with_openid_mut,
+};
 use crate::types::state::{ApiKey, Env, HeapState, OpenId, OpenIdProvider, OpenIdScheduler};
 use junobuild_shared::controllers::{
     delete_controllers as delete_controllers_impl, set_controllers as set_controllers_impl,
@@ -68,32 +70,34 @@ pub fn disable_scheduler(provider: &OpenIdProvider) -> Result<(), String> {
     with_openid_mut(|openid| disable_scheduler_impl(provider, openid))
 }
 
-fn assert_scheduler_stopped_impl(provider: &OpenIdProvider, openid: &Option<OpenId>) -> Result<(), String> {
-    let enabled = openid
-        .as_ref()
-        .and_then(|openid| openid.schedulers.get(provider))
-        .map(|scheduler| scheduler.enabled)
-        .unwrap_or(false);
-
-    if enabled {
+fn assert_scheduler_stopped_impl(
+    provider: &OpenIdProvider,
+    openid: &Option<OpenId>,
+) -> Result<(), String> {
+    if scheduler_enabled(openid, provider) {
         return Err("OpenID scheduler already running".to_string());
     }
 
     Ok(())
 }
 
-fn assert_scheduler_running_impl(provider: &OpenIdProvider, openid: &Option<OpenId>) -> Result<(), String> {
-    let running = openid
-        .as_ref()
-        .and_then(|o| o.schedulers.get(provider))
-        .map(|s| s.enabled)
-        .unwrap_or(false);
-
-    if !running {
+fn assert_scheduler_running_impl(
+    provider: &OpenIdProvider,
+    openid: &Option<OpenId>,
+) -> Result<(), String> {
+    if !scheduler_enabled(openid, provider) {
         return Err("OpenID scheduler is not running".to_string());
     }
 
     Ok(())
+}
+
+fn scheduler_enabled(openid: &Option<OpenId>, provider: &OpenIdProvider) -> bool {
+    openid
+        .as_ref()
+        .and_then(|openid| openid.schedulers.get(provider))
+        .map(|scheduler| scheduler.enabled)
+        .unwrap_or(false)
 }
 
 fn enable_scheduler_impl(provider: &OpenIdProvider, current_openid: &mut Option<OpenId>) {
@@ -107,7 +111,10 @@ fn enable_scheduler_impl(provider: &OpenIdProvider, current_openid: &mut Option<
     scheduler.enabled = true;
 }
 
-fn disable_scheduler_impl(provider: &OpenIdProvider, openid: &mut Option<OpenId>) -> Result<(), String> {
+fn disable_scheduler_impl(
+    provider: &OpenIdProvider,
+    openid: &mut Option<OpenId>,
+) -> Result<(), String> {
     if let Some(openid) = openid {
         if let Some(cfg) = openid.schedulers.get_mut(provider) {
             cfg.enabled = false;

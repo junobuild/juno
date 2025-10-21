@@ -1,7 +1,8 @@
-use crate::memory::state::services::with_openid_mut;
 use crate::openid::certificate::schedule_certificate_update;
-use crate::store::heap::{assert_scheduler_running, assert_scheduler_stopped, disable_scheduler, enable_scheduler};
-use crate::types::state::{OpenId, OpenIdProvider, OpenIdScheduler};
+use crate::store::heap::{
+    assert_scheduler_running, assert_scheduler_stopped, disable_scheduler, enable_scheduler,
+};
+use crate::types::state::OpenIdProvider;
 
 pub fn start_openid_scheduler() -> Result<(), String> {
     let provider = OpenIdProvider::Google;

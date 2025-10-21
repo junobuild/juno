@@ -1,6 +1,7 @@
-use crate::memory::state::services::{with_openid, with_openid_mut};
+use crate::memory::state::services::with_openid_mut;
 use crate::openid::constants::FETCH_CERTIFICATE_INTERVAL;
 use crate::openid::http::request::get_certificate;
+use crate::store::heap::assert_scheduler_running;
 use crate::types::state::{OpenId, OpenIdCertificate, OpenIdProvider};
 use ic_cdk::futures::spawn;
 use ic_cdk_timers::set_timer;
@@ -10,7 +11,7 @@ use std::cmp::min;
 use std::time::Duration;
 
 pub fn schedule_certificate_update(provider: OpenIdProvider, delay: Option<u64>) {
-    if !scheduler_enabled(&provider) {
+    if !assert_scheduler_running(&provider).is_ok() {
         return;
     }
 
@@ -29,16 +30,6 @@ pub fn schedule_certificate_update(provider: OpenIdProvider, delay: Option<u64>)
             schedule_certificate_update(provider, Some(next_delay));
         })
     });
-}
-
-fn scheduler_enabled(provider: &OpenIdProvider) -> bool {
-    with_openid(|openid| {
-        openid
-            .as_ref()
-            .and_then(|openid| openid.schedulers.get(&provider))
-            .map(|scheduler| scheduler.enabled)
-            .unwrap_or(true)
-    })
 }
 
 async fn fetch_and_save_certificate(provider: &OpenIdProvider) -> Result<(), String> {

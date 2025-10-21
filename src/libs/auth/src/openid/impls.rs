@@ -1,4 +1,4 @@
-use crate::openid::jwt::types::Claims;
+use crate::openid::jwt::types::token::Claims;
 use crate::openid::types::{OpenIdCredential, OpenIdCredentialKey};
 use jsonwebtoken::TokenData;
 

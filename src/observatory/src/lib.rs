@@ -3,10 +3,10 @@
 mod api;
 mod console;
 mod guards;
-mod http;
 mod impls;
 mod memory;
-mod notify;
+mod notifications;
+mod openid;
 mod random;
 mod store;
 mod templates;

@@ -66,4 +66,6 @@ service : () -> {
   ping : (NotifyArgs) -> ();
   set_controllers : (SetControllersArgs) -> ();
   set_env : (Env) -> ();
+  start_openid_monitoring : () -> ();
+  stop_openid_monitoring : () -> ();
 }

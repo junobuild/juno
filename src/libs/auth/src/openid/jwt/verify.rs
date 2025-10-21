@@ -1,5 +1,6 @@
 use crate::openid::jwt::header::decode_jwt_header;
-use crate::openid::jwt::types::{Claims, Jwk, JwtVerifyError};
+use crate::openid::jwt::types::cert::{JwkParams, JwkType};
+use crate::openid::jwt::types::{cert::Jwk, errors::JwtVerifyError, token::Claims};
 use jsonwebtoken::{decode, Algorithm, DecodingKey, TokenData, Validation};
 
 fn pick_key<'a>(kid: &str, jwks: &'a [Jwk]) -> Option<&'a Jwk> {
@@ -21,11 +22,18 @@ pub fn verify_openid_jwt(
     // 2) Find matching RSA key
     let jwk = pick_key(&kid, jwks).ok_or(JwtVerifyError::NoKeyForKid)?;
 
-    // 3) Build decoding key
-    let key = DecodingKey::from_rsa_components(&jwk.n, &jwk.e)
+    // 3) Extract RSA components - We support only Google at the moment
+    // which always uses RSA keys.
+    let (n, e) = match (&jwk.kty, &jwk.params) {
+        (JwkType::Rsa, JwkParams::Rsa(params)) => (&params.n, &params.e),
+        _ => return Err(JwtVerifyError::WrongKeyType),
+    };
+
+    // 4) Build decoding key
+    let key = DecodingKey::from_rsa_components(n, e)
         .map_err(|e| JwtVerifyError::BadSig(e.to_string()))?;
 
-    // 4) Build validation but disable automatic audience validation
+    // 5) Build validation but disable automatic audience validation
     let mut val = Validation::new(Algorithm::RS256);
 
     // The forked library uses IC time for time-based checks.
@@ -47,18 +55,18 @@ pub fn verify_openid_jwt(
     let token =
         decode::<Claims>(jwt, &key, &val).map_err(|e| JwtVerifyError::BadSig(e.to_string()))?;
 
-    // 5) Manual checks audience
+    // 6) Manual checks audience
     let c = &token.claims;
     if c.aud != client_id {
         return Err(JwtVerifyError::BadClaim("aud".to_string()));
     }
 
-    // 6) Assert it is the expected nonce
+    // 7) Assert it is the expected nonce
     if c.nonce.as_deref() != Some(expected_nonce) {
         return Err(JwtVerifyError::BadClaim("nonce".to_string()));
     }
 
-    // 7) Assert expiration
+    // 8) Assert expiration
     let now_ns = now_ns();
     const MAX_VALIDITY_WINDOW_NS: u64 = 10 * 60 * 1_000_000_000; // 10 min
     const IAT_FUTURE_SKEW_NS: u64 = 2 * 60 * 1_000_000_000; // 2 min
@@ -99,7 +107,8 @@ fn now_ns() -> u64 {
 #[cfg(test)]
 mod verify_tests {
     use super::verify_openid_jwt;
-    use crate::openid::jwt::types::{Claims, Jwk, JwtVerifyError};
+    use crate::openid::jwt::types::cert::{JwkParams, JwkParamsRsa, JwkType};
+    use crate::openid::jwt::types::{cert::Jwk, errors::JwtVerifyError, token::Claims};
     use jsonwebtoken::{encode, Algorithm, EncodingKey, Header};
     use std::time::{SystemTime, UNIX_EPOCH};
 
@@ -156,9 +165,13 @@ mod verify_tests {
 
     fn jwk_with_kid(kid: &str) -> Jwk {
         Jwk {
+            kty: JwkType::Rsa,
+            alg: Some("RS256".into()),
             kid: Some(kid.into()),
-            n: N_B64URL.into(),
-            e: E_B64URL.into(),
+            params: JwkParams::Rsa(JwkParamsRsa {
+                n: N_B64URL.into(),
+                e: E_B64URL.into(),
+            }),
         }
     }
 
@@ -452,9 +465,13 @@ mod verify_tests {
         bad_n.push(if last == 'A' { 'B' } else { 'A' });
 
         let bad_jwk = Jwk {
+            kty: JwkType::Rsa,
+            alg: Some("RS256".into()),
             kid: Some(KID_OK.into()),
-            n: bad_n,
-            e: E_B64URL.into(),
+            params: JwkParams::Rsa(JwkParamsRsa {
+                n: bad_n,
+                e: E_B64URL.into(),
+            }),
         };
 
         let err =

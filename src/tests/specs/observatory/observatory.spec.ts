@@ -110,6 +110,20 @@ describe('Observatory', () => {
 				})
 			).rejects.toThrow(CALLER_NOT_CONTROLLER_OBSERVATORY_MSG);
 		});
+
+		it('should throw errors on start openid monitoring', async () => {
+			const { start_openid_monitoring } = actor;
+
+			await expect(start_openid_monitoring()).rejects.toThrow(
+				CALLER_NOT_CONTROLLER_OBSERVATORY_MSG
+			);
+		});
+
+		it('should throw errors on stop openid monitoring', async () => {
+			const { stop_openid_monitoring } = actor;
+
+			await expect(stop_openid_monitoring()).rejects.toThrow(CALLER_NOT_CONTROLLER_OBSERVATORY_MSG);
+		});
 	};
 
 	describe('anonymous', () => {

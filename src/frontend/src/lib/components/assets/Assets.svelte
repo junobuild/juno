@@ -29,8 +29,8 @@
 	let { includeSysCollections }: Props = $props();
 
 	const { store, hasAnyRules }: RulesContext = getContext<RulesContext>(RULES_CONTEXT_KEY);
-	const { store: listParamsStore }: ListParamsContext =
-		getContext<ListParamsContext>(LIST_PARAMS_CONTEXT_KEY);
+
+	const { listParams } = getContext<ListParamsContext>(LIST_PARAMS_CONTEXT_KEY);
 
 	let collection = $derived($store.rule?.[0]);
 
@@ -55,7 +55,7 @@
 
 	$effect(() => {
 		collection;
-		$listParamsStore;
+		$listParams;
 		$versionStore;
 
 		untrack(() => {

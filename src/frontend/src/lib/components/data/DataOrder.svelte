@@ -6,11 +6,10 @@
 	import type { ListOrderField } from '$lib/types/list';
 	import { type ListParamsContext, LIST_PARAMS_CONTEXT_KEY } from '$lib/types/list-params.context';
 
-	const { store: listParamsStore, setOrder }: ListParamsContext =
-		getContext<ListParamsContext>(LIST_PARAMS_CONTEXT_KEY);
+	const { listParams, setOrder } = getContext<ListParamsContext>(LIST_PARAMS_CONTEXT_KEY);
 
-	let desc = $state($listParamsStore.order.desc);
-	let field: ListOrderField = $state($listParamsStore.order.field);
+	let desc = $state($listParams.order.desc);
+	let field: ListOrderField = $state($listParams.order.field);
 
 	let visible: boolean = $state(false);
 
@@ -32,9 +31,9 @@
 		// Avoid glitch
 		setTimeout(() => {
 			// eslint-disable-next-line prefer-destructuring
-			desc = $listParamsStore.order.desc;
+			desc = $listParams.order.desc;
 			// eslint-disable-next-line prefer-destructuring
-			field = $listParamsStore.order.field;
+			field = $listParams.order.field;
 		}, 250);
 	});
 </script>

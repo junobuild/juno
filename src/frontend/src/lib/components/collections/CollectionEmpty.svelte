@@ -1,11 +1,15 @@
 <script lang="ts">
 	import { nonNullish } from '@dfinity/utils';
-	import type { Snippet } from 'svelte';
+	import { getContext, type Snippet } from 'svelte';
 	import { run } from 'svelte/legacy';
 	import type { SatelliteDid } from '$declarations';
 	import Html from '$lib/components/ui/Html.svelte';
-	import { getDerivedListParamsFiltered } from '$lib/derived/list-params.derived';
 	import { i18n } from '$lib/stores/i18n.store';
+	import {
+		LIST_PARAMS_CONTEXT_KEY,
+		type ListParamsContext,
+		type ListParamsData
+	} from '$lib/types/list-params.context';
 	import { i18nFormat } from '$lib/utils/i18n.utils';
 
 	interface Props {
@@ -16,7 +20,12 @@
 
 	let { rule, collection, filter }: Props = $props();
 
-	const listParamsFiltered = getDerivedListParamsFiltered();
+	const { listParams } = getContext<ListParamsContext>(LIST_PARAMS_CONTEXT_KEY);
+
+	const filterListParams = ({ filter: { matcher, owner } }: ListParamsData) =>
+		(nonNullish(matcher) && matcher !== '') || (nonNullish(owner) && owner !== '');
+
+	let listParamsFiltered = $derived(filterListParams($listParams));
 
 	let privateReadRule = $state(false);
 	run(() => {
@@ -34,7 +43,7 @@
 				}
 			])}
 		/>
-	{:else if $listParamsFiltered}
+	{:else if listParamsFiltered}
 		{@render filter?.()}
 	{:else}
 		<Html

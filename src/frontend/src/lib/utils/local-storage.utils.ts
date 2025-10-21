@@ -7,7 +7,7 @@ import type { Languages } from '$lib/types/languages';
 import { SatellitesLayout } from '$lib/types/layout';
 import type { LayoutMenuState } from '$lib/types/layout-menu';
 import type { ListRulesParams } from '$lib/types/list';
-import type { LIST_PARAMS_KEY, ListParamsData } from '$lib/types/list-params.context';
+import type { ListParamsData, ListParamsKey } from '$lib/types/list-params.context';
 import type { NotificationPreferences } from '$lib/types/notification';
 import type { AnalyticsPeriodicity } from '$lib/types/orbiter';
 import { Theme } from '$lib/types/theme';
@@ -44,7 +44,7 @@ export const getLocalStorageLang = (): Languages => {
 	}
 };
 
-export const getLocalListParams = (key: LIST_PARAMS_KEY): ListParamsData => {
+export const getLocalListParams = (key: ListParamsKey): ListParamsData => {
 	try {
 		const { [`list_params_${key}`]: list_params }: Storage = browser
 			? localStorage

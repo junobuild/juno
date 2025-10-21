@@ -16,7 +16,7 @@
 	import { versionStore } from '$lib/stores/version.store';
 	import {
 		LIST_PARAMS_CONTEXT_KEY,
-		LIST_PARAMS_KEY,
+		ListParamsKey,
 		type ListParamsContext
 	} from '$lib/types/list-params.context';
 	import { PAGINATION_CONTEXT_KEY, type PaginationContext } from '$lib/types/pagination.context';
@@ -45,8 +45,8 @@
 			const { users, matches_length, items_length } = await listUsers({
 				satelliteId,
 				startAfter: $startAfter,
-				filter: $listParamsStore.filter,
-				order: $listParamsStore.order,
+				filter: $listParams.filter,
+				order: $listParams.order,
 				identity: $authStore.identity
 			});
 
@@ -72,15 +72,14 @@
 
 	setContext<ListParamsContext>(
 		LIST_PARAMS_CONTEXT_KEY,
-		initListParamsContext(LIST_PARAMS_KEY.USERS)
+		initListParamsContext(ListParamsKey.USERS)
 	);
 
-	const { store: listParamsStore }: ListParamsContext =
-		getContext<ListParamsContext>(LIST_PARAMS_CONTEXT_KEY);
+	const { listParams } = getContext<ListParamsContext>(LIST_PARAMS_CONTEXT_KEY);
 
 	$effect(() => {
 		$versionStore;
-		$listParamsStore;
+		$listParams;
 
 		untrack(() => {
 			list();

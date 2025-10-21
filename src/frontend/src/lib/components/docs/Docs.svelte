@@ -20,7 +20,7 @@
 	import {
 		type ListParamsContext,
 		LIST_PARAMS_CONTEXT_KEY,
-		LIST_PARAMS_KEY
+		ListParamsKey
 	} from '$lib/types/list-params.context';
 	import { PAGINATION_CONTEXT_KEY, type PaginationContext } from '$lib/types/pagination.context';
 	import { RULES_CONTEXT_KEY, type RulesContext } from '$lib/types/rules.context';
@@ -44,13 +44,9 @@
 	const { store: docsStore, resetData }: DataContext<SatelliteDid.Doc> =
 		getContext<DataContext<SatelliteDid.Doc>>(DATA_CONTEXT_KEY);
 
-	setContext<ListParamsContext>(
-		LIST_PARAMS_CONTEXT_KEY,
-		initListParamsContext(LIST_PARAMS_KEY.DOCS)
-	);
+	setContext<ListParamsContext>(LIST_PARAMS_CONTEXT_KEY, initListParamsContext(ListParamsKey.DOCS));
 
-	const { store: listParamsStore }: ListParamsContext =
-		getContext<ListParamsContext>(LIST_PARAMS_CONTEXT_KEY);
+	const { listParams } = getContext<ListParamsContext>(LIST_PARAMS_CONTEXT_KEY);
 
 	const load = async () => {
 		resetPage();
@@ -60,7 +56,7 @@
 
 	$effect(() => {
 		collection;
-		$listParamsStore;
+		$listParams;
 		$versionStore;
 
 		untrack(() => {

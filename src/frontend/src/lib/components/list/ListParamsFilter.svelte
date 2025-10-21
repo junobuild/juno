@@ -14,11 +14,10 @@
 
 	let { matcherFilter = true, ownerFilter = true, direction, key }: Props = $props();
 
-	const { store: listParamsStore, setFilter }: ListParamsContext =
-		getContext<ListParamsContext>(LIST_PARAMS_CONTEXT_KEY);
+	const { listParams, setFilter } = getContext<ListParamsContext>(LIST_PARAMS_CONTEXT_KEY);
 
-	let matcher = $state($listParamsStore.filter.matcher ?? '');
-	let owner = $state($listParamsStore.filter.owner ?? '');
+	let matcher = $state($listParams.filter.matcher ?? '');
+	let owner = $state($listParams.filter.owner ?? '');
 
 	let visible: boolean = $state(false);
 
@@ -39,8 +38,8 @@
 
 		// Avoid glitch
 		setTimeout(() => {
-			matcher = $listParamsStore.filter.matcher ?? '';
-			owner = $listParamsStore.filter.owner ?? '';
+			matcher = $listParams.filter.matcher ?? '';
+			owner = $listParams.filter.owner ?? '';
 		}, 250);
 	});
 </script>

@@ -43,6 +43,40 @@ export interface GetNotifications {
 	from: [] | [bigint];
 	segment_id: [] | [Principal];
 }
+export interface GetOpenIdCertificate {
+	provider: OpenIdProvider;
+}
+export interface Jwk {
+	alg: [] | [string];
+	kid: [] | [string];
+	kty: JwkType;
+	params: JwkParams;
+}
+export type JwkParams =
+	| { Ec: JwkParamsEc }
+	| { Oct: JwkParamsOct }
+	| { Okp: JwkParamsOkp }
+	| { Rsa: JwkParamsRsa };
+export interface JwkParamsEc {
+	x: string;
+	y: string;
+	crv: string;
+}
+export interface JwkParamsOct {
+	k: string;
+}
+export interface JwkParamsOkp {
+	x: string;
+	crv: string;
+}
+export interface JwkParamsRsa {
+	e: string;
+	n: string;
+}
+export type JwkType = { EC: null } | { OKP: null } | { RSA: null } | { oct: null };
+export interface Jwks {
+	keys: Array<Jwk>;
+}
 export type NotificationKind =
 	| {
 			DepositedCyclesEmail: DepositedCyclesEmailNotification;
@@ -58,6 +92,14 @@ export interface NotifyStatus {
 	sent: bigint;
 	failed: bigint;
 }
+export interface OpenIdCertificate {
+	updated_at: bigint;
+	jwks: Jwks;
+	created_at: bigint;
+	version: [] | [bigint];
+	expires_at: [] | [bigint];
+}
+export type OpenIdProvider = { Google: null };
 export interface Segment {
 	id: Principal;
 	metadata: [] | [Array<[string, string]>];
@@ -76,6 +118,7 @@ export interface SetControllersArgs {
 export interface _SERVICE {
 	del_controllers: ActorMethod<[DeleteControllersArgs], undefined>;
 	get_notify_status: ActorMethod<[GetNotifications], NotifyStatus>;
+	get_openid_certificate: ActorMethod<[GetOpenIdCertificate], [] | [OpenIdCertificate]>;
 	list_controllers: ActorMethod<[], Array<[Principal, Controller]>>;
 	notify: ActorMethod<[NotifyArgs], undefined>;
 	ping: ActorMethod<[NotifyArgs], undefined>;

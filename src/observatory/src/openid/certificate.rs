@@ -24,7 +24,14 @@ pub fn schedule_certificate_update(provider: OpenIdProvider, delay: Option<u64>)
             } else {
                 // Try again with backoff if fetch failed. e.g. the HTTPS outcall responses
                 // aren't the same across nodes when we fetch at the moment of key rotation.
-                min(FETCH_CERTIFICATE_INTERVAL, delay.unwrap_or(60) * 2)
+                let backoff = match delay {
+                    // already backing off -> double
+                    Some(delay) if delay < FETCH_CERTIFICATE_INTERVAL => delay.saturating_mul(2),
+                    // on first error
+                    _ => 60 *  2,
+                };
+
+                min(FETCH_CERTIFICATE_INTERVAL, backoff)
             };
 
             schedule_certificate_update(provider, Some(next_delay));

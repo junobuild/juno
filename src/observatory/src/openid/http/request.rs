@@ -10,28 +10,9 @@ use junobuild_shared::ic::api::id;
 pub async fn get_certificate(provider: &OpenIdProvider) -> Result<HttpRequestResult, String> {
     let request = get_request(provider);
 
-    let response = http_request_outcall(&request)
+    http_request_outcall(&request)
         .await
-        .map_err(|error| format!("‼️ --> HTTP request failed: {error:?}."))?;
-
-    let status_code = match u64::try_from(&response.status.0) {
-        Ok(status) => status,
-        Err(_) => {
-            return Err(format!(
-                "‼️ --> Invalid HTTP status type returned from {}: {:?}",
-                provider, response.status
-            ));
-        }
-    };
-
-    if !(200..300).contains(&status_code) {
-        return Err(format!(
-            "‼️ --> HTTP request unexpected status code: {} from {}",
-            status_code, provider
-        ));
-    }
-
-    Ok(response)
+        .map_err(|error| format!("‼️ --> HTTP request error: {error:?}."))
 }
 
 fn get_request(provider: &OpenIdProvider) -> HttpRequestArgs {

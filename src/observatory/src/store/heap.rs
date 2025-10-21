@@ -82,7 +82,7 @@ fn assert_scheduler_stopped_impl(
     openid: &Option<OpenId>,
 ) -> Result<(), String> {
     if scheduler_enabled(openid, provider) {
-        return Err("OpenID scheduler already running".to_string());
+        return Err(format!("OpenID scheduler for {provider} already running"));
     }
 
     Ok(())

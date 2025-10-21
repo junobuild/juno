@@ -2,7 +2,7 @@ import { idlFactoryObservatory, type ObservatoryActor, type ObservatoryDid } fro
 import { Ed25519KeyIdentity } from '@dfinity/identity';
 import { type Actor, PocketIc } from '@dfinity/pic';
 import { CanisterHttpMethod } from '@dfinity/pic/dist/pocket-ic-types';
-import { Principal } from '@dfinity/principal';
+import type { Principal } from '@dfinity/principal';
 import { assertNonNullish, fromNullable } from '@dfinity/utils';
 import { inject } from 'vitest';
 import { toBodyJson } from '../../utils/orbiter-tests.utils';
@@ -212,7 +212,7 @@ describe('Observatory > OpenId', () => {
 
 			const pendingHttpsOutcalls = await pic.getPendingHttpsOutcalls();
 
-			expect(pendingHttpsOutcalls.length).toBe(1);
+			expect(pendingHttpsOutcalls).toHaveLength(1);
 
 			const { subnetId, requestId } = pendingHttpsOutcalls[0];
 
@@ -244,7 +244,7 @@ describe('Observatory > OpenId', () => {
 
 			await tick(pic);
 
-			expect((await pic.getPendingHttpsOutcalls()).length).toBe(0);
+			await expect((pic.getPendingHttpsOutcalls())).resolves.toHaveLength(0);
 		});
 
 		it('should throw error if openid scheduler is already stopped', async () => {
@@ -266,7 +266,7 @@ describe('Observatory > OpenId', () => {
 
 			const pendingHttpsOutcalls = await pic.getPendingHttpsOutcalls();
 
-			expect(pendingHttpsOutcalls.length).toBe(1);
+			expect(pendingHttpsOutcalls).toHaveLength(1);
 
 			await failHttpsOutCall(pendingHttpsOutcalls[0]);
 
@@ -274,7 +274,8 @@ describe('Observatory > OpenId', () => {
 			await tick(pic);
 
 			const pendingBackoff1 = await pic.getPendingHttpsOutcalls();
-			expect(pendingBackoff1.length).toBe(1); // retried after 120s
+
+			expect(pendingBackoff1).toHaveLength(1); // retried after 120s
 
 			await failHttpsOutCall(pendingBackoff1[0]);
 
@@ -282,7 +283,8 @@ describe('Observatory > OpenId', () => {
 			await tick(pic);
 
 			const pendingBackoff2 = await pic.getPendingHttpsOutcalls();
-			expect(pendingBackoff2.length).toBe(1); // retried after 120s
+
+			expect(pendingBackoff2).toHaveLength(1); // retried after 120s
 
 			await finalizeHttpsOutCall(pendingBackoff2[0]);
 		});

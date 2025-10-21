@@ -135,6 +135,7 @@ describe('Observatory > OpenId', () => {
 		await finalizeHttpsOutCall({ subnetId, requestId });
 	};
 
+
 	const failHttpsOutCall = async (params: { subnetId: Principal; requestId: number }) => {
 		await pic.mockPendingHttpsOutcall({
 			...params,

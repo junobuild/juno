@@ -273,7 +273,7 @@ impl OpenIdCertificate {
 
         Self {
             jwks: jwks.clone(),
-            expires_at: expires_at.clone(),
+            expires_at: *expires_at,
             created_at: now,
             updated_at: now,
             version: Some(version),
@@ -291,7 +291,7 @@ impl OpenIdCertificate {
 
         Self {
             jwks: jwks.clone(),
-            expires_at: expires_at.clone(),
+            expires_at: *expires_at,
             updated_at: now,
             version: Some(version),
             ..current_certificate.clone()

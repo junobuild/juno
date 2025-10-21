@@ -7,7 +7,7 @@ use crate::types::interface::{
     AnalyticsMetricsPageViews, AnalyticsOperatingSystemsPageViews, AnalyticsTop10PageViews,
     AnalyticsTrackEvents, AnalyticsWebVitalsPageMetrics, AnalyticsWebVitalsPerformanceMetrics,
 };
-use junobuild_shared::day::calendar_date;
+use junobuild_shared::date::calendar_date;
 use junobuild_shared::types::utils::CalendarDate;
 use regex::Regex;
 use std::cmp::Ordering;

@@ -1,9 +1,7 @@
 use crate::memory::state::services::{
     mutate_heap_state, read_heap_state, with_openid, with_openid_mut,
 };
-use crate::types::state::{
-    ApiKey, Env, HeapState, OpenId, OpenIdCertificate, OpenIdProvider, OpenIdScheduler,
-};
+use crate::types::state::{ApiKey, Env, HeapState, OpenId, OpenIdCertificate, OpenIdProvider};
 use junobuild_auth::openid::jwt::types::cert::Jwks;
 use junobuild_shared::controllers::{
     delete_controllers as delete_controllers_impl, set_controllers as set_controllers_impl,
@@ -57,6 +55,10 @@ pub fn get_email_api_key() -> Result<ApiKey, String> {
 // OpenId
 // ---------------------------------------------------------
 
+pub fn get_certificate(provider: &OpenIdProvider) -> Option<OpenIdCertificate> {
+    with_openid(|openid| get_certificate_impl(provider, openid))
+}
+
 pub fn assert_scheduler_stopped(provider: &OpenIdProvider) -> Result<(), String> {
     with_openid(|openid| assert_scheduler_stopped_impl(provider, openid))
 }
@@ -79,6 +81,15 @@ pub fn set_openid_certificate(
     expires_at: &Option<Timestamp>,
 ) {
     with_openid_mut(|openid| set_openid_certificate_impl(provider, jwks, expires_at, openid))
+}
+
+fn get_certificate_impl(
+    provider: &OpenIdProvider,
+    openid: &Option<OpenId>,
+) -> Option<OpenIdCertificate> {
+    openid
+        .as_ref()
+        .and_then(|openid| openid.certificates.get(provider).cloned())
 }
 
 fn assert_scheduler_stopped_impl(
@@ -114,10 +125,7 @@ fn scheduler_enabled(openid: &Option<OpenId>, provider: &OpenIdProvider) -> bool
 fn enable_scheduler_impl(provider: &OpenIdProvider, current_openid: &mut Option<OpenId>) {
     let openid = current_openid.get_or_insert_with(OpenId::default);
 
-    let scheduler = openid
-        .schedulers
-        .entry(provider.clone())
-        .or_insert_with(OpenIdScheduler::default);
+    let scheduler = openid.schedulers.entry(provider.clone()).or_default();
 
     scheduler.enabled = true;
 }

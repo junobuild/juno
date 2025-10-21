@@ -49,3 +49,4 @@ async fn fetch_and_save_certificate(provider: &OpenIdProvider) -> Result<(), Str
 
     Ok(())
 }
+

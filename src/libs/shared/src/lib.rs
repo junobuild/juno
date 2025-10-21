@@ -6,7 +6,7 @@ mod constants_internal;
 #[doc(hidden)]
 pub mod constants_shared;
 pub mod controllers;
-pub mod day;
+pub mod date;
 #[doc(hidden)]
 pub mod env;
 #[doc(hidden)]
@@ -22,7 +22,6 @@ pub mod rate;
 pub mod regex;
 pub mod serializers;
 pub mod structures;
-pub mod time;
 #[doc(hidden)]
 pub mod types;
 #[doc(hidden)]

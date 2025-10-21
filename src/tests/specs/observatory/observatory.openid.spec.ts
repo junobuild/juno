@@ -1,8 +1,8 @@
-import { idlFactoryObservatory, type ObservatoryActor } from '$declarations';
+import { idlFactoryObservatory, type ObservatoryActor, type ObservatoryDid } from '$declarations';
 import { Ed25519KeyIdentity } from '@dfinity/identity';
 import { type Actor, PocketIc } from '@dfinity/pic';
 import { CanisterHttpMethod } from '@dfinity/pic/dist/pocket-ic-types';
-import { assertNonNullish } from '@dfinity/utils';
+import { assertNonNullish, fromNullable } from '@dfinity/utils';
 import { inject } from 'vitest';
 import { toBodyJson } from '../../utils/orbiter-tests.utils';
 import { tick } from '../../utils/pic-tests.utils';
@@ -52,6 +52,50 @@ describe('Observatory > OpenId', () => {
 		]
 	};
 
+	const mapGoogleCertificateToJwks = (cert: typeof mockGoogleCertificate): ObservatoryDid.Jwks => ({
+		keys: cert.keys
+			.sort((a, b) => a.kid.localeCompare(b.kid))
+			.map((key) => {
+				const kty = key.kty.toUpperCase();
+
+				const mappedType: ObservatoryDid.JwkType =
+					kty === 'RSA'
+						? { RSA: null }
+						: kty === 'EC'
+							? { EC: null }
+							: kty === 'OKP'
+								? { OKP: null }
+								: { oct: null };
+
+				const params: ObservatoryDid.JwkParams =
+					kty === 'RSA'
+						? { Rsa: { e: key.e, n: key.n } }
+						: kty === 'EC'
+							? {
+									Ec: {
+										x: (key as unknown as { x: string }).x,
+										y: (key as unknown as { y: string }).y,
+										crv: (key as unknown as { crv: string }).crv
+									}
+								}
+							: kty === 'OKP'
+								? {
+										Okp: {
+											x: (key as unknown as { x: string }).x,
+											crv: (key as unknown as { crv: string }).crv
+										}
+									}
+								: { Oct: { k: (key as unknown as { k: string }).k } };
+
+				return {
+					alg: key.alg ? [key.alg] : [],
+					kid: key.kid ? [key.kid] : [],
+					kty: mappedType,
+					params
+				};
+			})
+	});
+
 	const assertHttpsOutcalls = async () => {
 		await tick(pic);
 
@@ -96,37 +140,68 @@ describe('Observatory > OpenId', () => {
 		await tick(pic);
 	};
 
-	it('should start openid monitoring', async () => {
-		const { start_openid_monitoring } = actor;
+	const assertGetCertificate = async () => {
+		const { get_openid_certificate } = actor;
 
-		await start_openid_monitoring();
+		const cert = await get_openid_certificate({
+			provider: { Google: null }
+		});
 
-		await assertHttpsOutcalls();
+		const certificate = fromNullable(cert);
 
-		// TODO: getter assertion
-	});
+		expect(certificate).not.toBeUndefined();
 
-	it('should throw error if openid scheduler is already running', async () => {
-		const { start_openid_monitoring } = actor;
-
-		await expect(start_openid_monitoring()).rejects.toThrow(
-			'OpenID scheduler for Google already running'
+		expect(certificate).toEqual(
+			expect.objectContaining({
+				jwks: mapGoogleCertificateToJwks(mockGoogleCertificate),
+				expires_at: [],
+				created_at: expect.any(BigInt),
+				updated_at: expect.any(BigInt),
+				version: [1n]
+			})
 		);
-	});
+	}
 
-	it('should stop openid monitoring', async () => {
-		await expect(actor.stop_openid_monitoring()).resolves.toBeNull();
-	});
+	describe("Google certificate", () => {
 
-	it('should throw error if openid scheduler is already stopped', async () => {
-		await expect(actor.stop_openid_monitoring()).rejects.toThrow(
-			'OpenID scheduler for Google is not running'
-		);
-	});
+		it('should start openid monitoring', async () => {
+			const { start_openid_monitoring } = actor;
 
-	it('should restart monitoring', async () => {
-		await actor.start_openid_monitoring();
+			await start_openid_monitoring();
 
-		await assertHttpsOutcalls();
-	});
+			await assertHttpsOutcalls();
+		});
+
+		it('should provide certificate', async () => {
+			await assertGetCertificate();
+		});
+
+		it('should throw error if openid scheduler is already running', async () => {
+			const { start_openid_monitoring } = actor;
+
+			await expect(start_openid_monitoring()).rejects.toThrow(
+				'OpenID scheduler for Google already running'
+			);
+		});
+
+		it('should stop openid monitoring', async () => {
+			await expect(actor.stop_openid_monitoring()).resolves.toBeNull();
+		});
+
+		it('should still provide certificate', async () => {
+			await assertGetCertificate();
+		});
+
+		it('should throw error if openid scheduler is already stopped', async () => {
+			await expect(actor.stop_openid_monitoring()).rejects.toThrow(
+				'OpenID scheduler for Google is not running'
+			);
+		});
+
+		it('should restart monitoring', async () => {
+			await actor.start_openid_monitoring();
+
+			await assertHttpsOutcalls();
+		});
+	})
 });

@@ -135,18 +135,6 @@ describe('Observatory > OpenId', () => {
 		await finalizeHttpsOutCall({ subnetId, requestId });
 	};
 
-	const failHttpsOutCall = async (params: { subnetId: Principal; requestId: number }) => {
-		await pic.mockPendingHttpsOutcall({
-			...params,
-			response: {
-				type: 'reject',
-				statusCode: 500,
-				message: 'an error occurred'
-			}
-		});
-		await tick(pic);
-	};
-
 	const finalizeHttpsOutCall = async (params: { subnetId: Principal; requestId: number }) => {
 		await pic.mockPendingHttpsOutcall({
 			...params,
@@ -161,7 +149,7 @@ describe('Observatory > OpenId', () => {
 		await tick(pic);
 	};
 
-	const assertGetCertificate = async ({version}: {version: bigint}) => {
+	const assertGetCertificate = async ({ version }: { version: bigint }) => {
 		const { get_openid_certificate } = actor;
 
 		const cert = await get_openid_certificate({
@@ -193,7 +181,7 @@ describe('Observatory > OpenId', () => {
 		});
 
 		it('should provide certificate', async () => {
-			await assertGetCertificate({version: 1n});
+			await assertGetCertificate({ version: 1n });
 		});
 
 		it('should throw error if openid scheduler is already running', async () => {
@@ -227,7 +215,7 @@ describe('Observatory > OpenId', () => {
 		});
 
 		it('should still provide certificate', async () => {
-			await assertGetCertificate({version: 2n});
+			await assertGetCertificate({ version: 2n });
 		});
 
 		it('should have a scheduler timer because stop was called in between', async () => {
@@ -256,34 +244,6 @@ describe('Observatory > OpenId', () => {
 			await actor.start_openid_monitoring();
 
 			await assertHttpsOutcalls();
-		});
-
-		it.skip('should retry with exponential backoff on failure', async () => {
-			await pic.advanceTime(FETCH_CERTIFICATE_INTERVAL + 1000); // 15min and 1sec
-
-			await tick(pic);
-
-			const pendingHttpsOutcalls = await pic.getPendingHttpsOutcalls();
-
-			expect(pendingHttpsOutcalls.length).toBe(1);
-
-			await failHttpsOutCall(pendingHttpsOutcalls[0]);
-
-			await pic.advanceTime(120_000 + 1_000); // 2min + 1 sec
-			await tick(pic);
-
-			const pendingBackoff1 = await pic.getPendingHttpsOutcalls();
-			expect(pendingBackoff1.length).toBe(1); // retried after 120s
-
-			await failHttpsOutCall(pendingBackoff1[0]);
-
-			await pic.advanceTime(240_000 + 1_000); // 4min + 1sec
-			await tick(pic);
-
-			const pendingBackoff2 = await pic.getPendingHttpsOutcalls();
-			expect(pendingBackoff2.length).toBe(1); // retried after 120s
-
-			await finalizeHttpsOutCall(pendingBackoff2[0]);
 		});
 	});
 });

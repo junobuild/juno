@@ -6,12 +6,14 @@
 	import IconDelete from '$lib/components/icons/IconDelete.svelte';
 	import { busy } from '$lib/stores/busy.store';
 	import { i18n } from '$lib/stores/i18n.store';
-	import { listParamsStore } from '$lib/stores/list-params.store';
 	import { toasts } from '$lib/stores/toasts.store';
 	import { RULES_CONTEXT_KEY, type RulesContext } from '$lib/types/rules.context';
 	import { emit } from '$lib/utils/events.utils';
+	import { type ListParamsContext, LIST_PARAMS_CONTEXT_KEY } from '$lib/types/list-params.context';
 
 	const { store }: RulesContext = getContext<RulesContext>(RULES_CONTEXT_KEY);
+	const { reload: reloadListParams }: ListParamsContext =
+		getContext<ListParamsContext>(LIST_PARAMS_CONTEXT_KEY);
 
 	interface Props {
 		deleteData: (params: { collection: string; satelliteId: Principal }) => Promise<void>;
@@ -46,7 +48,7 @@
 				collection
 			});
 
-			listParamsStore.reload();
+			reloadListParams();
 		} catch (err: unknown) {
 			toasts.error({
 				text: $i18n.errors.data_delete,

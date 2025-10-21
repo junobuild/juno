@@ -2,7 +2,8 @@
 	import IconFilter from '$lib/components/icons/IconFilter.svelte';
 	import PopoverApply from '$lib/components/ui/PopoverApply.svelte';
 	import { i18n } from '$lib/stores/i18n.store';
-	import { listParamsStore } from '$lib/stores/list-params.store';
+	import { type ListParamsContext, LIST_PARAMS_CONTEXT_KEY } from '$lib/types/list-params.context';
+	import { getContext } from 'svelte';
 
 	interface Props {
 		matcherFilter?: boolean;
@@ -13,6 +14,9 @@
 
 	let { matcherFilter = true, ownerFilter = true, direction, key }: Props = $props();
 
+	const { store: listParamsStore, setFilter }: ListParamsContext =
+		getContext<ListParamsContext>(LIST_PARAMS_CONTEXT_KEY);
+
 	let matcher = $state($listParamsStore.filter.matcher ?? '');
 	let owner = $state($listParamsStore.filter.owner ?? '');
 
@@ -20,7 +24,7 @@
 
 	// eslint-disable-next-line require-await
 	const apply = async () => {
-		listParamsStore.setFilter({
+		setFilter({
 			matcher,
 			owner
 		});

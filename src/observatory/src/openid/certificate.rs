@@ -5,7 +5,7 @@ use crate::types::state::OpenIdProvider;
 use ic_cdk::futures::spawn;
 use ic_cdk_timers::set_timer;
 use junobuild_auth::openid::jwt::types::cert::Jwks;
-use junobuild_shared::time::parse_text_datetime_ns;
+use junobuild_shared::date::parse_text_datetime_ns;
 use serde_json::from_slice;
 use std::cmp::min;
 use std::time::Duration;

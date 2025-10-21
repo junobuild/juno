@@ -86,7 +86,7 @@ describe('Observatory > OpenId > Upgrade', () => {
 			// Delayed HTTPs outcalls which happens after stop
 			await assertOpenIdHttpsOutcalls({ pic });
 
-			expect((await pic.getPendingHttpsOutcalls()).length).toBe(0);
+			await expect((pic.getPendingHttpsOutcalls())).resolves.toHaveLength(0);
 
 			await upgradeCurrent();
 

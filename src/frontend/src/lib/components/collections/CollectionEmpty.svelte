@@ -4,9 +4,9 @@
 	import { run } from 'svelte/legacy';
 	import type { SatelliteDid } from '$declarations';
 	import Html from '$lib/components/ui/Html.svelte';
+	import { getDerivedListParamsFiltered } from '$lib/derived/list-params.derived';
 	import { i18n } from '$lib/stores/i18n.store';
 	import { i18nFormat } from '$lib/utils/i18n.utils';
-	import { getDerivedListParamsFiltered } from '$lib/derived/list-params.derived';
 
 	interface Props {
 		rule: SatelliteDid.Rule | undefined;

@@ -1,9 +1,9 @@
 <script lang="ts">
+	import { getContext } from 'svelte';
 	import IconFilter from '$lib/components/icons/IconFilter.svelte';
 	import PopoverApply from '$lib/components/ui/PopoverApply.svelte';
 	import { i18n } from '$lib/stores/i18n.store';
 	import { type ListParamsContext, LIST_PARAMS_CONTEXT_KEY } from '$lib/types/list-params.context';
-	import { getContext } from 'svelte';
 
 	interface Props {
 		matcherFilter?: boolean;

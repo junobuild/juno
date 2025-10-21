@@ -20,9 +20,9 @@
 	import { versionStore } from '$lib/stores/version.store';
 	import { DATA_CONTEXT_KEY, type DataContext, type DataStoreData } from '$lib/types/data.context';
 	import type { ListParams } from '$lib/types/list';
+	import { LIST_PARAMS_CONTEXT_KEY, type ListParamsContext } from '$lib/types/list-params.context';
 	import { PAGINATION_CONTEXT_KEY, type PaginationContext } from '$lib/types/pagination.context';
 	import { RULES_CONTEXT_KEY, type RulesContext } from '$lib/types/rules.context';
-	import { LIST_PARAMS_CONTEXT_KEY, type ListParamsContext } from '$lib/types/list-params.context';
 
 	const docsStore = writable<DataStoreData<SatelliteDid.Doc>>(undefined);
 

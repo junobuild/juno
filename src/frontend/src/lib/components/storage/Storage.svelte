@@ -5,15 +5,15 @@
 	import StorageData from '$lib/components/storage/StorageData.svelte';
 	import { StorageCollectionType } from '$lib/constants/rules.constants';
 	import { authStore } from '$lib/stores/auth.store';
-	import { initRulesContext } from '$lib/stores/rules.context.store';
-	import { RULES_CONTEXT_KEY, type RulesContext } from '$lib/types/rules.context';
-	import { TABS_CONTEXT_KEY, type TabsContext } from '$lib/types/tabs.context';
 	import { initListParamsContext } from '$lib/stores/list-params.context.store';
+	import { initRulesContext } from '$lib/stores/rules.context.store';
 	import {
 		type ListParamsContext,
 		LIST_PARAMS_CONTEXT_KEY,
 		LIST_PARAMS_KEY
 	} from '$lib/types/list-params.context';
+	import { RULES_CONTEXT_KEY, type RulesContext } from '$lib/types/rules.context';
+	import { TABS_CONTEXT_KEY, type TabsContext } from '$lib/types/tabs.context';
 
 	interface Props {
 		satelliteId: Principal;

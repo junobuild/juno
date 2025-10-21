@@ -28,7 +28,7 @@ pub fn schedule_certificate_update(provider: OpenIdProvider, delay: Option<u64>)
                     // already backing off -> double
                     Some(delay) if delay < FETCH_CERTIFICATE_INTERVAL => delay.saturating_mul(2),
                     // on first error
-                    _ => 60 *  2,
+                    _ => 60 * 2,
                 };
 
                 min(FETCH_CERTIFICATE_INTERVAL, backoff)

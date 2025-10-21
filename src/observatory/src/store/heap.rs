@@ -9,7 +9,7 @@ use junobuild_shared::controllers::{
     delete_controllers as delete_controllers_impl, set_controllers as set_controllers_impl,
 };
 use junobuild_shared::types::interface::SetController;
-use junobuild_shared::types::state::{ControllerId, Controllers};
+use junobuild_shared::types::state::{ControllerId, Controllers, Timestamp};
 
 // ---------------------------------------------------------
 // Controllers
@@ -73,8 +73,12 @@ pub fn disable_scheduler(provider: &OpenIdProvider) -> Result<(), String> {
     with_openid_mut(|openid| disable_scheduler_impl(provider, openid))
 }
 
-pub fn set_openid_certificate(provider: &OpenIdProvider, jwks: &Jwks) {
-    with_openid_mut(|openid| set_openid_certificate_impl(provider, jwks, openid))
+pub fn set_openid_certificate(
+    provider: &OpenIdProvider,
+    jwks: &Jwks,
+    expires_at: &Option<Timestamp>,
+) {
+    with_openid_mut(|openid| set_openid_certificate_impl(provider, jwks, expires_at, openid))
 }
 
 fn assert_scheduler_stopped_impl(
@@ -137,6 +141,7 @@ fn disable_scheduler_impl(
 fn set_openid_certificate_impl(
     provider: &OpenIdProvider,
     jwks: &Jwks,
+    expires_at: &Option<Timestamp>,
     current_openid: &mut Option<OpenId>,
 ) {
     let openid = current_openid.get_or_insert_with(OpenId::default);
@@ -144,6 +149,6 @@ fn set_openid_certificate_impl(
     openid
         .certificates
         .entry(provider.clone())
-        .and_modify(|c| *c = OpenIdCertificate::update(c, jwks))
-        .or_insert_with(|| OpenIdCertificate::init(jwks));
+        .and_modify(|c| *c = OpenIdCertificate::update(c, jwks, expires_at))
+        .or_insert_with(|| OpenIdCertificate::init(jwks, expires_at));
 }

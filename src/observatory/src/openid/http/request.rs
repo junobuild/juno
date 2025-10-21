@@ -1,23 +1,18 @@
 use crate::openid::http::constants::FETCH_MAX_RESPONSE_BYTES;
 use crate::types::state::OpenIdProvider;
 use ic_cdk::management_canister::{
-    http_request as http_request_outcall, HttpRequestArgs, TransformContext, TransformFunc,
+    http_request as http_request_outcall, HttpRequestArgs, HttpRequestResult, TransformContext,
+    TransformFunc,
 };
 use ic_cdk::management_canister::{HttpHeader, HttpMethod};
 use junobuild_shared::ic::api::id;
 
-type RawJsonValue = Vec<u8>;
-
-pub async fn get_certificate(provider: &OpenIdProvider) -> Result<RawJsonValue, String> {
+pub async fn get_certificate(provider: &OpenIdProvider) -> Result<HttpRequestResult, String> {
     let request = get_request(provider);
 
-    match http_request_outcall(&request).await {
-        Ok(response) => Ok(response.body),
-        Err(error) => {
-            let message = format!("HTTP request error: {error:?}");
-            Err(format!("‼️ --> {message}."))
-        }
-    }
+    http_request_outcall(&request)
+        .await
+        .map_err(|error| format!("‼️ --> HTTP request error: {error:?}."))
 }
 
 fn get_request(provider: &OpenIdProvider) -> HttpRequestArgs {

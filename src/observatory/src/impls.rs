@@ -16,7 +16,9 @@ use junobuild_shared::serializers::{
     deserialize_from_bytes, serialize_into_bytes, serialize_to_bytes,
 };
 use junobuild_shared::types::interface::NotifyArgs;
-use junobuild_shared::types::state::{NotificationKind, SegmentKind, Version, Versioned};
+use junobuild_shared::types::state::{
+    NotificationKind, SegmentKind, Timestamp, Version, Versioned,
+};
 use junobuild_shared::version::next_version;
 use std::borrow::Cow;
 use std::fmt::{Display, Formatter, Result as FmtResult};
@@ -264,29 +266,32 @@ impl OpenIdCertificate {
         next_version(current_certificate)
     }
 
-    pub fn init(jwks: &Jwks) -> Self {
+    pub fn init(jwks: &Jwks, expires_at: &Option<Timestamp>) -> Self {
         let now = time();
 
         let version = Self::get_next_version(&None);
 
         Self {
             jwks: jwks.clone(),
-            // TODO
-            expires_at: now,
+            expires_at: expires_at.clone(),
             created_at: now,
             updated_at: now,
             version: Some(version),
         }
     }
 
-    pub fn update(current_certificate: &OpenIdCertificate, jwks: &Jwks) -> Self {
+    pub fn update(
+        current_certificate: &OpenIdCertificate,
+        jwks: &Jwks,
+        expires_at: &Option<Timestamp>,
+    ) -> Self {
         let now = time();
 
         let version = Self::get_next_version(&Some(current_certificate.clone()));
 
         Self {
             jwks: jwks.clone(),
-            // TODO: expires_at
+            expires_at: expires_at.clone(),
             updated_at: now,
             version: Some(version),
             ..current_certificate.clone()

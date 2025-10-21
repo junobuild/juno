@@ -14,6 +14,7 @@
 	let { children, actions }: Props = $props();
 
 	const { store }: RulesContext = getContext<RulesContext>(RULES_CONTEXT_KEY);
+
 	let collectionSelected = $derived(nonNullish($store.rule));
 </script>
 

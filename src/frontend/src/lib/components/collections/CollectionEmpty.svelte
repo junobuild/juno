@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { nonNullish } from '@dfinity/utils';
-	import { type Snippet } from 'svelte';
+	import type { Snippet } from 'svelte';
 	import { run } from 'svelte/legacy';
 	import type { SatelliteDid } from '$declarations';
 	import Html from '$lib/components/ui/Html.svelte';

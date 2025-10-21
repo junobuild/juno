@@ -14,11 +14,11 @@ impl From<TokenData<Claims>> for OpenIdCredential {
     }
 }
 
-impl From<OpenIdCredential> for OpenIdCredentialKey {
-    fn from(credential: OpenIdCredential) -> Self {
+impl<'a> From<&'a OpenIdCredential> for OpenIdCredentialKey<'a> {
+    fn from(credential: &'a OpenIdCredential) -> Self {
         Self {
-            sub: credential.sub,
-            iss: credential.iss,
+            sub: &credential.sub,
+            iss: &credential.iss,
         }
     }
 }

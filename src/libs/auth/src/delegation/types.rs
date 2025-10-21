@@ -26,16 +26,18 @@ pub type SessionKey = PublicKey;
 pub type Timestamp = u64;
 pub type Signature = ByteBuf;
 
-pub type PrepareDelegationResult = Result<(UserKey, Timestamp), PrepareDelegationError>;
+pub type PrepareDelegationResult = Result<UserKeyTimestamp, PrepareDelegationError>;
 pub type GetDelegationResult = Result<SignedDelegation, GetDelegationError>;
 
-#[derive(CandidType, Deserialize)]
+pub type UserKeyTimestamp = (UserKey, Timestamp);
+
+#[derive(CandidType, Serialize, Deserialize)]
 pub struct SignedDelegation {
     pub delegation: Delegation,
     pub signature: Signature,
 }
 
-#[derive(CandidType, Deserialize)]
+#[derive(CandidType, Serialize, Deserialize)]
 pub struct Delegation {
     pub pubkey: PublicKey,
     pub expiration: Timestamp,

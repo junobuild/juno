@@ -26,6 +26,10 @@ export interface AssetNoContent {
 export interface AssetsUpgradeOptions {
 	clear_existing_assets: [] | [boolean];
 }
+export type AuthenticateUserArgs = { OpenId: OpenIdPrepareDelegationArgs };
+export interface AuthenticateUserResult {
+	delegation: PrepareDelegationResultData;
+}
 export interface AuthenticationConfig {
 	updated_at: [] | [bigint];
 	openid: [] | [AuthenticationConfigOpenId];
@@ -89,6 +93,11 @@ export interface DelDoc {
 export interface DelRule {
 	version: [] | [bigint];
 }
+export interface Delegation {
+	pubkey: Uint8Array | number[];
+	targets: [] | [Array<Principal>];
+	expiration: bigint;
+}
 export interface DeleteControllersArgs {
 	controllers: Array<Principal>;
 }
@@ -107,6 +116,14 @@ export interface Doc {
 	created_at: bigint;
 	version: [] | [bigint];
 }
+export type GetDelegationArgs = { OpenId: OpenIdGetDelegationArgs };
+export type GetDelegationError =
+	| { JwtFindProvider: JwtFindProviderError }
+	| { ParseJwksFailed: string }
+	| { NoSuchDelegation: null }
+	| { JwtVerify: JwtVerifyError }
+	| { DeriveSeedFailed: string };
+export type GetDelegationResultResponse = { Ok: SignedDelegation } | { Err: GetDelegationError };
 export interface HttpRequest {
 	url: string;
 	method: string;
@@ -138,6 +155,16 @@ export interface InitStorageArgs {
 export interface InitUploadResult {
 	batch_id: bigint;
 }
+export type JwtFindProviderError =
+	| { BadClaim: string }
+	| { BadSig: string }
+	| { NoMatchingProvider: null };
+export type JwtVerifyError =
+	| { WrongKeyType: null }
+	| { MissingKid: null }
+	| { BadClaim: string }
+	| { BadSig: string }
+	| { NoKeyForKid: null };
 export interface ListMatcher {
 	key: [] | [string];
 	updated_at: [] | [TimestampMatcher];
@@ -205,6 +232,17 @@ export interface MemorySize {
 	stable: bigint;
 	heap: bigint;
 }
+export interface OpenIdGetDelegationArgs {
+	jwt: string;
+	session_key: Uint8Array | number[];
+	salt: Uint8Array | number[];
+	expiration: bigint;
+}
+export interface OpenIdPrepareDelegationArgs {
+	jwt: string;
+	session_key: Uint8Array | number[];
+	salt: Uint8Array | number[];
+}
 export type OpenIdProvider = { Google: null };
 export interface OpenIdProviderConfig {
 	client_id: string;
@@ -214,6 +252,18 @@ export type Permission =
 	| { Private: null }
 	| { Public: null }
 	| { Managed: null };
+export type PrepareDelegationError =
+	| {
+			JwtFindProvider: JwtFindProviderError;
+	  }
+	| { ParseJwksFailed: string }
+	| { JwtVerify: JwtVerifyError }
+	| { DeriveSeedFailed: string };
+export type PrepareDelegationResultData =
+	| {
+			Ok: [Uint8Array | number[], bigint];
+	  }
+	| { Err: PrepareDelegationError };
 export interface Proposal {
 	status: ProposalStatus;
 	updated_at: bigint;
@@ -303,6 +353,10 @@ export interface SetStorageConfig {
 	raw_access: [] | [StorageConfigRawAccess];
 	redirects: [] | [Array<[string, StorageConfigRedirect]>];
 }
+export interface SignedDelegation {
+	signature: Uint8Array | number[];
+	delegation: Delegation;
+}
 export interface StorageConfig {
 	iframe: [] | [StorageConfigIFrame];
 	updated_at: [] | [bigint];
@@ -353,6 +407,7 @@ export interface UploadChunkResult {
 	chunk_id: bigint;
 }
 export interface _SERVICE {
+	authenticate_user: ActorMethod<[AuthenticateUserArgs], AuthenticateUserResult>;
 	commit_asset_upload: ActorMethod<[CommitBatch], undefined>;
 	commit_proposal: ActorMethod<[CommitProposal], null>;
 	commit_proposal_asset_upload: ActorMethod<[CommitBatch], undefined>;
@@ -379,6 +434,7 @@ export interface _SERVICE {
 	get_auth_config: ActorMethod<[], [] | [AuthenticationConfig]>;
 	get_config: ActorMethod<[], Config>;
 	get_db_config: ActorMethod<[], [] | [DbConfig]>;
+	get_delegation: ActorMethod<[GetDelegationArgs], GetDelegationResultResponse>;
 	get_doc: ActorMethod<[string, string], [] | [Doc]>;
 	get_many_assets: ActorMethod<[Array<[string, string]>], Array<[string, [] | [AssetNoContent]]>>;
 	get_many_docs: ActorMethod<[Array<[string, string]>], Array<[string, [] | [Doc]]>>;

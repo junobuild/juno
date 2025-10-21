@@ -22,6 +22,10 @@ type AssetNoContent = record {
   version : opt nat64;
 };
 type AssetsUpgradeOptions = record { clear_existing_assets : opt bool };
+type AuthenticateUserArgs = variant { OpenId : OpenIdPrepareDelegationArgs };
+type AuthenticateUserResult = record {
+  delegation : PrepareDelegationResultData;
+};
 type AuthenticationConfig = record {
   updated_at : opt nat64;
   openid : opt AuthenticationConfigOpenId;
@@ -73,6 +77,11 @@ type DbConfig = record {
 };
 type DelDoc = record { version : opt nat64 };
 type DelRule = record { version : opt nat64 };
+type Delegation = record {
+  pubkey : blob;
+  targets : opt vec principal;
+  expiration : nat64;
+};
 type DeleteControllersArgs = record { controllers : vec principal };
 type DeleteProposalAssets = record { proposal_ids : vec nat };
 type DepositCyclesArgs = record { cycles : nat; destination_id : principal };
@@ -83,6 +92,18 @@ type Doc = record {
   description : opt text;
   created_at : nat64;
   version : opt nat64;
+};
+type GetDelegationArgs = variant { OpenId : OpenIdGetDelegationArgs };
+type GetDelegationError = variant {
+  JwtFindProvider : JwtFindProviderError;
+  ParseJwksFailed : text;
+  NoSuchDelegation;
+  JwtVerify : JwtVerifyError;
+  DeriveSeedFailed : text;
+};
+type GetDelegationResultResponse = variant {
+  Ok : SignedDelegation;
+  Err : GetDelegationError;
 };
 type HttpRequest = record {
   url : text;
@@ -111,6 +132,18 @@ type InitSatelliteArgs = record {
 };
 type InitStorageArgs = record { system_memory : opt Memory };
 type InitUploadResult = record { batch_id : nat };
+type JwtFindProviderError = variant {
+  BadClaim : text;
+  BadSig : text;
+  NoMatchingProvider;
+};
+type JwtVerifyError = variant {
+  WrongKeyType;
+  MissingKid;
+  BadClaim : text;
+  BadSig : text;
+  NoKeyForKid;
+};
 type ListMatcher = record {
   key : opt text;
   updated_at : opt TimestampMatcher;
@@ -160,9 +193,30 @@ type ListRulesResults = record {
 };
 type Memory = variant { Heap; Stable };
 type MemorySize = record { stable : nat64; heap : nat64 };
+type OpenIdGetDelegationArgs = record {
+  jwt : text;
+  session_key : blob;
+  salt : blob;
+  expiration : nat64;
+};
+type OpenIdPrepareDelegationArgs = record {
+  jwt : text;
+  session_key : blob;
+  salt : blob;
+};
 type OpenIdProvider = variant { Google };
 type OpenIdProviderConfig = record { client_id : text };
 type Permission = variant { Controllers; Private; Public; Managed };
+type PrepareDelegationError = variant {
+  JwtFindProvider : JwtFindProviderError;
+  ParseJwksFailed : text;
+  JwtVerify : JwtVerifyError;
+  DeriveSeedFailed : text;
+};
+type PrepareDelegationResultData = variant {
+  Ok : record { blob; nat64 };
+  Err : PrepareDelegationError;
+};
 type Proposal = record {
   status : ProposalStatus;
   updated_at : nat64;
@@ -249,6 +303,7 @@ type SetStorageConfig = record {
   raw_access : opt StorageConfigRawAccess;
   redirects : opt vec record { text; StorageConfigRedirect };
 };
+type SignedDelegation = record { signature : blob; delegation : Delegation };
 type StorageConfig = record {
   iframe : opt StorageConfigIFrame;
   updated_at : opt nat64;
@@ -295,6 +350,7 @@ type UploadChunk = record {
 };
 type UploadChunkResult = record { chunk_id : nat };
 service : (InitSatelliteArgs) -> {
+  authenticate_user : (AuthenticateUserArgs) -> (AuthenticateUserResult);
   commit_asset_upload : (CommitBatch) -> ();
   commit_proposal : (CommitProposal) -> (null);
   commit_proposal_asset_upload : (CommitBatch) -> ();
@@ -323,6 +379,7 @@ service : (InitSatelliteArgs) -> {
   get_auth_config : () -> (opt AuthenticationConfig) query;
   get_config : () -> (Config);
   get_db_config : () -> (opt DbConfig) query;
+  get_delegation : (GetDelegationArgs) -> (GetDelegationResultResponse) query;
   get_doc : (text, text) -> (opt Doc) query;
   get_many_assets : (vec record { text; text }) -> (
       vec record { text; opt AssetNoContent },

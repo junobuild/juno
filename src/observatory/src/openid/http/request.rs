@@ -27,8 +27,7 @@ pub async fn get_certificate(provider: &OpenIdProvider) -> Result<HttpRequestRes
     if !(200..300).contains(&status_code) {
         return Err(format!(
             "‼️ --> HTTP request unexpected status code: {} from {}",
-            status_code,
-            provider
+            status_code, provider
         ));
     }
 

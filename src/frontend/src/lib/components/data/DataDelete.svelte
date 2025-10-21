@@ -12,8 +12,8 @@
 	import { emit } from '$lib/utils/events.utils';
 
 	const { store }: RulesContext = getContext<RulesContext>(RULES_CONTEXT_KEY);
-	const { reload: reloadListParams }: ListParamsContext =
-		getContext<ListParamsContext>(LIST_PARAMS_CONTEXT_KEY);
+
+	const { reload: reloadListParams } = getContext<ListParamsContext>(LIST_PARAMS_CONTEXT_KEY);
 
 	interface Props {
 		deleteData: (params: { collection: string; satelliteId: Principal }) => Promise<void>;

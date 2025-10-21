@@ -10,7 +10,7 @@
 	import {
 		type ListParamsContext,
 		LIST_PARAMS_CONTEXT_KEY,
-		LIST_PARAMS_KEY
+		ListParamsKey
 	} from '$lib/types/list-params.context';
 	import { RULES_CONTEXT_KEY, type RulesContext } from '$lib/types/rules.context';
 	import { TABS_CONTEXT_KEY, type TabsContext } from '$lib/types/tabs.context';
@@ -31,9 +31,10 @@
 	});
 
 	setContext<RulesContext>(RULES_CONTEXT_KEY, context);
+
 	setContext<ListParamsContext>(
 		LIST_PARAMS_CONTEXT_KEY,
-		initListParamsContext(LIST_PARAMS_KEY.STORAGE)
+		initListParamsContext(ListParamsKey.STORAGE)
 	);
 
 	const { store: tabsStore }: TabsContext = getContext<TabsContext>(TABS_CONTEXT_KEY);

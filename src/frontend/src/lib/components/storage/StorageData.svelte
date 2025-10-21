@@ -63,7 +63,7 @@
 				params: {
 					startAfter: $startAfter,
 					// prettier-ignore parenthesis required for Webstorm Svelte plugin
-					...$listParamsStore
+					...$listParams
 				} as ListParams,
 				identity: $authStore.identity
 			});
@@ -86,8 +86,7 @@
 
 	const { store }: RulesContext = getContext<RulesContext>(RULES_CONTEXT_KEY);
 
-	const { store: listParamsStore }: ListParamsContext =
-		getContext<ListParamsContext>(LIST_PARAMS_CONTEXT_KEY);
+	const { listParams } = getContext<ListParamsContext>(LIST_PARAMS_CONTEXT_KEY);
 
 	let collection: string | undefined = $derived($store.rule?.[0]);
 

@@ -1,22 +1,24 @@
 import type { ListFilter, ListOrder } from '$lib/types/list';
 import type {
-	LIST_PARAMS_KEY,
 	ListParamsContext,
-	ListParamsData
+	ListParamsData,
+	ListParamsKey
 } from '$lib/types/list-params.context';
 import { getLocalListParams, setLocalStorageItem } from '$lib/utils/local-storage.utils';
-import { writable } from 'svelte/store';
+import { derived, writable } from 'svelte/store';
 
-const saveListParams = ({ key, state }: { key: LIST_PARAMS_KEY; state: ListParamsData }) =>
+const saveListParams = ({ key, state }: { key: ListParamsKey; state: ListParamsData }) =>
 	setLocalStorageItem({ key: `list_params_${key}`, value: JSON.stringify(state) });
 
 // Key input is required for persistent (local) storage
-export const initListParamsContext = (key: LIST_PARAMS_KEY): ListParamsContext => {
+export const initListParamsContext = (key: ListParamsKey): ListParamsContext => {
 	const store = writable<ListParamsData>(getLocalListParams(key));
+
+	const listParams = derived(store, (store) => store);
 
 	return {
 		key,
-		store,
+		listParams,
 		setOrder: (order: ListOrder) => {
 			store.update((state) => {
 				const updated_state = {

@@ -55,7 +55,7 @@
 				params: {
 					startAfter: $startAfter,
 					// prettier-ignore parenthesis required for Webstorm Svelte plugin
-					...$listParamsStore
+					...$listParams
 				} as ListParams,
 				identity: $authStore.identity
 			});
@@ -78,8 +78,7 @@
 	const { setItems, startAfter }: PaginationContext<SatelliteDid.Doc> =
 		getContext<PaginationContext<SatelliteDid.Doc>>(PAGINATION_CONTEXT_KEY);
 
-	const { store: listParamsStore }: ListParamsContext =
-		getContext<ListParamsContext>(LIST_PARAMS_CONTEXT_KEY);
+	const { listParams } = getContext<ListParamsContext>(LIST_PARAMS_CONTEXT_KEY);
 
 	let collection: string | undefined = $derived($store.rule?.[0]);
 </script>

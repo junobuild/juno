@@ -14,7 +14,7 @@
 	import { versionStore } from '$lib/stores/version.store';
 	import {
 		LIST_PARAMS_CONTEXT_KEY,
-		LIST_PARAMS_KEY,
+		ListParamsKey,
 		type ListParamsContext
 	} from '$lib/types/list-params.context';
 	import { PAGINATION_CONTEXT_KEY, type PaginationContext } from '$lib/types/pagination.context';
@@ -76,17 +76,13 @@
 		PaginationContext<SatelliteDid.AssetNoContent>
 	>(PAGINATION_CONTEXT_KEY);
 
-	setContext<ListParamsContext>(
-		LIST_PARAMS_CONTEXT_KEY,
-		initListParamsContext(LIST_PARAMS_KEY.CDN)
-	);
+	setContext<ListParamsContext>(LIST_PARAMS_CONTEXT_KEY, initListParamsContext(ListParamsKey.CDN));
 
-	const { store: listParamsStore }: ListParamsContext =
-		getContext<ListParamsContext>(LIST_PARAMS_CONTEXT_KEY);
+	const { listParams } = getContext<ListParamsContext>(LIST_PARAMS_CONTEXT_KEY);
 
 	$effect(() => {
 		$versionStore;
-		$listParamsStore;
+		$listParams;
 
 		untrack(() => {
 			list();

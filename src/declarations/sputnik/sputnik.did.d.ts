@@ -160,6 +160,7 @@ export type JwtFindProviderError =
 	| { BadSig: string }
 	| { NoMatchingProvider: null };
 export type JwtVerifyError =
+	| { WrongKeyType: null }
 	| { MissingKid: null }
 	| { BadClaim: string }
 	| { BadSig: string }

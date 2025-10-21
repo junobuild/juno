@@ -20,6 +20,7 @@ export const idlFactory = ({ IDL }) => {
 		NoMatchingProvider: IDL.Null
 	});
 	const JwtVerifyError = IDL.Variant({
+		WrongKeyType: IDL.Null,
 		MissingKid: IDL.Null,
 		BadClaim: IDL.Text,
 		BadSig: IDL.Text,

@@ -138,6 +138,7 @@ type JwtFindProviderError = variant {
   NoMatchingProvider;
 };
 type JwtVerifyError = variant {
+  WrongKeyType;
   MissingKid;
   BadClaim : text;
   BadSig : text;

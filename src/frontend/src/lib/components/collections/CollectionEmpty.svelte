@@ -1,24 +1,22 @@
 <script lang="ts">
 	import { nonNullish } from '@dfinity/utils';
-	import type { Snippet } from 'svelte';
+	import { type Snippet } from 'svelte';
 	import { run } from 'svelte/legacy';
 	import type { SatelliteDid } from '$declarations';
 	import Html from '$lib/components/ui/Html.svelte';
-	import { getDerivedListParamsFiltered } from '$lib/derived/list-params.derived';
 	import { i18n } from '$lib/stores/i18n.store';
-	import type { ListParamsStore } from '$lib/stores/list-params.store';
 	import { i18nFormat } from '$lib/utils/i18n.utils';
+	import { getDerivedListParamsFiltered } from '$lib/derived/list-params.derived';
 
 	interface Props {
 		rule: SatelliteDid.Rule | undefined;
 		collection: string | undefined;
 		filter?: Snippet;
-		listParamsStore: ListParamsStore;
 	}
 
-	let { rule, collection, filter, listParamsStore }: Props = $props();
+	let { rule, collection, filter }: Props = $props();
 
-	const listParamsFiltered = getDerivedListParamsFiltered(listParamsStore);
+	const listParamsFiltered = getDerivedListParamsFiltered();
 
 	let privateReadRule = $state(false);
 	run(() => {

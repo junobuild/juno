@@ -13,7 +13,6 @@
 	import DataCount from '$lib/components/data/DataCount.svelte';
 	import { SATELLITE_v0_0_10, SATELLITE_v0_0_9 } from '$lib/constants/version.constants';
 	import { authStore } from '$lib/stores/auth.store';
-	import { getListParamsStore, StoreContainers } from '$lib/stores/list-params.store';
 	import { initPaginationContext } from '$lib/stores/pagination.context.store';
 	import { toasts } from '$lib/stores/toasts.store';
 	import { versionStore } from '$lib/stores/version.store';
@@ -21,11 +20,11 @@
 	import type { ListParams } from '$lib/types/list';
 	import { PAGINATION_CONTEXT_KEY, type PaginationContext } from '$lib/types/pagination.context';
 	import { RULES_CONTEXT_KEY, type RulesContext } from '$lib/types/rules.context';
+	import { LIST_PARAMS_CONTEXT_KEY, type ListParamsContext } from '$lib/types/list-params.context';
 
 	const assetsStore = writable<DataStoreData<SatelliteDid.AssetNoContent>>(undefined);
 
 	const resetData = () => assetsStore.set(null);
-	const listParamsStore = getListParamsStore(StoreContainers.STORAGE);
 
 	setContext<DataContext<SatelliteDid.AssetNoContent>>(DATA_CONTEXT_KEY, {
 		store: assetsStore,
@@ -87,13 +86,16 @@
 
 	const { store }: RulesContext = getContext<RulesContext>(RULES_CONTEXT_KEY);
 
+	const { store: listParamsStore }: ListParamsContext =
+		getContext<ListParamsContext>(LIST_PARAMS_CONTEXT_KEY);
+
 	let collection: string | undefined = $derived($store.rule?.[0]);
 
 	let includeSysCollections = $state(false);
 </script>
 
 <Data displayEmpty={!includeSysCollections} onclose={resetData}>
-	<Assets {includeSysCollections} {listParamsStore} />
+	<Assets {includeSysCollections} />
 
 	<Asset />
 

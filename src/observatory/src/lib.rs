@@ -6,6 +6,7 @@ mod guards;
 mod impls;
 mod memory;
 mod notifications;
+mod openid;
 mod random;
 mod store;
 mod templates;

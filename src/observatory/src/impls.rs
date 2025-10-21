@@ -4,16 +4,22 @@ use crate::templates::{
     FAILED_DEPOSIT_CYCLES_TXT,
 };
 use crate::types::interface::NotifyStatus;
-use crate::types::state::{HeapState, Notification, NotificationKey, NotificationStatus, State};
+use crate::types::state::{
+    HeapState, Notification, NotificationKey, NotificationStatus, OpenIdCertificate,
+    OpenIdProvider, State,
+};
 use ic_cdk::api::time;
 use ic_stable_structures::storable::Bound;
 use ic_stable_structures::Storable;
+use junobuild_auth::openid::jwt::types::cert::Jwks;
 use junobuild_shared::serializers::{
     deserialize_from_bytes, serialize_into_bytes, serialize_to_bytes,
 };
 use junobuild_shared::types::interface::NotifyArgs;
-use junobuild_shared::types::state::{NotificationKind, SegmentKind};
+use junobuild_shared::types::state::{NotificationKind, SegmentKind, Version, Versioned};
+use junobuild_shared::version::next_version;
 use std::borrow::Cow;
+use std::fmt::{Display, Formatter, Result as FmtResult};
 use time::OffsetDateTime;
 
 impl Default for State {
@@ -235,6 +241,63 @@ impl NotifyStatus {
             pending,
             sent,
             failed,
+        }
+    }
+}
+
+impl OpenIdProvider {
+    pub fn jwks_url(&self) -> &'static str {
+        match self {
+            Self::Google => "https://www.googleapis.com/oauth2/v3/certs",
+        }
+    }
+}
+
+impl Versioned for OpenIdCertificate {
+    fn version(&self) -> Option<Version> {
+        self.version
+    }
+}
+
+impl OpenIdCertificate {
+    fn get_next_version(current_certificate: &Option<OpenIdCertificate>) -> Version {
+        next_version(current_certificate)
+    }
+
+    pub fn init(jwks: &Jwks) -> Self {
+        let now = time();
+
+        let version = Self::get_next_version(&None);
+
+        Self {
+            jwks: jwks.clone(),
+            // TODO
+            expires_at: now,
+            created_at: now,
+            updated_at: now,
+            version: Some(version),
+        }
+    }
+
+    pub fn update(current_certificate: &OpenIdCertificate, jwks: &Jwks) -> Self {
+        let now = time();
+
+        let version = Self::get_next_version(&Some(current_certificate.clone()));
+
+        Self {
+            jwks: jwks.clone(),
+            // TODO: expires_at
+            updated_at: now,
+            version: Some(version),
+            ..current_certificate.clone()
+        }
+    }
+}
+
+impl Display for OpenIdProvider {
+    fn fmt(&self, f: &mut Formatter<'_>) -> FmtResult {
+        match self {
+            OpenIdProvider::Google => write!(f, "Google"),
         }
     }
 }

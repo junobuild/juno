@@ -81,6 +81,8 @@ export interface _SERVICE {
 	ping: ActorMethod<[NotifyArgs], undefined>;
 	set_controllers: ActorMethod<[SetControllersArgs], undefined>;
 	set_env: ActorMethod<[Env], undefined>;
+	start_openid_monitoring: ActorMethod<[], undefined>;
+	stop_openid_monitoring: ActorMethod<[], undefined>;
 }
 export declare const idlFactory: IDL.InterfaceFactory;
 export declare const init: (args: { IDL: typeof IDL }) => IDL.Type[];

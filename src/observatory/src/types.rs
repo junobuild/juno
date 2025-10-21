@@ -2,11 +2,13 @@ pub mod state {
     use crate::memory::init_stable_state;
     use candid::{CandidType, Deserialize};
     use ic_stable_structures::StableBTreeMap;
+    use junobuild_auth::openid::jwt::types::cert::Jwks;
     use junobuild_shared::types::memory::Memory;
     use junobuild_shared::types::state::{
-        Controllers, NotificationKind, Segment, SegmentId, Timestamp,
+        Controllers, NotificationKind, Segment, SegmentId, Timestamp, Version,
     };
     use serde::Serialize;
+    use std::collections::HashMap;
 
     pub type NotificationsStable = StableBTreeMap<NotificationKey, Notification, Memory>;
 
@@ -23,10 +25,11 @@ pub mod state {
         pub notifications: NotificationsStable,
     }
 
-    #[derive(Default, CandidType, Serialize, Deserialize, Clone)]
+    #[derive(Default, CandidType, Serialize, Deserialize)]
     pub struct HeapState {
         pub controllers: Controllers,
         pub env: Option<Env>,
+        pub openid: Option<OpenId>,
     }
 
     #[derive(CandidType, Serialize, Deserialize, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
@@ -58,6 +61,37 @@ pub mod state {
     #[derive(CandidType, Serialize, Deserialize, Clone)]
     pub struct Env {
         pub email_api_key: Option<ApiKey>,
+    }
+
+    #[derive(Default, CandidType, Serialize, Deserialize)]
+    pub struct OpenId {
+        pub certificates: HashMap<OpenIdProvider, OpenIdCertificate>,
+        pub schedulers: HashMap<OpenIdProvider, OpenIdScheduler>,
+    }
+
+    #[derive(CandidType, Serialize, Deserialize, Clone, Default)]
+    pub struct OpenIdScheduler {
+        pub enabled: bool,
+    }
+
+    #[derive(CandidType, Serialize, Deserialize, Clone, Hash, Eq, PartialEq)]
+    pub enum OpenIdProvider {
+        Google,
+    }
+
+    #[derive(CandidType, Serialize, Deserialize, Clone)]
+    pub struct OpenIdCertificate {
+        pub jwks: Jwks,
+
+        // This JWKS might no longer be valid after this timestamp.
+        // e.g. when fetching the Google certificate, the date is derived
+        // from the HTTP response header "expires".
+        pub expires_at: Timestamp,
+
+        pub created_at: Timestamp,
+        pub updated_at: Timestamp,
+
+        pub version: Option<Version>,
     }
 }
 

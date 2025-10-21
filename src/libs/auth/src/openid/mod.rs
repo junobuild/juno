@@ -4,4 +4,4 @@ pub(crate) mod types;
 mod utils;
 mod verify;
 
-pub(crate) use verify::*;
+pub use verify::*;

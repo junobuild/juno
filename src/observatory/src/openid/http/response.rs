@@ -6,11 +6,11 @@ use junobuild_shared::ic::UnwrapOrTrap;
 
 const HTTP_STATUS_OK: u8 = 200;
 
-// Google certs occasionally seems to return responses with keys and their properties in random order,
-// so we deserialize, sort the keys and serialize to make the response the same across all nodes.
+// Google certs occasionally return responses where keys and their properties appear in random order.
+// To ensure consistency across all nodes, we deserialize, sort the keys, and then reserialize the response.
 //
-// We trap in case of unexpected JSON response as the http_request does not proceed result
-// in case of any error or unexpected status code
+// We trap in case of an unexpected JSON response, as http_request does not return a result
+// in case of any error or unexpected status code.
 pub fn transform_certificate_response(raw: TransformArgs) -> HttpRequestResult {
     let response = raw.response;
 

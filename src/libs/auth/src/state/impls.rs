@@ -1,5 +1,3 @@
-use crate::openid::jwt::types::cert::Jwks;
-use crate::openid::types::provider::OpenIdCertificate;
 use crate::state::types::config::AuthenticationConfig;
 use crate::state::types::interface::SetAuthenticationConfig;
 use crate::state::types::state::OpenIdCachedCertificate;

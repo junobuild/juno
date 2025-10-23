@@ -1,13 +1,7 @@
 use crate::openid::jwt::decode_jwt_header;
 use crate::openid::jwt::types::errors::JwtFindKidError;
-use candid::Deserialize;
+use crate::openid::jwt::types::token::UnsafeClaims;
 use jsonwebtoken::dangerous;
-
-// TODO: refactor duplicate struct
-#[derive(Clone, Deserialize)]
-struct UnsafeClaims {
-    pub iss: Option<String>,
-}
 
 // TODO: refactor decode_jwt_header for perf reason
 

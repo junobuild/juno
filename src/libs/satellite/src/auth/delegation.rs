@@ -53,6 +53,7 @@ pub fn openid_get_delegation(
         &args.jwt,
         &args.salt,
         &openid.providers,
+        &AuthHeap,
     ) {
         Ok(value) => value,
         Err(err) => return Ok(Err(GetDelegationError::from(err))),

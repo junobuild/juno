@@ -167,7 +167,7 @@ pub fn count_collection_docs(collection: CollectionKey) -> usize {
 #[doc(hidden)]
 #[update]
 pub async fn authenticate_user(args: AuthenticateUserArgs) -> AuthenticateUserResult {
-    api::auth::authenticate_user(&args)
+    api::auth::authenticate_user(&args).await
 }
 
 #[doc(hidden)]

@@ -31,6 +31,7 @@ pub(crate) mod runtime_state {
 }
 
 pub mod config {
+    use crate::openid::types::provider::OpenIdProvider;
     use candid::{CandidType, Deserialize, Principal};
     use junobuild_shared::types::core::DomainName;
     use junobuild_shared::types::state::{Timestamp, Version};
@@ -64,11 +65,6 @@ pub mod config {
     }
 
     pub type OpenIdProviders = BTreeMap<OpenIdProvider, OpenIdProviderConfig>;
-
-    #[derive(CandidType, Serialize, Deserialize, Clone, PartialEq, Eq, PartialOrd, Ord, Debug)]
-    pub enum OpenIdProvider {
-        Google,
-    }
 
     pub type OpenIdProviderClientId = String;
 

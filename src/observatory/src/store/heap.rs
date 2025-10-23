@@ -1,8 +1,9 @@
 use crate::memory::state::services::{
     mutate_heap_state, read_heap_state, with_openid, with_openid_mut,
 };
-use crate::types::state::{ApiKey, Env, HeapState, OpenId, OpenIdCertificate, OpenIdProvider};
+use crate::types::state::{ApiKey, Env, HeapState, OpenId};
 use junobuild_auth::openid::jwt::types::cert::Jwks;
+use junobuild_auth::openid::types::provider::{OpenIdCertificate, OpenIdProvider};
 use junobuild_shared::controllers::{
     delete_controllers as delete_controllers_impl, set_controllers as set_controllers_impl,
 };

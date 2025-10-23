@@ -3,7 +3,7 @@ use crate::delegation::types::{
     Delegation, GetDelegationError, GetDelegationResult, OpenIdGetDelegationArgs, SessionKey,
     SignedDelegation, Timestamp,
 };
-use crate::openid::types::{OpenIdCredential, OpenIdCredentialKey};
+use crate::openid::types::interface::{OpenIdCredential, OpenIdCredentialKey};
 use crate::state::get_salt;
 use crate::state::services::read_state;
 use crate::state::types::config::OpenIdProviderClientId;

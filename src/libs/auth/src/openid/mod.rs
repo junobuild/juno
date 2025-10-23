@@ -1,6 +1,6 @@
 mod impls;
 pub mod jwt;
-pub(crate) mod types;
+pub mod types;
 mod utils;
 mod verify;
 

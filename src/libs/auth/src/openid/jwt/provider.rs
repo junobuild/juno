@@ -1,6 +1,7 @@
 use crate::openid::jwt::header::decode_jwt_header;
 use crate::openid::jwt::types::errors::JwtFindProviderError;
-use crate::state::types::config::{OpenIdProvider, OpenIdProviderConfig, OpenIdProviders};
+use crate::openid::types::provider::OpenIdProvider;
+use crate::state::types::config::{OpenIdProviderConfig, OpenIdProviders};
 use jsonwebtoken::dangerous;
 use serde::Deserialize;
 
@@ -39,7 +40,8 @@ pub fn unsafe_find_jwt_provider<'a>(
 mod tests {
     use super::unsafe_find_jwt_provider;
     use crate::openid::jwt::types::errors::JwtFindProviderError;
-    use crate::state::types::config::{OpenIdProvider, OpenIdProviderConfig, OpenIdProviders};
+    use crate::openid::types::provider::OpenIdProvider;
+    use crate::state::types::config::{OpenIdProviderConfig, OpenIdProviders};
     use base64::engine::general_purpose::URL_SAFE_NO_PAD;
     use base64::Engine;
     use serde_json::json;

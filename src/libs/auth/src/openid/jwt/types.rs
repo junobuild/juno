@@ -17,13 +17,6 @@ pub(crate) mod token {
 
         pub nonce: Option<String>,
     }
-
-    #[derive(Clone, Deserialize)]
-    pub struct UnsafeHeader {
-        pub iss: Option<String>,
-        pub sub: Option<String>,
-        pub aud: Option<String>,
-    }
 }
 
 pub mod cert {

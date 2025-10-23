@@ -1,10 +1,14 @@
 use crate::openid::jwt::header::decode_jwt_header;
 use crate::openid::jwt::types::errors::JwtFindProviderError;
-use crate::openid::jwt::types::token::UnsafeHeader;
 use crate::openid::types::provider::OpenIdProvider;
 use crate::state::types::config::{OpenIdProviderConfig, OpenIdProviders};
 use jsonwebtoken::dangerous;
 use serde::Deserialize;
+
+#[derive(Clone, Deserialize)]
+struct UnsafeClaims {
+    pub iss: Option<String>,
+}
 
 /// ⚠️ **Warning:** This function decodes the JWT payload *without verifying its signature*.
 /// Use only to inspect claims (e.g., `iss`) before performing a verified decode.
@@ -16,7 +20,7 @@ pub fn unsafe_find_jwt_provider<'a>(
     decode_jwt_header(jwt).map_err(JwtFindProviderError::from)?;
 
     // 2) Decode the payload (⚠️ no signature validation)
-    let token_data = dangerous::insecure_decode::<UnsafeHeader>(jwt)
+    let token_data = dangerous::insecure_decode::<UnsafeClaims>(jwt)
         .map_err(|e| JwtFindProviderError::BadSig(e.to_string()))?;
 
     // 3) Try to find by issuer

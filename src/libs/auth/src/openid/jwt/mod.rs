@@ -4,6 +4,7 @@ mod impls;
 mod provider;
 pub mod types;
 mod verify;
+mod jwks;
 
 pub(super) use constants::*;
 pub(super) use provider::*;

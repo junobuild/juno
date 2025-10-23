@@ -2,10 +2,10 @@ pub mod state {
     use crate::memory::init_stable_state;
     use candid::{CandidType, Deserialize};
     use ic_stable_structures::StableBTreeMap;
-    use junobuild_auth::openid::jwt::types::cert::Jwks;
+    use junobuild_auth::openid::types::provider::{OpenIdCertificate, OpenIdProvider};
     use junobuild_shared::types::memory::Memory;
     use junobuild_shared::types::state::{
-        Controllers, NotificationKind, Segment, SegmentId, Timestamp, Version,
+        Controllers, NotificationKind, Segment, SegmentId, Timestamp,
     };
     use serde::Serialize;
     use std::collections::HashMap;
@@ -73,26 +73,6 @@ pub mod state {
     pub struct OpenIdScheduler {
         pub enabled: bool,
     }
-
-    #[derive(CandidType, Serialize, Deserialize, Clone, Hash, Eq, PartialEq)]
-    pub enum OpenIdProvider {
-        Google,
-    }
-
-    #[derive(CandidType, Serialize, Deserialize, Clone)]
-    pub struct OpenIdCertificate {
-        pub jwks: Jwks,
-
-        // This JWKS might no longer be valid after this timestamp.
-        // e.g. when fetching the Google certificate, the date is derived
-        // from the HTTP response header "expires".
-        pub expires_at: Option<Timestamp>,
-
-        pub created_at: Timestamp,
-        pub updated_at: Timestamp,
-
-        pub version: Option<Version>,
-    }
 }
 
 pub mod runtime {
@@ -105,8 +85,8 @@ pub mod runtime {
 }
 
 pub mod interface {
-    use crate::types::state::OpenIdProvider;
     use candid::{CandidType, Deserialize};
+    use junobuild_auth::openid::types::provider::OpenIdProvider;
     use junobuild_shared::types::state::{SegmentId, Timestamp};
     use serde::Serialize;
 

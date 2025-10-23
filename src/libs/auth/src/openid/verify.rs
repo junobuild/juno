@@ -1,6 +1,7 @@
 use crate::openid::jwt::types::cert::Jwks;
 use crate::openid::jwt::{unsafe_find_jwt_provider, verify_openid_jwt, GOOGLE_JWKS};
-use crate::openid::types::{OpenIdCredential, VerifyOpenidCredentialsError};
+use crate::openid::types::errors::VerifyOpenidCredentialsError;
+use crate::openid::types::interface::OpenIdCredential;
 use crate::openid::utils::build_nonce;
 use crate::state::types::config::{OpenIdProviderClientId, OpenIdProviders};
 use crate::state::types::state::Salt;

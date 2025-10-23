@@ -2,9 +2,9 @@ use crate::openid::certificate::schedule_certificate_update;
 use crate::store::heap::{
     assert_scheduler_running, assert_scheduler_stopped, disable_scheduler, enable_scheduler,
 };
-use crate::types::state::OpenIdProvider;
 use ic_cdk::futures::spawn;
 use ic_cdk_timers::set_timer;
+use junobuild_auth::openid::types::provider::OpenIdProvider;
 use std::time::Duration;
 
 pub fn defer_restart_monitoring() {

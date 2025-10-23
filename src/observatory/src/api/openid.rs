@@ -2,8 +2,8 @@ use crate::guards::caller_is_admin_controller;
 use crate::openid::scheduler::{start_openid_scheduler, stop_openid_scheduler};
 use crate::store::heap::get_certificate;
 use crate::types::interface::GetOpenIdCertificate;
-use crate::types::state::OpenIdCertificate;
 use ic_cdk_macros::{query, update};
+use junobuild_auth::openid::types::provider::OpenIdCertificate;
 use junobuild_shared::ic::UnwrapOrTrap;
 
 #[update(guard = "caller_is_admin_controller")]

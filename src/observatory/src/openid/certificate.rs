@@ -1,10 +1,10 @@
 use crate::openid::constants::FETCH_CERTIFICATE_INTERVAL;
 use crate::openid::http::request::get_certificate;
 use crate::store::heap::{assert_scheduler_running, set_openid_certificate};
-use crate::types::state::OpenIdProvider;
 use ic_cdk::futures::spawn;
 use ic_cdk_timers::set_timer;
 use junobuild_auth::openid::jwt::types::cert::Jwks;
+use junobuild_auth::openid::types::provider::OpenIdProvider;
 use junobuild_shared::date::parse_text_datetime_ns;
 use serde_json::from_slice;
 use std::cmp::min;

@@ -1,10 +1,10 @@
 use crate::openid::http::constants::FETCH_MAX_RESPONSE_BYTES;
-use crate::types::state::OpenIdProvider;
 use ic_cdk::management_canister::{
     http_request as http_request_outcall, HttpRequestArgs, HttpRequestResult, TransformContext,
     TransformFunc,
 };
 use ic_cdk::management_canister::{HttpHeader, HttpMethod};
+use junobuild_auth::openid::types::provider::OpenIdProvider;
 use junobuild_shared::ic::api::id;
 
 pub async fn get_certificate(provider: &OpenIdProvider) -> Result<HttpRequestResult, String> {

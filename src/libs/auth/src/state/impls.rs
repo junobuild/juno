@@ -1,4 +1,4 @@
-use crate::state::types::config::{AuthenticationConfig, OpenIdProvider};
+use crate::state::types::config::AuthenticationConfig;
 use crate::state::types::interface::SetAuthenticationConfig;
 use ic_cdk::api::time;
 use junobuild_shared::types::state::{Timestamp, Version, Versioned};
@@ -42,13 +42,5 @@ impl AuthenticationConfig {
         self.openid
             .as_ref()
             .is_some_and(|openid| !openid.providers.is_empty())
-    }
-}
-
-impl OpenIdProvider {
-    pub fn issuers(&self) -> &[&'static str] {
-        match self {
-            OpenIdProvider::Google => &["https://accounts.google.com", "accounts.google.com"],
-        }
     }
 }

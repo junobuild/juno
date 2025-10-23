@@ -1,4 +1,4 @@
-use crate::openid::jwtset::types::interface::GetOpenIdCertificateArgs;
+use crate::openid::jkwset::types::interface::GetOpenIdCertificateArgs;
 use crate::openid::types::provider::{OpenIdCertificate, OpenIdProvider};
 use candid::Principal;
 use ic_cdk::call::Call;

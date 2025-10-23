@@ -1,5 +1,5 @@
+use crate::openid::jkwset::types::errors::GetOrRefreshJwksError;
 use crate::openid::jwt::types::errors::{JwtFindProviderError, JwtVerifyError};
-use crate::openid::jwtset::types::errors::GetOrRefreshJwksError;
 use crate::state::types::state::Salt;
 use candid::{CandidType, Deserialize, Principal};
 use serde::Serialize;

@@ -15,8 +15,8 @@ pub(crate) mod interface {
 }
 
 pub(crate) mod errors {
+    use crate::openid::jkwset::types::errors::GetOrRefreshJwksError;
     use crate::openid::jwt::types::errors::{JwtFindProviderError, JwtVerifyError};
-    use crate::openid::jwtset::types::errors::GetOrRefreshJwksError;
     use candid::{CandidType, Deserialize};
     use serde::Serialize;
 

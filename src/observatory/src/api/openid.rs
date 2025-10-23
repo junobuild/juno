@@ -2,7 +2,7 @@ use crate::guards::caller_is_admin_controller;
 use crate::openid::scheduler::{start_openid_scheduler, stop_openid_scheduler};
 use crate::store::heap::get_certificate;
 use ic_cdk_macros::{query, update};
-use junobuild_auth::openid::jwtset::types::interface::GetOpenIdCertificateArgs;
+use junobuild_auth::openid::jkwset::types::interface::GetOpenIdCertificateArgs;
 use junobuild_auth::openid::types::provider::OpenIdCertificate;
 use junobuild_shared::ic::UnwrapOrTrap;
 

@@ -1,7 +1,10 @@
 pub mod state {
+    use std::collections::HashMap;
     use crate::state::types::config::AuthenticationConfig;
     use candid::CandidType;
     use serde::{Deserialize, Serialize};
+    use crate::delegation::types::Timestamp;
+    use crate::openid::types::provider::{OpenIdCertificate, OpenIdProvider};
 
     pub type Salt = [u8; 32];
 
@@ -9,6 +12,18 @@ pub mod state {
     pub struct AuthenticationHeapState {
         pub config: AuthenticationConfig,
         pub salt: Option<Salt>,
+        pub openid: Option<OpenIdState>,
+    }
+
+    #[derive(Default, CandidType, Serialize, Deserialize, Clone)]
+    pub struct OpenIdState {
+        pub certificates: HashMap<OpenIdProvider, OpenIdCachedCertificate>,
+    }
+
+    #[derive(CandidType, Serialize, Deserialize, Clone)]
+    pub struct OpenIdCachedCertificate {
+        pub certificate: Option<OpenIdCertificate>,
+        pub last_fetch_attempt_at: Timestamp,
     }
 }
 

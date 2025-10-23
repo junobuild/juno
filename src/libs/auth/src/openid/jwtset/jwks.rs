@@ -9,6 +9,15 @@ use crate::state::{cache_certificate, get_cached_certificate, record_fetch_attem
 use crate::strategies::AuthHeapStrategy;
 use ic_cdk::api::time;
 
+pub fn get_jwks(provider: &OpenIdProvider, auth_heap: &impl AuthHeapStrategy) -> Option<Jwks> {
+    let cached_certificate = get_cached_certificate(provider, auth_heap);
+
+    cached_certificate
+        .as_ref()
+        .and_then(|cert| cert.certificate.as_ref())
+        .map(|certificate| certificate.jwks.clone())
+}
+
 pub async fn get_or_refresh_jwks(
     provider: &OpenIdProvider,
     jwt: &str,

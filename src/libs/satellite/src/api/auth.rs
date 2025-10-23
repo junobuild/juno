@@ -3,10 +3,10 @@ use crate::types::interface::{AuthenticateUserArgs, AuthenticateUserResult, GetD
 use junobuild_auth::delegation::types::GetDelegationResult;
 use junobuild_shared::ic::UnwrapOrTrap;
 
-pub fn authenticate_user(args: &AuthenticateUserArgs) -> AuthenticateUserResult {
+pub async fn authenticate_user(args: &AuthenticateUserArgs) -> AuthenticateUserResult {
     match args {
         AuthenticateUserArgs::OpenId(args) => {
-            let delegation = openid_prepare_delegation(args).unwrap_or_trap();
+            let delegation = openid_prepare_delegation(args).await.unwrap_or_trap();
             AuthenticateUserResult {
                 delegation: delegation.into(),
             }

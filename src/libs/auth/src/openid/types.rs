@@ -16,12 +16,14 @@ pub(crate) mod interface {
 
 pub(crate) mod errors {
     use crate::openid::jwt::types::errors::{JwtFindProviderError, JwtVerifyError};
+    use crate::openid::jwtset::types::errors::GetOrRefreshJwksError;
     use candid::{CandidType, Deserialize};
     use serde::Serialize;
 
     #[derive(CandidType, Serialize, Deserialize, Debug)]
     pub enum VerifyOpenidCredentialsError {
-        ParseJwksFailed(String),
+        GetOrFetchJwks(GetOrRefreshJwksError),
+        GetCachedJwks,
         JwtFindProvider(JwtFindProviderError),
         JwtVerify(JwtVerifyError),
     }

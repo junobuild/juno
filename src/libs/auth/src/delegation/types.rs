@@ -1,4 +1,5 @@
 use crate::openid::jwt::types::errors::{JwtFindProviderError, JwtVerifyError};
+use crate::openid::jwtset::types::errors::GetOrRefreshJwksError;
 use crate::state::types::state::Salt;
 use candid::{CandidType, Deserialize, Principal};
 use serde::Serialize;
@@ -47,7 +48,8 @@ pub struct Delegation {
 #[derive(CandidType, Serialize, Deserialize, Debug)]
 pub enum PrepareDelegationError {
     DeriveSeedFailed(String),
-    ParseJwksFailed(String),
+    GetOrFetchJwks(GetOrRefreshJwksError),
+    GetCachedJwks,
     JwtFindProvider(JwtFindProviderError),
     JwtVerify(JwtVerifyError),
 }
@@ -56,7 +58,8 @@ pub enum PrepareDelegationError {
 pub enum GetDelegationError {
     NoSuchDelegation,
     DeriveSeedFailed(String),
-    ParseJwksFailed(String),
+    GetOrFetchJwks(GetOrRefreshJwksError),
+    GetCachedJwks,
     JwtFindProvider(JwtFindProviderError),
     JwtVerify(JwtVerifyError),
 }

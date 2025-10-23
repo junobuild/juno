@@ -8,7 +8,7 @@ use junobuild_auth::delegation::types::{
 use junobuild_auth::{delegation, openid};
 
 // TODO: rename
-pub fn openid_prepare_delegation(
+pub async fn openid_prepare_delegation(
     args: &OpenIdPrepareDelegationArgs,
 ) -> Result<PrepareDelegationResult, String> {
     let config = get_config().ok_or("No authentication configuration found.")?;
@@ -16,11 +16,17 @@ pub fn openid_prepare_delegation(
         .openid
         .ok_or("Authentication with OpenId disabled.")?;
 
-    let (client_id, credential) =
-        match openid::verify_openid_credentials(&args.jwt, &args.salt, &openid.providers) {
-            Ok(value) => value,
-            Err(err) => return Ok(Err(PrepareDelegationError::from(err))),
-        };
+    let (client_id, credential) = match openid::verify_openid_credentials_with_jwks_renewal(
+        &args.jwt,
+        &args.salt,
+        &openid.providers,
+        &AuthHeap,
+    )
+    .await
+    {
+        Ok(value) => value,
+        Err(err) => return Ok(Err(PrepareDelegationError::from(err))),
+    };
 
     // TODO: create and assert user
 
@@ -43,11 +49,14 @@ pub fn openid_get_delegation(
         .openid
         .ok_or("Authentication with OpenId disabled.")?;
 
-    let (client_id, credential) =
-        match openid::verify_openid_credentials(&args.jwt, &args.salt, &openid.providers) {
-            Ok(value) => value,
-            Err(err) => return Ok(Err(GetDelegationError::from(err))),
-        };
+    let (client_id, credential) = match openid::verify_openid_credentials_with_cached_jwks(
+        &args.jwt,
+        &args.salt,
+        &openid.providers,
+    ) {
+        Ok(value) => value,
+        Err(err) => return Ok(Err(GetDelegationError::from(err))),
+    };
 
     let result = delegation::openid_get_delegation(
         args,

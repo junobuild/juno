@@ -76,7 +76,7 @@ pub fn get_cached_certificate(
 
 pub fn cache_certificate(
     provider: &OpenIdProvider,
-    certificate: OpenIdCertificate,
+    certificate: &OpenIdCertificate,
     auth_heap: &impl AuthHeapStrategy,
 ) {
     auth_heap.with_auth_state_mut(|authentication| {
@@ -118,7 +118,7 @@ fn record_fetch_attempt_impl(
 
 fn cache_certificate_impl(
     provider: &OpenIdProvider,
-    certificate: OpenIdCertificate,
+    certificate: &OpenIdCertificate,
     state: &mut Option<AuthenticationHeapState>,
 ) {
     let authentication = state.get_or_insert_with(AuthenticationHeapState::default);

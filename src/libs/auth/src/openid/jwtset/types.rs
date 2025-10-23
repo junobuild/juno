@@ -9,5 +9,16 @@ pub(crate) mod errors {
         MissingKid,
         KeyNotFoundCooldown,
         KeyNotFound,
+        FetchFailed(String),
+    }
+}
+
+pub mod interface {
+    use crate::openid::types::provider::OpenIdProvider;
+    use candid::{CandidType, Deserialize};
+
+    #[derive(CandidType, Deserialize, Clone)]
+    pub struct GetOpenIdCertificate {
+        pub provider: OpenIdProvider,
     }
 }

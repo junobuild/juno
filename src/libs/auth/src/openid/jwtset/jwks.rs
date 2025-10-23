@@ -1,10 +1,11 @@
 use crate::openid::jwt::types::cert::Jwks;
 use crate::openid::jwt::unsafe_find_jwt_kid;
 use crate::openid::jwtset::constants::REFRESH_COOLDOWN_NS;
+use crate::openid::jwtset::fetch::fetch_openid_certificate;
 use crate::openid::jwtset::types::errors::GetOrRefreshJwksError;
 use crate::openid::types::provider::OpenIdProvider;
 use crate::state::types::state::OpenIdCachedCertificate;
-use crate::state::{get_cached_certificate, record_fetch_attempt};
+use crate::state::{cache_certificate, get_cached_certificate, record_fetch_attempt};
 use crate::strategies::AuthHeapStrategy;
 use ic_cdk::api::time;
 
@@ -33,16 +34,18 @@ pub async fn get_or_refresh_jwks(
 
     record_fetch_attempt(provider, auth_heap);
 
-    // TODO
-    // let fetched_certificate = ic_cdk::boundedwait_call .await
+    let fetched_certificate = fetch_openid_certificate(provider)
+        .await
+        .map_err(GetOrRefreshJwksError::FetchFailed)?;
 
-    // TODO what do set/do in case of fetch error
+    // TODO what do set/do in case of fetch error - i.e. should we keep track of success
+    // or error and retry to not block?
 
-    // cache_certificate(&provider, &fetched_certificate, auth_heap);
+    cache_certificate(&provider, &fetched_certificate, auth_heap);
 
-    // if jwks_has_kid(&fetched_certificate.jwks, kid) {
-    //        return Ok(fetched_certificate.jwks.clone());
-    //  }
+    if jwks_has_kid(&fetched_certificate.jwks, &unsafe_kid) {
+        return Ok(fetched_certificate.jwks.clone());
+    }
 
     Err(GetOrRefreshJwksError::KeyNotFound)
 }

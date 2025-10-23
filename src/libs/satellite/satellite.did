@@ -94,14 +94,24 @@ type Doc = record {
 type GetDelegationArgs = variant { OpenId : OpenIdGetDelegationArgs };
 type GetDelegationError = variant {
   JwtFindProvider : JwtFindProviderError;
-  ParseJwksFailed : text;
+  GetCachedJwks;
   NoSuchDelegation;
   JwtVerify : JwtVerifyError;
+  GetOrFetchJwks : GetOrRefreshJwksError;
   DeriveSeedFailed : text;
 };
 type GetDelegationResultResponse = variant {
   Ok : SignedDelegation;
   Err : GetDelegationError;
+};
+type GetOrRefreshJwksError = variant {
+  MissingKid;
+  BadClaim : text;
+  KeyNotFoundCooldown;
+  CertificateNotFound;
+  BadSig : text;
+  KeyNotFound;
+  FetchFailed : text;
 };
 type HttpRequest = record {
   url : text;
@@ -207,8 +217,9 @@ type OpenIdProviderConfig = record { client_id : text };
 type Permission = variant { Controllers; Private; Public; Managed };
 type PrepareDelegationError = variant {
   JwtFindProvider : JwtFindProviderError;
-  ParseJwksFailed : text;
+  GetCachedJwks;
   JwtVerify : JwtVerifyError;
+  GetOrFetchJwks : GetOrRefreshJwksError;
   DeriveSeedFailed : text;
 };
 type PrepareDelegationResultData = variant {

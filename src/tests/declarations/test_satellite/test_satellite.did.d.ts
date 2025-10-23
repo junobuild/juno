@@ -119,11 +119,20 @@ export interface Doc {
 export type GetDelegationArgs = { OpenId: OpenIdGetDelegationArgs };
 export type GetDelegationError =
 	| { JwtFindProvider: JwtFindProviderError }
-	| { ParseJwksFailed: string }
+	| { GetCachedJwks: null }
 	| { NoSuchDelegation: null }
 	| { JwtVerify: JwtVerifyError }
+	| { GetOrFetchJwks: GetOrRefreshJwksError }
 	| { DeriveSeedFailed: string };
 export type GetDelegationResultResponse = { Ok: SignedDelegation } | { Err: GetDelegationError };
+export type GetOrRefreshJwksError =
+	| { MissingKid: null }
+	| { BadClaim: string }
+	| { KeyNotFoundCooldown: null }
+	| { CertificateNotFound: null }
+	| { BadSig: string }
+	| { KeyNotFound: null }
+	| { FetchFailed: string };
 export interface HttpRequest {
 	url: string;
 	method: string;
@@ -256,8 +265,9 @@ export type PrepareDelegationError =
 	| {
 			JwtFindProvider: JwtFindProviderError;
 	  }
-	| { ParseJwksFailed: string }
+	| { GetCachedJwks: null }
 	| { JwtVerify: JwtVerifyError }
+	| { GetOrFetchJwks: GetOrRefreshJwksError }
 	| { DeriveSeedFailed: string };
 export type PrepareDelegationResultData =
 	| {

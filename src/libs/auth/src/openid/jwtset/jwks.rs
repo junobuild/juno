@@ -1,12 +1,12 @@
 use crate::openid::jwt::types::cert::Jwks;
 use crate::openid::jwt::unsafe_find_jwt_kid;
+use crate::openid::jwtset::constants::REFRESH_COOLDOWN_NS;
 use crate::openid::jwtset::types::errors::GetOrRefreshJwksError;
 use crate::openid::types::provider::OpenIdProvider;
 use crate::state::types::state::OpenIdCachedCertificate;
 use crate::state::{get_cached_certificate, record_fetch_attempt};
 use crate::strategies::AuthHeapStrategy;
 use ic_cdk::api::time;
-use crate::openid::jwtset::constants::REFRESH_COOLDOWN_NS;
 
 pub async fn get_or_refresh_jwks(
     provider: &OpenIdProvider,
@@ -19,14 +19,9 @@ pub async fn get_or_refresh_jwks(
 
     let cached_jwks = cached_certificate
         .as_ref()
-        .and_then(|cert| cert.certificate.clone())
-        .and_then(|certificate| {
-            if jwks_has_kid(&certificate.jwks, &unsafe_kid) {
-                return Some(certificate.jwks.clone());
-            }
-
-            None
-        });
+        .and_then(|cert| cert.certificate.as_ref())
+        .filter(|certificate| jwks_has_kid(&certificate.jwks, &unsafe_kid))
+        .map(|certificate| certificate.jwks.clone());
 
     if let Some(cached_jwks) = cached_jwks {
         return Ok(cached_jwks);

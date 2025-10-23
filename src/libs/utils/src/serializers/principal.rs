@@ -57,3 +57,69 @@ impl<'de> Visitor<'de> for DocDataPrincipalVisitor {
         Ok(DocDataPrincipal { value: principal })
     }
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use candid::Principal as CandidPrincipal;
+    use serde_json::{self};
+
+    fn p(txt: &str) -> CandidPrincipal {
+        CandidPrincipal::from_text(txt).expect("principal text should parse")
+    }
+
+    #[test]
+    fn serialize_doc_data_principal() {
+        let ddp = DocDataPrincipal {
+            value: p("aaaaa-aa"),
+        };
+        let s = serde_json::to_string(&ddp).expect("serialize");
+        assert_eq!(s, r#"{"__principal__":"aaaaa-aa"}"#);
+    }
+
+    #[test]
+    fn deserialize_doc_data_principal() {
+        let s = r#"{"__principal__":"aaaaa-aa"}"#;
+        let ddp: DocDataPrincipal = serde_json::from_str(s).expect("deserialize");
+        assert_eq!(ddp.value, p("aaaaa-aa"));
+    }
+
+    #[test]
+    fn round_trip() {
+        let original = DocDataPrincipal {
+            value: p("ryjl3-tyaaa-aaaaa-aaaba-cai"),
+        };
+        let json = serde_json::to_string(&original).unwrap();
+        let decoded: DocDataPrincipal = serde_json::from_str(&json).unwrap();
+        assert_eq!(decoded.value, original.value);
+    }
+
+    #[test]
+    fn error_on_missing_field() {
+        let err = serde_json::from_str::<DocDataPrincipal>(r#"{}"#).unwrap_err();
+        assert!(
+            err.to_string().contains("missing field `__principal__`"),
+            "got: {err}"
+        );
+    }
+
+    #[test]
+    fn error_on_duplicate_field() {
+        let s = r#"{"__principal__":"aaaaa-aa","__principal__":"aaaaa-aa"}"#;
+        let err = serde_json::from_str::<DocDataPrincipal>(s).unwrap_err();
+        assert!(
+            err.to_string().contains("duplicate field `__principal__`"),
+            "got: {err}"
+        );
+    }
+
+    #[test]
+    fn error_on_invalid_principal_format() {
+        let s = r#"{"__principal__":"not-a-principal"}"#;
+        let err = serde_json::from_str::<DocDataPrincipal>(s).unwrap_err();
+        assert!(
+            err.to_string().contains("Invalid format for __principal__"),
+            "got: {err}"
+        );
+    }
+}

@@ -1,6 +1,6 @@
 use crate::openid::jwt::types::errors::{JwtFindKidError, JwtHeaderError, JwtVerifyError};
 use crate::openid::jwtset::types::errors::GetOrRefreshJwksError;
-use crate::openid::jwtset::types::interface::GetOpenIdCertificate;
+use crate::openid::jwtset::types::interface::GetOpenIdCertificateArgs;
 use crate::openid::types::provider::OpenIdProvider;
 
 impl From<JwtFindKidError> for GetOrRefreshJwksError {
@@ -13,7 +13,7 @@ impl From<JwtFindKidError> for GetOrRefreshJwksError {
     }
 }
 
-impl From<&OpenIdProvider> for GetOpenIdCertificate {
+impl From<&OpenIdProvider> for GetOpenIdCertificateArgs {
     fn from(provider: &OpenIdProvider) -> Self {
         Self {
             provider: provider.clone(),

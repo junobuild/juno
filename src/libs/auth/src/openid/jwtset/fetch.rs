@@ -1,4 +1,4 @@
-use crate::openid::jwtset::types::interface::GetOpenIdCertificate;
+use crate::openid::jwtset::types::interface::GetOpenIdCertificateArgs;
 use crate::openid::types::provider::{OpenIdCertificate, OpenIdProvider};
 use candid::Principal;
 use ic_cdk::call::Call;
@@ -11,7 +11,7 @@ pub async fn fetch_openid_certificate(
     let observatory = Principal::from_text(OBSERVATORY).map_err(|e| e.to_string())?;
 
     let certificate = Call::bounded_wait(observatory, "get_openid_certificate")
-        .with_arg(GetOpenIdCertificate::from(provider))
+        .with_arg(GetOpenIdCertificateArgs::from(provider))
         .await
         .map_err(|e| format!("Fetching OpenID certificate failed: {:?}", e))?
         .candid()

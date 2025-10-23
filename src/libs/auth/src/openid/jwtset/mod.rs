@@ -2,4 +2,4 @@ mod constants;
 mod fetch;
 mod impls;
 mod jwks;
-mod types;
+pub mod types;

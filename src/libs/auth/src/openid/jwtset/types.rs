@@ -19,7 +19,7 @@ pub mod interface {
     use candid::{CandidType, Deserialize};
 
     #[derive(CandidType, Deserialize, Clone)]
-    pub struct GetOpenIdCertificate {
+    pub struct GetOpenIdCertificateArgs {
         pub provider: OpenIdProvider,
     }
 }

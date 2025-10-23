@@ -14,7 +14,7 @@ export const idlFactory = ({ IDL }) => {
 		failed: IDL.Nat64
 	});
 	const OpenIdProvider = IDL.Variant({ Google: IDL.Null });
-	const GetOpenIdCertificate = IDL.Record({ provider: OpenIdProvider });
+	const GetOpenIdCertificateArgs = IDL.Record({ provider: OpenIdProvider });
 	const JwkType = IDL.Variant({
 		EC: IDL.Null,
 		OKP: IDL.Null,
@@ -117,7 +117,7 @@ export const idlFactory = ({ IDL }) => {
 		del_controllers: IDL.Func([DeleteControllersArgs], [], []),
 		get_notify_status: IDL.Func([GetNotifications], [NotifyStatus], ['query']),
 		get_openid_certificate: IDL.Func(
-			[GetOpenIdCertificate],
+			[GetOpenIdCertificateArgs],
 			[IDL.Opt(OpenIdCertificate)],
 			['query']
 		),

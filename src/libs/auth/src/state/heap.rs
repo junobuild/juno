@@ -1,7 +1,9 @@
+use crate::openid::types::provider::{OpenIdCertificate, OpenIdProvider};
 use crate::state::types::config::AuthenticationConfig;
-use crate::state::types::state::AuthenticationHeapState;
 use crate::state::types::state::Salt;
+use crate::state::types::state::{AuthenticationHeapState, OpenIdCachedCertificate, OpenIdState};
 use crate::strategies::AuthHeapStrategy;
+use ic_cdk::api::time;
 
 // ---------------------------------------------------------
 // Config
@@ -52,4 +54,81 @@ fn insert_salt_impl(salt: &Salt, state: &mut Option<AuthenticationHeapState>) {
         }
         Some(state) => state.salt = Some(*salt),
     }
+}
+
+// ---------------------------------------------------------
+// Openid
+// ---------------------------------------------------------
+
+pub fn get_openid_state(auth_heap: &impl AuthHeapStrategy) -> Option<OpenIdState> {
+    auth_heap.with_auth_state(|authentication| {
+        authentication.as_ref().and_then(|auth| auth.openid.clone())
+    })
+}
+
+pub fn get_cached_certificate(
+    provider: &OpenIdProvider,
+    auth_heap: &impl AuthHeapStrategy,
+) -> Option<OpenIdCachedCertificate> {
+    auth_heap
+        .with_auth_state(|authentication| get_cached_certificate_impl(provider, authentication))
+}
+
+pub fn cache_certificate(
+    provider: &OpenIdProvider,
+    certificate: OpenIdCertificate,
+    auth_heap: &impl AuthHeapStrategy,
+) {
+    auth_heap.with_auth_state_mut(|authentication| {
+        cache_certificate_impl(provider, certificate, authentication)
+    })
+}
+
+pub fn record_fetch_attempt(provider: &OpenIdProvider, auth_heap: &impl AuthHeapStrategy) {
+    auth_heap
+        .with_auth_state_mut(|authentication| record_fetch_attempt_impl(provider, authentication))
+}
+
+fn get_cached_certificate_impl(
+    provider: &OpenIdProvider,
+    state: &Option<AuthenticationHeapState>,
+) -> Option<OpenIdCachedCertificate> {
+    state
+        .as_ref()
+        .and_then(|auth| auth.openid.as_ref())
+        .and_then(|openid| openid.certificates.get(provider).clone())
+        .and_then(|cached| Some(cached.clone()))
+}
+
+fn record_fetch_attempt_impl(
+    provider: &OpenIdProvider,
+    state: &mut Option<AuthenticationHeapState>,
+) {
+    let authentication = state.get_or_insert_with(AuthenticationHeapState::default);
+    let openid_state = authentication
+        .openid
+        .get_or_insert_with(OpenIdState::default);
+
+    openid_state
+        .certificates
+        .entry(provider.clone())
+        .and_modify(|cached_certificate| cached_certificate.last_fetch_attempt_at = time())
+        .or_insert_with(OpenIdCachedCertificate::init);
+}
+
+fn cache_certificate_impl(
+    provider: &OpenIdProvider,
+    certificate: OpenIdCertificate,
+    state: &mut Option<AuthenticationHeapState>,
+) {
+    let authentication = state.get_or_insert_with(AuthenticationHeapState::default);
+    let openid_state = authentication
+        .openid
+        .get_or_insert_with(OpenIdState::default);
+
+    openid_state
+        .certificates
+        .entry(provider.clone())
+        .and_modify(|cached_certificate| cached_certificate.certificate = Some(certificate.clone()))
+        .or_insert_with(OpenIdCachedCertificate::init);
 }

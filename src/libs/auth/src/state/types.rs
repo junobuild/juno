@@ -1,10 +1,10 @@
 pub mod state {
-    use std::collections::HashMap;
+    use crate::delegation::types::Timestamp;
+    use crate::openid::types::provider::{OpenIdCertificate, OpenIdProvider};
     use crate::state::types::config::AuthenticationConfig;
     use candid::CandidType;
     use serde::{Deserialize, Serialize};
-    use crate::delegation::types::Timestamp;
-    use crate::openid::types::provider::{OpenIdCertificate, OpenIdProvider};
+    use std::collections::HashMap;
 
     pub type Salt = [u8; 32];
 

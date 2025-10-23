@@ -1,0 +1,68 @@
+use crate::openid::jwt::types::cert::Jwks;
+use crate::openid::jwt::unsafe_find_jwt_kid;
+use crate::openid::jwtset::types::errors::GetOrRefreshJwksError;
+use crate::openid::types::provider::OpenIdProvider;
+use crate::state::types::state::OpenIdCachedCertificate;
+use crate::state::{get_cached_certificate, record_fetch_attempt};
+use crate::strategies::AuthHeapStrategy;
+use ic_cdk::api::time;
+use crate::openid::jwtset::constants::REFRESH_COOLDOWN_NS;
+
+pub async fn get_or_refresh_jwks(
+    provider: &OpenIdProvider,
+    jwt: &str,
+    auth_heap: &impl AuthHeapStrategy,
+) -> Result<Jwks, GetOrRefreshJwksError> {
+    let unsafe_kid = unsafe_find_jwt_kid(jwt)?;
+
+    let cached_certificate = get_cached_certificate(provider, auth_heap);
+
+    let cached_jwks = cached_certificate
+        .as_ref()
+        .and_then(|cert| cert.certificate.clone())
+        .and_then(|certificate| {
+            if jwks_has_kid(&certificate.jwks, &unsafe_kid) {
+                return Some(certificate.jwks.clone());
+            }
+
+            None
+        });
+
+    if let Some(cached_jwks) = cached_jwks {
+        return Ok(cached_jwks);
+    }
+
+    if !refresh_allowed(&cached_certificate) {
+        return Err(GetOrRefreshJwksError::KeyNotFoundCooldown);
+    }
+
+    record_fetch_attempt(provider, auth_heap);
+
+    // TODO
+    // let fetched_certificate = ic_cdk::boundedwait_call .await
+
+    // TODO what do set/do in case of fetch error
+
+    // cache_certificate(&provider, &fetched_certificate, auth_heap);
+
+    // if jwks_has_kid(&fetched_certificate.jwks, kid) {
+    //        return Ok(fetched_certificate.jwks.clone());
+    //  }
+
+    Err(GetOrRefreshJwksError::KeyNotFound)
+}
+
+fn jwks_has_kid(jwks: &Jwks, kid: &str) -> bool {
+    jwks.keys.iter().any(|k| k.kid.as_deref() == Some(kid))
+}
+
+fn refresh_allowed(certificate: &Option<OpenIdCachedCertificate>) -> bool {
+    let last_fetch_attempt = certificate
+        .as_ref()
+        .and_then(|cert| Some(cert.last_fetch_attempt_at));
+
+    match last_fetch_attempt {
+        None => true,
+        Some(t) => time().saturating_sub(t) > REFRESH_COOLDOWN_NS,
+    }
+}

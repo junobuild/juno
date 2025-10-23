@@ -1,0 +1,1 @@
+pub const REFRESH_COOLDOWN_NS: u64 = 30 * 1_000_000_000;

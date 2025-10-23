@@ -165,6 +165,13 @@ pub(crate) mod errors {
     }
 
     #[derive(CandidType, Serialize, Deserialize, Debug)]
+    pub enum JwtFindKidError {
+        BadSig(String),
+        BadClaim(String),
+        MissingKid,
+    }
+
+    #[derive(CandidType, Serialize, Deserialize, Debug)]
     pub enum JwtVerifyError {
         MissingKid,
         NoKeyForKid,

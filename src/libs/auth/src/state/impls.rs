@@ -1,5 +1,8 @@
+use crate::openid::jwt::types::cert::Jwks;
+use crate::openid::types::provider::OpenIdCertificate;
 use crate::state::types::config::AuthenticationConfig;
 use crate::state::types::interface::SetAuthenticationConfig;
+use crate::state::types::state::OpenIdCachedCertificate;
 use ic_cdk::api::time;
 use junobuild_shared::types::state::{Timestamp, Version, Versioned};
 use junobuild_shared::version::next_version;
@@ -42,5 +45,14 @@ impl AuthenticationConfig {
         self.openid
             .as_ref()
             .is_some_and(|openid| !openid.providers.is_empty())
+    }
+}
+
+impl OpenIdCachedCertificate {
+    pub fn init() -> Self {
+        Self {
+            certificate: None,
+            last_fetch_attempt_at: time(),
+        }
     }
 }

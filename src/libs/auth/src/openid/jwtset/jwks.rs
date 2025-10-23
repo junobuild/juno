@@ -36,7 +36,8 @@ pub async fn get_or_refresh_jwks(
 
     let fetched_certificate = fetch_openid_certificate(provider)
         .await
-        .map_err(GetOrRefreshJwksError::FetchFailed)?;
+        .map_err(GetOrRefreshJwksError::FetchFailed)?
+        .ok_or(GetOrRefreshJwksError::CertificateNotFound)?;
 
     // TODO what do set/do in case of fetch error - i.e. should we keep track of success
     // or error and retry to not block?

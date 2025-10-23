@@ -6,7 +6,7 @@ use junobuild_shared::env::OBSERVATORY;
 
 pub async fn fetch_openid_certificate(
     provider: &OpenIdProvider,
-) -> Result<OpenIdCertificate, String> {
+) -> Result<Option<OpenIdCertificate>, String> {
     // TODO: optional parameter observatory ID
     let observatory = Principal::from_text(OBSERVATORY).map_err(|e| e.to_string())?;
 

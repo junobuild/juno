@@ -1,6 +1,6 @@
-use crate::openid::jkwset::constants::REFRESH_COOLDOWN_NS;
-use crate::openid::jkwset::fetch::fetch_openid_certificate;
-use crate::openid::jkwset::types::errors::GetOrRefreshJwksError;
+use crate::openid::jwkset::constants::REFRESH_COOLDOWN_NS;
+use crate::openid::jwkset::fetch::fetch_openid_certificate;
+use crate::openid::jwkset::types::errors::GetOrRefreshJwksError;
 use crate::openid::jwt::types::cert::Jwks;
 use crate::openid::jwt::unsafe_find_jwt_kid;
 use crate::openid::types::provider::OpenIdProvider;

@@ -1,5 +1,5 @@
 mod impls;
-pub mod jkwset;
+pub mod jwkset;
 pub mod jwt;
 pub mod types;
 mod utils;

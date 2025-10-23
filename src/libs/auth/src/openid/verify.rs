@@ -1,4 +1,4 @@
-use crate::openid::jkwset::{get_jwks, get_or_refresh_jwks};
+use crate::openid::jwkset::{get_jwks, get_or_refresh_jwks};
 use crate::openid::jwt::types::cert::Jwks;
 use crate::openid::jwt::{unsafe_find_jwt_provider, verify_openid_jwt};
 use crate::openid::types::errors::VerifyOpenidCredentialsError;

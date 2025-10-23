@@ -1,5 +1,5 @@
-use crate::openid::jkwset::types::errors::GetOrRefreshJwksError;
-use crate::openid::jkwset::types::interface::GetOpenIdCertificateArgs;
+use crate::openid::jwkset::types::errors::GetOrRefreshJwksError;
+use crate::openid::jwkset::types::interface::GetOpenIdCertificateArgs;
 use crate::openid::jwt::types::errors::JwtFindKidError;
 use crate::openid::types::provider::OpenIdProvider;
 

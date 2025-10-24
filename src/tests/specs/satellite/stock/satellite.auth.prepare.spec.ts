@@ -282,9 +282,11 @@ describe('Satellite > Authentication > Prepare', async () => {
 
 				await tick(pic);
 
+				const now = await pic.getTime();
+
 				const { jwks, jwt } = await makeMockGoogleOpenIdJwt({
 					clientId: mockClientId,
-					date: mockCertificateDate,
+					date: new Date(now),
 					nonce
 				});
 

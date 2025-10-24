@@ -3,11 +3,9 @@ import { Ed25519KeyIdentity } from '@dfinity/identity';
 import { type Actor, PocketIc } from '@dfinity/pic';
 import { fromNullable } from '@dfinity/utils';
 import { inject } from 'vitest';
-import {
-	FETCH_CERTIFICATE_INTERVAL,
-	mockCertificateDate,
-	mockGoogleCertificate
-} from '../../mocks/observatory.mocks';
+import { mockCertificateDate, mockClientId } from '../../mocks/jwt.mocks';
+import { FETCH_CERTIFICATE_INTERVAL } from '../../mocks/observatory.mocks';
+import { makeMockGoogleOpenIdJwt } from '../../utils/jwt-test.utils';
 import {
 	assertOpenIdHttpsOutcalls,
 	failOpenIdHttpsOutCall,
@@ -16,11 +14,16 @@ import {
 import { tick } from '../../utils/pic-tests.utils';
 import { OBSERVATORY_WASM_PATH } from '../../utils/setup-tests.utils';
 
-describe('Observatory > OpenId', () => {
+describe('Observatory > OpenId', async () => {
 	let pic: PocketIc;
 	let actor: Actor<ObservatoryActor>;
 
 	const controller = Ed25519KeyIdentity.generate();
+
+	const { jwks: mockJwks } = await makeMockGoogleOpenIdJwt({
+		clientId: mockClientId,
+		date: mockCertificateDate
+	});
 
 	beforeAll(async () => {
 		pic = await PocketIc.create(inject('PIC_URL'));
@@ -41,8 +44,8 @@ describe('Observatory > OpenId', () => {
 		await pic?.tearDown();
 	});
 
-	const mapGoogleCertificateToJwks = (cert: typeof mockGoogleCertificate): ObservatoryDid.Jwks => ({
-		keys: cert.keys
+	const mapGoogleCertificateToJwks = (): ObservatoryDid.Jwks => ({
+		keys: mockJwks.keys
 			.sort((a, b) => a.kid.localeCompare(b.kid))
 			.map((key) => {
 				const kty = key.kty.toUpperCase();
@@ -98,7 +101,7 @@ describe('Observatory > OpenId', () => {
 
 		expect(certificate).toEqual(
 			expect.objectContaining({
-				jwks: mapGoogleCertificateToJwks(mockGoogleCertificate),
+				jwks: mapGoogleCertificateToJwks(),
 				expires_at: [],
 				created_at: expect.any(BigInt),
 				updated_at: expect.any(BigInt),
@@ -113,7 +116,7 @@ describe('Observatory > OpenId', () => {
 
 			await start_openid_monitoring();
 
-			await assertOpenIdHttpsOutcalls({ pic });
+			await assertOpenIdHttpsOutcalls({ pic, jwks: mockJwks });
 		});
 
 		it('should provide certificate', async () => {
@@ -139,7 +142,7 @@ describe('Observatory > OpenId', () => {
 
 			const [{ subnetId, requestId }] = pendingHttpsOutcalls;
 
-			await finalizeOpenIdHttpsOutCall({ subnetId, requestId, pic });
+			await finalizeOpenIdHttpsOutCall({ subnetId, requestId, pic, jwks: mockJwks });
 		});
 
 		it('should stop openid monitoring', async () => {
@@ -161,7 +164,7 @@ describe('Observatory > OpenId', () => {
 
 			await tick(pic);
 
-			await assertOpenIdHttpsOutcalls({ pic });
+			await assertOpenIdHttpsOutcalls({ pic, jwks: mockJwks });
 		});
 
 		it('should not have rescheduled a timer', async () => {
@@ -185,7 +188,7 @@ describe('Observatory > OpenId', () => {
 
 			await start_openid_monitoring();
 
-			await assertOpenIdHttpsOutcalls({ pic });
+			await assertOpenIdHttpsOutcalls({ pic, jwks: mockJwks });
 		});
 
 		it('should retry with exponential backoff on failure', async () => {
@@ -215,7 +218,7 @@ describe('Observatory > OpenId', () => {
 
 			expect(pendingBackoff2).toHaveLength(1); // retried after 120s
 
-			await finalizeOpenIdHttpsOutCall({ ...pendingBackoff2[0], pic });
+			await finalizeOpenIdHttpsOutCall({ ...pendingBackoff2[0], pic, jwks: mockJwks });
 		});
 	});
 });

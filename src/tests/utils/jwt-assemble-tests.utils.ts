@@ -1,5 +1,5 @@
 import { uint8ArrayToBase64 } from '@dfinity/utils';
-import type { mockJwtBasePayload } from '../mocks/jwt.mocks';
+import type { MockOpenIdJwt } from './jwt-test.utils';
 
 export const toBase64URL = (uint8Array: Uint8Array): string =>
 	uint8ArrayToBase64(uint8Array).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
@@ -12,5 +12,5 @@ export const assembleJwt = ({
 	payload
 }: {
 	header: string;
-	payload: typeof mockJwtBasePayload;
+	payload: MockOpenIdJwt['payload'];
 }) => [toBase64URL(enc(header)), toBase64URL(enc(JSON.stringify(payload))), randomSig()].join('.');

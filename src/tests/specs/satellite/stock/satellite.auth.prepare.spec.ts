@@ -9,15 +9,15 @@ import { type Actor, PocketIc } from '@dfinity/pic';
 import type { Principal } from '@dfinity/principal';
 import { inject } from 'vitest';
 import { OBSERVATORY_ID } from '../../../constants/observatory-tests.constants';
-import { mockClientId, mockJwt, mockJwtBasePayload } from '../../../mocks/jwt.mocks';
-import { mockCertificateDate } from '../../../mocks/observatory.mocks';
-import { assembleJwt } from '../../../utils/auth-jwt-tests.utils';
+import { mockCertificateDate, mockClientId } from '../../../mocks/jwt.mocks';
+import { assembleJwt } from '../../../utils/jwt-assemble-tests.utils';
+import { makeMockGoogleOpenIdJwt } from '../../../utils/jwt-test.utils';
 import { assertOpenIdHttpsOutcalls } from '../../../utils/observatory-openid-tests.utils';
 import { tick } from '../../../utils/pic-tests.utils';
 import { setupSatelliteStock } from '../../../utils/satellite-tests.utils';
 import { OBSERVATORY_WASM_PATH } from '../../../utils/setup-tests.utils';
 
-describe('Satellite > Authentication > Prepare', () => {
+describe('Satellite > Authentication > Prepare', async () => {
 	let pic: PocketIc;
 
 	let observatoryActor: Actor<ObservatoryActor>;
@@ -26,6 +26,15 @@ describe('Satellite > Authentication > Prepare', () => {
 	let actor: Actor<SatelliteActor>;
 	let controller: Ed25519KeyIdentity;
 	let canisterIdUrl: string;
+
+	const {
+		jwks: mockJwks,
+		jwt: mockJwt,
+		payload: mockJwtPayload
+	} = await makeMockGoogleOpenIdJwt({
+		clientId: mockClientId,
+		date: mockCertificateDate
+	});
 
 	beforeAll(async () => {
 		pic = await PocketIc.create(inject('PIC_URL'));
@@ -155,7 +164,7 @@ describe('Satellite > Authentication > Prepare', () => {
 					const { authenticate_user } = actor;
 
 					// not valid JSON → decode_header fails → BadSig
-					const badSigJwt = assembleJwt({ header: 'not json', payload: mockJwtBasePayload });
+					const badSigJwt = assembleJwt({ header: 'not json', payload: mockJwtPayload });
 
 					const { delegation } = await authenticate_user({
 						OpenId: { jwt: badSigJwt, session_key: publicKey, salt }
@@ -189,7 +198,7 @@ describe('Satellite > Authentication > Prepare', () => {
 						typ: 'JWT'
 					});
 
-					const badAlgJwt = assembleJwt({ header, payload: mockJwtBasePayload });
+					const badAlgJwt = assembleJwt({ header, payload: mockJwtPayload });
 
 					const { delegation } = await authenticate_user({
 						OpenId: { jwt: badAlgJwt, session_key: publicKey, salt }
@@ -216,7 +225,7 @@ describe('Satellite > Authentication > Prepare', () => {
 						typ: 'JWS' // ← wrong on purpose
 					});
 
-					const badTypJwt = assembleJwt({ header, payload: mockJwtBasePayload });
+					const badTypJwt = assembleJwt({ header, payload: mockJwtPayload });
 
 					const { delegation } = await authenticate_user({
 						OpenId: { jwt: badTypJwt, session_key: publicKey, salt }
@@ -274,7 +283,7 @@ describe('Satellite > Authentication > Prepare', () => {
 
 				await start_openid_monitoring();
 
-				await assertOpenIdHttpsOutcalls({ pic });
+				await assertOpenIdHttpsOutcalls({ pic, jwks: mockJwks });
 			});
 
 			it('should authenticate user', async () => {

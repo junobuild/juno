@@ -11,7 +11,7 @@ import { inject } from 'vitest';
 import { OBSERVATORY_ID } from '../../../constants/observatory-tests.constants';
 import { mockCertificateDate, mockClientId } from '../../../mocks/jwt.mocks';
 import { assembleJwt } from '../../../utils/jwt-assemble-tests.utils';
-import { makeMockGoogleOpenIdJwt } from '../../../utils/jwt-test.utils';
+import { makeMockGoogleOpenIdJwt } from '../../../utils/jwt-tests.utils';
 import { assertOpenIdHttpsOutcalls } from '../../../utils/observatory-openid-tests.utils';
 import { tick } from '../../../utils/pic-tests.utils';
 import { setupSatelliteStock } from '../../../utils/satellite-tests.utils';

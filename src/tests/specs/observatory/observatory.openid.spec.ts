@@ -5,7 +5,7 @@ import { fromNullable } from '@dfinity/utils';
 import { inject } from 'vitest';
 import { mockCertificateDate, mockClientId } from '../../mocks/jwt.mocks';
 import { FETCH_CERTIFICATE_INTERVAL } from '../../mocks/observatory.mocks';
-import { makeMockGoogleOpenIdJwt } from '../../utils/jwt-test.utils';
+import { makeMockGoogleOpenIdJwt } from '../../utils/jwt-tests.utils';
 import {
 	assertOpenIdHttpsOutcalls,
 	failOpenIdHttpsOutCall,

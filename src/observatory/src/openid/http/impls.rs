@@ -1,5 +1,7 @@
 use crate::openid::http::types::{JwkJson, JwksJson};
-use junobuild_auth::openid::jwt::types::cert::{Jwk, JwkParams, JwkParamsEc, JwkParamsOct, JwkParamsOkp, JwkParamsRsa, JwkType, Jwks};
+use junobuild_auth::openid::jwt::types::cert::{
+    Jwk, JwkParams, JwkParamsEc, JwkParamsOct, JwkParamsOkp, JwkParamsRsa, JwkType, Jwks,
+};
 
 impl From<JwkJson> for Jwk {
     fn from(j: JwkJson) -> Self {

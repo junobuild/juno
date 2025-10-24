@@ -2,11 +2,17 @@ import type { PocketIc } from '@dfinity/pic';
 import { CanisterHttpMethod } from '@dfinity/pic/dist/pocket-ic-types';
 import type { Principal } from '@dfinity/principal';
 import { assertNonNullish } from '@dfinity/utils';
-import { mockGoogleCertificate } from '../mocks/observatory.mocks';
+import type { MockOpenIdJwt } from './jwt-tests.utils';
 import { toBodyJson } from './orbiter-tests.utils';
 import { tick } from './pic-tests.utils';
 
-export const assertOpenIdHttpsOutcalls = async ({ pic }: { pic: PocketIc }) => {
+export const assertOpenIdHttpsOutcalls = async ({
+	pic,
+	jwks
+}: {
+	pic: PocketIc;
+	jwks: MockOpenIdJwt['jwks'];
+}) => {
 	await tick(pic);
 
 	const [pendingHttpOutCall] = await pic.getPendingHttpsOutcalls();
@@ -28,7 +34,7 @@ export const assertOpenIdHttpsOutcalls = async ({ pic }: { pic: PocketIc }) => {
 
 	expect(body).toHaveLength(0);
 
-	await finalizeOpenIdHttpsOutCall({ subnetId, requestId, pic });
+	await finalizeOpenIdHttpsOutCall({ subnetId, requestId, pic, jwks });
 };
 
 export const failOpenIdHttpsOutCall = async ({
@@ -53,17 +59,19 @@ export const failOpenIdHttpsOutCall = async ({
 
 export const finalizeOpenIdHttpsOutCall = async ({
 	pic,
+	jwks,
 	...params
 }: {
 	subnetId: Principal;
 	requestId: number;
 	pic: PocketIc;
+	jwks: MockOpenIdJwt['jwks'];
 }) => {
 	await pic.mockPendingHttpsOutcall({
 		...params,
 		response: {
 			type: 'success',
-			body: toBodyJson(mockGoogleCertificate),
+			body: toBodyJson(jwks),
 			statusCode: 200,
 			headers: []
 		}

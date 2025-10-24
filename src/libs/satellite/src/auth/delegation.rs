@@ -11,6 +11,7 @@ use junobuild_auth::{delegation, openid};
 pub async fn openid_prepare_delegation(
     args: &OpenIdPrepareDelegationArgs,
 ) -> Result<PrepareDelegationResult, String> {
+    // TODO: error labels
     let config = get_config().ok_or("No authentication configuration found.")?;
     let openid = config
         .openid

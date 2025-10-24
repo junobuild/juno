@@ -22,3 +22,25 @@ export const mockGoogleCertificate = {
 		}
 	]
 };
+
+export const mockJwt = [
+	btoa(
+		JSON.stringify({
+			alg: 'RS256',
+			kid: 'fb9f9371d5755f3e383a40ab3a172cd8baca517f',
+			typ: 'JWT'
+		})
+	),
+	btoa(
+		JSON.stringify({
+			iss: 'https://accounts.google.com',
+			sub: '123456789012345678901',
+			email: 'user@example.com',
+			email_verified: true,
+			aud: 'client-id.apps.googleusercontent.com',
+			iat: Math.floor(Date.now() / 1000) - 10,
+			exp: Math.floor(Date.now() / 1000) + 3600
+		})
+	),
+	'signatureplaceholder'
+].join('.');

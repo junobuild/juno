@@ -10,8 +10,8 @@ import {
 	LOG_SALT_ALREADY_INITIALIZED,
 	LOG_SALT_INITIALIZED
 } from '../constants/auth-tests.constants';
+import { mockClientId } from '../mocks/jwt.mocks';
 import { fetchLogs } from './mgmt-tests.utils';
-import { mockClientId } from '../mocks/observatory.mocks';
 
 /* eslint-disable vitest/require-top-level-describe */
 

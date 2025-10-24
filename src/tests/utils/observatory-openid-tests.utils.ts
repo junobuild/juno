@@ -2,7 +2,7 @@ import type { PocketIc } from '@dfinity/pic';
 import { CanisterHttpMethod } from '@dfinity/pic/dist/pocket-ic-types';
 import type { Principal } from '@dfinity/principal';
 import { assertNonNullish } from '@dfinity/utils';
-import type { MockOpenIdJwt } from './jwt-test.utils';
+import type { MockOpenIdJwt } from './jwt-tests.utils';
 import { toBodyJson } from './orbiter-tests.utils';
 import { tick } from './pic-tests.utils';
 

@@ -7,10 +7,8 @@ use crate::openid::jwkset::types::errors::GetOrRefreshJwksError;
 use crate::openid::jwt::types::cert::Jwks;
 use crate::openid::jwt::unsafe_find_jwt_kid;
 use crate::openid::types::provider::OpenIdProvider;
-use crate::state::types::state::{OpenIdCachedCertificate, OpenIdFetchCertificateResult};
-use crate::state::{
-    cache_certificate, get_cached_certificate, record_fetch_attempt, record_fetch_failure,
-};
+use crate::state::types::state::OpenIdCachedCertificate;
+use crate::state::{cache_certificate, get_cached_certificate, record_fetch_attempt};
 use crate::strategies::AuthHeapStrategy;
 use ic_cdk::api::time;
 
@@ -42,35 +40,25 @@ pub async fn get_or_refresh_jwks(
         return Ok(cached_jwks);
     }
 
-    if !refresh_allowed(&cached_certificate) {
-        return Err(GetOrRefreshJwksError::KeyNotFoundCooldown);
+    match refresh_allowed(&cached_certificate) {
+        RefreshStatus::AllowedFirstFetch | RefreshStatus::AllowedRetry => {
+            record_fetch_attempt(provider, false, auth_heap);
+        }
+        RefreshStatus::AllowedAfterCooldown => {
+            record_fetch_attempt(provider, true, auth_heap);
+        }
+        RefreshStatus::Denied => {
+            return Err(GetOrRefreshJwksError::KeyNotFoundCooldown);
+        }
     }
 
-    record_fetch_attempt(provider, auth_heap);
+    let fetched_certificate = fetch_openid_certificate(provider)
+        .await
+        .map_err(GetOrRefreshJwksError::FetchFailed)?
+        .ok_or(GetOrRefreshJwksError::CertificateNotFound)?;
 
-    let fetched_certificate = match fetch_openid_certificate(provider).await {
-        Ok(Some(certificate)) => {
-            if let Err(e) = cache_certificate(provider, &certificate, auth_heap) {
-                return Err(GetOrRefreshJwksError::MissingLastAttempt(e));
-            }
-
-            certificate
-        }
-        Ok(None) => {
-            if let Err(e) = record_fetch_failure(provider, auth_heap) {
-                return Err(GetOrRefreshJwksError::MissingLastAttempt(e));
-            }
-
-            return Err(GetOrRefreshJwksError::CertificateNotFound);
-        }
-        Err(e) => {
-            if let Err(e) = record_fetch_failure(provider, auth_heap) {
-                return Err(GetOrRefreshJwksError::MissingLastAttempt(e));
-            }
-
-            return Err(GetOrRefreshJwksError::FetchFailed(e));
-        }
-    };
+    cache_certificate(provider, &fetched_certificate, auth_heap)
+        .map_err(GetOrRefreshJwksError::MissingLastAttempt)?;
 
     if jwks_has_kid(&fetched_certificate.jwks, &unsafe_kid) {
         return Ok(fetched_certificate.jwks.clone());
@@ -83,26 +71,37 @@ fn jwks_has_kid(jwks: &Jwks, kid: &str) -> bool {
     jwks.keys.iter().any(|k| k.kid.as_deref() == Some(kid))
 }
 
-fn refresh_allowed(certificate: &Option<OpenIdCachedCertificate>) -> bool {
-    let Some(cached_certificate) = certificate.as_ref() else {
-        // Certificate was never fetched.
-        return true;
-    };
-
-    let delay = match &cached_certificate.last_result {
-        Some(OpenIdFetchCertificateResult::Failure {
-            consecutive_failures,
-            ..
-        }) => failure_backoff_ns(*consecutive_failures),
-        _ => REFRESH_COOLDOWN_NS,
-    };
-
-    time().saturating_sub(cached_certificate.last_fetch_attempt_at) >= delay
+pub enum RefreshStatus {
+    AllowedFirstFetch,
+    AllowedAfterCooldown,
+    AllowedRetry,
+    Denied,
 }
 
-fn failure_backoff_ns(consecutive_failures: u8) -> u64 {
+fn refresh_allowed(certificate: &Option<OpenIdCachedCertificate>) -> RefreshStatus {
+    let Some(cached_certificate) = certificate.as_ref() else {
+        // Certificate was never fetched.
+        return RefreshStatus::AllowedFirstFetch;
+    };
+
+    let since_last_attempt = time().saturating_sub(cached_certificate.last_fetch_attempt.at);
+
+    if since_last_attempt >= REFRESH_COOLDOWN_NS {
+        return RefreshStatus::AllowedAfterCooldown;
+    }
+
+    let delay = attempt_backoff_ns(cached_certificate.last_fetch_attempt.streak_count);
+
+    if since_last_attempt >= delay {
+        RefreshStatus::AllowedRetry
+    } else {
+        RefreshStatus::Denied
+    }
+}
+
+fn attempt_backoff_ns(streak_count: u8) -> u64 {
     let mut factor: u64 = 1;
-    let mut n = consecutive_failures.saturating_sub(1);
+    let mut n = streak_count.max(1).saturating_sub(1);
 
     while n > 0 {
         factor = factor.saturating_mul(FAILURE_BACKOFF_MULTIPLIER);

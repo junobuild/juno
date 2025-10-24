@@ -1,7 +1,7 @@
 use crate::openid::types::provider::OpenIdCertificate;
 use crate::state::types::config::AuthenticationConfig;
 use crate::state::types::interface::SetAuthenticationConfig;
-use crate::state::types::state::{OpenIdCachedCertificate, OpenIdFetchCertificateResult};
+use crate::state::types::state::{OpenIdCachedCertificate, OpenIdLastFetchAttempt};
 use ic_cdk::api::time;
 use junobuild_shared::types::state::{Timestamp, Version, Versioned};
 use junobuild_shared::version::next_version;
@@ -51,32 +51,26 @@ impl OpenIdCachedCertificate {
     pub fn init() -> Self {
         Self {
             certificate: None,
-            last_fetch_attempt_at: time(),
-            last_result: None,
+            last_fetch_attempt: OpenIdLastFetchAttempt {
+                at: time(),
+                streak_count: 1,
+            },
         }
     }
 
-    pub fn update_fetch_attempt(&mut self) {
-        self.last_fetch_attempt_at = time();
+    pub fn record_attempt(&mut self, reset_streak: bool) {
+        self.last_fetch_attempt.at = time();
+
+        if reset_streak {
+            self.last_fetch_attempt.streak_count = 1;
+        } else {
+            self.last_fetch_attempt.streak_count =
+                self.last_fetch_attempt.streak_count.saturating_add(1);
+        }
     }
 
     pub fn update_certificate(&mut self, certificate: &OpenIdCertificate) {
         self.certificate = Some(certificate.clone());
-        self.last_result = Some(OpenIdFetchCertificateResult::Success { at: time() });
-    }
-
-    pub fn record_failure(&mut self) {
-        let consecutive_failures = match &self.last_result {
-            Some(OpenIdFetchCertificateResult::Failure {
-                consecutive_failures,
-                ..
-            }) => consecutive_failures.saturating_add(1),
-            _ => 1,
-        };
-
-        self.last_result = Some(OpenIdFetchCertificateResult::Failure {
-            at: time(),
-            consecutive_failures,
-        });
+        self.last_fetch_attempt.streak_count = 0;
     }
 }

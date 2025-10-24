@@ -84,17 +84,14 @@ pub fn cache_certificate(
     })
 }
 
-pub fn record_fetch_failure(
+pub fn record_fetch_attempt(
     provider: &OpenIdProvider,
+    reset_streak: bool,
     auth_heap: &impl AuthHeapStrategy,
-) -> Result<(), String> {
-    auth_heap
-        .with_auth_state_mut(|authentication| record_fetch_failure_impl(provider, authentication))
-}
-
-pub fn record_fetch_attempt(provider: &OpenIdProvider, auth_heap: &impl AuthHeapStrategy) {
-    auth_heap
-        .with_auth_state_mut(|authentication| record_fetch_attempt_impl(provider, authentication))
+) {
+    auth_heap.with_auth_state_mut(|authentication| {
+        record_fetch_attempt_impl(provider, reset_streak, authentication)
+    })
 }
 
 fn get_cached_certificate_impl(
@@ -110,6 +107,7 @@ fn get_cached_certificate_impl(
 
 fn record_fetch_attempt_impl(
     provider: &OpenIdProvider,
+    reset_streak: bool,
     state: &mut Option<AuthenticationHeapState>,
 ) {
     let authentication = state.get_or_insert_with(AuthenticationHeapState::default);
@@ -120,7 +118,7 @@ fn record_fetch_attempt_impl(
     openid_state
         .certificates
         .entry(provider.clone())
-        .and_modify(|cached_certificate| cached_certificate.update_fetch_attempt())
+        .and_modify(|cached_certificate| cached_certificate.record_attempt(reset_streak))
         .or_insert_with(|| OpenIdCachedCertificate::init());
 }
 
@@ -140,23 +138,5 @@ fn cache_certificate_impl(
             Ok(())
         }
         Entry::Vacant(_) => Err("Cannot cache certificate: fetch attempt was not recorded".into()),
-    }
-}
-
-fn record_fetch_failure_impl(
-    provider: &OpenIdProvider,
-    state: &mut Option<AuthenticationHeapState>,
-) -> Result<(), String> {
-    let authentication = state.get_or_insert_with(AuthenticationHeapState::default);
-    let openid_state = authentication
-        .openid
-        .get_or_insert_with(OpenIdState::default);
-
-    match openid_state.certificates.entry(provider.clone()) {
-        Entry::Occupied(mut occ) => {
-            occ.get_mut().record_failure();
-            Ok(())
-        }
-        Entry::Vacant(_) => Err("Cannot record failure: fetch attempt was not recorded".into()),
     }
 }

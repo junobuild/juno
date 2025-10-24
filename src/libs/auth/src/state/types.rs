@@ -23,19 +23,13 @@ pub mod state {
     #[derive(CandidType, Serialize, Deserialize, Clone)]
     pub struct OpenIdCachedCertificate {
         pub certificate: Option<OpenIdCertificate>,
-        pub last_fetch_attempt_at: Timestamp,
-        pub last_result: Option<OpenIdFetchCertificateResult>,
+        pub last_fetch_attempt: OpenIdLastFetchAttempt,
     }
 
     #[derive(CandidType, Serialize, Deserialize, Clone)]
-    pub enum OpenIdFetchCertificateResult {
-        Success {
-            at: Timestamp,
-        },
-        Failure {
-            at: Timestamp,
-            consecutive_failures: u8,
-        },
+    pub struct OpenIdLastFetchAttempt {
+        pub at: Timestamp,
+        pub streak_count: u8,
     }
 }
 

@@ -281,6 +281,8 @@ describe('Satellite > Authentication > Prepare', async () => {
 				await start_openid_monitoring();
 
 				await assertOpenIdHttpsOutcalls({ pic, jwks: mockJwks });
+
+				actor.setIdentity(user);
 			});
 
 			it('should authenticate user', async () => {

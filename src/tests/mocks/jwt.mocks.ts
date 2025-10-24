@@ -41,4 +41,3 @@ export const mockJwt = [
 	// 256-byte random signature
 	toBase64URL(crypto.getRandomValues(new Uint8Array(256)))
 ].join('.');
-

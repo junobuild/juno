@@ -44,7 +44,6 @@ pub mod cert {
 
         // Type-Specific Key Properties.
         // https://tools.ietf.org/html/rfc7517#section-4
-        #[serde(flatten)]
         pub params: JwkParams,
     }
 
@@ -69,7 +68,6 @@ pub mod cert {
     // Algorithm-specific parameters for JSON Web Keys.
     // https://tools.ietf.org/html/rfc7518#section-6
     #[derive(CandidType, Serialize, Deserialize, Clone)]
-    #[serde(untagged)]
     pub enum JwkParams {
         // Elliptic Curve parameters.
         Ec(JwkParamsEc),

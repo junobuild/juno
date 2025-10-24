@@ -12,6 +12,8 @@ import { OBSERVATORY_ID } from '../../../constants/observatory-tests.constants';
 import { mockClientId, mockJwt, mockJwtBasePayload } from '../../../mocks/jwt.mocks';
 import { mockCertificateDate } from '../../../mocks/observatory.mocks';
 import { assembleJwt } from '../../../utils/auth-jwt-tests.utils';
+import { assertOpenIdHttpsOutcalls } from '../../../utils/observatory-openid-tests.utils';
+import { tick } from '../../../utils/pic-tests.utils';
 import { setupSatelliteStock } from '../../../utils/satellite-tests.utils';
 import { OBSERVATORY_WASM_PATH } from '../../../utils/setup-tests.utils';
 
@@ -159,15 +161,19 @@ describe('Satellite > Authentication > Prepare', () => {
 						OpenId: { jwt: badSigJwt, session_key: publicKey, salt }
 					});
 
-					expect('Err' in delegation).toBe(true);
-					if (!('Err' in delegation)) return;
+					expect('Err' in delegation).toBeTruthy();
+
+					if (!('Err' in delegation)) {return;}
 
 					const { Err } = delegation;
-					expect('JwtFindProvider' in Err).toBe(true);
-					if (!('JwtFindProvider' in Err)) return;
+
+					expect('JwtFindProvider' in Err).toBeTruthy();
+
+					if (!('JwtFindProvider' in Err)) {return;}
 
 					const jfp = Err.JwtFindProvider;
-					expect('BadSig' in jfp).toBe(true); // message string not asserted, just the variant
+
+					expect('BadSig' in jfp).toBeTruthy(); // message string not asserted, just the variant
 				});
 
 				it('should fail with JwtFindProvider.BadClaim("alg") when alg is not RS256', async () => {
@@ -185,11 +191,15 @@ describe('Satellite > Authentication > Prepare', () => {
 						OpenId: { jwt: badAlgJwt, session_key: publicKey, salt }
 					});
 
-					expect('Err' in delegation).toBe(true);
+					expect('Err' in delegation).toBeTruthy();
+
 					const { Err } = delegation as Extract<typeof delegation, { Err: unknown }>;
-					expect('JwtFindProvider' in Err).toBe(true);
+
+					expect('JwtFindProvider' in Err).toBeTruthy();
+
 					const jfp = (Err as any).JwtFindProvider;
-					expect('BadClaim' in jfp).toBe(true);
+
+					expect('BadClaim' in jfp).toBeTruthy();
 					expect(jfp.BadClaim).toBe('alg');
 				});
 
@@ -208,11 +218,15 @@ describe('Satellite > Authentication > Prepare', () => {
 						OpenId: { jwt: badTypJwt, session_key: publicKey, salt }
 					});
 
-					expect('Err' in delegation).toBe(true);
+					expect('Err' in delegation).toBeTruthy();
+
 					const { Err } = delegation as Extract<typeof delegation, { Err: unknown }>;
-					expect('JwtFindProvider' in Err).toBe(true);
+
+					expect('JwtFindProvider' in Err).toBeTruthy();
+
 					const jfp = (Err as any).JwtFindProvider;
-					expect('BadClaim' in jfp).toBe(true);
+
+					expect('BadClaim' in jfp).toBeTruthy();
 					expect(jfp.BadClaim).toBe('typ');
 				});
 			});
@@ -230,6 +244,7 @@ describe('Satellite > Authentication > Prepare', () => {
 
 				if ('Ok' in delegation) {
 					expect(true).toBeFalsy();
+
 					return;
 				}
 
@@ -237,6 +252,55 @@ describe('Satellite > Authentication > Prepare', () => {
 
 				if (!('GetOrFetchJwks' in Err)) {
 					expect(true).toBeFalsy();
+
+					return;
+				}
+
+				const { GetOrFetchJwks } = Err;
+
+				expect('CertificateNotFound' in GetOrFetchJwks).toBeTruthy();
+			});
+		});
+
+		describe('Success', () => {
+			beforeAll(async () => {
+				const { start_openid_monitoring } = observatoryActor;
+
+				actor.setIdentity(controller);
+
+				await start_openid_monitoring();
+
+				await assertOpenIdHttpsOutcalls({ pic });
+			});
+
+			it('should authenticate user', async () => {
+				const { authenticate_user } = actor;
+
+				await pic.advanceTime(1000 * 60 * 15); // 15min. We tried few times above with errors
+
+				await tick(pic);
+
+				const { delegation } = await authenticate_user({
+					OpenId: {
+						jwt: mockJwt,
+						session_key: publicKey,
+						salt
+					}
+				});
+
+				console.log(delegation);
+
+				if ('Ok' in delegation) {
+					expect(true).toBeFalsy();
+
+					return;
+				}
+
+				const { Err } = delegation;
+
+				if (!('GetOrFetchJwks' in Err)) {
+					expect(true).toBeFalsy();
+
 					return;
 				}
 

@@ -4,17 +4,24 @@ import { type Actor, PocketIc } from '@dfinity/pic';
 import type { Principal } from '@dfinity/principal';
 import { fromNullable } from '@dfinity/utils';
 import { inject } from 'vitest';
-import { FETCH_CERTIFICATE_INTERVAL, mockCertificateDate } from '../../mocks/observatory.mocks';
+import { mockCertificateDate, mockClientId } from '../../mocks/jwt.mocks';
+import { FETCH_CERTIFICATE_INTERVAL } from '../../mocks/observatory.mocks';
+import { makeMockGoogleOpenIdJwt } from '../../utils/jwt-test.utils';
 import { assertOpenIdHttpsOutcalls } from '../../utils/observatory-openid-tests.utils';
 import { tick } from '../../utils/pic-tests.utils';
 import { OBSERVATORY_WASM_PATH } from '../../utils/setup-tests.utils';
 
-describe('Observatory > OpenId > Upgrade', () => {
+describe('Observatory > OpenId > Upgrade', async () => {
 	let pic: PocketIc;
 	let actor: Actor<ObservatoryActor>;
 	let observatoryId: Principal;
 
 	const controller = Ed25519KeyIdentity.generate();
+
+	const { jwks: mockJwks } = await makeMockGoogleOpenIdJwt({
+		clientId: mockClientId,
+		date: mockCertificateDate
+	});
 
 	beforeEach(async () => {
 		pic = await PocketIc.create(inject('PIC_URL'));
@@ -74,7 +81,7 @@ describe('Observatory > OpenId > Upgrade', () => {
 			await start_openid_monitoring();
 
 			// HTTPs outcalls after stat
-			await assertOpenIdHttpsOutcalls({ pic });
+			await assertOpenIdHttpsOutcalls({ pic, jwks: mockJwks });
 
 			await pic.advanceTime(1000);
 			await tick(pic);
@@ -84,7 +91,7 @@ describe('Observatory > OpenId > Upgrade', () => {
 			await pic.advanceTime(FETCH_CERTIFICATE_INTERVAL + 1000);
 
 			// Delayed HTTPs outcalls which happens after stop
-			await assertOpenIdHttpsOutcalls({ pic });
+			await assertOpenIdHttpsOutcalls({ pic, jwks: mockJwks });
 
 			await expect(pic.getPendingHttpsOutcalls()).resolves.toHaveLength(0);
 
@@ -101,7 +108,7 @@ describe('Observatory > OpenId > Upgrade', () => {
 			await start_openid_monitoring();
 
 			// HTTPs outcalls after stat
-			await assertOpenIdHttpsOutcalls({ pic });
+			await assertOpenIdHttpsOutcalls({ pic, jwks: mockJwks });
 
 			await upgradeCurrent();
 
@@ -120,7 +127,7 @@ describe('Observatory > OpenId > Upgrade', () => {
 			await start_openid_monitoring();
 
 			// HTTPs outcalls after stat
-			await assertOpenIdHttpsOutcalls({ pic });
+			await assertOpenIdHttpsOutcalls({ pic, jwks: mockJwks });
 
 			await upgradeCurrent();
 
@@ -130,7 +137,7 @@ describe('Observatory > OpenId > Upgrade', () => {
 			await expect(pic.getPendingHttpsOutcalls()).resolves.toHaveLength(1);
 
 			// HTTPs outcalls after restat
-			await assertOpenIdHttpsOutcalls({ pic });
+			await assertOpenIdHttpsOutcalls({ pic, jwks: mockJwks });
 		});
 	});
 });

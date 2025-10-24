@@ -1,9 +1,8 @@
 use crate::openid::types::provider::{OpenIdCertificate, OpenIdProvider};
 use crate::state::types::config::AuthenticationConfig;
-use crate::state::types::state::Salt;
 use crate::state::types::state::{AuthenticationHeapState, OpenIdCachedCertificate, OpenIdState};
+use crate::state::types::state::{Salt};
 use crate::strategies::AuthHeapStrategy;
-use ic_cdk::api::time;
 
 // ---------------------------------------------------------
 // Config
@@ -84,6 +83,11 @@ pub fn cache_certificate(
     })
 }
 
+pub fn record_fetch_failure(provider: &OpenIdProvider, auth_heap: &impl AuthHeapStrategy) {
+    auth_heap
+        .with_auth_state_mut(|authentication| record_fetch_failure_impl(provider, authentication))
+}
+
 pub fn record_fetch_attempt(provider: &OpenIdProvider, auth_heap: &impl AuthHeapStrategy) {
     auth_heap
         .with_auth_state_mut(|authentication| record_fetch_attempt_impl(provider, authentication))
@@ -112,8 +116,8 @@ fn record_fetch_attempt_impl(
     openid_state
         .certificates
         .entry(provider.clone())
-        .and_modify(|cached_certificate| cached_certificate.last_fetch_attempt_at = time())
-        .or_insert_with(OpenIdCachedCertificate::init);
+        .and_modify(|cached_certificate| cached_certificate.update_fetch_attempt())
+        .or_insert_with(|| OpenIdCachedCertificate::init_with_fetch_attempt());
 }
 
 fn cache_certificate_impl(
@@ -129,6 +133,22 @@ fn cache_certificate_impl(
     openid_state
         .certificates
         .entry(provider.clone())
-        .and_modify(|cached_certificate| cached_certificate.certificate = Some(certificate.clone()))
-        .or_insert_with(OpenIdCachedCertificate::init);
+        .and_modify(|cached_certificate| cached_certificate.update_certificate(certificate))
+        .or_insert_with(|| OpenIdCachedCertificate::init_with_certificate(certificate));
+}
+
+fn record_fetch_failure_impl(
+    provider: &OpenIdProvider,
+    state: &mut Option<AuthenticationHeapState>,
+) {
+    let authentication = state.get_or_insert_with(AuthenticationHeapState::default);
+    let openid_state = authentication
+        .openid
+        .get_or_insert_with(OpenIdState::default);
+
+    openid_state
+        .certificates
+        .entry(provider.clone())
+        .and_modify(|cached_certificate| cached_certificate.record_failure())
+        .or_insert_with(|| OpenIdCachedCertificate::init_with_failure());
 }

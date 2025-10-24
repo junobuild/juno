@@ -10,6 +10,7 @@ import type { Principal } from '@dfinity/principal';
 import { inject } from 'vitest';
 import { OBSERVATORY_ID } from '../../../constants/observatory-tests.constants';
 import { mockCertificateDate, mockClientId } from '../../../mocks/jwt.mocks';
+import { generateNonce } from '../../../utils/auth-nonce-tests.utils';
 import { assembleJwt } from '../../../utils/jwt-assemble-tests.utils';
 import { makeMockGoogleOpenIdJwt } from '../../../utils/jwt-tests.utils';
 import { assertOpenIdHttpsOutcalls } from '../../../utils/observatory-openid-tests.utils';
@@ -27,13 +28,21 @@ describe('Satellite > Authentication > Prepare', async () => {
 	let controller: Ed25519KeyIdentity;
 	let canisterIdUrl: string;
 
+	const user = Ed25519KeyIdentity.generate();
+
+	const sessionKey = await ECDSAKeyIdentity.generate();
+	const publicKey = new Uint8Array(sessionKey.getPublicKey().toDer());
+
+	const { nonce, salt } = await generateNonce({ caller: user });
+
 	const {
 		jwks: mockJwks,
 		jwt: mockJwt,
 		payload: mockJwtPayload
 	} = await makeMockGoogleOpenIdJwt({
 		clientId: mockClientId,
-		date: mockCertificateDate
+		date: mockCertificateDate,
+		nonce
 	});
 
 	beforeAll(async () => {
@@ -71,12 +80,6 @@ describe('Satellite > Authentication > Prepare', async () => {
 	});
 
 	describe('Authenticate user fails', async () => {
-		const user = Ed25519KeyIdentity.generate();
-
-		const sessionKey = await ECDSAKeyIdentity.generate();
-		const publicKey = new Uint8Array(sessionKey.getPublicKey().toDer());
-		const salt = crypto.getRandomValues(new Uint8Array(32));
-
 		beforeAll(() => {
 			actor.setIdentity(user);
 		});
@@ -124,12 +127,6 @@ describe('Satellite > Authentication > Prepare', async () => {
 	});
 
 	describe('Authentication with Google', async () => {
-		const user = Ed25519KeyIdentity.generate();
-
-		const sessionKey = await ECDSAKeyIdentity.generate();
-		const publicKey = new Uint8Array(sessionKey.getPublicKey().toDer());
-		const salt = crypto.getRandomValues(new Uint8Array(32));
-
 		beforeAll(async () => {
 			const { set_auth_config } = actor;
 

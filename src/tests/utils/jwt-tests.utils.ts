@@ -9,10 +9,12 @@ export interface MockOpenIdJwt {
 
 export const makeMockGoogleOpenIdJwt = async ({
 	clientId,
-	date
+	date,
+	nonce
 }: {
 	clientId: string;
 	date: Date;
+	nonce?: string;
 }): Promise<MockOpenIdJwt> => {
 	const { publicKey, privateKey } = await generateKeyPair('RS256');
 
@@ -30,7 +32,8 @@ export const makeMockGoogleOpenIdJwt = async ({
 		email_verified: true,
 		aud: clientId,
 		iat: timestamp - 10,
-		exp: timestamp + 3600
+		exp: timestamp + 3600,
+		nonce
 	} as const;
 
 	const jwt = await new SignJWT(payload)

@@ -7,12 +7,11 @@ import {
 import { ECDSAKeyIdentity, Ed25519KeyIdentity } from '@dfinity/identity';
 import { type Actor, PocketIc } from '@dfinity/pic';
 import type { Principal } from '@dfinity/principal';
-import { inject } from 'vitest';
 import { OBSERVATORY_ID } from '../../../constants/observatory-tests.constants';
 import { mockCertificateDate, mockClientId } from '../../../mocks/jwt.mocks';
 import { generateNonce } from '../../../utils/auth-nonce-tests.utils';
 import { assembleJwt } from '../../../utils/jwt-assemble-tests.utils';
-import { makeMockGoogleOpenIdJwt } from '../../../utils/jwt-tests.utils';
+import { makeMockGoogleOpenIdJwt, type MockOpenIdJwt } from '../../../utils/jwt-tests.utils';
 import { assertOpenIdHttpsOutcalls } from '../../../utils/observatory-openid-tests.utils';
 import { tick } from '../../../utils/pic-tests.utils';
 import { setupSatelliteStock } from '../../../utils/satellite-tests.utils';
@@ -35,28 +34,18 @@ describe('Satellite > Authentication > Prepare', async () => {
 
 	const { nonce, salt } = await generateNonce({ caller: user });
 
-	const {
-		jwks: mockJwks,
-		jwt: mockJwt,
-		payload: mockJwtPayload
-	} = await makeMockGoogleOpenIdJwt({
-		clientId: mockClientId,
-		date: mockCertificateDate,
-		nonce
-	});
-
 	beforeAll(async () => {
-		pic = await PocketIc.create(inject('PIC_URL'));
-
-		await pic.setTime(mockCertificateDate.getTime());
-
 		const {
 			actor: a,
 			canisterId: c,
 			pic: p,
 			controller: cO,
 			canisterIdUrl: url
-		} = await setupSatelliteStock();
+		} = await setupSatelliteStock({
+			dateTime: mockCertificateDate,
+			withIndexHtml: false,
+			memory: { Heap: null }
+		});
 
 		pic = p;
 		canisterId = c;
@@ -80,6 +69,12 @@ describe('Satellite > Authentication > Prepare', async () => {
 	});
 
 	describe('Authenticate user fails', async () => {
+		const { jwt: mockJwt } = await makeMockGoogleOpenIdJwt({
+			clientId: mockClientId,
+			date: mockCertificateDate,
+			nonce
+		});
+
 		beforeAll(() => {
 			actor.setIdentity(user);
 		});
@@ -155,7 +150,13 @@ describe('Satellite > Authentication > Prepare', async () => {
 			actor.setIdentity(user);
 		});
 
-		describe('Errors', () => {
+		describe('Errors', async () => {
+			const { jwt: mockJwt, payload: mockJwtPayload } = await makeMockGoogleOpenIdJwt({
+				clientId: mockClientId,
+				date: mockCertificateDate,
+				nonce
+			});
+
 			describe('Bad jwt header', () => {
 				it('should fail with JwtFindProvider.BadSig when JWT header is not JSON', async () => {
 					const { authenticate_user } = actor;
@@ -272,8 +273,24 @@ describe('Satellite > Authentication > Prepare', async () => {
 			});
 		});
 
-		describe('Success', () => {
+		describe('Success', async () => {
+			let mockJwks: MockOpenIdJwt['jwks'];
+			let mockJwt: MockOpenIdJwt['jwt'];
+
 			beforeAll(async () => {
+				await pic.advanceTime(1000 * 60 * 15); // 15min. We tried few times above with errors
+
+				await tick(pic);
+
+				const { jwks, jwt } = await makeMockGoogleOpenIdJwt({
+					clientId: mockClientId,
+					date: mockCertificateDate,
+					nonce
+				});
+
+				mockJwks = jwks;
+				mockJwt = jwt;
+
 				const { start_openid_monitoring } = observatoryActor;
 
 				actor.setIdentity(controller);
@@ -287,10 +304,6 @@ describe('Satellite > Authentication > Prepare', async () => {
 
 			it('should authenticate user', async () => {
 				const { authenticate_user } = actor;
-
-				await pic.advanceTime(1000 * 60 * 15); // 15min. We tried few times above with errors
-
-				await tick(pic);
 
 				const { delegation } = await authenticate_user({
 					OpenId: {

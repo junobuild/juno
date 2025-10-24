@@ -32,6 +32,7 @@ export const idlFactory = ({ IDL }) => {
 		KeyNotFoundCooldown: IDL.Null,
 		CertificateNotFound: IDL.Null,
 		BadSig: IDL.Text,
+		MissingLastAttempt: IDL.Text,
 		KeyNotFound: IDL.Null,
 		FetchFailed: IDL.Text
 	});

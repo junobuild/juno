@@ -131,6 +131,7 @@ export type GetOrRefreshJwksError =
 	| { KeyNotFoundCooldown: null }
 	| { CertificateNotFound: null }
 	| { BadSig: string }
+	| { MissingLastAttempt: string }
 	| { KeyNotFound: null }
 	| { FetchFailed: string };
 export interface HttpRequest {

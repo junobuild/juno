@@ -110,6 +110,7 @@ type GetOrRefreshJwksError = variant {
   KeyNotFoundCooldown;
   CertificateNotFound;
   BadSig : text;
+  MissingLastAttempt : text;
   KeyNotFound;
   FetchFailed : text;
 };

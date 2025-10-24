@@ -9,7 +9,7 @@ import { type Actor, PocketIc } from '@dfinity/pic';
 import type { Principal } from '@dfinity/principal';
 import { inject } from 'vitest';
 import { OBSERVATORY_ID } from '../../../constants/observatory-tests.constants';
-import { mockCertificateDate, mockJwt } from '../../../mocks/observatory.mocks';
+import { mockCertificateDate, mockClientId, mockJwt } from '../../../mocks/observatory.mocks';
 import { setupSatelliteStock } from '../../../utils/satellite-tests.utils';
 import { OBSERVATORY_WASM_PATH } from '../../../utils/setup-tests.utils';
 
@@ -107,6 +107,70 @@ describe('Satellite > Authentication > Prepare', () => {
 					}
 				})
 			).rejects.toThrow('Authentication with OpenId disabled.');
+		});
+	});
+
+	describe('Authentication with Google', async () => {
+		const user = Ed25519KeyIdentity.generate();
+
+		const sessionKey = await ECDSAKeyIdentity.generate();
+		const publicKey = new Uint8Array(sessionKey.getPublicKey().toDer());
+		const salt = crypto.getRandomValues(new Uint8Array(32));
+
+		beforeAll(async () => {
+			const { set_auth_config } = actor;
+
+			actor.setIdentity(controller);
+
+			const config: SatelliteDid.SetAuthenticationConfig = {
+				internet_identity: [],
+				rules: [],
+				openid: [
+					{
+						providers: [
+							[
+								{ Google: null },
+								{
+									client_id: mockClientId
+								}
+							]
+						]
+					}
+				],
+				version: [1n]
+			};
+
+			await set_auth_config(config);
+
+			actor.setIdentity(user);
+		});
+
+		it('should fail if observatory has no certificate', async () => {
+			const { authenticate_user } = actor;
+
+			const { delegation } = await authenticate_user({
+				OpenId: {
+					jwt: mockJwt,
+					session_key: publicKey,
+					salt
+				}
+			});
+
+			if ('Ok' in delegation) {
+				expect(true).toBeFalsy();
+				return;
+			}
+
+			const { Err } = delegation;
+
+			if (!('GetOrFetchJwks' in Err)) {
+				expect(true).toBeFalsy();
+				return;
+			}
+
+			const { GetOrFetchJwks } = Err;
+
+			expect('CertificateNotFound' in GetOrFetchJwks).toBeTruthy();
 		});
 	});
 });

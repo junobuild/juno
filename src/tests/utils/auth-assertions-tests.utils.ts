@@ -11,6 +11,7 @@ import {
 	LOG_SALT_INITIALIZED
 } from '../constants/auth-tests.constants';
 import { fetchLogs } from './mgmt-tests.utils';
+import { mockClientId } from '../mocks/observatory.mocks';
 
 /* eslint-disable vitest/require-top-level-describe */
 
@@ -323,8 +324,6 @@ export const testAuthGoogleConfig = ({
 	controller: () => Identity;
 	version: bigint;
 }) => {
-	const CLIENT_ID = '974645666757-ebfaaau4cesdddqahu83e1qqmmmmdrod.apps.googleusercontent.com';
-
 	const assertLog = async (logMessage: string) => {
 		const logs = await fetchLogs({
 			pic: pic(),
@@ -349,7 +348,7 @@ export const testAuthGoogleConfig = ({
 						[
 							{ Google: null },
 							{
-								client_id: CLIENT_ID
+								client_id: mockClientId
 							}
 						]
 					]
@@ -366,7 +365,7 @@ export const testAuthGoogleConfig = ({
 			([key]) => 'Google' in key
 		)?.[1];
 
-		expect(google?.client_id).toEqual(CLIENT_ID);
+		expect(google?.client_id).toEqual(mockClientId);
 
 		await assertLog(LOG_SALT_INITIALIZED);
 	});
@@ -404,7 +403,7 @@ export const testAuthGoogleConfig = ({
 						[
 							{ Google: null },
 							{
-								client_id: CLIENT_ID
+								client_id: mockClientId
 							}
 						]
 					]

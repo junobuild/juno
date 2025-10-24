@@ -41,20 +41,20 @@
 </script>
 
 <IdentityGuard>
-	<SatelliteGuard>
-		<MissionControlGuard>
-			{#if nonNullish($satelliteStore) && nonNullish($missionControlIdDerived)}
-				<Tabs>
-					<Loaders>
+	<Loaders>
+		<SatelliteGuard>
+			<Tabs>
+				<MissionControlGuard>
+					{#if nonNullish($satelliteStore) && nonNullish($missionControlIdDerived)}
 						{#if $store.tabId === $store.tabs[0].id}
 							<Hosting satellite={$satelliteStore} />
 						{:else if $store.tabId === $store.tabs[1].id}
 							<HostingSettings satellite={$satelliteStore} />
 						{/if}
-					</Loaders>
-				</Tabs>
-			{/if}
-		</MissionControlGuard>
-	</SatelliteGuard>
+					{/if}
+				</MissionControlGuard>
+			</Tabs>
+		</SatelliteGuard>
+	</Loaders>
 </IdentityGuard>
 

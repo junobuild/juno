@@ -1,4 +1,7 @@
-use crate::openid::jwkset::constants::{FAILURE_BACKOFF_BASE_NS, FAILURE_BACKOFF_CAP_NS, FAILURE_BACKOFF_MULTIPLIER, REFRESH_COOLDOWN_NS};
+use crate::openid::jwkset::constants::{
+    FAILURE_BACKOFF_BASE_NS, FAILURE_BACKOFF_CAP_NS, FAILURE_BACKOFF_MULTIPLIER,
+    REFRESH_COOLDOWN_NS,
+};
 use crate::openid::jwkset::fetch::fetch_openid_certificate;
 use crate::openid::jwkset::types::errors::GetOrRefreshJwksError;
 use crate::openid::jwt::types::cert::Jwks;
@@ -47,15 +50,24 @@ pub async fn get_or_refresh_jwks(
 
     let fetched_certificate = match fetch_openid_certificate(provider).await {
         Ok(Some(certificate)) => {
-            cache_certificate(provider, &certificate, auth_heap);
+            if let Err(e) = cache_certificate(provider, &certificate, auth_heap) {
+                return Err(GetOrRefreshJwksError::MissingLastAttempt(e));
+            }
+
             certificate
         }
         Ok(None) => {
-            record_fetch_failure(provider, auth_heap);
+            if let Err(e) = record_fetch_failure(provider, auth_heap) {
+                return Err(GetOrRefreshJwksError::MissingLastAttempt(e));
+            }
+
             return Err(GetOrRefreshJwksError::CertificateNotFound);
         }
         Err(e) => {
-            record_fetch_failure(provider, auth_heap);
+            if let Err(e) = record_fetch_failure(provider, auth_heap) {
+                return Err(GetOrRefreshJwksError::MissingLastAttempt(e));
+            }
+
             return Err(GetOrRefreshJwksError::FetchFailed(e));
         }
     };
@@ -77,21 +89,16 @@ fn refresh_allowed(certificate: &Option<OpenIdCachedCertificate>) -> bool {
         return true;
     };
 
-    let Some(last_attempt) = cached_certificate.last_fetch_attempt_at else {
-        // Unlikely with current implementation
-        return true;
-    };
-
     let delay = match &cached_certificate.last_result {
-        Some(OpenIdFetchCertificateResult::Failure { consecutive_failures, .. }) => {
-            failure_backoff_ns(*consecutive_failures)
-        }
+        Some(OpenIdFetchCertificateResult::Failure {
+            consecutive_failures,
+            ..
+        }) => failure_backoff_ns(*consecutive_failures),
         _ => REFRESH_COOLDOWN_NS,
     };
 
-    time().saturating_sub(last_attempt) >= delay
+    time().saturating_sub(cached_certificate.last_fetch_attempt_at) >= delay
 }
-
 
 fn failure_backoff_ns(consecutive_failures: u8) -> u64 {
     let mut factor: u64 = 1;

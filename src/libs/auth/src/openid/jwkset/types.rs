@@ -10,6 +10,7 @@ pub(crate) mod errors {
         KeyNotFoundCooldown,
         KeyNotFound,
         FetchFailed(String),
+        MissingLastAttempt(String),
         CertificateNotFound,
     }
 }

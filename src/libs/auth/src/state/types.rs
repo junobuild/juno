@@ -23,7 +23,7 @@ pub mod state {
     #[derive(CandidType, Serialize, Deserialize, Clone)]
     pub struct OpenIdCachedCertificate {
         pub certificate: Option<OpenIdCertificate>,
-        pub last_fetch_attempt_at: Option<Timestamp>,
+        pub last_fetch_attempt_at: Timestamp,
         pub last_result: Option<OpenIdFetchCertificateResult>,
     }
 

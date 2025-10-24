@@ -163,13 +163,17 @@ describe('Satellite > Authentication > Prepare', () => {
 
 					expect('Err' in delegation).toBeTruthy();
 
-					if (!('Err' in delegation)) {return;}
+					if (!('Err' in delegation)) {
+						return;
+					}
 
 					const { Err } = delegation;
 
 					expect('JwtFindProvider' in Err).toBeTruthy();
 
-					if (!('JwtFindProvider' in Err)) {return;}
+					if (!('JwtFindProvider' in Err)) {
+						return;
+					}
 
 					const jfp = Err.JwtFindProvider;
 

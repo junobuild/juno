@@ -61,3 +61,72 @@ impl<'de> Visitor<'de> for DocDataBigIntVisitor {
         })
     }
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use serde_json::{self};
+
+    #[test]
+    fn serialize_doc_data_bigint() {
+        let data = DocDataBigInt {
+            value: 12345678901234,
+        };
+        let s = serde_json::to_string(&data).expect("serialize");
+        assert_eq!(s, r#"{"__bigint__":"12345678901234"}"#);
+    }
+
+    #[test]
+    fn deserialize_doc_data_bigint() {
+        let s = r#"{"__bigint__":"12345678901234"}"#;
+        let data: DocDataBigInt = serde_json::from_str(s).expect("deserialize");
+        assert_eq!(data.value, 12345678901234);
+    }
+
+    #[test]
+    fn round_trip() {
+        let original = DocDataBigInt {
+            value: u64::MAX,
+        };
+        let json = serde_json::to_string(&original).unwrap();
+        let decoded: DocDataBigInt = serde_json::from_str(&json).unwrap();
+        assert_eq!(decoded.value, original.value);
+    }
+
+    #[test]
+    fn error_on_missing_field() {
+        let err = serde_json::from_str::<DocDataBigInt>(r#"{}"#).unwrap_err();
+        assert!(
+            err.to_string().contains("missing field `__bigint__`"),
+            "got: {err}"
+        );
+    }
+
+    #[test]
+    fn error_on_duplicate_field() {
+        let s = r#"{"__bigint__":"123","__bigint__":"456"}"#;
+        let err = serde_json::from_str::<DocDataBigInt>(s).unwrap_err();
+        assert!(
+            err.to_string().contains("duplicate field `__bigint__`"),
+            "got: {err}"
+        );
+    }
+
+    #[test]
+    fn error_on_invalid_bigint_format() {
+        let s = r#"{"__bigint__":"not-a-number"}"#;
+        let err = serde_json::from_str::<DocDataBigInt>(s).unwrap_err();
+        assert!(
+            err.to_string().contains("Invalid format for __bigint__"),
+            "got: {err}"
+        );
+    }
+
+    #[test]
+    fn test_display_implementation() {
+        let data = DocDataBigInt {
+            value: 12345678901234,
+        };
+        assert_eq!(format!("{}", data), "12345678901234");
+    }
+}

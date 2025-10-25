@@ -12,7 +12,7 @@ import {
 import { fromArray, toArray } from '@junobuild/utils';
 import { nanoid } from 'nanoid';
 import { inject } from 'vitest';
-import { controllersInitArgs, SATELLITE_WASM_PATH } from '../../../utils/setup-tests.utils';
+import { controllersInitArgs, SATELLITE_WASM_PATH } from '../../../../utils/setup-tests.utils';
 
 describe.each([{ memory: { Heap: null } }, { memory: { Stable: null } }])(
 	'Satellite > Datastore > Data',

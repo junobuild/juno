@@ -7,13 +7,13 @@ import {
 	JUNO_AUTH_ERROR_NOT_ADMIN_CONTROLLER,
 	JUNO_STORAGE_ERROR_RESERVED_ASSET
 } from '@junobuild/errors';
-import { MEMORIES } from '../../../constants/satellite-tests.constants';
+import { MEMORIES } from '../../../../constants/satellite-tests.constants';
 import {
 	adminCustomDomainsTests,
 	adminCustomDomainsWithProposalTests,
 	anonymousCustomDomainsTests
-} from '../../../utils/custom-domains-tests.utils';
-import { setupSatelliteStock } from '../../../utils/satellite-tests.utils';
+} from '../../../../utils/custom-domains-tests.utils';
+import { setupSatelliteStock } from '../../../../utils/satellite-tests.utils';
 
 describe.each(MEMORIES)('Satellite > Custom domains > $title', ({ memory }) => {
 	let pic: PocketIc;

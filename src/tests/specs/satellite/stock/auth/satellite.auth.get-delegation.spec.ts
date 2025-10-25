@@ -7,15 +7,15 @@ import {
 import { ECDSAKeyIdentity, Ed25519KeyIdentity } from '@dfinity/identity';
 import type { Actor, PocketIc } from '@dfinity/pic';
 import { assertNonNullish } from '@dfinity/utils';
-import { OBSERVATORY_ID } from '../../../constants/observatory-tests.constants';
-import { mockCertificateDate, mockClientId } from '../../../mocks/jwt.mocks';
-import { generateNonce } from '../../../utils/auth-nonce-tests.utils';
-import { assembleJwt } from '../../../utils/jwt-assemble-tests.utils';
-import { makeMockGoogleOpenIdJwt, type MockOpenIdJwt } from '../../../utils/jwt-tests.utils';
-import { assertOpenIdHttpsOutcalls } from '../../../utils/observatory-openid-tests.utils';
-import { tick } from '../../../utils/pic-tests.utils';
-import { setupSatelliteStock } from '../../../utils/satellite-tests.utils';
-import { OBSERVATORY_WASM_PATH } from '../../../utils/setup-tests.utils';
+import { OBSERVATORY_ID } from '../../../../constants/observatory-tests.constants';
+import { mockCertificateDate, mockClientId } from '../../../../mocks/jwt.mocks';
+import { generateNonce } from '../../../../utils/auth-nonce-tests.utils';
+import { assembleJwt } from '../../../../utils/jwt-assemble-tests.utils';
+import { makeMockGoogleOpenIdJwt, type MockOpenIdJwt } from '../../../../utils/jwt-tests.utils';
+import { assertOpenIdHttpsOutcalls } from '../../../../utils/observatory-openid-tests.utils';
+import { tick } from '../../../../utils/pic-tests.utils';
+import { setupSatelliteStock } from '../../../../utils/satellite-tests.utils';
+import { OBSERVATORY_WASM_PATH } from '../../../../utils/setup-tests.utils';
 
 describe('Satellite > Delegation > Get delegation', async () => {
 	let pic: PocketIc;

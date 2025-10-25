@@ -25,14 +25,14 @@ import {
 } from '@junobuild/errors';
 import { readFileSync } from 'node:fs';
 import { join } from 'node:path';
-import { MEMORIES } from '../../../constants/satellite-tests.constants';
-import { mockListRules } from '../../../mocks/list.mocks';
-import { mockBlob, mockHtml } from '../../../mocks/storage.mocks';
-import { assertCertification } from '../../../utils/certification-tests.utils';
-import { createUser as createUserUtils } from '../../../utils/satellite-doc-tests.utils';
-import { uploadAsset } from '../../../utils/satellite-storage-tests.utils';
-import { setupSatelliteStock } from '../../../utils/satellite-tests.utils';
-import { assertHeaders } from '../../../utils/storage-tests.utils';
+import { MEMORIES } from '../../../../constants/satellite-tests.constants';
+import { mockListRules } from '../../../../mocks/list.mocks';
+import { mockBlob, mockHtml } from '../../../../mocks/storage.mocks';
+import { assertCertification } from '../../../../utils/certification-tests.utils';
+import { createUser as createUserUtils } from '../../../../utils/satellite-doc-tests.utils';
+import { uploadAsset } from '../../../../utils/satellite-storage-tests.utils';
+import { setupSatelliteStock } from '../../../../utils/satellite-tests.utils';
+import { assertHeaders } from '../../../../utils/storage-tests.utils';
 
 describe.each([{ title: 'Heap (default)', memory: null }, ...MEMORIES])(
 	'Satellite > Storage > $title',

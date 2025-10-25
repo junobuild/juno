@@ -10,10 +10,10 @@ import {
 import { fromArray, toArray } from '@junobuild/utils';
 import { nanoid } from 'nanoid';
 import { inject } from 'vitest';
-import { mockSetRule } from '../../../mocks/collection.mocks';
-import { mockListParams } from '../../../mocks/list.mocks';
-import { uploadAsset } from '../../../utils/satellite-storage-tests.utils';
-import { controllersInitArgs, SATELLITE_WASM_PATH } from '../../../utils/setup-tests.utils';
+import { mockSetRule } from '../../../../mocks/collection.mocks';
+import { mockListParams } from '../../../../mocks/list.mocks';
+import { uploadAsset } from '../../../../utils/satellite-storage-tests.utils';
+import { controllersInitArgs, SATELLITE_WASM_PATH } from '../../../../utils/setup-tests.utils';
 
 describe('Satellite > User Ban', () => {
 	let pic: PocketIc;

@@ -16,7 +16,7 @@ import {
 } from '@junobuild/errors';
 import { fromArray, toArray } from '@junobuild/utils';
 import { inject } from 'vitest';
-import { controllersInitArgs, SATELLITE_WASM_PATH } from '../../../utils/setup-tests.utils';
+import { controllersInitArgs, SATELLITE_WASM_PATH } from '../../../../utils/setup-tests.utils';
 
 describe('Satellite > User', () => {
 	let pic: PocketIc;

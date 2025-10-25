@@ -202,7 +202,7 @@ describe('Satellite > Delegation > Get delegation', async () => {
 				const { authenticate_user } = actor;
 
 				const { delegation } = await authenticate_user({
-					OpenId: { jwt: mockJwt, session_key: publicKey, salt }
+					OpenId: { jwt: mockJwt, session_key: publicKey, salt, max_time_to_live: [] }
 				});
 
 				if ('Err' in delegation) {
@@ -235,7 +235,7 @@ describe('Satellite > Delegation > Get delegation', async () => {
 
 				const { authenticate_user } = actor;
 				await authenticate_user({
-					OpenId: { jwt: minted.jwt, session_key: throwawayPub, salt }
+					OpenId: { jwt: minted.jwt, session_key: throwawayPub, salt, max_time_to_live: [] }
 				});
 
 				const { get_delegation } = actor;

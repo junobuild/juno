@@ -2,10 +2,10 @@ import type { SatelliteActor, SatelliteDid } from '$declarations';
 import type { Actor, PocketIc } from '@dfinity/pic';
 import type { Principal } from '@dfinity/principal';
 import { toNullable } from '@dfinity/utils';
-import { MEMORIES } from '../../../constants/satellite-tests.constants';
-import { assertCertification } from '../../../utils/certification-tests.utils';
-import { uploadAsset } from '../../../utils/satellite-storage-tests.utils';
-import { setupSatelliteStock } from '../../../utils/satellite-tests.utils';
+import { MEMORIES } from '../../../../constants/satellite-tests.constants';
+import { assertCertification } from '../../../../utils/certification-tests.utils';
+import { uploadAsset } from '../../../../utils/satellite-storage-tests.utils';
+import { setupSatelliteStock } from '../../../../utils/satellite-tests.utils';
 
 describe.each(MEMORIES)('Satellite > Storage > Certificate > $title', ({ memory }) => {
 	let pic: PocketIc;

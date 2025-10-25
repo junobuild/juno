@@ -8,13 +8,13 @@ import { JUNO_AUTH_ERROR_NOT_ADMIN_CONTROLLER } from '@junobuild/errors';
 import {
 	EXTERNAL_ALTERNATIVE_ORIGINS,
 	EXTERNAL_ALTERNATIVE_ORIGINS_URLS
-} from '../../../constants/auth-tests.constants';
+} from '../../../../constants/auth-tests.constants';
 import {
 	testAuthConfig,
 	testAuthGoogleConfig,
 	testReturnAuthConfig
-} from '../../../utils/auth-assertions-tests.utils';
-import { setupSatelliteStock } from '../../../utils/satellite-tests.utils';
+} from '../../../../utils/auth-assertions-tests.utils';
+import { setupSatelliteStock } from '../../../../utils/satellite-tests.utils';
 
 describe('Satellite > Authentication', () => {
 	let pic: PocketIc;

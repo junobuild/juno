@@ -3,8 +3,8 @@ import { Ed25519KeyIdentity } from '@dfinity/identity';
 import { type Actor, PocketIc } from '@dfinity/pic';
 import type { Principal } from '@dfinity/principal';
 import { inject } from 'vitest';
-import { testUploadProposalManyAssets } from '../../../utils/cdn-assertions-tests.utils';
-import { controllersInitArgs, SATELLITE_WASM_PATH } from '../../../utils/setup-tests.utils';
+import { testUploadProposalManyAssets } from '../../../../utils/cdn-assertions-tests.utils';
+import { controllersInitArgs, SATELLITE_WASM_PATH } from '../../../../utils/setup-tests.utils';
 
 describe('Satellite > Cdn > Batch', () => {
 	let pic: PocketIc;

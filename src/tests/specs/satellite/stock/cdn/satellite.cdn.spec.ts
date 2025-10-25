@@ -10,8 +10,8 @@ import {
 	JUNO_AUTH_ERROR_NOT_WRITE_CONTROLLER,
 	JUNO_STORAGE_ERROR_UPLOAD_PATH_COLLECTION_PREFIX
 } from '@junobuild/errors';
-import { MEMORIES } from '../../../constants/satellite-tests.constants';
-import { mockListProposalsParams } from '../../../mocks/list.mocks';
+import { MEMORIES } from '../../../../constants/satellite-tests.constants';
+import { mockListProposalsParams } from '../../../../mocks/list.mocks';
 import {
 	testCdnConfig,
 	testCdnCountProposals,
@@ -21,8 +21,8 @@ import {
 	testControlledCdnMethods,
 	testNotAllowedCdnMethods,
 	testReleasesProposal
-} from '../../../utils/cdn-assertions-tests.utils';
-import { setupSatelliteStock } from '../../../utils/satellite-tests.utils';
+} from '../../../../utils/cdn-assertions-tests.utils';
+import { setupSatelliteStock } from '../../../../utils/satellite-tests.utils';
 
 describe.each(MEMORIES)('Satellite > Cdn > $title', ({ memory }) => {
 	let pic: PocketIc;

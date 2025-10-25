@@ -2,8 +2,8 @@ import type { SatelliteActor, SatelliteDid } from '$declarations';
 import type { Actor, PocketIc } from '@dfinity/pic';
 import { toNullable } from '@dfinity/utils';
 import { nanoid } from 'nanoid';
-import { uploadAsset } from '../../../utils/satellite-storage-tests.utils';
-import { setupSatelliteStock } from '../../../utils/satellite-tests.utils';
+import { uploadAsset } from '../../../../utils/satellite-storage-tests.utils';
+import { setupSatelliteStock } from '../../../../utils/satellite-tests.utils';
 
 describe('Satellite > Storage > Token', () => {
 	let pic: PocketIc;

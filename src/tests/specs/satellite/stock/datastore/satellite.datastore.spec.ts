@@ -12,9 +12,9 @@ import {
 } from '@junobuild/errors';
 import { nanoid } from 'nanoid';
 import { inject } from 'vitest';
-import { mockData } from '../../../mocks/doc.mocks';
-import { createDoc as createDocUtils } from '../../../utils/satellite-doc-tests.utils';
-import { controllersInitArgs, SATELLITE_WASM_PATH } from '../../../utils/setup-tests.utils';
+import { mockData } from '../../../../mocks/doc.mocks';
+import { createDoc as createDocUtils } from '../../../../utils/satellite-doc-tests.utils';
+import { controllersInitArgs, SATELLITE_WASM_PATH } from '../../../../utils/setup-tests.utils';
 
 describe.each([{ memory: { Heap: null } }, { memory: { Stable: null } }])(
 	'Satellite > Datastore',

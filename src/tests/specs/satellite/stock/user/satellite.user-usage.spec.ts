@@ -11,11 +11,11 @@ import {
 import { fromArray, toArray } from '@junobuild/utils';
 import { nanoid } from 'nanoid';
 import { inject } from 'vitest';
-import { mockData } from '../../../mocks/doc.mocks';
-import { tick } from '../../../utils/pic-tests.utils';
-import { createDoc as createDocUtils } from '../../../utils/satellite-doc-tests.utils';
-import { uploadAsset } from '../../../utils/satellite-storage-tests.utils';
-import { controllersInitArgs, SATELLITE_WASM_PATH } from '../../../utils/setup-tests.utils';
+import { mockData } from '../../../../mocks/doc.mocks';
+import { tick } from '../../../../utils/pic-tests.utils';
+import { createDoc as createDocUtils } from '../../../../utils/satellite-doc-tests.utils';
+import { uploadAsset } from '../../../../utils/satellite-storage-tests.utils';
+import { controllersInitArgs, SATELLITE_WASM_PATH } from '../../../../utils/setup-tests.utils';
 
 describe('Satellite > User Usage', () => {
 	let pic: PocketIc;

@@ -10,7 +10,7 @@ pub struct OpenIdPrepareDelegationArgs {
     pub jwt: String,
     pub salt: Salt,
     pub session_key: SessionKey,
-    // TODO: max_time_to_live opt<u64>
+    pub max_time_to_live: Option<u64>,
 }
 
 #[derive(CandidType, Serialize, Deserialize)]

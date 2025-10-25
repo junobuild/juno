@@ -142,8 +142,8 @@ describe('Satellite > Delegation > Get delegation', async () => {
 			};
 			await set_auth_config(config);
 
-			// enable observatory loop (so we can feed JWKS)
 			const { start_openid_monitoring } = observatoryActor;
+
 			await start_openid_monitoring();
 
 			actor.setIdentity(user);
@@ -233,13 +233,14 @@ describe('Satellite > Delegation > Get delegation', async () => {
 					date: new Date(now),
 					nonce
 				});
+
 				await assertOpenIdHttpsOutcalls({ pic, jwks: minted.jwks });
 
 				const throwaway = await ECDSAKeyIdentity.generate();
 				const throwawayPub = new Uint8Array(throwaway.getPublicKey().toDer());
 
 				const { authenticate_user } = actor;
-				const prepared = await authenticate_user({
+				await authenticate_user({
 					OpenId: { jwt: minted.jwt, session_key: throwawayPub, salt }
 				});
 
@@ -254,6 +255,7 @@ describe('Satellite > Delegation > Get delegation', async () => {
 					expect(true).toBeFalsy();
 					return;
 				}
+
 				expect('NoSuchDelegation' in res.Err).toBeTruthy();
 			});
 

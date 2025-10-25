@@ -442,6 +442,44 @@ describe('Satellite > Authentication > Prepare', async () => {
 
 				expect('Ok' in delegation).toBeTruthy();
 			});
+
+			it('should fail at authenticating attacker', async () => {
+				await generateJwtCertificate({});
+
+				const attacker = Ed25519KeyIdentity.generate();
+				actor.setIdentity(attacker);
+
+				const { authenticate_user } = actor;
+
+				const { delegation } = await authenticate_user({
+					OpenId: {
+						jwt: mockJwt,
+						session_key: publicKey,
+						salt
+					}
+				});
+
+				if ('Ok' in delegation) {
+					expect(true).toBeFalsy();
+
+					return;
+				}
+
+				const { Err } = delegation;
+
+				if (!('JwtVerify' in Err)) {
+					expect(true).toBeFalsy();
+
+					return;
+				}
+
+				const { JwtVerify } = Err;
+
+				expect('BadClaim' in JwtVerify).toBeTruthy();
+				expect((JwtVerify as { BadClaim: string }).BadClaim).toEqual('nonce');
+
+				actor.setIdentity(user);
+			});
 		});
 	});
 });

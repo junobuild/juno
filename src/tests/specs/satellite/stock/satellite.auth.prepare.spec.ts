@@ -480,6 +480,65 @@ describe('Satellite > Authentication > Prepare', async () => {
 
 				actor.setIdentity(user);
 			});
+
+			it('should fail when salt is wrong for the same user (nonce mismatch)', async () => {
+				await generateJwtCertificate({});
+
+				const wrongSalt = crypto.getRandomValues(new Uint8Array(32));
+
+				const { authenticate_user } = actor;
+				const { delegation } = await authenticate_user({
+					OpenId: { jwt: mockJwt, session_key: publicKey, salt: wrongSalt }
+				});
+
+				expect('Err' in delegation).toBeTruthy();
+
+				if ('Ok' in delegation) {
+					expect(true).toBeFalsy();
+
+					return;
+				}
+
+				const { Err } = delegation;
+
+				if (!('JwtVerify' in Err)) {
+					expect(true).toBeFalsy();
+
+					return;
+				}
+
+				expect((Err.JwtVerify as { BadClaim: string }).BadClaim).toEqual('nonce');
+			});
+
+			it('should fail when token is replayed after 10 minutes (iat_expired)', async () => {
+				await generateJwtCertificate({});
+
+				await pic.advanceTime(10 * 60_000 + 1_000);
+				await tick(pic);
+
+				const { authenticate_user } = actor;
+				const { delegation } = await authenticate_user({
+					OpenId: { jwt: mockJwt, session_key: publicKey, salt }
+				});
+
+				expect('Err' in delegation).toBeTruthy();
+
+				if ('Ok' in delegation) {
+					expect(true).toBeFalsy();
+
+					return;
+				}
+
+				const { Err } = delegation;
+
+				if (!('JwtVerify' in Err)) {
+					expect(true).toBeFalsy();
+
+					return;
+				}
+
+				expect((Err.JwtVerify as { BadClaim: string }).BadClaim).toBe('iat_expired');
+			});
 		});
 	});
 });

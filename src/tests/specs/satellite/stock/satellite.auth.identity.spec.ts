@@ -82,11 +82,11 @@ describe('Satellite > Auth > Delegation identity', async () => {
 			version: [1n]
 		};
 
-		const {set_auth_config} = actor;
+		const { set_auth_config } = actor;
 		await set_auth_config(config);
 
 		// Start fetching OpenID Jwts in Observatory
-		const {start_openid_monitoring} = observatoryActor;
+		const { start_openid_monitoring } = observatoryActor;
 		await start_openid_monitoring();
 
 		actor.setIdentity(user);

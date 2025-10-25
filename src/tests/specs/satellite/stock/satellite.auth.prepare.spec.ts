@@ -7,6 +7,7 @@ import {
 import { ECDSAKeyIdentity, Ed25519KeyIdentity } from '@dfinity/identity';
 import { type Actor, PocketIc } from '@dfinity/pic';
 import type { Principal } from '@dfinity/principal';
+import { nanoid } from 'nanoid';
 import { OBSERVATORY_ID } from '../../../constants/observatory-tests.constants';
 import { mockCertificateDate, mockClientId } from '../../../mocks/jwt.mocks';
 import { generateNonce } from '../../../utils/auth-nonce-tests.utils';
@@ -150,7 +151,7 @@ describe('Satellite > Authentication > Prepare', async () => {
 			actor.setIdentity(user);
 		});
 
-		describe('Errors', async () => {
+		describe('Errors without Jwts', async () => {
 			const { jwt: mockJwt, payload: mockJwtPayload } = await makeMockGoogleOpenIdJwt({
 				clientId: mockClientId,
 				date: mockCertificateDate,
@@ -273,12 +274,30 @@ describe('Satellite > Authentication > Prepare', async () => {
 			});
 		});
 
-		describe('Success', async () => {
+		describe('With Jwts', async () => {
 			let mockJwks: MockOpenIdJwt['jwks'];
 			let mockJwt: MockOpenIdJwt['jwt'];
 
 			beforeAll(async () => {
-				await pic.advanceTime(1000 * 60 * 15); // 15min. We tried few times above with errors
+				actor.setIdentity(controller);
+
+				const { start_openid_monitoring } = observatoryActor;
+
+				await start_openid_monitoring();
+
+				actor.setIdentity(user);
+			});
+
+			const generateJwtCertificate = async ({
+				advanceTime,
+				refreshJwts = true,
+				kid
+			}: {
+				advanceTime?: number;
+				refreshJwts?: boolean;
+				kid?: string;
+			}) => {
+				await pic.advanceTime(advanceTime ?? 1000 * 60 * 15); // Observatory refresh every 15min
 
 				await tick(pic);
 
@@ -287,24 +306,130 @@ describe('Satellite > Authentication > Prepare', async () => {
 				const { jwks, jwt } = await makeMockGoogleOpenIdJwt({
 					clientId: mockClientId,
 					date: new Date(now),
-					nonce
+					nonce,
+					kid
 				});
 
 				mockJwks = jwks;
 				mockJwt = jwt;
 
-				const { start_openid_monitoring } = observatoryActor;
+				if (!refreshJwts) {
+					return;
+				}
 
-				actor.setIdentity(controller);
-
-				await start_openid_monitoring();
-
+				// Refresh certificate in Observatory
 				await assertOpenIdHttpsOutcalls({ pic, jwks: mockJwks });
+			};
 
-				actor.setIdentity(user);
+			it('should fail at authenticating because fetching Jwts is disallowed (cooldown period)', async () => {
+				await generateJwtCertificate({ advanceTime: 1000 });
+
+				const { authenticate_user } = actor;
+
+				const { delegation } = await authenticate_user({
+					OpenId: {
+						jwt: mockJwt,
+						session_key: publicKey,
+						salt
+					}
+				});
+
+				if ('Ok' in delegation) {
+					expect(true).toBeFalsy();
+
+					return;
+				}
+
+				const { Err } = delegation;
+
+				if (!('GetOrFetchJwks' in Err)) {
+					expect(true).toBeFalsy();
+
+					return;
+				}
+
+				const { GetOrFetchJwks } = Err;
+
+				expect('KeyNotFoundCooldown' in GetOrFetchJwks).toBeTruthy();
+			});
+
+			describe('Kid', () => {
+				const kid = nanoid();
+
+				beforeEach(async () => {
+					// Generate for Kid and update certificate in Observatory
+					await generateJwtCertificate({ advanceTime: 1000 * 60 * 15, refreshJwts: true, kid });
+				});
+
+				it('should fetch certificate but fail with kid not found', async () => {
+					await generateJwtCertificate({ advanceTime: 1000 * 60, refreshJwts: false });
+
+					const { authenticate_user } = actor;
+
+					const { delegation } = await authenticate_user({
+						OpenId: {
+							jwt: mockJwt,
+							session_key: publicKey,
+							salt
+						}
+					});
+
+					if ('Ok' in delegation) {
+						expect(true).toBeFalsy();
+
+						return;
+					}
+
+					const { Err } = delegation;
+
+					if (!('GetOrFetchJwks' in Err)) {
+						expect(true).toBeFalsy();
+
+						return;
+					}
+
+					const { GetOrFetchJwks } = Err;
+
+					expect('KeyNotFound' in GetOrFetchJwks).toBeTruthy();
+				});
+
+				it('should fetch certificate but fail with invalid signature', async () => {
+					await generateJwtCertificate({ advanceTime: 1000 * 60, refreshJwts: false, kid });
+
+					const { authenticate_user } = actor;
+
+					const { delegation } = await authenticate_user({
+						OpenId: {
+							jwt: mockJwt,
+							session_key: publicKey,
+							salt
+						}
+					});
+
+					if ('Ok' in delegation) {
+						expect(true).toBeFalsy();
+
+						return;
+					}
+
+					const { Err } = delegation;
+
+					if (!('JwtVerify' in Err)) {
+						expect(true).toBeFalsy();
+
+						return;
+					}
+
+					const { JwtVerify } = Err;
+
+					expect('BadSig' in JwtVerify).toBeTruthy();
+					expect((JwtVerify as { BadSig: string }).BadSig).toEqual('InvalidSignature');
+				});
 			});
 
 			it('should authenticate user', async () => {
+				await generateJwtCertificate({});
+
 				const { authenticate_user } = actor;
 
 				const { delegation } = await authenticate_user({

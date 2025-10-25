@@ -1,4 +1,5 @@
 import { exportJWK, generateKeyPair, SignJWT, type JWK, type JWTPayload } from 'jose';
+import { nanoid } from 'nanoid';
 
 export interface MockOpenIdJwt {
 	jwks: { keys: Required<JWK>[] };
@@ -10,18 +11,20 @@ export interface MockOpenIdJwt {
 export const makeMockGoogleOpenIdJwt = async ({
 	clientId,
 	date,
-	nonce
+	nonce,
+	kid
 }: {
 	clientId: string;
 	date: Date;
 	nonce?: string;
+	kid?: string;
 }): Promise<MockOpenIdJwt> => {
 	const { publicKey, privateKey } = await generateKeyPair('RS256');
 
 	const pubJwk = await exportJWK(publicKey);
 	pubJwk.kty = 'RSA';
 	pubJwk.alg = 'RS256';
-	pubJwk.kid = 'test-key-1';
+	pubJwk.kid = kid ?? nanoid();
 
 	const timestamp = Math.floor(date.getTime() / 1000);
 

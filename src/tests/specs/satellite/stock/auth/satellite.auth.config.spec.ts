@@ -16,7 +16,7 @@ import {
 } from '../../../../utils/auth-assertions-tests.utils';
 import { setupSatelliteStock } from '../../../../utils/satellite-tests.utils';
 
-describe('Satellite > Authentication', () => {
+describe('Satellite > Authentication > Configuration', () => {
 	let pic: PocketIc;
 	let canisterId: Principal;
 	let actor: Actor<SatelliteActor>;

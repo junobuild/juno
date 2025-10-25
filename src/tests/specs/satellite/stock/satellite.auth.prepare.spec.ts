@@ -491,8 +491,6 @@ describe('Satellite > Authentication > Prepare', async () => {
 					OpenId: { jwt: mockJwt, session_key: publicKey, salt: wrongSalt }
 				});
 
-				expect('Err' in delegation).toBeTruthy();
-
 				if ('Ok' in delegation) {
 					expect(true).toBeFalsy();
 
@@ -521,7 +519,41 @@ describe('Satellite > Authentication > Prepare', async () => {
 					OpenId: { jwt: mockJwt, session_key: publicKey, salt }
 				});
 
-				expect('Err' in delegation).toBeTruthy();
+				if ('Ok' in delegation) {
+					expect(true).toBeFalsy();
+
+					return;
+				}
+
+				const { Err } = delegation;
+
+				if (!('JwtVerify' in Err)) {
+					expect(true).toBeFalsy();
+
+					return;
+				}
+
+				expect((Err.JwtVerify as { BadClaim: string }).BadClaim).toEqual('iat_expired');
+			});
+
+			it('should fail when audience does not match', async () => {
+				await pic.advanceTime(15 * 60_000);
+				await tick(pic);
+
+				const now = await pic.getTime();
+
+				const { jwks, jwt } = await makeMockGoogleOpenIdJwt({
+					clientId: 'wrong-client-id.apps.googleusercontent.com',
+					date: new Date(now),
+					nonce
+				});
+
+				await assertOpenIdHttpsOutcalls({ pic, jwks });
+
+				const { authenticate_user } = actor;
+				const { delegation } = await authenticate_user({
+					OpenId: { jwt, session_key: publicKey, salt }
+				});
 
 				if ('Ok' in delegation) {
 					expect(true).toBeFalsy();
@@ -537,7 +569,30 @@ describe('Satellite > Authentication > Prepare', async () => {
 					return;
 				}
 
-				expect((Err.JwtVerify as { BadClaim: string }).BadClaim).toBe('iat_expired');
+				expect((Err.JwtVerify as { BadClaim: string }).BadClaim).toEqual('aud');
+			});
+
+			it('should authenticates when iat is slightly in the future (within skew)', async () => {
+				await pic.advanceTime(15 * 60_000);
+				await tick(pic);
+
+				const base = await pic.getTime();
+				const future60s = new Date(base + 60_000);
+
+				const { jwks, jwt } = await makeMockGoogleOpenIdJwt({
+					clientId: mockClientId,
+					date: future60s,
+					nonce
+				});
+
+				await assertOpenIdHttpsOutcalls({ pic, jwks });
+
+				const { authenticate_user } = actor;
+				const { delegation } = await authenticate_user({
+					OpenId: { jwt, session_key: publicKey, salt }
+				});
+
+				expect('Ok' in delegation).toBeTruthy();
 			});
 		});
 	});

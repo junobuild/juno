@@ -1,4 +1,4 @@
-use crate::delegation::constants::DEFAULT_EXPIRATION_PERIOD_NS;
+use crate::delegation::constants::{DEFAULT_EXPIRATION_PERIOD_NS, MAX_EXPIRATION_PERIOD_NS};
 use crate::delegation::seed::calculate_seed;
 use crate::delegation::types::{
     OpenIdPrepareDelegationArgs, PrepareDelegationError, PrepareDelegationResult, PublicKey,
@@ -16,6 +16,7 @@ use ic_canister_sig_creation::{
 };
 use ic_cdk::api::{canister_self, time};
 use serde_bytes::ByteBuf;
+use std::cmp::min;
 
 pub fn openid_prepare_delegation(
     args: &OpenIdPrepareDelegationArgs,
@@ -28,6 +29,7 @@ pub fn openid_prepare_delegation(
         &client_id,
         &OpenIdCredentialKey::from(credential),
         &args.session_key,
+        &args.max_time_to_live,
         auth_heap,
         certificate,
     )?;
@@ -39,10 +41,17 @@ fn prepare_delegation(
     client_id: &str,
     key: &OpenIdCredentialKey,
     session_key: &SessionKey,
+    max_time_to_live: &Option<u64>,
     auth_heap: &impl AuthHeapStrategy,
     certificate: &impl AuthCertificateStrategy,
 ) -> PrepareDelegationResult {
-    let expiration = time().saturating_add(DEFAULT_EXPIRATION_PERIOD_NS);
+    let session_duration = min(
+        max_time_to_live.unwrap_or(DEFAULT_EXPIRATION_PERIOD_NS),
+        MAX_EXPIRATION_PERIOD_NS,
+    );
+
+    let expiration = time().saturating_add(session_duration);
+
     let seed = calculate_seed(client_id, key, &get_salt(auth_heap))
         .map_err(PrepareDelegationError::DeriveSeedFailed)?;
 

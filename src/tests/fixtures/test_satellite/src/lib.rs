@@ -5,7 +5,10 @@ use ic_cdk::update;
 use junobuild_macros::{
     on_delete_doc, on_init_random_seed, on_init_sync, on_post_upgrade_sync, on_set_doc,
 };
-use junobuild_satellite::{caller, error, id, include_satellite, info, random, set_doc_store, warn_with_data, OnDeleteDocContext, OnSetDocContext, SetDoc};
+use junobuild_satellite::{
+    caller, error, id, include_satellite, info, random, set_doc_store, warn_with_data,
+    OnDeleteDocContext, OnSetDocContext, SetDoc,
+};
 use junobuild_utils::{
     decode_doc_data, encode_doc_data, DocDataBigInt, DocDataPrincipal, DocDataUint8Array,
 };

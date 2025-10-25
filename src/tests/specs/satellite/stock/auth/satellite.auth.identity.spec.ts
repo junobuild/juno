@@ -138,7 +138,7 @@ describe('Satellite > Auth > Delegation identity', async () => {
 		const { authenticate_user, get_delegation } = actor;
 
 		const { delegation: prepareDelegation } = await authenticate_user({
-			OpenId: { jwt, session_key: publicKey, salt }
+			OpenId: { jwt, session_key: publicKey, salt, max_time_to_live: [] }
 		});
 
 		if ('Err' in prepareDelegation) {

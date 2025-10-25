@@ -40,9 +40,9 @@
 </script>
 
 <IdentityGuard>
-	<Tabs>
-		<Loaders>
-			<SatelliteGuard>
+	<Loaders>
+		<SatelliteGuard>
+			<Tabs>
 				{#if nonNullish($satelliteStore) && nonNullish($missionControlIdDerived)}
 					{#if $store.tabId === $store.tabs[0].id}
 						<Logs satelliteId={$satelliteStore.satellite_id} />
@@ -50,7 +50,7 @@
 						<Cdn satellite={$satelliteStore} />
 					{/if}
 				{/if}
-			</SatelliteGuard>
-		</Loaders>
-	</Tabs>
+			</Tabs>
+		</SatelliteGuard>
+	</Loaders>
 </IdentityGuard>

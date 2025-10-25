@@ -669,6 +669,145 @@ describe('Satellite > Authentication > Prepare', async () => {
 
 				expect((Err.JwtVerify as { BadClaim: string }).BadClaim).toEqual('iat_expired');
 			});
+
+			it('should fail when JWT header has no kid', async () => {
+				const now = await pic.getTime();
+
+				const { payload } = await makeMockGoogleOpenIdJwt({
+					clientId: mockClientId,
+					date: new Date(now),
+					nonce
+				});
+
+				const headerNoKid = JSON.stringify({ alg: 'RS256' });
+				const badJwt = assembleJwt({ header: headerNoKid, payload });
+
+				const { authenticate_user } = actor;
+				const { delegation } = await authenticate_user({
+					OpenId: { jwt: badJwt, session_key: publicKey, salt }
+				});
+
+				if ('Ok' in delegation) {
+					expect(true).toBeFalsy();
+
+					return;
+				}
+
+				const { Err } = delegation;
+
+				if (!('GetOrFetchJwks' in Err)) {
+					expect(true).toBeFalsy();
+
+					return;
+				}
+
+				const { GetOrFetchJwks } = Err;
+
+				expect('MissingKid' in GetOrFetchJwks).toBeTruthy();
+			});
+
+			it('should fail when JWKS key type is not RSA (WrongKeyType)', async () => {
+				await pic.advanceTime(15 * 60_000);
+				await tick(pic);
+
+				const now = await pic.getTime();
+				const { jwt, kid } = await makeMockGoogleOpenIdJwt({
+					clientId: mockClientId,
+					date: new Date(now),
+					nonce
+				});
+
+				const ecJwks = {
+					keys: [
+						{
+							kty: 'EC',
+							alg: 'ES256',
+							kid,
+							crv: 'P-256',
+							x: 'AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA',
+							y: 'BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB'
+						}
+					]
+				} as unknown as MockOpenIdJwt['jwks'];
+
+				await assertOpenIdHttpsOutcalls({ pic, jwks: ecJwks });
+
+				const { authenticate_user } = actor;
+				const { delegation } = await authenticate_user({
+					OpenId: { jwt, session_key: publicKey, salt }
+				});
+
+				if ('Ok' in delegation) {
+					expect(true).toBeFalsy();
+
+					return;
+				}
+
+				const { Err } = delegation;
+
+				if (!('JwtVerify' in Err)) {
+					expect(true).toBeFalsy();
+
+					return;
+				}
+
+				const { JwtVerify } = Err;
+
+				expect('WrongKeyType' in JwtVerify).toBeTruthy();
+			});
+
+			it('should fail when nbf is in the future', async () => {
+				await pic.advanceTime(15 * 60_000);
+				await tick(pic);
+
+				const now = await pic.getTime();
+				const base = Math.floor(now / 1000);
+
+				const { jwks, kid } = await makeMockGoogleOpenIdJwt({
+					clientId: mockClientId,
+					date: new Date(now),
+					nonce
+				});
+				await assertOpenIdHttpsOutcalls({ pic, jwks });
+
+				const payload = {
+					iss: 'https://accounts.google.com',
+					sub: 'sub',
+					email: 'user@example.com',
+					email_verified: true,
+					aud: mockClientId,
+					iat: base,
+					exp: base + 3600,
+					nbf: base + 300,
+					nonce
+				};
+
+				const header = JSON.stringify({ alg: 'RS256', kid, typ: 'JWT' });
+				const badNbfJwt = assembleJwt({ header, payload });
+
+				const { authenticate_user } = actor;
+				const { delegation } = await authenticate_user({
+					OpenId: { jwt: badNbfJwt, session_key: publicKey, salt }
+				});
+
+				if ('Ok' in delegation) {
+					expect(true).toBeFalsy();
+
+					return;
+				}
+
+				const { Err } = delegation;
+
+				if (!('JwtVerify' in Err)) {
+					expect(true).toBeFalsy();
+
+					return;
+				}
+
+				const { JwtVerify } = Err;
+
+				expect('BadSig' in JwtVerify).toBeTruthy();
+			});
 		});
 	});
 });

@@ -40,17 +40,17 @@
 </script>
 
 <IdentityGuard>
-		<Loaders>
-			<SatelliteGuard>
-				<Tabs>
-					{#if nonNullish($satelliteStore) && nonNullish($missionControlIdDerived)}
+	<Loaders>
+		<SatelliteGuard>
+			<Tabs>
+				{#if nonNullish($satelliteStore) && nonNullish($missionControlIdDerived)}
 					{#if $store.tabId === $store.tabs[0].id}
 						<Users satelliteId={$satelliteStore.satellite_id} />
 					{:else if $store.tabId === $store.tabs[1].id}
 						<AuthSettings satellite={$satelliteStore} />
 					{/if}
 				{/if}
-				</Tabs>
-			</SatelliteGuard>
-		</Loaders>
+			</Tabs>
+		</SatelliteGuard>
+	</Loaders>
 </IdentityGuard>

@@ -505,7 +505,8 @@ export const idlFactory = ({ IDL }) => {
 		switch_storage_system_memory: IDL.Func([], [], []),
 		upload_asset_chunk: IDL.Func([UploadChunk], [UploadChunkResult], []),
 		upload_proposal_asset_chunk: IDL.Func([UploadChunk], [UploadChunkResult], []),
-		get_random: IDL.Func([], [Result], [])
+		get_random: IDL.Func([], [Result], []),
+		whoami: IDL.Func([], [IDL.Principal], [])
 	});
 };
 // @ts-ignore

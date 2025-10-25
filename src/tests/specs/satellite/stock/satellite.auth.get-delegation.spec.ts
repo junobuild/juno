@@ -5,7 +5,7 @@ import {
 	type SatelliteDid
 } from '$declarations';
 import { ECDSAKeyIdentity, Ed25519KeyIdentity } from '@dfinity/identity';
-import type { PocketIc , Actor } from '@dfinity/pic';
+import type { Actor, PocketIc } from '@dfinity/pic';
 import type { Principal } from '@dfinity/principal';
 import { assertNonNullish } from '@dfinity/utils';
 import { OBSERVATORY_ID } from '../../../constants/observatory-tests.constants';

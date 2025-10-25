@@ -486,6 +486,7 @@ export interface _SERVICE {
 	upload_asset_chunk: ActorMethod<[UploadChunk], UploadChunkResult>;
 	upload_proposal_asset_chunk: ActorMethod<[UploadChunk], UploadChunkResult>;
 	get_random: ActorMethod<[], Result>;
+	whoami: ActorMethod<[], Principal>;
 }
 export declare const idlFactory: IDL.InterfaceFactory;
 export declare const init: (args: { IDL: typeof IDL }) => IDL.Type[];

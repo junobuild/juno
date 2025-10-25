@@ -118,7 +118,8 @@ mod tests {
         let s = r#"{"__uint8array__":"not-a-uint8array"}"#;
         let err = serde_json::from_str::<DocDataUint8Array>(s).unwrap_err();
         assert!(
-            err.to_string().contains("invalid type: string \"not-a-uint8array\""),
+            err.to_string()
+                .contains("invalid type: string \"not-a-uint8array\""),
             "got: {err}"
         );
     }

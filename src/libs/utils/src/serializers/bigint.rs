@@ -85,9 +85,7 @@ mod tests {
 
     #[test]
     fn round_trip() {
-        let original = DocDataBigInt {
-            value: u64::MAX,
-        };
+        let original = DocDataBigInt { value: u64::MAX };
         let json = serde_json::to_string(&original).unwrap();
         let decoded: DocDataBigInt = serde_json::from_str(&json).unwrap();
         assert_eq!(decoded.value, original.value);

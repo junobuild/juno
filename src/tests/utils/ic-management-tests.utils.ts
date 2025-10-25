@@ -96,6 +96,7 @@ interface install_chunked_code_args {
 // canister_status did
 
 const canister_status_args = IDL.Record({ canister_id });
+const stop_canister_args = canister_status_args;
 
 const log_visibility = IDL.Variant({
 	controllers: IDL.Null,
@@ -413,4 +414,19 @@ export const canisterStatus = async ({
 	) as unknown as [canister_status_result];
 
 	return fromNullable(result);
+};
+
+export const stopCanister = async ({
+	canisterId,
+	pic,
+	sender
+}: PicParams & { canisterId: Principal }) => {
+	const arg = IDL.encode([stop_canister_args], [{ canister_id: canisterId }]);
+
+	await pic.updateCall({
+		canisterId: Principal.fromText(MANAGEMENT_CANISTER_ID),
+		sender: sender.getPrincipal(),
+		method: 'stop_canister',
+		arg: arg.buffer
+	});
 };

@@ -1,4 +1,6 @@
-use crate::openid::jwt::types::errors::{JwtFindProviderError, JwtHeaderError, JwtVerifyError};
+use crate::openid::jwt::types::errors::{
+    JwtFindKidError, JwtFindProviderError, JwtHeaderError, JwtVerifyError,
+};
 
 impl From<JwtHeaderError> for JwtVerifyError {
     fn from(e: JwtHeaderError) -> Self {
@@ -14,6 +16,15 @@ impl From<JwtHeaderError> for JwtFindProviderError {
         match e {
             JwtHeaderError::BadSig(s) => JwtFindProviderError::BadSig(s),
             JwtHeaderError::BadClaim(c) => JwtFindProviderError::BadClaim(c.to_string()),
+        }
+    }
+}
+
+impl From<JwtHeaderError> for JwtFindKidError {
+    fn from(e: JwtHeaderError) -> Self {
+        match e {
+            JwtHeaderError::BadSig(s) => JwtFindKidError::BadSig(s),
+            JwtHeaderError::BadClaim(c) => JwtFindKidError::BadClaim(c.to_string()),
         }
     }
 }

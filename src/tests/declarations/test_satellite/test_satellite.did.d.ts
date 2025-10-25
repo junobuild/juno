@@ -119,11 +119,21 @@ export interface Doc {
 export type GetDelegationArgs = { OpenId: OpenIdGetDelegationArgs };
 export type GetDelegationError =
 	| { JwtFindProvider: JwtFindProviderError }
-	| { ParseJwksFailed: string }
+	| { GetCachedJwks: null }
 	| { NoSuchDelegation: null }
 	| { JwtVerify: JwtVerifyError }
+	| { GetOrFetchJwks: GetOrRefreshJwksError }
 	| { DeriveSeedFailed: string };
 export type GetDelegationResultResponse = { Ok: SignedDelegation } | { Err: GetDelegationError };
+export type GetOrRefreshJwksError =
+	| { MissingKid: null }
+	| { BadClaim: string }
+	| { KeyNotFoundCooldown: null }
+	| { CertificateNotFound: null }
+	| { BadSig: string }
+	| { MissingLastAttempt: string }
+	| { KeyNotFound: null }
+	| { FetchFailed: string };
 export interface HttpRequest {
 	url: string;
 	method: string;
@@ -256,8 +266,9 @@ export type PrepareDelegationError =
 	| {
 			JwtFindProvider: JwtFindProviderError;
 	  }
-	| { ParseJwksFailed: string }
+	| { GetCachedJwks: null }
 	| { JwtVerify: JwtVerifyError }
+	| { GetOrFetchJwks: GetOrRefreshJwksError }
 	| { DeriveSeedFailed: string };
 export type PrepareDelegationResultData =
 	| {
@@ -475,6 +486,7 @@ export interface _SERVICE {
 	upload_asset_chunk: ActorMethod<[UploadChunk], UploadChunkResult>;
 	upload_proposal_asset_chunk: ActorMethod<[UploadChunk], UploadChunkResult>;
 	get_random: ActorMethod<[], Result>;
+	whoami: ActorMethod<[], Principal>;
 }
 export declare const idlFactory: IDL.InterfaceFactory;
 export declare const init: (args: { IDL: typeof IDL }) => IDL.Type[];

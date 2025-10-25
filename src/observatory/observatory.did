@@ -33,7 +33,7 @@ type GetNotifications = record {
   from : opt nat64;
   segment_id : opt principal;
 };
-type GetOpenIdCertificate = record { provider : OpenIdProvider };
+type GetOpenIdCertificateArgs = record { provider : OpenIdProvider };
 type Jwk = record {
   alg : opt text;
   kid : opt text;
@@ -88,7 +88,7 @@ type SetControllersArgs = record {
 service : () -> {
   del_controllers : (DeleteControllersArgs) -> ();
   get_notify_status : (GetNotifications) -> (NotifyStatus) query;
-  get_openid_certificate : (GetOpenIdCertificate) -> (
+  get_openid_certificate : (GetOpenIdCertificateArgs) -> (
       opt OpenIdCertificate,
     ) query;
   list_controllers : () -> (vec record { principal; Controller }) query;

@@ -86,7 +86,6 @@ pub mod runtime {
 
 pub mod interface {
     use candid::{CandidType, Deserialize};
-    use junobuild_auth::openid::types::provider::OpenIdProvider;
     use junobuild_shared::types::state::{SegmentId, Timestamp};
     use serde::Serialize;
 
@@ -102,10 +101,5 @@ pub mod interface {
         pub pending: u64,
         pub sent: u64,
         pub failed: u64,
-    }
-
-    #[derive(CandidType, Deserialize, Clone)]
-    pub struct GetOpenIdCertificate {
-        pub provider: OpenIdProvider,
     }
 }

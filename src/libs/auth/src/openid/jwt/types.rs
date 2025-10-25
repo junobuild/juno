@@ -17,6 +17,11 @@ pub(crate) mod token {
 
         pub nonce: Option<String>,
     }
+
+    #[derive(Clone, Deserialize)]
+    pub struct UnsafeClaims {
+        pub iss: Option<String>,
+    }
 }
 
 pub mod cert {
@@ -160,6 +165,13 @@ pub(crate) mod errors {
         BadSig(String),
         BadClaim(String),
         NoMatchingProvider,
+    }
+
+    #[derive(CandidType, Serialize, Deserialize, Debug)]
+    pub enum JwtFindKidError {
+        BadSig(String),
+        BadClaim(String),
+        MissingKid,
     }
 
     #[derive(CandidType, Serialize, Deserialize, Debug)]

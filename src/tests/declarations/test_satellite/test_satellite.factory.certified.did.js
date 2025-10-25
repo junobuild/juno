@@ -26,10 +26,21 @@ export const idlFactory = ({ IDL }) => {
 		BadSig: IDL.Text,
 		NoKeyForKid: IDL.Null
 	});
+	const GetOrRefreshJwksError = IDL.Variant({
+		MissingKid: IDL.Null,
+		BadClaim: IDL.Text,
+		KeyNotFoundCooldown: IDL.Null,
+		CertificateNotFound: IDL.Null,
+		BadSig: IDL.Text,
+		MissingLastAttempt: IDL.Text,
+		KeyNotFound: IDL.Null,
+		FetchFailed: IDL.Text
+	});
 	const PrepareDelegationError = IDL.Variant({
 		JwtFindProvider: JwtFindProviderError,
-		ParseJwksFailed: IDL.Text,
+		GetCachedJwks: IDL.Null,
 		JwtVerify: JwtVerifyError,
+		GetOrFetchJwks: GetOrRefreshJwksError,
 		DeriveSeedFailed: IDL.Text
 	});
 	const PrepareDelegationResultData = IDL.Variant({
@@ -199,9 +210,10 @@ export const idlFactory = ({ IDL }) => {
 	});
 	const GetDelegationError = IDL.Variant({
 		JwtFindProvider: JwtFindProviderError,
-		ParseJwksFailed: IDL.Text,
+		GetCachedJwks: IDL.Null,
 		NoSuchDelegation: IDL.Null,
 		JwtVerify: JwtVerifyError,
+		GetOrFetchJwks: GetOrRefreshJwksError,
 		DeriveSeedFailed: IDL.Text
 	});
 	const GetDelegationResultResponse = IDL.Variant({
@@ -493,7 +505,8 @@ export const idlFactory = ({ IDL }) => {
 		switch_storage_system_memory: IDL.Func([], [], []),
 		upload_asset_chunk: IDL.Func([UploadChunk], [UploadChunkResult], []),
 		upload_proposal_asset_chunk: IDL.Func([UploadChunk], [UploadChunkResult], []),
-		get_random: IDL.Func([], [Result], [])
+		get_random: IDL.Func([], [Result], []),
+		whoami: IDL.Func([], [IDL.Principal], [])
 	});
 };
 // @ts-ignore

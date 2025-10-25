@@ -24,11 +24,13 @@ export const setupSatelliteStock = async (
 	{
 		withIndexHtml,
 		memory,
-		controllers
+		controllers,
+		dateTime
 	}: {
 		withIndexHtml: boolean;
 		memory: { Heap: null } | { Stable: null } | null;
 		controllers?: Principal[];
+		dateTime?: Date;
 	} = {
 		withIndexHtml: false,
 		memory: { Heap: null }
@@ -43,7 +45,7 @@ export const setupSatelliteStock = async (
 }> => {
 	const pic = await PocketIc.create(inject('PIC_URL'));
 
-	const currentDate = new Date(2021, 6, 10, 0, 0, 0, 0);
+	const currentDate = dateTime ?? new Date(2021, 6, 10, 0, 0, 0, 0);
 	await pic.setTime(currentDate.getTime());
 
 	const controller = Ed25519KeyIdentity.generate();

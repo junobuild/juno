@@ -594,6 +594,81 @@ describe('Satellite > Authentication > Prepare', async () => {
 
 				expect('Ok' in delegation).toBeTruthy();
 			});
+
+			it('should fail when iat is beyond future skew', async () => {
+				await pic.advanceTime(15 * 60_000);
+				await tick(pic);
+
+				const base = await pic.getTime();
+				const future3min = new Date(base + 3 * 60_000);
+
+				const { jwks, jwt } = await makeMockGoogleOpenIdJwt({
+					clientId: mockClientId,
+					date: future3min,
+					nonce
+				});
+
+				await assertOpenIdHttpsOutcalls({ pic, jwks });
+
+				const { authenticate_user } = actor;
+				const { delegation } = await authenticate_user({
+					OpenId: { jwt, session_key: publicKey, salt }
+				});
+
+				if ('Ok' in delegation) {
+					expect(true).toBeFalsy();
+
+					return;
+				}
+
+				const { Err } = delegation;
+
+				if (!('JwtVerify' in Err)) {
+					expect(true).toBeFalsy();
+
+					return;
+				}
+
+				expect((Err.JwtVerify as { BadClaim: string }).BadClaim).toEqual('iat_future');
+			});
+
+			it('should fail when iat is older than 10 minutes', async () => {
+				await pic.advanceTime(15 * 60_000);
+				await tick(pic);
+
+				const base = await pic.getTime();
+				const { jwks, jwt } = await makeMockGoogleOpenIdJwt({
+					clientId: mockClientId,
+					date: new Date(base),
+					nonce
+				});
+
+				await assertOpenIdHttpsOutcalls({ pic, jwks });
+
+				await pic.advanceTime(10 * 60_000 + 1_000);
+				await tick(pic);
+
+				const { authenticate_user } = actor;
+				const { delegation } = await authenticate_user({
+					OpenId: { jwt, session_key: publicKey, salt }
+				});
+
+				if ('Ok' in delegation) {
+					expect(true).toBeFalsy();
+
+					return;
+				}
+
+				const { Err } = delegation;
+
+				if (!('JwtVerify' in Err)) {
+					expect(true).toBeFalsy();
+
+					return;
+				}
+
+				expect((Err.JwtVerify as { BadClaim: string }).BadClaim).toEqual('iat_expired');
+			});
 		});
 	});
 });

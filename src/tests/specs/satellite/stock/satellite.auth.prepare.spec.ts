@@ -315,25 +315,7 @@ describe('Satellite > Authentication > Prepare', async () => {
 					}
 				});
 
-				console.log(delegation);
-
-				if ('Ok' in delegation) {
-					expect(true).toBeFalsy();
-
-					return;
-				}
-
-				const { Err } = delegation;
-
-				if (!('GetOrFetchJwks' in Err)) {
-					expect(true).toBeFalsy();
-
-					return;
-				}
-
-				const { GetOrFetchJwks } = Err;
-
-				expect('CertificateNotFound' in GetOrFetchJwks).toBeTruthy();
+				expect('Ok' in delegation).toBeTruthy();
 			});
 		});
 	});

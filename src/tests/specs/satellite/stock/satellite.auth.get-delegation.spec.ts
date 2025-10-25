@@ -223,7 +223,7 @@ describe('Satellite > Delegation > Get delegation', async () => {
 				return { userKey, expiration };
 			};
 
-			it('should returns NoSuchDelegation if called before prepare', async () => {
+			it('should return NoSuchDelegation if called before prepare (for this session_key/expiration)', async () => {
 				await pic.advanceTime(15 * 60_000);
 				await tick(pic);
 
@@ -233,25 +233,28 @@ describe('Satellite > Delegation > Get delegation', async () => {
 					date: new Date(now),
 					nonce
 				});
-
 				await assertOpenIdHttpsOutcalls({ pic, jwks: minted.jwks });
+
+				const throwaway = await ECDSAKeyIdentity.generate();
+				const throwawayPub = new Uint8Array(throwaway.getPublicKey().toDer());
+
+				const { authenticate_user } = actor;
+				const prepared = await authenticate_user({
+					OpenId: { jwt: minted.jwt, session_key: throwawayPub, salt }
+				});
 
 				const { get_delegation } = actor;
 				const expiration = BigInt(now * 1_000_000 + 5 * 60 * 1_000_000_000);
 
-				const delegation = await get_delegation({
+				const res = await get_delegation({
 					OpenId: { jwt: minted.jwt, session_key: publicKey, salt, expiration }
 				});
 
-				if ('Ok' in delegation) {
+				if ('Ok' in res) {
 					expect(true).toBeFalsy();
-
 					return;
 				}
-
-				const { Err } = delegation;
-
-				expect('NoSuchDelegation' in Err).toBeTruthy();
+				expect('NoSuchDelegation' in res.Err).toBeTruthy();
 			});
 
 			it('should succeeds after prepare_delegation', async () => {

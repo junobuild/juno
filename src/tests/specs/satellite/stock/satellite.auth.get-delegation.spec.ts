@@ -5,7 +5,7 @@ import {
 	type SatelliteDid
 } from '$declarations';
 import { ECDSAKeyIdentity, Ed25519KeyIdentity } from '@dfinity/identity';
-import { type Actor, PocketIc } from '@dfinity/pic';
+import type { PocketIc , Actor } from '@dfinity/pic';
 import type { Principal } from '@dfinity/principal';
 import { assertNonNullish } from '@dfinity/utils';
 import { OBSERVATORY_ID } from '../../../constants/observatory-tests.constants';
@@ -82,6 +82,7 @@ describe('Satellite > Delegation > Get delegation', async () => {
 
 		it('should fail when authentication is not configured', async () => {
 			const { get_delegation } = actor;
+
 			await expect(
 				get_delegation({
 					OpenId: {
@@ -253,6 +254,7 @@ describe('Satellite > Delegation > Get delegation', async () => {
 
 				if ('Ok' in res) {
 					expect(true).toBeFalsy();
+
 					return;
 				}
 

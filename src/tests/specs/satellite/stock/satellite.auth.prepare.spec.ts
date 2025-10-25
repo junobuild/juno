@@ -6,7 +6,6 @@ import {
 } from '$declarations';
 import { ECDSAKeyIdentity, Ed25519KeyIdentity } from '@dfinity/identity';
 import type { Actor, PocketIc } from '@dfinity/pic';
-import type { Principal } from '@dfinity/principal';
 import { nanoid } from 'nanoid';
 import { OBSERVATORY_ID } from '../../../constants/observatory-tests.constants';
 import { mockCertificateDate, mockClientId } from '../../../mocks/jwt.mocks';
@@ -23,10 +22,8 @@ describe('Satellite > Authentication > Prepare', async () => {
 
 	let observatoryActor: Actor<ObservatoryActor>;
 
-	let canisterId: Principal;
 	let actor: Actor<SatelliteActor>;
 	let controller: Ed25519KeyIdentity;
-	let canisterIdUrl: string;
 
 	const user = Ed25519KeyIdentity.generate();
 
@@ -38,10 +35,8 @@ describe('Satellite > Authentication > Prepare', async () => {
 	beforeAll(async () => {
 		const {
 			actor: a,
-			canisterId: c,
 			pic: p,
-			controller: cO,
-			canisterIdUrl: url
+			controller: cO
 		} = await setupSatelliteStock({
 			dateTime: mockCertificateDate,
 			withIndexHtml: false,
@@ -49,10 +44,8 @@ describe('Satellite > Authentication > Prepare', async () => {
 		});
 
 		pic = p;
-		canisterId = c;
 		actor = a;
 		controller = cO;
-		canisterIdUrl = url;
 
 		const { actor: obsA } = await pic.setupCanister<ObservatoryActor>({
 			idlFactory: idlFactoryObservatory,
@@ -122,7 +115,7 @@ describe('Satellite > Authentication > Prepare', async () => {
 		});
 	});
 
-	describe('Authentication with Google', async () => {
+	describe('Authentication with Google', () => {
 		beforeAll(async () => {
 			const { set_auth_config } = actor;
 
@@ -201,16 +194,21 @@ describe('Satellite > Authentication > Prepare', async () => {
 						OpenId: { jwt: badAlgJwt, session_key: publicKey, salt }
 					});
 
-					expect('Err' in delegation).toBeTruthy();
+					if (!('Err' in delegation)) {
+						expect(true).toBeFalsy();
 
-					const { Err } = delegation as Extract<typeof delegation, { Err: unknown }>;
+						return;
+					}
 
-					expect('JwtFindProvider' in Err).toBeTruthy();
+					const { Err } = delegation;
 
-					const jfp = (Err as any).JwtFindProvider;
+					if (!('JwtFindProvider' in Err)) {
+						return;
+					}
 
-					expect('BadClaim' in jfp).toBeTruthy();
-					expect(jfp.BadClaim).toBe('alg');
+					const { JwtFindProvider } = Err;
+
+					expect((JwtFindProvider as { BadClaim: string }).BadClaim).toEqual('alg');
 				});
 
 				it('should fail with JwtFindProvider.BadClaim("typ") when typ is present and not "JWT"', async () => {
@@ -228,16 +226,21 @@ describe('Satellite > Authentication > Prepare', async () => {
 						OpenId: { jwt: badTypJwt, session_key: publicKey, salt }
 					});
 
-					expect('Err' in delegation).toBeTruthy();
+					if (!('Err' in delegation)) {
+						expect(true).toBeFalsy();
 
-					const { Err } = delegation as Extract<typeof delegation, { Err: unknown }>;
+						return;
+					}
 
-					expect('JwtFindProvider' in Err).toBeTruthy();
+					const { Err } = delegation;
 
-					const jfp = (Err as any).JwtFindProvider;
+					if (!('JwtFindProvider' in Err)) {
+						return;
+					}
 
-					expect('BadClaim' in jfp).toBeTruthy();
-					expect(jfp.BadClaim).toBe('typ');
+					const { JwtFindProvider } = Err;
+
+					expect((JwtFindProvider as { BadClaim: string }).BadClaim).toEqual('typ');
 				});
 			});
 
@@ -272,7 +275,7 @@ describe('Satellite > Authentication > Prepare', async () => {
 			});
 		});
 
-		describe('With Jwts', async () => {
+		describe('With Jwts', () => {
 			let mockJwks: MockOpenIdJwt['jwks'];
 			let mockJwt: MockOpenIdJwt['jwt'];
 

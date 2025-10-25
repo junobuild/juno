@@ -6,7 +6,6 @@ import {
 } from '$declarations';
 import { ECDSAKeyIdentity, Ed25519KeyIdentity } from '@dfinity/identity';
 import type { Actor, PocketIc } from '@dfinity/pic';
-import type { Principal } from '@dfinity/principal';
 import { assertNonNullish } from '@dfinity/utils';
 import { OBSERVATORY_ID } from '../../../constants/observatory-tests.constants';
 import { mockCertificateDate, mockClientId } from '../../../mocks/jwt.mocks';
@@ -23,10 +22,8 @@ describe('Satellite > Delegation > Get delegation', async () => {
 
 	let observatoryActor: Actor<ObservatoryActor>;
 
-	let canisterId: Principal;
 	let actor: Actor<SatelliteActor>;
 	let controller: Ed25519KeyIdentity;
-	let canisterIdUrl: string;
 
 	const user = Ed25519KeyIdentity.generate();
 
@@ -38,10 +35,8 @@ describe('Satellite > Delegation > Get delegation', async () => {
 	beforeAll(async () => {
 		const {
 			actor: a,
-			canisterId: c,
 			pic: p,
-			controller: cO,
-			canisterIdUrl: url
+			controller: cO
 		} = await setupSatelliteStock({
 			dateTime: mockCertificateDate,
 			withIndexHtml: false,
@@ -49,10 +44,8 @@ describe('Satellite > Delegation > Get delegation', async () => {
 		});
 
 		pic = p;
-		canisterId = c;
 		actor = a;
 		controller = cO;
-		canisterIdUrl = url;
 
 		const { actor: obsA } = await pic.setupCanister<ObservatoryActor>({
 			idlFactory: idlFactoryObservatory,

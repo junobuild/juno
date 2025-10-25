@@ -14,8 +14,7 @@ import {
 	Ed25519KeyIdentity,
 	type SignedDelegation
 } from '@dfinity/identity';
-import type { PocketIc , Actor } from '@dfinity/pic';
-import type { Principal } from '@dfinity/principal';
+import type { Actor, PocketIc } from '@dfinity/pic';
 import { OBSERVATORY_ID } from '../../../constants/observatory-tests.constants';
 import { mockCertificateDate, mockClientId } from '../../../mocks/jwt.mocks';
 import { generateNonce } from '../../../utils/auth-nonce-tests.utils';
@@ -32,7 +31,6 @@ describe('Satellite > Auth > Delegation identity', async () => {
 	let observatoryActor: Actor<ObservatoryActor>;
 	let testSatelliteActor: Actor<TestSatelliteActor>;
 
-	let canisterId: Principal;
 	let actor: Actor<SatelliteActor>;
 	let controller: Ed25519KeyIdentity;
 
@@ -44,7 +42,6 @@ describe('Satellite > Auth > Delegation identity', async () => {
 	beforeAll(async () => {
 		const {
 			actor: a,
-			canisterId: c,
 			pic: p,
 			controller: cO
 		} = await setupSatelliteStock({
@@ -54,7 +51,6 @@ describe('Satellite > Auth > Delegation identity', async () => {
 		});
 
 		pic = p;
-		canisterId = c;
 		actor = a;
 		controller = cO;
 

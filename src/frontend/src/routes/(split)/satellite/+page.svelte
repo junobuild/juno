@@ -42,15 +42,15 @@
 </script>
 
 <IdentityGuard>
-	<Tabs>
-		{#snippet info()}
-			{#if nonNullish($satelliteStore)}
-				<Warnings satellite={$satelliteStore} />
-			{/if}
-		{/snippet}
+	<Loaders monitoring>
+		<SatelliteGuard>
+			<Tabs>
+				{#snippet info()}
+					{#if nonNullish($satelliteStore)}
+						<Warnings satellite={$satelliteStore} />
+					{/if}
+				{/snippet}
 
-		<Loaders monitoring>
-			<SatelliteGuard>
 				<MissionControlGuard>
 					{#if nonNullish($satelliteStore) && nonNullish($missionControlIdDerived)}
 						{#if $store.tabId === $store.tabs[0].id}
@@ -60,7 +60,7 @@
 						{/if}
 					{/if}
 				</MissionControlGuard>
-			</SatelliteGuard>
-		</Loaders>
-	</Tabs>
+			</Tabs>
+		</SatelliteGuard>
+	</Loaders>
 </IdentityGuard>

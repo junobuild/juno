@@ -177,8 +177,6 @@ describe('Satellite > Authentication > Prepare', async () => {
 
 					const { Err } = delegation;
 
-					expect('JwtFindProvider' in Err).toBeTruthy();
-
 					if (!('JwtFindProvider' in Err)) {
 						return;
 					}

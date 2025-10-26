@@ -16,6 +16,7 @@ pub mod state {
         Nfid,
         #[serde(rename = "webauthn")]
         WebAuthn,
+        Google
     }
 
     #[derive(Serialize, Deserialize)]
@@ -29,11 +30,20 @@ pub mod state {
     pub enum ProviderData {
         #[serde(rename = "webauthn")]
         WebAuthn(WebAuthnData),
+        Google(GoogleData)
     }
 
     #[derive(Serialize, Deserialize)]
     #[serde(rename_all = "camelCase", deny_unknown_fields)]
     pub struct WebAuthnData {
         pub aaguid: Option<Vec<u8>>,
+    }
+
+    #[derive(Serialize, Deserialize)]
+    #[serde(rename_all = "camelCase", deny_unknown_fields)]
+    pub struct GoogleData {
+        pub email: Option<String>,
+        pub name: Option<String>,
+        pub picture: Option<String>,
     }
 }

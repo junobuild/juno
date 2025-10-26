@@ -3,8 +3,9 @@ use crate::state::get_config;
 use crate::strategies::AuthHeapStrategy;
 use junobuild_shared::ic::api::id;
 
-// By default, we restrict delegation to the authentication module that created it.
-// Developers can opt out (allow any targets) or define their own restrictions in their config.
+// By default, and for security reasons, we restrict delegation to the authentication module
+// that created it. Developers can opt out (allow any targets) or define their own
+// restrictions in their configuration.
 // See https://internetcomputer.org/docs/current/references/ic-interface-spec#authentication
 pub fn delegation_targets(auth_heap: &impl AuthHeapStrategy) -> Option<DelegationTargets> {
     get_config(auth_heap)

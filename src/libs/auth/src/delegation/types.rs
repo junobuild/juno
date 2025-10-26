@@ -38,11 +38,13 @@ pub struct SignedDelegation {
     pub signature: Signature,
 }
 
+pub type DelegationTargets = Vec<Principal>;
+
 #[derive(CandidType, Serialize, Deserialize)]
 pub struct Delegation {
     pub pubkey: PublicKey,
     pub expiration: Timestamp,
-    pub targets: Option<Vec<Principal>>,
+    pub targets: Option<DelegationTargets>,
 }
 
 #[derive(CandidType, Serialize, Deserialize, Debug)]

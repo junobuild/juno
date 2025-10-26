@@ -1,4 +1,5 @@
 use crate::delegation::seed::calculate_seed;
+use crate::delegation::targets::delegation_targets;
 use crate::delegation::types::{
     Delegation, GetDelegationError, GetDelegationResult, OpenIdGetDelegationArgs, SessionKey,
     SignedDelegation, Timestamp,
@@ -40,6 +41,8 @@ pub fn get_delegation(
     let seed = calculate_seed(client_id, key, &get_salt(auth_heap))
         .map_err(GetDelegationError::DeriveSeedFailed)?;
 
+    let targets = delegation_targets(auth_heap);
+
     read_state(|state| {
         let inputs = CanisterSigInputs {
             domain: DELEGATION_SIG_DOMAIN,
@@ -58,7 +61,7 @@ pub fn get_delegation(
                 delegation: Delegation {
                     pubkey: session_key.clone(),
                     expiration: *expiration,
-                    targets: None,
+                    targets,
                 },
                 signature: ByteBuf::from(signature),
             }),

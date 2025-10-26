@@ -9,6 +9,7 @@ import {
 	type SignedDelegation
 } from '@dfinity/identity';
 import type { Actor, PocketIc } from '@dfinity/pic';
+import { fromNullable } from '@dfinity/utils';
 import { mockClientId } from '../../../../mocks/jwt.mocks';
 import { makeMockGoogleOpenIdJwt } from '../../../../utils/jwt-tests.utils';
 import { assertOpenIdHttpsOutcalls } from '../../../../utils/observatory-openid-tests.utils';
@@ -121,7 +122,11 @@ describe('Satellite > Auth > Delegation identity', () => {
 			userKey,
 			[
 				{
-					delegation: new Delegation(Uint8Array.from(delegation.pubkey), delegation.expiration),
+					delegation: new Delegation(
+						Uint8Array.from(delegation.pubkey),
+						delegation.expiration,
+						fromNullable(delegation.targets)
+					),
 					signature: Uint8Array.from(signature) as unknown as Signature
 				}
 			]

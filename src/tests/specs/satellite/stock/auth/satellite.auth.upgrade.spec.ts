@@ -1,89 +1,49 @@
-import {
-	idlFactoryObservatory,
-	type ObservatoryActor,
-	type SatelliteActor,
-	type SatelliteDid
-} from '$declarations';
-import { ECDSAKeyIdentity, Ed25519KeyIdentity } from '@dfinity/identity';
+import type { SatelliteActor } from '$declarations';
+import type { Ed25519KeyIdentity } from '@dfinity/identity';
 import type { Actor, PocketIc } from '@dfinity/pic';
 import type { Principal } from '@dfinity/principal';
-import { OBSERVATORY_ID } from '../../../../constants/observatory-tests.constants';
-import { mockCertificateDate, mockClientId } from '../../../../mocks/jwt.mocks';
-import { generateNonce } from '../../../../utils/auth-nonce-tests.utils';
+import { mockClientId } from '../../../../mocks/jwt.mocks';
 import { stopCanister } from '../../../../utils/ic-management-tests.utils';
 import { makeMockGoogleOpenIdJwt } from '../../../../utils/jwt-tests.utils';
 import { assertOpenIdHttpsOutcalls } from '../../../../utils/observatory-openid-tests.utils';
 import { tick } from '../../../../utils/pic-tests.utils';
-import { setupSatelliteStock } from '../../../../utils/satellite-tests.utils';
+import { setupSatelliteAuth } from '../../../../utils/satellite-auth-tests.utils';
 import { upgradeSatellite } from '../../../../utils/satellite-upgrade-tests.utils';
-import { OBSERVATORY_WASM_PATH } from '../../../../utils/setup-tests.utils';
 
-describe('Satellite > Auth > Upgrade', async () => {
+describe('Satellite > Auth > Upgrade', () => {
 	let pic: PocketIc;
 
-	let observatoryActor: Actor<ObservatoryActor>;
-	let observatoryCanisterId: Principal;
+	let observatoryId: Principal;
 
-	let actor: Actor<SatelliteActor>;
 	let controller: Ed25519KeyIdentity;
-	let canisterId: Principal;
 
-	const user = Ed25519KeyIdentity.generate();
-	const sessionKey = await ECDSAKeyIdentity.generate();
-	const publicKey = new Uint8Array(sessionKey.getPublicKey().toDer());
-	const { nonce, salt } = await generateNonce({ caller: user });
+	let satelliteActor: Actor<SatelliteActor>;
+	let satelliteId: Principal;
+
+	let publicKey: Uint8Array;
+	let nonce: string;
+	let salt: Uint8Array;
 
 	beforeAll(async () => {
 		const {
-			actor: a,
 			pic: p,
-			controller: cO,
-			canisterId: cId
-		} = await setupSatelliteStock({
-			dateTime: mockCertificateDate,
-			withIndexHtml: false,
-			memory: { Heap: null }
-		});
+			satellite: { actor: sActor, canisterId: sId },
+			observatory: { canisterId: oId },
+			session: { nonce: n, publicKey: pK, salt: sT },
+			controller: c
+		} = await setupSatelliteAuth();
 
 		pic = p;
-		actor = a;
-		controller = cO;
-		canisterId = cId;
 
-		const { actor: obsA, canisterId: obsC } = await pic.setupCanister<ObservatoryActor>({
-			idlFactory: idlFactoryObservatory,
-			wasm: OBSERVATORY_WASM_PATH,
-			sender: controller.getPrincipal(),
-			targetCanisterId: OBSERVATORY_ID
-		});
+		satelliteActor = sActor;
+		satelliteId = sId;
+		observatoryId = oId;
 
-		observatoryActor = obsA;
-		observatoryCanisterId = obsC;
+		controller = c;
 
-		observatoryActor.setIdentity(controller);
-
-		// Enable authentication with OpenID
-		actor.setIdentity(controller);
-
-		const config: SatelliteDid.SetAuthenticationConfig = {
-			internet_identity: [],
-			rules: [],
-			openid: [
-				{
-					providers: [[{ Google: null }, { client_id: mockClientId }]]
-				}
-			],
-			version: [1n]
-		};
-
-		const { set_auth_config } = actor;
-		await set_auth_config(config);
-
-		// Start fetching OpenID Jwts in Observatory
-		const { start_openid_monitoring } = observatoryActor;
-		await start_openid_monitoring();
-
-		actor.setIdentity(user);
+		nonce = n;
+		publicKey = pK;
+		salt = sT;
 	});
 
 	afterAll(async () => {
@@ -105,7 +65,7 @@ describe('Satellite > Auth > Upgrade', async () => {
 
 		await assertOpenIdHttpsOutcalls({ pic, jwks });
 
-		const { authenticate_user } = actor;
+		const { authenticate_user } = satelliteActor;
 
 		const { delegation } = await authenticate_user({
 			OpenId: { jwt, session_key: publicKey, salt }
@@ -115,13 +75,13 @@ describe('Satellite > Auth > Upgrade', async () => {
 
 		// Stop the Observatory. If there is a fetch it would throw an error.
 		await stopCanister({
-			canisterId: observatoryCanisterId,
+			canisterId: observatoryId,
 			pic,
 			sender: controller
 		});
 
 		// Upgrade Satellite
-		await upgradeSatellite({ canisterId, pic, controller });
+		await upgradeSatellite({ canisterId: satelliteId, pic, controller });
 
 		await tick(pic);
 

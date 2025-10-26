@@ -1,95 +1,47 @@
-import {
-	idlFactoryObservatory,
-	type ObservatoryActor,
-	type SatelliteActor,
-	type SatelliteDid
-} from '$declarations';
+import type { SatelliteActor } from '$declarations';
 import type { _SERVICE as TestSatelliteActor } from '$test-declarations/test_satellite/test_satellite.did';
 import type { Signature } from '@dfinity/agent';
 import {
 	Delegation,
 	DelegationChain,
 	DelegationIdentity,
-	ECDSAKeyIdentity,
-	Ed25519KeyIdentity,
+	type ECDSAKeyIdentity,
 	type SignedDelegation
 } from '@dfinity/identity';
 import type { Actor, PocketIc } from '@dfinity/pic';
-import { OBSERVATORY_ID } from '../../../../constants/observatory-tests.constants';
-import { mockCertificateDate, mockClientId } from '../../../../mocks/jwt.mocks';
-import { generateNonce } from '../../../../utils/auth-nonce-tests.utils';
-import { setupTestSatellite } from '../../../../utils/fixtures-tests.utils';
+import { mockClientId } from '../../../../mocks/jwt.mocks';
 import { makeMockGoogleOpenIdJwt } from '../../../../utils/jwt-tests.utils';
 import { assertOpenIdHttpsOutcalls } from '../../../../utils/observatory-openid-tests.utils';
 import { tick } from '../../../../utils/pic-tests.utils';
-import { setupSatelliteStock } from '../../../../utils/satellite-tests.utils';
-import { OBSERVATORY_WASM_PATH } from '../../../../utils/setup-tests.utils';
+import { setupSatelliteAuth } from '../../../../utils/satellite-auth-tests.utils';
 
-describe('Satellite > Auth > Delegation identity', async () => {
+describe('Satellite > Auth > Delegation identity', () => {
 	let pic: PocketIc;
 
-	let observatoryActor: Actor<ObservatoryActor>;
+	let satelliteActor: Actor<SatelliteActor>;
 	let testSatelliteActor: Actor<TestSatelliteActor>;
 
-	let actor: Actor<SatelliteActor>;
-	let controller: Ed25519KeyIdentity;
-
-	const user = Ed25519KeyIdentity.generate();
-	const sessionKey = await ECDSAKeyIdentity.generate();
-	const publicKey = new Uint8Array(sessionKey.getPublicKey().toDer());
-	const { nonce, salt } = await generateNonce({ caller: user });
+	let publicKey: Uint8Array;
+	let nonce: string;
+	let salt: Uint8Array;
+	let sessionKey: ECDSAKeyIdentity;
 
 	beforeAll(async () => {
 		const {
-			actor: a,
 			pic: p,
-			controller: cO
-		} = await setupSatelliteStock({
-			dateTime: mockCertificateDate,
-			withIndexHtml: false,
-			memory: { Heap: null }
-		});
+			satellite: { actor },
+			testSatellite: { actor: tActor },
+			session: { nonce: n, publicKey: pK, salt: sT, sessionKey: sK }
+		} = await setupSatelliteAuth();
 
 		pic = p;
-		actor = a;
-		controller = cO;
+		satelliteActor = actor;
+		testSatelliteActor = tActor;
 
-		const { actor: obsA } = await pic.setupCanister<ObservatoryActor>({
-			idlFactory: idlFactoryObservatory,
-			wasm: OBSERVATORY_WASM_PATH,
-			sender: controller.getPrincipal(),
-			targetCanisterId: OBSERVATORY_ID
-		});
-
-		observatoryActor = obsA;
-		observatoryActor.setIdentity(controller);
-
-		const { actor: testA } = await setupTestSatellite({ withUpgrade: false });
-
-		testSatelliteActor = testA;
-
-		// Enable authentication with OpenID
-		actor.setIdentity(controller);
-
-		const config: SatelliteDid.SetAuthenticationConfig = {
-			internet_identity: [],
-			rules: [],
-			openid: [
-				{
-					providers: [[{ Google: null }, { client_id: mockClientId }]]
-				}
-			],
-			version: [1n]
-		};
-
-		const { set_auth_config } = actor;
-		await set_auth_config(config);
-
-		// Start fetching OpenID Jwts in Observatory
-		const { start_openid_monitoring } = observatoryActor;
-		await start_openid_monitoring();
-
-		actor.setIdentity(user);
+		nonce = n;
+		publicKey = pK;
+		salt = sT;
+		sessionKey = sK;
 	});
 
 	afterAll(async () => {
@@ -135,7 +87,7 @@ describe('Satellite > Auth > Delegation identity', async () => {
 
 		await assertOpenIdHttpsOutcalls({ pic, jwks });
 
-		const { authenticate_user, get_delegation } = actor;
+		const { authenticate_user, get_delegation } = satelliteActor;
 
 		const { delegation: prepareDelegation } = await authenticate_user({
 			OpenId: { jwt, session_key: publicKey, salt, max_time_to_live: [] }

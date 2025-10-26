@@ -9,6 +9,7 @@ pub(crate) mod errors {
         MissingKid,
         KeyNotFoundCooldown,
         KeyNotFound,
+        InvalidConfig(String),
         FetchFailed(String),
         MissingLastAttempt(String),
         CertificateNotFound,

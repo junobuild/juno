@@ -56,39 +56,7 @@ pub fn assert_user_collection_data(collection: &CollectionKey, doc: &SetDoc) -> 
     let user_data = decode_doc_data::<UserData>(&doc.data)
         .map_err(|err| format!("{JUNO_DATASTORE_ERROR_USER_INVALID_DATA}: {err}"))?;
 
-    assert_user_provider_data(&user_data)
-}
-
-fn assert_user_provider_data(user_data: &UserData) -> Result<(), String> {
-    match user_data.provider {
-        Some(AuthProvider::WebAuthn) => {
-            let provider_data = user_data.provider_data.as_ref().ok_or_else(|| {
-                JUNO_DATASTORE_ERROR_USER_PROVIDER_WEBAUTHN_INVALID_DATA.to_string()
-            })?;
-
-            // No other type of ProviderData for now.
-            let ProviderData::WebAuthn(webauthn_data) = provider_data;
-
-            if let Some(aaguid) = webauthn_data.aaguid.as_ref() {
-                // The AAGUID (Authenticator Attestation GUID) must be exactly 16 bytes.
-                // For simplicity, no further validation is performed here; additional checks are deferred to the frontends for display only.
-                if aaguid.len() != 16 {
-                    return Err(JUNO_DATASTORE_ERROR_USER_AAGUID_INVALID_LENGTH.to_string());
-                }
-            }
-
-            Ok(())
-        }
-        _ => {
-            // There is currently no other provider data than WebAuthn, therefore we can simply assert
-            // those are not set if the provider is not of that kind.
-            if user_data.provider_data.is_some() {
-                return Err(JUNO_DATASTORE_ERROR_USER_PROVIDER_INVALID_DATA.to_string());
-            }
-
-            Ok(())
-        }
-    }
+    user_data.assert_provider_data()
 }
 
 pub fn assert_user_collection_write_permission(

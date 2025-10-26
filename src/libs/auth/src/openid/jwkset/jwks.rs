@@ -3,6 +3,7 @@ use crate::openid::jwkset::constants::{
     REFRESH_COOLDOWN_NS,
 };
 use crate::openid::jwkset::fetch::fetch_openid_certificate;
+use crate::openid::jwkset::targets::target_observatory_id;
 use crate::openid::jwkset::types::errors::GetOrRefreshJwksError;
 use crate::openid::jwt::types::cert::Jwks;
 use crate::openid::jwt::unsafe_find_jwt_kid;
@@ -52,7 +53,10 @@ pub async fn get_or_refresh_jwks(
         }
     }
 
-    let fetched_certificate = fetch_openid_certificate(provider)
+    let observatory_id =
+        target_observatory_id(auth_heap).map_err(GetOrRefreshJwksError::InvalidConfig)?;
+
+    let fetched_certificate = fetch_openid_certificate(provider, observatory_id)
         .await
         .map_err(GetOrRefreshJwksError::FetchFailed)?
         .ok_or(GetOrRefreshJwksError::CertificateNotFound)?;

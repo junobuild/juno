@@ -351,7 +351,8 @@ export const testAuthGoogleConfig = ({
 								client_id: mockClientId
 							}
 						]
-					]
+					],
+					observatory_id: []
 				}
 			],
 			version: [version]
@@ -406,7 +407,8 @@ export const testAuthGoogleConfig = ({
 								client_id: mockClientId
 							}
 						]
-					]
+					],
+					observatory_id: []
 				}
 			],
 			version: [version + 2n]

@@ -1,13 +1,13 @@
 import type { SatelliteActor } from '$declarations';
 import type { _SERVICE as TestSatelliteActor } from '$test-declarations/test_satellite/test_satellite.did';
+import { DelegationChain, DelegationIdentity } from '@dfinity/identity';
 import type { Actor, PocketIc } from '@dfinity/pic';
 import {
 	assertIdentity,
 	authenticateAndMakeIdentity
 } from '../../../../utils/auth-identity-tests.utils';
-import { setupSatelliteAuth, type TestSession } from '../../../../utils/satellite-auth-tests.utils';
-import { DelegationIdentity } from '@dfinity/identity';
 import { tick } from '../../../../utils/pic-tests.utils';
+import { setupSatelliteAuth, type TestSession } from '../../../../utils/satellite-auth-tests.utils';
 
 describe('Satellite > Auth > Session duration', () => {
 	let pic: PocketIc;
@@ -44,15 +44,17 @@ describe('Satellite > Auth > Session duration', () => {
 		{ title: 'Custom', maxTimeToLive: 60n * MINUTE }
 	])('$title', ({ maxTimeToLive }) => {
 		let identity: DelegationIdentity;
+		let delegationChain: DelegationChain;
 
 		it('should authenticate and use identity to perform a call before expiration', async () => {
-			const { identity: i } = await authenticateAndMakeIdentity({
+			const { identity: i, delegationChain: d } = await authenticateAndMakeIdentity({
 				pic,
 				session: { ...session, maxTimeToLive },
 				satelliteActor
 			});
 
 			identity = i;
+			delegationChain = d;
 
 			await assertIdentity({
 				testSatelliteActor,
@@ -61,9 +63,25 @@ describe('Satellite > Auth > Session duration', () => {
 		});
 
 		it('should fail at calling after expiration', async () => {
-			await pic.advanceTime(Number((maxTimeToLive ?? DEFAULT_MAX_TIME_TO_LIVE) / 1_000_000n) + 1_000);
+			await pic.advanceTime(
+				Number((maxTimeToLive ?? DEFAULT_MAX_TIME_TO_LIVE) / 1_000_000n) + 1_000
+			);
 			await tick(pic);
 
+			const picTime = new Date(await pic.getTime());
+
+			const identityExpiration = new Date(
+				Number(identity.getDelegation().delegations[0].delegation.expiration / BigInt(1_000_000))
+			);
+
+			const delegationExpiration = new Date(
+				Number(delegationChain.delegations[0].delegation.expiration / BigInt(1_000_000))
+			);
+
+			expect(picTime.getTime()).toBeGreaterThan(identityExpiration.getTime());
+			expect(picTime.getTime()).toBeGreaterThan(delegationExpiration.getTime());
+
+			// TODO: does not work should throw an exception
 			await assertIdentity({
 				testSatelliteActor,
 				identity

@@ -81,7 +81,8 @@ describe('Satellite > Authentication > Prepare', async () => {
 					OpenId: {
 						jwt: mockJwt,
 						session_key: publicKey,
-						salt
+						salt,
+						max_time_to_live: []
 					}
 				})
 			).rejects.toThrow('No authentication configuration found.');
@@ -108,7 +109,8 @@ describe('Satellite > Authentication > Prepare', async () => {
 					OpenId: {
 						jwt: mockJwt,
 						session_key: publicKey,
-						salt
+						salt,
+						max_time_to_live: []
 					}
 				})
 			).rejects.toThrow('Authentication with OpenId disabled.');
@@ -160,7 +162,7 @@ describe('Satellite > Authentication > Prepare', async () => {
 					const badSigJwt = assembleJwt({ header: 'not json', payload: mockJwtPayload });
 
 					const { delegation } = await authenticate_user({
-						OpenId: { jwt: badSigJwt, session_key: publicKey, salt }
+						OpenId: { jwt: badSigJwt, session_key: publicKey, salt, max_time_to_live: [] }
 					});
 
 					if (!('Err' in delegation)) {
@@ -192,7 +194,7 @@ describe('Satellite > Authentication > Prepare', async () => {
 					const badAlgJwt = assembleJwt({ header, payload: mockJwtPayload });
 
 					const { delegation } = await authenticate_user({
-						OpenId: { jwt: badAlgJwt, session_key: publicKey, salt }
+						OpenId: { jwt: badAlgJwt, session_key: publicKey, salt, max_time_to_live: [] }
 					});
 
 					if (!('Err' in delegation)) {
@@ -224,7 +226,7 @@ describe('Satellite > Authentication > Prepare', async () => {
 					const badTypJwt = assembleJwt({ header, payload: mockJwtPayload });
 
 					const { delegation } = await authenticate_user({
-						OpenId: { jwt: badTypJwt, session_key: publicKey, salt }
+						OpenId: { jwt: badTypJwt, session_key: publicKey, salt, max_time_to_live: [] }
 					});
 
 					if (!('Err' in delegation)) {
@@ -252,7 +254,8 @@ describe('Satellite > Authentication > Prepare', async () => {
 					OpenId: {
 						jwt: mockJwt,
 						session_key: publicKey,
-						salt
+						salt,
+						max_time_to_live: []
 					}
 				});
 
@@ -332,7 +335,8 @@ describe('Satellite > Authentication > Prepare', async () => {
 					OpenId: {
 						jwt: mockJwt,
 						session_key: publicKey,
-						salt
+						salt,
+						max_time_to_live: []
 					}
 				});
 
@@ -372,7 +376,8 @@ describe('Satellite > Authentication > Prepare', async () => {
 						OpenId: {
 							jwt: mockJwt,
 							session_key: publicKey,
-							salt
+							salt,
+							max_time_to_live: []
 						}
 					});
 
@@ -404,7 +409,8 @@ describe('Satellite > Authentication > Prepare', async () => {
 						OpenId: {
 							jwt: mockJwt,
 							session_key: publicKey,
-							salt
+							salt,
+							max_time_to_live: []
 						}
 					});
 
@@ -438,7 +444,8 @@ describe('Satellite > Authentication > Prepare', async () => {
 					OpenId: {
 						jwt: mockJwt,
 						session_key: publicKey,
-						salt
+						salt,
+						max_time_to_live: []
 					}
 				});
 
@@ -457,7 +464,8 @@ describe('Satellite > Authentication > Prepare', async () => {
 					OpenId: {
 						jwt: mockJwt,
 						session_key: publicKey,
-						salt
+						salt,
+						max_time_to_live: []
 					}
 				});
 
@@ -490,7 +498,7 @@ describe('Satellite > Authentication > Prepare', async () => {
 
 				const { authenticate_user } = actor;
 				const { delegation } = await authenticate_user({
-					OpenId: { jwt: mockJwt, session_key: publicKey, salt: wrongSalt }
+					OpenId: { jwt: mockJwt, session_key: publicKey, salt: wrongSalt, max_time_to_live: [] }
 				});
 
 				if ('Ok' in delegation) {
@@ -518,7 +526,7 @@ describe('Satellite > Authentication > Prepare', async () => {
 
 				const { authenticate_user } = actor;
 				const { delegation } = await authenticate_user({
-					OpenId: { jwt: mockJwt, session_key: publicKey, salt }
+					OpenId: { jwt: mockJwt, session_key: publicKey, salt, max_time_to_live: [] }
 				});
 
 				if ('Ok' in delegation) {
@@ -554,7 +562,7 @@ describe('Satellite > Authentication > Prepare', async () => {
 
 				const { authenticate_user } = actor;
 				const { delegation } = await authenticate_user({
-					OpenId: { jwt, session_key: publicKey, salt }
+					OpenId: { jwt, session_key: publicKey, salt, max_time_to_live: [] }
 				});
 
 				if ('Ok' in delegation) {
@@ -591,7 +599,7 @@ describe('Satellite > Authentication > Prepare', async () => {
 
 				const { authenticate_user } = actor;
 				const { delegation } = await authenticate_user({
-					OpenId: { jwt, session_key: publicKey, salt }
+					OpenId: { jwt, session_key: publicKey, salt, max_time_to_live: [] }
 				});
 
 				expect('Ok' in delegation).toBeTruthy();
@@ -614,7 +622,7 @@ describe('Satellite > Authentication > Prepare', async () => {
 
 				const { authenticate_user } = actor;
 				const { delegation } = await authenticate_user({
-					OpenId: { jwt, session_key: publicKey, salt }
+					OpenId: { jwt, session_key: publicKey, salt, max_time_to_live: [] }
 				});
 
 				if ('Ok' in delegation) {
@@ -652,7 +660,7 @@ describe('Satellite > Authentication > Prepare', async () => {
 
 				const { authenticate_user } = actor;
 				const { delegation } = await authenticate_user({
-					OpenId: { jwt, session_key: publicKey, salt }
+					OpenId: { jwt, session_key: publicKey, salt, max_time_to_live: [] }
 				});
 
 				if ('Ok' in delegation) {
@@ -686,7 +694,7 @@ describe('Satellite > Authentication > Prepare', async () => {
 
 				const { authenticate_user } = actor;
 				const { delegation } = await authenticate_user({
-					OpenId: { jwt: badJwt, session_key: publicKey, salt }
+					OpenId: { jwt: badJwt, session_key: publicKey, salt, max_time_to_live: [] }
 				});
 
 				if ('Ok' in delegation) {
@@ -736,7 +744,7 @@ describe('Satellite > Authentication > Prepare', async () => {
 
 				const { authenticate_user } = actor;
 				const { delegation } = await authenticate_user({
-					OpenId: { jwt, session_key: publicKey, salt }
+					OpenId: { jwt, session_key: publicKey, salt, max_time_to_live: [] }
 				});
 
 				if ('Ok' in delegation) {
@@ -789,7 +797,7 @@ describe('Satellite > Authentication > Prepare', async () => {
 
 				const { authenticate_user } = actor;
 				const { delegation } = await authenticate_user({
-					OpenId: { jwt: badNbfJwt, session_key: publicKey, salt }
+					OpenId: { jwt: badNbfJwt, session_key: publicKey, salt, max_time_to_live: [] }
 				});
 
 				if ('Ok' in delegation) {

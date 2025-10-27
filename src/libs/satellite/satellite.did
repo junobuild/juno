@@ -214,6 +214,7 @@ type OpenIdPrepareDelegationArgs = record {
   jwt : text;
   session_key : blob;
   salt : blob;
+  max_time_to_live : opt nat64;
 };
 type OpenIdProvider = variant { Google };
 type OpenIdProviderConfig = record { client_id : text };

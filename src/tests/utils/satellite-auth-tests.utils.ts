@@ -15,19 +15,21 @@ import { setupTestSatellite } from './fixtures-tests.utils';
 import { setupSatelliteStock } from './satellite-tests.utils';
 import { OBSERVATORY_WASM_PATH } from './setup-tests.utils';
 
+export interface TestSession {
+	user: Ed25519KeyIdentity;
+	sessionKey: ECDSAKeyIdentity;
+	publicKey: Uint8Array;
+	nonce: string;
+	salt: Uint8Array;
+}
+
 export const setupSatelliteAuth = async (): Promise<{
 	pic: PocketIc;
 	controller: Ed25519KeyIdentity;
 	satellite: { canisterId: Principal; actor: Actor<SatelliteActor> };
 	observatory: { canisterId: Principal; actor: Actor<ObservatoryActor> };
 	testSatellite: { canisterId: Principal; actor: Actor<TestSatelliteActor> };
-	session: {
-		user: Ed25519KeyIdentity;
-		sessionKey: ECDSAKeyIdentity;
-		publicKey: Uint8Array;
-		nonce: string;
-		salt: Uint8Array;
-	};
+	session: TestSession
 }> => {
 	// User and session
 	const user = Ed25519KeyIdentity.generate();

@@ -9,7 +9,8 @@ export const idlFactory = ({ IDL }) => {
 	const OpenIdPrepareDelegationArgs = IDL.Record({
 		jwt: IDL.Text,
 		session_key: IDL.Vec(IDL.Nat8),
-		salt: IDL.Vec(IDL.Nat8)
+		salt: IDL.Vec(IDL.Nat8),
+		max_time_to_live: IDL.Opt(IDL.Nat64)
 	});
 	const AuthenticateUserArgs = IDL.Variant({
 		OpenId: OpenIdPrepareDelegationArgs

@@ -68,7 +68,7 @@ describe('Satellite > Auth > Upgrade', () => {
 		const { authenticate_user } = satelliteActor;
 
 		const { delegation } = await authenticate_user({
-			OpenId: { jwt, session_key: publicKey, salt }
+			OpenId: { jwt, session_key: publicKey, salt, max_time_to_live: [] }
 		});
 
 		expect('Ok' in delegation).toBeTruthy();
@@ -87,7 +87,7 @@ describe('Satellite > Auth > Upgrade', () => {
 
 		// Try to re-authenticate
 		const { delegation: newDelegation } = await authenticate_user({
-			OpenId: { jwt, session_key: publicKey, salt }
+			OpenId: { jwt, session_key: publicKey, salt, max_time_to_live: [] }
 		});
 
 		expect('Ok' in newDelegation).toBeTruthy();

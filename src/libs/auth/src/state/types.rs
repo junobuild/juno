@@ -73,6 +73,7 @@ pub mod config {
     #[derive(Default, CandidType, Serialize, Deserialize, Clone)]
     pub struct AuthenticationConfigOpenId {
         pub providers: OpenIdProviders,
+        pub observatory_id: Option<Principal>,
         pub delegation: Option<AuthenticationConfigOpenIdDelegation>,
     }
 

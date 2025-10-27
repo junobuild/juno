@@ -41,6 +41,7 @@ export const idlFactory = ({ IDL }) => {
 	const OpenIdProvider = IDL.Variant({ Google: IDL.Null });
 	const OpenIdProviderConfig = IDL.Record({ client_id: IDL.Text });
 	const AuthenticationConfigOpenId = IDL.Record({
+		observatory_id: IDL.Opt(IDL.Principal),
 		providers: IDL.Vec(IDL.Tuple(OpenIdProvider, OpenIdProviderConfig))
 	});
 	const AuthenticationConfigInternetIdentity = IDL.Record({

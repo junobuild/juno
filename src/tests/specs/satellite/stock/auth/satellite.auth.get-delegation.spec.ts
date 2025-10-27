@@ -129,7 +129,8 @@ describe('Satellite > Delegation > Get delegation', async () => {
 									client_id: mockClientId
 								}
 							]
-						]
+						],
+						observatory_id: []
 					}
 				],
 				version: [1n]

@@ -58,8 +58,11 @@ mod unsafe_find_kid_tests {
             iat: Some(now),
             email: None,
             name: None,
+            given_name: None,
+            family_name: None,
             picture: None,
             nonce: None,
+            locale: None,
         }
     }
 

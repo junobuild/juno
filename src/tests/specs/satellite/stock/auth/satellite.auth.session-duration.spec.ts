@@ -104,7 +104,6 @@ describe('Satellite > Auth > Session duration', () => {
 			await pic.advanceTime(15 * 60_000);
 			await tick(pic);
 
-
 			const { identity: i, delegationChain: d } = await authenticateAndMakeIdentity({
 				pic,
 				session,

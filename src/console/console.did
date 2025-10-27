@@ -38,7 +38,11 @@ type AuthenticationConfigInternetIdentity = record {
 };
 type AuthenticationConfigOpenId = record {
   observatory_id : opt principal;
+  delegation : opt AuthenticationConfigOpenIdDelegation;
   providers : vec record { OpenIdProvider; OpenIdProviderConfig };
+};
+type AuthenticationConfigOpenIdDelegation = record {
+  targets : opt vec principal;
 };
 type AuthenticationRules = record { allowed_callers : vec principal };
 type CommitBatch = record {

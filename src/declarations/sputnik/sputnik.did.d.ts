@@ -44,7 +44,11 @@ export interface AuthenticationConfigInternetIdentity {
 }
 export interface AuthenticationConfigOpenId {
 	observatory_id: [] | [Principal];
+	delegation: [] | [AuthenticationConfigOpenIdDelegation];
 	providers: Array<[OpenIdProvider, OpenIdProviderConfig]>;
+}
+export interface AuthenticationConfigOpenIdDelegation {
+	targets: [] | [Array<Principal>];
 }
 export interface AuthenticationRules {
 	allowed_callers: Array<Principal>;

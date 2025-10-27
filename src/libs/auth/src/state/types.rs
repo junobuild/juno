@@ -52,6 +52,7 @@ pub(crate) mod runtime_state {
 }
 
 pub mod config {
+    use crate::delegation::types::DelegationTargets;
     use crate::openid::types::provider::OpenIdProvider;
     use candid::{CandidType, Deserialize, Principal};
     use junobuild_shared::types::core::DomainName;
@@ -73,6 +74,12 @@ pub mod config {
     pub struct AuthenticationConfigOpenId {
         pub providers: OpenIdProviders,
         pub observatory_id: Option<Principal>,
+        pub delegation: Option<AuthenticationConfigOpenIdDelegation>,
+    }
+
+    #[derive(Default, CandidType, Serialize, Deserialize, Clone)]
+    pub struct AuthenticationConfigOpenIdDelegation {
+        pub targets: Option<DelegationTargets>,
     }
 
     #[derive(Default, CandidType, Serialize, Deserialize, Clone)]

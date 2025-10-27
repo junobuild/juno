@@ -1,0 +1,27 @@
+use crate::delegation::types::DelegationTargets;
+use crate::state::get_config;
+use crate::strategies::AuthHeapStrategy;
+use junobuild_shared::ic::api::id;
+
+// By default, and for security reasons, we restrict delegation to the authentication module
+// that created it. Developers can opt out (allow any targets) or define their own
+// restrictions in their configuration.
+// See https://internetcomputer.org/docs/current/references/ic-interface-spec#authentication
+// ⚠️ Add-on to the documentation:
+// > None means no restriction, Some(vec![]) means the delegation only applies to no canister.
+pub fn build_targets(auth_heap: &impl AuthHeapStrategy) -> Option<DelegationTargets> {
+    get_config(auth_heap)
+        .as_ref()
+        .and_then(|config| config.openid.clone())
+        .and_then(|openid| openid.delegation)
+        .map_or(Some(Vec::from([id()])), |delegation| delegation.targets)
+}
+
+pub fn targets_to_bytes(targets: &Option<DelegationTargets>) -> Option<Vec<Vec<u8>>> {
+    targets.as_ref().map(|target| {
+        target
+            .iter()
+            .map(|principal| principal.as_slice().to_vec())
+            .collect()
+    })
+}

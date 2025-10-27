@@ -29,7 +29,7 @@ export const setupSatelliteAuth = async (): Promise<{
 	satellite: { canisterId: Principal; actor: Actor<SatelliteActor> };
 	observatory: { canisterId: Principal; actor: Actor<ObservatoryActor> };
 	testSatellite: { canisterId: Principal; actor: Actor<TestSatelliteActor> };
-	session: TestSession
+	session: TestSession;
 }> => {
 	// User and session
 	const user = Ed25519KeyIdentity.generate();
@@ -78,7 +78,8 @@ export const setupSatelliteAuth = async (): Promise<{
 		openid: [
 			{
 				providers: [[{ Google: null }, { client_id: mockClientId }]],
-				observatory_id: []
+				observatory_id: [],
+				delegation: []
 			}
 		],
 		version: [1n]

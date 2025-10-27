@@ -1,6 +1,6 @@
 import type { SatelliteActor } from '$declarations';
 import type { _SERVICE as TestSatelliteActor } from '$test-declarations/test_satellite/test_satellite.did';
-import { DelegationChain, DelegationIdentity } from '@dfinity/identity';
+import type { DelegationChain, DelegationIdentity } from '@dfinity/identity';
 import type { Actor, PocketIc } from '@dfinity/pic';
 import {
 	assertIdentity,

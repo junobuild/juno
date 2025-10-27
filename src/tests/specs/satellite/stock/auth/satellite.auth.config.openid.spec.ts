@@ -80,7 +80,8 @@ describe('Satellite > Authentication > Prepare', async () => {
 								}
 							]
 						],
-						observatory_id: toNullable(observatoryId)
+						observatory_id: toNullable(observatoryId),
+						delegation: []
 					}
 				],
 				version: toNullable(version)

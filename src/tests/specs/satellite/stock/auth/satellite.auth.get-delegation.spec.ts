@@ -92,6 +92,7 @@ describe('Satellite > Delegation > Get delegation', async () => {
 			const { set_auth_config, get_delegation } = actor;
 
 			actor.setIdentity(controller);
+
 			const config: SatelliteDid.SetAuthenticationConfig = {
 				internet_identity: [],
 				rules: [],
@@ -117,6 +118,7 @@ describe('Satellite > Delegation > Get delegation', async () => {
 			const { set_auth_config } = actor;
 
 			actor.setIdentity(controller);
+
 			const config: SatelliteDid.SetAuthenticationConfig = {
 				internet_identity: [],
 				rules: [],
@@ -130,7 +132,8 @@ describe('Satellite > Delegation > Get delegation', async () => {
 								}
 							]
 						],
-						observatory_id: []
+						observatory_id: [],
+						delegation: []
 					}
 				],
 				version: [1n]

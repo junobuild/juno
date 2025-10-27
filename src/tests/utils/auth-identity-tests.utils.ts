@@ -9,12 +9,12 @@ import {
 	type SignedDelegation
 } from '@dfinity/identity';
 import type { Actor, PocketIc } from '@dfinity/pic';
+import { fromNullable, toNullable } from '@dfinity/utils';
 import { mockClientId } from '../mocks/jwt.mocks';
 import { makeMockGoogleOpenIdJwt } from './jwt-tests.utils';
 import { assertOpenIdHttpsOutcalls } from './observatory-openid-tests.utils';
 import { tick } from './pic-tests.utils';
 import type { TestSession } from './satellite-auth-tests.utils';
-import { toNullable } from '@dfinity/utils';
 
 type UserKey = Uint8Array | number[];
 type Delegations = [UserKey, SignedDelegation[]];
@@ -25,7 +25,7 @@ export const authenticateAndMakeIdentity = async ({
 	satelliteActor
 }: {
 	pic: PocketIc;
-	session: TestSession & { maxTimeToLive?: bigint};
+	session: TestSession & { maxTimeToLive?: bigint };
 	satelliteActor: Actor<SatelliteActor>;
 }): Promise<{
 	identity: DelegationIdentity;
@@ -52,6 +52,7 @@ export const authenticateAndMakeIdentity = async ({
 
 	if ('Err' in prepareDelegation) {
 		expect(true).toBeFalsy();
+
 		throw new Error('Unreachable');
 	}
 
@@ -65,6 +66,7 @@ export const authenticateAndMakeIdentity = async ({
 
 	if ('Err' in signedDelegation) {
 		expect(true).toBeFalsy();
+
 		throw new Error('Unreachable');
 	}
 
@@ -76,7 +78,11 @@ export const authenticateAndMakeIdentity = async ({
 		userKey,
 		[
 			{
-				delegation: new Delegation(Uint8Array.from(delegation.pubkey), delegation.expiration),
+				delegation: new Delegation(
+					Uint8Array.from(delegation.pubkey),
+					delegation.expiration,
+					fromNullable(delegation.targets)
+				),
 				signature: Uint8Array.from(signature) as unknown as Signature
 			}
 		]

@@ -49,6 +49,7 @@ export interface AuthenticationConfigOpenId {
 }
 export interface AuthenticationConfigOpenIdDelegation {
 	targets: [] | [Array<Principal>];
+	max_time_to_live: [] | [bigint];
 }
 export interface AuthenticationRules {
 	allowed_callers: Array<Principal>;
@@ -258,7 +259,6 @@ export interface OpenIdPrepareDelegationArgs {
 	jwt: string;
 	session_key: Uint8Array | number[];
 	salt: Uint8Array | number[];
-	max_time_to_live: [] | [bigint];
 }
 export type OpenIdProvider = { Google: null };
 export interface OpenIdProviderConfig {

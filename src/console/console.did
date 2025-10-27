@@ -43,6 +43,7 @@ type AuthenticationConfigOpenId = record {
 };
 type AuthenticationConfigOpenIdDelegation = record {
   targets : opt vec principal;
+  max_time_to_live : opt nat64;
 };
 type AuthenticationRules = record { allowed_callers : vec principal };
 type CommitBatch = record {

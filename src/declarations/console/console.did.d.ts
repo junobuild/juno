@@ -49,6 +49,7 @@ export interface AuthenticationConfigOpenId {
 }
 export interface AuthenticationConfigOpenIdDelegation {
 	targets: [] | [Array<Principal>];
+	max_time_to_live: [] | [bigint];
 }
 export interface AuthenticationRules {
 	allowed_callers: Array<Principal>;

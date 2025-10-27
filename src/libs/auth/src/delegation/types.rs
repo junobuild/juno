@@ -10,7 +10,6 @@ pub struct OpenIdPrepareDelegationArgs {
     pub jwt: String,
     pub salt: Salt,
     pub session_key: SessionKey,
-    pub max_time_to_live: Option<u64>,
 }
 
 #[derive(CandidType, Serialize, Deserialize)]
@@ -18,7 +17,6 @@ pub struct OpenIdGetDelegationArgs {
     pub jwt: String,
     pub salt: Salt,
     pub session_key: SessionKey,
-    pub expiration: Timestamp,
 }
 
 pub type UserKey = PublicKey;

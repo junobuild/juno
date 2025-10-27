@@ -62,7 +62,7 @@ describe('Satellite > Auth > Session duration', () => {
 			});
 		});
 
-		it('should fail at calling after expiration', async () => {
+		it('should be expired', async () => {
 			await pic.advanceTime(
 				Number((maxTimeToLive ?? DEFAULT_MAX_TIME_TO_LIVE) / 1_000_000n) + 1_000
 			);
@@ -81,11 +81,13 @@ describe('Satellite > Auth > Session duration', () => {
 			expect(picTime.getTime()).toBeGreaterThan(identityExpiration.getTime());
 			expect(picTime.getTime()).toBeGreaterThan(delegationExpiration.getTime());
 
-			// TODO: currently does not work with
-			await assertIdentity({
-				testSatelliteActor,
-				identity
-			});
+			// TODO: calling a canister is currently impersonated by PicJS and therefore,
+			// we cannot use the generated delegation that is now expired
+			// to perform a call and assert it fails.
+			// await assertIdentity({
+			// 	testSatelliteActor,
+			//  identity
+			// });
 		});
 	});
 });

@@ -69,6 +69,7 @@ fn add_delegation_signature(
     let inputs = CanisterSigInputs {
         domain: DELEGATION_SIG_DOMAIN,
         seed,
+        // TODO: targets
         message: &delegation_signature_msg(public_key, expiration, None),
     };
 

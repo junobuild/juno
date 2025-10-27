@@ -153,8 +153,11 @@ mod verify_tests {
             iat,
             email: None,
             name: None,
+            given_name: None,
+            family_name: None,
             picture: None,
             nonce: nonce.map(|s| s.into()),
+            locale: None,
         }
     }
 

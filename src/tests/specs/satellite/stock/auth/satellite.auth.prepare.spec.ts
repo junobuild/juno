@@ -135,7 +135,8 @@ describe('Satellite > Authentication > Prepare', async () => {
 									client_id: mockClientId
 								}
 							]
-						]
+						],
+						observatory_id: []
 					}
 				],
 				version: [1n]

@@ -24,6 +24,10 @@ pub mod state {
         Indefinite,
     }
 
+    pub trait Validated {
+        fn validate(&self) -> Result<(), String>;
+    }
+
     #[derive(Serialize, Deserialize)]
     #[serde(rename_all = "snake_case")]
     pub enum ProviderData {

@@ -77,7 +77,8 @@ export const setupSatelliteAuth = async (): Promise<{
 		rules: [],
 		openid: [
 			{
-				providers: [[{ Google: null }, { client_id: mockClientId }]]
+				providers: [[{ Google: null }, { client_id: mockClientId }]],
+				observatory_id: []
 			}
 		],
 		version: [1n]

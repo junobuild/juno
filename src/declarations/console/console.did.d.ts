@@ -43,6 +43,7 @@ export interface AuthenticationConfigInternetIdentity {
 	external_alternative_origins: [] | [Array<string>];
 }
 export interface AuthenticationConfigOpenId {
+	observatory_id: [] | [Principal];
 	providers: Array<[OpenIdProvider, OpenIdProviderConfig]>;
 }
 export interface AuthenticationRules {

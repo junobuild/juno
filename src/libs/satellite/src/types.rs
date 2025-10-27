@@ -60,7 +60,7 @@ pub mod interface {
     use candid::CandidType;
     use junobuild_auth::delegation::types::{
         GetDelegationError, OpenIdGetDelegationArgs, OpenIdPrepareDelegationArgs,
-        PrepareDelegationError, SignedDelegation, UserKeyTimestamp,
+        PrepareDelegationError, PreparedDelegation, SignedDelegation,
     };
     use junobuild_auth::state::types::config::AuthenticationConfig;
     use junobuild_cdn::proposals::ProposalId;
@@ -99,7 +99,7 @@ pub mod interface {
     // include_satellite and use Result as well.
     #[derive(CandidType, Serialize, Deserialize)]
     pub enum PrepareDelegationResultData {
-        Ok(UserKeyTimestamp),
+        Ok(PreparedDelegation),
         Err(PrepareDelegationError),
     }
 

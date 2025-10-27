@@ -80,6 +80,7 @@ pub mod config {
     #[derive(Default, CandidType, Serialize, Deserialize, Clone)]
     pub struct AuthenticationConfigOpenIdDelegation {
         pub targets: Option<DelegationTargets>,
+        pub max_time_to_live: Option<u64>,
     }
 
     #[derive(Default, CandidType, Serialize, Deserialize, Clone)]

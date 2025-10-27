@@ -45,6 +45,7 @@ type AuthenticationConfigOpenId = record {
 };
 type AuthenticationConfigOpenIdDelegation = record {
   targets : opt vec principal;
+  max_time_to_live : opt nat64;
 };
 type AuthenticationRules = record { allowed_callers : vec principal };
 type CollectionType = variant { Db; Storage };
@@ -214,13 +215,11 @@ type OpenIdGetDelegationArgs = record {
   jwt : text;
   session_key : blob;
   salt : blob;
-  expiration : nat64;
 };
 type OpenIdPrepareDelegationArgs = record {
   jwt : text;
   session_key : blob;
   salt : blob;
-  max_time_to_live : opt nat64;
 };
 type OpenIdProvider = variant { Google };
 type OpenIdProviderConfig = record { client_id : text };

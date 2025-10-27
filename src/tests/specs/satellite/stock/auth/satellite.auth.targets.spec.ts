@@ -68,7 +68,8 @@ describe('Satellite > Auth > Session duration', () => {
 					observatory_id: [],
 					delegation: [
 						{
-							targets: toNullable(targets)
+							targets: toNullable(targets),
+							max_time_to_live: toNullable()
 						}
 					]
 				}

@@ -10,7 +10,10 @@ pub(crate) mod interface {
 
         pub email: Option<String>,
         pub name: Option<String>,
+        pub given_name: Option<String>,
+        pub family_name: Option<String>,
         pub picture: Option<String>,
+        pub locale: Option<String>,
     }
 }
 

@@ -153,8 +153,11 @@ mod verify_tests {
             iat,
             email: None,
             name: None,
+            given_name: None,
+            family_name: None,
             picture: None,
             nonce: nonce.map(|s| s.into()),
+            locale: None,
         }
     }
 
@@ -477,5 +480,48 @@ mod verify_tests {
         let err =
             verify_openid_jwt(&token, &[ISS_GOOGLE], AUD_OK, &[bad_jwk], NONCE_OK).unwrap_err();
         assert!(matches!(err, JwtVerifyError::BadSig(_)));
+    }
+
+    #[test]
+    fn decodes_optional_profile_claims() {
+        let now = now_secs();
+
+        let c = Claims {
+            iss: ISS_GOOGLE.into(),
+            sub: "sub-123".into(),
+            aud: AUD_OK.into(),
+            exp: Some(now + 600),
+            nbf: None,
+            iat: Some(now),
+            email: Some("hello@example.com".into()),
+            name: Some("World".into()),
+            given_name: Some("Hello".into()),
+            family_name: Some("World".into()),
+            picture: Some("https://example.com/world.png".into()),
+            nonce: Some(NONCE_OK.into()),
+            locale: Some("fr-CH".into()),
+        };
+
+        let token = sign_token(&header(Some("JWT"), Some(KID_OK)), &c);
+
+        let out = verify_openid_jwt(
+            &token,
+            &[ISS_GOOGLE],
+            AUD_OK,
+            &[jwk_with_kid(KID_OK)],
+            NONCE_OK,
+        )
+        .expect("should verify");
+
+        let claims = out.claims;
+        assert_eq!(claims.email.as_deref(), Some("hello@example.com"));
+        assert_eq!(claims.name.as_deref(), Some("World")); // unicode/emoji
+        assert_eq!(claims.given_name.as_deref(), Some("Hello"));
+        assert_eq!(claims.family_name.as_deref(), Some("World"));
+        assert_eq!(
+            claims.picture.as_deref(),
+            Some("https://example.com/world.png")
+        );
+        assert_eq!(claims.locale.as_deref(), Some("fr-CH"));
     }
 }

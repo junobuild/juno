@@ -5,6 +5,7 @@ import { type Actor, PocketIc } from '@dfinity/pic';
 import type { Principal } from '@dfinity/principal';
 import { nonNullish } from '@dfinity/utils';
 import { inject } from 'vitest';
+import { SATELLITE_ID } from '../constants/satellite-tests.constants';
 import { SATELLITE_WASM_PATH, satelliteInitArgs } from './setup-tests.utils';
 
 export const deleteDefaultIndexHTML = async ({
@@ -59,7 +60,8 @@ export const setupSatelliteStock = async (
 				: controller,
 			memory
 		}),
-		sender: controller.getPrincipal()
+		sender: controller.getPrincipal(),
+		targetCanisterId: SATELLITE_ID
 	});
 
 	if (!withIndexHtml) {

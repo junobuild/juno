@@ -38,10 +38,15 @@ export const idlFactory = ({ IDL }) => {
 	const DeleteProposalAssets = IDL.Record({
 		proposal_ids: IDL.Vec(IDL.Nat)
 	});
+	const AuthenticationConfigOpenIdDelegation = IDL.Record({
+		targets: IDL.Opt(IDL.Vec(IDL.Principal)),
+		max_time_to_live: IDL.Opt(IDL.Nat64)
+	});
 	const OpenIdProvider = IDL.Variant({ Google: IDL.Null });
 	const OpenIdProviderConfig = IDL.Record({ client_id: IDL.Text });
 	const AuthenticationConfigOpenId = IDL.Record({
 		observatory_id: IDL.Opt(IDL.Principal),
+		delegation: IDL.Opt(AuthenticationConfigOpenIdDelegation),
 		providers: IDL.Vec(IDL.Tuple(OpenIdProvider, OpenIdProviderConfig))
 	});
 	const AuthenticationConfigInternetIdentity = IDL.Record({

@@ -19,7 +19,7 @@ pub mod state {
         Google,
     }
 
-    #[derive(Serialize, Deserialize)]
+    #[derive(Serialize, Deserialize, Clone)]
     #[serde(rename_all = "snake_case")]
     pub enum BannedReason {
         Indefinite,
@@ -45,7 +45,7 @@ pub mod state {
 
     // https://developers.google.com/identity/openid-connect/openid-connect#an-id-tokens-payload
     // https://openid.net/specs/openid-connect-core-1_0.html#StandardClaims
-    #[derive(Serialize, Deserialize)]
+    #[derive(Serialize, Deserialize, Eq, PartialEq)]
     #[serde(rename_all = "camelCase", deny_unknown_fields)]
     pub struct GoogleData {
         pub email: Option<String>,

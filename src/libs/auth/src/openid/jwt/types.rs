@@ -11,11 +11,14 @@ pub(crate) mod token {
         pub nbf: Option<u64>,
         pub iat: Option<u64>,
 
+        pub nonce: Option<String>,
+
         pub email: Option<String>,
         pub name: Option<String>,
+        pub given_name: Option<String>,
+        pub family_name: Option<String>,
         pub picture: Option<String>,
-
-        pub nonce: Option<String>,
+        pub locale: Option<String>,
     }
 
     #[derive(Clone, Deserialize)]

@@ -1,0 +1,77 @@
+use crate::db::internal::unsafe_get_doc;
+use crate::errors::user::JUNO_DATASTORE_ERROR_USER_PROVIDER_GOOGLE_INVALID_DATA;
+use crate::rules::store::get_rule_db;
+use crate::user::core::types::state::{AuthProvider, GoogleData, ProviderData, UserData};
+use crate::{set_doc_store, Doc};
+use candid::Principal;
+use junobuild_auth::delegation::types::UserKey;
+use junobuild_auth::openid::types::interface::OpenIdCredential;
+use junobuild_collections::constants::db::COLLECTION_USER_KEY;
+use junobuild_collections::msg::msg_db_collection_not_found;
+use junobuild_utils::decode_doc_data;
+
+pub fn register_user(public_key: &UserKey, credential: &OpenIdCredential) -> Result<Doc, String> {
+    let user_collection = COLLECTION_USER_KEY.to_string();
+
+    let rule = get_rule_db(&user_collection)
+        .ok_or_else(|| msg_db_collection_not_found(&user_collection))?;
+
+    let user_id = Principal::self_authenticating(public_key);
+    let user_key = user_id.to_text();
+
+    let current_user = unsafe_get_doc(&user_collection.to_string(), &user_key, &rule)?;
+
+    let current_user_data = if let Some(current_user) = &current_user {
+        Some(decode_doc_data::<UserData>(&current_user.data)?)
+    } else {
+        None
+    };
+
+    // We clone the banned flag for the state of the art as the assertion
+    // read the flag from the state anyway. Therefore, even if we would incorrectly
+    // set None here for a banned user, the assertion triggered by set_doc_store would
+    // still fail.
+    let banned = current_user_data
+        .as_ref()
+        .and_then(|user_data| user_data.banned.clone());
+
+    let existing_provider_data: Option<&GoogleData> = match current_user_data.as_ref() {
+        None => None, // A new user
+        Some(user_data) => match user_data.provider_data.as_ref() {
+            Some(ProviderData::Google(provider_data)) => Some(provider_data),
+            _ => return Err(JUNO_DATASTORE_ERROR_USER_PROVIDER_GOOGLE_INVALID_DATA.to_string()),
+        },
+    };
+
+    // If the credential data are unchanged and user already exists, we can return it
+    // without any updates.
+    if let (Some(existing_provider_data), Some(current_user)) =
+        (existing_provider_data, current_user.as_ref())
+    {
+        let new_provider_data = GoogleData::from(credential);
+
+        if *existing_provider_data == new_provider_data {
+            return Ok(current_user.clone());
+        }
+    }
+
+    // Merge or define new provider data
+    let provider_data = if let Some(existing_provider_data) = existing_provider_data {
+        GoogleData::merge(&existing_provider_data, &credential)
+    } else {
+        GoogleData::from(credential)
+    };
+
+    // Create or update the user.
+    let user_data: UserData = UserData {
+        banned,
+        provider: Some(AuthProvider::Google),
+        provider_data: Some(ProviderData::Google(provider_data)),
+    };
+
+    let user_data = UserData::prepare_set_doc(&user_data, &current_user)?;
+
+    let result = set_doc_store(user_id, user_collection, user_key, user_data)?;
+
+    Ok(result.data.after)
+}

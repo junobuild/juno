@@ -7,7 +7,6 @@ use junobuild_auth::delegation::types::{
 };
 use junobuild_auth::{delegation, openid};
 
-// TODO: rename
 pub async fn openid_prepare_delegation(
     args: &OpenIdPrepareDelegationArgs,
 ) -> Result<PrepareDelegationResult, String> {
@@ -28,8 +27,6 @@ pub async fn openid_prepare_delegation(
         Ok(value) => value,
         Err(err) => return Ok(Err(PrepareDelegationError::from(err))),
     };
-
-    // TODO: create and assert user
 
     let result = delegation::openid_prepare_delegation(
         args,

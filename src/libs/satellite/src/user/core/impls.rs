@@ -16,6 +16,9 @@ use crate::user::core::constants::{
 use crate::user::core::types::state::{
     AuthProvider, GoogleData, ProviderData, UserData, Validated, WebAuthnData,
 };
+use crate::{Doc, SetDoc};
+use junobuild_auth::openid::types::interface::OpenIdCredential;
+use junobuild_utils::encode_doc_data;
 use url::Url;
 
 impl Validated for WebAuthnData {
@@ -127,6 +130,53 @@ impl UserData {
 
                 Ok(())
             }
+        }
+    }
+
+    pub fn prepare_set_doc(
+        user_data: &UserData,
+        current_doc: &Option<Doc>,
+    ) -> Result<SetDoc, String> {
+        let data = encode_doc_data(user_data)?;
+
+        let set_doc = SetDoc {
+            data,
+            description: None,
+            version: current_doc.as_ref().and_then(|d| d.version),
+        };
+
+        Ok(set_doc)
+    }
+}
+
+impl GoogleData {
+    pub fn merge(existing: &GoogleData, credential: &OpenIdCredential) -> Self {
+        Self {
+            email: credential.email.clone().or(existing.email.clone()),
+            name: credential.name.clone().or(existing.name.clone()),
+            given_name: credential
+                .given_name
+                .clone()
+                .or(existing.given_name.clone()),
+            family_name: credential
+                .family_name
+                .clone()
+                .or(existing.family_name.clone()),
+            picture: credential.picture.clone().or(existing.picture.clone()),
+            locale: credential.locale.clone().or(existing.locale.clone()),
+        }
+    }
+}
+
+impl From<&OpenIdCredential> for GoogleData {
+    fn from(credential: &OpenIdCredential) -> Self {
+        Self {
+            email: credential.email.clone(),
+            name: credential.name.clone(),
+            given_name: credential.given_name.clone(),
+            family_name: credential.family_name.clone(),
+            picture: credential.picture.clone(),
+            locale: credential.locale.clone(),
         }
     }
 }

@@ -130,7 +130,8 @@ describe('Satellite > Delegation > Get delegation', async () => {
 								}
 							]
 						],
-						observatory_id: []
+						observatory_id: [],
+						delegation: []
 					}
 				],
 				version: [1n]

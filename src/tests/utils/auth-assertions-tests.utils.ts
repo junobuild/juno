@@ -352,7 +352,8 @@ export const testAuthGoogleConfig = ({
 							}
 						]
 					],
-					observatory_id: []
+					observatory_id: [],
+					delegation: []
 				}
 			],
 			version: [version]
@@ -408,7 +409,8 @@ export const testAuthGoogleConfig = ({
 							}
 						]
 					],
-					observatory_id: []
+					observatory_id: [],
+					delegation: []
 				}
 			],
 			version: [version + 2n]

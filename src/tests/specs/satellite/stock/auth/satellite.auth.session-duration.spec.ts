@@ -81,7 +81,7 @@ describe('Satellite > Auth > Session duration', () => {
 			expect(picTime.getTime()).toBeGreaterThan(identityExpiration.getTime());
 			expect(picTime.getTime()).toBeGreaterThan(delegationExpiration.getTime());
 
-			// TODO: does not work should throw an exception
+			// TODO: currently does not work with
 			await assertIdentity({
 				testSatelliteActor,
 				identity

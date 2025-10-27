@@ -258,6 +258,7 @@ export interface OpenIdPrepareDelegationArgs {
 	jwt: string;
 	session_key: Uint8Array | number[];
 	salt: Uint8Array | number[];
+	max_time_to_live: [] | [bigint];
 }
 export type OpenIdProvider = { Google: null };
 export interface OpenIdProviderConfig {

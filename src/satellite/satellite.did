@@ -40,7 +40,12 @@ type AuthenticationConfigInternetIdentity = record {
 };
 type AuthenticationConfigOpenId = record {
   observatory_id : opt principal;
+  delegation : opt AuthenticationConfigOpenIdDelegation;
   providers : vec record { OpenIdProvider; OpenIdProviderConfig };
+};
+type AuthenticationConfigOpenIdDelegation = record {
+  targets : opt vec principal;
+  max_time_to_live : opt nat64;
 };
 type AuthenticationRules = record { allowed_callers : vec principal };
 type CollectionType = variant { Db; Storage };
@@ -210,7 +215,6 @@ type OpenIdGetDelegationArgs = record {
   jwt : text;
   session_key : blob;
   salt : blob;
-  expiration : nat64;
 };
 type OpenIdPrepareDelegationArgs = record {
   jwt : text;

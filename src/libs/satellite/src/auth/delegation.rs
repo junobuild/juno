@@ -33,7 +33,7 @@ pub async fn openid_prepare_delegation(
     };
 
     let result = delegation::openid_prepare_delegation(
-        args,
+        &args.session_key,
         &client_id,
         &credential,
         &AuthHeap,
@@ -62,7 +62,7 @@ pub fn openid_get_delegation(
     };
 
     let result = delegation::openid_get_delegation(
-        args,
+        &args.session_key,
         &client_id,
         &credential,
         &AuthHeap,

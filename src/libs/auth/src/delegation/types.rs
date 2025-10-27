@@ -10,7 +10,6 @@ pub struct OpenIdPrepareDelegationArgs {
     pub jwt: String,
     pub salt: Salt,
     pub session_key: SessionKey,
-    // TODO: max_time_to_live opt<u64>
 }
 
 #[derive(CandidType, Serialize, Deserialize)]
@@ -18,7 +17,6 @@ pub struct OpenIdGetDelegationArgs {
     pub jwt: String,
     pub salt: Salt,
     pub session_key: SessionKey,
-    pub expiration: Timestamp,
 }
 
 pub type UserKey = PublicKey;
@@ -38,11 +36,13 @@ pub struct SignedDelegation {
     pub signature: Signature,
 }
 
+pub type DelegationTargets = Vec<Principal>;
+
 #[derive(CandidType, Serialize, Deserialize)]
 pub struct Delegation {
     pub pubkey: PublicKey,
     pub expiration: Timestamp,
-    pub targets: Option<Vec<Principal>>,
+    pub targets: Option<DelegationTargets>,
 }
 
 #[derive(CandidType, Serialize, Deserialize, Debug)]

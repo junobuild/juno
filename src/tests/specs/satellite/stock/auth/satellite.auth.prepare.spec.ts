@@ -134,7 +134,8 @@ describe('Satellite > Authentication > Prepare', async () => {
 								}
 							]
 						],
-						observatory_id: []
+						observatory_id: [],
+						delegation: []
 					}
 				],
 				version: [1n]

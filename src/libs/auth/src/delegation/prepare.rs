@@ -1,8 +1,9 @@
 use crate::delegation::constants::DEFAULT_EXPIRATION_PERIOD_NS;
 use crate::delegation::seed::calculate_seed;
+use crate::delegation::targets::{delegation_targets, targets_to_bytes};
 use crate::delegation::types::{
-    OpenIdPrepareDelegationArgs, PrepareDelegationError, PrepareDelegationResult, PublicKey,
-    SessionKey, Timestamp,
+    DelegationTargets, OpenIdPrepareDelegationArgs, PrepareDelegationError,
+    PrepareDelegationResult, PublicKey, SessionKey, Timestamp,
 };
 use crate::openid::types::interface::{OpenIdCredential, OpenIdCredentialKey};
 use crate::state::get_salt;
@@ -43,11 +44,14 @@ fn prepare_delegation(
     certificate: &impl AuthCertificateStrategy,
 ) -> PrepareDelegationResult {
     let expiration = time().saturating_add(DEFAULT_EXPIRATION_PERIOD_NS);
+
     let seed = calculate_seed(client_id, key, &get_salt(auth_heap))
         .map_err(PrepareDelegationError::DeriveSeedFailed)?;
 
+    let targets = delegation_targets(auth_heap);
+
     mutate_state(|state| {
-        add_delegation_signature(state, session_key, seed.as_ref(), expiration);
+        add_delegation_signature(state, session_key, seed.as_ref(), expiration, &targets);
     });
 
     certificate.update_certified_data();
@@ -65,12 +69,16 @@ fn add_delegation_signature(
     public_key: &PublicKey,
     seed: &[u8],
     expiration: Timestamp,
+    targets: &Option<DelegationTargets>,
 ) {
     let inputs = CanisterSigInputs {
         domain: DELEGATION_SIG_DOMAIN,
         seed,
-        // TODO: targets
-        message: &delegation_signature_msg(public_key, expiration, None),
+        message: &delegation_signature_msg(
+            public_key,
+            expiration,
+            targets_to_bytes(targets).as_ref(),
+        ),
     };
 
     state.runtime.sigs.add_signature(&inputs);

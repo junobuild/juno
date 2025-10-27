@@ -14,3 +14,12 @@ pub fn delegation_targets(auth_heap: &impl AuthHeapStrategy) -> Option<Delegatio
         .and_then(|openid| openid.delegation)
         .map_or(Some(Vec::from([id()])), |delegation| delegation.targets)
 }
+
+pub fn targets_to_bytes(targets: &Option<DelegationTargets>) -> Option<Vec<Vec<u8>>> {
+    targets.as_ref().map(|target| {
+        target
+            .iter()
+            .map(|principal| principal.as_slice().to_vec())
+            .collect()
+    })
+}

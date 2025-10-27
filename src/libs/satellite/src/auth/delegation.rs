@@ -3,13 +3,17 @@ use crate::auth::strategy_impls::AuthHeap;
 use crate::certification::strategy_impls::AuthCertificate;
 use junobuild_auth::delegation::types::{
     GetDelegationError, GetDelegationResult, OpenIdGetDelegationArgs, OpenIdPrepareDelegationArgs,
-    PrepareDelegationError, PrepareDelegationResult,
+    PrepareDelegationError, UserKeyTimestamp,
 };
+use junobuild_auth::openid::types::interface::OpenIdCredential;
 use junobuild_auth::{delegation, openid};
+
+pub type OpenIdPrepareDelegationResult =
+    Result<(UserKeyTimestamp, OpenIdCredential), PrepareDelegationError>;
 
 pub async fn openid_prepare_delegation(
     args: &OpenIdPrepareDelegationArgs,
-) -> Result<PrepareDelegationResult, String> {
+) -> Result<OpenIdPrepareDelegationResult, String> {
     // TODO: error labels
     let config = get_config().ok_or("No authentication configuration found.")?;
     let openid = config
@@ -36,7 +40,7 @@ pub async fn openid_prepare_delegation(
         &AuthCertificate,
     );
 
-    Ok(result)
+    Ok(result.map(|user_key_timestamp| (user_key_timestamp, credential)))
 }
 
 pub fn openid_get_delegation(

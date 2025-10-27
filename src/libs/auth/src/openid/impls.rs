@@ -13,9 +13,12 @@ impl From<TokenData<Claims>> for OpenIdCredential {
         Self {
             sub: token.claims.sub,
             iss: token.claims.iss,
-            name: token.claims.name,
             email: token.claims.email,
+            name: token.claims.name,
+            given_name: token.claims.given_name,
+            family_name: token.claims.family_name,
             picture: token.claims.picture,
+            locale: token.claims.locale,
         }
     }
 }

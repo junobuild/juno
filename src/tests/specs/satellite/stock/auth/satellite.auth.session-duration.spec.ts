@@ -101,8 +101,10 @@ describe('Satellite > Auth > Session duration', () => {
 				maxTimeToLive
 			});
 
-			await pic.advanceTime(advanceTime);
-			await tick(pic);
+			if (advanceTime > 0) {
+				await pic.advanceTime(advanceTime);
+				await tick(pic);
+			}
 
 			const { identity: i, delegationChain: d } = await authenticateAndMakeIdentity({
 				pic,

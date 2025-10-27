@@ -1,6 +1,6 @@
 use crate::delegation::constants::{DEFAULT_EXPIRATION_PERIOD_NS, MAX_EXPIRATION_PERIOD_NS};
 use crate::delegation::seed::calculate_seed;
-use crate::delegation::targets::{delegation_targets, targets_to_bytes};
+use crate::delegation::targets::{build_targets, targets_to_bytes};
 use crate::delegation::types::{
     DelegationTargets, OpenIdPrepareDelegationArgs, PrepareDelegationError,
     PrepareDelegationResult, PublicKey, SessionKey, Timestamp,
@@ -56,7 +56,7 @@ fn prepare_delegation(
     let seed = calculate_seed(client_id, key, &get_salt(auth_heap))
         .map_err(PrepareDelegationError::DeriveSeedFailed)?;
 
-    let targets = delegation_targets(auth_heap);
+    let targets = build_targets(auth_heap);
 
     mutate_state(|state| {
         add_delegation_signature(state, session_key, seed.as_ref(), expiration, &targets);

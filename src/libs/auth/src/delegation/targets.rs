@@ -9,7 +9,7 @@ use junobuild_shared::ic::api::id;
 // See https://internetcomputer.org/docs/current/references/ic-interface-spec#authentication
 // ⚠️ Add-on to the documentation:
 // > None means no restriction, Some(vec![]) means the delegation only applies to no canister.
-pub fn delegation_targets(auth_heap: &impl AuthHeapStrategy) -> Option<DelegationTargets> {
+pub fn build_targets(auth_heap: &impl AuthHeapStrategy) -> Option<DelegationTargets> {
     get_config(auth_heap)
         .as_ref()
         .and_then(|config| config.openid.clone())

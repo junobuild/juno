@@ -1,7 +1,9 @@
-import type { SatelliteActor } from '$declarations';
+import type { SatelliteActor, SatelliteDid } from '$declarations';
 import type { _SERVICE as TestSatelliteActor } from '$test-declarations/test_satellite/test_satellite.did';
-import type { DelegationChain, DelegationIdentity } from '@dfinity/identity';
+import type { DelegationChain, DelegationIdentity, Ed25519KeyIdentity } from '@dfinity/identity';
 import type { Actor, PocketIc } from '@dfinity/pic';
+import { toNullable } from '@dfinity/utils';
+import { mockClientId } from '../../../../mocks/jwt.mocks';
 import {
 	assertIdentity,
 	authenticateAndMakeIdentity
@@ -11,6 +13,8 @@ import { setupSatelliteAuth, type TestSession } from '../../../../utils/satellit
 
 describe('Satellite > Auth > Session duration', () => {
 	let pic: PocketIc;
+
+	let controller: Ed25519KeyIdentity;
 
 	let satelliteActor: Actor<SatelliteActor>;
 	let testSatelliteActor: Actor<TestSatelliteActor>;
@@ -22,12 +26,16 @@ describe('Satellite > Auth > Session duration', () => {
 			pic: p,
 			satellite: { actor },
 			testSatellite: { actor: tActor },
-			session: s
+			session: s,
+			controller: c
 		} = await setupSatelliteAuth();
 
 		pic = p;
+
 		satelliteActor = actor;
 		testSatelliteActor = tActor;
+
+		controller = c;
 
 		session = s;
 	});
@@ -39,17 +47,63 @@ describe('Satellite > Auth > Session duration', () => {
 	const MINUTE = 60n * 1_000_000_000n;
 	const DEFAULT_MAX_TIME_TO_LIVE = 30n * MINUTE;
 
+	const configAuthExpiration = async ({
+		version,
+		maxTimeToLive
+	}: {
+		version: bigint;
+		maxTimeToLive?: bigint;
+	}) => {
+		const { set_auth_config } = satelliteActor;
+
+		satelliteActor.setIdentity(controller);
+
+		const config: SatelliteDid.SetAuthenticationConfig = {
+			internet_identity: [],
+			rules: [],
+			openid: [
+				{
+					providers: [
+						[
+							{ Google: null },
+							{
+								client_id: mockClientId
+							}
+						]
+					],
+					observatory_id: [],
+					delegation: [
+						{
+							targets: toNullable(),
+							max_time_to_live: toNullable(maxTimeToLive)
+						}
+					]
+				}
+			],
+			version: [version]
+		};
+
+		await set_auth_config(config);
+
+		satelliteActor.setIdentity(session.user);
+	};
+
 	describe.each([
-		// { title: 'Default', maxTimeToLive: undefined },
-		{ title: 'Custom', maxTimeToLive: 60n * MINUTE }
-	])('$title', ({ maxTimeToLive }) => {
+		// { title: 'Default', maxTimeToLive: undefined, version: 1n },
+		{ title: 'Custom', maxTimeToLive: 60n * MINUTE, version: 2n }
+	])('$title', ({ maxTimeToLive, version }) => {
 		let identity: DelegationIdentity;
 		let delegationChain: DelegationChain;
 
 		it('should authenticate and use identity to perform a call before expiration', async () => {
+			await configAuthExpiration({
+				version,
+				maxTimeToLive
+			});
+
 			const { identity: i, delegationChain: d } = await authenticateAndMakeIdentity({
 				pic,
-				session: { ...session, maxTimeToLive },
+				session,
 				satelliteActor
 			});
 

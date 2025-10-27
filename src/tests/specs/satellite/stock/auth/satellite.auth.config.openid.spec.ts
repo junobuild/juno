@@ -133,8 +133,7 @@ describe('Satellite > Authentication > Prepare', async () => {
 				OpenId: {
 					jwt: mockJwt,
 					session_key: publicKey,
-					salt,
-					max_time_to_live: []
+					salt
 				}
 			});
 
@@ -179,8 +178,7 @@ describe('Satellite > Authentication > Prepare', async () => {
 				OpenId: {
 					jwt: mockJwt,
 					session_key: publicKey,
-					salt,
-					max_time_to_live: []
+					salt
 				}
 			});
 

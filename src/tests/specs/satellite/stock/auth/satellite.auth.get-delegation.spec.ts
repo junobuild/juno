@@ -81,8 +81,7 @@ describe('Satellite > Delegation > Get delegation', async () => {
 					OpenId: {
 						jwt,
 						session_key: publicKey,
-						salt,
-						expiration: BigInt(Math.floor(mockCertificateDate.getTime() * 1_000_000))
+						salt
 					}
 				})
 			).rejects.toThrow('No authentication configuration found.');
@@ -103,11 +102,9 @@ describe('Satellite > Delegation > Get delegation', async () => {
 
 			actor.setIdentity(user);
 
-			const expiration = BigInt((await pic.getTime()) * 1_000_000 + 5 * 60 * 1_000_000_000);
-
 			await expect(
 				get_delegation({
-					OpenId: { jwt, session_key: publicKey, salt, expiration }
+					OpenId: { jwt, session_key: publicKey, salt }
 				})
 			).rejects.toThrow('Authentication with OpenId disabled.');
 		});
@@ -157,10 +154,9 @@ describe('Satellite > Delegation > Get delegation', async () => {
 				});
 
 				const { get_delegation } = actor;
-				const expiration = BigInt((await pic.getTime()) * 1_000_000 + 5 * 60 * 1_000_000_000);
 
 				const delegation = await get_delegation({
-					OpenId: { jwt, session_key: publicKey, salt, expiration }
+					OpenId: { jwt, session_key: publicKey, salt }
 				});
 
 				if ('Ok' in delegation) {
@@ -206,7 +202,7 @@ describe('Satellite > Delegation > Get delegation', async () => {
 				const { authenticate_user } = actor;
 
 				const { delegation } = await authenticate_user({
-					OpenId: { jwt: mockJwt, session_key: publicKey, salt, max_time_to_live: [] }
+					OpenId: { jwt: mockJwt, session_key: publicKey, salt }
 				});
 
 				if ('Err' in delegation) {
@@ -239,14 +235,13 @@ describe('Satellite > Delegation > Get delegation', async () => {
 
 				const { authenticate_user } = actor;
 				await authenticate_user({
-					OpenId: { jwt: minted.jwt, session_key: throwawayPub, salt, max_time_to_live: [] }
+					OpenId: { jwt: minted.jwt, session_key: throwawayPub, salt }
 				});
 
 				const { get_delegation } = actor;
-				const expiration = BigInt(now * 1_000_000 + 5 * 60 * 1_000_000_000);
 
 				const res = await get_delegation({
-					OpenId: { jwt: minted.jwt, session_key: publicKey, salt, expiration }
+					OpenId: { jwt: minted.jwt, session_key: publicKey, salt }
 				});
 
 				if ('Ok' in res) {
@@ -259,13 +254,11 @@ describe('Satellite > Delegation > Get delegation', async () => {
 			});
 
 			it('should succeeds after prepare_delegation', async () => {
-				const authentication = await prepare();
-				assertNonNullish(authentication);
-				const { expiration } = authentication;
+				await prepare();
 
 				const { get_delegation } = actor;
 				const delegation = await get_delegation({
-					OpenId: { jwt: mockJwt, session_key: publicKey, salt, expiration }
+					OpenId: { jwt: mockJwt, session_key: publicKey, salt }
 				});
 
 				if ('Err' in delegation) {
@@ -279,42 +272,17 @@ describe('Satellite > Delegation > Get delegation', async () => {
 				} = delegation;
 
 				expect(deg.pubkey).toBeDefined();
-				expect(deg.expiration).toEqual(expiration);
 			});
 
 			it('should fail with NoSuchDelegation on wrong session_key', async () => {
-				const authentication = await prepare();
-				assertNonNullish(authentication);
-				const { expiration } = authentication;
+				await prepare();
 
 				const otherSession = await ECDSAKeyIdentity.generate();
 				const otherPub = new Uint8Array(otherSession.getPublicKey().toDer());
 
 				const { get_delegation } = actor;
 				const delegation = await get_delegation({
-					OpenId: { jwt: mockJwt, session_key: otherPub, salt, expiration }
-				});
-
-				if ('Ok' in delegation) {
-					expect(true).toBeFalsy();
-
-					return;
-				}
-
-				const { Err } = delegation;
-
-				expect('NoSuchDelegation' in Err).toBeTruthy();
-			});
-
-			it('should fail with NoSuchDelegation on wrong expiration', async () => {
-				const authentication = await prepare();
-				assertNonNullish(authentication);
-				const { expiration } = authentication;
-
-				const wrongExp = expiration + 1n; // message changes → no signature stored
-				const { get_delegation } = actor;
-				const delegation = await get_delegation({
-					OpenId: { jwt: mockJwt, session_key: publicKey, salt, expiration: wrongExp }
+					OpenId: { jwt: mockJwt, session_key: otherPub, salt }
 				});
 
 				if ('Ok' in delegation) {
@@ -329,16 +297,14 @@ describe('Satellite > Delegation > Get delegation', async () => {
 			});
 
 			it('should fail for attacker (nonce mismatch) even after prepare', async () => {
-				const authentication = await prepare();
-				assertNonNullish(authentication);
-				const { expiration } = authentication;
+				await prepare();
 
 				const attacker = Ed25519KeyIdentity.generate();
 				actor.setIdentity(attacker);
 
 				const { get_delegation } = actor;
 				const delegation = await get_delegation({
-					OpenId: { jwt: mockJwt, session_key: publicKey, salt, expiration }
+					OpenId: { jwt: mockJwt, session_key: publicKey, salt }
 				});
 
 				actor.setIdentity(user);
@@ -373,10 +339,10 @@ describe('Satellite > Delegation > Get delegation', async () => {
 				const headerNoKid = JSON.stringify({ alg: 'RS256' });
 				const badJwt = assembleJwt({ header: headerNoKid, payload });
 
-				const expiration = BigInt(now * 1_000_000 + 5 * 60 * 1_000_000_000);
 				const { get_delegation } = actor;
+
 				const delegation = await get_delegation({
-					OpenId: { jwt: badJwt, session_key: publicKey, salt, expiration }
+					OpenId: { jwt: badJwt, session_key: publicKey, salt }
 				});
 
 				if ('Ok' in delegation) {

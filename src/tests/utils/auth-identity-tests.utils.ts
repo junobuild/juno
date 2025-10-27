@@ -9,7 +9,7 @@ import {
 	type SignedDelegation
 } from '@dfinity/identity';
 import type { Actor, PocketIc } from '@dfinity/pic';
-import { fromNullable, toNullable } from '@dfinity/utils';
+import { fromNullable } from '@dfinity/utils';
 import { mockClientId } from '../mocks/jwt.mocks';
 import { makeMockGoogleOpenIdJwt } from './jwt-tests.utils';
 import { assertOpenIdHttpsOutcalls } from './observatory-openid-tests.utils';
@@ -21,11 +21,11 @@ type Delegations = [UserKey, SignedDelegation[]];
 
 export const authenticateAndMakeIdentity = async ({
 	pic,
-	session: { sessionKey, nonce, publicKey, salt, maxTimeToLive },
+	session: { sessionKey, nonce, publicKey, salt },
 	satelliteActor
 }: {
 	pic: PocketIc;
-	session: TestSession & { maxTimeToLive?: bigint };
+	session: TestSession;
 	satelliteActor: Actor<SatelliteActor>;
 }): Promise<{
 	identity: DelegationIdentity;
@@ -47,7 +47,7 @@ export const authenticateAndMakeIdentity = async ({
 	const { authenticate_user, get_delegation } = satelliteActor;
 
 	const { delegation: prepareDelegation } = await authenticate_user({
-		OpenId: { jwt, session_key: publicKey, salt, max_time_to_live: toNullable(maxTimeToLive) }
+		OpenId: { jwt, session_key: publicKey, salt }
 	});
 
 	if ('Err' in prepareDelegation) {
@@ -61,7 +61,7 @@ export const authenticateAndMakeIdentity = async ({
 	const [userKey, expiration] = Ok;
 
 	const signedDelegation = await get_delegation({
-		OpenId: { jwt, session_key: publicKey, salt, expiration }
+		OpenId: { jwt, session_key: publicKey, salt }
 	});
 
 	if ('Err' in signedDelegation) {

@@ -497,7 +497,7 @@ mod verify_tests {
             name: Some("World".into()),
             given_name: Some("Hello".into()),
             family_name: Some("World".into()),
-            picture: Some("https://example.com/wold.png".into()),
+            picture: Some("https://example.com/world.png".into()),
             nonce: Some(NONCE_OK.into()),
             locale: Some("fr-CH".into()),
         };

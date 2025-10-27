@@ -89,7 +89,7 @@ describe('Satellite > Auth > Session duration', () => {
 	};
 
 	describe.each([
-		// { title: 'Default', maxTimeToLive: undefined, version: 1n },
+		{ title: 'Default', maxTimeToLive: undefined, version: 1n },
 		{ title: 'Custom', maxTimeToLive: 60n * MINUTE, version: 2n }
 	])('$title', ({ maxTimeToLive, version }) => {
 		let identity: DelegationIdentity;
@@ -100,6 +100,9 @@ describe('Satellite > Auth > Session duration', () => {
 				version,
 				maxTimeToLive
 			});
+
+			await pic.advanceTime(15 * 60_000);
+			await tick(pic);
 
 			const { identity: i, delegationChain: d } = await authenticateAndMakeIdentity({
 				pic,

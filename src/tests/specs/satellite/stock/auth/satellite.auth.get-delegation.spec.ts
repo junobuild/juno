@@ -6,7 +6,6 @@ import {
 } from '$declarations';
 import { ECDSAKeyIdentity, Ed25519KeyIdentity } from '@dfinity/identity';
 import type { Actor, PocketIc } from '@dfinity/pic';
-import { assertNonNullish } from '@dfinity/utils';
 import { OBSERVATORY_ID } from '../../../../constants/observatory-tests.constants';
 import { mockCertificateDate, mockClientId } from '../../../../mocks/jwt.mocks';
 import { generateNonce } from '../../../../utils/auth-nonce-tests.utils';

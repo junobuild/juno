@@ -52,6 +52,7 @@ export const authenticateAndMakeIdentity = async ({
 
 	if ('Err' in prepareDelegation) {
 		expect(true).toBeFalsy();
+
 		throw new Error('Unreachable');
 	}
 
@@ -65,6 +66,7 @@ export const authenticateAndMakeIdentity = async ({
 
 	if ('Err' in signedDelegation) {
 		expect(true).toBeFalsy();
+
 		throw new Error('Unreachable');
 	}
 

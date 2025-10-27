@@ -155,9 +155,8 @@ mod tests {
         let data = WebAuthnData {
             aaguid: Some(vec![0; 15]),
         };
-        let result = data.validate();
-        assert!(result.is_err());
-        assert!(result.unwrap_err().contains("AAGUID"));
+        let err = data.validate().unwrap_err();
+        assert_eq!(err, JUNO_DATASTORE_ERROR_USER_AAGUID_INVALID_LENGTH);
     }
 
     // ------------------------

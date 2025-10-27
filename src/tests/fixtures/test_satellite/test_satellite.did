@@ -215,7 +215,6 @@ type OpenIdGetDelegationArgs = record {
   jwt : text;
   session_key : blob;
   salt : blob;
-  expiration : nat64;
 };
 type OpenIdPrepareDelegationArgs = record {
   jwt : text;

@@ -202,8 +202,7 @@ export const idlFactory = ({ IDL }) => {
 	const OpenIdGetDelegationArgs = IDL.Record({
 		jwt: IDL.Text,
 		session_key: IDL.Vec(IDL.Nat8),
-		salt: IDL.Vec(IDL.Nat8),
-		expiration: IDL.Nat64
+		salt: IDL.Vec(IDL.Nat8)
 	});
 	const GetDelegationArgs = IDL.Variant({ OpenId: OpenIdGetDelegationArgs });
 	const Delegation = IDL.Record({

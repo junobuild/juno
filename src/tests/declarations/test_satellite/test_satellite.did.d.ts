@@ -253,7 +253,6 @@ export interface OpenIdGetDelegationArgs {
 	jwt: string;
 	session_key: Uint8Array | number[];
 	salt: Uint8Array | number[];
-	expiration: bigint;
 }
 export interface OpenIdPrepareDelegationArgs {
 	jwt: string;

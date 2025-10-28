@@ -34,6 +34,7 @@ pub mod state {
     pub enum ProviderData {
         #[serde(rename = "webauthn")]
         WebAuthn(WebAuthnData),
+        #[serde(rename = "openid")]
         OpenId(OpenIdData),
     }
 

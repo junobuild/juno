@@ -199,19 +199,19 @@ describe('Satellite > Delegation > Get delegation', async () => {
 
 				const { authenticate_user } = actor;
 
-				const { delegation } = await authenticate_user({
+				const result = await authenticate_user({
 					OpenId: { jwt: mockJwt, session_key: publicKey, salt }
 				});
 
-				if ('Err' in delegation) {
+				if ('Err' in result) {
 					expect(true).toBeFalsy();
 
 					return undefined;
 				}
 
-				const { Ok } = delegation;
+				const { Ok } = result;
 
-				const { user_key: userKey } = Ok;
+				const { public_key: userKey } = Ok;
 				return { userKey };
 			};
 

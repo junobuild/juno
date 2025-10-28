@@ -46,7 +46,7 @@ export const authenticateAndMakeIdentity = async ({
 
 	const { authenticate_user, get_delegation } = satelliteActor;
 
-	const { delegation: prepareDelegation } = await authenticate_user({
+	const prepareDelegation = await authenticate_user({
 		OpenId: { jwt, session_key: publicKey, salt }
 	});
 
@@ -58,7 +58,7 @@ export const authenticateAndMakeIdentity = async ({
 
 	const { Ok } = prepareDelegation;
 
-	const { user_key: userKey } = Ok;
+	const { public_key: userKey } = Ok;
 
 	const signedDelegation = await get_delegation({
 		OpenId: { jwt, session_key: publicKey, salt }

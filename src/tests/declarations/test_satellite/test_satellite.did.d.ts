@@ -26,7 +26,7 @@ export interface AssetNoContent {
 export interface AssetsUpgradeOptions {
 	clear_existing_assets: [] | [boolean];
 }
-export type AuthenticateUserArgs = { OpenId: OpenIdPrepareDelegationArgs };
+export type AuthenticateUserArgs = { OpenId: OpenIdDelegationArgs };
 export type AuthenticateUserError =
 	| {
 			PrepareDelegation: PrepareDelegationError;
@@ -131,7 +131,7 @@ export interface Doc {
 	created_at: bigint;
 	version: [] | [bigint];
 }
-export type GetDelegationArgs = { OpenId: OpenIdGetDelegationArgs };
+export type GetDelegationArgs = { OpenId: OpenIdDelegationArgs };
 export type GetDelegationError =
 	| { JwtFindProvider: JwtFindProviderError }
 	| { GetCachedJwks: null }
@@ -258,12 +258,7 @@ export interface MemorySize {
 	stable: bigint;
 	heap: bigint;
 }
-export interface OpenIdGetDelegationArgs {
-	jwt: string;
-	session_key: Uint8Array | number[];
-	salt: Uint8Array | number[];
-}
-export interface OpenIdPrepareDelegationArgs {
+export interface OpenIdDelegationArgs {
 	jwt: string;
 	session_key: Uint8Array | number[];
 	salt: Uint8Array | number[];

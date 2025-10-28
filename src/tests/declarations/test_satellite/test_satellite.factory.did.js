@@ -6,14 +6,12 @@ export const idlFactory = ({ IDL }) => {
 		controllers: IDL.Vec(IDL.Principal),
 		storage: IDL.Opt(InitStorageArgs)
 	});
-	const OpenIdPrepareDelegationArgs = IDL.Record({
+	const OpenIdDelegationArgs = IDL.Record({
 		jwt: IDL.Text,
 		session_key: IDL.Vec(IDL.Nat8),
 		salt: IDL.Vec(IDL.Nat8)
 	});
-	const AuthenticateUserArgs = IDL.Variant({
-		OpenId: OpenIdPrepareDelegationArgs
-	});
+	const AuthenticateUserArgs = IDL.Variant({ OpenId: OpenIdDelegationArgs });
 	const Doc = IDL.Record({
 		updated_at: IDL.Nat64,
 		owner: IDL.Principal,
@@ -212,12 +210,7 @@ export const idlFactory = ({ IDL }) => {
 		authentication: IDL.Opt(AuthenticationConfig),
 		storage: StorageConfig
 	});
-	const OpenIdGetDelegationArgs = IDL.Record({
-		jwt: IDL.Text,
-		session_key: IDL.Vec(IDL.Nat8),
-		salt: IDL.Vec(IDL.Nat8)
-	});
-	const GetDelegationArgs = IDL.Variant({ OpenId: OpenIdGetDelegationArgs });
+	const GetDelegationArgs = IDL.Variant({ OpenId: OpenIdDelegationArgs });
 	const Delegation = IDL.Record({
 		pubkey: IDL.Vec(IDL.Nat8),
 		targets: IDL.Opt(IDL.Vec(IDL.Principal)),

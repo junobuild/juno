@@ -21,7 +21,7 @@ describe('Satellite > Auth > User', () => {
 		provider: 'google',
 		banned: null,
 		providerData: {
-			google: {
+			openid: {
 				email: 'user@example.com',
 				name: 'Hello World',
 				givenName: 'Hello',
@@ -138,8 +138,8 @@ describe('Satellite > Auth > User', () => {
 		expect(data).toEqual({
 			...mockUserData,
 			providerData: {
-				google: {
-					...mockUserData.providerData.google,
+				openid: {
+					...mockUserData.providerData.openid,
 					name: updatePayload.name,
 					givenName: updatePayload.given_name,
 					familyName: updatePayload.family_name,

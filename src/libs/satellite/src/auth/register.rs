@@ -4,7 +4,7 @@ use crate::db::types::store::AssertSetDocOptions;
 use crate::errors::user::JUNO_DATASTORE_ERROR_USER_PROVIDER_GOOGLE_INVALID_DATA;
 use crate::rules::store::get_rule_db;
 use crate::user::core::types::state::{AuthProvider, OpenIdData, ProviderData, UserData};
-use crate::{Doc};
+use crate::Doc;
 use candid::Principal;
 use junobuild_auth::delegation::types::UserKey;
 use junobuild_auth::openid::types::interface::OpenIdCredential;

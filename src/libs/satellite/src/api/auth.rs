@@ -1,4 +1,4 @@
-use crate::auth::{openid_authenticate_user, openid_get_delegation};
+use crate::auth::authenticate::{openid_authenticate_user, openid_get_delegation};
 use crate::types::interface::{AuthenticateUserArgs, AuthenticateUserResult, GetDelegationArgs};
 use junobuild_auth::delegation::types::GetDelegationResult;
 use junobuild_shared::ic::UnwrapOrTrap;

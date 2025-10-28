@@ -1,4 +1,3 @@
-use crate::auth::store::get_config;
 use crate::auth::strategy_impls::AuthHeap;
 use crate::certification::strategy_impls::AuthCertificate;
 use junobuild_auth::delegation::types::{
@@ -6,6 +5,7 @@ use junobuild_auth::delegation::types::{
     PrepareDelegationError, PreparedDelegation,
 };
 use junobuild_auth::openid::types::interface::OpenIdCredential;
+use junobuild_auth::state::types::config::OpenIdProviders;
 use junobuild_auth::{delegation, openid};
 
 pub type OpenIdPrepareDelegationResult =
@@ -13,23 +13,15 @@ pub type OpenIdPrepareDelegationResult =
 
 pub async fn openid_prepare_delegation(
     args: &OpenIdPrepareDelegationArgs,
-) -> Result<OpenIdPrepareDelegationResult, String> {
-    // TODO: error labels
-    let config = get_config().ok_or("No authentication configuration found.")?;
-    let openid = config
-        .openid
-        .ok_or("Authentication with OpenId disabled.")?;
-
+    providers: &OpenIdProviders,
+) -> OpenIdPrepareDelegationResult {
     let (client_id, credential) = match openid::verify_openid_credentials_with_jwks_renewal(
-        &args.jwt,
-        &args.salt,
-        &openid.providers,
-        &AuthHeap,
+        &args.jwt, &args.salt, providers, &AuthHeap,
     )
     .await
     {
         Ok(value) => value,
-        Err(err) => return Ok(Err(PrepareDelegationError::from(err))),
+        Err(err) => return Err(PrepareDelegationError::from(err)),
     };
 
     let result = delegation::openid_prepare_delegation(
@@ -40,34 +32,25 @@ pub async fn openid_prepare_delegation(
         &AuthCertificate,
     );
 
-    Ok(result.map(|prepared_delegation| (prepared_delegation, credential)))
+    result.map(|prepared_delegation| (prepared_delegation, credential))
 }
 
 pub fn openid_get_delegation(
     args: &OpenIdGetDelegationArgs,
-) -> Result<GetDelegationResult, String> {
-    let config = get_config().ok_or("No authentication configuration found.")?;
-    let openid = config
-        .openid
-        .ok_or("Authentication with OpenId disabled.")?;
-
+    providers: &OpenIdProviders,
+) -> GetDelegationResult {
     let (client_id, credential) = match openid::verify_openid_credentials_with_cached_jwks(
-        &args.jwt,
-        &args.salt,
-        &openid.providers,
-        &AuthHeap,
+        &args.jwt, &args.salt, providers, &AuthHeap,
     ) {
         Ok(value) => value,
-        Err(err) => return Ok(Err(GetDelegationError::from(err))),
+        Err(err) => return Err(GetDelegationError::from(err)),
     };
 
-    let result = delegation::openid_get_delegation(
+    delegation::openid_get_delegation(
         &args.session_key,
         &client_id,
         &credential,
         &AuthHeap,
         &AuthCertificate,
-    );
-
-    Ok(result)
+    )
 }

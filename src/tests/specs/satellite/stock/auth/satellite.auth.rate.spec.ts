@@ -113,7 +113,7 @@ describe('Satellite > Auth > Rate', async () => {
 			OpenId: { jwt, session_key: publicKey, salt }
 		});
 
-		expect('Ok' in result);
+		expect('Ok' in result).toBeTruthy();
 
 		await config({
 			max_tokens: 1n,
@@ -128,7 +128,7 @@ describe('Satellite > Auth > Rate', async () => {
 			OpenId: { jwt: jwt2, session_key: publicKey, salt }
 		});
 
-		expect('Ok' in result2);
+		expect('Ok' in result2).toBeTruthy();
 
 		const { jwt: jwt3 } = await generateJwtCertificate({ refreshJwts: false, advanceTime: 400 });
 

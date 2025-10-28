@@ -1,4 +1,5 @@
 import type { SatelliteActor } from '$declarations';
+import type { Doc } from '$declarations/satellite/satellite.did';
 import type { _SERVICE as TestSatelliteActor } from '$test-declarations/test_satellite/test_satellite.did';
 import type { Signature } from '@dfinity/agent';
 import {
@@ -15,7 +16,6 @@ import { makeMockGoogleOpenIdJwt, type MockOpenIdJwt } from './jwt-tests.utils';
 import { assertOpenIdHttpsOutcalls } from './observatory-openid-tests.utils';
 import { tick } from './pic-tests.utils';
 import type { TestSession } from './satellite-auth-tests.utils';
-import type { Doc } from '$declarations/satellite/satellite.did';
 
 type UserKey = Uint8Array | number[];
 type Delegations = [UserKey, SignedDelegation[]];
@@ -31,8 +31,8 @@ export const authenticateAndMakeIdentity = async ({
 }): Promise<{
 	identity: DelegationIdentity;
 	delegationChain: DelegationChain;
-	user: Doc,
-	jwt: MockOpenIdJwt,
+	user: Doc;
+	jwt: MockOpenIdJwt;
 }> => {
 	await pic.advanceTime(15 * 60_000);
 	await tick(pic);
@@ -102,7 +102,7 @@ export const authenticateAndMakeIdentity = async ({
 		...identity,
 		user: userDoc,
 		jwt: mockJwt
-	}
+	};
 };
 
 export const assertIdentity = async ({

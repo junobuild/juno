@@ -151,7 +151,7 @@ describe('Satellite > Authentication > Prepare', async () => {
 				return;
 			}
 
-			const {PrepareDelegation} = Err;
+			const { PrepareDelegation } = Err;
 
 			if (!('GetOrFetchJwks' in PrepareDelegation)) {
 				expect(true).toBeFalsy();

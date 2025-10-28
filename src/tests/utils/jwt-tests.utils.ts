@@ -6,8 +6,8 @@ export interface MockOpenIdJwt {
 	jwt: string;
 	kid: string;
 	payload: Required<Omit<JWTPayload, 'jti' | 'nbf'>>;
-	pubJwk: JWK,
-	privateKey: CryptoKey,
+	pubJwk: JWK;
+	privateKey: CryptoKey;
 }
 
 export const makeMockGoogleOpenIdJwt = async ({
@@ -45,10 +45,19 @@ export const makeMockGoogleOpenIdJwt = async ({
 	} as const;
 
 	const jwt = await makeJwt({
-		privateKey, pubJwk, payload
-	})
+		privateKey,
+		pubJwk,
+		payload
+	});
 
-	return { jwks: { keys: [pubJwk as Required<JWK>] }, jwt, kid: pubJwk.kid, payload, pubJwk, privateKey };
+	return {
+		jwks: { keys: [pubJwk as Required<JWK>] },
+		jwt,
+		kid: pubJwk.kid,
+		payload,
+		pubJwk,
+		privateKey
+	};
 };
 
 export const makeJwt = async ({
@@ -59,10 +68,8 @@ export const makeJwt = async ({
 	privateKey: CryptoKey;
 	pubJwk: JWK;
 	payload: Required<Omit<JWTPayload, 'jti' | 'nbf'>>;
-}): Promise<string> => {
-	return await new SignJWT(payload)
+}): Promise<string> => await new SignJWT(payload)
 		.setProtectedHeader({ alg: 'RS256', kid: pubJwk.kid, typ: 'JWT' })
-		.setIssuedAt((payload as {iat: number}).iat)
-		.setExpirationTime((payload as {exp: number}).exp)
+		.setIssuedAt((payload as { iat: number }).iat)
+		.setExpirationTime((payload as { exp: number }).exp)
 		.sign(privateKey);
-};

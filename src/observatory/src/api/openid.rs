@@ -1,4 +1,4 @@
-use crate::guards::caller_is_admin_controller;
+use crate::guards::{caller_is_admin_controller, caller_is_not_anonymous};
 use crate::openid::scheduler::{start_openid_scheduler, stop_openid_scheduler};
 use crate::store::heap::get_certificate;
 use ic_cdk_macros::{query, update};
@@ -16,7 +16,7 @@ fn stop_openid_monitoring() {
     stop_openid_scheduler().unwrap_or_trap()
 }
 
-#[query]
+#[query(guard = "caller_is_not_anonymous")]
 fn get_openid_certificate(
     GetOpenIdCertificateArgs { provider }: GetOpenIdCertificateArgs,
 ) -> Option<OpenIdCertificate> {

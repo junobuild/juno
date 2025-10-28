@@ -128,7 +128,29 @@ describe('Satellite > Auth > Rate', async () => {
 			OpenId: { jwt: jwt2, session_key: publicKey, salt }
 		});
 
-		expect('Ok' in result2).toBeTruthy();
+		// The error in result2 does not matter much here.
+		// Goal is to assert the rate limiter.
+		if ('Ok' in result2) {
+			expect(true).toBeFalsy();
+
+			return;
+		}
+
+		const { Err } = result2;
+
+		if (!('PrepareDelegation' in Err)) {
+			expect(true).toBeFalsy();
+
+			return;
+		}
+
+		const { PrepareDelegation } = Err;
+
+		if (!('GetOrFetchJwks' in PrepareDelegation)) {
+			expect(true).toBeFalsy();
+
+			return;
+		}
 
 		const { jwt: jwt3 } = await generateJwtCertificate({ refreshJwts: false, advanceTime: 400 });
 

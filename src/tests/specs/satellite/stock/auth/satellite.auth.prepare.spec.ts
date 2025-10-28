@@ -6,6 +6,7 @@ import {
 } from '$declarations';
 import { ECDSAKeyIdentity, Ed25519KeyIdentity } from '@dfinity/identity';
 import type { Actor, PocketIc } from '@dfinity/pic';
+import { JUNO_AUTH_ERROR_NOT_CONFIGURED, JUNO_AUTH_ERROR_OPENID_DISABLED } from '@junobuild/errors';
 import { nanoid } from 'nanoid';
 import { OBSERVATORY_ID } from '../../../../constants/observatory-tests.constants';
 import { mockCertificateDate, mockClientId } from '../../../../mocks/jwt.mocks';
@@ -84,7 +85,7 @@ describe('Satellite > Authentication > Prepare', async () => {
 						salt
 					}
 				})
-			).rejects.toThrow('No authentication configuration found.');
+			).rejects.toThrow(JUNO_AUTH_ERROR_NOT_CONFIGURED);
 		});
 
 		it('should fail when openid configuration is not set', async () => {
@@ -111,7 +112,7 @@ describe('Satellite > Authentication > Prepare', async () => {
 						salt
 					}
 				})
-			).rejects.toThrow('Authentication with OpenId disabled.');
+			).rejects.toThrow(JUNO_AUTH_ERROR_OPENID_DISABLED);
 		});
 	});
 

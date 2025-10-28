@@ -6,6 +6,7 @@ import {
 } from '$declarations';
 import { ECDSAKeyIdentity, Ed25519KeyIdentity } from '@dfinity/identity';
 import type { Actor, PocketIc } from '@dfinity/pic';
+import { JUNO_AUTH_ERROR_NOT_CONFIGURED, JUNO_AUTH_ERROR_OPENID_DISABLED } from '@junobuild/errors';
 import { OBSERVATORY_ID } from '../../../../constants/observatory-tests.constants';
 import { mockCertificateDate, mockClientId } from '../../../../mocks/jwt.mocks';
 import { generateNonce } from '../../../../utils/auth-nonce-tests.utils';
@@ -83,7 +84,7 @@ describe('Satellite > Delegation > Get delegation', async () => {
 						salt
 					}
 				})
-			).rejects.toThrow('No authentication configuration found.');
+			).rejects.toThrow(JUNO_AUTH_ERROR_NOT_CONFIGURED);
 		});
 
 		it('should not authenticate_user when OpenId disabled', async () => {
@@ -105,7 +106,7 @@ describe('Satellite > Delegation > Get delegation', async () => {
 				get_delegation({
 					OpenId: { jwt, session_key: publicKey, salt }
 				})
-			).rejects.toThrow('Authentication with OpenId disabled.');
+			).rejects.toThrow(JUNO_AUTH_ERROR_OPENID_DISABLED);
 		});
 	});
 

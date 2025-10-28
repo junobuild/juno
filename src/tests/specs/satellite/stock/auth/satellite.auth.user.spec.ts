@@ -1,13 +1,12 @@
 import type { SatelliteActor } from '$declarations';
 import type { _SERVICE as TestSatelliteActor } from '$test-declarations/test_satellite/test_satellite.did';
+import { DelegationIdentity } from '@dfinity/identity';
 import type { Actor, PocketIc } from '@dfinity/pic';
 import { fromArray } from '@junobuild/utils';
 import { authenticateAndMakeIdentity } from '../../../../utils/auth-identity-tests.utils';
-import { setupSatelliteAuth, type TestSession } from '../../../../utils/satellite-auth-tests.utils';
-import { tick } from '../../../../utils/pic-tests.utils';
-import type { Principal } from '@dfinity/principal';
-import { DelegationIdentity } from '@dfinity/identity';
 import { makeJwt, type MockOpenIdJwt } from '../../../../utils/jwt-tests.utils';
+import { tick } from '../../../../utils/pic-tests.utils';
+import { setupSatelliteAuth, type TestSession } from '../../../../utils/satellite-auth-tests.utils';
 
 describe('Satellite > Auth > User', () => {
 	let pic: PocketIc;
@@ -33,7 +32,7 @@ describe('Satellite > Auth > User', () => {
 				locale: null
 			}
 		}
-	}
+	};
 
 	beforeAll(async () => {
 		const {
@@ -48,8 +47,6 @@ describe('Satellite > Auth > User', () => {
 		testSatelliteActor = tActor;
 
 		session = s;
-
-
 	});
 
 	afterAll(async () => {
@@ -92,7 +89,7 @@ describe('Satellite > Auth > User', () => {
 			return;
 		}
 
-		const {doc: user} = result.Ok;
+		const { doc: user } = result.Ok;
 
 		expect(user.owner.toText()).toEqual(mockIdentity.getPrincipal().toText());
 
@@ -106,17 +103,17 @@ describe('Satellite > Auth > User', () => {
 
 		const updatePayload = {
 			...mockJwt.payload,
-			name: "Super Duper",
-			givenName: "Super",
-			familyName: "Duper",
-			email: "test@test1.com"
-		}
+			name: 'Super Duper',
+			given_name: 'Super',
+			family_name: 'Duper',
+			email: 'test@test1.com'
+		};
 
 		const newJwt = await makeJwt({
 			payload: updatePayload,
 			pubJwk: mockJwt.pubJwk,
 			privateKey: mockJwt.privateKey
-		})
+		});
 
 		const { authenticate_user } = satelliteActor;
 
@@ -134,11 +131,23 @@ describe('Satellite > Auth > User', () => {
 			return;
 		}
 
-		const {doc: user} = result.Ok;
+		const { doc: user } = result.Ok;
 
 		expect(user.owner.toText()).toEqual(mockIdentity.getPrincipal().toText());
 
 		const data = await fromArray(user.data);
-		expect(data).toEqual(updatePayload);
+
+		expect(data).toEqual({
+			...mockUserData,
+			providerData: {
+				google: {
+					...mockUserData.providerData.google,
+					name: updatePayload.name,
+					givenName: updatePayload.given_name,
+					familyName: updatePayload.family_name,
+					email: updatePayload.email
+				}
+			}
+		});
 	});
 });

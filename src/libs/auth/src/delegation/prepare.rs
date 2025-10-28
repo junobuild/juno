@@ -2,8 +2,8 @@ use crate::delegation::duration::build_expiration;
 use crate::delegation::seed::calculate_seed;
 use crate::delegation::targets::{build_targets, targets_to_bytes};
 use crate::delegation::types::{
-    DelegationTargets, PrepareDelegationError, PrepareDelegationResult, PublicKey, SessionKey,
-    Timestamp,
+    DelegationTargets, PrepareDelegationError, PrepareDelegationResult, PreparedDelegation,
+    PublicKey, SessionKey, Timestamp,
 };
 use crate::openid::types::interface::{OpenIdCredential, OpenIdCredentialKey};
 use crate::state::get_salt;
@@ -56,10 +56,9 @@ fn prepare_delegation(
 
     certificate.update_certified_data();
 
-    let delegation = (
-        ByteBuf::from(der_encode_canister_sig_key(seed.to_vec())),
-        expiration,
-    );
+    let delegation = PreparedDelegation {
+        user_key: ByteBuf::from(der_encode_canister_sig_key(seed.to_vec())),
+    };
 
     Ok(delegation)
 }

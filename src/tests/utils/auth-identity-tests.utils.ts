@@ -58,7 +58,7 @@ export const authenticateAndMakeIdentity = async ({
 
 	const { Ok } = prepareDelegation;
 
-	const [userKey, expiration] = Ok;
+	const { user_key: userKey } = Ok;
 
 	const signedDelegation = await get_delegation({
 		OpenId: { jwt, session_key: publicKey, salt }

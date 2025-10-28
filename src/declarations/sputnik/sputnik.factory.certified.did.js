@@ -14,6 +14,7 @@ export const idlFactory = ({ IDL }) => {
 	const AuthenticateUserArgs = IDL.Variant({
 		OpenId: OpenIdPrepareDelegationArgs
 	});
+	const PreparedDelegation = IDL.Record({ user_key: IDL.Vec(IDL.Nat8) });
 	const JwtFindProviderError = IDL.Variant({
 		BadClaim: IDL.Text,
 		BadSig: IDL.Text,
@@ -45,7 +46,7 @@ export const idlFactory = ({ IDL }) => {
 		DeriveSeedFailed: IDL.Text
 	});
 	const PrepareDelegationResultData = IDL.Variant({
-		Ok: IDL.Tuple(IDL.Vec(IDL.Nat8), IDL.Nat64),
+		Ok: PreparedDelegation,
 		Err: PrepareDelegationError
 	});
 	const AuthenticateUserResult = IDL.Record({

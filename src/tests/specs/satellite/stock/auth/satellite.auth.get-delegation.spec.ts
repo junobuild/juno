@@ -177,7 +177,6 @@ describe('Satellite > Delegation > Get delegation', async () => {
 			const prepare = async (): Promise<
 				| {
 						userKey: Uint8Array | number[];
-						expiration: bigint;
 				  }
 				| undefined
 			> => {
@@ -212,8 +211,8 @@ describe('Satellite > Delegation > Get delegation', async () => {
 
 				const { Ok } = delegation;
 
-				const [userKey, expiration] = Ok;
-				return { userKey, expiration };
+				const { user_key: userKey } = Ok;
+				return { userKey };
 			};
 
 			it('should return NoSuchDelegation if called before prepare (for this session_key/expiration)', async () => {

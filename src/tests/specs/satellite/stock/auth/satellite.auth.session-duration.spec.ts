@@ -45,7 +45,7 @@ describe('Satellite > Auth > Session duration', () => {
 	});
 
 	const MINUTE = 60n * 1_000_000_000n;
-	const DEFAULT_MAX_TIME_TO_LIVE = 30n * MINUTE;
+	const DEFAULT_MAX_TIME_TO_LIVE = 24n * 60n * MINUTE; // A day
 
 	const configAuthExpiration = async ({
 		version,

@@ -1,3 +1,4 @@
+use crate::auth::assert::increment_and_assert_user_rate;
 use crate::auth::delegation;
 use crate::auth::delegation::openid_prepare_delegation;
 use crate::auth::register::register_user;
@@ -16,7 +17,10 @@ pub async fn openid_authenticate_user(
         .openid
         .ok_or("Authentication with OpenId disabled.")?;
 
-    // TODO: rate tokens assertions
+    // We assert early on to avoid generating a delegation which won't be used
+    // in case the user cannot be created. We also want to prevent creating delegations
+    // while the rate limiter is reached.
+    increment_and_assert_user_rate()?;
 
     let prepared_delegation = openid_prepare_delegation(args, &openid.providers).await;
 

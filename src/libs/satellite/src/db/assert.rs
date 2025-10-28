@@ -3,6 +3,7 @@ use crate::db::runtime::increment_and_assert_rate;
 use crate::db::types::config::DbConfig;
 use crate::db::types::interface::SetDbConfig;
 use crate::db::types::state::{DocAssertDelete, DocAssertSet, DocContext};
+use crate::db::types::store::AssertSetDocOptions;
 use crate::errors::db::{JUNO_DATASTORE_ERROR_CANNOT_READ, JUNO_DATASTORE_ERROR_CANNOT_WRITE};
 use crate::hooks::db::{invoke_assert_delete_doc, invoke_assert_set_doc};
 use crate::types::store::{AssertContext, StoreContext};
@@ -68,6 +69,7 @@ pub fn assert_set_doc(
     }: &StoreContext,
     &AssertContext { rule, auth_config }: &AssertContext,
     config: &Option<DbConfig>,
+    options: &AssertSetDocOptions,
     key: &Key,
     value: &SetDoc,
     current_doc: &Option<Doc>,
@@ -106,7 +108,9 @@ pub fn assert_set_doc(
 
     increment_and_assert_db_usage(caller, controllers, collection, rule.max_changes_per_user)?;
 
-    increment_and_assert_rate(collection, &rule.rate_config)?;
+    if options.with_assert_rate {
+        increment_and_assert_rate(collection, &rule.rate_config)?;
+    }
 
     Ok(())
 }

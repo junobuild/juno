@@ -89,6 +89,7 @@ impl ProviderData {
     }
 
     fn matches_provider(&self, provider: &AuthProvider) -> bool {
+        #[allow(clippy::match_like_matches_macro)]
         match (self, provider) {
             (ProviderData::WebAuthn(_), &AuthProvider::WebAuthn) => true,
             (ProviderData::Google(_), &AuthProvider::Google) => true,

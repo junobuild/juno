@@ -4,7 +4,7 @@ use crate::db::types::store::AssertSetDocOptions;
 use crate::errors::user::JUNO_DATASTORE_ERROR_USER_PROVIDER_GOOGLE_INVALID_DATA;
 use crate::rules::store::get_rule_db;
 use crate::user::core::types::state::{AuthProvider, GoogleData, ProviderData, UserData};
-use crate::{Doc};
+use crate::Doc;
 use candid::Principal;
 use junobuild_auth::delegation::types::UserKey;
 use junobuild_auth::openid::types::interface::OpenIdCredential;
@@ -61,7 +61,7 @@ pub fn register_user(public_key: &UserKey, credential: &OpenIdCredential) -> Res
 
     // Merge or define new provider data.
     let provider_data = if let Some(existing_provider_data) = existing_provider_data {
-        GoogleData::merge(&existing_provider_data, &credential)
+        GoogleData::merge(existing_provider_data, credential)
     } else {
         GoogleData::from(credential)
     };
@@ -69,7 +69,7 @@ pub fn register_user(public_key: &UserKey, credential: &OpenIdCredential) -> Res
     // The document should be created on behalf of the user, meaning the owner must be the user's public key.
     // However, only an administrator is currently allowed to update user data.
     // See `assert_user_collection_write_permission` for details.
-    let caller = if let Some(_) = existing_provider_data {
+    let caller = if existing_provider_data.is_some() {
         id()
     } else {
         user_id

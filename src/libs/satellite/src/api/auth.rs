@@ -5,12 +5,7 @@ use junobuild_shared::ic::UnwrapOrTrap;
 
 pub async fn authenticate_user(args: &AuthenticateUserArgs) -> AuthenticateUserResult {
     match args {
-        AuthenticateUserArgs::OpenId(args) => {
-            let delegation = openid_authenticate_user(args).await.unwrap_or_trap();
-            AuthenticateUserResult {
-                delegation: delegation.into(),
-            }
-        }
+        AuthenticateUserArgs::OpenId(args) => openid_authenticate_user(args).await.unwrap_or_trap(),
     }
 }
 

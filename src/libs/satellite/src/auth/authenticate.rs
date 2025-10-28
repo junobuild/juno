@@ -1,19 +1,25 @@
 use crate::auth::delegation::openid_prepare_delegation;
 use crate::auth::register::register_user;
-use junobuild_auth::delegation::types::{OpenIdPrepareDelegationArgs, PrepareDelegationResult};
+use crate::types::interface::{AuthenticateUserError, AuthenticateUserResult, AuthenticatedUser};
+use junobuild_auth::delegation::types::OpenIdPrepareDelegationArgs;
 
 pub async fn openid_authenticate_user(
     args: &OpenIdPrepareDelegationArgs,
-) -> Result<PrepareDelegationResult, String> {
-    let result = openid_prepare_delegation(args).await?;
+) -> Result<AuthenticateUserResult, String> {
+    // TODO: rate tokens assertions
 
-    match result {
+    let prepared_delegation = openid_prepare_delegation(args).await?;
+
+    let result = match prepared_delegation {
         Ok((delegation, credential)) => {
-            // TODO: return user and popup error
-            let _todo = register_user(&delegation.0, &credential);
+            let key = delegation.user_key;
 
-            Ok(Ok(delegation))
+            register_user(&key, &credential)
+                .map(|doc| AuthenticatedUser { public_key: key, doc: doc })
+                .map_err(AuthenticateUserError::CreateUser)
         }
-        Err(err) => Ok(Err(err)),
-    }
+        Err(err) => Err(AuthenticateUserError::PrepareDelegation(err)),
+    };
+
+    Ok(result)
 }

@@ -2,7 +2,7 @@ use crate::memory::internal::init_stable_state;
 use crate::types::interface::{GetDelegationResultResponse, PrepareDelegationResultData};
 use crate::types::state::{CollectionType, HeapState, RuntimeState, State};
 use junobuild_auth::delegation::types::{
-    GetDelegationError, PrepareDelegationError, SignedDelegation, UserKeyTimestamp,
+    GetDelegationError, PrepareDelegationError, PreparedDelegation, SignedDelegation,
 };
 use std::fmt::{Display, Formatter, Result as FmtResult};
 
@@ -29,8 +29,8 @@ impl Display for CollectionType {
     }
 }
 
-impl From<Result<UserKeyTimestamp, PrepareDelegationError>> for PrepareDelegationResultData {
-    fn from(r: Result<UserKeyTimestamp, PrepareDelegationError>) -> Self {
+impl From<Result<PreparedDelegation, PrepareDelegationError>> for PrepareDelegationResultData {
+    fn from(r: Result<PreparedDelegation, PrepareDelegationError>) -> Self {
         match r {
             Ok(v) => Self::Ok(v),
             Err(e) => Self::Err(e),

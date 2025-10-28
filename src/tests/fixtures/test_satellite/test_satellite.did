@@ -232,9 +232,10 @@ type PrepareDelegationError = variant {
   DeriveSeedFailed : text;
 };
 type PrepareDelegationResultData = variant {
-  Ok : record { blob; nat64 };
+  Ok : PreparedDelegation;
   Err : PrepareDelegationError;
 };
+type PreparedDelegation = record { user_key : blob };
 type Proposal = record {
   status : ProposalStatus;
   updated_at : nat64;

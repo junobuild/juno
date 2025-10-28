@@ -277,10 +277,11 @@ export type PrepareDelegationError =
 	| { GetOrFetchJwks: GetOrRefreshJwksError }
 	| { DeriveSeedFailed: string };
 export type PrepareDelegationResultData =
-	| {
-			Ok: [Uint8Array | number[], bigint];
-	  }
+	| { Ok: PreparedDelegation }
 	| { Err: PrepareDelegationError };
+export interface PreparedDelegation {
+	user_key: Uint8Array | number[];
+}
 export interface Proposal {
 	status: ProposalStatus;
 	updated_at: bigint;

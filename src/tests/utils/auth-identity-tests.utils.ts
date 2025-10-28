@@ -11,7 +11,7 @@ import {
 import type { Actor, PocketIc } from '@dfinity/pic';
 import { fromNullable } from '@dfinity/utils';
 import { mockClientId } from '../mocks/jwt.mocks';
-import { makeMockGoogleOpenIdJwt } from './jwt-tests.utils';
+import { makeMockGoogleOpenIdJwt, type MockOpenIdJwt } from './jwt-tests.utils';
 import { assertOpenIdHttpsOutcalls } from './observatory-openid-tests.utils';
 import { tick } from './pic-tests.utils';
 import type { TestSession } from './satellite-auth-tests.utils';
@@ -32,18 +32,20 @@ export const authenticateAndMakeIdentity = async ({
 	identity: DelegationIdentity;
 	delegationChain: DelegationChain;
 	user: Doc,
-	jwt: string,
+	jwt: MockOpenIdJwt,
 }> => {
 	await pic.advanceTime(15 * 60_000);
 	await tick(pic);
 
 	const now = await pic.getTime();
 
-	const { jwks, jwt } = await makeMockGoogleOpenIdJwt({
+	const mockJwt = await makeMockGoogleOpenIdJwt({
 		clientId: mockClientId,
 		date: new Date(now),
 		nonce
 	});
+
+	const { jwks, jwt } = mockJwt;
 
 	await assertOpenIdHttpsOutcalls({ pic, jwks });
 
@@ -99,7 +101,7 @@ export const authenticateAndMakeIdentity = async ({
 	return {
 		...identity,
 		user: userDoc,
-		jwt
+		jwt: mockJwt
 	}
 };
 

@@ -7,6 +7,7 @@ import { setupSatelliteAuth, type TestSession } from '../../../../utils/satellit
 import { tick } from '../../../../utils/pic-tests.utils';
 import type { Principal } from '@dfinity/principal';
 import { DelegationIdentity } from '@dfinity/identity';
+import { makeJwt, type MockOpenIdJwt } from '../../../../utils/jwt-tests.utils';
 
 describe('Satellite > Auth > User', () => {
 	let pic: PocketIc;
@@ -16,7 +17,7 @@ describe('Satellite > Auth > User', () => {
 
 	let session: TestSession;
 
-	let mockJwt: string;
+	let mockJwt: MockOpenIdJwt;
 	let mockIdentity: DelegationIdentity;
 
 	const mockUserData = {
@@ -47,6 +48,8 @@ describe('Satellite > Auth > User', () => {
 		testSatelliteActor = tActor;
 
 		session = s;
+
+
 	});
 
 	afterAll(async () => {
@@ -77,7 +80,7 @@ describe('Satellite > Auth > User', () => {
 
 		const result = await authenticate_user({
 			OpenId: {
-				jwt: mockJwt,
+				jwt: mockJwt.jwt,
 				session_key: session.publicKey,
 				salt: session.salt
 			}
@@ -95,5 +98,47 @@ describe('Satellite > Auth > User', () => {
 
 		const data = await fromArray(user.data);
 		expect(data).toEqual(mockUserData);
+	});
+
+	it('should update user data', async () => {
+		await pic.advanceTime(1000 * 30); // 30s for cooldown guard
+		await tick(pic);
+
+		const updatePayload = {
+			...mockJwt.payload,
+			name: "Super Duper",
+			givenName: "Super",
+			familyName: "Duper",
+			email: "test@test1.com"
+		}
+
+		const newJwt = await makeJwt({
+			payload: updatePayload,
+			pubJwk: mockJwt.pubJwk,
+			privateKey: mockJwt.privateKey
+		})
+
+		const { authenticate_user } = satelliteActor;
+
+		const result = await authenticate_user({
+			OpenId: {
+				jwt: newJwt,
+				session_key: session.publicKey,
+				salt: session.salt
+			}
+		});
+
+		if (!('Ok' in result)) {
+			expect(true).toBeFalsy();
+
+			return;
+		}
+
+		const {doc: user} = result.Ok;
+
+		expect(user.owner.toText()).toEqual(mockIdentity.getPrincipal().toText());
+
+		const data = await fromArray(user.data);
+		expect(data).toEqual(updatePayload);
 	});
 });

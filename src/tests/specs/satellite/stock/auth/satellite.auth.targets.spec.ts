@@ -46,7 +46,7 @@ describe('Satellite > Auth > Session duration', () => {
 		targets
 	}: {
 		version: bigint;
-		targets?: Principal[];
+		targets: [] | [Principal[]];
 	}) => {
 		const { set_auth_config } = satelliteActor;
 
@@ -68,7 +68,7 @@ describe('Satellite > Auth > Session duration', () => {
 					observatory_id: [],
 					delegation: [
 						{
-							targets: toNullable(targets),
+							targets,
 							max_time_to_live: toNullable()
 						}
 					]
@@ -102,7 +102,7 @@ describe('Satellite > Auth > Session duration', () => {
 	it('should sign a delegation with no targets - works with any canister', async () => {
 		await configAuthTargets({
 			version: 1n,
-			targets: undefined
+			targets: [] // None
 		});
 
 		const { identity, delegationChain } = await authenticateAndMakeIdentity({
@@ -118,10 +118,10 @@ describe('Satellite > Auth > Session duration', () => {
 		expect(delegationTargets).toBeUndefined();
 	});
 
-	it('should sign a delegation with empty targets - works with no canister', async () => {
+	it('should sign a delegation with empty targets - defaults to satellite ID', async () => {
 		await configAuthTargets({
 			version: 2n,
-			targets: []
+			targets: [[]]
 		});
 
 		const { identity, delegationChain } = await authenticateAndMakeIdentity({
@@ -136,14 +136,17 @@ describe('Satellite > Auth > Session duration', () => {
 		assertNonNullish(identityTargets);
 		assertNonNullish(delegationTargets);
 
-		expect(identityTargets).toHaveLength(0);
-		expect(delegationTargets).toHaveLength(0);
+		expect(identityTargets).toHaveLength(1);
+		expect(delegationTargets).toHaveLength(1);
+
+		expect(identityTargets?.[0].toText()).toEqual(satelliteId.toText());
+		expect(delegationTargets?.[0].toText()).toEqual(satelliteId.toText());
 	});
 
 	it('should sign a delegation with targets', async () => {
 		await configAuthTargets({
 			version: 3n,
-			targets: [OBSERVATORY_ID, SATELLITE_ID]
+			targets: [[OBSERVATORY_ID, SATELLITE_ID]]
 		});
 
 		const { identity, delegationChain } = await authenticateAndMakeIdentity({

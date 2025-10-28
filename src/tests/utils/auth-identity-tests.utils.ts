@@ -15,6 +15,7 @@ import { makeMockGoogleOpenIdJwt } from './jwt-tests.utils';
 import { assertOpenIdHttpsOutcalls } from './observatory-openid-tests.utils';
 import { tick } from './pic-tests.utils';
 import type { TestSession } from './satellite-auth-tests.utils';
+import type { Doc } from '$declarations/satellite/satellite.did';
 
 type UserKey = Uint8Array | number[];
 type Delegations = [UserKey, SignedDelegation[]];
@@ -30,6 +31,7 @@ export const authenticateAndMakeIdentity = async ({
 }): Promise<{
 	identity: DelegationIdentity;
 	delegationChain: DelegationChain;
+	user: Doc
 }> => {
 	await pic.advanceTime(15 * 60_000);
 	await tick(pic);
@@ -58,7 +60,7 @@ export const authenticateAndMakeIdentity = async ({
 
 	const { Ok } = prepareDelegation;
 
-	const { public_key: userKey } = Ok;
+	const { public_key: userKey, doc: userDoc } = Ok;
 
 	const signedDelegation = await get_delegation({
 		OpenId: { jwt, session_key: publicKey, salt }
@@ -88,10 +90,15 @@ export const authenticateAndMakeIdentity = async ({
 		]
 	];
 
-	return generateIdentity({
+	const identity = generateIdentity({
 		sessionKey,
 		delegations
 	});
+
+	return {
+		...identity,
+		user: userDoc
+	}
 };
 
 export const assertIdentity = async ({

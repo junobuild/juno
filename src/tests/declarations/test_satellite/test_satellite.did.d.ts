@@ -27,8 +27,17 @@ export interface AssetsUpgradeOptions {
 	clear_existing_assets: [] | [boolean];
 }
 export type AuthenticateUserArgs = { OpenId: OpenIdPrepareDelegationArgs };
-export interface AuthenticateUserResult {
-	delegation: PrepareDelegationResultData;
+export type AuthenticateUserError =
+	| {
+			PrepareDelegation: PrepareDelegationError;
+	  }
+	| { RegisterUser: string };
+export type AuthenticateUserResultResponse =
+	| { Ok: AuthenticatedUser }
+	| { Err: AuthenticateUserError };
+export interface AuthenticatedUser {
+	doc: Doc;
+	public_key: Uint8Array | number[];
 }
 export interface AuthenticationConfig {
 	updated_at: [] | [bigint];
@@ -276,12 +285,6 @@ export type PrepareDelegationError =
 	| { JwtVerify: JwtVerifyError }
 	| { GetOrFetchJwks: GetOrRefreshJwksError }
 	| { DeriveSeedFailed: string };
-export type PrepareDelegationResultData =
-	| { Ok: PreparedDelegation }
-	| { Err: PrepareDelegationError };
-export interface PreparedDelegation {
-	user_key: Uint8Array | number[];
-}
 export interface Proposal {
 	status: ProposalStatus;
 	updated_at: bigint;
@@ -426,7 +429,7 @@ export interface UploadChunkResult {
 	chunk_id: bigint;
 }
 export interface _SERVICE {
-	authenticate_user: ActorMethod<[AuthenticateUserArgs], AuthenticateUserResult>;
+	authenticate_user: ActorMethod<[AuthenticateUserArgs], AuthenticateUserResultResponse>;
 	commit_asset_upload: ActorMethod<[CommitBatch], undefined>;
 	commit_proposal: ActorMethod<[CommitProposal], null>;
 	commit_proposal_asset_upload: ActorMethod<[CommitBatch], undefined>;

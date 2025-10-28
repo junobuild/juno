@@ -3,14 +3,17 @@ use crate::auth::strategy_impls::AuthHeap;
 use crate::certification::strategy_impls::AuthCertificate;
 use junobuild_auth::delegation::types::{
     GetDelegationError, GetDelegationResult, OpenIdGetDelegationArgs, OpenIdPrepareDelegationArgs,
-    PrepareDelegationError, PrepareDelegationResult,
+    PrepareDelegationError, PreparedDelegation,
 };
+use junobuild_auth::openid::types::interface::OpenIdCredential;
 use junobuild_auth::{delegation, openid};
 
-// TODO: rename
+pub type OpenIdPrepareDelegationResult =
+    Result<(PreparedDelegation, OpenIdCredential), PrepareDelegationError>;
+
 pub async fn openid_prepare_delegation(
     args: &OpenIdPrepareDelegationArgs,
-) -> Result<PrepareDelegationResult, String> {
+) -> Result<OpenIdPrepareDelegationResult, String> {
     // TODO: error labels
     let config = get_config().ok_or("No authentication configuration found.")?;
     let openid = config
@@ -29,8 +32,6 @@ pub async fn openid_prepare_delegation(
         Err(err) => return Ok(Err(PrepareDelegationError::from(err))),
     };
 
-    // TODO: create and assert user
-
     let result = delegation::openid_prepare_delegation(
         &args.session_key,
         &client_id,
@@ -39,7 +40,7 @@ pub async fn openid_prepare_delegation(
         &AuthCertificate,
     );
 
-    Ok(result)
+    Ok(result.map(|prepared_delegation| (prepared_delegation, credential)))
 }
 
 pub fn openid_get_delegation(

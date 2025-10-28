@@ -280,7 +280,7 @@ describe('Satellite > User', () => {
 						})
 					).rejects.toThrow(
 						new RegExp(
-							`${JUNO_DATASTORE_ERROR_USER_INVALID_DATA}: unknown variant \`test\`, expected \`webauthn\` at line 1 column 45.`,
+							`${JUNO_DATASTORE_ERROR_USER_INVALID_DATA}: unknown variant \`test\`, expected \`webauthn\` or \`google\` at line 1 column 45.`,
 							'i'
 						)
 					);
@@ -689,7 +689,7 @@ describe('Satellite > User', () => {
 				})
 			).rejects.toThrow(
 				new RegExp(
-					`${JUNO_DATASTORE_ERROR_USER_INVALID_DATA}: unknown variant \`unknown\`, expected one of \`internet_identity\`, \`nfid\`, \`webauthn\` at line 1 column 21.`,
+					`${JUNO_DATASTORE_ERROR_USER_INVALID_DATA}: unknown variant \`unknown\`, expected one of \`internet_identity\`, \`nfid\`, \`webauthn\`, \`google\` at line 1 column 21.`,
 					'i'
 				)
 			);
@@ -711,7 +711,7 @@ describe('Satellite > User', () => {
 				})
 			).rejects.toThrow(
 				new RegExp(
-					`${JUNO_DATASTORE_ERROR_USER_INVALID_DATA}: unknown variant \`test\`, expected \`webauthn\` at line 1 column 54.`,
+					`${JUNO_DATASTORE_ERROR_USER_INVALID_DATA}: unknown variant \`test\`, expected \`webauthn\` or \`google\` at line 1 column 54.`,
 					'i'
 				)
 			);

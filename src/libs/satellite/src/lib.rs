@@ -23,8 +23,8 @@ use crate::guards::{
     caller_is_admin_controller, caller_is_controller, caller_is_controller_with_write,
 };
 use crate::types::interface::{
-    AuthenticateUserArgs, AuthenticateUserResult, Config, DeleteProposalAssets, GetDelegationArgs,
-    GetDelegationResultResponse,
+    AuthenticateUserArgs, AuthenticateUserResultResponse, Config, DeleteProposalAssets,
+    GetDelegationArgs, GetDelegationResultResponse,
 };
 use crate::types::state::CollectionType;
 use ic_cdk_macros::{init, post_upgrade, pre_upgrade, query, update};
@@ -166,8 +166,8 @@ pub fn count_collection_docs(collection: CollectionKey) -> usize {
 
 #[doc(hidden)]
 #[update]
-pub async fn authenticate_user(args: AuthenticateUserArgs) -> AuthenticateUserResult {
-    api::auth::authenticate_user(&args).await
+pub async fn authenticate_user(args: AuthenticateUserArgs) -> AuthenticateUserResultResponse {
+    api::auth::authenticate_user(&args).await.into()
 }
 
 #[doc(hidden)]

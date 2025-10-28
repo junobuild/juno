@@ -1,4 +1,4 @@
-pub(crate) mod interface {
+pub mod interface {
     pub struct OpenIdCredentialKey<'a> {
         pub iss: &'a String,
         pub sub: &'a String,

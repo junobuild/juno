@@ -96,7 +96,7 @@ pub mod interface {
     #[derive(CandidType, Serialize, Deserialize)]
     pub enum AuthenticateUserError {
         PrepareDelegation(PrepareDelegationError),
-        CreateUser(String),
+        RegisterUser(String),
     }
 
     #[derive(CandidType, Serialize, Deserialize)]

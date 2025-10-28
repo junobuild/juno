@@ -31,7 +31,8 @@ export const authenticateAndMakeIdentity = async ({
 }): Promise<{
 	identity: DelegationIdentity;
 	delegationChain: DelegationChain;
-	user: Doc
+	user: Doc,
+	jwt: string,
 }> => {
 	await pic.advanceTime(15 * 60_000);
 	await tick(pic);
@@ -97,7 +98,8 @@ export const authenticateAndMakeIdentity = async ({
 
 	return {
 		...identity,
-		user: userDoc
+		user: userDoc,
+		jwt
 	}
 };
 

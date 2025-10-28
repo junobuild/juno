@@ -68,7 +68,8 @@ export const makeJwt = async ({
 	privateKey: CryptoKey;
 	pubJwk: JWK;
 	payload: Required<Omit<JWTPayload, 'jti' | 'nbf'>>;
-}): Promise<string> => await new SignJWT(payload)
+}): Promise<string> =>
+	await new SignJWT(payload)
 		.setProtectedHeader({ alg: 'RS256', kid: pubJwk.kid, typ: 'JWT' })
 		.setIssuedAt((payload as { iat: number }).iat)
 		.setExpirationTime((payload as { exp: number }).exp)

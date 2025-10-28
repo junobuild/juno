@@ -14,7 +14,7 @@ use crate::user::core::constants::{
     AAGUID_LENGTH, EMAIL_MAX_LENGTH, LOCALE_MAX_LENGTH, NAME_MAX_LENGTH, SHORT_NAME_MAX_LENGTH,
 };
 use crate::user::core::types::state::{
-    AuthProvider, GoogleData, ProviderData, UserData, Validated, WebAuthnData,
+    AuthProvider, OpenIdData, ProviderData, UserData, Validated, WebAuthnData,
 };
 use crate::{Doc, SetDoc};
 use junobuild_auth::openid::types::interface::OpenIdCredential;
@@ -35,7 +35,7 @@ impl Validated for WebAuthnData {
     }
 }
 
-impl Validated for GoogleData {
+impl Validated for OpenIdData {
     fn validate(&self) -> Result<(), String> {
         if let Some(email) = self.email.as_ref() {
             if email.len() > EMAIL_MAX_LENGTH {
@@ -84,7 +84,7 @@ impl ProviderData {
     fn validate(&self) -> Result<(), String> {
         match self {
             ProviderData::WebAuthn(data) => data.validate(),
-            ProviderData::Google(data) => data.validate(),
+            ProviderData::OpenId(data) => data.validate(),
         }
     }
 
@@ -92,7 +92,7 @@ impl ProviderData {
         #[allow(clippy::match_like_matches_macro)]
         match (self, provider) {
             (ProviderData::WebAuthn(_), &AuthProvider::WebAuthn) => true,
-            (ProviderData::Google(_), &AuthProvider::Google) => true,
+            (ProviderData::OpenId(_), &AuthProvider::Google) => true,
             _ => false,
         }
     }
@@ -150,8 +150,8 @@ impl UserData {
     }
 }
 
-impl GoogleData {
-    pub fn merge(existing: &GoogleData, credential: &OpenIdCredential) -> Self {
+impl OpenIdData {
+    pub fn merge(existing: &OpenIdData, credential: &OpenIdCredential) -> Self {
         Self {
             email: credential.email.clone().or(existing.email.clone()),
             name: credential.name.clone().or(existing.name.clone()),
@@ -169,7 +169,7 @@ impl GoogleData {
     }
 }
 
-impl From<&OpenIdCredential> for GoogleData {
+impl From<&OpenIdCredential> for OpenIdData {
     fn from(credential: &OpenIdCredential) -> Self {
         Self {
             email: credential.email.clone(),
@@ -186,7 +186,7 @@ impl From<&OpenIdCredential> for GoogleData {
 mod tests {
     use super::*;
     use crate::user::core::types::state::{
-        AuthProvider, GoogleData, ProviderData, UserData, WebAuthnData,
+        AuthProvider, OpenIdData, ProviderData, UserData, WebAuthnData,
     };
 
     // ------------------------
@@ -211,12 +211,12 @@ mod tests {
     }
 
     // ------------------------
-    // GoogleData
+    // OpenIdData
     // ------------------------
 
     #[test]
     fn test_google_valid_data() {
-        let data = GoogleData {
+        let data = OpenIdData {
             email: Some("user@example.com".to_string()),
             name: Some("Ada Lovelace".to_string()),
             given_name: Some("Ada".to_string()),
@@ -231,7 +231,7 @@ mod tests {
     #[test]
     fn test_google_invalid_email_length() {
         let long_email = "a".repeat(EMAIL_MAX_LENGTH + 1);
-        let data = GoogleData {
+        let data = OpenIdData {
             email: Some(long_email),
             name: None,
             given_name: None,
@@ -244,7 +244,7 @@ mod tests {
 
     #[test]
     fn test_google_invalid_picture_url() {
-        let data = GoogleData {
+        let data = OpenIdData {
             email: None,
             name: None,
             given_name: None,
@@ -257,7 +257,7 @@ mod tests {
 
     #[test]
     fn test_google_invalid_picture_scheme() {
-        let data = GoogleData {
+        let data = OpenIdData {
             email: None,
             name: None,
             given_name: None,
@@ -270,7 +270,7 @@ mod tests {
 
     #[test]
     fn test_google_invalid_name_length() {
-        let data = GoogleData {
+        let data = OpenIdData {
             email: None,
             name: Some("a".repeat(NAME_MAX_LENGTH + 1)),
             given_name: None,
@@ -283,7 +283,7 @@ mod tests {
 
     #[test]
     fn test_google_invalid_given_name_length() {
-        let data = GoogleData {
+        let data = OpenIdData {
             email: None,
             name: None,
             given_name: Some("a".repeat(SHORT_NAME_MAX_LENGTH + 1)),
@@ -296,7 +296,7 @@ mod tests {
 
     #[test]
     fn test_google_invalid_family_name_length() {
-        let data = GoogleData {
+        let data = OpenIdData {
             email: None,
             name: None,
             given_name: None,
@@ -309,7 +309,7 @@ mod tests {
 
     #[test]
     fn test_google_invalid_locale_length() {
-        let data = GoogleData {
+        let data = OpenIdData {
             email: None,
             name: None,
             given_name: None,
@@ -348,7 +348,7 @@ mod tests {
 
     #[test]
     fn test_userdata_google_valid() {
-        let provider_data = ProviderData::Google(GoogleData {
+        let provider_data = ProviderData::OpenId(OpenIdData {
             email: Some("user@example.com".to_string()),
             name: Some("User".to_string()),
             given_name: None,
@@ -368,7 +368,7 @@ mod tests {
 
     #[test]
     fn test_userdata_google_invalid_picture_scheme() {
-        let provider_data = ProviderData::Google(GoogleData {
+        let provider_data = ProviderData::OpenId(OpenIdData {
             email: Some("user@example.com".to_string()),
             name: Some("User".to_string()),
             given_name: None,

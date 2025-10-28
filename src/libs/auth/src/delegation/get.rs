@@ -22,7 +22,7 @@ pub fn openid_get_delegation(
 ) -> GetDelegationResult {
     get_delegation(
         session_key,
-        &client_id,
+        client_id,
         &OpenIdCredentialKey::from(credential),
         auth_heap,
         certificate,

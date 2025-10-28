@@ -198,7 +198,7 @@ pub fn internal_set_doc_store(
         collection: &collection,
     };
 
-    let data = secure_set_doc(&context, &config, &assert_options, key.clone(), value)?;
+    let data = secure_set_doc(&context, &config, assert_options, key.clone(), value)?;
 
     Ok(DocContext {
         key,

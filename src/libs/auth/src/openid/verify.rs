@@ -23,7 +23,7 @@ pub async fn verify_openid_credentials_with_jwks_renewal(
 
     let jwks = get_or_refresh_jwks(&provider, jwt, auth_heap)
         .await
-        .map_err(|e| VerifyOpenidCredentialsError::GetOrFetchJwks(e))?;
+        .map_err(VerifyOpenidCredentialsError::GetOrFetchJwks)?;
 
     verify_openid_credentials(jwt, &jwks, &provider, &config.client_id, salt)
 }

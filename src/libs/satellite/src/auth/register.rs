@@ -3,7 +3,7 @@ use crate::db::store::internal_set_doc_store;
 use crate::db::types::store::AssertSetDocOptions;
 use crate::errors::user::JUNO_DATASTORE_ERROR_USER_PROVIDER_GOOGLE_INVALID_DATA;
 use crate::rules::store::get_rule_db;
-use crate::user::core::types::state::{AuthProvider, GoogleData, ProviderData, UserData};
+use crate::user::core::types::state::{AuthProvider, OpenIdData, ProviderData, UserData};
 use crate::{Doc};
 use candid::Principal;
 use junobuild_auth::delegation::types::UserKey;
@@ -39,10 +39,10 @@ pub fn register_user(public_key: &UserKey, credential: &OpenIdCredential) -> Res
         .as_ref()
         .and_then(|user_data| user_data.banned.clone());
 
-    let existing_provider_data: Option<&GoogleData> = match current_user_data.as_ref() {
+    let existing_provider_data: Option<&OpenIdData> = match current_user_data.as_ref() {
         None => None, // A new user
         Some(user_data) => match user_data.provider_data.as_ref() {
-            Some(ProviderData::Google(provider_data)) => Some(provider_data),
+            Some(ProviderData::OpenId(provider_data)) => Some(provider_data),
             _ => return Err(JUNO_DATASTORE_ERROR_USER_PROVIDER_GOOGLE_INVALID_DATA.to_string()),
         },
     };
@@ -52,7 +52,7 @@ pub fn register_user(public_key: &UserKey, credential: &OpenIdCredential) -> Res
     if let (Some(existing_provider_data), Some(current_user)) =
         (existing_provider_data, current_user.as_ref())
     {
-        let new_provider_data = GoogleData::from(credential);
+        let new_provider_data = OpenIdData::from(credential);
 
         if *existing_provider_data == new_provider_data {
             return Ok(current_user.clone());
@@ -61,9 +61,9 @@ pub fn register_user(public_key: &UserKey, credential: &OpenIdCredential) -> Res
 
     // Merge or define new provider data.
     let provider_data = if let Some(existing_provider_data) = existing_provider_data {
-        GoogleData::merge(&existing_provider_data, &credential)
+        OpenIdData::merge(&existing_provider_data, &credential)
     } else {
-        GoogleData::from(credential)
+        OpenIdData::from(credential)
     };
 
     // The document should be created on behalf of the user, meaning the owner must be the user's public key.
@@ -79,7 +79,7 @@ pub fn register_user(public_key: &UserKey, credential: &OpenIdCredential) -> Res
     let user_data: UserData = UserData {
         banned,
         provider: Some(AuthProvider::Google),
-        provider_data: Some(ProviderData::Google(provider_data)),
+        provider_data: Some(ProviderData::OpenId(provider_data)),
     };
 
     let user_data = UserData::prepare_set_doc(&user_data, &current_user)?;

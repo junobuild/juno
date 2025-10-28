@@ -34,7 +34,7 @@ pub mod state {
     pub enum ProviderData {
         #[serde(rename = "webauthn")]
         WebAuthn(WebAuthnData),
-        Google(GoogleData),
+        OpenId(OpenIdData),
     }
 
     #[derive(Serialize, Deserialize)]
@@ -47,7 +47,7 @@ pub mod state {
     // https://openid.net/specs/openid-connect-core-1_0.html#StandardClaims
     #[derive(Serialize, Deserialize, Eq, PartialEq)]
     #[serde(rename_all = "camelCase", deny_unknown_fields)]
-    pub struct GoogleData {
+    pub struct OpenIdData {
         pub email: Option<String>,
         pub name: Option<String>,
         pub given_name: Option<String>,

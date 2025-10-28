@@ -1,8 +1,10 @@
 use crate::db::internal::unsafe_get_doc;
+use crate::db::store::internal_set_doc_store;
+use crate::db::types::store::AssertSetDocOptions;
 use crate::errors::user::JUNO_DATASTORE_ERROR_USER_PROVIDER_GOOGLE_INVALID_DATA;
 use crate::rules::store::get_rule_db;
 use crate::user::core::types::state::{AuthProvider, GoogleData, ProviderData, UserData};
-use crate::{set_doc_store, Doc};
+use crate::{Doc};
 use candid::Principal;
 use junobuild_auth::delegation::types::UserKey;
 use junobuild_auth::openid::types::interface::OpenIdCredential;
@@ -82,7 +84,19 @@ pub fn register_user(public_key: &UserKey, credential: &OpenIdCredential) -> Res
 
     let user_data = UserData::prepare_set_doc(&user_data, &current_user)?;
 
-    let result = set_doc_store(caller, user_collection, user_key, user_data)?;
+    let assert_options = AssertSetDocOptions {
+        // We disable the assertion for the rate tokens because it has been asserted
+        // before generating the delegation.
+        with_assert_rate: false,
+    };
+
+    let result = internal_set_doc_store(
+        caller,
+        user_collection,
+        user_key,
+        user_data,
+        &assert_options,
+    )?;
 
     Ok(result.data.after)
 }

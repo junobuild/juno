@@ -101,8 +101,8 @@ fn get_cached_certificate_impl(
     state
         .as_ref()
         .and_then(|auth| auth.openid.as_ref())
-        .and_then(|openid| openid.certificates.get(provider).clone())
-        .and_then(|cached| Some(cached.clone()))
+        .and_then(|openid| openid.certificates.get(provider))
+        .cloned()
 }
 
 fn record_fetch_attempt_impl(
@@ -119,7 +119,7 @@ fn record_fetch_attempt_impl(
         .certificates
         .entry(provider.clone())
         .and_modify(|cached_certificate| cached_certificate.record_attempt(reset_streak))
-        .or_insert_with(|| OpenIdCachedCertificate::init());
+        .or_insert_with(OpenIdCachedCertificate::init);
 }
 
 fn cache_certificate_impl(

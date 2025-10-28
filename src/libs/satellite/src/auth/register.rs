@@ -61,7 +61,7 @@ pub fn register_user(public_key: &UserKey, credential: &OpenIdCredential) -> Res
 
     // Merge or define new provider data.
     let provider_data = if let Some(existing_provider_data) = existing_provider_data {
-        OpenIdData::merge(&existing_provider_data, &credential)
+        OpenIdData::merge(existing_provider_data, credential)
     } else {
         OpenIdData::from(credential)
     };
@@ -69,7 +69,7 @@ pub fn register_user(public_key: &UserKey, credential: &OpenIdCredential) -> Res
     // The document should be created on behalf of the user, meaning the owner must be the user's public key.
     // However, only an administrator is currently allowed to update user data.
     // See `assert_user_collection_write_permission` for details.
-    let caller = if let Some(_) = existing_provider_data {
+    let caller = if existing_provider_data.is_some() {
         id()
     } else {
         user_id

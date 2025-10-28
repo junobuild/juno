@@ -16,7 +16,5 @@ pub fn build_expiration(auth_heap: &impl AuthHeapStrategy) -> u64 {
         MAX_EXPIRATION_PERIOD_NS,
     );
 
-    let expiration = time().saturating_add(session_duration);
-
-    expiration
+    time().saturating_add(session_duration)
 }

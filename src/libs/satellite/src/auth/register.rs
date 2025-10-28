@@ -8,6 +8,7 @@ use junobuild_auth::delegation::types::UserKey;
 use junobuild_auth::openid::types::interface::OpenIdCredential;
 use junobuild_collections::constants::db::COLLECTION_USER_KEY;
 use junobuild_collections::msg::msg_db_collection_not_found;
+use junobuild_shared::ic::api::id;
 use junobuild_utils::decode_doc_data;
 
 pub fn register_user(public_key: &UserKey, credential: &OpenIdCredential) -> Result<Doc, String> {
@@ -31,6 +32,7 @@ pub fn register_user(public_key: &UserKey, credential: &OpenIdCredential) -> Res
     // read the flag from the state anyway. Therefore, even if we would incorrectly
     // set None here for a banned user, the assertion triggered by set_doc_store would
     // still fail.
+    // See `assert_user_is_not_banned` for details.
     let banned = current_user_data
         .as_ref()
         .and_then(|user_data| user_data.banned.clone());
@@ -55,11 +57,20 @@ pub fn register_user(public_key: &UserKey, credential: &OpenIdCredential) -> Res
         }
     }
 
-    // Merge or define new provider data
+    // Merge or define new provider data.
     let provider_data = if let Some(existing_provider_data) = existing_provider_data {
         GoogleData::merge(&existing_provider_data, &credential)
     } else {
         GoogleData::from(credential)
+    };
+
+    // The document should be created on behalf of the user, meaning the owner must be the user's public key.
+    // However, only an administrator is currently allowed to update user data.
+    // See `assert_user_collection_write_permission` for details.
+    let caller = if let Some(_) = existing_provider_data {
+        id()
+    } else {
+        user_id
     };
 
     // Create or update the user.
@@ -71,7 +82,7 @@ pub fn register_user(public_key: &UserKey, credential: &OpenIdCredential) -> Res
 
     let user_data = UserData::prepare_set_doc(&user_data, &current_user)?;
 
-    let result = set_doc_store(user_id, user_collection, user_key, user_data)?;
+    let result = set_doc_store(caller, user_collection, user_key, user_data)?;
 
     Ok(result.data.after)
 }

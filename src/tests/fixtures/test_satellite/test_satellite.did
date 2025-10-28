@@ -22,7 +22,7 @@ type AssetNoContent = record {
   version : opt nat64;
 };
 type AssetsUpgradeOptions = record { clear_existing_assets : opt bool };
-type AuthenticateUserArgs = variant { OpenId : OpenIdPrepareDelegationArgs };
+type AuthenticateUserArgs = variant { OpenId : OpenIdDelegationArgs };
 type AuthenticateUserError = variant {
   PrepareDelegation : PrepareDelegationError;
   RegisterUser : text;
@@ -105,7 +105,7 @@ type Doc = record {
   created_at : nat64;
   version : opt nat64;
 };
-type GetDelegationArgs = variant { OpenId : OpenIdGetDelegationArgs };
+type GetDelegationArgs = variant { OpenId : OpenIdDelegationArgs };
 type GetDelegationError = variant {
   JwtFindProvider : JwtFindProviderError;
   GetCachedJwks;
@@ -217,12 +217,7 @@ type ListRulesResults = record {
 };
 type Memory = variant { Heap; Stable };
 type MemorySize = record { stable : nat64; heap : nat64 };
-type OpenIdGetDelegationArgs = record {
-  jwt : text;
-  session_key : blob;
-  salt : blob;
-};
-type OpenIdPrepareDelegationArgs = record {
+type OpenIdDelegationArgs = record {
   jwt : text;
   session_key : blob;
   salt : blob;

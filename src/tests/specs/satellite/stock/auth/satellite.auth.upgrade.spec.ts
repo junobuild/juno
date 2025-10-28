@@ -67,11 +67,11 @@ describe('Satellite > Auth > Upgrade', () => {
 
 		const { authenticate_user } = satelliteActor;
 
-		const { delegation } = await authenticate_user({
+		const result = await authenticate_user({
 			OpenId: { jwt, session_key: publicKey, salt }
 		});
 
-		expect('Ok' in delegation).toBeTruthy();
+		expect('Ok' in result).toBeTruthy();
 
 		// Stop the Observatory. If there is a fetch it would throw an error.
 		await stopCanister({
@@ -86,10 +86,10 @@ describe('Satellite > Auth > Upgrade', () => {
 		await tick(pic);
 
 		// Try to re-authenticate
-		const { delegation: newDelegation } = await authenticate_user({
+		const newResult = await authenticate_user({
 			OpenId: { jwt, session_key: publicKey, salt }
 		});
 
-		expect('Ok' in newDelegation).toBeTruthy();
+		expect('Ok' in newResult).toBeTruthy();
 	});
 });

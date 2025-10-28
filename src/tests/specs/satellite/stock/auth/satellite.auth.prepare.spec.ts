@@ -160,23 +160,31 @@ describe('Satellite > Authentication > Prepare', async () => {
 					// not valid JSON → decode_header fails → BadSig
 					const badSigJwt = assembleJwt({ header: 'not json', payload: mockJwtPayload });
 
-					const { delegation } = await authenticate_user({
+					const result = await authenticate_user({
 						OpenId: { jwt: badSigJwt, session_key: publicKey, salt }
 					});
 
-					if (!('Err' in delegation)) {
+					if (!('Err' in result)) {
 						expect(true).toBeFalsy();
 
 						return;
 					}
 
-					const { Err } = delegation;
+					const { Err } = result;
 
-					if (!('JwtFindProvider' in Err)) {
+					if (!('PrepareDelegation' in Err)) {
+						expect(true).toBeFalsy();
+
 						return;
 					}
 
-					const jfp = Err.JwtFindProvider;
+					const { PrepareDelegation } = Err;
+
+					if (!('JwtFindProvider' in PrepareDelegation)) {
+						return;
+					}
+
+					const jfp = PrepareDelegation.JwtFindProvider;
 
 					expect('BadSig' in jfp).toBeTruthy(); // message string not asserted, just the variant
 				});
@@ -192,23 +200,31 @@ describe('Satellite > Authentication > Prepare', async () => {
 
 					const badAlgJwt = assembleJwt({ header, payload: mockJwtPayload });
 
-					const { delegation } = await authenticate_user({
+					const result = await authenticate_user({
 						OpenId: { jwt: badAlgJwt, session_key: publicKey, salt }
 					});
 
-					if (!('Err' in delegation)) {
+					if (!('Err' in result)) {
 						expect(true).toBeFalsy();
 
 						return;
 					}
 
-					const { Err } = delegation;
+					const { Err } = result;
 
-					if (!('JwtFindProvider' in Err)) {
+					if (!('PrepareDelegation' in Err)) {
+						expect(true).toBeFalsy();
+
 						return;
 					}
 
-					const { JwtFindProvider } = Err;
+					const { PrepareDelegation } = Err;
+
+					if (!('JwtFindProvider' in PrepareDelegation)) {
+						return;
+					}
+
+					const { JwtFindProvider } = PrepareDelegation;
 
 					expect((JwtFindProvider as { BadClaim: string }).BadClaim).toEqual('alg');
 				});
@@ -224,23 +240,31 @@ describe('Satellite > Authentication > Prepare', async () => {
 
 					const badTypJwt = assembleJwt({ header, payload: mockJwtPayload });
 
-					const { delegation } = await authenticate_user({
+					const result = await authenticate_user({
 						OpenId: { jwt: badTypJwt, session_key: publicKey, salt }
 					});
 
-					if (!('Err' in delegation)) {
+					if (!('Err' in result)) {
 						expect(true).toBeFalsy();
 
 						return;
 					}
 
-					const { Err } = delegation;
+					const { Err } = result;
 
-					if (!('JwtFindProvider' in Err)) {
+					if (!('PrepareDelegation' in Err)) {
+						expect(true).toBeFalsy();
+
 						return;
 					}
 
-					const { JwtFindProvider } = Err;
+					const { PrepareDelegation } = Err;
+
+					if (!('JwtFindProvider' in PrepareDelegation)) {
+						return;
+					}
+
+					const { JwtFindProvider } = PrepareDelegation;
 
 					expect((JwtFindProvider as { BadClaim: string }).BadClaim).toEqual('typ');
 				});
@@ -249,7 +273,7 @@ describe('Satellite > Authentication > Prepare', async () => {
 			it('should fail if observatory has no certificate', async () => {
 				const { authenticate_user } = actor;
 
-				const { delegation } = await authenticate_user({
+				const result = await authenticate_user({
 					OpenId: {
 						jwt: mockJwt,
 						session_key: publicKey,
@@ -257,21 +281,29 @@ describe('Satellite > Authentication > Prepare', async () => {
 					}
 				});
 
-				if ('Ok' in delegation) {
+				if ('Ok' in result) {
 					expect(true).toBeFalsy();
 
 					return;
 				}
 
-				const { Err } = delegation;
+				const { Err } = result;
 
-				if (!('GetOrFetchJwks' in Err)) {
+				if (!('PrepareDelegation' in Err)) {
 					expect(true).toBeFalsy();
 
 					return;
 				}
 
-				const { GetOrFetchJwks } = Err;
+				const { PrepareDelegation } = Err;
+
+				if (!('GetOrFetchJwks' in PrepareDelegation)) {
+					expect(true).toBeFalsy();
+
+					return;
+				}
+
+				const { GetOrFetchJwks } = PrepareDelegation;
 
 				expect('CertificateNotFound' in GetOrFetchJwks).toBeTruthy();
 			});
@@ -329,7 +361,7 @@ describe('Satellite > Authentication > Prepare', async () => {
 
 				const { authenticate_user } = actor;
 
-				const { delegation } = await authenticate_user({
+				const result = await authenticate_user({
 					OpenId: {
 						jwt: mockJwt,
 						session_key: publicKey,
@@ -337,21 +369,29 @@ describe('Satellite > Authentication > Prepare', async () => {
 					}
 				});
 
-				if ('Ok' in delegation) {
+				if ('Ok' in result) {
 					expect(true).toBeFalsy();
 
 					return;
 				}
 
-				const { Err } = delegation;
+				const { Err } = result;
 
-				if (!('GetOrFetchJwks' in Err)) {
+				if (!('PrepareDelegation' in Err)) {
 					expect(true).toBeFalsy();
 
 					return;
 				}
 
-				const { GetOrFetchJwks } = Err;
+				const { PrepareDelegation } = Err;
+
+				if (!('GetOrFetchJwks' in PrepareDelegation)) {
+					expect(true).toBeFalsy();
+
+					return;
+				}
+
+				const { GetOrFetchJwks } = PrepareDelegation;
 
 				expect('KeyNotFoundCooldown' in GetOrFetchJwks).toBeTruthy();
 			});
@@ -369,7 +409,7 @@ describe('Satellite > Authentication > Prepare', async () => {
 
 					const { authenticate_user } = actor;
 
-					const { delegation } = await authenticate_user({
+					const result = await authenticate_user({
 						OpenId: {
 							jwt: mockJwt,
 							session_key: publicKey,
@@ -377,21 +417,29 @@ describe('Satellite > Authentication > Prepare', async () => {
 						}
 					});
 
-					if ('Ok' in delegation) {
+					if ('Ok' in result) {
 						expect(true).toBeFalsy();
 
 						return;
 					}
 
-					const { Err } = delegation;
+					const { Err } = result;
 
-					if (!('GetOrFetchJwks' in Err)) {
+					if (!('PrepareDelegation' in Err)) {
 						expect(true).toBeFalsy();
 
 						return;
 					}
 
-					const { GetOrFetchJwks } = Err;
+					const { PrepareDelegation } = Err;
+
+					if (!('GetOrFetchJwks' in PrepareDelegation)) {
+						expect(true).toBeFalsy();
+
+						return;
+					}
+
+					const { GetOrFetchJwks } = PrepareDelegation;
 
 					expect('KeyNotFound' in GetOrFetchJwks).toBeTruthy();
 				});
@@ -401,7 +449,7 @@ describe('Satellite > Authentication > Prepare', async () => {
 
 					const { authenticate_user } = actor;
 
-					const { delegation } = await authenticate_user({
+					const result = await authenticate_user({
 						OpenId: {
 							jwt: mockJwt,
 							session_key: publicKey,
@@ -409,21 +457,29 @@ describe('Satellite > Authentication > Prepare', async () => {
 						}
 					});
 
-					if ('Ok' in delegation) {
+					if ('Ok' in result) {
 						expect(true).toBeFalsy();
 
 						return;
 					}
 
-					const { Err } = delegation;
+					const { Err } = result;
 
-					if (!('JwtVerify' in Err)) {
+					if (!('PrepareDelegation' in Err)) {
 						expect(true).toBeFalsy();
 
 						return;
 					}
 
-					const { JwtVerify } = Err;
+					const { PrepareDelegation } = Err;
+
+					if (!('JwtVerify' in PrepareDelegation)) {
+						expect(true).toBeFalsy();
+
+						return;
+					}
+
+					const { JwtVerify } = PrepareDelegation;
 
 					expect('BadSig' in JwtVerify).toBeTruthy();
 					expect((JwtVerify as { BadSig: string }).BadSig).toEqual('InvalidSignature');
@@ -435,7 +491,7 @@ describe('Satellite > Authentication > Prepare', async () => {
 
 				const { authenticate_user } = actor;
 
-				const { delegation } = await authenticate_user({
+				const result = await authenticate_user({
 					OpenId: {
 						jwt: mockJwt,
 						session_key: publicKey,
@@ -443,7 +499,7 @@ describe('Satellite > Authentication > Prepare', async () => {
 					}
 				});
 
-				expect('Ok' in delegation).toBeTruthy();
+				expect('Ok' in result).toBeTruthy();
 			});
 
 			it('should fail at authenticating attacker', async () => {
@@ -454,7 +510,7 @@ describe('Satellite > Authentication > Prepare', async () => {
 
 				const { authenticate_user } = actor;
 
-				const { delegation } = await authenticate_user({
+				const result = await authenticate_user({
 					OpenId: {
 						jwt: mockJwt,
 						session_key: publicKey,
@@ -462,21 +518,29 @@ describe('Satellite > Authentication > Prepare', async () => {
 					}
 				});
 
-				if ('Ok' in delegation) {
+				if ('Ok' in result) {
 					expect(true).toBeFalsy();
 
 					return;
 				}
 
-				const { Err } = delegation;
+				const { Err } = result;
 
-				if (!('JwtVerify' in Err)) {
+				if (!('PrepareDelegation' in Err)) {
 					expect(true).toBeFalsy();
 
 					return;
 				}
 
-				const { JwtVerify } = Err;
+				const { PrepareDelegation } = Err;
+
+				if (!('JwtVerify' in PrepareDelegation)) {
+					expect(true).toBeFalsy();
+
+					return;
+				}
+
+				const { JwtVerify } = PrepareDelegation;
 
 				expect('BadClaim' in JwtVerify).toBeTruthy();
 				expect((JwtVerify as { BadClaim: string }).BadClaim).toEqual('nonce');
@@ -490,25 +554,33 @@ describe('Satellite > Authentication > Prepare', async () => {
 				const wrongSalt = crypto.getRandomValues(new Uint8Array(32));
 
 				const { authenticate_user } = actor;
-				const { delegation } = await authenticate_user({
+				const result = await authenticate_user({
 					OpenId: { jwt: mockJwt, session_key: publicKey, salt: wrongSalt }
 				});
 
-				if ('Ok' in delegation) {
+				if ('Ok' in result) {
 					expect(true).toBeFalsy();
 
 					return;
 				}
 
-				const { Err } = delegation;
+				const { Err } = result;
 
-				if (!('JwtVerify' in Err)) {
+				if (!('PrepareDelegation' in Err)) {
 					expect(true).toBeFalsy();
 
 					return;
 				}
 
-				expect((Err.JwtVerify as { BadClaim: string }).BadClaim).toEqual('nonce');
+				const { PrepareDelegation } = Err;
+
+				if (!('JwtVerify' in PrepareDelegation)) {
+					expect(true).toBeFalsy();
+
+					return;
+				}
+
+				expect((PrepareDelegation.JwtVerify as { BadClaim: string }).BadClaim).toEqual('nonce');
 			});
 
 			it('should fail when token is replayed after 10 minutes (iat_expired)', async () => {
@@ -518,25 +590,35 @@ describe('Satellite > Authentication > Prepare', async () => {
 				await tick(pic);
 
 				const { authenticate_user } = actor;
-				const { delegation } = await authenticate_user({
+				const result = await authenticate_user({
 					OpenId: { jwt: mockJwt, session_key: publicKey, salt }
 				});
 
-				if ('Ok' in delegation) {
+				if ('Ok' in result) {
 					expect(true).toBeFalsy();
 
 					return;
 				}
 
-				const { Err } = delegation;
+				const { Err } = result;
 
-				if (!('JwtVerify' in Err)) {
+				if (!('PrepareDelegation' in Err)) {
 					expect(true).toBeFalsy();
 
 					return;
 				}
 
-				expect((Err.JwtVerify as { BadClaim: string }).BadClaim).toEqual('iat_expired');
+				const { PrepareDelegation } = Err;
+
+				if (!('JwtVerify' in PrepareDelegation)) {
+					expect(true).toBeFalsy();
+
+					return;
+				}
+
+				expect((PrepareDelegation.JwtVerify as { BadClaim: string }).BadClaim).toEqual(
+					'iat_expired'
+				);
 			});
 
 			it('should fail when audience does not match', async () => {
@@ -554,25 +636,33 @@ describe('Satellite > Authentication > Prepare', async () => {
 				await assertOpenIdHttpsOutcalls({ pic, jwks });
 
 				const { authenticate_user } = actor;
-				const { delegation } = await authenticate_user({
+				const result = await authenticate_user({
 					OpenId: { jwt, session_key: publicKey, salt }
 				});
 
-				if ('Ok' in delegation) {
+				if ('Ok' in result) {
 					expect(true).toBeFalsy();
 
 					return;
 				}
 
-				const { Err } = delegation;
+				const { Err } = result;
 
-				if (!('JwtVerify' in Err)) {
+				if (!('PrepareDelegation' in Err)) {
 					expect(true).toBeFalsy();
 
 					return;
 				}
 
-				expect((Err.JwtVerify as { BadClaim: string }).BadClaim).toEqual('aud');
+				const { PrepareDelegation } = Err;
+
+				if (!('JwtVerify' in PrepareDelegation)) {
+					expect(true).toBeFalsy();
+
+					return;
+				}
+
+				expect((PrepareDelegation.JwtVerify as { BadClaim: string }).BadClaim).toEqual('aud');
 			});
 
 			it('should authenticates when iat is slightly in the future (within skew)', async () => {
@@ -591,11 +681,11 @@ describe('Satellite > Authentication > Prepare', async () => {
 				await assertOpenIdHttpsOutcalls({ pic, jwks });
 
 				const { authenticate_user } = actor;
-				const { delegation } = await authenticate_user({
+				const result = await authenticate_user({
 					OpenId: { jwt, session_key: publicKey, salt }
 				});
 
-				expect('Ok' in delegation).toBeTruthy();
+				expect('Ok' in result).toBeTruthy();
 			});
 
 			it('should fail when iat is beyond future skew', async () => {
@@ -614,25 +704,35 @@ describe('Satellite > Authentication > Prepare', async () => {
 				await assertOpenIdHttpsOutcalls({ pic, jwks });
 
 				const { authenticate_user } = actor;
-				const { delegation } = await authenticate_user({
+				const result = await authenticate_user({
 					OpenId: { jwt, session_key: publicKey, salt }
 				});
 
-				if ('Ok' in delegation) {
+				if ('Ok' in result) {
 					expect(true).toBeFalsy();
 
 					return;
 				}
 
-				const { Err } = delegation;
+				const { Err } = result;
 
-				if (!('JwtVerify' in Err)) {
+				if (!('PrepareDelegation' in Err)) {
 					expect(true).toBeFalsy();
 
 					return;
 				}
 
-				expect((Err.JwtVerify as { BadClaim: string }).BadClaim).toEqual('iat_future');
+				const { PrepareDelegation } = Err;
+
+				if (!('JwtVerify' in PrepareDelegation)) {
+					expect(true).toBeFalsy();
+
+					return;
+				}
+
+				expect((PrepareDelegation.JwtVerify as { BadClaim: string }).BadClaim).toEqual(
+					'iat_future'
+				);
 			});
 
 			it('should fail when iat is older than 10 minutes', async () => {
@@ -652,25 +752,35 @@ describe('Satellite > Authentication > Prepare', async () => {
 				await tick(pic);
 
 				const { authenticate_user } = actor;
-				const { delegation } = await authenticate_user({
+				const result = await authenticate_user({
 					OpenId: { jwt, session_key: publicKey, salt }
 				});
 
-				if ('Ok' in delegation) {
+				if ('Ok' in result) {
 					expect(true).toBeFalsy();
 
 					return;
 				}
 
-				const { Err } = delegation;
+				const { Err } = result;
 
-				if (!('JwtVerify' in Err)) {
+				if (!('PrepareDelegation' in Err)) {
 					expect(true).toBeFalsy();
 
 					return;
 				}
 
-				expect((Err.JwtVerify as { BadClaim: string }).BadClaim).toEqual('iat_expired');
+				const { PrepareDelegation } = Err;
+
+				if (!('JwtVerify' in PrepareDelegation)) {
+					expect(true).toBeFalsy();
+
+					return;
+				}
+
+				expect((PrepareDelegation.JwtVerify as { BadClaim: string }).BadClaim).toEqual(
+					'iat_expired'
+				);
 			});
 
 			it('should fail when JWT header has no kid', async () => {
@@ -686,25 +796,33 @@ describe('Satellite > Authentication > Prepare', async () => {
 				const badJwt = assembleJwt({ header: headerNoKid, payload });
 
 				const { authenticate_user } = actor;
-				const { delegation } = await authenticate_user({
+				const result = await authenticate_user({
 					OpenId: { jwt: badJwt, session_key: publicKey, salt }
 				});
 
-				if ('Ok' in delegation) {
+				if ('Ok' in result) {
 					expect(true).toBeFalsy();
 
 					return;
 				}
 
-				const { Err } = delegation;
+				const { Err } = result;
 
-				if (!('GetOrFetchJwks' in Err)) {
+				if (!('PrepareDelegation' in Err)) {
 					expect(true).toBeFalsy();
 
 					return;
 				}
 
-				const { GetOrFetchJwks } = Err;
+				const { PrepareDelegation } = Err;
+
+				if (!('GetOrFetchJwks' in PrepareDelegation)) {
+					expect(true).toBeFalsy();
+
+					return;
+				}
+
+				const { GetOrFetchJwks } = PrepareDelegation;
 
 				expect('MissingKid' in GetOrFetchJwks).toBeTruthy();
 			});
@@ -736,25 +854,33 @@ describe('Satellite > Authentication > Prepare', async () => {
 				await assertOpenIdHttpsOutcalls({ pic, jwks: ecJwks });
 
 				const { authenticate_user } = actor;
-				const { delegation } = await authenticate_user({
+				const result = await authenticate_user({
 					OpenId: { jwt, session_key: publicKey, salt }
 				});
 
-				if ('Ok' in delegation) {
+				if ('Ok' in result) {
 					expect(true).toBeFalsy();
 
 					return;
 				}
 
-				const { Err } = delegation;
+				const { Err } = result;
 
-				if (!('JwtVerify' in Err)) {
+				if (!('PrepareDelegation' in Err)) {
 					expect(true).toBeFalsy();
 
 					return;
 				}
 
-				const { JwtVerify } = Err;
+				const { PrepareDelegation } = Err;
+
+				if (!('JwtVerify' in PrepareDelegation)) {
+					expect(true).toBeFalsy();
+
+					return;
+				}
+
+				const { JwtVerify } = PrepareDelegation;
 
 				expect('WrongKeyType' in JwtVerify).toBeTruthy();
 			});
@@ -789,25 +915,33 @@ describe('Satellite > Authentication > Prepare', async () => {
 				const badNbfJwt = assembleJwt({ header, payload });
 
 				const { authenticate_user } = actor;
-				const { delegation } = await authenticate_user({
+				const result = await authenticate_user({
 					OpenId: { jwt: badNbfJwt, session_key: publicKey, salt }
 				});
 
-				if ('Ok' in delegation) {
+				if ('Ok' in result) {
 					expect(true).toBeFalsy();
 
 					return;
 				}
 
-				const { Err } = delegation;
+				const { Err } = result;
 
-				if (!('JwtVerify' in Err)) {
+				if (!('PrepareDelegation' in Err)) {
 					expect(true).toBeFalsy();
 
 					return;
 				}
 
-				const { JwtVerify } = Err;
+				const { PrepareDelegation } = Err;
+
+				if (!('JwtVerify' in PrepareDelegation)) {
+					expect(true).toBeFalsy();
+
+					return;
+				}
+
+				const { JwtVerify } = PrepareDelegation;
 
 				expect('BadSig' in JwtVerify).toBeTruthy();
 			});

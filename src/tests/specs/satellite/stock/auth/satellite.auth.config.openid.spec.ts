@@ -129,7 +129,7 @@ describe('Satellite > Authentication > Prepare', async () => {
 
 			const { authenticate_user } = actor;
 
-			const { delegation } = await authenticate_user({
+			const result = await authenticate_user({
 				OpenId: {
 					jwt: mockJwt,
 					session_key: publicKey,
@@ -137,21 +137,29 @@ describe('Satellite > Authentication > Prepare', async () => {
 				}
 			});
 
-			if ('Ok' in delegation) {
+			if ('Ok' in result) {
 				expect(true).toBeFalsy();
 
 				return;
 			}
 
-			const { Err } = delegation;
+			const { Err } = result;
 
-			if (!('GetOrFetchJwks' in Err)) {
+			if (!('PrepareDelegation' in Err)) {
 				expect(true).toBeFalsy();
 
 				return;
 			}
 
-			const { GetOrFetchJwks } = Err;
+			const { PrepareDelegation } = Err;
+
+			if (!('GetOrFetchJwks' in PrepareDelegation)) {
+				expect(true).toBeFalsy();
+
+				return;
+			}
+
+			const { GetOrFetchJwks } = PrepareDelegation;
 
 			if (!('FetchFailed' in GetOrFetchJwks)) {
 				expect(true).toBeFalsy();
@@ -174,7 +182,7 @@ describe('Satellite > Authentication > Prepare', async () => {
 
 			const { authenticate_user } = actor;
 
-			const { delegation } = await authenticate_user({
+			const result = await authenticate_user({
 				OpenId: {
 					jwt: mockJwt,
 					session_key: publicKey,
@@ -182,7 +190,7 @@ describe('Satellite > Authentication > Prepare', async () => {
 				}
 			});
 
-			expect('Ok' in delegation).toBeTruthy();
+			expect('Ok' in result).toBeTruthy();
 		});
 	});
 });

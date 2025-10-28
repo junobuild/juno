@@ -1,4 +1,5 @@
 import type { SatelliteActor } from '$declarations';
+import type { Doc } from '$declarations/satellite/satellite.did';
 import type { _SERVICE as TestSatelliteActor } from '$test-declarations/test_satellite/test_satellite.did';
 import type { Signature } from '@dfinity/agent';
 import {
@@ -11,7 +12,7 @@ import {
 import type { Actor, PocketIc } from '@dfinity/pic';
 import { fromNullable } from '@dfinity/utils';
 import { mockClientId } from '../mocks/jwt.mocks';
-import { makeMockGoogleOpenIdJwt } from './jwt-tests.utils';
+import { makeMockGoogleOpenIdJwt, type MockOpenIdJwt } from './jwt-tests.utils';
 import { assertOpenIdHttpsOutcalls } from './observatory-openid-tests.utils';
 import { tick } from './pic-tests.utils';
 import type { TestSession } from './satellite-auth-tests.utils';
@@ -30,23 +31,27 @@ export const authenticateAndMakeIdentity = async ({
 }): Promise<{
 	identity: DelegationIdentity;
 	delegationChain: DelegationChain;
+	user: Doc;
+	jwt: MockOpenIdJwt;
 }> => {
 	await pic.advanceTime(15 * 60_000);
 	await tick(pic);
 
 	const now = await pic.getTime();
 
-	const { jwks, jwt } = await makeMockGoogleOpenIdJwt({
+	const mockJwt = await makeMockGoogleOpenIdJwt({
 		clientId: mockClientId,
 		date: new Date(now),
 		nonce
 	});
 
+	const { jwks, jwt } = mockJwt;
+
 	await assertOpenIdHttpsOutcalls({ pic, jwks });
 
 	const { authenticate_user, get_delegation } = satelliteActor;
 
-	const { delegation: prepareDelegation } = await authenticate_user({
+	const prepareDelegation = await authenticate_user({
 		OpenId: { jwt, session_key: publicKey, salt }
 	});
 
@@ -58,7 +63,7 @@ export const authenticateAndMakeIdentity = async ({
 
 	const { Ok } = prepareDelegation;
 
-	const { user_key: userKey } = Ok;
+	const { public_key: userKey, doc: userDoc } = Ok;
 
 	const signedDelegation = await get_delegation({
 		OpenId: { jwt, session_key: publicKey, salt }
@@ -88,10 +93,16 @@ export const authenticateAndMakeIdentity = async ({
 		]
 	];
 
-	return generateIdentity({
+	const identity = generateIdentity({
 		sessionKey,
 		delegations
 	});
+
+	return {
+		...identity,
+		user: userDoc,
+		jwt: mockJwt
+	};
 };
 
 export const assertIdentity = async ({

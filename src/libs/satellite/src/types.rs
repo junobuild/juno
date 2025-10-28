@@ -57,10 +57,11 @@ pub mod state {
 
 pub mod interface {
     use crate::db::types::config::DbConfig;
+    use crate::Doc;
     use candid::CandidType;
     use junobuild_auth::delegation::types::{
         GetDelegationError, OpenIdGetDelegationArgs, OpenIdPrepareDelegationArgs,
-        PrepareDelegationError, PreparedDelegation, SignedDelegation,
+        PrepareDelegationError, SignedDelegation, UserKey,
     };
     use junobuild_auth::state::types::config::AuthenticationConfig;
     use junobuild_cdn::proposals::ProposalId;
@@ -84,9 +85,18 @@ pub mod interface {
         OpenId(OpenIdPrepareDelegationArgs),
     }
 
+    pub type AuthenticateUserResult = Result<AuthenticatedUser, AuthenticateUserError>;
+
     #[derive(CandidType, Serialize, Deserialize)]
-    pub struct AuthenticateUserResult {
-        pub delegation: PrepareDelegationResultData,
+    pub struct AuthenticatedUser {
+        pub public_key: UserKey,
+        pub doc: Doc,
+    }
+
+    #[derive(CandidType, Serialize, Deserialize)]
+    pub enum AuthenticateUserError {
+        PrepareDelegation(PrepareDelegationError),
+        RegisterUser(String),
     }
 
     #[derive(CandidType, Serialize, Deserialize)]
@@ -98,9 +108,9 @@ pub mod interface {
     // clashes with didc when developers
     // include_satellite and use Result as well.
     #[derive(CandidType, Serialize, Deserialize)]
-    pub enum PrepareDelegationResultData {
-        Ok(PreparedDelegation),
-        Err(PrepareDelegationError),
+    pub enum AuthenticateUserResultResponse {
+        Ok(AuthenticatedUser),
+        Err(AuthenticateUserError),
     }
 
     #[derive(CandidType, Serialize, Deserialize)]

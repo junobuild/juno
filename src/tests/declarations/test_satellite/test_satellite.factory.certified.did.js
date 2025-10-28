@@ -14,7 +14,18 @@ export const idlFactory = ({ IDL }) => {
 	const AuthenticateUserArgs = IDL.Variant({
 		OpenId: OpenIdPrepareDelegationArgs
 	});
-	const PreparedDelegation = IDL.Record({ user_key: IDL.Vec(IDL.Nat8) });
+	const Doc = IDL.Record({
+		updated_at: IDL.Nat64,
+		owner: IDL.Principal,
+		data: IDL.Vec(IDL.Nat8),
+		description: IDL.Opt(IDL.Text),
+		created_at: IDL.Nat64,
+		version: IDL.Opt(IDL.Nat64)
+	});
+	const AuthenticatedUser = IDL.Record({
+		doc: Doc,
+		public_key: IDL.Vec(IDL.Nat8)
+	});
 	const JwtFindProviderError = IDL.Variant({
 		BadClaim: IDL.Text,
 		BadSig: IDL.Text,
@@ -45,12 +56,13 @@ export const idlFactory = ({ IDL }) => {
 		GetOrFetchJwks: GetOrRefreshJwksError,
 		DeriveSeedFailed: IDL.Text
 	});
-	const PrepareDelegationResultData = IDL.Variant({
-		Ok: PreparedDelegation,
-		Err: PrepareDelegationError
+	const AuthenticateUserError = IDL.Variant({
+		PrepareDelegation: PrepareDelegationError,
+		RegisterUser: IDL.Text
 	});
-	const AuthenticateUserResult = IDL.Record({
-		delegation: PrepareDelegationResultData
+	const AuthenticateUserResultResponse = IDL.Variant({
+		Ok: AuthenticatedUser,
+		Err: AuthenticateUserError
 	});
 	const CommitBatch = IDL.Record({
 		batch_id: IDL.Nat,
@@ -226,14 +238,6 @@ export const idlFactory = ({ IDL }) => {
 	const GetDelegationResultResponse = IDL.Variant({
 		Ok: SignedDelegation,
 		Err: GetDelegationError
-	});
-	const Doc = IDL.Record({
-		updated_at: IDL.Nat64,
-		owner: IDL.Principal,
-		data: IDL.Vec(IDL.Nat8),
-		description: IDL.Opt(IDL.Text),
-		created_at: IDL.Nat64,
-		version: IDL.Opt(IDL.Nat64)
 	});
 	const ProposalStatus = IDL.Variant({
 		Initialized: IDL.Null,
@@ -424,7 +428,7 @@ export const idlFactory = ({ IDL }) => {
 	const UploadChunkResult = IDL.Record({ chunk_id: IDL.Nat });
 	const Result = IDL.Variant({ Ok: IDL.Int32, Err: IDL.Text });
 	return IDL.Service({
-		authenticate_user: IDL.Func([AuthenticateUserArgs], [AuthenticateUserResult], []),
+		authenticate_user: IDL.Func([AuthenticateUserArgs], [AuthenticateUserResultResponse], []),
 		commit_asset_upload: IDL.Func([CommitBatch], [], []),
 		commit_proposal: IDL.Func([CommitProposal], [IDL.Null], []),
 		commit_proposal_asset_upload: IDL.Func([CommitBatch], [], []),

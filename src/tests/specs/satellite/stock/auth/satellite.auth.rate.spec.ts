@@ -1,23 +1,18 @@
 import type { SatelliteActor } from '$declarations';
-import { type DelegationIdentity, ECDSAKeyIdentity, Ed25519KeyIdentity } from '@dfinity/identity';
+import { ECDSAKeyIdentity, Ed25519KeyIdentity } from '@dfinity/identity';
 import type { Actor, PocketIc } from '@dfinity/pic';
 import { assertNonNullish, fromNullable } from '@dfinity/utils';
 import { mockClientId } from '../../../../mocks/jwt.mocks';
 import { generateNonce } from '../../../../utils/auth-nonce-tests.utils';
-import { makeMockGoogleOpenIdJwt, type MockOpenIdJwt } from '../../../../utils/jwt-tests.utils';
+import { makeMockGoogleOpenIdJwt } from '../../../../utils/jwt-tests.utils';
 import { assertOpenIdHttpsOutcalls } from '../../../../utils/observatory-openid-tests.utils';
 import { tick } from '../../../../utils/pic-tests.utils';
-import { setupSatelliteAuth, type TestSession } from '../../../../utils/satellite-auth-tests.utils';
+import { setupSatelliteAuth } from '../../../../utils/satellite-auth-tests.utils';
 
 describe('Satellite > Auth > Rate', async () => {
 	let pic: PocketIc;
 
 	let satelliteActor: Actor<SatelliteActor>;
-
-	let session: TestSession;
-
-	let mockJwt: MockOpenIdJwt;
-	let mockIdentity: DelegationIdentity;
 
 	let controller: Ed25519KeyIdentity;
 
@@ -32,14 +27,11 @@ describe('Satellite > Auth > Rate', async () => {
 		const {
 			pic: p,
 			satellite: { actor },
-			session: s,
 			controller: c
 		} = await setupSatelliteAuth();
 
 		pic = p;
 		satelliteActor = actor;
-
-		session = s;
 
 		controller = c;
 	});

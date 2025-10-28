@@ -6,18 +6,14 @@ use serde::Serialize;
 use serde_bytes::ByteBuf;
 
 #[derive(CandidType, Serialize, Deserialize)]
-pub struct OpenIdPrepareDelegationArgs {
+pub struct OpenIdDelegationArgs {
     pub jwt: String,
     pub salt: Salt,
     pub session_key: SessionKey,
 }
 
-#[derive(CandidType, Serialize, Deserialize)]
-pub struct OpenIdGetDelegationArgs {
-    pub jwt: String,
-    pub salt: Salt,
-    pub session_key: SessionKey,
-}
+pub type OpenIdPrepareDelegationArgs = OpenIdDelegationArgs;
+pub type OpenIdGetDelegationArgs = OpenIdDelegationArgs;
 
 pub type UserKey = PublicKey;
 pub type PublicKey = ByteBuf;

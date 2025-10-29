@@ -64,7 +64,7 @@ fn add_delegation_signature(
 
     let message = build_signature_msg(session_key, expiration, &targets);
 
-    let inputs = build_signature_inputs(seed.as_ref(), &message);
+    let inputs = build_signature_inputs(seed, &message);
 
     mutate_state(|state| {
         state.runtime.sigs.add_signature(&inputs);

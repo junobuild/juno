@@ -13,6 +13,8 @@ mod metadata;
 mod store;
 mod types;
 
+use crate::types::interface::AuthenticateUserArgs;
+use crate::types::interface::AuthenticateUserResult;
 use crate::types::interface::Config;
 use crate::types::interface::DeleteProposalAssets;
 use crate::types::interface::GetDelegationArgs;

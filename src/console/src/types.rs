@@ -110,7 +110,9 @@ pub mod state {
 
 pub mod interface {
     use candid::CandidType;
-    use junobuild_auth::delegation::types::OpenIdGetDelegationArgs;
+    use junobuild_auth::delegation::types::{
+        OpenIdGetDelegationArgs, OpenIdPrepareDelegationArgs, PrepareDelegationError, UserKey,
+    };
     use junobuild_auth::state::types::config::AuthenticationConfig;
     use junobuild_cdn::proposals::ProposalId;
     use junobuild_storage::types::config::StorageConfig;
@@ -125,6 +127,23 @@ pub mod interface {
     #[derive(CandidType, Serialize, Deserialize, Clone)]
     pub struct DeleteProposalAssets {
         pub proposal_ids: Vec<ProposalId>,
+    }
+
+    #[derive(CandidType, Serialize, Deserialize)]
+    pub enum AuthenticateUserArgs {
+        OpenId(OpenIdPrepareDelegationArgs),
+    }
+
+    pub type AuthenticateUserResult = Result<AuthenticatedUser, AuthenticateUserError>;
+
+    #[derive(CandidType, Serialize, Deserialize)]
+    pub struct AuthenticatedUser {
+        pub public_key: UserKey,
+    }
+
+    #[derive(CandidType, Serialize, Deserialize)]
+    pub enum AuthenticateUserError {
+        PrepareDelegation(PrepareDelegationError),
     }
 
     #[derive(CandidType, Serialize, Deserialize)]

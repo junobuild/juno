@@ -1,7 +1,8 @@
+use crate::errors::{JUNO_AUTH_ERROR_NOT_CONFIGURED, JUNO_AUTH_ERROR_OPENID_DISABLED};
 use crate::state::assert::assert_set_config;
 use crate::state::heap::get_config;
 use crate::state::heap::insert_config;
-use crate::state::types::config::AuthenticationConfig;
+use crate::state::types::config::{AuthenticationConfig, OpenIdProviders};
 use crate::state::types::interface::SetAuthenticationConfig;
 use crate::state::{get_salt, insert_salt};
 use crate::strategies::AuthHeapStrategy;
@@ -43,4 +44,13 @@ pub async fn init_salt(auth_heap: &impl AuthHeapStrategy) -> Result<(), String> 
     print("Authentication salt initialized.");
 
     Ok(())
+}
+
+pub fn get_providers(auth_heap: &impl AuthHeapStrategy) -> Result<OpenIdProviders, String> {
+    let config = get_config(auth_heap).ok_or(JUNO_AUTH_ERROR_NOT_CONFIGURED.to_string())?;
+    let openid = config
+        .openid
+        .ok_or(JUNO_AUTH_ERROR_OPENID_DISABLED.to_string())?;
+
+    Ok(openid.providers.clone())
 }

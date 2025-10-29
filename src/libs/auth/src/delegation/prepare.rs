@@ -1,5 +1,6 @@
 use crate::delegation::types::{
     PrepareDelegationError, PrepareDelegationResult, PreparedDelegation, PublicKey, SessionKey,
+    Timestamp,
 };
 use crate::delegation::utils::duration::build_expiration;
 use crate::delegation::utils::seed::calculate_seed;
@@ -41,7 +42,7 @@ fn prepare_delegation(
 ) -> PrepareDelegationResult {
     let seed = calculate_seed(client_id, key, &get_salt(auth_heap))
         .map_err(PrepareDelegationError::DeriveSeedFailed)?;
-    
+
     let expiration = build_expiration(auth_heap);
 
     add_delegation_signature(session_key, expiration, seed.as_ref(), auth_heap);
@@ -50,7 +51,7 @@ fn prepare_delegation(
 
     let delegation = PreparedDelegation {
         user_key: ByteBuf::from(der_encode_canister_sig_key(seed.to_vec())),
-        expiration
+        expiration,
     };
 
     Ok(delegation)
@@ -58,7 +59,7 @@ fn prepare_delegation(
 
 fn add_delegation_signature(
     session_key: &PublicKey,
-    expiration: u64,
+    expiration: Timestamp,
     seed: &[u8],
     auth_heap: &impl AuthHeapStrategy,
 ) {

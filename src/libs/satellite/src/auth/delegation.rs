@@ -48,6 +48,7 @@ pub fn openid_get_delegation(
 
     delegation::openid_get_delegation(
         &args.session_key,
+        args.expiration,
         &client_id,
         &credential,
         &AuthHeap,

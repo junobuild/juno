@@ -25,10 +25,7 @@ pub async fn openid_authenticate_user(
             let key = &delegation.user_key;
 
             register_user(key, &credential)
-                .map(|doc| AuthenticatedUser {
-                    delegation,
-                    doc,
-                })
+                .map(|doc| AuthenticatedUser { delegation, doc })
                 .map_err(AuthenticateUserError::RegisterUser)
         }
         Err(err) => Err(AuthenticateUserError::PrepareDelegation(err)),

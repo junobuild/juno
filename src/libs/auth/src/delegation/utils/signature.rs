@@ -1,4 +1,4 @@
-use crate::delegation::types::{DelegationTargets, SessionKey};
+use crate::delegation::types::{DelegationTargets, SessionKey, Timestamp};
 use crate::delegation::utils::targets::targets_to_bytes;
 use ic_canister_sig_creation::signature_map::CanisterSigInputs;
 use ic_canister_sig_creation::{delegation_signature_msg, DELEGATION_SIG_DOMAIN};
@@ -13,7 +13,7 @@ pub fn build_signature_inputs<'a>(seed: &'a [u8], message: &'a [u8]) -> Canister
 
 pub fn build_signature_msg(
     session_key: &SessionKey,
-    expiration: u64,
+    expiration: Timestamp,
     targets: &Option<DelegationTargets>,
 ) -> Vec<u8> {
     delegation_signature_msg(session_key, expiration, targets_to_bytes(targets).as_ref())

@@ -4,6 +4,7 @@ mod get;
 mod impls;
 mod prepare;
 mod seed;
+mod signature;
 mod targets;
 pub mod types;
 

@@ -1,20 +1,16 @@
 use crate::delegation::duration::build_expiration;
 use crate::delegation::seed::calculate_seed;
-use crate::delegation::targets::{build_targets, targets_to_bytes};
+use crate::delegation::signature::{build_signature_inputs, build_signature_msg};
+use crate::delegation::targets::build_targets;
 use crate::delegation::types::{
-    DelegationTargets, PrepareDelegationError, PrepareDelegationResult, PreparedDelegation,
-    PublicKey, SessionKey, Timestamp,
+    PrepareDelegationError, PrepareDelegationResult, PreparedDelegation, PublicKey, SessionKey,
 };
 use crate::openid::types::interface::{OpenIdCredential, OpenIdCredentialKey};
 use crate::state::get_salt;
 use crate::state::services::mutate_state;
 use crate::state::types::config::OpenIdProviderClientId;
-use crate::state::types::runtime_state::State;
 use crate::strategies::{AuthCertificateStrategy, AuthHeapStrategy};
-use ic_canister_sig_creation::signature_map::CanisterSigInputs;
-use ic_canister_sig_creation::{
-    delegation_signature_msg, CanisterSigPublicKey, DELEGATION_SIG_DOMAIN,
-};
+use ic_canister_sig_creation::CanisterSigPublicKey;
 use ic_cdk::api::canister_self;
 use serde_bytes::ByteBuf;
 
@@ -46,13 +42,7 @@ fn prepare_delegation(
     let seed = calculate_seed(client_id, key, &get_salt(auth_heap))
         .map_err(PrepareDelegationError::DeriveSeedFailed)?;
 
-    let expiration = build_expiration(auth_heap);
-
-    let targets = build_targets(auth_heap);
-
-    mutate_state(|state| {
-        add_delegation_signature(state, session_key, seed.as_ref(), expiration, &targets);
-    });
+    add_delegation_signature(session_key, seed.as_ref(), auth_heap);
 
     certificate.update_certified_data();
 
@@ -64,23 +54,21 @@ fn prepare_delegation(
 }
 
 fn add_delegation_signature(
-    state: &mut State,
-    public_key: &PublicKey,
+    session_key: &PublicKey,
     seed: &[u8],
-    expiration: Timestamp,
-    targets: &Option<DelegationTargets>,
+    auth_heap: &impl AuthHeapStrategy,
 ) {
-    let inputs = CanisterSigInputs {
-        domain: DELEGATION_SIG_DOMAIN,
-        seed,
-        message: &delegation_signature_msg(
-            public_key,
-            expiration,
-            targets_to_bytes(targets).as_ref(),
-        ),
-    };
+    let expiration = build_expiration(auth_heap);
 
-    state.runtime.sigs.add_signature(&inputs);
+    let targets = build_targets(auth_heap);
+
+    let message = build_signature_msg(session_key, expiration, &targets);
+
+    let inputs = build_signature_inputs(seed.as_ref(), &message);
+
+    mutate_state(|state| {
+        state.runtime.sigs.add_signature(&inputs);
+    });
 }
 
 fn der_encode_canister_sig_key(seed: Vec<u8>) -> Vec<u8> {

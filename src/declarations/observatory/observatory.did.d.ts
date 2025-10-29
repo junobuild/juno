@@ -97,7 +97,6 @@ export interface OpenIdCertificate {
 	jwks: Jwks;
 	created_at: bigint;
 	version: [] | [bigint];
-	expires_at: [] | [bigint];
 }
 export type OpenIdProvider = { Google: null };
 export interface Segment {

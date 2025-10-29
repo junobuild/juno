@@ -67,7 +67,6 @@ type OpenIdCertificate = record {
   jwks : Jwks;
   created_at : nat64;
   version : opt nat64;
-  expires_at : opt nat64;
 };
 type OpenIdProvider = variant { Google };
 type Segment = record {

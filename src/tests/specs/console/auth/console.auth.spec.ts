@@ -1,13 +1,13 @@
-import { type ConsoleActor } from '$declarations';
-import { Ed25519KeyIdentity } from '@dfinity/identity';
-import { type Actor, PocketIc } from '@dfinity/pic';
+import type { ConsoleActor } from '$declarations';
+import type { Ed25519KeyIdentity } from '@dfinity/identity';
+import type { Actor, PocketIc } from '@dfinity/pic';
 import type { Principal } from '@dfinity/principal';
 import {
 	testAuthConfig,
 	testAuthGoogleConfig,
 	testReturnAuthConfig
-} from '../../utils/auth-assertions-tests.utils';
-import { setupConsole } from '../../utils/console-tests.utils';
+} from '../../../utils/auth-assertions-tests.utils';
+import { setupConsole } from '../../../utils/console-tests.utils';
 
 describe('Console > Authentication', () => {
 	let pic: PocketIc;

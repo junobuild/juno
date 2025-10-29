@@ -27,6 +27,7 @@ pub type GetDelegationResult = Result<SignedDelegation, GetDelegationError>;
 #[derive(CandidType, Serialize, Deserialize)]
 pub struct PreparedDelegation {
     pub user_key: UserKey,
+    pub expiration: Timestamp,
 }
 
 #[derive(CandidType, Serialize, Deserialize)]

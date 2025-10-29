@@ -41,13 +41,16 @@ fn prepare_delegation(
 ) -> PrepareDelegationResult {
     let seed = calculate_seed(client_id, key, &get_salt(auth_heap))
         .map_err(PrepareDelegationError::DeriveSeedFailed)?;
+    
+    let expiration = build_expiration(auth_heap);
 
-    add_delegation_signature(session_key, seed.as_ref(), auth_heap);
+    add_delegation_signature(session_key, expiration, seed.as_ref(), auth_heap);
 
     certificate.update_certified_data();
 
     let delegation = PreparedDelegation {
         user_key: ByteBuf::from(der_encode_canister_sig_key(seed.to_vec())),
+        expiration
     };
 
     Ok(delegation)
@@ -55,11 +58,10 @@ fn prepare_delegation(
 
 fn add_delegation_signature(
     session_key: &PublicKey,
+    expiration: u64,
     seed: &[u8],
     auth_heap: &impl AuthHeapStrategy,
 ) {
-    let expiration = build_expiration(auth_heap);
-
     let targets = build_targets(auth_heap);
 
     let message = build_signature_msg(session_key, expiration, &targets);

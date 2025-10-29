@@ -276,6 +276,26 @@ describe('Satellite > Delegation > Get delegation', async () => {
 				expect(deg.pubkey).toBeDefined();
 			});
 
+			it('should return NoSuchDelegation if a non matching expiration is passed', async () => {
+				const {
+					delegation: { expiration }
+				} = await prepare();
+
+				const { get_delegation } = actor;
+
+				const res = await get_delegation({
+					OpenId: { jwt: mockJwt, session_key: publicKey, salt, expiration: expiration + 1n }
+				});
+
+				if ('Ok' in res) {
+					expect(true).toBeFalsy();
+
+					return;
+				}
+
+				expect('NoSuchDelegation' in res.Err).toBeTruthy();
+			});
+
 			it('should fail with NoSuchDelegation on wrong session_key', async () => {
 				const {
 					delegation: { expiration }

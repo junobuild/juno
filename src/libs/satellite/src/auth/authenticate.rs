@@ -1,6 +1,5 @@
 use crate::auth::assert::increment_and_assert_user_rate;
 use crate::auth::delegation;
-use crate::auth::delegation::openid_prepare_delegation;
 use crate::auth::register::register_user;
 use crate::auth::store::get_config;
 use crate::errors::auth::{JUNO_AUTH_ERROR_NOT_CONFIGURED, JUNO_AUTH_ERROR_OPENID_DISABLED};
@@ -22,7 +21,7 @@ pub async fn openid_authenticate_user(
     // while the rate limiter is reached.
     increment_and_assert_user_rate()?;
 
-    let prepared_delegation = openid_prepare_delegation(args, &openid.providers).await;
+    let prepared_delegation = delegation::openid_prepare_delegation(args, &openid.providers).await;
 
     let result = match prepared_delegation {
         Ok((delegation, credential)) => {

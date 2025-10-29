@@ -1,10 +1,10 @@
-use crate::delegation::duration::build_expiration;
-use crate::delegation::seed::calculate_seed;
-use crate::delegation::signature::{build_signature_inputs, build_signature_msg};
-use crate::delegation::targets::build_targets;
 use crate::delegation::types::{
     Delegation, GetDelegationError, GetDelegationResult, SessionKey, SignedDelegation,
 };
+use crate::delegation::utils::duration::build_expiration;
+use crate::delegation::utils::seed::calculate_seed;
+use crate::delegation::utils::signature::{build_signature_inputs, build_signature_msg};
+use crate::delegation::utils::targets::build_targets;
 use crate::openid::types::interface::{OpenIdCredential, OpenIdCredentialKey};
 use crate::state::get_salt;
 use crate::state::services::read_state;

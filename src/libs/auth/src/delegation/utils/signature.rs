@@ -1,5 +1,5 @@
-use crate::delegation::targets::targets_to_bytes;
 use crate::delegation::types::{DelegationTargets, SessionKey};
+use crate::delegation::utils::targets::targets_to_bytes;
 use ic_canister_sig_creation::signature_map::CanisterSigInputs;
 use ic_canister_sig_creation::{delegation_signature_msg, DELEGATION_SIG_DOMAIN};
 

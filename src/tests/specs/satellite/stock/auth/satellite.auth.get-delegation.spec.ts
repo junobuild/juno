@@ -179,12 +179,9 @@ describe('Satellite > Delegation > Get delegation', async () => {
 			let mockJwks: MockOpenIdJwt['jwks'];
 			let mockJwt: MockOpenIdJwt['jwt'];
 
-			const prepare = async (): Promise<
-				| {
-						delegation: PreparedDelegation;
-				  }
-
-			> => {
+			const prepare = async (): Promise<{
+				delegation: PreparedDelegation;
+			}> => {
 				await pic.advanceTime(15 * 60_000);
 
 				await tick(pic);
@@ -210,7 +207,7 @@ describe('Satellite > Delegation > Get delegation', async () => {
 
 				if ('Err' in result) {
 					expect(true).toBeFalsy();
-					throw new Error("Unreachable");
+					throw new Error('Unreachable');
 				}
 
 				const { Ok } = result;
@@ -256,7 +253,9 @@ describe('Satellite > Delegation > Get delegation', async () => {
 			});
 
 			it('should succeeds after prepare_delegation', async () => {
-				const {delegation: {expiration}} = await prepare();
+				const {
+					delegation: { expiration }
+				} = await prepare();
 
 				const { get_delegation } = actor;
 				const delegation = await get_delegation({
@@ -277,7 +276,9 @@ describe('Satellite > Delegation > Get delegation', async () => {
 			});
 
 			it('should fail with NoSuchDelegation on wrong session_key', async () => {
-				const {delegation: {expiration}} = await prepare();
+				const {
+					delegation: { expiration }
+				} = await prepare();
 
 				const otherSession = await ECDSAKeyIdentity.generate();
 				const otherPub = new Uint8Array(otherSession.getPublicKey().toDer());
@@ -299,7 +300,9 @@ describe('Satellite > Delegation > Get delegation', async () => {
 			});
 
 			it('should fail for attacker (nonce mismatch) even after prepare', async () => {
-				const {delegation: {expiration}} = await prepare();
+				const {
+					delegation: { expiration }
+				} = await prepare();
 
 				const attacker = Ed25519KeyIdentity.generate();
 				actor.setIdentity(attacker);
@@ -344,7 +347,7 @@ describe('Satellite > Delegation > Get delegation', async () => {
 				const { get_delegation } = actor;
 
 				const delegation = await get_delegation({
-					OpenId: { jwt: badJwt, session_key: publicKey, salt, expiration: mockExpiration },
+					OpenId: { jwt: badJwt, session_key: publicKey, salt, expiration: mockExpiration }
 				});
 
 				if ('Ok' in delegation) {

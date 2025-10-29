@@ -26,7 +26,7 @@ export interface AssetNoContent {
 export interface AssetsUpgradeOptions {
 	clear_existing_assets: [] | [boolean];
 }
-export type AuthenticateUserArgs = { OpenId: OpenIdDelegationArgs };
+export type AuthenticateUserArgs = { OpenId: OpenIdPrepareDelegationArgs };
 export type AuthenticateUserError =
 	| {
 			PrepareDelegation: PrepareDelegationError;
@@ -37,7 +37,7 @@ export type AuthenticateUserResultResponse =
 	| { Err: AuthenticateUserError };
 export interface AuthenticatedUser {
 	doc: Doc;
-	public_key: Uint8Array | number[];
+	delegation: PreparedDelegation;
 }
 export interface AuthenticationConfig {
 	updated_at: [] | [bigint];
@@ -131,7 +131,7 @@ export interface Doc {
 	created_at: bigint;
 	version: [] | [bigint];
 }
-export type GetDelegationArgs = { OpenId: OpenIdDelegationArgs };
+export type GetDelegationArgs = { OpenId: OpenIdGetDelegationArgs };
 export type GetDelegationError =
 	| { JwtFindProvider: JwtFindProviderError }
 	| { GetCachedJwks: null }
@@ -258,7 +258,13 @@ export interface MemorySize {
 	stable: bigint;
 	heap: bigint;
 }
-export interface OpenIdDelegationArgs {
+export interface OpenIdGetDelegationArgs {
+	jwt: string;
+	session_key: Uint8Array | number[];
+	salt: Uint8Array | number[];
+	expiration: bigint;
+}
+export interface OpenIdPrepareDelegationArgs {
 	jwt: string;
 	session_key: Uint8Array | number[];
 	salt: Uint8Array | number[];
@@ -280,6 +286,10 @@ export type PrepareDelegationError =
 	| { JwtVerify: JwtVerifyError }
 	| { GetOrFetchJwks: GetOrRefreshJwksError }
 	| { DeriveSeedFailed: string };
+export interface PreparedDelegation {
+	user_key: Uint8Array | number[];
+	expiration: bigint;
+}
 export interface Proposal {
 	status: ProposalStatus;
 	updated_at: bigint;

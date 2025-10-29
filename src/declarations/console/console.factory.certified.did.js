@@ -5,13 +5,19 @@ export const idlFactory = ({ IDL }) => {
 		mission_control_id: IDL.Principal,
 		user: IDL.Principal
 	});
-	const OpenIdDelegationArgs = IDL.Record({
+	const OpenIdPrepareDelegationArgs = IDL.Record({
 		jwt: IDL.Text,
 		session_key: IDL.Vec(IDL.Nat8),
 		salt: IDL.Vec(IDL.Nat8)
 	});
-	const AuthenticateUserArgs = IDL.Variant({ OpenId: OpenIdDelegationArgs });
-	const AuthenticatedUser = IDL.Record({ public_key: IDL.Vec(IDL.Nat8) });
+	const AuthenticateUserArgs = IDL.Variant({
+		OpenId: OpenIdPrepareDelegationArgs
+	});
+	const PreparedDelegation = IDL.Record({
+		user_key: IDL.Vec(IDL.Nat8),
+		expiration: IDL.Nat64
+	});
+	const AuthenticatedUser = IDL.Record({ delegation: PreparedDelegation });
 	const JwtFindProviderError = IDL.Variant({
 		BadClaim: IDL.Text,
 		BadSig: IDL.Text,
@@ -141,7 +147,13 @@ export const idlFactory = ({ IDL }) => {
 		storage: StorageConfig
 	});
 	const GetCreateCanisterFeeArgs = IDL.Record({ user: IDL.Principal });
-	const GetDelegationArgs = IDL.Variant({ OpenId: OpenIdDelegationArgs });
+	const OpenIdGetDelegationArgs = IDL.Record({
+		jwt: IDL.Text,
+		session_key: IDL.Vec(IDL.Nat8),
+		salt: IDL.Vec(IDL.Nat8),
+		expiration: IDL.Nat64
+	});
+	const GetDelegationArgs = IDL.Variant({ OpenId: OpenIdGetDelegationArgs });
 	const Delegation = IDL.Record({
 		pubkey: IDL.Vec(IDL.Nat8),
 		targets: IDL.Opt(IDL.Vec(IDL.Principal)),

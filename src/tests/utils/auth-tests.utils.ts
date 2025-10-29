@@ -1,5 +1,6 @@
 import {
 	idlFactoryObservatory,
+	type ConsoleActor,
 	type ObservatoryActor,
 	type SatelliteActor,
 	type SatelliteDid
@@ -11,6 +12,7 @@ import type { Principal } from '@dfinity/principal';
 import { OBSERVATORY_ID } from '../constants/observatory-tests.constants';
 import { mockCertificateDate, mockClientId } from '../mocks/jwt.mocks';
 import { generateNonce } from './auth-nonce-tests.utils';
+import { setupConsole } from './console-tests.utils';
 import { setupTestSatellite } from './fixtures-tests.utils';
 import { setupSatelliteStock } from './satellite-tests.utils';
 import { OBSERVATORY_WASM_PATH } from './setup-tests.utils';
@@ -23,20 +25,19 @@ export interface TestSession {
 	salt: Uint8Array;
 }
 
-export const setupSatelliteAuth = async (): Promise<{
+interface SetupAuth {
 	pic: PocketIc;
 	controller: Ed25519KeyIdentity;
-	satellite: { canisterId: Principal; actor: Actor<SatelliteActor> };
 	observatory: { canisterId: Principal; actor: Actor<ObservatoryActor> };
 	testSatellite: { canisterId: Principal; actor: Actor<TestSatelliteActor> };
 	session: TestSession;
-}> => {
-	// User and session
-	const user = Ed25519KeyIdentity.generate();
-	const sessionKey = await ECDSAKeyIdentity.generate();
-	const publicKey = new Uint8Array(sessionKey.getPublicKey().toDer());
-	const { nonce, salt } = await generateNonce({ caller: user });
+}
 
+export const setupSatelliteAuth = async (): Promise<
+	SetupAuth & {
+		satellite: { canisterId: Principal; actor: Actor<SatelliteActor> };
+	}
+> => {
 	const {
 		actor: a,
 		pic: p,
@@ -52,6 +53,64 @@ export const setupSatelliteAuth = async (): Promise<{
 	const controller = cO;
 	const satelliteActor = a;
 	const satelliteCanisterId = cId;
+
+	const common = await setupAuth({
+		pic,
+		controller,
+		actor: satelliteActor
+	});
+
+	return {
+		...common,
+		satellite: { canisterId: satelliteCanisterId, actor: satelliteActor }
+	};
+};
+
+export const setupConsoleAuth = async (): Promise<
+	SetupAuth & {
+		console: { canisterId: Principal; actor: Actor<ConsoleActor> };
+	}
+> => {
+	const {
+		actor: a,
+		pic: p,
+		controller: cO,
+		canisterId: cId
+	} = await setupConsole({
+		dateTime: mockCertificateDate
+	});
+
+	const pic = p;
+	const controller = cO;
+	const consoleActor = a;
+	const consoleCanisterId = cId;
+
+	const common = await setupAuth({
+		pic,
+		controller,
+		actor: consoleActor
+	});
+
+	return {
+		...common,
+		console: { canisterId: consoleCanisterId, actor: consoleActor }
+	};
+};
+
+const setupAuth = async ({
+	pic,
+	controller,
+	actor
+}: {
+	pic: PocketIc;
+	controller: Ed25519KeyIdentity;
+	actor: Actor<SatelliteActor> | Actor<ConsoleActor>;
+}): Promise<SetupAuth> => {
+	// User and session
+	const user = Ed25519KeyIdentity.generate();
+	const sessionKey = await ECDSAKeyIdentity.generate();
+	const publicKey = new Uint8Array(sessionKey.getPublicKey().toDer());
+	const { nonce, salt } = await generateNonce({ caller: user });
 
 	const { actor: obsA } = await pic.setupCanister<ObservatoryActor>({
 		idlFactory: idlFactoryObservatory,
@@ -70,7 +129,7 @@ export const setupSatelliteAuth = async (): Promise<{
 	const testSatelliteActor = testA;
 
 	// Enable authentication with OpenID
-	satelliteActor.setIdentity(controller);
+	actor.setIdentity(controller);
 
 	const config: SatelliteDid.SetAuthenticationConfig = {
 		internet_identity: [],
@@ -85,19 +144,18 @@ export const setupSatelliteAuth = async (): Promise<{
 		version: [1n]
 	};
 
-	const { set_auth_config } = satelliteActor;
+	const { set_auth_config } = actor;
 	await set_auth_config(config);
 
 	// Start fetching OpenID Jwts in Observatory
 	const { start_openid_monitoring } = observatoryActor;
 	await start_openid_monitoring();
 
-	satelliteActor.setIdentity(user);
+	actor.setIdentity(user);
 
 	return {
 		pic,
 		controller,
-		satellite: { actor: satelliteActor, canisterId: satelliteCanisterId },
 		observatory: { actor: observatoryActor, canisterId: OBSERVATORY_ID },
 		testSatellite: { actor: testSatelliteActor, canisterId: testSatelliteId },
 		session: {

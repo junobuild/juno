@@ -7,7 +7,7 @@ import { OBSERVATORY_ID } from '../../../../constants/observatory-tests.constant
 import { SATELLITE_ID } from '../../../../constants/satellite-tests.constants';
 import { mockClientId } from '../../../../mocks/jwt.mocks';
 import { authenticateAndMakeIdentity } from '../../../../utils/auth-identity-tests.utils';
-import { setupSatelliteAuth, type TestSession } from '../../../../utils/satellite-auth-tests.utils';
+import { setupSatelliteAuth, type TestSession } from '../../../../utils/auth-tests.utils';
 
 describe('Satellite > Auth > Session duration', () => {
 	let pic: PocketIc;
@@ -86,7 +86,7 @@ describe('Satellite > Auth > Session duration', () => {
 		const { identity, delegationChain } = await authenticateAndMakeIdentity({
 			pic,
 			session,
-			satelliteActor
+			actor: satelliteActor
 		});
 
 		const identityTargets = identity.getDelegation().delegations[0].delegation.targets;
@@ -108,7 +108,7 @@ describe('Satellite > Auth > Session duration', () => {
 		const { identity, delegationChain } = await authenticateAndMakeIdentity({
 			pic,
 			session,
-			satelliteActor
+			actor: satelliteActor
 		});
 
 		const identityTargets = identity.getDelegation().delegations[0].delegation.targets;
@@ -127,7 +127,7 @@ describe('Satellite > Auth > Session duration', () => {
 		const { identity, delegationChain } = await authenticateAndMakeIdentity({
 			pic,
 			session,
-			satelliteActor
+			actor: satelliteActor
 		});
 
 		const identityTargets = identity.getDelegation().delegations[0].delegation.targets;
@@ -152,7 +152,7 @@ describe('Satellite > Auth > Session duration', () => {
 		const { identity, delegationChain } = await authenticateAndMakeIdentity({
 			pic,
 			session,
-			satelliteActor
+			actor: satelliteActor
 		});
 
 		const identityTargets = identity.getDelegation().delegations[0].delegation.targets;

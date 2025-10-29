@@ -5,20 +5,18 @@ import {
 	type SatelliteActor,
 	type SatelliteDid
 } from '$declarations';
+import type { PreparedDelegation } from '$declarations/satellite/satellite.did';
 import { ECDSAKeyIdentity, Ed25519KeyIdentity } from '@dfinity/identity';
 import type { Actor, PocketIc } from '@dfinity/pic';
-import type { Principal } from '@dfinity/principal';
-import { toNullable } from '@dfinity/utils';
+import { JUNO_AUTH_ERROR_NOT_CONFIGURED, JUNO_AUTH_ERROR_OPENID_DISABLED } from '@junobuild/errors';
+import { OBSERVATORY_ID } from '../constants/observatory-tests.constants';
 import { mockCertificateDate, mockClientId } from '../mocks/jwt.mocks';
 import { generateNonce } from './auth-nonce-tests.utils';
+import { assembleJwt } from './jwt-assemble-tests.utils';
 import { makeMockGoogleOpenIdJwt, type MockOpenIdJwt } from './jwt-tests.utils';
 import { assertOpenIdHttpsOutcalls } from './observatory-openid-tests.utils';
 import { tick } from './pic-tests.utils';
 import { OBSERVATORY_WASM_PATH } from './setup-tests.utils';
-import { JUNO_AUTH_ERROR_NOT_CONFIGURED, JUNO_AUTH_ERROR_OPENID_DISABLED } from '@junobuild/errors';
-import type { PreparedDelegation } from '$declarations/satellite/satellite.did';
-import { assembleJwt } from './jwt-assemble-tests.utils';
-import { OBSERVATORY_ID } from '../constants/observatory-tests.constants';
 
 export const testAuthGetDelegation = ({
 	actor: getActor,
@@ -30,7 +28,7 @@ export const testAuthGetDelegation = ({
 	pic: () => PocketIc;
 }) => {
 	describe('Get', async () => {
-		let pic : PocketIc;
+		let pic: PocketIc;
 
 		const user = Ed25519KeyIdentity.generate();
 
@@ -60,7 +58,7 @@ export const testAuthGetDelegation = ({
 
 			observatoryActor = obsA;
 			observatoryActor.setIdentity(controller);
-		})
+		});
 
 		describe('should fail without configuration', async () => {
 			const { jwt } = await makeMockGoogleOpenIdJwt({

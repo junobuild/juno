@@ -1,16 +1,16 @@
-import type { SatelliteActor } from '$declarations';
+import type { ConsoleActor } from '$declarations';
 import type { _SERVICE as TestSatelliteActor } from '$test-declarations/test_satellite/test_satellite.did';
 import type { Actor, PocketIc } from '@dfinity/pic';
 import {
 	assertIdentity,
 	authenticateAndMakeIdentity
-} from '../../../../utils/auth-identity-tests.utils';
-import { setupSatelliteAuth, type TestSession } from '../../../../utils/auth-tests.utils';
+} from '../../../utils/auth-identity-tests.utils';
+import { setupConsoleAuth, type TestSession } from '../../../utils/auth-tests.utils';
 
 describe('Satellite > Auth > Delegation identity', () => {
 	let pic: PocketIc;
 
-	let satelliteActor: Actor<SatelliteActor>;
+	let consoleActor: Actor<ConsoleActor>;
 	let testSatelliteActor: Actor<TestSatelliteActor>;
 
 	let session: TestSession;
@@ -18,13 +18,13 @@ describe('Satellite > Auth > Delegation identity', () => {
 	beforeAll(async () => {
 		const {
 			pic: p,
-			satellite: { actor },
+			console: { actor },
 			testSatellite: { actor: tActor },
 			session: s
-		} = await setupSatelliteAuth();
+		} = await setupConsoleAuth();
 
 		pic = p;
-		satelliteActor = actor;
+		consoleActor = actor;
 		testSatelliteActor = tActor;
 
 		session = s;
@@ -38,7 +38,7 @@ describe('Satellite > Auth > Delegation identity', () => {
 		const { identity } = await authenticateAndMakeIdentity({
 			pic,
 			session,
-			actor: satelliteActor
+			actor: consoleActor
 		});
 
 		await assertIdentity({

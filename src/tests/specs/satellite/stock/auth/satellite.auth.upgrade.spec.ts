@@ -3,11 +3,11 @@ import type { Ed25519KeyIdentity } from '@dfinity/identity';
 import type { Actor, PocketIc } from '@dfinity/pic';
 import type { Principal } from '@dfinity/principal';
 import { mockClientId } from '../../../../mocks/jwt.mocks';
+import { setupSatelliteAuth } from '../../../../utils/auth-tests.utils';
 import { stopCanister } from '../../../../utils/ic-management-tests.utils';
 import { makeMockGoogleOpenIdJwt } from '../../../../utils/jwt-tests.utils';
 import { assertOpenIdHttpsOutcalls } from '../../../../utils/observatory-openid-tests.utils';
 import { tick } from '../../../../utils/pic-tests.utils';
-import { setupSatelliteAuth } from '../../../../utils/satellite-auth-tests.utils';
 import { upgradeSatellite } from '../../../../utils/satellite-upgrade-tests.utils';
 
 describe('Satellite > Auth > Upgrade', () => {

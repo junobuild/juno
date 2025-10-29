@@ -8,8 +8,8 @@ import {
 	assertIdentity,
 	authenticateAndMakeIdentity
 } from '../../../../utils/auth-identity-tests.utils';
+import { setupSatelliteAuth, type TestSession } from '../../../../utils/auth-tests.utils';
 import { tick } from '../../../../utils/pic-tests.utils';
-import { setupSatelliteAuth, type TestSession } from '../../../../utils/satellite-auth-tests.utils';
 
 describe('Satellite > Auth > Session duration', () => {
 	let pic: PocketIc;
@@ -109,7 +109,7 @@ describe('Satellite > Auth > Session duration', () => {
 			const { identity: i, delegationChain: d } = await authenticateAndMakeIdentity({
 				pic,
 				session,
-				satelliteActor
+				actor: satelliteActor
 			});
 
 			identity = i;

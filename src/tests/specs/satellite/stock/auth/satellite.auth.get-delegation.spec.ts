@@ -1,5 +1,5 @@
-import { type ObservatoryActor, type SatelliteActor } from '$declarations';
-import { Ed25519KeyIdentity } from '@dfinity/identity';
+import type { SatelliteActor } from '$declarations';
+import type { Ed25519KeyIdentity } from '@dfinity/identity';
 import type { Actor, PocketIc } from '@dfinity/pic';
 import { mockCertificateDate } from '../../../../mocks/jwt.mocks';
 import { testAuthGetDelegation } from '../../../../utils/auth-assertions-get-delegation-tests.utils';

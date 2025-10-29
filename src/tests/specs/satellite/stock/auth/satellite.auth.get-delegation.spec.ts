@@ -207,6 +207,7 @@ describe('Satellite > Delegation > Get delegation', async () => {
 
 				if ('Err' in result) {
 					expect(true).toBeFalsy();
+
 					throw new Error('Unreachable');
 				}
 

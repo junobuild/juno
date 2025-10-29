@@ -4,6 +4,7 @@ import {
 	type SatelliteActor,
 	type SatelliteDid
 } from '$declarations';
+import type { PreparedDelegation } from '$declarations/satellite/satellite.did';
 import { ECDSAKeyIdentity, Ed25519KeyIdentity } from '@dfinity/identity';
 import type { Actor, PocketIc } from '@dfinity/pic';
 import { JUNO_AUTH_ERROR_NOT_CONFIGURED, JUNO_AUTH_ERROR_OPENID_DISABLED } from '@junobuild/errors';
@@ -26,6 +27,8 @@ describe('Satellite > Delegation > Get delegation', async () => {
 	let controller: Ed25519KeyIdentity;
 
 	const user = Ed25519KeyIdentity.generate();
+
+	const mockExpiration = 30n * 60n * 1_000_000_000n; // 30min
 
 	const sessionKey = await ECDSAKeyIdentity.generate();
 	const publicKey = new Uint8Array(sessionKey.getPublicKey().toDer());
@@ -81,7 +84,8 @@ describe('Satellite > Delegation > Get delegation', async () => {
 					OpenId: {
 						jwt,
 						session_key: publicKey,
-						salt
+						salt,
+						expiration: mockExpiration
 					}
 				})
 			).rejects.toThrow(JUNO_AUTH_ERROR_NOT_CONFIGURED);
@@ -104,7 +108,7 @@ describe('Satellite > Delegation > Get delegation', async () => {
 
 			await expect(
 				get_delegation({
-					OpenId: { jwt, session_key: publicKey, salt }
+					OpenId: { jwt, session_key: publicKey, salt, expiration: mockExpiration }
 				})
 			).rejects.toThrow(JUNO_AUTH_ERROR_OPENID_DISABLED);
 		});
@@ -156,7 +160,7 @@ describe('Satellite > Delegation > Get delegation', async () => {
 				const { get_delegation } = actor;
 
 				const delegation = await get_delegation({
-					OpenId: { jwt, session_key: publicKey, salt }
+					OpenId: { jwt, session_key: publicKey, salt, expiration: mockExpiration }
 				});
 
 				if ('Ok' in delegation) {
@@ -177,9 +181,9 @@ describe('Satellite > Delegation > Get delegation', async () => {
 
 			const prepare = async (): Promise<
 				| {
-						userKey: Uint8Array | number[];
+						delegation: PreparedDelegation;
 				  }
-				| undefined
+
 			> => {
 				await pic.advanceTime(15 * 60_000);
 
@@ -206,14 +210,13 @@ describe('Satellite > Delegation > Get delegation', async () => {
 
 				if ('Err' in result) {
 					expect(true).toBeFalsy();
-
-					return undefined;
+					throw new Error("Unreachable");
 				}
 
 				const { Ok } = result;
 
-				const { public_key: userKey } = Ok;
-				return { userKey };
+				const { delegation } = Ok;
+				return { delegation };
 			};
 
 			it('should return NoSuchDelegation if called before prepare (for this session_key/expiration)', async () => {
@@ -240,7 +243,7 @@ describe('Satellite > Delegation > Get delegation', async () => {
 				const { get_delegation } = actor;
 
 				const res = await get_delegation({
-					OpenId: { jwt: minted.jwt, session_key: publicKey, salt }
+					OpenId: { jwt: minted.jwt, session_key: publicKey, salt, expiration: mockExpiration }
 				});
 
 				if ('Ok' in res) {
@@ -253,11 +256,11 @@ describe('Satellite > Delegation > Get delegation', async () => {
 			});
 
 			it('should succeeds after prepare_delegation', async () => {
-				await prepare();
+				const {delegation: {expiration}} = await prepare();
 
 				const { get_delegation } = actor;
 				const delegation = await get_delegation({
-					OpenId: { jwt: mockJwt, session_key: publicKey, salt }
+					OpenId: { jwt: mockJwt, session_key: publicKey, salt, expiration }
 				});
 
 				if ('Err' in delegation) {
@@ -274,14 +277,14 @@ describe('Satellite > Delegation > Get delegation', async () => {
 			});
 
 			it('should fail with NoSuchDelegation on wrong session_key', async () => {
-				await prepare();
+				const {delegation: {expiration}} = await prepare();
 
 				const otherSession = await ECDSAKeyIdentity.generate();
 				const otherPub = new Uint8Array(otherSession.getPublicKey().toDer());
 
 				const { get_delegation } = actor;
 				const delegation = await get_delegation({
-					OpenId: { jwt: mockJwt, session_key: otherPub, salt }
+					OpenId: { jwt: mockJwt, session_key: otherPub, salt, expiration }
 				});
 
 				if ('Ok' in delegation) {
@@ -296,14 +299,14 @@ describe('Satellite > Delegation > Get delegation', async () => {
 			});
 
 			it('should fail for attacker (nonce mismatch) even after prepare', async () => {
-				await prepare();
+				const {delegation: {expiration}} = await prepare();
 
 				const attacker = Ed25519KeyIdentity.generate();
 				actor.setIdentity(attacker);
 
 				const { get_delegation } = actor;
 				const delegation = await get_delegation({
-					OpenId: { jwt: mockJwt, session_key: publicKey, salt }
+					OpenId: { jwt: mockJwt, session_key: publicKey, salt, expiration }
 				});
 
 				actor.setIdentity(user);
@@ -341,7 +344,7 @@ describe('Satellite > Delegation > Get delegation', async () => {
 				const { get_delegation } = actor;
 
 				const delegation = await get_delegation({
-					OpenId: { jwt: badJwt, session_key: publicKey, salt }
+					OpenId: { jwt: badJwt, session_key: publicKey, salt, expiration: mockExpiration },
 				});
 
 				if ('Ok' in delegation) {

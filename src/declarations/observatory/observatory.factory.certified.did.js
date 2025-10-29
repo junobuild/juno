@@ -46,8 +46,7 @@ export const idlFactory = ({ IDL }) => {
 		updated_at: IDL.Nat64,
 		jwks: Jwks,
 		created_at: IDL.Nat64,
-		version: IDL.Opt(IDL.Nat64),
-		expires_at: IDL.Opt(IDL.Nat64)
+		version: IDL.Opt(IDL.Nat64)
 	});
 	const ControllerScope = IDL.Variant({
 		Write: IDL.Null,

@@ -102,7 +102,6 @@ describe('Observatory > OpenId', async () => {
 		expect(certificate).toEqual(
 			expect.objectContaining({
 				jwks: mapGoogleCertificateToJwks(),
-				expires_at: [],
 				created_at: expect.any(BigInt),
 				updated_at: expect.any(BigInt),
 				version: [version]

@@ -17,11 +17,9 @@ pub async fn openid_authenticate_user(
 
     let result = match prepared_delegation {
         Ok((delegation, credential)) => {
-            let key = delegation.user_key;
-
             // TODO: register user
 
-            Ok(AuthenticatedUser { public_key: key })
+            Ok(AuthenticatedUser { delegation })
         }
         Err(err) => Err(AuthenticateUserError::PrepareDelegation(err)),
     };

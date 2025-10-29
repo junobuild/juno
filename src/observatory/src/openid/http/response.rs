@@ -49,9 +49,18 @@ pub fn transform_certificate_response(raw: TransformArgs) -> HttpRequestResult {
         .map_err(|_| "Jwks serialize error")
         .unwrap_or_trap();
 
+    // Strip all headers except "Expires", which
+    // indicates when the certificate, well, expires.
+    let headers = response
+        .headers
+        .iter()
+        .find(|header| header.name.eq_ignore_ascii_case("expires"))
+        .map(|header| vec![header.clone()])
+        .unwrap_or_default();
+
     HttpRequestResult {
         status: Nat::from(HTTP_STATUS_OK),
         body,
-        headers: vec![],
+        headers,
     }
 }

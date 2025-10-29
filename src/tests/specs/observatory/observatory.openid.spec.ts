@@ -1,7 +1,7 @@
 import { idlFactoryObservatory, type ObservatoryActor, type ObservatoryDid } from '$declarations';
 import { Ed25519KeyIdentity } from '@dfinity/identity';
 import { type Actor, PocketIc } from '@dfinity/pic';
-import { fromNullable } from '@dfinity/utils';
+import { fromNullable, toNullable } from '@dfinity/utils';
 import { inject } from 'vitest';
 import { mockCertificateDate, mockClientId } from '../../mocks/jwt.mocks';
 import { FETCH_CERTIFICATE_INTERVAL } from '../../mocks/observatory.mocks';
@@ -88,7 +88,7 @@ describe('Observatory > OpenId', async () => {
 			})
 	});
 
-	const assertGetCertificate = async ({ version }: { version: bigint }) => {
+	const assertGetCertificate = async ({ version, expiresAt }: { version: bigint, expiresAt?: bigint }) => {
 		const { get_openid_certificate } = actor;
 
 		const cert = await get_openid_certificate({
@@ -102,7 +102,7 @@ describe('Observatory > OpenId', async () => {
 		expect(certificate).toEqual(
 			expect.objectContaining({
 				jwks: mapGoogleCertificateToJwks(),
-				expires_at: [],
+				expires_at: toNullable(expiresAt),
 				created_at: expect.any(BigInt),
 				updated_at: expect.any(BigInt),
 				version: [version]
@@ -219,6 +219,17 @@ describe('Observatory > OpenId', async () => {
 			expect(pendingBackoff2).toHaveLength(1); // retried after 120s
 
 			await finalizeOpenIdHttpsOutCall({ ...pendingBackoff2[0], pic, jwks: mockJwks });
+		});
+
+		it('should save and provide certificate with expire information', async () => {
+			await pic.advanceTime(FETCH_CERTIFICATE_INTERVAL); // 15min
+
+			await tick(pic);
+
+			await assertOpenIdHttpsOutcalls({ pic, jwks: mockJwks, withExpires: true });
+
+			// 1761746445000000000n === Wed, 29 Oct 2025 14:00:45 GMT which is used when withExpires is true
+			await assertGetCertificate({ version: 6n, expiresAt: 1761746445000000000n });
 		});
 	});
 });

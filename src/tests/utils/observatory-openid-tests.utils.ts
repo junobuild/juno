@@ -1,5 +1,5 @@
 import type { PocketIc } from '@dfinity/pic';
-import { CanisterHttpMethod } from '@dfinity/pic/dist/pocket-ic-types';
+import { type CanisterHttpHeader, CanisterHttpMethod } from '@dfinity/pic/dist/pocket-ic-types';
 import type { Principal } from '@dfinity/principal';
 import { assertNonNullish } from '@dfinity/utils';
 import type { MockOpenIdJwt } from './jwt-tests.utils';
@@ -8,10 +8,12 @@ import { tick } from './pic-tests.utils';
 
 export const assertOpenIdHttpsOutcalls = async ({
 	pic,
-	jwks
+	jwks,
+																									withExpires
 }: {
 	pic: PocketIc;
 	jwks: MockOpenIdJwt['jwks'];
+	withExpires?: boolean;
 }) => {
 	await tick(pic);
 
@@ -34,7 +36,7 @@ export const assertOpenIdHttpsOutcalls = async ({
 
 	expect(body).toHaveLength(0);
 
-	await finalizeOpenIdHttpsOutCall({ subnetId, requestId, pic, jwks });
+	await finalizeOpenIdHttpsOutCall({ subnetId, requestId, pic, jwks, withExpires });
 };
 
 export const failOpenIdHttpsOutCall = async ({
@@ -60,12 +62,14 @@ export const failOpenIdHttpsOutCall = async ({
 export const finalizeOpenIdHttpsOutCall = async ({
 	pic,
 	jwks,
+	withExpires = false,
 	...params
 }: {
 	subnetId: Principal;
 	requestId: number;
 	pic: PocketIc;
 	jwks: MockOpenIdJwt['jwks'];
+	withExpires?: boolean;
 }) => {
 	await pic.mockPendingHttpsOutcall({
 		...params,
@@ -73,7 +77,9 @@ export const finalizeOpenIdHttpsOutCall = async ({
 			type: 'success',
 			body: toBodyJson(jwks),
 			statusCode: 200,
-			headers: []
+			headers: [
+				...(withExpires ? [['Expires', 'Wed, 29 Oct 2025 14:00:45 GMT'] as CanisterHttpHeader] : [])
+			]
 		}
 	});
 

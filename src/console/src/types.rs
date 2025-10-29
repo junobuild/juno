@@ -112,7 +112,7 @@ pub mod interface {
     use candid::CandidType;
     use junobuild_auth::delegation::types::{
         OpenIdGetDelegationArgs, OpenIdPrepareDelegationArgs, PrepareDelegationError,
-        PreparedDelegation, UserKey,
+        PreparedDelegation,
     };
     use junobuild_auth::state::types::config::AuthenticationConfig;
     use junobuild_cdn::proposals::ProposalId;

@@ -1,8 +1,10 @@
-use junobuild_auth::delegation::types::{GetDelegationError, GetDelegationResult, OpenIdGetDelegationArgs};
-use junobuild_auth::{delegation, openid};
-use junobuild_auth::state::types::config::OpenIdProviders;
 use crate::auth::strategy_impls::AuthHeap;
 use crate::certification::strategy_impls::AuthCertificate;
+use junobuild_auth::delegation::types::{
+    GetDelegationError, GetDelegationResult, OpenIdGetDelegationArgs,
+};
+use junobuild_auth::state::types::config::OpenIdProviders;
+use junobuild_auth::{delegation, openid};
 
 pub fn openid_get_delegation(
     args: &OpenIdGetDelegationArgs,

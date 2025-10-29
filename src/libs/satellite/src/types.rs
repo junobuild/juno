@@ -61,7 +61,7 @@ pub mod interface {
     use candid::CandidType;
     use junobuild_auth::delegation::types::{
         GetDelegationError, OpenIdGetDelegationArgs, OpenIdPrepareDelegationArgs,
-        PrepareDelegationError, SignedDelegation, UserKey,
+        PrepareDelegationError, PreparedDelegation, SignedDelegation,
     };
     use junobuild_auth::state::types::config::AuthenticationConfig;
     use junobuild_cdn::proposals::ProposalId;
@@ -89,7 +89,7 @@ pub mod interface {
 
     #[derive(CandidType, Serialize, Deserialize)]
     pub struct AuthenticatedUser {
-        pub public_key: UserKey,
+        pub delegation: PreparedDelegation,
         pub doc: Doc,
     }
 

@@ -9,8 +9,7 @@ use crate::state::types::config::{OpenIdProviderClientId, OpenIdProviders};
 use crate::state::types::state::Salt;
 use crate::strategies::AuthHeapStrategy;
 
-type VerifyOpenIdCredentialsResult =
-    Result<OpenIdCredential, VerifyOpenidCredentialsError>;
+type VerifyOpenIdCredentialsResult = Result<OpenIdCredential, VerifyOpenidCredentialsError>;
 
 pub async fn verify_openid_credentials_with_jwks_renewal(
     jwt: &str,

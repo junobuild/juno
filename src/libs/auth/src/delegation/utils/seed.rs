@@ -3,10 +3,7 @@ use crate::state::types::state::Salt;
 use ic_certification::Hash;
 use sha2::{Digest, Sha256};
 
-pub fn calculate_seed(
-    key: &OpenIdCredentialKey,
-    salt: &Option<Salt>,
-) -> Result<Hash, String> {
+pub fn calculate_seed(key: &OpenIdCredentialKey, salt: &Option<Salt>) -> Result<Hash, String> {
     let salt =
         salt.ok_or("The salt has not been initialized. A seed cannot be calculated.".to_string())?;
 

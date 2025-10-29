@@ -1,7 +1,6 @@
 use crate::delegation::types::{
-    Delegation, GetDelegationError, GetDelegationResult, SessionKey, SignedDelegation,
+    Delegation, GetDelegationError, GetDelegationResult, SessionKey, SignedDelegation, Timestamp,
 };
-use crate::delegation::utils::duration::build_expiration;
 use crate::delegation::utils::seed::calculate_seed;
 use crate::delegation::utils::signature::{build_signature_inputs, build_signature_msg};
 use crate::delegation::utils::targets::build_targets;
@@ -13,12 +12,14 @@ use serde_bytes::ByteBuf;
 
 pub fn openid_get_delegation(
     session_key: &SessionKey,
+    expiration: Timestamp,
     credential: &OpenIdCredential,
     auth_heap: &impl AuthHeapStrategy,
     certificate: &impl AuthCertificateStrategy,
 ) -> GetDelegationResult {
     get_delegation(
         session_key,
+        expiration,
         &OpenIdCredentialKey::from(credential),
         auth_heap,
         certificate,
@@ -27,14 +28,13 @@ pub fn openid_get_delegation(
 
 pub fn get_delegation(
     session_key: &SessionKey,
+    expiration: Timestamp,
     key: &OpenIdCredentialKey,
     auth_heap: &impl AuthHeapStrategy,
     certificate: &impl AuthCertificateStrategy,
 ) -> GetDelegationResult {
-    let seed = calculate_seed(key, &get_salt(auth_heap))
-        .map_err(GetDelegationError::DeriveSeedFailed)?;
-
-    let expiration = build_expiration(auth_heap);
+    let seed =
+        calculate_seed(key, &get_salt(auth_heap)).map_err(GetDelegationError::DeriveSeedFailed)?;
 
     let targets = build_targets(auth_heap);
 

@@ -22,7 +22,7 @@ type AssetNoContent = record {
   version : opt nat64;
 };
 type AssetsUpgradeOptions = record { clear_existing_assets : opt bool };
-type AuthenticateUserArgs = variant { OpenId : OpenIdDelegationArgs };
+type AuthenticateUserArgs = variant { OpenId : OpenIdPrepareDelegationArgs };
 type AuthenticateUserError = variant {
   PrepareDelegation : PrepareDelegationError;
   RegisterUser : text;
@@ -31,7 +31,7 @@ type AuthenticateUserResultResponse = variant {
   Ok : AuthenticatedUser;
   Err : AuthenticateUserError;
 };
-type AuthenticatedUser = record { doc : Doc; public_key : blob };
+type AuthenticatedUser = record { doc : Doc; delegation : PreparedDelegation };
 type AuthenticationConfig = record {
   updated_at : opt nat64;
   openid : opt AuthenticationConfigOpenId;
@@ -105,7 +105,7 @@ type Doc = record {
   created_at : nat64;
   version : opt nat64;
 };
-type GetDelegationArgs = variant { OpenId : OpenIdDelegationArgs };
+type GetDelegationArgs = variant { OpenId : OpenIdGetDelegationArgs };
 type GetDelegationError = variant {
   JwtFindProvider : JwtFindProviderError;
   GetCachedJwks;
@@ -217,7 +217,13 @@ type ListRulesResults = record {
 };
 type Memory = variant { Heap; Stable };
 type MemorySize = record { stable : nat64; heap : nat64 };
-type OpenIdDelegationArgs = record {
+type OpenIdGetDelegationArgs = record {
+  jwt : text;
+  session_key : blob;
+  salt : blob;
+  expiration : nat64;
+};
+type OpenIdPrepareDelegationArgs = record {
   jwt : text;
   session_key : blob;
   salt : blob;
@@ -232,6 +238,7 @@ type PrepareDelegationError = variant {
   GetOrFetchJwks : GetOrRefreshJwksError;
   DeriveSeedFailed : text;
 };
+type PreparedDelegation = record { user_key : blob; expiration : nat64 };
 type Proposal = record {
   status : ProposalStatus;
   updated_at : nat64;

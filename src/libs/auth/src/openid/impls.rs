@@ -4,7 +4,7 @@ use crate::openid::types::interface::{OpenIdCredential, OpenIdCredentialKey};
 use crate::openid::types::provider::{OpenIdCertificate, OpenIdProvider};
 use ic_cdk::api::time;
 use jsonwebtoken::TokenData;
-use junobuild_shared::types::state::{Timestamp, Version, Versioned};
+use junobuild_shared::types::state::{Version, Versioned};
 use junobuild_shared::version::next_version;
 use std::fmt::{Display, Formatter, Result as FmtResult};
 
@@ -57,32 +57,26 @@ impl OpenIdCertificate {
         next_version(current_certificate)
     }
 
-    pub fn init(jwks: &Jwks, expires_at: &Option<Timestamp>) -> Self {
+    pub fn init(jwks: &Jwks) -> Self {
         let now = time();
 
         let version = Self::get_next_version(&None);
 
         Self {
             jwks: jwks.clone(),
-            expires_at: *expires_at,
             created_at: now,
             updated_at: now,
             version: Some(version),
         }
     }
 
-    pub fn update(
-        current_certificate: &OpenIdCertificate,
-        jwks: &Jwks,
-        expires_at: &Option<Timestamp>,
-    ) -> Self {
+    pub fn update(current_certificate: &OpenIdCertificate, jwks: &Jwks) -> Self {
         let now = time();
 
         let version = Self::get_next_version(&Some(current_certificate.clone()));
 
         Self {
             jwks: jwks.clone(),
-            expires_at: *expires_at,
             updated_at: now,
             version: Some(version),
             ..current_certificate.clone()

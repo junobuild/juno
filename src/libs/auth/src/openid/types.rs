@@ -49,11 +49,6 @@ pub mod provider {
     pub struct OpenIdCertificate {
         pub jwks: Jwks,
 
-        // This JWKS might no longer be valid after this timestamp.
-        // e.g. when fetching the Google certificate, the date is derived
-        // from the HTTP response header "expires".
-        pub expires_at: Option<Timestamp>,
-
         pub created_at: Timestamp,
         pub updated_at: Timestamp,
 

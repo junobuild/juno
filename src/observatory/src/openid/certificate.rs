@@ -5,7 +5,6 @@ use ic_cdk::futures::spawn;
 use ic_cdk_timers::set_timer;
 use junobuild_auth::openid::jwt::types::cert::Jwks;
 use junobuild_auth::openid::types::provider::OpenIdProvider;
-use junobuild_shared::date::parse_text_datetime_ns;
 use serde_json::from_slice;
 use std::cmp::min;
 use std::time::Duration;
@@ -44,18 +43,9 @@ async fn fetch_and_save_certificate(provider: &OpenIdProvider) -> Result<(), Str
 
     let raw_json_value = http_result.body;
 
-    // Google JWKS responses include an `Expires` header.
-    // It indicates when the current key set should no longer be considered valid.
-    // We don't use this information at the moment, which is why we don't cap it yet.
-    let expires_at = http_result
-        .headers
-        .iter()
-        .find(|header| header.name.eq_ignore_ascii_case("expires"))
-        .and_then(|header| parse_text_datetime_ns(&header.value));
-
     let jwks = from_slice::<Jwks>(&raw_json_value).map_err(|e| e.to_string())?;
 
-    set_openid_certificate(provider, &jwks, &expires_at);
+    set_openid_certificate(provider, &jwks);
 
     Ok(())
 }

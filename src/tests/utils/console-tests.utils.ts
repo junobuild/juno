@@ -3,11 +3,13 @@ import {
 	type ConsoleActor0014,
 	type ConsoleActor008,
 	type MissionControlActor,
+	idlFactoryConsole,
 	idlFactoryMissionControl
 } from '$declarations';
 import type { Identity } from '@dfinity/agent';
 import { Ed25519KeyIdentity } from '@dfinity/identity';
-import type { Actor, PocketIc } from '@dfinity/pic';
+import { type Actor, PocketIc } from '@dfinity/pic';
+import type { Principal } from '@dfinity/principal';
 import {
 	arrayBufferToUint8Array,
 	assertNonNullish,
@@ -15,9 +17,11 @@ import {
 	toNullable
 } from '@dfinity/utils';
 import { readFile } from 'node:fs/promises';
+import { inject } from 'vitest';
 import { mockScript } from '../mocks/storage.mocks';
 import { tick } from './pic-tests.utils';
 import {
+	CONSOLE_WASM_PATH,
 	downloadMissionControl,
 	downloadOrbiter,
 	downloadSatellite,
@@ -477,4 +481,30 @@ export const updateRateConfig = async ({
 	await update_rate_config({ Satellite: null }, config);
 	await update_rate_config({ Orbiter: null }, config);
 	await update_rate_config({ MissionControl: null }, config);
+};
+
+export const setupConsole = async ({
+	dateTime
+}: {
+	dateTime?: Date;
+}): Promise<{
+	pic: PocketIc;
+	controller: Ed25519KeyIdentity;
+	canisterId: Principal;
+	actor: Actor<ConsoleActor>;
+}> => {
+	const pic = await PocketIc.create(inject('PIC_URL'));
+
+	const currentDate = dateTime ?? new Date(2021, 6, 10, 0, 0, 0, 0);
+	await pic.setTime(currentDate.getTime());
+
+	const controller = Ed25519KeyIdentity.generate();
+
+	const { actor, canisterId } = await pic.setupCanister<ConsoleActor>({
+		idlFactory: idlFactoryConsole,
+		wasm: CONSOLE_WASM_PATH,
+		sender: controller.getPrincipal()
+	});
+
+	return { pic, controller, actor, canisterId };
 };

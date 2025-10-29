@@ -3,13 +3,13 @@ import { AnonymousIdentity } from '@dfinity/agent';
 import { Ed25519KeyIdentity } from '@dfinity/identity';
 import { PocketIc, type Actor } from '@dfinity/pic';
 import { inject } from 'vitest';
-import { CONTROLLER_ERROR_MSG } from '../../constants/console-tests.constants';
+import { CONTROLLER_ERROR_MSG } from '../../../constants/console-tests.constants';
 import {
 	adminCustomDomainsTests,
 	adminCustomDomainsWithProposalTests,
 	anonymousCustomDomainsTests
-} from '../../utils/custom-domains-tests.utils';
-import { CONSOLE_WASM_PATH } from '../../utils/setup-tests.utils';
+} from '../../../utils/custom-domains-tests.utils';
+import { CONSOLE_WASM_PATH } from '../../../utils/setup-tests.utils';
 
 describe('Console > Cdn > Custom Domains', () => {
 	let pic: PocketIc;

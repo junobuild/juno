@@ -1,24 +1,25 @@
-import { type ConsoleActor, idlFactoryConsole } from '$declarations';
+import { idlFactoryConsole, type ConsoleActor } from '$declarations';
 import { Ed25519KeyIdentity } from '@dfinity/identity';
-import { type Actor, PocketIc } from '@dfinity/pic';
+import { PocketIc, type Actor } from '@dfinity/pic';
 import type { Principal } from '@dfinity/principal';
 import { inject } from 'vitest';
-import {
-	testAuthConfig,
-	testAuthGoogleConfig,
-	testReturnAuthConfig
-} from '../../utils/auth-assertions-tests.utils';
-import { CONSOLE_WASM_PATH } from '../../utils/setup-tests.utils';
+import { testUploadProposalManyAssets } from '../../../utils/cdn-assertions-tests.utils';
+import { CONSOLE_WASM_PATH } from '../../../utils/setup-tests.utils';
 
-describe('Console > Storage', () => {
+describe('Console > Cdn > Batch', () => {
 	let pic: PocketIc;
 	let actor: Actor<ConsoleActor>;
+
 	let canisterId: Principal;
 
 	const controller = Ed25519KeyIdentity.generate();
 
+	const currentDate = new Date(2021, 6, 10, 0, 0, 0, 0);
+
 	beforeAll(async () => {
 		pic = await PocketIc.create(inject('PIC_URL'));
+
+		await pic.setTime(currentDate.getTime());
 
 		const { actor: c, canisterId: cId } = await pic.setupCanister<ConsoleActor>({
 			idlFactory: idlFactoryConsole,
@@ -27,37 +28,27 @@ describe('Console > Storage', () => {
 		});
 
 		actor = c;
-		canisterId = cId;
 		actor.setIdentity(controller);
+
+		canisterId = cId;
 	});
 
 	afterAll(async () => {
 		await pic?.tearDown();
 	});
 
-	describe('admin', () => {
+	describe('Admin', () => {
 		beforeAll(() => {
 			actor.setIdentity(controller);
 		});
 
-		testAuthConfig({
-			actor: () => actor
-		});
-
-		testReturnAuthConfig({
+		testUploadProposalManyAssets({
+			expectedProposalId: 1n,
 			actor: () => actor,
-			pic: () => pic,
+			currentDate,
 			canisterId: () => canisterId,
-			controller: () => controller,
-			version: 4n
-		});
-
-		testAuthGoogleConfig({
-			actor: () => actor,
-			pic: () => pic,
-			canisterId: () => canisterId,
-			controller: () => controller,
-			version: 5n
+			caller: () => controller,
+			pic: () => pic
 		});
 	});
 });

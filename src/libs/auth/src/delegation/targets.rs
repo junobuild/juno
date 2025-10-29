@@ -31,7 +31,7 @@ pub fn build_targets(auth_heap: &impl AuthHeapStrategy) -> Option<DelegationTarg
                     } else {
                         Some(targets)
                     }
-                },
+                }
             }
         })
 }

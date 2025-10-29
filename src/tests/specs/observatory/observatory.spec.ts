@@ -5,7 +5,10 @@ import { PocketIc, type Actor } from '@dfinity/pic';
 import { Principal } from '@dfinity/principal';
 import { toNullable } from '@dfinity/utils';
 import { inject } from 'vitest';
-import { CALLER_NOT_CONTROLLER_OBSERVATORY_MSG } from '../../constants/observatory-tests.constants';
+import {
+	CALLER_NOT_ANONYMOUS_MSG,
+	CALLER_NOT_CONTROLLER_OBSERVATORY_MSG
+} from '../../constants/observatory-tests.constants';
 import { OBSERVATORY_WASM_PATH } from '../../utils/setup-tests.utils';
 
 describe('Observatory', () => {
@@ -132,6 +135,16 @@ describe('Observatory', () => {
 		});
 
 		testGuards();
+
+		it('should throw errors on get openid certificate', async () => {
+			const { get_openid_certificate } = actor;
+
+			await expect(
+				get_openid_certificate({
+					provider: { Google: null }
+				})
+			).rejects.toThrow(CALLER_NOT_ANONYMOUS_MSG);
+		});
 	});
 
 	describe('user', () => {

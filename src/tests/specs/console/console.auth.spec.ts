@@ -1,34 +1,27 @@
-import { type ConsoleActor, idlFactoryConsole } from '$declarations';
+import { type ConsoleActor } from '$declarations';
 import { Ed25519KeyIdentity } from '@dfinity/identity';
 import { type Actor, PocketIc } from '@dfinity/pic';
 import type { Principal } from '@dfinity/principal';
-import { inject } from 'vitest';
 import {
 	testAuthConfig,
 	testAuthGoogleConfig,
 	testReturnAuthConfig
 } from '../../utils/auth-assertions-tests.utils';
-import { CONSOLE_WASM_PATH } from '../../utils/setup-tests.utils';
+import { setupConsole } from '../../utils/console-tests.utils';
 
-describe('Console > Storage', () => {
+describe('Console > Authentication', () => {
 	let pic: PocketIc;
 	let actor: Actor<ConsoleActor>;
 	let canisterId: Principal;
-
-	const controller = Ed25519KeyIdentity.generate();
+	let controller: Ed25519KeyIdentity;
 
 	beforeAll(async () => {
-		pic = await PocketIc.create(inject('PIC_URL'));
+		const { pic: p, actor: c, canisterId: cId, controller: cO } = await setupConsole({});
 
-		const { actor: c, canisterId: cId } = await pic.setupCanister<ConsoleActor>({
-			idlFactory: idlFactoryConsole,
-			wasm: CONSOLE_WASM_PATH,
-			sender: controller.getPrincipal()
-		});
-
+		pic = p;
 		actor = c;
 		canisterId = cId;
-		actor.setIdentity(controller);
+		controller = cO;
 	});
 
 	afterAll(async () => {

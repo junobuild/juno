@@ -4,7 +4,6 @@ use ic_certification::Hash;
 use sha2::{Digest, Sha256};
 
 pub fn calculate_seed(
-    client_id: &str,
     key: &OpenIdCredentialKey,
     salt: &Option<Salt>,
 ) -> Result<Hash, String> {
@@ -14,9 +13,6 @@ pub fn calculate_seed(
     let mut blob: Vec<u8> = vec![];
     blob.push(salt.len() as u8);
     blob.extend_from_slice(&salt);
-
-    blob.push(client_id.len() as u8);
-    blob.extend(client_id.bytes());
 
     blob.push(key.iss.len() as u8);
     blob.extend(key.iss.bytes());
@@ -50,14 +46,11 @@ mod tests {
         OpenIdCredentialKey { iss, sub }
     }
 
-    fn build_blob(client_id: &str, key: &OpenIdCredentialKey, salt: &Salt) -> Vec<u8> {
+    fn build_blob(key: &OpenIdCredentialKey, salt: &Salt) -> Vec<u8> {
         let mut blob: Vec<u8> = vec![];
 
         blob.push(salt.len() as u8);
         blob.extend_from_slice(salt);
-
-        blob.push(client_id.len() as u8);
-        blob.extend(client_id.as_bytes());
 
         blob.push(key.iss.len() as u8);
         blob.extend(key.iss.as_bytes());
@@ -80,10 +73,9 @@ mod tests {
         let iss = "https://accounts.google.com".to_string();
         let sub = "abc123".to_string();
         let key = key(&iss, &sub);
-        let client_id = "client-123";
 
-        let a = calculate_seed(client_id, &key, &Some(salt)).expect("ok");
-        let b = calculate_seed(client_id, &key, &Some(salt)).expect("ok");
+        let a = calculate_seed(&key, &Some(salt)).expect("ok");
+        let b = calculate_seed(&key, &Some(salt)).expect("ok");
         assert_eq!(a, b);
     }
 
@@ -95,25 +87,13 @@ mod tests {
         let key = key(&iss, &sub);
         let client_id = "my-client";
 
-        let expected = sha256(&build_blob(client_id, &key, &salt));
-        let got = calculate_seed(client_id, &key, &Some(salt)).expect("ok");
+        let expected = sha256(&build_blob(&key, &salt));
+        let got = calculate_seed(&key, &Some(salt)).expect("ok");
 
         assert_eq!(
             got, expected,
             "seed must be SHA-256 over the length-prefixed blob"
         );
-    }
-
-    #[test]
-    fn changes_when_client_id_changes() {
-        let salt = salt(0x7A);
-        let iss = "https://accounts.google.com".to_string();
-        let sub = "abc123".to_string();
-        let key = key(&iss, &sub);
-
-        let a = calculate_seed("client-a", &key, &Some(salt)).unwrap();
-        let b = calculate_seed("client-b", &key, &Some(salt)).unwrap();
-        assert_ne!(a, b);
     }
 
     #[test]
@@ -126,9 +106,8 @@ mod tests {
         let a_key = key(&iss_a, &sub);
         let b_key = key(&iss_b, &sub);
 
-        let cid = "client";
-        let a = calculate_seed(cid, &a_key, &Some(salt)).unwrap();
-        let b = calculate_seed(cid, &b_key, &Some(salt)).unwrap();
+        let a = calculate_seed(&a_key, &Some(salt)).unwrap();
+        let b = calculate_seed(&b_key, &Some(salt)).unwrap();
         assert_ne!(a, b);
     }
 
@@ -142,9 +121,8 @@ mod tests {
         let a_key = key(&iss, &sub_a);
         let b_key = key(&iss, &sub_b);
 
-        let cid = "client";
-        let a = calculate_seed(cid, &a_key, &Some(salt)).unwrap();
-        let b = calculate_seed(cid, &b_key, &Some(salt)).unwrap();
+        let a = calculate_seed(&a_key, &Some(salt)).unwrap();
+        let b = calculate_seed(&b_key, &Some(salt)).unwrap();
         assert_ne!(a, b);
     }
 
@@ -153,10 +131,9 @@ mod tests {
         let iss = "https://accounts.google.com".to_string();
         let sub = "abc123".to_string();
         let key = key(&iss, &sub);
-        let cid = "client";
 
-        let a = calculate_seed(cid, &key, &Some(salt(0x00))).unwrap();
-        let b = calculate_seed(cid, &key, &Some(salt(0xFF))).unwrap();
+        let a = calculate_seed(&key, &Some(salt(0x00))).unwrap();
+        let b = calculate_seed(&key, &Some(salt(0xFF))).unwrap();
         assert_ne!(a, b);
     }
 
@@ -166,7 +143,7 @@ mod tests {
         let sub = "abc123".to_string();
         let key = key(&iss, &sub);
 
-        let err = calculate_seed("client", &key, &None).unwrap_err();
+        let err = calculate_seed(&key, &None).unwrap_err();
         assert!(
             err.contains("The salt has not been initialized"),
             "got: {err}"

@@ -22,16 +22,12 @@ type AssetNoContent = record {
   version : opt nat64;
 };
 type AssetsUpgradeOptions = record { clear_existing_assets : opt bool };
-type AuthenticateUserArgs = variant { OpenId : OpenIdPrepareDelegationArgs };
-type AuthenticateUserError = variant {
-  PrepareDelegation : PrepareDelegationError;
-  RegisterUser : text;
+type AuthenticateResultResponse = variant {
+  Ok : Authentication;
+  Err : AuthenticationError;
 };
-type AuthenticateUserResultResponse = variant {
-  Ok : AuthenticatedUser;
-  Err : AuthenticateUserError;
-};
-type AuthenticatedUser = record { doc : Doc; delegation : PreparedDelegation };
+type Authentication = record { doc : Doc; delegation : PreparedDelegation };
+type AuthenticationArgs = variant { OpenId : OpenIdPrepareDelegationArgs };
 type AuthenticationConfig = record {
   updated_at : opt nat64;
   openid : opt AuthenticationConfigOpenId;
@@ -52,6 +48,10 @@ type AuthenticationConfigOpenId = record {
 type AuthenticationConfigOpenIdDelegation = record {
   targets : opt vec principal;
   max_time_to_live : opt nat64;
+};
+type AuthenticationError = variant {
+  PrepareDelegation : PrepareDelegationError;
+  RegisterUser : text;
 };
 type AuthenticationRules = record { allowed_callers : vec principal };
 type CollectionType = variant { Db; Storage };
@@ -372,9 +372,7 @@ type UploadChunk = record {
 };
 type UploadChunkResult = record { chunk_id : nat };
 service : (InitSatelliteArgs) -> {
-  authenticate_user : (AuthenticateUserArgs) -> (
-      AuthenticateUserResultResponse,
-    );
+  authenticate : (AuthenticationArgs) -> (AuthenticateResultResponse);
   commit_asset_upload : (CommitBatch) -> ();
   commit_proposal : (CommitProposal) -> (null);
   commit_proposal_asset_upload : (CommitBatch) -> ();

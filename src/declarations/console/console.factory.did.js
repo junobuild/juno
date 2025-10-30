@@ -17,7 +17,17 @@ export const idlFactory = ({ IDL }) => {
 		user_key: IDL.Vec(IDL.Nat8),
 		expiration: IDL.Nat64
 	});
-	const AuthenticatedUser = IDL.Record({ delegation: PreparedDelegation });
+	const MissionControl = IDL.Record({
+		updated_at: IDL.Nat64,
+		credits: Tokens,
+		mission_control_id: IDL.Opt(IDL.Principal),
+		owner: IDL.Principal,
+		created_at: IDL.Nat64
+	});
+	const AuthenticatedUser = IDL.Record({
+		delegation: PreparedDelegation,
+		mission_control: MissionControl
+	});
 	const JwtFindProviderError = IDL.Variant({
 		BadClaim: IDL.Text,
 		BadSig: IDL.Text,
@@ -49,7 +59,8 @@ export const idlFactory = ({ IDL }) => {
 		DeriveSeedFailed: IDL.Text
 	});
 	const AuthenticateUserError = IDL.Variant({
-		PrepareDelegation: PrepareDelegationError
+		PrepareDelegation: PrepareDelegationError,
+		RegisterUser: IDL.Text
 	});
 	const Result = IDL.Variant({
 		Ok: AuthenticatedUser,
@@ -204,13 +215,6 @@ export const idlFactory = ({ IDL }) => {
 		created_at: IDL.Nat64,
 		version: IDL.Opt(IDL.Nat64),
 		proposal_type: ProposalType
-	});
-	const MissionControl = IDL.Record({
-		updated_at: IDL.Nat64,
-		credits: Tokens,
-		mission_control_id: IDL.Opt(IDL.Principal),
-		owner: IDL.Principal,
-		created_at: IDL.Nat64
 	});
 	const HttpRequest = IDL.Record({
 		url: IDL.Text,

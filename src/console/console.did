@@ -27,8 +27,12 @@ type AssetsUpgradeOptions = record { clear_existing_assets : opt bool };
 type AuthenticateUserArgs = variant { OpenId : OpenIdPrepareDelegationArgs };
 type AuthenticateUserError = variant {
   PrepareDelegation : PrepareDelegationError;
+  RegisterUser : text;
 };
-type AuthenticatedUser = record { delegation : PreparedDelegation };
+type AuthenticatedUser = record {
+  delegation : PreparedDelegation;
+  mission_control : MissionControl;
+};
 type AuthenticationConfig = record {
   updated_at : opt nat64;
   openid : opt AuthenticationConfigOpenId;

@@ -31,11 +31,14 @@ export interface AssetsUpgradeOptions {
 	clear_existing_assets: [] | [boolean];
 }
 export type AuthenticateUserArgs = { OpenId: OpenIdPrepareDelegationArgs };
-export type AuthenticateUserError = {
-	PrepareDelegation: PrepareDelegationError;
-};
+export type AuthenticateUserError =
+	| {
+			PrepareDelegation: PrepareDelegationError;
+	  }
+	| { RegisterUser: string };
 export interface AuthenticatedUser {
 	delegation: PreparedDelegation;
+	mission_control: MissionControl;
 }
 export interface AuthenticationConfig {
 	updated_at: [] | [bigint];

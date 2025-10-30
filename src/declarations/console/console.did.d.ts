@@ -225,8 +225,17 @@ export interface MissionControl {
 	updated_at: bigint;
 	credits: Tokens;
 	mission_control_id: [] | [Principal];
+	provider: [] | [Provider];
 	owner: Principal;
 	created_at: bigint;
+}
+export interface OpenIdData {
+	name: [] | [string];
+	locale: [] | [string];
+	family_name: [] | [string];
+	email: [] | [string];
+	picture: [] | [string];
+	given_name: [] | [string];
 }
 export interface OpenIdGetDelegationArgs {
 	jwt: string;
@@ -287,6 +296,7 @@ export type ProposalStatus =
 export type ProposalType =
 	| { AssetsUpgrade: AssetsUpgradeOptions }
 	| { SegmentsDeployment: SegmentsDeploymentOptions };
+export type Provider = { InternetIdentity: null } | { Google: OpenIdData };
 export interface RateConfig {
 	max_tokens: bigint;
 	time_per_token_ns: bigint;

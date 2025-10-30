@@ -17,10 +17,23 @@ export const idlFactory = ({ IDL }) => {
 		user_key: IDL.Vec(IDL.Nat8),
 		expiration: IDL.Nat64
 	});
+	const OpenIdData = IDL.Record({
+		name: IDL.Opt(IDL.Text),
+		locale: IDL.Opt(IDL.Text),
+		family_name: IDL.Opt(IDL.Text),
+		email: IDL.Opt(IDL.Text),
+		picture: IDL.Opt(IDL.Text),
+		given_name: IDL.Opt(IDL.Text)
+	});
+	const Provider = IDL.Variant({
+		InternetIdentity: IDL.Null,
+		Google: OpenIdData
+	});
 	const MissionControl = IDL.Record({
 		updated_at: IDL.Nat64,
 		credits: Tokens,
 		mission_control_id: IDL.Opt(IDL.Principal),
+		provider: IDL.Opt(Provider),
 		owner: IDL.Principal,
 		created_at: IDL.Nat64
 	});

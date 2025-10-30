@@ -24,6 +24,8 @@ describe('Console > Auth > Delegation', () => {
 		actor = a;
 		controller = cO;
 
+		actor.setIdentity(controller);
+
 		await deploySegments({ actor, withOrbiter: false, withSatellite: false });
 	});
 

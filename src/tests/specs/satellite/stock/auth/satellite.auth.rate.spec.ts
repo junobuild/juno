@@ -4,10 +4,10 @@ import type { Actor, PocketIc } from '@dfinity/pic';
 import { assertNonNullish, fromNullable } from '@dfinity/utils';
 import { mockClientId } from '../../../../mocks/jwt.mocks';
 import { generateNonce } from '../../../../utils/auth-nonce-tests.utils';
+import { setupSatelliteAuth } from '../../../../utils/auth-tests.utils';
 import { makeMockGoogleOpenIdJwt } from '../../../../utils/jwt-tests.utils';
 import { assertOpenIdHttpsOutcalls } from '../../../../utils/observatory-openid-tests.utils';
 import { tick } from '../../../../utils/pic-tests.utils';
-import { setupSatelliteAuth } from '../../../../utils/satellite-auth-tests.utils';
 
 describe('Satellite > Auth > Rate', async () => {
 	let pic: PocketIc;

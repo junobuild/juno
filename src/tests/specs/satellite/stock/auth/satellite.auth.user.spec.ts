@@ -1,11 +1,12 @@
 import type { SatelliteActor } from '$declarations';
+import type { Doc } from '$declarations/satellite/satellite.did';
 import type { DelegationIdentity } from '@dfinity/identity';
 import type { Actor, PocketIc } from '@dfinity/pic';
 import { fromArray } from '@junobuild/utils';
 import { authenticateAndMakeIdentity } from '../../../../utils/auth-identity-tests.utils';
+import { setupSatelliteAuth, type TestSession } from '../../../../utils/auth-tests.utils';
 import { makeJwt, type MockOpenIdJwt } from '../../../../utils/jwt-tests.utils';
 import { tick } from '../../../../utils/pic-tests.utils';
-import { setupSatelliteAuth, type TestSession } from '../../../../utils/satellite-auth-tests.utils';
 
 describe('Satellite > Auth > User', () => {
 	let pic: PocketIc;
@@ -50,10 +51,14 @@ describe('Satellite > Auth > User', () => {
 	});
 
 	it('should register a new user', async () => {
-		const { identity, user, jwt } = await authenticateAndMakeIdentity({
+		const {
+			identity,
+			doc: user,
+			jwt
+		} = await authenticateAndMakeIdentity<{ doc: Doc }>({
 			pic,
 			session,
-			satelliteActor
+			actor: satelliteActor
 		});
 
 		mockJwt = jwt;

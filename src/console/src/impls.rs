@@ -1,7 +1,7 @@
 use crate::constants::{ORBITER_CREATION_FEE_ICP, SATELLITE_CREATION_FEE_ICP};
 use crate::memory::manager::init_stable_state;
 use crate::types::ledger::Payment;
-use crate::types::state::{Fee, Fees, HeapState, MissionControl, Rate, Rates, State};
+use crate::types::state::{Fee, Fees, HeapState, MissionControl, OpenIdData, Rate, Rates, State};
 use ic_cdk::api::time;
 use ic_stable_structures::storable::Bound;
 use ic_stable_structures::Storable;
@@ -11,6 +11,7 @@ use junobuild_shared::serializers::{
     deserialize_from_bytes, serialize_into_bytes, serialize_to_bytes,
 };
 use std::borrow::Cow;
+use junobuild_auth::profile::types::OpenIdProfile;
 
 impl Default for State {
     fn default() -> Self {
@@ -94,4 +95,25 @@ impl Storable for Payment {
     }
 
     const BOUND: Bound = Bound::Unbounded;
+}
+
+impl OpenIdProfile for OpenIdData {
+    fn email(&self) -> Option<&str> {
+        self.email.as_deref()
+    }
+    fn name(&self) -> Option<&str> {
+        self.name.as_deref()
+    }
+    fn given_name(&self) -> Option<&str> {
+        self.given_name.as_deref()
+    }
+    fn family_name(&self) -> Option<&str> {
+        self.family_name.as_deref()
+    }
+    fn picture(&self) -> Option<&str> {
+        self.picture.as_deref()
+    }
+    fn locale(&self) -> Option<&str> {
+        self.locale.as_deref()
+    }
 }

@@ -23,7 +23,7 @@ use crate::guards::{
     caller_is_admin_controller, caller_is_controller, caller_is_controller_with_write,
 };
 use crate::types::interface::{
-    AuthenticationArgs, AuthenticateResultResponse, Config, DeleteProposalAssets,
+    AuthenticateResultResponse, AuthenticationArgs, Config, DeleteProposalAssets,
     GetDelegationArgs, GetDelegationResultResponse,
 };
 use crate::types::state::CollectionType;

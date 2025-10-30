@@ -7,9 +7,7 @@ use junobuild_shared::ic::UnwrapOrTrap;
 #[update]
 async fn authenticate(args: AuthenticationArgs) -> AuthenticationResult {
     match args {
-        AuthenticationArgs::OpenId(args) => {
-            openid_authenticate(&args).await.unwrap_or_trap()
-        }
+        AuthenticationArgs::OpenId(args) => openid_authenticate(&args).await.unwrap_or_trap(),
     }
 }
 

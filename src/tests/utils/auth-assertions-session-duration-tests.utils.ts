@@ -1,4 +1,4 @@
-import type { SatelliteActor, SatelliteDid } from '$declarations';
+import type { ConsoleActor, SatelliteActor, SatelliteDid } from '$declarations';
 import type { _SERVICE as TestSatelliteActor } from '$test-declarations/test_satellite/test_satellite.did';
 import type { DelegationChain, DelegationIdentity, Ed25519KeyIdentity } from '@dfinity/identity';
 import type { Actor, PocketIc } from '@dfinity/pic';
@@ -15,7 +15,7 @@ export const testAuthSessionDuration = ({
 	testSatelliteActor: getTestSatelliteActor,
 	session: getSession
 }: {
-	actor: () => Actor<SatelliteActor>;
+	actor: () => Actor<SatelliteActor | ConsoleActor>;
 	testSatelliteActor: () => Actor<TestSatelliteActor>;
 	controller: () => Ed25519KeyIdentity;
 	pic: () => PocketIc;
@@ -27,7 +27,7 @@ export const testAuthSessionDuration = ({
 
 		let pic: PocketIc;
 
-		let actor: Actor<SatelliteActor>;
+		let actor: Actor<SatelliteActor | ConsoleActor>;
 		let controller: Ed25519KeyIdentity;
 
 		let testSatelliteActor: Actor<TestSatelliteActor>;

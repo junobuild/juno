@@ -1,4 +1,5 @@
 import {
+	type ConsoleActor,
 	idlFactoryObservatory,
 	type ObservatoryActor,
 	type SatelliteActor,
@@ -20,7 +21,7 @@ export const testAuthConfigObservatory = ({
 	controller: getController,
 	pic: getPic
 }: {
-	actor: () => Actor<SatelliteActor>;
+	actor: () => Actor<SatelliteActor | ConsoleActor>;
 	controller: () => Ed25519KeyIdentity;
 	pic: () => PocketIc;
 }) => {

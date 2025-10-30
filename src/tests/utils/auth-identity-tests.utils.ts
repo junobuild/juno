@@ -1,4 +1,4 @@
-import type { SatelliteActor } from '$declarations';
+import type { ConsoleActor, SatelliteActor } from '$declarations';
 import type { _SERVICE as TestSatelliteActor } from '$test-declarations/test_satellite/test_satellite.did';
 import type { Signature } from '@dfinity/agent';
 import {
@@ -26,7 +26,7 @@ export const authenticateAndMakeIdentity = async <R>({
 }: {
 	pic: PocketIc;
 	session: TestSession;
-	actor: Actor<SatelliteActor>;
+	actor: Actor<SatelliteActor | ConsoleActor>;
 }): Promise<
 	{
 		identity: DelegationIdentity;

@@ -1,4 +1,4 @@
-import type { SatelliteActor, SatelliteDid } from '$declarations';
+import type { ConsoleActor, SatelliteActor, SatelliteDid } from '$declarations';
 import type { Ed25519KeyIdentity } from '@dfinity/identity';
 import type { Actor, PocketIc } from '@dfinity/pic';
 import type { Principal } from '@dfinity/principal';
@@ -16,7 +16,7 @@ export const testAuthTargets = ({
 	session: getSession,
 	canisterId: getCanisterId
 }: {
-	actor: () => Actor<SatelliteActor>;
+	actor: () => Actor<SatelliteActor | ConsoleActor>;
 	canisterId: () => Principal;
 	controller: () => Ed25519KeyIdentity;
 	pic: () => PocketIc;
@@ -28,7 +28,7 @@ export const testAuthTargets = ({
 		let controller: Ed25519KeyIdentity;
 
 		let canisterId: Principal;
-		let actor: Actor<SatelliteActor>;
+		let actor: Actor<SatelliteActor | ConsoleActor>;
 
 		let session: TestSession;
 

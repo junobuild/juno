@@ -1,4 +1,5 @@
 import {
+	type ConsoleActor,
 	idlFactoryObservatory,
 	type ObservatoryActor,
 	type SatelliteActor,
@@ -22,7 +23,7 @@ export const testAuthGetDelegation = ({
 	controller: getController,
 	pic: getPic
 }: {
-	actor: () => Actor<SatelliteActor>;
+	actor: () => Actor<SatelliteActor | ConsoleActor>;
 	controller: () => Ed25519KeyIdentity;
 	pic: () => PocketIc;
 }) => {
@@ -38,7 +39,7 @@ export const testAuthGetDelegation = ({
 
 		const { nonce, salt } = await generateNonce({ caller: user });
 
-		let actor: Actor<SatelliteActor>;
+		let actor: Actor<SatelliteActor | ConsoleActor>;
 		let controller: Ed25519KeyIdentity;
 
 		let observatoryActor: Actor<ObservatoryActor>;

@@ -24,6 +24,11 @@ type AssetNoContent = record {
   version : opt nat64;
 };
 type AssetsUpgradeOptions = record { clear_existing_assets : opt bool };
+type AuthenticateUserArgs = variant { OpenId : OpenIdPrepareDelegationArgs };
+type AuthenticateUserError = variant {
+  PrepareDelegation : PrepareDelegationError;
+};
+type AuthenticatedUser = record { delegation : PreparedDelegation };
 type AuthenticationConfig = record {
   updated_at : opt nat64;
   openid : opt AuthenticationConfigOpenId;
@@ -82,9 +87,34 @@ type CustomDomain = record {
   version : opt nat64;
   bn_id : opt text;
 };
+type Delegation = record {
+  pubkey : blob;
+  targets : opt vec principal;
+  expiration : nat64;
+};
 type DeleteControllersArgs = record { controllers : vec principal };
 type DeleteProposalAssets = record { proposal_ids : vec nat };
 type GetCreateCanisterFeeArgs = record { user : principal };
+type GetDelegationArgs = variant { OpenId : OpenIdGetDelegationArgs };
+type GetDelegationError = variant {
+  JwtFindProvider : JwtFindProviderError;
+  GetCachedJwks;
+  NoSuchDelegation;
+  JwtVerify : JwtVerifyError;
+  GetOrFetchJwks : GetOrRefreshJwksError;
+  DeriveSeedFailed : text;
+};
+type GetOrRefreshJwksError = variant {
+  InvalidConfig : text;
+  MissingKid;
+  BadClaim : text;
+  KeyNotFoundCooldown;
+  CertificateNotFound;
+  BadSig : text;
+  MissingLastAttempt : text;
+  KeyNotFound;
+  FetchFailed : text;
+};
 type HttpRequest = record {
   url : text;
   method : text;
@@ -109,6 +139,18 @@ type InitAssetKey = record {
 type InitStorageArgs = record { system_memory : opt InitStorageMemory };
 type InitStorageMemory = variant { Heap; Stable };
 type InitUploadResult = record { batch_id : nat };
+type JwtFindProviderError = variant {
+  BadClaim : text;
+  BadSig : text;
+  NoMatchingProvider;
+};
+type JwtVerifyError = variant {
+  WrongKeyType;
+  MissingKid;
+  BadClaim : text;
+  BadSig : text;
+  NoKeyForKid;
+};
 type ListMatcher = record {
   key : opt text;
   updated_at : opt TimestampMatcher;
@@ -150,6 +192,17 @@ type MissionControl = record {
   owner : principal;
   created_at : nat64;
 };
+type OpenIdGetDelegationArgs = record {
+  jwt : text;
+  session_key : blob;
+  salt : blob;
+  expiration : nat64;
+};
+type OpenIdPrepareDelegationArgs = record {
+  jwt : text;
+  session_key : blob;
+  salt : blob;
+};
 type OpenIdProvider = variant { Google };
 type OpenIdProviderConfig = record { client_id : text };
 type Payment = record {
@@ -161,6 +214,14 @@ type Payment = record {
   block_index_refunded : opt nat64;
 };
 type PaymentStatus = variant { Refunded; Acknowledged; Completed };
+type PrepareDelegationError = variant {
+  JwtFindProvider : JwtFindProviderError;
+  GetCachedJwks;
+  JwtVerify : JwtVerifyError;
+  GetOrFetchJwks : GetOrRefreshJwksError;
+  DeriveSeedFailed : text;
+};
+type PreparedDelegation = record { user_key : blob; expiration : nat64 };
 type Proposal = record {
   status : ProposalStatus;
   updated_at : nat64;
@@ -185,6 +246,8 @@ type ProposalType = variant {
   SegmentsDeployment : SegmentsDeploymentOptions;
 };
 type RateConfig = record { max_tokens : nat64; time_per_token_ns : nat64 };
+type Result = variant { Ok : AuthenticatedUser; Err : AuthenticateUserError };
+type Result_1 = variant { Ok : SignedDelegation; Err : GetDelegationError };
 type SegmentKind = variant { Orbiter; MissionControl; Satellite };
 type SegmentsDeploymentOptions = record {
   orbiter : opt text;
@@ -215,6 +278,7 @@ type SetStorageConfig = record {
   raw_access : opt StorageConfigRawAccess;
   redirects : opt vec record { text; StorageConfigRedirect };
 };
+type SignedDelegation = record { signature : blob; delegation : Delegation };
 type StorageConfig = record {
   iframe : opt StorageConfigIFrame;
   updated_at : opt nat64;
@@ -265,6 +329,7 @@ service : () -> {
   add_credits : (principal, Tokens) -> ();
   add_invitation_code : (text) -> ();
   assert_mission_control_center : (AssertMissionControlCenterArgs) -> () query;
+  authenticate_user : (AuthenticateUserArgs) -> (Result);
   commit_proposal : (CommitProposal) -> (null);
   commit_proposal_asset_upload : (CommitBatch) -> ();
   commit_proposal_many_assets_upload : (vec CommitBatch) -> ();
@@ -279,6 +344,7 @@ service : () -> {
   get_create_orbiter_fee : (GetCreateCanisterFeeArgs) -> (opt Tokens) query;
   get_create_satellite_fee : (GetCreateCanisterFeeArgs) -> (opt Tokens) query;
   get_credits : () -> (Tokens) query;
+  get_delegation : (GetDelegationArgs) -> (Result_1) query;
   get_proposal : (nat) -> (opt Proposal) query;
   get_storage_config : () -> (StorageConfig) query;
   get_user_mission_control_center : () -> (opt MissionControl) query;

@@ -5,6 +5,56 @@ export const idlFactory = ({ IDL }) => {
 		mission_control_id: IDL.Principal,
 		user: IDL.Principal
 	});
+	const OpenIdPrepareDelegationArgs = IDL.Record({
+		jwt: IDL.Text,
+		session_key: IDL.Vec(IDL.Nat8),
+		salt: IDL.Vec(IDL.Nat8)
+	});
+	const AuthenticateUserArgs = IDL.Variant({
+		OpenId: OpenIdPrepareDelegationArgs
+	});
+	const PreparedDelegation = IDL.Record({
+		user_key: IDL.Vec(IDL.Nat8),
+		expiration: IDL.Nat64
+	});
+	const AuthenticatedUser = IDL.Record({ delegation: PreparedDelegation });
+	const JwtFindProviderError = IDL.Variant({
+		BadClaim: IDL.Text,
+		BadSig: IDL.Text,
+		NoMatchingProvider: IDL.Null
+	});
+	const JwtVerifyError = IDL.Variant({
+		WrongKeyType: IDL.Null,
+		MissingKid: IDL.Null,
+		BadClaim: IDL.Text,
+		BadSig: IDL.Text,
+		NoKeyForKid: IDL.Null
+	});
+	const GetOrRefreshJwksError = IDL.Variant({
+		InvalidConfig: IDL.Text,
+		MissingKid: IDL.Null,
+		BadClaim: IDL.Text,
+		KeyNotFoundCooldown: IDL.Null,
+		CertificateNotFound: IDL.Null,
+		BadSig: IDL.Text,
+		MissingLastAttempt: IDL.Text,
+		KeyNotFound: IDL.Null,
+		FetchFailed: IDL.Text
+	});
+	const PrepareDelegationError = IDL.Variant({
+		JwtFindProvider: JwtFindProviderError,
+		GetCachedJwks: IDL.Null,
+		JwtVerify: JwtVerifyError,
+		GetOrFetchJwks: GetOrRefreshJwksError,
+		DeriveSeedFailed: IDL.Text
+	});
+	const AuthenticateUserError = IDL.Variant({
+		PrepareDelegation: PrepareDelegationError
+	});
+	const Result = IDL.Variant({
+		Ok: AuthenticatedUser,
+		Err: AuthenticateUserError
+	});
 	const CommitProposal = IDL.Record({
 		sha256: IDL.Vec(IDL.Nat8),
 		proposal_id: IDL.Nat
@@ -97,6 +147,34 @@ export const idlFactory = ({ IDL }) => {
 		storage: StorageConfig
 	});
 	const GetCreateCanisterFeeArgs = IDL.Record({ user: IDL.Principal });
+	const OpenIdGetDelegationArgs = IDL.Record({
+		jwt: IDL.Text,
+		session_key: IDL.Vec(IDL.Nat8),
+		salt: IDL.Vec(IDL.Nat8),
+		expiration: IDL.Nat64
+	});
+	const GetDelegationArgs = IDL.Variant({ OpenId: OpenIdGetDelegationArgs });
+	const Delegation = IDL.Record({
+		pubkey: IDL.Vec(IDL.Nat8),
+		targets: IDL.Opt(IDL.Vec(IDL.Principal)),
+		expiration: IDL.Nat64
+	});
+	const SignedDelegation = IDL.Record({
+		signature: IDL.Vec(IDL.Nat8),
+		delegation: Delegation
+	});
+	const GetDelegationError = IDL.Variant({
+		JwtFindProvider: JwtFindProviderError,
+		GetCachedJwks: IDL.Null,
+		NoSuchDelegation: IDL.Null,
+		JwtVerify: JwtVerifyError,
+		GetOrFetchJwks: GetOrRefreshJwksError,
+		DeriveSeedFailed: IDL.Text
+	});
+	const Result_1 = IDL.Variant({
+		Ok: SignedDelegation,
+		Err: GetDelegationError
+	});
 	const ProposalStatus = IDL.Variant({
 		Initialized: IDL.Null,
 		Failed: IDL.Null,
@@ -321,6 +399,7 @@ export const idlFactory = ({ IDL }) => {
 		add_credits: IDL.Func([IDL.Principal, Tokens], [], []),
 		add_invitation_code: IDL.Func([IDL.Text], [], []),
 		assert_mission_control_center: IDL.Func([AssertMissionControlCenterArgs], [], ['query']),
+		authenticate_user: IDL.Func([AuthenticateUserArgs], [Result], []),
 		commit_proposal: IDL.Func([CommitProposal], [IDL.Null], []),
 		commit_proposal_asset_upload: IDL.Func([CommitBatch], [], []),
 		commit_proposal_many_assets_upload: IDL.Func([IDL.Vec(CommitBatch)], [], []),
@@ -335,6 +414,7 @@ export const idlFactory = ({ IDL }) => {
 		get_create_orbiter_fee: IDL.Func([GetCreateCanisterFeeArgs], [IDL.Opt(Tokens)], ['query']),
 		get_create_satellite_fee: IDL.Func([GetCreateCanisterFeeArgs], [IDL.Opt(Tokens)], ['query']),
 		get_credits: IDL.Func([], [Tokens], ['query']),
+		get_delegation: IDL.Func([GetDelegationArgs], [Result_1], ['query']),
 		get_proposal: IDL.Func([IDL.Nat], [IDL.Opt(Proposal)], ['query']),
 		get_storage_config: IDL.Func([], [StorageConfig], ['query']),
 		get_user_mission_control_center: IDL.Func([], [IDL.Opt(MissionControl)], ['query']),

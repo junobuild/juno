@@ -1,4 +1,5 @@
 import {
+	type ConsoleActor,
 	idlFactoryObservatory,
 	type ObservatoryActor,
 	type SatelliteActor,
@@ -22,7 +23,7 @@ export const testAuthPrepareDelegation = ({
 	controller: getController,
 	pic: getPic
 }: {
-	actor: () => Actor<SatelliteActor>;
+	actor: () => Actor<SatelliteActor | ConsoleActor>;
 	controller: () => Ed25519KeyIdentity;
 	pic: () => PocketIc;
 }) => {
@@ -31,7 +32,7 @@ export const testAuthPrepareDelegation = ({
 
 		let observatoryActor: Actor<ObservatoryActor>;
 
-		let actor: Actor<SatelliteActor>;
+		let actor: Actor<SatelliteActor | ConsoleActor>;
 		let controller: Ed25519KeyIdentity;
 
 		const user = Ed25519KeyIdentity.generate();

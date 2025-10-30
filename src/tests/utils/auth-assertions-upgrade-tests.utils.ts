@@ -1,4 +1,4 @@
-import type { SatelliteActor } from '$declarations';
+import type { ConsoleActor, SatelliteActor } from '$declarations';
 import type { Ed25519KeyIdentity } from '@dfinity/identity';
 import type { Actor, PocketIc } from '@dfinity/pic';
 import type { Principal } from '@dfinity/principal';
@@ -18,7 +18,7 @@ export const testAuthUpgrade = ({
 	observatoryId: getObservatoryId,
 	upgrade
 }: {
-	actor: () => Actor<SatelliteActor>;
+	actor: () => Actor<SatelliteActor | ConsoleActor>;
 	canisterId: () => Principal;
 	controller: () => Ed25519KeyIdentity;
 	pic: () => PocketIc;
@@ -33,7 +33,7 @@ export const testAuthUpgrade = ({
 
 		let controller: Ed25519KeyIdentity;
 
-		let actor: Actor<SatelliteActor>;
+		let actor: Actor<SatelliteActor | ConsoleActor>;
 
 		let publicKey: Uint8Array;
 		let nonce: string;

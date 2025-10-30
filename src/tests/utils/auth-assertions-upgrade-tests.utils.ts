@@ -8,7 +8,6 @@ import { stopCanister } from './ic-management-tests.utils';
 import { makeMockGoogleOpenIdJwt } from './jwt-tests.utils';
 import { assertOpenIdHttpsOutcalls } from './observatory-openid-tests.utils';
 import { tick } from './pic-tests.utils';
-import { upgradeSatellite } from './satellite-upgrade-tests.utils';
 
 export const testAuthUpgrade = ({
 	actor: getActor,

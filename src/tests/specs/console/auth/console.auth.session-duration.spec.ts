@@ -1,16 +1,16 @@
-import type { SatelliteActor } from '$declarations';
+import type { ConsoleActor } from '$declarations';
 import type { _SERVICE as TestSatelliteActor } from '$test-declarations/test_satellite/test_satellite.did';
 import type { Ed25519KeyIdentity } from '@dfinity/identity';
 import type { Actor, PocketIc } from '@dfinity/pic';
-import { testAuthSessionDuration } from '../../../../utils/auth-assertions-session-duration-tests.utils';
-import { setupSatelliteAuth, type TestSession } from '../../../../utils/auth-tests.utils';
+import { setupConsoleAuth, type TestSession } from '../../../utils/auth-tests.utils';
+import { testAuthSessionDuration } from '../../../utils/auth-assertions-session-duration-tests.utils';
 
-describe('Satellite > Auth', () => {
+describe('Console > Auth', () => {
 	let pic: PocketIc;
 
 	let controller: Ed25519KeyIdentity;
 
-	let satelliteActor: Actor<SatelliteActor>;
+	let consoleActor: Actor<ConsoleActor>;
 	let testSatelliteActor: Actor<TestSatelliteActor>;
 
 	let session: TestSession;
@@ -18,20 +18,19 @@ describe('Satellite > Auth', () => {
 	beforeAll(async () => {
 		const {
 			pic: p,
-			satellite: { actor },
+			console: { actor },
 			testSatellite: { actor: tActor },
 			session: s,
-			controller: c
-		} = await setupSatelliteAuth();
+			controller: cO
+		} = await setupConsoleAuth();
 
 		pic = p;
-
-		satelliteActor = actor;
+		consoleActor = actor;
 		testSatelliteActor = tActor;
 
-		controller = c;
-
 		session = s;
+
+		controller = cO;
 	});
 
 	afterAll(async () => {
@@ -40,7 +39,7 @@ describe('Satellite > Auth', () => {
 
 	testAuthSessionDuration({
 		pic: () => pic,
-		actor: () => satelliteActor,
+		actor: () => consoleActor,
 		controller: () => controller,
 		session: () => session,
 		testSatelliteActor: () => testSatelliteActor

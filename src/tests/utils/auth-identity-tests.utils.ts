@@ -26,7 +26,7 @@ export const authenticateAndMakeIdentity = async <R>({
 }: {
 	pic: PocketIc;
 	session: TestSession;
-	actor: Actor<SatelliteActor> | Actor<ConsoleActor>;
+	actor: Actor<SatelliteActor | ConsoleActor>;
 }): Promise<
 	{
 		identity: DelegationIdentity;

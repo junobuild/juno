@@ -32,6 +32,7 @@ export interface AssetsUpgradeOptions {
 }
 export interface Authentication {
 	delegation: PreparedDelegation;
+	mission_control: MissionControl;
 }
 export type AuthenticationArgs = { OpenId: OpenIdPrepareDelegationArgs };
 export interface AuthenticationConfig {
@@ -55,9 +56,11 @@ export interface AuthenticationConfigOpenIdDelegation {
 	targets: [] | [Array<Principal>];
 	max_time_to_live: [] | [bigint];
 }
-export type AuthenticationError = {
-	PrepareDelegation: PrepareDelegationError;
-};
+export type AuthenticationError =
+	| {
+			PrepareDelegation: PrepareDelegationError;
+	  }
+	| { RegisterUser: string };
 export interface AuthenticationRules {
 	allowed_callers: Array<Principal>;
 }

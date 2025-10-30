@@ -24,7 +24,10 @@ type AssetNoContent = record {
   version : opt nat64;
 };
 type AssetsUpgradeOptions = record { clear_existing_assets : opt bool };
-type Authentication = record { delegation : PreparedDelegation };
+type Authentication = record {
+  delegation : PreparedDelegation;
+  mission_control : MissionControl;
+};
 type AuthenticationArgs = variant { OpenId : OpenIdPrepareDelegationArgs };
 type AuthenticationConfig = record {
   updated_at : opt nat64;
@@ -49,6 +52,7 @@ type AuthenticationConfigOpenIdDelegation = record {
 };
 type AuthenticationError = variant {
   PrepareDelegation : PrepareDelegationError;
+  RegisterUser : text;
 };
 type AuthenticationRules = record { allowed_callers : vec principal };
 type CommitBatch = record {

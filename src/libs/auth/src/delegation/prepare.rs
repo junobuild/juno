@@ -9,7 +9,6 @@ use crate::delegation::utils::targets::build_targets;
 use crate::openid::types::interface::{OpenIdCredential, OpenIdCredentialKey};
 use crate::state::get_salt;
 use crate::state::services::mutate_state;
-use crate::state::types::config::OpenIdProviderClientId;
 use crate::strategies::{AuthCertificateStrategy, AuthHeapStrategy};
 use ic_canister_sig_creation::CanisterSigPublicKey;
 use ic_cdk::api::canister_self;
@@ -17,14 +16,12 @@ use serde_bytes::ByteBuf;
 
 pub fn openid_prepare_delegation(
     session_key: &SessionKey,
-    client_id: &OpenIdProviderClientId,
     credential: &OpenIdCredential,
     auth_heap: &impl AuthHeapStrategy,
     certificate: &impl AuthCertificateStrategy,
 ) -> PrepareDelegationResult {
     let delegation = prepare_delegation(
         session_key,
-        client_id,
         &OpenIdCredentialKey::from(credential),
         auth_heap,
         certificate,
@@ -35,12 +32,11 @@ pub fn openid_prepare_delegation(
 
 fn prepare_delegation(
     session_key: &SessionKey,
-    client_id: &str,
     key: &OpenIdCredentialKey,
     auth_heap: &impl AuthHeapStrategy,
     certificate: &impl AuthCertificateStrategy,
 ) -> PrepareDelegationResult {
-    let seed = calculate_seed(client_id, key, &get_salt(auth_heap))
+    let seed = calculate_seed(key, &get_salt(auth_heap))
         .map_err(PrepareDelegationError::DeriveSeedFailed)?;
 
     let expiration = build_expiration(auth_heap);

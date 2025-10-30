@@ -9,8 +9,7 @@ use crate::state::types::config::{OpenIdProviderClientId, OpenIdProviders};
 use crate::state::types::state::Salt;
 use crate::strategies::AuthHeapStrategy;
 
-type VerifyOpenIdCredentialsResult =
-    Result<(OpenIdProviderClientId, OpenIdCredential), VerifyOpenidCredentialsError>;
+type VerifyOpenIdCredentialsResult = Result<OpenIdCredential, VerifyOpenidCredentialsError>;
 
 pub async fn verify_openid_credentials_with_jwks_renewal(
     jwt: &str,
@@ -54,5 +53,5 @@ fn verify_openid_credentials(
     let token = verify_openid_jwt(jwt, provider.issuers(), client_id, &jwks.keys, &nonce)
         .map_err(VerifyOpenidCredentialsError::JwtVerify)?;
 
-    Ok((client_id.clone(), OpenIdCredential::from(token)))
+    Ok(OpenIdCredential::from(token))
 }

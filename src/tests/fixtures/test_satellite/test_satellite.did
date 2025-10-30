@@ -42,12 +42,7 @@ type AuthenticationConfigInternetIdentity = record {
 };
 type AuthenticationConfigOpenId = record {
   observatory_id : opt principal;
-  delegation : opt AuthenticationConfigOpenIdDelegation;
   providers : vec record { OpenIdProvider; OpenIdProviderConfig };
-};
-type AuthenticationConfigOpenIdDelegation = record {
-  targets : opt vec principal;
-  max_time_to_live : opt nat64;
 };
 type AuthenticationError = variant {
   PrepareDelegation : PrepareDelegationError;
@@ -229,7 +224,14 @@ type OpenIdPrepareDelegationArgs = record {
   salt : blob;
 };
 type OpenIdProvider = variant { Google };
-type OpenIdProviderConfig = record { client_id : text };
+type OpenIdProviderConfig = record {
+  delegation : opt OpenIdProviderDelegationConfig;
+  client_id : text;
+};
+type OpenIdProviderDelegationConfig = record {
+  targets : opt vec principal;
+  max_time_to_live : opt nat64;
+};
 type Permission = variant { Controllers; Private; Public; Managed };
 type PrepareDelegationError = variant {
   JwtFindProvider : JwtFindProviderError;

@@ -51,7 +51,11 @@ describe('Satellite > Auth > User', () => {
 	});
 
 	it('should register a new user', async () => {
-		const { identity, user, jwt } = await authenticateAndMakeIdentity<{ user: Doc }>({
+		const {
+			identity,
+			doc: user,
+			jwt
+		} = await authenticateAndMakeIdentity<{ doc: Doc }>({
 			pic,
 			session,
 			actor: satelliteActor

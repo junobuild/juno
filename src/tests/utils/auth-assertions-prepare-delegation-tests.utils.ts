@@ -70,10 +70,10 @@ export const testAuthPrepareDelegation = ({
 			});
 
 			it('should fail when authentication is not configured', async () => {
-				const { authenticate_user } = actor;
+				const { authenticate } = actor;
 
 				await expect(
-					authenticate_user({
+					authenticate({
 						OpenId: {
 							jwt: mockJwt,
 							session_key: publicKey,
@@ -84,7 +84,7 @@ export const testAuthPrepareDelegation = ({
 			});
 
 			it('should fail when openid configuration is not set', async () => {
-				const { set_auth_config, authenticate_user } = actor;
+				const { set_auth_config, authenticate } = actor;
 
 				actor.setIdentity(controller);
 
@@ -100,7 +100,7 @@ export const testAuthPrepareDelegation = ({
 				actor.setIdentity(user);
 
 				await expect(
-					authenticate_user({
+					authenticate({
 						OpenId: {
 							jwt: mockJwt,
 							session_key: publicKey,
@@ -151,12 +151,12 @@ export const testAuthPrepareDelegation = ({
 
 				describe('Bad jwt header', () => {
 					it('should fail with JwtFindProvider.BadSig when JWT header is not JSON', async () => {
-						const { authenticate_user } = actor;
+						const { authenticate } = actor;
 
 						// not valid JSON → decode_header fails → BadSig
 						const badSigJwt = assembleJwt({ header: 'not json', payload: mockJwtPayload });
 
-						const result = await authenticate_user({
+						const result = await authenticate({
 							OpenId: { jwt: badSigJwt, session_key: publicKey, salt }
 						});
 
@@ -186,7 +186,7 @@ export const testAuthPrepareDelegation = ({
 					});
 
 					it('should fail with JwtFindProvider.BadClaim("alg") when alg is not RS256', async () => {
-						const { authenticate_user } = actor;
+						const { authenticate } = actor;
 
 						const header = JSON.stringify({
 							alg: 'HS256', // ← wrong on purpose
@@ -196,7 +196,7 @@ export const testAuthPrepareDelegation = ({
 
 						const badAlgJwt = assembleJwt({ header, payload: mockJwtPayload });
 
-						const result = await authenticate_user({
+						const result = await authenticate({
 							OpenId: { jwt: badAlgJwt, session_key: publicKey, salt }
 						});
 
@@ -226,7 +226,7 @@ export const testAuthPrepareDelegation = ({
 					});
 
 					it('should fail with JwtFindProvider.BadClaim("typ") when typ is present and not "JWT"', async () => {
-						const { authenticate_user } = actor;
+						const { authenticate } = actor;
 
 						const header = JSON.stringify({
 							alg: 'RS256',
@@ -236,7 +236,7 @@ export const testAuthPrepareDelegation = ({
 
 						const badTypJwt = assembleJwt({ header, payload: mockJwtPayload });
 
-						const result = await authenticate_user({
+						const result = await authenticate({
 							OpenId: { jwt: badTypJwt, session_key: publicKey, salt }
 						});
 
@@ -267,9 +267,9 @@ export const testAuthPrepareDelegation = ({
 				});
 
 				it('should fail if observatory has no certificate', async () => {
-					const { authenticate_user } = actor;
+					const { authenticate } = actor;
 
-					const result = await authenticate_user({
+					const result = await authenticate({
 						OpenId: {
 							jwt: mockJwt,
 							session_key: publicKey,
@@ -355,9 +355,9 @@ export const testAuthPrepareDelegation = ({
 				it('should fail at authenticating because fetching Jwts is disallowed (cooldown period)', async () => {
 					await generateJwtCertificate({ advanceTime: 1000 });
 
-					const { authenticate_user } = actor;
+					const { authenticate } = actor;
 
-					const result = await authenticate_user({
+					const result = await authenticate({
 						OpenId: {
 							jwt: mockJwt,
 							session_key: publicKey,
@@ -403,9 +403,9 @@ export const testAuthPrepareDelegation = ({
 					it('should fetch certificate but fail with kid not found', async () => {
 						await generateJwtCertificate({ advanceTime: 1000 * 60, refreshJwts: false });
 
-						const { authenticate_user } = actor;
+						const { authenticate } = actor;
 
-						const result = await authenticate_user({
+						const result = await authenticate({
 							OpenId: {
 								jwt: mockJwt,
 								session_key: publicKey,
@@ -443,9 +443,9 @@ export const testAuthPrepareDelegation = ({
 					it('should fetch certificate but fail with invalid signature', async () => {
 						await generateJwtCertificate({ advanceTime: 1000 * 60, refreshJwts: false, kid });
 
-						const { authenticate_user } = actor;
+						const { authenticate } = actor;
 
-						const result = await authenticate_user({
+						const result = await authenticate({
 							OpenId: {
 								jwt: mockJwt,
 								session_key: publicKey,
@@ -485,9 +485,9 @@ export const testAuthPrepareDelegation = ({
 				it('should authenticate user', async () => {
 					await generateJwtCertificate({});
 
-					const { authenticate_user } = actor;
+					const { authenticate } = actor;
 
-					const result = await authenticate_user({
+					const result = await authenticate({
 						OpenId: {
 							jwt: mockJwt,
 							session_key: publicKey,
@@ -504,9 +504,9 @@ export const testAuthPrepareDelegation = ({
 					const attacker = Ed25519KeyIdentity.generate();
 					actor.setIdentity(attacker);
 
-					const { authenticate_user } = actor;
+					const { authenticate } = actor;
 
-					const result = await authenticate_user({
+					const result = await authenticate({
 						OpenId: {
 							jwt: mockJwt,
 							session_key: publicKey,
@@ -549,8 +549,8 @@ export const testAuthPrepareDelegation = ({
 
 					const wrongSalt = crypto.getRandomValues(new Uint8Array(32));
 
-					const { authenticate_user } = actor;
-					const result = await authenticate_user({
+					const { authenticate } = actor;
+					const result = await authenticate({
 						OpenId: { jwt: mockJwt, session_key: publicKey, salt: wrongSalt }
 					});
 
@@ -585,8 +585,8 @@ export const testAuthPrepareDelegation = ({
 					await pic.advanceTime(10 * 60_000 + 1_000);
 					await tick(pic);
 
-					const { authenticate_user } = actor;
-					const result = await authenticate_user({
+					const { authenticate } = actor;
+					const result = await authenticate({
 						OpenId: { jwt: mockJwt, session_key: publicKey, salt }
 					});
 
@@ -631,8 +631,8 @@ export const testAuthPrepareDelegation = ({
 
 					await assertOpenIdHttpsOutcalls({ pic, jwks });
 
-					const { authenticate_user } = actor;
-					const result = await authenticate_user({
+					const { authenticate } = actor;
+					const result = await authenticate({
 						OpenId: { jwt, session_key: publicKey, salt }
 					});
 
@@ -676,8 +676,8 @@ export const testAuthPrepareDelegation = ({
 
 					await assertOpenIdHttpsOutcalls({ pic, jwks });
 
-					const { authenticate_user } = actor;
-					const result = await authenticate_user({
+					const { authenticate } = actor;
+					const result = await authenticate({
 						OpenId: { jwt, session_key: publicKey, salt }
 					});
 
@@ -699,8 +699,8 @@ export const testAuthPrepareDelegation = ({
 
 					await assertOpenIdHttpsOutcalls({ pic, jwks });
 
-					const { authenticate_user } = actor;
-					const result = await authenticate_user({
+					const { authenticate } = actor;
+					const result = await authenticate({
 						OpenId: { jwt, session_key: publicKey, salt }
 					});
 
@@ -747,8 +747,8 @@ export const testAuthPrepareDelegation = ({
 					await pic.advanceTime(10 * 60_000 + 1_000);
 					await tick(pic);
 
-					const { authenticate_user } = actor;
-					const result = await authenticate_user({
+					const { authenticate } = actor;
+					const result = await authenticate({
 						OpenId: { jwt, session_key: publicKey, salt }
 					});
 
@@ -791,8 +791,8 @@ export const testAuthPrepareDelegation = ({
 					const headerNoKid = JSON.stringify({ alg: 'RS256' });
 					const badJwt = assembleJwt({ header: headerNoKid, payload });
 
-					const { authenticate_user } = actor;
-					const result = await authenticate_user({
+					const { authenticate } = actor;
+					const result = await authenticate({
 						OpenId: { jwt: badJwt, session_key: publicKey, salt }
 					});
 
@@ -849,8 +849,8 @@ export const testAuthPrepareDelegation = ({
 
 					await assertOpenIdHttpsOutcalls({ pic, jwks: ecJwks });
 
-					const { authenticate_user } = actor;
-					const result = await authenticate_user({
+					const { authenticate } = actor;
+					const result = await authenticate({
 						OpenId: { jwt, session_key: publicKey, salt }
 					});
 
@@ -910,8 +910,8 @@ export const testAuthPrepareDelegation = ({
 					const header = JSON.stringify({ alg: 'RS256', kid, typ: 'JWT' });
 					const badNbfJwt = assembleJwt({ header, payload });
 
-					const { authenticate_user } = actor;
-					const result = await authenticate_user({
+					const { authenticate } = actor;
+					const result = await authenticate({
 						OpenId: { jwt: badNbfJwt, session_key: publicKey, salt }
 					});
 

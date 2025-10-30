@@ -1,15 +1,15 @@
 use crate::auth::delegation;
 use crate::auth::register::register_mission_control;
 use crate::auth::strategy_impls::AuthHeap;
-use crate::types::interface::{AuthenticateUserError, AuthenticateUserResult, AuthenticatedUser};
+use crate::types::interface::{Authentication, AuthenticationError, AuthenticationResult};
 use junobuild_auth::delegation::types::{
     GetDelegationResult, OpenIdGetDelegationArgs, OpenIdPrepareDelegationArgs,
 };
 use junobuild_auth::state::get_providers;
 
-pub async fn openid_authenticate_user(
+pub async fn openid_authenticate(
     args: &OpenIdPrepareDelegationArgs,
-) -> Result<AuthenticateUserResult, String> {
+) -> Result<AuthenticationResult, String> {
     let providers = get_providers(&AuthHeap)?;
 
     // TODO: rate limiter
@@ -22,13 +22,13 @@ pub async fn openid_authenticate_user(
 
             register_mission_control(&key, &credential)
                 .await
-                .map(|mission_control| AuthenticatedUser {
+                .map(|mission_control| Authentication {
                     delegation,
                     mission_control,
                 })
-                .map_err(AuthenticateUserError::RegisterUser)
+                .map_err(AuthenticationError::RegisterUser)
         }
-        Err(err) => Err(AuthenticateUserError::PrepareDelegation(err)),
+        Err(err) => Err(AuthenticationError::PrepareDelegation(err)),
     };
 
     Ok(result)

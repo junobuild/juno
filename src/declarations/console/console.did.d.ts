@@ -30,16 +30,10 @@ export interface AssetNoContent {
 export interface AssetsUpgradeOptions {
 	clear_existing_assets: [] | [boolean];
 }
-export type AuthenticateUserArgs = { OpenId: OpenIdPrepareDelegationArgs };
-export type AuthenticateUserError =
-	| {
-			PrepareDelegation: PrepareDelegationError;
-	  }
-	| { RegisterUser: string };
-export interface AuthenticatedUser {
+export interface Authentication {
 	delegation: PreparedDelegation;
-	mission_control: MissionControl;
 }
+export type AuthenticationArgs = { OpenId: OpenIdPrepareDelegationArgs };
 export interface AuthenticationConfig {
 	updated_at: [] | [bigint];
 	openid: [] | [AuthenticationConfigOpenId];
@@ -61,6 +55,9 @@ export interface AuthenticationConfigOpenIdDelegation {
 	targets: [] | [Array<Principal>];
 	max_time_to_live: [] | [bigint];
 }
+export type AuthenticationError = {
+	PrepareDelegation: PrepareDelegationError;
+};
 export interface AuthenticationRules {
 	allowed_callers: Array<Principal>;
 }
@@ -291,7 +288,7 @@ export interface RateConfig {
 	max_tokens: bigint;
 	time_per_token_ns: bigint;
 }
-export type Result = { Ok: AuthenticatedUser } | { Err: AuthenticateUserError };
+export type Result = { Ok: Authentication } | { Err: AuthenticationError };
 export type Result_1 = { Ok: SignedDelegation } | { Err: GetDelegationError };
 export type SegmentKind = { Orbiter: null } | { MissionControl: null } | { Satellite: null };
 export interface SegmentsDeploymentOptions {
@@ -383,7 +380,7 @@ export interface _SERVICE {
 	add_credits: ActorMethod<[Principal, Tokens], undefined>;
 	add_invitation_code: ActorMethod<[string], undefined>;
 	assert_mission_control_center: ActorMethod<[AssertMissionControlCenterArgs], undefined>;
-	authenticate_user: ActorMethod<[AuthenticateUserArgs], Result>;
+	authenticate: ActorMethod<[AuthenticationArgs], Result>;
 	commit_proposal: ActorMethod<[CommitProposal], null>;
 	commit_proposal_asset_upload: ActorMethod<[CommitBatch], undefined>;
 	commit_proposal_many_assets_upload: ActorMethod<[Array<CommitBatch>], undefined>;

@@ -81,20 +81,20 @@ pub mod interface {
     }
 
     #[derive(CandidType, Serialize, Deserialize)]
-    pub enum AuthenticateUserArgs {
+    pub enum AuthenticationArgs {
         OpenId(OpenIdPrepareDelegationArgs),
     }
 
-    pub type AuthenticateUserResult = Result<AuthenticatedUser, AuthenticateUserError>;
+    pub type AuthenticationResult = Result<Authentication, AuthenticationError>;
 
     #[derive(CandidType, Serialize, Deserialize)]
-    pub struct AuthenticatedUser {
+    pub struct Authentication {
         pub delegation: PreparedDelegation,
         pub doc: Doc,
     }
 
     #[derive(CandidType, Serialize, Deserialize)]
-    pub enum AuthenticateUserError {
+    pub enum AuthenticationError {
         PrepareDelegation(PrepareDelegationError),
         RegisterUser(String),
     }
@@ -108,9 +108,9 @@ pub mod interface {
     // clashes with didc when developers
     // include_satellite and use Result as well.
     #[derive(CandidType, Serialize, Deserialize)]
-    pub enum AuthenticateUserResultResponse {
-        Ok(AuthenticatedUser),
-        Err(AuthenticateUserError),
+    pub enum AuthenticateResultResponse {
+        Ok(Authentication),
+        Err(AuthenticationError),
     }
 
     #[derive(CandidType, Serialize, Deserialize)]

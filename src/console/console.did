@@ -24,15 +24,8 @@ type AssetNoContent = record {
   version : opt nat64;
 };
 type AssetsUpgradeOptions = record { clear_existing_assets : opt bool };
-type AuthenticateUserArgs = variant { OpenId : OpenIdPrepareDelegationArgs };
-type AuthenticateUserError = variant {
-  PrepareDelegation : PrepareDelegationError;
-  RegisterUser : text;
-};
-type AuthenticatedUser = record {
-  delegation : PreparedDelegation;
-  mission_control : MissionControl;
-};
+type Authentication = record { delegation : PreparedDelegation };
+type AuthenticationArgs = variant { OpenId : OpenIdPrepareDelegationArgs };
 type AuthenticationConfig = record {
   updated_at : opt nat64;
   openid : opt AuthenticationConfigOpenId;
@@ -53,6 +46,9 @@ type AuthenticationConfigOpenId = record {
 type AuthenticationConfigOpenIdDelegation = record {
   targets : opt vec principal;
   max_time_to_live : opt nat64;
+};
+type AuthenticationError = variant {
+  PrepareDelegation : PrepareDelegationError;
 };
 type AuthenticationRules = record { allowed_callers : vec principal };
 type CommitBatch = record {
@@ -250,7 +246,7 @@ type ProposalType = variant {
   SegmentsDeployment : SegmentsDeploymentOptions;
 };
 type RateConfig = record { max_tokens : nat64; time_per_token_ns : nat64 };
-type Result = variant { Ok : AuthenticatedUser; Err : AuthenticateUserError };
+type Result = variant { Ok : Authentication; Err : AuthenticationError };
 type Result_1 = variant { Ok : SignedDelegation; Err : GetDelegationError };
 type SegmentKind = variant { Orbiter; MissionControl; Satellite };
 type SegmentsDeploymentOptions = record {
@@ -333,7 +329,7 @@ service : () -> {
   add_credits : (principal, Tokens) -> ();
   add_invitation_code : (text) -> ();
   assert_mission_control_center : (AssertMissionControlCenterArgs) -> () query;
-  authenticate_user : (AuthenticateUserArgs) -> (Result);
+  authenticate : (AuthenticationArgs) -> (Result);
   commit_proposal : (CommitProposal) -> (null);
   commit_proposal_asset_upload : (CommitBatch) -> ();
   commit_proposal_many_assets_upload : (vec CommitBatch) -> ();

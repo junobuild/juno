@@ -49,9 +49,9 @@ export const authenticateAndMakeIdentity = async <R>({
 
 	await assertOpenIdHttpsOutcalls({ pic, jwks });
 
-	const { authenticate_user, get_delegation } = actor;
+	const { authenticate, get_delegation } = actor;
 
-	const prepareDelegation = await authenticate_user({
+	const prepareDelegation = await authenticate({
 		OpenId: { jwt, session_key: publicKey, salt }
 	});
 

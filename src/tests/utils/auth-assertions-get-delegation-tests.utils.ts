@@ -86,7 +86,7 @@ export const testAuthGetDelegation = ({
 				).rejects.toThrow(JUNO_AUTH_ERROR_NOT_CONFIGURED);
 			});
 
-			it('should not authenticate_user when OpenId disabled', async () => {
+			it('should not authenticate when OpenId disabled', async () => {
 				const { set_auth_config, get_delegation } = actor;
 
 				actor.setIdentity(controller);
@@ -194,9 +194,9 @@ export const testAuthGetDelegation = ({
 
 					await assertOpenIdHttpsOutcalls({ pic, jwks: mockJwks });
 
-					const { authenticate_user } = actor;
+					const { authenticate } = actor;
 
-					const result = await authenticate_user({
+					const result = await authenticate({
 						OpenId: { jwt: mockJwt, session_key: publicKey, salt }
 					});
 
@@ -228,8 +228,8 @@ export const testAuthGetDelegation = ({
 					const throwaway = await ECDSAKeyIdentity.generate();
 					const throwawayPub = new Uint8Array(throwaway.getPublicKey().toDer());
 
-					const { authenticate_user } = actor;
-					await authenticate_user({
+					const { authenticate } = actor;
+					await authenticate({
 						OpenId: { jwt: minted.jwt, session_key: throwawayPub, salt }
 					});
 

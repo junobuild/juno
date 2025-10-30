@@ -23,7 +23,7 @@ use crate::guards::{
     caller_is_admin_controller, caller_is_controller, caller_is_controller_with_write,
 };
 use crate::types::interface::{
-    AuthenticateUserArgs, AuthenticateUserResultResponse, Config, DeleteProposalAssets,
+    AuthenticateResultResponse, AuthenticationArgs, Config, DeleteProposalAssets,
     GetDelegationArgs, GetDelegationResultResponse,
 };
 use crate::types::state::CollectionType;
@@ -166,8 +166,8 @@ pub fn count_collection_docs(collection: CollectionKey) -> usize {
 
 #[doc(hidden)]
 #[update]
-pub async fn authenticate_user(args: AuthenticateUserArgs) -> AuthenticateUserResultResponse {
-    api::auth::authenticate_user(&args).await.into()
+pub async fn authenticate(args: AuthenticationArgs) -> AuthenticateResultResponse {
+    api::auth::authenticate(&args).await.into()
 }
 
 #[doc(hidden)]
@@ -536,7 +536,7 @@ pub fn memory_size() -> MemorySize {
 macro_rules! include_satellite {
     () => {
         use junobuild_satellite::{
-            authenticate_user, commit_asset_upload, commit_proposal, commit_proposal_asset_upload,
+            authenticate, commit_asset_upload, commit_proposal, commit_proposal_asset_upload,
             commit_proposal_many_assets_upload, count_assets, count_collection_assets,
             count_collection_docs, count_docs, count_proposals, del_asset, del_assets,
             del_controllers, del_custom_domain, del_doc, del_docs, del_filtered_assets,

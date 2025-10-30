@@ -1,9 +1,9 @@
-import { type ConsoleActor, type SatelliteActor } from '$declarations';
-import { Ed25519KeyIdentity } from '@dfinity/identity';
+import type { ConsoleActor, SatelliteActor } from '$declarations';
+import type { Ed25519KeyIdentity } from '@dfinity/identity';
 import type { Actor, PocketIc } from '@dfinity/pic';
 import type { Principal } from '@dfinity/principal';
 import { mockClientId } from '../mocks/jwt.mocks';
-import { type TestSession } from './auth-tests.utils';
+import type { TestSession } from './auth-tests.utils';
 import { stopCanister } from './ic-management-tests.utils';
 import { makeMockGoogleOpenIdJwt } from './jwt-tests.utils';
 import { assertOpenIdHttpsOutcalls } from './observatory-openid-tests.utils';
@@ -34,24 +34,25 @@ export const testAuthUpgrade = ({
 		let controller: Ed25519KeyIdentity;
 
 		let actor: Actor<SatelliteActor | ConsoleActor>;
-		let canisterId: Principal;
 
 		let publicKey: Uint8Array;
 		let nonce: string;
 		let salt: Uint8Array;
 
-		beforeAll(async () => {
+		beforeAll(() => {
 			pic = getPic();
 
 			actor = getActor();
-			canisterId = getCanisterId();
 
 			observatoryId = getObservatoryId();
 
 			controller = getController();
 
+			// eslint-disable-next-line prefer-destructuring
 			nonce = getSession().nonce;
+			// eslint-disable-next-line prefer-destructuring
 			publicKey = getSession().publicKey;
+			// eslint-disable-next-line prefer-destructuring
 			salt = getSession().salt;
 		});
 

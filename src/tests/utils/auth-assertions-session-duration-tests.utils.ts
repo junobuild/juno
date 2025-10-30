@@ -1,9 +1,10 @@
-import { type ConsoleActor, type SatelliteActor, type SatelliteDid } from '$declarations';
+import type { ConsoleActor, SatelliteActor, SatelliteDid } from '$declarations';
 import type { _SERVICE as TestSatelliteActor } from '$test-declarations/test_satellite/test_satellite.did';
-import {
-	type DelegationChain,
-	type DelegationIdentity,
+import type {
 	Ed25519KeyIdentity
+,
+	DelegationChain,
+	DelegationIdentity
 } from '@dfinity/identity';
 import type { Actor, PocketIc } from '@dfinity/pic';
 import { toNullable } from '@dfinity/utils';

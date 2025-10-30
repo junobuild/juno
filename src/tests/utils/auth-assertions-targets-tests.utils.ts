@@ -1,5 +1,5 @@
-import { type ConsoleActor, type SatelliteActor, type SatelliteDid } from '$declarations';
-import { Ed25519KeyIdentity } from '@dfinity/identity';
+import type { ConsoleActor, SatelliteActor, SatelliteDid } from '$declarations';
+import type { Ed25519KeyIdentity } from '@dfinity/identity';
 import type { Actor, PocketIc } from '@dfinity/pic';
 import type { Principal } from '@dfinity/principal';
 import { assertNonNullish, toNullable } from '@dfinity/utils';
@@ -7,7 +7,7 @@ import { OBSERVATORY_ID } from '../constants/observatory-tests.constants';
 import { SATELLITE_ID } from '../constants/satellite-tests.constants';
 import { mockClientId } from '../mocks/jwt.mocks';
 import { authenticateAndMakeIdentity } from './auth-identity-tests.utils';
-import { type TestSession } from './auth-tests.utils';
+import type { TestSession } from './auth-tests.utils';
 
 export const testAuthTargets = ({
 	actor: getActor,
@@ -32,7 +32,7 @@ export const testAuthTargets = ({
 
 		let session: TestSession;
 
-		beforeAll(async () => {
+		beforeAll(() => {
 			pic = getPic();
 			controller = getController();
 			actor = getActor();
@@ -85,7 +85,7 @@ export const testAuthTargets = ({
 			const { identity, delegationChain } = await authenticateAndMakeIdentity({
 				pic,
 				session,
-				actor: actor
+				actor
 			});
 
 			const identityTargets = identity.getDelegation().delegations[0].delegation.targets;
@@ -107,7 +107,7 @@ export const testAuthTargets = ({
 			const { identity, delegationChain } = await authenticateAndMakeIdentity({
 				pic,
 				session,
-				actor: actor
+				actor
 			});
 
 			const identityTargets = identity.getDelegation().delegations[0].delegation.targets;
@@ -126,7 +126,7 @@ export const testAuthTargets = ({
 			const { identity, delegationChain } = await authenticateAndMakeIdentity({
 				pic,
 				session,
-				actor: actor
+				actor
 			});
 
 			const identityTargets = identity.getDelegation().delegations[0].delegation.targets;
@@ -151,7 +151,7 @@ export const testAuthTargets = ({
 			const { identity, delegationChain } = await authenticateAndMakeIdentity({
 				pic,
 				session,
-				actor: actor
+				actor
 			});
 
 			const identityTargets = identity.getDelegation().delegations[0].delegation.targets;

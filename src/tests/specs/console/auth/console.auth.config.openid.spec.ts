@@ -5,7 +5,7 @@ import { mockCertificateDate } from '../../../mocks/jwt.mocks';
 import { testAuthConfigObservatory } from '../../../utils/auth-assertions-config-openid-tests.utils';
 import { setupConsole } from '../../../utils/console-tests.utils';
 
-describe('Console > Authentication > Config', async () => {
+describe('Console > Authentication > Config', () => {
 	let pic: PocketIc;
 
 	let actor: Actor<ConsoleActor>;

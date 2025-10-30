@@ -5,7 +5,7 @@ import { mockCertificateDate } from '../../../../mocks/jwt.mocks';
 import { testAuthConfigObservatory } from '../../../../utils/auth-assertions-config-openid-tests.utils';
 import { setupSatelliteStock } from '../../../../utils/satellite-tests.utils';
 
-describe('Satellite > Authentication > Config', async () => {
+describe('Satellite > Authentication > Config', () => {
 	let pic: PocketIc;
 
 	let actor: Actor<SatelliteActor>;

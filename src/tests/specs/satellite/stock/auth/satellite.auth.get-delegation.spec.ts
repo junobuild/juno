@@ -5,7 +5,7 @@ import { mockCertificateDate } from '../../../../mocks/jwt.mocks';
 import { testAuthGetDelegation } from '../../../../utils/auth-assertions-get-delegation-tests.utils';
 import { setupSatelliteStock } from '../../../../utils/satellite-tests.utils';
 
-describe('Satellite > Delegation', async () => {
+describe('Satellite > Delegation', () => {
 	let pic: PocketIc;
 
 	let actor: Actor<SatelliteActor>;

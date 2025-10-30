@@ -1,11 +1,11 @@
-import { type SatelliteActor } from '$declarations';
-import { Ed25519KeyIdentity } from '@dfinity/identity';
+import type { SatelliteActor } from '$declarations';
+import type { Ed25519KeyIdentity } from '@dfinity/identity';
 import type { Actor, PocketIc } from '@dfinity/pic';
 import { mockCertificateDate } from '../../../../mocks/jwt.mocks';
 import { testAuthPrepareDelegation } from '../../../../utils/auth-assertions-prepare-delegation-tests.utils';
 import { setupSatelliteStock } from '../../../../utils/satellite-tests.utils';
 
-describe('Satellite > Authentication', async () => {
+describe('Satellite > Authentication', () => {
 	let pic: PocketIc;
 
 	let actor: Actor<SatelliteActor>;

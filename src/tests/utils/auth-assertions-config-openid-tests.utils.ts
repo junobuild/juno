@@ -26,9 +26,6 @@ export const testAuthConfigObservatory = ({
 	pic: () => PocketIc;
 }) => {
 	describe('Observatory', async () => {
-		let pic: PocketIc;
-		let controller: ECDSAKeyIdentity;
-
 		let observatoryActor: Actor<ObservatoryActor>;
 		let observatoryCanisterId: Principal;
 		let mockJwt: string;

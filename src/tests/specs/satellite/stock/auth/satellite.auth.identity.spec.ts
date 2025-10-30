@@ -5,7 +5,7 @@ import {
 	assertIdentity,
 	authenticateAndMakeIdentity
 } from '../../../../utils/auth-identity-tests.utils';
-import { setupSatelliteAuth, type TestSession } from '../../../../utils/satellite-auth-tests.utils';
+import { setupSatelliteAuth, type TestSession } from '../../../../utils/auth-tests.utils';
 
 describe('Satellite > Auth > Delegation identity', () => {
 	let pic: PocketIc;
@@ -38,7 +38,7 @@ describe('Satellite > Auth > Delegation identity', () => {
 		const { identity } = await authenticateAndMakeIdentity({
 			pic,
 			session,
-			satelliteActor
+			actor: satelliteActor
 		});
 
 		await assertIdentity({

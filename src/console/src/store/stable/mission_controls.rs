@@ -1,6 +1,6 @@
 use crate::constants::E8S_PER_ICP;
 use crate::store::services::{mutate_stable_state, read_stable_state};
-use crate::types::state::{MissionControl, MissionControls, MissionControlsStable, StableState};
+use crate::types::state::{MissionControl, MissionControls, MissionControlsStable, Provider, StableState};
 use ic_cdk::api::time;
 use junobuild_shared::structures::collect_stable_map_from;
 use junobuild_shared::types::state::{MissionControlId, UserId};
@@ -102,6 +102,30 @@ fn add_mission_control_impl(
         .insert(*user, finalized_mission_control.clone());
 
     finalized_mission_control
+}
+
+pub fn update_provider(user: &UserId, provider: &Provider) -> Result<MissionControl, String> {
+    mutate_stable_state(|stable| update_provider_impl(user, provider, stable))
+}
+
+fn update_provider_impl(
+    user: &UserId,
+    provider: &Provider,
+    state: &mut StableState,
+) -> Result<MissionControl, String> {
+    let mission_control = state.mission_controls.get(user).ok_or("User does not have a mission control.")?;
+
+    let update_mission_control = MissionControl {
+        updated_at: time(),
+        provider: Some(provider.clone()),
+        ..mission_control
+    };
+
+    state
+        .mission_controls
+        .insert(*user, update_mission_control.clone());
+
+    Ok(mission_control)
 }
 
 pub fn delete_mission_control(user: &UserId) -> Option<MissionControl> {

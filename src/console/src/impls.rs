@@ -119,6 +119,25 @@ impl OpenIdProfile for OpenIdData {
     }
 }
 
+impl OpenIdData {
+    pub fn merge(existing: &OpenIdData, credential: &OpenIdCredential) -> Self {
+        Self {
+            email: credential.email.clone().or(existing.email.clone()),
+            name: credential.name.clone().or(existing.name.clone()),
+            given_name: credential
+                .given_name
+                .clone()
+                .or(existing.given_name.clone()),
+            family_name: credential
+                .family_name
+                .clone()
+                .or(existing.family_name.clone()),
+            picture: credential.picture.clone().or(existing.picture.clone()),
+            locale: credential.locale.clone().or(existing.locale.clone()),
+        }
+    }
+}
+
 impl From<&OpenIdCredential> for OpenIdData {
     fn from(credential: &OpenIdCredential) -> Self {
         Self {

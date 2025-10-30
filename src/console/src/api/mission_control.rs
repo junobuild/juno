@@ -5,7 +5,7 @@ use crate::store::stable::{
 };
 use crate::types::state::{MissionControl, MissionControls};
 use ic_cdk_macros::{query, update};
-use junobuild_shared::ic::api::{caller, id};
+use junobuild_shared::ic::api::{caller};
 use junobuild_shared::ic::UnwrapOrTrap;
 use junobuild_shared::types::interface::AssertMissionControlCenterArgs;
 

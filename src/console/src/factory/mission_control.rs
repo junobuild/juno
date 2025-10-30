@@ -44,9 +44,9 @@ async fn create_mission_control(user_id: &UserId) -> Result<MissionControl, Stri
     let wasm_arg = mission_control_wasm_arg(user_id)?;
 
     let console = id();
-
+    
     let create_settings_arg = CreateCanisterInitSettingsArg {
-        controllers: Vec::from([*console, *user_id]),
+        controllers: Vec::from([console, *user_id]),
         freezing_threshold: Nat::from(FREEZING_THRESHOLD_ONE_YEAR),
     };
 

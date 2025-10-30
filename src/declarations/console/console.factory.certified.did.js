@@ -10,14 +10,14 @@ export const idlFactory = ({ IDL }) => {
 		session_key: IDL.Vec(IDL.Nat8),
 		salt: IDL.Vec(IDL.Nat8)
 	});
-	const AuthenticateUserArgs = IDL.Variant({
+	const AuthenticationArgs = IDL.Variant({
 		OpenId: OpenIdPrepareDelegationArgs
 	});
 	const PreparedDelegation = IDL.Record({
 		user_key: IDL.Vec(IDL.Nat8),
 		expiration: IDL.Nat64
 	});
-	const AuthenticatedUser = IDL.Record({ delegation: PreparedDelegation });
+	const Authentication = IDL.Record({ delegation: PreparedDelegation });
 	const JwtFindProviderError = IDL.Variant({
 		BadClaim: IDL.Text,
 		BadSig: IDL.Text,
@@ -48,12 +48,12 @@ export const idlFactory = ({ IDL }) => {
 		GetOrFetchJwks: GetOrRefreshJwksError,
 		DeriveSeedFailed: IDL.Text
 	});
-	const AuthenticateUserError = IDL.Variant({
+	const AuthenticationError = IDL.Variant({
 		PrepareDelegation: PrepareDelegationError
 	});
 	const Result = IDL.Variant({
-		Ok: AuthenticatedUser,
-		Err: AuthenticateUserError
+		Ok: Authentication,
+		Err: AuthenticationError
 	});
 	const CommitProposal = IDL.Record({
 		sha256: IDL.Vec(IDL.Nat8),
@@ -399,7 +399,7 @@ export const idlFactory = ({ IDL }) => {
 		add_credits: IDL.Func([IDL.Principal, Tokens], [], []),
 		add_invitation_code: IDL.Func([IDL.Text], [], []),
 		assert_mission_control_center: IDL.Func([AssertMissionControlCenterArgs], [], []),
-		authenticate_user: IDL.Func([AuthenticateUserArgs], [Result], []),
+		authenticate: IDL.Func([AuthenticationArgs], [Result], []),
 		commit_proposal: IDL.Func([CommitProposal], [IDL.Null], []),
 		commit_proposal_asset_upload: IDL.Func([CommitBatch], [], []),
 		commit_proposal_many_assets_upload: IDL.Func([IDL.Vec(CommitBatch)], [], []),

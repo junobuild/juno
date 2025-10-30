@@ -11,7 +11,7 @@ export const idlFactory = ({ IDL }) => {
 		session_key: IDL.Vec(IDL.Nat8),
 		salt: IDL.Vec(IDL.Nat8)
 	});
-	const AuthenticateUserArgs = IDL.Variant({
+	const AuthenticationArgs = IDL.Variant({
 		OpenId: OpenIdPrepareDelegationArgs
 	});
 	const Doc = IDL.Record({
@@ -26,7 +26,7 @@ export const idlFactory = ({ IDL }) => {
 		user_key: IDL.Vec(IDL.Nat8),
 		expiration: IDL.Nat64
 	});
-	const AuthenticatedUser = IDL.Record({
+	const Authentication = IDL.Record({
 		doc: Doc,
 		delegation: PreparedDelegation
 	});
@@ -60,13 +60,13 @@ export const idlFactory = ({ IDL }) => {
 		GetOrFetchJwks: GetOrRefreshJwksError,
 		DeriveSeedFailed: IDL.Text
 	});
-	const AuthenticateUserError = IDL.Variant({
+	const AuthenticationError = IDL.Variant({
 		PrepareDelegation: PrepareDelegationError,
 		RegisterUser: IDL.Text
 	});
-	const AuthenticateUserResultResponse = IDL.Variant({
-		Ok: AuthenticatedUser,
-		Err: AuthenticateUserError
+	const AuthenticateResultResponse = IDL.Variant({
+		Ok: Authentication,
+		Err: AuthenticationError
 	});
 	const CommitBatch = IDL.Record({
 		batch_id: IDL.Nat,
@@ -432,7 +432,7 @@ export const idlFactory = ({ IDL }) => {
 	});
 	const UploadChunkResult = IDL.Record({ chunk_id: IDL.Nat });
 	return IDL.Service({
-		authenticate_user: IDL.Func([AuthenticateUserArgs], [AuthenticateUserResultResponse], []),
+		authenticate: IDL.Func([AuthenticationArgs], [AuthenticateResultResponse], []),
 		commit_asset_upload: IDL.Func([CommitBatch], [], []),
 		commit_proposal: IDL.Func([CommitProposal], [IDL.Null], []),
 		commit_proposal_asset_upload: IDL.Func([CommitBatch], [], []),

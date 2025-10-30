@@ -1,6 +1,6 @@
 use crate::memory::internal::init_stable_state;
 use crate::types::interface::{
-    AuthenticateUserResult, AuthenticateUserResultResponse, GetDelegationResultResponse,
+    AuthenticationResult, AuthenticateResultResponse, GetDelegationResultResponse,
 };
 use crate::types::state::{CollectionType, HeapState, RuntimeState, State};
 use junobuild_auth::delegation::types::{GetDelegationError, SignedDelegation};
@@ -38,8 +38,8 @@ impl From<Result<SignedDelegation, GetDelegationError>> for GetDelegationResultR
     }
 }
 
-impl From<AuthenticateUserResult> for AuthenticateUserResultResponse {
-    fn from(r: AuthenticateUserResult) -> Self {
+impl From<AuthenticationResult> for AuthenticateResultResponse {
+    fn from(r: AuthenticationResult) -> Self {
         match r {
             Ok(v) => Self::Ok(v),
             Err(e) => Self::Err(e),

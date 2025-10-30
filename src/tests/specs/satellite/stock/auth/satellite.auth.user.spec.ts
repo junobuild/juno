@@ -75,9 +75,9 @@ describe('Satellite > Auth > User', () => {
 		await pic.advanceTime(1000 * 30); // 30s for cooldown guard
 		await tick(pic);
 
-		const { authenticate_user } = satelliteActor;
+		const { authenticate } = satelliteActor;
 
-		const result = await authenticate_user({
+		const result = await authenticate({
 			OpenId: {
 				jwt: mockJwt.jwt,
 				session_key: session.publicKey,
@@ -118,9 +118,9 @@ describe('Satellite > Auth > User', () => {
 			privateKey: mockJwt.privateKey
 		});
 
-		const { authenticate_user } = satelliteActor;
+		const { authenticate } = satelliteActor;
 
-		const result = await authenticate_user({
+		const result = await authenticate({
 			OpenId: {
 				jwt: newJwt,
 				session_key: session.publicKey,

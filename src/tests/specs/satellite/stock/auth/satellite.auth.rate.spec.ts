@@ -107,9 +107,9 @@ describe('Satellite > Auth > Rate', async () => {
 
 		const { jwt } = await generateJwtCertificate({});
 
-		const { authenticate_user } = satelliteActor;
+		const { authenticate } = satelliteActor;
 
-		const result = await authenticate_user({
+		const result = await authenticate({
 			OpenId: { jwt, session_key: publicKey, salt }
 		});
 
@@ -124,7 +124,7 @@ describe('Satellite > Auth > Rate', async () => {
 
 		const { jwt: jwt2 } = await generateJwtCertificate({ refreshJwts: false, advanceTime: 500 });
 
-		const result2 = await authenticate_user({
+		const result2 = await authenticate({
 			OpenId: { jwt: jwt2, session_key: publicKey, salt }
 		});
 
@@ -155,7 +155,7 @@ describe('Satellite > Auth > Rate', async () => {
 		const { jwt: jwt3 } = await generateJwtCertificate({ refreshJwts: false, advanceTime: 400 });
 
 		await expect(
-			authenticate_user({
+			authenticate({
 				OpenId: { jwt: jwt3, session_key: publicKey, salt }
 			})
 		).rejects.toThrow('Rate limit reached, try again later.');

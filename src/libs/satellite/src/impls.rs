@@ -1,6 +1,6 @@
 use crate::memory::internal::init_stable_state;
 use crate::types::interface::{
-    AuthenticationResult, AuthenticateResultResponse, GetDelegationResultResponse,
+    AuthenticateResultResponse, AuthenticationResult, GetDelegationResultResponse,
 };
 use crate::types::state::{CollectionType, HeapState, RuntimeState, State};
 use junobuild_auth::delegation::types::{GetDelegationError, SignedDelegation};

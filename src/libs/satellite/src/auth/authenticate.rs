@@ -2,7 +2,7 @@ use crate::auth::assert::increment_and_assert_user_rate;
 use crate::auth::delegation;
 use crate::auth::register::register_user;
 use crate::auth::strategy_impls::AuthHeap;
-use crate::types::interface::{AuthenticationError, AuthenticationResult, Authentication};
+use crate::types::interface::{Authentication, AuthenticationError, AuthenticationResult};
 use junobuild_auth::delegation::types::{
     GetDelegationResult, OpenIdGetDelegationArgs, OpenIdPrepareDelegationArgs,
 };

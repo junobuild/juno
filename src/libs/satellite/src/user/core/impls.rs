@@ -1,25 +1,17 @@
 use crate::errors::user::{
     JUNO_DATASTORE_ERROR_USER_AAGUID_INVALID_LENGTH,
-    JUNO_DATASTORE_ERROR_USER_EMAIL_INVALID_LENGTH,
-    JUNO_DATASTORE_ERROR_USER_FAMILY_NAME_INVALID_LENGTH,
-    JUNO_DATASTORE_ERROR_USER_GIVEN_NAME_INVALID_LENGTH,
-    JUNO_DATASTORE_ERROR_USER_LOCALE_INVALID_LENGTH, JUNO_DATASTORE_ERROR_USER_NAME_INVALID_LENGTH,
-    JUNO_DATASTORE_ERROR_USER_PICTURE_INVALID_SCHEME,
-    JUNO_DATASTORE_ERROR_USER_PICTURE_INVALID_URL,
     JUNO_DATASTORE_ERROR_USER_PROVIDER_GOOGLE_INVALID_DATA,
     JUNO_DATASTORE_ERROR_USER_PROVIDER_INVALID_DATA,
     JUNO_DATASTORE_ERROR_USER_PROVIDER_WEBAUTHN_INVALID_DATA,
 };
-use crate::user::core::constants::{
-    AAGUID_LENGTH, EMAIL_MAX_LENGTH, LOCALE_MAX_LENGTH, NAME_MAX_LENGTH, SHORT_NAME_MAX_LENGTH,
-};
+use crate::user::core::constants::AAGUID_LENGTH;
 use crate::user::core::types::state::{
-    AuthProvider, OpenIdData, ProviderData, UserData, Validated, WebAuthnData,
+    AuthProvider, OpenIdData, ProviderData, UserData, WebAuthnData,
 };
 use crate::{Doc, SetDoc};
 use junobuild_auth::openid::types::interface::OpenIdCredential;
+use junobuild_auth::profile::types::{OpenIdProfile, Validated};
 use junobuild_utils::encode_doc_data;
-use url::Url;
 
 impl Validated for WebAuthnData {
     fn validate(&self) -> Result<(), String> {
@@ -35,48 +27,24 @@ impl Validated for WebAuthnData {
     }
 }
 
-impl Validated for OpenIdData {
-    fn validate(&self) -> Result<(), String> {
-        if let Some(email) = self.email.as_ref() {
-            if email.len() > EMAIL_MAX_LENGTH {
-                return Err(JUNO_DATASTORE_ERROR_USER_EMAIL_INVALID_LENGTH.to_string());
-            }
-        }
-
-        if let Some(name) = self.name.as_ref() {
-            if name.chars().count() > NAME_MAX_LENGTH {
-                return Err(JUNO_DATASTORE_ERROR_USER_NAME_INVALID_LENGTH.to_string());
-            }
-        }
-
-        if let Some(given_name) = self.given_name.as_ref() {
-            if given_name.chars().count() > SHORT_NAME_MAX_LENGTH {
-                return Err(JUNO_DATASTORE_ERROR_USER_GIVEN_NAME_INVALID_LENGTH.to_string());
-            }
-        }
-
-        if let Some(family_name) = self.family_name.as_ref() {
-            if family_name.chars().count() > SHORT_NAME_MAX_LENGTH {
-                return Err(JUNO_DATASTORE_ERROR_USER_FAMILY_NAME_INVALID_LENGTH.to_string());
-            }
-        }
-
-        if let Some(locale) = self.locale.as_ref() {
-            if locale.chars().count() > LOCALE_MAX_LENGTH {
-                return Err(JUNO_DATASTORE_ERROR_USER_LOCALE_INVALID_LENGTH.to_string());
-            }
-        }
-
-        if let Some(picture) = self.picture.as_ref() {
-            let url = Url::parse(picture)
-                .map_err(|_| JUNO_DATASTORE_ERROR_USER_PICTURE_INVALID_URL.to_string())?;
-
-            if url.scheme() != "https" {
-                return Err(JUNO_DATASTORE_ERROR_USER_PICTURE_INVALID_SCHEME.to_string());
-            }
-        }
-
-        Ok(())
+impl OpenIdProfile for OpenIdData {
+    fn email(&self) -> Option<&str> {
+        self.email.as_deref()
+    }
+    fn name(&self) -> Option<&str> {
+        self.name.as_deref()
+    }
+    fn given_name(&self) -> Option<&str> {
+        self.given_name.as_deref()
+    }
+    fn family_name(&self) -> Option<&str> {
+        self.family_name.as_deref()
+    }
+    fn picture(&self) -> Option<&str> {
+        self.picture.as_deref()
+    }
+    fn locale(&self) -> Option<&str> {
+        self.locale.as_deref()
     }
 }
 
@@ -208,116 +176,6 @@ mod tests {
         };
         let err = data.validate().unwrap_err();
         assert_eq!(err, JUNO_DATASTORE_ERROR_USER_AAGUID_INVALID_LENGTH);
-    }
-
-    // ------------------------
-    // OpenIdData
-    // ------------------------
-
-    #[test]
-    fn test_google_valid_data() {
-        let data = OpenIdData {
-            email: Some("user@example.com".to_string()),
-            name: Some("Ada Lovelace".to_string()),
-            given_name: Some("Ada".to_string()),
-            family_name: Some("Lovelace".to_string()),
-            picture: Some("https://example.com/avatar.png".to_string()),
-            locale: Some("en".to_string()),
-        };
-
-        assert!(data.validate().is_ok());
-    }
-
-    #[test]
-    fn test_google_invalid_email_length() {
-        let long_email = "a".repeat(EMAIL_MAX_LENGTH + 1);
-        let data = OpenIdData {
-            email: Some(long_email),
-            name: None,
-            given_name: None,
-            family_name: None,
-            picture: None,
-            locale: None,
-        };
-        assert!(data.validate().is_err());
-    }
-
-    #[test]
-    fn test_google_invalid_picture_url() {
-        let data = OpenIdData {
-            email: None,
-            name: None,
-            given_name: None,
-            family_name: None,
-            picture: Some("not-a-valid-url".to_string()),
-            locale: None,
-        };
-        assert!(data.validate().is_err());
-    }
-
-    #[test]
-    fn test_google_invalid_picture_scheme() {
-        let data = OpenIdData {
-            email: None,
-            name: None,
-            given_name: None,
-            family_name: None,
-            picture: Some("http://example.com/avatar.png".to_string()),
-            locale: None,
-        };
-        assert!(data.validate().is_err());
-    }
-
-    #[test]
-    fn test_google_invalid_name_length() {
-        let data = OpenIdData {
-            email: None,
-            name: Some("a".repeat(NAME_MAX_LENGTH + 1)),
-            given_name: None,
-            family_name: None,
-            picture: None,
-            locale: None,
-        };
-        assert!(data.validate().is_err());
-    }
-
-    #[test]
-    fn test_google_invalid_given_name_length() {
-        let data = OpenIdData {
-            email: None,
-            name: None,
-            given_name: Some("a".repeat(SHORT_NAME_MAX_LENGTH + 1)),
-            family_name: None,
-            picture: None,
-            locale: None,
-        };
-        assert!(data.validate().is_err());
-    }
-
-    #[test]
-    fn test_google_invalid_family_name_length() {
-        let data = OpenIdData {
-            email: None,
-            name: None,
-            given_name: None,
-            family_name: Some("a".repeat(SHORT_NAME_MAX_LENGTH + 1)),
-            picture: None,
-            locale: None,
-        };
-        assert!(data.validate().is_err());
-    }
-
-    #[test]
-    fn test_google_invalid_locale_length() {
-        let data = OpenIdData {
-            email: None,
-            name: None,
-            given_name: None,
-            family_name: None,
-            picture: None,
-            locale: Some("a".repeat(LOCALE_MAX_LENGTH + 1)),
-        };
-        assert!(data.validate().is_err());
     }
 
     // ------------------------

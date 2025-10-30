@@ -16,7 +16,7 @@ pub async fn openid_authenticate_user(
     let prepared_delegation = delegation::openid_prepare_delegation(args, &providers).await;
 
     let result = match prepared_delegation {
-        Ok((delegation, credential)) => {
+        Ok((delegation, _credential)) => {
             // TODO: register user
 
             Ok(AuthenticatedUser { delegation })

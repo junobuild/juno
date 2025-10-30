@@ -21,29 +21,27 @@ pub async fn register_mission_control(
         },
     };
 
-    // If the credential data are unchanged and the mission control already exists, we can return it
-    // without any updates.
+    let new_provider_data = OpenIdData::from(credential);
+
+    // If credentials are unchanged and the mission control already exists, return it.
     if let (Some(existing_provider_data), Some(current_mission_control)) =
         (existing_provider_data, current_mission_control.as_ref())
     {
-        let new_provider_data = OpenIdData::from(credential);
-
         if *existing_provider_data == new_provider_data {
             return Ok(current_mission_control.clone());
         }
     }
 
-    // Merge or define new provider data.
+    // Merge with existing provider data or create new provider data.
     let provider_data = if let Some(existing_provider_data) = existing_provider_data {
         OpenIdData::merge(existing_provider_data, credential)
     } else {
-        OpenIdData::from(credential)
+        new_provider_data
     };
 
     let provider = Provider::Google(provider_data);
 
-    // If the mission control exists, we update the latest provider
-    // data we got from the credential.
+    // If mission control exists, update provider data and return it.
     if let Some(_) = current_mission_control.as_ref() {
         let updated_mission_control = update_provider(&user_id, &provider)?;
 

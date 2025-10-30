@@ -197,6 +197,7 @@ type MissionControl = record {
   owner : principal;
   created_at : nat64;
 };
+type OpenId = record { provider : OpenIdProvider; data : OpenIdData };
 type OpenIdData = record {
   name : opt text;
   locale : opt text;
@@ -258,7 +259,7 @@ type ProposalType = variant {
   AssetsUpgrade : AssetsUpgradeOptions;
   SegmentsDeployment : SegmentsDeploymentOptions;
 };
-type Provider = variant { InternetIdentity; Google : OpenIdData };
+type Provider = variant { InternetIdentity; OpenId : OpenId };
 type RateConfig = record { max_tokens : nat64; time_per_token_ns : nat64 };
 type Result = variant { Ok : Authentication; Err : AuthenticationError };
 type Result_1 = variant { Ok : SignedDelegation; Err : GetDelegationError };

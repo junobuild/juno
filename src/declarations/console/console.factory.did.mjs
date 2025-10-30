@@ -17,6 +17,7 @@ export const idlFactory = ({ IDL }) => {
 		user_key: IDL.Vec(IDL.Nat8),
 		expiration: IDL.Nat64
 	});
+	const OpenIdProvider = IDL.Variant({ Google: IDL.Null });
 	const OpenIdData = IDL.Record({
 		name: IDL.Opt(IDL.Text),
 		locale: IDL.Opt(IDL.Text),
@@ -25,9 +26,13 @@ export const idlFactory = ({ IDL }) => {
 		picture: IDL.Opt(IDL.Text),
 		given_name: IDL.Opt(IDL.Text)
 	});
+	const OpenId = IDL.Record({
+		provider: OpenIdProvider,
+		data: OpenIdData
+	});
 	const Provider = IDL.Variant({
 		InternetIdentity: IDL.Null,
-		Google: OpenIdData
+		OpenId: OpenId
 	});
 	const MissionControl = IDL.Record({
 		updated_at: IDL.Nat64,
@@ -116,7 +121,6 @@ export const idlFactory = ({ IDL }) => {
 		targets: IDL.Opt(IDL.Vec(IDL.Principal)),
 		max_time_to_live: IDL.Opt(IDL.Nat64)
 	});
-	const OpenIdProvider = IDL.Variant({ Google: IDL.Null });
 	const OpenIdProviderConfig = IDL.Record({ client_id: IDL.Text });
 	const AuthenticationConfigOpenId = IDL.Record({
 		observatory_id: IDL.Opt(IDL.Principal),

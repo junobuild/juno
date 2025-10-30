@@ -229,6 +229,10 @@ export interface MissionControl {
 	owner: Principal;
 	created_at: bigint;
 }
+export interface OpenId {
+	provider: OpenIdProvider;
+	data: OpenIdData;
+}
 export interface OpenIdData {
 	name: [] | [string];
 	locale: [] | [string];
@@ -296,7 +300,7 @@ export type ProposalStatus =
 export type ProposalType =
 	| { AssetsUpgrade: AssetsUpgradeOptions }
 	| { SegmentsDeployment: SegmentsDeploymentOptions };
-export type Provider = { InternetIdentity: null } | { Google: OpenIdData };
+export type Provider = { InternetIdentity: null } | { OpenId: OpenId };
 export interface RateConfig {
 	max_tokens: bigint;
 	time_per_token_ns: bigint;

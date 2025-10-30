@@ -2,6 +2,7 @@ import type { ConsoleActor } from '$declarations';
 import type { MissionControl } from '$declarations/console/console.did';
 import type { DelegationIdentity } from '@dfinity/identity';
 import type { Actor, PocketIc } from '@dfinity/pic';
+import { assertNonNullish, fromNullable } from '@dfinity/utils';
 import { authenticateAndMakeIdentity } from '../../../utils/auth-identity-tests.utils';
 import { setupConsoleAuth, type TestSession } from '../../../utils/auth-tests.utils';
 import { makeJwt, type MockOpenIdJwt } from '../../../utils/jwt-tests.utils';
@@ -65,9 +66,18 @@ describe('Satellite > Auth > Mission Control', () => {
 
 		expect(missionControl.owner.toText()).toEqual(identity.getPrincipal().toText());
 
-		// TODO
-		// const data = await fromArray(user.data);
-		// expect(data).toEqual(mockUserData);
+		const provider = fromNullable(missionControl.provider);
+
+		assertNonNullish(provider);
+
+		if ('InternetIdentity' in provider) {
+			expect(true).toBeFalsy();
+
+			return;
+		}
+
+		const { Google: data } = provider;
+		expect(data).toEqual(mockUserData);
 	});
 
 	// TODO assert controller

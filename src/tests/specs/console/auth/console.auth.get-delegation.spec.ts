@@ -5,7 +5,7 @@ import { mockCertificateDate } from '../../../mocks/jwt.mocks';
 import { testAuthGetDelegation } from '../../../utils/auth-assertions-get-delegation-tests.utils';
 import { setupConsole } from '../../../utils/console-tests.utils';
 
-describe('Console > Delegation', async () => {
+describe('Console > Auth > Delegation', async () => {
 	let pic: PocketIc;
 
 	let actor: Actor<ConsoleActor>;

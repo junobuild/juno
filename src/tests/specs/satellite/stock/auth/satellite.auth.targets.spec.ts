@@ -1,14 +1,9 @@
-import type { SatelliteActor, SatelliteDid } from '$declarations';
+import type { SatelliteActor } from '$declarations';
 import type { Ed25519KeyIdentity } from '@dfinity/identity';
 import type { Actor, PocketIc } from '@dfinity/pic';
 import type { Principal } from '@dfinity/principal';
-import { assertNonNullish, toNullable } from '@dfinity/utils';
-import { OBSERVATORY_ID } from '../../../../constants/observatory-tests.constants';
-import { SATELLITE_ID } from '../../../../constants/satellite-tests.constants';
-import { mockClientId } from '../../../../mocks/jwt.mocks';
-import { authenticateAndMakeIdentity } from '../../../../utils/auth-identity-tests.utils';
-import { setupSatelliteAuth, type TestSession } from '../../../../utils/auth-tests.utils';
 import { testAuthTargets } from '../../../../utils/auth-assertions-targets-tests.utils';
+import { setupSatelliteAuth, type TestSession } from '../../../../utils/auth-tests.utils';
 
 describe('Satellite > Auth', () => {
 	let pic: PocketIc;
@@ -47,6 +42,6 @@ describe('Satellite > Auth', () => {
 		actor: () => satelliteActor,
 		canisterId: () => satelliteId,
 		controller: () => controller,
-		session: () => session,
-	})
+		session: () => session
+	});
 });

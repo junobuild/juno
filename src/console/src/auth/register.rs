@@ -4,6 +4,7 @@ use candid::Principal;
 use junobuild_auth::delegation::types::UserKey;
 use junobuild_auth::openid::types::interface::OpenIdCredential;
 use junobuild_shared::ic::api::id;
+use crate::store::stable::get_mission_control;
 
 pub async fn register_mission_control(
     public_key: &UserKey,
@@ -11,6 +12,9 @@ pub async fn register_mission_control(
 ) -> Result<MissionControl, String> {
     let console = id();
     let user_id = Principal::self_authenticating(public_key);
+
+    let current_mission_control = get_mission_control(&user_id)?;
+
 
     // TODO: init mission control with jwt info
 

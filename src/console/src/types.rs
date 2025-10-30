@@ -58,9 +58,16 @@ pub mod state {
     pub struct MissionControl {
         pub mission_control_id: Option<MissionControlId>,
         pub owner: UserId,
+        pub provider: Option<Provider>,
         pub credits: Tokens,
         pub created_at: Timestamp,
         pub updated_at: Timestamp,
+    }
+
+    #[derive(CandidType, Serialize, Deserialize, Clone)]
+    pub enum Provider {
+        InternetIdentity,
+        Google(OpenIdData),
     }
 
     pub type ReleaseVersion = SegmentDeploymentVersion;

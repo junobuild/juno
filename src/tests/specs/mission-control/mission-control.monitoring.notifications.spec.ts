@@ -62,7 +62,7 @@ describe('Mission Control > Notifications', () => {
 		await update_rate_config({ Satellite: null }, config);
 		await update_rate_config({ MissionControl: null }, config);
 
-		await deploySegments(consoleActor);
+		await deploySegments({ actor: consoleActor });
 
 		const { actor: oActor } = await pic.setupCanister<ObservatoryActor>({
 			idlFactory: idlFactoryObservatory,

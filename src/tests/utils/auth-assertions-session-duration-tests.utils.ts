@@ -1,11 +1,6 @@
 import type { ConsoleActor, SatelliteActor, SatelliteDid } from '$declarations';
 import type { _SERVICE as TestSatelliteActor } from '$test-declarations/test_satellite/test_satellite.did';
-import type {
-	Ed25519KeyIdentity
-,
-	DelegationChain,
-	DelegationIdentity
-} from '@dfinity/identity';
+import type { DelegationChain, DelegationIdentity, Ed25519KeyIdentity } from '@dfinity/identity';
 import type { Actor, PocketIc } from '@dfinity/pic';
 import { toNullable } from '@dfinity/utils';
 import { mockClientId } from '../mocks/jwt.mocks';

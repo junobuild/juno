@@ -109,6 +109,7 @@ pub mod state {
 }
 
 pub mod interface {
+    use crate::types::state::MissionControl;
     use candid::CandidType;
     use junobuild_auth::delegation::types::{
         OpenIdGetDelegationArgs, OpenIdPrepareDelegationArgs, PrepareDelegationError,
@@ -140,11 +141,13 @@ pub mod interface {
     #[derive(CandidType, Serialize, Deserialize)]
     pub struct AuthenticatedUser {
         pub delegation: PreparedDelegation,
+        pub mission_control: MissionControl,
     }
 
     #[derive(CandidType, Serialize, Deserialize)]
     pub enum AuthenticateUserError {
         PrepareDelegation(PrepareDelegationError),
+        RegisterUser(String),
     }
 
     #[derive(CandidType, Serialize, Deserialize)]

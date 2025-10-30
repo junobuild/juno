@@ -1,4 +1,5 @@
 use crate::auth::delegation;
+use crate::auth::register::register_mission_control;
 use crate::auth::strategy_impls::AuthHeap;
 use crate::types::interface::{Authentication, AuthenticationError, AuthenticationResult};
 use junobuild_auth::delegation::types::{
@@ -16,10 +17,16 @@ pub async fn openid_authenticate(
     let prepared_delegation = delegation::openid_prepare_delegation(args, &providers).await;
 
     let result = match prepared_delegation {
-        Ok((delegation, _credential)) => {
-            // TODO: register user
+        Ok((delegation, credential)) => {
+            let key = &delegation.user_key;
 
-            Ok(Authentication { delegation })
+            register_mission_control(&key, &credential)
+                .await
+                .map(|mission_control| Authentication {
+                    delegation,
+                    mission_control,
+                })
+                .map_err(AuthenticationError::RegisterUser)
         }
         Err(err) => Err(AuthenticationError::PrepareDelegation(err)),
     };

@@ -12,7 +12,7 @@ import type { Principal } from '@dfinity/principal';
 import { OBSERVATORY_ID } from '../constants/observatory-tests.constants';
 import { mockCertificateDate, mockClientId } from '../mocks/jwt.mocks';
 import { generateNonce } from './auth-nonce-tests.utils';
-import { setupConsole } from './console-tests.utils';
+import { deploySegments, setupConsole } from './console-tests.utils';
 import { setupTestSatellite } from './fixtures-tests.utils';
 import { setupSatelliteStock } from './satellite-tests.utils';
 import { OBSERVATORY_WASM_PATH } from './setup-tests.utils';
@@ -84,6 +84,14 @@ export const setupConsoleAuth = async (): Promise<
 	const controller = cO;
 	const consoleActor = a;
 	const consoleCanisterId = cId;
+
+	consoleActor.setIdentity(controller);
+
+	await deploySegments({
+		actor: consoleActor,
+		withSatellite: false,
+		withOrbiter: false
+	});
 
 	const common = await setupAuth({
 		pic,

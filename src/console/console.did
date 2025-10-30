@@ -24,7 +24,10 @@ type AssetNoContent = record {
   version : opt nat64;
 };
 type AssetsUpgradeOptions = record { clear_existing_assets : opt bool };
-type Authentication = record { delegation : PreparedDelegation };
+type Authentication = record {
+  delegation : PreparedDelegation;
+  mission_control : MissionControl;
+};
 type AuthenticationArgs = variant { OpenId : OpenIdPrepareDelegationArgs };
 type AuthenticationConfig = record {
   updated_at : opt nat64;
@@ -49,6 +52,7 @@ type AuthenticationConfigOpenIdDelegation = record {
 };
 type AuthenticationError = variant {
   PrepareDelegation : PrepareDelegationError;
+  RegisterUser : text;
 };
 type AuthenticationRules = record { allowed_callers : vec principal };
 type CommitBatch = record {
@@ -189,8 +193,18 @@ type MissionControl = record {
   updated_at : nat64;
   credits : Tokens;
   mission_control_id : opt principal;
+  provider : opt Provider;
   owner : principal;
   created_at : nat64;
+};
+type OpenId = record { provider : OpenIdProvider; data : OpenIdData };
+type OpenIdData = record {
+  name : opt text;
+  locale : opt text;
+  family_name : opt text;
+  email : opt text;
+  picture : opt text;
+  given_name : opt text;
 };
 type OpenIdGetDelegationArgs = record {
   jwt : text;
@@ -245,6 +259,7 @@ type ProposalType = variant {
   AssetsUpgrade : AssetsUpgradeOptions;
   SegmentsDeployment : SegmentsDeploymentOptions;
 };
+type Provider = variant { InternetIdentity; OpenId : OpenId };
 type RateConfig = record { max_tokens : nat64; time_per_token_ns : nat64 };
 type Result = variant { Ok : Authentication; Err : AuthenticationError };
 type Result_1 = variant { Ok : SignedDelegation; Err : GetDelegationError };

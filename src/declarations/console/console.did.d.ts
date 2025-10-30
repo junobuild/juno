@@ -32,6 +32,7 @@ export interface AssetsUpgradeOptions {
 }
 export interface Authentication {
 	delegation: PreparedDelegation;
+	mission_control: MissionControl;
 }
 export type AuthenticationArgs = { OpenId: OpenIdPrepareDelegationArgs };
 export interface AuthenticationConfig {
@@ -55,9 +56,11 @@ export interface AuthenticationConfigOpenIdDelegation {
 	targets: [] | [Array<Principal>];
 	max_time_to_live: [] | [bigint];
 }
-export type AuthenticationError = {
-	PrepareDelegation: PrepareDelegationError;
-};
+export type AuthenticationError =
+	| {
+			PrepareDelegation: PrepareDelegationError;
+	  }
+	| { RegisterUser: string };
 export interface AuthenticationRules {
 	allowed_callers: Array<Principal>;
 }
@@ -222,8 +225,21 @@ export interface MissionControl {
 	updated_at: bigint;
 	credits: Tokens;
 	mission_control_id: [] | [Principal];
+	provider: [] | [Provider];
 	owner: Principal;
 	created_at: bigint;
+}
+export interface OpenId {
+	provider: OpenIdProvider;
+	data: OpenIdData;
+}
+export interface OpenIdData {
+	name: [] | [string];
+	locale: [] | [string];
+	family_name: [] | [string];
+	email: [] | [string];
+	picture: [] | [string];
+	given_name: [] | [string];
 }
 export interface OpenIdGetDelegationArgs {
 	jwt: string;
@@ -284,6 +300,7 @@ export type ProposalStatus =
 export type ProposalType =
 	| { AssetsUpgrade: AssetsUpgradeOptions }
 	| { SegmentsDeployment: SegmentsDeploymentOptions };
+export type Provider = { InternetIdentity: null } | { OpenId: OpenId };
 export interface RateConfig {
 	max_tokens: bigint;
 	time_per_token_ns: bigint;

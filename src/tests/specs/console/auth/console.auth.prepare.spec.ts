@@ -3,7 +3,7 @@ import type { Ed25519KeyIdentity } from '@dfinity/identity';
 import type { Actor, PocketIc } from '@dfinity/pic';
 import { mockCertificateDate } from '../../../mocks/jwt.mocks';
 import { testAuthPrepareDelegation } from '../../../utils/auth-assertions-prepare-delegation-tests.utils';
-import { setupConsole } from '../../../utils/console-tests.utils';
+import { deploySegments, setupConsole } from '../../../utils/console-tests.utils';
 
 describe('Console > Auth > Delegation', () => {
 	let pic: PocketIc;
@@ -23,6 +23,8 @@ describe('Console > Auth > Delegation', () => {
 		pic = p;
 		actor = a;
 		controller = cO;
+
+		await deploySegments({ actor, withOrbiter: false, withSatellite: false });
 	});
 
 	afterAll(async () => {

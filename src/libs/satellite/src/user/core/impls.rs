@@ -1,8 +1,8 @@
 use crate::errors::user::{
     JUNO_DATASTORE_ERROR_USER_AAGUID_INVALID_LENGTH,
-    JUNO_DATASTORE_ERROR_USER_PROVIDER_GOOGLE_INVALID_DATA,
     JUNO_DATASTORE_ERROR_USER_PROVIDER_INVALID_DATA,
     JUNO_DATASTORE_ERROR_USER_PROVIDER_WEBAUTHN_INVALID_DATA,
+    JUNO_DATASTORE_ERROR_USER_REGISTER_PROVIDER_INVALID_DATA,
 };
 use crate::user::core::constants::AAGUID_LENGTH;
 use crate::user::core::types::state::{
@@ -82,7 +82,7 @@ impl UserData {
             }
             Some(AuthProvider::Google) => {
                 let provider_data = self.provider_data.as_ref().ok_or_else(|| {
-                    JUNO_DATASTORE_ERROR_USER_PROVIDER_GOOGLE_INVALID_DATA.to_string()
+                    JUNO_DATASTORE_ERROR_USER_REGISTER_PROVIDER_INVALID_DATA.to_string()
                 })?;
 
                 if !provider_data.matches_provider(&AuthProvider::Google) {

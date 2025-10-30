@@ -1,7 +1,7 @@
 use crate::db::internal::unsafe_get_doc;
 use crate::db::store::internal_set_doc_store;
 use crate::db::types::store::AssertSetDocOptions;
-use crate::errors::user::JUNO_DATASTORE_ERROR_USER_PROVIDER_GOOGLE_INVALID_DATA;
+use crate::errors::user::JUNO_DATASTORE_ERROR_USER_REGISTER_PROVIDER_INVALID_DATA;
 use crate::rules::store::get_rule_db;
 use crate::user::core::types::state::{AuthProvider, OpenIdData, ProviderData, UserData};
 use crate::Doc;
@@ -43,7 +43,7 @@ pub fn register_user(public_key: &UserKey, credential: &OpenIdCredential) -> Res
         None => None, // A new user
         Some(user_data) => match user_data.provider_data.as_ref() {
             Some(ProviderData::OpenId(provider_data)) => Some(provider_data),
-            _ => return Err(JUNO_DATASTORE_ERROR_USER_PROVIDER_GOOGLE_INVALID_DATA.to_string()),
+            _ => return Err(JUNO_DATASTORE_ERROR_USER_REGISTER_PROVIDER_INVALID_DATA.to_string()),
         },
     };
 

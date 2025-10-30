@@ -4,6 +4,8 @@ use crate::types::state::{MissionControl, OpenIdData, Provider};
 use candid::Principal;
 use junobuild_auth::delegation::types::UserKey;
 use junobuild_auth::openid::types::interface::OpenIdCredential;
+use junobuild_auth::openid::types::provider::OpenIdProvider;
+use crate::types::state::OpenId;
 
 pub async fn register_mission_control(
     public_key: &UserKey,
@@ -16,7 +18,7 @@ pub async fn register_mission_control(
     let existing_provider_data: Option<&OpenIdData> = match &current_mission_control {
         None => None, // A new user
         Some(mission_control) => match mission_control.provider.as_ref() {
-            Some(Provider::Google(provider_data)) => Some(provider_data),
+            Some(Provider::OpenId(OpenId { data, .. })) => Some(data),
             _ => return Err("Unsupported provider data for registration.".to_string()),
         },
     };
@@ -39,13 +41,16 @@ pub async fn register_mission_control(
         new_provider_data
     };
 
-    let provider = Provider::Google(provider_data);
+    let provider = Provider::OpenId(OpenId {
+        provider: OpenIdProvider::Google,
+        data: provider_data,
+    });
 
     // If mission control exists, update provider data and return it.
-    if let Some(_) = current_mission_control.as_ref() {
+    if current_mission_control.is_some() {
         let updated_mission_control = update_provider(&user_id, &provider)?;
 
-        return Ok(updated_mission_control.clone());
+        return Ok(updated_mission_control);
     }
 
     init_user_mission_control_with_provider(&user_id, &provider).await

@@ -75,7 +75,10 @@ fn init_empty_mission_control_impl(user: &UserId, state: &mut StableState) {
     state.mission_controls.insert(*user, mission_control);
 }
 
-pub fn add_mission_control(user: &UserId, mission_control_id: &MissionControlId) -> MissionControl {
+pub fn add_mission_control(
+    user: &UserId,
+    mission_control_id: &MissionControlId,
+) -> Result<MissionControl, &'static str> {
     mutate_stable_state(|stable| add_mission_control_impl(user, mission_control_id, stable))
 }
 
@@ -83,25 +86,25 @@ fn add_mission_control_impl(
     user: &UserId,
     mission_control_id: &MissionControlId,
     state: &mut StableState,
-) -> MissionControl {
+) -> Result<MissionControl, &'static str> {
     let now = time();
 
-    // We know for sure that we have created an empty mission control center
-    let mission_control = state.mission_controls.get(user).unwrap();
+    let mission_control = state
+        .mission_controls
+        .get(user)
+        .ok_or("User does not have a mission control.")?;
 
     let finalized_mission_control = MissionControl {
-        owner: mission_control.owner,
         mission_control_id: Some(*mission_control_id),
-        credits: mission_control.credits,
-        created_at: mission_control.created_at,
         updated_at: now,
+        ..mission_control
     };
 
     state
         .mission_controls
         .insert(*user, finalized_mission_control.clone());
 
-    finalized_mission_control
+    Ok(finalized_mission_control)
 }
 
 pub fn delete_mission_control(user: &UserId) -> Option<MissionControl> {

@@ -3,7 +3,7 @@ import type { Ed25519KeyIdentity } from '@dfinity/identity';
 import type { Actor, PocketIc } from '@dfinity/pic';
 import { mockCertificateDate } from '../../../mocks/jwt.mocks';
 import { testAuthConfigObservatory } from '../../../utils/auth-assertions-config-openid-tests.utils';
-import { setupConsole } from '../../../utils/console-tests.utils';
+import { deploySegments, setupConsole } from '../../../utils/console-tests.utils';
 
 describe('Console > Authentication > Config', () => {
 	let pic: PocketIc;
@@ -23,6 +23,10 @@ describe('Console > Authentication > Config', () => {
 		pic = p;
 		actor = a;
 		controller = cO;
+
+		actor.setIdentity(controller);
+
+		await deploySegments({ actor, withOrbiter: false, withSatellite: false });
 	});
 
 	afterAll(async () => {

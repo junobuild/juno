@@ -1,5 +1,5 @@
 use crate::factory::mission_control::init_user_mission_control;
-use crate::types::state::{MissionControl, Provider};
+use crate::types::state::{MissionControl, OpenIdData, Provider};
 use candid::Principal;
 use junobuild_auth::delegation::types::UserKey;
 use junobuild_auth::openid::types::interface::OpenIdCredential;
@@ -19,21 +19,19 @@ pub async fn register_mission_control(
         None => None, // A new user
         Some(mission_control) => match mission_control.provider.as_ref() {
             Some(Provider::Google(provider_data)) => Some(provider_data),
-            _ => return Err(JUNO_DATASTORE_ERROR_USER_PROVIDER_GOOGLE_INVALID_DATA.to_string()),
+            _ => return Err("Unsupported provider data for registration.".to_string()),
         },
     };
 
     // If the credential data are unchanged and the mission control already exists, we can return it
     // without any updates.
-    if let Some(current_mission_control) =
-        &current_mission_control
+    if let (Some(existing_provider_data), Some(current_mission_control)) =
+        (existing_provider_data, current_mission_control.as_ref())
     {
-        if let Some(existing_provider) = current_mission_control.provider.as_ref() {
-            let new_provider_data = OpenIdData::from(credential);
+        let new_provider_data = OpenIdData::from(credential);
 
-            if *existing_provider_data == new_provider_data {
-                return Ok(current_user.clone());
-            }
+        if *existing_provider_data == new_provider_data {
+            return Ok(current_mission_control.clone());
         }
     }
 

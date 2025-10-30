@@ -70,7 +70,7 @@ pub mod state {
         Google(OpenIdData),
     }
 
-    #[derive(CandidType, Serialize, Deserialize, Clone)]
+    #[derive(CandidType, Serialize, Deserialize, Clone, Eq, PartialEq)]
     pub struct OpenIdData {
         pub email: Option<String>,
         pub name: Option<String>,

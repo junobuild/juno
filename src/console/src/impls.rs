@@ -11,6 +11,7 @@ use junobuild_shared::serializers::{
     deserialize_from_bytes, serialize_into_bytes, serialize_to_bytes,
 };
 use std::borrow::Cow;
+use junobuild_auth::openid::types::interface::OpenIdCredential;
 use junobuild_auth::profile::types::OpenIdProfile;
 
 impl Default for State {
@@ -115,5 +116,18 @@ impl OpenIdProfile for OpenIdData {
     }
     fn locale(&self) -> Option<&str> {
         self.locale.as_deref()
+    }
+}
+
+impl From<&OpenIdCredential> for OpenIdData {
+    fn from(credential: &OpenIdCredential) -> Self {
+        Self {
+            email: credential.email.clone(),
+            name: credential.name.clone(),
+            given_name: credential.given_name.clone(),
+            family_name: credential.family_name.clone(),
+            picture: credential.picture.clone(),
+            locale: credential.locale.clone(),
+        }
     }
 }

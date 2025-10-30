@@ -113,9 +113,9 @@ export const testAuthConfigObservatory = ({
 		it('should fail if default observatory is targeted', async () => {
 			await configTargetObservatory({});
 
-			const { authenticate_user } = getActor();
+			const { authenticate } = getActor();
 
-			const result = await authenticate_user({
+			const result = await authenticate({
 				OpenId: {
 					jwt: mockJwt,
 					session_key: publicKey,
@@ -166,9 +166,9 @@ export const testAuthConfigObservatory = ({
 			await getPic().advanceTime(1000 * 30); // 30s for cooldown guard
 			await tick(getPic());
 
-			const { authenticate_user } = getActor();
+			const { authenticate } = getActor();
 
-			const result = await authenticate_user({
+			const result = await authenticate({
 				OpenId: {
 					jwt: mockJwt,
 					session_key: publicKey,

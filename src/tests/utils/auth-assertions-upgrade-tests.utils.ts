@@ -71,9 +71,9 @@ export const testAuthUpgrade = ({
 
 			await assertOpenIdHttpsOutcalls({ pic, jwks });
 
-			const { authenticate_user } = actor;
+			const { authenticate } = actor;
 
-			const result = await authenticate_user({
+			const result = await authenticate({
 				OpenId: { jwt, session_key: publicKey, salt }
 			});
 
@@ -91,7 +91,7 @@ export const testAuthUpgrade = ({
 			await tick(pic);
 
 			// Try to re-authenticate
-			const newResult = await authenticate_user({
+			const newResult = await authenticate({
 				OpenId: { jwt, session_key: publicKey, salt }
 			});
 

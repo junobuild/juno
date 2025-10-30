@@ -66,6 +66,7 @@ describe('Satellite > Auth > User', () => {
 
 		expect(user.owner.toText()).toEqual(identity.getPrincipal().toText());
 
+
 		const data = await fromArray(user.data);
 
 		expect(data).toEqual(mockUserData);

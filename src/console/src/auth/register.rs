@@ -1,16 +1,14 @@
-use crate::factory::mission_control::init_user_mission_control;
+use crate::factory::mission_control::init_user_mission_control_with_provider;
+use crate::store::stable::{get_mission_control, update_provider};
 use crate::types::state::{MissionControl, OpenIdData, Provider};
 use candid::Principal;
 use junobuild_auth::delegation::types::UserKey;
 use junobuild_auth::openid::types::interface::OpenIdCredential;
-use junobuild_shared::ic::api::id;
-use crate::store::stable::{get_mission_control, update_provider};
 
 pub async fn register_mission_control(
     public_key: &UserKey,
     credential: &OpenIdCredential,
 ) -> Result<MissionControl, String> {
-    let console = id();
     let user_id = Principal::self_authenticating(public_key);
 
     let current_mission_control = get_mission_control(&user_id)?;
@@ -34,25 +32,23 @@ pub async fn register_mission_control(
             return Ok(current_mission_control.clone());
         }
     }
-    
+
+    // Merge or define new provider data.
+    let provider_data = if let Some(existing_provider_data) = existing_provider_data {
+        OpenIdData::merge(existing_provider_data, credential)
+    } else {
+        OpenIdData::from(credential)
+    };
+
+    let provider = Provider::Google(provider_data);
+
     // If the mission control exists, we update the latest provider
     // data we got from the credential.
     if let Some(_) = current_mission_control.as_ref() {
-        // Merge or define new provider data.
-        let provider_data = if let Some(existing_provider_data) = existing_provider_data {
-            OpenIdData::merge(existing_provider_data, credential)
-        } else {
-            OpenIdData::from(credential)
-        };
+        let updated_mission_control = update_provider(&user_id, &provider)?;
 
-        let updated_mission_control = update_provider(&user_id, &Provider::Google(provider_data))?;
-        
         return Ok(updated_mission_control.clone());
     }
-    
 
-    // TODO: init mission control with jwt info
-
-    // TODO: without rate checks
-    init_user_mission_control(&console, &user_id).await
+    init_user_mission_control_with_provider(&user_id, &provider).await
 }

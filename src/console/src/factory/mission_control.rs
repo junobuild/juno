@@ -5,7 +5,7 @@ use crate::store::heap::increment_mission_controls_rate;
 use crate::store::stable::{
     add_mission_control, delete_mission_control, get_mission_control, init_empty_mission_control,
 };
-use crate::types::state::MissionControl;
+use crate::types::state::{MissionControl, Provider};
 use candid::Nat;
 use junobuild_shared::constants_shared::CREATE_MISSION_CONTROL_CYCLES;
 use junobuild_shared::ic::api::{caller, id};
@@ -24,11 +24,20 @@ pub async fn init_user_mission_control_with_caller() -> Result<MissionControl, S
             // Guard too many requests
             increment_mission_controls_rate()?;
 
-            init_empty_mission_control(&caller);
+            init_empty_mission_control(&caller, &None);
 
             create_mission_control(&caller).await
         }
     }
+}
+
+pub async fn init_user_mission_control_with_provider(
+    user: &UserId,
+    provider: &Provider,
+) -> Result<MissionControl, String> {
+    init_empty_mission_control(user, &Some(provider.clone()));
+
+    create_mission_control(user).await
 }
 
 async fn create_mission_control(user_id: &UserId) -> Result<MissionControl, String> {

@@ -5,14 +5,14 @@ use crate::types::state::{Fee, Fees, HeapState, MissionControl, OpenIdData, Rate
 use ic_cdk::api::time;
 use ic_stable_structures::storable::Bound;
 use ic_stable_structures::Storable;
+use junobuild_auth::openid::types::interface::OpenIdCredential;
+use junobuild_auth::profile::types::OpenIdProfile;
 use junobuild_shared::rate::constants::DEFAULT_RATE_CONFIG;
 use junobuild_shared::rate::types::RateTokens;
 use junobuild_shared::serializers::{
     deserialize_from_bytes, serialize_into_bytes, serialize_to_bytes,
 };
 use std::borrow::Cow;
-use junobuild_auth::openid::types::interface::OpenIdCredential;
-use junobuild_auth::profile::types::OpenIdProfile;
 
 impl Default for State {
     fn default() -> Self {

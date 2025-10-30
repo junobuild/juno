@@ -138,7 +138,7 @@ fn update_provider_impl(
         .mission_controls
         .insert(*user, update_mission_control.clone());
 
-    Ok(mission_control)
+    Ok(update_mission_control)
 }
 
 pub fn delete_mission_control(user: &UserId) -> Option<MissionControl> {

@@ -2,13 +2,13 @@ use crate::profile::constants::{
     EMAIL_MAX_LENGTH, LOCALE_MAX_LENGTH, NAME_MAX_LENGTH, SHORT_NAME_MAX_LENGTH,
 };
 use crate::profile::errors::{
-    JUNO_DATASTORE_ERROR_PROFILE_EMAIL_INVALID_LENGTH,
-    JUNO_DATASTORE_ERROR_PROFILE_FAMILY_NAME_INVALID_LENGTH,
-    JUNO_DATASTORE_ERROR_PROFILE_GIVEN_NAME_INVALID_LENGTH,
-    JUNO_DATASTORE_ERROR_PROFILE_LOCALE_INVALID_LENGTH,
-    JUNO_DATASTORE_ERROR_PROFILE_NAME_INVALID_LENGTH,
-    JUNO_DATASTORE_ERROR_PROFILE_PICTURE_INVALID_SCHEME,
-    JUNO_DATASTORE_ERROR_PROFILE_PICTURE_INVALID_URL,
+    JUNO_AUTH_ERROR_PROFILE_EMAIL_INVALID_LENGTH,
+    JUNO_AUTH_ERROR_PROFILE_FAMILY_NAME_INVALID_LENGTH,
+    JUNO_AUTH_ERROR_PROFILE_GIVEN_NAME_INVALID_LENGTH,
+    JUNO_AUTH_ERROR_PROFILE_LOCALE_INVALID_LENGTH,
+    JUNO_AUTH_ERROR_PROFILE_NAME_INVALID_LENGTH,
+    JUNO_AUTH_ERROR_PROFILE_PICTURE_INVALID_SCHEME,
+    JUNO_AUTH_ERROR_PROFILE_PICTURE_INVALID_URL,
 };
 use crate::profile::types::{OpenIdProfile, Validated};
 use url::Url;
@@ -17,40 +17,40 @@ impl<T: OpenIdProfile> Validated for T {
     fn validate(&self) -> Result<(), String> {
         if let Some(email) = self.email().as_ref() {
             if email.len() > EMAIL_MAX_LENGTH {
-                return Err(JUNO_DATASTORE_ERROR_PROFILE_EMAIL_INVALID_LENGTH.to_string());
+                return Err(JUNO_AUTH_ERROR_PROFILE_EMAIL_INVALID_LENGTH.to_string());
             }
         }
 
         if let Some(name) = self.name().as_ref() {
             if name.chars().count() > NAME_MAX_LENGTH {
-                return Err(JUNO_DATASTORE_ERROR_PROFILE_NAME_INVALID_LENGTH.to_string());
+                return Err(JUNO_AUTH_ERROR_PROFILE_NAME_INVALID_LENGTH.to_string());
             }
         }
 
         if let Some(given_name) = self.given_name().as_ref() {
             if given_name.chars().count() > SHORT_NAME_MAX_LENGTH {
-                return Err(JUNO_DATASTORE_ERROR_PROFILE_GIVEN_NAME_INVALID_LENGTH.to_string());
+                return Err(JUNO_AUTH_ERROR_PROFILE_GIVEN_NAME_INVALID_LENGTH.to_string());
             }
         }
 
         if let Some(family_name) = self.family_name().as_ref() {
             if family_name.chars().count() > SHORT_NAME_MAX_LENGTH {
-                return Err(JUNO_DATASTORE_ERROR_PROFILE_FAMILY_NAME_INVALID_LENGTH.to_string());
+                return Err(JUNO_AUTH_ERROR_PROFILE_FAMILY_NAME_INVALID_LENGTH.to_string());
             }
         }
 
         if let Some(locale) = self.locale().as_ref() {
             if locale.chars().count() > LOCALE_MAX_LENGTH {
-                return Err(JUNO_DATASTORE_ERROR_PROFILE_LOCALE_INVALID_LENGTH.to_string());
+                return Err(JUNO_AUTH_ERROR_PROFILE_LOCALE_INVALID_LENGTH.to_string());
             }
         }
 
         if let Some(picture) = self.picture().as_ref() {
             let url = Url::parse(picture)
-                .map_err(|_| JUNO_DATASTORE_ERROR_PROFILE_PICTURE_INVALID_URL.to_string())?;
+                .map_err(|_| JUNO_AUTH_ERROR_PROFILE_PICTURE_INVALID_URL.to_string())?;
 
             if url.scheme() != "https" {
-                return Err(JUNO_DATASTORE_ERROR_PROFILE_PICTURE_INVALID_SCHEME.to_string());
+                return Err(JUNO_AUTH_ERROR_PROFILE_PICTURE_INVALID_SCHEME.to_string());
             }
         }
 

@@ -188,37 +188,55 @@ const uploadSegment = async ({
 	});
 };
 
-export const deploySegments = async (actor: Actor<ConsoleActor | ConsoleActor0014>) => {
+export const deploySegments = async ({
+	actor,
+	withOrbiter = true,
+	withMissionControl = true,
+	withSatellite = true
+}: {
+	actor: Actor<ConsoleActor | ConsoleActor0014>;
+	withOrbiter?: boolean;
+	withMissionControl?: boolean;
+	withSatellite?: boolean;
+}) => {
 	const { init_proposal, submit_proposal, commit_proposal } = actor;
 
 	const [proposalId, _] = await init_proposal({
 		SegmentsDeployment: {
-			orbiter: toNullable(WASM_VERSIONS.orbiter),
-			mission_control_version: toNullable(WASM_VERSIONS.mission_control),
-			satellite_version: toNullable(WASM_VERSIONS.satellite)
+			orbiter: toNullable(withOrbiter ? WASM_VERSIONS.orbiter : undefined),
+			mission_control_version: toNullable(
+				withMissionControl ? WASM_VERSIONS.mission_control : undefined
+			),
+			satellite_version: toNullable(withSatellite ? WASM_VERSIONS.satellite : undefined)
 		}
 	});
 
-	await uploadSegment({
-		segment: 'satellite',
-		version: WASM_VERSIONS.satellite,
-		actor,
-		proposalId
-	});
+	if (withSatellite) {
+		await uploadSegment({
+			segment: 'satellite',
+			version: WASM_VERSIONS.satellite,
+			actor,
+			proposalId
+		});
+	}
 
-	await uploadSegment({
-		segment: 'orbiter',
-		version: WASM_VERSIONS.orbiter,
-		actor,
-		proposalId
-	});
+	if (withOrbiter) {
+		await uploadSegment({
+			segment: 'orbiter',
+			version: WASM_VERSIONS.orbiter,
+			actor,
+			proposalId
+		});
+	}
 
-	await uploadSegment({
-		segment: 'mission_control',
-		version: WASM_VERSIONS.mission_control,
-		actor,
-		proposalId
-	});
+	if (withMissionControl) {
+		await uploadSegment({
+			segment: 'mission_control',
+			version: WASM_VERSIONS.mission_control,
+			actor,
+			proposalId
+		});
+	}
 
 	const [__, { sha256 }] = await submit_proposal(proposalId);
 

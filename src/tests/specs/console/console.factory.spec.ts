@@ -48,7 +48,7 @@ describe('Console', () => {
 		actor = c;
 		actor.setIdentity(controller);
 
-		await deploySegments(actor);
+		await deploySegments({ actor });
 	});
 
 	afterAll(async () => {

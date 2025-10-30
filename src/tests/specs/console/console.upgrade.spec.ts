@@ -178,7 +178,7 @@ describe('Console > Upgrade', () => {
 
 			await updateRateConfig({ actor });
 
-			await deploySegments(actor);
+			await deploySegments({ actor });
 		});
 
 		it('should preserve controllers even if scope enum is extended', async () => {

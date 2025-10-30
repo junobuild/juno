@@ -1,14 +1,17 @@
 import type { ConsoleActor } from '$declarations';
+import type { MissionControl } from '$declarations/console/console.did';
 import type { DelegationIdentity } from '@dfinity/identity';
 import type { Actor, PocketIc } from '@dfinity/pic';
 import { fromArray } from '@junobuild/utils';
+import { authenticateAndMakeIdentity } from '../../../utils/auth-identity-tests.utils';
 import { setupConsoleAuth, type TestSession } from '../../../utils/auth-tests.utils';
-import type { MockOpenIdJwt } from '../../../utils/jwt-tests.utils';
+import { makeJwt, type MockOpenIdJwt } from '../../../utils/jwt-tests.utils';
+import { tick } from '../../../utils/pic-tests.utils';
 
 describe('Satellite > Auth > Mission Control', () => {
 	let pic: PocketIc;
 
-	let satelliteActor: Actor<ConsoleActor>;
+	let consoleActor: Actor<ConsoleActor>;
 
 	let session: TestSession;
 
@@ -38,7 +41,7 @@ describe('Satellite > Auth > Mission Control', () => {
 		} = await setupConsoleAuth();
 
 		pic = p;
-		satelliteActor = actor;
+		consoleActor = actor;
 
 		session = s;
 	});
@@ -47,32 +50,34 @@ describe('Satellite > Auth > Mission Control', () => {
 		await pic?.tearDown();
 	});
 
-	it('should register a new user', async () => {
+	it('should register a new user and spin a mission control', async () => {
 		const {
 			identity,
-			doc: user,
+			mission_control: missionControl,
 			jwt
-		} = await authenticateAndMakeIdentity<{ doc: Doc }>({
+		} = await authenticateAndMakeIdentity<{ mission_control: MissionControl }>({
 			pic,
 			session,
-			actor: satelliteActor
+			actor: consoleActor
 		});
 
 		mockJwt = jwt;
 		mockIdentity = identity;
 
-		expect(user.owner.toText()).toEqual(identity.getPrincipal().toText());
+		expect(missionControl.owner.toText()).toEqual(identity.getPrincipal().toText());
 
-		const data = await fromArray(user.data);
-
-		expect(data).toEqual(mockUserData);
+		// TODO
+		// const data = await fromArray(user.data);
+		// expect(data).toEqual(mockUserData);
 	});
 
-	it('should return same user', async () => {
+	// TODO assert controller
+
+	it('should return same mission control', async () => {
 		await pic.advanceTime(1000 * 30); // 30s for cooldown guard
 		await tick(pic);
 
-		const { authenticate_user } = satelliteActor;
+		const { authenticate_user } = consoleActor;
 
 		const result = await authenticate_user({
 			OpenId: {
@@ -88,13 +93,13 @@ describe('Satellite > Auth > Mission Control', () => {
 			return;
 		}
 
-		const { doc: user } = result.Ok;
+		const { mission_control: missionControl } = result.Ok;
 
-		expect(user.owner.toText()).toEqual(mockIdentity.getPrincipal().toText());
+		expect(missionControl.owner.toText()).toEqual(mockIdentity.getPrincipal().toText());
 
-		const data = await fromArray(user.data);
-
-		expect(data).toEqual(mockUserData);
+		// TODO
+		// const data = await fromArray(user.data);
+		// expect(data).toEqual(mockUserData);
 	});
 
 	it('should update user data', async () => {
@@ -115,7 +120,7 @@ describe('Satellite > Auth > Mission Control', () => {
 			privateKey: mockJwt.privateKey
 		});
 
-		const { authenticate_user } = satelliteActor;
+		const { authenticate_user } = consoleActor;
 
 		const result = await authenticate_user({
 			OpenId: {
@@ -131,23 +136,24 @@ describe('Satellite > Auth > Mission Control', () => {
 			return;
 		}
 
-		const { doc: user } = result.Ok;
+		const { mission_control: missionControl } = result.Ok;
 
-		expect(user.owner.toText()).toEqual(mockIdentity.getPrincipal().toText());
+		expect(missionControl.owner.toText()).toEqual(mockIdentity.getPrincipal().toText());
 
-		const data = await fromArray(user.data);
-
-		expect(data).toEqual({
-			...mockUserData,
-			providerData: {
-				openid: {
-					...mockUserData.providerData.openid,
-					name: updatePayload.name,
-					givenName: updatePayload.given_name,
-					familyName: updatePayload.family_name,
-					email: updatePayload.email
-				}
-			}
-		});
+		// TODO
+		// const data = await fromArray(user.data);
+		//
+		// expect(data).toEqual({
+		// 	...mockUserData,
+		// 	providerData: {
+		// 		openid: {
+		// 			...mockUserData.providerData.openid,
+		// 			name: updatePayload.name,
+		// 			givenName: updatePayload.given_name,
+		// 			familyName: updatePayload.family_name,
+		// 			email: updatePayload.email
+		// 		}
+		// 	}
+		// });
 	});
 });

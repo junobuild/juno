@@ -75,11 +75,9 @@ fn update_credits_impl(
             let remaining_credits = Tokens::from_e8s(remaining_credits_e8s);
 
             let update_mission_control = MissionControl {
-                mission_control_id: mission_control.mission_control_id,
-                owner: mission_control.owner,
                 credits: remaining_credits,
-                created_at: mission_control.created_at,
                 updated_at: now,
+                ..mission_control
             };
 
             state.mission_controls.insert(*user, update_mission_control);

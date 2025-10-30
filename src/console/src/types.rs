@@ -4,6 +4,7 @@ pub mod state {
     use candid::CandidType;
     use ic_ledger_types::{BlockIndex, Tokens};
     use ic_stable_structures::StableBTreeMap;
+    use junobuild_auth::openid::types::provider::OpenIdProvider;
     use junobuild_auth::state::types::state::AuthenticationHeapState;
     use junobuild_cdn::proposals::{ProposalsStable, SegmentDeploymentVersion};
     use junobuild_cdn::storage::{ProposalAssetsStable, ProposalContentChunksStable};
@@ -14,7 +15,6 @@ pub mod state {
     use junobuild_storage::types::state::StorageHeapState;
     use serde::{Deserialize, Serialize};
     use std::collections::{HashMap, HashSet};
-    use junobuild_auth::openid::types::provider::OpenIdProvider;
 
     pub type MissionControls = HashMap<UserId, MissionControl>;
     pub type Payments = HashMap<BlockIndex, Payment>;

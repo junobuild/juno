@@ -3,6 +3,7 @@ import { Ed25519KeyIdentity } from '@dfinity/identity';
 import type { Actor, PocketIc } from '@dfinity/pic';
 import { testAuthRate } from '../../../utils/auth-assertions-rate-tests.utils';
 import { setupConsoleAuth } from '../../../utils/auth-tests.utils';
+import { configMissionControlRateTokens } from '../../../utils/console-tests.utils';
 import { tick } from '../../../utils/pic-tests.utils';
 
 describe('Console > Auth > Rate', async () => {
@@ -25,7 +26,9 @@ describe('Console > Auth > Rate', async () => {
 		controller = c;
 
 		// Set current running rate limiter
-		await config({
+		await configMissionControlRateTokens({
+			actor: consoleActor,
+			controller,
 			max_tokens: 2n,
 			time_per_token_ns: 60_000_000_000n // 1min = 60000000000n
 		});
@@ -38,31 +41,10 @@ describe('Console > Auth > Rate', async () => {
 		await pic?.tearDown();
 	});
 
-	const config = async ({
-		max_tokens,
-		time_per_token_ns
-	}: {
-		max_tokens: bigint;
-		time_per_token_ns: bigint;
-	}) => {
-		consoleActor.setIdentity(controller);
-
-		const { update_rate_config } = consoleActor;
-
-		await update_rate_config(
-			{ MissionControl: null },
-			{
-				max_tokens,
-				time_per_token_ns
-			}
-		);
-
-		await tick(pic);
-	};
-
 	testAuthRate({
 		pic: () => pic,
 		actor: () => consoleActor,
-		config
+		config: (params) =>
+			configMissionControlRateTokens({ ...params, actor: consoleActor, controller })
 	});
 });

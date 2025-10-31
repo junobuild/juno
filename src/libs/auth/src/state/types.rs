@@ -91,7 +91,7 @@ pub mod config {
 
     pub type OpenIdProviderClientId = String;
 
-    #[derive(Default, CandidType, Serialize, Deserialize, Clone)]
+    #[derive(Default, CandidType, Serialize, Deserialize, Clone, Debug)]
     pub struct OpenIdProviderConfig {
         pub client_id: OpenIdProviderClientId,
         pub delegation: Option<OpenIdProviderDelegationConfig>,

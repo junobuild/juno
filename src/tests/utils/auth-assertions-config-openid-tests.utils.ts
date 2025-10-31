@@ -59,12 +59,12 @@ export const testAuthConfigObservatory = ({
 							[
 								{ Google: null },
 								{
-									client_id: mockClientId
+									client_id: mockClientId,
+									delegation: []
 								}
 							]
 						],
-						observatory_id: toNullable(observatoryId),
-						delegation: []
+						observatory_id: toNullable(observatoryId)
 					}
 				],
 				version: toNullable(version)

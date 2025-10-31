@@ -124,12 +124,12 @@ export const testAuthGetDelegation = ({
 								[
 									{ Google: null },
 									{
-										client_id: mockClientId
+										client_id: mockClientId,
+										delegation: []
 									}
 								]
 							],
-							observatory_id: [],
-							delegation: []
+							observatory_id: []
 						}
 					],
 					version: [1n]

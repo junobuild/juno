@@ -57,6 +57,7 @@ mod tests {
             OpenIdProvider::Google,
             OpenIdProviderConfig {
                 client_id: "client-123".into(),
+                delegation: None,
             },
         );
         map

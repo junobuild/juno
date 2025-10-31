@@ -60,17 +60,17 @@ export const testAuthTargets = ({
 							[
 								{ Google: null },
 								{
-									client_id: mockClientId
+									client_id: mockClientId,
+									delegation: [
+										{
+											targets,
+											max_time_to_live: toNullable()
+										}
+									]
 								}
 							]
 						],
-						observatory_id: [],
-						delegation: [
-							{
-								targets,
-								max_time_to_live: toNullable()
-							}
-						]
+						observatory_id: []
 					}
 				],
 				version: [version]

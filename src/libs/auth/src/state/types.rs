@@ -74,13 +74,6 @@ pub mod config {
     pub struct AuthenticationConfigOpenId {
         pub providers: OpenIdProviders,
         pub observatory_id: Option<Principal>,
-        pub delegation: Option<AuthenticationConfigOpenIdDelegation>,
-    }
-
-    #[derive(Default, CandidType, Serialize, Deserialize, Clone)]
-    pub struct AuthenticationConfigOpenIdDelegation {
-        pub targets: Option<DelegationTargets>,
-        pub max_time_to_live: Option<u64>,
     }
 
     #[derive(Default, CandidType, Serialize, Deserialize, Clone)]
@@ -101,6 +94,13 @@ pub mod config {
     #[derive(Default, CandidType, Serialize, Deserialize, Clone, Debug)]
     pub struct OpenIdProviderConfig {
         pub client_id: OpenIdProviderClientId,
+        pub delegation: Option<OpenIdProviderDelegationConfig>,
+    }
+
+    #[derive(Default, CandidType, Serialize, Deserialize, Clone, Debug)]
+    pub struct OpenIdProviderDelegationConfig {
+        pub targets: Option<DelegationTargets>,
+        pub max_time_to_live: Option<u64>,
     }
 }
 

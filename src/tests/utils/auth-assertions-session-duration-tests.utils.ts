@@ -62,17 +62,17 @@ export const testAuthSessionDuration = ({
 							[
 								{ Google: null },
 								{
-									client_id: mockClientId
+									client_id: mockClientId,
+									delegation: [
+										{
+											targets: toNullable(),
+											max_time_to_live: toNullable(maxTimeToLive)
+										}
+									]
 								}
 							]
 						],
-						observatory_id: [],
-						delegation: [
-							{
-								targets: toNullable(),
-								max_time_to_live: toNullable(maxTimeToLive)
-							}
-						]
+						observatory_id: []
 					}
 				],
 				version: [version]

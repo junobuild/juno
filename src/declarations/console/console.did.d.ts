@@ -49,12 +49,7 @@ export interface AuthenticationConfigInternetIdentity {
 }
 export interface AuthenticationConfigOpenId {
 	observatory_id: [] | [Principal];
-	delegation: [] | [AuthenticationConfigOpenIdDelegation];
 	providers: Array<[OpenIdProvider, OpenIdProviderConfig]>;
-}
-export interface AuthenticationConfigOpenIdDelegation {
-	targets: [] | [Array<Principal>];
-	max_time_to_live: [] | [bigint];
 }
 export type AuthenticationError =
 	| {
@@ -254,7 +249,12 @@ export interface OpenIdPrepareDelegationArgs {
 }
 export type OpenIdProvider = { Google: null };
 export interface OpenIdProviderConfig {
+	delegation: [] | [OpenIdProviderDelegationConfig];
 	client_id: string;
+}
+export interface OpenIdProviderDelegationConfig {
+	targets: [] | [Array<Principal>];
+	max_time_to_live: [] | [bigint];
 }
 export interface Payment {
 	status: PaymentStatus;

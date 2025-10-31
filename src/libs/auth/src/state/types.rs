@@ -97,7 +97,7 @@ pub mod config {
         pub delegation: Option<OpenIdProviderDelegationConfig>,
     }
 
-    #[derive(Default, CandidType, Serialize, Deserialize, Clone)]
+    #[derive(Default, CandidType, Serialize, Deserialize, Clone, Debug)]
     pub struct OpenIdProviderDelegationConfig {
         pub targets: Option<DelegationTargets>,
         pub max_time_to_live: Option<u64>,

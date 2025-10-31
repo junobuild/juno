@@ -1,11 +1,11 @@
 import type { ConsoleActor } from '$declarations';
-import { Ed25519KeyIdentity } from '@dfinity/identity';
+import type { Ed25519KeyIdentity } from '@dfinity/identity';
 import type { Actor, PocketIc } from '@dfinity/pic';
 import { testAuthRate } from '../../../utils/auth-assertions-rate-tests.utils';
 import { setupConsoleAuth } from '../../../utils/auth-tests.utils';
 import { tick } from '../../../utils/pic-tests.utils';
 
-describe('Console > Auth > Rate', async () => {
+describe('Console > Auth > Rate', () => {
 	let pic: PocketIc;
 
 	let consoleActor: Actor<ConsoleActor>;

@@ -8,6 +8,8 @@ on:
       - 'src/console/**'
       - 'src/sputnik/**'
       - 'src/libs/auth/**'
+      - 'rust-toolchain.toml'
+      - 'Cargo.toml'
 
 env:
   CARGO_TERM_COLOR: always

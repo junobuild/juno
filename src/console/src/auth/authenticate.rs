@@ -6,13 +6,15 @@ use junobuild_auth::delegation::types::{
     GetDelegationResult, OpenIdGetDelegationArgs, OpenIdPrepareDelegationArgs,
 };
 use junobuild_auth::state::get_providers;
+use crate::store::heap::increment_mission_controls_rate;
 
 pub async fn openid_authenticate(
     args: &OpenIdPrepareDelegationArgs,
 ) -> Result<AuthenticationResult, String> {
     let providers = get_providers(&AuthHeap)?;
 
-    // TODO: rate limiter
+    // Guard too many requests
+    increment_mission_controls_rate()?;
 
     let prepared_delegation = delegation::openid_prepare_delegation(args, &providers).await;
 

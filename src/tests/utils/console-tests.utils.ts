@@ -502,9 +502,11 @@ export const updateRateConfig = async ({
 };
 
 export const setupConsole = async ({
-	dateTime
+	dateTime,
+	withApplyRateTokens = true
 }: {
 	dateTime?: Date;
+	withApplyRateTokens?: boolean;
 }): Promise<{
 	pic: PocketIc;
 	controller: Ed25519KeyIdentity;
@@ -524,15 +526,17 @@ export const setupConsole = async ({
 		sender: controller.getPrincipal()
 	});
 
-	await configMissionControlRateTokens({
-		actor,
-		controller,
-		max_tokens: 10n,
-		time_per_token_ns: 1_000_000_000n // 1s per token
-	});
+	if (withApplyRateTokens) {
+		await configMissionControlRateTokens({
+			actor,
+			controller,
+			max_tokens: 10n,
+			time_per_token_ns: 1_000_000_000n // 1s per token
+		});
 
-	await pic.advanceTime(120_000);
-	await tick(pic);
+		await pic.advanceTime(120_000);
+		await tick(pic);
+	}
 
 	return { pic, controller, actor, canisterId };
 };

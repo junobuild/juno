@@ -1,4 +1,4 @@
-import { type ConsoleActor, type SatelliteActor } from '$declarations';
+import type { ConsoleActor, SatelliteActor } from '$declarations';
 import { ECDSAKeyIdentity, Ed25519KeyIdentity } from '@dfinity/identity';
 import type { Actor, PocketIc } from '@dfinity/pic';
 import { mockClientId } from '../mocks/jwt.mocks';

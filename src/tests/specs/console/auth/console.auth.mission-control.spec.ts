@@ -77,6 +77,7 @@ describe('Satellite > Auth > Mission Control', () => {
 		const {
 			OpenId: { data, provider: provider_name }
 		} = provider;
+
 		expect('Google' in provider_name).toBeTruthy();
 
 		expect(data).toEqual(mockUserData);
@@ -95,6 +96,7 @@ describe('Satellite > Auth > Mission Control', () => {
 		const { get_user } = micActor;
 
 		const user = await get_user();
+
 		expect(user.toText()).toEqual(missionControl.owner.toText());
 	});
 
@@ -137,6 +139,7 @@ describe('Satellite > Auth > Mission Control', () => {
 		const {
 			OpenId: { data, provider: provider_name }
 		} = provider;
+
 		expect('Google' in provider_name).toBeTruthy();
 
 		expect(data).toEqual(mockUserData);
@@ -193,6 +196,7 @@ describe('Satellite > Auth > Mission Control', () => {
 		const {
 			OpenId: { data, provider: provider_name }
 		} = provider;
+
 		expect('Google' in provider_name).toBeTruthy();
 
 		expect(data).toEqual({

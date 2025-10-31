@@ -348,12 +348,12 @@ export const testAuthGoogleConfig = ({
 						[
 							{ Google: null },
 							{
-								client_id: mockClientId
+								client_id: mockClientId,
+								delegation: []
 							}
 						]
 					],
-					observatory_id: [],
-					delegation: []
+					observatory_id: []
 				}
 			],
 			version: [version]
@@ -405,12 +405,12 @@ export const testAuthGoogleConfig = ({
 						[
 							{ Google: null },
 							{
-								client_id: mockClientId
+								client_id: mockClientId,
+								delegation: []
 							}
 						]
 					],
-					observatory_id: [],
-					delegation: []
+					observatory_id: []
 				}
 			],
 			version: [version + 2n]

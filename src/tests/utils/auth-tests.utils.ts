@@ -66,7 +66,9 @@ export const setupSatelliteAuth = async (): Promise<
 	};
 };
 
-export const setupConsoleAuth = async (): Promise<
+export const setupConsoleAuth = async (
+	{ withApplyRateTokens }: { withApplyRateTokens?: boolean } = { withApplyRateTokens: true }
+): Promise<
 	SetupAuth & {
 		console: { canisterId: Principal; actor: Actor<ConsoleActor> };
 	}
@@ -77,7 +79,8 @@ export const setupConsoleAuth = async (): Promise<
 		controller: cO,
 		canisterId: cId
 	} = await setupConsole({
-		dateTime: mockCertificateDate
+		dateTime: mockCertificateDate,
+		withApplyRateTokens
 	});
 
 	const pic = p;

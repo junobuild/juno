@@ -51,6 +51,7 @@ const initAuthStore = (): AuthStore => {
 			return refreshed;
 		}
 
+
 		// When the user signs out, we trigger a call to `sync()`.
 		// The `sync()` method creates a new `AuthClient` (since the previous one was nullified on sign-out), causing the creation of new identity keys in IndexedDB.
 		// To avoid using such keys (or tampered ones) for the next login, we use the method `safeCreateAuthClient()` which clears any stored keys before creating a new `AuthClient`.

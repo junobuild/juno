@@ -3,6 +3,7 @@
 	import { onDestroy, onMount, type Snippet } from 'svelte';
 	import { browser } from '$app/environment';
 	import { onNavigate } from '$app/navigation';
+	import AuthBroadcastGuard from '$lib/components/core/AuthBroadcastGuard.svelte';
 	import Overlays from '$lib/components/core/Overlays.svelte';
 	import { layoutNavigationTitle } from '$lib/derived/layout-navigation.derived';
 	import { displayAndCleanLogoutMsg } from '$lib/services/auth/auth.services';
@@ -121,7 +122,9 @@
 {#await sync()}
 	<!-- No animation as initializing the auth should be fast -->
 {:then _}
-	{@render children()}
+	<AuthBroadcastGuard>
+		{@render children()}
 
-	<Overlays />
+		<Overlays />
+	</AuthBroadcastGuard>
 {/await}

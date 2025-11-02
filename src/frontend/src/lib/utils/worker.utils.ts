@@ -1,5 +1,5 @@
 import type { Canister } from '$lib/types/canister';
-import { createAuthClient } from '$lib/utils/auth.utils';
+import { createAuthClient } from '$lib/providers/auth-client.provider';
 import type { Identity } from '@dfinity/agent';
 import { isNullish, nonNullish } from '@dfinity/utils';
 import { getMany, type UseStore } from 'idb-keyval';

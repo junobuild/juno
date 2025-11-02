@@ -354,6 +354,7 @@
 		"methods": "Sign-in methods",
 		"not_signed_in": "You are not signed in. Please sign in to continue.",
 		"session_expired": "You have been logged out because your session has expired.",
+		"refreshed_authentication": "This page was refreshed to reflect the login done in another tab.",
 		"main_domain": "Main domain (\"derivation origin\")",
 		"not_configured": "Not configured",
 		"edit_configuration": "Update the configuration of your authentication using the form below.",

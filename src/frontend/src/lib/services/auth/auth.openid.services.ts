@@ -1,7 +1,10 @@
-import { GOOGLE_CLIENT_ID } from '$lib/constants/app.constants';
+import { CONSOLE_CANISTER_ID, GOOGLE_CLIENT_ID } from '$lib/constants/app.constants';
+import { setAuthClientStorage } from '$lib/providers/auth-client.provider';
+import { authStore } from '$lib/stores/auth.store';
 import { SignInInitError } from '$lib/types/errors';
+import { container } from '$lib/utils/juno.utils';
 import { isNullish } from '@dfinity/utils';
-import { requestJwt } from '@junobuild/auth';
+import { authenticate as authenticateApi, requestJwt } from '@junobuild/auth';
 
 export const signInWithGoogle = async () => {
 	if (isNullish(GOOGLE_CLIENT_ID)) {
@@ -22,4 +25,34 @@ export const signInWithGoogle = async () => {
 			}
 		}
 	});
+};
+
+const authenticateWithGoogle = async () => {
+	const { delegationChain, sessionKey } = await authenticateApi({
+		redirect: null,
+		auth: {
+			console: {
+				consoleId: CONSOLE_CANISTER_ID,
+				...container()
+			}
+		}
+	});
+
+	await setAuthClientStorage({
+		delegationChain,
+		sessionKey
+	});
+};
+
+export const authenticate = async (): Promise<{
+	success: 'ok' | 'error';
+	err?: unknown;
+}> => {
+	try {
+		await authStore.signInWithOpenId({ signInFn: authenticateWithGoogle });
+
+		return { success: 'ok' };
+	} catch (err: unknown) {
+		return { success: 'error', err };
+	}
 };

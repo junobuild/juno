@@ -4,7 +4,7 @@ import type { SignInFn } from '$lib/types/auth';
 import { SignInInitError } from '$lib/types/errors';
 import type { OptionIdentity } from '$lib/types/itentity';
 import type { Option } from '$lib/types/utils';
-import { type AuthClient } from '@dfinity/auth-client';
+import type { AuthClient } from '@dfinity/auth-client';
 import { isNullish, nonNullish } from '@dfinity/utils';
 import { type Readable, writable } from 'svelte/store';
 

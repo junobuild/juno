@@ -6,10 +6,10 @@ import {
 	LOCAL_REPLICA_HOST
 } from '$lib/constants/app.constants';
 import { isDev } from '$lib/env/app.env';
+import { createAuthClient, resetAuthClient } from '$lib/providers/auth-client.provider';
 import { SignInError, SignInInitError, SignInUserInterruptError } from '$lib/types/errors';
 import type { OptionIdentity } from '$lib/types/itentity';
 import type { Option } from '$lib/types/utils';
-import { createAuthClient, resetAuthClient } from '$lib/utils/auth.utils';
 import { popupCenter } from '$lib/utils/window.utils';
 import { type AuthClient, ERROR_USER_INTERRUPT } from '@dfinity/auth-client';
 import { isNullish } from '@dfinity/utils';

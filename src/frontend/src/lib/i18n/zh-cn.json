@@ -261,7 +261,9 @@
 		"quote_8": "手可摘星，银河入怀。",
 		"quote_9": "逐星海之浩渺，追云梦之无涯。",
 		"quote_10": "宇宙无垠，探索不止。",
-		"internet_identity": "继续使用Internet Identity"
+		"internet_identity": "继续使用Internet Identity",
+		"internet_identity_short": "继续使用Identity",
+		"google": "继续使用Google"
 	},
 	"satellites": {
 		"title": "所有卫星",

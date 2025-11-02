@@ -261,7 +261,9 @@
 		"quote_8": "Galaxies within grasp forever.",
 		"quote_9": "Navigate stars, chase dreams.",
 		"quote_10": "Universe: endless exploration awaits.",
-		"internet_identity": "Continue with Internet Identity"
+		"internet_identity": "Continue with Internet Identity",
+		"internet_identity_short": "Continue with Identity",
+		"google": "Continue with Google"
 	},
 	"satellites": {
 		"title": "Satellites",

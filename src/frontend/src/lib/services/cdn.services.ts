@@ -1,6 +1,6 @@
 import { isDev } from '$lib/env/app.env';
 import { fetchReleasesMetadata } from '$lib/rest/cdn.rest';
-import { assertNonNullish, isEmptyString } from '@dfinity/utils';
+import { isEmptyString } from '@dfinity/utils';
 import { type ReleasesMetadata, ReleasesMetadataSchema } from '@junobuild/admin';
 
 export const getReleasesMetadata = async (): Promise<ReleasesMetadata> => {
@@ -12,5 +12,5 @@ export const getReleasesMetadata = async (): Promise<ReleasesMetadata> => {
 		return ReleasesMetadataSchema.parse(data);
 	}
 
-	return await fetchReleasesMetadata({ cdnUrl: JUNO_CDN_URL ?? "" });
+	return await fetchReleasesMetadata({ cdnUrl: JUNO_CDN_URL ?? '' });
 };

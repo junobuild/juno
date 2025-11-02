@@ -11,9 +11,9 @@ import { SignInError, SignInUserInterruptError } from '$lib/types/errors';
 import { popupCenter } from '$lib/utils/window.utils';
 import { ERROR_USER_INTERRUPT } from '@dfinity/auth-client';
 
-export const signInWithII: SignInFn = ({ authClient }) => 
+export const signInWithII: SignInFn = ({ authClient }) =>
 	// eslint-disable-next-line no-async-promise-executor
-	 new Promise<SignedInIdentity>(async (resolve, reject) => {
+	new Promise<SignedInIdentity>(async (resolve, reject) => {
 		const identityProvider = isDev()
 			? /apple/i.test(navigator?.vendor)
 				? `${LOCAL_REPLICA_HOST}?canisterId=${INTERNET_IDENTITY_CANISTER_ID}`
@@ -37,5 +37,4 @@ export const signInWithII: SignInFn = ({ authClient }) =>
 			identityProvider,
 			windowOpenerFeatures: popupCenter({ width: AUTH_POPUP_WIDTH, height: AUTH_POPUP_HEIGHT })
 		});
-	})
-;
+	});

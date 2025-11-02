@@ -92,6 +92,7 @@
 		"@types/ua-parser-js": "^0.7.39",
 		"@types/wicg-file-system-access": "^2023.10.6",
 		"conf": "^14.0.0",
+		"fake-indexeddb": "^6.2.4",
 		"globals": "^16.4.0",
 		"jose": "^6.1.0",
 		"jsdom": "^27.0.0",

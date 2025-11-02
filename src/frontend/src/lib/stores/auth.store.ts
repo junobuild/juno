@@ -22,14 +22,10 @@ export interface AuthStoreData {
 
 let authClient: Option<AuthClient>;
 
-export interface AuthSignInParams {
-	domain?: 'internetcomputer.org' | 'ic0.app';
-}
-
 export interface AuthStore extends Readable<AuthStoreData> {
 	sync: () => Promise<void>;
 	forceSync: () => Promise<void>;
-	signIn: (params: AuthSignInParams) => Promise<void>;
+	signInWithII: () => Promise<void>;
 	signOut: () => Promise<void>;
 }
 
@@ -77,7 +73,7 @@ const initAuthStore = (): AuthStore => {
 			await sync({ forceSync: true });
 		},
 
-		signIn: ({ domain }: AuthSignInParams) =>
+		signInWithII: () =>
 			// eslint-disable-next-line no-async-promise-executor
 			new Promise<void>(async (resolve, reject) => {
 				if (isNullish(authClient)) {
@@ -89,7 +85,7 @@ const initAuthStore = (): AuthStore => {
 					? /apple/i.test(navigator?.vendor)
 						? `${LOCAL_REPLICA_HOST}?canisterId=${INTERNET_IDENTITY_CANISTER_ID}`
 						: `http://${INTERNET_IDENTITY_CANISTER_ID}.${new URL(LOCAL_REPLICA_HOST).host}`
-					: `https://identity.${domain ?? 'internetcomputer.org'}`;
+					: `https://identity.internetcomputer.org`;
 
 				await authClient?.login({
 					maxTimeToLive: AUTH_MAX_TIME_TO_LIVE,

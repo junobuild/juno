@@ -1,4 +1,4 @@
-import { AuthBroadcastChannel } from '$lib/services/auth/auth-broadcast.services';
+import { AuthBroadcastChannel } from '$lib/providers/auth-broadcast.provider';
 
 describe('auth-broadcast.services', () => {
 	let originalWindowLocation: Location;

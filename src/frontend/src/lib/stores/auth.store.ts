@@ -6,8 +6,8 @@ import {
 	LOCAL_REPLICA_HOST
 } from '$lib/constants/app.constants';
 import { isDev } from '$lib/env/app.env';
+import { AuthBroadcastChannel } from '$lib/providers/auth-broadcast.provider';
 import { createAuthClient, safeCreateAuthClient } from '$lib/providers/auth-client.provider';
-import { AuthBroadcastChannel } from '$lib/services/auth/auth-broadcast.services';
 import { SignInError, SignInInitError, SignInUserInterruptError } from '$lib/types/errors';
 import type { OptionIdentity } from '$lib/types/itentity';
 import type { Option } from '$lib/types/utils';

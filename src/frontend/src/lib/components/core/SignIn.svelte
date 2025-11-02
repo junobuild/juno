@@ -1,5 +1,4 @@
 <script lang="ts">
-	import SignInHelp from '$lib/components/core/SignInHelp.svelte';
 	import IconIc from '$lib/components/icons/IconIC.svelte';
 	import ContainerCentered from '$lib/components/ui/ContainerCentered.svelte';
 	import { testIds } from '$lib/constants/test-ids.constants';
@@ -38,10 +37,6 @@
 	{/snippet}
 </ContainerCentered>
 
-<div class="pre-footer">
-	<SignInHelp />
-</div>
-
 <style lang="scss">
 	@use '../../../lib/styles/mixins/media';
 
@@ -60,10 +55,5 @@
 
 	button {
 		padding: var(--padding) var(--padding-2x);
-	}
-
-	.pre-footer {
-		display: flex;
-		justify-content: center;
 	}
 </style>

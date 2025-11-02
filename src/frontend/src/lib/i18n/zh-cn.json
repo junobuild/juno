@@ -261,11 +261,7 @@
 		"quote_8": "手可摘星，银河入怀。",
 		"quote_9": "逐星海之浩渺，追云梦之无涯。",
 		"quote_10": "宇宙无垠，探索不止。",
-		"internet_identity": "继续使用Internet Identity",
-		"juno_defaults_to": "Juno默认使用",
-		"for_authentication": "用于身份验证。",
-		"alternatively": "此外，你也可以使用",
-		"if_neither_works": "如仍无法解决，请通过以下渠道联系我们："
+		"internet_identity": "继续使用Internet Identity"
 	},
 	"satellites": {
 		"title": "所有卫星",

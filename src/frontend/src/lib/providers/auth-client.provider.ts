@@ -9,14 +9,24 @@ class AuthClientProvider {
 		this.#storage = new IdbStorage();
 	}
 
-	createAuthClient = (): Promise<AuthClient> =>
-		AuthClient.create({
-			storage: this.#storage,
-			idleOptions: {
-				disableIdle: true,
-				disableDefaultIdleCallback: true
-			}
-		});
+	createAuthClient = async (): Promise<AuthClient> => {
+		// TODO: Workaround for agent-js. Disable utter annoying console.warn used as pseudo documentation.
+		const hideAgentJsConsoleWarn = globalThis.console.warn;
+		globalThis.console.warn = (): null => null;
+
+		try {
+			return await AuthClient.create({
+				storage: this.#storage,
+				idleOptions: {
+					disableIdle: true,
+					disableDefaultIdleCallback: true
+				}
+			});
+		} finally {
+			// Redo console.warn
+			globalThis.console.warn = hideAgentJsConsoleWarn;
+		}
+	};
 
 	/**
 	 * Since icp-js-core persists identity keys in IndexedDB by default,

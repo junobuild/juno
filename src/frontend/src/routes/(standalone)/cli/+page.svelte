@@ -8,7 +8,7 @@
 	import { missionControlIdDerived } from '$lib/derived/mission-control.derived';
 	import { sortedSatellites } from '$lib/derived/satellites.derived';
 	import { onIntersection } from '$lib/directives/intersection.directives';
-	import { signIn } from '$lib/services/auth/auth.services';
+	import { signInWithII } from '$lib/services/auth/auth.services';
 	import { i18n } from '$lib/stores/i18n.store';
 	import { onLayoutTitleIntersection } from '$lib/stores/layout-intersecting.store';
 	import type { Option } from '$lib/types/utils';
@@ -50,7 +50,7 @@
 				{$i18n.cli.sign_in}
 			</p>
 
-			<button onclick={async () => await signIn({})}>{$i18n.core.sign_in}</button>
+			<button onclick={signInWithII}>{$i18n.core.sign_in}</button>
 		{/if}
 	{:else}
 		<p>{$i18n.errors.cli_missing_params}</p>

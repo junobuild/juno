@@ -10,7 +10,7 @@
 	import Popover from '$lib/components/ui/Popover.svelte';
 	import { APP_VERSION } from '$lib/constants/app.constants';
 	import { authSignedIn } from '$lib/derived/auth.derived';
-	import { signIn as doSignIn, signOut } from '$lib/services/auth/auth.services';
+	import { signInWithII, signOut } from '$lib/services/auth/auth.services';
 	import { i18n } from '$lib/stores/i18n.store';
 
 	interface Props {
@@ -30,7 +30,7 @@
 	const close = () => (visible = false);
 
 	const onLogin = async () => {
-		await doSignIn({});
+		await signInWithII();
 	};
 
 	// eslint-disable-next-line require-await

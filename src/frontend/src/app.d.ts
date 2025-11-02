@@ -7,5 +7,3 @@ declare namespace App {
 	// interface Error {}
 	// interface Platform {}
 }
-
-declare const VITE_APP_VERSION: string;

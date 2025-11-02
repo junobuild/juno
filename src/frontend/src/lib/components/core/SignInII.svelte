@@ -9,9 +9,9 @@
 
 <button
 	{...testId(testIds.auth.signIn)}
+	aria-label={$i18n.sign_in.internet_identity}
 	disabled={$isBusy}
 	onclick={async () => await signIn({})}
-	aria-label={$i18n.sign_in.internet_identity}
 	><IconIc size="22px" />
 	<span>{$i18n.sign_in.internet_identity_short}</span></button
 >

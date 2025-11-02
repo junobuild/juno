@@ -1,8 +1,8 @@
 <script lang="ts">
+	import SignInGoogle from '$lib/components/core/SignInGoogle.svelte';
 	import SignInII from '$lib/components/core/SignInII.svelte';
 	import ContainerCentered from '$lib/components/ui/ContainerCentered.svelte';
 	import { i18n } from '$lib/stores/i18n.store';
-	import SignInGoogle from '$lib/components/core/SignInGoogle.svelte';
 
 	let quotes: string[] = $derived([
 		$i18n.sign_in.quote_1,

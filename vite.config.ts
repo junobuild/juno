@@ -36,10 +36,8 @@ const config: UserConfig = {
 };
 
 export default defineConfig(
-	(): UserConfig => ({
+	async ({ mode }): Promise<UserConfig> => ({
 		...config,
-		define: {
-			...defineViteReplacements()
-		}
+		define: await defineViteReplacements({ mode })
 	})
 );

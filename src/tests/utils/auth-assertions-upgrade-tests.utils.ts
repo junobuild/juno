@@ -14,12 +14,10 @@ export const testAuthUpgrade = ({
 	controller: getController,
 	pic: getPic,
 	session: getSession,
-	canisterId: getCanisterId,
 	observatoryId: getObservatoryId,
 	upgrade
 }: {
 	actor: () => Actor<SatelliteActor | ConsoleActor>;
-	canisterId: () => Principal;
 	controller: () => Ed25519KeyIdentity;
 	pic: () => PocketIc;
 	session: () => TestSession;

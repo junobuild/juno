@@ -76,7 +76,7 @@
 		"@dfinity/response-verification": "^3.0.3",
 		"@junobuild/cli-tools": "^0.8.0",
 		"@junobuild/config": "^2.3.0",
-		"@junobuild/config-loader": "^0.4.5",
+		"@junobuild/config-loader": "^0.4.5-next-2025-11-02.1",
 		"@junobuild/errors": "^0.1.4-next-2025-10-30",
 		"@junobuild/functions": "^0.3.3",
 		"@ltd/j-toml": "^1.38.0",

@@ -56,7 +56,6 @@ describe('Console > Auth', () => {
 	testAuthUpgrade({
 		pic: () => pic,
 		actor: () => consoleActor,
-		canisterId: () => consoleId,
 		controller: () => controller,
 		session: () => session,
 		observatoryId: () => observatoryId,

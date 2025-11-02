@@ -1,9 +1,40 @@
-import { readFileSync } from 'fs';
-import { fileURLToPath } from 'url';
+import { assertNonNullish } from '@dfinity/utils';
+import type {
+	JunoConfigEnv,
+	JunoConsoleConfig,
+	JunoConsoleConfigFnOrObject
+} from '@junobuild/config';
+import { readConsoleConfig as readConsoleConfigTools } from '@junobuild/config-loader';
+import { readFileSync } from 'node:fs';
+import { fileURLToPath } from 'node:url';
 
-export const defineViteReplacements = (): {
-	VITE_APP_VERSION: string;
-} => {
+const JUNO_CONFIG_FILENAME = 'juno.config';
+
+const readConsoleConfig = async (env: JunoConfigEnv): Promise<JunoConsoleConfig> => {
+	const config = (userConfig: JunoConsoleConfigFnOrObject): JunoConsoleConfig =>
+		typeof userConfig === 'function' ? userConfig(env) : userConfig;
+
+	return await readConsoleConfigTools({
+		filename: JUNO_CONFIG_FILENAME,
+		config
+	});
+};
+
+const defineJunoEnv = async ({
+	mode
+}: JunoConfigEnv): Promise<Pick<ViteReplacements, 'VITE_CONSOLE_ID'>> => {
+	const { id, ids } = await readConsoleConfig({ mode });
+
+	const consoleId = id ?? ids[mode];
+
+	assertNonNullish(consoleId, 'Console ID not defined.');
+
+	return {
+		VITE_CONSOLE_ID: JSON.stringify(consoleId)
+	};
+};
+
+const defineAppVersion = (): Pick<ViteReplacements, 'VITE_APP_VERSION'> => {
 	const file = fileURLToPath(new URL('package.json', import.meta.url));
 	const json = readFileSync(file, 'utf8');
 	const { version } = JSON.parse(json);
@@ -11,4 +42,26 @@ export const defineViteReplacements = (): {
 	return {
 		VITE_APP_VERSION: JSON.stringify(version)
 	};
+};
+
+interface ViteReplacements {
+	VITE_CONSOLE_ID: string;
+	VITE_APP_VERSION: string;
+}
+
+export const defineViteReplacements = async (env: JunoConfigEnv) => {
+	const prefix = `import.meta.env`;
+
+	const replacements = {
+		...defineAppVersion(),
+		...(await defineJunoEnv(env))
+	};
+
+	return Object.entries(replacements).reduce(
+		(acc, [key, value]) => ({
+			...acc,
+			[`${prefix}.${key}`]: value
+		}),
+		{}
+	);
 };

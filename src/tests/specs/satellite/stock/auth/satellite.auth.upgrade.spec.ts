@@ -45,7 +45,6 @@ describe('Satellite > Auth', () => {
 	testAuthUpgrade({
 		pic: () => pic,
 		actor: () => satelliteActor,
-		canisterId: () => satelliteId,
 		controller: () => controller,
 		session: () => session,
 		observatoryId: () => observatoryId,

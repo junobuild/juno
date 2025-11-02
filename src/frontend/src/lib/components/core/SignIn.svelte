@@ -1,11 +1,7 @@
 <script lang="ts">
-	import IconIc from '$lib/components/icons/IconIC.svelte';
 	import ContainerCentered from '$lib/components/ui/ContainerCentered.svelte';
-	import { testIds } from '$lib/constants/test-ids.constants';
-	import { signIn } from '$lib/services/auth/auth.services';
-	import { isBusy } from '$lib/stores/busy.store';
 	import { i18n } from '$lib/stores/i18n.store';
-	import { testId } from '$lib/utils/test.utils';
+	import SignInII from '$lib/components/core/SignInII.svelte';
 
 	let quotes: string[] = $derived([
 		$i18n.sign_in.quote_1,
@@ -27,13 +23,7 @@
 	<h1>{title}</h1>
 
 	{#snippet action()}
-		<button
-			{...testId(testIds.auth.signIn)}
-			disabled={$isBusy}
-			onclick={async () => await signIn({})}
-			><IconIc size="20px" />
-			<span>{$i18n.sign_in.internet_identity}</span></button
-		>
+		<SignInII />
 	{/snippet}
 </ContainerCentered>
 
@@ -51,9 +41,5 @@
 		@include media.min-width(large) {
 			--bigger-title: 1.4;
 		}
-	}
-
-	button {
-		padding: var(--padding) var(--padding-2x);
 	}
 </style>

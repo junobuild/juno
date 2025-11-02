@@ -363,6 +363,7 @@ interface I18nAuthentication {
 	methods: string;
 	not_signed_in: string;
 	session_expired: string;
+	refreshed_authentication: string;
 	main_domain: string;
 	not_configured: string;
 	edit_configuration: string;

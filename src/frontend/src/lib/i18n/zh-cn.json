@@ -354,6 +354,7 @@
 		"methods": "登录方式",
 		"not_signed_in": "您尚未登录。请登录以继续。",
 		"session_expired": "由于会话已过期，您已被自动登出。",
+		"refreshed_authentication": "此页面已刷新，以同步您在其他标签页的登录状态。",
 		"main_domain": "主域名（\"派生源\"）",
 		"not_configured": "未配置",
 		"edit_configuration": "使用下面的表单更新您的身份认证配置。",

@@ -39,6 +39,8 @@ export const CMC_CANISTER_ID = 'rkp4c-7iaaa-aaaaa-aaaca-cai';
 export const OBSERVATORY_CANISTER_ID = 'klbfr-lqaaa-aaaak-qbwsa-cai';
 export const ICP_LEDGER_CANISTER_ID = 'ryjl3-tyaaa-aaaaa-aaaba-cai';
 
+export const GOOGLE_CLIENT_ID = import.meta.env.VITE_GOOGLE_CLIENT_ID;
+
 /**
  * Revoked principals that must not be used.
  *

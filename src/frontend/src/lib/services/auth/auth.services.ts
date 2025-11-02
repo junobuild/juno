@@ -20,6 +20,18 @@ import { isNullish } from '@dfinity/utils';
 import { clear } from 'idb-keyval';
 import { get } from 'svelte/store';
 import { signInWithII as signInWithIIFn } from './_internet-identity.services';
+import { signInWithGoogle as signInWithGoogleFn } from './auth.openid.services';
+
+export const signInWithGoogle = async () => {
+	try {
+		await signInWithGoogleFn();
+	} catch (err: unknown) {
+		toasts.error({
+			text: get(i18n).errors.sign_in,
+			detail: err
+		});
+	}
+}
 
 export const signInWithII = async (): Promise<{
 	success: 'ok' | 'cancelled' | 'error';

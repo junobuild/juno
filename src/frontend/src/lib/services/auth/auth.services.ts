@@ -19,6 +19,7 @@ import { replaceHistory } from '$lib/utils/route.utils';
 import { isNullish } from '@dfinity/utils';
 import { clear } from 'idb-keyval';
 import { get } from 'svelte/store';
+import { signInWithII as signInWithIIFn } from './_internet-identity.services';
 
 export const signInWithII = async (): Promise<{
 	success: 'ok' | 'cancelled' | 'error';
@@ -27,7 +28,7 @@ export const signInWithII = async (): Promise<{
 	busy.show();
 
 	try {
-		await authStore.signInWithII();
+		await authStore.signIn({ signInFn: signInWithIIFn });
 
 		return { success: 'ok' };
 	} catch (err: unknown) {

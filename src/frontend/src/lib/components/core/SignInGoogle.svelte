@@ -5,19 +5,17 @@
 	import { isBusy } from '$lib/stores/busy.store';
 	import { i18n } from '$lib/stores/i18n.store';
 	import { testId } from '$lib/utils/test.utils';
+	import IconGoogle from '$lib/components/icons/IconGoogle.svelte';
 </script>
 
-<button
-	{...testId(testIds.auth.signIn)}
-	disabled={$isBusy}
-	onclick={async () => await signIn({})}
-	aria-label={$i18n.sign_in.internet_identity}
-	><IconIc size="22px" />
-	<span>{$i18n.sign_in.internet_identity_short}</span></button
+<button {...testId(testIds.auth.signIn)} disabled={$isBusy} onclick={async () => await signIn({})}
+	><IconGoogle size="20px" />
+	<span>{$i18n.sign_in.google}</span></button
 >
 
 <style lang="scss">
 	button {
+		width: 100%;
 		padding: var(--padding) var(--padding-3x);
 	}
 </style>

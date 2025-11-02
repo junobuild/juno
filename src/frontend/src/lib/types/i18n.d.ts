@@ -267,6 +267,8 @@ interface I18nSign_in {
 	quote_9: string;
 	quote_10: string;
 	internet_identity: string;
+	internet_identity_short: string;
+	google: string;
 }
 
 interface I18nSatellites {

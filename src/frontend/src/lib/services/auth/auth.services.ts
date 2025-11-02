@@ -31,7 +31,7 @@ export const signInWithGoogle = async () => {
 			detail: err
 		});
 	}
-}
+};
 
 export const signInWithII = async (): Promise<{
 	success: 'ok' | 'cancelled' | 'error';

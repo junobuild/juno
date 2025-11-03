@@ -2,19 +2,16 @@
 	import { fromNullable, notEmptyString } from '@dfinity/utils';
 	import { page } from '$app/state';
 	import type { ConsoleDid } from '$declarations';
-	import type { OpenId } from '$declarations/console/console.did';
 	import UserProviderData from '$lib/components/core/UserProviderData.svelte';
 	import IconBook from '$lib/components/icons/IconBook.svelte';
 	import IconCodeBranch from '$lib/components/icons/IconCodeBranch.svelte';
 	import IconRaygun from '$lib/components/icons/IconRaygun.svelte';
-	import IconSignIn from '$lib/components/icons/IconSignIn.svelte';
 	import IconSignOut from '$lib/components/icons/IconSignOut.svelte';
 	import IconUser from '$lib/components/icons/IconUser.svelte';
 	import ButtonIcon from '$lib/components/ui/ButtonIcon.svelte';
 	import Popover from '$lib/components/ui/Popover.svelte';
 	import { APP_VERSION } from '$lib/constants/app.constants';
-	import { authSignedIn } from '$lib/derived/auth.derived';
-	import { signInWithII, signOut } from '$lib/services/auth/auth.services';
+	import { signOut } from '$lib/services/auth/auth.services';
 	import { i18n } from '$lib/stores/i18n.store';
 
 	interface Props {

@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { fromNullable, notEmptyString } from '@dfinity/utils';
+	import { fromNullable, nonNullish, notEmptyString } from '@dfinity/utils';
 	import { page } from '$app/state';
 	import type { ConsoleDid } from '$declarations';
 	import UserProviderData from '$lib/components/core/UserProviderData.svelte';
@@ -15,7 +15,7 @@
 	import { i18n } from '$lib/stores/i18n.store';
 
 	interface Props {
-		provider: ConsoleDid.Provider;
+		provider?: ConsoleDid.Provider;
 	}
 
 	let { provider }: Props = $props();
@@ -38,7 +38,7 @@
 	let preferences = $derived(page.route.id === '/(single)/preferences');
 
 	let openId = $derived<ConsoleDid.OpenId | undefined>(
-		'OpenId' in provider ? provider.OpenId : undefined
+		nonNullish(provider) && 'OpenId' in provider ? provider.OpenId : undefined
 	);
 	let openIdData = $derived<ConsoleDid.OpenIdData | undefined>(openId?.data);
 	let openIdPicture = $derived<string | undefined>(fromNullable(openIdData?.picture ?? []));

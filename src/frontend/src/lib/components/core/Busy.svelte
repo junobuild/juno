@@ -77,6 +77,8 @@
 		flex-direction: column;
 
 		color: var(--label-color);
+
+		background: transparent;
 	}
 
 	@include media.dark-theme {

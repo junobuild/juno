@@ -8,7 +8,7 @@
 </script>
 
 <button
-	{...testId(testIds.auth.signIn)}
+	{...testId(testIds.auth.signInII)}
 	aria-label={$i18n.sign_in.internet_identity}
 	disabled={$isBusy}
 	onclick={signInWithII}

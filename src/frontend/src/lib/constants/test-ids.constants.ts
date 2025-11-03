@@ -2,7 +2,7 @@ import type { TestIds } from '$lib/types/test-id';
 
 export const testIds = {
 	auth: {
-		signIn: 'btn-sign-in'
+		signInII: 'btn-sign-in-ii'
 	},
 	createSatellite: {
 		launch: 'btn-launch-satellite',

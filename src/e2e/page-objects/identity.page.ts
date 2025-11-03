@@ -7,7 +7,7 @@ export interface IdentityPageParams {
 }
 
 export abstract class IdentityPage {
-	protected identity: number | undefined;
+	protected iiAnchor: number | undefined;
 
 	protected readonly page: Page;
 	protected readonly context: BrowserContext;

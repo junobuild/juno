@@ -1,11 +1,13 @@
-import {
-	__test_only_auth_client_storage__ as authClientStorage,
-	createAuthClient,
-	safeCreateAuthClient
-} from '$lib/providers/auth-client.provider';
+import { AuthClientProvider } from '$lib/providers/auth-client.provider';
 import { AuthClient, KEY_STORAGE_DELEGATION, KEY_STORAGE_KEY } from '@dfinity/auth-client';
 
 describe('auth-client.provider', () => {
+	const {
+		__test_only_auth_client_storage__: authClientStorage,
+		createAuthClient,
+		safeCreateAuthClient
+	} = AuthClientProvider.getInstance();
+
 	beforeEach(() => {
 		vi.clearAllMocks();
 

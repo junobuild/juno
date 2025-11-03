@@ -1,7 +1,7 @@
 import { AUTH_TIMER_INTERVAL } from '$lib/constants/app.constants';
-import { createAuthClient } from '$lib/providers/auth-client.provider';
+import { AuthClientProvider } from '$lib/providers/auth-client.provider';
 import type { PostMessageRequest } from '$lib/types/post-message';
-import { IdbStorage, KEY_STORAGE_DELEGATION, type AuthClient } from '@dfinity/auth-client';
+import { IdbStorage, KEY_STORAGE_DELEGATION } from '@dfinity/auth-client';
 import { DelegationChain, isDelegationValid } from '@dfinity/identity';
 
 export const onAuthMessage = async ({
@@ -55,7 +55,7 @@ const onIdleSignOut = async () => {
  * @returns true if authenticated
  */
 const checkAuthentication = async (): Promise<boolean> => {
-	const authClient: AuthClient = await createAuthClient();
+	const authClient = await AuthClientProvider.getInstance().createAuthClient();
 	return authClient.isAuthenticated();
 };
 

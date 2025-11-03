@@ -1,5 +1,5 @@
 import { CONSOLE_CANISTER_ID, GOOGLE_CLIENT_ID } from '$lib/constants/app.constants';
-import { setAuthClientStorage } from '$lib/providers/auth-client.provider';
+import { AuthClientProvider } from '$lib/providers/auth-client.provider';
 import { authStore } from '$lib/stores/auth.store';
 import { i18n } from '$lib/stores/i18n.store';
 import { toasts } from '$lib/stores/toasts.store';
@@ -41,7 +41,7 @@ const authenticateWithGoogle = async () => {
 		}
 	});
 
-	await setAuthClientStorage({
+	await AuthClientProvider.getInstance().setAuthClientStorage({
 		delegationChain,
 		sessionKey
 	});

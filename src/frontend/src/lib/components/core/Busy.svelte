@@ -3,11 +3,11 @@
 	import { stopPropagation } from 'svelte/legacy';
 	import { fade } from 'svelte/transition';
 	import IconClose from '$lib/components/icons/IconClose.svelte';
+	import Message from '$lib/components/ui/Message.svelte';
 	import Spinner from '$lib/components/ui/Spinner.svelte';
 	import { busy } from '$lib/stores/busy.store';
 	import { i18n } from '$lib/stores/i18n.store';
 	import { handleKeyPress } from '$lib/utils/keyboard.utils';
-	import Message from '$lib/components/ui/Message.svelte';
 
 	const close = () => {
 		if (isNullish($busy) || !$busy.close) {

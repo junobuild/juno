@@ -1,12 +1,12 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
 	import { fade } from 'svelte/transition';
+	import { goto } from '$app/navigation';
 	import ContainerCentered from '$lib/components/ui/ContainerCentered.svelte';
+	import Message from '$lib/components/ui/Message.svelte';
 	import Spinner from '$lib/components/ui/Spinner.svelte';
 	import { authenticate } from '$lib/services/auth/auth.openid.services';
 	import { i18n } from '$lib/stores/i18n.store';
-	import { goto } from '$app/navigation';
-	import Message from '$lib/components/ui/Message.svelte';
 
 	let state = $state<'loading' | 'ok' | 'error'>('loading');
 

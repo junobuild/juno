@@ -6,12 +6,12 @@ import {
 	LOCAL_REPLICA_HOST
 } from '$lib/constants/app.constants';
 import { isDev } from '$lib/env/app.env';
-import type { SignedInIdentity, SignInFn } from '$lib/types/auth';
+import type { SignedInIdentity, SignInWithAuthClient } from '$lib/types/auth';
 import { SignInError, SignInUserInterruptError } from '$lib/types/errors';
 import { popupCenter } from '$lib/utils/window.utils';
 import { ERROR_USER_INTERRUPT } from '@dfinity/auth-client';
 
-export const signInWithII: SignInFn = ({ authClient }) =>
+export const signInWithII: SignInWithAuthClient = ({ authClient }) =>
 	// eslint-disable-next-line no-async-promise-executor
 	new Promise<SignedInIdentity>(async (resolve, reject) => {
 		const identityProvider = isDev()

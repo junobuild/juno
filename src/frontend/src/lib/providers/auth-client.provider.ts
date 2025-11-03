@@ -1,4 +1,10 @@
-import { AuthClient, IdbStorage, KEY_STORAGE_KEY } from '@dfinity/auth-client';
+import {
+	AuthClient,
+	IdbStorage,
+	KEY_STORAGE_DELEGATION,
+	KEY_STORAGE_KEY
+} from '@dfinity/auth-client';
+import type { DelegationChain, ECDSAKeyIdentity } from '@dfinity/identity';
 
 class AuthClientProvider {
 	// We use a dedicated storage for the auth client to better manage it, e.g. clear it for a new login.
@@ -38,6 +44,19 @@ class AuthClientProvider {
 		return await this.createAuthClient();
 	};
 
+	setAuthClientStorage = async ({
+		delegationChain,
+		sessionKey
+	}: {
+		delegationChain: DelegationChain;
+		sessionKey: ECDSAKeyIdentity;
+	}) => {
+		await Promise.all([
+			this.#storage.set(KEY_STORAGE_KEY, sessionKey.getKeyPair()),
+			this.#storage.set(KEY_STORAGE_DELEGATION, JSON.stringify(delegationChain.toJSON()))
+		]);
+	};
+
 	get storage(): IdbStorage {
 		return this.#storage;
 	}
@@ -46,7 +65,13 @@ class AuthClientProvider {
 const {
 	storage: __test_only_auth_client_storage__,
 	createAuthClient,
-	safeCreateAuthClient
+	safeCreateAuthClient,
+	setAuthClientStorage
 } = new AuthClientProvider();
 
-export { __test_only_auth_client_storage__, createAuthClient, safeCreateAuthClient };
+export {
+	__test_only_auth_client_storage__,
+	createAuthClient,
+	safeCreateAuthClient,
+	setAuthClientStorage
+};

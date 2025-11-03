@@ -40,7 +40,7 @@ export const signInWithII = async (): Promise<{
 	busy.show();
 
 	try {
-		await authStore.signIn({ signInFn: signInWithIIFn });
+		await authStore.signInWithII({ signInFn: signInWithIIFn });
 
 		return { success: 'ok' };
 	} catch (err: unknown) {

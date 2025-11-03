@@ -4,4 +4,8 @@ import type { AuthClient } from '@dfinity/auth-client';
 export interface SignedInIdentity {
 	identity: OptionIdentity;
 }
-export type SignInFn = (params: { authClient: AuthClient }) => Promise<SignedInIdentity>;
+
+export type SignInWithAuthClient = (params: {
+	authClient: AuthClient;
+}) => Promise<SignedInIdentity>;
+export type SignInWithNewAuthClient = () => Promise<void>;

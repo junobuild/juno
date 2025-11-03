@@ -271,6 +271,12 @@ interface I18nSign_in {
 	google: string;
 }
 
+interface I18nSign_in_openid {
+	in_progress: string;
+	success: string;
+	error: string;
+}
+
 interface I18nSatellites {
 	title: string;
 	launch: string;
@@ -533,6 +539,7 @@ interface I18nCli {
 
 interface I18nErrors {
 	no_identity: string;
+	stack_trace: string;
 	initializing_mission_control: string;
 	sign_in: string;
 	mission_control_sign_out: string;
@@ -993,6 +1000,7 @@ interface I18n {
 	core: I18nCore;
 	canisters: I18nCanisters;
 	sign_in: I18nSign_in;
+	sign_in_openid: I18nSign_in_openid;
 	satellites: I18nSatellites;
 	mission_control: I18nMission_control;
 	wallet: I18nWallet;

@@ -265,6 +265,11 @@
 		"internet_identity_short": "继续使用Identity",
 		"google": "继续使用Google"
 	},
+	"sign_in_openid": {
+		"in_progress": "请稍候，正在对接您的身份...",
+		"success": "任务就绪！欢迎登船。",
+		"error": "哎呀，对接失败。请重试或联系我们！"
+	},
 	"satellites": {
 		"title": "所有卫星",
 		"launch": "部署新卫星",
@@ -517,6 +522,7 @@
 	},
 	"errors": {
 		"no_identity": "意外错误，未提供身份信息。",
+		"stack_trace": "错误堆栈追踪",
 		"initializing_mission_control": "控制中心初始化失败。",
 		"sign_in": "登录异常，请检查详细错误信息并重试。",
 		"mission_control_sign_out": "控制中心认证失败，您已被登出。",

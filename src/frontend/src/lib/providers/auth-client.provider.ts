@@ -5,14 +5,25 @@ import {
 	KEY_STORAGE_KEY
 } from '@dfinity/auth-client';
 import type { DelegationChain, ECDSAKeyIdentity } from '@dfinity/identity';
+import { isNullish } from '@dfinity/utils';
 
-class AuthClientProvider {
+export class AuthClientProvider {
+	static #instance: AuthClientProvider;
+
 	// We use a dedicated storage for the auth client to better manage it, e.g. clear it for a new login.
 	// It is similar as the default fallback option of AgentJS.
 	readonly #storage: IdbStorage;
 
-	constructor() {
+	private constructor() {
 		this.#storage = new IdbStorage();
+	}
+
+	static getInstance(): AuthClientProvider {
+		if (isNullish(this.#instance)) {
+			this.#instance = new AuthClientProvider();
+		}
+
+		return this.#instance;
 	}
 
 	createAuthClient = async (): Promise<AuthClient> => {
@@ -57,21 +68,7 @@ class AuthClientProvider {
 		]);
 	};
 
-	get storage(): IdbStorage {
+	get __test_only_auth_client_storage__(): IdbStorage {
 		return this.#storage;
 	}
 }
-
-const {
-	storage: __test_only_auth_client_storage__,
-	createAuthClient,
-	safeCreateAuthClient,
-	setAuthClientStorage
-} = new AuthClientProvider();
-
-export {
-	__test_only_auth_client_storage__,
-	createAuthClient,
-	safeCreateAuthClient,
-	setAuthClientStorage
-};

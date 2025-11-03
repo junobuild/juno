@@ -1,5 +1,5 @@
 import { AuthBroadcastChannel } from '$lib/providers/auth-broadcast.provider';
-import { createAuthClient, safeCreateAuthClient } from '$lib/providers/auth-client.provider';
+import { AuthClientProvider } from '$lib/providers/auth-client.provider';
 import type { SignInWithAuthClient, SignInWithNewAuthClient } from '$lib/types/auth';
 import { SignInInitError } from '$lib/types/errors';
 import type { OptionIdentity } from '$lib/types/itentity';
@@ -34,6 +34,8 @@ const initAuthStore = (): AuthStore => {
 			return authClient;
 		}
 
+		const { createAuthClient, safeCreateAuthClient } = AuthClientProvider.getInstance();
+
 		const refreshed = await createAuthClient();
 
 		if (await refreshed.isAuthenticated()) {
@@ -48,7 +50,9 @@ const initAuthStore = (): AuthStore => {
 	};
 
 	const sync = async ({ forceSync }: { forceSync: boolean }) => {
-		authClient = forceSync ? await createAuthClient() : await pickAuthClient();
+		authClient = forceSync
+			? await AuthClientProvider.getInstance().createAuthClient()
+			: await pickAuthClient();
 
 		const isAuthenticated = await authClient.isAuthenticated();
 
@@ -102,6 +106,8 @@ const initAuthStore = (): AuthStore => {
 		},
 
 		signOut: async () => {
+			const { createAuthClient } = AuthClientProvider.getInstance();
+
 			const client: AuthClient = authClient ?? (await createAuthClient());
 
 			await client.logout();

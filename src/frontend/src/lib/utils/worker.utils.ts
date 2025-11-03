@@ -1,11 +1,11 @@
-import { createAuthClient } from '$lib/providers/auth-client.provider';
+import { AuthClientProvider } from '$lib/providers/auth-client.provider';
 import type { Canister } from '$lib/types/canister';
 import type { Identity } from '@dfinity/agent';
 import { isNullish, nonNullish } from '@dfinity/utils';
 import { getMany, type UseStore } from 'idb-keyval';
 
 export const loadIdentity = async (): Promise<Identity | null> => {
-	const authClient = await createAuthClient();
+	const authClient = await AuthClientProvider.getInstance().createAuthClient();
 
 	if (!(await authClient.isAuthenticated())) {
 		return null;

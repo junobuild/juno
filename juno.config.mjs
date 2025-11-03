@@ -11,7 +11,8 @@ export default defineConsoleConfig(({ mode }) => ({
 				delegation: {
 					// Like identities derived by Internet Identity, those derived with OpenID
 					// are allowed to interact with any canister on the Internet Computer.
-					allowedTargets: null
+					allowedTargets: null,
+					sessionDuration: BigInt(7 * 24 * 60 * 60 * 1000 * 1000 * 1000) // 7 days in nanoseconds
 				}
 			}
 		}

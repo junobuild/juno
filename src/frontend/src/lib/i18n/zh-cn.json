@@ -30,7 +30,7 @@
 		"apply": "应用",
 		"language": "语言",
 		"theme": "主题",
-		"user_menu": "用户菜单",
+		"user_menu": "打开用户菜单",
 		"version": "版本",
 		"dependencies": "依赖",
 		"delete": "删除",
@@ -268,7 +268,8 @@
 	"sign_in_openid": {
 		"in_progress": "请稍候，正在对接您的身份...",
 		"success": "任务就绪！欢迎登船。",
-		"already_signed_in": "你已登录。"
+		"already_signed_in": "你已登录。",
+		"avatar": "来自您登录服务的个人头像"
 	},
 	"satellites": {
 		"title": "所有卫星",

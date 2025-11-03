@@ -275,6 +275,7 @@ interface I18nSign_in_openid {
 	in_progress: string;
 	success: string;
 	already_signed_in: string;
+	avatar: string;
 }
 
 interface I18nSatellites {

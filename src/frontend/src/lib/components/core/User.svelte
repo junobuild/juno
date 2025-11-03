@@ -1,5 +1,9 @@
 <script lang="ts">
+	import { fromNullable, notEmptyString } from '@dfinity/utils';
 	import { page } from '$app/state';
+	import type { ConsoleDid } from '$declarations';
+	import type { OpenId } from '$declarations/console/console.did';
+	import UserProviderData from '$lib/components/core/UserProviderData.svelte';
 	import IconBook from '$lib/components/icons/IconBook.svelte';
 	import IconCodeBranch from '$lib/components/icons/IconCodeBranch.svelte';
 	import IconRaygun from '$lib/components/icons/IconRaygun.svelte';
@@ -14,10 +18,10 @@
 	import { i18n } from '$lib/stores/i18n.store';
 
 	interface Props {
-		signIn?: boolean;
+		provider: ConsoleDid.Provider;
 	}
 
-	let { signIn = true }: Props = $props();
+	let { provider }: Props = $props();
 
 	let button: HTMLButtonElement | undefined = $state();
 	let visible: boolean = $state(false);
@@ -29,36 +33,36 @@
 
 	const close = () => (visible = false);
 
-	const onLogin = async () => {
-		await signInWithII();
-	};
-
 	// eslint-disable-next-line require-await
 	const onclick = async () => {
 		visible = true;
 	};
 
 	let preferences = $derived(page.route.id === '/(single)/preferences');
+
+	let openId = $derived<ConsoleDid.OpenId | undefined>(
+		'OpenId' in provider ? provider.OpenId : undefined
+	);
+	let openIdData = $derived<ConsoleDid.OpenIdData | undefined>(openId?.data);
+	let openIdPicture = $derived<string | undefined>(fromNullable(openIdData?.picture ?? []));
 </script>
 
-{#if $authSignedIn}
-	<ButtonIcon {onclick} bind:button>
-		{#snippet icon()}
+<ButtonIcon {onclick} bind:button>
+	{#snippet icon()}
+		{#if notEmptyString(openIdPicture)}
+			<picture><img alt="" src={openIdPicture} /></picture>
+		{:else}
 			<IconUser size="14px" />
-		{/snippet}
-		{$i18n.core.user_menu}
-	</ButtonIcon>
-{:else if signIn}
-	<ButtonIcon onclick={onLogin}>
-		{#snippet icon()}
-			<IconSignIn size="14px" />
-		{/snippet}
-		{$i18n.core.sign_in}
-	</ButtonIcon>
-{/if}
+		{/if}
+	{/snippet}
+
+	{$i18n.core.user_menu}
+</ButtonIcon>
 
 <Popover anchor={button} direction="rtl" bind:visible>
 	<div class="container">
+		<UserProviderData {provider} />
+
 		{#if !preferences}
 			<a class="menu" aria-haspopup="menu" href="/preferences" onclick={close} role="menuitem">
 				<IconRaygun />
@@ -125,5 +129,13 @@
 		hr {
 			border-color: var(--color-menu-tint);
 		}
+	}
+
+	picture {
+		width: 100%;
+		height: 100%;
+
+		border-radius: 50%;
+		overflow: hidden;
 	}
 </style>

@@ -22,7 +22,7 @@
 
 <Layout centered={true}>
 	{#snippet navbar()}
-		<Navbar signIn={false} start="logo" />
+		<Navbar start="logo" />
 	{/snippet}
 
 	{@render children()}

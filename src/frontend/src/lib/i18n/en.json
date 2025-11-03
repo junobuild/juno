@@ -30,7 +30,7 @@
 		"apply": "Apply",
 		"language": "Language",
 		"theme": "Theme",
-		"user_menu": "User menu",
+		"user_menu": "Open user menu",
 		"version": "Version",
 		"dependencies": "Dependencies",
 		"delete": "Delete",
@@ -268,7 +268,8 @@
 	"sign_in_openid": {
 		"in_progress": "Stand by, docking your identity...",
 		"success": "Mission ready! Welcome aboard.",
-		"already_signed_in": "You are already signed in."
+		"already_signed_in": "You are already signed in.",
+		"avatar": "Your profile picture from your sign-in service"
 	},
 	"satellites": {
 		"title": "Satellites",

@@ -13,15 +13,15 @@
 	import Header from '$lib/components/ui/Header.svelte';
 	import { authSignedIn } from '$lib/derived/auth.derived';
 	import { missionControlIdDerived } from '$lib/derived/mission-control.derived';
+	import { provider } from '$lib/derived/provider.derived';
 	import { isSkylab } from '$lib/env/app.env';
 	import { layoutTitleIntersecting } from '$lib/stores/layout-intersecting.store';
 
 	interface Props {
 		start?: 'logo' | 'back' | 'menu';
-		signIn?: boolean;
 	}
 
-	let { start = 'logo', signIn = true }: Props = $props();
+	let { start = 'logo' }: Props = $props();
 
 	let hide = $state(false);
 
@@ -54,17 +54,17 @@
 	</div>
 
 	<div>
-		{#if $authSignedIn && nonNullish($missionControlIdDerived)}
+		{#if $authSignedIn && nonNullish($missionControlIdDerived) && nonNullish($provider)}
 			<div in:fade>
 				<Notifications />
 
 				<NavbarSpotlight />
 
 				<NavbarWallet missionControlId={$missionControlIdDerived} />
+
+				<User provider={$provider} />
 			</div>
 		{/if}
-
-		<User {signIn} />
 	</div>
 </Header>
 

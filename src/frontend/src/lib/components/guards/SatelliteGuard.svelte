@@ -1,8 +1,6 @@
 <script lang="ts">
 	import type { Snippet } from 'svelte';
 	import { fade } from 'svelte/transition';
-	import Html from '$lib/components/ui/Html.svelte';
-	import Info from '$lib/components/ui/Info.svelte';
 	import NotFound from '$lib/components/ui/NotFound.svelte';
 	import SpinnerParagraph from '$lib/components/ui/SpinnerParagraph.svelte';
 	import { satelliteStore } from '$lib/derived/satellite.derived';

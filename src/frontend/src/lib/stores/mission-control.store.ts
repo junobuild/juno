@@ -1,9 +1,8 @@
-import type { MissionControlDid } from '$declarations';
+import type { ConsoleDid, MissionControlDid } from '$declarations';
 import { initCertifiedStore } from '$lib/stores/_certified.store';
 import { initUncertifiedStore } from '$lib/stores/_uncertified.store';
-import type { MissionControlId } from '$lib/types/mission-control';
 
-export const missionControlIdCertifiedStore = initCertifiedStore<MissionControlId>();
+export const missionControlCertifiedStore = initCertifiedStore<ConsoleDid.MissionControl>();
 
 export const missionControlUserUncertifiedStore = initUncertifiedStore<MissionControlDid.User>();
 

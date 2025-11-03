@@ -3,6 +3,7 @@
 	import SignInII from '$lib/components/sign-in/SignInII.svelte';
 	import ContainerCentered from '$lib/components/ui/ContainerCentered.svelte';
 	import { i18n } from '$lib/stores/i18n.store';
+	import SignInActions from '$lib/components/sign-in/SignInActions.svelte';
 
 	let quotes: string[] = $derived([
 		$i18n.sign_in.quote_1,
@@ -24,11 +25,7 @@
 	<h1>{title}</h1>
 
 	{#snippet action()}
-		<div class="sign-in">
-			<SignInGoogle />
-
-			<SignInII />
-		</div>
+		<SignInActions />
 	{/snippet}
 </ContainerCentered>
 
@@ -46,10 +43,5 @@
 		@include media.min-width(large) {
 			--bigger-title: 1.4;
 		}
-	}
-
-	.sign-in {
-		display: flex;
-		flex-direction: column;
 	}
 </style>

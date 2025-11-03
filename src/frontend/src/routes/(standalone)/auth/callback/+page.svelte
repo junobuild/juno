@@ -1,10 +1,10 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
-	import { authenticate } from '$lib/services/auth/auth.openid.services';
+	import { fade } from 'svelte/transition';
 	import ContainerCentered from '$lib/components/ui/ContainerCentered.svelte';
 	import Spinner from '$lib/components/ui/Spinner.svelte';
+	import { authenticate } from '$lib/services/auth/auth.openid.services';
 	import { i18n } from '$lib/stores/i18n.store';
-	import { fade } from 'svelte/transition';
 
 	let state = $state<'loading' | 'ok' | 'error'>('loading');
 

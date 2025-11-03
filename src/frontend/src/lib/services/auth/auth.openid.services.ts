@@ -1,5 +1,6 @@
 import { CONSOLE_CANISTER_ID, GOOGLE_CLIENT_ID } from '$lib/constants/app.constants';
 import { AuthClientProvider } from '$lib/providers/auth-client.provider';
+import { clearAuthNavOrigin, saveAuthNavOrigin } from '$lib/services/auth/_auth.nav.services';
 import { authStore } from '$lib/stores/auth.store';
 import { i18n } from '$lib/stores/i18n.store';
 import { toasts } from '$lib/stores/toasts.store';
@@ -11,8 +12,12 @@ import { get } from 'svelte/store';
 
 export const signInWithGoogle = async () => {
 	try {
+		saveAuthNavOrigin();
+
 		await signInWithGoogleFn();
 	} catch (err: unknown) {
+		clearAuthNavOrigin();
+
 		toasts.error({
 			text: get(i18n).errors.sign_in,
 			detail: err

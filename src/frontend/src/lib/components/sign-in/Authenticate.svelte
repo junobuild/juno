@@ -7,6 +7,7 @@
 	import Spinner from '$lib/components/ui/Spinner.svelte';
 	import { authenticate } from '$lib/services/auth/auth.openid.services';
 	import { i18n } from '$lib/stores/i18n.store';
+	import { getAndClearAuthNavOrigin } from '$lib/services/auth/_auth.nav.services';
 
 	let state = $state<'loading' | 'ok' | 'error'>('loading');
 
@@ -18,7 +19,10 @@
 			return;
 		}
 
-		setTimeout(async () => await goto('/', { replaceState: true }), 1000);
+		setTimeout(async () => {
+			const redirectUrl = getAndClearAuthNavOrigin();
+			await goto(redirectUrl, { replaceState: true });
+		}, 1000);
 	};
 
 	onMount(signIn);

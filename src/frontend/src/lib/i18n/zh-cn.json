@@ -268,7 +268,7 @@
 	"sign_in_openid": {
 		"in_progress": "请稍候，正在对接您的身份...",
 		"success": "任务就绪！欢迎登船。",
-		"error": "哎呀，对接失败。请重试或联系我们！"
+		"already_signed_in": "你已登录。"
 	},
 	"satellites": {
 		"title": "所有卫星",
@@ -525,6 +525,7 @@
 		"stack_trace": "错误堆栈追踪",
 		"initializing_mission_control": "控制中心初始化失败。",
 		"sign_in": "登录异常，请检查详细错误信息并重试。",
+		"sign_in_openid": "哎呀，对接失败。请重试或联系我们！",
 		"mission_control_sign_out": "控制中心认证失败，您已被登出。",
 		"no_mission_control": "控制中心未初始化。",
 		"cli_missing_params": "缺少URL参数，未提供重定向URL或主体标识。",

@@ -1,6 +1,6 @@
 <script lang="ts">
-	import SignInGoogle from '$lib/components/core/SignInGoogle.svelte';
-	import SignInII from '$lib/components/core/SignInII.svelte';
+	import SignInGoogle from '$lib/components/sign-in/SignInGoogle.svelte';
+	import SignInII from '$lib/components/sign-in/SignInII.svelte';
 	import ContainerCentered from '$lib/components/ui/ContainerCentered.svelte';
 	import { i18n } from '$lib/stores/i18n.store';
 
@@ -33,7 +33,7 @@
 </ContainerCentered>
 
 <style lang="scss">
-	@use '../../../lib/styles/mixins/media';
+	@use '../../styles/mixins/media';
 
 	h1 {
 		padding: 0;

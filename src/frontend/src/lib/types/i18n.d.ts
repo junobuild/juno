@@ -274,7 +274,7 @@ interface I18nSign_in {
 interface I18nSign_in_openid {
 	in_progress: string;
 	success: string;
-	error: string;
+	already_signed_in: string;
 }
 
 interface I18nSatellites {
@@ -542,6 +542,7 @@ interface I18nErrors {
 	stack_trace: string;
 	initializing_mission_control: string;
 	sign_in: string;
+	sign_in_openid: string;
 	mission_control_sign_out: string;
 	no_mission_control: string;
 	cli_missing_params: string;

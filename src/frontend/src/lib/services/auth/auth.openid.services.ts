@@ -45,14 +45,14 @@ const authenticateWithGoogle = async () => {
 };
 
 export const authenticate = async (): Promise<{
-	success: 'ok' | 'error';
+	result: 'ok' | 'error';
 	err?: unknown;
 }> => {
 	try {
 		await authStore.signInWithOpenId({ signInFn: authenticateWithGoogle });
 
-		return { success: 'ok' };
+		return { result: 'ok' };
 	} catch (err: unknown) {
-		return { success: 'error', err };
+		return { result: 'error', err };
 	}
 };

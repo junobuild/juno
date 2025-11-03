@@ -5,5 +5,7 @@ export interface SignedInIdentity {
 	identity: OptionIdentity;
 }
 
-export type SignInWithAuthClient = (params: { authClient: AuthClient }) => Promise<SignedInIdentity>;
+export type SignInWithAuthClient = (params: {
+	authClient: AuthClient;
+}) => Promise<SignedInIdentity>;
 export type SignInWithNewAuthClient = () => Promise<void>;

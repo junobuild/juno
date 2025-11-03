@@ -18,7 +18,7 @@ const configAuth = async ({ mainnet, config }) => {
 		version: currentConfig?.version ?? config.version
 	});
 
-	console.log('✅ Authentication configuration updated.')
+	console.log('✅ Authentication configuration updated.');
 };
 
 const buildConfig = async () => {

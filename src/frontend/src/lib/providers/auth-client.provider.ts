@@ -69,4 +69,9 @@ const {
 	setAuthClientStorage
 } = new AuthClientProvider();
 
-export { __test_only_auth_client_storage__, createAuthClient, safeCreateAuthClient, setAuthClientStorage };
+export {
+	__test_only_auth_client_storage__,
+	createAuthClient,
+	safeCreateAuthClient,
+	setAuthClientStorage
+};

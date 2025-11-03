@@ -3,8 +3,8 @@
 	import { onDestroy, onMount, type Snippet } from 'svelte';
 	import { browser } from '$app/environment';
 	import { onNavigate } from '$app/navigation';
-	import AuthBroadcastGuard from '$lib/components/core/AuthBroadcastGuard.svelte';
 	import Overlays from '$lib/components/core/Overlays.svelte';
+	import AuthBroadcastGuard from '$lib/components/guards/AuthBroadcastGuard.svelte';
 	import { layoutNavigationTitle } from '$lib/derived/layout-navigation.derived';
 	import { displayAndCleanLogoutMsg } from '$lib/services/auth/auth.services';
 	import { initMissionControl } from '$lib/services/console.services';

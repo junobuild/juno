@@ -266,8 +266,8 @@
 		"google": "继续使用Google"
 	},
 	"sign_in_openid": {
-		"in_progress": "请稍候，正在对接您的身份…",
-		"success": "任务就绪！欢迎登船 👋",
+		"in_progress": "请稍候，正在对接您的身份...",
+		"success": "任务就绪！欢迎登船。",
 		"error": "哎呀，对接失败。请重试或联系我们！"
 	},
 	"satellites": {

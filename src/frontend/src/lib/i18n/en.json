@@ -267,7 +267,7 @@
 	},
 	"sign_in_openid": {
 		"in_progress": "Stand by, docking your identity...",
-		"success": "Mission ready! Welcome aboard \uD83D\uDC4B",
+		"success": "Mission ready! Welcome aboard.",
 		"error": "Oops, docking sequence failed. Retry or reach out!"
 	},
 	"satellites": {

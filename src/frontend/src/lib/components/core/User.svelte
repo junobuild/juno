@@ -8,6 +8,7 @@
 	import IconRaygun from '$lib/components/icons/IconRaygun.svelte';
 	import IconSignOut from '$lib/components/icons/IconSignOut.svelte';
 	import IconUser from '$lib/components/icons/IconUser.svelte';
+	import Avatar from '$lib/components/ui/Avatar.svelte';
 	import ButtonIcon from '$lib/components/ui/ButtonIcon.svelte';
 	import Popover from '$lib/components/ui/Popover.svelte';
 	import { APP_VERSION } from '$lib/constants/app.constants';
@@ -47,7 +48,7 @@
 <ButtonIcon {onclick} bind:button>
 	{#snippet icon()}
 		{#if notEmptyString(openIdPicture)}
-			<picture><img alt="" src={openIdPicture} /></picture>
+			<Avatar alt="" src={openIdPicture} />
 		{:else}
 			<IconUser size="14px" />
 		{/if}
@@ -126,13 +127,5 @@
 		hr {
 			border-color: var(--color-menu-tint);
 		}
-	}
-
-	picture {
-		width: 100%;
-		height: 100%;
-
-		border-radius: 50%;
-		overflow: hidden;
 	}
 </style>

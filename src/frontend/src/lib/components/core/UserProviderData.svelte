@@ -1,16 +1,16 @@
 <script lang="ts">
-	import { fromNullable, notEmptyString } from '@dfinity/utils';
+	import { fromNullable, nonNullish, notEmptyString } from '@dfinity/utils';
 	import type { ConsoleDid } from '$declarations';
 	import { i18n } from '$lib/stores/i18n.store';
 
 	interface Props {
-		provider: ConsoleDid.Provider;
+		provider?: ConsoleDid.Provider;
 	}
 
 	let { provider }: Props = $props();
 
 	let openId = $derived<ConsoleDid.OpenId | undefined>(
-		'OpenId' in provider ? provider.OpenId : undefined
+		nonNullish(provider) && 'OpenId' in provider ? provider.OpenId : undefined
 	);
 	let openIdData = $derived<ConsoleDid.OpenIdData | undefined>(openId?.data);
 	let openIdPicture = $derived<string | undefined>(fromNullable(openIdData?.picture ?? []));

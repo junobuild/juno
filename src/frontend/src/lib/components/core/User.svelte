@@ -8,12 +8,12 @@
 	import IconRaygun from '$lib/components/icons/IconRaygun.svelte';
 	import IconSignOut from '$lib/components/icons/IconSignOut.svelte';
 	import IconUser from '$lib/components/icons/IconUser.svelte';
+	import Avatar from '$lib/components/ui/Avatar.svelte';
 	import ButtonIcon from '$lib/components/ui/ButtonIcon.svelte';
 	import Popover from '$lib/components/ui/Popover.svelte';
 	import { APP_VERSION } from '$lib/constants/app.constants';
 	import { signOut } from '$lib/services/auth/auth.services';
 	import { i18n } from '$lib/stores/i18n.store';
-	import Avatar from '$lib/components/ui/Avatar.svelte';
 
 	interface Props {
 		provider?: ConsoleDid.Provider;
@@ -48,7 +48,7 @@
 <ButtonIcon {onclick} bind:button>
 	{#snippet icon()}
 		{#if notEmptyString(openIdPicture)}
-			<Avatar src={openIdPicture} alt="" />
+			<Avatar alt="" src={openIdPicture} />
 		{:else}
 			<IconUser size="14px" />
 		{/if}

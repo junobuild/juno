@@ -1,8 +1,8 @@
 <script lang="ts">
 	import { fromNullable, nonNullish, notEmptyString } from '@dfinity/utils';
 	import type { ConsoleDid } from '$declarations';
-	import { i18n } from '$lib/stores/i18n.store';
 	import Avatar from '$lib/components/ui/Avatar.svelte';
+	import { i18n } from '$lib/stores/i18n.store';
 
 	interface Props {
 		provider?: ConsoleDid.Provider;
@@ -22,7 +22,7 @@
 {#if notEmptyString(openIdGivenName) || notEmptyString(openIdEmail)}
 	<div class="container">
 		{#if notEmptyString(openIdPicture)}
-			<Avatar alt={$i18n.sign_in_openid.avatar} src={openIdPicture} size="32px" />
+			<Avatar alt={$i18n.sign_in_openid.avatar} size="32px" src={openIdPicture} />
 		{/if}
 
 		<div class="meta">

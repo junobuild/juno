@@ -9,7 +9,7 @@
 </script>
 
 <picture style={`--avatar-size: ${size}`}
-	><img {alt} {src} referrerPolicy="no-referrer" loading="lazy" /></picture
+	><img {alt} loading="lazy" referrerPolicy="no-referrer" {src} /></picture
 >
 
 <style lang="scss">

@@ -5,6 +5,9 @@ import { SignInInitError } from '$lib/types/errors';
 import { container } from '$lib/utils/juno.utils';
 import { isNullish } from '@dfinity/utils';
 import { authenticate as authenticateApi, requestJwt } from '@junobuild/auth';
+import { toasts } from '$lib/stores/toasts.store';
+import { get } from 'svelte/store';
+import { i18n } from '$lib/stores/i18n.store';
 
 export const signInWithGoogle = async () => {
 	if (isNullish(GOOGLE_CLIENT_ID)) {
@@ -53,6 +56,11 @@ export const authenticate = async (): Promise<{
 
 		return { result: 'ok' };
 	} catch (err: unknown) {
+		toasts.error({
+			text: get(i18n).errors.stack_trace,
+			detail: err
+		});
+
 		return { result: 'error', err };
 	}
 };

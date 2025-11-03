@@ -265,6 +265,11 @@
 		"internet_identity_short": "Continue with Identity",
 		"google": "Continue with Google"
 	},
+	"sign_in_openid": {
+		"in_progress": "Stand by, docking your identity...",
+		"success": "Mission ready! Welcome aboard \uD83D\uDC4B",
+		"error": "Oops, docking sequence failed. Retry or reach out!"
+	},
 	"satellites": {
 		"title": "Satellites",
 		"launch": "Launch a new satellite",
@@ -517,6 +522,7 @@
 	},
 	"errors": {
 		"no_identity": "Unexpected error. No identity provided.",
+		"stack_trace": "Stack trace of the error",
 		"initializing_mission_control": "Mission control center cannot be initialized.",
 		"sign_in": "An error occurred during sign-in. Please check the error details and try again.",
 		"mission_control_sign_out": "You have been signed out because your Mission Control could not be certified.",

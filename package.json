@@ -127,7 +127,7 @@
 		"@junobuild/auth": "^0.0.3-next-2025-11-02.3",
 		"@junobuild/cdn": "^1.3.3-next-2025-11-02.2",
 		"@junobuild/core": "^2.2.1-next-2025-11-02.2",
-		"@junobuild/ic-client": "^3.1.4-next-2025-11-02.2",
+		"@junobuild/ic-client": "^3.1.4-next-2025-11-02.3",
 		"@junobuild/storage": "^1.3.3-next-2025-11-02.2",
 		"@junobuild/utils": "^0.2.1-next-2025-11-02.2",
 		"@zip.js/zip.js": "^2.8.2",

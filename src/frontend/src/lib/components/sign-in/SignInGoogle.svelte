@@ -1,7 +1,7 @@
 <script lang="ts">
 	import IconGoogle from '$lib/components/icons/IconGoogle.svelte';
 	import { testIds } from '$lib/constants/test-ids.constants';
-	import { signInWithGoogle } from '$lib/services/auth/auth.services';
+	import { signInWithGoogle } from '$lib/services/auth/auth.openid.services';
 	import { isBusy } from '$lib/stores/busy.store';
 	import { i18n } from '$lib/stores/i18n.store';
 	import { testId } from '$lib/utils/test.utils';

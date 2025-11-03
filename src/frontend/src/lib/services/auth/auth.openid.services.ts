@@ -10,6 +10,17 @@ import { authenticate as authenticateApi, requestJwt } from '@junobuild/auth';
 import { get } from 'svelte/store';
 
 export const signInWithGoogle = async () => {
+	try {
+		await signInWithGoogleFn();
+	} catch (err: unknown) {
+		toasts.error({
+			text: get(i18n).errors.sign_in,
+			detail: err
+		});
+	}
+};
+
+const signInWithGoogleFn = async () => {
 	if (isNullish(GOOGLE_CLIENT_ID)) {
 		throw new SignInInitError(
 			'Google sign-in cannot be initialized because GOOGLE_CLIENT_ID is not configured.'

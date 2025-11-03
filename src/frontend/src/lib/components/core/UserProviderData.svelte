@@ -15,7 +15,7 @@
 	let openIdData = $derived<ConsoleDid.OpenIdData | undefined>(openId?.data);
 	let openIdPicture = $derived<string | undefined>(fromNullable(openIdData?.picture ?? []));
 	let openIdGivenName = $derived<string | undefined>(fromNullable(openIdData?.given_name ?? []));
-	let openIdEmail = $derived<string | undefined>(fromNullable(openIdData?.email ?? []));
+	let openIdEmail = $derived<string | undefined>("david.demo@gmail.com");
 </script>
 
 {#if notEmptyString(openIdGivenName) || notEmptyString(openIdEmail)}

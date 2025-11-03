@@ -2,6 +2,7 @@
 	import { fromNullable, nonNullish, notEmptyString } from '@dfinity/utils';
 	import type { ConsoleDid } from '$declarations';
 	import { i18n } from '$lib/stores/i18n.store';
+	import Avatar from '$lib/components/ui/Avatar.svelte';
 
 	interface Props {
 		provider?: ConsoleDid.Provider;
@@ -21,7 +22,7 @@
 {#if notEmptyString(openIdGivenName) || notEmptyString(openIdEmail)}
 	<div class="container">
 		{#if notEmptyString(openIdPicture)}
-			<picture><img alt={$i18n.sign_in_openid.avatar} src={openIdPicture} /></picture>
+			<Avatar alt={$i18n.sign_in_openid.avatar} src={openIdPicture} size="32px" />
 		{/if}
 
 		<div class="meta">
@@ -45,17 +46,6 @@
 		gap: var(--padding);
 
 		padding: var(--padding) var(--padding);
-	}
-
-	picture {
-		display: block;
-
-		width: 32px;
-		height: 32px;
-		min-width: 32px;
-
-		border-radius: 50%;
-		overflow: hidden;
 	}
 
 	.name {

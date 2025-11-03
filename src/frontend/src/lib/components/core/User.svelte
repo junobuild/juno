@@ -13,6 +13,7 @@
 	import { APP_VERSION } from '$lib/constants/app.constants';
 	import { signOut } from '$lib/services/auth/auth.services';
 	import { i18n } from '$lib/stores/i18n.store';
+	import Avatar from '$lib/components/ui/Avatar.svelte';
 
 	interface Props {
 		provider?: ConsoleDid.Provider;
@@ -47,7 +48,7 @@
 <ButtonIcon {onclick} bind:button>
 	{#snippet icon()}
 		{#if notEmptyString(openIdPicture)}
-			<picture><img alt="" src={openIdPicture} /></picture>
+			<Avatar src={openIdPicture} alt="" />
 		{:else}
 			<IconUser size="14px" />
 		{/if}
@@ -126,13 +127,5 @@
 		hr {
 			border-color: var(--color-menu-tint);
 		}
-	}
-
-	picture {
-		width: 100%;
-		height: 100%;
-
-		border-radius: 50%;
-		overflow: hidden;
 	}
 </style>

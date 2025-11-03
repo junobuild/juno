@@ -12,7 +12,10 @@
 	import ButtonMenu from '$lib/components/ui/ButtonMenu.svelte';
 	import Header from '$lib/components/ui/Header.svelte';
 	import { authSignedIn } from '$lib/derived/auth.derived';
-	import { missionControlIdDerived } from '$lib/derived/mission-control.derived';
+	import {
+		missionControlIdDerived,
+		missionControlIdLoaded
+	} from '$lib/derived/mission-control.derived';
 	import { provider } from '$lib/derived/provider.derived';
 	import { isSkylab } from '$lib/env/app.env';
 	import { layoutTitleIntersecting } from '$lib/stores/layout-intersecting.store';
@@ -54,17 +57,17 @@
 	</div>
 
 	<div>
-		{#if $authSignedIn && nonNullish($missionControlIdDerived)}
-			<div in:fade>
-				<Notifications />
+		{#if $authSignedIn && $missionControlIdLoaded}
+			{#if nonNullish($missionControlIdDerived)}
+				<div in:fade>
+					<Notifications />
 
-				<NavbarSpotlight />
+					<NavbarSpotlight />
 
-				<NavbarWallet missionControlId={$missionControlIdDerived} />
-			</div>
-		{/if}
+					<NavbarWallet missionControlId={$missionControlIdDerived} />
+				</div>
+			{/if}
 
-		{#if $authSignedIn}
 			<User provider={$provider} />
 		{/if}
 	</div>

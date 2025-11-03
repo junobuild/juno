@@ -1,6 +1,5 @@
 <script lang="ts">
 	import IconIc from '$lib/components/icons/IconIC.svelte';
-	import IconNFID from '$lib/components/icons/IconNFID.svelte';
 	import IconPasskey from '$lib/components/icons/IconPasskey.svelte';
 	import { i18n } from '$lib/stores/i18n.store';
 </script>
@@ -17,11 +16,6 @@
 		<tbody>
 			<tr>
 				<td><span class="provider"><IconIc /> Internet Identity</span></td>
-				<td class="status">{$i18n.core.enabled}</td>
-			</tr>
-
-			<tr>
-				<td><span class="provider"><IconNFID /> NFID</span></td>
 				<td class="status">{$i18n.core.enabled}</td>
 			</tr>
 

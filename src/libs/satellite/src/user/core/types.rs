@@ -13,6 +13,7 @@ pub mod state {
     #[serde(rename_all = "snake_case")]
     pub enum AuthProvider {
         InternetIdentity,
+        #[deprecated(note = "Support for NFID is deprecated in the tooling and documentation")]
         Nfid,
         #[serde(rename = "webauthn")]
         WebAuthn,

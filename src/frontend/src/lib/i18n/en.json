@@ -268,7 +268,7 @@
 	"sign_in_openid": {
 		"in_progress": "Stand by, docking your identity...",
 		"success": "Mission ready! Welcome aboard.",
-		"error": "Oops, docking sequence failed. Retry or reach out!"
+		"already_signed_in": "You are already signed in."
 	},
 	"satellites": {
 		"title": "Satellites",
@@ -525,6 +525,7 @@
 		"stack_trace": "Stack trace of the error",
 		"initializing_mission_control": "Mission control center cannot be initialized.",
 		"sign_in": "An error occurred during sign-in. Please check the error details and try again.",
+		"sign_in_openid": "Oops, docking sequence failed. Retry or reach out!",
 		"mission_control_sign_out": "You have been signed out because your Mission Control could not be certified.",
 		"no_mission_control": "Mission control center is not initialized.",
 		"cli_missing_params": "Missing URL parameters. Either the redirection URL or principal is not provided.",

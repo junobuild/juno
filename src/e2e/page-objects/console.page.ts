@@ -23,9 +23,9 @@ export class ConsolePage extends IdentityPage {
 		await this.page.goto('/');
 	}
 
-	async signIn(): Promise<void> {
-		this.identity = await this.#consoleIIPage.signInWithNewIdentity({
-			selector: `[data-tid=${testIds.auth.signIn}]`
+	async signInWithII(): Promise<void> {
+		this.iiAnchor = await this.#consoleIIPage.signInWithNewIdentity({
+			selector: `[data-tid=${testIds.auth.signInII}]`
 		});
 	}
 

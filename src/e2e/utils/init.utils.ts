@@ -24,7 +24,7 @@ export const initTestSuite = (): (() => ConsolePage) => {
 
 		await consolePage.goto();
 
-		await consolePage.signIn();
+		await consolePage.signInWithII();
 	});
 
 	testWithII.afterAll(async () => {

@@ -4,12 +4,17 @@
 	import type { SatelliteDid } from '$declarations';
 	import Value from '$lib/components/ui/Value.svelte';
 	import { i18n } from '$lib/stores/i18n.store';
-	import type { JunoModalEditAuthConfigDetail } from '$lib/types/modal';
+	import type {
+		JunoModalEditAuthConfigDetailCore,
+		JunoModalEditAuthConfigDetailII
+	} from '$lib/types/modal';
 
 	interface Props {
 		config: SatelliteDid.AuthenticationConfig | undefined;
 		supportConfig: boolean;
-		openModal: (params: Pick<JunoModalEditAuthConfigDetail, 'edit'>) => Promise<void>;
+		openModal: (
+			params: JunoModalEditAuthConfigDetailCore | JunoModalEditAuthConfigDetailII
+		) => Promise<void>;
 	}
 
 	let { config, supportConfig, openModal }: Props = $props();
@@ -22,6 +27,10 @@
 			fromNullishNullable(config?.internet_identity)?.external_alternative_origins
 		)
 	);
+	const openEditModal = async () =>
+		await openModal({
+			internet_identity: null
+		});
 </script>
 
 <div class="card-container with-title">
@@ -60,11 +69,7 @@
 	</div>
 </div>
 
-<button
-	disabled={!supportConfig}
-	onclick={async () => await openModal({ edit: 'internet_identity' })}
-	in:fade>{$i18n.core.configure}</button
->
+<button disabled={!supportConfig} onclick={openEditModal} in:fade>{$i18n.core.configure}</button>
 
 <style lang="scss">
 	@use '../../styles/mixins/text';

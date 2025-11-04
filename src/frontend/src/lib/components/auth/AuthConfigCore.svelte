@@ -5,7 +5,11 @@
 	import SkeletonText from '$lib/components/ui/SkeletonText.svelte';
 	import Value from '$lib/components/ui/Value.svelte';
 	import { i18n } from '$lib/stores/i18n.store';
-	import type { JunoModalEditAuthConfigDetail } from '$lib/types/modal';
+	import type {
+		JunoModalEditAuthConfigDetail,
+		JunoModalEditAuthConfigDetailCore,
+		JunoModalEditAuthConfigDetailII
+	} from '$lib/types/modal';
 	import { i18nFormat } from '$lib/utils/i18n.utils';
 
 	interface Props {
@@ -13,7 +17,9 @@
 		rule: SatelliteDid.Rule | undefined;
 		supportConfig: boolean;
 		supportSettings: boolean;
-		openModal: (params: Pick<JunoModalEditAuthConfigDetail, 'edit'>) => Promise<void>;
+		openModal: (
+			params: JunoModalEditAuthConfigDetailCore | JunoModalEditAuthConfigDetailII
+		) => Promise<void>;
 	}
 
 	let { config, rule, supportConfig, supportSettings, openModal }: Props = $props();
@@ -26,6 +32,13 @@
 		const rateConfig = fromNullishNullable(rule?.rate_config);
 		maxTokens = nonNullish(rateConfig?.max_tokens) ? Number(rateConfig.max_tokens) : undefined;
 	});
+
+	const openEditModal = async () =>
+		await openModal({
+			core: {
+				rule
+			}
+		});
 </script>
 
 <div class="card-container with-title">
@@ -81,10 +94,8 @@
 	</div>
 </div>
 
-<button
-	disabled={!supportConfig || !supportSettings}
-	onclick={async () => await openModal({ edit: 'core' })}
-	in:fade>{$i18n.core.edit_config}</button
+<button disabled={!supportConfig || !supportSettings} onclick={openEditModal} in:fade
+	>{$i18n.core.edit_config}</button
 >
 
 <style lang="scss">

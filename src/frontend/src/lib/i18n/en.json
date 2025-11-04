@@ -364,6 +364,8 @@
 		"main_domain": "Main domain (\"derivation origin\")",
 		"not_configured": "Not configured",
 		"edit_configuration": "Update the configuration of your authentication using the form below.",
+		"edit_internet_identity": "Configure the Internet Identity settings below.",
+		"edit_google": "Configure the Google authentication settings below.",
 		"main_domain_warn": "You are about to change your primary domain. Please ensure this is the desired action, as all existing users will no longer be recognized by your app.",
 		"external_alternative_origins": "External alternative origins",
 		"external_alternative_origins_placeholder": "A comma-separated list of external domains to allow for derivation",

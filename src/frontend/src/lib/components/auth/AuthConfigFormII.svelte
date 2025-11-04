@@ -2,7 +2,7 @@
 	import { fromNullable, fromNullishNullable, isNullish, nonNullish } from '@dfinity/utils';
 	import { fade } from 'svelte/transition';
 	import type { SatelliteDid, MissionControlDid } from '$declarations';
-	import AuthConfigAdvancedOptions from '$lib/components/auth/AuthConfigAdvancedOptions.svelte';
+	import AuthConfigFormIIOptions from '$lib/components/auth/AuthConfigFormIIOptions.svelte';
 	import Value from '$lib/components/ui/Value.svelte';
 	import Warning from '$lib/components/ui/Warning.svelte';
 	import { sortedSatelliteCustomDomains } from '$lib/derived/satellite-custom-domains.derived';
@@ -84,7 +84,7 @@
 			</Value>
 		</div>
 
-		<AuthConfigAdvancedOptions {config} bind:externalAlternativeOrigins />
+		<AuthConfigFormIIOptions {config} bind:externalAlternativeOrigins />
 
 		{#if warnDerivationOrigin}
 			<div class="warn" in:fade>

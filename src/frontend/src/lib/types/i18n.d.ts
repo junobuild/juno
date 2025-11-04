@@ -95,6 +95,21 @@ interface I18nCore {
 	staging: string;
 	test: string;
 	unspecified: string;
+	an_hour: string;
+	two_hours: string;
+	four_hours: string;
+	eight_hours: string;
+	half_day: string;
+	a_day: string;
+	a_week: string;
+	two_weeks: string;
+	a_month: string;
+	three_months: string;
+	six_months: string;
+	a_year: string;
+	two_years: string;
+	five_years: string;
+	custom: string;
 }
 
 interface I18nCanisters {
@@ -246,12 +261,6 @@ interface I18nCanisters {
 	risk: string;
 	of_cycles_needed: string;
 	only: string;
-	a_month: string;
-	three_months: string;
-	six_months: string;
-	a_year: string;
-	two_years: string;
-	five_years: string;
 	reload_initiated: string;
 }
 
@@ -374,8 +383,8 @@ interface I18nAuthentication {
 	main_domain: string;
 	not_configured: string;
 	edit_configuration: string;
-	edit_internet_identity: string;
-	edit_google: string;
+	edit_provider: string;
+	edit_to_enable_provider: string;
 	main_domain_warn: string;
 	external_alternative_origins: string;
 	external_alternative_origins_placeholder: string;
@@ -384,6 +393,14 @@ interface I18nAuthentication {
 	no_restrictions: string;
 	one_identity: string;
 	identities: string;
+	client_id: string;
+	client_id_placeholder: string;
+	session_duration: string;
+	allowed_targets: string;
+	allowed_targets_placeholder: string;
+	target_your_satellite: string;
+	target_modules: string;
+	in_nanoseconds: string;
 }
 
 interface I18nDatastore {
@@ -456,12 +473,6 @@ interface I18nAnalytics {
 	analytics_updated: string;
 	adjust_periodicity: string;
 	periodicity: string;
-	four_hours: string;
-	eight_hours: string;
-	half_day: string;
-	one_day: string;
-	a_week: string;
-	a_month: string;
 	why_periodicity: string;
 	periodicity_impact: string;
 }
@@ -652,6 +663,7 @@ interface I18nErrors {
 	auth_rate_config_update: string;
 	auth_domain_config: string;
 	auth_external_alternative_origins: string;
+	auth_invalid_google_client_id: string;
 	mission_control_not_loaded: string;
 	mission_control_settings_not_loaded: string;
 	mission_control_user_data_not_loaded: string;
@@ -900,7 +912,6 @@ interface I18nMonitoring {
 	choose_method: string;
 	basic: string;
 	basic_description: string;
-	custom: string;
 	custom_description: string;
 	default: string;
 	default_description: string;

@@ -4,17 +4,12 @@
 	import type { SatelliteDid } from '$declarations';
 	import Value from '$lib/components/ui/Value.svelte';
 	import { i18n } from '$lib/stores/i18n.store';
-	import type {
-		JunoModalEditAuthConfigDetailCore,
-		JunoModalEditAuthConfigDetailII
-	} from '$lib/types/modal';
+	import type { JunoModalEditAuthConfigDetailType } from '$lib/types/modal';
 
 	interface Props {
 		config: SatelliteDid.AuthenticationConfig | undefined;
 		supportConfig: boolean;
-		openModal: (
-			params: JunoModalEditAuthConfigDetailCore | JunoModalEditAuthConfigDetailII
-		) => Promise<void>;
+		openModal: (params: JunoModalEditAuthConfigDetailType) => Promise<void>;
 	}
 
 	let { config, supportConfig, openModal }: Props = $props();
@@ -27,6 +22,7 @@
 			fromNullishNullable(config?.internet_identity)?.external_alternative_origins
 		)
 	);
+
 	const openEditModal = async () =>
 		await openModal({
 			internet_identity: null

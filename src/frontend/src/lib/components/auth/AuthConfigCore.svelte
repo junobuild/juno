@@ -5,11 +5,7 @@
 	import SkeletonText from '$lib/components/ui/SkeletonText.svelte';
 	import Value from '$lib/components/ui/Value.svelte';
 	import { i18n } from '$lib/stores/i18n.store';
-	import type {
-		JunoModalEditAuthConfigDetail,
-		JunoModalEditAuthConfigDetailCore,
-		JunoModalEditAuthConfigDetailII
-	} from '$lib/types/modal';
+	import type { JunoModalEditAuthConfigDetailType } from '$lib/types/modal';
 	import { i18nFormat } from '$lib/utils/i18n.utils';
 
 	interface Props {
@@ -17,9 +13,7 @@
 		rule: SatelliteDid.Rule | undefined;
 		supportConfig: boolean;
 		supportSettings: boolean;
-		openModal: (
-			params: JunoModalEditAuthConfigDetailCore | JunoModalEditAuthConfigDetailII
-		) => Promise<void>;
+		openModal: (params: JunoModalEditAuthConfigDetailType) => Promise<void>;
 	}
 
 	let { config, rule, supportConfig, supportSettings, openModal }: Props = $props();

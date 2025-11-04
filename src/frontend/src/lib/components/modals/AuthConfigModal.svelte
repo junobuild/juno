@@ -1,13 +1,16 @@
 <script lang="ts">
 	import type { Principal } from '@dfinity/principal';
+	import type { PrincipalText } from '@dfinity/zod-schemas';
 	import AuthConfigFormCore from '$lib/components/auth/AuthConfigFormCore.svelte';
+	import AuthConfigFormGoogle from '$lib/components/auth/AuthConfigFormGoogle.svelte';
 	import AuthConfigFormII from '$lib/components/auth/AuthConfigFormII.svelte';
 	import Modal from '$lib/components/ui/Modal.svelte';
 	import SpinnerModal from '$lib/components/ui/SpinnerModal.svelte';
 	import {
 		updateAuthConfigRules,
 		updateAuthConfigInternetIdentity,
-		type UpdateAuthConfigResult
+		type UpdateAuthConfigResult,
+		updateAuthConfigGoogle
 	} from '$lib/services/auth/auth.config.services';
 	import { authStore } from '$lib/stores/auth.store';
 	import { wizardBusy } from '$lib/stores/busy.store';
@@ -28,19 +31,24 @@
 
 	let rule = $derived('core' in detail ? detail.core.rule : undefined);
 
-	let edit = $derived<'core' | 'internet_identity'>(
-		'core' in detail ? 'core' : 'internet_identity'
+	let edit = $derived<'core' | 'internet_identity' | 'google'>(
+		'core' in detail ? 'core' : 'internet_identity' in detail ? 'internet_identity' : 'google'
 	);
 
 	let config = $derived(detail.config);
 
+	// Core rules
 	let maxTokens = $state<number | undefined>(undefined);
+	let allowedCallers = $state<Principal[]>([]);
 
+	// Internet Identity
 	let selectedDerivationOrigin = $state<URL | undefined>(undefined);
-
 	let externalAlternativeOrigins = $state('');
 
-	let allowedCallers = $state<Principal[]>([]);
+	// Google
+	let googleClientId = $state('');
+	let googleMaxTimeToLive = $state<bigint | undefined>(undefined);
+	let googleAllowedTargets = $state<PrincipalText[] | null | undefined>(undefined);
 
 	let step: 'init' | 'in_progress' | 'ready' | 'error' = $state('init');
 
@@ -57,19 +65,28 @@
 				config
 			};
 
-			if (edit === 'core') {
-				return updateAuthConfigRules({
+			if (edit === 'internet_identity') {
+				return updateAuthConfigInternetIdentity({
 					...commonPayload,
-					rule,
-					maxTokens,
-					allowedCallers
+					derivationOrigin: selectedDerivationOrigin,
+					externalAlternativeOrigins
 				});
 			}
 
-			return updateAuthConfigInternetIdentity({
+			if (edit === 'google') {
+				return updateAuthConfigGoogle({
+					...commonPayload,
+					clientId: googleClientId,
+					maxTimeToLive: googleMaxTimeToLive,
+					allowedTargets: $state.snapshot(googleAllowedTargets)
+				});
+			}
+
+			return updateAuthConfigRules({
 				...commonPayload,
-				derivationOrigin: selectedDerivationOrigin,
-				externalAlternativeOrigins
+				rule,
+				maxTokens,
+				allowedCallers
 			});
 		};
 
@@ -98,21 +115,30 @@
 		<SpinnerModal>
 			<p>{$i18n.core.updating_configuration}</p>
 		</SpinnerModal>
-	{:else if edit === 'core'}
-		<AuthConfigFormCore
+	{:else if edit === 'google'}
+		<AuthConfigFormGoogle
 			{config}
 			onsubmit={handleSubmit}
-			{rule}
-			bind:maxTokens
-			bind:allowedCallers
+			{satellite}
+			bind:clientId={googleClientId}
+			bind:maxTimeToLive={googleMaxTimeToLive}
+			bind:allowedTargets={googleAllowedTargets}
 		/>
-	{:else}
+	{:else if edit === 'internet_identity'}
 		<AuthConfigFormII
 			{config}
 			onsubmit={handleSubmit}
 			{satellite}
 			bind:selectedDerivationOrigin
 			bind:externalAlternativeOrigins
+		/>
+	{:else}
+		<AuthConfigFormCore
+			{config}
+			onsubmit={handleSubmit}
+			{rule}
+			bind:maxTokens
+			bind:allowedCallers
 		/>
 	{/if}
 </Modal>

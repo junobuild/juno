@@ -60,7 +60,7 @@
 		<label class="radio-group">
 			<input name="strategy" type="radio" value="custom" bind:group={strategy} />
 			<span class="text">
-				<span>{$i18n.monitoring.custom}</span>
+				<span>{$i18n.core.custom}</span>
 				<span class="description">{$i18n.monitoring.custom_description}</span>
 			</span>
 		</label>

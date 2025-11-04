@@ -4,11 +4,7 @@
 	import type { SatelliteDid } from '$declarations';
 	import Value from '$lib/components/ui/Value.svelte';
 	import { i18n } from '$lib/stores/i18n.store';
-	import type {
-		JunoModalEditAuthConfigDetailCore,
-		JunoModalEditAuthConfigDetailII,
-		JunoModalEditAuthConfigDetailType
-	} from '$lib/types/modal';
+	import type { JunoModalEditAuthConfigDetailType } from '$lib/types/modal';
 
 	interface Props {
 		config: SatelliteDid.AuthenticationConfig | undefined;

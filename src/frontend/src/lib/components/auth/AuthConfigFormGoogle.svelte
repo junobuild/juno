@@ -1,20 +1,11 @@
 <script lang="ts">
 	import type { Principal } from '@dfinity/principal';
-	import {
-		fromNullable,
-		fromNullishNullable,
-		isEmptyString,
-		isNullish,
-		nonNullish,
-		notEmptyString
-	} from '@dfinity/utils';
+	import { fromNullable, isEmptyString, nonNullish } from '@dfinity/utils';
 	import { onMount } from 'svelte';
-	import { fade } from 'svelte/transition';
-	import type { SatelliteDid, MissionControlDid } from '$declarations';
+	import type { SatelliteDid } from '$declarations';
 	import AuthConfigFormGoogleOptions from '$lib/components/auth/AuthConfigFormGoogleOptions.svelte';
 	import Input from '$lib/components/ui/Input.svelte';
 	import Value from '$lib/components/ui/Value.svelte';
-	import Warning from '$lib/components/ui/Warning.svelte';
 	import {
 		A_MONTH_NS,
 		A_WEEK_NS,
@@ -27,20 +18,9 @@
 		TWO_HOURS_NS,
 		TWO_WEEKS_NS
 	} from '$lib/constants/auth.constants';
-	import {
-		FIVE_YEARS,
-		ONE_MONTH,
-		ONE_YEAR,
-		SIX_MONTHS,
-		THREE_MONTHS,
-		TWO_YEARS
-	} from '$lib/constants/canister.constants';
-	import { sortedSatelliteCustomDomains } from '$lib/derived/satellite-custom-domains.derived';
 	import { isBusy } from '$lib/stores/busy.store';
 	import { i18n } from '$lib/stores/i18n.store';
-	import type { JunoModalEditCanisterSettingsDetail } from '$lib/types/modal';
 	import { i18nFormat } from '$lib/utils/i18n.utils';
-	import { satelliteUrl as satelliteUrlUtils } from '$lib/utils/satellite.utils';
 
 	interface Props {
 		config: SatelliteDid.AuthenticationConfig | undefined;

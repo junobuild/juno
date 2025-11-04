@@ -5,12 +5,7 @@
 	import SkeletonText from '$lib/components/ui/SkeletonText.svelte';
 	import Value from '$lib/components/ui/Value.svelte';
 	import { i18n } from '$lib/stores/i18n.store';
-	import type {
-		JunoModalEditAuthConfigDetail,
-		JunoModalEditAuthConfigDetailCore,
-		JunoModalEditAuthConfigDetailII,
-		JunoModalEditAuthConfigDetailType
-	} from '$lib/types/modal';
+	import type { JunoModalEditAuthConfigDetailType } from '$lib/types/modal';
 	import { i18nFormat } from '$lib/utils/i18n.utils';
 
 	interface Props {

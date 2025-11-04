@@ -11,12 +11,7 @@
 	import { authStore } from '$lib/stores/auth.store';
 	import { busy } from '$lib/stores/busy.store';
 	import { versionStore } from '$lib/stores/version.store';
-	import type {
-		JunoModalEditAuthConfigDetail,
-		JunoModalEditAuthConfigDetailCore,
-		JunoModalEditAuthConfigDetailII,
-		JunoModalEditAuthConfigDetailType
-	} from '$lib/types/modal';
+	import type { JunoModalEditAuthConfigDetailType } from '$lib/types/modal';
 	import { emit } from '$lib/utils/events.utils';
 
 	interface Props {

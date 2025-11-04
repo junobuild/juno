@@ -1,18 +1,10 @@
 <script lang="ts">
 	import { Principal } from '@dfinity/principal';
-	import {
-		fromNullable,
-		fromNullishNullable,
-		isEmptyString,
-		nonNullish,
-		notEmptyString
-	} from '@dfinity/utils';
+	import { fromNullable, isEmptyString, notEmptyString } from '@dfinity/utils';
 	import { PrincipalTextSchema } from '@dfinity/zod-schemas';
 	import { onMount } from 'svelte';
-	import type { MissionControlDid, SatelliteDid } from '$declarations';
-	import type { OpenIdProviderDelegationConfig } from '$declarations/satellite/satellite.did';
+	import type { SatelliteDid } from '$declarations';
 	import Collapsible from '$lib/components/ui/Collapsible.svelte';
-	import Input from '$lib/components/ui/Input.svelte';
 	import Value from '$lib/components/ui/Value.svelte';
 	import { i18n } from '$lib/stores/i18n.store';
 

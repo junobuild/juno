@@ -9,6 +9,7 @@
 	import { isBusy } from '$lib/stores/busy.store';
 	import { i18n } from '$lib/stores/i18n.store';
 	import { satelliteUrl as satelliteUrlUtils } from '$lib/utils/satellite.utils';
+	import { i18nFormat } from '$lib/utils/i18n.utils';
 
 	interface Props {
 		config: SatelliteDid.AuthenticationConfig | undefined;
@@ -60,7 +61,14 @@
 
 <h2>Internet Identity</h2>
 
-<p>{$i18n.authentication.edit_internet_identity}</p>
+<p>
+	{i18nFormat($i18n.authentication.edit_provider, [
+		{
+			placeholder: '{0}',
+			value: 'Internet Identity'
+		}
+	])}
+</p>
 
 <form class="content" {onsubmit}>
 	<div class="container">

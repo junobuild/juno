@@ -8,7 +8,8 @@
 	import type {
 		JunoModalEditAuthConfigDetail,
 		JunoModalEditAuthConfigDetailCore,
-		JunoModalEditAuthConfigDetailII
+		JunoModalEditAuthConfigDetailII,
+		JunoModalEditAuthConfigDetailType
 	} from '$lib/types/modal';
 	import { i18nFormat } from '$lib/utils/i18n.utils';
 
@@ -17,9 +18,7 @@
 		rule: SatelliteDid.Rule | undefined;
 		supportConfig: boolean;
 		supportSettings: boolean;
-		openModal: (
-			params: JunoModalEditAuthConfigDetailCore | JunoModalEditAuthConfigDetailII
-		) => Promise<void>;
+		openModal: (params: JunoModalEditAuthConfigDetailType) => Promise<void>;
 	}
 
 	let { config, rule, supportConfig, supportSettings, openModal }: Props = $props();

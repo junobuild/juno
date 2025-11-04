@@ -14,6 +14,7 @@
 	import { i18n } from '$lib/stores/i18n.store';
 	import type { JunoModalDetail, JunoModalEditAuthConfigDetail } from '$lib/types/modal';
 	import { emit } from '$lib/utils/events.utils';
+	import AuthConfigFormGoogle from '$lib/components/auth/AuthConfigFormGoogle.svelte';
 
 	interface Props {
 		detail: JunoModalDetail;
@@ -28,19 +29,22 @@
 
 	let rule = $derived('core' in detail ? detail.core.rule : undefined);
 
-	let edit = $derived<'core' | 'internet_identity'>(
-		'core' in detail ? 'core' : 'internet_identity'
+	let edit = $derived<'core' | 'internet_identity' | 'google'>(
+		'core' in detail ? 'core' : 'internet_identity' in detail ? 'internet_identity' : 'google'
 	);
 
 	let config = $derived(detail.config);
 
+	// Core rules
 	let maxTokens = $state<number | undefined>(undefined);
+	let allowedCallers = $state<Principal[]>([]);
 
+	// Internet Identity
 	let selectedDerivationOrigin = $state<URL | undefined>(undefined);
-
 	let externalAlternativeOrigins = $state('');
 
-	let allowedCallers = $state<Principal[]>([]);
+	// Google
+	let googleClientId = $state('');
 
 	let step: 'init' | 'in_progress' | 'ready' | 'error' = $state('init');
 
@@ -106,7 +110,7 @@
 			bind:maxTokens
 			bind:allowedCallers
 		/>
-	{:else}
+	{:else if edit === 'internet_identity'}
 		<AuthConfigFormII
 			{config}
 			onsubmit={handleSubmit}
@@ -114,6 +118,8 @@
 			bind:selectedDerivationOrigin
 			bind:externalAlternativeOrigins
 		/>
+	{:else}
+		<AuthConfigFormGoogle {config} onsubmit={handleSubmit} bind:clientId={googleClientId} />
 	{/if}
 </Modal>
 

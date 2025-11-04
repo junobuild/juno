@@ -14,7 +14,8 @@
 	import type {
 		JunoModalEditAuthConfigDetail,
 		JunoModalEditAuthConfigDetailCore,
-		JunoModalEditAuthConfigDetailII
+		JunoModalEditAuthConfigDetailII,
+		JunoModalEditAuthConfigDetailType
 	} from '$lib/types/modal';
 	import { emit } from '$lib/utils/events.utils';
 
@@ -61,9 +62,7 @@
 		});
 	});
 
-	const openModal = async (
-		params: JunoModalEditAuthConfigDetailCore | JunoModalEditAuthConfigDetailII
-	) => {
+	const openModal = async (params: JunoModalEditAuthConfigDetailType) => {
 		busy.start();
 
 		const { success } = await listCustomDomains({ satelliteId, reload: false });

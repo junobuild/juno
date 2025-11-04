@@ -91,12 +91,21 @@ export interface JunoModalEditOrbiterConfigDetail {
 
 export type JunoModalEditAuthConfigDetail = JunoModalWithSatellite & {
 	config: SatelliteDid.AuthenticationConfig | undefined;
-} & (JunoModalEditAuthConfigDetailCore | JunoModalEditAuthConfigDetailII);
+} & JunoModalEditAuthConfigDetailType;
 
 export interface JunoModalEditAuthConfigDetailCore {
 	core: {
 		rule: SatelliteDid.Rule | undefined;
 	};
+}
+
+export type JunoModalEditAuthConfigDetailType =
+	| JunoModalEditAuthConfigDetailCore
+	| JunoModalEditAuthConfigDetailII
+	| JunoModalEditAuthConfigDetailGoogle;
+
+export interface JunoModalEditAuthConfigDetailGoogle {
+	google: null;
 }
 
 export interface JunoModalEditAuthConfigDetailII {

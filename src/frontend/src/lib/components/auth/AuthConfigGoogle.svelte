@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { fromNullable, isNullish, nonNullish, notEmptyString } from '@dfinity/utils';
+	import { fromNullable, isNullish, nonNullish } from '@dfinity/utils';
 	import { fade } from 'svelte/transition';
 	import type { MissionControlDid, SatelliteDid } from '$declarations';
 	import Value from '$lib/components/ui/Value.svelte';
@@ -14,16 +14,11 @@
 		TWO_HOURS_NS,
 		TWO_WEEKS_NS
 	} from '$lib/constants/auth.constants';
-	import {
-		FIVE_YEARS,
-		ONE_MONTH,
-		ONE_YEAR,
-		SIX_MONTHS,
-		THREE_MONTHS,
-		TWO_YEARS
-	} from '$lib/constants/canister.constants';
 	import { i18n } from '$lib/stores/i18n.store';
-	import type { JunoModalEditAuthConfigDetail } from '$lib/types/modal';
+	import type {
+		JunoModalEditAuthConfigDetail,
+		JunoModalEditAuthConfigDetailType
+	} from '$lib/types/modal';
 	import { secondsToDuration } from '$lib/utils/date.utils';
 	import { i18nFormat } from '$lib/utils/i18n.utils';
 	import { satelliteName } from '$lib/utils/satellite.utils';
@@ -32,7 +27,7 @@
 		satellite: MissionControlDid.Satellite;
 		config: SatelliteDid.AuthenticationConfig | undefined;
 		supportConfig: boolean;
-		openModal: (params: Pick<JunoModalEditAuthConfigDetail, 'edit'>) => Promise<void>;
+		openModal: (params: JunoModalEditAuthConfigDetailType) => Promise<void>;
 	}
 
 	let { satellite, config, supportConfig, openModal }: Props = $props();
@@ -59,6 +54,11 @@
 	let targetsSelf = $derived(
 		targets?.length === 1 && targets[0] === satellite.satellite_id.toText()
 	);
+
+	const openEditModal = async () =>
+		await openModal({
+			google: null
+		});
 </script>
 
 <div class="card-container with-title">
@@ -142,11 +142,7 @@
 	</div>
 </div>
 
-<button
-	disabled={!supportConfig}
-	onclick={async () => await openModal({ edit: 'internet_identity' })}
-	in:fade>{$i18n.core.configure}</button
->
+<button disabled={!supportConfig} onclick={openEditModal} in:fade>{$i18n.core.configure}</button>
 
 <style lang="scss">
 	@use '../../styles/mixins/text';

@@ -382,8 +382,8 @@ interface I18nAuthentication {
 	main_domain: string;
 	not_configured: string;
 	edit_configuration: string;
-	edit_internet_identity: string;
-	edit_google: string;
+	edit_provider: string;
+	edit_to_enable_provider: string;
 	main_domain_warn: string;
 	external_alternative_origins: string;
 	external_alternative_origins_placeholder: string;
@@ -393,6 +393,7 @@ interface I18nAuthentication {
 	one_identity: string;
 	identities: string;
 	client_id: string;
+	client_id_placeholder: string;
 	session_duration: string;
 	allowed_targets: string;
 	target_your_satellite: string;

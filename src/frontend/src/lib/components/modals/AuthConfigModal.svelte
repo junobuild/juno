@@ -126,7 +126,7 @@
 			onsubmit={handleSubmit}
 			bind:clientId={googleClientId}
 			bind:maxTimeToLive={googleMaxTimeToLive}
-			bind:allowedCallers={googleAllowedTargets}
+			bind:allowedTargets={googleAllowedTargets}
 		/>
 	{/if}
 </Modal>

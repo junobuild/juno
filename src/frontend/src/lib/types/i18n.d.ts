@@ -109,6 +109,7 @@ interface I18nCore {
 	a_year: string;
 	two_years: string;
 	five_years: string;
+	custom: string;
 }
 
 interface I18nCanisters {
@@ -662,6 +663,7 @@ interface I18nErrors {
 	auth_rate_config_update: string;
 	auth_domain_config: string;
 	auth_external_alternative_origins: string;
+	auth_invalid_google_client_id: string;
 	mission_control_not_loaded: string;
 	mission_control_settings_not_loaded: string;
 	mission_control_user_data_not_loaded: string;
@@ -910,7 +912,6 @@ interface I18nMonitoring {
 	choose_method: string;
 	basic: string;
 	basic_description: string;
-	custom: string;
 	custom_description: string;
 	default: string;
 	default_description: string;

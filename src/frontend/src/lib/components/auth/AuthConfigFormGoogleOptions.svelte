@@ -1,31 +1,70 @@
 <script lang="ts">
 	import { Principal } from '@dfinity/principal';
-	import { fromNullable, isEmptyString, notEmptyString } from '@dfinity/utils';
+	import { fromNullable, isEmptyString, nonNullish, notEmptyString } from '@dfinity/utils';
 	import { PrincipalTextSchema } from '@dfinity/zod-schemas';
 	import { onMount } from 'svelte';
-	import type { SatelliteDid } from '$declarations';
+	import { quintOut } from 'svelte/easing';
+	import { slide } from 'svelte/transition';
+	import type { MissionControlDid, SatelliteDid } from '$declarations';
 	import Collapsible from '$lib/components/ui/Collapsible.svelte';
 	import Value from '$lib/components/ui/Value.svelte';
 	import { i18n } from '$lib/stores/i18n.store';
+	import { satelliteName } from '$lib/utils/satellite.utils';
 
 	interface Props {
+		satellite: MissionControlDid.Satellite;
 		delegation: SatelliteDid.OpenIdProviderDelegationConfig | undefined;
-		allowedTargets: Principal[];
+		allowedTargets: Principal[] | null | undefined;
 	}
 
-	let { delegation, allowedTargets = $bindable([]) }: Props = $props();
+	let {
+		satellite,
+		delegation,
+		allowedTargets = $bindable<Principal[] | null | undefined>(undefined)
+	}: Props = $props();
 
-	let allowedTargetsInput = $state<string>(
-		(fromNullable(delegation?.targets ?? []) ?? []).map((target) => target.toText()).join('\n')
+	let targets = $state(
+		// delegation.targets===[] (exactly equals because delegation is undefined by default)
+		nonNullish(delegation) && nonNullish(delegation.targets) && delegation.targets.length === 0
+			? null
+			: // delegation.targets===[[]]
+				(fromNullable(delegation?.targets ?? []) ?? []).length === 0
+				? undefined
+				: (fromNullable(delegation?.targets ?? []) ?? []).map((p) => p.toText())
 	);
 
-	$effect(() => {
-		allowedTargets = allowedTargetsInput
+	let allowedTargetsInput = $state<string>((targets ?? []).map((target) => target).join('\n'));
+
+	let targetsType = $state<'default' | 'none' | 'custom'>(
+		targets === null ? 'none' : targets === undefined ? 'default' : 'custom'
+	);
+
+	const setTargets = (targetsInput: string) => {
+		allowedTargets = targetsInput
 			.split(/[\n,]+/)
 			.map((input) => input.toLowerCase().trim())
 			.filter(notEmptyString)
 			.filter((input) => PrincipalTextSchema.safeParse(input).success)
 			.map((input) => Principal.fromText(input));
+	};
+
+	$effect(() => {
+		switch (targetsType) {
+			case 'default':
+				allowedTargets = undefined;
+				break;
+			case 'none':
+				allowedTargets = null;
+				break;
+			case 'custom':
+				setTargets(allowedTargetsInput);
+				setTimeout(() => collapsibleRef?.updateMaxHeight(), 250);
+				break;
+		}
+	});
+
+	$effect(() => {
+		setTargets(allowedTargetsInput);
 	});
 
 	let collapsibleRef: Collapsible | undefined = $state(undefined);
@@ -50,11 +89,25 @@
 				{$i18n.authentication.allowed_targets}
 			{/snippet}
 
-			<textarea
-				placeholder={$i18n.authentication.allowed_targets_placeholder}
-				rows="5"
-				bind:value={allowedTargetsInput}
-			></textarea>
+			<div>
+				<select bind:value={targetsType}>
+					<option value="default">
+						{$i18n.authentication.target_your_satellite} {satelliteName(satellite)}</option
+					>
+					<option value="none"> {$i18n.authentication.no_restrictions} </option>
+					<option value="custom"> {$i18n.core.custom} </option>
+				</select>
+			</div>
+
+			{#if targetsType === 'custom'}
+				<div in:slide={{ delay: 0, duration: 150, easing: quintOut, axis: 'y' }}>
+					<textarea
+						placeholder={$i18n.authentication.allowed_targets_placeholder}
+						rows="5"
+						bind:value={allowedTargetsInput}
+					></textarea>
+				</div>
+			{/if}
 		</Value>
 	</div>
 </Collapsible>

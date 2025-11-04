@@ -1,5 +1,7 @@
 import type { MissionControlDid, SatelliteDid } from '$declarations';
+import type { OpenIdProviderDelegationConfig } from '$declarations/satellite/satellite.did';
 import { getAuthConfig as getAuthConfigApi, setAuthConfig, setRule } from '$lib/api/satellites.api';
+import { GOOGLE_CLIENT_ID_REGEX } from '$lib/constants/auth.constants';
 import { DEFAULT_RATE_CONFIG_TIME_PER_TOKEN_NS } from '$lib/constants/data.constants';
 import { DbCollectionType } from '$lib/constants/rules.constants';
 import { SATELLITE_v0_0_17 } from '$lib/constants/version.constants';
@@ -44,6 +46,12 @@ interface UpdateAuthConfigRulesParams extends UpdateAuthConfigParams {
 interface UpdateAuthConfigIIParams extends UpdateAuthConfigParams {
 	externalAlternativeOrigins: string;
 	derivationOrigin: Option<URL>;
+}
+
+interface UpdateAuthConfigGoogleParams extends UpdateAuthConfigParams {
+	clientId: string;
+	maxTimeToLive: bigint | undefined;
+	allowedTargets: Principal[] | null | undefined;
 }
 
 export const updateAuthConfigRules = async ({
@@ -110,10 +118,46 @@ export const updateAuthConfigInternetIdentity = async ({
 		return { success: 'error' };
 	}
 
-	const { result: resultConfig } = await updateConfigCoreInternetIdentity({
+	const { result: resultConfig } = await updateConfigInternetIdentity({
 		satellite,
 		derivationOrigin,
 		externalOrigins,
+		config,
+		identity
+	});
+
+	if (resultConfig === 'error') {
+		return { success: 'error' };
+	}
+
+	return { success: 'ok' };
+};
+
+export const updateAuthConfigGoogle = async ({
+	satellite,
+	config,
+	clientId,
+	maxTimeToLive,
+	allowedTargets,
+	identity
+}: UpdateAuthConfigGoogleParams): Promise<UpdateAuthConfigResult> => {
+	const labels = get(i18n);
+
+	if (isNullish(identity) || isNullish(identity?.getPrincipal())) {
+		toasts.error({ text: labels.core.not_logged_in });
+		return { success: 'error' };
+	}
+
+	if (!GOOGLE_CLIENT_ID_REGEX.test(clientId)) {
+		toasts.error({ text: labels.errors.auth_invalid_google_client_id });
+		return { success: 'error' };
+	}
+
+	const { result: resultConfig } = await updateConfigGoogle({
+		satellite,
+		clientId,
+		maxTimeToLive,
+		allowedTargets,
 		config,
 		identity
 	});
@@ -157,8 +201,7 @@ const updateConfigRules = async ({
 		config: {
 			internet_identity: config?.internet_identity ?? [],
 			rules: unmodifiedRules ? (config?.rules ?? []) : editConfigRules,
-			// TODO: support for Google configuration in the Console UI
-			openid: [],
+			openid: config?.openid ?? [],
 			version: config?.version ?? []
 		},
 		satellite,
@@ -166,7 +209,7 @@ const updateConfigRules = async ({
 	});
 };
 
-const updateConfigCoreInternetIdentity = async ({
+const updateConfigInternetIdentity = async ({
 	satellite,
 	config,
 	derivationOrigin,
@@ -193,8 +236,99 @@ const updateConfigCoreInternetIdentity = async ({
 		config: {
 			internet_identity: editConfig?.internet_identity ?? config?.internet_identity ?? [],
 			rules: config?.rules ?? [],
-			// TODO: support for Google configuration in the Console UI
-			openid: [],
+			openid: config?.openid ?? [],
+			version: config?.version ?? []
+		},
+		satellite,
+		identity
+	});
+};
+
+const updateConfigGoogle = async ({
+	satellite,
+	config,
+	clientId,
+	maxTimeToLive,
+	allowedTargets,
+	identity
+}: Pick<
+	UpdateAuthConfigGoogleParams,
+	'config' | 'clientId' | 'maxTimeToLive' | 'allowedTargets' | 'satellite'
+> &
+	Required<Pick<UpdateAuthConfigParams, 'identity'>>): Promise<{
+	result: 'skip' | 'success' | 'error';
+	err?: unknown;
+}> => {
+	const openid = fromNullable(config?.openid ?? []);
+	const google = openid?.providers.find(([key]) => 'Google' in key);
+	const providerData = google?.[1];
+	const delegation = fromNullable(providerData?.delegation ?? []);
+
+	const sameClientId = providerData?.client_id === clientId;
+
+	const updateMaxTimeToLive =
+		maxTimeToLive === DEFAULT_RATE_CONFIG_TIME_PER_TOKEN_NS ? undefined : maxTimeToLive;
+
+	const sameMaxTimeToLive =
+		fromNullable(delegation?.max_time_to_live ?? []) === updateMaxTimeToLive;
+
+	const targets =
+		// delegation.targets===[] (exactly equals because delegation is undefined by default)
+		nonNullish(delegation) && nonNullish(delegation.targets) && delegation.targets.length === 0
+			? null
+			: // delegation.targets===[[]]
+				(fromNullable(delegation?.targets ?? []) ?? []).length === 0
+				? undefined
+				: (fromNullable(delegation?.targets ?? []) ?? []).map((p) => p.toText());
+
+	const sameTargets =
+		(isNullish(allowedTargets) && allowedTargets === targets) ||
+		(allowedTargets?.length === targets?.length &&
+			(allowedTargets ?? [])
+				.map((p) => p.toText())
+				.find((allowedTarget) => !(targets ?? []).includes(allowedTarget)) === undefined);
+
+	if (sameClientId && sameMaxTimeToLive && sameTargets) {
+		return { result: 'skip' };
+	}
+
+	const updateDelegation: OpenIdProviderDelegationConfig | undefined = nonNullish(
+		updateMaxTimeToLive
+	)
+		? {
+				max_time_to_live: toNullable(updateMaxTimeToLive),
+				targets: allowedTargets === null ? [] : [allowedTargets ?? []]
+			}
+		: allowedTargets === null
+			? {
+					max_time_to_live: toNullable(),
+					targets: []
+				}
+			: (allowedTargets ?? []).length > 0
+				? {
+						max_time_to_live: toNullable(),
+						targets: [allowedTargets ?? []]
+					}
+				: undefined;
+
+	return await updateConfig({
+		config: {
+			internet_identity: config?.internet_identity ?? [],
+			rules: config?.rules ?? [],
+			openid: [
+				{
+					providers: [
+						[
+							{ Google: null },
+							{
+								client_id: clientId,
+								delegation: toNullable(updateDelegation)
+							}
+						]
+					],
+					observatory_id: toNullable()
+				}
+			],
 			version: config?.version ?? []
 		},
 		satellite,

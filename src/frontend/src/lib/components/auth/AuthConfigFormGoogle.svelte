@@ -2,7 +2,7 @@
 	import type { Principal } from '@dfinity/principal';
 	import { fromNullable, isEmptyString, nonNullish } from '@dfinity/utils';
 	import { onMount } from 'svelte';
-	import type { SatelliteDid } from '$declarations';
+	import type { MissionControlDid, SatelliteDid } from '$declarations';
 	import AuthConfigFormGoogleOptions from '$lib/components/auth/AuthConfigFormGoogleOptions.svelte';
 	import Input from '$lib/components/ui/Input.svelte';
 	import Value from '$lib/components/ui/Value.svelte';
@@ -13,6 +13,7 @@
 		AUTH_DEFAULT_MAX_SESSION_TIME_TO_LIVE,
 		EIGHT_HOURS_NS,
 		FOUR_HOURS_NS,
+		GOOGLE_CLIENT_ID_REGEX,
 		HALF_DAY_NS,
 		ONE_DAY_NS,
 		TWO_HOURS_NS,
@@ -23,19 +24,21 @@
 	import { i18nFormat } from '$lib/utils/i18n.utils';
 
 	interface Props {
+		satellite: MissionControlDid.Satellite;
 		config: SatelliteDid.AuthenticationConfig | undefined;
 		onsubmit: ($event: SubmitEvent) => Promise<void>;
 		clientId: string;
 		maxTimeToLive: bigint | undefined;
-		allowedTargets: Principal[];
+		allowedTargets: Principal[] | null | undefined;
 	}
 
 	let {
+		satellite,
 		onsubmit,
 		config,
 		clientId = $bindable(''),
 		maxTimeToLive = $bindable(),
-		allowedTargets = $bindable([])
+		allowedTargets = $bindable(undefined)
 	}: Props = $props();
 
 	let openid = $state(fromNullable(config?.openid ?? []));
@@ -79,9 +82,7 @@
 			BigInt(maxTimeToLiveInput) !== A_MONTH_NS;
 	});
 
-	let disabled = $derived(
-		isEmptyString(clientId) || !/^[0-9]+-[a-z0-9]+\.apps\.googleusercontent\.com$/.test(clientId)
-	);
+	let disabled = $derived(isEmptyString(clientId) || !GOOGLE_CLIENT_ID_REGEX.test(clientId));
 </script>
 
 <h2>Google</h2>
@@ -148,7 +149,7 @@
 			</Value>
 		</div>
 
-		<AuthConfigFormGoogleOptions {delegation} bind:allowedTargets />
+		<AuthConfigFormGoogleOptions {delegation} {satellite} bind:allowedTargets />
 	</div>
 
 	<button disabled={disabled || $isBusy} type="submit">

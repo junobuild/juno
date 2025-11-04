@@ -105,7 +105,8 @@
 		"six_months": "Six months",
 		"a_year": "A year",
 		"two_years": "Two years",
-		"five_years": "Five years"
+		"five_years": "Five years",
+		"custom": "Custom"
 	},
 	"canisters": {
 		"top_up": "Top-up",
@@ -645,6 +646,7 @@
 		"auth_rate_config_update": "Unexpected error(s) while trying to update your authentication settings.",
 		"auth_domain_config": "Unexpected error(s) while trying to update your authentication configuration.",
 		"auth_external_alternative_origins": "External alternative origins are malformed. Please provide a valid domain without a protocol.",
+		"auth_invalid_google_client_id": "Invalid Google client ID pattern detected.",
 		"mission_control_not_loaded": "Your mission control is not yet loaded.",
 		"mission_control_settings_not_loaded": "The settings for the mission control are not yet loaded.",
 		"mission_control_user_data_not_loaded": "Your data (metadata, config, etc) for the mission control are not yet loaded.",
@@ -884,7 +886,6 @@
 		"choose_method": "Choose how you'd like to configure auto-refill:",
 		"basic": "Basic",
 		"basic_description": "Predefined values to quickly set up auto-refill.",
-		"custom": "Custom",
 		"custom_description": "Customize your top-up trigger and amount.",
 		"default": "Your strategy",
 		"default_description": "Use your previously saved default strategy.",

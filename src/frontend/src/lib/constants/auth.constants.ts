@@ -14,3 +14,5 @@ export const TWO_WEEKS_NS = 2n * A_WEEK_NS;
 export const A_MONTH_NS = 30n * ONE_DAY_NS; // 30 days. Max.
 
 export const AUTH_DEFAULT_MAX_SESSION_TIME_TO_LIVE = DAY_NANOSECONDS;
+
+export const GOOGLE_CLIENT_ID_REGEX = /^[0-9]+-[a-z0-9]+\.apps\.googleusercontent\.com$/;

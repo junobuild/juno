@@ -105,7 +105,8 @@
 		"six_months": "六个月",
 		"a_year": "一年",
 		"two_years": "两年",
-		"five_years": "五年"
+		"five_years": "五年",
+		"custom": "自定义"
 	},
 	"canisters": {
 		"top_up": "充值",
@@ -876,7 +877,6 @@
 		"choose_method": "选择自动充值配置：",
 		"basic": "基础",
 		"basic_description": "使用预设值以快速设置自动充值。",
-		"custom": "自定义",
 		"custom_description": "自定义充值触发阈值和金额。",
 		"default": "当前策略",
 		"default_description": "使用您之前保存的默认策略。",

@@ -8,7 +8,8 @@
 	import {
 		updateAuthConfigRules,
 		updateAuthConfigInternetIdentity,
-		type UpdateAuthConfigResult
+		type UpdateAuthConfigResult,
+		updateAuthConfigGoogle
 	} from '$lib/services/auth/auth.config.services';
 	import { authStore } from '$lib/stores/auth.store';
 	import { wizardBusy } from '$lib/stores/busy.store';
@@ -46,7 +47,7 @@
 	// Google
 	let googleClientId = $state('');
 	let googleMaxTimeToLive = $state<bigint | undefined>(undefined);
-	let googleAllowedTargets = $state<Principal[]>([]);
+	let googleAllowedTargets = $state<Principal[] | null | undefined>(undefined);
 
 	let step: 'init' | 'in_progress' | 'ready' | 'error' = $state('init');
 
@@ -63,19 +64,28 @@
 				config
 			};
 
-			if (edit === 'core') {
-				return updateAuthConfigRules({
+			if (edit === 'internet_identity') {
+				return updateAuthConfigInternetIdentity({
 					...commonPayload,
-					rule,
-					maxTokens,
-					allowedCallers
+					derivationOrigin: selectedDerivationOrigin,
+					externalAlternativeOrigins
 				});
 			}
 
-			return updateAuthConfigInternetIdentity({
+			if (edit === 'google') {
+				return updateAuthConfigGoogle({
+					...commonPayload,
+					clientId: googleClientId,
+					maxTimeToLive: googleMaxTimeToLive,
+					allowedTargets: googleAllowedTargets
+				});
+			}
+
+			return updateAuthConfigRules({
 				...commonPayload,
-				derivationOrigin: selectedDerivationOrigin,
-				externalAlternativeOrigins
+				rule,
+				maxTokens,
+				allowedCallers
 			});
 		};
 
@@ -104,13 +114,14 @@
 		<SpinnerModal>
 			<p>{$i18n.core.updating_configuration}</p>
 		</SpinnerModal>
-	{:else if edit === 'core'}
-		<AuthConfigFormCore
+	{:else if edit === 'google'}
+		<AuthConfigFormGoogle
 			{config}
 			onsubmit={handleSubmit}
-			{rule}
-			bind:maxTokens
-			bind:allowedCallers
+			{satellite}
+			bind:clientId={googleClientId}
+			bind:maxTimeToLive={googleMaxTimeToLive}
+			bind:allowedTargets={googleAllowedTargets}
 		/>
 	{:else if edit === 'internet_identity'}
 		<AuthConfigFormII
@@ -121,12 +132,12 @@
 			bind:externalAlternativeOrigins
 		/>
 	{:else}
-		<AuthConfigFormGoogle
+		<AuthConfigFormCore
 			{config}
 			onsubmit={handleSubmit}
-			bind:clientId={googleClientId}
-			bind:maxTimeToLive={googleMaxTimeToLive}
-			bind:allowedTargets={googleAllowedTargets}
+			{rule}
+			bind:maxTokens
+			bind:allowedCallers
 		/>
 	{/if}
 </Modal>

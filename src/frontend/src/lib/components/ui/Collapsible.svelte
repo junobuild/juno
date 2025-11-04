@@ -66,7 +66,7 @@
 		isNullish(height) ? '' : `max-height: ${height}px;`;
 	// In case of `initiallyExpanded=true` we should avoid calculating `max-height` from the content-height
 	// because the content in the slot can be initialized w/ some delay.
-	const updateMaxHeight = () => {
+	export const updateMaxHeight = () => {
 		if (userUpdated) {
 			maxHeight = expanded ? calculateMaxContentHeight() : 0;
 		} else {

@@ -1,6 +1,5 @@
 <script lang="ts">
-	import { Principal } from '@dfinity/principal';
-	import { fromNullable, isEmptyString, nonNullish, notEmptyString } from '@dfinity/utils';
+	import { fromNullable, nonNullish, notEmptyString } from '@dfinity/utils';
 	import { type PrincipalText, PrincipalTextSchema } from '@dfinity/zod-schemas';
 	import { onMount } from 'svelte';
 	import { quintOut } from 'svelte/easing';

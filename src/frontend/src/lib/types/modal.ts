@@ -92,6 +92,7 @@ export interface JunoModalEditOrbiterConfigDetail {
 export interface JunoModalEditAuthConfigDetail extends JunoModalWithSatellite {
 	rule: SatelliteDid.Rule | undefined;
 	config: SatelliteDid.AuthenticationConfig | undefined;
+	edit: 'core' | 'internet_identity';
 }
 
 export interface JunoModalCreateMonitoringStrategyDetail {

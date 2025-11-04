@@ -1,19 +1,16 @@
 <script lang="ts">
-	import { isNullish, nonNullish, fromNullishNullable } from '@dfinity/utils';
 	import { untrack } from 'svelte';
-	import { fade } from 'svelte/transition';
 	import type { SatelliteDid, MissionControlDid } from '$declarations';
-	import SkeletonText from '$lib/components/ui/SkeletonText.svelte';
-	import Value from '$lib/components/ui/Value.svelte';
+	import AuthConfigCore from '$lib/components/auth/AuthConfigCore.svelte';
+	import AuthConfigII from '$lib/components/auth/AuthConfigII.svelte';
 	import { getAuthConfig } from '$lib/services/auth/auth.config.services';
 	import { getRuleUser } from '$lib/services/collection.services';
 	import { listCustomDomains } from '$lib/services/custom-domain.services';
 	import { authStore } from '$lib/stores/auth.store';
 	import { busy } from '$lib/stores/busy.store';
-	import { i18n } from '$lib/stores/i18n.store';
 	import { versionStore } from '$lib/stores/version.store';
+	import type { JunoModalEditAuthConfigDetail } from '$lib/types/modal';
 	import { emit } from '$lib/utils/events.utils';
-	import { i18nFormat } from '$lib/utils/i18n.utils';
 
 	interface Props {
 		satellite: MissionControlDid.Satellite;
@@ -26,8 +23,6 @@
 	let rule = $state<SatelliteDid.Rule | undefined>(undefined);
 	let supportSettings = $state(false);
 
-	let maxTokens: number | undefined = $state(undefined);
-
 	const loadRule = async () => {
 		const result = await getRuleUser({ satelliteId, identity: $authStore.identity });
 		rule = result?.rule;
@@ -36,17 +31,6 @@
 
 	let supportConfig = $state(false);
 	let config = $state<SatelliteDid.AuthenticationConfig | undefined>(undefined);
-
-	let derivationOrigin = $derived(
-		fromNullishNullable(fromNullishNullable(config?.internet_identity)?.derivation_origin)
-	);
-	let externalAlternativeOrigins = $derived(
-		fromNullishNullable(
-			fromNullishNullable(config?.internet_identity)?.external_alternative_origins
-		)
-	);
-
-	let allowedCallers = $derived(fromNullishNullable(config?.rules)?.allowed_callers);
 
 	const loadConfig = async () => {
 		const result = await getAuthConfig({
@@ -71,12 +55,7 @@
 		});
 	});
 
-	$effect(() => {
-		const rateConfig = fromNullishNullable(rule?.rate_config);
-		maxTokens = nonNullish(rateConfig?.max_tokens) ? Number(rateConfig.max_tokens) : undefined;
-	});
-
-	const openModal = async () => {
+	const openModal = async ({ edit }: Pick<JunoModalEditAuthConfigDetail, 'edit'>) => {
 		busy.start();
 
 		const { success } = await listCustomDomains({ satelliteId, reload: false });
@@ -92,6 +71,7 @@
 			detail: {
 				type: 'edit_auth_config',
 				detail: {
+					edit,
 					rule,
 					config,
 					satellite
@@ -103,99 +83,6 @@
 
 <svelte:window onjunoReloadAuthConfig={load} />
 
-<div class="card-container with-title">
-	<span class="title">{$i18n.core.config}</span>
+<AuthConfigCore {config} {openModal} {rule} {supportConfig} {supportSettings} />
 
-	<div class="columns-3 fit-column-1">
-		<div>
-			{#if supportConfig}
-				<div in:fade>
-					<Value>
-						{#snippet label()}
-							{$i18n.authentication.main_domain}
-						{/snippet}
-
-						{#if isNullish(derivationOrigin)}
-							<p>{$i18n.authentication.not_configured}</p>
-						{:else}
-							<p>{derivationOrigin}</p>
-						{/if}
-					</Value>
-				</div>
-
-				{#if nonNullish(externalAlternativeOrigins)}
-					<div in:fade>
-						<Value>
-							{#snippet label()}
-								{$i18n.authentication.external_alternative_origins}
-							{/snippet}
-
-							<p>{externalAlternativeOrigins.join(',')}</p>
-						</Value>
-					</div>
-				{/if}
-			{/if}
-
-			{#if supportSettings}
-				<div in:fade>
-					<Value>
-						{#snippet label()}
-							{$i18n.collections.rate_limit}
-						{/snippet}
-
-						{#if isNullish(rule)}
-							<p><SkeletonText /></p>
-						{:else if isNullish(maxTokens)}
-							<p>{$i18n.collections.no_rate_limit}</p>
-						{:else}
-							<p>{maxTokens}</p>
-						{/if}
-					</Value>
-				</div>
-			{/if}
-		</div>
-
-		<div>
-			{#if supportConfig}
-				<div in:fade>
-					<Value>
-						{#snippet label()}
-							{$i18n.authentication.allowed_callers}
-						{/snippet}
-
-						{#if isNullish(allowedCallers) || allowedCallers.length === 0}
-							<p>{$i18n.authentication.no_restrictions}</p>
-						{:else if allowedCallers.length === 1}
-							<p>{$i18n.authentication.one_identity}</p>
-						{:else}
-							<p>
-								{i18nFormat($i18n.authentication.identities, [
-									{
-										placeholder: '{0}',
-										value: `${allowedCallers.length}`
-									}
-								])}
-							</p>
-						{/if}
-					</Value>
-				</div>
-			{/if}
-		</div>
-	</div>
-</div>
-
-{#if supportConfig || supportSettings}
-	<button onclick={openModal} in:fade>{$i18n.core.edit_config}</button>
-{/if}
-
-<style lang="scss">
-	@use '../../styles/mixins/text';
-
-	.card-container {
-		min-height: 166px;
-	}
-
-	p {
-		@include text.truncate;
-	}
-</style>
+<AuthConfigII {config} {openModal} {supportConfig} />

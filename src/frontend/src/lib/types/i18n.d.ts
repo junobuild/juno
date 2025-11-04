@@ -374,6 +374,8 @@ interface I18nAuthentication {
 	main_domain: string;
 	not_configured: string;
 	edit_configuration: string;
+	edit_internet_identity: string;
+	edit_google: string;
 	main_domain_warn: string;
 	external_alternative_origins: string;
 	external_alternative_origins_placeholder: string;

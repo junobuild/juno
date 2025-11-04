@@ -17,6 +17,7 @@
 	import { sortedSatelliteCustomDomains } from '$lib/derived/satellite-custom-domains.derived';
 	import { isBusy } from '$lib/stores/busy.store';
 	import { i18n } from '$lib/stores/i18n.store';
+	import type { JunoModalEditAuthConfigDetail } from '$lib/types/modal';
 	import { satelliteUrl as satelliteUrlUtils } from '$lib/utils/satellite.utils';
 
 	interface Props {
@@ -27,6 +28,7 @@
 		maxTokens: number | undefined;
 		externalAlternativeOrigins: string;
 		allowedCallers: Principal[];
+		edit: JunoModalEditAuthConfigDetail['edit'];
 		onsubmit: ($event: SubmitEvent) => Promise<void>;
 	}
 
@@ -38,14 +40,15 @@
 		rule,
 		maxTokens = $bindable(undefined),
 		externalAlternativeOrigins = $bindable(''),
-		allowedCallers = $bindable([])
+		allowedCallers = $bindable([]),
+		edit
 	}: Props = $props();
 
-	let satelliteUrl: URL | null = $derived(
+	let satelliteUrl = $derived<URL | null>(
 		URL.parse(satelliteUrlUtils(satellite.satellite_id.toText()))
 	);
 
-	let customDomains: URL[] = $derived(
+	let customDomains = $derived<URL[]>(
 		$sortedSatelliteCustomDomains
 			.map(([customDomain, _]) => URL.parse(`https://${customDomain}`))
 			.filter(nonNullish)
@@ -98,69 +101,79 @@
 	});
 </script>
 
-<h2>{$i18n.core.config}</h2>
+<h2>
+	{edit === 'internet_identity' ? 'Internet Identity' : $i18n.core.config}
+</h2>
 
-<p>{$i18n.authentication.edit_configuration}</p>
+<p>
+	{edit === 'internet_identity'
+		? $i18n.authentication.edit_internet_identity
+		: $i18n.authentication.edit_configuration}
+</p>
 
 <form class="content" {onsubmit}>
 	<div class="container">
-		<div>
-			<Value>
-				{#snippet label()}
-					{$i18n.authentication.main_domain}
-				{/snippet}
-
-				<select id="logVisibility" name="logVisibility" bind:value={derivationOrigin}>
-					<option value={undefined}>{$i18n.authentication.not_configured}</option>
-
-					{#if nonNullish(satelliteUrl)}
-						<option value={satelliteUrl.host}>{satelliteUrl.host}</option>
-					{/if}
-
-					{#each customDomains as customDomain (customDomain.host)}
-						<option value={customDomain.host}>{customDomain.host}</option>
-					{/each}
-				</select>
-			</Value>
-		</div>
-
-		{#if nonNullish(rule)}
+		{#if edit === 'internet_identity'}
 			<div>
 				<Value>
 					{#snippet label()}
-						{$i18n.collections.rate_limit}
+						{$i18n.authentication.main_domain}
 					{/snippet}
 
-					<Input
-						name="maxTokens"
-						inputType="number"
-						onblur={() =>
-							(maxTokensInput = nonNullish(maxTokensInput)
-								? Math.trunc(maxTokensInput)
-								: undefined)}
-						placeholder={$i18n.collections.rate_limit_placeholder}
-						required={false}
-						bind:value={maxTokensInput}
-					/>
+					<select id="logVisibility" name="logVisibility" bind:value={derivationOrigin}>
+						<option value={undefined}>{$i18n.authentication.not_configured}</option>
+
+						{#if nonNullish(satelliteUrl)}
+							<option value={satelliteUrl.host}>{satelliteUrl.host}</option>
+						{/if}
+
+						{#each customDomains as customDomain (customDomain.host)}
+							<option value={customDomain.host}>{customDomain.host}</option>
+						{/each}
+					</select>
+				</Value>
+			</div>
+
+			<AuthConfigAdvancedOptions {config} bind:externalAlternativeOrigins />
+		{/if}
+
+		{#if edit === 'core'}
+			{#if nonNullish(rule)}
+				<div>
+					<Value>
+						{#snippet label()}
+							{$i18n.collections.rate_limit}
+						{/snippet}
+
+						<Input
+							name="maxTokens"
+							inputType="number"
+							onblur={() =>
+								(maxTokensInput = nonNullish(maxTokensInput)
+									? Math.trunc(maxTokensInput)
+									: undefined)}
+							placeholder={$i18n.collections.rate_limit_placeholder}
+							required={false}
+							bind:value={maxTokensInput}
+						/>
+					</Value>
+				</div>
+			{/if}
+
+			<div>
+				<Value>
+					{#snippet label()}
+						{$i18n.authentication.allowed_callers}
+					{/snippet}
+
+					<textarea
+						placeholder={$i18n.authentication.allowed_callers_placeholder}
+						rows="5"
+						bind:value={allowedCallersInput}
+					></textarea>
 				</Value>
 			</div>
 		{/if}
-
-		<div>
-			<Value>
-				{#snippet label()}
-					{$i18n.authentication.allowed_callers}
-				{/snippet}
-
-				<textarea
-					placeholder={$i18n.authentication.allowed_callers_placeholder}
-					rows="5"
-					bind:value={allowedCallersInput}
-				></textarea>
-			</Value>
-		</div>
-
-		<AuthConfigAdvancedOptions {config} bind:externalAlternativeOrigins />
 
 		{#if warnDerivationOrigin}
 			<div class="warn" in:fade>

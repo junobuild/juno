@@ -23,6 +23,8 @@
 
 	let config = $state((detail as JunoModalEditAuthConfigDetail).config);
 
+	let edit = $state((detail as JunoModalEditAuthConfigDetail).edit);
+
 	let maxTokens = $state<number | undefined>(undefined);
 
 	let selectedDerivationOrigin = $state<URL | undefined>(undefined);
@@ -76,6 +78,7 @@
 	{:else}
 		<AuthConfigForm
 			{config}
+			{edit}
 			onsubmit={handleSubmit}
 			{rule}
 			{satellite}

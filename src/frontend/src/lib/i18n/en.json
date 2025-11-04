@@ -387,7 +387,8 @@
 		"session_duration": "Session duration",
 		"allowed_targets": "Allowed targets",
 		"target_your_satellite": "Your Satellite:",
-		"target_modules": "{0} modules"
+		"target_modules": "{0} modules",
+		"in_nanoseconds": "in nanoseconds"
 	},
 	"datastore": {
 		"title": "Datastore",

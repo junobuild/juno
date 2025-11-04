@@ -398,6 +398,7 @@ interface I18nAuthentication {
 	allowed_targets: string;
 	target_your_satellite: string;
 	target_modules: string;
+	in_nanoseconds: string;
 }
 
 interface I18nDatastore {

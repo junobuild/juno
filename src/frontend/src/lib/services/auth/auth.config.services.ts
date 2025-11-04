@@ -1,7 +1,10 @@
 import type { MissionControlDid, SatelliteDid } from '$declarations';
 import type { OpenIdProviderDelegationConfig } from '$declarations/satellite/satellite.did';
 import { getAuthConfig as getAuthConfigApi, setAuthConfig, setRule } from '$lib/api/satellites.api';
-import { GOOGLE_CLIENT_ID_REGEX } from '$lib/constants/auth.constants';
+import {
+	AUTH_DEFAULT_MAX_SESSION_TIME_TO_LIVE,
+	GOOGLE_CLIENT_ID_REGEX
+} from '$lib/constants/auth.constants';
 import { DEFAULT_RATE_CONFIG_TIME_PER_TOKEN_NS } from '$lib/constants/data.constants';
 import { DbCollectionType } from '$lib/constants/rules.constants';
 import { SATELLITE_v0_0_17 } from '$lib/constants/version.constants';
@@ -15,7 +18,7 @@ import {
 	buildDeleteAuthenticationConfig,
 	buildSetAuthenticationConfig
 } from '$lib/utils/auth.config.utils';
-import type { Principal } from '@dfinity/principal';
+import { Principal } from '@dfinity/principal';
 import {
 	fromNullable,
 	fromNullishNullable,
@@ -24,6 +27,7 @@ import {
 	notEmptyString,
 	toNullable
 } from '@dfinity/utils';
+import type { PrincipalText } from '@dfinity/zod-schemas';
 import { get } from 'svelte/store';
 
 interface UpdateAuthConfigParams {
@@ -51,7 +55,7 @@ interface UpdateAuthConfigIIParams extends UpdateAuthConfigParams {
 interface UpdateAuthConfigGoogleParams extends UpdateAuthConfigParams {
 	clientId: string;
 	maxTimeToLive: bigint | undefined;
-	allowedTargets: Principal[] | null | undefined;
+	allowedTargets: PrincipalText[] | null | undefined;
 }
 
 export const updateAuthConfigRules = async ({
@@ -267,7 +271,7 @@ const updateConfigGoogle = async ({
 	const sameClientId = providerData?.client_id === clientId;
 
 	const updateMaxTimeToLive =
-		maxTimeToLive === DEFAULT_RATE_CONFIG_TIME_PER_TOKEN_NS ? undefined : maxTimeToLive;
+		maxTimeToLive === AUTH_DEFAULT_MAX_SESSION_TIME_TO_LIVE ? undefined : maxTimeToLive;
 
 	const sameMaxTimeToLive =
 		fromNullable(delegation?.max_time_to_live ?? []) === updateMaxTimeToLive;
@@ -285,9 +289,8 @@ const updateConfigGoogle = async ({
 		(isNullish(allowedTargets) && allowedTargets === targets) ||
 		(nonNullish(allowedTargets) &&
 			allowedTargets?.length === targets?.length &&
-			(allowedTargets ?? [])
-				.map((p) => p.toText())
-				.find((allowedTarget) => !(targets ?? []).includes(allowedTarget)) === undefined);
+			(allowedTargets ?? []).find((allowedTarget) => !(targets ?? []).includes(allowedTarget)) ===
+				undefined);
 
 	if (sameClientId && sameMaxTimeToLive && sameTargets) {
 		return { result: 'skip' };
@@ -298,7 +301,8 @@ const updateConfigGoogle = async ({
 	)
 		? {
 				max_time_to_live: toNullable(updateMaxTimeToLive),
-				targets: allowedTargets === null ? [] : [allowedTargets ?? []]
+				targets:
+					allowedTargets === null ? [] : [(allowedTargets ?? []).map((p) => Principal.fromText(p))]
 			}
 		: allowedTargets === null
 			? {
@@ -308,7 +312,7 @@ const updateConfigGoogle = async ({
 			: (allowedTargets ?? []).length > 0
 				? {
 						max_time_to_live: toNullable(),
-						targets: [allowedTargets ?? []]
+						targets: [(allowedTargets ?? []).map((p) => Principal.fromText(p))]
 					}
 				: undefined;
 

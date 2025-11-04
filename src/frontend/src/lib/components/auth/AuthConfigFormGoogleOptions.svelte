@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { Principal } from '@dfinity/principal';
 	import { fromNullable, isEmptyString, nonNullish, notEmptyString } from '@dfinity/utils';
-	import { PrincipalTextSchema } from '@dfinity/zod-schemas';
+	import { type PrincipalText, PrincipalTextSchema } from '@dfinity/zod-schemas';
 	import { onMount } from 'svelte';
 	import { quintOut } from 'svelte/easing';
 	import { slide } from 'svelte/transition';
@@ -14,13 +14,13 @@
 	interface Props {
 		satellite: MissionControlDid.Satellite;
 		delegation: SatelliteDid.OpenIdProviderDelegationConfig | undefined;
-		allowedTargets: Principal[] | null | undefined;
+		allowedTargets: PrincipalText[] | null | undefined;
 	}
 
 	let {
 		satellite,
 		delegation,
-		allowedTargets = $bindable<Principal[] | null | undefined>(undefined)
+		allowedTargets = $bindable<PrincipalText[] | null | undefined>(undefined)
 	}: Props = $props();
 
 	let targets = $state(
@@ -44,8 +44,7 @@
 			.split(/[\n,]+/)
 			.map((input) => input.toLowerCase().trim())
 			.filter(notEmptyString)
-			.filter((input) => PrincipalTextSchema.safeParse(input).success)
-			.map((input) => Principal.fromText(input));
+			.filter((input) => PrincipalTextSchema.safeParse(input).success);
 	};
 
 	$effect(() => {
@@ -70,7 +69,7 @@
 	let collapsibleRef: Collapsible | undefined = $state(undefined);
 
 	onMount(() => {
-		if (targetsType === "default") {
+		if (targetsType === 'default') {
 			return;
 		}
 

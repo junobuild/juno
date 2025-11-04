@@ -16,6 +16,7 @@
 	import { i18n } from '$lib/stores/i18n.store';
 	import type { JunoModalDetail, JunoModalEditAuthConfigDetail } from '$lib/types/modal';
 	import { emit } from '$lib/utils/events.utils';
+	import type { PrincipalText } from '@dfinity/zod-schemas';
 
 	interface Props {
 		detail: JunoModalDetail;
@@ -47,7 +48,7 @@
 	// Google
 	let googleClientId = $state('');
 	let googleMaxTimeToLive = $state<bigint | undefined>(undefined);
-	let googleAllowedTargets = $state<Principal[] | null | undefined>(undefined);
+	let googleAllowedTargets = $state<PrincipalText[] | null | undefined>(undefined);
 
 	let step: 'init' | 'in_progress' | 'ready' | 'error' = $state('init');
 
@@ -77,7 +78,7 @@
 					...commonPayload,
 					clientId: googleClientId,
 					maxTimeToLive: googleMaxTimeToLive,
-					allowedTargets: googleAllowedTargets
+					allowedTargets: $state.snapshot(googleAllowedTargets)
 				});
 			}
 

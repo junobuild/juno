@@ -22,6 +22,7 @@
 	import { isBusy } from '$lib/stores/busy.store';
 	import { i18n } from '$lib/stores/i18n.store';
 	import { i18nFormat } from '$lib/utils/i18n.utils';
+	import type { PrincipalText } from '@dfinity/zod-schemas';
 
 	interface Props {
 		satellite: MissionControlDid.Satellite;
@@ -29,7 +30,7 @@
 		onsubmit: ($event: SubmitEvent) => Promise<void>;
 		clientId: string;
 		maxTimeToLive: bigint | undefined;
-		allowedTargets: Principal[] | null | undefined;
+		allowedTargets: PrincipalText[] | null | undefined;
 	}
 
 	let {

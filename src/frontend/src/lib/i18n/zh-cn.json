@@ -382,7 +382,15 @@
 		"allowed_callers_placeholder": "身份标识（用户密钥格式），逗号分隔或每行一个。留空表示无限制。",
 		"no_restrictions": "无限制",
 		"one_identity": "1个身份",
-		"identities": "{0}个身份"
+		"identities": "{0}个身份",
+		"client_id": "客户端 ID",
+		"client_id_placeholder": "1234567890-abcdefg.apps.googleusercontent.com",
+		"session_duration": "会话时长",
+		"allowed_targets": "允许的目标",
+		"allowed_targets_placeholder": "Principal ID，逗号分隔或每行一个。留空则使用默认权限。",
+		"target_your_satellite": "您的 Satellite：",
+		"target_modules": "{0} 个模块",
+		"in_nanoseconds": "单位：纳秒"
 	},
 	"datastore": {
 		"title": "数据池",
@@ -638,6 +646,7 @@
 		"auth_rate_config_update": "更新身份认证设置时发生意外错误。",
 		"auth_domain_config": "更新身份认证配置时发生意外错误。",
 		"auth_external_alternative_origins": "外部备用源格式错误，请提供不含协议的合法域名。",
+		"auth_invalid_google_client_id": "检测到无效的 Google 客户端 ID 格式。",
 		"mission_control_not_loaded": "任务控制中心未加载。",
 		"mission_control_settings_not_loaded": "任务控制中心设置未加载。",
 		"mission_control_user_data_not_loaded": "您的任务控制中心数据（元数据、配置等）未加载。",

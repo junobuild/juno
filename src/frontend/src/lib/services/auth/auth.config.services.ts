@@ -283,7 +283,8 @@ const updateConfigGoogle = async ({
 
 	const sameTargets =
 		(isNullish(allowedTargets) && allowedTargets === targets) ||
-		(allowedTargets?.length === targets?.length &&
+		(nonNullish(allowedTargets) &&
+			allowedTargets?.length === targets?.length &&
 			(allowedTargets ?? [])
 				.map((p) => p.toText())
 				.find((allowedTarget) => !(targets ?? []).includes(allowedTarget)) === undefined);

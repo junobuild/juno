@@ -70,7 +70,7 @@
 	let collapsibleRef: Collapsible | undefined = $state(undefined);
 
 	onMount(() => {
-		if (isEmptyString(allowedTargetsInput)) {
+		if (targetsType === "default") {
 			return;
 		}
 

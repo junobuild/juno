@@ -91,7 +91,21 @@
 		"production": "生产环境",
 		"staging": "预发环境",
 		"test": "测试环境",
-		"unspecified": "未定义状态"
+		"unspecified": "未定义状态",
+		"an_hour": "一小时",
+		"two_hours": "两小时",
+		"four_hours": "四小时",
+		"eight_hours": "八小时",
+		"half_day": "半天",
+		"a_day": "一天",
+		"a_week": "一周",
+		"two_weeks": "两周",
+		"a_month": "一个月",
+		"three_months": "三个月",
+		"six_months": "六个月",
+		"a_year": "一年",
+		"two_years": "两年",
+		"five_years": "五年"
 	},
 	"canisters": {
 		"top_up": "充值",
@@ -242,12 +256,6 @@
 		"risk": "存在风险",
 		"of_cycles_needed": "所需cycles占比",
 		"only": "仅",
-		"a_month": "一个月",
-		"three_months": "三个月",
-		"six_months": "六个月",
-		"a_year": "一年",
-		"two_years": "两年",
-		"five_years": "五年",
 		"reload_initiated": "已启动重新加载..."
 	},
 	"sign_in": {
@@ -443,12 +451,6 @@
 		"analytics_updated": "统计已更新",
 		"adjust_periodicity": "调整cycles",
 		"periodicity": "cycles",
-		"four_hours": "4 小时",
-		"eight_hours": "8 小时",
-		"half_day": "半天",
-		"one_day": "1 天",
-		"a_week": "一周",
-		"a_month": "一个月",
 		"why_periodicity": "控制台使用分页收集统计——它根据时间间隔获取您所选日期之间的数据，间隔范围可以从几小时到一周。如果您由于大量的浏览量和事件而遇到数据收集问题（首先，恭喜您！），您可以尝试调整间隔以提高可靠性。",
 		"periodicity_impact": "请记住，较小的间隔意味着更多查询——导致您的轨道器负载更高，并且 UI 需要额外工作。"
 	},

@@ -95,6 +95,20 @@ interface I18nCore {
 	staging: string;
 	test: string;
 	unspecified: string;
+	an_hour: string;
+	two_hours: string;
+	four_hours: string;
+	eight_hours: string;
+	half_day: string;
+	a_day: string;
+	a_week: string;
+	two_weeks: string;
+	a_month: string;
+	three_months: string;
+	six_months: string;
+	a_year: string;
+	two_years: string;
+	five_years: string;
 }
 
 interface I18nCanisters {
@@ -246,12 +260,6 @@ interface I18nCanisters {
 	risk: string;
 	of_cycles_needed: string;
 	only: string;
-	a_month: string;
-	three_months: string;
-	six_months: string;
-	a_year: string;
-	two_years: string;
-	five_years: string;
 	reload_initiated: string;
 }
 
@@ -384,6 +392,11 @@ interface I18nAuthentication {
 	no_restrictions: string;
 	one_identity: string;
 	identities: string;
+	client_id: string;
+	session_duration: string;
+	allowed_targets: string;
+	target_your_satellite: string;
+	target_modules: string;
 }
 
 interface I18nDatastore {
@@ -456,12 +469,6 @@ interface I18nAnalytics {
 	analytics_updated: string;
 	adjust_periodicity: string;
 	periodicity: string;
-	four_hours: string;
-	eight_hours: string;
-	half_day: string;
-	one_day: string;
-	a_week: string;
-	a_month: string;
 	why_periodicity: string;
 	periodicity_impact: string;
 }

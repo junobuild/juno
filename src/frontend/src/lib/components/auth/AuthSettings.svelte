@@ -2,6 +2,7 @@
 	import { untrack } from 'svelte';
 	import type { SatelliteDid, MissionControlDid } from '$declarations';
 	import AuthConfigCore from '$lib/components/auth/AuthConfigCore.svelte';
+	import AuthConfigGoogle from '$lib/components/auth/AuthConfigGoogle.svelte';
 	import AuthConfigII from '$lib/components/auth/AuthConfigII.svelte';
 	import AuthProviders from '$lib/components/auth/AuthProviders.svelte';
 	import { getAuthConfig } from '$lib/services/auth/auth.config.services';
@@ -84,8 +85,10 @@
 
 <svelte:window onjunoReloadAuthConfig={load} />
 
-<AuthProviders />
+<AuthProviders {config} />
 
-<AuthConfigCore {config} {openModal} {rule} {supportConfig} {supportSettings} />
+<AuthConfigGoogle {config} {openModal} {satellite} {supportConfig} />
 
 <AuthConfigII {config} {openModal} {supportConfig} />
+
+<AuthConfigCore {config} {openModal} {rule} {supportConfig} {supportSettings} />

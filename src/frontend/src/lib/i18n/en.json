@@ -91,7 +91,21 @@
 		"production": "Production",
 		"staging": "Staging",
 		"test": "Test",
-		"unspecified": "Unspecified"
+		"unspecified": "Unspecified",
+		"an_hour": "An hour",
+		"two_hours": "Two hours",
+		"four_hours": "Four hours",
+		"eight_hours": "Eight hours",
+		"half_day": "Half a day",
+		"a_day": "A day",
+		"a_week": "A week",
+		"two_weeks": "Two weeks",
+		"a_month": "A month",
+		"three_months": "Three months",
+		"six_months": "Six months",
+		"a_year": "A year",
+		"two_years": "Two years",
+		"five_years": "Five years"
 	},
 	"canisters": {
 		"top_up": "Top-up",
@@ -242,12 +256,6 @@
 		"risk": "At risk",
 		"of_cycles_needed": "of cycles needed",
 		"only": "Only",
-		"a_month": "A month",
-		"three_months": "Three months",
-		"six_months": "Six months",
-		"a_year": "A year",
-		"two_years": "Two years",
-		"five_years": "Five years",
 		"reload_initiated": "Reload initiated..."
 	},
 	"sign_in": {
@@ -373,7 +381,12 @@
 		"allowed_callers_placeholder": "Identities (user key format), comma-separated or one per line. Leave empty for no restrictions.",
 		"no_restrictions": "No restrictions",
 		"one_identity": "1 identity",
-		"identities": "{0} identities"
+		"identities": "{0} identities",
+		"client_id": "Client ID",
+		"session_duration": "Session duration",
+		"allowed_targets": "Allowed targets",
+		"target_your_satellite": "Your Satellite:",
+		"target_modules": "{0} modules"
 	},
 	"datastore": {
 		"title": "Datastore",
@@ -443,12 +456,6 @@
 		"analytics_updated": "Analytics updated",
 		"adjust_periodicity": "Adjust periodicity",
 		"periodicity": "Periodicity",
-		"four_hours": "4 hours",
-		"eight_hours": "8 hours",
-		"half_day": "Half day",
-		"one_day": "1 day",
-		"a_week": "A week",
-		"a_month": "A month",
 		"why_periodicity": "The Console gathers analytics using pagination — it fetches data between your selected dates based on a time interval, which can range from a few hours up to a week. If you experience issues collecting data due to a high volume of views and events (first, congratulations!), you can try adjusting the interval to improve reliability.",
 		"periodicity_impact": "Keep in mind that smaller intervals mean more queries — leading to higher load on your Orbiter and extra work for the UI."
 	},

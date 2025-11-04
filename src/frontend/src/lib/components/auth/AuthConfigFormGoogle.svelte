@@ -1,32 +1,20 @@
 <script lang="ts">
+	import type { Principal } from '@dfinity/principal';
 	import {
 		fromNullable,
-		fromNullishNullable, isEmptyString,
+		fromNullishNullable,
+		isEmptyString,
 		isNullish,
 		nonNullish,
 		notEmptyString
 	} from '@dfinity/utils';
+	import { onMount } from 'svelte';
 	import { fade } from 'svelte/transition';
 	import type { SatelliteDid, MissionControlDid } from '$declarations';
-	import AuthConfigAdvancedOptions from '$lib/components/auth/AuthConfigAdvancedOptions.svelte';
+	import AuthConfigFormGoogleOptions from '$lib/components/auth/AuthConfigFormGoogleOptions.svelte';
+	import Input from '$lib/components/ui/Input.svelte';
 	import Value from '$lib/components/ui/Value.svelte';
 	import Warning from '$lib/components/ui/Warning.svelte';
-	import { sortedSatelliteCustomDomains } from '$lib/derived/satellite-custom-domains.derived';
-	import { isBusy } from '$lib/stores/busy.store';
-	import { i18n } from '$lib/stores/i18n.store';
-	import { satelliteUrl as satelliteUrlUtils } from '$lib/utils/satellite.utils';
-	import { i18nFormat } from '$lib/utils/i18n.utils';
-	import Input from '$lib/components/ui/Input.svelte';
-	import { onMount } from 'svelte';
-	import {
-		FIVE_YEARS,
-		ONE_MONTH,
-		ONE_YEAR,
-		SIX_MONTHS,
-		THREE_MONTHS,
-		TWO_YEARS
-	} from '$lib/constants/canister.constants';
-	import type { JunoModalEditCanisterSettingsDetail } from '$lib/types/modal';
 	import {
 		A_MONTH_NS,
 		A_WEEK_NS,
@@ -39,14 +27,36 @@
 		TWO_HOURS_NS,
 		TWO_WEEKS_NS
 	} from '$lib/constants/auth.constants';
+	import {
+		FIVE_YEARS,
+		ONE_MONTH,
+		ONE_YEAR,
+		SIX_MONTHS,
+		THREE_MONTHS,
+		TWO_YEARS
+	} from '$lib/constants/canister.constants';
+	import { sortedSatelliteCustomDomains } from '$lib/derived/satellite-custom-domains.derived';
+	import { isBusy } from '$lib/stores/busy.store';
+	import { i18n } from '$lib/stores/i18n.store';
+	import type { JunoModalEditCanisterSettingsDetail } from '$lib/types/modal';
+	import { i18nFormat } from '$lib/utils/i18n.utils';
+	import { satelliteUrl as satelliteUrlUtils } from '$lib/utils/satellite.utils';
 
 	interface Props {
 		config: SatelliteDid.AuthenticationConfig | undefined;
 		onsubmit: ($event: SubmitEvent) => Promise<void>;
 		clientId: string;
+		maxTimeToLive: bigint | undefined;
+		allowedTargets: Principal[];
 	}
 
-	let { onsubmit, config, clientId = $bindable('') }: Props = $props();
+	let {
+		onsubmit,
+		config,
+		clientId = $bindable(''),
+		maxTimeToLive = $bindable(),
+		allowedTargets = $bindable([])
+	}: Props = $props();
 
 	let openid = $state(fromNullable(config?.openid ?? []));
 	let google = $state(openid?.providers.find(([key]) => 'Google' in key));
@@ -62,27 +72,31 @@
 	});
 
 	// Max time to live
-	let maxTimeToLive = $state(
+	let maxTimeToLiveInput = $state(
 		Number(
 			fromNullable(delegation?.max_time_to_live ?? []) ?? AUTH_DEFAULT_MAX_SESSION_TIME_TO_LIVE
 		)
 	);
+
+	$effect(() => {
+		maxTimeToLive = BigInt(maxTimeToLiveInput);
+	});
 
 	let customMaxTimeToLive = $state(false);
 	onMount(() => {
 		// Only evaluated onMount as we do not want to toggle between input or select
 		// if the dev enters one of the values.
 		customMaxTimeToLive =
-			nonNullish(maxTimeToLive) &&
-			BigInt(maxTimeToLive) !== AN_HOUR_NS &&
-			BigInt(maxTimeToLive) !== TWO_HOURS_NS &&
-			BigInt(maxTimeToLive) !== FOUR_HOURS_NS &&
-			BigInt(maxTimeToLive) !== EIGHT_HOURS_NS &&
-			BigInt(maxTimeToLive) !== HALF_DAY_NS &&
-			BigInt(maxTimeToLive) !== ONE_DAY_NS &&
-			BigInt(maxTimeToLive) !== A_WEEK_NS &&
-			BigInt(maxTimeToLive) !== TWO_WEEKS_NS &&
-			BigInt(maxTimeToLive) !== A_MONTH_NS;
+			nonNullish(maxTimeToLiveInput) &&
+			BigInt(maxTimeToLiveInput) !== AN_HOUR_NS &&
+			BigInt(maxTimeToLiveInput) !== TWO_HOURS_NS &&
+			BigInt(maxTimeToLiveInput) !== FOUR_HOURS_NS &&
+			BigInt(maxTimeToLiveInput) !== EIGHT_HOURS_NS &&
+			BigInt(maxTimeToLiveInput) !== HALF_DAY_NS &&
+			BigInt(maxTimeToLiveInput) !== ONE_DAY_NS &&
+			BigInt(maxTimeToLiveInput) !== A_WEEK_NS &&
+			BigInt(maxTimeToLiveInput) !== TWO_WEEKS_NS &&
+			BigInt(maxTimeToLiveInput) !== A_MONTH_NS;
 	});
 
 	let disabled = $derived(
@@ -136,10 +150,10 @@
 						name="maxTimeToLive"
 						inputType="number"
 						placeholder=""
-						bind:value={maxTimeToLive}
+						bind:value={maxTimeToLiveInput}
 					/>
 				{:else}
-					<select name="maxTimeToLive" bind:value={maxTimeToLive}>
+					<select name="maxTimeToLive" bind:value={maxTimeToLiveInput}>
 						<option value={Number(AN_HOUR_NS)}> {$i18n.core.an_hour} </option>
 						<option value={Number(TWO_HOURS_NS)}> {$i18n.core.two_hours} </option>
 						<option value={Number(FOUR_HOURS_NS)}> {$i18n.core.four_hours} </option>
@@ -153,6 +167,8 @@
 				{/if}
 			</Value>
 		</div>
+
+		<AuthConfigFormGoogleOptions {delegation} bind:allowedTargets />
 	</div>
 
 	<button disabled={disabled || $isBusy} type="submit">

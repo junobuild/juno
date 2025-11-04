@@ -8,8 +8,8 @@
 	import { sortedSatelliteCustomDomains } from '$lib/derived/satellite-custom-domains.derived';
 	import { isBusy } from '$lib/stores/busy.store';
 	import { i18n } from '$lib/stores/i18n.store';
-	import { satelliteUrl as satelliteUrlUtils } from '$lib/utils/satellite.utils';
 	import { i18nFormat } from '$lib/utils/i18n.utils';
+	import { satelliteUrl as satelliteUrlUtils } from '$lib/utils/satellite.utils';
 
 	interface Props {
 		config: SatelliteDid.AuthenticationConfig | undefined;

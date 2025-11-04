@@ -396,6 +396,7 @@ interface I18nAuthentication {
 	client_id_placeholder: string;
 	session_duration: string;
 	allowed_targets: string;
+	allowed_targets_placeholder: string;
 	target_your_satellite: string;
 	target_modules: string;
 	in_nanoseconds: string;

@@ -1,6 +1,7 @@
 <script lang="ts">
 	import type { Principal } from '@dfinity/principal';
 	import AuthConfigFormCore from '$lib/components/auth/AuthConfigFormCore.svelte';
+	import AuthConfigFormGoogle from '$lib/components/auth/AuthConfigFormGoogle.svelte';
 	import AuthConfigFormII from '$lib/components/auth/AuthConfigFormII.svelte';
 	import Modal from '$lib/components/ui/Modal.svelte';
 	import SpinnerModal from '$lib/components/ui/SpinnerModal.svelte';
@@ -14,7 +15,6 @@
 	import { i18n } from '$lib/stores/i18n.store';
 	import type { JunoModalDetail, JunoModalEditAuthConfigDetail } from '$lib/types/modal';
 	import { emit } from '$lib/utils/events.utils';
-	import AuthConfigFormGoogle from '$lib/components/auth/AuthConfigFormGoogle.svelte';
 
 	interface Props {
 		detail: JunoModalDetail;
@@ -45,6 +45,8 @@
 
 	// Google
 	let googleClientId = $state('');
+	let googleMaxTimeToLive = $state<bigint | undefined>(undefined);
+	let googleAllowedTargets = $state<Principal[]>([]);
 
 	let step: 'init' | 'in_progress' | 'ready' | 'error' = $state('init');
 
@@ -119,7 +121,13 @@
 			bind:externalAlternativeOrigins
 		/>
 	{:else}
-		<AuthConfigFormGoogle {config} onsubmit={handleSubmit} bind:clientId={googleClientId} />
+		<AuthConfigFormGoogle
+			{config}
+			onsubmit={handleSubmit}
+			bind:clientId={googleClientId}
+			bind:maxTimeToLive={googleMaxTimeToLive}
+			bind:allowedCallers={googleAllowedTargets}
+		/>
 	{/if}
 </Modal>
 

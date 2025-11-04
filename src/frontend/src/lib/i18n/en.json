@@ -386,6 +386,7 @@
 		"client_id_placeholder": "1234567890-abcdefg.apps.googleusercontent.com",
 		"session_duration": "Session duration",
 		"allowed_targets": "Allowed targets",
+		"allowed_targets_placeholder": "Principal IDs, comma-separated or one per line. Leave empty for default permissions.",
 		"target_your_satellite": "Your Satellite:",
 		"target_modules": "{0} modules",
 		"in_nanoseconds": "in nanoseconds"

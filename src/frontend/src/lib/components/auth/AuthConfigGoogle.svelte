@@ -15,10 +15,7 @@
 		TWO_WEEKS_NS
 	} from '$lib/constants/auth.constants';
 	import { i18n } from '$lib/stores/i18n.store';
-	import type {
-		JunoModalEditAuthConfigDetail,
-		JunoModalEditAuthConfigDetailType
-	} from '$lib/types/modal';
+	import type { JunoModalEditAuthConfigDetailType } from '$lib/types/modal';
 	import { secondsToDuration } from '$lib/utils/date.utils';
 	import { i18nFormat } from '$lib/utils/i18n.utils';
 	import { satelliteName } from '$lib/utils/satellite.utils';

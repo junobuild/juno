@@ -11,7 +11,11 @@
 	import { authStore } from '$lib/stores/auth.store';
 	import { busy } from '$lib/stores/busy.store';
 	import { versionStore } from '$lib/stores/version.store';
-	import type { JunoModalEditAuthConfigDetail } from '$lib/types/modal';
+	import type {
+		JunoModalEditAuthConfigDetail,
+		JunoModalEditAuthConfigDetailCore,
+		JunoModalEditAuthConfigDetailII
+	} from '$lib/types/modal';
 	import { emit } from '$lib/utils/events.utils';
 
 	interface Props {
@@ -57,7 +61,9 @@
 		});
 	});
 
-	const openModal = async ({ edit }: Pick<JunoModalEditAuthConfigDetail, 'edit'>) => {
+	const openModal = async (
+		params: JunoModalEditAuthConfigDetailCore | JunoModalEditAuthConfigDetailII
+	) => {
 		busy.start();
 
 		const { success } = await listCustomDomains({ satelliteId, reload: false });
@@ -73,10 +79,9 @@
 			detail: {
 				type: 'edit_auth_config',
 				detail: {
-					edit,
-					rule,
 					config,
-					satellite
+					satellite,
+					...params
 				}
 			}
 		});

@@ -89,10 +89,18 @@ export interface JunoModalEditOrbiterConfigDetail {
 	config: Record<SatelliteIdText, OrbiterSatelliteConfigEntry>;
 }
 
-export interface JunoModalEditAuthConfigDetail extends JunoModalWithSatellite {
-	rule: SatelliteDid.Rule | undefined;
+export type JunoModalEditAuthConfigDetail = JunoModalWithSatellite & {
 	config: SatelliteDid.AuthenticationConfig | undefined;
-	edit: 'core' | 'internet_identity';
+} & (JunoModalEditAuthConfigDetailCore | JunoModalEditAuthConfigDetailII);
+
+export interface JunoModalEditAuthConfigDetailCore {
+	core: {
+		rule: SatelliteDid.Rule | undefined;
+	};
+}
+
+export interface JunoModalEditAuthConfigDetailII {
+	internet_identity: null;
 }
 
 export interface JunoModalCreateMonitoringStrategyDetail {
@@ -135,7 +143,8 @@ export type JunoModalDetail =
 	| JunoModalCreateMonitoringStrategyDetail
 	| JunoModalShowUserDetail
 	| JunoModalChangeDetail
-	| JunoModalCdnUpgradeDetail;
+	| JunoModalCdnUpgradeDetail
+	| JunoModalEditAuthConfigDetail;
 
 export interface JunoModal<T extends JunoModalDetail> {
 	type:

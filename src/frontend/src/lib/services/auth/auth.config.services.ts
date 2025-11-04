@@ -26,25 +26,73 @@ import { get } from 'svelte/store';
 
 interface UpdateAuthConfigParams {
 	satellite: MissionControlDid.Satellite;
-	rule: SatelliteDid.Rule | undefined;
 	config: SatelliteDid.AuthenticationConfig | undefined;
-	maxTokens: number | undefined;
-	externalAlternativeOrigins: string;
-	allowedCallers: Principal[];
-	derivationOrigin: Option<URL>;
 	identity: OptionIdentity;
 }
 
-export const updateAuthConfig = async ({
+export interface UpdateAuthConfigResult {
+	success: 'ok' | 'cancelled' | 'error';
+	err?: unknown;
+}
+
+interface UpdateAuthConfigRulesParams extends UpdateAuthConfigParams {
+	rule: SatelliteDid.Rule | undefined;
+	maxTokens: number | undefined;
+	allowedCallers: Principal[];
+}
+
+interface UpdateAuthConfigIIParams extends UpdateAuthConfigParams {
+	externalAlternativeOrigins: string;
+	derivationOrigin: Option<URL>;
+}
+
+export const updateAuthConfigRules = async ({
 	satellite,
 	rule,
 	config,
 	maxTokens,
-	derivationOrigin,
-	externalAlternativeOrigins,
 	allowedCallers,
 	identity
-}: UpdateAuthConfigParams): Promise<{ success: 'ok' | 'cancelled' | 'error'; err?: unknown }> => {
+}: UpdateAuthConfigRulesParams): Promise<UpdateAuthConfigResult> => {
+	const labels = get(i18n);
+
+	if (isNullish(identity) || isNullish(identity?.getPrincipal())) {
+		toasts.error({ text: labels.core.not_logged_in });
+		return { success: 'error' };
+	}
+
+	const { result: resultRule } = await updateRule({
+		satellite,
+		maxTokens,
+		rule,
+		identity
+	});
+
+	if (resultRule === 'error') {
+		return { success: 'error' };
+	}
+
+	const { result: resultConfig } = await updateConfigRules({
+		satellite,
+		allowedCallers,
+		config,
+		identity
+	});
+
+	if (resultConfig === 'error') {
+		return { success: 'error' };
+	}
+
+	return { success: 'ok' };
+};
+
+export const updateAuthConfigInternetIdentity = async ({
+	satellite,
+	config,
+	derivationOrigin,
+	externalAlternativeOrigins,
+	identity
+}: UpdateAuthConfigIIParams): Promise<UpdateAuthConfigResult> => {
 	const labels = get(i18n);
 
 	if (isNullish(identity) || isNullish(identity?.getPrincipal())) {
@@ -62,22 +110,10 @@ export const updateAuthConfig = async ({
 		return { success: 'error' };
 	}
 
-	const { result: resultRule } = await updateRule({
-		satellite,
-		maxTokens,
-		rule,
-		identity
-	});
-
-	if (resultRule === 'error') {
-		return { success: 'error' };
-	}
-
-	const { result: resultConfig } = await updateConfig({
+	const { result: resultConfig } = await updateConfigCoreInternetIdentity({
 		satellite,
 		derivationOrigin,
 		externalOrigins,
-		allowedCallers,
 		config,
 		identity
 	});
@@ -89,14 +125,54 @@ export const updateAuthConfig = async ({
 	return { success: 'ok' };
 };
 
-const updateConfig = async ({
-	satellite: { satellite_id: satelliteId },
+const updateConfigRules = async ({
+	satellite,
+	config,
+	allowedCallers,
+	identity
+}: Pick<UpdateAuthConfigRulesParams, 'config' | 'allowedCallers' | 'satellite'> &
+	Required<Pick<UpdateAuthConfigParams, 'identity'>>): Promise<{
+	result: 'skip' | 'success' | 'error';
+	err?: unknown;
+}> => {
+	const currentAllowedCallers = fromNullishNullable(config?.rules)?.allowed_callers ?? [];
+	const unmodifiedRules =
+		currentAllowedCallers.length === allowedCallers.length &&
+		currentAllowedCallers.every(
+			(caller) =>
+				allowedCallers.find((allowedCaller) => allowedCaller.toText() === caller.toText()) !==
+				undefined
+		);
+
+	// Do nothing if the allowed callers are untouched
+	if (unmodifiedRules) {
+		return { result: 'skip' };
+	}
+
+	const editConfigRules = toNullable(
+		allowedCallers.length > 0 ? { allowed_callers: allowedCallers } : undefined
+	);
+
+	return await updateConfig({
+		config: {
+			internet_identity: config?.internet_identity ?? [],
+			rules: unmodifiedRules ? (config?.rules ?? []) : editConfigRules,
+			// TODO: support for Google configuration in the Console UI
+			openid: [],
+			version: config?.version ?? []
+		},
+		satellite,
+		identity
+	});
+};
+
+const updateConfigCoreInternetIdentity = async ({
+	satellite,
 	config,
 	derivationOrigin,
 	externalOrigins,
-	allowedCallers,
 	identity
-}: Pick<UpdateAuthConfigParams, 'config' | 'derivationOrigin' | 'allowedCallers' | 'satellite'> &
+}: Pick<UpdateAuthConfigIIParams, 'config' | 'derivationOrigin' | 'satellite'> &
 	Required<Pick<UpdateAuthConfigParams, 'identity'>> & { externalOrigins: string[] }): Promise<{
 	result: 'skip' | 'success' | 'error';
 	err?: unknown;
@@ -108,34 +184,39 @@ const updateConfig = async ({
 			? buildDeleteAuthenticationConfig(config)
 			: undefined;
 
-	const currentAllowedCallers = fromNullishNullable(config?.rules)?.allowed_callers ?? [];
-	const unmodifiedRules =
-		currentAllowedCallers.length === allowedCallers.length &&
-		currentAllowedCallers.every(
-			(caller) =>
-				allowedCallers.find((allowedCaller) => allowedCaller.toText() === caller.toText()) !==
-				undefined
-		);
-
-	// Do nothing if there is no current config and no derivation origin was selected and the allowed callers are untouched as well
-	if (isNullish(editConfig) && unmodifiedRules) {
+	// Do nothing if there is no current config and no derivation origin was selected
+	if (isNullish(editConfig)) {
 		return { result: 'skip' };
 	}
 
-	const editConfigRules = toNullable(
-		allowedCallers.length > 0 ? { allowed_callers: allowedCallers } : undefined
-	);
+	return await updateConfig({
+		config: {
+			internet_identity: editConfig?.internet_identity ?? config?.internet_identity ?? [],
+			rules: config?.rules ?? [],
+			// TODO: support for Google configuration in the Console UI
+			openid: [],
+			version: config?.version ?? []
+		},
+		satellite,
+		identity
+	});
+};
 
+const updateConfig = async ({
+	satellite: { satellite_id: satelliteId },
+	config,
+	identity
+}: Pick<UpdateAuthConfigParams, 'satellite'> &
+	Required<Pick<UpdateAuthConfigParams, 'identity'>> & {
+		config: SatelliteDid.SetAuthenticationConfig;
+	}): Promise<{
+	result: 'skip' | 'success' | 'error';
+	err?: unknown;
+}> => {
 	try {
 		await setAuthConfig({
 			satelliteId,
-			config: {
-				internet_identity: editConfig?.internet_identity ?? config?.internet_identity ?? [],
-				rules: unmodifiedRules ? (config?.rules ?? []) : editConfigRules,
-				// TODO: support for Google configuration in the Console UI
-				openid: [],
-				version: config?.version ?? []
-			},
+			config,
 			identity
 		});
 	} catch (err: unknown) {
@@ -157,7 +238,7 @@ const updateRule = async ({
 	rule,
 	maxTokens,
 	identity
-}: Pick<UpdateAuthConfigParams, 'rule' | 'maxTokens' | 'satellite'> &
+}: Pick<UpdateAuthConfigRulesParams, 'rule' | 'maxTokens' | 'satellite'> &
 	Required<Pick<UpdateAuthConfigParams, 'identity'>>): Promise<{
 	result: 'skip' | 'success' | 'error';
 	err?: unknown;

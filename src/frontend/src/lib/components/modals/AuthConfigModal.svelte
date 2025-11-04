@@ -1,9 +1,14 @@
 <script lang="ts">
 	import type { Principal } from '@dfinity/principal';
-	import AuthConfigForm from '$lib/components/auth/AuthConfigForm.svelte';
+	import AuthConfigFormCore from '$lib/components/auth/AuthConfigFormCore.svelte';
+	import AuthConfigFormII from '$lib/components/auth/AuthConfigFormII.svelte';
 	import Modal from '$lib/components/ui/Modal.svelte';
 	import SpinnerModal from '$lib/components/ui/SpinnerModal.svelte';
-	import { updateAuthConfig } from '$lib/services/auth/auth.config.services';
+	import {
+		updateAuthConfigRules,
+		updateAuthConfigInternetIdentity,
+		type UpdateAuthConfigResult
+	} from '$lib/services/auth/auth.config.services';
 	import { authStore } from '$lib/stores/auth.store';
 	import { wizardBusy } from '$lib/stores/busy.store';
 	import { i18n } from '$lib/stores/i18n.store';
@@ -15,15 +20,19 @@
 		onclose: () => void;
 	}
 
-	let { detail, onclose }: Props = $props();
+	let { detail: d, onclose }: Props = $props();
 
-	let satellite = $state((detail as JunoModalEditAuthConfigDetail).satellite);
+	let detail = $derived(d as JunoModalEditAuthConfigDetail);
 
-	let rule = $state((detail as JunoModalEditAuthConfigDetail).rule);
+	let satellite = $derived(detail.satellite);
 
-	let config = $state((detail as JunoModalEditAuthConfigDetail).config);
+	let rule = $derived('core' in detail ? detail.core.rule : undefined);
 
-	let edit = $state((detail as JunoModalEditAuthConfigDetail).edit);
+	let edit = $derived<'core' | 'internet_identity'>(
+		'core' in detail ? 'core' : 'internet_identity'
+	);
+
+	let config = $derived(detail.config);
 
 	let maxTokens = $state<number | undefined>(undefined);
 
@@ -41,16 +50,30 @@
 		wizardBusy.start();
 		step = 'in_progress';
 
-		const { success } = await updateAuthConfig({
-			satellite,
-			identity: $authStore.identity,
-			maxTokens,
-			rule,
-			derivationOrigin: selectedDerivationOrigin,
-			externalAlternativeOrigins,
-			allowedCallers,
-			config
-		});
+		const update = (): Promise<UpdateAuthConfigResult> => {
+			const commonPayload = {
+				satellite,
+				identity: $authStore.identity,
+				config
+			};
+
+			if (edit === 'core') {
+				return updateAuthConfigRules({
+					...commonPayload,
+					rule,
+					maxTokens,
+					allowedCallers
+				});
+			}
+
+			return updateAuthConfigInternetIdentity({
+				...commonPayload,
+				derivationOrigin: selectedDerivationOrigin,
+				externalAlternativeOrigins
+			});
+		};
+
+		const { success } = await update();
 
 		wizardBusy.stop();
 
@@ -75,17 +98,21 @@
 		<SpinnerModal>
 			<p>{$i18n.core.updating_configuration}</p>
 		</SpinnerModal>
-	{:else}
-		<AuthConfigForm
+	{:else if edit === 'core'}
+		<AuthConfigFormCore
 			{config}
-			{edit}
 			onsubmit={handleSubmit}
 			{rule}
-			{satellite}
 			bind:maxTokens
+			bind:allowedCallers
+		/>
+	{:else}
+		<AuthConfigFormII
+			{config}
+			onsubmit={handleSubmit}
+			{satellite}
 			bind:selectedDerivationOrigin
 			bind:externalAlternativeOrigins
-			bind:allowedCallers
 		/>
 	{/if}
 </Modal>

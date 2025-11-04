@@ -1,6 +1,7 @@
 <script lang="ts">
 	import type { Principal } from '@dfinity/principal';
 	import { fromNullable, isEmptyString, nonNullish } from '@dfinity/utils';
+	import type { PrincipalText } from '@dfinity/zod-schemas';
 	import { onMount } from 'svelte';
 	import type { MissionControlDid, SatelliteDid } from '$declarations';
 	import AuthConfigFormGoogleOptions from '$lib/components/auth/AuthConfigFormGoogleOptions.svelte';
@@ -22,7 +23,6 @@
 	import { isBusy } from '$lib/stores/busy.store';
 	import { i18n } from '$lib/stores/i18n.store';
 	import { i18nFormat } from '$lib/utils/i18n.utils';
-	import type { PrincipalText } from '@dfinity/zod-schemas';
 
 	interface Props {
 		satellite: MissionControlDid.Satellite;

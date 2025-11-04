@@ -1,5 +1,6 @@
 <script lang="ts">
 	import type { Principal } from '@dfinity/principal';
+	import type { PrincipalText } from '@dfinity/zod-schemas';
 	import AuthConfigFormCore from '$lib/components/auth/AuthConfigFormCore.svelte';
 	import AuthConfigFormGoogle from '$lib/components/auth/AuthConfigFormGoogle.svelte';
 	import AuthConfigFormII from '$lib/components/auth/AuthConfigFormII.svelte';
@@ -16,7 +17,6 @@
 	import { i18n } from '$lib/stores/i18n.store';
 	import type { JunoModalDetail, JunoModalEditAuthConfigDetail } from '$lib/types/modal';
 	import { emit } from '$lib/utils/events.utils';
-	import type { PrincipalText } from '@dfinity/zod-schemas';
 
 	interface Props {
 		detail: JunoModalDetail;

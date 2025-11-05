@@ -19,17 +19,19 @@
 	import { secondsToDuration } from '$lib/utils/date.utils';
 	import { i18nFormat } from '$lib/utils/i18n.utils';
 	import { satelliteName } from '$lib/utils/satellite.utils';
+	import { getContext } from 'svelte';
+	import { AUTH_CONFIG_CONTEXT_KEY, type AuthConfigContext } from '$lib/types/auth.context';
 
 	interface Props {
 		satellite: MissionControlDid.Satellite;
-		config: SatelliteDid.AuthenticationConfig | undefined;
-		supportConfig: boolean;
 		openModal: (params: JunoModalEditAuthConfigDetailType) => Promise<void>;
 	}
 
-	let { satellite, config, supportConfig, openModal }: Props = $props();
+	let { satellite, openModal }: Props = $props();
 
-	let openid = $derived(fromNullable(config?.openid ?? []));
+	const { config, supportConfig } = getContext<AuthConfigContext>(AUTH_CONFIG_CONTEXT_KEY);
+
+	let openid = $derived(fromNullable($config?.openid ?? []));
 	let google = $derived(openid?.providers.find(([key]) => 'Google' in key));
 
 	let providerData = $derived(google?.[1]);
@@ -63,7 +65,7 @@
 
 	<div class="columns-3 fit-column-1">
 		<div>
-			{#if supportConfig}
+			{#if $supportConfig}
 				<div in:fade>
 					<Value>
 						{#snippet label()}
@@ -81,7 +83,7 @@
 		</div>
 
 		<div>
-			{#if supportConfig && nonNullish(clientId)}
+			{#if $supportConfig && nonNullish(clientId)}
 				<div in:fade>
 					<Value>
 						{#snippet label()}
@@ -141,7 +143,7 @@
 	</div>
 </div>
 
-<button disabled={!supportConfig} onclick={openEditModal} in:fade>{$i18n.core.configure}</button>
+<button disabled={!$supportConfig} onclick={openEditModal} in:fade>{$i18n.core.configure}</button>
 
 <style lang="scss">
 	@use '../../styles/mixins/text';

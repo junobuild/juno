@@ -1,25 +1,26 @@
 <script lang="ts">
 	import { fromNullishNullable, isNullish, nonNullish } from '@dfinity/utils';
 	import { fade } from 'svelte/transition';
-	import type { SatelliteDid } from '$declarations';
 	import Value from '$lib/components/ui/Value.svelte';
 	import { i18n } from '$lib/stores/i18n.store';
 	import type { JunoModalEditAuthConfigDetailType } from '$lib/types/modal';
+	import { getContext } from 'svelte';
+	import { AUTH_CONFIG_CONTEXT_KEY, type AuthConfigContext } from '$lib/types/auth.context';
 
 	interface Props {
-		config: SatelliteDid.AuthenticationConfig | undefined;
-		supportConfig: boolean;
 		openModal: (params: JunoModalEditAuthConfigDetailType) => Promise<void>;
 	}
 
-	let { config, supportConfig, openModal }: Props = $props();
+	let { openModal }: Props = $props();
+
+	const { config, supportConfig } = getContext<AuthConfigContext>(AUTH_CONFIG_CONTEXT_KEY);
 
 	let derivationOrigin = $derived(
-		fromNullishNullable(fromNullishNullable(config?.internet_identity)?.derivation_origin)
+		fromNullishNullable(fromNullishNullable($config?.internet_identity)?.derivation_origin)
 	);
 	let externalAlternativeOrigins = $derived(
 		fromNullishNullable(
-			fromNullishNullable(config?.internet_identity)?.external_alternative_origins
+			fromNullishNullable($config?.internet_identity)?.external_alternative_origins
 		)
 	);
 
@@ -34,7 +35,7 @@
 
 	<div class="columns-3 fit-column-1">
 		<div>
-			{#if supportConfig}
+			{#if $supportConfig}
 				<div in:fade>
 					<Value>
 						{#snippet label()}
@@ -65,7 +66,7 @@
 	</div>
 </div>
 
-<button disabled={!supportConfig} onclick={openEditModal} in:fade>{$i18n.core.configure}</button>
+<button disabled={!$supportConfig} onclick={openEditModal} in:fade>{$i18n.core.configure}</button>
 
 <style lang="scss">
 	@use '../../styles/mixins/text';

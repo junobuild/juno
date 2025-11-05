@@ -1,36 +1,36 @@
 <script lang="ts">
 	import { fromNullishNullable, isNullish, nonNullish } from '@dfinity/utils';
+	import { getContext } from 'svelte';
 	import { fade } from 'svelte/transition';
-	import type { SatelliteDid } from '$declarations';
 	import SkeletonText from '$lib/components/ui/SkeletonText.svelte';
 	import Value from '$lib/components/ui/Value.svelte';
 	import { i18n } from '$lib/stores/i18n.store';
+	import { AUTH_CONFIG_CONTEXT_KEY, type AuthConfigContext } from '$lib/types/auth.context';
 	import type { JunoModalEditAuthConfigDetailType } from '$lib/types/modal';
 	import { i18nFormat } from '$lib/utils/i18n.utils';
 
 	interface Props {
-		config: SatelliteDid.AuthenticationConfig | undefined;
-		rule: SatelliteDid.Rule | undefined;
-		supportConfig: boolean;
-		supportSettings: boolean;
 		openModal: (params: JunoModalEditAuthConfigDetailType) => Promise<void>;
 	}
 
-	let { config, rule, supportConfig, supportSettings, openModal }: Props = $props();
+	let { openModal }: Props = $props();
 
-	let allowedCallers = $derived(fromNullishNullable(config?.rules)?.allowed_callers);
+	const { config, supportConfig, rule, supportSettings } =
+		getContext<AuthConfigContext>(AUTH_CONFIG_CONTEXT_KEY);
+
+	let allowedCallers = $derived(fromNullishNullable($config?.rules)?.allowed_callers);
 
 	let maxTokens: number | undefined = $state(undefined);
 
 	$effect(() => {
-		const rateConfig = fromNullishNullable(rule?.rate_config);
+		const rateConfig = fromNullishNullable($rule?.rate_config);
 		maxTokens = nonNullish(rateConfig?.max_tokens) ? Number(rateConfig.max_tokens) : undefined;
 	});
 
 	const openEditModal = async () =>
 		await openModal({
 			core: {
-				rule
+				rule: $rule
 			}
 		});
 </script>
@@ -40,7 +40,7 @@
 
 	<div class="columns-3 fit-column-1">
 		<div>
-			{#if supportSettings}
+			{#if $supportSettings}
 				<div in:fade>
 					<Value>
 						{#snippet label()}
@@ -60,7 +60,7 @@
 		</div>
 
 		<div>
-			{#if supportConfig}
+			{#if $supportConfig}
 				<div in:fade>
 					<Value>
 						{#snippet label()}
@@ -88,7 +88,7 @@
 	</div>
 </div>
 
-<button disabled={!supportConfig || !supportSettings} onclick={openEditModal} in:fade
+<button disabled={!$supportConfig || !$supportSettings} onclick={openEditModal} in:fade
 	>{$i18n.core.edit_config}</button
 >
 

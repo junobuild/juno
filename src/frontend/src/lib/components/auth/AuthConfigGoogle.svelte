@@ -1,7 +1,8 @@
 <script lang="ts">
 	import { fromNullable, isNullish, nonNullish } from '@dfinity/utils';
+	import { getContext } from 'svelte';
 	import { fade } from 'svelte/transition';
-	import type { MissionControlDid, SatelliteDid } from '$declarations';
+	import type { MissionControlDid } from '$declarations';
 	import Value from '$lib/components/ui/Value.svelte';
 	import {
 		A_MONTH_NS,
@@ -15,6 +16,7 @@
 		TWO_WEEKS_NS
 	} from '$lib/constants/auth.constants';
 	import { i18n } from '$lib/stores/i18n.store';
+	import { AUTH_CONFIG_CONTEXT_KEY, type AuthConfigContext } from '$lib/types/auth.context';
 	import type { JunoModalEditAuthConfigDetailType } from '$lib/types/modal';
 	import { secondsToDuration } from '$lib/utils/date.utils';
 	import { i18nFormat } from '$lib/utils/i18n.utils';
@@ -22,14 +24,14 @@
 
 	interface Props {
 		satellite: MissionControlDid.Satellite;
-		config: SatelliteDid.AuthenticationConfig | undefined;
-		supportConfig: boolean;
 		openModal: (params: JunoModalEditAuthConfigDetailType) => Promise<void>;
 	}
 
-	let { satellite, config, supportConfig, openModal }: Props = $props();
+	let { satellite, openModal }: Props = $props();
 
-	let openid = $derived(fromNullable(config?.openid ?? []));
+	const { config, supportConfig } = getContext<AuthConfigContext>(AUTH_CONFIG_CONTEXT_KEY);
+
+	let openid = $derived(fromNullable($config?.openid ?? []));
 	let google = $derived(openid?.providers.find(([key]) => 'Google' in key));
 
 	let providerData = $derived(google?.[1]);
@@ -63,7 +65,7 @@
 
 	<div class="columns-3 fit-column-1">
 		<div>
-			{#if supportConfig}
+			{#if $supportConfig}
 				<div in:fade>
 					<Value>
 						{#snippet label()}
@@ -81,7 +83,7 @@
 		</div>
 
 		<div>
-			{#if supportConfig && nonNullish(clientId)}
+			{#if $supportConfig && nonNullish(clientId)}
 				<div in:fade>
 					<Value>
 						{#snippet label()}
@@ -141,7 +143,7 @@
 	</div>
 </div>
 
-<button disabled={!supportConfig} onclick={openEditModal} in:fade>{$i18n.core.configure}</button>
+<button disabled={!$supportConfig} onclick={openEditModal} in:fade>{$i18n.core.configure}</button>
 
 <style lang="scss">
 	@use '../../styles/mixins/text';

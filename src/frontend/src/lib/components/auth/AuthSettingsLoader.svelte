@@ -2,14 +2,14 @@
 	import { getContext, type Snippet, untrack } from 'svelte';
 	import { fade } from 'svelte/transition';
 	import type { MissionControlDid } from '$declarations';
+	import SpinnerParagraph from '$lib/components/ui/SpinnerParagraph.svelte';
+	import Warning from '$lib/components/ui/Warning.svelte';
 	import { getAuthConfig } from '$lib/services/auth/auth.config.services';
 	import { getRuleUser } from '$lib/services/collection.services';
 	import { authStore } from '$lib/stores/auth.store';
+	import { i18n } from '$lib/stores/i18n.store';
 	import { versionStore } from '$lib/stores/version.store';
 	import { AUTH_CONFIG_CONTEXT_KEY, type AuthConfigContext } from '$lib/types/auth.context';
-	import SpinnerParagraph from '$lib/components/ui/SpinnerParagraph.svelte';
-	import { i18n } from '$lib/stores/i18n.store';
-	import Warning from '$lib/components/ui/Warning.svelte';
 
 	interface Props {
 		satellite: MissionControlDid.Satellite;
@@ -20,6 +20,7 @@
 
 	let satelliteId = $derived(satellite.satellite_id);
 
+	// eslint-disable-next-line @typescript-eslint/no-unused-vars
 	const { setConfig, setRule, state } = getContext<AuthConfigContext>(AUTH_CONFIG_CONTEXT_KEY);
 
 	const loadRule = async () => {

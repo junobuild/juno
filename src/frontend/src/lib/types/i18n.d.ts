@@ -395,6 +395,7 @@ interface I18nAuthentication {
 	identities: string;
 	client_id: string;
 	client_id_placeholder: string;
+	client_id_warn: string;
 	session_duration: string;
 	allowed_targets: string;
 	allowed_targets_placeholder: string;

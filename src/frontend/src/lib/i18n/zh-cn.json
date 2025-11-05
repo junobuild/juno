@@ -385,6 +385,7 @@
 		"identities": "{0}个身份",
 		"client_id": "客户端 ID",
 		"client_id_placeholder": "1234567890-abcdefg.apps.googleusercontent.com",
+		"client_id_warn": "您即将禁用 Google 身份验证。请确认这是您想执行的操作，因为所有使用 Google 登录的用户将无法再访问您的应用程序。",
 		"session_duration": "会话时长",
 		"allowed_targets": "允许的目标",
 		"allowed_targets_placeholder": "Principal ID，逗号分隔或每行一个。留空则使用默认权限。",

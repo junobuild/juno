@@ -41,6 +41,11 @@ export interface UpdateAuthConfigResult {
 	err?: unknown;
 }
 
+interface UpdateResult {
+	result: 'skip' | 'success' | 'error';
+	err?: unknown;
+}
+
 interface UpdateAuthConfigRulesParams extends UpdateAuthConfigParams {
 	rule: SatelliteDid.Rule | undefined;
 	maxTokens: number | undefined;
@@ -53,7 +58,7 @@ interface UpdateAuthConfigIIParams extends UpdateAuthConfigParams {
 }
 
 interface UpdateAuthConfigGoogleParams extends UpdateAuthConfigParams {
-	clientId: string;
+	clientId: string | undefined;
 	maxTimeToLive: bigint | undefined;
 	allowedTargets: PrincipalText[] | null | undefined;
 }
@@ -152,6 +157,16 @@ export const updateAuthConfigGoogle = async ({
 		return { success: 'error' };
 	}
 
+	if (isNullish(clientId)) {
+		const { result: resultConfig } = await disableConfigGoogle({
+			satellite,
+			config,
+			identity
+		});
+
+		return { success: resultConfig === 'error' ? 'error' : 'ok' };
+	}
+
 	if (!GOOGLE_CLIENT_ID_REGEX.test(clientId)) {
 		toasts.error({ text: labels.errors.auth_invalid_google_client_id });
 		return { success: 'error' };
@@ -166,11 +181,7 @@ export const updateAuthConfigGoogle = async ({
 		identity
 	});
 
-	if (resultConfig === 'error') {
-		return { success: 'error' };
-	}
-
-	return { success: 'ok' };
+	return { success: resultConfig === 'error' ? 'error' : 'ok' };
 };
 
 const updateConfigRules = async ({
@@ -179,10 +190,7 @@ const updateConfigRules = async ({
 	allowedCallers,
 	identity
 }: Pick<UpdateAuthConfigRulesParams, 'config' | 'allowedCallers' | 'satellite'> &
-	Required<Pick<UpdateAuthConfigParams, 'identity'>>): Promise<{
-	result: 'skip' | 'success' | 'error';
-	err?: unknown;
-}> => {
+	Required<Pick<UpdateAuthConfigParams, 'identity'>>): Promise<UpdateResult> => {
 	const currentAllowedCallers = fromNullishNullable(config?.rules)?.allowed_callers ?? [];
 	const unmodifiedRules =
 		currentAllowedCallers.length === allowedCallers.length &&
@@ -220,10 +228,9 @@ const updateConfigInternetIdentity = async ({
 	externalOrigins,
 	identity
 }: Pick<UpdateAuthConfigIIParams, 'config' | 'derivationOrigin' | 'satellite'> &
-	Required<Pick<UpdateAuthConfigParams, 'identity'>> & { externalOrigins: string[] }): Promise<{
-	result: 'skip' | 'success' | 'error';
-	err?: unknown;
-}> => {
+	Required<Pick<UpdateAuthConfigParams, 'identity'>> & {
+		externalOrigins: string[];
+	}): Promise<UpdateResult> => {
 	const editConfig = nonNullish(derivationOrigin)
 		? // We use the host in the backend satellite which parse the url with https to generate the /.well-known/ii-alternative-origins
 			buildSetAuthenticationConfig({ config, domainName: derivationOrigin.host, externalOrigins })
@@ -248,6 +255,32 @@ const updateConfigInternetIdentity = async ({
 	});
 };
 
+const disableConfigGoogle = async ({
+	satellite,
+	config,
+	identity
+}: Pick<UpdateAuthConfigGoogleParams, 'config' | 'satellite'> &
+	Required<Pick<UpdateAuthConfigParams, 'identity'>>): Promise<UpdateResult> => {
+	const openid = fromNullable(config?.openid ?? []);
+	const google = openid?.providers.find(([key]) => 'Google' in key);
+
+	if (isNullish(google)) {
+		return { result: 'skip' };
+	}
+
+	// TODO: we set the all OpenID to None for simplicity reason as we do not support currently any other provider than Google
+	return await updateConfig({
+		config: {
+			internet_identity: config?.internet_identity ?? [],
+			rules: config?.rules ?? [],
+			openid: [],
+			version: config?.version ?? []
+		},
+		satellite,
+		identity
+	});
+};
+
 const updateConfigGoogle = async ({
 	satellite,
 	config,
@@ -255,14 +288,10 @@ const updateConfigGoogle = async ({
 	maxTimeToLive,
 	allowedTargets,
 	identity
-}: Pick<
-	UpdateAuthConfigGoogleParams,
-	'config' | 'clientId' | 'maxTimeToLive' | 'allowedTargets' | 'satellite'
-> &
-	Required<Pick<UpdateAuthConfigParams, 'identity'>>): Promise<{
-	result: 'skip' | 'success' | 'error';
-	err?: unknown;
-}> => {
+}: Pick<UpdateAuthConfigGoogleParams, 'config' | 'maxTimeToLive' | 'allowedTargets' | 'satellite'> &
+	Required<Pick<UpdateAuthConfigParams, 'identity'>> & {
+		clientId: string;
+	}): Promise<UpdateResult> => {
 	const openid = fromNullable(config?.openid ?? []);
 	const google = openid?.providers.find(([key]) => 'Google' in key);
 	const providerData = google?.[1];
@@ -348,10 +377,7 @@ const updateConfig = async ({
 }: Pick<UpdateAuthConfigParams, 'satellite'> &
 	Required<Pick<UpdateAuthConfigParams, 'identity'>> & {
 		config: SatelliteDid.SetAuthenticationConfig;
-	}): Promise<{
-	result: 'skip' | 'success' | 'error';
-	err?: unknown;
-}> => {
+	}): Promise<UpdateResult> => {
 	try {
 		await setAuthConfig({
 			satelliteId,
@@ -378,10 +404,7 @@ const updateRule = async ({
 	maxTokens,
 	identity
 }: Pick<UpdateAuthConfigRulesParams, 'rule' | 'maxTokens' | 'satellite'> &
-	Required<Pick<UpdateAuthConfigParams, 'identity'>>): Promise<{
-	result: 'skip' | 'success' | 'error';
-	err?: unknown;
-}> => {
+	Required<Pick<UpdateAuthConfigParams, 'identity'>>): Promise<UpdateResult> => {
 	// We do nothing if no rule is provided
 	if (isNullish(rule)) {
 		return { result: 'skip' };

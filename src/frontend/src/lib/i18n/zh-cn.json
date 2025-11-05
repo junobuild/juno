@@ -391,7 +391,8 @@
 		"allowed_targets_placeholder": "Principal ID，逗号分隔或每行一个。留空则使用默认权限。",
 		"target_your_satellite": "您的 Satellite：",
 		"target_modules": "{0} 个模块",
-		"in_nanoseconds": "单位：纳秒"
+		"in_nanoseconds": "单位：纳秒",
+		"loading_config": "正在加载配置..."
 	},
 	"datastore": {
 		"title": "数据池",
@@ -565,6 +566,8 @@
 		"load_users": "用户加载时发生意外错误。",
 		"load_settings": "设置加载时发生意外错误。",
 		"load_user_data": "加载您的数据（配置、元数据等）时发生意外错误。",
+		"loading_config": "正在加载配置…",
+		"load_auth_config_error": "加载身份验证配置时出现意外错误。",
 		"hosting_missing_domain_name": "必须提供域名。",
 		"hosting_invalid_url": "请提供有效的URL。",
 		"hosting_missing_dns_configuration": "必须提供域名配置。",

@@ -391,7 +391,8 @@
 		"allowed_targets_placeholder": "Principal IDs, comma-separated or one per line. Leave empty for default permissions.",
 		"target_your_satellite": "Your Satellite:",
 		"target_modules": "{0} modules",
-		"in_nanoseconds": "in nanoseconds"
+		"in_nanoseconds": "in nanoseconds",
+		"loading_config": "Loading configuration…"
 	},
 	"datastore": {
 		"title": "Datastore",
@@ -565,6 +566,7 @@
 		"load_users": "Unexpected error(s) while loading the users.",
 		"load_settings": "Unexpected error(s) while loading the settings.",
 		"load_user_data": "Unexpected error(s) while loading your data (configuration, metadata, etc.).",
+		"load_auth_config_error": "An unexpected error occurred while loading your authentication configuration.",
 		"hosting_missing_domain_name": "A domain name must be provided.",
 		"hosting_invalid_url": "Please provide a valid URL.",
 		"hosting_missing_dns_configuration": "A domain name configuration must be provided.",

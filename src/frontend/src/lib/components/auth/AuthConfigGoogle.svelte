@@ -1,7 +1,6 @@
 <script lang="ts">
 	import { fromNullable, isNullish, nonNullish } from '@dfinity/utils';
 	import { getContext } from 'svelte';
-	import { fade } from 'svelte/transition';
 	import type { MissionControlDid } from '$declarations';
 	import Value from '$lib/components/ui/Value.svelte';
 	import {
@@ -66,7 +65,7 @@
 	<div class="columns-3 fit-column-1">
 		<div>
 			{#if $supportConfig}
-				<div in:fade>
+				<div>
 					<Value>
 						{#snippet label()}
 							{$i18n.authentication.client_id}
@@ -84,7 +83,7 @@
 
 		<div>
 			{#if $supportConfig && nonNullish(clientId)}
-				<div in:fade>
+				<div>
 					<Value>
 						{#snippet label()}
 							{$i18n.authentication.session_duration}
@@ -116,7 +115,7 @@
 					</Value>
 				</div>
 
-				<div in:fade>
+				<div>
 					<Value>
 						{#snippet label()}
 							{$i18n.authentication.allowed_targets}
@@ -143,19 +142,11 @@
 	</div>
 </div>
 
-<button disabled={!$supportConfig} onclick={openEditModal} in:fade>{$i18n.core.configure}</button>
+<button disabled={!$supportConfig} onclick={openEditModal}>{$i18n.core.configure}</button>
 
 <style lang="scss">
 	@use '../../styles/mixins/text';
 	@use '../../styles/mixins/media';
-
-	.card-container {
-		min-height: 94px;
-
-		@include media.min-width(medium) {
-			min-height: 110px;
-		}
-	}
 
 	p {
 		&:not(.client-id) {

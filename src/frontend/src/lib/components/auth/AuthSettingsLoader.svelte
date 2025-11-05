@@ -1,8 +1,8 @@
 <script lang="ts">
 	import { getContext, type Snippet, untrack } from 'svelte';
 	import type { MissionControlDid } from '$declarations';
-	import { getRuleUser } from '$lib/services/collection.services';
 	import { getAuthConfig } from '$lib/services/auth/auth.config.services';
+	import { getRuleUser } from '$lib/services/collection.services';
 	import { authStore } from '$lib/stores/auth.store';
 	import { versionStore } from '$lib/stores/version.store';
 	import { AUTH_CONFIG_CONTEXT_KEY, type AuthConfigContext } from '$lib/types/auth.context';

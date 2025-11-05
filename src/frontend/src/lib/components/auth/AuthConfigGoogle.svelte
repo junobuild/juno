@@ -1,7 +1,8 @@
 <script lang="ts">
 	import { fromNullable, isNullish, nonNullish } from '@dfinity/utils';
+	import { getContext } from 'svelte';
 	import { fade } from 'svelte/transition';
-	import type { MissionControlDid, SatelliteDid } from '$declarations';
+	import type { MissionControlDid } from '$declarations';
 	import Value from '$lib/components/ui/Value.svelte';
 	import {
 		A_MONTH_NS,
@@ -15,12 +16,11 @@
 		TWO_WEEKS_NS
 	} from '$lib/constants/auth.constants';
 	import { i18n } from '$lib/stores/i18n.store';
+	import { AUTH_CONFIG_CONTEXT_KEY, type AuthConfigContext } from '$lib/types/auth.context';
 	import type { JunoModalEditAuthConfigDetailType } from '$lib/types/modal';
 	import { secondsToDuration } from '$lib/utils/date.utils';
 	import { i18nFormat } from '$lib/utils/i18n.utils';
 	import { satelliteName } from '$lib/utils/satellite.utils';
-	import { getContext } from 'svelte';
-	import { AUTH_CONFIG_CONTEXT_KEY, type AuthConfigContext } from '$lib/types/auth.context';
 
 	interface Props {
 		satellite: MissionControlDid.Satellite;

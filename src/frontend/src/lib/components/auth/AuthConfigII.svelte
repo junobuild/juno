@@ -1,11 +1,11 @@
 <script lang="ts">
 	import { fromNullishNullable, isNullish, nonNullish } from '@dfinity/utils';
+	import { getContext } from 'svelte';
 	import { fade } from 'svelte/transition';
 	import Value from '$lib/components/ui/Value.svelte';
 	import { i18n } from '$lib/stores/i18n.store';
-	import type { JunoModalEditAuthConfigDetailType } from '$lib/types/modal';
-	import { getContext } from 'svelte';
 	import { AUTH_CONFIG_CONTEXT_KEY, type AuthConfigContext } from '$lib/types/auth.context';
+	import type { JunoModalEditAuthConfigDetailType } from '$lib/types/modal';
 
 	interface Props {
 		openModal: (params: JunoModalEditAuthConfigDetailType) => Promise<void>;

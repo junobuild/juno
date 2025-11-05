@@ -1,10 +1,10 @@
 <script lang="ts">
 	import { fromNullable, nonNullish } from '@dfinity/utils';
+	import { getContext } from 'svelte';
 	import IconGoogle from '$lib/components/icons/IconGoogle.svelte';
 	import IconIc from '$lib/components/icons/IconIC.svelte';
 	import IconPasskey from '$lib/components/icons/IconPasskey.svelte';
 	import { i18n } from '$lib/stores/i18n.store';
-	import { getContext } from 'svelte';
 	import { AUTH_CONFIG_CONTEXT_KEY, type AuthConfigContext } from '$lib/types/auth.context';
 
 	const { config } = getContext<AuthConfigContext>(AUTH_CONFIG_CONTEXT_KEY);

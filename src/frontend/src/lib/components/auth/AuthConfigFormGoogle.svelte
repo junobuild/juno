@@ -1,11 +1,13 @@
 <script lang="ts">
-	import { fromNullable, isEmptyString, nonNullish } from '@dfinity/utils';
+	import { fromNullable, isEmptyString, nonNullish, notEmptyString } from '@dfinity/utils';
 	import type { PrincipalText } from '@dfinity/zod-schemas';
 	import { onMount } from 'svelte';
+	import { fade } from 'svelte/transition';
 	import type { MissionControlDid, SatelliteDid } from '$declarations';
 	import AuthConfigFormGoogleOptions from '$lib/components/auth/AuthConfigFormGoogleOptions.svelte';
 	import Input from '$lib/components/ui/Input.svelte';
 	import Value from '$lib/components/ui/Value.svelte';
+	import Warning from '$lib/components/ui/Warning.svelte';
 	import {
 		A_MONTH_NS,
 		A_WEEK_NS,
@@ -13,7 +15,6 @@
 		AUTH_DEFAULT_MAX_SESSION_TIME_TO_LIVE,
 		EIGHT_HOURS_NS,
 		FOUR_HOURS_NS,
-		GOOGLE_CLIENT_ID_REGEX,
 		HALF_DAY_NS,
 		ONE_DAY_NS,
 		TWO_HOURS_NS,
@@ -27,7 +28,7 @@
 		satellite: MissionControlDid.Satellite;
 		config: SatelliteDid.AuthenticationConfig | undefined;
 		onsubmit: ($event: SubmitEvent) => Promise<void>;
-		clientId: string;
+		clientId: string | undefined;
 		maxTimeToLive: bigint | undefined;
 		allowedTargets: PrincipalText[] | null | undefined;
 	}
@@ -36,7 +37,7 @@
 		satellite,
 		onsubmit,
 		config,
-		clientId = $bindable(''),
+		clientId = $bindable(undefined),
 		maxTimeToLive = $bindable(),
 		allowedTargets = $bindable(undefined)
 	}: Props = $props();
@@ -48,10 +49,11 @@
 	let googleEnabled = $state(nonNullish(google));
 
 	// Client ID
-	let clientIdInput = $state(providerData?.client_id ?? '');
+	let currentClientId = $state(providerData?.client_id);
+	let clientIdInput = $state(currentClientId ?? '');
 
 	$effect(() => {
-		clientId = clientIdInput;
+		clientId = notEmptyString(clientIdInput) ? clientIdInput : undefined;
 	});
 
 	// Max time to live
@@ -82,7 +84,7 @@
 			BigInt(maxTimeToLiveInput) !== A_MONTH_NS;
 	});
 
-	let disabled = $derived(isEmptyString(clientId) || !GOOGLE_CLIENT_ID_REGEX.test(clientId));
+	let warnClientId = $derived(isEmptyString(clientId) && notEmptyString(currentClientId));
 </script>
 
 <h2>Google</h2>
@@ -113,7 +115,7 @@
 					name="client_id"
 					inputType="text"
 					placeholder={$i18n.authentication.client_id_placeholder}
-					required={true}
+					required={false}
 					bind:value={clientIdInput}
 				/>
 			</Value>
@@ -150,9 +152,15 @@
 		</div>
 
 		<AuthConfigFormGoogleOptions {delegation} {satellite} bind:allowedTargets />
+
+		{#if warnClientId}
+			<div class="warn" in:fade>
+				<Warning>{$i18n.authentication.client_id_warn}</Warning>
+			</div>
+		{/if}
 	</div>
 
-	<button disabled={disabled || $isBusy} type="submit">
+	<button disabled={$isBusy} type="submit">
 		{$i18n.core.submit}
 	</button>
 </form>

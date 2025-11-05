@@ -46,7 +46,7 @@
 	let externalAlternativeOrigins = $state('');
 
 	// Google
-	let googleClientId = $state('');
+	let googleClientId = $state<string | undefined>(undefined);
 	let googleMaxTimeToLive = $state<bigint | undefined>(undefined);
 	let googleAllowedTargets = $state<PrincipalText[] | null | undefined>(undefined);
 

@@ -385,6 +385,7 @@
 		"identities": "{0} identities",
 		"client_id": "Client ID",
 		"client_id_placeholder": "1234567890-abcdefg.apps.googleusercontent.com",
+		"client_id_warn": "You are about to disable Google authentication. Please ensure this is the intended action, as users who signed in with Google will no longer be able to access your app.",
 		"session_duration": "Session duration",
 		"allowed_targets": "Allowed targets",
 		"allowed_targets_placeholder": "Principal IDs, comma-separated or one per line. Leave empty for default permissions.",

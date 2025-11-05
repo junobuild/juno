@@ -23,6 +23,8 @@ export interface AuthConfigContext {
 	rule: Readable<SatelliteDid.Rule | undefined>;
 	supportSettings: Readable<boolean>;
 	supportConfig: Readable<boolean>;
+
+	state: Readable<'loading' | 'initialized' | 'error'>;
 }
 
 export const AUTH_CONFIG_CONTEXT_KEY = Symbol('auth-config');

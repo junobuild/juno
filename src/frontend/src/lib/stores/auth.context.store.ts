@@ -1,5 +1,6 @@
 import type { SatelliteDid } from '$declarations';
 import type { AuthConfigContext, AuthConfigData } from '$lib/types/auth.context';
+import { nonNullish } from '@dfinity/utils';
 import { derived, writable } from 'svelte/store';
 
 export const initAuthConfigContext = (): AuthConfigContext => {
@@ -10,6 +11,17 @@ export const initAuthConfigContext = (): AuthConfigContext => {
 
 	const rule = derived([store], ([store]) => store.rule?.rule);
 	const supportSettings = derived([store], ([store]) => store.rule?.result === 'success');
+
+	const state = derived([store], ([store]) =>
+		nonNullish(store.config) &&
+		store.config.result !== 'error' &&
+		nonNullish(store.rule) &&
+		store.rule.result !== 'error'
+			? 'initialized'
+			: store.config?.result === 'error' || store.rule?.result === 'error'
+				? 'error'
+				: 'loading'
+	);
 
 	const setConfig = (result: {
 		result: 'success' | 'error' | 'skip';
@@ -35,6 +47,7 @@ export const initAuthConfigContext = (): AuthConfigContext => {
 		config,
 		supportConfig,
 		rule,
-		supportSettings
+		supportSettings,
+		state
 	};
 };

@@ -1,11 +1,15 @@
 <script lang="ts">
 	import { getContext, type Snippet, untrack } from 'svelte';
+	import { fade } from 'svelte/transition';
 	import type { MissionControlDid } from '$declarations';
 	import { getAuthConfig } from '$lib/services/auth/auth.config.services';
 	import { getRuleUser } from '$lib/services/collection.services';
 	import { authStore } from '$lib/stores/auth.store';
 	import { versionStore } from '$lib/stores/version.store';
 	import { AUTH_CONFIG_CONTEXT_KEY, type AuthConfigContext } from '$lib/types/auth.context';
+	import SpinnerParagraph from '$lib/components/ui/SpinnerParagraph.svelte';
+	import { i18n } from '$lib/stores/i18n.store';
+	import Warning from '$lib/components/ui/Warning.svelte';
 
 	interface Props {
 		satellite: MissionControlDid.Satellite;
@@ -16,7 +20,7 @@
 
 	let satelliteId = $derived(satellite.satellite_id);
 
-	const { setConfig, setRule } = getContext<AuthConfigContext>(AUTH_CONFIG_CONTEXT_KEY);
+	const { setConfig, setRule, state } = getContext<AuthConfigContext>(AUTH_CONFIG_CONTEXT_KEY);
 
 	const loadRule = async () => {
 		const result = await getRuleUser({ satelliteId, identity: $authStore.identity });
@@ -39,6 +43,10 @@
 	$effect(() => {
 		$versionStore;
 
+		if (Object.keys($versionStore.satellites).length === 0) {
+			return;
+		}
+
 		untrack(() => {
 			load();
 		});
@@ -47,4 +55,12 @@
 
 <svelte:window onjunoReloadAuthConfig={load} />
 
-{@render children()}
+{#if $state === 'initialized'}
+	<div in:fade>
+		{@render children()}
+	</div>
+{:else if $state === 'error'}
+	<Warning>{$i18n.errors.load_auth_config_error}</Warning>
+{:else}
+	<SpinnerParagraph>{$i18n.authentication.loading_config}</SpinnerParagraph>
+{/if}

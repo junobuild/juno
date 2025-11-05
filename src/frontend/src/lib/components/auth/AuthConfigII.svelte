@@ -1,7 +1,6 @@
 <script lang="ts">
 	import { fromNullishNullable, isNullish, nonNullish } from '@dfinity/utils';
 	import { getContext } from 'svelte';
-	import { fade } from 'svelte/transition';
 	import Value from '$lib/components/ui/Value.svelte';
 	import { i18n } from '$lib/stores/i18n.store';
 	import { AUTH_CONFIG_CONTEXT_KEY, type AuthConfigContext } from '$lib/types/auth.context';
@@ -36,7 +35,7 @@
 	<div class="columns-3 fit-column-1">
 		<div>
 			{#if $supportConfig}
-				<div in:fade>
+				<div>
 					<Value>
 						{#snippet label()}
 							{$i18n.authentication.main_domain}
@@ -51,7 +50,7 @@
 				</div>
 
 				{#if nonNullish(externalAlternativeOrigins)}
-					<div in:fade>
+					<div>
 						<Value>
 							{#snippet label()}
 								{$i18n.authentication.external_alternative_origins}
@@ -66,19 +65,11 @@
 	</div>
 </div>
 
-<button disabled={!$supportConfig} onclick={openEditModal} in:fade>{$i18n.core.configure}</button>
+<button disabled={!$supportConfig} onclick={openEditModal}>{$i18n.core.configure}</button>
 
 <style lang="scss">
 	@use '../../styles/mixins/text';
 	@use '../../styles/mixins/media';
-
-	.card-container {
-		min-height: 94px;
-
-		@include media.min-width(medium) {
-			min-height: 168px;
-		}
-	}
 
 	p {
 		@include text.truncate;

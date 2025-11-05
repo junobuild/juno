@@ -402,6 +402,7 @@ interface I18nAuthentication {
 	target_your_satellite: string;
 	target_modules: string;
 	in_nanoseconds: string;
+	loading_config: string;
 }
 
 interface I18nDatastore {
@@ -582,6 +583,7 @@ interface I18nErrors {
 	load_users: string;
 	load_settings: string;
 	load_user_data: string;
+	load_auth_config_error: string;
 	hosting_missing_domain_name: string;
 	hosting_invalid_url: string;
 	hosting_missing_dns_configuration: string;

@@ -100,15 +100,11 @@
 		min-height: 168px;
 
 		@include media.min-width(medium) {
-			min-height: 94px;
+			min-height: 108px;
 		}
 	}
 
 	p {
-		@include media.min-width(medium) {
-			margin: 0;
-		}
-
 		@include text.truncate;
 	}
 

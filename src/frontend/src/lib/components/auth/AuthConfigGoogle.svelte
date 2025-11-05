@@ -88,27 +88,29 @@
 							{$i18n.authentication.session_duration}
 						{/snippet}
 
-						{#if maxTimeToLive === BigInt(AN_HOUR_NS)}
-							{$i18n.core.an_hour}
-						{:else if maxTimeToLive === BigInt(TWO_HOURS_NS)}
-							{$i18n.core.two_hours}
-						{:else if maxTimeToLive === BigInt(FOUR_HOURS_NS)}
-							{$i18n.core.four_hours}
-						{:else if maxTimeToLive === BigInt(EIGHT_HOURS_NS)}
-							{$i18n.core.eight_hours}
-						{:else if maxTimeToLive === BigInt(HALF_DAY_NS)}
-							{$i18n.core.half_day}
-						{:else if maxTimeToLive === BigInt(ONE_DAY_NS)}
-							{$i18n.core.a_day}
-						{:else if maxTimeToLive === BigInt(A_WEEK_NS)}
-							{$i18n.core.a_week}
-						{:else if maxTimeToLive === BigInt(TWO_WEEKS_NS)}
-							{$i18n.core.two_weeks}
-						{:else if maxTimeToLive === BigInt(A_MONTH_NS)}
-							{$i18n.core.a_month}
-						{:else}
-							{secondsToDuration(maxTimeToLive ?? 0n)}
-						{/if}
+						<p>
+							{#if maxTimeToLive === BigInt(AN_HOUR_NS)}
+								{$i18n.core.an_hour}
+							{:else if maxTimeToLive === BigInt(TWO_HOURS_NS)}
+								{$i18n.core.two_hours}
+							{:else if maxTimeToLive === BigInt(FOUR_HOURS_NS)}
+								{$i18n.core.four_hours}
+							{:else if maxTimeToLive === BigInt(EIGHT_HOURS_NS)}
+								{$i18n.core.eight_hours}
+							{:else if maxTimeToLive === BigInt(HALF_DAY_NS)}
+								{$i18n.core.half_day}
+							{:else if maxTimeToLive === BigInt(ONE_DAY_NS)}
+								{$i18n.core.a_day}
+							{:else if maxTimeToLive === BigInt(A_WEEK_NS)}
+								{$i18n.core.a_week}
+							{:else if maxTimeToLive === BigInt(TWO_WEEKS_NS)}
+								{$i18n.core.two_weeks}
+							{:else if maxTimeToLive === BigInt(A_MONTH_NS)}
+								{$i18n.core.a_month}
+							{:else}
+								{secondsToDuration(maxTimeToLive ?? 0n)}
+							{/if}
+						</p>
 					</Value>
 				</div>
 
@@ -149,15 +151,11 @@
 		min-height: 94px;
 
 		@include media.min-width(medium) {
-			min-height: 94px;
+			min-height: 110px;
 		}
 	}
 
 	p {
-		@include media.min-width(medium) {
-			margin: 0;
-		}
-
 		&:not(.client-id) {
 			@include text.truncate;
 		}

@@ -47,7 +47,7 @@ const signInWithGoogleFn = async () => {
 };
 
 const authenticateWithGoogle = async () => {
-	const { delegationChain, sessionKey } = await authenticateApi({
+	const { identity: {delegationChain, sessionKey} } = await authenticateApi({
 		redirect: null,
 		auth: {
 			console: {
@@ -63,7 +63,7 @@ const authenticateWithGoogle = async () => {
 	});
 };
 
-export const authenticate = async (): Promise<{
+export const handleRedirectCallback = async (): Promise<{
 	result: 'ok' | 'error';
 	err?: unknown;
 }> => {

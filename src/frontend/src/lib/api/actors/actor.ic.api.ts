@@ -1,6 +1,6 @@
-import { type ICActor, idlFactoryCertifiedIC } from '$declarations';
+import { type ICActor, idlFactoryCertifiedIC, idlFactoryIC } from '$declarations';
 import type { GetAgentParams } from '$lib/api/_agent/_agent.api';
-import { ActorApi } from '$lib/api/actors/actor.api';
+import { ActorApi, type GetActorParams } from '$lib/api/actors/actor.api';
 import type { ActorConfig, CallConfig } from '@dfinity/agent';
 import { Principal } from '@dfinity/principal';
 import { nonNullish } from '@dfinity/utils';
@@ -38,13 +38,17 @@ const transform: CallTransform | QueryTransform = (
 
 const icActor = new ActorApi<ICActor>();
 
-export const getICActor = async (params: GetAgentParams): Promise<ICActor> =>
+export const getICActor = async ({
+	certified,
+	...params
+}: GetAgentParams & Pick<GetActorParams, 'certified'>): Promise<ICActor> =>
 	await icActor.getActor({
 		canisterId: MANAGEMENT_CANISTER_ID,
 		config: {
 			callTransform: transform,
 			queryTransform: transform
 		},
-		idlFactory: idlFactoryCertifiedIC,
+		idlFactory: certified === false ? idlFactoryIC : idlFactoryCertifiedIC,
+		certified: certified ?? true,
 		...params
 	});

@@ -1,4 +1,4 @@
-import { type ICActor, type ICDid, idlFactoryCertifiedIC } from '$declarations';
+import { type ICActor, type ICDid, idlFactoryIC } from '$declarations';
 import type { Identity } from '@dfinity/agent';
 import type { PocketIc } from '@dfinity/pic';
 import { Principal } from '@dfinity/principal';
@@ -17,7 +17,7 @@ export const fetchLogs = async ({
 	controller: Identity;
 	canisterId: Principal;
 }): Promise<[string, IcMgmtLog][]> => {
-	const mgmtActor = pic.createActor<ICActor>(idlFactoryCertifiedIC, Principal.fromText('aaaaa-aa'));
+	const mgmtActor = pic.createActor<ICActor>(idlFactoryIC, Principal.fromText('aaaaa-aa'));
 	mgmtActor.setIdentity(controller);
 
 	const { fetch_canister_logs } = mgmtActor;

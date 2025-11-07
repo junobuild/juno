@@ -17,6 +17,7 @@ import { idlFactory as idlFactorySatellite0022 } from '$declarations/deprecated/
 import { idlFactory as idlFactorySatellite008 } from '$declarations/deprecated/satellite-0-0-8.factory.did';
 import { idlFactory as idlFactorySatellite009 } from '$declarations/deprecated/satellite-0-0-9.factory.did';
 import { idlFactory as idlFactoryCertifiedIC } from '$declarations/ic-management/ic-management.factory.certified.did';
+import { idlFactory as idlFactoryIC } from '$declarations/ic-management/ic-management.factory.did';
 import { idlFactory as idlFactoryMissionControl } from '$declarations/mission_control/mission_control.factory.did';
 import { idlFactory as idlFactoryObservatory } from '$declarations/observatory/observatory.factory.did';
 import { idlFactory as idlFactoryOrbiter } from '$declarations/orbiter/orbiter.factory.did';
@@ -53,6 +54,7 @@ export {
 	idlFactoryConsole,
 	idlFactoryConsole0014,
 	idlFactoryConsole008,
+	idlFactoryIC,
 	idlFactoryMissionControl,
 	idlFactoryMissionControl0013,
 	idlFactoryMissionControl0014,

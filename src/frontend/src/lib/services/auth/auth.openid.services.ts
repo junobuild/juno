@@ -47,7 +47,9 @@ const signInWithGoogleFn = async () => {
 };
 
 const authenticateWithGoogle = async () => {
-	const { identity: {delegationChain, sessionKey} } = await authenticateApi({
+	const {
+		identity: { delegationChain, sessionKey }
+	} = await authenticateApi({
 		redirect: null,
 		auth: {
 			console: {

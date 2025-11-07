@@ -1,5 +1,5 @@
 import type { OptionIdentity } from '$lib/types/itentity';
-import type { AuthClient } from '@dfinity/auth-client';
+import type { AuthClient } from '@icp-sdk/auth/client';
 
 export interface SignedInIdentity {
 	identity: OptionIdentity;

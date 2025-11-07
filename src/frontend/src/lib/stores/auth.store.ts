@@ -4,8 +4,8 @@ import type { SignInWithAuthClient, SignInWithNewAuthClient } from '$lib/types/a
 import { SignInInitError } from '$lib/types/errors';
 import type { OptionIdentity } from '$lib/types/itentity';
 import type { Option } from '$lib/types/utils';
-import type { AuthClient } from '@dfinity/auth-client';
 import { isNullish, nonNullish } from '@dfinity/utils';
+import type { AuthClient } from '@icp-sdk/auth/client';
 import { type Readable, writable } from 'svelte/store';
 
 export interface AuthStoreData {

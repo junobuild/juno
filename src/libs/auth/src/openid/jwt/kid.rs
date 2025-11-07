@@ -3,8 +3,6 @@ use crate::openid::jwt::types::errors::JwtFindKidError;
 use crate::openid::jwt::types::token::UnsafeClaims;
 use jsonwebtoken::dangerous;
 
-// TODO: refactor decode_jwt_header for perf reason
-
 /// ⚠️ **Warning:** This function decodes the JWT *without verifying its signature*.
 /// Use only to inspect the header (e.g., `kid`) before performing a verified decode
 /// before finalizing any task.

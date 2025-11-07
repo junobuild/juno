@@ -5,8 +5,8 @@ import {
 } from '$declarations';
 import { AnonymousIdentity } from '@dfinity/agent';
 import { Ed25519KeyIdentity } from '@dfinity/identity';
+import type { LedgerCanisterOptions } from '@dfinity/ledger-icp';
 import { AccountIdentifier } from '@dfinity/ledger-icp';
-import type { _SERVICE as LedgerActor } from '@dfinity/ledger-icp/dist/candid/ledger';
 import { PocketIc, SubnetStateType, type Actor } from '@dfinity/pic';
 import type { Principal } from '@dfinity/principal';
 import { inject } from 'vitest';
@@ -15,6 +15,8 @@ import { MISSION_CONTROL_ADMIN_CONTROLLER_ERROR_MSG } from '../../constants/miss
 import { setupLedger } from '../../utils/ledger-tests.utils';
 import { missionControlUserInitArgs } from '../../utils/mission-control-tests.utils';
 import { MISSION_CONTROL_WASM_PATH } from '../../utils/setup-tests.utils';
+
+type LedgerActor = LedgerCanisterOptions['serviceOverride'];
 
 describe('Mission Control > Wallet', () => {
 	let pic: PocketIc;

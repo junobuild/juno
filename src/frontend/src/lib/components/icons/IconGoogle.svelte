@@ -4,10 +4,10 @@
 
 	interface Props {
 		size?: string;
-		title?: string;
+		withTitle?: boolean;
 	}
 
-	let { size = '24px', title }: Props = $props();
+	let { size = '24px', withTitle }: Props = $props();
 </script>
 
 <svg
@@ -17,8 +17,8 @@
 	width={size}
 	xmlns="http://www.w3.org/2000/svg"
 >
-	{#if nonNullish(title)}
-		<title>{title}</title>
+	{#if withTitle}
+		<title>Google</title>
 	{/if}
 
 	<path

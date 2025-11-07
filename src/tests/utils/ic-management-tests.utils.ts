@@ -1,4 +1,3 @@
-import type { canister_status_result } from '@dfinity/ic-management';
 import type { ActorInterface, CanisterFixture, PocketIc } from '@dfinity/pic';
 import {
 	arrayBufferToUint8Array,
@@ -7,6 +6,7 @@ import {
 	nonNullish,
 	toNullable
 } from '@dfinity/utils';
+import type { canister_status_result } from '@icp-sdk/canisters/ic-management';
 import { type Identity, MANAGEMENT_CANISTER_ID } from '@icp-sdk/core/agent';
 import { IDL } from '@icp-sdk/core/candid';
 import { Principal } from '@icp-sdk/core/principal';

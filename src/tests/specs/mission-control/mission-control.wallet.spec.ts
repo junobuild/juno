@@ -3,8 +3,8 @@ import {
 	type MissionControlActor,
 	type MissionControlDid
 } from '$declarations';
-import { AccountIdentifier, type LedgerCanisterOptions } from '@dfinity/ledger-icp';
 import { PocketIc, SubnetStateType, type Actor } from '@dfinity/pic';
+import { AccountIdentifier, type LedgerCanisterOptions } from '@icp-sdk/canisters/ledger/icp';
 import { AnonymousIdentity } from '@icp-sdk/core/agent';
 import { Ed25519KeyIdentity } from '@icp-sdk/core/identity';
 import type { Principal } from '@icp-sdk/core/principal';

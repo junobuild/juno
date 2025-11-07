@@ -1,5 +1,5 @@
 <script lang="ts">
-	import type { AccountIdentifier } from '@dfinity/ledger-icp';
+	import type { AccountIdentifier } from '@icp-sdk/canisters/ledger/icp';
 	import { nonNullish } from '@dfinity/utils';
 	import CanisterTopUpModal from '$lib/components/modals/CanisterTopUpModal.svelte';
 	import Html from '$lib/components/ui/Html.svelte';

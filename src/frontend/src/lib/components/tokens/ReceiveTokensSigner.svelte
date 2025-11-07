@@ -1,5 +1,5 @@
 <script lang="ts">
-	import type { Icrc1TransferRequest } from '@dfinity/ledger-icp';
+	import type { Icrc1TransferRequest } from '@icp-sdk/canisters/ledger/icp';
 	import type { IcrcAccount } from '@dfinity/oisy-wallet-signer';
 	import { IcpWallet } from '@dfinity/oisy-wallet-signer/icp-wallet';
 	import { isNullish, nonNullish, toNullable } from '@dfinity/utils';

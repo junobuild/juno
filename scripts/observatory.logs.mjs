@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 
-import { ICManagementCanister } from '@dfinity/ic-management';
+import { ICManagementCanister } from '@icp-sdk/canisters/ic-management';
 import { icAgent, localAgent } from './actor.mjs';
 import { OBSERVATORY_ID } from './constants.mjs';
 import { targetMainnet } from './utils.mjs';

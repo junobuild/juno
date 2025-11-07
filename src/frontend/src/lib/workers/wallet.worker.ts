@@ -21,8 +21,8 @@ import type {
 import { mapIcpTransaction } from '$lib/utils/icp-transactions.utils';
 import { loadIdentity } from '$lib/utils/worker.utils';
 import { type IndexedTransactions, WalletStore } from '$lib/workers/_stores/wallet-worker.store';
-import type { GetAccountIdentifierTransactionsResponse } from '@dfinity/ledger-icp';
 import { isNullish, jsonReplacer } from '@dfinity/utils';
+import type { GetAccountIdentifierTransactionsResponse } from '@icp-sdk/canisters/ledger/icp';
 import type { Identity } from '@icp-sdk/core/agent';
 import { Principal } from '@icp-sdk/core/principal';
 

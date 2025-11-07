@@ -1,11 +1,11 @@
 import { getAgent } from '$lib/api/_agent/_agent.api';
 import type { OptionIdentity } from '$lib/types/itentity';
+import { assertNonNullish } from '@dfinity/utils';
 import {
 	AccountIdentifier,
 	IndexCanister,
 	type GetAccountIdentifierTransactionsResponse
-} from '@dfinity/ledger-icp';
-import { assertNonNullish } from '@dfinity/utils';
+} from '@icp-sdk/canisters/ledger/icp';
 import type { Principal } from '@icp-sdk/core/principal';
 
 export const getAccountIdentifier = (principal: Principal): AccountIdentifier =>

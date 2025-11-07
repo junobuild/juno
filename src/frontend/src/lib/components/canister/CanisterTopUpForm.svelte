@@ -1,5 +1,5 @@
 <script lang="ts">
-	import type { AccountIdentifier } from '@dfinity/ledger-icp';
+	import type { AccountIdentifier } from '@icp-sdk/canisters/ledger/icp';
 	import { isNullish, nonNullish, notEmptyString } from '@dfinity/utils';
 	import { onMount, type Snippet } from 'svelte';
 	import { icpXdrConversionRate } from '$lib/api/cmc.api';

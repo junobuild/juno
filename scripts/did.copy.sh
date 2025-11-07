@@ -1,9 +1,9 @@
 #!/usr/bin/env bash
 
 # ic-management to declarations
-cp node_modules/@dfinity/ic-management/dist/candid/ic-management.d.ts src/declarations/ic-management/ic-management.did.d.ts
-cp node_modules/@dfinity/ic-management/dist/candid/ic-management.certified.idl.js src/declarations/ic-management/ic-management.factory.certified.did.js
-cp node_modules/@dfinity/ic-management/dist/candid/ic-management.idl.js src/declarations/ic-management/ic-management.factory.did.js
+cp node_modules/@icp-sdk/canisters/ic-management/dist/candid/ic-management.d.ts src/declarations/ic-management/ic-management.did.d.ts
+cp node_modules/@icp-sdk/canisters/ic-management/dist/candid/ic-management.certified.idl.js src/declarations/ic-management/ic-management.factory.certified.did.js
+cp node_modules/@icp-sdk/canisters/ic-management/dist/candid/ic-management.idl.js src/declarations/ic-management/ic-management.factory.did.js
 
 cp node_modules/@dfinity/ledger-icp/dist/candid/ledger.d.ts src/declarations/ledger/icp/ledger.did.d.ts
 cp node_modules/@dfinity/ledger-icp/dist/candid/ledger.certified.idl.js src/declarations/ledger/icp/ledger.factory.certified.did.js

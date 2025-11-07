@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 
-import { CMCCanister } from '@dfinity/cmc';
 import { jsonReplacer, nonNullish } from '@dfinity/utils';
+import { CMCCanister } from '@icp-sdk/canisters/cmc';
 import { existsSync, mkdirSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { icAnonymousAgent } from './actor.mjs';

@@ -129,7 +129,7 @@ export const canisterLogs = async ({
 	canisterId: Principal;
 	identity: Identity;
 }): Promise<ICDid.canister_log_record[]> => {
-	const { fetch_canister_logs } = await getICActor({ identity });
+	const { fetch_canister_logs } = await getICActor({ identity, certified: false });
 
 	const { canister_log_records } = await fetch_canister_logs({
 		canister_id: canisterId

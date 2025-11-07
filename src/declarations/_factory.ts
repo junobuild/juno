@@ -16,12 +16,13 @@ import { idlFactory as idlFactorySatellite0021 } from '$declarations/deprecated/
 import { idlFactory as idlFactorySatellite0022 } from '$declarations/deprecated/satellite-0-0-22.factory.did';
 import { idlFactory as idlFactorySatellite008 } from '$declarations/deprecated/satellite-0-0-8.factory.did';
 import { idlFactory as idlFactorySatellite009 } from '$declarations/deprecated/satellite-0-0-9.factory.did';
+import { idlFactory as idlFactoryCertifiedIC } from '$declarations/ic-management/ic-management.factory.certified.did';
+import { idlFactory as idlFactoryIC } from '$declarations/ic-management/ic-management.factory.did';
 import { idlFactory as idlFactoryMissionControl } from '$declarations/mission_control/mission_control.factory.did';
 import { idlFactory as idlFactoryObservatory } from '$declarations/observatory/observatory.factory.did';
 import { idlFactory as idlFactoryOrbiter } from '$declarations/orbiter/orbiter.factory.did';
 import { idlFactory as idlFactorySatellite } from '$declarations/satellite/satellite.factory.did';
 import { idlFactory as idlFactorySputnik } from '$declarations/sputnik/sputnik.factory.did';
-import { idlFactory as idlFactoryIC } from '@dfinity/ic-management/dist/candid/ic-management.idl';
 
 import type { _SERVICE as ConsoleActor } from '$declarations/console/console.did';
 import type { _SERVICE as ConsoleActor0014 } from '$declarations/deprecated/console-0-0-14.did';
@@ -40,15 +41,16 @@ import type { _SERVICE as SatelliteActor0021 } from '$declarations/deprecated/sa
 import type { _SERVICE as SatelliteActor0022 } from '$declarations/deprecated/satellite-0-0-22.did';
 import type { _SERVICE as SatelliteActor008 } from '$declarations/deprecated/satellite-0-0-8.did';
 import type { _SERVICE as SatelliteActor009 } from '$declarations/deprecated/satellite-0-0-9.did';
+import type { _SERVICE as ICActor } from '$declarations/ic-management/ic-management.did';
 import type { _SERVICE as MissionControlActor } from '$declarations/mission_control/mission_control.did';
 import type { _SERVICE as ObservatoryActor } from '$declarations/observatory/observatory.did';
 import type { _SERVICE as OrbiterActor } from '$declarations/orbiter/orbiter.did';
 import type { _SERVICE as SatelliteActor } from '$declarations/satellite/satellite.did';
 import type { _SERVICE as SputnikActor } from '$declarations/sputnik/sputnik.did';
-import type { _SERVICE as ICActor } from '@dfinity/ic-management/dist/candid/ic-management';
 
 export {
 	idlFactoryCertifiedConsole,
+	idlFactoryCertifiedIC,
 	idlFactoryConsole,
 	idlFactoryConsole0014,
 	idlFactoryConsole008,

@@ -1,5 +1,5 @@
 import { AuthClientProvider } from '$lib/providers/auth-client.provider';
-import { AuthClient, KEY_STORAGE_DELEGATION, KEY_STORAGE_KEY } from '@dfinity/auth-client';
+import { AuthClient, KEY_STORAGE_DELEGATION, KEY_STORAGE_KEY } from '@icp-sdk/auth/client';
 
 describe('auth-client.provider', () => {
 	const {

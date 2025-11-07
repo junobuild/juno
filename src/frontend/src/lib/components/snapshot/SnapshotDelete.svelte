@@ -1,6 +1,6 @@
 <script lang="ts">
-	import { encodeSnapshotId } from '@icp-sdk/canisters/ic-management';
 	import { isNullish, nonNullish } from '@dfinity/utils';
+	import { encodeSnapshotId } from '@icp-sdk/canisters/ic-management';
 	import type { Principal } from '@icp-sdk/core/principal';
 	import type { ICDid } from '$declarations';
 	import Popover from '$lib/components/ui/Popover.svelte';

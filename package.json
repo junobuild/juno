@@ -111,6 +111,7 @@
 		"vitest": "^3.2.4"
 	},
 	"dependencies": {
+		"@dfinity/oisy-wallet-signer": "^2.0.0",
 		"@dfinity/utils": "^4.0.0",
 		"@dfinity/zod-schemas": "^3.0.0",
 		"@icp-sdk/auth": "^4.2.0",

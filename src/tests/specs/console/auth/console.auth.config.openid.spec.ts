@@ -1,6 +1,6 @@
 import type { ConsoleActor } from '$declarations';
-import type { Ed25519KeyIdentity } from '@dfinity/identity';
 import type { Actor, PocketIc } from '@dfinity/pic';
+import type { Ed25519KeyIdentity } from '@icp-sdk/core/identity';
 import { mockCertificateDate } from '../../../mocks/jwt.mocks';
 import { testAuthConfigObservatory } from '../../../utils/auth-assertions-config-openid-tests.utils';
 import { deploySegments, setupConsole } from '../../../utils/console-tests.utils';

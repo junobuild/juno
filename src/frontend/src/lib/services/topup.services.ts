@@ -10,8 +10,8 @@ import type { Option } from '$lib/types/utils';
 import { emit } from '$lib/utils/events.utils';
 import { assertAndConvertAmountToICPToken } from '$lib/utils/token.utils';
 import { waitAndRestartWallet } from '$lib/utils/wallet.utils';
-import type { Principal } from '@dfinity/principal';
 import { assertNonNullish, isNullish } from '@dfinity/utils';
+import type { Principal } from '@icp-sdk/core/principal';
 import { get } from 'svelte/store';
 
 export const topUp = async ({

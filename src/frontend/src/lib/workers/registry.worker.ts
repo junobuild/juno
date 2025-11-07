@@ -27,9 +27,9 @@ import type {
 } from '$lib/types/version';
 import { last } from '$lib/utils/utils';
 import { loadIdentity } from '$lib/utils/worker.utils';
-import type { Identity } from '@dfinity/agent';
-import { Principal } from '@dfinity/principal';
 import { isNullish, nonNullish } from '@dfinity/utils';
+import type { Identity } from '@icp-sdk/core/agent';
+import { Principal } from '@icp-sdk/core/principal';
 import type { MetadataVersions, ReleaseMetadata } from '@junobuild/admin';
 import { entries, getMany, setMany } from 'idb-keyval';
 import { compare } from 'semver';

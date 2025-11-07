@@ -1,7 +1,7 @@
 import type { SatelliteActor } from '$declarations';
 import type { Doc } from '$declarations/satellite/satellite.did';
-import type { DelegationIdentity } from '@dfinity/identity';
 import type { Actor, PocketIc } from '@dfinity/pic';
+import type { DelegationIdentity } from '@icp-sdk/core/identity';
 import { fromArray } from '@junobuild/utils';
 import { authenticateAndMakeIdentity } from '../../../../utils/auth-identity-tests.utils';
 import { setupSatelliteAuth, type TestSession } from '../../../../utils/auth-tests.utils';

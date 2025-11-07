@@ -1,5 +1,5 @@
 <script lang="ts" module>
-	import type { Principal } from '@dfinity/principal';
+	import type { Principal } from '@icp-sdk/core/principal';
 	import type { UpgradeCodeParams } from '@junobuild/admin';
 	import type { Snippet } from 'svelte';
 	import type { Wasm } from '$lib/types/upgrade';

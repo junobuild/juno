@@ -1,7 +1,7 @@
 import type { ConsoleActor, SatelliteActor } from '$declarations';
-import type { Ed25519KeyIdentity } from '@dfinity/identity';
 import type { Actor, PocketIc } from '@dfinity/pic';
-import type { Principal } from '@dfinity/principal';
+import type { Ed25519KeyIdentity } from '@icp-sdk/core/identity';
+import type { Principal } from '@icp-sdk/core/principal';
 import { mockClientId } from '../mocks/jwt.mocks';
 import type { TestSession } from './auth-tests.utils';
 import { stopCanister } from './ic-management-tests.utils';

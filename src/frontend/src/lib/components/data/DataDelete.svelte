@@ -1,6 +1,6 @@
 <script lang="ts">
-	import type { Principal } from '@dfinity/principal';
 	import { isNullish } from '@dfinity/utils';
+	import type { Principal } from '@icp-sdk/core/principal';
 	import { getContext, type Snippet } from 'svelte';
 	import Confirmation from '$lib/components/core/Confirmation.svelte';
 	import IconDelete from '$lib/components/icons/IconDelete.svelte';

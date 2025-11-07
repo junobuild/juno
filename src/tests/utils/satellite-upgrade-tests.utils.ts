@@ -1,9 +1,9 @@
 import type { SatelliteActor0016, SatelliteActor0017, SatelliteActor0021 } from '$declarations';
-import type { Identity } from '@dfinity/agent';
-import { Ed25519KeyIdentity } from '@dfinity/identity';
 import type { Actor, PocketIc } from '@dfinity/pic';
-import type { Principal } from '@dfinity/principal';
 import { toNullable } from '@dfinity/utils';
+import type { Identity } from '@icp-sdk/core/agent';
+import { Ed25519KeyIdentity } from '@icp-sdk/core/identity';
+import type { Principal } from '@icp-sdk/core/principal';
 import { toArray } from '@junobuild/utils';
 import { tick } from './pic-tests.utils';
 import { downloadSatellite, SATELLITE_WASM_PATH } from './setup-tests.utils';

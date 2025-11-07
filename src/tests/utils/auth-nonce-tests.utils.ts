@@ -1,5 +1,5 @@
-import type { Ed25519KeyIdentity } from '@dfinity/identity';
 import { arrayBufferToUint8Array, uint8ArrayToBase64 } from '@dfinity/utils';
+import type { Ed25519KeyIdentity } from '@icp-sdk/core/identity';
 // In the future: uint8Array.toBase64({ alphabet: "base64url" })
 // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Uint8Array/toBase64
 export const toBase64URL = (uint8Array: Uint8Array): string =>

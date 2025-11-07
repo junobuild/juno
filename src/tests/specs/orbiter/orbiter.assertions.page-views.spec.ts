@@ -1,7 +1,7 @@
 import { type OrbiterActor, type OrbiterDid, idlFactoryOrbiter } from '$declarations';
-import { Ed25519KeyIdentity } from '@dfinity/identity';
 import { type Actor, PocketIc } from '@dfinity/pic';
 import { toNullable } from '@dfinity/utils';
+import { Ed25519KeyIdentity } from '@icp-sdk/core/identity';
 import { nanoid } from 'nanoid';
 import { inject } from 'vitest';
 import { pageViewMock, satelliteIdMock } from '../../mocks/orbiter.mocks';

@@ -1,7 +1,7 @@
 import { type ICActor, type ICDid, idlFactoryIC } from '$declarations';
-import type { Identity } from '@dfinity/agent';
 import type { PocketIc } from '@dfinity/pic';
-import { Principal } from '@dfinity/principal';
+import type { Identity } from '@icp-sdk/core/agent';
+import { Principal } from '@icp-sdk/core/principal';
 
 export interface IcMgmtLog {
 	message: string;

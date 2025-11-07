@@ -1,7 +1,7 @@
 import { AuthClientProvider } from '$lib/providers/auth-client.provider';
 import type { Canister } from '$lib/types/canister';
-import type { Identity } from '@dfinity/agent';
 import { isNullish, nonNullish } from '@dfinity/utils';
+import type { Identity } from '@icp-sdk/core/agent';
 import { getMany, type UseStore } from 'idb-keyval';
 
 export const loadIdentity = async (): Promise<Identity | null> => {

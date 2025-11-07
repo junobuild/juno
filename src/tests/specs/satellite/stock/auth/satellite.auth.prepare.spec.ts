@@ -1,6 +1,6 @@
 import type { SatelliteActor } from '$declarations';
-import type { Ed25519KeyIdentity } from '@dfinity/identity';
 import type { Actor, PocketIc } from '@dfinity/pic';
+import type { Ed25519KeyIdentity } from '@icp-sdk/core/identity';
 import { mockCertificateDate } from '../../../../mocks/jwt.mocks';
 import { testAuthPrepareDelegation } from '../../../../utils/auth-assertions-prepare-delegation-tests.utils';
 import { setupSatelliteStock } from '../../../../utils/satellite-tests.utils';

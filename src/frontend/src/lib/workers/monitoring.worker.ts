@@ -22,9 +22,9 @@ import {
 	emitSavedCanisters,
 	loadIdentity
 } from '$lib/utils/worker.utils';
-import type { Identity } from '@dfinity/agent';
-import { Principal } from '@dfinity/principal';
 import { fromNullable, fromNullishNullable, isNullish, nonNullish } from '@dfinity/utils';
+import type { Identity } from '@icp-sdk/core/agent';
+import { Principal } from '@icp-sdk/core/principal';
 import { addDays, endOfDay, format, startOfDay } from 'date-fns';
 import { get, set } from 'idb-keyval';
 

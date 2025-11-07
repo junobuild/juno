@@ -1,5 +1,5 @@
 import { queryAndUpdate } from '$lib/api/call/query.api';
-import { AnonymousIdentity } from '@dfinity/agent';
+import { AnonymousIdentity } from '@icp-sdk/core/agent';
 import { tick } from 'svelte';
 
 describe('query.api', () => {

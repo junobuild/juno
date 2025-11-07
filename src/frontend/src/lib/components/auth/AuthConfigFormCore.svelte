@@ -1,7 +1,7 @@
 <script lang="ts">
-	import { Principal } from '@dfinity/principal';
 	import { fromNullishNullable, nonNullish, notEmptyString } from '@dfinity/utils';
 	import { PrincipalTextSchema } from '@dfinity/zod-schemas';
+	import { Principal } from '@icp-sdk/core/principal';
 	import type { SatelliteDid } from '$declarations';
 	import Input from '$lib/components/ui/Input.svelte';
 	import Value from '$lib/components/ui/Value.svelte';

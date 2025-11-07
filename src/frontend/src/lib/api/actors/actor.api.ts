@@ -1,10 +1,10 @@
 import { getAgent, type GetAgentParams } from '$lib/api/_agent/_agent.api';
 import type { OptionIdentity } from '$lib/types/itentity';
 import type { Option } from '$lib/types/utils';
-import { Actor, type ActorConfig, type ActorMethod, type ActorSubclass } from '@dfinity/agent';
-import type { IDL } from '@dfinity/candid';
-import { Principal } from '@dfinity/principal';
 import { assertNonNullish, isNullish } from '@dfinity/utils';
+import { Actor, type ActorConfig, type ActorMethod, type ActorSubclass } from '@icp-sdk/core/agent';
+import type { IDL } from '@icp-sdk/core/candid';
+import { Principal } from '@icp-sdk/core/principal';
 
 type CreateActorParams = {
 	canisterId: string | Principal;

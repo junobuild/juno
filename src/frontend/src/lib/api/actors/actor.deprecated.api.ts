@@ -19,7 +19,7 @@ import {
 import { ActorApi } from '$lib/api/actors/actor.api';
 import type { OptionIdentity } from '$lib/types/itentity';
 import type { MissionControlId } from '$lib/types/mission-control';
-import type { Principal } from '@dfinity/principal';
+import type { Principal } from '@icp-sdk/core/principal';
 
 const missionControl004Actor = new ActorApi<MissionControlActor004>();
 const missionControl0013Actor = new ActorApi<MissionControlActor0013>();

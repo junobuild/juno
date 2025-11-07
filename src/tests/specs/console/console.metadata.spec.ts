@@ -1,8 +1,8 @@
 import { idlFactoryConsole, type ConsoleActor } from '$declarations';
-import { AnonymousIdentity } from '@dfinity/agent';
-import { Ed25519KeyIdentity } from '@dfinity/identity';
 import { PocketIc, type Actor } from '@dfinity/pic';
 import { assertNonNullish, fromNullable, toNullable } from '@dfinity/utils';
+import { AnonymousIdentity } from '@icp-sdk/core/agent';
+import { Ed25519KeyIdentity } from '@icp-sdk/core/identity';
 import { JUNO_STORAGE_ERROR_RESERVED_ASSET } from '@junobuild/errors';
 import { inject } from 'vitest';
 import { uploadFile } from '../../utils/cdn-tests.utils';

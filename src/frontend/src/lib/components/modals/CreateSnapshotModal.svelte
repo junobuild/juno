@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { Principal } from '@dfinity/principal';
+	import { Principal } from '@icp-sdk/core/principal';
 	import { fade } from 'svelte/transition';
 	import ProgressSnapshot from '$lib/components/canister/ProgressSnapshot.svelte';
 	import Confetti from '$lib/components/ui/Confetti.svelte';

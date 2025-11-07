@@ -1,6 +1,6 @@
 <script lang="ts">
-	import type { Principal } from '@dfinity/principal';
 	import { debounce } from '@dfinity/utils';
+	import type { Principal } from '@icp-sdk/core/principal';
 	import { onDestroy, onMount, type Snippet } from 'svelte';
 	import type { MissionControlDid } from '$declarations';
 	import { orbiterNotLoaded } from '$lib/derived/orbiter.derived';

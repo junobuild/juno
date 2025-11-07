@@ -1,5 +1,4 @@
 <script lang="ts">
-	import type { Principal } from '@dfinity/principal';
 	import {
 		isEmptyString,
 		isNullish,
@@ -7,6 +6,7 @@
 		notEmptyString,
 		fromNullishNullable
 	} from '@dfinity/utils';
+	import type { Principal } from '@icp-sdk/core/principal';
 	import { setDoc } from '@junobuild/core';
 	import { nanoid } from 'nanoid';
 	import { getContext, type Snippet } from 'svelte';

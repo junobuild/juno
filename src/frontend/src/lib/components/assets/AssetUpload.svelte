@@ -1,6 +1,6 @@
 <script lang="ts">
-	import type { Principal } from '@dfinity/principal';
 	import { fromNullable, isNullish, nonNullish, notEmptyString } from '@dfinity/utils';
+	import type { Principal } from '@icp-sdk/core/principal';
 	import { uploadFile } from '@junobuild/core';
 	import { getContext, type Snippet } from 'svelte';
 	import { quintOut } from 'svelte/easing';

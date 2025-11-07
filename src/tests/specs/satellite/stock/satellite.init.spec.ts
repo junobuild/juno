@@ -1,7 +1,7 @@
 import type { SatelliteActor, SatelliteDid } from '$declarations';
-import { Ed25519KeyIdentity } from '@dfinity/identity';
 import type { Actor, PocketIc } from '@dfinity/pic';
 import { fromNullable, fromNullishNullable } from '@dfinity/utils';
+import { Ed25519KeyIdentity } from '@icp-sdk/core/identity';
 import { MEMORIES } from '../../../constants/satellite-tests.constants';
 import { setupSatelliteStock } from '../../../utils/satellite-tests.utils';
 

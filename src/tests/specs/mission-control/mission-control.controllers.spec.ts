@@ -6,9 +6,9 @@ import {
 	type OrbiterActor,
 	type SatelliteActor
 } from '$declarations';
-import { Ed25519KeyIdentity } from '@dfinity/identity';
 import { PocketIc, type Actor } from '@dfinity/pic';
-import type { Principal } from '@dfinity/principal';
+import { Ed25519KeyIdentity } from '@icp-sdk/core/identity';
+import type { Principal } from '@icp-sdk/core/principal';
 import { JUNO_AUTH_ERROR_NOT_ADMIN_CONTROLLER } from '@junobuild/errors';
 import { inject } from 'vitest';
 import { ORBITER_CONTROLLER_ERR_MSG } from '../../constants/orbiter-tests.constants';

@@ -1,6 +1,6 @@
 <script lang="ts">
-	import { AnonymousIdentity } from '@dfinity/agent';
 	import { nonNullish } from '@dfinity/utils';
+	import { AnonymousIdentity } from '@icp-sdk/core/agent';
 	import { type UpgradeCodeParams, upgradeSatellite } from '@junobuild/admin';
 	import { compare } from 'semver';
 	import CanisterUpgradeModal from '$lib/components/modals/CanisterUpgradeModal.svelte';

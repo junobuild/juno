@@ -2,7 +2,7 @@ import type { SatelliteDid } from '$declarations';
 import { reloadContextRules } from '$lib/services/rules.loader.services';
 import type { OptionIdentity } from '$lib/types/itentity';
 import type { RulesContext, RulesData } from '$lib/types/rules.context';
-import type { Principal } from '@dfinity/principal';
+import type { Principal } from '@icp-sdk/core/principal';
 import { derived, get, writable } from 'svelte/store';
 
 export const initRulesContext = ({

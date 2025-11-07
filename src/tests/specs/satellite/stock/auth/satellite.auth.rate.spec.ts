@@ -1,7 +1,7 @@
 import type { SatelliteActor } from '$declarations';
-import type { Ed25519KeyIdentity } from '@dfinity/identity';
 import type { Actor, PocketIc } from '@dfinity/pic';
 import { assertNonNullish, fromNullable } from '@dfinity/utils';
+import type { Ed25519KeyIdentity } from '@icp-sdk/core/identity';
 import { testAuthRate } from '../../../../utils/auth-assertions-rate-tests.utils';
 import { setupSatelliteAuth } from '../../../../utils/auth-tests.utils';
 

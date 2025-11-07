@@ -11,10 +11,10 @@ import {
 	type OrbiterDid006,
 	type OrbiterDid008
 } from '$declarations';
-import { Ed25519KeyIdentity } from '@dfinity/identity';
 import { PocketIc, type Actor } from '@dfinity/pic';
-import type { Principal } from '@dfinity/principal';
 import { assertNonNullish, fromNullable, toNullable } from '@dfinity/utils';
+import { Ed25519KeyIdentity } from '@icp-sdk/core/identity';
+import type { Principal } from '@icp-sdk/core/principal';
 import { nanoid } from 'nanoid';
 import { inject } from 'vitest';
 import { pageViewMock, satelliteIdMock, trackEventMock } from '../../mocks/orbiter.mocks';

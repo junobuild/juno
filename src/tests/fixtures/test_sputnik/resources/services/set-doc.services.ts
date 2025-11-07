@@ -1,6 +1,6 @@
 import type { SatelliteDid } from '$declarations';
-import { IDL } from '@dfinity/candid';
 import { arrayOfNumberToUint8Array, assertNonNullish, fromNullable } from '@dfinity/utils';
+import { IDL } from '@icp-sdk/core/candid';
 import type { Collection, Key, RawUserId } from '@junobuild/functions';
 import { call, id } from '@junobuild/functions/ic-cdk';
 import { decodeDocData, encodeDocData, setDocStore } from '@junobuild/functions/sdk';

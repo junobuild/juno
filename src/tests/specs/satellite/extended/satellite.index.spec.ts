@@ -1,8 +1,8 @@
 import { idlFactorySatellite, type SatelliteActor, type SatelliteDid } from '$declarations';
-import { Ed25519KeyIdentity } from '@dfinity/identity';
 import { PocketIc, type Actor } from '@dfinity/pic';
-import type { Principal } from '@dfinity/principal';
 import { toNullable } from '@dfinity/utils';
+import { Ed25519KeyIdentity } from '@icp-sdk/core/identity';
+import type { Principal } from '@icp-sdk/core/principal';
 import { readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { inject } from 'vitest';

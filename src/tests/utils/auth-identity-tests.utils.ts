@@ -1,15 +1,15 @@
 import type { ConsoleActor, SatelliteActor } from '$declarations';
 import type { _SERVICE as TestSatelliteActor } from '$test-declarations/test_satellite/test_satellite.did';
-import type { Signature } from '@dfinity/agent';
+import type { Actor, PocketIc } from '@dfinity/pic';
+import { fromNullable } from '@dfinity/utils';
+import type { Signature } from '@icp-sdk/core/agent';
 import {
 	Delegation,
 	DelegationChain,
 	DelegationIdentity,
 	type ECDSAKeyIdentity,
 	type SignedDelegation
-} from '@dfinity/identity';
-import type { Actor, PocketIc } from '@dfinity/pic';
-import { fromNullable } from '@dfinity/utils';
+} from '@icp-sdk/core/identity';
 import { mockClientId } from '../mocks/jwt.mocks';
 import type { TestSession } from './auth-tests.utils';
 import { makeMockGoogleOpenIdJwt, type MockOpenIdJwt } from './jwt-tests.utils';

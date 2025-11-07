@@ -1,7 +1,7 @@
 import type { SatelliteActor } from '$declarations';
-import type { Ed25519KeyIdentity } from '@dfinity/identity';
 import type { Actor, PocketIc } from '@dfinity/pic';
-import type { Principal } from '@dfinity/principal';
+import type { Ed25519KeyIdentity } from '@icp-sdk/core/identity';
+import type { Principal } from '@icp-sdk/core/principal';
 import { testAuthTargets } from '../../../../utils/auth-assertions-targets-tests.utils';
 import { setupSatelliteAuth, type TestSession } from '../../../../utils/auth-tests.utils';
 

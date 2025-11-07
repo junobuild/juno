@@ -1,7 +1,7 @@
 import { idlFactoryObservatory, type ObservatoryActor, type ObservatoryDid } from '$declarations';
-import { Ed25519KeyIdentity } from '@dfinity/identity';
 import { type Actor, PocketIc } from '@dfinity/pic';
 import { fromNullable } from '@dfinity/utils';
+import { Ed25519KeyIdentity } from '@icp-sdk/core/identity';
 import { inject } from 'vitest';
 import { mockCertificateDate, mockClientId } from '../../mocks/jwt.mocks';
 import { FETCH_CERTIFICATE_INTERVAL } from '../../mocks/observatory.mocks';

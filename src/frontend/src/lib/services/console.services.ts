@@ -8,8 +8,8 @@ import { i18n } from '$lib/stores/i18n.store';
 import { missionControlCertifiedStore } from '$lib/stores/mission-control.store';
 import { toasts } from '$lib/stores/toasts.store';
 import type { OptionIdentity } from '$lib/types/itentity';
-import type { Identity } from '@dfinity/agent';
 import { fromNullable, isNullish } from '@dfinity/utils';
+import type { Identity } from '@icp-sdk/core/agent';
 import { get } from 'svelte/store';
 
 interface Certified {

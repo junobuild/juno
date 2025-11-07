@@ -3,8 +3,8 @@ import { getOrbiterActor007, getOrbiterActor008 } from '$lib/api/actors/actor.de
 import type { OptionIdentity } from '$lib/types/itentity';
 import type { PageViewsParams } from '$lib/types/orbiter';
 import { toBigIntNanoSeconds } from '$lib/utils/date.utils';
-import type { Principal } from '@dfinity/principal';
 import { nonNullish, toNullable } from '@dfinity/utils';
+import type { Principal } from '@icp-sdk/core/principal';
 
 /**
  * @deprecated

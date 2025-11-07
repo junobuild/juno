@@ -1,8 +1,8 @@
 import { type SatelliteActor, type SatelliteDid, idlFactorySatellite } from '$declarations';
-import type { Identity } from '@dfinity/agent';
-import { Ed25519KeyIdentity } from '@dfinity/identity';
 import { type Actor, PocketIc } from '@dfinity/pic';
 import { fromNullable, toNullable } from '@dfinity/utils';
+import type { Identity } from '@icp-sdk/core/agent';
+import { Ed25519KeyIdentity } from '@icp-sdk/core/identity';
 import {
 	JUNO_DATASTORE_ERROR_USER_INVALID_DATA,
 	JUNO_DATASTORE_ERROR_USER_NOT_ALLOWED

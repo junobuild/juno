@@ -5,8 +5,8 @@ import { SatelliteUiMetadataParser } from '$lib/schemas/satellite.schema';
 import type { ListParams } from '$lib/types/list';
 import type { SatelliteUi, SatelliteUiMetadata, SatelliteUiTags } from '$lib/types/satellite';
 import { metadataEnvironment, metadataName, metadataTags } from '$lib/utils/metadata.utils';
-import { Principal } from '@dfinity/principal';
 import { isEmptyString, isNullish, notEmptyString, toNullable } from '@dfinity/utils';
+import { Principal } from '@icp-sdk/core/principal';
 
 export const satelliteUrl = (satelliteId: string): string => {
 	if (isDev()) {

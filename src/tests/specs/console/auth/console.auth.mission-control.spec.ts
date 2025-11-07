@@ -4,9 +4,9 @@ import {
 	type MissionControlActor
 } from '$declarations';
 import type { MissionControl } from '$declarations/console/console.did';
-import type { DelegationIdentity } from '@dfinity/identity';
 import type { Actor, PocketIc } from '@dfinity/pic';
 import { assertNonNullish, fromNullable, toNullable } from '@dfinity/utils';
+import type { DelegationIdentity } from '@icp-sdk/core/identity';
 import { authenticateAndMakeIdentity } from '../../../utils/auth-identity-tests.utils';
 import { setupConsoleAuth, type TestSession } from '../../../utils/auth-tests.utils';
 import { makeJwt, type MockOpenIdJwt } from '../../../utils/jwt-tests.utils';

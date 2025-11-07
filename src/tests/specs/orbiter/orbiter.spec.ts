@@ -1,7 +1,7 @@
 import { type OrbiterActor, type OrbiterDid, idlFactoryOrbiter } from '$declarations';
-import { Ed25519KeyIdentity } from '@dfinity/identity';
 import { type Actor, PocketIc } from '@dfinity/pic';
 import { fromNullable } from '@dfinity/utils';
+import { Ed25519KeyIdentity } from '@icp-sdk/core/identity';
 import {
 	JUNO_ERROR_NO_VERSION_PROVIDED,
 	JUNO_ERROR_VERSION_OUTDATED_OR_FUTURE

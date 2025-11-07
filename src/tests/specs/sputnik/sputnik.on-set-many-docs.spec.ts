@@ -1,8 +1,8 @@
 import type { SputnikActor } from '$declarations';
-import type { Identity } from '@dfinity/agent';
 import type { Actor, PocketIc } from '@dfinity/pic';
-import type { Principal } from '@dfinity/principal';
 import { assertNonNullish, fromNullable, toNullable } from '@dfinity/utils';
+import type { Identity } from '@icp-sdk/core/agent';
+import type { Principal } from '@icp-sdk/core/principal';
 import { fromArray } from '@junobuild/utils';
 import { nanoid } from 'nanoid';
 import { valid } from 'semver';

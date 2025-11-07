@@ -1,7 +1,7 @@
 <script lang="ts">
-	import { AnonymousIdentity } from '@dfinity/agent';
-	import { Principal } from '@dfinity/principal';
 	import { fromNullable, isNullish, nonNullish } from '@dfinity/utils';
+	import { AnonymousIdentity } from '@icp-sdk/core/agent';
+	import { Principal } from '@icp-sdk/core/principal';
 	import { type UpgradeCodeParams, upgradeSatellite } from '@junobuild/admin';
 	import type { SatelliteDid, MissionControlDid } from '$declarations';
 	import CanisterUpgradeWizard, {

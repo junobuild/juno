@@ -1,6 +1,6 @@
 <script lang="ts">
-	import { Principal } from '@dfinity/principal';
 	import { isNullish } from '@dfinity/utils';
+	import { Principal } from '@icp-sdk/core/principal';
 	import CanisterTransferCyclesForm from '$lib/components/canister/CanisterTransferCyclesForm.svelte';
 	import CanisterTransferCyclesReview from '$lib/components/canister/CanisterTransferCyclesReview.svelte';
 	import Modal from '$lib/components/ui/Modal.svelte';

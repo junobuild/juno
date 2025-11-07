@@ -1,6 +1,6 @@
 import { versionStore } from '$lib/stores/version.store';
-import type { Principal } from '@dfinity/principal';
 import { nonNullish } from '@dfinity/utils';
+import type { Principal } from '@icp-sdk/core/principal';
 import { compare } from 'semver';
 import { get } from 'svelte/store';
 

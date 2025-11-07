@@ -1,7 +1,7 @@
 import { idlFactoryConsole, type ConsoleActor } from '$declarations';
-import { AnonymousIdentity } from '@dfinity/agent';
-import { Ed25519KeyIdentity } from '@dfinity/identity';
 import { PocketIc, type Actor } from '@dfinity/pic';
+import { AnonymousIdentity } from '@icp-sdk/core/agent';
+import { Ed25519KeyIdentity } from '@icp-sdk/core/identity';
 import { inject } from 'vitest';
 import { CONTROLLER_ERROR_MSG } from '../../../constants/console-tests.constants';
 import {

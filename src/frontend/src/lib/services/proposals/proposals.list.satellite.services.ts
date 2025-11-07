@@ -4,8 +4,8 @@ import { toasts } from '$lib/stores/toasts.store';
 import type { OptionIdentity } from '$lib/types/itentity';
 import type { LoadProposalsBaseParams, LoadProposalsResult } from '$lib/types/proposals';
 import { container } from '$lib/utils/juno.utils';
-import type { Principal } from '@dfinity/principal';
 import { assertNonNullish, nonNullish } from '@dfinity/utils';
+import type { Principal } from '@icp-sdk/core/principal';
 import { listProposals } from '@junobuild/cdn';
 import { get } from 'svelte/store';
 

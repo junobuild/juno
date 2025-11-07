@@ -1,7 +1,7 @@
 import { i18n } from '$lib/stores/i18n.store';
-import type { Principal } from '@dfinity/principal';
 import { assertNonNullish, isNullish } from '@dfinity/utils';
 import { type PrincipalText, PrincipalTextSchema } from '@dfinity/zod-schemas';
+import type { Principal } from '@icp-sdk/core/principal';
 import { get } from 'svelte/store';
 
 export const getEmulatorMainIdentity = async (): Promise<PrincipalText> => {

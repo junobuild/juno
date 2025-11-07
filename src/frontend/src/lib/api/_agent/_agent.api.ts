@@ -1,8 +1,8 @@
 import { LOCAL_REPLICA_HOST } from '$lib/constants/app.constants';
 import { isDev } from '$lib/env/app.env';
 import type { Option } from '$lib/types/utils';
-import { HttpAgent, type Identity } from '@dfinity/agent';
 import { isNullish } from '@dfinity/utils';
+import { HttpAgent, type Identity } from '@icp-sdk/core/agent';
 
 export interface GetAgentParams {
 	identity: Identity;

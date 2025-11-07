@@ -7,9 +7,9 @@ import { i18n } from '$lib/stores/i18n.store';
 import { toasts } from '$lib/stores/toasts.store';
 import type { OptionIdentity } from '$lib/types/itentity';
 import type { Log, LogDataDid, LogLevel } from '$lib/types/log';
-import type { Identity } from '@dfinity/agent';
-import type { Principal } from '@dfinity/principal';
 import { isNullish, nonNullish } from '@dfinity/utils';
+import type { Identity } from '@icp-sdk/core/agent';
+import type { Principal } from '@icp-sdk/core/principal';
 import { fromArray } from '@junobuild/utils';
 import { get } from 'svelte/store';
 

@@ -6,8 +6,8 @@ import type { Metadata } from '$lib/types/metadata';
 import type { MissionControlId } from '$lib/types/mission-control';
 import type { GetMonitoringParams, MonitoringHistory } from '$lib/types/monitoring';
 import { toSetController } from '$lib/utils/controllers.utils';
-import { Principal } from '@dfinity/principal';
 import { toNullable } from '@dfinity/utils';
+import { Principal } from '@icp-sdk/core/principal';
 
 export const setSatellitesController = async ({
 	identity,

@@ -1,9 +1,9 @@
 import { type ICActor, idlFactoryCertifiedIC, idlFactoryIC } from '$declarations';
 import type { GetAgentParams } from '$lib/api/_agent/_agent.api';
 import { ActorApi, type GetActorParams } from '$lib/api/actors/actor.api';
-import type { ActorConfig, CallConfig } from '@dfinity/agent';
-import { Principal } from '@dfinity/principal';
 import { nonNullish } from '@dfinity/utils';
+import type { ActorConfig, CallConfig } from '@icp-sdk/core/agent';
+import { Principal } from '@icp-sdk/core/principal';
 
 const MANAGEMENT_CANISTER_ID = Principal.fromText('aaaaa-aa');
 

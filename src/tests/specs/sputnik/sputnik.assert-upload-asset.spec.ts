@@ -1,8 +1,8 @@
 import type { SputnikActor } from '$declarations';
-import type { Identity } from '@dfinity/agent';
 import type { Actor, PocketIc } from '@dfinity/pic';
-import type { Principal } from '@dfinity/principal';
 import { fromNullable } from '@dfinity/utils';
+import type { Identity } from '@icp-sdk/core/agent';
+import type { Principal } from '@icp-sdk/core/principal';
 import { mockSetRule } from '../../mocks/collection.mocks';
 import { setupTestSputnik } from '../../utils/fixtures-tests.utils';
 import { fetchLogs, type IcMgmtLog } from '../../utils/mgmt-tests.utils';

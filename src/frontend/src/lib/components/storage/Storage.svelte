@@ -1,5 +1,5 @@
 <script lang="ts">
-	import type { Principal } from '@dfinity/principal';
+	import type { Principal } from '@icp-sdk/core/principal';
 	import { getContext, setContext } from 'svelte';
 	import StorageCollections from '$lib/components/storage/StorageCollections.svelte';
 	import StorageData from '$lib/components/storage/StorageData.svelte';

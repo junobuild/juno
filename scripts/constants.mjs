@@ -1,4 +1,4 @@
-import { Principal } from '@dfinity/principal';
+import { Principal } from '@icp-sdk/core/principal';
 
 export const CONSOLE_ID = Principal.fromText('cokmz-oiaaa-aaaal-aby6q-cai');
 export const OBSERVATORY_ID = Principal.fromText('klbfr-lqaaa-aaaak-qbwsa-cai');

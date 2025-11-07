@@ -1,9 +1,9 @@
 import type { SatelliteActor, SatelliteDid } from '$declarations';
-import { AnonymousIdentity } from '@dfinity/agent';
-import type { Ed25519KeyIdentity } from '@dfinity/identity';
 import type { Actor, PocketIc } from '@dfinity/pic';
-import type { Principal } from '@dfinity/principal';
 import { toNullable } from '@dfinity/utils';
+import { AnonymousIdentity } from '@icp-sdk/core/agent';
+import type { Ed25519KeyIdentity } from '@icp-sdk/core/identity';
+import type { Principal } from '@icp-sdk/core/principal';
 import { JUNO_AUTH_ERROR_NOT_ADMIN_CONTROLLER } from '@junobuild/errors';
 import {
 	EXTERNAL_ALTERNATIVE_ORIGINS,

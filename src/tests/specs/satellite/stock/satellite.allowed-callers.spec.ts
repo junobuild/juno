@@ -1,9 +1,9 @@
 import { type SatelliteActor, type SatelliteDid, idlFactorySatellite } from '$declarations';
-import type { Identity } from '@dfinity/agent';
-import { Ed25519KeyIdentity } from '@dfinity/identity';
 import { type Actor, PocketIc } from '@dfinity/pic';
-import type { Principal } from '@dfinity/principal';
 import { fromNullable, isNullish, toNullable } from '@dfinity/utils';
+import type { Identity } from '@icp-sdk/core/agent';
+import { Ed25519KeyIdentity } from '@icp-sdk/core/identity';
+import type { Principal } from '@icp-sdk/core/principal';
 import { JUNO_AUTH_ERROR_CALLER_NOT_ALLOWED } from '@junobuild/errors';
 import { toArray } from '@junobuild/utils';
 import { nanoid } from 'nanoid';

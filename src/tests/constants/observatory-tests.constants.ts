@@ -1,4 +1,4 @@
-import { Principal } from '@dfinity/principal';
+import { Principal } from '@icp-sdk/core/principal';
 
 export const CALLER_NOT_CONTROLLER_OBSERVATORY_MSG =
 	'Caller is not a controller of the observatory.';

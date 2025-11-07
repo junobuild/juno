@@ -1,6 +1,6 @@
 import { idlFactoryObservatory, type ObservatoryActor } from '$declarations';
-import { Ed25519KeyIdentity } from '@dfinity/identity';
 import { type Actor, PocketIc } from '@dfinity/pic';
+import { Ed25519KeyIdentity } from '@icp-sdk/core/identity';
 import { inject } from 'vitest';
 import { mockMissionControlId } from '../../../frontend/tests/mocks/modules.mock';
 import {

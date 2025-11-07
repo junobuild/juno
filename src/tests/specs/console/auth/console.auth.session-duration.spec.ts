@@ -1,7 +1,7 @@
 import type { ConsoleActor } from '$declarations';
 import type { _SERVICE as TestSatelliteActor } from '$test-declarations/test_satellite/test_satellite.did';
-import type { Ed25519KeyIdentity } from '@dfinity/identity';
 import type { Actor, PocketIc } from '@dfinity/pic';
+import type { Ed25519KeyIdentity } from '@icp-sdk/core/identity';
 import { testAuthSessionDuration } from '../../../utils/auth-assertions-session-duration-tests.utils';
 import { setupConsoleAuth, type TestSession } from '../../../utils/auth-tests.utils';
 

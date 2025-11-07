@@ -1,7 +1,7 @@
 import { idlFactorySatellite, type SatelliteActor } from '$declarations';
-import { Ed25519KeyIdentity } from '@dfinity/identity';
 import { PocketIc, type Actor } from '@dfinity/pic';
 import { toNullable } from '@dfinity/utils';
+import { Ed25519KeyIdentity } from '@icp-sdk/core/identity';
 import { inject } from 'vitest';
 import { createUser as createUserUtils } from '../../../utils/satellite-doc-tests.utils';
 import { SATELLITE_WASM_PATH, controllersInitArgs } from '../../../utils/setup-tests.utils';

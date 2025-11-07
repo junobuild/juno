@@ -18,7 +18,6 @@ import {
 	buildDeleteAuthenticationConfig,
 	buildSetAuthenticationConfig
 } from '$lib/utils/auth.config.utils';
-import { Principal } from '@dfinity/principal';
 import {
 	fromNullable,
 	fromNullishNullable,
@@ -28,6 +27,7 @@ import {
 	toNullable
 } from '@dfinity/utils';
 import type { PrincipalText } from '@dfinity/zod-schemas';
+import { Principal } from '@icp-sdk/core/principal';
 import { get } from 'svelte/store';
 
 interface UpdateAuthConfigParams {

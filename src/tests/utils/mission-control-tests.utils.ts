@@ -4,10 +4,10 @@ import {
 	idlFactoryOrbiter,
 	idlFactorySatellite
 } from '$declarations';
-import type { Identity } from '@dfinity/agent';
-import { IDL } from '@dfinity/candid';
 import type { PocketIc } from '@dfinity/pic';
-import type { Principal } from '@dfinity/principal';
+import type { Identity } from '@icp-sdk/core/agent';
+import { IDL } from '@icp-sdk/core/candid';
+import type { Principal } from '@icp-sdk/core/principal';
 import { controllersInitArgs, ORBITER_WASM_PATH, SATELLITE_WASM_PATH } from './setup-tests.utils';
 
 export const missionControlUserInitArgs = (owner: Principal): ArrayBuffer =>

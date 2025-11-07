@@ -1,8 +1,5 @@
-import { type Identity, MANAGEMENT_CANISTER_ID } from '@dfinity/agent';
-import { IDL } from '@dfinity/candid';
 import type { canister_status_result } from '@dfinity/ic-management';
 import type { ActorInterface, CanisterFixture, PocketIc } from '@dfinity/pic';
-import { Principal } from '@dfinity/principal';
 import {
 	arrayBufferToUint8Array,
 	fromNullable,
@@ -10,6 +7,9 @@ import {
 	nonNullish,
 	toNullable
 } from '@dfinity/utils';
+import { type Identity, MANAGEMENT_CANISTER_ID } from '@icp-sdk/core/agent';
+import { IDL } from '@icp-sdk/core/candid';
+import { Principal } from '@icp-sdk/core/principal';
 import { uint8ArraySha256 } from '@junobuild/admin';
 import { readFile } from 'node:fs/promises';
 

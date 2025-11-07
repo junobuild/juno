@@ -1,8 +1,12 @@
 import type { ConsoleActor, SatelliteActor, SatelliteDid } from '$declarations';
 import type { _SERVICE as TestSatelliteActor } from '$test-declarations/test_satellite/test_satellite.did';
-import type { DelegationChain, DelegationIdentity, Ed25519KeyIdentity } from '@dfinity/identity';
 import type { Actor, PocketIc } from '@dfinity/pic';
 import { toNullable } from '@dfinity/utils';
+import type {
+	DelegationChain,
+	DelegationIdentity,
+	Ed25519KeyIdentity
+} from '@icp-sdk/core/identity';
 import { mockClientId } from '../mocks/jwt.mocks';
 import { assertIdentity, authenticateAndMakeIdentity } from './auth-identity-tests.utils';
 import type { TestSession } from './auth-tests.utils';

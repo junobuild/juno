@@ -1,9 +1,9 @@
 import { orbiterVersion } from '$lib/api/orbiter.deprecated.api';
 import type { VersionMetadata } from '$lib/types/version';
 import { container } from '$lib/utils/juno.utils';
-import type { Identity } from '@dfinity/agent';
-import type { Principal } from '@dfinity/principal';
 import { nonNullish } from '@dfinity/utils';
+import type { Identity } from '@icp-sdk/core/agent';
+import type { Principal } from '@icp-sdk/core/principal';
 import { getJunoPackage } from '@junobuild/admin';
 
 export const getOrbiterVersionMetadata = async ({

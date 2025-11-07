@@ -1,8 +1,8 @@
 import { browser } from '$app/environment';
 import { goto } from '$app/navigation';
 import type { Option } from '$lib/types/utils';
-import type { Principal } from '@dfinity/principal';
 import { nonNullish } from '@dfinity/utils';
+import type { Principal } from '@icp-sdk/core/principal';
 import type { LoadEvent } from '@sveltejs/kit';
 
 export const overviewLink = (satelliteId: Option<Principal>): string =>

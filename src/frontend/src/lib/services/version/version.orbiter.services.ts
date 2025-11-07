@@ -1,6 +1,6 @@
 import { reloadVersion } from '$lib/services/version/_version.reload.services';
-import type { Principal } from '@dfinity/principal';
 import { isNullish } from '@dfinity/utils';
+import type { Principal } from '@icp-sdk/core/principal';
 
 export const reloadOrbiterVersion = async ({
 	orbiterId

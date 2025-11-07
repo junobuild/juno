@@ -4,8 +4,8 @@ import { i18n } from '$lib/stores/i18n.store';
 import { toasts } from '$lib/stores/toasts.store';
 import type { OptionIdentity } from '$lib/types/itentity';
 import type { Wasm } from '$lib/types/upgrade';
-import type { Principal } from '@dfinity/principal';
 import { isNullish } from '@dfinity/utils';
+import type { Principal } from '@icp-sdk/core/principal';
 import type { UpgradeCodeParams, UpgradeCodeProgress } from '@junobuild/admin';
 import { get } from 'svelte/store';
 

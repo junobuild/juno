@@ -7,7 +7,7 @@ import { toasts } from '$lib/stores/toasts.store';
 import { SignInInitError } from '$lib/types/errors';
 import { container } from '$lib/utils/juno.utils';
 import { isNullish } from '@dfinity/utils';
-import { authenticate as authenticateApi, requestJwt } from '@junobuild/auth';
+import { authenticate, requestJwt } from '@junobuild/auth';
 import { get } from 'svelte/store';
 
 export const signInWithGoogle = async () => {
@@ -46,10 +46,10 @@ const signInWithGoogleFn = async () => {
 	});
 };
 
-const authenticateWithGoogle = async () => {
+const authenticateWithOpenID = async () => {
 	const {
 		identity: { delegationChain, sessionKey }
-	} = await authenticateApi({
+	} = await authenticate({
 		redirect: null,
 		auth: {
 			console: {
@@ -70,7 +70,7 @@ export const handleRedirectCallback = async (): Promise<{
 	err?: unknown;
 }> => {
 	try {
-		await authStore.signInWithOpenId({ signInFn: authenticateWithGoogle });
+		await authStore.signInWithOpenId({ signInFn: authenticateWithOpenID });
 
 		return { result: 'ok' };
 	} catch (err: unknown) {

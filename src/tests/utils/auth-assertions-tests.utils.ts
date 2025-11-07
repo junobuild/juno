@@ -1,8 +1,8 @@
 import type { ConsoleActor, SatelliteActor, SatelliteDid } from '$declarations';
-import type { Identity } from '@dfinity/agent';
 import type { Actor, PocketIc } from '@dfinity/pic';
-import type { Principal } from '@dfinity/principal';
 import { fromNullable, nonNullish, toNullable } from '@dfinity/utils';
+import type { Identity } from '@icp-sdk/core/agent';
+import type { Principal } from '@icp-sdk/core/principal';
 import { JUNO_AUTH_ERROR_INVALID_ORIGIN } from '@junobuild/errors';
 import {
 	EXTERNAL_ALTERNATIVE_ORIGINS,

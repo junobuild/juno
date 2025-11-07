@@ -1,6 +1,6 @@
 <script lang="ts">
-	import type { Principal } from '@dfinity/principal';
 	import { isNullish, nonNullish } from '@dfinity/utils';
+	import type { Principal } from '@icp-sdk/core/principal';
 	import { compare } from 'semver';
 	import type { OrbiterDid } from '$declarations';
 	import Checkbox from '$lib/components/ui/Checkbox.svelte';

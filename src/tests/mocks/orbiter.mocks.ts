@@ -1,6 +1,6 @@
 import type { OrbiterDid } from '$declarations';
 import type { SatelliteIdText } from '$lib/types/satellite';
-import { Principal } from '@dfinity/principal';
+import { Principal } from '@icp-sdk/core/principal';
 import { nanoid } from 'nanoid';
 
 export interface SetPageViewsRequestEntry {

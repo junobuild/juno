@@ -1,10 +1,10 @@
 import { idlFactory, init } from '$declarations/ledger/icp/ledger.factory.did.js';
-import type { Identity } from '@dfinity/agent';
-import { IDL } from '@dfinity/candid';
-import { Ed25519KeyIdentity } from '@dfinity/identity';
 import { AccountIdentifier, type LedgerCanisterOptions } from '@dfinity/ledger-icp';
 import type { CanisterFixture, PocketIc } from '@dfinity/pic';
 import { assertNonNullish } from '@dfinity/utils';
+import type { Identity } from '@icp-sdk/core/agent';
+import { IDL } from '@icp-sdk/core/candid';
+import { Ed25519KeyIdentity } from '@icp-sdk/core/identity';
 import { LEDGER_ID } from '../constants/ledger-tests.contants';
 import { download } from './setup-tests.utils';
 

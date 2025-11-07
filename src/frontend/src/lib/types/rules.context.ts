@@ -1,6 +1,6 @@
 import type { CollectionRule } from '$lib/types/collection';
 import type { OptionIdentity } from '$lib/types/itentity';
-import type { Principal } from '@dfinity/principal';
+import type { Principal } from '@icp-sdk/core/principal';
 import type { Readable, Writable } from 'svelte/store';
 
 export interface RulesData {

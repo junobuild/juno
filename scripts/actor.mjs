@@ -1,4 +1,4 @@
-import { Actor, AnonymousIdentity, HttpAgent } from '@dfinity/agent';
+import { Actor, AnonymousIdentity, HttpAgent } from '@icp-sdk/core/agent';
 /* eslint-disable */
 import { idlFactory } from '../src/declarations/console/console.factory.did.mjs';
 import { idlFactory as observatoryIdlFactory } from '../src/declarations/observatory/observatory.factory.did.mjs';

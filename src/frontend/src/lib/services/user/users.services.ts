@@ -6,7 +6,7 @@ import type { OptionIdentity } from '$lib/types/itentity';
 import type { ListParams } from '$lib/types/list';
 import type { User } from '$lib/types/user';
 import { toKeyUser } from '$lib/utils/user.utils';
-import type { Principal } from '@dfinity/principal';
+import type { Principal } from '@icp-sdk/core/principal';
 
 export const listUsers = async ({
 	startAfter,

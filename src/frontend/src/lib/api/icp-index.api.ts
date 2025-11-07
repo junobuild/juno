@@ -5,8 +5,8 @@ import {
 	IndexCanister,
 	type GetAccountIdentifierTransactionsResponse
 } from '@dfinity/ledger-icp';
-import type { Principal } from '@dfinity/principal';
 import { assertNonNullish } from '@dfinity/utils';
+import type { Principal } from '@icp-sdk/core/principal';
 
 export const getAccountIdentifier = (principal: Principal): AccountIdentifier =>
 	AccountIdentifier.fromPrincipal({ principal, subAccount: undefined });

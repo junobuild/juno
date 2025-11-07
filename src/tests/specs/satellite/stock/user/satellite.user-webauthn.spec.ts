@@ -1,6 +1,4 @@
 import { type SatelliteActor, idlFactorySatellite } from '$declarations';
-import type { DerEncodedPublicKey, Identity, SignIdentity } from '@dfinity/agent';
-import { Ed25519KeyIdentity } from '@dfinity/identity';
 import { type Actor, PocketIc } from '@dfinity/pic';
 import {
 	arrayOfNumberToUint8Array,
@@ -8,6 +6,8 @@ import {
 	fromNullable,
 	toNullable
 } from '@dfinity/utils';
+import type { DerEncodedPublicKey, Identity, SignIdentity } from '@icp-sdk/core/agent';
+import { Ed25519KeyIdentity } from '@icp-sdk/core/identity';
 import {
 	JUNO_DATASTORE_ERROR_USER_WEBAUTHN_CALLER_KEY,
 	JUNO_DATASTORE_ERROR_USER_WEBAUTHN_CANNOT_UPDATE,

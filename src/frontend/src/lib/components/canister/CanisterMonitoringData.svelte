@@ -1,5 +1,5 @@
 <script lang="ts">
-	import type { Principal } from '@dfinity/principal';
+	import type { Principal } from '@icp-sdk/core/principal';
 	import type { Snippet } from 'svelte';
 	import { canisterMonitoringUncertifiedStore } from '$lib/stores/canister-monitoring.store';
 	import type { CanisterMonitoringData } from '$lib/types/canister';

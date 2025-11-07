@@ -21,9 +21,9 @@ import type { OptionIdentity } from '$lib/types/itentity';
 import type { OrbiterSatelliteConfigEntry } from '$lib/types/orbiter';
 import type { SatelliteIdText } from '$lib/types/satellite';
 import type { Option } from '$lib/types/utils';
-import type { Identity } from '@dfinity/agent';
-import { Principal } from '@dfinity/principal';
 import { assertNonNullish, isNullish, nonNullish, toNullable } from '@dfinity/utils';
+import type { Identity } from '@icp-sdk/core/agent';
+import { Principal } from '@icp-sdk/core/principal';
 import { compare } from 'semver';
 import { get } from 'svelte/store';
 

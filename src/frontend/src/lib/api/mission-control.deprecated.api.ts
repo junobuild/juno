@@ -6,8 +6,8 @@ import {
 import type { SetControllerParams } from '$lib/types/controllers';
 import type { OptionIdentity } from '$lib/types/itentity';
 import type { MissionControlId } from '$lib/types/mission-control';
-import { Principal } from '@dfinity/principal';
 import { nonNullish, toNullable } from '@dfinity/utils';
+import { Principal } from '@icp-sdk/core/principal';
 
 const toSetController = ({
 	profile

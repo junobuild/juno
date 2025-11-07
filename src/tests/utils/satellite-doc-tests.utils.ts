@@ -1,9 +1,9 @@
 import type { SatelliteActor, SatelliteDid } from '$declarations';
-import type { Identity } from '@dfinity/agent';
-import { Ed25519KeyIdentity } from '@dfinity/identity';
 import type { Actor } from '@dfinity/pic';
 import type { ActorInterface } from '@dfinity/pic/dist/pocket-ic-actor';
 import { toNullable } from '@dfinity/utils';
+import type { Identity } from '@icp-sdk/core/agent';
+import { Ed25519KeyIdentity } from '@icp-sdk/core/identity';
 import { toArray } from '@junobuild/utils';
 import { nanoid } from 'nanoid';
 import { mockData } from '../mocks/doc.mocks';

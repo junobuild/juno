@@ -7,8 +7,8 @@ import { toasts } from '$lib/stores/toasts.store';
 import type { OptionIdentity } from '$lib/types/itentity';
 import { type HostingProgress, HostingProgressStep } from '$lib/types/progress-hosting';
 import { buildSetAuthenticationConfig } from '$lib/utils/auth.config.utils';
-import type { Principal } from '@dfinity/principal';
 import { assertNonNullish, fromNullishNullable, notEmptyString } from '@dfinity/utils';
+import type { Principal } from '@icp-sdk/core/principal';
 import { get } from 'svelte/store';
 
 export const configHosting = async ({

@@ -5,7 +5,7 @@ import { filterSystemRules } from '$lib/constants/rules.constants';
 import { toasts } from '$lib/stores/toasts.store';
 import type { OptionIdentity } from '$lib/types/itentity';
 import type { RulesData } from '$lib/types/rules.context';
-import type { Principal } from '@dfinity/principal';
+import type { Principal } from '@icp-sdk/core/principal';
 import type { Writable } from 'svelte/store';
 
 export const reloadContextRules = async ({

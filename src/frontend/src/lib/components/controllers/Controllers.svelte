@@ -1,6 +1,6 @@
 <script lang="ts">
-	import type { Principal } from '@dfinity/principal';
 	import { nonNullish } from '@dfinity/utils';
+	import type { Principal } from '@icp-sdk/core/principal';
 	import { onMount } from 'svelte';
 	import type { MissionControlDid } from '$declarations';
 	import ControllerAdd from '$lib/components/controllers/ControllerAdd.svelte';

@@ -1,6 +1,6 @@
 <script lang="ts">
-	import type { Principal } from '@dfinity/principal';
 	import type { PrincipalText } from '@dfinity/zod-schemas';
+	import type { Principal } from '@icp-sdk/core/principal';
 	import AuthConfigFormCore from '$lib/components/auth/AuthConfigFormCore.svelte';
 	import AuthConfigFormGoogle from '$lib/components/auth/AuthConfigFormGoogle.svelte';
 	import AuthConfigFormII from '$lib/components/auth/AuthConfigFormII.svelte';

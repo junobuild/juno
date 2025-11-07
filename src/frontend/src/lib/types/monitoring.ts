@@ -1,5 +1,5 @@
 import type { MissionControlDid } from '$declarations';
-import type { Principal } from '@dfinity/principal';
+import type { Principal } from '@icp-sdk/core/principal';
 
 export type MonitoringHistoryEntry = [
 	MissionControlDid.MonitoringHistoryKey,

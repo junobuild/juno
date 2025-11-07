@@ -1,7 +1,7 @@
 import type { SputnikActor } from '$declarations';
-import type { Identity } from '@dfinity/agent';
 import type { Actor, PocketIc } from '@dfinity/pic';
 import { toNullable } from '@dfinity/utils';
+import type { Identity } from '@icp-sdk/core/agent';
 import { nanoid } from 'nanoid';
 import { mockSetRule } from '../../mocks/collection.mocks';
 import { mockListParams } from '../../mocks/list.mocks';

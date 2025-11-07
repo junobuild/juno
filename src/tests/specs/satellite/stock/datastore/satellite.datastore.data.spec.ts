@@ -1,7 +1,5 @@
 import { type SatelliteActor, type SatelliteDid, idlFactorySatellite } from '$declarations';
-import { Ed25519KeyIdentity } from '@dfinity/identity';
 import { type Actor, PocketIc } from '@dfinity/pic';
-import { Principal } from '@dfinity/principal';
 import {
 	arrayOfNumberToUint8Array,
 	assertNonNullish,
@@ -9,6 +7,8 @@ import {
 	toNullable,
 	uint8ArrayToArrayOfNumber
 } from '@dfinity/utils';
+import { Ed25519KeyIdentity } from '@icp-sdk/core/identity';
+import { Principal } from '@icp-sdk/core/principal';
 import { fromArray, toArray } from '@junobuild/utils';
 import { nanoid } from 'nanoid';
 import { inject } from 'vitest';

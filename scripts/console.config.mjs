@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 
-import { Principal } from '@dfinity/principal';
 import { fromNullable, isNullish, toNullable } from '@dfinity/utils';
+import { Principal } from '@icp-sdk/core/principal';
 import { consoleActorIC, consoleActorLocal } from './actor.mjs';
 import { readJunoConfig } from './console.deploy.utils.mjs';
 import { targetMainnet } from './utils.mjs';

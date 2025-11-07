@@ -1,6 +1,6 @@
 <script lang="ts">
-	import { Principal } from '@dfinity/principal';
 	import { assertNonNullish } from '@dfinity/utils';
+	import { Principal } from '@icp-sdk/core/principal';
 	import { canisterStop } from '$lib/api/ic.api';
 	import Confirmation from '$lib/components/core/Confirmation.svelte';
 	import IconStop from '$lib/components/icons/IconStop.svelte';

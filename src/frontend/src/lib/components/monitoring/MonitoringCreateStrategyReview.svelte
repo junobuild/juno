@@ -1,6 +1,6 @@
 <script lang="ts">
-	import type { Principal } from '@dfinity/principal';
 	import { nonNullish, notEmptyString } from '@dfinity/utils';
+	import type { Principal } from '@icp-sdk/core/principal';
 	import type { MissionControlDid } from '$declarations';
 	import MonitoringSelectedModules from '$lib/components/monitoring/MonitoringSelectedModules.svelte';
 	import MonitoringStepReview from '$lib/components/monitoring/MonitoringStepReview.svelte';

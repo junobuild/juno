@@ -1,6 +1,6 @@
 <script lang="ts">
-	import type { Principal } from '@dfinity/principal';
 	import { isNullish, nonNullish } from '@dfinity/utils';
+	import type { Principal } from '@icp-sdk/core/principal';
 	import Canister from '$lib/components/canister/Canister.svelte';
 	import CanisterValue from '$lib/components/canister/CanisterValue.svelte';
 	import {

@@ -1,8 +1,8 @@
 import type { ConsoleActor, SatelliteActor, SatelliteDid } from '$declarations';
-import type { Ed25519KeyIdentity } from '@dfinity/identity';
 import type { Actor, PocketIc } from '@dfinity/pic';
-import type { Principal } from '@dfinity/principal';
 import { assertNonNullish, toNullable } from '@dfinity/utils';
+import type { Ed25519KeyIdentity } from '@icp-sdk/core/identity';
+import type { Principal } from '@icp-sdk/core/principal';
 import { OBSERVATORY_ID } from '../constants/observatory-tests.constants';
 import { SATELLITE_ID } from '../constants/satellite-tests.constants';
 import { mockClientId } from '../mocks/jwt.mocks';

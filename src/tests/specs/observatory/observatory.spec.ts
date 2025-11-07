@@ -1,9 +1,9 @@
 import { idlFactoryObservatory, type ObservatoryActor } from '$declarations';
-import { AnonymousIdentity } from '@dfinity/agent';
-import { Ed25519KeyIdentity } from '@dfinity/identity';
 import { PocketIc, type Actor } from '@dfinity/pic';
-import { Principal } from '@dfinity/principal';
 import { toNullable } from '@dfinity/utils';
+import { AnonymousIdentity } from '@icp-sdk/core/agent';
+import { Ed25519KeyIdentity } from '@icp-sdk/core/identity';
+import { Principal } from '@icp-sdk/core/principal';
 import { inject } from 'vitest';
 import {
 	CALLER_NOT_ANONYMOUS_MSG,

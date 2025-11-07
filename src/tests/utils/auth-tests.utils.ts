@@ -6,9 +6,9 @@ import {
 	type SatelliteDid
 } from '$declarations';
 import type { _SERVICE as TestSatelliteActor } from '$test-declarations/test_satellite/test_satellite.did';
-import { ECDSAKeyIdentity, Ed25519KeyIdentity } from '@dfinity/identity';
 import type { Actor, PocketIc } from '@dfinity/pic';
-import type { Principal } from '@dfinity/principal';
+import { ECDSAKeyIdentity, Ed25519KeyIdentity } from '@icp-sdk/core/identity';
+import type { Principal } from '@icp-sdk/core/principal';
 import { OBSERVATORY_ID } from '../constants/observatory-tests.constants';
 import { mockCertificateDate, mockClientId } from '../mocks/jwt.mocks';
 import { generateNonce } from './auth-nonce-tests.utils';

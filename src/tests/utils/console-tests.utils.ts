@@ -6,16 +6,16 @@ import {
 	idlFactoryConsole,
 	idlFactoryMissionControl
 } from '$declarations';
-import type { Identity } from '@dfinity/agent';
-import { Ed25519KeyIdentity } from '@dfinity/identity';
 import { type Actor, PocketIc } from '@dfinity/pic';
-import type { Principal } from '@dfinity/principal';
 import {
 	arrayBufferToUint8Array,
 	assertNonNullish,
 	fromNullable,
 	toNullable
 } from '@dfinity/utils';
+import type { Identity } from '@icp-sdk/core/agent';
+import { Ed25519KeyIdentity } from '@icp-sdk/core/identity';
+import type { Principal } from '@icp-sdk/core/principal';
 import { readFile } from 'node:fs/promises';
 import { inject } from 'vitest';
 import { mockScript } from '../mocks/storage.mocks';

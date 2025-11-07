@@ -1,8 +1,8 @@
 import type { SatelliteActor } from '$declarations';
-import { AnonymousIdentity } from '@dfinity/agent';
-import type { Ed25519KeyIdentity } from '@dfinity/identity';
 import type { Actor, PocketIc } from '@dfinity/pic';
 import { toNullable } from '@dfinity/utils';
+import { AnonymousIdentity } from '@icp-sdk/core/agent';
+import type { Ed25519KeyIdentity } from '@icp-sdk/core/identity';
 import {
 	JUNO_AUTH_ERROR_NOT_ADMIN_CONTROLLER,
 	JUNO_STORAGE_ERROR_RESERVED_ASSET

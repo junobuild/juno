@@ -1,8 +1,8 @@
 import { idlFactorySatellite, type SatelliteActor } from '$declarations';
-import { AnonymousIdentity, type Identity } from '@dfinity/agent';
-import { Ed25519KeyIdentity } from '@dfinity/identity';
 import { type Actor, PocketIc } from '@dfinity/pic';
 import { assertNonNullish, fromNullable, toNullable } from '@dfinity/utils';
+import { AnonymousIdentity, type Identity } from '@icp-sdk/core/agent';
+import { Ed25519KeyIdentity } from '@icp-sdk/core/identity';
 import {
 	JUNO_DATASTORE_ERROR_CANNOT_WRITE,
 	JUNO_DATASTORE_ERROR_USER_AAGUID_INVALID_LENGTH,

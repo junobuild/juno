@@ -2,9 +2,9 @@ import { satelliteBuildVersion, satelliteVersion } from '$lib/api/satellites.dep
 import type { SatelliteVersionMetadata } from '$lib/types/version';
 import { container } from '$lib/utils/juno.utils';
 import { mapJunoPackageMetadata } from '$lib/utils/version.utils';
-import type { Identity } from '@dfinity/agent';
-import type { Principal } from '@dfinity/principal';
 import { isNullish, nonNullish } from '@dfinity/utils';
+import type { Identity } from '@icp-sdk/core/agent';
+import type { Principal } from '@icp-sdk/core/principal';
 import { getJunoPackage, satelliteBuildType } from '@junobuild/admin';
 
 export const getSatelliteVersionMetadata = async ({

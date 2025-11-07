@@ -9,8 +9,8 @@ import { authStore } from '$lib/stores/auth.store';
 import { customDomainsStore } from '$lib/stores/custom-domains.store';
 import { i18n } from '$lib/stores/i18n.store';
 import { toasts } from '$lib/stores/toasts.store';
-import type { Principal } from '@dfinity/principal';
 import { fromNullable, nonNullish } from '@dfinity/utils';
+import type { Principal } from '@icp-sdk/core/principal';
 import { get } from 'svelte/store';
 
 /**

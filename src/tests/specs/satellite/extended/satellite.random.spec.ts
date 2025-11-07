@@ -2,9 +2,9 @@ import type {
 	Result,
 	_SERVICE as TestSatelliteActor
 } from '$test-declarations/test_satellite/test_satellite.did';
-import type { Identity } from '@dfinity/agent';
 import type { Actor, PocketIc } from '@dfinity/pic';
-import type { Principal } from '@dfinity/principal';
+import type { Identity } from '@icp-sdk/core/agent';
+import type { Principal } from '@icp-sdk/core/principal';
 
 import { mockSetRule } from '../../../mocks/collection.mocks';
 import { setupTestSatellite, upgradeTestSatellite } from '../../../utils/fixtures-tests.utils';

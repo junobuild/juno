@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { Principal } from '@dfinity/principal';
+	import { Principal } from '@icp-sdk/core/principal';
 	import { onMount } from 'svelte';
 	import Html from '$lib/components/ui/Html.svelte';
 	import Input from '$lib/components/ui/Input.svelte';

@@ -1,8 +1,8 @@
 import type { OrbiterDid, SatelliteDid } from '$declarations';
 import type { PocketIc } from '@dfinity/pic';
-import type { Principal } from '@dfinity/principal';
 import { verifyRequestResponsePair, type Request } from '@dfinity/response-verification';
 import { assertNonNullish } from '@dfinity/utils';
+import type { Principal } from '@icp-sdk/core/principal';
 
 const CERTIFICATE_VERSION = 2;
 

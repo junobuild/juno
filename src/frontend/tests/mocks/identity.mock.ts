@@ -1,5 +1,5 @@
-import type { Identity } from '@dfinity/agent';
-import { Principal } from '@dfinity/principal';
+import type { Identity } from '@icp-sdk/core/agent';
+import { Principal } from '@icp-sdk/core/principal';
 
 export const mockPrincipalText = 'xlmdg-vkosz-ceopx-7wtgu-g3xmd-koiyc-awqaq-7modz-zf6r6-364rh-oqe';
 

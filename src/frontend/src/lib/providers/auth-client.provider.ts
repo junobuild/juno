@@ -1,4 +1,3 @@
-import type { DelegationChain, ECDSAKeyIdentity } from '@dfinity/identity';
 import { isNullish } from '@dfinity/utils';
 import {
 	AuthClient,
@@ -6,6 +5,7 @@ import {
 	KEY_STORAGE_DELEGATION,
 	KEY_STORAGE_KEY
 } from '@icp-sdk/auth/client';
+import type { DelegationChain, ECDSAKeyIdentity } from '@icp-sdk/core/identity';
 
 export class AuthClientProvider {
 	static #instance: AuthClientProvider;

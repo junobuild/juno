@@ -1,6 +1,6 @@
 <script lang="ts">
-	import type { Principal } from '@dfinity/principal';
 	import { isNullish, nonNullish } from '@dfinity/utils';
+	import type { Principal } from '@icp-sdk/core/principal';
 	import { getContext, setContext, untrack } from 'svelte';
 	import User from '$lib/components/auth/User.svelte';
 	import UserFilter from '$lib/components/auth/UserFilter.svelte';

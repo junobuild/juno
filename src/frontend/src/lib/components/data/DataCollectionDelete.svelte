@@ -1,5 +1,5 @@
 <script lang="ts">
-	import type { Principal } from '@dfinity/principal';
+	import type { Principal } from '@icp-sdk/core/principal';
 	import type { Snippet } from 'svelte';
 	import DataDelete from '$lib/components/data/DataDelete.svelte';
 	import { i18n } from '$lib/stores/i18n.store';

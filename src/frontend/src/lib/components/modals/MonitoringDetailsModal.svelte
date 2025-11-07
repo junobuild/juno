@@ -1,6 +1,6 @@
 <script lang="ts">
-	import { Principal } from '@dfinity/principal';
 	import { nonNullish } from '@dfinity/utils';
+	import { Principal } from '@icp-sdk/core/principal';
 	import { fade } from 'svelte/transition';
 	import CanisterMonitoringChart from '$lib/components/canister/CanisterMonitoringChart.svelte';
 	import CanisterMonitoringData from '$lib/components/canister/CanisterMonitoringData.svelte';

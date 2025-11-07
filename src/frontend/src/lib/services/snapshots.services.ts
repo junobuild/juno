@@ -21,9 +21,9 @@ import { snapshotStore } from '$lib/stores/snapshot.store';
 import { toasts } from '$lib/stores/toasts.store';
 import type { OptionIdentity } from '$lib/types/itentity';
 import { type SnapshotProgress, SnapshotProgressStep } from '$lib/types/progress-snapshot';
-import type { Identity } from '@dfinity/agent';
-import type { Principal } from '@dfinity/principal';
 import { assertNonNullish, nonNullish } from '@dfinity/utils';
+import type { Identity } from '@icp-sdk/core/agent';
+import type { Principal } from '@icp-sdk/core/principal';
 import { get } from 'svelte/store';
 
 export const syncSnapshots = async () => {

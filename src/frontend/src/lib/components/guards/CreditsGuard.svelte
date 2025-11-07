@@ -1,5 +1,5 @@
 <script lang="ts">
-	import type { AccountIdentifier } from '@dfinity/ledger-icp';
+	import type { AccountIdentifier } from '@icp-sdk/canisters/ledger/icp';
 	import type { Snippet } from 'svelte';
 	import MissionControlICPInfo from '$lib/components/mission-control/MissionControlICPInfo.svelte';
 	import Html from '$lib/components/ui/Html.svelte';

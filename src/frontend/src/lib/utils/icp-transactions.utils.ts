@@ -1,8 +1,8 @@
 import { getAccountIdentifier } from '$lib/api/icp-index.api';
 import type { IcTransactionUi } from '$lib/types/ic-transaction';
 import type { OptionIdentity } from '$lib/types/itentity';
-import type { Tokens, TransactionWithId } from '@dfinity/ledger-icp';
 import { fromNullable, jsonReplacer, nonNullish } from '@dfinity/utils';
+import type { Tokens, TransactionWithId } from '@icp-sdk/canisters/ledger/icp';
 
 export const mapIcpTransaction = ({
 	transaction: { transaction, id },

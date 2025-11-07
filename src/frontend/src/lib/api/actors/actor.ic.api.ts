@@ -11,7 +11,7 @@ type CallTransform = Required<ActorConfig>['callTransform'];
 
 type QueryTransform = Required<ActorConfig>['queryTransform'];
 
-// Source: `@dfinity/ic-management` function `transform`
+// Source: `@icp-sdk/canisters/ic-management` function `transform`
 // eslint-disable-next-line local-rules/prefer-object-params
 const transform: CallTransform | QueryTransform = (
 	methodName: string,

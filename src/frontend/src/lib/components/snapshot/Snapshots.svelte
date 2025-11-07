@@ -1,6 +1,6 @@
 <script lang="ts">
-	import { encodeSnapshotId } from '@dfinity/ic-management';
 	import { isNullish } from '@dfinity/utils';
+	import { encodeSnapshotId } from '@icp-sdk/canisters/ic-management';
 	import type { Principal } from '@icp-sdk/core/principal';
 	import { fade } from 'svelte/transition';
 	import SnapshotActions from '$lib/components/snapshot/SnapshotActions.svelte';

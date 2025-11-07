@@ -1,4 +1,4 @@
-import { type ICActor, idlFactoryIC } from '$declarations';
+import { type ICActor, idlFactoryCertifiedIC } from '$declarations';
 import type { GetAgentParams } from '$lib/api/_agent/_agent.api';
 import { ActorApi } from '$lib/api/actors/actor.api';
 import type { ActorConfig, CallConfig } from '@dfinity/agent';
@@ -45,6 +45,6 @@ export const getICActor = async (params: GetAgentParams): Promise<ICActor> =>
 			callTransform: transform,
 			queryTransform: transform
 		},
-		idlFactory: idlFactoryIC,
+		idlFactory: idlFactoryCertifiedIC,
 		...params
 	});

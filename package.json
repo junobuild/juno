@@ -116,7 +116,7 @@
 		"@dfinity/utils": "^4.0.0",
 		"@dfinity/zod-schemas": "^3.0.0",
 		"@icp-sdk/auth": "^4.2.0",
-		"@icp-sdk/canisters": "^1.1.0",
+		"@icp-sdk/canisters": "^1.1.1",
 		"@icp-sdk/core": "^4.2.1",
 		"@junobuild/admin": "^3.0.0",
 		"@junobuild/auth": "^1.0.0",
@@ -142,7 +142,6 @@
 		"npm": ">=11.5.1 <12.0.0"
 	},
 	"overrides": {
-		"cookie": "^0.7.0",
-		"@dfinity/ic-management": "8.0.1-next-2025-11-07.1"
+		"cookie": "^0.7.0"
 	}
 }

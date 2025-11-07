@@ -47,9 +47,7 @@ export const satelliteMatchesFilter = ({
 	satellite: SatelliteUi;
 	filter: string;
 }): boolean =>
-	// eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
 	name.toLowerCase().includes(filter) ||
-	// eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
 	satellite_id.toText().includes(filter) ||
 	(notEmptyString(environment) && environment.includes(filter)) ||
 	(tags ?? []).find((tag) => tag.includes(filter)) !== undefined;

@@ -1,8 +1,8 @@
 import { AUTH_TIMER_INTERVAL } from '$lib/constants/app.constants';
 import { AuthClientProvider } from '$lib/providers/auth-client.provider';
 import type { PostMessageRequest } from '$lib/types/post-message';
-import { IdbStorage, KEY_STORAGE_DELEGATION } from '@dfinity/auth-client';
 import { DelegationChain, isDelegationValid } from '@dfinity/identity';
+import { IdbStorage, KEY_STORAGE_DELEGATION } from '@icp-sdk/auth/client';
 
 export const onAuthMessage = async ({
 	data

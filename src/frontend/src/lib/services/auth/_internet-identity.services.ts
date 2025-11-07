@@ -9,7 +9,7 @@ import { isDev } from '$lib/env/app.env';
 import type { SignedInIdentity, SignInWithAuthClient } from '$lib/types/auth';
 import { SignInError, SignInUserInterruptError } from '$lib/types/errors';
 import { popupCenter } from '$lib/utils/window.utils';
-import { ERROR_USER_INTERRUPT } from '@dfinity/auth-client';
+import { ERROR_USER_INTERRUPT } from '@icp-sdk/auth/client';
 
 export const signInWithII: SignInWithAuthClient = ({ authClient }) =>
 	// eslint-disable-next-line no-async-promise-executor

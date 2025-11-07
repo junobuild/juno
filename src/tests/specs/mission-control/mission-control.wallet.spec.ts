@@ -5,7 +5,7 @@ import {
 } from '$declarations';
 import { AnonymousIdentity } from '@dfinity/agent';
 import { Ed25519KeyIdentity } from '@dfinity/identity';
-import { type LedgerCanisterOptions , AccountIdentifier } from '@dfinity/ledger-icp';
+import { AccountIdentifier, type LedgerCanisterOptions } from '@dfinity/ledger-icp';
 import { PocketIc, SubnetStateType, type Actor } from '@dfinity/pic';
 import type { Principal } from '@dfinity/principal';
 import { inject } from 'vitest';

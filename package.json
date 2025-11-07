@@ -38,7 +38,7 @@
 		"prebuild": "npm run generate",
 		"postinstall": "npm run copy:did",
 		"generate": "scripts/did.sh && scripts/did.idl.sh && node scripts/did.update.types.mjs && scripts/did.idl.certified.sh && npm run copy:did && npm run format",
-		"copy:did": "scripts/did.copy.sh && prettier --write src/declarations/ic-management/**/*",
+		"copy:did": "scripts/did.copy.sh && prettier --write src/declarations/ic-management/**/* && prettier --write src/declarations/ledger/**/*",
 		"console:invitation": "node scripts/console.invitation.mjs",
 		"console:credits": "node scripts/console.credits.mjs",
 		"console:devs": "node scripts/console.devs.mjs",

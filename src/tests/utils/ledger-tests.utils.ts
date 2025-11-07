@@ -1,9 +1,8 @@
+import { idlFactory, init } from '$declarations/ledger/icp/ledger.factory.did.js';
 import type { Identity } from '@dfinity/agent';
 import { IDL } from '@dfinity/candid';
 import { Ed25519KeyIdentity } from '@dfinity/identity';
 import { AccountIdentifier, type LedgerCanisterOptions } from '@dfinity/ledger-icp';
-// @ts-expect-error init is not packaged / exposed
-import { idlFactory, init } from '@dfinity/ledger-icp/dist/candid/ledger.idl.js';
 import type { CanisterFixture, PocketIc } from '@dfinity/pic';
 import { assertNonNullish } from '@dfinity/utils';
 import { LEDGER_ID } from '../constants/ledger-tests.contants';

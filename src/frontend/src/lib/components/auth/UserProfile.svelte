@@ -21,7 +21,7 @@
 			<Avatar alt="" size="20px" src={picture} />
 		{/if}
 
-		{name}
+		<span>{name}</span>
 	</p>
 {/if}
 
@@ -35,6 +35,12 @@
 
 		vertical-align: middle;
 
+		margin: 0;
+
+		max-width: 100%;
+	}
+
+	span {
 		@include text.truncate;
 	}
 </style>

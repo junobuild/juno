@@ -23,6 +23,8 @@
 	@use '../../styles/mixins/text';
 
 	p {
+		margin: 0;
+
 		@include text.truncate;
 	}
 </style>

@@ -1,7 +1,5 @@
 <!-- source: https://developers.google.com/identity/branding-guidelines -->
 <script lang="ts">
-	import { nonNullish } from '@dfinity/utils';
-
 	interface Props {
 		size?: string;
 		withTitle?: boolean;

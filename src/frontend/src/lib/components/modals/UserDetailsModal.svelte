@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { nonNullish } from '@dfinity/utils';
+	import UserOpenId from '$lib/components/auth/UserOpenId.svelte';
 	import UserPasskeyAuthenticator from '$lib/components/auth/UserPasskeyAuthenticator.svelte';
 	import UserProvider from '$lib/components/auth/UserProvider.svelte';
 	import UserStatus from '$lib/components/auth/UserStatus.svelte';
@@ -10,7 +11,6 @@
 	import { i18n } from '$lib/stores/i18n.store';
 	import type { JunoModalDetail, JunoModalShowUserDetail } from '$lib/types/modal';
 	import { formatToDate } from '$lib/utils/date.utils';
-	import UserOpenId from '$lib/components/auth/UserOpenId.svelte';
 
 	interface Props {
 		detail: JunoModalDetail;

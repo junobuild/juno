@@ -12,3 +12,6 @@ export const toKeyUser = async ([key, { data: dataArray, ...rest }]: [
 		...rest
 	}
 ];
+
+export const isGoogleUser = (user: User): user is User<'google'> =>
+	user?.data?.provider === 'google';

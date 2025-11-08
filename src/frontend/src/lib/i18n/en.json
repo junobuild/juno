@@ -807,6 +807,8 @@
 	},
 	"users": {
 		"user_details": "User's details",
+		"user": "User",
+		"email": "Email",
 		"identifier": "Identifier",
 		"provider": "Provider",
 		"authenticator": "Authenticator",

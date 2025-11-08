@@ -1,6 +1,8 @@
 <script lang="ts">
 	import type { Principal } from '@icp-sdk/core/principal';
 	import UserBan from '$lib/components/auth/UserBan.svelte';
+	import UserEmail from '$lib/components/auth/UserEmail.svelte';
+	import UserProfile from '$lib/components/auth/UserProfile.svelte';
 	import UserProvider from '$lib/components/auth/UserProvider.svelte';
 	import ButtonTableAction from '$lib/components/ui/ButtonTableAction.svelte';
 	import Identifier from '$lib/components/ui/Identifier.svelte';
@@ -17,7 +19,7 @@
 
 	let { user, satelliteId }: Props = $props();
 
-	let { owner, created_at, updated_at } = $derived(user);
+	let { owner, created_at } = $derived(user);
 
 	const openModal = async () => {
 		await openUserDetail({
@@ -40,8 +42,9 @@
 	<td class="providers">
 		<UserProvider {user} />
 	</td>
+	<td class="user"><UserProfile {user} /></td>
+	<td class="email"><UserEmail {user} /></td>
 	<td class="created">{formatToDate(created_at)}</td>
-	<td class="updated">{formatToDate(updated_at)}</td>
 </tr>
 
 <style lang="scss">
@@ -64,15 +67,21 @@
 		}
 	}
 
-	.created {
+	.user {
 		display: none;
 
-		@include media.min-width(medium) {
+		@include media.min-width(small) {
 			display: table-cell;
 		}
 	}
 
-	.updated {
+	.user,
+	.email {
+		max-width: 200px;
+	}
+
+	.created,
+	.email {
 		display: none;
 
 		@include media.min-width(large) {

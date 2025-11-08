@@ -121,7 +121,7 @@
 		"@junobuild/admin": "^3.0.0",
 		"@junobuild/auth": "^1.0.0",
 		"@junobuild/cdn": "^2.0.0",
-		"@junobuild/core": "^3.0.0",
+		"@junobuild/core": "^3.1.0",
 		"@junobuild/ic-client": "^4.0.0",
 		"@junobuild/storage": "^2.0.0",
 		"@junobuild/utils": "^0.2.2",

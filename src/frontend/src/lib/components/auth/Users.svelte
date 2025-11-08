@@ -4,9 +4,11 @@
 	import { getContext, setContext, untrack } from 'svelte';
 	import UserFilter from '$lib/components/auth/UserFilter.svelte';
 	import UserRow from '$lib/components/auth/UserRow.svelte';
+	import DataActions from '$lib/components/data/DataActions.svelte';
 	import DataCount from '$lib/components/data/DataCount.svelte';
 	import DataOrder from '$lib/components/data/DataOrder.svelte';
 	import DataPaginator from '$lib/components/data/DataPaginator.svelte';
+	import IconRefresh from '$lib/components/icons/IconRefresh.svelte';
 	import { listUsers } from '$lib/services/user/users.services';
 	import { authStore } from '$lib/stores/auth.store';
 	import { i18n } from '$lib/stores/i18n.store';
@@ -21,8 +23,6 @@
 	} from '$lib/types/list-params.context';
 	import { PAGINATION_CONTEXT_KEY, type PaginationContext } from '$lib/types/pagination.context';
 	import type { User as UserType } from '$lib/types/user';
-	import DataActions from '$lib/components/data/DataActions.svelte';
-	import IconRefresh from '$lib/components/icons/IconRefresh.svelte';
 	import { emit } from '$lib/utils/events.utils';
 
 	interface Props {
@@ -90,6 +90,7 @@
 	});
 
 	const reload = async () => {
+		// eslint-disable-next-line require-await
 		// Not awaited on purpose, we want to close the popover no matter what
 		list();
 

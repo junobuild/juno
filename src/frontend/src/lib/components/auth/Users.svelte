@@ -2,8 +2,8 @@
 	import { isNullish, nonNullish } from '@dfinity/utils';
 	import type { Principal } from '@icp-sdk/core/principal';
 	import { getContext, setContext, untrack } from 'svelte';
-	import User from '$lib/components/auth/User.svelte';
 	import UserFilter from '$lib/components/auth/UserFilter.svelte';
+	import UserRow from '$lib/components/auth/UserRow.svelte';
 	import DataCount from '$lib/components/data/DataCount.svelte';
 	import DataOrder from '$lib/components/data/DataOrder.svelte';
 	import DataPaginator from '$lib/components/data/DataPaginator.svelte';
@@ -91,7 +91,7 @@
 	let innerWidth = $state(0);
 
 	let colspan = $derived(
-		innerWidth >= 1024 ? 5 : innerWidth >= 768 ? 4 : innerWidth >= 576 ? 3 : 2
+		innerWidth >= 1024 ? 6 : innerWidth >= 768 ? 5 : innerWidth >= 576 ? 4 : 2
 	);
 </script>
 
@@ -112,15 +112,16 @@
 				<th class="tools"></th>
 				<th class="identifier"> {$i18n.users.identifier} </th>
 				<th class="providers"> {$i18n.users.provider} </th>
+				<th class="user"> {$i18n.users.user} </th>
+				<th class="email"> {$i18n.users.email} </th>
 				<th class="created"> {$i18n.core.created} </th>
-				<th class="updated"> {$i18n.core.updated} </th>
 			</tr>
 		</thead>
 
 		<tbody>
 			{#if nonNullish($paginationStore.items)}
 				{#each $paginationStore.items as [key, user] (key)}
-					<User {satelliteId} {user} />
+					<UserRow {satelliteId} {user} />
 				{/each}
 
 				{#if !empty && ($paginationStore.pages ?? 0) > 1}
@@ -156,15 +157,21 @@
 		}
 	}
 
-	.created {
+	.user {
 		display: none;
 
-		@include media.min-width(medium) {
+		@include media.min-width(small) {
 			display: table-cell;
 		}
 	}
 
-	.updated {
+	.user,
+	.email {
+		max-width: 200px;
+	}
+
+	.created,
+	.email {
 		display: none;
 
 		@include media.min-width(large) {
@@ -172,17 +179,17 @@
 		}
 	}
 
-	@include media.min-width(small) {
-		.providers {
-			width: 220px;
+	.user {
+		@include media.min-width(small) {
+			width: 50%;
+		}
+
+		@include media.min-width(large) {
+			width: inherit;
 		}
 	}
 
 	@include media.min-width(large) {
-		.identifier {
-			width: 300px;
-		}
-
 		.providers {
 			width: inherit;
 		}

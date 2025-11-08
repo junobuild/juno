@@ -808,6 +808,8 @@
 	},
 	"users": {
 		"user_details": "用户详情",
+		"user": "用户",
+		"email": "邮箱",
 		"identifier": "用户标识",
 		"provider": "提供者",
 		"authenticator": "认证器",

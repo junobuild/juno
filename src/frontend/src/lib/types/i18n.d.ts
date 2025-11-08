@@ -832,6 +832,8 @@ interface I18nFilter {
 
 interface I18nUsers {
 	user_details: string;
+	user: string;
+	email: string;
 	identifier: string;
 	provider: string;
 	authenticator: string;

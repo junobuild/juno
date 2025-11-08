@@ -21,6 +21,9 @@
 	} from '$lib/types/list-params.context';
 	import { PAGINATION_CONTEXT_KEY, type PaginationContext } from '$lib/types/pagination.context';
 	import type { User as UserType } from '$lib/types/user';
+	import DataActions from '$lib/components/data/DataActions.svelte';
+	import IconRefresh from '$lib/components/icons/IconRefresh.svelte';
+	import { emit } from '$lib/utils/events.utils';
 
 	interface Props {
 		satelliteId: Principal;
@@ -86,6 +89,13 @@
 		});
 	});
 
+	const reload = async () => {
+		// Not awaited on purpose, we want to close the popover no matter what
+		list();
+
+		emit({ message: 'junoCloseActions' });
+	};
+
 	let empty = $derived($paginationStore.items?.length === 0);
 
 	let innerWidth = $state(0);
@@ -105,6 +115,12 @@
 					<div class="actions">
 						<UserFilter />
 						<DataOrder />
+
+						<DataActions>
+							<button class="menu" onclick={reload} type="button"
+								><IconRefresh size="20px" /> {$i18n.core.reload}</button
+							>
+						</DataActions>
 					</div>
 				</th>
 			</tr>

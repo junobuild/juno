@@ -10,6 +10,7 @@
 	import { i18n } from '$lib/stores/i18n.store';
 	import type { JunoModalDetail, JunoModalShowUserDetail } from '$lib/types/modal';
 	import { formatToDate } from '$lib/utils/date.utils';
+	import UserOpenId from '$lib/components/auth/UserOpenId.svelte';
 
 	interface Props {
 		detail: JunoModalDetail;
@@ -54,6 +55,7 @@
 					</Value>
 
 					<UserPasskeyAuthenticator {user} />
+					<UserOpenId {user} />
 				</div>
 
 				<div>

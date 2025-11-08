@@ -89,9 +89,8 @@
 		});
 	});
 
-	const reload = async () => {
+	const reload = () => {
 		// Not awaited on purpose, we want to close the popover no matter what
-		// eslint-disable-next-line require-await
 		list();
 
 		emit({ message: 'junoCloseActions' });

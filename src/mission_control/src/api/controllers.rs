@@ -10,34 +10,6 @@ use junobuild_shared::types::interface::SetController;
 use junobuild_shared::types::state::{ControllerId, ControllerScope, Controllers, UserId};
 use std::collections::HashMap;
 
-#[deprecated(
-    since = "0.0.3",
-    note = "please use `set_mission_control_controllers` instead"
-)]
-#[update(guard = "caller_is_user_or_admin_controller")]
-async fn add_mission_control_controllers(controllers: Vec<UserId>) {
-    let controller: SetController = SetController {
-        metadata: HashMap::new(),
-        expires_at: None,
-        scope: ControllerScope::Admin,
-    };
-
-    set_controllers_to_mission_control(&controllers, &controller)
-        .await
-        .unwrap_or_trap();
-}
-
-#[deprecated(
-    since = "0.0.3",
-    note = "please use `del_mission_control_controllers` instead"
-)]
-#[update(guard = "caller_is_user_or_admin_controller")]
-async fn remove_mission_control_controllers(controllers: Vec<ControllerId>) {
-    delete_controllers_to_mission_control(&controllers)
-        .await
-        .unwrap_or_trap();
-}
-
 #[update(guard = "caller_is_user_or_admin_controller")]
 async fn set_mission_control_controllers(
     controllers: Vec<ControllerId>,

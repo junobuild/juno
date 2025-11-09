@@ -1,7 +1,7 @@
 use crate::types::interface::MemorySize;
 #[cfg(target_arch = "wasm32")]
 use core::arch::wasm32::memory_size as wasm_memory_size;
-use ic_cdk::api::stable::{stable_size, WASM_PAGE_SIZE_IN_BYTES};
+use ic_cdk::stable::{stable_size, WASM_PAGE_SIZE_IN_BYTES};
 
 /// Returns the current memory usage of the WebAssembly module.
 ///

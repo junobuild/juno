@@ -1,5 +1,8 @@
+use crate::auth::store::get_config as get_auth_config;
 use crate::controllers::store::get_controllers;
-use crate::db::assert::{assert_delete_doc, assert_get_doc, assert_get_docs, assert_set_doc};
+use crate::db::assert::{
+    assert_delete_doc, assert_get_doc, assert_get_docs, assert_set_config, assert_set_doc,
+};
 use crate::db::state::{
     count_docs_heap, count_docs_stable, delete_collection as delete_state_collection,
     delete_doc as delete_state_doc, get_config, get_doc as get_state_doc, get_docs_heap,
@@ -8,11 +11,12 @@ use crate::db::state::{
     is_collection_empty as is_state_collection_empty,
 };
 use crate::db::types::config::DbConfig;
-use crate::db::types::interface::{DelDoc, SetDoc};
+use crate::db::types::interface::{DelDoc, SetDbConfig, SetDoc};
 use crate::db::types::state::{Doc, DocContext, DocUpsert};
+use crate::db::types::store::AssertSetDocOptions;
 use crate::db::utils::filter_values;
-use crate::memory::internal::STATE;
-use crate::types::store::StoreContext;
+use crate::memory::state::STATE;
+use crate::types::store::{AssertContext, StoreContext};
 use candid::Principal;
 use junobuild_collections::msg::msg_db_collection_not_empty;
 use junobuild_collections::types::core::CollectionKey;
@@ -21,7 +25,6 @@ use junobuild_shared::list::list_values;
 use junobuild_shared::types::core::Key;
 use junobuild_shared::types::list::{ListParams, ListResults};
 use junobuild_shared::types::state::{Controllers, UserId};
-
 // ---------------------------------------------------------
 // Collection
 // ---------------------------------------------------------
@@ -94,16 +97,27 @@ pub fn get_doc_store(
 
 fn secure_get_doc(context: &StoreContext, key: Key) -> Result<Option<Doc>, String> {
     let rule = get_state_rule(context.collection)?;
-    get_doc_impl(context, key, &rule)
+    let auth_config = get_auth_config();
+
+    let assert_context = AssertContext {
+        rule: &rule,
+        auth_config: &auth_config,
+    };
+
+    get_doc_impl(context, &assert_context, key)
 }
 
-fn get_doc_impl(context: &StoreContext, key: Key, rule: &Rule) -> Result<Option<Doc>, String> {
-    let value = get_state_doc(context.collection, &key, rule)?;
+fn get_doc_impl(
+    context: &StoreContext,
+    assert_context: &AssertContext,
+    key: Key,
+) -> Result<Option<Doc>, String> {
+    let value = get_state_doc(context.collection, &key, assert_context.rule)?;
 
     match value {
         None => Ok(None),
         Some(value) => {
-            if assert_get_doc(context, rule, &value).is_err() {
+            if assert_get_doc(context, assert_context, &value).is_err() {
                 return Ok(None);
             }
 
@@ -149,7 +163,42 @@ pub fn set_doc_store(
         collection: &collection,
     };
 
-    let data = secure_set_doc(&context, &config, key.clone(), value)?;
+    let assert_options = AssertSetDocOptions {
+        with_assert_rate: true,
+    };
+
+    let data = secure_set_doc(&context, &config, &assert_options, key.clone(), value)?;
+
+    Ok(DocContext {
+        key,
+        collection,
+        data,
+    })
+}
+
+/// Internal variant of `set_doc_store`.
+///
+/// Performs a secure insert or update of a document in the specified collection,
+/// using custom assertion options.
+///
+/// Useful for the authentication flow using prepare delegation.
+pub fn internal_set_doc_store(
+    caller: UserId,
+    collection: CollectionKey,
+    key: Key,
+    value: SetDoc,
+    assert_options: &AssertSetDocOptions,
+) -> Result<DocContext<DocUpsert>, String> {
+    let controllers: Controllers = get_controllers();
+    let config = get_config();
+
+    let context = StoreContext {
+        caller,
+        controllers: &controllers,
+        collection: &collection,
+    };
+
+    let data = secure_set_doc(&context, &config, assert_options, key.clone(), value)?;
 
     Ok(DocContext {
         key,
@@ -161,27 +210,45 @@ pub fn set_doc_store(
 fn secure_set_doc(
     context: &StoreContext,
     config: &Option<DbConfig>,
+    assert_options: &AssertSetDocOptions,
     key: Key,
     value: SetDoc,
 ) -> Result<DocUpsert, String> {
     let rule = get_state_rule(context.collection)?;
-    set_doc_impl(context, config, key, value, &rule)
+    let auth_config = get_auth_config();
+
+    let assert_context = AssertContext {
+        rule: &rule,
+        auth_config: &auth_config,
+    };
+
+    set_doc_impl(context, &assert_context, config, assert_options, key, value)
 }
 
 fn set_doc_impl(
     context: &StoreContext,
+    assert_context: &AssertContext,
     config: &Option<DbConfig>,
+    assert_options: &AssertSetDocOptions,
     key: Key,
     value: SetDoc,
-    rule: &Rule,
 ) -> Result<DocUpsert, String> {
-    let current_doc = get_state_doc(context.collection, &key, rule)?;
+    let current_doc = get_state_doc(context.collection, &key, assert_context.rule)?;
 
-    assert_set_doc(context, config, &key, &value, rule, &current_doc)?;
+    assert_set_doc(
+        context,
+        assert_context,
+        config,
+        assert_options,
+        &key,
+        &value,
+        &current_doc,
+    )?;
 
     let doc: Doc = Doc::prepare(context.caller, &current_doc, value);
 
-    let (_evicted_doc, after) = insert_state_doc(context.collection, &key, &doc, rule)?;
+    let (_evicted_doc, after) =
+        insert_state_doc(context.collection, &key, &doc, assert_context.rule)?;
 
     Ok(DocUpsert {
         before: current_doc,
@@ -200,7 +267,7 @@ fn set_doc_impl(
 /// or an error message as `Err(String)` if the operation encounters issues.
 ///
 /// # Parameters
-/// - `caller`: The `Principal` representing the caller initiating the operation. If used in serverless functions, you can use `ic_cdk::id()` to pass an administrator controller.
+/// - `caller`: The `Principal` representing the caller initiating the operation. If used in serverless functions, you can use `junobuild_satellite::id()` to pass an administrator controller.
 /// - `collection`: A `CollectionKey` representing the collection from which to list the documents.
 /// - `filter`: A reference to `ListParams` containing the filter criteria for listing the documents.
 ///
@@ -226,7 +293,7 @@ pub fn list_docs_store(
 /// or an error message as `Err(String)` if the operation encounters issues.
 ///
 /// # Parameters
-/// - `caller`: The `Principal` representing the caller initiating the operation. If used in serverless functions, you can use `ic_cdk::id()` to pass an administrator controller.
+/// - `caller`: The `Principal` representing the caller initiating the operation. If used in serverless functions, you can use `junobuild_satellite::id()` to pass an administrator controller.
 /// - `collection`: A `CollectionKey` representing the collection from which to count the documents.
 /// - `filter`: A reference to `ListParams` containing the filter criteria for counting the documents.
 ///
@@ -259,9 +326,15 @@ fn secure_get_docs(
         controllers,
     };
 
-    assert_get_docs(&context)?;
-
     let rule = get_state_rule(&collection)?;
+    let auth_config = get_auth_config();
+
+    let assert_context = AssertContext {
+        rule: &rule,
+        auth_config: &auth_config,
+    };
+
+    assert_get_docs(&context, &assert_context)?;
 
     match rule.mem() {
         Memory::Heap => STATE.with(|state| {
@@ -284,7 +357,7 @@ fn get_docs_impl<'a>(
     filters: &ListParams,
     rule: &Rule,
 ) -> Result<ListResults<Doc>, String> {
-    let matches = filter_values(caller, controllers, &rule.read, docs, filters);
+    let matches = filter_values(caller, controllers, &rule.read, docs, filters)?;
 
     let results = list_values(&matches, filters);
 
@@ -345,20 +418,27 @@ fn secure_delete_doc(
     value: DelDoc,
 ) -> Result<Option<Doc>, String> {
     let rule = get_state_rule(context.collection)?;
-    delete_doc_impl(context, key, value, &rule)
+    let auth_config = get_auth_config();
+
+    let assert_context = AssertContext {
+        rule: &rule,
+        auth_config: &auth_config,
+    };
+
+    delete_doc_impl(context, &assert_context, key, value)
 }
 
 fn delete_doc_impl(
     context: &StoreContext,
+    assert_context: &AssertContext,
     key: Key,
     value: DelDoc,
-    rule: &Rule,
 ) -> Result<Option<Doc>, String> {
-    let current_doc = get_state_doc(context.collection, &key, rule)?;
+    let current_doc = get_state_doc(context.collection, &key, assert_context.rule)?;
 
-    assert_delete_doc(context, &key, &value, rule, &current_doc)?;
+    assert_delete_doc(context, assert_context, &key, &value, &current_doc)?;
 
-    delete_state_doc(context.collection, &key, rule)
+    delete_state_doc(context.collection, &key, assert_context.rule)
 }
 
 /// Delete multiple documents from a collection's store.
@@ -478,6 +558,12 @@ fn delete_filtered_docs_store_impl(
     docs: &ListResults<Doc>,
 ) -> Result<Vec<DocContext<Option<Doc>>>, String> {
     let rule = get_state_rule(context.collection)?;
+    let auth_config = get_auth_config();
+
+    let assert_context = AssertContext {
+        rule: &rule,
+        auth_config: &auth_config,
+    };
 
     let mut results: Vec<DocContext<Option<Doc>>> = Vec::new();
 
@@ -486,7 +572,7 @@ fn delete_filtered_docs_store_impl(
             version: doc.version,
         };
 
-        let deleted_doc = delete_doc_impl(context, key.clone(), value, &rule)?;
+        let deleted_doc = delete_doc_impl(context, &assert_context, key.clone(), value)?;
 
         let doc_context = DocContext {
             key: key.clone(),
@@ -504,8 +590,16 @@ fn delete_filtered_docs_store_impl(
 // Config
 // ---------------------------------------------------------
 
-pub fn set_config_store(config: &DbConfig) {
-    insert_config(config);
+pub fn set_config_store(proposed_config: &SetDbConfig) -> Result<DbConfig, String> {
+    let current_config = get_config();
+
+    assert_set_config(proposed_config, &current_config)?;
+
+    let config = DbConfig::prepare(&current_config, proposed_config);
+
+    insert_config(&config);
+
+    Ok(config)
 }
 
 pub fn get_config_store() -> Option<DbConfig> {

@@ -1,8 +1,8 @@
 <script lang="ts">
-	import type { Principal } from '@dfinity/principal';
 	import { nonNullish } from '@dfinity/utils';
+	import type { Principal } from '@icp-sdk/core/principal';
 	import { onMount } from 'svelte';
-	import type { Controller } from '$declarations/mission_control/mission_control.did';
+	import type { MissionControlDid } from '$declarations';
 	import ControllerAdd from '$lib/components/controllers/ControllerAdd.svelte';
 	import ControllerDelete from '$lib/components/controllers/ControllerDelete.svelte';
 	import ControllerInfo from '$lib/components/controllers/ControllerInfo.svelte';
@@ -18,7 +18,7 @@
 	import { metadataProfile } from '$lib/utils/metadata.utils';
 
 	interface Props {
-		list: () => Promise<[Principal, Controller][]>;
+		list: () => Promise<[Principal, MissionControlDid.Controller][]>;
 		remove: (params: {
 			missionControlId: MissionControlId;
 			controller: Principal;
@@ -30,16 +30,20 @@
 		) => Promise<void>;
 		segment: CanisterSegmentWithLabel;
 		// The canister and user are controllers of the mission control but not added in its state per default
-		extraControllers?: [Principal, Controller | undefined][];
+		extraControllers?: [Principal, MissionControlDid.Controller][];
 	}
 
 	let { list, remove, add, segment, extraControllers = [] }: Props = $props();
 
-	let controllers: [Principal, Controller | undefined][] = $state([]);
+	let controllers = $state<[Principal, MissionControlDid.Controller][]>([]);
 
 	const load = async () => {
 		try {
-			controllers = [...(await list()), ...extraControllers];
+			controllers = [...(await list()), ...extraControllers].sort((controllerA, controllerB) =>
+				Object.keys(controllerA[1]?.scope ?? {})[0].localeCompare(
+					Object.keys(controllerB[1]?.scope ?? {})[0]
+				)
+			);
 		} catch (err: unknown) {
 			toasts.error({
 				text: $i18n.errors.controllers_listing,
@@ -52,14 +56,16 @@
 
 	let visibleDelete = $state(false);
 	let visibleInfo = $state(false);
-	let selectedController: [Principal, Controller | undefined] | undefined = $state();
+	let selectedController = $state<
+		[Principal, MissionControlDid.Controller | undefined] | undefined
+	>(undefined);
 
-	const canEdit = (controllerId: Principal): boolean =>
-		nonNullish($authStore.identity) &&
+	const isMissionControl = (controllerId: Principal): boolean =>
 		nonNullish($missionControlIdDerived) &&
-		![$missionControlIdDerived.toText(), $authStore.identity.getPrincipal().toText()].includes(
-			controllerId.toText()
-		);
+		$missionControlIdDerived.toText() === controllerId.toText();
+	const isDev = (controllerId: Principal): boolean =>
+		nonNullish($authStore.identity) &&
+		$authStore.identity.getPrincipal().toText() === controllerId.toText();
 </script>
 
 <div class="table-container">
@@ -74,12 +80,15 @@
 		</thead>
 		<tbody>
 			{#each controllers as [controllerId, controller] (controllerId.toText())}
+				{@const dev = isDev(controllerId)}
+				{@const mic = isMissionControl(controllerId)}
+
 				<tr>
 					<td class="actions">
-						{#if canEdit(controllerId)}
+						{#if !dev && !mic}
 							<ButtonTableAction
-								icon="delete"
 								ariaLabel={$i18n.controllers.delete}
+								icon="delete"
 								onaction={() => {
 									selectedController = [controllerId, controller];
 									visibleDelete = true;
@@ -87,8 +96,8 @@
 							/>
 						{:else}
 							<ButtonTableAction
-								icon="info"
 								ariaLabel={$i18n.controllers.info}
+								icon="info"
 								onaction={() => (visibleInfo = true)}
 							/>
 						{/if}
@@ -99,17 +108,26 @@
 					</td>
 
 					<td class="profile"
-						>{metadataProfile(nonNullish(controller) ? controller.metadata : [])}</td
-					>
+						>{#if mic}
+							{$i18n.mission_control.title}
+						{:else if dev}
+							{$i18n.preferences.dev_id}
+						{:else}
+							{metadataProfile(nonNullish(controller) ? controller.metadata : [])}
+						{/if}
+					</td>
 
 					<td class="scope">
 						{#if nonNullish(controller)}
-							{#if nonNullish(controller) && 'Write' in controller.scope}
+							{#if 'Write' in controller.scope}
 								{$i18n.controllers.write}
-							{:else}
+							{:else if 'Admin' in controller.scope}
 								{$i18n.controllers.admin}
-							{/if}{/if}</td
-					>
+							{:else if 'Submit' in controller.scope}
+								{$i18n.controllers.submit}
+							{/if}
+						{/if}
+					</td>
 				</tr>
 			{/each}
 		</tbody>
@@ -118,7 +136,7 @@
 
 <ControllerAdd {add} {load} {segment} />
 
-<ControllerDelete bind:selectedController bind:visible={visibleDelete} {load} {remove} />
+<ControllerDelete {load} {remove} bind:selectedController bind:visible={visibleDelete} />
 
 <ControllerInfo bind:visible={visibleInfo} />
 

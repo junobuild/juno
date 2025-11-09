@@ -44,6 +44,6 @@
 		display: flex;
 		flex-flow: row nowrap;
 
-		overflow-x: hidden;
+		overflow: hidden;
 	}
 </style>

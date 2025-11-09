@@ -1,24 +1,24 @@
 <script lang="ts">
-	import type { Principal } from '@dfinity/principal';
-	import { isNullish, nonNullish } from '@dfinity/utils';
+	import { isNullish, nonNullish, notEmptyString } from '@dfinity/utils';
+	import type { Principal } from '@icp-sdk/core/principal';
 	import { fade } from 'svelte/transition';
-	import type { Satellite, Orbiter } from '$declarations/mission_control/mission_control.did';
+	import type { MissionControlDid } from '$declarations';
 	import { setOrbitersController } from '$lib/api/mission-control.api';
 	import SegmentsTable from '$lib/components/segments/SegmentsTable.svelte';
-	import Collapsible from '$lib/components/ui/Collapsible.svelte';
 	import Html from '$lib/components/ui/Html.svelte';
 	import Warning from '$lib/components/ui/Warning.svelte';
 	import { REVOKED_CONTROLLERS } from '$lib/constants/app.constants';
 	import { missionControlIdDerived } from '$lib/derived/mission-control.derived';
 	import {
 		setMissionControlControllerForVersion,
-		setSatellitesForVersion
+		setSatellitesControllerForVersion
 	} from '$lib/services/mission-control.services';
 	import { authStore } from '$lib/stores/auth.store';
 	import { busy } from '$lib/stores/busy.store';
 	import { i18n } from '$lib/stores/i18n.store';
 	import { toasts } from '$lib/stores/toasts.store';
 	import type { MissionControlId } from '$lib/types/mission-control';
+	import type { Option } from '$lib/types/utils';
 	import { bigintStringify } from '$lib/utils/number.utils';
 	import { orbiterName } from '$lib/utils/orbiter.utils';
 	import { satelliteName } from '$lib/utils/satellite.utils';
@@ -26,16 +26,15 @@
 	interface Props {
 		principal: string;
 		redirect_uri: string;
+		profile: Option<string>;
 		missionControlId: MissionControlId;
 	}
 
-	let { principal, redirect_uri, missionControlId }: Props = $props();
-
-	let profile = $state('');
+	let { principal, redirect_uri, missionControlId, profile }: Props = $props();
 
 	let selectedMissionControl = $state(false);
-	let selectedSatellites: [Principal, Satellite][] = $state([]);
-	let selectedOrbiters: [Principal, Orbiter][] = $state([]);
+	let selectedSatellites = $state<[Principal, MissionControlDid.Satellite][]>([]);
+	let selectedOrbiters = $state<[Principal, MissionControlDid.Orbiter][]>([]);
 
 	const onSubmit = async ($event: SubmitEvent) => {
 		$event.preventDefault();
@@ -68,6 +67,13 @@
 			return;
 		}
 
+		if (isNullish($authStore.identity)) {
+			toasts.error({
+				text: $i18n.authentication.not_signed_in
+			});
+			return;
+		}
+
 		busy.start();
 
 		try {
@@ -78,18 +84,20 @@
 								missionControlId: $missionControlIdDerived,
 								controllerId: principal,
 								profile,
-								scope: 'admin'
+								scope: 'admin',
+								identity: $authStore.identity
 							})
 						]
 					: []),
 				...(selectedSatellites.length > 0
 					? [
-							setSatellitesForVersion({
+							setSatellitesControllerForVersion({
 								missionControlId: $missionControlIdDerived,
 								controllerId: principal,
 								satelliteIds: selectedSatellites.map((s) => s[0]),
 								profile,
-								scope: 'admin'
+								scope: 'admin',
+								identity: $authStore.identity
 							})
 						]
 					: []),
@@ -166,30 +174,12 @@
 		bind:selectedDisabled={disabled}
 		bind:loadingSegments
 	>
-		<div class="terminal">{$i18n.cli.terminal}:&nbsp;{principal}</div>
+		<div class="terminal">
+			{$i18n.cli.terminal}:&nbsp;{principal}{#if notEmptyString(profile)}&nbsp;[{profile}]{/if}
+		</div>
 	</SegmentsTable>
 
 	{#if loadingSegments === 'ready'}
-		<div class="options">
-			<Collapsible>
-				<svelte:fragment slot="header">{$i18n.core.advanced_options}</svelte:fragment>
-
-				<div>
-					<p class="profile-info">{$i18n.cli.profile_info}</p>
-
-					<input
-						id="profile"
-						type="text"
-						placeholder={$i18n.cli.profile_placeholder}
-						name="profile"
-						bind:value={profile}
-						autocomplete="off"
-						data-1p-ignore
-					/>
-				</div>
-			</Collapsible>
-		</div>
-
 		<div in:fade>
 			<Warning>
 				<Html text={$i18n.cli.confirm} />
@@ -221,13 +211,5 @@
 		background: var(--color-card-contrast);
 		color: var(--color-card);
 		padding: var(--padding-0_5x) var(--padding-2x);
-	}
-
-	.options {
-		margin: var(--padding-4x) 0 var(--padding-6x);
-	}
-
-	.profile-info {
-		margin: 0;
 	}
 </style>

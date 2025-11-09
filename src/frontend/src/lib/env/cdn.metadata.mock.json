@@ -1,0 +1,16 @@
+{
+	"mission_controls": ["0.1.0"],
+	"satellites": ["0.1.3"],
+	"orbiters": ["0.2.2"],
+	"releases": [
+		{
+			"tag": "0.0.55",
+			"console": "0.1.2",
+			"observatory": "0.1.0",
+			"mission_control": "0.1.0",
+			"satellite": "0.1.3",
+			"orbiter": "0.2.2",
+			"sputnik": "0.1.4"
+		}
+	]
+}

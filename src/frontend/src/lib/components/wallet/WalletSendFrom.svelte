@@ -1,10 +1,10 @@
 <script lang="ts">
-	import { AccountIdentifier } from '@dfinity/ledger-icp';
 	import { nonNullish } from '@dfinity/utils';
+	import type { AccountIdentifier } from '@icp-sdk/canisters/ledger/icp';
 	import { getAccountIdentifier } from '$lib/api/icp-index.api';
 	import Identifier from '$lib/components/ui/Identifier.svelte';
 	import Value from '$lib/components/ui/Value.svelte';
-	import { icpToUsd } from '$lib/derived/exchange.derived';
+	import { icpToUsd, icpToUsdDefined } from '$lib/derived/exchange.derived';
 	import { i18n } from '$lib/stores/i18n.store';
 	import type { MissionControlId } from '$lib/types/mission-control';
 	import { formatICP, formatICPToUsd } from '$lib/utils/icp.utils';
@@ -30,7 +30,7 @@
 				{$i18n.wallet.wallet_id}
 			{/snippet}
 			<p class="identifier">
-				<Identifier shorten={false} identifier={missionControlId.toText()} />
+				<Identifier identifier={missionControlId.toText()} shorten={false} />
 			</p>
 		</Value>
 
@@ -51,7 +51,7 @@
 				{#if nonNullish(balance)}
 					<span>{formatICP(balance)} <small>ICP</small></span>
 
-					{#if nonNullish($icpToUsd)}
+					{#if nonNullish($icpToUsd) && $icpToUsdDefined}
 						<span class="usd">{formatICPToUsd({ icp: balance, icpToUsd: $icpToUsd })}</span>
 					{/if}
 				{/if}

@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { fromNullable, isNullish, nonNullish, fromNullishNullable } from '@dfinity/utils';
-	import { type SvelteComponent, getContext } from 'svelte';
-	import type { RateConfig, Rule, CollectionType } from '$declarations/satellite/satellite.did';
+	import { getContext } from 'svelte';
+	import type { SatelliteDid } from '$declarations';
 	import CollectionDelete from '$lib/components/collections/CollectionDelete.svelte';
 	import Checkbox from '$lib/components/ui/Checkbox.svelte';
 	import Collapsible from '$lib/components/ui/Collapsible.svelte';
@@ -26,7 +26,7 @@
 	const { store, reload }: RulesContext = getContext<RulesContext>(RULES_CONTEXT_KEY);
 
 	interface Props {
-		type: CollectionType;
+		type: SatelliteDid.CollectionType;
 		oncancel: () => void;
 		onsuccess: () => void;
 	}
@@ -37,33 +37,38 @@
 
 	let typeDatastore = $derived('Db' in type);
 
+	// eslint-disable-next-line svelte/prefer-writable-derived
 	let collection: string = $state('');
 	$effect(() => {
 		collection = $store.rule?.[0] ?? '';
 	});
 
-	let rule: Rule | undefined = $state(undefined);
+	// eslint-disable-next-line svelte/prefer-writable-derived
+	let rule: SatelliteDid.Rule | undefined = $state(undefined);
 	$effect(() => {
 		rule = $store.rule?.[1] ?? undefined;
 	});
 
 	let mode: 'new' | 'edit' = $derived(nonNullish(rule) ? 'edit' : 'new');
 
+	// eslint-disable-next-line svelte/prefer-writable-derived
 	let read: PermissionText = $state(permissionToText(PermissionManaged));
 	$effect(() => {
 		read = permissionToText(rule?.read ?? PermissionManaged);
 	});
 
+	// eslint-disable-next-line svelte/prefer-writable-derived
 	let write: PermissionText = $state(permissionToText(PermissionManaged));
 	$effect(() => {
 		write = permissionToText(rule?.write ?? PermissionManaged);
 	});
 
 	// Before the introduction of the stable memory, the memory used was "Heap". That's why we fallback for display purpose on Stable only if new to support old satellites
-	const initMemory = (rule: Rule | undefined): MemoryText =>
+	const initMemory = (rule: SatelliteDid.Rule | undefined): MemoryText =>
 		memoryToText(
 			fromNullishNullable(rule?.memory) ?? (isNullish(rule) ? MemoryStable : MemoryHeap)
 		);
+	// eslint-disable-next-line svelte/prefer-writable-derived
 	let memory: MemoryText = $state(memoryToText(MemoryStable));
 	$effect(() => {
 		memory = initMemory(rule);
@@ -71,7 +76,7 @@
 
 	let currentImmutable: boolean | undefined = $state();
 	let immutable: boolean | undefined = $state();
-	const initMutable = (initialRule: Rule | undefined) => {
+	const initMutable = (initialRule: SatelliteDid.Rule | undefined) => {
 		currentImmutable = !(fromNullishNullable(initialRule?.mutable_permissions) ?? true);
 		immutable = currentImmutable;
 	};
@@ -85,17 +90,19 @@
 	$effect(() => initMaxSize(rule?.max_size ?? []));
 
 	let maxTokens: number | undefined = $state();
-	const initRateTokens = (rate_config: [] | [RateConfig]) => {
+	const initRateTokens = (rate_config: [] | [SatelliteDid.RateConfig]) => {
 		const tmp = fromNullable(rate_config)?.max_tokens;
 		maxTokens = nonNullish(tmp) ? Number(tmp) : undefined;
 	};
 	$effect(() => initRateTokens(rule?.rate_config ?? []));
 
+	// eslint-disable-next-line svelte/prefer-writable-derived
 	let maxCapacity: number | undefined = $state(undefined);
 	$effect(() => {
 		maxCapacity = fromNullishNullable(rule?.max_capacity);
 	});
 
+	// eslint-disable-next-line svelte/prefer-writable-derived
 	let maxChanges: number | undefined = $state(undefined);
 	$effect(() => {
 		maxChanges = fromNullishNullable(rule?.max_changes_per_user);
@@ -123,14 +130,14 @@
 				identity: $authStore.identity
 			});
 
-			toasts.success(
-				i18nFormat(isNullish(rule) ? $i18n.collections.added : $i18n.collections.updated, [
+			toasts.success({
+				text: i18nFormat(isNullish(rule) ? $i18n.collections.added : $i18n.collections.updated, [
 					{
 						placeholder: '{0}',
 						value: collection
 					}
 				])
-			);
+			});
 
 			await reload({ identity: $authStore.identity });
 
@@ -155,8 +162,7 @@
 
 	let disabled = $derived(isNullish(collection) || collection === '');
 
-	let collapsibleRef: (SvelteComponent & { open: () => void; close: () => void }) | undefined =
-		$state(undefined);
+	let collapsibleRef: Collapsible | undefined = $state(undefined);
 
 	const toggle = (toggleOptions: boolean) => {
 		if (!toggleOptions) {
@@ -200,13 +206,13 @@
 				{/snippet}
 				<input
 					id="collection"
-					type="text"
-					placeholder={$i18n.collections.key_placeholder}
 					name="collection"
-					bind:value={collection}
-					disabled={mode === 'edit'}
 					autocomplete="off"
 					data-1p-ignore
+					disabled={mode === 'edit'}
+					placeholder={$i18n.collections.key_placeholder}
+					type="text"
+					bind:value={collection}
 				/>
 			</Value>
 		</div>
@@ -216,11 +222,11 @@
 				{#snippet label()}
 					{$i18n.collections.read_permission}
 				{/snippet}
-				<select id="read" name="read" bind:value={read} disabled={currentImmutable}>
+				<select id="read" name="read" disabled={currentImmutable} bind:value={read}>
 					<option value="Public">{$i18n.collections.public}</option>
 					<option value="Private">{$i18n.collections.private}</option>
 					<option value="Managed">{$i18n.collections.managed}</option>
-					<option value="Controllers">{$i18n.collections.controllers}</option>
+					<option value="Restricted">{$i18n.collections.restricted}</option>
 				</select>
 			</Value>
 		</div>
@@ -230,17 +236,19 @@
 				{#snippet label()}
 					{$i18n.collections.write_permission}
 				{/snippet}
-				<select id="write" name="write" bind:value={write} disabled={currentImmutable}>
+				<select id="write" name="write" disabled={currentImmutable} bind:value={write}>
 					<option value="Public">{$i18n.collections.public}</option>
 					<option value="Private">{$i18n.collections.private}</option>
 					<option value="Managed">{$i18n.collections.managed}</option>
-					<option value="Controllers">{$i18n.collections.controllers}</option>
+					<option value="Restricted">{$i18n.collections.restricted}</option>
 				</select>
 			</Value>
 		</div>
 
 		<Collapsible bind:this={collapsibleRef}>
-			<svelte:fragment slot="header">{$i18n.collections.options}</svelte:fragment>
+			{#snippet header()}
+				{$i18n.collections.options}
+			{/snippet}
 
 			<div class="options">
 				<div>
@@ -248,7 +256,7 @@
 						{#snippet label()}
 							{$i18n.collections.memory}
 						{/snippet}
-						<select id="memory" name="write" bind:value={memory} disabled={mode === 'edit'}>
+						<select id="memory" name="write" disabled={mode === 'edit'} bind:value={memory}>
 							<option value="Stable">{$i18n.collections.stable}</option>
 							<option value="Heap">{$i18n.collections.heap}</option>
 						</select>
@@ -261,13 +269,13 @@
 							{$i18n.collections.max_changes}
 						{/snippet}
 						<Input
-							inputType="number"
-							placeholder={$i18n.collections.max_changes_placeholder}
 							name="maxChanges"
-							required={false}
-							bind:value={maxChanges}
+							inputType="number"
 							onblur={() =>
 								(maxChanges = nonNullish(maxChanges) ? Math.trunc(maxChanges) : undefined)}
+							placeholder={$i18n.collections.max_changes_placeholder}
+							required={false}
+							bind:value={maxChanges}
 						/>
 					</Value>
 				</div>
@@ -279,13 +287,13 @@
 								{$i18n.collections.max_capacity}
 							{/snippet}
 							<Input
-								inputType="number"
-								placeholder={$i18n.collections.max_capacity_placeholder}
 								name="maxCapacity"
-								required={false}
-								bind:value={maxCapacity}
+								inputType="number"
 								onblur={() =>
 									(maxCapacity = nonNullish(maxCapacity) ? Math.trunc(maxCapacity) : undefined)}
+								placeholder={$i18n.collections.max_capacity_placeholder}
+								required={false}
+								bind:value={maxCapacity}
 							/>
 						</Value>
 					</div>
@@ -298,12 +306,12 @@
 								{$i18n.collections.max_size}
 							{/snippet}
 							<Input
-								inputType="number"
-								placeholder={$i18n.collections.max_size_placeholder}
 								name="maxSize"
+								inputType="number"
+								onblur={() => (maxSize = nonNullish(maxSize) ? Math.trunc(maxSize) : undefined)}
+								placeholder={$i18n.collections.max_size_placeholder}
 								required={false}
 								bind:value={maxSize}
-								onblur={() => (maxSize = nonNullish(maxSize) ? Math.trunc(maxSize) : undefined)}
 							/>
 						</Value>
 					</div>
@@ -315,12 +323,12 @@
 							{$i18n.collections.rate_limit}
 						{/snippet}
 						<Input
-							inputType="number"
-							placeholder={$i18n.collections.rate_limit_placeholder}
 							name="maxTokens"
+							inputType="number"
+							onblur={() => (maxTokens = nonNullish(maxTokens) ? Math.trunc(maxTokens) : undefined)}
+							placeholder={$i18n.collections.rate_limit_placeholder}
 							required={false}
 							bind:value={maxTokens}
-							onblur={() => (maxTokens = nonNullish(maxTokens) ? Math.trunc(maxTokens) : undefined)}
 						/>
 					</Value>
 				</div>
@@ -329,10 +337,10 @@
 					<Checkbox>
 						<label class="immutable">
 							<input
-								type="checkbox"
 								checked={immutable}
 								disabled={currentImmutable}
 								onchange={() => (immutable = !immutable)}
+								type="checkbox"
 							/>
 							<span>{$i18n.collections.immutable}</span>
 						</label>
@@ -342,13 +350,13 @@
 		</Collapsible>
 
 		<div class="toolbar">
-			<button type="button" onclick={oncancel}>{$i18n.core.cancel}</button>
+			<button onclick={oncancel} type="button">{$i18n.core.cancel}</button>
 
 			{#if mode === 'edit'}
 				<CollectionDelete {collection} {rule} {type} on:junoCollectionSuccess />
 			{/if}
 
-			<button type="submit" class="primary" {disabled}>{$i18n.core.submit}</button>
+			<button class="primary" {disabled} type="submit">{$i18n.core.submit}</button>
 		</div>
 	</form>
 </article>

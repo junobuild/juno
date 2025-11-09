@@ -1,3 +1,5 @@
+use crate::db::types::config::DbConfig;
+use crate::db::types::interface::SetDbConfig;
 use crate::db::types::state::{DbHeapState, Doc, StableKey};
 use crate::SetDoc;
 use candid::Principal;
@@ -6,7 +8,9 @@ use ic_stable_structures::storable::Bound;
 use ic_stable_structures::Storable;
 use junobuild_collections::constants::db::DEFAULT_DB_COLLECTIONS;
 use junobuild_collections::types::rules::{Memory, Rule};
-use junobuild_shared::serializers::{deserialize_from_bytes, serialize_to_bytes};
+use junobuild_shared::serializers::{
+    deserialize_from_bytes, serialize_into_bytes, serialize_to_bytes,
+};
 use junobuild_shared::types::state::{Timestamp, UserId, Version};
 use junobuild_shared::types::state::{Timestamped, Versioned};
 use junobuild_shared::version::next_version;
@@ -65,8 +69,12 @@ impl Timestamped for Doc {
 }
 
 impl Storable for Doc {
-    fn to_bytes(&self) -> Cow<[u8]> {
+    fn to_bytes(&self) -> Cow<'_, [u8]> {
         serialize_to_bytes(self)
+    }
+
+    fn into_bytes(self) -> Vec<u8> {
+        serialize_into_bytes(&self)
     }
 
     fn from_bytes(bytes: Cow<[u8]>) -> Self {
@@ -77,8 +85,12 @@ impl Storable for Doc {
 }
 
 impl Storable for StableKey {
-    fn to_bytes(&self) -> Cow<[u8]> {
+    fn to_bytes(&self) -> Cow<'_, [u8]> {
         serialize_to_bytes(self)
+    }
+
+    fn into_bytes(self) -> Vec<u8> {
+        serialize_into_bytes(&self)
     }
 
     fn from_bytes(bytes: Cow<[u8]>) -> Self {
@@ -118,6 +130,34 @@ impl Doc {
 }
 
 impl Versioned for Doc {
+    fn version(&self) -> Option<Version> {
+        self.version
+    }
+}
+
+impl DbConfig {
+    pub fn prepare(current_config: &Option<DbConfig>, user_config: &SetDbConfig) -> Self {
+        let now = time();
+
+        let created_at: Timestamp = match current_config {
+            None => now,
+            Some(current_doc) => current_doc.created_at.unwrap_or(now),
+        };
+
+        let version = next_version(current_config);
+
+        let updated_at: Timestamp = now;
+
+        DbConfig {
+            max_memory_size: user_config.max_memory_size.clone(),
+            created_at: Some(created_at),
+            updated_at: Some(updated_at),
+            version: Some(version),
+        }
+    }
+}
+
+impl Versioned for DbConfig {
     fn version(&self) -> Option<Version> {
         self.version
     }

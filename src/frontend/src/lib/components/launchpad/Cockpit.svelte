@@ -1,6 +1,5 @@
 <script lang="ts">
 	import { isNullish, nonNullish } from '@dfinity/utils';
-	import { run } from 'svelte/legacy';
 	import { fade } from 'svelte/transition';
 	import Canister from '$lib/components/canister/Canister.svelte';
 	import CanisterIndicator from '$lib/components/canister/CanisterIndicator.svelte';
@@ -11,7 +10,6 @@
 	import IconWallet from '$lib/components/icons/IconWallet.svelte';
 	import LaunchpadLink from '$lib/components/launchpad/LaunchpadLink.svelte';
 	import MissionControlDataLoader from '$lib/components/mission-control/MissionControlDataLoader.svelte';
-	import MissionControlVersion from '$lib/components/mission-control/MissionControlVersion.svelte';
 	import SkeletonText from '$lib/components/ui/SkeletonText.svelte';
 	import WalletInlineBalance from '$lib/components/wallet/WalletInlineBalance.svelte';
 	import { balance } from '$lib/derived/balance.derived';
@@ -22,15 +20,8 @@
 	import { missionControlIdDerived } from '$lib/derived/mission-control.derived';
 	import { orbiterStore } from '$lib/derived/orbiter.derived';
 	import { missionControlVersion } from '$lib/derived/version.derived';
-	import { loadOrbiters } from '$lib/services/orbiters.services';
 	import { i18n } from '$lib/stores/i18n.store';
 	import type { CanisterData } from '$lib/types/canister';
-
-	run(() => {
-		// @ts-expect-error TODO: to be migrated to Svelte v5
-		$missionControlIdDerived,
-			(async () => await loadOrbiters({ missionControlId: $missionControlIdDerived }))();
-	});
 
 	let missionControlData: CanisterData | undefined = $state(undefined);
 	let orbiterData: CanisterData | undefined = $state(undefined);
@@ -46,10 +37,10 @@
 
 <div class="analytics">
 	<LaunchpadLink
-		size="small"
-		href="/analytics"
 		ariaLabel={`${$i18n.core.open}: ${$i18n.analytics.title}`}
 		highlight={isNullish($orbiterStore)}
+		href="/analytics"
+		size="small"
 	>
 		<p>
 			<span class="link-icon"><IconAnalytics size="24px" /></span>
@@ -72,18 +63,16 @@
 	</LaunchpadLink>
 </div>
 
-<MissionControlVersion />
-
 {#if nonNullish($missionControlIdDerived) && nonNullish($missionControlVersion)}
 	<MissionControlDataLoader missionControlId={$missionControlIdDerived} />
 {/if}
 
 <div class="monitoring">
 	<LaunchpadLink
-		size="small"
-		href="/monitoring"
 		ariaLabel={`${$i18n.core.open}: ${$i18n.monitoring.title}`}
 		highlight={$missionControlSettingsLoaded && $missionControlNotMonitored}
+		href="/monitoring"
+		size="small"
 	>
 		<p>
 			<span class="link-icon"><IconTelescope /></span>
@@ -97,9 +86,9 @@
 
 <div class="mission-control">
 	<LaunchpadLink
-		size="small"
-		href="/mission-control"
 		ariaLabel={`${$i18n.core.open}: ${$i18n.mission_control.title}`}
+		href="/mission-control"
+		size="small"
 	>
 		<p>
 			<span class="link-icon"><IconMissionControl /></span>
@@ -122,9 +111,9 @@
 
 <div class="wallet">
 	<LaunchpadLink
-		size="small"
-		href="/wallet"
 		ariaLabel={`${$i18n.core.open}: ${$i18n.wallet.title}`}
+		href="/wallet"
+		size="small"
 	>
 		<p>
 			<span class="link-icon"><IconWallet /></span>

@@ -1,13 +1,20 @@
 <script lang="ts">
-	import { Principal } from '@dfinity/principal';
-	import { createEventDispatcher } from 'svelte';
-	import { preventDefault } from 'svelte/legacy';
+	import { Principal } from '@icp-sdk/core/principal';
+	import { onMount } from 'svelte';
 	import Html from '$lib/components/ui/Html.svelte';
 	import Input from '$lib/components/ui/Input.svelte';
 	import Modal from '$lib/components/ui/Modal.svelte';
 	import SpinnerModal from '$lib/components/ui/SpinnerModal.svelte';
 	import Value from '$lib/components/ui/Value.svelte';
 	import { ONE_TRILLION } from '$lib/constants/app.constants';
+	import {
+		FIVE_YEARS,
+		ONE_MONTH,
+		ONE_YEAR,
+		SIX_MONTHS,
+		THREE_MONTHS,
+		TWO_YEARS
+	} from '$lib/constants/canister.constants';
 	import { updateSettings as updateSettingsServices } from '$lib/services/settings.services';
 	import { authStore } from '$lib/stores/auth.store';
 	import { isBusy, wizardBusy } from '$lib/stores/busy.store';
@@ -20,17 +27,35 @@
 
 	interface Props {
 		detail: JunoModalDetail;
+		onclose: () => void;
 	}
 
-	let { detail }: Props = $props();
+	let { detail, onclose }: Props = $props();
 
-	let { segment, settings } = $derived(detail as JunoModalEditCanisterSettingsDetail);
+	let {
+		segment,
+		settings,
+		canister: canisterInfo
+	} = $derived(detail as JunoModalEditCanisterSettingsDetail);
 
-	let freezingThreshold: number = $state(
+	let freezingThreshold = $state(
 		Number((detail as JunoModalEditCanisterSettingsDetail).settings.freezingThreshold)
 	);
 
-	let reservedTCyclesLimit: number = $state(
+	let customFreezingThreshold = $state(false);
+	onMount(() => {
+		// Only evaluated onMount as we do not want to toggle between input or select
+		// if the dev enters one of the values.
+		customFreezingThreshold =
+			freezingThreshold !== ONE_MONTH &&
+			freezingThreshold !== THREE_MONTHS &&
+			freezingThreshold !== SIX_MONTHS &&
+			freezingThreshold !== ONE_YEAR &&
+			freezingThreshold !== TWO_YEARS &&
+			freezingThreshold !== FIVE_YEARS;
+	});
+
+	let reservedTCyclesLimit = $state(
 		Number(
 			formatTCycles((detail as JunoModalEditCanisterSettingsDetail).settings.reservedCyclesLimit)
 		)
@@ -40,19 +65,19 @@
 		(detail as JunoModalEditCanisterSettingsDetail).settings.logVisibility
 	);
 
-	let wasmMemoryLimit: number = $state(
+	let wasmMemoryLimit = $state(
 		Number((detail as JunoModalEditCanisterSettingsDetail).settings.wasmMemoryLimit)
 	);
 
-	let memoryAllocation: number = $state(
+	let memoryAllocation = $state(
 		Number((detail as JunoModalEditCanisterSettingsDetail).settings.memoryAllocation)
 	);
 
-	let computeAllocation: number = $state(
+	let computeAllocation = $state(
 		Number((detail as JunoModalEditCanisterSettingsDetail).settings.computeAllocation)
 	);
 
-	let reservedCyclesLimit: bigint = $derived(BigInt(reservedTCyclesLimit * ONE_TRILLION));
+	let reservedCyclesLimit = $derived(BigInt(reservedTCyclesLimit * ONE_TRILLION));
 
 	let disabled = $derived(
 		(BigInt(freezingThreshold ?? 0n) === settings.freezingThreshold || freezingThreshold === 0) &&
@@ -65,10 +90,9 @@
 
 	let step: 'edit' | 'in_progress' | 'ready' = $state('edit');
 
-	const dispatch = createEventDispatcher();
-	const close = () => dispatch('junoClose');
+	const updateSettings = async ($event: SubmitEvent) => {
+		$event.preventDefault();
 
-	const updateSettings = async () => {
 		wizardBusy.start();
 		step = 'in_progress';
 
@@ -77,9 +101,10 @@
 		const { success } = await updateSettingsServices({
 			canisterId,
 			currentSettings: settings,
+			canisterInfo,
 			newSettings: {
 				freezingThreshold: BigInt(freezingThreshold),
-				reservedCyclesLimit: reservedCyclesLimit,
+				reservedCyclesLimit,
 				logVisibility,
 				wasmMemoryLimit: BigInt(wasmMemoryLimit),
 				memoryAllocation: BigInt(memoryAllocation),
@@ -101,7 +126,7 @@
 	};
 </script>
 
-<Modal on:junoClose>
+<Modal {onclose}>
 	{#if step === 'ready'}
 		<div class="msg">
 			<p>
@@ -114,7 +139,7 @@
 					])}
 				/>
 			</p>
-			<button onclick={close}>{$i18n.core.close}</button>
+			<button onclick={onclose}>{$i18n.core.close}</button>
 		</div>
 	{:else if step === 'in_progress'}
 		<SpinnerModal>
@@ -129,19 +154,32 @@
 			])}
 		</p>
 
-		<form class="content" onsubmit={preventDefault(updateSettings)}>
+		<form class="content" onsubmit={updateSettings}>
 			<div class="container">
 				<div>
 					<Value>
 						{#snippet label()}
-							{$i18n.canisters.freezing_threshold} ({$i18n.canisters.in_seconds})
+							{$i18n.canisters.freezing_threshold}{#if customFreezingThreshold}
+								({$i18n.canisters.in_seconds}){/if}
 						{/snippet}
-						<Input
-							inputType="number"
-							name="freezingThreshold"
-							placeholder=""
-							bind:value={freezingThreshold}
-						/>
+
+						{#if customFreezingThreshold}
+							<Input
+								name="freezingThreshold"
+								inputType="number"
+								placeholder=""
+								bind:value={freezingThreshold}
+							/>
+						{:else}
+							<select name="freezingThreshold" bind:value={freezingThreshold}>
+								<option value={ONE_MONTH}> {$i18n.core.a_month} </option>
+								<option value={THREE_MONTHS}> {$i18n.core.three_months} </option>
+								<option value={SIX_MONTHS}> {$i18n.core.six_months} </option>
+								<option value={ONE_YEAR}> {$i18n.core.a_year} </option>
+								<option value={TWO_YEARS}> {$i18n.core.two_years} </option>
+								<option value={FIVE_YEARS}> {$i18n.core.five_years} </option>
+							</select>
+						{/if}
 					</Value>
 				</div>
 
@@ -151,8 +189,8 @@
 							{$i18n.canisters.reserved_cycles_limit} ({$i18n.canisters.in_t_cycles})
 						{/snippet}
 						<Input
-							inputType="number"
 							name="reservedCyclesLimit"
+							inputType="number"
 							placeholder=""
 							bind:value={reservedTCyclesLimit}
 						/>
@@ -177,8 +215,8 @@
 							{$i18n.canisters.heap_memory_limit} ({$i18n.canisters.in_bytes})
 						{/snippet}
 						<Input
-							inputType="number"
 							name="wasmMemoryLimit"
+							inputType="number"
 							placeholder=""
 							bind:value={wasmMemoryLimit}
 						/>
@@ -191,8 +229,8 @@
 							{$i18n.canisters.memory_allocation} ({$i18n.canisters.in_bytes})
 						{/snippet}
 						<Input
-							inputType="number"
 							name="memoryAllocation"
+							inputType="number"
 							placeholder=""
 							bind:value={memoryAllocation}
 						/>
@@ -205,17 +243,17 @@
 							{$i18n.canisters.compute_allocation} ({$i18n.canisters.in_percent})
 						{/snippet}
 						<Input
-							inputType="number"
 							name="computeAllocation"
-							placeholder=""
+							inputType="number"
 							max={100}
+							placeholder=""
 							bind:value={computeAllocation}
 						/>
 					</Value>
 				</div>
 			</div>
 
-			<button type="submit" disabled={disabled || $isBusy}>
+			<button disabled={disabled || $isBusy} type="submit">
 				{$i18n.core.submit}
 			</button>
 		</form>

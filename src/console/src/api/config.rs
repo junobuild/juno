@@ -1,0 +1,56 @@
+use crate::auth::store::{
+    get_config as get_auth_config_store, set_config as set_auth_config_store,
+};
+use crate::cdn::strategies_impls::cdn::CdnHeap;
+use crate::cdn::strategies_impls::storage::StorageState;
+use crate::guards::caller_is_admin_controller;
+use crate::types::interface::Config;
+use ic_cdk_macros::{query, update};
+use junobuild_auth::state::types::config::AuthenticationConfig;
+use junobuild_auth::state::types::interface::SetAuthenticationConfig;
+use junobuild_shared::ic::UnwrapOrTrap;
+use junobuild_storage::types::config::StorageConfig;
+use junobuild_storage::types::interface::SetStorageConfig;
+
+// ---------------------------------------------------------
+// Config
+// ---------------------------------------------------------
+
+#[query(guard = "caller_is_admin_controller")]
+pub fn get_config() -> Config {
+    let storage = junobuild_cdn::storage::heap::get_config(&CdnHeap);
+    let authentication = get_auth_config_store();
+
+    Config {
+        storage,
+        authentication,
+    }
+}
+
+// ---------------------------------------------------------
+// Storage config
+// ---------------------------------------------------------
+
+#[update(guard = "caller_is_admin_controller")]
+pub fn set_storage_config(config: SetStorageConfig) -> StorageConfig {
+    junobuild_cdn::storage::set_config_store(&CdnHeap, &StorageState, &config).unwrap_or_trap()
+}
+
+#[query(guard = "caller_is_admin_controller")]
+pub fn get_storage_config() -> StorageConfig {
+    junobuild_cdn::storage::heap::get_config(&CdnHeap)
+}
+
+// ---------------------------------------------------------
+// Authentication config
+// ---------------------------------------------------------
+
+#[update(guard = "caller_is_admin_controller")]
+pub async fn set_auth_config(config: SetAuthenticationConfig) -> AuthenticationConfig {
+    set_auth_config_store(&config).await.unwrap_or_trap()
+}
+
+#[query(guard = "caller_is_admin_controller")]
+pub fn get_auth_config() -> Option<AuthenticationConfig> {
+    get_auth_config_store()
+}

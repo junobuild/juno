@@ -43,11 +43,11 @@
 			{/snippet}
 
 			<input
+				data-1p-ignore
+				disabled={$isBusy}
+				placeholder={EMAIL_PLACEHOLDER}
 				type="email"
 				bind:value={email}
-				placeholder={EMAIL_PLACEHOLDER}
-				disabled={$isBusy}
-				data-1p-ignore
 			/>
 		</Value>
 	</div>

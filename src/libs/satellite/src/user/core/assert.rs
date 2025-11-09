@@ -6,10 +6,10 @@ use crate::errors::user::{
 use crate::user::core::types::state::{BannedReason, UserData};
 use crate::{get_doc_store, Doc, SetDoc};
 use candid::Principal;
-use ic_cdk::id;
 use junobuild_collections::constants::db::COLLECTION_USER_KEY;
 use junobuild_collections::types::core::CollectionKey;
-use junobuild_shared::controllers::is_controller;
+use junobuild_shared::controllers::controller_can_write;
+use junobuild_shared::ic::api::id;
 use junobuild_shared::types::core::Key;
 use junobuild_shared::types::state::Controllers;
 use junobuild_shared::utils::principal_not_equal;
@@ -51,13 +51,13 @@ pub fn assert_user_collection_data(collection: &CollectionKey, doc: &SetDoc) -> 
         return Ok(());
     }
 
-    decode_doc_data::<UserData>(&doc.data)
-        .map_err(|err| format!("{}: {}", JUNO_DATASTORE_ERROR_USER_INVALID_DATA, err))?;
+    let user_data = decode_doc_data::<UserData>(&doc.data)
+        .map_err(|err| format!("{JUNO_DATASTORE_ERROR_USER_INVALID_DATA}: {err}"))?;
 
-    Ok(())
+    user_data.assert_provider_data()
 }
 
-pub fn assert_user_write_permission(
+pub fn assert_user_collection_write_permission(
     caller: Principal,
     controllers: &Controllers,
     collection: &CollectionKey,
@@ -69,7 +69,7 @@ pub fn assert_user_write_permission(
         return Ok(());
     }
 
-    if is_controller(caller, controllers) {
+    if controller_can_write(caller, controllers) {
         return Ok(());
     }
 
@@ -87,7 +87,7 @@ pub fn assert_user_is_not_banned(
     controllers: &Controllers,
 ) -> Result<(), String> {
     // This way we spare loading the user for controllers calls and, we for example allow controllers to delete banned users
-    if is_controller(caller, controllers) {
+    if controller_can_write(caller, controllers) {
         return Ok(());
     }
 

@@ -21,7 +21,7 @@
 	};
 </script>
 
-<button class="square" class:error={errorStyle} aria-label={ariaLabel} type="button" {onclick}
+<button class="square" class:error={errorStyle} aria-label={ariaLabel} {onclick} type="button"
 	>{#if icon === 'delete'}
 		<IconDelete size="20px" />
 	{:else if icon === 'info'}

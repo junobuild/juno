@@ -1,11 +1,16 @@
 use crate::memory::init_stable_state;
-use crate::templates::{DEPOSITED_CYCLES_HTML, DEPOSITED_CYCLES_TXT};
+use crate::templates::{
+    DEPOSITED_CYCLES_HTML, DEPOSITED_CYCLES_TXT, FAILED_DEPOSIT_CYCLES_HTML,
+    FAILED_DEPOSIT_CYCLES_TXT,
+};
 use crate::types::interface::NotifyStatus;
 use crate::types::state::{HeapState, Notification, NotificationKey, NotificationStatus, State};
 use ic_cdk::api::time;
 use ic_stable_structures::storable::Bound;
 use ic_stable_structures::Storable;
-use junobuild_shared::serializers::{deserialize_from_bytes, serialize_to_bytes};
+use junobuild_shared::serializers::{
+    deserialize_from_bytes, serialize_into_bytes, serialize_to_bytes,
+};
 use junobuild_shared::types::interface::NotifyArgs;
 use junobuild_shared::types::state::{NotificationKind, SegmentKind};
 use std::borrow::Cow;
@@ -21,8 +26,12 @@ impl Default for State {
 }
 
 impl Storable for Notification {
-    fn to_bytes(&self) -> Cow<[u8]> {
+    fn to_bytes(&self) -> Cow<'_, [u8]> {
         serialize_to_bytes(self)
+    }
+
+    fn into_bytes(self) -> Vec<u8> {
+        serialize_into_bytes(&self)
     }
 
     fn from_bytes(bytes: Cow<[u8]>) -> Self {
@@ -33,8 +42,12 @@ impl Storable for Notification {
 }
 
 impl Storable for NotificationKey {
-    fn to_bytes(&self) -> Cow<[u8]> {
+    fn to_bytes(&self) -> Cow<'_, [u8]> {
         serialize_to_bytes(self)
+    }
+
+    fn into_bytes(self) -> Vec<u8> {
+        serialize_into_bytes(&self)
     }
 
     fn from_bytes(bytes: Cow<[u8]>) -> Self {
@@ -85,7 +98,7 @@ impl Notification {
         let t_cycles = amount as f64 / 1_000_000_000_000.0;
 
         // Format with 8 decimals
-        let formatted = format!("{:.8}", t_cycles);
+        let formatted = format!("{t_cycles:.8}");
 
         // Trim leading zeros
         let formatted_cycles = formatted
@@ -102,11 +115,11 @@ impl Notification {
 
         let format =
             time::format_description::parse("[year]-[month]-[day]T[hour]:[minute]:[second]+00:00")
-                .map_err(|err| format!("Failed to parse format description: {}", err))?;
+                .map_err(|err| format!("Failed to parse format description: {err}"))?;
 
         dt_offset
             .format(&format)
-            .map_err(|err| format!("Failed to format timestamp: {}", err))
+            .map_err(|err| format!("Failed to format timestamp: {err}"))
     }
 
     fn segment_url(&self) -> String {
@@ -131,51 +144,76 @@ impl Notification {
                     formatted_cycles, self.segment.kind
                 )
             }
-        }
-    }
-
-    fn content(&self, template: &str) -> String {
-        match &self.kind {
-            NotificationKind::DepositedCyclesEmail(email_notification) => {
-                let formatted_cycles =
-                    Self::format_cycles(email_notification.deposited_cycles.amount);
-
-                let formatted_timestamp =
-                    Self::format_timestamp(email_notification.deposited_cycles.timestamp)
-                        .unwrap_or_else(|_| "Invalid timestamp".to_string());
-
-                let mut content = template
-                    .replace("{{cycles}}", &formatted_cycles)
-                    .replace("{{module}}", &self.segment.kind.to_string())
-                    .replace("{{timestamp}}", &formatted_timestamp)
-                    .replace("{{url}}", &self.segment_url());
-
-                let name = self
-                    .segment
-                    .metadata
-                    .as_ref()
-                    .and_then(|metadata| metadata.get("name"));
-
-                content = match name {
-                    Some(name) => content.replace("{{name}}", name),
-                    None => content
-                        .replace(" (<!-- -->{{name}}<!-- -->)", "")
-                        .replace(" ({{name}})", ""),
-                };
-
-                content
+            NotificationKind::FailedCyclesDepositEmail(_email_notification) => {
+                format!("❗️Cycles Deposit Failed on Your {}", self.segment.kind)
             }
         }
     }
 
+    fn content(&self, template: &str) -> String {
+        let (timestamp, deposited_cycles_amount) = match &self.kind {
+            NotificationKind::DepositedCyclesEmail(email_notification) => (
+                email_notification.deposited_cycles.timestamp,
+                Some(email_notification.deposited_cycles.amount),
+            ),
+            NotificationKind::FailedCyclesDepositEmail(email_notification) => {
+                (email_notification.funding_failure.timestamp, None)
+            }
+        };
+
+        let formatted_timestamp =
+            Self::format_timestamp(timestamp).unwrap_or_else(|_| "Invalid timestamp".to_string());
+
+        let mut content = template
+            .replace("{{module}}", &self.segment.kind.to_string())
+            .replace("{{timestamp}}", &formatted_timestamp)
+            .replace("{{url}}", &self.segment_url());
+
+        if let Some(amount) = deposited_cycles_amount {
+            let formatted_cycles = Self::format_cycles(amount);
+            content = content.replace("{{cycles}}", &formatted_cycles);
+        }
+
+        let name = self
+            .segment
+            .metadata
+            .as_ref()
+            .and_then(|metadata| metadata.get("name"));
+
+        content = match name {
+            Some(name) => content.replace("{{name}}", name),
+            None => content
+                .replace(" (<!-- -->{{name}}<!-- -->)", "")
+                .replace(" ({{name}})", ""),
+        };
+
+        content
+    }
+
     pub fn html(&self) -> String {
-        let template = String::from_utf8_lossy(DEPOSITED_CYCLES_HTML);
-        self.content(&template)
+        match &self.kind {
+            NotificationKind::DepositedCyclesEmail(_email_notification) => {
+                let template = String::from_utf8_lossy(DEPOSITED_CYCLES_HTML);
+                self.content(&template)
+            }
+            NotificationKind::FailedCyclesDepositEmail(_email_notification) => {
+                let template = String::from_utf8_lossy(FAILED_DEPOSIT_CYCLES_HTML);
+                self.content(&template)
+            }
+        }
     }
 
     pub fn text(&self) -> String {
-        let template = String::from_utf8_lossy(DEPOSITED_CYCLES_TXT);
-        self.content(&template)
+        match &self.kind {
+            NotificationKind::DepositedCyclesEmail(_email_notification) => {
+                let template = String::from_utf8_lossy(DEPOSITED_CYCLES_TXT);
+                self.content(&template)
+            }
+            NotificationKind::FailedCyclesDepositEmail(_email_notification) => {
+                let template = String::from_utf8_lossy(FAILED_DEPOSIT_CYCLES_TXT);
+                self.content(&template)
+            }
+        }
     }
 }
 

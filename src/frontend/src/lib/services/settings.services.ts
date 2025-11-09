@@ -1,22 +1,25 @@
-import type { canister_settings } from '$declarations/ic/ic.did';
+import type { ICDid } from '$declarations';
 import { canisterUpdateSettings } from '$lib/api/ic.api';
 import { i18n } from '$lib/stores/i18n.store';
 import { toasts } from '$lib/stores/toasts.store';
-import type { CanisterSettings } from '$lib/types/canister';
+import type { CanisterInfo, CanisterSettings } from '$lib/types/canister';
 import type { OptionIdentity } from '$lib/types/itentity';
-import { Principal } from '@dfinity/principal';
+import { lacksCyclesForFreezingThreshold } from '$lib/utils/canister.utils';
 import { isNullish, toNullable } from '@dfinity/utils';
+import type { Principal } from '@icp-sdk/core/principal';
 import { get } from 'svelte/store';
 
 export const updateSettings = async ({
 	canisterId,
 	identity,
 	currentSettings,
-	newSettings
+	newSettings,
+	canisterInfo
 }: {
 	canisterId: Principal;
 	identity: OptionIdentity;
 	currentSettings: CanisterSettings;
+	canisterInfo: CanisterInfo;
 	newSettings: Omit<CanisterSettings, 'controllers'>;
 }): Promise<{ success: 'ok' | 'cancelled' | 'error'; err?: unknown }> => {
 	const labels = get(i18n);
@@ -35,10 +38,11 @@ export const updateSettings = async ({
 		computeAllocation
 	} = newSettings;
 
-	const updateSettings: canister_settings = {
-		freezing_threshold: toNullable(
-			freezingThreshold === currentSettings.freezingThreshold ? undefined : freezingThreshold
-		),
+	const keepCurrentFreezingThreshold = freezingThreshold === currentSettings.freezingThreshold;
+	const updateFreezingThreshold = !keepCurrentFreezingThreshold;
+
+	const updateSettings: ICDid.canister_settings = {
+		freezing_threshold: toNullable(keepCurrentFreezingThreshold ? undefined : freezingThreshold),
 		controllers: toNullable(),
 		log_visibility: toNullable(
 			logVisibility === currentSettings.logVisibility
@@ -58,7 +62,11 @@ export const updateSettings = async ({
 		),
 		wasm_memory_limit: toNullable(
 			wasmMemoryLimit === currentSettings.wasmMemoryLimit ? undefined : wasmMemoryLimit
-		)
+		),
+		// Function on_low_wasm_memory is not implemented (currently) in any Juno modules. That is why the settings is also unused.
+		wasm_memory_threshold: toNullable(),
+		// Not used yet
+		environment_variables: toNullable()
 	};
 
 	if (
@@ -71,6 +79,21 @@ export const updateSettings = async ({
 		updateSettings.wasm_memory_limit.length === 0
 	) {
 		toasts.show({ text: labels.canisters.no_update_required, level: 'info' });
+		return { success: 'cancelled' };
+	}
+
+	if (
+		updateFreezingThreshold &&
+		lacksCyclesForFreezingThreshold({
+			canisterInfo,
+			freezingThreshold
+		})
+	) {
+		// We do not want to auto-hide the toast in this particular case
+		toasts.show({
+			text: labels.canisters.not_enough_cycles_to_update_freezing_threshold,
+			level: 'warn'
+		});
 		return { success: 'cancelled' };
 	}
 

@@ -5,12 +5,13 @@
 		ref?: undefined | string;
 		label: Snippet;
 		children: Snippet;
+		suffix?: ':' | '?';
 	}
 
-	let { ref = undefined, label, children }: Props = $props();
+	let { ref = undefined, label, children, suffix = ':' }: Props = $props();
 </script>
 
-<label for={ref}>{@render label()}:</label>
+<label for={ref}>{@render label()}{suffix}</label>
 <div>{@render children()}</div>
 
 <style lang="scss">

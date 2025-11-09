@@ -1,5 +1,6 @@
 <script lang="ts">
-	import { Principal } from '@dfinity/principal';
+	import { assertNonNullish } from '@dfinity/utils';
+	import { Principal } from '@icp-sdk/core/principal';
 	import { canisterStop } from '$lib/api/ic.api';
 	import Confirmation from '$lib/components/core/Confirmation.svelte';
 	import IconStop from '$lib/components/icons/IconStop.svelte';
@@ -44,14 +45,16 @@
 		try {
 			const canisterId = Principal.fromText(canister.id);
 
-			await canisterStop({ canisterId, identity: $authStore.identity! });
+			assertNonNullish($authStore.identity);
+
+			await canisterStop({ canisterId, identity: $authStore.identity });
 
 			emit({ message: 'junoRestartCycles', detail: { canisterId } });
 
 			close();
 
-			toasts.success(
-				i18nCapitalize(
+			toasts.success({
+				text: i18nCapitalize(
 					i18nFormat($i18n.canisters.stop_success, [
 						{
 							placeholder: '{0}',
@@ -59,7 +62,7 @@
 						}
 					])
 				)
-			);
+			});
 		} catch (err: unknown) {
 			toasts.error({
 				text: $i18n.errors.canister_stop,
@@ -73,7 +76,7 @@
 	const close = () => (visible = false);
 </script>
 
-<button onclick={() => (visible = true)} class="menu"><IconStop /> {$i18n.core.stop}</button>
+<button class="menu" onclick={() => (visible = true)}><IconStop /> {$i18n.core.stop}</button>
 
 <Confirmation bind:visible on:junoYes={stop} on:junoNo={close}>
 	{#snippet title()}

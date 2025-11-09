@@ -1,25 +1,22 @@
-import type { ListParams as ListParamsApi } from '$declarations/deprecated/satellite-0-0-8.did';
-import type {
-	AssetNoContent,
-	CollectionType,
-	Doc,
-	ListResults as ListAssets,
-	ListResults_1 as ListDocs,
-	Rule
-} from '$declarations/satellite/satellite.did';
-import { getSatelliteActor008, getSatelliteActor009 } from '$lib/api/actors/actor.deprecated.api';
+import type { SatelliteDid, SatelliteDid008 } from '$declarations';
+import {
+	getSatelliteActor0021,
+	getSatelliteActor0022,
+	getSatelliteActor008,
+	getSatelliteActor009
+} from '$lib/api/actors/actor.deprecated.api';
 import { PAGINATION } from '$lib/constants/app.constants';
 import type { OptionIdentity } from '$lib/types/itentity';
 import type { ListParams } from '$lib/types/list';
 import { toListParams } from '$lib/utils/satellite.utils';
-import { Principal } from '@dfinity/principal';
 import { isNullish, toNullable } from '@dfinity/utils';
+import { Principal } from '@icp-sdk/core/principal';
 
 const toListParams008 = ({
 	startAfter,
 	order,
 	filter: { matcher, owner }
-}: ListParams): ListParamsApi => ({
+}: ListParams): SatelliteDid008.ListParams => ({
 	matcher: toNullable(matcher === '' ? null : matcher),
 	paginate: [
 		{
@@ -54,7 +51,7 @@ export const listDocs008 = async ({
 	collection: string;
 	params: ListParams;
 	identity: OptionIdentity;
-}): Promise<ListDocs> => {
+}): Promise<SatelliteDid.ListResults_1> => {
 	const actor = await getSatelliteActor008({ satelliteId, identity });
 	const {
 		items,
@@ -62,7 +59,7 @@ export const listDocs008 = async ({
 		matches_length
 	} = await actor.list_docs(collection, toListParams008(params));
 	return {
-		items: items as [string, Doc][],
+		items: items as [string, SatelliteDid.Doc][],
 		items_length,
 		items_page: [],
 		matches_length,
@@ -83,7 +80,7 @@ export const listAssets008 = async ({
 	collection: string;
 	params: ListParams;
 	identity: OptionIdentity;
-}): Promise<ListAssets> => {
+}): Promise<SatelliteDid.ListResults> => {
 	const actor = await getSatelliteActor008({ satelliteId, identity });
 	const {
 		items,
@@ -91,7 +88,7 @@ export const listAssets008 = async ({
 		matches_length
 	} = await actor.list_assets(toNullable(collection), toListParams008(params));
 	return {
-		items: items as [string, AssetNoContent][],
+		items: items as [string, SatelliteDid.AssetNoContent][],
 		items_length,
 		items_page: [],
 		matches_length,
@@ -112,7 +109,7 @@ export const listAssets009 = async ({
 	collection: string;
 	params: ListParams;
 	identity: OptionIdentity;
-}): Promise<ListAssets> => {
+}): Promise<SatelliteDid.ListResults> => {
 	const actor = await getSatelliteActor009({ satelliteId, identity });
 	const { items, ...rest } = await actor.list_assets(toNullable(collection), toListParams(params));
 	return {
@@ -130,9 +127,9 @@ export const listRulesDeprecated = async ({
 	identity
 }: {
 	satelliteId: Principal;
-	type: CollectionType;
+	type: SatelliteDid.CollectionType;
 	identity: OptionIdentity;
-}): Promise<[string, Rule][]> => {
+}): Promise<[string, SatelliteDid.Rule][]> => {
 	const actor = await getSatelliteActor008({ satelliteId, identity });
 	const rules = await actor.list_rules(type);
 	return rules.map(([key, rule]) => [
@@ -141,6 +138,52 @@ export const listRulesDeprecated = async ({
 			...rule,
 			version: [],
 			memory: [{ Heap: null }]
-		} as Rule
+		} as SatelliteDid.Rule
 	]);
+};
+
+/**
+ * @deprecated - Replaced in Satellite > v0.0.22 with public custom section juno:package
+ */
+export const satelliteVersion = async ({
+	satelliteId,
+	identity
+}: {
+	satelliteId: Principal;
+	identity: OptionIdentity;
+}): Promise<string> => {
+	// For simplicity reason we just use an old actor (21 instead of 22) as the API did not change until it was fully deprecated.
+	const { version } = await getSatelliteActor0021({ satelliteId, identity });
+	return version();
+};
+
+/**
+ * @deprecated - Replaced in Satellite > v0.0.22 with public custom section juno:package
+ */
+export const satelliteBuildVersion = async ({
+	satelliteId,
+	identity
+}: {
+	satelliteId: Principal;
+	identity: OptionIdentity;
+}): Promise<string> => {
+	// For simplicity reason we just use an old actor (21 instead of 22) as the API did not change until it was fully deprecated.
+	const { build_version } = await getSatelliteActor0021({ satelliteId, identity });
+	return build_version();
+};
+
+/**
+ * @deprecated TODO: to be remove - backwards compatibility
+ */
+export const listRules0022 = async ({
+	satelliteId,
+	type,
+	identity
+}: {
+	satelliteId: Principal;
+	type: SatelliteDid.CollectionType;
+	identity: OptionIdentity;
+}): Promise<[string, SatelliteDid.Rule][]> => {
+	const actor = await getSatelliteActor0022({ satelliteId, identity });
+	return actor.list_rules(type);
 };

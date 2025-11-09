@@ -1,7 +1,6 @@
 <script lang="ts">
 	import { isNullish, nonNullish } from '@dfinity/utils';
 	import { getAccountIdentifier } from '$lib/api/icp-index.api';
-	import IconPublish from '$lib/components/icons/IconPublish.svelte';
 	import { missionControlIdDerived } from '$lib/derived/mission-control.derived';
 	import { i18n } from '$lib/stores/i18n.store';
 	import { toasts } from '$lib/stores/toasts.store';
@@ -41,4 +40,4 @@
 	};
 </script>
 
-<button onclick={topUp} class="menu"><IconPublish /> {$i18n.canisters.top_up}</button>
+<button onclick={topUp}>{$i18n.canisters.top_up}</button>

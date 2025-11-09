@@ -1,40 +1,33 @@
-use crate::memory::STATE;
+use crate::memory::state::services::{mutate_stable_state, read_stable_state};
 use crate::random::random;
 use crate::store::filter::filter_notifications_range;
 use crate::types::interface::GetNotifications;
 use crate::types::state::{Notification, NotificationKey, NotificationsStable};
 use ic_cdk::api::time;
+use junobuild_shared::structures::collect_stable_vec;
 use junobuild_shared::types::state::SegmentId;
 
 pub fn insert_notification(
     segment_id: &SegmentId,
     notification: &Notification,
 ) -> Result<NotificationKey, String> {
-    STATE.with(|state| {
-        insert_notification_impl(
-            segment_id,
-            notification,
-            &mut state.borrow_mut().stable.notifications,
-        )
+    mutate_stable_state(|stable| {
+        insert_notification_impl(segment_id, notification, &mut stable.notifications)
     })
 }
 
 pub fn get_notification(key: &NotificationKey) -> Option<Notification> {
-    STATE.with(|state| get_notification_impl(key, &state.borrow().stable.notifications))
+    read_stable_state(|stable| get_notification_impl(key, &stable.notifications))
 }
 
 pub fn set_notification(key: &NotificationKey, notification: &Notification) {
-    STATE.with(|state| {
-        insert_notification_with_key(
-            key,
-            notification,
-            &mut state.borrow_mut().stable.notifications,
-        )
+    mutate_stable_state(|stable| {
+        insert_notification_with_key(key, notification, &mut stable.notifications)
     })
 }
 
 pub fn get_notifications(filter: &GetNotifications) -> Vec<(NotificationKey, Notification)> {
-    STATE.with(|state| get_notifications_impl(filter, &state.borrow().stable.notifications))
+    read_stable_state(|stable| get_notifications_impl(filter, &stable.notifications))
 }
 
 fn get_notification_impl(
@@ -80,5 +73,5 @@ fn get_notifications_impl(
     filter: &GetNotifications,
     history: &NotificationsStable,
 ) -> Vec<(NotificationKey, Notification)> {
-    history.range(filter_notifications_range(filter)).collect()
+    collect_stable_vec(history.range(filter_notifications_range(filter)))
 }

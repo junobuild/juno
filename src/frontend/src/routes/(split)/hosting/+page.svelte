@@ -6,10 +6,10 @@
 	import MissionControlGuard from '$lib/components/guards/MissionControlGuard.svelte';
 	import SatelliteGuard from '$lib/components/guards/SatelliteGuard.svelte';
 	import Hosting from '$lib/components/hosting/Hosting.svelte';
-	import CanistersLoader from '$lib/components/loaders/CanistersLoader.svelte';
-	import SatellitesLoader from '$lib/components/loaders/SatellitesLoader.svelte';
+	import HostingSettings from '$lib/components/hosting/HostingSettings.svelte';
+	import Loaders from '$lib/components/loaders/Loaders.svelte';
 	import Tabs from '$lib/components/ui/Tabs.svelte';
-	import WalletLoader from '$lib/components/wallet/WalletLoader.svelte';
+	import { missionControlIdDerived } from '$lib/derived/mission-control.derived';
 	import { satelliteStore } from '$lib/derived/satellite.derived';
 	import {
 		type Tab,
@@ -22,7 +22,11 @@
 	const tabs: Tab[] = [
 		{
 			id: Symbol('1'),
-			labelKey: 'hosting.title'
+			labelKey: 'hosting.domains'
+		},
+		{
+			id: Symbol('2'),
+			labelKey: 'core.settings'
 		}
 	];
 
@@ -37,21 +41,19 @@
 </script>
 
 <IdentityGuard>
-	<Tabs help="https://juno.build/docs/build/hosting">
-		<WalletLoader>
-			<SatellitesLoader>
-				<SatelliteGuard>
-					<MissionControlGuard>
-						<CanistersLoader>
-							{#if nonNullish($satelliteStore)}
-								{#if $store.tabId === $store.tabs[0].id}
-									<Hosting satellite={$satelliteStore} />
-								{/if}
-							{/if}
-						</CanistersLoader>
-					</MissionControlGuard>
-				</SatelliteGuard>
-			</SatellitesLoader>
-		</WalletLoader>
-	</Tabs>
+	<Loaders>
+		<SatelliteGuard>
+			<Tabs>
+				<MissionControlGuard>
+					{#if nonNullish($satelliteStore) && nonNullish($missionControlIdDerived)}
+						{#if $store.tabId === $store.tabs[0].id}
+							<Hosting satellite={$satelliteStore} />
+						{:else if $store.tabId === $store.tabs[1].id}
+							<HostingSettings satellite={$satelliteStore} />
+						{/if}
+					{/if}
+				</MissionControlGuard>
+			</Tabs>
+		</SatelliteGuard>
+	</Loaders>
 </IdentityGuard>

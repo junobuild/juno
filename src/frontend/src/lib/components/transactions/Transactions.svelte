@@ -21,7 +21,7 @@
 </script>
 
 {#if transactions.length > 0}
-	<InfiniteScroll {onintersect} disabled={disableInfiniteScroll}>
+	<InfiniteScroll disabled={disableInfiniteScroll} {onintersect}>
 		<div class="table-container">
 			<table>
 				<thead>
@@ -37,7 +37,7 @@
 
 				<tbody>
 					{#each transactions as transaction, index (`${transaction.data.id}-${index}`)}
-						<Transaction transaction={transaction.data} {missionControlId} />
+						<Transaction {missionControlId} transaction={transaction.data} />
 					{/each}
 				</tbody>
 			</table>

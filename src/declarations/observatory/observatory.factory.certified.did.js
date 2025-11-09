@@ -13,9 +13,45 @@ export const idlFactory = ({ IDL }) => {
 		sent: IDL.Nat64,
 		failed: IDL.Nat64
 	});
+	const OpenIdProvider = IDL.Variant({ Google: IDL.Null });
+	const GetOpenIdCertificateArgs = IDL.Record({ provider: OpenIdProvider });
+	const JwkType = IDL.Variant({
+		EC: IDL.Null,
+		OKP: IDL.Null,
+		RSA: IDL.Null,
+		oct: IDL.Null
+	});
+	const JwkParamsEc = IDL.Record({
+		x: IDL.Text,
+		y: IDL.Text,
+		crv: IDL.Text
+	});
+	const JwkParamsOct = IDL.Record({ k: IDL.Text });
+	const JwkParamsOkp = IDL.Record({ x: IDL.Text, crv: IDL.Text });
+	const JwkParamsRsa = IDL.Record({ e: IDL.Text, n: IDL.Text });
+	const JwkParams = IDL.Variant({
+		Ec: JwkParamsEc,
+		Oct: JwkParamsOct,
+		Okp: JwkParamsOkp,
+		Rsa: JwkParamsRsa
+	});
+	const Jwk = IDL.Record({
+		alg: IDL.Opt(IDL.Text),
+		kid: IDL.Opt(IDL.Text),
+		kty: JwkType,
+		params: JwkParams
+	});
+	const Jwks = IDL.Record({ keys: IDL.Vec(Jwk) });
+	const OpenIdCertificate = IDL.Record({
+		updated_at: IDL.Nat64,
+		jwks: Jwks,
+		created_at: IDL.Nat64,
+		version: IDL.Opt(IDL.Nat64)
+	});
 	const ControllerScope = IDL.Variant({
 		Write: IDL.Null,
-		Admin: IDL.Null
+		Admin: IDL.Null,
+		Submit: IDL.Null
 	});
 	const Controller = IDL.Record({
 		updated_at: IDL.Nat64,
@@ -32,8 +68,24 @@ export const idlFactory = ({ IDL }) => {
 		to: IDL.Text,
 		deposited_cycles: CyclesBalance
 	});
+	const FundingErrorCode = IDL.Variant({
+		BalanceCheckFailed: IDL.Null,
+		ObtainCyclesFailed: IDL.Null,
+		DepositFailed: IDL.Null,
+		InsufficientCycles: IDL.Null,
+		Other: IDL.Text
+	});
+	const FundingFailure = IDL.Record({
+		timestamp: IDL.Nat64,
+		error_code: FundingErrorCode
+	});
+	const FailedCyclesDepositEmailNotification = IDL.Record({
+		to: IDL.Text,
+		funding_failure: FundingFailure
+	});
 	const NotificationKind = IDL.Variant({
-		DepositedCyclesEmail: DepositedCyclesEmailNotification
+		DepositedCyclesEmail: DepositedCyclesEmailNotification,
+		FailedCyclesDepositEmail: FailedCyclesDepositEmailNotification
 	});
 	const SegmentKind = IDL.Variant({
 		Orbiter: IDL.Null,
@@ -63,12 +115,14 @@ export const idlFactory = ({ IDL }) => {
 	return IDL.Service({
 		del_controllers: IDL.Func([DeleteControllersArgs], [], []),
 		get_notify_status: IDL.Func([GetNotifications], [NotifyStatus], []),
+		get_openid_certificate: IDL.Func([GetOpenIdCertificateArgs], [IDL.Opt(OpenIdCertificate)], []),
 		list_controllers: IDL.Func([], [IDL.Vec(IDL.Tuple(IDL.Principal, Controller))], []),
 		notify: IDL.Func([NotifyArgs], [], []),
 		ping: IDL.Func([NotifyArgs], [], []),
 		set_controllers: IDL.Func([SetControllersArgs], [], []),
 		set_env: IDL.Func([Env], [], []),
-		version: IDL.Func([], [IDL.Text], [])
+		start_openid_monitoring: IDL.Func([], [], []),
+		stop_openid_monitoring: IDL.Func([], [], [])
 	});
 };
 // @ts-ignore

@@ -1,19 +1,22 @@
-use crate::memory::init_stable_state;
+use crate::memory::manager::init_stable_state;
 use crate::types::core::{Segment, SettingsMonitoring};
+use crate::types::interface::{CreateCanisterConfig, CreateSatelliteConfig};
 use crate::types::state::CyclesMonitoringStrategy::BelowThreshold;
 use crate::types::state::{
-    Archive, ArchiveStatuses, Config, CyclesMonitoring, CyclesMonitoringStrategy, HeapState,
-    MissionControlSettings, Monitoring, MonitoringHistory, MonitoringHistoryKey, Orbiter, Orbiters,
-    Satellite, Settings, State, User,
+    Config, CyclesMonitoring, CyclesMonitoringStrategy, HeapState, MissionControlSettings,
+    Monitoring, MonitoringHistory, MonitoringHistoryKey, Orbiter, Orbiters, Satellite, Settings,
+    State, User,
 };
 use canfund::manager::options::{CyclesThreshold, FundStrategy};
 use ic_cdk::api::time;
 use ic_stable_structures::storable::Bound;
 use ic_stable_structures::Storable;
-use junobuild_shared::serializers::{deserialize_from_bytes, serialize_to_bytes};
+use junobuild_shared::serializers::{
+    deserialize_from_bytes, serialize_into_bytes, serialize_to_bytes,
+};
 use junobuild_shared::types::state::{Metadata, OrbiterId, SatelliteId, UserId};
 use std::borrow::Cow;
-use std::collections::{BTreeMap, HashMap};
+use std::collections::HashMap;
 
 impl Default for State {
     fn default() -> Self {
@@ -30,7 +33,6 @@ impl From<&UserId> for HeapState {
             user: User::from(user),
             satellites: HashMap::new(),
             controllers: HashMap::new(),
-            archive: Archive::new(),
             orbiters: Orbiters::new(),
             settings: None,
         }
@@ -47,18 +49,6 @@ impl From<&UserId> for User {
             config: None,
             created_at: now,
             updated_at: now,
-        }
-    }
-}
-
-impl Archive {
-    pub fn new() -> Self {
-        Archive {
-            statuses: ArchiveStatuses {
-                mission_control: BTreeMap::new(),
-                satellites: HashMap::new(),
-                orbiters: HashMap::new(),
-            },
         }
     }
 }
@@ -312,8 +302,12 @@ impl SettingsMonitoring for MissionControlSettings {
 }
 
 impl Storable for MonitoringHistory {
-    fn to_bytes(&self) -> Cow<[u8]> {
+    fn to_bytes(&self) -> Cow<'_, [u8]> {
         serialize_to_bytes(self)
+    }
+
+    fn into_bytes(self) -> Vec<u8> {
+        serialize_into_bytes(&self)
     }
 
     fn from_bytes(bytes: Cow<[u8]>) -> Self {
@@ -324,8 +318,12 @@ impl Storable for MonitoringHistory {
 }
 
 impl Storable for MonitoringHistoryKey {
-    fn to_bytes(&self) -> Cow<[u8]> {
+    fn to_bytes(&self) -> Cow<'_, [u8]> {
         serialize_to_bytes(self)
+    }
+
+    fn into_bytes(self) -> Vec<u8> {
+        serialize_into_bytes(&self)
     }
 
     fn from_bytes(bytes: Cow<[u8]>) -> Self {
@@ -333,4 +331,13 @@ impl Storable for MonitoringHistoryKey {
     }
 
     const BOUND: Bound = Bound::Unbounded;
+}
+
+impl From<&CreateSatelliteConfig> for CreateCanisterConfig {
+    fn from(args: &CreateSatelliteConfig) -> Self {
+        Self {
+            name: args.name.clone(),
+            subnet_id: args.subnet_id,
+        }
+    }
 }

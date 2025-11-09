@@ -1,67 +1,27 @@
-import type { SatelliteIdText } from '$lib/types/satellite';
-import type { BuildType } from '@junobuild/admin';
-import { writable, type Readable } from 'svelte/store';
+import type { VersionRegistry } from '$lib/types/version';
+import { type Readable, writable } from 'svelte/store';
 
-export interface ReleaseVersion {
-	current: string | undefined;
-	release: string | undefined;
-}
+export type VersionStoreData = VersionRegistry;
 
-export interface ReleaseVersionSatellite extends ReleaseVersion {
-	currentBuild?: string | undefined;
-	build: BuildType;
-}
-
-export interface ReleasesVersion {
-	satellites: Record<SatelliteIdText, ReleaseVersionSatellite | undefined>;
-	missionControl: ReleaseVersion | undefined;
-	orbiter: ReleaseVersion | undefined;
-}
-
-export interface VersionStore extends Readable<ReleasesVersion> {
-	setMissionControl: (version: ReleaseVersion) => void;
-	setSatellite: (params: {
-		satelliteId: SatelliteIdText;
-		version: ReleaseVersionSatellite | undefined;
-	}) => void;
-	setOrbiter: (version: ReleaseVersion) => void;
+export interface VersionStore extends Readable<VersionStoreData> {
+	setAll: (state: VersionStoreData) => void;
 	reset: () => void;
 }
 
 const initVersionStore = (): VersionStore => {
-	const INITIAL: ReleasesVersion = {
+	const INITIAL: VersionStoreData = {
 		satellites: {},
 		missionControl: undefined,
 		orbiter: undefined
 	};
 
-	const { subscribe, update, set } = writable<ReleasesVersion>(INITIAL);
+	const { subscribe, set } = writable<VersionStoreData>(INITIAL);
 
 	return {
 		subscribe,
 
-		setMissionControl(version: ReleaseVersion) {
-			update((state) => ({
-				...state,
-				missionControl: version
-			}));
-		},
-
-		setSatellite({ satelliteId, version }) {
-			update((state) => ({
-				...state,
-				satellites: {
-					...state.satellites,
-					[satelliteId]: version
-				}
-			}));
-		},
-
-		setOrbiter(version: ReleaseVersion) {
-			update((state) => ({
-				...state,
-				orbiter: version
-			}));
+		setAll(state) {
+			set(state);
 		},
 
 		reset: () => set(INITIAL)

@@ -1,9 +1,8 @@
-import type { MemorySize } from '$declarations/satellite/satellite.did';
-import type { CanisterIdTextSchema } from '$lib/schema/canister.schema';
+import type { CanisterIdTextSchema } from '$lib/schemas/canister.schema';
 import type { ChartsData, TimeOfDayChartData } from '$lib/types/chart';
 import type { MonitoringHistory, MonitoringMetadata } from '$lib/types/monitoring';
-import type { Principal } from '@dfinity/principal';
-import * as z from 'zod';
+import type { Principal } from '@icp-sdk/core/principal';
+import type * as z from 'zod';
 
 export type CanisterStatus = 'stopped' | 'stopping' | 'running';
 export type CanisterSyncStatus = 'loading' | 'syncing' | 'synced' | 'error';
@@ -26,6 +25,17 @@ export interface CanisterQueryStats {
 	responsePayloadBytesTotal: bigint;
 }
 
+export interface CanisterMemoryMetrics {
+	wasmBinarySize: bigint;
+	wasmChunkStoreSize: bigint;
+	canisterHistorySize: bigint;
+	stableMemorySize: bigint;
+	snapshotsSize: bigint;
+	wasmMemorySize: bigint;
+	globalMemorySize: bigint;
+	customSectionsSize: bigint;
+}
+
 export type Segment = 'satellite' | 'mission_control' | 'orbiter';
 
 export interface CanisterSegment {
@@ -43,20 +53,23 @@ export interface CanisterInfo {
 	status: CanisterStatus;
 	canisterId: string;
 	idleCyclesBurnedPerDay?: bigint;
-	queryStats?: CanisterQueryStats;
-	settings?: CanisterSettings;
+	queryStats: CanisterQueryStats;
+	settings: CanisterSettings;
+	memoryMetrics: CanisterMemoryMetrics;
 }
 
 export interface CanisterWarning {
 	cycles: boolean;
 	heap: boolean;
+	freezingThreshold: boolean;
 }
+
+export type CanisterDataInfo = Omit<CanisterInfo, 'canisterId'>;
 
 export interface CanisterData {
 	icp: number;
 	warning: CanisterWarning;
-	canister: Omit<CanisterInfo, 'canisterId'>;
-	memory?: MemorySize;
+	canister: CanisterDataInfo;
 }
 
 export interface CanisterMonitoringCharts {

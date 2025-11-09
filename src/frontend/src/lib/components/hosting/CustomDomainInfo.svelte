@@ -3,7 +3,7 @@
 	import { createEventDispatcher } from 'svelte';
 	import { run, stopPropagation } from 'svelte/legacy';
 	import { fade } from 'svelte/transition';
-	import type { CustomDomain as CustomDomainType } from '$declarations/satellite/satellite.did';
+	import type { SatelliteDid } from '$declarations';
 	import IconCheckCircle from '$lib/components/icons/IconCheckCircle.svelte';
 	import Identifier from '$lib/components/ui/Identifier.svelte';
 	import Popover from '$lib/components/ui/Popover.svelte';
@@ -15,7 +15,7 @@
 
 	interface Props {
 		info: {
-			customDomain: [string, CustomDomainType] | undefined;
+			customDomain: [string, SatelliteDid.CustomDomain] | undefined;
 			registrationState: Option<CustomDomainRegistrationState>;
 			mainDomain: boolean;
 		};
@@ -44,7 +44,7 @@
 
 	run(() => {
 		// @ts-expect-error TODO: to be migrated to Svelte v5
-		visible, onVisible();
+		(visible, onVisible());
 	});
 </script>
 
@@ -55,7 +55,7 @@
 		(registrationState = state)}
 />
 
-<Popover bind:visible center={true} backdrop="dark">
+<Popover backdrop="dark" center={true} bind:visible>
 	<div class="content">
 		{#if nonNullish(customDomain)}
 			<div class="space">
@@ -103,7 +103,7 @@
 			</div>
 		{/if}
 
-		<button type="button" onclick={stopPropagation(close)}>
+		<button onclick={stopPropagation(close)} type="button">
 			{$i18n.core.ok}
 		</button>
 	</div>

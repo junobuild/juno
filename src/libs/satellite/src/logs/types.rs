@@ -1,6 +1,6 @@
 pub mod logs {
-    use crate::Blob;
     use candid::{CandidType, Deserialize};
+    use junobuild_shared::types::core::Blob;
     use serde::Serialize;
 
     #[derive(CandidType, Serialize, Deserialize, Clone, Debug)]

@@ -1,7 +1,29 @@
-import { default as config } from '@dfinity/eslint-config-oisy-wallet/svelte';
+import { default as svelteConfig } from '@dfinity/eslint-config-oisy-wallet/svelte';
+import { default as vitestConfig } from '@dfinity/eslint-config-oisy-wallet/vitest';
 
 export default [
-	...config,
+	...vitestConfig,
+	...svelteConfig,
+	{
+		rules: {
+			// TODO: re-enable this rule when it includes `expect` statements nested in callable functions.
+			'vitest/expect-expect': ['off'],
+			// Following rule is annoying for my workflow as it is conflicting when I'm implementing iteratively
+			// features that share similar logic across modules.
+			'vitest/no-commented-out-tests': ['off'],
+			// It does not always make sense. For example, sometimes it reports function passed as property as being
+			// required to be prefixed with "on".
+			'svelte/require-event-prefix': ['off'],
+			// The linter throws error for goto('/') but, also href="/" which is really annoying.
+			'svelte/no-navigation-without-resolve': ['off']
+		}
+	},
+	{
+		files: ['src/frontend/src/lib/stores/**/*'],
+		rules: {
+			'prefer-arrow/prefer-arrow-functions': 'off'
+		}
+	},
 	{
 		ignores: [
 			'**/.DS_Store',
@@ -22,7 +44,14 @@ export default [
 			'src/declarations/**/*',
 			'src/tests/declarations/**/*',
 			'target/**/*',
-			'tmp/**/*'
+			'tmp/**/*',
+			'src/frontend/src/custom-events.d.ts'
+		]
+	},
+	{
+		ignores: [
+			'src/sputnik/resources/index.mjs',
+			'src/sputnik/src/js/apis/node/text_encoding/javy/text-encoding.js'
 		]
 	}
 ];

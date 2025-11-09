@@ -1,6 +1,7 @@
 use crate::canister::memory_size;
-use crate::msg::{
-    JUNO_ERROR_NO_TIMESTAMP, JUNO_ERROR_NO_VERSION, JUNO_ERROR_TIMESTAMP_OUTDATED_OR_FUTURE,
+use crate::errors::{
+    JUNO_ERROR_MEMORY_HEAP_EXCEEDED, JUNO_ERROR_MEMORY_STABLE_EXCEEDED, JUNO_ERROR_NO_TIMESTAMP,
+    JUNO_ERROR_NO_VERSION, JUNO_ERROR_TIMESTAMP_OUTDATED_OR_FUTURE,
     JUNO_ERROR_VERSION_OUTDATED_OR_FUTURE,
 };
 use crate::types::config::ConfigMaxMemorySize;
@@ -53,8 +54,7 @@ pub fn assert_timestamp(user_timestamp: Option<u64>, current_timestamp: u64) -> 
         Some(user_timestamp) => {
             if current_timestamp != user_timestamp {
                 return Err(format!(
-                    "{} ({} - {})",
-                    JUNO_ERROR_TIMESTAMP_OUTDATED_OR_FUTURE, current_timestamp, user_timestamp
+                    "{JUNO_ERROR_TIMESTAMP_OUTDATED_OR_FUTURE} ({current_timestamp} - {user_timestamp})"
                 ));
             }
         }
@@ -111,8 +111,7 @@ pub fn assert_version(
             Some(user_version) => {
                 if current_version != user_version {
                     return Err(format!(
-                        "{} ({} - {})",
-                        JUNO_ERROR_VERSION_OUTDATED_OR_FUTURE, current_version, user_version
+                        "{JUNO_ERROR_VERSION_OUTDATED_OR_FUTURE} ({current_version} - {user_version})"
                     ));
                 }
             }
@@ -175,19 +174,17 @@ pub fn assert_max_memory_size(
         let MemorySize { heap, stable } = memory_size();
 
         if let Some(max_heap) = max_memory_size.heap {
-            if heap > max_heap {
+            if heap > max_heap as u64 {
                 return Err(format!(
-                    "Heap memory usage exceeded: {} bytes used, {} bytes allowed.",
-                    heap, max_heap
+                    "{JUNO_ERROR_MEMORY_HEAP_EXCEEDED} ({heap} bytes used, {max_heap} bytes allowed)"
                 ));
             }
         }
 
         if let Some(max_stable) = max_memory_size.stable {
-            if stable > max_stable {
+            if stable > max_stable as u64 {
                 return Err(format!(
-                    "Stable memory usage exceeded: {} bytes used, {} bytes allowed.",
-                    stable, max_stable
+                    "{JUNO_ERROR_MEMORY_STABLE_EXCEEDED} ({stable} bytes used, {max_stable} bytes allowed)"
                 ));
             }
         }

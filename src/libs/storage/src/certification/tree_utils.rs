@@ -1,6 +1,6 @@
 use crate::certification::constants::{
-    EXACT_MATCH_TERMINATOR, IC_CERTIFICATE_EXPRESSION, IC_CERTIFICATE_EXPRESSION_HEADER,
-    IC_STATUS_CODE_PSEUDO_HEADER, LABEL_HTTP_EXPR, WILDCARD_MATCH_TERMINATOR,
+    IC_CERTIFICATE_EXPRESSION, IC_CERTIFICATE_EXPRESSION_HEADER, IC_STATUS_CODE_PSEUDO_HEADER,
+    LABEL_HTTP_EXPR, WILDCARD_MATCH_TERMINATOR,
 };
 use crate::http::types::{HeaderField, StatusCode};
 use crate::types::state::FullPath;
@@ -41,19 +41,18 @@ pub fn nested_tree_path(full_path: &str, terminator: &str) -> Vec<Blob> {
     segments
 }
 
-pub fn fallback_paths(paths: Vec<Blob>) -> Vec<Blob> {
+pub fn fallback_paths(paths: Vec<Blob>) -> Vec<Vec<Blob>> {
     let mut fallback_paths = Vec::new();
 
-    // starting at 1 because "http_expr" is always the starting element
-    for i in 1..paths.len() {
+    for i in 0..paths.len() {
         let mut without_trailing_slash: Vec<Blob> = paths.as_slice()[0..i].to_vec();
         let mut with_trailing_slash = without_trailing_slash.clone();
-        without_trailing_slash.push(EXACT_MATCH_TERMINATOR.as_bytes().to_vec());
+        without_trailing_slash.push(WILDCARD_MATCH_TERMINATOR.as_bytes().to_vec());
         with_trailing_slash.push("".as_bytes().to_vec());
         with_trailing_slash.push(WILDCARD_MATCH_TERMINATOR.as_bytes().to_vec());
 
-        fallback_paths.extend(without_trailing_slash);
-        fallback_paths.extend(with_trailing_slash);
+        fallback_paths.push(without_trailing_slash);
+        fallback_paths.push(with_trailing_slash);
     }
 
     fallback_paths
@@ -104,11 +103,16 @@ fn response_hash(headers: &[HeaderField], status_code: StatusCode, body_hash: &H
 }
 
 pub fn response_headers_expression(headers: &[HeaderField]) -> String {
-    let headers = headers
+    let mut header_names: Vec<String> = headers
         .iter()
-        .map(|field: &HeaderField| format!("\"{}\"", field.0))
-        .collect::<Vec<_>>()
-        .join(",");
+        .map(|field| format!("\"{}\"", field.0))
+        .collect();
+
+    // We sort for testing purposes so we can assert the exact certification expression
+    // without needing to manipulate or extract parts of it. This allows us to compare the entire block directly.
+    header_names.sort();
+
+    let headers = header_names.join(",");
 
     IC_CERTIFICATE_EXPRESSION.replace("{headers}", &headers)
 }

@@ -4,10 +4,9 @@
 	import { writable } from 'svelte/store';
 	import IdentityGuard from '$lib/components/guards/IdentityGuard.svelte';
 	import MissionControlGuard from '$lib/components/guards/MissionControlGuard.svelte';
-	import CanistersLoader from '$lib/components/loaders/CanistersLoader.svelte';
-	import Tabs from '$lib/components/ui/Tabs.svelte';
+	import Loaders from '$lib/components/loaders/Loaders.svelte';
+	import NoTabs from '$lib/components/ui/NoTabs.svelte';
 	import Wallet from '$lib/components/wallet/Wallet.svelte';
-	import WalletLoader from '$lib/components/wallet/WalletLoader.svelte';
 	import Warnings from '$lib/components/warning/Warnings.svelte';
 	import { authSignedIn } from '$lib/derived/auth.derived';
 	import { missionControlIdDerived } from '$lib/derived/mission-control.derived';
@@ -37,23 +36,21 @@
 </script>
 
 <IdentityGuard>
-	<Tabs help={'https://juno.build/docs/miscellaneous/wallet'}>
+	<NoTabs>
 		{#snippet info()}
 			{#if $authSignedIn}
 				<Warnings />
 			{/if}
 		{/snippet}
 
-		<WalletLoader>
+		<Loaders>
 			<MissionControlGuard>
-				<CanistersLoader>
-					{#if nonNullish($missionControlIdDerived)}
-						{#if $store.tabId === $store.tabs[0].id}
-							<Wallet missionControlId={$missionControlIdDerived} />
-						{/if}
+				{#if nonNullish($missionControlIdDerived)}
+					{#if $store.tabId === $store.tabs[0].id}
+						<Wallet missionControlId={$missionControlIdDerived} />
 					{/if}
-				</CanistersLoader>
+				{/if}
 			</MissionControlGuard>
-		</WalletLoader>
-	</Tabs>
+		</Loaders>
+	</NoTabs>
 </IdentityGuard>

@@ -9,17 +9,17 @@ use crate::types::interface::{
     GetMonitoringHistory, MonitoringStartConfig, MonitoringStatus, MonitoringStopConfig,
 };
 use crate::types::state::{MonitoringHistory, MonitoringHistoryKey};
-use ic_cdk::spawn;
-use ic_cdk::trap;
+use ic_cdk::futures::spawn_017_compat;
 use ic_cdk_timers::set_timer;
+use junobuild_shared::ic::UnwrapOrTrap;
 use std::time::Duration;
 
 pub fn defer_restart_monitoring() {
-    set_timer(Duration::ZERO, || spawn(restart_monitoring()));
+    set_timer(Duration::ZERO, || spawn_017_compat(restart_monitoring()));
 }
 
 async fn restart_monitoring() {
-    start_cycles_monitoring(true).unwrap_or_else(|e| trap(&e));
+    start_cycles_monitoring(true).unwrap_or_trap();
 }
 
 pub fn start_monitoring() -> Result<(), String> {

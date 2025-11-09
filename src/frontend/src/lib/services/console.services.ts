@@ -1,27 +1,15 @@
-import type { MissionControl } from '$declarations/console/console.did';
-import type { Orbiter } from '$declarations/mission_control/mission_control.did';
+import type { ConsoleDid } from '$declarations';
 import {
 	getMissionControl as getMissionControlApi,
 	initMissionControl as initMissionControlApi
 } from '$lib/api/console.api';
-import { missionControlVersion } from '$lib/api/mission-control.api';
-import { orbiterVersion } from '$lib/api/orbiter.api';
-import { satelliteBuildVersion, satelliteVersion } from '$lib/api/satellites.api';
-import { getNewestReleasesMetadata } from '$lib/rest/cdn.rest';
-import { missionControlErrorSignOut } from '$lib/services/auth.services';
-import { authStore } from '$lib/stores/auth.store';
+import { missionControlErrorSignOut } from '$lib/services/auth/auth.services';
 import { i18n } from '$lib/stores/i18n.store';
-import { missionControlIdCertifiedStore } from '$lib/stores/mission-control.store';
+import { missionControlCertifiedStore } from '$lib/stores/mission-control.store';
 import { toasts } from '$lib/stores/toasts.store';
-import { versionStore, type ReleaseVersionSatellite } from '$lib/stores/version.store';
 import type { OptionIdentity } from '$lib/types/itentity';
-import type { MissionControlId } from '$lib/types/mission-control';
-import type { Option } from '$lib/types/utils';
-import { container } from '$lib/utils/juno.utils';
-import type { Identity } from '@dfinity/agent';
-import type { Principal } from '@dfinity/principal';
-import { assertNonNullish, fromNullable, isNullish, nonNullish } from '@dfinity/utils';
-import { satelliteBuildType } from '@junobuild/admin';
+import { fromNullable, isNullish } from '@dfinity/utils';
+import type { Identity } from '@icp-sdk/core/agent';
 import { get } from 'svelte/store';
 
 interface Certified {
@@ -29,7 +17,7 @@ interface Certified {
 }
 
 type PollAndInitResult = {
-	missionControlId: MissionControlId;
+	missionControl: ConsoleDid.MissionControl;
 } & Certified;
 
 export const initMissionControl = async ({
@@ -44,12 +32,12 @@ export const initMissionControl = async ({
 
 	try {
 		// Poll to init mission control center
-		const { missionControlId, certified } = await pollAndInitMissionControl({
+		const { missionControl, certified } = await pollAndInitMissionControl({
 			identity
 		});
 
-		missionControlIdCertifiedStore.set({
-			data: missionControlId,
+		missionControlCertifiedStore.set({
+			data: missionControl,
 			certified
 		});
 
@@ -83,9 +71,11 @@ const pollAndInitMissionControl = async ({
 	// eslint-disable-next-line no-async-promise-executor
 	new Promise<PollAndInitResult>(async (resolve, reject) => {
 		try {
-			const { missionControlId, certified } = await getOrInitMissionControlId({
+			const { missionControl, certified } = await getOrInitMissionControl({
 				identity
 			});
+
+			const missionControlId = fromNullable(missionControl.mission_control_id);
 
 			// TODO: we can/should probably add a max time to not retry forever even though the user will probably close their browsers.
 			if (isNullish(missionControlId)) {
@@ -100,34 +90,17 @@ const pollAndInitMissionControl = async ({
 				return;
 			}
 
-			resolve({ missionControlId, certified });
+			resolve({ missionControl, certified });
 		} catch (err: unknown) {
 			reject(err);
 		}
 	});
 
-const getOrInitMissionControlId = async (params: {
-	identity: Identity;
-}): Promise<
-	{
-		missionControlId: MissionControlId | undefined;
-	} & Certified
-> => {
-	const { missionControl, certified } = await getOrInitMissionControl(params);
-
-	const missionControlId = fromNullable(missionControl.mission_control_id);
-
-	return {
-		missionControlId,
-		certified
-	};
-};
-
 export const getOrInitMissionControl = async ({
 	identity
 }: {
 	identity: Identity;
-}): Promise<{ missionControl: MissionControl } & Certified> => {
+}): Promise<{ missionControl: ConsoleDid.MissionControl } & Certified> => {
 	const existingMissionControl = await getMissionControlApi({ identity, certified: false });
 
 	if (isNullish(existingMissionControl)) {
@@ -151,131 +124,4 @@ const assertMissionControl = async ({ identity }: { identity: Identity }) => {
 	} catch (_err: unknown) {
 		await missionControlErrorSignOut();
 	}
-};
-
-export const loadVersion = async ({
-	satelliteId,
-	missionControlId,
-	skipReload
-}: {
-	satelliteId: Principal | undefined;
-	missionControlId: Option<Principal>;
-	skipReload: boolean;
-}) => {
-	if (isNullish(missionControlId)) {
-		return;
-	}
-
-	// We load the satellite version once per session
-	// We might load the mission control version twice per session if user go to that view first and then to overview
-	const store = get(versionStore);
-	if (nonNullish(satelliteId) && nonNullish(store.satellites[satelliteId.toText()]) && skipReload) {
-		return;
-	}
-
-	try {
-		const empty = (): Promise<undefined> => Promise.resolve(undefined);
-
-		const identity = get(authStore).identity;
-
-		assertNonNullish(identity);
-
-		const satelliteInfo = async (
-			satelliteId: Principal
-		): Promise<Omit<ReleaseVersionSatellite, 'release'> | undefined> => {
-			// Backwards compatibility for Satellite <= 0.0.14 which did not expose the end point "version_build"
-			const queryBuildVersion = async (): Promise<string | undefined> => {
-				try {
-					return await satelliteBuildVersion({ satelliteId, identity });
-				} catch (_: unknown) {
-					return undefined;
-				}
-			};
-
-			const [version, buildVersion, buildType] = await Promise.allSettled([
-				satelliteVersion({ satelliteId, identity }),
-				queryBuildVersion(),
-				satelliteBuildType({
-					satellite: {
-						satelliteId: satelliteId.toText(),
-						identity,
-						...container()
-					}
-				})
-			]);
-
-			if (version.status === 'rejected') {
-				return undefined;
-			}
-
-			const { value: current } = version;
-
-			return {
-				current,
-				...(buildVersion.status === 'fulfilled' &&
-					nonNullish(buildVersion.value) && { currentBuild: buildVersion.value }),
-				build: buildType.status === 'fulfilled' ? (buildType.value ?? 'stock') : 'stock'
-			};
-		};
-
-		const [satVersion, ctrlVersion, releases] = await Promise.all([
-			nonNullish(satelliteId) ? satelliteInfo(satelliteId) : empty(),
-			missionControlVersion({ missionControlId, identity }),
-			getNewestReleasesMetadata()
-		]);
-
-		versionStore.setMissionControl({
-			release: releases.mission_control,
-			current: ctrlVersion
-		});
-
-		if (isNullish(satelliteId)) {
-			return;
-		}
-
-		versionStore.setSatellite({
-			satelliteId: satelliteId.toText(),
-			version: nonNullish(satVersion)
-				? {
-						release: releases.satellite,
-						...satVersion
-					}
-				: undefined
-		});
-	} catch (err: unknown) {
-		toasts.error({
-			text: `Cannot fetch the versions information.`,
-			detail: err
-		});
-	}
-};
-
-export const loadOrbiterVersion = async ({
-	orbiter,
-	reload
-}: {
-	orbiter: Option<Orbiter>;
-	reload: boolean;
-}) => {
-	if (isNullish(orbiter)) {
-		return;
-	}
-
-	// We load the orbiter version once per session
-	const store = get(versionStore);
-	if (nonNullish(store.orbiter) && !reload) {
-		return;
-	}
-
-	const identity = get(authStore).identity;
-
-	const [orbVersion, releases] = await Promise.all([
-		orbiterVersion({ orbiterId: orbiter.orbiter_id, identity }),
-		getNewestReleasesMetadata()
-	]);
-
-	versionStore.setOrbiter({
-		release: releases.orbiter,
-		current: orbVersion
-	});
 };

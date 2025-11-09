@@ -1,10 +1,9 @@
 <script lang="ts">
-	import type { Principal } from '@dfinity/principal';
 	import { isNullish, nonNullish } from '@dfinity/utils';
-	import { getContext } from 'svelte';
-	import { run } from 'svelte/legacy';
+	import type { Principal } from '@icp-sdk/core/principal';
+	import { getContext, setContext, untrack } from 'svelte';
 	import { fade } from 'svelte/transition';
-	import type { Doc as DocType } from '$declarations/satellite/satellite.did';
+	import type { SatelliteDid } from '$declarations';
 	import { deleteDocs } from '$lib/api/satellites.api';
 	import CollectionEmpty from '$lib/components/collections/CollectionEmpty.svelte';
 	import DataCollectionDelete from '$lib/components/data/DataCollectionDelete.svelte';
@@ -15,8 +14,14 @@
 	import Html from '$lib/components/ui/Html.svelte';
 	import { authStore } from '$lib/stores/auth.store';
 	import { i18n } from '$lib/stores/i18n.store';
-	import { listParamsStore } from '$lib/stores/list-params.store';
+	import { initListParamsContext } from '$lib/stores/list-params.context.store';
+	import { versionStore } from '$lib/stores/version.store';
 	import { DATA_CONTEXT_KEY, type DataContext } from '$lib/types/data.context';
+	import {
+		type ListParamsContext,
+		LIST_PARAMS_CONTEXT_KEY,
+		ListParamsKey
+	} from '$lib/types/list-params.context';
 	import { PAGINATION_CONTEXT_KEY, type PaginationContext } from '$lib/types/pagination.context';
 	import { RULES_CONTEXT_KEY, type RulesContext } from '$lib/types/rules.context';
 	import { emit } from '$lib/utils/events.utils';
@@ -24,24 +29,24 @@
 
 	const { store, hasAnyRules }: RulesContext = getContext<RulesContext>(RULES_CONTEXT_KEY);
 
-	let collection: string | undefined = $state();
-	run(() => {
-		collection = $store.rule?.[0];
-	});
+	let collection = $derived($store.rule?.[0]);
 
 	const {
 		store: paginationStore,
 		resetPage,
 		list
-	}: PaginationContext<DocType> = getContext<PaginationContext<DocType>>(PAGINATION_CONTEXT_KEY);
+	}: PaginationContext<SatelliteDid.Doc> = getContext<PaginationContext<SatelliteDid.Doc>>(
+		PAGINATION_CONTEXT_KEY
+	);
 
-	let empty = $state(false);
-	run(() => {
-		empty = $paginationStore.items?.length === 0 && nonNullish(collection);
-	});
+	let empty = $derived($paginationStore.items?.length === 0 && nonNullish(collection));
 
-	const { store: docsStore, resetData }: DataContext<DocType> =
-		getContext<DataContext<DocType>>(DATA_CONTEXT_KEY);
+	const { store: docsStore, resetData }: DataContext<SatelliteDid.Doc> =
+		getContext<DataContext<SatelliteDid.Doc>>(DATA_CONTEXT_KEY);
+
+	setContext<ListParamsContext>(LIST_PARAMS_CONTEXT_KEY, initListParamsContext(ListParamsKey.DOCS));
+
+	const { listParams } = getContext<ListParamsContext>(LIST_PARAMS_CONTEXT_KEY);
 
 	const load = async () => {
 		resetPage();
@@ -49,21 +54,25 @@
 		await list();
 	};
 
-	run(() => {
-		// @ts-expect-error TODO: to be migrated to Svelte v5
-		collection, $listParamsStore, (async () => await load())();
+	$effect(() => {
+		collection;
+		$listParams;
+		$versionStore;
+
+		untrack(() => {
+			load();
+		});
 	});
 
 	/**
 	 * Delete data
 	 */
 
-	let deleteData: (params: { collection: string; satelliteId: Principal }) => Promise<void> =
-		$derived(async (params: { collection: string; satelliteId: Principal }) => {
-			await deleteDocs({ ...params, identity: $authStore.identity });
+	const deleteData = async (params: { collection: string; satelliteId: Principal }) => {
+		await deleteDocs({ ...params, identity: $authStore.identity });
 
-			resetData();
-		});
+		resetData();
+	};
 
 	const reload = async () => {
 		emit({ message: 'junoCloseActions' });
@@ -76,7 +85,7 @@
 		{$i18n.datastore.documents}
 
 		{#snippet actions()}
-			<DocUpload on:junoUploaded={reload}>
+			<DocUpload onfileuploaded={reload}>
 				{#snippet action()}
 					{$i18n.document.create_document}
 				{/snippet}
@@ -95,7 +104,7 @@
 				{/snippet}
 			</DocUpload>
 
-			<button class="menu" type="button" onclick={load}
+			<button class="menu" onclick={load} type="button"
 				><IconRefresh size="20px" /> {$i18n.core.reload}</button
 			>
 
@@ -122,8 +131,8 @@
 {#if $hasAnyRules}
 	<div
 		class="data"
-		class:data-selected={nonNullish($docsStore?.data)}
 		class:data-nullish={isNullish($paginationStore.items)}
+		class:data-selected={nonNullish($docsStore?.data)}
 	>
 		{#if nonNullish($paginationStore.items)}
 			<div in:fade>
@@ -136,7 +145,7 @@
 				{/if}
 
 				{#if $paginationStore.items.length > 0}
-					{#each $paginationStore.items as [key, doc]}
+					{#each $paginationStore.items as [key, doc] (key)}
 						<button class="text action" onclick={() => docsStore.set({ key, data: doc })}
 							><span>{key}</span></button
 						>

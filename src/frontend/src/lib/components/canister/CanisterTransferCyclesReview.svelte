@@ -1,6 +1,6 @@
 <script lang="ts">
-	import { Principal } from '@dfinity/principal';
 	import { nonNullish } from '@dfinity/utils';
+	import { Principal } from '@icp-sdk/core/principal';
 	import Segment from '$lib/components/segments/Segment.svelte';
 	import GridArrow from '$lib/components/ui/GridArrow.svelte';
 	import Value from '$lib/components/ui/Value.svelte';
@@ -81,7 +81,7 @@
 	</div>
 
 	<div class="toolbar">
-		<button type="button" onclick={onback}>{$i18n.core.back}</button>
+		<button onclick={onback} type="button">{$i18n.core.back}</button>
 		<button type="submit">{$i18n.core.confirm}</button>
 	</div>
 </form>

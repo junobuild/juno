@@ -1,10 +1,13 @@
 <script lang="ts">
-	import { Principal } from '@dfinity/principal';
+	import { assertNonNullish } from '@dfinity/utils';
+	import { Principal } from '@icp-sdk/core/principal';
 	import { canisterStart } from '$lib/api/ic.api';
 	import Confirmation from '$lib/components/core/Confirmation.svelte';
 	import IconStart from '$lib/components/icons/IconStart.svelte';
 	import Text from '$lib/components/ui/Text.svelte';
 	import { authSignedOut } from '$lib/derived/auth.derived';
+	import { reloadOrbiterVersion } from '$lib/services/version/version.orbiter.services';
+	import { reloadSatelliteVersion } from '$lib/services/version/version.satellite.services';
 	import { authStore } from '$lib/stores/auth.store';
 	import { busy } from '$lib/stores/busy.store';
 	import { i18n } from '$lib/stores/i18n.store';
@@ -38,15 +41,34 @@
 		try {
 			const canisterId = Principal.fromText(canister.id);
 
-			await canisterStart({ canisterId, identity: $authStore.identity! });
+			assertNonNullish($authStore.identity);
+
+			await canisterStart({ canisterId, identity: $authStore.identity });
 
 			emit({ message: 'junoRestartCycles', detail: { canisterId } });
-			emit({ message: 'junoReloadVersions' });
+
+			// Reload version
+			switch (segment) {
+				case 'orbiter': {
+					await reloadOrbiterVersion({
+						orbiterId: canisterId
+					});
+
+					break;
+				}
+				case 'satellite': {
+					await reloadSatelliteVersion({
+						satelliteId: canisterId
+					});
+
+					break;
+				}
+			}
 
 			close();
 
-			toasts.success(
-				i18nCapitalize(
+			toasts.success({
+				text: i18nCapitalize(
 					i18nFormat($i18n.canisters.start_success, [
 						{
 							placeholder: '{0}',
@@ -54,7 +76,7 @@
 						}
 					])
 				)
-			);
+			});
 		} catch (err: unknown) {
 			toasts.error({
 				text: $i18n.errors.canister_start,
@@ -68,7 +90,7 @@
 	const close = () => (visible = false);
 </script>
 
-<button onclick={() => (visible = true)} class="menu"><IconStart /> {$i18n.core.start}</button>
+<button class="menu" onclick={() => (visible = true)}><IconStart /> {$i18n.core.start}</button>
 
 <Confirmation bind:visible on:junoYes={start} on:junoNo={close}>
 	{#snippet title()}

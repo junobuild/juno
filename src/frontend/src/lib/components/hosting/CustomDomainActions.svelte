@@ -1,11 +1,7 @@
 <script lang="ts">
 	import { isNullish, nonNullish, fromNullishNullable } from '@dfinity/utils';
 	import { run, stopPropagation } from 'svelte/legacy';
-	import type { Satellite } from '$declarations/mission_control/mission_control.did';
-	import type {
-		AuthenticationConfig,
-		CustomDomain as CustomDomainType
-	} from '$declarations/satellite/satellite.did';
+	import type { SatelliteDid, MissionControlDid } from '$declarations';
 	import { setAuthConfig } from '$lib/api/satellites.api';
 	import IconWarning from '$lib/components/icons/IconWarning.svelte';
 	import ButtonTableAction from '$lib/components/ui/ButtonTableAction.svelte';
@@ -24,10 +20,10 @@
 	import { i18nFormat } from '$lib/utils/i18n.utils';
 
 	interface Props {
-		satellite: Satellite;
-		customDomain: [string, CustomDomainType] | undefined;
+		satellite: MissionControlDid.Satellite;
+		customDomain: [string, SatelliteDid.CustomDomain] | undefined;
 		displayState: Option<string>;
-		config: AuthenticationConfig | undefined;
+		config: SatelliteDid.AuthenticationConfig | undefined;
 	}
 
 	let { satellite, customDomain, displayState, config }: Props = $props();
@@ -65,7 +61,10 @@
 
 		await setAuthConfig({
 			satelliteId: satellite.satellite_id,
-			config: updateConfig,
+			config: {
+				...updateConfig,
+				version: config.version
+			},
 			identity: $authStore.identity
 		});
 	};
@@ -117,18 +116,18 @@
 </script>
 
 <div class="tools">
-	<ButtonTableAction onaction={openDelete} ariaLabel={$i18n.hosting.delete} icon="delete" />
+	<ButtonTableAction ariaLabel={$i18n.hosting.delete} icon="delete" onaction={openDelete} />
 
 	{#if displayState !== undefined && displayState?.toLowerCase() !== 'available'}
 		<ButtonTableAction
-			onaction={() => openAddCustomDomain({ editDomainName: customDomain?.[0] })}
 			ariaLabel={$i18n.hosting.edit}
 			icon="edit"
+			onaction={() => openAddCustomDomain({ editDomainName: customDomain?.[0] })}
 		/>
 	{/if}
 </div>
 
-<Popover bind:visible center={true}>
+<Popover center={true} bind:visible>
 	<div class="content">
 		<h3>
 			<Html
@@ -150,11 +149,11 @@
 		<p>{$i18n.hosting.delete_are_you_sure}</p>
 
 		<div class="toolbar">
-			<button type="button" onclick={stopPropagation(() => (visible = false))} disabled={$isBusy}>
+			<button disabled={$isBusy} onclick={stopPropagation(() => (visible = false))} type="button">
 				{$i18n.core.no}
 			</button>
 
-			<button type="button" onclick={stopPropagation(deleteCustomDomain)} disabled={$isBusy}>
+			<button disabled={$isBusy} onclick={stopPropagation(deleteCustomDomain)} type="button">
 				{$i18n.core.yes}
 			</button>
 		</div>
@@ -162,8 +161,14 @@
 		{#if advancedOptions}
 			<hr />
 			<Checkbox>
-				<input type="checkbox" onchange={() => (skipDeleteDomain = !skipDeleteDomain)} />
-				<span class="skip-delete">{$i18n.hosting.skip_delete_domain}</span>
+				<input
+					id="skip-delete"
+					onchange={() => (skipDeleteDomain = !skipDeleteDomain)}
+					type="checkbox"
+				/>
+				<label for="skip-delete"
+					><span class="skip-delete">{$i18n.hosting.skip_delete_domain}</span></label
+				>
 			</Checkbox>
 		{/if}
 	</div>

@@ -2,8 +2,8 @@ import type { DataStore } from '$lib/stores/_data.store';
 import { i18n } from '$lib/stores/i18n.store';
 import { toasts } from '$lib/stores/toasts.store';
 import type { OptionIdentity } from '$lib/types/itentity';
-import type { Identity } from '@dfinity/agent';
 import { assertNonNullish } from '@dfinity/utils';
+import type { Identity } from '@icp-sdk/core/agent';
 import { get } from 'svelte/store';
 
 export const loadDataStore = async <T>({

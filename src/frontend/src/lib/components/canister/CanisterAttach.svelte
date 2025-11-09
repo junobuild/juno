@@ -1,11 +1,10 @@
 <script lang="ts">
-	import { Principal } from '@dfinity/principal';
 	import { debounce, isNullish, nonNullish } from '@dfinity/utils';
-	import { type Snippet } from 'svelte';
-	import { run, preventDefault } from 'svelte/legacy';
+	import { Principal } from '@icp-sdk/core/principal';
+	import type { Snippet } from 'svelte';
 	import Popover from '$lib/components/ui/Popover.svelte';
 	import { missionControlIdDerived } from '$lib/derived/mission-control.derived';
-	import { busy } from '$lib/stores/busy.store';
+	import { busy, isBusy } from '$lib/stores/busy.store';
 	import { i18n } from '$lib/stores/i18n.store';
 	import { toasts } from '$lib/stores/toasts.store';
 	import type { MissionControlId } from '$lib/types/mission-control';
@@ -21,7 +20,6 @@
 	let { setFn, visible = $bindable(), title, input, attach }: Props = $props();
 
 	let validConfirm = $state(false);
-	let saving = false;
 
 	let canisterId = $state('');
 
@@ -34,12 +32,15 @@
 		}
 	});
 
-	run(() => {
-		// @ts-expect-error TODO: to be migrated to Svelte v5
-		canisterId, (() => assertForm())();
+	$effect(() => {
+		canisterId;
+
+		assertForm();
 	});
 
-	const handleSubmit = async () => {
+	const handleSubmit = async ($event: SubmitEvent) => {
+		$event.preventDefault();
+
 		if (!validConfirm) {
 			// Submit is disabled if not valid
 			toasts.error({
@@ -77,24 +78,24 @@
 	};
 </script>
 
-<Popover bind:visible center backdrop="dark">
-	<form class="container" onsubmit={preventDefault(handleSubmit)}>
+<Popover backdrop="dark" center bind:visible>
+	<form class="container" onsubmit={handleSubmit}>
 		<h3>{@render title?.()}</h3>
 
 		<label for="canisterId">{@render input?.()}:</label>
 
 		<input
 			id="canisterId"
-			bind:value={canisterId}
-			type="text"
-			placeholder="_____-_____-_____-_____-cai"
-			maxlength={64}
-			disabled={saving}
 			autocomplete="off"
 			data-1p-ignore
+			disabled={$isBusy}
+			maxlength={64}
+			placeholder="_____-_____-_____-_____-cai"
+			type="text"
+			bind:value={canisterId}
 		/>
 
-		<button type="submit" class="submit" disabled={saving || !validConfirm}>
+		<button class="submit" disabled={$isBusy || !validConfirm} type="submit">
 			{$i18n.core.submit}
 		</button>
 	</form>

@@ -1,0 +1,38 @@
+#!/usr/bin/env bash
+
+set -euo pipefail
+
+function pre_build_canister() {
+    if [[ $# -eq 0 ]]; then
+        echo "WARNING: No arguments provided. Skipping pre-building canister."
+        return 0
+    fi
+
+    while [[ $# -gt 0 ]]
+    do
+        case "$1" in
+            --test_sputnik)
+                build_test_sputnik_fixtures
+                export_test_sputnik_fixtures
+                ;;
+        esac
+        shift
+    done
+}
+
+function export_test_sputnik_fixtures() {
+  export DEV_SCRIPT_PATH="$PWD/target/fixtures/index.mjs"
+
+  echo "[test_sputnik] DEV_SCRIPT_PATH set to $DEV_SCRIPT_PATH"
+  echo
+}
+
+# TODO: to be replace with a CLI command
+function build_test_sputnik_fixtures() {
+  if [ ! -d "$PWD/node_modules" ]; then
+    npm ci
+    npm run prepare
+  fi
+
+  npm run build:sputnik:fixtures
+}

@@ -1,11 +1,7 @@
 <script lang="ts">
-	import type { Principal } from '@dfinity/principal';
 	import { fromNullishNullable } from '@dfinity/utils';
-	import type {
-		CyclesMonitoringStrategy,
-		Orbiter,
-		Satellite
-	} from '$declarations/mission_control/mission_control.did';
+	import type { Principal } from '@icp-sdk/core/principal';
+	import type { MissionControlDid } from '$declarations';
 	import MonitoringSelectSegments from '$lib/components/monitoring/MonitoringSelectSegments.svelte';
 	import MonitoringStopMissionControl from '$lib/components/monitoring/MonitoringStopMissionControl.svelte';
 	import MonitoringStopReview from '$lib/components/monitoring/MonitoringStopReview.svelte';
@@ -27,18 +23,20 @@
 
 	let { settings, missionControlId } = $derived(detail as JunoModalCreateMonitoringStrategyDetail);
 
-	let selectedSatellites: [Principal, Satellite][] = $state([]);
-	let selectedOrbiters: [Principal, Orbiter][] = $state([]);
+	let selectedSatellites = $state<[Principal, MissionControlDid.Satellite][]>([]);
+	let selectedOrbiters = $state<[Principal, MissionControlDid.Orbiter][]>([]);
 
 	let missionControlCycles = $derived(
 		fromNullishNullable(fromNullishNullable(settings?.monitoring)?.cycles)
 	);
 
-	let missionControl: { monitored: boolean; strategy: CyclesMonitoringStrategy | undefined } =
-		$derived({
-			monitored: missionControlCycles?.enabled === true,
-			strategy: fromNullishNullable(missionControlCycles?.strategy)
-		});
+	let missionControl: {
+		monitored: boolean;
+		strategy: MissionControlDid.CyclesMonitoringStrategy | undefined;
+	} = $derived({
+		monitored: missionControlCycles?.enabled === true,
+		strategy: fromNullishNullable(missionControlCycles?.strategy)
+	});
 
 	let stopMissionControl: boolean | undefined = $state(undefined);
 
@@ -85,7 +83,7 @@
 	};
 </script>
 
-<Modal on:junoClose={onclose}>
+<Modal {onclose}>
 	{#if step === 'ready'}
 		<div class="msg">
 			<p>
@@ -94,7 +92,7 @@
 			<button onclick={onclose}>{$i18n.core.close}</button>
 		</div>
 	{:else if step === 'in_progress'}
-		<ProgressMonitoring {progress} action="stop" />
+		<ProgressMonitoring action="stop" {progress} />
 	{:else if step === 'mission_control'}
 		<MonitoringStopMissionControl
 			onno={() => {
@@ -108,19 +106,19 @@
 		/>
 	{:else if step === 'review'}
 		<MonitoringStopReview
-			{selectedSatellites}
-			{selectedOrbiters}
-			{stopMissionControl}
 			onback={() => (step = 'mission_control')}
 			{onsubmit}
+			{selectedOrbiters}
+			{selectedSatellites}
+			{stopMissionControl}
 		/>
 	{:else}
 		<MonitoringSelectSegments
 			{missionControlId}
+			oncontinue={onContinueSegments}
+			onlySyncedSegments={false}
 			bind:selectedSatellites
 			bind:selectedOrbiters
-			onlySyncedSegments={false}
-			oncontinue={onContinueSegments}
 		>
 			<h2>{$i18n.monitoring.stop_auto_refill}</h2>
 

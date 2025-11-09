@@ -3,8 +3,11 @@ use crate::ledger::types::icp::{BlockIndexed, Blocks};
 use crate::ledger::utils::account_identifier_equal;
 use candid::{Func, Principal};
 use futures::future::join_all;
-use ic_cdk::api::call::{CallResult, RejectionCode};
+use ic_cdk::api::call::{
+    CallResult as DeprecatedCallResult, RejectionCode as DeprecatedRejectionCode,
+};
 use ic_cdk::call;
+use ic_cdk::call::{CallResult, Error};
 use ic_ledger_types::{
     query_blocks, transfer, AccountIdentifier, ArchivedBlockRange, BlockIndex, GetBlocksArgs,
     GetBlocksResult, Memo, Operation, Subaccount, Tokens, Transaction, TransferArgs,
@@ -71,7 +74,7 @@ pub async fn transfer_payment(
 pub async fn transfer_token(args: TransferArgs) -> CallResult<TransferResult> {
     let ledger = Principal::from_text(LEDGER).unwrap();
 
-    transfer(ledger, args).await
+    transfer(ledger, &args).await
 }
 
 /// Finds a payment transaction based on specified criteria.
@@ -140,7 +143,7 @@ pub async fn chain_length(block_index: BlockIndex) -> CallResult<u64> {
     let ledger = Principal::from_text(LEDGER).unwrap();
     let response = query_blocks(
         ledger,
-        GetBlocksArgs {
+        &GetBlocksArgs {
             start: block_index,
             length: 1,
         },
@@ -210,11 +213,13 @@ async fn blocks_since(
     ledger_canister_id: Principal,
     start: BlockIndex,
     length: u64,
-) -> CallResult<Blocks> {
+) -> DeprecatedCallResult<Blocks> {
     // Source: OpenChat
     // https://github.com/open-ic/transaction-notifier/blob/cf8c2deaaa2e90aac9dc1e39ecc3e67e94451c08/canister/impl/src/lifecycle/heartbeat.rs
 
-    let response = query_blocks(ledger_canister_id, GetBlocksArgs { start, length }).await?;
+    let response = query_blocks(ledger_canister_id, &GetBlocksArgs { start, length })
+        .await
+        .map_err(|err: Error| (DeprecatedRejectionCode::CanisterReject, err.to_string()))?;
 
     let blocks: Blocks = response
         .blocks
@@ -226,7 +231,7 @@ async fn blocks_since(
     if response.archived_blocks.is_empty() {
         Ok(blocks)
     } else {
-        type FromArchiveResult = CallResult<Blocks>;
+        type FromArchiveResult = DeprecatedCallResult<Blocks>;
 
         async fn get_blocks_from_archive(range: ArchivedBlockRange) -> FromArchiveResult {
             let args = GetBlocksArgs {
@@ -235,14 +240,14 @@ async fn blocks_since(
             };
             let func: Func = range.callback.into();
 
-            let response: CallResult<(GetBlocksResult,)> =
+            let response: DeprecatedCallResult<(GetBlocksResult,)> =
                 call(func.principal, &func.method, (args,)).await;
 
             match response {
                 Err(e) => Err(e),
                 Ok((block_result,)) => match block_result {
                     Err(_) => Err((
-                        RejectionCode::Unknown,
+                        DeprecatedRejectionCode::Unknown,
                         "Block results cannot be decoded".to_string(),
                     )),
                     Ok(blocks_range) => Ok(blocks_range
@@ -269,7 +274,7 @@ async fn blocks_since(
 
         let results = archive_responses
             .into_iter()
-            .collect::<CallResult<Vec<Blocks>>>()?;
+            .collect::<DeprecatedCallResult<Vec<Blocks>>>()?;
 
         Ok(results.into_iter().flatten().chain(blocks).collect())
     }

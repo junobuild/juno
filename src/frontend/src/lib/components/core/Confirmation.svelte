@@ -1,7 +1,6 @@
 <script lang="ts">
 	import { createEventDispatcher, type Snippet } from 'svelte';
 	import { stopPropagation } from 'svelte/legacy';
-
 	import Popover from '$lib/components/ui/Popover.svelte';
 	import { isBusy } from '$lib/stores/busy.store';
 	import { i18n } from '$lib/stores/i18n.store';
@@ -19,17 +18,17 @@
 	const no = () => dispatch('junoNo');
 </script>
 
-<Popover bind:visible center={true} backdrop="dark">
+<Popover backdrop="dark" center={true} bind:visible>
 	<div class="content">
 		<h3>{@render title?.()}</h3>
 
 		{@render children()}
 
-		<button type="button" onclick={stopPropagation(no)} disabled={$isBusy}>
+		<button disabled={$isBusy} onclick={stopPropagation(no)} type="button">
 			{$i18n.core.no}
 		</button>
 
-		<button type="button" onclick={stopPropagation(yes)} disabled={$isBusy}>
+		<button disabled={$isBusy} onclick={stopPropagation(yes)} type="button">
 			{$i18n.core.yes}
 		</button>
 	</div>

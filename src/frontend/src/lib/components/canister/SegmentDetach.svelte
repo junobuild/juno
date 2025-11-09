@@ -1,6 +1,6 @@
 <script lang="ts">
-	import type { Principal } from '@dfinity/principal';
 	import { isNullish } from '@dfinity/utils';
+	import type { Principal } from '@icp-sdk/core/principal';
 	import { goto } from '$app/navigation';
 	import Confirmation from '$lib/components/core/Confirmation.svelte';
 	import IconLinkOff from '$lib/components/icons/IconLinkOff.svelte';
@@ -61,8 +61,8 @@
 
 			close();
 
-			toasts.success(
-				i18nCapitalize(
+			toasts.success({
+				text: i18nCapitalize(
 					i18nFormat($i18n.canisters.detach_success, [
 						{
 							placeholder: '{0}',
@@ -70,7 +70,7 @@
 						}
 					])
 				)
-			);
+			});
 		} catch (err: unknown) {
 			toasts.error({
 				text: $i18n.errors.segment_detach,
@@ -84,7 +84,7 @@
 	const close = () => (visible = false);
 </script>
 
-<button onclick={() => (visible = true)} class="menu"><IconLinkOff /> {$i18n.core.detach}</button>
+<button class="menu" onclick={() => (visible = true)}><IconLinkOff /> {$i18n.core.detach}</button>
 
 <Confirmation bind:visible on:junoYes={detach} on:junoNo={close}>
 	{#snippet title()}

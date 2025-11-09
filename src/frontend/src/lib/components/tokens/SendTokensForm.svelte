@@ -64,17 +64,17 @@
 			{/snippet}
 
 			<Input
-				inputType="text"
 				name="destination"
+				inputType="text"
 				placeholder={$i18n.wallet.destination_placeholder}
 				bind:value={destination}
 			/>
 		</Value>
 	</div>
 
-	<InputIcp bind:amount {balance} />
+	<InputIcp {balance} bind:amount />
 
-	<button type="submit" class="action">
+	<button class="action" type="submit">
 		{$i18n.core.review}
 	</button>
 </form>

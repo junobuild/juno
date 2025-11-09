@@ -11,7 +11,7 @@
 	let { onyes, onno }: Props = $props();
 </script>
 
-<MonitoringStepYesNo {onyes} {onno}>
+<MonitoringStepYesNo {onno} {onyes}>
 	<h2>{$i18n.mission_control.title}</h2>
 
 	<p>{$i18n.monitoring.stop_monitoring_question}</p>

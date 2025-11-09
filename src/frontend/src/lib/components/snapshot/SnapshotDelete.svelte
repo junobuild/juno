@@ -1,8 +1,8 @@
 <script lang="ts">
-	import { encodeSnapshotId } from '@dfinity/ic-management';
-	import type { Principal } from '@dfinity/principal';
 	import { isNullish, nonNullish } from '@dfinity/utils';
-	import type { snapshot } from '$declarations/ic/ic.did';
+	import { encodeSnapshotId } from '@icp-sdk/canisters/ic-management';
+	import type { Principal } from '@icp-sdk/core/principal';
+	import type { ICDid } from '$declarations';
 	import Popover from '$lib/components/ui/Popover.svelte';
 	import { deleteSnapshot } from '$lib/services/snapshots.services';
 	import { authStore } from '$lib/stores/auth.store';
@@ -15,7 +15,7 @@
 	interface Props {
 		visible?: boolean;
 		segmentLabel: string;
-		existingSnapshot: snapshot | undefined;
+		existingSnapshot: ICDid.snapshot | undefined;
 		canisterId: Principal;
 	}
 
@@ -47,7 +47,7 @@
 	};
 </script>
 
-<Popover bind:visible center={true} backdrop="dark">
+<Popover backdrop="dark" center={true} bind:visible>
 	<form class="content" onsubmit={onSubmit}>
 		<h2>{$i18n.canisters.delete_snapshot}</h2>
 
@@ -56,18 +56,18 @@
 				{
 					placeholder: '{0}',
 					value: nonNullish(existingSnapshot)
-						? shortenWithMiddleEllipsis(`0x${encodeSnapshotId(existingSnapshot.id)}`)
+						? shortenWithMiddleEllipsis({ text: `0x${encodeSnapshotId(existingSnapshot.id)}` })
 						: ''
 				},
 				{ placeholder: '{1}', value: segmentLabel }
 			])}
 		</p>
 
-		<button type="button" onclick={() => (visible = false)} disabled={$isBusy}>
+		<button disabled={$isBusy} onclick={() => (visible = false)} type="button">
 			{$i18n.core.no}
 		</button>
 
-		<button type="submit" disabled={$isBusy}>
+		<button disabled={$isBusy} type="submit">
 			{$i18n.core.yes}
 		</button>
 	</form>

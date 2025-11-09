@@ -24,12 +24,13 @@
 </script>
 
 <g class="scatter-group">
+	<!-- eslint-disable-next-line svelte/require-each-key -->
 	{#each $data as d}
 		<circle
 			cx={$xGet(d) + ($xScale.bandwidth ? $xScale.bandwidth() / 2 : 0)}
 			cy={$yGet(d) + ($yScale.bandwidth ? $yScale.bandwidth() / 2 : 0)}
-			{r}
 			{fill}
+			{r}
 			{stroke}
 			stroke-width={strokeWidth}
 		/>

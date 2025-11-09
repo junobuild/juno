@@ -1,0 +1,71 @@
+use crate::notifications::http::types::EmailRequestBody;
+use crate::types::state::ApiKey;
+use ic_cdk::management_canister::{
+    http_request as http_request_outcall, TransformContext, TransformFunc,
+};
+use ic_cdk::management_canister::{HttpHeader, HttpMethod, HttpRequestArgs};
+use junobuild_shared::ic::api::id;
+use serde_json::json;
+
+pub async fn post_email(
+    idempotency_key: &String,
+    api_key: &ApiKey,
+    email: &EmailRequestBody,
+) -> Result<(), String> {
+    let request = get_email_request(idempotency_key, api_key, email)?;
+
+    match http_request_outcall(&request).await {
+        Ok(_response) => Ok(()),
+        Err(error) => {
+            let message = format!("HTTP request error: {error:?}");
+            Err(format!("‼️ --> {message}."))
+        }
+    }
+}
+
+fn get_email_request(
+    idempotency_key: &String,
+    api_key: &ApiKey,
+    email: &EmailRequestBody,
+) -> Result<HttpRequestArgs, String> {
+    let email_notifications_url =
+        "https://europe-west6-juno-observatory.cloudfunctions.net/observatory/notifications/email";
+
+    let request_headers = vec![
+        HttpHeader {
+            name: "Content-Type".to_string(),
+            value: "application/json".to_string(),
+        },
+        HttpHeader {
+            name: "idempotency-key".to_string(),
+            value: idempotency_key.to_owned(),
+        },
+        HttpHeader {
+            name: "authorization".to_string(),
+            value: format!("Bearer {api_key}"),
+        },
+    ];
+
+    let body = json!(email);
+
+    let body_json = serde_json::to_string(&body).map_err(|e| e.to_string())?;
+
+    Ok(HttpRequestArgs {
+        url: email_notifications_url.to_string(),
+        method: HttpMethod::POST,
+        body: Some(body_json.as_bytes().to_vec()),
+        max_response_bytes: None,
+        transform: param_transform(),
+        headers: request_headers,
+    })
+}
+
+fn param_transform() -> Option<TransformContext> {
+    Some(TransformContext {
+        function: TransformFunc(candid::Func {
+            principal: id(),
+            method: "transform_post_email".to_string(),
+        }),
+        context: vec![],
+    })
+}

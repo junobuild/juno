@@ -18,6 +18,13 @@
 	row-gap: var(--padding);
 }
 
+@mixin three-columns {
+	display: grid;
+	grid-template-columns: repeat(3, 1fr);
+	column-gap: var(--padding-2x);
+	row-gap: var(--padding);
+}
+
 @mixin two-columns-with-arrow {
 	@include media.min-width(large) {
 		display: grid;

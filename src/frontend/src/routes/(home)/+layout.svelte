@@ -20,9 +20,9 @@
 	});
 </script>
 
-<Layout centered title={false}>
+<Layout centered>
 	{#snippet navbar()}
-		<Navbar signIn={false} headerOpaqueOnScroll={false} />
+		<Navbar />
 	{/snippet}
 
 	{@render children()}

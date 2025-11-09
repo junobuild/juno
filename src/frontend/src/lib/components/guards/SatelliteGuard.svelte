@@ -1,8 +1,10 @@
 <script lang="ts">
 	import type { Snippet } from 'svelte';
-	import Html from '$lib/components/ui/Html.svelte';
+	import { fade } from 'svelte/transition';
+	import NotFound from '$lib/components/ui/NotFound.svelte';
 	import SpinnerParagraph from '$lib/components/ui/SpinnerParagraph.svelte';
 	import { satelliteStore } from '$lib/derived/satellite.derived';
+	import { satellitesStore } from '$lib/derived/satellites.derived';
 	import { i18n } from '$lib/stores/i18n.store';
 
 	interface Props {
@@ -12,17 +14,12 @@
 	let { children }: Props = $props();
 </script>
 
-{#if $satelliteStore === undefined}
+{#if $satellitesStore === undefined}
 	<SpinnerParagraph>{$i18n.satellites.loading_satellites}</SpinnerParagraph>
 {:else if $satelliteStore === null}
-	<p class="label"><Html text={$i18n.errors.satellite_no_found} /></p>
+	<div in:fade>
+		<NotFound warnText={$i18n.errors.satellite_no_found} />
+	</div>
 {:else}
 	{@render children()}
 {/if}
-
-<style lang="scss">
-	p {
-		margin-top: var(--padding-3x);
-		color: var(--value-color);
-	}
-</style>

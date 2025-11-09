@@ -1,6 +1,6 @@
-import type { ActorMethod } from '@dfinity/agent';
-import type { IDL } from '@dfinity/candid';
-import type { Principal } from '@dfinity/principal';
+import type { ActorMethod } from '@icp-sdk/core/agent';
+import type { IDL } from '@icp-sdk/core/candid';
+import type { Principal } from '@icp-sdk/core/principal';
 
 export interface AssertMissionControlCenterArgs {
 	mission_control_id: Principal;
@@ -30,6 +30,35 @@ export interface AssetNoContent {
 export interface AssetsUpgradeOptions {
 	clear_existing_assets: [] | [boolean];
 }
+export interface Authentication {
+	delegation: PreparedDelegation;
+	mission_control: MissionControl;
+}
+export type AuthenticationArgs = { OpenId: OpenIdPrepareDelegationArgs };
+export interface AuthenticationConfig {
+	updated_at: [] | [bigint];
+	openid: [] | [AuthenticationConfigOpenId];
+	created_at: [] | [bigint];
+	version: [] | [bigint];
+	internet_identity: [] | [AuthenticationConfigInternetIdentity];
+	rules: [] | [AuthenticationRules];
+}
+export interface AuthenticationConfigInternetIdentity {
+	derivation_origin: [] | [string];
+	external_alternative_origins: [] | [Array<string>];
+}
+export interface AuthenticationConfigOpenId {
+	observatory_id: [] | [Principal];
+	providers: Array<[OpenIdProvider, OpenIdProviderConfig]>;
+}
+export type AuthenticationError =
+	| {
+			PrepareDelegation: PrepareDelegationError;
+	  }
+	| { RegisterUser: string };
+export interface AuthenticationRules {
+	allowed_callers: Array<Principal>;
+}
 export interface CommitBatch {
 	batch_id: bigint;
 	headers: Array<[string, string]>;
@@ -40,16 +69,30 @@ export interface CommitProposal {
 	proposal_id: bigint;
 }
 export interface Config {
+	authentication: [] | [AuthenticationConfig];
 	storage: StorageConfig;
 }
 export interface ConfigMaxMemorySize {
 	stable: [] | [bigint];
 	heap: [] | [bigint];
 }
-export type ControllerScope = { Write: null } | { Admin: null };
+export interface Controller {
+	updated_at: bigint;
+	metadata: Array<[string, string]>;
+	created_at: bigint;
+	scope: ControllerScope;
+	expires_at: [] | [bigint];
+}
+export type ControllerScope = { Write: null } | { Admin: null } | { Submit: null };
 export interface CreateCanisterArgs {
 	block_index: [] | [bigint];
 	subnet_id: [] | [Principal];
+	user: Principal;
+}
+export interface CreateSatelliteArgs {
+	block_index: [] | [bigint];
+	subnet_id: [] | [Principal];
+	storage: [] | [InitStorageArgs];
 	user: Principal;
 }
 export interface CustomDomain {
@@ -57,6 +100,11 @@ export interface CustomDomain {
 	created_at: bigint;
 	version: [] | [bigint];
 	bn_id: [] | [string];
+}
+export interface Delegation {
+	pubkey: Uint8Array | number[];
+	targets: [] | [Array<Principal>];
+	expiration: bigint;
 }
 export interface DeleteControllersArgs {
 	controllers: Array<Principal>;
@@ -67,6 +115,24 @@ export interface DeleteProposalAssets {
 export interface GetCreateCanisterFeeArgs {
 	user: Principal;
 }
+export type GetDelegationArgs = { OpenId: OpenIdGetDelegationArgs };
+export type GetDelegationError =
+	| { JwtFindProvider: JwtFindProviderError }
+	| { GetCachedJwks: null }
+	| { NoSuchDelegation: null }
+	| { JwtVerify: JwtVerifyError }
+	| { GetOrFetchJwks: GetOrRefreshJwksError }
+	| { DeriveSeedFailed: string };
+export type GetOrRefreshJwksError =
+	| { InvalidConfig: string }
+	| { MissingKid: null }
+	| { BadClaim: string }
+	| { KeyNotFoundCooldown: null }
+	| { CertificateNotFound: null }
+	| { BadSig: string }
+	| { MissingLastAttempt: string }
+	| { KeyNotFound: null }
+	| { FetchFailed: string };
 export interface HttpRequest {
 	url: string;
 	method: string;
@@ -88,9 +154,23 @@ export interface InitAssetKey {
 	encoding_type: [] | [string];
 	full_path: string;
 }
+export interface InitStorageArgs {
+	system_memory: [] | [InitStorageMemory];
+}
+export type InitStorageMemory = { Heap: null } | { Stable: null };
 export interface InitUploadResult {
 	batch_id: bigint;
 }
+export type JwtFindProviderError =
+	| { BadClaim: string }
+	| { BadSig: string }
+	| { NoMatchingProvider: null };
+export type JwtVerifyError =
+	| { WrongKeyType: null }
+	| { MissingKid: null }
+	| { BadClaim: string }
+	| { BadSig: string }
+	| { NoKeyForKid: null };
 export interface ListMatcher {
 	key: [] | [string];
 	updated_at: [] | [TimestampMatcher];
@@ -112,6 +192,22 @@ export interface ListParams {
 	matcher: [] | [ListMatcher];
 	paginate: [] | [ListPaginate];
 }
+export interface ListProposalResults {
+	matches_length: bigint;
+	items: Array<[ProposalKey, Proposal]>;
+	items_length: bigint;
+}
+export interface ListProposalsOrder {
+	desc: boolean;
+}
+export interface ListProposalsPaginate {
+	start_after: [] | [bigint];
+	limit: [] | [bigint];
+}
+export interface ListProposalsParams {
+	order: [] | [ListProposalsOrder];
+	paginate: [] | [ListProposalsPaginate];
+}
 export interface ListResults {
 	matches_pages: [] | [bigint];
 	matches_length: bigint;
@@ -124,8 +220,41 @@ export interface MissionControl {
 	updated_at: bigint;
 	credits: Tokens;
 	mission_control_id: [] | [Principal];
+	provider: [] | [Provider];
 	owner: Principal;
 	created_at: bigint;
+}
+export interface OpenId {
+	provider: OpenIdProvider;
+	data: OpenIdData;
+}
+export interface OpenIdData {
+	name: [] | [string];
+	locale: [] | [string];
+	family_name: [] | [string];
+	email: [] | [string];
+	picture: [] | [string];
+	given_name: [] | [string];
+}
+export interface OpenIdGetDelegationArgs {
+	jwt: string;
+	session_key: Uint8Array | number[];
+	salt: Uint8Array | number[];
+	expiration: bigint;
+}
+export interface OpenIdPrepareDelegationArgs {
+	jwt: string;
+	session_key: Uint8Array | number[];
+	salt: Uint8Array | number[];
+}
+export type OpenIdProvider = { Google: null };
+export interface OpenIdProviderConfig {
+	delegation: [] | [OpenIdProviderDelegationConfig];
+	client_id: string;
+}
+export interface OpenIdProviderDelegationConfig {
+	targets: [] | [Array<Principal>];
+	max_time_to_live: [] | [bigint];
 }
 export interface Payment {
 	status: PaymentStatus;
@@ -136,6 +265,18 @@ export interface Payment {
 	block_index_refunded: [] | [bigint];
 }
 export type PaymentStatus = { Refunded: null } | { Acknowledged: null } | { Completed: null };
+export type PrepareDelegationError =
+	| {
+			JwtFindProvider: JwtFindProviderError;
+	  }
+	| { GetCachedJwks: null }
+	| { JwtVerify: JwtVerifyError }
+	| { GetOrFetchJwks: GetOrRefreshJwksError }
+	| { DeriveSeedFailed: string };
+export interface PreparedDelegation {
+	user_key: Uint8Array | number[];
+	expiration: bigint;
+}
 export interface Proposal {
 	status: ProposalStatus;
 	updated_at: bigint;
@@ -145,6 +286,9 @@ export interface Proposal {
 	created_at: bigint;
 	version: [] | [bigint];
 	proposal_type: ProposalType;
+}
+export interface ProposalKey {
+	proposal_id: bigint;
 }
 export type ProposalStatus =
 	| { Initialized: null }
@@ -156,15 +300,24 @@ export type ProposalStatus =
 export type ProposalType =
 	| { AssetsUpgrade: AssetsUpgradeOptions }
 	| { SegmentsDeployment: SegmentsDeploymentOptions };
+export type Provider = { InternetIdentity: null } | { OpenId: OpenId };
 export interface RateConfig {
 	max_tokens: bigint;
 	time_per_token_ns: bigint;
 }
+export type Result = { Ok: Authentication } | { Err: AuthenticationError };
+export type Result_1 = { Ok: SignedDelegation } | { Err: GetDelegationError };
 export type SegmentKind = { Orbiter: null } | { MissionControl: null } | { Satellite: null };
 export interface SegmentsDeploymentOptions {
 	orbiter: [] | [string];
 	mission_control_version: [] | [string];
 	satellite_version: [] | [string];
+}
+export interface SetAuthenticationConfig {
+	openid: [] | [AuthenticationConfigOpenId];
+	version: [] | [bigint];
+	internet_identity: [] | [AuthenticationConfigInternetIdentity];
+	rules: [] | [AuthenticationRules];
 }
 export interface SetController {
 	metadata: Array<[string, string]>;
@@ -175,10 +328,26 @@ export interface SetControllersArgs {
 	controller: SetController;
 	controllers: Array<Principal>;
 }
-export interface StorageConfig {
+export interface SetStorageConfig {
 	iframe: [] | [StorageConfigIFrame];
 	rewrites: Array<[string, string]>;
 	headers: Array<[string, Array<[string, string]>]>;
+	version: [] | [bigint];
+	max_memory_size: [] | [ConfigMaxMemorySize];
+	raw_access: [] | [StorageConfigRawAccess];
+	redirects: [] | [Array<[string, StorageConfigRedirect]>];
+}
+export interface SignedDelegation {
+	signature: Uint8Array | number[];
+	delegation: Delegation;
+}
+export interface StorageConfig {
+	iframe: [] | [StorageConfigIFrame];
+	updated_at: [] | [bigint];
+	rewrites: Array<[string, string]>;
+	headers: Array<[string, Array<[string, string]>]>;
+	created_at: [] | [bigint];
+	version: [] | [bigint];
 	max_memory_size: [] | [ConfigMaxMemorySize];
 	raw_access: [] | [StorageConfigRawAccess];
 	redirects: [] | [Array<[string, StorageConfigRedirect]>];
@@ -228,17 +397,22 @@ export interface _SERVICE {
 	add_credits: ActorMethod<[Principal, Tokens], undefined>;
 	add_invitation_code: ActorMethod<[string], undefined>;
 	assert_mission_control_center: ActorMethod<[AssertMissionControlCenterArgs], undefined>;
-	commit_asset_upload: ActorMethod<[CommitBatch], undefined>;
+	authenticate: ActorMethod<[AuthenticationArgs], Result>;
 	commit_proposal: ActorMethod<[CommitProposal], null>;
+	commit_proposal_asset_upload: ActorMethod<[CommitBatch], undefined>;
+	commit_proposal_many_assets_upload: ActorMethod<[Array<CommitBatch>], undefined>;
+	count_proposals: ActorMethod<[], bigint>;
 	create_orbiter: ActorMethod<[CreateCanisterArgs], Principal>;
-	create_satellite: ActorMethod<[CreateCanisterArgs], Principal>;
+	create_satellite: ActorMethod<[CreateSatelliteArgs], Principal>;
 	del_controllers: ActorMethod<[DeleteControllersArgs], undefined>;
 	del_custom_domain: ActorMethod<[string], undefined>;
 	delete_proposal_assets: ActorMethod<[DeleteProposalAssets], undefined>;
+	get_auth_config: ActorMethod<[], [] | [AuthenticationConfig]>;
 	get_config: ActorMethod<[], Config>;
 	get_create_orbiter_fee: ActorMethod<[GetCreateCanisterFeeArgs], [] | [Tokens]>;
 	get_create_satellite_fee: ActorMethod<[GetCreateCanisterFeeArgs], [] | [Tokens]>;
 	get_credits: ActorMethod<[], Tokens>;
+	get_delegation: ActorMethod<[GetDelegationArgs], Result_1>;
 	get_proposal: ActorMethod<[bigint], [] | [Proposal]>;
 	get_storage_config: ActorMethod<[], StorageConfig>;
 	get_user_mission_control_center: ActorMethod<[], [] | [MissionControl]>;
@@ -247,21 +421,28 @@ export interface _SERVICE {
 		[StreamingCallbackToken],
 		StreamingCallbackHttpResponse
 	>;
-	init_asset_upload: ActorMethod<[InitAssetKey, bigint], InitUploadResult>;
 	init_proposal: ActorMethod<[ProposalType], [bigint, Proposal]>;
+	init_proposal_asset_upload: ActorMethod<[InitAssetKey, bigint], InitUploadResult>;
+	init_proposal_many_assets_upload: ActorMethod<
+		[Array<InitAssetKey>, bigint],
+		Array<[string, InitUploadResult]>
+	>;
 	init_user_mission_control_center: ActorMethod<[], MissionControl>;
 	list_assets: ActorMethod<[string, ListParams], ListResults>;
+	list_controllers: ActorMethod<[], Array<[Principal, Controller]>>;
 	list_custom_domains: ActorMethod<[], Array<[string, CustomDomain]>>;
 	list_payments: ActorMethod<[], Array<[bigint, Payment]>>;
+	list_proposals: ActorMethod<[ListProposalsParams], ListProposalResults>;
 	list_user_mission_control_centers: ActorMethod<[], Array<[Principal, MissionControl]>>;
+	reject_proposal: ActorMethod<[CommitProposal], null>;
+	set_auth_config: ActorMethod<[SetAuthenticationConfig], AuthenticationConfig>;
 	set_controllers: ActorMethod<[SetControllersArgs], undefined>;
 	set_custom_domain: ActorMethod<[string, [] | [string]], undefined>;
 	set_fee: ActorMethod<[SegmentKind, Tokens], undefined>;
-	set_storage_config: ActorMethod<[StorageConfig], undefined>;
+	set_storage_config: ActorMethod<[SetStorageConfig], StorageConfig>;
 	submit_proposal: ActorMethod<[bigint], [bigint, Proposal]>;
 	update_rate_config: ActorMethod<[SegmentKind, RateConfig], undefined>;
-	upload_asset_chunk: ActorMethod<[UploadChunk], UploadChunkResult>;
-	version: ActorMethod<[], string>;
+	upload_proposal_asset_chunk: ActorMethod<[UploadChunk], UploadChunkResult>;
 }
 export declare const idlFactory: IDL.InterfaceFactory;
 export declare const init: (args: { IDL: typeof IDL }) => IDL.Type[];

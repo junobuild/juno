@@ -1,34 +1,36 @@
-import type {
-	MissionControlSettings,
-	Satellite,
-	User
-} from '$declarations/mission_control/mission_control.did';
+import type { MissionControlDid } from '$declarations';
 import {
 	addMissionControlController,
 	addSatellitesController,
 	getSettings,
 	getUserData,
-	missionControlVersion,
 	setMetadata,
 	setMissionControlController,
 	setOrbiter,
 	setSatellite,
-	setSatelliteMetadata,
+	setSatelliteMetadata as setSatelliteMetadataApi,
 	setSatellitesController,
 	unsetOrbiter,
 	unsetSatellite
 } from '$lib/api/mission-control.api';
 import { setMissionControlController004 } from '$lib/api/mission-control.deprecated.api';
-import { satelliteVersion } from '$lib/api/satellites.api';
-import { METADATA_KEY_EMAIL, METADATA_KEY_NAME } from '$lib/constants/metadata.constants';
+import {
+	METADATA_KEY_EMAIL,
+	METADATA_KEY_ENVIRONMENT,
+	METADATA_KEY_NAME,
+	METADATA_KEY_TAGS
+} from '$lib/constants/metadata.constants';
 import {
 	MISSION_CONTROL_v0_0_14,
 	MISSION_CONTROL_v0_0_3,
 	MISSION_CONTROL_v0_0_5,
-	MISSION_CONTROL_v0_0_7
+	SATELLITE_v0_0_7
 } from '$lib/constants/version.constants';
 import { satellitesStore } from '$lib/derived/satellites.derived';
-import { missionControlVersion as missionControlVersionStore } from '$lib/derived/version.derived';
+import {
+	SatelliteUiMetadataSchema,
+	SatelliteUiMetadataSerializer
+} from '$lib/schemas/satellite.schema';
 import { loadDataStore } from '$lib/services/loader.services';
 import { loadSatellites } from '$lib/services/satellites.services';
 import { authStore } from '$lib/stores/auth.store';
@@ -40,29 +42,42 @@ import {
 import { orbitersUncertifiedStore } from '$lib/stores/orbiter.store';
 import { satellitesUncertifiedStore } from '$lib/stores/satellite.store';
 import { toasts } from '$lib/stores/toasts.store';
+import { versionStore } from '$lib/stores/version.store';
 import type { SetControllerParams } from '$lib/types/controllers';
 import type { OptionIdentity } from '$lib/types/itentity';
 import type { Metadata } from '$lib/types/metadata';
 import type { MissionControlId } from '$lib/types/mission-control';
+import type { SatelliteUiMetadata } from '$lib/types/satellite';
 import type { Option } from '$lib/types/utils';
 import { isNotValidEmail } from '$lib/utils/email.utils';
-import type { Identity } from '@dfinity/agent';
-import type { Principal } from '@dfinity/principal';
-import { fromNullable, isEmptyString, isNullish } from '@dfinity/utils';
+import { container } from '$lib/utils/juno.utils';
+import { fromNullable, isEmptyString, isNullish, notEmptyString } from '@dfinity/utils';
+import type { Identity } from '@icp-sdk/core/agent';
+import type { Principal } from '@icp-sdk/core/principal';
+import { missionControlVersion, satelliteVersion } from '@junobuild/admin';
 import { compare } from 'semver';
 import { get } from 'svelte/store';
+import * as z from 'zod';
 
-// TODO: to be removed in next version as only supported if < v0.0.3
 export const setMissionControlControllerForVersion = async ({
 	missionControlId,
 	controllerId,
-	profile
+	profile,
+	identity
 }: {
 	missionControlId: MissionControlId;
+	identity: Identity;
 } & SetControllerParams) => {
-	const identity = get(authStore).identity;
-
-	const version = await missionControlVersion({ missionControlId, identity });
+	let version: string;
+	try {
+		version = await missionControlVersion({
+			missionControl: { missionControlId: missionControlId.toText(), identity, ...container() }
+		});
+	} catch (_err: unknown) {
+		// For simplicity, since this method is meant to support very old and likely inactive Mission Control instances,
+		// we set the version to trigger the use of the latest API.
+		version = MISSION_CONTROL_v0_0_5;
+	}
 
 	const missionControlController =
 		compare(version, MISSION_CONTROL_v0_0_3) >= 0
@@ -80,22 +95,33 @@ export const setMissionControlControllerForVersion = async ({
 	});
 };
 
-// TODO: to be removed in next version as only supported if < v0.0.7
-export const setSatellitesForVersion = async ({
+export const setSatellitesControllerForVersion = async ({
 	missionControlId,
 	satelliteIds,
 	controllerId,
-	profile
+	profile,
+	identity
 }: {
 	missionControlId: MissionControlId;
 	satelliteIds: Principal[];
+	identity: Identity;
 } & SetControllerParams) => {
-	const identity = get(authStore).identity;
-
 	const mapVersions = async (
 		satelliteId: Principal
 	): Promise<{ satelliteId: Principal; version: string }> => {
-		const version = await satelliteVersion({ satelliteId, identity });
+		let version: string;
+		try {
+			version = await satelliteVersion({
+				satellite: { satelliteId: satelliteId.toText(), identity, ...container() }
+			});
+		} catch (_err: unknown) {
+			// For simplicity, this method assumes compatibility with very old Satellite instances, like instance that would have
+			// never been upgraded since the Beta phrase in 2023.
+			// We set the version to trigger the use of the latest API, since Satellite versions >= v0.0.24
+			// no longer implement the /version endpoint.
+			version = SATELLITE_v0_0_7;
+		}
+
 		return {
 			version,
 			satelliteId
@@ -112,7 +138,7 @@ export const setSatellitesForVersion = async ({
 			}: { setSatelliteIds: Principal[]; addSatellitesIds: Principal[] },
 			{ satelliteId, version }
 		) => {
-			if (compare(version, MISSION_CONTROL_v0_0_7) >= 0) {
+			if (compare(version, SATELLITE_v0_0_7) >= 0) {
 				return {
 					setSatelliteIds: [...setSatelliteIds, satelliteId],
 					addSatellitesIds
@@ -155,34 +181,71 @@ export const setSatellitesForVersion = async ({
 	]);
 };
 
-export const setSatelliteName = async ({
+export const setSatelliteMetadata = async ({
 	missionControlId,
-	satellite: { satellite_id: satelliteId, metadata },
-	satelliteName
+	satellite: { satellite_id: satelliteId, metadata: currentMetadata },
+	metadata
 }: {
 	missionControlId: MissionControlId;
-	satellite: Satellite;
-	satelliteName: string;
-}) => {
-	const updateData = new Map(metadata);
-	updateData.set(METADATA_KEY_NAME, satelliteName);
+	satellite: MissionControlDid.Satellite;
+	metadata: SatelliteUiMetadata;
+}): Promise<{ success: boolean }> => {
+	const { error, success, data } = SatelliteUiMetadataSchema.safeParse(metadata);
 
-	const identity = get(authStore).identity;
+	if (!success) {
+		toasts.error({
+			text: get(i18n).errors.invalid_metadata,
+			detail: z.prettifyError(error)
+		});
+		return { success: false };
+	}
 
-	const updatedSatellite = await setSatelliteMetadata({
-		missionControlId,
-		satelliteId,
-		metadata: Array.from(updateData),
-		identity
-	});
+	const { name: satelliteName, environment: satelliteEnv, tags: satelliteTags } = data;
 
-	const satellites = get(satellitesStore);
-	satellitesUncertifiedStore.set([
-		...(satellites ?? []).filter(
-			({ satellite_id }) => updatedSatellite.satellite_id.toText() !== satellite_id.toText()
-		),
-		updatedSatellite
-	]);
+	try {
+		const updateData = new Map<string, string>(currentMetadata);
+		updateData.set(METADATA_KEY_NAME, satelliteName);
+
+		if (notEmptyString(satelliteEnv)) {
+			updateData.set(METADATA_KEY_ENVIRONMENT, satelliteEnv);
+		} else {
+			updateData.delete(METADATA_KEY_ENVIRONMENT);
+		}
+
+		const tags = SatelliteUiMetadataSerializer.parse(satelliteTags);
+
+		if (notEmptyString(tags)) {
+			updateData.set(METADATA_KEY_TAGS, tags);
+		} else {
+			updateData.delete(METADATA_KEY_TAGS);
+		}
+
+		const { identity } = get(authStore);
+
+		const updatedSatellite = await setSatelliteMetadataApi({
+			missionControlId,
+			satelliteId,
+			metadata: Array.from(updateData),
+			identity
+		});
+
+		const satellites = get(satellitesStore);
+		satellitesUncertifiedStore.set([
+			...(satellites ?? []).filter(
+				({ satellite_id }) => updatedSatellite.satellite_id.toText() !== satellite_id.toText()
+			),
+			updatedSatellite
+		]);
+
+		return { success: true };
+	} catch (err: unknown) {
+		toasts.error({
+			text: get(i18n).errors.satellite_metadata_update,
+			detail: err
+		});
+
+		return { success: false };
+	}
 };
 
 export const attachSatellite = async ({
@@ -192,7 +255,7 @@ export const attachSatellite = async ({
 	missionControlId: MissionControlId;
 	satelliteId: Principal;
 }) => {
-	const identity = get(authStore).identity;
+	const { identity } = get(authStore);
 
 	await setSatellite({ missionControlId, satelliteId, identity });
 
@@ -210,7 +273,7 @@ export const detachSatellite = async ({
 	missionControlId: MissionControlId;
 	canisterId: Principal;
 }) => {
-	const identity = get(authStore).identity;
+	const { identity } = get(authStore);
 
 	await unsetSatellite({ missionControlId, satelliteId: canisterId, identity });
 
@@ -224,7 +287,7 @@ export const attachOrbiter = async (params: {
 	missionControlId: MissionControlId;
 	orbiterId: Principal;
 }) => {
-	const identity = get(authStore).identity;
+	const { identity } = get(authStore);
 
 	const orbiter = await setOrbiter({ ...params, identity });
 
@@ -238,7 +301,7 @@ export const detachOrbiter = async ({
 	missionControlId: MissionControlId;
 	canisterId: Principal;
 }) => {
-	const identity = get(authStore).identity;
+	const { identity } = get(authStore);
 
 	await unsetOrbiter({ ...rest, orbiterId: canisterId, identity });
 
@@ -254,14 +317,16 @@ export const loadSettings = async ({
 	identity: OptionIdentity;
 	reload?: boolean;
 }): Promise<{ success: boolean }> => {
-	const versionStore = get(missionControlVersionStore);
+	const store = get(versionStore);
 
-	if (compare(versionStore?.current ?? '0.0.0', MISSION_CONTROL_v0_0_14) < 0) {
+	if (compare(store.missionControl?.current ?? '0.0.0', MISSION_CONTROL_v0_0_14) < 0) {
 		missionControlSettingsUncertifiedStore.reset();
 		return { success: true };
 	}
 
-	const load = async (identity: Identity): Promise<MissionControlSettings | undefined> => {
+	const load = async (
+		identity: Identity
+	): Promise<MissionControlDid.MissionControlSettings | undefined> => {
 		const settings = await getSettings({
 			missionControlId,
 			identity
@@ -270,7 +335,7 @@ export const loadSettings = async ({
 		return fromNullable(settings);
 	};
 
-	const { result } = await loadDataStore<MissionControlSettings | undefined>({
+	const { result } = await loadDataStore<MissionControlDid.MissionControlSettings | undefined>({
 		identity,
 		reload,
 		load,
@@ -290,20 +355,20 @@ export const loadUserData = async ({
 	identity: OptionIdentity;
 	reload?: boolean;
 }): Promise<{ success: boolean }> => {
-	const versionStore = get(missionControlVersionStore);
+	const store = get(versionStore);
 
-	if (compare(versionStore?.current ?? '0.0.0', MISSION_CONTROL_v0_0_14) < 0) {
+	if (compare(store.missionControl?.current ?? '0.0.0', MISSION_CONTROL_v0_0_14) < 0) {
 		missionControlUserUncertifiedStore.reset();
 		return { success: true };
 	}
 
-	const load = async (identity: Identity): Promise<User> =>
+	const load = async (identity: Identity): Promise<MissionControlDid.User> =>
 		await getUserData({
 			missionControlId,
 			identity
 		});
 
-	const { result } = await loadDataStore<User>({
+	const { result } = await loadDataStore<MissionControlDid.User>({
 		identity,
 		reload,
 		load,

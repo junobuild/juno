@@ -45,7 +45,7 @@
 			text:
 				snapshotAction === 'restore'
 					? $i18n.canisters.restoring_snapshot
-					: $i18n.canisters.creating_snapshot
+					: $i18n.core.creating_snapshot
 		},
 		restarting: {
 			state: 'next',

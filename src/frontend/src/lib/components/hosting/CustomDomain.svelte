@@ -2,17 +2,13 @@
 	import { isNullish, nonNullish, fromNullishNullable } from '@dfinity/utils';
 	import { createEventDispatcher, onDestroy, onMount } from 'svelte';
 	import { run } from 'svelte/legacy';
-	import type { Satellite } from '$declarations/mission_control/mission_control.did';
-	import type {
-		AuthenticationConfig,
-		CustomDomain as CustomDomainType
-	} from '$declarations/satellite/satellite.did';
+	import type { SatelliteDid, MissionControlDid } from '$declarations';
 	import CustomDomainActions from '$lib/components/hosting/CustomDomainActions.svelte';
 	import IconCheckCircle from '$lib/components/icons/IconCheckCircle.svelte';
 	import IconSync from '$lib/components/icons/IconSync.svelte';
 	import ButtonTableAction from '$lib/components/ui/ButtonTableAction.svelte';
 	import ExternalLink from '$lib/components/ui/ExternalLink.svelte';
-	import { type HostingCallback, initHostingWorker } from '$lib/services/worker.hosting.services';
+	import { HostingWorker } from '$lib/services/workers/worker.hosting.services';
 	import { i18n } from '$lib/stores/i18n.store';
 	import type { CustomDomainRegistrationState } from '$lib/types/custom-domain';
 	import type { PostMessageDataResponseHosting } from '$lib/types/post-message';
@@ -24,9 +20,9 @@
 		url: string;
 		ariaLabel?: string;
 		type?: 'default' | 'custom';
-		customDomain?: [string, CustomDomainType] | undefined;
-		satellite?: Satellite | undefined;
-		config?: AuthenticationConfig | undefined;
+		customDomain?: [string, SatelliteDid.CustomDomain] | undefined;
+		satellite?: MissionControlDid.Satellite | undefined;
+		config?: SatelliteDid.AuthenticationConfig | undefined;
 	}
 
 	let {
@@ -51,15 +47,7 @@
 
 	let registrationState: Option<CustomDomainRegistrationState> = $state(undefined);
 
-	let worker:
-		| {
-				startCustomDomainRegistrationTimer: (params: {
-					customDomain: CustomDomainType;
-					callback: HostingCallback;
-				}) => void;
-				stopCustomDomainRegistrationTimer: () => void;
-		  }
-		| undefined = $state();
+	let worker = $state<HostingWorker | undefined>();
 
 	const syncState = ({ registrationState: state }: PostMessageDataResponseHosting) => {
 		registrationState = state;
@@ -90,12 +78,12 @@
 		});
 	};
 
-	onMount(async () => (worker = await initHostingWorker()));
-	onDestroy(() => worker?.stopCustomDomainRegistrationTimer());
+	onMount(async () => (worker = await HostingWorker.init()));
+	onDestroy(() => worker?.terminate());
 
 	run(() => {
 		// @ts-expect-error TODO: to be migrated to Svelte v5
-		worker, customDomain, loadRegistrationState();
+		(worker, customDomain, loadRegistrationState());
 	});
 
 	let displayState: Option<string> = $derived(
@@ -118,16 +106,16 @@
 <td>
 	{#if type === 'custom' && nonNullish(satellite)}
 		<div class="actions">
-			<ButtonTableAction icon="info" ariaLabel={$i18n.hosting.info} onaction={displayInfo} />
+			<ButtonTableAction ariaLabel={$i18n.hosting.info} icon="info" onaction={displayInfo} />
 
-			<CustomDomainActions {satellite} {customDomain} {config} {displayState} />
+			<CustomDomainActions {config} {customDomain} {displayState} {satellite} />
 		</div>
 	{/if}
 </td>
 
 <td colspan={type === 'default' ? 2 : undefined}>
 	<div class="domain">
-		<ExternalLink href={url} {ariaLabel}>{host}</ExternalLink>
+		<ExternalLink {ariaLabel} href={url}>{host}</ExternalLink>
 		<span class="type">{type}</span>
 	</div>
 </td>

@@ -1,6 +1,6 @@
 pub mod cmc {
     use candid::{CandidType, Principal};
-    use ic_cdk::api::management_canister::main::{CanisterId, CanisterSettings};
+    use ic_cdk::management_canister::{CanisterId, CanisterSettings};
     use ic_ledger_types::BlockIndex;
     use serde::Deserialize;
 
@@ -63,9 +63,15 @@ pub mod cmc {
 
 pub mod ic {
     use crate::types::core::Blob;
+    use candid::{Nat, Principal};
 
     pub struct WasmArg {
         pub wasm: Blob,
         pub install_arg: Vec<u8>,
+    }
+
+    pub struct CreateCanisterInitSettingsArg {
+        pub controllers: Vec<Principal>,
+        pub freezing_threshold: Nat,
     }
 }

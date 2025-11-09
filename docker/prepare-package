@@ -1,0 +1,154 @@
+#!/usr/bin/env bash
+
+set -euo pipefail
+
+function get_version_from_cargo() {
+  local manifest_path="$1"
+
+  if [[ ! -f "$manifest_path" ]]; then
+    echo "ERROR: Cargo.toml not found at $manifest_path"
+    exit 1
+  fi
+
+  local version
+    version=$(cargo metadata --no-deps --format-version 1 --manifest-path "$manifest_path" 2>/dev/null |
+      jq --arg manifest_path "$(realpath "$manifest_path")" -r '
+        .packages[] | select(.manifest_path == $manifest_path) | .version
+      ')
+
+  if [[ -z "$version" || "$version" == "null" ]]; then
+    echo "ERROR: Failed to extract version from $manifest_path"
+    exit 1
+  fi
+
+  echo "$version"
+}
+
+function generate_juno_package_json() {
+  local name="$1"
+  local version="$2"
+  local pkg_root_dir="$3"
+  local package_json_dir="$4"
+  local dependencies_csv="${5:-}"
+
+  local output_file="$package_json_dir/juno.package.json"
+
+  declare -A dependencies=()
+
+  IFS=',' read -ra dep_array <<< "$dependencies_csv"
+  for dep in "${dep_array[@]}"; do
+    # trim spaces (just in case)
+    dep=$(echo "$dep" | xargs)
+
+    # Build the path to the Cargo.toml from the package name
+    local dep_basename
+    dep_basename="$(basename "$dep")"
+    local path="$pkg_root_dir/$dep_basename/Cargo.toml"
+
+    if [[ ! -f "$path" ]]; then
+      echo "ERROR: Cargo.toml not found for dependency '$dep' at '$path'."
+      exit 1
+    fi
+
+    dependencies["@junobuild/$dep"]=$(get_version_from_cargo "$path")
+  done
+
+  echo "Generating $output_file..."
+
+  {
+    echo "{"
+    echo "  \"name\": \"$name\","
+    if [ ${#dependencies[@]} -gt 0 ]; then
+      echo "  \"version\": \"$version\","
+      echo "  \"dependencies\": {"
+      local first=1
+      for dep in "${!dependencies[@]}"; do
+        [ $first -eq 0 ] && echo ","
+        printf "    \"%s\": \"%s\"" "$dep" "${dependencies[$dep]}"
+        first=0
+      done
+      echo
+      echo "  }"
+    else
+      echo "  \"version\": \"$version\""
+    fi
+    echo "}"
+  } > "$output_file"
+}
+
+function create_canister_package_json() {
+  local canister=$1
+  local src_root_dir=$2
+  local pkg_root_dir=$3
+  local package_json_dir=$4
+  local custom="${5:-}"
+
+  if [ -z "$src_root_dir" ]; then
+      echo "ERROR: No root directory for the source specified."
+      exit 1
+  fi
+
+  if [ -z "$pkg_root_dir" ]; then
+      echo "ERROR: No directory for the package dependency specified."
+      exit 1
+  fi
+
+  if [ -z "$package_json_dir" ]; then
+      echo "ERROR: No directory for the package output path specified."
+      exit 1
+  fi
+
+  local target="${custom:-$canister}"
+  local name=""
+  local version=""
+  declare -a dependencies=()
+
+  case "$target" in
+    mission_control)
+      name="@junobuild/mission-control"
+      version=$(get_version_from_cargo "$src_root_dir/$canister/Cargo.toml")
+      ;;
+    satellite)
+      name="@junobuild/satellite"
+      version=$(get_version_from_cargo "$src_root_dir/$canister/Cargo.toml")
+      ;;
+    console)
+      name="@junobuild/console"
+      version=$(get_version_from_cargo "$src_root_dir/$canister/Cargo.toml")
+      ;;
+    observatory)
+      name="@junobuild/observatory"
+      version=$(get_version_from_cargo "$src_root_dir/$canister/Cargo.toml")
+      ;;
+    orbiter)
+      name="@junobuild/orbiter"
+      version=$(get_version_from_cargo "$src_root_dir/$canister/Cargo.toml")
+      ;;
+    sputnik)
+      name="@junobuild/sputnik"
+      version=$(get_version_from_cargo "$src_root_dir/$canister/Cargo.toml")
+      dependencies+=("satellite")
+      ;;
+    test_sputnik)
+      name="test-sputnik"
+      version="1.2.3-patch.4"
+      dependencies+=("satellite" "sputnik")
+      ;;
+    test_satellite)
+      name="test-satellite"
+      version=$(get_version_from_cargo "$src_root_dir/$canister/Cargo.toml")
+      dependencies+=("satellite")
+      ;;
+    *)
+      echo "ERROR: Unknown package type '$target'"
+      exit 1
+      ;;
+  esac
+
+  local dependencies_csv=""
+  if [ ${#dependencies[@]} -gt 0 ]; then
+    dependencies_csv=$(IFS=','; echo "${dependencies[*]}")
+  fi
+
+  generate_juno_package_json "$name" "$version" "$pkg_root_dir" "$package_json_dir" "$dependencies_csv"
+}

@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { nonNullish } from '@dfinity/utils';
+	import { isNullish, nonNullish } from '@dfinity/utils';
 	import type { Snippet } from 'svelte';
 	import { quintOut } from 'svelte/easing';
 	import { stopPropagation } from 'svelte/legacy';
@@ -12,7 +12,7 @@
 		anchor?: HTMLElement | undefined;
 		visible?: boolean;
 		direction?: 'ltr' | 'rtl';
-		center?: boolean;
+		center?: boolean | 'wide';
 		closeButton?: boolean;
 		backdrop?: 'light' | 'dark';
 		children: Snippet;
@@ -22,7 +22,7 @@
 		anchor = undefined,
 		visible = $bindable(false),
 		direction = 'ltr',
-		center = false,
+		center,
 		closeButton = false,
 		backdrop = 'light',
 		children
@@ -39,6 +39,10 @@
 		({ bottom, left, right } = nonNullish(anchor)
 			? anchor.getBoundingClientRect()
 			: { bottom: 0, left: 0, right: 0 });
+
+	let position = $derived<'top' | 'bottom'>(
+		bottom > window.innerHeight - 100 && isNullish(center) ? 'bottom' : 'top'
+	);
 
 	$effect(() => {
 		if (visible === false) {
@@ -58,17 +62,18 @@
 
 {#if visible && attached}
 	<div
-		role="menu"
-		aria-orientation="vertical"
-		out:fade
-		class={`popover ${backdrop}`}
-		class:center
-		tabindex="-1"
 		style={`--popover-top: ${bottom}px; ${
 			direction === 'rtl'
 				? `--popover-right: ${innerWidth - (right ?? 0)}px;`
 				: `--popover-left: ${left}px;`
 		}`}
+		class={`popover ${backdrop}`}
+		class:center={nonNullish(center)}
+		class:wide={center === 'wide'}
+		aria-orientation="vertical"
+		role="menu"
+		tabindex="-1"
+		out:fade
 	>
 		<div
 			class="backdrop"
@@ -78,13 +83,13 @@
 			tabindex="-1"
 		></div>
 		<div
-			transition:scale={{ delay: 25, duration: 150, easing: quintOut }}
-			class="wrapper"
-			class:center
+			class={`wrapper ${position}`}
+			class:center={nonNullish(center)}
 			class:rtl={direction === 'rtl'}
+			transition:scale={{ delay: 25, duration: 150, easing: quintOut }}
 		>
 			{#if closeButton}
-				<button onclick={stopPropagation(close)} aria-label={$i18n.core.close} class="close icon"
+				<button class="close icon" aria-label={$i18n.core.close} onclick={stopPropagation(close)}
 					><IconClose /></button
 				>
 			{/if}
@@ -109,7 +114,11 @@
 		}
 
 		&.center {
-			--popover-min-size: 340px;
+			--popover-min-size: 280px;
+
+			&.wide {
+				--popover-min-size: 540px;
+			}
 		}
 	}
 </style>

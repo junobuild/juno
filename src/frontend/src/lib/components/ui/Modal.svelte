@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { nonNullish } from '@dfinity/utils';
-	import { createEventDispatcher, type Snippet } from 'svelte';
+	import type { Snippet } from 'svelte';
 	import { quintOut } from 'svelte/easing';
 	import { fade, scale } from 'svelte/transition';
 	import IconBack from '$lib/components/icons/IconBack.svelte';
@@ -13,13 +13,12 @@
 	interface Props {
 		onback?: () => void;
 		children: Snippet;
+		onclose: () => void;
 	}
 
-	let { children, onback }: Props = $props();
+	let { children, onback, onclose }: Props = $props();
 
 	let visible = $state(true);
-
-	const dispatch = createEventDispatcher();
 
 	const onClose = ($event: MouseEvent | TouchEvent) => {
 		$event.stopPropagation();
@@ -33,17 +32,17 @@
 		}
 
 		visible = false;
-		dispatch('junoClose');
+		onclose();
 	};
 </script>
 
 {#if visible}
 	<div
 		class="modal"
-		out:fade
-		role="dialog"
-		aria-labelledby="modalTitle"
 		aria-describedby="modalContent"
+		aria-labelledby="modalTitle"
+		role="dialog"
+		out:fade
 	>
 		<div
 			class="backdrop"
@@ -52,25 +51,25 @@
 			role="button"
 			tabindex="-1"
 		></div>
-		<div transition:scale={{ delay: 25, duration: 150, easing: quintOut }} class="wrapper flex">
+		<div class="wrapper flex" transition:scale={{ delay: 25, duration: 150, easing: quintOut }}>
 			<div class="toolbar">
 				{#if nonNullish(onback)}
 					<div class="start">
-						<ButtonIcon onclick={onback} disabled={$isBusy}>
+						<ButtonIcon disabled={$isBusy} onclick={onback}>
 							{#snippet icon()}
-								<IconBack size="20px" />
+								<IconBack size="16px" />
 							{/snippet}
 							{$i18n.core.back}
 						</ButtonIcon>
 					</div>
 				{/if}
 
-				<button onclick={onClose} aria-label={$i18n.core.close} disabled={$isBusy}
+				<button aria-label={$i18n.core.close} disabled={$isBusy} onclick={onClose}
 					><IconClose /></button
 				>
 			</div>
 
-			<div class="content" id="modalContent">
+			<div id="modalContent" class="content">
 				{@render children()}
 			</div>
 		</div>

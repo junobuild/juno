@@ -26,29 +26,29 @@
 	});
 </script>
 
-<Popover bind:visible center={true} backdrop="dark">
+<Popover backdrop="dark" center={true} bind:visible>
 	<div class="container">
 		<h3>{$i18n.wallet.receive}</h3>
 
 		{#if step === 'wallet_id'}
 			<div in:fade>
 				<ReceiveTokensQRCode
+					ariaLabel={$i18n.wallet.wallet_id}
 					back={() => (step = 'options')}
 					value={missionControlId.toText()}
-					ariaLabel={$i18n.wallet.wallet_id}
 				/>
 			</div>
 		{:else if step === 'account_identifier'}
 			<div in:fade>
 				<ReceiveTokensQRCode
+					ariaLabel={$i18n.wallet.account_identifier}
 					back={() => (step = 'options')}
 					value={accountIdentifier.toHex()}
-					ariaLabel={$i18n.wallet.account_identifier}
 				/>
 			</div>
 		{:else if step === 'signer'}
 			<div in:fade>
-				<ReceiveTokensSigner {missionControlId} bind:visible back={() => (step = 'options')} />
+				<ReceiveTokensSigner back={() => (step = 'options')} {missionControlId} bind:visible />
 			</div>
 		{:else}
 			<div class="options">

@@ -7,7 +7,7 @@
 </script>
 
 {#if visible}
-	<span role="presentation" class="separator">&nbsp;</span>
+	<span class="separator" role="presentation">&nbsp;</span>
 {/if}
 
 <style lang="scss">

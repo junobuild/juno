@@ -1,14 +1,14 @@
 <script lang="ts">
 	import { nonNullish } from '@dfinity/utils';
-	import type { CyclesMonitoringStrategy } from '$declarations/mission_control/mission_control.did';
+	import type { MissionControlDid } from '$declarations';
 	import MonitoringStepBackContinue from '$lib/components/monitoring/MonitoringStepBackContinue.svelte';
 	import { BASIC_STRATEGY } from '$lib/constants/monitoring.constants';
 	import { i18n } from '$lib/stores/i18n.store';
 
 	interface Props {
-		defaultStrategy: CyclesMonitoringStrategy | undefined;
+		defaultStrategy: MissionControlDid.CyclesMonitoringStrategy | undefined;
 		onback: () => void;
-		oncontinue: (strategy?: CyclesMonitoringStrategy) => void;
+		oncontinue: (strategy?: MissionControlDid.CyclesMonitoringStrategy) => void;
 	}
 
 	let { defaultStrategy, oncontinue, onback }: Props = $props();
@@ -29,7 +29,7 @@
 	};
 </script>
 
-<MonitoringStepBackContinue {onback} oncontinue={onSelect} grid={false}>
+<MonitoringStepBackContinue grid={false} {onback} oncontinue={onSelect}>
 	{#snippet header()}
 		<h2>{$i18n.monitoring.select_auto_refill_strategy}</h2>
 
@@ -40,7 +40,7 @@
 
 	<div class="options">
 		<label class="radio-group">
-			<input type="radio" bind:group={strategy} name="strategy" value="basic" />
+			<input name="strategy" type="radio" value="basic" bind:group={strategy} />
 			<span class="text">
 				<span>{$i18n.monitoring.basic}</span>
 				<span class="description">{$i18n.monitoring.basic_description}</span>
@@ -49,7 +49,7 @@
 
 		{#if nonNullish(defaultStrategy)}
 			<label class="radio-group">
-				<input type="radio" bind:group={strategy} name="strategy" value="default" />
+				<input name="strategy" type="radio" value="default" bind:group={strategy} />
 				<span class="text">
 					<span>{$i18n.monitoring.default}</span>
 					<span class="description">{$i18n.monitoring.default_description}</span>
@@ -58,9 +58,9 @@
 		{/if}
 
 		<label class="radio-group">
-			<input type="radio" bind:group={strategy} name="strategy" value="custom" />
+			<input name="strategy" type="radio" value="custom" bind:group={strategy} />
 			<span class="text">
-				<span>{$i18n.monitoring.custom}</span>
+				<span>{$i18n.core.custom}</span>
 				<span class="description">{$i18n.monitoring.custom_description}</span>
 			</span>
 		</label>

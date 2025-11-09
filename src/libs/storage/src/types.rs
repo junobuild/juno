@@ -151,6 +151,10 @@ pub mod interface {
     use serde::Serialize;
 
     use crate::http::types::HeaderField;
+    use crate::types::config::{
+        StorageConfigHeaders, StorageConfigIFrame, StorageConfigMaxMemorySize,
+        StorageConfigRawAccess, StorageConfigRedirects, StorageConfigRewrites,
+    };
     use crate::types::runtime_state::{BatchId, ChunkId};
     use crate::types::state::FullPath;
     use crate::types::store::{AssetKey, EncodingType};
@@ -205,12 +209,24 @@ pub mod interface {
         pub total_length: u128,
         pub sha256: Hash,
     }
+
+    #[derive(Default, CandidType, Serialize, Deserialize, Clone)]
+    pub struct SetStorageConfig {
+        pub headers: StorageConfigHeaders,
+        pub rewrites: StorageConfigRewrites,
+        pub redirects: Option<StorageConfigRedirects>,
+        pub iframe: Option<StorageConfigIFrame>,
+        pub raw_access: Option<StorageConfigRawAccess>,
+        pub max_memory_size: Option<StorageConfigMaxMemorySize>,
+        pub version: Option<Version>,
+    }
 }
 
 pub mod config {
     use crate::http::types::{HeaderField, StatusCode};
     use candid::CandidType;
     use junobuild_shared::types::config::ConfigMaxMemorySize;
+    use junobuild_shared::types::state::{Timestamp, Version};
     use serde::{Deserialize, Serialize};
     use std::collections::HashMap;
 
@@ -241,6 +257,9 @@ pub mod config {
         pub iframe: Option<StorageConfigIFrame>,
         pub raw_access: Option<StorageConfigRawAccess>,
         pub max_memory_size: Option<StorageConfigMaxMemorySize>,
+        pub version: Option<Version>,
+        pub created_at: Option<Timestamp>,
+        pub updated_at: Option<Timestamp>,
     }
 
     #[derive(Default, CandidType, Serialize, Deserialize, Clone)]

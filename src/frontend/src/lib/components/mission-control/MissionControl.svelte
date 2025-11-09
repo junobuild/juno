@@ -1,18 +1,13 @@
 <script lang="ts">
 	import { fade } from 'svelte/transition';
-	import CanisterMonitoring from '$lib/components/canister/CanisterMonitoring.svelte';
 	import CanisterOverview from '$lib/components/canister/CanisterOverview.svelte';
 	import CanisterSubnet from '$lib/components/canister/CanisterSubnet.svelte';
-	import MissionControlActions from '$lib/components/mission-control/MissionControlActions.svelte';
-	import MissionControlDataLoader from '$lib/components/mission-control/MissionControlDataLoader.svelte';
-	import MonitoringDisabled from '$lib/components/monitoring/MonitoringDisabled.svelte';
+	import MissionControlOverviewActions from '$lib/components/mission-control/MissionControlOverviewActions.svelte';
+	import MissionControlRuntimeActions from '$lib/components/mission-control/MissionControlRuntimeActions.svelte';
+	import SegmentVersion from '$lib/components/segments/SegmentVersion.svelte';
 	import Identifier from '$lib/components/ui/Identifier.svelte';
 	import Value from '$lib/components/ui/Value.svelte';
 	import { authSignedIn } from '$lib/derived/auth.derived';
-	import {
-		missionControlMonitoring,
-		missionControlSettingsNotLoaded
-	} from '$lib/derived/mission-control-settings.derived';
 	import { missionControlVersion } from '$lib/derived/version.derived';
 	import { i18n } from '$lib/stores/i18n.store';
 	import type { MissionControlId } from '$lib/types/mission-control';
@@ -43,36 +38,22 @@
 			</div>
 
 			<div>
-				<div>
-					<Value>
-						{#snippet label()}
-							{$i18n.core.version}
-						{/snippet}
-						<p>v{$missionControlVersion?.current ?? '...'}</p>
-					</Value>
-				</div>
+				<SegmentVersion version={$missionControlVersion?.current} />
 			</div>
 		</div>
-
-		<MissionControlActions {missionControlId} />
 	</div>
 
+	<MissionControlOverviewActions {missionControlId} />
+
 	<div class="card-container with-title" in:fade>
-		<span class="title">{$i18n.monitoring.title}</span>
+		<span class="title">{$i18n.monitoring.runtime}</span>
 
 		<div class="columns-3">
 			<CanisterOverview canisterId={missionControlId} segment="mission_control" />
-
-			<CanisterMonitoring canisterId={missionControlId}>
-				<MissionControlDataLoader {missionControlId}>
-					<MonitoringDisabled
-						monitoring={$missionControlMonitoring}
-						loading={$missionControlSettingsNotLoaded}
-					/>
-				</MissionControlDataLoader>
-			</CanisterMonitoring>
 		</div>
 	</div>
+
+	<MissionControlRuntimeActions {missionControlId} />
 {/if}
 
 <style lang="scss">

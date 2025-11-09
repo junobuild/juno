@@ -7,7 +7,7 @@
 	let { animated = true, tagName = 'span' }: Props = $props();
 </script>
 
-<div data-tid="skeleton-text" aria-busy="true" class="skeleton-text" class:animated>
+<div class="skeleton-text" class:animated aria-busy="true" data-tid="skeleton-text">
 	<svelte:element this={tagName}>&nbsp;</svelte:element>
 </div>
 

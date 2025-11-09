@@ -1,5 +1,4 @@
 <script lang="ts">
-	import type { Principal } from '@dfinity/principal';
 	import {
 		isEmptyString,
 		isNullish,
@@ -7,11 +6,11 @@
 		notEmptyString,
 		fromNullishNullable
 	} from '@dfinity/utils';
+	import type { Principal } from '@icp-sdk/core/principal';
 	import { setDoc } from '@junobuild/core';
 	import { nanoid } from 'nanoid';
-	import { createEventDispatcher, getContext, type Snippet } from 'svelte';
-	import { run } from 'svelte/legacy';
-	import type { Doc } from '$declarations/satellite/satellite.did';
+	import { getContext, type Snippet } from 'svelte';
+	import type { SatelliteDid } from '$declarations';
 	import DataUpload from '$lib/components/data/DataUpload.svelte';
 	import IconAutoRenew from '$lib/components/icons/IconAutoRenew.svelte';
 	import Value from '$lib/components/ui/Value.svelte';
@@ -25,10 +24,11 @@
 
 	interface Props {
 		docKey?: string | undefined;
-		doc?: Doc | undefined;
+		doc?: SatelliteDid.Doc | undefined;
 		action?: Snippet;
 		title?: Snippet;
 		description?: Snippet;
+		onfileuploaded: () => void;
 	}
 
 	let {
@@ -36,7 +36,8 @@
 		doc = undefined,
 		action,
 		title,
-		description: descriptionSnippet
+		description: descriptionSnippet,
+		onfileuploaded
 	}: Props = $props();
 
 	const { store }: RulesContext = getContext<RulesContext>(RULES_CONTEXT_KEY);
@@ -45,23 +46,21 @@
 
 	let satelliteId: Principal = $derived($store.satelliteId);
 
-	let key: string | undefined = $state();
+	let key = $state<string | undefined>();
 	const initKey = (k: string | undefined) => (key = k);
-	run(() => {
+	$effect(() => {
 		initKey(docKey);
 	});
 
-	let description: string | undefined = $state();
+	let description = $state<string | undefined>();
 	const initDescription = (d: string | undefined) => (description = d);
-	run(() => {
+	$effect(() => {
 		initDescription(fromNullishNullable(doc?.description));
 	});
 
 	const generateKey = () => (key = nanoid());
 
-	const dispatch = createEventDispatcher();
-
-	const upload = async ({ detail: file }: CustomEvent<File | undefined>) => {
+	const upload = async (file: File | undefined) => {
 		if (isNullish(file)) {
 			// Upload is disabled if not valid
 			toasts.error({
@@ -110,7 +109,7 @@
 				}
 			});
 
-			dispatch('junoUploaded');
+			onfileuploaded();
 
 			close();
 		} catch (err: unknown) {
@@ -123,18 +122,15 @@
 		busy.stop();
 	};
 
-	let mode: 'create' | 'replace' = $state('create');
-	run(() => {
-		mode = nonNullish(doc) && nonNullish(docKey) ? 'replace' : 'create';
-	});
+	let mode = $derived(nonNullish(doc) && nonNullish(docKey) ? 'replace' : 'create');
 </script>
 
 <DataUpload
-	on:junoUpload={upload}
-	disabled={isEmptyString(key)}
 	{action}
-	{title}
 	description={descriptionSnippet}
+	disabled={isEmptyString(key)}
+	{title}
+	uploadFile={upload}
 >
 	{#if mode === 'create'}
 		<div>
@@ -145,17 +141,17 @@
 				<div class="form-doc-key">
 					<input
 						id="doc-key"
-						type="text"
-						placeholder={$i18n.document.key_placeholder}
-						bind:value={key}
 						autocomplete="off"
 						data-1p-ignore
+						placeholder={$i18n.document.key_placeholder}
+						type="text"
+						bind:value={key}
 					/>
 					<button
 						class="text"
-						type="button"
-						onclick={generateKey}
 						aria-label={$i18n.document.key_generate}
+						onclick={generateKey}
+						type="button"
 					>
 						<IconAutoRenew size="20px" />
 					</button>
@@ -170,11 +166,11 @@
 				{/snippet}
 				<input
 					id="doc-description"
-					type="text"
-					placeholder={$i18n.document.description_placeholder}
-					bind:value={description}
 					autocomplete="off"
 					data-1p-ignore
+					placeholder={$i18n.document.description_placeholder}
+					type="text"
+					bind:value={description}
 				/>
 			</Value>
 		</div>

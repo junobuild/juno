@@ -20,9 +20,9 @@
 </script>
 
 {#if nonNullish(canister) && status === 'stopped' && sync === 'synced'}
-	<div in:fade><CanisterStart {canister} {segment} {onstart} /></div>
+	<div in:fade><CanisterStart {canister} {onstart} {segment} /></div>
 {:else if nonNullish(canister) && status === 'running' && sync === 'synced'}
-	<div in:fade><CanisterStop {canister} {monitoringEnabled} {segment} {onstop} /></div>
+	<div in:fade><CanisterStop {canister} {monitoringEnabled} {onstop} {segment} /></div>
 {/if}
 
 <style lang="scss">

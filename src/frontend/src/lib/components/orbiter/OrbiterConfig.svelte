@@ -1,6 +1,6 @@
 <script lang="ts">
-	import type { Principal } from '@dfinity/principal';
 	import { isNullish, notEmptyString } from '@dfinity/utils';
+	import type { Principal } from '@icp-sdk/core/principal';
 	import { run } from 'svelte/legacy';
 	import { fade } from 'svelte/transition';
 	import Value from '$lib/components/ui/Value.svelte';
@@ -9,7 +9,7 @@
 		orbiterSatellitesConfig
 	} from '$lib/derived/orbiter-satellites.derived';
 	import { sortedSatellites } from '$lib/derived/satellites.derived';
-	import { loadOrbiterConfigs } from '$lib/services/orbiters.services';
+	import { loadOrbiterConfigs } from '$lib/services/orbiter/orbiters.services';
 	import { i18n } from '$lib/stores/i18n.store';
 	import { versionStore } from '$lib/stores/version.store';
 	import { emit } from '$lib/utils/events.utils';
@@ -34,7 +34,7 @@
 
 	run(() => {
 		// @ts-expect-error TODO: to be migrated to Svelte v5
-		$versionStore, (async () => await load())();
+		($versionStore, (async () => await load())());
 	});
 
 	let enabledSatellites = $derived(

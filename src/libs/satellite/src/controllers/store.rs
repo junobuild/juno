@@ -1,4 +1,4 @@
-use crate::memory::internal::STATE;
+use crate::memory::state::STATE;
 use junobuild_shared::controllers::{
     delete_controllers as delete_controllers_impl, filter_admin_controllers,
     set_controllers as set_controllers_impl,

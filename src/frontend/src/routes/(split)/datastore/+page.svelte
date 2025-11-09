@@ -5,10 +5,9 @@
 	import Db from '$lib/components/db/Db.svelte';
 	import IdentityGuard from '$lib/components/guards/IdentityGuard.svelte';
 	import SatelliteGuard from '$lib/components/guards/SatelliteGuard.svelte';
-	import CanistersLoader from '$lib/components/loaders/CanistersLoader.svelte';
-	import SatellitesLoader from '$lib/components/loaders/SatellitesLoader.svelte';
+	import Loaders from '$lib/components/loaders/Loaders.svelte';
 	import Tabs from '$lib/components/ui/Tabs.svelte';
-	import WalletLoader from '$lib/components/wallet/WalletLoader.svelte';
+	import { missionControlIdDerived } from '$lib/derived/mission-control.derived';
 	import { satelliteStore } from '$lib/derived/satellite.derived';
 	import {
 		type Tab,
@@ -40,17 +39,13 @@
 </script>
 
 <IdentityGuard>
-	<Tabs help="https://juno.build/docs/build/datastore">
-		<WalletLoader>
-			<SatellitesLoader>
-				<SatelliteGuard>
-					<CanistersLoader>
-						{#if nonNullish($satelliteStore)}
-							<Db satelliteId={$satelliteStore.satellite_id} />
-						{/if}
-					</CanistersLoader>
-				</SatelliteGuard>
-			</SatellitesLoader>
-		</WalletLoader>
-	</Tabs>
+	<Loaders>
+		<SatelliteGuard>
+			<Tabs>
+				{#if nonNullish($satelliteStore) && nonNullish($missionControlIdDerived)}
+					<Db satelliteId={$satelliteStore.satellite_id} />
+				{/if}
+			</Tabs>
+		</SatelliteGuard>
+	</Loaders>
 </IdentityGuard>

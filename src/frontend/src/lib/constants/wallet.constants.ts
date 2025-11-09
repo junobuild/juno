@@ -1,4 +1,4 @@
-import { DEV } from '$lib/constants/app.constants';
+import { isDev } from '$lib/env/app.env';
 import type { RelyingPartyOptions } from '@dfinity/oisy-wallet-signer';
 
 export const MEMO_CANISTER_CREATE = BigInt(0x41455243); // == 'CREA'
@@ -11,7 +11,7 @@ export const MEMO_SATELLITE_CREATE_REFUND = BigInt(0x44464552544153); // == 'SAT
 // eslint-disable-next-line no-loss-of-precision
 export const MEMO_ORBITER_CREATE_REFUND = BigInt(0x4446455242524f); // == 'ORBREFD'
 
-export const OISY_WALLET_OPTIONS: RelyingPartyOptions = DEV
+export const OISY_WALLET_OPTIONS: RelyingPartyOptions = isDev()
 	? {
 			url: 'http://localhost:5174/sign',
 			host: 'http://localhost:5987/'

@@ -1,17 +1,17 @@
 <script lang="ts">
-	import type { Principal } from '@dfinity/principal';
 	import { isNullish, nonNullish } from '@dfinity/utils';
+	import type { Principal } from '@icp-sdk/core/principal';
 	import { compare } from 'semver';
-	import type { SvelteComponent } from 'svelte';
-	import type { OrbiterSatelliteFeatures } from '$declarations/orbiter/orbiter.did';
+	import type { OrbiterDid } from '$declarations';
 	import Checkbox from '$lib/components/ui/Checkbox.svelte';
 	import CheckboxGroup from '$lib/components/ui/CheckboxGroup.svelte';
 	import Collapsible from '$lib/components/ui/Collapsible.svelte';
 	import Identifier from '$lib/components/ui/Identifier.svelte';
 	import Modal from '$lib/components/ui/Modal.svelte';
 	import SpinnerModal from '$lib/components/ui/SpinnerModal.svelte';
+	import { DEFAULT_FEATURES } from '$lib/constants/analytics.constants';
 	import { ORBITER_v0_0_8 } from '$lib/constants/version.constants';
-	import { setOrbiterSatelliteConfigs } from '$lib/services/orbiters.services';
+	import { setOrbiterSatelliteConfigs } from '$lib/services/orbiter/orbiters.services';
 	import { authStore } from '$lib/stores/auth.store';
 	import { isBusy, wizardBusy } from '$lib/stores/busy.store';
 	import { i18n } from '$lib/stores/i18n.store';
@@ -19,7 +19,7 @@
 	import { toasts } from '$lib/stores/toasts.store';
 	import { versionStore } from '$lib/stores/version.store';
 	import type { JunoModalDetail, JunoModalEditOrbiterConfigDetail } from '$lib/types/modal';
-	import type { OrbiterSatelliteConfigEntry } from '$lib/types/ortbiter';
+	import type { OrbiterSatelliteConfigEntry } from '$lib/types/orbiter';
 	import type { SatelliteIdText } from '$lib/types/satellite';
 
 	interface Props {
@@ -35,20 +35,19 @@
 		(detail as JunoModalEditOrbiterConfigDetail).config
 	);
 
-	let features: OrbiterSatelliteFeatures | undefined = $state(
+	let features: OrbiterDid.OrbiterSatelliteFeatures | undefined = $state(
 		(detail as JunoModalEditOrbiterConfigDetail).features
 	);
 
 	let step: 'init' | 'in_progress' | 'ready' | 'error' = $state('init');
 
-	let collapsibleRef: (SvelteComponent & { open: () => void; close: () => void }) | undefined =
-		$state(undefined);
+	let collapsibleRef: Collapsible | undefined = $state(undefined);
 
-	const openOptions = (features: OrbiterSatelliteFeatures | undefined) => {
+	const openOptions = (features: OrbiterDid.OrbiterSatelliteFeatures | undefined) => {
 		if (
 			features?.page_views === false ||
 			features?.track_events === false ||
-			features?.performance_metrics === false
+			features?.performance_metrics === true
 		) {
 			collapsibleRef?.open();
 		}
@@ -61,7 +60,7 @@
 			return;
 		}
 
-		const features = (detail as JunoModalEditOrbiterConfigDetail).features;
+		const { features } = detail as JunoModalEditOrbiterConfigDetail;
 		openOptions(features);
 
 		mounted = true;
@@ -73,27 +72,21 @@
 
 	const onPageViewsToggle = () => {
 		features = {
-			...(nonNullish(features)
-				? features
-				: { page_views: true, track_events: true, performance_metrics: true }),
+			...(nonNullish(features) ? features : DEFAULT_FEATURES),
 			page_views: features?.page_views !== true
 		};
 	};
 
 	const onTrackEventsToggle = () => {
 		features = {
-			...(nonNullish(features)
-				? features
-				: { page_views: true, track_events: true, performance_metrics: true }),
+			...(nonNullish(features) ? features : DEFAULT_FEATURES),
 			track_events: features?.track_events !== true
 		};
 	};
 
 	const onPerformanceToggle = () => {
 		features = {
-			...(nonNullish(features)
-				? features
-				: { page_views: true, track_events: true, performance_metrics: true }),
+			...(nonNullish(features) ? features : DEFAULT_FEATURES),
 			performance_metrics: features?.performance_metrics !== true
 		};
 	};
@@ -149,7 +142,7 @@
 	};
 </script>
 
-<Modal on:junoClose={onclose}>
+<Modal {onclose}>
 	{#if step === 'ready'}
 		<div class="msg">
 			<p>{$i18n.core.configuration_applied}</p>
@@ -175,19 +168,18 @@
 						</tr>
 					</thead>
 					<tbody>
-						{#each Object.entries(config) as conf}
-							{@const satelliteId = conf[0]}
-							{@const entry = conf[1]}
+						{#each Object.entries(config) as conf (conf[0])}
+							{@const [satelliteId, entry] = conf}
 
 							<tr>
 								<td class="actions">
 									<Checkbox>
-										<input type="checkbox" bind:checked={conf[1].enabled} />
+										<input id={satelliteId} type="checkbox" bind:checked={conf[1].enabled} />
 									</Checkbox>
 								</td>
 
 								<td>
-									{entry.name}
+									<label for={satelliteId}>{entry.name}</label>
 								</td>
 
 								<td>
@@ -202,7 +194,9 @@
 			{#if featuresSupported}
 				<div class="options">
 					<Collapsible bind:this={collapsibleRef}>
-						<svelte:fragment slot="header">{$i18n.core.advanced_options}</svelte:fragment>
+						{#snippet header()}
+							{$i18n.core.advanced_options}
+						{/snippet}
 
 						<div class="card-container with-title">
 							<span class="title">{$i18n.analytics.tracked_metrics}</span>
@@ -210,30 +204,36 @@
 							<div class="content">
 								<CheckboxGroup>
 									<Checkbox>
-										<input
-											type="checkbox"
-											checked={isNullish(features) || features?.page_views === true}
-											onchange={onPageViewsToggle}
-										/>
-										<span>{$i18n.analytics.page_views}</span>
+										<label>
+											<input
+												checked={isNullish(features) || features?.page_views === true}
+												onchange={onPageViewsToggle}
+												type="checkbox"
+											/>
+											<span>{$i18n.analytics.page_views}</span>
+										</label>
 									</Checkbox>
 
 									<Checkbox>
-										<input
-											type="checkbox"
-											checked={isNullish(features) || features?.track_events === true}
-											onchange={onTrackEventsToggle}
-										/>
-										<span>{$i18n.analytics.tracked_events}</span>
+										<label>
+											<input
+												checked={isNullish(features) || features?.track_events === true}
+												onchange={onTrackEventsToggle}
+												type="checkbox"
+											/>
+											<span>{$i18n.analytics.tracked_events}</span>
+										</label>
 									</Checkbox>
 
 									<Checkbox>
-										<input
-											type="checkbox"
-											checked={isNullish(features) || features?.performance_metrics === true}
-											onchange={onPerformanceToggle}
-										/>
-										<span>{$i18n.analytics.web_vitals}</span>
+										<label
+											><input
+												checked={features?.performance_metrics === true}
+												onchange={onPerformanceToggle}
+												type="checkbox"
+											/>
+											<span>{$i18n.analytics.web_vitals}</span></label
+										>
 									</Checkbox>
 								</CheckboxGroup>
 							</div>
@@ -242,7 +242,7 @@
 				</div>
 			{/if}
 
-			<button type="submit" disabled={!validConfirm || $isBusy}>
+			<button disabled={!validConfirm || $isBusy} type="submit">
 				{$i18n.core.submit}
 			</button>
 		</form>

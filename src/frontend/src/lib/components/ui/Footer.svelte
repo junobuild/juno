@@ -9,15 +9,15 @@
 
 	<div class="end">
 		<div class="links">
-			<ExternalLink href="https://juno.build/docs/intro" arrow={false}>Docs</ExternalLink>
+			<ExternalLink arrow={false} href="https://juno.build/docs/intro">Docs</ExternalLink>
 
-			<ExternalLink href="https://juno.build/docs/category/guides-and-examples" arrow={false}
+			<ExternalLink arrow={false} href="https://juno.build/docs/category/guides-and-examples"
 				>Guides</ExternalLink
 			>
 
-			<ExternalLink href="https://github.com/junobuild/juno" arrow={false}>GitHub</ExternalLink>
+			<ExternalLink arrow={false} href="https://github.com/junobuild/juno">GitHub</ExternalLink>
 
-			<ExternalLink href="https://discord.gg/wHZ57Z2RAG" arrow={false}>Discord</ExternalLink>
+			<ExternalLink arrow={false} href="https://discord.gg/wHZ57Z2RAG">Discord</ExternalLink>
 		</div>
 
 		<AppLang />

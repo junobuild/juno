@@ -48,7 +48,7 @@
 
 <form onsubmit={onSubmit}>
 	<div class="columns">
-		<WalletSendFrom {missionControlId} {balance} />
+		<WalletSendFrom {balance} {missionControlId} />
 
 		<GridArrow />
 
@@ -86,7 +86,7 @@
 	</div>
 
 	<div class="toolbar">
-		<button type="button" onclick={onback}>{$i18n.core.back}</button>
+		<button onclick={onback} type="button">{$i18n.core.back}</button>
 		<button type="submit">{$i18n.core.confirm}</button>
 	</div>
 </form>

@@ -1,6 +1,6 @@
 <script lang="ts">
-	import { Principal } from '@dfinity/principal';
 	import { nonNullish } from '@dfinity/utils';
+	import { Principal } from '@icp-sdk/core/principal';
 	import { fade } from 'svelte/transition';
 	import CanisterMonitoringChart from '$lib/components/canister/CanisterMonitoringChart.svelte';
 	import CanisterMonitoringData from '$lib/components/canister/CanisterMonitoringData.svelte';
@@ -10,7 +10,11 @@
 	import Modal from '$lib/components/ui/Modal.svelte';
 	import Value from '$lib/components/ui/Value.svelte';
 	import { i18n } from '$lib/stores/i18n.store';
-	import type { CanisterMonitoringData as CanisterMonitoringDataType } from '$lib/types/canister';
+	import type {
+		CanisterData,
+		CanisterMonitoringData as CanisterMonitoringDataType,
+		CanisterSyncStatus
+	} from '$lib/types/canister';
 	import type { JunoModalDetail, JunoModalShowMonitoringDetail } from '$lib/types/modal';
 	import { formatTCycles } from '$lib/utils/cycles.utils';
 	import { formatToRelativeTime } from '$lib/utils/date.utils';
@@ -35,17 +39,27 @@
 	let chartsData = $derived(monitoringData?.chartsData ?? []);
 
 	let depositedCyclesChartData = $derived(monitoringData?.charts.depositedCycles ?? []);
+
+	let canisterData = $state<CanisterData | undefined>(undefined);
+	let canisterSyncStatus = $state<CanisterSyncStatus | undefined>(undefined);
 </script>
 
-<Modal on:junoClose={onclose}>
+<Modal {onclose}>
 	<h2>{$i18n.monitoring.title}</h2>
 
 	<div class="card-container columns-3 no-border">
-		<CanisterOverview {canisterId} segment={segment.segment} />
+		<CanisterOverview
+			{canisterId}
+			segment={segment.segment}
+			bind:data={canisterData}
+			bind:sync={canisterSyncStatus}
+		/>
+
+		<hr />
 
 		<CanisterMonitoringData {canisterId} bind:monitoringData>
-			<div>
-				<MonitoringStrategyStatus {monitoring} />
+			<div class="status">
+				<MonitoringStrategyStatus {canisterData} {canisterSyncStatus} {monitoring} />
 
 				{#if nonNullish(lastExecutionTime)}
 					<div in:fade>
@@ -103,6 +117,24 @@
 	.chart {
 		@include media.min-width(medium) {
 			grid-column: 1 / 3;
+		}
+	}
+
+	.status {
+		margin: var(--padding-6x) 0 var(--padding-8x);
+
+		@include media.min-width(medium) {
+			margin: var(--padding-6x) 0 var(--padding-4x);
+			grid-column: 1 / 4;
+		}
+	}
+
+	hr {
+		margin: var(--padding-4x) 0 var(--padding-2x);
+
+		@include media.min-width(medium) {
+			margin: var(--padding-6x) 0 var(--padding-2x);
+			grid-column: 1 / 4;
 		}
 	}
 </style>

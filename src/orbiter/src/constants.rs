@@ -3,6 +3,7 @@ pub const STRING_MAX_LENGTH: usize = 1024;
 pub const SHORT_STRING_MAX_LENGTH: usize = 256;
 pub const KEY_MAX_LENGTH: usize = 36; // UUID length
 pub const METADATA_MAX_ELEMENTS: usize = 10;
+pub const UTM_MAX_LENGTH: usize = 100;
 
 pub const SERIALIZED_PRINCIPAL_LENGTH: usize = 30;
 pub const SERIALIZED_LONG_STRING_LENGTH: usize = LONG_STRING_MAX_LENGTH + 1;

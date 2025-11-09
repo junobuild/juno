@@ -1,12 +1,13 @@
 <script lang="ts">
-	import { AnonymousIdentity } from '@dfinity/agent';
 	import { nonNullish } from '@dfinity/utils';
+	import { AnonymousIdentity } from '@icp-sdk/core/agent';
 	import { type UpgradeCodeParams, upgradeSatellite } from '@junobuild/admin';
 	import { compare } from 'semver';
 	import CanisterUpgradeModal from '$lib/components/modals/CanisterUpgradeModal.svelte';
 	import Html from '$lib/components/ui/Html.svelte';
 	import { SATELLITE_v0_0_7, SATELLITE_v0_0_9 } from '$lib/constants/version.constants';
 	import { missionControlIdDerived } from '$lib/derived/mission-control.derived';
+	import { reloadSatelliteVersion } from '$lib/services/version/version.satellite.services';
 	import { authStore } from '$lib/stores/auth.store';
 	import { i18n } from '$lib/stores/i18n.store';
 	import type { JunoModalDetail, JunoModalUpgradeSatelliteDetail } from '$lib/types/modal';
@@ -40,16 +41,23 @@
 			deprecated: compare(currentVersion, SATELLITE_v0_0_7) < 0,
 			deprecatedNoScope: compare(currentVersion, SATELLITE_v0_0_9) < 0
 		});
+
+	const reloadVersion = async () => {
+		await reloadSatelliteVersion({
+			satelliteId: satellite.satellite_id
+		});
+	};
 </script>
 
 <CanisterUpgradeModal
-	{onclose}
-	{newerReleases}
-	{currentVersion}
 	{build}
-	upgrade={upgradeSatelliteWasm}
-	segment="satellite"
 	canisterId={satellite.satellite_id}
+	{currentVersion}
+	{newerReleases}
+	{onclose}
+	{reloadVersion}
+	segment="satellite"
+	upgrade={upgradeSatelliteWasm}
 >
 	{#snippet intro()}
 		<h2>

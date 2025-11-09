@@ -4,13 +4,57 @@ use crate::types::store::{
     Asset, AssetAssertUpload, AssetEncoding, Batch, EncodingType, ReferenceId,
 };
 use candid::Principal;
+use ic_certification::HashTree;
 use junobuild_collections::types::core::CollectionKey;
-use junobuild_collections::types::rules::{Memory, Rule};
+use junobuild_collections::types::rules::{Memory, Permission, Rule};
 use junobuild_shared::types::core::Blob;
 use junobuild_shared::types::domain::CustomDomains;
 use junobuild_shared::types::state::Controllers;
 
 pub trait StorageAssertionsStrategy {
+    fn assert_key(
+        &self,
+        full_path: &FullPath,
+        description: &Option<String>,
+        collection: &CollectionKey,
+    ) -> Result<(), String>;
+
+    fn assert_write_on_dapp_collection(&self, caller: Principal, controllers: &Controllers)
+        -> bool;
+
+    fn assert_write_on_system_collection(
+        &self,
+        caller: Principal,
+        collection: &CollectionKey,
+        controllers: &Controllers,
+    ) -> bool;
+
+    fn assert_create_permission(
+        &self,
+        permission: &Permission,
+        caller: Principal,
+        collection: &CollectionKey,
+        controllers: &Controllers,
+    ) -> bool;
+
+    fn assert_update_permission(
+        &self,
+        permission: &Permission,
+        owner: Principal,
+        caller: Principal,
+        collection: &CollectionKey,
+        controllers: &Controllers,
+    ) -> bool;
+
+    fn assert_list_permission(
+        &self,
+        permission: &Permission,
+        owner: Principal,
+        caller: Principal,
+        collection: &CollectionKey,
+        controllers: &Controllers,
+    ) -> bool;
+
     fn invoke_assert_upload_asset(
         &self,
         caller: &Principal,
@@ -61,23 +105,35 @@ pub trait StorageStateStrategy {
         rule: &Rule,
     );
 
+    fn insert_asset_encoding(
+        &self,
+        full_path: &FullPath,
+        encoding_type: &str,
+        encoding: &AssetEncoding,
+        asset: &mut Asset,
+        rule: &Rule,
+    );
+
     fn delete_asset(
         &self,
         collection: &CollectionKey,
         full_path: &FullPath,
         rule: &Rule,
     ) -> Option<Asset>;
+
+    fn init_certified_assets(&self);
 }
 
 pub trait StorageUploadStrategy {
     fn insert_asset_encoding(
         &self,
+        reference_id: &Option<ReferenceId>,
         full_path: &FullPath,
         encoding_type: &EncodingType,
         encoding: &AssetEncoding,
         asset: &mut Asset,
         rule: &Rule,
-    );
+    ) -> Result<(), String>;
 
     fn insert_asset(&self, batch: &Batch, asset: &Asset, rule: &Rule) -> Result<(), String>;
 
@@ -88,4 +144,13 @@ pub trait StorageUploadStrategy {
         full_path: &FullPath,
         rule: &Rule,
     ) -> Result<Option<Asset>, String>;
+}
+
+pub trait StorageCertificateStrategy {
+    fn update_certified_data(&self);
+
+    // We use this function to access the auth signatures root hash
+    // in the storage crate when we build an HTTP response because the
+    // tree is a fork of both assets and signatures.
+    fn get_pruned_labeled_sigs_root_hash_tree(&self) -> HashTree;
 }

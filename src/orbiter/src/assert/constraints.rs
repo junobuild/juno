@@ -1,19 +1,16 @@
 use crate::constants::{
     KEY_MAX_LENGTH, LONG_STRING_MAX_LENGTH, METADATA_MAX_ELEMENTS, SHORT_STRING_MAX_LENGTH,
-    STRING_MAX_LENGTH,
+    STRING_MAX_LENGTH, UTM_MAX_LENGTH,
 };
-use crate::msg::ERROR_BOT_CALL;
+use crate::state::types::state::AnalyticKey;
 use crate::types::interface::{SetPageView, SetTrackEvent};
-use crate::types::state::AnalyticKey;
-use isbot::Bots;
 use junobuild_shared::types::state::SatelliteId;
 use junobuild_shared::utils::principal_not_equal;
 
 pub fn assert_analytic_key_length(key: &AnalyticKey) -> Result<(), String> {
     if key.key.len() > KEY_MAX_LENGTH {
         return Err(format!(
-            "An analytic key must not be longer than {}.",
-            KEY_MAX_LENGTH
+            "An analytic key must not be longer than {KEY_MAX_LENGTH}."
         ));
     }
 
@@ -35,23 +32,20 @@ pub fn assert_track_event_length(track_event: &SetTrackEvent) -> Result<(), Stri
         Some(metadata) => {
             if metadata.len() > METADATA_MAX_ELEMENTS {
                 return Err(format!(
-                    "Track event metadata must not contain more than {} elements.",
-                    METADATA_MAX_ELEMENTS
+                    "Track event metadata must not contain more than {METADATA_MAX_ELEMENTS} elements."
                 ));
             }
 
             for (key, value) in metadata.iter() {
                 if key.len() > SHORT_STRING_MAX_LENGTH {
                     return Err(format!(
-                        "Track event metadata key {} is longer than {}.",
-                        key, SHORT_STRING_MAX_LENGTH
+                        "Track event metadata key {key} is longer than {SHORT_STRING_MAX_LENGTH}."
                     ));
                 }
 
                 if value.len() > SHORT_STRING_MAX_LENGTH {
                     return Err(format!(
-                        "Track event metadata value {} is longer than {}.",
-                        value, SHORT_STRING_MAX_LENGTH
+                        "Track event metadata value {value} is longer than {SHORT_STRING_MAX_LENGTH}."
                     ));
                 }
             }
@@ -83,8 +77,7 @@ pub fn assert_page_view_length(page_view: &SetPageView) -> Result<(), String> {
         Some(referrer) => {
             if referrer.len() > LONG_STRING_MAX_LENGTH {
                 return Err(format!(
-                    "Page event referrer {} is longer than {}.",
-                    referrer, LONG_STRING_MAX_LENGTH
+                    "Page event referrer {referrer} is longer than {LONG_STRING_MAX_LENGTH}."
                 ));
             }
         }
@@ -95,8 +88,7 @@ pub fn assert_page_view_length(page_view: &SetPageView) -> Result<(), String> {
         Some(user_agent) => {
             if user_agent.len() > STRING_MAX_LENGTH {
                 return Err(format!(
-                    "Page event user_agent {} is longer than {}.",
-                    user_agent, STRING_MAX_LENGTH
+                    "Page event user_agent {user_agent} is longer than {STRING_MAX_LENGTH}."
                 ));
             }
         }
@@ -112,27 +104,54 @@ pub fn assert_page_view_length(page_view: &SetPageView) -> Result<(), String> {
     Ok(())
 }
 
-fn assert_session_id_length(session_id: &str) -> Result<(), String> {
-    if session_id.len() > KEY_MAX_LENGTH {
-        return Err(format!(
-            "An analytic session ID must not be longer than {}.",
-            KEY_MAX_LENGTH
-        ));
+pub fn assert_page_view_campaign_length(page_view: &SetPageView) -> Result<(), String> {
+    if let Some(campaign) = &page_view.campaign {
+        if campaign.utm_source.len() > UTM_MAX_LENGTH {
+            return Err(format!(
+                "utm_source {} is longer than {}.",
+                campaign.utm_source, UTM_MAX_LENGTH
+            ));
+        }
+
+        if let Some(medium) = &campaign.utm_medium {
+            if medium.len() > UTM_MAX_LENGTH {
+                return Err(format!(
+                    "utm_medium {medium} is longer than {UTM_MAX_LENGTH}."
+                ));
+            }
+        }
+
+        if let Some(campaign_name) = &campaign.utm_campaign {
+            if campaign_name.len() > UTM_MAX_LENGTH {
+                return Err(format!(
+                    "utm_campaign {campaign_name} is longer than {UTM_MAX_LENGTH}."
+                ));
+            }
+        }
+
+        if let Some(term) = &campaign.utm_term {
+            if term.len() > UTM_MAX_LENGTH {
+                return Err(format!("utm_term {term} is longer than {UTM_MAX_LENGTH}."));
+            }
+        }
+
+        if let Some(content) = &campaign.utm_content {
+            if content.len() > UTM_MAX_LENGTH {
+                return Err(format!(
+                    "utm_content {content} is longer than {UTM_MAX_LENGTH}."
+                ));
+            }
+        }
     }
 
     Ok(())
 }
 
-pub fn assert_bot(user_agent: &Option<String>) -> Result<(), String> {
-    match user_agent.clone() {
-        None => {}
-        Some(user_agent) => {
-            let bots = Bots::default();
-
-            if bots.is_bot(&user_agent) {
-                return Err(ERROR_BOT_CALL.to_string());
-            }
-        }
+fn assert_session_id_length(session_id: &str) -> Result<(), String> {
+    if session_id.len() > KEY_MAX_LENGTH {
+        return Err(format!(
+            "An analytic session ID must not be longer than {KEY_MAX_LENGTH}."
+        ));
     }
 
     Ok(())
@@ -144,8 +163,7 @@ pub fn assert_session_id(
 ) -> Result<(), String> {
     if user_session_id != current_session_id {
         return Err(format!(
-            "Session IDs do not match ({} - {})",
-            current_session_id, user_session_id
+            "Session IDs do not match ({current_session_id} - {user_session_id})"
         ));
     }
 

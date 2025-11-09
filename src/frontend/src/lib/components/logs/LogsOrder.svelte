@@ -24,7 +24,7 @@
 	};
 </script>
 
-<PopoverApply ariaLabel={$i18n.sort.title} onapply={apply} bind:visible direction="ltr">
+<PopoverApply ariaLabel={$i18n.sort.title} direction="ltr" onapply={apply} bind:visible>
 	{#snippet icon()}
 		<IconSort size="20px" />
 	{/snippet}
@@ -32,12 +32,12 @@
 	<p class="category sort">{$i18n.functions.sort}</p>
 
 	<label>
-		<input type="radio" bind:group={desc} name="desc" value={false} />
+		<input name="desc" type="radio" value={false} bind:group={desc} />
 		<span>{$i18n.sort.ascending}</span>
 	</label>
 
 	<label>
-		<input type="radio" bind:group={desc} name="desc" value={true} />
+		<input name="desc" type="radio" value={true} bind:group={desc} />
 		<span>{$i18n.sort.descending}</span>
 	</label>
 </PopoverApply>

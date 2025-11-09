@@ -17,7 +17,7 @@
 	let filterInput = $state('');
 	run(() => {
 		// @ts-expect-error TODO: to be migrated to Svelte v5
-		filterInput, debounceUpdateFilter();
+		(filterInput, debounceUpdateFilter());
 	});
 </script>
 
@@ -26,9 +26,9 @@
 		<Input
 			name="filter"
 			inputType="text"
-			bind:value={filterInput}
 			placeholder={$i18n.satellites.search}
 			spellcheck={false}
+			bind:value={filterInput}
 		/>
 	</div>
 

@@ -1,7 +1,8 @@
 import en from '$lib/i18n/en.json';
 
 import type { Languages } from '$lib/types/languages';
-import { getLocalStorageLang, setLocalStorageItem } from '$lib/utils/local-storage.utils';
+import { switchLanguage } from '$lib/utils/i18n.utils';
+import { getLocalStorageLang } from '$lib/utils/local-storage.utils';
 import { writable, type Readable } from 'svelte/store';
 
 const zhCnI18n = async (): Promise<I18n> => ({
@@ -23,8 +24,6 @@ const loadLanguage = (lang: Languages): Promise<I18n> => {
 			return Promise.resolve(enI18n());
 	}
 };
-
-const switchLanguage = (lang: Languages) => setLocalStorageItem({ key: 'lang', value: lang });
 
 export interface I18nStore extends Readable<I18n> {
 	init: () => Promise<void>;

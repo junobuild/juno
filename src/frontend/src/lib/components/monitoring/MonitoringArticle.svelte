@@ -1,9 +1,9 @@
 <script lang="ts">
-	import type { Principal } from '@dfinity/principal';
 	import { nonNullish, fromNullishNullable } from '@dfinity/utils';
+	import type { Principal } from '@icp-sdk/core/principal';
 	import type { Snippet } from 'svelte';
 	import { fade } from 'svelte/transition';
-	import type { Monitoring } from '$declarations/mission_control/mission_control.did';
+	import type { MissionControlDid } from '$declarations';
 	import Canister from '$lib/components/canister/Canister.svelte';
 	import CanisterMonitoringData from '$lib/components/canister/CanisterMonitoringData.svelte';
 	import Chart from '$lib/components/charts/Chart.svelte';
@@ -21,7 +21,7 @@
 
 	interface Props {
 		children: Snippet;
-		monitoring: Monitoring | undefined;
+		monitoring: MissionControlDid.Monitoring | undefined;
 		canisterId: Principal;
 		segment: Segment;
 		segmentLabel: string;
@@ -61,7 +61,7 @@
 <Canister {canisterId} display={false} bind:data={canisterData} />
 
 <CanisterMonitoringData {canisterId} bind:monitoringData>
-	<button onclick={openModal} class="article monitoring">
+	<button class="article monitoring" onclick={openModal}>
 		<span class="segment">
 			{@render children()}
 		</span>
@@ -71,20 +71,20 @@
 		{#if enabled}
 			<span class="chart-container" in:fade>
 				<Chart
-					{chartsData}
 					axisWithText={false}
+					{chartsData}
 					padding={{ top: 0, right: 0, bottom: 0, left: 0 }}
 				/>
 			</span>
 
 			<span class="info">
 				{#if nonNullish(lastExecutionTime)}
-					<span in:fade title={$i18n.monitoring.last_status_check}
+					<span title={$i18n.monitoring.last_status_check} in:fade
 						><IconClockUpdate /> <span>{formatToRelativeTime(lastExecutionTime)}</span></span
 					>
 				{/if}
 				{#if nonNullish(lastDepositCyclesTime) && nonNullish(lastDepositCyclesAmount)}
-					<span in:fade title={$i18n.monitoring.last_top_up}
+					<span title={$i18n.monitoring.last_top_up} in:fade
 						><IconRefresh size="18px" />
 						<span
 							>{formatToRelativeTime(lastDepositCyclesTime)} with {formatTCycles(

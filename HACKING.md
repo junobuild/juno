@@ -7,7 +7,7 @@ This document explains how to run [Juno](https://juno.build) locally.
 - [Local Development](#local-development)
 - [Building the Modules](#building-the-modules)
 - [Required Tools](#required-tools)
-- [Useful Administration Commands](#useful-administration-commands)
+- [Using a sample App for testing](#using-a-sample-app-for-testing)
 
 ## Local Development
 
@@ -69,16 +69,15 @@ npm run build:orbiter
 
 The following additional tools are required when building the modules:
 
-### didc
+> [!NOTE]
+> The script `./docker/bootstrap` takes care of installing Rustup, the toolchain, and the following tools.
 
-`didc` is required to work with Candid files. You can download it from the [Candid releases](https://github.com/dfinity/candid/releases) page.
+### junobuild-didc
 
-For example, to install `didc` on macOS:
+`didc` is required to generate [Candid](https://github.com/dfinity/candid) files.
 
 ```bash
-release=$(curl --silent "https://api.github.com/repos/dfinity/candid/releases/latest" | grep -e '"tag_name"' | cut -c 16-25)
-curl -fsSL https://github.com/dfinity/candid/releases/download/$release/didc-macos > ~/.cargo/bin/didc
-chmod 755 ~/.cargo/bin/didc
+cargo install junobuild-didc
 ```
 
 ### candid-extractor
@@ -97,10 +96,35 @@ cargo install candid-extractor
 cargo install wasi2ic
 ```
 
-## Useful Administration Commands
+## Using a sample App for testing
 
-Here are a few commands that can be useful when developing and contributing to Juno:
+When developing features for Juno — especially for the Console — you may need to generate data, such as creating users or adding entries in a Satellite's datastore or storage.
 
-| Command                   | Description                                    |
-| ------------------------- | ---------------------------------------------- |
-| `npm run ledger:transfer` | Transfer 55 ICP to a Mission Control (Wallet). |
+You can achieve this by running a sample app locally, connecting it to a Satellite, and signing in as a user would normally do.
+
+To do so, follow these steps:
+
+1. **Create or use a sample app**:
+
+```bash
+npm create juno@latest
+```
+
+Or clone the examples [repo](https://github.com/junobuild/examples) and use `frontend/vanilla/vite-typescript`.
+
+2. **Configure the app to use a dev Satellite**:
+
+Open the `juno.config` file at the project root.
+
+Replace `<DEV_SATELLITE_ID>` with the Satellite ID created in the Console.
+
+3. **Run the app locally**:
+
+```bash
+npm run dev
+```
+
+4. **Interact as a normal user**:
+
+Users, datastore, and storage will be automatically created.
+Inspect/manage through the Console.

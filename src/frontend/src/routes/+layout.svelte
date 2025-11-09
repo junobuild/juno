@@ -1,17 +1,17 @@
 <script lang="ts">
 	import { debounce } from '@dfinity/utils';
-	import { onMount, type Snippet } from 'svelte';
-	import { run } from 'svelte/legacy';
+	import { onDestroy, onMount, type Snippet } from 'svelte';
 	import { browser } from '$app/environment';
+	import { onNavigate } from '$app/navigation';
 	import Overlays from '$lib/components/core/Overlays.svelte';
-	import Spinner from '$lib/components/ui/Spinner.svelte';
+	import AuthBroadcastGuard from '$lib/components/guards/AuthBroadcastGuard.svelte';
 	import { layoutNavigationTitle } from '$lib/derived/layout-navigation.derived';
-	import { displayAndCleanLogoutMsg } from '$lib/services/auth.services';
+	import { displayAndCleanLogoutMsg } from '$lib/services/auth/auth.services';
 	import { initMissionControl } from '$lib/services/console.services';
 	import { syncSnapshots } from '$lib/services/snapshots.services';
 	import { syncSubnets } from '$lib/services/subnets.services';
-	import { initAuthWorker } from '$lib/services/worker.auth.services';
-	import { type AuthStoreData, authStore } from '$lib/stores/auth.store';
+	import { AuthWorker } from '$lib/services/workers/worker.auth.services';
+	import { authStore, type AuthStoreData } from '$lib/stores/auth.store';
 	import { i18n } from '$lib/stores/i18n.store';
 	import '$lib/styles/global.scss';
 
@@ -21,8 +21,17 @@
 
 	let { children }: Props = $props();
 
-	const init = async () =>
-		await Promise.all([i18n.init(), syncAuthStore(), syncSubnets(), syncSnapshots()]);
+	/**
+	 * App init
+	 */
+
+	const init = async () => await Promise.all([i18n.init(), syncSubnets(), syncSnapshots()]);
+
+	onMount(init);
+
+	/**
+	 * App sync
+	 */
 
 	const syncAuthStore = async () => {
 		if (!browser) {
@@ -38,18 +47,33 @@
 		displayAndCleanLogoutMsg();
 	};
 
-	run(() => {
-		(async () => await initMissionControl($authStore))();
+	const sync = async () => {
+		await syncAuthStore();
+	};
+
+	$effect(() => {
+		initMissionControl($authStore);
 	});
 
-	let worker: { syncAuthIdle: (auth: AuthStoreData) => void } | undefined = $state();
+	/**
+	 * Auth worker
+	 */
 
-	onMount(async () => (worker = await initAuthWorker()));
+	let worker = $state<AuthWorker | undefined>();
 
-	run(() => {
-		// @ts-expect-error TODO: to be migrated to Svelte v5
-		worker, $authStore, (() => worker?.syncAuthIdle($authStore))();
+	onMount(async () => (worker = await AuthWorker.init()));
+	onDestroy(() => worker?.terminate());
+
+	$effect(() => {
+		worker;
+		$authStore;
+
+		worker?.syncAuthIdle($authStore);
 	});
+
+	/**
+	 * Navigation title
+	 */
 
 	const debounceSetNavTitle = debounce(() => (document.title = $layoutNavigationTitle));
 
@@ -57,14 +81,50 @@
 		$layoutNavigationTitle;
 		debounceSetNavTitle();
 	});
+
+	// Source: https://svelte.dev/blog/view-transitions
+	onNavigate((navigation) => {
+		if (!document.startViewTransition) {
+			return;
+		}
+
+		return new Promise((resolve) => {
+			document.startViewTransition(async () => {
+				resolve();
+				await navigation.complete;
+			});
+		});
+	});
+
+	/**
+	 * Boot animation
+	 */
+
+	// To improve the UX while the app is loading on mainnet we display a spinner which is attached statically in the index.html files.
+	// Once the authentication has been initialized we know most JavaScript resources has been loaded and therefore we can hide the spinner, the loading information.
+	const removeLoadingSpinner = ({ authData }: { authData: AuthStoreData }) => {
+		// We want to display a spinner until the authentication is loaded. This to avoid a glitch when either the landing page or effective content (sign-in / sign-out) is presented.
+		if (authData?.identity === undefined) {
+			return;
+		}
+
+		const spinner = document.querySelector('body > #app-spinner');
+		spinner?.remove();
+	};
+
+	$effect(() => {
+		removeLoadingSpinner({ authData: $authStore });
+	});
 </script>
 
 <svelte:window onstorage={syncAuthStore} />
 
-{#await init()}
-	<Spinner />
+{#await sync()}
+	<!-- No animation as initializing the auth should be fast -->
 {:then _}
-	{@render children()}
+	<AuthBroadcastGuard>
+		{@render children()}
 
-	<Overlays />
+		<Overlays />
+	</AuthBroadcastGuard>
 {/await}

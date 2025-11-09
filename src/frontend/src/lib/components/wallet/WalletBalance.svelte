@@ -32,7 +32,7 @@
 			<span class="skeleton main"><SkeletonText /></span>
 			<span class="skeleton"><SkeletonText /></span>
 		{:else}
-			<span in:fade class="main">
+			<span class="main" in:fade>
 				{#if nonNullish($icpToUsd) && $icpToUsdDefined}
 					{formatICPToUsd({ icp: balance, icpToUsd: $icpToUsd })}
 				{:else}

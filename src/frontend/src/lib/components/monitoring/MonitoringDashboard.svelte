@@ -34,8 +34,8 @@
 {:else}
 	<section in:fade>
 		<MonitoringArticle
-			monitoring={$missionControlMonitoring}
 			canisterId={missionControlId}
+			monitoring={$missionControlMonitoring}
 			segment="mission_control"
 			segmentLabel={$i18n.mission_control.title}
 		>
@@ -43,10 +43,10 @@
 			<span>{$i18n.mission_control.title}</span>
 		</MonitoringArticle>
 
-		{#each $sortedSatellites ?? [] as satellite}
+		{#each $sortedSatellites ?? [] as satellite (satellite.satellite_id.toText())}
 			<MonitoringArticle
-				monitoring={fromNullishNullable(fromNullable(satellite.settings)?.monitoring)}
 				canisterId={satellite.satellite_id}
+				monitoring={fromNullishNullable(fromNullable(satellite.settings)?.monitoring)}
 				segment="satellite"
 				segmentLabel={$i18n.satellites.satellite}
 			>
@@ -55,10 +55,10 @@
 			</MonitoringArticle>
 		{/each}
 
-		{#each $orbitersStore ?? [] as orbiter}
+		{#each $orbitersStore ?? [] as orbiter (orbiter.orbiter_id.toText())}
 			<MonitoringArticle
-				monitoring={fromNullishNullable(fromNullable(orbiter.settings)?.monitoring)}
 				canisterId={orbiter.orbiter_id}
+				monitoring={fromNullishNullable(fromNullable(orbiter.settings)?.monitoring)}
 				segment="orbiter"
 				segmentLabel={$i18n.analytics.orbiter}
 			>

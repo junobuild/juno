@@ -1,18 +1,21 @@
 <script lang="ts">
+	import { getContext } from 'svelte';
 	import IconSort from '$lib/components/icons/IconSort.svelte';
 	import PopoverApply from '$lib/components/ui/PopoverApply.svelte';
 	import { i18n } from '$lib/stores/i18n.store';
-	import { listParamsStore } from '$lib/stores/list-params.store';
 	import type { ListOrderField } from '$lib/types/list';
+	import { type ListParamsContext, LIST_PARAMS_CONTEXT_KEY } from '$lib/types/list-params.context';
 
-	let desc = $state($listParamsStore.order.desc);
-	let field: ListOrderField = $state($listParamsStore.order.field);
+	const { listParams, setOrder } = getContext<ListParamsContext>(LIST_PARAMS_CONTEXT_KEY);
+
+	let desc = $state($listParams.order.desc);
+	let field: ListOrderField = $state($listParams.order.field);
 
 	let visible: boolean = $state(false);
 
 	// eslint-disable-next-line require-await
 	const apply = async () => {
-		listParamsStore.setOrder({
+		setOrder({
 			desc,
 			field
 		});
@@ -27,8 +30,10 @@
 
 		// Avoid glitch
 		setTimeout(() => {
-			desc = $listParamsStore.order.desc;
-			field = $listParamsStore.order.field;
+			// eslint-disable-next-line prefer-destructuring
+			desc = $listParams.order.desc;
+			// eslint-disable-next-line prefer-destructuring
+			field = $listParams.order.field;
 		}, 250);
 	});
 </script>
@@ -41,29 +46,29 @@
 	<p class="category">{$i18n.sort.sort_by_field}</p>
 
 	<label>
-		<input type="radio" bind:group={field} name="field" value="keys" />
+		<input name="field" type="radio" value="keys" bind:group={field} />
 		<span>{$i18n.sort.keys}</span>
 	</label>
 
 	<label>
-		<input type="radio" bind:group={field} name="field" value="created_at" />
+		<input name="field" type="radio" value="created_at" bind:group={field} />
 		<span>{$i18n.sort.created_at}</span>
 	</label>
 
 	<label>
-		<input type="radio" bind:group={field} name="field" value="updated_at" />
+		<input name="field" type="radio" value="updated_at" bind:group={field} />
 		<span>{$i18n.sort.updated_at}</span>
 	</label>
 
 	<p class="category sort">{$i18n.sort.sort_results}</p>
 
 	<label>
-		<input type="radio" bind:group={desc} name="desc" value={false} />
+		<input name="desc" type="radio" value={false} bind:group={desc} />
 		<span>{$i18n.sort.ascending}</span>
 	</label>
 
 	<label>
-		<input type="radio" bind:group={desc} name="desc" value={true} />
+		<input name="desc" type="radio" value={true} bind:group={desc} />
 		<span>{$i18n.sort.descending}</span>
 	</label>
 </PopoverApply>

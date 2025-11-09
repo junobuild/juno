@@ -1,4 +1,5 @@
 use crate::types::domain::CustomDomain;
+use crate::types::interface::{CreateCanisterArgs, CreateSatelliteArgs};
 use crate::types::state::{OrbiterSatelliteConfig, SegmentKind, Version, Versioned};
 use crate::types::utils::CalendarDate;
 use std::fmt::{Display, Formatter, Result};
@@ -33,5 +34,15 @@ impl Versioned for CustomDomain {
 impl Versioned for &OrbiterSatelliteConfig {
     fn version(&self) -> Option<Version> {
         self.version
+    }
+}
+
+impl From<CreateSatelliteArgs> for CreateCanisterArgs {
+    fn from(args: CreateSatelliteArgs) -> Self {
+        Self {
+            user: args.user,
+            block_index: args.block_index,
+            subnet_id: args.subnet_id,
+        }
     }
 }

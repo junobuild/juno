@@ -1,4 +1,4 @@
-use ic_cdk::id;
+use junobuild_satellite::id;
 use junobuild_satellite::set_asset_handler;
 use junobuild_storage::http::types::HeaderField;
 use junobuild_storage::types::store::AssetKey;
@@ -10,7 +10,7 @@ pub fn init_asset() -> Result<(), String> {
 
     let name = "index.html".to_string();
 
-    let full_path = format!("/{}", name).to_string();
+    let full_path = format!("/{name}").to_string();
 
     let key: AssetKey = AssetKey {
         name: name.clone(),

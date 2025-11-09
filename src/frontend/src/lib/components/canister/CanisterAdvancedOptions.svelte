@@ -1,6 +1,6 @@
 <script lang="ts">
 	import type { PrincipalText } from '@dfinity/zod-schemas';
-	import type { CyclesMonitoringStrategy } from '$declarations/mission_control/mission_control.did';
+	import type { MissionControlDid } from '$declarations';
 	import CanisterMonitoringDefaultStrategy from '$lib/components/canister/CanisterMonitoringDefaultStrategy.svelte';
 	import CanisterSubnets from '$lib/components/canister/CanisterSubnets.svelte';
 	import Collapsible from '$lib/components/ui/Collapsible.svelte';
@@ -9,7 +9,7 @@
 
 	interface Props {
 		subnetId: PrincipalText | undefined;
-		monitoringStrategy: CyclesMonitoringStrategy | undefined;
+		monitoringStrategy: MissionControlDid.CyclesMonitoringStrategy | undefined;
 		detail: JunoModalDetail;
 	}
 
@@ -17,9 +17,11 @@
 </script>
 
 <Collapsible>
-	<svelte:fragment slot="header">{$i18n.core.advanced_options}</svelte:fragment>
+	{#snippet header()}
+		{$i18n.core.advanced_options}
+	{/snippet}
 
 	<CanisterSubnets bind:subnetId />
 
-	<CanisterMonitoringDefaultStrategy bind:monitoringStrategy {detail} />
+	<CanisterMonitoringDefaultStrategy {detail} bind:monitoringStrategy />
 </Collapsible>

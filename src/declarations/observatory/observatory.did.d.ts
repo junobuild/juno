@@ -1,6 +1,6 @@
-import type { ActorMethod } from '@dfinity/agent';
-import type { IDL } from '@dfinity/candid';
-import type { Principal } from '@dfinity/principal';
+import type { ActorMethod } from '@icp-sdk/core/agent';
+import type { IDL } from '@icp-sdk/core/candid';
+import type { Principal } from '@icp-sdk/core/principal';
 
 export interface Controller {
 	updated_at: bigint;
@@ -9,7 +9,7 @@ export interface Controller {
 	scope: ControllerScope;
 	expires_at: [] | [bigint];
 }
-export type ControllerScope = { Write: null } | { Admin: null };
+export type ControllerScope = { Write: null } | { Admin: null } | { Submit: null };
 export interface CyclesBalance {
 	timestamp: bigint;
 	amount: bigint;
@@ -24,14 +24,64 @@ export interface DepositedCyclesEmailNotification {
 export interface Env {
 	email_api_key: [] | [string];
 }
+export interface FailedCyclesDepositEmailNotification {
+	to: string;
+	funding_failure: FundingFailure;
+}
+export type FundingErrorCode =
+	| { BalanceCheckFailed: null }
+	| { ObtainCyclesFailed: null }
+	| { DepositFailed: null }
+	| { InsufficientCycles: null }
+	| { Other: string };
+export interface FundingFailure {
+	timestamp: bigint;
+	error_code: FundingErrorCode;
+}
 export interface GetNotifications {
 	to: [] | [bigint];
 	from: [] | [bigint];
 	segment_id: [] | [Principal];
 }
-export type NotificationKind = {
-	DepositedCyclesEmail: DepositedCyclesEmailNotification;
-};
+export interface GetOpenIdCertificateArgs {
+	provider: OpenIdProvider;
+}
+export interface Jwk {
+	alg: [] | [string];
+	kid: [] | [string];
+	kty: JwkType;
+	params: JwkParams;
+}
+export type JwkParams =
+	| { Ec: JwkParamsEc }
+	| { Oct: JwkParamsOct }
+	| { Okp: JwkParamsOkp }
+	| { Rsa: JwkParamsRsa };
+export interface JwkParamsEc {
+	x: string;
+	y: string;
+	crv: string;
+}
+export interface JwkParamsOct {
+	k: string;
+}
+export interface JwkParamsOkp {
+	x: string;
+	crv: string;
+}
+export interface JwkParamsRsa {
+	e: string;
+	n: string;
+}
+export type JwkType = { EC: null } | { OKP: null } | { RSA: null } | { oct: null };
+export interface Jwks {
+	keys: Array<Jwk>;
+}
+export type NotificationKind =
+	| {
+			DepositedCyclesEmail: DepositedCyclesEmailNotification;
+	  }
+	| { FailedCyclesDepositEmail: FailedCyclesDepositEmailNotification };
 export interface NotifyArgs {
 	kind: NotificationKind;
 	user: Principal;
@@ -42,6 +92,13 @@ export interface NotifyStatus {
 	sent: bigint;
 	failed: bigint;
 }
+export interface OpenIdCertificate {
+	updated_at: bigint;
+	jwks: Jwks;
+	created_at: bigint;
+	version: [] | [bigint];
+}
+export type OpenIdProvider = { Google: null };
 export interface Segment {
 	id: Principal;
 	metadata: [] | [Array<[string, string]>];
@@ -60,12 +117,14 @@ export interface SetControllersArgs {
 export interface _SERVICE {
 	del_controllers: ActorMethod<[DeleteControllersArgs], undefined>;
 	get_notify_status: ActorMethod<[GetNotifications], NotifyStatus>;
+	get_openid_certificate: ActorMethod<[GetOpenIdCertificateArgs], [] | [OpenIdCertificate]>;
 	list_controllers: ActorMethod<[], Array<[Principal, Controller]>>;
 	notify: ActorMethod<[NotifyArgs], undefined>;
 	ping: ActorMethod<[NotifyArgs], undefined>;
 	set_controllers: ActorMethod<[SetControllersArgs], undefined>;
 	set_env: ActorMethod<[Env], undefined>;
-	version: ActorMethod<[], string>;
+	start_openid_monitoring: ActorMethod<[], undefined>;
+	stop_openid_monitoring: ActorMethod<[], undefined>;
 }
 export declare const idlFactory: IDL.InterfaceFactory;
 export declare const init: (args: { IDL: typeof IDL }) => IDL.Type[];

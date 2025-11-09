@@ -60,11 +60,11 @@ export const formatICPToHTML = ({
 	const icpValue = (): string => `<${tag}>${formatICP(e8s)} <small>ICP</small></${tag}>`;
 
 	if (nonNullish(icpToUsd) && icpToUsd > 0) {
-		const value = formatICPToUsd({ icp: e8s, icpToUsd: icpToUsd });
+		const value = formatICPToUsd({ icp: e8s, icpToUsd });
 
 		// Hardcoded $0.00. We can convert to number but, ultimately it's the same result, we do not want to display $0.00.
 		if (value !== '$0.00') {
-			return `${icpValue()} <small>(${formatICPToUsd({ icp: e8s, icpToUsd: icpToUsd })})</small>`;
+			return `${icpValue()} <small>(${formatICPToUsd({ icp: e8s, icpToUsd })})</small>`;
 		}
 	}
 

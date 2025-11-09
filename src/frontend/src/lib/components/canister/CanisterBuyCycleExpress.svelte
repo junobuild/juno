@@ -1,6 +1,6 @@
 <script lang="ts">
-	import type { Principal } from '@dfinity/principal';
 	import { nonNullish } from '@dfinity/utils';
+	import type { Principal } from '@icp-sdk/core/principal';
 	import { onDestroy } from 'svelte';
 	import IconShoppingCart from '$lib/components/icons/IconShoppingCart.svelte';
 	import { busy } from '$lib/stores/busy.store';
@@ -49,6 +49,6 @@
 </script>
 
 {#if nonNullish(CYCLE_EXPRESS_URL)}
-	<button onclick={buyCycles} class="menu"><IconShoppingCart /> {$i18n.canisters.buy_cycles}</button
+	<button class="menu" onclick={buyCycles}><IconShoppingCart /> {$i18n.canisters.buy_cycles}</button
 	>
 {/if}

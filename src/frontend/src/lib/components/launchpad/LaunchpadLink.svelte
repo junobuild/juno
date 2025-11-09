@@ -25,11 +25,11 @@
 
 <a
 	class="article"
-	{href}
-	aria-label={ariaLabel}
-	class:small={size === 'small'}
-	class:row
 	class:highlight
+	class:row
+	class:small={size === 'small'}
+	aria-label={ariaLabel}
+	{href}
 >
 	{#if nonNullish(summary)}
 		<div class="summary">
@@ -83,7 +83,11 @@
 
 		.content,
 		.summary {
-			width: auto;
+			width: 100%;
+
+			@include media.min-width(medium) {
+				width: auto;
+			}
 		}
 
 		.summary {

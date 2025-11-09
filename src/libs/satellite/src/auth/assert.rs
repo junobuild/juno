@@ -1,30 +1,53 @@
-use crate::auth::types::config::AuthenticationConfig;
-use crate::errors::auth::JUNO_AUTH_ERROR_INVALID_ORIGIN;
-use junobuild_shared::types::core::DomainName;
-use url::Url;
+use crate::db::runtime::increment_and_assert_rate;
+use crate::errors::auth::JUNO_AUTH_ERROR_CALLER_NOT_ALLOWED;
+use crate::rules::store::get_rule_db;
+use candid::Principal;
+use junobuild_auth::state::types::config::AuthenticationConfig;
+use junobuild_collections::constants::db::COLLECTION_USER_KEY;
+use junobuild_collections::msg::msg_db_collection_not_found;
+use junobuild_shared::controllers::controller_can_write;
+use junobuild_shared::types::state::Controllers;
+use junobuild_shared::utils::principal_equal;
 
-pub fn assert_config_origin_urls(config: &AuthenticationConfig) -> Result<(), String> {
-    if let Some(internet_identity) = &config.internet_identity {
-        if let Some(derivation_origin) = &internet_identity.derivation_origin {
-            assert_url(derivation_origin)?;
-        }
+pub fn assert_caller_is_allowed(
+    caller: Principal,
+    controllers: &Controllers,
+    config: &Option<AuthenticationConfig>,
+) -> Result<(), String> {
+    let Some(auth_config) = config else {
+        return Ok(());
+    };
 
-        if let Some(external_alternative_origins) = &internet_identity.external_alternative_origins
-        {
-            for origin in external_alternative_origins {
-                assert_url(origin)?;
-            }
-        }
+    let Some(auth_rules) = &auth_config.rules else {
+        return Ok(());
+    };
+
+    if auth_rules.allowed_callers.is_empty() {
+        return Ok(());
     }
 
-    Ok(())
+    // Admins do not need to be allowed. The permission scheme of the collections rules their access.
+    // It could also lead to some weird effects if admins were disallowed as soon as a set of users is allowed.
+    if controller_can_write(caller, controllers) {
+        return Ok(());
+    }
+
+    if auth_rules
+        .allowed_callers
+        .iter()
+        .any(|allowed_caller| principal_equal(caller, *allowed_caller))
+    {
+        return Ok(());
+    }
+
+    Err(JUNO_AUTH_ERROR_CALLER_NOT_ALLOWED.to_string())
 }
 
-fn assert_url(domain: &DomainName) -> Result<(), String> {
-    let parsed_url = Url::parse(&format!("https://{}", domain));
+pub fn increment_and_assert_user_rate() -> Result<(), String> {
+    let user_collection = COLLECTION_USER_KEY.to_string();
 
-    match parsed_url {
-        Err(_) => Err(format!("{} ({})", JUNO_AUTH_ERROR_INVALID_ORIGIN, domain)),
-        Ok(_url) => Ok(()),
-    }
+    let rule = get_rule_db(&user_collection)
+        .ok_or_else(|| msg_db_collection_not_found(&user_collection))?;
+
+    increment_and_assert_rate(&user_collection, &rule.rate_config)
 }

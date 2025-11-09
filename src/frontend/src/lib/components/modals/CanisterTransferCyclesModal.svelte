@@ -1,6 +1,6 @@
 <script lang="ts">
-	import { Principal } from '@dfinity/principal';
 	import { isNullish } from '@dfinity/utils';
+	import { Principal } from '@icp-sdk/core/principal';
 	import CanisterTransferCyclesForm from '$lib/components/canister/CanisterTransferCyclesForm.svelte';
 	import CanisterTransferCyclesReview from '$lib/components/canister/CanisterTransferCyclesReview.svelte';
 	import Modal from '$lib/components/ui/Modal.svelte';
@@ -81,7 +81,7 @@
 	const onreview = () => (step = 'review');
 </script>
 
-<Modal on:junoClose={onclose}>
+<Modal {onclose}>
 	{#if step === 'ready'}
 		<div class="msg">
 			<p>{$i18n.canisters.transfer_cycles_done}</p>
@@ -100,9 +100,9 @@
 		/>
 	{:else}
 		<CanisterTransferCyclesForm
-			{segment}
 			{currentCycles}
 			{onreview}
+			{segment}
 			bind:cycles
 			bind:destinationId
 		/>

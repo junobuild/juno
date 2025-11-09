@@ -1,5 +1,5 @@
 <script lang="ts">
-	import type { Principal } from '@dfinity/principal';
+	import type { Principal } from '@icp-sdk/core/principal';
 	import type { Snippet } from 'svelte';
 	import DataDelete from '$lib/components/data/DataDelete.svelte';
 	import { i18n } from '$lib/stores/i18n.store';
@@ -14,7 +14,7 @@
 	let { deleteData, button, title, children }: Props = $props();
 </script>
 
-<DataDelete {deleteData} {button} {title}>
+<DataDelete {button} {deleteData} {title}>
 	<p>{@render children()}</p>
 
 	<p>{$i18n.core.are_you_sure}</p>

@@ -7,15 +7,15 @@
 	let { size = '48px' }: Props = $props();
 </script>
 
-<svg height={size} width={size} xmlns="http://www.w3.org/2000/svg" viewBox="0 0 29 29"
+<svg height={size} viewBox="0 0 29 29" width={size} xmlns="http://www.w3.org/2000/svg"
 	><g
 		><g
-			><rect class="icon-authentication-1" width="29" height="29" /><rect
+			><rect class="icon-authentication-1" height="29" width="29" /><rect
 				class="icon-authentication-2"
+				height="16.18"
+				width="19.36"
 				x="4.82"
 				y="11.44"
-				width="19.36"
-				height="16.18"
 			/><path
 				class="icon-authentication-3"
 				d="m24.18,10.44h-3.4v-3.79c0-3.46-2.82-6.28-6.28-6.28s-6.28,2.82-6.28,6.28c0,.55.45,1,1,1s1-.45,1-1c0-2.36,1.92-4.28,4.28-4.28s4.28,1.92,4.28,4.28v3.79H4.82c-.55,0-1,.45-1,1v16.18c0,.55.45,1,1,1h19.36c.55,0,1-.45,1-1V11.44c0-.55-.45-1-1-1Zm-1,16.18H5.82v-14.18h17.36v14.18Z"

@@ -1,8 +1,7 @@
 import adapter from '@sveltejs/adapter-static';
-import autoprefixer from 'autoprefixer';
+import { vitePreprocess } from '@sveltejs/vite-plugin-svelte';
 import { readFileSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
-import preprocess from 'svelte-preprocess';
 
 const file = fileURLToPath(new URL('package.json', import.meta.url));
 const json = readFileSync(file, 'utf8');
@@ -12,16 +11,11 @@ const filesPath = (path) => `src/frontend/${path}`;
 
 /** @type {import('@sveltejs/kit').Config} */
 const config = {
-	// Consult https://github.com/sveltejs/svelte-preprocess
-	// for more information about preprocessors
-	preprocess: preprocess({
-		postcss: {
-			plugins: [autoprefixer]
-		}
-	}),
+	preprocess: vitePreprocess(),
+
 	kit: {
 		adapter: adapter({
-			fallback: 'index.html',
+			fallback: '404.html',
 			precompress: false
 		}),
 		files: {
@@ -29,8 +23,7 @@ const config = {
 			lib: filesPath('src/lib'),
 			params: filesPath('src/params'),
 			routes: filesPath('src/routes'),
-			appTemplate: filesPath('src/app.html'),
-			errorTemplate: filesPath('src/error.html')
+			appTemplate: filesPath('src/app.html')
 		},
 		alias: {
 			$declarations: './src/declarations'

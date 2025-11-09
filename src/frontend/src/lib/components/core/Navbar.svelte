@@ -1,32 +1,49 @@
 <script lang="ts">
-	import { nonNullish } from '@dfinity/utils';
+	import { debounce, nonNullish } from '@dfinity/utils';
 	import { fade } from 'svelte/transition';
+	import BannerSkylab from '$lib/components/core/BannerSkylab.svelte';
 	import Logo from '$lib/components/core/Logo.svelte';
-	import NavbarCockpit from '$lib/components/core/NavbarCockpit.svelte';
+	import NavbarSpotlight from '$lib/components/core/NavbarSpotlight.svelte';
+	import NavbarTitle from '$lib/components/core/NavbarTitle.svelte';
+	import NavbarWallet from '$lib/components/core/NavbarWallet.svelte';
 	import User from '$lib/components/core/User.svelte';
-	import SatellitesSwitcher from '$lib/components/satellites/SatellitesSwitcher.svelte';
+	import Notifications from '$lib/components/notifications/Notifications.svelte';
 	import ButtonBack from '$lib/components/ui/ButtonBack.svelte';
 	import ButtonMenu from '$lib/components/ui/ButtonMenu.svelte';
 	import Header from '$lib/components/ui/Header.svelte';
+	import { authSignedIn } from '$lib/derived/auth.derived';
+	import {
+		missionControlIdDerived,
+		missionControlIdLoaded
+	} from '$lib/derived/mission-control.derived';
+	import { provider } from '$lib/derived/provider.derived';
+	import { isSkylab } from '$lib/env/app.env';
 	import { layoutTitleIntersecting } from '$lib/stores/layout-intersecting.store';
-	import { layoutNavigation } from '$lib/stores/layout-navigation.store';
 
 	interface Props {
 		start?: 'logo' | 'back' | 'menu';
-		signIn?: boolean;
-		launchpad?: boolean;
-		headerOpaqueOnScroll?: boolean;
 	}
 
-	let {
-		start = 'logo',
-		signIn = true,
-		launchpad = false,
-		headerOpaqueOnScroll = true
-	}: Props = $props();
+	let { start = 'logo' }: Props = $props();
+
+	let hide = $state(false);
+
+	// We debounce hiding the header to avoid the effect on navigation
+	const hideHeader = () => (hide = !$layoutTitleIntersecting);
+	const debounceHideHeader = debounce(hideHeader);
+
+	$effect(() => {
+		$layoutTitleIntersecting;
+
+		debounceHideHeader();
+	});
 </script>
 
-<Header opaque={!$layoutTitleIntersecting && headerOpaqueOnScroll}>
+{#snippet banner()}
+	<BannerSkylab />
+{/snippet}
+
+<Header banner={isSkylab() ? banner : undefined} {hide}>
 	<div class="start">
 		{#if start === 'menu'}
 			<ButtonMenu />
@@ -36,21 +53,23 @@
 			<Logo />
 		{/if}
 
-		{#if nonNullish($layoutNavigation?.data.satellite)}
-			<div in:fade>
-				<SatellitesSwitcher />
-			</div>
-		{/if}
+		<NavbarTitle />
 	</div>
 
-	<div class="end">
-		{#if launchpad}
-			<div>
-				<NavbarCockpit />
-			</div>
-		{/if}
+	<div>
+		{#if $authSignedIn && $missionControlIdLoaded}
+			{#if nonNullish($missionControlIdDerived)}
+				<div in:fade>
+					<Notifications />
 
-		<User {signIn} />
+					<NavbarSpotlight />
+
+					<NavbarWallet missionControlId={$missionControlIdDerived} />
+				</div>
+			{/if}
+
+			<User provider={$provider} />
+		{/if}
 	</div>
 </Header>
 
@@ -62,10 +81,6 @@
 		justify-content: center;
 		align-items: center;
 
-		gap: var(--padding);
-	}
-
-	.end {
-		gap: var(--padding-6x);
+		gap: var(--padding-1_5x);
 	}
 </style>

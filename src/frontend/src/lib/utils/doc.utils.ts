@@ -1,6 +1,7 @@
 import { jsonReviver } from '@dfinity/utils';
+import type { ExcludeDate } from '@junobuild/core';
 
-export const fileToDocData = async (file: File): Promise<unknown> => {
+export const fileToDocData = async (file: File): Promise<ExcludeDate<unknown>> => {
 	const reader = new FileReader();
 
 	await new Promise((resolve, reject) => {

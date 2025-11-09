@@ -1,10 +1,11 @@
 <script lang="ts">
-	import { AnonymousIdentity } from '@dfinity/agent';
 	import { nonNullish } from '@dfinity/utils';
+	import { AnonymousIdentity } from '@icp-sdk/core/agent';
 	import { type UpgradeCodeParams, upgradeMissionControl } from '@junobuild/admin';
 	import CanisterUpgradeModal from '$lib/components/modals/CanisterUpgradeModal.svelte';
 	import Html from '$lib/components/ui/Html.svelte';
 	import { missionControlIdDerived } from '$lib/derived/mission-control.derived';
+	import { reloadMissionControlVersion } from '$lib/services/version/version.mission-control.services';
 	import { authStore } from '$lib/stores/auth.store';
 	import { i18n } from '$lib/stores/i18n.store';
 	import type { JunoModalDetail, JunoModalUpgradeDetail } from '$lib/types/modal';
@@ -25,22 +26,35 @@
 	) =>
 		await upgradeMissionControl({
 			missionControl: {
+				// TODO: resolve no-non-null-assertion
+				// We know for sure that the mission control is defined at this point.
+				// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
 				missionControlId: $missionControlIdDerived!.toText(),
 				identity: $authStore.identity ?? new AnonymousIdentity(),
 				...container()
 			},
 			...params
 		});
+
+	const reloadVersion = async () => {
+		await reloadMissionControlVersion({
+			// TODO: resolve no-non-null-assertion
+			// We know for sure that the mission control is defined at this point.
+			// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+			missionControlId: $missionControlIdDerived!
+		});
+	};
 </script>
 
 {#if nonNullish($missionControlIdDerived)}
 	<CanisterUpgradeModal
-		{onclose}
-		{newerReleases}
-		{currentVersion}
-		upgrade={upgradeMissionControlWasm}
-		segment="mission_control"
 		canisterId={$missionControlIdDerived}
+		{currentVersion}
+		{newerReleases}
+		{onclose}
+		{reloadVersion}
+		segment="mission_control"
+		upgrade={upgradeMissionControlWasm}
 	>
 		{#snippet intro()}
 			<h2>

@@ -9,8 +9,10 @@ on:
       - 'src/console/**'
       - 'src/observatory/**'
       - 'src/mission_control/**'
+      - 'src/sputnik/**'
       - 'src/libs/**'
       - 'src/tests/**'
+      - 'src/e2e/**'
       - 'rust-toolchain.toml'
       - 'Cargo.toml'
       - 'docker/**'
@@ -54,38 +56,51 @@ jobs:
             wasm: mission_control.wasm.gz
             target: scratch_mission_control
 
+          - name: sputnik
+            wasm: sputnik.wasm.gz
+            target: scratch_sputnik
+
           - name: test_satellite
             wasm: test_satellite.wasm.gz
             target: scratch_test_satellite
+
+          - name: test_sputnik
+            wasm: test_sputnik.wasm.gz
+            target: scratch_test_sputnik
 
     steps:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Set up docker buildx
-        uses: docker/setup-buildx-action@v3
-
-      - name: Build ${{ matrix.name }}
-        uses: docker/build-push-action@v5
+      - name: Build and upload ${{ matrix.name }}
+        uses: ./.github/actions/docker-build
         with:
-          file: Dockerfile
-          cache-from: type=gha,scope=cached-stage
-          # Exports the artefacts from the final stage
-          outputs: ./out
+          name: ${{ matrix.name }}
+          wasm: ${{ matrix.wasm }}
           target: ${{ matrix.target }}
 
-      - run: mv out/${{ matrix.wasm }} ${{ matrix.wasm }}
-
-      - name: Upload ${{ matrix.name }}
-        uses: actions/upload-artifact@v4
-        with:
-          # name is the name used to display and retrieve the artifact
-          name: ${{ matrix.wasm }}
-          # path is the name used as the file to upload and the name of the
-          # downloaded file
-          path: ./${{ matrix.wasm }}
-
   tests:
+    runs-on: ubuntu-latest
+    needs: docker-build
+    strategy:
+      matrix:
+        shardIndex: [1, 2, 3, 4, 5, 6]
+        shardTotal: [6]
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Prepare
+        uses: ./.github/actions/prepare
+
+      - name: Download WASM Artifacts
+        uses: ./.github/actions/download-wasms
+
+      - name: Tests
+        run: npm run test -- --shard=${{ matrix.shardIndex }}/${{ matrix.shardTotal }}
+
+  e2e:
     runs-on: ubuntu-latest
     needs: docker-build
 
@@ -96,47 +111,29 @@ jobs:
       - name: Prepare
         uses: ./.github/actions/prepare
 
-      - name: Download satellite.wasm.gz
-        uses: actions/download-artifact@v4
-        with:
-          name: satellite.wasm.gz
-          path: .
+      - name: Prepare Playwright
+        run: npm run e2e:playwright:install
 
-      - name: Download orbiter.wasm.gz
-        uses: actions/download-artifact@v4
+      - name: Download WASM Artifacts
+        uses: ./.github/actions/download-wasms
         with:
-          name: orbiter.wasm.gz
-          path: .
+          path: ./target/deploy
 
-      - name: Download console.wasm.gz
-        uses: actions/download-artifact@v4
+      - name: Run emulator
+        uses: ./.github/actions/emulator
+
+      - name: E2E tests
+        run: npm run e2e:ci
+
+      - uses: actions/upload-artifact@v4
+        if: ${{ !cancelled() }}
         with:
-          name: console.wasm.gz
-          path: .
-
-      - name: Download observatory.wasm.gz
-        uses: actions/download-artifact@v4
-        with:
-          name: observatory.wasm.gz
-          path: .
-
-      - name: Download mission_control.wasm.gz
-        uses: actions/download-artifact@v4
-        with:
-          name: mission_control.wasm.gz
-          path: .
-
-      - name: Download test_satellite.wasm.gz
-        uses: actions/download-artifact@v4
-        with:
-          name: test_satellite.wasm.gz
-          path: .
-
-      - name: Tests
-        run: npm run test
+          name: playwright-report
+          path: playwright-report/
+          retention-days: 5
 
   may-merge:
-    needs: ['tests']
+    needs: ['tests', 'e2e']
     runs-on: ubuntu-latest
     steps:
       - name: Cleared for merging

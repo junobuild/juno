@@ -2,7 +2,7 @@ use crate::msg::{
     ERROR_PAGE_VIEWS_FEATURE_DISABLED, ERROR_PERFORMANCE_METRICS_FEATURE_DISABLED,
     ERROR_TRACK_EVENTS_FEATURE_DISABLED,
 };
-use crate::types::state::SatelliteConfig;
+use crate::state::types::state::SatelliteConfig;
 
 fn assert_feature_enabled<F>(
     config: &Option<SatelliteConfig>,
@@ -19,6 +19,7 @@ where
     }
     Err(error_message.to_string())
 }
+
 pub fn assert_page_views_enabled(config: &Option<SatelliteConfig>) -> Result<(), String> {
     assert_feature_enabled(
         config,

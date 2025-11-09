@@ -1,4 +1,4 @@
-use crate::memory::RUNTIME_STATE;
+use crate::memory::manager::RUNTIME_STATE;
 use crate::monitoring::cycles::funding::init_funding_manager;
 use crate::monitoring::cycles::funding::register_cycles_monitoring;
 use crate::monitoring::cycles::scheduler::{
@@ -12,7 +12,7 @@ use crate::types::core::SettingsMonitoring;
 use crate::types::runtime::RuntimeState;
 use crate::types::state::CyclesMonitoringStrategy;
 use crate::user::store::get_settings;
-use ic_cdk::id;
+use junobuild_shared::ic::api::id;
 use junobuild_shared::types::state::SegmentId;
 
 type SegmentCyclesMonitoryStrategyPair = (SegmentId, CyclesMonitoringStrategy);

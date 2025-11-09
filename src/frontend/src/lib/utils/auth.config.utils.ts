@@ -1,4 +1,4 @@
-import type { AuthenticationConfig } from '$declarations/satellite/satellite.did';
+import type { SatelliteDid } from '$declarations';
 import { fromNullable, isNullish, nonNullish, toNullable } from '@dfinity/utils';
 
 export const buildSetAuthenticationConfig = ({
@@ -6,10 +6,10 @@ export const buildSetAuthenticationConfig = ({
 	domainName,
 	externalOrigins
 }: {
-	config: AuthenticationConfig | undefined;
+	config: SatelliteDid.AuthenticationConfig | undefined;
 	domainName: string;
 	externalOrigins?: string[];
-}): AuthenticationConfig => {
+}): Omit<SatelliteDid.SetAuthenticationConfig, 'version'> => {
 	const external_alternative_origins: [] | [string[]] =
 		isNullish(externalOrigins) || externalOrigins.length === 0
 			? toNullable()
@@ -22,7 +22,10 @@ export const buildSetAuthenticationConfig = ({
 						derivation_origin: [domainName],
 						external_alternative_origins
 					}
-				]
+				],
+				// TODO: support for Google configuration in the Console UI
+				openid: [],
+				rules: []
 			}
 		: {
 				...config,
@@ -39,8 +42,8 @@ export const buildSetAuthenticationConfig = ({
 };
 
 export const buildDeleteAuthenticationConfig = (
-	config: AuthenticationConfig
-): AuthenticationConfig => ({
+	config: SatelliteDid.AuthenticationConfig
+): Omit<SatelliteDid.SetAuthenticationConfig, 'version'> => ({
 	...config,
 	...(nonNullish(fromNullable(config.internet_identity)) && {
 		internet_identity: [

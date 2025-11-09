@@ -13,7 +13,7 @@
 	let { text, onclick }: Props = $props();
 </script>
 
-<div class="container" use:onIntersection onjunoIntersecting={onLayoutTitleIntersection}>
+<div class="container" onjunoIntersecting={onLayoutTitleIntersection} use:onIntersection>
 	<div class="icon"><IconNewReleases /></div>
 
 	<div>

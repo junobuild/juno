@@ -11,9 +11,10 @@
 </script>
 
 <span
-	class:error={log.level === 'Error'}
-	class:warning={log.level === 'Warning'}
 	class:debug={log.level === 'Debug'}
+	class:error={log.level === 'Error'}
+	class:unknown={log.level === 'Unknown'}
+	class:warning={log.level === 'Warning'}
 >
 	{i18nText({ i18n: $i18n, labelKey: `functions.${log.level.toLowerCase()}` })}
 </span>
@@ -48,5 +49,10 @@
 	.error {
 		background: var(--color-error);
 		color: var(--color-error-contrast);
+	}
+
+	.unknown {
+		background: var(--color-primary-opaque);
+		color: var(--color-primary-opaque-contrast);
 	}
 </style>

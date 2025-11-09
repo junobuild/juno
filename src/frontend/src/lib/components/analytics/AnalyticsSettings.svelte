@@ -1,5 +1,5 @@
 <script lang="ts">
-	import type { Principal } from '@dfinity/principal';
+	import type { Principal } from '@icp-sdk/core/principal';
 	import AnalyticsControllers from '$lib/components/analytics/AnalyticsControllers.svelte';
 	import CanisterSettings from '$lib/components/canister/CanisterSettings.svelte';
 	import Snapshots from '$lib/components/snapshot/Snapshots.svelte';

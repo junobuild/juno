@@ -1,5 +1,5 @@
 <script lang="ts">
-	import type { Principal } from '@dfinity/principal';
+	import type { Principal } from '@icp-sdk/core/principal';
 	import IconAutoRenew from '$lib/components/icons/IconAutoRenew.svelte';
 	import { reloadSnapshots } from '$lib/services/snapshots.services';
 	import { authStore } from '$lib/stores/auth.store';
@@ -24,7 +24,7 @@
 	};
 </script>
 
-<button class="icon" type="button" onclick={reload} aria-label={$i18n.core.refresh}
+<button class="icon" aria-label={$i18n.core.refresh} onclick={reload} type="button"
 	><IconAutoRenew size="16px" />
 </button>
 

@@ -1,12 +1,12 @@
-use crate::constants::{
-    ASSET_ENCODING_NO_COMPRESSION, WELL_KNOWN_CUSTOM_DOMAINS, WELL_KNOWN_II_ALTERNATIVE_ORIGINS,
-};
+use crate::constants::{WELL_KNOWN_CUSTOM_DOMAINS, WELL_KNOWN_II_ALTERNATIVE_ORIGINS};
 use crate::http::types::HeaderField;
+use crate::strategies::StorageAssertionsStrategy;
 use crate::types::interface::AssetNoContent;
 use crate::types::state::FullPath;
 use crate::types::store::{Asset, AssetEncoding, AssetKey};
+use crate::well_known::types::WellKnownAsset;
 use candid::Principal;
-use junobuild_collections::assert::stores::assert_permission;
+use junobuild_collections::constants::assets::COLLECTION_ASSET_KEY;
 use junobuild_collections::types::core::CollectionKey;
 use junobuild_collections::types::rules::Permission;
 use junobuild_shared::list::{filter_timestamps, matcher_regex};
@@ -22,7 +22,7 @@ pub fn map_asset_no_content(asset: &Asset) -> (FullPath, AssetNoContent) {
 pub fn filter_values<'a>(
     caller: Principal,
     controllers: &'a Controllers,
-    rule: &'a Permission,
+    permission: &'a Permission,
     collection: CollectionKey,
     ListParams {
         matcher,
@@ -31,10 +31,11 @@ pub fn filter_values<'a>(
         owner,
     }: &'a ListParams,
     assets: &'a [(&'a FullPath, &'a Asset)],
-) -> Vec<(&'a FullPath, &'a Asset)> {
-    let (regex_key, regex_description) = matcher_regex(matcher);
+    assertions: &impl StorageAssertionsStrategy,
+) -> Result<Vec<(&'a FullPath, &'a Asset)>, String> {
+    let (regex_key, regex_description) = matcher_regex(matcher)?;
 
-    assets
+    let result = assets
         .iter()
         .filter_map(|(key, asset)| {
             if filter_collection(collection.clone(), asset)
@@ -42,14 +43,22 @@ pub fn filter_values<'a>(
                 && filter_description(&regex_description, asset)
                 && filter_owner(*owner, asset)
                 && filter_timestamps(matcher, *asset)
-                && assert_permission(rule, asset.key.owner, caller, controllers)
+                && assertions.assert_list_permission(
+                    permission,
+                    asset.key.owner,
+                    caller,
+                    &collection,
+                    controllers,
+                )
             {
                 Some((*key, *asset))
             } else {
                 None
             }
         })
-        .collect()
+        .collect();
+
+    Ok(result)
 }
 
 fn filter_full_path(regex: &Option<Regex>, asset: &Asset) -> bool {
@@ -119,7 +128,7 @@ pub fn should_include_asset_for_deletion(collection: &CollectionKey, asset_path:
         WELL_KNOWN_II_ALTERNATIVE_ORIGINS.to_string(),
     ];
 
-    collection != "#dapp" || !excluded_paths.contains(asset_path)
+    collection != COLLECTION_ASSET_KEY || !excluded_paths.contains(asset_path)
 }
 
 pub fn map_content_type_headers(content_type: &str) -> Vec<HeaderField> {
@@ -144,14 +153,26 @@ pub fn create_asset_with_content(
     headers: &[HeaderField],
     existing_asset: Option<Asset>,
     key: AssetKey,
-) -> Asset {
-    let mut asset: Asset = Asset::prepare(key, headers.to_vec(), &existing_asset);
+) -> WellKnownAsset {
+    let asset: Asset = Asset::prepare(key, headers.to_vec(), &existing_asset);
 
     let encoding = map_content_encoding(&content.as_bytes().to_vec());
 
+    (asset, encoding)
+}
+
+pub fn clone_asset_encoding_content_chunks(encoding: &AssetEncoding, chunk_index: usize) -> Blob {
+    encoding.content_chunks[chunk_index].clone()
+}
+
+/// With heap memory the encodings are part of the asset struct.
+/// Using stable, the encoding become a key pointing to another stable tree.
+pub fn insert_encoding_into_asset(
+    encoding_type: &str,
+    encoding: &AssetEncoding,
+    asset: &mut Asset,
+) {
     asset
         .encodings
-        .insert(ASSET_ENCODING_NO_COMPRESSION.to_string(), encoding);
-
-    asset
+        .insert(encoding_type.to_owned(), encoding.clone());
 }

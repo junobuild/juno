@@ -1,24 +1,16 @@
-import type { snapshot } from '$declarations/ic/ic.did';
-import type {
-	MissionControlSettings,
-	Monitoring,
-	MonitoringConfig,
-	Satellite,
-	User
-} from '$declarations/mission_control/mission_control.did';
-import type { OrbiterSatelliteFeatures } from '$declarations/orbiter/orbiter.did';
-import type { AuthenticationConfig, Rule } from '$declarations/satellite/satellite.did';
-import type { CanisterSegmentWithLabel, CanisterSettings } from '$lib/types/canister';
+import type { ICDid, MissionControlDid, OrbiterDid, SatelliteDid } from '$declarations';
+import type { CanisterInfo, CanisterSegmentWithLabel, CanisterSettings } from '$lib/types/canister';
 import type { SetControllerParams } from '$lib/types/controllers';
 import type { CustomDomains } from '$lib/types/custom-domain';
 import type { MissionControlId } from '$lib/types/mission-control';
-import type { OrbiterSatelliteConfigEntry } from '$lib/types/ortbiter';
+import type { OrbiterSatelliteConfigEntry } from '$lib/types/orbiter';
+import type { ProposalRecord } from '$lib/types/proposals';
 import type { SatelliteIdText } from '$lib/types/satellite';
 import type { User as UserListed } from '$lib/types/user';
 import type { UserUsageCollection } from '$lib/types/user-usage';
 import type { Option } from '$lib/types/utils';
-import type { AccountIdentifier } from '@dfinity/ledger-icp';
-import type { Principal } from '@dfinity/principal';
+import type { AccountIdentifier } from '@icp-sdk/canisters/ledger/icp';
+import type { Principal } from '@icp-sdk/core/principal';
 import type { BuildType } from '@junobuild/admin';
 
 export interface JunoModalWithAccountIdentifier {
@@ -26,7 +18,7 @@ export interface JunoModalWithAccountIdentifier {
 }
 
 export interface JunoModalWithSatellite {
-	satellite: Satellite;
+	satellite: MissionControlDid.Satellite;
 }
 
 export type JunoModalTopUpSatelliteDetail = JunoModalWithAccountIdentifier & JunoModalWithSatellite;
@@ -46,13 +38,13 @@ export type JunoModalUpgradeSatelliteDetail = JunoModalUpgradeDetail &
 export interface JunoModalCreateSegmentDetail extends JunoModalWithAccountIdentifier {
 	fee: bigint;
 	monitoringEnabled: boolean;
-	monitoringConfig: Option<MonitoringConfig>;
+	monitoringConfig: Option<MissionControlDid.MonitoringConfig>;
 }
 
 export interface JunoModalCustomDomainDetail {
 	editDomainName?: string;
-	satellite: Satellite;
-	config: AuthenticationConfig | undefined;
+	satellite: MissionControlDid.Satellite;
+	config: SatelliteDid.AuthenticationConfig | undefined;
 }
 
 export interface JunoModalCycles {
@@ -84,36 +76,63 @@ export interface JunoModalCreateControllerDetail extends JunoModalSegmentDetail 
 
 export interface JunoModalEditCanisterSettingsDetail extends JunoModalSegmentDetail {
 	settings: CanisterSettings;
+	canister: CanisterInfo;
 }
 
 export interface JunoModalRestoreSnapshotDetail extends JunoModalSegmentDetail {
-	snapshot: snapshot;
+	snapshot: ICDid.snapshot;
 }
 
 export interface JunoModalEditOrbiterConfigDetail {
 	orbiterId: Principal;
-	features: OrbiterSatelliteFeatures | undefined;
+	features: OrbiterDid.OrbiterSatelliteFeatures | undefined;
 	config: Record<SatelliteIdText, OrbiterSatelliteConfigEntry>;
 }
 
-export interface JunoModalEditAuthConfigDetail extends JunoModalWithSatellite {
-	rule: Rule | undefined;
-	config: AuthenticationConfig | undefined;
+export type JunoModalEditAuthConfigDetail = JunoModalWithSatellite & {
+	config: SatelliteDid.AuthenticationConfig | undefined;
+} & JunoModalEditAuthConfigDetailType;
+
+export interface JunoModalEditAuthConfigDetailCore {
+	core: {
+		rule: SatelliteDid.Rule | undefined;
+	};
+}
+
+export type JunoModalEditAuthConfigDetailType =
+	| JunoModalEditAuthConfigDetailCore
+	| JunoModalEditAuthConfigDetailII
+	| JunoModalEditAuthConfigDetailGoogle;
+
+export interface JunoModalEditAuthConfigDetailGoogle {
+	google: null;
+}
+
+export interface JunoModalEditAuthConfigDetailII {
+	internet_identity: null;
 }
 
 export interface JunoModalCreateMonitoringStrategyDetail {
 	missionControlId: MissionControlId;
-	settings: MissionControlSettings | undefined;
-	user: User;
+	settings: MissionControlDid.MissionControlSettings | undefined;
+	user: MissionControlDid.User;
 }
 
 export interface JunoModalShowMonitoringDetail extends JunoModalSegmentDetail {
-	monitoring: Monitoring | undefined;
+	monitoring: MissionControlDid.Monitoring | undefined;
 }
 
 export interface JunoModalShowUserDetail {
 	user: UserListed;
 	usages: UserUsageCollection[];
+}
+
+export interface JunoModalChangeDetail extends JunoModalWithSatellite {
+	proposal: ProposalRecord;
+}
+
+export interface JunoModalCdnUpgradeDetail extends JunoModalWithSatellite {
+	asset: SatelliteDid.AssetNoContent;
 }
 
 export type JunoModalDetail =
@@ -131,7 +150,10 @@ export type JunoModalDetail =
 	| JunoModalDeleteSatelliteDetail
 	| JunoModalEditOrbiterConfigDetail
 	| JunoModalCreateMonitoringStrategyDetail
-	| JunoModalShowUserDetail;
+	| JunoModalShowUserDetail
+	| JunoModalChangeDetail
+	| JunoModalCdnUpgradeDetail
+	| JunoModalEditAuthConfigDetail;
 
 export interface JunoModal<T extends JunoModalDetail> {
 	type:
@@ -159,6 +181,9 @@ export interface JunoModal<T extends JunoModalDetail> {
 		| 'create_monitoring_strategy'
 		| 'stop_monitoring_strategy'
 		| 'show_monitoring_details'
-		| 'show_user_details';
+		| 'show_user_details'
+		| 'apply_change'
+		| 'reject_change'
+		| 'upgrade_satellite_with_cdn';
 	detail?: T;
 }

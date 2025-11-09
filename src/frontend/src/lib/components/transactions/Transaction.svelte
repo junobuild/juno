@@ -36,12 +36,12 @@
 	</td>
 	<td class="from">
 		{#if nonNullish(from)}
-			<Identifier small={false} identifier={from} />
+			<Identifier identifier={from} small={false} />
 		{/if}
 	</td>
 	<td class="to">
 		{#if nonNullish(to)}
-			<Identifier small={false} identifier={to} />
+			<Identifier identifier={to} small={false} />
 		{/if}
 	</td>
 	<td class="memo">{memo}</td>

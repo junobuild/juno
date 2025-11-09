@@ -22,7 +22,7 @@ runs:
         base: main
         commit-message: ${{ inputs.title }}
         committer: GitHub <noreply@github.com>
-        author: gix-bot <gix-bot@users.noreply.github.com>
+        author: juno-bot <juno-bot@users.noreply.github.com>
         branch: ${{ inputs.branch }}
         delete-branch: true
         title: ${{ inputs.title }}

@@ -1,0 +1,1 @@
+export const FETCH_CERTIFICATE_INTERVAL = 1000 * 60 * 15; // 15min

@@ -1,11 +1,11 @@
-use crate::memory::RUNTIME_STATE;
+use crate::memory::manager::RUNTIME_STATE;
 use crate::monitoring::cycles::funding::init_funding_manager;
 use crate::monitoring::cycles::funding::register_cycles_monitoring;
 use crate::monitoring::store::heap::set_mission_control_strategy;
 use crate::types::interface::SegmentsMonitoringStrategy;
 use crate::types::runtime::RuntimeState;
 use crate::types::state::CyclesMonitoringStrategy;
-use ic_cdk::id;
+use junobuild_shared::ic::api::id;
 use junobuild_shared::types::state::SegmentId;
 
 type SaveSegmentStrategy = fn(&SegmentId, &CyclesMonitoringStrategy) -> Result<(), String>;

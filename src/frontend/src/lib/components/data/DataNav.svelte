@@ -11,6 +11,7 @@
 		onedit: (rule: CollectionRule | undefined) => void;
 	}
 
+	// eslint-disable-next-line svelte/no-unused-props
 	let props: Props = $props();
 
 	const { store }: DataContext<unknown> = getContext<DataContext<unknown>>(DATA_CONTEXT_KEY);

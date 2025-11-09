@@ -1,0 +1,102 @@
+name: Update E2E Screenshots
+
+on:
+  workflow_dispatch:
+
+jobs:
+  docker-build-base:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Build Base Docker Image
+        uses: ./.github/actions/docker-build-base
+
+  docker-build:
+    runs-on: ubuntu-latest
+    needs: docker-build-base
+
+    strategy:
+      matrix:
+        include:
+          - name: satellite
+            wasm: satellite.wasm.gz
+            target: scratch_satellite
+
+          - name: orbiter
+            wasm: orbiter.wasm.gz
+            target: scratch_orbiter
+
+          - name: console
+            wasm: console.wasm.gz
+            target: scratch_console
+
+          - name: observatory
+            wasm: observatory.wasm.gz
+            target: scratch_observatory
+
+          - name: mission_control
+            wasm: mission_control.wasm.gz
+            target: scratch_mission_control
+
+          - name: sputnik
+            wasm: sputnik.wasm.gz
+            target: scratch_sputnik
+
+          - name: test_satellite
+            wasm: test_satellite.wasm.gz
+            target: scratch_test_satellite
+
+          - name: test_sputnik
+            wasm: test_sputnik.wasm.gz
+            target: scratch_test_sputnik
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Build and upload ${{ matrix.name }}
+        uses: ./.github/actions/docker-build
+        with:
+          name: ${{ matrix.name }}
+          wasm: ${{ matrix.wasm }}
+          target: ${{ matrix.target }}
+
+  update_screenshots:
+    runs-on: ubuntu-latest
+    needs: docker-build
+    steps:
+      - name: Fail if branch is main
+        if: ${{ github.ref == 'refs/heads/main' }}
+        run: |
+          echo "This workflow should not be triggered with workflow_dispatch on main"
+          exit 1
+
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Prepare
+        uses: ./.github/actions/prepare
+
+      - name: Prepare Playwright
+        run: npm run e2e:playwright:install
+
+      - name: Download WASM Artifacts
+        uses: ./.github/actions/download-wasms
+        with:
+          path: ./target/deploy
+
+      - name: Run emulator
+        uses: ./.github/actions/emulator
+
+      - name: Run Playwright tests
+        run: npm run e2e:ci:snapshots
+
+      - name: Commit Playwright updated screenshots
+        uses: EndBug/add-and-commit@v9
+        if: ${{ github.ref != 'refs/heads/main' }}
+        with:
+          add: ./src/e2e
+          default_author: github_actions
+          message: "🤖 update E2E screenshots"

@@ -74,18 +74,18 @@
 			{/if}
 			{#if axisWithText}
 				<text
-					x={xTick}
-					y={isBandwidth ? $yScale.bandwidth() / 2 + yTick : yTick}
+					style="text-anchor:{isBandwidth ? 'end' : textAnchor};"
 					dx={isBandwidth ? -9 : dxTick}
 					dy={isBandwidth ? 4 : dyTick}
-					style="text-anchor:{isBandwidth ? 'end' : textAnchor};">{formatTick(tick)}</text
+					x={xTick}
+					y={isBandwidth ? $yScale.bandwidth() / 2 + yTick : yTick}>{formatTick(tick)}</text
 				>
 			{/if}
 		</g>
 	{/each}
 </g>
 
-<style>
+<style lang="scss">
 	.tick {
 		font-size: var(--font-size-ultra-small);
 	}

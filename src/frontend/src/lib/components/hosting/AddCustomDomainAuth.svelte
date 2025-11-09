@@ -1,63 +1,36 @@
-<script lang="ts">
-	import type { AuthenticationConfig } from '$declarations/satellite/satellite.did';
-	import Html from '$lib/components/ui/Html.svelte';
-	import { i18n } from '$lib/stores/i18n.store';
-	import { buildSetAuthenticationConfig } from '$lib/utils/auth.config.utils';
-	import { i18nFormat } from '$lib/utils/i18n.utils';
+<script lang="ts" module>
+	import type { SatelliteDid } from '$declarations';
 
-	interface Props {
-		config: AuthenticationConfig | undefined;
-		domainNameInput: string;
-		next: (config: AuthenticationConfig | null) => void;
+	export interface AddCustomDomainAuthProps {
+		config: SatelliteDid.AuthenticationConfig | undefined;
+		useDomainForDerivationOrigin: boolean;
 	}
-
-	let { config, domainNameInput, next }: Props = $props();
-
-	const yes = () => {
-		const payload = buildSetAuthenticationConfig({ config, domainName: domainNameInput });
-
-		next(payload);
-	};
-
-	const no = () => next(null);
 </script>
 
-<h2>{$i18n.hosting.set_auth_domain_title}</h2>
+<script lang="ts">
+	import { fromNullishNullable, isEmptyString } from '@dfinity/utils';
+	import CheckboxInline from '$lib/components/ui/CheckboxInline.svelte';
+	import Collapsible from '$lib/components/ui/Collapsible.svelte';
+	import { i18n } from '$lib/stores/i18n.store';
 
-<p>
-	<Html
-		text={i18nFormat($i18n.hosting.set_auth_domain_question, [
-			{
-				placeholder: '{0}',
-				value: domainNameInput
-			},
-			{
-				placeholder: '{1}',
-				value: domainNameInput.startsWith('www')
-					? domainNameInput.replace('www.', '')
-					: `www.${domainNameInput}`
-			},
-			{
-				placeholder: '{2}',
-				value: domainNameInput
-			}
-		])}
-	/>
-</p>
+	let { config, useDomainForDerivationOrigin = $bindable(false) }: AddCustomDomainAuthProps =
+		$props();
 
-<div class="toolbar">
-	<button onclick={no}>{$i18n.core.no}</button>
-	<button onclick={yes}>{$i18n.core.yes}</button>
-</div>
+	let existingDerivationOrigin = $derived(
+		fromNullishNullable(fromNullishNullable(config?.internet_identity)?.derivation_origin)
+	);
 
-<style lang="scss">
-	@use '../../styles/mixins/text';
+	let noExistingDerivationOrigin = $derived(isEmptyString(existingDerivationOrigin));
+</script>
 
-	button {
-		max-width: 100%;
+{#if noExistingDerivationOrigin}
+	<Collapsible>
+		{#snippet header()}
+			{$i18n.core.advanced_options}
+		{/snippet}
 
-		span {
-			@include text.truncate;
-		}
-	}
-</style>
+		<CheckboxInline bind:checked={useDomainForDerivationOrigin}>
+			{$i18n.hosting.set_auth_domain_question}
+		</CheckboxInline>
+	</Collapsible>
+{/if}

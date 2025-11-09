@@ -3,45 +3,74 @@
 	import { fade } from 'svelte/transition';
 	import CliAdd from '$lib/components/cli/CliAdd.svelte';
 	import MissionControlGuard from '$lib/components/guards/MissionControlGuard.svelte';
-	import CanistersLoader from '$lib/components/loaders/CanistersLoader.svelte';
+	import MetadataLoader from '$lib/components/loaders/MetadataLoader.svelte';
+	import SignInActions from '$lib/components/sign-in/SignInActions.svelte';
+	import ContainerCentered from '$lib/components/ui/ContainerCentered.svelte';
+	import Message from '$lib/components/ui/Message.svelte';
 	import { authSignedIn } from '$lib/derived/auth.derived';
 	import { missionControlIdDerived } from '$lib/derived/mission-control.derived';
 	import { sortedSatellites } from '$lib/derived/satellites.derived';
-	import { signIn } from '$lib/services/auth.services';
+	import { onIntersection } from '$lib/directives/intersection.directives';
 	import { i18n } from '$lib/stores/i18n.store';
+	import { onLayoutTitleIntersection } from '$lib/stores/layout-intersecting.store';
 	import type { Option } from '$lib/types/utils';
 
 	interface Props {
 		data: {
 			redirect_uri: Option<string>;
 			principal: Option<string>;
+			profile: Option<string>;
 		};
 	}
 
 	let { data }: Props = $props();
 
-	let redirect_uri: Option<string> = $derived(data?.redirect_uri);
-	let principal: Option<string> = $derived(data?.principal);
+	let redirect_uri = $derived(data?.redirect_uri);
+	let principal = $derived(data?.principal);
+	let profile = $derived(data?.profile);
 </script>
 
-{#if nonNullish(redirect_uri) && nonNullish(principal) && notEmptyString(redirect_uri) && notEmptyString(principal)}
-	{#if $authSignedIn}
-		<MissionControlGuard>
-			<CanistersLoader satellites={$sortedSatellites}>
-				{#if nonNullish($missionControlIdDerived)}
-					<div in:fade>
-						<CliAdd {principal} {redirect_uri} missionControlId={$missionControlIdDerived} />
-					</div>
-				{/if}
-			</CanistersLoader>
-		</MissionControlGuard>
-	{:else}
-		<p>
-			{$i18n.cli.sign_in}
-		</p>
+<div onjunoIntersecting={onLayoutTitleIntersection} use:onIntersection>
+	{#if nonNullish(redirect_uri) && nonNullish(principal) && notEmptyString(redirect_uri) && notEmptyString(principal)}
+		{#if $authSignedIn}
+			<MissionControlGuard>
+				<MetadataLoader satellites={$sortedSatellites}>
+					{#if nonNullish($missionControlIdDerived)}
+						<div in:fade>
+							<CliAdd
+								missionControlId={$missionControlIdDerived}
+								{principal}
+								{profile}
+								{redirect_uri}
+							/>
+						</div>
+					{/if}
+				</MetadataLoader>
+			</MissionControlGuard>
+		{:else}
+			<ContainerCentered>
+				<p>
+					{$i18n.cli.sign_in}
+				</p>
 
-		<button onclick={async () => await signIn({})}>{$i18n.core.sign_in}</button>
+				<SignInActions />
+			</ContainerCentered>
+		{/if}
+	{:else}
+		<ContainerCentered>
+			<Message>
+				{#snippet icon()}
+					<span>❌</span>
+				{/snippet}
+
+				<p>{$i18n.errors.cli_missing_params}</p>
+			</Message>
+		</ContainerCentered>
 	{/if}
-{:else}
-	<p>{$i18n.errors.cli_missing_params}</p>
-{/if}
+</div>
+
+<style lang="scss">
+	p {
+		max-width: 450px;
+	}
+</style>

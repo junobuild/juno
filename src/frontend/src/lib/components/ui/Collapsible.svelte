@@ -1,29 +1,38 @@
-<!-- @migration-task Error while migrating Svelte code: Can't migrate code with afterUpdate. Please migrate by hand. -->
 <script lang="ts">
 	import { isNullish, nonNullish } from '@dfinity/utils';
-	import { afterUpdate } from 'svelte';
+	import type { Snippet } from 'svelte';
 	import { fade } from 'svelte/transition';
 	import IconUnfoldLess from '$lib/components/icons/IconUnfoldLess.svelte';
 	import IconUnfoldMore from '$lib/components/icons/IconUnfoldMore.svelte';
 	import { i18n } from '$lib/stores/i18n.store';
 	import { handleKeyPress } from '$lib/utils/keyboard.utils';
 
-	// TODO: migrate to Svelte v5
-	// e.g. afterUpdate cannot be used in runes mode
+	interface Props {
+		id?: string;
+		initiallyExpanded?: boolean;
+		maxContentHeight?: number;
+		wrapHeight?: boolean;
+		expanded?: boolean;
+		header: Snippet;
+		children: Snippet;
+	}
 
-	export let id: string | undefined = undefined;
-	export let initiallyExpanded = false;
-	export let maxContentHeight: number | undefined = undefined;
-
-	export let wrapHeight = false;
+	let {
+		id,
+		initiallyExpanded = false,
+		expanded = $bindable(initiallyExpanded),
+		maxContentHeight,
+		wrapHeight = false,
+		header,
+		children
+	}: Props = $props();
 
 	// Minimum height when some part of the text-content is visible (empirical value)
 	const CONTENT_MIN_HEIGHT = 40;
 
-	export let expanded = initiallyExpanded;
-	let container: HTMLDivElement | undefined;
-	let userUpdated = false;
-	let maxHeight: number | undefined;
+	let container = $state<HTMLDivElement | undefined>();
+	let userUpdated = $state(false);
+	let maxHeight = $state<number | undefined>();
 
 	export const close = () => {
 		if (!expanded) {
@@ -41,7 +50,7 @@
 		toggleContent();
 	};
 
-	export const toggleContent = () => {
+	const toggleContent = () => {
 		userUpdated = true;
 		expanded = !expanded;
 	};
@@ -57,7 +66,7 @@
 		isNullish(height) ? '' : `max-height: ${height}px;`;
 	// In case of `initiallyExpanded=true` we should avoid calculating `max-height` from the content-height
 	// because the content in the slot can be initialized w/ some delay.
-	const updateMaxHeight = () => {
+	export const updateMaxHeight = () => {
 		if (userUpdated) {
 			maxHeight = expanded ? calculateMaxContentHeight() : 0;
 		} else {
@@ -73,7 +82,7 @@
 				: 'overflow-y: auto;';
 
 	// recalculate max-height after DOM update
-	afterUpdate(updateMaxHeight);
+	$effect(updateMaxHeight);
 
 	const toggle = () => toggleContent();
 </script>
@@ -81,43 +90,43 @@
 <div class="collapsible">
 	<div
 		id={nonNullish(id) ? `heading${id}` : undefined}
-		role="button"
 		class="header"
-		on:click={toggle}
-		on:keypress={($event) => handleKeyPress({ $event, callback: toggle })}
+		onclick={toggle}
+		onkeypress={($event) => handleKeyPress({ $event, callback: toggle })}
+		role="button"
 		tabindex="-1"
 	>
 		<button
-			type="button"
 			class="square"
 			class:expanded
-			aria-expanded={expanded}
 			aria-controls={id}
-			title={expanded ? $i18n.core.collapse : $i18n.core.expand}
+			aria-expanded={expanded}
 			tabindex="-1"
+			title={expanded ? $i18n.core.collapse : $i18n.core.expand}
+			type="button"
 		>
 			{#if expanded}
-				<span in:fade class="icon"><IconUnfoldLess size="16px" /></span>
+				<span class="icon" in:fade><IconUnfoldLess size="16px" /></span>
 			{:else}
-				<span in:fade class="icon"><IconUnfoldMore size="16px" /></span>
+				<span class="icon" in:fade><IconUnfoldMore size="16px" /></span>
 			{/if}
 		</button>
-		<slot name="header" />
+		{@render header()}
 	</div>
 	<div
-		role="definition"
+		style={`${maxHeightStyle(maxHeight)}${overflyYStyle(maxHeight)}`}
 		class="wrapper"
 		class:expanded
-		style={`${maxHeightStyle(maxHeight)}${overflyYStyle(maxHeight)}`}
+		role="definition"
 	>
 		<div
+			bind:this={container}
 			{id}
-			aria-labelledby={nonNullish(id) ? `heading${id}` : undefined}
 			class="content"
 			class:wrapHeight
-			bind:this={container}
+			aria-labelledby={nonNullish(id) ? `heading${id}` : undefined}
 		>
-			<slot />
+			{@render children()}
 		</div>
 	</div>
 </div>

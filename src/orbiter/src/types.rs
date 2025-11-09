@@ -1,168 +1,10 @@
-pub mod state {
-    use crate::memory::init_stable_state;
-    use crate::types::memory::{StoredPageView, StoredTrackEvent};
-    use candid::CandidType;
-    use ic_stable_structures::StableBTreeMap;
-    use junobuild_shared::types::memory::Memory;
-    use junobuild_shared::types::state::{
-        Controllers, Metadata, OrbiterSatelliteConfig, SatelliteId, Timestamp, Version,
-    };
-    use serde::{Deserialize, Serialize};
-    use std::collections::HashMap;
-
-    #[derive(Serialize, Deserialize)]
-    pub struct State {
-        // Direct stable state: State that is uses stable memory directly as its store. No need for pre/post upgrade hooks.
-        #[serde(skip, default = "init_stable_state")]
-        pub stable: StableState,
-
-        // Indirect stable state: State that lives on the heap, but is saved into stable memory on upgrades.
-        pub heap: HeapState,
-    }
-
-    pub type Key = String;
-    pub type SessionId = String;
-
-    pub type PageViewsStable = StableBTreeMap<AnalyticKey, StoredPageView, Memory>;
-    pub type TrackEventsStable = StableBTreeMap<AnalyticKey, StoredTrackEvent, Memory>;
-    pub type PerformanceMetricsStable = StableBTreeMap<AnalyticKey, PerformanceMetric, Memory>;
-
-    pub type SatellitesPageViewsStable = StableBTreeMap<AnalyticSatelliteKey, AnalyticKey, Memory>;
-    pub type SatellitesTrackEventsStable =
-        StableBTreeMap<AnalyticSatelliteKey, AnalyticKey, Memory>;
-    pub type SatellitesPerformanceMetricsStable =
-        StableBTreeMap<AnalyticSatelliteKey, AnalyticKey, Memory>;
-
-    pub struct StableState {
-        pub page_views: PageViewsStable,
-        pub track_events: TrackEventsStable,
-        pub performance_metrics: PerformanceMetricsStable,
-        pub satellites_page_views: SatellitesPageViewsStable,
-        pub satellites_track_events: SatellitesTrackEventsStable,
-        pub satellites_performance_metrics: SatellitesPerformanceMetricsStable,
-    }
-
-    pub type SatelliteConfig = OrbiterSatelliteConfig;
-    pub type SatelliteConfigs = HashMap<SatelliteId, SatelliteConfig>;
-
-    #[derive(Default, CandidType, Serialize, Deserialize, Clone)]
-    pub struct HeapState {
-        pub controllers: Controllers,
-        pub config: SatelliteConfigs,
-    }
-
-    #[derive(CandidType, Serialize, Deserialize, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
-    pub struct AnalyticKey {
-        pub collected_at: Timestamp,
-        pub key: Key,
-    }
-
-    #[derive(CandidType, Serialize, Deserialize, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
-    pub struct AnalyticSatelliteKey {
-        pub satellite_id: SatelliteId,
-        pub collected_at: Timestamp,
-        pub key: Key,
-    }
-
-    #[derive(CandidType, Serialize, Deserialize, Clone)]
-    pub struct PageView {
-        pub title: String,
-        pub href: String,
-        pub referrer: Option<String>,
-        pub device: PageViewDevice,
-        pub user_agent: Option<String>,
-        pub time_zone: String,
-        pub satellite_id: SatelliteId,
-        pub session_id: SessionId,
-        pub created_at: Timestamp,
-        pub updated_at: Timestamp,
-        pub version: Option<Version>,
-    }
-
-    #[derive(Default, CandidType, Serialize, Deserialize, Clone)]
-    pub struct PageViewDevice {
-        pub inner_width: u16,
-        pub inner_height: u16,
-    }
-
-    #[derive(CandidType, Serialize, Deserialize, Clone)]
-    pub struct TrackEvent {
-        pub name: String,
-        pub metadata: Option<Metadata>,
-        pub satellite_id: SatelliteId,
-        pub session_id: SessionId,
-        pub created_at: Timestamp,
-        pub updated_at: Timestamp,
-        pub version: Option<Version>,
-    }
-
-    #[derive(CandidType, Serialize, Deserialize, Clone)]
-    pub struct PerformanceMetric {
-        pub href: String,
-        pub metric_name: PerformanceMetricName,
-        pub data: PerformanceData,
-        pub satellite_id: SatelliteId,
-        pub session_id: SessionId,
-        pub created_at: Timestamp,
-        pub updated_at: Timestamp,
-        pub version: Option<Version>,
-    }
-
-    #[allow(clippy::upper_case_acronyms)]
-    #[derive(CandidType, Serialize, Deserialize, Clone)]
-    pub enum PerformanceMetricName {
-        CLS,
-        FCP,
-        INP,
-        LCP,
-        TTFB,
-    }
-
-    #[derive(CandidType, Serialize, Deserialize, Clone)]
-    pub enum PerformanceData {
-        WebVitalsMetric(WebVitalsMetric),
-    }
-
-    #[derive(CandidType, Serialize, Deserialize, Clone)]
-    pub struct WebVitalsMetric {
-        pub value: f64,
-        pub delta: f64,
-        pub id: String,
-        pub navigation_type: Option<NavigationType>,
-    }
-
-    #[derive(CandidType, Serialize, Deserialize, Clone)]
-    pub enum NavigationType {
-        Navigate,
-        Reload,
-        BackForward,
-        BackForwardCache,
-        Prerender,
-        Restore,
-    }
-}
-
-pub mod memory {
-    use crate::types::state::{PageView, TrackEvent};
-    use candid::CandidType;
-    use serde::{Deserialize, Serialize};
-
-    #[derive(CandidType, Serialize, Deserialize, Clone)]
-    pub enum StoredPageView {
-        Unbounded(PageView),
-        Bounded(PageView),
-    }
-
-    #[derive(CandidType, Serialize, Deserialize, Clone)]
-    pub enum StoredTrackEvent {
-        Unbounded(TrackEvent),
-        Bounded(TrackEvent),
-    }
-}
-
 pub mod interface {
-    use crate::types::state::{PageViewDevice, PerformanceData, PerformanceMetricName, SessionId};
+    use crate::state::types::state::{
+        PageViewCampaign, PageViewClient, PageViewDevice, PerformanceData, PerformanceMetricName,
+        SessionId,
+    };
     use candid::CandidType;
+    use junobuild_shared::types::core::DomainName;
     use junobuild_shared::types::state::{
         Metadata, OrbiterSatelliteFeatures, SatelliteId, Timestamp, Version,
     };
@@ -178,8 +20,10 @@ pub mod interface {
         pub device: PageViewDevice,
         pub time_zone: String,
         pub user_agent: Option<String>,
+        pub client: Option<PageViewClient>,
         pub satellite_id: SatelliteId,
         pub session_id: SessionId,
+        pub campaign: Option<PageViewCampaign>,
         #[deprecated(
             since = "0.0.7",
             note = "Support for backwards compatibility. It has been replaced by version for overwrite checks."
@@ -192,6 +36,9 @@ pub mod interface {
     pub struct SetTrackEvent {
         pub name: String,
         pub metadata: Option<Metadata>,
+        #[deprecated(
+            note = "User agent was previously collected to assert bots, but this is now handled using HTTP request headers."
+        )]
         pub user_agent: Option<String>,
         pub satellite_id: SatelliteId,
         pub session_id: SessionId,
@@ -208,6 +55,9 @@ pub mod interface {
         pub href: String,
         pub metric_name: PerformanceMetricName,
         pub data: PerformanceData,
+        #[deprecated(
+            note = "User agent was previously collected to assert bots, but this is now handled using HTTP request headers."
+        )]
         pub user_agent: Option<String>,
         pub satellite_id: SatelliteId,
         pub session_id: SessionId,
@@ -224,6 +74,7 @@ pub mod interface {
     #[derive(CandidType, Deserialize, Clone)]
     pub struct SetSatelliteConfig {
         pub features: Option<OrbiterSatelliteFeatures>,
+        pub restricted_origin: Option<DomainName>,
         pub version: Option<Version>,
     }
 
@@ -246,11 +97,26 @@ pub mod interface {
     pub struct AnalyticsTop10PageViews {
         pub referrers: Vec<(String, u32)>,
         pub pages: Vec<(String, u32)>,
+        pub time_zones: Option<Vec<(String, u32)>>,
+        pub utm_sources: Option<Vec<(String, u32)>>,
+        pub utm_campaigns: Option<Vec<(String, u32)>>,
+    }
+
+    #[derive(CandidType, Deserialize, Clone)]
+    pub struct AnalyticsOperatingSystemsPageViews {
+        pub ios: f64,
+        pub android: f64,
+        pub windows: f64,
+        pub macos: f64,
+        pub linux: f64,
+        pub others: f64,
     }
 
     #[derive(CandidType, Deserialize, Clone)]
     pub struct AnalyticsDevicesPageViews {
         pub mobile: f64,
+        pub tablet: Option<f64>,
+        pub laptop: Option<f64>,
         pub desktop: f64,
         pub others: f64,
     }
@@ -268,6 +134,7 @@ pub mod interface {
     pub struct AnalyticsClientsPageViews {
         pub devices: AnalyticsDevicesPageViews,
         pub browsers: AnalyticsBrowsersPageViews,
+        pub operating_systems: Option<AnalyticsOperatingSystemsPageViews>,
     }
 
     #[derive(CandidType, Deserialize, Clone)]
@@ -288,5 +155,193 @@ pub mod interface {
         pub inp: Option<f64>,
         pub lcp: Option<f64>,
         pub ttfb: Option<f64>,
+    }
+
+    pub mod http {
+        use crate::state::types::state::{Key, PerformanceData, PerformanceMetricName, SessionId};
+        use junobuild_shared::types::state::Metadata;
+        use junobuild_utils::DocDataBigInt;
+        use serde::{Deserialize, Serialize};
+
+        pub type TimestampPayload = DocDataBigInt;
+        pub type VersionPayload = Option<DocDataBigInt>;
+
+        // We use textual representation of Principal for performance reason on the client side.
+        // This way the frontend can spare the need to bloat the JS bundle.
+        pub type PrincipalText = String;
+        pub type SatelliteIdText = PrincipalText;
+
+        #[derive(Deserialize)]
+        pub struct SetPageViewRequest {
+            pub satellite_id: SatelliteIdText,
+            pub key: AnalyticKeyPayload,
+            pub page_view: SetPageViewPayload,
+        }
+
+        #[derive(Deserialize)]
+        pub struct SetTrackEventRequest {
+            pub satellite_id: SatelliteIdText,
+            pub key: AnalyticKeyPayload,
+            pub track_event: SetTrackEventPayload,
+        }
+
+        #[derive(Deserialize)]
+        pub struct SetPerformanceMetricRequest {
+            pub satellite_id: SatelliteIdText,
+            pub key: AnalyticKeyPayload,
+            pub performance_metric: SetPerformanceMetricPayload,
+        }
+
+        #[derive(Deserialize)]
+        pub struct SetPageViewsRequest {
+            pub satellite_id: SatelliteIdText,
+            pub page_views: Vec<SetPageViewsRequestEntry>,
+        }
+
+        #[derive(Deserialize)]
+        pub struct SetPageViewsRequestEntry {
+            pub key: AnalyticKeyPayload,
+            pub page_view: SetPageViewPayload,
+        }
+
+        #[derive(Deserialize)]
+        pub struct SetTrackEventsRequest {
+            pub satellite_id: SatelliteIdText,
+            pub track_events: Vec<SetTrackEventsRequestEntry>,
+        }
+
+        #[derive(Deserialize)]
+        pub struct SetTrackEventsRequestEntry {
+            pub key: AnalyticKeyPayload,
+            pub track_event: SetTrackEventPayload,
+        }
+
+        #[derive(Deserialize)]
+        pub struct SetPerformanceMetricsRequest {
+            pub satellite_id: SatelliteIdText,
+            pub performance_metrics: Vec<SetPerformanceMetricsRequestEntry>,
+        }
+
+        #[derive(Deserialize)]
+        pub struct SetPerformanceMetricsRequestEntry {
+            pub key: AnalyticKeyPayload,
+            pub performance_metric: SetPerformanceMetricPayload,
+        }
+
+        #[derive(Deserialize)]
+        pub struct AnalyticKeyPayload {
+            pub collected_at: TimestampPayload,
+            pub key: Key,
+        }
+
+        #[derive(Deserialize)]
+        pub struct SetPageViewPayload {
+            pub title: String,
+            pub href: String,
+            pub referrer: Option<String>,
+            pub device: PageViewDevicePayload,
+            pub time_zone: String,
+            pub user_agent: Option<String>,
+            pub client: Option<PageViewClientPayload>,
+            pub session_id: SessionId,
+            pub campaign: Option<PageViewCampaignPayload>,
+            pub version: VersionPayload,
+        }
+
+        #[derive(Deserialize)]
+        pub struct SetTrackEventPayload {
+            pub name: String,
+            pub metadata: Option<Metadata>,
+            pub user_agent: Option<String>,
+            pub session_id: SessionId,
+            pub version: VersionPayload,
+        }
+
+        #[derive(Deserialize)]
+        pub struct SetPerformanceMetricPayload {
+            pub href: String,
+            pub metric_name: PerformanceMetricName,
+            pub data: PerformanceData,
+            pub user_agent: Option<String>,
+            pub session_id: SessionId,
+            pub version: VersionPayload,
+        }
+
+        #[derive(Serialize)]
+        pub struct PageViewPayload {
+            pub title: String,
+            pub href: String,
+            #[serde(skip_serializing_if = "Option::is_none")]
+            pub referrer: Option<String>,
+            pub device: PageViewDevicePayload,
+            pub time_zone: String,
+            #[serde(skip_serializing_if = "Option::is_none")]
+            pub user_agent: Option<String>,
+            #[serde(skip_serializing_if = "Option::is_none")]
+            pub client: Option<PageViewClientPayload>,
+            #[serde(skip_serializing_if = "Option::is_none")]
+            pub campaign: Option<PageViewCampaignPayload>,
+            pub session_id: SessionId,
+            pub created_at: TimestampPayload,
+            pub updated_at: TimestampPayload,
+            #[serde(skip_serializing_if = "Option::is_none")]
+            pub version: VersionPayload,
+        }
+
+        #[derive(Deserialize, Serialize)]
+        pub struct PageViewClientPayload {
+            pub browser: String,
+            #[serde(rename = "os")]
+            pub operating_system: String,
+            #[serde(skip_serializing_if = "Option::is_none")]
+            pub device: Option<String>,
+        }
+
+        #[derive(Deserialize, Serialize)]
+        pub struct PageViewDevicePayload {
+            pub inner_width: u16,
+            pub inner_height: u16,
+            #[serde(skip_serializing_if = "Option::is_none")]
+            pub screen_width: Option<u16>,
+            #[serde(skip_serializing_if = "Option::is_none")]
+            pub screen_height: Option<u16>,
+        }
+
+        #[derive(Deserialize, Serialize)]
+        pub struct PageViewCampaignPayload {
+            pub utm_source: String,
+            #[serde(skip_serializing_if = "Option::is_none")]
+            pub utm_medium: Option<String>,
+            #[serde(skip_serializing_if = "Option::is_none")]
+            pub utm_campaign: Option<String>,
+            #[serde(skip_serializing_if = "Option::is_none")]
+            pub utm_term: Option<String>,
+            #[serde(skip_serializing_if = "Option::is_none")]
+            pub utm_content: Option<String>,
+        }
+
+        #[derive(Serialize)]
+        pub struct TrackEventPayload {
+            pub name: String,
+            #[serde(skip_serializing_if = "Option::is_none")]
+            pub metadata: Option<Metadata>,
+            pub session_id: SessionId,
+            pub created_at: TimestampPayload,
+            pub updated_at: TimestampPayload,
+            #[serde(skip_serializing_if = "Option::is_none")]
+            pub version: VersionPayload,
+        }
+
+        #[derive(Serialize)]
+        pub struct PerformanceMetricPayload {
+            pub href: String,
+            pub metric_name: PerformanceMetricName,
+            pub data: PerformanceData,
+            pub session_id: SessionId,
+            pub created_at: TimestampPayload,
+            pub updated_at: TimestampPayload,
+            #[serde(skip_serializing_if = "Option::is_none")]
+            pub version: VersionPayload,
+        }
     }
 }

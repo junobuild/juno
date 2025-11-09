@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { isNullish } from '@dfinity/utils';
 	import { createEventDispatcher, getContext } from 'svelte';
-	import type { Rule, CollectionType } from '$declarations/satellite/satellite.did';
+	import type { SatelliteDid } from '$declarations';
 	import { deleteRule } from '$lib/api/satellites.api';
 	import Confirmation from '$lib/components/core/Confirmation.svelte';
 	import Value from '$lib/components/ui/Value.svelte';
@@ -14,8 +14,8 @@
 
 	interface Props {
 		collection: string;
-		rule: Rule | undefined;
-		type: CollectionType;
+		rule: SatelliteDid.Rule | undefined;
+		type: SatelliteDid.CollectionType;
 	}
 
 	let { collection, rule, type }: Props = $props();
@@ -49,14 +49,14 @@
 
 			await reload({ identity: $authStore.identity });
 
-			toasts.success(
-				i18nFormat($i18n.collections.deleted, [
+			toasts.success({
+				text: i18nFormat($i18n.collections.deleted, [
 					{
 						placeholder: '{0}',
 						value: collection
 					}
 				])
-			);
+			});
 
 			dispatch('junoCollectionSuccess');
 		} catch (err: unknown) {
@@ -77,7 +77,7 @@
 	};
 </script>
 
-<button type="button" onclick={() => (visible = true)}>{$i18n.core.delete}</button>
+<button onclick={() => (visible = true)} type="button">{$i18n.core.delete}</button>
 
 <Confirmation bind:visible on:junoYes={deleteCollection} on:junoNo={close}>
 	{#snippet title()}

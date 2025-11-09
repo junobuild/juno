@@ -1,6 +1,6 @@
 <script lang="ts">
-	import type { AccountIdentifier } from '@dfinity/ledger-icp';
-	import { Principal } from '@dfinity/principal';
+	import type { AccountIdentifier } from '@icp-sdk/canisters/ledger/icp';
+	import { Principal } from '@icp-sdk/core/principal';
 	import type { Snippet } from 'svelte';
 	import { fade } from 'svelte/transition';
 	import CanisterTopUpForm from '$lib/components/canister/CanisterTopUpForm.svelte';
@@ -13,7 +13,7 @@
 	import { wizardBusy } from '$lib/stores/busy.store';
 	import { i18n } from '$lib/stores/i18n.store';
 	import type { CanisterSegmentWithLabel } from '$lib/types/canister';
-	import { type TopUpProgress } from '$lib/types/progress-topup';
+	import type { TopUpProgress } from '$lib/types/progress-topup';
 
 	interface Props {
 		balance: bigint;
@@ -63,7 +63,7 @@
 	};
 </script>
 
-<Modal on:junoClose={onclose}>
+<Modal {onclose}>
 	{#if step === 'ready'}
 		<div class="msg">
 			{@render outro?.()}
@@ -75,21 +75,21 @@
 		<div in:fade>
 			<CanisterTopUpReview
 				{balance}
-				{icp}
 				{cycles}
-				{segment}
-				{onsubmit}
+				{icp}
 				onback={() => (step = 'init')}
+				{onsubmit}
+				{segment}
 			/>
 		</div>
 	{:else}
 		<CanisterTopUpForm
-			{intro}
-			{segment}
-			{balance}
 			{accountIdentifier}
+			{balance}
+			{intro}
 			{onclose}
 			onreview={() => (step = 'review')}
+			{segment}
 			bind:icp
 			bind:cycles
 		/>

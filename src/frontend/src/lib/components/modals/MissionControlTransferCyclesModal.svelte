@@ -1,6 +1,6 @@
 <script lang="ts">
-	import type { Principal } from '@dfinity/principal';
 	import { nonNullish } from '@dfinity/utils';
+	import type { Principal } from '@icp-sdk/core/principal';
 	import { depositCycles } from '$lib/api/mission-control.api';
 	import CanisterTransferCyclesModal from '$lib/components/modals/CanisterTransferCyclesModal.svelte';
 	import { missionControlIdDerived } from '$lib/derived/mission-control.derived';
@@ -22,6 +22,9 @@
 			async (params: { cycles: bigint; destinationId: Principal }) =>
 				await depositCycles({
 					...params,
+					// TODO: resolve no-non-null-assertion
+					// We know for sure that the mission control is defined at this point.
+					// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
 					missionControlId: $missionControlIdDerived!,
 					identity: $authStore.identity
 				})
@@ -30,7 +33,6 @@
 
 {#if nonNullish($missionControlIdDerived)}
 	<CanisterTransferCyclesModal
-		{transferFn}
 		{currentCycles}
 		{onclose}
 		segment={{
@@ -38,5 +40,6 @@
 			canisterId: $missionControlIdDerived.toText(),
 			label: $i18n.mission_control.title
 		}}
+		{transferFn}
 	/>
 {/if}

@@ -1,11 +1,7 @@
 <script lang="ts">
-	import type { Principal } from '@dfinity/principal';
 	import { nonNullish, notEmptyString, fromNullishNullable } from '@dfinity/utils';
-	import type {
-		CyclesMonitoringStrategy,
-		Orbiter,
-		Satellite
-	} from '$declarations/mission_control/mission_control.did';
+	import type { Principal } from '@icp-sdk/core/principal';
+	import type { MissionControlDid } from '$declarations';
 	import MonitoringCreateSelectStrategy from '$lib/components/monitoring/MonitoringCreateSelectStrategy.svelte';
 	import MonitoringCreateStrategy from '$lib/components/monitoring/MonitoringCreateStrategy.svelte';
 	import MonitoringCreateStrategyMissionControl from '$lib/components/monitoring/MonitoringCreateStrategyMissionControl.svelte';
@@ -73,8 +69,8 @@
 
 	// Monitoring strategy
 
-	let selectedSatellites: [Principal, Satellite][] = $state([]);
-	let selectedOrbiters: [Principal, Orbiter][] = $state([]);
+	let selectedSatellites = $state<[Principal, MissionControlDid.Satellite][]>([]);
+	let selectedOrbiters = $state<[Principal, MissionControlDid.Orbiter][]>([]);
 
 	let minCycles: bigint | undefined = $state(undefined);
 	let fundCycles: bigint | undefined = $state(undefined);
@@ -86,11 +82,13 @@
 		fromNullishNullable(fromNullishNullable(settings?.monitoring)?.cycles)
 	);
 
-	let missionControl: { monitored: boolean; strategy: CyclesMonitoringStrategy | undefined } =
-		$derived({
-			monitored: missionControlCycles?.enabled === true,
-			strategy: fromNullishNullable(missionControlCycles?.strategy)
-		});
+	let missionControl: {
+		monitored: boolean;
+		strategy: MissionControlDid.CyclesMonitoringStrategy | undefined;
+	} = $derived({
+		monitored: missionControlCycles?.enabled === true,
+		strategy: fromNullishNullable(missionControlCycles?.strategy)
+	});
 
 	// Monitoring email
 
@@ -101,9 +99,9 @@
 
 	// Strategy choice
 
-	let reuseStrategy: CyclesMonitoringStrategy | undefined = $state(undefined);
+	let reuseStrategy = $state<MissionControlDid.CyclesMonitoringStrategy | undefined>(undefined);
 
-	const onSelectStrategy = (strategy?: CyclesMonitoringStrategy) => {
+	const onSelectStrategy = (strategy?: MissionControlDid.CyclesMonitoringStrategy) => {
 		reuseStrategy = strategy;
 
 		if (nonNullish(strategy)) {
@@ -177,7 +175,7 @@
 	};
 </script>
 
-<Modal on:junoClose={onclose} onback={step === 'mission_control' ? back : undefined}>
+<Modal onback={step === 'mission_control' ? back : undefined} {onclose}>
 	{#if step === 'ready'}
 		<div class="msg">
 			<p>
@@ -186,7 +184,7 @@
 			<button onclick={onclose}>{$i18n.core.close}</button>
 		</div>
 	{:else if step === 'in_progress'}
-		<ProgressMonitoring {progress} action="create" withOptions={nonNullish(withOptions)} />
+		<ProgressMonitoring action="create" {progress} withOptions={nonNullish(withOptions)} />
 	{:else if step === 'notifications'}
 		<MonitoringCreateStrategyNotifications
 			onback={back}
@@ -197,26 +195,26 @@
 		/>
 	{:else if step === 'review'}
 		<MonitoringCreateStrategyReview
-			{selectedSatellites}
-			{selectedOrbiters}
-			{minCycles}
 			{fundCycles}
-			{saveAsDefaultStrategy}
-			{missionControlMinCycles}
-			{missionControlFundCycles}
+			{minCycles}
 			{missionControl}
-			{userEmail}
-			{reuseStrategy}
+			{missionControlFundCycles}
+			{missionControlMinCycles}
 			onback={back}
 			{onsubmit}
+			{reuseStrategy}
+			{saveAsDefaultStrategy}
+			{selectedOrbiters}
+			{selectedSatellites}
+			{userEmail}
 		/>
 	{:else if step === 'mission_control_strategy'}
 		<MonitoringCreateStrategy
-			bind:minCycles={missionControlMinCycles}
-			bind:fundCycles={missionControlFundCycles}
-			strategy="mission-control"
 			onback={back}
 			oncontinue={nextReviewOrNotifications}
+			strategy="mission-control"
+			bind:minCycles={missionControlMinCycles}
+			bind:fundCycles={missionControlFundCycles}
 		/>
 	{:else if step === 'mission_control'}
 		<MonitoringCreateStrategyMissionControl
@@ -226,22 +224,22 @@
 		/>
 	{:else if step === 'strategy'}
 		<MonitoringCreateStrategyWithDefault
+			{defaultStrategy}
+			onback={back}
+			oncontinue={() => next('mission_control')}
+			strategy="modules"
 			bind:minCycles
 			bind:fundCycles
 			bind:saveAsDefaultStrategy
-			{defaultStrategy}
-			strategy="modules"
-			onback={back}
-			oncontinue={() => next('mission_control')}
 		/>
 	{:else if step === 'select_strategy'}
 		<MonitoringCreateSelectStrategy {defaultStrategy} onback={back} oncontinue={onSelectStrategy} />
 	{:else}
 		<MonitoringSelectSegments
 			{missionControlId}
+			oncontinue={() => next('select_strategy')}
 			bind:selectedSatellites
 			bind:selectedOrbiters
-			oncontinue={() => next('select_strategy')}
 		>
 			<h2>{$i18n.core.getting_started}</h2>
 

@@ -2,13 +2,14 @@
 // History
 // ---------------------------------------------------------
 
-use crate::memory::STATE;
+use crate::memory::manager::STATE;
 use crate::random::random;
 use crate::types::interface::GetMonitoringHistory;
 use crate::types::state::{
     MonitoringHistory, MonitoringHistoryCycles, MonitoringHistoryKey, MonitoringHistoryStable,
 };
 use ic_cdk::api::time;
+use junobuild_shared::structures::collect_stable_vec;
 use junobuild_shared::types::state::SegmentId;
 use std::ops::RangeBounds;
 
@@ -77,9 +78,7 @@ fn get_monitoring_history_impl(
     filter: &GetMonitoringHistory,
     history: &MonitoringHistoryStable,
 ) -> Vec<(MonitoringHistoryKey, MonitoringHistory)> {
-    history
-        .range(filter_monitoring_history_range(filter))
-        .collect()
+    collect_stable_vec(history.range(filter_monitoring_history_range(filter)))
 }
 
 fn get_monitoring_history_keys_impl(
@@ -107,7 +106,7 @@ fn filter_monitoring_history_range(
     let end_key = MonitoringHistoryKey {
         segment_id: *segment_id,
         created_at: to.unwrap_or(u64::MAX),
-        nonce: i32::MAX,
+        nonce: i32::MIN, // We want to get all entries up to the timestamp excluded
     };
 
     start_key..end_key

@@ -1,4 +1,4 @@
-use crate::memory::RUNTIME_STATE;
+use crate::memory::manager::RUNTIME_STATE;
 use crate::types::runtime::RuntimeState;
 
 pub fn start_scheduler() {

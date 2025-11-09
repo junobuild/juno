@@ -1,6 +1,6 @@
 <script lang="ts">
-	import { Principal } from '@dfinity/principal';
 	import { nonNullish, type TokenAmountV2 } from '@dfinity/utils';
+	import { Principal } from '@icp-sdk/core/principal';
 	import CanisterTopUpCycles from '$lib/components/canister/CanisterTopUpCycles.svelte';
 	import Segment from '$lib/components/segments/Segment.svelte';
 	import SendTokensAmount from '$lib/components/tokens/SendTokensAmount.svelte';
@@ -35,7 +35,7 @@
 <form {onsubmit}>
 	<div class="columns">
 		{#if nonNullish($missionControlIdDerived)}
-			<WalletSendFrom missionControlId={$missionControlIdDerived} {balance} />
+			<WalletSendFrom {balance} missionControlId={$missionControlIdDerived} />
 		{/if}
 
 		<GridArrow />
@@ -80,7 +80,7 @@
 	</div>
 
 	<div class="toolbar">
-		<button type="button" onclick={onback}>{$i18n.core.back}</button>
+		<button onclick={onback} type="button">{$i18n.core.back}</button>
 		<button type="submit">{$i18n.core.confirm}</button>
 	</div>
 </form>

@@ -1,5 +1,6 @@
 // @ts-ignore
 export const idlFactory = ({ IDL }) => {
+	const InitMissionControlArgs = IDL.Record({ user: IDL.Principal });
 	const CyclesThreshold = IDL.Record({
 		fund_cycles: IDL.Nat,
 		min_cycles: IDL.Nat
@@ -31,6 +32,18 @@ export const idlFactory = ({ IDL }) => {
 		satellite_id: IDL.Principal,
 		settings: IDL.Opt(Settings)
 	});
+	const InitStorageMemory = IDL.Variant({
+		Heap: IDL.Null,
+		Stable: IDL.Null
+	});
+	const InitStorageArgs = IDL.Record({
+		system_memory: IDL.Opt(InitStorageMemory)
+	});
+	const CreateSatelliteConfig = IDL.Record({
+		subnet_id: IDL.Opt(IDL.Principal),
+		storage: IDL.Opt(InitStorageArgs),
+		name: IDL.Opt(IDL.Text)
+	});
 	const DepositCyclesArgs = IDL.Record({
 		cycles: IDL.Nat,
 		destination_id: IDL.Principal
@@ -61,9 +74,21 @@ export const idlFactory = ({ IDL }) => {
 		timestamp: IDL.Nat64,
 		amount: IDL.Nat
 	});
+	const FundingErrorCode = IDL.Variant({
+		BalanceCheckFailed: IDL.Null,
+		ObtainCyclesFailed: IDL.Null,
+		DepositFailed: IDL.Null,
+		InsufficientCycles: IDL.Null,
+		Other: IDL.Text
+	});
+	const FundingFailure = IDL.Record({
+		timestamp: IDL.Nat64,
+		error_code: FundingErrorCode
+	});
 	const MonitoringHistoryCycles = IDL.Record({
 		deposited_cycles: IDL.Opt(CyclesBalance),
-		cycles: CyclesBalance
+		cycles: CyclesBalance,
+		funding_failure: IDL.Opt(FundingFailure)
 	});
 	const MonitoringHistory = IDL.Record({
 		cycles: IDL.Opt(MonitoringHistoryCycles)
@@ -133,7 +158,8 @@ export const idlFactory = ({ IDL }) => {
 	const Result_1 = IDL.Variant({ Ok: IDL.Nat, Err: TransferError_1 });
 	const ControllerScope = IDL.Variant({
 		Write: IDL.Null,
-		Admin: IDL.Null
+		Admin: IDL.Null,
+		Submit: IDL.Null
 	});
 	const Controller = IDL.Record({
 		updated_at: IDL.Nat64,
@@ -173,7 +199,7 @@ export const idlFactory = ({ IDL }) => {
 		create_orbiter: IDL.Func([IDL.Opt(IDL.Text)], [Orbiter], []),
 		create_orbiter_with_config: IDL.Func([CreateCanisterConfig], [Orbiter], []),
 		create_satellite: IDL.Func([IDL.Text], [Satellite], []),
-		create_satellite_with_config: IDL.Func([CreateCanisterConfig], [Satellite], []),
+		create_satellite_with_config: IDL.Func([CreateSatelliteConfig], [Satellite], []),
 		del_mission_control_controllers: IDL.Func([IDL.Vec(IDL.Principal)], [], []),
 		del_orbiter: IDL.Func([IDL.Principal, IDL.Nat], [], []),
 		del_orbiters_controllers: IDL.Func([IDL.Vec(IDL.Principal), IDL.Vec(IDL.Principal)], [], []),
@@ -237,11 +263,11 @@ export const idlFactory = ({ IDL }) => {
 		unset_orbiter: IDL.Func([IDL.Principal], [], []),
 		unset_satellite: IDL.Func([IDL.Principal], [], []),
 		update_and_start_monitoring: IDL.Func([MonitoringStartConfig], [], []),
-		update_and_stop_monitoring: IDL.Func([MonitoringStopConfig], [], []),
-		version: IDL.Func([], [IDL.Text], ['query'])
+		update_and_stop_monitoring: IDL.Func([MonitoringStopConfig], [], [])
 	});
 };
 // @ts-ignore
 export const init = ({ IDL }) => {
-	return [];
+	const InitMissionControlArgs = IDL.Record({ user: IDL.Principal });
+	return [InitMissionControlArgs];
 };

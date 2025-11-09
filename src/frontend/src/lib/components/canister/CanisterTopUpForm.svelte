@@ -1,6 +1,6 @@
 <script lang="ts">
-	import type { AccountIdentifier } from '@dfinity/ledger-icp';
 	import { isNullish, nonNullish, notEmptyString } from '@dfinity/utils';
+	import type { AccountIdentifier } from '@icp-sdk/canisters/ledger/icp';
 	import { onMount, type Snippet } from 'svelte';
 	import { icpXdrConversionRate } from '$lib/api/cmc.api';
 	import InputIcp from '$lib/components/core/InputIcp.svelte';
@@ -53,11 +53,7 @@
 		cycles = convertedCycles;
 	});
 
-	let displayTCycles: string | undefined = $state(undefined);
-
-	$effect(() => {
-		displayTCycles = nonNullish(cycles) ? `${formatTCycles(BigInt(cycles ?? 0))}` : '';
-	});
+	let displayTCycles = $derived(nonNullish(cycles) ? `${formatTCycles(BigInt(cycles ?? 0))}` : '');
 
 	const onSubmit = ($event: SubmitEvent) => {
 		$event.preventDefault();
@@ -100,7 +96,7 @@
 {:else}
 	<form onsubmit={onSubmit}>
 		<div class="columns">
-			<InputIcp bind:amount={icp} {balance} />
+			<InputIcp {balance} fee={TOP_UP_NETWORK_FEES} bind:amount={icp} />
 
 			<GridArrow small />
 
@@ -117,7 +113,7 @@
 			</div>
 		</div>
 
-		<button type="submit" disabled={isNullish($missionControlIdDerived) || isNullish(cycles)}
+		<button disabled={isNullish($missionControlIdDerived) || isNullish(cycles)} type="submit"
 			>{$i18n.core.review}</button
 		>
 	</form>

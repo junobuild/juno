@@ -1,10 +1,22 @@
 import { browser } from '$app/environment';
-import { DEFAULT_LIST_PARAMS } from '$lib/constants/data.constants';
-import type { ListParamsStoreData } from '$lib/stores/list-params.store';
+import { DEFAULT_ANALYTICS_PERIODICITY } from '$lib/constants/analytics.constants';
+import { DEFAULT_LIST_PARAMS, DEFAULT_LIST_RULES_PARAMS } from '$lib/constants/data.constants';
+import { DEFAULT_NOTIFICATION_PREFERENCES } from '$lib/constants/notification.constants';
+import { NotificationPreferencesSchema } from '$lib/schemas/notification.schema';
 import type { Languages } from '$lib/types/languages';
 import { SatellitesLayout } from '$lib/types/layout';
+import type { LayoutMenuState } from '$lib/types/layout-menu';
+import type { ListRulesParams } from '$lib/types/list';
+import type { ListParamsData, ListParamsKey } from '$lib/types/list-params.context';
+import type { NotificationPreferences } from '$lib/types/notification';
+import type { AnalyticsPeriodicity } from '$lib/types/orbiter';
 import { Theme } from '$lib/types/theme';
-import { nonNullish } from '@dfinity/utils';
+import { isNullish, nonNullish, notEmptyString } from '@dfinity/utils';
+
+// eslint-disable-next-line require-await
+export const resetLocalStorage = async () => {
+	localStorage.clear();
+};
 
 export const setLocalStorageItem = ({ key, value }: { key: string; value: string }) => {
 	// Pre-rendering guard
@@ -23,7 +35,8 @@ export const setLocalStorageItem = ({ key, value }: { key: string; value: string
 export const getLocalStorageLang = (): Languages => {
 	try {
 		const { lang }: Storage = browser ? localStorage : ({ lang: 'en' } as unknown as Storage);
-		return lang;
+		// Backwards compatibility as we incorrectly set undefined string as value for lang in the storage.
+		return nonNullish(lang) && lang !== 'undefined' ? lang : 'en';
 	} catch (err: unknown) {
 		// We use the local storage for the operational part of the app but, not crucial
 		console.error(err);
@@ -31,17 +44,33 @@ export const getLocalStorageLang = (): Languages => {
 	}
 };
 
-export const getLocalListParams = (): ListParamsStoreData => {
+export const getLocalListParams = (key: ListParamsKey): ListParamsData => {
 	try {
-		const { list_params }: Storage = browser
+		const { [`list_params_${key}`]: list_params }: Storage = browser
 			? localStorage
-			: ({ list_params: JSON.stringify(DEFAULT_LIST_PARAMS) } as unknown as Storage);
+			: ({ [`list_params_${key}`]: JSON.stringify(DEFAULT_LIST_PARAMS) } as unknown as Storage);
 
 		return nonNullish(list_params) ? JSON.parse(list_params) : DEFAULT_LIST_PARAMS;
 	} catch (err: unknown) {
 		// We use the local storage for the operational part of the app but, not crucial
 		console.error(err);
 		return DEFAULT_LIST_PARAMS;
+	}
+};
+
+export const getLocalListRulesParams = (): ListRulesParams => {
+	try {
+		const { list_rules_params }: Storage = browser
+			? localStorage
+			: ({ list_rules_params: JSON.stringify(DEFAULT_LIST_RULES_PARAMS) } as unknown as Storage);
+
+		return nonNullish(list_rules_params)
+			? JSON.parse(list_rules_params)
+			: DEFAULT_LIST_RULES_PARAMS;
+	} catch (err: unknown) {
+		// We use the local storage for the operational part of the app but, not crucial
+		console.error(err);
+		return DEFAULT_LIST_RULES_PARAMS;
 	}
 };
 
@@ -83,5 +112,62 @@ export const getLocalStorageSatellitesLayout = (): SatellitesLayout => {
 		// We use the local storage for the operational part of the app but, not crucial
 		console.error(err);
 		return SatellitesLayout.CARDS;
+	}
+};
+
+export const getLocalStorageAnalyticsPeriodicity = (): { periodicity: AnalyticsPeriodicity } => {
+	try {
+		const { analytics_periodicity }: Storage = browser
+			? localStorage
+			: ({
+					analytics_periodicity: JSON.stringify(DEFAULT_ANALYTICS_PERIODICITY)
+				} as unknown as Storage);
+
+		return nonNullish(analytics_periodicity)
+			? JSON.parse(analytics_periodicity)
+			: DEFAULT_ANALYTICS_PERIODICITY;
+	} catch (err: unknown) {
+		// We use the local storage for the operational part of the app but, not crucial
+		console.error(err);
+		return DEFAULT_ANALYTICS_PERIODICITY;
+	}
+};
+
+export const getLocalStorageMenuState = (): LayoutMenuState => {
+	try {
+		const { menu_state }: Storage = browser
+			? localStorage
+			: ({ menu_state: 'expanded' } as unknown as Storage);
+		return notEmptyString(menu_state) && ['expanded', 'collapsed'].includes(menu_state)
+			? (menu_state as LayoutMenuState)
+			: 'expanded';
+	} catch (err: unknown) {
+		// We use the local storage for the operational part of the app but, not crucial
+		console.error(err);
+		return 'expanded';
+	}
+};
+
+export const getLocalStorageNotificationPreferences = (): NotificationPreferences => {
+	try {
+		const { notification_preferences }: Storage = browser
+			? localStorage
+			: ({
+					notification_preferences: JSON.stringify(DEFAULT_NOTIFICATION_PREFERENCES)
+				} as unknown as Storage);
+
+		if (isNullish(notification_preferences)) {
+			return DEFAULT_NOTIFICATION_PREFERENCES;
+		}
+
+		const notificationsPreferences = JSON.parse(notification_preferences);
+
+		NotificationPreferencesSchema.parse(notificationsPreferences);
+
+		return notificationsPreferences;
+	} catch (err: unknown) {
+		// We use the local storage for the operational part of the app but, not crucial
+		console.error(err);
+		return DEFAULT_NOTIFICATION_PREFERENCES;
 	}
 };

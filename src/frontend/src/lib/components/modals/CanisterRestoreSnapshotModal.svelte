@@ -1,6 +1,6 @@
 <script lang="ts">
-	import { encodeSnapshotId } from '@dfinity/ic-management';
-	import { Principal } from '@dfinity/principal';
+	import { encodeSnapshotId } from '@icp-sdk/canisters/ic-management';
+	import { Principal } from '@icp-sdk/core/principal';
 	import ProgressSnapshot from '$lib/components/canister/ProgressSnapshot.svelte';
 	import Html from '$lib/components/ui/Html.svelte';
 	import Modal from '$lib/components/ui/Modal.svelte';
@@ -56,7 +56,7 @@
 	};
 </script>
 
-<Modal on:junoClose={onclose}>
+<Modal {onclose}>
 	{#if step === 'ready'}
 		<div class="msg">
 			<p>
@@ -72,7 +72,7 @@
 			<button onclick={onclose}>{$i18n.core.close}</button>
 		</div>
 	{:else if step === 'in_progress'}
-		<ProgressSnapshot segment={segment.segment} {progress} snapshotAction="restore" />
+		<ProgressSnapshot {progress} segment={segment.segment} snapshotAction="restore" />
 	{:else}
 		<h2>{$i18n.canisters.snapshot}</h2>
 
@@ -89,7 +89,7 @@
 		</p>
 
 		<form class="content" onsubmit={handleSubmit}>
-			<button type="submit" disabled={$isBusy}>
+			<button disabled={$isBusy} type="submit">
 				{$i18n.canisters.restore_the_snapshot}
 			</button>
 		</form>

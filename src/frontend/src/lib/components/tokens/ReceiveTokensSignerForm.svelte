@@ -1,7 +1,7 @@
 <script lang="ts">
 	import type { IcrcAccount } from '@dfinity/oisy-wallet-signer';
-	import { Principal } from '@dfinity/principal';
 	import { nonNullish } from '@dfinity/utils';
+	import { Principal } from '@icp-sdk/core/principal';
 	import { getBalance } from '$lib/api/icp-index.api';
 	import Identifier from '$lib/components/ui/Identifier.svelte';
 	import Input from '$lib/components/ui/Input.svelte';
@@ -42,7 +42,9 @@
 		loadBalance(owner);
 	});
 
-	const onsubmit = async () => {
+	const onsubmit = async ($event: SubmitEvent) => {
+		$event.preventDefault();
+
 		await receive({
 			balance,
 			amount
@@ -81,10 +83,10 @@
 			<Input
 				name="amount"
 				inputType="currency"
-				required
-				bind:value={amount}
-				spellcheck={false}
 				placeholder={$i18n.wallet.amount_placeholder}
+				required
+				spellcheck={false}
+				bind:value={amount}
 			/>
 		</Value>
 	</div>

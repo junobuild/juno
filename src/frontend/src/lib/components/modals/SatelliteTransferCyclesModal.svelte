@@ -1,5 +1,5 @@
 <script lang="ts">
-	import type { Principal } from '@dfinity/principal';
+	import type { Principal } from '@icp-sdk/core/principal';
 	import { depositCycles } from '$lib/api/satellites.api';
 	import CanisterTransferCyclesModal from '$lib/components/modals/CanisterTransferCyclesModal.svelte';
 	import { authStore } from '$lib/stores/auth.store';
@@ -27,7 +27,6 @@
 </script>
 
 <CanisterTransferCyclesModal
-	{transferFn}
 	{currentCycles}
 	{onclose}
 	segment={{
@@ -35,4 +34,5 @@
 		canisterId: satellite.satellite_id.toText(),
 		label: satelliteName(satellite)
 	}}
+	{transferFn}
 />

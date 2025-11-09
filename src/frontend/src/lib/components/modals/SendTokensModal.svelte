@@ -63,7 +63,7 @@
 </script>
 
 {#if nonNullish($missionControlIdDerived)}
-	<Modal on:junoClose={onclose}>
+	<Modal {onclose}>
 		{#if step === 'ready'}
 			<Confetti />
 
@@ -76,20 +76,20 @@
 		{:else if step === 'review'}
 			<div in:fade>
 				<SendTokensReview
-					missionControlId={$missionControlIdDerived}
 					balance={$balance}
+					missionControlId={$missionControlIdDerived}
+					onback={() => (step = 'form')}
+					{onsubmit}
 					bind:amount
 					bind:destination
-					{onsubmit}
-					onback={() => (step = 'form')}
 				/>
 			</div>
 		{:else}
 			<SendTokensForm
 				balance={$balance}
+				onreview={() => (step = 'review')}
 				bind:amount
 				bind:destination
-				onreview={() => (step = 'review')}
 			/>
 		{/if}
 	</Modal>

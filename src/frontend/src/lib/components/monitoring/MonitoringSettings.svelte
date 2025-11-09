@@ -1,5 +1,4 @@
 <script lang="ts">
-	import { onMount } from 'svelte';
 	import { fade } from 'svelte/transition';
 	import MissionControlEmail from '$lib/components/mission-control/MissionControlEmail.svelte';
 	import MonitoringDefaultStrategy from '$lib/components/monitoring/MonitoringDefaultStrategy.svelte';
@@ -12,7 +11,6 @@
 	import { orbiterLoaded } from '$lib/derived/orbiter.derived';
 	import { satellitesLoaded } from '$lib/derived/satellites.derived';
 	import { openMonitoringModal } from '$lib/services/monitoring.services';
-	import { loadOrbiters } from '$lib/services/orbiters.services';
 	import { i18n } from '$lib/stores/i18n.store';
 	import type { MissionControlId } from '$lib/types/mission-control';
 
@@ -31,8 +29,6 @@
 
 	const openCreateModal = () => openModal('create_monitoring_strategy');
 	const openStopModal = () => openModal('stop_monitoring_strategy');
-
-	onMount(async () => await loadOrbiters({ missionControlId }));
 
 	let orbiterMonitored = $state(false);
 	let hasSatellitesMonitored = $state(false);
@@ -60,7 +56,7 @@
 
 {#if $missionControlSettingsLoaded && $satellitesLoaded && $orbiterLoaded}
 	<div class="toolbar">
-		<button in:fade onclick={openCreateModal}>
+		<button onclick={openCreateModal} in:fade>
 			{#if monitored}
 				{$i18n.monitoring.update_auto_refill}
 			{:else}
@@ -69,7 +65,7 @@
 		</button>
 
 		{#if monitored}
-			<button in:fade onclick={openStopModal}>
+			<button onclick={openStopModal} in:fade>
 				{$i18n.monitoring.stop_auto_refill}
 			</button>
 		{/if}

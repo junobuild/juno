@@ -1,45 +1,25 @@
 <script lang="ts">
-	import type { AnalyticsTrackEvents } from '$declarations/orbiter/orbiter.did';
+	import type { OrbiterDid } from '$declarations';
+	import AnalyticsTable from '$lib/components/analytics/AnalyticsTable.svelte';
 	import { i18n } from '$lib/stores/i18n.store';
 
 	interface Props {
-		trackEvents: AnalyticsTrackEvents;
+		trackEvents: OrbiterDid.AnalyticsTrackEvents;
 	}
 
 	let { trackEvents }: Props = $props();
 
-	let total: Array<[string, number]> = $state([]);
-
-	$effect(() => {
-		const { total: t } = trackEvents;
-		t.sort(([keyA, _], [keyB, __]) => keyA.localeCompare(keyB));
-
-		total = t;
-	});
+	let allEvents = $derived(trackEvents.total);
 </script>
 
-<div class="table-container">
-	<table>
-		<thead>
-			<tr>
-				<th> {$i18n.analytics.tracked_events} </th>
-				<th> {$i18n.analytics.count} </th>
-			</tr>
-		</thead>
-
-		<tbody>
-			{#each total as [name, count]}
-				<tr>
-					<td>{name}</td>
-					<td>{count}</td>
-				</tr>
-			{/each}
-		</tbody>
-	</table>
+<div>
+	<AnalyticsTable events={allEvents}>
+		{$i18n.analytics.tracked_events}
+	</AnalyticsTable>
 </div>
 
 <style lang="scss">
-	.table-container {
+	div {
 		margin: var(--padding-4x) 0;
 	}
 </style>

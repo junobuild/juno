@@ -8,7 +8,8 @@ export enum Color {
 	HOT_PINK = 'hot-pink',
 	FOLLY_LIGHTER = 'folly-lighter',
 	KEPPEL = 'keppel',
-	TIFFANY_BLUE = 'tiffany-blue'
+	TIFFANY_BLUE = 'tiffany-blue',
+	ROSE_BONBON = 'rose-bonbon'
 }
 
 export enum Theme {

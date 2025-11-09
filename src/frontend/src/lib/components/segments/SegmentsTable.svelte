@@ -1,9 +1,9 @@
 <script lang="ts">
-	import type { Principal } from '@dfinity/principal';
 	import { isEmptyString, isNullish, nonNullish } from '@dfinity/utils';
+	import type { Principal } from '@icp-sdk/core/principal';
 	import { onMount, type Snippet, untrack } from 'svelte';
 	import { fade } from 'svelte/transition';
-	import type { Orbiter, Satellite } from '$declarations/mission_control/mission_control.did';
+	import type { MissionControlDid } from '$declarations';
 	import Segment from '$lib/components/segments/Segment.svelte';
 	import Checkbox from '$lib/components/ui/Checkbox.svelte';
 	import SpinnerParagraph from '$lib/components/ui/SpinnerParagraph.svelte';
@@ -15,7 +15,7 @@
 	import { orbiterStore } from '$lib/derived/orbiter.derived';
 	import { satellitesWithSyncData } from '$lib/derived/satellites-merged.derived';
 	import { sortedSatellites } from '$lib/derived/satellites.derived';
-	import { loadOrbiters } from '$lib/services/orbiters.services';
+	import { loadOrbiters } from '$lib/services/orbiter/orbiters.services';
 	import { loadSatellites } from '$lib/services/satellites.services';
 	import { i18n } from '$lib/stores/i18n.store';
 	import { toasts } from '$lib/stores/toasts.store';
@@ -28,8 +28,8 @@
 		missionControlId: MissionControlId;
 		children?: Snippet;
 		selectedMissionControl?: boolean;
-		selectedSatellites: [Principal, Satellite][];
-		selectedOrbiters: [Principal, Orbiter][];
+		selectedSatellites: [Principal, MissionControlDid.Satellite][];
+		selectedOrbiters: [Principal, MissionControlDid.Orbiter][];
 		selectedDisabled: boolean;
 		withMissionControl?: boolean;
 		reloadSegments?: boolean;
@@ -56,8 +56,8 @@
 		loadingSegments = loadingState;
 	});
 
-	let satellites: [Principal, Satellite][] = $state([]);
-	let orbiters: [Principal, Orbiter][] = $state([]);
+	let satellites = $state<[Principal, MissionControlDid.Satellite][]>([]);
+	let orbiters = $state<[Principal, MissionControlDid.Orbiter][]>([]);
 
 	const loadSegments = async () => {
 		const [{ result: resultSatellites }, { result: resultOrbiters }] = await Promise.all([
@@ -76,7 +76,7 @@
 			return;
 		}
 
-		let countModules = $sortedSatellites.length + (isNullish($orbiterStore) ? 0 : 1);
+		const countModules = $sortedSatellites.length + (isNullish($orbiterStore) ? 0 : 1);
 
 		if (countModules === 0) {
 			satellites = [];
@@ -174,32 +174,36 @@
 					</tr>
 				{/if}
 
-				{#each satellites as satellite}
+				{#each satellites as satellite (satellite[0].toText())}
+					{@const satelliteId = satellite[0].toText()}
 					<tr>
 						<td class="actions"
 							><Checkbox
 								><input
+									id={satelliteId}
 									type="checkbox"
-									bind:group={selectedSatellites}
 									value={satellite}
+									bind:group={selectedSatellites}
 								/></Checkbox
 							></td
 						>
 						<td>
-							<Segment id={satellite[0]}>
-								{satelliteName(satellite[1])}
-							</Segment></td
+							<label for={satelliteId}>
+								<Segment id={satellite[0]}>
+									{satelliteName(satellite[1])}
+								</Segment>
+							</label></td
 						>
 					</tr>
 				{/each}
 
-				{#each orbiters as orbiter}
+				{#each orbiters as orbiter (orbiter[0].toText())}
 					{@const orbName = orbiterName(orbiter[1])}
 
 					<tr>
 						<td class="actions"
 							><Checkbox
-								><input type="checkbox" bind:group={selectedOrbiters} value={orbiter} /></Checkbox
+								><input type="checkbox" value={orbiter} bind:group={selectedOrbiters} /></Checkbox
 							></td
 						>
 						<td>
@@ -211,7 +215,7 @@
 				{/each}
 			{:else}
 				<tr
-					><td colspan="2" class="loading"
+					><td class="loading" colspan="2"
 						><SpinnerParagraph>{$i18n.canisters.loading_segments}</SpinnerParagraph></td
 					>
 				</tr>
@@ -224,7 +228,7 @@
 	<div class="objects" in:fade>
 		<div class="all">
 			<Checkbox>
-				<input type="checkbox" onchange={toggleAll} checked={allSelected} />
+				<input checked={allSelected} onchange={toggleAll} type="checkbox" />
 				<span>{allSelected ? $i18n.core.unselect_all : $i18n.core.select_all}</span>
 			</Checkbox>
 		</div>

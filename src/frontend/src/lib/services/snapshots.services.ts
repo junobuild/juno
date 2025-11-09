@@ -1,4 +1,4 @@
-import type { snapshot, snapshot_id } from '$declarations/ic/ic.did';
+import type { ICDid } from '$declarations';
 import {
 	canisterSnapshots,
 	canisterStart,
@@ -21,9 +21,9 @@ import { snapshotStore } from '$lib/stores/snapshot.store';
 import { toasts } from '$lib/stores/toasts.store';
 import type { OptionIdentity } from '$lib/types/itentity';
 import { type SnapshotProgress, SnapshotProgressStep } from '$lib/types/progress-snapshot';
-import type { Identity } from '@dfinity/agent';
-import type { Principal } from '@dfinity/principal';
 import { assertNonNullish, nonNullish } from '@dfinity/utils';
+import type { Identity } from '@icp-sdk/core/agent';
+import type { Principal } from '@icp-sdk/core/principal';
 import { get } from 'svelte/store';
 
 export const syncSnapshots = async () => {
@@ -49,15 +49,15 @@ interface SnapshotParams {
 }
 
 interface CreateSnapshotParams extends SnapshotParams {
-	snapshotId?: snapshot_id;
+	snapshotId?: ICDid.snapshot_id;
 }
 
 interface RestoreSnapshotParams extends SnapshotParams {
-	snapshot: snapshot;
+	snapshot: ICDid.snapshot;
 }
 
 interface DeleteSnapshotParams extends Omit<SnapshotParams, 'onProgress'> {
-	snapshot: snapshot;
+	snapshot: ICDid.snapshot;
 }
 
 type ReloadSnapshotsParams = Omit<SnapshotParams, 'onProgress'>;
@@ -239,7 +239,7 @@ const applySnapshot = async ({
 const updateStore = async ({
 	canisterId,
 	snapshot
-}: Pick<SnapshotParams, 'canisterId'> & { snapshot: snapshot }) => {
+}: Pick<SnapshotParams, 'canisterId'> & { snapshot: ICDid.snapshot }) => {
 	// Currently the IC only supports once snapshot per canister.
 	await setIdbStore({
 		store: snapshotStore,

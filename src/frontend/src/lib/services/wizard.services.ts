@@ -1,40 +1,39 @@
-import type {
-	CyclesMonitoringStrategy,
-	Orbiter,
-	Satellite
-} from '$declarations/mission_control/mission_control.did';
+import type { MissionControlDid } from '$declarations';
 import { getOrbiterFee, getSatelliteFee } from '$lib/api/console.api';
 import { getAccountIdentifier } from '$lib/api/icp-index.api';
 import { updateAndStartMonitoring } from '$lib/api/mission-control.api';
 import { missionControlMonitored } from '$lib/derived/mission-control-settings.derived';
 import { missionControlConfigMonitoring } from '$lib/derived/mission-control-user.derived';
-import { loadVersion } from '$lib/services/console.services';
+import { isSkylab } from '$lib/env/app.env';
 import { loadCredits } from '$lib/services/credits.services';
+import { unsafeSetEmulatorControllerForSatellite } from '$lib/services/emulator.services';
 import { loadSettings, loadUserData } from '$lib/services/mission-control.services';
 import {
 	createOrbiter,
 	createOrbiterWithConfig,
 	loadOrbiters
-} from '$lib/services/orbiters.services';
+} from '$lib/services/orbiter/orbiters.services';
 import { execute } from '$lib/services/progress.services';
 import {
 	createSatellite,
 	createSatelliteWithConfig,
 	loadSatellites
 } from '$lib/services/satellites.services';
+import { waitMissionControlVersionLoaded } from '$lib/services/version/version.mission-control.services';
 import { busy } from '$lib/stores/busy.store';
 import { i18n } from '$lib/stores/i18n.store';
 import { toasts } from '$lib/stores/toasts.store';
 import type { OptionIdentity } from '$lib/types/itentity';
+import type { MissionControlId } from '$lib/types/mission-control';
 import type { JunoModal, JunoModalCreateSegmentDetail } from '$lib/types/modal';
 import { type WizardCreateProgress, WizardCreateProgressStep } from '$lib/types/progress-wizard';
 import type { Option } from '$lib/types/utils';
 import { emit } from '$lib/utils/events.utils';
 import { waitAndRestartWallet } from '$lib/utils/wallet.utils';
-import type { Identity } from '@dfinity/agent';
-import { Principal } from '@dfinity/principal';
 import { assertNonNullish, isNullish, nonNullish, toNullable } from '@dfinity/utils';
 import type { PrincipalText } from '@dfinity/zod-schemas';
+import type { Identity } from '@icp-sdk/core/agent';
+import { Principal } from '@icp-sdk/core/principal';
 import { get } from 'svelte/store';
 
 type GetFeeBalance =
@@ -80,7 +79,7 @@ const initCreateWizard = async ({
 	feeFn,
 	modalType
 }: {
-	missionControlId: Option<Principal>;
+	missionControlId: Option<MissionControlId>;
 	identity: Option<Identity>;
 	feeFn: GetFeeBalanceFn;
 	modalType: 'create_satellite' | 'create_orbiter';
@@ -92,6 +91,13 @@ const initCreateWizard = async ({
 
 	busy.start();
 
+	const { result } = await waitMissionControlVersionLoaded();
+
+	if (result === 'error') {
+		busy.stop();
+		return;
+	}
+
 	const resultFee = await feeFn({
 		identity
 	});
@@ -102,12 +108,6 @@ const initCreateWizard = async ({
 	}
 
 	const { fee } = resultFee;
-
-	await loadVersion({
-		satelliteId: undefined,
-		missionControlId,
-		skipReload: true
-	});
 
 	const params = {
 		identity,
@@ -190,7 +190,7 @@ interface CreateWizardParams {
 	missionControlId: Option<Principal>;
 	identity: OptionIdentity;
 	subnetId: PrincipalText | undefined;
-	monitoringStrategy: CyclesMonitoringStrategy | undefined;
+	monitoringStrategy: MissionControlDid.CyclesMonitoringStrategy | undefined;
 	withCredits: boolean;
 	onProgress: (progress: WizardCreateProgress | undefined) => void;
 }
@@ -200,14 +200,16 @@ export const createSatelliteWizard = async ({
 	onProgress,
 	subnetId,
 	satelliteName,
+	satelliteKind,
 	monitoringStrategy,
 	...rest
 }: CreateWizardParams & {
 	satelliteName: string | undefined;
+	satelliteKind: 'website' | 'application' | undefined;
 }): Promise<
 	| {
 			success: 'ok';
-			segment: Satellite;
+			segment: MissionControlDid.Satellite;
 	  }
 	| { success: 'error'; err?: unknown }
 > => {
@@ -218,20 +220,35 @@ export const createSatelliteWizard = async ({
 		return { success: 'error' };
 	}
 
-	const createFn = async ({ identity }: { identity: Identity }): Promise<Satellite> => {
-		const fn = nonNullish(subnetId) ? createSatelliteWithConfig : createSatellite;
+	if (isNullish(satelliteKind)) {
+		toasts.error({
+			text: get(i18n).errors.satellite_kind
+		});
+		return { success: 'error' };
+	}
+
+	const createFn = async ({
+		identity
+	}: {
+		identity: Identity;
+	}): Promise<MissionControlDid.Satellite> => {
+		const fn =
+			nonNullish(subnetId) || satelliteKind !== 'website'
+				? createSatelliteWithConfig
+				: createSatellite;
 
 		return await fn({
 			identity,
 			missionControlId,
 			config: {
 				name: satelliteName,
-				...(nonNullish(subnetId) && { subnetId: Principal.fromText(subnetId) })
+				...(nonNullish(subnetId) && { subnetId: Principal.fromText(subnetId) }),
+				kind: satelliteKind
 			}
 		});
 	};
 
-	const buildMonitoringFn = (): MonitoringFn<Satellite> | undefined => {
+	const buildMonitoringFn = (): MonitoringFn<MissionControlDid.Satellite> | undefined => {
 		if (isNullish(monitoringStrategy)) {
 			return undefined;
 		}
@@ -241,7 +258,7 @@ export const createSatelliteWizard = async ({
 			segment
 		}: {
 			identity: Identity;
-			segment: Satellite;
+			segment: MissionControlDid.Satellite;
 		}): Promise<void> => {
 			assertNonNullish(missionControlId);
 
@@ -264,6 +281,22 @@ export const createSatelliteWizard = async ({
 
 	const monitoringFn = buildMonitoringFn();
 
+	const unsafeFinalizingFn = async ({
+		identity,
+		segment
+	}: {
+		identity: Identity;
+		segment: MissionControlDid.Satellite;
+	}): Promise<void> => {
+		assertNonNullish(missionControlId);
+
+		await unsafeSetEmulatorControllerForSatellite({
+			missionControlId,
+			satelliteId: segment.satellite_id,
+			identity
+		});
+	};
+
 	return await createWizard({
 		...rest,
 		missionControlId,
@@ -271,7 +304,8 @@ export const createSatelliteWizard = async ({
 		createFn,
 		reloadFn: loadSatellites,
 		monitoringFn,
-		errorLabel: 'satellite_unexpected_error'
+		errorLabel: 'satellite_unexpected_error',
+		...(isSkylab() && { finalizingFn: unsafeFinalizingFn })
 	});
 };
 
@@ -284,11 +318,15 @@ export const createOrbiterWizard = async ({
 }: CreateWizardParams): Promise<
 	| {
 			success: 'ok';
-			segment: Orbiter;
+			segment: MissionControlDid.Orbiter;
 	  }
 	| { success: 'error'; err?: unknown }
 > => {
-	const createFn = async ({ identity }: { identity: Identity }): Promise<Orbiter> => {
+	const createFn = async ({
+		identity
+	}: {
+		identity: Identity;
+	}): Promise<MissionControlDid.Orbiter> => {
 		const fn = nonNullish(subnetId) ? createOrbiterWithConfig : createOrbiter;
 
 		return await fn({
@@ -300,7 +338,7 @@ export const createOrbiterWizard = async ({
 		});
 	};
 
-	const buildMonitoringFn = (): MonitoringFn<Orbiter> | undefined => {
+	const buildMonitoringFn = (): MonitoringFn<MissionControlDid.Orbiter> | undefined => {
 		if (isNullish(monitoringStrategy)) {
 			return undefined;
 		}
@@ -310,7 +348,7 @@ export const createOrbiterWizard = async ({
 			segment
 		}: {
 			identity: Identity;
-			segment: Orbiter;
+			segment: MissionControlDid.Orbiter;
 		}): Promise<void> => {
 			assertNonNullish(missionControlId);
 
@@ -346,11 +384,14 @@ export const createOrbiterWizard = async ({
 
 type MonitoringFn<T> = (params: { identity: Identity; segment: T }) => Promise<void>;
 
+type FinalizingFn<T> = (params: { identity: Identity; segment: T }) => Promise<void>;
+
 const createWizard = async <T>({
 	missionControlId,
 	identity,
 	errorLabel,
 	createFn,
+	finalizingFn,
 	reloadFn,
 	monitoringFn,
 	onProgress,
@@ -358,6 +399,7 @@ const createWizard = async <T>({
 }: Omit<CreateWizardParams, 'subnetId' | 'monitoringStrategy'> & {
 	errorLabel: keyof I18nErrors;
 	createFn: (params: { identity: Identity }) => Promise<T>;
+	finalizingFn?: FinalizingFn<T>;
 	reloadFn: (params: {
 		missionControlId: Option<Principal>;
 		reload: boolean;
@@ -409,6 +451,22 @@ const createWizard = async <T>({
 				onProgress,
 				step: WizardCreateProgressStep.Monitoring
 			});
+		}
+
+		if (nonNullish(finalizingFn)) {
+			const executeFinalizingFn = async () => {
+				await finalizingFn({ identity, segment });
+			};
+
+			try {
+				await execute({
+					fn: executeFinalizingFn,
+					onProgress,
+					step: WizardCreateProgressStep.Finalizing
+				});
+			} catch (_error: unknown) {
+				// This is used for development purpose only. We continue the wizard even if it failed.
+			}
 		}
 
 		// Reload list of segments and wallet or credits before navigation

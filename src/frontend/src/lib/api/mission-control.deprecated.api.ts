@@ -1,5 +1,4 @@
-import type { Result_2 } from '$declarations/deprecated/mission_control-0-0-13.did';
-import type { SetController as SetControllerDid } from '$declarations/deprecated/mission_control-0-0-4.did';
+import type { MissionControlDid0013, MissionControlDid004 } from '$declarations';
 import {
 	getMissionControlActor0013,
 	getMissionControlActor004
@@ -7,12 +6,12 @@ import {
 import type { SetControllerParams } from '$lib/types/controllers';
 import type { OptionIdentity } from '$lib/types/itentity';
 import type { MissionControlId } from '$lib/types/mission-control';
-import { Principal } from '@dfinity/principal';
 import { nonNullish, toNullable } from '@dfinity/utils';
+import { Principal } from '@icp-sdk/core/principal';
 
 const toSetController = ({
 	profile
-}: Omit<SetControllerParams, 'controllerId'>): SetControllerDid => ({
+}: Omit<SetControllerParams, 'controllerId'>): MissionControlDid004.SetController => ({
 	metadata: nonNullish(profile) && profile !== '' ? [['profile', profile]] : [],
 	expires_at: toNullable<bigint>(undefined)
 });
@@ -52,7 +51,7 @@ export const listSatelliteStatuses = async ({
 	missionControlId: MissionControlId;
 	identity: OptionIdentity;
 	satelliteId: Principal;
-}): Promise<[] | [[bigint, Result_2][]]> => {
+}): Promise<[] | [[bigint, MissionControlDid0013.Result_2][]]> => {
 	const { list_satellite_statuses } = await getMissionControlActor0013({
 		missionControlId,
 		identity
@@ -71,7 +70,7 @@ export const listOrbiterStatuses = async ({
 	missionControlId: MissionControlId;
 	identity: OptionIdentity;
 	orbiterId: Principal;
-}): Promise<[] | [[bigint, Result_2][]]> => {
+}): Promise<[] | [[bigint, MissionControlDid0013.Result_2][]]> => {
 	const { list_orbiter_statuses } = await getMissionControlActor0013({
 		missionControlId,
 		identity
@@ -88,10 +87,24 @@ export const listMissionControlStatuses = async ({
 }: {
 	missionControlId: MissionControlId;
 	identity: OptionIdentity;
-}): Promise<[] | [[bigint, Result_2][]]> => {
+}): Promise<[] | [[bigint, MissionControlDid0013.Result_2][]]> => {
 	const { list_mission_control_statuses } = await getMissionControlActor0013({
 		missionControlId,
 		identity
 	});
 	return [await list_mission_control_statuses()];
+};
+
+/**
+ * @deprecated - Replaced in Mission Control > v0.0.14 with public custom section juno:package
+ */
+export const missionControlVersion = async ({
+	missionControlId,
+	identity
+}: {
+	missionControlId: MissionControlId;
+	identity: OptionIdentity;
+}): Promise<string> => {
+	const { version } = await getMissionControlActor0013({ missionControlId, identity });
+	return version();
 };

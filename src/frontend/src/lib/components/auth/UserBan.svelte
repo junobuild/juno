@@ -1,9 +1,9 @@
 <script lang="ts">
-	import type { Principal } from '@dfinity/principal';
+	import type { Principal } from '@icp-sdk/core/principal';
 	import { getContext } from 'svelte';
 	import ButtonTableAction from '$lib/components/ui/ButtonTableAction.svelte';
 	import Popover from '$lib/components/ui/Popover.svelte';
-	import { banUser, unbanUser } from '$lib/services/user.services';
+	import { banUser, unbanUser } from '$lib/services/user/user.services';
 	import { authStore } from '$lib/stores/auth.store';
 	import { i18n } from '$lib/stores/i18n.store';
 	import { PAGINATION_CONTEXT_KEY, type PaginationContext } from '$lib/types/pagination.context';
@@ -52,19 +52,19 @@
 </script>
 
 <ButtonTableAction
-	icon={isBanned ? 'block' : 'check'}
-	errorStyle={isBanned}
 	ariaLabel={isBanned ? $i18n.users.unban_user : $i18n.users.ban_user}
+	errorStyle={isBanned}
+	icon={isBanned ? 'block' : 'check'}
 	onaction={open}
 />
 
-<Popover bind:visible center backdrop="dark">
+<Popover backdrop="dark" center bind:visible>
 	<form class="container" onsubmit={handleSubmit}>
 		<p class="title">
 			{i18nFormat(isBanned ? $i18n.users.user_banned : $i18n.users.user_active, [
 				{
 					placeholder: '{0}',
-					value: shortenWithMiddleEllipsis(user.owner.toText())
+					value: shortenWithMiddleEllipsis({ text: user.owner.toText() })
 				}
 			])}
 		</p>
@@ -74,7 +74,7 @@
 		<p>{isBanned ? $i18n.users.are_you_sure_unban : $i18n.users.are_you_sure_ban}</p>
 
 		<div class="toolbar">
-			<button type="button" onclick={close}>{$i18n.core.cancel}</button>
+			<button onclick={close} type="button">{$i18n.core.cancel}</button>
 			<button type="submit">{$i18n.core.confirm}</button>
 		</div>
 	</form>

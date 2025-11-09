@@ -17,7 +17,7 @@
 	{#snippet label()}
 		{$i18n.core.language}
 	{/snippet}
-	<select bind:value={selected} onchange={async () => await i18n.switchLang(selected)}>
+	<select onchange={async () => await i18n.switchLang(selected)} bind:value={selected}>
 		<option value="en"> English </option>
 		<option value="zh-cn"> 简体中文 </option>
 	</select>

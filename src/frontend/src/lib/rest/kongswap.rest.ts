@@ -1,4 +1,4 @@
-import { KongSwapTokensSchema } from '$lib/schema/kongswap.schema';
+import { KongSwapTokensSchema } from '$lib/schemas/kongswap.schema';
 import type { KongSwapTokens } from '$lib/types/kongswap';
 import { isEmptyString } from '@dfinity/utils';
 

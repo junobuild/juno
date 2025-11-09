@@ -3,3 +3,5 @@ pub const ERROR_TRACK_EVENTS_FEATURE_DISABLED: &str = "error_track_events_featur
 pub const ERROR_PERFORMANCE_METRICS_FEATURE_DISABLED: &str =
     "error_performance_metrics_feature_disabled";
 pub const ERROR_BOT_CALL: &str = "error_bot_call";
+pub const ERROR_FEATURE_DISABLED: &str = "error_feature_disabled";
+pub const ERROR_MISSING_USER_AGENT: &str = "error_missing_user_agent";

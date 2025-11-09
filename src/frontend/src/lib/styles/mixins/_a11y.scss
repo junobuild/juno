@@ -1,0 +1,15 @@
+/*
+ * Utility class to hide content visually while keeping it screen reader-accessible.
+ * Source:
+ * - https://www.sarasoueidan.com/blog/accessible-icon-buttons/
+ * - https://www.scottohara.me/blog/2017/04/14/inclusively-hidden.html
+ */
+@mixin visually-hidden {
+	clip: rect(0 0 0 0);
+	clip-path: inset(100%);
+	height: 1px;
+	overflow: hidden;
+	position: absolute;
+	white-space: nowrap;
+	width: 1px;
+}

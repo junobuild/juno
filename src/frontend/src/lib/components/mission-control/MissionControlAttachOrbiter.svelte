@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { Principal } from '@dfinity/principal';
+	import type { Principal } from '@icp-sdk/core/principal';
 	import { createEventDispatcher } from 'svelte';
 	import CanisterAttach from '$lib/components/canister/CanisterAttach.svelte';
 	import IconLink from '$lib/components/icons/IconLink.svelte';
@@ -26,8 +26,8 @@
 	const dispatch = createEventDispatcher();
 
 	const onSuccess = () => {
-		toasts.success(
-			i18nCapitalize(
+		toasts.success({
+			text: i18nCapitalize(
 				i18nFormat($i18n.canisters.attach_success, [
 					{
 						placeholder: '{0}',
@@ -35,15 +35,15 @@
 					}
 				])
 			)
-		);
+		});
 
 		dispatch('junoAttach');
 	};
 </script>
 
-<button onclick={() => (visible = true)} class="menu"><IconLink /> {$i18n.analytics.attach}</button>
+<button class="menu" onclick={() => (visible = true)}><IconLink /> {$i18n.analytics.attach}</button>
 
-<CanisterAttach attach={onSuccess} bind:visible setFn={setOrbiter}>
+<CanisterAttach attach={onSuccess} setFn={setOrbiter} bind:visible>
 	{#snippet title()}
 		{$i18n.analytics.attach}
 	{/snippet}

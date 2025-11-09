@@ -1,6 +1,6 @@
-import type { ActorMethod } from '@dfinity/agent';
-import type { IDL } from '@dfinity/candid';
-import type { Principal } from '@dfinity/principal';
+import type { ActorMethod } from '@icp-sdk/core/agent';
+import type { IDL } from '@icp-sdk/core/candid';
+import type { Principal } from '@icp-sdk/core/principal';
 
 export interface Account {
 	owner: Principal;
@@ -16,9 +16,14 @@ export interface Controller {
 	scope: ControllerScope;
 	expires_at: [] | [bigint];
 }
-export type ControllerScope = { Write: null } | { Admin: null };
+export type ControllerScope = { Write: null } | { Admin: null } | { Submit: null };
 export interface CreateCanisterConfig {
 	subnet_id: [] | [Principal];
+	name: [] | [string];
+}
+export interface CreateSatelliteConfig {
+	subnet_id: [] | [Principal];
+	storage: [] | [InitStorageArgs];
 	name: [] | [string];
 }
 export interface CyclesBalance {
@@ -60,11 +65,28 @@ export interface DepositedCyclesEmailNotification {
 	to: [] | [string];
 	enabled: boolean;
 }
+export type FundingErrorCode =
+	| { BalanceCheckFailed: null }
+	| { ObtainCyclesFailed: null }
+	| { DepositFailed: null }
+	| { InsufficientCycles: null }
+	| { Other: string };
+export interface FundingFailure {
+	timestamp: bigint;
+	error_code: FundingErrorCode;
+}
 export interface GetMonitoringHistory {
 	to: [] | [bigint];
 	from: [] | [bigint];
 	segment_id: Principal;
 }
+export interface InitMissionControlArgs {
+	user: Principal;
+}
+export interface InitStorageArgs {
+	system_memory: [] | [InitStorageMemory];
+}
+export type InitStorageMemory = { Heap: null } | { Stable: null };
 export interface MissionControlSettings {
 	updated_at: bigint;
 	created_at: bigint;
@@ -82,6 +104,7 @@ export interface MonitoringHistory {
 export interface MonitoringHistoryCycles {
 	deposited_cycles: [] | [CyclesBalance];
 	cycles: CyclesBalance;
+	funding_failure: [] | [FundingFailure];
 }
 export interface MonitoringHistoryKey {
 	segment_id: Principal;
@@ -179,7 +202,7 @@ export interface _SERVICE {
 	create_orbiter: ActorMethod<[[] | [string]], Orbiter>;
 	create_orbiter_with_config: ActorMethod<[CreateCanisterConfig], Orbiter>;
 	create_satellite: ActorMethod<[string], Satellite>;
-	create_satellite_with_config: ActorMethod<[CreateCanisterConfig], Satellite>;
+	create_satellite_with_config: ActorMethod<[CreateSatelliteConfig], Satellite>;
 	del_mission_control_controllers: ActorMethod<[Array<Principal>], undefined>;
 	del_orbiter: ActorMethod<[Principal, bigint], undefined>;
 	del_orbiters_controllers: ActorMethod<[Array<Principal>, Array<Principal>], undefined>;
@@ -225,7 +248,6 @@ export interface _SERVICE {
 	unset_satellite: ActorMethod<[Principal], undefined>;
 	update_and_start_monitoring: ActorMethod<[MonitoringStartConfig], undefined>;
 	update_and_stop_monitoring: ActorMethod<[MonitoringStopConfig], undefined>;
-	version: ActorMethod<[], string>;
 }
 export declare const idlFactory: IDL.InterfaceFactory;
 export declare const init: (args: { IDL: typeof IDL }) => IDL.Type[];

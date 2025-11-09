@@ -1,7 +1,6 @@
-<script lang="ts" generics="T">
+<script generics="T" lang="ts">
 	import { nonNullish } from '@dfinity/utils';
 	import { getContext, type Snippet } from 'svelte';
-	import { fade } from 'svelte/transition';
 	import DataActions from '$lib/components/data/DataActions.svelte';
 	import { DATA_CONTEXT_KEY, type DataContext } from '$lib/types/data.context';
 
@@ -12,12 +11,11 @@
 
 	let { children, actions }: Props = $props();
 
-	// eslint-disable-next-line no-undef
 	const { store }: DataContext<T> = getContext<DataContext<T>>(DATA_CONTEXT_KEY);
 </script>
 
 {#if nonNullish($store?.data)}
-	<div class="actions" transition:fade>
+	<div class="actions">
 		<span>{@render children()}</span>
 
 		<DataActions>

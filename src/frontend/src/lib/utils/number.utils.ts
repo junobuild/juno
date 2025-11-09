@@ -15,6 +15,9 @@ export const formatNumber = (
 	}).format(value);
 };
 
+export const formatCompactNumber = (value: number): string =>
+	formatNumber(value, { notation: 'compact', minFraction: 0, maxFraction: 1 });
+
 export const formatUsd = (value: number): string =>
 	new Intl.NumberFormat('en-US', {
 		style: 'currency',

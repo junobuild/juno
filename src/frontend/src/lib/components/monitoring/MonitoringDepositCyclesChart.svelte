@@ -22,22 +22,18 @@
 			{/snippet}
 
 			<div class="chart-container">
-				<TimeOfDayPlot chartsData={depositedCycles} {allDays} />
+				<TimeOfDayPlot {allDays} chartsData={depositedCycles} />
 			</div>
 		</Value>
 	</div>
 {/if}
 
 <style lang="scss">
-	@use '../../styles/mixins/shadow';
-
 	.chart-container {
 		width: 100%;
 		height: 258px;
 
 		margin: var(--padding-0_5x) 0 var(--padding-4x);
-		padding: var(--padding) var(--padding-2x) var(--padding-2x);
-
-		@include shadow.strong-card;
+		padding: 0 0 var(--padding-2x);
 	}
 </style>

@@ -1,6 +1,6 @@
 <script lang="ts">
-	import type { Principal } from '@dfinity/principal';
 	import { nonNullish } from '@dfinity/utils';
+	import type { Principal } from '@icp-sdk/core/principal';
 	import { depositCycles } from '$lib/api/orbiter.api';
 	import CanisterTransferCyclesModal from '$lib/components/modals/CanisterTransferCyclesModal.svelte';
 	import { orbiterStore } from '$lib/derived/orbiter.derived';
@@ -22,6 +22,9 @@
 			async (params: { cycles: bigint; destinationId: Principal }) =>
 				await depositCycles({
 					...params,
+					// TODO: resolve no-non-null-assertion
+					// We know for sure that the orbiter is defined at this point.
+					// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
 					orbiterId: $orbiterStore!.orbiter_id,
 					identity: $authStore.identity
 				})
@@ -30,13 +33,13 @@
 
 {#if nonNullish($orbiterStore)}
 	<CanisterTransferCyclesModal
-		{transferFn}
 		{currentCycles}
+		{onclose}
 		segment={{
 			segment: 'orbiter',
 			canisterId: $orbiterStore.orbiter_id.toText(),
 			label: $i18n.analytics.orbiter
 		}}
-		{onclose}
+		{transferFn}
 	/>
 {/if}

@@ -9,10 +9,10 @@
 
 <svg
 	id="uuid-14b6c318-d77a-4c97-ac1b-d2f4a93d20f4"
-	xmlns="http://www.w3.org/2000/svg"
-	viewBox="0 0 29 29"
 	height={size}
+	viewBox="0 0 29 29"
 	width={size}
+	xmlns="http://www.w3.org/2000/svg"
 	><defs
 		><style>
 			.uuid-e25d01e3-041f-4f24-8f56-ffeae117f999,

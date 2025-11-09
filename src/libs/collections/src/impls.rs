@@ -1,4 +1,5 @@
 use crate::assert::collection::is_system_collection;
+use crate::errors::JUNO_COLLECTIONS_ERROR_RESERVED_COLLECTION;
 use crate::types::core::CollectionKey;
 use crate::types::interface::SetRule;
 use crate::types::rules::{Memory, Rule};
@@ -62,7 +63,9 @@ impl Rule {
         user_rule: &SetRule,
     ) -> Result<Rule, String> {
         match current_rule {
-            None => Err(format!("Collection {} is reserved.", collection)),
+            None => Err(format!(
+                "{JUNO_COLLECTIONS_ERROR_RESERVED_COLLECTION} ({collection})"
+            )),
             Some(current_rule) => {
                 let (created_at, version, updated_at) =
                     Self::initialize_common_fields(&Some(current_rule));
@@ -83,6 +86,21 @@ impl Rule {
 
                 Ok(rule)
             }
+        }
+    }
+
+    pub fn switch_rule_memory(current_rule: &Rule) -> Rule {
+        let (created_at, version, updated_at) = Self::initialize_common_fields(&Some(current_rule));
+
+        Rule {
+            memory: Some(match current_rule.mem() {
+                Memory::Heap => Memory::Stable,
+                Memory::Stable => Memory::Heap,
+            }),
+            created_at,
+            updated_at,
+            version: Some(version),
+            ..current_rule.clone()
         }
     }
 }

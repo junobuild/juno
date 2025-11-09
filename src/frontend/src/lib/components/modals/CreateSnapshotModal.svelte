@@ -1,6 +1,5 @@
 <script lang="ts">
-	import { Principal } from '@dfinity/principal';
-	import { isNullish } from '@dfinity/utils';
+	import { Principal } from '@icp-sdk/core/principal';
 	import { fade } from 'svelte/transition';
 	import ProgressSnapshot from '$lib/components/canister/ProgressSnapshot.svelte';
 	import Confetti from '$lib/components/ui/Confetti.svelte';
@@ -34,7 +33,7 @@
 	const handleSubmit = async ($event: SubmitEvent) => {
 		$event.preventDefault();
 
-		if (isNullish($snapshotStore?.[segment.canisterId])) {
+		if ($snapshotStore?.[segment.canisterId] === undefined) {
 			toasts.error({ text: $i18n.errors.snapshot_not_loaded });
 			return;
 		}
@@ -67,7 +66,7 @@
 	let warnExistingSnapshot = $derived(($snapshotStore?.[segment.canisterId]?.length ?? 0) > 0);
 </script>
 
-<Modal on:junoClose={onclose}>
+<Modal {onclose}>
 	{#if step === 'ready'}
 		<Confetti />
 
@@ -85,12 +84,12 @@
 			<button onclick={onclose}>{$i18n.core.close}</button>
 		</div>
 	{:else if step === 'in_progress'}
-		<ProgressSnapshot segment={segment.segment} {progress} snapshotAction="create" />
+		<ProgressSnapshot {progress} segment={segment.segment} snapshotAction="create" />
 	{:else}
 		<h2>{$i18n.canisters.snapshot}</h2>
 
 		{#if warnExistingSnapshot}
-			<div in:fade class="warning">
+			<div class="warning" in:fade>
 				<Warning>{$i18n.canisters.create_snapshot_warning}</Warning>
 			</div>
 		{/if}
@@ -102,7 +101,7 @@
 		</p>
 
 		<form class="content" onsubmit={handleSubmit}>
-			<button type="submit" disabled={$isBusy}>
+			<button disabled={$isBusy} type="submit">
 				{$i18n.canisters.create_a_snapshot}
 			</button>
 		</form>

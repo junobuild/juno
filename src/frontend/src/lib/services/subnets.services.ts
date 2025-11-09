@@ -10,8 +10,8 @@ import { i18n } from '$lib/stores/i18n.store';
 import { subnetsIdbStore } from '$lib/stores/idb.store';
 import { subnetStore } from '$lib/stores/subnet.store';
 import { toasts } from '$lib/stores/toasts.store';
-import type { Principal } from '@dfinity/principal';
 import { nonNullish } from '@dfinity/utils';
+import type { Principal } from '@icp-sdk/core/principal';
 import { get } from 'svelte/store';
 
 export const syncSubnets = async () => {

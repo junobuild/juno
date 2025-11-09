@@ -7,9 +7,14 @@ type Controller = record {
   scope : ControllerScope;
   expires_at : opt nat64;
 };
-type ControllerScope = variant { Write; Admin };
+type ControllerScope = variant { Write; Admin; Submit };
 type CreateCanisterConfig = record {
   subnet_id : opt principal;
+  name : opt text;
+};
+type CreateSatelliteConfig = record {
+  subnet_id : opt principal;
+  storage : opt InitStorageArgs;
   name : opt text;
 };
 type CyclesBalance = record { timestamp : nat64; amount : nat };
@@ -42,11 +47,25 @@ type DepositedCyclesEmailNotification = record {
   to : opt text;
   enabled : bool;
 };
+type FundingErrorCode = variant {
+  BalanceCheckFailed;
+  ObtainCyclesFailed;
+  DepositFailed;
+  InsufficientCycles;
+  Other : text;
+};
+type FundingFailure = record {
+  timestamp : nat64;
+  error_code : FundingErrorCode;
+};
 type GetMonitoringHistory = record {
   to : opt nat64;
   from : opt nat64;
   segment_id : principal;
 };
+type InitMissionControlArgs = record { user : principal };
+type InitStorageArgs = record { system_memory : opt InitStorageMemory };
+type InitStorageMemory = variant { Heap; Stable };
 type MissionControlSettings = record {
   updated_at : nat64;
   created_at : nat64;
@@ -58,6 +77,7 @@ type MonitoringHistory = record { cycles : opt MonitoringHistoryCycles };
 type MonitoringHistoryCycles = record {
   deposited_cycles : opt CyclesBalance;
   cycles : CyclesBalance;
+  funding_failure : opt FundingFailure;
 };
 type MonitoringHistoryKey = record {
   segment_id : principal;
@@ -139,13 +159,13 @@ type User = record {
   created_at : nat64;
   config : opt Config;
 };
-service : () -> {
+service : (InitMissionControlArgs) -> {
   add_mission_control_controllers : (vec principal) -> ();
   add_satellites_controllers : (vec principal, vec principal) -> ();
   create_orbiter : (opt text) -> (Orbiter);
   create_orbiter_with_config : (CreateCanisterConfig) -> (Orbiter);
   create_satellite : (text) -> (Satellite);
-  create_satellite_with_config : (CreateCanisterConfig) -> (Satellite);
+  create_satellite_with_config : (CreateSatelliteConfig) -> (Satellite);
   del_mission_control_controllers : (vec principal) -> ();
   del_orbiter : (principal, nat) -> ();
   del_orbiters_controllers : (vec principal, vec principal) -> ();
@@ -196,5 +216,4 @@ service : () -> {
   unset_satellite : (principal) -> ();
   update_and_start_monitoring : (MonitoringStartConfig) -> ();
   update_and_stop_monitoring : (MonitoringStopConfig) -> ();
-  version : () -> (text) query;
 }

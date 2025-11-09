@@ -5,6 +5,7 @@
 	import Cockpit from '$lib/components/launchpad/Cockpit.svelte';
 	import SatelliteNew from '$lib/components/satellites/SatelliteNew.svelte';
 	import Satellites from '$lib/components/satellites/Satellites.svelte';
+	import Message from '$lib/components/ui/Message.svelte';
 	import Spinner from '$lib/components/ui/Spinner.svelte';
 	import { satellitesStore } from '$lib/derived/satellites.derived';
 	import { onIntersection } from '$lib/directives/intersection.directives';
@@ -22,23 +23,37 @@
 			loading = true;
 		})();
 	});
+
+	const customOnIntersection = (element: HTMLElement) =>
+		onIntersection(element, {
+			threshold: 0.8,
+			rootMargin: '-50px 0px'
+		});
 </script>
 
 {#if loading || ($satellitesStore?.length ?? 0n) === 0}
 	{#if loading}
 		<div class="spinner" out:fade>
-			<Spinner inline />
+			<Message>
+				{#snippet icon()}
+					<Spinner inline />
+				{/snippet}
 
-			<p class="loading">{$i18n.satellites.loading_launchpad}</p>
+				<p>{$i18n.satellites.loading_launchpad}</p>
+			</Message>
 		</div>
 	{:else}
-		<section use:onIntersection onjunoIntersecting={onLayoutTitleIntersection}>
+		<section onjunoIntersecting={onLayoutTitleIntersection} use:customOnIntersection>
 			<SatelliteNew />
 		</section>
 	{/if}
 {:else if ($satellitesStore?.length ?? 0) >= 1}
-	<div in:fade use:onIntersection onjunoIntersecting={onLayoutTitleIntersection}>
-		<section class="cockpit">
+	<div in:fade>
+		<section
+			class="cockpit"
+			onjunoIntersecting={onLayoutTitleIntersection}
+			use:customOnIntersection
+		>
 			<Cockpit />
 		</section>
 
@@ -98,18 +113,6 @@
 		position: fixed;
 		top: 50%;
 		left: 50%;
-		transform: translate(-50%, -50%);
-
-		display: flex;
-		flex-direction: column;
-		justify-content: center;
-		align-items: center;
-		gap: var(--padding-2x);
-
-		font-size: var(--font-size-very-small);
-	}
-
-	.loading {
-		text-align: center;
+		transform: translate(-50%, -75%);
 	}
 </style>

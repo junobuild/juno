@@ -5,7 +5,7 @@
 	import IconClose from '$lib/components/icons/IconClose.svelte';
 	import { i18n } from '$lib/stores/i18n.store';
 	import { toasts } from '$lib/stores/toasts.store';
-	import type { ToastLevel, ToastMsg } from '$lib/types/toast';
+	import type { ToastColor, ToastLevel, ToastMsg } from '$lib/types/toast';
 
 	interface Props {
 		msg: ToastMsg;
@@ -18,6 +18,7 @@
 	let text: string = $derived(msg.text);
 	let level: ToastLevel = $derived(msg.level);
 	let detail: string | undefined = $derived(msg.detail);
+	let color: ToastColor | undefined = $derived(msg.color);
 
 	let timer = $state<number | undefined>(undefined);
 
@@ -61,10 +62,10 @@
 </script>
 
 <div
-	role="dialog"
-	class="toast"
+	class={`toast ${color ?? ''}`}
 	class:error={level === 'error'}
 	class:warn={level === 'warn'}
+	role="dialog"
 	in:fly={{ y: 100, duration: 200 }}
 	out:fade={{ delay: 100 }}
 >
@@ -74,7 +75,7 @@
 		</p>
 	</div>
 
-	<button class="text" onclick={close} aria-label={$i18n.core.close}><IconClose /></button>
+	<button class="text" aria-label={$i18n.core.close} onclick={close}><IconClose /></button>
 </div>
 
 <style lang="scss">
@@ -105,6 +106,26 @@
 
 		@media (min-width: 768px) {
 			max-width: 576px;
+		}
+
+		&.secondary {
+			background: var(--color-secondary);
+			color: var(--color-secondary-contrast);
+		}
+
+		&.tertiary {
+			background: var(--color-tertiary);
+			color: var(--color-tertiary-contrast);
+		}
+
+		&.success {
+			background: var(--color-success);
+			color: var(--color-success-contrast);
+		}
+
+		&.warn {
+			background: var(--color-warning);
+			color: var(--color-warning-contrast);
 		}
 
 		&.error {

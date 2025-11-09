@@ -1,5 +1,7 @@
 <script lang="ts">
 	import { nonNullish } from '@dfinity/utils';
+	import UserOpenId from '$lib/components/auth/UserOpenId.svelte';
+	import UserPasskeyAuthenticator from '$lib/components/auth/UserPasskeyAuthenticator.svelte';
 	import UserProvider from '$lib/components/auth/UserProvider.svelte';
 	import UserStatus from '$lib/components/auth/UserStatus.svelte';
 	import Identifier from '$lib/components/ui/Identifier.svelte';
@@ -22,7 +24,7 @@
 	let { owner, created_at, updated_at } = $derived(user);
 </script>
 
-<Modal on:junoClose={onclose}>
+<Modal {onclose}>
 	<h2>{$i18n.users.user_details}</h2>
 
 	<div class="card-container columns-3 no-border">
@@ -31,7 +33,14 @@
 				{#snippet label()}
 					{$i18n.users.identifier}
 				{/snippet}
-				<Identifier small={false} identifier={owner.toText()} />
+				<Identifier identifier={owner.toText()} small={false} />
+			</Value>
+
+			<Value>
+				{#snippet label()}
+					{$i18n.users.status}
+				{/snippet}
+				<p><UserStatus {user} /></p>
 			</Value>
 		</div>
 
@@ -45,25 +54,21 @@
 						<p class="provider"><UserProvider {user} withText /></p>
 					</Value>
 
-					<Value>
-						{#snippet label()}
-							{$i18n.users.status}
-						{/snippet}
-						<p><UserStatus {user} /></p>
-					</Value>
+					<UserPasskeyAuthenticator {user} />
+					<UserOpenId {user} />
 				</div>
 
 				<div>
 					<Value>
 						{#snippet label()}
-							{$i18n.users.created}
+							{$i18n.core.created}
 						{/snippet}
 						<p>{formatToDate(created_at)}</p>
 					</Value>
 
 					<Value>
 						{#snippet label()}
-							{$i18n.users.updated}
+							{$i18n.core.updated}
 						{/snippet}
 						<p>{formatToDate(updated_at)}</p>
 					</Value>
@@ -90,7 +95,7 @@
 							</thead>
 
 							<tbody>
-								{#each usages as usage}
+								{#each usages as usage (usage.collection)}
 									{@const warning =
 										nonNullish(usage.maxChangesPerUser) &&
 										(usage.usage?.changes_count ?? 0) >= (usage.maxChangesPerUser ?? 0)}

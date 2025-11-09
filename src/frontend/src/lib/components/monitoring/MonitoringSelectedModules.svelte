@@ -1,7 +1,7 @@
 <script lang="ts">
-	import type { Principal } from '@dfinity/principal';
 	import { isEmptyString } from '@dfinity/utils';
-	import type { Orbiter, Satellite } from '$declarations/mission_control/mission_control.did';
+	import type { Principal } from '@icp-sdk/core/principal';
+	import type { MissionControlDid } from '$declarations';
 	import Segment from '$lib/components/segments/Segment.svelte';
 	import Value from '$lib/components/ui/Value.svelte';
 	import { i18n } from '$lib/stores/i18n.store';
@@ -9,8 +9,8 @@
 	import { satelliteName } from '$lib/utils/satellite.utils';
 
 	interface Props {
-		selectedSatellites: [Principal, Satellite][];
-		selectedOrbiters: [Principal, Orbiter][];
+		selectedSatellites: [Principal, MissionControlDid.Satellite][];
+		selectedOrbiters: [Principal, MissionControlDid.Orbiter][];
 	}
 
 	let { selectedSatellites, selectedOrbiters }: Props = $props();
@@ -22,7 +22,7 @@
 	{/snippet}
 
 	<ul>
-		{#each selectedSatellites as [satelliteId, satellite]}
+		{#each selectedSatellites as [satelliteId, satellite] (satelliteId.toText())}
 			<li>
 				<Segment id={satelliteId}>
 					{satelliteName(satellite)}
@@ -30,7 +30,7 @@
 			</li>
 		{/each}
 
-		{#each selectedOrbiters as [orbiterId, orbiter]}
+		{#each selectedOrbiters as [orbiterId, orbiter] (orbiterId.toText())}
 			{@const orbName = orbiterName(orbiter)}
 
 			<li>

@@ -8,11 +8,11 @@
 </script>
 
 <svg
-	xmlns="http://www.w3.org/2000/svg"
-	height={size}
-	width={size}
-	viewBox="0 0 24 24"
 	fill="currentColor"
+	height={size}
+	viewBox="0 0 24 24"
+	width={size}
+	xmlns="http://www.w3.org/2000/svg"
 	><g><path d="M0,0h24v24H0V0z" fill="none" /></g><g
 		><g
 			><path

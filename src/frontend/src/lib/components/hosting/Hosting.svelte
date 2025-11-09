@@ -1,34 +1,29 @@
 <script lang="ts">
 	import { nonNullish } from '@dfinity/utils';
 	import { onMount } from 'svelte';
-	import type { Satellite } from '$declarations/mission_control/mission_control.did';
-	import type {
-		AuthenticationConfig,
-		CustomDomain as CustomDomainType
-	} from '$declarations/satellite/satellite.did';
+	import type { SatelliteDid, MissionControlDid } from '$declarations';
 	import AddCustomDomain from '$lib/components/hosting/AddCustomDomain.svelte';
 	import CustomDomain from '$lib/components/hosting/CustomDomain.svelte';
 	import CustomDomainInfo from '$lib/components/hosting/CustomDomainInfo.svelte';
 	import HostingCount from '$lib/components/hosting/HostingCount.svelte';
 	import { sortedSatelliteCustomDomains } from '$lib/derived/satellite-custom-domains.derived';
-	import { getAuthConfig } from '$lib/services/auth.config.services';
+	import { getAuthConfig } from '$lib/services/auth/auth.config.services';
 	import { listCustomDomains } from '$lib/services/custom-domain.services';
 	import { authStore } from '$lib/stores/auth.store';
 	import { i18n } from '$lib/stores/i18n.store';
 	import type { CustomDomainRegistrationState } from '$lib/types/custom-domain';
-	import type { SatelliteIdText } from '$lib/types/satellite';
 	import type { Option } from '$lib/types/utils';
 	import { satelliteUrl } from '$lib/utils/satellite.utils';
 
 	interface Props {
-		satellite: Satellite;
+		satellite: MissionControlDid.Satellite;
 	}
 
 	let { satellite }: Props = $props();
 
-	let satelliteId: SatelliteIdText = $derived(satellite.satellite_id.toText());
+	let satelliteId = $derived(satellite.satellite_id.toText());
 
-	let config: AuthenticationConfig | undefined = $state();
+	let config = $state<SatelliteDid.AuthenticationConfig | undefined>();
 
 	const list = async () => {
 		const [_, { config: c }] = await Promise.all([
@@ -48,7 +43,7 @@
 	onMount(list);
 
 	interface SelectedCustomDomain {
-		customDomain: [string, CustomDomainType] | undefined;
+		customDomain: [string, SatelliteDid.CustomDomain] | undefined;
 		registrationState: Option<CustomDomainRegistrationState>;
 		mainDomain: boolean;
 	}
@@ -72,18 +67,18 @@
 		</thead>
 		<tbody>
 			<tr>
-				<CustomDomain url={satelliteUrl(satelliteId)} ariaLabel={$i18n.hosting.default_domain} />
+				<CustomDomain ariaLabel={$i18n.hosting.default_domain} url={satelliteUrl(satelliteId)} />
 			</tr>
 
-			{#each $sortedSatelliteCustomDomains as [customDomainUrl, customDomain]}
+			{#each $sortedSatelliteCustomDomains as [customDomainUrl, customDomain] (customDomainUrl)}
 				<tr>
 					<CustomDomain
+						ariaLabel={$i18n.hosting.custom_domain}
+						{config}
+						customDomain={[customDomainUrl, customDomain]}
+						{satellite}
 						type="custom"
 						url={`https://${customDomainUrl}`}
-						customDomain={[customDomainUrl, customDomain]}
-						{config}
-						ariaLabel={$i18n.hosting.custom_domain}
-						{satellite}
 						on:junoDisplayInfo={onDisplayInfo}
 					/>
 				</tr>
@@ -93,7 +88,7 @@
 </div>
 
 <div class="footer">
-	<AddCustomDomain {satellite} {config} />
+	<AddCustomDomain {config} {satellite} />
 
 	<HostingCount {satellite} />
 </div>

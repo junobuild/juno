@@ -1,6 +1,6 @@
 <script lang="ts">
-	import type { AccountIdentifier } from '@dfinity/ledger-icp';
 	import { nonNullish } from '@dfinity/utils';
+	import type { AccountIdentifier } from '@icp-sdk/canisters/ledger/icp';
 	import CanisterTopUpModal from '$lib/components/modals/CanisterTopUpModal.svelte';
 	import Html from '$lib/components/ui/Html.svelte';
 	import { balanceOrZero } from '$lib/derived/balance.derived';
@@ -23,14 +23,14 @@
 
 {#if nonNullish($orbiterStore)}
 	<CanisterTopUpModal
+		{accountIdentifier}
+		balance={$balanceOrZero}
+		{onclose}
 		segment={{
 			segment: 'orbiter',
 			canisterId: $orbiterStore.orbiter_id.toText(),
 			label: $i18n.analytics.orbiter
 		}}
-		balance={$balanceOrZero}
-		{accountIdentifier}
-		{onclose}
 	>
 		{#snippet intro()}
 			<h2>

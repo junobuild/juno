@@ -1,22 +1,28 @@
+use crate::auth::assert::assert_caller_is_allowed;
 use crate::db::runtime::increment_and_assert_rate;
 use crate::db::types::config::DbConfig;
+use crate::db::types::interface::SetDbConfig;
 use crate::db::types::state::{DocAssertDelete, DocAssertSet, DocContext};
+use crate::db::types::store::AssertSetDocOptions;
 use crate::errors::db::{JUNO_DATASTORE_ERROR_CANNOT_READ, JUNO_DATASTORE_ERROR_CANNOT_WRITE};
 use crate::hooks::db::{invoke_assert_delete_doc, invoke_assert_set_doc};
-use crate::types::store::StoreContext;
+use crate::types::store::{AssertContext, StoreContext};
 use crate::user::core::assert::{
-    assert_user_collection_caller_key, assert_user_collection_data, assert_user_is_not_banned,
-    assert_user_write_permission,
+    assert_user_collection_caller_key, assert_user_collection_data,
+    assert_user_collection_write_permission, assert_user_is_not_banned,
 };
 use crate::user::usage::assert::{
     assert_user_usage_collection_data, increment_and_assert_db_usage,
+};
+use crate::user::webauthn::assert::{
+    assert_user_webauthn_collection_data, assert_user_webauthn_collection_write_permission,
 };
 use crate::{DelDoc, Doc, SetDoc};
 use candid::Principal;
 use junobuild_collections::assert::stores::{
     assert_create_permission, assert_permission, public_permission,
 };
-use junobuild_collections::types::rules::{Permission, Rule};
+use junobuild_collections::types::rules::Permission;
 use junobuild_shared::assert::{assert_description_length, assert_max_memory_size, assert_version};
 use junobuild_shared::types::core::Key;
 use junobuild_shared::types::state::{Controllers, Version};
@@ -27,9 +33,10 @@ pub fn assert_get_doc(
         controllers,
         collection: _,
     }: &StoreContext,
-    rule: &Rule,
+    &AssertContext { rule, auth_config }: &AssertContext,
     current_doc: &Doc,
 ) -> Result<(), String> {
+    assert_caller_is_allowed(caller, controllers, auth_config)?;
     assert_user_is_not_banned(caller, controllers)?;
 
     assert_read_permission(caller, controllers, current_doc, &rule.read)?;
@@ -43,7 +50,12 @@ pub fn assert_get_docs(
         controllers,
         collection: _,
     }: &StoreContext,
+    &AssertContext {
+        auth_config,
+        rule: _,
+    }: &AssertContext,
 ) -> Result<(), String> {
+    assert_caller_is_allowed(caller, controllers, auth_config)?;
     assert_user_is_not_banned(caller, controllers)?;
 
     Ok(())
@@ -55,17 +67,22 @@ pub fn assert_set_doc(
         controllers,
         collection,
     }: &StoreContext,
+    &AssertContext { rule, auth_config }: &AssertContext,
     config: &Option<DbConfig>,
+    options: &AssertSetDocOptions,
     key: &Key,
     value: &SetDoc,
-    rule: &Rule,
     current_doc: &Option<Doc>,
 ) -> Result<(), String> {
+    assert_caller_is_allowed(caller, controllers, auth_config)?;
     assert_user_is_not_banned(caller, controllers)?;
 
     assert_user_collection_caller_key(caller, collection, key, current_doc)?;
     assert_user_collection_data(collection, value)?;
-    assert_user_write_permission(caller, controllers, collection, current_doc)?;
+    assert_user_collection_write_permission(caller, controllers, collection, current_doc)?;
+
+    assert_user_webauthn_collection_data(caller, collection, value)?;
+    assert_user_webauthn_collection_write_permission(collection, current_doc)?;
 
     assert_write_permission(caller, controllers, current_doc, &rule.write)?;
 
@@ -91,7 +108,9 @@ pub fn assert_set_doc(
 
     increment_and_assert_db_usage(caller, controllers, collection, rule.max_changes_per_user)?;
 
-    increment_and_assert_rate(collection, &rule.rate_config)?;
+    if options.with_assert_rate {
+        increment_and_assert_rate(collection, &rule.rate_config)?;
+    }
 
     Ok(())
 }
@@ -102,11 +121,12 @@ pub fn assert_delete_doc(
         controllers,
         collection,
     }: &StoreContext,
+    &AssertContext { rule, auth_config }: &AssertContext,
     key: &Key,
     value: &DelDoc,
-    rule: &Rule,
     current_doc: &Option<Doc>,
 ) -> Result<(), String> {
+    assert_caller_is_allowed(caller, controllers, auth_config)?;
     assert_user_is_not_banned(caller, controllers)?;
 
     assert_write_permission(caller, controllers, current_doc, &rule.write)?;
@@ -190,6 +210,26 @@ fn assert_write_version(
                 return Err(e);
             }
         },
+    }
+
+    Ok(())
+}
+
+pub fn assert_set_config(
+    proposed_config: &SetDbConfig,
+    current_config: &Option<DbConfig>,
+) -> Result<(), String> {
+    assert_config_version(current_config, proposed_config.version)?;
+
+    Ok(())
+}
+
+fn assert_config_version(
+    current_config: &Option<DbConfig>,
+    proposed_version: Option<Version>,
+) -> Result<(), String> {
+    if let Some(cfg) = current_config {
+        assert_version(proposed_version, cfg.version)?
     }
 
     Ok(())

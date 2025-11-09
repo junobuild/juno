@@ -1,0 +1,587 @@
+[
+	[
+		{
+			"key": "BYqw04gpiIk_cngduuiYv",
+			"collected_at": {
+				"__bigint__": "1742076010671000000"
+			}
+		},
+		{
+			"title": "Demo",
+			"updated_at": {
+				"__bigint__": "1742076012627551082"
+			},
+			"referrer": ["https://source.com/"],
+			"time_zone": "Asia/Tokyo",
+			"session_id": "S3dH3rVWgwWykbhCRUr96",
+			"href": "https://demo.com/hello/",
+			"created_at": {
+				"__bigint__": "1742076012627551082"
+			},
+			"satellite_id": {
+				"__principal__": "jx5yt-yyaaa-aaaal-abzbq-cai"
+			},
+			"device": {
+				"inner_height": 848,
+				"inner_width": 430
+			},
+			"version": [
+				{
+					"__bigint__": "1"
+				}
+			],
+			"user_agent": [
+				"Mozilla/5.0 (iPhone; CPU iPhone OS 18_3_2 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/18.3.1 Mobile/15E148 Safari/604.1"
+			],
+			"campaign": [
+				{
+					"utm_source": "twitter",
+					"utm_medium": ["social"],
+					"utm_campaign": ["product_launch"],
+					"utm_term": ["juno"],
+					"utm_content": ["video"]
+				}
+			]
+		}
+	],
+	[
+		{
+			"key": "mOKcNyDCi26ScvKmJDZ8A",
+			"collected_at": {
+				"__bigint__": "1742076038442000000"
+			}
+		},
+		{
+			"title": "Demo",
+			"updated_at": {
+				"__bigint__": "1742076039020550679"
+			},
+			"referrer": ["https://source.com/"],
+			"time_zone": "Asia/Tokyo",
+			"session_id": "S3dH3rVWgwWykbhCRUr96",
+			"href": "https://demo.com/hello/",
+			"created_at": {
+				"__bigint__": "1742076039020550679"
+			},
+			"satellite_id": {
+				"__principal__": "jx5yt-yyaaa-aaaal-abzbq-cai"
+			},
+			"device": {
+				"inner_height": 732,
+				"inner_width": 430
+			},
+			"version": [
+				{
+					"__bigint__": "1"
+				}
+			],
+			"user_agent": [
+				"Mozilla/5.0 (iPhone; CPU iPhone OS 18_3_2 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/18.3.1 Mobile/15E148 Safari/604.1"
+			],
+			"campaign": [
+				{
+					"utm_source": "linkedin",
+					"utm_medium": ["social"],
+					"utm_campaign": ["b2b_outreach"],
+					"utm_term": ["cloud"],
+					"utm_content": ["text_post"]
+				}
+			]
+		}
+	],
+	[
+		{
+			"key": "xNFiHDu2SCw7Wm8lo2yWY",
+			"collected_at": {
+				"__bigint__": "1742076039936000000"
+			}
+		},
+		{
+			"title": "Demo",
+			"updated_at": {
+				"__bigint__": "1742076042335876081"
+			},
+			"referrer": ["https://source.com/"],
+			"time_zone": "Asia/Tokyo",
+			"session_id": "S3dH3rVWgwWykbhCRUr96",
+			"href": "https://demo.com/",
+			"created_at": {
+				"__bigint__": "1742076042335876081"
+			},
+			"satellite_id": {
+				"__principal__": "jx5yt-yyaaa-aaaal-abzbq-cai"
+			},
+			"device": {
+				"inner_height": 732,
+				"inner_width": 430
+			},
+			"version": [
+				{
+					"__bigint__": "1"
+				}
+			],
+			"user_agent": [
+				"Mozilla/5.0 (iPhone; CPU iPhone OS 18_3_2 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/18.3.1 Mobile/15E148 Safari/604.1"
+			],
+			"campaign": [
+				{
+					"utm_source": "twitter",
+					"utm_medium": ["social"],
+					"utm_campaign": ["product_launch"],
+					"utm_term": ["juno"],
+					"utm_content": ["video"]
+				}
+			]
+		}
+	],
+	[
+		{
+			"key": "L52jFtAC_ZKFcwEsIgtY3",
+			"collected_at": {
+				"__bigint__": "1742076129752000000"
+			}
+		},
+		{
+			"title": "Demo",
+			"updated_at": {
+				"__bigint__": "1742076137381687026"
+			},
+			"referrer": ["android-app://com.twitter.android/"],
+			"time_zone": "America/Los_Angeles",
+			"session_id": "DcGnulMQm26Jiu0rdJpVa",
+			"href": "https://demo.com/info/?token=Internet%20Computer&network=ICP",
+			"created_at": {
+				"__bigint__": "1742076137381687026"
+			},
+			"satellite_id": {
+				"__principal__": "jx5yt-yyaaa-aaaal-abzbq-cai"
+			},
+			"device": {
+				"inner_height": 768,
+				"inner_width": 1366
+			},
+			"version": [
+				{
+					"__bigint__": "1"
+				}
+			],
+			"user_agent": [
+				"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/132.0.0.0 Safari/537.36"
+			],
+			"campaign": [
+				{
+					"utm_source": "google",
+					"utm_medium": ["cpc"],
+					"utm_campaign": ["spring_sale"],
+					"utm_term": ["icp hosting"],
+					"utm_content": ["banner_ad_1"]
+				}
+			]
+		}
+	],
+	[
+		{
+			"key": "fuBCI1IxwXK_VILxwz1ul",
+			"collected_at": {
+				"__bigint__": "1742076165618000000"
+			}
+		},
+		{
+			"title": "Demo",
+			"updated_at": {
+				"__bigint__": "1742076168360847727"
+			},
+			"referrer": ["https://demo.com/?msg=Logged%2520out.&level=warn"],
+			"time_zone": "America/Chicago",
+			"session_id": "55pd7Y6GNOLO6lwW8ZtH2",
+			"href": "https://demo.com/",
+			"created_at": {
+				"__bigint__": "1742076168360847727"
+			},
+			"satellite_id": {
+				"__principal__": "jx5yt-yyaaa-aaaal-abzbq-cai"
+			},
+			"device": {
+				"inner_height": 662,
+				"inner_width": 1463
+			},
+			"version": [
+				{
+					"__bigint__": "1"
+				}
+			],
+			"user_agent": [
+				"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/134.0.0.0 Safari/537.36"
+			],
+			"campaign": [
+				{
+					"utm_source": "referral",
+					"utm_medium": ["partner"],
+					"utm_campaign": ["b2b_outreach"],
+					"utm_term": ["affiliate"],
+					"utm_content": ["widget"]
+				}
+			]
+		}
+	],
+	[
+		{
+			"key": "ambMwhBvhtLkqbe8X4ojW",
+			"collected_at": {
+				"__bigint__": "1742076278227000000"
+			}
+		},
+		{
+			"title": "Demo",
+			"updated_at": {
+				"__bigint__": "1742076281058622624"
+			},
+			"referrer": [],
+			"time_zone": "America/Los_Angeles",
+			"session_id": "CIbzikXQUQiqK4_oL_lO8",
+			"href": "https://demo.com/",
+			"created_at": {
+				"__bigint__": "1742076281058622624"
+			},
+			"satellite_id": {
+				"__principal__": "jx5yt-yyaaa-aaaal-abzbq-cai"
+			},
+			"device": {
+				"inner_height": 775,
+				"inner_width": 1512
+			},
+			"version": [
+				{
+					"__bigint__": "1"
+				}
+			],
+			"user_agent": [
+				"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/133.0.0.0 Safari/537.36"
+			],
+			"campaign": [
+				{
+					"utm_source": "google",
+					"utm_medium": ["cpc"],
+					"utm_campaign": ["spring_sale"],
+					"utm_term": ["icp hosting"],
+					"utm_content": ["banner_ad_1"]
+				}
+			]
+		}
+	],
+	[
+		{
+			"key": "RHYgky05xXR-iAX4v_tot",
+			"collected_at": {
+				"__bigint__": "1742076310310000000"
+			}
+		},
+		{
+			"title": "Demo",
+			"updated_at": {
+				"__bigint__": "1742076311864957879"
+			},
+			"referrer": ["https://source.com/HzUcyKgxkY"],
+			"time_zone": "America/Chicago",
+			"session_id": "4wiYEuaoI8o9YniCdnELN",
+			"href": "https://demo.com/",
+			"created_at": {
+				"__bigint__": "1742076311864957879"
+			},
+			"satellite_id": {
+				"__principal__": "jx5yt-yyaaa-aaaal-abzbq-cai"
+			},
+			"device": {
+				"inner_height": 723,
+				"inner_width": 1377
+			},
+			"version": [
+				{
+					"__bigint__": "1"
+				}
+			],
+			"user_agent": [
+				"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/133.0.0.0 Safari/537.36"
+			],
+			"campaign": [
+				{
+					"utm_source": "google",
+					"utm_medium": ["cpc"],
+					"utm_campaign": ["spring_sale"],
+					"utm_term": ["icp hosting"],
+					"utm_content": ["banner_ad_1"]
+				}
+			]
+		}
+	],
+	[
+		{
+			"key": "q8hdNUJ_rwEaeS7OpBN_6",
+			"collected_at": {
+				"__bigint__": "1742076327532000000"
+			}
+		},
+		{
+			"title": "Demo",
+			"updated_at": {
+				"__bigint__": "1742076330368635843"
+			},
+			"referrer": ["https://demo.com/hello/?msg=Logged%2520out.&level=warn"],
+			"time_zone": "America/Los_Angeles",
+			"session_id": "MHJcOdjUYya4CLTQDKUwc",
+			"href": "https://demo.com/hello/?msg=Logged%2520out.&level=warn",
+			"created_at": {
+				"__bigint__": "1742076330368635843"
+			},
+			"satellite_id": {
+				"__principal__": "jx5yt-yyaaa-aaaal-abzbq-cai"
+			},
+			"device": {
+				"inner_height": 917,
+				"inner_width": 1920
+			},
+			"version": [
+				{
+					"__bigint__": "1"
+				}
+			],
+			"user_agent": [
+				"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/134.0.0.0 Safari/537.36"
+			],
+			"campaign": [
+				{
+					"utm_source": "linkedin",
+					"utm_medium": ["social"],
+					"utm_campaign": ["partner_promo"],
+					"utm_term": ["cloud"],
+					"utm_content": ["text_post"]
+				}
+			]
+		}
+	],
+	[
+		{
+			"key": "0feQJ2ULIQe_aCl3shbvZ",
+			"collected_at": {
+				"__bigint__": "1742076339782000000"
+			}
+		},
+		{
+			"title": "Demo",
+			"updated_at": {
+				"__bigint__": "1742076340617870203"
+			},
+			"referrer": ["https://source.com/HzUcyKgxkY"],
+			"time_zone": "America/Chicago",
+			"session_id": "4wiYEuaoI8o9YniCdnELN",
+			"href": "https://demo.com/hello/",
+			"created_at": {
+				"__bigint__": "1742076340617870203"
+			},
+			"satellite_id": {
+				"__principal__": "jx5yt-yyaaa-aaaal-abzbq-cai"
+			},
+			"device": {
+				"inner_height": 723,
+				"inner_width": 1377
+			},
+			"version": [
+				{
+					"__bigint__": "1"
+				}
+			],
+			"user_agent": [
+				"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/133.0.0.0 Safari/537.36"
+			],
+			"campaign": [
+				{
+					"utm_source": "google",
+					"utm_medium": ["cpc"],
+					"utm_campaign": ["spring_sale"],
+					"utm_term": ["icp hosting"],
+					"utm_content": ["banner_ad_1"]
+				}
+			]
+		}
+	],
+	[
+		{
+			"key": "xhMdF1AO2_3xTox_pWBSG",
+			"collected_at": {
+				"__bigint__": "1742076369044000000"
+			}
+		},
+		{
+			"title": "Demo",
+			"updated_at": {
+				"__bigint__": "1742076371059591158"
+			},
+			"referrer": [],
+			"time_zone": "America/Los_Angeles",
+			"session_id": "CIbzikXQUQiqK4_oL_lO8",
+			"href": "https://demo.com/hello/",
+			"created_at": {
+				"__bigint__": "1742076371059591158"
+			},
+			"satellite_id": {
+				"__principal__": "jx5yt-yyaaa-aaaal-abzbq-cai"
+			},
+			"device": {
+				"inner_height": 775,
+				"inner_width": 1512
+			},
+			"version": [
+				{
+					"__bigint__": "1"
+				}
+			],
+			"user_agent": [
+				"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/133.0.0.0 Safari/537.36"
+			],
+			"campaign": [
+				{
+					"utm_source": "google",
+					"utm_medium": ["cpc"],
+					"utm_campaign": ["spring_sale"],
+					"utm_term": ["icp hosting"],
+					"utm_content": ["banner_ad_1"]
+				}
+			]
+		}
+	],
+	[
+		{
+			"key": "N_k_KKxgkKy_M9Y_Ex19J",
+			"collected_at": {
+				"__bigint__": "1742076383563000000"
+			}
+		},
+		{
+			"title": "Demo",
+			"updated_at": {
+				"__bigint__": "1742076389796028554"
+			},
+			"referrer": ["android-app://com.twitter.android/"],
+			"time_zone": "Europe/Berlin",
+			"session_id": "xBVrzn00RxSut_S71wYGG",
+			"href": "https://demo.com/?extid=2-1xzzr6ps2gxp2hyyblr8raf04",
+			"created_at": {
+				"__bigint__": "1742076389796028554"
+			},
+			"satellite_id": {
+				"__principal__": "jx5yt-yyaaa-aaaal-abzbq-cai"
+			},
+			"device": {
+				"inner_height": 780,
+				"inner_width": 411
+			},
+			"version": [
+				{
+					"__bigint__": "1"
+				}
+			],
+			"user_agent": [
+				"Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/134.0.0.0 Mobile Safari/537.36"
+			],
+			"campaign": [
+				{
+					"utm_source": "linkedin",
+					"utm_medium": ["social"],
+					"utm_campaign": ["product_launch"],
+					"utm_term": ["juno"],
+					"utm_content": ["video"]
+				}
+			]
+		}
+	],
+	[
+		{
+			"key": "F-QnOyfsJnWTn_ACfYpJ0",
+			"collected_at": {
+				"__bigint__": "1742076587510000000"
+			}
+		},
+		{
+			"title": "Demo",
+			"updated_at": {
+				"__bigint__": "1742076591720862365"
+			},
+			"referrer": [],
+			"time_zone": "America/Chicago",
+			"session_id": "C1CFcWvC-9_cIFfIH133-",
+			"href": "https://demo.com/",
+			"created_at": {
+				"__bigint__": "1742076591720862365"
+			},
+			"satellite_id": {
+				"__principal__": "jx5yt-yyaaa-aaaal-abzbq-cai"
+			},
+			"device": {
+				"inner_height": 1014,
+				"inner_width": 1920
+			},
+			"version": [
+				{
+					"__bigint__": "1"
+				}
+			],
+			"user_agent": [
+				"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/134.0.0.0 Safari/537.36"
+			],
+			"campaign": [
+				{
+					"utm_source": "twitter",
+					"utm_medium": ["social"],
+					"utm_campaign": ["product_launch"],
+					"utm_term": ["juno"],
+					"utm_content": ["video"]
+				}
+			]
+		}
+	],
+	[
+		{
+			"key": "A_Ai8Yss-Ct7JTAvfh_BS",
+			"collected_at": {
+				"__bigint__": "1742076599448000000"
+			}
+		},
+		{
+			"title": "Demo",
+			"updated_at": {
+				"__bigint__": "1742076600348153459"
+			},
+			"referrer": ["https://demo.com/?msg=Logged%2520out.&level=warn"],
+			"time_zone": "America/Los_Angeles",
+			"session_id": "DU41zjt95xv3fr4DCtDFT",
+			"href": "https://demo.com/?msg=Logged%2520out.&level=warn",
+			"created_at": {
+				"__bigint__": "1742076600348153459"
+			},
+			"satellite_id": {
+				"__principal__": "jx5yt-yyaaa-aaaal-abzbq-cai"
+			},
+			"device": {
+				"inner_height": 958,
+				"inner_width": 1728
+			},
+			"version": [
+				{
+					"__bigint__": "1"
+				}
+			],
+			"user_agent": [
+				"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/133.0.0.0 Safari/537.36"
+			],
+			"campaign": [
+				{
+					"utm_source": "linkedin",
+					"utm_medium": ["social"],
+					"utm_campaign": ["b2b_outreach"],
+					"utm_term": ["cloud"],
+					"utm_content": ["text_post"]
+				}
+			]
+		}
+	]
+]

@@ -1,9 +1,11 @@
 pub mod state {
-    use crate::auth::types::state::AuthenticationHeapState;
+    use crate::assets::storage::types::state::{AssetsStable, ContentChunksStable};
     use crate::db::types::state::{DbHeapState, DbRuntimeState, DbStable};
     use crate::memory::internal::init_stable_state;
-    use crate::storage::types::state::{AssetsStable, ContentChunksStable};
     use candid::CandidType;
+    use junobuild_auth::state::types::state::AuthenticationHeapState;
+    use junobuild_cdn::proposals::ProposalsStable;
+    use junobuild_cdn::storage::{ProposalAssetsStable, ProposalContentChunksStable};
     use junobuild_shared::types::state::Controllers;
     use junobuild_storage::types::state::StorageHeapState;
     use rand::rngs::StdRng;
@@ -27,6 +29,9 @@ pub mod state {
         pub db: DbStable,
         pub assets: AssetsStable,
         pub content_chunks: ContentChunksStable,
+        pub proposals_assets: ProposalAssetsStable,
+        pub proposals_content_chunks: ProposalContentChunksStable,
+        pub proposals: ProposalsStable,
     }
 
     #[derive(Default, CandidType, Serialize, Deserialize, Clone)]
@@ -51,11 +56,17 @@ pub mod state {
 }
 
 pub mod interface {
-    use crate::auth::types::config::AuthenticationConfig;
     use crate::db::types::config::DbConfig;
+    use crate::Doc;
     use candid::CandidType;
+    use junobuild_auth::delegation::types::{
+        GetDelegationError, OpenIdGetDelegationArgs, OpenIdPrepareDelegationArgs,
+        PrepareDelegationError, PreparedDelegation, SignedDelegation,
+    };
+    use junobuild_auth::state::types::config::AuthenticationConfig;
+    use junobuild_cdn::proposals::ProposalId;
     use junobuild_storage::types::config::StorageConfig;
-    use serde::Deserialize;
+    use serde::{Deserialize, Serialize};
 
     #[derive(CandidType, Deserialize)]
     pub struct Config {
@@ -63,16 +74,67 @@ pub mod interface {
         pub db: Option<DbConfig>,
         pub authentication: Option<AuthenticationConfig>,
     }
+
+    #[derive(CandidType, Serialize, Deserialize, Clone)]
+    pub struct DeleteProposalAssets {
+        pub proposal_ids: Vec<ProposalId>,
+    }
+
+    #[derive(CandidType, Serialize, Deserialize)]
+    pub enum AuthenticationArgs {
+        OpenId(OpenIdPrepareDelegationArgs),
+    }
+
+    pub type AuthenticationResult = Result<Authentication, AuthenticationError>;
+
+    #[derive(CandidType, Serialize, Deserialize)]
+    pub struct Authentication {
+        pub delegation: PreparedDelegation,
+        pub doc: Doc,
+    }
+
+    #[derive(CandidType, Serialize, Deserialize)]
+    pub enum AuthenticationError {
+        PrepareDelegation(PrepareDelegationError),
+        RegisterUser(String),
+    }
+
+    #[derive(CandidType, Serialize, Deserialize)]
+    pub enum GetDelegationArgs {
+        OpenId(OpenIdGetDelegationArgs),
+    }
+
+    // We need custom types for Result to avoid
+    // clashes with didc when developers
+    // include_satellite and use Result as well.
+    #[derive(CandidType, Serialize, Deserialize)]
+    pub enum AuthenticateResultResponse {
+        Ok(Authentication),
+        Err(AuthenticationError),
+    }
+
+    #[derive(CandidType, Serialize, Deserialize)]
+    pub enum GetDelegationResultResponse {
+        Ok(SignedDelegation),
+        Err(GetDelegationError),
+    }
 }
 
 pub mod store {
+    use junobuild_auth::state::types::config::AuthenticationConfig;
     use junobuild_collections::types::core::CollectionKey;
+    use junobuild_collections::types::rules::Rule;
     use junobuild_shared::types::state::{Controllers, UserId};
 
     pub struct StoreContext<'a> {
         pub caller: UserId,
         pub controllers: &'a Controllers,
         pub collection: &'a CollectionKey,
+    }
+
+    pub struct AssertContext<'a> {
+        pub rule: &'a Rule,
+        pub auth_config: &'a Option<AuthenticationConfig>,
     }
 }
 

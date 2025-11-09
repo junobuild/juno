@@ -99,12 +99,16 @@ const exchangeRateICPToUsd = async (): Promise<ExchangePrice | undefined> => {
 		metrics: { price, updated_at, market_cap, volume_24h, price_change_24h }
 	} = icp;
 
+	if (isNullish(price)) {
+		return undefined;
+	}
+
 	return {
 		usd: Number(price),
-		usdMarketCap: Number(market_cap),
-		usdVolume24h: Number(volume_24h),
-		usdChange24h: Number(price_change_24h),
-		updatedAt: new Date(updated_at).getTime()
+		...(nonNullish(market_cap) && { usdMarketCap: Number(market_cap) }),
+		...(nonNullish(volume_24h) && { usdVolume24h: Number(volume_24h) }),
+		...(nonNullish(price_change_24h) && { usdChange24h: Number(price_change_24h) }),
+		updatedAt: nonNullish(updated_at) ? new Date(updated_at).getTime() : new Date().getTime()
 	};
 };
 

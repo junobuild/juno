@@ -5,6 +5,7 @@
 interface I18nCore {
 	close: string;
 	back: string;
+	dismiss: string;
 	menu: string;
 	copy: string;
 	copied: string;
@@ -17,7 +18,8 @@ interface I18nCore {
 	light_on: string;
 	submit: string;
 	home: string;
-	help: string;
+	docs: string;
+	changelog: string;
 	controllers: string;
 	settings: string;
 	setup: string;
@@ -33,6 +35,7 @@ interface I18nCore {
 	theme: string;
 	user_menu: string;
 	version: string;
+	dependencies: string;
 	delete: string;
 	skip: string;
 	done: string;
@@ -85,6 +88,28 @@ interface I18nCore {
 	preparing: string;
 	refreshing_interface: string;
 	usage: string;
+	creating_snapshot: string;
+	created: string;
+	updated: string;
+	production: string;
+	staging: string;
+	test: string;
+	unspecified: string;
+	an_hour: string;
+	two_hours: string;
+	four_hours: string;
+	eight_hours: string;
+	half_day: string;
+	a_day: string;
+	a_week: string;
+	two_weeks: string;
+	a_month: string;
+	three_months: string;
+	six_months: string;
+	a_year: string;
+	two_years: string;
+	five_years: string;
+	custom: string;
 }
 
 interface I18nCanisters {
@@ -110,6 +135,10 @@ interface I18nCanisters {
 	upgrade_breaking_change: string;
 	more_upgrade: string;
 	upgrade_note: string;
+	upgrade_confirm_warning_revert: string;
+	upgrade_confirm_how_to: string;
+	rust_upgrade_guide: string;
+	typescript_upgrade_guide: string;
 	upgrade_confirm: string;
 	converted_cycles: string;
 	top_up_info: string;
@@ -161,6 +190,9 @@ interface I18nCanisters {
 	detach_success: string;
 	delete_success: string;
 	cycles: string;
+	lifecycle: string;
+	available_cycles: string;
+	cycles_needed: string;
 	transfer_cycles: string;
 	review_and_confirm_transfer_cycles: string;
 	transfer_cycles_action: string;
@@ -176,6 +208,11 @@ interface I18nCanisters {
 	on_heap: string;
 	on_stable: string;
 	on_snapshot: string;
+	in_global: string;
+	of_code: string;
+	in_chunks: string;
+	of_custom_sections: string;
+	in_history: string;
 	warning_mission_control_low_cycles: string;
 	warning_satellite_low_cycles: string;
 	warning_orbiter_low_cycles: string;
@@ -189,6 +226,7 @@ interface I18nCanisters {
 	in_percent: string;
 	in_t_cycles: string;
 	no_update_required: string;
+	not_enough_cycles_to_update_freezing_threshold: string;
 	controllers: string;
 	public: string;
 	subnet: string;
@@ -207,15 +245,23 @@ interface I18nCanisters {
 	no_snapshot: string;
 	snapshot_created: string;
 	snapshot_restored: string;
-	creating_snapshot: string;
 	restoring_snapshot: string;
 	snapshot_preparing: string;
 	snapshot_stopping: string;
-	upgrade_snapshot: string;
 	edit_snapshot: string;
 	delete_snapshot: string;
 	delete_snapshot_confirm: string;
 	loading_segments: string;
+	health_check: string;
+	grace_period: string;
+	current_balance: string;
+	safety: string;
+	safe: string;
+	low: string;
+	risk: string;
+	of_cycles_needed: string;
+	only: string;
+	reload_initiated: string;
 }
 
 interface I18nSign_in {
@@ -230,10 +276,15 @@ interface I18nSign_in {
 	quote_9: string;
 	quote_10: string;
 	internet_identity: string;
-	juno_defaults_to: string;
-	for_authentication: string;
-	alternatively: string;
-	if_neither_works: string;
+	internet_identity_short: string;
+	google: string;
+}
+
+interface I18nSign_in_openid {
+	in_progress: string;
+	success: string;
+	already_signed_in: string;
+	avatar: string;
 }
 
 interface I18nSatellites {
@@ -249,8 +300,14 @@ interface I18nSatellites {
 	description: string;
 	name: string;
 	satellite_name: string;
+	what_are_you_building: string;
+	website: string;
+	application: string;
+	environment: string;
+	tags: string;
+	tags_placeholder: string;
 	enter_name: string;
-	edit_name: string;
+	edit_details: string;
 	create_satellite_price: string;
 	loading_satellites: string;
 	overview: string;
@@ -322,12 +379,30 @@ interface I18nAuthentication {
 	methods: string;
 	not_signed_in: string;
 	session_expired: string;
+	refreshed_authentication: string;
 	main_domain: string;
 	not_configured: string;
 	edit_configuration: string;
+	edit_provider: string;
+	edit_to_enable_provider: string;
 	main_domain_warn: string;
 	external_alternative_origins: string;
 	external_alternative_origins_placeholder: string;
+	allowed_callers: string;
+	allowed_callers_placeholder: string;
+	no_restrictions: string;
+	one_identity: string;
+	identities: string;
+	client_id: string;
+	client_id_placeholder: string;
+	client_id_warn: string;
+	session_duration: string;
+	allowed_targets: string;
+	allowed_targets_placeholder: string;
+	target_your_satellite: string;
+	target_modules: string;
+	in_nanoseconds: string;
+	loading_config: string;
 }
 
 interface I18nDatastore {
@@ -364,13 +439,19 @@ interface I18nAnalytics {
 	tracked_events: string;
 	count: string;
 	referrers: string;
+	time_zones: string;
+	utm_sources: string;
+	utm_campaigns: string;
 	pages: string;
 	orbiter: string;
 	devices: string;
 	mobile: string;
+	tablet: string;
+	laptop: string;
 	desktop: string;
 	others: string;
 	browsers: string;
+	operating_systems: string;
 	attach: string;
 	attach_id: string;
 	score: string;
@@ -390,6 +471,12 @@ interface I18nAnalytics {
 	page_views: string;
 	configuration_description: string;
 	tracked_metrics: string;
+	warn_no_from: string;
+	analytics_updated: string;
+	adjust_periodicity: string;
+	periodicity: string;
+	why_periodicity: string;
+	periodicity_impact: string;
 }
 
 interface I18nHosting {
@@ -414,6 +501,8 @@ interface I18nHosting {
 	custom_domain: string;
 	default_domain: string;
 	domain: string;
+	domains: string;
+	hosting_memory: string;
 	status: string;
 	bn_id: string;
 	info: string;
@@ -425,9 +514,11 @@ interface I18nHosting {
 	failed: string;
 	skip_delete_domain: string;
 	files_deployed: string;
-	set_auth_domain_title: string;
 	set_auth_domain_question: string;
 	domain_name: string;
+	default_url: string;
+	switch_memory: string;
+	switch_memory_confirm: string;
 }
 
 interface I18nFunctions {
@@ -439,6 +530,7 @@ interface I18nFunctions {
 	debug: string;
 	warning: string;
 	error: string;
+	unknown: string;
 	message: string;
 	empty: string;
 	expand: string;
@@ -456,26 +548,27 @@ interface I18nCli {
 	selected: string;
 	module: string;
 	terminal: string;
-	profile_info: string;
 	segments: string;
-	profile_placeholder: string;
 	confirm: string;
 	authorize: string;
 }
 
 interface I18nErrors {
 	no_identity: string;
+	stack_trace: string;
 	initializing_mission_control: string;
 	sign_in: string;
+	sign_in_openid: string;
 	mission_control_sign_out: string;
 	no_mission_control: string;
 	cli_missing_params: string;
 	cli_missing_selection: string;
 	cli_unexpected_error: string;
 	satellite_name_missing: string;
+	satellite_kind: string;
 	satellite_unexpected_error: string;
 	satellite_no_found: string;
-	satellite_name_update: string;
+	satellite_metadata_update: string;
 	satellite_missing_name: string;
 	satellites_not_loaded: string;
 	canister_stop: string;
@@ -490,6 +583,7 @@ interface I18nErrors {
 	load_users: string;
 	load_settings: string;
 	load_user_data: string;
+	load_auth_config_error: string;
 	hosting_missing_domain_name: string;
 	hosting_invalid_url: string;
 	hosting_missing_dns_configuration: string;
@@ -498,6 +592,7 @@ interface I18nErrors {
 	hosting_count_assets: string;
 	hosting_no_custom_domain: string;
 	hosting_delete_custom_domain: string;
+	hosting_switch_memory: string;
 	controllers_listing: string;
 	controllers_no_selection: string;
 	controllers_delete: string;
@@ -521,6 +616,7 @@ interface I18nErrors {
 	top_up_error: string;
 	analytics_load_error: string;
 	analytics_tracked_events_export: string;
+	analytics_page_views_export: string;
 	satellites_loading: string;
 	orbiters_loading: string;
 	orbiter_configuration_missing: string;
@@ -542,8 +638,11 @@ interface I18nErrors {
 	no_file_selected_for_upload: string;
 	upload_error: string;
 	no_collection_for_upload: string;
+	full_path_start_slash: string;
+	full_path_end_slash: string;
 	invalid_email: string;
 	invalid_destination: string;
+	invalid_metadata: string;
 	empty_amount: string;
 	invalid_amount: string;
 	empty_balance: string;
@@ -567,6 +666,7 @@ interface I18nErrors {
 	auth_rate_config_update: string;
 	auth_domain_config: string;
 	auth_external_alternative_origins: string;
+	auth_invalid_google_client_id: string;
 	mission_control_not_loaded: string;
 	mission_control_settings_not_loaded: string;
 	mission_control_user_data_not_loaded: string;
@@ -580,12 +680,27 @@ interface I18nErrors {
 	user_usage_not_loaded: string;
 	user_ban: string;
 	user_unban: string;
+	satellite_version_not_found: string;
+	load_version: string;
+	load_version_timeout: string;
+	load_proposals: string;
+	apply_proposal_error: string;
+	reject_proposal_error: string;
+	find_wasm_asset_for_proposal_error: string;
+	find_wasm_asset_for_proposal_invalid_type_error: string;
+	find_wasm_asset_for_proposal_incomplete_version_error: string;
+	find_wasm_asset_for_proposal_missing_change_hash: string;
+	find_wasm_asset_for_proposal_proposal_not_found: string;
+	find_wasm_asset_for_proposal_not_executed: string;
+	find_wasm_asset_for_proposal_asset_not_found: string;
+	missing_juno_package: string;
+	invalid_juno_package: string;
+	missing_satellite_version: string;
+	invalid_version_cannot_downgrade: string;
 }
 
 interface I18nDocument {
 	owner: string;
-	created: string;
-	updated: string;
 	version: string;
 	data: string;
 	no_match: string;
@@ -610,14 +725,13 @@ interface I18nAsset {
 	owner: string;
 	token: string;
 	headers: string;
-	created: string;
-	updated: string;
 	version: string;
 	no_match: string;
 	delete: string;
 	delete_all: string;
 	description: string;
 	full_path: string;
+	full_path_description: string;
 	edit: string;
 	upload_file: string;
 	replace_file: string;
@@ -645,6 +759,7 @@ interface I18nControllers {
 	more_delete: string;
 	admin: string;
 	write: string;
+	submit: string;
 	add_a_controller: string;
 	add_intro: string;
 	generate: string;
@@ -678,7 +793,7 @@ interface I18nCollections {
 	public: string;
 	private: string;
 	managed: string;
-	controllers: string;
+	restricted: string;
 	empty: string;
 	empty_private: string;
 	added: string;
@@ -692,6 +807,8 @@ interface I18nCollections {
 	immutable: string;
 	clear_collection: string;
 	options: string;
+	show_system_collections: string;
+	hide_system_collections: string;
 }
 
 interface I18nSort {
@@ -715,10 +832,12 @@ interface I18nFilter {
 
 interface I18nUsers {
 	user_details: string;
+	user: string;
+	email: string;
 	identifier: string;
 	provider: string;
-	created: string;
-	updated: string;
+	authenticator: string;
+	authenticator_logo: string;
 	empty: string;
 	view_details: string;
 	persistence: string;
@@ -736,6 +855,7 @@ interface I18nUsers {
 	are_you_sure_unban: string;
 	ban_explanation: string;
 	unban_explanation: string;
+	identifier_placeholder: string;
 }
 
 interface I18nMonitoring {
@@ -788,6 +908,7 @@ interface I18nMonitoring {
 	auto_refill: string;
 	auto_refill_disabled: string;
 	auto_refill_strategy: string;
+	auto_refill_strategy_with_cycles_needed: string;
 	email_notifications: string;
 	receive_email: string;
 	notifications: string;
@@ -796,11 +917,11 @@ interface I18nMonitoring {
 	choose_method: string;
 	basic: string;
 	basic_description: string;
-	custom: string;
 	custom_description: string;
 	default: string;
 	default_description: string;
 	warn_monitoring_enabled: string;
+	runtime: string;
 }
 
 interface I18nPreferences {
@@ -809,19 +930,89 @@ interface I18nPreferences {
 	session_expires_in: string;
 }
 
-interface I18nExamples {
-	tutorials: string;
-	tutorial_framework_description: string;
-	tutorial_serverless_functions: string;
-	tutorial_github_description: string;
-	tutorial_docker_description: string;
+interface I18nEmulator {
+	get_icp: string;
+	emulator: string;
+	setting_emulator_controller: string;
+	error_never_execute: string;
+	error_get_identities: string;
+	error_no_main_identity: string;
 }
 
-interface I18nResources {
-	resources: string;
-	resources_description: string;
-	changelog: string;
-	changelog_description: string;
+interface I18nUpgrade {
+	title: string;
+	modules: string;
+	release: string;
+	releases: string;
+	source: string;
+	current: string;
+	dev: string;
+	changes: string;
+	no_upgrades: string;
+}
+
+interface I18nChanges {
+	select_a_satellite: string;
+	no_changes: string;
+	id: string;
+	hash: string;
+	type: string;
+	assets_upgrade: string;
+	segments_deployment: string;
+	apply_change: string;
+	snapshot_before_apply: string;
+	confirm_assets_upgrade: string;
+	confirm_segments_deployment: string;
+	change_preparing: string;
+	applying_update: string;
+	clearing_and_applying_update: string;
+	clearing_staged_assets: string;
+	clear_existing_assets: string;
+	clear_after_apply: string;
+	assets_upgrade_applied: string;
+	segments_deployment_applied: string;
+	reject: string;
+	rejecting: string;
+	reject_change: string;
+	reject_assets_upgrade: string;
+	reject_segments_deployment: string;
+	assets_upgrade_discarded: string;
+	segments_deployment_discarded: string;
+	reject_preparing: string;
+	upgrade_now: string;
+	upgrade_cdn_source: string;
+}
+
+interface I18nCdn {
+	title: string;
+	empty: string;
+}
+
+interface I18nNotifications {
+	title: string;
+	alerts: string;
+	inbox: string;
+	no_alerts: string;
+	no_notifications: string;
+	low_cycles: string;
+	heap: string;
+	upgrade_available: string;
+	short_freezing_threshold: string;
+	learn_more: string;
+}
+
+interface I18nNot_found {
+	title: string;
+	text: string;
+	go_launchpad_text: string;
+	go_home_text: string;
+	go_launchpad: string;
+	go_home: string;
+}
+
+interface I18nSpotlight {
+	search_title: string;
+	search_placeholder: string;
 }
 
 interface I18n {
@@ -829,6 +1020,7 @@ interface I18n {
 	core: I18nCore;
 	canisters: I18nCanisters;
 	sign_in: I18nSign_in;
+	sign_in_openid: I18nSign_in_openid;
 	satellites: I18nSatellites;
 	mission_control: I18nMission_control;
 	wallet: I18nWallet;
@@ -850,6 +1042,11 @@ interface I18n {
 	users: I18nUsers;
 	monitoring: I18nMonitoring;
 	preferences: I18nPreferences;
-	examples: I18nExamples;
-	resources: I18nResources;
+	emulator: I18nEmulator;
+	upgrade: I18nUpgrade;
+	changes: I18nChanges;
+	cdn: I18nCdn;
+	notifications: I18nNotifications;
+	not_found: I18nNot_found;
+	spotlight: I18nSpotlight;
 }

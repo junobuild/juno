@@ -12,9 +12,10 @@
 	interface Props {
 		balance: bigint | undefined;
 		amount: string | undefined;
+		fee?: bigint;
 	}
 
-	let { amount = $bindable(), balance }: Props = $props();
+	let { amount = $bindable(), balance, fee }: Props = $props();
 
 	let token: TokenAmountV2 | undefined = $derived(amountToICPToken(amount));
 
@@ -45,15 +46,15 @@
 
 		<Input
 			name="amount"
-			inputType="currency"
-			required
-			bind:value={amount}
-			spellcheck={false}
-			placeholder={$i18n.wallet.amount_placeholder}
 			footer={withUsd ? footer : undefined}
+			inputType="currency"
+			placeholder={$i18n.wallet.amount_placeholder}
+			required
+			spellcheck={false}
+			bind:value={amount}
 		>
 			{#snippet end()}
-				<SendTokensMax {balance} onmax={(value) => (amount = value)} />
+				<SendTokensMax {balance} {fee} onmax={(value) => (amount = value)} />
 			{/snippet}
 		</Input>
 	</Value>

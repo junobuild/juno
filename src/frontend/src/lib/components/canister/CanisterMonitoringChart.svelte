@@ -20,23 +20,19 @@
 			{/snippet}
 
 			<div class="chart-container">
-				<Chart {chartsData} />
+				<Chart {chartsData} tickSpacingInDays={chartsData.length > 13 ? 7 : 3} />
 			</div>
 		</Value>
 	</div>
 {/if}
 
 <style lang="scss">
-	@use '../../styles/mixins/shadow';
-
 	.chart-container {
 		width: 100%;
 		height: 258px;
 		fill: var(--value-color);
 
 		margin: var(--padding-0_5x) 0 var(--padding-4x);
-		padding: var(--padding-0_5x) var(--padding-2x);
-
-		@include shadow.strong-card;
+		padding: 0 0 var(--padding-2x);
 	}
 </style>

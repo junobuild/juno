@@ -1,5 +1,5 @@
 import type { CustomDomainDns } from '$lib/types/custom-domain';
-import type { Principal } from '@dfinity/principal';
+import type { Principal } from '@icp-sdk/core/principal';
 
 /**
  * TXT: _canister-id(.subdomain) -> canisterId.to.Text()

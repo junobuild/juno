@@ -1,7 +1,8 @@
-import { DEV } from '$lib/constants/app.constants';
+import { LOCAL_REPLICA_HOST } from '$lib/constants/app.constants';
+import { isDev } from '$lib/env/app.env';
 import type { Option } from '$lib/types/utils';
-import { HttpAgent, type Identity } from '@dfinity/agent';
 import { isNullish } from '@dfinity/utils';
+import { HttpAgent, type Identity } from '@icp-sdk/core/agent';
 
 export interface GetAgentParams {
 	identity: Identity;
@@ -32,7 +33,7 @@ export const getAgent = async ({ identity }: GetAgentParams): Promise<HttpAgent>
 };
 
 const createAgent = async (params: GetAgentParams): Promise<HttpAgent> => {
-	if (DEV) {
+	if (isDev()) {
 		return await getLocalAgent(params);
 	}
 
@@ -44,15 +45,13 @@ const getMainnetAgent = async (params: GetAgentParams): Promise<HttpAgent> => {
 	return await HttpAgent.create({ ...params, host, retryTimes: DEFAULT_RETRY_TIMES });
 };
 
-const getLocalAgent = async (params: GetAgentParams): Promise<HttpAgent> => {
-	const host = 'http://localhost:5987/';
-	return await HttpAgent.create({
+const getLocalAgent = async (params: GetAgentParams): Promise<HttpAgent> =>
+	await HttpAgent.create({
 		...params,
-		host,
+		host: LOCAL_REPLICA_HOST,
 		shouldFetchRootKey: true,
 		retryTimes: DEFAULT_RETRY_TIMES
 	});
-};
 
 // Unused because currently we do a window.location.reload after logout
 export const clearAgents = () => (agents = null);

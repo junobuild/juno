@@ -1,6 +1,6 @@
 <script lang="ts">
-	import { Principal } from '@dfinity/principal';
 	import { nonNullish } from '@dfinity/utils';
+	import { Principal } from '@icp-sdk/core/principal';
 	import CanistersPicker from '$lib/components/canister/CanistersPicker.svelte';
 	import GridArrow from '$lib/components/ui/GridArrow.svelte';
 	import Html from '$lib/components/ui/Html.svelte';
@@ -91,9 +91,9 @@
 				<Input
 					name="cycles"
 					inputType="icp"
+					placeholder={$i18n.canisters.amount_cycles}
 					required
 					bind:value={tCycles}
-					placeholder={$i18n.canisters.amount_cycles}
 				>
 					{#snippet footer()}
 						<span class="remaining-cycles">
@@ -133,7 +133,7 @@
 		</div>
 	</div>
 
-	<button type="submit" class="submit" disabled={$isBusy || !validConfirm}>
+	<button class="submit" disabled={$isBusy || !validConfirm} type="submit">
 		{$i18n.core.submit}
 	</button>
 </form>

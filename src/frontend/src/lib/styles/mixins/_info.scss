@@ -1,15 +1,32 @@
 @use './shadow';
 
-@mixin warning {
+@mixin alert {
 	display: flex;
 	align-items: center;
 	gap: var(--padding-2x);
 
-	background: var(--color-warning);
-	color: var(--color-warning-contrast);
 	padding: var(--padding-2x);
 	margin: var(--warning-margin, 0 0 var(--padding-4x));
 	@include shadow.shadow;
+}
+
+@mixin info {
+	background: var(--color-tertiary);
+	color: var(--color-tertiary-contrast);
+
+	:global(a:hover),
+	:global(a:active) {
+		color: var(--color-secondary);
+	}
+
+	@include alert;
+}
+
+@mixin warning {
+	background: var(--color-warning);
+	color: var(--color-warning-contrast);
+
+	@include alert;
 }
 
 @mixin warning-button {

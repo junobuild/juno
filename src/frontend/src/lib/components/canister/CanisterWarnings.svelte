@@ -1,5 +1,5 @@
 <script lang="ts">
-	import type { Principal } from '@dfinity/principal';
+	import type { Principal } from '@icp-sdk/core/principal';
 	import type { Snippet } from 'svelte';
 	import CanisterSyncData from '$lib/components/canister/CanisterSyncData.svelte';
 	import Warning from '$lib/components/ui/Warning.svelte';
@@ -21,13 +21,13 @@
 
 	// Disabled for now, a bit too much in your face given that wasm memory cannot be shrink. We can always activate this warning if necessary, therefore I don't remove the code.
 	// heapWarning = data?.warning?.heap === true ?? false;
-	let heapWarning = false;
+	const heapWarning = false;
 </script>
 
 <CanisterSyncData {canisterId} bind:canister />
 
 {#if cyclesWarning}
-	<div use:onIntersection onjunoIntersecting={onLayoutTitleIntersection}>
+	<div onjunoIntersecting={onLayoutTitleIntersection} use:onIntersection>
 		<Warning>
 			{@render cycles?.()}
 		</Warning>
@@ -35,7 +35,7 @@
 {/if}
 
 {#if heapWarning}
-	<div use:onIntersection onjunoIntersecting={onLayoutTitleIntersection}>
+	<div onjunoIntersecting={onLayoutTitleIntersection} use:onIntersection>
 		<Warning>
 			{@render heap?.()}
 		</Warning>

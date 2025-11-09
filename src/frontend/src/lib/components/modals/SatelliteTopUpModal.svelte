@@ -1,5 +1,5 @@
 <script lang="ts">
-	import type { AccountIdentifier } from '@dfinity/ledger-icp';
+	import type { AccountIdentifier } from '@icp-sdk/canisters/ledger/icp';
 	import IconSatellite from '$lib/components/icons/IconSatellite.svelte';
 	import CanisterTopUpModal from '$lib/components/modals/CanisterTopUpModal.svelte';
 	import Html from '$lib/components/ui/Html.svelte';
@@ -24,14 +24,14 @@
 </script>
 
 <CanisterTopUpModal
+	{accountIdentifier}
+	balance={$balanceOrZero}
+	{onclose}
 	segment={{
 		segment: 'satellite',
 		canisterId: satellite.satellite_id.toText(),
 		label: satelliteName(satellite)
 	}}
-	balance={$balanceOrZero}
-	{accountIdentifier}
-	{onclose}
 >
 	{#snippet intro()}
 		<h2>

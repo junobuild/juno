@@ -1,7 +1,7 @@
 use crate::types::rules::Permission;
 use candid::Principal;
-use junobuild_shared::controllers::is_controller;
-use junobuild_shared::types::state::Controllers;
+use junobuild_shared::controllers::controller_can_write;
+use junobuild_shared::types::state::{Controllers, UserId};
 use junobuild_shared::utils::{principal_not_anonymous, principal_not_anonymous_and_equal};
 
 pub fn assert_permission(
@@ -10,11 +10,23 @@ pub fn assert_permission(
     caller: Principal,
     controllers: &Controllers,
 ) -> bool {
+    assert_permission_with(permission, owner, caller, controllers, controller_can_write)
+}
+
+pub fn assert_permission_with(
+    permission: &Permission,
+    owner: Principal,
+    caller: Principal,
+    controllers: &Controllers,
+    is_allowed_controller: fn(UserId, &Controllers) -> bool,
+) -> bool {
     match permission {
         Permission::Public => true,
         Permission::Private => assert_caller(caller, owner),
-        Permission::Managed => assert_caller(caller, owner) || is_controller(caller, controllers),
-        Permission::Controllers => is_controller(caller, controllers),
+        Permission::Managed => {
+            assert_caller(caller, owner) || controller_can_write(caller, controllers)
+        }
+        Permission::Controllers => is_allowed_controller(caller, controllers),
     }
 }
 
@@ -25,11 +37,20 @@ pub fn assert_create_permission(
     caller: Principal,
     controllers: &Controllers,
 ) -> bool {
+    assert_create_permission_with(permission, caller, controllers, controller_can_write)
+}
+
+pub fn assert_create_permission_with(
+    permission: &Permission,
+    caller: Principal,
+    controllers: &Controllers,
+    is_allowed_controller: fn(UserId, &Controllers) -> bool,
+) -> bool {
     match permission {
         Permission::Public => true,
         Permission::Private => assert_not_anonymous(caller),
         Permission::Managed => assert_not_anonymous(caller),
-        Permission::Controllers => is_controller(caller, controllers),
+        Permission::Controllers => is_allowed_controller(caller, controllers),
     }
 }
 

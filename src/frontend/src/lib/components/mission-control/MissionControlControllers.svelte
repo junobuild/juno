@@ -1,7 +1,7 @@
 <script lang="ts">
-	import type { Principal } from '@dfinity/principal';
 	import { nonNullish } from '@dfinity/utils';
-	import type { Controller } from '$declarations/mission_control/mission_control.did';
+	import type { Principal } from '@icp-sdk/core/principal';
+	import type { MissionControlDid } from '$declarations';
 	import {
 		deleteMissionControlController,
 		listMissionControlControllers,
@@ -19,7 +19,7 @@
 
 	let { missionControlId }: Props = $props();
 
-	const list = (): Promise<[Principal, Controller][]> =>
+	const list = (): Promise<[Principal, MissionControlDid.Controller][]> =>
 		listMissionControlControllers({ missionControlId, identity: $authStore.identity });
 
 	const remove = (params: {
@@ -33,19 +33,32 @@
 		} & SetControllerParams
 	): Promise<void> => setMissionControlController({ ...params, identity: $authStore.identity });
 
-	let extraControllers: [Principal, Controller | undefined][] = [
-		[missionControlId, undefined],
+	const pseudoAdminController: MissionControlDid.Controller = {
+		created_at: 0n,
+		updated_at: 0n,
+		expires_at: [],
+		metadata: [],
+		scope: { Admin: null }
+	};
+
+	let extraControllers = $derived<[Principal, MissionControlDid.Controller][]>([
+		[missionControlId, pseudoAdminController],
 		...(nonNullish($authStore.identity)
-			? [[$authStore.identity.getPrincipal(), undefined] as [Principal, Controller | undefined]]
+			? [
+					[$authStore.identity.getPrincipal(), pseudoAdminController] as [
+						Principal,
+						MissionControlDid.Controller
+					]
+				]
 			: [])
-	];
+	]);
 </script>
 
 <Controllers
-	{list}
-	{remove}
 	{add}
 	{extraControllers}
+	{list}
+	{remove}
 	segment={{
 		label: $i18n.mission_control.title,
 		canisterId: missionControlId.toText(),

@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { getContext } from 'svelte';
-	import type { CollectionType } from '$declarations/satellite/satellite.did';
+	import type { SatelliteDid } from '$declarations';
 	import CollectionEdit from '$lib/components/collections/CollectionEdit.svelte';
 	import CollectionSelection from '$lib/components/collections/CollectionSelection.svelte';
 	import CollectionsNav from '$lib/components/collections/CollectionsNav.svelte';
@@ -10,7 +10,7 @@
 	import { RULES_CONTEXT_KEY, type RulesContext } from '$lib/types/rules.context';
 
 	interface Props {
-		type: CollectionType;
+		type: SatelliteDid.CollectionType;
 	}
 
 	let { type }: Props = $props();
@@ -38,13 +38,13 @@
 <section>
 	<CollectionsNav onclose={closeEdit} onedit={editCollectionRule} />
 
-	<CollectionSelection start onedit={editCollectionRule} onstart={startCollectionRule} />
+	<CollectionSelection onedit={editCollectionRule} onstart={startCollectionRule} start />
 
 	<p class="title rules-title">{$i18n.collections.details}</p>
 
 	<div class="rules">
 		{#if editCollection}
-			<CollectionEdit {type} oncancel={closeEdit} onsuccess={closeEdit} />
+			<CollectionEdit oncancel={closeEdit} onsuccess={closeEdit} {type} />
 		{:else}
 			<button class="text action start" onclick={startCollectionRule}
 				><IconNew size="16px" /> <span>{$i18n.collections.start_collection}</span></button

@@ -83,14 +83,6 @@ pub fn delete_proposal_assets(DeleteProposalAssets { proposal_ids }: &DeleteProp
 // Internal storage
 // ---------------------------------------------------------
 
-pub fn init_proposal_asset_upload(init: InitAssetKey, proposal_id: ProposalId) -> InitUploadResult {
-    let caller = caller();
-
-    let batch_id = init_asset_upload_store(caller, init, proposal_id).unwrap_or_trap();
-
-    InitUploadResult { batch_id }
-}
-
 pub fn init_proposal_many_assets_upload(
     init_asset_keys: Vec<InitAssetKey>,
     proposal_id: ProposalId,
@@ -118,24 +110,6 @@ pub fn upload_proposal_asset_chunk(chunk: UploadChunk) -> UploadChunkResult {
     let chunk_id = create_chunk(caller, &config, chunk).unwrap_or_trap();
 
     UploadChunkResult { chunk_id }
-}
-
-pub fn commit_proposal_asset_upload(commit: CommitBatch) {
-    let caller = caller();
-
-    let controllers: Controllers = get_controllers();
-    let config = get_config_store();
-
-    commit_batch_storage(
-        caller,
-        &controllers,
-        &config,
-        commit,
-        &CdnStorageAssertions,
-        &StorageState,
-        &CdnStorageUpload,
-    )
-    .unwrap_or_trap();
 }
 
 pub fn commit_proposal_many_assets_upload(commits: Vec<CommitBatch>) {

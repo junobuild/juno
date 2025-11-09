@@ -399,7 +399,6 @@ export interface _SERVICE {
 	assert_mission_control_center: ActorMethod<[AssertMissionControlCenterArgs], undefined>;
 	authenticate: ActorMethod<[AuthenticationArgs], Result>;
 	commit_proposal: ActorMethod<[CommitProposal], null>;
-	commit_proposal_asset_upload: ActorMethod<[CommitBatch], undefined>;
 	commit_proposal_many_assets_upload: ActorMethod<[Array<CommitBatch>], undefined>;
 	count_proposals: ActorMethod<[], bigint>;
 	create_orbiter: ActorMethod<[CreateCanisterArgs], Principal>;
@@ -422,7 +421,6 @@ export interface _SERVICE {
 		StreamingCallbackHttpResponse
 	>;
 	init_proposal: ActorMethod<[ProposalType], [bigint, Proposal]>;
-	init_proposal_asset_upload: ActorMethod<[InitAssetKey, bigint], InitUploadResult>;
 	init_proposal_many_assets_upload: ActorMethod<
 		[Array<InitAssetKey>, bigint],
 		Array<[string, InitUploadResult]>

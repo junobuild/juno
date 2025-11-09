@@ -2,9 +2,10 @@ import {
 	type ConsoleActor,
 	type ConsoleActor0014,
 	type ConsoleActor008,
-	type MissionControlActor,
+	type ConsoleDid,
 	idlFactoryConsole,
-	idlFactoryMissionControl
+	idlFactoryMissionControl,
+	type MissionControlActor
 } from '$declarations';
 import { type Actor, PocketIc } from '@dfinity/pic';
 import {
@@ -100,7 +101,7 @@ const uploadSegment = async ({
 
 	const data = new Blob([await readFile(wasmPath)]);
 
-	const initPayload: InitAssetKey = {
+	const initPayload: ConsoleDid.InitAssetKey = {
 		collection: '#releases',
 		description: toNullable(`change=${proposalId};version=v${version}`),
 		encoding_type: ['identity'],
@@ -400,7 +401,7 @@ export const uploadFileWithProposal = async ({
 	});
 
 	const upload = async (gzip: boolean) => {
-		const initPayload: InitAssetKey = {
+		const initPayload: ConsoleDid.InitAssetKey = {
 			collection: '#dapp',
 			description: toNullable(),
 			encoding_type: gzip ? ['gzip'] : [],

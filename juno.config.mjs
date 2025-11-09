@@ -4,7 +4,7 @@ import { defineConsoleConfig } from '@junobuild/config';
 export default defineConsoleConfig(({ mode }) => ({
 	id: 'cokmz-oiaaa-aaaal-aby6q-cai',
 	source: 'build',
-	...(mode !== 'skylab' && {
+	...(['development', 'production'].includes(mode) && {
 		authentication: {
 			google: {
 				clientId:

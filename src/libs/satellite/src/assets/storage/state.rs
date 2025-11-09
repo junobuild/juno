@@ -2,7 +2,7 @@ use crate::assets::constants::{CDN_JUNO_PATH, CDN_JUNO_RELEASES_COLLECTION_KEY};
 use crate::assets::storage::types::state::{
     AssetsStable, ContentChunksStable, StableEncodingChunkKey, StableKey,
 };
-use crate::memory::internal::STATE;
+use crate::memory::state::STATE;
 use crate::types::state::{StableState, State};
 use junobuild_collections::constants::assets::COLLECTION_ASSET_KEY;
 use junobuild_collections::msg::msg_storage_collection_not_found;

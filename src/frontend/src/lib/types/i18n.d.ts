@@ -95,6 +95,21 @@ interface I18nCore {
 	staging: string;
 	test: string;
 	unspecified: string;
+	an_hour: string;
+	two_hours: string;
+	four_hours: string;
+	eight_hours: string;
+	half_day: string;
+	a_day: string;
+	a_week: string;
+	two_weeks: string;
+	a_month: string;
+	three_months: string;
+	six_months: string;
+	a_year: string;
+	two_years: string;
+	five_years: string;
+	custom: string;
 }
 
 interface I18nCanisters {
@@ -246,12 +261,6 @@ interface I18nCanisters {
 	risk: string;
 	of_cycles_needed: string;
 	only: string;
-	a_month: string;
-	three_months: string;
-	six_months: string;
-	a_year: string;
-	two_years: string;
-	five_years: string;
 	reload_initiated: string;
 }
 
@@ -267,10 +276,15 @@ interface I18nSign_in {
 	quote_9: string;
 	quote_10: string;
 	internet_identity: string;
-	juno_defaults_to: string;
-	for_authentication: string;
-	alternatively: string;
-	if_neither_works: string;
+	internet_identity_short: string;
+	google: string;
+}
+
+interface I18nSign_in_openid {
+	in_progress: string;
+	success: string;
+	already_signed_in: string;
+	avatar: string;
 }
 
 interface I18nSatellites {
@@ -365,9 +379,12 @@ interface I18nAuthentication {
 	methods: string;
 	not_signed_in: string;
 	session_expired: string;
+	refreshed_authentication: string;
 	main_domain: string;
 	not_configured: string;
 	edit_configuration: string;
+	edit_provider: string;
+	edit_to_enable_provider: string;
 	main_domain_warn: string;
 	external_alternative_origins: string;
 	external_alternative_origins_placeholder: string;
@@ -376,6 +393,16 @@ interface I18nAuthentication {
 	no_restrictions: string;
 	one_identity: string;
 	identities: string;
+	client_id: string;
+	client_id_placeholder: string;
+	client_id_warn: string;
+	session_duration: string;
+	allowed_targets: string;
+	allowed_targets_placeholder: string;
+	target_your_satellite: string;
+	target_modules: string;
+	in_nanoseconds: string;
+	loading_config: string;
 }
 
 interface I18nDatastore {
@@ -448,12 +475,6 @@ interface I18nAnalytics {
 	analytics_updated: string;
 	adjust_periodicity: string;
 	periodicity: string;
-	four_hours: string;
-	eight_hours: string;
-	half_day: string;
-	one_day: string;
-	a_week: string;
-	a_month: string;
 	why_periodicity: string;
 	periodicity_impact: string;
 }
@@ -534,8 +555,10 @@ interface I18nCli {
 
 interface I18nErrors {
 	no_identity: string;
+	stack_trace: string;
 	initializing_mission_control: string;
 	sign_in: string;
+	sign_in_openid: string;
 	mission_control_sign_out: string;
 	no_mission_control: string;
 	cli_missing_params: string;
@@ -560,6 +583,7 @@ interface I18nErrors {
 	load_users: string;
 	load_settings: string;
 	load_user_data: string;
+	load_auth_config_error: string;
 	hosting_missing_domain_name: string;
 	hosting_invalid_url: string;
 	hosting_missing_dns_configuration: string;
@@ -642,6 +666,7 @@ interface I18nErrors {
 	auth_rate_config_update: string;
 	auth_domain_config: string;
 	auth_external_alternative_origins: string;
+	auth_invalid_google_client_id: string;
 	mission_control_not_loaded: string;
 	mission_control_settings_not_loaded: string;
 	mission_control_user_data_not_loaded: string;
@@ -807,6 +832,8 @@ interface I18nFilter {
 
 interface I18nUsers {
 	user_details: string;
+	user: string;
+	email: string;
 	identifier: string;
 	provider: string;
 	authenticator: string;
@@ -890,7 +917,6 @@ interface I18nMonitoring {
 	choose_method: string;
 	basic: string;
 	basic_description: string;
-	custom: string;
 	custom_description: string;
 	default: string;
 	default_description: string;
@@ -994,6 +1020,7 @@ interface I18n {
 	core: I18nCore;
 	canisters: I18nCanisters;
 	sign_in: I18nSign_in;
+	sign_in_openid: I18nSign_in_openid;
 	satellites: I18nSatellites;
 	mission_control: I18nMission_control;
 	wallet: I18nWallet;

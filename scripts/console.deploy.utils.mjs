@@ -1,5 +1,5 @@
 import { nextArg } from '@junobuild/cli-tools';
-import { readJunoConfig as readJunoConfigTools } from '@junobuild/config-loader';
+import { readConsoleConfig as readConsoleConfigTools } from '@junobuild/config-loader';
 import { getIdentity } from './console.config.utils.mjs';
 import { CONSOLE_ID } from './constants.mjs';
 import { targetMainnet } from './utils.mjs';
@@ -31,7 +31,7 @@ export const readJunoConfig = async () => {
 
 	const config = (userConfig) => (typeof userConfig === 'function' ? userConfig(env) : userConfig);
 
-	return await readJunoConfigTools({
+	return await readConsoleConfigTools({
 		...JUNO_CONFIG_FILE,
 		config
 	});

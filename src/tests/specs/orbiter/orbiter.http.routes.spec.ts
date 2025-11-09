@@ -1,8 +1,8 @@
 import { type OrbiterActor, type OrbiterDid, idlFactoryOrbiter } from '$declarations';
-import { Ed25519KeyIdentity } from '@dfinity/identity';
 import { type Actor, PocketIc } from '@dfinity/pic';
-import type { Principal } from '@dfinity/principal';
 import { toNullable } from '@dfinity/utils';
+import { Ed25519KeyIdentity } from '@icp-sdk/core/identity';
+import type { Principal } from '@icp-sdk/core/principal';
 import { inject } from 'vitest';
 import { assertCertification } from '../../utils/certification-tests.utils';
 import { toBodyJson } from '../../utils/orbiter-tests.utils';

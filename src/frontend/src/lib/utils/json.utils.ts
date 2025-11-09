@@ -1,4 +1,4 @@
-import type { Principal } from '@dfinity/principal';
+import type { Principal } from '@icp-sdk/core/principal';
 
 // e.g. payloads.did/state_hash
 export const isHash = (bytes: number[]): boolean =>

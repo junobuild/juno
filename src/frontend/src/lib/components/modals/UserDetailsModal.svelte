@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { nonNullish } from '@dfinity/utils';
+	import UserOpenId from '$lib/components/auth/UserOpenId.svelte';
 	import UserPasskeyAuthenticator from '$lib/components/auth/UserPasskeyAuthenticator.svelte';
 	import UserProvider from '$lib/components/auth/UserProvider.svelte';
 	import UserStatus from '$lib/components/auth/UserStatus.svelte';
@@ -54,6 +55,7 @@
 					</Value>
 
 					<UserPasskeyAuthenticator {user} />
+					<UserOpenId {user} />
 				</div>
 
 				<div>

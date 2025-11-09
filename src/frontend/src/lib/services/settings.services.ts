@@ -5,8 +5,8 @@ import { toasts } from '$lib/stores/toasts.store';
 import type { CanisterInfo, CanisterSettings } from '$lib/types/canister';
 import type { OptionIdentity } from '$lib/types/itentity';
 import { lacksCyclesForFreezingThreshold } from '$lib/utils/canister.utils';
-import type { Principal } from '@dfinity/principal';
 import { isNullish, toNullable } from '@dfinity/utils';
+import type { Principal } from '@icp-sdk/core/principal';
 import { get } from 'svelte/store';
 
 export const updateSettings = async ({
@@ -64,7 +64,9 @@ export const updateSettings = async ({
 			wasmMemoryLimit === currentSettings.wasmMemoryLimit ? undefined : wasmMemoryLimit
 		),
 		// Function on_low_wasm_memory is not implemented (currently) in any Juno modules. That is why the settings is also unused.
-		wasm_memory_threshold: toNullable()
+		wasm_memory_threshold: toNullable(),
+		// Not used yet
+		environment_variables: toNullable()
 	};
 
 	if (

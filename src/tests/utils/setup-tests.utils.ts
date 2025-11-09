@@ -1,7 +1,7 @@
-import type { Identity } from '@dfinity/agent';
-import { IDL } from '@dfinity/candid';
-import type { Principal } from '@dfinity/principal';
 import { assertNonNullish, nonNullish, toNullable } from '@dfinity/utils';
+import type { Identity } from '@icp-sdk/core/agent';
+import { IDL } from '@icp-sdk/core/candid';
+import type { Principal } from '@icp-sdk/core/principal';
 import { parse } from '@ltd/j-toml';
 import { existsSync, readFileSync, writeFileSync } from 'node:fs';
 import { get, type RequestOptions } from 'node:https';

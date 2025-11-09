@@ -1,9 +1,9 @@
 import { type SatelliteActor, idlFactorySatellite } from '$declarations';
-import type { Identity } from '@dfinity/agent';
-import { Ed25519KeyIdentity } from '@dfinity/identity';
 import { type Actor, PocketIc } from '@dfinity/pic';
-import type { Principal } from '@dfinity/principal';
 import { nonNullish } from '@dfinity/utils';
+import type { Identity } from '@icp-sdk/core/agent';
+import { Ed25519KeyIdentity } from '@icp-sdk/core/identity';
+import type { Principal } from '@icp-sdk/core/principal';
 import { inject } from 'vitest';
 import { SATELLITE_WASM_PATH, satelliteInitArgs } from './setup-tests.utils';
 
@@ -24,11 +24,13 @@ export const setupSatelliteStock = async (
 	{
 		withIndexHtml,
 		memory,
-		controllers
+		controllers,
+		dateTime
 	}: {
 		withIndexHtml: boolean;
 		memory: { Heap: null } | { Stable: null } | null;
 		controllers?: Principal[];
+		dateTime?: Date;
 	} = {
 		withIndexHtml: false,
 		memory: { Heap: null }
@@ -43,7 +45,7 @@ export const setupSatelliteStock = async (
 }> => {
 	const pic = await PocketIc.create(inject('PIC_URL'));
 
-	const currentDate = new Date(2021, 6, 10, 0, 0, 0, 0);
+	const currentDate = dateTime ?? new Date(2021, 6, 10, 0, 0, 0, 0);
 	await pic.setTime(currentDate.getTime());
 
 	const controller = Ed25519KeyIdentity.generate();

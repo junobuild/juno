@@ -39,13 +39,13 @@
 </script>
 
 <IdentityGuard>
-	<Tabs>
-		<Loaders>
-			<SatelliteGuard>
+	<Loaders>
+		<SatelliteGuard>
+			<Tabs>
 				{#if nonNullish($satelliteStore) && nonNullish($missionControlIdDerived)}
 					<Storage satelliteId={$satelliteStore?.satellite_id} />
 				{/if}
-			</SatelliteGuard>
-		</Loaders>
-	</Tabs>
+			</Tabs>
+		</SatelliteGuard>
+	</Loaders>
 </IdentityGuard>

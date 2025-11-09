@@ -1,18 +1,11 @@
-import {
-	AUTH_MAX_TIME_TO_LIVE,
-	AUTH_POPUP_HEIGHT,
-	AUTH_POPUP_WIDTH,
-	INTERNET_IDENTITY_CANISTER_ID,
-	LOCAL_REPLICA_HOST
-} from '$lib/constants/app.constants';
-import { isDev } from '$lib/env/app.env';
-import { SignInError, SignInInitError, SignInUserInterruptError } from '$lib/types/errors';
+import { AuthBroadcastChannel } from '$lib/providers/auth-broadcast.provider';
+import { AuthClientProvider } from '$lib/providers/auth-client.provider';
+import type { SignInWithAuthClient, SignInWithNewAuthClient } from '$lib/types/auth';
+import { SignInInitError } from '$lib/types/errors';
 import type { OptionIdentity } from '$lib/types/itentity';
 import type { Option } from '$lib/types/utils';
-import { createAuthClient, resetAuthClient } from '$lib/utils/auth.utils';
-import { popupCenter } from '$lib/utils/window.utils';
-import { type AuthClient, ERROR_USER_INTERRUPT } from '@dfinity/auth-client';
-import { isNullish } from '@dfinity/utils';
+import { isNullish, nonNullish } from '@dfinity/utils';
+import type { AuthClient } from '@icp-sdk/auth/client';
 import { type Readable, writable } from 'svelte/store';
 
 export interface AuthStoreData {
@@ -21,13 +14,11 @@ export interface AuthStoreData {
 
 let authClient: Option<AuthClient>;
 
-export interface AuthSignInParams {
-	domain?: 'internetcomputer.org' | 'ic0.app';
-}
-
 export interface AuthStore extends Readable<AuthStoreData> {
 	sync: () => Promise<void>;
-	signIn: (params: AuthSignInParams) => Promise<void>;
+	forceSync: () => Promise<void>;
+	signInWithII: (params: { signInFn: SignInWithAuthClient }) => Promise<void>;
+	signInWithOpenId: (params: { signInFn: SignInWithNewAuthClient }) => Promise<void>;
 	signOut: () => Promise<void>;
 }
 
@@ -36,60 +27,87 @@ const initAuthStore = (): AuthStore => {
 		identity: undefined
 	});
 
+	// With different tabs opened of OISy in the same browser, it may happen that separate authClient objects are out-of-sync among themselves.
+	// To avoid issues, we use this method to pick the most up-to-date authClient object, since the data are cached in IndexedDB.
+	const pickAuthClient = async (): Promise<AuthClient> => {
+		if (nonNullish(authClient) && (await authClient.isAuthenticated())) {
+			return authClient;
+		}
+
+		const { createAuthClient, safeCreateAuthClient } = AuthClientProvider.getInstance();
+
+		const refreshed = await createAuthClient();
+
+		if (await refreshed.isAuthenticated()) {
+			return refreshed;
+		}
+
+		// When the user signs out, we trigger a call to `sync()`.
+		// The `sync()` method creates a new `AuthClient` (since the previous one was nullified on sign-out), causing the creation of new identity keys in IndexedDB.
+		// To avoid using such keys (or tampered ones) for the next login, we use the method `safeCreateAuthClient()` which clears any stored keys before creating a new `AuthClient`.
+		// We do it only if the user is not authenticated, because if it is, then it is theoretically already safe (or at least, it is out of our control to make it safer).
+		return await safeCreateAuthClient();
+	};
+
+	const sync = async ({ forceSync }: { forceSync: boolean }) => {
+		authClient = forceSync
+			? await AuthClientProvider.getInstance().createAuthClient()
+			: await pickAuthClient();
+
+		const isAuthenticated = await authClient.isAuthenticated();
+
+		set({ identity: isAuthenticated ? authClient.getIdentity() : null });
+	};
+
+	const broadCastSignIn = () => {
+		try {
+			// If the user has more than one tab open in the same browser,
+			// there could be a mismatch of the cached delegation chain vs the identity key of the `authClient` object.
+			// This causes the `authClient` to be unable to correctly sign calls, raising Trust Errors.
+			// To mitigate this, we use a BroadcastChannel to notify other tabs when a login has occurred, so that they can sync their `authClient` object.
+			const bc = new AuthBroadcastChannel();
+			bc.postLoginSuccess();
+		} catch (err: unknown) {
+			// We don't really care if the broadcast channel fails to open or if it fails to post messages.
+			// This is a non-critical feature that improves the UX when OISY is open in multiple tabs.
+			// We just print a warning in the console for debugging purposes.
+			console.warn('Auth BroadcastChannel posting failed', err);
+		}
+	};
+
 	return {
 		subscribe,
 
 		sync: async () => {
-			authClient = authClient ?? (await createAuthClient());
-			const isAuthenticated = await authClient.isAuthenticated();
-
-			if (!isAuthenticated) {
-				authClient = await resetAuthClient();
-				set({ identity: null });
-				return;
-			}
-
-			set({
-				identity: isAuthenticated ? authClient.getIdentity() : null
-			});
+			await sync({ forceSync: false });
 		},
 
-		signIn: ({ domain }: AuthSignInParams) =>
-			// eslint-disable-next-line no-async-promise-executor
-			new Promise<void>(async (resolve, reject) => {
-				if (isNullish(authClient)) {
-					reject(new SignInInitError());
-					return;
-				}
+		forceSync: async () => {
+			await sync({ forceSync: true });
+		},
 
-				const identityProvider = isDev()
-					? /apple/i.test(navigator?.vendor)
-						? `${LOCAL_REPLICA_HOST}?canisterId=${INTERNET_IDENTITY_CANISTER_ID}`
-						: `http://${INTERNET_IDENTITY_CANISTER_ID}.${new URL(LOCAL_REPLICA_HOST).host}`
-					: `https://identity.${domain ?? 'internetcomputer.org'}`;
+		signInWithII: async ({ signInFn }) => {
+			if (isNullish(authClient)) {
+				throw new SignInInitError();
+			}
 
-				await authClient?.login({
-					maxTimeToLive: AUTH_MAX_TIME_TO_LIVE,
-					allowPinAuthentication: false,
-					onSuccess: () => {
-						set({ identity: authClient?.getIdentity() });
+			const { identity } = await signInFn({ authClient });
+			set({ identity });
 
-						resolve();
-					},
-					onError: (error?: string) => {
-						if (error === ERROR_USER_INTERRUPT) {
-							reject(new SignInUserInterruptError(error));
-							return;
-						}
+			broadCastSignIn();
+		},
 
-						reject(new SignInError(error));
-					},
-					identityProvider,
-					windowOpenerFeatures: popupCenter({ width: AUTH_POPUP_WIDTH, height: AUTH_POPUP_HEIGHT })
-				});
-			}),
+		signInWithOpenId: async ({ signInFn }) => {
+			await signInFn();
+
+			await sync({ forceSync: true });
+
+			broadCastSignIn();
+		},
 
 		signOut: async () => {
+			const { createAuthClient } = AuthClientProvider.getInstance();
+
 			const client: AuthClient = authClient ?? (await createAuthClient());
 
 			await client.logout();

@@ -1,11 +1,11 @@
-use crate::factory::mission_control::init_user_mission_control;
+use crate::factory::mission_control::init_user_mission_control_with_caller;
 use crate::guards::{caller_is_admin_controller, caller_is_observatory};
 use crate::store::stable::{
     get_existing_mission_control, get_mission_control, list_mission_controls,
 };
 use crate::types::state::{MissionControl, MissionControls};
 use ic_cdk_macros::{query, update};
-use junobuild_shared::ic::api::{caller, id};
+use junobuild_shared::ic::api::caller;
 use junobuild_shared::ic::UnwrapOrTrap;
 use junobuild_shared::types::interface::AssertMissionControlCenterArgs;
 
@@ -32,10 +32,7 @@ fn list_user_mission_control_centers() -> MissionControls {
 
 #[update]
 async fn init_user_mission_control_center() -> MissionControl {
-    let caller = caller();
-    let console = id();
-
-    init_user_mission_control(&console, &caller)
+    init_user_mission_control_with_caller()
         .await
         .unwrap_or_trap()
 }

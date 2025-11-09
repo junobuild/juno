@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 
-import { IDL } from '@dfinity/candid';
+import { IDL } from '@icp-sdk/core/candid';
 import {
 	UpgradeCodeProgressStep,
 	UpgradeCodeUnchangedError,

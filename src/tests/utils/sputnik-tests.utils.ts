@@ -1,7 +1,7 @@
 import type { SputnikActor } from '$declarations';
-import { Ed25519KeyIdentity } from '@dfinity/identity';
 import type { Actor } from '@dfinity/pic';
 import { toNullable } from '@dfinity/utils';
+import { Ed25519KeyIdentity } from '@icp-sdk/core/identity';
 import { toArray } from '@junobuild/utils';
 import { nanoid } from 'nanoid';
 import { mockSetRule } from '../mocks/collection.mocks';

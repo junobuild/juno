@@ -8,6 +8,7 @@ use crate::cdn::proposals::{
 };
 use crate::cdn::strategies_impls::cdn::CdnHeap;
 use crate::cdn::strategies_impls::storage::StorageState;
+use crate::certification::strategy_impls::StorageCertificate;
 use crate::guards::caller_is_admin_controller;
 use crate::types::interface::DeleteProposalAssets;
 use ic_cdk_macros::{query, update};
@@ -20,7 +21,6 @@ use junobuild_shared::ic::call::ManualReply;
 use junobuild_shared::ic::UnwrapOrTrap;
 use junobuild_shared::types::core::DomainName;
 use junobuild_shared::types::domain::CustomDomains;
-
 // ---------------------------------------------------------
 // Proposal
 // ---------------------------------------------------------
@@ -89,12 +89,23 @@ pub fn list_custom_domains() -> CustomDomains {
 
 #[update(guard = "caller_is_admin_controller")]
 pub fn set_custom_domain(domain_name: DomainName, bn_id: Option<String>) {
-    junobuild_cdn::storage::set_domain_store(&CdnHeap, &StorageState, &domain_name, &bn_id)
-        .unwrap_or_trap();
+    junobuild_cdn::storage::set_domain_store(
+        &CdnHeap,
+        &StorageState,
+        &StorageCertificate,
+        &domain_name,
+        &bn_id,
+    )
+    .unwrap_or_trap();
 }
 
 #[update(guard = "caller_is_admin_controller")]
 pub fn del_custom_domain(domain_name: DomainName) {
-    junobuild_cdn::storage::delete_domain_store(&CdnHeap, &StorageState, &domain_name)
-        .unwrap_or_trap();
+    junobuild_cdn::storage::delete_domain_store(
+        &CdnHeap,
+        &StorageState,
+        &StorageCertificate,
+        &domain_name,
+    )
+    .unwrap_or_trap();
 }

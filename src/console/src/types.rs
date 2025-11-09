@@ -4,6 +4,8 @@ pub mod state {
     use candid::CandidType;
     use ic_ledger_types::{BlockIndex, Tokens};
     use ic_stable_structures::StableBTreeMap;
+    use junobuild_auth::openid::types::provider::OpenIdProvider;
+    use junobuild_auth::state::types::state::AuthenticationHeapState;
     use junobuild_cdn::proposals::{ProposalsStable, SegmentDeploymentVersion};
     use junobuild_cdn::storage::{ProposalAssetsStable, ProposalContentChunksStable};
     use junobuild_shared::rate::types::{RateConfig, RateTokens};
@@ -49,6 +51,7 @@ pub mod state {
         pub rates: Rates,
         pub fees: Fees,
         pub storage: StorageHeapState,
+        pub authentication: Option<AuthenticationHeapState>,
         pub releases_metadata: ReleasesMetadata,
     }
 
@@ -56,9 +59,32 @@ pub mod state {
     pub struct MissionControl {
         pub mission_control_id: Option<MissionControlId>,
         pub owner: UserId,
+        pub provider: Option<Provider>,
         pub credits: Tokens,
         pub created_at: Timestamp,
         pub updated_at: Timestamp,
+    }
+
+    #[derive(CandidType, Serialize, Deserialize, Clone)]
+    pub enum Provider {
+        InternetIdentity,
+        OpenId(OpenId),
+    }
+
+    #[derive(CandidType, Serialize, Deserialize, Clone)]
+    pub struct OpenId {
+        pub provider: OpenIdProvider,
+        pub data: OpenIdData,
+    }
+
+    #[derive(CandidType, Serialize, Deserialize, Clone, Eq, PartialEq)]
+    pub struct OpenIdData {
+        pub email: Option<String>,
+        pub name: Option<String>,
+        pub given_name: Option<String>,
+        pub family_name: Option<String>,
+        pub picture: Option<String>,
+        pub locale: Option<String>,
     }
 
     pub type ReleaseVersion = SegmentDeploymentVersion;
@@ -107,7 +133,13 @@ pub mod state {
 }
 
 pub mod interface {
+    use crate::types::state::MissionControl;
     use candid::CandidType;
+    use junobuild_auth::delegation::types::{
+        OpenIdGetDelegationArgs, OpenIdPrepareDelegationArgs, PrepareDelegationError,
+        PreparedDelegation,
+    };
+    use junobuild_auth::state::types::config::AuthenticationConfig;
     use junobuild_cdn::proposals::ProposalId;
     use junobuild_storage::types::config::StorageConfig;
     use serde::{Deserialize, Serialize};
@@ -115,11 +147,36 @@ pub mod interface {
     #[derive(CandidType, Deserialize)]
     pub struct Config {
         pub storage: StorageConfig,
+        pub authentication: Option<AuthenticationConfig>,
     }
 
     #[derive(CandidType, Serialize, Deserialize, Clone)]
     pub struct DeleteProposalAssets {
         pub proposal_ids: Vec<ProposalId>,
+    }
+
+    #[derive(CandidType, Serialize, Deserialize)]
+    pub enum AuthenticationArgs {
+        OpenId(OpenIdPrepareDelegationArgs),
+    }
+
+    pub type AuthenticationResult = Result<Authentication, AuthenticationError>;
+
+    #[derive(CandidType, Serialize, Deserialize)]
+    pub struct Authentication {
+        pub delegation: PreparedDelegation,
+        pub mission_control: MissionControl,
+    }
+
+    #[derive(CandidType, Serialize, Deserialize)]
+    pub enum AuthenticationError {
+        PrepareDelegation(PrepareDelegationError),
+        RegisterUser(String),
+    }
+
+    #[derive(CandidType, Serialize, Deserialize)]
+    pub enum GetDelegationArgs {
+        OpenId(OpenIdGetDelegationArgs),
     }
 }
 

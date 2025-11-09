@@ -5,6 +5,85 @@ export const idlFactory = ({ IDL }) => {
 		mission_control_id: IDL.Principal,
 		user: IDL.Principal
 	});
+	const OpenIdPrepareDelegationArgs = IDL.Record({
+		jwt: IDL.Text,
+		session_key: IDL.Vec(IDL.Nat8),
+		salt: IDL.Vec(IDL.Nat8)
+	});
+	const AuthenticationArgs = IDL.Variant({
+		OpenId: OpenIdPrepareDelegationArgs
+	});
+	const PreparedDelegation = IDL.Record({
+		user_key: IDL.Vec(IDL.Nat8),
+		expiration: IDL.Nat64
+	});
+	const OpenIdProvider = IDL.Variant({ Google: IDL.Null });
+	const OpenIdData = IDL.Record({
+		name: IDL.Opt(IDL.Text),
+		locale: IDL.Opt(IDL.Text),
+		family_name: IDL.Opt(IDL.Text),
+		email: IDL.Opt(IDL.Text),
+		picture: IDL.Opt(IDL.Text),
+		given_name: IDL.Opt(IDL.Text)
+	});
+	const OpenId = IDL.Record({
+		provider: OpenIdProvider,
+		data: OpenIdData
+	});
+	const Provider = IDL.Variant({
+		InternetIdentity: IDL.Null,
+		OpenId: OpenId
+	});
+	const MissionControl = IDL.Record({
+		updated_at: IDL.Nat64,
+		credits: Tokens,
+		mission_control_id: IDL.Opt(IDL.Principal),
+		provider: IDL.Opt(Provider),
+		owner: IDL.Principal,
+		created_at: IDL.Nat64
+	});
+	const Authentication = IDL.Record({
+		delegation: PreparedDelegation,
+		mission_control: MissionControl
+	});
+	const JwtFindProviderError = IDL.Variant({
+		BadClaim: IDL.Text,
+		BadSig: IDL.Text,
+		NoMatchingProvider: IDL.Null
+	});
+	const JwtVerifyError = IDL.Variant({
+		WrongKeyType: IDL.Null,
+		MissingKid: IDL.Null,
+		BadClaim: IDL.Text,
+		BadSig: IDL.Text,
+		NoKeyForKid: IDL.Null
+	});
+	const GetOrRefreshJwksError = IDL.Variant({
+		InvalidConfig: IDL.Text,
+		MissingKid: IDL.Null,
+		BadClaim: IDL.Text,
+		KeyNotFoundCooldown: IDL.Null,
+		CertificateNotFound: IDL.Null,
+		BadSig: IDL.Text,
+		MissingLastAttempt: IDL.Text,
+		KeyNotFound: IDL.Null,
+		FetchFailed: IDL.Text
+	});
+	const PrepareDelegationError = IDL.Variant({
+		JwtFindProvider: JwtFindProviderError,
+		GetCachedJwks: IDL.Null,
+		JwtVerify: JwtVerifyError,
+		GetOrFetchJwks: GetOrRefreshJwksError,
+		DeriveSeedFailed: IDL.Text
+	});
+	const AuthenticationError = IDL.Variant({
+		PrepareDelegation: PrepareDelegationError,
+		RegisterUser: IDL.Text
+	});
+	const Result = IDL.Variant({
+		Ok: Authentication,
+		Err: AuthenticationError
+	});
 	const CommitProposal = IDL.Record({
 		sha256: IDL.Vec(IDL.Nat8),
 		proposal_id: IDL.Nat
@@ -38,6 +117,33 @@ export const idlFactory = ({ IDL }) => {
 	const DeleteProposalAssets = IDL.Record({
 		proposal_ids: IDL.Vec(IDL.Nat)
 	});
+	const OpenIdProviderDelegationConfig = IDL.Record({
+		targets: IDL.Opt(IDL.Vec(IDL.Principal)),
+		max_time_to_live: IDL.Opt(IDL.Nat64)
+	});
+	const OpenIdProviderConfig = IDL.Record({
+		delegation: IDL.Opt(OpenIdProviderDelegationConfig),
+		client_id: IDL.Text
+	});
+	const AuthenticationConfigOpenId = IDL.Record({
+		observatory_id: IDL.Opt(IDL.Principal),
+		providers: IDL.Vec(IDL.Tuple(OpenIdProvider, OpenIdProviderConfig))
+	});
+	const AuthenticationConfigInternetIdentity = IDL.Record({
+		derivation_origin: IDL.Opt(IDL.Text),
+		external_alternative_origins: IDL.Opt(IDL.Vec(IDL.Text))
+	});
+	const AuthenticationRules = IDL.Record({
+		allowed_callers: IDL.Vec(IDL.Principal)
+	});
+	const AuthenticationConfig = IDL.Record({
+		updated_at: IDL.Opt(IDL.Nat64),
+		openid: IDL.Opt(AuthenticationConfigOpenId),
+		created_at: IDL.Opt(IDL.Nat64),
+		version: IDL.Opt(IDL.Nat64),
+		internet_identity: IDL.Opt(AuthenticationConfigInternetIdentity),
+		rules: IDL.Opt(AuthenticationRules)
+	});
 	const StorageConfigIFrame = IDL.Variant({
 		Deny: IDL.Null,
 		AllowAny: IDL.Null,
@@ -66,8 +172,39 @@ export const idlFactory = ({ IDL }) => {
 		raw_access: IDL.Opt(StorageConfigRawAccess),
 		redirects: IDL.Opt(IDL.Vec(IDL.Tuple(IDL.Text, StorageConfigRedirect)))
 	});
-	const Config = IDL.Record({ storage: StorageConfig });
+	const Config = IDL.Record({
+		authentication: IDL.Opt(AuthenticationConfig),
+		storage: StorageConfig
+	});
 	const GetCreateCanisterFeeArgs = IDL.Record({ user: IDL.Principal });
+	const OpenIdGetDelegationArgs = IDL.Record({
+		jwt: IDL.Text,
+		session_key: IDL.Vec(IDL.Nat8),
+		salt: IDL.Vec(IDL.Nat8),
+		expiration: IDL.Nat64
+	});
+	const GetDelegationArgs = IDL.Variant({ OpenId: OpenIdGetDelegationArgs });
+	const Delegation = IDL.Record({
+		pubkey: IDL.Vec(IDL.Nat8),
+		targets: IDL.Opt(IDL.Vec(IDL.Principal)),
+		expiration: IDL.Nat64
+	});
+	const SignedDelegation = IDL.Record({
+		signature: IDL.Vec(IDL.Nat8),
+		delegation: Delegation
+	});
+	const GetDelegationError = IDL.Variant({
+		JwtFindProvider: JwtFindProviderError,
+		GetCachedJwks: IDL.Null,
+		NoSuchDelegation: IDL.Null,
+		JwtVerify: JwtVerifyError,
+		GetOrFetchJwks: GetOrRefreshJwksError,
+		DeriveSeedFailed: IDL.Text
+	});
+	const Result_1 = IDL.Variant({
+		Ok: SignedDelegation,
+		Err: GetDelegationError
+	});
 	const ProposalStatus = IDL.Variant({
 		Initialized: IDL.Null,
 		Failed: IDL.Null,
@@ -97,13 +234,6 @@ export const idlFactory = ({ IDL }) => {
 		created_at: IDL.Nat64,
 		version: IDL.Opt(IDL.Nat64),
 		proposal_type: ProposalType
-	});
-	const MissionControl = IDL.Record({
-		updated_at: IDL.Nat64,
-		credits: Tokens,
-		mission_control_id: IDL.Opt(IDL.Principal),
-		owner: IDL.Principal,
-		created_at: IDL.Nat64
 	});
 	const HttpRequest = IDL.Record({
 		url: IDL.Text,
@@ -249,6 +379,12 @@ export const idlFactory = ({ IDL }) => {
 		items: IDL.Vec(IDL.Tuple(ProposalKey, Proposal)),
 		items_length: IDL.Nat64
 	});
+	const SetAuthenticationConfig = IDL.Record({
+		openid: IDL.Opt(AuthenticationConfigOpenId),
+		version: IDL.Opt(IDL.Nat64),
+		internet_identity: IDL.Opt(AuthenticationConfigInternetIdentity),
+		rules: IDL.Opt(AuthenticationRules)
+	});
 	const SetController = IDL.Record({
 		metadata: IDL.Vec(IDL.Tuple(IDL.Text, IDL.Text)),
 		scope: ControllerScope,
@@ -286,6 +422,7 @@ export const idlFactory = ({ IDL }) => {
 		add_credits: IDL.Func([IDL.Principal, Tokens], [], []),
 		add_invitation_code: IDL.Func([IDL.Text], [], []),
 		assert_mission_control_center: IDL.Func([AssertMissionControlCenterArgs], [], []),
+		authenticate: IDL.Func([AuthenticationArgs], [Result], []),
 		commit_proposal: IDL.Func([CommitProposal], [IDL.Null], []),
 		commit_proposal_many_assets_upload: IDL.Func([IDL.Vec(CommitBatch)], [], []),
 		count_proposals: IDL.Func([], [IDL.Nat64], []),
@@ -294,10 +431,12 @@ export const idlFactory = ({ IDL }) => {
 		del_controllers: IDL.Func([DeleteControllersArgs], [], []),
 		del_custom_domain: IDL.Func([IDL.Text], [], []),
 		delete_proposal_assets: IDL.Func([DeleteProposalAssets], [], []),
+		get_auth_config: IDL.Func([], [IDL.Opt(AuthenticationConfig)], []),
 		get_config: IDL.Func([], [Config], []),
 		get_create_orbiter_fee: IDL.Func([GetCreateCanisterFeeArgs], [IDL.Opt(Tokens)], []),
 		get_create_satellite_fee: IDL.Func([GetCreateCanisterFeeArgs], [IDL.Opt(Tokens)], []),
 		get_credits: IDL.Func([], [Tokens], []),
+		get_delegation: IDL.Func([GetDelegationArgs], [Result_1], []),
 		get_proposal: IDL.Func([IDL.Nat], [IDL.Opt(Proposal)], []),
 		get_storage_config: IDL.Func([], [StorageConfig], []),
 		get_user_mission_control_center: IDL.Func([], [IDL.Opt(MissionControl)], []),
@@ -325,6 +464,7 @@ export const idlFactory = ({ IDL }) => {
 			[]
 		),
 		reject_proposal: IDL.Func([CommitProposal], [IDL.Null], []),
+		set_auth_config: IDL.Func([SetAuthenticationConfig], [AuthenticationConfig], []),
 		set_controllers: IDL.Func([SetControllersArgs], [], []),
 		set_custom_domain: IDL.Func([IDL.Text, IDL.Opt(IDL.Text)], [], []),
 		set_fee: IDL.Func([SegmentKind, Tokens], [], []),

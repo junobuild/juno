@@ -1,8 +1,4 @@
-import { type Identity, MANAGEMENT_CANISTER_ID } from '@dfinity/agent';
-import { IDL } from '@dfinity/candid';
-import type { canister_status_result } from '@dfinity/ic-management';
 import type { ActorInterface, CanisterFixture, PocketIc } from '@dfinity/pic';
-import { Principal } from '@dfinity/principal';
 import {
 	arrayBufferToUint8Array,
 	fromNullable,
@@ -10,6 +6,10 @@ import {
 	nonNullish,
 	toNullable
 } from '@dfinity/utils';
+import type { canister_status_result } from '@icp-sdk/canisters/ic-management';
+import { type Identity, MANAGEMENT_CANISTER_ID } from '@icp-sdk/core/agent';
+import { IDL } from '@icp-sdk/core/candid';
+import { Principal } from '@icp-sdk/core/principal';
 import { uint8ArraySha256 } from '@junobuild/admin';
 import { readFile } from 'node:fs/promises';
 
@@ -96,6 +96,7 @@ interface install_chunked_code_args {
 // canister_status did
 
 const canister_status_args = IDL.Record({ canister_id });
+const stop_canister_args = canister_status_args;
 
 const log_visibility = IDL.Variant({
 	controllers: IDL.Null,
@@ -413,4 +414,19 @@ export const canisterStatus = async ({
 	) as unknown as [canister_status_result];
 
 	return fromNullable(result);
+};
+
+export const stopCanister = async ({
+	canisterId,
+	pic,
+	sender
+}: PicParams & { canisterId: Principal }) => {
+	const arg = IDL.encode([stop_canister_args], [{ canister_id: canisterId }]);
+
+	await pic.updateCall({
+		canisterId: Principal.fromText(MANAGEMENT_CANISTER_ID),
+		sender: sender.getPrincipal(),
+		method: 'stop_canister',
+		arg: arg.buffer
+	});
 };

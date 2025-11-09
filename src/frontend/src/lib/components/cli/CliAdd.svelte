@@ -1,6 +1,6 @@
 <script lang="ts">
-	import type { Principal } from '@dfinity/principal';
 	import { isNullish, nonNullish, notEmptyString } from '@dfinity/utils';
+	import type { Principal } from '@icp-sdk/core/principal';
 	import { fade } from 'svelte/transition';
 	import type { MissionControlDid } from '$declarations';
 	import { setOrbitersController } from '$lib/api/mission-control.api';

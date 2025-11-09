@@ -1,7 +1,7 @@
 import { idlFactoryOrbiter, type OrbiterActor, type OrbiterDid } from '$declarations';
-import { Ed25519KeyIdentity } from '@dfinity/identity';
 import { type Actor, PocketIc } from '@dfinity/pic';
 import { jsonReviver } from '@dfinity/utils';
+import { Ed25519KeyIdentity } from '@icp-sdk/core/identity';
 import { readFile } from 'node:fs/promises';
 import { join } from 'node:path';
 import { inject } from 'vitest';

@@ -1,6 +1,6 @@
 <script lang="ts">
-	import type { Principal } from '@dfinity/principal';
 	import { debounce, isNullish } from '@dfinity/utils';
+	import type { Principal } from '@icp-sdk/core/principal';
 	import { compare } from 'semver';
 	import { onDestroy, onMount, type Snippet } from 'svelte';
 	import { MISSION_CONTROL_v0_0_14 } from '$lib/constants/version.constants';

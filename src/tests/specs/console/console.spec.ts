@@ -1,6 +1,6 @@
 import { idlFactoryConsole, type ConsoleActor } from '$declarations';
-import { Ed25519KeyIdentity } from '@dfinity/identity';
 import { PocketIc, type Actor } from '@dfinity/pic';
+import { Ed25519KeyIdentity } from '@icp-sdk/core/identity';
 import { inject } from 'vitest';
 import { deploySegments, initMissionControls } from '../../utils/console-tests.utils';
 import { CONSOLE_WASM_PATH } from '../../utils/setup-tests.utils';
@@ -23,7 +23,7 @@ describe('Console', () => {
 		actor = c;
 		actor.setIdentity(controller);
 
-		await deploySegments(actor);
+		await deploySegments({ actor });
 	});
 
 	afterEach(async () => {

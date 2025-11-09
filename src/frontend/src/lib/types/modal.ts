@@ -9,8 +9,8 @@ import type { SatelliteIdText } from '$lib/types/satellite';
 import type { User as UserListed } from '$lib/types/user';
 import type { UserUsageCollection } from '$lib/types/user-usage';
 import type { Option } from '$lib/types/utils';
-import type { AccountIdentifier } from '@dfinity/ledger-icp';
-import type { Principal } from '@dfinity/principal';
+import type { AccountIdentifier } from '@icp-sdk/canisters/ledger/icp';
+import type { Principal } from '@icp-sdk/core/principal';
 import type { BuildType } from '@junobuild/admin';
 
 export interface JunoModalWithAccountIdentifier {
@@ -89,9 +89,27 @@ export interface JunoModalEditOrbiterConfigDetail {
 	config: Record<SatelliteIdText, OrbiterSatelliteConfigEntry>;
 }
 
-export interface JunoModalEditAuthConfigDetail extends JunoModalWithSatellite {
-	rule: SatelliteDid.Rule | undefined;
+export type JunoModalEditAuthConfigDetail = JunoModalWithSatellite & {
 	config: SatelliteDid.AuthenticationConfig | undefined;
+} & JunoModalEditAuthConfigDetailType;
+
+export interface JunoModalEditAuthConfigDetailCore {
+	core: {
+		rule: SatelliteDid.Rule | undefined;
+	};
+}
+
+export type JunoModalEditAuthConfigDetailType =
+	| JunoModalEditAuthConfigDetailCore
+	| JunoModalEditAuthConfigDetailII
+	| JunoModalEditAuthConfigDetailGoogle;
+
+export interface JunoModalEditAuthConfigDetailGoogle {
+	google: null;
+}
+
+export interface JunoModalEditAuthConfigDetailII {
+	internet_identity: null;
 }
 
 export interface JunoModalCreateMonitoringStrategyDetail {
@@ -134,7 +152,8 @@ export type JunoModalDetail =
 	| JunoModalCreateMonitoringStrategyDetail
 	| JunoModalShowUserDetail
 	| JunoModalChangeDetail
-	| JunoModalCdnUpgradeDetail;
+	| JunoModalCdnUpgradeDetail
+	| JunoModalEditAuthConfigDetail;
 
 export interface JunoModal<T extends JunoModalDetail> {
 	type:

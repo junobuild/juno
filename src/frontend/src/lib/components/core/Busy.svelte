@@ -3,6 +3,7 @@
 	import { stopPropagation } from 'svelte/legacy';
 	import { fade } from 'svelte/transition';
 	import IconClose from '$lib/components/icons/IconClose.svelte';
+	import Message from '$lib/components/ui/Message.svelte';
 	import Spinner from '$lib/components/ui/Spinner.svelte';
 	import { busy } from '$lib/stores/busy.store';
 	import { i18n } from '$lib/stores/i18n.store';
@@ -28,17 +29,19 @@
 		transition:fade
 	>
 		<div class="content">
-			{#if $busy.spinner}
-				<div class="spinner">
-					<Spinner />
-				</div>
-			{/if}
+			<Message>
+				{#snippet icon()}
+					{#if $busy.spinner}
+						<Spinner inline />
+					{/if}
+				{/snippet}
 
-			{#if $busy.close}
-				<button class="text close" aria-label={$i18n.core.close} onclick={stopPropagation(close)}
-					><IconClose size="12px" /> {$i18n.core.cancel}</button
-				>
-			{/if}
+				{#if $busy.close}
+					<button class="text close" aria-label={$i18n.core.close} onclick={stopPropagation(close)}
+						><IconClose size="18px" /> {$i18n.core.cancel}</button
+					>
+				{/if}
+			</Message>
 		</div>
 	</div>
 {/if}
@@ -66,41 +69,25 @@
 		position: absolute;
 		top: 50%;
 		left: 50%;
-		transform: translate(-50%, -50%);
+		transform: translate(-50%, calc(-50% - var(--padding-3x)));
 
 		display: flex;
 		justify-content: center;
 		align-items: center;
 		flex-direction: column;
 
-		width: fit-content;
+		color: var(--label-color);
 
 		background: transparent;
 	}
 
-	.spinner {
-		position: relative;
-		height: 30px;
-		margin: 1.45rem;
-		background: none;
-	}
-
-	.text {
-		font-size: var(--font-size-very-small);
-		color: var(--label-color);
-		text-decoration: none;
-		display: inline-flex;
-		gap: var(--padding-0_5x);
-	}
-
-	.spinner {
-		color: var(--label-color);
-	}
-
 	@include media.dark-theme {
-		.text,
-		.spinner {
+		.content {
 			color: var(--value-color);
 		}
+	}
+
+	button.close {
+		text-decoration: none;
 	}
 </style>

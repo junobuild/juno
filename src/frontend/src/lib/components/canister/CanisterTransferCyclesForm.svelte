@@ -1,6 +1,6 @@
 <script lang="ts">
-	import { Principal } from '@dfinity/principal';
 	import { nonNullish } from '@dfinity/utils';
+	import { Principal } from '@icp-sdk/core/principal';
 	import CanistersPicker from '$lib/components/canister/CanistersPicker.svelte';
 	import GridArrow from '$lib/components/ui/GridArrow.svelte';
 	import Html from '$lib/components/ui/Html.svelte';

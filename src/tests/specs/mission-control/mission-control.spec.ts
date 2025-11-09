@@ -3,10 +3,10 @@ import {
 	type MissionControlActor,
 	type MissionControlDid
 } from '$declarations';
-import { AnonymousIdentity } from '@dfinity/agent';
-import { Ed25519KeyIdentity } from '@dfinity/identity';
 import { PocketIc, type Actor } from '@dfinity/pic';
 import { fromNullable, toNullable } from '@dfinity/utils';
+import { AnonymousIdentity } from '@icp-sdk/core/agent';
+import { Ed25519KeyIdentity } from '@icp-sdk/core/identity';
 import { inject } from 'vitest';
 import { MISSION_CONTROL_ADMIN_CONTROLLER_ERROR_MSG } from '../../constants/mission-control-tests.constants';
 import { missionControlUserInitArgs } from '../../utils/mission-control-tests.utils';

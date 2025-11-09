@@ -12,10 +12,10 @@ import { nowInBigIntNanoSeconds } from '$lib/utils/date.utils';
 import { invalidIcpAddress } from '$lib/utils/icp-account.utils';
 import { invalidIcrcAddress } from '$lib/utils/icrc-account.utils';
 import { waitAndRestartWallet } from '$lib/utils/wallet.utils';
-import { AccountIdentifier } from '@dfinity/ledger-icp';
-import { decodeIcrcAccount } from '@dfinity/ledger-icrc';
-import { Principal } from '@dfinity/principal';
 import { type TokenAmountV2, assertNonNullish, isNullish, toNullable } from '@dfinity/utils';
+import { AccountIdentifier } from '@icp-sdk/canisters/ledger/icp';
+import { decodeIcrcAccount } from '@icp-sdk/canisters/ledger/icrc';
+import { Principal } from '@icp-sdk/core/principal';
 import { get } from 'svelte/store';
 
 export const sendTokens = async ({

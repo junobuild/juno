@@ -15,7 +15,7 @@ import { ActorApi, type GetActorParams } from '$lib/api/actors/actor.api';
 import { CONSOLE_CANISTER_ID, OBSERVATORY_CANISTER_ID } from '$lib/constants/app.constants';
 import type { OptionIdentity } from '$lib/types/itentity';
 import type { MissionControlId } from '$lib/types/mission-control';
-import type { Principal } from '@dfinity/principal';
+import type { Principal } from '@icp-sdk/core/principal';
 
 const consoleActor = new ActorApi<ConsoleActor>();
 const observatoryActor = new ActorApi<ObservatoryActor>();

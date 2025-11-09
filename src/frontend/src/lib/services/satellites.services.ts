@@ -4,9 +4,9 @@ import { loadDataStore } from '$lib/services/loader.services';
 import { authStore } from '$lib/stores/auth.store';
 import { satellitesUncertifiedStore } from '$lib/stores/satellite.store';
 import type { Option } from '$lib/types/utils';
-import type { Identity } from '@dfinity/agent';
-import type { Principal } from '@dfinity/principal';
 import { assertNonNullish, isNullish, toNullable } from '@dfinity/utils';
+import type { Identity } from '@icp-sdk/core/agent';
+import type { Principal } from '@icp-sdk/core/principal';
 import { get } from 'svelte/store';
 
 interface CreateSatelliteConfig {

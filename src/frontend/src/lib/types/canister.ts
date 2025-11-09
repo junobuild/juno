@@ -1,7 +1,7 @@
 import type { CanisterIdTextSchema } from '$lib/schemas/canister.schema';
 import type { ChartsData, TimeOfDayChartData } from '$lib/types/chart';
 import type { MonitoringHistory, MonitoringMetadata } from '$lib/types/monitoring';
-import type { Principal } from '@dfinity/principal';
+import type { Principal } from '@icp-sdk/core/principal';
 import type * as z from 'zod';
 
 export type CanisterStatus = 'stopped' | 'stopping' | 'running';

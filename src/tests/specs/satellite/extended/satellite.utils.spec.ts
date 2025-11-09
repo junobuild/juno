@@ -1,7 +1,5 @@
 import type { _SERVICE as TestSatelliteActor } from '$test-declarations/test_satellite/test_satellite.did';
-import type { Identity } from '@dfinity/agent';
 import type { Actor, PocketIc } from '@dfinity/pic';
-import { Principal } from '@dfinity/principal';
 import {
 	arrayOfNumberToUint8Array,
 	assertNonNullish,
@@ -9,6 +7,8 @@ import {
 	toNullable,
 	uint8ArraysEqual
 } from '@dfinity/utils';
+import type { Identity } from '@icp-sdk/core/agent';
+import { Principal } from '@icp-sdk/core/principal';
 import { fromArray, toArray } from '@junobuild/utils';
 import { nanoid } from 'nanoid';
 import { mockPrincipal } from '../../../../frontend/tests/mocks/identity.mock';

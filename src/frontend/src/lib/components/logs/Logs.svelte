@@ -1,6 +1,6 @@
 <script lang="ts">
-	import type { Principal } from '@dfinity/principal';
 	import { isNullish, nonNullish } from '@dfinity/utils';
+	import type { Principal } from '@icp-sdk/core/principal';
 	import { getContext, onMount, setContext } from 'svelte';
 	import { fade } from 'svelte/transition';
 	import DataCount from '$lib/components/data/DataCount.svelte';

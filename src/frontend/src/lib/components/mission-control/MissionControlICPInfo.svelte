@@ -1,6 +1,6 @@
 <script lang="ts">
-	import type { AccountIdentifier } from '@dfinity/ledger-icp';
 	import { nonNullish } from '@dfinity/utils';
+	import type { AccountIdentifier } from '@icp-sdk/canisters/ledger/icp';
 	import ExternalLink from '$lib/components/ui/ExternalLink.svelte';
 	import Identifier from '$lib/components/ui/Identifier.svelte';
 	import { testIds } from '$lib/constants/test-ids.constants';

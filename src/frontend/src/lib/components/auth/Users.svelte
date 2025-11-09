@@ -1,21 +1,29 @@
 <script lang="ts">
-	import type { Principal } from '@dfinity/principal';
 	import { isNullish, nonNullish } from '@dfinity/utils';
+	import type { Principal } from '@icp-sdk/core/principal';
 	import { getContext, setContext, untrack } from 'svelte';
-	import User from '$lib/components/auth/User.svelte';
 	import UserFilter from '$lib/components/auth/UserFilter.svelte';
+	import UserRow from '$lib/components/auth/UserRow.svelte';
+	import DataActions from '$lib/components/data/DataActions.svelte';
 	import DataCount from '$lib/components/data/DataCount.svelte';
 	import DataOrder from '$lib/components/data/DataOrder.svelte';
 	import DataPaginator from '$lib/components/data/DataPaginator.svelte';
+	import IconRefresh from '$lib/components/icons/IconRefresh.svelte';
 	import { listUsers } from '$lib/services/user/users.services';
 	import { authStore } from '$lib/stores/auth.store';
 	import { i18n } from '$lib/stores/i18n.store';
-	import { listParamsStore } from '$lib/stores/list-params.store';
+	import { initListParamsContext } from '$lib/stores/list-params.context.store';
 	import { initPaginationContext } from '$lib/stores/pagination.context.store';
 	import { toasts } from '$lib/stores/toasts.store';
 	import { versionStore } from '$lib/stores/version.store';
+	import {
+		LIST_PARAMS_CONTEXT_KEY,
+		ListParamsKey,
+		type ListParamsContext
+	} from '$lib/types/list-params.context';
 	import { PAGINATION_CONTEXT_KEY, type PaginationContext } from '$lib/types/pagination.context';
 	import type { User as UserType } from '$lib/types/user';
+	import { emit } from '$lib/utils/events.utils';
 
 	interface Props {
 		satelliteId: Principal;
@@ -40,8 +48,8 @@
 			const { users, matches_length, items_length } = await listUsers({
 				satelliteId,
 				startAfter: $startAfter,
-				filter: $listParamsStore.filter,
-				order: $listParamsStore.order,
+				filter: $listParams.filter,
+				order: $listParams.order,
 				identity: $authStore.identity
 			});
 
@@ -65,21 +73,35 @@
 		startAfter
 	}: PaginationContext<UserType> = getContext<PaginationContext<UserType>>(PAGINATION_CONTEXT_KEY);
 
+	setContext<ListParamsContext>(
+		LIST_PARAMS_CONTEXT_KEY,
+		initListParamsContext(ListParamsKey.USERS)
+	);
+
+	const { listParams } = getContext<ListParamsContext>(LIST_PARAMS_CONTEXT_KEY);
+
 	$effect(() => {
 		$versionStore;
-		$listParamsStore;
+		$listParams;
 
 		untrack(() => {
 			list();
 		});
 	});
 
+	const reload = () => {
+		// Not awaited on purpose, we want to close the popover no matter what
+		list();
+
+		emit({ message: 'junoCloseActions' });
+	};
+
 	let empty = $derived($paginationStore.items?.length === 0);
 
 	let innerWidth = $state(0);
 
 	let colspan = $derived(
-		innerWidth >= 1024 ? 5 : innerWidth >= 768 ? 4 : innerWidth >= 576 ? 3 : 2
+		innerWidth >= 1024 ? 6 : innerWidth >= 768 ? 5 : innerWidth >= 576 ? 4 : 2
 	);
 </script>
 
@@ -93,6 +115,12 @@
 					<div class="actions">
 						<UserFilter />
 						<DataOrder />
+
+						<DataActions>
+							<button class="menu" onclick={reload} type="button"
+								><IconRefresh size="20px" /> {$i18n.core.reload}</button
+							>
+						</DataActions>
 					</div>
 				</th>
 			</tr>
@@ -100,15 +128,16 @@
 				<th class="tools"></th>
 				<th class="identifier"> {$i18n.users.identifier} </th>
 				<th class="providers"> {$i18n.users.provider} </th>
+				<th class="user"> {$i18n.users.user} </th>
+				<th class="email"> {$i18n.users.email} </th>
 				<th class="created"> {$i18n.core.created} </th>
-				<th class="updated"> {$i18n.core.updated} </th>
 			</tr>
 		</thead>
 
 		<tbody>
 			{#if nonNullish($paginationStore.items)}
 				{#each $paginationStore.items as [key, user] (key)}
-					<User {satelliteId} {user} />
+					<UserRow {satelliteId} {user} />
 				{/each}
 
 				{#if !empty && ($paginationStore.pages ?? 0) > 1}
@@ -144,15 +173,21 @@
 		}
 	}
 
-	.created {
+	.user {
 		display: none;
 
-		@include media.min-width(medium) {
+		@include media.min-width(small) {
 			display: table-cell;
 		}
 	}
 
-	.updated {
+	.user,
+	.email {
+		max-width: 200px;
+	}
+
+	.created,
+	.email {
 		display: none;
 
 		@include media.min-width(large) {
@@ -160,17 +195,17 @@
 		}
 	}
 
-	@include media.min-width(small) {
-		.providers {
-			width: 220px;
+	.user {
+		@include media.min-width(small) {
+			width: 50%;
+		}
+
+		@include media.min-width(large) {
+			width: inherit;
 		}
 	}
 
 	@include media.min-width(large) {
-		.identifier {
-			width: 300px;
-		}
-
 		.providers {
 			width: inherit;
 		}

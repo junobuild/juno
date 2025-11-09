@@ -15,12 +15,12 @@
 	import { SATELLITE_v0_0_9 } from '$lib/constants/version.constants';
 	import { authStore } from '$lib/stores/auth.store';
 	import { i18n } from '$lib/stores/i18n.store';
-	import { listParamsStore } from '$lib/stores/list-params.store';
 	import { initPaginationContext } from '$lib/stores/pagination.context.store';
 	import { toasts } from '$lib/stores/toasts.store';
 	import { versionStore } from '$lib/stores/version.store';
 	import { DATA_CONTEXT_KEY, type DataContext, type DataStoreData } from '$lib/types/data.context';
 	import type { ListParams } from '$lib/types/list';
+	import { LIST_PARAMS_CONTEXT_KEY, type ListParamsContext } from '$lib/types/list-params.context';
 	import { PAGINATION_CONTEXT_KEY, type PaginationContext } from '$lib/types/pagination.context';
 	import { RULES_CONTEXT_KEY, type RulesContext } from '$lib/types/rules.context';
 
@@ -55,7 +55,7 @@
 				params: {
 					startAfter: $startAfter,
 					// prettier-ignore parenthesis required for Webstorm Svelte plugin
-					...$listParamsStore
+					...$listParams
 				} as ListParams,
 				identity: $authStore.identity
 			});
@@ -77,6 +77,8 @@
 
 	const { setItems, startAfter }: PaginationContext<SatelliteDid.Doc> =
 		getContext<PaginationContext<SatelliteDid.Doc>>(PAGINATION_CONTEXT_KEY);
+
+	const { listParams } = getContext<ListParamsContext>(LIST_PARAMS_CONTEXT_KEY);
 
 	let collection: string | undefined = $derived($store.rule?.[0]);
 </script>

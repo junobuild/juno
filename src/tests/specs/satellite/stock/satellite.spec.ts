@@ -1,7 +1,7 @@
 import { type SatelliteActor, type SatelliteDid, idlFactorySatellite } from '$declarations';
-import { Ed25519KeyIdentity } from '@dfinity/identity';
 import { type Actor, PocketIc } from '@dfinity/pic';
 import { assertNonNullish, fromNullable, toNullable } from '@dfinity/utils';
+import { Ed25519KeyIdentity } from '@icp-sdk/core/identity';
 import {
 	JUNO_AUTH_ERROR_NOT_ADMIN_CONTROLLER,
 	JUNO_AUTH_ERROR_NOT_CONTROLLER,
@@ -76,6 +76,17 @@ describe('Satellite', () => {
 	describe('admin', () => {
 		beforeAll(() => {
 			actor.setIdentity(controller);
+		});
+
+		it('should return size', async () => {
+			const { memory_size } = actor;
+
+			const size = await memory_size();
+
+			expect(size).toEqual({
+				heap: 3932160n,
+				stable: 50397184n
+			});
 		});
 
 		it('should create a db collection', async () => {

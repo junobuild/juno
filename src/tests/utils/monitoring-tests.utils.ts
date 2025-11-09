@@ -4,8 +4,8 @@ import type {
 	MissionControlDid
 } from '$declarations';
 import type { Actor } from '@dfinity/pic';
-import type { Principal } from '@dfinity/principal';
 import { assertNonNullish, fromNullable, toNullable } from '@dfinity/utils';
+import type { Principal } from '@icp-sdk/core/principal';
 
 const testMonitoring = ({
 	monitoring,

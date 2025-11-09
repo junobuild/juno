@@ -12,6 +12,8 @@
 
 {#if $authStore.identity === null}
 	<p>{$i18n.core.not_logged_in}</p>
+
+	<a class="button" href="/">{$i18n.not_found.go_home}</a>
 {:else}
 	{@render children()}
 {/if}

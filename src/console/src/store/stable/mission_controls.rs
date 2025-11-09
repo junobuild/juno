@@ -1,6 +1,8 @@
 use crate::constants::E8S_PER_ICP;
 use crate::store::services::{mutate_stable_state, read_stable_state};
-use crate::types::state::{MissionControl, MissionControls, MissionControlsStable, StableState};
+use crate::types::state::{
+    MissionControl, MissionControls, MissionControlsStable, Provider, StableState,
+};
 use ic_cdk::api::time;
 use junobuild_shared::structures::collect_stable_map_from;
 use junobuild_shared::types::state::{MissionControlId, UserId};
@@ -57,15 +59,20 @@ fn get_existing_mission_control_impl(
     }
 }
 
-pub fn init_empty_mission_control(user: &UserId) {
-    mutate_stable_state(|stable| init_empty_mission_control_impl(user, stable))
+pub fn init_empty_mission_control(user: &UserId, provider: &Option<Provider>) {
+    mutate_stable_state(|stable| init_empty_mission_control_impl(user, provider, stable))
 }
 
-fn init_empty_mission_control_impl(user: &UserId, state: &mut StableState) {
+fn init_empty_mission_control_impl(
+    user: &UserId,
+    provider: &Option<Provider>,
+    state: &mut StableState,
+) {
     let now = time();
 
     let mission_control = MissionControl {
         mission_control_id: None,
+        provider: provider.clone(),
         owner: *user,
         credits: E8S_PER_ICP,
         created_at: now,
@@ -75,7 +82,10 @@ fn init_empty_mission_control_impl(user: &UserId, state: &mut StableState) {
     state.mission_controls.insert(*user, mission_control);
 }
 
-pub fn add_mission_control(user: &UserId, mission_control_id: &MissionControlId) -> MissionControl {
+pub fn add_mission_control(
+    user: &UserId,
+    mission_control_id: &MissionControlId,
+) -> Result<MissionControl, &'static str> {
     mutate_stable_state(|stable| add_mission_control_impl(user, mission_control_id, stable))
 }
 
@@ -83,25 +93,52 @@ fn add_mission_control_impl(
     user: &UserId,
     mission_control_id: &MissionControlId,
     state: &mut StableState,
-) -> MissionControl {
+) -> Result<MissionControl, &'static str> {
     let now = time();
 
-    // We know for sure that we have created an empty mission control center
-    let mission_control = state.mission_controls.get(user).unwrap();
+    let mission_control = state
+        .mission_controls
+        .get(user)
+        .ok_or("User does not have a mission control.")?;
 
     let finalized_mission_control = MissionControl {
-        owner: mission_control.owner,
         mission_control_id: Some(*mission_control_id),
-        credits: mission_control.credits,
-        created_at: mission_control.created_at,
         updated_at: now,
+        ..mission_control
     };
 
     state
         .mission_controls
         .insert(*user, finalized_mission_control.clone());
 
-    finalized_mission_control
+    Ok(finalized_mission_control)
+}
+
+pub fn update_provider(user: &UserId, provider: &Provider) -> Result<MissionControl, String> {
+    mutate_stable_state(|stable| update_provider_impl(user, provider, stable))
+}
+
+fn update_provider_impl(
+    user: &UserId,
+    provider: &Provider,
+    state: &mut StableState,
+) -> Result<MissionControl, String> {
+    let mission_control = state
+        .mission_controls
+        .get(user)
+        .ok_or("User does not have a mission control.")?;
+
+    let update_mission_control = MissionControl {
+        updated_at: time(),
+        provider: Some(provider.clone()),
+        ..mission_control
+    };
+
+    state
+        .mission_controls
+        .insert(*user, update_mission_control.clone());
+
+    Ok(update_mission_control)
 }
 
 pub fn delete_mission_control(user: &UserId) -> Option<MissionControl> {

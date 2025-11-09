@@ -1,6 +1,6 @@
 <script lang="ts">
-	import type { Principal } from '@dfinity/principal';
 	import { isEmptyString, isNullish, nonNullish } from '@dfinity/utils';
+	import type { Principal } from '@icp-sdk/core/principal';
 	import { onMount, type Snippet, untrack } from 'svelte';
 	import { fade } from 'svelte/transition';
 	import type { MissionControlDid } from '$declarations';

@@ -4,11 +4,13 @@
 	import CliAdd from '$lib/components/cli/CliAdd.svelte';
 	import MissionControlGuard from '$lib/components/guards/MissionControlGuard.svelte';
 	import MetadataLoader from '$lib/components/loaders/MetadataLoader.svelte';
+	import SignInActions from '$lib/components/sign-in/SignInActions.svelte';
+	import ContainerCentered from '$lib/components/ui/ContainerCentered.svelte';
+	import Message from '$lib/components/ui/Message.svelte';
 	import { authSignedIn } from '$lib/derived/auth.derived';
 	import { missionControlIdDerived } from '$lib/derived/mission-control.derived';
 	import { sortedSatellites } from '$lib/derived/satellites.derived';
 	import { onIntersection } from '$lib/directives/intersection.directives';
-	import { signIn } from '$lib/services/auth/auth.services';
 	import { i18n } from '$lib/stores/i18n.store';
 	import { onLayoutTitleIntersection } from '$lib/stores/layout-intersecting.store';
 	import type { Option } from '$lib/types/utils';
@@ -46,13 +48,29 @@
 				</MetadataLoader>
 			</MissionControlGuard>
 		{:else}
-			<p>
-				{$i18n.cli.sign_in}
-			</p>
+			<ContainerCentered>
+				<p>
+					{$i18n.cli.sign_in}
+				</p>
 
-			<button onclick={async () => await signIn({})}>{$i18n.core.sign_in}</button>
+				<SignInActions />
+			</ContainerCentered>
 		{/if}
 	{:else}
-		<p>{$i18n.errors.cli_missing_params}</p>
+		<ContainerCentered>
+			<Message>
+				{#snippet icon()}
+					<span>❌</span>
+				{/snippet}
+
+				<p>{$i18n.errors.cli_missing_params}</p>
+			</Message>
+		</ContainerCentered>
 	{/if}
 </div>
+
+<style lang="scss">
+	p {
+		max-width: 450px;
+	}
+</style>

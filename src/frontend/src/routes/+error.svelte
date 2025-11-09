@@ -7,7 +7,7 @@
 
 <Layout centered>
 	{#snippet navbar()}
-		<Navbar signIn={false} />
+		<Navbar />
 	{/snippet}
 
 	<App404 />

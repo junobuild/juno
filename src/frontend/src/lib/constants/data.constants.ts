@@ -1,12 +1,12 @@
-import type { ListParamsStoreData } from '$lib/stores/list-params.store';
 import type { ListOrder, ListRulesParams } from '$lib/types/list';
+import type { ListParamsData } from '$lib/types/list-params.context';
 
 export const DEFAULT_LIST_ORDER: ListOrder = {
 	desc: false,
 	field: 'keys'
 };
 
-export const DEFAULT_LIST_PARAMS: ListParamsStoreData = { order: DEFAULT_LIST_ORDER, filter: {} };
+export const DEFAULT_LIST_PARAMS: ListParamsData = { order: DEFAULT_LIST_ORDER, filter: {} };
 
 export const DEFAULT_LIST_RULES_PARAMS: ListRulesParams = { includeSystem: false };
 

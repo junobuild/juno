@@ -226,7 +226,7 @@ pub mod utils {
     use candid::CandidType;
     use serde::Deserialize;
 
-    #[derive(Default, CandidType, Deserialize, Clone, PartialEq, Eq, Hash)]
+    #[derive(Default, CandidType, Deserialize, Clone, PartialEq, Eq, Hash, Debug)]
     pub struct CalendarDate {
         pub year: i32,
         pub month: u8,

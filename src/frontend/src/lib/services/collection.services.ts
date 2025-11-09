@@ -15,8 +15,8 @@ import { i18n } from '$lib/stores/i18n.store';
 import { toasts } from '$lib/stores/toasts.store';
 import type { OptionIdentity } from '$lib/types/itentity';
 import { memoryFromText, permissionFromText } from '$lib/utils/rules.utils';
-import type { Principal } from '@dfinity/principal';
 import { fromNullable, isNullish, nonNullish, toNullable } from '@dfinity/utils';
+import type { Principal } from '@icp-sdk/core/principal';
 import { get } from 'svelte/store';
 
 export const setRule = async ({

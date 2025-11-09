@@ -1,9 +1,10 @@
 <script lang="ts">
+	import { nonNullish } from '@dfinity/utils';
 	import type { Snippet } from 'svelte';
 
 	interface Props {
 		children: Snippet;
-		action: Snippet;
+		action?: Snippet;
 	}
 
 	let { children, action }: Props = $props();
@@ -12,9 +13,11 @@
 <div class="container">
 	{@render children()}
 
-	<div class="action">
-		{@render action()}
-	</div>
+	{#if nonNullish(action)}
+		<div class="action">
+			{@render action()}
+		</div>
+	{/if}
 </div>
 
 <style lang="scss">

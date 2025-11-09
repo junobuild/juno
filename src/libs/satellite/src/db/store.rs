@@ -13,8 +13,9 @@ use crate::db::state::{
 use crate::db::types::config::DbConfig;
 use crate::db::types::interface::{DelDoc, SetDbConfig, SetDoc};
 use crate::db::types::state::{Doc, DocContext, DocUpsert};
+use crate::db::types::store::AssertSetDocOptions;
 use crate::db::utils::filter_values;
-use crate::memory::internal::STATE;
+use crate::memory::state::STATE;
 use crate::types::store::{AssertContext, StoreContext};
 use candid::Principal;
 use junobuild_collections::msg::msg_db_collection_not_empty;
@@ -24,7 +25,6 @@ use junobuild_shared::list::list_values;
 use junobuild_shared::types::core::Key;
 use junobuild_shared::types::list::{ListParams, ListResults};
 use junobuild_shared::types::state::{Controllers, UserId};
-
 // ---------------------------------------------------------
 // Collection
 // ---------------------------------------------------------
@@ -163,7 +163,42 @@ pub fn set_doc_store(
         collection: &collection,
     };
 
-    let data = secure_set_doc(&context, &config, key.clone(), value)?;
+    let assert_options = AssertSetDocOptions {
+        with_assert_rate: true,
+    };
+
+    let data = secure_set_doc(&context, &config, &assert_options, key.clone(), value)?;
+
+    Ok(DocContext {
+        key,
+        collection,
+        data,
+    })
+}
+
+/// Internal variant of `set_doc_store`.
+///
+/// Performs a secure insert or update of a document in the specified collection,
+/// using custom assertion options.
+///
+/// Useful for the authentication flow using prepare delegation.
+pub fn internal_set_doc_store(
+    caller: UserId,
+    collection: CollectionKey,
+    key: Key,
+    value: SetDoc,
+    assert_options: &AssertSetDocOptions,
+) -> Result<DocContext<DocUpsert>, String> {
+    let controllers: Controllers = get_controllers();
+    let config = get_config();
+
+    let context = StoreContext {
+        caller,
+        controllers: &controllers,
+        collection: &collection,
+    };
+
+    let data = secure_set_doc(&context, &config, assert_options, key.clone(), value)?;
 
     Ok(DocContext {
         key,
@@ -175,6 +210,7 @@ pub fn set_doc_store(
 fn secure_set_doc(
     context: &StoreContext,
     config: &Option<DbConfig>,
+    assert_options: &AssertSetDocOptions,
     key: Key,
     value: SetDoc,
 ) -> Result<DocUpsert, String> {
@@ -186,19 +222,28 @@ fn secure_set_doc(
         auth_config: &auth_config,
     };
 
-    set_doc_impl(context, &assert_context, config, key, value)
+    set_doc_impl(context, &assert_context, config, assert_options, key, value)
 }
 
 fn set_doc_impl(
     context: &StoreContext,
     assert_context: &AssertContext,
     config: &Option<DbConfig>,
+    assert_options: &AssertSetDocOptions,
     key: Key,
     value: SetDoc,
 ) -> Result<DocUpsert, String> {
     let current_doc = get_state_doc(context.collection, &key, assert_context.rule)?;
 
-    assert_set_doc(context, assert_context, config, &key, &value, &current_doc)?;
+    assert_set_doc(
+        context,
+        assert_context,
+        config,
+        assert_options,
+        &key,
+        &value,
+        &current_doc,
+    )?;
 
     let doc: Doc = Doc::prepare(context.caller, &current_doc, value);
 

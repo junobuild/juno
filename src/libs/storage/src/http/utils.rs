@@ -6,6 +6,7 @@ use crate::memory::STATE;
 use crate::types::config::{StorageConfig, StorageConfigIFrame};
 use crate::types::runtime_state::StorageRuntimeState;
 use crate::types::store::{Asset, AssetEncoding, AssetKey, EncodingType};
+use ic_certification::HashTree;
 use junobuild_collections::types::rules::Memory;
 use junobuild_shared::ic::api::id;
 use serde_bytes::ByteBuf;
@@ -49,6 +50,7 @@ pub fn create_token(
     })
 }
 
+#[allow(clippy::too_many_arguments)]
 pub fn build_response_headers(
     url: &str,
     asset: &Asset,
@@ -57,10 +59,17 @@ pub fn build_response_headers(
     certificate_version: &Option<u16>,
     rewrite_source: &Option<String>,
     config: &StorageConfig,
+    sigs_tree: HashTree,
 ) -> Result<Vec<HeaderField>, &'static str> {
     let asset_headers = build_headers(asset, encoding, encoding_type, config);
 
-    extend_headers_with_certification(asset_headers, url, certificate_version, rewrite_source)
+    extend_headers_with_certification(
+        asset_headers,
+        url,
+        certificate_version,
+        rewrite_source,
+        sigs_tree,
+    )
 }
 
 pub fn build_response_redirect_headers(
@@ -68,10 +77,11 @@ pub fn build_response_redirect_headers(
     location: &str,
     iframe: &StorageConfigIFrame,
     certificate_version: &Option<u16>,
+    sigs_tree: HashTree,
 ) -> Result<Vec<HeaderField>, &'static str> {
     let asset_headers = build_redirect_headers(location, iframe);
 
-    extend_headers_with_certification(asset_headers, url, certificate_version, &None)
+    extend_headers_with_certification(asset_headers, url, certificate_version, &None, sigs_tree)
 }
 
 fn extend_headers_with_certification(
@@ -79,8 +89,10 @@ fn extend_headers_with_certification(
     url: &str,
     certificate_version: &Option<u16>,
     rewrite_source: &Option<String>,
+    sigs_tree: HashTree,
 ) -> Result<Vec<HeaderField>, &'static str> {
-    let certified_header = build_certified_headers(url, certificate_version, rewrite_source)?;
+    let certified_header =
+        build_certified_headers(url, certificate_version, rewrite_source, sigs_tree)?;
     let certified_expression = build_certified_expression(&asset_headers, certificate_version)?;
 
     match certified_expression {
@@ -95,12 +107,14 @@ fn build_certified_headers(
     url: &str,
     certificate_version: &Option<u16>,
     rewrite_source: &Option<String>,
+    sigs_tree: HashTree,
 ) -> Result<HeaderField, &'static str> {
     STATE.with(|state| {
         build_certified_headers_impl(
             url,
             certificate_version,
             rewrite_source,
+            sigs_tree,
             &state.borrow().runtime.storage,
         )
     })
@@ -110,6 +124,7 @@ fn build_certified_headers_impl(
     url: &str,
     certificate_version: &Option<u16>,
     rewrite_source: &Option<String>,
+    sigs_tree: HashTree,
     state: &StorageRuntimeState,
 ) -> Result<HeaderField, &'static str> {
     build_asset_certificate_header(
@@ -117,6 +132,7 @@ fn build_certified_headers_impl(
         url.to_owned(),
         certificate_version,
         rewrite_source,
+        sigs_tree,
     )
 }
 

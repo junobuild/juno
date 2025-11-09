@@ -1,7 +1,5 @@
 import type { ConsoleActor, ConsoleDid, SatelliteActor, SatelliteDid } from '$declarations';
-import type { Identity } from '@dfinity/agent';
 import type { Actor, PocketIc } from '@dfinity/pic';
-import type { Principal } from '@dfinity/principal';
 import {
 	arrayBufferToUint8Array,
 	assertNonNullish,
@@ -9,6 +7,8 @@ import {
 	toNullable,
 	uint8ArrayToHexString
 } from '@dfinity/utils';
+import type { Identity } from '@icp-sdk/core/agent';
+import type { Principal } from '@icp-sdk/core/principal';
 import {
 	JUNO_CDN_PROPOSALS_ERROR_CANNOT_COMMIT,
 	JUNO_CDN_PROPOSALS_ERROR_CANNOT_DELETE_ASSETS,

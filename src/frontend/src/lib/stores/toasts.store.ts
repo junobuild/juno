@@ -1,5 +1,6 @@
 import type { ToastMsg } from '$lib/types/toast';
 import { errorDetailToString } from '$lib/utils/error.utils';
+import { nonNullish } from '@dfinity/utils';
 import { writable } from 'svelte/store';
 
 const initToastsStore = () => {
@@ -10,6 +11,11 @@ const initToastsStore = () => {
 
 		error({ text, detail }: { text: string; detail?: unknown }) {
 			console.error(text, detail);
+
+			if (nonNullish(detail) && detail instanceof Error && !(detail.cause instanceof Error)) {
+				console.error('Cause of the error:', detail.cause);
+			}
+
 			update((messages: ToastMsg[]) => [
 				...messages,
 				{ text, level: 'error', detail: errorDetailToString(detail) }

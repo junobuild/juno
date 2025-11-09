@@ -1,0 +1,54 @@
+import { idlFactoryConsole, type ConsoleActor } from '$declarations';
+import { PocketIc, type Actor } from '@dfinity/pic';
+import { Ed25519KeyIdentity } from '@icp-sdk/core/identity';
+import type { Principal } from '@icp-sdk/core/principal';
+import { inject } from 'vitest';
+import { testUploadProposalManyAssets } from '../../../utils/cdn-assertions-tests.utils';
+import { CONSOLE_WASM_PATH } from '../../../utils/setup-tests.utils';
+
+describe('Console > Cdn > Batch', () => {
+	let pic: PocketIc;
+	let actor: Actor<ConsoleActor>;
+
+	let canisterId: Principal;
+
+	const controller = Ed25519KeyIdentity.generate();
+
+	const currentDate = new Date(2021, 6, 10, 0, 0, 0, 0);
+
+	beforeAll(async () => {
+		pic = await PocketIc.create(inject('PIC_URL'));
+
+		await pic.setTime(currentDate.getTime());
+
+		const { actor: c, canisterId: cId } = await pic.setupCanister<ConsoleActor>({
+			idlFactory: idlFactoryConsole,
+			wasm: CONSOLE_WASM_PATH,
+			sender: controller.getPrincipal()
+		});
+
+		actor = c;
+		actor.setIdentity(controller);
+
+		canisterId = cId;
+	});
+
+	afterAll(async () => {
+		await pic?.tearDown();
+	});
+
+	describe('Admin', () => {
+		beforeAll(() => {
+			actor.setIdentity(controller);
+		});
+
+		testUploadProposalManyAssets({
+			expectedProposalId: 1n,
+			actor: () => actor,
+			currentDate,
+			canisterId: () => canisterId,
+			caller: () => controller,
+			pic: () => pic
+		});
+	});
+});

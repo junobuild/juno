@@ -1,6 +1,6 @@
 <script lang="ts">
-	import type { Principal } from '@dfinity/principal';
 	import { isEmptyString } from '@dfinity/utils';
+	import type { Principal } from '@icp-sdk/core/principal';
 	import type { MissionControlDid } from '$declarations';
 	import Segment from '$lib/components/segments/Segment.svelte';
 	import Value from '$lib/components/ui/Value.svelte';

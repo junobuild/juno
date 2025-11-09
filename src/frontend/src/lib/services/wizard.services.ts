@@ -30,10 +30,10 @@ import { type WizardCreateProgress, WizardCreateProgressStep } from '$lib/types/
 import type { Option } from '$lib/types/utils';
 import { emit } from '$lib/utils/events.utils';
 import { waitAndRestartWallet } from '$lib/utils/wallet.utils';
-import type { Identity } from '@dfinity/agent';
-import { Principal } from '@dfinity/principal';
 import { assertNonNullish, isNullish, nonNullish, toNullable } from '@dfinity/utils';
 import type { PrincipalText } from '@dfinity/zod-schemas';
+import type { Identity } from '@icp-sdk/core/agent';
+import { Principal } from '@icp-sdk/core/principal';
 import { get } from 'svelte/store';
 
 type GetFeeBalance =

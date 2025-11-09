@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 
-import { Ed25519KeyIdentity } from '@dfinity/identity';
+import { Ed25519KeyIdentity } from '@icp-sdk/core/identity';
 import { getIdentity, saveToken } from './console.config.utils.mjs';
 import { targetMainnet } from './utils.mjs';
 

@@ -1,6 +1,6 @@
 <script lang="ts">
-	import { Ed25519KeyIdentity } from '@dfinity/identity';
 	import { isNullish, nonNullish } from '@dfinity/utils';
+	import { Ed25519KeyIdentity } from '@icp-sdk/core/identity';
 	import { untrack } from 'svelte';
 	import IconWarning from '$lib/components/icons/IconWarning.svelte';
 	import Identifier from '$lib/components/ui/Identifier.svelte';

@@ -4,6 +4,7 @@ use crate::assets::storage::store::assert_assets_collection_empty_store;
 use crate::assets::storage::strategy_impls::StorageState;
 use crate::auth::alternative_origins::update_alternative_origins;
 use crate::auth::store::get_config as get_auth_config;
+use crate::certification::strategy_impls::StorageCertificate;
 use crate::rules::internal::unsafe_set_rule;
 use crate::rules::store::get_rule_storage;
 use junobuild_collections::constants::assets::COLLECTION_ASSET_KEY;
@@ -48,7 +49,7 @@ pub fn switch_storage_memory() -> Result<(), String> {
     unsafe_set_rule(&releases_collection, &update_releases_rule);
 
     // Redo .well-known/ic-domains but, on the new memory
-    update_custom_domains_asset(&StorageState)?;
+    update_custom_domains_asset(&StorageState, &StorageCertificate)?;
 
     // Redo .well-known/ii-alternative-origins but, on the new memory
     if let Some(auth_config) = get_auth_config() {

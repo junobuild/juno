@@ -1,5 +1,5 @@
-import { checkAccountId } from '@dfinity/ledger-icp';
 import { isNullish } from '@dfinity/utils';
+import { checkAccountId } from '@icp-sdk/canisters/ledger/icp';
 
 export const isIcpAccountIdentifier = (address: string | undefined): boolean => {
 	if (isNullish(address)) {

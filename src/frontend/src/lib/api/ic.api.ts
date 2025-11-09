@@ -3,13 +3,13 @@ import { getAgent } from '$lib/api/_agent/_agent.api';
 import { getICActor } from '$lib/api/actors/actor.ic.api';
 import type { CanisterInfo, CanisterLogVisibility, CanisterStatus } from '$lib/types/canister';
 import type { Snapshots } from '$lib/types/progress-snapshot';
+import { nonNullish, toNullable } from '@dfinity/utils';
 import {
 	CanisterStatus as AgentCanisterStatus,
 	AnonymousIdentity,
 	type Identity
-} from '@dfinity/agent';
-import { Principal } from '@dfinity/principal';
-import { nonNullish, toNullable } from '@dfinity/utils';
+} from '@icp-sdk/core/agent';
+import { Principal } from '@icp-sdk/core/principal';
 
 const toStatus = (
 	status: { stopped: null } | { stopping: null } | { running: null }
@@ -129,7 +129,7 @@ export const canisterLogs = async ({
 	canisterId: Principal;
 	identity: Identity;
 }): Promise<ICDid.canister_log_record[]> => {
-	const { fetch_canister_logs } = await getICActor({ identity });
+	const { fetch_canister_logs } = await getICActor({ identity, certified: false });
 
 	const { canister_log_records } = await fetch_canister_logs({
 		canister_id: canisterId

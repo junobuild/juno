@@ -1,6 +1,6 @@
 <script lang="ts">
-	import type { Principal } from '@dfinity/principal';
 	import { isNullish, notEmptyString } from '@dfinity/utils';
+	import type { Principal } from '@icp-sdk/core/principal';
 	import { run } from 'svelte/legacy';
 	import { fade } from 'svelte/transition';
 	import Value from '$lib/components/ui/Value.svelte';

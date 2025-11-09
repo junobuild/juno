@@ -13,6 +13,7 @@ members = [
 	"src/libs/collections",
 	"src/libs/storage",
 	"src/libs/cdn",
+	"src/libs/auth",
 	"src/tests/fixtures/test_satellite"
 ]
 resolver = "2"
@@ -40,6 +41,7 @@ serde_bytes = "0.11.19"
 ciborium = "0.2.2"
 sha2 = "0.10.8"
 hex = "0.4.3"
+base64 = "0.22.1"
 url = "2.5.4"
 regex = "1.11.1"
 getrandom = "0.3.2"
@@ -50,4 +52,5 @@ junobuild-shared = { path = "./src/libs/shared" }
 junobuild-collections = { path = "./src/libs/collections" }
 junobuild-storage = { path = "./src/libs/storage" }
 junobuild-cdn = { path = "./src/libs/cdn" }
+junobuild-auth = { path = "./src/libs/auth" }
 junobuild-utils = { path = "./src/libs/utils" }

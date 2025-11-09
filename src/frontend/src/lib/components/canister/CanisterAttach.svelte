@@ -1,6 +1,6 @@
 <script lang="ts">
-	import { Principal } from '@dfinity/principal';
 	import { debounce, isNullish, nonNullish } from '@dfinity/utils';
+	import { Principal } from '@icp-sdk/core/principal';
 	import type { Snippet } from 'svelte';
 	import Popover from '$lib/components/ui/Popover.svelte';
 	import { missionControlIdDerived } from '$lib/derived/mission-control.derived';

@@ -3,8 +3,8 @@ import { getOrbiterActor } from '$lib/api/actors/actor.juno.api';
 import type { OptionIdentity } from '$lib/types/itentity';
 import type { PageViewsParams, PageViewsPeriod } from '$lib/types/orbiter';
 import { toBigIntNanoSeconds } from '$lib/utils/date.utils';
-import type { Principal } from '@dfinity/principal';
 import { nonNullish, toNullable } from '@dfinity/utils';
+import type { Principal } from '@icp-sdk/core/principal';
 
 export const getPageViews = async ({
 	satelliteId,

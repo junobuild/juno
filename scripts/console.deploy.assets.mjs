@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 
-import { ICManagementCanister } from '@dfinity/ic-management';
 import { toNullable } from '@dfinity/utils';
+import { ICManagementCanister } from '@icp-sdk/canisters/ic-management';
 import { uploadAssetsWithProposal } from '@junobuild/cdn';
 import { deploy as cliDeploy, hasArgs } from '@junobuild/cli-tools';
 import { consoleActor, icAgent, localAgent } from './actor.mjs';

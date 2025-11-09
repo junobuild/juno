@@ -1,6 +1,6 @@
 <script lang="ts">
-	import type { Principal } from '@dfinity/principal';
 	import { fromNullable, isNullish, nonNullish, fromNullishNullable } from '@dfinity/utils';
+	import type { Principal } from '@icp-sdk/core/principal';
 	import { getContext } from 'svelte';
 	import type { SatelliteDid } from '$declarations';
 	import { deleteAsset } from '$lib/api/satellites.api';

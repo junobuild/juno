@@ -1,17 +1,19 @@
 <script lang="ts">
-	import type { Principal } from '@dfinity/principal';
 	import { isNullish } from '@dfinity/utils';
+	import type { Principal } from '@icp-sdk/core/principal';
 	import { getContext, type Snippet } from 'svelte';
 	import Confirmation from '$lib/components/core/Confirmation.svelte';
 	import IconDelete from '$lib/components/icons/IconDelete.svelte';
 	import { busy } from '$lib/stores/busy.store';
 	import { i18n } from '$lib/stores/i18n.store';
-	import { listParamsStore } from '$lib/stores/list-params.store';
 	import { toasts } from '$lib/stores/toasts.store';
+	import { type ListParamsContext, LIST_PARAMS_CONTEXT_KEY } from '$lib/types/list-params.context';
 	import { RULES_CONTEXT_KEY, type RulesContext } from '$lib/types/rules.context';
 	import { emit } from '$lib/utils/events.utils';
 
 	const { store }: RulesContext = getContext<RulesContext>(RULES_CONTEXT_KEY);
+
+	const { reload: reloadListParams } = getContext<ListParamsContext>(LIST_PARAMS_CONTEXT_KEY);
 
 	interface Props {
 		deleteData: (params: { collection: string; satelliteId: Principal }) => Promise<void>;
@@ -46,7 +48,7 @@
 				collection
 			});
 
-			listParamsStore.reload();
+			reloadListParams();
 		} catch (err: unknown) {
 			toasts.error({
 				text: $i18n.errors.data_delete,

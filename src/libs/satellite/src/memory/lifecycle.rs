@@ -2,7 +2,8 @@ use crate::assets::storage::certified_assets::upgrade::defer_init_certified_asse
 use crate::hooks::lifecycle::{
     invoke_on_init, invoke_on_init_sync, invoke_on_post_upgrade, invoke_on_post_upgrade_sync,
 };
-use crate::memory::internal::{get_memory_for_upgrade, init_stable_state, STATE};
+use crate::memory::internal::{get_memory_for_upgrade, init_stable_state};
+use crate::memory::state::STATE;
 use crate::memory::utils::init_storage_heap_state;
 use crate::random::init::defer_init_random_seed;
 use crate::types::state::{HeapState, RuntimeState, State};

@@ -41,9 +41,9 @@
 </script>
 
 <IdentityGuard>
-	<Tabs>
-		<Loaders>
-			<SatelliteGuard>
+	<Loaders>
+		<SatelliteGuard>
+			<Tabs>
 				<MissionControlGuard>
 					{#if nonNullish($satelliteStore) && nonNullish($missionControlIdDerived)}
 						{#if $store.tabId === $store.tabs[0].id}
@@ -53,7 +53,7 @@
 						{/if}
 					{/if}
 				</MissionControlGuard>
-			</SatelliteGuard>
-		</Loaders>
-	</Tabs>
+			</Tabs>
+		</SatelliteGuard>
+	</Loaders>
 </IdentityGuard>

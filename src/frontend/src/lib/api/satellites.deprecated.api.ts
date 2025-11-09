@@ -9,8 +9,8 @@ import { PAGINATION } from '$lib/constants/app.constants';
 import type { OptionIdentity } from '$lib/types/itentity';
 import type { ListParams } from '$lib/types/list';
 import { toListParams } from '$lib/utils/satellite.utils';
-import { Principal } from '@dfinity/principal';
 import { isNullish, toNullable } from '@dfinity/utils';
+import { Principal } from '@icp-sdk/core/principal';
 
 const toListParams008 = ({
 	startAfter,

@@ -2,7 +2,7 @@ use crate::storage::assert_set_config;
 use crate::storage::heap::{delete_domain, get_config, get_domain, insert_config, insert_domain};
 use crate::strategies::CdnHeapStrategy;
 use junobuild_shared::types::core::DomainName;
-use junobuild_storage::strategies::StorageStateStrategy;
+use junobuild_storage::strategies::{StorageCertificateStrategy, StorageStateStrategy};
 use junobuild_storage::types::config::StorageConfig;
 use junobuild_storage::types::interface::SetStorageConfig;
 use junobuild_storage::well_known::update::update_custom_domains_asset;
@@ -37,12 +37,13 @@ pub fn set_config_store(
 pub fn set_domain_store(
     cdn_heap: &impl CdnHeapStrategy,
     storage_state: &impl StorageStateStrategy,
+    certificate: &impl StorageCertificateStrategy,
     domain_name: &DomainName,
     bn_id: &Option<String>,
 ) -> Result<(), String> {
     set_state_domain(cdn_heap, domain_name, bn_id);
 
-    update_custom_domains_asset(storage_state)
+    update_custom_domains_asset(storage_state, certificate)
 }
 
 fn set_state_domain(
@@ -60,9 +61,10 @@ fn set_state_domain(
 pub fn delete_domain_store(
     cdn_heap: &impl CdnHeapStrategy,
     storage_state: &impl StorageStateStrategy,
+    certificate: &impl StorageCertificateStrategy,
     domain_name: &DomainName,
 ) -> Result<(), String> {
     delete_domain(cdn_heap, domain_name);
 
-    update_custom_domains_asset(storage_state)
+    update_custom_domains_asset(storage_state, certificate)
 }

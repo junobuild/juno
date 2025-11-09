@@ -1,6 +1,6 @@
 <script lang="ts">
-	import { Principal } from '@dfinity/principal';
 	import { nonNullish, type TokenAmountV2 } from '@dfinity/utils';
+	import { Principal } from '@icp-sdk/core/principal';
 	import CanisterTopUpCycles from '$lib/components/canister/CanisterTopUpCycles.svelte';
 	import Segment from '$lib/components/segments/Segment.svelte';
 	import SendTokensAmount from '$lib/components/tokens/SendTokensAmount.svelte';

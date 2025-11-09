@@ -1,7 +1,9 @@
 #![deny(clippy::disallowed_methods)]
 
 mod api;
+mod auth;
 mod cdn;
+mod certification;
 mod constants;
 mod factory;
 mod guards;
@@ -11,8 +13,11 @@ mod metadata;
 mod store;
 mod types;
 
+use crate::types::interface::AuthenticationArgs;
+use crate::types::interface::AuthenticationResult;
 use crate::types::interface::Config;
 use crate::types::interface::DeleteProposalAssets;
+use crate::types::interface::GetDelegationArgs;
 use crate::types::state::InvitationCode;
 use crate::types::state::MissionControl;
 use crate::types::state::MissionControls;
@@ -20,6 +25,9 @@ use crate::types::state::Payments;
 use candid::Principal;
 use ic_cdk_macros::export_candid;
 use ic_ledger_types::Tokens;
+use junobuild_auth::delegation::types::GetDelegationResult;
+use junobuild_auth::state::types::config::AuthenticationConfig;
+use junobuild_auth::state::types::interface::SetAuthenticationConfig;
 use junobuild_cdn::proposals::CommitProposal;
 use junobuild_cdn::proposals::ListProposalResults;
 use junobuild_cdn::proposals::ListProposalsParams;

@@ -1,5 +1,5 @@
-import { IDL } from '@dfinity/candid';
 import { fromNullable } from '@dfinity/utils';
+import { IDL } from '@icp-sdk/core/candid';
 import type { OnSetDocContext } from '@junobuild/functions';
 import { call, id } from '@junobuild/functions/ic-cdk';
 import { encodeDocData, setDocStore } from '@junobuild/functions/sdk';

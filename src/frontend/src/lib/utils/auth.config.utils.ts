@@ -23,6 +23,8 @@ export const buildSetAuthenticationConfig = ({
 						external_alternative_origins
 					}
 				],
+				// TODO: support for Google configuration in the Console UI
+				openid: [],
 				rules: []
 			}
 		: {

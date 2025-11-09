@@ -47,12 +47,12 @@
 				{$i18n.analytics.periodicity}
 			{/snippet}
 			<select bind:value={periodicity}>
-				<option value={4}> {$i18n.analytics.four_hours} </option>
-				<option value={8}> {$i18n.analytics.eight_hours} </option>
-				<option value={12}> {$i18n.analytics.half_day} </option>
-				<option value={24}> {$i18n.analytics.one_day} </option>
-				<option value={168}> {$i18n.analytics.a_week} </option>
-				<option value={720}> {$i18n.analytics.a_month} </option>
+				<option value={4}> {$i18n.core.four_hours} </option>
+				<option value={8}> {$i18n.core.eight_hours} </option>
+				<option value={12}> {$i18n.core.half_day} </option>
+				<option value={24}> {$i18n.core.a_day} </option>
+				<option value={168}> {$i18n.core.a_week} </option>
+				<option value={720}> {$i18n.core.a_month} </option>
 			</select>
 		</Value>
 

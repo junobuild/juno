@@ -1,7 +1,7 @@
 <script lang="ts">
-	import { encodeSnapshotId } from '@dfinity/ic-management';
-	import type { Principal } from '@dfinity/principal';
 	import { isNullish } from '@dfinity/utils';
+	import { encodeSnapshotId } from '@icp-sdk/canisters/ic-management';
+	import type { Principal } from '@icp-sdk/core/principal';
 	import { fade } from 'svelte/transition';
 	import SnapshotActions from '$lib/components/snapshot/SnapshotActions.svelte';
 	import SnapshotDelete from '$lib/components/snapshot/SnapshotDelete.svelte';
@@ -37,7 +37,7 @@
 	});
 
 	const openCreateModal = () => {
-		if (isNullish(snapshots)) {
+		if (snapshots === undefined) {
 			toasts.error({ text: $i18n.errors.snapshot_not_loaded });
 			return;
 		}

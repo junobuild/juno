@@ -12,5 +12,5 @@ export const getReleasesMetadata = async (): Promise<ReleasesMetadata> => {
 		return ReleasesMetadataSchema.parse(data);
 	}
 
-	return await fetchReleasesMetadata({ cdnUrl: JUNO_CDN_URL });
+	return await fetchReleasesMetadata({ cdnUrl: JUNO_CDN_URL ?? '' });
 };

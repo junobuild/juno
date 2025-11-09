@@ -4,6 +4,7 @@ use crate::types::store::{
     Asset, AssetAssertUpload, AssetEncoding, Batch, EncodingType, ReferenceId,
 };
 use candid::Principal;
+use ic_certification::HashTree;
 use junobuild_collections::types::core::CollectionKey;
 use junobuild_collections::types::rules::{Memory, Permission, Rule};
 use junobuild_shared::types::core::Blob;
@@ -143,4 +144,13 @@ pub trait StorageUploadStrategy {
         full_path: &FullPath,
         rule: &Rule,
     ) -> Result<Option<Asset>, String>;
+}
+
+pub trait StorageCertificateStrategy {
+    fn update_certified_data(&self);
+
+    // We use this function to access the auth signatures root hash
+    // in the storage crate when we build an HTTP response because the
+    // tree is a fork of both assets and signatures.
+    fn get_pruned_labeled_sigs_root_hash_tree(&self) -> HashTree;
 }

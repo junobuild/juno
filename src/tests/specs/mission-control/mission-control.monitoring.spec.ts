@@ -3,11 +3,11 @@ import {
 	type MissionControlActor,
 	type MissionControlDid
 } from '$declarations';
-import { AnonymousIdentity } from '@dfinity/agent';
-import { Ed25519KeyIdentity } from '@dfinity/identity';
 import { PocketIc, type Actor } from '@dfinity/pic';
-import type { Principal } from '@dfinity/principal';
 import { fromNullable, nonNullish, toNullable } from '@dfinity/utils';
+import { AnonymousIdentity } from '@icp-sdk/core/agent';
+import { Ed25519KeyIdentity } from '@icp-sdk/core/identity';
+import type { Principal } from '@icp-sdk/core/principal';
 import { inject } from 'vitest';
 import { MISSION_CONTROL_ADMIN_CONTROLLER_ERROR_MSG } from '../../constants/mission-control-tests.constants';
 import { satelliteIdMock } from '../../mocks/orbiter.mocks';

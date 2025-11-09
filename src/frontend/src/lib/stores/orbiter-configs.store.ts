@@ -1,6 +1,6 @@
 import type { OrbiterDid } from '$declarations';
 import type { OrbiterIdText } from '$lib/types/orbiter';
-import type { Principal } from '@dfinity/principal';
+import type { Principal } from '@icp-sdk/core/principal';
 import { type Readable, writable } from 'svelte/store';
 
 export type OrbiterConfigs = [Principal, OrbiterDid.OrbiterSatelliteConfig][];

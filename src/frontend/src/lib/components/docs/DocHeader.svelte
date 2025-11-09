@@ -1,6 +1,6 @@
 <script lang="ts">
-	import type { Principal } from '@dfinity/principal';
 	import { isNullish, jsonReplacer } from '@dfinity/utils';
+	import type { Principal } from '@icp-sdk/core/principal';
 	import { fromArray } from '@junobuild/utils';
 	import { getContext } from 'svelte';
 	import type { SatelliteDid } from '$declarations';

@@ -1,8 +1,8 @@
 import { getAgent } from '$lib/api/_agent/_agent.api';
 import { CMC_CANISTER_ID } from '$lib/constants/app.constants';
-import { AnonymousIdentity } from '@dfinity/agent';
-import { CMCCanister } from '@dfinity/cmc';
-import { Principal } from '@dfinity/principal';
+import { CMCCanister } from '@icp-sdk/canisters/cmc';
+import { AnonymousIdentity } from '@icp-sdk/core/agent';
+import { Principal } from '@icp-sdk/core/principal';
 
 const NUMBER_XDR_PER_ONE_ICP = 10_000;
 

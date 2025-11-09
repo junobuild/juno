@@ -1,5 +1,5 @@
 <script lang="ts">
-	import type { Principal } from '@dfinity/principal';
+	import type { Principal } from '@icp-sdk/core/principal';
 	import { getContext } from 'svelte';
 	import ButtonTableAction from '$lib/components/ui/ButtonTableAction.svelte';
 	import Popover from '$lib/components/ui/Popover.svelte';

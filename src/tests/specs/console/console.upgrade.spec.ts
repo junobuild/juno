@@ -6,11 +6,11 @@ import {
 	type ConsoleActor0014,
 	type ConsoleActor008
 } from '$declarations';
-import type { Identity } from '@dfinity/agent';
-import { Ed25519KeyIdentity } from '@dfinity/identity';
 import { PocketIc, type Actor } from '@dfinity/pic';
-import type { Principal } from '@dfinity/principal';
 import { assertNonNullish, fromNullable } from '@dfinity/utils';
+import type { Identity } from '@icp-sdk/core/agent';
+import { Ed25519KeyIdentity } from '@icp-sdk/core/identity';
+import type { Principal } from '@icp-sdk/core/principal';
 import { inject } from 'vitest';
 import { mockScript } from '../../mocks/storage.mocks';
 import {
@@ -178,7 +178,7 @@ describe('Console > Upgrade', () => {
 
 			await updateRateConfig({ actor });
 
-			await deploySegments(actor);
+			await deploySegments({ actor });
 		});
 
 		it('should preserve controllers even if scope enum is extended', async () => {

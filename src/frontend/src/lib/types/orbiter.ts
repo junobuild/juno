@@ -1,7 +1,7 @@
 import type { OrbiterDid } from '$declarations';
 import type { OptionIdentity } from '$lib/types/itentity';
-import type { Principal } from '@dfinity/principal';
 import type { PrincipalText } from '@dfinity/zod-schemas';
+import type { Principal } from '@icp-sdk/core/principal';
 
 export interface PageViewsPeriod {
 	from: Date;

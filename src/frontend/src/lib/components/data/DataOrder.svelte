@@ -1,18 +1,21 @@
 <script lang="ts">
+	import { getContext } from 'svelte';
 	import IconSort from '$lib/components/icons/IconSort.svelte';
 	import PopoverApply from '$lib/components/ui/PopoverApply.svelte';
 	import { i18n } from '$lib/stores/i18n.store';
-	import { listParamsStore } from '$lib/stores/list-params.store';
 	import type { ListOrderField } from '$lib/types/list';
+	import { type ListParamsContext, LIST_PARAMS_CONTEXT_KEY } from '$lib/types/list-params.context';
 
-	let desc = $state($listParamsStore.order.desc);
-	let field: ListOrderField = $state($listParamsStore.order.field);
+	const { listParams, setOrder } = getContext<ListParamsContext>(LIST_PARAMS_CONTEXT_KEY);
+
+	let desc = $state($listParams.order.desc);
+	let field: ListOrderField = $state($listParams.order.field);
 
 	let visible: boolean = $state(false);
 
 	// eslint-disable-next-line require-await
 	const apply = async () => {
-		listParamsStore.setOrder({
+		setOrder({
 			desc,
 			field
 		});
@@ -28,9 +31,9 @@
 		// Avoid glitch
 		setTimeout(() => {
 			// eslint-disable-next-line prefer-destructuring
-			desc = $listParamsStore.order.desc;
+			desc = $listParams.order.desc;
 			// eslint-disable-next-line prefer-destructuring
-			field = $listParamsStore.order.field;
+			field = $listParams.order.field;
 		}, 250);
 	});
 </script>

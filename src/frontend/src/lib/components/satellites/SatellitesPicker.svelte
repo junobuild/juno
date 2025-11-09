@@ -7,8 +7,8 @@
 </script>
 
 <script lang="ts">
-	import { Principal } from '@dfinity/principal';
 	import { nonNullish } from '@dfinity/utils';
+	import { Principal } from '@icp-sdk/core/principal';
 	import { onMount } from 'svelte';
 	import { pageSatelliteId } from '$lib/derived/page.derived.svelte';
 	import { i18n } from '$lib/stores/i18n.store';

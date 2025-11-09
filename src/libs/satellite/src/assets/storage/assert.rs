@@ -1,4 +1,4 @@
-use crate::auth::caller::assert_caller_is_allowed;
+use crate::auth::assert::assert_caller_is_allowed;
 use crate::hooks::storage::invoke_assert_delete_asset;
 use crate::types::store::{AssertContext, StoreContext};
 use crate::user::core::assert::{assert_user_is_not_banned, is_known_user};

@@ -4,10 +4,13 @@ import { defineConsoleConfig } from '@junobuild/config';
 export default defineConsoleConfig(({ mode }) => ({
 	id: 'cokmz-oiaaa-aaaal-aby6q-cai',
 	source: 'build',
-	...(mode === 'development' && {
+	...(mode !== 'skylab' && {
 		authentication: {
 			google: {
-				clientId: '974645854757-h6ndt2o4kqv8o63512ssdlf20gnqjb8m.apps.googleusercontent.com',
+				clientId:
+					mode === 'production'
+						? '370155500951-42lqfeh5e71m9766s04hhp1ub4jfc1sd.apps.googleusercontent.com'
+						: '370155500951-s1hflh8hgj60it9o1teebuk9sqsrobt2.apps.googleusercontent.com',
 				delegation: {
 					// Like identities derived by Internet Identity, those derived with OpenID
 					// are allowed to interact with any canister on the Internet Computer.

@@ -1194,9 +1194,10 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "b1a46d1a171d865aa5f83f92695765caa047a9b4cbae2cbf37dbd613a793fd4c"
 
 [[package]]
-name = "jsonwebtoken"
-version = "10.1.0"
-source = "git+https://github.com/peterpeterparker/jsonwebtoken?branch=patch-v10.1.0#730b8877792d6dd4e421b9e60a909393df4abc4f"
+name = "jsonwebtoken-ic"
+version = "10.2.0-ic.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "4859dfd14dfb057211b8938614bab7feb41b6eb3acbfc74b291639b51d175150"
 dependencies = [
  "base64",
  "ed25519-dalek",
@@ -1225,7 +1226,7 @@ dependencies = [
  "ic-canister-sig-creation",
  "ic-cdk",
  "ic-certification",
- "jsonwebtoken",
+ "jsonwebtoken-ic",
  "junobuild-shared",
  "serde",
  "serde_bytes",

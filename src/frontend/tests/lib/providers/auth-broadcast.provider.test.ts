@@ -58,7 +58,7 @@ describe('auth-broadcast.services', () => {
 				})
 			);
 
-			bc = new AuthBroadcastChannel();
+			bc = AuthBroadcastChannel.getInstance();
 
 			bc.onLoginSuccess(mockHandler);
 		});

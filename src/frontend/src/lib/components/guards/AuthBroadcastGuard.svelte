@@ -30,7 +30,7 @@
 
 	const openBc = () => {
 		try {
-			const bc = new AuthBroadcastChannel();
+			const bc = AuthBroadcastChannel.getInstance();
 
 			bc.onLoginSuccess(handleBroadcastLoginSuccess);
 

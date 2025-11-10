@@ -1251,11 +1251,11 @@ dependencies = [
 
 [[package]]
 name = "junobuild-collections"
-version = "0.2.4"
+version = "0.2.5"
 dependencies = [
  "candid",
  "ic-cdk",
- "junobuild-shared 0.3.0",
+ "junobuild-shared 0.4.0",
  "serde",
 ]
 

@@ -253,10 +253,10 @@ dependencies = [
  "ic-ledger-types",
  "ic-stable-structures 0.7.0",
  "junobuild-auth",
- "junobuild-cdn 0.4.0",
+ "junobuild-cdn",
  "junobuild-collections",
- "junobuild-shared 0.4.0",
- "junobuild-storage 0.4.0",
+ "junobuild-shared",
+ "junobuild-storage",
  "regex",
  "semver",
  "serde",
@@ -1227,29 +1227,12 @@ dependencies = [
  "ic-cdk",
  "ic-certification",
  "jsonwebtoken-ic",
- "junobuild-shared 0.3.0",
+ "junobuild-shared",
  "serde",
  "serde_bytes",
  "serde_json",
  "sha2",
  "url",
-]
-
-[[package]]
-name = "junobuild-cdn"
-version = "0.3.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "c6038eb649cb40aa2035eaa3d3f1a1fa0513d725e730c1be1c67151ba95b6a38"
-dependencies = [
- "candid",
- "hex",
- "ic-cdk",
- "ic-stable-structures 0.7.0",
- "junobuild-collections",
- "junobuild-shared 0.3.0",
- "junobuild-storage 0.3.0",
- "serde",
- "sha2",
 ]
 
 [[package]]
@@ -1261,8 +1244,8 @@ dependencies = [
  "ic-cdk",
  "ic-stable-structures 0.7.0",
  "junobuild-collections",
- "junobuild-shared 0.4.0",
- "junobuild-storage 0.4.0",
+ "junobuild-shared",
+ "junobuild-storage",
  "serde",
  "sha2",
 ]
@@ -1273,7 +1256,7 @@ version = "0.2.5"
 dependencies = [
  "candid",
  "ic-cdk",
- "junobuild-shared 0.4.0",
+ "junobuild-shared",
  "serde",
 ]
 
@@ -1301,10 +1284,10 @@ dependencies = [
  "ic-certification",
  "ic-stable-structures 0.7.0",
  "junobuild-auth",
- "junobuild-cdn 0.3.0",
+ "junobuild-cdn",
  "junobuild-collections",
- "junobuild-shared 0.3.0",
- "junobuild-storage 0.3.0",
+ "junobuild-shared",
+ "junobuild-storage",
  "junobuild-utils",
  "rand 0.9.2",
  "regex",
@@ -1315,26 +1298,6 @@ dependencies = [
 
 [[package]]
 name = "junobuild-shared"
-version = "0.3.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "5ae976a9762f16d9701f5f2ec4bff23255d4219051222533669b8cc4b4c2eec0"
-dependencies = [
- "candid",
- "ciborium",
- "futures",
- "getrandom 0.3.2",
- "ic-cdk",
- "ic-ledger-types",
- "ic-stable-structures 0.7.0",
- "icrc-ledger-types",
- "rand 0.9.2",
- "regex",
- "serde",
- "time",
-]
-
-[[package]]
-name = "junobuild-shared"
 version = "0.4.0"
 dependencies = [
  "candid",
@@ -1353,31 +1316,6 @@ dependencies = [
 
 [[package]]
 name = "junobuild-storage"
-version = "0.3.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "b6686d7ed380ffd99ab0414b272f6e37577ac3b87741c0af3a7dad60e0cdb77f"
-dependencies = [
- "base64",
- "candid",
- "globset",
- "hex",
- "ic-cdk",
- "ic-certification",
- "ic-representation-independent-hash",
- "ic-stable-structures 0.7.0",
- "junobuild-collections",
- "junobuild-shared 0.3.0",
- "regex",
- "serde",
- "serde_bytes",
- "serde_cbor",
- "sha2",
- "url",
- "urlencoding",
-]
-
-[[package]]
-name = "junobuild-storage"
 version = "0.4.0"
 dependencies = [
  "base64",
@@ -1389,7 +1327,7 @@ dependencies = [
  "ic-representation-independent-hash",
  "ic-stable-structures 0.7.0",
  "junobuild-collections",
- "junobuild-shared 0.4.0",
+ "junobuild-shared",
  "regex",
  "serde",
  "serde_bytes",
@@ -1487,7 +1425,7 @@ dependencies = [
  "ic-ledger-types",
  "ic-stable-structures 0.7.0",
  "icrc-ledger-types",
- "junobuild-shared 0.4.0",
+ "junobuild-shared",
  "rand 0.9.2",
  "serde",
 ]
@@ -1568,7 +1506,7 @@ dependencies = [
  "ic-cdk-timers",
  "ic-stable-structures 0.7.0",
  "junobuild-auth",
- "junobuild-shared 0.4.0",
+ "junobuild-shared",
  "rand 0.9.2",
  "serde",
  "serde_json",
@@ -1587,7 +1525,7 @@ dependencies = [
  "ic-http-certification",
  "ic-stable-structures 0.7.0",
  "isbot",
- "junobuild-shared 0.4.0",
+ "junobuild-shared",
  "junobuild-utils",
  "lazy_static",
  "regex",
@@ -1961,7 +1899,7 @@ dependencies = [
  "ic-cdk",
  "junobuild-macros",
  "junobuild-satellite",
- "junobuild-storage 0.4.0",
+ "junobuild-storage",
 ]
 
 [[package]]
@@ -2144,8 +2082,8 @@ dependencies = [
  "junobuild-collections",
  "junobuild-macros",
  "junobuild-satellite",
- "junobuild-shared 0.4.0",
- "junobuild-storage 0.4.0",
+ "junobuild-shared",
+ "junobuild-storage",
  "rquickjs",
  "ryu",
 ]

@@ -65,7 +65,7 @@ const initAuthStore = (): AuthStore => {
 			// there could be a mismatch of the cached delegation chain vs the identity key of the `authClient` object.
 			// This causes the `authClient` to be unable to correctly sign calls, raising Trust Errors.
 			// To mitigate this, we use a BroadcastChannel to notify other tabs when a login has occurred, so that they can sync their `authClient` object.
-			const bc = new AuthBroadcastChannel();
+			const bc = AuthBroadcastChannel.getInstance();
 			bc.postLoginSuccess();
 		} catch (err: unknown) {
 			// We don't really care if the broadcast channel fails to open or if it fails to post messages.

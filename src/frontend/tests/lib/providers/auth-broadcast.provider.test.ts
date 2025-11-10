@@ -17,7 +17,10 @@ describe('auth-broadcast.services', () => {
 		let bc: AuthBroadcastChannel;
 
 		const channelName = AuthBroadcastChannel.CHANNEL_NAME;
-		const loginSuccessMessage = AuthBroadcastChannel.MESSAGE_LOGIN_SUCCESS;
+		const loginSuccessMessage = {
+			msg: AuthBroadcastChannel.MESSAGE_LOGIN_SUCCESS,
+			emitterId: window.crypto.randomUUID()
+		};
 
 		const postMessageSpy = vi.fn();
 		const closeSpy = vi.fn();
@@ -58,7 +61,7 @@ describe('auth-broadcast.services', () => {
 				})
 			);
 
-			bc = new AuthBroadcastChannel();
+			bc = AuthBroadcastChannel.getInstance();
 
 			bc.onLoginSuccess(mockHandler);
 		});
@@ -82,7 +85,29 @@ describe('auth-broadcast.services', () => {
 				expect(mockHandler).toHaveBeenCalledExactlyOnceWith();
 			});
 
-			it('should not call handler for different messages', () => {
+			it('should not call handler for totally different messages', () => {
+				const newBc = new BroadcastChannel(channelName);
+
+				newBc.postMessage({
+					...loginSuccessMessage,
+					emitterId: bc.__test__only__emitted_id__
+				});
+
+				expect(mockHandler).not.toHaveBeenCalled();
+			});
+
+			it('should not call handler for same emiited ID', () => {
+				const newBc = new BroadcastChannel(channelName);
+
+				newBc.postMessage({
+					...loginSuccessMessage,
+					msg: 'someOtherMessage'
+				});
+
+				expect(mockHandler).not.toHaveBeenCalled();
+			});
+
+			it('should not call handler for different messages payload', () => {
 				const newBc = new BroadcastChannel(channelName);
 
 				newBc.postMessage('someOtherMessage');
@@ -127,7 +152,10 @@ describe('auth-broadcast.services', () => {
 			it('should post a login success message', () => {
 				bc.postLoginSuccess();
 
-				expect(postMessageSpy).toHaveBeenCalledExactlyOnceWith(loginSuccessMessage);
+				expect(postMessageSpy).toHaveBeenCalledExactlyOnceWith({
+					...loginSuccessMessage,
+					emitterId: bc.__test__only__emitted_id__
+				});
 			});
 		});
 	});

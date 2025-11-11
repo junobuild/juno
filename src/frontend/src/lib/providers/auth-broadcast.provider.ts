@@ -58,7 +58,7 @@ export class AuthBroadcastChannel {
 		this.#bc.postMessage(data);
 	};
 
-	get __test__only__emitted_id__(): string {
+	get __test__only__emitter_id__(): string {
 		return this.#emitterId;
 	}
 }

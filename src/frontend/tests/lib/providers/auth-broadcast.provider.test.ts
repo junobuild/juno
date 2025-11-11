@@ -96,7 +96,7 @@ describe('auth-broadcast.services', () => {
 				expect(mockHandler).not.toHaveBeenCalled();
 			});
 
-			it('should not call handler for same emiited ID', () => {
+			it('should not call handler for same emitter ID if not supported message', () => {
 				const newBc = new BroadcastChannel(channelName);
 
 				newBc.postMessage({

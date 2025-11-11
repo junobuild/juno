@@ -67,7 +67,7 @@ describe('auth-broadcast.services', () => {
 		});
 
 		afterEach(() => {
-			bc.close();
+			bc.destroy();
 
 			vi.unstubAllGlobals();
 		});
@@ -128,13 +128,13 @@ describe('auth-broadcast.services', () => {
 
 		describe('close', () => {
 			it('should close the BroadcastChannel', () => {
-				bc.close();
+				bc.destroy();
 
 				expect(closeSpy).toHaveBeenCalledExactlyOnceWith();
 			});
 
 			it('should not close all the BroadcastChannel', () => {
-				bc.close();
+				bc.destroy();
 
 				expect(closeSpy).toHaveBeenCalledExactlyOnceWith();
 

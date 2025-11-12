@@ -1,3 +1,4 @@
+mod asserts;
 pub mod delegation;
 pub mod openid;
 pub mod profile;

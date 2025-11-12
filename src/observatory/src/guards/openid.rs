@@ -7,9 +7,9 @@ use junobuild_shared::ic::api::caller;
 pub fn assert_openid_request_rate(provider: &OpenIdProvider) -> Result<(), String> {
     let caller = caller();
 
-    let last_request_rate = get_openid_request_rate(provider, &caller);
+    let request_rate = get_openid_request_rate(provider, &caller);
 
-    match refresh_allowed(&last_request_rate) {
+    match refresh_allowed(&request_rate) {
         RefreshStatus::AllowedFirstFetch | RefreshStatus::AllowedRetry => {
             record_request_rate(provider, &caller, false);
         }

@@ -1,4 +1,4 @@
-use crate::store::heap::{get_openid_last_request_rate, record_request_rate};
+use crate::store::heap::{get_openid_request_rate, record_request_rate};
 use crate::types::errors::AssertOpenIdRequestRatesError;
 use junobuild_auth::asserts::refresh_allowed;
 use junobuild_auth::asserts::types::RefreshStatus;
@@ -14,7 +14,7 @@ pub fn assert_openid_request_rates(
 
     let caller = caller();
 
-    let last_request_rate = get_openid_last_request_rate(provider, &caller);
+    let last_request_rate = get_openid_request_rate(provider, &caller);
 
     match refresh_allowed(&last_request_rate) {
         RefreshStatus::AllowedFirstFetch | RefreshStatus::AllowedRetry => {

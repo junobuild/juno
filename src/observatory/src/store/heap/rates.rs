@@ -3,14 +3,14 @@ use crate::types::state::{HeapState, OpenIdRequestRate, Rates};
 use candid::Principal;
 use junobuild_auth::openid::types::provider::OpenIdProvider;
 
-pub fn get_openid_last_request_rate(
+pub fn get_openid_request_rate(
     provider: &OpenIdProvider,
     caller: &Principal,
 ) -> Option<OpenIdRequestRate> {
-    with_rates(|rates| get_openid_last_request_rate_impl(provider, caller, rates))
+    with_rates(|rates| get_openid_request_rate_impl(provider, caller, rates))
 }
 
-fn get_openid_last_request_rate_impl(
+fn get_openid_request_rate_impl(
     provider: &OpenIdProvider,
     caller: &Principal,
     rates: &Option<Rates>,

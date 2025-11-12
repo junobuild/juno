@@ -22,10 +22,10 @@ fn get_openid_request_rate_impl(
 }
 
 pub fn record_request_rate(provider: &OpenIdProvider, caller: &Principal, reset_streak: bool) {
-    mutate_heap_state(|state| record_fetch_attempt_impl(provider, caller, reset_streak, state))
+    mutate_heap_state(|state| record_request_rate_impl(provider, caller, reset_streak, state))
 }
 
-fn record_fetch_attempt_impl(
+fn record_request_rate_impl(
     provider: &OpenIdProvider,
     caller: &Principal,
     reset_streak: bool,

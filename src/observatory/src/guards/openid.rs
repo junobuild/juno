@@ -5,10 +5,6 @@ use junobuild_auth::openid::types::provider::OpenIdProvider;
 use junobuild_shared::ic::api::caller;
 
 pub fn assert_openid_request_rate(provider: &OpenIdProvider) -> Result<(), String> {
-    if !matches!(provider, OpenIdProvider::Google) {
-        return Err("Unknown OpenID provider".to_string());
-    }
-
     let caller = caller();
 
     let last_request_rate = get_openid_request_rate(provider, &caller);

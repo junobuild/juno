@@ -37,7 +37,7 @@ fn record_fetch_attempt_impl(
         .openid_request_rates
         .entry(provider.clone())
         .or_default()
-        .entry(caller.clone())
+        .entry(*caller)
         .and_modify(|request_rate| request_rate.record_attempt(reset_streak))
         .or_insert_with(OpenIdRequestRate::init);
 }

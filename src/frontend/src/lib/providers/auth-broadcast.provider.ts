@@ -1,20 +1,13 @@
-import { isNullish, notEmptyString } from '@dfinity/utils';
-
-// We broadcast an object that contains the message and an emitter
-// because we want to ignore the message in the tab that emitted its.
-// This is useful for example to avoid to reload the auth store if already
-// synced (since the postMessage happens after login).
-interface BroadcastData {
-	msg: string;
-	emitterId: string;
-}
+import { BroadcastDataSchema } from '$lib/schemas/auth-broadcast.schema';
+import { isNullish } from '@dfinity/utils';
+import type * as z from 'zod';
 
 // If the user has more than one tab open in the same browser,
 // there could be a mismatch of the cached delegation chain vs the identity key of the `authClient` object.
 // This causes the `authClient` to be unable to correctly sign calls, raising Trust Errors.
 // To mitigate this, we use a `BroadcastChannel` to notify other tabs when a login has occurred, so that they can sync their `authClient` object.
 export class AuthBroadcastChannel {
-	static #instance: AuthBroadcastChannel;
+	static #instance: AuthBroadcastChannel | null;
 
 	readonly #bc: BroadcastChannel;
 	readonly #emitterId: string;
@@ -40,24 +33,24 @@ export class AuthBroadcastChannel {
 			location: { origin }
 		} = window;
 
-		this.#bc.onmessage = async ($event) => {
+		this.#bc.onmessage = async ({ origin: eventOrigin, data }) => {
 			if (
-				$event.origin === origin &&
-				$event.data?.msg === AuthBroadcastChannel.MESSAGE_LOGIN_SUCCESS &&
-				notEmptyString($event.data?.emitterId) &&
-				$event.data?.emitterId !== this.#emitterId
+				eventOrigin === origin &&
+				BroadcastDataSchema.safeParse(data).success &&
+				data.emitterId !== this.#emitterId
 			) {
 				await handler();
 			}
 		};
 	};
 
-	close = () => {
+	destroy = () => {
 		this.#bc.close();
+		AuthBroadcastChannel.#instance = null;
 	};
 
 	postLoginSuccess = () => {
-		const data: BroadcastData = {
+		const data: z.infer<typeof BroadcastDataSchema> = {
 			emitterId: this.#emitterId,
 			msg: AuthBroadcastChannel.MESSAGE_LOGIN_SUCCESS
 		};
@@ -65,7 +58,7 @@ export class AuthBroadcastChannel {
 		this.#bc.postMessage(data);
 	};
 
-	get __test__only__emitted_id__(): string {
+	get __test__only__emitter_id__(): string {
 		return this.#emitterId;
 	}
 }

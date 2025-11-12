@@ -35,7 +35,7 @@
 			bc.onLoginSuccess(handleBroadcastLoginSuccess);
 
 			return () => {
-				bc?.close();
+				bc?.destroy();
 			};
 		} catch (err: unknown) {
 			// We don't really care if the broadcast channel fails to open or if it fails to set the message handler.

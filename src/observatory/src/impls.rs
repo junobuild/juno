@@ -3,7 +3,6 @@ use crate::templates::{
     DEPOSITED_CYCLES_HTML, DEPOSITED_CYCLES_TXT, FAILED_DEPOSIT_CYCLES_HTML,
     FAILED_DEPOSIT_CYCLES_TXT,
 };
-use crate::types::errors::AssertOpenIdRequestRatesError;
 use crate::types::interface::NotifyStatus;
 use crate::types::state::{
     HeapState, Notification, NotificationKey, NotificationStatus, OpenIdRequestRate, State,
@@ -18,7 +17,6 @@ use junobuild_shared::serializers::{
 use junobuild_shared::types::interface::NotifyArgs;
 use junobuild_shared::types::state::{NotificationKind, SegmentKind};
 use std::borrow::Cow;
-use std::fmt;
 use time::OffsetDateTime;
 
 impl Default for State {
@@ -268,15 +266,6 @@ impl OpenIdRequestRate {
             self.count = 1;
         } else {
             self.count = self.count.saturating_add(1);
-        }
-    }
-}
-
-impl fmt::Display for AssertOpenIdRequestRatesError {
-    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-        match self {
-            AssertOpenIdRequestRatesError::UnknownProvider => write!(f, "Unknown OpenID provider"),
-            AssertOpenIdRequestRatesError::RequestCooldown => write!(f, "Too many requests"),
         }
     }
 }

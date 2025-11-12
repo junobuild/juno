@@ -117,14 +117,3 @@ pub mod interface {
         pub failed: u64,
     }
 }
-
-pub mod errors {
-    use candid::{CandidType, Deserialize};
-    use serde::Serialize;
-
-    #[derive(CandidType, Serialize, Deserialize, Debug)]
-    pub enum AssertOpenIdRequestRatesError {
-        UnknownProvider,
-        RequestCooldown,
-    }
-}

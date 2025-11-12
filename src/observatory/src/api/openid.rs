@@ -1,4 +1,4 @@
-use crate::guards::assert_openid_request_rates;
+use crate::guards::assert_openid_request_rate;
 use crate::guards::{caller_is_admin_controller, caller_is_not_anonymous};
 use crate::openid::scheduler::{start_openid_scheduler, stop_openid_scheduler};
 use crate::store::heap::get_certificate;
@@ -21,7 +21,7 @@ fn stop_openid_monitoring() {
 fn get_openid_certificate(
     GetOpenIdCertificateArgs { provider }: GetOpenIdCertificateArgs,
 ) -> Option<OpenIdCertificate> {
-    assert_openid_request_rates(&provider).unwrap_or_trap();
+    assert_openid_request_rate(&provider).unwrap_or_trap();
 
     get_certificate(&provider)
 }

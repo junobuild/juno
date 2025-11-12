@@ -75,7 +75,7 @@ pub mod state {
         pub enabled: bool,
     }
 
-    #[derive(CandidType, Serialize, Deserialize, Clone)]
+    #[derive(Default, CandidType, Serialize, Deserialize, Clone)]
     pub struct Rates {
         pub openid_request_rates: HashMap<OpenIdProvider, OpenIdRequestRates>,
     }
@@ -115,5 +115,16 @@ pub mod interface {
         pub pending: u64,
         pub sent: u64,
         pub failed: u64,
+    }
+}
+
+pub mod errors {
+    use candid::{CandidType, Deserialize};
+    use serde::Serialize;
+
+    #[derive(CandidType, Serialize, Deserialize, Debug)]
+    pub enum AssertOpenIdRequestRatesError {
+        UnknownProvider,
+        RequestCooldown,
     }
 }

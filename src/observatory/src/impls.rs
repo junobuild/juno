@@ -3,17 +3,22 @@ use crate::templates::{
     DEPOSITED_CYCLES_HTML, DEPOSITED_CYCLES_TXT, FAILED_DEPOSIT_CYCLES_HTML,
     FAILED_DEPOSIT_CYCLES_TXT,
 };
+use crate::types::errors::AssertOpenIdRequestRatesError;
 use crate::types::interface::NotifyStatus;
-use crate::types::state::{HeapState, Notification, NotificationKey, NotificationStatus, State};
+use crate::types::state::{
+    HeapState, Notification, NotificationKey, NotificationStatus, OpenIdLastRequestRate, State,
+};
 use ic_cdk::api::time;
 use ic_stable_structures::storable::Bound;
 use ic_stable_structures::Storable;
+use junobuild_auth::asserts::types::AssertRefreshRecord;
 use junobuild_shared::serializers::{
     deserialize_from_bytes, serialize_into_bytes, serialize_to_bytes,
 };
 use junobuild_shared::types::interface::NotifyArgs;
 use junobuild_shared::types::state::{NotificationKind, SegmentKind};
 use std::borrow::Cow;
+use std::fmt;
 use time::OffsetDateTime;
 
 impl Default for State {
@@ -235,6 +240,43 @@ impl NotifyStatus {
             pending,
             sent,
             failed,
+        }
+    }
+}
+
+impl AssertRefreshRecord for OpenIdLastRequestRate {
+    fn last_attempt_at(&self) -> u64 {
+        self.at
+    }
+    fn last_attempt_streak_count(&self) -> u8 {
+        self.streak_count
+    }
+}
+
+impl OpenIdLastRequestRate {
+    pub fn init() -> Self {
+        Self {
+            at: time(),
+            streak_count: 1,
+        }
+    }
+
+    pub fn record_attempt(&mut self, reset_streak: bool) {
+        self.at = time();
+
+        if reset_streak {
+            self.streak_count = 1;
+        } else {
+            self.streak_count = self.streak_count.saturating_add(1);
+        }
+    }
+}
+
+impl fmt::Display for AssertOpenIdRequestRatesError {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        match self {
+            AssertOpenIdRequestRatesError::UnknownProvider => write!(f, "Unknown OpenID provider"),
+            AssertOpenIdRequestRatesError::RequestCooldown => write!(f, "Too many requests"),
         }
     }
 }

@@ -1,6 +1,6 @@
 pub mod state {
     use crate::memory::init_stable_state;
-    use candid::{CandidType, Deserialize};
+    use candid::{CandidType, Deserialize, Principal};
     use ic_stable_structures::StableBTreeMap;
     use junobuild_auth::openid::types::provider::{OpenIdCertificate, OpenIdProvider};
     use junobuild_shared::types::memory::Memory;
@@ -30,6 +30,7 @@ pub mod state {
         pub controllers: Controllers,
         pub env: Option<Env>,
         pub openid: Option<OpenId>,
+        pub rates: Option<Rates>,
     }
 
     #[derive(CandidType, Serialize, Deserialize, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
@@ -72,6 +73,19 @@ pub mod state {
     #[derive(CandidType, Serialize, Deserialize, Clone, Default)]
     pub struct OpenIdScheduler {
         pub enabled: bool,
+    }
+
+    #[derive(CandidType, Serialize, Deserialize, Clone)]
+    pub struct Rates {
+        pub openid_request_rates: HashMap<OpenIdProvider, OpenIdRequestRates>,
+    }
+
+    pub type OpenIdRequestRates = HashMap<Principal, OpenIdLastRequestRate>;
+
+    #[derive(Default, CandidType, Serialize, Deserialize, Clone)]
+    pub struct OpenIdLastRequestRate {
+        pub at: Timestamp,
+        pub streak_count: u8,
     }
 }
 

@@ -5,6 +5,7 @@ use ic_cdk_macros::{query, update};
 use junobuild_auth::openid::jwkset::types::interface::GetOpenIdCertificateArgs;
 use junobuild_auth::openid::types::provider::OpenIdCertificate;
 use junobuild_shared::ic::UnwrapOrTrap;
+use crate::guard_openid::assert_openid_request_rates;
 
 #[update(guard = "caller_is_admin_controller")]
 fn start_openid_monitoring() {
@@ -20,7 +21,7 @@ fn stop_openid_monitoring() {
 fn get_openid_certificate(
     GetOpenIdCertificateArgs { provider }: GetOpenIdCertificateArgs,
 ) -> Option<OpenIdCertificate> {
-    // TODO: caller rate limiter
+    assert_openid_request_rates(&provider).unwrap_or_trap();
 
     get_certificate(&provider)
 }

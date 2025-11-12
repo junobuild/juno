@@ -1,5 +1,5 @@
 use crate::memory::state::services::{mutate_heap_state, mutate_runtime_state, read_heap_state};
-use crate::types::state::OpenId;
+use crate::types::state::{OpenId, Rates};
 use junobuild_shared::types::state::Controllers;
 use rand::prelude::StdRng;
 
@@ -17,4 +17,12 @@ pub fn with_openid<R>(f: impl FnOnce(&Option<OpenId>) -> R) -> R {
 
 pub fn with_openid_mut<R>(f: impl FnOnce(&mut Option<OpenId>) -> R) -> R {
     mutate_heap_state(|heap| f(&mut heap.openid))
+}
+
+pub fn with_rates<R>(f: impl FnOnce(&Option<Rates>) -> R) -> R {
+    read_heap_state(|heap| f(&heap.rates))
+}
+
+pub fn with_rates_mut<R>(f: impl FnOnce(&mut Option<Rates>) -> R) -> R {
+    mutate_heap_state(|heap| f(&mut heap.rates))
 }

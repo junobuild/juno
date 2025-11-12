@@ -2,17 +2,16 @@ use crate::asserts::constants::{
     FAILURE_BACKOFF_BASE_NS, FAILURE_BACKOFF_CAP_NS, FAILURE_BACKOFF_MULTIPLIER,
     REFRESH_COOLDOWN_NS,
 };
-use crate::asserts::types::RefreshStatus;
+use crate::asserts::types::{AssertRefreshRecord, RefreshStatus};
 use crate::delegation::types::Timestamp;
-use crate::state::types::state::OpenIdCachedCertificate;
 use ic_cdk::api::time;
 
-pub fn refresh_allowed(certificate: &Option<OpenIdCachedCertificate>) -> RefreshStatus {
+pub fn refresh_allowed<R: AssertRefreshRecord>(certificate: &Option<R>) -> RefreshStatus {
     refresh_allowed_at(certificate, time())
 }
 
-fn refresh_allowed_at(
-    certificate: &Option<OpenIdCachedCertificate>,
+fn refresh_allowed_at<R: AssertRefreshRecord>(
+    certificate: &Option<R>,
     now: Timestamp,
 ) -> RefreshStatus {
     let Some(cached_certificate) = certificate.as_ref() else {
@@ -20,13 +19,13 @@ fn refresh_allowed_at(
         return RefreshStatus::AllowedFirstFetch;
     };
 
-    let since_last_attempt = now.saturating_sub(cached_certificate.last_fetch_attempt.at);
+    let since_last_attempt = now.saturating_sub(cached_certificate.last_attempt_at());
 
     if since_last_attempt >= REFRESH_COOLDOWN_NS {
         return RefreshStatus::AllowedAfterCooldown;
     }
 
-    let delay = attempt_backoff_ns(cached_certificate.last_fetch_attempt.streak_count);
+    let delay = attempt_backoff_ns(cached_certificate.last_attempt_streak_count());
 
     if since_last_attempt >= delay {
         RefreshStatus::AllowedRetry
@@ -51,7 +50,7 @@ fn attempt_backoff_ns(streak_count: u8) -> u64 {
 mod tests {
     use super::*;
     use crate::asserts::types::RefreshStatus;
-    use crate::state::types::state::OpenIdLastFetchAttempt;
+    use crate::state::types::state::{OpenIdCachedCertificate, OpenIdLastFetchAttempt};
 
     const fn secs(n: u64) -> u64 {
         n * 1_000_000_000

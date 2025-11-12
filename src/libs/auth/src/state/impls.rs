@@ -1,3 +1,4 @@
+use crate::asserts::types::AssertRefreshRecord;
 use crate::openid::types::provider::OpenIdCertificate;
 use crate::state::types::config::AuthenticationConfig;
 use crate::state::types::interface::SetAuthenticationConfig;
@@ -72,5 +73,14 @@ impl OpenIdCachedCertificate {
     pub fn update_certificate(&mut self, certificate: &OpenIdCertificate) {
         self.certificate = Some(certificate.clone());
         self.last_fetch_attempt.streak_count = 0;
+    }
+}
+
+impl AssertRefreshRecord for OpenIdCachedCertificate {
+    fn last_attempt_at(&self) -> u64 {
+        self.last_fetch_attempt.at
+    }
+    fn last_attempt_streak_count(&self) -> u8 {
+        self.last_fetch_attempt.streak_count
     }
 }

@@ -22,7 +22,7 @@ pub async fn openid_authenticate(
         Ok((delegation, credential)) => {
             let key = &delegation.user_key;
 
-            register_mission_control(&key, &credential)
+            register_mission_control(key, &credential)
                 .await
                 .map(|mission_control| Authentication {
                     delegation,

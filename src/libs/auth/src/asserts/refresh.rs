@@ -1,9 +1,9 @@
-use crate::delegation::types::Timestamp;
-use crate::refresh::constants::{
+use crate::asserts::constants::{
     FAILURE_BACKOFF_BASE_NS, FAILURE_BACKOFF_CAP_NS, FAILURE_BACKOFF_MULTIPLIER,
     REFRESH_COOLDOWN_NS,
 };
-use crate::refresh::types::RefreshStatus;
+use crate::asserts::types::RefreshStatus;
+use crate::delegation::types::Timestamp;
 use crate::state::types::state::OpenIdCachedCertificate;
 use ic_cdk::api::time;
 
@@ -50,7 +50,7 @@ fn attempt_backoff_ns(streak_count: u8) -> u64 {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::refresh::types::RefreshStatus;
+    use crate::asserts::types::RefreshStatus;
     use crate::state::types::state::OpenIdLastFetchAttempt;
 
     const fn secs(n: u64) -> u64 {

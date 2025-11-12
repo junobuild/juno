@@ -1,11 +1,11 @@
+use crate::asserts::refresh_allowed;
+use crate::asserts::types::RefreshStatus;
 use crate::openid::jwkset::fetch::fetch_openid_certificate;
 use crate::openid::jwkset::targets::target_observatory_id;
 use crate::openid::jwkset::types::errors::GetOrRefreshJwksError;
 use crate::openid::jwt::types::cert::Jwks;
 use crate::openid::jwt::unsafe_find_jwt_kid;
 use crate::openid::types::provider::OpenIdProvider;
-use crate::refresh::refresh_allowed;
-use crate::refresh::types::RefreshStatus;
 use crate::state::{cache_certificate, get_cached_certificate, record_fetch_attempt};
 use crate::strategies::AuthHeapStrategy;
 

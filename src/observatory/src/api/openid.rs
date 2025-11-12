@@ -1,3 +1,4 @@
+use crate::guards::assert_openid_request_rates;
 use crate::guards::{caller_is_admin_controller, caller_is_not_anonymous};
 use crate::openid::scheduler::{start_openid_scheduler, stop_openid_scheduler};
 use crate::store::heap::get_certificate;
@@ -5,7 +6,6 @@ use ic_cdk_macros::{query, update};
 use junobuild_auth::openid::jwkset::types::interface::GetOpenIdCertificateArgs;
 use junobuild_auth::openid::types::provider::OpenIdCertificate;
 use junobuild_shared::ic::UnwrapOrTrap;
-use crate::guard_openid::assert_openid_request_rates;
 
 #[update(guard = "caller_is_admin_controller")]
 fn start_openid_monitoring() {

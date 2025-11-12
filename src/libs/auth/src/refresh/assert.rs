@@ -1,3 +1,4 @@
+use crate::delegation::types::Timestamp;
 use crate::refresh::constants::{
     FAILURE_BACKOFF_BASE_NS, FAILURE_BACKOFF_CAP_NS, FAILURE_BACKOFF_MULTIPLIER,
     REFRESH_COOLDOWN_NS,
@@ -7,12 +8,19 @@ use crate::state::types::state::OpenIdCachedCertificate;
 use ic_cdk::api::time;
 
 pub fn refresh_allowed(certificate: &Option<OpenIdCachedCertificate>) -> RefreshStatus {
+    refresh_allowed_at(certificate, time())
+}
+
+fn refresh_allowed_at(
+    certificate: &Option<OpenIdCachedCertificate>,
+    now: Timestamp,
+) -> RefreshStatus {
     let Some(cached_certificate) = certificate.as_ref() else {
         // Certificate was never fetched.
         return RefreshStatus::AllowedFirstFetch;
     };
 
-    let since_last_attempt = time().saturating_sub(cached_certificate.last_fetch_attempt.at);
+    let since_last_attempt = now.saturating_sub(cached_certificate.last_fetch_attempt.at);
 
     if since_last_attempt >= REFRESH_COOLDOWN_NS {
         return RefreshStatus::AllowedAfterCooldown;
@@ -37,4 +45,132 @@ fn attempt_backoff_ns(streak_count: u8) -> u64 {
     }
 
     (FAILURE_BACKOFF_BASE_NS.saturating_mul(factor)).min(FAILURE_BACKOFF_CAP_NS)
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use crate::refresh::types::RefreshStatus;
+    use crate::state::types::state::OpenIdLastFetchAttempt;
+
+    const fn secs(n: u64) -> u64 {
+        n * 1_000_000_000
+    }
+    const fn mins(n: u64) -> u64 {
+        secs(n * 60)
+    }
+
+    fn make_cached(at: u64, streak: u8) -> OpenIdCachedCertificate {
+        OpenIdCachedCertificate {
+            certificate: None,
+            last_fetch_attempt: OpenIdLastFetchAttempt {
+                at,
+                streak_count: streak,
+            },
+        }
+    }
+
+    #[test]
+    fn none_means_allowed_first_fetch() {
+        let cert: Option<OpenIdCachedCertificate> = None;
+        assert!(matches!(
+            refresh_allowed_at(&cert, 0),
+            RefreshStatus::AllowedFirstFetch
+        ));
+    }
+
+    #[test]
+    fn cooldown_allows_at_or_after_15min() {
+        let start = 1_000;
+        let cert = Some(make_cached(start, 1));
+
+        // exactly at 15 min → AllowedAfterCooldown
+        assert!(matches!(
+            refresh_allowed_at(&cert, start + REFRESH_COOLDOWN_NS),
+            RefreshStatus::AllowedAfterCooldown
+        ));
+
+        // well after 15 min → AllowedAfterCooldown
+        assert!(matches!(
+            refresh_allowed_at(&cert, start + REFRESH_COOLDOWN_NS + secs(1)),
+            RefreshStatus::AllowedAfterCooldown
+        ));
+    }
+
+    #[test]
+    fn backoff_streak_1_is_30s_boundary_inclusive() {
+        let start = 10_000;
+        let cert = Some(make_cached(start, 1));
+
+        // just before 30s → denied
+        assert!(matches!(
+            refresh_allowed_at(&cert, start + secs(30) - 1),
+            RefreshStatus::Denied
+        ));
+
+        // at 30s → AllowedRetry
+        assert!(matches!(
+            refresh_allowed_at(&cert, start + secs(30)),
+            RefreshStatus::AllowedRetry
+        ));
+    }
+
+    #[test]
+    fn backoff_streak_2_is_60s_boundary_inclusive() {
+        let start = 20_000;
+        let cert = Some(make_cached(start, 2));
+
+        assert!(matches!(
+            refresh_allowed_at(&cert, start + secs(60) - 1),
+            RefreshStatus::Denied
+        ));
+        assert!(matches!(
+            refresh_allowed_at(&cert, start + secs(60)),
+            RefreshStatus::AllowedRetry
+        ));
+    }
+
+    #[test]
+    fn backoff_streak_3_caps_at_120s() {
+        let start = 30_000;
+        let cert = Some(make_cached(start, 3));
+
+        assert!(matches!(
+            refresh_allowed_at(&cert, start + secs(120) - 1),
+            RefreshStatus::Denied
+        ));
+        assert!(matches!(
+            refresh_allowed_at(&cert, start + secs(120)),
+            RefreshStatus::AllowedRetry
+        ));
+    }
+
+    #[test]
+    fn backoff_above_3_keeps_capped_at_120s() {
+        let start = 40_000;
+        for streak in [4u8, 10, u8::MAX] {
+            let cert = Some(make_cached(start, streak));
+
+            assert!(matches!(
+                refresh_allowed_at(&cert, start + secs(120) - 1),
+                RefreshStatus::Denied
+            ));
+            assert!(matches!(
+                refresh_allowed_at(&cert, start + secs(120)),
+                RefreshStatus::AllowedRetry
+            ));
+        }
+    }
+
+    #[test]
+    fn attempt_backoff_formula_matches_constants() {
+        // streak 1 => 30s
+        assert_eq!(attempt_backoff_ns(1), secs(30));
+        // streak 2 => 60s
+        assert_eq!(attempt_backoff_ns(2), secs(60));
+        // streak 3 => 120s (cap)
+        assert_eq!(attempt_backoff_ns(3), mins(2));
+        // streak 4+ => still 120s (cap)
+        assert_eq!(attempt_backoff_ns(10), mins(2));
+    }
 }

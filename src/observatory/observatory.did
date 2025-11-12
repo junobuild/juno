@@ -89,7 +89,7 @@ service : () -> {
   get_notify_status : (GetNotifications) -> (NotifyStatus) query;
   get_openid_certificate : (GetOpenIdCertificateArgs) -> (
       opt OpenIdCertificate,
-    ) query;
+    );
   list_controllers : () -> (vec record { principal; Controller }) query;
   notify : (NotifyArgs) -> ();
   ping : (NotifyArgs) -> ();

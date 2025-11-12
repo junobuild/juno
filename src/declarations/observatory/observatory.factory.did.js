@@ -115,11 +115,7 @@ export const idlFactory = ({ IDL }) => {
 	return IDL.Service({
 		del_controllers: IDL.Func([DeleteControllersArgs], [], []),
 		get_notify_status: IDL.Func([GetNotifications], [NotifyStatus], ['query']),
-		get_openid_certificate: IDL.Func(
-			[GetOpenIdCertificateArgs],
-			[IDL.Opt(OpenIdCertificate)],
-			['query']
-		),
+		get_openid_certificate: IDL.Func([GetOpenIdCertificateArgs], [IDL.Opt(OpenIdCertificate)], []),
 		list_controllers: IDL.Func([], [IDL.Vec(IDL.Tuple(IDL.Principal, Controller))], ['query']),
 		notify: IDL.Func([NotifyArgs], [], []),
 		ping: IDL.Func([NotifyArgs], [], []),

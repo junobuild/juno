@@ -7,7 +7,7 @@ pub enum RefreshStatus {
     Denied,
 }
 
-pub trait AssertRefreshRecord {
-    fn last_attempt_at(&self) -> Timestamp;
-    fn last_attempt_streak_count(&self) -> u8;
+pub trait AssertRefresh {
+    fn last_refresh_at(&self) -> Timestamp;
+    fn refresh_count(&self) -> u8;
 }

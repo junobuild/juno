@@ -1,12 +1,12 @@
 use crate::memory::state::services::{mutate_heap_state, with_rates};
-use crate::types::state::{HeapState, OpenIdLastRequestRate, Rates};
+use crate::types::state::{HeapState, OpenIdRequestRate, Rates};
 use candid::Principal;
 use junobuild_auth::openid::types::provider::OpenIdProvider;
 
 pub fn get_openid_last_request_rate(
     provider: &OpenIdProvider,
     caller: &Principal,
-) -> Option<OpenIdLastRequestRate> {
+) -> Option<OpenIdRequestRate> {
     with_rates(|rates| get_openid_last_request_rate_impl(provider, caller, rates))
 }
 
@@ -14,7 +14,7 @@ fn get_openid_last_request_rate_impl(
     provider: &OpenIdProvider,
     caller: &Principal,
     rates: &Option<Rates>,
-) -> Option<OpenIdLastRequestRate> {
+) -> Option<OpenIdRequestRate> {
     rates
         .as_ref()
         .and_then(|rates| rates.openid_request_rates.get(provider))
@@ -39,5 +39,5 @@ fn record_fetch_attempt_impl(
         .or_default()
         .entry(caller.clone())
         .and_modify(|request_rate| request_rate.record_attempt(reset_streak))
-        .or_insert_with(OpenIdLastRequestRate::init);
+        .or_insert_with(OpenIdRequestRate::init);
 }

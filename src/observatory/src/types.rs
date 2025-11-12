@@ -80,12 +80,12 @@ pub mod state {
         pub openid_request_rates: HashMap<OpenIdProvider, OpenIdRequestRates>,
     }
 
-    pub type OpenIdRequestRates = HashMap<Principal, OpenIdLastRequestRate>;
+    pub type OpenIdRequestRates = HashMap<Principal, OpenIdRequestRate>;
 
     #[derive(Default, CandidType, Serialize, Deserialize, Clone)]
-    pub struct OpenIdLastRequestRate {
-        pub at: Timestamp,
-        pub streak_count: u8,
+    pub struct OpenIdRequestRate {
+        pub last_request_at: Timestamp,
+        pub count: u8,
     }
 }
 

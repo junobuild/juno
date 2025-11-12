@@ -6,12 +6,12 @@ use crate::templates::{
 use crate::types::errors::AssertOpenIdRequestRatesError;
 use crate::types::interface::NotifyStatus;
 use crate::types::state::{
-    HeapState, Notification, NotificationKey, NotificationStatus, OpenIdLastRequestRate, State,
+    HeapState, Notification, NotificationKey, NotificationStatus, OpenIdRequestRate, State,
 };
 use ic_cdk::api::time;
 use ic_stable_structures::storable::Bound;
 use ic_stable_structures::Storable;
-use junobuild_auth::asserts::types::AssertRefreshRecord;
+use junobuild_auth::asserts::types::AssertRefresh;
 use junobuild_shared::serializers::{
     deserialize_from_bytes, serialize_into_bytes, serialize_to_bytes,
 };
@@ -244,30 +244,30 @@ impl NotifyStatus {
     }
 }
 
-impl AssertRefreshRecord for OpenIdLastRequestRate {
-    fn last_attempt_at(&self) -> u64 {
-        self.at
+impl AssertRefresh for OpenIdRequestRate {
+    fn last_refresh_at(&self) -> u64 {
+        self.last_request_at
     }
-    fn last_attempt_streak_count(&self) -> u8 {
-        self.streak_count
+    fn refresh_count(&self) -> u8 {
+        self.count
     }
 }
 
-impl OpenIdLastRequestRate {
+impl OpenIdRequestRate {
     pub fn init() -> Self {
         Self {
-            at: time(),
-            streak_count: 1,
+            last_request_at: time(),
+            count: 1,
         }
     }
 
     pub fn record_attempt(&mut self, reset_streak: bool) {
-        self.at = time();
+        self.last_request_at = time();
 
         if reset_streak {
-            self.streak_count = 1;
+            self.count = 1;
         } else {
-            self.streak_count = self.streak_count.saturating_add(1);
+            self.count = self.count.saturating_add(1);
         }
     }
 }

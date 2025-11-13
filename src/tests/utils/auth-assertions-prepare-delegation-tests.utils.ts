@@ -56,6 +56,17 @@ export const testAuthPrepareDelegation = ({
 
 			observatoryActor = obsA;
 			observatoryActor.setIdentity(controller);
+
+			// Allow lots of requests
+			const { update_rate_config } = observatoryActor;
+
+			await update_rate_config(
+				{ OpenIdCertificateRequests: null },
+				{
+					max_tokens: 10_000n,
+					time_per_token_ns: 1n // 1 milli per token
+				}
+			);
 		});
 
 		describe('Authenticate user fails', async () => {

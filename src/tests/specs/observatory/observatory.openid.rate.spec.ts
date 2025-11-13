@@ -92,14 +92,6 @@ describe('Observatory > OpenId > Rate', async () => {
 			actor.setIdentity(user);
 		});
 
-		assertControllers(() => actor);
-	});
-
-	describe('Controller', () => {
-		beforeAll(() => {
-			actor.setIdentity(controller);
-		});
-
 		it('should provide certificate', async () => {
 			await assertGetCertificate({ version: 1n, actor, jwks: mockJwks });
 		});
@@ -128,6 +120,21 @@ describe('Observatory > OpenId > Rate', async () => {
 
 				await assertGetCertificate({ version: 1n, actor, jwks: mockJwks });
 			});
+		});
+	});
+
+	describe('Controller', () => {
+		beforeAll(() => {
+			actor.setIdentity(controller);
+		});
+
+		it('should provide certificate anytime for controllers', async () => {
+			await assertGetCertificate({ version: 1n, actor, jwks: mockJwks });
+
+			await pic.advanceTime(30_000);
+			await tick(pic);
+
+			await assertGetCertificate({ version: 1n, actor, jwks: mockJwks });
 		});
 	});
 });

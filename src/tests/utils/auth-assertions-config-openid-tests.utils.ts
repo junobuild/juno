@@ -14,6 +14,7 @@ import { generateNonce } from './auth-nonce-tests.utils';
 import { makeMockGoogleOpenIdJwt } from './jwt-tests.utils';
 import { assertOpenIdHttpsOutcalls } from './observatory-openid-tests.utils';
 import { tick } from './pic-tests.utils';
+import { updateRateConfigNoLimit } from './rate.tests.utils';
 import { OBSERVATORY_WASM_PATH } from './setup-tests.utils';
 
 export const testAuthConfigObservatory = ({
@@ -71,17 +72,7 @@ export const testAuthConfigObservatory = ({
 			};
 
 			await set_auth_config(config);
-
-			// Allow lots of requests
-			const { update_rate_config } = observatoryActor;
-
-			await update_rate_config(
-				{ OpenIdCertificateRequests: null },
-				{
-					max_tokens: 10_000n,
-					time_per_token_ns: 1n // 1 milli per token
-				}
-			);
+			await updateRateConfigNoLimit({ actor: observatoryActor });
 
 			actor.setIdentity(user);
 		};

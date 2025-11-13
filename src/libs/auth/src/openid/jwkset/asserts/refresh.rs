@@ -7,23 +7,26 @@ use crate::openid::jwkset::asserts::types::RefreshStatus;
 use crate::state::types::state::OpenIdCachedCertificate;
 use ic_cdk::api::time;
 
-pub fn refresh_allowed(record: &Option<OpenIdCachedCertificate>) -> RefreshStatus {
-    refresh_allowed_at(record, time())
+pub fn refresh_allowed(certificate: &Option<OpenIdCachedCertificate>) -> RefreshStatus {
+    refresh_allowed_at(certificate, time())
 }
 
-fn refresh_allowed_at(record: &Option<OpenIdCachedCertificate>, now: Timestamp) -> RefreshStatus {
-    let Some(assert_record) = record.as_ref() else {
+fn refresh_allowed_at(
+    certificate: &Option<OpenIdCachedCertificate>,
+    now: Timestamp,
+) -> RefreshStatus {
+    let Some(cached_certificate) = certificate.as_ref() else {
         // Certificate was never fetched.
         return RefreshStatus::AllowedFirstFetch;
     };
 
-    let since_last_attempt = now.saturating_sub(assert_record.last_refresh_at());
+    let since_last_attempt = now.saturating_sub(cached_certificate.last_fetch_attempt.at);
 
     if since_last_attempt >= REFRESH_COOLDOWN_NS {
         return RefreshStatus::AllowedAfterCooldown;
     }
 
-    let delay = attempt_backoff_ns(assert_record.refresh_count());
+    let delay = attempt_backoff_ns(cached_certificate.last_fetch_attempt.streak_count);
 
     // Once we exceed the backoff cap, no more retries until full cooldown
     // 0s -> 30s -> 60s -> 2min ... 15min

@@ -10,7 +10,7 @@ use crate::types::state::{
 use ic_cdk::api::time;
 use ic_stable_structures::storable::Bound;
 use ic_stable_structures::Storable;
-use junobuild_auth::asserts::types::AssertRefresh;
+use junobuild_auth::asserts::types::AssertRefreshCertificate;
 use junobuild_shared::serializers::{
     deserialize_from_bytes, serialize_into_bytes, serialize_to_bytes,
 };
@@ -242,7 +242,7 @@ impl NotifyStatus {
     }
 }
 
-impl AssertRefresh for OpenIdRequestRate {
+impl AssertRefreshCertificate for OpenIdRequestRate {
     fn last_refresh_at(&self) -> u64 {
         self.last_request_at
     }

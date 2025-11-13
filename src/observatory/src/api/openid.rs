@@ -1,4 +1,7 @@
-use crate::guards::{caller_is_admin_controller, caller_is_not_admin_controller, caller_is_not_anonymous, increment_openid_certificate_requests};
+use crate::guards::{
+    caller_is_admin_controller, caller_is_not_admin_controller, caller_is_not_anonymous,
+    increment_openid_certificate_requests,
+};
 use crate::openid::scheduler::{start_openid_scheduler, stop_openid_scheduler};
 use crate::store::heap::get_certificate;
 use ic_cdk_macros::update;

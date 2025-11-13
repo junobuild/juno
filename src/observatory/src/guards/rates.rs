@@ -6,8 +6,12 @@ pub fn increment_openid_certificate_requests() -> Result<(), String> {
     with_rates_mut(increment_openid_certificate_requests_impl)
 }
 
-fn increment_openid_certificate_requests_impl(current_rates: &mut Option<Rates>) -> Result<(), String> {
-    let rates = current_rates.get_or_insert_with(Rates::default);
+fn increment_openid_certificate_requests_impl(
+    current_rates: &mut Option<Rates>,
+) -> Result<(), String> {
+    let rates = current_rates.as_mut().ok_or_else(|| {
+        "Cannot increment OpenID certificate requests: rates are not configured.".to_string()
+    })?;
 
     let openid_certificate_requests = &mut rates.openid_certificate_requests;
 

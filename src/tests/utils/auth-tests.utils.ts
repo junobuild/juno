@@ -161,6 +161,17 @@ const setupAuth = async ({
 	const { start_openid_monitoring } = observatoryActor;
 	await start_openid_monitoring();
 
+	// Allow lots of requests
+	const { update_rate_config } = observatoryActor;
+
+	await update_rate_config(
+		{ OpenIdCertificateRequests: null },
+		{
+			max_tokens: 10_000n,
+			time_per_token_ns: 1n // 1 milli per token
+		}
+	);
+
 	actor.setIdentity(user);
 
 	return {

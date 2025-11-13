@@ -2,27 +2,38 @@ use crate::asserts::constants::{
     FAILURE_BACKOFF_BASE_NS, FAILURE_BACKOFF_CAP_NS, FAILURE_BACKOFF_MULTIPLIER,
     REFRESH_COOLDOWN_NS,
 };
-use crate::asserts::types::{AssertRefresh, RefreshStatus};
+use crate::asserts::types::{AssertRefreshCertificate, RefreshStatus};
 use crate::delegation::types::Timestamp;
 use ic_cdk::api::time;
 
-pub fn refresh_allowed<R: AssertRefresh>(certificate: &Option<R>) -> RefreshStatus {
-    refresh_allowed_at(certificate, time())
+pub fn refresh_certificate_allowed<R: AssertRefreshCertificate>(
+    record: &Option<R>,
+) -> RefreshStatus {
+    refresh_allowed_at(record, time())
 }
 
-fn refresh_allowed_at<R: AssertRefresh>(certificate: &Option<R>, now: Timestamp) -> RefreshStatus {
-    let Some(cached_certificate) = certificate.as_ref() else {
+fn refresh_allowed_at<R: AssertRefreshCertificate>(
+    record: &Option<R>,
+    now: Timestamp,
+) -> RefreshStatus {
+    let Some(assert_record) = record.as_ref() else {
         // Certificate was never fetched.
         return RefreshStatus::AllowedFirstFetch;
     };
 
-    let since_last_attempt = now.saturating_sub(cached_certificate.last_refresh_at());
+    let since_last_attempt = now.saturating_sub(assert_record.last_refresh_at());
 
     if since_last_attempt >= REFRESH_COOLDOWN_NS {
         return RefreshStatus::AllowedAfterCooldown;
     }
 
-    let delay = attempt_backoff_ns(cached_certificate.refresh_count());
+    let delay = attempt_backoff_ns(assert_record.refresh_count());
+
+    // Once we exceed the backoff cap, no more retries until full cooldown
+    // 0s -> 30s -> 60s -> 2min ... 15min
+    if delay > FAILURE_BACKOFF_CAP_NS {
+        return RefreshStatus::Denied;
+    }
 
     if since_last_attempt >= delay {
         RefreshStatus::AllowedRetry
@@ -40,7 +51,7 @@ fn attempt_backoff_ns(streak_count: u8) -> u64 {
         n -= 1;
     }
 
-    (FAILURE_BACKOFF_BASE_NS.saturating_mul(factor)).min(FAILURE_BACKOFF_CAP_NS)
+    FAILURE_BACKOFF_BASE_NS.saturating_mul(factor)
 }
 
 #[cfg(test)]
@@ -142,18 +153,17 @@ mod tests {
     }
 
     #[test]
-    fn backoff_above_3_keeps_capped_at_120s() {
+    fn streak_4_and_above_requires_cooldown() {
         let start = 40_000;
         for streak in [4u8, 10, u8::MAX] {
             let cert = Some(make_cached(start, streak));
-
             assert!(matches!(
-                refresh_allowed_at(&cert, start + secs(120) - 1),
+                refresh_allowed_at(&cert, start + mins(15) - 1),
                 RefreshStatus::Denied
             ));
             assert!(matches!(
-                refresh_allowed_at(&cert, start + secs(120)),
-                RefreshStatus::AllowedRetry
+                refresh_allowed_at(&cert, start + mins(15)),
+                RefreshStatus::AllowedAfterCooldown
             ));
         }
     }
@@ -164,9 +174,33 @@ mod tests {
         assert_eq!(attempt_backoff_ns(1), secs(30));
         // streak 2 => 60s
         assert_eq!(attempt_backoff_ns(2), secs(60));
-        // streak 3 => 120s (cap)
+        // streak 3 => 120s
         assert_eq!(attempt_backoff_ns(3), mins(2));
-        // streak 4+ => still 120s (cap)
-        assert_eq!(attempt_backoff_ns(10), mins(2));
+        // streak 4+ => bigger than 120s, no cap
+        assert!(attempt_backoff_ns(4) > mins(2));
+    }
+
+    #[test]
+    fn no_retries_after_cap_until_cooldown() {
+        let start = 50_000;
+        let cert = Some(make_cached(start, 4)); // beyond cap
+
+        // At 2 min (the cap) → still denied because we exceeded cap
+        assert!(matches!(
+            refresh_allowed_at(&cert, start + mins(2)),
+            RefreshStatus::Denied
+        ));
+
+        // At 10 min → still denied (within cooldown)
+        assert!(matches!(
+            refresh_allowed_at(&cert, start + mins(10)),
+            RefreshStatus::Denied
+        ));
+
+        // At 15 min → finally allowed again
+        assert!(matches!(
+            refresh_allowed_at(&cert, start + REFRESH_COOLDOWN_NS),
+            RefreshStatus::AllowedAfterCooldown
+        ));
     }
 }

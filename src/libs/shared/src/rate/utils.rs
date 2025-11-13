@@ -34,10 +34,16 @@ fn increment_and_assert_rate_at(
     tokens: &mut RateTokens,
     now: Timestamp,
 ) -> Result<(), String> {
-    let new_tokens = (now - tokens.updated_at) / config.time_per_token_ns;
+    if config.time_per_token_ns == 0 {
+        return Err("Invalid rate configuration: time_per_token_ns cannot be zero.".to_string());
+    }
+
+    let elapsed = now.saturating_sub(tokens.updated_at);
+    let new_tokens = elapsed / config.time_per_token_ns;
+
     if new_tokens > 0 {
         // The number of tokens is capped otherwise tokens might accumulate
-        tokens.tokens = min(config.max_tokens, tokens.tokens + new_tokens);
+        tokens.tokens = min(config.max_tokens, tokens.tokens.saturating_add(new_tokens));
         tokens.updated_at += config.time_per_token_ns * new_tokens;
     }
 
@@ -171,5 +177,27 @@ mod tests {
         assert_eq!(tokens.tokens, 4);
         // updated_at advanced by new_tokens * time_per_token_ns = u64::MAX
         assert_eq!(tokens.updated_at, now);
+    }
+
+    #[test]
+    fn returns_error_when_time_per_token_is_zero() {
+        let config = cfg(0, 10); // invalid configuration
+
+        let mut tokens = RateTokens {
+            tokens: 5,
+            updated_at: 1000,
+        };
+
+        let result = increment_and_assert_rate_at(&config, &mut tokens, 2000);
+
+        assert!(result.is_err());
+        assert_eq!(
+            result.unwrap_err(),
+            "Invalid rate configuration: time_per_token_ns cannot be zero."
+        );
+
+        // Ensure no mutation happened
+        assert_eq!(tokens.tokens, 5);
+        assert_eq!(tokens.updated_at, 1000);
     }
 }

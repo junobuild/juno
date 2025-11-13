@@ -11,6 +11,10 @@ pub fn caller_is_admin_controller() -> Result<(), String> {
     }
 }
 
+pub fn caller_is_not_admin_controller() -> bool {
+    caller_is_admin_controller().is_err()
+}
+
 pub fn caller_is_not_anonymous() -> Result<(), String> {
     let caller = caller();
 

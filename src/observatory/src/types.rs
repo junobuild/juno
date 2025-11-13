@@ -3,6 +3,7 @@ pub mod state {
     use candid::{CandidType, Deserialize};
     use ic_stable_structures::StableBTreeMap;
     use junobuild_auth::openid::types::provider::{OpenIdCertificate, OpenIdProvider};
+    use junobuild_shared::rate::types::{RateConfig, RateTokens};
     use junobuild_shared::types::memory::Memory;
     use junobuild_shared::types::state::{
         Controllers, NotificationKind, Segment, SegmentId, Timestamp,
@@ -30,6 +31,7 @@ pub mod state {
         pub controllers: Controllers,
         pub env: Option<Env>,
         pub openid: Option<OpenId>,
+        pub rates: Option<Rates>,
     }
 
     #[derive(CandidType, Serialize, Deserialize, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
@@ -73,6 +75,17 @@ pub mod state {
     pub struct OpenIdScheduler {
         pub enabled: bool,
     }
+
+    #[derive(Default, CandidType, Serialize, Deserialize, Clone)]
+    pub struct Rates {
+        pub openid_certificate_requests: Rate,
+    }
+
+    #[derive(Default, CandidType, Serialize, Deserialize, Clone)]
+    pub struct Rate {
+        pub tokens: RateTokens,
+        pub config: RateConfig,
+    }
 }
 
 pub mod runtime {
@@ -101,5 +114,10 @@ pub mod interface {
         pub pending: u64,
         pub sent: u64,
         pub failed: u64,
+    }
+
+    #[derive(CandidType, Serialize, Deserialize, Clone)]
+    pub enum RateKind {
+        OpenIdCertificateRequests,
     }
 }

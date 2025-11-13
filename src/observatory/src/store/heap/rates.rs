@@ -1,43 +1,16 @@
-use crate::memory::state::services::{mutate_heap_state, with_rates};
-use crate::types::state::{HeapState, OpenIdRequestRate, Rates};
-use candid::Principal;
-use junobuild_auth::openid::types::provider::OpenIdProvider;
+use crate::memory::state::services::with_rates_mut;
+use crate::types::state::Rates;
+use junobuild_shared::rate::types::RateConfig;
 
-pub fn get_openid_request_rate(
-    provider: &OpenIdProvider,
-    caller: &Principal,
-) -> Option<OpenIdRequestRate> {
-    with_rates(|rates| get_openid_request_rate_impl(provider, caller, rates))
+pub fn update_openid_certificate_requests_rate_config(config: &RateConfig) {
+    with_rates_mut(|rates| update_openid_certificate_requests_rate_config_impl(config, rates))
 }
 
-fn get_openid_request_rate_impl(
-    provider: &OpenIdProvider,
-    caller: &Principal,
-    rates: &Option<Rates>,
-) -> Option<OpenIdRequestRate> {
-    rates
-        .as_ref()
-        .and_then(|rates| rates.openid_request_rates.get(provider))
-        .and_then(|request_rates| request_rates.get(caller).cloned())
-}
-
-pub fn record_request_rate(provider: &OpenIdProvider, caller: &Principal, reset_streak: bool) {
-    mutate_heap_state(|state| record_request_rate_impl(provider, caller, reset_streak, state))
-}
-
-fn record_request_rate_impl(
-    provider: &OpenIdProvider,
-    caller: &Principal,
-    reset_streak: bool,
-    state: &mut HeapState,
+fn update_openid_certificate_requests_rate_config_impl(
+    config: &RateConfig,
+    current_rates: &mut Option<Rates>,
 ) {
-    let rates = state.rates.get_or_insert_with(Rates::default);
+    let rates = current_rates.get_or_insert_with(Rates::default);
 
-    rates
-        .openid_request_rates
-        .entry(provider.clone())
-        .or_default()
-        .entry(*caller)
-        .and_modify(|request_rate| request_rate.record_attempt(reset_streak))
-        .or_insert_with(OpenIdRequestRate::init);
+    rates.openid_certificate_requests.config = config.clone();
 }

@@ -4,13 +4,10 @@ use crate::templates::{
     FAILED_DEPOSIT_CYCLES_TXT,
 };
 use crate::types::interface::NotifyStatus;
-use crate::types::state::{
-    HeapState, Notification, NotificationKey, NotificationStatus, OpenIdRequestRate, State,
-};
+use crate::types::state::{HeapState, Notification, NotificationKey, NotificationStatus, State};
 use ic_cdk::api::time;
 use ic_stable_structures::storable::Bound;
 use ic_stable_structures::Storable;
-use junobuild_auth::asserts::types::AssertRefreshCertificate;
 use junobuild_shared::serializers::{
     deserialize_from_bytes, serialize_into_bytes, serialize_to_bytes,
 };
@@ -238,34 +235,6 @@ impl NotifyStatus {
             pending,
             sent,
             failed,
-        }
-    }
-}
-
-impl AssertRefreshCertificate for OpenIdRequestRate {
-    fn last_refresh_at(&self) -> u64 {
-        self.last_request_at
-    }
-    fn refresh_count(&self) -> u8 {
-        self.count
-    }
-}
-
-impl OpenIdRequestRate {
-    pub fn init() -> Self {
-        Self {
-            last_request_at: time(),
-            count: 1,
-        }
-    }
-
-    pub fn record_attempt(&mut self, reset_streak: bool) {
-        self.last_request_at = time();
-
-        if reset_streak {
-            self.count = 1;
-        } else {
-            self.count = self.count.saturating_add(1);
         }
     }
 }

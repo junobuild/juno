@@ -1,8 +1,9 @@
 pub mod state {
     use crate::memory::init_stable_state;
-    use candid::{CandidType, Deserialize, Principal};
+    use candid::{CandidType, Deserialize};
     use ic_stable_structures::StableBTreeMap;
     use junobuild_auth::openid::types::provider::{OpenIdCertificate, OpenIdProvider};
+    use junobuild_shared::rate::types::{RateConfig, RateTokens};
     use junobuild_shared::types::memory::Memory;
     use junobuild_shared::types::state::{
         Controllers, NotificationKind, Segment, SegmentId, Timestamp,
@@ -77,15 +78,13 @@ pub mod state {
 
     #[derive(Default, CandidType, Serialize, Deserialize, Clone)]
     pub struct Rates {
-        pub openid_request_rates: HashMap<OpenIdProvider, OpenIdRequestRates>,
+        pub openid_certificate_requests: Rate,
     }
 
-    pub type OpenIdRequestRates = HashMap<Principal, OpenIdRequestRate>;
-
     #[derive(Default, CandidType, Serialize, Deserialize, Clone)]
-    pub struct OpenIdRequestRate {
-        pub last_request_at: Timestamp,
-        pub count: u8,
+    pub struct Rate {
+        pub tokens: RateTokens,
+        pub config: RateConfig,
     }
 }
 
@@ -115,5 +114,10 @@ pub mod interface {
         pub pending: u64,
         pub sent: u64,
         pub failed: u64,
+    }
+
+    #[derive(CandidType, Serialize, Deserialize, Clone)]
+    pub enum RateKind {
+        OpenIdCertificateRequests,
     }
 }

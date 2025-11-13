@@ -99,6 +99,11 @@ export interface OpenIdCertificate {
 	version: [] | [bigint];
 }
 export type OpenIdProvider = { Google: null };
+export interface RateConfig {
+	max_tokens: bigint;
+	time_per_token_ns: bigint;
+}
+export type RateKind = { OpenIdCertificateRequests: null };
 export interface Segment {
 	id: Principal;
 	metadata: [] | [Array<[string, string]>];
@@ -125,6 +130,7 @@ export interface _SERVICE {
 	set_env: ActorMethod<[Env], undefined>;
 	start_openid_monitoring: ActorMethod<[], undefined>;
 	stop_openid_monitoring: ActorMethod<[], undefined>;
+	update_rate_config: ActorMethod<[RateKind, RateConfig], undefined>;
 }
 export declare const idlFactory: IDL.InterfaceFactory;
 export declare const init: (args: { IDL: typeof IDL }) => IDL.Type[];

@@ -1,7 +1,9 @@
 import { idlFactoryObservatory, type ObservatoryActor } from '$declarations';
 import { type Actor, PocketIc } from '@dfinity/pic';
+import { AnonymousIdentity } from '@icp-sdk/core/agent';
 import { Ed25519KeyIdentity } from '@icp-sdk/core/identity';
 import { inject } from 'vitest';
+import { CALLER_NOT_CONTROLLER_OBSERVATORY_MSG } from '../../constants/observatory-tests.constants';
 import { mockCertificateDate, mockClientId } from '../../mocks/jwt.mocks';
 import { makeMockGoogleOpenIdJwt } from '../../utils/jwt-tests.utils';
 import {
@@ -34,6 +36,24 @@ describe('Observatory > OpenId > Rate', async () => {
 		await stop_openid_monitoring();
 	};
 
+	const setRateConfig = async (customActor?: ObservatoryActor) => {
+		const { update_rate_config } = customActor ?? actor;
+
+		await update_rate_config(
+			{ OpenIdCertificateRequests: null },
+			{
+				max_tokens: 1n,
+				time_per_token_ns: 2n * 60n * 1_000_000_000n // 2min
+			}
+		);
+	};
+
+	const assertControllers = (actor: () => ObservatoryActor) => {
+		it('should throw errors on updating rate config for not a controller', async () => {
+			await expect(setRateConfig(actor())).rejects.toThrow(CALLER_NOT_CONTROLLER_OBSERVATORY_MSG);
+		});
+	};
+
 	beforeAll(async () => {
 		pic = await PocketIc.create(inject('PIC_URL'));
 
@@ -49,10 +69,36 @@ describe('Observatory > OpenId > Rate', async () => {
 		actor.setIdentity(controller);
 
 		await loadCertificate();
+
+		await setRateConfig();
 	});
 
 	afterAll(async () => {
 		await pic?.tearDown();
+	});
+
+	describe('Anonymous', () => {
+		beforeAll(() => {
+			actor.setIdentity(new AnonymousIdentity());
+		});
+
+		assertControllers(() => actor);
+	});
+
+	describe('Some user', () => {
+		const user = Ed25519KeyIdentity.generate();
+
+		beforeAll(() => {
+			actor.setIdentity(user);
+		});
+
+		assertControllers(() => actor);
+	});
+
+	describe('Controller', () => {
+		beforeAll(() => {
+			actor.setIdentity(controller);
+		});
 	});
 
 	it('should provide certificate', async () => {
@@ -60,9 +106,9 @@ describe('Observatory > OpenId > Rate', async () => {
 	});
 
 	describe.each([
-		{ title: '30s', advanceToRejection: 20_000, advanceToSuccess: 20_000 }, // 20s < 30s < 20s + 20s
-		{ title: '60s', advanceToRejection: 50_000, advanceToSuccess: 20_000 }, // 50s < 60s < 50s + 20s
-		{ title: '120s', advanceToRejection: 100_000, advanceToSuccess: 30_000 } // 100s < 120s < 100s + 30s
+		{ title: '30s', advanceToRejection: 30_000, advanceToSuccess: 91_000 }, // 30s -> 91s (2min 1s)
+		{ title: '60s', advanceToRejection: 60_000, advanceToSuccess: 61_000 }, // 60s -> 61s (2min 1s)
+		{ title: '115s', advanceToRejection: 115_000, advanceToSuccess: 6_000 } // 115s -> 6s (2min 1s)
 	])('$title', ({ advanceToRejection, advanceToSuccess }) => {
 		it('should reject request', async () => {
 			await pic.advanceTime(advanceToRejection);
@@ -74,7 +120,7 @@ describe('Observatory > OpenId > Rate', async () => {
 				get_openid_certificate({
 					provider: { Google: null }
 				})
-			).rejects.toThrow('Too many requests');
+			).rejects.toThrow('Rate limit reached, try again later.');
 		});
 
 		it('should provide certificate', async () => {
@@ -83,33 +129,5 @@ describe('Observatory > OpenId > Rate', async () => {
 
 			await assertGetCertificate({ version: 1n, actor, jwks: mockJwks });
 		});
-	});
-
-	describe.each([
-		{ title: '30s', advanceToRejection: 30_000 }, // 30s
-		{ title: '60s', advanceToRejection: 60_000 }, // 1min 30
-		{ title: '120s', advanceToRejection: 2 * 60_000 }, // 3min 30
-		{ title: '300s', advanceToRejection: 5 * 60_000 }, // 8min 30
-		{ title: '300s', advanceToRejection: 5 * 60_000 } // 13min 30
-	])('$title', ({ advanceToRejection }) => {
-		it('should reject request until cooldown', async () => {
-			await pic.advanceTime(advanceToRejection);
-			await tick(pic);
-
-			const { get_openid_certificate } = actor;
-
-			await expect(
-				get_openid_certificate({
-					provider: { Google: null }
-				})
-			).rejects.toThrow('Too many requests');
-		});
-	});
-
-	it('should provide certificate after cooldown', async () => {
-		await pic.advanceTime(90_000); // 1min 30 after 13min 30
-		await tick(pic);
-
-		await assertGetCertificate({ version: 1n, actor, jwks: mockJwks });
 	});
 });

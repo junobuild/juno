@@ -7,7 +7,7 @@ pub enum RefreshStatus {
     Denied,
 }
 
-pub trait AssertRefresh {
+pub trait AssertRefreshCertificate {
     fn last_refresh_at(&self) -> Timestamp;
     fn refresh_count(&self) -> u8;
 }

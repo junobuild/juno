@@ -1,4 +1,4 @@
-use crate::asserts::types::AssertRefresh;
+use crate::asserts::types::AssertRefreshCertificate;
 use crate::openid::types::provider::OpenIdCertificate;
 use crate::state::types::config::AuthenticationConfig;
 use crate::state::types::interface::SetAuthenticationConfig;
@@ -76,7 +76,7 @@ impl OpenIdCachedCertificate {
     }
 }
 
-impl AssertRefresh for OpenIdCachedCertificate {
+impl AssertRefreshCertificate for OpenIdCachedCertificate {
     fn last_refresh_at(&self) -> u64 {
         self.last_fetch_attempt.at
     }

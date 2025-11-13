@@ -2,27 +2,32 @@ use crate::asserts::constants::{
     FAILURE_BACKOFF_BASE_NS, FAILURE_BACKOFF_CAP_NS, FAILURE_BACKOFF_MULTIPLIER,
     REFRESH_COOLDOWN_NS,
 };
-use crate::asserts::types::{AssertRefresh, RefreshStatus};
+use crate::asserts::types::{AssertRefreshCertificate, RefreshStatus};
 use crate::delegation::types::Timestamp;
 use ic_cdk::api::time;
 
-pub fn refresh_allowed<R: AssertRefresh>(certificate: &Option<R>) -> RefreshStatus {
-    refresh_allowed_at(certificate, time())
+pub fn refresh_certificate_allowed<R: AssertRefreshCertificate>(
+    record: &Option<R>,
+) -> RefreshStatus {
+    refresh_allowed_at(record, time())
 }
 
-fn refresh_allowed_at<R: AssertRefresh>(certificate: &Option<R>, now: Timestamp) -> RefreshStatus {
-    let Some(cached_certificate) = certificate.as_ref() else {
+fn refresh_allowed_at<R: AssertRefreshCertificate>(
+    record: &Option<R>,
+    now: Timestamp,
+) -> RefreshStatus {
+    let Some(assert_record) = record.as_ref() else {
         // Certificate was never fetched.
         return RefreshStatus::AllowedFirstFetch;
     };
 
-    let since_last_attempt = now.saturating_sub(cached_certificate.last_refresh_at());
+    let since_last_attempt = now.saturating_sub(assert_record.last_refresh_at());
 
     if since_last_attempt >= REFRESH_COOLDOWN_NS {
         return RefreshStatus::AllowedAfterCooldown;
     }
 
-    let delay = attempt_backoff_ns(cached_certificate.refresh_count());
+    let delay = attempt_backoff_ns(assert_record.refresh_count());
 
     if since_last_attempt >= delay {
         RefreshStatus::AllowedRetry

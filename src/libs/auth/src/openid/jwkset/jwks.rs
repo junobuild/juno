@@ -1,4 +1,4 @@
-use crate::asserts::refresh_allowed;
+use crate::asserts::refresh_certificate_allowed;
 use crate::asserts::types::RefreshStatus;
 use crate::openid::jwkset::fetch::fetch_openid_certificate;
 use crate::openid::jwkset::targets::target_observatory_id;
@@ -37,7 +37,7 @@ pub async fn get_or_refresh_jwks(
         return Ok(cached_jwks);
     }
 
-    match refresh_allowed(&cached_certificate) {
+    match refresh_certificate_allowed(&cached_certificate) {
         RefreshStatus::AllowedFirstFetch | RefreshStatus::AllowedRetry => {
             record_fetch_attempt(provider, false, auth_heap);
         }

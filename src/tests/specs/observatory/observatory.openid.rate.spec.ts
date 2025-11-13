@@ -24,6 +24,29 @@ describe('Observatory > OpenId > Rate', async () => {
 		date: mockCertificateDate
 	});
 
+	beforeAll(async () => {
+		pic = await PocketIc.create(inject('PIC_URL'));
+
+		await pic.setTime(mockCertificateDate.getTime());
+
+		const { actor: c } = await pic.setupCanister<ObservatoryActor>({
+			idlFactory: idlFactoryObservatory,
+			wasm: OBSERVATORY_WASM_PATH,
+			sender: controller.getPrincipal()
+		});
+
+		actor = c;
+		actor.setIdentity(controller);
+
+		await loadCertificate();
+
+		await setRateConfig();
+	});
+
+	afterAll(async () => {
+		await pic?.tearDown();
+	});
+
 	const loadCertificate = async () => {
 		const { start_openid_monitoring, stop_openid_monitoring } = actor;
 
@@ -53,29 +76,6 @@ describe('Observatory > OpenId > Rate', async () => {
 			await expect(setRateConfig(actor())).rejects.toThrow(CALLER_NOT_CONTROLLER_OBSERVATORY_MSG);
 		});
 	};
-
-	beforeAll(async () => {
-		pic = await PocketIc.create(inject('PIC_URL'));
-
-		await pic.setTime(mockCertificateDate.getTime());
-
-		const { actor: c } = await pic.setupCanister<ObservatoryActor>({
-			idlFactory: idlFactoryObservatory,
-			wasm: OBSERVATORY_WASM_PATH,
-			sender: controller.getPrincipal()
-		});
-
-		actor = c;
-		actor.setIdentity(controller);
-
-		await loadCertificate();
-
-		await setRateConfig();
-	});
-
-	afterAll(async () => {
-		await pic?.tearDown();
-	});
 
 	describe('Anonymous', () => {
 		beforeAll(() => {

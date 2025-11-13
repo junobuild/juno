@@ -1,3 +1,4 @@
+mod asserts;
 mod fetch;
 mod impls;
 mod jwks;

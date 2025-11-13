@@ -1,21 +1,17 @@
-use crate::asserts::constants::{
+use crate::delegation::types::Timestamp;
+use crate::openid::jwkset::asserts::constants::{
     FAILURE_BACKOFF_BASE_NS, FAILURE_BACKOFF_CAP_NS, FAILURE_BACKOFF_MULTIPLIER,
     REFRESH_COOLDOWN_NS,
 };
-use crate::asserts::types::{AssertRefreshCertificate, RefreshStatus};
-use crate::delegation::types::Timestamp;
+use crate::openid::jwkset::asserts::types::RefreshStatus;
+use crate::state::types::state::OpenIdCachedCertificate;
 use ic_cdk::api::time;
 
-pub fn refresh_certificate_allowed<R: AssertRefreshCertificate>(
-    record: &Option<R>,
-) -> RefreshStatus {
+pub fn refresh_allowed(record: &Option<OpenIdCachedCertificate>) -> RefreshStatus {
     refresh_allowed_at(record, time())
 }
 
-fn refresh_allowed_at<R: AssertRefreshCertificate>(
-    record: &Option<R>,
-    now: Timestamp,
-) -> RefreshStatus {
+fn refresh_allowed_at(record: &Option<OpenIdCachedCertificate>, now: Timestamp) -> RefreshStatus {
     let Some(assert_record) = record.as_ref() else {
         // Certificate was never fetched.
         return RefreshStatus::AllowedFirstFetch;
@@ -57,8 +53,7 @@ fn attempt_backoff_ns(streak_count: u8) -> u64 {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::asserts::types::RefreshStatus;
-    use crate::state::types::state::{OpenIdCachedCertificate, OpenIdLastFetchAttempt};
+    use crate::state::types::state::OpenIdLastFetchAttempt;
 
     const fn secs(n: u64) -> u64 {
         n * 1_000_000_000

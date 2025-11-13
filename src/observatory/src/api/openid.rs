@@ -1,5 +1,5 @@
 use crate::guards::{
-    caller_is_admin_controller, caller_is_not_anonymous, increment_satellites_rate,
+    caller_is_admin_controller, caller_is_not_anonymous, increment_openid_certificate_requests,
 };
 use crate::openid::scheduler::{start_openid_scheduler, stop_openid_scheduler};
 use crate::store::heap::get_certificate;
@@ -22,7 +22,7 @@ fn stop_openid_monitoring() {
 fn get_openid_certificate(
     GetOpenIdCertificateArgs { provider }: GetOpenIdCertificateArgs,
 ) -> Option<OpenIdCertificate> {
-    increment_satellites_rate().unwrap_or_trap();
+    increment_openid_certificate_requests().unwrap_or_trap();
 
     get_certificate(&provider)
 }

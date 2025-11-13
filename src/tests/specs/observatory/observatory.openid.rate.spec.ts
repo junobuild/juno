@@ -99,35 +99,35 @@ describe('Observatory > OpenId > Rate', async () => {
 		beforeAll(() => {
 			actor.setIdentity(controller);
 		});
-	});
-
-	it('should provide certificate', async () => {
-		await assertGetCertificate({ version: 1n, actor, jwks: mockJwks });
-	});
-
-	describe.each([
-		{ title: '30s', advanceToRejection: 30_000, advanceToSuccess: 91_000 }, // 30s -> 91s (2min 1s)
-		{ title: '60s', advanceToRejection: 60_000, advanceToSuccess: 61_000 }, // 60s -> 61s (2min 1s)
-		{ title: '115s', advanceToRejection: 115_000, advanceToSuccess: 6_000 } // 115s -> 6s (2min 1s)
-	])('$title', ({ advanceToRejection, advanceToSuccess }) => {
-		it('should reject request', async () => {
-			await pic.advanceTime(advanceToRejection);
-			await tick(pic);
-
-			const { get_openid_certificate } = actor;
-
-			await expect(
-				get_openid_certificate({
-					provider: { Google: null }
-				})
-			).rejects.toThrow('Rate limit reached, try again later.');
-		});
 
 		it('should provide certificate', async () => {
-			await pic.advanceTime(advanceToSuccess);
-			await tick(pic);
-
 			await assertGetCertificate({ version: 1n, actor, jwks: mockJwks });
+		});
+
+		describe.each([
+			{ title: '30s', advanceToRejection: 30_000, advanceToSuccess: 91_000 }, // 30s -> 91s (2min 1s)
+			{ title: '60s', advanceToRejection: 60_000, advanceToSuccess: 61_000 }, // 60s -> 61s (2min 1s)
+			{ title: '115s', advanceToRejection: 115_000, advanceToSuccess: 6_000 } // 115s -> 6s (2min 1s)
+		])('$title', ({ advanceToRejection, advanceToSuccess }) => {
+			it('should reject request', async () => {
+				await pic.advanceTime(advanceToRejection);
+				await tick(pic);
+
+				const { get_openid_certificate } = actor;
+
+				await expect(
+					get_openid_certificate({
+						provider: { Google: null }
+					})
+				).rejects.toThrow('Rate limit reached, try again later.');
+			});
+
+			it('should provide certificate', async () => {
+				await pic.advanceTime(advanceToSuccess);
+				await tick(pic);
+
+				await assertGetCertificate({ version: 1n, actor, jwks: mockJwks });
+			});
 		});
 	});
 });

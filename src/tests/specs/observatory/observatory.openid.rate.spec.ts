@@ -1,4 +1,4 @@
-import { idlFactoryObservatory, type ObservatoryActor } from '$declarations';
+import { idlFactoryCertifiedObservatory, type ObservatoryActor } from '$declarations';
 import { type Actor, PocketIc } from '@dfinity/pic';
 import { AnonymousIdentity } from '@icp-sdk/core/agent';
 import { Ed25519KeyIdentity } from '@icp-sdk/core/identity';
@@ -30,7 +30,7 @@ describe('Observatory > OpenId > Rate', async () => {
 		await pic.setTime(mockCertificateDate.getTime());
 
 		const { actor: c } = await pic.setupCanister<ObservatoryActor>({
-			idlFactory: idlFactoryObservatory,
+			idlFactory: idlFactoryCertifiedObservatory,
 			wasm: OBSERVATORY_WASM_PATH,
 			sender: controller.getPrincipal()
 		});

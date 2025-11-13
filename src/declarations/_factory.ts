@@ -20,6 +20,7 @@ import { idlFactory as idlFactoryCertifiedIC } from '$declarations/ic-management
 import { idlFactory as idlFactoryIC } from '$declarations/ic-management/ic-management.factory.did';
 import { idlFactory as idlFactoryMissionControl } from '$declarations/mission_control/mission_control.factory.did';
 import { idlFactory as idlFactoryObservatory } from '$declarations/observatory/observatory.factory.did';
+import { idlFactory as idlFactoryCertifiedObservatory } from '$declarations/observatory/observatory.factory.certified.did';
 import { idlFactory as idlFactoryOrbiter } from '$declarations/orbiter/orbiter.factory.did';
 import { idlFactory as idlFactorySatellite } from '$declarations/satellite/satellite.factory.did';
 import { idlFactory as idlFactorySputnik } from '$declarations/sputnik/sputnik.factory.did';
@@ -60,6 +61,7 @@ export {
 	idlFactoryMissionControl0014,
 	idlFactoryMissionControl004,
 	idlFactoryObservatory,
+	idlFactoryCertifiedObservatory,
 	idlFactoryObservatory009,
 	idlFactoryOrbiter,
 	idlFactoryOrbiter006,

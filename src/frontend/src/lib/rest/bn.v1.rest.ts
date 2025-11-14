@@ -1,6 +1,7 @@
 import {
 	DeleteCustomDomainStateSchema,
 	GetCustomDomainStateSchema,
+	GetCustomDomainValidateSchema,
 	PostCustomDomainStateSchema
 } from '$lib/schemas/custom-domain.schema';
 import type { CustomDomainName, CustomDomainRegistration } from '$lib/types/custom-domain';
@@ -98,4 +99,35 @@ export const deleteDomain = async ({
 	}
 
 	throw new Error(`Failed to delete ${domainName} on the Boundary Nodes: ${result.errors}`);
+};
+
+export const validateDomain = async ({
+	domainName
+}: CustomDomainRegistrationParams): Promise<void> => {
+	assertNonNullish(
+		BN_CUSTOM_DOMAINS_URL,
+		'Boundary Node API URL not defined. This service is unavailable.'
+	);
+
+	const response = await fetch(`${BN_CUSTOM_DOMAINS_URL}/${domainName}/validate`, {
+		method: 'GET',
+		headers: {
+			'Content-Type': 'application/json'
+		}
+	});
+
+	if (!response.ok) {
+		const text = await response.text();
+		throw new Error(`Error validating ${domainName} on the Boundary Nodes: ${text}`);
+	}
+
+	const data = await response.json();
+
+	const result = GetCustomDomainValidateSchema.parse(data);
+
+	if (result.status === 'success') {
+		return;
+	}
+
+	throw new Error(`Failed to validate ${domainName} on the Boundary Nodes: ${result.errors}`);
 };

@@ -1,8 +1,9 @@
 import type { UpgradeCodeProgressState } from '@junobuild/admin';
 
 export enum HostingProgressStep {
-	CustomDomain = 0,
-	AuthConfig = 1
+	Validate = 0,
+	Register = 1,
+	AuthConfig = 2
 }
 
 export type HostingProgressState = UpgradeCodeProgressState;

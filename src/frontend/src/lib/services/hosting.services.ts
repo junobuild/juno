@@ -1,5 +1,6 @@
 import type { SatelliteDid } from '$declarations';
 import { setAuthConfig } from '$lib/api/satellites.api';
+import { validateDomain } from '$lib/rest/bn.v1.rest';
 import { registerCustomDomain } from '$lib/services/custom-domain.services';
 import { execute } from '$lib/services/progress.services';
 import { i18n } from '$lib/stores/i18n.store';
@@ -29,6 +30,16 @@ export const configHosting = async ({
 	try {
 		assertNonNullish(identity, get(i18n).core.not_logged_in);
 
+		// Validation
+		const validateCustomDomain = async () =>
+			await validateDomain({
+				domainName
+			});
+
+		await execute({ fn: validateCustomDomain, onProgress, step: HostingProgressStep.Validate });
+
+		// Register
+
 		const configCustomDomain = async () =>
 			await registerCustomDomain({
 				satelliteId,
@@ -36,7 +47,9 @@ export const configHosting = async ({
 				identity
 			});
 
-		await execute({ fn: configCustomDomain, onProgress, step: HostingProgressStep.CustomDomain });
+		await execute({ fn: configCustomDomain, onProgress, step: HostingProgressStep.Register });
+
+		// Authentication (Optional)
 
 		const existingDerivationOrigin = fromNullishNullable(
 			fromNullishNullable(config?.internet_identity)?.derivation_origin

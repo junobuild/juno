@@ -47,6 +47,9 @@ interface CustomDomainRegistrationV0Response {
 }
 
 export interface CustomDomainRegistration {
+	/**
+	 * @deprecated
+	 */
 	v0: {
 		State: CustomDomainRegistrationV0State;
 		Response: CustomDomainRegistrationV0Response;

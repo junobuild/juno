@@ -1,9 +1,7 @@
 import type { SatelliteDid } from '$declarations';
 import type {
 	CustomDomainStateSchema,
-	GetCustomDomainStateSchema,
-	GetCustomDomainValidateSchema,
-	PostCustomDomainStateSchema
+	GetCustomDomainStateSchema
 } from '$lib/schemas/custom-domain.schema';
 import type * as z from 'zod';
 
@@ -55,9 +53,7 @@ interface CustomDomainRegistrationV0Response {
 	state: CustomDomainRegistrationV0State | CustomDomainRegistrationV0StateFailed;
 }
 
-export type GetCustomDomainValidate = z.infer<typeof GetCustomDomainValidateSchema>;
 export type GetCustomDomainState = z.infer<typeof GetCustomDomainStateSchema>;
-export type PostCustomDomainState = z.infer<typeof PostCustomDomainStateSchema>;
 
 export interface CustomDomainRegistration {
 	/**

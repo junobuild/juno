@@ -4,12 +4,12 @@ import {
 	listCustomDomains as listCustomDomainsApi,
 	setCustomDomain as setCustomDomainApi
 } from '$lib/api/satellites.api';
-import { deleteDomainV0 } from '$lib/rest/bn.v0.rest';
-import { registerDomain } from '$lib/rest/bn.v1.rest';
+import { deleteDomain, registerDomain } from '$lib/rest/bn.v1.rest';
 import { authStore } from '$lib/stores/auth.store';
 import { customDomainsStore } from '$lib/stores/custom-domains.store';
 import { i18n } from '$lib/stores/i18n.store';
 import { toasts } from '$lib/stores/toasts.store';
+import type { CustomDomainName } from '$lib/types/custom-domain';
 import { fromNullable, nonNullish } from '@dfinity/utils';
 import type { Principal } from '@icp-sdk/core/principal';
 import { get } from 'svelte/store';
@@ -22,7 +22,7 @@ export const setCustomDomain = async ({
 	domainName
 }: {
 	satelliteId: Principal;
-	domainName: string;
+	domainName: CustomDomainName;
 }) => {
 	const { identity } = get(authStore);
 
@@ -50,14 +50,14 @@ export const deleteCustomDomain = async ({
 }: {
 	satelliteId: Principal;
 	customDomain: SatelliteDid.CustomDomain;
-	domainName: string;
+	domainName: CustomDomainName;
 	deleteCustomDomain: boolean;
 }) => {
 	const { identity } = get(authStore);
 
 	if (deleteCustomDomain && nonNullish(fromNullable(customDomain.bn_id))) {
 		// Delete domain name in BN
-		await deleteDomainV0(customDomain);
+		await deleteDomain({ domainName });
 	}
 
 	// Remove custom domain from satellite

@@ -72,3 +72,17 @@ export const PostCustomDomainStateSuccessSchema = z.strictObject({
 export const PostCustomDomainStateSchema = PostCustomDomainStateSuccessSchema.or(
 	PostCustomDomainStateErrorSchema
 );
+
+// DELETE BN_API/{domain}
+
+const DeleteCustomDomainStateErrorSchema = CustomDomainResponseErrorSchema;
+
+export const DeleteCustomDomainStateSuccessSchema = z.strictObject({
+	status: CustomDomainResponseStatusSchema.extract(['success']),
+	message: z.string(),
+	data: CustomDomainResponseDataSchema
+});
+
+export const DeleteCustomDomainStateSchema = DeleteCustomDomainStateSuccessSchema.or(
+	DeleteCustomDomainStateErrorSchema
+);

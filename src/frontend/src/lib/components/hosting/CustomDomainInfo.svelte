@@ -1,9 +1,9 @@
 <script lang="ts" module>
-	import type { CustomDomain, DeprecatedCustomDomainRegistrationState } from '$lib/types/custom-domain';
+	import type { CustomDomain } from '$lib/types/custom-domain';
 
 	export interface SelectedCustomDomain {
 		customDomain: CustomDomain | undefined;
-		registrationState: Option<DeprecatedCustomDomainRegistrationState>;
+		registrationState: Option<CustomDomainState>;
 		mainDomain: boolean;
 	}
 </script>
@@ -18,6 +18,7 @@
 	import Popover from '$lib/components/ui/Popover.svelte';
 	import Value from '$lib/components/ui/Value.svelte';
 	import { i18n } from '$lib/stores/i18n.store';
+	import type { CustomDomainState } from '$lib/types/custom-domain';
 	import type { Option } from '$lib/types/utils';
 	import { keyOf } from '$lib/utils/utils';
 
@@ -29,7 +30,7 @@
 
 	let { customDomain, mainDomain } = $derived(info);
 
-	let registrationState: Option<DeprecatedCustomDomainRegistrationState> = $state(info.registrationState);
+	let registrationState = $state<Option<CustomDomainState>>(info.registrationState);
 
 	let visible = $state(true);
 
@@ -55,8 +56,7 @@
 <svelte:window
 	onjunoRegistrationState={({
 		detail: { registrationState: state }
-	}: CustomEvent<{ registrationState: Option<DeprecatedCustomDomainRegistrationState> }>) =>
-		(registrationState = state)}
+	}: CustomEvent<{ registrationState: Option<CustomDomainState> }>) => (registrationState = state)}
 />
 
 <Popover backdrop="dark" center={true} bind:visible>

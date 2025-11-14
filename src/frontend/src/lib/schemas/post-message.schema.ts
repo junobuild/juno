@@ -1,4 +1,5 @@
 import { CanisterIdTextSchema } from '$lib/schemas/canister.schema';
+import { CustomDomainStateSchema } from '$lib/schemas/custom-domain.schema';
 import { ExchangePriceSchema } from '$lib/schemas/exchange.schema';
 import type {
 	CanisterSegment,
@@ -57,7 +58,7 @@ export const PostMessageDataResponseCanistersMonitoringSchema = z.object({
 });
 
 export const PostMessageDataResponseHostingSchema = z.object({
-	registrationState: z.custom<DeprecatedCustomDomainRegistrationState>().nullable().optional()
+	registrationState: CustomDomainStateSchema.nullable().optional()
 });
 
 export const PostMessageDataResponseRegistrySchema = z.object({

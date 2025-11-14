@@ -1,5 +1,5 @@
 import type { SatelliteDid } from '$declarations';
-import type { DeprecatedCustomDomainRegistration } from '$lib/types/custom-domain';
+import type { CustomDomainRegistration } from '$lib/types/custom-domain';
 import { assertNonNullish, fromNullable, isNullish } from '@dfinity/utils';
 
 const BN_REGISTRATIONS_URL = import.meta.env.VITE_BN_REGISTRATIONS_URL;
@@ -7,9 +7,9 @@ const BN_REGISTRATIONS_URL = import.meta.env.VITE_BN_REGISTRATIONS_URL;
 /**
  * @deprecated
  */
-export const getDeprecatedCustomDomainRegistration = async ({
-	bn_id
-}: SatelliteDid.CustomDomain): Promise<DeprecatedCustomDomainRegistration | undefined> => {
+export const getCustomDomainRegistrationV0 = async ({
+																											bn_id
+																										}: SatelliteDid.CustomDomain): Promise<CustomDomainRegistration['v0']['Response'] | undefined> => {
 	const id = fromNullable(bn_id);
 
 	if (isNullish(id) || id === '') {
@@ -32,12 +32,15 @@ export const getDeprecatedCustomDomainRegistration = async ({
 		throw new Error(`Fetching custom domain state from the boundary nodes failed. ${text}`);
 	}
 
-	const result: DeprecatedCustomDomainRegistration = await response.json();
+	const result: CustomDomainRegistration['v0']['Response'] = await response.json();
 
 	return result;
 };
 
-export const registerDomain = async ({ domainName }: { domainName: string }): Promise<string> => {
+/**
+ * @deprecated
+ */
+export const registerDomainV0 = async ({ domainName }: { domainName: string }): Promise<string> => {
 	assertNonNullish(
 		BN_REGISTRATIONS_URL,
 		'Boundary Node API URL not defined. This service is unavailable.'
@@ -61,7 +64,10 @@ export const registerDomain = async ({ domainName }: { domainName: string }): Pr
 	return result.id;
 };
 
-export const deleteDomain = async ({ bn_id }: SatelliteDid.CustomDomain): Promise<void> => {
+/**
+ * @deprecated
+ */
+export const deleteDomainV0 = async ({ bn_id }: SatelliteDid.CustomDomain): Promise<void> => {
 	assertNonNullish(
 		BN_REGISTRATIONS_URL,
 		'Boundary Node API URL not defined. This service is unavailable.'

@@ -22,10 +22,12 @@ export interface CustomDomainDns {
 
 // BN
 
+export type CustomDomainState = z.infer<typeof CustomDomainStateSchema>;
+
 /**
  * @deprecated
  */
-export type DeprecatedCustomDomainRegistrationState =
+type CustomDomainRegistrationV0State =
 	| 'PendingOrder'
 	| 'PendingChallengeResponse'
 	| 'PendingAcmeApproval'
@@ -35,19 +37,29 @@ export type DeprecatedCustomDomainRegistrationState =
 /**
  * @deprecated
  */
-export interface DeprecatedCustomDomainRegistrationStateFailed {
+interface CustomDomainRegistrationV0StateFailed {
 	Failed: string;
 }
 
 /**
  * @deprecated
  */
-export interface DeprecatedCustomDomainRegistration {
+interface CustomDomainRegistrationV0Response {
 	name: string;
 	canister: string;
-	state: DeprecatedCustomDomainRegistrationState | DeprecatedCustomDomainRegistrationStateFailed;
+	state: CustomDomainRegistrationV0State | CustomDomainRegistrationV0StateFailed;
 }
 
 export type CustomDomainResponseValidation = z.infer<typeof CustomDomainResponseValidationSchema>;
 
 export type CustomDomainResponseGet = z.infer<typeof CustomDomainResponseGetSchema>;
+
+export interface CustomDomainRegistration {
+	/**
+	 * @deprecated
+	 */
+	v0: {
+		State: CustomDomainRegistrationV0State;
+		Response: CustomDomainRegistrationV0Response;
+	};
+}

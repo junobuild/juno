@@ -1,9 +1,9 @@
 import type { SatelliteDid } from '$declarations';
 import { SYNC_CUSTOM_DOMAIN_TIMER_INTERVAL } from '$lib/constants/app.constants';
-import { getDeprecatedCustomDomainRegistration } from '$lib/rest/bn.depcreated.rest';
-import type { CustomDomain, DeprecatedCustomDomainRegistrationState } from '$lib/types/custom-domain';
+import { getCustomDomainRegistrationV0 } from '$lib/rest/bn.v0.rest';
+import type { CustomDomainState } from '$lib/types/custom-domain';
 import type { PostMessageDataRequest, PostMessageRequest } from '$lib/types/post-message';
-import { fromNullable, isNullish, nonNullish } from '@dfinity/utils';
+import { fromNullable, nonNullish } from '@dfinity/utils';
 
 export const onHostingMessage = async ({ data: dataMsg }: MessageEvent<PostMessageRequest>) => {
 	const { msg, data } = dataMsg;
@@ -58,13 +58,7 @@ const syncCustomDomainRegistration = async ({
 	syncing = true;
 
 	try {
-		// TODO if bn_id not null else
-		const registration = await getDeprecatedCustomDomainRegistration(customDomain);
-		const registrationState = nonNullish(registration)
-			? typeof registration.state !== 'string' && 'Failed' in registration.state
-				? 'Failed'
-				: registration.state
-			: null;
+		const registrationState = await syncCustomDomainRegistrationV0({ customDomain });
 
 		emit(registrationState);
 
@@ -74,7 +68,7 @@ const syncCustomDomainRegistration = async ({
 		}
 	} catch (err: unknown) {
 		console.error(err);
-		emit('Failed');
+		emit('failed');
 
 		// We sync until Available or Failed
 		stopTimer();
@@ -83,8 +77,32 @@ const syncCustomDomainRegistration = async ({
 	syncing = false;
 };
 
+const syncCustomDomainRegistrationV0 = async ({
+	customDomain
+}: {
+	customDomain: SatelliteDid.CustomDomain;
+}): Promise<CustomDomainState> => {
+	const registration = await getCustomDomainRegistrationV0(customDomain);
+	const registrationState = nonNullish(registration)
+		? typeof registration.state !== 'string' && 'Failed' in registration.state
+			? 'Failed'
+			: registration.state
+		: null;
+
+	switch (registrationState) {
+		case 'PendingOrder':
+		case 'PendingChallengeResponse':
+		case 'PendingAcmeApproval':
+			return 'registering';
+		case 'Available':
+			return 'registered';
+		default:
+			return 'failed';
+	}
+};
+
 // Update ui with registration state
-const emit = (registrationState: DeprecatedCustomDomainRegistrationState | null) =>
+const emit = (registrationState: CustomDomainState | null) =>
 	postMessage({
 		msg: 'customDomainRegistrationState',
 		data: {

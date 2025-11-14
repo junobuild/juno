@@ -1,6 +1,8 @@
 import { PrincipalTextSchema } from '@dfinity/zod-schemas';
 import * as z from 'zod';
 
+export const CustomDomainStateSchema = z.enum(['registering', 'registered', 'expired', 'failed']);
+
 const CustomDomainResponseStatusSchema = z.enum(['success', 'error']);
 
 const CustomDomainResponseDataSchema = z.strictObject({

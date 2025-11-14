@@ -1,7 +1,7 @@
 import type { SatelliteDid } from '$declarations';
 import { SYNC_CUSTOM_DOMAIN_TIMER_INTERVAL } from '$lib/constants/app.constants';
-import { getCustomDomainRegistration } from '$lib/rest/bn.rest';
-import type { CustomDomainRegistrationState } from '$lib/types/custom-domain';
+import { getCustomDomainRegistrationV0 } from '$lib/rest/bn.v0.rest';
+import type { CustomDomainRegistration } from '$lib/types/custom-domain';
 import type { PostMessageDataRequest, PostMessageRequest } from '$lib/types/post-message';
 import { fromNullable, nonNullish } from '@dfinity/utils';
 
@@ -58,7 +58,7 @@ const syncCustomDomainRegistration = async ({
 	syncing = true;
 
 	try {
-		const registration = await getCustomDomainRegistration(customDomain);
+		const registration = await getCustomDomainRegistrationV0(customDomain);
 		const registrationState = nonNullish(registration)
 			? typeof registration.state !== 'string' && 'Failed' in registration.state
 				? 'Failed'
@@ -83,7 +83,7 @@ const syncCustomDomainRegistration = async ({
 };
 
 // Update ui with registration state
-const emit = (registrationState: CustomDomainRegistrationState | null) =>
+const emit = (registrationState: CustomDomainRegistration['v0']['State'] | null) =>
 	postMessage({
 		msg: 'customDomainRegistrationState',
 		data: {

@@ -4,7 +4,7 @@ import {
 	listCustomDomains as listCustomDomainsApi,
 	setCustomDomain as setCustomDomainApi
 } from '$lib/api/satellites.api';
-import { deleteDomain, registerDomain } from '$lib/rest/bn.rest';
+import { deleteDomainV0, registerDomainV0 } from '$lib/rest/bn.v0.rest';
 import { authStore } from '$lib/stores/auth.store';
 import { customDomainsStore } from '$lib/stores/custom-domains.store';
 import { i18n } from '$lib/stores/i18n.store';
@@ -34,7 +34,7 @@ export const setCustomDomain = async ({
 	});
 
 	// Register domain name with BN
-	const boundaryNodesId = await registerDomain({ domainName });
+	const boundaryNodesId = await registerDomainV0({ domainName });
 
 	// Save above request ID provided in previous step
 	await setCustomDomainApi({
@@ -60,7 +60,7 @@ export const deleteCustomDomain = async ({
 
 	if (deleteCustomDomain && nonNullish(fromNullable(customDomain.bn_id))) {
 		// Delete domain name in BN
-		await deleteDomain(customDomain);
+		await deleteDomainV0(customDomain);
 	}
 
 	// Remove custom domain from satellite

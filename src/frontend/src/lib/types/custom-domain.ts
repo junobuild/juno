@@ -20,19 +20,35 @@ export interface CustomDomainDns {
 
 // BN
 
-export type CustomDomainRegistrationState =
+/**
+ * @deprecated
+ */
+type CustomDomainRegistrationV0State =
 	| 'PendingOrder'
 	| 'PendingChallengeResponse'
 	| 'PendingAcmeApproval'
 	| 'Available'
 	| 'Failed';
 
-export interface CustomDomainRegistrationStateFailed {
+/**
+ * @deprecated
+ */
+interface CustomDomainRegistrationV0StateFailed {
 	Failed: string;
 }
 
-export interface CustomDomainRegistration {
+/**
+ * @deprecated
+ */
+interface CustomDomainRegistrationV0Response {
 	name: string;
 	canister: string;
-	state: CustomDomainRegistrationState | CustomDomainRegistrationStateFailed;
+	state: CustomDomainRegistrationV0State | CustomDomainRegistrationV0StateFailed;
+}
+
+export interface CustomDomainRegistration {
+	v0: {
+		State: CustomDomainRegistrationV0State;
+		Response: CustomDomainRegistrationV0Response;
+	};
 }

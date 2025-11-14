@@ -10,7 +10,7 @@
 	import ExternalLink from '$lib/components/ui/ExternalLink.svelte';
 	import { HostingWorker } from '$lib/services/workers/worker.hosting.services';
 	import { i18n } from '$lib/stores/i18n.store';
-	import type { CustomDomain, CustomDomainRegistrationState } from '$lib/types/custom-domain';
+	import type { CustomDomain, CustomDomainRegistration } from '$lib/types/custom-domain';
 	import type { PostMessageDataResponseHosting } from '$lib/types/post-message';
 	import type { Option } from '$lib/types/utils';
 	import { emit } from '$lib/utils/events.utils';
@@ -45,7 +45,7 @@
 
 	let mainDomain: boolean = $derived(host === authDomain && nonNullish(authDomain));
 
-	let registrationState: Option<CustomDomainRegistrationState> = $state(undefined);
+	let registrationState: Option<CustomDomainRegistration['v0']['State']> = $state(undefined);
 
 	let worker = $state<HostingWorker | undefined>();
 

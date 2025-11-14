@@ -30,7 +30,7 @@
 		},
 		setup: {
 			state: 'next',
-			step: 'validate-custom-domain',
+			step: 'setup-custom-domain',
 			text: $i18n.hosting.setup_custom_domain_in_progress
 		},
 		validate: {

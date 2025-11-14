@@ -1,6 +1,6 @@
 import type { SatelliteDid } from '$declarations';
 import type { CustomDomainRegistration } from '$lib/types/custom-domain';
-import { fromNullable, isNullish } from '@dfinity/utils';
+import { assertNonNullish, fromNullable, isNullish } from '@dfinity/utils';
 
 const BN_REGISTRATIONS_URL = import.meta.env.VITE_BN_REGISTRATIONS_URL;
 
@@ -35,4 +35,26 @@ export const getCustomDomainRegistrationV0 = async ({
 	const result: CustomDomainRegistration['v0']['State'] = await response.json();
 
 	return result;
+};
+
+/**
+ * @deprecated
+ */
+export const deleteDomainV0 = async ({ bnId }: { bnId: string }): Promise<void> => {
+	assertNonNullish(
+		BN_REGISTRATIONS_URL,
+		'Boundary Node API URL not defined. This service is unavailable.'
+	);
+
+	const response = await fetch(`${BN_REGISTRATIONS_URL}/${bnId}`, {
+		method: 'DELETE',
+		headers: {
+			'Content-Type': 'application/json'
+		}
+	});
+
+	if (!response.ok) {
+		const text = await response.text();
+		throw new Error(`Deleting custom domain in the boundary nodes failed. ${text}`);
+	}
 };

@@ -2,7 +2,9 @@ import type { SatelliteDid } from '$declarations';
 
 export type CustomDomainName = string;
 
-export type CustomDomains = [CustomDomainName, SatelliteDid.CustomDomain][];
+export type CustomDomain = [CustomDomainName, SatelliteDid.CustomDomain];
+
+export type CustomDomains = CustomDomain[];
 
 export interface CustomDomainDnsEntry {
 	type: 'TXT' | 'CNAME';

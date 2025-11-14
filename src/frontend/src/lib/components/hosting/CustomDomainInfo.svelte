@@ -1,24 +1,28 @@
+<script lang="ts" module>
+	import type { CustomDomain, CustomDomainRegistrationState } from '$lib/types/custom-domain';
+
+	export interface SelectedCustomDomain {
+		customDomain: CustomDomain | undefined;
+		registrationState: Option<CustomDomainRegistrationState>;
+		mainDomain: boolean;
+	}
+</script>
+
 <script lang="ts">
 	import { nonNullish, fromNullishNullable } from '@dfinity/utils';
 	import { createEventDispatcher } from 'svelte';
 	import { run, stopPropagation } from 'svelte/legacy';
 	import { fade } from 'svelte/transition';
-	import type { SatelliteDid } from '$declarations';
 	import IconCheckCircle from '$lib/components/icons/IconCheckCircle.svelte';
 	import Identifier from '$lib/components/ui/Identifier.svelte';
 	import Popover from '$lib/components/ui/Popover.svelte';
 	import Value from '$lib/components/ui/Value.svelte';
 	import { i18n } from '$lib/stores/i18n.store';
-	import type { CustomDomainRegistrationState } from '$lib/types/custom-domain';
 	import type { Option } from '$lib/types/utils';
 	import { keyOf } from '$lib/utils/utils';
 
 	interface Props {
-		info: {
-			customDomain: [string, SatelliteDid.CustomDomain] | undefined;
-			registrationState: Option<CustomDomainRegistrationState>;
-			mainDomain: boolean;
-		};
+		info: SelectedCustomDomain;
 	}
 
 	let { info }: Props = $props();

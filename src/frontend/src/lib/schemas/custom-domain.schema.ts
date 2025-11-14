@@ -10,14 +10,18 @@ export const CustomDomainStateSchema = z.enum(['registering', 'registered', 'exp
 const CustomDomainResponseStatusSchema = z.enum(['success', 'error']);
 
 const CustomDomainResponseDataSchema = z.strictObject({
-	domain: z.string(),
-	canister_id: PrincipalTextSchema.optional()
+	domain: z.string()
+});
+
+const CustomDomainResponseDataWithCanisterIdSchema = z.strictObject({
+	...CustomDomainResponseDataSchema.shape,
+	canister_id: PrincipalTextSchema
 });
 
 const CustomDomainResponseErrorSchema = z.strictObject({
 	status: CustomDomainResponseStatusSchema.extract(['error']),
 	message: z.string(),
-	data: CustomDomainResponseDataSchema.omit({ canister_id: true }),
+	data: CustomDomainResponseDataSchema,
 	errors: z.string()
 });
 
@@ -30,7 +34,7 @@ const CustomDomainResponseValidationStatusSchema = z.enum(['valid']);
 const CustomDomainResponseValidationSuccessSchema = z.strictObject({
 	status: CustomDomainResponseStatusSchema.extract(['success']),
 	message: z.string(),
-	data: CustomDomainResponseDataSchema.extend({
+	data: CustomDomainResponseDataWithCanisterIdSchema.extend({
 		validation_status: CustomDomainResponseValidationStatusSchema
 	})
 });
@@ -46,7 +50,7 @@ const CustomDomainResponseGetErrorSchema = CustomDomainResponseErrorSchema;
 export const CustomDomainResponseGetSuccessSchema = z.strictObject({
 	status: CustomDomainResponseStatusSchema.extract(['success']),
 	message: z.string(),
-	data: CustomDomainResponseDataSchema.required().extend({
+	data: CustomDomainResponseDataWithCanisterIdSchema.extend({
 		registration_status: CustomDomainStateSchema
 	})
 });

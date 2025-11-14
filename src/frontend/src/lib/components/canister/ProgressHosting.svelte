@@ -16,7 +16,8 @@
 
 	interface Steps {
 		preparing: ProgressStep;
-		customDomain: ProgressStep;
+		validate: ProgressStep;
+		register: ProgressStep;
 		authConfig?: ProgressStep;
 	}
 
@@ -26,10 +27,15 @@
 			step: 'preparing',
 			text: $i18n.core.preparing
 		},
-		customDomain: {
+		validate: {
 			state: 'next',
-			step: 'custom-domain',
-			text: $i18n.hosting.config_custom_domain_in_progress
+			step: 'validate-custom-domain',
+			text: $i18n.hosting.validate_custom_domain_in_progress
+		},
+		register: {
+			state: 'next',
+			step: 'register-custom-domain',
+			text: $i18n.hosting.register_custom_domain_in_progress
 		},
 		...(withConfig && {
 			authConfig: {
@@ -46,19 +52,26 @@
 		progress;
 
 		untrack(() => {
-			const { preparing, customDomain, authConfig } = steps;
+			const { preparing, validate, register, authConfig } = steps;
 
 			steps = {
 				preparing: {
 					...preparing,
 					state: isNullish(progress) ? 'in_progress' : 'completed'
 				},
-				customDomain: {
-					...customDomain,
+				validate: {
+					...validate,
 					state:
-						progress?.step === HostingProgressStep.CustomDomain
+						progress?.step === HostingProgressStep.Validate
 							? mapProgressState(progress?.state)
-							: customDomain.state
+							: register.state
+				},
+				register: {
+					...register,
+					state:
+						progress?.step === HostingProgressStep.Register
+							? mapProgressState(progress?.state)
+							: register.state
 				},
 				...(nonNullish(authConfig) && {
 					authConfig: {

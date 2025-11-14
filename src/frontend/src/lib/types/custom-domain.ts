@@ -1,10 +1,9 @@
 import type { SatelliteDid } from '$declarations';
 import type {
-	PostCustomDomainStateSchema
-,
 	CustomDomainStateSchema,
 	GetCustomDomainStateSchema,
-	GetCustomDomainValidateSchema
+	GetCustomDomainValidateSchema,
+	PostCustomDomainStateSchema
 } from '$lib/schemas/custom-domain.schema';
 import type * as z from 'zod';
 

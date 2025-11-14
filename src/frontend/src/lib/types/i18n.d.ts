@@ -507,10 +507,9 @@ interface I18nHosting {
 	bn_id: string;
 	info: string;
 	autentication_main_domain: string;
-	pendingorder: string;
-	pendingchallengeresponse: string;
-	pendingacmeapproval: string;
-	available: string;
+	registering: string;
+	registered: string;
+	expired: string;
 	failed: string;
 	skip_delete_domain: string;
 	files_deployed: string;

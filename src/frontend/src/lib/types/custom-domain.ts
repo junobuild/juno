@@ -1,4 +1,6 @@
 import type { SatelliteDid } from '$declarations';
+import type { CustomDomainStateSchema } from '$lib/schemas/custom-domain.schema';
+import type * as z from 'zod';
 
 export type CustomDomainName = string;
 
@@ -19,6 +21,8 @@ export interface CustomDomainDns {
 }
 
 // BN
+
+export type CustomDomainState = z.infer<typeof CustomDomainStateSchema>;
 
 /**
  * @deprecated

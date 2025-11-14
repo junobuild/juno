@@ -494,6 +494,7 @@ interface I18nHosting {
 	type: string;
 	host: string;
 	value: string;
+	setup_custom_domain_in_progress: string;
 	validate_custom_domain_in_progress: string;
 	register_custom_domain_in_progress: string;
 	config_auth_config_in_progress: string;

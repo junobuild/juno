@@ -9,7 +9,7 @@ const BN_REGISTRATIONS_URL = import.meta.env.VITE_BN_REGISTRATIONS_URL;
  */
 export const getCustomDomainRegistrationV0 = async ({
 	bn_id
-}: SatelliteDid.CustomDomain): Promise<CustomDomainRegistration['v0']['Response'] | undefined> => {
+}: SatelliteDid.CustomDomain): Promise<CustomDomainRegistration['v0']['State'] | undefined> => {
 	const id = fromNullable(bn_id);
 
 	if (isNullish(id) || id === '') {
@@ -32,7 +32,7 @@ export const getCustomDomainRegistrationV0 = async ({
 		throw new Error(`Fetching custom domain state from the boundary nodes failed. ${text}`);
 	}
 
-	const result: CustomDomainRegistration['v0']['Response'] = await response.json();
+	const result: CustomDomainRegistration['v0']['State'] = await response.json();
 
 	return result;
 };

@@ -73,7 +73,7 @@
 		}
 
 		worker.startCustomDomainRegistrationTimer({
-			customDomain: customDomain[1],
+			customDomain,
 			callback: syncState
 		});
 	};

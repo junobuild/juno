@@ -10,22 +10,24 @@ import { customDomainsStore } from '$lib/stores/custom-domains.store';
 import { i18n } from '$lib/stores/i18n.store';
 import { toasts } from '$lib/stores/toasts.store';
 import type { CustomDomainName } from '$lib/types/custom-domain';
-import { fromNullable, nonNullish } from '@dfinity/utils';
+import type { OptionIdentity } from '$lib/types/itentity';
+import { assertNonNullish, fromNullable, nonNullish } from '@dfinity/utils';
+import type { Identity } from '@icp-sdk/core/agent';
 import type { Principal } from '@icp-sdk/core/principal';
 import { get } from 'svelte/store';
 
 /**
- * https://internetcomputer.org/docs/current/developer-docs/production/custom-domain/
+ * @see https://internetcomputer.org/docs/current/developer-docs/production/custom-domain/
  */
-export const setCustomDomain = async ({
+export const registerCustomDomain = async ({
 	satelliteId,
-	domainName
+	domainName,
+	identity
 }: {
 	satelliteId: Principal;
 	domainName: CustomDomainName;
+	identity: Identity;
 }) => {
-	const { identity } = get(authStore);
-
 	// Add domain name to list of custom domain in `./well-known/ic-domains`
 	await setCustomDomainApi({
 		satelliteId,
@@ -46,14 +48,16 @@ export const deleteCustomDomain = async ({
 	satelliteId,
 	customDomain,
 	domainName,
-	deleteCustomDomain
+	deleteCustomDomain,
+	identity
 }: {
 	satelliteId: Principal;
 	customDomain: SatelliteDid.CustomDomain;
 	domainName: CustomDomainName;
 	deleteCustomDomain: boolean;
+	identity: OptionIdentity;
 }) => {
-	const { identity } = get(authStore);
+	assertNonNullish(identity, get(i18n).core.not_logged_in);
 
 	if (deleteCustomDomain && nonNullish(fromNullable(customDomain.bn_id))) {
 		// Delete domain name in BN

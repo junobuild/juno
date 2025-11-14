@@ -1,6 +1,6 @@
 import type { SatelliteDid } from '$declarations';
 import { setAuthConfig } from '$lib/api/satellites.api';
-import { setCustomDomain } from '$lib/services/custom-domain.services';
+import { registerCustomDomain } from '$lib/services/custom-domain.services';
 import { execute } from '$lib/services/progress.services';
 import { i18n } from '$lib/stores/i18n.store';
 import { toasts } from '$lib/stores/toasts.store';
@@ -30,9 +30,10 @@ export const configHosting = async ({
 		assertNonNullish(identity, get(i18n).core.not_logged_in);
 
 		const configCustomDomain = async () =>
-			await setCustomDomain({
+			await registerCustomDomain({
 				satelliteId,
-				domainName
+				domainName,
+				identity
 			});
 
 		await execute({ fn: configCustomDomain, onProgress, step: HostingProgressStep.CustomDomain });

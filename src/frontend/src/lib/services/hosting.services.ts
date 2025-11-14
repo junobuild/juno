@@ -38,6 +38,8 @@ export const configHosting = async ({
 
 		await execute({ fn: validateCustomDomain, onProgress, step: HostingProgressStep.Validate });
 
+		// TODO: move set custom domain before validation
+
 		// Register
 
 		const configCustomDomain = async () =>

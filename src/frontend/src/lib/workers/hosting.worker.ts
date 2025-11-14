@@ -1,9 +1,9 @@
 import type { SatelliteDid } from '$declarations';
 import { SYNC_CUSTOM_DOMAIN_TIMER_INTERVAL } from '$lib/constants/app.constants';
 import { getCustomDomainRegistrationV0 } from '$lib/rest/bn.v0.rest';
-import type { CustomDomainState } from '$lib/types/custom-domain';
+import type { CustomDomain, CustomDomainState } from '$lib/types/custom-domain';
 import type { PostMessageDataRequest, PostMessageRequest } from '$lib/types/post-message';
-import { fromNullable, nonNullish } from '@dfinity/utils';
+import { isNullish, nonNullish } from '@dfinity/utils';
 
 export const onHostingMessage = async ({ data: dataMsg }: MessageEvent<PostMessageRequest>) => {
 	const { msg, data } = dataMsg;
@@ -45,11 +45,7 @@ const startTimer = async ({ data: { customDomain } }: { data: PostMessageDataReq
 
 let syncing = false;
 
-const syncCustomDomainRegistration = async ({
-	customDomain
-}: {
-	customDomain: CustomDomain;
-}) => {
+const syncCustomDomainRegistration = async ({ customDomain }: { customDomain: CustomDomain }) => {
 	// We avoid to relaunch a sync while previous sync is not finished
 	if (syncing) {
 		return;

@@ -6,7 +6,7 @@ import type {
 	CanisterSyncData,
 	CanisterSyncMonitoring
 } from '$lib/types/canister';
-import type { CustomDomain, DeprecatedCustomDomainRegistrationState } from '$lib/types/custom-domain';
+import type { CustomDomain } from '$lib/types/custom-domain';
 import type { CertifiedData } from '$lib/types/store';
 import type { VersionRegistry } from '$lib/types/version';
 import * as z from 'zod';

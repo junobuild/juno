@@ -1,7 +1,11 @@
 import { PrincipalTextSchema } from '@dfinity/zod-schemas';
 import * as z from 'zod';
 
+// App
+
 export const CustomDomainStateSchema = z.enum(['registering', 'registered', 'expired', 'failed']);
+
+// BN
 
 const CustomDomainResponseStatusSchema = z.enum(['success', 'error']);
 
@@ -31,7 +35,7 @@ const CustomDomainResponseValidationSuccessSchema = z.strictObject({
 	})
 });
 
-export const CustomDomainResponseValidationSchema = CustomDomainResponseValidationSuccessSchema.or(
+export const CustomDomainValidateResponseSchema = CustomDomainResponseValidationSuccessSchema.or(
 	CustomDomainResponseValidationErrorSchema
 );
 
@@ -39,16 +43,14 @@ export const CustomDomainResponseValidationSchema = CustomDomainResponseValidati
 
 const CustomDomainResponseGetErrorSchema = CustomDomainResponseErrorSchema;
 
-const CustomDomainResponseRegistrationStatusSchema = z.enum(['registering', 'registered', 'expired', 'failed']);
-
 const CustomDomainResponseGetSuccessSchema = z.strictObject({
 	status: CustomDomainResponseStatusSchema.extract(['success']),
 	message: z.string(),
 	data: CustomDomainResponseDataSchema.required().extend({
-		registration_status: CustomDomainResponseRegistrationStatusSchema
+		registration_status: CustomDomainStateSchema
 	})
 });
 
-export const CustomDomainResponseGetSchema = CustomDomainResponseGetSuccessSchema.or(
+export const CustomDomainGetResponseSchema = CustomDomainResponseGetSuccessSchema.or(
 	CustomDomainResponseGetErrorSchema
 );

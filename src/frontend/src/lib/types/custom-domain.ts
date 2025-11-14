@@ -1,5 +1,7 @@
 import type { SatelliteDid } from '$declarations';
 import type {
+	PostCustomDomainStateSchema
+,
 	CustomDomainStateSchema,
 	GetCustomDomainStateSchema,
 	GetCustomDomainValidateSchema
@@ -56,6 +58,7 @@ interface CustomDomainRegistrationV0Response {
 
 export type GetCustomDomainValidate = z.infer<typeof GetCustomDomainValidateSchema>;
 export type GetCustomDomainState = z.infer<typeof GetCustomDomainStateSchema>;
+export type PostCustomDomainState = z.infer<typeof PostCustomDomainStateSchema>;
 
 export interface CustomDomainRegistration {
 	/**
@@ -66,6 +69,5 @@ export interface CustomDomainRegistration {
 	};
 	v1: {
 		State: GetCustomDomainState;
-		Validate: GetCustomDomainValidate;
 	};
 }

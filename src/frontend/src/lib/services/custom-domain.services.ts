@@ -3,6 +3,7 @@ import {
 	deleteCustomDomain as deleteCustomDomainApi,
 	listCustomDomains as listCustomDomainsApi
 } from '$lib/api/satellites.api';
+import { deleteDomainV0 } from '$lib/rest/bn.v0.rest';
 import { deleteDomain } from '$lib/rest/bn.v1.rest';
 import { authStore } from '$lib/stores/auth.store';
 import { customDomainsStore } from '$lib/stores/custom-domains.store';
@@ -29,9 +30,21 @@ export const deleteCustomDomain = async ({
 }) => {
 	assertNonNullish(identity, get(i18n).core.not_logged_in);
 
-	if (deleteCustomDomain && nonNullish(fromNullable(customDomain.bn_id))) {
+	if (deleteCustomDomain) {
 		// Delete domain name in BN
-		await deleteDomain({ domainName });
+		const unregisterCustomDomain = async () => {
+			const bnId = fromNullable(customDomain.bn_id);
+			if (nonNullish(bnId)) {
+				await deleteDomainV0({
+					bnId
+				});
+				return;
+			}
+
+			await deleteDomain({ domainName });
+		};
+
+		await unregisterCustomDomain();
 	}
 
 	// Remove custom domain from satellite

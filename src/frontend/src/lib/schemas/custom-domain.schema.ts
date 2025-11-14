@@ -58,3 +58,17 @@ export const GetCustomDomainStateSuccessSchema = z.strictObject({
 export const GetCustomDomainStateSchema = GetCustomDomainStateSuccessSchema.or(
 	GetCustomDomainStateErrorSchema
 );
+
+// POST BN_API/{domain}
+
+const PostCustomDomainStateErrorSchema = CustomDomainResponseErrorSchema;
+
+export const PostCustomDomainStateSuccessSchema = z.strictObject({
+	status: CustomDomainResponseStatusSchema.extract(['success']),
+	message: z.string(),
+	data: CustomDomainResponseDataWithCanisterIdSchema
+});
+
+export const PostCustomDomainStateSchema = PostCustomDomainStateSuccessSchema.or(
+	PostCustomDomainStateErrorSchema
+);

@@ -40,33 +40,6 @@ export const getCustomDomainRegistrationV0 = async ({
 /**
  * @deprecated
  */
-export const registerDomainV0 = async ({ domainName }: { domainName: string }): Promise<string> => {
-	assertNonNullish(
-		BN_REGISTRATIONS_URL,
-		'Boundary Node API URL not defined. This service is unavailable.'
-	);
-
-	const response = await fetch(BN_REGISTRATIONS_URL, {
-		method: 'POST',
-		headers: {
-			'Content-Type': 'application/json'
-		},
-		body: JSON.stringify({ name: domainName })
-	});
-
-	if (!response.ok) {
-		const text = await response.text();
-		throw new Error(`Registering ${domainName} with the boundary nodes failed. ${text}`);
-	}
-
-	const result: { id: string } = await response.json();
-
-	return result.id;
-};
-
-/**
- * @deprecated
- */
 export const deleteDomainV0 = async ({ bn_id }: SatelliteDid.CustomDomain): Promise<void> => {
 	assertNonNullish(
 		BN_REGISTRATIONS_URL,

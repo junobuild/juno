@@ -4,7 +4,8 @@ import {
 	listCustomDomains as listCustomDomainsApi,
 	setCustomDomain as setCustomDomainApi
 } from '$lib/api/satellites.api';
-import { deleteDomainV0, registerDomainV0 } from '$lib/rest/bn.v0.rest';
+import { deleteDomainV0 } from '$lib/rest/bn.v0.rest';
+import { registerDomain } from '$lib/rest/bn.v1.rest';
 import { authStore } from '$lib/stores/auth.store';
 import { customDomainsStore } from '$lib/stores/custom-domains.store';
 import { i18n } from '$lib/stores/i18n.store';
@@ -34,15 +35,11 @@ export const setCustomDomain = async ({
 	});
 
 	// Register domain name with BN
-	const boundaryNodesId = await registerDomainV0({ domainName });
+	await registerDomain({ domainName });
 
-	// Save above request ID provided in previous step
-	await setCustomDomainApi({
-		satelliteId,
-		domainName,
-		boundaryNodesId,
-		identity
-	});
+	// In case of an error, we keep the custom domain in `./well-known/ic-domains` - this should not harm.
+	// In the past, we used to update the domain to save the BN_ID, but this information
+	// is no longer required with API v1. The domain name itself has become the key.
 };
 
 export const deleteCustomDomain = async ({

@@ -10,7 +10,7 @@
 	import ExternalLink from '$lib/components/ui/ExternalLink.svelte';
 	import { HostingWorker } from '$lib/services/workers/worker.hosting.services';
 	import { i18n } from '$lib/stores/i18n.store';
-	import type { CustomDomain, CustomDomainRegistration } from '$lib/types/custom-domain';
+	import type { CustomDomain, CustomDomainState } from '$lib/types/custom-domain';
 	import type { PostMessageDataResponseHosting } from '$lib/types/post-message';
 	import type { Option } from '$lib/types/utils';
 	import { emit } from '$lib/utils/events.utils';
@@ -45,7 +45,7 @@
 
 	let mainDomain: boolean = $derived(host === authDomain && nonNullish(authDomain));
 
-	let registrationState: Option<CustomDomainRegistration['v0']['State']> = $state(undefined);
+	let registrationState: Option<CustomDomainState> = $state(undefined);
 
 	let worker = $state<HostingWorker | undefined>();
 
@@ -53,7 +53,7 @@
 		registrationState = state;
 
 		// If the state is available we can optimistically stop polling
-		if (registrationState === 'Available') {
+		if (registrationState === 'registered') {
 			worker?.stopCustomDomainRegistrationTimer();
 		}
 
@@ -86,7 +86,7 @@
 		(worker, customDomain, loadRegistrationState());
 	});
 
-	let displayState: Option<string> = $derived(
+	let displayState = $derived(
 		registrationState === undefined
 			? undefined
 			: registrationState === null
@@ -130,7 +130,7 @@
 		><span class="state"
 			>{#if nonNullish(displayState)}
 				{displayState}
-				{#if ['PendingOrder', 'PendingChallengeResponse', 'PendingAcmeApproval'].includes(registrationState ?? '')}
+				{#if (registrationState ?? '') === 'registering'}
 					<IconSync />
 				{/if}
 			{/if}</span
@@ -164,9 +164,10 @@
 	}
 
 	.state {
-		@include text.truncate;
-
 		padding: 0 var(--padding-1_5x);
+		text-transform: capitalize;
+
+		@include text.truncate;
 
 		@include media.min-width(medium) {
 			padding: 0;

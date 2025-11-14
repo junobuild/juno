@@ -1,12 +1,12 @@
 import type { SatelliteDid } from '$declarations';
 import { CanisterIdTextSchema } from '$lib/schemas/canister.schema';
+import { CustomDomainStateSchema } from '$lib/schemas/custom-domain.schema';
 import { ExchangePriceSchema } from '$lib/schemas/exchange.schema';
 import type {
 	CanisterSegment,
 	CanisterSyncData,
 	CanisterSyncMonitoring
 } from '$lib/types/canister';
-import type { CustomDomainRegistration } from '$lib/types/custom-domain';
 import type { CertifiedData } from '$lib/types/store';
 import type { VersionRegistry } from '$lib/types/version';
 import * as z from 'zod';
@@ -58,7 +58,7 @@ export const PostMessageDataResponseCanistersMonitoringSchema = z.object({
 });
 
 export const PostMessageDataResponseHostingSchema = z.object({
-	registrationState: z.custom<CustomDomainRegistration['v0']['State']>().nullable().optional()
+	registrationState: CustomDomainStateSchema.nullable().optional()
 });
 
 export const PostMessageDataResponseRegistrySchema = z.object({

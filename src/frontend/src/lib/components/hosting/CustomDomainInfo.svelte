@@ -1,9 +1,9 @@
 <script lang="ts" module>
-	import type { CustomDomain, CustomDomainRegistrationState } from '$lib/types/custom-domain';
+	import type { CustomDomain, CustomDomainRegistration } from '$lib/types/custom-domain';
 
 	export interface SelectedCustomDomain {
 		customDomain: CustomDomain | undefined;
-		registrationState: Option<CustomDomainRegistrationState>;
+		registrationState: Option<CustomDomainRegistration['v0']['State']>;
 		mainDomain: boolean;
 	}
 </script>
@@ -29,7 +29,9 @@
 
 	let { customDomain, mainDomain } = $derived(info);
 
-	let registrationState: Option<CustomDomainRegistrationState> = $state(info.registrationState);
+	let registrationState = $state<Option<CustomDomainRegistration['v0']['State']>>(
+		info.registrationState
+	);
 
 	let visible = $state(true);
 
@@ -55,7 +57,7 @@
 <svelte:window
 	onjunoRegistrationState={({
 		detail: { registrationState: state }
-	}: CustomEvent<{ registrationState: Option<CustomDomainRegistrationState> }>) =>
+	}: CustomEvent<{ registrationState: Option<CustomDomainRegistration['v0']['State']> }>) =>
 		(registrationState = state)}
 />
 

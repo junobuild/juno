@@ -43,7 +43,7 @@ export const CustomDomainValidateResponseSchema = CustomDomainResponseValidation
 
 const CustomDomainResponseGetErrorSchema = CustomDomainResponseErrorSchema;
 
-const CustomDomainResponseGetSuccessSchema = z.strictObject({
+export const CustomDomainResponseGetSuccessSchema = z.strictObject({
 	status: CustomDomainResponseStatusSchema.extract(['success']),
 	message: z.string(),
 	data: CustomDomainResponseDataSchema.required().extend({

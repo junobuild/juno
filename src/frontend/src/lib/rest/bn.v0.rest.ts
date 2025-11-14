@@ -8,8 +8,8 @@ const BN_REGISTRATIONS_URL = import.meta.env.VITE_BN_REGISTRATIONS_URL;
  * @deprecated
  */
 export const getCustomDomainRegistrationV0 = async ({
-																											bn_id
-																										}: SatelliteDid.CustomDomain): Promise<CustomDomainRegistration['v0']['Response'] | undefined> => {
+	bn_id
+}: SatelliteDid.CustomDomain): Promise<CustomDomainRegistration['v0']['Response'] | undefined> => {
 	const id = fromNullable(bn_id);
 
 	if (isNullish(id) || id === '') {

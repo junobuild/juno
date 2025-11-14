@@ -1,9 +1,10 @@
 import type { SatelliteDid } from '$declarations';
 import { SYNC_CUSTOM_DOMAIN_TIMER_INTERVAL } from '$lib/constants/app.constants';
 import { getCustomDomainRegistrationV0 } from '$lib/rest/bn.v0.rest';
-import type { CustomDomain, CustomDomainState } from '$lib/types/custom-domain';
+import { getCustomDomainRegistration } from '$lib/rest/bn.v1.rest';
+import type { CustomDomain, CustomDomainName, CustomDomainState } from '$lib/types/custom-domain';
 import type { PostMessageDataRequest, PostMessageRequest } from '$lib/types/post-message';
-import { isNullish, nonNullish } from '@dfinity/utils';
+import { fromNullable, isNullish, nonNullish } from '@dfinity/utils';
 
 export const onHostingMessage = async ({ data: dataMsg }: MessageEvent<PostMessageRequest>) => {
 	const { msg, data } = dataMsg;
@@ -54,7 +55,17 @@ const syncCustomDomainRegistration = async ({ customDomain }: { customDomain: Cu
 	syncing = true;
 
 	try {
-		const registrationState = await syncCustomDomainRegistrationV0({ customDomain });
+		const sync = async () => {
+			const [domainName, custom] = customDomain;
+
+			if (nonNullish(fromNullable(custom.bn_id))) {
+				return syncCustomDomainRegistrationV0({ customDomain: custom });
+			}
+
+			return syncCustomDomainRegistrationV1({ domain: domainName });
+		};
+
+		const registrationState = await sync();
 
 		emit(registrationState);
 
@@ -71,6 +82,23 @@ const syncCustomDomainRegistration = async ({ customDomain }: { customDomain: Cu
 	}
 
 	syncing = false;
+};
+
+const syncCustomDomainRegistrationV1 = async ({
+	domain
+}: {
+	domain: CustomDomainName;
+}): Promise<CustomDomainState> => {
+	const response = await getCustomDomainRegistration({ domain });
+
+	if (response?.status === 'success') {
+		const {
+			data: { registration_status }
+		} = response;
+		return registration_status;
+	}
+
+	return 'failed';
 };
 
 const syncCustomDomainRegistrationV0 = async ({

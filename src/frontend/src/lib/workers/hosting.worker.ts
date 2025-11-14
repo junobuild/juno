@@ -89,7 +89,7 @@ const syncCustomDomainRegistrationV1 = async ({
 }: {
 	domain: CustomDomainName;
 }): Promise<CustomDomainState> => {
-	const response = await getCustomDomainRegistration({ domain });
+	const response = await getCustomDomainRegistration({ domainName: domain });
 
 	if (response?.status === 'success') {
 		const {

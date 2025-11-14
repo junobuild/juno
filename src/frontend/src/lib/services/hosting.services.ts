@@ -1,7 +1,6 @@
 import type { SatelliteDid } from '$declarations';
-import { setAuthConfig } from '$lib/api/satellites.api';
-import { validateDomain } from '$lib/rest/bn.v1.rest';
-import { registerCustomDomain } from '$lib/services/custom-domain.services';
+import { setAuthConfig, setCustomDomain as setCustomDomainApi } from '$lib/api/satellites.api';
+import { registerDomain, validateDomain } from '$lib/rest/bn.v1.rest';
 import { execute } from '$lib/services/progress.services';
 import { i18n } from '$lib/stores/i18n.store';
 import { toasts } from '$lib/stores/toasts.store';
@@ -30,6 +29,18 @@ export const configHosting = async ({
 	try {
 		assertNonNullish(identity, get(i18n).core.not_logged_in);
 
+		// Set up the Satellite
+
+		const setupCustomDomain = async () =>
+			await setCustomDomainApi({
+				satelliteId,
+				domainName,
+				boundaryNodesId: undefined,
+				identity
+			});
+
+		await execute({ fn: setupCustomDomain, onProgress, step: HostingProgressStep.Setup });
+
 		// Validation
 		const validateCustomDomain = async () =>
 			await validateDomain({
@@ -38,16 +49,9 @@ export const configHosting = async ({
 
 		await execute({ fn: validateCustomDomain, onProgress, step: HostingProgressStep.Validate });
 
-		// TODO: move set custom domain before validation
-
 		// Register
 
-		const configCustomDomain = async () =>
-			await registerCustomDomain({
-				satelliteId,
-				domainName,
-				identity
-			});
+		const configCustomDomain = async () => await registerDomain({ domainName });
 
 		await execute({ fn: configCustomDomain, onProgress, step: HostingProgressStep.Register });
 

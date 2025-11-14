@@ -4,7 +4,7 @@ import {
 	listCustomDomains as listCustomDomainsApi,
 	setCustomDomain as setCustomDomainApi
 } from '$lib/api/satellites.api';
-import { deleteDomain, registerDomain } from '$lib/rest/bn.rest';
+import { deleteDomain, registerDomain } from '$lib/rest/bn.depcreated.rest';
 import { authStore } from '$lib/stores/auth.store';
 import { customDomainsStore } from '$lib/stores/custom-domains.store';
 import { i18n } from '$lib/stores/i18n.store';

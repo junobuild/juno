@@ -1,17 +1,26 @@
 import type { SatelliteDid } from '$declarations';
-import type { CustomDomainRegistration } from '$lib/types/custom-domain';
+import type { DeprecatedCustomDomainRegistration } from '$lib/types/custom-domain';
 import { assertNonNullish, fromNullable, isNullish } from '@dfinity/utils';
 
 const BN_REGISTRATIONS_URL = import.meta.env.VITE_BN_REGISTRATIONS_URL;
 
-export const getCustomDomainRegistration = async ({
-	domain
-}: SatelliteDid.CustomDomain): Promise<CustomDomainRegistration | undefined> => {
+/**
+ * @deprecated
+ */
+export const getDeprecatedCustomDomainRegistration = async ({
+	bn_id
+}: SatelliteDid.CustomDomain): Promise<DeprecatedCustomDomainRegistration | undefined> => {
+	const id = fromNullable(bn_id);
+
+	if (isNullish(id) || id === '') {
+		return undefined;
+	}
+
 	if (isNullish(BN_REGISTRATIONS_URL)) {
 		return undefined;
 	}
 
-	const response = await fetch(`${BN_REGISTRATIONS_URL}/${domain}`, {
+	const response = await fetch(`${BN_REGISTRATIONS_URL}/${id}`, {
 		method: 'GET',
 		headers: {
 			'Content-Type': 'application/json'
@@ -23,7 +32,7 @@ export const getCustomDomainRegistration = async ({
 		throw new Error(`Fetching custom domain state from the boundary nodes failed. ${text}`);
 	}
 
-	const result: CustomDomainRegistration = await response.json();
+	const result: DeprecatedCustomDomainRegistration = await response.json();
 
 	return result;
 };

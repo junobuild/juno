@@ -25,7 +25,7 @@ export interface CustomDomainDns {
 /**
  * @deprecated
  */
-export type CustomDomainRegistrationState =
+export type DeprecatedCustomDomainRegistrationState =
 	| 'PendingOrder'
 	| 'PendingChallengeResponse'
 	| 'PendingAcmeApproval'
@@ -35,17 +35,17 @@ export type CustomDomainRegistrationState =
 /**
  * @deprecated
  */
-export interface CustomDomainRegistrationStateFailed {
+export interface DeprecatedCustomDomainRegistrationStateFailed {
 	Failed: string;
 }
 
 /**
  * @deprecated
  */
-export interface CustomDomainRegistration {
+export interface DeprecatedCustomDomainRegistration {
 	name: string;
 	canister: string;
-	state: CustomDomainRegistrationState | CustomDomainRegistrationStateFailed;
+	state: DeprecatedCustomDomainRegistrationState | DeprecatedCustomDomainRegistrationStateFailed;
 }
 
 export type CustomDomainResponseValidation = z.infer<typeof CustomDomainResponseValidationSchema>;

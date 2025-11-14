@@ -1,9 +1,9 @@
 import type { SatelliteDid } from '$declarations';
 import { SYNC_CUSTOM_DOMAIN_TIMER_INTERVAL } from '$lib/constants/app.constants';
-import { getCustomDomainRegistration } from '$lib/rest/bn.rest';
-import type { CustomDomainRegistrationState } from '$lib/types/custom-domain';
+import { getDeprecatedCustomDomainRegistration } from '$lib/rest/bn.depcreated.rest';
+import type { CustomDomain, DeprecatedCustomDomainRegistrationState } from '$lib/types/custom-domain';
 import type { PostMessageDataRequest, PostMessageRequest } from '$lib/types/post-message';
-import { fromNullable, nonNullish } from '@dfinity/utils';
+import { fromNullable, isNullish, nonNullish } from '@dfinity/utils';
 
 export const onHostingMessage = async ({ data: dataMsg }: MessageEvent<PostMessageRequest>) => {
 	const { msg, data } = dataMsg;
@@ -30,7 +30,7 @@ const stopTimer = () => {
 };
 
 const startTimer = async ({ data: { customDomain } }: { data: PostMessageDataRequest }) => {
-	if (customDomain === undefined || fromNullable(customDomain.bn_id) === undefined) {
+	if (isNullish(customDomain)) {
 		// No custom domain registration to sync
 		return;
 	}
@@ -48,7 +48,7 @@ let syncing = false;
 const syncCustomDomainRegistration = async ({
 	customDomain
 }: {
-	customDomain: SatelliteDid.CustomDomain;
+	customDomain: CustomDomain;
 }) => {
 	// We avoid to relaunch a sync while previous sync is not finished
 	if (syncing) {
@@ -58,7 +58,8 @@ const syncCustomDomainRegistration = async ({
 	syncing = true;
 
 	try {
-		const registration = await getCustomDomainRegistration(customDomain);
+		// TODO if bn_id not null else
+		const registration = await getDeprecatedCustomDomainRegistration(customDomain);
 		const registrationState = nonNullish(registration)
 			? typeof registration.state !== 'string' && 'Failed' in registration.state
 				? 'Failed'
@@ -83,7 +84,7 @@ const syncCustomDomainRegistration = async ({
 };
 
 // Update ui with registration state
-const emit = (registrationState: CustomDomainRegistrationState | null) =>
+const emit = (registrationState: DeprecatedCustomDomainRegistrationState | null) =>
 	postMessage({
 		msg: 'customDomainRegistrationState',
 		data: {

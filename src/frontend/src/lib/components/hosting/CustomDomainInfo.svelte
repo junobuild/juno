@@ -1,9 +1,9 @@
 <script lang="ts" module>
-	import type { CustomDomain, CustomDomainRegistrationState } from '$lib/types/custom-domain';
+	import type { CustomDomain, DeprecatedCustomDomainRegistrationState } from '$lib/types/custom-domain';
 
 	export interface SelectedCustomDomain {
 		customDomain: CustomDomain | undefined;
-		registrationState: Option<CustomDomainRegistrationState>;
+		registrationState: Option<DeprecatedCustomDomainRegistrationState>;
 		mainDomain: boolean;
 	}
 </script>
@@ -29,7 +29,7 @@
 
 	let { customDomain, mainDomain } = $derived(info);
 
-	let registrationState: Option<CustomDomainRegistrationState> = $state(info.registrationState);
+	let registrationState: Option<DeprecatedCustomDomainRegistrationState> = $state(info.registrationState);
 
 	let visible = $state(true);
 
@@ -55,7 +55,7 @@
 <svelte:window
 	onjunoRegistrationState={({
 		detail: { registrationState: state }
-	}: CustomEvent<{ registrationState: Option<CustomDomainRegistrationState> }>) =>
+	}: CustomEvent<{ registrationState: Option<DeprecatedCustomDomainRegistrationState> }>) =>
 		(registrationState = state)}
 />
 

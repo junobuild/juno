@@ -1,4 +1,3 @@
-import type { SatelliteDid } from '$declarations';
 import { CanisterIdTextSchema } from '$lib/schemas/canister.schema';
 import { ExchangePriceSchema } from '$lib/schemas/exchange.schema';
 import type {
@@ -6,14 +5,14 @@ import type {
 	CanisterSyncData,
 	CanisterSyncMonitoring
 } from '$lib/types/canister';
-import type { CustomDomainRegistrationState } from '$lib/types/custom-domain';
+import type { CustomDomain, DeprecatedCustomDomainRegistrationState } from '$lib/types/custom-domain';
 import type { CertifiedData } from '$lib/types/store';
 import type { VersionRegistry } from '$lib/types/version';
 import * as z from 'zod';
 
 export const PostMessageDataRequestDataSchema = z.object({
 	segments: z.array(z.custom<CanisterSegment>()).optional(),
-	customDomain: z.custom<SatelliteDid.CustomDomain>().optional(),
+	customDomain: z.custom<CustomDomain>().optional(),
 	missionControlId: z.string().optional(),
 	withMonitoringHistory: z.boolean().optional()
 });
@@ -58,7 +57,7 @@ export const PostMessageDataResponseCanistersMonitoringSchema = z.object({
 });
 
 export const PostMessageDataResponseHostingSchema = z.object({
-	registrationState: z.custom<CustomDomainRegistrationState>().nullable().optional()
+	registrationState: z.custom<DeprecatedCustomDomainRegistrationState>().nullable().optional()
 });
 
 export const PostMessageDataResponseRegistrySchema = z.object({

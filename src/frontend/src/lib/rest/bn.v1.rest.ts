@@ -1,4 +1,4 @@
-import { CustomDomainGetResponseSchema } from '$lib/schemas/custom-domain.schema';
+import { GetCustomDomainStateSchema } from '$lib/schemas/custom-domain.schema';
 import type { CustomDomainName, CustomDomainRegistration } from '$lib/types/custom-domain';
 import { isEmptyString } from '@dfinity/utils';
 
@@ -8,7 +8,7 @@ export const getCustomDomainRegistration = async ({
 	domain
 }: {
 	domain: CustomDomainName;
-}): Promise<CustomDomainRegistration['v1']['Get'] | undefined> => {
+}): Promise<CustomDomainRegistration['v1']['State'] | undefined> => {
 	if (isEmptyString(BN_CUSTOM_DOMAINS_URL)) {
 		return undefined;
 	}
@@ -27,5 +27,5 @@ export const getCustomDomainRegistration = async ({
 
 	const data = await response.json();
 
-	return CustomDomainGetResponseSchema.parse(data);
+	return GetCustomDomainStateSchema.parse(data);
 };

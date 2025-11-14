@@ -55,14 +55,14 @@ const syncCustomDomainRegistration = async ({ customDomain }: { customDomain: Cu
 	syncing = true;
 
 	try {
-		const sync = async () => {
+		const sync = async (): Promise<CustomDomainState> => {
 			const [domainName, custom] = customDomain;
 
 			if (nonNullish(fromNullable(custom.bn_id))) {
-				return syncCustomDomainRegistrationV0({ customDomain: custom });
+				return await syncCustomDomainRegistrationV0({ customDomain: custom });
 			}
 
-			return syncCustomDomainRegistrationV1({ domain: domainName });
+			return await syncCustomDomainRegistrationV1({ domain: domainName });
 		};
 
 		const registrationState = await sync();

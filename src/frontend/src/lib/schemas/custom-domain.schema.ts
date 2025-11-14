@@ -27,27 +27,27 @@ const CustomDomainResponseErrorSchema = z.strictObject({
 
 // GET BN_API/{domain}/validate
 
-const CustomDomainResponseValidationErrorSchema = CustomDomainResponseErrorSchema;
+const GetCustomDomainValidateErrorSchema = CustomDomainResponseErrorSchema;
 
-const CustomDomainResponseValidationStatusSchema = z.enum(['valid']);
+const CustomDomainValidationStatusSchema = z.enum(['valid']);
 
-const CustomDomainResponseValidationSuccessSchema = z.strictObject({
+const GetCustomDomainValidateSuccessSchema = z.strictObject({
 	status: CustomDomainResponseStatusSchema.extract(['success']),
 	message: z.string(),
 	data: CustomDomainResponseDataWithCanisterIdSchema.extend({
-		validation_status: CustomDomainResponseValidationStatusSchema
+		validation_status: CustomDomainValidationStatusSchema
 	})
 });
 
-export const CustomDomainValidateResponseSchema = CustomDomainResponseValidationSuccessSchema.or(
-	CustomDomainResponseValidationErrorSchema
+export const GetCustomDomainValidateSchema = GetCustomDomainValidateSuccessSchema.or(
+	GetCustomDomainValidateErrorSchema
 );
 
 // GET BN_API/{domain}
 
-const CustomDomainResponseGetErrorSchema = CustomDomainResponseErrorSchema;
+const GetCustomDomainStateErrorSchema = CustomDomainResponseErrorSchema;
 
-export const CustomDomainResponseGetSuccessSchema = z.strictObject({
+export const GetCustomDomainStateSuccessSchema = z.strictObject({
 	status: CustomDomainResponseStatusSchema.extract(['success']),
 	message: z.string(),
 	data: CustomDomainResponseDataWithCanisterIdSchema.extend({
@@ -55,6 +55,6 @@ export const CustomDomainResponseGetSuccessSchema = z.strictObject({
 	})
 });
 
-export const CustomDomainGetResponseSchema = CustomDomainResponseGetSuccessSchema.or(
-	CustomDomainResponseGetErrorSchema
+export const GetCustomDomainStateSchema = GetCustomDomainStateSuccessSchema.or(
+	GetCustomDomainStateErrorSchema
 );

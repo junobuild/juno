@@ -37,9 +37,9 @@ export const setCustomDomain = async ({
 	// Register domain name with BN
 	await registerDomain({ domainName });
 
-	// In case of error we keep the custom domain in `./well-known/ic-domains` - this should not arm.
-	// In the past, we used to update the domain to save the BN_ID but, this information
-	// is not required anymore with the API v1. The domain name itself has become the key.
+	// In case of an error, we keep the custom domain in `./well-known/ic-domains` - this should not harm.
+	// In the past, we used to update the domain to save the BN_ID, but this information
+	// is no longer required with API v1. The domain name itself has become the key.
 };
 
 export const deleteCustomDomain = async ({

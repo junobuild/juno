@@ -11,7 +11,7 @@ import {
 import { buildAnalyticsPeriods } from '$lib/utils/orbiter.utils';
 import { download, filenameTimestamp } from '$lib/utils/save.utils';
 import { jsonReplacer } from '@dfinity/utils';
-import { BlobWriter, TextReader, ZipWriter } from '@zip.js/zip.js';
+import { BlobWriter, configure, TextReader, ZipWriter } from '@zip.js/zip.js';
 import { get } from 'svelte/store';
 
 export const exportTrackEvents = async (params: PageViewsParams): Promise<{ success: boolean }> => {
@@ -111,6 +111,13 @@ const collectAndZip = async <T>({
 	const pageViewsByPeriods = await batchAnalyticsRequests<Result>({
 		periods,
 		fn: executeFn
+	});
+
+	// Disable web worker to avoid the issue: "Refused to create a worker from 'data:text/javascript...'"
+	// In our current use case, we do not necessarily need to defer the work.
+	// Alternatively, we can import and provide the workers (see https://github.com/gildas-lormeau/zip.js/pull/607)
+	configure({
+		useWebWorkers: false
 	});
 
 	const zipWriter = new ZipWriter(new BlobWriter('application/zip'), { bufferedWrite: true });

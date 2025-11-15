@@ -1,9 +1,9 @@
 <script lang="ts">
+	import IconRocket from '$lib/components/icons/IconRocket.svelte';
 	import { missionControlIdDerived } from '$lib/derived/mission-control.derived';
 	import { initSatelliteWizard } from '$lib/services/wizard.services';
 	import { authStore } from '$lib/stores/auth.store';
 	import { i18n } from '$lib/stores/i18n.store';
-	import IconRocket from '$lib/components/icons/IconRocket.svelte';
 
 	const createSatellite = async () => {
 		await initSatelliteWizard({

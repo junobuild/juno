@@ -125,7 +125,7 @@
 		"@junobuild/ic-client": "^4.0.0",
 		"@junobuild/storage": "^2.0.0",
 		"@junobuild/utils": "^0.2.2",
-		"@zip.js/zip.js": "^2.8.2",
+		"@zip.js/zip.js": "^2.8.10",
 		"date-fns": "^4.1.0",
 		"dompurify": "^3.2.7",
 		"idb-keyval": "^6.2.2",

@@ -14,18 +14,10 @@
 		onclick: () => Promise<void>;
 	}
 
-	let {
-		children,
-		summary,
-		disabled,
-		testId: testIdProp,
-		primary = false,
-		row = false,
-		onclick
-	}: Props = $props();
+	let { children, summary, disabled, testId: testIdProp, row = false, onclick }: Props = $props();
 </script>
 
-<button class="article" class:primary class:row {...testId(testIdProp)} {disabled} {onclick}>
+<button class="article" class:row {...testId(testIdProp)} {disabled} {onclick}>
 	{#if nonNullish(summary)}
 		<div class="summary">
 			{@render summary()}
@@ -42,10 +34,6 @@
 		height: 100%;
 		min-height: 231px;
 		margin: 0;
-
-		&.primary {
-			--color-card-contrast: var(--color-primary);
-		}
 	}
 
 	.summary {

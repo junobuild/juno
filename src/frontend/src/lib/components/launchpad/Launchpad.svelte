@@ -3,7 +3,7 @@
 	import { run } from 'svelte/legacy';
 	import { fade } from 'svelte/transition';
 	import Cockpit from '$lib/components/launchpad/Cockpit.svelte';
-	import SatelliteNew from '$lib/components/satellites/SatelliteNew.svelte';
+	import SatelliteNewCard from '$lib/components/satellites/SatelliteNewCard.svelte';
 	import Satellites from '$lib/components/satellites/Satellites.svelte';
 	import Message from '$lib/components/ui/Message.svelte';
 	import Spinner from '$lib/components/ui/Spinner.svelte';
@@ -44,7 +44,7 @@
 		</div>
 	{:else}
 		<section onjunoIntersecting={onLayoutTitleIntersection} use:customOnIntersection>
-			<SatelliteNew />
+			<SatelliteNewCard />
 		</section>
 	{/if}
 {:else if ($satellitesStore?.length ?? 0) >= 1}

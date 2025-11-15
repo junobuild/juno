@@ -199,7 +199,7 @@
 	.search {
 		padding: var(--padding-2x) var(--padding-2x) 0 var(--padding-2x);
 
-		background: var(--color-menu);
+		background: var(--color-background);
 	}
 
 	li,

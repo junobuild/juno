@@ -125,7 +125,7 @@
 
 	@include media.dark-theme {
 		hr {
-			border-color: var(--color-menu-tint);
+			border-color: var(--color-background-tint);
 		}
 	}
 </style>

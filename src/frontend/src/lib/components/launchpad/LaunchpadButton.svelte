@@ -8,7 +8,6 @@
 		summary?: Snippet;
 		children: Snippet;
 		disabled?: boolean;
-		primary?: boolean;
 		row?: boolean;
 		testId?: TestId;
 		onclick: () => Promise<void>;

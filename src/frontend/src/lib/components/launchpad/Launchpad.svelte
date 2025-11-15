@@ -3,7 +3,7 @@
 	import { run } from 'svelte/legacy';
 	import { fade } from 'svelte/transition';
 	import Cockpit from '$lib/components/launchpad/Cockpit.svelte';
-	import SatelliteNewCard from '$lib/components/satellites/SatelliteNewCard.svelte';
+	import SatelliteNewCard from '$lib/components/satellites/SatelliteNewButtonCircle.svelte';
 	import Satellites from '$lib/components/satellites/Satellites.svelte';
 	import Message from '$lib/components/ui/Message.svelte';
 	import Spinner from '$lib/components/ui/Spinner.svelte';
@@ -11,6 +11,7 @@
 	import { onIntersection } from '$lib/directives/intersection.directives';
 	import { i18n } from '$lib/stores/i18n.store';
 	import { onLayoutTitleIntersection } from '$lib/stores/layout-intersecting.store';
+	import ContainerCentered from '$lib/components/ui/ContainerCentered.svelte';
 
 	let loading = $state(true);
 	run(() => {
@@ -33,7 +34,7 @@
 
 {#if loading || ($satellitesStore?.length ?? 0n) === 0}
 	{#if loading}
-		<div class="spinner" out:fade>
+		<div class="spinner">
 			<Message>
 				{#snippet icon()}
 					<Spinner inline />
@@ -43,9 +44,11 @@
 			</Message>
 		</div>
 	{:else}
-		<section onjunoIntersecting={onLayoutTitleIntersection} use:customOnIntersection>
-			<SatelliteNewCard />
-		</section>
+		<div in:fade>
+			<ContainerCentered>
+				<SatelliteNewCard />
+			</ContainerCentered>
+		</div>
 	{/if}
 {:else if ($satellitesStore?.length ?? 0) >= 1}
 	<div in:fade>

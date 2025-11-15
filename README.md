@@ -3,18 +3,11 @@
     <img src="https://github.com/junobuild/juno/raw/main/src/frontend/static/images/juno_logo.png" width="100%" alt="Juno" role="presentation"/>
   </a>
 
-  <br />
-  <br />
-
-[![GitHub release](https://img.shields.io/github/release/junobuild/juno/all?logo=GitHub&style=flat-square&color=7888ff)](https://github.com/junobuild/juno/releases/latest)
-[![GitHub CI Checks Workflow Status](https://img.shields.io/github/actions/workflow/status/junobuild/juno/checks.yml?logo=github&label=CI%20checks&style=flat-square)](https://github.com/junobuild/juno/actions/workflows/checks.yml)
-[![GitHub CI Tests Workflow Status](https://img.shields.io/github/actions/workflow/status/junobuild/juno/tests.yml?logo=github&label=CI%20tests&style=flat-square)](https://github.com/junobuild/juno/actions/workflows/tests.yml)
-
 </div>
 
-[Juno] is an open-source, reimagined serverless platform built for modern developers who want strong security, and zero operational complexity.
+[Juno] is an open-source, reimagined serverless platform for hosting static websites, building web applications, and running serverless functions with the privacy and control of self-hosting.
 
-It offers a familiar cloud-like experience — powered by decentralized infrastructure — by running each project in its own unstoppable WASM container, exclusively controlled by you.
+It provides a familiar cloud experience with strong security and zero operational complexity. Each project runs in its own WASM container, fully owned and controlled by you.
 
 - 🔑 Authentication [[Docs](https://juno.build/docs/build/authentication)]
 - 📦 Datastore [[Docs](https://juno.build/docs/build/datastore)]
@@ -42,7 +35,7 @@ Here are some useful links:
 
 ## 🖥️ Bootstrap
 
-Planning to build a decentralized website, blog, or application? Quickly scaffold your project with ready-made templates.
+Planning to build a website, blog, or web application? Start quickly by scaffolding a new project using a template.
 
 ```bash
 # with npm

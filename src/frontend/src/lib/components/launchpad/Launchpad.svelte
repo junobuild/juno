@@ -3,7 +3,7 @@
 	import { run } from 'svelte/legacy';
 	import { fade } from 'svelte/transition';
 	import Cockpit from '$lib/components/launchpad/Cockpit.svelte';
-	import SatelliteNewCard from '$lib/components/satellites/SatelliteNewButtonCircle.svelte';
+	import SatelliteNewLaunchButton from '$lib/components/satellites/SatelliteNewLaunchButton.svelte';
 	import Satellites from '$lib/components/satellites/Satellites.svelte';
 	import ContainerCentered from '$lib/components/ui/ContainerCentered.svelte';
 	import Message from '$lib/components/ui/Message.svelte';
@@ -46,7 +46,7 @@
 	{:else}
 		<div in:fade>
 			<ContainerCentered>
-				<SatelliteNewCard />
+				<SatelliteNewLaunchButton />
 			</ContainerCentered>
 		</div>
 	{/if}

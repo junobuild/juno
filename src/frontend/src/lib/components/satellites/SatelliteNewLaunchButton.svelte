@@ -33,11 +33,11 @@
 
 		border-radius: 50%;
 
-		box-shadow: 4px 4px var(--color-card-contrast);
+		box-shadow: 3px 3px var(--color-card-contrast);
 
 		&:active {
 			box-shadow: none;
-			transform: translateX(4px) translateY(4px);
+			transform: translateX(3px) translateY(3px);
 		}
 	}
 </style>

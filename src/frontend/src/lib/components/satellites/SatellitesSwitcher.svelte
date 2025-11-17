@@ -1,7 +1,6 @@
 <script lang="ts">
 	import IconUnfoldMore from '$lib/components/icons/IconUnfoldMore.svelte';
 	import SatelliteEnvironment from '$lib/components/satellites/SatelliteEnvironment.svelte';
-	import ButtonIcon from '$lib/components/ui/ButtonIcon.svelte';
 	import Popover from '$lib/components/ui/Popover.svelte';
 	import { sortedSatelliteUis } from '$lib/derived/satellites.derived';
 	import { i18n } from '$lib/stores/i18n.store';
@@ -11,13 +10,10 @@
 	let visible: boolean = $state(false);
 </script>
 
-<ButtonIcon onclick={() => (visible = true)} bind:button>
-	{#snippet icon()}
-		<IconUnfoldMore />
-	{/snippet}
-
-	{$i18n.satellites.see_all_satellites}
-</ButtonIcon>
+<button bind:this={button} class="square" onclick={() => (visible = true)}>
+	<IconUnfoldMore />
+	<span class="visually-hidden">{$i18n.satellites.see_all_satellites}</span>
+</button>
 
 <Popover anchor={button} bind:visible>
 	<div class="container">

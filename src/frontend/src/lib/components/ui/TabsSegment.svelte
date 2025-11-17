@@ -33,13 +33,31 @@
 	@use '../../styles/mixins/tabs';
 
 	.tabs {
+		width: fit-content;
+
+		background: var(--color-card-contrast);
+		color: var(--color-card);
+		border: 1px solid var(--card-border-color, var(--color-card-contrast));
+		border-radius: var(--border-radius);
+
 		margin: var(--padding) 0 var(--padding-1_5x);
 
 		@include tabs.tabs;
 	}
 
 	.tab {
+		border: 1px solid var(--card-border-color, var(--color-card-contrast));
+
+		border-radius: var(--border-radius);
+
 		margin: 0;
+
+		&:not(:focus):not(:hover) {
+			&.selected {
+				color: var(--color-card-contrast);
+				background: var(--color-card);
+			}
+		}
 
 		@include tabs.tab;
 	}

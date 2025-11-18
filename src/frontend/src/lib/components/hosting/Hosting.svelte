@@ -95,7 +95,7 @@
 	@use '../../styles/mixins/media';
 
 	.tools {
-		width: 100px;
+		width: 105px;
 	}
 
 	.domain {

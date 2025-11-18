@@ -70,14 +70,14 @@
 					state:
 						progress?.step === HostingProgressStep.Setup
 							? mapProgressState(progress?.state)
-							: register.state
+							: setup.state
 				},
 				validate: {
 					...validate,
 					state:
 						progress?.step === HostingProgressStep.Validate
 							? mapProgressState(progress?.state)
-							: register.state
+							: validate.state
 				},
 				register: {
 					...register,

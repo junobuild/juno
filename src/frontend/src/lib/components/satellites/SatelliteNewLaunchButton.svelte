@@ -26,18 +26,38 @@
 
 		aspect-ratio: 1/1;
 
-		max-width: 180px;
-		max-height: 180px;
+		max-width: 160px;
+		max-height: 160px;
 
-		padding: var(--padding-4x);
+		padding: var(--padding);
 
 		border-radius: 50%;
 
 		box-shadow: 3px 3px var(--color-card-contrast);
 
+		animation: push ease-in 750ms 2 forwards;
+
 		&:active {
 			box-shadow: none;
 			transform: translateX(3px) translateY(3px);
+		}
+	}
+
+	/* -global- */
+	@keyframes -global-push {
+		0% {
+			box-shadow: 3px 3px var(--color-card-contrast);
+			transform: none;
+		}
+
+		50% {
+			box-shadow: none;
+			transform: translateX(3px) translateY(3px);
+		}
+
+		100% {
+			box-shadow: 3px 3px var(--color-card-contrast);
+			transform: none;
 		}
 	}
 </style>

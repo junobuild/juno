@@ -13,9 +13,14 @@ const CustomDomainResponseDataSchema = z.strictObject({
 	domain: z.string()
 });
 
-const CustomDomainResponseDataWithCanisterIdSchema = z.strictObject({
+const CustomDomainResponseDataWithNullableCanisterIdSchema = z.strictObject({
 	...CustomDomainResponseDataSchema.shape,
-	canister_id: PrincipalTextSchema
+	// Workaround: while we observed the canister_id is provided for GET /validate and POST being provided, we also noticed
+	// that the first GET request after POST did **not** provide the information, which leads to a validation issue.
+	// Since this field is not used within the codebase, for consistency — to avoid having different types —
+	// and to prevent similar issues in case those APIs someday do not provide the information in the future,
+	// we set the field as nullable.
+	canister_id: PrincipalTextSchema.nullable()
 });
 
 const CustomDomainResponseErrorSchema = z.strictObject({
@@ -34,7 +39,7 @@ const CustomDomainValidationStatusSchema = z.enum(['valid']);
 const GetCustomDomainValidateSuccessSchema = z.strictObject({
 	status: CustomDomainResponseStatusSchema.extract(['success']),
 	message: z.string(),
-	data: CustomDomainResponseDataWithCanisterIdSchema.extend({
+	data: CustomDomainResponseDataWithNullableCanisterIdSchema.extend({
 		validation_status: CustomDomainValidationStatusSchema
 	})
 });
@@ -50,7 +55,7 @@ const GetCustomDomainStateErrorSchema = CustomDomainResponseErrorSchema;
 export const GetCustomDomainStateSuccessSchema = z.strictObject({
 	status: CustomDomainResponseStatusSchema.extract(['success']),
 	message: z.string(),
-	data: CustomDomainResponseDataWithCanisterIdSchema.extend({
+	data: CustomDomainResponseDataWithNullableCanisterIdSchema.extend({
 		registration_status: CustomDomainStateSchema
 	})
 });
@@ -66,7 +71,7 @@ const PostCustomDomainStateErrorSchema = CustomDomainResponseErrorSchema;
 export const PostCustomDomainStateSuccessSchema = z.strictObject({
 	status: CustomDomainResponseStatusSchema.extract(['success']),
 	message: z.string(),
-	data: CustomDomainResponseDataWithCanisterIdSchema
+	data: CustomDomainResponseDataWithNullableCanisterIdSchema
 });
 
 export const PostCustomDomainStateSchema = PostCustomDomainStateSuccessSchema.or(

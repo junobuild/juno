@@ -18,7 +18,7 @@ describe('custom-domain.schemas', () => {
 				}
 			});
 
-			expect(parsed.success).toBe(true);
+			expect(parsed.success).toBeTruthy();
 		});
 
 		it('validates GetCustomDomainValidateSchema error without canister ID', () => {
@@ -32,7 +32,7 @@ describe('custom-domain.schemas', () => {
 				}
 			});
 
-			expect(parsed.success).toBe(false);
+			expect(parsed.success).toBeFalsy();
 		});
 
 		it('validates GetCustomDomainValidateSchema error', () => {
@@ -43,7 +43,7 @@ describe('custom-domain.schemas', () => {
 				errors: 'boom'
 			});
 
-			expect(parsed.success).toBe(true);
+			expect(parsed.success).toBeTruthy();
 		});
 	});
 
@@ -59,7 +59,7 @@ describe('custom-domain.schemas', () => {
 				}
 			});
 
-			expect(parsed.success).toBe(true);
+			expect(parsed.success).toBeTruthy();
 		});
 
 		it('validates GetCustomDomainStateSchema error', () => {
@@ -70,7 +70,7 @@ describe('custom-domain.schemas', () => {
 				errors: 'bad'
 			});
 
-			expect(parsed.success).toBe(true);
+			expect(parsed.success).toBeTruthy();
 		});
 	});
 
@@ -85,7 +85,7 @@ describe('custom-domain.schemas', () => {
 				}
 			});
 
-			expect(parsed.success).toBe(true);
+			expect(parsed.success).toBeTruthy();
 		});
 
 		it('validates PostCustomDomainStateSchema error without canister id', () => {
@@ -98,7 +98,7 @@ describe('custom-domain.schemas', () => {
 				}
 			});
 
-			expect(parsed.success).toBe(false);
+			expect(parsed.success).toBeFalsy();
 		});
 
 		it('validates PostCustomDomainStateSchema error', () => {
@@ -109,7 +109,7 @@ describe('custom-domain.schemas', () => {
 				errors: 'fail'
 			});
 
-			expect(parsed.success).toBe(true);
+			expect(parsed.success).toBeTruthy();
 		});
 	});
 
@@ -121,7 +121,7 @@ describe('custom-domain.schemas', () => {
 				data: { domain: 'bye.com' }
 			});
 
-			expect(parsed.success).toBe(true);
+			expect(parsed.success).toBeTruthy();
 		});
 
 		it('validates DeleteCustomDomainStateSchema error', () => {
@@ -132,7 +132,7 @@ describe('custom-domain.schemas', () => {
 				errors: 'cannot delete'
 			});
 
-			expect(parsed.success).toBe(true);
+			expect(parsed.success).toBeTruthy();
 		});
 	});
 });

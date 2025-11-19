@@ -38,7 +38,7 @@
 	const applyFilters = async () => {
 		loading = true;
 
-		const { result } = await loadAnalytics();
+		await loadAnalytics();
 
 		loading = false;
 	};

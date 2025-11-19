@@ -23,7 +23,6 @@ export class CyclesWorker extends AppWorker {
 					return;
 				case 'syncCanisters':
 					syncCanistersSyncData(data.data as PostMessageDataResponseCanistersSyncData);
-					return;
 			}
 		};
 	}

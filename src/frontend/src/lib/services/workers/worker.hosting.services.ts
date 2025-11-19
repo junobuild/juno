@@ -16,7 +16,6 @@ export class HostingWorker extends AppWorker {
 			switch (msg) {
 				case 'customDomainRegistrationState':
 					this.#hostingCallback?.(data.data as PostMessageDataResponseHosting);
-					return;
 			}
 		};
 	}

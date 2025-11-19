@@ -41,10 +41,6 @@
 		const { result } = await loadAnalytics();
 
 		loading = false;
-
-		if (result === 'error') {
-			return;
-		}
 	};
 </script>
 

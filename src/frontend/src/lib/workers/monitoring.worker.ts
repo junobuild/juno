@@ -41,7 +41,6 @@ export const onMonitoringMessage = async ({ data: dataMsg }: MessageEvent<PostMe
 		case 'restartMonitoringTimer':
 			stopMonitoringTimer();
 			await startMonitoringTimer({ data });
-			return;
 	}
 };
 

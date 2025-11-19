@@ -16,7 +16,6 @@ export const onAuthMessage = async ({
 			return;
 		case 'stopIdleTimer':
 			stopIdleTimer();
-			return;
 	}
 };
 

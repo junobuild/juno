@@ -7,6 +7,7 @@ import { toasts } from '$lib/stores/toasts.store';
 import type { OptionIdentity } from '$lib/types/itentity';
 import { type HostingProgress, HostingProgressStep } from '$lib/types/progress-hosting';
 import { buildSetAuthenticationConfig } from '$lib/utils/auth.config.utils';
+import { waitForMilliseconds } from '$lib/utils/timeout.utils';
 import { assertNonNullish, fromNullishNullable, notEmptyString } from '@dfinity/utils';
 import type { Principal } from '@icp-sdk/core/principal';
 import { get } from 'svelte/store';
@@ -42,10 +43,21 @@ export const configHosting = async ({
 		await execute({ fn: setupCustomDomain, onProgress, step: HostingProgressStep.Setup });
 
 		// Validation
-		const validateCustomDomain = async () =>
+		const validateCustomDomain = async () => {
+			// When testing custom domain registration, one attempt failed on the first try with the following error:
+			// Error validating www.something.com on the Boundary Nodes: {"status":"error","message":"Failed to validate DNS records or verify canister ownership","data":{"domain":"www.something.com"},"errors":"unprocessable_entity: domain is missing from canister ...-cai list of known domains"}
+			//
+			// This was unexpected. To reduce the likelihood of it happening again, we wait a few seconds before validating the domain.
+			//
+			// This is a naive approach since the issue should be rare. If it becomes more frequent, we should implement a proper solution
+			// using `waitReady` and passing a function that fetches `canister-id.icp0.io/.well-known/ic-domains`, checking the content
+			// until the registered domain appears.
+			await waitForMilliseconds(2000);
+
 			await validateDomain({
 				domainName
 			});
+		};
 
 		await execute({ fn: validateCustomDomain, onProgress, step: HostingProgressStep.Validate });
 

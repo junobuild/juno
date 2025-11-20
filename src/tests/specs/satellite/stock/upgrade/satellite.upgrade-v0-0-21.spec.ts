@@ -42,7 +42,7 @@ describe('Satellite > Upgrade > v0.0.21', () => {
 		const { http_request } = actor;
 
 		const { status_code } = await http_request({
-			body: [],
+			body: Uint8Array.from([]),
 			certificate_version: toNullable(),
 			headers: [],
 			method: 'GET',

@@ -9,6 +9,7 @@ import {
 import { type Actor, PocketIc } from '@dfinity/pic';
 import {
 	arrayBufferToUint8Array,
+	arrayOfNumberToUint8Array,
 	assertNonNullish,
 	fromNullable,
 	toNullable
@@ -53,13 +54,13 @@ const installReleaseWithDeprecatedFlow = async ({
 
 	const chunkSize = 700000;
 
-	const upload = async (chunks: number[]) => {
+	const upload = async (chunks: Uint8Array) => {
 		await load_release(segment, chunks, version);
 	};
 
 	for (let start = 0; start < wasmModule.length; start += chunkSize) {
 		const chunks = wasmModule.slice(start, start + chunkSize);
-		await upload(chunks);
+		await upload(arrayOfNumberToUint8Array(chunks));
 	}
 };
 
@@ -444,7 +445,7 @@ export const uploadFileWithProposal = async ({
 	});
 
 	const { headers } = await http_request({
-		body: [],
+		body: Uint8Array.from([]),
 		certificate_version: toNullable(),
 		headers: [['accept-encoding', 'gzip, deflate, br']],
 		method: 'GET',
@@ -470,7 +471,7 @@ export const assertAssetServed = async ({
 	const { http_request } = actor;
 
 	const { status_code, body } = await http_request({
-		body: [],
+		body: Uint8Array.from([]),
 		certificate_version: toNullable(),
 		headers: [['accept-encoding', 'gzip, deflate, br']],
 		method: 'GET',
@@ -481,7 +482,7 @@ export const assertAssetServed = async ({
 
 	const decoder = new TextDecoder();
 
-	expect(decoder.decode(body as Uint8Array<ArrayBufferLike>)).toEqual(content);
+	expect(decoder.decode(body)).toEqual(content);
 };
 
 export const updateRateConfig = async ({

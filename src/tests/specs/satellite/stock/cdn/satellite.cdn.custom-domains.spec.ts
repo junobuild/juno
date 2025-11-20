@@ -100,7 +100,7 @@ describe.each(MEMORIES)('Satellite > Custom domains > $title', ({ memory }) => {
 			await del_custom_domain('test3.com');
 
 			const { status_code } = await http_request({
-				body: [],
+				body: Uint8Array.from([]),
 				certificate_version: toNullable(),
 				headers: [],
 				method: 'GET',

@@ -48,7 +48,7 @@ describe('Orbiter > HTTP > Routes', () => {
 
 	describe.each([
 		['With body', toBodyJson({ hello: 'world' })],
-		['Without body', []]
+		['Without body', Uint8Array.from([])]
 		// eslint-disable-next-line local-rules/prefer-object-params
 	])('%s', (_, body) => {
 		describe.each(['/something', '/'])('Route not found for %s', (url) => {
@@ -72,7 +72,7 @@ describe('Orbiter > HTTP > Routes', () => {
 					).toEqual('application/json');
 
 					const decoder = new TextDecoder();
-					const responseBody = decoder.decode(response.body as Uint8Array<ArrayBufferLike>);
+					const responseBody = decoder.decode(response.body);
 
 					expect(JSON.parse(responseBody)).toEqual(RESPONSE_404);
 
@@ -116,7 +116,7 @@ describe('Orbiter > HTTP > Routes', () => {
 					).toEqual('application/json');
 
 					const decoder = new TextDecoder();
-					const responseBody = decoder.decode(response.body as Uint8Array<ArrayBufferLike>);
+					const responseBody = decoder.decode(response.body);
 
 					expect(JSON.parse(responseBody)).toEqual(RESPONSE_404);
 
@@ -155,7 +155,7 @@ describe('Orbiter > HTTP > Routes', () => {
 						).toEqual('application/json');
 
 						const decoder = new TextDecoder();
-						const responseBody = decoder.decode(response.body as Uint8Array<ArrayBufferLike>);
+						const responseBody = decoder.decode(response.body);
 
 						expect(JSON.parse(responseBody)).toEqual(RESPONSE_405);
 

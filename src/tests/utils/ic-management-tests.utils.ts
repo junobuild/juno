@@ -38,12 +38,12 @@ const chunk_hash = IDL.Record({ hash: IDL.Vec(IDL.Nat8) });
 const upload_chunk_result = chunk_hash;
 
 export interface upload_chunk_args {
-	chunk: Uint8Array | number[];
+	chunk: Uint8Array;
 	canister_id: Principal;
 }
 export type upload_chunk_result = chunk_hash;
 export interface chunk_hash {
-	hash: Uint8Array | number[];
+	hash: Uint8Array;
 }
 
 // Install chunked code did
@@ -84,8 +84,8 @@ export type canister_install_mode =
 	| { install: null };
 
 interface install_chunked_code_args {
-	arg: Uint8Array | number[];
-	wasm_module_hash: Uint8Array | number[];
+	arg: Uint8Array;
+	wasm_module_hash: Uint8Array;
 	mode: canister_install_mode;
 	chunk_hashes_list: Array<chunk_hash>;
 	target_canister: canister_id;

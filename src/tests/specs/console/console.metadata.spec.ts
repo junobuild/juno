@@ -51,7 +51,7 @@ describe('Console > Metadata', () => {
 			});
 
 			const decoder = new TextDecoder();
-			const responseBody = decoder.decode(body as Uint8Array<ArrayBufferLike>);
+			const responseBody = decoder.decode(body);
 
 			expect(responseBody).toEqual(
 				JSON.stringify({

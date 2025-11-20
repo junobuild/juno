@@ -72,7 +72,7 @@ describe('Orbiter > HTTP > Routes', () => {
 					).toEqual('application/json');
 
 					const decoder = new TextDecoder();
-					const responseBody = decoder.decode(response.body as Uint8Array<ArrayBufferLike>);
+					const responseBody = decoder.decode(response.body);
 
 					expect(JSON.parse(responseBody)).toEqual(RESPONSE_404);
 
@@ -116,7 +116,7 @@ describe('Orbiter > HTTP > Routes', () => {
 					).toEqual('application/json');
 
 					const decoder = new TextDecoder();
-					const responseBody = decoder.decode(response.body as Uint8Array<ArrayBufferLike>);
+					const responseBody = decoder.decode(response.body);
 
 					expect(JSON.parse(responseBody)).toEqual(RESPONSE_404);
 
@@ -155,7 +155,7 @@ describe('Orbiter > HTTP > Routes', () => {
 						).toEqual('application/json');
 
 						const decoder = new TextDecoder();
-						const responseBody = decoder.decode(response.body as Uint8Array<ArrayBufferLike>);
+						const responseBody = decoder.decode(response.body);
 
 						expect(JSON.parse(responseBody)).toEqual(RESPONSE_405);
 

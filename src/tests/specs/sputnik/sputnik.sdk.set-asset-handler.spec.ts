@@ -72,7 +72,7 @@ describe('Sputnik > sdk > setAssetHandler', () => {
 		const response = await http_request(request);
 
 		const decoder = new TextDecoder();
-		const responseBody = decoder.decode(response.body as Uint8Array<ArrayBufferLike>);
+		const responseBody = decoder.decode(response.body);
 
 		expect(responseBody).toEqual(mockHtml);
 

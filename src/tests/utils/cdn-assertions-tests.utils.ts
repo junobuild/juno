@@ -641,7 +641,7 @@ export const testControlledCdnMethods = ({
 
 				const decoder = new TextDecoder();
 
-				expect(decoder.decode(body as Uint8Array<ArrayBufferLike>)).toEqual(mockHtml);
+				expect(decoder.decode(body)).toEqual(mockHtml);
 			});
 
 			it('should list assets', async () => {
@@ -1528,7 +1528,7 @@ export const testUploadProposalManyAssets = ({
 
 		const decoder = new TextDecoder();
 
-		expect(decoder.decode(body as Uint8Array<ArrayBufferLike>)).toEqual(mockHtml);
+		expect(decoder.decode(body)).toEqual(mockHtml);
 	});
 };
 

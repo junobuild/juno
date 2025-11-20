@@ -481,7 +481,7 @@ export const assertAssetServed = async ({
 
 	const decoder = new TextDecoder();
 
-	expect(decoder.decode(body as Uint8Array<ArrayBufferLike>)).toEqual(content);
+	expect(decoder.decode(body)).toEqual(content);
 };
 
 export const updateRateConfig = async ({

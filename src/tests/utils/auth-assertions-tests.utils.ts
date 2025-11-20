@@ -131,7 +131,7 @@ export const testAuthConfig = ({
 			});
 
 			const decoder = new TextDecoder();
-			const responseBody = decoder.decode(body as Uint8Array<ArrayBufferLike>);
+			const responseBody = decoder.decode(body);
 
 			expect(responseBody).toEqual(JSON.stringify({ alternativeOrigins: [canisterIdUrl] }));
 			expect(JSON.parse(responseBody).alternativeOrigins).toEqual([canisterIdUrl]);
@@ -171,7 +171,7 @@ export const testAuthConfig = ({
 			});
 
 			const decoder = new TextDecoder();
-			const responseBody = decoder.decode(body as Uint8Array<ArrayBufferLike>);
+			const responseBody = decoder.decode(body);
 
 			expect(responseBody).toEqual(
 				JSON.stringify({

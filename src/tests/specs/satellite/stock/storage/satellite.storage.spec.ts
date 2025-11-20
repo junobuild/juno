@@ -294,7 +294,7 @@ describe.each([{ title: 'Heap (default)', memory: null }, ...MEMORIES])(
 
 				const decoder = new TextDecoder();
 
-				expect(decoder.decode(body as Uint8Array<ArrayBufferLike>)).toEqual(mockHtml);
+				expect(decoder.decode(body)).toEqual(mockHtml);
 			});
 
 			describe.each(['/.well-known/ic-domains', '/.well-known/ii-alternative-origins'])(
@@ -431,7 +431,7 @@ describe.each([{ title: 'Heap (default)', memory: null }, ...MEMORIES])(
 
 						const decoder = new TextDecoder();
 
-						expect(decoder.decode(body as Uint8Array<ArrayBufferLike>)).toEqual(mockHtml);
+						expect(decoder.decode(body)).toEqual(mockHtml);
 					});
 
 					it('should not delete other collection assets', async () => {
@@ -529,7 +529,7 @@ describe.each([{ title: 'Heap (default)', memory: null }, ...MEMORIES])(
 
 					const decoder = new TextDecoder();
 
-					expect(decoder.decode(body as Uint8Array<ArrayBufferLike>)).toEqual(HTML);
+					expect(decoder.decode(body)).toEqual(HTML);
 				});
 
 				it('should set a config for a rewrite and redirect', async () => {
@@ -655,7 +655,7 @@ describe.each([{ title: 'Heap (default)', memory: null }, ...MEMORIES])(
 
 					const decoder = new TextDecoder();
 
-					expect(decoder.decode(body as Uint8Array<ArrayBufferLike>)).toEqual(mockHtml);
+					expect(decoder.decode(body)).toEqual(mockHtml);
 				});
 
 				it('should not be able to access on raw if explicitly disabled', async () => {
@@ -711,7 +711,7 @@ describe.each([{ title: 'Heap (default)', memory: null }, ...MEMORIES])(
 
 					const decoder = new TextDecoder();
 
-					expect(decoder.decode(body as Uint8Array<ArrayBufferLike>)).toEqual(mockHtml);
+					expect(decoder.decode(body)).toEqual(mockHtml);
 				});
 			});
 		});
@@ -802,7 +802,7 @@ describe.each([{ title: 'Heap (default)', memory: null }, ...MEMORIES])(
 
 						const decoder = new TextDecoder();
 
-						expect(decoder.decode(body as Uint8Array<ArrayBufferLike>)).toEqual(SVG);
+						expect(decoder.decode(body)).toEqual(SVG);
 					});
 
 					it('should not change owner if controller overwrite asset', async () => {

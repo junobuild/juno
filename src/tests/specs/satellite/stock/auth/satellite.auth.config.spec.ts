@@ -86,7 +86,7 @@ describe('Satellite > Authentication > Configuration', () => {
 				});
 
 				const decoder = new TextDecoder();
-				const responseBody = decoder.decode(body as Uint8Array<ArrayBufferLike>);
+				const responseBody = decoder.decode(body);
 
 				const responseObj = JSON.parse(responseBody);
 
@@ -124,7 +124,7 @@ describe('Satellite > Authentication > Configuration', () => {
 				});
 
 				const decoder = new TextDecoder();
-				const responseBody = decoder.decode(body as Uint8Array<ArrayBufferLike>);
+				const responseBody = decoder.decode(body);
 
 				const responseObj = JSON.parse(responseBody);
 
@@ -198,7 +198,7 @@ describe('Satellite > Authentication > Configuration', () => {
 				});
 
 				const decoder = new TextDecoder();
-				const responseBody = decoder.decode(body as Uint8Array<ArrayBufferLike>);
+				const responseBody = decoder.decode(body);
 
 				const responseObj = JSON.parse(responseBody);
 
@@ -240,7 +240,7 @@ describe('Satellite > Authentication > Configuration', () => {
 				});
 
 				const decoder = new TextDecoder();
-				const responseBody = decoder.decode(body as Uint8Array<ArrayBufferLike>);
+				const responseBody = decoder.decode(body);
 
 				const responseObj = JSON.parse(responseBody);
 
@@ -278,7 +278,7 @@ describe('Satellite > Authentication > Configuration', () => {
 				});
 
 				const decoder = new TextDecoder();
-				const responseBody = decoder.decode(body as Uint8Array<ArrayBufferLike>);
+				const responseBody = decoder.decode(body);
 
 				const responseObj = JSON.parse(responseBody);
 

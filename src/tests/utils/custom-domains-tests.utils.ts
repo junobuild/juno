@@ -86,8 +86,8 @@ export const adminCustomDomainsTests = ({
 
 		const decoder = new TextDecoder();
 
-		expect(decoder.decode(body as Uint8Array<ArrayBufferLike>)).toContain('hello.com');
-		expect(decoder.decode(body as Uint8Array<ArrayBufferLike>)).toContain('test2.com');
+		expect(decoder.decode(body)).toContain('hello.com');
+		expect(decoder.decode(body)).toContain('test2.com');
 	});
 
 	// eslint-disable-next-line vitest/require-top-level-describe
@@ -117,7 +117,7 @@ export const adminCustomDomainsTests = ({
 
 		const decoder = new TextDecoder();
 
-		expect(decoder.decode(body as Uint8Array<ArrayBufferLike>)).not.toContain('hello.com');
+		expect(decoder.decode(body)).not.toContain('hello.com');
 	});
 
 	// eslint-disable-next-line vitest/require-top-level-describe
@@ -134,8 +134,8 @@ export const adminCustomDomainsTests = ({
 
 		const decoder = new TextDecoder();
 
-		expect(decoder.decode(body as Uint8Array<ArrayBufferLike>)).toContain('test3.com');
-		expect(decoder.decode(body as Uint8Array<ArrayBufferLike>)).toContain('test2.com');
+		expect(decoder.decode(body)).toContain('test3.com');
+		expect(decoder.decode(body)).toContain('test2.com');
 	});
 };
 

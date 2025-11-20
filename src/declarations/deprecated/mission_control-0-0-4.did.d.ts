@@ -1,5 +1,5 @@
-import type { ActorMethod } from '@dfinity/agent';
-import type { Principal } from '@dfinity/principal';
+import type { ActorMethod } from '@icp-sdk/core/agent';
+import type { Principal } from '@icp-sdk/core/principal';
 
 export interface CanisterStatusResponse {
 	status: CanisterStatusType;
@@ -7,7 +7,7 @@ export interface CanisterStatusResponse {
 	cycles: bigint;
 	settings: DefiniteCanisterSettings;
 	idle_cycles_burned_per_day: bigint;
-	module_hash: [] | [Uint8Array | number[]];
+	module_hash: [] | [Uint8Array];
 }
 export type CanisterStatusType = { stopped: null } | { stopping: null } | { running: null };
 export interface Controller {

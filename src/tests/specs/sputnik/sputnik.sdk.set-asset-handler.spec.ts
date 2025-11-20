@@ -1,8 +1,7 @@
-import type { HttpRequest } from '$declarations/satellite/satellite.did';
-import type { _SERVICE as SputnikActor } from '$declarations/sputnik/sputnik.did';
+import type { SputnikActor, SputnikDid } from '$declarations';
 import type { Actor, PocketIc } from '@dfinity/pic';
-import type { Principal } from '@dfinity/principal';
 import { toNullable } from '@dfinity/utils';
+import type { Principal } from '@icp-sdk/core/principal';
 import { nanoid } from 'nanoid';
 import { mockSetRule } from '../../mocks/collection.mocks';
 import { mockHtml } from '../../mocks/storage.mocks';
@@ -49,7 +48,7 @@ describe('Sputnik > sdk > setAssetHandler', () => {
 		const key = nanoid();
 
 		await set_doc(TEST_COLLECTION, key, {
-			data: [],
+			data: Uint8Array.from([]),
 			description: toNullable(),
 			version: toNullable()
 		});
@@ -62,8 +61,8 @@ describe('Sputnik > sdk > setAssetHandler', () => {
 
 		const { http_request } = actor;
 
-		const request: HttpRequest = {
-			body: [],
+		const request: SputnikDid.HttpRequest = {
+			body: Uint8Array.from([]),
 			certificate_version: toNullable(2),
 			headers: [],
 			method: 'GET',
@@ -73,7 +72,7 @@ describe('Sputnik > sdk > setAssetHandler', () => {
 		const response = await http_request(request);
 
 		const decoder = new TextDecoder();
-		const responseBody = decoder.decode(response.body as Uint8Array<ArrayBufferLike>);
+		const responseBody = decoder.decode(response.body);
 
 		expect(responseBody).toEqual(mockHtml);
 

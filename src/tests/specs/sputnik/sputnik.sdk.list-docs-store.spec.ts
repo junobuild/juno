@@ -1,9 +1,8 @@
-import type { Doc } from '$declarations/satellite/satellite.did';
-import type { _SERVICE as SputnikActor } from '$declarations/sputnik/sputnik.did';
-import type { Identity } from '@dfinity/agent';
+import type { SputnikActor, SputnikDid } from '$declarations';
 import type { Actor, PocketIc } from '@dfinity/pic';
-import type { Principal } from '@dfinity/principal';
 import { assertNonNullish, fromNullable, toNullable } from '@dfinity/utils';
+import type { Identity } from '@icp-sdk/core/agent';
+import type { Principal } from '@icp-sdk/core/principal';
 import { fromArray } from '@junobuild/utils';
 import { nanoid } from 'nanoid';
 import { mockSetRule } from '../../mocks/collection.mocks';
@@ -62,13 +61,13 @@ describe('Sputnik > sdk > listDocsStore', () => {
 		await pic?.tearDown();
 	});
 
-	const setAndGetDoc = async (keySuffix?: string): Promise<Doc> => {
+	const setAndGetDoc = async (keySuffix?: string): Promise<SputnikDid.Doc> => {
 		const { set_doc, get_doc } = actor;
 
 		const key = nanoid();
 
 		await set_doc(TEST_COLLECTION, key, {
-			data: [],
+			data: Uint8Array.from([]),
 			description: toNullable(),
 			version: toNullable()
 		});

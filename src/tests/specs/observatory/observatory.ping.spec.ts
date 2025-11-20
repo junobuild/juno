@@ -1,7 +1,6 @@
-import type { _SERVICE as ObservatoryActor } from '$declarations/observatory/observatory.did';
-import { idlFactory as idlFactorObservatory } from '$declarations/observatory/observatory.factory.did';
-import { Ed25519KeyIdentity } from '@dfinity/identity';
+import { idlFactoryObservatory, type ObservatoryActor } from '$declarations';
 import { type Actor, PocketIc } from '@dfinity/pic';
+import { Ed25519KeyIdentity } from '@icp-sdk/core/identity';
 import { inject } from 'vitest';
 import { mockMissionControlId } from '../../../frontend/tests/mocks/modules.mock';
 import {
@@ -22,7 +21,7 @@ describe('Observatory > Ping', () => {
 		pic = await PocketIc.create(inject('PIC_URL'));
 
 		const { actor: c } = await pic.setupCanister<ObservatoryActor>({
-			idlFactory: idlFactorObservatory,
+			idlFactory: idlFactoryObservatory,
 			wasm: OBSERVATORY_WASM_PATH,
 			sender: controller.getPrincipal()
 		});

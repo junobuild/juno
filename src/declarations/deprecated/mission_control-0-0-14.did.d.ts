@@ -1,10 +1,10 @@
-import type { ActorMethod } from '@dfinity/agent';
-import type { IDL } from '@dfinity/candid';
-import type { Principal } from '@dfinity/principal';
+import type { ActorMethod } from '@icp-sdk/core/agent';
+import type { IDL } from '@icp-sdk/core/candid';
+import type { Principal } from '@icp-sdk/core/principal';
 
 export interface Account {
 	owner: Principal;
-	subaccount: [] | [Uint8Array | number[]];
+	subaccount: [] | [Uint8Array];
 }
 export interface Config {
 	monitoring: [] | [MonitoringConfig];
@@ -145,16 +145,16 @@ export interface Tokens {
 export interface TransferArg {
 	to: Account;
 	fee: [] | [bigint];
-	memo: [] | [Uint8Array | number[]];
-	from_subaccount: [] | [Uint8Array | number[]];
+	memo: [] | [Uint8Array];
+	from_subaccount: [] | [Uint8Array];
 	created_at_time: [] | [bigint];
 	amount: bigint;
 }
 export interface TransferArgs {
-	to: Uint8Array | number[];
+	to: Uint8Array;
 	fee: Tokens;
 	memo: bigint;
-	from_subaccount: [] | [Uint8Array | number[]];
+	from_subaccount: [] | [Uint8Array];
 	created_at_time: [] | [Timestamp];
 	amount: Tokens;
 }

@@ -10,9 +10,9 @@ import { formatToDateNumeric } from '$lib/utils/date.utils';
 import { mapIcpTransaction } from '$lib/utils/icp-transactions.utils';
 import { CSV_PICKER_OPTIONS, filenameTimestamp, saveToFileSystem } from '$lib/utils/save.utils';
 import { transactionAmount, transactionMemo } from '$lib/utils/wallet.utils';
-import type { GetAccountIdentifierTransactionsResponse } from '@dfinity/ledger-icp';
-import type { Principal } from '@dfinity/principal';
 import { nonNullish } from '@dfinity/utils';
+import type { GetAccountIdentifierTransactionsResponse } from '@icp-sdk/canisters/ledger/icp';
+import type { Principal } from '@icp-sdk/core/principal';
 import { get } from 'svelte/store';
 
 type TransactionId = string;

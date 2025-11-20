@@ -1,13 +1,8 @@
-import type {
-	Doc,
-	InitUploadResult,
-	_SERVICE as SatelliteActor
-} from '$declarations/satellite/satellite.did';
-import { idlFactory as idlFactorSatellite } from '$declarations/satellite/satellite.factory.did';
-import type { Identity } from '@dfinity/agent';
-import { Ed25519KeyIdentity } from '@dfinity/identity';
+import { idlFactorySatellite, type SatelliteActor, type SatelliteDid } from '$declarations';
 import { PocketIc, type Actor } from '@dfinity/pic';
 import { assertNonNullish, fromNullable, isNullish, nonNullish, toNullable } from '@dfinity/utils';
+import type { Identity } from '@icp-sdk/core/agent';
+import { Ed25519KeyIdentity } from '@icp-sdk/core/identity';
 import { toArray } from '@junobuild/utils';
 import { inject } from 'vitest';
 import { SATELLITE_WASM_PATH, controllersInitArgs } from '../../../utils/setup-tests.utils';
@@ -22,7 +17,7 @@ describe('Satellite > Rate', () => {
 		pic = await PocketIc.create(inject('PIC_URL'));
 
 		const { actor: c } = await pic.setupCanister<SatelliteActor>({
-			idlFactory: idlFactorSatellite,
+			idlFactory: idlFactorySatellite,
 			wasm: SATELLITE_WASM_PATH,
 			arg: controllersInitArgs(controller),
 			sender: controller.getPrincipal()
@@ -35,7 +30,9 @@ describe('Satellite > Rate', () => {
 		await pic?.tearDown();
 	});
 
-	const initDoc = async (collection: string): Promise<{ doc: Doc; user: Identity }> => {
+	const initDoc = async (
+		collection: string
+	): Promise<{ doc: SatelliteDid.Doc; user: Identity }> => {
 		const { set_doc } = actor;
 
 		const user = Ed25519KeyIdentity.generate();
@@ -56,7 +53,7 @@ describe('Satellite > Rate', () => {
 	}: {
 		length: number;
 		collection: string;
-	}): Promise<{ doc: Doc; user: Identity }[]> => {
+	}): Promise<{ doc: SatelliteDid.Doc; user: Identity }[]> => {
 		const keys = Array.from({ length });
 
 		const docs = [];
@@ -230,7 +227,7 @@ describe('Satellite > Rate', () => {
 				});
 			});
 
-			const deleteDocs = async (docs: { doc: Doc; user: Identity }[]) => {
+			const deleteDocs = async (docs: { doc: SatelliteDid.Doc; user: Identity }[]) => {
 				const { del_doc } = actor;
 
 				for (const doc of docs) {
@@ -287,7 +284,9 @@ describe('Satellite > Rate', () => {
 		const collectionType = { Storage: null };
 		const collection = 'test_storage_values';
 
-		const initBatch = async (i: number): Promise<{ batch: InitUploadResult; user: Identity }> => {
+		const initBatch = async (
+			i: number
+		): Promise<{ batch: SatelliteDid.InitUploadResult; user: Identity }> => {
 			const { init_asset_upload } = actor;
 
 			const user = Ed25519KeyIdentity.generate();
@@ -307,7 +306,7 @@ describe('Satellite > Rate', () => {
 
 		const testBatches = async (
 			length: number
-		): Promise<{ batch: InitUploadResult; user: Identity }[]> => {
+		): Promise<{ batch: SatelliteDid.InitUploadResult; user: Identity }[]> => {
 			const keys = Array.from({ length }).map((_, i) => i);
 
 			const batches = [];
@@ -360,7 +359,9 @@ describe('Satellite > Rate', () => {
 				});
 			});
 
-			const testChunks = async (batches: { batch: InitUploadResult; user: Identity }[]) => {
+			const testChunks = async (
+				batches: { batch: SatelliteDid.InitUploadResult; user: Identity }[]
+			) => {
 				const { upload_asset_chunk, commit_asset_upload } = actor;
 
 				for (const batch of batches) {
@@ -368,7 +369,7 @@ describe('Satellite > Rate', () => {
 
 					const chunk = await upload_asset_chunk({
 						batch_id: batch.batch.batch_id,
-						content: [],
+						content: Uint8Array.from([]),
 						order_id: [0n]
 					});
 

@@ -1,5 +1,5 @@
 import { PrincipalTextSchema } from '@dfinity/zod-schemas';
-import * as z from 'zod/v4';
+import * as z from 'zod';
 
 const DateTimeSchema = z.string().refine(
 	(val) => {

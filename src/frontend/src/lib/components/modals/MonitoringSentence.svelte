@@ -1,11 +1,11 @@
 <script lang="ts">
-	import type { CyclesMonitoringStrategy } from '$declarations/mission_control/mission_control.did';
+	import type { MissionControlDid } from '$declarations';
 	import { i18n } from '$lib/stores/i18n.store';
 	import { formatTCycles } from '$lib/utils/cycles.utils';
 	import { i18nFormat } from '$lib/utils/i18n.utils';
 
 	interface Props {
-		monitoringStrategy: CyclesMonitoringStrategy;
+		monitoringStrategy: MissionControlDid.CyclesMonitoringStrategy;
 	}
 
 	let { monitoringStrategy }: Props = $props();

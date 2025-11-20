@@ -1,5 +1,5 @@
 <script lang="ts">
-	import type { Principal } from '@dfinity/principal';
+	import type { Principal } from '@icp-sdk/core/principal';
 	import Canister from '$lib/components/canister/Canister.svelte';
 	import CanisterCyclesBalance from '$lib/components/canister/CanisterCyclesBalance.svelte';
 	import CanisterHealthCheck from '$lib/components/canister/CanisterHealthCheck.svelte';

@@ -15,6 +15,9 @@ pub const JUNO_DATASTORE_ERROR_USER_PROVIDER_INVALID_DATA: &str =
 pub const JUNO_DATASTORE_ERROR_USER_PROVIDER_WEBAUTHN_INVALID_DATA: &str =
     "juno.datastore.error.user.webauthn.provider_webauthn_invalid_data";
 
+pub const JUNO_DATASTORE_ERROR_USER_REGISTER_PROVIDER_INVALID_DATA: &str =
+    "juno.datastore.error.user.register.provider_invalid_data";
+
 // Change limit reached.
 pub const JUNO_DATASTORE_ERROR_USER_USAGE_CHANGE_LIMIT_REACHED: &str =
     "juno.datastore.error.user.usage.change_limit_reached";

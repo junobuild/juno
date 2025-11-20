@@ -12,6 +12,11 @@ type CreateCanisterConfig = record {
   subnet_id : opt principal;
   name : opt text;
 };
+type CreateSatelliteConfig = record {
+  subnet_id : opt principal;
+  storage : opt InitStorageArgs;
+  name : opt text;
+};
 type CyclesBalance = record { timestamp : nat64; amount : nat };
 type CyclesMonitoring = record {
   strategy : opt CyclesMonitoringStrategy;
@@ -58,7 +63,9 @@ type GetMonitoringHistory = record {
   from : opt nat64;
   segment_id : principal;
 };
-type MissionControlArgs = record { user : principal };
+type InitMissionControlArgs = record { user : principal };
+type InitStorageArgs = record { system_memory : opt InitStorageMemory };
+type InitStorageMemory = variant { Heap; Stable };
 type MissionControlSettings = record {
   updated_at : nat64;
   created_at : nat64;
@@ -152,13 +159,13 @@ type User = record {
   created_at : nat64;
   config : opt Config;
 };
-service : (MissionControlArgs) -> {
+service : (InitMissionControlArgs) -> {
   add_mission_control_controllers : (vec principal) -> ();
   add_satellites_controllers : (vec principal, vec principal) -> ();
   create_orbiter : (opt text) -> (Orbiter);
   create_orbiter_with_config : (CreateCanisterConfig) -> (Orbiter);
   create_satellite : (text) -> (Satellite);
-  create_satellite_with_config : (CreateCanisterConfig) -> (Satellite);
+  create_satellite_with_config : (CreateSatelliteConfig) -> (Satellite);
   del_mission_control_controllers : (vec principal) -> ();
   del_orbiter : (principal, nat) -> ();
   del_orbiters_controllers : (vec principal, vec principal) -> ();

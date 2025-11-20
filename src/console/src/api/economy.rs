@@ -11,6 +11,7 @@ use ic_cdk::trap;
 use ic_cdk_macros::{query, update};
 use ic_ledger_types::Tokens;
 use junobuild_shared::ic::api::caller;
+use junobuild_shared::ic::UnwrapOrTrap;
 use junobuild_shared::types::interface::GetCreateCanisterFeeArgs;
 use junobuild_shared::types::state::{SegmentKind, UserId};
 
@@ -23,12 +24,12 @@ fn list_payments() -> Payments {
 fn get_credits() -> Tokens {
     let caller = caller();
 
-    get_credits_store(&caller).unwrap_or_else(|e| trap(e))
+    get_credits_store(&caller).unwrap_or_trap()
 }
 
 #[update(guard = "caller_is_admin_controller")]
 fn add_credits(user: UserId, credits: Tokens) {
-    add_credits_store(&user, &credits).unwrap_or_else(|e| trap(e));
+    add_credits_store(&user, &credits).unwrap_or_trap();
 }
 
 #[query]

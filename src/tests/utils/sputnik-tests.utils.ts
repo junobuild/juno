@@ -1,7 +1,7 @@
-import type { _SERVICE as SputnikActor } from '$declarations/sputnik/sputnik.did';
-import { Ed25519KeyIdentity } from '@dfinity/identity';
+import type { SputnikActor } from '$declarations';
 import type { Actor } from '@dfinity/pic';
 import { toNullable } from '@dfinity/utils';
+import { Ed25519KeyIdentity } from '@icp-sdk/core/identity';
 import { toArray } from '@junobuild/utils';
 import { nanoid } from 'nanoid';
 import { mockSetRule } from '../mocks/collection.mocks';
@@ -12,7 +12,7 @@ import {
 	mockSputnikVersionKey
 } from '../mocks/sputnik.mocks';
 import type { SetupFixtureCanister } from './fixtures-tests.utils';
-import { fetchLogs, type IcMgmtLog } from './mgmt-tests.utils';
+import { type IcMgmtLog, fetchLogs } from './mgmt-tests.utils';
 import { tick } from './pic-tests.utils';
 import { createDoc as createDocUtils } from './satellite-doc-tests.utils';
 import { waitServerlessFunction } from './satellite-extended-tests.utils';

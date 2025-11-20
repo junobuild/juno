@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { fromNullable, isNullish, nonNullish, fromNullishNullable } from '@dfinity/utils';
 	import { getContext } from 'svelte';
-	import type { RateConfig, Rule, CollectionType } from '$declarations/satellite/satellite.did';
+	import type { SatelliteDid } from '$declarations';
 	import CollectionDelete from '$lib/components/collections/CollectionDelete.svelte';
 	import Checkbox from '$lib/components/ui/Checkbox.svelte';
 	import Collapsible from '$lib/components/ui/Collapsible.svelte';
@@ -26,7 +26,7 @@
 	const { store, reload }: RulesContext = getContext<RulesContext>(RULES_CONTEXT_KEY);
 
 	interface Props {
-		type: CollectionType;
+		type: SatelliteDid.CollectionType;
 		oncancel: () => void;
 		onsuccess: () => void;
 	}
@@ -44,7 +44,7 @@
 	});
 
 	// eslint-disable-next-line svelte/prefer-writable-derived
-	let rule: Rule | undefined = $state(undefined);
+	let rule: SatelliteDid.Rule | undefined = $state(undefined);
 	$effect(() => {
 		rule = $store.rule?.[1] ?? undefined;
 	});
@@ -64,7 +64,7 @@
 	});
 
 	// Before the introduction of the stable memory, the memory used was "Heap". That's why we fallback for display purpose on Stable only if new to support old satellites
-	const initMemory = (rule: Rule | undefined): MemoryText =>
+	const initMemory = (rule: SatelliteDid.Rule | undefined): MemoryText =>
 		memoryToText(
 			fromNullishNullable(rule?.memory) ?? (isNullish(rule) ? MemoryStable : MemoryHeap)
 		);
@@ -76,7 +76,7 @@
 
 	let currentImmutable: boolean | undefined = $state();
 	let immutable: boolean | undefined = $state();
-	const initMutable = (initialRule: Rule | undefined) => {
+	const initMutable = (initialRule: SatelliteDid.Rule | undefined) => {
 		currentImmutable = !(fromNullishNullable(initialRule?.mutable_permissions) ?? true);
 		immutable = currentImmutable;
 	};
@@ -90,7 +90,7 @@
 	$effect(() => initMaxSize(rule?.max_size ?? []));
 
 	let maxTokens: number | undefined = $state();
-	const initRateTokens = (rate_config: [] | [RateConfig]) => {
+	const initRateTokens = (rate_config: [] | [SatelliteDid.RateConfig]) => {
 		const tmp = fromNullable(rate_config)?.max_tokens;
 		maxTokens = nonNullish(tmp) ? Number(tmp) : undefined;
 	};

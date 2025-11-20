@@ -1,8 +1,4 @@
-import type {
-	AnalyticsBrowsersPageViews,
-	AnalyticsDevicesPageViews,
-	AnalyticsOperatingSystemsPageViews
-} from '$declarations/orbiter/orbiter.did';
+import type { OrbiterDid } from '$declarations';
 import { getAnalyticsPageViews } from '$lib/services/orbiter/_orbiter.services';
 import type {
 	AnalyticsMetrics,
@@ -212,7 +208,7 @@ const aggregateClients = ({
 
 	const { mobile, tablet, laptop, desktop, others } = devices;
 
-	const resultDevices: AnalyticsDevicesPageViews = {
+	const resultDevices: OrbiterDid.AnalyticsDevicesPageViews = {
 		mobile,
 		tablet: toNullable(tablet > 0 ? tablet : undefined),
 		laptop: toNullable(laptop > 0 ? laptop : undefined),
@@ -223,9 +219,9 @@ const aggregateClients = ({
 	return {
 		clients: {
 			operating_systems: withOperatingSystems
-				? (operating_systems as unknown as AnalyticsOperatingSystemsPageViews)
+				? (operating_systems as unknown as OrbiterDid.AnalyticsOperatingSystemsPageViews)
 				: undefined,
-			browsers: browsers as unknown as AnalyticsBrowsersPageViews,
+			browsers: browsers as unknown as OrbiterDid.AnalyticsBrowsersPageViews,
 			devices: resultDevices
 		}
 	};

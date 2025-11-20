@@ -139,18 +139,43 @@ pub mod interface {
     }
 
     #[derive(CandidType, Deserialize)]
+    pub struct CreateSatelliteArgs {
+        pub user: UserId,
+        pub block_index: Option<BlockIndex>,
+        pub subnet_id: Option<SubnetId>,
+        pub storage: Option<InitStorageArgs>,
+    }
+
+    #[derive(CandidType, Deserialize)]
     pub struct GetCreateCanisterFeeArgs {
         pub user: UserId,
     }
 
     #[derive(CandidType, Deserialize)]
-    pub struct MissionControlArgs {
+    pub struct InitMissionControlArgs {
         pub user: UserId,
     }
 
     #[derive(CandidType, Deserialize)]
-    pub struct SegmentArgs {
+    pub struct InitOrbiterArgs {
         pub controllers: Vec<ControllerId>,
+    }
+
+    #[derive(CandidType, Deserialize)]
+    pub struct InitSatelliteArgs {
+        pub controllers: Vec<ControllerId>,
+        pub storage: Option<InitStorageArgs>,
+    }
+
+    #[derive(CandidType, Serialize, Deserialize, Clone)]
+    pub struct InitStorageArgs {
+        pub system_memory: Option<InitStorageMemory>,
+    }
+
+    #[derive(CandidType, Serialize, Deserialize, Clone)]
+    pub enum InitStorageMemory {
+        Heap,
+        Stable,
     }
 
     #[derive(CandidType, Deserialize, Clone)]
@@ -201,7 +226,7 @@ pub mod utils {
     use candid::CandidType;
     use serde::Deserialize;
 
-    #[derive(Default, CandidType, Deserialize, Clone, PartialEq, Eq, Hash)]
+    #[derive(Default, CandidType, Deserialize, Clone, PartialEq, Eq, Hash, Debug)]
     pub struct CalendarDate {
         pub year: i32,
         pub month: u8,

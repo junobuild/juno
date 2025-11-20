@@ -1,9 +1,8 @@
-import type { _SERVICE as SatelliteActor_0_0_16 } from '$declarations/deprecated/satellite-0-0-16.did';
-import { idlFactory as idlFactorSatellite_0_0_16 } from '$declarations/deprecated/satellite-0-0-16.factory.did';
-import { Ed25519KeyIdentity } from '@dfinity/identity';
+import { idlFactorySatellite0016, type SatelliteActor0016 } from '$declarations';
 import { PocketIc, type Actor } from '@dfinity/pic';
-import type { Principal } from '@dfinity/principal';
 import { toNullable } from '@dfinity/utils';
+import { Ed25519KeyIdentity } from '@icp-sdk/core/identity';
+import type { Principal } from '@icp-sdk/core/principal';
 import { inject } from 'vitest';
 import {
 	initUsers,
@@ -23,15 +22,15 @@ describe('Satellite > Upgrade > v0.0.15 -> v0.0.16', () => {
 	});
 
 	describe('v0.0.15 -> v0.0.16', () => {
-		let actor: Actor<SatelliteActor_0_0_16>;
+		let actor: Actor<SatelliteActor0016>;
 
 		beforeEach(async () => {
 			pic = await PocketIc.create(inject('PIC_URL'));
 
 			const destination = await downloadSatellite('0.0.15');
 
-			const { actor: c, canisterId: cId } = await pic.setupCanister<SatelliteActor_0_0_16>({
-				idlFactory: idlFactorSatellite_0_0_16,
+			const { actor: c, canisterId: cId } = await pic.setupCanister<SatelliteActor0016>({
+				idlFactory: idlFactorySatellite0016,
 				wasm: destination,
 				arg: controllersInitArgs(controller),
 				sender: controller.getPrincipal()
@@ -93,15 +92,15 @@ describe('Satellite > Upgrade > v0.0.15 -> v0.0.16', () => {
 	});
 
 	describe('v0.0.16 -> v0.0.16', () => {
-		let actor: Actor<SatelliteActor_0_0_16>;
+		let actor: Actor<SatelliteActor0016>;
 
 		beforeEach(async () => {
 			pic = await PocketIc.create(inject('PIC_URL'));
 
 			const destination = await downloadSatellite('0.0.16');
 
-			const { actor: c, canisterId: cId } = await pic.setupCanister<SatelliteActor_0_0_16>({
-				idlFactory: idlFactorSatellite_0_0_16,
+			const { actor: c, canisterId: cId } = await pic.setupCanister<SatelliteActor0016>({
+				idlFactory: idlFactorySatellite0016,
 				wasm: destination,
 				arg: controllersInitArgs(controller),
 				sender: controller.getPrincipal()

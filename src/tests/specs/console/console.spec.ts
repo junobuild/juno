@@ -1,7 +1,6 @@
-import type { _SERVICE as ConsoleActor } from '$declarations/console/console.did';
-import { idlFactory as idlFactorConsole } from '$declarations/console/console.factory.did';
-import { Ed25519KeyIdentity } from '@dfinity/identity';
+import { idlFactoryConsole, type ConsoleActor } from '$declarations';
 import { PocketIc, type Actor } from '@dfinity/pic';
+import { Ed25519KeyIdentity } from '@icp-sdk/core/identity';
 import { inject } from 'vitest';
 import { deploySegments, initMissionControls } from '../../utils/console-tests.utils';
 import { CONSOLE_WASM_PATH } from '../../utils/setup-tests.utils';
@@ -16,7 +15,7 @@ describe('Console', () => {
 		pic = await PocketIc.create(inject('PIC_URL'));
 
 		const { actor: c } = await pic.setupCanister<ConsoleActor>({
-			idlFactory: idlFactorConsole,
+			idlFactory: idlFactoryConsole,
 			wasm: CONSOLE_WASM_PATH,
 			sender: controller.getPrincipal()
 		});
@@ -24,7 +23,7 @@ describe('Console', () => {
 		actor = c;
 		actor.setIdentity(controller);
 
-		await deploySegments(actor);
+		await deploySegments({ actor });
 	});
 
 	afterEach(async () => {

@@ -1,11 +1,7 @@
-import type {
-	_SERVICE as OrbiterActor,
-	OrbiterSatelliteFeatures
-} from '$declarations/orbiter/orbiter.did';
-import { idlFactory as idlFactorOrbiter } from '$declarations/orbiter/orbiter.factory.did';
-import { Ed25519KeyIdentity } from '@dfinity/identity';
+import { type OrbiterActor, type OrbiterDid, idlFactoryOrbiter } from '$declarations';
 import { type Actor, PocketIc } from '@dfinity/pic';
 import { toNullable } from '@dfinity/utils';
+import { Ed25519KeyIdentity } from '@icp-sdk/core/identity';
 import { nanoid } from 'nanoid';
 import { inject } from 'vitest';
 import { pageViewMock, satelliteIdMock } from '../../mocks/orbiter.mocks';
@@ -21,7 +17,7 @@ describe('Orbiter > Assertions > Page Views', () => {
 		pic = await PocketIc.create(inject('PIC_URL'));
 
 		const { actor: c } = await pic.setupCanister<OrbiterActor>({
-			idlFactory: idlFactorOrbiter,
+			idlFactory: idlFactoryOrbiter,
 			wasm: ORBITER_WASM_PATH,
 			arg: controllersInitArgs(controller),
 			sender: controller.getPrincipal()
@@ -30,7 +26,7 @@ describe('Orbiter > Assertions > Page Views', () => {
 		actor = c;
 		actor.setIdentity(controller);
 
-		const allFeatures: OrbiterSatelliteFeatures = {
+		const allFeatures: OrbiterDid.OrbiterSatelliteFeatures = {
 			page_views: true,
 			performance_metrics: true,
 			track_events: true

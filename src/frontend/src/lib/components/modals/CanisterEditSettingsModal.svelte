@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { Principal } from '@dfinity/principal';
+	import { Principal } from '@icp-sdk/core/principal';
 	import { onMount } from 'svelte';
 	import Html from '$lib/components/ui/Html.svelte';
 	import Input from '$lib/components/ui/Input.svelte';
@@ -172,12 +172,12 @@
 							/>
 						{:else}
 							<select name="freezingThreshold" bind:value={freezingThreshold}>
-								<option value={ONE_MONTH}> {$i18n.canisters.a_month} </option>
-								<option value={THREE_MONTHS}> {$i18n.canisters.three_months} </option>
-								<option value={SIX_MONTHS}> {$i18n.canisters.six_months} </option>
-								<option value={ONE_YEAR}> {$i18n.canisters.a_year} </option>
-								<option value={TWO_YEARS}> {$i18n.canisters.two_years} </option>
-								<option value={FIVE_YEARS}> {$i18n.canisters.five_years} </option>
+								<option value={ONE_MONTH}> {$i18n.core.a_month} </option>
+								<option value={THREE_MONTHS}> {$i18n.core.three_months} </option>
+								<option value={SIX_MONTHS}> {$i18n.core.six_months} </option>
+								<option value={ONE_YEAR}> {$i18n.core.a_year} </option>
+								<option value={TWO_YEARS}> {$i18n.core.two_years} </option>
+								<option value={FIVE_YEARS}> {$i18n.core.five_years} </option>
 							</select>
 						{/if}
 					</Value>

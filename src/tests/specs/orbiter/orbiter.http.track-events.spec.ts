@@ -1,12 +1,7 @@
-import type {
-	_SERVICE as OrbiterActor,
-	OrbiterSatelliteFeatures
-} from '$declarations/orbiter/orbiter.did';
-import { idlFactory as idlFactorOrbiter } from '$declarations/orbiter/orbiter.factory.did';
-import type { HttpRequest } from '$declarations/satellite/satellite.did';
-import { Ed25519KeyIdentity } from '@dfinity/identity';
+import { idlFactoryOrbiter, type OrbiterActor, type OrbiterDid } from '$declarations';
 import { type Actor, PocketIc } from '@dfinity/pic';
 import { fromNullable, jsonReviver, toNullable } from '@dfinity/utils';
+import { Ed25519KeyIdentity } from '@icp-sdk/core/identity';
 import { nanoid } from 'nanoid';
 import { inject } from 'vitest';
 import {
@@ -39,7 +34,7 @@ describe('Orbiter > HTTP > Track events', () => {
 		await pic.setTime(currentDate.getTime());
 
 		const { actor: c } = await pic.setupCanister<OrbiterActor>({
-			idlFactory: idlFactorOrbiter,
+			idlFactory: idlFactoryOrbiter,
 			wasm: ORBITER_WASM_PATH,
 			arg: controllersInitArgs(controller),
 			sender: controller.getPrincipal()
@@ -79,7 +74,7 @@ describe('Orbiter > HTTP > Track events', () => {
 		beforeAll(async () => {
 			actor.setIdentity(controller);
 
-			const allFeatures: OrbiterSatelliteFeatures = {
+			const allFeatures: OrbiterDid.OrbiterSatelliteFeatures = {
 				page_views: true,
 				performance_metrics: true,
 				track_events: true
@@ -112,7 +107,7 @@ describe('Orbiter > HTTP > Track events', () => {
 				it('should upgrade http_request', async () => {
 					const { http_request } = actor;
 
-					const request: HttpRequest = {
+					const request: OrbiterDid.HttpRequest = {
 						body,
 						certificate_version: toNullable(2),
 						headers: userAgentHeadersMock,
@@ -128,7 +123,7 @@ describe('Orbiter > HTTP > Track events', () => {
 				it.each(NON_POST_METHODS)('should not upgrade http_request for %s', async (method) => {
 					const { http_request } = actor;
 
-					const request: HttpRequest = {
+					const request: OrbiterDid.HttpRequest = {
 						body,
 						certificate_version: toNullable(2),
 						headers: userAgentHeadersMock,
@@ -151,7 +146,7 @@ describe('Orbiter > HTTP > Track events', () => {
 				it.each(invalidPayloads)('should upgrade http_request for %s', async (_title, payload) => {
 					const { http_request } = actor;
 
-					const request: HttpRequest = {
+					const request: OrbiterDid.HttpRequest = {
 						body: toBodyJson(payload),
 						certificate_version: toNullable(2),
 						headers: userAgentHeadersMock,
@@ -167,7 +162,7 @@ describe('Orbiter > HTTP > Track events', () => {
 				it('should return a bad request for invalid type', async () => {
 					const { http_request_update } = actor;
 
-					const request: HttpRequest = {
+					const request: OrbiterDid.HttpRequest = {
 						body: toBodyJson(invalidPayloads[0][1]),
 						certificate_version: toNullable(2),
 						headers: userAgentHeadersMock,
@@ -180,7 +175,7 @@ describe('Orbiter > HTTP > Track events', () => {
 					expect(response.status_code).toEqual(400);
 
 					const decoder = new TextDecoder();
-					const responseBody = decoder.decode(response.body as Uint8Array<ArrayBufferLike>);
+					const responseBody = decoder.decode(response.body);
 
 					const {
 						err: { message }
@@ -192,7 +187,7 @@ describe('Orbiter > HTTP > Track events', () => {
 				it('should return a bad request for missing field', async () => {
 					const { http_request_update } = actor;
 
-					const request: HttpRequest = {
+					const request: OrbiterDid.HttpRequest = {
 						body: toBodyJson(invalidPayloads[1][1]),
 						certificate_version: toNullable(2),
 						headers: userAgentHeadersMock,
@@ -205,7 +200,7 @@ describe('Orbiter > HTTP > Track events', () => {
 					expect(response.status_code).toEqual(400);
 
 					const decoder = new TextDecoder();
-					const responseBody = decoder.decode(response.body as Uint8Array<ArrayBufferLike>);
+					const responseBody = decoder.decode(response.body);
 
 					const {
 						err: { message }
@@ -217,7 +212,7 @@ describe('Orbiter > HTTP > Track events', () => {
 				it('should return forbidden for unknown satellite', async () => {
 					const { http_request_update } = actor;
 
-					const request: HttpRequest = {
+					const request: OrbiterDid.HttpRequest = {
 						body: toBodyJson(invalidPayloads[2][1]),
 						certificate_version: toNullable(2),
 						headers: userAgentHeadersMock,
@@ -230,7 +225,7 @@ describe('Orbiter > HTTP > Track events', () => {
 					expect(response.status_code).toEqual(403);
 
 					const decoder = new TextDecoder();
-					const responseBody = decoder.decode(response.body as Uint8Array<ArrayBufferLike>);
+					const responseBody = decoder.decode(response.body);
 
 					const {
 						err: { message }
@@ -242,7 +237,7 @@ describe('Orbiter > HTTP > Track events', () => {
 				it('should not set a track event with invalid satellite id', async () => {
 					const { http_request_update } = actor;
 
-					const request: HttpRequest = {
+					const request: OrbiterDid.HttpRequest = {
 						body: toBodyJson({
 							...trackEvent,
 							satellite_id: satelliteIdMock // Should be principal as text
@@ -258,7 +253,7 @@ describe('Orbiter > HTTP > Track events', () => {
 					expect(response.status_code).toEqual(400);
 
 					const decoder = new TextDecoder();
-					const responseBody = decoder.decode(response.body as Uint8Array<ArrayBufferLike>);
+					const responseBody = decoder.decode(response.body);
 
 					const {
 						err: { message }
@@ -270,7 +265,7 @@ describe('Orbiter > HTTP > Track events', () => {
 				it('should set a track event', async () => {
 					const { http_request_update } = actor;
 
-					const request: HttpRequest = {
+					const request: OrbiterDid.HttpRequest = {
 						body,
 						certificate_version: toNullable(2),
 						headers: userAgentHeadersMock,
@@ -283,7 +278,7 @@ describe('Orbiter > HTTP > Track events', () => {
 					expect(response.status_code).toEqual(200);
 
 					const decoder = new TextDecoder();
-					const responseBody = decoder.decode(response.body as Uint8Array<ArrayBufferLike>);
+					const responseBody = decoder.decode(response.body);
 
 					const {
 						ok: { data }
@@ -303,7 +298,7 @@ describe('Orbiter > HTTP > Track events', () => {
 				it('should fail at updating track event without version', async () => {
 					const { http_request_update } = actor;
 
-					const request: HttpRequest = {
+					const request: OrbiterDid.HttpRequest = {
 						body,
 						certificate_version: toNullable(2),
 						headers: userAgentHeadersMock,
@@ -314,7 +309,7 @@ describe('Orbiter > HTTP > Track events', () => {
 					const response = await http_request_update(request);
 
 					const decoder = new TextDecoder();
-					const responseBody = decoder.decode(response.body as Uint8Array<ArrayBufferLike>);
+					const responseBody = decoder.decode(response.body);
 
 					const result = JSON.parse(responseBody, jsonReviver);
 
@@ -324,7 +319,7 @@ describe('Orbiter > HTTP > Track events', () => {
 				it('should update a track event', async () => {
 					const { http_request_update } = actor;
 
-					const request: HttpRequest = {
+					const request: OrbiterDid.HttpRequest = {
 						body: toBodyJson({
 							...trackEvent,
 							track_event: {
@@ -341,7 +336,7 @@ describe('Orbiter > HTTP > Track events', () => {
 					const response = await http_request_update(request);
 
 					const decoder = new TextDecoder();
-					const responseBody = decoder.decode(response.body as Uint8Array<ArrayBufferLike>);
+					const responseBody = decoder.decode(response.body);
 
 					const {
 						ok: { data }
@@ -359,7 +354,7 @@ describe('Orbiter > HTTP > Track events', () => {
 				it('should upgrade http_request', async () => {
 					const { http_request } = actor;
 
-					const request: HttpRequest = {
+					const request: OrbiterDid.HttpRequest = {
 						body,
 						certificate_version: toNullable(2),
 						headers: userAgentHeadersMock,
@@ -375,7 +370,7 @@ describe('Orbiter > HTTP > Track events', () => {
 				it.each(NON_POST_METHODS)('should not upgrade http_request for %s', async (method) => {
 					const { http_request } = actor;
 
-					const request: HttpRequest = {
+					const request: OrbiterDid.HttpRequest = {
 						body,
 						certificate_version: toNullable(2),
 						headers: userAgentHeadersMock,
@@ -409,7 +404,7 @@ describe('Orbiter > HTTP > Track events', () => {
 				it.each(invalidPayloads)('should upgrade http_request for %s', async (_title, payload) => {
 					const { http_request } = actor;
 
-					const request: HttpRequest = {
+					const request: OrbiterDid.HttpRequest = {
 						body: toBodyJson(payload),
 						certificate_version: toNullable(2),
 						headers: userAgentHeadersMock,
@@ -425,7 +420,7 @@ describe('Orbiter > HTTP > Track events', () => {
 				it('should return a bad request for invalid type', async () => {
 					const { http_request_update } = actor;
 
-					const request: HttpRequest = {
+					const request: OrbiterDid.HttpRequest = {
 						body: toBodyJson(invalidPayloads[0][1]),
 						certificate_version: toNullable(2),
 						headers: userAgentHeadersMock,
@@ -438,7 +433,7 @@ describe('Orbiter > HTTP > Track events', () => {
 					expect(response.status_code).toEqual(400);
 
 					const decoder = new TextDecoder();
-					const responseBody = decoder.decode(response.body as Uint8Array<ArrayBufferLike>);
+					const responseBody = decoder.decode(response.body);
 
 					const {
 						err: { message }
@@ -450,7 +445,7 @@ describe('Orbiter > HTTP > Track events', () => {
 				it('should return ok for empty payload', async () => {
 					const { http_request_update } = actor;
 
-					const request: HttpRequest = {
+					const request: OrbiterDid.HttpRequest = {
 						body: toBodyJson(invalidPayloads[1][1]),
 						certificate_version: toNullable(2),
 						headers: userAgentHeadersMock,
@@ -466,7 +461,7 @@ describe('Orbiter > HTTP > Track events', () => {
 				it('should return forbidden for unknown satellite', async () => {
 					const { http_request_update } = actor;
 
-					const request: HttpRequest = {
+					const request: OrbiterDid.HttpRequest = {
 						body: toBodyJson(invalidPayloads[2][1]),
 						certificate_version: toNullable(2),
 						headers: userAgentHeadersMock,
@@ -479,7 +474,7 @@ describe('Orbiter > HTTP > Track events', () => {
 					expect(response.status_code).toEqual(403);
 
 					const decoder = new TextDecoder();
-					const responseBody = decoder.decode(response.body as Uint8Array<ArrayBufferLike>);
+					const responseBody = decoder.decode(response.body);
 
 					const {
 						err: { message }
@@ -491,7 +486,7 @@ describe('Orbiter > HTTP > Track events', () => {
 				it('should not set track events with invalid satellite id', async () => {
 					const { http_request_update } = actor;
 
-					const request: HttpRequest = {
+					const request: OrbiterDid.HttpRequest = {
 						body: toBodyJson({
 							track_events: [
 								{
@@ -515,7 +510,7 @@ describe('Orbiter > HTTP > Track events', () => {
 				it('should set track events', async () => {
 					const { http_request_update } = actor;
 
-					const request: HttpRequest = {
+					const request: OrbiterDid.HttpRequest = {
 						body,
 						certificate_version: toNullable(2),
 						headers: userAgentHeadersMock,
@@ -528,7 +523,7 @@ describe('Orbiter > HTTP > Track events', () => {
 					expect(response.status_code).toEqual(200);
 
 					const decoder = new TextDecoder();
-					const responseBody = decoder.decode(response.body as Uint8Array<ArrayBufferLike>);
+					const responseBody = decoder.decode(response.body);
 
 					const result = JSON.parse(responseBody, jsonReviver);
 
@@ -538,7 +533,7 @@ describe('Orbiter > HTTP > Track events', () => {
 				it('should fail at updating track events without version', async () => {
 					const { http_request_update } = actor;
 
-					const request: HttpRequest = {
+					const request: OrbiterDid.HttpRequest = {
 						body,
 						certificate_version: toNullable(2),
 						headers: userAgentHeadersMock,
@@ -549,7 +544,7 @@ describe('Orbiter > HTTP > Track events', () => {
 					const response = await http_request_update(request);
 
 					const decoder = new TextDecoder();
-					const responseBody = decoder.decode(response.body as Uint8Array<ArrayBufferLike>);
+					const responseBody = decoder.decode(response.body);
 
 					const result = JSON.parse(responseBody, jsonReviver);
 
@@ -566,7 +561,7 @@ describe('Orbiter > HTTP > Track events', () => {
 				it('should update track events', async () => {
 					const { http_request_update } = actor;
 
-					const request: HttpRequest = {
+					const request: OrbiterDid.HttpRequest = {
 						body: toBodyJson({
 							...trackEvents,
 							track_events: trackEvents.track_events.map((trackEvent) => ({
@@ -586,7 +581,7 @@ describe('Orbiter > HTTP > Track events', () => {
 					const response = await http_request_update(request);
 
 					const decoder = new TextDecoder();
-					const responseBody = decoder.decode(response.body as Uint8Array<ArrayBufferLike>);
+					const responseBody = decoder.decode(response.body);
 
 					const result = JSON.parse(responseBody, jsonReviver);
 

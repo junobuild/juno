@@ -1,6 +1,6 @@
 import { resetSnapshots } from '$lib/services/snapshots.services';
 import { resetSubnets } from '$lib/services/subnets.services';
-import { authStore, type AuthSignInParams } from '$lib/stores/auth.store';
+import { authStore } from '$lib/stores/auth.store';
 import { busy } from '$lib/stores/busy.store';
 import { i18n } from '$lib/stores/i18n.store';
 import {
@@ -19,14 +19,16 @@ import { replaceHistory } from '$lib/utils/route.utils';
 import { isNullish } from '@dfinity/utils';
 import { clear } from 'idb-keyval';
 import { get } from 'svelte/store';
+import { signInWithII as signInWithIIFn } from './_internet-identity.services';
 
-export const signIn = async (
-	params: AuthSignInParams
-): Promise<{ success: 'ok' | 'cancelled' | 'error'; err?: unknown }> => {
+export const signInWithII = async (): Promise<{
+	success: 'ok' | 'cancelled' | 'error';
+	err?: unknown;
+}> => {
 	busy.show();
 
 	try {
-		await authStore.signIn(params);
+		await authStore.signInWithII({ signInFn: signInWithIIFn });
 
 		return { success: 'ok' };
 	} catch (err: unknown) {

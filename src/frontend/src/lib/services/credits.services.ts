@@ -2,7 +2,7 @@ import { getCredits } from '$lib/api/console.api';
 import { loadDataStore } from '$lib/services/loader.services';
 import { creditsUncertifiedStore } from '$lib/stores/credits.store';
 import type { OptionIdentity } from '$lib/types/itentity';
-import type { Identity } from '@dfinity/agent';
+import type { Identity } from '@icp-sdk/core/agent';
 
 export const loadCredits = async ({
 	identity,

@@ -6,8 +6,8 @@ use junobuild_macros::{
     on_delete_doc, on_init_random_seed, on_init_sync, on_post_upgrade_sync, on_set_doc,
 };
 use junobuild_satellite::{
-    error, id, include_satellite, info, random, set_doc_store, warn_with_data, OnDeleteDocContext,
-    OnSetDocContext, SetDoc,
+    caller, error, id, include_satellite, info, random, set_doc_store, warn_with_data,
+    OnDeleteDocContext, OnSetDocContext, SetDoc,
 };
 use junobuild_utils::{
     decode_doc_data, encode_doc_data, DocDataBigInt, DocDataPrincipal, DocDataUint8Array,
@@ -25,6 +25,7 @@ struct MockData {
 fn on_set_doc(context: OnSetDocContext) -> Result<(), String> {
     info("Hello world".to_string())?;
 
+    #[allow(clippy::single_match)]
     match context.data.collection.as_str() {
         "test_utils" => {
             let data = decode_doc_data::<MockData>(&context.data.data.after.data)?;
@@ -53,7 +54,7 @@ fn on_set_doc(context: OnSetDocContext) -> Result<(), String> {
             let doc: SetDoc = SetDoc {
                 data: encode_doc_data(&update_data)?,
                 description: None,
-                version: context.data.data.after.version.clone(),
+                version: context.data.data.after.version,
             };
 
             let _ = set_doc_store(id(), "test_utils".to_string(), context.data.key, doc)?;
@@ -93,6 +94,11 @@ fn on_init_random_seed() -> Result<(), String> {
 #[update]
 fn get_random() -> Result<i32, String> {
     random()
+}
+
+#[update]
+fn whoami() -> Principal {
+    caller()
 }
 
 include_satellite!();

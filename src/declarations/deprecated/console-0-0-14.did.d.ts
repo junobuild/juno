@@ -1,6 +1,6 @@
-import type { ActorMethod } from '@dfinity/agent';
-import type { IDL } from '@dfinity/candid';
-import type { Principal } from '@dfinity/principal';
+import type { ActorMethod } from '@icp-sdk/core/agent';
+import type { IDL } from '@icp-sdk/core/candid';
+import type { Principal } from '@icp-sdk/core/principal';
 
 export interface AssertMissionControlCenterArgs {
 	mission_control_id: Principal;
@@ -8,7 +8,7 @@ export interface AssertMissionControlCenterArgs {
 }
 export interface AssetEncodingNoContent {
 	modified: bigint;
-	sha256: Uint8Array | number[];
+	sha256: Uint8Array;
 	total_length: bigint;
 }
 export interface AssetKey {
@@ -36,7 +36,7 @@ export interface CommitBatch {
 	chunk_ids: Array<bigint>;
 }
 export interface CommitProposal {
-	sha256: Uint8Array | number[];
+	sha256: Uint8Array;
 	proposal_id: bigint;
 }
 export interface Config {
@@ -70,12 +70,12 @@ export interface GetCreateCanisterFeeArgs {
 export interface HttpRequest {
 	url: string;
 	method: string;
-	body: Uint8Array | number[];
+	body: Uint8Array;
 	headers: Array<[string, string]>;
 	certificate_version: [] | [number];
 }
 export interface HttpResponse {
-	body: Uint8Array | number[];
+	body: Uint8Array;
 	headers: Array<[string, string]>;
 	streaming_strategy: [] | [StreamingStrategy];
 	status_code: number;
@@ -139,7 +139,7 @@ export type PaymentStatus = { Refunded: null } | { Acknowledged: null } | { Comp
 export interface Proposal {
 	status: ProposalStatus;
 	updated_at: bigint;
-	sha256: [] | [Uint8Array | number[]];
+	sha256: [] | [Uint8Array];
 	executed_at: [] | [bigint];
 	owner: Principal;
 	created_at: bigint;
@@ -191,12 +191,12 @@ export interface StorageConfigRedirect {
 }
 export interface StreamingCallbackHttpResponse {
 	token: [] | [StreamingCallbackToken];
-	body: Uint8Array | number[];
+	body: Uint8Array;
 }
 export interface StreamingCallbackToken {
 	memory: Memory;
 	token: [] | [string];
-	sha256: [] | [Uint8Array | number[]];
+	sha256: [] | [Uint8Array];
 	headers: Array<[string, string]>;
 	index: bigint;
 	encoding_type: string;
@@ -217,7 +217,7 @@ export interface Tokens {
 	e8s: bigint;
 }
 export interface UploadChunk {
-	content: Uint8Array | number[];
+	content: Uint8Array;
 	batch_id: bigint;
 	order_id: [] | [bigint];
 }

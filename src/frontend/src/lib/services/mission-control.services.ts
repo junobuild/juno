@@ -1,8 +1,4 @@
-import type {
-	MissionControlSettings,
-	Satellite,
-	User
-} from '$declarations/mission_control/mission_control.did';
+import type { MissionControlDid } from '$declarations';
 import {
 	addMissionControlController,
 	addSatellitesController,
@@ -55,13 +51,13 @@ import type { SatelliteUiMetadata } from '$lib/types/satellite';
 import type { Option } from '$lib/types/utils';
 import { isNotValidEmail } from '$lib/utils/email.utils';
 import { container } from '$lib/utils/juno.utils';
-import type { Identity } from '@dfinity/agent';
-import type { Principal } from '@dfinity/principal';
 import { fromNullable, isEmptyString, isNullish, notEmptyString } from '@dfinity/utils';
+import type { Identity } from '@icp-sdk/core/agent';
+import type { Principal } from '@icp-sdk/core/principal';
 import { missionControlVersion, satelliteVersion } from '@junobuild/admin';
 import { compare } from 'semver';
 import { get } from 'svelte/store';
-import * as z from 'zod/v4';
+import * as z from 'zod';
 
 export const setMissionControlControllerForVersion = async ({
 	missionControlId,
@@ -191,7 +187,7 @@ export const setSatelliteMetadata = async ({
 	metadata
 }: {
 	missionControlId: MissionControlId;
-	satellite: Satellite;
+	satellite: MissionControlDid.Satellite;
 	metadata: SatelliteUiMetadata;
 }): Promise<{ success: boolean }> => {
 	const { error, success, data } = SatelliteUiMetadataSchema.safeParse(metadata);
@@ -328,7 +324,9 @@ export const loadSettings = async ({
 		return { success: true };
 	}
 
-	const load = async (identity: Identity): Promise<MissionControlSettings | undefined> => {
+	const load = async (
+		identity: Identity
+	): Promise<MissionControlDid.MissionControlSettings | undefined> => {
 		const settings = await getSettings({
 			missionControlId,
 			identity
@@ -337,7 +335,7 @@ export const loadSettings = async ({
 		return fromNullable(settings);
 	};
 
-	const { result } = await loadDataStore<MissionControlSettings | undefined>({
+	const { result } = await loadDataStore<MissionControlDid.MissionControlSettings | undefined>({
 		identity,
 		reload,
 		load,
@@ -364,13 +362,13 @@ export const loadUserData = async ({
 		return { success: true };
 	}
 
-	const load = async (identity: Identity): Promise<User> =>
+	const load = async (identity: Identity): Promise<MissionControlDid.User> =>
 		await getUserData({
 			missionControlId,
 			identity
 		});
 
-	const { result } = await loadDataStore<User>({
+	const { result } = await loadDataStore<MissionControlDid.User>({
 		identity,
 		reload,
 		load,

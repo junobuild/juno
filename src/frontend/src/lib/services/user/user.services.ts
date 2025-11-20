@@ -1,4 +1,4 @@
-import type { CollectionType, Rule } from '$declarations/satellite/satellite.did';
+import type { SatelliteDid } from '$declarations';
 import { getDoc, listRules, setDoc } from '$lib/api/satellites.api';
 import { listRules0022 } from '$lib/api/satellites.deprecated.api';
 import {
@@ -18,9 +18,9 @@ import type { UserUsage, UserUsageCollection } from '$lib/types/user-usage';
 import { emit } from '$lib/utils/events.utils';
 import { waitReady } from '$lib/utils/timeout.utils';
 import { toKeyUser } from '$lib/utils/user.utils';
-import type { Identity } from '@dfinity/agent';
-import type { Principal } from '@dfinity/principal';
 import { assertNonNullish, fromNullable, isNullish } from '@dfinity/utils';
+import type { Identity } from '@icp-sdk/core/agent';
+import type { Principal } from '@icp-sdk/core/principal';
 import { fromArray, toArray } from '@junobuild/utils';
 import { get } from 'svelte/store';
 
@@ -89,7 +89,9 @@ const loadUserUsages = async ({
 		requiredMinVersion: SATELLITE_v0_1_0
 	});
 
-	const modernListRules = async (collectionType: CollectionType): Promise<[string, Rule][]> => {
+	const modernListRules = async (
+		collectionType: SatelliteDid.CollectionType
+	): Promise<[string, SatelliteDid.Rule][]> => {
 		const { items } = await listRules({
 			satelliteId,
 			type: collectionType,
@@ -114,7 +116,7 @@ const loadUserUsages = async ({
 		maxChangesPerUser
 	}: {
 		collection: string;
-		collectionType: CollectionType;
+		collectionType: SatelliteDid.CollectionType;
 		maxChangesPerUser: number | undefined;
 	}): Promise<UserUsageCollection> => {
 		const key = `${user.owner.toText()}#${'Storage' in collectionType ? 'storage' : 'db'}#${collection}`;

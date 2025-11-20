@@ -1,4 +1,4 @@
-use crate::cdn::strategies_impls::cdn::{CdnHeap, CdnStable, CdnWorkflow};
+use crate::cdn::strategies_impls::cdn::{CdnCommitAssets, CdnHeap, CdnStable, CdnWorkflow};
 use crate::metadata::update_releases_metadata;
 use candid::Principal;
 use junobuild_cdn::proposals::{
@@ -34,7 +34,13 @@ pub fn reject_proposal(proposition: &RejectProposal) -> Result<(), RejectProposa
 }
 
 pub fn commit_proposal(proposition: &CommitProposal) -> Result<(), CommitProposalError> {
-    junobuild_cdn::proposals::commit_proposal(&CdnHeap, &CdnStable, &CdnWorkflow, proposition)
+    junobuild_cdn::proposals::commit_proposal(
+        &CdnHeap,
+        &CdnCommitAssets,
+        &CdnStable,
+        &CdnWorkflow,
+        proposition,
+    )
 }
 
 pub fn delete_proposal_assets(proposal_ids: &Vec<ProposalId>) -> Result<(), String> {

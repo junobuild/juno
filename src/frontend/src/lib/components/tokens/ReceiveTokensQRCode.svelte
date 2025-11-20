@@ -14,7 +14,7 @@
 </script>
 
 <div class="container">
-	<QRCodeContainer {ariaLabel} {value} />
+	<QRCodeContainer {value} />
 
 	<div class="info">
 		<Value>

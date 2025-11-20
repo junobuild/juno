@@ -1,10 +1,10 @@
-import type { Doc } from '$declarations/satellite/satellite.did';
-import type { UserData as UserDataCore } from '@junobuild/core';
+import type { SatelliteDid } from '$declarations';
+import type { UserData as UserDataCore, UserProvider } from '@junobuild/core';
 
-export type UserData = UserDataCore & {
+export type UserData<P extends UserProvider = UserProvider> = UserDataCore<P> & {
 	banned?: 'indefinite';
 };
 
-export type User = Omit<Doc, 'data'> & {
-	data: UserData;
+export type User<P extends UserProvider = UserProvider> = Omit<SatelliteDid.Doc, 'data'> & {
+	data: UserData<P>;
 };

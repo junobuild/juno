@@ -33,6 +33,25 @@ type GetNotifications = record {
   from : opt nat64;
   segment_id : opt principal;
 };
+type GetOpenIdCertificateArgs = record { provider : OpenIdProvider };
+type Jwk = record {
+  alg : opt text;
+  kid : opt text;
+  kty : JwkType;
+  params : JwkParams;
+};
+type JwkParams = variant {
+  Ec : JwkParamsEc;
+  Oct : JwkParamsOct;
+  Okp : JwkParamsOkp;
+  Rsa : JwkParamsRsa;
+};
+type JwkParamsEc = record { x : text; y : text; crv : text };
+type JwkParamsOct = record { k : text };
+type JwkParamsOkp = record { x : text; crv : text };
+type JwkParamsRsa = record { e : text; n : text };
+type JwkType = variant { EC; OKP; RSA; oct };
+type Jwks = record { keys : vec Jwk };
 type NotificationKind = variant {
   DepositedCyclesEmail : DepositedCyclesEmailNotification;
   FailedCyclesDepositEmail : FailedCyclesDepositEmailNotification;
@@ -43,6 +62,15 @@ type NotifyArgs = record {
   segment : Segment;
 };
 type NotifyStatus = record { pending : nat64; sent : nat64; failed : nat64 };
+type OpenIdCertificate = record {
+  updated_at : nat64;
+  jwks : Jwks;
+  created_at : nat64;
+  version : opt nat64;
+};
+type OpenIdProvider = variant { Google };
+type RateConfig = record { max_tokens : nat64; time_per_token_ns : nat64 };
+type RateKind = variant { OpenIdCertificateRequests };
 type Segment = record {
   id : principal;
   metadata : opt vec record { text; text };
@@ -61,9 +89,15 @@ type SetControllersArgs = record {
 service : () -> {
   del_controllers : (DeleteControllersArgs) -> ();
   get_notify_status : (GetNotifications) -> (NotifyStatus) query;
+  get_openid_certificate : (GetOpenIdCertificateArgs) -> (
+      opt OpenIdCertificate,
+    );
   list_controllers : () -> (vec record { principal; Controller }) query;
   notify : (NotifyArgs) -> ();
   ping : (NotifyArgs) -> ();
   set_controllers : (SetControllersArgs) -> ();
   set_env : (Env) -> ();
+  start_openid_monitoring : () -> ();
+  stop_openid_monitoring : () -> ();
+  update_rate_config : (RateKind, RateConfig) -> ();
 }

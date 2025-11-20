@@ -1,5 +1,5 @@
-import { Principal } from '@dfinity/principal';
 import { isNullish } from '@dfinity/utils';
+import { Principal } from '@icp-sdk/core/principal';
 import { z } from 'zod/v4';
 
 export const mockSputnikVersion = '1.2.3-patch.4';

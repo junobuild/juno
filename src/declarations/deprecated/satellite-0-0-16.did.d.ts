@@ -1,10 +1,10 @@
-import type { ActorMethod } from '@dfinity/agent';
-import type { IDL } from '@dfinity/candid';
-import type { Principal } from '@dfinity/principal';
+import type { ActorMethod } from '@icp-sdk/core/agent';
+import type { IDL } from '@icp-sdk/core/candid';
+import type { Principal } from '@icp-sdk/core/principal';
 
 export interface AssetEncodingNoContent {
 	modified: bigint;
-	sha256: Uint8Array | number[];
+	sha256: Uint8Array;
 	total_length: bigint;
 }
 export interface AssetKey {
@@ -56,19 +56,19 @@ export interface DepositCyclesArgs {
 export interface Doc {
 	updated_at: bigint;
 	owner: Principal;
-	data: Uint8Array | number[];
+	data: Uint8Array;
 	description: [] | [string];
 	created_at: bigint;
 }
 export interface HttpRequest {
 	url: string;
 	method: string;
-	body: Uint8Array | number[];
+	body: Uint8Array;
 	headers: Array<[string, string]>;
 	certificate_version: [] | [number];
 }
 export interface HttpResponse {
-	body: Uint8Array | number[];
+	body: Uint8Array;
 	headers: Array<[string, string]>;
 	streaming_strategy: [] | [StreamingStrategy];
 	status_code: number;
@@ -149,7 +149,7 @@ export interface SetControllersArgs {
 }
 export interface SetDoc {
 	updated_at: [] | [bigint];
-	data: Uint8Array | number[];
+	data: Uint8Array;
 	description: [] | [string];
 }
 export interface SetRule {
@@ -174,12 +174,12 @@ export interface StorageConfigRedirect {
 }
 export interface StreamingCallbackHttpResponse {
 	token: [] | [StreamingCallbackToken];
-	body: Uint8Array | number[];
+	body: Uint8Array;
 }
 export interface StreamingCallbackToken {
 	memory: Memory;
 	token: [] | [string];
-	sha256: [] | [Uint8Array | number[]];
+	sha256: [] | [Uint8Array];
 	headers: Array<[string, string]>;
 	index: bigint;
 	encoding_type: string;
@@ -192,7 +192,7 @@ export type StreamingStrategy = {
 	};
 };
 export interface UploadChunk {
-	content: Uint8Array | number[];
+	content: Uint8Array;
 	batch_id: bigint;
 	order_id: [] | [bigint];
 }

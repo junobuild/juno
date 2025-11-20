@@ -1,10 +1,9 @@
 <script lang="ts">
-	import { AnonymousIdentity } from '@dfinity/agent';
-	import { Principal } from '@dfinity/principal';
 	import { fromNullable, isNullish, nonNullish } from '@dfinity/utils';
+	import { AnonymousIdentity } from '@icp-sdk/core/agent';
+	import { Principal } from '@icp-sdk/core/principal';
 	import { type UpgradeCodeParams, upgradeSatellite } from '@junobuild/admin';
-	import type { Satellite } from '$declarations/mission_control/mission_control.did';
-	import type { AssetNoContent } from '$declarations/satellite/satellite.did';
+	import type { SatelliteDid, MissionControlDid } from '$declarations';
 	import CanisterUpgradeWizard, {
 		type CanisterUpgradeWizardProps,
 		type CanisterUpgradeWizardStep
@@ -25,8 +24,8 @@
 	import { satelliteName } from '$lib/utils/satellite.utils';
 
 	interface Props {
-		satellite: Satellite;
-		asset: AssetNoContent | undefined;
+		satellite: MissionControlDid.Satellite;
+		asset: SatelliteDid.AssetNoContent | undefined;
 		onclose: () => void;
 	}
 

@@ -1,10 +1,10 @@
 <script lang="ts">
-	import type { Orbiter } from '$declarations/mission_control/mission_control.did';
+	import type { MissionControlDid } from '$declarations';
 	import SegmentReload from '$lib/components/segments/SegmentReload.svelte';
 	import { reloadOrbiterVersion } from '$lib/services/version/version.orbiter.services';
 
 	interface Props {
-		orbiter: Orbiter;
+		orbiter: MissionControlDid.Orbiter;
 		onreload: () => void;
 	}
 

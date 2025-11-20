@@ -27,7 +27,7 @@ pub fn set_user_webauthn_index(
         &rule,
     )?;
 
-    let update_doc = UserWebAuthnIndex::prepare_set_doc(&credential_id, &doc);
+    let update_doc = UserWebAuthnIndex::prepare_set_doc(credential_id, &doc);
 
     unsafe_set_doc(
         id(),
@@ -77,7 +77,7 @@ fn delete_user_webauthn(credential_id: &UserWebAuthnCredentialId) -> Result<(), 
 
     unsafe_delete_doc(
         &user_webauthn_collection,
-        &credential_id,
+        credential_id,
         &user_webauthn_rule,
     )?;
 

@@ -1,7 +1,4 @@
-import type {
-	AnalyticsTrackEvents,
-	AnalyticsWebVitalsPerformanceMetrics
-} from '$declarations/orbiter/orbiter.did';
+import type { OrbiterDid } from '$declarations';
 import {
 	getAnalyticsClientsPageViews,
 	getAnalyticsMetricsPageViews,
@@ -76,7 +73,7 @@ export const getAnalyticsTrackEvents = async ({
 }: {
 	params: PageViewsParams;
 	orbiterVersion: string;
-}): Promise<AnalyticsTrackEvents> => {
+}): Promise<OrbiterDid.AnalyticsTrackEvents> => {
 	if (compare(orbiterVersion, ORBITER_v0_0_5) >= 0) {
 		return await getTrackEventsAnalytics(params);
 	}
@@ -91,7 +88,7 @@ export const getAnalyticsPerformanceMetrics = async ({
 }: {
 	params: PageViewsParams;
 	orbiterVersion: string;
-}): Promise<AnalyticsWebVitalsPerformanceMetrics | undefined> => {
+}): Promise<OrbiterDid.AnalyticsWebVitalsPerformanceMetrics | undefined> => {
 	if (compare(orbiterVersion, ORBITER_v0_0_8) >= 0) {
 		return await getPerformanceMetricsAnalyticsWebVitals(params);
 	}

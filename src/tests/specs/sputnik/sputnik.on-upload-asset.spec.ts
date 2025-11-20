@@ -1,10 +1,10 @@
-import type { _SERVICE as SputnikActor } from '$declarations/sputnik/sputnik.did';
-import type { Identity } from '@dfinity/agent';
+import type { SputnikActor } from '$declarations';
 import type { Actor, PocketIc } from '@dfinity/pic';
-import type { Principal } from '@dfinity/principal';
+import type { Identity } from '@icp-sdk/core/agent';
+import type { Principal } from '@icp-sdk/core/principal';
 import { mockSetRule } from '../../mocks/collection.mocks';
 import { setupTestSputnik } from '../../utils/fixtures-tests.utils';
-import { fetchLogs, type IcMgmtLog } from '../../utils/mgmt-tests.utils';
+import { type IcMgmtLog, fetchLogs } from '../../utils/mgmt-tests.utils';
 import { waitServerlessFunction } from '../../utils/satellite-extended-tests.utils';
 import { uploadAsset } from '../../utils/satellite-storage-tests.utils';
 

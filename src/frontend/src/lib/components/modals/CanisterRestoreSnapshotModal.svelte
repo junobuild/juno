@@ -1,6 +1,6 @@
 <script lang="ts">
-	import { encodeSnapshotId } from '@dfinity/ic-management';
-	import { Principal } from '@dfinity/principal';
+	import { encodeSnapshotId } from '@icp-sdk/canisters/ic-management';
+	import { Principal } from '@icp-sdk/core/principal';
 	import ProgressSnapshot from '$lib/components/canister/ProgressSnapshot.svelte';
 	import Html from '$lib/components/ui/Html.svelte';
 	import Modal from '$lib/components/ui/Modal.svelte';

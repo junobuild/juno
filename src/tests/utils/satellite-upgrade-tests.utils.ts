@@ -1,11 +1,9 @@
-import type { _SERVICE as SatelliteActor_0_0_16 } from '$declarations/deprecated/satellite-0-0-16.did';
-import type { _SERVICE as SatelliteActor_0_0_17 } from '$declarations/deprecated/satellite-0-0-17.did';
-import type { _SERVICE as SatelliteActor_0_0_21 } from '$declarations/deprecated/satellite-0-0-21.did';
-import type { Identity } from '@dfinity/agent';
-import { Ed25519KeyIdentity } from '@dfinity/identity';
+import type { SatelliteActor0016, SatelliteActor0017, SatelliteActor0021 } from '$declarations';
 import type { Actor, PocketIc } from '@dfinity/pic';
-import type { Principal } from '@dfinity/principal';
 import { toNullable } from '@dfinity/utils';
+import type { Identity } from '@icp-sdk/core/agent';
+import { Ed25519KeyIdentity } from '@icp-sdk/core/identity';
+import type { Principal } from '@icp-sdk/core/principal';
 import { toArray } from '@junobuild/utils';
 import { tick } from './pic-tests.utils';
 import { downloadSatellite, SATELLITE_WASM_PATH } from './setup-tests.utils';
@@ -50,7 +48,7 @@ export const upgradeSatellite = async ({
 	});
 };
 
-export const initUsers = async (actor: Actor<SatelliteActor_0_0_16>): Promise<Identity[]> => {
+export const initUsers = async (actor: Actor<SatelliteActor0016>): Promise<Identity[]> => {
 	const { set_doc } = actor;
 
 	const user1 = Ed25519KeyIdentity.generate();
@@ -81,7 +79,7 @@ export const testUsers = async ({
 	actor
 }: {
 	users: Identity[];
-	actor: Actor<SatelliteActor_0_0_16 | SatelliteActor_0_0_17 | SatelliteActor_0_0_21>;
+	actor: Actor<SatelliteActor0016 | SatelliteActor0017 | SatelliteActor0021>;
 }) => {
 	const { list_docs } = actor;
 

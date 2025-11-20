@@ -1,6 +1,6 @@
 <script lang="ts">
-	import type { AccountIdentifier } from '@dfinity/ledger-icp';
-	import { Principal } from '@dfinity/principal';
+	import type { AccountIdentifier } from '@icp-sdk/canisters/ledger/icp';
+	import { Principal } from '@icp-sdk/core/principal';
 	import type { Snippet } from 'svelte';
 	import { fade } from 'svelte/transition';
 	import CanisterTopUpForm from '$lib/components/canister/CanisterTopUpForm.svelte';

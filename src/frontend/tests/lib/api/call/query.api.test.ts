@@ -1,5 +1,5 @@
 import { queryAndUpdate } from '$lib/api/call/query.api';
-import { AnonymousIdentity } from '@dfinity/agent';
+import { AnonymousIdentity } from '@icp-sdk/core/agent';
 import { tick } from 'svelte';
 
 describe('query.api', () => {
@@ -138,7 +138,10 @@ describe('query.api', () => {
 
 		expect(onLoad).not.toHaveBeenCalled();
 		expect(onError).toHaveBeenCalledTimes(2);
-		expect(onCertifiedError).toHaveBeenCalledOnce();
+		expect(onCertifiedError).toHaveBeenCalledExactlyOnceWith({
+			error: 'test',
+			identity
+		});
 		expect(onError).toHaveBeenCalledWith({
 			certified: false,
 			error: 'test',
@@ -146,10 +149,6 @@ describe('query.api', () => {
 		});
 		expect(onError).toHaveBeenCalledWith({
 			certified: true,
-			error: 'test',
-			identity
-		});
-		expect(onCertifiedError).toHaveBeenCalledWith({
 			error: 'test',
 			identity
 		});

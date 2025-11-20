@@ -4,8 +4,12 @@ use crate::constants::RELEASES_METADATA_JSON;
 use crate::store::heap::{get_releases_metadata, set_releases_metadata};
 use junobuild_cdn::proposals::SegmentsDeploymentOptions;
 use junobuild_shared::ic::api::id;
+use junobuild_storage::constants::ASSET_ENCODING_NO_COMPRESSION;
 use junobuild_storage::types::store::{Asset, AssetKey};
-use junobuild_storage::utils::{create_asset_with_content, map_content_type_headers};
+use junobuild_storage::utils::{
+    create_asset_with_content, insert_encoding_into_asset, map_content_type_headers,
+};
+use junobuild_storage::well_known::types::WellKnownAsset;
 use serde_json::to_string;
 
 pub fn update_releases_metadata(options: &SegmentsDeploymentOptions) -> Result<(), String> {
@@ -40,7 +44,10 @@ fn update_releases_metadata_asset() -> Result<(), String> {
 
     let existing_asset = get_asset(&RELEASES_METADATA_JSON.to_string());
 
-    let asset = map_releases_metadata_asset(&json, existing_asset);
+    let (mut asset, encoding) = map_releases_metadata_asset(&json, existing_asset);
+
+    // The metadata json leaves on the heap only.
+    insert_encoding_into_asset(ASSET_ENCODING_NO_COMPRESSION, &encoding, &mut asset);
 
     insert_asset(&RELEASES_METADATA_JSON.to_string(), &asset);
 
@@ -49,7 +56,7 @@ fn update_releases_metadata_asset() -> Result<(), String> {
     Ok(())
 }
 
-fn map_releases_metadata_asset(metadata: &str, existing_asset: Option<Asset>) -> Asset {
+fn map_releases_metadata_asset(metadata: &str, existing_asset: Option<Asset>) -> WellKnownAsset {
     let key = AssetKey {
         name: RELEASES_METADATA_JSON.to_string(),
         full_path: RELEASES_METADATA_JSON.to_string(),

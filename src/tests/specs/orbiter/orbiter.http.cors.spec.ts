@@ -1,13 +1,8 @@
-import type {
-	_SERVICE as OrbiterActor,
-	OrbiterSatelliteFeatures
-} from '$declarations/orbiter/orbiter.did';
-import { idlFactory as idlFactorOrbiter } from '$declarations/orbiter/orbiter.factory.did';
-import type { HttpRequest } from '$declarations/satellite/satellite.did';
-import { Ed25519KeyIdentity } from '@dfinity/identity';
+import { idlFactoryOrbiter, type OrbiterActor, type OrbiterDid } from '$declarations';
 import { type Actor, PocketIc } from '@dfinity/pic';
-import type { Principal } from '@dfinity/principal';
 import { toNullable } from '@dfinity/utils';
+import { Ed25519KeyIdentity } from '@icp-sdk/core/identity';
+import type { Principal } from '@icp-sdk/core/principal';
 import { nanoid } from 'nanoid';
 import { inject } from 'vitest';
 import {
@@ -45,7 +40,7 @@ describe('Orbiter > HTTP > CORS', () => {
 		await pic.setTime(currentDate.getTime());
 
 		const { actor: c, canisterId: cId } = await pic.setupCanister<OrbiterActor>({
-			idlFactory: idlFactorOrbiter,
+			idlFactory: idlFactoryOrbiter,
 			wasm: ORBITER_WASM_PATH,
 			arg: controllersInitArgs(controller),
 			sender: controller.getPrincipal()
@@ -62,8 +57,8 @@ describe('Orbiter > HTTP > CORS', () => {
 		it.each(URLS)('should return * for OPTIONS to %s', async (url) => {
 			const { http_request } = actor;
 
-			const request: HttpRequest = {
-				body: [],
+			const request: OrbiterDid.HttpRequest = {
+				body: Uint8Array.from([]),
 				certificate_version: toNullable(2),
 				headers: [],
 				method: 'OPTIONS',
@@ -115,7 +110,7 @@ describe('Orbiter > HTTP > CORS', () => {
 			it(`should return ${allowedOriginForPOST} for POST to /views`, async () => {
 				const { http_request_update } = actor;
 
-				const request: HttpRequest = {
+				const request: OrbiterDid.HttpRequest = {
 					body: toBodyJson(pageView),
 					certificate_version: toNullable(2),
 					headers: userAgentHeadersMock,
@@ -137,7 +132,7 @@ describe('Orbiter > HTTP > CORS', () => {
 			it(`should return ${allowedOriginForPOST} for POST to /views`, async () => {
 				const { http_request_update } = actor;
 
-				const request: HttpRequest = {
+				const request: OrbiterDid.HttpRequest = {
 					body: toBodyJson(pageViews),
 					certificate_version: toNullable(2),
 					headers: userAgentHeadersMock,
@@ -177,7 +172,7 @@ describe('Orbiter > HTTP > CORS', () => {
 			it(`should return ${allowedOriginForPOST} for POST to /event`, async () => {
 				const { http_request_update } = actor;
 
-				const request: HttpRequest = {
+				const request: OrbiterDid.HttpRequest = {
 					body: toBodyJson(trackEvent),
 					certificate_version: toNullable(2),
 					headers: userAgentHeadersMock,
@@ -199,7 +194,7 @@ describe('Orbiter > HTTP > CORS', () => {
 			it(`should return ${allowedOriginForPOST} for POST to /events`, async () => {
 				const { http_request_update } = actor;
 
-				const request: HttpRequest = {
+				const request: OrbiterDid.HttpRequest = {
 					body: toBodyJson(trackEvents),
 					certificate_version: toNullable(2),
 					headers: userAgentHeadersMock,
@@ -239,7 +234,7 @@ describe('Orbiter > HTTP > CORS', () => {
 			it(`should return ${allowedOriginForPOST} for POST to /metric`, async () => {
 				const { http_request_update } = actor;
 
-				const request: HttpRequest = {
+				const request: OrbiterDid.HttpRequest = {
 					body: toBodyJson(performanceMetricEvent),
 					certificate_version: toNullable(2),
 					headers: userAgentHeadersMock,
@@ -261,7 +256,7 @@ describe('Orbiter > HTTP > CORS', () => {
 			it(`should return ${allowedOriginForPOST} for POST to /metrics`, async () => {
 				const { http_request_update } = actor;
 
-				const request: HttpRequest = {
+				const request: OrbiterDid.HttpRequest = {
 					body: toBodyJson(performanceMetricEvents),
 					certificate_version: toNullable(2),
 					headers: userAgentHeadersMock,
@@ -286,7 +281,7 @@ describe('Orbiter > HTTP > CORS', () => {
 		beforeAll(async () => {
 			actor.setIdentity(controller);
 
-			const allFeatures: OrbiterSatelliteFeatures = {
+			const allFeatures: OrbiterDid.OrbiterSatelliteFeatures = {
 				page_views: true,
 				performance_metrics: true,
 				track_events: true
@@ -315,7 +310,7 @@ describe('Orbiter > HTTP > CORS', () => {
 		beforeAll(async () => {
 			actor.setIdentity(controller);
 
-			const allFeatures: OrbiterSatelliteFeatures = {
+			const allFeatures: OrbiterDid.OrbiterSatelliteFeatures = {
 				page_views: true,
 				performance_metrics: true,
 				track_events: true

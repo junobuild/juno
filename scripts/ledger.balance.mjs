@@ -1,5 +1,5 @@
-import { AccountIdentifier } from '@dfinity/ledger-icp';
-import { IcrcLedgerCanister } from '@dfinity/ledger-icrc';
+import { AccountIdentifier } from '@icp-sdk/canisters/ledger/icp';
+import { IcrcLedgerCanister } from '@icp-sdk/canisters/ledger/icrc';
 import { icAnonymousAgent, localAgent } from './actor.mjs';
 import { CONSOLE_ID, LEDGER_ID } from './constants.mjs';
 import { targetMainnet } from './utils.mjs';

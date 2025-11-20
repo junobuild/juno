@@ -4,8 +4,8 @@ import { getEmulatorMainIdentity } from '$lib/rest/emulator.rest';
 import { i18n } from '$lib/stores/i18n.store';
 import type { SetControllerParams } from '$lib/types/controllers';
 import type { MissionControlId } from '$lib/types/mission-control';
-import type { Identity } from '@dfinity/agent';
-import type { Principal } from '@dfinity/principal';
+import type { Identity } from '@icp-sdk/core/agent';
+import type { Principal } from '@icp-sdk/core/principal';
 import { get } from 'svelte/store';
 
 /**

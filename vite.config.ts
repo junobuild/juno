@@ -1,11 +1,10 @@
 import { sveltekit } from '@sveltejs/kit/vite';
 import { dirname, resolve } from 'path';
 import { defineConfig, type UserConfig } from 'vite';
-import { nodePolyfills } from 'vite-plugin-node-polyfills';
 import { defineViteReplacements } from './vite.utils';
 
 const config: UserConfig = {
-	plugins: [sveltekit(), nodePolyfills()],
+	plugins: [sveltekit()],
 	resolve: {
 		alias: {
 			$declarations: resolve('./src/declarations')
@@ -37,10 +36,8 @@ const config: UserConfig = {
 };
 
 export default defineConfig(
-	(): UserConfig => ({
+	async ({ mode }): Promise<UserConfig> => ({
 		...config,
-		define: {
-			...defineViteReplacements()
-		}
+		define: await defineViteReplacements({ mode })
 	})
 );

@@ -13,7 +13,9 @@ export default [
 			'vitest/no-commented-out-tests': ['off'],
 			// It does not always make sense. For example, sometimes it reports function passed as property as being
 			// required to be prefixed with "on".
-			'svelte/require-event-prefix': ['off']
+			'svelte/require-event-prefix': ['off'],
+			// The linter throws error for goto('/') but, also href="/" which is really annoying.
+			'svelte/no-navigation-without-resolve': ['off']
 		}
 	},
 	{

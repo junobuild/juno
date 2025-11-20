@@ -1,21 +1,21 @@
-import type {
-	_SERVICE as MissionControlActor,
-	TransferArg,
-	TransferArgs
-} from '$declarations/mission_control/mission_control.did';
-import { idlFactory as idlFactorMissionControl } from '$declarations/mission_control/mission_control.factory.did';
-import { AnonymousIdentity } from '@dfinity/agent';
-import { Ed25519KeyIdentity } from '@dfinity/identity';
-import { AccountIdentifier } from '@dfinity/ledger-icp';
-import type { _SERVICE as LedgerActor } from '@dfinity/ledger-icp/dist/candid/ledger';
+import {
+	idlFactoryMissionControl,
+	type MissionControlActor,
+	type MissionControlDid
+} from '$declarations';
 import { PocketIc, SubnetStateType, type Actor } from '@dfinity/pic';
-import type { Principal } from '@dfinity/principal';
+import { AccountIdentifier, type LedgerCanisterOptions } from '@icp-sdk/canisters/ledger/icp';
+import { AnonymousIdentity } from '@icp-sdk/core/agent';
+import { Ed25519KeyIdentity } from '@icp-sdk/core/identity';
+import type { Principal } from '@icp-sdk/core/principal';
 import { inject } from 'vitest';
 import { LEDGER_ID } from '../../constants/ledger-tests.contants';
 import { MISSION_CONTROL_ADMIN_CONTROLLER_ERROR_MSG } from '../../constants/mission-control-tests.constants';
 import { setupLedger } from '../../utils/ledger-tests.utils';
 import { missionControlUserInitArgs } from '../../utils/mission-control-tests.utils';
 import { MISSION_CONTROL_WASM_PATH } from '../../utils/setup-tests.utils';
+
+type LedgerActor = LedgerCanisterOptions['serviceOverride'];
 
 describe('Mission Control > Wallet', () => {
 	let pic: PocketIc;
@@ -24,7 +24,7 @@ describe('Mission Control > Wallet', () => {
 
 	const to = Ed25519KeyIdentity.generate();
 
-	const args: TransferArgs = {
+	const args: MissionControlDid.TransferArgs = {
 		to: AccountIdentifier.fromPrincipal({ principal: to.getPrincipal() }).toUint8Array(),
 		amount: { e8s: 100_000n },
 		fee: { e8s: 10_000n },
@@ -33,7 +33,7 @@ describe('Mission Control > Wallet', () => {
 		from_subaccount: []
 	};
 
-	const arg: TransferArg = {
+	const arg: MissionControlDid.TransferArg = {
 		to: {
 			owner: to.getPrincipal(),
 			subaccount: []
@@ -64,7 +64,7 @@ describe('Mission Control > Wallet', () => {
 
 	const initMissionControl = async (owner: Principal) => {
 		const { actor: c, canisterId } = await pic.setupCanister<MissionControlActor>({
-			idlFactory: idlFactorMissionControl,
+			idlFactory: idlFactoryMissionControl,
 			wasm: MISSION_CONTROL_WASM_PATH,
 			arg: missionControlUserInitArgs(owner),
 			sender: controller.getPrincipal()

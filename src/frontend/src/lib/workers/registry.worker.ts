@@ -4,7 +4,8 @@ import {
 	CACHED_RELEASES_ORBITERS_KEY,
 	CACHED_RELEASES_SATELLITES_KEY
 } from '$lib/constants/releases.constants';
-import { findNewestReleasesMetadata, getReleasesMetadata } from '$lib/rest/cdn.rest';
+import { findNewestReleasesMetadata } from '$lib/rest/cdn.rest';
+import { getReleasesMetadata } from '$lib/services/cdn.services';
 import { getMissionControlVersionMetadata } from '$lib/services/version/version.metadata.mission-control.services';
 import { getOrbiterVersionMetadata } from '$lib/services/version/version.metadata.orbiter.services';
 import { getSatelliteVersionMetadata } from '$lib/services/version/version.metadata.satellite.services';
@@ -26,9 +27,9 @@ import type {
 } from '$lib/types/version';
 import { last } from '$lib/utils/utils';
 import { loadIdentity } from '$lib/utils/worker.utils';
-import type { Identity } from '@dfinity/agent';
-import { Principal } from '@dfinity/principal';
 import { isNullish, nonNullish } from '@dfinity/utils';
+import type { Identity } from '@icp-sdk/core/agent';
+import { Principal } from '@icp-sdk/core/principal';
 import type { MetadataVersions, ReleaseMetadata } from '@junobuild/admin';
 import { entries, getMany, setMany } from 'idb-keyval';
 import { compare } from 'semver';
@@ -39,7 +40,6 @@ export const onRegistryMessage = async ({ data: dataMsg }: MessageEvent<PostMess
 	switch (msg) {
 		case 'loadRegistry':
 			await loadRegistry({ data });
-			return;
 	}
 };
 

@@ -1,7 +1,7 @@
-import type { _SERVICE as SputnikActor } from '$declarations/sputnik/sputnik.did';
-import type { Identity } from '@dfinity/agent';
+import type { SputnikActor } from '$declarations';
 import type { Actor, PocketIc } from '@dfinity/pic';
 import { toNullable } from '@dfinity/utils';
+import type { Identity } from '@icp-sdk/core/agent';
 import { nanoid } from 'nanoid';
 import { mockSetRule } from '../../mocks/collection.mocks';
 import { mockListParams } from '../../mocks/list.mocks';
@@ -50,7 +50,7 @@ describe('Sputnik > sdk > testSdkDeleteAssetsStore', () => {
 		const key = nanoid();
 
 		await set_doc(TEST_COLLECTION, key, {
-			data: [],
+			data: Uint8Array.from([]),
 			description: toNullable(),
 			version: toNullable()
 		});

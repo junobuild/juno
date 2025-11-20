@@ -4,8 +4,8 @@ use crate::controllers::mission_control::{
 };
 use crate::controllers::store::get_controllers;
 use crate::guards::caller_is_user_or_admin_controller;
-use ic_cdk::trap;
 use ic_cdk_macros::{query, update};
+use junobuild_shared::ic::UnwrapOrTrap;
 use junobuild_shared::types::interface::SetController;
 use junobuild_shared::types::state::{ControllerId, ControllerScope, Controllers, UserId};
 use std::collections::HashMap;
@@ -24,7 +24,7 @@ async fn add_mission_control_controllers(controllers: Vec<UserId>) {
 
     set_controllers_to_mission_control(&controllers, &controller)
         .await
-        .unwrap_or_else(|e| trap(&e));
+        .unwrap_or_trap();
 }
 
 #[deprecated(
@@ -35,7 +35,7 @@ async fn add_mission_control_controllers(controllers: Vec<UserId>) {
 async fn remove_mission_control_controllers(controllers: Vec<ControllerId>) {
     delete_controllers_to_mission_control(&controllers)
         .await
-        .unwrap_or_else(|e| trap(&e));
+        .unwrap_or_trap();
 }
 
 #[update(guard = "caller_is_user_or_admin_controller")]
@@ -45,14 +45,14 @@ async fn set_mission_control_controllers(
 ) {
     set_controllers_to_mission_control(&controllers, &controller)
         .await
-        .unwrap_or_else(|e| trap(&e));
+        .unwrap_or_trap();
 }
 
 #[update(guard = "caller_is_user_or_admin_controller")]
 async fn del_mission_control_controllers(controllers: Vec<ControllerId>) {
     delete_controllers_to_mission_control(&controllers)
         .await
-        .unwrap_or_else(|e| trap(&e));
+        .unwrap_or_trap();
 }
 
 #[query(guard = "caller_is_user_or_admin_controller")]

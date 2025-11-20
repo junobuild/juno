@@ -1,8 +1,9 @@
 <script lang="ts">
+	import { getContext } from 'svelte';
 	import IconFilter from '$lib/components/icons/IconFilter.svelte';
 	import PopoverApply from '$lib/components/ui/PopoverApply.svelte';
 	import { i18n } from '$lib/stores/i18n.store';
-	import { listParamsStore } from '$lib/stores/list-params.store';
+	import { type ListParamsContext, LIST_PARAMS_CONTEXT_KEY } from '$lib/types/list-params.context';
 
 	interface Props {
 		matcherFilter?: boolean;
@@ -13,14 +14,16 @@
 
 	let { matcherFilter = true, ownerFilter = true, direction, key }: Props = $props();
 
-	let matcher = $state($listParamsStore.filter.matcher ?? '');
-	let owner = $state($listParamsStore.filter.owner ?? '');
+	const { listParams, setFilter } = getContext<ListParamsContext>(LIST_PARAMS_CONTEXT_KEY);
+
+	let matcher = $state($listParams.filter.matcher ?? '');
+	let owner = $state($listParams.filter.owner ?? '');
 
 	let visible: boolean = $state(false);
 
 	// eslint-disable-next-line require-await
 	const apply = async () => {
-		listParamsStore.setFilter({
+		setFilter({
 			matcher,
 			owner
 		});
@@ -35,8 +38,8 @@
 
 		// Avoid glitch
 		setTimeout(() => {
-			matcher = $listParamsStore.filter.matcher ?? '';
-			owner = $listParamsStore.filter.owner ?? '';
+			matcher = $listParams.filter.matcher ?? '';
+			owner = $listParams.filter.owner ?? '';
 		}, 250);
 	});
 </script>

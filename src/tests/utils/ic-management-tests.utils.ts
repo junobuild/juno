@@ -1,8 +1,4 @@
-import { type Identity, MANAGEMENT_CANISTER_ID } from '@dfinity/agent';
-import { IDL } from '@dfinity/candid';
-import type { canister_status_result } from '@dfinity/ic-management';
 import type { ActorInterface, CanisterFixture, PocketIc } from '@dfinity/pic';
-import { Principal } from '@dfinity/principal';
 import {
 	arrayBufferToUint8Array,
 	fromNullable,
@@ -10,6 +6,10 @@ import {
 	nonNullish,
 	toNullable
 } from '@dfinity/utils';
+import type { canister_status_result } from '@icp-sdk/canisters/ic-management';
+import { type Identity, MANAGEMENT_CANISTER_ID } from '@icp-sdk/core/agent';
+import { IDL } from '@icp-sdk/core/candid';
+import { Principal } from '@icp-sdk/core/principal';
 import { uint8ArraySha256 } from '@junobuild/admin';
 import { readFile } from 'node:fs/promises';
 
@@ -38,12 +38,12 @@ const chunk_hash = IDL.Record({ hash: IDL.Vec(IDL.Nat8) });
 const upload_chunk_result = chunk_hash;
 
 export interface upload_chunk_args {
-	chunk: Uint8Array | number[];
+	chunk: Uint8Array;
 	canister_id: Principal;
 }
 export type upload_chunk_result = chunk_hash;
 export interface chunk_hash {
-	hash: Uint8Array | number[];
+	hash: Uint8Array;
 }
 
 // Install chunked code did
@@ -84,8 +84,8 @@ export type canister_install_mode =
 	| { install: null };
 
 interface install_chunked_code_args {
-	arg: Uint8Array | number[];
-	wasm_module_hash: Uint8Array | number[];
+	arg: Uint8Array;
+	wasm_module_hash: Uint8Array;
 	mode: canister_install_mode;
 	chunk_hashes_list: Array<chunk_hash>;
 	target_canister: canister_id;
@@ -96,6 +96,7 @@ interface install_chunked_code_args {
 // canister_status did
 
 const canister_status_args = IDL.Record({ canister_id });
+const stop_canister_args = canister_status_args;
 
 const log_visibility = IDL.Variant({
 	controllers: IDL.Null,
@@ -244,7 +245,7 @@ const clearChunkStoreApi = async ({
 
 	await pic.updateCall({
 		method: 'clear_chunk_store',
-		arg,
+		arg: arg.buffer,
 		canisterId: Principal.fromText(MANAGEMENT_CANISTER_ID),
 		sender: sender.getPrincipal()
 	});
@@ -341,12 +342,15 @@ const uploadChunkApi = async ({
 
 	const response = await pic.updateCall({
 		method: 'upload_chunk',
-		arg,
+		arg: arg.buffer,
 		canisterId: Principal.fromText(MANAGEMENT_CANISTER_ID),
 		sender: sender.getPrincipal()
 	});
 
-	const result = IDL.decode(toNullable(upload_chunk_result), response as ArrayBuffer);
+	const result = IDL.decode(
+		toNullable(upload_chunk_result),
+		arrayBufferToUint8Array(response as ArrayBuffer)
+	);
 
 	const [hash] = result as unknown as [upload_chunk_result];
 
@@ -383,7 +387,7 @@ const installChunkedCodeApi = async ({
 
 	await pic.updateCall({
 		method: 'install_chunked_code',
-		arg,
+		arg: arg.buffer,
 		canisterId: Principal.fromText(MANAGEMENT_CANISTER_ID),
 		sender: sender.getPrincipal(),
 		targetSubnetId: subnetId ?? undefined
@@ -401,13 +405,28 @@ export const canisterStatus = async ({
 		canisterId: Principal.fromText(MANAGEMENT_CANISTER_ID),
 		sender: sender.getPrincipal(),
 		method: 'canister_status',
-		arg
+		arg: arg.buffer
 	});
 
 	const result = IDL.decode(
 		toNullable(canister_status_result),
-		response as ArrayBuffer
+		arrayBufferToUint8Array(response as ArrayBuffer)
 	) as unknown as [canister_status_result];
 
 	return fromNullable(result);
+};
+
+export const stopCanister = async ({
+	canisterId,
+	pic,
+	sender
+}: PicParams & { canisterId: Principal }) => {
+	const arg = IDL.encode([stop_canister_args], [{ canister_id: canisterId }]);
+
+	await pic.updateCall({
+		canisterId: Principal.fromText(MANAGEMENT_CANISTER_ID),
+		sender: sender.getPrincipal(),
+		method: 'stop_canister',
+		arg: arg.buffer
+	});
 };

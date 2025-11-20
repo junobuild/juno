@@ -63,8 +63,6 @@
 			const action = firstChild.querySelector('a') ?? firstChild.querySelector('button');
 			action?.focus();
 		}
-
-		return;
 	};
 
 	const onkeydown = ($event: KeyboardEvent) => {
@@ -87,7 +85,6 @@
 			case 'ArrowUp':
 				$event.preventDefault();
 				selectItem('up');
-				return;
 		}
 	};
 
@@ -110,7 +107,7 @@
 
 <svelte:window onjunoSpotlight={() => (visible = true)} {onkeydown} />
 
-<Popover backdrop="dark" center bind:visible>
+<Popover backdrop="dark" center="wide" bind:visible>
 	<div class="container">
 		<div class="search" role="search">
 			<span class="search-title"
@@ -199,7 +196,7 @@
 	.search {
 		padding: var(--padding-2x) var(--padding-2x) 0 var(--padding-2x);
 
-		background: var(--color-menu);
+		background: var(--color-background);
 	}
 
 	li,

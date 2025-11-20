@@ -1,9 +1,8 @@
-import type { _SERVICE as MissionControlActor } from '$declarations/mission_control/mission_control.did';
-import { idlFactory as idlFactorMissionControl } from '$declarations/mission_control/mission_control.factory.did';
-import { AnonymousIdentity } from '@dfinity/agent';
-import { Ed25519KeyIdentity } from '@dfinity/identity';
+import { idlFactoryMissionControl, type MissionControlActor } from '$declarations';
 import { PocketIc, type Actor } from '@dfinity/pic';
-import type { Principal } from '@dfinity/principal';
+import { AnonymousIdentity } from '@icp-sdk/core/agent';
+import { Ed25519KeyIdentity } from '@icp-sdk/core/identity';
+import type { Principal } from '@icp-sdk/core/principal';
 import { inject } from 'vitest';
 import { MISSION_CONTROL_ADMIN_CONTROLLER_ERROR_MSG } from '../../constants/mission-control-tests.constants';
 import {
@@ -28,7 +27,7 @@ describe('Mission Control > Set / Unset', () => {
 
 		const { actor: c, canisterId: missionControlId } = await pic.setupCanister<MissionControlActor>(
 			{
-				idlFactory: idlFactorMissionControl,
+				idlFactory: idlFactoryMissionControl,
 				wasm: MISSION_CONTROL_WASM_PATH,
 				arg: userInitArgs(),
 				sender: controller.getPrincipal()

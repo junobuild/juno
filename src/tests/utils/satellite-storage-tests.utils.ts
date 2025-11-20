@@ -1,4 +1,4 @@
-import type { _SERVICE as SatelliteActor } from '$declarations/satellite/satellite.did';
+import type { SatelliteActor } from '$declarations';
 import type { Actor } from '@dfinity/pic';
 import { arrayBufferToUint8Array, toNullable } from '@dfinity/utils';
 import { mockBlob } from '../mocks/storage.mocks';

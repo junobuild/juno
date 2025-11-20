@@ -1,4 +1,4 @@
-use crate::cdn::certified_assets::runtime::init_certified_assets as init_runtime_certified_assets;
+use crate::cdn::storage::init_certified_assets as init_runtime_certified_assets;
 use ic_cdk::futures::spawn_017_compat;
 use ic_cdk_timers::set_timer;
 use std::time::Duration;

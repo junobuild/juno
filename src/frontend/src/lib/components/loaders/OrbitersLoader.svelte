@@ -1,5 +1,5 @@
 <script lang="ts">
-	import type { Principal } from '@dfinity/principal';
+	import type { Principal } from '@icp-sdk/core/principal';
 	import type { Snippet } from 'svelte';
 	import { missionControlIdDerived } from '$lib/derived/mission-control.derived';
 	import { loadOrbiters } from '$lib/services/orbiter/orbiters.services';

@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { nonNullish, fromNullishNullable } from '@dfinity/utils';
-	import type { Monitoring } from '$declarations/mission_control/mission_control.did';
+	import type { MissionControlDid } from '$declarations';
 	import CanisterValue from '$lib/components/canister/CanisterValue.svelte';
 	import MonitoringDisabled from '$lib/components/monitoring/MonitoringDisabled.svelte';
 	import Html from '$lib/components/ui/Html.svelte';
@@ -11,7 +11,7 @@
 	import { i18nFormat } from '$lib/utils/i18n.utils';
 
 	interface Props {
-		monitoring: Monitoring | undefined;
+		monitoring: MissionControlDid.Monitoring | undefined;
 		canisterData: CanisterData | undefined;
 		canisterSyncStatus: CanisterSyncStatus | undefined;
 	}

@@ -24,13 +24,42 @@ type AssetNoContent = record {
   version : opt nat64;
 };
 type AssetsUpgradeOptions = record { clear_existing_assets : opt bool };
+type Authentication = record {
+  delegation : PreparedDelegation;
+  mission_control : MissionControl;
+};
+type AuthenticationArgs = variant { OpenId : OpenIdPrepareDelegationArgs };
+type AuthenticationConfig = record {
+  updated_at : opt nat64;
+  openid : opt AuthenticationConfigOpenId;
+  created_at : opt nat64;
+  version : opt nat64;
+  internet_identity : opt AuthenticationConfigInternetIdentity;
+  rules : opt AuthenticationRules;
+};
+type AuthenticationConfigInternetIdentity = record {
+  derivation_origin : opt text;
+  external_alternative_origins : opt vec text;
+};
+type AuthenticationConfigOpenId = record {
+  observatory_id : opt principal;
+  providers : vec record { OpenIdProvider; OpenIdProviderConfig };
+};
+type AuthenticationError = variant {
+  PrepareDelegation : PrepareDelegationError;
+  RegisterUser : text;
+};
+type AuthenticationRules = record { allowed_callers : vec principal };
 type CommitBatch = record {
   batch_id : nat;
   headers : vec record { text; text };
   chunk_ids : vec nat;
 };
 type CommitProposal = record { sha256 : blob; proposal_id : nat };
-type Config = record { storage : StorageConfig };
+type Config = record {
+  authentication : opt AuthenticationConfig;
+  storage : StorageConfig;
+};
 type ConfigMaxMemorySize = record { stable : opt nat64; heap : opt nat64 };
 type Controller = record {
   updated_at : nat64;
@@ -45,15 +74,46 @@ type CreateCanisterArgs = record {
   subnet_id : opt principal;
   user : principal;
 };
+type CreateSatelliteArgs = record {
+  block_index : opt nat64;
+  subnet_id : opt principal;
+  storage : opt InitStorageArgs;
+  user : principal;
+};
 type CustomDomain = record {
   updated_at : nat64;
   created_at : nat64;
   version : opt nat64;
   bn_id : opt text;
 };
+type Delegation = record {
+  pubkey : blob;
+  targets : opt vec principal;
+  expiration : nat64;
+};
 type DeleteControllersArgs = record { controllers : vec principal };
 type DeleteProposalAssets = record { proposal_ids : vec nat };
 type GetCreateCanisterFeeArgs = record { user : principal };
+type GetDelegationArgs = variant { OpenId : OpenIdGetDelegationArgs };
+type GetDelegationError = variant {
+  JwtFindProvider : JwtFindProviderError;
+  GetCachedJwks;
+  NoSuchDelegation;
+  JwtVerify : JwtVerifyError;
+  GetOrFetchJwks : GetOrRefreshJwksError;
+  DeriveSeedFailed : text;
+};
+type GetOrRefreshJwksError = variant {
+  InvalidConfig : text;
+  MissingKid;
+  BadClaim : text;
+  KeyNotFoundCooldown;
+  CertificateNotFound;
+  BadSig : text;
+  MissingLastAttempt : text;
+  KeyNotFound;
+  FetchFailed : text;
+};
 type HttpRequest = record {
   url : text;
   method : text;
@@ -75,7 +135,21 @@ type InitAssetKey = record {
   encoding_type : opt text;
   full_path : text;
 };
+type InitStorageArgs = record { system_memory : opt InitStorageMemory };
+type InitStorageMemory = variant { Heap; Stable };
 type InitUploadResult = record { batch_id : nat };
+type JwtFindProviderError = variant {
+  BadClaim : text;
+  BadSig : text;
+  NoMatchingProvider;
+};
+type JwtVerifyError = variant {
+  WrongKeyType;
+  MissingKid;
+  BadClaim : text;
+  BadSig : text;
+  NoKeyForKid;
+};
 type ListMatcher = record {
   key : opt text;
   updated_at : opt TimestampMatcher;
@@ -114,8 +188,38 @@ type MissionControl = record {
   updated_at : nat64;
   credits : Tokens;
   mission_control_id : opt principal;
+  provider : opt Provider;
   owner : principal;
   created_at : nat64;
+};
+type OpenId = record { provider : OpenIdProvider; data : OpenIdData };
+type OpenIdData = record {
+  name : opt text;
+  locale : opt text;
+  family_name : opt text;
+  email : opt text;
+  picture : opt text;
+  given_name : opt text;
+};
+type OpenIdGetDelegationArgs = record {
+  jwt : text;
+  session_key : blob;
+  salt : blob;
+  expiration : nat64;
+};
+type OpenIdPrepareDelegationArgs = record {
+  jwt : text;
+  session_key : blob;
+  salt : blob;
+};
+type OpenIdProvider = variant { Google };
+type OpenIdProviderConfig = record {
+  delegation : opt OpenIdProviderDelegationConfig;
+  client_id : text;
+};
+type OpenIdProviderDelegationConfig = record {
+  targets : opt vec principal;
+  max_time_to_live : opt nat64;
 };
 type Payment = record {
   status : PaymentStatus;
@@ -126,6 +230,14 @@ type Payment = record {
   block_index_refunded : opt nat64;
 };
 type PaymentStatus = variant { Refunded; Acknowledged; Completed };
+type PrepareDelegationError = variant {
+  JwtFindProvider : JwtFindProviderError;
+  GetCachedJwks;
+  JwtVerify : JwtVerifyError;
+  GetOrFetchJwks : GetOrRefreshJwksError;
+  DeriveSeedFailed : text;
+};
+type PreparedDelegation = record { user_key : blob; expiration : nat64 };
 type Proposal = record {
   status : ProposalStatus;
   updated_at : nat64;
@@ -149,12 +261,21 @@ type ProposalType = variant {
   AssetsUpgrade : AssetsUpgradeOptions;
   SegmentsDeployment : SegmentsDeploymentOptions;
 };
+type Provider = variant { InternetIdentity; OpenId : OpenId };
 type RateConfig = record { max_tokens : nat64; time_per_token_ns : nat64 };
+type Result = variant { Ok : Authentication; Err : AuthenticationError };
+type Result_1 = variant { Ok : SignedDelegation; Err : GetDelegationError };
 type SegmentKind = variant { Orbiter; MissionControl; Satellite };
 type SegmentsDeploymentOptions = record {
   orbiter : opt text;
   mission_control_version : opt text;
   satellite_version : opt text;
+};
+type SetAuthenticationConfig = record {
+  openid : opt AuthenticationConfigOpenId;
+  version : opt nat64;
+  internet_identity : opt AuthenticationConfigInternetIdentity;
+  rules : opt AuthenticationRules;
 };
 type SetController = record {
   metadata : vec record { text; text };
@@ -174,6 +295,7 @@ type SetStorageConfig = record {
   raw_access : opt StorageConfigRawAccess;
   redirects : opt vec record { text; StorageConfigRedirect };
 };
+type SignedDelegation = record { signature : blob; delegation : Delegation };
 type StorageConfig = record {
   iframe : opt StorageConfigIFrame;
   updated_at : opt nat64;
@@ -224,19 +346,22 @@ service : () -> {
   add_credits : (principal, Tokens) -> ();
   add_invitation_code : (text) -> ();
   assert_mission_control_center : (AssertMissionControlCenterArgs) -> () query;
+  authenticate : (AuthenticationArgs) -> (Result);
   commit_proposal : (CommitProposal) -> (null);
   commit_proposal_asset_upload : (CommitBatch) -> ();
   commit_proposal_many_assets_upload : (vec CommitBatch) -> ();
   count_proposals : () -> (nat64) query;
   create_orbiter : (CreateCanisterArgs) -> (principal);
-  create_satellite : (CreateCanisterArgs) -> (principal);
+  create_satellite : (CreateSatelliteArgs) -> (principal);
   del_controllers : (DeleteControllersArgs) -> ();
   del_custom_domain : (text) -> ();
   delete_proposal_assets : (DeleteProposalAssets) -> ();
+  get_auth_config : () -> (opt AuthenticationConfig) query;
   get_config : () -> (Config) query;
   get_create_orbiter_fee : (GetCreateCanisterFeeArgs) -> (opt Tokens) query;
   get_create_satellite_fee : (GetCreateCanisterFeeArgs) -> (opt Tokens) query;
   get_credits : () -> (Tokens) query;
+  get_delegation : (GetDelegationArgs) -> (Result_1) query;
   get_proposal : (nat) -> (opt Proposal) query;
   get_storage_config : () -> (StorageConfig) query;
   get_user_mission_control_center : () -> (opt MissionControl) query;
@@ -259,6 +384,7 @@ service : () -> {
       vec record { principal; MissionControl },
     ) query;
   reject_proposal : (CommitProposal) -> (null);
+  set_auth_config : (SetAuthenticationConfig) -> (AuthenticationConfig);
   set_controllers : (SetControllersArgs) -> ();
   set_custom_domain : (text, opt text) -> ();
   set_fee : (SegmentKind, Tokens) -> ();

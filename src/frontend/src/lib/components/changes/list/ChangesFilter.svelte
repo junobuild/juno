@@ -1,5 +1,5 @@
 <script lang="ts">
-	import type { Principal } from '@dfinity/principal';
+	import type { Principal } from '@icp-sdk/core/principal';
 	import { onMount } from 'svelte';
 	import IconFilter from '$lib/components/icons/IconFilter.svelte';
 	import SatellitesPicker, {

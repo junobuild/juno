@@ -1,3 +1,4 @@
+mod auth;
 mod cdn;
 mod config;
 mod controllers;

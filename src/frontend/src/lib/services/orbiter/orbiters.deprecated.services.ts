@@ -1,11 +1,4 @@
-import type {
-	AnalyticKey,
-	AnalyticsClientsPageViews,
-	AnalyticsDevicesPageViews,
-	AnalyticsTop10PageViews,
-	AnalyticsTrackEvents,
-	PageView
-} from '$declarations/orbiter/orbiter.did';
+import type { OrbiterDid } from '$declarations';
 import { getPageViews, getTrackEvents } from '$lib/api/orbiter.api';
 import { getAnalyticsClientsPageViews008 } from '$lib/api/orbiter.deprecated.api';
 import type {
@@ -21,7 +14,7 @@ import { startOfDay } from 'date-fns';
 
 export const getDeprecatedAnalyticsClientsPageViews = async (
 	params: PageViewsParams
-): Promise<AnalyticsClientsPageViews> => {
+): Promise<OrbiterDid.AnalyticsClientsPageViews> => {
 	const { browsers, devices } = await getAnalyticsClientsPageViews008(params);
 
 	return {
@@ -54,7 +47,7 @@ export const getDeprecatedAnalyticsPageViews = async (
 
 export const getDeprecatedAnalyticsTrackEvents = async (
 	params: PageViewsParams
-): Promise<AnalyticsTrackEvents> => {
+): Promise<OrbiterDid.AnalyticsTrackEvents> => {
 	const trackEvents = await getTrackEvents(params);
 
 	const trackEventsSum = trackEvents.reduce<Record<string, number>>(
@@ -71,7 +64,7 @@ export const getDeprecatedAnalyticsTrackEvents = async (
 };
 
 const mapDeprecatedAnalyticsMetricsPageViews = (
-	pageViews: [AnalyticKey, PageView][]
+	pageViews: [OrbiterDid.AnalyticKey, OrbiterDid.PageView][]
 ): AnalyticsMetrics => {
 	const totalPageViews = pageViews.reduce<Record<DateStartOfTheDay, number>>(
 		(acc, [{ collected_at }, _]) => {
@@ -129,8 +122,8 @@ const mapDeprecatedAnalyticsMetricsPageViews = (
 };
 
 const mapDeprecatedAnalyticsTop10PageViews = (
-	pageViews: [AnalyticKey, PageView][]
-): AnalyticsTop10PageViews => {
+	pageViews: [OrbiterDid.AnalyticKey, OrbiterDid.PageView][]
+): OrbiterDid.AnalyticsTop10PageViews => {
 	const referrers = pageViews
 		.filter(
 			([_, { referrer }]) => nonNullish(fromNullable(referrer)) && fromNullable(referrer) !== ''
@@ -186,8 +179,8 @@ const mapDeprecatedAnalyticsTop10PageViews = (
 };
 
 const mapDeprecatedAnalyticsDevicesPageViews = (
-	pageViews: [AnalyticKey, PageView][]
-): AnalyticsDevicesPageViews => {
+	pageViews: [OrbiterDid.AnalyticKey, OrbiterDid.PageView][]
+): OrbiterDid.AnalyticsDevicesPageViews => {
 	const total = pageViews.length;
 
 	const { desktop, mobile, others } = pageViews.reduce(

@@ -1,10 +1,12 @@
-import type { _SERVICE as MissionControlActor } from '$declarations/mission_control/mission_control.did';
-import { idlFactory as idlFactorMissionControl } from '$declarations/mission_control/mission_control.factory.did';
-import type { _SERVICE as SatelliteActor } from '$declarations/satellite/satellite.did';
-import { idlFactory as idlFactorSatellite } from '$declarations/satellite/satellite.factory.did';
-import { Ed25519KeyIdentity } from '@dfinity/identity';
+import {
+	idlFactoryMissionControl,
+	idlFactorySatellite,
+	type MissionControlActor,
+	type SatelliteActor
+} from '$declarations';
 import { PocketIc, type Actor } from '@dfinity/pic';
-import type { Principal } from '@dfinity/principal';
+import { Ed25519KeyIdentity } from '@icp-sdk/core/identity';
+import type { Principal } from '@icp-sdk/core/principal';
 import { inject } from 'vitest';
 import { MISSION_CONTROL_ADMIN_CONTROLLER_ERROR_MSG } from '../../constants/mission-control-tests.constants';
 import { missionControlUserInitArgs } from '../../utils/mission-control-tests.utils';
@@ -31,7 +33,7 @@ describe('Mission Control', () => {
 
 		const { actor: c, canisterId: missionControlId } = await pic.setupCanister<MissionControlActor>(
 			{
-				idlFactory: idlFactorMissionControl,
+				idlFactory: idlFactoryMissionControl,
 				wasm: MISSION_CONTROL_WASM_PATH,
 				arg: userInitArgs(),
 				sender: controller.getPrincipal()
@@ -41,7 +43,7 @@ describe('Mission Control', () => {
 		actor = c;
 
 		const { canisterId: cId } = await pic.setupCanister<SatelliteActor>({
-			idlFactory: idlFactorSatellite,
+			idlFactory: idlFactorySatellite,
 			wasm: SATELLITE_WASM_PATH,
 			arg: controllersInitArgs([controller.getPrincipal(), missionControlId]),
 			sender: controller.getPrincipal()

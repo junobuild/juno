@@ -1,4 +1,4 @@
-import { encodeSnapshotId, ICManagementCanister } from '@dfinity/ic-management';
+import { encodeSnapshotId, ICManagementCanister } from '@icp-sdk/canisters/ic-management';
 import { icAgent, localAgent } from './actor.mjs';
 import { targetMainnet } from './utils.mjs';
 

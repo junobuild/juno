@@ -149,3 +149,9 @@ pub mod interface {
         pub version: Option<Version>,
     }
 }
+
+pub mod store {
+    pub struct AssertSetDocOptions {
+        pub with_assert_rate: bool,
+    }
+}

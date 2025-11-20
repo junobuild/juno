@@ -1,4 +1,4 @@
-import type { AnalyticKey, PageView, TrackEvent } from '$declarations/orbiter/orbiter.did';
+import type { OrbiterDid } from '$declarations';
 import { getPageViews, getTrackEvents } from '$lib/api/orbiter.api';
 import { i18n } from '$lib/stores/i18n.store';
 import { toasts } from '$lib/stores/toasts.store';
@@ -11,7 +11,7 @@ import {
 import { buildAnalyticsPeriods } from '$lib/utils/orbiter.utils';
 import { download, filenameTimestamp } from '$lib/utils/save.utils';
 import { jsonReplacer } from '@dfinity/utils';
-import { BlobWriter, TextReader, ZipWriter } from '@zip.js/zip.js';
+import { BlobWriter, configure, TextReader, ZipWriter } from '@zip.js/zip.js';
 import { get } from 'svelte/store';
 
 export const exportTrackEvents = async (params: PageViewsParams): Promise<{ success: boolean }> => {
@@ -19,14 +19,14 @@ export const exportTrackEvents = async (params: PageViewsParams): Promise<{ succ
 		period
 	}: {
 		period: Required<PageViewsPeriod>;
-	}): Promise<[AnalyticKey, TrackEvent][]> =>
+	}): Promise<[OrbiterDid.AnalyticKey, OrbiterDid.TrackEvent][]> =>
 		getTrackEvents({
 			...params,
 			...period
 		});
 
 	try {
-		await executeExport<TrackEvent>({
+		await executeExport<OrbiterDid.TrackEvent>({
 			params,
 			filename: `Juno_Analytics_Tracked_Events_${filenameTimestamp()}.zip`,
 			fn
@@ -48,14 +48,14 @@ export const exportPageViews = async (params: PageViewsParams): Promise<{ succes
 		period
 	}: {
 		period: Required<PageViewsPeriod>;
-	}): Promise<[AnalyticKey, PageView][]> =>
+	}): Promise<[OrbiterDid.AnalyticKey, OrbiterDid.PageView][]> =>
 		getPageViews({
 			...params,
 			...period
 		});
 
 	try {
-		await executeExport<PageView>({
+		await executeExport<OrbiterDid.PageView>({
 			params,
 			filename: `Juno_Analytics_Page_Views_${filenameTimestamp()}.zip`,
 			fn
@@ -78,7 +78,7 @@ const executeExport = async <T>({
 }: {
 	params: PageViewsParams;
 	filename: string;
-} & Pick<BatchPeriodsRequestsParams<[AnalyticKey, T][]>, 'fn'>): Promise<void> => {
+} & Pick<BatchPeriodsRequestsParams<[OrbiterDid.AnalyticKey, T][]>, 'fn'>): Promise<void> => {
 	const blob = await collectAndZip(params);
 
 	// We use download because of the following issue when using the file picker
@@ -93,14 +93,14 @@ const collectAndZip = async <T>({
 	params,
 	fn
 }: { params: PageViewsParams } & Pick<
-	BatchPeriodsRequestsParams<[AnalyticKey, T][]>,
+	BatchPeriodsRequestsParams<[OrbiterDid.AnalyticKey, T][]>,
 	'fn'
 >): Promise<Blob> => {
 	const periods = buildAnalyticsPeriods({ params });
 
 	interface Result {
 		period: PageViewsPeriod;
-		data: [AnalyticKey, T][];
+		data: [OrbiterDid.AnalyticKey, T][];
 	}
 
 	const executeFn = async ({ period }: { period: Required<PageViewsPeriod> }): Promise<Result> => ({
@@ -111,6 +111,13 @@ const collectAndZip = async <T>({
 	const pageViewsByPeriods = await batchAnalyticsRequests<Result>({
 		periods,
 		fn: executeFn
+	});
+
+	// Disable web worker to avoid the issue: "Refused to create a worker from 'data:text/javascript...'"
+	// In our current use case, we do not necessarily need to defer the work.
+	// Alternatively, we can import and provide the workers (see https://github.com/gildas-lormeau/zip.js/pull/607)
+	configure({
+		useWebWorkers: false
 	});
 
 	const zipWriter = new ZipWriter(new BlobWriter('application/zip'), { bufferedWrite: true });

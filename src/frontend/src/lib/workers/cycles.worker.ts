@@ -16,8 +16,8 @@ import {
 	emitSavedCanisters,
 	loadIdentity
 } from '$lib/utils/worker.utils';
-import type { Identity } from '@dfinity/agent';
 import { isNullish } from '@dfinity/utils';
+import type { Identity } from '@icp-sdk/core/agent';
 import { set } from 'idb-keyval';
 
 export const onCyclesMessage = async ({ data: dataMsg }: MessageEvent<PostMessageRequest>) => {
@@ -33,7 +33,6 @@ export const onCyclesMessage = async ({ data: dataMsg }: MessageEvent<PostMessag
 		case 'restartCyclesTimer':
 			stopCyclesTimer();
 			await startCyclesTimer({ data });
-			return;
 	}
 };
 

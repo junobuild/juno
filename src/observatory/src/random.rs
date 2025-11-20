@@ -1,4 +1,4 @@
-use crate::memory::manager::RUNTIME_STATE;
+use crate::memory::state::services::with_runtime_rng_mut;
 use getrandom::Error;
 use ic_cdk::futures::spawn_017_compat;
 use ic_cdk_timers::set_timer;
@@ -13,17 +13,13 @@ pub fn defer_init_random_seed() {
 async fn set_random_seed() {
     let seed = get_random_seed().await;
 
-    RUNTIME_STATE.with(|state| {
-        state.borrow_mut().rng = seed;
-    });
+    with_runtime_rng_mut(|rng| *rng = seed);
 }
 
 /// Source: https://github.com/rust-random/getrandom?tab=readme-ov-file#custom-backend
 #[no_mangle]
 unsafe extern "Rust" fn __getrandom_v03_custom(dest: *mut u8, len: usize) -> Result<(), Error> {
-    RUNTIME_STATE.with(|state| {
-        let rng = &mut state.borrow_mut().rng;
-
+    with_runtime_rng_mut(|rng| {
         match rng {
             None => Err(Error::new_custom(0)),
             Some(rng) => {
@@ -42,12 +38,8 @@ unsafe extern "Rust" fn __getrandom_v03_custom(dest: *mut u8, len: usize) -> Res
 }
 
 pub fn random() -> Result<i32, String> {
-    RUNTIME_STATE.with(|state| {
-        let rng = &mut state.borrow_mut().rng;
-
-        match rng {
-            None => Err("The random number generator has not been initialized.".to_string()),
-            Some(rng) => Ok(rng.random()),
-        }
+    with_runtime_rng_mut(|rng| match rng {
+        None => Err("The random number generator has not been initialized.".to_string()),
+        Some(rng) => Ok(rng.random()),
     })
 }

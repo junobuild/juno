@@ -1,11 +1,13 @@
-import type { _SERVICE as OrbiterActor } from '$declarations/orbiter/orbiter.did';
-import { idlFactory as idlFactorOrbiter } from '$declarations/orbiter/orbiter.factory.did';
-import type { _SERVICE as SatelliteActor } from '$declarations/satellite/satellite.did';
-import { idlFactory as idlFactorSatellite } from '$declarations/satellite/satellite.factory.did';
-import type { Identity } from '@dfinity/agent';
-import { IDL } from '@dfinity/candid';
+import {
+	type OrbiterActor,
+	type SatelliteActor,
+	idlFactoryOrbiter,
+	idlFactorySatellite
+} from '$declarations';
 import type { PocketIc } from '@dfinity/pic';
-import type { Principal } from '@dfinity/principal';
+import type { Identity } from '@icp-sdk/core/agent';
+import { IDL } from '@icp-sdk/core/candid';
+import type { Principal } from '@icp-sdk/core/principal';
 import { controllersInitArgs, ORBITER_WASM_PATH, SATELLITE_WASM_PATH } from './setup-tests.utils';
 
 export const missionControlUserInitArgs = (owner: Principal): ArrayBuffer =>
@@ -16,7 +18,7 @@ export const missionControlUserInitArgs = (owner: Principal): ArrayBuffer =>
 			})
 		],
 		[{ user: owner }]
-	);
+	).buffer as ArrayBuffer;
 
 export const setupMissionControlModules = async ({
 	pic,
@@ -28,7 +30,7 @@ export const setupMissionControlModules = async ({
 	missionControlId: Principal;
 }): Promise<{ satelliteId: Principal; orbiterId: Principal }> => {
 	const { canisterId: orbiterId } = await pic.setupCanister<OrbiterActor>({
-		idlFactory: idlFactorOrbiter,
+		idlFactory: idlFactoryOrbiter,
 		wasm: ORBITER_WASM_PATH,
 		arg: controllersInitArgs([controller.getPrincipal(), missionControlId]),
 		sender: controller.getPrincipal()
@@ -41,7 +43,7 @@ export const setupMissionControlModules = async ({
 	});
 
 	const { canisterId: satelliteId } = await pic.setupCanister<SatelliteActor>({
-		idlFactory: idlFactorSatellite,
+		idlFactory: idlFactorySatellite,
 		wasm: SATELLITE_WASM_PATH,
 		arg: controllersInitArgs([controller.getPrincipal(), missionControlId]),
 		sender: controller.getPrincipal()

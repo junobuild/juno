@@ -17,6 +17,7 @@ pub enum CommitProposalError {
     ProposalNotOpen(String),
     InvalidSha256(String),
     InvalidType(String),
+    PreCommitAssetsIssue(String),
     CommitAssetsIssue(String),
     PostCommitAssetsIssue(String),
 }

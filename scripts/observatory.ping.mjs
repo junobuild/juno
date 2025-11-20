@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 
-import { Principal } from '@dfinity/principal';
+import { Principal } from '@icp-sdk/core/principal';
 import { observatoryActorIC, observatoryActorLocal } from './actor.mjs';
 import { targetMainnet } from './utils.mjs';
 

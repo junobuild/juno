@@ -21,6 +21,7 @@ fn init() {
         rates: Rates::default(),
         fees: Fees::default(),
         storage: init_cdn_storage_heap_state(),
+        authentication: None,
         releases_metadata: ReleasesMetadata::default(),
     };
 

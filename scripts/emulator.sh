@@ -28,6 +28,7 @@ else
     -p 5987:5987 \
     -p 5999:5999 \
     -v "$VOLUME":/juno/.juno \
+    -v "$(pwd)/juno.config.mjs:/juno/juno.config.mjs" \
     -v "$(pwd)/target/deploy:/juno/target/deploy" \
     junobuild/console:latest
 fi

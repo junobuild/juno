@@ -1,6 +1,6 @@
 [package]
 name = "junobuild-shared"
-version = "0.2.3"
+version = "0.4.0"
 authors.workspace = true
 edition.workspace = true
 repository.workspace = true
@@ -26,5 +26,5 @@ getrandom.workspace = true
 rand.workspace = true
 futures = "0.3.31"
 ciborium.workspace = true
-time = "0.3.31"
+time = { version = "0.3.31", features = ["parsing"] }
 regex.workspace = true

@@ -1,9 +1,8 @@
-import type { HttpResponse as OrbiterHttpResponse } from '$declarations/orbiter/orbiter.did';
-import type { HttpResponse as SatelliteHttpResponse } from '$declarations/satellite/satellite.did';
+import type { OrbiterDid, SatelliteDid } from '$declarations';
 import type { PocketIc } from '@dfinity/pic';
-import type { Principal } from '@dfinity/principal';
 import { verifyRequestResponsePair, type Request } from '@dfinity/response-verification';
 import { assertNonNullish } from '@dfinity/utils';
+import type { Principal } from '@icp-sdk/core/principal';
 
 const CERTIFICATE_VERSION = 2;
 
@@ -31,7 +30,7 @@ export const assertCertification = async ({
 	currentDate: Date;
 	canisterId: Principal;
 	request: Request;
-	response: SatelliteHttpResponse | OrbiterHttpResponse;
+	response: SatelliteDid.HttpResponse | OrbiterDid.HttpResponse;
 	statusCode?: number;
 }) => {
 	const rootKey = await getRootKey(pic);

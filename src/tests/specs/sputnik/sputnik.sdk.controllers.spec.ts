@@ -1,9 +1,8 @@
-import type { Controller } from '$declarations/satellite/satellite.did';
-import type { _SERVICE as SputnikActor } from '$declarations/sputnik/sputnik.did';
-import type { Identity } from '@dfinity/agent';
+import type { SputnikActor, SputnikDid } from '$declarations';
 import type { Actor, PocketIc } from '@dfinity/pic';
-import { Principal } from '@dfinity/principal';
 import { assertNonNullish, jsonReplacer, jsonReviver } from '@dfinity/utils';
+import type { Identity } from '@icp-sdk/core/agent';
+import { Principal } from '@icp-sdk/core/principal';
 import { mockSetRule } from '../../mocks/collection.mocks';
 import { setupTestSputnik } from '../../utils/fixtures-tests.utils';
 import { createUser as createUserUtils } from '../../utils/satellite-doc-tests.utils';
@@ -21,7 +20,7 @@ describe('Sputnik > sdk > controllers', () => {
 		keyword
 	}: {
 		keyword: string;
-	}): Promise<[Uint8Array, Controller][]> => {
+	}): Promise<[Uint8Array, SputnikDid.Controller][]> => {
 		const { logs } = await setDocAndFetchLogs({
 			collection: TEST_COLLECTION,
 			actor,
@@ -36,7 +35,7 @@ describe('Sputnik > sdk > controllers', () => {
 
 		const [_, { message }] = log;
 
-		const data: [Uint8Array, Controller][] = JSON.parse(
+		const data: [Uint8Array, SputnikDid.Controller][] = JSON.parse(
 			message.replace(`${keyword}:`, '').trim(),
 			jsonReviver
 		);

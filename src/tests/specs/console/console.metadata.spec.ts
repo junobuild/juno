@@ -1,9 +1,8 @@
-import type { _SERVICE as ConsoleActor } from '$declarations/console/console.did';
-import { idlFactory as idlFactorConsole } from '$declarations/console/console.factory.did';
-import { AnonymousIdentity } from '@dfinity/agent';
-import { Ed25519KeyIdentity } from '@dfinity/identity';
+import { idlFactoryConsole, type ConsoleActor } from '$declarations';
 import { PocketIc, type Actor } from '@dfinity/pic';
 import { assertNonNullish, fromNullable, toNullable } from '@dfinity/utils';
+import { AnonymousIdentity } from '@icp-sdk/core/agent';
+import { Ed25519KeyIdentity } from '@icp-sdk/core/identity';
 import { JUNO_STORAGE_ERROR_RESERVED_ASSET } from '@junobuild/errors';
 import { inject } from 'vitest';
 import { uploadFile } from '../../utils/cdn-tests.utils';
@@ -20,7 +19,7 @@ describe('Console > Metadata', () => {
 		pic = await PocketIc.create(inject('PIC_URL'));
 
 		const { actor: c } = await pic.setupCanister<ConsoleActor>({
-			idlFactory: idlFactorConsole,
+			idlFactory: idlFactoryConsole,
 			wasm: CONSOLE_WASM_PATH,
 			sender: controller.getPrincipal()
 		});
@@ -28,7 +27,7 @@ describe('Console > Metadata', () => {
 		actor = c;
 		actor.setIdentity(controller);
 
-		await deploySegments(actor);
+		await deploySegments({ actor });
 	});
 
 	afterAll(async () => {
@@ -44,7 +43,7 @@ describe('Console > Metadata', () => {
 			const { http_request } = actor;
 
 			const { body } = await http_request({
-				body: [],
+				body: Uint8Array.from([]),
 				certificate_version: toNullable(),
 				headers: [],
 				method: 'GET',
@@ -52,7 +51,7 @@ describe('Console > Metadata', () => {
 			});
 
 			const decoder = new TextDecoder();
-			const responseBody = decoder.decode(body as Uint8Array<ArrayBufferLike>);
+			const responseBody = decoder.decode(body);
 
 			expect(responseBody).toEqual(
 				JSON.stringify({
@@ -92,7 +91,7 @@ describe('Console > Metadata', () => {
 			});
 
 			const { status_code } = await http_request({
-				body: [],
+				body: Uint8Array.from([]),
 				certificate_version: toNullable(),
 				headers: [],
 				method: 'GET',

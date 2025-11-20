@@ -1,7 +1,7 @@
 import { CachedValueSchema } from '$lib/schemas/_cache.schema';
 import { BuildTypeSchema, MetadataVersionSchema } from '@junobuild/admin';
 import { JunoPackageSchema } from '@junobuild/config';
-import * as z from 'zod/v4';
+import * as z from 'zod';
 
 /**
  * Schema for the metadata of a version.

@@ -1,11 +1,11 @@
-import type { CollectionType } from '$declarations/satellite/satellite.did';
+import type { SatelliteDid } from '$declarations';
 import { listRules } from '$lib/api/satellites.api';
 import { listRules0022, listRulesDeprecated } from '$lib/api/satellites.deprecated.api';
 import { filterSystemRules } from '$lib/constants/rules.constants';
 import { toasts } from '$lib/stores/toasts.store';
 import type { OptionIdentity } from '$lib/types/itentity';
 import type { RulesData } from '$lib/types/rules.context';
-import type { Principal } from '@dfinity/principal';
+import type { Principal } from '@icp-sdk/core/principal';
 import type { Writable } from 'svelte/store';
 
 export const reloadContextRules = async ({
@@ -16,7 +16,7 @@ export const reloadContextRules = async ({
 }: {
 	satelliteId: Principal;
 	store: Writable<RulesData>;
-	type: CollectionType;
+	type: SatelliteDid.CollectionType;
 	identity: OptionIdentity;
 }) => {
 	try {

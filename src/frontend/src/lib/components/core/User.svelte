@@ -1,23 +1,25 @@
 <script lang="ts">
+	import { fromNullable, nonNullish, notEmptyString } from '@dfinity/utils';
 	import { page } from '$app/state';
+	import type { ConsoleDid } from '$declarations';
+	import UserProviderData from '$lib/components/core/UserProviderData.svelte';
 	import IconBook from '$lib/components/icons/IconBook.svelte';
 	import IconCodeBranch from '$lib/components/icons/IconCodeBranch.svelte';
 	import IconRaygun from '$lib/components/icons/IconRaygun.svelte';
-	import IconSignIn from '$lib/components/icons/IconSignIn.svelte';
 	import IconSignOut from '$lib/components/icons/IconSignOut.svelte';
 	import IconUser from '$lib/components/icons/IconUser.svelte';
+	import Avatar from '$lib/components/ui/Avatar.svelte';
 	import ButtonIcon from '$lib/components/ui/ButtonIcon.svelte';
 	import Popover from '$lib/components/ui/Popover.svelte';
 	import { APP_VERSION } from '$lib/constants/app.constants';
-	import { authSignedIn } from '$lib/derived/auth.derived';
-	import { signIn as doSignIn, signOut } from '$lib/services/auth/auth.services';
+	import { signOut } from '$lib/services/auth/auth.services';
 	import { i18n } from '$lib/stores/i18n.store';
 
 	interface Props {
-		signIn?: boolean;
+		provider?: ConsoleDid.Provider;
 	}
 
-	let { signIn = true }: Props = $props();
+	let { provider }: Props = $props();
 
 	let button: HTMLButtonElement | undefined = $state();
 	let visible: boolean = $state(false);
@@ -29,36 +31,36 @@
 
 	const close = () => (visible = false);
 
-	const onLogin = async () => {
-		await doSignIn({});
-	};
-
 	// eslint-disable-next-line require-await
 	const onclick = async () => {
 		visible = true;
 	};
 
 	let preferences = $derived(page.route.id === '/(single)/preferences');
+
+	let openId = $derived<ConsoleDid.OpenId | undefined>(
+		nonNullish(provider) && 'OpenId' in provider ? provider.OpenId : undefined
+	);
+	let openIdData = $derived<ConsoleDid.OpenIdData | undefined>(openId?.data);
+	let openIdPicture = $derived<string | undefined>(fromNullable(openIdData?.picture ?? []));
 </script>
 
-{#if $authSignedIn}
-	<ButtonIcon {onclick} bind:button>
-		{#snippet icon()}
+<ButtonIcon {onclick} bind:button>
+	{#snippet icon()}
+		{#if notEmptyString(openIdPicture)}
+			<Avatar alt="" src={openIdPicture} />
+		{:else}
 			<IconUser size="14px" />
-		{/snippet}
-		{$i18n.core.user_menu}
-	</ButtonIcon>
-{:else if signIn}
-	<ButtonIcon onclick={onLogin}>
-		{#snippet icon()}
-			<IconSignIn size="14px" />
-		{/snippet}
-		{$i18n.core.sign_in}
-	</ButtonIcon>
-{/if}
+		{/if}
+	{/snippet}
+
+	{$i18n.core.user_menu}
+</ButtonIcon>
 
 <Popover anchor={button} direction="rtl" bind:visible>
 	<div class="container">
+		<UserProviderData {provider} />
+
 		{#if !preferences}
 			<a class="menu" aria-haspopup="menu" href="/preferences" onclick={close} role="menuitem">
 				<IconRaygun />
@@ -123,7 +125,7 @@
 
 	@include media.dark-theme {
 		hr {
-			border-color: var(--color-menu-tint);
+			border-color: var(--color-background-tint);
 		}
 	}
 </style>

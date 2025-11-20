@@ -1,10 +1,12 @@
 <script lang="ts">
-	import type { AccountIdentifier } from '@dfinity/ledger-icp';
 	import { nonNullish } from '@dfinity/utils';
+	import type { AccountIdentifier } from '@icp-sdk/canisters/ledger/icp';
 	import ExternalLink from '$lib/components/ui/ExternalLink.svelte';
 	import Identifier from '$lib/components/ui/Identifier.svelte';
+	import { testIds } from '$lib/constants/test-ids.constants';
 	import { missionControlIdDerived } from '$lib/derived/mission-control.derived';
 	import { i18n } from '$lib/stores/i18n.store';
+	import { testId } from '$lib/utils/test.utils';
 
 	interface Props {
 		accountIdentifier: AccountIdentifier | undefined;
@@ -28,7 +30,9 @@
 	>.
 </p>
 
-<button onclick={onclose}>{$i18n.core.close}</button>
+<button onclick={onclose} {...testId(testIds.wizard.closeInsufficientFunds)}
+	>{$i18n.core.close}</button
+>
 
 <style lang="scss">
 	.account-identifier {

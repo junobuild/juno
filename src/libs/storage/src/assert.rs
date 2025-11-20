@@ -12,7 +12,7 @@ use crate::types::state::FullPath;
 use crate::types::store::{Asset, AssetAssertUpload, Batch};
 use candid::Principal;
 use junobuild_collections::assert::collection::is_system_collection;
-use junobuild_collections::constants::assets::DEFAULT_ASSETS_COLLECTIONS;
+use junobuild_collections::constants::assets::COLLECTION_ASSET_KEY;
 use junobuild_collections::constants::core::SYS_COLLECTION_PREFIX;
 use junobuild_collections::types::core::CollectionKey;
 use junobuild_collections::types::rules::Rule;
@@ -211,7 +211,7 @@ fn assert_key(
     // /.well-known/ii-alternative-origins is automatically generated for alternative origins
     assert_well_known_key(full_path, WELL_KNOWN_II_ALTERNATIVE_ORIGINS)?;
 
-    let dapp_collection = DEFAULT_ASSETS_COLLECTIONS[0].0;
+    let dapp_collection = COLLECTION_ASSET_KEY;
 
     if is_system_collection(collection) {
         let allowed = if collection.clone() == *dapp_collection {

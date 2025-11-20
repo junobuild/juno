@@ -88,6 +88,21 @@ impl Rule {
             }
         }
     }
+
+    pub fn switch_rule_memory(current_rule: &Rule) -> Rule {
+        let (created_at, version, updated_at) = Self::initialize_common_fields(&Some(current_rule));
+
+        Rule {
+            memory: Some(match current_rule.mem() {
+                Memory::Heap => Memory::Stable,
+                Memory::Stable => Memory::Heap,
+            }),
+            created_at,
+            updated_at,
+            version: Some(version),
+            ..current_rule.clone()
+        }
+    }
 }
 
 impl Versioned for &Rule {

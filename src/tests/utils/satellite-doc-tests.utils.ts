@@ -1,9 +1,8 @@
-import type { Doc, _SERVICE as SatelliteActor } from '$declarations/satellite/satellite.did';
-import type { Identity } from '@dfinity/agent';
-import { Ed25519KeyIdentity } from '@dfinity/identity';
-import type { Actor } from '@dfinity/pic';
-import type { ActorInterface } from '@dfinity/pic/dist/pocket-ic-actor';
+import type { SatelliteActor, SatelliteDid } from '$declarations';
+import type { Actor, ActorInterface } from '@dfinity/pic';
 import { toNullable } from '@dfinity/utils';
+import type { Identity } from '@icp-sdk/core/agent';
+import { Ed25519KeyIdentity } from '@icp-sdk/core/identity';
 import { toArray } from '@junobuild/utils';
 import { nanoid } from 'nanoid';
 import { mockData } from '../mocks/doc.mocks';
@@ -36,7 +35,7 @@ export const createUser = async <T extends ActorInterface<T>>({
 	user?: Identity;
 }): Promise<{
 	user: Identity;
-	doc: Doc;
+	doc: SatelliteDid.Doc;
 }> => {
 	const identity = user ?? Ed25519KeyIdentity.generate();
 

@@ -41,15 +41,15 @@
 </script>
 
 <IdentityGuard>
-	<Tabs>
-		{#snippet info()}
-			{#if $authSignedIn}
-				<Warnings />
-			{/if}
-		{/snippet}
+	<Loaders>
+		<MissionControlGuard>
+			<Tabs>
+				{#snippet info()}
+					{#if $authSignedIn}
+						<Warnings />
+					{/if}
+				{/snippet}
 
-		<Loaders>
-			<MissionControlGuard>
 				{#if nonNullish($missionControlIdDerived)}
 					{#if $store.tabId === $store.tabs[0].id}
 						<MissionControl missionControlId={$missionControlIdDerived} />
@@ -57,7 +57,7 @@
 						<MissionControlSettings missionControlId={$missionControlIdDerived} />
 					{/if}
 				{/if}
-			</MissionControlGuard>
-		</Loaders>
-	</Tabs>
+			</Tabs>
+		</MissionControlGuard>
+	</Loaders>
 </IdentityGuard>

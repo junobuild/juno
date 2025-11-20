@@ -1,9 +1,9 @@
 <script lang="ts">
-	import type { Principal } from '@dfinity/principal';
 	import { isNullish, nonNullish } from '@dfinity/utils';
+	import type { Principal } from '@icp-sdk/core/principal';
 	import { getContext, untrack } from 'svelte';
 	import { fade } from 'svelte/transition';
-	import type { AssetNoContent } from '$declarations/satellite/satellite.did';
+	import type { SatelliteDid } from '$declarations';
 	import { deleteAssets } from '$lib/api/satellites.api';
 	import AssetUpload from '$lib/components/assets/AssetUpload.svelte';
 	import CollectionEmpty from '$lib/components/collections/CollectionEmpty.svelte';
@@ -14,9 +14,9 @@
 	import Html from '$lib/components/ui/Html.svelte';
 	import { authStore } from '$lib/stores/auth.store';
 	import { i18n } from '$lib/stores/i18n.store';
-	import { listParamsStore } from '$lib/stores/list-params.store';
 	import { versionStore } from '$lib/stores/version.store';
 	import { type DataContext, DATA_CONTEXT_KEY } from '$lib/types/data.context';
+	import { type ListParamsContext, LIST_PARAMS_CONTEXT_KEY } from '$lib/types/list-params.context';
 	import { type PaginationContext, PAGINATION_CONTEXT_KEY } from '$lib/types/pagination.context';
 	import { type RulesContext, RULES_CONTEXT_KEY } from '$lib/types/rules.context';
 	import { emit } from '$lib/utils/events.utils';
@@ -30,20 +30,22 @@
 
 	const { store, hasAnyRules }: RulesContext = getContext<RulesContext>(RULES_CONTEXT_KEY);
 
+	const { listParams } = getContext<ListParamsContext>(LIST_PARAMS_CONTEXT_KEY);
+
 	let collection = $derived($store.rule?.[0]);
 
 	const {
 		store: paginationStore,
 		resetPage,
 		list
-	}: PaginationContext<AssetNoContent> = getContext<PaginationContext<AssetNoContent>>(
-		PAGINATION_CONTEXT_KEY
-	);
+	}: PaginationContext<SatelliteDid.AssetNoContent> = getContext<
+		PaginationContext<SatelliteDid.AssetNoContent>
+	>(PAGINATION_CONTEXT_KEY);
 
 	let empty = $derived($paginationStore.items?.length === 0 && nonNullish(collection));
 
-	const { store: assetsStore, resetData }: DataContext<AssetNoContent> =
-		getContext<DataContext<AssetNoContent>>(DATA_CONTEXT_KEY);
+	const { store: assetsStore, resetData }: DataContext<SatelliteDid.AssetNoContent> =
+		getContext<DataContext<SatelliteDid.AssetNoContent>>(DATA_CONTEXT_KEY);
 
 	const load = async () => {
 		resetPage();
@@ -53,7 +55,7 @@
 
 	$effect(() => {
 		collection;
-		$listParamsStore;
+		$listParams;
 		$versionStore;
 
 		untrack(() => {
@@ -71,12 +73,10 @@
 	 * Delete data
 	 */
 
-	let deleteData: (params: { collection: string; satelliteId: Principal }) => Promise<void> =
-		$derived(async (params: { collection: string; satelliteId: Principal }) => {
-			await deleteAssets({ ...params, identity: $authStore.identity });
-
-			resetData();
-		});
+	const deleteData = async (params: { collection: string; satelliteId: Principal }) => {
+		await deleteAssets({ ...params, identity: $authStore.identity });
+		resetData();
+	};
 
 	const reload = async () => {
 		emit({ message: 'junoCloseActions' });

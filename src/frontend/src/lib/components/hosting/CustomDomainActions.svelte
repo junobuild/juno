@@ -1,11 +1,7 @@
 <script lang="ts">
 	import { isNullish, nonNullish, fromNullishNullable } from '@dfinity/utils';
 	import { run, stopPropagation } from 'svelte/legacy';
-	import type { Satellite } from '$declarations/mission_control/mission_control.did';
-	import type {
-		AuthenticationConfig,
-		CustomDomain as CustomDomainType
-	} from '$declarations/satellite/satellite.did';
+	import type { SatelliteDid, MissionControlDid } from '$declarations';
 	import { setAuthConfig } from '$lib/api/satellites.api';
 	import IconWarning from '$lib/components/icons/IconWarning.svelte';
 	import ButtonTableAction from '$lib/components/ui/ButtonTableAction.svelte';
@@ -17,6 +13,7 @@
 	import { busy, isBusy } from '$lib/stores/busy.store';
 	import { i18n } from '$lib/stores/i18n.store';
 	import { toasts } from '$lib/stores/toasts.store';
+	import type { CustomDomain } from '$lib/types/custom-domain';
 	import type { JunoModalCustomDomainDetail } from '$lib/types/modal';
 	import type { Option } from '$lib/types/utils';
 	import { buildDeleteAuthenticationConfig } from '$lib/utils/auth.config.utils';
@@ -24,10 +21,10 @@
 	import { i18nFormat } from '$lib/utils/i18n.utils';
 
 	interface Props {
-		satellite: Satellite;
-		customDomain: [string, CustomDomainType] | undefined;
+		satellite: MissionControlDid.Satellite;
+		customDomain: CustomDomain | undefined;
 		displayState: Option<string>;
-		config: AuthenticationConfig | undefined;
+		config: SatelliteDid.AuthenticationConfig | undefined;
 	}
 
 	let { satellite, customDomain, displayState, config }: Props = $props();
@@ -88,7 +85,8 @@
 				satelliteId: satellite.satellite_id,
 				domainName: customDomain[0],
 				customDomain: customDomain[1],
-				deleteCustomDomain: !skipDeleteDomain
+				deleteCustomDomain: !skipDeleteDomain,
+				identity: $authStore.identity
 			});
 
 			await updateConfig();
@@ -165,8 +163,14 @@
 		{#if advancedOptions}
 			<hr />
 			<Checkbox>
-				<input onchange={() => (skipDeleteDomain = !skipDeleteDomain)} type="checkbox" />
-				<span class="skip-delete">{$i18n.hosting.skip_delete_domain}</span>
+				<input
+					id="skip-delete"
+					onchange={() => (skipDeleteDomain = !skipDeleteDomain)}
+					type="checkbox"
+				/>
+				<label for="skip-delete"
+					><span class="skip-delete">{$i18n.hosting.skip_delete_domain}</span></label
+				>
 			</Checkbox>
 		{/if}
 	</div>

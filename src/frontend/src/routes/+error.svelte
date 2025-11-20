@@ -5,9 +5,9 @@
 	import Layout from '$lib/components/ui/Layout.svelte';
 </script>
 
-<Layout centered title={false}>
+<Layout centered>
 	{#snippet navbar()}
-		<Navbar signIn={false} />
+		<Navbar />
 	{/snippet}
 
 	<App404 />

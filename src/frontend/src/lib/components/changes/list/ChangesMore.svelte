@@ -1,5 +1,5 @@
 <script lang="ts">
-	import type { Principal } from '@dfinity/principal';
+	import type { Principal } from '@icp-sdk/core/principal';
 	import IconMore from '$lib/components/icons/IconMore.svelte';
 	import IconRefresh from '$lib/components/icons/IconRefresh.svelte';
 	import Popover from '$lib/components/ui/Popover.svelte';

@@ -1,10 +1,8 @@
-import type { _SERVICE as OrbiterActor } from '$declarations/orbiter/orbiter.did';
-import { idlFactory as idlFactorOrbiter } from '$declarations/orbiter/orbiter.factory.did';
-import type { HttpRequest } from '$declarations/satellite/satellite.did';
-import { Ed25519KeyIdentity } from '@dfinity/identity';
+import { type OrbiterActor, type OrbiterDid, idlFactoryOrbiter } from '$declarations';
 import { type Actor, PocketIc } from '@dfinity/pic';
-import type { Principal } from '@dfinity/principal';
 import { toNullable } from '@dfinity/utils';
+import { Ed25519KeyIdentity } from '@icp-sdk/core/identity';
+import type { Principal } from '@icp-sdk/core/principal';
 import { inject } from 'vitest';
 import { assertCertification } from '../../utils/certification-tests.utils';
 import { toBodyJson } from '../../utils/orbiter-tests.utils';
@@ -31,7 +29,7 @@ describe('Orbiter > HTTP > Routes', () => {
 		await pic.setTime(currentDate.getTime());
 
 		const { actor: c, canisterId: cId } = await pic.setupCanister<OrbiterActor>({
-			idlFactory: idlFactorOrbiter,
+			idlFactory: idlFactoryOrbiter,
 			wasm: ORBITER_WASM_PATH,
 			arg: controllersInitArgs(controller),
 			sender: controller.getPrincipal()
@@ -50,7 +48,7 @@ describe('Orbiter > HTTP > Routes', () => {
 
 	describe.each([
 		['With body', toBodyJson({ hello: 'world' })],
-		['Without body', []]
+		['Without body', Uint8Array.from([])]
 		// eslint-disable-next-line local-rules/prefer-object-params
 	])('%s', (_, body) => {
 		describe.each(['/something', '/'])('Route not found for %s', (url) => {
@@ -59,7 +57,7 @@ describe('Orbiter > HTTP > Routes', () => {
 				async (method) => {
 					const { http_request } = actor;
 
-					const request: HttpRequest = {
+					const request: OrbiterDid.HttpRequest = {
 						body,
 						certificate_version: toNullable(2),
 						headers: [],
@@ -74,7 +72,7 @@ describe('Orbiter > HTTP > Routes', () => {
 					).toEqual('application/json');
 
 					const decoder = new TextDecoder();
-					const responseBody = decoder.decode(response.body as Uint8Array<ArrayBufferLike>);
+					const responseBody = decoder.decode(response.body);
 
 					expect(JSON.parse(responseBody)).toEqual(RESPONSE_404);
 
@@ -103,7 +101,7 @@ describe('Orbiter > HTTP > Routes', () => {
 				async (method) => {
 					const { http_request } = actor;
 
-					const request: HttpRequest = {
+					const request: OrbiterDid.HttpRequest = {
 						body,
 						certificate_version: toNullable(2),
 						headers: [],
@@ -118,7 +116,7 @@ describe('Orbiter > HTTP > Routes', () => {
 					).toEqual('application/json');
 
 					const decoder = new TextDecoder();
-					const responseBody = decoder.decode(response.body as Uint8Array<ArrayBufferLike>);
+					const responseBody = decoder.decode(response.body);
 
 					expect(JSON.parse(responseBody)).toEqual(RESPONSE_404);
 
@@ -142,7 +140,7 @@ describe('Orbiter > HTTP > Routes', () => {
 					async (method) => {
 						const { http_request } = actor;
 
-						const request: HttpRequest = {
+						const request: OrbiterDid.HttpRequest = {
 							body,
 							certificate_version: toNullable(2),
 							headers: [],
@@ -157,7 +155,7 @@ describe('Orbiter > HTTP > Routes', () => {
 						).toEqual('application/json');
 
 						const decoder = new TextDecoder();
-						const responseBody = decoder.decode(response.body as Uint8Array<ArrayBufferLike>);
+						const responseBody = decoder.decode(response.body);
 
 						expect(JSON.parse(responseBody)).toEqual(RESPONSE_405);
 

@@ -6,14 +6,15 @@ import type { OptionIdentity } from '$lib/types/itentity';
 import type { ListParams } from '$lib/types/list';
 import type { User } from '$lib/types/user';
 import { toKeyUser } from '$lib/utils/user.utils';
-import type { Principal } from '@dfinity/principal';
+import type { Principal } from '@icp-sdk/core/principal';
 
 export const listUsers = async ({
 	startAfter,
 	satelliteId,
 	filter,
+	order,
 	identity
-}: Pick<ListParams, 'startAfter' | 'filter'> & {
+}: Pick<ListParams, 'startAfter' | 'filter' | 'order'> & {
 	satelliteId: Principal;
 	identity: OptionIdentity;
 }): Promise<{
@@ -33,7 +34,7 @@ export const listUsers = async ({
 		satelliteId,
 		params: {
 			startAfter,
-			order: {
+			order: order ?? {
 				desc: true,
 				field: 'created_at'
 			},

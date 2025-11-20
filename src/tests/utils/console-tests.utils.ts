@@ -1,22 +1,28 @@
-import type { _SERVICE as ConsoleActor } from '$declarations/console/console.did';
-import type { _SERVICE as ConsoleActor_0_0_14 } from '$declarations/deprecated/console-0-0-14.did';
-import type { _SERVICE as ConsoleActor_0_0_8 } from '$declarations/deprecated/console-0-0-8-patch1.did';
-import type { _SERVICE as MissionControlActor } from '$declarations/mission_control/mission_control.did';
-import { idlFactory as idlFactorMissionControl } from '$declarations/mission_control/mission_control.factory.did';
-import type { Identity } from '@dfinity/agent';
-import { Ed25519KeyIdentity } from '@dfinity/identity';
-import type { Actor, PocketIc } from '@dfinity/pic';
+import {
+	type ConsoleActor,
+	type ConsoleActor0014,
+	type ConsoleActor008,
+	type MissionControlActor,
+	idlFactoryConsole,
+	idlFactoryMissionControl
+} from '$declarations';
+import { type Actor, PocketIc } from '@dfinity/pic';
 import {
 	arrayBufferToUint8Array,
+	arrayOfNumberToUint8Array,
 	assertNonNullish,
 	fromNullable,
 	toNullable
 } from '@dfinity/utils';
+import type { Identity } from '@icp-sdk/core/agent';
+import { Ed25519KeyIdentity } from '@icp-sdk/core/identity';
+import type { Principal } from '@icp-sdk/core/principal';
 import { readFile } from 'node:fs/promises';
-
+import { inject } from 'vitest';
 import { mockScript } from '../mocks/storage.mocks';
 import { tick } from './pic-tests.utils';
 import {
+	CONSOLE_WASM_PATH,
 	downloadMissionControl,
 	downloadOrbiter,
 	downloadSatellite,
@@ -35,7 +41,7 @@ const installReleaseWithDeprecatedFlow = async ({
 	download: (version: string) => Promise<string>;
 	segment: { Satellite: null } | { Orbiter: null } | { MissionControl: null };
 	version: string;
-	actor: Actor<ConsoleActor_0_0_8>;
+	actor: Actor<ConsoleActor008>;
 }) => {
 	const { load_release, reset_release } = actor;
 
@@ -48,13 +54,13 @@ const installReleaseWithDeprecatedFlow = async ({
 
 	const chunkSize = 700000;
 
-	const upload = async (chunks: number[]) => {
+	const upload = async (chunks: Uint8Array) => {
 		await load_release(segment, chunks, version);
 	};
 
 	for (let start = 0; start < wasmModule.length; start += chunkSize) {
 		const chunks = wasmModule.slice(start, start + chunkSize);
-		await upload(chunks);
+		await upload(arrayOfNumberToUint8Array(chunks));
 	}
 };
 
@@ -70,22 +76,22 @@ const uploadSegment = async ({
 }: {
 	segment: 'satellite' | 'mission_control' | 'orbiter';
 	version: string;
-	actor: Actor<ConsoleActor | ConsoleActor_0_0_14>;
+	actor: Actor<ConsoleActor | ConsoleActor0014>;
 	proposalId: bigint;
 }) => {
 	const init_proposal_asset_upload =
 		'init_asset_upload' in actor
-			? (actor as ConsoleActor_0_0_14).init_asset_upload
+			? (actor as ConsoleActor0014).init_asset_upload
 			: (actor as ConsoleActor).init_proposal_asset_upload;
 
 	const upload_proposal_asset_chunk =
 		'upload_asset_chunk' in actor
-			? (actor as ConsoleActor_0_0_14).upload_asset_chunk
+			? (actor as ConsoleActor0014).upload_asset_chunk
 			: (actor as ConsoleActor).upload_proposal_asset_chunk;
 
 	const commit_proposal_asset_upload =
 		'commit_asset_upload' in actor
-			? (actor as ConsoleActor_0_0_14).commit_asset_upload
+			? (actor as ConsoleActor0014).commit_asset_upload
 			: (actor as ConsoleActor).commit_proposal_asset_upload;
 
 	const name = `${segment}-v${version}.wasm.gz`;
@@ -183,37 +189,55 @@ const uploadSegment = async ({
 	});
 };
 
-export const deploySegments = async (actor: Actor<ConsoleActor | ConsoleActor_0_0_14>) => {
+export const deploySegments = async ({
+	actor,
+	withOrbiter = true,
+	withMissionControl = true,
+	withSatellite = true
+}: {
+	actor: Actor<ConsoleActor | ConsoleActor0014>;
+	withOrbiter?: boolean;
+	withMissionControl?: boolean;
+	withSatellite?: boolean;
+}) => {
 	const { init_proposal, submit_proposal, commit_proposal } = actor;
 
 	const [proposalId, _] = await init_proposal({
 		SegmentsDeployment: {
-			orbiter: toNullable(WASM_VERSIONS.orbiter),
-			mission_control_version: toNullable(WASM_VERSIONS.mission_control),
-			satellite_version: toNullable(WASM_VERSIONS.satellite)
+			orbiter: toNullable(withOrbiter ? WASM_VERSIONS.orbiter : undefined),
+			mission_control_version: toNullable(
+				withMissionControl ? WASM_VERSIONS.mission_control : undefined
+			),
+			satellite_version: toNullable(withSatellite ? WASM_VERSIONS.satellite : undefined)
 		}
 	});
 
-	await uploadSegment({
-		segment: 'satellite',
-		version: WASM_VERSIONS.satellite,
-		actor,
-		proposalId
-	});
+	if (withSatellite) {
+		await uploadSegment({
+			segment: 'satellite',
+			version: WASM_VERSIONS.satellite,
+			actor,
+			proposalId
+		});
+	}
 
-	await uploadSegment({
-		segment: 'orbiter',
-		version: WASM_VERSIONS.orbiter,
-		actor,
-		proposalId
-	});
+	if (withOrbiter) {
+		await uploadSegment({
+			segment: 'orbiter',
+			version: WASM_VERSIONS.orbiter,
+			actor,
+			proposalId
+		});
+	}
 
-	await uploadSegment({
-		segment: 'mission_control',
-		version: WASM_VERSIONS.mission_control,
-		actor,
-		proposalId
-	});
+	if (withMissionControl) {
+		await uploadSegment({
+			segment: 'mission_control',
+			version: WASM_VERSIONS.mission_control,
+			actor,
+			proposalId
+		});
+	}
 
 	const [__, { sha256 }] = await submit_proposal(proposalId);
 
@@ -227,7 +251,7 @@ export const deploySegments = async (actor: Actor<ConsoleActor | ConsoleActor_0_
 	});
 };
 
-export const installReleasesWithDeprecatedFlow = async (actor: Actor<ConsoleActor_0_0_8>) => {
+export const installReleasesWithDeprecatedFlow = async (actor: Actor<ConsoleActor008>) => {
 	await installReleaseWithDeprecatedFlow({
 		download: downloadSatellite,
 		version: versionSatellite,
@@ -252,7 +276,7 @@ export const installReleasesWithDeprecatedFlow = async (actor: Actor<ConsoleActo
 	await testReleases(actor);
 };
 
-export const testReleases = async (actor: Actor<ConsoleActor_0_0_8>) => {
+export const testReleases = async (actor: Actor<ConsoleActor008>) => {
 	const { get_releases_version } = actor;
 
 	const { satellite, mission_control, orbiter } = await get_releases_version();
@@ -267,7 +291,7 @@ export const initMissionControls = async ({
 	pic,
 	length
 }: {
-	actor: Actor<ConsoleActor | ConsoleActor_0_0_8 | ConsoleActor_0_0_14>;
+	actor: Actor<ConsoleActor | ConsoleActor008 | ConsoleActor0014>;
 	pic: PocketIc;
 	length: number;
 }): Promise<Identity[]> => {
@@ -291,7 +315,7 @@ export const testSatelliteExists = async ({
 	pic
 }: {
 	users: Identity[];
-	actor: Actor<ConsoleActor | ConsoleActor_0_0_8 | ConsoleActor_0_0_14>;
+	actor: Actor<ConsoleActor | ConsoleActor008 | ConsoleActor0014>;
 	pic: PocketIc;
 }) => {
 	const { list_user_mission_control_centers } = actor;
@@ -314,7 +338,7 @@ export const testSatelliteExists = async ({
 		assertNonNullish(missionControlId);
 
 		const { get_user } = pic.createActor<MissionControlActor>(
-			idlFactorMissionControl,
+			idlFactoryMissionControl,
 			missionControlId
 		);
 
@@ -341,23 +365,23 @@ export const uploadFileWithProposal = async ({
 	pic,
 	fullPath = '/index.js'
 }: {
-	actor: Actor<ConsoleActor | ConsoleActor_0_0_14>;
+	actor: Actor<ConsoleActor | ConsoleActor0014>;
 	pic: PocketIc;
 	fullPath?: string;
 }): Promise<{ proposalId: bigint; fullPath: string }> => {
 	const init_proposal_asset_upload =
 		'init_asset_upload' in actor
-			? (actor as ConsoleActor_0_0_14).init_asset_upload
+			? (actor as ConsoleActor0014).init_asset_upload
 			: (actor as ConsoleActor).init_proposal_asset_upload;
 
 	const upload_proposal_asset_chunk =
 		'upload_asset_chunk' in actor
-			? (actor as ConsoleActor_0_0_14).upload_asset_chunk
+			? (actor as ConsoleActor0014).upload_asset_chunk
 			: (actor as ConsoleActor).upload_proposal_asset_chunk;
 
 	const commit_proposal_asset_upload =
 		'commit_asset_upload' in actor
-			? (actor as ConsoleActor_0_0_14).commit_asset_upload
+			? (actor as ConsoleActor0014).commit_asset_upload
 			: (actor as ConsoleActor).commit_proposal_asset_upload;
 
 	const { init_proposal, http_request, commit_proposal, submit_proposal } = actor;
@@ -421,7 +445,7 @@ export const uploadFileWithProposal = async ({
 	});
 
 	const { headers } = await http_request({
-		body: [],
+		body: Uint8Array.from([]),
 		certificate_version: toNullable(),
 		headers: [['accept-encoding', 'gzip, deflate, br']],
 		method: 'GET',
@@ -440,14 +464,14 @@ export const assertAssetServed = async ({
 	fullPath,
 	body: content
 }: {
-	actor: Actor<ConsoleActor | ConsoleActor_0_0_14>;
+	actor: Actor<ConsoleActor | ConsoleActor0014>;
 	fullPath: string;
 	body: string;
 }) => {
 	const { http_request } = actor;
 
 	const { status_code, body } = await http_request({
-		body: [],
+		body: Uint8Array.from([]),
 		certificate_version: toNullable(),
 		headers: [['accept-encoding', 'gzip, deflate, br']],
 		method: 'GET',
@@ -458,5 +482,86 @@ export const assertAssetServed = async ({
 
 	const decoder = new TextDecoder();
 
-	expect(decoder.decode(body as Uint8Array<ArrayBufferLike>)).toEqual(content);
+	expect(decoder.decode(body)).toEqual(content);
+};
+
+export const updateRateConfig = async ({
+	actor
+}: {
+	actor: Actor<ConsoleActor008 | ConsoleActor0014 | ConsoleActor>;
+}) => {
+	const { update_rate_config } = actor;
+
+	const config = {
+		max_tokens: 100n,
+		time_per_token_ns: 60n
+	};
+
+	await update_rate_config({ Satellite: null }, config);
+	await update_rate_config({ Orbiter: null }, config);
+	await update_rate_config({ MissionControl: null }, config);
+};
+
+export const setupConsole = async ({
+	dateTime,
+	withApplyRateTokens = true
+}: {
+	dateTime?: Date;
+	withApplyRateTokens?: boolean;
+}): Promise<{
+	pic: PocketIc;
+	controller: Ed25519KeyIdentity;
+	canisterId: Principal;
+	actor: Actor<ConsoleActor>;
+}> => {
+	const pic = await PocketIc.create(inject('PIC_URL'));
+
+	const currentDate = dateTime ?? new Date(2021, 6, 10, 0, 0, 0, 0);
+	await pic.setTime(currentDate.getTime());
+
+	const controller = Ed25519KeyIdentity.generate();
+
+	const { actor, canisterId } = await pic.setupCanister<ConsoleActor>({
+		idlFactory: idlFactoryConsole,
+		wasm: CONSOLE_WASM_PATH,
+		sender: controller.getPrincipal()
+	});
+
+	if (withApplyRateTokens) {
+		await configMissionControlRateTokens({
+			actor,
+			controller,
+			max_tokens: 10n,
+			time_per_token_ns: 1_000_000_000n // 1s per token
+		});
+
+		await pic.advanceTime(120_000);
+		await tick(pic);
+	}
+
+	return { pic, controller, actor, canisterId };
+};
+
+export const configMissionControlRateTokens = async ({
+	max_tokens,
+	time_per_token_ns,
+	actor,
+	controller
+}: {
+	max_tokens: bigint;
+	time_per_token_ns: bigint;
+	actor: Actor<ConsoleActor>;
+	controller: Ed25519KeyIdentity;
+}) => {
+	actor.setIdentity(controller);
+
+	const { update_rate_config } = actor;
+
+	await update_rate_config(
+		{ MissionControl: null },
+		{
+			max_tokens,
+			time_per_token_ns
+		}
+	);
 };

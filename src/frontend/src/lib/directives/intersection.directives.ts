@@ -1,5 +1,5 @@
 const INTERSECTION_THRESHOLD = 0.8;
-const INTERSECTION_ROOT_MARGIN = '-150px 0px';
+const INTERSECTION_ROOT_MARGIN = '-80px 0px';
 
 export interface IntersectingDetail {
 	intersecting: boolean;

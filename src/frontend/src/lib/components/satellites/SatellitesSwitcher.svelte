@@ -1,42 +1,19 @@
 <script lang="ts">
-	import { nonNullish } from '@dfinity/utils';
-	import IconArrowDropDown from '$lib/components/icons/IconArrowDropDown.svelte';
+	import IconUnfoldMore from '$lib/components/icons/IconUnfoldMore.svelte';
 	import SatelliteEnvironment from '$lib/components/satellites/SatelliteEnvironment.svelte';
-	import ButtonIcon from '$lib/components/ui/ButtonIcon.svelte';
 	import Popover from '$lib/components/ui/Popover.svelte';
-	import { authSignedIn } from '$lib/derived/auth.derived';
-	import { satelliteStore, satelliteUi } from '$lib/derived/satellite.derived';
 	import { sortedSatelliteUis } from '$lib/derived/satellites.derived';
 	import { i18n } from '$lib/stores/i18n.store';
 	import { overviewLink } from '$lib/utils/nav.utils';
-	import { satelliteName } from '$lib/utils/satellite.utils';
 
 	let button: HTMLButtonElement | undefined = $state();
 	let visible: boolean = $state(false);
-
-	let label = $derived(
-		nonNullish($satelliteStore)
-			? satelliteName($satelliteStore)
-			: $i18n.satellites.see_all_satellites
-	);
 </script>
 
-{#snippet currentEnvironment()}
-	{#if nonNullish($satelliteUi)}
-		<SatelliteEnvironment satellite={$satelliteUi} />
-	{/if}
-{/snippet}
-
-{#if $authSignedIn}
-	<ButtonIcon onclick={() => (visible = true)} bind:button>
-		{#snippet icon()}
-			<IconArrowDropDown />
-		{/snippet}
-
-		{label}{@render currentEnvironment()}
-	</ButtonIcon>
-	<span class="satellite current"><span>{label}</span>{@render currentEnvironment()}</span>
-{/if}
+<button bind:this={button} class="square" onclick={() => (visible = true)}>
+	<IconUnfoldMore />
+	<span class="visually-hidden">{$i18n.satellites.see_all_satellites}</span>
+</button>
 
 <Popover anchor={button} bind:visible>
 	<div class="container">
@@ -73,8 +50,8 @@
 </Popover>
 
 <style lang="scss">
-	@use '../../styles/mixins/text';
 	@use '../../styles/mixins/media';
+	@use '../../styles/mixins/text';
 
 	.container {
 		max-height: calc(30 * var(--padding));
@@ -85,10 +62,6 @@
 		padding: var(--padding-1_5x);
 
 		font-size: var(--font-size-small);
-
-		@include media.min-width(large) {
-			min-width: calc(40 * var(--padding));
-		}
 	}
 
 	button.text {
@@ -109,6 +82,7 @@
 
 	span {
 		font-size: var(--font-size-small);
+		max-width: 100%;
 		@include text.truncate;
 	}
 
@@ -126,23 +100,5 @@
 		display: inline-flex;
 		align-items: center;
 		gap: var(--padding);
-
-		span:first-of-type {
-			max-width: 260px;
-
-			@include text.truncate;
-
-			@include media.min-width(medium) {
-				max-width: 420px;
-			}
-		}
-	}
-
-	.current {
-		display: none;
-
-		@include media.min-width(small) {
-			display: inline-flex;
-		}
 	}
 </style>

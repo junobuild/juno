@@ -1,12 +1,12 @@
-import type { AssetNoContent } from '$declarations/satellite/satellite.did';
+import type { SatelliteDid } from '$declarations';
 import { downloadWasm } from '$lib/rest/cdn.dev';
 import { downloadRelease } from '$lib/rest/cdn.rest';
 import type { OptionIdentity } from '$lib/types/itentity';
 import type { Wasm } from '$lib/types/upgrade';
 import { sha256 } from '$lib/utils/crypto.utils';
 import { container } from '$lib/utils/juno.utils';
-import type { Principal } from '@dfinity/principal';
 import { fromNullable } from '@dfinity/utils';
+import type { Principal } from '@icp-sdk/core/principal';
 import { downloadUrl as downloadUrlLib } from '@junobuild/core';
 
 export const downloadWasmFromJunoCdn = async (params: {
@@ -30,7 +30,7 @@ export const downloadWasmFromDevCdn = async ({
 	satelliteId,
 	identity
 }: {
-	asset: AssetNoContent;
+	asset: SatelliteDid.AssetNoContent;
 	satelliteId: Principal;
 	identity: OptionIdentity;
 }): Promise<Omit<Wasm, 'version'>> => {

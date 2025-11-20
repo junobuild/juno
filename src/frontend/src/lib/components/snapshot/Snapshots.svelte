@@ -1,9 +1,8 @@
 <script lang="ts">
-	import { encodeSnapshotId } from '@dfinity/ic-management';
-	import type { Principal } from '@dfinity/principal';
 	import { isNullish } from '@dfinity/utils';
+	import { encodeSnapshotId } from '@icp-sdk/canisters/ic-management';
+	import type { Principal } from '@icp-sdk/core/principal';
 	import { fade } from 'svelte/transition';
-	import type { snapshot } from '$declarations/ic/ic.did';
 	import SnapshotActions from '$lib/components/snapshot/SnapshotActions.svelte';
 	import SnapshotDelete from '$lib/components/snapshot/SnapshotDelete.svelte';
 	import SnapshotsLoader from '$lib/components/snapshot/SnapshotsLoader.svelte';
@@ -38,7 +37,7 @@
 	});
 
 	const openCreateModal = () => {
-		if (isNullish(snapshots)) {
+		if (snapshots === undefined) {
 			toasts.error({ text: $i18n.errors.snapshot_not_loaded });
 			return;
 		}
@@ -55,7 +54,7 @@
 	};
 
 	// Currently the IC supports only one snapshot per canister.
-	let existingSnapshot: snapshot | undefined = $derived(snapshots?.[0]);
+	let existingSnapshot = $derived(snapshots?.[0]);
 
 	const openRestoreModal = () => {
 		if (isNullish(existingSnapshot)) {
@@ -110,7 +109,12 @@
 									onrestore={openRestoreModal}
 								/></td
 							>
-							<td><Identifier identifier={`0x${encodeSnapshotId(snapshot.id)}`} small={false} /></td
+							<td
+								><Identifier
+									identifier={`0x${encodeSnapshotId(snapshot.id)}`}
+									shortenLength={9}
+									small={false}
+								/></td
 							>
 							<td>{formatBytes(Number(snapshot.total_size))}</td>
 							<td>{formatToDate(snapshot.taken_at_timestamp)}</td>

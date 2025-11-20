@@ -7,6 +7,7 @@
 	import WalletActions from '$lib/components/wallet/WalletActions.svelte';
 	import WalletIds from '$lib/components/wallet/WalletIds.svelte';
 	import WalletInlineBalance from '$lib/components/wallet/WalletInlineBalance.svelte';
+	import { testIds } from '$lib/constants/test-ids.constants';
 	import { balance } from '$lib/derived/balance.derived';
 	import { i18n } from '$lib/stores/i18n.store';
 	import type { MissionControlId } from '$lib/types/mission-control';
@@ -30,7 +31,7 @@
 	};
 </script>
 
-<ButtonIcon {onclick} bind:button>
+<ButtonIcon {onclick} testId={testIds.navbar.openWallet} bind:button>
 	{#snippet icon()}
 		<IconWallet size="16px" />
 	{/snippet}

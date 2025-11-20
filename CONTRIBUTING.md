@@ -49,19 +49,22 @@ git push -u origin fix/login-bug
 - Run tests locally (see `HACKING.md`).
 - Verify functionality.
 
-### 5. **Submit a Pull Request (PR)**
+### 5. **Run Checks**
+
+Before pushing your branch and creating a PR, ensure your code passes
+formatting, linting, and type checks by running:
+
+```bash
+npm run check:all
+```
+
+### 6. **Submit a Pull Request (PR)**
 
 1. Go to [Juno’s Pull Requests](https://github.com/junobuild/juno/pulls) and click "New PR".
 2. Select **your fork/branch** as the source.
 3. Follow the PR template (if any) and:
    - Link related issues (e.g., `Closes #123`).
    - Add screenshots for UI changes.
-
----
-
-## 📜 Code of Conduct
-
-Be respectful! Review our [Code of Conduct](#).
 
 ---
 

@@ -1,5 +1,5 @@
 export abstract class AppWorker {
-	protected _worker: Worker;
+	protected readonly _worker: Worker;
 
 	protected constructor(worker: Worker) {
 		this._worker = worker;

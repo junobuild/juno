@@ -1,6 +1,6 @@
 import { versionIdbStore } from '$lib/stores/idb.store';
 import { emit } from '$lib/utils/events.utils';
-import type { Principal } from '@dfinity/principal';
+import type { Principal } from '@icp-sdk/core/principal';
 import { del } from 'idb-keyval';
 
 export const reloadVersion = async ({ canisterId }: { canisterId: Principal }) => {

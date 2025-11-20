@@ -1,12 +1,8 @@
-import type {
-	HttpRequest,
-	_SERVICE as SatelliteActor
-} from '$declarations/satellite/satellite.did';
-import { idlFactory as idlFactorSatellite } from '$declarations/satellite/satellite.factory.did';
-import { Ed25519KeyIdentity } from '@dfinity/identity';
+import { idlFactorySatellite, type SatelliteActor, type SatelliteDid } from '$declarations';
 import { PocketIc, type Actor } from '@dfinity/pic';
-import type { Principal } from '@dfinity/principal';
 import { toNullable } from '@dfinity/utils';
+import { Ed25519KeyIdentity } from '@icp-sdk/core/identity';
+import type { Principal } from '@icp-sdk/core/principal';
 import { readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { inject } from 'vitest';
@@ -29,7 +25,7 @@ describe('Satellite > Index HTML', () => {
 		await pic.setTime(currentDate.getTime());
 
 		const { actor: c, canisterId: cId } = await pic.setupCanister<SatelliteActor>({
-			idlFactory: idlFactorSatellite,
+			idlFactory: idlFactorySatellite,
 			wasm: SATELLITE_WASM_PATH,
 			arg: controllersInitArgs(controller),
 			sender: controller.getPrincipal()
@@ -47,7 +43,7 @@ describe('Satellite > Index HTML', () => {
 		const { http_request } = actor;
 
 		const { body } = await http_request({
-			body: [],
+			body: Uint8Array.from([]),
 			certificate_version: toNullable(),
 			headers: [],
 			method: 'GET',
@@ -55,7 +51,7 @@ describe('Satellite > Index HTML', () => {
 		});
 
 		const decoder = new TextDecoder();
-		const responseBody = decoder.decode(body as Uint8Array<ArrayBufferLike>);
+		const responseBody = decoder.decode(body);
 
 		const sourceIndexHTML = readFileSync(
 			join(process.cwd(), 'src', 'satellite', 'resources', 'index.html'),
@@ -68,8 +64,8 @@ describe('Satellite > Index HTML', () => {
 	it('should provide index.html with a valid certification', async () => {
 		const { http_request } = actor;
 
-		const request: HttpRequest = {
-			body: [],
+		const request: SatelliteDid.HttpRequest = {
+			body: Uint8Array.from([]),
 			certificate_version: toNullable(2),
 			headers: [],
 			method: 'GET',
@@ -93,7 +89,7 @@ describe('Satellite > Index HTML', () => {
 		const { http_request } = actor;
 
 		const { status_code } = await http_request({
-			body: [],
+			body: Uint8Array.from([]),
 			certificate_version: toNullable(),
 			headers: [],
 			method: 'GET',

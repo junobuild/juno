@@ -1,8 +1,17 @@
 <script lang="ts">
+	import { fromNullable, nonNullish } from '@dfinity/utils';
+	import { getContext } from 'svelte';
+	import IconGoogle from '$lib/components/icons/IconGoogle.svelte';
 	import IconIc from '$lib/components/icons/IconIC.svelte';
-	import IconNFID from '$lib/components/icons/IconNFID.svelte';
 	import IconPasskey from '$lib/components/icons/IconPasskey.svelte';
 	import { i18n } from '$lib/stores/i18n.store';
+	import { AUTH_CONFIG_CONTEXT_KEY, type AuthConfigContext } from '$lib/types/auth.context';
+
+	const { config } = getContext<AuthConfigContext>(AUTH_CONFIG_CONTEXT_KEY);
+
+	let openid = $derived(fromNullable($config?.openid ?? []));
+	let google = $derived(openid?.providers.find(([key]) => 'Google' in key));
+	let googleEnabled = $derived(nonNullish(google));
 </script>
 
 <div class="table-container">
@@ -16,17 +25,21 @@
 
 		<tbody>
 			<tr>
-				<td><span class="provider"><IconIc /> Internet Identity</span></td>
+				<td
+					><span class="provider"><span class="icon"><IconGoogle size="20px" /></span> Google</span
+					></td
+				>
+				<td class="status">{googleEnabled ? $i18n.core.enabled : $i18n.core.disabled}</td>
+			</tr>
+
+			<tr>
+				<td><span class="provider"><span class="icon"><IconIc /></span> Internet Identity</span></td
+				>
 				<td class="status">{$i18n.core.enabled}</td>
 			</tr>
 
 			<tr>
-				<td><span class="provider"><IconNFID /> NFID</span></td>
-				<td class="status">{$i18n.core.enabled}</td>
-			</tr>
-
-			<tr>
-				<td><span class="provider"><IconPasskey /> Passkey</span></td>
+				<td><span class="provider"><span class="icon"><IconPasskey /></span> Passkey</span></td>
 				<td class="status">{$i18n.core.enabled}</td>
 			</tr>
 		</tbody>
@@ -57,6 +70,11 @@
 		display: flex;
 		align-items: center;
 		gap: var(--padding-1_5x);
+	}
+
+	.icon {
+		width: 24px;
+		text-align: center;
 	}
 
 	.table-container {

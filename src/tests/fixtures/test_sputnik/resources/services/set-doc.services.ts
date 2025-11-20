@@ -1,6 +1,6 @@
-import type { Doc } from '$declarations/satellite/satellite.did';
-import { IDL } from '@dfinity/candid';
+import type { SatelliteDid } from '$declarations';
 import { arrayOfNumberToUint8Array, assertNonNullish, fromNullable } from '@dfinity/utils';
+import { IDL } from '@icp-sdk/core/candid';
 import type { Collection, Key, RawUserId } from '@junobuild/functions';
 import { call, id } from '@junobuild/functions/ic-cdk';
 import { decodeDocData, encodeDocData, setDocStore } from '@junobuild/functions/sdk';
@@ -27,7 +27,7 @@ export const callAndSaveVersion = async ({
 	collection: Collection;
 	key: Key;
 }) => {
-	const result = await call<[] | [Doc]>({
+	const result = await call<[] | [SatelliteDid.Doc]>({
 		canisterId: id(),
 		method: 'get_doc',
 		args: [

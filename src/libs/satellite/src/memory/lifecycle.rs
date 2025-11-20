@@ -2,22 +2,26 @@ use crate::assets::storage::certified_assets::upgrade::defer_init_certified_asse
 use crate::hooks::lifecycle::{
     invoke_on_init, invoke_on_init_sync, invoke_on_post_upgrade, invoke_on_post_upgrade_sync,
 };
-use crate::memory::internal::{get_memory_for_upgrade, init_stable_state, STATE};
+use crate::memory::internal::{get_memory_for_upgrade, init_stable_state};
+use crate::memory::state::STATE;
 use crate::memory::utils::init_storage_heap_state;
 use crate::random::init::defer_init_random_seed;
 use crate::types::state::{HeapState, RuntimeState, State};
 use ciborium::{from_reader, into_writer};
 use junobuild_shared::controllers::init_admin_controllers;
-use junobuild_shared::types::interface::SegmentArgs;
+use junobuild_shared::types::interface::InitSatelliteArgs;
 use junobuild_shared::types::memory::Memory;
 use junobuild_shared::upgrade::{read_post_upgrade, write_pre_upgrade};
 
-pub fn init(args: SegmentArgs) {
-    let SegmentArgs { controllers } = args;
+pub fn init(args: InitSatelliteArgs) {
+    let InitSatelliteArgs {
+        controllers,
+        storage,
+    } = args;
 
     let heap = HeapState {
         controllers: init_admin_controllers(&controllers),
-        storage: init_storage_heap_state(),
+        storage: init_storage_heap_state(&storage),
         ..HeapState::default()
     };
 

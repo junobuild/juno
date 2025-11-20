@@ -4,11 +4,11 @@ use crate::random::defer_init_random_seed;
 use crate::types::state::{HeapState, State};
 use ciborium::{from_reader, into_writer};
 use ic_cdk_macros::{init, post_upgrade, pre_upgrade};
-use junobuild_shared::types::interface::MissionControlArgs;
+use junobuild_shared::types::interface::InitMissionControlArgs;
 use junobuild_shared::upgrade::{read_post_upgrade, write_pre_upgrade};
 
 #[init]
-fn init(args: MissionControlArgs) {
+fn init(args: InitMissionControlArgs) {
     let user = args.user;
 
     STATE.with(|state| {

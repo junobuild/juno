@@ -1,5 +1,4 @@
-import type { canister_log_record } from '$declarations/ic/ic.did';
-import type { Doc } from '$declarations/satellite/satellite.did';
+import type { ICDid, SatelliteDid } from '$declarations';
 import { canisterLogs as canisterLogsApi } from '$lib/api/ic.api';
 import { listDocs } from '$lib/api/satellites.api';
 import { SATELLITE_v0_0_16 } from '$lib/constants/version.constants';
@@ -8,9 +7,9 @@ import { i18n } from '$lib/stores/i18n.store';
 import { toasts } from '$lib/stores/toasts.store';
 import type { OptionIdentity } from '$lib/types/itentity';
 import type { Log, LogDataDid, LogLevel } from '$lib/types/log';
-import type { Identity } from '@dfinity/agent';
-import type { Principal } from '@dfinity/principal';
 import { isNullish, nonNullish } from '@dfinity/utils';
+import type { Identity } from '@icp-sdk/core/agent';
+import type { Principal } from '@icp-sdk/core/principal';
 import { fromArray } from '@junobuild/utils';
 import { get } from 'svelte/store';
 
@@ -85,9 +84,10 @@ const functionLogs = async ({
 		...rest
 	});
 
-	const mapLog = async ([key, { data, created_at: timestamp }]: [string, Doc]): Promise<
-		[string, Log]
-	> => {
+	const mapLog = async ([key, { data, created_at: timestamp }]: [
+		string,
+		SatelliteDid.Doc
+	]): Promise<[string, Log]> => {
 		const { message, data: msgData, level }: LogDataDid = await fromArray(data);
 
 		return [
@@ -114,9 +114,9 @@ const canisterLogs = async (params: {
 		idx,
 		timestamp_nanos: timestamp,
 		content
-	}: canister_log_record): Promise<[string, Log]> => {
-		const blob = new Blob([
-			content instanceof Uint8Array ? (content as Uint8Array<ArrayBuffer>) : new Uint8Array(content)
+	}: ICDid.canister_log_record): Promise<[string, Log]> => {
+		const blob: Blob = new Blob([
+			content instanceof Uint8Array ? content : new Uint8Array(content)
 		]);
 
 		return [

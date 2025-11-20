@@ -16,7 +16,7 @@ pub fn filter_rules(rules: &Rules) -> Vec<(CollectionKey, Rule)> {
     rules
         .clone()
         .into_iter()
-        .filter(|(path, _rules)| (path.starts_with(|c| c != SYS_COLLECTION_PREFIX)))
+        .filter(|(path, _rules)| path.starts_with(|c| c != SYS_COLLECTION_PREFIX))
         .collect()
 }
 

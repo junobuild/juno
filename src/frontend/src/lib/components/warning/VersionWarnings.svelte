@@ -2,7 +2,7 @@
 	import { nonNullish } from '@dfinity/utils';
 	import type { BuildType } from '@junobuild/admin';
 	import { compare } from 'semver';
-	import type { Satellite } from '$declarations/mission_control/mission_control.did';
+	import type { MissionControlDid } from '$declarations';
 	import VersionWarning from '$lib/components/warning/VersionWarning.svelte';
 	import { missionControlVersion } from '$lib/derived/version.derived';
 	import { openUpgradeModal } from '$lib/services/upgrade/upgrade.init.services';
@@ -10,7 +10,7 @@
 	import { versionStore } from '$lib/stores/version.store';
 
 	interface Props {
-		satellite?: Satellite | undefined;
+		satellite?: MissionControlDid.Satellite | undefined;
 	}
 
 	let { satellite = undefined }: Props = $props();

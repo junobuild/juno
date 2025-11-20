@@ -7,11 +7,12 @@ use crate::http::types::{HeaderField, HttpResponse, StatusCode};
 use crate::http::utils::{
     build_encodings, build_response_headers, build_response_redirect_headers, streaming_strategy,
 };
-use crate::strategies::StorageStateStrategy;
+use crate::strategies::{StorageCertificateStrategy, StorageStateStrategy};
 use crate::types::config::{StorageConfigIFrame, StorageConfigRedirect};
 use crate::types::store::Asset;
 use junobuild_collections::types::rules::Memory;
 
+#[allow(clippy::too_many_arguments)]
 pub fn build_asset_response(
     requested_url: String,
     requested_headers: Vec<HeaderField>,
@@ -20,6 +21,7 @@ pub fn build_asset_response(
     rewrite_source: Option<String>,
     status_code: StatusCode,
     storage_state: &impl StorageStateStrategy,
+    certificate: &impl StorageCertificateStrategy,
 ) -> HttpResponse {
     match asset {
         Some((asset, memory)) => {
@@ -35,6 +37,7 @@ pub fn build_asset_response(
                         &certificate_version,
                         &rewrite_source,
                         &storage_state.get_config(),
+                        certificate.get_pruned_labeled_sigs_root_hash_tree(),
                     );
 
                     let Asset { key, .. } = &asset;
@@ -95,12 +98,14 @@ pub fn build_redirect_response(
     certificate_version: Option<u16>,
     redirect: &StorageConfigRedirect,
     iframe: &StorageConfigIFrame,
+    certificate: &impl StorageCertificateStrategy,
 ) -> HttpResponse {
     let headers = build_response_redirect_headers(
         &requested_url,
         &redirect.location,
         iframe,
         &certificate_version,
+        certificate.get_pruned_labeled_sigs_root_hash_tree(),
     )
     .unwrap();
 

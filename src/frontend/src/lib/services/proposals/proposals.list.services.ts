@@ -1,4 +1,4 @@
-import type { Satellite } from '$declarations/mission_control/mission_control.did';
+import type { MissionControlDid } from '$declarations';
 import { SATELLITE_v0_1_0 } from '$lib/constants/version.constants';
 import { isSatelliteFeatureSupported } from '$lib/services/feature.services';
 import { reloadSatelliteProposals } from '$lib/services/proposals/proposals.list.satellite.services';
@@ -12,11 +12,13 @@ export const loadProposals = async ({
 	identity,
 	satellites
 }: {
-	satellites: Satellite[];
+	satellites: MissionControlDid.Satellite[];
 	identity: OptionIdentity;
 }): Promise<{ result: 'loaded' | 'error' }> => {
 	// Split those Satellites that do not support proposals.
-	const [newSatellites, oldSatellites] = satellites.reduce<[Satellite[], Satellite[]]>(
+	const [newSatellites, oldSatellites] = satellites.reduce<
+		[MissionControlDid.Satellite[], MissionControlDid.Satellite[]]
+	>(
 		([newSat, oldSat], satellite) => {
 			// The component assert that all versions are loaded. That's why we can get the version imperatively here.
 			const newestAPI = isSatelliteFeatureSupported({

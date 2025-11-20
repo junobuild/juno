@@ -4,25 +4,27 @@
 	import BannerSkylab from '$lib/components/core/BannerSkylab.svelte';
 	import Logo from '$lib/components/core/Logo.svelte';
 	import NavbarSpotlight from '$lib/components/core/NavbarSpotlight.svelte';
+	import NavbarTitle from '$lib/components/core/NavbarTitle.svelte';
 	import NavbarWallet from '$lib/components/core/NavbarWallet.svelte';
 	import User from '$lib/components/core/User.svelte';
 	import Notifications from '$lib/components/notifications/Notifications.svelte';
-	import SatellitesSwitcher from '$lib/components/satellites/SatellitesSwitcher.svelte';
 	import ButtonBack from '$lib/components/ui/ButtonBack.svelte';
 	import ButtonMenu from '$lib/components/ui/ButtonMenu.svelte';
 	import Header from '$lib/components/ui/Header.svelte';
 	import { authSignedIn } from '$lib/derived/auth.derived';
-	import { missionControlIdDerived } from '$lib/derived/mission-control.derived';
-	import { isSatelliteRoute } from '$lib/derived/route.derived.svelte';
+	import {
+		missionControlIdDerived,
+		missionControlIdLoaded
+	} from '$lib/derived/mission-control.derived';
+	import { provider } from '$lib/derived/provider.derived';
 	import { isSkylab } from '$lib/env/app.env';
 	import { layoutTitleIntersecting } from '$lib/stores/layout-intersecting.store';
 
 	interface Props {
 		start?: 'logo' | 'back' | 'menu';
-		signIn?: boolean;
 	}
 
-	let { start = 'logo', signIn = true }: Props = $props();
+	let { start = 'logo' }: Props = $props();
 
 	let hide = $state(false);
 
@@ -51,25 +53,23 @@
 			<Logo />
 		{/if}
 
-		{#if $isSatelliteRoute}
-			<div in:fade>
-				<SatellitesSwitcher />
-			</div>
-		{/if}
+		<NavbarTitle />
 	</div>
 
 	<div>
-		{#if $authSignedIn && nonNullish($missionControlIdDerived)}
-			<div in:fade>
-				<Notifications />
+		{#if $authSignedIn && $missionControlIdLoaded}
+			{#if nonNullish($missionControlIdDerived)}
+				<div in:fade>
+					<Notifications />
 
-				<NavbarSpotlight />
+					<NavbarSpotlight />
 
-				<NavbarWallet missionControlId={$missionControlIdDerived} />
-			</div>
+					<NavbarWallet missionControlId={$missionControlIdDerived} />
+				</div>
+			{/if}
+
+			<User provider={$provider} />
 		{/if}
-
-		<User {signIn} />
 	</div>
 </Header>
 

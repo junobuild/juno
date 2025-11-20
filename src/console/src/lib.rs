@@ -1,9 +1,10 @@
 #![deny(clippy::disallowed_methods)]
 
 mod api;
+mod auth;
 mod cdn;
+mod certification;
 mod constants;
-mod controllers;
 mod factory;
 mod guards;
 mod impls;
@@ -11,10 +12,12 @@ mod memory;
 mod metadata;
 mod store;
 mod types;
-mod wasm;
 
+use crate::types::interface::AuthenticationArgs;
+use crate::types::interface::AuthenticationResult;
 use crate::types::interface::Config;
 use crate::types::interface::DeleteProposalAssets;
+use crate::types::interface::GetDelegationArgs;
 use crate::types::state::InvitationCode;
 use crate::types::state::MissionControl;
 use crate::types::state::MissionControls;
@@ -22,6 +25,9 @@ use crate::types::state::Payments;
 use candid::Principal;
 use ic_cdk_macros::export_candid;
 use ic_ledger_types::Tokens;
+use junobuild_auth::delegation::types::GetDelegationResult;
+use junobuild_auth::state::types::config::AuthenticationConfig;
+use junobuild_auth::state::types::interface::SetAuthenticationConfig;
 use junobuild_cdn::proposals::CommitProposal;
 use junobuild_cdn::proposals::ListProposalResults;
 use junobuild_cdn::proposals::ListProposalsParams;
@@ -34,6 +40,7 @@ use junobuild_shared::ic::call::ManualReply;
 use junobuild_shared::rate::types::RateConfig;
 use junobuild_shared::types::core::DomainName;
 use junobuild_shared::types::domain::CustomDomains;
+use junobuild_shared::types::interface::CreateSatelliteArgs;
 use junobuild_shared::types::interface::{
     AssertMissionControlCenterArgs, CreateCanisterArgs, DeleteControllersArgs,
     GetCreateCanisterFeeArgs, SetControllersArgs,

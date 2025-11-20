@@ -1,29 +1,33 @@
 use crate::constants::FREEZING_THRESHOLD_ONE_YEAR;
-use crate::controllers::remove_console_controller;
 use crate::factory::canister::create_canister;
+use crate::factory::utils::controllers::remove_console_controller;
+use crate::factory::utils::wasm::satellite_wasm_arg;
 use crate::store::heap::{get_satellite_fee, increment_satellites_rate};
-use crate::wasm::satellite_wasm_arg;
 use candid::{Nat, Principal};
 use junobuild_shared::constants_shared::CREATE_SATELLITE_CYCLES;
 use junobuild_shared::mgmt::cmc::cmc_create_canister_install_code;
 use junobuild_shared::mgmt::ic::create_canister_install_code;
 use junobuild_shared::mgmt::types::cmc::SubnetId;
 use junobuild_shared::mgmt::types::ic::CreateCanisterInitSettingsArg;
-use junobuild_shared::types::interface::CreateCanisterArgs;
+use junobuild_shared::types::interface::{CreateSatelliteArgs, InitStorageArgs};
 use junobuild_shared::types::state::{MissionControlId, UserId};
 
 pub async fn create_satellite(
     console: Principal,
     caller: Principal,
-    args: CreateCanisterArgs,
+    args: CreateSatelliteArgs,
 ) -> Result<Principal, String> {
+    let storage = args.storage.clone();
+
     create_canister(
-        create_satellite_wasm,
+        move |console, mission_control_id, user, subnet_id| async move {
+            create_satellite_wasm(console, mission_control_id, user, subnet_id, storage).await
+        },
         &increment_satellites_rate,
         &get_satellite_fee,
         console,
         caller,
-        args,
+        args.into(),
     )
     .await
 }
@@ -33,8 +37,9 @@ async fn create_satellite_wasm(
     mission_control_id: MissionControlId,
     user: UserId,
     subnet_id: Option<SubnetId>,
+    storage: Option<InitStorageArgs>,
 ) -> Result<Principal, String> {
-    let wasm_arg = satellite_wasm_arg(&user, &mission_control_id)?;
+    let wasm_arg = satellite_wasm_arg(&user, &mission_control_id, storage)?;
 
     let create_settings_arg = CreateCanisterInitSettingsArg {
         controllers: Vec::from([console, mission_control_id, user]),

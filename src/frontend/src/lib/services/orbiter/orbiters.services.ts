@@ -1,9 +1,4 @@
-import type { Orbiter } from '$declarations/mission_control/mission_control.did';
-import type {
-	OrbiterSatelliteConfig,
-	OrbiterSatelliteFeatures,
-	OrbiterSatelliteConfig as SatelliteConfig
-} from '$declarations/orbiter/orbiter.did';
+import type { MissionControlDid, OrbiterDid } from '$declarations';
 import { getMissionControlActor } from '$lib/api/actors/actor.juno.api';
 import {
 	listOrbiterSatelliteConfigs as listOrbiterSatelliteConfigsApi,
@@ -26,9 +21,9 @@ import type { OptionIdentity } from '$lib/types/itentity';
 import type { OrbiterSatelliteConfigEntry } from '$lib/types/orbiter';
 import type { SatelliteIdText } from '$lib/types/satellite';
 import type { Option } from '$lib/types/utils';
-import type { Identity } from '@dfinity/agent';
-import { Principal } from '@dfinity/principal';
 import { assertNonNullish, isNullish, nonNullish, toNullable } from '@dfinity/utils';
+import type { Identity } from '@icp-sdk/core/agent';
+import { Principal } from '@icp-sdk/core/principal';
 import { compare } from 'semver';
 import { get } from 'svelte/store';
 
@@ -45,7 +40,7 @@ export const createOrbiter = async ({
 	identity: Option<Identity>;
 	missionControlId: Option<Principal>;
 	config: CreateOrbiterConfig;
-}): Promise<Orbiter> => {
+}): Promise<MissionControlDid.Orbiter> => {
 	assertNonNullish(missionControlId);
 
 	const { create_orbiter } = await getMissionControlActor({
@@ -64,7 +59,7 @@ export const createOrbiterWithConfig = async ({
 	identity: Option<Identity>;
 	missionControlId: Option<Principal>;
 	config: CreateOrbiterConfig;
-}): Promise<Orbiter> => {
+}): Promise<MissionControlDid.Orbiter> => {
 	assertNonNullish(missionControlId);
 
 	const { create_orbiter_with_config } = await getMissionControlActor({
@@ -89,7 +84,7 @@ export const loadOrbiters = async ({
 		return { result: 'skip' };
 	}
 
-	const load = async (identity: Identity): Promise<Orbiter[]> => {
+	const load = async (identity: Identity): Promise<MissionControlDid.Orbiter[]> => {
 		const { list_orbiters } = await getMissionControlActor({
 			missionControlId,
 			identity
@@ -102,7 +97,7 @@ export const loadOrbiters = async ({
 
 	const { identity } = get(authStore);
 
-	return await loadDataStore<Orbiter[]>({
+	return await loadDataStore<MissionControlDid.Orbiter[]>({
 		identity,
 		store: orbitersUncertifiedStore,
 		errorLabel: 'orbiters_loading',
@@ -167,7 +162,7 @@ const listOrbiterSatelliteConfigs = async ({
 	orbiterId: Principal;
 	identity: OptionIdentity;
 	orbiterVersion: string;
-}): Promise<[Principal, SatelliteConfig][]> => {
+}): Promise<[Principal, OrbiterDid.OrbiterSatelliteConfig][]> => {
 	if (compare(orbiterVersion, ORBITER_v0_0_8) >= 0) {
 		return await listOrbiterSatelliteConfigsApi(rest);
 	}
@@ -196,8 +191,8 @@ export const setOrbiterSatelliteConfigs = async ({
 	config: Record<SatelliteIdText, OrbiterSatelliteConfigEntry>;
 	identity: OptionIdentity;
 	orbiterVersion: string;
-	features: OrbiterSatelliteFeatures | undefined;
-}): Promise<[Principal, OrbiterSatelliteConfig][]> => {
+	features: OrbiterDid.OrbiterSatelliteFeatures | undefined;
+}): Promise<[Principal, OrbiterDid.OrbiterSatelliteConfig][]> => {
 	if (compare(orbiterVersion, ORBITER_v0_0_8) >= 0) {
 		return await setOrbiterSatelliteConfigsApi({
 			orbiterId,

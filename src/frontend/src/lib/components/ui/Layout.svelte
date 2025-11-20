@@ -1,32 +1,18 @@
 <script lang="ts">
 	import { nonNullish } from '@dfinity/utils';
 	import type { Snippet } from 'svelte';
-	import { fade } from 'svelte/transition';
 	import SplitPane from '$lib/components/ui/SplitPane.svelte';
-	import { layoutTitle } from '$lib/derived/layout-title.derived';
-	import { layoutNavigation } from '$lib/stores/layout-navigation.store';
 
 	interface Props {
 		centered?: boolean;
 		fullWidth?: boolean;
-		title?: boolean;
-		topMargin?: 'default' | 'wide';
 		menu?: Snippet;
 		navbar?: Snippet;
 		children: Snippet;
 		footer?: Snippet;
 	}
 
-	let {
-		centered = false,
-		fullWidth = false,
-		title = true,
-		topMargin = 'default',
-		menu,
-		navbar,
-		children,
-		footer
-	}: Props = $props();
+	let { centered = false, fullWidth = false, menu, navbar, children, footer }: Props = $props();
 </script>
 
 <SplitPane {menu}>
@@ -35,20 +21,6 @@
 
 		<div class="page">
 			<main class:centered class:full-width={fullWidth} class:with-footer={nonNullish(footer)}>
-				{#if title}
-					{#if nonNullish($layoutNavigation)}
-						{@const SvelteComponent = $layoutNavigation.data.icon}
-						<h1 class:space={topMargin === 'wide'} in:fade>
-							<span>
-								<span class="icon"><SvelteComponent size="32px" /></span>
-								<span>{$layoutTitle ?? ''}</span>
-							</span>
-						</h1>
-					{:else}
-						<span class="empty" class:space={topMargin === 'wide'}>&ZeroWidthSpace;</span>
-					{/if}
-				{/if}
-
 				{@render children()}
 			</main>
 
@@ -82,7 +54,7 @@
 		max-width: 1440px;
 		overflow-x: hidden;
 
-		padding: 0 var(--padding-2x) var(--padding-6x);
+		padding: var(--padding-2x) var(--padding-2x) var(--padding-6x);
 
 		transition: max-width var(--animation-time) var(--menu-animation-timing-function);
 
@@ -95,7 +67,7 @@
 		}
 
 		@include media.min-width(xlarge) {
-			padding: 0 var(--padding-10x) var(--padding-6x);
+			padding: var(--padding-2x) var(--padding-7x) var(--padding-6x);
 		}
 	}
 

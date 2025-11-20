@@ -1,4 +1,6 @@
-export const ONE_DAY = 86_400n;
+const ONE_DAY_SECONDS = 86_400n;
+
+export const ONE_DAY = ONE_DAY_SECONDS;
 
 // Used for making freezing threshold human readable
 export const ONE_MONTH = 2_592_000; // 30 days

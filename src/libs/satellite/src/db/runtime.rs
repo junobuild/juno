@@ -1,4 +1,4 @@
-use crate::memory::internal::STATE;
+use crate::memory::state::STATE;
 use junobuild_collections::types::core::CollectionKey;
 use junobuild_shared::rate::types::RateConfig;
 use junobuild_shared::rate::utils::increment_and_assert_rate_store;

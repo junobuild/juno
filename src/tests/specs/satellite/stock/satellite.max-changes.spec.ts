@@ -1,9 +1,8 @@
-import type { ListParams, _SERVICE as SatelliteActor } from '$declarations/satellite/satellite.did';
-import { idlFactory as idlFactorSatellite } from '$declarations/satellite/satellite.factory.did';
-import type { Identity } from '@dfinity/agent';
-import { Ed25519KeyIdentity } from '@dfinity/identity';
+import { type SatelliteActor, type SatelliteDid, idlFactorySatellite } from '$declarations';
 import { type Actor, PocketIc } from '@dfinity/pic';
 import { fromNullable, nonNullish, toNullable } from '@dfinity/utils';
+import type { Identity } from '@icp-sdk/core/agent';
+import { Ed25519KeyIdentity } from '@icp-sdk/core/identity';
 import { JUNO_DATASTORE_ERROR_USER_USAGE_CHANGE_LIMIT_REACHED } from '@junobuild/errors';
 import { inject } from 'vitest';
 import { createDoc as createDocUtils } from '../../../utils/satellite-doc-tests.utils';
@@ -20,7 +19,7 @@ describe('Satellite > Max changes', () => {
 		pic = await PocketIc.create(inject('PIC_URL'));
 
 		const { actor: c } = await pic.setupCanister<SatelliteActor>({
-			idlFactory: idlFactorSatellite,
+			idlFactory: idlFactorySatellite,
 			wasm: SATELLITE_WASM_PATH,
 			arg: controllersInitArgs(controller),
 			sender: controller.getPrincipal()
@@ -62,7 +61,7 @@ describe('Satellite > Max changes', () => {
 		});
 	};
 
-	const NO_FILTER_PARAMS: ListParams = {
+	const NO_FILTER_PARAMS: SatelliteDid.ListParams = {
 		matcher: toNullable(),
 		order: toNullable(),
 		owner: toNullable(),

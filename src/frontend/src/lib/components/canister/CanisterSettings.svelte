@@ -1,6 +1,6 @@
 <script lang="ts">
-	import type { Principal } from '@dfinity/principal';
 	import { isNullish, nonNullish } from '@dfinity/utils';
+	import type { Principal } from '@icp-sdk/core/principal';
 	import Canister from '$lib/components/canister/Canister.svelte';
 	import CanisterValue from '$lib/components/canister/CanisterValue.svelte';
 	import {
@@ -95,17 +95,17 @@
 				{/snippet}
 				<p>
 					{#if freezingThreshold === BigInt(ONE_MONTH)}
-						{$i18n.canisters.a_month}
+						{$i18n.core.a_month}
 					{:else if freezingThreshold === BigInt(THREE_MONTHS)}
-						{$i18n.canisters.three_months}
+						{$i18n.core.three_months}
 					{:else if freezingThreshold === BigInt(SIX_MONTHS)}
-						{$i18n.canisters.six_months}
+						{$i18n.core.six_months}
 					{:else if freezingThreshold === BigInt(ONE_YEAR)}
-						{$i18n.canisters.a_year}
+						{$i18n.core.a_year}
 					{:else if freezingThreshold === BigInt(TWO_YEARS)}
-						{$i18n.canisters.two_years}
+						{$i18n.core.two_years}
 					{:else if freezingThreshold === BigInt(FIVE_YEARS)}
-						{$i18n.canisters.five_years}
+						{$i18n.core.five_years}
 					{:else}
 						{secondsToDuration(freezingThreshold ?? 0n)}
 					{/if}

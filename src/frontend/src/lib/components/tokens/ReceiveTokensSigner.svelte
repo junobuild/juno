@@ -1,8 +1,8 @@
 <script lang="ts">
-	import type { Icrc1TransferRequest } from '@dfinity/ledger-icp';
 	import type { IcrcAccount } from '@dfinity/oisy-wallet-signer';
 	import { IcpWallet } from '@dfinity/oisy-wallet-signer/icp-wallet';
 	import { isNullish, nonNullish, toNullable } from '@dfinity/utils';
+	import type { Icrc1TransferRequest } from '@icp-sdk/canisters/ledger/icp';
 	import ReceiveTokensSignerForm from '$lib/components/tokens/ReceiveTokensSignerForm.svelte';
 	import Confetti from '$lib/components/ui/Confetti.svelte';
 	import Spinner from '$lib/components/ui/Spinner.svelte';

@@ -20,7 +20,7 @@ const customSection = async ({
 	const wasm = await gunzipFile({ source: buffer });
 
 	// Compile a WebAssembly.Module object
-	const wasmModule = await WebAssembly.compile(wasm);
+	const wasmModule = await WebAssembly.compile(wasm as Uint8Array<ArrayBuffer>);
 
 	// Read the public custom section
 	const pkgSections = WebAssembly.Module.customSections(wasmModule, sectionName);

@@ -108,7 +108,7 @@
 		"svelte": "^5.39.2",
 		"svelte-check": "^4.3.1",
 		"tslib": "^2.8.1",
-		"typescript": "5.8.3",
+		"typescript": "^5.9.3",
 		"vite": "^7.1.6",
 		"vitest": "^3.2.4"
 	},

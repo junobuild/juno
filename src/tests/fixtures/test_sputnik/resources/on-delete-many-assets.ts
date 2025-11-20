@@ -19,7 +19,6 @@ export const onDeleteManyAssets = defineHook<OnDeleteManyAssets>({
 			};
 
 			await thr();
-			return;
 		}
 	}
 });

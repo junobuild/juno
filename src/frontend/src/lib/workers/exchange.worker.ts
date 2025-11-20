@@ -18,7 +18,6 @@ export const onExchangeMessage = async ({ data: dataMsg }: MessageEvent<PostMess
 			return;
 		case 'startWalletTimer':
 			await startTimer();
-			return;
 	}
 };
 

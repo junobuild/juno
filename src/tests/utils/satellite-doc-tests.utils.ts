@@ -1,6 +1,5 @@
 import type { SatelliteActor, SatelliteDid } from '$declarations';
-import type { Actor } from '@dfinity/pic';
-import type { ActorInterface } from '@dfinity/pic/dist/pocket-ic-actor';
+import type { Actor, ActorInterface } from '@dfinity/pic';
 import { toNullable } from '@dfinity/utils';
 import type { Identity } from '@icp-sdk/core/agent';
 import { Ed25519KeyIdentity } from '@icp-sdk/core/identity';

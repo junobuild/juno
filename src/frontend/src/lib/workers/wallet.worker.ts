@@ -39,7 +39,6 @@ export const onWalletMessage = async ({ data: dataMsg }: MessageEvent<PostMessag
 		case 'restartWalletTimer':
 			stopTimer();
 			await startTimer({ data });
-			return;
 	}
 };
 

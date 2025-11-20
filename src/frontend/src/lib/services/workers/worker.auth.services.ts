@@ -17,7 +17,6 @@ export class AuthWorker extends AppWorker {
 					return;
 				case 'delegationRemainingTime':
 					authRemainingTimeStore.set((data.data as PostMessageDataResponseAuth)?.authRemainingTime);
-					return;
 			}
 		};
 	}

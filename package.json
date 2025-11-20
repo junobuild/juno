@@ -71,7 +71,7 @@
 		"emulator:wait": "node scripts/emulator.wait.mjs"
 	},
 	"devDependencies": {
-		"@dfinity/eslint-config-oisy-wallet": "^0.2.2",
+		"@dfinity/eslint-config-oisy-wallet": "^0.2.3",
 		"@dfinity/internet-identity-playwright": "^2.0.0",
 		"@dfinity/pic": "^0.16.0",
 		"@dfinity/response-verification": "^3.0.3",

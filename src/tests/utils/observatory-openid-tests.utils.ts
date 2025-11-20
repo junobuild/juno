@@ -1,6 +1,5 @@
 import type { ObservatoryActor, ObservatoryDid } from '$declarations';
-import type { Actor, PocketIc } from '@dfinity/pic';
-import { CanisterHttpMethod } from '@dfinity/pic/dist/pocket-ic-types';
+import { type Actor, type PocketIc, CanisterHttpMethod } from '@dfinity/pic';
 import { assertNonNullish, fromNullable } from '@dfinity/utils';
 import type { Principal } from '@icp-sdk/core/principal';
 import type { MockOpenIdJwt } from './jwt-tests.utils';

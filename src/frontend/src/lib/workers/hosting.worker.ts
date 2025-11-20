@@ -15,7 +15,6 @@ export const onHostingMessage = async ({ data: dataMsg }: MessageEvent<PostMessa
 			return;
 		case 'startCustomDomainRegistrationTimer':
 			await startTimer({ data });
-			return;
 	}
 };
 

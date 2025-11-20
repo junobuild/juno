@@ -72,14 +72,6 @@ The following additional tools are required when building the modules:
 > [!NOTE]
 > The script `./docker/bootstrap` takes care of installing Rustup, the toolchain, and the following tools.
 
-### junobuild-didc
-
-`didc` is required to generate [Candid](https://github.com/dfinity/candid) files.
-
-```bash
-cargo install junobuild-didc
-```
-
 ### candid-extractor
 
 `candid-extractor` is needed to extract Candid interfaces. Install it with:

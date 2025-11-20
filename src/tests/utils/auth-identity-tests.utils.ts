@@ -16,7 +16,7 @@ import { makeMockGoogleOpenIdJwt, type MockOpenIdJwt } from './jwt-tests.utils';
 import { assertOpenIdHttpsOutcalls } from './observatory-openid-tests.utils';
 import { tick } from './pic-tests.utils';
 
-type UserKey = Uint8Array | number[];
+type UserKey = Uint8Array;
 type Delegations = [UserKey, SignedDelegation[]];
 
 export const authenticateAndMakeIdentity = async <R>({

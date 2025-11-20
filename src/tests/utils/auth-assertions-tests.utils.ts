@@ -123,7 +123,7 @@ export const testAuthConfig = ({
 			const { http_request } = actor();
 
 			const { body } = await http_request({
-				body: [],
+				body: Uint8Array.from([]),
 				certificate_version: toNullable(),
 				headers: [],
 				method: 'GET',
@@ -163,7 +163,7 @@ export const testAuthConfig = ({
 			const { http_request } = actor();
 
 			const { body } = await http_request({
-				body: [],
+				body: Uint8Array.from([]),
 				certificate_version: toNullable(),
 				headers: [],
 				method: 'GET',
@@ -210,7 +210,7 @@ export const testAuthConfig = ({
 			const { http_request } = actor();
 
 			const { status_code } = await http_request({
-				body: [],
+				body: Uint8Array.from([]),
 				certificate_version: toNullable(),
 				headers: [],
 				method: 'GET',
@@ -241,7 +241,7 @@ export const testAuthConfig = ({
 			const { http_request } = actor();
 
 			const { status_code } = await http_request({
-				body: [],
+				body: Uint8Array.from([]),
 				certificate_version: toNullable(),
 				headers: [],
 				method: 'GET',

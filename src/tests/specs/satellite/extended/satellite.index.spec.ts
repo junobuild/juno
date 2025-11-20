@@ -43,7 +43,7 @@ describe('Satellite > Index HTML', () => {
 		const { http_request } = actor;
 
 		const { body } = await http_request({
-			body: [],
+			body: Uint8Array.from([]),
 			certificate_version: toNullable(),
 			headers: [],
 			method: 'GET',
@@ -65,7 +65,7 @@ describe('Satellite > Index HTML', () => {
 		const { http_request } = actor;
 
 		const request: SatelliteDid.HttpRequest = {
-			body: [],
+			body: Uint8Array.from([]),
 			certificate_version: toNullable(2),
 			headers: [],
 			method: 'GET',
@@ -89,7 +89,7 @@ describe('Satellite > Index HTML', () => {
 		const { http_request } = actor;
 
 		const { status_code } = await http_request({
-			body: [],
+			body: Uint8Array.from([]),
 			certificate_version: toNullable(),
 			headers: [],
 			method: 'GET',

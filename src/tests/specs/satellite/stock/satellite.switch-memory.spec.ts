@@ -112,7 +112,7 @@ describe('Satellite > Switch storage system memory', () => {
 			const { http_request } = actor;
 
 			const request: SatelliteDid.HttpRequest = {
-				body: [],
+				body: Uint8Array.from([]),
 				certificate_version: toNullable(2),
 				headers: [],
 				method: 'GET',
@@ -141,7 +141,7 @@ describe('Satellite > Switch storage system memory', () => {
 			const { http_request } = actor;
 
 			const request: SatelliteDid.HttpRequest = {
-				body: [],
+				body: Uint8Array.from([]),
 				certificate_version: toNullable(2),
 				headers: [],
 				method: 'GET',

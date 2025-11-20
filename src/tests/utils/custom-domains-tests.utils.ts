@@ -77,7 +77,7 @@ export const adminCustomDomainsTests = ({
 		const { http_request } = actor();
 
 		const { body } = await http_request({
-			body: [],
+			body: Uint8Array.from([]),
 			certificate_version: toNullable(),
 			headers: [],
 			method: 'GET',
@@ -108,7 +108,7 @@ export const adminCustomDomainsTests = ({
 		expect(resultsAfter).toHaveLength(2);
 
 		const { body } = await http_request({
-			body: [],
+			body: Uint8Array.from([]),
 			certificate_version: toNullable(),
 			headers: [],
 			method: 'GET',
@@ -125,7 +125,7 @@ export const adminCustomDomainsTests = ({
 		const { http_request } = actor();
 
 		const { body } = await http_request({
-			body: [],
+			body: Uint8Array.from([]),
 			certificate_version: toNullable(),
 			headers: [],
 			method: 'GET',
@@ -167,7 +167,7 @@ export const adminCustomDomainsWithProposalTests = ({
 		});
 
 		const { status_code } = await http_request({
-			body: [],
+			body: Uint8Array.from([]),
 			certificate_version: toNullable(),
 			headers: [],
 			method: 'GET',

@@ -48,7 +48,7 @@ describe('Orbiter > HTTP > Routes', () => {
 
 	describe.each([
 		['With body', toBodyJson({ hello: 'world' })],
-		['Without body', []]
+		['Without body', Uint8Array.from([])]
 		// eslint-disable-next-line local-rules/prefer-object-params
 	])('%s', (_, body) => {
 		describe.each(['/something', '/'])('Route not found for %s', (url) => {

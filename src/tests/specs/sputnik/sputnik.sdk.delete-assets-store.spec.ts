@@ -50,7 +50,7 @@ describe('Sputnik > sdk > testSdkDeleteAssetsStore', () => {
 		const key = nanoid();
 
 		await set_doc(TEST_COLLECTION, key, {
-			data: [],
+			data: Uint8Array.from([]),
 			description: toNullable(),
 			version: toNullable()
 		});

@@ -78,7 +78,7 @@ describe('Satellite > Authentication > Configuration', () => {
 				await set_auth_config(config);
 
 				const { body } = await http_request({
-					body: [],
+					body: Uint8Array.from([]),
 					certificate_version: toNullable(),
 					headers: [],
 					method: 'GET',
@@ -116,7 +116,7 @@ describe('Satellite > Authentication > Configuration', () => {
 				await set_auth_config(config);
 
 				const { body } = await http_request({
-					body: [],
+					body: Uint8Array.from([]),
 					certificate_version: toNullable(),
 					headers: [],
 					method: 'GET',
@@ -157,7 +157,7 @@ describe('Satellite > Authentication > Configuration', () => {
 				await set_auth_config(config);
 
 				const { status_code } = await http_request({
-					body: [],
+					body: Uint8Array.from([]),
 					certificate_version: toNullable(),
 					headers: [],
 					method: 'GET',
@@ -190,7 +190,7 @@ describe('Satellite > Authentication > Configuration', () => {
 				await set_auth_config(config);
 
 				const { body } = await http_request({
-					body: [],
+					body: Uint8Array.from([]),
 					certificate_version: toNullable(),
 					headers: [],
 					method: 'GET',
@@ -232,7 +232,7 @@ describe('Satellite > Authentication > Configuration', () => {
 				await set_auth_config(config);
 
 				const { body } = await http_request({
-					body: [],
+					body: Uint8Array.from([]),
 					certificate_version: toNullable(),
 					headers: [],
 					method: 'GET',
@@ -270,7 +270,7 @@ describe('Satellite > Authentication > Configuration', () => {
 				await set_auth_config(config);
 
 				const { body } = await http_request({
-					body: [],
+					body: Uint8Array.from([]),
 					certificate_version: toNullable(),
 					headers: [],
 					method: 'GET',
@@ -311,7 +311,7 @@ describe('Satellite > Authentication > Configuration', () => {
 				await set_auth_config(config);
 
 				const { status_code } = await http_request({
-					body: [],
+					body: Uint8Array.from([]),
 					certificate_version: toNullable(),
 					headers: [],
 					method: 'GET',

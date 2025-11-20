@@ -91,7 +91,7 @@ describe('Satellite > Storage > Token', () => {
 				const { fullPath } = await uploadAssetWithToken({ collection });
 
 				const request: SatelliteDid.HttpRequest = {
-					body: [],
+					body: Uint8Array.from([]),
 					certificate_version: toNullable(2),
 					headers: [],
 					method: 'GET',
@@ -111,7 +111,7 @@ describe('Satellite > Storage > Token', () => {
 				const { fullPathWithToken } = await uploadAssetWithToken({ collection });
 
 				const request: SatelliteDid.HttpRequest = {
-					body: [],
+					body: Uint8Array.from([]),
 					certificate_version: toNullable(2),
 					headers: [],
 					method: 'GET',
@@ -131,7 +131,7 @@ describe('Satellite > Storage > Token', () => {
 				const { fullPathWithToken } = await uploadAssetWithToken({ collection });
 
 				const request: SatelliteDid.HttpRequest = {
-					body: [],
+					body: Uint8Array.from([]),
 					certificate_version: toNullable(2),
 					headers: [],
 					method: 'GET',
@@ -164,7 +164,7 @@ describe('Satellite > Storage > Token', () => {
 				});
 
 				const request: SatelliteDid.HttpRequest = {
-					body: [],
+					body: Uint8Array.from([]),
 					certificate_version: toNullable(2),
 					headers: [],
 					method: 'GET',

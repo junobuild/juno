@@ -48,7 +48,7 @@ describe('Sputnik > sdk > setAssetHandler', () => {
 		const key = nanoid();
 
 		await set_doc(TEST_COLLECTION, key, {
-			data: [],
+			data: Uint8Array.from([]),
 			description: toNullable(),
 			version: toNullable()
 		});
@@ -62,7 +62,7 @@ describe('Sputnik > sdk > setAssetHandler', () => {
 		const { http_request } = actor;
 
 		const request: SputnikDid.HttpRequest = {
-			body: [],
+			body: Uint8Array.from([]),
 			certificate_version: toNullable(2),
 			headers: [],
 			method: 'GET',

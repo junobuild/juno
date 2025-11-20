@@ -10,17 +10,32 @@ function generate_did_idl() {
        mkdir "$declaration_path"
   fi
 
-  junobuild-didc -t ts --input "$canister_root"/"$canister".did --output "$declaration_path"/"$canister".did.d.ts
-  junobuild-didc -t js --input "$canister_root"/"$canister".did --output "$declaration_path"/"$canister".did.js
+  local didfile="$canister_root/$canister.did"
+
+  local generatedFolder="$declaration_path/declarations"
+  local generatedTsfile="$canister.did.d.ts"
+  local generatedJsfile="$canister.did.js"
+
+  # --actor-disabled: skip generating actor files, since we handle those ourselves
+  # --force: overwrite files. Required; otherwise, icp-bindgen would delete files at preprocess,
+  # which causes issues when multiple .did files are located in the same folder.
+  npx icp-bindgen --did-file "${didfile}" --out-dir "$declaration_path" --actor-disabled --force
+
+  # icp-bindgen generates the files in a `declarations` subfolder
+  # using a different suffix for JavaScript as the one we used to use.
+  # That's why we have to post-process the results.
+  mv "$generatedFolder/$generatedTsfile" "$declaration_path"
+  mv "$generatedFolder/$generatedJsfile" "$declaration_path"
+  rm -r "$generatedFolder"
 }
 
-# Assert junobuild-didc is installed
+# Assert @icp-sdk/bindgen is installed
 
-if [[ ! "$(command -v junobuild-didc)" || "$(junobuild-didc --version)" != "junobuild-didc 0.2.0" ]]
+if [[ ! "$(command -v npx)" || "$(npx icp-bindgen --version)" != "0.2.0" ]]
 then
-    echo "could not find junobuild-didc 0.2.0"
-    echo "junobuild-didc version 0.2.0 is needed, please run the following command:"
-    echo "  cargo install junobuild-didc --version 0.2.0"
+    echo "could not find @icp-sdk/binden 0.2.0"
+    echo "please run the following command:"
+    echo "  npm ci"
     exit 1
 fi
 

@@ -75,6 +75,7 @@
 		"@dfinity/internet-identity-playwright": "^2.0.0",
 		"@dfinity/pic": "^0.16.0",
 		"@dfinity/response-verification": "^3.0.3",
+		"@icp-sdk/bindgen": "^0.2.0",
 		"@junobuild/cli-tools": "^0.9.0",
 		"@junobuild/config": "^2.6.0",
 		"@junobuild/config-loader": "^0.4.6",

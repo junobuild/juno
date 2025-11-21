@@ -34,32 +34,36 @@ describe('auth-broadcast.services', () => {
 		beforeEach(() => {
 			vi.clearAllMocks();
 
-			vi.stubGlobal(
-				'BroadcastChannel',
-				vi.fn((name: string) => {
-					const channel =
-						mockChannels.get(name) ??
-						({
-							name,
-							onmessage: null,
-							postMessage: postMessageSpy,
-							close: closeSpy
-						} as unknown as BroadcastChannel);
+			const MockBroadcastChannelConstructor = vi.fn(function (this: any, name: string) {
+				this.name = name;
+				this.onmessage = null;
+				this.postMessage = postMessageSpy;
+				this.close = closeSpy;
 
-					postMessageSpy.mockImplementation((message: unknown) => {
-						const event = new MessageEvent('message', {
-							data: message,
-							origin: mockOrigin()
-						});
+				const channel =
+					mockChannels.get(name) ??
+					({
+						name,
+						onmessage: null,
+						postMessage: postMessageSpy,
+						close: closeSpy
+					} as unknown as BroadcastChannel);
 
-						channel.onmessage?.(event);
+				postMessageSpy.mockImplementation((message: unknown) => {
+					const event = new MessageEvent('message', {
+						data: message,
+						origin: mockOrigin()
 					});
 
-					mockChannels.set(name, channel);
+					channel.onmessage?.(event);
+				});
 
-					return channel;
-				})
-			);
+				mockChannels.set(name, channel);
+
+				return channel;
+			});
+
+			vi.stubGlobal('BroadcastChannel', MockBroadcastChannelConstructor);
 
 			bc = AuthBroadcastChannel.getInstance();
 

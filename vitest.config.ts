@@ -16,11 +16,7 @@ export default defineConfig({
 			]
 		],
 		environment: 'node',
-		poolOptions: {
-			threads: {
-				singleThread: true
-			}
-		},
+		maxWorkers: 1, // single thread
 		testTimeout: 60000,
 		hookTimeout: 60000
 	},

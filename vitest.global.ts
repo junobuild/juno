@@ -1,10 +1,10 @@
 import { PocketIcServer } from '@dfinity/pic';
-import type { GlobalSetupContext } from 'vitest/node';
+import type { TestProject } from 'vitest/node';
 
 let pic: PocketIcServer | undefined;
 
 // eslint-disable-next-line func-style, prefer-arrow/prefer-arrow-functions
-export async function setup({ provide }: GlobalSetupContext): Promise<void> {
+export async function setup({ provide }: TestProject): Promise<void> {
 	pic = await PocketIcServer.start({
 		showCanisterLogs: true
 	});

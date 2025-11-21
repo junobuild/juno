@@ -34,6 +34,7 @@ describe('auth-broadcast.services', () => {
 		beforeEach(() => {
 			vi.clearAllMocks();
 
+			// eslint-disable-next-line local-rules/prefer-object-params, @typescript-eslint/no-explicit-any
 			const MockBroadcastChannelConstructor = vi.fn(function (this: any, name: string) {
 				this.name = name;
 				this.onmessage = null;

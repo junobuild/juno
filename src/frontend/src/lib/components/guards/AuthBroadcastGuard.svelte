@@ -39,7 +39,7 @@
 			};
 		} catch (err: unknown) {
 			// We don't really care if the broadcast channel fails to open or if it fails to set the message handler.
-			// This is a non-critical feature that improves the UX when OISY is open in multiple tabs.
+			// This is a non-critical feature that improves the UX when Juno is open in multiple tabs.
 			// We just print a warning in the console for debugging purposes.
 			console.warn('Auth BroadcastChannel initialization failed', err);
 		}

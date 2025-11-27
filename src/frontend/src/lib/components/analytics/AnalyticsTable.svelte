@@ -30,7 +30,9 @@
 				{@const title = withTitle ? name : undefined}
 
 				<tr>
-					<td><span style={ratio} class="progress" {title}>{name}</span></td>
+					<td
+						><span class="stack"><span style={ratio} class="progress" {title}>{name}</span></span>
+					</td>
 					<td class="count">
 						{#if display === 'percent'}
 							{count > 0 ? (count * 100).toFixed(2) : 0}<small>%</small>
@@ -46,11 +48,17 @@
 
 <style lang="scss">
 	@use '../../styles/mixins/text';
+	@use '../../styles/mixins/media';
+
+	.stack {
+		position: relative;
+		z-index: 1;
+	}
 
 	.progress {
 		position: relative;
 		width: 100%;
-		display: inline-block;
+		display: block;
 
 		@include text.truncate;
 
@@ -63,11 +71,21 @@
 
 			display: block;
 
-			background: rgba(var(--color-primary-rgb), 0.1);
+			background: rgba(var(--color-secondary-rgb), 0.5);
 			border-radius: var(--border-radius);
 
 			width: calc(var(--ratio) + var(--padding));
 			height: 100%;
+
+			z-index: -1;
+		}
+	}
+
+	@include media.dark-theme {
+		.progress {
+			&:before {
+				background: rgba(var(--color-tertiary-rgb), 0.85);
+			}
 		}
 	}
 

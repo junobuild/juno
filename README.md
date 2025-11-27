@@ -36,23 +36,24 @@ Think of it as **Vercel + Firebase + Self-Hosting** - without the compromises.
 
 ```typescript
 // Initialize Juno
-import { initSatellite } from "@junobuild/core";
+import { initSatellite } from '@junobuild/core';
 await initSatellite();
 
 // Store data
-import { setDoc } from "@junobuild/core";
+import { setDoc } from '@junobuild/core';
 await setDoc({
-  collection: "posts",
-  doc: {
-    key: "my-post",
-    data: { title: "Hello Juno!" }
-  }
+	collection: 'posts',
+	doc: {
+		key: 'my-post',
+		data: { title: 'Hello Juno!' }
+	}
 });
 ```
 
 ## 🚢 Deploy
 
 Deploy to production with a single command:
+
 ```bash
 # Deploy your frontend
 juno hosting deploy
@@ -61,8 +62,7 @@ juno hosting deploy
 juno functions publish
 ```
 
-Or integrate with GitHub Actions  → [Setup CI/CD](https://juno.build/docs/guides/github-actions)
-
+Or integrate with GitHub Actions → [Setup CI/CD](https://juno.build/docs/guides/github-actions)
 
 ## 💁‍♂️️ Links & Resources
 

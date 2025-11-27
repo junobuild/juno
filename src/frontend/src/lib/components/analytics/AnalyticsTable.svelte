@@ -7,9 +7,10 @@
 		children: Snippet;
 		events: [string, number][];
 		display?: 'number' | 'percent';
+		withTitle?: boolean;
 	}
 
-	let { events, children, display = 'number' }: Props = $props();
+	let { events, children, display = 'number', withTitle }: Props = $props();
 
 	let total = $derived(events.reduce((acc, [_, count]) => acc + count, 0));
 </script>
@@ -26,9 +27,10 @@
 		<tbody>
 			{#each events as [name, count] (name)}
 				{@const ratio = total > 0 ? `--ratio: ${(count * 100) / total}%` : undefined}
+				{@const title = withTitle ? name : undefined}
 
 				<tr>
-					<td><span style={ratio} class="progress">{name}</span></td>
+					<td><span style={ratio} class="progress" {title}>{name}</span></td>
 					<td class="count">
 						{#if display === 'percent'}
 							{count > 0 ? (count * 100).toFixed(2) : 0}<small>%</small>
@@ -43,10 +45,14 @@
 </div>
 
 <style lang="scss">
+	@use '../../styles/mixins/text';
+
 	.progress {
 		position: relative;
 		width: 100%;
 		display: inline-block;
+
+		@include text.truncate;
 
 		&:before {
 			content: '';

@@ -12,7 +12,7 @@ use junobuild_shared::ic::DecodeCandid;
 use junobuild_shared::ledger::icp::{transfer_payment, SUB_ACCOUNT};
 use junobuild_shared::mgmt::ic::{delete_segment, stop_segment};
 use junobuild_shared::types::interface::{DepositCyclesArgs, GetCreateCanisterFeeArgs};
-use junobuild_shared::types::state::{UserId};
+use junobuild_shared::types::state::UserId;
 use std::future::Future;
 
 pub async fn create_canister<F, Fut, T>(
@@ -68,8 +68,6 @@ async fn deposit_cycles(segment_id: &Principal, cycles: u128) -> Result<(), Stri
         destination_id: id(),
         cycles,
     };
-
-    ic_cdk::print("Depositing cycles");
 
     let _ = Call::unbounded_wait(*segment_id, "deposit_cycles")
         .with_arg(args)

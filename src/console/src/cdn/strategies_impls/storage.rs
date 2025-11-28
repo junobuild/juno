@@ -25,7 +25,7 @@ use junobuild_storage::strategies::{
 use junobuild_storage::types::config::StorageConfig;
 use junobuild_storage::types::state::FullPath;
 use junobuild_storage::types::store::{
-    Asset, AssetAssertUpload, AssetEncoding, Batch, EncodingType, ReferenceId,
+    Asset, AssetAccessToken, AssetAssertUpload, AssetEncoding, Batch, EncodingType, ReferenceId,
 };
 use junobuild_storage::utils::{clone_asset_encoding_content_chunks, insert_encoding_into_asset};
 
@@ -127,7 +127,7 @@ impl StorageStateStrategy for StorageState {
     fn get_public_asset(
         &self,
         full_path: FullPath,
-        token: Option<String>,
+        token: AssetAccessToken,
     ) -> Option<(Asset, Memory)> {
         crate::cdn::storage::heap::get_public_asset(full_path, token)
     }

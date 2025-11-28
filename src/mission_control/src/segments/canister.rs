@@ -69,10 +69,12 @@ async fn deposit_cycles(segment_id: &Principal, cycles: u128) -> Result<(), Stri
         cycles,
     };
 
-    let result: CallResult<((),)> = call(*segment_id, "deposit_cycles", (args,)).await;
+    ic_cdk::print("Depositing cycles");
 
-    match result {
-        Err((_, message)) => Err(["Deposit cycles failed.", &message].join(" - ")),
-        Ok(_) => Ok(()),
-    }
+    let _ = Call::unbounded_wait(*segment_id, "deposit_cycles")
+        .with_arg(args)
+        .await
+        .decode_candid::<()>()?;
+
+    Ok(())
 }

@@ -1,5 +1,5 @@
 pub mod api;
-pub mod call;
+pub mod response;
 mod trap;
 
 pub use trap::*;

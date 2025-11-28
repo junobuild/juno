@@ -17,7 +17,7 @@ use junobuild_cdn::proposals::{
     RejectProposal,
 };
 use junobuild_shared::ic::api::caller;
-use junobuild_shared::ic::call::ManualReply;
+use junobuild_shared::ic::response::ManualReply;
 use junobuild_shared::ic::UnwrapOrTrap;
 use junobuild_shared::types::core::DomainName;
 use junobuild_shared::types::domain::CustomDomains;

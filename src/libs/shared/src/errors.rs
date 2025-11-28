@@ -34,8 +34,6 @@ pub const JUNO_ERROR_SEGMENT_DELETE_FAILED: &str = "juno.error.segment.delete_fa
 pub const JUNO_ERROR_CMC_CALL_LEDGER_FAILED: &str = "juno.error.cmc.call_ledger_failed";
 // Ledger transfer failed
 pub const JUNO_ERROR_CMC_LEDGER_TRANSFER_FAILED: &str = "juno.error.cmc.ledger_transfer_failed";
-// Top-up failed
-pub const JUNO_ERROR_CMC_TOP_UP_FAILED: &str = "juno.error.cmc.top_up_failed";
 // Failed to call CMC to create canister
 pub const JUNO_ERROR_CMC_CALL_CREATE_CANISTER_FAILED: &str =
     "juno.error.cmc.call_create_canister_failed";

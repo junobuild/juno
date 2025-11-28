@@ -6,6 +6,7 @@ use crate::types::state::Orbiter;
 use candid::Principal;
 use ic_cdk::api::call::CallResult;
 use ic_cdk::call;
+use ic_cdk::call::Call;
 use ic_ledger_types::BlockIndex;
 use junobuild_shared::env::CONSOLE;
 use junobuild_shared::types::interface::CreateCanisterArgs;
@@ -100,11 +101,12 @@ async fn assert_orbiter(orbiter_id: &OrbiterId) -> Result<(), String> {
     // Note: We could have use list_controllers() but the Satellite also exposes that function.
     type SatelliteConfigs = HashMap<SatelliteId, OrbiterSatelliteConfig>;
 
-    let result: CallResult<(SatelliteConfigs,)> =
-        call(*orbiter_id, "list_satellite_configs", ((),)).await;
+    let _ = Call::bounded_wait(*orbiter_id, "list_satellite_configs")
+        .with_arg(())
+        .await
+        .map_err(|e| format!("Fetching list of satellite configs failed: {:?}", e))?
+        .candid::<SatelliteConfigs>()
+        .map_err(|e| format!("Decoding SatelliteConfigs failed: {:?}", e))?;
 
-    match result {
-        Err((_, message)) => Err(["Set orbiter failed.", &message].join(" - ")),
-        Ok((_,)) => Ok(()),
-    }
+    Ok(())
 }

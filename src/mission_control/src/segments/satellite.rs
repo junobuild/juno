@@ -8,6 +8,7 @@ use crate::types::state::Satellite;
 use candid::Principal;
 use ic_cdk::api::call::CallResult;
 use ic_cdk::call;
+use ic_cdk::call::Call;
 use ic_ledger_types::BlockIndex;
 use junobuild_shared::env::CONSOLE;
 use junobuild_shared::types::domain::CustomDomains;
@@ -136,11 +137,12 @@ async fn assert_satellite(satellite_id: &SatelliteId) -> Result<(), String> {
     //
     // Notes: We could have use list_controllers() but the Orbiter also exposes that function.
     // Likewise, we could have use list_rules but, list_custom_domains might return a smaller response
-    let result: CallResult<(CustomDomains,)> =
-        call(*satellite_id, "list_custom_domains", ((),)).await;
+    let _ = Call::bounded_wait(*satellite_id, "list_custom_domains")
+        .with_arg(())
+        .await
+        .map_err(|e| format!("Fetching list of custom domains failed: {:?}", e))?
+        .candid::<CustomDomains>()
+        .map_err(|e| format!("Decoding CustomDomains failed: {:?}", e))?;
 
-    match result {
-        Err((_, message)) => Err(["Set satellite failed.", &message].join(" - ")),
-        Ok((_,)) => Ok(()),
-    }
+    Ok(())
 }

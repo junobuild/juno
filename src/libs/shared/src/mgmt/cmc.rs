@@ -5,6 +5,7 @@ use crate::errors::{
     JUNO_ERROR_CMC_CREATE_CANISTER_FAILED, JUNO_ERROR_CMC_INSTALL_CODE_FAILED,
     JUNO_ERROR_CMC_LEDGER_TRANSFER_FAILED, JUNO_ERROR_CMC_TOP_UP_FAILED,
 };
+use crate::ic::DecodeCandid;
 use crate::ledger::icp::transfer_payment;
 use crate::mgmt::ic::install_code;
 use crate::mgmt::settings::{create_canister_cycles, create_canister_settings};
@@ -13,9 +14,11 @@ use crate::mgmt::types::cmc::{
     TopUpCanisterArgs,
 };
 use crate::mgmt::types::ic::{CreateCanisterInitSettingsArg, WasmArg};
+use crate::types::state::ControllerId;
 use candid::Principal;
 use ic_cdk::api::call::{call_with_payment128, CallResult};
 use ic_cdk::call;
+use ic_cdk::call::Call;
 use ic_cdk::management_canister::{CanisterId, CanisterInstallMode};
 use ic_ledger_types::{Subaccount, Tokens};
 
@@ -88,20 +91,18 @@ pub async fn cmc_create_canister_install_code(
         settings: create_canister_settings(create_settings_arg),
     };
 
-    let result: CallResult<(CreateCanisterResult,)> = call_with_payment128(
-        cmc,
-        "create_canister",
-        (create_canister_arg,),
-        create_canister_cycles(cycles),
-    )
-    .await;
+    let result = Call::unbounded_wait(cmc, "create_canister")
+        .with_arg(create_canister_arg)
+        .with_cycles(create_canister_cycles(cycles))
+        .await
+        .decode_candid::<CreateCanisterResult>();
 
     match result {
-        Err((_, message)) => Err(format!(
+        Err(error) => Err(format!(
             "{} ({})",
-            JUNO_ERROR_CMC_CALL_CREATE_CANISTER_FAILED, &message
+            JUNO_ERROR_CMC_CALL_CREATE_CANISTER_FAILED, &error
         )),
-        Ok((result,)) => match result {
+        Ok(result) => match result {
             Err(err) => Err(format!("{JUNO_ERROR_CMC_CREATE_CANISTER_FAILED} ({err})")),
             Ok(canister_id) => {
                 let install =

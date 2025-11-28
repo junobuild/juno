@@ -9,6 +9,7 @@ use ic_cdk::call;
 use ic_cdk::call::Call;
 use ic_ledger_types::BlockIndex;
 use junobuild_shared::env::CONSOLE;
+use junobuild_shared::ic::DecodeCandid;
 use junobuild_shared::types::interface::CreateCanisterArgs;
 use junobuild_shared::types::state::{OrbiterId, OrbiterSatelliteConfig, SatelliteId, UserId};
 use std::collections::HashMap;
@@ -104,9 +105,7 @@ async fn assert_orbiter(orbiter_id: &OrbiterId) -> Result<(), String> {
     let _ = Call::bounded_wait(*orbiter_id, "list_satellite_configs")
         .with_arg(())
         .await
-        .map_err(|e| format!("Fetching list of satellite configs failed: {:?}", e))?
-        .candid::<SatelliteConfigs>()
-        .map_err(|e| format!("Decoding SatelliteConfigs failed: {:?}", e))?;
+        .decode_candid()?;
 
     Ok(())
 }

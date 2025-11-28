@@ -595,6 +595,7 @@ pub fn set_asset_token_store(
     token: &AssetAccessToken,
 ) -> Result<(), String> {
     let controllers: Controllers = get_controllers();
+    let config = get_config_store();
 
     let context = StoreContext {
         caller,
@@ -602,13 +603,14 @@ pub fn set_asset_token_store(
         collection,
     };
 
-    secure_set_asset_token_impl(&context, full_path, token)
+    secure_set_asset_token_impl(&context, full_path, token, &config)
 }
 
 fn secure_set_asset_token_impl(
     context: &StoreContext,
     full_path: &FullPath,
     token: &AssetAccessToken,
+    config: &StorageConfig,
 ) -> Result<(), String> {
     let rule = get_state_rule(context.collection)?;
     let auth_config = get_auth_config();
@@ -618,7 +620,7 @@ fn secure_set_asset_token_impl(
         auth_config: &auth_config,
     };
 
-    set_asset_token_impl(context, &assert_context, full_path, token)
+    set_asset_token_impl(context, &assert_context, full_path,  token, config)
 }
 
 fn set_asset_token_impl(
@@ -626,6 +628,7 @@ fn set_asset_token_impl(
     assert_context: &AssertContext,
     full_path: &FullPath,
     token: &AssetAccessToken,
+    config: &StorageConfig,
 ) -> Result<(), String> {
     let asset = get_state_asset(context.collection, full_path, assert_context.rule)
         .ok_or(JUNO_STORAGE_ERROR_ASSET_NOT_FOUND.to_string())?;
@@ -640,6 +643,10 @@ fn set_asset_token_impl(
         &updated_asset,
         assert_context.rule,
     );
+
+    if asset.key.token.is_some() ^ token.is_some() {
+        update_runtime_certified_asset(&updated_asset, config, &StorageCertificate);
+    }
 
     Ok(())
 }

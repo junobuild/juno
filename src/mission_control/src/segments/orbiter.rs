@@ -4,8 +4,6 @@ use crate::segments::store::{add_orbiter, delete_orbiter as delete_orbiter_store
 use crate::types::interface::CreateCanisterConfig;
 use crate::types::state::Orbiter;
 use candid::Principal;
-use ic_cdk::api::call::CallResult;
-use ic_cdk::call;
 use ic_cdk::call::Call;
 use ic_ledger_types::BlockIndex;
 use junobuild_shared::env::CONSOLE;
@@ -85,12 +83,14 @@ async fn create_and_save_orbiter(
         subnet_id,
     };
 
-    let result: CallResult<(OrbiterId,)> = call(console, "create_orbiter", (args,)).await;
+    let orbiter_id = Call::unbounded_wait(console, "create_orbiter")
+        .with_arg(args)
+        .await
+        .map_err(|e| format!("Calling console.create_orbiter failed: {:?}", e))?
+        .candid::<OrbiterId>()
+        .map_err(|e| format!("Decoding OrbiterId failed: {:?}", e))?;
 
-    match result {
-        Err((_, message)) => Err(["Create orbiter failed.", &message].join(" - ")),
-        Ok((orbiter,)) => Ok(add_orbiter(&orbiter, &name)),
-    }
+    Ok(add_orbiter(&orbiter_id, &name))
 }
 
 async fn assert_orbiter(orbiter_id: &OrbiterId) -> Result<(), String> {

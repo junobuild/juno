@@ -3,10 +3,12 @@ use crate::user::store::get_user;
 use candid::Principal;
 use ic_cdk::api::call::CallResult;
 use ic_cdk::call;
+use ic_cdk::call::Call;
 use ic_ledger_types::{BlockIndex, Tokens};
 use junobuild_shared::constants_shared::{IC_TRANSACTION_FEE_ICP, MEMO_CANISTER_CREATE};
 use junobuild_shared::env::CONSOLE;
 use junobuild_shared::ic::api::id;
+use junobuild_shared::ic::DecodeCandid;
 use junobuild_shared::ledger::icp::{transfer_payment, SUB_ACCOUNT};
 use junobuild_shared::mgmt::ic::{delete_segment, stop_segment};
 use junobuild_shared::types::interface::{DepositCyclesArgs, GetCreateCanisterFeeArgs};
@@ -69,10 +71,12 @@ async fn deposit_cycles(segment_id: &Principal, cycles: u128) -> Result<(), Stri
         cycles,
     };
 
-    let result: CallResult<((),)> = call(*segment_id, "deposit_cycles", (args,)).await;
+    ic_cdk::print("Depositing cycles");
 
-    match result {
-        Err((_, message)) => Err(["Deposit cycles failed.", &message].join(" - ")),
-        Ok(_) => Ok(()),
-    }
+    let _ = Call::unbounded_wait(*segment_id, "deposit_cycles")
+        .with_arg(args)
+        .await
+        .decode_candid::<()>()?;
+
+    Ok(())
 }

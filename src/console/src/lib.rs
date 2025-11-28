@@ -36,7 +36,7 @@ use junobuild_cdn::proposals::ProposalId;
 use junobuild_cdn::proposals::ProposalType;
 use junobuild_cdn::proposals::RejectProposal;
 use junobuild_collections::types::core::CollectionKey;
-use junobuild_shared::ic::call::ManualReply;
+use junobuild_shared::ic::response::ManualReply;
 use junobuild_shared::rate::types::RateConfig;
 use junobuild_shared::types::core::DomainName;
 use junobuild_shared::types::domain::CustomDomains;

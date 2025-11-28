@@ -1,6 +1,6 @@
 pub mod api;
-pub mod call;
 mod decode;
+pub mod response;
 mod trap;
 
 pub use decode::*;

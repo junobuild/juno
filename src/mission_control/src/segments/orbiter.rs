@@ -87,7 +87,7 @@ async fn create_and_save_orbiter(
     let orbiter_id = Call::unbounded_wait(console, "create_orbiter")
         .with_arg(args)
         .await
-        .decode_candid()?;
+        .decode_candid::<OrbiterId>()?;
 
     Ok(add_orbiter(&orbiter_id, &name))
 }
@@ -103,7 +103,7 @@ async fn assert_orbiter(orbiter_id: &OrbiterId) -> Result<(), String> {
     let _ = Call::bounded_wait(*orbiter_id, "list_satellite_configs")
         .with_arg(())
         .await
-        .decode_candid()?;
+        .decode_candid::<SatelliteConfigs>()?;
 
     Ok(())
 }

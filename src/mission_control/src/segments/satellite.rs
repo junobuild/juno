@@ -10,6 +10,7 @@ use ic_cdk::call::Call;
 use ic_ledger_types::BlockIndex;
 use junobuild_shared::env::CONSOLE;
 use junobuild_shared::ic::DecodeCandid;
+use junobuild_shared::types::domain::CustomDomains;
 use junobuild_shared::types::interface::CreateSatelliteArgs;
 use junobuild_shared::types::state::{SatelliteId, UserId};
 
@@ -92,7 +93,7 @@ async fn create_and_save_satellite(
     let satellite_id = Call::unbounded_wait(console, "create_satellite")
         .with_arg(args)
         .await
-        .decode_candid()?;
+        .decode_candid::<SatelliteId>()?;
 
     Ok(add_satellite(&satellite_id, &name))
 }
@@ -138,7 +139,7 @@ async fn assert_satellite(satellite_id: &SatelliteId) -> Result<(), String> {
     let _ = Call::bounded_wait(*satellite_id, "list_custom_domains")
         .with_arg(())
         .await
-        .decode_candid()?;
+        .decode_candid::<CustomDomains>()?;
 
     Ok(())
 }

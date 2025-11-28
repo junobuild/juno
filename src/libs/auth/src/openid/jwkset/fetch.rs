@@ -11,7 +11,7 @@ pub async fn fetch_openid_certificate(
     let certificate = Call::bounded_wait(observatory, "get_openid_certificate")
         .with_arg(GetOpenIdCertificateArgs::from(provider))
         .await
-        .decode_candid()?;
+        .decode_candid::<Option<OpenIdCertificate>>()?;
 
     Ok(certificate)
 }

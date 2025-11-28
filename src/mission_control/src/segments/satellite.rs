@@ -6,8 +6,6 @@ use crate::segments::store::{
 use crate::types::interface::{CreateCanisterConfig, CreateSatelliteConfig};
 use crate::types::state::Satellite;
 use candid::Principal;
-use ic_cdk::api::call::CallResult;
-use ic_cdk::call;
 use ic_cdk::call::Call;
 use ic_ledger_types::BlockIndex;
 use junobuild_shared::env::CONSOLE;
@@ -92,12 +90,14 @@ async fn create_and_save_satellite(
         storage,
     };
 
-    let result: CallResult<(SatelliteId,)> = call(console, "create_satellite", (args,)).await;
+    let satellite_id = Call::unbounded_wait(console, "create_satellite")
+        .with_arg(args)
+        .await
+        .map_err(|e| format!("Calling console.create_satellite failed: {:?}", e))?
+        .candid::<SatelliteId>()
+        .map_err(|e| format!("Decoding SatelliteId failed: {:?}", e))?;
 
-    match result {
-        Err((_, message)) => Err(["Create satellite failed.", &message].join(" - ")),
-        Ok((satellite,)) => Ok(add_satellite(&satellite, &name)),
-    }
+    Ok(add_satellite(&satellite_id, &name))
 }
 
 pub async fn attach_satellite(

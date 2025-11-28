@@ -124,8 +124,6 @@ pub mod storage {
 
     pub type JsFullPath = FullPath;
 
-    pub type JsAssetAccessToken = AssetAccessToken;
-
     #[derive(Clone)]
     pub struct JsHeaderFieldRecord(pub String, pub String);
 

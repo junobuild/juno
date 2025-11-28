@@ -7,6 +7,7 @@ use candid::Principal;
 use ic_cdk::call::Call;
 use ic_ledger_types::BlockIndex;
 use junobuild_shared::env::CONSOLE;
+use junobuild_shared::ic::DecodeCandid;
 use junobuild_shared::types::interface::CreateCanisterArgs;
 use junobuild_shared::types::state::{OrbiterId, OrbiterSatelliteConfig, SatelliteId, UserId};
 use std::collections::HashMap;
@@ -86,9 +87,7 @@ async fn create_and_save_orbiter(
     let orbiter_id = Call::unbounded_wait(console, "create_orbiter")
         .with_arg(args)
         .await
-        .map_err(|e| format!("Calling console.create_orbiter failed: {:?}", e))?
-        .candid::<OrbiterId>()
-        .map_err(|e| format!("Decoding OrbiterId failed: {:?}", e))?;
+        .decode_candid::<OrbiterId>()?;
 
     Ok(add_orbiter(&orbiter_id, &name))
 }
@@ -104,9 +103,7 @@ async fn assert_orbiter(orbiter_id: &OrbiterId) -> Result<(), String> {
     let _ = Call::bounded_wait(*orbiter_id, "list_satellite_configs")
         .with_arg(())
         .await
-        .map_err(|e| format!("Fetching list of satellite configs failed: {:?}", e))?
-        .candid::<SatelliteConfigs>()
-        .map_err(|e| format!("Decoding SatelliteConfigs failed: {:?}", e))?;
+        .decode_candid::<SatelliteConfigs>()?;
 
     Ok(())
 }

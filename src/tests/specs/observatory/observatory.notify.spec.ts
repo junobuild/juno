@@ -98,7 +98,7 @@ describe('Observatory > Notify', () => {
 		it('should throw errors if caller is not a mission control', async () => {
 			const { notify } = observatoryActor;
 
-			await expect(notify(mockNotifyArgs)).rejects.toThrow('Mission control is unknown.');
+			await expect(notify(mockNotifyArgs)).rejects.toThrow('User does not have a mission control center.');
 		});
 
 		it('should throw errors if caller is not observatory', async () => {

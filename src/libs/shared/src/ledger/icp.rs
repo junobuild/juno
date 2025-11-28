@@ -1,13 +1,10 @@
 use crate::env::LEDGER;
+use crate::ic::DecodeCandid;
 use crate::ledger::types::icp::{BlockIndexed, Blocks};
 use crate::ledger::utils::account_identifier_equal;
 use candid::{Func, Principal};
 use futures::future::join_all;
-use ic_cdk::api::call::{
-    CallResult as DeprecatedCallResult, RejectionCode as DeprecatedRejectionCode,
-};
-use ic_cdk::call;
-use ic_cdk::call::{CallResult, Error};
+use ic_cdk::call::{Call, CallResult};
 use ic_ledger_types::{
     query_blocks, transfer, AccountIdentifier, ArchivedBlockRange, BlockIndex, GetBlocksArgs,
     GetBlocksResult, Memo, Operation, Subaccount, Tokens, Transaction, TransferArgs,
@@ -200,6 +197,8 @@ pub async fn find_blocks_transfer(
         .collect()
 }
 
+type QueryBlocksResult = Result<Blocks, String>;
+
 /// Queries the ledger for blocks since a specified index, including handling archived blocks.
 ///
 /// # Arguments
@@ -213,13 +212,18 @@ async fn blocks_since(
     ledger_canister_id: Principal,
     start: BlockIndex,
     length: u64,
-) -> DeprecatedCallResult<Blocks> {
+) -> QueryBlocksResult {
     // Source: OpenChat
     // https://github.com/open-ic/transaction-notifier/blob/cf8c2deaaa2e90aac9dc1e39ecc3e67e94451c08/canister/impl/src/lifecycle/heartbeat.rs
 
     let response = query_blocks(ledger_canister_id, &GetBlocksArgs { start, length })
         .await
-        .map_err(|err: Error| (DeprecatedRejectionCode::CanisterReject, err.to_string()))?;
+        .map_err(|e| {
+            format!(
+                "Query blocks {} with length {} failed: {:?}",
+                start, length, e
+            )
+        })?;
 
     let blocks: Blocks = response
         .blocks
@@ -231,32 +235,26 @@ async fn blocks_since(
     if response.archived_blocks.is_empty() {
         Ok(blocks)
     } else {
-        type FromArchiveResult = DeprecatedCallResult<Blocks>;
-
-        async fn get_blocks_from_archive(range: ArchivedBlockRange) -> FromArchiveResult {
+        async fn get_blocks_from_archive(range: ArchivedBlockRange) -> Result<Blocks, String> {
             let args = GetBlocksArgs {
                 start: range.start,
                 length: range.length,
             };
             let func: Func = range.callback.into();
 
-            let response: DeprecatedCallResult<(GetBlocksResult,)> =
-                call(func.principal, &func.method, (args,)).await;
+            let block_result = Call::bounded_wait(func.principal, &func.method)
+                .with_arg(args)
+                .await
+                .decode_candid::<GetBlocksResult>()?;
 
-            match response {
-                Err(e) => Err(e),
-                Ok((block_result,)) => match block_result {
-                    Err(_) => Err((
-                        DeprecatedRejectionCode::Unknown,
-                        "Block results cannot be decoded".to_string(),
-                    )),
-                    Ok(blocks_range) => Ok(blocks_range
-                        .blocks
-                        .into_iter()
-                        .enumerate()
-                        .map(|(index, block)| (range.start + (index as u64), block))
-                        .collect()),
-                },
+            match block_result {
+                Err(e) => Err(format!("Query blocks from archive failed: {:?}", e)),
+                Ok(blocks_range) => Ok(blocks_range
+                    .blocks
+                    .into_iter()
+                    .enumerate()
+                    .map(|(index, block)| (range.start + (index as u64), block))
+                    .collect()),
             }
         }
 
@@ -270,11 +268,11 @@ async fn blocks_since(
             .map(get_blocks_from_archive)
             .collect();
 
-        let archive_responses: Vec<FromArchiveResult> = join_all(futures).await;
+        let archive_responses: Vec<QueryBlocksResult> = join_all(futures).await;
 
         let results = archive_responses
             .into_iter()
-            .collect::<DeprecatedCallResult<Vec<Blocks>>>()?;
+            .collect::<Result<Vec<Blocks>, String>>()?;
 
         Ok(results.into_iter().flatten().chain(blocks).collect())
     }

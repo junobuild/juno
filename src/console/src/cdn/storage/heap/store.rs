@@ -6,8 +6,8 @@ use junobuild_shared::list::list_values;
 use junobuild_shared::types::list::{ListParams, ListResults};
 use junobuild_storage::heap_utils::collect_assets_heap;
 use junobuild_storage::types::interface::AssetNoContent;
-use junobuild_storage::types::state::FullPath;
-use junobuild_storage::types::store::{Asset, AssetAccessToken};
+use junobuild_storage::types::state::{AssetAccessToken, FullPath};
+use junobuild_storage::types::store::Asset;
 use junobuild_storage::utils::{get_token_protected_asset, map_asset_no_content};
 
 // ---------------------------------------------------------

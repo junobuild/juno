@@ -23,9 +23,9 @@ use junobuild_storage::strategies::{
     StorageAssertionsStrategy, StorageStateStrategy, StorageUploadStrategy,
 };
 use junobuild_storage::types::config::StorageConfig;
-use junobuild_storage::types::state::FullPath;
+use junobuild_storage::types::state::{AssetAccessToken, FullPath};
 use junobuild_storage::types::store::{
-    Asset, AssetAccessToken, AssetAssertUpload, AssetEncoding, Batch, EncodingType, ReferenceId,
+    Asset, AssetAssertUpload, AssetEncoding, Batch, EncodingType, ReferenceId,
 };
 use junobuild_storage::utils::{clone_asset_encoding_content_chunks, insert_encoding_into_asset};
 

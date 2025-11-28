@@ -1,7 +1,7 @@
 pub mod api;
-mod decode;
+mod call;
 pub mod response;
 mod trap;
 
-pub use decode::*;
+pub use call::*;
 pub use trap::*;

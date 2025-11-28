@@ -109,7 +109,7 @@ const uploadSegment = async ({
 			wasmPath = SATELLITE_WASM_PATH;
 	}
 
-	const data = new Blob([await readFile(wasmPath)]);
+	const data = new Blob([(await readFile(wasmPath)) as Uint8Array<ArrayBuffer>]);
 
 	const { batch_id: batchId } = await init_proposal_asset_upload(
 		{

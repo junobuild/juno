@@ -100,7 +100,11 @@ describe.each([{ memory: { Heap: null } }, { memory: { Stable: null } }])(
 
 				// We explicitly want to assert that the data are saved / serialized in a certain way so we read the raw data
 				const blob = new Blob(
-					[doc.data instanceof Uint8Array ? doc.data : new Uint8Array(doc.data)],
+					[
+						doc.data instanceof Uint8Array
+							? (doc.data as Uint8Array<ArrayBuffer>)
+							: new Uint8Array(doc.data)
+					],
 					{
 						type: 'application/json; charset=utf-8'
 					}

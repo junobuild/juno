@@ -9,11 +9,13 @@
 
 It provides a familiar cloud experience with strong security and zero operational complexity. Each project runs in its own WASM container, fully owned and controlled by you.
 
+Think of it as **Vercel + Firebase + Self-Hosting** - without the compromises.
+
 - 🔑 Authentication [[Docs](https://juno.build/docs/build/authentication)]
 - 📦 Datastore [[Docs](https://juno.build/docs/build/datastore)]
 - 📂 File Storage [[Docs](https://juno.build/docs/build/storage)]
 - 🌐 Hosting [[Docs](https://juno.build/docs/build/hosting)]
-- ⚙️ Serverless Functions [[Docs](https://juno.build/docs/build/functions)]
+- ⚙️ Serverless Functions (Rust & TypeScript) [[Docs](https://juno.build/docs/build/functions)]
 - 📊 Analytics [[Docs](https://juno.build/docs/build/analytics)]
 - 👀 Monitoring [[Docs](https://juno.build/docs/management/monitoring)]
 - 💾 Snapshots [[Docs](https://juno.build/docs/management/snapshots)]
@@ -23,6 +25,44 @@ It provides a familiar cloud experience with strong security and zero operationa
 ![A screenshot of the Juno Console](./src/frontend/static/images/console_screenshot.png)
 
 <br />
+
+## ⚡️ Why Juno?
+
+- **Zero DevOps** - No servers to manage, no infrastructure to maintain
+- **True Ownership** - Your code, data, and infrastructure are fully yours
+- **Local-First Development** - Full production-like emulator for rapid iteration
+
+## 🚀 Quick Start
+
+```typescript
+// Initialize Juno
+import { initSatellite } from '@junobuild/core';
+await initSatellite();
+
+// Store data
+import { setDoc } from '@junobuild/core';
+await setDoc({
+	collection: 'posts',
+	doc: {
+		key: 'my-post',
+		data: { title: 'Hello Juno!' }
+	}
+});
+```
+
+## 🚢 Deploy
+
+Deploy to production with a single command:
+
+```bash
+# Deploy your frontend
+juno hosting deploy
+
+# Deploy your serverless functions
+juno functions publish
+```
+
+Or integrate with GitHub Actions → [Setup CI/CD](https://juno.build/docs/guides/github-actions)
 
 ## 💁‍♂️️ Links & Resources
 
@@ -41,17 +81,14 @@ Planning to build a website, blog, or web application? Start quickly by scaffold
 # with npm
 npm create juno@latest
 # with pnpm
-yarn create juno
-# with yarn
 pnpm create juno
+# with yarn
+yarn create juno
 ```
 
-## 🐳 Docker
+## 🎯 Live Examples
 
-When building your project locally or contributing to this repo, ensure you have Docker installed on your machine ([Windows](https://docs.docker.com/desktop/install/windows-install/), [MacOS](https://docs.docker.com/desktop/install/mac-install/), or [Linux](https://docs.docker.com/desktop/install/linux-install/)).
-
-> [!NOTE]
-> For MacBooks with M processors, it is important to use Docker Desktop version 4.25.0 or later, ideally the latest available version.
+Check out the [showcase](https://juno.build/showcase).
 
 ## 🧑‍🤝‍🧑 Community
 

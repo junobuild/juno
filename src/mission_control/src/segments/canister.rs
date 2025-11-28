@@ -29,8 +29,6 @@ where
 
     let args = GetCreateCanisterFeeArgs { user };
 
-    ic_cdk::print("Get fee");
-
     let fee = Call::bounded_wait(console, fee_method)
         .with_arg(args)
         .await

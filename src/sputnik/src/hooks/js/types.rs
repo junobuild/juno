@@ -114,7 +114,7 @@ pub mod storage {
     use crate::hooks::js::types::shared::{JsTimestamp, JsUserId, JsVersion};
     use crate::js::types::candid::JsUint8Array;
     use crate::js::types::primitives::JsU128Compat;
-    use junobuild_storage::types::state::FullPath;
+    use junobuild_storage::types::state::{AssetAccessToken, FullPath};
 
     pub type JsBlob<'js> = JsUint8Array<'js>;
 
@@ -145,7 +145,7 @@ pub mod storage {
     pub struct JsAssetKey<'js> {
         pub name: String,
         pub full_path: JsFullPath,
-        pub token: Option<String>,
+        pub token: AssetAccessToken,
         pub collection: String,
         pub owner: JsUserId<'js>,
         pub description: Option<String>,

@@ -42,7 +42,7 @@ use junobuild_storage::types::interface::{
     AssetNoContent, CommitBatch, InitAssetKey, SetStorageConfig, UploadChunk,
 };
 use junobuild_storage::types::runtime_state::{BatchId, ChunkId};
-use junobuild_storage::types::state::FullPath;
+use junobuild_storage::types::state::{AssetAccessToken, FullPath};
 use junobuild_storage::types::store::{Asset, AssetEncoding};
 use junobuild_storage::utils::{
     filter_collection_values, filter_values, get_token_protected_asset, map_asset_no_content,
@@ -282,7 +282,7 @@ fn get_asset_impl(
 
 pub fn get_public_asset_store(
     full_path: FullPath,
-    token: Option<String>,
+    token: AssetAccessToken,
 ) -> Option<(Asset, Memory)> {
     let (asset, memory) = get_state_public_asset(&full_path);
 

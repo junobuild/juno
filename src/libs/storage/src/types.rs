@@ -15,6 +15,10 @@ pub mod state {
     /// `FullPath` is commonly used to identify the location of assets within a storage system.
     pub type FullPath = Key;
 
+    /// An optional access token that can be used to make an asset private on the web.
+    /// Private as in practically unguessable (if complex enough and not shared of course).
+    pub type AssetAccessToken = Option<String>;
+
     pub type AssetsHeap = HashMap<FullPath, Asset>;
 
     #[derive(CandidType, Serialize, Deserialize, Clone)]
@@ -64,7 +68,7 @@ pub mod store {
     use crate::http::types::HeaderField;
     use crate::types::interface::CommitBatch;
     use crate::types::runtime_state::BatchId;
-    use crate::types::state::FullPath;
+    use crate::types::state::{AssetAccessToken, FullPath};
     use candid::CandidType;
     use ic_certification::Hash;
     use junobuild_collections::types::core::CollectionKey;
@@ -99,7 +103,7 @@ pub mod store {
         // /images/myimage.jpg
         pub full_path: FullPath,
         // ?token=1223-3345-5564-3333
-        pub token: Option<String>,
+        pub token: AssetAccessToken,
         // Assets are prefixed with full_path because these are unique. Collection is there for read (list) and write but all assets are available through http_request (that's why we use the token).
         pub collection: CollectionKey,
         // For security check purpose
@@ -156,14 +160,14 @@ pub mod interface {
         StorageConfigRawAccess, StorageConfigRedirects, StorageConfigRewrites,
     };
     use crate::types::runtime_state::{BatchId, ChunkId};
-    use crate::types::state::FullPath;
+    use crate::types::state::{AssetAccessToken, FullPath};
     use crate::types::store::{AssetKey, EncodingType};
 
     #[derive(CandidType, Deserialize)]
     pub struct InitAssetKey {
         pub name: String,
         pub full_path: FullPath,
-        pub token: Option<String>,
+        pub token: AssetAccessToken,
         pub collection: CollectionKey,
         pub encoding_type: Option<EncodingType>,
         pub description: Option<String>,
@@ -272,6 +276,7 @@ pub mod config {
 pub mod http_request {
     use crate::http::types::StatusCode;
     use crate::types::config::{StorageConfigIFrame, StorageConfigRedirect};
+    use crate::types::state::AssetAccessToken;
     use crate::types::store::Asset;
     use candid::{CandidType, Deserialize};
     use junobuild_collections::types::rules::Memory;
@@ -279,7 +284,7 @@ pub mod http_request {
     #[derive(CandidType, Deserialize, Clone)]
     pub struct MapUrl {
         pub path: String,
-        pub token: Option<String>,
+        pub token: AssetAccessToken,
     }
 
     #[derive(CandidType, Deserialize, Clone)]

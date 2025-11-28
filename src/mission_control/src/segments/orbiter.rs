@@ -87,9 +87,7 @@ async fn create_and_save_orbiter(
     let orbiter_id = Call::unbounded_wait(console, "create_orbiter")
         .with_arg(args)
         .await
-        .map_err(|e| format!("Calling console.create_orbiter failed: {:?}", e))?
-        .candid::<OrbiterId>()
-        .map_err(|e| format!("Decoding OrbiterId failed: {:?}", e))?;
+        .decode_candid()?;
 
     Ok(add_orbiter(&orbiter_id, &name))
 }

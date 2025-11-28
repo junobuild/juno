@@ -10,7 +10,6 @@ use ic_cdk::call::Call;
 use ic_ledger_types::BlockIndex;
 use junobuild_shared::env::CONSOLE;
 use junobuild_shared::ic::DecodeCandid;
-use junobuild_shared::types::domain::CustomDomains;
 use junobuild_shared::types::interface::CreateSatelliteArgs;
 use junobuild_shared::types::state::{SatelliteId, UserId};
 
@@ -93,9 +92,7 @@ async fn create_and_save_satellite(
     let satellite_id = Call::unbounded_wait(console, "create_satellite")
         .with_arg(args)
         .await
-        .map_err(|e| format!("Calling console.create_satellite failed: {:?}", e))?
-        .candid::<SatelliteId>()
-        .map_err(|e| format!("Decoding SatelliteId failed: {:?}", e))?;
+        .decode_candid()?;
 
     Ok(add_satellite(&satellite_id, &name))
 }

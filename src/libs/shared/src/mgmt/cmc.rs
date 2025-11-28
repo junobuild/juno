@@ -45,7 +45,7 @@ pub async fn top_up_canister(canister_id: &CanisterId, amount: &Tokens) -> Resul
 
     // If the topup fails in the Cmc canister, it refunds the caller.
     // let was_refunded = matches!(error, NotifyError::Refunded { .. });
-    let _ = Call::bounded_wait(cmc, "notify_top_up")
+    let _ = Call::unbounded_wait(cmc, "notify_top_up")
         .with_arg(args)
         .await
         .decode_candid::<Result<Cycles, NotifyError>>()?;

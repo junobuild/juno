@@ -158,7 +158,7 @@ export const testAuthConfigObservatory = ({
 			const { FetchFailed } = GetOrFetchJwks;
 
 			expect(FetchFailed).toEqual(
-				'Fetching OpenID certificate failed: CallRejected(CallRejected { raw_reject_code: 3, reject_message: "No route to canister klbfr-lqaaa-aaaak-qbwsa-cai" })'
+				'Call failed: CallRejected(CallRejected { raw_reject_code: 3, reject_message: "No route to canister klbfr-lqaaa-aaaak-qbwsa-cai" })'
 			);
 		});
 

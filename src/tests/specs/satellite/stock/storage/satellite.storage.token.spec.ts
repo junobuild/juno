@@ -1,13 +1,18 @@
 import type { SatelliteActor, SatelliteDid } from '$declarations';
 import type { Actor, PocketIc } from '@dfinity/pic';
 import { toNullable } from '@dfinity/utils';
+import type { Principal } from '@icp-sdk/core/principal';
 import { nanoid } from 'nanoid';
+import { assertCertification } from '../../../../utils/certification-tests.utils';
 import { uploadAsset } from '../../../../utils/satellite-storage-tests.utils';
 import { setupSatelliteStock } from '../../../../utils/satellite-tests.utils';
 
 describe('Satellite > Storage > Token', () => {
 	let pic: PocketIc;
 	let actor: Actor<SatelliteActor>;
+
+	let canisterId: Principal;
+	let currentDate: Date;
 
 	const upload = async (params: {
 		full_path: string;
@@ -47,10 +52,12 @@ describe('Satellite > Storage > Token', () => {
 	};
 
 	beforeAll(async () => {
-		const { actor: a, pic: p } = await setupSatelliteStock();
+		const { actor: a, pic: p, currentDate: cD, canisterId: cI } = await setupSatelliteStock();
 
 		pic = p;
 		actor = a;
+		currentDate = cD;
+		canisterId = cI;
 	});
 
 	afterAll(async () => {
@@ -331,6 +338,64 @@ describe('Satellite > Storage > Token', () => {
 				const cacheControl = headers.find(([key, _]) => key === 'cache-control');
 
 				expect(cacheControl?.[1]).toEqual('private, no-store');
+			});
+
+			it('should update certification on remove token', async () => {
+				const { http_request, set_asset_token } = actor;
+
+				const { fullPath } = await uploadAssetWithToken({ collection });
+
+				await set_asset_token(collection, fullPath, toNullable());
+
+				const request: SatelliteDid.HttpRequest = {
+					body: Uint8Array.from([]),
+					certificate_version: toNullable(2),
+					headers: [],
+					method: 'GET',
+					url: fullPath
+				};
+
+				const response = await http_request(request);
+
+				await assertCertification({
+					canisterId,
+					pic,
+					request,
+					response,
+					currentDate,
+					statusCode: 200
+				});
+			});
+
+			it('should update certification on redo token', async () => {
+				const { http_request, set_asset_token } = actor;
+
+				const { fullPath } = await uploadAssetWithToken({ collection });
+
+				await set_asset_token(collection, fullPath, toNullable());
+
+				let token = nanoid();
+
+				await set_asset_token(collection, fullPath, toNullable(token));
+
+				const request: SatelliteDid.HttpRequest = {
+					body: Uint8Array.from([]),
+					certificate_version: toNullable(2),
+					headers: [],
+					method: 'GET',
+					url: `${fullPath}?token=${token}`
+				};
+
+				const response = await http_request(request);
+
+				await assertCertification({
+					canisterId,
+					pic,
+					request,
+					response,
+					currentDate,
+					statusCode: 200
+				});
 			});
 		}
 	);

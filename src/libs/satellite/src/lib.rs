@@ -38,7 +38,7 @@ use junobuild_collections::types::interface::{
     DelRule, ListRulesParams, ListRulesResults, SetRule,
 };
 use junobuild_collections::types::rules::Rule;
-use junobuild_shared::ic::call::ManualReply;
+use junobuild_shared::ic::response::ManualReply;
 use junobuild_shared::ic::UnwrapOrTrap;
 use junobuild_shared::types::core::DomainName;
 use junobuild_shared::types::core::Key;

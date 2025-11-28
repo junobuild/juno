@@ -16,10 +16,8 @@ pub async fn assert_mission_control_center(
         mission_control_id: *mission_control_id,
     };
 
-    let _ = Call::bounded_wait(console, "assert_mission_control_center")
+    Call::bounded_wait(console, "assert_mission_control_center")
         .with_arg(args)
         .await
-        .decode_candid::<()>()?;
-
-    Ok(())
+        .decode_candid::<()>()
 }

@@ -67,10 +67,8 @@ async fn deposit_cycles(segment_id: &Principal, cycles: u128) -> Result<(), Stri
         cycles,
     };
 
-    let _ = Call::unbounded_wait(*segment_id, "deposit_cycles")
+    Call::unbounded_wait(*segment_id, "deposit_cycles")
         .with_arg(args)
         .await
-        .decode_candid::<()>()?;
-
-    Ok(())
+        .decode_candid::<()>()
 }

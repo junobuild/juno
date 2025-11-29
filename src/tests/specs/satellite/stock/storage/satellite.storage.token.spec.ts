@@ -175,7 +175,7 @@ describe('Satellite > Storage > Token', () => {
 
 				const { fullPath, fullPathWithToken } = await uploadAssetWithToken({ collection });
 
-				let newToken = nanoid();
+				const newToken = nanoid();
 
 				await set_asset_token(collection, fullPath, toNullable(newToken));
 
@@ -285,7 +285,7 @@ describe('Satellite > Storage > Token', () => {
 
 				await set_asset_token(collection, fullPath, toNullable());
 
-				let token = nanoid();
+				const token = nanoid();
 
 				await set_asset_token(collection, fullPath, toNullable(token));
 
@@ -315,7 +315,7 @@ describe('Satellite > Storage > Token', () => {
 
 				const { fullPath } = await uploadAssetWithToken({ collection });
 
-				let token = nanoid();
+				const token = nanoid();
 
 				await set_asset_token(collection, fullPath, toNullable(token));
 
@@ -374,7 +374,7 @@ describe('Satellite > Storage > Token', () => {
 
 				await set_asset_token(collection, fullPath, toNullable());
 
-				let token = nanoid();
+				const token = nanoid();
 
 				await set_asset_token(collection, fullPath, toNullable(token));
 

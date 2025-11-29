@@ -3,7 +3,7 @@ import type { _SERVICE as TestSatelliteActor } from '$test-declarations/test_sat
 import type { Actor, PocketIc } from '@dfinity/pic';
 import { arrayOfNumberToUint8Array, toNullable } from '@dfinity/utils';
 import type { Identity } from '@icp-sdk/core/agent';
-import { Principal } from '@icp-sdk/core/principal';
+import type { Principal } from '@icp-sdk/core/principal';
 import { nanoid } from 'nanoid';
 import { mockPrincipal } from '../../../../frontend/tests/mocks/identity.mock';
 import { mockSetRule } from '../../../mocks/collection.mocks';

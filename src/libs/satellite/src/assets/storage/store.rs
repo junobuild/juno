@@ -620,7 +620,7 @@ fn secure_set_asset_token_impl(
         auth_config: &auth_config,
     };
 
-    set_asset_token_impl(context, &assert_context, full_path,  token, config)
+    set_asset_token_impl(context, &assert_context, full_path, token, config)
 }
 
 fn set_asset_token_impl(

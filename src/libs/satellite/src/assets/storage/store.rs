@@ -644,6 +644,8 @@ fn set_asset_token_impl(
         assert_context.rule,
     );
 
+    // Protected assets are served with specific certified headers (see token_headers).
+    // That is why we update the certification if either those have to be added or removed.
     if asset.key.token.is_some() ^ token.is_some() {
         update_runtime_certified_asset(&updated_asset, config, &StorageCertificate);
     }

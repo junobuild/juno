@@ -13,6 +13,7 @@ import {
 	getContentChunksStore,
 	listAssetsStore,
 	setAssetHandler,
+	setAssetTokenStore,
 	setDocStore
 } from '@junobuild/functions/sdk';
 import type { SputnikTestListDocs } from '../../../../mocks/sputnik.mocks';
@@ -175,4 +176,19 @@ export const testSdkGetContentChunksStore = async ({ caller }: OnSetDocContext) 
 
 	// eslint-disable-next-line no-console
 	console.log('Chunk:', responseBody);
+};
+
+export const testSdkSetAssetTokenStore = async ({
+	caller,
+	data: { data }
+	// eslint-disable-next-line require-await
+}: OnSetDocContext) => {
+	const fullPath = decodeDocData<string>(data.after.data);
+
+	setAssetTokenStore({
+		caller,
+		collection: 'demo-setassettoken',
+		full_path: fullPath,
+		token: '123456-update'
+	});
 };

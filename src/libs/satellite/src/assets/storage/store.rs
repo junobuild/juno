@@ -1,6 +1,6 @@
 use crate::assets::storage::assert::{
     assert_create_batch, assert_delete_asset, assert_get_asset, assert_list_assets,
-    assert_set_config,
+    assert_set_config, assert_write_asset,
 };
 use crate::assets::storage::certified_assets::runtime::init_certified_assets as init_runtime_certified_assets;
 use crate::assets::storage::state::{
@@ -427,7 +427,9 @@ fn delete_asset_impl(
     match asset {
         None => Err(JUNO_STORAGE_ERROR_ASSET_NOT_FOUND.to_string()),
         Some(asset) => {
-            assert_delete_asset(context, assert_context, &asset)?;
+            assert_write_asset(context, assert_context, &asset)?;
+
+            assert_delete_asset(context, &asset)?;
 
             let certificate = &StorageCertificate;
 

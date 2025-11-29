@@ -1,7 +1,11 @@
 import { setSatellitesController } from '$lib/api/mission-control.api';
 import { isNotSkylab } from '$lib/env/app.env';
-import { getEmulatorMainIdentity } from '$lib/rest/emulator.rest';
+import {
+	emulatorToggleObservatoryOpenIdMonitoring,
+	getEmulatorMainIdentity
+} from '$lib/rest/emulator.rest';
 import { i18n } from '$lib/stores/i18n.store';
+import { toasts } from '$lib/stores/toasts.store';
 import type { SetControllerParams } from '$lib/types/controllers';
 import type { MissionControlId } from '$lib/types/mission-control';
 import type { Identity } from '@icp-sdk/core/agent';
@@ -64,4 +68,22 @@ const unsafeSetEmulatorController = async ({
 		profile: `👾 ${get(i18n).emulator.emulator}`,
 		scope: 'admin'
 	});
+};
+
+export const emulatorToggleOpenIdMonitoring = async ({ enable }: { enable: boolean }) => {
+	if (isNotSkylab()) {
+		toasts.error({ text: get(i18n).emulator.error_never_execute_openid_monitoring });
+		return;
+	}
+
+	try {
+		await emulatorToggleObservatoryOpenIdMonitoring({
+			action: enable ? 'start' : 'stop'
+		});
+	} catch (err: unknown) {
+		toasts.error({
+			text: get(i18n).emulator.error_toggling_openid_monitoring_failed,
+			detail: err
+		});
+	}
 };

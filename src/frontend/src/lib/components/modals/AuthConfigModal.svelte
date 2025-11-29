@@ -17,6 +17,10 @@
 	import { i18n } from '$lib/stores/i18n.store';
 	import type { JunoModalDetail, JunoModalEditAuthConfigDetail } from '$lib/types/modal';
 	import { emit } from '$lib/utils/events.utils';
+	import { isSkylab } from '$lib/env/app.env.ts';
+	import { emulatorToggleObservatoryOpenIdMonitoring } from '$lib/rest/emulator.rest';
+	import { isNullish, nonNullish } from '@dfinity/utils';
+	import { emulatorToggleOpenIdMonitoring } from '$lib/services/emulator.services';
 
 	interface Props {
 		detail: JunoModalDetail;
@@ -91,6 +95,12 @@
 		};
 
 		const { success } = await update();
+
+		if (isSkylab() && edit === 'google') {
+			await emulatorToggleOpenIdMonitoring({
+				enable: nonNullish(googleClientId)
+			});
+		}
 
 		wizardBusy.stop();
 

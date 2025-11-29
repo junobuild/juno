@@ -430,6 +430,7 @@ service : (InitSatelliteArgs) -> {
   list_rules : (CollectionType, ListRulesParams) -> (ListRulesResults) query;
   memory_size : () -> (MemorySize) query;
   reject_proposal : (CommitProposal) -> (null);
+  set_asset_token : (text, text, opt text) -> ();
   set_auth_config : (SetAuthenticationConfig) -> (AuthenticationConfig);
   set_controllers : (SetControllersArgs) -> (
       vec record { principal; Controller },

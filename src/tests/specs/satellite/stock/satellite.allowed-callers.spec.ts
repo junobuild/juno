@@ -639,6 +639,37 @@ describe('Satellite > Allowed Callers', () => {
 					await assertAllowed();
 				});
 			});
+
+			describe('set an asset token', () => {
+				const setAssetToken = async ({
+					actorIdentity
+				}: { actorIdentity?: Identity } = {}): Promise<void> => {
+					actor.setIdentity(actorIdentity ?? user);
+
+					const { set_asset_token } = actor;
+
+					await set_asset_token(collection, fullPath, toNullable(nanoid()));
+				};
+
+				beforeEach(async () => {
+					await createUser(user);
+
+					await uploadAsset({
+						full_path: fullPath,
+						name: filename,
+						collection,
+						actor
+					});
+				});
+
+				const assertAllowed = async (params: { actorIdentity?: Identity } = {}) => {
+					await expect(setAssetToken(params)).resolves.not.toThrow();
+				};
+
+				it('should set an asset token if no config', async () => {
+					await assertAllowed();
+				});
+			});
 		});
 	});
 
@@ -1595,6 +1626,57 @@ describe('Satellite > Allowed Callers', () => {
 				});
 
 				it('should delete assets if controller', async () => {
+					await setSomeAllowedCaller();
+
+					await assertAllowed({ actorIdentity: controller });
+				});
+			});
+
+			describe('set an asset token', () => {
+				const setAssetToken = async ({
+					actorIdentity
+				}: { actorIdentity?: Identity } = {}): Promise<void> => {
+					actor.setIdentity(actorIdentity ?? user);
+
+					const { set_asset_token } = actor;
+
+					await set_asset_token(collection, fullPath, toNullable(nanoid()));
+				};
+
+				beforeEach(async () => {
+					await resetAuthConfig();
+
+					await createUser(user);
+
+					await uploadAsset({
+						full_path: fullPath,
+						name: filename,
+						collection,
+						actor
+					});
+				});
+
+				it('should not set an asset token if not allowed', async () => {
+					await setSomeAllowedCaller();
+
+					await expect(setAssetToken()).rejects.toThrow(JUNO_AUTH_ERROR_CALLER_NOT_ALLOWED);
+				});
+
+				const assertAllowed = async (params: { actorIdentity?: Identity } = {}) => {
+					await expect(setAssetToken(params)).resolves.not.toThrow();
+				};
+
+				it('should set asset token if no rules', async () => {
+					await assertAllowed();
+				});
+
+				it('should set asset token if empty allowed callers', async () => {
+					await setEmptyAllowedCallers();
+
+					await assertAllowed();
+				});
+
+				it('should set asset token if controller', async () => {
 					await setSomeAllowedCaller();
 
 					await assertAllowed({ actorIdentity: controller });

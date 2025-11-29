@@ -818,6 +818,40 @@ describe('Satellite > User Ban', () => {
 					await expect(deleteAssets()).resolves.not.toThrow();
 				});
 			});
+
+			describe('set an asset token', () => {
+				const setAssetToken = async (): Promise<void> => {
+					actor.setIdentity(user);
+
+					const { set_asset_token } = actor;
+
+					await set_asset_token(collection, fullPath, toNullable(nanoid()));
+				};
+
+				beforeEach(async () => {
+					await createUser(user);
+
+					await uploadAsset({
+						full_path: fullPath,
+						name: filename,
+						collection,
+						actor
+					});
+				});
+
+				it('should not set an asset token if banned', async () => {
+					await banUser({ user, version: [1n] });
+
+					await expect(setAssetToken()).rejects.toThrow(JUNO_DATASTORE_ERROR_USER_NOT_ALLOWED);
+				});
+
+				it('should set an asset token if unbanned', async () => {
+					await banUser({ user, version: [1n] });
+					await unbanUser({ user, version: [2n] });
+
+					await expect(setAssetToken()).resolves.not.toThrow();
+				});
+			});
 		});
 	});
 });

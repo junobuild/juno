@@ -4,7 +4,7 @@ use crate::types::config::{
     StorageConfigRedirects, StorageConfigRewrites,
 };
 use crate::types::interface::{AssetEncodingNoContent, AssetNoContent, SetStorageConfig};
-use crate::types::state::StorageHeapState;
+use crate::types::state::{AssetAccessToken, StorageHeapState};
 use crate::types::store::{Asset, AssetEncoding, AssetKey, Batch, BatchExpiry};
 use ic_cdk::api::time;
 use ic_stable_structures::storable::Bound;
@@ -221,6 +221,22 @@ impl Asset {
             created_at,
             updated_at,
             version: Some(version),
+        }
+    }
+
+    pub fn update_token(current_asset: &Asset, token: &AssetAccessToken) -> Self {
+        let now = time();
+
+        let version = next_version(&Some(current_asset));
+
+        Self {
+            key: AssetKey {
+                token: token.clone(),
+                ..current_asset.key.clone()
+            },
+            updated_at: now,
+            version: Some(version),
+            ..current_asset.clone()
         }
     }
 }

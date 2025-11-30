@@ -57,7 +57,7 @@ const unsafeSetEmulatorController = async ({
 	) => Promise<void>;
 }) => {
 	if (isNotSkylab()) {
-		throw new Error(get(i18n).emulator.error_never_execute);
+		throw new Error(get(i18n).emulator.error_never_execute_set_controller);
 	}
 
 	const mainIdentity = await getEmulatorMainIdentity();

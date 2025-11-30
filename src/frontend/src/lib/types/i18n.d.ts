@@ -935,7 +935,7 @@ interface I18nEmulator {
 	get_icp: string;
 	emulator: string;
 	setting_emulator_controller: string;
-	error_never_execute: string;
+	error_never_execute_set_controller: string;
 	error_get_identities: string;
 	error_no_main_identity: string;
 	error_never_execute_openid_monitoring: string;

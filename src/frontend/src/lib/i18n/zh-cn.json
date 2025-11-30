@@ -908,7 +908,7 @@
 		"get_icp": "获取ICP",
 		"emulator": "模拟器",
 		"setting_emulator_controller": "将模拟器设为管理员（仅开发环境）",
-		"error_never_execute": "⚠️ 此功能严禁在模拟器环境外执行。此步骤设置管理员仅适用于模拟器环境（实际执行也会失败）。",
+		"error_never_execute_set_controller": "⚠️ 此功能严禁在模拟器环境外执行。此步骤设置管理员仅适用于模拟器环境（实际执行也会失败）。",
 		"error_get_identities": "获取模拟器身份失败。",
 		"error_no_main_identity": "模拟器未提供任何主身份。",
 		"error_never_execute_openid_monitoring": "⚠️ 此函数绝对不能在模拟器环境之外执行。切换 Observatory OpenId 监控的功能仅用于方便本地开发。",

@@ -39,7 +39,7 @@ describe('emulator.services', () => {
 					satelliteId: mockSatelliteId,
 					identity: mockIdentity
 				})
-			).rejects.toThrow(i18Mock.emulator.error_never_execute);
+			).rejects.toThrow(i18Mock.emulator.error_never_execute_set_controller);
 
 			expect(setSatellitesController).not.toHaveBeenCalled();
 			expect(getEmulatorMainIdentity).not.toHaveBeenCalled();

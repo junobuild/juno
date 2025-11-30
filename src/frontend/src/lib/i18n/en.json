@@ -909,7 +909,9 @@
 		"setting_emulator_controller": "Setting the emulator as a administrator (DEV only)",
 		"error_never_execute": "⚠️ This function should never ever be executed outside the emulator environment. Setting a administrator at this step is strictly for the emulator (and yes, it would fail anyway).",
 		"error_get_identities": "Fetching the emulator identities failed.",
-		"error_no_main_identity": "The emulator does not expose any main identity."
+		"error_no_main_identity": "The emulator does not expose any main identity.",
+		"error_never_execute_openid_monitoring": "⚠️ This function should never ever be executed outside the emulator environment. Toggling the Observatory OpenId monitoring is integrated to ease local development only.",
+		"error_toggling_openid_monitoring_failed": "Toggling the Observatory monitoring in the emulator failed."
 	},
 	"upgrade": {
 		"title": "Upgrade Dock",

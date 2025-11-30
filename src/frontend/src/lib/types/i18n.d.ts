@@ -938,6 +938,8 @@ interface I18nEmulator {
 	error_never_execute: string;
 	error_get_identities: string;
 	error_no_main_identity: string;
+	error_never_execute_openid_monitoring: string;
+	error_toggling_openid_monitoring_failed: string;
 }
 
 interface I18nUpgrade {

@@ -1,7 +1,7 @@
 import { setSatellitesController } from '$lib/api/mission-control.api';
 import { isNotSkylab } from '$lib/env/app.env';
 import {
-	emulatorToggleObservatoryOpenIdMonitoring,
+	emulatorObservatoryMonitoringOpenId,
 	getEmulatorMainIdentity
 } from '$lib/rest/emulator.rest';
 import { i18n } from '$lib/stores/i18n.store';
@@ -72,12 +72,11 @@ const unsafeSetEmulatorController = async ({
 
 export const emulatorToggleOpenIdMonitoring = async ({ enable }: { enable: boolean }) => {
 	if (isNotSkylab()) {
-		toasts.error({ text: get(i18n).emulator.error_never_execute_openid_monitoring });
-		return;
+		throw new Error(get(i18n).emulator.error_never_execute_openid_monitoring);
 	}
 
 	try {
-		await emulatorToggleObservatoryOpenIdMonitoring({
+		await emulatorObservatoryMonitoringOpenId({
 			action: enable ? 'start' : 'stop'
 		});
 	} catch (err: unknown) {

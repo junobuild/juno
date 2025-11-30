@@ -43,7 +43,7 @@ export const emulatorLedgerTransfer = async ({
 	await fetch(`${VITE_EMULATOR_ADMIN_URL}/ledger/transfer/?to=${missionControlId.toText()}`);
 };
 
-export const emulatorToggleObservatoryOpenIdMonitoring = async ({
+export const emulatorObservatoryMonitoringOpenId = async ({
 	action
 }: {
 	action: 'start' | 'stop';

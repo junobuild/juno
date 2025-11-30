@@ -4,10 +4,10 @@ use crate::segments::store::{add_orbiter, delete_orbiter as delete_orbiter_store
 use crate::types::interface::CreateCanisterConfig;
 use crate::types::state::Orbiter;
 use candid::Principal;
-use ic_cdk::api::call::CallResult;
-use ic_cdk::call;
+use ic_cdk::call::Call;
 use ic_ledger_types::BlockIndex;
 use junobuild_shared::env::CONSOLE;
+use junobuild_shared::ic::DecodeCandid;
 use junobuild_shared::types::interface::CreateCanisterArgs;
 use junobuild_shared::types::state::{OrbiterId, OrbiterSatelliteConfig, SatelliteId, UserId};
 use std::collections::HashMap;
@@ -84,12 +84,12 @@ async fn create_and_save_orbiter(
         subnet_id,
     };
 
-    let result: CallResult<(OrbiterId,)> = call(console, "create_orbiter", (args,)).await;
+    let orbiter_id = Call::unbounded_wait(console, "create_orbiter")
+        .with_arg(args)
+        .await
+        .decode_candid::<OrbiterId>()?;
 
-    match result {
-        Err((_, message)) => Err(["Create orbiter failed.", &message].join(" - ")),
-        Ok((orbiter,)) => Ok(add_orbiter(&orbiter, &name)),
-    }
+    Ok(add_orbiter(&orbiter_id, &name))
 }
 
 async fn assert_orbiter(orbiter_id: &OrbiterId) -> Result<(), String> {
@@ -100,11 +100,10 @@ async fn assert_orbiter(orbiter_id: &OrbiterId) -> Result<(), String> {
     // Note: We could have use list_controllers() but the Satellite also exposes that function.
     type SatelliteConfigs = HashMap<SatelliteId, OrbiterSatelliteConfig>;
 
-    let result: CallResult<(SatelliteConfigs,)> =
-        call(*orbiter_id, "list_satellite_configs", ((),)).await;
+    let _ = Call::bounded_wait(*orbiter_id, "list_satellite_configs")
+        .with_arg(())
+        .await
+        .decode_candid::<SatelliteConfigs>()?;
 
-    match result {
-        Err((_, message)) => Err(["Set orbiter failed.", &message].join(" - ")),
-        Ok((_,)) => Ok(()),
-    }
+    Ok(())
 }

@@ -19,7 +19,8 @@ import {
 	testSdkGetAssetStore,
 	testSdkGetContentChunksStore,
 	testSdkListAssetsStore,
-	testSdkSetAssetHandler
+	testSdkSetAssetHandler,
+	testSdkSetAssetTokenStore
 } from './sdk/assets';
 import { testSdkControllers } from './sdk/controllers';
 import {
@@ -64,6 +65,7 @@ const collections = [
 	'test-deleteasset',
 	'test-deleteassets',
 	'test-deletefilteredassets',
+	'test-setassettoken',
 	'test-getasset',
 	'test-listassets',
 	'test-getchunks'
@@ -97,6 +99,7 @@ export const onSetDoc = defineHook<OnSetDoc>({
 			'test-deleteasset': testSdkDeleteAssetStore,
 			'test-deleteassets': testSdkDeleteAssetsStore,
 			'test-deletefilteredassets': testSdkDeleteFilteredAssetsStore,
+			'test-setassettoken': testSdkSetAssetTokenStore,
 			'test-getasset': testSdkGetAssetStore,
 			'test-listassets': testSdkListAssetsStore,
 			'test-getchunks': testSdkGetContentChunksStore

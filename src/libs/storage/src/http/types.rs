@@ -1,4 +1,4 @@
-use crate::types::state::FullPath;
+use crate::types::state::{AssetAccessToken, FullPath};
 use crate::types::store::EncodingType;
 use candid::{define_function, CandidType};
 use junobuild_collections::types::rules::Memory;
@@ -41,7 +41,7 @@ pub enum StreamingStrategy {
 #[derive(CandidType, Deserialize, Clone)]
 pub struct StreamingCallbackToken {
     pub full_path: FullPath,
-    pub token: Option<String>,
+    pub token: AssetAccessToken,
     pub headers: Vec<HeaderField>,
     pub sha256: Option<ByteBuf>,
     pub index: usize,

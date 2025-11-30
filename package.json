@@ -80,7 +80,7 @@
 		"@junobuild/config": "^2.7.0",
 		"@junobuild/config-loader": "^0.4.6",
 		"@junobuild/errors": "^0.1.6",
-		"@junobuild/functions": "^0.5.1",
+		"@junobuild/functions": "^0.5.1-next-2025-11-29.1",
 		"@ltd/j-toml": "^1.38.0",
 		"@playwright/test": "^1.55.0",
 		"@sveltejs/adapter-static": "^3.0.9",

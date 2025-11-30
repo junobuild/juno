@@ -1,5 +1,5 @@
 use crate::types::config::StorageConfig;
-use crate::types::state::FullPath;
+use crate::types::state::{AssetAccessToken, FullPath};
 use crate::types::store::{
     Asset, AssetAssertUpload, AssetEncoding, Batch, EncodingType, ReferenceId,
 };
@@ -81,7 +81,7 @@ pub trait StorageStateStrategy {
     fn get_public_asset(
         &self,
         full_path: FullPath,
-        token: Option<String>,
+        token: AssetAccessToken,
     ) -> Option<(Asset, Memory)>;
 
     fn get_rule(&self, collection: &CollectionKey) -> Result<Rule, String>;

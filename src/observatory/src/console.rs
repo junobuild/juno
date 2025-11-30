@@ -1,7 +1,7 @@
 use candid::Principal;
-use ic_cdk::api::call::CallResult;
-use ic_cdk::call;
+use ic_cdk::call::Call;
 use junobuild_shared::env::CONSOLE;
+use junobuild_shared::ic::DecodeCandid;
 use junobuild_shared::types::interface::AssertMissionControlCenterArgs;
 use junobuild_shared::types::state::{MissionControlId, UserId};
 
@@ -16,10 +16,8 @@ pub async fn assert_mission_control_center(
         mission_control_id: *mission_control_id,
     };
 
-    let result: CallResult<((),)> = call(console, "assert_mission_control_center", (args,)).await;
-
-    match result {
-        Err((_, message)) => Err(["Mission control is unknown.", &message].join(" - ")),
-        Ok((_,)) => Ok(()),
-    }
+    Call::bounded_wait(console, "assert_mission_control_center")
+        .with_arg(args)
+        .await
+        .decode_candid::<()>()
 }

@@ -6,6 +6,7 @@ use crate::hooks::storage::{
 use crate::{
     caller, count_assets_store, count_collection_assets_store, delete_asset_store,
     delete_assets_store, delete_filtered_assets_store, get_asset_store, list_assets_store,
+    set_asset_token_store,
 };
 use junobuild_collections::types::core::CollectionKey;
 use junobuild_shared::ic::UnwrapOrTrap;
@@ -13,7 +14,7 @@ use junobuild_shared::types::list::{ListParams, ListResults};
 use junobuild_storage::types::interface::{
     AssetNoContent, CommitBatch, InitAssetKey, InitUploadResult, UploadChunk, UploadChunkResult,
 };
-use junobuild_storage::types::state::FullPath;
+use junobuild_storage::types::state::{AssetAccessToken, FullPath};
 use junobuild_storage::types::store::Asset;
 
 pub fn init_asset_upload(init: InitAssetKey) -> InitUploadResult {
@@ -107,4 +108,13 @@ pub fn get_many_assets(
             (full_path.clone(), asset.clone())
         })
         .collect()
+}
+
+pub fn set_asset_token(collection: CollectionKey, full_path: FullPath, token: AssetAccessToken) {
+    let caller = caller();
+
+    set_asset_token_store(caller, &collection, &full_path, &token).unwrap_or_trap();
+
+    // No hook currently available for this function for simplicity reasons,
+    // but not against adding one if it proves useful.
 }

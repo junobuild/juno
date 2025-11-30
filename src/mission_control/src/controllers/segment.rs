@@ -1,7 +1,7 @@
 use candid::Principal;
-use ic_cdk::api::call::CallResult;
-use ic_cdk::call;
+use ic_cdk::call::Call;
 use junobuild_shared::controllers::{filter_admin_controllers, into_controller_ids};
+use junobuild_shared::ic::DecodeCandid;
 use junobuild_shared::mgmt::ic::update_canister_controllers;
 use junobuild_shared::types::interface::{
     DeleteControllersArgs, SetController, SetControllersArgs,
@@ -40,12 +40,12 @@ async fn set_controllers(
         controller: controller.clone(),
     };
 
-    let result: CallResult<(Controllers,)> = call(*segment_id, "set_controllers", (args,)).await;
+    let controllers = Call::unbounded_wait(*segment_id, "set_controllers")
+        .with_arg(args)
+        .await
+        .decode_candid::<Controllers>()?;
 
-    match result {
-        Err((_, message)) => Err(["Failed to set controllers.", &message].join(" - ")),
-        Ok((controllers,)) => Ok(into_controller_ids(&filter_admin_controllers(&controllers))),
-    }
+    Ok(into_controller_ids(&filter_admin_controllers(&controllers)))
 }
 
 async fn delete_controllers(
@@ -56,12 +56,12 @@ async fn delete_controllers(
         controllers: controllers.to_owned(),
     };
 
-    let result: CallResult<(Controllers,)> = call(*segment_id, "del_controllers", (args,)).await;
+    let controllers = Call::unbounded_wait(*segment_id, "del_controllers")
+        .with_arg(args)
+        .await
+        .decode_candid::<Controllers>()?;
 
-    match result {
-        Err((_, message)) => Err(["Failed to delete controllers.", &message].join(" - ")),
-        Ok((controllers,)) => Ok(into_controller_ids(&filter_admin_controllers(&controllers))),
-    }
+    Ok(into_controller_ids(&filter_admin_controllers(&controllers)))
 }
 
 pub async fn update_segment_controllers_settings(

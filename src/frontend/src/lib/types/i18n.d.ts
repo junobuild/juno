@@ -936,10 +936,11 @@ interface I18nEmulator {
 	emulator: string;
 	setting_emulator_controller: string;
 	error_never_execute_set_controller: string;
-	error_get_identities: string;
+	error_fetching_emulator: string;
 	error_no_main_identity: string;
 	error_never_execute_openid_monitoring: string;
 	error_toggling_openid_monitoring_failed: string;
+	error_getting_icp: string;
 }
 
 interface I18nUpgrade {

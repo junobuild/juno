@@ -1,4 +1,5 @@
 {
+	"a11a5faa-9f32-4b8c-8c5d-2f7d13e8c942": "AliasVault",
 	"ea9b8d66-4d01-1d21-3ce4-b6b48cb575d4": "Google Password Manager",
 	"adce0002-35bc-c60a-648b-0b25f1f05503": "Chrome on Mac",
 	"08987058-cadc-4b81-b6e1-30de50dcbe96": "Windows Hello",
@@ -15,7 +16,7 @@
 	"771b48fd-d3d4-4f74-9232-fc157ab0507a": "Edge on Mac",
 	"39a5647e-1853-446c-a1f6-a79bae9f5bc7": "IDmelon",
 	"d548826e-79b4-db40-a3d8-11116f7e8349": "Bitwarden",
-	"fbfc3007-154e-4ecc-8c0b-6e020557d7bd": "iCloud Keychain",
+	"fbfc3007-154e-4ecc-8c0b-6e020557d7bd": "Apple Passwords",
 	"53414d53-554e-4700-0000-000000000000": "Samsung Pass",
 	"66a0ccb3-bd6a-191f-ee06-e375c50b9846": "Thales Bio iOS SDK",
 	"8836336a-f590-0921-301d-46427531eee6": "Thales Bio Android SDK",
@@ -23,6 +24,7 @@
 	"17290f1e-c212-34d0-1423-365d729f09d9": "Thales PIN iOS SDK",
 	"50726f74-6f6e-5061-7373-50726f746f6e": "Proton Pass",
 	"fdb141b2-5d84-443e-8a35-4698c205a502": "KeePassXC",
+	"eaecdef2-1c31-5634-8639-f1cbd9c00a08": "KeePassDX",
 	"cc45f64e-52a2-451b-831a-4edd8022a202": "ToothPic Passkey Provider",
 	"bfc748bb-3429-4faa-b9f9-7cfa9f3b76d0": "iPasswords",
 	"b35a26b2-8f6e-4697-ab1d-d44db4da28c6": "Zoho Vault",

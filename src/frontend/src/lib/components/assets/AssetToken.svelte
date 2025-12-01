@@ -12,6 +12,7 @@
 	import { toasts } from '$lib/stores/toasts.store';
 	import { RULES_CONTEXT_KEY, type RulesContext } from '$lib/types/rules.context';
 	import { container } from '$lib/utils/juno.utils';
+	import Value from "$lib/components/ui/Value.svelte";
 
 	interface Props {
 		asset: SatelliteDid.AssetNoContent;
@@ -72,18 +73,22 @@
 
 <Popover backdrop="dark" center={true} bind:visible>
 	<div class="content">
-		<h3>{$i18n.asset.token}</h3>
+		<h3>{$i18n.asset.token_edit}</h3>
 
 		<p>{$i18n.asset.token_edit_description}</p>
 
-		<p>
+		<Value ref="token">
+			{#snippet label()}
+				{$i18n.asset.token}
+			{/snippet}
+
 			<InputGenerate
-				generate={generateToken}
-				generateLabel={$i18n.asset.token_generate}
-				inputPlaceholder={$i18n.asset.token_description}
-				bind:inputValue={token}
+					generate={generateToken}
+					generateLabel={$i18n.asset.token_generate}
+					inputPlaceholder={$i18n.asset.token_description}
+					bind:inputValue={token}
 			/>
-		</p>
+		</Value>
 
 		<div>
 			<button disabled={$isBusy} onclick={close} type="button">

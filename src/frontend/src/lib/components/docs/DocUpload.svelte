@@ -21,6 +21,7 @@
 	import { RULES_CONTEXT_KEY, type RulesContext } from '$lib/types/rules.context';
 	import { fileToDocData } from '$lib/utils/doc.utils';
 	import { container } from '$lib/utils/juno.utils';
+	import InputGenerate from '$lib/components/ui/InputGenerate.svelte';
 
 	interface Props {
 		docKey?: string | undefined;
@@ -138,24 +139,13 @@
 				{#snippet label()}
 					{$i18n.document.key}
 				{/snippet}
-				<div class="form-doc-key">
-					<input
-						id="doc-key"
-						autocomplete="off"
-						data-1p-ignore
-						placeholder={$i18n.document.key_placeholder}
-						type="text"
-						bind:value={key}
-					/>
-					<button
-						class="text"
-						aria-label={$i18n.document.key_generate}
-						onclick={generateKey}
-						type="button"
-					>
-						<IconAutoRenew size="20px" />
-					</button>
-				</div>
+
+				<InputGenerate
+					inputPlaceholder={$i18n.document.key_placeholder}
+					bind:inputValue={key}
+					generateLabel={$i18n.document.key_generate}
+					generate={generateKey}
+				/>
 			</Value>
 		</div>
 
@@ -180,15 +170,3 @@
 		{mode === 'replace' ? $i18n.core.replace : $i18n.core.create}
 	{/snippet}
 </DataUpload>
-
-<style lang="scss">
-	.form-doc-key {
-		display: flex;
-		align-items: center;
-		gap: var(--padding-2x);
-
-		button {
-			margin: var(--padding) 0 var(--padding-2x);
-		}
-	}
-</style>

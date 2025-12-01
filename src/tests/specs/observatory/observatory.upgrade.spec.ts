@@ -189,7 +189,7 @@ describe('Observatory > Upgrade', () => {
 		});
 	});
 
-	describe('v0.1.1 -> v0.1.2', () => {
+	describe('v0.1.1 -> v0.2.0', () => {
 		const upgradeCurrent = async () => {
 			await tick(pic);
 

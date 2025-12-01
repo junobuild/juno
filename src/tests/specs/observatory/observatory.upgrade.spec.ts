@@ -30,6 +30,166 @@ describe('Observatory > Upgrade', () => {
 	});
 
 	describe('v0.0.9 -> v0.1.0', () => {
+		const upgrade0_1_0 = async () => {
+			await tick(pic);
+
+			const destination = await downloadObservatory({ junoVersion: '0.0.51', version: '0.1.0' });
+
+			await pic.upgradeCanister({
+				canisterId: observatoryId,
+				wasm: destination,
+				sender: controller.getPrincipal()
+			});
+		};
+
+		beforeEach(async () => {
+			pic = await PocketIc.create(inject('PIC_URL'));
+
+			const destination = await downloadObservatory({ junoVersion: '0.0.41', version: '0.0.9' });
+
+			const { actor: c, canisterId: mId } = await pic.setupCanister<ObservatoryActor009>({
+				idlFactory: idlFactoryObservatory009,
+				wasm: destination,
+				arg: missionControlUserInitArgs(controller.getPrincipal()),
+				sender: controller.getPrincipal()
+			});
+
+			observatoryId = mId;
+
+			actor = c;
+			actor.setIdentity(controller);
+
+			// The random seed generator init is deferred
+			await tick(pic);
+
+			const { set_env } = actor;
+
+			await set_env({
+				email_api_key: [mockObservatoryProxyBearerKey]
+			});
+
+			await upgrade0_1_0();
+
+			// The random seed generator init is deferred
+			await tick(pic);
+		});
+
+		describe('Deposit cycles notifications', () => {
+			const mockExpectedApiUrl =
+				'https://europe-west6-juno-observatory.cloudfunctions.net/observatory/notifications/email';
+
+			it('should still notify Mission Control with previous interface', async () => {
+				await testDepositedCyclesNotification({
+					kind: { MissionControl: null },
+					url: 'https://console.juno.build/mission-control',
+					moduleName: 'Mission Control',
+					actor,
+					pic,
+					expectedApiUrl: mockExpectedApiUrl
+				});
+			});
+
+			it('should still notify Orbiter with previous interface', async () => {
+				await testDepositedCyclesNotification({
+					kind: { Orbiter: null },
+					url: 'https://console.juno.build/analytics',
+					moduleName: 'Orbiter',
+					actor,
+					pic,
+					expectedApiUrl: mockExpectedApiUrl
+				});
+			});
+
+			it('should still notify Satellite with previous interface', async () => {
+				await testDepositedCyclesNotification({
+					kind: { Satellite: null },
+					url: `https://console.juno.build/satellite/?s=${mockMissionControlId.toText()}`,
+					moduleName: 'Satellite',
+					actor,
+					pic,
+					expectedApiUrl: mockExpectedApiUrl
+				});
+			});
+
+			it('should notify Satellite with name', async () => {
+				await testDepositedCyclesNotification({
+					kind: { Satellite: null },
+					url: `https://console.juno.build/satellite/?s=${mockMissionControlId.toText()}`,
+					moduleName: 'Satellite',
+					metadataName: 'This is a test name',
+					actor,
+					pic,
+					expectedApiUrl: mockExpectedApiUrl
+				});
+			});
+		});
+
+		it('should preserve controllers even if scope enum is extended', async () => {
+			const user1 = Ed25519KeyIdentity.generate();
+			const user2 = Ed25519KeyIdentity.generate();
+			const admin1 = Ed25519KeyIdentity.generate();
+
+			const { set_controllers } = actor;
+
+			await set_controllers({
+				controller: {
+					scope: { Write: null },
+					metadata: [['hello', 'world']],
+					expires_at: []
+				},
+				controllers: [user1.getPrincipal(), user2.getPrincipal()]
+			});
+
+			await set_controllers({
+				controller: {
+					scope: { Admin: null },
+					metadata: [['super', 'top']],
+					expires_at: []
+				},
+				controllers: [admin1.getPrincipal()]
+			});
+
+			const assertControllers = async (actor: ObservatoryActor | ObservatoryActor009) => {
+				const { list_controllers } = actor;
+
+				const controllers = await list_controllers();
+
+				expect(
+					controllers.find(([p, _]) => p.toText() === controller.getPrincipal().toText())
+				).not.toBeUndefined();
+
+				const assertWriteController = (controller: Principal) => {
+					const maybeUser = controllers.find(([p, _]) => p.toText() === controller.toText());
+					assertNonNullish(maybeUser);
+
+					expect(maybeUser[1].scope).toEqual({ Write: null });
+					expect(maybeUser[1].metadata).toEqual([['hello', 'world']]);
+				};
+
+				assertWriteController(user1.getPrincipal());
+				assertWriteController(user2.getPrincipal());
+
+				const maybeAdmin = controllers.find(
+					([p, _]) => p.toText() === admin1.getPrincipal().toText()
+				);
+				assertNonNullish(maybeAdmin);
+
+				expect(maybeAdmin[1].scope).toEqual({ Admin: null });
+				expect(maybeAdmin[1].metadata).toEqual([['super', 'top']]);
+			};
+
+			await assertControllers(actor);
+
+			await upgrade0_1_0();
+
+			const newActor = pic.createActor<ObservatoryActor>(idlFactoryObservatory, observatoryId);
+			newActor.setIdentity(controller);
+
+			await assertControllers(newActor);
+		});
+	});
+
+	describe('v0.1.1 -> v0.1.2', () => {
 		const upgradeCurrent = async () => {
 			await tick(pic);
 
@@ -113,70 +273,6 @@ describe('Observatory > Upgrade', () => {
 					pic
 				});
 			});
-		});
-
-		it('should preserve controllers even if scope enum is extended', async () => {
-			const user1 = Ed25519KeyIdentity.generate();
-			const user2 = Ed25519KeyIdentity.generate();
-			const admin1 = Ed25519KeyIdentity.generate();
-
-			const { set_controllers } = actor;
-
-			await set_controllers({
-				controller: {
-					scope: { Write: null },
-					metadata: [['hello', 'world']],
-					expires_at: []
-				},
-				controllers: [user1.getPrincipal(), user2.getPrincipal()]
-			});
-
-			await set_controllers({
-				controller: {
-					scope: { Admin: null },
-					metadata: [['super', 'top']],
-					expires_at: []
-				},
-				controllers: [admin1.getPrincipal()]
-			});
-
-			const assertControllers = async (actor: ObservatoryActor | ObservatoryActor009) => {
-				const { list_controllers } = actor;
-
-				const controllers = await list_controllers();
-
-				expect(
-					controllers.find(([p, _]) => p.toText() === controller.getPrincipal().toText())
-				).not.toBeUndefined();
-
-				const assertWriteController = (controller: Principal) => {
-					const maybeUser = controllers.find(([p, _]) => p.toText() === controller.toText());
-					assertNonNullish(maybeUser);
-
-					expect(maybeUser[1].scope).toEqual({ Write: null });
-					expect(maybeUser[1].metadata).toEqual([['hello', 'world']]);
-				};
-
-				assertWriteController(user1.getPrincipal());
-				assertWriteController(user2.getPrincipal());
-
-				const maybeAdmin = controllers.find(
-					([p, _]) => p.toText() === admin1.getPrincipal().toText()
-				);
-				assertNonNullish(maybeAdmin);
-
-				expect(maybeAdmin[1].scope).toEqual({ Admin: null });
-				expect(maybeAdmin[1].metadata).toEqual([['super', 'top']]);
-			};
-
-			await assertControllers(actor);
-
-			await upgradeCurrent();
-
-			const newActor = pic.createActor<ObservatoryActor>(idlFactoryObservatory, observatoryId);
-			newActor.setIdentity(controller);
-
-			await assertControllers(newActor);
 		});
 	});
 });

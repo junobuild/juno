@@ -59,12 +59,16 @@ impl Storable for NotificationKey {
 
 impl NotificationKey {
     pub fn idempotency_key(&self) -> String {
-        format!(
+        let key = format!(
             "{}___{}___{}",
             self.segment_id.to_text(),
             self.created_at,
             self.nonce
-        )
+        );
+
+        // We're likely to generate 66 chars, but to be future-proof and for simplicity, we truncate
+        // to 256 as required by the documentation: https://resend.com/docs/api-reference/emails/send-email#param-idempotency-key
+        key.chars().take(256).collect()
     }
 }
 

@@ -638,6 +638,7 @@ interface I18nErrors {
 	authentication_config_loading: string;
 	no_file_selected_for_upload: string;
 	upload_error: string;
+	set_asset_token_error: string;
 	no_collection_for_upload: string;
 	full_path_start_slash: string;
 	full_path_end_slash: string;

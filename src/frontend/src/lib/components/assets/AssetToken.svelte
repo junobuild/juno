@@ -34,8 +34,15 @@
 		busy.start();
 
 		try {
-
+			console.log("ToDo")
+		} catch (err: unknown) {
+			toasts.error({
+				text: $i18n.errors.set_asset_token_error,
+				detail: err
+			});
 		}
+
+		busy.stop();
 	}
 </script>
 

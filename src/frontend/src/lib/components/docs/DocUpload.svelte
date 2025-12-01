@@ -13,6 +13,7 @@
 	import type { SatelliteDid } from '$declarations';
 	import DataUpload from '$lib/components/data/DataUpload.svelte';
 	import IconAutoRenew from '$lib/components/icons/IconAutoRenew.svelte';
+	import InputGenerate from '$lib/components/ui/InputGenerate.svelte';
 	import Value from '$lib/components/ui/Value.svelte';
 	import { authStore } from '$lib/stores/auth.store';
 	import { busy } from '$lib/stores/busy.store';
@@ -21,7 +22,6 @@
 	import { RULES_CONTEXT_KEY, type RulesContext } from '$lib/types/rules.context';
 	import { fileToDocData } from '$lib/utils/doc.utils';
 	import { container } from '$lib/utils/juno.utils';
-	import InputGenerate from '$lib/components/ui/InputGenerate.svelte';
 
 	interface Props {
 		docKey?: string | undefined;
@@ -141,10 +141,10 @@
 				{/snippet}
 
 				<InputGenerate
+					generate={generateKey}
+					generateLabel={$i18n.document.key_generate}
 					inputPlaceholder={$i18n.document.key_placeholder}
 					bind:inputValue={key}
-					generateLabel={$i18n.document.key_generate}
-					generate={generateKey}
 				/>
 			</Value>
 		</div>

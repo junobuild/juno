@@ -108,7 +108,7 @@ pub async fn update_canister_controllers(
             log_visibility: None,
             wasm_memory_limit: None,
             wasm_memory_threshold: None,
-            environment_variables: None
+            environment_variables: None,
         },
     };
 

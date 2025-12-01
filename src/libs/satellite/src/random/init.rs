@@ -7,9 +7,7 @@ use rand::RngCore;
 use std::time::Duration;
 
 pub fn defer_init_random_seed() {
-    set_timer(Duration::ZERO, async {
-        init_random_seed().await
-    });
+    set_timer(Duration::ZERO, async { init_random_seed().await });
 }
 
 pub async fn init_random_seed() {

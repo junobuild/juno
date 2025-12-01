@@ -18,7 +18,7 @@ pub fn invoke_on_init() {
     #[cfg(feature = "on_init")]
     {
         unsafe {
-            set_timer(Duration::ZERO, || {
+            set_timer(Duration::ZERO, async {
                 juno_on_init();
             });
         }
@@ -40,7 +40,7 @@ pub fn invoke_on_post_upgrade() {
     #[cfg(feature = "on_post_upgrade")]
     {
         unsafe {
-            set_timer(Duration::ZERO, || {
+            set_timer(Duration::ZERO, async {
                 juno_on_post_upgrade();
             });
         }

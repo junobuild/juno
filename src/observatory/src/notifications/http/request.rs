@@ -57,6 +57,8 @@ fn get_email_request(
         max_response_bytes: None,
         transform: param_transform(),
         headers: request_headers,
+        // TODO: set to false
+        is_replicated: None,
     })
 }
 

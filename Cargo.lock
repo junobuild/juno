@@ -137,9 +137,9 @@ checksum = "d71b6127be86fdcfddb610f7182ac57211d4b18a3e9c82eb2d17662f2227ad6a"
 
 [[package]]
 name = "candid"
-version = "0.10.19"
+version = "0.10.20"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "3ea81e16df186fae1979175058f05dfbfac6e2fdf3b161edcbdc440ef09232cf"
+checksum = "8037a01ec09d6c06883a38bad4f47b8d06158ad360b841e0ae5707c9884dfaf6"
 dependencies = [
  "anyhow",
  "binread",
@@ -160,9 +160,9 @@ dependencies = [
 
 [[package]]
 name = "candid_derive"
-version = "0.10.19"
+version = "0.10.20"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "2e6d499625531c41f474e55160a40313b33d002262ddaae40cade71bcc3bc75a"
+checksum = "fb45f4d5eff3805598ee633dd80f8afb306c023249d34b5b7dfdc2080ea1df2e"
 dependencies = [
  "lazy_static",
  "proc-macro2",
@@ -173,8 +173,7 @@ dependencies = [
 [[package]]
 name = "canfund"
 version = "0.8.4"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "37c0fc82e7f3498d9e6bfb0f8eee841c664179b2b5087ad303e1812e67c48ede"
+source = "git+https://github.com/dfinity/canfund#8d1ad7f870ef6ece5bdf82be6a11ef26967fc1b4"
 dependencies = [
  "async-trait",
  "candid",
@@ -251,7 +250,7 @@ dependencies = [
  "ic-cdk-timers",
  "ic-certification",
  "ic-ledger-types",
- "ic-stable-structures 0.7.0",
+ "ic-stable-structures 0.7.2",
  "junobuild-auth",
  "junobuild-cdn",
  "junobuild-collections",
@@ -799,9 +798,9 @@ dependencies = [
 
 [[package]]
 name = "ic-cdk"
-version = "0.18.5"
+version = "0.19.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "db9cc3e0e86ee12504c749fa33793014f1f4d6956a8a70e4db595169c5f6ac26"
+checksum = "818d6d5416a8f0212e1b132703b0da51e36c55f2b96677e96f2bbe7702e1bd85"
 dependencies = [
  "candid",
  "ic-cdk-executor",
@@ -809,6 +808,7 @@ dependencies = [
  "ic-error-types",
  "ic-management-canister-types",
  "ic0",
+ "pin-project-lite",
  "serde",
  "serde_bytes",
  "slotmap",
@@ -817,18 +817,20 @@ dependencies = [
 
 [[package]]
 name = "ic-cdk-executor"
-version = "1.0.1"
+version = "2.0.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "15948808e3e7b50749fe50838df77fccaf048c8af2c26884ff5c8f787c29787a"
+checksum = "33716b730ded33690b8a704bff3533fda87d229e58046823647d28816e9bcee7"
 dependencies = [
+ "ic0",
  "slotmap",
+ "smallvec",
 ]
 
 [[package]]
 name = "ic-cdk-macros"
-version = "0.18.5"
+version = "0.19.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "b190cace2b141a5801252115bdc27397d47f086c928af3e917ce1da81b17e3cd"
+checksum = "66dad91a214945cb3605bc9ef6901b87e2ac41e3624284c2cabba49d43aa4f43"
 dependencies = [
  "candid",
  "darling",
@@ -839,16 +841,12 @@ dependencies = [
 
 [[package]]
 name = "ic-cdk-timers"
-version = "0.12.2"
+version = "1.0.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "9ea87cf31444de833db85bbd15e97bc135ee14529b13158ffdaf6530bf6d7e85"
+checksum = "6852b9c1d4a82ff50fc7318599298aee8bfb082bd7e9fe7e5c1420692b2170f7"
 dependencies = [
- "candid",
- "futures",
- "ic-cdk",
+ "ic-cdk-executor",
  "ic0",
- "serde",
- "serde_bytes",
  "slotmap",
 ]
 
@@ -894,9 +892,9 @@ dependencies = [
 
 [[package]]
 name = "ic-ledger-types"
-version = "0.15.0"
+version = "0.16.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "feb52826a353b583012628af6da762b52672350686c3275234febfadeca965ea"
+checksum = "60ab0da348a638e01beb5bcc6c0b92e51efbe351950ff99c125d53fff77899d5"
 dependencies = [
  "candid",
  "crc32fast",
@@ -909,9 +907,9 @@ dependencies = [
 
 [[package]]
 name = "ic-management-canister-types"
-version = "0.3.1"
+version = "0.5.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "98554c2d8a30c00b6bfda18062fdcef21215cad07a52d8b8b1eb3130e51bfe71"
+checksum = "3149217e24186df3f13dc45eee14cdb3e5cad07d0b2b67bd53555c1c55462957"
 dependencies = [
  "candid",
  "serde",
@@ -939,22 +937,22 @@ dependencies = [
 
 [[package]]
 name = "ic-stable-structures"
-version = "0.7.0"
+version = "0.7.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "e54aeb082293c69def5ab34c70593ba85ff000386f7d0eacdf73514daaeca031"
+checksum = "8ee3372ddc0cf2a747fc26ce2d075a240ed6bfab151e63bc70109e8967f7ce6f"
 dependencies = [
  "ic_principal",
 ]
 
 [[package]]
 name = "ic-wasi-polyfill"
-version = "0.11.1"
+version = "0.12.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "9d913d0b34bf4fcc8ffb46c8f91ef0445ff789992b44486c24f6183a227523ea"
+checksum = "0a7305b94cb2d3b0f1416e1b7da44610eb542de3ff1184548eb95a29673eaf5b"
 dependencies = [
  "anyhow",
  "ic-cdk",
- "ic-stable-structures 0.7.0",
+ "ic-stable-structures 0.7.2",
  "rand 0.9.2",
  "stable-fs",
 ]
@@ -992,9 +990,9 @@ dependencies = [
 
 [[package]]
 name = "icrc-ledger-types"
-version = "0.1.10"
+version = "0.1.12"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "87c31beeee0e5ab964861a3d5ea2b5ed7b688b2b22400367a832b1fcf0db1fa4"
+checksum = "aafb78e620b2cc2b000cd745c0504dfb23a828acc3dd6f1baef208cd6c471e32"
 dependencies = [
  "base32",
  "candid",
@@ -1195,9 +1193,9 @@ checksum = "b1a46d1a171d865aa5f83f92695765caa047a9b4cbae2cbf37dbd613a793fd4c"
 
 [[package]]
 name = "jsonwebtoken-ic"
-version = "10.2.0-ic.0"
+version = "10.2.0-ic.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "4859dfd14dfb057211b8938614bab7feb41b6eb3acbfc74b291639b51d175150"
+checksum = "61afa40c6d5df5e17e149b52f5ce72cb2d80755daed474ed7c2b9cd95736bffa"
 dependencies = [
  "base64",
  "ed25519-dalek",
@@ -1242,7 +1240,7 @@ dependencies = [
  "candid",
  "hex",
  "ic-cdk",
- "ic-stable-structures 0.7.0",
+ "ic-stable-structures 0.7.2",
  "junobuild-collections",
  "junobuild-shared",
  "junobuild-storage",
@@ -1282,7 +1280,7 @@ dependencies = [
  "ic-cdk-macros",
  "ic-cdk-timers",
  "ic-certification",
- "ic-stable-structures 0.7.0",
+ "ic-stable-structures 0.7.2",
  "junobuild-auth",
  "junobuild-cdn",
  "junobuild-collections",
@@ -1306,7 +1304,7 @@ dependencies = [
  "getrandom 0.3.2",
  "ic-cdk",
  "ic-ledger-types",
- "ic-stable-structures 0.7.0",
+ "ic-stable-structures 0.7.2",
  "icrc-ledger-types",
  "rand 0.9.2",
  "regex",
@@ -1325,7 +1323,7 @@ dependencies = [
  "ic-cdk",
  "ic-certification",
  "ic-representation-independent-hash",
- "ic-stable-structures 0.7.0",
+ "ic-stable-structures 0.7.2",
  "junobuild-collections",
  "junobuild-shared",
  "regex",
@@ -1423,7 +1421,7 @@ dependencies = [
  "ic-cdk-macros",
  "ic-cdk-timers",
  "ic-ledger-types",
- "ic-stable-structures 0.7.0",
+ "ic-stable-structures 0.7.2",
  "icrc-ledger-types",
  "junobuild-shared",
  "rand 0.9.2",
@@ -1504,7 +1502,7 @@ dependencies = [
  "ic-cdk",
  "ic-cdk-macros",
  "ic-cdk-timers",
- "ic-stable-structures 0.7.0",
+ "ic-stable-structures 0.7.2",
  "junobuild-auth",
  "junobuild-shared",
  "rand 0.9.2",
@@ -1523,7 +1521,7 @@ dependencies = [
  "ic-cdk-macros",
  "ic-cdk-timers",
  "ic-http-certification",
- "ic-stable-structures 0.7.0",
+ "ic-stable-structures 0.7.2",
  "isbot",
  "junobuild-shared",
  "junobuild-utils",
@@ -1597,9 +1595,9 @@ checksum = "e3148f5046208a5d56bcfc03053e3ca6334e51da8dfb19b6cdc8b306fae3283e"
 
 [[package]]
 name = "pin-project-lite"
-version = "0.2.13"
+version = "0.2.16"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "8afb450f006bf6385ca15ef45d71d2288452bc3683ce2e2cacc0d18e4be60b58"
+checksum = "3b3cff922bd51709b605d9ead9aa71031d81447142d828eb4a6eba76fe619f9b"
 
 [[package]]
 name = "pin-utils"
@@ -2050,9 +2048,9 @@ dependencies = [
 
 [[package]]
 name = "smallvec"
-version = "1.13.2"
+version = "1.15.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "3c5e1a9a646d36c3599cd173a41282daf47c44583ad367b8e6837255952e5c67"
+checksum = "67b1b7a3b5fe4f1376887184045fcf45c69e92af734b7aaddc05fb777b6fbd03"
 
 [[package]]
 name = "spin"
@@ -2090,14 +2088,14 @@ dependencies = [
 
 [[package]]
 name = "stable-fs"
-version = "0.11.0"
+version = "0.12.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "f50a570b7015d096ee0a134f317e98d2f106f1711652459da220fdddb2d68cdc"
+checksum = "0bae8643db364dcf78d6782aa61cb75cc906c813ca3aff949cff1839b84e455c"
 dependencies = [
  "bitflags",
  "ciborium",
  "ic-cdk",
- "ic-stable-structures 0.7.0",
+ "ic-stable-structures 0.7.2",
  "serde",
  "serde_bytes",
 ]

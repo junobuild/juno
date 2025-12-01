@@ -725,6 +725,8 @@ interface I18nDocument {
 interface I18nAsset {
 	owner: string;
 	token: string;
+	token_description: string;
+	token_generate: string;
 	headers: string;
 	version: string;
 	no_match: string;
@@ -935,9 +937,12 @@ interface I18nEmulator {
 	get_icp: string;
 	emulator: string;
 	setting_emulator_controller: string;
-	error_never_execute: string;
-	error_get_identities: string;
+	error_never_execute_set_controller: string;
+	error_fetching_emulator: string;
 	error_no_main_identity: string;
+	error_never_execute_openid_monitoring: string;
+	error_toggling_openid_monitoring_failed: string;
+	error_getting_icp: string;
 }
 
 interface I18nUpgrade {

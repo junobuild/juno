@@ -1,21 +1,30 @@
 <script lang="ts">
-	import IconLockOpen from '$lib/components/icons/IconLockOpen.svelte';
-	import Popover from '$lib/components/ui/Popover.svelte';
-	import { i18n } from '$lib/stores/i18n.store';
+	import { fromNullable, isNullish } from '@dfinity/utils';
+	import { setAssetToken } from '@junobuild/core';
+	import { getContext } from 'svelte';
 	import type { SatelliteDid } from '$declarations';
-	import {fromNullable, isNullish} from '@dfinity/utils';
+	import IconLockOpen from '$lib/components/icons/IconLockOpen.svelte';
 	import InputGenerate from '$lib/components/ui/InputGenerate.svelte';
-	import {busy, isBusy} from "$lib/stores/busy.store";
-	import {toasts} from "$lib/stores/toasts.store";
-	import {authStore} from "$lib/stores/auth.store";
+	import Popover from '$lib/components/ui/Popover.svelte';
+	import { authStore } from '$lib/stores/auth.store';
+	import { busy, isBusy } from '$lib/stores/busy.store';
+	import { i18n } from '$lib/stores/i18n.store';
+	import { toasts } from '$lib/stores/toasts.store';
+	import { RULES_CONTEXT_KEY, type RulesContext } from '$lib/types/rules.context';
+	import { container } from '$lib/utils/juno.utils';
 
 	interface Props {
 		asset: SatelliteDid.AssetNoContent;
+		onsettokensuccess: () => void;
 	}
 
-	let { asset }: Props = $props();
+	let { asset, onsettokensuccess }: Props = $props();
 
 	let token = $state<string | undefined>(fromNullable(asset.key.token));
+
+	const { store }: RulesContext = getContext<RulesContext>(RULES_CONTEXT_KEY);
+
+	let satelliteId = $derived($store.satelliteId);
 
 	let visible: boolean = $state(false);
 	const close = () => (visible = false);
@@ -34,16 +43,27 @@
 		busy.start();
 
 		try {
-			console.log("ToDo")
+			await setAssetToken({
+				fullPath: asset.key.full_path,
+				collection: asset.key.collection,
+				token: token ?? null,
+				satellite: {
+					satelliteId: satelliteId.toText(),
+					identity: $authStore.identity,
+					...container()
+				}
+			});
+
+			onsettokensuccess();
 		} catch (err: unknown) {
 			toasts.error({
 				text: $i18n.errors.set_asset_token_error,
 				detail: err
 			});
+		} finally {
+			busy.stop();
 		}
-
-		busy.stop();
-	}
+	};
 </script>
 
 <button class="menu" onclick={() => (visible = true)} type="button"

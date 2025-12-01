@@ -4,6 +4,7 @@
 	import { getContext } from 'svelte';
 	import type { SatelliteDid } from '$declarations';
 	import { deleteAsset } from '$lib/api/satellites.api';
+	import AssetToken from '$lib/components/assets/AssetToken.svelte';
 	import AssetUpload from '$lib/components/assets/AssetUpload.svelte';
 	import DataHeader from '$lib/components/data/DataHeader.svelte';
 	import DataKeyDelete from '$lib/components/data/DataKeyDelete.svelte';
@@ -18,7 +19,6 @@
 	import { RULES_CONTEXT_KEY, type RulesContext } from '$lib/types/rules.context';
 	import { formatToDate } from '$lib/utils/date.utils';
 	import { satelliteUrl } from '$lib/utils/satellite.utils';
-	import AssetToken from '$lib/components/assets/AssetToken.svelte';
 
 	const { store, resetData }: DataContext<SatelliteDid.AssetNoContent> =
 		getContext<DataContext<SatelliteDid.AssetNoContent>>(DATA_CONTEXT_KEY);
@@ -98,7 +98,7 @@
 			</AssetUpload>
 
 			{#if nonNullish(asset)}
-				<AssetToken {asset} />
+				<AssetToken {asset} onsettokensuccess={reload} />
 			{/if}
 
 			<DataKeyDelete {deleteData}>

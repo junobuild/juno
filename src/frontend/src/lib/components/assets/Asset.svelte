@@ -4,6 +4,7 @@
 	import { getContext } from 'svelte';
 	import type { SatelliteDid } from '$declarations';
 	import { deleteAsset } from '$lib/api/satellites.api';
+	import AssetToken from '$lib/components/assets/AssetToken.svelte';
 	import AssetUpload from '$lib/components/assets/AssetUpload.svelte';
 	import DataHeader from '$lib/components/data/DataHeader.svelte';
 	import DataKeyDelete from '$lib/components/data/DataKeyDelete.svelte';
@@ -95,6 +96,10 @@
 					{$i18n.asset.replace_description}
 				{/snippet}
 			</AssetUpload>
+
+			{#if nonNullish(asset)}
+				<AssetToken {asset} onsettokensuccess={reload} />
+			{/if}
 
 			<DataKeyDelete {deleteData}>
 				{#snippet title()}

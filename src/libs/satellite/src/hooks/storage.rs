@@ -50,7 +50,7 @@ pub fn invoke_upload_asset(caller: &UserId, asset: &Asset) {
             let collections = juno_on_upload_asset_collections();
 
             if should_invoke_asset_hook(collections, &context.data.key.collection) {
-                set_timer(Duration::ZERO, || {
+                set_timer(Duration::ZERO, async {
                     juno_on_upload_asset(context);
                 });
             }
@@ -80,7 +80,7 @@ pub fn invoke_on_delete_asset(caller: &UserId, asset: &Option<Asset>) {
                     data: asset.clone(),
                 };
 
-                set_timer(Duration::ZERO, || {
+                set_timer(Duration::ZERO, async {
                     juno_on_delete_asset(context);
                 });
             }
@@ -103,7 +103,7 @@ pub fn invoke_on_delete_many_assets(caller: &UserId, assets: &[Option<Asset>]) {
                     data: filtered_assets.clone(),
                 };
 
-                set_timer(Duration::ZERO, || {
+                set_timer(Duration::ZERO, async {
                     juno_on_delete_many_assets(context);
                 });
             }
@@ -126,7 +126,7 @@ pub fn invoke_on_delete_filtered_assets(caller: &UserId, assets: &[Option<Asset>
                     data: filtered_assets.clone(),
                 };
 
-                set_timer(Duration::ZERO, || {
+                set_timer(Duration::ZERO, async {
                     juno_on_delete_filtered_assets(context);
                 });
             }

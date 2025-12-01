@@ -706,7 +706,9 @@
 	},
 	"asset": {
 		"owner": "所有者",
-		"token": "令牌",
+		"token": "访问令牌",
+		"token_description": "可选的保护",
+		"token_generate": "自动生成令牌",
 		"headers": "头信息",
 		"version": "版本",
 		"no_match": "无匹配资源。",

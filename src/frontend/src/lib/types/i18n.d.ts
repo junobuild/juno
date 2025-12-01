@@ -725,6 +725,8 @@ interface I18nDocument {
 interface I18nAsset {
 	owner: string;
 	token: string;
+	token_description: string;
+	token_generate: string;
 	headers: string;
 	version: string;
 	no_match: string;

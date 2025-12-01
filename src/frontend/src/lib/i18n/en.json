@@ -705,7 +705,9 @@
 	},
 	"asset": {
 		"owner": "Owner",
-		"token": "Token",
+		"token": "Access token",
+		"token_description": "Optional protection",
+		"token_generate": "Auto generate token",
 		"headers": "Headers",
 		"version": "Version",
 		"no_match": "No asset matches your filters.",

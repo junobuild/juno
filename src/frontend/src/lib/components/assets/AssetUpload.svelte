@@ -15,6 +15,8 @@
 	import { toasts } from '$lib/stores/toasts.store';
 	import { RULES_CONTEXT_KEY, type RulesContext } from '$lib/types/rules.context';
 	import { container } from '$lib/utils/juno.utils';
+	import InputGenerate from '$lib/components/ui/InputGenerate.svelte';
+	import { nanoid } from 'nanoid';
 
 	interface Props {
 		asset?: SatelliteDid.AssetNoContent | undefined;
@@ -31,6 +33,11 @@
 	let collection = $derived($store.rule?.[0]);
 
 	let newFileFullPath = $state<string | undefined>(undefined);
+
+	let newToken = $state<string | undefined>(undefined);
+
+	// Use UUID - longer than nanoid - for better protection
+	const generateToken = () => (newToken = window.crypto.randomUUID());
 
 	let satelliteId: Principal = $derived($store.satelliteId);
 
@@ -86,6 +93,9 @@
 				...(notEmptyString(newFileFullPath) && {
 					fullPath: newFileFullPath
 				}),
+				...(notEmptyString(newToken) && {
+					token: newToken
+				}),
 				collection,
 				data: file,
 				satellite: {
@@ -108,7 +118,13 @@
 		busy.stop();
 	};
 
+	let editableToken = $state(false);
+
 	const onfilechange = (file: File | undefined) => {
+		// If the asset exist, the token cannot be edited in this component
+		editableToken = nonNullish(file) && isNullish(asset);
+		newToken = undefined;
+
 		// If the asset exist, the full path cannot be edited
 		if (nonNullish(asset)) {
 			newFileFullPath = undefined;
@@ -145,6 +161,23 @@
 					placeholder={$i18n.asset.full_path_description}
 					type="text"
 					bind:value={newFileFullPath}
+				/>
+			</Value>
+		</div>
+	{/if}
+
+	{#if editableToken}
+		<div in:slide={{ delay: 0, duration: 150, easing: quintOut, axis: 'y' }}>
+			<Value ref="token">
+				{#snippet label()}
+					{$i18n.asset.token}
+				{/snippet}
+
+				<InputGenerate
+					inputPlaceholder={$i18n.asset.token_description}
+					bind:inputValue={newToken}
+					generateLabel={$i18n.asset.token_generate}
+					generate={generateToken}
 				/>
 			</Value>
 		</div>

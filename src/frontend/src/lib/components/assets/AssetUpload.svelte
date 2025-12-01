@@ -38,7 +38,7 @@
 	// Use UUID - longer than nanoid - for better protection
 	const generateToken = () => (newToken = window.crypto.randomUUID());
 
-	let satelliteId: Principal = $derived($store.satelliteId);
+	let satelliteId = $derived($store.satelliteId);
 
 	const upload = async (file: File | undefined) => {
 		if (isNullish(file)) {
@@ -110,9 +110,9 @@
 				text: $i18n.errors.upload_error,
 				detail: err
 			});
+		} finally {
+			busy.stop();
 		}
-
-		busy.stop();
 	};
 
 	let editableToken = $state(false);

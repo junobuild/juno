@@ -7,6 +7,7 @@
 	import { slide } from 'svelte/transition';
 	import type { SatelliteDid } from '$declarations';
 	import DataUpload from '$lib/components/data/DataUpload.svelte';
+	import InputGenerate from '$lib/components/ui/InputGenerate.svelte';
 	import Value from '$lib/components/ui/Value.svelte';
 	import { COLLECTION_DAPP } from '$lib/constants/storage.constants';
 	import { authStore } from '$lib/stores/auth.store';
@@ -15,8 +16,6 @@
 	import { toasts } from '$lib/stores/toasts.store';
 	import { RULES_CONTEXT_KEY, type RulesContext } from '$lib/types/rules.context';
 	import { container } from '$lib/utils/juno.utils';
-	import InputGenerate from '$lib/components/ui/InputGenerate.svelte';
-	import { nanoid } from 'nanoid';
 
 	interface Props {
 		asset?: SatelliteDid.AssetNoContent | undefined;
@@ -174,10 +173,10 @@
 				{/snippet}
 
 				<InputGenerate
+					generate={generateToken}
+					generateLabel={$i18n.asset.token_generate}
 					inputPlaceholder={$i18n.asset.token_description}
 					bind:inputValue={newToken}
-					generateLabel={$i18n.asset.token_generate}
-					generate={generateToken}
 				/>
 			</Value>
 		</div>

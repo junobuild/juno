@@ -105,8 +105,6 @@
 			});
 
 			onfileuploaded();
-
-			close();
 		} catch (err: unknown) {
 			toasts.error({
 				text: $i18n.errors.upload_error,

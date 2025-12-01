@@ -28,8 +28,7 @@ fn get_email_request(
     api_key: &ApiKey,
     email: &EmailRequestBody,
 ) -> Result<HttpRequestArgs, String> {
-    let email_notifications_url =
-        "https://europe-west6-juno-observatory.cloudfunctions.net/observatory/notifications/email";
+    let email_notifications_url = "https://api.resend.com/emails";
 
     let request_headers = vec![
         HttpHeader {
@@ -57,8 +56,7 @@ fn get_email_request(
         max_response_bytes: None,
         transform: param_transform(),
         headers: request_headers,
-        // TODO: set to false
-        is_replicated: None,
+        is_replicated: Some(false),
     })
 }
 

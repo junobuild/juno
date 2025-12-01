@@ -6,13 +6,13 @@
 	import IconLockOpen from '$lib/components/icons/IconLockOpen.svelte';
 	import InputGenerate from '$lib/components/ui/InputGenerate.svelte';
 	import Popover from '$lib/components/ui/Popover.svelte';
+	import Value from '$lib/components/ui/Value.svelte';
 	import { authStore } from '$lib/stores/auth.store';
 	import { busy, isBusy } from '$lib/stores/busy.store';
 	import { i18n } from '$lib/stores/i18n.store';
 	import { toasts } from '$lib/stores/toasts.store';
 	import { RULES_CONTEXT_KEY, type RulesContext } from '$lib/types/rules.context';
 	import { container } from '$lib/utils/juno.utils';
-	import Value from "$lib/components/ui/Value.svelte";
 
 	interface Props {
 		asset: SatelliteDid.AssetNoContent;
@@ -83,10 +83,10 @@
 			{/snippet}
 
 			<InputGenerate
-					generate={generateToken}
-					generateLabel={$i18n.asset.token_generate}
-					inputPlaceholder={$i18n.asset.token_description}
-					bind:inputValue={token}
+				generate={generateToken}
+				generateLabel={$i18n.asset.token_generate}
+				inputPlaceholder={$i18n.asset.token_description}
+				bind:inputValue={token}
 			/>
 		</Value>
 

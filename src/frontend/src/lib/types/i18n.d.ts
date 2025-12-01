@@ -727,6 +727,8 @@ interface I18nAsset {
 	token: string;
 	token_description: string;
 	token_generate: string;
+	token_edit: string;
+	token_edit_description: string;
 	headers: string;
 	version: string;
 	no_match: string;

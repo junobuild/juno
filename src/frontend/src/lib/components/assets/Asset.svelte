@@ -18,6 +18,7 @@
 	import { RULES_CONTEXT_KEY, type RulesContext } from '$lib/types/rules.context';
 	import { formatToDate } from '$lib/utils/date.utils';
 	import { satelliteUrl } from '$lib/utils/satellite.utils';
+	import AssetToken from '$lib/components/assets/AssetToken.svelte';
 
 	const { store, resetData }: DataContext<SatelliteDid.AssetNoContent> =
 		getContext<DataContext<SatelliteDid.AssetNoContent>>(DATA_CONTEXT_KEY);
@@ -95,6 +96,10 @@
 					{$i18n.asset.replace_description}
 				{/snippet}
 			</AssetUpload>
+
+			{#if nonNullish(asset)}
+				<AssetToken {asset} />
+			{/if}
 
 			<DataKeyDelete {deleteData}>
 				{#snippet title()}

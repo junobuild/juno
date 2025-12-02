@@ -33,7 +33,6 @@ export const onCyclesMessage = async ({ data: dataMsg }: MessageEvent<PostMessag
 		case 'restartCyclesTimer':
 			stopCyclesTimer();
 			await startCyclesTimer({ data });
-			return;
 	}
 };
 

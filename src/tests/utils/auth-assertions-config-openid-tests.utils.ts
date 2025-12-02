@@ -14,6 +14,7 @@ import { generateNonce } from './auth-nonce-tests.utils';
 import { makeMockGoogleOpenIdJwt } from './jwt-tests.utils';
 import { assertOpenIdHttpsOutcalls } from './observatory-openid-tests.utils';
 import { tick } from './pic-tests.utils';
+import { updateRateConfigNoLimit } from './rate.tests.utils';
 import { OBSERVATORY_WASM_PATH } from './setup-tests.utils';
 
 export const testAuthConfigObservatory = ({
@@ -71,6 +72,7 @@ export const testAuthConfigObservatory = ({
 			};
 
 			await set_auth_config(config);
+			await updateRateConfigNoLimit({ actor: observatoryActor });
 
 			actor.setIdentity(user);
 		};
@@ -156,7 +158,7 @@ export const testAuthConfigObservatory = ({
 			const { FetchFailed } = GetOrFetchJwks;
 
 			expect(FetchFailed).toEqual(
-				'Fetching OpenID certificate failed: CallRejected(CallRejected { raw_reject_code: 3, reject_message: "No route to canister klbfr-lqaaa-aaaak-qbwsa-cai" })'
+				'Call failed: CallRejected(CallRejected { raw_reject_code: 3, reject_message: "No route to canister klbfr-lqaaa-aaaak-qbwsa-cai" })'
 			);
 		});
 

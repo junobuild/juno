@@ -14,6 +14,7 @@ import { mockCertificateDate, mockClientId } from '../mocks/jwt.mocks';
 import { generateNonce } from './auth-nonce-tests.utils';
 import { deploySegments, setupConsole } from './console-tests.utils';
 import { setupTestSatellite } from './fixtures-tests.utils';
+import { updateRateConfigNoLimit } from './rate.tests.utils';
 import { setupSatelliteStock } from './satellite-tests.utils';
 import { OBSERVATORY_WASM_PATH } from './setup-tests.utils';
 
@@ -160,6 +161,8 @@ const setupAuth = async ({
 	// Start fetching OpenID Jwts in Observatory
 	const { start_openid_monitoring } = observatoryActor;
 	await start_openid_monitoring();
+
+	await updateRateConfigNoLimit({ actor: observatoryActor });
 
 	actor.setIdentity(user);
 

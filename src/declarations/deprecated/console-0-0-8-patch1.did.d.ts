@@ -64,7 +64,7 @@ export interface _SERVICE {
 	get_user_mission_control_center: ActorMethod<[], [] | [MissionControl]>;
 	init_user_mission_control_center: ActorMethod<[], MissionControl>;
 	list_user_mission_control_centers: ActorMethod<[], Array<[Principal, MissionControl]>>;
-	load_release: ActorMethod<[Segment, Uint8Array | number[], string], LoadRelease>;
+	load_release: ActorMethod<[Segment, Uint8Array, string], LoadRelease>;
 	reset_release: ActorMethod<[Segment], undefined>;
 	set_controllers: ActorMethod<[SetControllersArgs], undefined>;
 	set_fee: ActorMethod<[Segment, Tokens], undefined>;

@@ -38,7 +38,7 @@ use junobuild_collections::types::interface::{
     DelRule, ListRulesParams, ListRulesResults, SetRule,
 };
 use junobuild_collections::types::rules::Rule;
-use junobuild_shared::ic::call::ManualReply;
+use junobuild_shared::ic::response::ManualReply;
 use junobuild_shared::ic::UnwrapOrTrap;
 use junobuild_shared::types::core::DomainName;
 use junobuild_shared::types::core::Key;
@@ -57,7 +57,7 @@ use junobuild_storage::types::interface::{
     AssetNoContent, CommitBatch, InitAssetKey, InitUploadResult, SetStorageConfig, UploadChunk,
     UploadChunkResult,
 };
-use junobuild_storage::types::state::FullPath;
+use junobuild_storage::types::state::{AssetAccessToken, FullPath};
 use memory::lifecycle;
 
 // ============================================================================================
@@ -289,7 +289,6 @@ pub fn delete_proposal_assets(params: DeleteProposalAssets) {
 // ---------------------------------------------------------
 
 #[doc(hidden)]
-#[deprecated(note = "Use init_proposal_many_assets_upload instead")]
 #[update(guard = "caller_is_controller")]
 pub fn init_proposal_asset_upload(init: InitAssetKey, proposal_id: ProposalId) -> InitUploadResult {
     api::cdn::init_proposal_asset_upload(init, proposal_id)
@@ -311,7 +310,6 @@ pub fn upload_proposal_asset_chunk(chunk: UploadChunk) -> UploadChunkResult {
 }
 
 #[doc(hidden)]
-#[deprecated(note = "Use commit_proposal_many_assets_upload instead")]
 #[update(guard = "caller_is_controller")]
 pub fn commit_proposal_asset_upload(commit: CommitBatch) {
     api::cdn::commit_proposal_asset_upload(commit)
@@ -480,6 +478,12 @@ pub fn del_assets(collection: CollectionKey) {
 }
 
 #[doc(hidden)]
+#[update]
+pub fn set_asset_token(collection: CollectionKey, full_path: FullPath, token: AssetAccessToken) {
+    api::storage::set_asset_token(collection, full_path, token);
+}
+
+#[doc(hidden)]
 #[query(guard = "caller_is_controller_with_write")]
 pub fn count_collection_assets(collection: CollectionKey) -> usize {
     api::storage::count_collection_assets(collection)
@@ -546,9 +550,9 @@ macro_rules! include_satellite {
             http_request, http_request_streaming_callback, init, init_asset_upload, init_proposal,
             init_proposal_asset_upload, init_proposal_many_assets_upload, list_assets,
             list_controllers, list_custom_domains, list_docs, list_proposals, list_rules,
-            post_upgrade, pre_upgrade, reject_proposal, set_auth_config, set_controllers,
-            set_custom_domain, set_db_config, set_doc, set_many_docs, set_rule, set_storage_config,
-            submit_proposal, switch_storage_system_memory, upload_asset_chunk,
+            post_upgrade, pre_upgrade, reject_proposal, set_asset_token, set_auth_config,
+            set_controllers, set_custom_domain, set_db_config, set_doc, set_many_docs, set_rule,
+            set_storage_config, submit_proposal, switch_storage_system_memory, upload_asset_chunk,
             upload_proposal_asset_chunk,
         };
 

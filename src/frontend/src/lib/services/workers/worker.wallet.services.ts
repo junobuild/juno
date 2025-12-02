@@ -37,7 +37,6 @@ export class WalletWorker extends AppWorker {
 					return;
 				case 'syncExchange':
 					onSyncExchange(data.data as PostMessageDataResponseExchange);
-					return;
 			}
 		};
 	}

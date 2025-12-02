@@ -13,6 +13,7 @@
 	import type { SatelliteDid } from '$declarations';
 	import DataUpload from '$lib/components/data/DataUpload.svelte';
 	import IconAutoRenew from '$lib/components/icons/IconAutoRenew.svelte';
+	import InputGenerate from '$lib/components/ui/InputGenerate.svelte';
 	import Value from '$lib/components/ui/Value.svelte';
 	import { authStore } from '$lib/stores/auth.store';
 	import { busy } from '$lib/stores/busy.store';
@@ -138,24 +139,13 @@
 				{#snippet label()}
 					{$i18n.document.key}
 				{/snippet}
-				<div class="form-doc-key">
-					<input
-						id="doc-key"
-						autocomplete="off"
-						data-1p-ignore
-						placeholder={$i18n.document.key_placeholder}
-						type="text"
-						bind:value={key}
-					/>
-					<button
-						class="text"
-						aria-label={$i18n.document.key_generate}
-						onclick={generateKey}
-						type="button"
-					>
-						<IconAutoRenew size="20px" />
-					</button>
-				</div>
+
+				<InputGenerate
+					generate={generateKey}
+					generateLabel={$i18n.document.key_generate}
+					inputPlaceholder={$i18n.document.key_placeholder}
+					bind:inputValue={key}
+				/>
 			</Value>
 		</div>
 
@@ -180,15 +170,3 @@
 		{mode === 'replace' ? $i18n.core.replace : $i18n.core.create}
 	{/snippet}
 </DataUpload>
-
-<style lang="scss">
-	.form-doc-key {
-		display: flex;
-		align-items: center;
-		gap: var(--padding-2x);
-
-		button {
-			margin: var(--padding) 0 var(--padding-2x);
-		}
-	}
-</style>

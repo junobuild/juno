@@ -124,7 +124,7 @@ describe.each([{ title: 'Heap (default)', memory: null }, ...MEMORIES])(
 				await expect(
 					upload_asset_chunk({
 						batch_id: batch.batch_id,
-						content: [],
+						content: Uint8Array.from([]),
 						order_id: [0n]
 					})
 				).rejects.toThrow('Bach initializer does not match chunk uploader.');
@@ -144,7 +144,7 @@ describe.each([{ title: 'Heap (default)', memory: null }, ...MEMORIES])(
 
 				const chunk = await upload_asset_chunk({
 					batch_id: batch.batch_id,
-					content: [],
+					content: Uint8Array.from([]),
 					order_id: [0n]
 				});
 
@@ -269,7 +269,7 @@ describe.each([{ title: 'Heap (default)', memory: null }, ...MEMORIES])(
 				});
 
 				const request: SatelliteDid.HttpRequest = {
-					body: [],
+					body: Uint8Array.from([]),
 					certificate_version: toNullable(2),
 					headers: [],
 					method: 'GET',
@@ -294,7 +294,7 @@ describe.each([{ title: 'Heap (default)', memory: null }, ...MEMORIES])(
 
 				const decoder = new TextDecoder();
 
-				expect(decoder.decode(body as Uint8Array<ArrayBufferLike>)).toEqual(mockHtml);
+				expect(decoder.decode(body)).toEqual(mockHtml);
 			});
 
 			describe.each(['/.well-known/ic-domains', '/.well-known/ii-alternative-origins'])(
@@ -406,7 +406,7 @@ describe.each([{ title: 'Heap (default)', memory: null }, ...MEMORIES])(
 						await upload({ full_path, name, collection });
 
 						const request: SatelliteDid.HttpRequest = {
-							body: [],
+							body: Uint8Array.from([]),
 							certificate_version: toNullable(2),
 							headers: [],
 							method: 'GET',
@@ -431,7 +431,7 @@ describe.each([{ title: 'Heap (default)', memory: null }, ...MEMORIES])(
 
 						const decoder = new TextDecoder();
 
-						expect(decoder.decode(body as Uint8Array<ArrayBufferLike>)).toEqual(mockHtml);
+						expect(decoder.decode(body)).toEqual(mockHtml);
 					});
 
 					it('should not delete other collection assets', async () => {
@@ -518,7 +518,7 @@ describe.each([{ title: 'Heap (default)', memory: null }, ...MEMORIES])(
 					});
 
 					const { status_code, body } = await http_request({
-						body: [],
+						body: Uint8Array.from([]),
 						certificate_version: toNullable(),
 						headers: [],
 						method: 'GET',
@@ -529,7 +529,7 @@ describe.each([{ title: 'Heap (default)', memory: null }, ...MEMORIES])(
 
 					const decoder = new TextDecoder();
 
-					expect(decoder.decode(body as Uint8Array<ArrayBufferLike>)).toEqual(HTML);
+					expect(decoder.decode(body)).toEqual(HTML);
 				});
 
 				it('should set a config for a rewrite and redirect', async () => {
@@ -616,7 +616,7 @@ describe.each([{ title: 'Heap (default)', memory: null }, ...MEMORIES])(
 							const { http_request } = actor;
 
 							const { status_code } = await http_request({
-								body: [],
+								body: Uint8Array.from([]),
 								certificate_version: toNullable(),
 								headers: [['Host', `${canisterId.toText()}.raw.${domain}`]],
 								method: 'GET',
@@ -644,7 +644,7 @@ describe.each([{ title: 'Heap (default)', memory: null }, ...MEMORIES])(
 					await set_storage_config(storage);
 
 					const { status_code, body } = await http_request({
-						body: [],
+						body: Uint8Array.from([]),
 						certificate_version: toNullable(),
 						headers: [['Host', `${canisterId.toText()}.raw.icp0.io`]],
 						method: 'GET',
@@ -655,7 +655,7 @@ describe.each([{ title: 'Heap (default)', memory: null }, ...MEMORIES])(
 
 					const decoder = new TextDecoder();
 
-					expect(decoder.decode(body as Uint8Array<ArrayBufferLike>)).toEqual(mockHtml);
+					expect(decoder.decode(body)).toEqual(mockHtml);
 				});
 
 				it('should not be able to access on raw if explicitly disabled', async () => {
@@ -674,7 +674,7 @@ describe.each([{ title: 'Heap (default)', memory: null }, ...MEMORIES])(
 					await set_storage_config(storage);
 
 					const { status_code } = await http_request({
-						body: [],
+						body: Uint8Array.from([]),
 						certificate_version: toNullable(),
 						headers: [['Host', `${canisterId.toText()}.raw.icp0.io`]],
 						method: 'GET',
@@ -700,7 +700,7 @@ describe.each([{ title: 'Heap (default)', memory: null }, ...MEMORIES])(
 					await set_storage_config(storage);
 
 					const { status_code, body } = await http_request({
-						body: [],
+						body: Uint8Array.from([]),
 						certificate_version: toNullable(),
 						headers: toNullable(),
 						method: 'GET',
@@ -711,7 +711,7 @@ describe.each([{ title: 'Heap (default)', memory: null }, ...MEMORIES])(
 
 					const decoder = new TextDecoder();
 
-					expect(decoder.decode(body as Uint8Array<ArrayBufferLike>)).toEqual(mockHtml);
+					expect(decoder.decode(body)).toEqual(mockHtml);
 				});
 			});
 		});
@@ -793,7 +793,7 @@ describe.each([{ title: 'Heap (default)', memory: null }, ...MEMORIES])(
 						await uploadCustomAsset();
 
 						const { body } = await http_request({
-							body: [],
+							body: Uint8Array.from([]),
 							certificate_version: toNullable(),
 							headers: [],
 							method: 'GET',
@@ -802,7 +802,7 @@ describe.each([{ title: 'Heap (default)', memory: null }, ...MEMORIES])(
 
 						const decoder = new TextDecoder();
 
-						expect(decoder.decode(body as Uint8Array<ArrayBufferLike>)).toEqual(SVG);
+						expect(decoder.decode(body)).toEqual(SVG);
 					});
 
 					it('should not change owner if controller overwrite asset', async () => {
@@ -1481,7 +1481,7 @@ describe.each([{ title: 'Heap (default)', memory: null }, ...MEMORIES])(
 						await upload({ full_path, name, collection, headers: customHeaders });
 
 						const request: SatelliteDid.HttpRequest = {
-							body: [],
+							body: Uint8Array.from([]),
 							certificate_version: toNullable(2),
 							headers: [],
 							method: 'GET',
@@ -1512,7 +1512,7 @@ describe.each([{ title: 'Heap (default)', memory: null }, ...MEMORIES])(
 						await upload({ full_path, name, collection, headers: customHeaders });
 
 						const request: SatelliteDid.HttpRequest = {
-							body: [],
+							body: Uint8Array.from([]),
 							certificate_version: toNullable(2),
 							headers: [],
 							method: 'GET',

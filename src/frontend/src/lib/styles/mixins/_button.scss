@@ -80,9 +80,14 @@
 @mixin square {
 	box-shadow: none;
 
+	border-radius: 50%;
+
 	height: calc(var(--padding-3x) + var(--padding-0_5x));
 	width: calc(var(--padding-3x) + var(--padding-0_5x));
-	padding: var(--padding-0_25x);
+	aspect-ratio: 1 / 1;
+	padding: var(--padding-0_25x) calc(var(--padding-0_25x) * 3 / 2) var(--padding-0_25x)
+		var(--padding-0_25x);
+
 	margin: 0;
 
 	@include visually-hidden;

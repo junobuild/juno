@@ -1,7 +1,6 @@
 use crate::ledger::types::icrc::IcrcTransferResult;
 use candid::Principal;
-use ic_cdk::api::call::CallResult;
-use ic_cdk::call;
+use ic_cdk::call::{Call, CallResult};
 use icrc_ledger_types::icrc1::transfer::TransferArg;
 
 /// Initiates a transfer of tokens on a specified ledger using the provided ICRC-1 arguments.
@@ -19,6 +18,8 @@ pub async fn icrc_transfer_token(
     ledger_id: Principal,
     args: TransferArg,
 ) -> CallResult<IcrcTransferResult> {
-    let (result,) = call(ledger_id, "icrc1_transfer", (args,)).await?;
-    Ok(result)
+    Ok(Call::bounded_wait(ledger_id, "icrc1_transfer")
+        .with_arg(args)
+        .await?
+        .candid::<IcrcTransferResult>()?)
 }

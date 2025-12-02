@@ -44,6 +44,7 @@ export const testDepositedCyclesNotification = async ({
 	metadataName?: string;
 	actor: ObservatoryActor | ObservatoryActor009;
 	pic: PocketIc;
+	expectedApiUrl?: string;
 }) => {
 	const { ping } = actor;
 
@@ -90,6 +91,7 @@ export const testFailedDepositCyclesNotification = async ({
 	metadataName?: string;
 	actor: ObservatoryActor;
 	pic: PocketIc;
+	expectedApiUrl?: string;
 }) => {
 	const { ping } = actor;
 
@@ -132,7 +134,8 @@ export const assertNotificationHttpsOutcalls = async ({
 	templateTitle,
 	expectedCycles,
 	expectedIdempotencyKeySegmentId,
-	expectedTimestamp = '2025-05-12T07:53:19+00:00'
+	expectedTimestamp = '2025-05-12T07:53:19+00:00',
+	expectedApiUrl = 'https://api.resend.com/emails'
 }: {
 	url: string;
 	moduleName: 'Mission Control' | 'Satellite' | 'Orbiter';
@@ -144,6 +147,7 @@ export const assertNotificationHttpsOutcalls = async ({
 	expectedCycles?: string;
 	expectedIdempotencyKeySegmentId: Principal;
 	expectedTimestamp?: string;
+	expectedApiUrl?: string;
 }) => {
 	await tick(pic);
 
@@ -153,9 +157,7 @@ export const assertNotificationHttpsOutcalls = async ({
 
 	const { requestId, subnetId, url, headers: headersArray, body } = pendingHttpOutCall;
 
-	expect(url).toEqual(
-		'https://europe-west6-juno-observatory.cloudfunctions.net/observatory/notifications/email'
-	);
+	expect(url).toEqual(expectedApiUrl);
 
 	const headers = headersArray.reduce<Record<string, string>>(
 		(acc, [key, value]) => ({ ...acc, [key]: value }),

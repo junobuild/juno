@@ -369,7 +369,7 @@ describe('Satellite > Rate', () => {
 
 					const chunk = await upload_asset_chunk({
 						batch_id: batch.batch.batch_id,
-						content: [],
+						content: Uint8Array.from([]),
 						order_id: [0n]
 					});
 

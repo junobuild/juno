@@ -82,8 +82,8 @@
 
 	@include media.dark-theme {
 		div[role='menu'] {
-			background: var(--color-menu);
-			color: var(--color-menu-contrast);
+			background: var(--color-background);
+			color: var(--color-background-contrast);
 		}
 	}
 

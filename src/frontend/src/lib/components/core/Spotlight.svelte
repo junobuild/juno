@@ -63,8 +63,6 @@
 			const action = firstChild.querySelector('a') ?? firstChild.querySelector('button');
 			action?.focus();
 		}
-
-		return;
 	};
 
 	const onkeydown = ($event: KeyboardEvent) => {
@@ -87,7 +85,6 @@
 			case 'ArrowUp':
 				$event.preventDefault();
 				selectItem('up');
-				return;
 		}
 	};
 
@@ -199,7 +196,7 @@
 	.search {
 		padding: var(--padding-2x) var(--padding-2x) 0 var(--padding-2x);
 
-		background: var(--color-menu);
+		background: var(--color-background);
 	}
 
 	li,

@@ -15,7 +15,7 @@
 </script>
 
 {#if pages.length > 0}
-	<AnalyticsTable events={pages}>
+	<AnalyticsTable events={pages} withTitle>
 		{$i18n.analytics.pages}
 	</AnalyticsTable>
 {/if}

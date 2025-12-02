@@ -22,7 +22,6 @@ export class RegistryWorker extends AppWorker {
 					onRegistryError({
 						error: (data.data as PostMessageDataResponseError).error
 					});
-					return;
 			}
 		};
 	}

@@ -1,8 +1,15 @@
 import type { SatelliteDid } from '$declarations';
+import type {
+	CustomDomainStateSchema,
+	GetCustomDomainStateSchema
+} from '$lib/schemas/custom-domain.schema';
+import type * as z from 'zod';
 
 export type CustomDomainName = string;
 
-export type CustomDomains = [CustomDomainName, SatelliteDid.CustomDomain][];
+export type CustomDomain = [CustomDomainName, SatelliteDid.CustomDomain];
+
+export type CustomDomains = CustomDomain[];
 
 export interface CustomDomainDnsEntry {
 	type: 'TXT' | 'CNAME';
@@ -18,19 +25,44 @@ export interface CustomDomainDns {
 
 // BN
 
-export type CustomDomainRegistrationState =
+export type CustomDomainState = z.infer<typeof CustomDomainStateSchema>;
+
+/**
+ * @deprecated
+ */
+type CustomDomainRegistrationV0State =
 	| 'PendingOrder'
 	| 'PendingChallengeResponse'
 	| 'PendingAcmeApproval'
 	| 'Available'
 	| 'Failed';
 
-export interface CustomDomainRegistrationStateFailed {
+/**
+ * @deprecated
+ */
+interface CustomDomainRegistrationV0StateFailed {
 	Failed: string;
 }
 
-export interface CustomDomainRegistration {
+/**
+ * @deprecated
+ */
+interface CustomDomainRegistrationV0Response {
 	name: string;
 	canister: string;
-	state: CustomDomainRegistrationState | CustomDomainRegistrationStateFailed;
+	state: CustomDomainRegistrationV0State | CustomDomainRegistrationV0StateFailed;
+}
+
+export type GetCustomDomainState = z.infer<typeof GetCustomDomainStateSchema>;
+
+export interface CustomDomainRegistration {
+	/**
+	 * @deprecated
+	 */
+	v0: {
+		State: CustomDomainRegistrationV0Response;
+	};
+	v1: {
+		State: GetCustomDomainState;
+	};
 }

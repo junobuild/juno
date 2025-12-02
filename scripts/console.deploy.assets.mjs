@@ -115,7 +115,7 @@ const deployWithCli = async (proposalId) => {
 
 		const {
 			memory_metrics: { wasm_memory_size: heap }
-		} = await canisterStatus(CONSOLE_ID);
+		} = await canisterStatus({ canisterId: CONSOLE_ID });
 
 		if (heap < MEMORY_HEAP_WARNING) {
 			return;

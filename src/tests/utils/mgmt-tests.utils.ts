@@ -30,7 +30,7 @@ export const fetchLogs = async ({
 		content
 	}: ICDid.canister_log_record): Promise<[string, IcMgmtLog]> => {
 		const blob: Blob = new Blob([
-			content instanceof Uint8Array ? content : new Uint8Array(content)
+			content instanceof Uint8Array ? (content as Uint8Array<ArrayBuffer>) : new Uint8Array(content)
 		]);
 
 		return [

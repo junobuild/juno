@@ -1,7 +1,6 @@
 use crate::openid::constants::FETCH_CERTIFICATE_INTERVAL;
 use crate::openid::http::request::get_certificate;
 use crate::store::heap::{assert_scheduler_running, set_openid_certificate};
-use ic_cdk::futures::spawn;
 use ic_cdk_timers::set_timer;
 use junobuild_auth::openid::jwt::types::cert::Jwks;
 use junobuild_auth::openid::types::provider::OpenIdProvider;
@@ -14,27 +13,25 @@ pub fn schedule_certificate_update(provider: OpenIdProvider, delay: Option<u64>)
         return;
     }
 
-    set_timer(Duration::from_secs(delay.unwrap_or(0)), move || {
-        spawn(async move {
-            let result = fetch_and_save_certificate(&provider).await;
+    set_timer(Duration::from_secs(delay.unwrap_or(0)), async move {
+        let result = fetch_and_save_certificate(&provider).await;
 
-            let next_delay = if result.is_ok() {
-                FETCH_CERTIFICATE_INTERVAL
-            } else {
-                // Try again with backoff if fetch failed. e.g. the HTTPS outcall responses
-                // aren't the same across nodes when we fetch at the moment of key rotation.
-                let backoff = match delay {
-                    // already backing off -> double
-                    Some(delay) if delay < FETCH_CERTIFICATE_INTERVAL => delay.saturating_mul(2),
-                    // on first error
-                    _ => 60 * 2,
-                };
-
-                min(FETCH_CERTIFICATE_INTERVAL, backoff)
+        let next_delay = if result.is_ok() {
+            FETCH_CERTIFICATE_INTERVAL
+        } else {
+            // Try again with backoff if fetch failed. e.g. the HTTPS outcall responses
+            // aren't the same across nodes when we fetch at the moment of key rotation.
+            let backoff = match delay {
+                // already backing off -> double
+                Some(delay) if delay < FETCH_CERTIFICATE_INTERVAL => delay.saturating_mul(2),
+                // on first error
+                _ => 60 * 2,
             };
 
-            schedule_certificate_update(provider, Some(next_delay));
-        })
+            min(FETCH_CERTIFICATE_INTERVAL, backoff)
+        };
+
+        schedule_certificate_update(provider, Some(next_delay));
     });
 }
 

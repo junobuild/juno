@@ -27,7 +27,7 @@ const initAuthStore = (): AuthStore => {
 		identity: undefined
 	});
 
-	// With different tabs opened of OISy in the same browser, it may happen that separate authClient objects are out-of-sync among themselves.
+	// With different tabs opened of Juno in the same browser, it may happen that separate authClient objects are out-of-sync among themselves.
 	// To avoid issues, we use this method to pick the most up-to-date authClient object, since the data are cached in IndexedDB.
 	const pickAuthClient = async (): Promise<AuthClient> => {
 		if (nonNullish(authClient) && (await authClient.isAuthenticated())) {
@@ -65,11 +65,11 @@ const initAuthStore = (): AuthStore => {
 			// there could be a mismatch of the cached delegation chain vs the identity key of the `authClient` object.
 			// This causes the `authClient` to be unable to correctly sign calls, raising Trust Errors.
 			// To mitigate this, we use a BroadcastChannel to notify other tabs when a login has occurred, so that they can sync their `authClient` object.
-			const bc = new AuthBroadcastChannel();
+			const bc = AuthBroadcastChannel.getInstance();
 			bc.postLoginSuccess();
 		} catch (err: unknown) {
 			// We don't really care if the broadcast channel fails to open or if it fails to post messages.
-			// This is a non-critical feature that improves the UX when OISY is open in multiple tabs.
+			// This is a non-critical feature that improves the UX when Juno is open in multiple tabs.
 			// We just print a warning in the console for debugging purposes.
 			console.warn('Auth BroadcastChannel posting failed', err);
 		}

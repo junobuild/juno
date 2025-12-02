@@ -4,10 +4,11 @@ use candid::Principal;
 use ic_cdk::update;
 use junobuild_macros::{
     on_delete_doc, on_init_random_seed, on_init_sync, on_post_upgrade_sync, on_set_doc,
+    on_upload_asset,
 };
 use junobuild_satellite::{
-    caller, error, id, include_satellite, info, random, set_doc_store, warn_with_data,
-    OnDeleteDocContext, OnSetDocContext, SetDoc,
+    caller, error, id, include_satellite, info, random, set_asset_token_store, set_doc_store,
+    warn_with_data, OnDeleteDocContext, OnSetDocContext, OnUploadAssetContext, SetDoc,
 };
 use junobuild_utils::{
     decode_doc_data, encode_doc_data, DocDataBigInt, DocDataPrincipal, DocDataUint8Array,
@@ -88,6 +89,23 @@ fn on_init_random_seed() -> Result<(), String> {
 
     warn_with_data("Random initialized".to_string(), &value)?;
 
+    Ok(())
+}
+
+#[on_upload_asset]
+fn on_upload_asset(context: OnUploadAssetContext) -> Result<(), String> {
+    #[allow(clippy::single_match)]
+    match context.data.key.collection.as_str() {
+        "test_token" => {
+            set_asset_token_store(
+                id(),
+                &context.data.key.collection,
+                &context.data.key.full_path,
+                &Some("123456-update".to_string()),
+            )?;
+        }
+        _ => (),
+    }
     Ok(())
 }
 

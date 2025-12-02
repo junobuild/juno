@@ -8,29 +8,19 @@
 	text-decoration: none;
 
 	padding: 2px var(--padding);
-	border: 1px solid var(--card-border-color, var(--color-card-contrast));
-
-	border-radius: var(--border-radius);
 
 	transition: all var(--animation-time) ease-out;
 }
 
 @mixin _tab-hover {
-	background: var(--color-primary);
-	color: var(--color-primary-contrast);
+	background: var(--color-primary-opaque);
+	color: var(--color-primary-opaque-contrast);
 }
 
 @mixin tabs {
 	display: flex;
 	align-items: center;
 	flex-wrap: wrap;
-
-	background: var(--color-card-contrast);
-	color: var(--color-card);
-	border: 1px solid var(--card-border-color, var(--color-card-contrast));
-	border-radius: var(--border-radius);
-
-	width: fit-content;
 
 	font-size: var(--font-size-small);
 
@@ -52,12 +42,5 @@
 	&:hover,
 	&:focus {
 		@include _tab-hover;
-	}
-
-	&:not(:focus):not(:hover) {
-		&.selected {
-			color: var(--color-card-contrast);
-			background: var(--color-card);
-		}
 	}
 }

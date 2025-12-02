@@ -1,4 +1,8 @@
 :root {
-	background: var(--color-background);
-	color: var(--color-background-contrast);
+	background: var(--color-body);
+	color: var(--color-body-contrast);
+
+	transition:
+		color 0.15s ease-out,
+		background 0.15s ease-out;
 }

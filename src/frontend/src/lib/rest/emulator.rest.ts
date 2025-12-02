@@ -17,7 +17,7 @@ export const getEmulatorMainIdentity = async (): Promise<PrincipalText> => {
 	});
 
 	if (!response.ok) {
-		throw new Error(get(i18n).emulator.error_get_identities);
+		throw new Error(get(i18n).emulator.error_fetching_emulator, { cause: response });
 	}
 
 	const result: Record<string, string> = await response.json();
@@ -40,5 +40,29 @@ export const emulatorLedgerTransfer = async ({
 
 	assertNonNullish(VITE_EMULATOR_ADMIN_URL);
 
-	await fetch(`${VITE_EMULATOR_ADMIN_URL}/ledger/transfer/?to=${missionControlId.toText()}`);
+	const response = await fetch(
+		`${VITE_EMULATOR_ADMIN_URL}/ledger/transfer/?to=${missionControlId.toText()}`
+	);
+
+	if (!response.ok) {
+		throw new Error(get(i18n).emulator.error_fetching_emulator, { cause: response });
+	}
+};
+
+export const emulatorObservatoryMonitoringOpenId = async ({
+	action
+}: {
+	action: 'start' | 'stop';
+}) => {
+	const { VITE_EMULATOR_ADMIN_URL } = import.meta.env;
+
+	assertNonNullish(VITE_EMULATOR_ADMIN_URL);
+
+	const response = await fetch(
+		`${VITE_EMULATOR_ADMIN_URL}/observatory/monitoring/openid/?action=${action}`
+	);
+
+	if (!response.ok) {
+		throw new Error(get(i18n).emulator.error_fetching_emulator, { cause: response });
+	}
 };

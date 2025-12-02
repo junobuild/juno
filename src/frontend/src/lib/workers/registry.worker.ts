@@ -40,7 +40,6 @@ export const onRegistryMessage = async ({ data: dataMsg }: MessageEvent<PostMess
 	switch (msg) {
 		case 'loadRegistry':
 			await loadRegistry({ data });
-			return;
 	}
 };
 

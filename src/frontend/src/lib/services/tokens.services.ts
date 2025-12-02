@@ -100,7 +100,8 @@ export const sendIcrc = async ({
 	const args: MissionControlDid.TransferArg = {
 		to: {
 			owner,
-			subaccount: toNullable(subaccount)
+			// TODO: remove cast after updating libs
+			subaccount: toNullable(subaccount) as [] | [Uint8Array]
 		},
 		amount: token.toE8s(),
 		fee: toNullable(IC_TRANSACTION_FEE_ICP),

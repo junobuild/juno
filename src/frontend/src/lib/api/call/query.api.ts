@@ -67,7 +67,7 @@ export const queryAndUpdate = async <R, E = unknown>({
 
 				onError?.({ certified, error, identity });
 
-				// Handling certified is always handled the same way in Oisy - i.e. just console error query error and do something with the update error
+				// Handling certified is always handled the same way in Juno - i.e. just console error query error and do something with the update error
 				if (isNullish(onCertifiedError)) {
 					return;
 				}

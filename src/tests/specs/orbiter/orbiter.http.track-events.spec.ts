@@ -175,7 +175,7 @@ describe('Orbiter > HTTP > Track events', () => {
 					expect(response.status_code).toEqual(400);
 
 					const decoder = new TextDecoder();
-					const responseBody = decoder.decode(response.body as Uint8Array<ArrayBufferLike>);
+					const responseBody = decoder.decode(response.body);
 
 					const {
 						err: { message }
@@ -200,7 +200,7 @@ describe('Orbiter > HTTP > Track events', () => {
 					expect(response.status_code).toEqual(400);
 
 					const decoder = new TextDecoder();
-					const responseBody = decoder.decode(response.body as Uint8Array<ArrayBufferLike>);
+					const responseBody = decoder.decode(response.body);
 
 					const {
 						err: { message }
@@ -225,7 +225,7 @@ describe('Orbiter > HTTP > Track events', () => {
 					expect(response.status_code).toEqual(403);
 
 					const decoder = new TextDecoder();
-					const responseBody = decoder.decode(response.body as Uint8Array<ArrayBufferLike>);
+					const responseBody = decoder.decode(response.body);
 
 					const {
 						err: { message }
@@ -253,7 +253,7 @@ describe('Orbiter > HTTP > Track events', () => {
 					expect(response.status_code).toEqual(400);
 
 					const decoder = new TextDecoder();
-					const responseBody = decoder.decode(response.body as Uint8Array<ArrayBufferLike>);
+					const responseBody = decoder.decode(response.body);
 
 					const {
 						err: { message }
@@ -278,7 +278,7 @@ describe('Orbiter > HTTP > Track events', () => {
 					expect(response.status_code).toEqual(200);
 
 					const decoder = new TextDecoder();
-					const responseBody = decoder.decode(response.body as Uint8Array<ArrayBufferLike>);
+					const responseBody = decoder.decode(response.body);
 
 					const {
 						ok: { data }
@@ -309,7 +309,7 @@ describe('Orbiter > HTTP > Track events', () => {
 					const response = await http_request_update(request);
 
 					const decoder = new TextDecoder();
-					const responseBody = decoder.decode(response.body as Uint8Array<ArrayBufferLike>);
+					const responseBody = decoder.decode(response.body);
 
 					const result = JSON.parse(responseBody, jsonReviver);
 
@@ -336,7 +336,7 @@ describe('Orbiter > HTTP > Track events', () => {
 					const response = await http_request_update(request);
 
 					const decoder = new TextDecoder();
-					const responseBody = decoder.decode(response.body as Uint8Array<ArrayBufferLike>);
+					const responseBody = decoder.decode(response.body);
 
 					const {
 						ok: { data }
@@ -433,7 +433,7 @@ describe('Orbiter > HTTP > Track events', () => {
 					expect(response.status_code).toEqual(400);
 
 					const decoder = new TextDecoder();
-					const responseBody = decoder.decode(response.body as Uint8Array<ArrayBufferLike>);
+					const responseBody = decoder.decode(response.body);
 
 					const {
 						err: { message }
@@ -474,7 +474,7 @@ describe('Orbiter > HTTP > Track events', () => {
 					expect(response.status_code).toEqual(403);
 
 					const decoder = new TextDecoder();
-					const responseBody = decoder.decode(response.body as Uint8Array<ArrayBufferLike>);
+					const responseBody = decoder.decode(response.body);
 
 					const {
 						err: { message }
@@ -523,7 +523,7 @@ describe('Orbiter > HTTP > Track events', () => {
 					expect(response.status_code).toEqual(200);
 
 					const decoder = new TextDecoder();
-					const responseBody = decoder.decode(response.body as Uint8Array<ArrayBufferLike>);
+					const responseBody = decoder.decode(response.body);
 
 					const result = JSON.parse(responseBody, jsonReviver);
 
@@ -544,7 +544,7 @@ describe('Orbiter > HTTP > Track events', () => {
 					const response = await http_request_update(request);
 
 					const decoder = new TextDecoder();
-					const responseBody = decoder.decode(response.body as Uint8Array<ArrayBufferLike>);
+					const responseBody = decoder.decode(response.body);
 
 					const result = JSON.parse(responseBody, jsonReviver);
 
@@ -581,7 +581,7 @@ describe('Orbiter > HTTP > Track events', () => {
 					const response = await http_request_update(request);
 
 					const decoder = new TextDecoder();
-					const responseBody = decoder.decode(response.body as Uint8Array<ArrayBufferLike>);
+					const responseBody = decoder.decode(response.body);
 
 					const result = JSON.parse(responseBody, jsonReviver);
 

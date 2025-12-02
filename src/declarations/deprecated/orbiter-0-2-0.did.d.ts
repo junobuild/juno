@@ -93,12 +93,12 @@ export interface GetAnalytics {
 export interface HttpRequest {
 	url: string;
 	method: string;
-	body: Uint8Array | number[];
+	body: Uint8Array;
 	headers: Array<[string, string]>;
 	certificate_version: [] | [number];
 }
 export interface HttpResponse {
-	body: Uint8Array | number[];
+	body: Uint8Array;
 	headers: Array<[string, string]>;
 	upgrade: [] | [boolean];
 	status_code: number;

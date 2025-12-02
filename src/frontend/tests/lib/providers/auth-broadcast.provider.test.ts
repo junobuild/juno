@@ -17,7 +17,10 @@ describe('auth-broadcast.services', () => {
 		let bc: AuthBroadcastChannel;
 
 		const channelName = AuthBroadcastChannel.CHANNEL_NAME;
-		const loginSuccessMessage = AuthBroadcastChannel.MESSAGE_LOGIN_SUCCESS;
+		const loginSuccessMessage = {
+			msg: AuthBroadcastChannel.MESSAGE_LOGIN_SUCCESS,
+			emitterId: window.crypto.randomUUID()
+		};
 
 		const postMessageSpy = vi.fn();
 		const closeSpy = vi.fn();
@@ -31,40 +34,45 @@ describe('auth-broadcast.services', () => {
 		beforeEach(() => {
 			vi.clearAllMocks();
 
-			vi.stubGlobal(
-				'BroadcastChannel',
-				vi.fn((name: string) => {
-					const channel =
-						mockChannels.get(name) ??
-						({
-							name,
-							onmessage: null,
-							postMessage: postMessageSpy,
-							close: closeSpy
-						} as unknown as BroadcastChannel);
+			// eslint-disable-next-line local-rules/prefer-object-params, @typescript-eslint/no-explicit-any
+			const MockBroadcastChannelConstructor = vi.fn(function (this: any, name: string) {
+				this.name = name;
+				this.onmessage = null;
+				this.postMessage = postMessageSpy;
+				this.close = closeSpy;
 
-					postMessageSpy.mockImplementation((message: unknown) => {
-						const event = new MessageEvent('message', {
-							data: message,
-							origin: mockOrigin()
-						});
+				const channel =
+					mockChannels.get(name) ??
+					({
+						name,
+						onmessage: null,
+						postMessage: postMessageSpy,
+						close: closeSpy
+					} as unknown as BroadcastChannel);
 
-						channel.onmessage?.(event);
+				postMessageSpy.mockImplementation((message: unknown) => {
+					const event = new MessageEvent('message', {
+						data: message,
+						origin: mockOrigin()
 					});
 
-					mockChannels.set(name, channel);
+					channel.onmessage?.(event);
+				});
 
-					return channel;
-				})
-			);
+				mockChannels.set(name, channel);
 
-			bc = new AuthBroadcastChannel();
+				return channel;
+			});
+
+			vi.stubGlobal('BroadcastChannel', MockBroadcastChannelConstructor);
+
+			bc = AuthBroadcastChannel.getInstance();
 
 			bc.onLoginSuccess(mockHandler);
 		});
 
 		afterEach(() => {
-			bc.close();
+			bc.destroy();
 
 			vi.unstubAllGlobals();
 		});
@@ -82,7 +90,29 @@ describe('auth-broadcast.services', () => {
 				expect(mockHandler).toHaveBeenCalledExactlyOnceWith();
 			});
 
-			it('should not call handler for different messages', () => {
+			it('should not call handler for totally different messages', () => {
+				const newBc = new BroadcastChannel(channelName);
+
+				newBc.postMessage({
+					...loginSuccessMessage,
+					emitterId: bc.__test__only__emitter_id__
+				});
+
+				expect(mockHandler).not.toHaveBeenCalled();
+			});
+
+			it('should not call handler for same emitter ID if not supported message', () => {
+				const newBc = new BroadcastChannel(channelName);
+
+				newBc.postMessage({
+					...loginSuccessMessage,
+					msg: 'someOtherMessage'
+				});
+
+				expect(mockHandler).not.toHaveBeenCalled();
+			});
+
+			it('should not call handler for different messages payload', () => {
 				const newBc = new BroadcastChannel(channelName);
 
 				newBc.postMessage('someOtherMessage');
@@ -103,13 +133,13 @@ describe('auth-broadcast.services', () => {
 
 		describe('close', () => {
 			it('should close the BroadcastChannel', () => {
-				bc.close();
+				bc.destroy();
 
 				expect(closeSpy).toHaveBeenCalledExactlyOnceWith();
 			});
 
 			it('should not close all the BroadcastChannel', () => {
-				bc.close();
+				bc.destroy();
 
 				expect(closeSpy).toHaveBeenCalledExactlyOnceWith();
 
@@ -127,7 +157,10 @@ describe('auth-broadcast.services', () => {
 			it('should post a login success message', () => {
 				bc.postLoginSuccess();
 
-				expect(postMessageSpy).toHaveBeenCalledExactlyOnceWith(loginSuccessMessage);
+				expect(postMessageSpy).toHaveBeenCalledExactlyOnceWith({
+					...loginSuccessMessage,
+					emitterId: bc.__test__only__emitter_id__
+				});
 			});
 		});
 	});

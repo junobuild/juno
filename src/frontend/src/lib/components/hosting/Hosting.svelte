@@ -4,15 +4,15 @@
 	import type { SatelliteDid, MissionControlDid } from '$declarations';
 	import AddCustomDomain from '$lib/components/hosting/AddCustomDomain.svelte';
 	import CustomDomain from '$lib/components/hosting/CustomDomain.svelte';
-	import CustomDomainInfo from '$lib/components/hosting/CustomDomainInfo.svelte';
+	import CustomDomainInfo, {
+		type SelectedCustomDomain
+	} from '$lib/components/hosting/CustomDomainInfo.svelte';
 	import HostingCount from '$lib/components/hosting/HostingCount.svelte';
 	import { sortedSatelliteCustomDomains } from '$lib/derived/satellite-custom-domains.derived';
 	import { getAuthConfig } from '$lib/services/auth/auth.config.services';
 	import { listCustomDomains } from '$lib/services/custom-domain.services';
 	import { authStore } from '$lib/stores/auth.store';
 	import { i18n } from '$lib/stores/i18n.store';
-	import type { CustomDomainRegistrationState } from '$lib/types/custom-domain';
-	import type { Option } from '$lib/types/utils';
 	import { satelliteUrl } from '$lib/utils/satellite.utils';
 
 	interface Props {
@@ -42,13 +42,7 @@
 
 	onMount(list);
 
-	interface SelectedCustomDomain {
-		customDomain: [string, SatelliteDid.CustomDomain] | undefined;
-		registrationState: Option<CustomDomainRegistrationState>;
-		mainDomain: boolean;
-	}
-
-	let selectedInfo: SelectedCustomDomain | undefined = $state();
+	let selectedInfo = $state<SelectedCustomDomain | undefined>();
 
 	const onDisplayInfo = ({ detail }: CustomEvent<SelectedCustomDomain>) => (selectedInfo = detail);
 </script>
@@ -101,7 +95,7 @@
 	@use '../../styles/mixins/media';
 
 	.tools {
-		width: 100px;
+		width: 105px;
 	}
 
 	.domain {

@@ -436,7 +436,7 @@ describe.each(MEMORIES)('Satellite > Cdn > $title', ({ memory }) => {
 
 			await expect(
 				commit_proposal({
-					sha256: Array.from({ length: 32 }).map((_, i) => i),
+					sha256: Uint8Array.from(Array.from({ length: 32 }).map((_, i) => i)),
 					proposal_id: 32n
 				})
 			).rejects.toThrow(JUNO_AUTH_ERROR_NOT_WRITE_CONTROLLER);

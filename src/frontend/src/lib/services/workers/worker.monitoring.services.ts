@@ -24,7 +24,6 @@ export class MonitoringWorker extends AppWorker {
 					return;
 				case 'syncCanisters':
 					syncCanistersMonitoring(data.data as PostMessageDataResponseCanistersMonitoring);
-					return;
 			}
 		};
 	}

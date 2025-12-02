@@ -1,8 +1,8 @@
 use crate::controllers::segment::{
     delete_segment_controllers, set_segment_controllers, update_segment_controllers_settings,
 };
-use ic_cdk::api::call::CallResult;
-use ic_cdk::call;
+use ic_cdk::call::Call;
+use junobuild_shared::ic::DecodeCandid;
 use junobuild_shared::types::interface::{DeleteControllersArgs, SetController};
 use junobuild_shared::types::state::{ControllerId, SatelliteId};
 
@@ -51,13 +51,12 @@ async fn add_controllers(
         controllers: controllers.to_owned(),
     };
 
-    let result: CallResult<(Vec<ControllerId>,)> =
-        call(*satellite_id, "add_controllers", (args,)).await;
+    let result = Call::unbounded_wait(*satellite_id, "add_controllers")
+        .with_arg(args)
+        .await
+        .decode_candid::<Vec<ControllerId>>()?;
 
-    match result {
-        Err((_, message)) => Err(["Failed to add controllers to satellite.", &message].join(" - ")),
-        Ok((result,)) => Ok(result),
-    }
+    Ok(result)
 }
 
 #[deprecated(since = "0.0.3", note = "please use `delete_controllers` instead")]
@@ -69,13 +68,10 @@ async fn remove_controllers(
         controllers: controllers.to_owned(),
     };
 
-    let result: CallResult<(Vec<ControllerId>,)> =
-        call(*satellite_id, "remove_controllers", (args,)).await;
+    let result = Call::unbounded_wait(*satellite_id, "remove_controllers")
+        .with_arg(args)
+        .await
+        .decode_candid::<Vec<ControllerId>>()?;
 
-    match result {
-        Err((_, message)) => {
-            Err(["Failed to remove controllers from satellite.", &message].join(" - "))
-        }
-        Ok((result,)) => Ok(result),
-    }
+    Ok(result)
 }

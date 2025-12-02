@@ -14,7 +14,7 @@ pub fn invoke_on_init_random_seed() {
     #[cfg(feature = "on_init_random_seed")]
     {
         unsafe {
-            set_timer(Duration::ZERO, || {
+            set_timer(Duration::ZERO, async {
                 juno_on_init_random_seed();
             });
         }

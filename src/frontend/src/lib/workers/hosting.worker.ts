@@ -1,9 +1,10 @@
 import type { SatelliteDid } from '$declarations';
 import { SYNC_CUSTOM_DOMAIN_TIMER_INTERVAL } from '$lib/constants/app.constants';
-import { getCustomDomainRegistration } from '$lib/rest/bn.rest';
-import type { CustomDomainRegistrationState } from '$lib/types/custom-domain';
+import { getCustomDomainRegistrationV0 } from '$lib/rest/bn.v0.rest';
+import { getCustomDomainRegistration } from '$lib/rest/bn.v1.rest';
+import type { CustomDomain, CustomDomainName, CustomDomainState } from '$lib/types/custom-domain';
 import type { PostMessageDataRequest, PostMessageRequest } from '$lib/types/post-message';
-import { fromNullable, nonNullish } from '@dfinity/utils';
+import { fromNullable, isNullish, nonNullish } from '@dfinity/utils';
 
 export const onHostingMessage = async ({ data: dataMsg }: MessageEvent<PostMessageRequest>) => {
 	const { msg, data } = dataMsg;
@@ -14,7 +15,6 @@ export const onHostingMessage = async ({ data: dataMsg }: MessageEvent<PostMessa
 			return;
 		case 'startCustomDomainRegistrationTimer':
 			await startTimer({ data });
-			return;
 	}
 };
 
@@ -30,7 +30,7 @@ const stopTimer = () => {
 };
 
 const startTimer = async ({ data: { customDomain } }: { data: PostMessageDataRequest }) => {
-	if (customDomain === undefined || fromNullable(customDomain.bn_id) === undefined) {
+	if (isNullish(customDomain)) {
 		// No custom domain registration to sync
 		return;
 	}
@@ -45,11 +45,7 @@ const startTimer = async ({ data: { customDomain } }: { data: PostMessageDataReq
 
 let syncing = false;
 
-const syncCustomDomainRegistration = async ({
-	customDomain
-}: {
-	customDomain: SatelliteDid.CustomDomain;
-}) => {
+const syncCustomDomainRegistration = async ({ customDomain }: { customDomain: CustomDomain }) => {
 	// We avoid to relaunch a sync while previous sync is not finished
 	if (syncing) {
 		return;
@@ -58,12 +54,17 @@ const syncCustomDomainRegistration = async ({
 	syncing = true;
 
 	try {
-		const registration = await getCustomDomainRegistration(customDomain);
-		const registrationState = nonNullish(registration)
-			? typeof registration.state !== 'string' && 'Failed' in registration.state
-				? 'Failed'
-				: registration.state
-			: null;
+		const sync = async (): Promise<CustomDomainState> => {
+			const [domainName, custom] = customDomain;
+
+			if (nonNullish(fromNullable(custom.bn_id))) {
+				return await syncCustomDomainRegistrationV0({ customDomain: custom });
+			}
+
+			return await syncCustomDomainRegistrationV1({ domain: domainName });
+		};
+
+		const registrationState = await sync();
 
 		emit(registrationState);
 
@@ -73,7 +74,7 @@ const syncCustomDomainRegistration = async ({
 		}
 	} catch (err: unknown) {
 		console.error(err);
-		emit('Failed');
+		emit('failed');
 
 		// We sync until Available or Failed
 		stopTimer();
@@ -82,8 +83,49 @@ const syncCustomDomainRegistration = async ({
 	syncing = false;
 };
 
+const syncCustomDomainRegistrationV1 = async ({
+	domain
+}: {
+	domain: CustomDomainName;
+}): Promise<CustomDomainState> => {
+	const response = await getCustomDomainRegistration({ domainName: domain });
+
+	if (response?.status === 'success') {
+		const {
+			data: { registration_status }
+		} = response;
+		return registration_status;
+	}
+
+	return 'failed';
+};
+
+const syncCustomDomainRegistrationV0 = async ({
+	customDomain
+}: {
+	customDomain: SatelliteDid.CustomDomain;
+}): Promise<CustomDomainState> => {
+	const registration = await getCustomDomainRegistrationV0(customDomain);
+	const registrationState = nonNullish(registration)
+		? typeof registration.state !== 'string' && 'Failed' in registration.state
+			? 'Failed'
+			: registration.state
+		: null;
+
+	switch (registrationState) {
+		case 'PendingOrder':
+		case 'PendingChallengeResponse':
+		case 'PendingAcmeApproval':
+			return 'registering';
+		case 'Available':
+			return 'registered';
+		default:
+			return 'failed';
+	}
+};
+
 // Update ui with registration state
-const emit = (registrationState: CustomDomainRegistrationState | null) =>
+const emit = (registrationState: CustomDomainState | null) =>
 	postMessage({
 		msg: 'customDomainRegistrationState',
 		data: {

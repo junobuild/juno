@@ -1,10 +1,7 @@
 <script lang="ts">
 	import SatelliteArticle from '$lib/components/satellites/SatelliteArticle.svelte';
-	import SatelliteNew from '$lib/components/satellites/SatelliteNew.svelte';
 	import SatellitesToolbar from '$lib/components/satellites/SatellitesToolbar.svelte';
 	import { sortedSatelliteUis } from '$lib/derived/satellites.derived';
-	import { layoutSatellites } from '$lib/stores/layout-launchpad.store';
-	import { SatellitesLayout } from '$lib/types/layout';
 	import { satelliteMatchesFilter } from '$lib/utils/satellite.utils';
 
 	let filter = $state('');
@@ -17,8 +14,6 @@
 </script>
 
 <SatellitesToolbar bind:filter />
-
-<SatelliteNew row={$layoutSatellites === SatellitesLayout.LIST} />
 
 {#each satellites as satellite (satellite.satellite_id.toText())}
 	<SatelliteArticle {satellite} />

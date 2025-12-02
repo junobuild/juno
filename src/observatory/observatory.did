@@ -69,6 +69,8 @@ type OpenIdCertificate = record {
   version : opt nat64;
 };
 type OpenIdProvider = variant { Google };
+type RateConfig = record { max_tokens : nat64; time_per_token_ns : nat64 };
+type RateKind = variant { OpenIdCertificateRequests };
 type Segment = record {
   id : principal;
   metadata : opt vec record { text; text };
@@ -89,7 +91,7 @@ service : () -> {
   get_notify_status : (GetNotifications) -> (NotifyStatus) query;
   get_openid_certificate : (GetOpenIdCertificateArgs) -> (
       opt OpenIdCertificate,
-    ) query;
+    );
   list_controllers : () -> (vec record { principal; Controller }) query;
   notify : (NotifyArgs) -> ();
   ping : (NotifyArgs) -> ();
@@ -97,4 +99,5 @@ service : () -> {
   set_env : (Env) -> ();
   start_openid_monitoring : () -> ();
   stop_openid_monitoring : () -> ();
+  update_rate_config : (RateKind, RateConfig) -> ();
 }

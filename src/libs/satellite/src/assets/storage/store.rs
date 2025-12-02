@@ -1,6 +1,6 @@
 use crate::assets::storage::assert::{
     assert_create_batch, assert_delete_asset, assert_get_asset, assert_list_assets,
-    assert_set_config,
+    assert_set_config, assert_write_asset,
 };
 use crate::assets::storage::certified_assets::runtime::init_certified_assets as init_runtime_certified_assets;
 use crate::assets::storage::state::{
@@ -8,7 +8,7 @@ use crate::assets::storage::state::{
     get_asset as get_state_asset, get_assets_stable, get_config as get_state_config, get_config,
     get_content_chunks as get_state_content_chunks, get_domain as get_state_domain,
     get_domains as get_state_domains, get_public_asset as get_state_public_asset,
-    get_rule as get_state_rule, insert_config as insert_state_config,
+    get_rule as get_state_rule, insert_asset, insert_config as insert_state_config,
     insert_domain as insert_state_domain,
 };
 use crate::assets::storage::strategy_impls::{StorageAssertions, StorageState, StorageUpload};
@@ -42,7 +42,7 @@ use junobuild_storage::types::interface::{
     AssetNoContent, CommitBatch, InitAssetKey, SetStorageConfig, UploadChunk,
 };
 use junobuild_storage::types::runtime_state::{BatchId, ChunkId};
-use junobuild_storage::types::state::FullPath;
+use junobuild_storage::types::state::{AssetAccessToken, FullPath};
 use junobuild_storage::types::store::{Asset, AssetEncoding};
 use junobuild_storage::utils::{
     filter_collection_values, filter_values, get_token_protected_asset, map_asset_no_content,
@@ -282,7 +282,7 @@ fn get_asset_impl(
 
 pub fn get_public_asset_store(
     full_path: FullPath,
-    token: Option<String>,
+    token: AssetAccessToken,
 ) -> Option<(Asset, Memory)> {
     let (asset, memory) = get_state_public_asset(&full_path);
 
@@ -427,7 +427,9 @@ fn delete_asset_impl(
     match asset {
         None => Err(JUNO_STORAGE_ERROR_ASSET_NOT_FOUND.to_string()),
         Some(asset) => {
-            assert_delete_asset(context, assert_context, &asset)?;
+            assert_write_asset(context, assert_context, &asset)?;
+
+            assert_delete_asset(context, &asset)?;
 
             let certificate = &StorageCertificate;
 
@@ -566,6 +568,89 @@ fn delete_filtered_assets_store_impl(
     }
 
     Ok(results)
+}
+
+/// Set or update an access token for an asset in a collection's store.
+///
+/// This function sets or updates the access token for an asset in a collection's store based on the specified parameters.
+/// It returns a `Result<(), String>` where `Ok(())` indicates successful token update, or an error message
+/// as `Err(String)` if the operation encounters issues.
+///
+/// # Parameters
+/// - `caller`: The `Principal` representing the caller initiating the operation.
+/// - `collection`: A reference to the `CollectionKey` representing the collection containing the asset.
+/// - `full_path`: A reference to the `FullPath` identifying the asset to update.
+/// - `token`: A reference to the `AssetAccessToken` to be set for the asset.
+///
+/// # Returns
+/// - `Ok(())`: Indicates successful token update.
+/// - `Err(String)`: An error message if the operation fails.
+///
+/// This function allows you to securely set or update an access token for an asset of the storage. Useful
+/// for example if you shared a link to the asset and want to reset its known access.
+pub fn set_asset_token_store(
+    caller: Principal,
+    collection: &CollectionKey,
+    full_path: &FullPath,
+    token: &AssetAccessToken,
+) -> Result<(), String> {
+    let controllers: Controllers = get_controllers();
+    let config = get_config_store();
+
+    let context = StoreContext {
+        caller,
+        controllers: &controllers,
+        collection,
+    };
+
+    secure_set_asset_token_impl(&context, full_path, token, &config)
+}
+
+fn secure_set_asset_token_impl(
+    context: &StoreContext,
+    full_path: &FullPath,
+    token: &AssetAccessToken,
+    config: &StorageConfig,
+) -> Result<(), String> {
+    let rule = get_state_rule(context.collection)?;
+    let auth_config = get_auth_config();
+
+    let assert_context = AssertContext {
+        rule: &rule,
+        auth_config: &auth_config,
+    };
+
+    set_asset_token_impl(context, &assert_context, full_path, token, config)
+}
+
+fn set_asset_token_impl(
+    context: &StoreContext,
+    assert_context: &AssertContext,
+    full_path: &FullPath,
+    token: &AssetAccessToken,
+    config: &StorageConfig,
+) -> Result<(), String> {
+    let asset = get_state_asset(context.collection, full_path, assert_context.rule)
+        .ok_or(JUNO_STORAGE_ERROR_ASSET_NOT_FOUND.to_string())?;
+
+    assert_write_asset(context, assert_context, &asset)?;
+
+    let updated_asset = Asset::update_token(&asset, token);
+
+    insert_asset(
+        context.collection,
+        full_path,
+        &updated_asset,
+        assert_context.rule,
+    );
+
+    // Protected assets are served with specific certified headers (see token_headers).
+    // That is why we update the certification if either those have to be added or removed.
+    if asset.key.token.is_some() ^ token.is_some() {
+        update_runtime_certified_asset(&updated_asset, config, &StorageCertificate);
+    }
+
+    Ok(())
 }
 
 // ---------------------------------------------------------

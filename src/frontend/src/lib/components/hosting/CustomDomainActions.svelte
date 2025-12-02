@@ -13,6 +13,7 @@
 	import { busy, isBusy } from '$lib/stores/busy.store';
 	import { i18n } from '$lib/stores/i18n.store';
 	import { toasts } from '$lib/stores/toasts.store';
+	import type { CustomDomain } from '$lib/types/custom-domain';
 	import type { JunoModalCustomDomainDetail } from '$lib/types/modal';
 	import type { Option } from '$lib/types/utils';
 	import { buildDeleteAuthenticationConfig } from '$lib/utils/auth.config.utils';
@@ -21,7 +22,7 @@
 
 	interface Props {
 		satellite: MissionControlDid.Satellite;
-		customDomain: [string, SatelliteDid.CustomDomain] | undefined;
+		customDomain: CustomDomain | undefined;
 		displayState: Option<string>;
 		config: SatelliteDid.AuthenticationConfig | undefined;
 	}
@@ -84,7 +85,8 @@
 				satelliteId: satellite.satellite_id,
 				domainName: customDomain[0],
 				customDomain: customDomain[1],
-				deleteCustomDomain: !skipDeleteDomain
+				deleteCustomDomain: !skipDeleteDomain,
+				identity: $authStore.identity
 			});
 
 			await updateConfig();

@@ -19,7 +19,6 @@ export const onDeleteFilteredAssets = defineHook<OnDeleteFilteredAssets>({
 			};
 
 			await thr();
-			return;
 		}
 	}
 });

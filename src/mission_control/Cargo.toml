@@ -19,5 +19,5 @@ serde.workspace = true
 ciborium.workspace = true
 getrandom.workspace = true
 rand.workspace = true
-canfund = "0.8.4"
+canfund = { git = "https://github.com/dfinity/canfund" }
 junobuild-shared = { path = "../libs/shared" }

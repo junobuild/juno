@@ -19,6 +19,7 @@ pub fn create_canister_settings(
         log_visibility: None,
         wasm_memory_limit: Some(Nat::from(WASM_MEMORY_LIMIT)),
         wasm_memory_threshold: None,
+        environment_variables: None,
     })
 }
 

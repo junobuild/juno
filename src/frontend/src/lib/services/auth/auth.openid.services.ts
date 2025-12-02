@@ -40,7 +40,7 @@ const signInWithGoogleFn = async () => {
 		google: {
 			redirect: {
 				clientId: GOOGLE_CLIENT_ID,
-				redirectUrl: `${origin}/auth/callback`
+				redirectUrl: `${origin}/auth/callback/google`
 			}
 		}
 	});

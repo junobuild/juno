@@ -112,7 +112,7 @@ describe('Satellite > Switch storage system memory', () => {
 			const { http_request } = actor;
 
 			const request: SatelliteDid.HttpRequest = {
-				body: [],
+				body: Uint8Array.from([]),
 				certificate_version: toNullable(2),
 				headers: [],
 				method: 'GET',
@@ -125,8 +125,8 @@ describe('Satellite > Switch storage system memory', () => {
 
 			const decoder = new TextDecoder();
 
-			expect(decoder.decode(body as Uint8Array<ArrayBufferLike>)).toContain(DOMAINS[0]);
-			expect(decoder.decode(body as Uint8Array<ArrayBufferLike>)).toContain(DOMAINS[1]);
+			expect(decoder.decode(body)).toContain(DOMAINS[0]);
+			expect(decoder.decode(body)).toContain(DOMAINS[1]);
 
 			await assertCertification({
 				canisterId,
@@ -141,7 +141,7 @@ describe('Satellite > Switch storage system memory', () => {
 			const { http_request } = actor;
 
 			const request: SatelliteDid.HttpRequest = {
-				body: [],
+				body: Uint8Array.from([]),
 				certificate_version: toNullable(2),
 				headers: [],
 				method: 'GET',
@@ -153,7 +153,7 @@ describe('Satellite > Switch storage system memory', () => {
 			const { body } = response;
 
 			const decoder = new TextDecoder();
-			const responseBody = decoder.decode(body as Uint8Array<ArrayBufferLike>);
+			const responseBody = decoder.decode(body);
 
 			const alternativeOrigins = [
 				...DOMAINS.map((domain) => `https://${domain}`).reverse(),

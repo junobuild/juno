@@ -1,87 +1,48 @@
-use candid::{encode_one, CandidType};
-use ic_cdk::api::{msg_reject, msg_reply};
-use ic_cdk::trap;
-use std::marker::PhantomData;
+use candid::{CandidType, Deserialize};
+use ic_cdk::call::{CallFailed, Response};
 
-/// Helper for replying or rejecting calls marked with `manual_reply = true`.
+/// Extension trait for decoding Candid responses from inter-canister calls.
 ///
-/// This struct mirrors the now-deprecated `ManualReply<T>` type from the
-/// IC Rust CDK. It uses `PhantomData<T>` internally to preserve the correct
-/// return type in the generated Candid interface, but never actually serializes
-/// anything because you send the reply or reject manually.
-///
-/// # When to use
-///
-/// - Your method is annotated with `#[update(..., manual_reply = true)]`
-///   or `#[query(..., manual_reply = true)]`.
-/// - You want to send the reply or reject explicitly, rather than having
-///   the CDK serialize and return your function's result automatically.
-/// - You still want the generated `.did` file to correctly show the return type.
-///
-/// # Example
-///
-/// ```rust
-/// #[update(manual_reply = true)]
-/// fn my_method() -> ManualReply<()> {
-///     if something_went_wrong() {
-///         return ManualReply::reject("bad input");
-///     }
-///     ManualReply::one(())
-/// }
-/// ```
-#[derive(Debug, Copy, Clone, Default)]
-pub struct ManualReply<T: ?Sized>(PhantomData<T>);
-
-impl<T: ?Sized> ManualReply<T> {
-    /// Returns a `ManualReply<T>` without sending a reply or reject.
+/// This trait provides a convenient method to decode the response of an inter-canister call
+/// into a Rust type, combining error handling for both call failures and decoding failures.
+pub trait DecodeCandid {
+    /// Decodes the response as a Candid type.
     ///
-    /// Only useful once reply/reject were sent manually earlier.
-    const fn done() -> Self {
-        Self(PhantomData)
-    }
-
-    /// Sends a reply containing the given value as a single Candid return.
+    /// This method handles both the call result and Candid decoding in a single step,
+    /// converting any errors into descriptive string messages.
     ///
-    /// # Example
+    /// # Type Parameters
+    /// * `T` - The type to decode the response into. Must implement `CandidType` and `Deserialize`.
+    ///
+    /// # Returns
+    /// * `Ok(T)` - The successfully decoded response.
+    /// * `Err(String)` - An error message describing either the call failure or decoding failure.
+    ///
+    /// # Examples
+    ///
+    /// ```rust,no_run
+    /// # use ic_cdk::call::Call;
+    /// # use candid::Principal;
+    /// # async fn example() -> Result<u32, String> {
+    /// # let canister_id = Principal::anonymous();
+    /// let result: u32 = Call::bounded_wait(canister_id, "get_value")
+    ///     .await
+    ///     .decode_candid()?;
+    /// # Ok(result)
+    /// # }
     /// ```
-    /// ManualReply::one(42u64); // replies with 42
-    /// ```
-    pub fn one<U>(value: U) -> Self
+    fn decode_candid<T>(self) -> Result<T, String>
     where
-        U: CandidType,
-    {
-        let bytes =
-            encode_one(value).unwrap_or_else(|e| trap(format!("Candid encode failed: {e}")));
-        msg_reply(bytes);
-        Self::done()
-    }
-
-    /// Rejects the call with the given message (user-level reject).
-    ///
-    /// # Example
-    /// ```
-    /// ManualReply::reject("Not allowed");
-    /// ```
-    pub fn reject(message: impl AsRef<str>) -> Self {
-        msg_reject(message.as_ref());
-        Self::done()
-    }
+        T: CandidType + for<'de> Deserialize<'de>;
 }
 
-impl<T> CandidType for ManualReply<T>
-where
-    T: CandidType + ?Sized,
-{
-    fn _ty() -> candid::types::Type {
-        T::_ty()
-    }
-
-    fn idl_serialize<S>(&self, _: S) -> Result<(), S::Error>
+impl DecodeCandid for Result<Response, CallFailed> {
+    fn decode_candid<T>(self) -> Result<T, String>
     where
-        S: candid::types::Serializer,
+        T: CandidType + for<'de> Deserialize<'de>,
     {
-        Err(<S::Error as serde::ser::Error>::custom(
-            "ManualReply cannot be serialized (manual_reply = true)",
-        ))
+        self.map_err(|e| format!("Call failed: {:?}", e))?
+            .candid::<T>()
+            .map_err(|e| format!("Decoding failed: {:?}", e))
     }
 }

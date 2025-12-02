@@ -67,12 +67,34 @@
 	@use '../../styles/mixins/tabs';
 
 	.tabs {
+		width: 100%;
+
+		--tabs-border-color: var(--card-border-color, var(--color-card-contrast));
+		border-bottom: 1px solid var(--tabs-border-color);
+
+		padding: 0 var(--padding-0_5x);
+
+		gap: var(--padding-0_5x);
 		margin: var(--padding) 0 var(--padding-4x);
 
 		@include tabs.tabs;
 	}
 
 	.tab {
+		border-start-start-radius: var(--border-radius);
+		border-start-end-radius: var(--border-radius);
+
+		border-top: 1px solid var(--tabs-border-color);
+		border-right: 1px solid var(--tabs-border-color);
+		border-left: 1px solid var(--tabs-border-color);
+
+		&:not(:focus):not(:hover) {
+			&.selected {
+				background: var(--color-primary);
+				color: var(--color-primary-contrast);
+			}
+		}
+
 		@include tabs.tab;
 	}
 </style>

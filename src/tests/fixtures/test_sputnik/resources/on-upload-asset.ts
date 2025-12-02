@@ -16,7 +16,6 @@ export const onUploadAsset = defineHook<OnUploadAsset>({
 			};
 
 			await thr();
-			return;
 		}
 	}
 });

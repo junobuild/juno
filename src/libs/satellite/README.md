@@ -24,7 +24,7 @@ use junobuild_satellite::include_satellite;
 include_satellite!();
 ```
 
-By using the `include_satellite!` macro, you can effortlessly integrate all the necessary features into your satellite project.
+By using the `include_satellite!` macro, you can integrate all the necessary features into your satellite project.
 
 ## Features
 

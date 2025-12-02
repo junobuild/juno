@@ -77,7 +77,7 @@ export const testNotAllowedCdnMethods = ({
 		const { upload_proposal_asset_chunk } = actor();
 
 		const chunk: ConsoleDid.UploadChunk = {
-			content: [1, 2, 3],
+			content: Uint8Array.from([1, 2, 3]),
 			batch_id: 123n,
 			order_id: []
 		};
@@ -145,7 +145,7 @@ export const testNotAllowedCdnMethods = ({
 		const { reject_proposal } = actor();
 
 		const commit: ConsoleDid.CommitProposal = {
-			sha256: [1, 2, 3],
+			sha256: Uint8Array.from([1, 2, 3]),
 			proposal_id: 123n
 		};
 
@@ -158,7 +158,7 @@ export const testNotAllowedCdnMethods = ({
 		const { commit_proposal } = actor();
 
 		const commit: ConsoleDid.CommitProposal = {
-			sha256: [1, 2, 3],
+			sha256: Uint8Array.from([1, 2, 3]),
 			proposal_id: 123n
 		};
 
@@ -316,7 +316,7 @@ export const testControlledCdnMethods = ({
 	])(
 		'Proposal, upload and serve',
 		({ proposal_type, collection, full_path, expected_proposal_id, description }) => {
-			let sha256: [] | [Uint8Array | number[]];
+			let sha256: [] | [Uint8Array];
 			let proposalId: bigint;
 
 			it('should init a proposal', async () => {
@@ -401,7 +401,7 @@ export const testControlledCdnMethods = ({
 				const { http_request } = actor();
 
 				const { status_code } = await http_request({
-					body: [],
+					body: Uint8Array.from([]),
 					certificate_version: toNullable(),
 					headers: [],
 					method: 'GET',
@@ -430,7 +430,9 @@ export const testControlledCdnMethods = ({
 				const [_, proposal] = await submit_proposal(proposalId);
 
 				expect(proposal.status).toEqual({ Open: null });
-				expect(sha256ToBase64String(fromNullable(proposal.sha256) ?? [])).not.toBeUndefined();
+				expect(
+					sha256ToBase64String(fromNullable(proposal.sha256) ?? Uint8Array.from([]))
+				).not.toBeUndefined();
 				expect(fromNullable(proposal.executed_at)).toBeUndefined();
 				expect(proposal.owner.toText()).toEqual(caller().getPrincipal().toText());
 				expect(proposal.proposal_type).toEqual(proposal_type);
@@ -449,7 +451,7 @@ export const testControlledCdnMethods = ({
 				const { http_request } = actor();
 
 				const { status_code } = await http_request({
-					body: [],
+					body: Uint8Array.from([]),
 					certificate_version: toNullable(),
 					headers: [],
 					method: 'GET',
@@ -484,7 +486,7 @@ export const testControlledCdnMethods = ({
 
 				await expect(
 					reject_proposal({
-						sha256: Array.from({ length: 32 }).map((_, i) => i),
+						sha256: Uint8Array.from(Array.from({ length: 32 }).map((_, i) => i)),
 						proposal_id: proposalId + 1n
 					})
 				).rejects.toThrow(`${JUNO_CDN_PROPOSALS_ERROR_CANNOT_REJECT} (${unknownProposalId})`);
@@ -497,7 +499,7 @@ export const testControlledCdnMethods = ({
 
 				await expect(
 					commit_proposal({
-						sha256: Array.from({ length: 32 }).map((_, i) => i),
+						sha256: Uint8Array.from(Array.from({ length: 32 }).map((_, i) => i)),
 						proposal_id: proposalId + 1n
 					})
 				).rejects.toThrow(`${JUNO_CDN_PROPOSALS_ERROR_CANNOT_COMMIT} (${unknownProposalId})`);
@@ -506,7 +508,7 @@ export const testControlledCdnMethods = ({
 			it('should fail at rejecting a proposal with incorrect sha256', async () => {
 				const { reject_proposal } = actor({ requireController: true });
 
-				const sha256 = Array.from({ length: 32 }).map((_, i) => i);
+				const sha256 = Uint8Array.from(Array.from({ length: 32 }).map((_, i) => i));
 
 				await expect(
 					reject_proposal({
@@ -521,7 +523,7 @@ export const testControlledCdnMethods = ({
 			it('should fail at committing a proposal with incorrect sha256', async () => {
 				const { commit_proposal } = actor({ requireController: true });
 
-				const sha256 = Array.from({ length: 32 }).map((_, i) => i);
+				const sha256 = Uint8Array.from(Array.from({ length: 32 }).map((_, i) => i));
 
 				await expect(
 					commit_proposal({
@@ -592,7 +594,7 @@ export const testControlledCdnMethods = ({
 				await tick(pic());
 
 				const request: ConsoleDid.HttpRequest = {
-					body: [],
+					body: Uint8Array.from([]),
 					certificate_version: toNullable(2),
 					headers: [],
 					method: 'GET',
@@ -619,7 +621,7 @@ export const testControlledCdnMethods = ({
 
 				const decoder = new TextDecoder();
 
-				expect(decoder.decode(body as Uint8Array<ArrayBufferLike>)).toEqual(mockHtml);
+				expect(decoder.decode(body)).toEqual(mockHtml);
 			});
 
 			it('should list assets', async () => {
@@ -641,7 +643,7 @@ export const testControlledCdnMethods = ({
 
 			describe('Reject', () => {
 				let rejectProposalId: bigint;
-				let rejectSha256: [] | [Uint8Array | number[]];
+				let rejectSha256: [] | [Uint8Array];
 
 				beforeAll(async () => {
 					const { init_proposal } = actor();
@@ -703,7 +705,7 @@ export const testControlledCdnMethods = ({
 							proposal_id: rejectProposalId
 						})
 					).rejects.toThrow(
-						`${JUNO_CDN_PROPOSALS_ERROR_INVALID_HASH} (${uint8ArrayToHexString(fromNullable(sha256) ?? [])})`
+						`${JUNO_CDN_PROPOSALS_ERROR_INVALID_HASH} (${uint8ArrayToHexString(fromNullable(sha256) ?? Uint8Array.from([]))})`
 					);
 				});
 
@@ -771,7 +773,7 @@ export const testControlledCdnMethods = ({
 		});
 
 		const { status_code } = await http_request({
-			body: [],
+			body: Uint8Array.from([]),
 			certificate_version: toNullable(),
 			headers: [],
 			method: 'GET',
@@ -781,7 +783,7 @@ export const testControlledCdnMethods = ({
 		expect(status_code).toEqual(404);
 
 		const { status_code: status_code_200 } = await http_request({
-			body: [],
+			body: Uint8Array.from([]),
 			certificate_version: toNullable(),
 			headers: [],
 			method: 'GET',
@@ -795,7 +797,7 @@ export const testControlledCdnMethods = ({
 		const { http_request } = actor();
 
 		const { status_code } = await http_request({
-			body: [],
+			body: Uint8Array.from([]),
 			certificate_version: toNullable(),
 			headers: [],
 			method: 'GET',
@@ -1057,7 +1059,7 @@ export const testCdnStorageSettings = ({
 		});
 
 		const { headers } = await http_request({
-			body: [],
+			body: Uint8Array.from([]),
 			certificate_version: toNullable(),
 			headers: [['accept-encoding', 'gzip, deflate, br']],
 			method: 'GET',
@@ -1087,7 +1089,9 @@ export const testCdnGetProposal = ({
 		assertNonNullish(proposal);
 
 		expect(proposal.status).toEqual({ Executed: null });
-		expect(sha256ToBase64String(fromNullable(proposal.sha256) ?? [])).not.toBeUndefined();
+		expect(
+			sha256ToBase64String(fromNullable(proposal.sha256) ?? Uint8Array.from([]))
+		).not.toBeUndefined();
 		expect(fromNullable(proposal.executed_at)).not.toBeUndefined();
 		expect(proposal.owner.toText()).toEqual(owner().getPrincipal().toText());
 		expect(proposal.proposal_type).toEqual({
@@ -1384,7 +1388,7 @@ export const testUploadProposalManyAssets = ({
 		);
 	};
 
-	let sha256: [] | [Uint8Array | number[]];
+	let sha256: [] | [Uint8Array];
 	let proposalId: bigint;
 
 	const proposal_type: ConsoleDid.ProposalType = {
@@ -1422,7 +1426,7 @@ export const testUploadProposalManyAssets = ({
 		const { http_request } = actor();
 
 		const { status_code } = await http_request({
-			body: [],
+			body: Uint8Array.from([]),
 			certificate_version: toNullable(),
 			headers: [],
 			method: 'GET',
@@ -1441,7 +1445,9 @@ export const testUploadProposalManyAssets = ({
 		const [_, proposal] = await submit_proposal(proposalId);
 
 		expect(proposal.status).toEqual({ Open: null });
-		expect(sha256ToBase64String(fromNullable(proposal.sha256) ?? [])).not.toBeUndefined();
+		expect(
+			sha256ToBase64String(fromNullable(proposal.sha256) ?? Uint8Array.from([]))
+		).not.toBeUndefined();
 		expect(fromNullable(proposal.executed_at)).toBeUndefined();
 		expect(proposal.owner.toText()).toEqual(caller().getPrincipal().toText());
 		expect(proposal.proposal_type).toEqual(proposal_type);
@@ -1460,7 +1466,7 @@ export const testUploadProposalManyAssets = ({
 		const { http_request } = actor();
 
 		const { status_code } = await http_request({
-			body: [],
+			body: Uint8Array.from([]),
 			certificate_version: toNullable(),
 			headers: [],
 			method: 'GET',
@@ -1491,7 +1497,7 @@ export const testUploadProposalManyAssets = ({
 		await tick(pic());
 
 		const request: ConsoleDid.HttpRequest = {
-			body: [],
+			body: Uint8Array.from([]),
 			certificate_version: toNullable(2),
 			headers: [],
 			method: 'GET',
@@ -1518,7 +1524,7 @@ export const testUploadProposalManyAssets = ({
 
 		const decoder = new TextDecoder();
 
-		expect(decoder.decode(body as Uint8Array<ArrayBufferLike>)).toEqual(mockHtml);
+		expect(decoder.decode(body)).toEqual(mockHtml);
 	});
 };
 

@@ -177,13 +177,13 @@
 	@use '../../styles/mixins/text';
 
 	.selected {
-		background: var(--color-background);
-		color: var(--color-background-contrast);
+		background: var(--color-body);
+		color: var(--color-body-contrast);
 
 		&:hover:not(:disabled),
 		&:active:not(:disabled),
 		&:focus-visible:not(:disabled) {
-			background: var(--color-background);
+			background: var(--color-body);
 		}
 	}
 

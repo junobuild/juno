@@ -1,12 +1,12 @@
-import { idlFactoryObservatory, type ObservatoryActor, type ObservatoryDid } from '$declarations';
+import { idlFactoryObservatory, type ObservatoryActor } from '$declarations';
 import { type Actor, PocketIc } from '@dfinity/pic';
-import { fromNullable } from '@dfinity/utils';
 import { Ed25519KeyIdentity } from '@icp-sdk/core/identity';
 import { inject } from 'vitest';
 import { mockCertificateDate, mockClientId } from '../../mocks/jwt.mocks';
 import { FETCH_CERTIFICATE_INTERVAL } from '../../mocks/observatory.mocks';
 import { makeMockGoogleOpenIdJwt } from '../../utils/jwt-tests.utils';
 import {
+	assertGetCertificate,
 	assertOpenIdHttpsOutcalls,
 	failOpenIdHttpsOutCall,
 	finalizeOpenIdHttpsOutCall
@@ -44,71 +44,6 @@ describe('Observatory > OpenId', async () => {
 		await pic?.tearDown();
 	});
 
-	const mapGoogleCertificateToJwks = (): ObservatoryDid.Jwks => ({
-		keys: mockJwks.keys
-			.sort((a, b) => a.kid.localeCompare(b.kid))
-			.map((key) => {
-				const kty = key.kty.toUpperCase();
-
-				const mappedType: ObservatoryDid.JwkType =
-					kty === 'RSA'
-						? { RSA: null }
-						: kty === 'EC'
-							? { EC: null }
-							: kty === 'OKP'
-								? { OKP: null }
-								: { oct: null };
-
-				const params: ObservatoryDid.JwkParams =
-					kty === 'RSA'
-						? { Rsa: { e: key.e, n: key.n } }
-						: kty === 'EC'
-							? {
-									Ec: {
-										x: (key as unknown as { x: string }).x,
-										y: (key as unknown as { y: string }).y,
-										crv: (key as unknown as { crv: string }).crv
-									}
-								}
-							: kty === 'OKP'
-								? {
-										Okp: {
-											x: (key as unknown as { x: string }).x,
-											crv: (key as unknown as { crv: string }).crv
-										}
-									}
-								: { Oct: { k: (key as unknown as { k: string }).k } };
-
-				return {
-					alg: key.alg ? [key.alg] : [],
-					kid: key.kid ? [key.kid] : [],
-					kty: mappedType,
-					params
-				};
-			})
-	});
-
-	const assertGetCertificate = async ({ version }: { version: bigint }) => {
-		const { get_openid_certificate } = actor;
-
-		const cert = await get_openid_certificate({
-			provider: { Google: null }
-		});
-
-		const certificate = fromNullable(cert);
-
-		expect(certificate).not.toBeUndefined();
-
-		expect(certificate).toEqual(
-			expect.objectContaining({
-				jwks: mapGoogleCertificateToJwks(),
-				created_at: expect.any(BigInt),
-				updated_at: expect.any(BigInt),
-				version: [version]
-			})
-		);
-	};
-
 	describe('Google certificate', () => {
 		it('should start openid monitoring', async () => {
 			const { start_openid_monitoring } = actor;
@@ -119,7 +54,7 @@ describe('Observatory > OpenId', async () => {
 		});
 
 		it('should provide certificate', async () => {
-			await assertGetCertificate({ version: 1n });
+			await assertGetCertificate({ version: 1n, actor, jwks: mockJwks });
 		});
 
 		it('should throw error if openid scheduler is already running', async () => {
@@ -155,7 +90,7 @@ describe('Observatory > OpenId', async () => {
 		});
 
 		it('should still provide certificate', async () => {
-			await assertGetCertificate({ version: 2n });
+			await assertGetCertificate({ version: 2n, actor, jwks: mockJwks });
 		});
 
 		it('should have a scheduler timer because stop was called in between', async () => {

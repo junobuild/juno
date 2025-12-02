@@ -36,6 +36,7 @@ fn get_request(provider: &OpenIdProvider) -> HttpRequestArgs {
         max_response_bytes: Some(FETCH_MAX_RESPONSE_BYTES),
         transform: param_transform(),
         headers: request_headers,
+        is_replicated: Some(true),
     }
 }
 

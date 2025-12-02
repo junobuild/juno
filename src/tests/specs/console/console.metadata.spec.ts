@@ -43,7 +43,7 @@ describe('Console > Metadata', () => {
 			const { http_request } = actor;
 
 			const { body } = await http_request({
-				body: [],
+				body: Uint8Array.from([]),
 				certificate_version: toNullable(),
 				headers: [],
 				method: 'GET',
@@ -51,7 +51,7 @@ describe('Console > Metadata', () => {
 			});
 
 			const decoder = new TextDecoder();
-			const responseBody = decoder.decode(body as Uint8Array<ArrayBufferLike>);
+			const responseBody = decoder.decode(body);
 
 			expect(responseBody).toEqual(
 				JSON.stringify({
@@ -91,7 +91,7 @@ describe('Console > Metadata', () => {
 			});
 
 			const { status_code } = await http_request({
-				body: [],
+				body: Uint8Array.from([]),
 				certificate_version: toNullable(),
 				headers: [],
 				method: 'GET',

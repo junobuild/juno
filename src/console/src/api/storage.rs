@@ -20,7 +20,6 @@ use junobuild_storage::types::state::FullPath;
 // Storage
 // ---------------------------------------------------------
 
-#[deprecated(note = "Use init_proposal_many_assets_upload instead")]
 #[update(guard = "caller_is_admin_controller")]
 fn init_proposal_asset_upload(init: InitAssetKey, proposal_id: ProposalId) -> InitUploadResult {
     let caller = caller();
@@ -61,7 +60,6 @@ fn upload_proposal_asset_chunk(chunk: UploadChunk) -> UploadChunkResult {
     UploadChunkResult { chunk_id }
 }
 
-#[deprecated(note = "Use commit_proposal_many_assets_upload instead")]
 #[update(guard = "caller_is_admin_controller")]
 fn commit_proposal_asset_upload(commit: CommitBatch) {
     let caller = caller();

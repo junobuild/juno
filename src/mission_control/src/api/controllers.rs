@@ -7,8 +7,7 @@ use crate::guards::caller_is_user_or_admin_controller;
 use ic_cdk_macros::{query, update};
 use junobuild_shared::ic::UnwrapOrTrap;
 use junobuild_shared::types::interface::SetController;
-use junobuild_shared::types::state::{ControllerId, ControllerScope, Controllers, UserId};
-use std::collections::HashMap;
+use junobuild_shared::types::state::{ControllerId, Controllers};
 
 #[update(guard = "caller_is_user_or_admin_controller")]
 async fn set_mission_control_controllers(

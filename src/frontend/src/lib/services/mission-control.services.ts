@@ -1,7 +1,5 @@
 import type { MissionControlDid } from '$declarations';
 import {
-	addMissionControlController,
-	addSatellitesController,
 	getSettings,
 	getUserData,
 	setMetadata,
@@ -13,7 +11,11 @@ import {
 	unsetOrbiter,
 	unsetSatellite
 } from '$lib/api/mission-control.api';
-import { setMissionControlController004 } from '$lib/api/mission-control.deprecated.api';
+import {
+	addMissionControlController003,
+	addSatellitesController003,
+	setMissionControlController004
+} from '$lib/api/mission-control.deprecated.api';
 import {
 	METADATA_KEY_EMAIL,
 	METADATA_KEY_ENVIRONMENT,
@@ -84,7 +86,7 @@ export const setMissionControlControllerForVersion = async ({
 			? compare(version, MISSION_CONTROL_v0_0_5) >= 0
 				? setMissionControlController
 				: setMissionControlController004
-			: addMissionControlController;
+			: addMissionControlController003;
 
 	await missionControlController({
 		missionControlId,
@@ -168,7 +170,7 @@ export const setSatellitesControllerForVersion = async ({
 			: []),
 		...(addSatellitesIds.length > 0
 			? [
-					addSatellitesController({
+					addSatellitesController003({
 						satelliteIds: addSatellitesIds,
 						missionControlId,
 						controllerId,

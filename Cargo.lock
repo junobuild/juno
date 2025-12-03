@@ -242,7 +242,7 @@ dependencies = [
 
 [[package]]
 name = "console"
-version = "0.1.4"
+version = "0.1.5"
 dependencies = [
  "candid",
  "ciborium",
@@ -1412,7 +1412,7 @@ dependencies = [
 
 [[package]]
 name = "mission_control"
-version = "0.1.1"
+version = "0.1.2"
 dependencies = [
  "candid",
  "canfund",
@@ -1514,7 +1514,7 @@ dependencies = [
 
 [[package]]
 name = "orbiter"
-version = "0.2.2"
+version = "0.2.3"
 dependencies = [
  "candid",
  "ciborium",

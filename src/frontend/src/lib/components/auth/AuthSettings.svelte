@@ -6,7 +6,7 @@
 	import AuthConfigII from '$lib/components/auth/AuthConfigII.svelte';
 	import AuthProviders from '$lib/components/auth/AuthProviders.svelte';
 	import AuthSettingsLoader from '$lib/components/auth/AuthSettingsLoader.svelte';
-	import { listCustomDomains } from '$lib/services/custom-domain.services';
+	import { listCustomDomains } from '$lib/services/satellite/custom-domain.services';
 	import { initAuthConfigContext } from '$lib/stores/auth.context.store';
 	import { busy } from '$lib/stores/busy.store';
 	import { AUTH_CONFIG_CONTEXT_KEY, type AuthConfigContext } from '$lib/types/auth.context';

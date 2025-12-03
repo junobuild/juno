@@ -13,8 +13,8 @@ import {
 	resetIdbStore,
 	setIdbStore,
 	syncIdbStore
-} from '$lib/services/idb-store.services';
-import { execute } from '$lib/services/progress.services';
+} from '$lib/services/_idb-store.services';
+import { execute } from '$lib/services/_progress.services';
 import { i18n } from '$lib/stores/i18n.store';
 import { snapshotsIdbStore } from '$lib/stores/idb.store';
 import { snapshotStore } from '$lib/stores/snapshot.store';

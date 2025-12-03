@@ -4,7 +4,7 @@
 	import ApplyChangeDone from '$lib/components/changes/wizard/ApplyChangeDone.svelte';
 	import ConfirmApplyChange from '$lib/components/changes/wizard/ConfirmApplyChange.svelte';
 	import ProgressApplyChange from '$lib/components/changes/wizard/ProgressApplyChange.svelte';
-	import { applyProposal } from '$lib/services/proposals/proposals.services';
+	import { applyProposal } from '$lib/services/satellite/proposals/proposals.services';
 	import { authStore } from '$lib/stores/auth.store';
 	import type { ProposalRecord } from '$lib/types/proposals';
 	import type { SatelliteIdText } from '$lib/types/satellite';

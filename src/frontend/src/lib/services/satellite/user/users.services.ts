@@ -1,7 +1,7 @@
 import { listDocs } from '$lib/api/satellites.api';
 import { listDocs008 } from '$lib/api/satellites.deprecated.api';
 import { SATELLITE_v0_0_9 } from '$lib/constants/version.constants';
-import { isSatelliteFeatureSupported } from '$lib/services/feature.services';
+import { isSatelliteFeatureSupported } from '$lib/services/_feature.services';
 import type { OptionIdentity } from '$lib/types/itentity';
 import type { ListParams } from '$lib/types/list';
 import type { User } from '$lib/types/user';

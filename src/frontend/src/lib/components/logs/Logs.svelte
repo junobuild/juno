@@ -9,7 +9,7 @@
 	import LogsOrder from '$lib/components/logs/LogsOrder.svelte';
 	import LogsRefresh from '$lib/components/logs/LogsRefresh.svelte';
 	import SpinnerParagraph from '$lib/components/ui/SpinnerParagraph.svelte';
-	import { listLogs } from '$lib/services/logs.services';
+	import { listLogs } from '$lib/services/satellite/logs.services';
 	import { authStore } from '$lib/stores/auth.store';
 	import { i18n } from '$lib/stores/i18n.store';
 	import { initPaginationContext } from '$lib/stores/pagination.context.store';

@@ -33,8 +33,8 @@ import {
 	SatelliteUiMetadataSchema,
 	SatelliteUiMetadataSerializer
 } from '$lib/schemas/satellite.schema';
-import { loadDataStore } from '$lib/services/loader.services';
-import { loadSatellites } from '$lib/services/satellites.services';
+import { loadDataStore } from '$lib/services/_loader.services';
+import { loadSatellites } from '$lib/services/mission-control/mission-control.satellites.services';
 import { authStore } from '$lib/stores/auth.store';
 import { i18n } from '$lib/stores/i18n.store';
 import {

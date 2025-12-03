@@ -4,8 +4,8 @@
 	import type { MissionControlDid } from '$declarations';
 	import SpinnerParagraph from '$lib/components/ui/SpinnerParagraph.svelte';
 	import Warning from '$lib/components/ui/Warning.svelte';
-	import { getAuthConfig } from '$lib/services/auth/auth.config.services';
-	import { getRuleUser } from '$lib/services/collection.services';
+	import { getAuthConfig } from '$lib/services/console/auth/auth.config.services';
+	import { getRuleUser } from '$lib/services/satellite/collection.services';
 	import { authStore } from '$lib/stores/auth.store';
 	import { i18n } from '$lib/stores/i18n.store';
 	import { versionStore } from '$lib/stores/version.store';

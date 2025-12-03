@@ -13,10 +13,10 @@ import {
 import { missionControlUserData } from '$lib/derived/mission-control-user.derived';
 import { orbiterNotLoaded, orbiterStore } from '$lib/derived/orbiter.derived';
 import { satellitesNotLoaded, satellitesStore } from '$lib/derived/satellites.derived';
-import { loadSettings, loadUserData } from '$lib/services/mission-control.services';
+import { execute } from '$lib/services/_progress.services';
+import { loadSatellites } from '$lib/services/mission-control/mission-control.satellites.services';
+import { loadSettings, loadUserData } from '$lib/services/mission-control/mission-control.services';
 import { loadOrbiters } from '$lib/services/orbiter/orbiters.services';
-import { execute } from '$lib/services/progress.services';
-import { loadSatellites } from '$lib/services/satellites.services';
 import { i18n } from '$lib/stores/i18n.store';
 import { toasts } from '$lib/stores/toasts.store';
 import type { OptionIdentity } from '$lib/types/itentity';

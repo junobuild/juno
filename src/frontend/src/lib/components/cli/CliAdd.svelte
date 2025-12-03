@@ -12,7 +12,7 @@
 	import {
 		setMissionControlControllerForVersion,
 		setSatellitesControllerForVersion
-	} from '$lib/services/mission-control.services';
+	} from '$lib/services/mission-control/mission-control.services';
 	import { authStore } from '$lib/stores/auth.store';
 	import { busy } from '$lib/stores/busy.store';
 	import { i18n } from '$lib/stores/i18n.store';

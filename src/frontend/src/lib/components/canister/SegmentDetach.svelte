@@ -7,7 +7,10 @@
 	import Text from '$lib/components/ui/Text.svelte';
 	import { authSignedOut } from '$lib/derived/auth.derived';
 	import { missionControlIdDerived } from '$lib/derived/mission-control.derived';
-	import { detachOrbiter, detachSatellite } from '$lib/services/mission-control.services';
+	import {
+		detachOrbiter,
+		detachSatellite
+	} from '$lib/services/mission-control/mission-control.services';
 	import { busy } from '$lib/stores/busy.store';
 	import { i18n } from '$lib/stores/i18n.store';
 	import { toasts } from '$lib/stores/toasts.store';

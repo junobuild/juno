@@ -2,7 +2,7 @@ import type { ICDid, SatelliteDid } from '$declarations';
 import { canisterLogs as canisterLogsApi } from '$lib/api/ic.api';
 import { listDocs } from '$lib/api/satellites.api';
 import { SATELLITE_v0_0_16 } from '$lib/constants/version.constants';
-import { isSatelliteFeatureSupported } from '$lib/services/feature.services';
+import { isSatelliteFeatureSupported } from '$lib/services/_feature.services';
 import { i18n } from '$lib/stores/i18n.store';
 import { toasts } from '$lib/stores/toasts.store';
 import type { OptionIdentity } from '$lib/types/itentity';

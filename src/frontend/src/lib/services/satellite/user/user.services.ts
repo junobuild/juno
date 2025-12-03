@@ -7,7 +7,7 @@ import {
 	StorageCollectionType
 } from '$lib/constants/rules.constants';
 import { SATELLITE_v0_1_0 } from '$lib/constants/version.constants';
-import { isSatelliteFeatureSupported } from '$lib/services/feature.services';
+import { isSatelliteFeatureSupported } from '$lib/services/_feature.services';
 import { busy } from '$lib/stores/busy.store';
 import { i18n } from '$lib/stores/i18n.store';
 import { toasts } from '$lib/stores/toasts.store';

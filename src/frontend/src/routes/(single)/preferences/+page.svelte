@@ -9,7 +9,7 @@
 	import Value from '$lib/components/ui/Value.svelte';
 	import { authSignedOut } from '$lib/derived/auth.derived';
 	import { credits } from '$lib/derived/credits.derived';
-	import { loadCredits as loadCreditsServices } from '$lib/services/credits.services';
+	import { loadCredits as loadCreditsServices } from '$lib/services/console/credits.services';
 	import { authRemainingTimeStore, authStore } from '$lib/stores/auth.store';
 	import { i18n } from '$lib/stores/i18n.store';
 	import type { Languages } from '$lib/types/languages';

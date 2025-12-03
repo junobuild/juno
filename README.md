@@ -5,7 +5,7 @@
 
 </div>
 
-[Juno] is an open-source, reimagined serverless platform for hosting static websites, building web applications, and running serverless functions with the privacy and control of self-hosting.
+[Juno] is an open-source serverless platform for hosting static websites, building web applications, and running serverless functions with the privacy and control of self-hosting.
 
 It provides a familiar cloud experience with strong security and zero operational complexity. Each project runs in its own WASM container, fully owned and controlled by you.
 

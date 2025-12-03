@@ -39,11 +39,13 @@
 	<div class="details" class:row>
 		<Canister canisterId={satellite_id} {row} />
 
-		<div class="tags">
-			{#each tags as tag, index (`${tag}-${index}`)}
-				<Badge color="primary-opaque">{tag}</Badge>
-			{/each}
-		</div>
+		{#if tags.length}
+			<div class="tags">
+				{#each tags as tag, index (`${tag}-${index}`)}
+					<Badge color="primary-opaque">{tag}</Badge>
+				{/each}
+			</div>
+		{/if}
 	</div>
 </LaunchpadLink>
 

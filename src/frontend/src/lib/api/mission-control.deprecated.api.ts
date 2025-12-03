@@ -108,3 +108,59 @@ export const missionControlVersion = async ({
 	const { version } = await getMissionControlActor0013({ missionControlId, identity });
 	return version();
 };
+
+/**
+ * @deprecated use setSatellitesController
+ */
+export const addSatellitesController003 = async ({
+	missionControlId,
+	satelliteIds,
+	controllerId,
+	identity
+}: {
+	missionControlId: MissionControlId;
+	satelliteIds: Principal[];
+	identity: OptionIdentity;
+} & SetControllerParams) => {
+	try {
+		// We use getMissionControlActor004 actor because the method add_satellites_controllers
+		// was ultimately deprecated (removed) in Mission Control v0.2.0
+		const { add_satellites_controllers } = await getMissionControlActor004({
+			missionControlId,
+			identity
+		});
+		await add_satellites_controllers(satelliteIds, [Principal.fromText(controllerId)]);
+	} catch (err: unknown) {
+		console.error(
+			'addSatellitesController:',
+			missionControlId.toText(),
+			satelliteIds.map((id) => id.toText()).join(',')
+		);
+		throw err;
+	}
+};
+
+/**
+ * @deprecated use setMissionControlController
+ */
+export const addMissionControlController003 = async ({
+	missionControlId,
+	controllerId,
+	identity
+}: {
+	missionControlId: MissionControlId;
+	identity: OptionIdentity;
+} & SetControllerParams) => {
+	try {
+		// We use getMissionControlActor004 actor because the method add_mission_control_controllers
+		// was ultimately deprecated (removed) in Mission Control v0.2.0
+		const { add_mission_control_controllers } = await getMissionControlActor004({
+			missionControlId,
+			identity
+		});
+		await add_mission_control_controllers([Principal.fromText(controllerId)]);
+	} catch (err: unknown) {
+		console.error('addMissionControlController:', missionControlId.toText());
+		throw err;
+	}
+};

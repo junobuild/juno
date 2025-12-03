@@ -4,6 +4,7 @@
 	import { isDev } from '$lib/env/app.env';
 	import { emulatorLedgerTransfer } from '$lib/rest/emulator.rest';
 	import { i18n } from '$lib/stores/i18n.store';
+	import { toasts } from '$lib/stores/toasts.store';
 	import type { MissionControlId } from '$lib/types/mission-control';
 	import { emit } from '$lib/utils/events.utils';
 	import { testId } from '$lib/utils/test.utils';
@@ -17,13 +18,17 @@
 	let confetti = $state(false);
 
 	const onClick = async () => {
-		await emulatorLedgerTransfer({ missionControlId });
+		try {
+			await emulatorLedgerTransfer({ missionControlId });
 
-		emit({ message: 'junoRestartWallet' });
+			emit({ message: 'junoRestartWallet' });
 
-		confetti = true;
+			confetti = true;
 
-		setTimeout(() => (confetti = false), 5000);
+			setTimeout(() => (confetti = false), 5000);
+		} catch (err: unknown) {
+			toasts.error({ text: $i18n.emulator.error_getting_icp, detail: err });
+		}
 	};
 </script>
 

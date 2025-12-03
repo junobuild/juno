@@ -19,7 +19,7 @@ use junobuild_storage::strategies::{
     StorageAssertionsStrategy, StorageStateStrategy, StorageUploadStrategy,
 };
 use junobuild_storage::types::config::StorageConfig;
-use junobuild_storage::types::state::FullPath;
+use junobuild_storage::types::state::{AssetAccessToken, FullPath};
 use junobuild_storage::types::store::{
     Asset, AssetAssertUpload, AssetEncoding, Batch, EncodingType, ReferenceId,
 };
@@ -119,7 +119,7 @@ impl StorageStateStrategy for StorageState {
     fn get_public_asset(
         &self,
         full_path: FullPath,
-        token: Option<String>,
+        token: AssetAccessToken,
     ) -> Option<(Asset, Memory)> {
         get_public_asset_store(full_path, token)
     }

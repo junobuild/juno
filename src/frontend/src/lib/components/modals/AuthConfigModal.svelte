@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { nonNullish } from '@dfinity/utils';
 	import type { PrincipalText } from '@dfinity/zod-schemas';
 	import type { Principal } from '@icp-sdk/core/principal';
 	import AuthConfigFormCore from '$lib/components/auth/AuthConfigFormCore.svelte';
@@ -6,12 +7,14 @@
 	import AuthConfigFormII from '$lib/components/auth/AuthConfigFormII.svelte';
 	import Modal from '$lib/components/ui/Modal.svelte';
 	import SpinnerModal from '$lib/components/ui/SpinnerModal.svelte';
+	import { isSkylab } from '$lib/env/app.env';
 	import {
 		updateAuthConfigRules,
 		updateAuthConfigInternetIdentity,
 		type UpdateAuthConfigResult,
 		updateAuthConfigGoogle
 	} from '$lib/services/auth/auth.config.services';
+	import { emulatorToggleOpenIdMonitoring } from '$lib/services/emulator.services';
 	import { authStore } from '$lib/stores/auth.store';
 	import { wizardBusy } from '$lib/stores/busy.store';
 	import { i18n } from '$lib/stores/i18n.store';
@@ -91,6 +94,12 @@
 		};
 
 		const { success } = await update();
+
+		if (isSkylab() && edit === 'google') {
+			await emulatorToggleOpenIdMonitoring({
+				enable: nonNullish(googleClientId)
+			});
+		}
 
 		wizardBusy.stop();
 

@@ -7,7 +7,7 @@ use std::time::Duration;
 pub fn invoke_delete_user_usage(user_id: &UserId) {
     let user_id = *user_id;
 
-    set_timer(Duration::ZERO, move || {
+    set_timer(Duration::ZERO, async move {
         delete_user_usage(&user_id).unwrap_or_trap()
     });
 }

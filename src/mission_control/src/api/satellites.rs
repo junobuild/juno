@@ -1,7 +1,4 @@
-use crate::controllers::satellite::{
-    add_satellite_controllers as add_satellite_controllers_impl, delete_satellite_controllers,
-    remove_satellite_controllers as remove_satellite_controllers_impl, set_satellite_controllers,
-};
+use crate::controllers::satellite::{delete_satellite_controllers, set_satellite_controllers};
 use crate::guards::caller_is_user_or_admin_controller;
 use crate::segments::satellite::{
     attach_satellite, create_satellite as create_satellite_console,
@@ -39,38 +36,6 @@ async fn create_satellite_with_config(config: CreateSatelliteConfig) -> Satellit
 #[update(guard = "caller_is_user_or_admin_controller")]
 fn set_satellite_metadata(satellite_id: SatelliteId, metadata: Metadata) -> Satellite {
     set_satellite_metadata_store(&satellite_id, &metadata).unwrap_or_trap()
-}
-
-#[deprecated(
-    since = "0.0.3",
-    note = "please use `set_satellites_controllers` instead"
-)]
-#[update(guard = "caller_is_user_or_admin_controller")]
-async fn add_satellites_controllers(
-    satellite_ids: Vec<SatelliteId>,
-    controllers: Vec<ControllerId>,
-) {
-    for satellite_id in satellite_ids {
-        add_satellite_controllers_impl(&satellite_id, &controllers)
-            .await
-            .unwrap_or_trap();
-    }
-}
-
-#[deprecated(
-    since = "0.0.3",
-    note = "please use `del_satellites_controllers` instead"
-)]
-#[update(guard = "caller_is_user_or_admin_controller")]
-async fn remove_satellites_controllers(
-    satellite_ids: Vec<SatelliteId>,
-    controllers: Vec<ControllerId>,
-) {
-    for satellite_id in satellite_ids {
-        remove_satellite_controllers_impl(&satellite_id, &controllers)
-            .await
-            .unwrap_or_trap();
-    }
 }
 
 #[update(guard = "caller_is_user_or_admin_controller")]

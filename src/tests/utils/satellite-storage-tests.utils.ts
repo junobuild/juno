@@ -1,6 +1,7 @@
-import type { SatelliteActor } from '$declarations';
+import type { SatelliteActor, SatelliteDid } from '$declarations';
 import type { Actor } from '@dfinity/pic';
 import { arrayBufferToUint8Array, toNullable } from '@dfinity/utils';
+import { nanoid } from 'nanoid';
 import { mockBlob } from '../mocks/storage.mocks';
 
 export const uploadAsset = async ({
@@ -44,4 +45,55 @@ export const uploadAsset = async ({
 		chunk_ids: [chunk.chunk_id],
 		headers
 	});
+};
+
+export const uploadAssetWithToken = async ({
+	collection,
+	headers,
+	actor
+}: {
+	collection: string;
+	headers?: [string, string][];
+	actor: Actor<SatelliteActor>;
+}): Promise<{ fullPathWithToken: string; fullPath: string }> => {
+	const name = `hello-${nanoid()}.html`;
+	const full_path = `/${collection}/${name}`;
+	const token = nanoid();
+
+	await uploadAsset({
+		full_path,
+		name,
+		collection,
+		token,
+		headers,
+		actor
+	});
+
+	return { fullPathWithToken: `${full_path}?token=${token}`, fullPath: full_path };
+};
+
+export const assertHttpRequestCode = async ({
+	url,
+	code,
+	actor
+}: {
+	url: string;
+	code: 200 | 404;
+	actor: Actor<SatelliteActor>;
+}) => {
+	const { http_request } = actor;
+
+	const request: SatelliteDid.HttpRequest = {
+		body: Uint8Array.from([]),
+		certificate_version: toNullable(2),
+		headers: [],
+		method: 'GET',
+		url
+	};
+
+	const response = await http_request(request);
+
+	const { status_code } = response;
+
+	expect(status_code).toEqual(code);
 };

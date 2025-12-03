@@ -47,7 +47,7 @@ pub fn invoke_on_set_doc(caller: &UserId, doc: &DocContext<DocUpsert>) {
             let collections = juno_on_set_doc_collections();
 
             if should_invoke_doc_hook(collections, &context) {
-                set_timer(Duration::ZERO, || {
+                set_timer(Duration::ZERO, async {
                     juno_on_set_doc(context);
                 });
             }
@@ -70,7 +70,7 @@ pub fn invoke_on_set_many_docs(caller: &UserId, docs: &[DocContext<DocUpsert>]) 
                     data: filtered_docs.clone(),
                 };
 
-                set_timer(Duration::ZERO, || {
+                set_timer(Duration::ZERO, async {
                     juno_on_set_many_docs(context);
                 });
             }
@@ -91,7 +91,7 @@ pub fn invoke_on_delete_doc(caller: &UserId, doc: &DocContext<Option<Doc>>) {
             let collections = juno_on_delete_doc_collections();
 
             if should_invoke_doc_hook(collections, &context) {
-                set_timer(Duration::ZERO, || {
+                set_timer(Duration::ZERO, async {
                     juno_on_delete_doc(context);
                 });
             }
@@ -114,7 +114,7 @@ pub fn invoke_on_delete_many_docs(caller: &UserId, docs: &[DocContext<Option<Doc
                     data: filtered_docs.clone(),
                 };
 
-                set_timer(Duration::ZERO, || {
+                set_timer(Duration::ZERO, async {
                     juno_on_delete_many_docs(context);
                 });
             }
@@ -137,7 +137,7 @@ pub fn invoke_on_delete_filtered_docs(caller: &UserId, docs: &[DocContext<Option
                     data: filtered_docs.clone(),
                 };
 
-                set_timer(Duration::ZERO, || {
+                set_timer(Duration::ZERO, async {
                     juno_on_delete_filtered_docs(context);
                 });
             }

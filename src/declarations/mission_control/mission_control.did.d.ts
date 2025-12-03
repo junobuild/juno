@@ -205,8 +205,6 @@ export interface User {
 	config: [] | [Config];
 }
 export interface _SERVICE {
-	add_mission_control_controllers: ActorMethod<[Array<Principal>], undefined>;
-	add_satellites_controllers: ActorMethod<[Array<Principal>, Array<Principal>], undefined>;
 	create_orbiter: ActorMethod<[[] | [string]], Orbiter>;
 	create_orbiter_with_config: ActorMethod<[CreateCanisterConfig], Orbiter>;
 	create_satellite: ActorMethod<[string], Satellite>;
@@ -232,8 +230,6 @@ export interface _SERVICE {
 	list_mission_control_controllers: ActorMethod<[], Array<[Principal, Controller]>>;
 	list_orbiters: ActorMethod<[], Array<[Principal, Orbiter]>>;
 	list_satellites: ActorMethod<[], Array<[Principal, Satellite]>>;
-	remove_mission_control_controllers: ActorMethod<[Array<Principal>], undefined>;
-	remove_satellites_controllers: ActorMethod<[Array<Principal>, Array<Principal>], undefined>;
 	set_config: ActorMethod<[[] | [Config]], undefined>;
 	set_metadata: ActorMethod<[Array<[string, string]>], undefined>;
 	set_mission_control_controllers: ActorMethod<[Array<Principal>, SetController], undefined>;

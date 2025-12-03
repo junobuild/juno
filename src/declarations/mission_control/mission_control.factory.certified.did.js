@@ -202,8 +202,6 @@ export const idlFactory = ({ IDL }) => {
 	});
 
 	return IDL.Service({
-		add_mission_control_controllers: IDL.Func([IDL.Vec(IDL.Principal)], [], []),
-		add_satellites_controllers: IDL.Func([IDL.Vec(IDL.Principal), IDL.Vec(IDL.Principal)], [], []),
 		create_orbiter: IDL.Func([IDL.Opt(IDL.Text)], [Orbiter], []),
 		create_orbiter_with_config: IDL.Func([CreateCanisterConfig], [Orbiter], []),
 		create_satellite: IDL.Func([IDL.Text], [Satellite], []),
@@ -234,12 +232,6 @@ export const idlFactory = ({ IDL }) => {
 		),
 		list_orbiters: IDL.Func([], [IDL.Vec(IDL.Tuple(IDL.Principal, Orbiter))], []),
 		list_satellites: IDL.Func([], [IDL.Vec(IDL.Tuple(IDL.Principal, Satellite))], []),
-		remove_mission_control_controllers: IDL.Func([IDL.Vec(IDL.Principal)], [], []),
-		remove_satellites_controllers: IDL.Func(
-			[IDL.Vec(IDL.Principal), IDL.Vec(IDL.Principal)],
-			[],
-			[]
-		),
 		set_config: IDL.Func([IDL.Opt(Config)], [], []),
 		set_metadata: IDL.Func([IDL.Vec(IDL.Tuple(IDL.Text, IDL.Text))], [], []),
 		set_mission_control_controllers: IDL.Func([IDL.Vec(IDL.Principal), SetController], [], []),

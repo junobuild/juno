@@ -160,8 +160,6 @@ type User = record {
   config : opt Config;
 };
 service : (InitMissionControlArgs) -> {
-  add_mission_control_controllers : (vec principal) -> ();
-  add_satellites_controllers : (vec principal, vec principal) -> ();
   create_orbiter : (opt text) -> (Orbiter);
   create_orbiter_with_config : (CreateCanisterConfig) -> (Orbiter);
   create_satellite : (text) -> (Satellite);
@@ -188,8 +186,6 @@ service : (InitMissionControlArgs) -> {
     ) query;
   list_orbiters : () -> (vec record { principal; Orbiter }) query;
   list_satellites : () -> (vec record { principal; Satellite }) query;
-  remove_mission_control_controllers : (vec principal) -> ();
-  remove_satellites_controllers : (vec principal, vec principal) -> ();
   set_config : (opt Config) -> ();
   set_metadata : (vec record { text; text }) -> ();
   set_mission_control_controllers : (vec principal, SetController) -> ();

@@ -15,7 +15,8 @@ junobuild-satellite = { path = "../../../libs/satellite", default-features = fal
 	"on_delete_doc",
 	"on_init_sync",
 	"on_post_upgrade_sync",
-	"on_init_random_seed"
+	"on_init_random_seed",
+	"on_upload_asset"
 ] }
 junobuild-macros = { path = "../../../libs/macros" }
 junobuild-utils = { path = "../../../libs/utils" }

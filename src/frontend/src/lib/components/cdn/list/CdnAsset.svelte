@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { nonNullish } from '@dfinity/utils';
 	import type { SatelliteDid, MissionControlDid } from '$declarations';
-	import IconArrowCircleUp from '$lib/components/icons/IconArrowCircleUp.svelte';
+	import IconArrowUpward from '$lib/components/icons/IconArrowUpward.svelte';
 	import Identifier from '$lib/components/ui/Identifier.svelte';
 	import { i18n } from '$lib/stores/i18n.store';
 	import { formatToDate } from '$lib/utils/date.utils';
@@ -31,7 +31,7 @@
 <tr>
 	<td class="actions">
 		<button class="square" aria-label={$i18n.canisters.upgrade} onclick={openUpgrade}
-			><IconArrowCircleUp size="20px" /></button
+			><IconArrowUpward size="20px" /></button
 		>
 	</td>
 	<td><Identifier identifier={full_path} shortenLength={15} small={false} /></td>

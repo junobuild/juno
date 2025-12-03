@@ -1,5 +1,5 @@
 <script lang="ts">
-	import IconArrowCircleUp from '$lib/components/icons/IconArrowCircleUp.svelte';
+	import IconArrowUpward from '$lib/components/icons/IconArrowUpward.svelte';
 	import IconJunoLogo from '$lib/components/icons/IconJunoLogo.svelte';
 	import IconUser from '$lib/components/icons/IconUser.svelte';
 	import { i18n } from '$lib/stores/i18n.store';
@@ -18,7 +18,7 @@
 <tr>
 	<td>
 		<button class="square" aria-label={$i18n.canisters.upgrade} onclick={startUpgrade}
-			><IconArrowCircleUp size="20px" /></button
+			><IconArrowUpward size="20px" /></button
 		>
 	</td>
 	<td>{segmentLabel}</td>

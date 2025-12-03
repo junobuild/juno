@@ -1,7 +1,7 @@
 import type { MissionControlDid } from '$declarations';
 import { icpTransfer, icrcTransfer } from '$lib/api/mission-control.api';
 import { ICP_LEDGER_CANISTER_ID, IC_TRANSACTION_FEE_ICP } from '$lib/constants/app.constants';
-import { execute } from '$lib/services/progress.services';
+import { execute } from '$lib/services/_progress.services';
 import { i18n } from '$lib/stores/i18n.store';
 import { toasts } from '$lib/stores/toasts.store';
 import type { OptionIdentity } from '$lib/types/itentity';

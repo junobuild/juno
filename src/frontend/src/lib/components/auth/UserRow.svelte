@@ -6,7 +6,7 @@
 	import UserProvider from '$lib/components/auth/UserProvider.svelte';
 	import ButtonTableAction from '$lib/components/ui/ButtonTableAction.svelte';
 	import Identifier from '$lib/components/ui/Identifier.svelte';
-	import { openUserDetail } from '$lib/services/user/user.services';
+	import { openUserDetail } from '$lib/services/satellite/user/user.services';
 	import { authStore } from '$lib/stores/auth.store';
 	import { i18n } from '$lib/stores/i18n.store';
 	import type { User } from '$lib/types/user';

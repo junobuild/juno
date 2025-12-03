@@ -6,7 +6,7 @@
 	import AddCustomDomainForm from '$lib/components/hosting/AddCustomDomainForm.svelte';
 	import IconVerified from '$lib/components/icons/IconVerified.svelte';
 	import Modal from '$lib/components/ui/Modal.svelte';
-	import { configHosting } from '$lib/services/hosting.services';
+	import { configHosting } from '$lib/services/satellite/hosting.services';
 	import { authStore } from '$lib/stores/auth.store';
 	import { wizardBusy } from '$lib/stores/busy.store';
 	import { i18n } from '$lib/stores/i18n.store';

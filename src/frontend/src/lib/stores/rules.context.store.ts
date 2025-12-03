@@ -1,5 +1,5 @@
 import type { SatelliteDid } from '$declarations';
-import { reloadContextRules } from '$lib/services/rules.loader.services';
+import { reloadContextRules } from '$lib/services/satellite/rules.loader.services';
 import type { OptionIdentity } from '$lib/types/itentity';
 import type { RulesContext, RulesData } from '$lib/types/rules.context';
 import type { Principal } from '@icp-sdk/core/principal';

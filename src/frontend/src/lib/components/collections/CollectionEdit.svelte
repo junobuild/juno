@@ -14,7 +14,7 @@
 		type MemoryText,
 		type PermissionText
 	} from '$lib/constants/rules.constants';
-	import { setRule } from '$lib/services/collection.services';
+	import { setRule } from '$lib/services/satellite/collection.services';
 	import { authStore } from '$lib/stores/auth.store';
 	import { busy } from '$lib/stores/busy.store';
 	import { i18n } from '$lib/stores/i18n.store';

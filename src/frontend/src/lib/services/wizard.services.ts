@@ -5,20 +5,20 @@ import { updateAndStartMonitoring } from '$lib/api/mission-control.api';
 import { missionControlMonitored } from '$lib/derived/mission-control-settings.derived';
 import { missionControlConfigMonitoring } from '$lib/derived/mission-control-user.derived';
 import { isSkylab } from '$lib/env/app.env';
-import { loadCredits } from '$lib/services/credits.services';
+import { execute } from '$lib/services/_progress.services';
+import { loadCredits } from '$lib/services/console/credits.services';
 import { unsafeSetEmulatorControllerForSatellite } from '$lib/services/emulator.services';
-import { loadSettings, loadUserData } from '$lib/services/mission-control.services';
+import {
+	createSatellite,
+	createSatelliteWithConfig,
+	loadSatellites
+} from '$lib/services/mission-control/mission-control.satellites.services';
+import { loadSettings, loadUserData } from '$lib/services/mission-control/mission-control.services';
 import {
 	createOrbiter,
 	createOrbiterWithConfig,
 	loadOrbiters
 } from '$lib/services/orbiter/orbiters.services';
-import { execute } from '$lib/services/progress.services';
-import {
-	createSatellite,
-	createSatelliteWithConfig,
-	loadSatellites
-} from '$lib/services/satellites.services';
 import { waitMissionControlVersionLoaded } from '$lib/services/version/version.mission-control.services';
 import { busy } from '$lib/stores/busy.store';
 import { i18n } from '$lib/stores/i18n.store';

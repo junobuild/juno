@@ -13,7 +13,7 @@
 	} from '$lib/constants/app.constants';
 	import { authSignedOut } from '$lib/derived/auth.derived';
 	import { missionControlIdDerived } from '$lib/derived/mission-control.derived';
-	import { loadSatellites } from '$lib/services/satellites.services';
+	import { loadSatellites } from '$lib/services/mission-control/mission-control.satellites.services';
 	import { isBusy, wizardBusy } from '$lib/stores/busy.store';
 	import { i18n } from '$lib/stores/i18n.store';
 	import { toasts } from '$lib/stores/toasts.store';

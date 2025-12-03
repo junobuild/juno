@@ -1,5 +1,5 @@
-import { resetSnapshots } from '$lib/services/snapshots.services';
-import { resetSubnets } from '$lib/services/subnets.services';
+import { resetSnapshots } from '$lib/services/ic-mgmt/snapshots.services';
+import { resetSubnets } from '$lib/services/ic-mgmt/subnets.services';
 import { authStore } from '$lib/stores/auth.store';
 import { busy } from '$lib/stores/busy.store';
 import { i18n } from '$lib/stores/i18n.store';

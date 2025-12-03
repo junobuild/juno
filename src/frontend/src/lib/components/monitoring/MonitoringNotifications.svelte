@@ -7,7 +7,7 @@
 	import { missionControlSettingsLoaded } from '$lib/derived/mission-control-settings.derived';
 	import { missionControlConfigMonitoring } from '$lib/derived/mission-control-user.derived';
 	import { missionControlIdDerived } from '$lib/derived/mission-control.derived';
-	import { setMonitoringNotification } from '$lib/services/monitoring.services';
+	import { setMonitoringNotification } from '$lib/services/mission-control/monitoring.services';
 	import { authStore } from '$lib/stores/auth.store';
 	import { busy } from '$lib/stores/busy.store';
 	import { i18n } from '$lib/stores/i18n.store';

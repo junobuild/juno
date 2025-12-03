@@ -28,11 +28,14 @@ pub async fn create_canister<F, Fut>(
     }: CreateCanisterArgs,
 ) -> Result<Principal, String>
 where
-    F: FnOnce(Principal, MissionControlId, UserId, Option<SubnetId>) -> Fut,
+    F: FnOnce(Principal, Option<MissionControlId>, UserId, Option<SubnetId>) -> Fut,
     Fut: Future<Output = Result<Principal, String>>,
 {
-    // User should have a mission control center
     let mission_control = get_existing_mission_control(&user, &caller)?;
+
+    if let Some(mission_control_id) = mission_control.mission_control_id {
+
+    }
 
     match mission_control.mission_control_id {
         None => Err("No mission control center found.".to_string()),
@@ -73,12 +76,12 @@ where
 async fn create_canister_with_credits<F, Fut>(
     create: F,
     console: Principal,
-    mission_control_id: MissionControlId,
+    mission_control_id: Option<MissionControlId>,
     user: UserId,
     subnet_id: Option<SubnetId>,
 ) -> Result<Principal, String>
 where
-    F: FnOnce(Principal, MissionControlId, UserId, Option<SubnetId>) -> Fut,
+    F: FnOnce(Principal, Option<MissionControlId>, UserId, Option<SubnetId>) -> Fut,
     Fut: Future<Output = Result<Principal, String>>,
 {
     // Create the satellite
@@ -102,7 +105,7 @@ async fn create_canister_with_payment<F, Fut>(
     create: F,
     console: Principal,
     caller: Principal,
-    mission_control_id: MissionControlId,
+    mission_control_id: Option<MissionControlId>,
     CreateCanisterArgs {
         user,
         block_index,
@@ -111,7 +114,7 @@ async fn create_canister_with_payment<F, Fut>(
     fee: Tokens,
 ) -> Result<Principal, String>
 where
-    F: FnOnce(Principal, MissionControlId, UserId, Option<SubnetId>) -> Fut,
+    F: FnOnce(Principal, Option<MissionControlId>, UserId, Option<SubnetId>) -> Fut,
     Fut: Future<Output = Result<Principal, String>>,
 {
     let mission_control_account_identifier = principal_to_account_identifier(&caller, &SUB_ACCOUNT);

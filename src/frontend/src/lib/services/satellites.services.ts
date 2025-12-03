@@ -76,6 +76,7 @@ export const loadSatellites = async ({
 	reload?: boolean;
 }): Promise<{ result: 'skip' | 'success' | 'error' }> => {
 	if (isNullish(missionControlId)) {
+		satellitesUncertifiedStore.set([])
 		return { result: 'skip' };
 	}
 

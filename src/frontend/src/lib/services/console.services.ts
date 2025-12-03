@@ -31,8 +31,7 @@ export const initMissionControl = async ({
 	}
 
 	try {
-		// Poll to init mission control center
-		const { missionControl, certified } = await pollAndInitMissionControl({
+		const { missionControl, certified } = await getOrInitMissionControl({
 			identity
 		});
 
@@ -61,40 +60,6 @@ export const initMissionControl = async ({
 		return { result: 'error' };
 	}
 };
-
-const pollAndInitMissionControl = async ({
-	identity
-}: {
-	identity: Identity;
-	// eslint-disable-next-line require-await
-}): Promise<PollAndInitResult> =>
-	// eslint-disable-next-line no-async-promise-executor
-	new Promise<PollAndInitResult>(async (resolve, reject) => {
-		try {
-			const { missionControl, certified } = await getOrInitMissionControl({
-				identity
-			});
-
-			const missionControlId = fromNullable(missionControl.mission_control_id);
-
-			// TODO: we can/should probably add a max time to not retry forever even though the user will probably close their browsers.
-			if (isNullish(missionControlId)) {
-				setTimeout(async () => {
-					try {
-						const result = await pollAndInitMissionControl({ identity });
-						resolve(result);
-					} catch (err: unknown) {
-						reject(err);
-					}
-				}, 2000);
-				return;
-			}
-
-			resolve({ missionControl, certified });
-		} catch (err: unknown) {
-			reject(err);
-		}
-	});
 
 export const getOrInitMissionControl = async ({
 	identity

@@ -48,7 +48,7 @@ pub fn mission_control_wasm_arg(user: &UserId) -> Result<WasmArg, String> {
 
 pub fn satellite_wasm_arg(
     user: &UserId,
-    mission_control_id: &MissionControlId,
+    mission_control_id: &Option<MissionControlId>,
     storage: Option<InitStorageArgs>,
 ) -> Result<WasmArg, String> {
     let latest_version =
@@ -65,7 +65,7 @@ pub fn satellite_wasm_arg(
 
 pub fn orbiter_wasm_arg(
     user: &UserId,
-    mission_control_id: &MissionControlId,
+    mission_control_id: &Option<MissionControlId>,
 ) -> Result<WasmArg, String> {
     let latest_version = get_latest_orbiter_version().ok_or("No orbiter versions available.")?;
     let full_path = format!("/releases/orbiter-v{latest_version}.wasm.gz");

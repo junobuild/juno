@@ -23,7 +23,7 @@ pub async fn update_mission_control_controllers(
 // Note: we install the code the first time with the console as a controller to avoid to have to populate the satellite wasm in each mission control center.
 pub async fn remove_console_controller(
     canister_id: &Principal,
-    mission_control_id: &MissionControlId,
+    mission_control_id: &Option<MissionControlId>,
     user: &UserId,
 ) -> Result<(), String> {
     let controllers = user_mission_control_controllers(user, mission_control_id);
@@ -37,7 +37,10 @@ pub async fn remove_console_controller(
 
 pub fn user_mission_control_controllers(
     user: &UserId,
-    mission_control_id: &MissionControlId,
+    mission_control_id: &Option<MissionControlId>,
 ) -> Vec<Principal> {
-    Vec::from([*user, *mission_control_id])
+    [user]
+        .into_iter()
+        .chain(mission_control_id)
+        .collect()
 }

@@ -34,15 +34,20 @@ pub async fn create_satellite(
 
 async fn create_satellite_wasm(
     console: Principal,
-    mission_control_id: MissionControlId,
+    mission_control_id: Option<MissionControlId>,
     user: UserId,
     subnet_id: Option<SubnetId>,
     storage: Option<InitStorageArgs>,
 ) -> Result<Principal, String> {
     let wasm_arg = satellite_wasm_arg(&user, &mission_control_id, storage)?;
 
+    let temporary_init_controllers = [console, user]
+        .into_iter()
+        .chain(mission_control_id)
+        .collect();
+
     let create_settings_arg = CreateCanisterInitSettingsArg {
-        controllers: Vec::from([console, mission_control_id, user]),
+        controllers: temporary_init_controllers,
         freezing_threshold: Nat::from(FREEZING_THRESHOLD_ONE_YEAR),
     };
 
@@ -61,7 +66,7 @@ async fn create_satellite_wasm(
     match result {
         Err(error) => Err(error),
         Ok(satellite_id) => {
-            remove_console_controller(&satellite_id, &user, &mission_control_id).await?;
+            remove_console_controller(&satellite_id, &mission_control_id, &user).await?;
             Ok(satellite_id)
         }
     }

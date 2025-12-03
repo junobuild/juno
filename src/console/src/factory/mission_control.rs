@@ -13,7 +13,7 @@ use junobuild_shared::mgmt::ic::create_canister_install_code;
 use junobuild_shared::mgmt::types::ic::CreateCanisterInitSettingsArg;
 use junobuild_shared::types::state::UserId;
 
-pub async fn init_user_mission_control_with_caller() -> Result<MissionControl, String> {
+pub fn init_user_mission_control_with_caller() -> Result<MissionControl, String> {
     let caller = caller();
 
     let mission_control = get_mission_control(&caller)?;
@@ -24,9 +24,9 @@ pub async fn init_user_mission_control_with_caller() -> Result<MissionControl, S
             // Guard too many requests
             increment_mission_controls_rate()?;
 
-            init_empty_mission_control(&caller, &None);
-
-            create_mission_control(&caller).await
+            let mission_control = init_empty_mission_control(&caller, &None);
+            
+            Ok(mission_control)
         }
     }
 }

@@ -59,7 +59,7 @@ fn get_existing_mission_control_impl(
     }
 }
 
-pub fn init_empty_mission_control(user: &UserId, provider: &Option<Provider>) {
+pub fn init_empty_mission_control(user: &UserId, provider: &Option<Provider>) -> MissionControl {
     mutate_stable_state(|stable| init_empty_mission_control_impl(user, provider, stable))
 }
 
@@ -67,7 +67,7 @@ fn init_empty_mission_control_impl(
     user: &UserId,
     provider: &Option<Provider>,
     state: &mut StableState,
-) {
+) -> MissionControl {
     let now = time();
 
     let mission_control = MissionControl {
@@ -79,7 +79,9 @@ fn init_empty_mission_control_impl(
         updated_at: now,
     };
 
-    state.mission_controls.insert(*user, mission_control);
+    state.mission_controls.insert(*user, mission_control.clone());
+    
+    mission_control
 }
 
 pub fn add_mission_control(

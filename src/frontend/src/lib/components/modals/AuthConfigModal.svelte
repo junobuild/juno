@@ -13,7 +13,7 @@
 		updateAuthConfigInternetIdentity,
 		type UpdateAuthConfigResult,
 		updateAuthConfigGoogle
-	} from '$lib/services/auth/auth.config.services';
+	} from '$lib/services/console/auth/auth.config.services';
 	import { emulatorToggleOpenIdMonitoring } from '$lib/services/emulator.services';
 	import { authStore } from '$lib/stores/auth.store';
 	import { wizardBusy } from '$lib/stores/busy.store';

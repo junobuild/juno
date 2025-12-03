@@ -1,5 +1,5 @@
-import { reloadSatelliteProposals } from '$lib/services/proposals/proposals.list.satellite.services';
-import { loadSnapshots } from '$lib/services/snapshots.services';
+import { loadSnapshots } from '$lib/services/ic-mgmt/snapshots.services';
+import { reloadSatelliteProposals } from '$lib/services/satellite/proposals/proposals.list.satellite.services';
 import { wizardBusy } from '$lib/stores/busy.store';
 import { i18n } from '$lib/stores/i18n.store';
 import { toasts } from '$lib/stores/toasts.store';

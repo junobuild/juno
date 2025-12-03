@@ -5,7 +5,7 @@
 	import CdnAsset from '$lib/components/cdn/list/CdnAsset.svelte';
 	import DataCount from '$lib/components/data/DataCount.svelte';
 	import DataPaginator from '$lib/components/data/DataPaginator.svelte';
-	import { listWasmAssets } from '$lib/services/proposals/proposals.cdn.services';
+	import { listWasmAssets } from '$lib/services/satellite/proposals/proposals.cdn.services';
 	import { authStore } from '$lib/stores/auth.store';
 	import { i18n } from '$lib/stores/i18n.store';
 	import { initListParamsContext } from '$lib/stores/list-params.context.store';

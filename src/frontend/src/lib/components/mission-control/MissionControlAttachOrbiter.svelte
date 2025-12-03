@@ -3,7 +3,7 @@
 	import { createEventDispatcher } from 'svelte';
 	import CanisterAttach from '$lib/components/canister/CanisterAttach.svelte';
 	import IconLink from '$lib/components/icons/IconLink.svelte';
-	import { attachOrbiter } from '$lib/services/mission-control.services';
+	import { attachOrbiter } from '$lib/services/mission-control/mission-control.services';
 	import { i18n } from '$lib/stores/i18n.store';
 	import { toasts } from '$lib/stores/toasts.store';
 	import type { MissionControlId } from '$lib/types/mission-control';

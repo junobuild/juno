@@ -15,7 +15,7 @@
 		THREE_MONTHS,
 		TWO_YEARS
 	} from '$lib/constants/canister.constants';
-	import { updateSettings as updateSettingsServices } from '$lib/services/settings.services';
+	import { updateSettings as updateSettingsServices } from '$lib/services/ic-mgmt/settings.services';
 	import { authStore } from '$lib/stores/auth.store';
 	import { isBusy, wizardBusy } from '$lib/stores/busy.store';
 	import { i18n } from '$lib/stores/i18n.store';

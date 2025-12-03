@@ -6,7 +6,7 @@
 	import HostingSwitchMemory from '$lib/components/hosting/HostingSwitchMemory.svelte';
 	import SkeletonText from '$lib/components/ui/SkeletonText.svelte';
 	import Value from '$lib/components/ui/Value.svelte';
-	import { getRuleDapp } from '$lib/services/collection.services';
+	import { getRuleDapp } from '$lib/services/satellite/collection.services';
 	import { authStore } from '$lib/stores/auth.store';
 	import { i18n } from '$lib/stores/i18n.store';
 

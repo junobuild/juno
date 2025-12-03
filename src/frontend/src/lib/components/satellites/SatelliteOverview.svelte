@@ -15,7 +15,7 @@
 	import Identifier from '$lib/components/ui/Identifier.svelte';
 	import Value from '$lib/components/ui/Value.svelte';
 	import { testIds } from '$lib/constants/test-ids.constants';
-	import { listCustomDomains } from '$lib/services/custom-domain.services';
+	import { listCustomDomains } from '$lib/services/satellite/custom-domain.services';
 	import { i18n } from '$lib/stores/i18n.store';
 	import type { CanisterSyncData as CanisterSyncDataType } from '$lib/types/canister';
 	import type { SatelliteIdText } from '$lib/types/satellite';

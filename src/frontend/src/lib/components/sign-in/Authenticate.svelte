@@ -5,8 +5,8 @@
 	import ContainerCentered from '$lib/components/ui/ContainerCentered.svelte';
 	import Message from '$lib/components/ui/Message.svelte';
 	import Spinner from '$lib/components/ui/Spinner.svelte';
-	import { getAndClearAuthNavOrigin } from '$lib/services/auth/_auth.nav.services';
-	import { handleRedirectCallback } from '$lib/services/auth/auth.openid.services';
+	import { getAndClearAuthNavOrigin } from '$lib/services/console/auth/_auth.nav.services';
+	import { handleRedirectCallback } from '$lib/services/console/auth/auth.openid.services';
 	import { i18n } from '$lib/stores/i18n.store';
 
 	let state = $state<'loading' | 'ok' | 'error'>('loading');

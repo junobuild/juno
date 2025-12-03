@@ -6,10 +6,10 @@
 	import Overlays from '$lib/components/core/Overlays.svelte';
 	import AuthBroadcastGuard from '$lib/components/guards/AuthBroadcastGuard.svelte';
 	import { layoutNavigationTitle } from '$lib/derived/layout-navigation.derived';
-	import { displayAndCleanLogoutMsg } from '$lib/services/auth/auth.services';
-	import { initMissionControl } from '$lib/services/console.services';
-	import { syncSnapshots } from '$lib/services/snapshots.services';
-	import { syncSubnets } from '$lib/services/subnets.services';
+	import { displayAndCleanLogoutMsg } from '$lib/services/console/auth/auth.services';
+	import { initMissionControl } from '$lib/services/console/console.mission-control.services';
+	import { syncSnapshots } from '$lib/services/ic-mgmt/snapshots.services';
+	import { syncSubnets } from '$lib/services/ic-mgmt/subnets.services';
 	import { AuthWorker } from '$lib/services/workers/worker.auth.services';
 	import { authStore, type AuthStoreData } from '$lib/stores/auth.store';
 	import { i18n } from '$lib/stores/i18n.store';

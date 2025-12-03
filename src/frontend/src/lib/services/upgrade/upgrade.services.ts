@@ -1,4 +1,4 @@
-import { loadSnapshots } from '$lib/services/snapshots.services';
+import { loadSnapshots } from '$lib/services/ic-mgmt/snapshots.services';
 import { wizardBusy } from '$lib/stores/busy.store';
 import { i18n } from '$lib/stores/i18n.store';
 import { toasts } from '$lib/stores/toasts.store';

@@ -1,7 +1,7 @@
 import type { SatelliteDid } from '$declarations';
 import { setAuthConfig, setCustomDomain as setCustomDomainApi } from '$lib/api/satellites.api';
 import { registerDomain, validateDomain } from '$lib/rest/bn.v1.rest';
-import { execute } from '$lib/services/progress.services';
+import { execute } from '$lib/services/_progress.services';
 import { i18n } from '$lib/stores/i18n.store';
 import { toasts } from '$lib/stores/toasts.store';
 import type { OptionIdentity } from '$lib/types/itentity';

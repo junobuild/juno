@@ -1,5 +1,5 @@
 import type { SatelliteDid } from '$declarations';
-import { instantSatelliteVersion } from '$lib/services/feature.services';
+import { instantSatelliteVersion } from '$lib/services/_feature.services';
 import { downloadWasmFromDevCdn } from '$lib/services/upgrade/upgrade.download.services';
 import { i18n } from '$lib/stores/i18n.store';
 import { toasts } from '$lib/stores/toasts.store';

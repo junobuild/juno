@@ -2,7 +2,7 @@
 	import { untrack } from 'svelte';
 	import { fade } from 'svelte/transition';
 	import type { MissionControlDid } from '$declarations';
-	import { countHostingAssets } from '$lib/services/hosting.storage.services';
+	import { countHostingAssets } from '$lib/services/satellite/hosting.storage.services';
 	import { authStore } from '$lib/stores/auth.store';
 	import { i18n } from '$lib/stores/i18n.store';
 	import { versionStore } from '$lib/stores/version.store';

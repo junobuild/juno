@@ -23,8 +23,8 @@ pub async fn update_mission_control_controllers(
 // Note: we install the code the first time with the console as a controller to avoid to have to populate the satellite wasm in each mission control center.
 pub async fn remove_console_controller(
     canister_id: &Principal,
-    mission_control_id: &MissionControlId,
     user: &UserId,
+    mission_control_id: &MissionControlId,
 ) -> Result<(), String> {
     let controllers = user_mission_control_controllers(user, mission_control_id);
     let result = update_canister_controllers(*canister_id, controllers.to_owned()).await;

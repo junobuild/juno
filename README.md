@@ -1,9 +1,16 @@
 <div align="center" style="display:flex;flex-direction:column;">
   <a href="https://juno.build/">
-    <img src="https://github.com/junobuild/juno/raw/main/src/frontend/static/images/juno_logo.png" width="100%" alt="Juno" role="presentation"/>
+    <img src="https://github.com/junobuild/juno/raw/main/src/frontend/static/images/juno_logo.png" width="100%" alt="Juno logo" role="presentation"/>
   </a>
-
 </div>
+
+<p align="center">
+  <a href="https://github.com/junobuild/juno"><img alt="GitHub Actions Workflow Status" src="https://img.shields.io/github/actions/workflow/status/junobuild/juno/release.yml?style=for-the-badge"></a>
+  <a href="https://github.com/junobuild/juno"><img src="https://img.shields.io/github/last-commit/junobuild/juno/main?commit&style=for-the-badge" alt="Last Commit" /></a>
+  <a href="https://discord.gg/wHZ57Z2RAG"><img src="https://dcbadge.limes.pink/api/server/https://discord.gg/wHZ57Z2RAG?style=for-the-badge" alt="Discord" /></a>
+</p>
+
+## ⭐️ Description
 
 [Juno] is an open-source serverless platform for hosting static websites, building web applications, and running serverless functions with the privacy and control of self-hosting.
 

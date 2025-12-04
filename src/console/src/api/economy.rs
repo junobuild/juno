@@ -3,7 +3,7 @@ use crate::store::heap::{
     get_orbiter_fee, get_satellite_fee, set_create_orbiter_fee, set_create_satellite_fee,
 };
 use crate::store::stable::{
-    add_credits as add_credits_store, get_credits as get_credits_store, has_credits,
+    add_credits as add_credits_store, get_credits as get_credits_store, has_mission_control_and_credits,
     list_payments as list_payments_state,
 };
 use crate::types::state::Payments;
@@ -40,7 +40,7 @@ fn get_create_satellite_fee(
 
     let fee = get_satellite_fee();
 
-    match has_credits(&user, &caller, &fee) {
+    match has_mission_control_and_credits(&user, &caller, &fee) {
         false => Some(fee),
         true => None,
     }
@@ -54,7 +54,7 @@ fn get_create_orbiter_fee(
 
     let fee = get_orbiter_fee();
 
-    match has_credits(&user, &caller, &fee) {
+    match has_mission_control_and_credits(&user, &caller, &fee) {
         false => Some(fee),
         true => None,
     }

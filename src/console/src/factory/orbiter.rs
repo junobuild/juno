@@ -5,6 +5,7 @@ use crate::factory::utils::wasm::orbiter_wasm_arg;
 use crate::store::heap::{get_orbiter_fee, increment_orbiters_rate};
 use candid::{Nat, Principal};
 use junobuild_shared::constants_shared::CREATE_ORBITER_CYCLES;
+use junobuild_shared::ic::api::id;
 use junobuild_shared::mgmt::cmc::cmc_create_canister_install_code;
 use junobuild_shared::mgmt::ic::create_canister_install_code;
 use junobuild_shared::mgmt::types::cmc::SubnetId;
@@ -13,7 +14,6 @@ use junobuild_shared::types::interface::CreateCanisterArgs;
 use junobuild_shared::types::state::{MissionControlId, UserId};
 
 pub async fn create_orbiter(
-    console: Principal,
     caller: Principal,
     args: CreateCanisterArgs,
 ) -> Result<Principal, String> {
@@ -21,7 +21,6 @@ pub async fn create_orbiter(
         create_orbiter_wasm,
         &increment_orbiters_rate,
         &get_orbiter_fee,
-        console,
         caller,
         args,
     )
@@ -29,14 +28,15 @@ pub async fn create_orbiter(
 }
 
 async fn create_orbiter_wasm(
-    console: Principal,
     mission_control_id: Option<MissionControlId>,
     user: UserId,
     subnet_id: Option<SubnetId>,
 ) -> Result<Principal, String> {
     let wasm_arg = orbiter_wasm_arg(&user, &mission_control_id)?;
 
-    let temporary_init_controllers = [console, user]
+    // We temporarily use the Console as a controller to create the canister but
+    // remove it as soon as it is spin.
+    let temporary_init_controllers = [id(), user]
         .into_iter()
         .chain(mission_control_id)
         .collect();

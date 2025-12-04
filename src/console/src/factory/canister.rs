@@ -1,8 +1,5 @@
 use crate::constants::SATELLITE_CREATION_FEE_ICP;
-use crate::store::stable::{
-    get_existing_mission_control, has_credits, insert_new_payment, is_known_payment,
-    update_payment_completed, update_payment_refunded, use_credits,
-};
+use crate::store::stable::{get_existing_mission_control, get_mission_control, has_credits, insert_new_payment, is_known_payment, update_payment_completed, update_payment_refunded, use_credits};
 use crate::types::ledger::Payment;
 use candid::Principal;
 use ic_ledger_types::{BlockIndex, Tokens};
@@ -14,12 +11,14 @@ use junobuild_shared::mgmt::types::cmc::SubnetId;
 use junobuild_shared::types::interface::CreateCanisterArgs;
 use junobuild_shared::types::state::{MissionControlId, UserId};
 use std::future::Future;
+use junobuild_shared::ic::api::id;
+use junobuild_shared::utils::principal_equal;
+use crate::types::state::MissionControl;
 
 pub async fn create_canister<F, Fut>(
     create: F,
     increment_rate: &dyn Fn() -> Result<(), String>,
     get_fee: &dyn Fn() -> Tokens,
-    console: Principal,
     caller: Principal,
     CreateCanisterArgs {
         user,
@@ -28,64 +27,108 @@ pub async fn create_canister<F, Fut>(
     }: CreateCanisterArgs,
 ) -> Result<Principal, String>
 where
-    F: FnOnce(Principal, Option<MissionControlId>, UserId, Option<SubnetId>) -> Fut,
+    F: FnOnce(Option<MissionControlId>, UserId, Option<SubnetId>) -> Fut,
     Fut: Future<Output = Result<Principal, String>>,
 {
-    let mission_control = get_existing_mission_control(&user, &caller)?;
+    let mission_control = get_mission_control(&user)?.ok_or("No mission control metadata found.")?;
 
-    if let Some(mission_control_id) = mission_control.mission_control_id {
-
+    if principal_equal(caller, mission_control.owner) {
+        // Caller is user
     }
 
-    match mission_control.mission_control_id {
-        None => Err("No mission control center found.".to_string()),
-        Some(mission_control_id) => {
-            let fee = get_fee();
+    let mission_control_id = mission_control.mission_control_id
+        .ok_or("No mission control center found.".to_string())?;
 
-            if has_credits(&user, &mission_control_id, &fee) {
-                // Guard too many requests
-                increment_rate()?;
-
-                return create_canister_with_credits(
-                    create,
-                    console,
-                    mission_control_id,
-                    user,
-                    subnet_id,
-                )
-                .await;
-            }
-
-            create_canister_with_payment(
-                create,
-                console,
-                caller,
-                mission_control_id,
-                CreateCanisterArgs {
-                    user,
-                    block_index,
-                    subnet_id,
-                },
-                fee,
-            )
-            .await
-        }
+    if principal_equal(caller, mission_control_id) {
+        // Caller is mission control
     }
+
+    let fee = get_fee();
+
+    if has_credits(&mission_control, &fee) {
+        // Guard too many requests
+        increment_rate()?;
+
+        return create_canister_with_credits(
+            create,
+            mission_control.mission_control_id,
+            user,
+            subnet_id,
+        )
+            .await;
+    }
+
+    create_canister_with_payment(
+        create,
+        caller,
+        mission_control.mission_control_id,
+        CreateCanisterArgs {
+            user,
+            block_index,
+            subnet_id,
+        },
+        fee,
+    )
+        .await
+}
+
+async fn create_canister_with_account<F, Fut>(
+    create: F,
+    increment_rate: &dyn Fn() -> Result<(), String>,
+    get_fee: &dyn Fn() -> Tokens,
+    caller: Principal,
+    mission_control: &MissionControl,
+    CreateCanisterArgs {
+        user,
+        block_index,
+        subnet_id,
+    }: CreateCanisterArgs,
+) -> Result<Principal, String>
+where
+    F: FnOnce(Option<MissionControlId>, UserId, Option<SubnetId>) -> Fut,
+    Fut: Future<Output = Result<Principal, String>>,
+{
+    let fee = get_fee();
+
+    if has_credits(mission_control, &fee) {
+        // Guard too many requests
+        increment_rate()?;
+
+        return create_canister_with_credits(
+            create,
+            mission_control.mission_control_id,
+            user,
+            subnet_id,
+        )
+            .await;
+    }
+
+    create_canister_with_payment(
+        create,
+        caller,
+        mission_control.mission_control_id,
+        CreateCanisterArgs {
+            user,
+            block_index,
+            subnet_id,
+        },
+        fee,
+    )
+        .await
 }
 
 async fn create_canister_with_credits<F, Fut>(
     create: F,
-    console: Principal,
     mission_control_id: Option<MissionControlId>,
     user: UserId,
     subnet_id: Option<SubnetId>,
 ) -> Result<Principal, String>
 where
-    F: FnOnce(Principal, Option<MissionControlId>, UserId, Option<SubnetId>) -> Fut,
+    F: FnOnce(Option<MissionControlId>, UserId, Option<SubnetId>) -> Fut,
     Fut: Future<Output = Result<Principal, String>>,
 {
     // Create the satellite
-    let create_canister_result = create(console, mission_control_id, user, subnet_id).await;
+    let create_canister_result = create(mission_control_id, user, subnet_id).await;
 
     match create_canister_result {
         Err(_) => Err("Segment creation with credits failed.".to_string()),
@@ -103,7 +146,6 @@ where
 
 async fn create_canister_with_payment<F, Fut>(
     create: F,
-    console: Principal,
     caller: Principal,
     mission_control_id: Option<MissionControlId>,
     CreateCanisterArgs {
@@ -118,7 +160,7 @@ where
     Fut: Future<Output = Result<Principal, String>>,
 {
     let mission_control_account_identifier = principal_to_account_identifier(&caller, &SUB_ACCOUNT);
-    let console_account_identifier = principal_to_account_identifier(&console, &SUB_ACCOUNT);
+    let console_account_identifier = principal_to_account_identifier(&id(), &SUB_ACCOUNT);
 
     if block_index.is_none() {
         return Err("No block index provided to verify payment.".to_string());
@@ -152,7 +194,7 @@ where
             insert_new_payment(&user, &mission_control_payment_block_index)?;
 
             // Create the canister (satellite or orbiter)
-            let create_canister_result = create(console, mission_control_id, user, subnet_id).await;
+            let create_canister_result = create(mission_control_id, user, subnet_id).await;
 
             match create_canister_result {
                 Err(error) => {

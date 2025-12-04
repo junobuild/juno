@@ -165,6 +165,7 @@ pub mod interface {
     #[derive(CandidType, Serialize, Deserialize)]
     pub struct Authentication {
         pub delegation: PreparedDelegation,
+        // TODO: rename to account
         pub mission_control: Account,
     }
 

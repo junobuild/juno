@@ -11,11 +11,11 @@ pub fn get_credits(user: &UserId) -> Result<Tokens, &'static str> {
 }
 
 fn get_credits_impl(user: &UserId, state: &StableState) -> Result<Tokens, &'static str> {
-    let existing_mission_control = state.accounts.get(user);
+    let existing_account = state.accounts.get(user);
 
-    match existing_mission_control {
-        None => Err("User does not have a mission control center"),
-        Some(mission_control) => Ok(mission_control.credits),
+    match existing_account {
+        None => Err("User does not have an account"),
+        Some(account) => Ok(account.credits),
     }
 }
 
@@ -37,12 +37,12 @@ pub fn has_mission_control_and_credits(
     mission_control_id: &MissionControlId,
     fee: &Tokens,
 ) -> bool {
-    let mission_control = get_existing_account(user, mission_control_id).ok_or(false)?;
-    has_credits(&mission_control, fee)
+    let account = get_existing_account(user, mission_control_id).ok_or(false)?;
+    has_credits(&account, fee)
 }
 
-pub fn has_credits(mission_control: &Account, fee: &Tokens) -> bool {
-    mission_control.credits.e8s() * fee.e8s() >= fee.e8s() * E8S_PER_ICP.e8s()
+pub fn has_credits(account: &Account, fee: &Tokens) -> bool {
+    account.credits.e8s() * fee.e8s() >= fee.e8s() * E8S_PER_ICP.e8s()
 }
 
 pub fn use_credits(user: &UserId) -> Result<Tokens, &'static str> {
@@ -59,30 +59,30 @@ fn update_credits_impl(
     credits: &Tokens,
     state: &mut StableState,
 ) -> Result<Tokens, &'static str> {
-    let existing_mission_control = state.accounts.get(user);
+    let existing_account = state.accounts.get(user);
 
-    match existing_mission_control {
-        None => Err("User does not have a mission control center"),
-        Some(mission_control) => {
+    match existing_account {
+        None => Err("User does not have an account"),
+        Some(account) => {
             let now = time();
 
             let remaining_credits_e8s = match increment {
-                true => mission_control.credits.e8s() + credits.e8s(),
-                false => match mission_control.credits.e8s() > credits.e8s() {
-                    true => mission_control.credits.e8s() - credits.e8s(),
+                true => account.credits.e8s() + credits.e8s(),
+                false => match account.credits.e8s() > credits.e8s() {
+                    true => account.credits.e8s() - credits.e8s(),
                     false => 0,
                 },
             };
 
             let remaining_credits = Tokens::from_e8s(remaining_credits_e8s);
 
-            let update_mission_control = Account {
+            let update_account = Account {
                 credits: remaining_credits,
                 updated_at: now,
-                ..mission_control
+                ..account
             };
 
-            state.accounts.insert(*user, update_mission_control);
+            state.accounts.insert(*user, update_account);
 
             Ok(remaining_credits)
         }

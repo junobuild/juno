@@ -12,7 +12,6 @@
 	import { getContext, type Snippet } from 'svelte';
 	import type { SatelliteDid } from '$declarations';
 	import DataUpload from '$lib/components/data/DataUpload.svelte';
-	import IconAutoRenew from '$lib/components/icons/IconAutoRenew.svelte';
 	import InputGenerate from '$lib/components/ui/InputGenerate.svelte';
 	import Value from '$lib/components/ui/Value.svelte';
 	import { authStore } from '$lib/stores/auth.store';

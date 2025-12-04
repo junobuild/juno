@@ -33,12 +33,14 @@ describe('Console', () => {
 	let pic: PocketIc;
 	let actor: Actor<ConsoleActor>;
 
+	let consoleId: Principal;
+
 	const controller = Ed25519KeyIdentity.generate();
 
 	beforeAll(async () => {
 		pic = await PocketIc.create(inject('PIC_URL'));
 
-		const { actor: c } = await pic.setupCanister<ConsoleActor>({
+		const { actor: c, canisterId: cId } = await pic.setupCanister<ConsoleActor>({
 			idlFactory: idlFactoryConsole,
 			wasm: CONSOLE_WASM_PATH,
 			sender: controller.getPrincipal(),
@@ -46,6 +48,7 @@ describe('Console', () => {
 		});
 
 		actor = c;
+		consoleId = cId;
 		actor.setIdentity(controller);
 
 		await deploySegments({ actor });
@@ -123,6 +126,40 @@ describe('Console', () => {
 		expect(maybeMic[1].metadata).toHaveLength(0);
 	};
 
+	const assertControllers = async ({
+		user,
+		canisterId,
+		controllers
+	}: {
+		user: Identity;
+		canisterId: Principal;
+		controllers: Principal[];
+	}) => {
+		const result = await canisterStatus({
+			sender: user,
+			pic,
+			canisterId
+		});
+
+		const settings = result?.settings;
+
+		expect(settings?.controllers).toHaveLength(2);
+
+		const maybeConsole = (settings?.controllers ?? []).find(
+			(controller) => controller.toText() === consoleId.toText()
+		);
+
+		expect(maybeConsole).toBeUndefined();
+
+		for (const controller of controllers) {
+			const maybeController = (settings?.controllers ?? []).find(
+				(c) => c.toText() === controller.toText()
+			);
+
+			expect(maybeController).not.toBeUndefined();
+		}
+	};
+
 	describe('User', () => {
 		let user: Identity;
 		let missionControlId: Principal | undefined;
@@ -156,6 +193,16 @@ describe('Console', () => {
 					missionControlId,
 					canisterId: missionControlId,
 					freezingThreshold: BigInt(ONE_YEAR)
+				});
+			});
+
+			it('should create a mission control with expected controllers', async () => {
+				assertNonNullish(missionControlId);
+
+				await assertControllers({
+					canisterId: missionControlId,
+					user,
+					controllers: [missionControlId, user.getPrincipal()]
 				});
 			});
 
@@ -213,6 +260,16 @@ describe('Console', () => {
 						missionControlId,
 						canisterId: satelliteId,
 						freezingThreshold: BigInt(ONE_YEAR)
+					});
+				});
+
+				it('should create a satellite with expected controllers', async () => {
+					assertNonNullish(missionControlId);
+
+					await assertControllers({
+						canisterId: satelliteId,
+						user,
+						controllers: [missionControlId, user.getPrincipal()]
 					});
 				});
 
@@ -344,6 +401,17 @@ describe('Console', () => {
 					missionControlId,
 					canisterId: orbiterId,
 					freezingThreshold: BigInt(THREE_MONTHS)
+				});
+			});
+
+			it('should create a satellite with expected controllers', async () => {
+				assertNonNullish(missionControlId);
+				assertNonNullish(orbiterId);
+
+				await assertControllers({
+					canisterId: orbiterId,
+					user,
+					controllers: [missionControlId, user.getPrincipal()]
 				});
 			});
 

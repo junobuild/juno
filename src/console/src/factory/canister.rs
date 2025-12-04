@@ -1,5 +1,5 @@
 use crate::constants::SATELLITE_CREATION_FEE_ICP;
-use crate::store::stable::{get_existing_mission_control, get_mission_control, has_credits, insert_new_payment, is_known_payment, update_payment_completed, update_payment_refunded, use_credits};
+use crate::store::stable::{get_existing_account, get_account, has_credits, insert_new_payment, is_known_payment, update_payment_completed, update_payment_refunded, use_credits};
 use crate::types::ledger::Payment;
 use candid::Principal;
 use ic_ledger_types::{BlockIndex, Tokens};
@@ -13,7 +13,7 @@ use junobuild_shared::types::state::{MissionControlId, UserId};
 use std::future::Future;
 use junobuild_shared::ic::api::id;
 use junobuild_shared::utils::principal_equal;
-use crate::types::state::MissionControl;
+use crate::types::state::Account;
 
 pub async fn create_canister<F, Fut>(
     create: F,
@@ -30,7 +30,7 @@ where
     F: FnOnce(Option<MissionControlId>, UserId, Option<SubnetId>) -> Fut,
     Fut: Future<Output = Result<Principal, String>>,
 {
-    let mission_control = get_mission_control(&user)?.ok_or("No mission control metadata found.")?;
+    let mission_control = get_account(&user)?.ok_or("No account found.")?;
 
     if principal_equal(caller, mission_control.owner) {
         // Caller is user
@@ -77,7 +77,7 @@ async fn create_canister_with_account<F, Fut>(
     increment_rate: &dyn Fn() -> Result<(), String>,
     get_fee: &dyn Fn() -> Tokens,
     caller: Principal,
-    mission_control: &MissionControl,
+    mission_control: &Account,
     CreateCanisterArgs {
         user,
         block_index,

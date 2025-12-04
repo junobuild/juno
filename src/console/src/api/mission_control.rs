@@ -3,14 +3,16 @@ use crate::guards::{caller_is_admin_controller, caller_is_observatory};
 use crate::store::stable::{
     get_existing_mission_control, get_mission_control, list_mission_controls,
 };
-use crate::types::state::{MissionControl, MissionControls};
+use crate::types::state::{Account, Accounts};
 use ic_cdk_macros::{query, update};
 use junobuild_shared::ic::api::caller;
 use junobuild_shared::ic::UnwrapOrTrap;
 use junobuild_shared::types::interface::AssertMissionControlCenterArgs;
 
+// TODO: to be rename all endpoints to account
+
 #[query]
-fn get_user_mission_control_center() -> Option<MissionControl> {
+fn get_user_mission_control_center() -> Option<Account> {
     let caller = caller();
     get_mission_control(&caller).unwrap_or_trap()
 }
@@ -26,12 +28,12 @@ fn assert_mission_control_center(
 }
 
 #[query(guard = "caller_is_admin_controller")]
-fn list_user_mission_control_centers() -> MissionControls {
+fn list_user_mission_control_centers() -> Accounts {
     list_mission_controls()
 }
 
 #[update]
-fn init_user_mission_control_center() -> MissionControl {
+fn init_user_mission_control_center() -> Accounts {
     init_user_mission_control_with_caller()
         .unwrap_or_trap()
 }

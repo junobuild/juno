@@ -23,7 +23,11 @@ import {
 	uploadFileWithProposal
 } from '../../utils/console-tests.utils';
 import { tick } from '../../utils/pic-tests.utils';
-import { controllersInitArgs, downloadConsole } from '../../utils/setup-tests.utils';
+import {
+	CONSOLE_WASM_PATH,
+	controllersInitArgs,
+	downloadConsole
+} from '../../utils/setup-tests.utils';
 
 describe('Console > Upgrade', () => {
 	let pic: PocketIc;
@@ -352,6 +356,52 @@ describe('Console > Upgrade', () => {
 
 				expect(proposalId).toEqual(1n);
 			});
+		});
+	});
+
+	describe('v0.1.5 -> current', () => {
+		let actor: Actor<ConsoleActor>;
+
+		const upgradeCurrent = async () => {
+			await tick(pic);
+
+			await pic.upgradeCanister({
+				canisterId,
+				wasm: CONSOLE_WASM_PATH,
+				sender: controller.getPrincipal()
+			});
+		};
+
+		beforeEach(async () => {
+			pic = await PocketIc.create(inject('PIC_URL'));
+
+			const destination = await downloadConsole({ junoVersion: '0.0.61', version: '0.1.5' });
+
+			const { actor: c, canisterId: cId } = await pic.setupCanister<ConsoleActor>({
+				idlFactory: idlFactoryConsole,
+				wasm: destination,
+				arg: controllersInitArgs(controller),
+				sender: controller.getPrincipal()
+			});
+
+			actor = c;
+			canisterId = cId;
+			actor.setIdentity(controller);
+
+			await updateRateConfig({ actor });
+
+			await deploySegments({ actor });
+		});
+
+		it('should still provide mission control after rename to accounts', async () => {
+			const originalUsers = await initMissionControls({ actor, pic, length: 3 });
+
+			await upgradeCurrent();
+
+			const newActor = pic.createActor<ConsoleActor>(idlFactoryConsole, canisterId);
+			newActor.setIdentity(controller);
+
+			await testUsers({ users: originalUsers, actor: newActor });
 		});
 	});
 });

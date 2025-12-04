@@ -1,7 +1,7 @@
 use crate::factory::mission_control::init_user_mission_control_with_provider;
-use crate::store::stable::{get_mission_control, update_provider};
+use crate::store::stable::{get_account, update_provider};
 use crate::types::state::OpenId;
-use crate::types::state::{MissionControl, OpenIdData, Provider};
+use crate::types::state::{Account, OpenIdData, Provider};
 use candid::Principal;
 use junobuild_auth::delegation::types::UserKey;
 use junobuild_auth::openid::types::interface::OpenIdCredential;
@@ -10,10 +10,10 @@ use junobuild_auth::openid::types::provider::OpenIdProvider;
 pub async fn register_mission_control(
     public_key: &UserKey,
     credential: &OpenIdCredential,
-) -> Result<MissionControl, String> {
+) -> Result<Account, String> {
     let user_id = Principal::self_authenticating(public_key);
 
-    let current_mission_control = get_mission_control(&user_id)?;
+    let current_mission_control = get_account(&user_id)?;
 
     let existing_provider_data: Option<&OpenIdData> = match &current_mission_control {
         None => None, // A new user

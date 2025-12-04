@@ -22,7 +22,7 @@ fn insert_new_payment_impl(
     block_index: &BlockIndex,
     state: &mut StableState,
 ) -> Result<Payment, &'static str> {
-    let existing_mission_control = state.mission_controls.get(user);
+    let existing_mission_control = state.accounts.get(user);
 
     match existing_mission_control {
         None => Err("User does not have a mission control center"),

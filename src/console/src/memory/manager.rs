@@ -6,7 +6,7 @@ use junobuild_shared::types::memory::Memory;
 use std::cell::RefCell;
 
 const UPGRADES: MemoryId = MemoryId::new(0);
-const MISSION_CONTROLS: MemoryId = MemoryId::new(1);
+const ACCOUNTS: MemoryId = MemoryId::new(1);
 const PAYMENTS: MemoryId = MemoryId::new(2);
 const PROPOSAL_ASSETS: MemoryId = MemoryId::new(3);
 const PROPOSAL_CONTENT_CHUNKS: MemoryId = MemoryId::new(4);
@@ -23,8 +23,8 @@ pub fn get_memory_upgrades() -> Memory {
     MEMORY_MANAGER.with(|m| m.borrow().get(UPGRADES))
 }
 
-fn get_memory_mission_controls() -> Memory {
-    MEMORY_MANAGER.with(|m| m.borrow().get(MISSION_CONTROLS))
+fn get_memory_accounts() -> Memory {
+    MEMORY_MANAGER.with(|m| m.borrow().get(ACCOUNTS))
 }
 
 fn get_memory_payments() -> Memory {
@@ -45,7 +45,7 @@ fn get_memory_proposals() -> Memory {
 
 pub fn init_stable_state() -> StableState {
     StableState {
-        mission_controls: StableBTreeMap::init(get_memory_mission_controls()),
+        accounts: StableBTreeMap::init(get_memory_accounts()),
         payments: StableBTreeMap::init(get_memory_payments()),
         proposals_assets: StableBTreeMap::init(get_memory_assets()),
         proposals_content_chunks: StableBTreeMap::init(get_memory_content_chunks()),

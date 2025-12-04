@@ -1,7 +1,7 @@
 use crate::constants::E8S_PER_ICP;
 use crate::store::services::{mutate_stable_state, read_stable_state};
-use crate::store::stable::get_existing_mission_control;
-use crate::types::state::{MissionControl, StableState};
+use crate::store::stable::get_existing_account;
+use crate::types::state::{Account, StableState};
 use ic_cdk::api::time;
 use ic_ledger_types::Tokens;
 use junobuild_shared::types::state::{MissionControlId, UserId};
@@ -11,7 +11,7 @@ pub fn get_credits(user: &UserId) -> Result<Tokens, &'static str> {
 }
 
 fn get_credits_impl(user: &UserId, state: &StableState) -> Result<Tokens, &'static str> {
-    let existing_mission_control = state.mission_controls.get(user);
+    let existing_mission_control = state.accounts.get(user);
 
     match existing_mission_control {
         None => Err("User does not have a mission control center"),
@@ -33,7 +33,7 @@ fn get_credits_impl(user: &UserId, state: &StableState) -> Result<Tokens, &'stat
 // ---------------------------------------------------------
 
 pub fn has_credits(user: &UserId, mission_control: &MissionControlId, fee: &Tokens) -> bool {
-    let mission_control = get_existing_mission_control(user, mission_control);
+    let mission_control = get_existing_account(user, mission_control);
 
     match mission_control {
         Err(_) => false,
@@ -57,7 +57,7 @@ fn update_credits_impl(
     credits: &Tokens,
     state: &mut StableState,
 ) -> Result<Tokens, &'static str> {
-    let existing_mission_control = state.mission_controls.get(user);
+    let existing_mission_control = state.accounts.get(user);
 
     match existing_mission_control {
         None => Err("User does not have a mission control center"),
@@ -74,13 +74,13 @@ fn update_credits_impl(
 
             let remaining_credits = Tokens::from_e8s(remaining_credits_e8s);
 
-            let update_mission_control = MissionControl {
+            let update_mission_control = Account {
                 credits: remaining_credits,
                 updated_at: now,
                 ..mission_control
             };
 
-            state.mission_controls.insert(*user, update_mission_control);
+            state.accounts.insert(*user, update_mission_control);
 
             Ok(remaining_credits)
         }

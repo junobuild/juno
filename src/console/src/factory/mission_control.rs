@@ -3,9 +3,9 @@ use crate::factory::utils::controllers::update_mission_control_controllers;
 use crate::factory::utils::wasm::mission_control_wasm_arg;
 use crate::store::heap::increment_mission_controls_rate;
 use crate::store::stable::{
-    add_mission_control, delete_mission_control, get_mission_control, init_empty_mission_control,
+    add_account, delete_account, get_account, init_account_with_empty_mission_control,
 };
-use crate::types::state::{MissionControl, Provider};
+use crate::types::state::{Account, Provider};
 use candid::Nat;
 use junobuild_shared::constants_shared::CREATE_MISSION_CONTROL_CYCLES;
 use junobuild_shared::ic::api::{caller, id};
@@ -13,10 +13,10 @@ use junobuild_shared::mgmt::ic::create_canister_install_code;
 use junobuild_shared::mgmt::types::ic::CreateCanisterInitSettingsArg;
 use junobuild_shared::types::state::UserId;
 
-pub async fn init_user_mission_control_with_caller() -> Result<MissionControl, String> {
+pub async fn init_user_mission_control_with_caller() -> Result<Account, String> {
     let caller = caller();
 
-    let mission_control = get_mission_control(&caller)?;
+    let mission_control = get_account(&caller)?;
 
     match mission_control {
         Some(mission_control) => Ok(mission_control),
@@ -24,7 +24,7 @@ pub async fn init_user_mission_control_with_caller() -> Result<MissionControl, S
             // Guard too many requests
             increment_mission_controls_rate()?;
 
-            init_empty_mission_control(&caller, &None);
+            init_account_with_empty_mission_control(&caller, &None);
 
             create_mission_control(&caller).await
         }
@@ -34,13 +34,13 @@ pub async fn init_user_mission_control_with_caller() -> Result<MissionControl, S
 pub async fn init_user_mission_control_with_provider(
     user: &UserId,
     provider: &Provider,
-) -> Result<MissionControl, String> {
-    init_empty_mission_control(user, &Some(provider.clone()));
+) -> Result<Account, String> {
+    init_account_with_empty_mission_control(user, &Some(provider.clone()));
 
     create_mission_control(user).await
 }
 
-async fn create_mission_control(user_id: &UserId) -> Result<MissionControl, String> {
+async fn create_mission_control(user_id: &UserId) -> Result<Account, String> {
     let wasm_arg = mission_control_wasm_arg(user_id)?;
 
     let console = id();
@@ -60,13 +60,13 @@ async fn create_mission_control(user_id: &UserId) -> Result<MissionControl, Stri
     match create {
         Err(e) => {
             // We delete the pending empty mission control center from the list - e.g. this can happens if manager is out of cycles and user would be blocked
-            delete_mission_control(user_id);
+            delete_account(user_id);
             Err(["Canister cannot be initialized.", &e].join(""))
         }
         Ok(mission_control_id) => {
             // There error is unlikely to happen as the implementation ensures a mission control
             // metadata was created before calling this factory function.
-            let mission_control = add_mission_control(user_id, &mission_control_id)?;
+            let mission_control = add_account(user_id, &mission_control_id)?;
 
             update_mission_control_controllers(&mission_control_id, user_id).await?;
 

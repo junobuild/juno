@@ -16,11 +16,11 @@ pub mod state {
     use serde::{Deserialize, Serialize};
     use std::collections::{HashMap, HashSet};
 
-    pub type MissionControls = HashMap<UserId, MissionControl>;
+    pub type Accounts = HashMap<UserId, Account>;
     pub type Payments = HashMap<BlockIndex, Payment>;
     pub type InvitationCodes = HashMap<InvitationCode, InvitationCodeRedeem>;
 
-    pub type MissionControlsStable = StableBTreeMap<UserId, MissionControl, Memory>;
+    pub type AccountsStable = StableBTreeMap<UserId, Account, Memory>;
     pub type PaymentsStable = StableBTreeMap<BlockIndex, Payment, Memory>;
 
     #[derive(Serialize, Deserialize)]
@@ -33,7 +33,7 @@ pub mod state {
     }
 
     pub struct StableState {
-        pub mission_controls: MissionControlsStable,
+        pub accounts: AccountsStable,
         pub payments: PaymentsStable,
         pub proposals_assets: ProposalAssetsStable,
         pub proposals_content_chunks: ProposalContentChunksStable,
@@ -43,7 +43,7 @@ pub mod state {
     #[derive(Default, CandidType, Serialize, Deserialize, Clone)]
     pub struct HeapState {
         #[deprecated(note = "Deprecated. Use stable memory instead.")]
-        pub mission_controls: MissionControls,
+        pub mission_controls: Accounts,
         #[deprecated(note = "Deprecated. Use stable memory instead.")]
         pub payments: Payments,
         pub invitation_codes: InvitationCodes,
@@ -56,7 +56,7 @@ pub mod state {
     }
 
     #[derive(CandidType, Serialize, Deserialize, Clone)]
-    pub struct MissionControl {
+    pub struct Account {
         pub mission_control_id: Option<MissionControlId>,
         pub owner: UserId,
         pub provider: Option<Provider>,
@@ -133,7 +133,7 @@ pub mod state {
 }
 
 pub mod interface {
-    use crate::types::state::MissionControl;
+    use crate::types::state::Account;
     use candid::CandidType;
     use junobuild_auth::delegation::types::{
         OpenIdGetDelegationArgs, OpenIdPrepareDelegationArgs, PrepareDelegationError,
@@ -165,7 +165,7 @@ pub mod interface {
     #[derive(CandidType, Serialize, Deserialize)]
     pub struct Authentication {
         pub delegation: PreparedDelegation,
-        pub mission_control: MissionControl,
+        pub mission_control: Account,
     }
 
     #[derive(CandidType, Serialize, Deserialize)]

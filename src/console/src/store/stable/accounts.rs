@@ -1,22 +1,17 @@
 use crate::constants::E8S_PER_ICP;
 use crate::store::services::{mutate_stable_state, read_stable_state};
-use crate::types::state::{
-    MissionControl, MissionControls, MissionControlsStable, Provider, StableState,
-};
+use crate::types::state::{Account, Accounts, AccountsStable, Provider, StableState};
 use ic_cdk::api::time;
 use junobuild_shared::structures::collect_stable_map_from;
 use junobuild_shared::types::state::{MissionControlId, UserId};
 use junobuild_shared::utils::principal_equal;
 
-pub fn get_mission_control(user: &UserId) -> Result<Option<MissionControl>, &'static str> {
-    read_stable_state(|stable| get_mission_control_impl(user, stable))
+pub fn get_account(user: &UserId) -> Result<Option<Account>, &'static str> {
+    read_stable_state(|stable| get_account_impl(user, stable))
 }
 
-fn get_mission_control_impl(
-    user: &UserId,
-    state: &StableState,
-) -> Result<Option<MissionControl>, &'static str> {
-    let mission_control = state.mission_controls.get(user);
+fn get_account_impl(user: &UserId, state: &StableState) -> Result<Option<Account>, &'static str> {
+    let mission_control = state.accounts.get(user);
 
     match mission_control {
         None => Ok(None),
@@ -30,19 +25,19 @@ fn get_mission_control_impl(
     }
 }
 
-pub fn get_existing_mission_control(
+pub fn get_existing_account(
     user: &UserId,
     mission_control_id: &MissionControlId,
-) -> Result<MissionControl, &'static str> {
-    read_stable_state(|stable| get_existing_mission_control_impl(user, mission_control_id, stable))
+) -> Result<Account, &'static str> {
+    read_stable_state(|stable| get_existing_account_impl(user, mission_control_id, stable))
 }
 
-fn get_existing_mission_control_impl(
+fn get_existing_account_impl(
     user: &UserId,
     mission_control_id: &MissionControlId,
     state: &StableState,
-) -> Result<MissionControl, &'static str> {
-    let existing_mission_control = state.mission_controls.get(user);
+) -> Result<Account, &'static str> {
+    let existing_mission_control = state.accounts.get(user);
 
     match existing_mission_control {
         None => Err("User does not have a mission control center."),
@@ -59,18 +54,20 @@ fn get_existing_mission_control_impl(
     }
 }
 
-pub fn init_empty_mission_control(user: &UserId, provider: &Option<Provider>) {
-    mutate_stable_state(|stable| init_empty_mission_control_impl(user, provider, stable))
+pub fn init_account_with_empty_mission_control(user: &UserId, provider: &Option<Provider>) {
+    mutate_stable_state(|stable| {
+        init_account_with_empty_mission_control_impl(user, provider, stable)
+    })
 }
 
-fn init_empty_mission_control_impl(
+fn init_account_with_empty_mission_control_impl(
     user: &UserId,
     provider: &Option<Provider>,
     state: &mut StableState,
 ) {
     let now = time();
 
-    let mission_control = MissionControl {
+    let mission_control = Account {
         mission_control_id: None,
         provider: provider.clone(),
         owner: *user,
@@ -79,42 +76,42 @@ fn init_empty_mission_control_impl(
         updated_at: now,
     };
 
-    state.mission_controls.insert(*user, mission_control);
+    state.accounts.insert(*user, mission_control);
 }
 
-pub fn add_mission_control(
+pub fn add_account(
     user: &UserId,
     mission_control_id: &MissionControlId,
-) -> Result<MissionControl, &'static str> {
-    mutate_stable_state(|stable| add_mission_control_impl(user, mission_control_id, stable))
+) -> Result<Account, &'static str> {
+    mutate_stable_state(|stable| add_account_impl(user, mission_control_id, stable))
 }
 
-fn add_mission_control_impl(
+fn add_account_impl(
     user: &UserId,
     mission_control_id: &MissionControlId,
     state: &mut StableState,
-) -> Result<MissionControl, &'static str> {
+) -> Result<Account, &'static str> {
     let now = time();
 
     let mission_control = state
-        .mission_controls
+        .accounts
         .get(user)
         .ok_or("User does not have a mission control.")?;
 
-    let finalized_mission_control = MissionControl {
+    let finalized_mission_control = Account {
         mission_control_id: Some(*mission_control_id),
         updated_at: now,
         ..mission_control
     };
 
     state
-        .mission_controls
+        .accounts
         .insert(*user, finalized_mission_control.clone());
 
     Ok(finalized_mission_control)
 }
 
-pub fn update_provider(user: &UserId, provider: &Provider) -> Result<MissionControl, String> {
+pub fn update_provider(user: &UserId, provider: &Provider) -> Result<Account, String> {
     mutate_stable_state(|stable| update_provider_impl(user, provider, stable))
 }
 
@@ -122,37 +119,35 @@ fn update_provider_impl(
     user: &UserId,
     provider: &Provider,
     state: &mut StableState,
-) -> Result<MissionControl, String> {
+) -> Result<Account, String> {
     let mission_control = state
-        .mission_controls
+        .accounts
         .get(user)
         .ok_or("User does not have a mission control.")?;
 
-    let update_mission_control = MissionControl {
+    let update_mission_control = Account {
         updated_at: time(),
         provider: Some(provider.clone()),
         ..mission_control
     };
 
-    state
-        .mission_controls
-        .insert(*user, update_mission_control.clone());
+    state.accounts.insert(*user, update_mission_control.clone());
 
     Ok(update_mission_control)
 }
 
-pub fn delete_mission_control(user: &UserId) -> Option<MissionControl> {
-    mutate_stable_state(|stable| delete_mission_control_impl(user, stable))
+pub fn delete_account(user: &UserId) -> Option<Account> {
+    mutate_stable_state(|stable| delete_account_impl(user, stable))
 }
 
-fn delete_mission_control_impl(user: &UserId, state: &mut StableState) -> Option<MissionControl> {
-    state.mission_controls.remove(user)
+fn delete_account_impl(user: &UserId, state: &mut StableState) -> Option<Account> {
+    state.accounts.remove(user)
 }
 
-pub fn list_mission_controls() -> MissionControls {
-    read_stable_state(|stable| list_mission_controls_impl(&stable.mission_controls))
+pub fn list_accounts() -> Accounts {
+    read_stable_state(|stable| list_accounts_impl(&stable.accounts))
 }
 
-fn list_mission_controls_impl(mission_controls: &MissionControlsStable) -> MissionControls {
+fn list_accounts_impl(mission_controls: &AccountsStable) -> Accounts {
     collect_stable_map_from(mission_controls)
 }

@@ -1,7 +1,7 @@
 use crate::constants::{ORBITER_CREATION_FEE_ICP, SATELLITE_CREATION_FEE_ICP};
 use crate::memory::manager::init_stable_state;
 use crate::types::ledger::Payment;
-use crate::types::state::{Fee, Fees, HeapState, MissionControl, OpenIdData, Rate, Rates, State};
+use crate::types::state::{Account, Fee, Fees, HeapState, OpenIdData, Rate, Rates, State};
 use ic_cdk::api::time;
 use ic_stable_structures::storable::Bound;
 use ic_stable_structures::Storable;
@@ -66,7 +66,7 @@ impl Default for Fees {
     }
 }
 
-impl Storable for MissionControl {
+impl Storable for Account {
     fn to_bytes(&self) -> Cow<'_, [u8]> {
         serialize_to_bytes(self)
     }

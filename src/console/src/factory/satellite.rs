@@ -66,7 +66,7 @@ async fn create_satellite_wasm(
     match result {
         Err(error) => Err(error),
         Ok(satellite_id) => {
-            remove_console_controller(&satellite_id, &mission_control_id, &user).await?;
+            remove_console_controller(&satellite_id, &user, &mission_control_id).await?;
             Ok(satellite_id)
         }
     }

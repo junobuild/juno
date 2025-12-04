@@ -9,7 +9,7 @@
 	import DataOrder from '$lib/components/data/DataOrder.svelte';
 	import DataPaginator from '$lib/components/data/DataPaginator.svelte';
 	import IconRefresh from '$lib/components/icons/IconRefresh.svelte';
-	import { listUsers } from '$lib/services/user/users.services';
+	import { listUsers } from '$lib/services/satellite/user/users.services';
 	import { authStore } from '$lib/stores/auth.store';
 	import { i18n } from '$lib/stores/i18n.store';
 	import { initListParamsContext } from '$lib/stores/list-params.context.store';

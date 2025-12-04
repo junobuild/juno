@@ -1,7 +1,7 @@
 import {
 	syncCanisterMonitoring,
 	syncCanistersMonitoring
-} from '$lib/services/canisters.loader.services';
+} from '$lib/services/workers/_canisters.loader.services';
 import { AppWorker } from '$lib/services/workers/_worker.services';
 import type { CanisterSegment } from '$lib/types/canister';
 import type { MissionControlId } from '$lib/types/mission-control';

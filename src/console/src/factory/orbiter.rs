@@ -30,14 +30,19 @@ pub async fn create_orbiter(
 
 async fn create_orbiter_wasm(
     console: Principal,
-    mission_control_id: MissionControlId,
+    mission_control_id: Option<MissionControlId>,
     user: UserId,
     subnet_id: Option<SubnetId>,
 ) -> Result<Principal, String> {
     let wasm_arg = orbiter_wasm_arg(&user, &mission_control_id)?;
 
+    let temporary_init_controllers = [console, user]
+        .into_iter()
+        .chain(mission_control_id)
+        .collect();
+
     let create_settings_arg = CreateCanisterInitSettingsArg {
-        controllers: Vec::from([console, mission_control_id, user]),
+        controllers: temporary_init_controllers,
         freezing_threshold: Nat::from(FREEZING_THRESHOLD_THREE_MONTHS),
     };
 

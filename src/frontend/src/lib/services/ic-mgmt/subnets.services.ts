@@ -5,7 +5,7 @@ import {
 	resetIdbStore,
 	setIdbStore,
 	syncIdbStore
-} from '$lib/services/idb-store.services';
+} from '$lib/services/_idb-store.services';
 import { i18n } from '$lib/stores/i18n.store';
 import { subnetsIdbStore } from '$lib/stores/idb.store';
 import { subnetStore } from '$lib/stores/subnet.store';

@@ -1,6 +1,9 @@
 import { CONSOLE_CANISTER_ID, GOOGLE_CLIENT_ID } from '$lib/constants/app.constants';
 import { AuthClientProvider } from '$lib/providers/auth-client.provider';
-import { clearAuthNavOrigin, saveAuthNavOrigin } from '$lib/services/auth/_auth.nav.services';
+import {
+	clearAuthNavOrigin,
+	saveAuthNavOrigin
+} from '$lib/services/console/auth/_auth.nav.services';
 import { authStore } from '$lib/stores/auth.store';
 import { i18n } from '$lib/stores/i18n.store';
 import { toasts } from '$lib/stores/toasts.store';

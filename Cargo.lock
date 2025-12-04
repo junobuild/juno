@@ -172,8 +172,9 @@ dependencies = [
 
 [[package]]
 name = "canfund"
-version = "0.8.4"
-source = "git+https://github.com/dfinity/canfund#8d1ad7f870ef6ece5bdf82be6a11ef26967fc1b4"
+version = "0.8.5"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "e091119870478f2530e86d76f38babe292eb2ee731e184613e02ab1a7ea95d10"
 dependencies = [
  "async-trait",
  "candid",
@@ -241,7 +242,7 @@ dependencies = [
 
 [[package]]
 name = "console"
-version = "0.1.4"
+version = "0.1.5"
 dependencies = [
  "candid",
  "ciborium",
@@ -1216,7 +1217,7 @@ dependencies = [
 
 [[package]]
 name = "junobuild-auth"
-version = "0.1.0"
+version = "0.1.1"
 dependencies = [
  "base64",
  "candid",
@@ -1235,7 +1236,7 @@ dependencies = [
 
 [[package]]
 name = "junobuild-cdn"
-version = "0.4.0"
+version = "0.4.1"
 dependencies = [
  "candid",
  "hex",
@@ -1250,7 +1251,7 @@ dependencies = [
 
 [[package]]
 name = "junobuild-collections"
-version = "0.2.5"
+version = "0.2.6"
 dependencies = [
  "candid",
  "ic-cdk",
@@ -1271,7 +1272,7 @@ dependencies = [
 
 [[package]]
 name = "junobuild-satellite"
-version = "0.3.0"
+version = "0.3.1"
 dependencies = [
  "candid",
  "ciborium",
@@ -1296,7 +1297,7 @@ dependencies = [
 
 [[package]]
 name = "junobuild-shared"
-version = "0.4.0"
+version = "0.5.0"
 dependencies = [
  "candid",
  "ciborium",
@@ -1314,7 +1315,7 @@ dependencies = [
 
 [[package]]
 name = "junobuild-storage"
-version = "0.4.0"
+version = "0.4.1"
 dependencies = [
  "base64",
  "candid",
@@ -1337,7 +1338,7 @@ dependencies = [
 
 [[package]]
 name = "junobuild-utils"
-version = "0.1.4"
+version = "0.1.5"
 dependencies = [
  "candid",
  "serde",
@@ -1411,7 +1412,7 @@ dependencies = [
 
 [[package]]
 name = "mission_control"
-version = "0.1.1"
+version = "0.1.2"
 dependencies = [
  "candid",
  "canfund",
@@ -1513,7 +1514,7 @@ dependencies = [
 
 [[package]]
 name = "orbiter"
-version = "0.2.2"
+version = "0.2.3"
 dependencies = [
  "candid",
  "ciborium",
@@ -1891,7 +1892,7 @@ checksum = "f98d2aa92eebf49b69786be48e4477826b256916e84a57ff2a4f21923b48eb4c"
 
 [[package]]
 name = "satellite"
-version = "0.1.5"
+version = "0.1.6"
 dependencies = [
  "candid",
  "ic-cdk",
@@ -2070,7 +2071,7 @@ dependencies = [
 
 [[package]]
 name = "sputnik"
-version = "0.1.6"
+version = "0.1.7"
 dependencies = [
  "anyhow",
  "candid",

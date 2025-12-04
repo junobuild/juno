@@ -12,7 +12,7 @@
 	import ButtonIcon from '$lib/components/ui/ButtonIcon.svelte';
 	import Popover from '$lib/components/ui/Popover.svelte';
 	import { APP_VERSION } from '$lib/constants/app.constants';
-	import { signOut } from '$lib/services/auth/auth.services';
+	import { signOut } from '$lib/services/console/auth/auth.services';
 	import { i18n } from '$lib/stores/i18n.store';
 
 	interface Props {

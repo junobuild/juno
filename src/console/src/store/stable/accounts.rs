@@ -54,7 +54,10 @@ fn get_existing_account_impl(
     }
 }
 
-pub fn init_account_with_empty_mission_control(user: &UserId, provider: &Option<Provider>) -> Account {
+pub fn init_account_with_empty_mission_control(
+    user: &UserId,
+    provider: &Option<Provider>,
+) -> Account {
     mutate_stable_state(|stable| {
         init_account_with_empty_mission_control_impl(user, provider, stable)
     })

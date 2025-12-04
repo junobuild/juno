@@ -32,7 +32,11 @@ fn get_credits_impl(user: &UserId, state: &StableState) -> Result<Tokens, &'stat
 // More like a percent. 1 credit equals 1 creation.
 // ---------------------------------------------------------
 
-pub fn has_mission_control_and_credits(user: &UserId, mission_control_id: &MissionControlId, fee: &Tokens) -> bool {
+pub fn has_mission_control_and_credits(
+    user: &UserId,
+    mission_control_id: &MissionControlId,
+    fee: &Tokens,
+) -> bool {
     let mission_control = get_existing_account(user, mission_control_id).ok_or(false)?;
     has_credits(&mission_control, fee)
 }

@@ -25,7 +25,7 @@ pub fn init_user_mission_control_with_caller() -> Result<Account, String> {
             increment_mission_controls_rate()?;
 
             let account = init_account_with_empty_mission_control(&caller, &None);
-            
+
             Ok(account)
         }
     }

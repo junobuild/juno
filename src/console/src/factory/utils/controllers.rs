@@ -39,8 +39,5 @@ pub fn user_mission_control_controllers(
     user: &UserId,
     mission_control_id: &Option<MissionControlId>,
 ) -> Vec<Principal> {
-    [user]
-        .into_iter()
-        .chain(mission_control_id)
-        .collect()
+    [user].into_iter().chain(mission_control_id).collect()
 }

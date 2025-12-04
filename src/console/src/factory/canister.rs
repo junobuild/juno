@@ -1,19 +1,22 @@
 use crate::constants::SATELLITE_CREATION_FEE_ICP;
-use crate::store::stable::{get_existing_account, get_account, has_credits, insert_new_payment, is_known_payment, update_payment_completed, update_payment_refunded, use_credits};
+use crate::store::stable::{
+    get_account, get_existing_account, has_credits, insert_new_payment, is_known_payment,
+    update_payment_completed, update_payment_refunded, use_credits,
+};
 use crate::types::ledger::Payment;
+use crate::types::state::Account;
 use candid::Principal;
 use ic_ledger_types::{BlockIndex, Tokens};
 use junobuild_shared::constants_shared::{IC_TRANSACTION_FEE_ICP, MEMO_SATELLITE_CREATE_REFUND};
+use junobuild_shared::ic::api::id;
 use junobuild_shared::ledger::icp::{
     find_payment, principal_to_account_identifier, transfer_payment, SUB_ACCOUNT,
 };
 use junobuild_shared::mgmt::types::cmc::SubnetId;
 use junobuild_shared::types::interface::CreateCanisterArgs;
 use junobuild_shared::types::state::{MissionControlId, UserId};
-use std::future::Future;
-use junobuild_shared::ic::api::id;
 use junobuild_shared::utils::principal_equal;
-use crate::types::state::Account;
+use std::future::Future;
 
 pub async fn create_canister<F, Fut>(
     create: F,
@@ -36,7 +39,8 @@ where
         // Caller is user
     }
 
-    let mission_control_id = mission_control.mission_control_id
+    let mission_control_id = mission_control
+        .mission_control_id
         .ok_or("No mission control center found.".to_string())?;
 
     if principal_equal(caller, mission_control_id) {
@@ -55,7 +59,7 @@ where
             user,
             subnet_id,
         )
-            .await;
+        .await;
     }
 
     create_canister_with_payment(
@@ -69,7 +73,7 @@ where
         },
         fee,
     )
-        .await
+    .await
 }
 
 async fn create_canister_with_account<F, Fut>(
@@ -100,7 +104,7 @@ where
             user,
             subnet_id,
         )
-            .await;
+        .await;
     }
 
     create_canister_with_payment(
@@ -114,7 +118,7 @@ where
         },
         fee,
     )
-        .await
+    .await
 }
 
 async fn create_canister_with_credits<F, Fut>(

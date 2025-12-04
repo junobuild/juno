@@ -34,6 +34,5 @@ fn list_user_mission_control_centers() -> Accounts {
 
 #[update]
 fn init_user_mission_control_center() -> Accounts {
-    init_user_mission_control_with_caller()
-        .unwrap_or_trap()
+    init_user_mission_control_with_caller().unwrap_or_trap()
 }

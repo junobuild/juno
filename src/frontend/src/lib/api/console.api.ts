@@ -5,17 +5,17 @@ import type { OptionIdentity } from '$lib/types/itentity';
 import { fromNullable, isNullish } from '@dfinity/utils';
 import type { Principal } from '@icp-sdk/core/principal';
 
-export const initMissionControl = async (
+export const initAccountAndMissionControl = async (
 	identity: OptionIdentity
-): Promise<ConsoleDid.MissionControl> => {
+): Promise<ConsoleDid.Account> => {
 	const { init_user_mission_control_center } = await getConsoleActor({ identity });
 
 	return await init_user_mission_control_center();
 };
 
-export const getMissionControl = async (
+export const getAccount = async (
 	actorParams: GetActorParams
-): Promise<ConsoleDid.MissionControl | undefined> => {
+): Promise<ConsoleDid.Account | undefined> => {
 	const { get_user_mission_control_center } = await getConsoleActor(actorParams);
 
 	return fromNullable(await get_user_mission_control_center());

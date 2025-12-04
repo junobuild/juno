@@ -41,7 +41,7 @@ export const idlFactory = ({ IDL }) => {
 		InternetIdentity: IDL.Null,
 		OpenId: OpenId
 	});
-	const MissionControl = IDL.Record({
+	const Account = IDL.Record({
 		updated_at: IDL.Nat64,
 		credits: Tokens,
 		mission_control_id: IDL.Opt(IDL.Principal),
@@ -51,7 +51,7 @@ export const idlFactory = ({ IDL }) => {
 	});
 	const Authentication = IDL.Record({
 		delegation: PreparedDelegation,
-		mission_control: MissionControl
+		mission_control: Account
 	});
 	const JwtFindProviderError = IDL.Variant({
 		BadClaim: IDL.Text,
@@ -448,7 +448,7 @@ export const idlFactory = ({ IDL }) => {
 		get_delegation: IDL.Func([GetDelegationArgs], [Result_1], ['query']),
 		get_proposal: IDL.Func([IDL.Nat], [IDL.Opt(Proposal)], ['query']),
 		get_storage_config: IDL.Func([], [StorageConfig], ['query']),
-		get_user_mission_control_center: IDL.Func([], [IDL.Opt(MissionControl)], ['query']),
+		get_user_mission_control_center: IDL.Func([], [IDL.Opt(Account)], ['query']),
 		http_request: IDL.Func([HttpRequest], [HttpResponse], ['query']),
 		http_request_streaming_callback: IDL.Func(
 			[StreamingCallbackToken],
@@ -462,7 +462,7 @@ export const idlFactory = ({ IDL }) => {
 			[IDL.Vec(IDL.Tuple(IDL.Text, InitUploadResult))],
 			[]
 		),
-		init_user_mission_control_center: IDL.Func([], [MissionControl], []),
+		init_user_mission_control_center: IDL.Func([], [Account], []),
 		list_assets: IDL.Func([IDL.Text, ListParams], [ListResults], ['query']),
 		list_controllers: IDL.Func([], [IDL.Vec(IDL.Tuple(IDL.Principal, Controller))], ['query']),
 		list_custom_domains: IDL.Func([], [IDL.Vec(IDL.Tuple(IDL.Text, CustomDomain))], ['query']),
@@ -470,7 +470,7 @@ export const idlFactory = ({ IDL }) => {
 		list_proposals: IDL.Func([ListProposalsParams], [ListProposalResults], ['query']),
 		list_user_mission_control_centers: IDL.Func(
 			[],
-			[IDL.Vec(IDL.Tuple(IDL.Principal, MissionControl))],
+			[IDL.Vec(IDL.Tuple(IDL.Principal, Account))],
 			['query']
 		),
 		reject_proposal: IDL.Func([CommitProposal], [IDL.Null], []),

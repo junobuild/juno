@@ -4,10 +4,12 @@
   </a>
 </div>
 
+<br />
+
 <p align="center">
-  <a href="https://github.com/junobuild/juno"><img alt="GitHub Actions Workflow Status" src="https://img.shields.io/github/actions/workflow/status/junobuild/juno/release.yml?style=for-the-badge"></a>
-  <a href="https://github.com/junobuild/juno"><img src="https://img.shields.io/github/last-commit/junobuild/juno/main?commit&style=for-the-badge" alt="Last Commit" /></a>
-  <a href="https://discord.gg/wHZ57Z2RAG"><img src="https://dcbadge.limes.pink/api/server/https://discord.gg/wHZ57Z2RAG?style=for-the-badge" alt="Discord" /></a>
+  <a href="https://github.com/junobuild/juno"><img alt="GitHub Actions Workflow Status" src="https://img.shields.io/github/actions/workflow/status/junobuild/juno/release.yml?style=flat"></a>
+  <a href="https://github.com/junobuild/juno"><img src="https://img.shields.io/github/last-commit/junobuild/juno/main?commit&style=flat" alt="Last Commit" /></a>
+  <a href="https://discord.gg/wHZ57Z2RAG"><img src="https://dcbadge.limes.pink/api/server/https://discord.gg/wHZ57Z2RAG?style=flat" alt="Discord" /></a>
 </p>
 
 ## ⭐️ Description

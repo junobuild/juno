@@ -1,8 +1,8 @@
 import {
 	type ConsoleActor,
+	type ConsoleDid,
 	idlFactoryMissionControl,
-	type MissionControlActor,
-	type ConsoleDid
+	type MissionControlActor
 } from '$declarations';
 import type { Actor, PocketIc } from '@dfinity/pic';
 import { assertNonNullish, fromNullable, toNullable } from '@dfinity/utils';

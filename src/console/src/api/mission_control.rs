@@ -1,8 +1,6 @@
 use crate::factory::mission_control::init_user_mission_control_with_caller;
 use crate::guards::{caller_is_admin_controller, caller_is_observatory};
-use crate::store::stable::{
-    get_existing_mission_control, get_mission_control, list_mission_controls,
-};
+use crate::store::stable::{get_account, get_existing_account, list_accounts};
 use crate::types::state::{Account, Accounts};
 use ic_cdk_macros::{query, update};
 use junobuild_shared::ic::api::caller;
@@ -14,7 +12,7 @@ use junobuild_shared::types::interface::AssertMissionControlCenterArgs;
 #[query]
 fn get_user_mission_control_center() -> Option<Account> {
     let caller = caller();
-    get_mission_control(&caller).unwrap_or_trap()
+    get_account(&caller).unwrap_or_trap()
 }
 
 #[query(guard = "caller_is_observatory")]
@@ -24,15 +22,15 @@ fn assert_mission_control_center(
         mission_control_id,
     }: AssertMissionControlCenterArgs,
 ) {
-    get_existing_mission_control(&user, &mission_control_id).unwrap_or_trap();
+    get_existing_account(&user, &mission_control_id).unwrap_or_trap();
 }
 
 #[query(guard = "caller_is_admin_controller")]
 fn list_user_mission_control_centers() -> Accounts {
-    list_mission_controls()
+    list_accounts()
 }
 
 #[update]
-fn init_user_mission_control_center() -> Accounts {
+fn init_user_mission_control_center() -> Account {
     init_user_mission_control_with_caller().unwrap_or_trap()
 }

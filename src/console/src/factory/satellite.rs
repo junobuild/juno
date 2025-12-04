@@ -15,7 +15,7 @@ use junobuild_shared::types::interface::{CreateSatelliteArgs, InitStorageArgs};
 
 pub async fn create_satellite(
     caller: Principal,
-    args: &CreateSatelliteArgs,
+    args: CreateSatelliteArgs,
 ) -> Result<Principal, String> {
     let storage = args.storage.clone();
 
@@ -32,17 +32,17 @@ pub async fn create_satellite(
 }
 
 async fn create_satellite_wasm(
-    creator: &CanisterCreator,
-    subnet_id: &Option<SubnetId>,
+    creator: CanisterCreator,
+    subnet_id: Option<SubnetId>,
     storage: Option<InitStorageArgs>,
 ) -> Result<Principal, String> {
     let controllers = creator.controllers();
 
-    let wasm_arg = satellite_wasm_arg(controllers, storage)?;
+    let wasm_arg = satellite_wasm_arg(&controllers, storage)?;
 
     // We temporarily use the Console as a controller to create the canister but
     // remove it as soon as it is spin.
-    let temporary_init_controllers = [id()].into_iter().chain(controllers).collect();
+    let temporary_init_controllers = [id()].into_iter().chain(controllers.clone()).collect();
 
     let create_settings_arg = CreateCanisterInitSettingsArg {
         controllers: temporary_init_controllers,
@@ -64,7 +64,7 @@ async fn create_satellite_wasm(
     match result {
         Err(error) => Err(error),
         Ok(satellite_id) => {
-            remove_console_controller(&satellite_id, controllers).await?;
+            remove_console_controller(&satellite_id, &controllers).await?;
             Ok(satellite_id)
         }
     }

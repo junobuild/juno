@@ -37,8 +37,9 @@ pub fn has_mission_control_and_credits(
     mission_control_id: &MissionControlId,
     fee: &Tokens,
 ) -> bool {
-    let account = get_existing_account(user, mission_control_id).ok_or(false)?;
-    has_credits(&account, fee)
+    get_existing_account(user, mission_control_id)
+        .map(|account| has_credits(&account, fee))
+        .unwrap_or(false)
 }
 
 pub fn has_credits(account: &Account, fee: &Tokens) -> bool {

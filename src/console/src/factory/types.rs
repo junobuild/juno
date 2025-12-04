@@ -1,4 +1,3 @@
-use candid::Principal;
 use junobuild_shared::types::state::{MissionControlId, UserId};
 
 #[derive(Clone)]

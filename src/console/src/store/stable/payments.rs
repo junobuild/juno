@@ -5,7 +5,6 @@ use candid::Principal;
 use ic_cdk::api::time;
 use ic_ledger_types::BlockIndex;
 use junobuild_shared::structures::collect_stable_map_from;
-use junobuild_shared::types::state::{MissionControlId, UserId};
 
 pub fn is_known_payment(block_index: &BlockIndex) -> bool {
     read_stable_state(|stable| stable.payments.contains_key(block_index))

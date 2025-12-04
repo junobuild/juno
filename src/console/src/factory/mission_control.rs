@@ -16,10 +16,10 @@ use junobuild_shared::types::state::UserId;
 pub fn init_user_mission_control_with_caller() -> Result<Account, String> {
     let caller = caller();
 
-    let mission_control = get_account(&caller)?;
+    let account = get_account(&caller)?;
 
-    match mission_control {
-        Some(mission_control) => Ok(mission_control),
+    match account {
+        Some(account) => Ok(account),
         None => {
             // Guard too many requests
             increment_mission_controls_rate()?;

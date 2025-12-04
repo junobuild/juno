@@ -23,10 +23,10 @@ pub async fn create_canister<F, Fut>(
     increment_rate: &dyn Fn() -> Result<(), String>,
     get_fee: &dyn Fn() -> Tokens,
     caller: Principal,
-    args: &CreateCanisterArgs,
+    args: CreateCanisterArgs,
 ) -> Result<Principal, String>
 where
-    F: FnOnce(&CanisterCreator, &Option<SubnetId>) -> Fut,
+    F: FnOnce(CanisterCreator, Option<SubnetId>) -> Fut,
     Fut: Future<Output = Result<Principal, String>>,
 {
     let account = get_account(&args.user)?.ok_or("No account found.")?;
@@ -39,7 +39,7 @@ where
             increment_rate,
             get_fee,
             &account,
-            &creator,
+            creator,
             args,
         )
         .await;
@@ -58,7 +58,7 @@ where
             increment_rate,
             get_fee,
             &account,
-            &creator,
+            creator,
             args,
         )
         .await;
@@ -72,11 +72,11 @@ async fn create_canister_with_account<F, Fut>(
     increment_rate: &dyn Fn() -> Result<(), String>,
     get_fee: &dyn Fn() -> Tokens,
     account: &Account,
-    creator: &CanisterCreator,
-    args: &CreateCanisterArgs,
+    creator: CanisterCreator,
+    args: CreateCanisterArgs,
 ) -> Result<Principal, String>
 where
-    F: FnOnce(&CanisterCreator, &Option<SubnetId>) -> Fut,
+    F: FnOnce(CanisterCreator, Option<SubnetId>) -> Fut,
     Fut: Future<Output = Result<Principal, String>>,
 {
     let fee = get_fee();
@@ -93,13 +93,15 @@ where
 
 async fn create_canister_with_credits<F, Fut>(
     create: F,
-    creator: &CanisterCreator,
-    CreateCanisterArgs { subnet_id, .. }: &CreateCanisterArgs,
+    creator: CanisterCreator,
+    CreateCanisterArgs { subnet_id, .. }: CreateCanisterArgs,
 ) -> Result<Principal, String>
 where
-    F: FnOnce(&CanisterCreator, &Option<SubnetId>) -> Fut,
+    F: FnOnce(CanisterCreator, Option<SubnetId>) -> Fut,
     Fut: Future<Output = Result<Principal, String>>,
 {
+    let account_owner = creator.account_owner().clone();
+
     // Create the satellite
     let create_canister_result = create(creator, subnet_id).await;
 
@@ -107,7 +109,7 @@ where
         Err(_) => Err("Segment creation with credits failed.".to_string()),
         Ok(satellite_id) => {
             // Satellite or orbiter is created we can use the credits
-            let credits = use_credits(creator.account_owner());
+            let credits = use_credits(&account_owner);
 
             match credits {
                 Err(e) => Err(e.to_string()),
@@ -119,19 +121,19 @@ where
 
 async fn create_canister_with_payment<F, Fut>(
     create: F,
-    creator: &CanisterCreator,
+    creator: CanisterCreator,
     CreateCanisterArgs {
         block_index,
         subnet_id,
         ..
-    }: &CreateCanisterArgs,
+    }: CreateCanisterArgs,
     fee: Tokens,
 ) -> Result<Principal, String>
 where
-    F: FnOnce(&CanisterCreator, &Option<SubnetId>) -> Fut,
+    F: FnOnce(CanisterCreator, Option<SubnetId>) -> Fut,
     Fut: Future<Output = Result<Principal, String>>,
 {
-    let purchaser = creator.purchaser();
+    let purchaser = creator.purchaser().clone();
 
     let purchaser_account_identifier = principal_to_account_identifier(&purchaser, &SUB_ACCOUNT);
     let console_account_identifier = principal_to_account_identifier(&id(), &SUB_ACCOUNT);

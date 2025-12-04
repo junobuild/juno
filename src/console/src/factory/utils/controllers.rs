@@ -1,7 +1,7 @@
 use candid::Principal;
 use junobuild_shared::mgmt::ic::update_canister_controllers;
+use junobuild_shared::types::state::ControllerId;
 use junobuild_shared::types::state::UserId;
-use junobuild_shared::types::state::{ControllerId, MissionControlId};
 
 /// Once mission control is created:
 /// 1. we remove the console from the controllers because the data are owned by the developers

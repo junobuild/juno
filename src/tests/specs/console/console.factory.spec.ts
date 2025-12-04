@@ -148,12 +148,14 @@ describe('Console', () => {
 		const maybeConsole = (settings?.controllers ?? []).find(
 			(controller) => controller.toText() === consoleId.toText()
 		);
+
 		expect(maybeConsole).toBeUndefined();
 
 		for (const controller of controllers) {
 			const maybeController = (settings?.controllers ?? []).find(
 				(c) => c.toText() === controller.toText()
 			);
+
 			expect(maybeController).not.toBeUndefined();
 		}
 	};

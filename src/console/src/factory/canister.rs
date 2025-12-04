@@ -1,6 +1,6 @@
 use crate::constants::SATELLITE_CREATION_FEE_ICP;
 use crate::store::stable::{
-    get_account, get_existing_account, has_credits, insert_new_payment, is_known_payment,
+    get_account, has_credits, insert_new_payment, is_known_payment,
     update_payment_completed, update_payment_refunded, use_credits,
 };
 use crate::types::ledger::Payment;
@@ -33,13 +33,13 @@ where
     F: FnOnce(Option<MissionControlId>, UserId, Option<SubnetId>) -> Fut,
     Fut: Future<Output = Result<Principal, String>>,
 {
-    let mission_control = get_account(&user)?.ok_or("No account found.")?;
+    let account = get_account(&user)?.ok_or("No account found.")?;
 
-    if principal_equal(caller, mission_control.owner) {
+    if principal_equal(caller, account.owner) {
         // Caller is user
     }
 
-    let mission_control_id = mission_control
+    let mission_control_id = account
         .mission_control_id
         .ok_or("No mission control center found.".to_string())?;
 
@@ -47,33 +47,7 @@ where
         // Caller is mission control
     }
 
-    let fee = get_fee();
-
-    if has_credits(&mission_control, &fee) {
-        // Guard too many requests
-        increment_rate()?;
-
-        return create_canister_with_credits(
-            create,
-            mission_control.mission_control_id,
-            user,
-            subnet_id,
-        )
-        .await;
-    }
-
-    create_canister_with_payment(
-        create,
-        caller,
-        mission_control.mission_control_id,
-        CreateCanisterArgs {
-            user,
-            block_index,
-            subnet_id,
-        },
-        fee,
-    )
-    .await
+    Err("Unknown caller".to_string())
 }
 
 async fn create_canister_with_account<F, Fut>(
@@ -160,7 +134,7 @@ async fn create_canister_with_payment<F, Fut>(
     fee: Tokens,
 ) -> Result<Principal, String>
 where
-    F: FnOnce(Principal, Option<MissionControlId>, UserId, Option<SubnetId>) -> Fut,
+    F: FnOnce(Option<MissionControlId>, UserId, Option<SubnetId>) -> Fut,
     Fut: Future<Output = Result<Principal, String>>,
 {
     let mission_control_account_identifier = principal_to_account_identifier(&caller, &SUB_ACCOUNT);

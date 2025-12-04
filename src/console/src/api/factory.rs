@@ -10,7 +10,7 @@ use junobuild_shared::types::interface::{CreateCanisterArgs, CreateSatelliteArgs
 async fn create_satellite(args: CreateSatelliteArgs) -> Principal {
     let caller = caller();
 
-    create_satellite_console(caller, args)
+    create_satellite_console(caller, &args)
         .await
         .unwrap_or_trap()
 }
@@ -19,5 +19,5 @@ async fn create_satellite(args: CreateSatelliteArgs) -> Principal {
 async fn create_orbiter(args: CreateCanisterArgs) -> Principal {
     let caller = caller();
 
-    create_orbiter_console(caller, args).await.unwrap_or_trap()
+    create_orbiter_console(caller, &args).await.unwrap_or_trap()
 }

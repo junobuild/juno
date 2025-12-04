@@ -9,7 +9,9 @@ use junobuild_shared::types::core::Blob;
 use junobuild_shared::types::interface::{
     InitMissionControlArgs, InitOrbiterArgs, InitSatelliteArgs, InitStorageArgs,
 };
-use junobuild_shared::types::state::{MissionControlId, UserId};
+use junobuild_shared::types::state::{
+    Controller, ControllerId, Controllers, MissionControlId, UserId,
+};
 use junobuild_storage::constants::ASSET_ENCODING_NO_COMPRESSION;
 use junobuild_storage::types::state::FullPath;
 
@@ -47,8 +49,7 @@ pub fn mission_control_wasm_arg(user: &UserId) -> Result<WasmArg, String> {
 }
 
 pub fn satellite_wasm_arg(
-    user: &UserId,
-    mission_control_id: &Option<MissionControlId>,
+    controllers: &Vec<ControllerId>,
     storage: Option<InitStorageArgs>,
 ) -> Result<WasmArg, String> {
     let latest_version =
@@ -56,22 +57,19 @@ pub fn satellite_wasm_arg(
     let full_path = format!("/releases/satellite-v{latest_version}.wasm.gz");
     let wasm: Blob = get_chunks(&full_path)?;
     let install_arg: Vec<u8> = Encode!(&InitSatelliteArgs {
-        controllers: user_mission_control_controllers(user, mission_control_id),
+        controllers: controllers.clone(),
         storage
     })
     .map_err(|e| e.to_string())?;
     Ok(WasmArg { wasm, install_arg })
 }
 
-pub fn orbiter_wasm_arg(
-    user: &UserId,
-    mission_control_id: &Option<MissionControlId>,
-) -> Result<WasmArg, String> {
+pub fn orbiter_wasm_arg(controllers: &Vec<ControllerId>) -> Result<WasmArg, String> {
     let latest_version = get_latest_orbiter_version().ok_or("No orbiter versions available.")?;
     let full_path = format!("/releases/orbiter-v{latest_version}.wasm.gz");
     let wasm: Blob = get_chunks(&full_path)?;
     let install_arg: Vec<u8> = Encode!(&InitOrbiterArgs {
-        controllers: user_mission_control_controllers(user, mission_control_id)
+        controllers: controllers.clone()
     })
     .map_err(|e| e.to_string())?;
     Ok(WasmArg { wasm, install_arg })

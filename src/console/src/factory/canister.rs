@@ -1,7 +1,8 @@
 use crate::constants::SATELLITE_CREATION_FEE_ICP;
+use crate::factory::types::CanisterCreator;
 use crate::store::stable::{
-    get_account, has_credits, insert_new_payment, is_known_payment,
-    update_payment_completed, update_payment_refunded, use_credits,
+    get_account, has_credits, insert_new_payment, is_known_payment, update_payment_completed,
+    update_payment_refunded, use_credits,
 };
 use crate::types::ledger::Payment;
 use crate::types::state::Account;
@@ -14,10 +15,8 @@ use junobuild_shared::ledger::icp::{
 };
 use junobuild_shared::mgmt::types::cmc::SubnetId;
 use junobuild_shared::types::interface::CreateCanisterArgs;
-use junobuild_shared::types::state::{MissionControlId, UserId};
 use junobuild_shared::utils::principal_equal;
 use std::future::Future;
-use crate::factory::types::CanisterCreator;
 
 pub async fn create_canister<F, Fut>(
     create: F,
@@ -27,15 +26,23 @@ pub async fn create_canister<F, Fut>(
     args: &CreateCanisterArgs,
 ) -> Result<Principal, String>
 where
-    F: FnOnce(Option<MissionControlId>, UserId, Option<SubnetId>) -> Fut,
+    F: FnOnce(&CanisterCreator, &Option<SubnetId>) -> Fut,
     Fut: Future<Output = Result<Principal, String>>,
 {
     let account = get_account(&args.user)?.ok_or("No account found.")?;
 
     if principal_equal(caller, account.owner) {
         // Caller is user
-        let creator: CanisterCreator = CanisterCreator::User(caller);
-        return create_canister_with_account(create, increment_rate, get_fee, &account, &creator, args).await;
+        let creator: CanisterCreator = CanisterCreator::User(account.owner);
+        return create_canister_with_account(
+            create,
+            increment_rate,
+            get_fee,
+            &account,
+            &creator,
+            args,
+        )
+        .await;
     }
 
     let mission_control_id = account
@@ -44,8 +51,17 @@ where
 
     if principal_equal(caller, mission_control_id) {
         // Caller is mission control
-        let creator: CanisterCreator = CanisterCreator::MissionControl((caller, args.user));
-        return create_canister_with_account(create, increment_rate, get_fee, &account, &creator, args).await;
+        let creator: CanisterCreator =
+            CanisterCreator::MissionControl((mission_control_id, account.owner));
+        return create_canister_with_account(
+            create,
+            increment_rate,
+            get_fee,
+            &account,
+            &creator,
+            args,
+        )
+        .await;
     }
 
     Err("Unknown caller".to_string())
@@ -60,7 +76,7 @@ async fn create_canister_with_account<F, Fut>(
     args: &CreateCanisterArgs,
 ) -> Result<Principal, String>
 where
-    F: FnOnce(Option<MissionControlId>, UserId, Option<SubnetId>) -> Fut,
+    F: FnOnce(&CanisterCreator, &Option<SubnetId>) -> Fut,
     Fut: Future<Output = Result<Principal, String>>,
 {
     let fee = get_fee();
@@ -69,21 +85,10 @@ where
         // Guard too many requests
         increment_rate()?;
 
-        return create_canister_with_credits(
-            create,
-            creator,
-            args,
-        )
-        .await;
+        return create_canister_with_credits(create, creator, args).await;
     }
 
-    create_canister_with_payment(
-        create,
-        creator,
-        args,
-        fee,
-    )
-    .await
+    create_canister_with_payment(create, creator, args, fee).await
 }
 
 async fn create_canister_with_credits<F, Fut>(
@@ -115,16 +120,20 @@ where
 async fn create_canister_with_payment<F, Fut>(
     create: F,
     creator: &CanisterCreator,
-    CreateCanisterArgs { block_index, subnet_id, .. }: &CreateCanisterArgs,
+    CreateCanisterArgs {
+        block_index,
+        subnet_id,
+        ..
+    }: &CreateCanisterArgs,
     fee: Tokens,
 ) -> Result<Principal, String>
 where
     F: FnOnce(&CanisterCreator, &Option<SubnetId>) -> Fut,
     Fut: Future<Output = Result<Principal, String>>,
 {
-    let buyer = creator.buyer();
+    let purchaser = creator.purchaser();
 
-    let buyer_account_identifier = principal_to_account_identifier(&buyer, &SUB_ACCOUNT);
+    let purchaser_account_identifier = principal_to_account_identifier(&purchaser, &SUB_ACCOUNT);
     let console_account_identifier = principal_to_account_identifier(&id(), &SUB_ACCOUNT);
 
     if block_index.is_none() {
@@ -132,52 +141,44 @@ where
     }
 
     // User should have processed a payment from the mission control center
-    let buyer_payment_block_index: BlockIndex = block_index.unwrap();
+    let purchaser_payment_block_index: BlockIndex = block_index.unwrap();
     let block = find_payment(
-        buyer_account_identifier,
+        purchaser_account_identifier,
         console_account_identifier,
         fee,
-        buyer_payment_block_index,
+        purchaser_payment_block_index,
     )
     .await;
 
     match block {
         None => Err([
             "No valid payment found to create satellite.",
-            &format!(" Buyer: {buyer_account_identifier}"),
+            &format!(" Purchaser: {purchaser_account_identifier}"),
             &format!(" Console: {console_account_identifier}"),
             &format!(" Amount: {fee}"),
             &format!(" Block index: {:?}", block_index),
         ]
         .join("")),
         Some(_) => {
-            if is_known_payment(&buyer_payment_block_index) {
+            if is_known_payment(&purchaser_payment_block_index) {
                 return Err("Payment has been or is being processed.".to_string());
             }
 
             // We acknowledge the new payment
-            insert_new_payment(&user, &buyer_payment_block_index)?;
+            insert_new_payment(&purchaser, &purchaser_payment_block_index)?;
 
             // Create the canister (satellite or orbiter)
             let create_canister_result = create(creator, subnet_id).await;
 
             match create_canister_result {
                 Err(error) => {
-                    refund_canister_creation(
-                        &buyer,
-                        &buyer_payment_block_index,
-                    )
-                    .await?;
+                    refund_canister_creation(&purchaser, &purchaser_payment_block_index).await?;
 
-                    Err([
-                        "Canister creation failed. Buyer has been refunded.",
-                        &error,
-                    ]
-                    .join(" - "))
+                    Err(["Canister creation failed. Buyer has been refunded.", &error].join(" - "))
                 }
                 Ok(satellite_id) => {
                     // Satellite or orbiter is created, we can update the payment has being processed
-                    update_payment_completed(&buyer_payment_block_index)?;
+                    update_payment_completed(&purchaser_payment_block_index)?;
 
                     Ok(satellite_id)
                 }
@@ -187,15 +188,15 @@ where
 }
 
 async fn refund_canister_creation(
-    buyer: &Principal,
-    buyer_payment_block_index: &BlockIndex,
+    purchaser: &Principal,
+    purchaser_payment_block_index: &BlockIndex,
 ) -> Result<Payment, String> {
     // We refund the satellite creation fee minus the ic fee - i.e. user pays the fee
     let refund_amount = SATELLITE_CREATION_FEE_ICP - IC_TRANSACTION_FEE_ICP;
 
     // Refund on error
     let refund_block_index = transfer_payment(
-        buyer,
+        purchaser,
         &SUB_ACCOUNT,
         MEMO_SATELLITE_CREATE_REFUND,
         refund_amount,
@@ -206,6 +207,6 @@ async fn refund_canister_creation(
     .map_err(|e| format!("ledger transfer error {e:?}"))?;
 
     // We record the refund in the payment list
-    update_payment_refunded(buyer_payment_block_index, &refund_block_index)
+    update_payment_refunded(purchaser_payment_block_index, &refund_block_index)
         .map_err(|e| format!("Insert refund transaction error {e:?}"))
 }

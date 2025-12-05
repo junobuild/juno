@@ -49,11 +49,9 @@ describe('Satellite > Auth > Mission Control', () => {
 	});
 
 	it('should register a new user and spin a mission control', async () => {
-		const {
-			identity,
-			mission_control: missionControl,
-			jwt
-		} = await authenticateAndMakeIdentity<{ mission_control: ConsoleDid.Account }>({
+		const { identity, account, jwt } = await authenticateAndMakeIdentity<{
+			account: ConsoleDid.Account;
+		}>({
 			pic,
 			session,
 			actor: consoleActor
@@ -62,9 +60,9 @@ describe('Satellite > Auth > Mission Control', () => {
 		mockJwt = jwt;
 		mockIdentity = identity;
 
-		expect(missionControl.owner.toText()).toEqual(identity.getPrincipal().toText());
+		expect(account.owner.toText()).toEqual(identity.getPrincipal().toText());
 
-		const provider = fromNullable(missionControl.provider);
+		const provider = fromNullable(account.provider);
 
 		assertNonNullish(provider);
 
@@ -83,7 +81,7 @@ describe('Satellite > Auth > Mission Control', () => {
 		expect(data).toEqual(mockUserData);
 
 		// Should be a controller
-		const missionControlId = fromNullable(missionControl.mission_control_id);
+		const missionControlId = fromNullable(account.mission_control_id);
 
 		assertNonNullish(missionControlId);
 
@@ -97,7 +95,7 @@ describe('Satellite > Auth > Mission Control', () => {
 
 		const user = await get_user();
 
-		expect(user.toText()).toEqual(missionControl.owner.toText());
+		expect(user.toText()).toEqual(account.owner.toText());
 	});
 
 	// TODO assert controller

@@ -42,7 +42,7 @@ export const getOrbiterVersionMetadata = async ({
 				current: version
 			}
 		};
-	} catch (err: unknown) {
+	} catch (_err: unknown) {
 		return { metadata: undefined };
 	}
 };

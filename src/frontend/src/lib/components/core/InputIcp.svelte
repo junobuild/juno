@@ -4,7 +4,7 @@
 	import SendTokensMax from '$lib/components/tokens/SendTokensMax.svelte';
 	import Input from '$lib/components/ui/Input.svelte';
 	import Value from '$lib/components/ui/Value.svelte';
-	import { icpToUsd } from '$lib/derived/exchange.derived';
+	import { icpToUsd } from '$lib/derived/wallet/exchange.derived';
 	import { i18n } from '$lib/stores/app/i18n.store';
 	import { formatICPToUsd } from '$lib/utils/icp.utils';
 	import { amountToICPToken } from '$lib/utils/token.utils';

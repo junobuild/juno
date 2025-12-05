@@ -8,7 +8,7 @@
 	import Theme from '$lib/components/ui/Theme.svelte';
 	import Value from '$lib/components/ui/Value.svelte';
 	import { authSignedOut } from '$lib/derived/auth.derived';
-	import { credits } from '$lib/derived/credits.derived';
+	import { credits } from '$lib/derived/console/credits.derived';
 	import { loadCredits as loadCreditsServices } from '$lib/services/console/credits.services';
 	import { i18n } from '$lib/stores/app/i18n.store';
 	import { authRemainingTimeStore, authStore } from '$lib/stores/auth.store';

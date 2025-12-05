@@ -12,14 +12,14 @@
 	import MissionControlDataLoader from '$lib/components/mission-control/MissionControlDataLoader.svelte';
 	import SkeletonText from '$lib/components/ui/SkeletonText.svelte';
 	import WalletInlineBalance from '$lib/components/wallet/WalletInlineBalance.svelte';
-	import { missionControlId } from '$lib/derived/account.mission-control.derived';
-	import { balance } from '$lib/derived/balance.derived';
+	import { missionControlId } from '$lib/derived/console/account.mission-control.derived';
 	import {
 		missionControlNotMonitored,
 		missionControlSettingsLoaded
-	} from '$lib/derived/mission-control-settings.derived';
-	import { orbiterStore } from '$lib/derived/orbiter.derived';
+	} from '$lib/derived/mission-control/mission-control-settings.derived';
+	import { orbiterStore } from '$lib/derived/orbiter/orbiter.derived';
 	import { missionControlVersion } from '$lib/derived/version.derived';
+	import { balance } from '$lib/derived/wallet/balance.derived';
 	import { i18n } from '$lib/stores/app/i18n.store';
 	import type { CanisterData } from '$lib/types/canister';
 

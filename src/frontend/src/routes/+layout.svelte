@@ -5,7 +5,7 @@
 	import { onNavigate } from '$app/navigation';
 	import Overlays from '$lib/components/core/Overlays.svelte';
 	import AuthBroadcastGuard from '$lib/components/guards/AuthBroadcastGuard.svelte';
-	import { layoutNavigationTitle } from '$lib/derived/layout-navigation.derived';
+	import { layoutNavigationTitle } from '$lib/derived/app/layout-navigation.derived';
 	import { initAccountAndMissionControl } from '$lib/services/console/account.services';
 	import { displayAndCleanLogoutMsg } from '$lib/services/console/auth/auth.services';
 	import { syncSnapshots } from '$lib/services/ic-mgmt/snapshots.services';

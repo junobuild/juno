@@ -6,7 +6,7 @@
 		exchangePricesNotLoaded,
 		icpToUsd,
 		icpToUsdDefined
-	} from '$lib/derived/exchange.derived';
+	} from '$lib/derived/wallet/exchange.derived';
 	import { formatICP, formatICPToUsd } from '$lib/utils/icp.utils';
 
 	interface Props {

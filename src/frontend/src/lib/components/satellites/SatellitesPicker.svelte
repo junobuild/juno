@@ -10,7 +10,7 @@
 	import { nonNullish } from '@dfinity/utils';
 	import { Principal } from '@icp-sdk/core/principal';
 	import { onMount } from 'svelte';
-	import { pageSatelliteId } from '$lib/derived/page.derived.svelte';
+	import { pageSatelliteId } from '$lib/derived/app/page.derived.svelte.js';
 	import { i18n } from '$lib/stores/app/i18n.store';
 	import type { SatelliteIdText } from '$lib/types/satellite';
 

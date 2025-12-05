@@ -4,9 +4,9 @@
 	import IconSatellite from '$lib/components/icons/IconSatellite.svelte';
 	import SatelliteEnvironment from '$lib/components/satellites/SatelliteEnvironment.svelte';
 	import SatellitesSwitcher from '$lib/components/satellites/SatellitesSwitcher.svelte';
+	import { layoutTitle } from '$lib/derived/app/layout-title.derived';
 	import { authSignedIn } from '$lib/derived/auth.derived';
-	import { layoutTitle } from '$lib/derived/layout-title.derived';
-	import { satelliteStore, satelliteUi } from '$lib/derived/satellite.derived';
+	import { satelliteStore, satelliteUi } from '$lib/derived/satellite/satellite.derived';
 	import { layoutNavigation } from '$lib/stores/app/layout-navigation.store';
 	import { satelliteName } from '$lib/utils/satellite.utils';
 

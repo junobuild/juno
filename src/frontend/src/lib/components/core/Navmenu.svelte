@@ -16,9 +16,9 @@
 	import IconUpgradeDock from '$lib/components/icons/IconUpgradeDock.svelte';
 	import IconWallet from '$lib/components/icons/IconWallet.svelte';
 	import Menu from '$lib/components/ui/Menu.svelte';
-	import { menuCollapsed, menuExpanded } from '$lib/derived/layout-menu.derived';
-	import { pageSatelliteId } from '$lib/derived/page.derived.svelte';
-	import { isSatelliteRoute } from '$lib/derived/route.derived.svelte';
+	import { menuCollapsed, menuExpanded } from '$lib/derived/app/layout-menu.derived';
+	import { pageSatelliteId } from '$lib/derived/app/page.derived.svelte.js';
+	import { isSatelliteRoute } from '$lib/derived/app/route.derived.svelte.js';
 	import { i18n } from '$lib/stores/app/i18n.store';
 	import { isRouteSelected } from '$lib/utils/nav.utils';
 

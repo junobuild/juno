@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { nonNullish, type TokenAmountV2 } from '@dfinity/utils';
 	import Value from '$lib/components/ui/Value.svelte';
-	import { icpToUsd, icpToUsdDefined } from '$lib/derived/exchange.derived';
+	import { icpToUsd, icpToUsdDefined } from '$lib/derived/wallet/exchange.derived';
 	import { i18n } from '$lib/stores/app/i18n.store';
 	import { formatICP, formatICPToUsd } from '$lib/utils/icp.utils';
 

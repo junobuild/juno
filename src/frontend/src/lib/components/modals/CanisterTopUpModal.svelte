@@ -7,7 +7,7 @@
 	import CanisterTopUpReview from '$lib/components/canister/CanisterTopUpReview.svelte';
 	import ProgressTopUp from '$lib/components/canister/ProgressTopUp.svelte';
 	import Modal from '$lib/components/ui/Modal.svelte';
-	import { missionControlId } from '$lib/derived/account.mission-control.derived';
+	import { missionControlId } from '$lib/derived/console/account.mission-control.derived';
 	import { topUp } from '$lib/services/mission-control/topup.services';
 	import { wizardBusy } from '$lib/stores/app/busy.store';
 	import { i18n } from '$lib/stores/app/i18n.store';

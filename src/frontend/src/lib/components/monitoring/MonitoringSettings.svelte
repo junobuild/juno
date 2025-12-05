@@ -7,9 +7,9 @@
 	import {
 		missionControlMonitored,
 		missionControlSettingsLoaded
-	} from '$lib/derived/mission-control-settings.derived';
-	import { orbiterLoaded } from '$lib/derived/orbiter.derived';
-	import { satellitesLoaded } from '$lib/derived/satellites.derived';
+	} from '$lib/derived/mission-control/mission-control-settings.derived';
+	import { orbiterLoaded } from '$lib/derived/orbiter/orbiter.derived';
+	import { satellitesLoaded } from '$lib/derived/satellite/satellites.derived';
 	import { openMonitoringModal } from '$lib/services/mission-control/monitoring.services';
 	import { i18n } from '$lib/stores/app/i18n.store';
 	import type { MissionControlId } from '$lib/types/mission-control';

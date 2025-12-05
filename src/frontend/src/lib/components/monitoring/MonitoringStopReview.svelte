@@ -4,7 +4,7 @@
 	import MonitoringSelectedModules from '$lib/components/monitoring/MonitoringSelectedModules.svelte';
 	import MonitoringStepReview from '$lib/components/monitoring/MonitoringStepReview.svelte';
 	import Warning from '$lib/components/ui/Warning.svelte';
-	import { i18n } from '$lib/stores/i18n.store';
+	import { i18n } from '$lib/stores/app/i18n.store';
 
 	interface Props {
 		stopMissionControl: boolean | undefined;

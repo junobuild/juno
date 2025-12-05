@@ -1,5 +1,5 @@
 import { ICP_LEDGER_CANISTER_ID } from '$lib/constants/app.constants';
-import { exchangePricesCanisterDataStore } from '$lib/stores/exchange.store';
+import { exchangePricesCanisterDataStore } from '$lib/stores/wallet/exchange.store';
 import { nonNullish } from '@dfinity/utils';
 import { derived } from 'svelte/store';
 

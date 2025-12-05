@@ -6,9 +6,9 @@
 	import Value from '$lib/components/ui/Value.svelte';
 	import { missionControlId } from '$lib/derived/account.mission-control.derived';
 	import { setSatelliteMetadata } from '$lib/services/mission-control/mission-control.services';
-	import { busy, isBusy } from '$lib/stores/busy.store';
-	import { i18n } from '$lib/stores/i18n.store';
-	import { toasts } from '$lib/stores/toasts.store';
+	import { busy, isBusy } from '$lib/stores/app/busy.store';
+	import { i18n } from '$lib/stores/app/i18n.store';
+	import { toasts } from '$lib/stores/app/toasts.store';
 	import type { SatelliteUiTags } from '$lib/types/satellite';
 	import { satelliteEnvironment, satelliteName, satelliteTags } from '$lib/utils/satellite.utils';
 

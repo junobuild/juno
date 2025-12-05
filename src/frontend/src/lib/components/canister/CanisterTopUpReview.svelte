@@ -9,7 +9,7 @@
 	import WalletSendFrom from '$lib/components/wallet/WalletSendFrom.svelte';
 	import { TOP_UP_NETWORK_FEES } from '$lib/constants/app.constants';
 	import { missionControlId } from '$lib/derived/account.mission-control.derived';
-	import { i18n } from '$lib/stores/i18n.store';
+	import { i18n } from '$lib/stores/app/i18n.store';
 	import type { CanisterSegmentWithLabel } from '$lib/types/canister';
 	import { formatICP } from '$lib/utils/icp.utils';
 	import { amountToICPToken } from '$lib/utils/token.utils';

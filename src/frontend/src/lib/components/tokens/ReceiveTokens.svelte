@@ -6,7 +6,7 @@
 	import ReceiveTokensQRCode from '$lib/components/tokens/ReceiveTokensQRCode.svelte';
 	import ReceiveTokensSigner from '$lib/components/tokens/ReceiveTokensSigner.svelte';
 	import Popover from '$lib/components/ui/Popover.svelte';
-	import { i18n } from '$lib/stores/i18n.store';
+	import { i18n } from '$lib/stores/app/i18n.store';
 	import type { MissionControlId } from '$lib/types/mission-control';
 
 	interface Props {

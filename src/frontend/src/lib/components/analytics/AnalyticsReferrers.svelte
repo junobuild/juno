@@ -1,6 +1,6 @@
 <script lang="ts">
 	import AnalyticsTable from '$lib/components/analytics/AnalyticsTable.svelte';
-	import { i18n } from '$lib/stores/i18n.store';
+	import { i18n } from '$lib/stores/app/i18n.store';
 	import type { AnalyticsPageViews } from '$lib/types/orbiter';
 
 	interface Props {

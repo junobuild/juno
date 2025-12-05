@@ -5,8 +5,8 @@
 	import type { SatelliteDid } from '$declarations';
 	import Input from '$lib/components/ui/Input.svelte';
 	import Value from '$lib/components/ui/Value.svelte';
-	import { isBusy } from '$lib/stores/busy.store';
-	import { i18n } from '$lib/stores/i18n.store';
+	import { isBusy } from '$lib/stores/app/busy.store';
+	import { i18n } from '$lib/stores/app/i18n.store';
 
 	interface Props {
 		config: SatelliteDid.AuthenticationConfig | undefined;

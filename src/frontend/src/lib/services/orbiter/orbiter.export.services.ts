@@ -1,7 +1,7 @@
 import type { OrbiterDid } from '$declarations';
 import { getPageViews, getTrackEvents } from '$lib/api/orbiter.api';
-import { i18n } from '$lib/stores/i18n.store';
-import { toasts } from '$lib/stores/toasts.store';
+import { i18n } from '$lib/stores/app/i18n.store';
+import { toasts } from '$lib/stores/app/toasts.store';
 import type { PageViewsParams, PageViewsPeriod } from '$lib/types/orbiter';
 import { formatDateToDateString } from '$lib/utils/date.utils';
 import {

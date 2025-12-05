@@ -4,9 +4,9 @@ import {
 	clearAuthNavOrigin,
 	saveAuthNavOrigin
 } from '$lib/services/console/auth/_auth.nav.services';
+import { i18n } from '$lib/stores/app/i18n.store';
+import { toasts } from '$lib/stores/app/toasts.store';
 import { authStore } from '$lib/stores/auth.store';
-import { i18n } from '$lib/stores/i18n.store';
-import { toasts } from '$lib/stores/toasts.store';
 import { SignInInitError } from '$lib/types/errors';
 import { container } from '$lib/utils/juno.utils';
 import { isNullish } from '@dfinity/utils';

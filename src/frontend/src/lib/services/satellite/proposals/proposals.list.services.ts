@@ -2,9 +2,9 @@ import type { MissionControlDid } from '$declarations';
 import { SATELLITE_v0_1_0 } from '$lib/constants/version.constants';
 import { isSatelliteFeatureSupported } from '$lib/services/_feature.services';
 import { reloadSatelliteProposals } from '$lib/services/satellite/proposals/proposals.list.satellite.services';
-import { i18n } from '$lib/stores/i18n.store';
-import { proposalsStore } from '$lib/stores/proposals.store';
-import { toasts } from '$lib/stores/toasts.store';
+import { i18n } from '$lib/stores/app/i18n.store';
+import { toasts } from '$lib/stores/app/toasts.store';
+import { proposalsStore } from '$lib/stores/satellite/proposals.store';
 import type { OptionIdentity } from '$lib/types/itentity';
 import { get } from 'svelte/store';
 

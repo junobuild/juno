@@ -9,7 +9,7 @@
 	import WalletInlineBalance from '$lib/components/wallet/WalletInlineBalance.svelte';
 	import { testIds } from '$lib/constants/test-ids.constants';
 	import { balance } from '$lib/derived/balance.derived';
-	import { i18n } from '$lib/stores/i18n.store';
+	import { i18n } from '$lib/stores/app/i18n.store';
 	import type { MissionControlId } from '$lib/types/mission-control';
 
 	interface Props {

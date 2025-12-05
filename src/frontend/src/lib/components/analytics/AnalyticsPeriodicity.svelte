@@ -2,8 +2,8 @@
 	import IconScience from '$lib/components/icons/IconScience.svelte';
 	import Popover from '$lib/components/ui/Popover.svelte';
 	import Value from '$lib/components/ui/Value.svelte';
-	import { analyticsFiltersStore } from '$lib/stores/analytics-filters.store';
-	import { i18n } from '$lib/stores/i18n.store';
+	import { analyticsFiltersStore } from '$lib/stores/orbiter/analytics-filters.store';
+	import { i18n } from '$lib/stores/app/i18n.store';
 	import type { AnalyticsPeriodicity } from '$lib/types/orbiter';
 	import { setLocalStorageItem } from '$lib/utils/local-storage.utils';
 

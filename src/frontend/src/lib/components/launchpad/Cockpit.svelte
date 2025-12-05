@@ -20,7 +20,7 @@
 	} from '$lib/derived/mission-control-settings.derived';
 	import { orbiterStore } from '$lib/derived/orbiter.derived';
 	import { missionControlVersion } from '$lib/derived/version.derived';
-	import { i18n } from '$lib/stores/i18n.store';
+	import { i18n } from '$lib/stores/app/i18n.store';
 	import type { CanisterData } from '$lib/types/canister';
 
 	let missionControlData: CanisterData | undefined = $state(undefined);

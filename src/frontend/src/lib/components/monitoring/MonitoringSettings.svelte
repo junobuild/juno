@@ -11,7 +11,7 @@
 	import { orbiterLoaded } from '$lib/derived/orbiter.derived';
 	import { satellitesLoaded } from '$lib/derived/satellites.derived';
 	import { openMonitoringModal } from '$lib/services/mission-control/monitoring.services';
-	import { i18n } from '$lib/stores/i18n.store';
+	import { i18n } from '$lib/stores/app/i18n.store';
 	import type { MissionControlId } from '$lib/types/mission-control';
 
 	interface Props {

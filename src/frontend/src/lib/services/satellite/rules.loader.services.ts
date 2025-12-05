@@ -2,7 +2,7 @@ import type { SatelliteDid } from '$declarations';
 import { listRules } from '$lib/api/satellites.api';
 import { listRules0022, listRulesDeprecated } from '$lib/api/satellites.deprecated.api';
 import { filterSystemRules } from '$lib/constants/rules.constants';
-import { toasts } from '$lib/stores/toasts.store';
+import { toasts } from '$lib/stores/app/toasts.store';
 import type { OptionIdentity } from '$lib/types/itentity';
 import type { RulesData } from '$lib/types/rules.context';
 import type { Principal } from '@icp-sdk/core/principal';

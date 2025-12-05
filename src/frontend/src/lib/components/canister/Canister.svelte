@@ -4,7 +4,7 @@
 	import CanisterSyncData from '$lib/components/canister/CanisterSyncData.svelte';
 	import CanisterTCycles from '$lib/components/canister/CanisterTCycles.svelte';
 	import SkeletonText from '$lib/components/ui/SkeletonText.svelte';
-	import { i18n } from '$lib/stores/i18n.store';
+	import { i18n } from '$lib/stores/app/i18n.store';
 	import type {
 		CanisterSyncData as CanisterSyncDataType,
 		CanisterData,

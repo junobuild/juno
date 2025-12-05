@@ -1,7 +1,7 @@
 <script lang="ts">
 	import MonitoringStepYesNo from '$lib/components/monitoring/MonitoringStepYesNo.svelte';
 	import Html from '$lib/components/ui/Html.svelte';
-	import { i18n } from '$lib/stores/i18n.store';
+	import { i18n } from '$lib/stores/app/i18n.store';
 
 	interface Props {
 		onyes: () => void;

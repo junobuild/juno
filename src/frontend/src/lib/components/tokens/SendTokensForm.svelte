@@ -3,8 +3,8 @@
 	import Html from '$lib/components/ui/Html.svelte';
 	import Input from '$lib/components/ui/Input.svelte';
 	import Value from '$lib/components/ui/Value.svelte';
-	import { i18n } from '$lib/stores/i18n.store';
-	import { toasts } from '$lib/stores/toasts.store';
+	import { i18n } from '$lib/stores/app/i18n.store';
+	import { toasts } from '$lib/stores/app/toasts.store';
 	import { i18nFormat } from '$lib/utils/i18n.utils';
 	import { invalidIcpAddress } from '$lib/utils/icp-account.utils';
 	import { formatICP } from '$lib/utils/icp.utils';

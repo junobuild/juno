@@ -1,7 +1,7 @@
 <script lang="ts">
 	import CanisterAction from '$lib/components/canister/CanisterAction.svelte';
 	import IconDelete from '$lib/components/icons/IconDelete.svelte';
-	import { i18n } from '$lib/stores/i18n.store';
+	import { i18n } from '$lib/stores/app/i18n.store';
 	import type { CanisterSyncData } from '$lib/types/canister';
 
 	interface Props {

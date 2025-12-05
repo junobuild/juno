@@ -1,4 +1,4 @@
-import { i18n } from '$lib/stores/i18n.store';
+import { i18n } from '$lib/stores/app/i18n.store';
 import { assertNonNullish, isNullish } from '@dfinity/utils';
 import { type PrincipalText, PrincipalTextSchema } from '@dfinity/zod-schemas';
 import type { Principal } from '@icp-sdk/core/principal';

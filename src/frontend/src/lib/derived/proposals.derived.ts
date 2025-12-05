@@ -1,4 +1,4 @@
-import { proposalsStore } from '$lib/stores/proposals.store';
+import { proposalsStore } from '$lib/stores/satellite/proposals.store';
 import type { ProposalRecord } from '$lib/types/proposals';
 import type { SatelliteIdText } from '$lib/types/satellite';
 import { derived } from 'svelte/store';

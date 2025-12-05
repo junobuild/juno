@@ -1,7 +1,7 @@
 <script lang="ts">
 	import type { Principal } from '@icp-sdk/core/principal';
 	import type { Snippet } from 'svelte';
-	import { canisterMonitoringUncertifiedStore } from '$lib/stores/canister-monitoring.store';
+	import { canisterMonitoringUncertifiedStore } from '$lib/stores/mission-control/canister-monitoring.store';
 	import type { CanisterMonitoringData } from '$lib/types/canister';
 
 	interface Props {

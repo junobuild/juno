@@ -1,4 +1,4 @@
-import { walletIdbStore } from '$lib/stores/idb.store';
+import { walletIdbStore } from '$lib/stores/app/idb.store';
 import type { CertifiedData } from '$lib/types/store';
 import type { PrincipalText } from '@dfinity/zod-schemas';
 import type { TransactionWithId } from '@icp-sdk/canisters/ledger/icp';

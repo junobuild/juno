@@ -5,7 +5,7 @@
 		missionControlMonitored,
 		missionControlSettingsLoaded
 	} from '$lib/derived/mission-control-settings.derived';
-	import { i18n } from '$lib/stores/i18n.store';
+	import { i18n } from '$lib/stores/app/i18n.store';
 
 	let enabled = $derived($missionControlMonitored);
 </script>

@@ -7,7 +7,7 @@
 	import { JUNO_SUBNET_ID } from '$lib/constants/app.constants';
 	import { isProd, isSkylab } from '$lib/env/app.env';
 	import subnets from '$lib/env/subnets.json';
-	import { i18n } from '$lib/stores/i18n.store';
+	import { i18n } from '$lib/stores/app/i18n.store';
 	import type { Subnet } from '$lib/types/subnet';
 	import { shortenWithMiddleEllipsis } from '$lib/utils/format.utils';
 

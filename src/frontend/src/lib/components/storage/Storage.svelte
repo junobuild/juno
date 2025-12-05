@@ -5,8 +5,8 @@
 	import StorageData from '$lib/components/storage/StorageData.svelte';
 	import { StorageCollectionType } from '$lib/constants/rules.constants';
 	import { authStore } from '$lib/stores/auth.store';
-	import { initListParamsContext } from '$lib/stores/list-params.context.store';
-	import { initRulesContext } from '$lib/stores/rules.context.store';
+	import { initListParamsContext } from '$lib/stores/app/list-params.context.store';
+	import { initRulesContext } from '$lib/stores/satellite/rules.context.store';
 	import {
 		type ListParamsContext,
 		LIST_PARAMS_CONTEXT_KEY,

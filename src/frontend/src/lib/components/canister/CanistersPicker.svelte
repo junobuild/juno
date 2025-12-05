@@ -7,7 +7,7 @@
 	import { sortedSatellites } from '$lib/derived/satellites.derived';
 	import { loadSatellites } from '$lib/services/mission-control/mission-control.satellites.services';
 	import { loadOrbiters } from '$lib/services/orbiter/orbiters.services';
-	import { i18n } from '$lib/stores/i18n.store';
+	import { i18n } from '$lib/stores/app/i18n.store';
 	import { satelliteName } from '$lib/utils/satellite.utils';
 
 	interface Props {

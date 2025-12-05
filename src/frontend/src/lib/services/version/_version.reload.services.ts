@@ -1,4 +1,4 @@
-import { versionIdbStore } from '$lib/stores/idb.store';
+import { versionIdbStore } from '$lib/stores/app/idb.store';
 import { emit } from '$lib/utils/events.utils';
 import type { Principal } from '@icp-sdk/core/principal';
 import { del } from 'idb-keyval';

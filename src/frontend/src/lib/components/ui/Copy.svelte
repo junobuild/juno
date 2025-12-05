@@ -1,8 +1,8 @@
 <script lang="ts">
 	import { notEmptyString } from '@dfinity/utils';
 	import IconCopy from '$lib/components/icons/IconCopy.svelte';
-	import { i18n } from '$lib/stores/i18n.store';
-	import { toasts } from '$lib/stores/toasts.store';
+	import { i18n } from '$lib/stores/app/i18n.store';
+	import { toasts } from '$lib/stores/app/toasts.store';
 	import type { TestId } from '$lib/types/test-id';
 	import { testId } from '$lib/utils/test.utils';
 

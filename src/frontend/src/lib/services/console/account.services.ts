@@ -5,8 +5,8 @@ import {
 } from '$lib/api/console.api';
 import { accountErrorSignOut } from '$lib/services/console/auth/auth.services';
 import { accountCertifiedStore } from '$lib/stores/account.store';
-import { i18n } from '$lib/stores/i18n.store';
-import { toasts } from '$lib/stores/toasts.store';
+import { i18n } from '$lib/stores/app/i18n.store';
+import { toasts } from '$lib/stores/app/toasts.store';
 import type { OptionIdentity } from '$lib/types/itentity';
 import { fromNullable, isNullish } from '@dfinity/utils';
 import type { Identity } from '@icp-sdk/core/agent';

@@ -5,7 +5,7 @@
 	import { stopPropagation } from 'svelte/legacy';
 	import { fade, scale } from 'svelte/transition';
 	import IconClose from '$lib/components/icons/IconClose.svelte';
-	import { i18n } from '$lib/stores/i18n.store';
+	import { i18n } from '$lib/stores/app/i18n.store';
 	import { handleKeyPress } from '$lib/utils/keyboard.utils';
 
 	interface Props {

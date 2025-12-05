@@ -7,7 +7,7 @@
 	import { getAuthConfig } from '$lib/services/console/auth/auth.config.services';
 	import { getRuleUser } from '$lib/services/satellite/collection.services';
 	import { authStore } from '$lib/stores/auth.store';
-	import { i18n } from '$lib/stores/i18n.store';
+	import { i18n } from '$lib/stores/app/i18n.store';
 	import { versionStore } from '$lib/stores/version.store';
 	import { AUTH_CONFIG_CONTEXT_KEY, type AuthConfigContext } from '$lib/types/auth.context';
 

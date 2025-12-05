@@ -1,4 +1,4 @@
-import { layoutMenuState } from '$lib/stores/layout-menu.store';
+import { layoutMenuState } from '$lib/stores/app/layout-menu.store';
 import { derived } from 'svelte/store';
 
 export const menuCollapsed = derived(

@@ -11,8 +11,8 @@ import {
 import { COLLECTION_DAPP } from '$lib/constants/storage.constants';
 import { SATELLITE_v0_0_21, SATELLITE_v0_1_4 } from '$lib/constants/version.constants';
 import { isSatelliteFeatureSupported } from '$lib/services/_feature.services';
-import { i18n } from '$lib/stores/i18n.store';
-import { toasts } from '$lib/stores/toasts.store';
+import { i18n } from '$lib/stores/app/i18n.store';
+import { toasts } from '$lib/stores/app/toasts.store';
 import type { OptionIdentity } from '$lib/types/itentity';
 import { memoryFromText, permissionFromText } from '$lib/utils/rules.utils';
 import { fromNullable, isNullish, nonNullish, toNullable } from '@dfinity/utils';

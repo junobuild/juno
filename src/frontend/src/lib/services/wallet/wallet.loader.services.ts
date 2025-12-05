@@ -1,8 +1,8 @@
-import { balanceCertifiedStore } from '$lib/stores/balance.store';
-import { exchangePricesCanisterDataStore } from '$lib/stores/exchange.store';
-import { i18n } from '$lib/stores/i18n.store';
-import { toasts } from '$lib/stores/toasts.store';
-import { transactionsCertifiedStore } from '$lib/stores/transactions.store';
+import { i18n } from '$lib/stores/app/i18n.store';
+import { toasts } from '$lib/stores/app/toasts.store';
+import { balanceCertifiedStore } from '$lib/stores/wallet/balance.store';
+import { exchangePricesCanisterDataStore } from '$lib/stores/wallet/exchange.store';
+import { transactionsCertifiedStore } from '$lib/stores/wallet/transactions.store';
 import type {
 	PostMessageDataResponseExchange,
 	PostMessageDataResponseWallet

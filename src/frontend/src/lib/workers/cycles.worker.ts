@@ -6,7 +6,7 @@ import {
 	SYNC_CYCLES_TIMER_INTERVAL
 } from '$lib/constants/app.constants';
 import { ONE_YEAR, THREE_MONTHS } from '$lib/constants/canister.constants';
-import { cyclesIdbStore } from '$lib/stores/idb.store';
+import { cyclesIdbStore } from '$lib/stores/app/idb.store';
 import type { CanisterInfo, CanisterSegment, CanisterSyncData, Segment } from '$lib/types/canister';
 import type { PostMessageDataRequest, PostMessageRequest } from '$lib/types/post-message';
 import { cyclesToICP } from '$lib/utils/cycles.utils';

@@ -11,10 +11,10 @@
 	import IconRefresh from '$lib/components/icons/IconRefresh.svelte';
 	import { listUsers } from '$lib/services/satellite/user/users.services';
 	import { authStore } from '$lib/stores/auth.store';
-	import { i18n } from '$lib/stores/i18n.store';
-	import { initListParamsContext } from '$lib/stores/list-params.context.store';
-	import { initPaginationContext } from '$lib/stores/pagination.context.store';
-	import { toasts } from '$lib/stores/toasts.store';
+	import { i18n } from '$lib/stores/app/i18n.store';
+	import { initListParamsContext } from '$lib/stores/app/list-params.context.store';
+	import { initPaginationContext } from '$lib/stores/app/pagination.context.store';
+	import { toasts } from '$lib/stores/app/toasts.store';
 	import { versionStore } from '$lib/stores/version.store';
 	import {
 		LIST_PARAMS_CONTEXT_KEY,

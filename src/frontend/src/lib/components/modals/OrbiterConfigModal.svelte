@@ -13,10 +13,10 @@
 	import { ORBITER_v0_0_8 } from '$lib/constants/version.constants';
 	import { setOrbiterSatelliteConfigs } from '$lib/services/orbiter/orbiters.services';
 	import { authStore } from '$lib/stores/auth.store';
-	import { isBusy, wizardBusy } from '$lib/stores/busy.store';
-	import { i18n } from '$lib/stores/i18n.store';
-	import { orbitersConfigsStore } from '$lib/stores/orbiter-configs.store';
-	import { toasts } from '$lib/stores/toasts.store';
+	import { isBusy, wizardBusy } from '$lib/stores/app/busy.store';
+	import { i18n } from '$lib/stores/app/i18n.store';
+	import { orbitersConfigsStore } from '$lib/stores/orbiter/orbiter-configs.store';
+	import { toasts } from '$lib/stores/app/toasts.store';
 	import { versionStore } from '$lib/stores/version.store';
 	import type { JunoModalDetail, JunoModalEditOrbiterConfigDetail } from '$lib/types/modal';
 	import type { OrbiterSatelliteConfigEntry } from '$lib/types/orbiter';

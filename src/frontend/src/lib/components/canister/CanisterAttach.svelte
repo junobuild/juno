@@ -4,9 +4,9 @@
 	import type { Snippet } from 'svelte';
 	import Popover from '$lib/components/ui/Popover.svelte';
 	import { missionControlId } from '$lib/derived/account.mission-control.derived';
-	import { busy, isBusy } from '$lib/stores/busy.store';
-	import { i18n } from '$lib/stores/i18n.store';
-	import { toasts } from '$lib/stores/toasts.store';
+	import { busy, isBusy } from '$lib/stores/app/busy.store';
+	import { i18n } from '$lib/stores/app/i18n.store';
+	import { toasts } from '$lib/stores/app/toasts.store';
 	import type { MissionControlId } from '$lib/types/mission-control';
 
 	interface Props {

@@ -6,7 +6,7 @@
 	import VersionWarning from '$lib/components/warning/VersionWarning.svelte';
 	import { missionControlVersion } from '$lib/derived/version.derived';
 	import { openUpgradeModal } from '$lib/services/upgrade/upgrade.init.services';
-	import { i18n } from '$lib/stores/i18n.store';
+	import { i18n } from '$lib/stores/app/i18n.store';
 	import { versionStore } from '$lib/stores/version.store';
 
 	interface Props {

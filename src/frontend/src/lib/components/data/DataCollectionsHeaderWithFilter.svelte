@@ -3,7 +3,7 @@
 	import CollectionSelection from '$lib/components/collections/CollectionSelection.svelte';
 	import IconVisibility from '$lib/components/icons/IconVisibility.svelte';
 	import IconVisibilityOff from '$lib/components/icons/IconVisibilityOff.svelte';
-	import { i18n } from '$lib/stores/i18n.store';
+	import { i18n } from '$lib/stores/app/i18n.store';
 	import type { CollectionRule } from '$lib/types/collection';
 	import { RULES_CONTEXT_KEY, type RulesContext } from '$lib/types/rules.context';
 	import { getLocalListRulesParams, setLocalStorageItem } from '$lib/utils/local-storage.utils';

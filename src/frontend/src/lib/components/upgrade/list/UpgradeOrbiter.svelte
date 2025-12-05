@@ -3,7 +3,7 @@
 	import UpgradeSegment from '$lib/components/upgrade/list/UpgradeSegment.svelte';
 	import { orbiterVersion } from '$lib/derived/version.derived';
 	import { openUpgradeModal } from '$lib/services/upgrade/upgrade.init.services';
-	import { i18n } from '$lib/stores/i18n.store';
+	import { i18n } from '$lib/stores/app/i18n.store';
 	import { versionStore } from '$lib/stores/version.store';
 
 	const startUpgrade = async () => {

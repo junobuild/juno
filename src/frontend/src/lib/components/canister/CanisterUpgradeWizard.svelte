@@ -37,7 +37,7 @@
 	import ConfirmUpgradeVersion from '$lib/components/upgrade/wizard/ConfirmUpgradeVersion.svelte';
 	import ProgressUpgradeVersion from '$lib/components/upgrade/wizard/ProgressUpgradeVersion.svelte';
 	import ReviewUpgradeVersion from '$lib/components/upgrade/wizard/ReviewUpgradeVersion.svelte';
-	import { i18n } from '$lib/stores/i18n.store';
+	import { i18n } from '$lib/stores/app/i18n.store';
 	import { i18nFormat } from '$lib/utils/i18n.utils';
 
 	let {

@@ -11,7 +11,7 @@
 	import { TOP_UP_NETWORK_FEES } from '$lib/constants/app.constants';
 	import { missionControlId } from '$lib/derived/account.mission-control.derived';
 	import { icpToUsd } from '$lib/derived/exchange.derived';
-	import { i18n } from '$lib/stores/i18n.store';
+	import { i18n } from '$lib/stores/app/i18n.store';
 	import type { CanisterSegmentWithLabel } from '$lib/types/canister';
 	import { formatTCycles, icpToCycles } from '$lib/utils/cycles.utils';
 	import { i18nFormat } from '$lib/utils/i18n.utils';

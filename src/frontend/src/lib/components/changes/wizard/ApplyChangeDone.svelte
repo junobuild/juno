@@ -1,6 +1,6 @@
 <script lang="ts">
 	import type { ProposalType } from '@junobuild/cdn';
-	import { i18n } from '$lib/stores/i18n.store';
+	import { i18n } from '$lib/stores/app/i18n.store';
 
 	interface Props {
 		proposalType: ProposalType;

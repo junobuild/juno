@@ -3,7 +3,7 @@
 	import IconCheckCircle from '$lib/components/icons/IconCheckCircle.svelte';
 	import IconError from '$lib/components/icons/IconError.svelte';
 	import InlineWarning from '$lib/components/ui/InlineWarning.svelte';
-	import { i18n } from '$lib/stores/i18n.store';
+	import { i18n } from '$lib/stores/app/i18n.store';
 	import type { CanisterDataInfo, CanisterSyncStatus } from '$lib/types/canister';
 	import { cyclesNeededForFreezingThreshold } from '$lib/utils/canister.utils';
 	import { formatTCycles } from '$lib/utils/cycles.utils';

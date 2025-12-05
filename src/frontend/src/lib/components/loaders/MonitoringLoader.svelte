@@ -9,8 +9,8 @@
 	import { satellitesNotLoaded } from '$lib/derived/satellites.derived';
 	import { missionControlVersion } from '$lib/derived/version.derived';
 	import { MonitoringWorker } from '$lib/services/workers/worker.monitoring.services';
-	import { i18n } from '$lib/stores/i18n.store';
-	import { toasts } from '$lib/stores/toasts.store';
+	import { i18n } from '$lib/stores/app/i18n.store';
+	import { toasts } from '$lib/stores/app/toasts.store';
 	import type { CanisterSegment } from '$lib/types/canister';
 
 	interface Props {

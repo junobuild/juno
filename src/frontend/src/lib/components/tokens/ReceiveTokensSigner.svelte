@@ -7,9 +7,9 @@
 	import Confetti from '$lib/components/ui/Confetti.svelte';
 	import Spinner from '$lib/components/ui/Spinner.svelte';
 	import { OISY_WALLET_OPTIONS } from '$lib/constants/wallet.constants';
-	import { wizardBusy } from '$lib/stores/busy.store';
-	import { i18n } from '$lib/stores/i18n.store';
-	import { toasts } from '$lib/stores/toasts.store';
+	import { wizardBusy } from '$lib/stores/app/busy.store';
+	import { i18n } from '$lib/stores/app/i18n.store';
+	import { toasts } from '$lib/stores/app/toasts.store';
 	import type { MissionControlId } from '$lib/types/mission-control';
 	import { assertAndConvertAmountToICPToken } from '$lib/utils/token.utils';
 

@@ -10,8 +10,8 @@
 	import { balance } from '$lib/derived/balance.derived';
 	import { sendTokens } from '$lib/services/mission-control/tokens.services';
 	import { authStore } from '$lib/stores/auth.store';
-	import { wizardBusy } from '$lib/stores/busy.store';
-	import { i18n } from '$lib/stores/i18n.store';
+	import { wizardBusy } from '$lib/stores/app/busy.store';
+	import { i18n } from '$lib/stores/app/i18n.store';
 	import type { SendTokensProgress } from '$lib/types/progress-send-tokens';
 
 	interface Props {

@@ -1,6 +1,6 @@
 import { getCredits } from '$lib/api/console.api';
 import { loadDataStore } from '$lib/services/_loader.services';
-import { creditsUncertifiedStore } from '$lib/stores/credits.store';
+import { creditsUncertifiedStore } from '$lib/stores/console/credits.store';
 import type { OptionIdentity } from '$lib/types/itentity';
 import type { Identity } from '@icp-sdk/core/agent';
 

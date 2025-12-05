@@ -2,7 +2,7 @@
 	import type { Principal } from '@icp-sdk/core/principal';
 	import type { Snippet } from 'svelte';
 	import DataDelete from '$lib/components/data/DataDelete.svelte';
-	import { i18n } from '$lib/stores/i18n.store';
+	import { i18n } from '$lib/stores/app/i18n.store';
 
 	interface Props {
 		deleteData: (params: { collection: string; satelliteId: Principal }) => Promise<void>;

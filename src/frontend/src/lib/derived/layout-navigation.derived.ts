@@ -1,6 +1,6 @@
 import { authSignedIn } from '$lib/derived/auth.derived';
-import { i18n } from '$lib/stores/i18n.store';
-import { layoutNavigation } from '$lib/stores/layout-navigation.store';
+import { i18n } from '$lib/stores/app/i18n.store';
+import { layoutNavigation } from '$lib/stores/app/layout-navigation.store';
 import { satelliteName } from '$lib/utils/satellite.utils';
 import { nonNullish, notEmptyString } from '@dfinity/utils';
 import { derived, type Readable } from 'svelte/store';

@@ -9,8 +9,8 @@ import { DEFAULT_RATE_CONFIG_TIME_PER_TOKEN_NS } from '$lib/constants/data.const
 import { DbCollectionType } from '$lib/constants/rules.constants';
 import { SATELLITE_v0_0_17 } from '$lib/constants/version.constants';
 import { isSatelliteFeatureSupported } from '$lib/services/_feature.services';
-import { i18n } from '$lib/stores/i18n.store';
-import { toasts } from '$lib/stores/toasts.store';
+import { i18n } from '$lib/stores/app/i18n.store';
+import { toasts } from '$lib/stores/app/toasts.store';
 import type { OptionIdentity } from '$lib/types/itentity';
 import type { Option } from '$lib/types/utils';
 import {

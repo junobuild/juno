@@ -5,7 +5,7 @@
 	import Html from '$lib/components/ui/Html.svelte';
 	import { balanceOrZero } from '$lib/derived/balance.derived';
 	import { orbiterStore } from '$lib/derived/orbiter.derived';
-	import { i18n } from '$lib/stores/i18n.store';
+	import { i18n } from '$lib/stores/app/i18n.store';
 	import type { JunoModalDetail, JunoModalTopUpOrbiterDetail } from '$lib/types/modal';
 	import { i18nFormat } from '$lib/utils/i18n.utils';
 

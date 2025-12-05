@@ -4,7 +4,7 @@
 	import NavbarSatellite from '$lib/components/core/NavbarSatellite.svelte';
 	import { layoutTitle } from '$lib/derived/layout-title.derived';
 	import { isSatelliteRoute } from '$lib/derived/route.derived.svelte';
-	import { layoutNavigation } from '$lib/stores/layout-navigation.store';
+	import { layoutNavigation } from '$lib/stores/app/layout-navigation.store';
 
 	let Icon = $derived($layoutNavigation?.data.icon);
 </script>

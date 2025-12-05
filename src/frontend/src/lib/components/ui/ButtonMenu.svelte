@@ -2,8 +2,8 @@
 	import IconClose from '$lib/components/icons/IconClose.svelte';
 	import IconMenu from '$lib/components/icons/IconMenu.svelte';
 	import ButtonIcon from '$lib/components/ui/ButtonIcon.svelte';
-	import { i18n } from '$lib/stores/i18n.store';
-	import { layoutMenuOpen } from '$lib/stores/layout-menu.store';
+	import { i18n } from '$lib/stores/app/i18n.store';
+	import { layoutMenuOpen } from '$lib/stores/app/layout-menu.store';
 </script>
 
 <div class="menu">

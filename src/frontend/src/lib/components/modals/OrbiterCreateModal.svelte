@@ -12,8 +12,8 @@
 	import { authSignedOut } from '$lib/derived/auth.derived';
 	import { createOrbiterWizard } from '$lib/services/wizard.services';
 	import { authStore } from '$lib/stores/auth.store';
-	import { wizardBusy } from '$lib/stores/busy.store';
-	import { i18n } from '$lib/stores/i18n.store';
+	import { wizardBusy } from '$lib/stores/app/busy.store';
+	import { i18n } from '$lib/stores/app/i18n.store';
 	import type { JunoModalDetail } from '$lib/types/modal';
 	import type { WizardCreateProgress } from '$lib/types/progress-wizard';
 	import { testId } from '$lib/utils/test.utils';

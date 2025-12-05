@@ -11,12 +11,12 @@
 	import ButtonBack from '$lib/components/ui/ButtonBack.svelte';
 	import ButtonMenu from '$lib/components/ui/ButtonMenu.svelte';
 	import Header from '$lib/components/ui/Header.svelte';
+	import { authSignedIn } from '$lib/derived/auth.derived';
 	import {
 		missionControlId,
 		missionControlIdLoaded
 	} from '$lib/derived/console/account.mission-control.derived';
 	import { provider } from '$lib/derived/console/account.provider.derived';
-	import { authSignedIn } from '$lib/derived/auth.derived';
 	import { isSkylab } from '$lib/env/app.env';
 	import { layoutTitleIntersecting } from '$lib/stores/app/layout-intersecting.store';
 

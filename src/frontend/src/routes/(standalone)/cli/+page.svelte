@@ -7,8 +7,8 @@
 	import SignInActions from '$lib/components/sign-in/SignInActions.svelte';
 	import ContainerCentered from '$lib/components/ui/ContainerCentered.svelte';
 	import Message from '$lib/components/ui/Message.svelte';
-	import { missionControlId } from '$lib/derived/console/account.mission-control.derived';
 	import { authSignedIn } from '$lib/derived/auth.derived';
+	import { missionControlId } from '$lib/derived/console/account.mission-control.derived';
 	import { sortedSatellites } from '$lib/derived/satellite/satellites.derived';
 	import { onIntersection } from '$lib/directives/intersection.directives';
 	import { i18n } from '$lib/stores/app/i18n.store';

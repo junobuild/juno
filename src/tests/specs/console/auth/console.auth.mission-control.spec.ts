@@ -122,11 +122,11 @@ describe('Satellite > Auth > Mission Control', () => {
 			return;
 		}
 
-		const { mission_control: missionControl } = result.Ok;
+		const { account } = result.Ok;
 
-		expect(missionControl.owner.toText()).toEqual(mockIdentity.getPrincipal().toText());
+		expect(account.owner.toText()).toEqual(mockIdentity.getPrincipal().toText());
 
-		const provider = fromNullable(missionControl.provider);
+		const provider = fromNullable(account.provider);
 
 		assertNonNullish(provider);
 
@@ -179,11 +179,11 @@ describe('Satellite > Auth > Mission Control', () => {
 			return;
 		}
 
-		const { mission_control: missionControl } = result.Ok;
+		const { account } = result.Ok;
 
-		expect(missionControl.owner.toText()).toEqual(mockIdentity.getPrincipal().toText());
+		expect(account.owner.toText()).toEqual(mockIdentity.getPrincipal().toText());
 
-		const provider = fromNullable(missionControl.provider);
+		const provider = fromNullable(account.provider);
 
 		assertNonNullish(provider);
 

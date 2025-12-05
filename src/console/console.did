@@ -34,7 +34,7 @@ type AssetNoContent = record {
 type AssetsUpgradeOptions = record { clear_existing_assets : opt bool };
 type Authentication = record {
   delegation : PreparedDelegation;
-  mission_control : Account;
+  account : Account;
 };
 type AuthenticationArgs = variant { OpenId : OpenIdPrepareDelegationArgs };
 type AuthenticationConfig = record {

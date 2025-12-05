@@ -48,7 +48,7 @@ export interface AssetsUpgradeOptions {
 }
 export interface Authentication {
 	delegation: PreparedDelegation;
-	mission_control: Account;
+	account: Account;
 }
 export type AuthenticationArgs = { OpenId: OpenIdPrepareDelegationArgs };
 export interface AuthenticationConfig {

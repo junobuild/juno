@@ -16,11 +16,11 @@ import IconTelescope from '$lib/components/icons/IconTelescope.svelte';
 import IconUpgradeDock from '$lib/components/icons/IconUpgradeDock.svelte';
 import IconWallet from '$lib/components/icons/IconWallet.svelte';
 import { authNotSignedIn } from '$lib/derived/auth.derived';
-import { missionControlIdDerived } from '$lib/derived/mission-control.derived';
-import { satelliteStore } from '$lib/derived/satellite.derived';
-import { sortedSatelliteUis } from '$lib/derived/satellites.derived';
-import { i18n } from '$lib/stores/i18n.store';
-import { theme } from '$lib/stores/theme.store';
+import { missionControlId } from '$lib/derived/console/account.mission-control.derived';
+import { satelliteStore } from '$lib/derived/satellite/satellite.derived';
+import { sortedSatelliteUis } from '$lib/derived/satellite/satellites.derived';
+import { i18n } from '$lib/stores/app/i18n.store';
+import { theme } from '$lib/stores/app/theme.store';
 import type { SatelliteUi } from '$lib/types/satellite';
 import type {
 	SpotlightActionItem,
@@ -37,7 +37,7 @@ import { isNullish, nonNullish, notEmptyString } from '@dfinity/utils';
 import { derived, type Readable } from 'svelte/store';
 
 const withMissionControlItems: Readable<SpotlightItems> = derived(
-	[i18n, missionControlIdDerived],
+	[i18n, missionControlId],
 	([$i18n, $missionControlIdDerived]) =>
 		isNullish($missionControlIdDerived)
 			? []

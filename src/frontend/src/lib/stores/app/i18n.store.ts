@@ -7,7 +7,7 @@ import { writable, type Readable } from 'svelte/store';
 
 const zhCnI18n = async (): Promise<I18n> => ({
 	lang: 'zh-cn',
-	...(await import(`../i18n/zh-cn.json`))
+	...(await import(`../../i18n/zh-cn.json`))
 });
 
 const enI18n = (): I18n =>

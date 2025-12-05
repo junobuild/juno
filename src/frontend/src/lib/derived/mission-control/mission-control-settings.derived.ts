@@ -1,4 +1,4 @@
-import { missionControlSettingsUncertifiedStore } from '$lib/stores/mission-control.store';
+import { missionControlSettingsUncertifiedStore } from '$lib/stores/mission-control/mission-control.store';
 import { fromNullishNullable, nonNullish } from '@dfinity/utils';
 import { derived } from 'svelte/store';
 

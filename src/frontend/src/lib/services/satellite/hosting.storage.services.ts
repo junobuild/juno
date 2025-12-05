@@ -3,9 +3,9 @@ import { countCollectionAssets, switchStorageSystemMemory } from '$lib/api/satel
 import { COLLECTION_DAPP } from '$lib/constants/storage.constants';
 import { SATELLITE_v0_0_20 } from '$lib/constants/version.constants';
 import { instantSatelliteVersion } from '$lib/services/_feature.services';
-import { busy } from '$lib/stores/busy.store';
-import { i18n } from '$lib/stores/i18n.store';
-import { toasts } from '$lib/stores/toasts.store';
+import { busy } from '$lib/stores/app/busy.store';
+import { i18n } from '$lib/stores/app/i18n.store';
+import { toasts } from '$lib/stores/app/toasts.store';
 import type { OptionIdentity } from '$lib/types/itentity';
 import { nonNullish } from '@dfinity/utils';
 import { compare } from 'semver';

@@ -1,8 +1,7 @@
 import { resetSnapshots } from '$lib/services/ic-mgmt/snapshots.services';
 import { resetSubnets } from '$lib/services/ic-mgmt/subnets.services';
-import { authStore } from '$lib/stores/auth.store';
-import { busy } from '$lib/stores/busy.store';
-import { i18n } from '$lib/stores/i18n.store';
+import { busy } from '$lib/stores/app/busy.store';
+import { i18n } from '$lib/stores/app/i18n.store';
 import {
 	cyclesIdbStore,
 	exchangeIdbStore,
@@ -10,8 +9,9 @@ import {
 	releasesIdbStore,
 	versionIdbStore,
 	walletIdbStore
-} from '$lib/stores/idb.store';
-import { toasts } from '$lib/stores/toasts.store';
+} from '$lib/stores/app/idb.store';
+import { toasts } from '$lib/stores/app/toasts.store';
+import { authStore } from '$lib/stores/auth.store';
 import { SignInUserInterruptError } from '$lib/types/errors';
 import type { ToastLevel, ToastMsg } from '$lib/types/toast';
 import { resetLocalStorage } from '$lib/utils/local-storage.utils';

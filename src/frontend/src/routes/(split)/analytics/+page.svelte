@@ -14,7 +14,7 @@
 	import Tabs from '$lib/components/ui/Tabs.svelte';
 	import Warnings from '$lib/components/warning/Warnings.svelte';
 	import { authSignedIn } from '$lib/derived/auth.derived';
-	import { orbiterStore } from '$lib/derived/orbiter.derived';
+	import { orbiterStore } from '$lib/derived/orbiter/orbiter.derived';
 	import {
 		type Tab,
 		type TabsContext,

@@ -1,6 +1,6 @@
 <script lang="ts">
 	import Html from '$lib/components/ui/Html.svelte';
-	import { i18n } from '$lib/stores/i18n.store';
+	import { i18n } from '$lib/stores/app/i18n.store';
 	import { i18nFormat, i18nText } from '$lib/utils/i18n.utils';
 
 	interface Props {

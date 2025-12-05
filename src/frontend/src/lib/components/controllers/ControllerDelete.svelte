@@ -4,10 +4,10 @@
 	import type { SatelliteDid } from '$declarations';
 	import Confirmation from '$lib/components/core/Confirmation.svelte';
 	import Value from '$lib/components/ui/Value.svelte';
-	import { missionControlIdDerived } from '$lib/derived/mission-control.derived';
-	import { busy } from '$lib/stores/busy.store';
-	import { i18n } from '$lib/stores/i18n.store';
-	import { toasts } from '$lib/stores/toasts.store';
+	import { missionControlId } from '$lib/derived/console/account.mission-control.derived';
+	import { busy } from '$lib/stores/app/busy.store';
+	import { i18n } from '$lib/stores/app/i18n.store';
+	import { toasts } from '$lib/stores/app/toasts.store';
 	import type { MissionControlId } from '$lib/types/mission-control';
 
 	interface Props {
@@ -35,7 +35,7 @@
 			return;
 		}
 
-		if (isNullish($missionControlIdDerived)) {
+		if (isNullish($missionControlId)) {
 			toasts.error({
 				text: $i18n.errors.no_mission_control
 			});
@@ -46,7 +46,7 @@
 
 		try {
 			await remove({
-				missionControlId: $missionControlIdDerived,
+				missionControlId: $missionControlId,
 				controller: selectedController[0]
 			});
 		} catch (err: unknown) {

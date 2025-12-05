@@ -1,5 +1,5 @@
-import { i18n } from '$lib/stores/i18n.store';
-import { toasts } from '$lib/stores/toasts.store';
+import { i18n } from '$lib/stores/app/i18n.store';
+import { toasts } from '$lib/stores/app/toasts.store';
 import { versionStore } from '$lib/stores/version.store';
 import type { PostMessageDataResponseRegistry } from '$lib/types/post-message';
 import { get } from 'svelte/store';

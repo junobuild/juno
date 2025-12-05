@@ -1,14 +1,14 @@
 import type { CanisterStoreData } from '$lib/stores/_canister.store';
 import {
-	canisterMonitoringUncertifiedStore,
-	canistersMonitoringUncertifiedStore,
-	type UncertifiedCanisterSyncMonitoring
-} from '$lib/stores/canister-monitoring.store';
-import {
 	canistersSyncDataUncertifiedStore,
 	canisterSyncDataUncertifiedStore,
 	type UncertifiedCanisterSyncData
-} from '$lib/stores/canister-sync-data.store';
+} from '$lib/stores/ic-mgmt/canister-sync-data.store';
+import {
+	canisterMonitoringUncertifiedStore,
+	canistersMonitoringUncertifiedStore,
+	type UncertifiedCanisterSyncMonitoring
+} from '$lib/stores/mission-control/canister-monitoring.store';
 import type {
 	PostMessageDataResponseCanisterMonitoring,
 	PostMessageDataResponseCanistersMonitoring,

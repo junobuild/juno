@@ -9,9 +9,9 @@
 	import Html from '$lib/components/ui/Html.svelte';
 	import Value from '$lib/components/ui/Value.svelte';
 	import { TOP_UP_NETWORK_FEES } from '$lib/constants/app.constants';
-	import { icpToUsd } from '$lib/derived/exchange.derived';
-	import { missionControlIdDerived } from '$lib/derived/mission-control.derived';
-	import { i18n } from '$lib/stores/i18n.store';
+	import { missionControlId } from '$lib/derived/console/account.mission-control.derived';
+	import { icpToUsd } from '$lib/derived/wallet/exchange.derived';
+	import { i18n } from '$lib/stores/app/i18n.store';
 	import type { CanisterSegmentWithLabel } from '$lib/types/canister';
 	import { formatTCycles, icpToCycles } from '$lib/utils/cycles.utils';
 	import { i18nFormat } from '$lib/utils/i18n.utils';
@@ -113,7 +113,7 @@
 			</div>
 		</div>
 
-		<button disabled={isNullish($missionControlIdDerived) || isNullish(cycles)} type="submit"
+		<button disabled={isNullish($missionControlId) || isNullish(cycles)} type="submit"
 			>{$i18n.core.review}</button
 		>
 	</form>

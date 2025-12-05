@@ -9,7 +9,7 @@ import {
 } from '$lib/services/emulator.services';
 import { Principal } from '@icp-sdk/core/principal';
 
-import { toasts } from '$lib/stores/toasts.store';
+import { toasts } from '$lib/stores/app/toasts.store';
 import i18Mock from '../../mocks/i18n.mock';
 import { mockIdentity } from '../../mocks/identity.mock';
 import { mockMissionControlId } from '../../mocks/modules.mock';

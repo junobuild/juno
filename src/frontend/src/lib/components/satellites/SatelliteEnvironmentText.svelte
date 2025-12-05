@@ -2,7 +2,7 @@
 	import { nonNullish } from '@dfinity/utils';
 	import type { MissionControlDid } from '$declarations';
 	import Value from '$lib/components/ui/Value.svelte';
-	import { i18n } from '$lib/stores/i18n.store';
+	import { i18n } from '$lib/stores/app/i18n.store';
 	import { satelliteEnvironment } from '$lib/utils/satellite.utils';
 
 	interface Props {

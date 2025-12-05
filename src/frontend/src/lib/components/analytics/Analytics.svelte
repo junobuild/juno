@@ -14,17 +14,17 @@
 	import NoAnalytics from '$lib/components/analytics/NoAnalytics.svelte';
 	import SpinnerParagraph from '$lib/components/ui/SpinnerParagraph.svelte';
 	import Warning from '$lib/components/ui/Warning.svelte';
-	import { orbiterFeatures } from '$lib/derived/orbiter-satellites.derived';
-	import { orbitersStore, orbiterStore } from '$lib/derived/orbiter.derived';
-	import { satelliteStore } from '$lib/derived/satellite.derived';
+	import { orbiterFeatures } from '$lib/derived/orbiter/orbiter-satellites.derived';
+	import { orbitersStore, orbiterStore } from '$lib/derived/orbiter/orbiter.derived';
+	import { satelliteStore } from '$lib/derived/satellite/satellite.derived';
 	import { getAnalyticsPageViewsForPeriods } from '$lib/services/orbiter/orbiter.pagination.page-views.services';
 	import { getAnalyticsPerformanceMetricsForPeriods } from '$lib/services/orbiter/orbiter.pagination.performance-metrics.services';
 	import { getAnalyticsTrackEventsForPeriods } from '$lib/services/orbiter/orbiter.pagination.track-events.services';
 	import { loadOrbiterConfigs } from '$lib/services/orbiter/orbiters.services';
-	import { analyticsFiltersStore } from '$lib/stores/analytics-filters.store';
+	import { i18n } from '$lib/stores/app/i18n.store';
+	import { toasts } from '$lib/stores/app/toasts.store';
 	import { authStore } from '$lib/stores/auth.store';
-	import { i18n } from '$lib/stores/i18n.store';
-	import { toasts } from '$lib/stores/toasts.store';
+	import { analyticsFiltersStore } from '$lib/stores/orbiter/analytics-filters.store';
 	import { versionStore } from '$lib/stores/version.store';
 	import type {
 		AnalyticsPageViews as AnalyticsPageViewsType,

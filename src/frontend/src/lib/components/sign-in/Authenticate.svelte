@@ -7,7 +7,7 @@
 	import Spinner from '$lib/components/ui/Spinner.svelte';
 	import { getAndClearAuthNavOrigin } from '$lib/services/console/auth/_auth.nav.services';
 	import { handleRedirectCallback } from '$lib/services/console/auth/auth.openid.services';
-	import { i18n } from '$lib/stores/i18n.store';
+	import { i18n } from '$lib/stores/app/i18n.store';
 
 	let state = $state<'loading' | 'ok' | 'error'>('loading');
 

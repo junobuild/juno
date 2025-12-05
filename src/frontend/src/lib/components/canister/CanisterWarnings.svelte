@@ -4,7 +4,7 @@
 	import CanisterSyncData from '$lib/components/canister/CanisterSyncData.svelte';
 	import Warning from '$lib/components/ui/Warning.svelte';
 	import { onIntersection } from '$lib/directives/intersection.directives';
-	import { onLayoutTitleIntersection } from '$lib/stores/layout-intersecting.store';
+	import { onLayoutTitleIntersection } from '$lib/stores/app/layout-intersecting.store';
 	import type { CanisterSyncData as CanisterSyncDataType } from '$lib/types/canister';
 
 	interface Props {

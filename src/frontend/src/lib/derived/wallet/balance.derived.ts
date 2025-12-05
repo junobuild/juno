@@ -1,4 +1,4 @@
-import { balanceCertifiedStore } from '$lib/stores/balance.store';
+import { balanceCertifiedStore } from '$lib/stores/wallet/balance.store';
 import { derived } from 'svelte/store';
 
 export const balance = derived([balanceCertifiedStore], ([$balanceStore]) => $balanceStore?.data);

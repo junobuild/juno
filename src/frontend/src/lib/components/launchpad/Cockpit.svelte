@@ -12,23 +12,23 @@
 	import MissionControlDataLoader from '$lib/components/mission-control/MissionControlDataLoader.svelte';
 	import SkeletonText from '$lib/components/ui/SkeletonText.svelte';
 	import WalletInlineBalance from '$lib/components/wallet/WalletInlineBalance.svelte';
-	import { balance } from '$lib/derived/balance.derived';
+	import { missionControlId } from '$lib/derived/console/account.mission-control.derived';
 	import {
 		missionControlNotMonitored,
 		missionControlSettingsLoaded
-	} from '$lib/derived/mission-control-settings.derived';
-	import { missionControlIdDerived } from '$lib/derived/mission-control.derived';
-	import { orbiterStore } from '$lib/derived/orbiter.derived';
+	} from '$lib/derived/mission-control/mission-control-settings.derived';
+	import { orbiterStore } from '$lib/derived/orbiter/orbiter.derived';
 	import { missionControlVersion } from '$lib/derived/version.derived';
-	import { i18n } from '$lib/stores/i18n.store';
+	import { balance } from '$lib/derived/wallet/balance.derived';
+	import { i18n } from '$lib/stores/app/i18n.store';
 	import type { CanisterData } from '$lib/types/canister';
 
 	let missionControlData: CanisterData | undefined = $state(undefined);
 	let orbiterData: CanisterData | undefined = $state(undefined);
 </script>
 
-{#if nonNullish($missionControlIdDerived)}
-	<Canister canisterId={$missionControlIdDerived} display={false} bind:data={missionControlData} />
+{#if nonNullish($missionControlId)}
+	<Canister canisterId={$missionControlId} display={false} bind:data={missionControlData} />
 {/if}
 
 {#if nonNullish($orbiterStore)}
@@ -63,8 +63,8 @@
 	</LaunchpadLink>
 </div>
 
-{#if nonNullish($missionControlIdDerived) && nonNullish($missionControlVersion)}
-	<MissionControlDataLoader missionControlId={$missionControlIdDerived} />
+{#if nonNullish($missionControlId) && nonNullish($missionControlVersion)}
+	<MissionControlDataLoader missionControlId={$missionControlId} />
 {/if}
 
 <div class="monitoring">

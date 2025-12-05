@@ -2,10 +2,10 @@
 	import { isNullish } from '@dfinity/utils';
 	import { compare } from 'semver';
 	import { MISSION_CONTROL_v0_0_12 } from '$lib/constants/version.constants';
-	import { balance, balanceNotLoaded } from '$lib/derived/balance.derived';
 	import { missionControlVersion } from '$lib/derived/version.derived';
-	import { i18n } from '$lib/stores/i18n.store';
-	import { toasts } from '$lib/stores/toasts.store';
+	import { balance, balanceNotLoaded } from '$lib/derived/wallet/balance.derived';
+	import { i18n } from '$lib/stores/app/i18n.store';
+	import { toasts } from '$lib/stores/app/toasts.store';
 	import { emit } from '$lib/utils/events.utils';
 
 	interface Props {

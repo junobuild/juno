@@ -4,7 +4,7 @@
 	import CanisterValue from '$lib/components/canister/CanisterValue.svelte';
 	import MonitoringDisabled from '$lib/components/monitoring/MonitoringDisabled.svelte';
 	import Html from '$lib/components/ui/Html.svelte';
-	import { i18n } from '$lib/stores/i18n.store';
+	import { i18n } from '$lib/stores/app/i18n.store';
 	import type { CanisterData, CanisterSyncStatus } from '$lib/types/canister';
 	import { cyclesNeededForFreezingThreshold } from '$lib/utils/canister.utils';
 	import { formatTCycles } from '$lib/utils/cycles.utils';

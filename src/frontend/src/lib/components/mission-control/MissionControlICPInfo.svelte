@@ -4,8 +4,8 @@
 	import ExternalLink from '$lib/components/ui/ExternalLink.svelte';
 	import Identifier from '$lib/components/ui/Identifier.svelte';
 	import { testIds } from '$lib/constants/test-ids.constants';
-	import { missionControlIdDerived } from '$lib/derived/mission-control.derived';
-	import { i18n } from '$lib/stores/i18n.store';
+	import { missionControlId } from '$lib/derived/console/account.mission-control.derived';
+	import { i18n } from '$lib/stores/app/i18n.store';
 	import { testId } from '$lib/utils/test.utils';
 
 	interface Props {
@@ -16,7 +16,7 @@
 	let { accountIdentifier, onclose }: Props = $props();
 </script>
 
-{#if nonNullish($missionControlIdDerived) && nonNullish(accountIdentifier)}
+{#if nonNullish($missionControlId) && nonNullish(accountIdentifier)}
 	<p class="account-identifier">
 		{$i18n.wallet.transfer_to_account_identifier}
 		<strong><Identifier identifier={accountIdentifier.toHex()} small={false} /></strong>.

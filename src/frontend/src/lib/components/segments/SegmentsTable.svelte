@@ -10,15 +10,15 @@
 	import {
 		canistersSyncDataUncertifiedCount,
 		canistersSyncDataUncertifiedNotSynced
-	} from '$lib/derived/canisters.derived';
-	import { orbiterWithSyncData } from '$lib/derived/orbiter-merged.derived';
-	import { orbiterStore } from '$lib/derived/orbiter.derived';
-	import { satellitesWithSyncData } from '$lib/derived/satellites-merged.derived';
-	import { sortedSatellites } from '$lib/derived/satellites.derived';
+	} from '$lib/derived/ic-mgmt/canisters.derived';
+	import { orbiterWithSyncData } from '$lib/derived/orbiter/orbiter-merged.derived';
+	import { orbiterStore } from '$lib/derived/orbiter/orbiter.derived';
+	import { satellitesWithSyncData } from '$lib/derived/satellite/satellites-merged.derived';
+	import { sortedSatellites } from '$lib/derived/satellite/satellites.derived';
 	import { loadSatellites } from '$lib/services/mission-control/mission-control.satellites.services';
 	import { loadOrbiters } from '$lib/services/orbiter/orbiters.services';
-	import { i18n } from '$lib/stores/i18n.store';
-	import { toasts } from '$lib/stores/toasts.store';
+	import { i18n } from '$lib/stores/app/i18n.store';
+	import { toasts } from '$lib/stores/app/toasts.store';
 	import type { MissionControlId } from '$lib/types/mission-control';
 	import { orbiterName } from '$lib/utils/orbiter.utils';
 	import { satelliteName } from '$lib/utils/satellite.utils';

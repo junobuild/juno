@@ -8,11 +8,11 @@
 	import ContainerCentered from '$lib/components/ui/ContainerCentered.svelte';
 	import Message from '$lib/components/ui/Message.svelte';
 	import { authSignedIn } from '$lib/derived/auth.derived';
-	import { missionControlIdDerived } from '$lib/derived/mission-control.derived';
-	import { sortedSatellites } from '$lib/derived/satellites.derived';
+	import { missionControlId } from '$lib/derived/console/account.mission-control.derived';
+	import { sortedSatellites } from '$lib/derived/satellite/satellites.derived';
 	import { onIntersection } from '$lib/directives/intersection.directives';
-	import { i18n } from '$lib/stores/i18n.store';
-	import { onLayoutTitleIntersection } from '$lib/stores/layout-intersecting.store';
+	import { i18n } from '$lib/stores/app/i18n.store';
+	import { onLayoutTitleIntersection } from '$lib/stores/app/layout-intersecting.store';
 	import type { Option } from '$lib/types/utils';
 
 	interface Props {
@@ -35,14 +35,9 @@
 		{#if $authSignedIn}
 			<MissionControlGuard>
 				<MetadataLoader satellites={$sortedSatellites}>
-					{#if nonNullish($missionControlIdDerived)}
+					{#if nonNullish($missionControlId)}
 						<div in:fade>
-							<CliAdd
-								missionControlId={$missionControlIdDerived}
-								{principal}
-								{profile}
-								{redirect_uri}
-							/>
+							<CliAdd missionControlId={$missionControlId} {principal} {profile} {redirect_uri} />
 						</div>
 					{/if}
 				</MetadataLoader>

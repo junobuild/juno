@@ -5,14 +5,14 @@
 	import { onNavigate } from '$app/navigation';
 	import Overlays from '$lib/components/core/Overlays.svelte';
 	import AuthBroadcastGuard from '$lib/components/guards/AuthBroadcastGuard.svelte';
-	import { layoutNavigationTitle } from '$lib/derived/layout-navigation.derived';
+	import { layoutNavigationTitle } from '$lib/derived/app/layout-navigation.derived';
 	import { initAccount } from '$lib/services/console/account.services';
 	import { displayAndCleanLogoutMsg } from '$lib/services/console/auth/auth.services';
 	import { syncSnapshots } from '$lib/services/ic-mgmt/snapshots.services';
 	import { syncSubnets } from '$lib/services/ic-mgmt/subnets.services';
 	import { AuthWorker } from '$lib/services/workers/worker.auth.services';
+	import { i18n } from '$lib/stores/app/i18n.store';
 	import { authStore, type AuthStoreData } from '$lib/stores/auth.store';
-	import { i18n } from '$lib/stores/i18n.store';
 	import '$lib/styles/global.scss';
 
 	interface Props {

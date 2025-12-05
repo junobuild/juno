@@ -1,13 +1,13 @@
 <script lang="ts">
 	import { isNullish } from '@dfinity/utils';
 	import type { MissionControlDid } from '$declarations';
-	import { satelliteStore } from '$lib/derived/satellite.derived';
+	import { satelliteStore } from '$lib/derived/satellite/satellite.derived';
 	import { exportPageViews } from '$lib/services/orbiter/orbiter.export.services';
-	import { analyticsFiltersStore } from '$lib/stores/analytics-filters.store';
+	import { busy } from '$lib/stores/app/busy.store';
+	import { i18n } from '$lib/stores/app/i18n.store';
+	import { toasts } from '$lib/stores/app/toasts.store';
 	import { authStore } from '$lib/stores/auth.store';
-	import { busy } from '$lib/stores/busy.store';
-	import { i18n } from '$lib/stores/i18n.store';
-	import { toasts } from '$lib/stores/toasts.store';
+	import { analyticsFiltersStore } from '$lib/stores/orbiter/analytics-filters.store';
 	import type { PageViewsParams } from '$lib/types/orbiter';
 
 	interface Props {

@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { isNullish } from '@dfinity/utils';
 	import { onDestroy, onMount, type Snippet } from 'svelte';
-	import { missionControlIdDerived } from '$lib/derived/mission-control.derived';
+	import { missionControlId } from '$lib/derived/console/account.mission-control.derived';
 	import { WalletWorker } from '$lib/services/workers/worker.wallet.services';
 
 	interface Props {
@@ -17,22 +17,22 @@
 	};
 
 	$effect(() => {
-		if (isNullish($missionControlIdDerived)) {
+		if (isNullish($missionControlId)) {
 			worker?.stop();
 			return;
 		}
 
 		worker?.start({
-			missionControlId: $missionControlIdDerived
+			missionControlId: $missionControlId
 		});
 	});
 
 	const onRestartWallet = () => {
-		if (isNullish($missionControlIdDerived)) {
+		if (isNullish($missionControlId)) {
 			return;
 		}
 
-		worker?.restart({ missionControlId: $missionControlIdDerived });
+		worker?.restart({ missionControlId: $missionControlId });
 	};
 
 	onMount(async () => await initWorker());

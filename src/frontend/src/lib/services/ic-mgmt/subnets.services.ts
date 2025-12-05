@@ -6,10 +6,10 @@ import {
 	setIdbStore,
 	syncIdbStore
 } from '$lib/services/_idb-store.services';
-import { i18n } from '$lib/stores/i18n.store';
-import { subnetsIdbStore } from '$lib/stores/idb.store';
-import { subnetStore } from '$lib/stores/subnet.store';
-import { toasts } from '$lib/stores/toasts.store';
+import { i18n } from '$lib/stores/app/i18n.store';
+import { subnetsIdbStore } from '$lib/stores/app/idb.store';
+import { toasts } from '$lib/stores/app/toasts.store';
+import { subnetStore } from '$lib/stores/ic-mgmt/subnet.store';
 import { nonNullish } from '@dfinity/utils';
 import type { Principal } from '@icp-sdk/core/principal';
 import { get } from 'svelte/store';

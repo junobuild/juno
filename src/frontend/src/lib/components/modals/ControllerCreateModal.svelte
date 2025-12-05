@@ -8,10 +8,10 @@
 	import SpinnerModal from '$lib/components/ui/SpinnerModal.svelte';
 	import Value from '$lib/components/ui/Value.svelte';
 	import { REVOKED_CONTROLLERS } from '$lib/constants/app.constants';
-	import { missionControlIdDerived } from '$lib/derived/mission-control.derived';
-	import { wizardBusy } from '$lib/stores/busy.store';
-	import { i18n } from '$lib/stores/i18n.store';
-	import { toasts } from '$lib/stores/toasts.store';
+	import { missionControlId } from '$lib/derived/console/account.mission-control.derived';
+	import { wizardBusy } from '$lib/stores/app/busy.store';
+	import { i18n } from '$lib/stores/app/i18n.store';
+	import { toasts } from '$lib/stores/app/toasts.store';
 	import type { SetControllerScope } from '$lib/types/controllers';
 	import type { JunoModalCreateControllerDetail, JunoModalDetail } from '$lib/types/modal';
 
@@ -46,7 +46,7 @@
 	const addController = async ($event: SubmitEvent) => {
 		$event.preventDefault();
 
-		if (isNullish($missionControlIdDerived)) {
+		if (isNullish($missionControlId)) {
 			toasts.error({
 				text: $i18n.errors.no_mission_control
 			});
@@ -74,7 +74,7 @@
 
 		try {
 			await add({
-				missionControlId: $missionControlIdDerived,
+				missionControlId: $missionControlId,
 				controllerId: controller,
 				profile: undefined,
 				scope

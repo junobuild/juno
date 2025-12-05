@@ -3,9 +3,9 @@
 	import type { Principal } from '@icp-sdk/core/principal';
 	import { depositCycles } from '$lib/api/orbiter.api';
 	import CanisterTransferCyclesModal from '$lib/components/modals/CanisterTransferCyclesModal.svelte';
-	import { orbiterStore } from '$lib/derived/orbiter.derived';
+	import { orbiterStore } from '$lib/derived/orbiter/orbiter.derived';
+	import { i18n } from '$lib/stores/app/i18n.store';
 	import { authStore } from '$lib/stores/auth.store';
-	import { i18n } from '$lib/stores/i18n.store';
 	import type { JunoModalCycles, JunoModalDetail } from '$lib/types/modal';
 
 	interface Props {

@@ -5,9 +5,9 @@
 	import SpotlightShortcut from '$lib/components/core/SpotlightShortcut.svelte';
 	import Input from '$lib/components/ui/Input.svelte';
 	import Popover from '$lib/components/ui/Popover.svelte';
+	import { spotlightItems } from '$lib/derived/app/spotlight.derived';
 	import { authSignedIn } from '$lib/derived/auth.derived';
-	import { spotlightItems } from '$lib/derived/spotlight.derived';
-	import { i18n } from '$lib/stores/i18n.store';
+	import { i18n } from '$lib/stores/app/i18n.store';
 	import { isDesktop } from '$lib/utils/device.utils';
 
 	let visible = $state(false);

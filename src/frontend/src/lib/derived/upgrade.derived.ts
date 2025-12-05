@@ -1,6 +1,6 @@
-import { missionControlIdNotLoaded } from '$lib/derived/mission-control.derived';
-import { orbiterNotLoaded } from '$lib/derived/orbiter.derived';
-import { satellitesNotLoaded } from '$lib/derived/satellites.derived';
+import { missionControlIdNotLoaded } from '$lib/derived/console/account.mission-control.derived';
+import { orbiterNotLoaded } from '$lib/derived/orbiter/orbiter.derived';
+import { satellitesNotLoaded } from '$lib/derived/satellite/satellites.derived';
 import {
 	missionControlVersion,
 	orbiterVersion,

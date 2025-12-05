@@ -4,9 +4,9 @@
 	import DbCollections from '$lib/components/db/DbCollections.svelte';
 	import DbData from '$lib/components/db/DbData.svelte';
 	import { DbCollectionType } from '$lib/constants/rules.constants';
+	import { initListParamsContext } from '$lib/stores/app/list-params.context.store';
 	import { authStore } from '$lib/stores/auth.store';
-	import { initListParamsContext } from '$lib/stores/list-params.context.store';
-	import { initRulesContext } from '$lib/stores/rules.context.store';
+	import { initRulesContext } from '$lib/stores/satellite/rules.context.store';
 	import {
 		type ListParamsContext,
 		LIST_PARAMS_CONTEXT_KEY,

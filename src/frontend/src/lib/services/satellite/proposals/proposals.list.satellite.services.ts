@@ -1,6 +1,6 @@
-import { i18n } from '$lib/stores/i18n.store';
-import { proposalsStore } from '$lib/stores/proposals.store';
-import { toasts } from '$lib/stores/toasts.store';
+import { i18n } from '$lib/stores/app/i18n.store';
+import { toasts } from '$lib/stores/app/toasts.store';
+import { proposalsStore } from '$lib/stores/satellite/proposals.store';
 import type { OptionIdentity } from '$lib/types/itentity';
 import type { LoadProposalsBaseParams, LoadProposalsResult } from '$lib/types/proposals';
 import { container } from '$lib/utils/juno.utils';

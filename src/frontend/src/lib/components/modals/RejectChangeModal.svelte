@@ -5,8 +5,8 @@
 	import ProgressRejectChange from '$lib/components/changes/wizard/ProgressRejectChange.svelte';
 	import Modal from '$lib/components/ui/Modal.svelte';
 	import { rejectProposal } from '$lib/services/satellite/proposals/proposals.services';
+	import { i18n } from '$lib/stores/app/i18n.store';
 	import { authStore } from '$lib/stores/auth.store';
-	import { i18n } from '$lib/stores/i18n.store';
 	import type { JunoModalChangeDetail, JunoModalDetail } from '$lib/types/modal';
 
 	interface Props {

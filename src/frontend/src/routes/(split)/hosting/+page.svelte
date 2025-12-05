@@ -9,8 +9,8 @@
 	import HostingSettings from '$lib/components/hosting/HostingSettings.svelte';
 	import Loaders from '$lib/components/loaders/Loaders.svelte';
 	import Tabs from '$lib/components/ui/Tabs.svelte';
-	import { missionControlIdDerived } from '$lib/derived/mission-control.derived';
-	import { satelliteStore } from '$lib/derived/satellite.derived';
+	import { missionControlId } from '$lib/derived/console/account.mission-control.derived';
+	import { satelliteStore } from '$lib/derived/satellite/satellite.derived';
 	import {
 		type Tab,
 		TABS_CONTEXT_KEY,
@@ -45,7 +45,7 @@
 		<SatelliteGuard>
 			<Tabs>
 				<MissionControlGuard>
-					{#if nonNullish($satelliteStore) && nonNullish($missionControlIdDerived)}
+					{#if nonNullish($satelliteStore) && nonNullish($missionControlId)}
 						{#if $store.tabId === $store.tabs[0].id}
 							<Hosting satellite={$satelliteStore} />
 						{:else if $store.tabId === $store.tabs[1].id}

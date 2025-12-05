@@ -8,15 +8,15 @@
 	import Html from '$lib/components/ui/Html.svelte';
 	import Warning from '$lib/components/ui/Warning.svelte';
 	import { REVOKED_CONTROLLERS } from '$lib/constants/app.constants';
-	import { missionControlIdDerived } from '$lib/derived/mission-control.derived';
+	import { missionControlId as missionControlIdDerived } from '$lib/derived/console/account.mission-control.derived';
 	import {
 		setMissionControlControllerForVersion,
 		setSatellitesControllerForVersion
 	} from '$lib/services/mission-control/mission-control.services';
+	import { busy } from '$lib/stores/app/busy.store';
+	import { i18n } from '$lib/stores/app/i18n.store';
+	import { toasts } from '$lib/stores/app/toasts.store';
 	import { authStore } from '$lib/stores/auth.store';
-	import { busy } from '$lib/stores/busy.store';
-	import { i18n } from '$lib/stores/i18n.store';
-	import { toasts } from '$lib/stores/toasts.store';
 	import type { MissionControlId } from '$lib/types/mission-control';
 	import type { Option } from '$lib/types/utils';
 	import { bigintStringify } from '$lib/utils/number.utils';

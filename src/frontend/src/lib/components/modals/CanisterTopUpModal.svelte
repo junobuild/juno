@@ -7,11 +7,11 @@
 	import CanisterTopUpReview from '$lib/components/canister/CanisterTopUpReview.svelte';
 	import ProgressTopUp from '$lib/components/canister/ProgressTopUp.svelte';
 	import Modal from '$lib/components/ui/Modal.svelte';
-	import { missionControlIdDerived } from '$lib/derived/mission-control.derived';
+	import { missionControlId } from '$lib/derived/console/account.mission-control.derived';
 	import { topUp } from '$lib/services/mission-control/topup.services';
+	import { wizardBusy } from '$lib/stores/app/busy.store';
+	import { i18n } from '$lib/stores/app/i18n.store';
 	import { authStore } from '$lib/stores/auth.store';
-	import { wizardBusy } from '$lib/stores/busy.store';
-	import { i18n } from '$lib/stores/i18n.store';
 	import type { CanisterSegmentWithLabel } from '$lib/types/canister';
 	import type { TopUpProgress } from '$lib/types/progress-topup';
 
@@ -44,7 +44,7 @@
 
 		const { success } = await topUp({
 			canisterId: Principal.fromText(segment.canisterId),
-			missionControlId: $missionControlIdDerived,
+			missionControlId: $missionControlId,
 			identity: $authStore.identity,
 			cycles,
 			balance,

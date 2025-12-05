@@ -10,9 +10,9 @@
 	import LogsRefresh from '$lib/components/logs/LogsRefresh.svelte';
 	import SpinnerParagraph from '$lib/components/ui/SpinnerParagraph.svelte';
 	import { listLogs } from '$lib/services/satellite/logs.services';
+	import { i18n } from '$lib/stores/app/i18n.store';
+	import { initPaginationContext } from '$lib/stores/app/pagination.context.store';
 	import { authStore } from '$lib/stores/auth.store';
-	import { i18n } from '$lib/stores/i18n.store';
-	import { initPaginationContext } from '$lib/stores/pagination.context.store';
 	import type { Log as LogType, LogLevel as LogLevelType } from '$lib/types/log';
 	import { PAGINATION_CONTEXT_KEY, type PaginationContext } from '$lib/types/pagination.context';
 

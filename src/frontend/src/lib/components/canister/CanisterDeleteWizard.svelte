@@ -12,11 +12,11 @@
 		DEFAULT_TCYCLES_TO_RETAIN_ON_DELETION
 	} from '$lib/constants/app.constants';
 	import { authSignedOut } from '$lib/derived/auth.derived';
-	import { missionControlIdDerived } from '$lib/derived/mission-control.derived';
+	import { missionControlId } from '$lib/derived/console/account.mission-control.derived';
 	import { loadSatellites } from '$lib/services/mission-control/mission-control.satellites.services';
-	import { isBusy, wizardBusy } from '$lib/stores/busy.store';
-	import { i18n } from '$lib/stores/i18n.store';
-	import { toasts } from '$lib/stores/toasts.store';
+	import { isBusy, wizardBusy } from '$lib/stores/app/busy.store';
+	import { i18n } from '$lib/stores/app/i18n.store';
+	import { toasts } from '$lib/stores/app/toasts.store';
 	import type { MissionControlId } from '$lib/types/mission-control';
 	import { formatTCycles } from '$lib/utils/cycles.utils';
 	import { i18nCapitalize, i18nFormat } from '$lib/utils/i18n.utils';
@@ -64,7 +64,7 @@
 			return;
 		}
 
-		if (isNullish($missionControlIdDerived)) {
+		if (isNullish($missionControlId)) {
 			toasts.error({
 				text: $i18n.errors.no_mission_control
 			});
@@ -84,12 +84,12 @@
 
 		try {
 			await deleteFn({
-				missionControlId: $missionControlIdDerived,
+				missionControlId: $missionControlId,
 				cyclesToDeposit
 			});
 
 			await loadSatellites({
-				missionControlId: $missionControlIdDerived,
+				missionControlId: $missionControlId,
 				reload: true
 			});
 

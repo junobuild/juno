@@ -2,8 +2,8 @@ import type { MissionControlDid } from '$declarations';
 import { getOrbiterFee, getSatelliteFee } from '$lib/api/console.api';
 import { getAccountIdentifier } from '$lib/api/icp-index.api';
 import { updateAndStartMonitoring } from '$lib/api/mission-control.api';
-import { missionControlMonitored } from '$lib/derived/mission-control-settings.derived';
-import { missionControlConfigMonitoring } from '$lib/derived/mission-control-user.derived';
+import { missionControlMonitored } from '$lib/derived/mission-control/mission-control-settings.derived';
+import { missionControlConfigMonitoring } from '$lib/derived/mission-control/mission-control-user.derived';
 import { isSkylab } from '$lib/env/app.env';
 import { execute } from '$lib/services/_progress.services';
 import { loadCredits } from '$lib/services/console/credits.services';
@@ -20,9 +20,9 @@ import {
 	loadOrbiters
 } from '$lib/services/orbiter/orbiters.services';
 import { waitMissionControlVersionLoaded } from '$lib/services/version/version.mission-control.services';
-import { busy } from '$lib/stores/busy.store';
-import { i18n } from '$lib/stores/i18n.store';
-import { toasts } from '$lib/stores/toasts.store';
+import { busy } from '$lib/stores/app/busy.store';
+import { i18n } from '$lib/stores/app/i18n.store';
+import { toasts } from '$lib/stores/app/toasts.store';
 import type { OptionIdentity } from '$lib/types/itentity';
 import type { MissionControlId } from '$lib/types/mission-control';
 import type { JunoModal, JunoModalCreateSegmentDetail } from '$lib/types/modal';

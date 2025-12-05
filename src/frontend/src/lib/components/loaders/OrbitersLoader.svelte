@@ -1,7 +1,7 @@
 <script lang="ts">
 	import type { Principal } from '@icp-sdk/core/principal';
 	import type { Snippet } from 'svelte';
-	import { missionControlIdDerived } from '$lib/derived/mission-control.derived';
+	import { missionControlId } from '$lib/derived/console/account.mission-control.derived';
 	import { loadOrbiters } from '$lib/services/orbiter/orbiters.services';
 	import type { Option } from '$lib/types/utils';
 
@@ -16,7 +16,7 @@
 	};
 
 	$effect(() => {
-		load($missionControlIdDerived);
+		load($missionControlId);
 	});
 </script>
 

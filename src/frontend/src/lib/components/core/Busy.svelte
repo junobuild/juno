@@ -5,8 +5,8 @@
 	import IconClose from '$lib/components/icons/IconClose.svelte';
 	import Message from '$lib/components/ui/Message.svelte';
 	import Spinner from '$lib/components/ui/Spinner.svelte';
-	import { busy } from '$lib/stores/busy.store';
-	import { i18n } from '$lib/stores/i18n.store';
+	import { busy } from '$lib/stores/app/busy.store';
+	import { i18n } from '$lib/stores/app/i18n.store';
 	import { handleKeyPress } from '$lib/utils/keyboard.utils';
 
 	const close = () => {

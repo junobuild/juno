@@ -1,8 +1,8 @@
 import { loadSnapshots } from '$lib/services/ic-mgmt/snapshots.services';
 import { reloadSatelliteProposals } from '$lib/services/satellite/proposals/proposals.list.satellite.services';
-import { wizardBusy } from '$lib/stores/busy.store';
-import { i18n } from '$lib/stores/i18n.store';
-import { toasts } from '$lib/stores/toasts.store';
+import { wizardBusy } from '$lib/stores/app/busy.store';
+import { i18n } from '$lib/stores/app/i18n.store';
+import { toasts } from '$lib/stores/app/toasts.store';
 import type { OptionIdentity } from '$lib/types/itentity';
 import type { ProposalRecord } from '$lib/types/proposals';
 import type { SatelliteIdText } from '$lib/types/satellite';

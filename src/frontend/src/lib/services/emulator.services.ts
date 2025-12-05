@@ -4,8 +4,8 @@ import {
 	emulatorObservatoryMonitoringOpenId,
 	getEmulatorMainIdentity
 } from '$lib/rest/emulator.rest';
-import { i18n } from '$lib/stores/i18n.store';
-import { toasts } from '$lib/stores/toasts.store';
+import { i18n } from '$lib/stores/app/i18n.store';
+import { toasts } from '$lib/stores/app/toasts.store';
 import type { SetControllerParams } from '$lib/types/controllers';
 import type { MissionControlId } from '$lib/types/mission-control';
 import type { Identity } from '@icp-sdk/core/agent';

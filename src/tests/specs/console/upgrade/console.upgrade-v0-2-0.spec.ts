@@ -63,18 +63,6 @@ describe('Console > Upgrade > v0.1.5 -> v0.2.0', () => {
 		await pic?.tearDown();
 	});
 
-	const upgradeVersion = async (params: { junoVersion: string; version: string }) => {
-		await tick(pic);
-
-		const destination = await downloadConsole(params);
-
-		await pic.upgradeCanister({
-			canisterId,
-			wasm: destination,
-			sender: controller.getPrincipal()
-		});
-	};
-
 	const testUserAccounts = async ({
 		actor,
 		users

@@ -54,9 +54,8 @@
 </script>
 
 <svelte:window
-	onjunoRegistrationState={({
-		detail: { registrationState: state }
-	}: CustomEvent<{ registrationState: Option<CustomDomainState> }>) => (registrationState = state)}
+	onjunoRegistrationState={({ detail: { registrationState: state } }: CustomEvent) =>
+		(registrationState = state)}
 />
 
 <Popover backdrop="dark" center={true} bind:visible>

@@ -11,8 +11,8 @@
 	import { syncSnapshots } from '$lib/services/ic-mgmt/snapshots.services';
 	import { syncSubnets } from '$lib/services/ic-mgmt/subnets.services';
 	import { AuthWorker } from '$lib/services/workers/worker.auth.services';
-	import { authStore, type AuthStoreData } from '$lib/stores/auth.store';
 	import { i18n } from '$lib/stores/app/i18n.store';
+	import { authStore, type AuthStoreData } from '$lib/stores/auth.store';
 	import '$lib/styles/global.scss';
 
 	interface Props {

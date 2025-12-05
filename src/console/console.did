@@ -356,6 +356,7 @@ service : () -> {
   del_controllers : (DeleteControllersArgs) -> ();
   del_custom_domain : (text) -> ();
   delete_proposal_assets : (DeleteProposalAssets) -> ();
+  get_account : () -> (opt Account) query;
   get_auth_config : () -> (opt AuthenticationConfig) query;
   get_config : () -> (Config) query;
   get_create_orbiter_fee : (GetCreateCanisterFeeArgs) -> (opt Tokens) query;
@@ -375,6 +376,7 @@ service : () -> {
       vec record { text; InitUploadResult },
     );
   init_user_mission_control_center : () -> (Account);
+  list_accounts : () -> (vec record { principal; Account }) query;
   list_assets : (text, ListParams) -> (ListResults) query;
   list_controllers : () -> (vec record { principal; Controller }) query;
   list_custom_domains : () -> (vec record { text; CustomDomain }) query;

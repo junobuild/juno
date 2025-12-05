@@ -3,7 +3,7 @@ use crate::factory::utils::controllers::update_mission_control_controllers;
 use crate::factory::utils::wasm::mission_control_wasm_arg;
 use crate::store::heap::increment_mission_controls_rate;
 use crate::store::stable::{
-    add_account, delete_account, get_account, init_account_with_empty_mission_control,
+    delete_account, get_account, init_account_with_empty_mission_control, update_account,
 };
 use crate::types::state::{Account, Provider};
 use candid::Nat;
@@ -59,18 +59,18 @@ async fn create_mission_control(user_id: &UserId) -> Result<Account, String> {
 
     match create {
         Err(e) => {
-            // We delete the pending empty mission control center from the list - e.g. this can happens if manager is out of cycles and user would be blocked
+            // We delete the pending empty account from the list - e.g. this can happen if manager is out of cycles and user would be blocked
             delete_account(user_id);
             Err(["Canister cannot be initialized.", &e].join(""))
         }
         Ok(mission_control_id) => {
-            // There error is unlikely to happen as the implementation ensures a mission control
-            // metadata was created before calling this factory function.
-            let mission_control = add_account(user_id, &mission_control_id)?;
+            // There error is unlikely to happen as the implementation ensures an
+            // account was created before calling this factory function.
+            let account = update_account(user_id, &mission_control_id)?;
 
             update_mission_control_controllers(&mission_control_id, user_id).await?;
 
-            Ok(mission_control)
+            Ok(account)
         }
     }
 }

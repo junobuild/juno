@@ -77,14 +77,14 @@ fn init_account_with_empty_mission_control_impl(
     accounts.insert(*user, account);
 }
 
-pub fn add_account(
+pub fn update_account(
     user: &UserId,
     mission_control_id: &MissionControlId,
 ) -> Result<Account, &'static str> {
-    with_accounts_mut(|accounts| add_account_impl(user, mission_control_id, accounts))
+    with_accounts_mut(|accounts| update_account_impl(user, mission_control_id, accounts))
 }
 
-fn add_account_impl(
+fn update_account_impl(
     user: &UserId,
     mission_control_id: &MissionControlId,
     accounts: &mut AccountsStable,

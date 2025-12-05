@@ -25,14 +25,16 @@ fn get_account_impl(
     Err("User does not have the permission for the mission control.")
 }
 
-pub fn get_existing_account(
+pub fn get_account_with_existing_mission_control(
     user: &UserId,
     mission_control_id: &MissionControlId,
 ) -> Result<Account, &'static str> {
-    with_accounts(|accounts| get_existing_account_impl(user, mission_control_id, accounts))
+    with_accounts(|accounts| {
+        get_account_with_existing_mission_control_impl(user, mission_control_id, accounts)
+    })
 }
 
-fn get_existing_account_impl(
+fn get_account_with_existing_mission_control_impl(
     user: &UserId,
     mission_control_id: &MissionControlId,
     accounts: &AccountsStable,

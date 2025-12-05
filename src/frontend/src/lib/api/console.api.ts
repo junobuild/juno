@@ -16,9 +16,9 @@ export const initAccountAndMissionControl = async (
 export const getAccount = async (
 	actorParams: GetActorParams
 ): Promise<ConsoleDid.Account | undefined> => {
-	const { get_user_mission_control_center } = await getConsoleActor(actorParams);
+	const { get_account } = await getConsoleActor(actorParams);
 
-	return fromNullable(await get_user_mission_control_center());
+	return fromNullable(await get_account());
 };
 
 export const getCredits = async (identity: OptionIdentity): Promise<bigint> => {

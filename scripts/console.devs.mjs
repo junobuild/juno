@@ -35,8 +35,8 @@ const countDevs = (devs) => {
 };
 
 const fetchDevs = async (mainnet) => {
-	const actor = await (mainnet ? consoleActorIC() : consoleActorLocal());
-	return await actor.list_user_mission_control_centers();
+	const { list_accounts } = await (mainnet ? consoleActorIC() : consoleActorLocal());
+	return await list_accounts();
 };
 
 const mainnet = targetMainnet();

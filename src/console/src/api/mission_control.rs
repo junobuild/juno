@@ -7,8 +7,7 @@ use junobuild_shared::ic::api::caller;
 use junobuild_shared::ic::UnwrapOrTrap;
 use junobuild_shared::types::interface::AssertMissionControlCenterArgs;
 
-// TODO: to be rename all endpoints to account
-
+#[deprecated = "Use get_account() instead"]
 #[query]
 fn get_user_mission_control_center() -> Option<Account> {
     let caller = caller();
@@ -25,6 +24,7 @@ fn assert_mission_control_center(
     get_account_with_existing_mission_control(&user, &mission_control_id).unwrap_or_trap();
 }
 
+#[deprecated = "Use list_accounts() instead"]
 #[query(guard = "caller_is_admin_controller")]
 fn list_user_mission_control_centers() -> Accounts {
     list_accounts()

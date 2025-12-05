@@ -96,10 +96,10 @@ describe('Mission Control > Notifications', () => {
 
 		consoleActor.setIdentity(user);
 
-		const { get_user_mission_control_center } = consoleActor;
-		const missionControl = await get_user_mission_control_center();
+		const { get_account } = consoleActor;
+		const account = await get_account();
 
-		const missionControlId = fromNullable(fromNullable(missionControl)?.mission_control_id ?? []);
+		const missionControlId = fromNullable(fromNullable(account)?.mission_control_id ?? []);
 
 		assertNonNullish(missionControlId);
 

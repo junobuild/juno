@@ -424,7 +424,6 @@ export interface _SERVICE {
 	get_delegation: ActorMethod<[GetDelegationArgs], Result_1>;
 	get_proposal: ActorMethod<[bigint], [] | [Proposal]>;
 	get_storage_config: ActorMethod<[], StorageConfig>;
-	get_user_mission_control_center: ActorMethod<[], [] | [Account]>;
 	http_request: ActorMethod<[HttpRequest], HttpResponse>;
 	http_request_streaming_callback: ActorMethod<
 		[StreamingCallbackToken],
@@ -443,7 +442,6 @@ export interface _SERVICE {
 	list_custom_domains: ActorMethod<[], Array<[string, CustomDomain]>>;
 	list_payments: ActorMethod<[], Array<[bigint, Payment]>>;
 	list_proposals: ActorMethod<[ListProposalsParams], ListProposalResults>;
-	list_user_mission_control_centers: ActorMethod<[], Array<[Principal, Account]>>;
 	reject_proposal: ActorMethod<[CommitProposal], null>;
 	set_auth_config: ActorMethod<[SetAuthenticationConfig], AuthenticationConfig>;
 	set_controllers: ActorMethod<[SetControllersArgs], undefined>;

@@ -1,6 +1,6 @@
 use crate::constants::SATELLITE_CREATION_FEE_ICP;
 use crate::store::stable::{
-    get_existing_account, has_credits, insert_new_payment, is_known_payment,
+    get_existing_account, has_mission_control_and_credits, insert_new_payment, is_known_payment,
     update_payment_completed, update_payment_refunded, use_credits,
 };
 use crate::types::ledger::Payment;
@@ -39,7 +39,7 @@ where
         Some(mission_control_id) => {
             let fee = get_fee();
 
-            if has_credits(&user, &mission_control_id, &fee) {
+            if has_mission_control_and_credits(&user, &mission_control_id, &fee) {
                 // Guard too many requests
                 increment_rate()?;
 

@@ -2,6 +2,7 @@ import {
 	type ConsoleActor,
 	type ConsoleActor0014,
 	type ConsoleActor008,
+	type ConsoleActor015,
 	type MissionControlActor,
 	idlFactoryConsole,
 	idlFactoryMissionControl
@@ -315,7 +316,7 @@ export const testSatelliteExists = async ({
 	pic
 }: {
 	users: Identity[];
-	actor: Actor<ConsoleActor | ConsoleActor008 | ConsoleActor0014>;
+	actor: Actor<ConsoleActor015 | ConsoleActor008 | ConsoleActor0014>;
 	pic: PocketIc;
 }) => {
 	const { list_user_mission_control_centers } = actor;

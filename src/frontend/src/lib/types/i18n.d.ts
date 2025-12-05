@@ -560,7 +560,7 @@ interface I18nErrors {
 	initializing_mission_control: string;
 	sign_in: string;
 	sign_in_openid: string;
-	mission_control_sign_out: string;
+	account_sign_out: string;
 	no_mission_control: string;
 	cli_missing_params: string;
 	cli_missing_selection: string;

@@ -4,8 +4,8 @@ import {
 	initAccountAndMissionControl as initAccountAndMissionControlApi
 } from '$lib/api/console.api';
 import { accountErrorSignOut } from '$lib/services/console/auth/auth.services';
+import { accountCertifiedStore } from '$lib/stores/account.store';
 import { i18n } from '$lib/stores/i18n.store';
-import { accountCertifiedStore } from '$lib/stores/mission-control.store';
 import { toasts } from '$lib/stores/toasts.store';
 import type { OptionIdentity } from '$lib/types/itentity';
 import { fromNullable, isNullish } from '@dfinity/utils';
